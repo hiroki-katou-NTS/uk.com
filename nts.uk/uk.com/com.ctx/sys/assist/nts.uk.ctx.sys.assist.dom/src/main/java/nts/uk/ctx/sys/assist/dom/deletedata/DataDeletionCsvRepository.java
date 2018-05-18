@@ -10,5 +10,8 @@ import java.util.List;
  *
  */
 public interface DataDeletionCsvRepository {
-	List<DataDeletionCsv> getDataDeletionCsvById(String delId);
+	List<TableDeletionDataCsv> getTableDelDataCsvById(String delId);
+	List<String> getColumnName(String nameTable);
+	List<List<String>> getDataForEachCaegory(TableDeletionDataCsv tableDelData, List<EmployeeDeletion> employeeDeletions);
+	int deleteData(TableDeletionDataCsv tableDelData, List<EmployeeDeletion> employeeDeletions);
 }

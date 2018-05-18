@@ -3,24 +3,32 @@
  */
 package nts.uk.ctx.sys.assist.infra.repository.deletedata;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.persistence.Query;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionCsv;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
+import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionCsvRepository;
+import nts.uk.ctx.sys.assist.dom.deletedata.EmployeeDeletion;
+import nts.uk.ctx.sys.assist.dom.deletedata.TableDeletionDataCsv;
 
 /**
- * @author nam.lh
+ * @author hiep.th
  *
  */
 @Stateless
 public class JpaDataDeletionCsvRepository extends JpaRepository implements DataDeletionCsvRepository {
 
-	private static final String SELECT_BY_STORE_PROCESSING_ID = "select a.delId, a.supplementExplanation, "
+	private static final String SELECT_TABLE_DEL_DATA_SQL = "select a.delId, a.supplementExplanation, "
 			+ "b.delType, b.delCode, b.delName, c.categoryId, c.timeStore, c.recoveryStorageRange, b.saveForInvest, "
 			+ "c.otherCompanyCls, e.categoryId, e.tableJapanName, e.tableEnglishName, "
 			+ "e.historyCls, e.defaultCondKeyQuery, e.fieldKeyQuery1, e.fieldKeyQuery2, "
@@ -35,15 +43,24 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 			+ "e.filedKeyUpdate18, e.filedKeyUpdate19, e.filedKeyUpdate20, e.fieldDate1, , e.fieldDate2, , "
 			+ "e.fieldDate3,  e.fieldDate4,  e.fieldDate5,  e.fieldDate6, e.fieldDate7, e.fieldDate8, "
 			+ "e.fieldDate9, e.fieldDate10, e.fieldDate11, e.fieldDate12, e.fieldDate13, e.fieldDate14, "
-			+ "e.fieldDate15, e.fieldDate16, e.fieldDate17, e.fieldDate18, e.fieldDate19, e.fieldDate20   "
-			+ "from SspdtManualSetDeletion a"
+			+ "e.fieldDate15, e.fieldDate16, e.fieldDate17, e.fieldDate18, e.fieldDate19, e.fieldDate20, "
+			+ "e.hasParentTblFlg, e.parentTblName, e.parentTblJapanName, e.fieldAcqDateTime, "
+			+ "e.fieldAcqEndDate, e.fieldAcqEmployeeId, e.fieldAcqStartDate, e.fieldAcqCid, e.fieldParent1, "
+			+ "e.fieldParent2, e.fieldParent3, e.fieldParent4, e.fieldParent5, e.fieldParent6, e.fieldParent7, "
+			+ "e.fieldParent8, e.fieldParent9, e.fieldParent10, e.fieldChild1, e.fieldChild2, e.fieldChild3, "
+			+ "e.fieldChild4, e.fieldChild5, e.fieldChild6, e.fieldChild7, e.fieldChild8, e.fieldChild9, "
+			+ "e.fieldChild10, a.startDateOfDaily, a.endDateOfDaily, a.startMonthOfMonthly, a.endMonthOfMonthly, "
+			+ "a.startYearOfMonthly, a.endYearOfMonthly, a.companyId " + "from SspdtManualSetDeletion a"
 			+ "JOIN SspdtResultDeletion b" + "ON a.delId = b.delId" + "JOIN SspmtCategory c "
 			+ "ON c.categoryId in (SELECT c.categoryId FROM SspdtCategoryDeletion d WHERE b.delId =:delId )"
 			+ "JOIN SspmtCategoryFieldMt e" + "ON e.categoryId = c.categoryId";
+	
+	private static final String SELECT_COLUMN_NAME_SQL = "select COLUMN_NAME from INFORMATION_SCHEMA.COLUMNS"
+			+ " where TABLE_NAME = :tableName";
 
 	@Override
-	public List<DataDeletionCsv> getDataDeletionCsvById(String delId) {
-		List<Object[]> listTemp = this.queryProxy().query(SELECT_BY_STORE_PROCESSING_ID, Object[].class)
+	public List<TableDeletionDataCsv> getTableDelDataCsvById(String delId) {
+		List<Object[]> listTemp = this.queryProxy().query(SELECT_TABLE_DEL_DATA_SQL, Object[].class)
 				.setParameter("delId", delId).getList();
 
 		if (listTemp == null || listTemp.isEmpty()) {
@@ -56,7 +73,7 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 	 * @param i
 	 * @return
 	 */
-	private DataDeletionCsv createDomainFromEntity(Object[] i) {
+	private TableDeletionDataCsv createDomainFromEntity(Object[] i) {
 		String delId = String.valueOf(i[0]);
 		int delType = Integer.parseInt(String.valueOf(i[1]));
 		String delCode = String.valueOf(i[2]);
@@ -132,7 +149,43 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		String fieldDate18 = String.valueOf(i[72]);
 		String fieldDate19 = String.valueOf(i[73]);
 		String fieldDate20 = String.valueOf(i[74]);
-		DataDeletionCsv dataDeletionCsv = new DataDeletionCsv(delId, delType, delCode, delName,
+		int hasParentTblFlg = Integer.parseInt(String.valueOf(i[75]));
+		String parentTblName = String.valueOf(i[76]);
+		String parentTblJapanName = String.valueOf(i[77]);
+		String fieldAcqDateTime = String.valueOf(i[78]);
+		String fieldAcqEndDate = String.valueOf(i[79]);
+		String fieldAcqEmployeeId = String.valueOf(i[80]);
+		String fieldAcqStartDate = String.valueOf(i[81]);
+		String fieldAcqCid = String.valueOf(i[82]);
+		String fieldParent1 = String.valueOf(i[83]);
+		String fieldParent2 = String.valueOf(i[84]);
+		String fieldParent3 = String.valueOf(i[85]);
+		String fieldParent4 = String.valueOf(i[86]);
+		String fieldParent5 = String.valueOf(i[87]);
+		String fieldParent6 = String.valueOf(i[88]);
+		String fieldParent7 = String.valueOf(i[89]);
+		String fieldParent8 = String.valueOf(i[90]);
+		String fieldParent9 = String.valueOf(i[91]);
+		String fieldParent10 = String.valueOf(i[92]);
+		String fieldChild1 = String.valueOf(i[93]);
+		String fieldChild2 = String.valueOf(i[94]);
+		String fieldChild3 = String.valueOf(i[95]);
+		String fieldChild4 = String.valueOf(i[96]);
+		String fieldChild5 = String.valueOf(i[97]);
+		String fieldChild6 = String.valueOf(i[98]);
+		String fieldChild7 = String.valueOf(i[99]);
+		String fieldChild8 = String.valueOf(i[100]);
+		String fieldChild9 = String.valueOf(i[101]);
+		String fieldChild10 = String.valueOf(i[102]);
+		String startDateOfDaily = String.valueOf(i[103]);
+		String endDateOfDaily = String.valueOf(i[104]);
+		String startMonthOfMonthly = String.valueOf(i[105]);
+		String endMonthOfMonthly = String.valueOf(i[106]);
+		String startYearOfMonthly = String.valueOf(i[107]);
+		String endYearOfMonthly = String.valueOf(i[108]);
+		String companyId = String.valueOf(i[109]);
+
+		TableDeletionDataCsv dataDeletionCsv = new TableDeletionDataCsv(delId, delType, delCode, delName,
 				supplementExplanation, categoryId, categoryName, timeStore, recoveryStorageRange, saveForInvest,
 				otherCompanyCls, tableJapanName, tableEnglishName, historyCls, defaultCondKeyQuery, fieldKeyQuery1,
 				fieldKeyQuery2, fieldKeyQuery3, fieldKeyQuery4, fieldKeyQuery5, fieldKeyQuery6, fieldKeyQuery7,
@@ -143,8 +196,512 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 				filedKeyUpdate13, filedKeyUpdate14, filedKeyUpdate15, filedKeyUpdate16, filedKeyUpdate17,
 				filedKeyUpdate18, filedKeyUpdate19, filedKeyUpdate20, fieldDate1, fieldDate2, fieldDate3, fieldDate4,
 				fieldDate5, fieldDate6, fieldDate7, fieldDate8, fieldDate9, fieldDate10, fieldDate11, fieldDate12,
-				fieldDate13, fieldDate14, fieldDate15, fieldDate16, fieldDate17, fieldDate18, fieldDate19, fieldDate20);
+				fieldDate13, fieldDate14, fieldDate15, fieldDate16, fieldDate17, fieldDate18, fieldDate19, fieldDate20,
+				hasParentTblFlg, parentTblName, parentTblJapanName, fieldAcqDateTime, fieldAcqEndDate,
+				fieldAcqEmployeeId, fieldAcqStartDate, fieldAcqCid, fieldParent1, fieldParent2, fieldParent3,
+				fieldParent4, fieldParent5, fieldParent6, fieldParent7, fieldParent8, fieldParent9, fieldParent10,
+				fieldChild1, fieldChild2, fieldChild3, fieldChild4, fieldChild5, fieldChild6, fieldChild7, fieldChild8,
+				fieldChild9, fieldChild10, startDateOfDaily, endDateOfDaily, startMonthOfMonthly, endMonthOfMonthly,
+				startYearOfMonthly, endYearOfMonthly, companyId);
+
 		return dataDeletionCsv;
 	}
+	
+	
 
+	/**
+	 * 
+	 */
+	@Override
+	public List<List<String>> getDataForEachCaegory(TableDeletionDataCsv tableDelData, List<EmployeeDeletion> employeeDeletions) {
+		Map<String, Object> parrams = new HashMap<>();
+		String sqlStr = buildGetDataForEachCatSql(tableDelData, employeeDeletions, parrams);
+		
+		TypedQueryWrapper<Object[]> query = (TypedQueryWrapper<Object[]>)this.queryProxy()
+				.query(sqlStr, Object[].class);
+		for(Entry<String, Object> entry : parrams.entrySet()) {
+			query.setParameter(entry.getKey(), entry.getValue());
+		}
+		
+		List<Object[]> listTemp = query.getList();
+		return listTemp.stream().map(objects -> {
+			List<String> record = new ArrayList<String>();
+			for (Object field : objects) {
+				record.add(String.valueOf(field));
+			}
+			return record;
+        }).collect(Collectors.toList());
+	}
+
+	/**
+	 * 
+	 * @param tableDelData
+	 * @param employeeDeletions
+	 * @param parrams
+	 * @return
+	 */
+	private String buildGetDataForEachCatSql(TableDeletionDataCsv tableDelData, 
+			List<EmployeeDeletion> employeeDeletions, Map<String, Object> parrams) {
+		boolean hasParentTbl = tableDelData.hasParentTblFlg();
+		StringBuffer buffer = new StringBuffer();
+		// build select part
+		buildSelectPart(buffer, tableDelData, hasParentTbl);
+		//build form part
+		buildFromPart(buffer, tableDelData.getTableEnglishName());
+		//build inner joint
+		if (hasParentTbl) {
+			buildInnerJoint(buffer, tableDelData);
+		}
+		//build where part
+		buildWherePart(buffer, tableDelData, employeeDeletions, parrams);
+		return buffer.toString();
+	}
+
+	/**
+	 * build the select part
+	 * @param buffer
+	 * @param tblName
+	 * @param parentTblName
+	 * @param acqCidField
+	 * @param acqEmployeeField
+	 * @param acqDateField
+	 * @param acqStartDateField
+	 * @param acqEndDateField
+	 * @param hasParentTbl
+	 */
+	private void buildSelectPart(StringBuffer buffer, TableDeletionDataCsv tableDelData,
+			boolean hasParentTbl) {
+		String acqCidField = tableDelData.getFieldAcqCid();
+		String acqEmployeeField = tableDelData.getFieldAcqEmployeeId();
+		String acqDateField = tableDelData.getFieldAcqDateTime();
+		String acqStartDateField = tableDelData.getFieldAcqStartDate();
+		String acqEndDateField = tableDelData.getFieldAcqEndDate();
+		String tblName = tableDelData.getTableEnglishName();
+		String parentTblName = tableDelData.getParentTblName();
+		
+		String tblAcq = tblName;
+		if (hasParentTbl) {
+			tblAcq = parentTblName;
+		}
+
+		buffer.append(" select ");
+		// acqCidField
+		if (acqCidField != null) {
+			buffer.append(tblAcq + "." + acqCidField + " as h_cid, ");
+		}
+		// acqEmployeeField
+		if (acqEmployeeField != null) {
+			buffer.append(tblAcq + "." + acqEmployeeField + " as h_sid, ");
+		}
+		// acqDateField
+		if (acqDateField != null) {
+			buffer.append(tblAcq + "." + acqDateField + " as h_date, ");
+		} else {
+			buffer.append(" NULL as h_date, ");
+		}
+		// acqStartDateField
+		if (acqStartDateField != null) {
+			buffer.append(tblAcq + "." + acqStartDateField + " as h_date_start, ");
+		} else {
+			buffer.append(" NULL as h_date_start, ");
+		}
+		// acqEndDateField
+		if (acqEndDateField != null) {
+			buffer.append(tblAcq + "." + acqEndDateField + " as h_date_end, ");
+		} else {
+			buffer.append(" NULL as h_date_start, ");
+		}
+		
+		if (hasParentTbl) {
+			buffer.append(parentTblName + ".* ");
+		} else {
+			buffer.append(tblName + ".* ");
+		}
+	}
+	
+	/**
+	 * 
+	 * @param buffer
+	 * @param tblName
+	 */
+	private void buildFromPart(StringBuffer buffer, String tblName) {
+		buffer.append(" FROM " + tblName );
+	}
+	
+	/**
+	 * build inner joint in case: the having parrent table
+	 * @param buffer
+	 * @param tableDelData
+	 */
+	private void buildInnerJoint(StringBuffer buffer, TableDeletionDataCsv tableDelData) {
+		String tblName = tableDelData.getTableEnglishName();
+		String parentTblName = tableDelData.getParentTblName();
+		buffer.append(" INNER　JOIN " + parentTblName + " ON ");
+		
+		if (tableDelData.getFieldChild1() != null && tableDelData.getFieldParent1() != null) {
+			buffer.append(tblName+ tableDelData.getFieldChild1() 
+				+ " = " + parentTblName + tableDelData.getFieldParent1());
+		}
+		
+		if (tableDelData.getFieldChild2() != null && tableDelData.getFieldParent2() != null) {
+			buffer.append(" AND " + tblName + "." + tableDelData.getFieldChild2() 
+				+ " = " + parentTblName + "." + tableDelData.getFieldParent2());
+		}
+		
+		if (tableDelData.getFieldChild3() != null && tableDelData.getFieldParent3() != null) {
+			buffer.append(" AND " + tblName + "." + tableDelData.getFieldChild3() 
+				+ " = " + parentTblName + "." + tableDelData.getFieldParent3());
+		}
+		
+		if (tableDelData.getFieldChild4() != null && tableDelData.getFieldParent4() != null) {
+			buffer.append(" AND " + tblName + "." + tableDelData.getFieldChild4() 
+				+ " = " + parentTblName + "." + tableDelData.getFieldParent4());
+		}
+		
+		if (tableDelData.getFieldChild5() != null && tableDelData.getFieldParent5() != null) {
+			buffer.append(" AND " + tblName + "." + tableDelData.getFieldChild5() 
+				+ " = " + parentTblName + "." + tableDelData.getFieldParent5());
+		}
+		
+		if (tableDelData.getFieldChild6() != null && tableDelData.getFieldParent6() != null) {
+			buffer.append(" AND " + tblName + "." + tableDelData.getFieldChild6() 
+				+ " = " + parentTblName + "." + tableDelData.getFieldParent6());
+		}
+		
+		if (tableDelData.getFieldChild7() != null && tableDelData.getFieldParent7() != null) {
+			buffer.append(" AND " + tblName + "." + tableDelData.getFieldChild7() 
+				+ " = " + parentTblName + "." + tableDelData.getFieldParent7());
+		}
+		
+		if (tableDelData.getFieldChild8() != null && tableDelData.getFieldParent8() != null) {
+			buffer.append(" AND " + tblName + "." + tableDelData.getFieldChild8() 
+				+ " = " + parentTblName + "." + tableDelData.getFieldParent8());
+		}
+		
+		if (tableDelData.getFieldChild9() != null && tableDelData.getFieldParent9() != null) {
+			buffer.append(" AND " + tblName + "." + tableDelData.getFieldChild9() 
+				+ " = " + parentTblName + "." + tableDelData.getFieldParent9());
+		}
+		
+		if (tableDelData.getFieldChild10() != null && tableDelData.getFieldParent10() != null) {
+			buffer.append(" AND " + tblName + "." + tableDelData.getFieldChild10() 
+				+ " = " + parentTblName + "." + tableDelData.getFieldParent10());
+		}
+	}
+	
+	/**
+	 * 
+	 * @param buffer
+	 * @param tableDelData
+	 * @param employeeDeletions
+	 * @param parrams
+	 */
+	private void buildWherePart(StringBuffer buffer, TableDeletionDataCsv tableDelData, 
+			List<EmployeeDeletion> employeeDeletions, Map<String, Object> parrams) {
+		int timeStore = tableDelData.getTimeStore();
+		String tblAcq = tableDelData.getTableEnglishName();
+		if (tableDelData.hasParentTblFlg()) {
+			tblAcq = tableDelData.getParentTblName();
+		}
+		
+		List<String> employeeIds = new ArrayList<String>();
+		for (EmployeeDeletion employeeDeletion : employeeDeletions) {
+			employeeIds.add(employeeDeletion.getEmployeeId());
+		}
+		
+		buffer.append(" WHERE ");
+		
+		//company id
+		if (tableDelData.getFieldAcqCid() != null) {
+			buffer.append(tblAcq + "." + tableDelData.getFieldAcqCid() + " = :cid ");
+			parrams.put("cid", tableDelData.getCompanyId());
+		}
+		
+		//employee id
+		if (tableDelData.getFieldAcqEmployeeId() != null) {
+			buffer.append(" AND " + tblAcq + "." + tableDelData.getFieldAcqEmployeeId() + " IN (:employeeIds) ");
+			parrams.put("employeeIds", employeeIds);
+		}
+		
+		//date
+		String acqDateTimeField = tableDelData.getFieldAcqDateTime();
+		if (acqDateTimeField != null) {
+			if (!isDateFieldInOracle(acqDateTimeField, tableDelData)) {
+				buffer.append(" AND " + tblAcq + "." + acqDateTimeField + " >= :startDate ");
+				buffer.append(" AND " + tblAcq + "." + acqDateTimeField + " <= :endDate ");
+			} else {
+				buffer.append(" AND " + tblAcq + "." + acqDateTimeField + " >= " + toDateOracle(timeStore, ":startDate"));
+				buffer.append(" AND " + tblAcq + "." + acqDateTimeField + " <= " + toDateOracle(timeStore, ":endDate"));
+			}
+			setDateParrams(tableDelData, parrams);
+		}
+		
+		//period date
+		String acqStartDateField = tableDelData.getFieldAcqStartDate();
+		String acqEndDateField = tableDelData.getFieldAcqEndDate();
+		
+		if (acqStartDateField != null && acqEndDateField != null) {
+			if (!isDateFieldInOracle(acqStartDateField, tableDelData)) {
+				buffer.append(" AND " + tblAcq + "." + acqStartDateField + " >= :startDate ");
+				buffer.append(" AND " + tblAcq + "." + acqEndDateField + " <= :endDate ");
+			} else {
+				buffer.append(" AND " + tblAcq + "." + acqStartDateField + " >= " + toDateOracle(timeStore, ":startDate"));
+				buffer.append(" AND " + tblAcq + "." + acqEndDateField + " <= " + toDateOracle(timeStore, ":endDate"));
+			}
+			setDateParrams(tableDelData, parrams);
+		}
+		
+		//condition default
+		if (tableDelData.getDefaultCondKeyQuery() != null) {
+			buffer.append(" AND " + tableDelData.getDefaultCondKeyQuery());
+		}
+	}
+	
+	/**
+	 * 
+	 * @param nameField
+	 * @param tableDelData
+	 * @return
+	 */
+	private boolean isDateFieldInOracle(String nameField, TableDeletionDataCsv tableDelData) {
+		if (nameField.equals(tableDelData.getFieldDate1()) || nameField.equals(tableDelData.getFieldDate2())
+				|| nameField.equals(tableDelData.getFieldDate3()) || nameField.equals(tableDelData.getFieldDate4())
+				|| nameField.equals(tableDelData.getFieldDate5()) || nameField.equals(tableDelData.getFieldDate6())
+				|| nameField.equals(tableDelData.getFieldDate7()) || nameField.equals(tableDelData.getFieldDate8())
+				|| nameField.equals(tableDelData.getFieldDate9()) || nameField.equals(tableDelData.getFieldDate10())
+				|| nameField.equals(tableDelData.getFieldDate11()) || nameField.equals(tableDelData.getFieldDate12())
+				|| nameField.equals(tableDelData.getFieldDate13()) || nameField.equals(tableDelData.getFieldDate14())
+				|| nameField.equals(tableDelData.getFieldDate15()) || nameField.equals(tableDelData.getFieldDate16())
+				|| nameField.equals(tableDelData.getFieldDate17()) || nameField.equals(tableDelData.getFieldDate18())
+				|| nameField.equals(tableDelData.getFieldDate19()) || nameField.equals(tableDelData.getFieldDate20())) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * 
+	 * @param timeStoreValue
+	 * @param key
+	 * @return
+	 */
+	private String toDateOracle(int timeStoreValue, String key) {
+		TimeStore timeStore = TimeStore.valueOf(timeStoreValue);
+		if (timeStore == TimeStore.DAILY) {
+			return " TO_DATE(" + key +  ",YYYY-MM-DD') ";
+		} else if (timeStore == TimeStore.MONTHLY) {
+			return " TO_DATE(" + key +  ",YYYY-MM') ";
+		} else if (timeStore == TimeStore.ANNUAL) {
+			return " TO_DATE(" + key +  ",YYYY') ";
+		}
+		return null;
+	}
+	
+	/**
+	 * 
+	 * @param tableDelData
+	 * @param parrams
+	 */
+	private void setDateParrams(TableDeletionDataCsv tableDelData, Map<String, Object> parrams) {
+		TimeStore timeStore = TimeStore.valueOf(tableDelData.getTimeStore());
+		if (timeStore == TimeStore.DAILY) {
+			parrams.put("startDate", tableDelData.getStartDateOfDaily());
+			parrams.put("endDate", tableDelData.getEndDateOfDaily());
+		} else if (timeStore == TimeStore.MONTHLY) {
+			parrams.put("startDate", tableDelData.getStartMonthOfMonthly());
+			parrams.put("endDate", tableDelData.getEndMonthOfMonthly());
+		} else if (timeStore == TimeStore.ANNUAL) {
+			parrams.put("startDate", tableDelData.getStartYearOfMonthly());
+			parrams.put("endDate", tableDelData.getEndYearOfMonthly());
+		}
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	public List<String> getColumnName(String nameTable) {
+		List<Object[]> listTemp = this.queryProxy().query(SELECT_COLUMN_NAME_SQL, Object[].class)
+				.setParameter("tableName", nameTable).getList();
+
+		if (listTemp == null || listTemp.isEmpty()) {
+			return Collections.emptyList();
+		}
+		return listTemp.stream().map(temp -> {
+			return String.valueOf(temp);
+		}).collect(Collectors.toList());
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	public int deleteData(TableDeletionDataCsv tableDelData, List<EmployeeDeletion> employeeDeletions) {
+		Map<String, Object> parrams = new HashMap<>();
+		String sqlStr = buildDelDataForEachCatSql(tableDelData, employeeDeletions, parrams);
+		Query query = this.getEntityManager().createQuery(sqlStr);
+		for(Entry<String, Object> entry : parrams.entrySet()) {
+			query.setParameter(entry.getKey(), entry.getValue());
+		}
+		
+		int numberDel = query.executeUpdate();
+		return numberDel;
+	}
+	
+	/**
+	 * 
+	 * @param tableDelData
+	 * @param employeeDeletions
+	 * @param parrams
+	 * @return
+	 */
+	private String buildDelDataForEachCatSql(TableDeletionDataCsv tableDelData, 
+			List<EmployeeDeletion> employeeDeletions, Map<String, Object> parrams) {
+		StringBuffer buffer = new StringBuffer();
+		//build form part
+		buildFromDelPart(buffer, tableDelData.getTableEnglishName());
+		//build where part
+		buildWhereDelPart(buffer, tableDelData, employeeDeletions, parrams);
+		return buffer.toString();
+	}
+	
+	/**
+	 * 
+	 * @param buffer
+	 * @param tblName
+	 */
+	private void buildFromDelPart(StringBuffer buffer, String tblName) {
+		buffer.append(" DELETE FROM " + tblName );
+	}
+	
+	/**
+	 * 
+	 * @param buffer
+	 * @param tableDelData
+	 * @param employeeDeletions
+	 * @param parrams
+	 */
+	private void buildWhereDelPart(StringBuffer buffer, TableDeletionDataCsv tableDelData, 
+			List<EmployeeDeletion> employeeDeletions, Map<String, Object> parrams) {
+		if (!tableDelData.hasParentTblFlg()) {
+			buildWherePart(buffer, tableDelData, employeeDeletions, parrams);
+		}
+		else {
+			buildWhereExist(buffer, tableDelData, employeeDeletions, parrams);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param buffer
+	 * @param tableDelData
+	 * @param employeeDeletions
+	 * @param parrams
+	 */
+	private void buildWhereExist(StringBuffer buffer, TableDeletionDataCsv tableDelData, 
+			List<EmployeeDeletion> employeeDeletions, Map<String, Object> parrams) {
+		
+		String tblName = tableDelData.getTableEnglishName();
+		String parentTblName = tableDelData.getParentTblName();
+		
+		buffer.append(" where ");
+		buffer.append(" exists ( ");
+		buffer.append(" select ");
+		
+		if (tableDelData.getFieldParent1() != null) {
+			buffer.append(tableDelData.getFieldParent1());
+		}
+		
+		if (tableDelData.getFieldParent2() != null) {
+			buffer.append(", " + tableDelData.getFieldParent2());
+		}
+		
+		if (tableDelData.getFieldParent3() != null) {
+			buffer.append(", " + tableDelData.getFieldParent3());
+		}
+		
+		if (tableDelData.getFieldParent4() != null) {
+			buffer.append(", " + tableDelData.getFieldParent4());
+		}
+		
+		if (tableDelData.getFieldParent5() != null) {
+			buffer.append(", " + tableDelData.getFieldParent5());
+		}
+		
+		if (tableDelData.getFieldParent6() != null) {
+			buffer.append(", " + tableDelData.getFieldParent6());
+		}
+		
+		if (tableDelData.getFieldParent7() != null) {
+			buffer.append(", " + tableDelData.getFieldParent7());
+		}
+		
+		if (tableDelData.getFieldParent8() != null) {
+			buffer.append(", " + tableDelData.getFieldParent8());
+		}
+		
+		if (tableDelData.getFieldParent9() != null) {
+			buffer.append(", " + tableDelData.getFieldParent9());
+		}
+		
+		if (tableDelData.getFieldParent10() != null) {
+			buffer.append(", " + tableDelData.getFieldParent10());
+		}
+		
+		buffer.append(" from " + parentTblName);
+		
+		//where for select
+		buildWherePart(buffer, tableDelData, employeeDeletions, parrams);
+		
+		//build 
+		if (tableDelData.getFieldChild1() != null && tableDelData.getFieldParent1() != null) {
+			buffer.append(" AND " + tblName+ tableDelData.getFieldChild1() 
+				+ " = " + parentTblName + tableDelData.getFieldParent1());
+		}
+		
+		if (tableDelData.getFieldChild2() != null && tableDelData.getFieldParent2() != null) {
+			buffer.append(" AND " + tblName + "." + tableDelData.getFieldChild2() 
+				+ " = " + parentTblName + "." + tableDelData.getFieldParent2());
+		}
+		
+		if (tableDelData.getFieldChild3() != null && tableDelData.getFieldParent3() != null) {
+			buffer.append(" AND " + tblName + "." + tableDelData.getFieldChild3() 
+				+ " = " + parentTblName + "." + tableDelData.getFieldParent3());
+		}
+		
+		if (tableDelData.getFieldChild4() != null && tableDelData.getFieldParent4() != null) {
+			buffer.append(" AND " + tblName + "." + tableDelData.getFieldChild4() 
+				+ " = " + parentTblName + "." + tableDelData.getFieldParent4());
+		}
+		
+		if (tableDelData.getFieldChild5() != null && tableDelData.getFieldParent5() != null) {
+			buffer.append(" AND " + tblName + "." + tableDelData.getFieldChild5() 
+				+ " = " + parentTblName + "." + tableDelData.getFieldParent5());
+		}
+		
+		if (tableDelData.getFieldChild6() != null && tableDelData.getFieldParent6() != null) {
+			buffer.append(" AND " + tblName + "." + tableDelData.getFieldChild6() 
+				+ " = " + parentTblName + "." + tableDelData.getFieldParent6());
+		}
+		
+		if (tableDelData.getFieldChild7() != null && tableDelData.getFieldParent7() != null) {
+			buffer.append(" AND " + tblName + "." + tableDelData.getFieldChild7() 
+				+ " = " + parentTblName + "." + tableDelData.getFieldParent7());
+		}
+		
+		if (tableDelData.getFieldChild8() != null && tableDelData.getFieldParent8() != null) {
+			buffer.append(" AND " + tblName + "." + tableDelData.getFieldChild8() 
+				+ " = " + parentTblName + "." + tableDelData.getFieldParent8());
+		}
+		
+		if (tableDelData.getFieldChild9() != null && tableDelData.getFieldParent9() != null) {
+			buffer.append(" AND " + tblName + "." + tableDelData.getFieldChild9() 
+				+ " = " + parentTblName + "." + tableDelData.getFieldParent9());
+		}
+		
+		if (tableDelData.getFieldChild10() != null && tableDelData.getFieldParent10() != null) {
+			buffer.append(" AND " + tblName + "." + tableDelData.getFieldChild10() 
+				+ " = " + parentTblName + "." + tableDelData.getFieldParent10());
+		}
+	}
 }

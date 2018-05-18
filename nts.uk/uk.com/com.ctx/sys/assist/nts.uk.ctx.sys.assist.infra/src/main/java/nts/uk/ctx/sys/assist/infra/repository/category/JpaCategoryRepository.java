@@ -33,7 +33,7 @@ public class JpaCategoryRepository extends JpaRepository implements CategoryRepo
     private static final String SELECT_BY_POSSIBILITY_SYSTEM_AND_CODENAME_CATEIGNORE = SELECT_ALL_QUERY_STRING + " WHERE ( f.categoryId like :keySearch OR f.categoryName LIKE :keySearch ) and f.timeStore <> :timeStore  and f.possibilitySystem = :possibilitySystem ORDER BY f.possibilitySystem,f.categoryId";
     private static final String SELECT_BY_SCHELPER_SYSTEM_AND_CODENAME_CATEIGNORE = SELECT_ALL_QUERY_STRING + " WHERE ( f.categoryId like :keySearch OR f.categoryName LIKE :keySearch ) and f.timeStore <> :timeStore  and f.schelperSystem = :schelperSystem ORDER BY f.possibilitySystem,f.categoryId";
     
-    private static final String SELECT_BY_LIST_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.categoryId IN :lstCID ";
+    private static final String SELECT_BY_LIST_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.categoryId IN ( :lstCID ) ";
 
     @Override
     public List<Category> getAllCategory(){

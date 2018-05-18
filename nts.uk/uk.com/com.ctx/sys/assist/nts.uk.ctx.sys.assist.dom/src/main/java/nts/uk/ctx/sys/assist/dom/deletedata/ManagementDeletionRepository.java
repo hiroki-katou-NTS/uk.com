@@ -39,5 +39,17 @@ public interface ManagementDeletionRepository {
 	 * @param managementDeletion
 	 */
 	void update(ManagementDeletion managementDeletion);
+	
+	/**
+	 * @param delId
+	 * @param categoryCount
+	 */
+	void updateCatCount(String delId, int categoryCount);
+	
+	/**
+	 * @param delId
+	 * @param operatingCondition
+	 */
+	void updateOperationCond(String delId, OperatingCondition operatingCondition);
 
 }

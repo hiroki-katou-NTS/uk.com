@@ -7,19 +7,19 @@ public enum OperatingCondition {
 	// 保存中
 	SAVING(1),
 	
-	// 保存中
-	INPROGRESS(2),
+	// 圧縮中
+	COMPRESSING(2),
 
-	// 保存中
+	// 削除中
 	DELETING(3),
 
-	// 保存中
+	// 完了
 	DONE(4),
 
-	// 保存中
+	// 中断終了
 	INTERRUPTION_END(5),
 
-	// 保存中
+	// 異常終了
 	ABNORMAL_TERMINATION(6);
 	
 	/** The value. */

@@ -64,7 +64,7 @@ public class AddManualSetDelHandler extends CommandHandlerWithResult<ManualSetDe
 
 //		}
 		
-//		repoCate.addAll(manualSetCmd.getCategories(delId));
+		repoCate.addAll(manualSetCmd.getCategories(delId));
 		
 		repo.addManualSetting(domain);
 		

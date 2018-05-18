@@ -24,6 +24,14 @@ public class SspdtEmployeesDeletion extends UkJpaEntity implements Serializable 
 	@EmbeddedId
     public SspdtEmployeesDeletionPK sspdtEmployeesDeletionPK;
 	
+	/**
+	 * The employee code
+	 * 社員コード
+	 */
+	@Basic(optional = false)
+	@Column(name = "EMPLOYEE_CODE")
+	public String employeeCode;
+	
 	/** The business name. */
 	/** ビジネスネーム */
 	@Basic(optional = false)
@@ -37,12 +45,12 @@ public class SspdtEmployeesDeletion extends UkJpaEntity implements Serializable 
 
 	public EmployeeDeletion toDomain() {
 		return EmployeeDeletion.createFromJavatype(this.sspdtEmployeesDeletionPK.delId, 
-				this.sspdtEmployeesDeletionPK.employeeId, this.businessName);
+				this.sspdtEmployeesDeletionPK.employeeId, this.employeeCode, this.businessName);
 	}
 
 	public static SspdtEmployeesDeletion toEntity(EmployeeDeletion employeeDeletion) {
 		return new SspdtEmployeesDeletion(new SspdtEmployeesDeletionPK(
-				employeeDeletion.getDelId(), employeeDeletion.getEmployeeId()),
-				employeeDeletion.getBusinessName().v());
+				employeeDeletion.getDelId(), employeeDeletion.getEmployeeId()), 
+				employeeDeletion.getEmployeeCode().v(), employeeDeletion.getBusinessName().v());
 	}
 }

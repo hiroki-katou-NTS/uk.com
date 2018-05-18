@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class SspdtEmployeesDeletionPK implements Serializable{
 	 
 	private static final long serialVersionUID = 1L;
+	
 	@NotNull
 	@Column(name = "DEL_ID")
     public String delId;

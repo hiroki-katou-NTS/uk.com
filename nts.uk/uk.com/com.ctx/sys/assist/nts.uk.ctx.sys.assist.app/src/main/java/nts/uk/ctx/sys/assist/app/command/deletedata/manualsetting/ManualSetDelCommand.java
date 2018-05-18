@@ -12,6 +12,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.deletedata.BusinessName;
 import nts.uk.ctx.sys.assist.dom.deletedata.CategoryDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.DelName;
+import nts.uk.ctx.sys.assist.dom.deletedata.EmployeeCode;
 import nts.uk.ctx.sys.assist.dom.deletedata.EmployeeDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.PasswordCompressFileEncrypt;
@@ -56,7 +57,8 @@ public class ManualSetDelCommand {
 	
 	public List<EmployeeDeletion> getEmployees(String delId) {
 		return employees.stream().map(x -> {
-			return new EmployeeDeletion(delId, x.getEmployeeId(), new BusinessName(x.getBusinessName()));
+			return new EmployeeDeletion(delId, x.getEmployeeId(), new EmployeeCode(x.getEmployeeCode()),
+					new BusinessName(x.getBusinessName()));
 		}).collect(Collectors.toList());
 	}
 	

@@ -346,9 +346,144 @@ public class CategoryFieldMt extends AggregateRoot
     * 履歴区分
     */
     private HistoryDiviSion historyCls;
-
-	
+ 
+    /**
+     * するしない区分
+     */
+    private boolean hasParentTblFlg;
     
+    /**
+     * テーブル物理名
+     */
+    private String parentTblName;
     
+    /**
+     * テーブル日本語名
+     */
+    private String parentTblJapanName;
     
+    /**
+     * 付加取得項目_日付
+     */
+    private String fieldAcqDateTime;
+    
+    /**
+     * 付加取得項目_終了日付
+     */
+    private String fieldAcqEndDate;
+    
+    /**
+     * 付加取得項目_社員ID
+     */
+    private String fieldAcqEmployeeId;
+    
+    /**
+     * 付加取得項目_開始日付
+     */
+    private String fieldAcqStartDate;
+    
+    /**
+     * 付加取得項目_会社ID
+     */
+    private String fieldAcqCid;
+    
+    /**
+     * 親側結合キー1
+     */
+    private String fieldParent1;
+    
+    /**
+     * 親側結合キー2
+     */
+    private String fieldParent2;
+    
+    /**
+     * 親側結合キー3
+     */
+    private String fieldParent3;
+    
+    /**
+     * 親側結合キー4
+     */
+    private String fieldParent4;
+    
+    /**
+     * 親側結合キー5
+     */
+    private String fieldParent5;
+    
+    /**
+     * 親側結合キー6
+     */
+    private String fieldParent6;
+    
+    /**
+     * 親側結合キー7
+     */
+    private String fieldParent7;
+    
+    /**
+     * 親側結合キー8
+     */
+    private String fieldParent8;
+    
+    /**
+     * 親側結合キー9
+     */
+    private String fieldParent9;
+    
+    /**
+     * 親側結合キー10
+     */
+    private String fieldParent10;
+    
+    /**
+     * 子側結合キー1
+     */
+    private String fieldChild1;
+    
+    /**
+     * 子側結合キー2
+     */
+    private String fieldChild2;
+    
+    /**
+     * 子側結合キー3
+     */
+    private String fieldChild3;
+    
+    /**
+     * 子側結合キー4
+     */
+    private String fieldChild4;
+    
+    /**
+     * 子側結合キー5
+     */
+    private String fieldChild5;
+    
+    /**
+     * 子側結合キー6
+     */
+    private String fieldChild6;
+    
+    /**
+     * 子側結合キー7
+     */
+    private String fieldChild7;
+    
+    /**
+     * 子側結合キー8
+     */
+    private String fieldChild8;
+    
+    /**
+     * 子側結合キー9
+     */
+    private String fieldChild9;
+    
+    /**
+     * 子側結合キー10
+     */
+    private String fieldChild10;
 }

@@ -17,13 +17,18 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class EmployeesDeletionCommand {
-	 /**
-	    * 社員ID
-	    */
-	    private String employeeId;
-	    
-	    /**
-	    * ビジネスネーム
-	    */
-	    private String businessName;
+	/**
+	 * 社員ID
+	 */
+	private String employeeId;
+
+	/**
+	 * 
+	 */
+	private String employeeCode;
+
+	/**
+	 * ビジネスネーム
+	 */
+	private String businessName;
 }

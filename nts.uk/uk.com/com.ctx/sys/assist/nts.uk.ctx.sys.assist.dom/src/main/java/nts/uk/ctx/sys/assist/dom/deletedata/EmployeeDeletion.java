@@ -20,12 +20,16 @@ public class EmployeeDeletion {
 	/** The employee Id. */
 	private String employeeId;
 
+	//社員コード
+	/** The employee code*/
+	private EmployeeCode employeeCode;
+	
 	// ビジネスネーム
 	/** The business name. */
 	private BusinessName businessName;
 	
 	public static EmployeeDeletion createFromJavatype(String delId, 
-			String employeeId, String businessName) {
-		return new EmployeeDeletion(delId, employeeId, new BusinessName(businessName));
+			String employeeId, String employeeCode, String businessName) {
+		return new EmployeeDeletion(delId, employeeId, new EmployeeCode(employeeCode), new BusinessName(businessName));
 	}
 }

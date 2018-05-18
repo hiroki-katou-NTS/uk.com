@@ -68,6 +68,18 @@ public class JpaManagementDeletionRepository extends JpaRepository implements Ma
 		this.commandProxy().update(entity);
 	}
 	
-	
-	
+	@Override
+	public void updateCatCount(String delId, int categoryCount) {
+		ManagementDeletion entity = this.getEntityManager().find(ManagementDeletion.class, delId);
+		entity.delId = delId;
+		entity.categoryCount = categoryCount;
+		this.commandProxy().update(entity);
+	}
+
+	@Override
+	public void updateOperationCond(String delId, OperatingCondition operatingCondition) {
+		ManagementDeletion entity = this.getEntityManager().find(ManagementDeletion.class, delId);
+		entity.operatingCondition = operatingCondition;
+		this.commandProxy().update(entity);
+	}
 }

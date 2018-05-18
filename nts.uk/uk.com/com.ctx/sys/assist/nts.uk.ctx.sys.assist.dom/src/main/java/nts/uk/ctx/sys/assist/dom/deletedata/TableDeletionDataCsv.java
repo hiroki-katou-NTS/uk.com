@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @Data
-public class DataDeletionCsv {
+public class TableDeletionDataCsv {
 
 	/**
 	 * データ保存処理ID
@@ -389,9 +389,295 @@ public class DataDeletionCsv {
 	 */
 	private String fieldDate20;
 
-	public DataDeletionCsv(String delId, int delType, String delCode, String delName,
-			String supplementExplanation, String categoryId, String categoryName, int timeStore, int recoveryStorageRange,
-			int saveForInvest, int otherCompanyCls, String tableJapanName, String tableEnglishName, int historyCls,
+	/**
+	 * するしない区分
+	 */
+	private int hasParentTblFlg;
+
+	/**
+	 * テーブル物理名
+	 */
+	private String parentTblName;
+
+	/**
+	 * テーブル日本語名
+	 */
+	private String parentTblJapanName;
+
+	/**
+	 * 付加取得項目_日付
+	 */
+	private String fieldAcqDateTime;
+
+	/**
+	 * 付加取得項目_終了日付
+	 */
+	private String fieldAcqEndDate;
+
+	/**
+	 * 付加取得項目_社員ID
+	 */
+	private String fieldAcqEmployeeId;
+
+	/**
+	 * 付加取得項目_開始日付
+	 */
+	private String fieldAcqStartDate;
+
+	/**
+	 * 付加取得項目_会社ID
+	 */
+	private String fieldAcqCid;
+
+	/**
+	 * 親側結合キー1
+	 */
+	private String fieldParent1;
+
+	/**
+	 * 親側結合キー2
+	 */
+	private String fieldParent2;
+
+	/**
+	 * 親側結合キー3
+	 */
+	private String fieldParent3;
+
+	/**
+	 * 親側結合キー4
+	 */
+	private String fieldParent4;
+
+	/**
+	 * 親側結合キー5
+	 */
+	private String fieldParent5;
+
+	/**
+	 * 親側結合キー6
+	 */
+	private String fieldParent6;
+
+	/**
+	 * 親側結合キー7
+	 */
+	private String fieldParent7;
+
+	/**
+	 * 親側結合キー8
+	 */
+	private String fieldParent8;
+
+	/**
+	 * 親側結合キー9
+	 */
+	private String fieldParent9;
+
+	/**
+	 * 親側結合キー10
+	 */
+	private String fieldParent10;
+
+	/**
+	 * 子側結合キー1
+	 */
+	private String fieldChild1;
+
+	/**
+	 * 子側結合キー2
+	 */
+	private String fieldChild2;
+
+	/**
+	 * 子側結合キー3
+	 */
+	private String fieldChild3;
+
+	/**
+	 * 子側結合キー4
+	 */
+	private String fieldChild4;
+
+	/**
+	 * 子側結合キー5
+	 */
+	private String fieldChild5;
+
+	/**
+	 * 子側結合キー6
+	 */
+	private String fieldChild6;
+
+	/**
+	 * 子側結合キー7
+	 */
+	private String fieldChild7;
+
+	/**
+	 * 子側結合キー8
+	 */
+	private String fieldChild8;
+
+	/**
+	 * 子側結合キー9
+	 */
+	private String fieldChild9;
+
+	/**
+	 * 子側結合キー10
+	 */
+	private String fieldChild10;
+	
+	/**
+	 * 日次削除開始日
+	 */
+	private String startDateOfDaily;
+
+	/**
+	 * 日次削除終了日
+	 */
+	private String endDateOfDaily;
+
+	/**
+	 * 月次削除開始月
+	 */
+	private String startMonthOfMonthly;
+
+	/**
+	 * 月次削除終了月
+	 */
+	private String endMonthOfMonthly;
+
+	/**
+	 * 年次開始年
+	 */
+	private String startYearOfMonthly;
+
+	/**
+	 * 年次終了年
+	 */
+	private String endYearOfMonthly;
+	
+	/**
+	 * 会社ID
+	 */
+	private String companyId;
+	
+	/**
+	 * 
+	 * @param delId
+	 * @param delType
+	 * @param delCode
+	 * @param delName
+	 * @param supplementExplanation
+	 * @param categoryId
+	 * @param categoryName
+	 * @param timeStore
+	 * @param recoveryStorageRange
+	 * @param saveForInvest
+	 * @param otherCompanyCls
+	 * @param tableJapanName
+	 * @param tableEnglishName
+	 * @param historyCls
+	 * @param defaultCondKeyQuery
+	 * @param fieldKeyQuery1
+	 * @param fieldKeyQuery2
+	 * @param fieldKeyQuery3
+	 * @param fieldKeyQuery4
+	 * @param fieldKeyQuery5
+	 * @param fieldKeyQuery6
+	 * @param fieldKeyQuery7
+	 * @param fieldKeyQuery8
+	 * @param fieldKeyQuery9
+	 * @param fieldKeyQuery10
+	 * @param clsKeyQuery1
+	 * @param clsKeyQuery2
+	 * @param clsKeyQuery3
+	 * @param clsKeyQuery4
+	 * @param clsKeyQuery5
+	 * @param clsKeyQuery6
+	 * @param clsKeyQuery7
+	 * @param clsKeyQuery8
+	 * @param clsKeyQuery9
+	 * @param clsKeyQuery10
+	 * @param filedKeyUpdate1
+	 * @param filedKeyUpdate2
+	 * @param filedKeyUpdate3
+	 * @param filedKeyUpdate4
+	 * @param filedKeyUpdate5
+	 * @param filedKeyUpdate6
+	 * @param filedKeyUpdate7
+	 * @param filedKeyUpdate8
+	 * @param filedKeyUpdate9
+	 * @param filedKeyUpdate10
+	 * @param filedKeyUpdate11
+	 * @param filedKeyUpdate12
+	 * @param filedKeyUpdate13
+	 * @param filedKeyUpdate14
+	 * @param filedKeyUpdate15
+	 * @param filedKeyUpdate16
+	 * @param filedKeyUpdate17
+	 * @param filedKeyUpdate18
+	 * @param filedKeyUpdate19
+	 * @param filedKeyUpdate20
+	 * @param fieldDate1
+	 * @param fieldDate2
+	 * @param fieldDate3
+	 * @param fieldDate4
+	 * @param fieldDate5
+	 * @param fieldDate6
+	 * @param fieldDate7
+	 * @param fieldDate8
+	 * @param fieldDate9
+	 * @param fieldDate10
+	 * @param fieldDate11
+	 * @param fieldDate12
+	 * @param fieldDate13
+	 * @param fieldDate14
+	 * @param fieldDate15
+	 * @param fieldDate16
+	 * @param fieldDate17
+	 * @param fieldDate18
+	 * @param fieldDate19
+	 * @param fieldDate20
+	 * @param hasParentTblFlg
+	 * @param parentTblName
+	 * @param parentTblJapanName
+	 * @param fieldAcqDateTime
+	 * @param fieldAcqEndDate
+	 * @param fieldAcqEmployeeId
+	 * @param fieldAcqStartDate
+	 * @param fieldAcqCid
+	 * @param fieldParent1
+	 * @param fieldParent2
+	 * @param fieldParent3
+	 * @param fieldParent4
+	 * @param fieldParent5
+	 * @param fieldParent6
+	 * @param fieldParent7
+	 * @param fieldParent8
+	 * @param fieldParent9
+	 * @param fieldParent10
+	 * @param fieldChild1
+	 * @param fieldChild2
+	 * @param fieldChild3
+	 * @param fieldChild4
+	 * @param fieldChild5
+	 * @param fieldChild6
+	 * @param fieldChild7
+	 * @param fieldChild8
+	 * @param fieldChild9
+	 * @param fieldChild10
+	 * @param endDateOfDaily
+	 * @param startMonthOfMonthly
+	 * @param endMonthOfMonthly
+	 * @param startYearOfMonthly
+	 * @param endYearOfMonthly
+	 */
+	public TableDeletionDataCsv(String delId, int delType, String delCode, String delName, String supplementExplanation,
+			String categoryId, String categoryName, int timeStore, int recoveryStorageRange, int saveForInvest,
+			int otherCompanyCls, String tableJapanName, String tableEnglishName, int historyCls,
 			String defaultCondKeyQuery, String fieldKeyQuery1, String fieldKeyQuery2, String fieldKeyQuery3,
 			String fieldKeyQuery4, String fieldKeyQuery5, String fieldKeyQuery6, String fieldKeyQuery7,
 			String fieldKeyQuery8, String fieldKeyQuery9, String fieldKeyQuery10, String clsKeyQuery1,
@@ -405,7 +691,15 @@ public class DataDeletionCsv {
 			String fieldDate2, String fieldDate3, String fieldDate4, String fieldDate5, String fieldDate6,
 			String fieldDate7, String fieldDate8, String fieldDate9, String fieldDate10, String fieldDate11,
 			String fieldDate12, String fieldDate13, String fieldDate14, String fieldDate15, String fieldDate16,
-			String fieldDate17, String fieldDate18, String fieldDate19, String fieldDate20) {
+			String fieldDate17, String fieldDate18, String fieldDate19, String fieldDate20, int hasParentTblFlg,
+			String parentTblName, String parentTblJapanName, String fieldAcqDateTime, String fieldAcqEndDate,
+			String fieldAcqEmployeeId, String fieldAcqStartDate, String fieldAcqCid, String fieldParent1,
+			String fieldParent2, String fieldParent3, String fieldParent4, String fieldParent5, String fieldParent6,
+			String fieldParent7, String fieldParent8, String fieldParent9, String fieldParent10, String fieldChild1,
+			String fieldChild2, String fieldChild3, String fieldChild4, String fieldChild5, String fieldChild6,
+			String fieldChild7, String fieldChild8, String fieldChild9, String fieldChild10, 
+			String startDateOfDaily, String endDateOfDaily, String startMonthOfMonthly, 
+			String endMonthOfMonthly, String startYearOfMonthly, String endYearOfMonthly, String companyId) {
 
 		this.delId = delId;
 		this.delType = delType;
@@ -482,6 +776,44 @@ public class DataDeletionCsv {
 		this.fieldDate18 = fieldDate18;
 		this.fieldDate19 = fieldDate19;
 		this.fieldDate20 = fieldDate20;
+		this.hasParentTblFlg = hasParentTblFlg;
+		this.parentTblName = parentTblName;
+		this.parentTblJapanName = parentTblJapanName;
+		this.fieldAcqDateTime = fieldAcqDateTime;
+		this.fieldAcqEndDate = fieldAcqEndDate;
+		this.fieldAcqEmployeeId = fieldAcqEmployeeId;
+		this.fieldAcqStartDate = fieldAcqStartDate;
+		this.fieldAcqCid = fieldAcqCid;
+		this.fieldParent1 = fieldParent1;
+		this.fieldParent2 = fieldParent2;
+		this.fieldParent3 = fieldParent3;
+		this.fieldParent4 = fieldParent4;
+		this.fieldParent5 = fieldParent5;
+		this.fieldParent6 = fieldParent6;
+		this.fieldParent7 = fieldParent7;
+		this.fieldParent8 = fieldParent8;
+		this.fieldParent9 = fieldParent9;
+		this.fieldParent10 = fieldParent10;
+		this.fieldChild1 = fieldChild1;
+		this.fieldChild2 = fieldChild2;
+		this.fieldChild3 = fieldChild3;
+		this.fieldChild4 = fieldChild4;
+		this.fieldChild5 = fieldChild5;
+		this.fieldChild6 = fieldChild6;
+		this.fieldChild7 = fieldChild7;
+		this.fieldChild8 = fieldChild8;
+		this.fieldChild9 = fieldChild9;
+		this.fieldChild10 = fieldChild10;
+		this.startDateOfDaily = startDateOfDaily;
+		this.endDateOfDaily = endDateOfDaily;
+		this.startMonthOfMonthly = startMonthOfMonthly;
+		this.endMonthOfMonthly = endMonthOfMonthly;
+		this.startYearOfMonthly = startYearOfMonthly;
+		this.endYearOfMonthly = endYearOfMonthly;
+		this.companyId = companyId;
 	}
-
+	
+	public boolean hasParentTblFlg() {
+		return this.hasParentTblFlg == 1;
+	}
 }
