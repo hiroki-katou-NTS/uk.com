@@ -295,8 +295,13 @@ module cmm001.a {
                         var masterCopyDataCmd: MasterCopyDataCommand = { companyId: cid, masterDataList: IMasterDataList };
                         service.getAllMasterCopyCategory().then(function(masterCopyCateList: Array<MasterCopyCategory>) {
                             if (masterCopyCateList != null) {
-                                for (item of masterCopyCateList) {
-                                    var IMasterCopyCategoryDto: MasterCopyCategoryDto = { masterCopyId: item.masterCopyId, categoryName: item.masterCopyCategory, order: item.order, systemType: item.systemType, copyMethod: 1 };
+
+                                var copyMethod: number;
+                                var item: model.MasterCopyCategory;
+                                for (var i = 0; i < masterCopyCateList.length; i++) {
+                                    item = masterCopyCateList[i];
+
+                                    var IMasterCopyCategoryDto: MasterCopyCategoryDto = { masterCopyId: item.masterCopyId, categoryName: item.masterCopyCategory, order: item.order, systemType: self.getSystemType(item.systemType), copyMethod: 1 };
                                     IMasterDataList.push(IMasterCopyCategoryDto);
                                 }
                                 nts.uk.ui.windows.setShared('masterCopyDataCmd', masterCopyDataCmd);
@@ -323,6 +328,25 @@ module cmm001.a {
             });
 
         }
+        
+                    private getSystemType(systemTypeVal: number): string {
+                var systemType : string;
+                switch (systemTypeVal) {
+                    case 0:
+                        systemType = '共通';
+                        break;
+                    case 1:
+                        systemType = '就業';
+                        break;
+                    case 2:
+                        systemType = '給与';
+                        break;
+                    case 3:
+                        systemType = '人事';
+                        break;
+                }
+                return systemType;
+            }
 
         /** search post code */
         search() {
