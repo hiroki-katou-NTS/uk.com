@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.val;
@@ -197,13 +198,24 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				excelInforList.add(excelInforCommand);
 				
 				setter.updateData(NUMBER_OF_SUCCESS, i + 1);
+				
+				ObjectMapper mapper = new ObjectMapper();
+				try {
+					String jsonInString = mapper.writeValueAsString(excelInforCommand);
+					setter.setData("EXCEL_LIST"  + i, jsonInString);
+				} catch (JsonProcessingException e) {
+					e.printStackTrace();
+				}
+				
 			}
 			// Excel出力情報ListをもとにExcel出力をする (Xuất ra file excel)
 			//exportCsv(excelInforList);
+			
 			if (asyncTask.hasBeenRequestedToCancel()) {
 				asyncTask.finishedAsCancelled();
 				return;
 			}
+			/*
 			final ByteArrayOutputStream out = new ByteArrayOutputStream();
 		    final ObjectMapper mapper = new ObjectMapper();
 
@@ -215,10 +227,11 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 
 		    final byte[] data = out.toByteArray();
 			setter.setData("EXCEL_LIST", new String(data));
+			*/
 		}
 		//delay a moment.
 		try {
-			TimeUnit.SECONDS.sleep(10);
+			TimeUnit.SECONDS.sleep(1);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
