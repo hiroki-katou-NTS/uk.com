@@ -56,6 +56,7 @@ module cps002.a.vm {
         layoutData: KnockoutObservableArray<any> = ko.observableArray([]);
 
         defaultImgId: KnockoutObservable<string> = ko.observable("");
+        subContraint: KnockoutObservable<boolean> = ko.observable(true);
 
         ccgcomponent: any = {
             /** Common properties */
@@ -233,45 +234,55 @@ module cps002.a.vm {
                 var self = this;
                 self.updateCardNumber();
             });
-            
+
             self.currentEmployee().cardNo.subscribe((cardNo) => {
                 let self = this;
                 let stampCardMehod = self.stampCardEditing.method;
                 let maxLength = self.stampCardEditing.digitsNumber;
                 if (cardNo.length < maxLength) {
-                    
+
                     let textValue = cardNo;
                     switch (stampCardMehod) {
                         case EDIT_METHOD.PreviousZero: {
-                            textValue= self.autoChange('0', POSITION.Previous, textValue, maxLength);
+                            textValue = self.autoChange('0', POSITION.Previous, textValue, maxLength);
                             break;
                         }
                         case EDIT_METHOD.AfterZero: {
-                            textValue= self.autoChange('0', POSITION.After, textValue, maxLength);
+                            textValue = self.autoChange('0', POSITION.After, textValue, maxLength);
                             break;
                         }
                         case EDIT_METHOD.PreviousSpace: {
-                            textValue= self.autoChange(' ', POSITION.Previous, textValue, maxLength);
+                            textValue = self.autoChange(' ', POSITION.Previous, textValue, maxLength);
                             break;
                         }
                         case EDIT_METHOD.AfterSpace: {
-                            textValue= self.autoChange(' ', POSITION.After, textValue, maxLength);
+                            textValue = self.autoChange(' ', POSITION.After, textValue, maxLength);
                             break;
                         }
                         default: {
                             break;
                         }
-                    } 
+                    }
                     self.currentEmployee().cardNo(textValue);
                 }
             });
 
+            self.subContraint.subscribe((value){
+                if (!value) {
+                    service.getStamCardEdit().done(data => {
+                        __viewContext.primitiveValueConstraints.StampNumber.maxLength = data.digitsNumber;
+                        self.subContraint(true);
+                    });
+
+                }
+            })
+
             self.start();
 
-            console.log('start done');
+
 
         }
-        
+
         autoChange(character: string, position: POSITION, textValue: string, maxLength: number): string {
             if (position == POSITION.Previous) {
                 while (textValue.length < maxLength) {
@@ -284,7 +295,7 @@ module cps002.a.vm {
             }
             return textValue;
         }
-        
+
         loadCopySettingItemData() {
 
             let self = this,
@@ -312,6 +323,7 @@ module cps002.a.vm {
 
             let self = this;
             self.currentEmployee().clearData();
+            self.subContraint(false);
 
             nts.uk.characteristics.restore("NewEmployeeBasicInfo").done((data: IEmployeeBasicInfo) => {
                 self.employeeBasicInfo(data);
@@ -331,7 +343,7 @@ module cps002.a.vm {
                     $.when.apply($, dfs).then(() => {
                         let stampCardEditing = arguments[0];
                         let userSetting = arguments[1];
-                        
+
                         __viewContext.primitiveValueConstraints["StampNumber"].maxLength = stampCardEditing.digitsNumber;
 
                         self.stampCardEditing = new StampCardEditing(stampCardEditing.method, stampCardEditing.digitsNumber);
@@ -1084,7 +1096,7 @@ module cps002.a.vm {
         PreviousSpace = 2,
         AfterSpace = 3
     }
-    
+
     enum POSITION {
         Previous = 0,
         After = 1
