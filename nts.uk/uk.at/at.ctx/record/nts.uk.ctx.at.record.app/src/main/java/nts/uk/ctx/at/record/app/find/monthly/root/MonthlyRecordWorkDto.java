@@ -4,8 +4,8 @@ import java.util.List;
 
 import lombok.Data;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
-import nts.uk.ctx.at.record.app.find.monthly.root.dto.ClosureDateDto;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
@@ -26,7 +26,7 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 	private String employeeId;
 
 	/** 締めID: 締めID */
-	private int closureId;
+	private int closureID;
 
 	/** 締め日: 日付 */
 	private ClosureDateDto closureDate;

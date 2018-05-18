@@ -9,8 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.dailyperform.optionalitem.dto.OptionalItemValueDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
-import nts.uk.ctx.at.record.app.find.monthly.root.dto.ClosureDateDto;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -26,7 +26,7 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 	private String employeeId;
 
 	/** 締めID: 締めID */
-	private int closureId = 1;
+	private int closureID = 1;
 
 	/** 締め日: 日付 */
 	private ClosureDateDto closureDate;
@@ -46,7 +46,7 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 	public List<AnyItemOfMonthly> toDomain() {
 		if (this.isHaveData()) {
 			return ConvertHelper.mapTo(values, any -> AnyItemOfMonthly.of(employeeId, yearMonth, 
-					ConvertHelper.getEnum(closureId, ClosureId.class),
+					ConvertHelper.getEnum(closureID, ClosureId.class),
 					closureDate == null ? null : closureDate.toDomain(),
 					any.getItemNo(),
 					Optional.ofNullable(any.getMonthlyTime()),
@@ -65,7 +65,7 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 		AnyItemOfMonthlyDto dto = new AnyItemOfMonthlyDto();
 		if (domain != null) {
 			dto.setClosureDate(ClosureDateDto.from(domain.getClosureDate()));
-			dto.setClosureId(domain.getClosureId() == null ? 1 : domain.getClosureId().value);
+			dto.setClosureID(domain.getClosureId() == null ? 1 : domain.getClosureId().value);
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setYearMonth(domain.getYearMonth());
 			dto.getValues().add(OptionalItemValueDto.from(domain));
@@ -78,7 +78,7 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 		AnyItemOfMonthlyDto dto = new AnyItemOfMonthlyDto();
 		if (domain != null && !domain.isEmpty()) {
 			dto.setClosureDate(ClosureDateDto.from(domain.get(0).getClosureDate()));
-			dto.setClosureId(domain.get(0).getClosureId() == null ? 1 : domain.get(0).getClosureId().value);
+			dto.setClosureID(domain.get(0).getClosureId() == null ? 1 : domain.get(0).getClosureId().value);
 			dto.setEmployeeId(domain.get(0).getEmployeeId());
 			dto.setYearMonth(domain.get(0).getYearMonth());
 			domain.stream().forEach(d -> {
