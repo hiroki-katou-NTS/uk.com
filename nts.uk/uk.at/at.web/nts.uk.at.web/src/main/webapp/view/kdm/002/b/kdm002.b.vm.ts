@@ -137,6 +137,7 @@ module nts.uk.at.view.kdm002.b {
                 // 1秒おきに下記を実行
                 nts.uk.deferred.repeat(conf => conf
                     .task(() => {
+                        if (
                         return nts.uk.request.asyncTask.getInfo(self.taskId()).done(function(res: any) {
                             // update state on screen
                             if (res.running || res.succeeded || res.cancelled) {

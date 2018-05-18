@@ -27,8 +27,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumb
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.DailyWorkTypeListImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.YearlyHolidaysTimeRemainingImport;
 import nts.uk.ctx.at.request.dom.settting.worktype.history.PlanVacationHistory;
-import nts.uk.ctx.at.request.dom.settting.worktype.history.PlanVacationHistoryGetMemento;
-import nts.uk.ctx.at.request.dom.settting.worktype.history.PlanVacationHistorySetMemento;
 import nts.uk.ctx.at.request.dom.settting.worktype.history.VacationHistoryRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -69,22 +67,38 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 		List<EmployeeSearchCommand> employeeSearchCommand = command.getEmployeeList();
 		setter.setData(NUMBER_OF_SUCCESS, command.getPass());
 		setter.setData(NUMBER_OF_ERROR, command.getError());
-
+		if (asyncTask.hasBeenRequestedToCancel()) {
+			return;
+		}
 		// アルゴリズム「社員ID、期間をもとに期間内に年休付与日がある社員を抽出する」を実行する
 		// TODO RequestList 要求No304. 
 		List<String> employeeList = employeeSearchCommand.stream().map(f -> f.getEmployeeId())
 				.collect(Collectors.toList());
-
+		if (asyncTask.hasBeenRequestedToCancel()) {
+			asyncTask.finishedAsCancelled();
+			return;
+		}
 		List<AnnualBreakManageImport> employeeIdRq304 = annualBreakManageAdapter.getEmployeeId(employeeList,
 				command.getStartTime(), command.getEndTime());
-
+		if (asyncTask.hasBeenRequestedToCancel()) {
+			asyncTask.finishedAsCancelled();
+			return;
+		}
 		// パラメータ.社員Listと取得した年休付与がある社員ID(List)を比較する
 		checkEmployeeListId(employeeSearchCommand, employeeIdRq304, employeeListResult, outputErrorInfoCommand);
+		if (asyncTask.hasBeenRequestedToCancel()) {
+			return;
+		}
 		List<PlannedVacationListCommand> plannedVacationList = new ArrayList<>();
 		if (outputErrorInfoCommand.isEmpty()) {
 			// 計画休暇一覧を取得する
 			plannedVacationList = getPlannedVacationList(command.getDate(),
 				outputErrorInfoCommand);
+		}
+		
+		if (asyncTask.hasBeenRequestedToCancel()) {
+			asyncTask.finishedAsCancelled();
+			return;
 		}
 		if (outputErrorInfoCommand.size() > 0) {
 			// エラーがあった場合
@@ -96,6 +110,11 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				setter.setData(ERROR_LIST + i, value);
 				setter.updateData(NUMBER_OF_SUCCESS, i+1);
 				setter.updateData(NUMBER_OF_ERROR, i+1);
+				
+				if (asyncTask.hasBeenRequestedToCancel()) {
+					asyncTask.finishedAsCancelled();
+					break;
+				}
 			}
 		} else {
 			// エラーがなかった場合
@@ -128,7 +147,10 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 					setter.updateData(NUMBER_OF_SUCCESS, i + 1);
 					continue;
 				}
-				
+				if (asyncTask.hasBeenRequestedToCancel()) {
+					asyncTask.finishedAsCancelled();
+					break;
+				}
 				// パラメータ.年休残数をチェックする
 				//(Check số phép còn lại trong param -パラメータ.年休残数)
 				if (command.getMaxDay() != null) {
@@ -141,7 +163,10 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 						}
 					}
 				}
-				
+				if (asyncTask.hasBeenRequestedToCancel()) {
+					asyncTask.finishedAsCancelled();
+					break;
+				}
 				// 取得成功
 				// TODO RequestList 要求No328
 				List<String> workTypeCode = plannedVacationList.stream().map(x -> x.getWorkTypeCode()).collect(Collectors.toList());
@@ -151,6 +176,10 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 					//パラメータ.処理人数に＋１加算する
 					setter.updateData(NUMBER_OF_SUCCESS, i + 1);
 					continue;
+				}
+				if (asyncTask.hasBeenRequestedToCancel()) {
+					asyncTask.finishedAsCancelled();
+					break;
 				}
 				//取得した情報をもとにExcel 出力情報Listに設定する
 				ExcelInforCommand excelInforCommand = new ExcelInforCommand();
@@ -169,6 +198,10 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 			}
 			// Excel出力情報ListをもとにExcel出力をする (Xuất ra file excel)
 			//exportCsv(excelInforList);
+			if (asyncTask.hasBeenRequestedToCancel()) {
+				asyncTask.finishedAsCancelled();
+				return;
+			}
 			final ByteArrayOutputStream out = new ByteArrayOutputStream();
 		    final ObjectMapper mapper = new ObjectMapper();
 
