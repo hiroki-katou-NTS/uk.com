@@ -36,6 +36,8 @@ public class PayoutManagementDataDto {
 
 	// 振休消化区分
 	private int stateAtr;
+	
+	private boolean Linked;
 
 	private PayoutManagementDataDto(String payoutId, String cID, String sID, boolean unknownDate, GeneralDate dayoffDate,
 			GeneralDate expiredDate, int lawAtr, Double occurredDays, Double unUsedDays, int stateAtr) {
@@ -61,5 +63,8 @@ public class PayoutManagementDataDto {
 				domain.getUnUsedDays().v(), domain.getStateAtr().value);
 	}
 	
+	public void setLinked(boolean isLinked){
+		this.Linked = isLinked;
+	}
 	
 }

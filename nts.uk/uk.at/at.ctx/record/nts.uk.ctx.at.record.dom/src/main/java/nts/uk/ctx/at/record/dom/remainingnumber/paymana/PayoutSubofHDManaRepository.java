@@ -11,4 +11,6 @@ public interface PayoutSubofHDManaRepository {
 	void delete(String payoutId, String subOfHDID);
 	
 	List<PayoutSubofHDManagement> getByPayoutId(String payoutId);
+	
+	List<PayoutSubofHDManagement> getBySubId(String subID);
 }

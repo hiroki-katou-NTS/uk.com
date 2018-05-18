@@ -17,12 +17,14 @@ public interface SubstitutionOfHDManaDataRepository {
 	
 	void delete(String subOfHDID);
 	
+	void delete(String sID, GeneralDate dayOff);
+	
 	void update(SubstitutionOfHDManagementData domain);
 	
 	Optional<SubstitutionOfHDManagementData> findByID(String Id);
 	
 	// ドメイン「振休管理データ」より紐付け対象となるデータを取得する
-	List<SubstitutionOfHDManagementData> getBySidDatePeriod(String sid, GeneralDate startDate, GeneralDate endDate, Double remainDays);
+	List<SubstitutionOfHDManagementData> getBySidDatePeriod(String sid,String payoutID, Double remainDays);
 	
 	List<SubstitutionOfHDManagementData> getBySidDatePeriodNoRemainDay(String sid, GeneralDate startDate, GeneralDate endDate);
 	

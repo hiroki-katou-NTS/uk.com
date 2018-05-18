@@ -7,5 +7,10 @@ import nts.arc.time.GeneralDate;
 public class DeleteSubstitutionOfHDManaDataCommand {
 
 	String subOfHDID;
+	
+	String sID;
+	
+	GeneralDate dayOff;
+	
 	GeneralDate expirationDate;
 }

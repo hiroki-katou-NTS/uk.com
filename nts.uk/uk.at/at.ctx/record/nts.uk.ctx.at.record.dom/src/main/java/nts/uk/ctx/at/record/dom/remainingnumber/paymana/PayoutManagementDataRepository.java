@@ -17,11 +17,13 @@ public interface PayoutManagementDataRepository {
 	
 	void delete(String payoutId);
 	
+	void delete(String sID, GeneralDate dayoff);
+	
 	void update(PayoutManagementData domain);
 	
 	Optional<PayoutManagementData> findByID(String ID);
 	// ドメイン「振休管理データ」より紐付け対象となるデータを取得する
-	List<PayoutManagementData> getBySidDatePeriod(String sid, GeneralDate startDate, GeneralDate endDate, int digestionAtr);
+	List<PayoutManagementData> getBySidDatePeriod(String sid, String subOfHDID, int digestionAtr);
 	
 	// ドメイン「振出管理データ」より指定されたデータを取得する: 消化区分　≠　未消化
 	List<PayoutManagementData> getBySidDatePeriodDif(String sid, GeneralDate startDate, GeneralDate endDate, int digestionAtr);

@@ -28,6 +28,8 @@ public class SubstitutionOfHDManagementDataDto{
 	
 	// 未相殺日数
 	private Double remainDays;
+	
+	private boolean isLinked;
 
 	private SubstitutionOfHDManagementDataDto(String subOfHDID, String cid, String sID, boolean unknownDate,
 			GeneralDate dayoffDate, Double requiredDays, Double remainDays) {
@@ -47,5 +49,7 @@ public class SubstitutionOfHDManagementDataDto{
 				domain.getRequiredDays().v(), domain.getRemainDays().v());
 	}
 	
-
+	public void setLinked(boolean isLinked){
+		this.isLinked = isLinked;
+	}
 }
