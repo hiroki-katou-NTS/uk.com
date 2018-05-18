@@ -54,13 +54,13 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             self.ccgcomponent = {
                 /** Common properties */
                 systemType: 1,
-                showEmployeeSelection: true,
+                showEmployeeSelection: false,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
-                showBaseDate: true,
-                showClosure: true,
-                showAllClosure: true,
-                showPeriod: true,
+                showBaseDate: false,
+                showClosure: false,
+                showAllClosure: false,
+                showPeriod: false,
                 periodFormatYM: false,
 
                 /** Required parameter */
@@ -105,11 +105,13 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         }
         openNewSubstituteData() {
             modal("/view/kdm/001/i/index.xhtml").onClosed(function() {
-
+                //TODO
+                $('#substituteDataGrid').focus();
             });
         }
         filterByPeriod() {
             // TODO
+            $('#substituteDataGrid').focus();
         }
         updateSubstituteDataList(){
             var self = this;
