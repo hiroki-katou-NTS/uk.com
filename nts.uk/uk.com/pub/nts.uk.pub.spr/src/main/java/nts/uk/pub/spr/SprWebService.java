@@ -20,6 +20,7 @@ import nts.uk.pub.spr.dailystatus.SprDailyStatusService;
 import nts.uk.pub.spr.login.SprLoginFormService;
 import nts.uk.pub.spr.login.output.LoginUserContextSpr;
 import nts.uk.pub.spr.login.output.RoleInfoSpr;
+import nts.uk.pub.spr.login.paramcheck.LoginParamCheck;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 
 @Path("public/spr")
@@ -39,6 +40,9 @@ public class SprWebService {
 	
 	@Inject
 	private LoginUserContextManager loginUserContextManager;
+	
+	@Inject
+	private LoginParamCheck loginParamCheck;
 
 	@POST
 	@Path("01/loginfromspr")
@@ -133,7 +137,7 @@ public class SprWebService {
 		paramsValue.put("employeeCode", targetEmployeeCDReal);
 		paramsValue.put("starttime", startTimeReal);
 		paramsValue.put("endtime", endTimeReal);
-		paramsValue.put("date", targetDateReal);
+		paramsValue.put("date", loginParamCheck.getDate(targetDateReal).toString());
 		paramsValue.put("selecttype", selectTypeReal);
 		paramsValue.put("applicationID", applicationIDReal);
 		paramsValue.put("reason", reasonReal);
