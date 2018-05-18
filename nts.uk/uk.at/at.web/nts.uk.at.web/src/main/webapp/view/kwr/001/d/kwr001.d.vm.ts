@@ -1,4 +1,7 @@
 module nts.uk.at.view.kwr001.d {
+    
+    import service = nts.uk.at.view.kwr001.d.service;
+    
     export module viewmodel {
         export class ScreenModel {
             itemList: KnockoutObservableArray<ItemModel>;
@@ -13,11 +16,7 @@ module nts.uk.at.view.kwr001.d {
              */
             constructor() {
                 var self = this;
-                self.itemList = ko.observableArray([
-                    new ItemModel('1', '基本給'),
-                    new ItemModel('2', '役職手当'),
-                    new ItemModel('3', '基本給ながい文字列ながい文字列ながい文字列')
-                ]);
+                self.itemList = ko.observableArray([]);
         
                 self.selectedCode = ko.observable('1');
                 self.isEnable = ko.observable(true);
@@ -26,11 +25,19 @@ module nts.uk.at.view.kwr001.d {
                 self.D1_7_value = ko.observable('');
             }
             
-            startPage() {
+            public startPage(): JQueryPromise<void> {
                 var self = this;
-                var dfd = $.Deferred();
+                var dfd = $.Deferred<void>();
                 var data = nts.uk.ui.windows.getShared('KWR001_D');
-                if (data) dfd.resolve();
+                
+                service.getDataStartPage().done(function(data: any) {
+                    let arr: ItemModel[] = [];
+                    _.forEach(data, function(value, index) {
+                        arr.push(new ItemModel(value.code, value.name));
+                    })
+                    self.itemList(arr);
+                    dfd.resolve();      
+                })
                 return dfd.promise();
             }
             

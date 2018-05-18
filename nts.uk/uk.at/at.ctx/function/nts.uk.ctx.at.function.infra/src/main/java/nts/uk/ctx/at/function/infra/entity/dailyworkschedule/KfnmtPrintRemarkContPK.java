@@ -29,7 +29,7 @@ public class KfnmtPrintRemarkContPK implements Serializable {
 	private String cid;
 
 	/** The item code. */
-	@Column(name="ITEM_CODE")
+	@Column(name="ITEM_CD")
 	private long itemCode;
 
 	/** The print item. */
@@ -40,30 +40,37 @@ public class KfnmtPrintRemarkContPK implements Serializable {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
-	public boolean equals(Object other) {
-		if (this == other) {
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
 			return true;
-		}
-		if (!(other instanceof KfnmtPrintRemarkContPK)) {
+		if (obj == null)
 			return false;
-		}
-		KfnmtPrintRemarkContPK castOther = (KfnmtPrintRemarkContPK)other;
-		return 
-			this.cid.equals(castOther.cid)
-			&& (this.itemCode == castOther.itemCode)
-			&& (this.printItem == castOther.printItem);
+		if (getClass() != obj.getClass())
+			return false;
+		KfnmtPrintRemarkContPK other = (KfnmtPrintRemarkContPK) obj;
+		if (cid == null) {
+			if (other.cid != null)
+				return false;
+		} else if (!cid.equals(other.cid))
+			return false;
+		if (itemCode != other.itemCode)
+			return false;
+		if (printItem != other.printItem)
+			return false;
+		return true;
 	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
+	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int hash = 17;
-		hash = hash * prime + this.cid.hashCode();
-		hash = hash * prime + ((int) (this.itemCode ^ (this.itemCode >>> 32)));
-		hash = hash * prime + ((int) (this.printItem ^ (this.printItem >>> 32)));
-		
-		return hash;
+		int result = 1;
+		result = prime * result + ((cid == null) ? 0 : cid.hashCode());
+		result = prime * result + (int) (itemCode ^ (itemCode >>> 32));
+		result = prime * result + (int) (printItem ^ (printItem >>> 32));
+		return result;
 	}
 }

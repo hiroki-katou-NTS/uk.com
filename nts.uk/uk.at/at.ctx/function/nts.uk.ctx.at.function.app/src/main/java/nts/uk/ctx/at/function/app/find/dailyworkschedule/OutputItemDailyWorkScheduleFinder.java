@@ -11,9 +11,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -173,12 +172,18 @@ public class OutputItemDailyWorkScheduleFinder {
 	 * @return the format daily performance
 	 */
 	// algorithm for screen D: start screen
-	private List<DataInforReturnDto> getFormatDailyPerformance() {
+	public List<DataInforReturnDto> getFormatDailyPerformance() {
 		String companyId = AppContexts.user().companyId();
 		// TODO: hoangdd - doi request list 402, do chua tach domain nen dung domain cu: OpOfDailyPerformance
 		// Get domain 実績修正画面で利用するフォーマット
 		Optional<FormatPerformance> optFormatPerformanceRepository = formatPerformanceRepository.getFormatPerformanceById(companyId);
 
+//		// TODO: hoangdd - fake data return
+//		List<DataInforReturnDto> lstFake = new ArrayList<>();
+//		lstFake.add(new DataInforReturnDto("1", "Test"));
+//		lstFake.add(new DataInforReturnDto("2", "Test"));
+//		return lstFake;
+		
 		// In case of authority
 		if (optFormatPerformanceRepository.get().getSettingUnitType().value == SettingUnitType.AUTHORITY.value) {
 			// Get domain 会社の日別実績の修正のフォーマット
@@ -191,27 +196,27 @@ public class OutputItemDailyWorkScheduleFinder {
 						}).collect(Collectors.toList());
 		} 
 		// In case of work type
-		else {
+		else if (optFormatPerformanceRepository.get().getSettingUnitType().value == SettingUnitType.BUSINESS_TYPE.value) {
 			// Get doamin 勤務種別日別実績の修正のフォーマット
 			// TODO: hoangdd - chua co repo cua companyId nen dung tam cai duoi cho khong bi loi do
 			List<BusinessTypeFormatDaily> lstBusinessTypeFormatDaily = businessTypeFormatDailyRepository.getBusinessTypeFormat(companyId, "dsf" );
+			Set<String> setBusinessTypeFormatDailyCode = lstBusinessTypeFormatDaily.stream()
+														.map(domain -> domain.getBusinessTypeCode().v())
+														.collect(Collectors.toSet());
 			
 			// Get domain ドメインモデル「勤務種別」を取得する
 			// businessTypeCode get from doamin 勤務種別日別実績の修正のフォーマット
 			List<BusinessType> lstBusinessType = businessTypesRepository.findAll(companyId);
-			Map<String, String> mapCodeNameBusinessType = lstBusinessType.stream().collect(Collectors.toMap(
-					new Function<BusinessType, String>() {
-						public String apply(BusinessType b) { return b.getBusinessTypeCode().v(); }
-					} , x -> x.getBusinessTypeName().v() ));
-			
-			lstBusinessTypeFormatDaily.stream()
+
+			return lstBusinessType.stream()
+				.filter(domain -> setBusinessTypeFormatDailyCode.contains(domain.getBusinessTypeCode().v()))
 				.map(domain -> {
 					DataInforReturnDto dto = new DataInforReturnDto(domain.getBusinessTypeCode().v(), domain.getBusinessTypeCode().v());
 					return dto;
 				})
-				.filter(Objects::nonNull)
 				.collect(Collectors.toList());
 		}
+		
 		return new ArrayList<>();
 	}
 	
@@ -238,13 +243,13 @@ public class OutputItemDailyWorkScheduleFinder {
 		Optional<FormatPerformance> optFormatPerformanceRepository = formatPerformanceRepository.getFormatPerformanceById(companyId);
 		
 		// In case of authority
-		if (optFormatPerformanceRepository.get().getSettingUnitType().value == 0) {
+		if (optFormatPerformanceRepository.get().getSettingUnitType().value == SettingUnitType.AUTHORITY.value) {
 			// get domain 会社の日別実績の修正のフォーマット, Acquire the domain model "format of company's daily performance correction"
 			// TODO: hoangdd - trong giai thuat su dung companyId va code lam doi so nhung repo hien tai moi chi co companyId, request tac gia them repo
 			// 			tam thoi dung tam repo vs doi so companyId
 			AuthorityDailyPerformanceFormat authorityDailyPerformanceFormat = authorityDailyPerformanceFormatRepository.getListCode(companyId).get(0);
 			
-		} else { // In case of work type
+		} else if (optFormatPerformanceRepository.get().getSettingUnitType().value == SettingUnitType.BUSINESS_TYPE.value) { // In case of work type
 			// get domain 勤務種別日別実績の修正のフォーマット 
 			List<BusinessTypeFormatDaily> lstBusinessTypeFormatDaily = businessTypeFormatDailyRepository.getBusinessTypeFormat(companyId, code);
 		}
@@ -253,15 +258,13 @@ public class OutputItemDailyWorkScheduleFinder {
 		List<AuthorityFomatDaily>  lstAuthorityFomatDaily = authorityFormatDailyRepository.getAuthorityFormatDailyDetail(companyId, new DailyPerformanceFormatCode(code), new BigDecimal(1));
 		lstAuthorityFomatDaily.sort(Comparator.comparing(AuthorityFomatDaily::getDisplayOrder));
 		
-		List<AuthorityFomatDaily> lstItemAuthorityReturn;
 		if (lstAuthorityFomatDaily.size() <= 48) {
-			lstItemAuthorityReturn = new ArrayList<>(Arrays.asList(lstAuthorityFomatDaily.get(0))) ;
+			return lstAuthorityFomatDaily;
 		} else {
-			lstItemAuthorityReturn = lstAuthorityFomatDaily.stream()
-															.limit(48)
-															.collect(Collectors.toList());
+			return lstAuthorityFomatDaily.stream()
+											.limit(48)
+											.collect(Collectors.toList());
 		}
-		return lstItemAuthorityReturn;
 	}
 	
 	/**

@@ -4,6 +4,8 @@
 
 .row {
 	margin: 10px 20px;
+	display: flex;
+    align-items: center;
 }
 
 .confirm {
@@ -26,6 +28,10 @@ button {
 	width: 30px;
 }
 
-#combo-box {
-	width: 250px;
+#combo-box-scrD {
+	width: 264px;
+}
+
+.D1_7 {
+	margin-left: 10px;
 }

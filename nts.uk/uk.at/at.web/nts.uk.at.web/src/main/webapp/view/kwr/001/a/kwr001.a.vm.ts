@@ -303,22 +303,22 @@ module nts.uk.at.view.kwr001.a {
                     self.selectedDataOutputType(workScheduleOutputCondition.outputType);
                     self.selectedCodeA7_3(workScheduleOutputCondition.code);
                     self.selectedCodeA9_2(workScheduleOutputCondition.pageBreakIndicator);
-                    self.checkedA10_2(workScheduleOutputCondition.settingDetailTotalOuput.details);
-                    self.checkedA10_3(workScheduleOutputCondition.settingDetailTotalOuput.personalTotal);
-                    self.checkedA10_4(workScheduleOutputCondition.settingDetailTotalOuput.workplaceTotal);
-                    self.checkedA10_5(workScheduleOutputCondition.settingDetailTotalOuput.totalNumberDay);
-                    self.checkedA10_6(workScheduleOutputCondition.settingDetailTotalOuput.grossTotal);
-                    self.checkedA10_7(workScheduleOutputCondition.settingDetailTotalOuput.cumulativeWorkplace);
-                    if (workScheduleOutputCondition.settingDetailTotalOuput.workplaceHierarchyTotal) {
-                        self.checkedA10_10(workScheduleOutputCondition.settingDetailTotalOuput.workplaceHierarchyTotal.firstLevel);
-                        self.checkedA10_11(workScheduleOutputCondition.settingDetailTotalOuput.workplaceHierarchyTotal.secondLevel);
-                        self.checkedA10_12(workScheduleOutputCondition.settingDetailTotalOuput.workplaceHierarchyTotal.thirdLevel);
-                        self.checkedA10_13(workScheduleOutputCondition.settingDetailTotalOuput.workplaceHierarchyTotal.fourthLevel);
-                        self.checkedA10_14(workScheduleOutputCondition.settingDetailTotalOuput.workplaceHierarchyTotal.fifthLevel);
-                        self.checkedA10_15(workScheduleOutputCondition.settingDetailTotalOuput.workplaceHierarchyTotal.sixthLevel);
-                        self.checkedA10_16(workScheduleOutputCondition.settingDetailTotalOuput.workplaceHierarchyTotal.seventhLevel);
-                        self.checkedA10_17(workScheduleOutputCondition.settingDetailTotalOuput.workplaceHierarchyTotal.eighthLevel);
-                        self.checkedA10_18(workScheduleOutputCondition.settingDetailTotalOuput.workplaceHierarchyTotal.ninthLevel);
+                    self.checkedA10_2(workScheduleOutputCondition.settingDetailTotalOutput.details);
+                    self.checkedA10_3(workScheduleOutputCondition.settingDetailTotalOutput.personalTotal);
+                    self.checkedA10_4(workScheduleOutputCondition.settingDetailTotalOutput.workplaceTotal);
+                    self.checkedA10_5(workScheduleOutputCondition.settingDetailTotalOutput.totalNumberDay);
+                    self.checkedA10_6(workScheduleOutputCondition.settingDetailTotalOutput.grossTotal);
+                    self.checkedA10_7(workScheduleOutputCondition.settingDetailTotalOutput.cumulativeWorkplace);
+                    if (workScheduleOutputCondition.settingDetailTotalOutput.workplaceHierarchyTotal) {
+                        self.checkedA10_10(workScheduleOutputCondition.settingDetailTotalOutput.workplaceHierarchyTotal.firstLevel);
+                        self.checkedA10_11(workScheduleOutputCondition.settingDetailTotalOutput.workplaceHierarchyTotal.secondLevel);
+                        self.checkedA10_12(workScheduleOutputCondition.settingDetailTotalOutput.workplaceHierarchyTotal.thirdLevel);
+                        self.checkedA10_13(workScheduleOutputCondition.settingDetailTotalOutput.workplaceHierarchyTotal.fourthLevel);
+                        self.checkedA10_14(workScheduleOutputCondition.settingDetailTotalOutput.workplaceHierarchyTotal.fifthLevel);
+                        self.checkedA10_15(workScheduleOutputCondition.settingDetailTotalOutput.workplaceHierarchyTotal.sixthLevel);
+                        self.checkedA10_16(workScheduleOutputCondition.settingDetailTotalOutput.workplaceHierarchyTotal.seventhLevel);
+                        self.checkedA10_17(workScheduleOutputCondition.settingDetailTotalOutput.workplaceHierarchyTotal.eighthLevel);
+                        self.checkedA10_18(workScheduleOutputCondition.settingDetailTotalOutput.workplaceHierarchyTotal.ninthLevel);
                     }
                     self.selectedCodeA13_1(workScheduleOutputCondition.conditionSetting);
                 })

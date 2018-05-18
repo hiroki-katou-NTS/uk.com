@@ -52,7 +52,7 @@ public class KfnmtItemWorkSchedule extends UkJpaEntity implements Serializable {
 	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumns({
 			@JoinColumn(name="CID", referencedColumnName="CID"),
-			@JoinColumn(name="ITEM_CODE", referencedColumnName="ITEM_CODE")
+			@JoinColumn(name="ITEM_CD", referencedColumnName="ITEM_CD")
 	})
 	private List<KfnmtAttendanceDisplay> lstKfnmtAttendanceDisplay;
 	
@@ -60,7 +60,7 @@ public class KfnmtItemWorkSchedule extends UkJpaEntity implements Serializable {
 	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumns({
 			@JoinColumn(name="CID", referencedColumnName="CID"),
-			@JoinColumn(name="ITEM_CODE", referencedColumnName="ITEM_CODE")
+			@JoinColumn(name="ITEM_CD", referencedColumnName="ITEM_CD")
 	})
 	private List<KfnmtPrintRemarkCont> lstKfnmtPrintRemarkCont;
 	

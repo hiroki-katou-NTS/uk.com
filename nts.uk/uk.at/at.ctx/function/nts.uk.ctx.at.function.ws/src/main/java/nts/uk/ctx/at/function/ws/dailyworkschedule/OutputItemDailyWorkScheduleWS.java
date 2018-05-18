@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.function.ws.dailyworkschedule;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -17,6 +18,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkScheduleCommand;
 import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkScheduleDeleteHandler;
 import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkScheduleSaveHandler;
+import nts.uk.ctx.at.function.app.find.dailyworkschedule.DataInforReturnDto;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.OutputItemDailyWorkScheduleFinder;
 
 /**
@@ -71,9 +73,9 @@ public class OutputItemDailyWorkScheduleWS extends WebService{
 		this.outputItemDailyWorkScheduleDeleteHandler.delete(code);
 	}
 	
-	@Path("find-copy")
+	@Path("findCopy")
 	@POST
-	public void findCopy(){
-		this.outputItemDailyWorkScheduleDeleteHandler.delete();
+	public List<DataInforReturnDto> findCopy(){
+		return this.outputItemDailyWorkScheduleFinder.getFormatDailyPerformance();
 	}
 }

@@ -27,7 +27,7 @@ public class KfnmtAttendanceDisplayPK implements Serializable {
 	private String cid;
 
 	/** The item code. */
-	@Column(name="ITEM_CODE")
+	@Column(name="ITEM_CD")
 	private long itemCode;
 
 	/** The order no. */
@@ -41,32 +41,39 @@ public class KfnmtAttendanceDisplayPK implements Serializable {
 	}
 
 	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
+	 * @see java.lang.Object#hashCode()
 	 */
-	public boolean equals(Object other) {
-		if (this == other) {
-			return true;
-		}
-		if (!(other instanceof KfnmtAttendanceDisplayPK)) {
-			return false;
-		}
-		KfnmtAttendanceDisplayPK castOther = (KfnmtAttendanceDisplayPK)other;
-		return 
-			this.cid.equals(castOther.cid)
-			&& (this.itemCode == castOther.itemCode)
-			&& (this.orderNo == castOther.orderNo);
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((cid == null) ? 0 : cid.hashCode());
+		result = prime * result + (int) (itemCode ^ (itemCode >>> 32));
+		result = prime * result + (int) (orderNo ^ (orderNo >>> 32));
+		return result;
 	}
 
 	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
+	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
-	public int hashCode() {
-		final int prime = 31;
-		int hash = 17;
-		hash = hash * prime + this.cid.hashCode();
-		hash = hash * prime + ((int) (this.itemCode ^ (this.itemCode >>> 32)));
-		hash = hash * prime + ((int) (this.orderNo ^ (this.orderNo >>> 32)));
-		
-		return hash;
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		KfnmtAttendanceDisplayPK other = (KfnmtAttendanceDisplayPK) obj;
+		if (cid == null) {
+			if (other.cid != null)
+				return false;
+		} else if (!cid.equals(other.cid))
+			return false;
+		if (itemCode != other.itemCode)
+			return false;
+		if (orderNo != other.orderNo)
+			return false;
+		return true;
 	}
 }
