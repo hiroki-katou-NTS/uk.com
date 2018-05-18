@@ -201,9 +201,9 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             self.selectedEmployeeCode = ko.observableArray([]);
             self.alreadySettingPersonal = ko.observableArray([]);
             self.itemTitleAtr = ko.observableArray([
-                { value: 1, titleAtrName: resource.getText('CMF005_51') },
-                { value: 0, titleAtrName: resource.getText('CMF005_52') }]);
-            self.selectedTitleAtr = ko.observable(1);
+                { value: 0, titleAtrName: resource.getText('CMF005_51') },
+                { value: 1, titleAtrName: resource.getText('CMF005_52') }]);
+            self.selectedTitleAtr = ko.observable(0);
             self.selectedTitleAtr.subscribe(function(value) {
                 if (value == 1) {
                     self.applyKCP005ContentSearch(self.initEmployeeList());
@@ -483,7 +483,6 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 leaveOfAbsence: true,
                 closed: true,
                 retirement: true,
-
                 /**
                 * Self-defined function: Return data from CCG001
                 * @param: data: the data return from CCG001
