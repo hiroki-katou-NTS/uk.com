@@ -189,7 +189,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 else {
                     monthConfirm = "";
                 }
-                if (_.filter(item.listDailyConfirm, { bossConfirm: false , personConfirm: false }).length == 0) {
+                if (_.filter(item.listDailyConfirm, { bossConfirm: false, personConfirm: false }).length == 0) {
                     personConfirm = text("KAF018_92");
                 }
                 else {
