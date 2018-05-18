@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.record.infra.entity.remainingnumber.subhdmana.KrcmtComDayoffMaData;
@@ -16,6 +17,8 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 	private String GET_BYSID = "SELECT c FROM KrcmtComDayoffMaData c WHERE c.sID = :employeeId AND c.cID = :cid";
 	
 	private String GET_BYSID_WITHREDAY = String.join(" ", GET_BYSID, " AND c.remainDays > 0");
+	
+	private String GET_BYSID_BY_DATECONDITION = String.join(" ", GET_BYSID, " AND dayOff >= :stateDate AND dayOff <= : endDate");
 	
 	@Override
 	public List<CompensatoryDayOffManaData> getBySidWithReDay(String cid, String sid) {
@@ -62,6 +65,19 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 	@Override
 	public void create(CompensatoryDayOffManaData domain) {
 		this.commandProxy().insert(toEnitty(domain));
+	}
+
+	@Override
+	public List<CompensatoryDayOffManaData> getBySidWithReDayAndDateCondition(String cid, String sid,
+			GeneralDate startDate, GeneralDate endDate) {
+		List<KrcmtComDayoffMaData> list = this.queryProxy().query(GET_BYSID_BY_DATECONDITION, KrcmtComDayoffMaData.class)
+				.setParameter("employeeId", sid)
+				.setParameter("cid", cid)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.getList();
+				
+		return list.stream().map(i->toDomain(i)).collect(Collectors.toList());
 	}
 
 }

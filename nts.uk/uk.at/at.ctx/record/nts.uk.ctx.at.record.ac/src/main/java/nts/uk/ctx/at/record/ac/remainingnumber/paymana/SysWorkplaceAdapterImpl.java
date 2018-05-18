@@ -7,12 +7,12 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SWkpHistImport;
-import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SyWorkplaceAdapter;
+import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SysWorkplaceAdapter;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 
 @Stateless
-public class SyWorkplaceAdapterImpl implements SyWorkplaceAdapter{
+public class SysWorkplaceAdapterImpl implements SysWorkplaceAdapter{
 
 	@Inject
 	private SyWorkplacePub syWorkplacePub;

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.record.infra.entity.remainingnumber.subhdmana.KrcmtLeaveManaData;
@@ -16,6 +17,8 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	private String QUERY_BYSID = "SELECT l FROM KrcmtLeaveManaData l WHERE l.cID = :cid AND l.sID =:employeeId ";
 	
 	private String QUERY_BYSIDWITHSUBHDATR = String.join(" ", QUERY_BYSID,"AND l.subHDAtr =:subHDAtr");
+	
+	private String QUERY_BYSIDANDDATECONDITION = String.join(" ", QUERY_BYSIDWITHSUBHDATR,"AND l.dayOff >= :startDate AND l.dayOff <= :endDate");
 	
 	@Override
 	public List<LeaveManagementData> getBySidWithsubHDAtr(String cid, String sid, int state) {
@@ -66,5 +69,17 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	@Override
 	public void create(LeaveManagementData domain) {
 		this.commandProxy().insert(toEntity(domain));
+	}
+
+	@Override
+	public List<LeaveManagementData> getBySidWithsubHDAtrAndDateCondition(String cid, String sid, GeneralDate startDate,
+			GeneralDate endDate) {
+		List<KrcmtLeaveManaData> listLeaveData = this.queryProxy().query(QUERY_BYSIDANDDATECONDITION,KrcmtLeaveManaData.class)
+				.setParameter("cid", cid)
+				.setParameter("employeeId", sid)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.getList();
+		return listLeaveData.stream().map(x -> toDomain(x)).collect(Collectors.toList());
 	}
 }

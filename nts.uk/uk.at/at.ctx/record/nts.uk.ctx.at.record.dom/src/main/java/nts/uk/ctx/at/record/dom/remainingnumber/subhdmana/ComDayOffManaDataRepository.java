@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.dom.remainingnumber.subhdmana;
 
 import java.util.List;
 
+import nts.arc.time.GeneralDate;
+
 public interface ComDayOffManaDataRepository {
 	
 	/**
@@ -14,6 +16,8 @@ public interface ComDayOffManaDataRepository {
 	List<CompensatoryDayOffManaData> getBySidWithReDay(String cid, String sid);
 	
 	List<CompensatoryDayOffManaData> getBySid(String cid, String sid);
+	
+	List<CompensatoryDayOffManaData> getBySidWithReDayAndDateCondition(String cid, String sid, GeneralDate startDate, GeneralDate endDate);
 	
 	void create(CompensatoryDayOffManaData domain);
 }

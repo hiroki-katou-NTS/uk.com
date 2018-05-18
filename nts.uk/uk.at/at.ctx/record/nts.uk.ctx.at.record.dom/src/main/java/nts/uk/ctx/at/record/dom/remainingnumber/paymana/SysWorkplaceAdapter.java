@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 
-public interface SyWorkplaceAdapter {
+public interface SysWorkplaceAdapter {
 	/**
 	 * Find by sid.
 	 *
