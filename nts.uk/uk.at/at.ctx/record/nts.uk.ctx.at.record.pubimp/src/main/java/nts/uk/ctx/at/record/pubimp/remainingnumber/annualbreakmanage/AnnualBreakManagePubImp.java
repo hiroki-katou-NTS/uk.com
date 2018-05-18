@@ -73,74 +73,51 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 		if (!startDate.isPresent()) {
 			return yearlyHolidaysTimeRemainingExport;
 		}
+		
 		// 指定日年の1/1を計算
-		GeneralDate designatedDate = GeneralDate.ymd(startDate.get().year(), 1, 1);
+		GeneralDate designatedStartDate = GeneralDate.ymd(startDate.get().year(), 1, 1);
 		
 		// 計算期間．終了日←パラメータ「指定日」
-		GeneralDate endDate = confirmDay;
-		// ドメインモデル「年休社員基本情報」を取得
-		Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo = annLeaEmpBasicInfoRepository.get(employeeId);
-		if (!annualLeaveEmpBasicInfo.isPresent()) {
-			return yearlyHolidaysTimeRemainingExport;
-		}
-		// 次回年休付与を計算
-		List<NextAnnualLeaveGrant> nextAnnualLeaveGrant = calculateNextHolidayGrant(employeeId, new DatePeriod(designatedDate, endDate));
+		GeneralDate designatedEndDate = confirmDay;
+		
+		DatePeriod designatedPeriod = new DatePeriod(designatedStartDate, designatedEndDate);
+		
 		// ログインしている会社ID　取得
 		LoginUserContext loginUserContext = AppContexts.user();
 		String companyId = loginUserContext.companyId();
-		Optional<AggrResultOfAnnualLeave> prevAnnualLeave = Optional.empty();
-		int count = 0;
-		for (NextAnnualLeaveGrant elementNextAnnualLeaveGrant : nextAnnualLeaveGrant) {
-			// 期間中の年休残数を取得
-			Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualLeave = 		
-					getAnnLeaRemNumWithinPeriod.
-					algorithm(companyId, 
-							employeeId, 
-							new DatePeriod(startDate.get(), elementNextAnnualLeaveGrant.getGrantDate().addDays(-1)), 
-							EnumAdaptor.valueOf(1, TempAnnualLeaveMngMode.class), 
-							elementNextAnnualLeaveGrant.getGrantDate().addDays(-1), 
-							false, 
-							false, 
-							null,
-							null,
-							prevAnnualLeave);
-			if (aggrResultOfAnnualLeave.isPresent()){
-				// 取得した年休の集計結果．年休情報(付与時点)でループ
-				Optional<List<AnnualLeaveInfo>> optListAnnus = aggrResultOfAnnualLeave.get().getAsOfGrant();
-				if (optListAnnus.isPresent() && !optListAnnus.get().isEmpty()) {
-					for (AnnualLeaveInfo annualLeaveInfoe : optListAnnus.get()) {
-						// 「年休の集計結果」で付与された年月日をチェック
-						if (startDate.get().beforeOrEquals(annualLeaveInfoe.getYmd()) && endDate.afterOrEquals(annualLeaveInfoe.getYmd())) {
-							//  計算期間．開始日<=年休情報．年月日<=計算期間．終了日
-							YearlyHolidaysTimeRemainingExport yhtre = 
-									new YearlyHolidaysTimeRemainingExport(annualLeaveInfoe.getYmd(), 
-											null, 
-											annualLeaveInfoe.getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays().v());
-							yearlyHolidaysTimeRemainingExport.add(yhtre );
-						}
+		// 期間中の年休残数を取得
+		Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualLeave = 		
+				getAnnLeaRemNumWithinPeriod.
+				algorithm(companyId, 
+						employeeId, 
+						new DatePeriod(startDate.get(), designatedPeriod.end()), 
+						TempAnnualLeaveMngMode.OTHER, 
+						designatedPeriod.end(), 
+						false, 
+						false, 
+						Optional.of(false),
+						Optional.empty(),
+						Optional.empty());
+		if (aggrResultOfAnnualLeave.isPresent()){
+			// 取得した年休の集計結果．年休情報(付与時点)でループ
+			Optional<List<AnnualLeaveInfo>> optListAnnus = aggrResultOfAnnualLeave.get().getAsOfGrant();
+			if (optListAnnus.isPresent() && !optListAnnus.get().isEmpty()) {
+				for (AnnualLeaveInfo annualLeaveInfoe : optListAnnus.get()) {
+					// 「年休の集計結果」で付与された年月日をチェック
+				    // 計算期間．開始日<=年休情報．年月日<=計算期間．終了日
+					if (designatedPeriod.start().beforeOrEquals(annualLeaveInfoe.getYmd()) && designatedPeriod.end().afterOrEquals(annualLeaveInfoe.getYmd())) {
+						YearlyHolidaysTimeRemainingExport yhtre = 
+								new YearlyHolidaysTimeRemainingExport(annualLeaveInfoe.getYmd(), 
+										null, 
+										annualLeaveInfoe.getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays().v());
+						yearlyHolidaysTimeRemainingExport.add(yhtre );
 					}
 				}
-				// 年休計算開始日←次回年休付与．付与年月日
-				startDate = Optional.of(nextAnnualLeaveGrant.get(count++).getGrantDate());
-				prevAnnualLeave = aggrResultOfAnnualLeave;
 			}
 			
-			// 期間中の年休残数を取得
-			Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualLeavee = 		
-					getAnnLeaRemNumWithinPeriod.
-					algorithm(companyId, 
-							employeeId, 
-							new DatePeriod(startDate.get(), elementNextAnnualLeaveGrant.getGrantDate().addDays(-1)), 
-							EnumAdaptor.valueOf(1, TempAnnualLeaveMngMode.class), 
-							elementNextAnnualLeaveGrant.getGrantDate().addDays(-1), 
-							false, 
-							false, 
-							null,
-							null,
-							prevAnnualLeave);
 			// List<指定日時点の年休残数>の年休残数を全て更新
 			for (YearlyHolidaysTimeRemainingExport yyearlyHolidaysTimeRemainingExport : yearlyHolidaysTimeRemainingExport) {
-				yyearlyHolidaysTimeRemainingExport.setAnnualRemaining(aggrResultOfAnnualLeavee.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays().v());
+				yyearlyHolidaysTimeRemainingExport.setAnnualRemaining(aggrResultOfAnnualLeave.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays().v());
 			}
 		}
 		

@@ -182,6 +182,8 @@ module nts.uk.at.view.kdm002.b {
                                 if (self.imErrorLog().length == 0) {
                                     if (res.succeeded) {
                                         self.status(getText("KDM002_29"));
+                                        self.startExportExcel(true);
+                                        $('#BTN_CLOSE').focus();
                                     } else if (res.cancelled) {
                                         self.status(getText("KDM002_23"));
                                     }
@@ -202,10 +204,7 @@ module nts.uk.at.view.kdm002.b {
                                     $('#BTN_ERROR_EXPORT').focus();
                                 }
                                 self.isStop(true);
-                                if (res.succeeded && self.excelContent().length > 0) {
-                                    self.startExportExcel(true);
-//                                    $('#BTN_CLOSE').focus();
-                                }
+                                
                             }
                         });
                     }).while(infor => {
@@ -217,7 +216,6 @@ module nts.uk.at.view.kdm002.b {
             stop(){
                 let self = this;
                 self.isStop(true);
-                self.isComplete(true);
                 if (nts.uk.text.isNullOrEmpty(self.taskId())) {
                     return;
                 }
