@@ -28,6 +28,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 public class RemainingNumberGeneratorImpl extends AsposeCellsReportGenerator implements RemainingNumberGenerator {
 
 	private static final String FILE_TEMPLATE = "remainingNumberTemplate.xlsx";
+	HashMap<String, NumberOfWorkTypeUsedImport> htbPlanneds = new HashMap<>();
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, List<ExcelInforCommand> dataSource) {
@@ -37,23 +38,10 @@ public class RemainingNumberGeneratorImpl extends AsposeCellsReportGenerator imp
 			Workbook workbook = designer.getWorkbook();
 			WorksheetCollection worksheets = workbook.getWorksheets();
 			Worksheet worksheet = worksheets.get(0);
-			// caculator index
-			HashMap<String, NumberOfWorkTypeUsedImport> htbPlanneds = new HashMap<>();
-			for (int i = 0; i < dataSource.get(0).getPlannedVacationListCommand().size(); i++) {
-				final String workTypeCode = dataSource.get(0).getPlannedVacationListCommand().get(i).getWorkTypeCode();
-				for (int j = 0; j < dataSource.size(); j++) {
-					Optional<NumberOfWorkTypeUsedImport> optNumWTUse = dataSource.get(j).getNumberOfWorkTypeUsedImport()
-							.stream().filter((item) -> item.getWorkTypeCode().equals(workTypeCode)).findFirst();
-					if (optNumWTUse.isPresent()) {
-						htbPlanneds.put(workTypeCode, optNumWTUse.get());
-						break;
-					}
-				}
-			}
 
-			printTemplate(worksheet, dataSource, htbPlanneds);
+			printTemplate(worksheet, dataSource);
 
-			printDataSource(worksheet, dataSource,htbPlanneds);
+			printDataSource(worksheet, dataSource);
 
 			designer.getDesigner().setWorkbook(workbook);
 			designer.processDesigner();
@@ -70,8 +58,7 @@ public class RemainingNumberGeneratorImpl extends AsposeCellsReportGenerator imp
 
 	}
 
-	private void printTemplate(Worksheet worksheet, List<ExcelInforCommand> dataSource,
-			HashMap<String, NumberOfWorkTypeUsedImport> htbPlanneds) throws Exception {
+	private void printTemplate(Worksheet worksheet, List<ExcelInforCommand> dataSource) throws Exception {
 
 		Cells cells = worksheet.getCells();
 
@@ -82,6 +69,19 @@ public class RemainingNumberGeneratorImpl extends AsposeCellsReportGenerator imp
 		cells.get(0, 4).setValue(TextResource.localize("KDM002_16"));
 		cells.get(0, 5).setValue(TextResource.localize("KDM002_17"));
 		cells.get(0, 6).setValue(TextResource.localize("KDM002_18"));
+		if (!dataSource.isEmpty()) {
+			for (int i = 0; i < dataSource.get(0).getPlannedVacationListCommand().size(); i++) {
+				final String workTypeCode = dataSource.get(0).getPlannedVacationListCommand().get(i).getWorkTypeCode();
+				for (int j = 0; j < dataSource.size(); j++) {
+					Optional<NumberOfWorkTypeUsedImport> optNumWTUse = dataSource.get(j).getNumberOfWorkTypeUsedImport()
+							.stream().filter((item) -> item.getWorkTypeCode().equals(workTypeCode)).findFirst();
+					if (optNumWTUse.isPresent()) {
+						htbPlanneds.put(workTypeCode, optNumWTUse.get());
+						break;
+					}
+				}
+			}
+		}
 		// auto header
 		int index = 0;
 		for (String wtCode : htbPlanneds.keySet()) {
@@ -96,14 +96,14 @@ public class RemainingNumberGeneratorImpl extends AsposeCellsReportGenerator imp
 
 	}
 
-	private void printDataSource(Worksheet worksheet, List<ExcelInforCommand> dataSource, HashMap<String, NumberOfWorkTypeUsedImport>  htbPlanneds) throws Exception {
+	private void printDataSource(Worksheet worksheet, List<ExcelInforCommand> dataSource) throws Exception {
 		int firstRow = 1;
 		for (ExcelInforCommand excelInforCommand : dataSource) {
-			firstRow = fillDataToExcel(worksheet, firstRow, excelInforCommand, htbPlanneds);
+			firstRow = fillDataToExcel(worksheet, firstRow, excelInforCommand);
 		}
 	}
 
-	private int fillDataToExcel(Worksheet worksheet, int firstRow, ExcelInforCommand excelInforCommand, HashMap<String, NumberOfWorkTypeUsedImport>  htbPlanneds) {
+	private int fillDataToExcel(Worksheet worksheet, int firstRow, ExcelInforCommand excelInforCommand) {
 		Cells cells = worksheet.getCells();
 		cells.get(firstRow, 0).setValue(excelInforCommand.getName());
 		cells.get(firstRow, 1).setValue(excelInforCommand.getDateStart());
@@ -117,7 +117,7 @@ public class RemainingNumberGeneratorImpl extends AsposeCellsReportGenerator imp
 			Optional<PlannedVacationListCommand> opPlanVa = excelInforCommand.getPlannedVacationListCommand().stream()
 					.filter(x -> x.getWorkTypeCode().equals(wtCode)).findFirst();
 			if (opPlanVa.isPresent()) {
-				cells.get(firstRow, 7+i).setValue(opPlanVa.get().getMaxNumberDays());
+				cells.get(firstRow, 7 + i).setValue(opPlanVa.get().getMaxNumberDays());
 			}
 			Optional<NumberOfWorkTypeUsedImport> opNumber = excelInforCommand.getNumberOfWorkTypeUsedImport().stream()
 					.filter(x -> x.getWorkTypeCode().equals(wtCode)).findFirst();
