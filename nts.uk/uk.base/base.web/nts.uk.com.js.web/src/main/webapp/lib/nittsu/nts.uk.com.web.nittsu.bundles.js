@@ -22402,6 +22402,7 @@ var nts;
                         feature_2.CELL_STATE = "CellState";
                         feature_2.ROW_STATE = "RowState";
                         feature_2.TEXT_COLOR = "TextColor";
+                        feature_2.TEXT_STYLE = "TextStyle";
                         feature_2.HEADER_STYLES = "HeaderStyles";
                         feature_2.HIDING = "Hiding";
                         feature_2.SHEET = "Sheet";
@@ -23982,6 +23983,7 @@ var nts;
                                         };
                                         cellFormatter.style($grid, cellElement);
                                         cellFormatter.setTextColor($grid, cellElement);
+                                        cellFormatter.setTextStyle($grid, cellElement);
                                     }
                                 }, 0);
                                 return $container.html();
@@ -25821,6 +25823,9 @@ var nts;
                                 // Text color
                                 this.textColorFeatureDef = feature.find(ntsFeatures, feature.TEXT_COLOR);
                                 this.setTextColorsTableMap(ntsFeatures);
+                                // Text style
+                                this.textStyleFeatureDef = feature.find(ntsFeatures, feature.TEXT_STYLE);
+                                this.setTextStylesTableMap();
                             }
                             /**
                              * Add disable rows.
@@ -25912,6 +25917,22 @@ var nts;
                                     _this.textColorsTable[key] = _.groupBy(_this.textColorsTable[key], function (item) {
                                         return item[columnKeyName];
                                     });
+                                });
+                            };
+                            /**
+                             * Set text styles.
+                             */
+                            CellFormatter.prototype.setTextStylesTableMap = function () {
+                                var _this = this;
+                                if (uk.util.isNullOrUndefined(this.textStyleFeatureDef))
+                                    return;
+                                var rowIdName = this.textStyleFeatureDef.rowId;
+                                var columnKeyName = this.textStyleFeatureDef.columnKey;
+                                var styleName = this.textStyleFeatureDef.style;
+                                var stylesTable = this.textStyleFeatureDef.styles;
+                                this.textStylesTable = _.groupBy(stylesTable, rowIdName);
+                                _.forEach(this.textStylesTable, function (value, key) {
+                                    _this.textStylesTable[key] = _.groupBy(_this.textStylesTable[key], columnKeyName);
                                 });
                             };
                             /**
@@ -26102,6 +26123,26 @@ var nts;
                                         return;
                                     }
                                     cell.$element.addClass(txtColor);
+                                }
+                            };
+                            /**
+                             * Set text style.
+                             */
+                            CellFormatter.prototype.setTextStyle = function ($grid, cell) {
+                                if (uk.util.isNullOrUndefined(this.textStyleFeatureDef))
+                                    return;
+                                var rowIdName = this.textStyleFeatureDef.rowId;
+                                var columnKeyName = this.textStyleFeatureDef.columnKey;
+                                var styleName = this.textStyleFeatureDef.style;
+                                var stylesTable = this.textStyleFeatureDef.styles;
+                                if (!uk.util.isNullOrUndefined(stylesTable) && !uk.util.isNullOrUndefined(rowIdName)
+                                    && !uk.util.isNullOrUndefined(columnKeyName) && !uk.util.isNullOrUndefined(styleName)
+                                    && !uk.util.isNullOrUndefined(this.textStylesTable[cell.id])) {
+                                    var textStyle = this.textStylesTable[cell.id][cell.columnKey];
+                                    if (uk.util.isNullOrUndefined(textStyle) || textStyle.length === 0)
+                                        return;
+                                    var txtStyle = textStyle[0][styleName];
+                                    cell.$element.addClass(txtStyle);
                                 }
                             };
                             return CellFormatter;
