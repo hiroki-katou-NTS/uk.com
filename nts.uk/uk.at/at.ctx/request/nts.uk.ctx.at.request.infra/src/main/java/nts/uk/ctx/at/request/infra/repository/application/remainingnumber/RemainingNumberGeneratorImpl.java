@@ -46,9 +46,7 @@ public class RemainingNumberGeneratorImpl extends AsposeCellsReportGenerator imp
 			designer.getDesigner().setWorkbook(workbook);
 			designer.processDesigner();
 			LoginUserContext loginUserContext = AppContexts.user();
-			Date now = new Date();
-			String fileName = "KDM002_" + new SimpleDateFormat("yyyyMMddHHmmss").format(now.getTime()).toString() + "_"
-					+ loginUserContext.employeeCode() + ".xlsx";
+			String fileName = "KDM002_" + loginUserContext.employeeCode() + ".xlsx";
 
 			designer.saveAsExcel(this.createNewFile(generatorContext, this.getReportName(fileName)));
 
@@ -66,9 +64,9 @@ public class RemainingNumberGeneratorImpl extends AsposeCellsReportGenerator imp
 		cells.get(0, 1).setValue(TextResource.localize("KDM002_12"));
 		cells.get(0, 2).setValue(TextResource.localize("KDM002_13"));
 		cells.get(0, 3).setValue(TextResource.localize("KDM002_14"));
-		cells.get(0, 4).setValue(TextResource.localize("KDM002_16"));
-		cells.get(0, 5).setValue(TextResource.localize("KDM002_17"));
-		cells.get(0, 6).setValue(TextResource.localize("KDM002_18"));
+		cells.get(0, 4).setValue(TextResource.localize("KDM002_15"));
+		cells.get(0, 5).setValue(TextResource.localize("KDM002_16"));
+		cells.get(0, 6).setValue(TextResource.localize("KDM002_9"));
 		if (!dataSource.isEmpty()) {
 			for (int i = 0; i < dataSource.get(0).getPlannedVacationListCommand().size(); i++) {
 				final String workTypeCode = dataSource.get(0).getPlannedVacationListCommand().get(i).getWorkTypeCode();

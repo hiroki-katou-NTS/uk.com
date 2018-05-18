@@ -121,6 +121,7 @@ module nts.uk.at.view.kdm002.b {
                     self.taskId(res.taskInfor.id);
                     // update state
                     self.updateState();
+                    $('#BTN_CLOSE').focus();
                 }).fail(function(res: any) {
                     console.log(res);
                     dfd.resolve(self);
@@ -238,11 +239,18 @@ module nts.uk.at.view.kdm002.b {
             }
             
             // Excel出力情報ListをもとにExcel出力をする (Xuất ra file excel)
-            excelExport() {
+            excelExport(): JQueryPromise<any> {
                 let self = this;
+                let dfd = $.Deferred();
                 nts.uk.ui.block.invisible();
                 service.exportExcel(ko.toJS(self.excelContent() || [])).always(function() {
                     nts.uk.ui.block.clear();
+                }).done(function() {
+                    
+                    $('#BTN_CLOSE').focus();
+                    dfd.resolve();
+                }).fail(function() {
+                    dfd.reject();
                 });
             }
         }
