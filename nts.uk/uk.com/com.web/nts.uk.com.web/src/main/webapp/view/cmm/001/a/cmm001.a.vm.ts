@@ -314,39 +314,38 @@ module cmm001.a {
 
                         });
                     });
+                }).fail(function(error) {
+                    if (error.messageId == 'Msg_809') {
+                        $('#companyCode').ntsError('set', { messageId: "Msg_809" });
+                    }
+                    if (error.messageId == 'Msg_3') {
+                        $('#companyCode').ntsError('set', { messageId: "Msg_3" });
+                    }
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
-
-            }).fail(function(error) {
-                if (error.messageId == 'Msg_809') {
-                    $('#companyCode').ntsError('set', { messageId: "Msg_809" });
-                }
-                if (error.messageId == 'Msg_3') {
-                    $('#companyCode').ntsError('set', { messageId: "Msg_3" });
-                }
-            }).always(() => {
-                nts.uk.ui.block.clear();
-            });
+            }
 
         }
-        
-                    private getSystemType(systemTypeVal: number): string {
-                var systemType : string;
-                switch (systemTypeVal) {
-                    case 0:
-                        systemType = '共通';
-                        break;
-                    case 1:
-                        systemType = '就業';
-                        break;
-                    case 2:
-                        systemType = '給与';
-                        break;
-                    case 3:
-                        systemType = '人事';
-                        break;
-                }
-                return systemType;
+
+        private getSystemType(systemTypeVal: number): string {
+            var systemType: string;
+            switch (systemTypeVal) {
+                case 0:
+                    systemType = '共通';
+                    break;
+                case 1:
+                    systemType = '就業';
+                    break;
+                case 2:
+                    systemType = '給与';
+                    break;
+                case 3:
+                    systemType = '人事';
+                    break;
             }
+            return systemType;
+        }
 
         /** search post code */
         search() {
