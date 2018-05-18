@@ -83,7 +83,12 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             block.invisible();
-            var topPagePartCode = $(location).attr('search').split('=')[1];            
+            var topPagePartCode = $(location).attr('search').split('=')[1];
+            if(nts.uk.text.isNullOrEmpty(topPagePartCode)){
+                block.clear();
+                dfd.resolve();
+                return dfd.promise();   
+            }            
             new service.Service().getOptionalWidgetDisplay(topPagePartCode).done(function(data: any){
                 if(data!=null){
                     self.excuteDisplay(data.optionalWidgetImport);
