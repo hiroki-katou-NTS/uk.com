@@ -15,7 +15,6 @@ module nts.uk.com.view.cmf005.f {
          * get Management Deletion
          */
         export function findManagementDel(delId: string): JQueryPromise<any> {
-            console.log(delId);
             let _path = format(paths.findManagementDel, delId);
             return ajax('com', _path);
         }
