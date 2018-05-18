@@ -375,8 +375,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         */
         validateDatePicker() {
             let self = this;
-            if (self.requiredDate) {
-                ;
+            if (self.requiredDate()) {
                 if (self.dateValue().startDate && self.dateValue().endDate) {
                     if (self.dateValue().startDate > self.dateValue().endDate) {
                         return false;
@@ -386,7 +385,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                     return false;
                 }
             }
-            if (self.requiredMonth) {
+            if (self.requiredMonth()) {
                 if (self.monthValue().startDate && self.monthValue().endDate) {
                     if (self.monthValue().startDate > self.monthValue().endDate) {
                         return false;
@@ -396,7 +395,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                     return false;
                 }
             }
-            if (self.requiredYear) {
+            if (self.requiredYear()) {
                 if (self.yearValue().startDate && self.yearValue().endDate) {
                     if (self.yearValue().startDate > self.yearValue().endDate) {
                         return false;
@@ -612,7 +611,6 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         private gotoscreenF(): void {
             let self = this;
             let params = {};
-            console.log("abc:"+self.delId());
                 params.delId = self.delId();
                 params.deleteSetName = self.deleteSetName();
                 params.dateValue = self.dateValue();

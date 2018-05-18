@@ -75,13 +75,13 @@ module nts.uk.com.view.cmf005.f.viewmodel {
             self.categoryPercentProcess = ko.observable("0/0");
             self.errorCount = ko.observable(0+"件");
             self.dialogMode = ko.observable("deleting"); 
+             $("#F10_1").focus();
 
             }
 
         start(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-
             // Management deletion monitoring process 
             self.interval = setInterval(self.confirmProcess(), 1000);
             $("#F10_2").focus();
