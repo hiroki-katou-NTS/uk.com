@@ -1772,6 +1772,13 @@ public class ProgramsManager {
             "/view/kdr/001/a/index.xhtml");   
     public static final Program KRD001B = new Program(WebAppId.AT, ProgramIdConsts.KRD001B, "KDR001_52",
             "/view/kdr/001/b/index.xhtml");
+    /**
+     * KRD001
+     */
+    public static final Program KRD001A = new Program(WebAppId.AT, ProgramIdConsts.KDR001A, "KDR001_51",
+            "/view/kdr/001/a/index.xhtml");   
+    public static final Program KRD001B = new Program(WebAppId.AT, ProgramIdConsts.KRD001B, "KDR001_52",
+            "/view/kdr/001/b/index.xhtml");
 	
 	public static final Program CMM001E = new Program(WebAppId.COM, ProgramIdConsts.CMM001E, "CMM001_68",
 			"/view/cmm/001/e/index.xhtml");
