@@ -107,6 +107,7 @@ module nts.uk.ui.koExtentions {
             var modal: boolean = ko.unwrap(option.modal);
             var show: boolean = ko.unwrap(option.show);
             var buttons: any = ko.unwrap(option.buttons);
+            var displayrows: number = ko.unwrap(option.displayrows);
             
             getCurrentWindow().done(function(self){
                 var id = 'ntsErrorDialog_' + self.id;
