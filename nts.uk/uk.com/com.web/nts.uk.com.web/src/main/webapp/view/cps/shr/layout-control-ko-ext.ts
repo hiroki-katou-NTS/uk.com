@@ -783,7 +783,8 @@ module nts.custombinding {
                                     ANYHALFWIDTH: 2,
                                     ALPHANUMERIC: 3,
                                     NUMERIC: 4,
-                                    KANA: 5
+                                    KANA: 5,
+                                    CARDNO: 6
                                 },
                                 CAT_TYPE: {  
                                     SINGLE : 1,
@@ -809,7 +810,7 @@ module nts.custombinding {
                                 }
                             } -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.STRING -->
-                        <!-- ko if: item.stringItemType == STRING_TYPE.NUMERIC || item.stringItemLength < 40 || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80) -->
+                        <!-- ko if: item.stringItemType == STRING_TYPE.NUMERIC || item.stringItemLength < 40 || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA, STRING_TYPE.CARDNO].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80) -->
                         <input data-bind=" ntsTextEditor: {
                                 name: itemName,
                                 value: value,
@@ -832,7 +833,7 @@ module nts.custombinding {
                                 'data-defv': defValue
                             }," />
                         <!-- /ko -->
-                        <!-- ko if: item.stringItemType != STRING_TYPE.NUMERIC && (([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) == -1 && item.stringItemLength >= 40) || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength > 80)) -->
+                        <!-- ko if: item.stringItemType != STRING_TYPE.NUMERIC && (([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA, STRING_TYPE.CARDNO].indexOf(item.stringItemType) == -1 && item.stringItemLength >= 40) || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA, STRING_TYPE.CARDNO].indexOf(item.stringItemType) > -1 && item.stringItemLength > 80)) -->
                         <textarea data-bind="ntsMultilineEditor: {
                                 name: itemName,
                                 value: value,
@@ -1485,6 +1486,7 @@ module nts.custombinding {
                                     case ITEM_STRING_TYPE.ANY:
                                         constraint.charType = 'Any';
                                         break;
+                                    case ITEM_STRING_TYPE.CARDNO:
                                     case ITEM_STRING_TYPE.ANYHALFWIDTH:
                                         constraint.charType = 'AnyHalfWidth';
                                         break;
@@ -2952,7 +2954,9 @@ module nts.custombinding {
         // 4:半角数字(Numeric)
         NUMERIC = 4,
         // 5:全角カタカナ(Kana)
-        KANA = 5
+        KANA = 5,
+        // 6: カードNO
+        CARDNO = 6
     }
 
     // define ITEM_SELECT_TYPE
