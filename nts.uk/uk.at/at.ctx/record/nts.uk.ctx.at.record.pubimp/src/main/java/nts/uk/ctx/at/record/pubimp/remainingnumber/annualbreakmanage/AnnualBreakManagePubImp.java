@@ -8,7 +8,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
@@ -90,9 +89,9 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 				getAnnLeaRemNumWithinPeriod.
 				algorithm(companyId, 
 						employeeId, 
-						new DatePeriod(startDate.get(), designatedPeriod.end()), 
+						new DatePeriod(startDate.get(), designatedPeriod.end().addDays(-1)), 
 						TempAnnualLeaveMngMode.OTHER, 
-						designatedPeriod.end(), 
+						designatedPeriod.end().addDays(-1), 
 						false, 
 						false, 
 						Optional.of(false),
@@ -110,15 +109,18 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 								new YearlyHolidaysTimeRemainingExport(annualLeaveInfoe.getYmd(), 
 										null, 
 										annualLeaveInfoe.getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays().v());
+						// List<指定日時点の年休残数>の年休残数を全て更新
+						yhtre.setAnnualRemaining(aggrResultOfAnnualLeave.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays().v());
 						yearlyHolidaysTimeRemainingExport.add(yhtre );
 					}
 				}
 			}
-			
+			/*
 			// List<指定日時点の年休残数>の年休残数を全て更新
 			for (YearlyHolidaysTimeRemainingExport yyearlyHolidaysTimeRemainingExport : yearlyHolidaysTimeRemainingExport) {
 				yyearlyHolidaysTimeRemainingExport.setAnnualRemaining(aggrResultOfAnnualLeave.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays().v());
 			}
+			*/
 		}
 		
 		return yearlyHolidaysTimeRemainingExport;
