@@ -9,7 +9,7 @@ module nts.uk.at.view.kaf018.c {
             __viewContext.bind(screenModel);
             nts.uk.ui.block.clear();
             _.defer(() => {
-                $('#extable-box').focus();
+                $('#extable').focus();
             });     
         })
     });

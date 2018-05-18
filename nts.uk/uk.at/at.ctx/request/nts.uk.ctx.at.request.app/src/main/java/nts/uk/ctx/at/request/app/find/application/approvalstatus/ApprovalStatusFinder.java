@@ -22,6 +22,7 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AllDayHalfDayLeaveAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.OverTimeFrame;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppAbsenceFull;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppCompltLeaveFull;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppDetailInfoRepository;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppGoBackInfoFull;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppHolidayWorkFull;
@@ -40,6 +41,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApp
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
+import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.HolidayAppType;
@@ -81,7 +83,8 @@ public class ApprovalStatusFinder {
 
 	@Inject
 	private RequestSettingRepository repoRequestSet;
-	
+	@Inject
+	private OtherCommonAlgorithm otherCommonAlgorithm;
 	/**
 	 * アルゴリズム「承認状況本文起動」を実行する
 	 */
@@ -383,10 +386,7 @@ public class ApprovalStatusFinder {
 				break;
 			// 振休振出申請
 			case COMPLEMENT_LEAVE_APPLICATION:
-				// Not use anymore
-				// appContent = getAppCompltLeaveInfo(applicaton_N, companyID,
-				// appId);
-				// Đơn xin đồng bộ
+				appContent = getAppCompltLeaveInfo(applicaton_N, companyID, appId);
 				break;
 			// 打刻申請（NR形式）
 			case STAMP_NR_APPLICATION:
@@ -416,24 +416,25 @@ public class ApprovalStatusFinder {
 		return listApplicationDetail;
 	}
 
-	/*
-	 * private String getAppCompltLeaveInfo(Application_New applicaton_N, String
-	 * companyID, String appId) { AppCompltLeaveFull appComlt =
-	 * appDetailInfoRepo.getAppCompltLeaveInfo(companyID, appId, type); return
-	 * null; }
-	 */
+	private String getAppCompltLeaveInfo(Application_New applicaton_N, String companyID, String appId) {
+		String appContent = "";
+		AppCompltLeaveFull appComlt = appDetailInfoRepo.getAppCompltLeaveInfo(companyID, appId, 1);
+		appContent += I18NText.getText("KAF018_262");
+		appContent += appComlt.getStartTime();
+		return null;
+	}
 
 	private String getBreakTimeApp(Application_New applicaton_N, String companyID, String appId) {
 		String appContent = "";
 		AppHolidayWorkFull appHoliday = appDetailInfoRepo.getAppHolidayWorkInfo(companyID, appId);
 		appContent += I18NText.getText("KAF018_275") + appHoliday.getWorkTypeName() + appHoliday.getWorkTimeName();
 		appContent += appHoliday.getStartTime1();
-		if (!Objects.isNull(appHoliday.getStartTime1()) && !Objects.isNull(appHoliday.getEndTime1())) {
+		if (!appHoliday.getStartTime1().equals("") && !appHoliday.getEndTime1().equals("")) {
 			appContent += I18NText.getText("KAF018_220");
 		}
 		appContent += appHoliday.getEndTime1();
 		appContent += appHoliday.getStartTime2();
-		if (!Objects.isNull(appHoliday.getStartTime2()) && !Objects.isNull(appHoliday.getEndTime2())) {
+		if (!appHoliday.getStartTime2().equals("") && !appHoliday.getEndTime2().equals("")) {
 			appContent += I18NText.getText("KAF018_220");
 		}
 		appContent += appHoliday.getEndTime2();
@@ -525,15 +526,15 @@ public class ApprovalStatusFinder {
 			if (overFrame.getApplicationTime() != 0) {
 				frameName += overFrame.getName() + clockShorHm(overFrame.getApplicationTime());
 				time += overFrame.getApplicationTime();
-				countItem ++;
+				countItem++;
 				if (countItem > 2) {
 					countRest = lstFrame.size() - 3;
 					break;
 				}
 			}
 		}
-		String other = countRest>0 ? I18NText.getText("KAF018_231", String.valueOf(countRest)) : "";
-		String otherFull = (frameName != "" || other !="") ? "（" + frameName + other + "）" : "";
+		String other = countRest > 0 ? I18NText.getText("KAF018_231", String.valueOf(countRest)) : "";
+		String otherFull = (frameName != "" || other != "") ? "（" + frameName + other + "）" : "";
 		appContent += clockShorHm(time) + "　" + otherFull;
 		return appContent;
 	}
@@ -588,12 +589,14 @@ public class ApprovalStatusFinder {
 		} else if (allDayHaflDay.equals(AllDayHalfDayLeaveAtr.HALF_DAY_LEAVE)) {
 			appContent += I18NText.getText("KAF018_279") + I18NText.getText("KAF018_249");
 			// 休暇申請.就業時間帯コード
-			appContent += I18NText.getText("#KAF018_230", appabsence.getWorkTimeName());
+			appContent += I18NText.getText("KAF018_230", appabsence.getWorkTimeName());
 			appContent += appabsence.getStartTime1();
-			appContent += I18NText.getText("KAF018_220");
+			appContent += (appabsence.getStartTime1().equals("") || appabsence.getEndTime1().equals("")) ? ""
+					: I18NText.getText("KAF018_220");
 			appContent += appabsence.getEndTime1();
 			appContent += appabsence.getStartTime2();
-			appContent += I18NText.getText("KAF018_220");
+			appContent += (appabsence.getStartTime2().equals("") || appabsence.getEndTime2().equals("")) ? ""
+					: I18NText.getText("KAF018_220");
 			appContent += appabsence.getEndTime2();
 		}
 		if (isDisplayReason(applicaton_N, companyID)) {
@@ -606,16 +609,16 @@ public class ApprovalStatusFinder {
 		Optional<RequestSetting> requestSet = repoRequestSet.findByCompany(companyID);
 		ApprovalListDisplaySetting appDisplaySet = null;
 		ApprovalListDisplaySetDto displaySet = null;
-		if(requestSet.isPresent()){
+		if (requestSet.isPresent()) {
 			appDisplaySet = requestSet.get().getApprovalListDisplaySetting();
 			displaySet = ApprovalListDisplaySetDto.fromDomain(appDisplaySet);
 		}
-		if (displaySet.getAppReasonDisAtr() == 1 && Objects.isNull(applicaton_N.getAppReason())) {
+		if (displaySet.getAppReasonDisAtr() == 1 && !Objects.isNull(applicaton_N.getAppReason())) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	private String clockShorHm(Integer minute) {
 		return (minute / 60 + ":" + (minute % 60 < 10 ? "0" + minute % 60 : minute % 60));
 	}

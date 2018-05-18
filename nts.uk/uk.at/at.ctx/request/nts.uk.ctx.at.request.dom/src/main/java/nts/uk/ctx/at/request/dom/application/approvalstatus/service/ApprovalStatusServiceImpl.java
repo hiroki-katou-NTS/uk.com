@@ -64,6 +64,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceA
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
@@ -767,6 +768,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	 * 承認状況申請内容追加
 	 */
 	private List<ApprovalSttAppDetail> getApprovalSttAppDetail(List<ApplicationApprContent> listAppContent) {
+		String companyId = AppContexts.user().companyId();
 		List<ApprovalSttAppDetail> listApprovalSttAppDetail = new ArrayList<>();
 		for (ApplicationApprContent appContent : listAppContent) {
 			Application_New app = appContent.getApplication();
@@ -777,7 +779,6 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			// アルゴリズム「承認状況申請内容取得実績」を実行する
 			ApprovalSttDetailRecord approvalSttDetail = this.getApplicationDetailRecord(appContent);
 			// アルゴリズム「承認状況申請内容取得振休振出」を実行する
-			// AppCompltSyncOutput noName =
 			// this.getAppliDetailAcquisitionOfBreakdown(app, listApplication);
 			// アルゴリズム「承認状況申請内容取得休暇」を実行する
 			String relationshipName = this.getApprovalSttDetailVacation(app);
@@ -787,6 +788,24 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		return listApprovalSttAppDetail;
 	}
 
+	/**
+	 * 「承認状況申請内容取得振休振出
+	 */
+	private AppCompltLeaveSyncOutput getCompltLeaveSyncOutput(String companyId, String appId) {
+		AppCompltLeaveSyncOutput complt;
+		//既に紐付け対象となっているト
+		//TODO
+		//アルゴリズム「同時申請された振休振出申請を取得する」を実行する
+		AppCompltLeaveSyncOutput sync = otherCommonAlgorithm.getAppComplementLeaveSync(companyId, appId);
+		if(!sync.isSync()){//TH k co don lien ket
+			return null;
+		}else{//TH co don lien ket
+			
+			//complt = repoAppDetail.getAppCompltLeaveInfo(companyId, app.getAppID(), sync.getType());
+		}
+		return null;
+	}
+	
 	/**
 	 * 承認状況申請承認者取得
 	 */
