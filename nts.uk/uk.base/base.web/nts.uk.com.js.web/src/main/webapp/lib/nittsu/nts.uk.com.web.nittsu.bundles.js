@@ -3666,7 +3666,8 @@ var nts;
                     $menuItems.append($("<li class='menu-item'/>").text("メニュー選択"));
                     $menuItems.append($("<hr/>").css({ margin: "5px 0px" }));
                     _.forEach(menuSet, function (item, i) {
-                        $menuItems.append($("<li class='menu-item'/>").data("code", item.webMenuCode)
+                        $menuItems.append($("<li class='menu-item'/>")
+                            .data("code", item.companyId + ":" + item.webMenuCode)
                             .text(item.webMenuName).on(constants.CLICK, function () {
                             uk.localStorage.setItem(constants.MENU, $(this).data("code"));
                             $menuNav.find(".category:eq(0)").off();
@@ -3694,8 +3695,9 @@ var nts;
                         createMenuSelect($menuNav, menuSet);
                         var menuCode = uk.localStorage.getItem(constants.MENU);
                         if (menuCode.isPresent()) {
+                            var parts_1 = menuCode.get().split(":");
                             var selectedMenu = _.find(menuSet, function (m) {
-                                return m.webMenuCode === menuCode.get();
+                                return m.companyId === parts_1[0] && m.webMenuCode === parts_1[1];
                             });
                             !uk.util.isNullOrUndefined(selectedMenu) ? generate($menuNav, selectedMenu)
                                 : generate($menuNav, menuSet[0]);
@@ -14179,7 +14181,7 @@ var nts;
                         collision: "none"
                     });
                     var $container = $dialog.closest(".ui-dialog");
-                    var offsetContentsArea = $("#header").height();
+                    var offsetContentsArea = window.parent.$("#header").height();
                     var offsetDialog = $container.offset();
                     if (offsetDialog.top < offsetContentsArea) {
                         offsetDialog.top = offsetContentsArea;
@@ -14195,6 +14197,7 @@ var nts;
                                 $container.offset(offsetDialog);
                                 return false;
                             }
+                            $dialog.data("stopdrop", offsetDialog);
                         } });
                     return $dialog;
                 };
@@ -15694,7 +15697,6 @@ var nts;
                     else {
                         nts.uk.deferred.repeat(function (conf) { return conf
                             .task(function () {
-                            console.log("loop");
                             var def = $.Deferred();
                             self = nts.uk.ui.windows.getSelf();
                             if (!nts.uk.util.isNullOrUndefined(self)) {
@@ -15744,6 +15746,7 @@ var nts;
                                 var button = buttons_2[_i];
                                 _loop_2(button);
                             }
+                            $dialog.data("winid", self.id);
                             // Calculate width
                             var dialogWidth = 40 + 35 + 17;
                             headers.forEach(function (header, index) {
@@ -15756,7 +15759,6 @@ var nts;
                                     }
                                 }
                             });
-                            var first = true;
                             // Create dialog
                             $dialog.dialog({
                                 title: title,
@@ -15771,10 +15773,13 @@ var nts;
                                     $(this).parent().find('.ui-dialog-buttonset > button.yes').focus();
                                     $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
                                     $('.ui-widget-overlay').last().css('z-index', nts.uk.ui.dialog.getMaxZIndex());
-                                    if (first) {
+                                    var offsetDraged = $dialog.data("stopdrop");
+                                    if (nts.uk.util.isNullOrUndefined(offsetDraged)) {
                                         $dialog.ntsDialogEx("centerUp", self);
                                     }
-                                    first = false;
+                                    else {
+                                        $dialog.closest(".ui-dialog").offset(offsetDraged);
+                                    }
                                 },
                                 close: function (event) {
                                     bindingContext.$data.option().show(false);
@@ -15796,7 +15801,7 @@ var nts;
                                 $dialog.dialog("option", "height", maxrowsHeight);
                             });
                             PS.$("body").bind("dialogclosed", function (evt, eData) {
-                                if ($dialog.attr("id") === eData.dialogId) {
+                                if ($dialog.data("winid") === eData.dialogId) {
                                     $dialog.dialog("close");
                                     $dialog.remove();
                                 }
@@ -15826,8 +15831,8 @@ var nts;
                             else {
                                 while (!nts.uk.util.isNullOrUndefined(self)) {
                                     if (self.isRoot) {
+                                        $dialog = $(self.globalContext.document.getElementById(id));
                                         self = null;
-                                        $dialog = $((nts.uk.ui.windows.getSelf().parent.globalContext.document).getElementById(id));
                                     }
                                     else {
                                         self = self.parent;
@@ -21159,27 +21164,27 @@ var nts;
                         }
                     };
                     function centerUp($dialog, winContainer) {
-                        var currentInfo = winContainer;
+                        //            let currentInfo = winContainer;
                         var top = 0, left = 0;
                         var dialog = $dialog.closest("div[role='dialog']");
                         dialog.addClass("disappear");
-                        if (currentInfo.isRoot) {
+                        if (winContainer.isRoot) {
                             //top = (window.innerHeight - dialog.innerHeight()) / 2;
                             //left = (window.innerWidth - dialog.innerWidth()) / 2;
                         }
                         else {
-                            while (!nts.uk.util.isNullOrUndefined(currentInfo)) {
-                                if (currentInfo.isRoot) {
-                                    currentInfo = null;
-                                }
-                                else {
-                                    var fullDialog = currentInfo.$dialog.closest("div[role='dialog']");
-                                    var offset = fullDialog.offset();
-                                    top += offset.top;
-                                    left += offset.left;
-                                    currentInfo = currentInfo.parent;
-                                }
-                            }
+                            //                while(!nts.uk.util.isNullOrUndefined(currentInfo)){
+                            //                    if(currentInfo.isRoot){
+                            //                        currentInfo = null;
+                            //                    } else {
+                            var offset = winContainer.$dialog.closest("div[role='dialog']").offset();
+                            //                        var offset = fullDialog.offset();
+                            console.log(dialog.offset());
+                            top += offset.top;
+                            left += offset.left;
+                            //                        currentInfo = currentInfo.parent;
+                            //                    }
+                            //                }
                         }
                         setTimeout(function () {
                             var dialogM = winContainer.isRoot ? $("body") : winContainer.$dialog.closest("div[role='dialog']");
