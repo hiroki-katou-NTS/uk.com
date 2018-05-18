@@ -38,7 +38,7 @@ public class AttendanceRecordExportWebService {
 	 * @return the all attendance record export daily
 	 */
 	@POST
-	@Path("getAllAttendanceRecordExportDaily/{code}")
+	@Path("getAllAttendanceRecordDailyExport/{code}")
 	public List<AttendanceRecordExportDto> getAllAttendanceRecordExportDaily(@PathParam("code") long code) {
 		String companyId = AppContexts.user().companyId();
 		return this.attendanceRecExpFinder.getAllAttendanceRecordExportDaily(companyId, code);

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.infra.repository.attendancerecord;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,12 +46,14 @@ public class JpaCalculateAttendanceRecordGetMemento implements CalculateAttendan
 
 	@Override
 	public List<Integer> getAddedItem() {
+		if(this.kfnstAttndRecItems == null) return new ArrayList<Integer>();
 		return this.kfnstAttndRecItems.stream().filter(e -> e.getFormulaType().compareTo(new BigDecimal(1)) == 0)
 				.map(obj -> (int) obj.getId().getTimeItemId()).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<Integer> getSubtractedItem() {
+		if(this.kfnstAttndRecItems == null) return new ArrayList<Integer>();
 		return this.kfnstAttndRecItems.stream().filter(e -> e.getFormulaType().compareTo(new BigDecimal(2)) == 0)
 				.map(obj -> (int) obj.getId().getTimeItemId()).collect(Collectors.toList());
 	}
