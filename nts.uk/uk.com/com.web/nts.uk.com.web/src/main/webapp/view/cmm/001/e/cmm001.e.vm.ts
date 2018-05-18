@@ -47,17 +47,17 @@ module nts.uk.com.view.cmm001.e {
                     var copyItemList: model.CopyItem[];
                     copyItemList = [];
                     var preSystemType = '';
-                    var i: number;
-                    var num: number = masterCopyCateList.length;
                     var itemData: model.MasterCopyCategory;
                     var nextItem: model.MasterCopyCategory;
-                    for (itemData of masterCopyCateList) {
-                        if (itemData.systemType === preSystemType) {
-                            copyItemList.push(new model.CopyItem(self.getSystemType(itemData.systemType), itemData.masterCopyId, itemData.masterCopyCategory, itemData.order, true));
-                        } else {
-                            copyItemList.push(new model.CopyItem(self.getSystemType(itemData.systemType), itemData.masterCopyId, itemData.masterCopyCategory, itemData.order, false));
+                    if (masterCopyCateList != null) {
+                        for (itemData of masterCopyCateList) {
+                            if (itemData.systemType === preSystemType) {
+                                copyItemList.push(new model.CopyItem(self.getSystemType(itemData.systemType), itemData.masterCopyId, itemData.masterCopyCategory, itemData.order, true));
+                            } else {
+                                copyItemList.push(new model.CopyItem(self.getSystemType(itemData.systemType), itemData.masterCopyId, itemData.masterCopyCategory, itemData.order, false));
+                            }
+                            preSystemType = itemData.systemType;
                         }
-                        preSystemType = itemData.systemType;
                     }
                     self.dataSource(copyItemList);
                     $("#copy-method-header").focus();
