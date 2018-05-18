@@ -15726,6 +15726,7 @@ var nts;
                         var modal = ko.unwrap(option.modal);
                         var show = ko.unwrap(option.show);
                         var buttons = ko.unwrap(option.buttons);
+                        var displayrows = ko.unwrap(option.displayrows);
                         getCurrentWindow().done(function (self) {
                             var id = 'ntsErrorDialog_' + self.id;
                             var $dialog = $("<div>", { "id": id });
@@ -15779,6 +15780,21 @@ var nts;
                                     bindingContext.$data.option().show(false);
                                 }
                             }).dialogPositionControl();
+                            $dialog.on("dialogopen", function () {
+                                var maxrowsHeight = 0;
+                                var index = 0;
+                                $(this).find("table tbody tr").each(function () {
+                                    if (index < displayrows) {
+                                        index++;
+                                        maxrowsHeight += $(this).height();
+                                    }
+                                });
+                                maxrowsHeight = maxrowsHeight + 33 + 20 + 20 + 55 + 4 + $(this).find("table thead").height();
+                                if (maxrowsHeight > $dialog.dialog("option", "maxHeight")) {
+                                    maxrowsHeight = $dialog.dialog("option", "maxHeight");
+                                }
+                                $dialog.dialog("option", "height", maxrowsHeight);
+                            });
                             PS.$("body").bind("dialogclosed", function (evt, eData) {
                                 if ($dialog.attr("id") === eData.dialogId) {
                                     $dialog.dialog("close");
@@ -15889,21 +15905,6 @@ var nts;
                                 $dialog.html("");
                                 $dialog.append($errorboard).append($message);
                                 //                $dialog.on("dialogresizestop dialogopen", function() {
-                                $dialog.on("dialogopen", function () {
-                                    var maxrowsHeight = 0;
-                                    var index = 0;
-                                    $(this).find("table tbody tr").each(function () {
-                                        if (index < displayrows) {
-                                            index++;
-                                            maxrowsHeight += $(this).height();
-                                        }
-                                    });
-                                    maxrowsHeight = maxrowsHeight + 33 + 20 + 20 + 55 + 4 + $(this).find("table thead").height();
-                                    if (maxrowsHeight > $dialog.dialog("option", "maxHeight")) {
-                                        maxrowsHeight = $dialog.dialog("option", "maxHeight");
-                                    }
-                                    $dialog.dialog("option", "height", maxrowsHeight);
-                                });
                                 //                if($dialog.dialog("isOpen")){
                                 $dialog.dialog("open");
                                 //                } else {
