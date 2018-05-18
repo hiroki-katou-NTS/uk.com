@@ -109,13 +109,6 @@ public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 										excessOutsideWork == null ? null : excessOutsideWork.toDomain(), 
 										verticalTotal == null ? null : verticalTotal.toDomain(), 
 										aggregateDays == null ? null : new AttendanceDaysMonth(aggregateDays));
-
-//		// TODO Auto-generated method stub
-//		return AttendanceTimeOfMonthly.of(employeeId, ym, ConvertHelper.getEnum(closureID, ClosureId.class), 
-//				new ClosureDate(closureDate.getClosureDay(), closureDate.getLastDayOfMonth()), 
-//				new DatePeriod(datePeriod.getStart(), datePeriod.getEnd()), 
-//				monthlyCalculation, excessOutsideWork, verticalTotal, 
-//				aggregateDays == null ? null : new AttendanceDaysMonth(aggregateDays));
 	}
 
 	@Override
