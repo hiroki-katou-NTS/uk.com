@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.repository.DailyAttendanceItemNameDomainService;
 import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceTypeDivergenceAdapter;
 import nts.uk.shr.com.context.AppContexts;
@@ -17,6 +18,9 @@ public class AttendanceRecordItemFinder {
 	/** The at type. */
 	@Inject
 	private AttendanceTypeDivergenceAdapter atType;
+	
+	@Inject
+	private AttendanceTypeRepository attendanceTypeRepository;
 
 	/** The at name. */
 	@Inject
@@ -31,9 +35,14 @@ public class AttendanceRecordItemFinder {
 	 */
 	public List<AttendanceRecordItemDto> getAttendanceItemsByScreenUseAtr(int screenUseAtr){
 		String companyId = AppContexts.user().companyId();
+		
+		List<Integer> attendanceItemIds = attendanceTypeRepository.getItemByScreenUseAtr(companyId, screenUseAtr)
+				.stream()
+				.map(e -> e.getAttendanceItemId())
+				.collect(Collectors.toList());
 		//get list AttendanceItem by screenUseAtr
 		List<AttendanceRecordItemDto> listAttendanceRecordItem = new ArrayList<AttendanceRecordItemDto>();
-		List<Integer> attendanceItemIds = atType.getItemByScreenUseAtr(companyId, screenUseAtr).stream().map(e -> e.getAttendanceItemId()).collect(Collectors.toList());
+//		List<Integer> attendanceItemIds = atType.getItemByScreenUseAtr(companyId, screenUseAtr).stream().map(e -> e.getAttendanceItemId()).collect(Collectors.toList());
 		//get list AttendanceItem and convert to list attendancerecordItemDto
 		listAttendanceRecordItem = atName.getNameOfDailyAttendanceItem(attendanceItemIds).stream().map(
 				e -> new AttendanceRecordItemDto(e.getAttendanceItemId(),e.getAttendanceItemName(),screenUseAtr)).collect(Collectors.toList());

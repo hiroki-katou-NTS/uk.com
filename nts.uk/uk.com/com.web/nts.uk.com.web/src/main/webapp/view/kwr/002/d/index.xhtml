@@ -39,7 +39,7 @@
 								<div
 									data-bind="ntsFormLabel: { constraint: 'ItemName', required: true }">#{i18n.getText('KWR002_134')}</div>
 							</td>
-							<td><input
+							<td><input class="nts-input"
 								data-bind="ntsTextEditor: {
                                           name: '#[KWR002_65]',
                                           value: attendanceRecordName,
@@ -61,7 +61,7 @@
 																options: listAttendanceType,
 																optionsValue: 'attendanceTypeCode',
 																visibleItemsCount: 5,
-																value: typeAttendanceSelected,
+																value: typeAttendanceCodeSelected,
 																optionsText: 'attendanceTypeName',
 																editable: false,
 																enable: true,
@@ -89,12 +89,12 @@
 					</div>
 					<div class="group-swith-button" style="float: left">
 						<div>
-							<button>
+							<button data-bind="click: selectAttendanceRec">
 								<i class="icon icon-button-arrow-right"></i>
 							</button>
 						</div>
 						<div style="margin-top:20px;">
-							<button>
+							<button data-bind="click: removeAttendanceSelected">
 								<i class="icon icon-button-arrow-left"></i>
 							</button>
 						</div>
@@ -102,26 +102,27 @@
 					<div id="right-content" class="bg-green" style="float: left;margin-top:30px;">
 						<div class="cf">
 							<div style="float: left">
-								<table tabindex="3" id="single-list-dataSource"
+								<table tabindex="" id="single-list-dataSource"
 									data-bind="ntsGridList:{
 									width: 230,
-									height: 60,
-									options: dataSource,
+									height: 48,
+									options: dataSelected,
 									optionsValue: 'attendanceItemId',
 									columns: columns,
 									multiple: false,
-									value:currentCodeAttendace ,
+									value:codeSingleAttendanceSelected ,
 									enable: true}">
 								</table>
 							</div>
 						</div>
 					</div>
-
-
 				</div>
-
-
-
+			</div>
+			
+			<div id="functions-area-bottom">
+				<button class="x-large proceed" tabindex=""
+					data-bind="click: ">#{i18n.getText('KWR002_151')}</button>
+				<button class="large" tabindex="" data-bind="click: close">#{i18n.getText('KWR002_152')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
