@@ -87,16 +87,9 @@ public class ExcelExportService extends ExportService<List<ExcelInforCommand>> {
 				    		}
 				    		Optional<NumberOfWorkTypeUsedImport> opNumber = infoLine.getNumberOfWorkTypeUsedImport().stream().filter(x -> x.getWorkTypeCode().equals(wtCode)).findFirst();
 				    		if (opNumber.isPresent()) {
-								 map.put(head.get(i+7), opNumber.get().getAttendanceDaysMonth());
+								 map.put(head.get(i+8), opNumber.get().getAttendanceDaysMonth());
 				    		}
-				    		/*
-							 for(int j = 0; j < infoLine.getPlannedVacationListCommand().size(); j++) {
-								 infoLine.getPlannedVacationListCommand().get(i).getWorkTypeCode();
-								 map.put(head.get(i+7), infoLine.getPlannedVacationListCommand().get(i).getMaxNumberDays());
-								 map.put(head.get(i+7), infoLine.getNumberOfWorkTypeUsedImport().get(i).getAttendanceDaysMonth());
-							 }
-							 */
-							 i++;
+				    		i = i + 2;						 
 						 }
 						 return map;
 			        })
