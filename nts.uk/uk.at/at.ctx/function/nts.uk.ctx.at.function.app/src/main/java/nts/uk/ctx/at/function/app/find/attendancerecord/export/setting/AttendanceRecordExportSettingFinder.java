@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class AttendanceRecordExportSettingFinder.
@@ -71,5 +72,16 @@ public class AttendanceRecordExportSettingFinder {
 		}
 		return new AttendanceRecordExportSettingDto();
 
+	}
+	
+	/**
+	 * Gets the seal stamp.
+	 *
+	 * @param code the code
+	 * @return the seal stamp
+	 */
+	public List<String> getSealStamp(long code){
+		String companyId = AppContexts.user().companyId();
+		return attendanceRecExpSetRepo.getSealStamp(companyId, code);
 	}
 }

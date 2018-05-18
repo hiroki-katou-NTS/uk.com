@@ -11,6 +11,8 @@ import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecor
 import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecord;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecordGetMemento;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
+import nts.uk.ctx.at.function.infra.repository.attendancerecord.JpaCalculateAttendanceRecordGetMemento;
+import nts.uk.ctx.at.function.infra.repository.attendancerecord.JpaSingleAttendanceRecordGetMemento;
 
 /**
  * The Class JpaAttendanceRecordExportGetMemento.
@@ -48,7 +50,7 @@ public class JpaAttendanceRecordExportGetMemento implements AttendanceRecordExpo
 	 */
 	@Override
 	public ExportAtr getExportAtr() {
-		return ExportAtr.valueOf(this.upperEntity.getAttribute().intValue());
+		return ExportAtr.valueOf((int)this.upperEntity.getId().getOutputAtr());
 	}
 
 	/*
@@ -84,13 +86,14 @@ public class JpaAttendanceRecordExportGetMemento implements AttendanceRecordExpo
 	public Optional<AttendanceRecordDisplay> getUpperPosition() {
 
 		// 13 <= Attribute <=15
-		if (this.upperEntity.getAttribute().compareTo(new BigDecimal(12)) == 1
-				&& this.upperEntity.getAttribute().compareTo(new BigDecimal(16)) == -1)
-			return Optional.of(new SingleAttendanceRecord((SingleAttendanceRecordGetMemento) upperEntity));
+		if (this.upperEntity.getAttribute().compareTo(new BigDecimal(0)) == 1
+				&& this.upperEntity.getAttribute().compareTo(new BigDecimal(4)) == -1)
+			return Optional.of(new SingleAttendanceRecord(new JpaSingleAttendanceRecordGetMemento(upperEntity, null)));
 		// 16<= Attribute <= 18
-		if (this.upperEntity.getAttribute().compareTo(new BigDecimal(15)) == 1
-				&& this.upperEntity.getAttribute().compareTo(new BigDecimal(16)) == 19)
-			return Optional.of(new CalculateAttendanceRecord((CalculateAttendanceRecordGetMemento) upperEntity));
+		if (this.upperEntity.getAttribute().compareTo(new BigDecimal(3)) == 1
+				&& this.upperEntity.getAttribute().compareTo(new BigDecimal(7)) == -1)
+			return Optional
+					.of(new CalculateAttendanceRecord(new JpaCalculateAttendanceRecordGetMemento(upperEntity, null)));
 
 		return Optional.empty();
 
@@ -106,13 +109,13 @@ public class JpaAttendanceRecordExportGetMemento implements AttendanceRecordExpo
 	public Optional<AttendanceRecordDisplay> getLowerPosition() {
 
 		// 13 <= Attribute <=15
-		if (this.lowerEntity.getAttribute().compareTo(new BigDecimal(12)) == 1
-				&& this.lowerEntity.getAttribute().compareTo(new BigDecimal(16)) == -1)
-			return Optional.of(new SingleAttendanceRecord((SingleAttendanceRecordGetMemento) lowerEntity));
+		if (this.lowerEntity.getAttribute().compareTo(new BigDecimal(0)) == 1
+				&& this.lowerEntity.getAttribute().compareTo(new BigDecimal(4)) == -1)
+			return Optional.of(new SingleAttendanceRecord(new JpaSingleAttendanceRecordGetMemento(lowerEntity, null)));
 		// 16<= Attribute <= 18
-		if (this.lowerEntity.getAttribute().compareTo(new BigDecimal(15)) == 1
-				&& this.lowerEntity.getAttribute().compareTo(new BigDecimal(16)) == 19)
-			return Optional.of(new CalculateAttendanceRecord((CalculateAttendanceRecordGetMemento) lowerEntity));
+		if (this.lowerEntity.getAttribute().compareTo(new BigDecimal(3)) == 1
+				&& this.lowerEntity.getAttribute().compareTo(new BigDecimal(7)) == -1)
+			return Optional.of(new CalculateAttendanceRecord(new JpaCalculateAttendanceRecordGetMemento(lowerEntity, null)));
 
 		return Optional.empty();
 	}
