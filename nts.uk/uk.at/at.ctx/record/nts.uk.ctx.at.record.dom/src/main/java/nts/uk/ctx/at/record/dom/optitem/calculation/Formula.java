@@ -61,11 +61,11 @@ public class Formula extends AggregateRoot {
 	// ===================== Optional ======================= //
 	/** The monthly rounding. */
 	// 月別端数処理
-	private Rounding monthlyRounding;
+	private Optional<Rounding> monthlyRounding;
 
 	/** The daily rounding. */
 	// 日別端数処理
-	private Rounding dailyRounding;
+	private Optional<Rounding> dailyRounding;
 
 	/**
 	 * Instantiates a new optional item formula.
