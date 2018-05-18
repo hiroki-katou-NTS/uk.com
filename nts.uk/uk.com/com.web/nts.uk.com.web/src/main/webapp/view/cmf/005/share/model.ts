@@ -11,17 +11,27 @@ module nts.uk.com.view.cmf005.share.model {
         PAYROLL_SYS = 2,
         OFFICE_HELPER = 3
     }
-    
+
     export enum TIME_STORE {
         MONTHLY = 0,
         ANNUAL = 1,
         FULL_TIME = 2,
         DAILY = 3
     }
-    
+
     export enum STORAGE_RANGE_SAVE {
         EARCH_EMP = 0,
         ALL_EMP = 1
+    }
+
+    export enum OPERATING_CONDITION {
+        INPREPARATION = 0,
+        SAVING = 1,
+        INPROGRESS = 2,
+        DELETING = 3,
+        DONE = 4,
+        INTERRUPTION_END = 5,
+        ABNORMAL_TERMINATION = 6
     }
 
     export class ItemModel {
@@ -34,9 +44,9 @@ module nts.uk.com.view.cmf005.share.model {
         }
     }
 
-      
+
     export class ItemCategory {
-       
+
         schelperSystem: number;
         categoryId: string;
         categoryName: string;
@@ -85,5 +95,5 @@ module nts.uk.com.view.cmf005.share.model {
             this.startYear = startYear;
             this.endYear = endYear;
         }
-    }  
+    }
 }

@@ -27,9 +27,12 @@
 #ex_accept_wizard, #ex_accept_wizard .content {
 	overflow: visible;
 }
+#contents-area {
+	overflow-x: hidden;
+}
 
 .contentAll {
-	width: 100%;
+	display: flex;
 }
 
 .contentL {

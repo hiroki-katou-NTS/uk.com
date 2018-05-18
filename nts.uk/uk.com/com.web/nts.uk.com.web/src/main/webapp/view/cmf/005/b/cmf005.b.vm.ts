@@ -72,7 +72,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
 
         //D
         // reference date
-        referenceDate : string;
+        referenceDate: string;
         //Radio button
         itemTitleAtr: KnockoutObservableArray<any>;
         selectedTitleAtr: KnockoutObservable<number>;
@@ -90,7 +90,8 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         columnEmployees: KnockoutObservableArray<NtsGridListColumn>;
         currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
-        categoryDeletionList: KnockoutObservableArray<CategoryDeletion>;;
+        categoryDeletionList: KnockoutObservableArray<CategoryDeletion>;
+        delId : KnockoutObservable<string>;
 
         constructor() {
             var self = this;
@@ -110,8 +111,8 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             self.stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
 
             //Radio button
-            self.optionCategory = ko.observable({ value: 1, text: nts.uk.resource.getText("CMF005_15") });
-            self.optionDeleteSet = ko.observable({ value: 2, text: nts.uk.resource.getText("CMF005_16") });
+            self.optionCategory = ko.observable({ value: 1, text: getText("CMF005_15") });
+            self.optionDeleteSet = ko.observable({ value: 2, text: getText("CMF005_16") });
             self.deleteSetName = ko.observable('');
 
             //B5_3
@@ -191,7 +192,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             //D
             //referenceDate init toDay
             self.referenceDate = moment.utc().format("YYYY/MM/DD");
-            
+
             self.systemType = ko.observable(1);
             self.initEmployeeList = ko.observableArray([]);
             self.employeeList = ko.observableArray([]);
@@ -200,11 +201,11 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             self.selectedEmployeeCode = ko.observableArray([]);
             self.alreadySettingPersonal = ko.observableArray([]);
             self.itemTitleAtr = ko.observableArray([
-                { value: 1, titleAtrName: resource.getText('CMF005_51') },
-                { value: 0, titleAtrName: resource.getText('CMF005_52') }]);
-            self.selectedTitleAtr = ko.observable(1);
+                { value: 0, titleAtrName: resource.getText('CMF005_51') },
+                { value: 1, titleAtrName: resource.getText('CMF005_52') }]);
+            self.selectedTitleAtr = ko.observable(0);
             self.selectedTitleAtr.subscribe(function(value) {
-                if(value == 1) {
+                if (value == 1) {
                     self.applyKCP005ContentSearch(self.initEmployeeList());
                 }
                 else {
@@ -219,6 +220,8 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 { headerText: getText('CMF005_56'), key: 'code', width: 150 },
                 { headerText: getText('CMF005_57'), key: 'name', width: 200 }
             ]);
+            self.delId = ko.observable("");
+            
         }
 
         /**
@@ -372,8 +375,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         */
         validateDatePicker() {
             let self = this;
-            if (self.requiredDate) {
-                ;
+            if (self.requiredDate()) {
                 if (self.dateValue().startDate && self.dateValue().endDate) {
                     if (self.dateValue().startDate > self.dateValue().endDate) {
                         return false;
@@ -383,7 +385,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                     return false;
                 }
             }
-            if (self.requiredMonth) {
+            if (self.requiredMonth()) {
                 if (self.monthValue().startDate && self.monthValue().endDate) {
                     if (self.monthValue().startDate > self.monthValue().endDate) {
                         return false;
@@ -393,7 +395,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                     return false;
                 }
             }
-            if (self.requiredYear) {
+            if (self.requiredYear()) {
                 if (self.yearValue().startDate && self.yearValue().endDate) {
                     if (self.yearValue().startDate > self.yearValue().endDate) {
                         return false;
@@ -481,7 +483,6 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 leaveOfAbsence: true,
                 closed: true,
                 retirement: true,
-
                 /**
                 * Self-defined function: Return data from CCG001
                 * @param: data: the data return from CCG001
@@ -562,7 +563,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                         if (self.employeeList()[j].code == self.selectedEmployeeCode()[i]) {
                             let employee = self.employeeList()[j];
                             self.employeeDeletionList.push(
-                                new EmployeeDeletion(employee.code, employee.name, 
+                                new EmployeeDeletion(employee.code, employee.name,
                                     employee.code, employee.name));
                         }
                     }
@@ -608,23 +609,35 @@ module nts.uk.com.view.cmf005.b.viewmodel {
 
         private gotoscreenF(): void {
             let self = this;
-            self.saveManualSetting();
+            let params = {};
+                params.delId = self.delId();
+                params.deleteSetName = self.deleteSetName();
+                params.dateValue = self.dateValue();
+                params.monthValue = self.monthValue();
+                params.yearValue = self.yearValue();
+                params.saveBeforDelete = self.isSaveBeforeDeleteFlg();
+
+            setShared("CMF005_E_PARAMS", params);
+            modal("/view/cmf/005/f/index.xhtml");
         }
 
         private saveManualSetting(): void {
-            let self = this;            
-            let manualSetting = new ManualSettingModal(self.deleteSetName(),self.supplementExplanation(), self.systemType(), 
-                    moment.utc(self.referenceDate, 'YYYY/MM/DD'), moment.utc().toISOString(),
-                    moment.utc(self.dateValue().startDate, 'YYYY/MM/DD'), moment.utc(self.dateValue().endDate, 'YYYY/MM/DD'),
-                    moment.utc(self.monthValue().startDate, 'YYYY/MM'), moment.utc(self.monthValue().endDate, 'YYYY/MM'),
-                    Number(self.yearValue().startDate), Number(self.yearValue().endDate),
-                    Number(self.isSaveBeforeDeleteFlg()), Number(self.isExistCompressPasswordFlg()), self.passwordForCompressFile(),
-                    Number(self.selectedTitleAtr()), self.employeeDeletionList(), self.categoryDeletionList());
+            let self = this;
+            let manualSetting = new ManualSettingModal(self.deleteSetName(), self.supplementExplanation(), self.systemType(),
+                moment.utc(self.referenceDate, 'YYYY/MM/DD'), moment.utc().toISOString(),
+                moment.utc(self.dateValue().startDate, 'YYYY/MM/DD'), moment.utc(self.dateValue().endDate, 'YYYY/MM/DD'),
+                moment.utc(self.monthValue().startDate, 'YYYY/MM'), moment.utc(self.monthValue().endDate, 'YYYY/MM'),
+                Number(self.yearValue().startDate), Number(self.yearValue().endDate),
+                Number(self.isSaveBeforeDeleteFlg()), Number(self.isExistCompressPasswordFlg()), self.passwordForCompressFile(),
+                Number(self.selectedTitleAtr()), self.employeeDeletionList(), self.categoryDeletionList());
             
-            service.addManualSetDel(manualSetting).done(() => {
+            service.addManualSetDel(manualSetting).done(function(data: any) {
+                self.delId(data);
+                self.gotoscreenF();
+            }).fail(function(error) {
+                alertError(error);
 
-            }).fail(res => {
-
+            }).always(() => {
             });
         }
     }
@@ -643,9 +656,9 @@ module nts.uk.com.view.cmf005.b.viewmodel {
 
     function storageRangeSaved(value, row) {
         if (value == model.STORAGE_RANGE_SAVE.EARCH_EMP) {
-            return getText('Enum_Storage_Range_Saved_EARCH_EMP');
+            return getText('Enum_StorageRangeSaved_EARCH_EMP');
         } else if (value == model.STORAGE_RANGE_SAVE.ALL_EMP) {
-            return getText('Enum_Storage_Range_Saved_ALL_EMP');
+            return getText('Enum_StorageRangeSaved_ALL_EMP');
         }
     }
 
@@ -685,7 +698,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         name: string;
         employeeId: string;
         businessName: string;
-        
+
         constructor(code: string, name: string, employeeId: string, businessName: string) {
             this.code = code;
             this.name = name;
@@ -715,7 +728,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         category: Array<CategoryDeletion>;
 
         constructor(delName: string, suppleExplanation: string, systemType: number, referenceDate: string,
-            executionDateAndTime: string, dayStartDate: string, dayEndDate: string, 
+            executionDateAndTime: string, dayStartDate: string, dayEndDate: string,
             monthStartDate: string, monthEndDate: string,
             startYear: number, endYear: number, isSaveBeforeDeleteFlg: number, isExistCompressPasswordFlg: number,
             passwordForCompressFile: string, haveEmployeeSpecifiedFlg: number, employees: Array<EmployeeDeletion>,

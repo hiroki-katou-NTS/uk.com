@@ -9,6 +9,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.assist.app.command.deletedata.management.ManagementDelCommand;
 import nts.uk.ctx.sys.assist.app.command.deletedata.management.UpdateManagementDelCommandHandler;
+import nts.uk.ctx.sys.assist.app.command.deletedata.management.RemoveManagementDelCommandHandler;
 import nts.uk.ctx.sys.assist.app.find.deletedata.ManagementDelDto;
 import nts.uk.ctx.sys.assist.app.find.deletedata.ManagementDelFinder;
 
@@ -20,6 +21,9 @@ public class ManagementDelWebService extends WebService {
 	
 	@Inject
 	private UpdateManagementDelCommandHandler updateManagementDelCommandHandler;
+	
+	@Inject
+	private RemoveManagementDelCommandHandler removeManagementDelCommandHandler;
 	
 	
 	@POST
@@ -34,4 +38,9 @@ public class ManagementDelWebService extends WebService {
 		this.updateManagementDelCommandHandler.handle(command);
 	}
 	
+	@POST
+	@Path("deleteManagementDel")
+	public void deleteManagementDel(ManagementDelCommand command) {
+		this.removeManagementDelCommandHandler.handle(command);
+	}
 }

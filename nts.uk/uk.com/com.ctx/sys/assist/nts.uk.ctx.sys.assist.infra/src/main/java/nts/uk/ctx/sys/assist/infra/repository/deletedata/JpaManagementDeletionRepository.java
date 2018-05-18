@@ -10,6 +10,7 @@ import nts.uk.ctx.sys.assist.dom.deletedata.ManagementDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.ManagementDeletionRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.OperatingCondition;
 import nts.uk.ctx.sys.assist.infra.entity.deletedata.SspdtManagementDeletion;
+import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtDataStorageMng;
 
 @Stateless
 public class JpaManagementDeletionRepository extends JpaRepository implements ManagementDeletionRepository {
@@ -59,13 +60,7 @@ public class JpaManagementDeletionRepository extends JpaRepository implements Ma
 
 	@Override
 	public void update(ManagementDeletion managementDeletion) {
-		ManagementDeletion entity = this.getEntityManager().find(ManagementDeletion.class, managementDeletion.getDelId());
-		entity.isInterruptedFlg = managementDeletion.isInterruptedFlg();
-		entity.totalCategoryCount = managementDeletion.getTotalCategoryCount();
-		entity.categoryCount = managementDeletion.getCategoryCount();
-		entity.errorCount = managementDeletion.getErrorCount();
-		entity.operatingCondition = managementDeletion.getOperatingCondition();
-		this.commandProxy().update(entity);
+		 this.commandProxy().update(SspdtManagementDeletion.toEntity(managementDeletion));
 	}
 	
 	@Override

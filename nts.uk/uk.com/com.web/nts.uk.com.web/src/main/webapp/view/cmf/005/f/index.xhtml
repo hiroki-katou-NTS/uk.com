@@ -13,6 +13,8 @@
 				        height : 370
 				    };
             </script>
+            <com:scriptfile path="../share/model.js" />
+            <com:scriptfile path="cmf005.f.service.js" />
 			<com:scriptfile path="cmf005.f.vm.js" />
 			<com:scriptfile path="cmf005.f.start.js" />
 			<com:stylefile path="cmf005.f.style.css" />
@@ -26,19 +28,19 @@
 				<table>
 					<tr>
 						<td class="columnLeft"><label>#{i18n.getText('CMF005_60')}</label></td>
-						<td class="columnRight"><label class="labeRight" data-bind="text: textf212" /></td>
+						<td class="columnRight"><label class="labeRight" data-bind="text: timeOver()" /></td>
 					</tr>
 					<tr>
 						<td class="columnLeft"><label>#{i18n.getText('CMF005_61')}</label></td>
 						<td>
-							<label class="labeRight" data-bind="text: textf222" />
-							<label class="labeRight" data-bind="text: textf223" />
+							<label class="labeRight" data-bind="text: status" />
+							<label class="labeRight" data-bind="text: categoryPercentProcess" />
 							<label>#{i18n.getText('CMF005_62')}</label>
 						</td>
 					</tr>
 					<tr>
 						<td class="columnLeft"><label>#{i18n.getText('CMF005_63')}</label></td>
-						<td><label class="labeRight">#{i18n.getText('CMF005_64')}</label></td>
+						<td><label class="labeRight" data-bind="text: errorCount"/></td>
 					</tr>
 				</table>
 
@@ -47,35 +49,35 @@
 					<table>
 						<tr>
 							<td class="columnLeft"><label class ="labeLeft" >#{i18n.getText('CMF005_66')}</label></td>
-							<td class="columnRight"><label class="labeRight" data-bind="text: textf312" /></td>
+							<td class="columnRight"><label class="labeRight" data-bind="text: deleteSetName" /></td>
 						</tr>
 						<tr>
 							<td class="columnLeft"><label class ="labeLeft">#{i18n.getText('CMF005_67')}</label></td>
-							<td><label class="labeRight" data-bind="text: textf322" /></td>
+							<td><label class="labeRight" data-bind="text: saveBeforDelete" /></td>
 						</tr>
 						<tr>
 							<td class="columnLeft" rowspan="3"><label class ="labeLeft">#{i18n.getText('CMF005_68')}</label></td>
 							<td>
 								<label>#{i18n.getText('CMF005_69')}</label>
-								<label data-bind="text: textf332" />
+								<label data-bind="text: dateStartValue" />
 								<label>#{i18n.getText('CMF005_72')}</label>
-								<label data-bind="text: textf334" />
+								<label data-bind="text: dateEndValue" />
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<label>#{i18n.getText('CMF005_70')}</label>
-								<label data-bind="text: textf342" />
+								<label data-bind="text: monthStartValue" />
 								<label>#{i18n.getText('CMF005_72')}</label>
-								<label data-bind="text: textf344" />
+								<label data-bind="text: monthEndValue" />
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<label>#{i18n.getText('CMF005_71')}</label>
-								<label data-bind="text: textf352" />
+								<label data-bind="text: yearStartValue" />
 								<label>#{i18n.getText('CMF005_72')}</label>
-								<label data-bind="text: textf354" />
+								<label data-bind="text: yearEndValue" />
 							</td>
 						</tr>
 					</table>
@@ -83,8 +85,12 @@
 			</div>
 			<hr />
 			<center>
-			<button id="F10_1" data-bind="click : breakPopup" class="large">#{i18n.getText('CMF005_73')}</button>
-			<button id="F10_2" data-bind="click : closePopup" class="large">#{i18n.getText('CMF005_74')}</button>
+				<com:ko-if bind="(dialogMode() == 'deleting')">
+ 						<button id="F10_1" data-bind="click : interrupt" class="large">#{i18n.getText('CMF005_73')}</button> 
+ 				</com:ko-if>
+ 				<com:ko-if bind="(dialogMode() !== 'deleting')">
+	 					<button id="F10_2" data-bind="click : closePopup" class="large">#{i18n.getText('CMF005_74')}</button> 
+				</com:ko-if>
 			</center>
 		</ui:define>
 	</ui:composition>

@@ -1800,6 +1800,8 @@ public class ProgramsManager {
 			"/view/cmm/005/b/index.xhtml");
 	public static final Program CMF005C = new Program(WebAppId.COM, ProgramIdConsts.CMF005C, "CMF005_3",
 			"/view/cmm/005/c/index.xhtml");
+	public static final Program CMF005F = new Program(WebAppId.COM, ProgramIdConsts.CMF005F, "CMF005_6",
+			"/view/cmm/005/f/index.xhtml");
 	
 
 	/**
