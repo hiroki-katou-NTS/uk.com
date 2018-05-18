@@ -39,6 +39,7 @@ module nts.uk.at.view.kwr001.c {
             // variable global store data from service 
             
             enableBtnDel: KnockoutObservable<boolean>;
+            enableCodeC3_2: KnockoutObservable<boolean>;
             
             constructor() {
                 var self = this;
@@ -66,29 +67,29 @@ module nts.uk.at.view.kwr001.c {
                 self.currentCodeListSwap.subscribe(function(value) {})
                 
                 self.enableBtnDel = ko.observable(false);
+                self.enableCodeC3_2 = ko.observable(false);
                 
                 self.currentCodeList.subscribe(function(value) {
                     
                     let codeChoose = _.find(self.outputItemList(), function(o: any) { 
                         return value == o.code; 
                     });
-                    if (!_.isUndefined(codeChoose)) {
+                    if (!_.isUndefined(codeChoose) && !_.isNull(codeChoose)) {
                         self.C3_2_value(codeChoose.code);
                         self.C3_3_value(codeChoose.name);
                         self.getOutputItemDailyWorkSchedule(_.find(self.allMainDom(), function(o: any) {
                                                                 return codeChoose.code == o.itemCode;             
                                                             }));
                         self.enableBtnDel(true);
+                        self.enableCodeC3_2(false);
                     } else {
                         self.C3_2_value('');
                         self.C3_3_value('');
+                        self.getOutputItemDailyWorkSchedule([]);
                         self.enableBtnDel(false);
-                        // TODO - hoangdd: lam them truong hop chua co code duoc chon
+                        self.enableCodeC3_2(true);
                     }                    
                 })
-                
-//                        self.items(self.outputItemPossibleLst());
-//                        self.items.removeAll(self.currentCodeListSwap());
                 
                 self.checkedRemarksInput = ko.observable(false);
                 self.checkedMasterUnregistered = ko.observable(false);
@@ -102,6 +103,9 @@ module nts.uk.at.view.kwr001.c {
                 self.checkedExceedByApplication = ko.observable(false);
             }
             
+            /*
+             * set data to C7_2, C7_8 
+            */
             private getOutputItemDailyWorkSchedule(data: any): void {
                 let self = this;
                 
@@ -116,8 +120,25 @@ module nts.uk.at.view.kwr001.c {
                 _.forEach(self.outputItemPossibleLst(), function(value) {
                     temp2.push(value);
                 })
+                // refresh data for C7_2
                 self.items(temp2);
+                // refresh data for C7_8
                 self.currentCodeListSwap(temp1);
+                
+                if (!_.isEmpty(data)) {
+                    self.checkedRemarksInput(self.convertNumToBool(data.lstRemarkContent[0].usedClassification));
+                    self.checkedMasterUnregistered(self.convertNumToBool(data.lstRemarkContent[1].usedClassification));
+                    self.checkedEngraving(self.convertNumToBool(data.lstRemarkContent[2].usedClassification));
+                    self.checkedImprintingOrderNotCorrect(self.convertNumToBool(data.lstRemarkContent[3].usedClassification));
+                    self.checkedLeavingEarly(self.convertNumToBool(data.lstRemarkContent[4].usedClassification));
+                    self.checkedDoubleEngraved(self.convertNumToBool(data.lstRemarkContent[5].usedClassification));
+                    self.checkedAcknowledgment(self.convertNumToBool(data.lstRemarkContent[6].usedClassification));
+                    self.checkedManualInput(self.convertNumToBool(data.lstRemarkContent[7].usedClassification));
+                    self.checkedNotCalculated(self.convertNumToBool(data.lstRemarkContent[8].usedClassification));
+                    self.checkedExceedByApplication(self.convertNumToBool(data.lstRemarkContent[9].usedClassification));    
+                } else {
+                    self.setRemarksContentDefault();
+                }
                 
             }
             
@@ -126,15 +147,18 @@ module nts.uk.at.view.kwr001.c {
                 let self = this;
                 self.getDataService().done(function(){
                     if (_.isUndefined(nts.uk.ui.windows.getShared('KWR001_C'))) {
-                        self.currentCodeList();
+                        self.currentCodeList(null);
                     } else {
-                        self.currentCodeList(nts.uk.ui.windows.getShared('KWR001_C'));   
+                        self.currentCodeList(nts.uk.ui.windows.getShared('KWR001_C'));
                     }
+                    dfd.resolve();
                 })
-                dfd.resolve();
                 return dfd.promise();
             }
             
+            /*
+             *  get data from server
+            */
             private getDataService(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 var self = this;
@@ -151,26 +175,30 @@ module nts.uk.at.view.kwr001.c {
                     
                     let arrCodeName: ItemModel[] = [];
                     _.forEach(data.outputItemDailyWorkSchedule, function(value, index) {
-                        arrCodeName.push({code: value.itemCode, name: value.itemName});
+                        arrCodeName.push({code: value.itemCode+"", name: value.itemName});
                     });
                     self.outputItemList(arrCodeName);
                     self.items(data.dailyAttendanceItem);
-                    // todo - hoangdd
-                    
                     dfd.resolve();
                 })
                 
                 return dfd.promise();
             }
 
+            /*
+             *  open screen D
+            */
             openScreenD () {
                 var self = this;
-                nts.uk.ui.windows.setShared('KWR001_D', 1, true);
+                nts.uk.ui.windows.setShared('KWR001_D', self.currentCodeList(), true);
                 nts.uk.ui.windows.sub.modal('/view/kwr/001/d/index.xhtml').onClosed(function(): any {
                     nts.uk.ui.windows.getShared('KWR001_D');
                 });
             }
             
+            /*
+             *  save data to server
+            */
             private saveData(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
@@ -193,13 +221,28 @@ module nts.uk.at.view.kwr001.c {
                 command.lstRemarkContent.push({usedClassification: self.convertBoolToNum(self.checkedNotCalculated()), printitem: 8});
                 command.lstRemarkContent.push({usedClassification: self.convertBoolToNum(self.checkedExceedByApplication()), printitem: 9});
                 command.workTypeNameDisplay = self.selectedRuleCode();
-                command.newMode = _.isUndefined(self.currentCodeList()) ? true : false;
+                command.newMode = (_.isUndefined(self.currentCodeList()) || _.isNull(self.currentCodeList())) ? true : false;
                 service.save(command).done(function() { 
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    dfd.resolve();
+                    self.getDataService().done(function(){
+                        dfd.resolve();
+                    })
+                    
+                }).fail(function(err) {
+                    nts.uk.ui.dialog.error(err);
+                    dfd.reject();
                 })
                 
                 return dfd.promise();
+            }
+            
+            private newMode(): void {
+                let self = this;
+                self.currentCodeList('');
+                self.C3_2_value('');
+                self.C3_3_value('');
+                self.getOutputItemDailyWorkSchedule([]);
+                self.enableBtnDel(false);
             }
             
             private convertBoolToNum(value: boolean): number {
@@ -209,15 +252,60 @@ module nts.uk.at.view.kwr001.c {
                 return 0;
             }
             
+            private convertNumToBool(value: number): boolean {
+                if (value == 1) {
+                    return true;
+                }
+                return false;
+            }
+            
             // return to screen A
             closeScreenC(): void {
                 nts.uk.ui.windows.close();
             }
             
+            /*
+             *  set default data
+            */
+            private setRemarksContentDefault(): void {
+                let self = this;
+                self.checkedRemarksInput(false);
+                self.checkedMasterUnregistered(false);
+                self.checkedEngraving(false);
+                self.checkedImprintingOrderNotCorrect(false);
+                self.checkedLeavingEarly(false);
+                self.checkedDoubleEngraved(false);
+                self.checkedAcknowledgment(false);
+                self.checkedManualInput(false);
+                self.checkedNotCalculated(false);
+                self.checkedExceedByApplication(false);
+            }
+            
+            /*
+             *  remove data       
+            */
             private removeData(): void {
                 let self = this;
-                service.remove(self.currentCodeList()).done(function() { 
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                service.remove(self.currentCodeList()).done(function() {
+                    let indexCurrentCode = _.findIndex(self.outputItemList(), function(value, index) {
+                        return self.currentCodeList() == value.code;
+                    })
+                    
+                    // self.currentCodeList only have 1 element in list
+                    if (self.outputItemList().length == 1) {
+                        self.currentCodeList(null);
+                    } 
+                    // when current code was selected is last element in list self.currentCodeList
+                    else if (indexCurrentCode == (self.outputItemList().length - 1)) {
+                        self.currentCodeList(self.outputItemList()[indexCurrentCode-1].code);
+                    } 
+                    // when current code was selected in place middle in list self.currentCodeList
+                    else {
+                        self.currentCodeList(self.outputItemList()[indexCurrentCode+1].code);
+                    }
+                    self.getDataService().done(function(){
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    })
                 })
             }
         }

@@ -70,4 +70,10 @@ public class OutputItemDailyWorkScheduleWS extends WebService{
 	public void delete(@PathParam("code") int code){
 		this.outputItemDailyWorkScheduleDeleteHandler.delete(code);
 	}
+	
+	@Path("find-copy")
+	@POST
+	public void findCopy(){
+		this.outputItemDailyWorkScheduleDeleteHandler.delete();
+	}
 }

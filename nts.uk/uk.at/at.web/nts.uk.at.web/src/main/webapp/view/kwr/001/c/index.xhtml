@@ -14,28 +14,28 @@
 				};
 			</script>
 		
+			<com:ValidatorScript>
+				nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode
+				nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName
+			</com:ValidatorScript>
+		
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="kwr001.c.start.js" />
 			<com:scriptfile path="kwr001.c.service.js" />
 			<com:scriptfile path="kwr001.c.vm.js" />
 			<com:stylefile path="kwr001.c.main.css" />
-			
-			<com:ValidatorScript>
-				nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode
-				nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName
-			</com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="contents-area">
 				<!-- C1_1 -->
-				<button tabindex="1" class="proceed">#{i18n.getText('KWR001_46')}</button>
+				<button tabindex="1" class="proceed" data-bind="click: newMode">#{i18n.getText('KWR001_46')}</button>
 				<!-- C1_2 -->
-				<button tabindex="2" class="proceed" data-bind="click: saveData">#{i18n.getText('KWR001_47')}</button>
+				<button tabindex="2" class="proceed" data-bind="click: saveData, enable: $root.errors.isEmpty">#{i18n.getText('KWR001_47')}</button>
 				<!-- C1_3 -->
 				<button tabindex="3" data-bind="click: openScreenD">#{i18n.getText('KWR001_48')}</button>
 				<!-- C1_4 -->
-				<button tabindex="4" class="danger C1_4" data-bind="click: removeData, enable: enableBtnDel">#{i18n.getText('KWR001_49')}</button>
+				<button tabindex="4" class="danger C1_4" data-bind="click: removeData, enable: enableBtnDel, enable: $root.errors.isEmpty">#{i18n.getText('KWR001_49')}</button>
 				<!-- C1_5 -->
 				<button tabindex="5" data-bind="click: closeScreenC" >#{i18n.getText('KWR001_50')}</button>
 				
@@ -65,15 +65,18 @@
 							<div class="right">
 								<div class="row">
 									<!-- C3_1 -->
-									<div class="label-name" data-bind="ntsFormLabel: { constraint: '', required: true }">#{i18n.getText('KWR001_54')}</div>
+									<div class="label-name" data-bind="ntsFormLabel: { constraint: 'OutputItemSettingCode', 
+																					   required: true,
+																					   name: '#[KWR001_54]', }">#{i18n.getText('KWR001_54')}</div>
 									<!-- C3_2 -->
-									<input tabindex="7" class="C3_2" data-bind="ntsTextEditor:{
+									<input id="C3_2" tabindex="7" class="C3_2" data-bind="ntsNumberEditor:{
 											name: '#[KWR001_55]',
 											require: true,
 											value: C3_2_value,
-											constraint: 'OutputItemSettingCode'}"/>
+											constraint: 'OutputItemSettingCode',
+											enable: enableCodeC3_2}"/>
 									<!-- C3_3 -->
-									<input class="C3_3" tabindex="8" data-bind="ntsTextEditor:{
+									<input id="C3_3" class="C3_3" tabindex="8" data-bind="ntsTextEditor:{
 											name: '#[KWR001_56]',
 											require: true,
 											value: C3_3_value,

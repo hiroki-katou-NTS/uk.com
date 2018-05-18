@@ -44,6 +44,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FormatPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FormatPerformanceRepository;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -179,7 +180,7 @@ public class OutputItemDailyWorkScheduleFinder {
 		Optional<FormatPerformance> optFormatPerformanceRepository = formatPerformanceRepository.getFormatPerformanceById(companyId);
 
 		// In case of authority
-		if (optFormatPerformanceRepository.get().getSettingUnitType().value == 0) {
+		if (optFormatPerformanceRepository.get().getSettingUnitType().value == SettingUnitType.AUTHORITY.value) {
 			// Get domain 会社の日別実績の修正のフォーマット
 			List<AuthorityDailyPerformanceFormat> lstAuthorityDailyPerformanceFormat = authorityDailyPerformanceFormatRepository.getListCode(companyId);
 			
@@ -316,7 +317,9 @@ public class OutputItemDailyWorkScheduleFinder {
 													dto.setPrintitem(domain.getPrintitem().value);
 													dto.setUsedClassification(domain.isUsedClassification() == true ? USE : NOT_USE);
 													return dto;
-												}).collect(Collectors.toList());
+												})
+												.sorted(Comparator.comparing(PrintRemarksContentDto::getPrintitem))
+												.collect(Collectors.toList());
 		return lstDto;
 	} 
 	

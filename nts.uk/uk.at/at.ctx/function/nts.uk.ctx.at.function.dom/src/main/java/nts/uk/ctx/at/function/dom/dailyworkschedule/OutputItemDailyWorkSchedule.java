@@ -47,7 +47,11 @@ public class OutputItemDailyWorkSchedule extends AggregateRoot{
 	 * @param memento the memento
 	 */
 	public OutputItemDailyWorkSchedule(OutputItemDailyWorkScheduleGetMemento memento) {
-		this.companyID = memento.getCompanyID();
+		if (memento.getCompanyID() == null) {
+			this.companyID = AppContexts.user().companyId();
+		} else {
+			this.companyID = memento.getCompanyID();
+		}
 		this.itemCode = memento.getItemCode();
 		this.itemName = memento.getItemName();
 		this.lstDisplayedAttendance = memento.getLstDisplayedAttendance();

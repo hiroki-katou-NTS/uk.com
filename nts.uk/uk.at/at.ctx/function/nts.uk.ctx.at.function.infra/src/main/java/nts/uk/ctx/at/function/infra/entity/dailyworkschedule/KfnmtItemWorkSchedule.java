@@ -49,7 +49,7 @@ public class KfnmtItemWorkSchedule extends UkJpaEntity implements Serializable {
 	private BigDecimal workTypeNameDisplay;
 
 	/** The lst kfnmt attendance display. */
-	@OneToMany(cascade = CascadeType.PERSIST, orphanRemoval = true)
+	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumns({
 			@JoinColumn(name="CID", referencedColumnName="CID"),
 			@JoinColumn(name="ITEM_CODE", referencedColumnName="ITEM_CODE")
@@ -57,7 +57,7 @@ public class KfnmtItemWorkSchedule extends UkJpaEntity implements Serializable {
 	private List<KfnmtAttendanceDisplay> lstKfnmtAttendanceDisplay;
 	
 	/** The lst kfnmt print remark cont. */
-	@OneToMany(cascade = CascadeType.PERSIST, orphanRemoval = true)
+	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumns({
 			@JoinColumn(name="CID", referencedColumnName="CID"),
 			@JoinColumn(name="ITEM_CODE", referencedColumnName="ITEM_CODE")

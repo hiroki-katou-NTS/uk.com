@@ -22,6 +22,9 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository;
+import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtAttendanceDisplay;
+import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtAttendanceDisplayPK_;
+import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtAttendanceDisplay_;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedule;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedulePK;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedulePK_;
@@ -55,6 +58,23 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 	 */
 	@Override
 	public void update(OutputItemDailyWorkSchedule domain) {
+		EntityManager em = this.getEntityManager();
+		
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+
+        // create delete
+        CriteriaDelete<KfnmtAttendanceDisplay> delete = cb.createCriteriaDelete(KfnmtAttendanceDisplay.class);
+
+        // set the root class
+        Root<KfnmtAttendanceDisplay> root = delete.from(KfnmtAttendanceDisplay.class);
+
+        // set where clause
+        delete.where(cb.equal(root.get(KfnmtAttendanceDisplay_.id).get(KfnmtAttendanceDisplayPK_.cid), domain.getCompanyID()),
+        				cb.equal(root.get(KfnmtAttendanceDisplay_.id).get(KfnmtAttendanceDisplayPK_.itemCode), domain.getItemCode().v()));
+
+        // perform update
+        em.createQuery(delete).executeUpdate();
+		
 		this.commandProxy().update(this.toEntity(domain));
 	}
 
@@ -71,7 +91,6 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 	 */
 	@Override
 	public List<OutputItemDailyWorkSchedule> findByCid(String companyId) {
-		// TODO Auto-generated method stub
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
@@ -89,7 +108,7 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 		// Add where condition
 		predicateList.add(builder.equal(root.get(KfnmtItemWorkSchedule_.id).get(KfnmtItemWorkSchedulePK_.cid),companyId));
 		cq.where(predicateList.toArray(new Predicate[] {}));
-
+		cq.orderBy(builder.asc(root.get(KfnmtItemWorkSchedule_.id).get(KfnmtItemWorkSchedulePK_.cid)));
 		// Get results
 		List<KfnmtItemWorkSchedule> results = em.createQuery(cq).getResultList();
 
@@ -108,27 +127,27 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 	 */
 	@Override
 	public void deleteByCidAndCode(String companyId, int code) {
-//		KfnmtItemWorkSchedulePK primaryKey = new KfnmtItemWorkSchedulePK();
-//		primaryKey.setCid(companyId);
-//		primaryKey.setItemCode(code);
-//		this.commandProxy().remove(KfnmtItemWorkSchedule.class, primaryKey);
-		
-		EntityManager em = this.getEntityManager();
-		
-		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		EntityManager em = this.getEntityManager();
+//		
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//
+//        // create delete
+//        CriteriaDelete<KfnmtItemWorkSchedule> delete = cb.createCriteriaDelete(KfnmtItemWorkSchedule.class);
+//
+//        // set the root class
+//        Root<KfnmtItemWorkSchedule> root = delete.from(KfnmtItemWorkSchedule.class);
+//
+//        // set where clause
+//        delete.where(cb.equal(root.get(KfnmtItemWorkSchedule_.id).get(KfnmtItemWorkSchedulePK_.cid), companyId),
+//        				cb.equal(root.get(KfnmtItemWorkSchedule_.id).get(KfnmtItemWorkSchedulePK_.itemCode), code));
+//
+//        // perform update
+//        em.createQuery(delete).executeUpdate();
 
-        // create delete
-        CriteriaDelete<KfnmtItemWorkSchedule> delete = cb.createCriteriaDelete(KfnmtItemWorkSchedule.class);
-
-        // set the root class
-        Root<KfnmtItemWorkSchedule> root = delete.from(KfnmtItemWorkSchedule.class);
-
-        // set where clause
-        delete.where(cb.equal(root.get(KfnmtItemWorkSchedule_.id).get(KfnmtItemWorkSchedulePK_.cid), companyId),
-        				cb.equal(root.get(KfnmtItemWorkSchedule_.id).get(KfnmtItemWorkSchedulePK_.itemCode), code));
-
-        // perform update
-        em.createQuery(delete).executeUpdate();
+        KfnmtItemWorkSchedulePK primaryKey = new KfnmtItemWorkSchedulePK();
+        primaryKey.setCid(companyId);
+        primaryKey.setItemCode(code);
+        this.commandProxy().remove(KfnmtItemWorkSchedule.class, primaryKey);
 	}
 
 	/* (non-Javadoc)
