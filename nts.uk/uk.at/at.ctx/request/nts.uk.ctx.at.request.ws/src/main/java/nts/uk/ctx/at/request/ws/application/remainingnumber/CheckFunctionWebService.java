@@ -12,10 +12,10 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc.CheckFuncDataCommand;
 import nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc.CheckFuncExecutionRespone;
 import nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc.ErrorInfoExportService;
-import nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc.ExcelExportService;
-import nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc.ExcelInforCommand;
 import nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc.OutputErrorInfoCommand;
+import nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc.RemainingNumberExportExcel;
 import nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc.SyncCheckFuncDataCommandHandler;
+import nts.uk.ctx.at.request.dom.application.remainingnumer.ExcelInforCommand;
 
 @Path("at/request/application/remainnumber/checkFunc")
 @Produces("application/json")
@@ -28,7 +28,7 @@ public class CheckFunctionWebService extends WebService{
 	private ErrorInfoExportService exportService;
 	
 	@Inject
-	ExcelExportService excelExportService;
+	private RemainingNumberExportExcel remainingNumberExportExcel;
 	
 	@POST
 	@Path("execution")
@@ -47,6 +47,6 @@ public class CheckFunctionWebService extends WebService{
 	@POST
 	@Path("exportExcel")
 	public ExportServiceResult exportExcel(List<ExcelInforCommand> command) {
-		return this.excelExportService.start(command);
+		return this.remainingNumberExportExcel.start(command);
 	}
 }

@@ -28,6 +28,8 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumb
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.AnnualBreakManageImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.DailyWorkTypeListImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.YearlyHolidaysTimeRemainingImport;
+import nts.uk.ctx.at.request.dom.application.remainingnumer.ExcelInforCommand;
+import nts.uk.ctx.at.request.dom.application.remainingnumer.PlannedVacationListCommand;
 import nts.uk.ctx.at.request.dom.settting.worktype.history.PlanVacationHistory;
 import nts.uk.ctx.at.request.dom.settting.worktype.history.VacationHistoryRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -208,26 +210,12 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				}
 				
 			}
-			// Excel出力情報ListをもとにExcel出力をする (Xuất ra file excel)
-			//exportCsv(excelInforList);
 			
 			if (asyncTask.hasBeenRequestedToCancel()) {
 				asyncTask.finishedAsCancelled();
 				return;
 			}
-			/*
-			final ByteArrayOutputStream out = new ByteArrayOutputStream();
-		    final ObjectMapper mapper = new ObjectMapper();
 
-		    try {
-				mapper.writeValue(out, excelInforList);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-		    final byte[] data = out.toByteArray();
-			setter.setData("EXCEL_LIST", new String(data));
-			*/
 		}
 		//delay a moment.
 		try {
