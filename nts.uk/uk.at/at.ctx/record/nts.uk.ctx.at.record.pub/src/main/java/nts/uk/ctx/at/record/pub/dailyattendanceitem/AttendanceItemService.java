@@ -12,6 +12,7 @@ public interface AttendanceItemService {
 
 	public Optional<AttendanceItemValue> getValueOf(String employeeId, GeneralDate workingDate, int itemId);
 
+	/** RequestList332 */
 	public AttendanceResult getValueOf(String employeeId, GeneralDate workingDate, Collection<Integer> itemIds);
 
 	public List<AttendanceResult> getValueOf(Collection<String> employeeId, DatePeriod workingDate,
@@ -23,9 +24,11 @@ public interface AttendanceItemService {
 	public MonthlyAttendanceResult getMonthlyValueOf(String employeeId, YearMonth yearMonth, int closureId,
 			int clouseDate, boolean lastDayOfMonth, Collection<Integer> itemIds);
 
+	/** RequestList421 */
 	public List<MonthlyAttendanceResult> getMonthlyValueOf(Collection<String> employeeId, DatePeriod range,
 			Collection<Integer> itemIds);
 
+	/** RequestList421 */
 	public List<MonthlyAttendanceResult> getMonthlyValueOf(String employeeId, DatePeriod range, Collection<Integer> itemIds);
 
 	public List<MonthlyAttendanceResult> getMonthlyValueOf(Collection<String> employeeId, YearMonth ym,
