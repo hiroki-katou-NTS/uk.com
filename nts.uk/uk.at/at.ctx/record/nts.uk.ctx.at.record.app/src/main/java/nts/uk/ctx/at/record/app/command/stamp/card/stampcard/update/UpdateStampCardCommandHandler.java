@@ -1,8 +1,11 @@
 package nts.uk.ctx.at.record.app.command.stamp.card.stampcard.update;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -15,7 +18,6 @@ import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 public class UpdateStampCardCommandHandler extends CommandHandler<UpdateStampCardCommand>
 		implements PeregUpdateCommandHandler<UpdateStampCardCommand> {
 
-		
 	@Inject
 	private StampCardRepository stampCardRepo;
 
@@ -32,13 +34,31 @@ public class UpdateStampCardCommandHandler extends CommandHandler<UpdateStampCar
 	@Override
 	protected void handle(CommandHandlerContext<UpdateStampCardCommand> context) {
 		UpdateStampCardCommand command = context.getCommand();
+
+		// check duplicate cardNo trong cùng 1 contractCode
+
+		if (command.getStampNumber() != null) {
+
+			Optional<StampCard> origin = this.stampCardRepo.getByStampCardId(command.getStampNumberId());
+
+			String contractCode = AppContexts.user().contractCode();
+			Optional<StampCard> duplicate = this.stampCardRepo.getByCardNoAndContractCode(command.getStampNumber(),
+					contractCode);
+
+			if (duplicate.isPresent() && origin.isPresent() && origin.get().getStampNumber().toString() != duplicate.get().getStampNumber().toString()) {
+				throw new BusinessException("Msg_346");
+			}
+			
+			// update domain
+			StampCard stampCard = StampCard.createFromJavaType(command.getStampNumberId(), command.getEmployeeId(),
+					command.getStampNumber(), GeneralDate.today(), AppContexts.user().contractCode());
+
+			stampCardRepo.update(stampCard);
+
+		}
+
 		
-		// update domain
-		StampCard stampCard = StampCard.createFromJavaType(command.getStampNumberId(), command.getEmployeeId(),
-				command.getStampNumber(), GeneralDate.today(), AppContexts.user().contractCode());
-		
-		stampCardRepo.update(stampCard);
-		
+
 	}
 
 }
