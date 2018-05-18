@@ -366,6 +366,8 @@ module nts.custom.component {
                     }
 
                     params.gridlist.row(10);
+                    params.combobox.value(undefined);
+                    
                     fetch.get_layout(sid).done((data: Array<any>) => {
                         if (data.length) {
                             params.gridlist.options(data);
