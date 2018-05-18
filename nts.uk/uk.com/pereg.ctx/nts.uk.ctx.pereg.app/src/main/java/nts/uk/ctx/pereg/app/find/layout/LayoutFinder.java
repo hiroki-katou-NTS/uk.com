@@ -5,7 +5,6 @@ package nts.uk.ctx.pereg.app.find.layout;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -23,6 +22,7 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository
 import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
 import nts.uk.ctx.pereg.app.find.common.InitDefaultValue;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
+import nts.uk.ctx.pereg.app.find.common.StampCardLength;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layout.dto.SimpleEmpMainLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
@@ -30,7 +30,6 @@ import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsFinder;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.definition.LayoutPersonInfoClsDefFinder;
-import nts.uk.ctx.pereg.app.find.person.info.item.DataTypeStateDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
@@ -42,7 +41,6 @@ import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
-import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.layout.IMaintenanceLayoutRepository;
 import nts.uk.ctx.pereg.dom.person.layout.MaintenanceLayout;
 import nts.uk.ctx.pereg.dom.person.layout.classification.ILayoutPersonInfoClsRepository;
@@ -109,7 +107,10 @@ public class LayoutFinder {
 
 	@Inject
 	private InitDefaultValue initDefaultValue;
-
+	
+	@Inject
+	private StampCardLength stampCardLength;
+	
 	public List<SimpleEmpMainLayoutDto> getSimpleLayoutList(String browsingEmpId) {
 
 		String loginEmpId = AppContexts.user().employeeId();
@@ -447,7 +448,6 @@ public class LayoutFinder {
 
 	private void getDataforListItem(PersonInfoCategory perInfoCategory, LayoutPersonInfoClsDto classItem,
 			GeneralDate standardDate, String personId, String employeeId, PeregQuery query) {
-
 		if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
 			List<PeregDto> peregDtoList = layoutingProcessor.findList(query);
 			List<LayoutPersonInfoValueDto> items = new ArrayList<>();
@@ -474,6 +474,9 @@ public class LayoutFinder {
 			classItem.setPersonInfoCategoryCD(perInfoCategory.getCategoryCode().v());
 			classItem.setItems(items);
 		}
+		
+		// special process with category CS00069 item IS00779. change string length
+		stampCardLength.updateLength(perInfoCategory, Arrays.asList(classItem));
 
 		// getComboBoxListForSelectionItems(employeeId, perInfoCategory,
 		// Arrays.asList(classItem), comboBoxStandardDate);

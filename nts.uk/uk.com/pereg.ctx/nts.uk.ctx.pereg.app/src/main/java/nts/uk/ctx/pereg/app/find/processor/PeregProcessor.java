@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.app.find.dailyperformanceformat.businesstype.Busines
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.pereg.app.find.common.InitDefaultValue;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
+import nts.uk.ctx.pereg.app.find.common.StampCardLength;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
@@ -98,6 +99,9 @@ public class PeregProcessor {
 	
 	@Inject
 	private InitDefaultValue initDefaultValue;
+	
+	@Inject
+	private StampCardLength stampCardLength;
 	
 	/**
 	 * get person information category and it's children (Hiển thị category và
@@ -207,6 +211,9 @@ public class PeregProcessor {
 		
 		// set default value
 		initDefaultValue.setDefaultValue(classItemList);
+		
+		// special process with category CS00069 item IS00779. change string length
+		stampCardLength.updateLength(perInfoCtg, classItemList);
 		
 		empMaintLayoutDto.setClassificationItems(classItemList);
 
