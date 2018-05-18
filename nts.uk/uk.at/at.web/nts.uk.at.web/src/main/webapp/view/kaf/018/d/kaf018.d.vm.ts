@@ -66,7 +66,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
                 }
                 let dateRange = self.appDateRangeColor(self.convertDateMDW(appStartDate), self.convertDateMDW(appEndDate));
                 let reflectStateContent = self.disReflectionStatus(data.reflectState);
-                self.listDataDisp.push(new ContentDisp(index, data.appType, data.appName, data.prePostAtr ? "事前" : "事後", dateRange, data.appContent, data.reflectState, reflectStateContent , self.disApprovalStatus(data.approvalStatus), data.phase1, data.phase2, data.phase3, data.phase4, data.phase5));
+                self.listDataDisp.push(new ContentDisp(index, data.appType, data.appName, data.prePostAtr ? "事後" : "事前", dateRange, data.appContent, data.reflectState, reflectStateContent , self.disApprovalStatus(data.approvalStatus), data.phase1, data.phase2, data.phase3, data.phase4, data.phase5));
                 index++;
             });
             let colorBackGr = self.fillColorbackGr();

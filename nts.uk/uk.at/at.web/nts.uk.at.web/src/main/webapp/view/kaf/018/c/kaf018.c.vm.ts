@@ -312,7 +312,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         //職場名
         private displayWkp(): string {
             var self = this;
-            return self.selectedWplId() + "    " + self.selectedWplName();
+            return self.selectedWplName();
         }
 
         /**

@@ -22,7 +22,6 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AllDayHalfDayLeaveAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.OverTimeFrame;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppAbsenceFull;
-import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppCompltLeaveFull;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppDetailInfoRepository;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppGoBackInfoFull;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppHolidayWorkFull;
@@ -237,9 +236,6 @@ public class ApprovalStatusFinder {
 					startDate, endDate, appStatus.getListEmpCd());
 			// アルゴリズム「承認状況取得申請承認」を実行する
 			ApprovalSttAppOutput approvalSttApp = appSttService.getApprovalSttApp(wkp, listAppStatusEmp);
-			if (Objects.isNull(approvalSttApp)) {
-				continue;
-			}
 			listAppSttApp.add(approvalSttApp);
 		}
 
@@ -279,7 +275,6 @@ public class ApprovalStatusFinder {
 				.initApprovalSttRequestContentDis(appSttContent.getListStatusEmp());
 		HdAppSetDto hdAppSetDto = HdAppSetDto.convertToDto(appList.getLstHdAppSet().get());
 		List<ApplicationDetailDto> listApplicationDetail = new ArrayList<>();
-
 		List<ApprovalSttAppDetail> listAppSttDetail = appList.getApprovalSttAppDetail();
 		for (ApprovalSttAppDetail app : listAppSttDetail) {
 			ApplicationDetailDto detail = new ApplicationDetailDto();

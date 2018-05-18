@@ -21,6 +21,7 @@ import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
+import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.CheckExitSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppCompltLeaveFull;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppDetailInfoRepository;
@@ -137,9 +138,13 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 
 	@Inject
 	private AtEmploymentAdapter atEmploymentAdapter;
-	
+
 	@Inject
 	private AppDetailInfoRepository repoAppDetail;
+
+	@Inject
+	private ApplicationRepository_New repoApp;
+
 	@Override
 	public List<ApprovalStatusEmployeeOutput> getApprovalStatusEmployee(String wkpId, GeneralDate closureStart,
 			GeneralDate closureEnd, List<String> listEmpCd) {
@@ -240,7 +245,6 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	public ApprovalSttAppOutput getApprovalSttApp(WorkplaceInfor wkpInfor,
 			List<ApprovalStatusEmployeeOutput> listAppStatusEmp) {
 		List<ApprovalSttAppOutput> appSttAppliStateList = new ArrayList<>();
-
 		for (ApprovalStatusEmployeeOutput approvalStt : listAppStatusEmp) {
 			// アルゴリズム「承認状況取得申請」を実行する
 			List<ApplicationApprContent> getAppSttAcquisitionAppl = this.getAppSttAcquisitionAppl(approvalStt);
@@ -249,25 +253,29 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			appSttAppliStateList.add(appStt);
 		}
 
-		if (appSttAppliStateList.isEmpty())
-			return null;
-		int numOfApp = appSttAppliStateList.stream().mapToInt(ApprovalSttAppOutput::getNumOfApp).sum();
-		int appNumOfCase = appSttAppliStateList.stream().mapToInt(ApprovalSttAppOutput::getApprovedNumOfCase).sum();
-		int numOfUnreflected = appSttAppliStateList.stream().mapToInt(ApprovalSttAppOutput::getNumOfUnreflected).sum();
-		int numOfUnapproval = appSttAppliStateList.stream().mapToInt(ApprovalSttAppOutput::getNumOfUnapproval).sum();
-		int numOfDenials = appSttAppliStateList.stream().mapToInt(ApprovalSttAppOutput::getNumOfDenials).sum();
-		Integer numOfAppDisp = numOfApp == 0 ? null : numOfApp;
-		Integer appNumOfCaseDisp = appNumOfCase == 0 ? null : appNumOfCase;
-		Integer numOfUnreflectedDisp = numOfUnreflected == 0 ? null : numOfUnreflected;
-		Integer numOfUnapprovalDisp = numOfUnapproval == 0 ? null : numOfUnapproval;
-		Integer numOfDenialsDisp = numOfDenials == 0 ? null : numOfDenials;
-		boolean isEnable = true;
-		if (Objects.isNull(numOfUnapprovalDisp) || numOfUnapprovalDisp <= 0) {
-			isEnable = false;
+		if (appSttAppliStateList.isEmpty()) {
+			return new ApprovalSttAppOutput(wkpInfor.getCode(), wkpInfor.getName(), false, false, null, null, null,
+					null, null);
+		} else {
+			int numOfApp = appSttAppliStateList.stream().mapToInt(ApprovalSttAppOutput::getNumOfApp).sum();
+			int appNumOfCase = appSttAppliStateList.stream().mapToInt(ApprovalSttAppOutput::getApprovedNumOfCase).sum();
+			int numOfUnreflected = appSttAppliStateList.stream().mapToInt(ApprovalSttAppOutput::getNumOfUnreflected)
+					.sum();
+			int numOfUnapproval = appSttAppliStateList.stream().mapToInt(ApprovalSttAppOutput::getNumOfUnapproval)
+					.sum();
+			int numOfDenials = appSttAppliStateList.stream().mapToInt(ApprovalSttAppOutput::getNumOfDenials).sum();
+			Integer numOfAppDisp = numOfApp == 0 ? null : numOfApp;
+			Integer appNumOfCaseDisp = appNumOfCase == 0 ? null : appNumOfCase;
+			Integer numOfUnreflectedDisp = numOfUnreflected == 0 ? null : numOfUnreflected;
+			Integer numOfUnapprovalDisp = numOfUnapproval == 0 ? null : numOfUnapproval;
+			Integer numOfDenialsDisp = numOfDenials == 0 ? null : numOfDenials;
+			boolean isEnable = true;
+			if (Objects.isNull(numOfUnapprovalDisp) || numOfUnapprovalDisp <= 0) {
+				isEnable = false;
+			}
+			return new ApprovalSttAppOutput(wkpInfor.getCode(), wkpInfor.getName(), isEnable, false, numOfAppDisp,
+					appNumOfCaseDisp, numOfUnreflectedDisp, numOfUnapprovalDisp, numOfDenialsDisp);
 		}
-		ApprovalSttAppOutput approvalSttApp = new ApprovalSttAppOutput(wkpInfor.getCode(), wkpInfor.getName(), isEnable,
-				false, numOfAppDisp, appNumOfCaseDisp, numOfUnreflectedDisp, numOfUnapprovalDisp, numOfDenialsDisp);
-		return approvalSttApp;
 	}
 
 	/**
@@ -338,12 +346,6 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// TODO 419
 		// Imported（申請承認）「社員メールアドレス」を取得する
 		listEmployee = new ArrayList<>();
-		for (String sid : listsId) {
-			EmployeeEmailImport sample = new EmployeeEmailImport(sid, "sname",
-					GeneralDate.fromString("20100101", "yyyyMMdd"), GeneralDate.fromString("20180101", "yyyyMMdd"),
-					"dat.lh@3si.vn");
-			listEmployee.add(sample);
-		}
 		return listEmployee;
 	}
 
@@ -697,7 +699,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	private List<DailyStatus> getApprovalSttByDate(GeneralDate startDate, GeneralDate endDate,
 			List<Application_New> listApprovalContent) {
 		List<DailyStatus> listDailyStatus = new ArrayList<>();
-		for (Application_New app : listApprovalContent) {			
+		for (Application_New app : listApprovalContent) {
 			DailyStatus dailyStatus = new DailyStatus();
 			ReflectedState_New reflectedState = app.getReflectionInformation().getStateReflectionReal();
 			Integer symbol = null;
@@ -761,6 +763,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			List<ApplicationApprContent> listAppContent = this.getAppSttAcquisitionAppl(appEmp);
 			listAppContents.addAll(listAppContent);
 		}
+		List<Application_New> lstCompltLeaveSync = new ArrayList<>();
 		// アルゴリズム「承認状況申請内容追加」を実行する
 		List<ApprovalSttAppDetail> listApprovalAppDetail = this.getApprovalSttAppDetail(listAppContents);
 		// ドメインモデル「休暇申請設定」を取得する
@@ -783,8 +786,9 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			List<ApproverOutput> listApprover = this.getApprovalSttApprover(appContent);
 			// アルゴリズム「承認状況申請内容取得実績」を実行する
 			ApprovalSttDetailRecord approvalSttDetail = this.getApplicationDetailRecord(appContent);
+			
 			// アルゴリズム「承認状況申請内容取得振休振出」を実行する
-			//AppCompltLeaveSyncOutput sync = this.getCompltLeaveSyncOutput(companyId, app);
+			//AppCompltLeaveSync sync = this.getCompltLeaveSyncOutput(companyId, app);
 			// this.getAppliDetailAcquisitionOfBreakdown(app, listApplication);
 			// アルゴリズム「承認状況申請内容取得休暇」を実行する
 			String relationshipName = this.getApprovalSttDetailVacation(app);
@@ -797,37 +801,54 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	/**
 	 * 「承認状況申請内容取得振休振出
 	 */
-	private AppCompltLeaveSyncOutput getCompltLeaveSyncOutput(String companyId, Application_New app) {
-		//既に紐付け対象となっているト
-		//TODO
-		//アルゴリズム「同時申請された振休振出申請を取得する」を実行する
-		AppCompltLeaveSyncOutput sync = otherCommonAlgorithm.getAppComplementLeaveSync(companyId, app.getAppID());
-		AppCompltLeaveFull appMain = null;
-		AppCompltLeaveFull appSub = null;
-		String appDateSub = null;
-		String appInputSub = null;
-		if(!sync.isSync()){//TH k co don lien ket
-			//lay thong tin chi tiet
-			appMain = repoAppDetail.getAppCompltLeaveInfo(companyId, app.getAppID(), sync.getType());
-		}else{//TH co don lien ket
-			//lay thong tin chi tiet A
-			/*appMain = repoAppDetail.getAppCompltLeaveInfo(companyId, app.getAppID(), sync.getType());
-			//check B co trong list don xin k?
-			String appIdSync = sync.getType() == 0 ? sync.getRecId() : sync.getAbsId();
-			CheckExitSync checkExit = this.checkExitSync(lstCompltLeave, appIdSync);
-			if(checkExit.isCheckExit()){//exist
-				appDateSub = checkExit.getAppDateSub().toString("yyyy/MM/dd");
-				appInputSub = checkExit.getInputDateSub().toString("yyyy/MM/dd HH:mm");
-			}else{//not exist
-				//lay thong tin chung
-				Application_New sub = repoApp.findByID(companyId, appIdSync).get();
-				appDateSub = sub.getAppDate().toString("yyyy/MM/dd");
-				appInputSub = sub.getInputDate().toString("yyyy/MM/dd HH:mm");*/
+	private AppCompltLeaveSync getCompltLeaveSyncOutput(String companyId, List<Application_New> lstCompltLeave) {
+		List<String> lstSyncId = new ArrayList<>();
+		for (Application_New app : lstCompltLeave) {
+			if (lstSyncId.contains(app.getAppID())) {
+				continue;
 			}
-			//appSub = repoAppDetail.getAppCompltLeaveInfo(companyId, appIdSync, sync.getType() == 0 ? 1 : 0);
+			AppCompltLeaveFull appMain = null;
+			AppCompltLeaveFull appSub = null;
+			String appDateSub = null;
+			String appInputSub = null;
+			// アルゴリズム「申請一覧リスト取得振休振出」を実行する-(get List App Complement Leave): 6 -
+			// 申請一覧リスト取得振休振出
+			AppCompltLeaveSyncOutput sync = otherCommonAlgorithm.getAppComplementLeaveSync(companyId, app.getAppID());
+			if (!sync.isSync()) {// TH k co don lien ket
+				// lay thong tin chi tiet
+				appMain = repoAppDetail.getAppCompltLeaveInfo(companyId, app.getAppID(), sync.getType());
+			} else {// TH co don lien ket
+					// lay thong tin chi tiet A
+				appMain = repoAppDetail.getAppCompltLeaveInfo(companyId, app.getAppID(), sync.getType());
+				// check B co trong list don xin k?
+				String appIdSync = sync.getType() == 0 ? sync.getRecId() : sync.getAbsId();
+				CheckExitSync checkExit = this.checkExitSync(lstCompltLeave, appIdSync);
+				if (checkExit.isCheckExit()) {// exist
+					lstSyncId.add(appIdSync);
+					appDateSub = checkExit.getAppDateSub().toString("yyyy/MM/dd");
+					appInputSub = checkExit.getInputDateSub().toString("yyyy/MM/dd HH:mm");
+				} else {// not exist
+						// lay thong tin chung
+					Application_New sub = repoApp.findByID(companyId, appIdSync).get();
+					appDateSub = sub.getAppDate().toString("yyyy/MM/dd");
+					appInputSub = sub.getInputDate().toString("yyyy/MM/dd HH:mm");
+				}
+				appSub = repoAppDetail.getAppCompltLeaveInfo(companyId, appIdSync, sync.getType() == 0 ? 1 : 0);
+			}
+		}
+		//return new AppCompltLeaveSync(sync.getType(), sync.isSync(), appMain, appSub, appDateSub, appInputSub);
 		return null;
 	}
-	
+
+	private CheckExitSync checkExitSync(List<Application_New> lstCompltLeave, String appId) {
+		for (Application_New app : lstCompltLeave) {
+			if (app.getAppID().equals(appId)) {
+				return new CheckExitSync(true, app.getAppDate(), app.getInputDate());
+			}
+		}
+		return new CheckExitSync(false, null, null);
+	}
+
 	/**
 	 * 承認状況申請承認者取得
 	 */
@@ -850,21 +871,11 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 				listEmployee.addAll(listEmp);
 			}
 			if (!listEmployee.isEmpty()) {
-				// 承認者（リスト）
-				int countPerson = 0;
-				for (int i = 0; i < listEmployee.size(); i++) {
-					// 1人目の場合
-					if (i == 0) {
-						// Imported（就業）「個人社員基本情報」を取得する
-						// RequestList126
-						List<EmployeeBasicInfoImport> listEmpInfor = this.workplaceAdapter.findBySIds(listEmployee);
-						empName = listEmpInfor.stream().findFirst().get().getPName();
-
-					} else {
-						countPerson++;
-					}
-					numOfPeople += countPerson;
-				}
+				// Imported（就業）「個人社員基本情報」を取得する
+				// RequestList126
+				List<EmployeeBasicInfoImport> listEmpInfor = this.workplaceAdapter.findBySIds(listEmployee);
+				empName = listEmpInfor.stream().findFirst().get().getPName();
+				numOfPeople = listEmployee.size()-1;
 				ApproverOutput approver = new ApproverOutput(appPhase.getPhaseOrder(), empName, numOfPeople);
 				listApprover.add(approver);
 			} else {
@@ -885,20 +896,19 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	private List<String> getUnAppSubstitutePriority(List<ApproverStateImport_New> listApproverState,
 			GeneralDate appDate) {
 		List<String> listEmpId = new ArrayList<>();
+		String cId = AppContexts.user().companyId();
 		for (ApproverStateImport_New approver : listApproverState) {
-			String cId = AppContexts.user().companyId();
 			String sID = approver.getApproverID();
 			// ドメインモデル「代行者管理」を取得する
 			List<AgentDataRequestPubImport> lstAgentData = agentApdater.lstAgentData(cId, sID, appDate, appDate);
-			if(lstAgentData.isEmpty()) continue;
-			AgentDataRequestPubImport agent = lstAgentData.stream().findFirst().get();
+			Optional<AgentDataRequestPubImport> agent = lstAgentData.stream().findFirst();
 			// 対象が存在する場合
-			if (!Objects.isNull(agent)) {
-				switch (agent.getAgentAppType1()) {
+			if (agent.isPresent()) {
+				switch (agent.get().getAgentAppType1()) {
 				// 0:代行者指定
 				case SUBSTITUTE_DESIGNATION:
 					// 代行者管理.承認代行者を社員IDにセットする
-					listEmpId.add(agent.getAgentSid1());
+					listEmpId.add(agent.get().getAgentSid1());
 					break;
 				// 1:パス
 				case PATH:
@@ -970,7 +980,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	private String getApprovalSttDetailVacation(Application_New app) {
 		String relaName = "";
 		Optional<AppAbsence> absence = repoAbsence.getAbsenceById(app.getCompanyID(), app.getAppID());
-		if(!absence.isPresent()) return "";
+		if (!absence.isPresent())
+			return "";
 		AppForSpecLeave appForSpec = absence.get().getAppForSpecLeave();
 		String relaCode = appForSpec == null ? ""
 				: appForSpec.getRelationshipCD() == null ? "" : appForSpec.getRelationshipCD().v();
