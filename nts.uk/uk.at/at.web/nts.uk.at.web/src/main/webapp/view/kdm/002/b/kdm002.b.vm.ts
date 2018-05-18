@@ -14,7 +14,7 @@ module nts.uk.at.view.kdm002.b {
             ERROR_MESS: string = getText("KDM002_27")
             
             // params
-            pempployeeList:  KnockoutObservableArray<EmployeeSearchDto> = ko.observable([]);
+            pempployeeList:  KnockoutObservableArray<EmployeeSearchDto> = ko.observableArray([]);
             pstartDate:  KnockoutObservable<string> = ko.observable('');
             pendDate: KnockoutObservable<string>= ko.observable('');
             pdate:  KnockoutObservable<string>= ko.observable('');
@@ -42,7 +42,7 @@ module nts.uk.at.view.kdm002.b {
             taskId: KnockoutObservable<string> =  ko.observable('');
             timeStartt: any;
             timeNow: any;
-            excelContent: KnockoutObservable<any> = ko.observable('');
+            excelContent: KnockoutObservableArray<any> = ko.observableArray([]);
             startExportExcel: KnockoutObservable<boolean>;
             constructor() {
                 let self = this;
@@ -140,7 +140,8 @@ module nts.uk.at.view.kdm002.b {
                         return nts.uk.request.asyncTask.getInfo(self.taskId()).done(function(res: any) {
                             // update state on screen
                             if (res.running || res.succeeded || res.cancelled) {
-                                self.excelContent('');
+                                //self.excelContent('');
+                                self.excelContent.removeAll();
                                 self.imErrorLog.removeAll();
                                 _.forEach(res.taskDatas, item => {
                                     if (item.key.substring(0, 10) == "ERROR_LIST") {
@@ -155,7 +156,7 @@ module nts.uk.at.view.kdm002.b {
                                     } else {
                                         if (item.key.substring(0, 10) == "EXCEL_LIST") {
                                             let exContent = JSON.parse(item.valueAsString);
-                                              self.excelContent(exContent);
+                                              self.excelContent.push(exContent);
                                         } else {
                                             // 処理カウント
                                             if (item.key == 'NUMBER_OF_SUCCESS') {
@@ -179,7 +180,11 @@ module nts.uk.at.view.kdm002.b {
 
                             if (res.succeeded || res.failed || res.cancelled) {
                                 if (self.imErrorLog().length == 0) {
-                                    self.status(getText("KDM002_29"));
+                                    if (res.succeeded) {
+                                        self.status(getText("KDM002_29"));
+                                    } else if (res.cancelled) {
+                                        self.status(getText("KDM002_23"));
+                                    }
                                     $('#BTN_CLOSE').focus();
                                 }
                                 else {
@@ -197,7 +202,7 @@ module nts.uk.at.view.kdm002.b {
                                     $('#BTN_ERROR_EXPORT').focus();
                                 }
                                 self.isStop(true);
-                                if (res.succeeded && self.excelContent()) {
+                                if (res.succeeded && self.excelContent().length > 0) {
                                     self.startExportExcel(true);
 //                                    $('#BTN_CLOSE').focus();
                                 }
