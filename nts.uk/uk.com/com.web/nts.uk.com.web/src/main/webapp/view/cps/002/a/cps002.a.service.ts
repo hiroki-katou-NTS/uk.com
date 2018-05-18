@@ -9,7 +9,7 @@ module cps002.a.service {
             getEmployeeCode: 'employee/mngdata/getGenerateEmplCode',
             getCardNumber: 'employee/mngdata/getGenerateCardNo',
             getStamCardEditing: 'record/stamp/stampcardedit/find',
-            getLayout: 'person/newlayout/get-layout-can-null',
+            getLayout: 'person/newlayout/check-new-layout',
             getAllInitValueSetting: 'person/info/setting/init/findAllHasChild',
             getSelfRoleAuth: 'roles/auth/get-self-auth',
             getUserSetting: 'usersetting/getUserSetting',
