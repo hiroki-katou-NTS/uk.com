@@ -18,6 +18,7 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 	private final String QUERY = "SELECT ps FROM KrcmtPayoutSubOfHDMana ps ";
 	
 	private final String QUERY_BY_PAYOUTID = String.join(" ",QUERY, " WHERE ps.krcmtPayoutSubOfHDManaPK.payoutId =:payoutId");
+	private final String QUERY_BY_SUBID = String.join(" ",QUERY, " WHERE ps.krcmtPayoutSubOfHDManaPK.subOfHDID =:subOfHDID");
 	
 	@Override
 	public void add(PayoutSubofHDManagement domain) {
@@ -64,7 +65,15 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 
 	@Override
 	public List<PayoutSubofHDManagement> getByPayoutId(String payoutId) {
-		List<KrcmtPayoutSubOfHDMana> listpayoutSub = this.queryProxy().query(QUERY_BY_PAYOUTID,KrcmtPayoutSubOfHDMana.class).getList();
+		List<KrcmtPayoutSubOfHDMana> listpayoutSub = this.queryProxy().query(QUERY_BY_PAYOUTID,KrcmtPayoutSubOfHDMana.class)
+				.setParameter("payoutId", payoutId).getList();
+		return listpayoutSub.stream().map(item->toDomain(item)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<PayoutSubofHDManagement> getBySubId(String subID) {
+		List<KrcmtPayoutSubOfHDMana> listpayoutSub = this.queryProxy().query(QUERY_BY_PAYOUTID,KrcmtPayoutSubOfHDMana.class)
+				.setParameter("subOfHDID", subID).getList();
 		return listpayoutSub.stream().map(item->toDomain(item)).collect(Collectors.toList());
 	}
 

@@ -58,14 +58,14 @@ public class SubstitutionOfHDManaDataService {
 	/**
 	 * KDM001 screen H
 	 */
-	//Q&&A
+	// Q&&A
 	public boolean checkCompensatoryDate() {
 		return false;
 	}
 
 	public boolean checkExpirationDate(GeneralDate expirationDate) {
 		boolean checkExpirationDate = false;
-		if(checkCompensatoryDate()){
+		if (checkCompensatoryDate()) {
 			GeneralDate today = GeneralDate.today();
 			if (today.compareTo(expirationDate) > 0) {
 				throw new BusinessException("Mg_825");
