@@ -310,7 +310,7 @@ module cps002.a.vm {
 
             let self = this;
             self.currentEmployee().clearData();
-            
+
             service.getStamCardEdit().done(data => {
                 self.stampCardEditing = new StampCardEditing(data.method, data.digitsNumber);
                 self.subContraint(false);
@@ -431,6 +431,9 @@ module cps002.a.vm {
                             break;
                         case "Msg_757":
                             $('#loginId').ntsError('set', { messageId: messageId });
+                            break;
+                        case "Msg_346":
+                            $('#cardNumber').ntsError('set', { messageId: messageId });
                             break;
                     }
 
