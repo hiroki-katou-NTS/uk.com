@@ -26,7 +26,7 @@ public class KwkdtStampCard extends UkJpaEntity implements Serializable {
 	@Column(name = "SID")
 	public String sid;
 	
-	@Column(name = "CARD_NO")
+	@Column(name = "CARD_NUMBER")
 	public String cardNo;
 
 	@Column(name = "REGISTER_DATE")
