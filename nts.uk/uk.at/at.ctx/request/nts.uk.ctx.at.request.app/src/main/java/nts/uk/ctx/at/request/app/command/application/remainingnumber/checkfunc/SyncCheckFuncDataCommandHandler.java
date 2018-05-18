@@ -208,26 +208,12 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				}
 				
 			}
-			// Excel出力情報ListをもとにExcel出力をする (Xuất ra file excel)
-			//exportCsv(excelInforList);
 			
 			if (asyncTask.hasBeenRequestedToCancel()) {
 				asyncTask.finishedAsCancelled();
 				return;
 			}
-			/*
-			final ByteArrayOutputStream out = new ByteArrayOutputStream();
-		    final ObjectMapper mapper = new ObjectMapper();
 
-		    try {
-				mapper.writeValue(out, excelInforList);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-		    final byte[] data = out.toByteArray();
-			setter.setData("EXCEL_LIST", new String(data));
-			*/
 		}
 		//delay a moment.
 		try {

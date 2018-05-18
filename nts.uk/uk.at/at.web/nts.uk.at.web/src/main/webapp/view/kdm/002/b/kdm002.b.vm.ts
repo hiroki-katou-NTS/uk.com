@@ -241,6 +241,7 @@ module nts.uk.at.view.kdm002.b {
                 });
             }
             
+            // Excel出力情報ListをもとにExcel出力をする (Xuất ra file excel)
             excelExport() {
                 let self = this;
                 nts.uk.ui.block.invisible();
