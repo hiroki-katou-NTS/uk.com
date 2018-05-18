@@ -67,7 +67,7 @@ public class OptionalItemPolicyImpl implements OptionalItemPolicy {
 	 * @return true, if is formula setting valid
 	 */
 	private boolean isFormulaSettingValid(Formula formula, List<Formula> formulas) {
-		FormulaSetting formulaSetting = formula.getCalcFormulaSetting().getFormulaSetting();
+		FormulaSetting formulaSetting = formula.getCalcFormulaSetting().getFormulaSetting().get();
 
 		if (formula.getCalcAtr().equals(CalculationAtr.FORMULA_SETTING) && formulaSetting.isBothItemSelect()
 				&& formulaSetting.isOperatorAddOrSub()) {

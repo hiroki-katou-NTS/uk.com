@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.command.optitem.calculation;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
@@ -150,8 +152,8 @@ public class FormulaDto implements FormulaGetMemento, FormulaDispOrderGetMemento
 	 * getMonthlyRounding()
 	 */
 	@Override
-	public Rounding getMonthlyRounding() {
-		return new Rounding(this.monthlyRounding);
+	public Optional<Rounding> getMonthlyRounding() {
+		return Optional.of(new Rounding(this.monthlyRounding));
 	}
 
 	/*
@@ -161,8 +163,8 @@ public class FormulaDto implements FormulaGetMemento, FormulaDispOrderGetMemento
 	 * getDailyRounding()
 	 */
 	@Override
-	public Rounding getDailyRounding() {
-		return new Rounding(this.dailyRounding);
+	public Optional<Rounding> getDailyRounding() {
+		return Optional.of(new Rounding(this.dailyRounding));
 	}
 
 	/*
