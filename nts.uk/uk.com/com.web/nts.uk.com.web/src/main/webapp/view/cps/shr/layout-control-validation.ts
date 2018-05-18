@@ -1569,8 +1569,8 @@ module nts.layout {
             let self = this,
                 finder: IFinder = self.finder,
                 ctrls: Array<IFindData> = finder.finds("CS00069", undefined),
-                empId = ko.toJS(__viewContext.viewModel.employee.employeeId),
-                is_self = __viewContext.user.employeeId == empId;
+                empId = ko.toJS((((__viewContext || {}) .viewModel || {}).employee || {}).employeeId),
+                is_self =  empId && ((_viewContext || {}).user||{}).employeeId == empId;
 
             if (!!ctrls) {
                 let categoryId = ((ctrls[0] || <any>{}).data || <any>{}).categoryId;
