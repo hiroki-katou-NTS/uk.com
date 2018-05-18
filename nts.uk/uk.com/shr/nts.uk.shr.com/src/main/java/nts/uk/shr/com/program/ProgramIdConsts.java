@@ -326,6 +326,8 @@ public class ProgramIdConsts {
 	public static final String KMK007D = "KMK007D";
 
 	public static final String CAS001A = "CAS001A";
+	
+	public static final String CAS003A = "CAS003A";
 
 	public static final String CAS001C = "CAS001C";
 

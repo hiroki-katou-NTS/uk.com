@@ -75,7 +75,6 @@ module nts.uk.ui.koExtentions {
         } else {
             nts.uk.deferred.repeat(conf => conf
                 .task(() =>  {
-                    console.log("loop");
                     let def = $.Deferred();
                     self = nts.uk.ui.windows.getSelf();
                     if(!nts.uk.util.isNullOrUndefined(self)){
@@ -107,6 +106,7 @@ module nts.uk.ui.koExtentions {
             var modal: boolean = ko.unwrap(option.modal);
             var show: boolean = ko.unwrap(option.show);
             var buttons: any = ko.unwrap(option.buttons);
+            var displayrows: number = ko.unwrap(option.displayrows);
             
             getCurrentWindow().done(function(self){
                 var id = 'ntsErrorDialog_' + self.id;
@@ -122,6 +122,7 @@ module nts.uk.ui.koExtentions {
                         click: function() { button.click(bindingContext.$data, $dialog) }
                     });
                 }
+                $dialog.data("winid", self.id);
                 // Calculate width
                 var dialogWidth: number = 40 + 35 + 17;
                 headers.forEach(function(header, index) {
@@ -134,7 +135,6 @@ module nts.uk.ui.koExtentions {
     
                     }
                 });
-                let first = true;
                 // Create dialog
                 $dialog.dialog({
                     title: title,
@@ -150,19 +150,37 @@ module nts.uk.ui.koExtentions {
                         $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
                         $('.ui-widget-overlay').last().css('z-index', nts.uk.ui.dialog.getMaxZIndex());
                         
-                        if(first){
+                        let offsetDraged = $dialog.data("stopdrop"); 
+                        if(nts.uk.util.isNullOrUndefined(offsetDraged)){
                             $dialog.ntsDialogEx("centerUp", self);    
-                        } 
+                        } else {
+                            $dialog.closest(".ui-dialog").offset(offsetDraged);    
+                        }
                         
-                        first = false;
                     },
                     close: function(event) {
                         bindingContext.$data.option().show(false);
                     }
                 }).dialogPositionControl();
                 
+                $dialog.on("dialogopen", function() {
+                    var maxrowsHeight = 0;
+                    var index = 0;
+                    $(this).find("table tbody tr").each(function() {
+                        if (index < displayrows) {
+                            index++;
+                            maxrowsHeight += $(this).height();
+                        }
+                    });
+                    maxrowsHeight = maxrowsHeight + 33 + 20 + 20 + 55 +4 + $(this).find("table thead").height();
+                    if (maxrowsHeight > $dialog.dialog("option", "maxHeight")) {
+                        maxrowsHeight = $dialog.dialog("option", "maxHeight");
+                    }
+                    $dialog.dialog("option", "height", maxrowsHeight);
+                });
+                
                 PS.$("body").bind("dialogclosed", function(evt, eData){
-                    if($dialog.attr("id") === eData.dialogId){
+                    if($dialog.data("winid") === eData.dialogId){
                         $dialog.dialog("close");
                         $dialog.remove();
                     }
@@ -184,7 +202,6 @@ module nts.uk.ui.koExtentions {
             //var maxrows: number = ko.unwrap(option.maxrows);
             var autoclose: boolean = ko.unwrap(option.autoclose);
             var show: boolean = ko.unwrap(option.show);
-			
             getCurrentWindow().done(function(self){
                 var id = 'ntsErrorDialog_' + self.id;
                 var $dialog;
@@ -193,8 +210,8 @@ module nts.uk.ui.koExtentions {
                 } else {
                     while (!nts.uk.util.isNullOrUndefined(self)) {
                         if (self.isRoot) {
+                            $dialog = $(self.globalContext.document.getElementById(id));
                             self = null;
-                            $dialog = $((nts.uk.ui.windows.getSelf().parent.globalContext.document).getElementById(id));
                         } else {
                             self = self.parent;
                         }
@@ -278,21 +295,6 @@ module nts.uk.ui.koExtentions {
                     $dialog.append($errorboard).append($message);
     
     //                $dialog.on("dialogresizestop dialogopen", function() {
-                    $dialog.on("dialogopen", function() {
-                        var maxrowsHeight = 0;
-                        var index = 0;
-                        $(this).find("table tbody tr").each(function() {
-                            if (index < displayrows) {
-                                index++;
-                                maxrowsHeight += $(this).height();
-                            }
-                        });
-                        maxrowsHeight = maxrowsHeight + 33 + 20 + 20 + 55 +4 + $(this).find("table thead").height();
-                        if (maxrowsHeight > $dialog.dialog("option", "maxHeight")) {
-                            maxrowsHeight = $dialog.dialog("option", "maxHeight");
-                        }
-                        $dialog.dialog("option", "height", maxrowsHeight);
-                    });
                     
     //                if($dialog.dialog("isOpen")){
                         $dialog.dialog("open");    

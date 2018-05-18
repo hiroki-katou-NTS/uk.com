@@ -199,9 +199,11 @@ public class AddWorkingConditionCommandAssembler {
 						command.getVacationAddedTimeAtr() != null ? command.getVacationAddedTimeAtr().intValue() : NotUseAtr.NOTUSE.value,
 						NotUseAtr.class),
 				// Default vaule is 0
-				command.getContractTime() != null ? new LaborContractTime(command.getContractTime().intValue()) : new LaborContractTime(0),
-						command.getLaborSystem() != null ? EnumAdaptor.valueOf(command.getLaborSystem().intValue(),
-						WorkingSystem.class) : null,
+				command.getContractTime() != null ? new LaborContractTime(command.getContractTime().intValue())
+						: new LaborContractTime(0),
+				command.getLaborSystem() != null
+						? EnumAdaptor.valueOf(command.getLaborSystem().intValue(), WorkingSystem.class)
+						: WorkingSystem.REGULAR_WORK,
 				// HourlyPaymentAtr default value is 時給者以外
 				holidayAddTimeSet, scheduleMethod, command.getHourlyPaymentAtr() != null? command.getHourlyPaymentAtr().intValue() : HourlyPaymentAtr.OOUTSIDE_TIME_PAY.value,
 				command.getTimeApply() != null ? new BonusPaySettingCode(command.getTimeApply()) : null,

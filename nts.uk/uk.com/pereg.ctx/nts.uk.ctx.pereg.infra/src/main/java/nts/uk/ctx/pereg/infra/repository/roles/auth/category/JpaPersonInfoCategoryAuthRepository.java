@@ -175,6 +175,15 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 				.setParameter("roleId", roleId).setParameter("categoryIdList", categoryIdList).getList().stream()
 				.collect(Collectors.toMap(c -> c.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId, c -> toDomain(c)));
 	}
+	
+	@Override
+	public Map<String, PersonInfoCategoryAuth> getByRoleId(String roleId) {
+
+		return this.queryProxy().query(SEL_CATEGORY_BY_ROLEID, PpemtPersonCategoryAuth.class)
+				.setParameter("roleId", roleId).getList().stream()
+				.map(ent -> toDomain(ent))
+				.collect(Collectors.toMap(c -> c.getPersonInfoCategoryAuthId(), c -> c));
+	}
 
 	@Override
 	public List<PersonInfoCategoryDetail> getAllCategory(String roleId, String contractCd, String companyId) {

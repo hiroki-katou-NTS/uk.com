@@ -31,6 +31,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDto;
 @Stateless
 public class InitValueSetItemFinder {
 
+
 	@Inject
 	private PerInfoInitValueSetItemRepository settingItemRepo;
 
@@ -193,7 +194,7 @@ public class InitValueSetItemFinder {
 	}
 
 	private boolean setSystemCtgData(List<PerInfoInitValueSetItemDetail> itemList, List<SettingItemDto> result) {
-		PeregQuery query = new PeregQuery(categoryCd, employeeId, null, baseDate);
+		PeregQuery query = PeregQuery.createQueryLayout(categoryCd, employeeId, null, baseDate);
 
 		PeregDto dto = this.layoutProc.findSingle(query);
 

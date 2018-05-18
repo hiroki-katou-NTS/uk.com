@@ -78,12 +78,15 @@
 						<div style="float: left;">
 							<h3>Multi Selection</h3>
 							<div>
+								<div style="width: 390px" data-bind="ntsSearchBox: {label: '検索', targetKey: 'code', mode:'igTree', comId:'treegrid', items: items1, selected: selectedCodes2, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />
 								<div style="display: inline-block;">
 									<table id="treegrid"
 										data-bind="ntsTreeGridView:{
 										width: 1000, 
 										height: 250,
 										options: items1,
+										virtualization: true, 
+										virtualizationMode: 'continuous',
 										selectedValues: selectedCode,
 										optionsValue: 'code',
 										optionsChild: 'childs',

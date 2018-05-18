@@ -27,8 +27,7 @@ public class AffiliationInfoOfMonthlyFinder extends MonthlyFinderFacade {
 	@SuppressWarnings("unchecked")
 	public AffiliationInfoOfMonthlyDto find(String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate) {
-		return AffiliationInfoOfMonthlyDto
-				.from(this.repo.find(employeeId, yearMonth, closureId, closureDate).orElse(null));
+		return AffiliationInfoOfMonthlyDto.from(this.repo.find(employeeId, yearMonth, closureId, closureDate).orElse(null));
 	}
 
 	@Override

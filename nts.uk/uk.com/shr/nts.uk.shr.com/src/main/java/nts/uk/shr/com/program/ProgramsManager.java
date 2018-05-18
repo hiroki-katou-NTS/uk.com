@@ -895,6 +895,13 @@ public class ProgramsManager {
 	 */
 	public static final Program CAS001A = new Program(WebAppId.COM, ProgramIdConsts.CAS001A, "CAS001_1",
 			"/view/cas/001/a/index.xhtml");
+	
+	/**
+	 * CAS003A
+	 */
+	public static final Program CAS003A = new Program(WebAppId.COM, ProgramIdConsts.CAS003A, "CAS003_1",
+			"/view/cas/003/a/index.xhtml");
+	
 
 	/**
 	 * CAS001C

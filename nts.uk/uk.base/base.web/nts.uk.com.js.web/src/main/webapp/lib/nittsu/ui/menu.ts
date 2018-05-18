@@ -28,7 +28,8 @@ module nts.uk.ui.menu {
         $menuItems.append($("<li class='menu-item'/>").text("メニュー選択"));
         $menuItems.append($("<hr/>").css({ margin: "5px 0px" }));
         _.forEach(menuSet, function(item, i) {
-            $menuItems.append($("<li class='menu-item'/>").data("code", item.webMenuCode)
+            $menuItems.append($("<li class='menu-item'/>")
+                .data("code", item.companyId + ":" + item.webMenuCode)
                 .text(item.webMenuName).on(constants.CLICK, function() {
                     uk.localStorage.setItem(constants.MENU, $(this).data("code"));
                     $menuNav.find(".category:eq(0)").off();
@@ -57,8 +58,9 @@ module nts.uk.ui.menu {
             createMenuSelect($menuNav, menuSet);
             let menuCode = uk.localStorage.getItem(constants.MENU);
             if (menuCode.isPresent()) {
+                let parts = menuCode.get().split(":");
                 let selectedMenu = _.find(menuSet, function(m) {
-                    return m.webMenuCode === menuCode.get();
+                    return m.companyId === parts[0] && m.webMenuCode === parts[1];
                 });
                 
                 !util.isNullOrUndefined(selectedMenu) ? generate($menuNav, selectedMenu)
