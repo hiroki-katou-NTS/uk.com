@@ -161,10 +161,15 @@ public class SprWebService {
 		
 		val paramStringValue = new StringBuilder();
 		paramsValue.forEach((name,value)->{
-			paramStringValue.append(name+":'"+value+"',");
+			if(value==null){
+				paramStringValue.append(name+":'',");
+			} else {
+				paramStringValue.append(name+":'"+value+"',");
+			}
 		});
 		
 		html.append("<script>");
+		html.append("debugger;");
 		html.append("window.sessionStorage.setItem(\"paramSPR\", JSON.stringify({"+paramStringValue+"}));");
 		html.append("window.location.href = '../../../../view/spr/index.xhtml'");
 		html.append("</script>");
