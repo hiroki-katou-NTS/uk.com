@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
+import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
@@ -71,7 +72,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 			return;
 		}
 		// アルゴリズム「社員ID、期間をもとに期間内に年休付与日がある社員を抽出する」を実行する
-		// TODO RequestList 要求No304. 
+		// RequestList 要求No304. 
 		List<String> employeeList = employeeSearchCommand.stream().map(f -> f.getEmployeeId())
 				.collect(Collectors.toList());
 		if (asyncTask.hasBeenRequestedToCancel()) {
@@ -85,14 +86,15 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 			return;
 		}
 		// パラメータ.社員Listと取得した年休付与がある社員ID(List)を比較する
-		checkEmployeeListId(employeeSearchCommand, employeeIdRq304, employeeListResult, outputErrorInfoCommand);
+		checkEmployeeListId(asyncTask, employeeSearchCommand, employeeIdRq304, employeeListResult, outputErrorInfoCommand);
 		if (asyncTask.hasBeenRequestedToCancel()) {
+			asyncTask.finishedAsCancelled();
 			return;
 		}
 		List<PlannedVacationListCommand> plannedVacationList = new ArrayList<>();
 		if (outputErrorInfoCommand.isEmpty()) {
 			// 計画休暇一覧を取得する
-			plannedVacationList = getPlannedVacationList(command.getDate(),
+			plannedVacationList = getPlannedVacationList(asyncTask, command.getDate(),
 				outputErrorInfoCommand);
 		}
 		
@@ -119,7 +121,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 		} else {
 			// エラーがなかった場合
 
-			// TODO アルゴリズム「Excel出力データ取得」を実行する
+			// アルゴリズム「Excel出力データ取得」を実行する
 			List<ExcelInforCommand> excelInforList = new ArrayList<>();
 			for (int i = 0; i < employeeSearchCommand.size(); i++) {
 				if (asyncTask.hasBeenRequestedToCancel()) {
@@ -168,7 +170,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 					break;
 				}
 				// 取得成功
-				// TODO RequestList 要求No328
+				// RequestList 要求No328
 				List<String> workTypeCode = plannedVacationList.stream().map(x -> x.getWorkTypeCode()).collect(Collectors.toList());
 				Optional<DailyWorkTypeListImport> dailyWorkTypeListImport = this.annualBreakManageAdapter.getDailyWorkTypeUsed(employeeSearchCommand.get(i).getEmployeeId(), workTypeCode, command.getStartTime(), command.getEndTime());
 				if(!dailyWorkTypeListImport.isPresent()){
@@ -229,16 +231,23 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 	 * @param maxDay
 	 * @return
 	 */
-	private List<PlannedVacationListCommand> getPlannedVacationList(GeneralDate confirmDate,
+	private List<PlannedVacationListCommand> getPlannedVacationList(AsyncCommandHandlerContext<CheckFuncDataCommand> asyncTask, GeneralDate confirmDate,
 			List<OutputErrorInfoCommand> outputErrorInfoCommand) {
 		List<PlannedVacationListCommand> plannedVacationListCommand = new ArrayList<>();
 		LoginUserContext loginUserContext = AppContexts.user();
 		String companyId = AppContexts.user().companyId();
-
+		if (asyncTask.hasBeenRequestedToCancel()) {
+			asyncTask.finishedAsCancelled();
+			return plannedVacationListCommand;
+		}
 		// ドメインモデル「計画休暇のルールの履歴」を取得する (Lấy domain 「計画休暇のルールの履歴」)
 		List<PlanVacationHistory> planVacationHistory = vacationHistoryRepository.findHistoryByBaseDate(companyId, confirmDate);
 				//iVactionHistoryRulesService
 				//.getPlanVacationHistoryByDate(companyId, date);
+		if (asyncTask.hasBeenRequestedToCancel()) {
+			asyncTask.finishedAsCancelled();
+			return plannedVacationListCommand;
+		}
 		if (planVacationHistory.isEmpty()) {
 			// 出力エラー情報に追加する
 			OutputErrorInfoCommand outputErrorInfo = new OutputErrorInfoCommand();
@@ -250,9 +259,17 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 			return plannedVacationListCommand;
 		}
 		for (PlanVacationHistory element : planVacationHistory) {
+			if (asyncTask.hasBeenRequestedToCancel()) {
+				asyncTask.finishedAsCancelled();
+				return plannedVacationListCommand;
+			}
 			// ドメインモデル「計画休暇を取得できる上限日数」を取得する (Lấy domain 「計画休暇を取得できる上限日数」)
 			List<PlanVacationHistory> planVacationHistoryMaxDay = vacationHistoryRepository.findHistory(companyId, element.identifier());
 			// ドメインモデル「勤務種類」を取得する (lấy domain 「勤務種類」)
+			if (asyncTask.hasBeenRequestedToCancel()) {
+				asyncTask.finishedAsCancelled();
+				return plannedVacationListCommand;
+			}
 			Optional<WorkType> workType = workTypeRepository.findByDeprecated(loginUserContext.companyId(), element.getWorkTypeCode());
 			if (workType.isPresent()) {
 				PlannedVacationListCommand plannedVacation = new PlannedVacationListCommand();
@@ -273,10 +290,14 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 	 * @param outputErrorInfoCommand
 	 * @param employeeSearchCommand
 	 */
-	private void checkEmployeeListId(List<EmployeeSearchCommand> employeeSearchCommand, List<AnnualBreakManageImport> employeeIdRq304,
+	private void checkEmployeeListId(AsyncCommandHandlerContext<CheckFuncDataCommand> asyncTask, List<EmployeeSearchCommand> employeeSearchCommand, List<AnnualBreakManageImport> employeeIdRq304,
 			List<EmployeeSearchCommand> employeeListResult, List<OutputErrorInfoCommand> outputErrorInfoCommand
 			) {
 		for (EmployeeSearchCommand employee : employeeSearchCommand) {
+			if (asyncTask.hasBeenRequestedToCancel()) {
+				asyncTask.finishedAsCancelled();
+				return;
+			}
 			Optional<AnnualBreakManageImport> findEmployeeById = employeeIdRq304.stream()
 					.filter(x -> employee.getEmployeeId().equals(x.getEmployeeId())).findFirst();
 			if (findEmployeeById.isPresent()) {
