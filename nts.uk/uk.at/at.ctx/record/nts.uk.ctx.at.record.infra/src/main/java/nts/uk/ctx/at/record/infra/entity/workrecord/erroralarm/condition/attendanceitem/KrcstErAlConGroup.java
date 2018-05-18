@@ -6,6 +6,7 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attend
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -23,7 +24,12 @@ import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlConditionsAttendanceItem;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtErAlCondition;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycheckcondition.KrcmtExtraResultMonthly;
 //import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycheckcondition.KrcmtExtraResultMonthly;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycondition.KrcmtTimeChkMonthly;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -40,39 +46,52 @@ public class KrcstErAlConGroup extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@Id
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 36)
-    @Column(name = "CONDITION_GROUP_ID")
-    public String conditionGroupId;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "CONDITION_OPERATOR")
-    public BigDecimal conditionOperator;
-    
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
+	@Basic(optional = false)
+	@NotNull
+	@Size(min = 1, max = 36)
+	@Column(name = "CONDITION_GROUP_ID")
+	public String conditionGroupId;
+	@Basic(optional = false)
+	@NotNull
+	@Column(name = "CONDITION_OPERATOR")
+	public BigDecimal conditionOperator;
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "CONDITION_GROUP_ID", nullable = true) })
 	public List<KrcmtErAlAtdItemCon> lstAtdItemCon;
-	
-    @OneToOne(mappedBy="krcstErAlConGroup1")
+
+	@OneToOne(mappedBy = "krcstErAlConGroup1")
 	public KrcmtErAlCondition krcmtErAlCondition;
-    
-    @OneToOne(mappedBy="krcstErAlConGroup1")
+
+	@OneToOne(mappedBy = "krcstErAlConGroup1")
 	public KrcmtTimeChkMonthly krcmtTimeChkMonthly;
-//    
-//    @OneToOne(mappedBy="krcstErAlConGroup1")
-//	public KrcmtExtraResultMonthly krcmtExtraResultMonthly;
-    
+
+	@OneToOne(mappedBy = "krcstErAlConGroup1")
+	public KrcmtExtraResultMonthly krcmtExtraResultMonthly;
+
 	@Override
 	protected Object getKey() {
 		return this.conditionGroupId;
 	}
 
-	public KrcstErAlConGroup(String conditionGroupId, BigDecimal conditionOperator,
-			List<KrcmtErAlAtdItemCon> lstAtdItemCon) {
+	public KrcstErAlConGroup(String conditionGroupId, BigDecimal conditionOperator, List<KrcmtErAlAtdItemCon> lstAtdItemCon) {
 		super();
 		this.conditionGroupId = conditionGroupId;
 		this.conditionOperator = conditionOperator;
 		this.lstAtdItemCon = lstAtdItemCon;
+	}
+
+	public static KrcstErAlConGroup toEntity(ErAlConditionsAttendanceItem domain) {
+		return new KrcstErAlConGroup(domain.getAtdItemConGroupId(), new BigDecimal(domain.getConditionOperator().value),
+				domain.getLstErAlAtdItemCon().stream().map(item -> KrcmtErAlAtdItemCon.toEntity(domain.getAtdItemConGroupId(), item)).collect(Collectors.toList()));
+	}
+	
+	public ErAlConditionsAttendanceItem toDomain(String companyId,String errorAlarmCode) {
+		return new ErAlConditionsAttendanceItem(
+				this.conditionGroupId,
+				EnumAdaptor.valueOf(this.conditionOperator.intValue(), LogicalOperator.class),
+				this.lstAtdItemCon.stream().map(c->c.toDomain(c, companyId, errorAlarmCode)).collect(Collectors.toList())
+				);
+		
 	}
 }

@@ -14,8 +14,8 @@ public class HowDisplayMessage extends DomainObject {
 	/**メッセージを太字にする*/
 	private boolean messageBold;
 	/**メッセージ色*/
-	private Optional<Integer> messageColor;
-	public HowDisplayMessage(boolean messageBold, Integer messageColor) {
+	private Optional<String> messageColor;
+	public HowDisplayMessage(boolean messageBold, String messageColor) {
 		super();
 		this.messageBold = messageBold;
 		this.messageColor = Optional.ofNullable(messageColor);
