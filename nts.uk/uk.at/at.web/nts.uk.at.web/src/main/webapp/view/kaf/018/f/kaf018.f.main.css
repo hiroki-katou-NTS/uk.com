@@ -55,3 +55,7 @@
 .bg-actual-excluded {
 	background-color: #a9a9a9 !important;
 }
+
+.legend-item .legend-item-symbol{
+	border: solid 1px gray;	
+}
