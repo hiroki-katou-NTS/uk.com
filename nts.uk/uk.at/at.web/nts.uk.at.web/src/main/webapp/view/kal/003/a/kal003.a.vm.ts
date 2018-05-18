@@ -161,6 +161,11 @@ module nts.uk.at.view.kal003.a.viewmodel {
 
             }
 
+            if (self.selectedCategory() == model.CATEGORY._36_AGREEMENT) {
+                self.tabAgreementHour.listAgreementHour([]);
+                self.tabAgreementError.listAgreementError([]);
+            }
+
             self.screenMode(model.SCREEN_MODE.NEW);
             if (self.afterDelete()) {
                 self.afterDelete(false);
