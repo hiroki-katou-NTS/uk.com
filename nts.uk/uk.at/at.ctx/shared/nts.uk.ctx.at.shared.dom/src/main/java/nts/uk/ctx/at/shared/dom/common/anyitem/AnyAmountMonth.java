@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.monthly.anyitem;
+package nts.uk.ctx.at.shared.dom.common.anyitem;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;

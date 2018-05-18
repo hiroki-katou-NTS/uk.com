@@ -290,21 +290,18 @@ public class WebMenuFinder {
 	 * Get program string.
 	 * @return program string
 	 */
-	public String getProgram() {
+	public List<ProgramNameDto> getProgram() {
 		String companyId = AppContexts.user().companyId();
 		String pgId = RequestContextProvider.get().get(AppContextsConfig.KEY_PROGRAM_ID);
-		if (pgId == null) return "";
+		if (pgId == null) return new ArrayList<>();
 		String programId = pgId, screenId = null;
 		if (pgId.length() > 6) {
 			 programId = pgId.substring(0, 6);
 			 screenId = pgId.substring(6);
 		}
-		Optional<StandardMenu> menuOpt = standardMenuRepository.getProgram(companyId, programId, screenId);
-		if (menuOpt.isPresent()) {
-			StandardMenu menu = menuOpt.get(); 
-			return pgId + " " + menu.getDisplayName().v();
-		}
-		return "";
+		return standardMenuRepository.getProgram(companyId, programId, screenId).stream()
+				.map(m -> new ProgramNameDto(m.getQueryString(), pgId + " " + m.getDisplayName()))
+				.collect(Collectors.toList());
 	}
 	
 	

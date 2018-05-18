@@ -330,13 +330,13 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e FROM KrcdtSyainDpErList e ");
-		builderString.append("WHERE e.processingDate IN :lstDate ");
+		builderString.append("WHERE ( e.processingDate BETWEEN :startDate AND :endDate ) ");
 		builderString.append("AND e.employeeId IN :lstEmployee");
 		SEL_DP_ERROR_EMPLOYEE = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e FROM KrcdtSyainDpErList e ");
-		builderString.append("WHERE e.processingDate IN :lstDate ");
+		builderString.append("WHERE ( e.processingDate BETWEEN :startDate AND :endDate ) ");
 		builderString.append("AND e.employeeId IN :lstEmployee ");
 		builderString.append("AND e.errorCode IN :errorCodes");
 		SEL_DP_ERROR_EMPLOYEE_CONDITION_ERRORS = builderString.toString();
@@ -772,7 +772,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		List<DPErrorDto> listDPError = new ArrayList<>();
 		CollectionUtil.split(lstEmployee, 1000, subList -> {
 			listDPError.addAll(this.queryProxy().query(SEL_DP_ERROR_EMPLOYEE, KrcdtSyainDpErList.class)
-					.setParameter("lstDate", dateRange.toListDate()).setParameter("lstEmployee", subList).getList()
+					.setParameter("startDate", dateRange.getStartDate()).setParameter("endDate", dateRange.getEndDate()).setParameter("lstEmployee", subList).getList()
 					.stream().map(e -> {
 						return new DPErrorDto(e.errorCode, "", e.employeeId, e.processingDate,
 								!e.erAttendanceItem.isEmpty() ? e.erAttendanceItem.stream()
@@ -789,7 +789,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		List<DPErrorDto> dpErrors = new ArrayList<>();
 		CollectionUtil.split(lstEmployee, 1000, subList -> {
 			dpErrors.addAll(this.queryProxy().query(SEL_DP_ERROR_EMPLOYEE_CONDITION_ERRORS, KrcdtSyainDpErList.class)
-					.setParameter("lstDate", dateRange.toListDate()).setParameter("lstEmployee", subList)
+					.setParameter("startDate", dateRange.getStartDate()).setParameter("endDate", dateRange.getEndDate()).setParameter("lstEmployee", subList)
 					.setParameter("errorCodes", errorCodes).getList().stream().map(e -> {
 						return new DPErrorDto(e.errorCode, "", e.employeeId, e.processingDate,
 								!e.erAttendanceItem.isEmpty() ? e.erAttendanceItem.stream()

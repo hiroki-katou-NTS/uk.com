@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.find.monthly.root.dto;
+package nts.uk.ctx.at.record.app.find.monthly.root.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

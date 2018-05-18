@@ -1,8 +1,13 @@
 package nts.uk.ctx.at.record.dom.monthly.anyitem;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth;
+import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
+import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
@@ -25,11 +30,11 @@ public class AnyItemOfMonthly extends AggregateRoot {
 	private final int anyItemId;
 	
 	/** 時間 */
-	private AnyTimeMonth time;
+	private Optional<AnyTimeMonth> time;
 	/** 回数 */
-	private AnyTimesMonth times;
+	private Optional<AnyTimesMonth> times;
 	/** 金額 */
-	private AnyAmountMonth amount;
+	private Optional<AnyAmountMonth> amount;
 	
 	/**
 	 * コンストラクタ
@@ -48,9 +53,9 @@ public class AnyItemOfMonthly extends AggregateRoot {
 		this.closureId = closureId;
 		this.closureDate = closureDate;
 		this.anyItemId = anyItemId;
-		this.time = new AnyTimeMonth(0);
-		this.times = new AnyTimesMonth(0.0);
-		this.amount = new AnyAmountMonth(0);
+		this.time = Optional.empty();
+		this.times = Optional.empty();
+		this.amount = Optional.empty();
 	}
 	
 	/**
@@ -71,9 +76,9 @@ public class AnyItemOfMonthly extends AggregateRoot {
 			ClosureId closureId,
 			ClosureDate closureDate,
 			int anyItemId,
-			AnyTimeMonth time,
-			AnyTimesMonth times,
-			AnyAmountMonth amount){
+			Optional<AnyTimeMonth> time,
+			Optional<AnyTimesMonth> times,
+			Optional<AnyAmountMonth> amount){
 		
 		AnyItemOfMonthly domain = new AnyItemOfMonthly(employeeId, yearMonth, closureId, closureDate, anyItemId);
 		domain.time = time;

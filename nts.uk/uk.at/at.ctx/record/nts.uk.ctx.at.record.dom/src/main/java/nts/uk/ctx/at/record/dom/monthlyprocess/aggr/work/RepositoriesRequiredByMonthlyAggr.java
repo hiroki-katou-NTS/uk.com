@@ -6,6 +6,7 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthlyRepository;
@@ -29,6 +30,9 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.attdstatus.GetAttendanceStatus;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.algorithm.GetTimeAndCountFromDailyRecord;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkRepository;
@@ -122,6 +126,8 @@ public interface RepositoriesRequiredByMonthlyAggr {
 	HolidayAddtionRepository getHolidayAddition();
 	/** 休暇加算設定を取得する */
 	GetVacationAddSet getVacationAddSet();
+	/** 回数集計 */
+	TotalTimesRepository getTotalTimes();
 
 	/** 週開始の取得 */
 	GetWeekStart getGetWeekStart();
@@ -138,8 +144,13 @@ public interface RepositoriesRequiredByMonthlyAggr {
 	
 	/** 月別実績の縦計方法の取得 */
 	//*****(未)　特定日の振り分け方法の設計待ち。
+	/** 出勤状態を取得する */
+	GetAttendanceStatus getAttendanceStatus();
 	/** 月別実績の給与項目カウントの取得 */
 	PayItemCountOfMonthlyRepository getPayItemCountOfMonthly();
 	/** 月別実績の丸め設定の取得 */
 	RoundingSetOfMonthlyRepository getRoundingSetOfMonthly();
+	
+	/** 日別実績から回数集計結果を取得する */
+	GetTimeAndCountFromDailyRecord getTimeAndCountFromDailyRecord();
 }

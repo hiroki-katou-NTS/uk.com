@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.entity.monthly.anyitem;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -10,10 +11,10 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyAmountMonth;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyTimeMonth;
-import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyTimesMonth;
+import nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth;
+import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
+import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -35,15 +36,15 @@ public class KrcdtMonAnyItemValue extends UkJpaEntity implements Serializable {
 	
 	/** 時間 */
 	@Column(name = "TIME_VALUE")
-	public int timeValue;
+	public Integer timeValue;
 	
 	/** 回数 */
 	@Column(name = "COUNT_VALUE")
-	public double countValue;
+	public Double countValue;
 	
 	/** 金額 */
 	@Column(name = "MONEY_VALUE")
-	public int moneyValue;
+	public Integer moneyValue;
 	
 	/**
 	 * キー取得
@@ -65,9 +66,9 @@ public class KrcdtMonAnyItemValue extends UkJpaEntity implements Serializable {
 				EnumAdaptor.valueOf(this.PK.closureId, ClosureId.class),
 				new ClosureDate(this.PK.closureDay, (this.PK.isLastDay == 1)),
 				this.PK.anyItemId,
-				new AnyTimeMonth(this.timeValue),
-				new AnyTimesMonth(this.countValue),
-				new AnyAmountMonth(this.moneyValue));
+				(this.timeValue == null ? Optional.empty() : Optional.of(new AnyTimeMonth(this.timeValue))),
+				(this.countValue == null ? Optional.empty() : Optional.of(new AnyTimesMonth(this.countValue))),
+				(this.moneyValue == null ? Optional.empty() : Optional.of(new AnyAmountMonth(this.moneyValue))));
 	}
 	
 	/**
@@ -92,8 +93,8 @@ public class KrcdtMonAnyItemValue extends UkJpaEntity implements Serializable {
 	 */
 	public void fromDomainForUpdate(AnyItemOfMonthly domain){
 
-		this.timeValue = domain.getTime().v();
-		this.countValue = domain.getTimes().v().doubleValue();
-		this.moneyValue = domain.getAmount().v();
+		this.timeValue = (domain.getTime().isPresent() ? domain.getTime().get().v() : null);
+		this.countValue = (domain.getTimes().isPresent() ? domain.getTimes().get().v().doubleValue() : null);
+		this.moneyValue = (domain.getAmount().isPresent() ? domain.getAmount().get().v() : null);
 	}
 }

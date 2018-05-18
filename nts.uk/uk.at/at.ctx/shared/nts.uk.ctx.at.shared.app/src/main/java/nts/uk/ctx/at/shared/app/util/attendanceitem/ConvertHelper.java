@@ -8,6 +8,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public class ConvertHelper {
 
@@ -25,5 +28,20 @@ public class ConvertHelper {
 			return null;
 		}
 		return EnumAdaptor.valueOf(value, enumClass);
+	}
+	
+	public static List<YearMonth> getYearMonthAvailableFrom(DatePeriod range){
+		List<YearMonth> result = new ArrayList<>();
+		GeneralDate start = range.start();
+		while (start.beforeOrEquals(range.end())) {
+			result.add(toYearMonth(start));
+			int currentDay = start.day();
+			start = start.addMonths(1).addDays(0 - currentDay + 1);
+		}
+		return result;
+	}
+
+	private static YearMonth toYearMonth(GeneralDate start) {
+		return YearMonth.of(start.year(), start.month());
 	}
 }
