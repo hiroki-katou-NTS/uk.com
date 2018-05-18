@@ -19352,6 +19352,8 @@ var nts;
                         var selectedValues = ko.unwrap(data.selectedValues);
                         var singleValue = ko.unwrap(data.value);
                         var rows = ko.unwrap(data.rows);
+                        var virtualization = ko.unwrap(!uk.util.isNullOrUndefined(data.virtualization) ? data.virtualization : false);
+                        var virtualizationMode = ko.unwrap(!uk.util.isNullOrUndefined(data.virtualizationMode) ? data.virtualizationMode : "");
                         // Default.
                         var showCheckBox = data.showCheckBox !== undefined ? ko.unwrap(data.showCheckBox) : true;
                         var enable = data.enable !== undefined ? ko.unwrap(data.enable) : true;
@@ -19441,6 +19443,8 @@ var nts;
                             initialExpandDepth: nts.uk.util.isNullOrUndefined(initialExpandDepth) ? 10 : initialExpandDepth,
                             tabIndex: -1,
                             features: features,
+                            virtualization: virtualization,
+                            virtualizationMode: virtualizationMode,
                             rowExpanded: function (evt, ui) {
                                 if (!$treegrid.data("autoExpanding")) {
                                     var holder = $treegrid.data("expand");
@@ -19821,6 +19825,14 @@ var nts;
                                 //                    $targetElement.igTreeGrid("option", "dataSource", source);
                                 //                    $targetElement.igTreeGrid("dataBind");
                                 //                    data.targetSource(source);
+                                var virtualization = $targetElement.igTreeGrid("option", "virtualization");
+                                if (virtualization) {
+                                    var selectedRow_1 = $targetElement.igTreeGrid("selectedRows")[0];
+                                    setTimeout(function () {
+                                        $targetElement.ntsTreeView("virtualScrollTo", selectedRow_1.id);
+                                    }, 0);
+                                    return;
+                                }
                                 var index = $targetElement.igTreeGrid("selectedRows")[0].index;
                                 if (index !== selected["index"]) {
                                     var scrollTo = _.sumBy(_.filter($target.igTreeGrid("allRows"), function (row) {
@@ -22303,6 +22315,7 @@ var nts;
                         feature_2.CELL_STATE = "CellState";
                         feature_2.ROW_STATE = "RowState";
                         feature_2.TEXT_COLOR = "TextColor";
+                        feature_2.TEXT_STYLE = "TextStyle";
                         feature_2.HEADER_STYLES = "HeaderStyles";
                         feature_2.HIDING = "Hiding";
                         feature_2.SHEET = "Sheet";
@@ -23883,6 +23896,7 @@ var nts;
                                         };
                                         cellFormatter.style($grid, cellElement);
                                         cellFormatter.setTextColor($grid, cellElement);
+                                        cellFormatter.setTextStyle($grid, cellElement);
                                     }
                                 }, 0);
                                 return $container.html();
@@ -25722,6 +25736,9 @@ var nts;
                                 // Text color
                                 this.textColorFeatureDef = feature.find(ntsFeatures, feature.TEXT_COLOR);
                                 this.setTextColorsTableMap(ntsFeatures);
+                                // Text style
+                                this.textStyleFeatureDef = feature.find(ntsFeatures, feature.TEXT_STYLE);
+                                this.setTextStylesTableMap();
                             }
                             /**
                              * Add disable rows.
@@ -25813,6 +25830,22 @@ var nts;
                                     _this.textColorsTable[key] = _.groupBy(_this.textColorsTable[key], function (item) {
                                         return item[columnKeyName];
                                     });
+                                });
+                            };
+                            /**
+                             * Set text styles.
+                             */
+                            CellFormatter.prototype.setTextStylesTableMap = function () {
+                                var _this = this;
+                                if (uk.util.isNullOrUndefined(this.textStyleFeatureDef))
+                                    return;
+                                var rowIdName = this.textStyleFeatureDef.rowId;
+                                var columnKeyName = this.textStyleFeatureDef.columnKey;
+                                var styleName = this.textStyleFeatureDef.style;
+                                var stylesTable = this.textStyleFeatureDef.styles;
+                                this.textStylesTable = _.groupBy(stylesTable, rowIdName);
+                                _.forEach(this.textStylesTable, function (value, key) {
+                                    _this.textStylesTable[key] = _.groupBy(_this.textStylesTable[key], columnKeyName);
                                 });
                             };
                             /**
@@ -26003,6 +26036,26 @@ var nts;
                                         return;
                                     }
                                     cell.$element.addClass(txtColor);
+                                }
+                            };
+                            /**
+                             * Set text style.
+                             */
+                            CellFormatter.prototype.setTextStyle = function ($grid, cell) {
+                                if (uk.util.isNullOrUndefined(this.textStyleFeatureDef))
+                                    return;
+                                var rowIdName = this.textStyleFeatureDef.rowId;
+                                var columnKeyName = this.textStyleFeatureDef.columnKey;
+                                var styleName = this.textStyleFeatureDef.style;
+                                var stylesTable = this.textStyleFeatureDef.styles;
+                                if (!uk.util.isNullOrUndefined(stylesTable) && !uk.util.isNullOrUndefined(rowIdName)
+                                    && !uk.util.isNullOrUndefined(columnKeyName) && !uk.util.isNullOrUndefined(styleName)
+                                    && !uk.util.isNullOrUndefined(this.textStylesTable[cell.id])) {
+                                    var textStyle = this.textStylesTable[cell.id][cell.columnKey];
+                                    if (uk.util.isNullOrUndefined(textStyle) || textStyle.length === 0)
+                                        return;
+                                    var txtStyle = textStyle[0][styleName];
+                                    cell.$element.addClass(txtStyle);
                                 }
                             };
                             return CellFormatter;
@@ -27672,6 +27725,8 @@ var nts;
                                 return setSelected($tree, param);
                             case 'deselectAll':
                                 return deselectAll($tree);
+                            case 'virtualScrollTo':
+                                return virtualScroll($tree, param);
                         }
                     };
                     function getSelected($tree) {
@@ -27697,11 +27752,47 @@ var nts;
                     function setSelected($tree, selectedId) {
                         deselectAll($tree);
                         if ($tree.igTreeGridSelection('option', 'multipleSelection')) {
-                            selectedId.forEach(function (id) { return $tree.igTreeGridSelection('selectRowById', id); });
+                            selectedId.forEach(function (id) {
+                                $tree.igTreeGridSelection('selectRowById', id);
+                                virtualScroll($tree, id);
+                            });
                         }
                         else {
                             $tree.igTreeGridSelection('selectRowById', selectedId);
+                            virtualScroll($tree, id);
                         }
+                    }
+                    function virtualScroll($tree, id) {
+                        var virtualization = $tree.igTreeGrid("option", "virtualization");
+                        if (virtualization) {
+                            var pk = $tree.igTreeGrid("option", "primaryKey");
+                            var childKey = $tree.igTreeGrid("option", "childDataKey");
+                            var ds = $tree.igTreeGrid("option", "dataSource");
+                            var res = findIndex(ds, id, pk, childKey, 0);
+                            if (res.found) {
+                                $tree.igTreeGrid("virtualScrollTo", res.index);
+                            }
+                        }
+                    }
+                    function findIndex(dataSource, id, pk, childKey, cIndex) {
+                        var found = false;
+                        _.forEach(dataSource, function (d) {
+                            if (d[pk] !== id && d[childKey]) {
+                                cIndex++;
+                                var res = findIndex(d[childKey], id, pk, childKey, cIndex);
+                                if (res.found) {
+                                    found = true;
+                                    cIndex = res.index;
+                                    return false;
+                                }
+                                cIndex = res.index;
+                            }
+                            else if (d[pk] === id) {
+                                found = true;
+                                return false;
+                            }
+                        });
+                        return { index: cIndex, found: found };
                     }
                     function deselectAll($grid) {
                         $grid.igTreeGridSelection('clearSelection');
