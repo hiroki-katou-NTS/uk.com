@@ -144,7 +144,7 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 			if (attendanceTime == null) continue;
 			
 			// 月別実績の任意項目を集計
-			this.aggregateAnyItem();
+			this.aggregateAnyItem(aggrPeriod);
 			
 			// データを合算する
 			val itrAttendanceTime = this.aggregateResult.getAttendanceTimeList().iterator();
@@ -296,9 +296,59 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 	
 	/**
 	 * 月別実績の任意項目を集計
+	 * @param datePeriod 期間
 	 */
-	private void aggregateAnyItem(){
+	private void aggregateAnyItem(DatePeriod datePeriod){
 		
+		/*
+		// 日別実績の任意項目の取得
+		List<String> employeeIds = new ArrayList<>();
+		employeeIds.add(this.employeeId);
+		val anyItemValueOfDailys = this.repositories.getAnyItemValueOfDaily().finds(employeeIds, datePeriod);
+		
+		// 任意項目ごとに集計する
+		Map<Integer, AnyItemValue> anyItemValues = new HashMap<>();
+		for (val anyItemValueOfDaily : anyItemValueOfDailys){
+			if (anyItemValueOfDaily.getItems() == null) continue;
+			for (val item : anyItemValueOfDaily.getItems()){
+				if (item.getItemNo() == null) continue;
+				Integer itemNo = item.getItemNo().v();
+				anyItemValues.putIfAbsent(itemNo,
+						new AnyItemValue(new AnyItemNo(itemNo), Optional.empty(), Optional.empty(), Optional.empty()));
+				val oldValue = anyItemValues.get(itemNo);
+			}
+		}
+		
+		// 任意項目を取得
+		val optionalItems = this.repositories.getOptionalItem().findAll(this.companyId);
+		for (val optionalItem : optionalItems){
+			Integer optionalItemNo = 0;
+			try {
+				optionalItemNo = Integer.parseInt(optionalItem.getOptionalItemNo().v());
+			}
+			catch (Exception e) { continue; }
+
+			// 利用条件の判定
+
+			// 「実績区分」を判断
+			if (optionalItem.getPerformanceAtr() == PerformanceAtr.DAILY_PERFORMANCE){
+				// 日別実績
+
+				// 縦計処理
+			}
+			else {
+				// 月別実績
+				
+			}
+			
+			// 任意項目に値を格納
+			
+			// 月別実績の任意項目を返す
+			this.aggregateResult.addAnyItemOrUpdate(AnyItemOfMonthly.of(
+					this.employeeId, this.yearMonth, this.closureId, this.closureDate,
+					optionalItemNo, Optional.empty(), Optional.empty(), Optional.empty()));
+		}
+		*/
 	}
 	
 	/**

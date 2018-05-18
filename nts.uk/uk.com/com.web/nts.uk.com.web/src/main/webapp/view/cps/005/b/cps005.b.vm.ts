@@ -212,6 +212,11 @@ module nts.uk.com.view.cps005.b {
             }
 
             checkRequired(newItemDef: any): boolean {
+                if(newItemDef.itemName == ""){
+                    $("#item-name-control").focus();
+                    block.clear();
+                    return true;    
+                }
 
                 if (newItemDef.singleItem.dataType === 1) {
                     if (newItemDef.singleItem.stringItemLength === null) {

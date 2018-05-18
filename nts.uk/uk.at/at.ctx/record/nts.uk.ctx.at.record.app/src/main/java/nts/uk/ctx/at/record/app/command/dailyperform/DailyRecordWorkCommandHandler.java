@@ -220,10 +220,8 @@ public class DailyRecordWorkCommandHandler {
 		//remove data error
 		employeeDailyPerErrorRepository.removeParam(command.getEmployeeId(), command.getWorkDate());
 		//check and insert error;
-		//determineErrorAlarmWorkRecordService.checkAndInsert(command.getEmployeeId(), command.getWorkDate());
-		
+//		determineErrorAlarmWorkRecordService.checkAndInsert(command.getEmployeeId(), command.getWorkDate());
 		determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(errors);
-		
 	}
 	
 	private List<EmployeeDailyPerError> calcIfNeed(Set<String> group, DailyRecordWorkCommand command){
@@ -256,7 +254,6 @@ public class DailyRecordWorkCommandHandler {
 //			command.getLogOnInfo
 //			group.add("I");
 			group.add("G");
-			
 			return calced.getEmployeeError();
 //		}
 	}

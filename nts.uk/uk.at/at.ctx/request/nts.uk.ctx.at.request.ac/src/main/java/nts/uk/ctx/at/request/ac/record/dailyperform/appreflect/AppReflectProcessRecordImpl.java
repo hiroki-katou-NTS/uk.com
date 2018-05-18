@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppCommonPara;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppReflectProcessRecordPub;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.CommonReflectPubParameter;
@@ -153,6 +154,13 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 	public boolean recruitmentReflectRecord(CommonReflectPara para, boolean isPre) {
 		return recordPub.recruitmentReflect(this.toPubPara(para), isPre);
 	}
+
+	@Override
+	public boolean isRecordData(String employeeId, GeneralDate baseDate) {
+		// TODO Auto-generated method stub
+		return recordPub.isRecordData(employeeId, baseDate);
+	}
+	
 	
 
 }

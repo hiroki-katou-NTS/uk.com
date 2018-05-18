@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.infra.repository.monthly.agreement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -11,10 +12,8 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
-import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.agreement.KrcdtMonMngAgreTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.agreement.KrcdtMonMngAgreTimePK;
 import nts.uk.ctx.at.shared.dom.common.Year;
@@ -34,7 +33,13 @@ public class JpaAgreementTimeOfManagePeriod extends JpaRepository implements Agr
 	
 	private static final String FIND_BY_EMPLOYEES = "SELECT a FROM KrcdtMonMngAgreTime a "
 			+ "WHERE a.PK.employeeId IN :employeeIds "
-			+ "AND a.PK.yearMonth = :yearMonth ";
+			+ "AND a.PK.yearMonth = :yearMonth "
+			+ "ORDER BY a.PK.employeeId ";
+	
+	private static final String FIND_BY_SIDS_AND_YEARMONTHS = "SELECT a FROM KrcdtMonMngAgreTime a "
+			+ "WHERE a.PK.employeeId IN :employeeIds "
+			+ "AND a.PK.yearMonth IN :yearMonths "
+			+ "ORDER BY a.PK.employeeId, a.PK.yearMonth ";
 	
 	private static final String REMOVE_BY_YEAR =
 			"DELETE FROM KrcdtMonMngAgreTime a "
@@ -63,7 +68,7 @@ public class JpaAgreementTimeOfManagePeriod extends JpaRepository implements Agr
 				.getList(c -> c.toDomain());
 	}
 
-	/** 検索　（社員リスト） */
+	/** 検索　（社員IDリスト） */
 	@Override
 	public List<AgreementTimeOfManagePeriod> findByEmployees(List<String> employeeIds, YearMonth yearMonth) {
 		
@@ -72,6 +77,23 @@ public class JpaAgreementTimeOfManagePeriod extends JpaRepository implements Agr
 			results.addAll(this.queryProxy().query(FIND_BY_EMPLOYEES, KrcdtMonMngAgreTime.class)
 					.setParameter("employeeIds", splitData)
 					.setParameter("yearMonth", yearMonth.v())
+					.getList(c -> c.toDomain()));
+		});
+		return results;
+	}
+	
+	/** 検索　（社員IDリストと年月リスト） */
+	@Override
+	public List<AgreementTimeOfManagePeriod> findBySidsAndYearMonths(List<String> employeeIds,
+			List<YearMonth> yearMonths) {
+		
+		val yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toList());
+		
+		List<AgreementTimeOfManagePeriod> results = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_YEARMONTHS, KrcdtMonMngAgreTime.class)
+					.setParameter("employeeIds", splitData)
+					.setParameter("yearMonths", yearMonthValues)
 					.getList(c -> c.toDomain()));
 		});
 		return results;
