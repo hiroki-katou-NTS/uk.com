@@ -148,7 +148,7 @@ module nts.uk.at.view.kdm002.a {
              */
             public setDefaultCcg001Option(): void {
                 let self = this;
-                self.isQuickSearchTab = ko.observable(true);
+                self.isQuickSearchTab = ko.observable(false);
                 self.isAdvancedSearchTab = ko.observable(true);
                 self.isAllReferableEmployee = ko.observable(true);
                 self.isOnlyMe = ko.observable(true);
