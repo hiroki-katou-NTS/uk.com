@@ -591,7 +591,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         if (data != "") {
                             let lock = data.split("|");
                             let tempD = "<span>";
-                            for (let i = 1; i < lock.length; i++) {
+                            for (let i = 0; i < lock.length; i++) {
                                 //月別実績のロック
                                 if (lock[i] == "monthlyResultLock")
                                     tempD += nts.uk.resource.getText("KMW003_35") + '<br/>';
@@ -615,7 +615,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                                     tempD += nts.uk.resource.getText("KMW003_41") + '<br/>';
 
                             }
-                            tempD += nts.uk.resource.getText("KDW003_67") + '</span>';
+                            tempD += '</span>';
                             $('#textLock').html(tempD);
                         }
                         self.helps(evt, "");
@@ -748,7 +748,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         updateDate(date: any) {
             let self = this;
             self.monthlyParam().yearMonth = date;
-            //self.initScreen();
+            self.initScreen();
         }
         /**
          * 実績期間を変更する

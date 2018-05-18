@@ -80,14 +80,15 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			throw new BusinessException("Msg_426");
 		}
 		String employmentCD = empHistImport.getEmploymentCode();
+		// ドメインモデル「雇用に紐づく就業締め」を取得する
+		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(companyID, employmentCD);
+		if(!closureEmployment.isPresent()){
+			throw new BusinessException("Msg_1134");
+		}
 		/*
 		ドメインモデル「締め」を取得する(lấy thông tin domain「締め」)
 		Object<String: tightenID, String: currentMonth> obj1 = Tighten.find(companyID, employeeCD); // obj1 <=> (締めID,当月)
 		*/
-		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(companyID, employmentCD);
-		if(!closureEmployment.isPresent()){
-			throw new RuntimeException("khong co closure employement");
-		}
 		Optional<Closure> closure = closureRepository.findById(companyID, closureEmployment.get().getClosureId());
 		if(!closure.isPresent()){
 			throw new RuntimeException("khong co closure");
