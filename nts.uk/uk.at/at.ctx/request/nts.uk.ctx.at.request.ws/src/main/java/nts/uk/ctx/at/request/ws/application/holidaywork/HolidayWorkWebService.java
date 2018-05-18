@@ -7,7 +7,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import lombok.Value;
+import lombok.Data;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDateTime;
@@ -39,7 +39,7 @@ public class HolidayWorkWebService extends WebService{
 	@POST
 	@Path("getHolidayWorkByUI")
 	public AppHolidayWorkDto getOvertimeByUIType(Param param) {
-		return this.appHolidayWorkFinder.getAppHolidayWork(param.getAppDate(), param.getUiType());
+		return this.appHolidayWorkFinder.getAppHolidayWork(param.getAppDate(), param.getUiType(),param.getLstEmployee(),param.getPayoutType());
 	}
 	@POST
 	@Path("findChangeAppDate")
@@ -95,12 +95,14 @@ public class HolidayWorkWebService extends WebService{
 	}
 	
 }
-@Value
+@Data
 class Param{
 	private String appDate;
 	private int uiType;
+	private List<String> lstEmployee;
+	private Integer payoutType;
 }
-@Value
+@Data
 class RecordWorkParam {
 	public String employeeID; 
 	public String appDate;

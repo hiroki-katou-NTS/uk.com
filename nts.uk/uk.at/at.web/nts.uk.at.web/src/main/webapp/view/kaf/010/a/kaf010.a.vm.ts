@@ -128,9 +128,20 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         //　初期起動時、計算フラグ=1とする。
         calculateFlag: KnockoutObservable<number> = ko.observable(1);
         preWorkContent: common.WorkContent;
-        constructor() {
+        // param 
+        uiType: KnockoutObservable<number> = ko.observable(0);
+        ltsEmployee: KnockoutObservableArray<string> = ko.observableArray([]);
+        leaverAppID: KnockoutObservable<string> = ko.observable(null);
+        payoutType: KnockoutObservable<number> = ko.observable(null);
+        constructor(transferData :any) {
             let self = this;  
-                    
+            if(transferData != null){
+                self.uiType(transferData.uiType);
+                self.ltsEmployee(transferData.applicant);
+                self.payoutType(transferData.payoutType);
+                self.leaverAppID(transferData.appID);
+                self.appDate(transferData.appDate);
+            }
             //KAF000_A
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //startPage 010a AFTER start 000_A
@@ -156,7 +167,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             nts.uk.ui.block.invisible();
             service.getHolidayWorkByUI({
                 appDate: nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
-                uiType: 0
+                lstEmployee: self.ltsEmployee(),
+                payoutType: self.payoutType(),
+                uiType: self.uiType()
             }).done((data) => {
                 self.initData(data);
                 $("#inputdate").focus();

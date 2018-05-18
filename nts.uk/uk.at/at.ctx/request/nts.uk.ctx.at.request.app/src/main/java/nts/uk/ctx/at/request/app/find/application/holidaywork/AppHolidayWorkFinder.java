@@ -130,11 +130,16 @@ public class AppHolidayWorkFinder {
 	 * @param uiType
 	 * @return
 	 */
-	public AppHolidayWorkDto getAppHolidayWork(String appDateInput,int uiType){
+	public AppHolidayWorkDto getAppHolidayWork(String appDateInput,int uiType,List<String> lstEmployee,Integer payoutType){
 		
 		AppHolidayWorkDto result = new AppHolidayWorkDto();
 		String companyID = AppContexts.user().companyId();
-		String employeeID = AppContexts.user().employeeId();
+		String employeeID = null;
+		if(CollectionUtil.isEmpty(lstEmployee)){
+			 employeeID = AppContexts.user().employeeId();
+		}else{
+			employeeID = lstEmployee.get(0);
+		}
 		int rootAtr = 1;
 		
 		//1-1.新規画面起動前申請共通設定を取得する
@@ -147,8 +152,6 @@ public class AppHolidayWorkFinder {
 		//アルゴリズム「1-5.新規画面起動時のエラーチェック」を実行する 
 		 startupErrorCheckService.startupErrorCheck(appCommonSettingOutput.generalDate, ApplicationType.BREAK_TIME_APPLICATION.value, approvalRootPattern.getApprovalRootContentImport());
 		 // 申請対象日のパラメータがあるかチェックする
-		 
-
 		 if(appDateInput != null){
 			 //13.実績の取得
 			 AchievementOutput achievementOutput = collectAchievement.getAchievement(companyID, employeeID,  GeneralDate.fromString(appDateInput, DATE_FORMAT));
@@ -611,7 +614,7 @@ public class AppHolidayWorkFinder {
 			// 時刻計算利用チェック
 			if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
 				result.setDisplayCaculationTime(true);
-				// 4.勤務種類を取得する : TODO
+				// 4.勤務種類を取得する :
 				GeneralDate baseDate = appCommonSettingOutput.generalDate;
 				//ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
 				Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository.getBySidAndStandardDate(employeeID,baseDate);

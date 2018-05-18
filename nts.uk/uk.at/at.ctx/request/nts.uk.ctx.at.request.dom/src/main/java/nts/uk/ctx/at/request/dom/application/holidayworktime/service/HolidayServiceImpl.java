@@ -27,7 +27,6 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTim
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTypeHolidayWork;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -84,7 +83,7 @@ public class HolidayServiceImpl implements HolidayService {
 			// 「申請日－法定外・法定内休日区分」をチェック　→Imported(申請承認)「対象日法定休日区分.法定休日区分」を取得する - req 253
 			Optional<BusinessDayCalendarImport> buOptional = this.businessDayCalendarAdapter.acquiredHolidayClsOfTargetDate(companyID, workplaceID, appDate);
 			if(buOptional.isPresent()){
-				String workTypeCode = personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().toString();
+				String workTypeCode = personalLablorCodition.get().getWorkCategory().getHolidayWork().getWorkTypeCode().toString();
 				if(buOptional.get().holidayCls.equals(HolidayClsImport.STATUTORY_HOLIDAYS)){
 					// 申請日＝＞法定内休日
 					if(personalLablorCodition.get().getWorkCategory().getInLawBreakTime().isPresent()){
@@ -187,5 +186,53 @@ public class HolidayServiceImpl implements HolidayService {
 		}
 		return workTypeHolidayWorks;
 	}
+	@Override
+	// 4_a.勤務種類を取得する（法定内外休日）
+	public WorkTypeHolidayWork getWorkTypeForLeaverApp(String companyID, String employeeID,
+			List<AppEmploymentSetting> appEmploymentSettings, GeneralDate appDate,
+			Optional<WorkingConditionItem> personalLablorCodition) {
+		WorkTypeHolidayWork workTypeHolidayWorks = new WorkTypeHolidayWork();
+		workTypeHolidayWorks = this.getListWorkType(companyID, employeeID, appEmploymentSettings, appDate, personalLablorCodition);
+		if(CollectionUtil.isEmpty(workTypeHolidayWorks.getWorkTypeCodes())){
+			return workTypeHolidayWorks;
+		}
+		//アルゴリズム「社員から職場を取得する」を実行する - req #30
+		WkpHistImport wkp = wkpAdapter.findWkpBySid(employeeID, appDate);
+		String workplaceID = "";
+		if(wkp !=null){
+			workplaceID = wkp.getWorkplaceId();
+		}
+		List<WorkType> worktypes = this.workTypeRepository.findNotDeprecatedByListCode(companyID, workTypeHolidayWorks.getWorkTypeCodes());
+		// 「申請日－法定外・法定内休日区分」をチェック →Imported(申請承認)「対象日法定休日区分.法定休日区分」を取得する - req253
+		Optional<BusinessDayCalendarImport> buOptional = this.businessDayCalendarAdapter
+				.acquiredHolidayClsOfTargetDate(companyID, workplaceID, appDate);
+		if(buOptional.isPresent()) {
+			if (HolidayClsImport.STATUTORY_HOLIDAYS.equals(buOptional.get().holidayCls)) {
+				// 法定内休日 : filter for STATUTORY_HOLIDAYS
+				
 
+			} else if (HolidayClsImport.NON_STATUTORY_HOLIDAYS.equals(buOptional.get().holidayCls)) {
+				// 法定外休日
+			} else if (HolidayClsImport.PUBLIC_HOLIDAY.equals(buOptional.get().holidayCls)) {
+				// 祝日
+			}else{
+				// 取得できない場合
+				return getWorkTypeForLeaveApp(workTypeHolidayWorks,companyID);
+			}
+		}else {
+			// 取得できない場合
+			return getWorkTypeForLeaveApp(workTypeHolidayWorks,companyID);
+		}
+		
+		
+		return null;
+	}
+	private WorkTypeHolidayWork getWorkTypeForLeaveApp(WorkTypeHolidayWork workTypeHoliday,String companyID){
+		workTypeHoliday.setWorkTypeCode(workTypeHoliday.getWorkTypeCodes().get(0));
+		Optional<WorkType> workType = workTypeRepository.findByPK(companyID, workTypeHoliday.getWorkTypeCode());
+		if(workType.isPresent()){
+			workTypeHoliday.setWorkTypeName(workType.get().getName().toString());
+		}
+		return workTypeHoliday;
+	}
 }
