@@ -379,8 +379,9 @@ module nts.uk.at.view.kal003.a.viewmodel {
                             let listAgreementHourKnockout = _.map(item.condAgree36().listCondOt(), y => {
                                 return new model.AgreeCondOt(y);
                             });
+                            
                             self.tabAgreementError.listAgreementError(listAgreementErrorKnockout);
-                            self.tabAgreementHour.listAgreementHour(listAgreementHourKnockout);
+                            self.tabAgreementHour.listAgreementHour(_.sortBy(listAgreementHourKnockout, ['no']));
                         }
 
                         if (item.category() == model.CATEGORY.MONTHLY) {
