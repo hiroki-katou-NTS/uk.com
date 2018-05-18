@@ -19,26 +19,26 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 @Getter
 @Setter
 public class ScheduleCreatorExecutionCommand {
-
+	
 	/** The employee id. */
 	private String employeeId;
-
+	
 	/** The execution id. */
 	private String executionId;
-
+	
 	/** The company id. */
 	private String companyId;
-
+	
 	/** The to date. */
 	private GeneralDate toDate;
-
+	
 	/** The content. */
 	private ScheduleCreateContent content;
-
+	
 	/** The is confirm. */
-	private Boolean confirm;
-
-	/** The is delete before insert. */
+	private Boolean confirm; 
+	
+	/** The is delete befor insert. */
 	private Boolean isDeleteBeforInsert;
 
 	private ScheduleExecutionLog scheduleExecutionLog;

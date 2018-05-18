@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.bs.company.dom.company.AddInfor;
 import nts.uk.ctx.bs.company.dom.company.Company;
 
@@ -12,6 +13,7 @@ import nts.uk.ctx.bs.company.dom.company.Company;
  * @author yennth
  */
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class AddCompanyInforCommand {
 	// 会社コード

@@ -77,7 +77,7 @@ public class TimeWithDayAttr extends TimeClockPrimitiveValue<TimeWithDayAttr>{
 	
 	public String getRawTimeWithFormat(){
 		int rawMinutes = Math.abs(this.v() % 60);
-		return (this.v() / 60) + ":" + (rawMinutes < 10 ? "0" + rawMinutes : rawMinutes);
+		return rawHour() + ":" + (rawMinutes < 10 ? "0" + rawMinutes : rawMinutes);
 	}
 	
 	/**
@@ -90,5 +90,14 @@ public class TimeWithDayAttr extends TimeClockPrimitiveValue<TimeWithDayAttr>{
 		newValue = Math.max(newValue, THE_PREVIOUS_DAY_1200.v());
 		newValue = Math.min(newValue, TWO_DAYS_LATER_2359.v());
 		return new TimeWithDayAttr(newValue);
+	}
+
+	@Override
+	public int hour() {
+		return super.hour() % 24;
+	}
+	
+	public int rawHour(){
+		return this.v() / 60;
 	}
 }

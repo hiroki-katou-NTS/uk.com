@@ -2,7 +2,6 @@ package nts.uk.ctx.pereg.ac.specialholiday;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,12 +11,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.i18n.I18NResources;
 import nts.arc.layer.dom.event.DomainEventSubscriber;
 import nts.uk.ctx.at.shared.dom.specialholiday.event.SpecialHolidayEvent;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryName;
-import nts.uk.ctx.pereg.dom.person.info.category.IsAbolition;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
@@ -43,7 +40,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 
 	private static final List<String> lstCtgCd1 = Arrays.asList(new String[] { "CS00025", "CS00026", "CS00027",
 			"CS00028", "CS00029", "CS00030", "CS00031", "CS00032", "CS00033", "CS00034", "CS00049", "CS00050",
-			"CS00051", "CS00052", "CS00053", "CS00054", "CS00055" });
+			"CS00051", "CS00052", "CS00053", "CS00054", "CS00055", "CS00056", "CS00057", "CS00058" });
 	private static final List<String> lstCtgCd2 = Arrays.asList(new String[] { "CS00039", "CS00040", "CS00041",
 			"CS00042", "CS00043", "CS00044", "CS00045", "CS00046", "CS00047", "CS00048", "CS00059", "CS00060",
 			"CS00061", "CS00062", "CS00063", "CS00064", "CS00065", "CS00066", "CS00067", "CS00068" });
@@ -111,10 +108,13 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 				PersonInfoCategory ctgInComZero = ctgLstComZero.stream().filter(c -> {
 					return c.getCategoryCode().v().equals(x.getCategoryCode().v());
 				}).collect(Collectors.toList()).get(0);
+
 				x.setDomainNameAndAbolition(ctgInComZero.getCategoryName(), 1);
 				ctgUpdateList.add(x);
+
 				String domainEventName = domainEvent.getSpecialHolidayName() == null ? ""
 						: domainEvent.getSpecialHolidayName().v();
+
 				updateItems.addAll(getUpdateItems(domainEventName, x.getCategoryCode().v(), contractCd, false,
 						loginCompanyId, updateCompanyId));
 			}
@@ -132,65 +132,63 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 
 	private List<PersonInfoItemDefinition> getUpdateItems(String spHDName, String ctgId, String contractCode,
 			boolean isEffective, String... companyId) {
-		List<PersonInfoItemDefinition> lstItem = itemRepo.getItemDefByCtgCdAndComId(ctgId, companyId[0]);
-		List<PersonInfoItemDefinition> lstReturn = new ArrayList<>();
-		if (isEffective) {
-			/**
-			 * 【更新内容】 廃止区分 ＝ 廃止しない 項目名称 ＝
-			 */
-			for (PersonInfoItemDefinition x : lstItem) {
-				Optional<String> newItemName = getNewItemName(x.getItemCode().v(), spHDName);
-				if (newItemName.isPresent()) {
-					// x.setIsAbolition(EnumAdaptor.valueOf(0, IsAbolition.class));
-					x.setItemName(newItemName.get());
-					lstReturn.add(x);
-				}
-			}
-		} else {
-			Map<String, String> mapItemNameInZeroCom = itemRepo.getItemDefByCtgCdAndComId(ctgId, companyId[1]).stream()
-					.collect(Collectors.toMap(x -> x.getItemCode().v(), x -> x.getItemName().v()));
+		return itemRepo.getItemDefByCtgCdAndComId(ctgId, companyId[0]).stream().filter(f -> {
+			String itemCode = f.getItemCode().v();
+			Optional<String> newItemName = getNewItemName(itemCode, spHDName);
 
-			/**
-			 * 【更新内容】 廃止区分 ＝ 廃止する 項目名 ＝ 取得したゼロ会社の「個人情報項目定義」．項目名
-			 */
-			for (PersonInfoItemDefinition x : lstItem) {
-				String itemCode = x.getItemCode().v();
-				if (mapItemNameInZeroCom.containsKey(itemCode)) {
-					// x.setIsAbolition(EnumAdaptor.valueOf(1, IsAbolition.class));
-					x.setItemName(mapItemNameInZeroCom.get(itemCode));
-					lstReturn.add(x);
+			if (newItemName.isPresent()) {
+				if (isEffective) {
+					/**
+					 * 【更新内容】 廃止区分 ＝ 廃止しない 項目名称 ＝
+					 */
+					f.setItemName(newItemName.get());
+				} else {
+					/**
+					 * 【更新内容】 廃止区分 ＝ 廃止する 項目名 ＝ 取得したゼロ会社の「個人情報項目定義」．項目名
+					 */
+					Map<String, String> mapItemNameInZeroCom = itemRepo.getItemDefByCtgCdAndComId(ctgId, companyId[1])
+							.stream().collect(Collectors.toMap(x -> x.getItemCode().v(), x -> x.getItemName().v()));
+
+					if (mapItemNameInZeroCom.containsKey(itemCode)) {
+						f.setItemName(mapItemNameInZeroCom.get(itemCode));
+					}
 				}
+
+				return true;
+			} else {
+				return false;
 			}
-		}
-		return lstReturn;
+		}).collect(Collectors.toList());
 	}
 
 	private List<String> getCtgCds(int spcHdCode) {
-		List<String> ctgCds = null;
-		Map<Integer, List<String>> map = new HashMap<Integer, List<String>>();
-		map.put(1, Arrays.asList(new String[] { "CS00025", "CS00039" }));
-		map.put(2, Arrays.asList(new String[] { "CS00026", "CS00040" }));
-		map.put(3, Arrays.asList(new String[] { "CS00027", "CS00041" }));
-		map.put(4, Arrays.asList(new String[] { "CS00028", "CS00042" }));
-		map.put(5, Arrays.asList(new String[] { "CS00029", "CS00043" }));
-		map.put(6, Arrays.asList(new String[] { "CS00030", "CS00044" }));
-		map.put(7, Arrays.asList(new String[] { "CS00031", "CS00045" }));
-		map.put(8, Arrays.asList(new String[] { "CS00032", "CS00046" }));
-		map.put(9, Arrays.asList(new String[] { "CS00033", "CS00047" }));
-		map.put(10, Arrays.asList(new String[] { "CS00034", "CS00048" }));
-		map.put(11, Arrays.asList(new String[] { "CS00049", "CS00059" }));
-		map.put(12, Arrays.asList(new String[] { "CS00050", "CS00060" }));
-		map.put(13, Arrays.asList(new String[] { "CS00051", "CS00061" }));
-		map.put(14, Arrays.asList(new String[] { "CS00052", "CS00062" }));
-		map.put(15, Arrays.asList(new String[] { "CS00053", "CS00063" }));
-		map.put(16, Arrays.asList(new String[] { "CS00054", "CS00064" }));
-		map.put(17, Arrays.asList(new String[] { "CS00055", "CS00065" }));
-		map.put(18, Arrays.asList(new String[] { "CS00056", "CS00066" }));
-		map.put(19, Arrays.asList(new String[] { "CS00057", "CS00067" }));
-		map.put(20, Arrays.asList(new String[] { "CS00058", "CS00068" }));
+		Map<Integer, List<String>> map = new HashMap<Integer, List<String>>() {
+			private static final long serialVersionUID = 1L;
+			{
+				put(1, Arrays.asList(new String[] { "CS00025", "CS00039" }));
+				put(2, Arrays.asList(new String[] { "CS00026", "CS00040" }));
+				put(3, Arrays.asList(new String[] { "CS00027", "CS00041" }));
+				put(4, Arrays.asList(new String[] { "CS00028", "CS00042" }));
+				put(5, Arrays.asList(new String[] { "CS00029", "CS00043" }));
+				put(6, Arrays.asList(new String[] { "CS00030", "CS00044" }));
+				put(7, Arrays.asList(new String[] { "CS00031", "CS00045" }));
+				put(8, Arrays.asList(new String[] { "CS00032", "CS00046" }));
+				put(9, Arrays.asList(new String[] { "CS00033", "CS00047" }));
+				put(10, Arrays.asList(new String[] { "CS00034", "CS00048" }));
+				put(11, Arrays.asList(new String[] { "CS00049", "CS00059" }));
+				put(12, Arrays.asList(new String[] { "CS00050", "CS00060" }));
+				put(13, Arrays.asList(new String[] { "CS00051", "CS00061" }));
+				put(14, Arrays.asList(new String[] { "CS00052", "CS00062" }));
+				put(15, Arrays.asList(new String[] { "CS00053", "CS00063" }));
+				put(16, Arrays.asList(new String[] { "CS00054", "CS00064" }));
+				put(17, Arrays.asList(new String[] { "CS00055", "CS00065" }));
+				put(18, Arrays.asList(new String[] { "CS00056", "CS00066" }));
+				put(19, Arrays.asList(new String[] { "CS00057", "CS00067" }));
+				put(20, Arrays.asList(new String[] { "CS00058", "CS00068" }));
+			}
+		};
 
-		ctgCds = map.get(spcHdCode);
-		return ctgCds;
+		return map.get(spcHdCode);
 	}
 
 	private Optional<String> getNewItemName(String itemCode, String name) {
@@ -223,6 +221,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 	private Map<String, Integer> mapICdFull = new HashMap<String, Integer>() {
 		private static final long serialVersionUID = -1247243373180819620L;
 		{
+			// 特別休暇コード＝01の場
 			put("IS00295", 1);
 			put("IS00296", 2);
 			put("IS00297", 3);
@@ -235,6 +234,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 			put("IS00411", 10);
 			put("IS00412", 11);
 
+			// 特別休暇コード＝02の場
 			put("IS00302", 1);
 			put("IS00303", 2);
 			put("IS00304", 3);
@@ -247,6 +247,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 			put("IS00426", 10);
 			put("IS00427", 11);
 
+			// 特別休暇コード＝03の場
 			put("IS00309", 1);
 			put("IS00310", 2);
 			put("IS00311", 3);
@@ -259,6 +260,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 			put("IS00441", 10);
 			put("IS00442", 11);
 
+			// 特別休暇コード＝04の場
 			put("IS00316", 1);
 			put("IS00317", 2);
 			put("IS00318", 3);
@@ -271,6 +273,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 			put("IS00456", 10);
 			put("IS00457", 11);
 
+			// 特別休暇コード＝05の場
 			put("IS00323", 1);
 			put("IS00324", 2);
 			put("IS00325", 3);
@@ -283,6 +286,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 			put("IS00471", 10);
 			put("IS00472", 11);
 
+			// 特別休暇コード＝06の場
 			put("IS00330", 1);
 			put("IS00331", 2);
 			put("IS00332", 3);
@@ -295,6 +299,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 			put("IS00486", 10);
 			put("IS00487", 11);
 
+			// 特別休暇コード＝07の場
 			put("IS00337", 1);
 			put("IS00338", 2);
 			put("IS00339", 3);
@@ -307,6 +312,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 			put("IS00501", 10);
 			put("IS00502", 11);
 
+			// 特別休暇コード＝08の場
 			put("IS00344", 1);
 			put("IS00345", 2);
 			put("IS00346", 3);
@@ -319,6 +325,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 			put("IS00516", 10);
 			put("IS00517", 11);
 
+			// 特別休暇コード＝09の場
 			put("IS00351", 1);
 			put("IS00352", 2);
 			put("IS00353", 3);
@@ -331,6 +338,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 			put("IS00531", 10);
 			put("IS00532", 11);
 
+			// 特別休暇コード＝10の場
 			put("IS00358", 1);
 			put("IS00359", 2);
 			put("IS00360", 3);
@@ -343,6 +351,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 			put("IS00546", 10);
 			put("IS00547", 11);
 
+			// 特別休暇コード＝11の場
 			put("IS00559", 1);
 			put("IS00560", 2);
 			put("IS00561", 3);
@@ -355,6 +364,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 			put("IS00631", 10);
 			put("IS00632", 11);
 
+			// 特別休暇コード＝12の場
 			put("IS00566", 1);
 			put("IS00567", 2);
 			put("IS00568", 3);
@@ -367,6 +377,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 			put("IS00646", 10);
 			put("IS00647", 11);
 
+			// 特別休暇コード＝13の場
 			put("IS00573", 1);
 			put("IS00574", 2);
 			put("IS00575", 3);
@@ -379,6 +390,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 			put("IS00661", 10);
 			put("IS00662", 11);
 
+			// 特別休暇コード＝14の場
 			put("IS00580", 1);
 			put("IS00581", 2);
 			put("IS00582", 3);
@@ -391,6 +403,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 			put("IS00676", 10);
 			put("IS00677", 11);
 
+			// 特別休暇コード＝15の場
 			put("IS00587", 1);
 			put("IS00588", 2);
 			put("IS00589", 3);
@@ -403,6 +416,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 			put("IS00691", 10);
 			put("IS00692", 11);
 
+			// 特別休暇コード＝16の場
 			put("IS00594", 1);
 			put("IS00595", 2);
 			put("IS00596", 3);
@@ -415,6 +429,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 			put("IS00706", 10);
 			put("IS00707", 11);
 
+			// 特別休暇コード＝17の場
 			put("IS00601", 1);
 			put("IS00602", 2);
 			put("IS00603", 3);
@@ -427,6 +442,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 			put("IS00721", 10);
 			put("IS00722", 11);
 
+			// 特別休暇コード＝18の場
 			put("IS00608", 1);
 			put("IS00609", 2);
 			put("IS00610", 3);
@@ -439,6 +455,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 			put("IS00736", 10);
 			put("IS00737", 11);
 
+			// 特別休暇コード＝19の場
 			put("IS00615", 1);
 			put("IS00616", 2);
 			put("IS00617", 3);
@@ -451,6 +468,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 			put("IS00751", 10);
 			put("IS00752", 11);
 
+			// 特別休暇コード＝20の場
 			put("IS00622", 1);
 			put("IS00623", 2);
 			put("IS00624", 3);

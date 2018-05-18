@@ -20,4 +20,6 @@ public interface AlarmListExtraProcessStatusRepository {
 	void updateAlListExtaProcess (AlarmListExtraProcessStatus alarmListExtraProcessStatus);
 	
 	void deleteAlListExtaProcess (String extraProcessStatusID);
+	
+	boolean isAlListExtaProcessing(String companyId, String employeeId);
 }

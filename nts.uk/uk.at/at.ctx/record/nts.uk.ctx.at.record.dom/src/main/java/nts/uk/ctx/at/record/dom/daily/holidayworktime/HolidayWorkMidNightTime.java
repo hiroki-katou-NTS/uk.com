@@ -30,4 +30,12 @@ public class HolidayWorkMidNightTime {
 	public boolean isOverLimitDivergenceTime() {
 		return this.calcOverLimitDivergenceTime() > 0 ? true:false;
 	}
+	
+	/**
+	 * 乖離時間を再計算
+	 * @return
+	 */
+	public HolidayWorkMidNightTime calcDiverGenceTime() {
+		return new HolidayWorkMidNightTime(this.time!=null?this.time.calcDiverGenceTime():TimeDivergenceWithCalculation.emptyTime(),this.statutoryAtr);
+	}
 }

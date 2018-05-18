@@ -3,6 +3,7 @@ package nts.uk.ctx.pereg.infra.repository.person.info.item;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -66,9 +67,14 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	private final static String SELECT_NO_WHERE = String.join(" ", SELECT_COMMON_FIELD, JOIN_COMMON_TABLE);
 
 	private final static String COMMON_CONDITION = "ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId AND ic.itemParentCd IS NULL ORDER BY io.disporder";
+	
+	private final static String CONDITION = "ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId ORDER BY io.disporder";
 
 	private final static String SELECT_ITEMS_BY_CATEGORY_ID_QUERY = String.join(" ", SELECT_NO_WHERE, "WHERE",
 			COMMON_CONDITION);
+	
+	private final static String SELECT_ALL_ITEMS_BY_CATEGORY_ID = String.join(" ", SELECT_NO_WHERE, "WHERE",
+			CONDITION);
 
 	private final static String SELECT_ITEM_BY_CTG_WITH_AUTH = String.join(" ", SELECT_NO_WHERE,
 			"INNER JOIN PpemtPersonItemAuth au",
@@ -122,7 +128,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"ic.dataType, ic.timeItemMin, ic.timeItemMax, ic.timepointItemMin, ic.timepointItemMax, ic.dateItemType,",
 			"ic.stringItemType, ic.stringItemLength, ic.stringItemDataType, ic.numericItemMin, ic.numericItemMax, ic.numericItemAmountAtr,",
 			"ic.numericItemMinusAtr, ic.numericItemDecimalPart, ic.numericItemIntegerPart,",
-			"ic.selectionItemRefType, ic.selectionItemRefCode, i.perInfoCtgId, ic.relatedCategoryCode, ic.resourceId",
+			"ic.selectionItemRefType, ic.selectionItemRefCode, i.perInfoCtgId, ic.relatedCategoryCode, ic.resourceId, io.disporder",
 			"FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId",
 			"INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd",
 			"AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd INNER JOIN PpemtPerInfoItemOrder io",
@@ -284,12 +290,27 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId",
 			"WHERE c.categoryCd = :ctgCd AND c.cid = :cid");
 
+	private final static String SELECT_ITEM_NAME_QUERY = String.join(" ",
+			"SELECT i.itemName FROM PpemtPerInfoItem i",
+			"INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId",
+			"INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd",
+			"AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd",
+			"WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND c.cid =:cid AND c.categoryCd =:categoryCd AND i.itemCd =:itemCd ");
+
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
 		return this.queryProxy().query(SELECT_ITEMS_BY_CATEGORY_ID_QUERY, Object[].class)
 				.setParameter("contractCd", contractCd).setParameter("perInfoCtgId", perInfoCtgId).getList(i -> {
 					List<String> items = getChildIds(contractCd, perInfoCtgId, String.valueOf(i[1]));
 					return createDomainFromEntity(i, items);
+				});
+	}
+	
+	@Override
+	public List<PersonInfoItemDefinition> getAllItemDefByCategoryId(String perInfoCtgId, String contractCd) {
+		return this.queryProxy().query(SELECT_ALL_ITEMS_BY_CATEGORY_ID, Object[].class)
+				.setParameter("contractCd", contractCd).setParameter("perInfoCtgId", perInfoCtgId).getList(i -> {
+					return createDomainFromEntity(i, new ArrayList<>());
 				});
 	}
 
@@ -906,5 +927,62 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				.setParameter("ctgCd", perInfoCtgCd).setParameter("cid", CompanyId)
 				.getList(x -> PersonInfoItemDefinition.createDomainWithNameAndAbolition(x[0].toString(),
 						x[1].toString(), x[2].toString()));
+	}
+
+	@Override
+	public List<PersonInfoItemDefinition> getItemLstByListId(List<String> listItemDefId, String contractCd) {
+		// SELECT_CHILDS_ITEMS_BY_LIST_ITEM_ID_QUERY
+		List<Object[]> objItemParents = this.queryProxy().query(SELECT_ITEMS_BY_LIST_ITEM_ID_QUERY, Object[].class)
+				.setParameter("contractCd", contractCd).setParameter("listItemDefId", listItemDefId).getList();
+		List<Object[]> itemlst = new ArrayList<>();
+		for (int i = 0; i < objItemParents.size(); i++) {
+			List<String> itemChilds = getChildIds(contractCd, String.valueOf(objItemParents.get(i)[27]),
+					String.valueOf(objItemParents.get(i)[1]));
+			if (!itemChilds.isEmpty()) {
+				List<Object[]> itemChildLst = this.queryProxy()
+						.query(SELECT_ITEMS_BY_LIST_ITEM_ID_QUERY, Object[].class)
+						.setParameter("contractCd", contractCd).setParameter("listItemDefId", itemChilds).getList();
+				if (!itemChildLst.isEmpty()) {
+					for (int j = 0; j < itemChildLst.size(); j++) {
+						List<String> itemChildChilds = getChildIds(contractCd, String.valueOf(itemChildLst.get(j)[27]),
+								String.valueOf(itemChildLst.get(j)[1]));
+						if (!itemChildChilds.isEmpty()) {
+							List<Object[]> itemChildChild = this.queryProxy()
+									.query(SELECT_ITEMS_BY_LIST_ITEM_ID_QUERY, Object[].class)
+									.setParameter("contractCd", contractCd)
+									.setParameter("listItemDefId", itemChildChilds).getList();
+							if (!itemChildChild.isEmpty()) {
+								itemlst.addAll(itemChildChild);
+							}
+						}
+
+					}
+					itemlst.addAll(itemChildLst);
+				}
+
+			}
+		}
+		objItemParents.addAll(itemlst);
+		Collections.sort(objItemParents, new Sortbyroll());
+		return objItemParents.stream().map(c -> {
+			return createDomainFromEntity1(c, new ArrayList<>());
+		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public String getItemName(String contractCode, String companyId, String categoryCode, String itemCode) {
+		return this.queryProxy()
+				.query(SELECT_ITEM_NAME_QUERY, String.class)
+				.setParameter("contractCd", contractCode)
+				.setParameter("cid", companyId)
+				.setParameter("categoryCd", companyId)
+				.setParameter("itemCd", itemCode)
+				.getSingle().orElse("not itemName");
+	}
+}
+
+class Sortbyroll implements Comparator<Object[]> {
+	public int compare(Object[] a, Object[] b) {
+		return (Integer.parseInt(a[30].toString()) - Integer.parseInt(b[30].toString()));
 	}
 }

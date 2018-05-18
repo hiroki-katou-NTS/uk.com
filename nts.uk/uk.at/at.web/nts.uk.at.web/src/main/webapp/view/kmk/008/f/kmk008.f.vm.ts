@@ -106,7 +106,7 @@ module nts.uk.at.view.kmk008.f {
                                 nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [param1, nts.uk.resource.getText(errorCode[3])] });
                                 return;
                             }
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                            nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                             self.getDetail(self.selectedCode());
 
                         });
@@ -120,7 +120,7 @@ module nts.uk.at.view.kmk008.f {
                             nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [param1, nts.uk.resource.getText(errorCode[3])] });
                             return;
                         }
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                         self.getalreadySettingList();
                         self.getDetail(self.selectedCode());
                     });

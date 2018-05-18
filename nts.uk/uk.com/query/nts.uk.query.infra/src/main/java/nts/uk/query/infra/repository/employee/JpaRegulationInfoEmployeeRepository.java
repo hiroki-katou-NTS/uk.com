@@ -23,6 +23,7 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.bs.employee.infra.entity.employee.order.BsymtEmpOrderCond;
 import nts.uk.ctx.bs.employee.infra.entity.employee.order.BsymtEmployeeOrder;
 import nts.uk.ctx.bs.employee.infra.entity.employee.order.BsymtEmployeeOrderPK;
@@ -316,6 +317,50 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 			// Not found.
 			return null;
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.query.model.employee.RegulationInfoEmployeeRepository
+	 * #findBySid(java.lang.String, java.lang.String, nts.arc.time.GeneralDateTime)
+	 */
+	@Override
+	public RegulationInfoEmployee findBySid(String comId, String sid, GeneralDateTime baseDate) {
+		CriteriaBuilder cb = this.getEntityManager().getCriteriaBuilder();
+		CriteriaQuery<EmployeeDataView> cq = cb.createQuery(EmployeeDataView.class);
+		Root<EmployeeDataView> root = cq.from(EmployeeDataView.class);
+		
+		// Constructing condition.
+		List<Predicate> conditions = new ArrayList<Predicate>();
+
+		// Add company condition
+		conditions.add(cb.equal(root.get(EmployeeDataView_.cid), comId));
+
+		// Add NOT_DELETED condition
+		conditions.add(cb.equal(root.get(EmployeeDataView_.delStatusAtr), NOT_DELETED));
+		
+		// Where SID.
+		conditions.add(cb.equal(root.get(EmployeeDataView_.sid), sid));
+		
+		// Where base date.
+		conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.wplStrDate), baseDate));
+		conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.wplEndDate), baseDate));
+		
+		// Find fist.
+		cq.where(conditions.toArray(new Predicate[] {}));
+		List<EmployeeDataView> res = this.getEntityManager().createQuery(cq).getResultList();
+		EmployeeDataView entity = res.get(0);
+		
+		// Convert.
+		return RegulationInfoEmployee.builder()
+				.classificationCode(Optional.ofNullable(entity.getClassificationCode())).employeeCode(entity.getScd())
+				.employeeID(entity.getSid()).employmentCode(Optional.ofNullable(entity.getEmpCd()))
+				.hireDate(Optional.ofNullable(entity.getComStrDate()))
+				.jobTitleCode(Optional.ofNullable(entity.getJobCd()))
+				.name(Optional.ofNullable(entity.getBusinessName()))
+				.workplaceId(Optional.ofNullable(entity.getWorkplaceId()))
+				.workplaceCode(Optional.ofNullable(entity.getWplCd()))
+				.workplaceName(Optional.ofNullable(entity.getWplName()))
+				.build();
 	}
 
 }

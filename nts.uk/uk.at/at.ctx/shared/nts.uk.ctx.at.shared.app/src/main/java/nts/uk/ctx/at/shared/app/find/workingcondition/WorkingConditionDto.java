@@ -9,7 +9,6 @@ import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.workingcondition.ScheduleMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.PeregItem;
@@ -73,7 +72,8 @@ public class WorkingConditionDto extends PeregDomainDto {
 	/**
 	 * 月間パターンCD
 	 */
-	// @PeregItem("IS00127")
+	 @PeregItem("IS00127")
+	 private String monthlyPattern;
 
 	/**
 	 * 休日勤種CD 区分別勤務.休日時.勤務種類コード
@@ -835,11 +835,6 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 @PeregItem("IS00246")
 	 private String timeApply;
 	 
-	 /* The monthly pattern. */
-	 // 月間パターン
-	 @PeregItem("IS00127")
-	 private String monthlyPattern;
-
 	public WorkingConditionDto(String recordId) {
 		super(recordId);
 	}
@@ -854,12 +849,12 @@ public class WorkingConditionDto extends PeregDomainDto {
 		if(workingConditionItem.getHourlyPaymentAtr() != null)dto.setHourlyPaymentAtr(workingConditionItem.getHourlyPaymentAtr().value);
 		if(workingConditionItem.getTimeApply().isPresent())
 			dto.setTimeApply(workingConditionItem.getTimeApply().get().v());
-		if(workingConditionItem.getMonthlyPattern().isPresent())
-			dto.setMonthlyPattern(workingConditionItem.getMonthlyPattern().get().v());
 		
 		dto.setScheduleManagementAtr(workingConditionItem.getScheduleManagementAtr().value);
 
 		// 予定作成方法
+		if(workingConditionItem.getMonthlyPattern().isPresent())
+			dto.setMonthlyPattern(workingConditionItem.getMonthlyPattern().get().v());
 		setScheduleMethod(dto, workingConditionItem.getScheduleMethod().get());
 
 		PersonalWorkCategory workCategory = workingConditionItem.getWorkCategory();
@@ -952,23 +947,25 @@ public class WorkingConditionDto extends PeregDomainDto {
 
 	private static void setScheduleMethod(WorkingConditionDto dto, ScheduleMethod scheduleMethod) {
 		dto.setBasicCreateMethod(scheduleMethod.getBasicCreateMethod().value);
-		if(scheduleMethod.getWorkScheduleBusCal().isPresent()){
-			dto.setReferenceBusinessDayCalendar(scheduleMethod.getWorkScheduleBusCal().get().getReferenceBusinessDayCalendar().value);			
+		if (scheduleMethod.getWorkScheduleBusCal().isPresent()) {
+			dto.setReferenceBusinessDayCalendar(
+					scheduleMethod.getWorkScheduleBusCal().get().getReferenceBusinessDayCalendar().value);
 			dto.setReferenceBasicWork(scheduleMethod.getWorkScheduleBusCal().get().getReferenceBasicWork().value);
 		}
-		
-		if(scheduleMethod.getBasicCreateMethod() != WorkScheduleBasicCreMethod.PERSONAL_DAY_OF_WEEK) {
-			if(scheduleMethod.getWorkScheduleBusCal().isPresent())
+		switch (scheduleMethod.getBasicCreateMethod()) {
+		case BUSINESS_DAY_CALENDAR:
+			if (scheduleMethod.getWorkScheduleBusCal().isPresent()) {
 				dto.setReferenceType(scheduleMethod.getWorkScheduleBusCal().get().getReferenceWorkingHours().value);
+			}
+			break;
+		case MONTHLY_PATTERN:
+			if (scheduleMethod.getMonthlyPatternWorkScheduleCre().isPresent()) {
+				dto.setReferenceType(scheduleMethod.getMonthlyPatternWorkScheduleCre().get().getReferenceType().value);
+			}
+			break;
+		default:
+			break;
 		}
-//		if(scheduleMethod.getBasicCreateMethod() == WorkScheduleBasicCreMethod.MONTHLY_PATTERN)
-//		{
-//			if(scheduleMethod.getMonthlyPatternWorkScheduleCre().isPresent())
-//				dto.setReferenceType(scheduleMethod.getMonthlyPatternWorkScheduleCre().get().getReferenceType().value);
-//		}else if(scheduleMethod.getBasicCreateMethod() == WorkScheduleBasicCreMethod.BUSINESS_DAY_CALENDAR) {
-//			if(scheduleMethod.getWorkScheduleBusCal().isPresent())
-//				dto.setReferenceType(scheduleMethod.getWorkScheduleBusCal().get().getReferenceWorkingHours().value);
-//		}
 	}
 
 	private static void setHolidayTime(WorkingConditionDto dto, SingleDaySchedule holidayTime) {

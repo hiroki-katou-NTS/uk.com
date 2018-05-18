@@ -14,7 +14,7 @@ import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformance
 import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectParameter;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -35,7 +35,7 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 	@Inject
 	private BasicScheduleService basicSche;
 	@Inject
-	private ScheWorkUpdateService scheWork;
+	private WorkUpdateService scheWork;
 	@Inject
 	private WorkTypeIsClosedService workTypeService;
 	@Inject
@@ -46,7 +46,12 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 	public ScheStartEndTimeReflectOutput reflectScheStartEndTime(OvertimeParameter para,
 			WorkTimeTypeOutput timeTypeData) {
 		//反映する開始終了時刻を求める
-		ScheStartEndTimeReflectOutput findStartEndTime = this.findStartEndTime(para, timeTypeData);
+		StartEndTimeRelectCheck startEndTimeData = new StartEndTimeRelectCheck(para.getEmployeeId(), para.getDateInfo(), para.getOvertimePara().getStartTime1(), 
+				para.getOvertimePara().getEndTime1(), para.getOvertimePara().getStartTime2(), 
+				para.getOvertimePara().getEndTime2(), 
+				para.getOvertimePara().getWorkTimeCode(), para.getOvertimePara().getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr());
+		ScheStartEndTimeReflectOutput findStartEndTime = this.findStartEndTime(startEndTimeData, timeTypeData);
+		
 		//申請する開始終了時刻に値があるかチェックする
 		if(para.getOvertimePara().getStartTime1() != null
 				|| para.getOvertimePara().getEndTime1() != null
@@ -56,40 +61,64 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 			if(findStartEndTime.isCountReflect1Atr()) {
 				//予定開始時刻の反映
 				//予定終了時刻の反映
+				//INPUT．残業区分をチェックする
+				boolean isEndTime = true;
+				boolean isStartTime = true;
+				if(para.getOvertimePara().getOvertimeAtr() == OverTimeRecordAtr.REGULAROVERTIME) {
+					isStartTime = false;
+				}
+				if(para.getOvertimePara().getOvertimeAtr() == OverTimeRecordAtr.PREOVERTIME) {
+					isEndTime = false;
+				}
+				
 				TimeReflectPara timeData1 = new TimeReflectPara(para.getEmployeeId(), 
 						para.getDateInfo(), 
 						findStartEndTime.getStartTime1(), 
 						findStartEndTime.getEndTime1(), 
-						1, true, true);
+						1, isStartTime, isEndTime);
 				scheWork.updateScheStartEndTime(timeData1);
 			}
 			//２回勤務反映区分(output)をチェックする
 			if(findStartEndTime.isCountReflect2Atr()) {
 				//予定開始時刻２の反映
 				//予定終了時刻２の反映
+				boolean isEndTime = true;
+				boolean isStartTime = true;
+				if(para.getOvertimePara().getOvertimeAtr() == OverTimeRecordAtr.REGULAROVERTIME) {
+					isStartTime = false;
+				}
+				if(para.getOvertimePara().getOvertimeAtr() == OverTimeRecordAtr.PREOVERTIME) {
+					isEndTime = false;
+				}
 				TimeReflectPara timeData2 = new TimeReflectPara(para.getEmployeeId(),
 						para.getDateInfo(),
 						findStartEndTime.getStartTime2(), 
 						findStartEndTime.getEndTime2(), 
 						2,
-						true, 
-						true);
+						isStartTime, 
+						isEndTime);
 				scheWork.updateScheStartEndTime(timeData2);
 			}
 		} else {
 			//１回勤務反映区分(output)をチェックする
 			if(findStartEndTime.isCountReflect1Atr()) {
 				//予定開始時刻を反映できるかチェックする
-				boolean isCheckStart = this.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 1, timeTypeData.getWorkTypeCode(), true);
-				boolean isCheckEnd = this.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 1, timeTypeData.getWorkTypeCode(), false);
-				TimeReflectPara timeData1 = new TimeReflectPara(para.getEmployeeId(), para.getDateInfo(), findStartEndTime.getStartTime1(), findStartEndTime.getEndTime1(), 1, isCheckStart, isCheckEnd);
+				boolean isCheckStart = this.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 1, 
+						timeTypeData.getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr(), true);
+				boolean isCheckEnd = this.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 1, 
+						timeTypeData.getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr(), false);
+				TimeReflectPara timeData1 = new TimeReflectPara(para.getEmployeeId(), para.getDateInfo(), 
+						findStartEndTime.getStartTime1(), findStartEndTime.getEndTime1(), 
+						1, isCheckStart, isCheckEnd);
 				scheWork.updateScheStartEndTime(timeData1);		
 				
 			}
 			//２回勤務反映区分(output)をチェックする
 			if(findStartEndTime.isCountReflect2Atr()) {
-				boolean isCheckStart = this.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 2, timeTypeData.getWorkTypeCode(), true);
-				boolean isCheckEnd = this.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 2, timeTypeData.getWorkTypeCode(), false);
+				boolean isCheckStart = this.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 2,
+						timeTypeData.getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr(), true);
+				boolean isCheckEnd = this.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 2, 
+						timeTypeData.getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr(), false);
 				TimeReflectPara timeData1 = new TimeReflectPara(para.getEmployeeId(), para.getDateInfo(), findStartEndTime.getStartTime2(), findStartEndTime.getEndTime2(), 2, isCheckStart, isCheckEnd);
 				scheWork.updateScheStartEndTime(timeData1);
 			}
@@ -99,7 +128,7 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 	}
 
 	@Override
-	public ScheStartEndTimeReflectOutput findStartEndTime(OvertimeParameter para, WorkTimeTypeOutput timeTypeData) {
+	public ScheStartEndTimeReflectOutput findStartEndTime(StartEndTimeRelectCheck para, WorkTimeTypeOutput timeTypeData) {
 		ScheStartEndTimeReflectOutput findDataOut = new ScheStartEndTimeReflectOutput(null, null, true, null, null, true);
 		//ドメインモデル「就業時間帯の設定」を取得する
 		String companyId = AppContexts.user().companyId();
@@ -121,8 +150,13 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 		} else {
 			timeZone2 = lstTimeZone2.get(0);	
 		}
-
-		TimezoneUse timeZone1 = lstTimeZone1.get(0);
+		TimezoneUse timeZone1 = null;
+		if(lstTimeZone1.isEmpty()) {
+			findDataOut.setCountReflect1Atr(false);
+		} else {
+			timeZone1 = lstTimeZone1.get(0);	
+		}
+		
 		if(timeZone2 != null && timeZone2.getUseAtr() == UseSetting.NOT_USE) {
 			findDataOut.setCountReflect2Atr(false);
 		} else {
@@ -132,14 +166,14 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 		WorkStyle workStyle =  basicSche.checkWorkDay(timeTypeData.getWorkTypeCode());
 		PrescribedTimezoneSetting prescribSeting = workTimeData.getPrescribedTimezoneSetting();
 		//申請の開始、終了時刻に値があるかチェックする
-		if(para.getOvertimePara().getStartTime1() != null
-				|| para.getOvertimePara().getEndTime1() != null
-				|| para.getOvertimePara().getStartTime2() != null
-				|| para.getOvertimePara().getEndTime2() != null) {
+		if(para.getStartTime1() != null
+				|| para.getEndTime1() != null
+				|| para.getStartTime2() != null
+				|| para.getEndTime2() != null) {
 			//取得した２回勤務使用区分をチェックする
 			if(!findDataOut.isCountReflect2Atr()) {
-				findDataOut.setStartTime1(para.getOvertimePara().getStartTime1());
-				findDataOut.setEndTime1(para.getOvertimePara().getEndTime1());
+				findDataOut.setStartTime1(para.getStartTime1());
+				findDataOut.setEndTime1(para.getEndTime1());
 				return findDataOut;
 			} else {
 				//昼休憩は勤務時間帯か、勤務時間帯2にあるかチェックする
@@ -148,28 +182,28 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 				if(timeZone2 != null 
 						&& prescribSeting.getAfternoonStartTime().v() < timeZone2.getStart().v()) {//true：昼休憩は勤務時間帯にある
 					//開始時刻=申請の開始時刻、終了時刻=申請の開始時刻
-					findDataOut.setStartTime1(para.getOvertimePara().getStartTime1());
-					findDataOut.setEndTime1(para.getOvertimePara().getEndTime1());
+					findDataOut.setStartTime1(para.getStartTime1());
+					findDataOut.setEndTime1(para.getEndTime1());
 					//OUTPUT．出勤休日区分をチェックする
 					if(workStyle == WorkStyle.MORNING_WORK) {
 						findDataOut.setCountReflect2Atr(false);
 					} else {
 						//開始時刻2=申請の開始時刻2、終了時刻2=申請の開始時刻2
-						findDataOut.setStartTime2(para.getOvertimePara().getStartTime2());
-						findDataOut.setEndTime2(para.getOvertimePara().getEndTime2());
+						findDataOut.setStartTime2(para.getStartTime2());
+						findDataOut.setEndTime2(para.getEndTime2());
 					}
 					return findDataOut;
 				} else { //false：昼休憩は勤務時間帯２にある
 					//開始時刻2=申請の開始時刻2、終了時刻2=申請の開始時刻2
-					findDataOut.setStartTime2(para.getOvertimePara().getStartTime2());
-					findDataOut.setEndTime2(para.getOvertimePara().getEndTime2());
+					findDataOut.setStartTime2(para.getStartTime2());
+					findDataOut.setEndTime2(para.getEndTime2());
 					//OUTPUT．出勤休日区分をチェックする
 					if(workStyle == WorkStyle.AFTERNOON_WORK) {
 						findDataOut.setCountReflect1Atr(false);
 					}else {
 						//開始時刻=申請の開始時刻、終了時刻=申請の開始時刻
-						findDataOut.setStartTime1(para.getOvertimePara().getStartTime1());
-						findDataOut.setEndTime1(para.getOvertimePara().getEndTime1());
+						findDataOut.setStartTime1(para.getStartTime1());
+						findDataOut.setEndTime1(para.getEndTime1());
 					}
 					return findDataOut;
 				}
@@ -263,7 +297,11 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 
 	@Override
 	public boolean checkStartEndTimeReflect(String employeeId, GeneralDate datadata, Integer frameNo,
-			String workTypeCode, boolean isPre) {
+			String workTypeCode, OverTimeRecordAtr overTimeAtr, boolean isPre) {
+		if((overTimeAtr == OverTimeRecordAtr.REGULAROVERTIME && isPre)
+				|| overTimeAtr == OverTimeRecordAtr.PREOVERTIME && !isPre) {
+			return false;
+		}
 		//打刻自動セット区分を取得する
 		if(workTypeService.checkStampAutoSet(workTypeCode, AttendanceOfficeAtr.ATTENDANCE)) {
 			//編集状態を取得する

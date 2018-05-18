@@ -100,7 +100,7 @@ public class OtherHolidayInfoFinder implements PeregFinder<OtherHolidayInfoDto> 
 		sumRemain = excessHolidayManaDataRepository
 				.getBySidWithExpCond(cid, query.getEmployeeId(), LeaveExpirationStatus.AVAILABLE.value).stream()
 				.mapToDouble(i -> i.getInfo().getRemainNumer().minute()).sum();
-		dto.setExtraHours(sumRemain.intValue());
+		dto.setExtraHours(OtherHolidayInfoDto.convertTime(sumRemain.intValue()));
 		// ----------------------------
 
 		return dto;

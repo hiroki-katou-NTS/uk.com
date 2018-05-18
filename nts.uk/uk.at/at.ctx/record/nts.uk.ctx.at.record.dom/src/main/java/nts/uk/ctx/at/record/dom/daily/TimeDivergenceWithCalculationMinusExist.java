@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.daily;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 
 /**
@@ -17,9 +18,12 @@ public class TimeDivergenceWithCalculationMinusExist {
 	private AttendanceTimeOfExistMinus divergenceTime;
 	
 	private TimeDivergenceWithCalculationMinusExist(AttendanceTimeOfExistMinus time,AttendanceTimeOfExistMinus calcTime) {
-		this.time = time;
-		this.calcTime = calcTime;
-		this.divergenceTime = calcTime.minusMinutes(time.valueAsMinutes());
+		this.time = time==null?new AttendanceTimeOfExistMinus(0):time;
+		this.calcTime = calcTime==null?new AttendanceTimeOfExistMinus(0):calcTime;
+		this.divergenceTime = this.time.minusMinutes(this.calcTime.valueAsMinutes());
+		if(this.divergenceTime.valueAsMinutes()<0) {
+			this.divergenceTime = new AttendanceTimeOfExistMinus(0);
+		}
 	}
 	
 	/**
@@ -39,4 +43,13 @@ public class TimeDivergenceWithCalculationMinusExist {
 		return new TimeDivergenceWithCalculationMinusExist(time,calcTime);
 		
 	}
+	
+	/**
+	 * 自身の乖離時間を計算する
+	 * @return
+	 */
+	public TimeDivergenceWithCalculationMinusExist calcDiverGenceTime() {
+		return new TimeDivergenceWithCalculationMinusExist(this.time,this.calcTime);
+	}
+	
 }
