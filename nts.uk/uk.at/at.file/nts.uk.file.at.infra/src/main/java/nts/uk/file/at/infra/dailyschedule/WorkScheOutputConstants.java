@@ -17,6 +17,7 @@ public class WorkScheOutputConstants {
 	public static final String EMPLOYEE = "【個人】";
 	public static final String EMPLOYMENT = "【雇用】";
 	public static final String POSITION = "【職位】";
+	public static final String DATE_BRACKET = "[日付]";
 	
 	// ER / AL
 	public static final String ER = "ER";
@@ -49,6 +50,9 @@ public class WorkScheOutputConstants {
 	public static final String RANGE_WHITE_ROW = "White"; // Append number of row after this constants, eg. "White3" for 3 rows
 	public static final String RANGE_LIGHTBLUE_ROW = "LBlue"; // Append number of row after this constants, eg. "LBlue3" for 3 rows
 	public static final String RANGE_DAYCOUNT_ROW = "DayCount";
-	public static final String RANGE_TOTAL_ROW = "WorkplaceRow"; // Append number of row after this constants, eg. "Total3" for 3 rows
-	public static final String RANGE_GROSS_ROW = "WorkplaceRow"; // Append number of row after this constants, eg. "Gross3" for 3 rows
+	public static final String RANGE_TOTAL_ROW = "Total"; // Append number of row after this constants, eg. "Total3" for 3 rows
+	public static final String RANGE_GROSS_ROW = "Gross"; // Append number of row after this constants, eg. "Gross3" for 3 rows
+	
+	public static final String RANGE_DATE_ROW = "DateRow";
+	public static final String RANGE_DAILY_WORKPLACE_ROW = "DailyWorkplaceRow";
 }

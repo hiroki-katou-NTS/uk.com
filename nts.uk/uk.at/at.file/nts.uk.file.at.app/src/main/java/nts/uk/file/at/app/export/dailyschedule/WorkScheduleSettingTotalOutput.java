@@ -24,5 +24,5 @@ public class WorkScheduleSettingTotalOutput {
 	// 職場累計
 	private boolean cumulativeWorkplace;
 	// 職場階層累計
-	private Optional<TotalWorkplaceHierachy> workplaceHierachyTotal;
+	private TotalWorkplaceHierachy workplaceHierachyTotal;
 }

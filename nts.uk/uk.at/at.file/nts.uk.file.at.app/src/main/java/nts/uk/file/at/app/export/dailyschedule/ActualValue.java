@@ -50,16 +50,16 @@ public class ActualValue {
 	 * @return the t
 	 */
 	public <T> T value() {
-		if(value == null){
-			return null;
-		}
+//		if(value == null){
+//			return null;
+//		}
 		switch (this.valueType) {
 		case INTEGER:
-			return this.value == null || this.value.isEmpty() ? null : (T) new Integer(this.value);
+			return this.value == null || this.value.isEmpty() ? (T) new Integer(0) : (T) new Integer(this.value);
 		case STRING:
 			return (T) this.value;
 		case BIG_DECIMAL:
-			return this.value == null || this.value.isEmpty() ? null : (T) new BigDecimal(this.value);
+			return this.value == null || this.value.isEmpty() ? (T) new BigDecimal(0) : (T) new BigDecimal(this.value);
 		case DATE:
 			return this.value == null || this.value.isEmpty() ? null : (T) GeneralDate.fromString(this.value, "yyyyMMdd");
 		default:

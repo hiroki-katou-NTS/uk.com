@@ -173,6 +173,7 @@ module nts.uk.at.view.kwr001.a {
                         var employeeSearchs: UnitModel[] = [];
                         _.forEach(data.listEmployee, function(value) {
                             var employee: UnitModel = {
+                                id: value.employeeId,
                                 code: value.employeeCode,
                                 name: value.employeeName,
                             };
@@ -298,7 +299,7 @@ module nts.uk.at.view.kwr001.a {
                 let companyId: string = __viewContext.user.companyId;
                 let userId: string = __viewContext.user.employeeId;
                 service.restoreCharacteristic(companyId, userId).done(function(data: any) {
-                    let workScheduleOutputCondition: WorkScheduleOutputCondition = data;
+                    let workScheduleOutputCondition: WorkScheduleOutputConditionDto = data;
                     self.selectedDataOutputType(workScheduleOutputCondition.outputType);
                     self.selectedCodeA7_3(workScheduleOutputCondition.code);
                     self.selectedCodeA9_2(workScheduleOutputCondition.pageBreakIndicator);
@@ -357,11 +358,11 @@ module nts.uk.at.view.kwr001.a {
                 let companyId: string = __viewContext.user.companyId;
                 let userId: string = __viewContext.user.employeeId;
 
-                $.when(service.restoreCharacteristic(companyId, userId)).done(function(data: WorkScheduleOutputCondition) {
+                $.when(service.restoreCharacteristic(companyId, userId)).done(function(data: WorkScheduleOutputConditionDto) {
                 if (_.isUndefined(data)) {
                     let totalWorkplaceHierachy = new TotalWorkplaceHierachy(false, false, false, false, false, false, false, false, false);
                     let workScheduleSettingTotalOutput = new WorkScheduleSettingTotalOutput(false, false, false, false, false, false, totalWorkplaceHierachy);
-                    let workScheduleOutputCondition = new WorkScheduleOutputCondition(companyId, userId, 0, '', 0, workScheduleSettingTotalOutput, 0, []);
+                    let workScheduleOutputCondition = new WorkScheduleOutputConditionDto(companyId, userId, 0, '', 0, workScheduleSettingTotalOutput, 0, []);
                     service.saveCharacteristic(companyId, userId, workScheduleOutputCondition);    
                 }
                 
@@ -376,7 +377,7 @@ module nts.uk.at.view.kwr001.a {
                 let companyId: string = __viewContext.user.companyId;
                 let userId: string = __viewContext.user.employeeId;
                 service.restoreCharacteristic(companyId, userId).done(function(data: any) {
-                    let workScheduleOutputCondition: WorkScheduleOutputCondition = data;
+                    let workScheduleOutputCondition: WorkScheduleOutputConditionDto = data;
                     nts.uk.ui.windows.setShared('KWR001_B_errorAlarmCode', _.isUndefined(data) ? [] : workScheduleOutputCondition.errorAlarmCode, true);
                     nts.uk.ui.windows.sub.modal('/view/kwr/001/b/index.xhtml').onClosed(function(): any {
                         workScheduleOutputCondition.errorAlarmCode = nts.uk.ui.windows.getShared('KWR001_B_errorAlarmCode');
@@ -412,11 +413,49 @@ module nts.uk.at.view.kwr001.a {
                 return codeChoose.code;
             }
             
+            /**
+             * find employee id in selected
+             */
+            private findEmployeeIdByCode(employeeCode: string): string {
+                var self = this;
+                var employeeId = '';
+                for (var employee of self.employeeList()) {
+                    if (employee.id === employeeCode) {
+                        employeeId = employee.id;
+                    }
+                }
+                return employeeId;
+            }
+            
+            /**
+             * find employee id in selected
+             */
+            private findEmployeeIdsByCodes(employeeCodes: UnitModel[]): string[] {
+                var self = this;
+                var employeeIds: string[] = [];
+                for (var employeeCode of employeeCodes) {
+                    employeeIds.push(self.findEmployeeIdByCode(employeeCode.id));
+                }
+                return employeeIds;
+            }
+            
             processExcel(): void {
                 let self = this;
                 if (self.validateMinimumOneChecked()) {
                     self.saveWorkScheduleOutputCondition();
-                    service.exportExcel();    
+                    let companyId: string = __viewContext.user.companyId;
+                    let userId: string = __viewContext.user.employeeId;
+                    service.restoreCharacteristic(companyId, userId).done(function(data: WorkScheduleOutputConditionDto) {
+                        var user: any = __viewContext.user;
+                        var dto: WorkScheduleOutputQueryDto = {
+                            lstEmployeeId: self.findEmployeeIdsByCodes(self.employeeList()),
+                            startDate: self.toDate(self.startDatepicker()),
+                            endDate: self.toDate(self.startDatepicker()),
+                            fileType: 0,
+                            condition: data
+                        };
+                        service.exportExcel(dto);
+                    });
                 }
                 
             }
@@ -425,6 +464,19 @@ module nts.uk.at.view.kwr001.a {
                 let self = this;
                 if (self.validateMinimumOneChecked()) {
                     self.saveWorkScheduleOutputCondition();
+                    let companyId: string = __viewContext.user.companyId;
+                    let userId: string = __viewContext.user.employeeId;
+                    service.restoreCharacteristic(companyId, userId).done(function(data: WorkScheduleOutputConditionDto) {
+                        var user: any = __viewContext.user;
+                        var dto: WorkScheduleOutputQueryDto = {
+                            lstEmployeeId: self.findEmployeeIdsByCodes(self.employeeList()),
+                            startDate: self.toDate(self.startDatepicker()),
+                            endDate: self.toDate(self.startDatepicker()),
+                            fileType: 1,
+                            condition: data
+                        };
+                        service.exportExcel(dto);
+                    });
                 }
             }
             
@@ -485,11 +537,15 @@ module nts.uk.at.view.kwr001.a {
                     
                     errorAlarmCode = data.errorAlarmCode;
                     
-                    let workScheduleOutputCondition = new WorkScheduleOutputCondition(companyId, userId, self.selectedDataOutputType(), 
+                    let workScheduleOutputCondition = new WorkScheduleOutputConditionDto(companyId, userId, self.selectedDataOutputType(), 
                                                                                     codeChoose, self.selectedCodeA9_2(), 
                                                                                     workScheduleSettingTotalOutput, self.selectedCodeA13_1(), errorAlarmCode);
                     service.saveCharacteristic(companyId, userId, workScheduleOutputCondition); 
                 })    
+            }
+            
+            private toDate(strDate: string): Date {
+                return moment(strDate, 'YYYY/MM/DD').toDate();
             }
         }
         
@@ -506,6 +562,7 @@ module nts.uk.at.view.kwr001.a {
         }
 
         export interface UnitModel {
+            id: string;
             code: string;
             name?: string;
             workplaceName?: string;
@@ -596,13 +653,13 @@ module nts.uk.at.view.kwr001.a {
         }
         // end CCG001
         
-        class WorkScheduleOutputCondition {
+        class WorkScheduleOutputConditionDto {
             companyId: string;
             userId: string;
             outputType: number;
             code: string;
             pageBreakIndicator: number;
-            settingDetailTotalOuput: WorkScheduleSettingTotalOutput;
+            settingDetailTotalOutput: WorkScheduleSettingTotalOutput;
             conditionSetting: number;
             errorAlarmCode: string[];
             
@@ -613,7 +670,7 @@ module nts.uk.at.view.kwr001.a {
                 this.outputType = outputType;
                 this.code = code;
                 this.pageBreakIndicator = pageBreakIndicator;
-                this.settingDetailTotalOuput = settingDetailTotalOuput;
+                this.settingDetailTotalOutput = settingDetailTotalOuput;
                 this.conditionSetting =  conditionSetting;
                 if (errorAlarmCode) {
                     this.errorAlarmCode = errorAlarmCode;        
@@ -642,6 +699,22 @@ module nts.uk.at.view.kwr001.a {
                 if (workplaceHierarchyTotal) {
                     this.workplaceHierarchyTotal = workplaceHierarchyTotal;
                 }
+            }
+        }
+        
+        class WorkScheduleOutputQueryDto {
+            lstEmployeeId: Array<string>;
+            startDate: Date;
+            endDate: Date;
+            fileType: number;
+            condition: WorkScheduleOutputConditionDto;
+            
+            constructor(lstEmployeeId: Array<string>, startDate: Date, endDate: Date, condition: WorkScheduleOutputConditionDto, fileType: number) {
+                this.lstEmployeeId = lstEmployeeId;
+                this.startDate = startDate;
+                this.endDate = endDate;
+                this.condition = condition;
+                this.fileType = fileType;
             }
         }
         
