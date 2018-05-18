@@ -511,25 +511,28 @@ public class CommonApprovalRootFinder {
 	 * @param employeeCode
 	 * @return
 	 */
-	public EmployeeWithRangeLoginImport getEmployeeInfoByCode(String employeeCode, boolean hasAuthority){
-		String companyId = AppContexts.user().companyId();
+	public EmployeeWithRangeLoginImport getEmployeeInfoByCode(Cmm053EmployeeSearchParam param){
+		String companyId     = AppContexts.user().companyId();
+		String employeeCode  = param.getEmployeeCode();
+		GeneralDate baseDate = Objects.isNull(param.getBaseDate()) ? GeneralDate.today() : param.getBaseDate();
 		Optional<EmployeeWithRangeLoginImport> employeeWithRange = null;
+
 		// 承認権限がある社員
-		if (hasAuthority) {
+		if (param.isHasAuthority()) {
 			// ログイン者の社員参照範囲で社員コードから社員を取得する
 			// RequestList314
 			employeeWithRange = this.employeeWithRangeAdapter.findEmployeeByAuthorizationAuthority(companyId, employeeCode);
 		} else {
 			// 社員コードから承認権限ありの社員のみ取得する
 			// RequestList315
-			employeeWithRange = this.employeeWithRangeAdapter.findByEmployeeByLoginRange(companyId, employeeCode);
+			employeeWithRange = this.employeeWithRangeAdapter.findByEmployeeByLoginRange(companyId, employeeCode, baseDate);
 		}
 
 		if (!employeeWithRange.isPresent())
 			throw new BusinessException("Msg_1078");
 
 		return employeeWithRange.map(x -> {
-			return new EmployeeWithRangeLoginImport(x.getBusinessName(), x.getPersonID(), x.getEmployeeCD(),
+			return new EmployeeWithRangeLoginImport(x.getBusinessName(), x.getEmployeeCD(),
 					x.getEmployeeID());
 		}).orElse(null);
 	}

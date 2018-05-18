@@ -10,7 +10,6 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.AddSelectionItemCommand;
 import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.AddSelectionItemCommandHandler;
 import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.RemoveSelectionItemCommand;
@@ -80,28 +79,28 @@ public class PerInfoSelectionItemWebservice extends WebService {
 
 	// add history data: screen C:
 	@Inject
-	AddSelectionHistoryCommandHandler addHistory;
+	private AddSelectionHistoryCommandHandler addHistory;
 
 	// Edit History:
 	@Inject
-	EditHistoryCommandHandler editHistory;
+	private EditHistoryCommandHandler editHistory;
 
 	// Delete history:
 	@Inject
-	RemoveHistoryCommandHandler removeHistory;
+	private RemoveHistoryCommandHandler removeHistory;
 
 	// Phan anh cong ty:
 	@Inject
-	ReflUnrCompCommandHandler reflUnrComp;
+	private ReflUnrCompCommandHandler reflUnrComp;
 
 	// hoatt - update selection order
 	@Inject
 	private UpdateSelOrderCommandHandler updateSelOrder;
 
 	@POST
-	@Path("findAll/{hasCompanyId}")
-	public List<PerInfoSelectionItemDto> getAllPerInfoSelectionItem(@PathParam("hasCompanyId") boolean hasCompanyId) {
-		return this.finder.getAllPerInfoSelectionItem(hasCompanyId);
+	@Path("findAll/{isCps017}")
+	public List<PerInfoSelectionItemDto> getAllPerInfoSelectionItem(@PathParam("isCps017") boolean isCps017) {
+		return this.finder.getAllPerInfoSelectionItem(isCps017);
 	}
 
 	@POST
@@ -194,9 +193,7 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	// Lanlt
 	@POST
 	@Path("findAllCombox")
-	public List<ComboBoxObject> getAllSelectionByHistoryId(SelectionQuery  query) {
-		//return this.selecFider.getAllSelectionByHistoryId(selectionItemId, baseDate);
-		
+	public List<ComboBoxObject> getAllSelectionByHistoryId(SelectionQuery query) {
 		return this.selecFider.getAllComboxByHistoryId(query);
 	}
 	

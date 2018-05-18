@@ -1,11 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.Getter;
 import lombok.val;
-import nts.arc.time.YearMonth;
 
 /**
  * 変形労働時間勤務の法定内集計設定

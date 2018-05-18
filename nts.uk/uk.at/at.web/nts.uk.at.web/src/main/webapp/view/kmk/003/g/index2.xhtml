@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+		
+			<script>
+				var dialogSize = {
+					width : 450,
+					height : 470
+				};
+			</script>
+			
+			<com:scriptfile set="IGNITE" />
+			
+			<com:scriptfile path="../a5/kmk003.a5.vm.js" />
+			<com:stylefile path="kmk003.g.style.css" />
+			<com:scriptfile path="kmk003.g.vm.js" />
+			<com:scriptfile path="kmk003.g.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+
+			<div id="contents-area">
+				<div class="main-container">
+				
+					<!-- START form label -  -->
+					<div class="dialog-rows">
+						<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_238')}</div>			
+					</div>	
+					<div><hr/></div>
+					<!-- END form label -  -->
+				
+					<!-- START setting items -  -->
+					<div class="dialog-block">
+						<div class="dialog-rows">
+							<div tabindex="1" id="selected-actual" data-bind="ntsRadioBoxGroup: {
+										options: actualList,
+										name: '#[KMK003_238]',
+										optionsValue: 'id',
+										optionsText: 'name',
+										value: selectedActual,
+										enable: true}"></div>	
+						</div>	
+					</div>				
+					<!-- END setting items -  -->
+					
+					<!-- ====================================================================================== -->
+
+					<!-- START form label -  -->
+					<div class="dialog-rows">
+						<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_234')}</div>			
+					</div>	
+					<div><hr/></div>
+					<!-- END form label -  -->
+					
+					<!-- START setting items -  -->
+					<div class="dialog-block">
+						<div class="dialog-rows">
+							<div tabindex="2" data-bind="ntsRadioBoxGroup: {
+										options: lstRest,
+										name: '#[KMK003_234]',
+										optionsValue: 'id',
+										optionsText: 'name',
+										value: selectedRest,
+										enable: true}"></div>
+						</div>	
+					</div>				
+					<!-- END setting items -  -->
+										
+				</div>
+			</div>
+
+			<div id="functions-area-bottom">
+				<button tabindex="6" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
+				<button tabindex="7" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

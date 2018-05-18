@@ -154,12 +154,12 @@
 }
 
 #role_auth_cover {
-	width: 550px;
+	width: 603px;
 }
 
-#A3_004 {
-	width: 70px;
-}
+/* #A3_004 {
+	width: 120px;
+} */
 
 #item_role_table_body_container {
 	margin-top: 5px !important;
@@ -200,6 +200,6 @@
 	float: left;
 }
 
-.checkbox_float_left>div:FIRST-CHILD {
-	float: left;
-}
+/* #item_role_table_body_isChecked > span > div > label > span.box {
+	margin-left: 6px !important;
+} */

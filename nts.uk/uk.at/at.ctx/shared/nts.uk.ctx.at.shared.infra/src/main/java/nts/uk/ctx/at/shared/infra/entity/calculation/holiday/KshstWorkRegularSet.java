@@ -42,7 +42,7 @@ public class KshstWorkRegularSet  extends UkJpaEntity implements Serializable{
 	@Column(name = "PRE_ADDITION_TIME")
 	public int additionTime1;
 	
-	/** 遅刻・早退を控除しない */
+	/** 控除する */
 	@Column(name = "PRE_NOT_DEDUCT_LATELEAVE")
 	public int notDeductLateleave1;
 	
@@ -73,10 +73,6 @@ public class KshstWorkRegularSet  extends UkJpaEntity implements Serializable{
 	/*就業時間帯毎の設定を可能とする*/
 	@Column(name = "ENABLE_SET_PER_WORK_HOUR1")
 	public int enableSetPerWorkHour1;
-	
-	/*就業時間帯毎の設定を可能とする*/
-	@Column(name = "ENABLE_SET_PER_WORK_HOUR2")
-	public int enableSetPerWorkHour2;
 	
 	@OneToOne(optional = false)
 		@JoinColumn(name = "CID", referencedColumnName="CID", insertable = false, updatable = false)

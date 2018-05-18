@@ -19,6 +19,37 @@ import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExport;
  */
 public interface ApprovalRootStatePub {
 	/**
+	 * RequestList356
+	 * 実績の承認を解除する
+	 * @param approverID
+	 * @param approvalRecordDates
+	 * @param employeeID
+	 * @param rootType
+	 * @return
+	 */
+	public boolean releaseApproval(String approverID, List<GeneralDate> approvalRecordDates, List<String> employeeID,Integer rootType,String companyID);
+	/**
+	 * RequestList347
+	 * 実績の承認を登録する
+	 * @param approverID
+	 * @param approvalRecordDates
+	 * @param employeeID
+	 * @param rootType
+	 * @return
+	 */
+	public void registerApproval(String approverID, List<GeneralDate> approvalRecordDates, List<String> employeeID,Integer rootType,String companyID);
+	/**
+	 * RequestList155
+	 * [No.155]承認対象者リストと日付リストから承認状況を取得する
+	 * getApprovalByListEmplAndListApprovalRecordDate
+	 * @param approvalRecordDates
+	 * @param employeeID
+	 * @param companyID
+	 * @param rootType
+	 * @return
+	 */
+	public List<ApproveRootStatusForEmpExport> getApprovalByListEmplAndListApprovalRecordDate(List<GeneralDate> approvalRecordDates, List<String> employeeID,Integer rootType);
+	/**
 	 * RequestList229
 	 * 承認対象者（複数）と期間から承認状況を取得する
 	 * @param startDate
@@ -72,7 +103,7 @@ public interface ApprovalRootStatePub {
 	
 	public ApprovalRootContentExport getApprovalRoot(String companyID, String employeeID, Integer appTypeValue, GeneralDate date, String appID, Boolean isCreate);
 	
-	public void insertAppRootType(String companyID, String employeeID, Integer appTypeValue, GeneralDate date, String appID);
+	public void insertAppRootType(String companyID, String employeeID, Integer appTypeValue, GeneralDate date, String appID, Integer rootType);
 	
 	/**
 	 * 4.次の承認の番の承認者を取得する(メール通知用)
@@ -81,8 +112,8 @@ public interface ApprovalRootStatePub {
 	 * @param approvalPhaseStateNumber ドメインモデル「承認フェーズインスタンス」・順序
 	 * @return
 	 */
-	public List<String> getNextApprovalPhaseStateMailList(String companyID, String rootStateID,
-			Integer approvalPhaseStateNumber, Boolean isCreate, String employeeID, Integer appTypeValue, GeneralDate appDate);
+	public List<String> getNextApprovalPhaseStateMailList(String companyID, String rootStateID, Integer approvalPhaseStateNumber, 
+			Boolean isCreate, String employeeID, Integer appTypeValue, GeneralDate appDate, Integer rootType);
 	
 	/**
 	 * 承認する
@@ -91,7 +122,8 @@ public interface ApprovalRootStatePub {
 	 * @param employeeID 社員ID
 	 * @return 承認フェーズ枠番
 	 */
-	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate, Integer appTypeValue, GeneralDate appDate, String memo);
+	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate, 
+			Integer appTypeValue, GeneralDate appDate, String memo, Integer rootType);
 	
 	/**
 	 * 2.承認全体が完了したか
@@ -99,21 +131,22 @@ public interface ApprovalRootStatePub {
 	 * @param rootStateID インスタンスID
 	 * @return
 	 */
-	public Boolean isApproveAllComplete(String companyID, String rootStateID, String employeeID, Boolean isCreate, Integer appTypeValue, GeneralDate appDate);
+	public Boolean isApproveAllComplete(String companyID, String rootStateID, String employeeID, Boolean isCreate, 
+			Integer appTypeValue, GeneralDate appDate, Integer rootType);
 	
 	/**
 	 * 一括解除する 
 	 * @param companyID 会社ID
 	 * @param rootStateID インスタンスID
 	 */
-	public void doReleaseAllAtOnce(String companyID, String rootStateID);
+	public void doReleaseAllAtOnce(String companyID, String rootStateID, Integer rootType);
 	
 	/**
 	 * 1.承認を行った承認者を取得する
 	 * @param rootStateID
 	 * @return
 	 */
-	public ApproverApprovedExport getApproverApproved(String rootStateID); 
+	public ApproverApprovedExport getApproverApproved(String rootStateID, Integer rootType); 
 	
 	/**
 	 * 承認代行情報の取得処理
@@ -130,9 +163,9 @@ public interface ApprovalRootStatePub {
 	 * @param rootStateID インスタンスID
 	 * @return
 	 */
-	public List<String> getMailNotifierList(String companyID, String rootStateID);
+	public List<String> getMailNotifierList(String companyID, String rootStateID, Integer rootType);
 	
-	public void deleteApprovalRootState(String rootStateID);
+	public void deleteApprovalRootState(String rootStateID, Integer rootType);
 	
 	/**
 	 * 解除する
@@ -140,7 +173,7 @@ public interface ApprovalRootStatePub {
 	 * @param rootStateID インスタンスID
 	 * @param employeeID 社員ID
 	 */
-	public Boolean doRelease(String companyID, String rootStateID, String employeeID);
+	public Boolean doRelease(String companyID, String rootStateID, String employeeID, Integer rootType);
 	
 	/**
 	 * 否認する
@@ -151,7 +184,7 @@ public interface ApprovalRootStatePub {
 				true：否認を実行した
 				false：否認を実行しなかった
 	 */
-	public Boolean doDeny(String companyID, String rootStateID, String employeeID, String memo);
+	public Boolean doDeny(String companyID, String rootStateID, String employeeID, String memo, Integer rootType);
 	
 	/**
 	 * 1.指定した社員が承認者であるかの判断
@@ -162,7 +195,7 @@ public interface ApprovalRootStatePub {
 	 			true：承認者である
 	 			false：承認者でない
 	 */
-	public Boolean judgmentTargetPersonIsApprover(String companyID, String rootStateID, String employeeID);
+	public Boolean judgmentTargetPersonIsApprover(String companyID, String rootStateID, String employeeID, Integer rootType);
 	
 	/**
 	 * 3.指定した社員が承認できるかの判断
@@ -171,7 +204,7 @@ public interface ApprovalRootStatePub {
 	 * @param employeeID 社員ID
 	 * @return
 	 */
-	public ApproverPersonExport judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID);
+	public ApproverPersonExport judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID, Integer rootType);
 	
 	/**
 	 * 差し戻しする(承認者まで)
@@ -179,14 +212,14 @@ public interface ApprovalRootStatePub {
 	 * @param rootStateID
 	 * @param order
 	 */
-	public List<String> doRemandForApprover(String companyID, String rootStateID, Integer order);
+	public List<String> doRemandForApprover(String companyID, String rootStateID, Integer order, Integer rootType);
 	
 	/**
 	 * 差し戻しする(本人まで)
 	 * @param companyID
 	 * @param rootStateID
 	 */
-	public void doRemandForApplicant(String companyID, String rootStateID);
+	public void doRemandForApplicant(String companyID, String rootStateID, Integer rootType);
 	
 	/**
 	 * RequestList #136
@@ -200,5 +233,14 @@ public interface ApprovalRootStatePub {
 	 */
 	public AppRootStateConfirmExport getApprovalRootState(String companyID, String employeeID, 
 			Integer confirmAtr, Integer appType, GeneralDate date);
+	
+	/**
+	 * RequestList 403
+	 * 承認状態をすべてクリアする
+	 * @param rootStateID
+	 */
+	public void cleanApprovalRootState(String rootStateID, Integer rootType);
+	
+	public void deleteConfirmDay(String employeeID, GeneralDate date);
 	
 }

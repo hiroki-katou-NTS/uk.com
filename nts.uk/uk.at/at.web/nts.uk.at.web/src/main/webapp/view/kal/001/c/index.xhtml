@@ -18,12 +18,12 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button data-bind="click: sendEmail"  >#{i18n.getText('KAL001_21')}</button>
-				<button data-bind="click : closeDialog" >#{i18n.getText('KAL001_22')}</button>
+				<button tabindex="1" data-bind="click: sendEmail"  >#{i18n.getText('KAL001_21')}</button>
+				<button tabindex="2" data-bind="click : closeDialog" >#{i18n.getText('KAL001_22')}</button>
 				 
 			</div>
 			<div id="contents-area"> 
-				<table id="grid"></table>
+				<table tabindex="3" id="grid"></table>
 			</div>
 
 		</ui:define>

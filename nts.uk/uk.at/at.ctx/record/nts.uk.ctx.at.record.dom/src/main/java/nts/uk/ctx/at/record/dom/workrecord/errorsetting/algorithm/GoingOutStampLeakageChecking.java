@@ -91,8 +91,10 @@ public class GoingOutStampLeakageChecking {
 					CorrectionResult correctionResult = stampLeakageCorrect(companID, employeeID, processingDate,
 							outingTimeSheet);
 					if (correctionResult == CorrectionResult.FAILURE) {
-						createEmployeeDailyPerError.createEmployeeDailyPerError(companID, employeeID, processingDate,
-								new ErrorAlarmWorkRecordCode("S001"), attendanceItemIDList);
+						if (!attendanceItemIDList.isEmpty()) {
+							createEmployeeDailyPerError.createEmployeeDailyPerError(companID, employeeID, processingDate,
+									new ErrorAlarmWorkRecordCode("S001"), attendanceItemIDList);
+						}
 					}
 				}
 
@@ -127,8 +129,10 @@ public class GoingOutStampLeakageChecking {
 					CorrectionResult returnCorrectionResult = returnStampLeakageCorrect(companID, employeeID,
 							processingDate, outingTimeSheet);
 					if (returnCorrectionResult == CorrectionResult.FAILURE) {
-						createEmployeeDailyPerError.createEmployeeDailyPerError(companID, employeeID, processingDate,
-								new ErrorAlarmWorkRecordCode("S001"), newAttendanceItemIDList);
+						if (!newAttendanceItemIDList.isEmpty()) {
+							createEmployeeDailyPerError.createEmployeeDailyPerError(companID, employeeID, processingDate,
+									new ErrorAlarmWorkRecordCode("S001"), newAttendanceItemIDList);
+						}
 					}
 				}
 

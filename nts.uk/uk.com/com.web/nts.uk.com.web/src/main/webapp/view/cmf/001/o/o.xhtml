@@ -91,7 +91,7 @@
 										</td>
 										<td>
 											<!--O5_6 条件名称-->
-											<div class="label" data-bind="text: selectedConditionName"></div>
+											<span class="limited-label" style="width: 220px; vertical-align: middle;" data-bind="text: selectedConditionName"></span>
 										</td>
 									</tr>
 									<tr>
@@ -121,7 +121,7 @@
 										<td></td>
 										<td colspan="2">
 											<label>#{i18n.getText('CMF001_146')}</label>									
-											<div style="display: inline-table; margin-left: 30px;"  
+											<div style="display: inline-table; margin-left: 5px;"  
 													data-bind="ntsComboBox: {
 													options: encodingList,
 													optionsValue: 'value',

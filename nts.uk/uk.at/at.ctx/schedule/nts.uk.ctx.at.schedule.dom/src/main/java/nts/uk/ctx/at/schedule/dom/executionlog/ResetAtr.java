@@ -14,57 +14,62 @@ import nts.arc.layer.dom.DomainObject;
 @Getter
 public class ResetAtr extends DomainObject {
 
-	/** The reset master info. */
-	// マスタ情報再設定
-	private Boolean resetMasterInfo;
-
-	/** The reset absent holiday business. */
-	// 休職休業再設定
-	private Boolean resetAbsentHolidayBusines;
-
-	/** The reset working hours. */
-	// 就業時間帯再設定
+	// 勤務開始・終了時刻を再設定
 	private Boolean resetWorkingHours;
 
-	/** The reset time assignment. */
-	// 申し送り時間再設定
+	// 休憩開始・終了時刻を再設定
+	private Boolean resetStartEndTime;
+
+	// マスタ情報を再設定
+	private Boolean resetMasterInfo;
+
+	// 申し送り時間を再設定
 	private Boolean resetTimeAssignment;
 
-	/** The reset direct line bounce. */
-	// 直行直帰再設定
-	private Boolean resetDirectLineBounce;
-
-	/** The reset time child care. */
-	// 育児介護時間再設定
-	private Boolean resetTimeChildCare;
-
+	public ResetAtr() {
+	}
+	
 	/**
 	 * To domain.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 * @return the reset atr
 	 */
 	public ResetAtr(ScheduleCreateContentGetMemento memento) {
 		this.resetMasterInfo = memento.getResetMasterInfo();
-		this.resetAbsentHolidayBusines = memento.getResetAbsentHolidayBusines();
 		this.resetWorkingHours = memento.getResetWorkingHours();
+		this.resetStartEndTime = memento.getResetStartEndTime();
 		this.resetTimeAssignment = memento.getResetTimeAssignment();
-		this.resetDirectLineBounce = memento.getResetDirectLineBounce();
-		this.resetTimeChildCare = memento.getResetTimeChildCare();
 	}
 
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(ScheduleCreateContentSetMemento memento) {
 		memento.setResetMasterInfo(this.resetMasterInfo);
-		memento.setResetAbsentHolidayBusines(this.resetAbsentHolidayBusines);
 		memento.setResetWorkingHours(this.resetWorkingHours);
 		memento.setResetTimeAssignment(this.resetTimeAssignment);
-		memento.setResetDirectLineBounce(this.resetDirectLineBounce);
-		memento.setResetTimeChildCare(this.resetTimeChildCare);
+		memento.setResetStartEndTime(this.resetStartEndTime);
 	}
 
+	public void setResetWorkingHours(Boolean resetWorkingHours) {
+		this.resetWorkingHours = resetWorkingHours;
+	}
+
+	public void setResetStartEndTime(Boolean resetStartEndTime) {
+		this.resetStartEndTime = resetStartEndTime;
+	}
+
+	public void setResetMasterInfo(Boolean resetMasterInfo) {
+		this.resetMasterInfo = resetMasterInfo;
+	}
+
+	public void setResetTimeAssignment(Boolean resetTimeAssignment) {
+		this.resetTimeAssignment = resetTimeAssignment;
+	}
+	
 }

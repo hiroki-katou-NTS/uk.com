@@ -7,6 +7,7 @@ package nts.uk.ctx.at.record.app.command.workrecord.workfixed;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.workfixed.ConfirmClsStatus;
 import nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkFixed;
 import nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkFixedGetMemento;
@@ -131,8 +132,8 @@ public class SaveWorkFixedCommand {
 		 * @see nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkFixedGetMemento#getProcessDate()
 		 */
 		@Override
-		public Integer getProcessDate() {
-			return this.processDate;
+		public YearMonth getProcessYm() {
+			return new YearMonth(this.processDate);
 		}
 
 		/* (non-Javadoc)

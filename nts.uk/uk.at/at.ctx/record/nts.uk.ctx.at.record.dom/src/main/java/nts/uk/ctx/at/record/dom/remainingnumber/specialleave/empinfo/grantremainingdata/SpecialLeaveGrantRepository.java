@@ -3,13 +3,11 @@ package nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremai
 import java.util.List;
 import java.util.Optional;
 
-import nts.arc.time.GeneralDate;
-
 public interface SpecialLeaveGrantRepository {
 
 	List<SpecialLeaveGrantRemainingData> getAll(String employeeId, int specialCode);
 
-	List<SpecialLeaveGrantRemainingData> getAllByExpStatus(String employeeId, int specialCode, boolean expirationStatus);
+	List<SpecialLeaveGrantRemainingData> getAllByExpStatus(String employeeId, int specialCode, int expirationStatus);
 	
 	void add(SpecialLeaveGrantRemainingData data);
 

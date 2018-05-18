@@ -27,15 +27,15 @@ public class AddAnnuaLeaveCommandHandler extends CommandHandlerWithResult<AddAnn
 		AddAnnuaLeaveCommand c = context.getCommand();
 
 		AnnualLeaveEmpBasicInfo basicInfo = AnnualLeaveEmpBasicInfo.createFromJavaType(c.getEmployeeId(),
-				c.getWorkingDaysPerYear().intValue(), c.getWorkingDayBeforeIntro().intValue(), c.getGrantTable(), c.getStandardDate());
+				c.getWorkingDaysPerYear(), c.getWorkingDayBeforeIntro(), c.getGrantTable(), c.getStandardDate());
 		annLeaBasicInfoRepo.add(basicInfo);
 
-		AnnualLeaveMaxData maxData = AnnualLeaveMaxData.createFromJavaType(c.getEmployeeId(), c.getMaxTimes().intValue(),
-				c.getUsedTimes().intValue(), c.getMaxTimes().intValue() - c.getUsedTimes().intValue(), c.getMaxMinutes().intValue(), c.getUsedMinutes().intValue(),
-				c.getMaxMinutes().intValue() - c.getUsedMinutes().intValue());
+		AnnualLeaveMaxData maxData = AnnualLeaveMaxData.createFromJavaType(c.getEmployeeId(), c.getMaxTimes(),
+				c.getUsedTimes(), c.getMaxMinutes(), c.getUsedMinutes());
+
 		maxDataRepo.add(maxData);
 
-		return new PeregAddCommandResult(null);
+		return new PeregAddCommandResult(c.getEmployeeId());
 	}
 
 	@Override

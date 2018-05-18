@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 
@@ -32,8 +33,15 @@ public class HolidayWorkFrameTime {
 		this.beforeApplicationTime = beforeApplicationTime;
 	}
 	
-	public void addHolidayTime(AttendanceTime holidayWorkTime) {
-		this.holidayWorkTime = Finally.of(this.holidayWorkTime.get().addMinutes(holidayWorkTime, holidayWorkTime));
+	public void addHolidayTime(AttendanceTime time,AttendanceTime calcTime) {
+		this.holidayWorkTime = Finally.of(this.holidayWorkTime.get().addMinutes(time, calcTime));
+	}
+	
+	public HolidayWorkFrameTime addHolidayTimeExistReturn(AttendanceTime time,AttendanceTime calcTime) {
+		return new HolidayWorkFrameTime(this.holidayFrameNo, 
+										Finally.of(this.holidayWorkTime.get().addMinutes(time, calcTime)), 
+										this.transferTime, 
+										this.beforeApplicationTime);
 	}
 	
 	//休出枠Noのみ指定した休出枠Noに更新する
@@ -71,6 +79,15 @@ public class HolidayWorkFrameTime {
 	}
 	
 	/**
+	 * 事前申請を足す(4末納品きんきゅうたいおうby 保科)
+	 * @param addTime
+	 */
+	public void addBeforeTime(AttendanceTime addTime) {
+		if(this.getBeforeApplicationTime().isPresent())
+			this.beforeApplicationTime = Finally.of(this.getBeforeApplicationTime().get().addMinutes(addTime.valueAsMinutes()));
+	}
+	
+	/**
 	 * 実績超過乖離時間の計算
 	 * @return
 	 */
@@ -101,6 +118,14 @@ public class HolidayWorkFrameTime {
 	 */
 	public boolean isPreOverLimitDivergenceTime() {
 		return this.calcPreOverLimitDivergenceTime() > 0 ? true:false;
+	}
+	
+	
+	public HolidayWorkFrameTime calcDiverGenceTime() {
+		TimeDivergenceWithCalculation holidayWorkTime = this.holidayWorkTime.isPresent()?this.holidayWorkTime.get().calcDiverGenceTime():TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0));
+		TimeDivergenceWithCalculation transferTime = this.transferTime.isPresent()?this.transferTime.get().calcDiverGenceTime():TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0));
+		
+		return new HolidayWorkFrameTime(this.holidayFrameNo,Finally.of(holidayWorkTime),Finally.of(transferTime),this.beforeApplicationTime);
 	}
 	
 }

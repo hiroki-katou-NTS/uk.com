@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
@@ -51,8 +52,16 @@ public class FlowOTTimezone extends WorkTimeDomainObject {
 		this.restrictTime = memento.getRestrictTime();
 		this.oTFrameNo = memento.getOTFrameNo();
 		this.flowTimeSetting = memento.getFlowTimeSetting();
-		this.inLegalOTFrameNo = memento.getInLegalOTFrameNo();
-		this.settlementOrder = memento.getSettlementOrder();
+		if (memento.getInLegalOTFrameNo() == null || memento.getInLegalOTFrameNo().v() == null) {
+			this.inLegalOTFrameNo = OvertimeWorkFrameNo.getDefaultData();
+		} else {
+			this.inLegalOTFrameNo = memento.getInLegalOTFrameNo();
+		}
+		if (memento.getSettlementOrder() == null || memento.getSettlementOrder().v() == null) {
+			this.settlementOrder = SettlementOrder.getDefaultData();
+		} else {
+			this.settlementOrder = memento.getSettlementOrder();
+		}
 	}
 
 	/**
@@ -68,5 +77,13 @@ public class FlowOTTimezone extends WorkTimeDomainObject {
 		memento.setFlowTimeSetting(this.flowTimeSetting);
 		memento.setInLegalOTFrameNo(this.inLegalOTFrameNo);
 		memento.setSettlementOrder(this.settlementOrder);
+	}
+
+	/**
+	 * Correct default data.
+	 */
+	public void correctDefaultData() {
+		this.settlementOrder = null;
+		this.inLegalOTFrameNo = null;
 	}
 }

@@ -20,7 +20,7 @@ public class SubDigestionDto {
 	private int daysUsedNo;
 
 	/**
-	 * 振出管理データ
+	 * 振休管理データ
 	 */
 	private String payoutMngDataID;
 

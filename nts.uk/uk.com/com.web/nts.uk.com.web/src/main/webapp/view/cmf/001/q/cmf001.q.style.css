@@ -1,5 +1,10 @@
+.dialog-contents{
+  width:600px;
+  height: 300px;
+}
 .contents-area{
-	margin:10px;
+	margin-left:10px;
+	padding-top:10px;
 }
 .bggreen {
 	background-color: #BFEA60;

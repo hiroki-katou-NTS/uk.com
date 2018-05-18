@@ -1,6 +1,5 @@
 package nts.uk.ctx.pereg.app.command.person.info.item;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -15,12 +14,13 @@ import nts.uk.ctx.pereg.dom.company.ICompanyRepo;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.info.category.IsFixed;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
-import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
+import nts.uk.ctx.pereg.dom.person.setting.init.item.ReferenceMethodType;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.Selection;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionRepository;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
@@ -34,7 +34,7 @@ public class UpdateItemCommandHandler extends CommandHandlerWithResult<UpdateIte
 
 	@Inject
 	private SelectionRepository selectionRepo;
-	
+
 	@Inject
 	private EmpInfoItemDataRepository empInfoRepo;
 
@@ -46,10 +46,10 @@ public class UpdateItemCommandHandler extends CommandHandlerWithResult<UpdateIte
 
 	@Inject
 	private PerInfoInitValueSetItemRepository itemInitRepo;
-	
+
 	@Inject
 	private PerInfoCategoryRepositoty perInfoCtgRep;
-	
+
 	@Inject
 	private ICompanyRepo companyRepo;
 
@@ -97,7 +97,7 @@ public class UpdateItemCommandHandler extends CommandHandlerWithResult<UpdateIte
 		if (this.itemInitRepo.hasItemData(itemCode, ctgLst)) {
 			return true;
 		}
-		
+
 		if (this.empInfoRepo.hasItemData(itemCode, ctgLst)) {
 			return true;
 		}
@@ -106,7 +106,7 @@ public class UpdateItemCommandHandler extends CommandHandlerWithResult<UpdateIte
 		}
 		return false;
 	}
-	
+
 	private void validateCommand(UpdateItemCommand itemCommand) {
 		
 		String itemName = itemCommand.getItemName();
@@ -121,21 +121,18 @@ public class UpdateItemCommandHandler extends CommandHandlerWithResult<UpdateIte
 		}
 		
 		if (itemCommand.getSingleItem().getDataType() == 6) {
-			String itemId = itemCommand.getSingleItem().getSelectionItemId();
-			GeneralDate today = GeneralDate.today();
-			List<Selection> selection = new ArrayList<>();
-			String zeroCompanyId = AppContexts.user().zeroCompanyIdInContract();
-			if (itemCommand.getPersonEmployeeType() == PersonEmployeeType.PERSON.value) {
-				selection = this.selectionRepo.getAllSelectionByHistoryId(zeroCompanyId, itemId, today, 0);
-			} else if (itemCommand.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE.value) {
-				selection = this.selectionRepo.getAllSelectionByHistoryId(zeroCompanyId, itemId, today, 1);
-			}
+			SingleItemCommand c =  itemCommand.getSingleItem();
+			
+			if(c.getReferenceType() == ReferenceTypes.CODE_NAME.value) {
+			List<Selection> selection = this.selectionRepo.getAllSelectionByCompanyId(
+					AppContexts.user().zeroCompanyIdInContract(), itemCommand.getSingleItem().getSelectionItemId(),
+					GeneralDate.today());
 			if (selection == null || selection.size() == 0) {
 				throw new BusinessException("Msg_587");
 			}
-
 		}
-		
-	}
+		}
+
+}
 
 }

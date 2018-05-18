@@ -41,6 +41,16 @@ public class WorkTypeProcessor {
 		
 		return this.workTypeQueryRepository.findAllWorkType(companyId, workTypeAtr);
 	}
+	
+	public List<WorkTypeDto> findWorkTypeDailyWorkType(List<Integer> workTypeAtr){
+		String companyId = AppContexts.user().companyId();
+		
+		if (CollectionUtil.isEmpty(workTypeAtr)) {
+			return Collections.emptyList();
+		}
+		
+		return this.workTypeQueryRepository.findWorkType(companyId, workTypeAtr);
+	}
 
 	/**
 	 * 

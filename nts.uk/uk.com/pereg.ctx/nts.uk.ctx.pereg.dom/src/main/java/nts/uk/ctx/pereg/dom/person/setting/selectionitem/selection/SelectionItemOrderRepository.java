@@ -9,17 +9,16 @@ import java.util.List;
  */
 
 public interface SelectionItemOrderRepository {
+	
 	void add(SelectionItemOrder selectionItemOrder);
 
 	void remove(String selectionId);
 	
+	void removeInSelectionItemId(String selectionItemId);
+	
 	List<SelectionItemOrder> getAllOrderSelectionByHistId(String histId);
 	
 	List<SelectionItemOrder> getAllOrderBySelectionId(String selectionId);
-	//hoatt
-	/**
-	 * update List Selection Item Order
-	 * @param lstSelOrder
-	 */
+	
 	void updateListSelOrder(List<SelectionItemOrder> lstSelOrder);
 }

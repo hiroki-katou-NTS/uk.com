@@ -7,7 +7,22 @@ import nts.uk.ctx.pereg.dom.person.info.order.PerInfoItemDefOrder;
 
 public interface PerInfoItemDefRepositoty {
 
+	/**
+	 * only parent items
+	 * @param perInfoCategoryId
+	 * @param contractCd
+	 * @return
+	 */
 	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCategoryId, String contractCd);
+	
+	/**
+	 * all items
+	 * Warning: set and table item have not ItemIdList
+	 * @param perInfoCategoryId
+	 * @param contractCd
+	 * @return
+	 */
+	List<PersonInfoItemDefinition> getAllItemDefByCategoryId(String perInfoCategoryId, String contractCd);
 
 	List<PersonInfoItemDefinition> getAllItemByCtgWithAuth(String perInfoCategoryId, String contractCd, String roleId,
 			boolean isSelfRef);
@@ -107,4 +122,14 @@ public interface PerInfoItemDefRepositoty {
 	List<PersonInfoItemDefinition> getPerInfoItemByCtgCd(String ctgCd, String companyId);
 	
 	List<String> getAllItemIdsByCtgCode(String cid, String ctgCode);
+	
+	List<PersonInfoItemDefinition> getItemDefByCtgCdAndComId(String perInfoCtgCd, String CompanyId);
+	
+	void updateItemDefNameAndAbolition(List<PersonInfoItemDefinition> lst, String companyId);
+	
+	List<PersonInfoItemDefinition> getItemLstByListId(List<String> listItemDefId, String contractCd);
+	
+	String getItemName(String contractCode, String companyId, String categoryCode, String itemCode);
+	
+	
 }

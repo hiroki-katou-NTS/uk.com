@@ -2,10 +2,11 @@ package approve.employee;
 
 import java.util.List;
 
+import lombok.Data;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 
-@Value
+@Data
 public class EmployeeApproverRootQuery {
 	private GeneralDate baseDate;
 	private List<EmployeeQuery> lstEmpIds;

@@ -11,12 +11,30 @@ public interface ApplicationReflectProcessSche {
 	 * 休暇申請
 	 * @param reflectSche
 	 */
-	public void forleaveReflect(ReflectScheDto reflectSche);
+	public boolean forleaveReflect(ReflectScheDto reflectSche);
 	/**
 	 * 勤務変更申請
 	 * @param reflectSche
 	 * @return
 	 */
 	public boolean workChangeReflect(ReflectScheDto reflectSche);
+	/**
+	 * 休日出勤申請
+	 * @param relectSche
+	 * @return
+	 */
+	public boolean holidayWorkReflect(ReflectScheDto relectSche);
+	/**
+	 * 振休申請の反映
+	 * @param relectSche
+	 * @return
+	 */
+	public boolean ebsenceLeaveReflect(ReflectScheDto relectSche);
+	/**
+	 * 振出申請の反映
+	 * @param relectSche
+	 * @return
+	 */
+	public boolean recruitmentReflect(ReflectScheDto relectSche);
 
 }

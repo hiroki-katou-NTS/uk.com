@@ -8,7 +8,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.Used
  * @author shuichu_ishida
  */
 @Getter
-public class UndigestedTimeAnnualLeaveTime {
+public class UndigestedTimeAnnualLeaveTime implements Cloneable {
 
 	/** 未消化時間 */
 	private UsedMinutes undigestedTime;
@@ -31,5 +31,25 @@ public class UndigestedTimeAnnualLeaveTime {
 		UndigestedTimeAnnualLeaveTime domain = new UndigestedTimeAnnualLeaveTime();
 		domain.undigestedTime = undigestedTime;
 		return domain;
+	}
+	
+	@Override
+	protected UndigestedTimeAnnualLeaveTime clone() {
+		UndigestedTimeAnnualLeaveTime cloned = new UndigestedTimeAnnualLeaveTime();
+		try {
+			cloned.undigestedTime = new UsedMinutes(this.undigestedTime.v());
+		}
+		catch (Exception e){
+			throw new RuntimeException("UndigestedTimeAnnualLeaveTime clone error.");
+		}
+		return cloned;
+	}
+	
+	/**
+	 * 分を加算する
+	 * @param minutes 分
+	 */
+	public void addMinutes(int minutes){
+		this.undigestedTime = this.undigestedTime.addMinutes(minutes);
 	}
 }

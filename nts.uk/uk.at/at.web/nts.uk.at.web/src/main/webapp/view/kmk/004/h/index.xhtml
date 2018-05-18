@@ -54,6 +54,7 @@
 							<div id="str-month-txt" class="label">#{i18n.getText('KMK004_79')}</div>
 							<div tabindex="2" style="float: left">
 								<input data-bind="ntsNumberEditor: {
+									name: '#[KMK004_150]',
 									value: strMonth,
 									constraint:'Month',
 									option: ko.mapping.fromJS({
@@ -70,6 +71,7 @@
 							<div id="period-txt" class="label">#{i18n.getText('KMK004_80')}</div>
 							<div tabindex="3" style="float: left">
 								<input data-bind="ntsNumberEditor: {
+									name: '#[KMK004_151]',
 									value: period,
 									constraint:'Month',
 									option: {
@@ -201,7 +203,7 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="11" class="x-large proceed" data-bind="click: decideData">#{i18n.getText('KMK004_36')}</button>
+				<button tabindex="11" class="x-large proceed" data-bind="click: decideData, enable: $root.errors.isEmpty">#{i18n.getText('KMK004_36')}</button>
 				<button tabindex="12" data-bind="click: cancel">#{i18n.getText('KMK004_37')}</button>
 			</div>
 		</ui:define>

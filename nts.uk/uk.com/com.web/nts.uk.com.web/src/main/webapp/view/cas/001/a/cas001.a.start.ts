@@ -7,5 +7,5 @@ module nts.uk.com.view.cas001.a {
             nts.uk.ui.ig.grid.header.getCell('A2_008', 'setting').append($(helpButton));
             ko.applyBindings(__viewContext['screenModel'], nts.uk.ui.ig.grid.header.getCell('A2_008', 'setting')[0]);
         });
-     });
+    });
 }

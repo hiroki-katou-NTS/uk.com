@@ -37,9 +37,9 @@ public class DenyImpl implements DenyService {
 	private CollectApprovalAgentInforService collectApprovalAgentInforService;
 
 	@Override
-	public Boolean doDeny(String companyID, String rootStateID, String employeeID, String memo) {
+	public Boolean doDeny(String companyID, String rootStateID, String employeeID, String memo, Integer rootType) {
 		Boolean executedFlag = false;
-		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findEmploymentApp(rootStateID);
+		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, rootType);
 		if(!opApprovalRootState.isPresent()){
 			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
 		}
@@ -91,7 +91,7 @@ public class DenyImpl implements DenyService {
 				approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
 				executedFlag = true;
 			}
-			approvalRootStateRepository.update(approvalRootState);
+			approvalRootStateRepository.update(approvalRootState, rootType);
 			break;
 		}
 		return executedFlag;
@@ -118,7 +118,8 @@ public class DenyImpl implements DenyService {
 		 	.filter(x -> x.getConfirmAtr().equals(ConfirmPerson.CONFIRM)).findAny();
 		if(opConfirmApprovalFrame.isPresent()){
 			ApprovalFrame confirmApprovalFrame = opConfirmApprovalFrame.get();
-			if(confirmApprovalFrame.getApproverID().equals(employeeID)||confirmApprovalFrame.getRepresenterID().equals(employeeID)){
+			if((Strings.isNotBlank(confirmApprovalFrame.getApproverID())&&confirmApprovalFrame.getApproverID().equals(employeeID))||
+				(Strings.isNotBlank(confirmApprovalFrame.getRepresenterID())&&confirmApprovalFrame.getRepresenterID().equals(employeeID))){
 				canDenyFlag = false;
 			} else {
 				canDenyFlag = true;
@@ -126,7 +127,8 @@ public class DenyImpl implements DenyService {
 			return canDenyFlag;
 		}
 		canDenyFlag = lowerPhase.getListApprovalFrame().stream()
-			.filter(x -> x.getApproverID().equals(employeeID)||x.getRepresenterID().equals(employeeID))
+			.filter(x -> (Strings.isNotBlank(x.getApproverID())&&x.getApproverID().equals(employeeID))||
+					(Strings.isNotBlank(x.getRepresenterID())&&x.getRepresenterID().equals(employeeID)))
 			.findAny().map(y -> false).orElse(true);
 		return canDenyFlag;
 	}

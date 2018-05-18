@@ -62,12 +62,16 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             //Start Date
             self.datePeriod.subscribe(value => {
                 nts.uk.ui.errors.clearAll();
+                nts.uk.ui.block.grayout();
                 $(".ntsStartDatePicker").trigger("validate");
                 $(".ntsEndDatePicker").trigger("validate");
                 if (nts.uk.ui.errors.hasError()) {
+                    nts.uk.ui.block.clear();
                     return;
                 }
-                self.changeApplicationDate(value.startDate, value.endDate);
+                self.changeApplicationDate(value.startDate, value.endDate).done(() => {
+                    nts.uk.ui.block.clear();
+                });
             });
         }
         /**
@@ -98,7 +102,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                             appCommonSettingDto.appTypeDiscreteSettingDtos.length > 0){                         
                         //事前事後区分 Enable ※A２
                         self.prePostEnable(appCommonSettingDto.appTypeDiscreteSettingDtos[0].prePostCanChangeFlg == 1 ? true: false);
-                        self.appWorkChange().application().prePostAtr(appCommonSettingDto.appTypeDiscreteSettingDtos[0].prePostCanChangeFlg);
+                        self.appWorkChange().application().prePostAtr(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].prePostInitFlg);
                         //「申請種類別設定．定型理由の表示」  ※A10
                         self.typicalReasonDisplayFlg(appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1 ? true : false );
                         //「申請種類別設定．申請理由の表示」  ※A11
@@ -168,7 +172,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             if (!appcommon.CommonProcess.checklenghtReason(appReason, "#inpReasonTextarea")) {
                 return;
             }
-            let appReasonError = !appcommon.CommonProcess.checkAppReason(true, self.typicalReasonDisplayFlg(), self.displayAppReasonContentFlg(), appReason);
+            let appReasonError = !appcommon.CommonProcess.checkAppReason(self.requiredReason(), self.typicalReasonDisplayFlg(), self.displayAppReasonContentFlg(), appReason);
             if(appReasonError){
                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function(){nts.uk.ui.block.clear();});    
                 return;    
@@ -257,8 +261,9 @@ module nts.uk.at.view.kaf007.a.viewmodel {
          * @param date: 申請日
          * @param dateType (Start or End type)
          */
-        private changeApplicationDate(startDate : any, endDate : any){
+        private changeApplicationDate(startDate : any, endDate : any): JQueryPromise<any>{
             let self = this,
+            dfd = $.Deferred(),
             tmpStartDate : string = moment(startDate).format(self.dateFormat),
             tmpEndDate : string = moment(endDate).format(self.dateFormat),
             application = self.appWorkChange().application();
@@ -274,10 +279,13 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             //実績の内容
             service.getRecordWorkInfoByDate(moment(endDate === null ? startDate : endDate).format(self.dateFormat)).done((recordWorkInfo) => {
                 //Binding data
+                dfd.resolve();
                 ko.mapping.fromJS( recordWorkInfo, {}, self.recordWorkInfo );
             }).fail((res) => {
-                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});
+                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                dfd.reject();
             });
+            return dfd.promise();
         }
         /**
          * 申請日を変更する
@@ -286,12 +294,9 @@ module nts.uk.at.view.kaf007.a.viewmodel {
         private checkChangeAppDate(date: string){
             let self = this;
             date = moment(date).format(self.dateFormat);
-            nts.uk.ui.block.invisible();
             self.kaf000_a.getAppDataDate(2, date, false)
-            .done(()=>{
-                nts.uk.ui.block.clear();         
-            }).fail(()=>{
-                nts.uk.ui.block.clear();    
+            .done(()=>{       
+            }).fail(()=>{ 
             });
         }
         /**

@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.workplace.config.info;
@@ -22,6 +22,7 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
@@ -379,9 +380,10 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 		lstpredicateWhere.add(criteriaBuilder.like(prHierarchyCodeParameter,
 				criteriaBuilder.concat(senderEmailPath, "%")));
 
+		// Base in EAP: Don't exclude
 		// Ignore the wkp
-		lstpredicateWhere.add(criteriaBuilder.notEqual(root.get(BsymtWkpConfigInfo_.hierarchyCd),
-				prHierarchyCode));
+		// lstpredicateWhere.add(criteriaBuilder.notEqual(root.get(BsymtWkpConfigInfo_.hierarchyCd),
+		// prHierarchyCode));
 
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
@@ -445,6 +447,51 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 		return lstEntity.stream()
 				.map(entity -> new WorkplaceConfigInfo(
 						new JpaWorkplaceConfigInfoGetMemento(Arrays.asList(entity))))
+				.collect(Collectors.toList());
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository
+	 * #findByHistoryIdsAndWplIds(java.lang.String, java.util.List, java.util.List)
+	 */
+	@Override
+	public List<WorkplaceConfigInfo> findByHistoryIdsAndWplIds(String companyId, List<String> historyIds,
+			List<String> workplaceIds) {
+		if (CollectionUtil.isEmpty(historyIds)) {
+			return Collections.emptyList();
+		}
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<BsymtWkpConfigInfo> cq = criteriaBuilder.createQuery(BsymtWkpConfigInfo.class);
+		Root<BsymtWkpConfigInfo> root = cq.from(BsymtWkpConfigInfo.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.cid), companyId));
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.historyId), historyIds));
+		if (!CollectionUtil.isEmpty(workplaceIds)) {
+			lstpredicateWhere.add(root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.wkpid)
+					.in(workplaceIds));
+		}
+
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		List<BsymtWkpConfigInfo> lstEntity = em.createQuery(cq).getResultList();
+
+		// check empty
+		if (lstEntity.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		return lstEntity.stream()
+				.map(entity -> new WorkplaceConfigInfo(new JpaWorkplaceConfigInfoGetMemento(Arrays.asList(entity))))
 				.collect(Collectors.toList());
 	}
 

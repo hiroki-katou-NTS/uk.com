@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
 
 /**
  * The Interface EmTimeZoneSetPolicy.
@@ -14,20 +14,26 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 public interface EmTimeZoneSetPolicy {
 
 	/**
-	 * Validate.
+	 * Validate fixed and diff.
 	 *
 	 * @param be the be
 	 * @param predTime the pred time
 	 * @param etzSet the etz set
+	 * @param displayMode the display mode
+	 * @param dayAtr the day atr
+	 * @param useHalfDayShift the use half day shift
 	 */
-	void validate(BundledBusinessException be, PredetemineTimeSetting predTime, EmTimeZoneSet etzSet);
+	void validateFixedAndDiff(BundledBusinessException be, PredetemineTimeSetting predTime, EmTimeZoneSet etzSet, DisplayMode displayMode, AmPmAtr dayAtr, boolean useHalfDayShift);
 
 	/**
-	 * Validate timezone.
+	 * Validate flex.
 	 *
 	 * @param be the be
-	 * @param presTz the pres tz
-	 * @param timezone the timezone
+	 * @param predTime the pred time
+	 * @param etzSet the etz set
+	 * @param displayMode the display mode
+	 * @param dayAtr the day atr
+	 * @param useHalfDayShift the use half day shift
 	 */
-	void validateTimezone(BundledBusinessException be, PrescribedTimezoneSetting presTz, TimeZoneRounding timezone);
+	void validateFlex(BundledBusinessException be, PredetemineTimeSetting predTime, EmTimeZoneSet etzSet, DisplayMode displayMode, AmPmAtr dayAtr, boolean useHalfDayShift);
 }

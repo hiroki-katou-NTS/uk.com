@@ -198,4 +198,41 @@ public class ExcessOutsideWorkOfMonthly {
 		// 変形労働時間から変形期間繰越時間をコピーする
 		this.deformationCarryforwardTime = irregularWork.getIrregularPeriodCarryforwardTime();
 	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(ExcessOutsideWorkOfMonthly target){
+		
+		this.weeklyTotalPremiumTime = this.weeklyTotalPremiumTime.addMinutes(target.weeklyTotalPremiumTime.v());
+		this.monthlyTotalPremiumTime = this.monthlyTotalPremiumTime.addMinutes(target.monthlyTotalPremiumTime.v());
+		this.deformationCarryforwardTime = this.deformationCarryforwardTime.addMinutes(target.deformationCarryforwardTime.v());
+		
+		for (val breakdown : this.time.values()){
+			val breakdownNo = breakdown.getBreakdownNo();
+			if (target.time.containsKey(breakdownNo)){
+				val targetBreakdown = target.time.get(breakdownNo);
+				for (val excess : breakdown.getBreakdown().values()){
+					val excessNo = excess.getExcessNo();
+					if (targetBreakdown.getBreakdown().containsKey(excessNo)){
+						excess.sum(targetBreakdown.getBreakdown().get(excessNo));
+					}
+				}
+			}
+		}
+		for (val targetBreakdown : target.time.values()){
+			val breakdownNo = targetBreakdown.getBreakdownNo();
+			if (this.time.containsKey(breakdownNo)){
+				val breakdown = this.time.get(breakdownNo);
+				for (val targetExcess : targetBreakdown.getBreakdown().values()){
+					val excessNo = targetExcess.getExcessNo();
+					breakdown.getBreakdown().putIfAbsent(excessNo, targetExcess);
+				}
+			}
+			else {
+				this.time.putIfAbsent(breakdownNo, targetBreakdown);
+			}
+		}
+	}
 }

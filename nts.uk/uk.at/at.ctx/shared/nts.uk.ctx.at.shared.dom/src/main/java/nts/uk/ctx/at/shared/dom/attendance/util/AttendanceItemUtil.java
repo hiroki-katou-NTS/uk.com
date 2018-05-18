@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -27,26 +28,54 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 public class AttendanceItemUtil {
 
 	public static <T extends ConvertibleAttendanceItem> List<ItemValue> toItemValues(T attendanceItems) {
-		return toItemValues(attendanceItems, Collections.emptyList());
+		return toItemValues(attendanceItems, AttendanceItemType.DAILY_ITEM);
 	}
 
 	public static <T extends ConvertibleAttendanceItem> T fromItemValues(Class<T> classType,
 			Collection<ItemValue> attendanceItems) {
+		return fromItemValues(classType, attendanceItems, AttendanceItemType.DAILY_ITEM);
+	}
+	
+	public static <T extends ConvertibleAttendanceItem> List<ItemValue> toItemValues(T attendanceItems, AttendanceItemType type) {
+		return toItemValues(attendanceItems, Collections.emptyList());
+	}
+
+	public static <T extends ConvertibleAttendanceItem> T fromItemValues(Class<T> classType,
+			Collection<ItemValue> attendanceItems, AttendanceItemType type) {
 		T newObject = ReflectionUtil.newInstance(classType);
 		return fromItemValues(newObject, attendanceItems);
 	}
 
 	public static <T extends ConvertibleAttendanceItem> List<ItemValue> toItemValues(T attendanceItems,
 			Collection<Integer> itemIds) {
-		// return toItemValues(attendanceItems, "", itemIds, 0);
-		return getItemValues(attendanceItems, 0, "", "", "", 0, getItemMap(itemIds, null));
+		return toItemValues(attendanceItems, itemIds, AttendanceItemType.DAILY_ITEM);
 	}
 
 	public static <T> T fromItemValues(T attendanceItems, Collection<ItemValue> itemValues) {
+		return fromItemValues(attendanceItems, itemValues, AttendanceItemType.DAILY_ITEM);
+	}
+	
+	public static <T extends ConvertibleAttendanceItem> List<ItemValue> toItemValues(T attendanceItems,
+			Collection<Integer> itemIds, AttendanceItemType type) {
 		// return toItemValues(attendanceItems, "", itemIds, 0);
+		AttendanceItemRoot root = attendanceItems.getClass().getAnnotation(AttendanceItemRoot.class);
+		if(root == null){
+			return new ArrayList<>();
+		}
+		int layout = root.isContainer() ? 0 : 1;
+		return getItemValues(attendanceItems, layout, "", root.isContainer() ? "" : root.rootName(), "", 0, getItemMap(type, itemIds, null, layout));
+	}
+
+	public static <T> T fromItemValues(T attendanceItems, Collection<ItemValue> itemValues, AttendanceItemType type) {
+		// return toItemValues(attendanceItems, "", itemIds, 0);
+		AttendanceItemRoot root = attendanceItems.getClass().getAnnotation(AttendanceItemRoot.class);
+		if(root == null){
+			return attendanceItems;
+		}
+		int layout = root.isContainer() ? 0 : 1;
 		Map<Integer, ItemValue> itemMap = itemValues.stream().collect(Collectors.toMap(c -> c.itemId(), c -> c));
-		return fromItemValues(attendanceItems, 0, "", "", 0, false,
-				getItemMap(itemMap.keySet(), c -> itemMap.get(c.itemId()).withPath(c.path())));
+		return fromItemValues(attendanceItems, layout, "", root.isContainer() ? "" : root.rootName(), 0, false,
+				getItemMap(type, itemMap.keySet(), c -> itemMap.get(c.itemId()).withPath(c.path()), layout));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -124,15 +153,17 @@ public class AttendanceItemUtil {
 					currentLayout = mergeLayout(layoutCode, layout.layout());
 			if (isList) {
 				boolean listNoIdx = layout.listNoIndex();
+				Map<Integer, List<ItemValue>> itemsForIdx = mapByPath(c.getValue(), 
+						x -> listNoIdx ? getEValAsIdxPlus(x.path()) : getIdxInText(x.path()));
 				List<T> list = processListToMax(
 									ReflectionUtil.getFieldValue(field, attendanceItems),
 									layout, 
 									className, 
-									c.getValue().isEmpty() ? "" : c.getValue().get(0).path());
+									c.getValue().isEmpty() ? "" : c.getValue().get(0).path(),
+									itemsForIdx.keySet());
 				String idxFieldName = listNoIdx ? layout.enumField() : layout.indexField();
 				Field idxField = idxFieldName.isEmpty() ? null : getField(idxFieldName, className);
-				Map<Integer, List<ItemValue>> itemsForIdx = mapByPath(c.getValue(), 
-						x -> listNoIdx ? getEValAsIdxPlus(x.path()) : getIdxInText(x.path()));
+				
 				list.stream().forEach(eVal -> {
 					Integer idx = idxField == null ? null : ReflectionUtil.getFieldValue(idxField, eVal);
 					List<ItemValue> subList = idx == null ? null : itemsForIdx.get(listNoIdx ? idx + 1 : idx);
@@ -245,13 +276,13 @@ public class AttendanceItemUtil {
 		return ids.stream().collect(Collectors.groupingBy(grouping));
 	}
 
-	private static Map<String, List<ItemValue>> getItemMap(Collection<Integer> itemIds,
-			Function<ItemValue, ItemValue> mapper) {
-		Stream<ItemValue> stream = AttendanceItemIdContainer.getIdMapStream(itemIds);
+	private static Map<String, List<ItemValue>> getItemMap(AttendanceItemType type, Collection<Integer> itemIds,
+			Function<ItemValue, ItemValue> mapper, int layout) {
+		Stream<ItemValue> stream = AttendanceItemIdContainer.getIdMapStream(itemIds, type);
 		if (mapper != null) {
 			stream = stream.map(mapper);
 		}
-		return stream.collect(Collectors.groupingBy(c -> getCurrentPath(0, c.path(), false)));
+		return stream.collect(Collectors.groupingBy(c -> getCurrentPath(layout, c.path(), false)));
 	}
 
 	public static <T> Map<String, Field> getFieldMap(T attendanceItems, Map<String, List<ItemValue>> groups) {
@@ -286,11 +317,17 @@ public class AttendanceItemUtil {
 		return list;
 	}
 
-	private static <T> List<T> processListToMax(List<T> list, AttendanceItemLayout layout, Class<T> targetClass, String path) {
+	private static <T> List<T> processListToMax(List<T> list, AttendanceItemLayout layout, Class<T> targetClass, String path, Set<Integer> keySet) {
 		list = list == null ? new ArrayList<>() : new ArrayList<>(list);
 		if(layout.listNoIndex()){
-			if(list.isEmpty()){
-				list.add(ReflectionUtil.newInstance(targetClass));
+			Field enumField = getField(layout.enumField(), targetClass);
+			if(enumField != null) {
+				Set<Integer> notExistEnums = notExistEnum(list, keySet, enumField);
+				for(Integer e : notExistEnums) {
+					T nIns = ReflectionUtil.newInstance(targetClass);
+					ReflectionUtil.setFieldValue(enumField, nIns, e);
+					list.add(nIns);
+				}
 			}
 			return list;
 		}
@@ -303,6 +340,12 @@ public class AttendanceItemUtil {
 			}
 		}
 		return list;
+	}
+
+	private static <T> Set<Integer> notExistEnum(List<T> list, Set<Integer> keySet, Field enumField) {
+		return keySet.stream().filter(c -> {
+			return !list.stream().filter(l -> ((Integer) ReflectionUtil.getFieldValue(enumField, l)) == (c - 1)).findFirst().isPresent();
+		}).collect(Collectors.toSet());
 	}
 
 	private static <T> void processAndSort(List<T> list, int max, Class<T> targetClass, String idxFieldName) {
@@ -432,5 +475,18 @@ public class AttendanceItemUtil {
 		}
 
 		return "";
+	}
+	
+	public enum AttendanceItemType{
+		DAILY_ITEM(0, "日次項目"),
+		MONTHLY_ITEM(1, "月次項目");
+		
+		public final int value;
+		public final String descript;
+		
+		private AttendanceItemType(int value, String descript) {
+			this.value = value;
+			this.descript = descript;
+		}
 	}
 }

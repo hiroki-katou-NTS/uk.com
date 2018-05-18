@@ -274,7 +274,10 @@ public class DefaultClosureServiceImpl implements ClosureService {
 					item.getClosureMonth().getProcessingYm());
 			
 			//Check ClosureClassification 
-			switch (item.getClosureMonth().getClosureClassification().get()) {
+			ClosureClassification closureClassification = item.getClosureMonth().getClosureClassification().isPresent()
+					? item.getClosureMonth().getClosureClassification().get()
+					: ClosureClassification.ClassificationClosingBefore;
+			switch (closureClassification) {
 			case ClassificationClosingBefore:
 				item.setClosureHistories(item.getClosureHistories().stream()
 						.filter(i -> i.getStartYearMonth().lessThanOrEqualTo(item.getClosureMonth().getProcessingYm())

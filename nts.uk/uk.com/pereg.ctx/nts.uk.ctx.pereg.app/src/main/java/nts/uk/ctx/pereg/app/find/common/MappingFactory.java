@@ -14,11 +14,9 @@ import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.shr.pereg.app.PeregItem;
-import nts.uk.shr.pereg.app.find.dto.DataClassification;
-import nts.uk.shr.pereg.app.find.dto.EmpOptionalDto;
+import nts.uk.shr.pereg.app.find.dto.OptionalItemDataDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
-import nts.uk.shr.pereg.app.find.dto.PersonOptionalDto;
 
 /**
  * @author danpv
@@ -120,19 +118,14 @@ public class MappingFactory {
 		});
 
 		// map from option data
-		if (peregDto.getDataType() == DataClassification.EMPLOYEE) {
-			peregDto.getEmpOptionalData()
-					.forEach(empData -> itemCodeValueMap.put(empData.getItemCode(), empData.getValue()));
-		} else {
-			peregDto.getPerOptionalData()
-					.forEach(perData -> itemCodeValueMap.put(perData.getItemCode(), perData.getValue()));
-		}
+		peregDto.getOptionalItemData()
+				.forEach(empData -> itemCodeValueMap.put(empData.getItemCode(), empData.getValue()));
 
 		return itemCodeValueMap;
 	}
 
-	public static void matchPerOptionData(String recordId, List<LayoutPersonInfoClsDto> classItemList,
-			List<PersonOptionalDto> dataItems) {
+	public static void matchOptionalItemData(String recordId, List<LayoutPersonInfoClsDto> classItemList,
+			List<OptionalItemDataDto> dataItems) {
 		for (LayoutPersonInfoClsDto classItem : classItemList) {
 			for (Object item : classItem.getItems()) {
 				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
@@ -141,7 +134,7 @@ public class MappingFactory {
 				valueItem.setShowColor(false);
 				
 				// data
-				for (PersonOptionalDto dataItem : dataItems) {
+				for (OptionalItemDataDto dataItem : dataItems) {
 					if (valueItem.getItemCode().equals(dataItem.getItemCode())) {
 						// recordId
 						valueItem.setRecordId(recordId);
@@ -151,27 +144,6 @@ public class MappingFactory {
 			}
 		}
 
-	}
-
-	public static void matchEmpOptionData(String recordId, List<LayoutPersonInfoClsDto> classItemList,
-			List<EmpOptionalDto> dataItems) {
-		for (LayoutPersonInfoClsDto classItem : classItemList) {
-			for (Object item : classItem.getItems()) {
-				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
-				
-				// update 2018/02/22 bug 87560
-				valueItem.setShowColor(false);
-				
-				// data
-				for (EmpOptionalDto dataItem : dataItems) {
-					if (valueItem.getItemCode().equals(dataItem.getItemCode())) {
-						// recordId
-						valueItem.setRecordId(recordId);
-						valueItem.setValue(dataItem.getValue());
-					}
-				}
-			}
-		}
 	}
 
 }

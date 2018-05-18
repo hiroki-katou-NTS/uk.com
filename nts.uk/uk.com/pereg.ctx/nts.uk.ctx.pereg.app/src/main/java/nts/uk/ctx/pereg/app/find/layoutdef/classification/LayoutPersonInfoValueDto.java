@@ -26,6 +26,8 @@ public class LayoutPersonInfoValueDto {
 	// categoryCode
 	@NonNull
 	private String categoryCode;
+	
+	private int ctgType;
 
 	// itemDefID
 	@NonNull
@@ -75,7 +77,9 @@ public class LayoutPersonInfoValueDto {
 	private boolean showColor;
 
 	private int type;
-	private int ctgType;
+	
+	// help button Id
+	private String resourceId;
 
 	public LayoutPersonInfoValueDto(String categoryId, String categoryCode, String itemDefId, String itemName,
 			String itemCode, String itemParentCode, Integer row, Object value) {
@@ -115,10 +119,11 @@ public class LayoutPersonInfoValueDto {
 			SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
 			dataObject.setItem(sigleItem.getDataTypeState());
 		}
+		dataObject.setResourceId(itemDef.getResourceId());
 		return dataObject;
 	}
 
-	public static LayoutPersonInfoValueDto initData(PerInfoItemDefForLayoutDto itemDef, Object value) {
+	public static LayoutPersonInfoValueDto initData(PerInfoItemDefForLayoutDto itemDef) {
 		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
 		dataObject.setRecordId(itemDef.getRecordId());
 		dataObject.setLstComboBoxValue(itemDef.getLstComboxBoxValue());
@@ -129,17 +134,42 @@ public class LayoutPersonInfoValueDto {
 		dataObject.setItemCode(itemDef.getItemCode());
 		dataObject.setItemParentCode(itemDef.getItemParentCode());
 		dataObject.setRow(itemDef.getRow());
-		dataObject.setValue(value);
 		dataObject.setCtgType(itemDef.getCtgType());
 		dataObject.setRequired(itemDef.getIsRequired() == 1);
+		dataObject.setResourceId(itemDef.getResourceId());
 
 		dataObject.setType(itemDef.getItemTypeState().getItemType());
 
-		if (itemDef.getItemDefType() == 2) {
+		if (itemDef.getItemTypeState().getItemType() == 2) {
 			SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
 			dataObject.setItem(sigleItem.getDataTypeState());
 		}
 		dataObject.setActionRole(itemDef.getActionRole());
 		return dataObject;
+	}
+	
+	public static LayoutPersonInfoValueDto createFromDefItem(PersonInfoCategory perInfoCategory, PerInfoItemDefDto itemDef) {
+		LayoutPersonInfoValueDto item = new LayoutPersonInfoValueDto();
+		
+		item.setCategoryId(itemDef.getPerInfoCtgId());
+		item.setCtgType(perInfoCategory.getCategoryType().value);
+		item.setCategoryCode(perInfoCategory.getCategoryCode().v());
+		
+		item.setItemDefId(itemDef.getId());
+		item.setItemName(itemDef.getItemName());
+		item.setItemCode(itemDef.getItemCode());
+		item.setItemParentCode(itemDef.getItemParentCode());
+		
+		item.setRow(0);
+		item.setRequired(itemDef.getIsRequired() == 1);
+		item.setType(itemDef.getItemTypeState().getItemType());
+		
+		item.setActionRole(ActionRole.EDIT);
+		item.setResourceId(itemDef.getResourceId());
+		return item;
+	}
+	
+	public void toStringValue() {
+		this.value = this.value.toString();
 	}
 }

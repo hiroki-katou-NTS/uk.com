@@ -46,7 +46,7 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandler<AddAppWork
 		String appID = appCommand.getApplicationID();
 		// 申請
 		Application_New updateApp = new Application_New(
-				0L, 
+				appCommand.getVersion(), 
 				companyId, 
 				appID,
 				EnumAdaptor.valueOf(appCommand.getPrePostAtr(), PrePostAtr.class), 
@@ -54,7 +54,7 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandler<AddAppWork
 				appCommand.getEnteredPersonSID(), 
 				new AppReason(Strings.EMPTY), 
 				appCommand.getStartDate(),
-				new AppReason(appCommand.getApplicationReason().replaceFirst(COLON_STRING, System.lineSeparator())),
+				new AppReason(appCommand.getApplicationReason()),
 				ApplicationType.WORK_CHANGE_APPLICATION, 
 				appCommand.getApplicantSID(),
 				Optional.of(appCommand.getStartDate()),
@@ -87,8 +87,8 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandler<AddAppWork
 				workChangeCommand.getWorkTimeStart2(), workChangeCommand.getWorkTimeEnd2(),
 				workChangeCommand.getGoWorkAtr2(), workChangeCommand.getBackHomeAtr2());
 		//OptimisticLock
-		workChangeDomain.setVersion(workChangeCommand.getVersion());
-		updateApp.setVersion(workChangeCommand.getVersion());
+		workChangeDomain.setVersion(appCommand.getVersion());
+		//updateApp.setVersion(workChangeCommand.getVersion());
 		
 		// アルゴリズム「勤務変更申請登録（更新）」を実行する
 		updateService.UpdateWorkChange(updateApp, workChangeDomain);

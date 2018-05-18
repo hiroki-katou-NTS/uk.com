@@ -1,5 +1,5 @@
 #ex_accept_wizard {
-	width: 1325px;
+	width: 1200px;
 	height: 480px;
 }
 
@@ -9,7 +9,7 @@
 }
 
 #ex_accept_wizard>.content {
-	width: 1065px;
+	width: 940px;
 	height: 590px;
 	background: none;
 	margin-left: 5px;

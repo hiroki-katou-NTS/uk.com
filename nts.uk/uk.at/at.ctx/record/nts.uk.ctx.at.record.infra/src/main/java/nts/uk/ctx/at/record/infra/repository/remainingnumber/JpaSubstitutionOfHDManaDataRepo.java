@@ -13,22 +13,24 @@ import nts.uk.ctx.at.record.infra.entity.remainingnumber.paymana.KrcmtSubOfHDMan
 @Stateless
 public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements SubstitutionOfHDManaDataRepository {
 
-	private String QUERY_BYSID = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid" ;
+	private String QUERY_BYSID = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND s.cID = :cid" ;
 	
 	private String QUERY_BYSID_REM_COD = String.join(" ",QUERY_BYSID, "AND s.remainDays > 0") ;
 	
 	@Override
-	public List<SubstitutionOfHDManagementData> getBysiD(String sid) {
+	public List<SubstitutionOfHDManagementData> getBysiD(String cid, String sid) {
 		List<KrcmtSubOfHDManaData> list = this.queryProxy().query(QUERY_BYSID,KrcmtSubOfHDManaData.class)
 				.setParameter("sid", sid)
+				.setParameter("cid", cid)
 				.getList();
 		return list.stream().map(i->toDomain(i)).collect(Collectors.toList());
 	}
 	
 	@Override
-	public List<SubstitutionOfHDManagementData> getBysiDRemCod(String sid) {
+	public List<SubstitutionOfHDManagementData> getBysiDRemCod(String cid, String sid) {
 		List<KrcmtSubOfHDManaData> list = this.queryProxy().query(QUERY_BYSID_REM_COD,KrcmtSubOfHDManaData.class)
 				.setParameter("sid", sid)
+				.setParameter("cid", cid)
 				.getList();
 		return list.stream().map(i->toDomain(i)).collect(Collectors.toList());
 	}
@@ -52,6 +54,7 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 		KrcmtSubOfHDManaData entity = new KrcmtSubOfHDManaData();
 		entity.subOfHDID = domain.getSubOfHDID();
 		entity.sID = domain.getSID();
+		entity.cID = domain.getCid();
 		entity.unknownDate = domain.getHolidayDate().isUnknownDate();
 		if (domain.getHolidayDate().getDayoffDate().isPresent()){
 			entity.dayOff = domain.getHolidayDate().getDayoffDate().get();

@@ -27,25 +27,27 @@ function initScreen(screenModel: any, listAppMeta: Array<model.ApplicationMetada
 }
 
 __viewContext.ready(function() {
-    var listAppMeta: Array<model.ApplicationMetadata>;
+    var listAppMeta: Array<model.ApplicationMetadata> = [];
     var currentApp: model.ApplicationMetadata;
+    var listValue: Array<string> = __viewContext.transferred.value.listAppMeta;
+    var currentValue: string = __viewContext.transferred.value.currentApp;
     var screenModel: any = {};
-    var appID = __viewContext.transferred.value.appID;
-    if (nts.uk.util.isNullOrUndefined(appID)) {
-        listAppMeta = __viewContext.transferred.value.listAppMeta;
-        currentApp = __viewContext.transferred.value.currentApp;
-        initScreen(screenModel, listAppMeta, currentApp);
-    } else {
-        nts.uk.at.view.kaf000.b.service.getAppByID(appID)
-            .done((data) => {
-                var appInfo = new model.ApplicationMetadata(data.appID, data.appType, data.appDate);
-                listAppMeta = [appInfo];
-                currentApp = appInfo;
-                initScreen(screenModel, listAppMeta, currentApp);
+    nts.uk.at.view.kaf000.b.service.getAppByListID(listValue)
+        .done((data) => {
+            _.forEach(listValue, (value) => {
+                listAppMeta.push(_.find(data, (o) => { return o.appID == value; }));
             });
+            
+            currentApp = _.find(listAppMeta, x => {return x.appID == currentValue; });
+            initScreen(screenModel, listAppMeta, currentApp);
+        }).fail((res) =>{
+            nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                          nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+            });
+        });
     }
 
-});
+);
 
 
 

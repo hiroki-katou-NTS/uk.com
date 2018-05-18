@@ -68,29 +68,49 @@ public class KscdtScheExeContent extends UkJpaEntity implements Serializable {
     @Column(name = "PROCESS_EXE_ATR")
     private Integer processExeAtr;
     
-    /** The re master info. */
-    @Column(name = "RE_MASTER_INFO")
-    private Integer reMasterInfo;
+    /** The re target atr. */
+    @Column(name = "RE_TARGET_ATR")
+    private Integer reTargetAtr;
     
-    /** The re abst hd busines. */
-    @Column(name = "RE_ABST_HD_BUSINES")
-    private Integer reAbstHdBusines;
+    /** The re converter. */
+    @Column(name = "RE_CONVERTER")
+    private Integer reConverter;
+    
+    /** The re emp off work. */
+    @Column(name = "RE_EMP_OFF_WORK")
+    private Integer reEmpOffWork;
+    
+    /** The re direct bouncer. */
+    @Column(name = "RE_DIRECT_BOUNCER")
+    private Integer reDirectBouncer;
+    
+    /** The re short term emp. */
+    @Column(name = "RE_SHORT_TERM_EMP")
+    private Integer reShortTermEmp;
+    
+    /** The re work type change. */
+    @Column(name = "RE_WORK_TYPE_CHANGE")
+    private Integer reWorkTypeChange;
+    
+    /** The re protect hand correct. */
+    @Column(name = "RE_PROTECT_HAND_CORRECT")
+    private Integer reProtectHandCorrect;
     
     /** The re working hours. */
     @Column(name = "RE_WORKING_HOURS")
     private Integer reWorkingHours;
     
+    /** The re start-end time. */
+    @Column(name = "RE_START_END_TIME")
+    private Integer reStartEndTime;
+    
+    /** The re master info. */
+    @Column(name = "RE_MASTER_INFO")
+    private Integer reMasterInfo;
+    
     /** The re time assignment. */
     @Column(name = "RE_TIME_ASSIGNMENT")
     private Integer reTimeAssignment;
-    
-    /** The re dir line bounce. */
-    @Column(name = "RE_DIR_LINE_BOUNCE")
-    private Integer reDirLineBounce;
-    
-    /** The re time child care. */
-    @Column(name = "RE_TIME_CHILD_CARE")
-    private Integer reTimeChildCare;
 
     /**
      * Instantiates a new kscmt sch create content.

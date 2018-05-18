@@ -35,4 +35,6 @@ public class HolidayWorktimeAppRequestPara {
 	 * 反映不可理由
 	 */
 	private ReasonNotReflectDaily_New reasonNotReflect;
+	private Integer startTime;
+	private Integer endTime;
 }

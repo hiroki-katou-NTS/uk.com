@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.dom.application.approvalstatus.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -8,14 +10,13 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTemp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTempRepository;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailType;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmbeddedUrlOutput;
@@ -25,9 +26,6 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.Perio
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
-import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Content;
-import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Subject;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.mail.SendMailFailedException;
@@ -225,7 +223,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}*/
 	
 	/**
-	 * アルゴリズム「承認状況社員メールアドレス取得」を実行する RequestList #126
+	 * 承認状況社員メールアドレス取得
 	 * 
 	 * @return 取得社員ID＜社員ID、社員名、メールアドレス＞
 	 */
@@ -304,5 +302,22 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		String url1 = "123123123";
 		String url2 = "1231ád23123";
 		return new EmbeddedUrlOutput(url1, url2);
+	}
+	
+	@Override
+	public String confirmApprovalStatusMailSender() {
+		String sId = AppContexts.user().userId();
+		List<String> listSId = new ArrayList<>();
+		listSId.add(sId);
+		// アルゴリズム「承認状況社員メールアドレス取得」を実行する
+		Optional<EmployeeEmailImport> emp = this.findEmpMailAddr(listSId).stream().findFirst();
+		if(!emp.isPresent()){
+			throw new BusinessException("Msg_791");
+		}
+		EmployeeEmailImport empEmail = emp.get();
+		if (Objects.isNull(empEmail.getMailAddr()) || empEmail.getMailAddr().isEmpty()) {
+			throw new BusinessException("Msg_791");
+		}
+		return empEmail.getMailAddr();
 	}
 }

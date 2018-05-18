@@ -58,26 +58,31 @@ public class AnnualLeaveFinder implements PeregFinder<AnnualLeaveDto> {
 	@Override
 	public AnnualLeaveDto getSingleData(PeregQuery query) {
 		String companyId = AppContexts.user().companyId();
-		Optional<AnnualLeaveEmpBasicInfo> basicInfoOpt = annLeaBasicInfoRepo.get(query.getEmployeeId());
-		Optional<AnnualLeaveMaxData> maxDataOpt = maxDataRepo.get(query.getEmployeeId());
-		if (basicInfoOpt.isPresent() && maxDataOpt.isPresent()) {
+		String employeeId = query.getEmployeeId();
+		AnnualLeaveDto dto = new AnnualLeaveDto(employeeId);
 
-			List<AnnualLeaveGrantRemainingData> annualLeaveDataList = annLeaDataRepo.findNotExp(query.getEmployeeId());
-			List<ReserveLeaveGrantRemainingData> rervLeaveDataList = rervLeaDataRepo.findNotExp(query.getEmployeeId(), companyId);
+		// 年休残数
+		List<AnnualLeaveGrantRemainingData> annualLeaveDataList = annLeaDataRepo.findNotExp(employeeId);
+		dto.setAnnualLeaveNumber(annLeaDomainService.calculateAnnLeaNumWithFormat(companyId, annualLeaveDataList));
+		dto.setLastGrantDate(annLeaDomainService.calculateLastGrantDate(employeeId));
 
-			AnnualLeaveDto dto = AnnualLeaveDto.createFromDomains(basicInfoOpt.get(), maxDataOpt.get());
-			
-			//年休残数
-			dto.setAnnualLeaveNumber(annLeaDomainService.calculateAnnualLeaveNumber(companyId, annualLeaveDataList));
-			
-			dto.setLastGrantDate(annLeaDomainService.calculateLastGrantDate(annualLeaveDataList));
-			
-			//積立年休残数
-			dto.setResvLeaRemainNumber(annLeaDomainService.calculateRervLeaveNumber(rervLeaveDataList));
-			
-			return dto;
+		// 年休社員基本情報
+		Optional<AnnualLeaveEmpBasicInfo> basicInfoOpt = annLeaBasicInfoRepo.get(employeeId);
+		if (basicInfoOpt.isPresent()) {
+			dto.pullDataFromBasicInfo(basicInfoOpt.get());
 		}
-		return null;
+
+		// 年休上限データ
+		Optional<AnnualLeaveMaxData> maxDataOpt = maxDataRepo.get(employeeId);
+		if (maxDataOpt.isPresent()) {
+			dto.pullDataFromMaxData(maxDataOpt.get());
+		}
+
+		// 積立年休残数
+		List<ReserveLeaveGrantRemainingData> rervLeaveDataList = rervLeaDataRepo.findNotExp(employeeId, companyId);
+		dto.setResvLeaRemainNumber(annLeaDomainService.calculateRervLeaveNumber(rervLeaveDataList));
+
+		return dto;
 	}
 
 	@Override

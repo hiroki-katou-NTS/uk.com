@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.request.ac.bs;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmail
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
+import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employment.SEmpHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
@@ -155,7 +157,9 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 
 	@Override
 	public List<EmployeeEmailImport> getApprovalStatusEmpMailAddr(List<String> sIds) {
-		List<EmployeeEmailImport> data = this.syEmployeePub.findBySIds(sIds)
+		List<EmployeeBasicInfoExport> list = this.syEmployeePub.findBySIds(sIds);
+		if(list == null) return  Collections.emptyList();
+		List<EmployeeEmailImport> data = list
 			.stream()
 			.map(x-> new EmployeeEmailImport(
 						x.getEmployeeId(),
@@ -170,7 +174,8 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 	@Override
 	public List<String> getListSIdByWkpIdAndPeriod(String workplaceId, GeneralDate startDate,
 			GeneralDate endDate) {
-		List<String> data = this.workplacePub.findListSIdByCidAndWkpIdAndPeriod(workplaceId, startDate, endDate);
-		return data;
+//		List<String> data = this.workplacePub.findListSIdByCidAndWkpIdAndPeriod(workplaceId, startDate, endDate);
+//		return data;
+		return null;
 	}
 }

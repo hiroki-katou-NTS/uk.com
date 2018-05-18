@@ -18,16 +18,24 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="contents-area">
+			<div id="contents-area" class="ktg002">
 				<table class="widget-table">     
 					<tr>
 						<td>#{i18n.getText('KTG001_3')}</td>
 					</tr>
 					<tr>
-						<td data-bind="text: text"></td>
-						<td class="go-button"  data-bind="visible: visible"><button data-bind = " click : dailyPerformanceConfirm">
-								<i data-bind="ntsIcon: { no: 144 }"></i>
-							</button></td>
+						<td>
+							<table class="widget-table">
+								<tr>
+									<td data-bind="text: text"></td>
+									<td class="go-button" data-bind="visible: visible">
+										<button data-bind = " click : dailyPerformanceConfirm">
+											<i data-bind="ntsIcon: { no: 145 }"></i>
+										</button>
+									</td>
+								</tr>
+							</table>
+						</td>
 					</tr>
 				</table>
 			</div>
