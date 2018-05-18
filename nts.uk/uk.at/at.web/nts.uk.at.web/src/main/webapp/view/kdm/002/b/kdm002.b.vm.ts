@@ -232,9 +232,7 @@ module nts.uk.at.view.kdm002.b {
             errorExport(){
                 let self = this;
                 nts.uk.ui.block.invisible();
-                service.exportDatatoCsv(ko.toJS(self.imErrorLog())).fail(function(res: any) {
-                    alertError({ messageId: res.messageId });
-                }).always(function() {
+                service.exportDatatoCsv(ko.toJS(self.imErrorLog())).always(function() {
                     nts.uk.ui.block.clear();
                 });
             }
@@ -243,9 +241,7 @@ module nts.uk.at.view.kdm002.b {
             excelExport() {
                 let self = this;
                 nts.uk.ui.block.invisible();
-                service.exportExcel(ko.toJS(self.excelContent())).fail(function(res: any) {
-                    alertError({ messageId: res.messageId });
-                }).always(function() {
+                service.exportExcel(ko.toJS(self.excelContent() || [])).always(function() {
                     nts.uk.ui.block.clear();
                 });
             }
