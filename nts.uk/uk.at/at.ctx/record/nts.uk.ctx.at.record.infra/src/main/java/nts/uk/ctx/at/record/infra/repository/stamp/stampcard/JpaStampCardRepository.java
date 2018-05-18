@@ -10,7 +10,6 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
-import nts.uk.ctx.at.record.infra.entity.stamp.stampcard.KrcmtStamcard;
 import nts.uk.ctx.at.record.infra.entity.stamp.stampcard.KwkdtStampCard;
 
 @Stateless
@@ -84,8 +83,8 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 		return StampCard.createFromJavaType(e.cardId, e.sid, e.cardNo, e.registerDate, e.contractCd);
 	}
 
-	private KrcmtStamcard toEntity(StampCard domain) {
-		KrcmtStamcard entity = new KrcmtStamcard();
+	private KwkdtStampCard toEntity(StampCard domain) {
+		KwkdtStampCard entity = new KwkdtStampCard();
 		entity.cardId = domain.getStampCardId();
 		entity.sid = domain.getEmployeeId();
 		entity.cardNo = domain.getStampNumber().v();
