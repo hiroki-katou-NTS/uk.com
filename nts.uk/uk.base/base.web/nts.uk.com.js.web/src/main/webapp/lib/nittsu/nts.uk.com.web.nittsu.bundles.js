@@ -3831,12 +3831,25 @@ var nts;
                  */
                 function getProgram() {
                     nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function (pg) {
+                        var programName = "";
+                        var queryString = __viewContext.program.queryString;
+                        if (queryString) {
+                            var program = _.find(pg, function (p) {
+                                return p.param === queryString;
+                            });
+                            if (program) {
+                                programName = program.name;
+                            }
+                        }
+                        else if (programName === "" && pg && pg.length > 0) {
+                            programName = pg[0].name;
+                        }
                         // show program name on title of browser
                         ui.viewModelBuilt.add(function () {
-                            ui._viewModel.kiban.programName(pg);
+                            ui._viewModel.kiban.programName(programName);
                         });
                         var $pgArea = $("#pg-area");
-                        $("<div/>").attr("id", "pg-name").text(pg).appendTo($pgArea);
+                        $("<div/>").attr("id", "pg-name").text(programName).appendTo($pgArea);
                         var $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
                         var $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
                         $manualBtn.on(constants.CLICK, function () {
@@ -4085,11 +4098,13 @@ var nts;
                     DepartmentCodeValidator.prototype.validate = function (inputText, option) {
                         var result = new ValidationResult();
                         // Check Required
-                        if (this.required !== undefined && this.required !== false) {
-                            if (util.isNullOrEmpty(inputText)) {
+                        if (util.isNullOrEmpty(inputText)) {
+                            if (this.required !== undefined && this.required !== false) {
                                 result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]), 'FND_E_REQ_INPUT');
                                 return result;
                             }
+                            result.success(inputText);
+                            return result;
                         }
                         var validateResult;
                         // Check CharType
@@ -4154,13 +4169,11 @@ var nts;
                     WorkplaceCodeValidator.prototype.validate = function (inputText, option) {
                         var result = new ValidationResult();
                         // Check Required
-                        if (this.required !== undefined && this.required !== false) {
-                            if (util.isNullOrEmpty(inputText)) {
+                        if (util.isNullOrEmpty(inputText)) {
+                            if (this.required !== undefined && this.required !== false) {
                                 result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]), 'FND_E_REQ_INPUT');
                                 return result;
                             }
-                        }
-                        else if (util.isNullOrEmpty(inputText)) {
                             result.success(inputText);
                             return result;
                         }
@@ -4197,11 +4210,13 @@ var nts;
                     PostCodeValidator.prototype.validate = function (inputText, option) {
                         var result = new ValidationResult();
                         // Check Required
-                        if (this.required !== undefined && this.required !== false) {
-                            if (util.isNullOrEmpty(inputText)) {
+                        if (util.isNullOrEmpty(inputText)) {
+                            if (this.required !== undefined && this.required !== false) {
                                 result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]), 'FND_E_REQ_INPUT');
                                 return result;
                             }
+                            result.success(inputText);
+                            return result;
                         }
                         var validateResult;
                         // Check CharType
@@ -4238,11 +4253,13 @@ var nts;
                     PunchCardNoValidator.prototype.validate = function (inputText, option) {
                         var result = new ValidationResult();
                         // Check Required
-                        if (this.required !== undefined && this.required !== false) {
-                            if (util.isNullOrEmpty(inputText)) {
+                        if (util.isNullOrEmpty(inputText)) {
+                            if (this.required !== undefined && this.required !== false) {
                                 result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]), 'FND_E_REQ_INPUT');
                                 return result;
                             }
+                            result.success(inputText);
+                            return result;
                         }
                         var validateResult;
                         // Check CharType
@@ -4282,11 +4299,13 @@ var nts;
                     StringValidator.prototype.validate = function (inputText, option) {
                         var result = new ValidationResult();
                         // Check Required
-                        if (this.required !== undefined && this.required !== false) {
-                            if (util.isNullOrEmpty(inputText)) {
+                        if (util.isNullOrEmpty(inputText)) {
+                            if (this.required !== undefined && this.required !== false) {
                                 result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]), 'FND_E_REQ_INPUT');
                                 return result;
                             }
+                            result.success(inputText);
+                            return result;
                         }
                         var validateResult;
                         // Check CharType
@@ -5272,10 +5291,9 @@ var nts;
                         this.setGlobal(this.$iframe[0].contentWindow);
                     };
                     ScreenWindow.prototype.onClosed = function (callback) {
-                        var _this = this;
                         this.onClosedHandler = function () {
-                            var dataModel = ko.dataFor(_this.$dialog[0]);
-                            dataModel.kiban.errorDialogViewModel.errors([]);
+                            //var dataModel = ko.dataFor(this.$dialog[0]);
+                            //dataModel.kiban.errorDialogViewModel.errors([]);
                             //dataModel.kiban.errorDialogViewModel.errors.valueHasMutated();
                             callback();
                             windows.container.localShared = {};
@@ -5470,7 +5488,7 @@ var nts;
              * Using for display info or confirm dialog
              */
             var dialog;
-            (function (dialog_2) {
+            (function (dialog) {
                 function getMaxZIndex() {
                     var overlayElements = PS.$(".ui-widget-overlay");
                     var max = 12000;
@@ -5481,7 +5499,7 @@ var nts;
                     }
                     return max;
                 }
-                dialog_2.getMaxZIndex = getMaxZIndex;
+                dialog.getMaxZIndex = getMaxZIndex;
                 function createNoticeDialog(message, buttons, header) {
                     var $control = $('<div/>').addClass('control').addClass("pre");
                     var text;
@@ -5556,7 +5574,7 @@ var nts;
                         .appendTo('body')
                         .dialog({});
                 }
-                dialog_2.version = version;
+                dialog.version = version;
                 function simpleDialog(message, option) {
                     var then = $.noop;
                     var $dialog = PS.$('<div/>').hide();
@@ -5584,23 +5602,23 @@ var nts;
                 function info(message) {
                     return simpleDialog(message, { title: ui_1.toBeResource.info });
                 }
-                dialog_2.info = info;
+                dialog.info = info;
                 function caution(message) {
                     return simpleDialog(message, { title: ui_1.toBeResource.warn });
                 }
-                dialog_2.caution = caution;
+                dialog.caution = caution;
                 function error(message) {
                     return simpleDialog(message, { title: ui_1.toBeResource.error });
                 }
-                dialog_2.error = error;
+                dialog.error = error;
                 function alertError(message) {
                     return error(message);
                 }
-                dialog_2.alertError = alertError;
+                dialog.alertError = alertError;
                 function alert(message) {
                     return error(message);
                 }
-                dialog_2.alert = alert;
+                dialog.alert = alert;
                 ;
                 function confirm(message, option) {
                     var handleYes = $.noop;
@@ -5673,16 +5691,16 @@ var nts;
                     });
                     return handlers;
                 }
-                dialog_2.confirm = confirm;
+                dialog.confirm = confirm;
                 ;
                 function confirmDanger(message) {
                     return confirm(message);
                 }
-                dialog_2.confirmDanger = confirmDanger;
+                dialog.confirmDanger = confirmDanger;
                 function confirmProceed(message) {
                     return confirm(message, { buttonStyles: { yes: "proceed" } });
                 }
-                dialog_2.confirmProceed = confirmProceed;
+                dialog.confirmProceed = confirmProceed;
                 function addError(errorBody, error, idx) {
                     var row = $("<tr/>");
                     row.append("<td style='display: none;'>" + idx + "/td><td>" + error["message"] + "</td><td>" + error["messageId"] + "</td>");
@@ -5773,41 +5791,7 @@ var nts;
                                     container.remove();
                                     then();
                                 });
-                                var currentInfo = dialogInfo;
-                                var top = 0, left = 0;
-                                var dialog = container.closest("div[role='dialog']");
-                                dialog.addClass("disappear");
-                                if (dialogInfo.isRoot) {
-                                    top = (window.innerHeight - dialog.innerHeight()) / 2;
-                                    left = (window.innerWidth - dialog.innerWidth()) / 2;
-                                }
-                                else {
-                                    while (!nts.uk.util.isNullOrUndefined(currentInfo)) {
-                                        if (currentInfo.isRoot) {
-                                            currentInfo = null;
-                                        }
-                                        else {
-                                            var fullDialog = currentInfo.$dialog.closest("div[role='dialog']");
-                                            var offset = fullDialog.offset();
-                                            top += offset.top;
-                                            left += offset.left;
-                                            currentInfo = currentInfo.parent;
-                                        }
-                                    }
-                                }
-                                setTimeout(function () {
-                                    var dialogM = dialogInfo.isRoot ? $("body") : dialogInfo.$dialog.closest("div[role='dialog']");
-                                    var topDiff = (dialogM.innerHeight() - dialog.innerHeight()) / 2;
-                                    var leftDiff = (dialogM.innerWidth() - dialog.innerWidth()) / 2;
-                                    if (topDiff > 0) {
-                                        top += topDiff;
-                                    }
-                                    if (leftDiff > 0) {
-                                        left += leftDiff;
-                                    }
-                                    dialog.css({ top: top, left: left });
-                                    dialog.removeClass("disappear");
-                                }, 33);
+                                container.ntsDialogEx("centerUp", dialogInfo);
                             },
                             close: function (event) {
                             }
@@ -5829,7 +5813,7 @@ var nts;
                         }
                     };
                 }
-                dialog_2.bundledErrors = bundledErrors;
+                dialog.bundledErrors = bundledErrors;
                 ;
             })(dialog = ui_1.dialog || (ui_1.dialog = {}));
         })(ui = uk.ui || (uk.ui = {}));
@@ -15700,6 +15684,30 @@ var nts;
                     };
                     return NtsDialogBindingHandler;
                 }());
+                function getCurrentWindow() {
+                    var self = nts.uk.ui.windows.getSelf();
+                    ;
+                    var dfd = $.Deferred();
+                    if (!nts.uk.util.isNullOrUndefined(self)) {
+                        dfd.resolve(self);
+                    }
+                    else {
+                        nts.uk.deferred.repeat(function (conf) { return conf
+                            .task(function () {
+                            console.log("loop");
+                            var def = $.Deferred();
+                            self = nts.uk.ui.windows.getSelf();
+                            if (!nts.uk.util.isNullOrUndefined(self)) {
+                                dfd.resolve(self);
+                            }
+                            def.resolve(self);
+                            return def.promise();
+                        })
+                            .while(function (c) { return nts.uk.util.isNullOrUndefined(c); })
+                            .pause(300); });
+                    }
+                    return dfd.promise();
+                }
                 /**
                  * Error Dialog binding handler
                  */
@@ -15718,57 +15726,65 @@ var nts;
                         var modal = ko.unwrap(option.modal);
                         var show = ko.unwrap(option.show);
                         var buttons = ko.unwrap(option.buttons);
-                        var self = nts.uk.ui.windows.getSelf();
-                        var id = 'ntsErrorDialog_' + self.id;
-                        var $dialog = $("<div>", { "id": id });
-                        PS.$('body').append($dialog);
-                        // Create Buttons
-                        var dialogbuttons = [];
-                        var _loop_2 = function (button) {
-                            dialogbuttons.push({
-                                text: ko.unwrap(button.text),
-                                "class": ko.unwrap(button.class) + ko.unwrap(button.size) + " " + ko.unwrap(button.color),
-                                click: function () { button.click(bindingContext.$data, $dialog); }
+                        getCurrentWindow().done(function (self) {
+                            var id = 'ntsErrorDialog_' + self.id;
+                            var $dialog = $("<div>", { "id": id });
+                            PS.$('body').append($dialog);
+                            // Create Buttons
+                            var dialogbuttons = [];
+                            var _loop_2 = function (button) {
+                                dialogbuttons.push({
+                                    text: ko.unwrap(button.text),
+                                    "class": ko.unwrap(button.class) + ko.unwrap(button.size) + " " + ko.unwrap(button.color),
+                                    click: function () { button.click(bindingContext.$data, $dialog); }
+                                });
+                            };
+                            for (var _i = 0, buttons_2 = buttons; _i < buttons_2.length; _i++) {
+                                var button = buttons_2[_i];
+                                _loop_2(button);
+                            }
+                            // Calculate width
+                            var dialogWidth = 40 + 35 + 17;
+                            headers.forEach(function (header, index) {
+                                if (ko.unwrap(header.visible)) {
+                                    if (typeof ko.unwrap(header.width) === "number") {
+                                        dialogWidth += ko.unwrap(header.width);
+                                    }
+                                    else {
+                                        dialogWidth += 200;
+                                    }
+                                }
                             });
-                        };
-                        for (var _i = 0, buttons_2 = buttons; _i < buttons_2.length; _i++) {
-                            var button = buttons_2[_i];
-                            _loop_2(button);
-                        }
-                        // Calculate width
-                        var dialogWidth = 40 + 35 + 17;
-                        headers.forEach(function (header, index) {
-                            if (ko.unwrap(header.visible)) {
-                                if (typeof ko.unwrap(header.width) === "number") {
-                                    dialogWidth += ko.unwrap(header.width);
+                            var first = true;
+                            // Create dialog
+                            $dialog.dialog({
+                                title: title,
+                                modal: modal,
+                                autoOpen: false,
+                                closeOnEscape: false,
+                                width: dialogWidth,
+                                maxHeight: 500,
+                                buttons: dialogbuttons,
+                                dialogClass: "no-close",
+                                open: function () {
+                                    $(this).parent().find('.ui-dialog-buttonset > button.yes').focus();
+                                    $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
+                                    $('.ui-widget-overlay').last().css('z-index', nts.uk.ui.dialog.getMaxZIndex());
+                                    if (first) {
+                                        $dialog.ntsDialogEx("centerUp", self);
+                                    }
+                                    first = false;
+                                },
+                                close: function (event) {
+                                    bindingContext.$data.option().show(false);
                                 }
-                                else {
-                                    dialogWidth += 200;
+                            }).dialogPositionControl();
+                            PS.$("body").bind("dialogclosed", function (evt, eData) {
+                                if ($dialog.attr("id") === eData.dialogId) {
+                                    $dialog.dialog("close");
+                                    $dialog.remove();
                                 }
-                            }
-                        });
-                        // Create dialog
-                        $dialog.dialog({
-                            title: title,
-                            modal: modal,
-                            autoOpen: false,
-                            closeOnEscape: false,
-                            width: dialogWidth,
-                            maxHeight: 500,
-                            buttons: dialogbuttons,
-                            dialogClass: "no-close",
-                            open: function () {
-                                $(this).parent().find('.ui-dialog-buttonset > button.yes').focus();
-                                $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
-                                $('.ui-widget-overlay').last().css('z-index', nts.uk.ui.dialog.getMaxZIndex());
-                            },
-                            close: function (event) {
-                                bindingContext.$data.option().show(false);
-                            }
-                        }).dialogPositionControl();
-                        PS.$("body").bind("dialogclosed", function (evt, eData) {
-                            $dialog.dialog("close");
-                            $dialog.remove();
+                            });
                         });
                     };
                     /**
@@ -15785,122 +15801,120 @@ var nts;
                         //var maxrows: number = ko.unwrap(option.maxrows);
                         var autoclose = ko.unwrap(option.autoclose);
                         var show = ko.unwrap(option.show);
-                        var self = nts.uk.ui.windows.getSelf();
-                        if (nts.uk.util.isNullOrUndefined(self)) {
-                            return;
-                        }
-                        var id = 'ntsErrorDialog_' + self.id;
-                        var $dialog;
-                        if (self.isRoot) {
-                            $dialog = PS.$("#" + id);
-                        }
-                        else {
-                            while (!nts.uk.util.isNullOrUndefined(self)) {
-                                if (self.isRoot) {
-                                    self = null;
-                                    $dialog = $((nts.uk.ui.windows.getSelf().parent.globalContext.document).getElementById(id));
-                                }
-                                else {
-                                    self = self.parent;
+                        getCurrentWindow().done(function (self) {
+                            var id = 'ntsErrorDialog_' + self.id;
+                            var $dialog;
+                            if (self.isRoot) {
+                                $dialog = PS.$("#" + id);
+                            }
+                            else {
+                                while (!nts.uk.util.isNullOrUndefined(self)) {
+                                    if (self.isRoot) {
+                                        self = null;
+                                        $dialog = $((nts.uk.ui.windows.getSelf().parent.globalContext.document).getElementById(id));
+                                    }
+                                    else {
+                                        self = self.parent;
+                                    }
                                 }
                             }
-                        }
-                        if (show == true) {
-                            // Create Error Table
-                            var $errorboard = $("<div id='error-board'></div>");
-                            var $errortable = $("<table></table>");
-                            // Header
-                            var $header = $("<thead></thead>");
-                            var $headerRow_1 = $("<tr></tr>");
-                            $headerRow_1.append("<th style='display:none;'></th>");
-                            headers.forEach(function (header, index) {
-                                if (ko.unwrap(header.visible)) {
-                                    var $headerElement = $("<th>" + ko.unwrap(header.text) + "</th>").width(ko.unwrap(header.width));
-                                    $headerRow_1.append($headerElement);
-                                }
-                            });
-                            $header.append($headerRow_1);
-                            $errortable.append($header);
-                            // Body
-                            var $body = $("<tbody></tbody>");
-                            errors.forEach(function (error, index) {
-                                // Row
-                                var $row = $("<tr></tr>");
-                                $row.click(function () {
-                                    error.$control.eq(0).exposeOnTabPanel().focus();
-                                    var $dialogContainer = $dialog.closest("[role='dialog']");
-                                    var $self = nts.uk.ui.windows.getSelf();
-                                    var additonalTop = 0;
-                                    var additonalLeft = 0;
-                                    if (!$self.isRoot) {
-                                        var $currentDialog = $self.$dialog.closest("[role='dialog']");
-                                        var $currentHeadBar = $currentDialog.find(".ui-dialog-titlebar");
-                                        var currentDialogOffset = $currentDialog.offset();
-                                        additonalTop = currentDialogOffset.top + $currentHeadBar.height();
-                                        additonalLeft = currentDialogOffset.left;
-                                    }
-                                    var currentControlOffset = error.$control.offset();
-                                    //change for compatibility with IE
-                                    var doc = document.documentElement;
-                                    var scrollX = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
-                                    var scrollY = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
-                                    var top = additonalTop + currentControlOffset.top + error.$control.outerHeight() - scrollY;
-                                    //                    let top = additonalTop + currentControlOffset.top  + element.outerHeight() - window.scrollY;
-                                    var left = additonalLeft + currentControlOffset.left - scrollX;
-                                    //                    let left = additonalLeft + currentControlOffset.left - window.scrollX;
-                                    var $errorDialogOffset = $dialogContainer.offset();
-                                    var maxLeft = $errorDialogOffset.left + $dialogContainer.width();
-                                    var maxTop = $errorDialogOffset.top + $dialogContainer.height();
-                                    if ($errorDialogOffset.top < top && top < maxTop) {
-                                        $dialogContainer.css("top", top + 15);
-                                    }
-                                    if (($errorDialogOffset.left < left && left < maxLeft)) {
-                                        $dialogContainer.css("left", left);
+                            if (show == true) {
+                                // Create Error Table
+                                var $errorboard = $("<div id='error-board'></div>");
+                                var $errortable = $("<table></table>");
+                                // Header
+                                var $header = $("<thead></thead>");
+                                var $headerRow_1 = $("<tr></tr>");
+                                $headerRow_1.append("<th style='display:none;'></th>");
+                                headers.forEach(function (header, index) {
+                                    if (ko.unwrap(header.visible)) {
+                                        var $headerElement = $("<th>" + ko.unwrap(header.text) + "</th>").width(ko.unwrap(header.width));
+                                        $headerRow_1.append($headerElement);
                                     }
                                 });
-                                $row.append("<td style='display:none;'>" + (index + 1) + "</td>");
-                                headers.forEach(function (header) {
-                                    if (ko.unwrap(header.visible))
-                                        if (error.hasOwnProperty(ko.unwrap(header.name))) {
-                                            // TD
-                                            var $column = $("<td>" + error[ko.unwrap(header.name)] + "</td>");
-                                            $row.append($column);
+                                $header.append($headerRow_1);
+                                $errortable.append($header);
+                                // Body
+                                var $body = $("<tbody></tbody>");
+                                errors.forEach(function (error, index) {
+                                    // Row
+                                    var $row = $("<tr></tr>");
+                                    $row.click(function () {
+                                        error.$control.eq(0).exposeOnTabPanel().focus();
+                                        var $dialogContainer = $dialog.closest("[role='dialog']");
+                                        var $self = nts.uk.ui.windows.getSelf();
+                                        var additonalTop = 0;
+                                        var additonalLeft = 0;
+                                        if (!$self.isRoot) {
+                                            var $currentDialog = $self.$dialog.closest("[role='dialog']");
+                                            var $currentHeadBar = $currentDialog.find(".ui-dialog-titlebar");
+                                            var currentDialogOffset = $currentDialog.offset();
+                                            additonalTop = currentDialogOffset.top + $currentHeadBar.height();
+                                            additonalLeft = currentDialogOffset.left;
                                         }
+                                        var currentControlOffset = error.$control.offset();
+                                        //change for compatibility with IE
+                                        var doc = document.documentElement;
+                                        var scrollX = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
+                                        var scrollY = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
+                                        var top = additonalTop + currentControlOffset.top + error.$control.outerHeight() - scrollY;
+                                        //                    let top = additonalTop + currentControlOffset.top  + element.outerHeight() - window.scrollY;
+                                        var left = additonalLeft + currentControlOffset.left - scrollX;
+                                        //                    let left = additonalLeft + currentControlOffset.left - window.scrollX;
+                                        var $errorDialogOffset = $dialogContainer.offset();
+                                        var maxLeft = $errorDialogOffset.left + $dialogContainer.width();
+                                        var maxTop = $errorDialogOffset.top + $dialogContainer.height();
+                                        if ($errorDialogOffset.top < top && top < maxTop) {
+                                            $dialogContainer.css("top", top + 15);
+                                        }
+                                        if (($errorDialogOffset.left < left && left < maxLeft)) {
+                                            $dialogContainer.css("left", left);
+                                        }
+                                    });
+                                    $row.append("<td style='display:none;'>" + (index + 1) + "</td>");
+                                    headers.forEach(function (header) {
+                                        if (ko.unwrap(header.visible))
+                                            if (error.hasOwnProperty(ko.unwrap(header.name))) {
+                                                // TD
+                                                var $column = $("<td>" + error[ko.unwrap(header.name)] + "</td>");
+                                                $row.append($column);
+                                            }
+                                    });
+                                    $body.append($row);
                                 });
-                                $body.append($row);
-                            });
-                            $errortable.append($body);
-                            $errorboard.append($errortable);
-                            // Errors over maxrows message
-                            var $message = $("<div></div>");
-                            $dialog.html("");
-                            $dialog.append($errorboard).append($message);
-                            //                $dialog.on("dialogresizestop dialogopen", function() {
-                            $dialog.on("dialogopen", function () {
-                                var maxrowsHeight = 0;
-                                var index = 0;
-                                $(this).find("table tbody tr").each(function () {
-                                    if (index < displayrows) {
-                                        index++;
-                                        maxrowsHeight += $(this).height();
+                                $errortable.append($body);
+                                $errorboard.append($errortable);
+                                // Errors over maxrows message
+                                var $message = $("<div></div>");
+                                $dialog.html("");
+                                $dialog.append($errorboard).append($message);
+                                //                $dialog.on("dialogresizestop dialogopen", function() {
+                                $dialog.on("dialogopen", function () {
+                                    var maxrowsHeight = 0;
+                                    var index = 0;
+                                    $(this).find("table tbody tr").each(function () {
+                                        if (index < displayrows) {
+                                            index++;
+                                            maxrowsHeight += $(this).height();
+                                        }
+                                    });
+                                    maxrowsHeight = maxrowsHeight + 33 + 20 + 20 + 55 + 4 + $(this).find("table thead").height();
+                                    if (maxrowsHeight > $dialog.dialog("option", "maxHeight")) {
+                                        maxrowsHeight = $dialog.dialog("option", "maxHeight");
                                     }
+                                    $dialog.dialog("option", "height", maxrowsHeight);
                                 });
-                                maxrowsHeight = maxrowsHeight + 33 + 20 + 20 + 55 + 4 + $(this).find("table thead").height();
-                                if (maxrowsHeight > $dialog.dialog("option", "maxHeight")) {
-                                    maxrowsHeight = $dialog.dialog("option", "maxHeight");
-                                }
-                                $dialog.dialog("option", "height", maxrowsHeight);
-                            });
-                            //                if($dialog.dialog("isOpen")){
-                            $dialog.dialog("open");
-                            //                } else {
-                            $dialog.closest("[role='dialog']").show();
-                            //                }
-                        }
-                        else {
-                            $dialog.closest("[role='dialog']").hide();
-                            //                $dialog.dialog("close");
-                        }
+                                //                if($dialog.dialog("isOpen")){
+                                $dialog.dialog("open");
+                                //                } else {
+                                $dialog.closest("[role='dialog']").show();
+                                //                }
+                            }
+                            else {
+                                $dialog.closest("[role='dialog']").hide();
+                                //                $dialog.dialog("close");
+                            }
+                        });
                     };
                     return NtsErrorDialogBindingHandler;
                 }());
@@ -21107,6 +21121,68 @@ var nts;
                         return $input;
                     }
                 })(ntsDatepicker || (ntsDatepicker = {}));
+            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var jqueryExtentions;
+            (function (jqueryExtentions) {
+                var ntsDialogEx;
+                (function (ntsDialogEx) {
+                    $.fn.ntsDialogEx = function (action, winContainer) {
+                        var $dialog = $(this);
+                        switch (action) {
+                            case 'centerUp':
+                                centerUp($dialog, winContainer);
+                            default:
+                                break;
+                        }
+                    };
+                    function centerUp($dialog, winContainer) {
+                        var currentInfo = winContainer;
+                        var top = 0, left = 0;
+                        var dialog = $dialog.closest("div[role='dialog']");
+                        dialog.addClass("disappear");
+                        if (currentInfo.isRoot) {
+                            //top = (window.innerHeight - dialog.innerHeight()) / 2;
+                            //left = (window.innerWidth - dialog.innerWidth()) / 2;
+                        }
+                        else {
+                            while (!nts.uk.util.isNullOrUndefined(currentInfo)) {
+                                if (currentInfo.isRoot) {
+                                    currentInfo = null;
+                                }
+                                else {
+                                    var fullDialog = currentInfo.$dialog.closest("div[role='dialog']");
+                                    var offset = fullDialog.offset();
+                                    top += offset.top;
+                                    left += offset.left;
+                                    currentInfo = currentInfo.parent;
+                                }
+                            }
+                        }
+                        setTimeout(function () {
+                            var dialogM = winContainer.isRoot ? $("body") : winContainer.$dialog.closest("div[role='dialog']");
+                            var topDiff = (dialogM.innerHeight() - dialog.innerHeight()) / 2;
+                            var leftDiff = (dialogM.innerWidth() - dialog.innerWidth()) / 2;
+                            if (topDiff > 0) {
+                                top += topDiff;
+                            }
+                            if (leftDiff > 0) {
+                                left += leftDiff;
+                            }
+                            dialog.css({ top: top, left: left });
+                            dialog.removeClass("disappear");
+                        }, 33);
+                    }
+                })(ntsDialogEx || (ntsDialogEx = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));

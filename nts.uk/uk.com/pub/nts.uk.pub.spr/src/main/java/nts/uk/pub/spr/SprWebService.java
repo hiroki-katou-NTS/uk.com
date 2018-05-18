@@ -54,16 +54,16 @@ public class SprWebService {
 			@FormParam("applicationID") String applicationID,
 			@FormParam("reason") String reason,
 			@FormParam("stampProtection") String stampProtection) {
-		String menuCDReal = menuCode.trim();
-		String loginEmployeeCDReal = loginEmployeeCode.trim();
-		String targetEmployeeCDReal = targetEmployeeCode.trim();
-		String startTimeReal = startTime.trim();
-		String endTimeReal = endTime.trim();
-		String targetDateReal = targetDate.trim();
-		String selectTypeReal = selectType.trim();
-		String applicationIDReal = applicationID.trim();
-		String reasonReal = reason.trim();
-		String stampProtectionReal = stampProtection.trim();
+		String menuCDReal = menuCode;
+		String loginEmployeeCDReal = loginEmployeeCode;
+		String targetEmployeeCDReal = targetEmployeeCode;
+		String startTimeReal = startTime;
+		String endTimeReal = endTime;
+		String targetDateReal = targetDate;
+		String selectTypeReal = selectType;
+		String applicationIDReal = applicationID;
+		String reasonReal = reason;
+		String stampProtectionReal = stampProtection;
 		LoginUserContextSpr loginUserContextSpr = sprLoginFormService.loginFromSpr(
 				menuCDReal, 
 				loginEmployeeCDReal, 

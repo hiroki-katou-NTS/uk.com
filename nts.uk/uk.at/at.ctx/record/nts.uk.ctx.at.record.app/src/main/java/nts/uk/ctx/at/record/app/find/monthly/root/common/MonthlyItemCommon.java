@@ -17,4 +17,8 @@ public abstract class MonthlyItemCommon extends AttendanceItemCommon {
 	}
 	
 	public abstract YearMonth yearMonth();
+	
+	public abstract int getClosureID();
+	
+	public abstract ClosureDateDto getClosureDate();
 }
