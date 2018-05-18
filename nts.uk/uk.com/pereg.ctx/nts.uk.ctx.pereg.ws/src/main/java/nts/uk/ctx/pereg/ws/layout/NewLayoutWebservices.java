@@ -36,7 +36,6 @@ public class NewLayoutWebservices extends WebService {
 	@POST
 	@Path("check-new-layout")
 	public Boolean checkNewLayout() {
-		return false;
-		//return nLayoutFinder.checkLayoutExist();
+		return nLayoutFinder.checkLayoutExist();
 	}
 }
