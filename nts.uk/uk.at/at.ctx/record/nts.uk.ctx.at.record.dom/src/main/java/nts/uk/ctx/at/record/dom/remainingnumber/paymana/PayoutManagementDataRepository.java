@@ -17,6 +17,8 @@ public interface PayoutManagementDataRepository {
 	
 	void delete(String payoutId);
 	
+	void delete(String sID, GeneralDate dayoff);
+	
 	void update(PayoutManagementData domain);
 	
 	Optional<PayoutManagementData> findByID(String ID);

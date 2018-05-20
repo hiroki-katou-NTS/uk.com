@@ -10,15 +10,15 @@
 			<script>var dialogSize = { width: 430, height: 420 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
-			<com:scriptfile path="kdm001.m.start.js" />
-			<com:scriptfile path="kdm001.m.vm.js" />
-			<com:stylefile path="kdm001.m.style.css" />
+			<com:scriptfile path="kdm001.h.start.js" />
+			<com:scriptfile path="kdm001.h.vm.js" />
+			<com:stylefile path="kdm001.h.style.css" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area" class="padding-item">
 				<div class="margin-bottom">
-					<!-- M1 文言 -->
-					<label>#{i18n.getText('KDM001_107')}</label>
+					<!--H1 -->
+					<label>#{i18n.getText('KDM001_102')}</label>
 				</div>
 				<div class="margin-bottom">
 					<!-- M2 対象者 -->
@@ -35,32 +35,37 @@
 						<label data-bind="text: employeeName" />
 					</div>
 				</div>
-				<!-- M3 罫線 -->
+				<!-- H3 -->
 				<div class="set-row">
 					<hr />
 				</div>
 				<div style="padding: 7px 0 7px 25px">
-					<!-- M4 代休 -->
+					<!-- H4 -->
 					<label>#{i18n.getText('KDM001_92')}</label>
 				</div>
-				<!-- M5 罫線 -->
+				<!-- H5 -->
 				<div class="padding-left-15">
 					<hr />
 				</div>
-				<div class="margin-bottom padding-left-15">
-					<!-- M6_1 年月日 -->
-					<div class="column-1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDM001_62')}</div>
-					<!-- M6_2 年月日 -->
-					<div id="M6_2"
-						data-bind="ntsDatePicker: {value: substituteHolidayDate, dateFormat: 'YYYY/MM/DD'}"
-						tabindex="1"></div>
-				</div>
-				<div class="flex valign-center margin-bottom padding-left-15">
-					<!-- M8_1 代休時間 -->
-					<div class="column-1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDM001_115')}</div>
-					<!-- M8_2 時間数 -->
-					<div class="combobox-select-day"
-						data-bind="ntsComboBox: {
+				<table>
+					<tr>
+						<th>
+							<div class="margin-bottom padding-left-15">
+								<!-- H6_1 -->
+								<div class="column-1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDM001_62')}</div>
+								<!-- M6_2 年月日 -->
+								<div id="H6_2"
+									data-bind="ntsDatePicker: {value: substituteHolidayDate, dateFormat: 'YYYY/MM/DD'}"
+									tabindex="1"></div>
+							</div>
+						</th>
+						<th>
+							<div class="flex valign-center margin-bottom padding-left-15">
+								<!--H6_3-->
+								<div style="border-style: none !important;" class="column-1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDM001_77')}</div>
+								<!--H6_4 -->
+								<div class="combobox-select-day"
+									data-bind="ntsComboBox: {
 										name: '#[KDM001_86]', 
 										options: holidayTimeList,
 										optionsValue: 'code',
@@ -70,12 +75,18 @@
 										enable: true,
 										required: true,
 										selectFirstIfNull: true,
-										columns: [{ prop: 'name', length: 5}]}" tabindex="2"></div>
-					</div>
+										columns: [{ prop: 'name', length: 5}]}"
+									tabindex="2"></div>
+							</div>
+						</th>
+					</tr>
+				</table>
+
+
 				<div class="flex valign-center margin-bottom padding-left-15">
-					<!-- M10_1 残数 -->
+					<!-- H8_1 -->
 					<div class="column-1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDM001_85')}</div>
-					<!-- M10_2 残数 -->
+					<!-- H8_2 -->
 					<div class="combobox-select-day"
 						data-bind="ntsComboBox: {
 										name: '#[KDM001_86]', 
@@ -87,15 +98,16 @@
 										enable: true,
 										required: true,
 										selectFirstIfNull: true,
-										columns: [{ prop: 'name', length: 5}]}" tabindex="4"></div>
+										columns: [{ prop: 'name', length: 5}]}"
+						tabindex="4"></div>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<!-- M31_1 登録 -->
+				<!--F31_1 登録 -->
 				<button class="proceed" data-bind="click: openKDM001M" tabindex="5">#{i18n.getText('KDM001_89')}</button>
-				<!-- M31_2 削除 -->
+				<!-- F31_2 削除 -->
 				<button class="danger" data-bind="click: openKDM001M" tabindex="6">#{i18n.getText('KDM001_100')}</button>
-				<!-- M31_3 キャンセル -->
+				<!-- F31_3 キャンセル -->
 				<button data-bind="click: closeKDM001M" tabindex="7">#{i18n.getText('KDM001_90')}</button>
 			</div>
 		</ui:define>

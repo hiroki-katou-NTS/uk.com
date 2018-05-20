@@ -1,0 +1,31 @@
+.down-s {
+	margin-bottom: 15px;
+}
+
+.down-m {
+	margin-bottom: 25px;
+}
+
+.down-l {
+	margin-bottom: 35px;
+}
+
+#contents-area {
+	padding: 20px;
+}
+
+#combo-box-holiday {
+	width: 95px;
+}
+
+#combo-box-sub-holiday {
+	width: 95px;
+}
+
+#combo-box-option-sub-holiday {
+	width: 95px;
+}
+
+.labelTitle {
+	width: 70px;
+}

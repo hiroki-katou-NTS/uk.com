@@ -37,7 +37,7 @@ public class SubHdManagementData {
 	/**
 	 * 代休
 	 */
-	private String checkedSubHoliday;
+	private Boolean checkedSubHoliday;
 	/**
 	 * 年月日
 	 */
@@ -52,7 +52,7 @@ public class SubHdManagementData {
 	/**
 	 * 分割消化
 	 */
-	private String checkedSplit;
+	private Boolean checkedSplit;
 	/**
 	 * 年月日
 	 */
@@ -80,8 +80,8 @@ public class SubHdManagementData {
 	 * @param dayRemaining
 	 */
 	public SubHdManagementData(String employeeId, Boolean checkedHoliday, GeneralDate dateHoliday,
-			String selectedCodeHoliday, GeneralDate duedateHoliday, String checkedSubHoliday,
-			GeneralDate dateSubHoliday, String selectedCodeSubHoliday, String checkedSplit,
+			String selectedCodeHoliday, GeneralDate duedateHoliday, Boolean checkedSubHoliday,
+			GeneralDate dateSubHoliday, String selectedCodeSubHoliday, Boolean checkedSplit,
 			GeneralDate dateOptionSubHoliday, String selectedCodeOptionSubHoliday, String dayRemaining) {
 		super();
 		this.employeeId = employeeId;

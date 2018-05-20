@@ -1,4 +1,4 @@
-module nts.uk.at.view.kdm001.b.viewmodel {
+module nts.uk.at.view.kdm001.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
     import dialog = nts.uk.ui.dialog;
@@ -27,12 +27,15 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         selectedItem: KnockoutObservable<string> = ko.observable(null);
         tabindex: number = -1;
         substituteData: KnockoutObservableArray<SubstitutedData>;
+        
         constructor() {
             var self = this;
+            
             self.periodOptionItem = ko.observableArray([
                 new ItemModel(0, getText("KDM001_4")),
                 new ItemModel(1, getText("KDM001_5"))
             ]);
+            
             self.selectedPeriodItem = ko.observable(0);
             self.startDateString = ko.observable("");
             self.endDateString = ko.observable("");
@@ -47,6 +50,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 self.dateValue().endDate = value;
                 self.dateValue.valueHasMutated();
             });
+            
             self.updateSubstituteDataList();
             //_____CCG001________
             self.selectedEmployee = ko.observableArray([]);
@@ -96,6 +100,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     self.convertEmployeeCcg01ToKcp009(data.listEmployee);
                 }
             }
+            
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
             self.selectedItem.subscribe(x =>{
                 //TODO
@@ -103,18 +108,21 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 // RELOAD SUBSTITUTE DATA TABLE
             });
         }
+        
         openNewSubstituteData() {
             modal("/view/kdm/001/i/index.xhtml").onClosed(function() {
                 //TODO
                 $('#substituteDataGrid').focus();
             });
         }
+        
         filterByPeriod() {
             // TODO
             //$('#substituteDataGrid').focus();
             var self = this;
             self.updateSubstituteDataList1();
         }
+        
         updateSubstituteDataList(){
             var self = this;
             let substituteDataArray: Array<SubstitutedData> = [];
@@ -138,6 +146,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             let date2 = 'Tao test 2';
             $(".substituteDataGrid").ntsGrid("updateRow", 15, new SubstitutedData(i, i%2 == 0 ? date1 : null, i%2 == 0 ? hours : null, i%2 == 0 ?"基" : "", i%2 == 1 ? date2 : null, i%2 == 1 ? hours : null, i%2 == 1 ?"基" : "", 0.5, 0.5, 1));   
         }
+        
         startPage(): JQueryPromise<any> {
             let self = this;
             var dfd = $.Deferred();
@@ -152,6 +161,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             dfd.resolve();
             return dfd.promise();
         }
+        
         initKCP009() {
             let self = this;
             //_______KCP009_______
@@ -188,6 +198,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 return obj.employeeId == selectedItem;
             })
         }
+        
         showSubstiteDataGrid() {
             var self = this;
             $("#substituteDataGrid").ntsGrid({
@@ -233,6 +244,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 }
             });
         }
+        
         pegSetting(value) {
             let selectedRowData = value;
             setShared('PEGSETTING_PARAMS', value);
@@ -246,6 +258,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 });
             }
         }
+        
         doCorrection(value) {
             let selectedRowData = value;
             setShared('CORRECTION_PARAMS', value);
@@ -260,6 +273,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             }
         }
     }
+    
     export class SubstitutedData {
         id: number;
         substituedWorkingDate: string;
@@ -286,6 +300,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             this.isLinked = isLinked;
         }
     }
+    
     export class ItemModel {
         value: number;
         name: string;

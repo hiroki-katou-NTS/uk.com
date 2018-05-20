@@ -25,8 +25,6 @@ public class PayoutManagementDataService {
 	public GeneralDate getClosingDate(){
 		return null;
 	}
-	@Inject
-	private PayoutManagementDataRepository payoutMNDTRepo;
 
 	/**
 	 * KDM001 screen G
@@ -84,7 +82,7 @@ public class PayoutManagementDataService {
 			// 振休管理データの修正（振出設定）入力項目チェック処理
 			boolean checkBoxData = checkboxData(checkBox, stateAtr, expiredDate, unUsedDays);
 			if (checkBoxData) {
-				payoutMNDTRepo.update(data);
+				payoutManagementDataRepository.update(data);
 
 				// **chưa có :(Thực hiện thuật toán 「振休残数管理データ更新フラグ処理」):bât cờ flag
 
