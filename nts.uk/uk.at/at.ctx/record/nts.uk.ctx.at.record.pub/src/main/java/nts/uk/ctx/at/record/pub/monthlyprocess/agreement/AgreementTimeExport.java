@@ -1,16 +1,15 @@
-package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export;
+package nts.uk.ctx.at.record.pub.monthlyprocess.agreement;
 
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
 
 /**
  * 36協定時間一覧
  * @author shuichu_ishida
  */
 @Getter
-public class AgreementTimeDetail {
+public class AgreementTimeExport {
 
 	/** 社員ID */
 	private String employeeId;
@@ -25,7 +24,7 @@ public class AgreementTimeDetail {
 	 * コンストラクタ
 	 * @param employeeId 社員ID
 	 */
-	public AgreementTimeDetail(String employeeId){
+	public AgreementTimeExport(String employeeId){
 		
 		this.employeeId = employeeId;
 		this.confirmed = Optional.empty();
@@ -41,13 +40,13 @@ public class AgreementTimeDetail {
 	 * @param errorMessage エラーメッセージ
 	 * @return 36協定時間一覧
 	 */
-	public static AgreementTimeDetail of(
+	public static AgreementTimeExport of(
 			String employeeId,
 			AgreementTimeOfMonthly confirmed,
 			AgreementTimeOfMonthly afterAppReflect,
 			String errorMessage){
 		
-		AgreementTimeDetail domain = new AgreementTimeDetail(employeeId);
+		AgreementTimeExport domain = new AgreementTimeExport(employeeId);
 		domain.confirmed = Optional.ofNullable(confirmed);
 		domain.afterAppReflect = Optional.ofNullable(afterAppReflect);
 		domain.errorMessage = Optional.ofNullable(errorMessage);

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.monthly.agreement;
+package nts.uk.ctx.at.shared.dom.monthly.agreement;
 
 /**
  * 月別実績の36協定時間状態
