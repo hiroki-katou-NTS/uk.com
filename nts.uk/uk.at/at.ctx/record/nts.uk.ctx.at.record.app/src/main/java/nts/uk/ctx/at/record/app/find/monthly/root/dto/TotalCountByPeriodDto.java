@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TotalCoiuntByPeriodDto {
+public class TotalCountByPeriodDto {
 
 	/** 回数集計 */
 	@AttendanceItemLayout(jpPropertyName = "回数集計", layout = "A", listMaxLength = 30, indexField = "totalCountNo")
@@ -27,8 +27,8 @@ public class TotalCoiuntByPeriodDto {
 				ConvertHelper.mapTo(this.totalCount, c -> c.toDomain()));
 	}
 	
-	public static TotalCoiuntByPeriodDto from(TotalCountByPeriod domain){
-		TotalCoiuntByPeriodDto dto = new TotalCoiuntByPeriodDto();
+	public static TotalCountByPeriodDto from(TotalCountByPeriod domain){
+		TotalCountByPeriodDto dto = new TotalCountByPeriodDto();
 		if (domain != null){
 			ConvertHelper.mapTo(domain.getTotalCountList(), c -> TotalCountDto.from(c.getValue()));
 		}

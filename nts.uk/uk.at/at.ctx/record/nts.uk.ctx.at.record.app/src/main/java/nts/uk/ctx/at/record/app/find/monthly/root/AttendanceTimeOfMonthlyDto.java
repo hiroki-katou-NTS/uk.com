@@ -9,7 +9,7 @@ import nts.uk.ctx.at.record.app.find.monthly.root.common.DatePeriodDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.ExcessOutsideWorkOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.MonthlyCalculationDto;
-import nts.uk.ctx.at.record.app.find.monthly.root.dto.TotalCoiuntByPeriodDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.dto.TotalCountByPeriodDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.VerticalTotalOfMonthlyDto;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
@@ -70,7 +70,7 @@ public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 
 	/** 回数集計: 期間別の回数集計 */
 	@AttendanceItemLayout(jpPropertyName = "回数集計", layout = "I")
-	private TotalCoiuntByPeriodDto totalCount;
+	private TotalCountByPeriodDto totalCount;
 
 	@Override
 	public String employeeId() {
@@ -91,7 +91,7 @@ public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 			dto.setExcessOutsideWork(ExcessOutsideWorkOfMonthlyDto.from(domain.getExcessOutsideWork()));
 			dto.setAggregateDays(domain.getAggregateDays() == null ? null : domain.getAggregateDays().v());
 			dto.setVerticalTotal(VerticalTotalOfMonthlyDto.from(domain.getVerticalTotal()));
-			dto.totalCount = TotalCoiuntByPeriodDto.from(domain.getTotalCount());
+			dto.totalCount = TotalCountByPeriodDto.from(domain.getTotalCount());
 			dto.exsistData();
 		}
 		return dto;
