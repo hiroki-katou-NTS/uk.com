@@ -101,23 +101,25 @@ public class AddSubHdManagementService {
 				repoComDayOffManaData.create(domainCompensatoryDayOffManaData);
 			}
 
-			if (subHdManagementData.getCheckedSubHoliday() == true || subHdManagementData.getCheckedSubHoliday() == true) {
+			if (subHdManagementData.getCheckedSubHoliday() == true
+					|| subHdManagementData.getCheckedSubHoliday() == true) {
 				// ドメインモデル「振休休出振付け管理」に紐付きチェックされているもの全てを追加する
-				// (Add toàn bộ phần được check liên kết với domain 「振休休出振付け管理」 )
+				// (Add toàn bộ phần được check liên kết với domain 「振休休出振付け管理」
+				// )
 				BigDecimal usedDays = null;
 				Double usedDay = subHdManagementData.getSelectedCodeOptionSubHoliday()
 						+ subHdManagementData.getSelectedCodeOptionSubHoliday();
-	
+
 				if (subHdManagementData.getCheckedSplit() == true) {
 					usedDays = BigDecimal.valueOf(usedDay);
 				} else {
 					usedDays = BigDecimal.valueOf(subHdManagementData.getSelectedCodeOptionSubHoliday());
 				}
-				
+
 				int targetSelectionAtr = 2;
 				int usedHours = 0;
-				LeaveComDayOffManagement domainLeaveComDayOffManagement = new LeaveComDayOffManagement(leaveId, comDayOffID,
-						usedDays, usedHours, targetSelectionAtr);
+				LeaveComDayOffManagement domainLeaveComDayOffManagement = new LeaveComDayOffManagement(leaveId,
+						comDayOffID, usedDays, usedHours, targetSelectionAtr);
 				repoLeaveComDayOffMana.add(domainLeaveComDayOffManagement);
 			}
 
@@ -163,7 +165,7 @@ public class AddSubHdManagementService {
 		// チェックボタン「代休」をチェックする (Check checkbox 「代休」)
 		if (subHdManagementData.getCheckedSubHoliday() == true) {
 			// アルゴリズム「代休（年月日）チェック処理」を実行する (Thực hiện thuât toán 「代休（年月日）チェック処理」)
-			errorList.addAll(checkDateHoliday(subHdManagementData.getDateHoliday(),
+			errorList.addAll(checkDateHoliday(Optional.of(subHdManagementData.getDateHoliday()),
 					subHdManagementData.getDateSubHoliday(), closure));
 			// ドメインモデル「代休管理データ」を読み込む (đọc domain 「代休管理データ」)
 			String employeeId = subHdManagementData.getEmployeeId();
@@ -215,7 +217,7 @@ public class AddSubHdManagementService {
 	 * @param closure
 	 * @return
 	 */
-	public List<String> checkDateHoliday(GeneralDate holidayDate, GeneralDate subHolidayDate,
+	public List<String> checkDateHoliday(Optional<GeneralDate> holidayDate, GeneralDate subHolidayDate,
 			Optional<Closure> closure) {
 		List<String> errorList = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
@@ -230,12 +232,12 @@ public class AddSubHdManagementService {
 		}
 		// 代休（年月日）と締め日をチェックする (Check 代休（年月日） và 締め日)
 		// Todo #118092
-		GeneralDate closingDate = holidayDate;
+		GeneralDate closingDate = subHolidayDate;
 		if (subHolidayDate.after(closingDate)) {
 			errorList.add("Msg_746");
 		}
 		// 休出（年月日）と代休（年月日）をチェックする (Check 休出（年月日） và 代休（年月日）)
-		if (subHolidayDate == holidayDate) {
+		if (holidayDate.isPresent() && subHolidayDate == holidayDate.get()) {
 			errorList.add("Msg_730");
 		}
 
