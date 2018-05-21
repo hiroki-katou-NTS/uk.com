@@ -14,7 +14,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Data
 @Builder
 // 社員所属雇用履歴を取得
-public class SEmpHistoryExport {
+public class SEmpHistoryImport {
 
 	/** The employee id. */
 	// 社員ID
@@ -32,7 +32,7 @@ public class SEmpHistoryExport {
 	// 配属期間 
 	private DatePeriod period;
 
-	public SEmpHistoryExport(String employeeId, String employmentCode, String employmentName, DatePeriod period) {
+	public SEmpHistoryImport(String employeeId, String employmentCode, String employmentName, DatePeriod period) {
 		super();
 		this.employeeId = employeeId;
 		this.employmentCode = employmentCode;

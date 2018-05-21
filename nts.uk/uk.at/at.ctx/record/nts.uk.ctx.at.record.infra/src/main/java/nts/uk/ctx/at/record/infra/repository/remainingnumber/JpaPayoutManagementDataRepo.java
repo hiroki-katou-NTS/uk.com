@@ -19,13 +19,10 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 
 	private String QUERY_BYSID_WITH_COND = String.join(" ", QUERY_BYSID, "AND p.stateAtr = :state");
 
-	private final String QUERY_BY_SID_DATEPERIOD_1 = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID =:employeeId AND p.dayOff >= :startDate AND p.dayOff <= :endDate"
-			+ " AND (p.stateAtr = :state OR p.payoutId in (SELECT pm.payoutId FROM KrcmtPayoutManaData pm inner join KrcmtPayoutSubOfHDMana ps on pm.payoutId = ps.krcmtPayoutSubOfHDManaPK.payoutId))";
-
-	private final String QUERY_BY_SID_DATEPERIOD_2 = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID =:employeeId "
+	private final String QUERY_BY_SID_DATEPERIOD = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID =:employeeId "
 			+ " AND (p.stateAtr = :state OR p.payoutId in (SELECT ps.krcmtPayoutSubOfHDManaPK.payoutId FROM KrcmtPayoutSubOfHDMana WHERE ps.krcmtPayoutSubOfHDManaPK.subOfHDID =:subOfHDID))";
 
-	private final String QUERY_BY_SID_DATEPERIOD_DIF = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID =:employeeId AND p.dayOff >= :startDate AND p.dayOff <= :endDate AND p.stateAtr != :state";
+	private final String QUERY_BY_SID_DATEPERIOD_DIF = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID =:employeeId AND p.dayOff >= :startDate AND p.dayOff <= :endDate AND p.stateAtr <> :state";
 
 	private final String QUERY_BY_SID_DATEPERIOD_NO_DIGES = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID =:employeeId AND p.dayOff >= :startDate AND p.dayOff <= :endDate";
 
@@ -109,19 +106,10 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 		return Optional.empty();
 	}
 
-	public List<PayoutManagementData> getBySidDatePeriod(String sid, GeneralDate startDate, GeneralDate endDate,
-			int digestionAtr) {
-		List<KrcmtPayoutManaData> listSubOfHD = this.queryProxy()
-				.query(QUERY_BY_SID_DATEPERIOD_1, KrcmtPayoutManaData.class).setParameter("sid", sid)
-				.setParameter("startDate", startDate).setParameter("endDate", endDate)
-				.setParameter("state", digestionAtr).getList();
-		return listSubOfHD.stream().map(i -> toDomain(i)).collect(Collectors.toList());
-	}
-
 	@Override
 	public List<PayoutManagementData> getBySidDatePeriod(String sid, String subOfHDID, int digestionAtr) {
 		List<KrcmtPayoutManaData> listSubOfHD = this.queryProxy()
-				.query(QUERY_BY_SID_DATEPERIOD_2, KrcmtPayoutManaData.class).setParameter("sid", sid)
+				.query(QUERY_BY_SID_DATEPERIOD, KrcmtPayoutManaData.class).setParameter("sid", sid)
 				.setParameter("state", digestionAtr).setParameter("subOfHDID", subOfHDID).getList();
 		return listSubOfHD.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}

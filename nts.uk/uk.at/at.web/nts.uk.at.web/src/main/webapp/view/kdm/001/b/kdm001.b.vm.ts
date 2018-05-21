@@ -54,13 +54,13 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             self.ccgcomponent = {
                 /** Common properties */
                 systemType: 1,
-                showEmployeeSelection: true,
+                showEmployeeSelection: false,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
-                showBaseDate: true,
-                showClosure: true,
-                showAllClosure: true,
-                showPeriod: true,
+                showBaseDate: false,
+                showClosure: false,
+                showAllClosure: false,
+                showPeriod: false,
                 periodFormatYM: false,
 
                 /** Required parameter */
@@ -105,11 +105,15 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         }
         openNewSubstituteData() {
             modal("/view/kdm/001/i/index.xhtml").onClosed(function() {
-
+                //TODO
+                $('#substituteDataGrid').focus();
             });
         }
         filterByPeriod() {
             // TODO
+            //$('#substituteDataGrid').focus();
+            var self = this;
+            self.updateSubstituteDataList1();
         }
         updateSubstituteDataList(){
             var self = this;
@@ -125,7 +129,14 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             self.dispTotalRemainHours(_.sumBy(substituteDataArray, function(x) { return x.remainHolidayHours }) + getText('KDM001_27'));
             self.dispTotalExpiredHours(_.sumBy(substituteDataArray, function(x) { return x.expiredHolidayHours }) + getText('KDM001_31'));
             self.showSubstiteDataGrid();
-            
+        }
+        
+        updateSubstituteDataList1(){
+            let i = 9999;
+            let hours = 8;
+            let date1 = 'Tao test';
+            let date2 = 'Tao test 2';
+            $(".substituteDataGrid").ntsGrid("updateRow", 15, new SubstitutedData(i, i%2 == 0 ? date1 : null, i%2 == 0 ? hours : null, i%2 == 0 ?"基" : "", i%2 == 1 ? date2 : null, i%2 == 1 ? hours : null, i%2 == 1 ?"基" : "", 0.5, 0.5, 1));   
         }
         startPage(): JQueryPromise<any> {
             let self = this;

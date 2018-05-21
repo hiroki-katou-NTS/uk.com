@@ -37,16 +37,14 @@ public class AddPayManaCommandHandler extends CommandHandler<PayManaRemainComman
 	@Override
 	protected void handle(CommandHandlerContext<PayManaRemainCommand> context) {
 		PayManaRemainCommand command = context.getCommand();
-		String cid = AppContexts.user().companyId();
+		String cId = AppContexts.user().companyId();
 		String newIDPayout = IdentifierUtil.randomUniqueId();
 		String newIDSub = IdentifierUtil.randomUniqueId();
-		PayoutManagementData data = new PayoutManagementData(newIDPayout,cid, command.getSID(), command.getUnknownDate(), command.getDayOff(), command.getExpiredDate(), command.getLawAtr(),
+		PayoutManagementData data = new PayoutManagementData(newIDPayout,cId, command.getSID(), command.getUnknownDate(), command.getDayOff(), command.getExpiredDate(), command.getLawAtr(),
 				command.getOccurredDays(), command.getUnUsedDays(), command.getStateAtr());
 
 		if (command.getPickUp()) {
-			if (payoutManaDataService.getClosingDate().compareTo(command.getDayOff()) > 0){
-				throw new BusinessException("Msg_740");
-			}
+			payoutManaDataService.checkProcess();
 		}
 		else if (!command.getPause()) {
 			throw new BusinessException("Msg_725");
@@ -69,7 +67,7 @@ public class AddPayManaCommandHandler extends CommandHandler<PayManaRemainComman
 			payoutManaRepo.create(data);
 		}
 		if (command.getPause()) {
-			SubstitutionOfHDManagementData subDomain = new SubstitutionOfHDManagementData(newIDSub, cid, command.getSID(),command.isSubUunknownDate(), command.getSubDayoffDate(), command.getRequiredDays(), command.getRemainDays());
+			SubstitutionOfHDManagementData subDomain = new SubstitutionOfHDManagementData(newIDSub, cId, command.getSID(),command.isSubUnknownDate(), command.getSubDayoffDate(), command.getRequiredDays(), command.getRemainDays());
 			substitutionOfHDManaDataRepository.create(subDomain);
 		}
 		if (command.getPickUp() && command.getPause()) {

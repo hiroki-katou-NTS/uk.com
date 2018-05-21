@@ -35,7 +35,7 @@ public class SubstitutionOfHDManaDataService {
 	public void insertSubOfHDMan(SubstitutionOfHDManagementData domain) {
 		String companyId = AppContexts.user().companyId();
 		// ドメインモデル「inported雇用」を読み込む
-		Optional<SEmpHistoryExport> syEmpHist = syEmploymentAdapter.findSEmpHistBySid(companyId, domain.getSID(),
+		Optional<SEmpHistoryImport> syEmpHist = syEmploymentAdapter.findSEmpHistBySid(companyId, domain.getSID(),
 				GeneralDate.today());
 		if (!syEmpHist.isPresent()) {
 			return;

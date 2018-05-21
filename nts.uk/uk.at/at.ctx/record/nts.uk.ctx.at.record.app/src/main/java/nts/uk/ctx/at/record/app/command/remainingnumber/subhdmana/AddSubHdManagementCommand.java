@@ -38,7 +38,7 @@ public class AddSubHdManagementCommand {
 	/**
 	 * 代休
 	 */
-	private String checkedSubHoliday;
+	private Boolean checkedSubHoliday;
 	/**
 	 * 年月日
 	 */
@@ -53,7 +53,7 @@ public class AddSubHdManagementCommand {
 	/**
 	 * 分割消化
 	 */
-	private String checkedSplit;
+	private Boolean checkedSplit;
 	/**
 	 * 年月日
 	 */

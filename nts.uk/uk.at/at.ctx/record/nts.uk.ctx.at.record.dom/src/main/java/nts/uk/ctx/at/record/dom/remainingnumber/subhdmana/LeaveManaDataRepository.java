@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.dom.remainingnumber.subhdmana;
 
 import java.util.List;
 
+import nts.arc.time.GeneralDate;
+
 public interface LeaveManaDataRepository {
 	
 	// ドメインモデル「休出管理データ」を取得
@@ -12,6 +14,10 @@ public interface LeaveManaDataRepository {
 	
 	
 	List<LeaveManagementData> getBySid(String cid, String sid);
+	
+	List<LeaveManagementData> getBySidWithsubHDAtrAndDateCondition (String cid, String sid, GeneralDate startDate, GeneralDate endDate);
+	
+	List<LeaveManagementData> getBySidWithHolidayDate(String cid, String sid, GeneralDate dateHoliday);
 	
 	void create(LeaveManagementData domain);
 }

@@ -18,7 +18,7 @@ public interface SysEmploymentHisAdapter {
 	 * @return the optional
 	 */
 	// RequestList31
-	Optional<SEmpHistoryExport> findSEmpHistBySid(String companyId, String employeeId, GeneralDate baseDate);
+	Optional<SEmpHistoryImport> findSEmpHistBySid(String companyId, String employeeId, GeneralDate baseDate);
 
 	
 	

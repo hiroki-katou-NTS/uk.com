@@ -1,0 +1,48 @@
+
+#K1 {
+	margin-left:15px;
+}
+#K2 {
+	margin-top: 20px;
+	height:20px !important;
+}
+#K2_1 {
+	margin-left:20px;
+}
+#K2_2 {
+	margin-left:5px;
+}
+#K2_3 {
+	margin-left:10px;
+}
+#K2_4 {
+	margin-left:5px;
+}
+#K2_5 {
+	margin-left:5px;
+}
+#K4_1 {
+	margin-left:15px;
+	margin-top: 10px;
+}
+#K4_2 {
+	margin-left:300px;
+}
+#K6_1 {
+	margin-left:80px;
+	overflow: hidden;
+	margin-top: 15px;
+}
+#K6_2 {
+	margin-left:20px;
+	overflow: hidden;
+	margin-top: 15px;
+}
+#K5 {
+	margin-left:15px;
+	margin-top: 20px;
+	float: left;
+}
+#parent {
+    overflow: hidden;
+}
