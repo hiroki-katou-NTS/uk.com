@@ -63,6 +63,7 @@ public class EmployeeDailyPerErrorPubImpl implements EmployeeDailyPerErrorPub {
 		return daysBetween;
 	}
 	
+	@Override
 	public List<EmployeeDailyPerErrorPubExport> getByErrorCode(List<String> employeeId, DatePeriod datePeriod,
 			List<String> errorCodes) {
 		List<EmployeeDailyPerError> employeeDailyList = repo.finds(employeeId, datePeriod);
