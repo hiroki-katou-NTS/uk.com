@@ -168,6 +168,7 @@ module nts.layout {
     }
 
     const fetch = {
+        get_stc_setting: () => ajax('at', `record/stamp/stampcardedit/find`),
         get_cb_data: (param: IComboParam) => ajax(`ctx/pereg/person/common/getFlexComboBox`, param),
         check_start_end: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkStartEnd`, param),
         check_multi_time: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkMultiTime`, param),
@@ -1569,8 +1570,8 @@ module nts.layout {
             let self = this,
                 finder: IFinder = self.finder,
                 ctrls: Array<IFindData> = finder.finds("CS00069", undefined),
-                empId = ko.toJS((((__viewContext || {}) .viewModel || {}).employee || {}).employeeId),
-                is_self =  empId && ((__viewContext || {}).user||{}).employeeId == empId;
+                empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
+                is_self = empId && ((__viewContext || {}).user || {}).employeeId == empId;
 
             if (!!ctrls) {
                 let categoryId = ((ctrls[0] || <any>{}).data || <any>{}).categoryId;
@@ -1578,6 +1579,33 @@ module nts.layout {
                     __viewContext
                         .primitiveValueConstraints[ctrls[0].id.replace(/#/g, '')]
                         .stringExpression = /^[a-zA-Z0-9"#$%&(~|{}\[\]@:`*+?;\\/_\-><)]{1,20}$/;
+
+                    fetch.get_stc_setting().done((stt: StampCardEditing) => {
+                        $(document).on('change', `[id=${ctrls[0].id.replace(/#/g, '')}]`, (event) => {
+                            let $ipc = $(event.target),
+                                value = $ipc.val(),
+                                len = value.length;
+
+                            if (len < stt.digitsNumber) {
+                                switch (stt.method) {
+                                    case EDIT_METHOD.PreviousZero:
+                                        $ipc.val(_.padStart(value, stt.digitsNumber, '0'));
+                                        break;
+                                    case EDIT_METHOD.AfterZero:
+                                        $ipc.val(_.padEnd(value, stt.digitsNumber, '0'));
+                                        break;
+                                    case EDIT_METHOD.PreviousSpace:
+                                        $ipc.val(_.padStart(value, stt.digitsNumber, ' '));
+                                        break;
+                                    case EDIT_METHOD.AfterSpace:
+                                        $ipc.val(_.padEnd(value, stt.digitsNumber, ' '));
+                                        break;
+                                }
+
+                                $ipc.trigger('change');
+                            }
+                        });
+                    });
 
                     fetch.perm((__viewContext || {}).user.role.personalInfo, categoryId).done(perm => {
                         if (perm) {
@@ -1599,13 +1627,14 @@ module nts.layout {
                                 }
 
                                 _.each(ctrls, c => {
-                                    if (c.data.recordId.indexOf("NID_") == -1) {
-                                        c.data.checkable(!!perm.otherAllowDelMulti);
+                                    if ((c.data.recordId || '').indexOf("NID_") == -1) {
+                                        if (ko.isObservable(c.data.checkable)) {
+                                            c.data.checkable(!!perm.otherAllowDelMulti);
+                                        }
                                     }
                                 });
                             }
                         }
-
                     });
                 }
             }
@@ -1789,5 +1818,17 @@ module nts.layout {
         grantDate: Date;
         specialLeaveCD: number;
         appSet: number;
+    }
+
+    interface StampCardEditing {
+        method: EDIT_METHOD;
+        digitsNumber: number;
+    }
+
+    enum EDIT_METHOD {
+        PreviousZero = 0,
+        AfterZero = 1,
+        PreviousSpace = 2,
+        AfterSpace = 3
     }
 }
