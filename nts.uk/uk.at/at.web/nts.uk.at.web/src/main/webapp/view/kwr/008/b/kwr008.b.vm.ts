@@ -163,11 +163,11 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     block.clear();
                 });
             }).always(function() {
-                self.checkListItemOutput();
                 dfd.resolve(self);
+                self.checkListItemOutput();
                 block.clear();
             });
-
+            
             return dfd.promise();
         }
 
