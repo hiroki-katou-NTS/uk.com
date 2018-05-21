@@ -10,8 +10,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOtTimeSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOtTimeSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOtTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOtTimeSetPK;
 
 /**
  * The Class JpaFlexOverTimeOfTimeZoneSetGetMemento.
@@ -107,7 +107,7 @@ public class JpaFlexOverTimeOfTimeZoneSetSetMemento implements OverTimeOfTimeZon
 	 */
 	@Override
 	public void setLegalOTframeNo(OTFrameNo legalOTframeNo) {
-		this.entity.setLegalOtFrameNo(legalOTframeNo.v());
+		this.entity.setLegalOtFrameNo(legalOTframeNo == null ? null : legalOTframeNo.v());
 	}
 
 	/*
@@ -120,7 +120,7 @@ public class JpaFlexOverTimeOfTimeZoneSetSetMemento implements OverTimeOfTimeZon
 	 */
 	@Override
 	public void setSettlementOrder(SettlementOrder settlementOrder) {
-		this.entity.setPayoffOrder(settlementOrder.v());
+		this.entity.setPayoffOrder(settlementOrder == null ? null : settlementOrder.v());
 	}
 
 }

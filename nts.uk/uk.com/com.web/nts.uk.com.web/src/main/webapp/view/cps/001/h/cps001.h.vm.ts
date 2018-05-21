@@ -1,4 +1,5 @@
 module cps001.h.vm {
+
     import text = nts.uk.resource.getText;
     import alert = nts.uk.ui.dialog.alert;
     import error = nts.uk.ui.dialog.alertError;
@@ -42,6 +43,7 @@ module cps001.h.vm {
 
                 service.getAll(self.sid(), data).done((data) => {
                     if (data && data.length > 0) {
+                        self.isCreate(false);
                         self.items(data);
                         let index = _.findIndex(self.items(), (item) => { return item.id == self.currentItem(); });
 
@@ -75,11 +77,11 @@ module cps001.h.vm {
                 { headerText: "", key: 'id', hidden: true },
                 { headerText: text("CPS001_118"), key: 'grantDate', width: 100, isDateColumn: true, format: 'YYYY/MM/DD' },
                 { headerText: text("CPS001_119"), key: 'deadline', width: 100, isDateColumn: true, format: 'YYYY/MM/DD' },
-                { headerText: text("CPS001_120"), key: 'grantDays', width: 70, formatter: self.formatterDate },
-                { headerText: text("CPS001_121"), key: 'useDays', width: 70, formatter: self.formatterDate },
-                { headerText: text("CPS001_130"), key: 'overLimitDays', width: 70, formatter: self.formatterDate },
-                { headerText: text("CPS001_123"), key: 'remainingDays', width: 70, formatter: self.formatterDate },
-                { headerText: text("CPS001_129"), key: 'expirationStatus', width: 70, formatter: self.formatterExState }
+                { headerText: text("CPS001_120"), key: 'grantDays', width: 80, formatter: self.formatterDate },
+                { headerText: text("CPS001_121"), key: 'useDays', width: 80, formatter: self.formatterDate },
+                { headerText: text("CPS001_130"), key: 'overLimitDays', width: 80, formatter: self.formatterDate },
+                { headerText: text("CPS001_123"), key: 'remainingDays', width: 80, formatter: self.formatterDate },
+                { headerText: text("CPS001_129"), key: 'expirationStatus', width: 90, formatter: self.formatterExState }
             ]);
         }
 
@@ -123,6 +125,7 @@ module cps001.h.vm {
             self.setDef().done(() => {
                 self.load().done(() => {
                     if (self.items().length > 0) {
+                        self.isCreate(false);
                         self.currentItem(self.items()[0].id);
                     }
                     dfd.resolve();
@@ -319,7 +322,11 @@ module cps001.h.vm {
         }
 
         formatterDate(value) {
-            return value + "日";
+            if (value) {
+                return value >= 0 ? "&nbsp;" + value + '日' : value + '日';
+            } else {
+                return "&nbsp;0日";
+            }
         }
 
         formatterExState(value: number) {
@@ -344,18 +351,23 @@ module cps001.h.vm {
         remainingDays: KnockoutObservable<string> = ko.observable("");
         constructor(data: IResvLeaGrantRemNum) {
             let self = this;
-            self.id(data && data.id || "");
-            self.grantDate(data && data.grantDate || "");
-            self.deadline(data && data.deadline || "");
+            self.id(data && data.id);
+            self.grantDate(data && data.grantDate);
+            self.deadline(data && data.deadline);
             self.expirationStatus(data == undefined ? 1 : (data.expirationStatus == undefined ? 1 : data.expirationStatus));
-            self.grantDays(data && data.grantDays || "");
-            self.useDays(data && data.useDays || "");
-            self.overLimitDays(data && data.overLimitDays || "");
-            self.remainingDays(data && data.remainingDays || "");
+            self.grantDays(data && data.grantDays);
+            self.useDays(data && data.useDays);
+            self.overLimitDays(data && data.overLimitDays);
+            self.remainingDays(data && data.remainingDays);
 
             self.grantDate.subscribe((data) => {
 
-                if (data && !(nts.uk.ui.errors.hasError())) {
+                if (data && __viewContext.viewModel.isCreate()) {
+
+                    if (nts.uk.ui.errors.hasError()) {
+                        return;
+                    }
+
                     service.generateDeadline(moment.utc(data, "YYYY/MM/DD")).done((item) => {
                         self.deadline(item);
                     });

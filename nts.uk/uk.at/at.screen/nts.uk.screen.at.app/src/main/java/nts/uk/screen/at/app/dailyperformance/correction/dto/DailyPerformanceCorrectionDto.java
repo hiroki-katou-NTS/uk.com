@@ -70,6 +70,10 @@ public class DailyPerformanceCorrectionDto {
 	private IdentityProcessUseSetDto identityProcessDto;
 	
 	private FlexShortage flexShortage;
+	
+	private Integer showQuestionSPR;
+	
+	private ChangeSPR changeSPR;
 
 	public DailyPerformanceCorrectionDto() {
 		super();
@@ -79,6 +83,7 @@ public class DailyPerformanceCorrectionDto {
 		this.itemValues = new HashSet<>();
 		this.data = new HashMap<>();
 		this.dPErrorDto = new ArrayList<>();
+		this.changeSPR = new ChangeSPR(false, false);
 	}
 
 	/** Check if employeeId is login user */
@@ -133,9 +138,9 @@ public class DailyPerformanceCorrectionDto {
 	}
 
 	/** Mark current login employee */
-	public void markLoginUser() {
+	public void markLoginUser(String sid) {
 		for (DailyPerformanceEmployeeDto employee : lstEmployee) {
-			if (employee.getId().equals(AppContexts.user().employeeId())) {
+			if (employee.getId().equals(sid)) {
 				employee.setLoginUser(true);
 			}
 		}

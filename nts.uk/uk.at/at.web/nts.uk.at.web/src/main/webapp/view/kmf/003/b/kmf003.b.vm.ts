@@ -237,18 +237,20 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 var grantHolidayTblList = [];
                 _.forEach(self.items(), function(item) {
                      if (item.lengthOfServiceYears() != null || item.lengthOfServiceMonths() != null || item.grantDays() != null || item.limitedTimeHdDays() != null || item.limitedHalfHdCnt() != null) {
-                         grantHolidayTblList.push({
-                            grantNum: item.grantYearHolidayNo(),
-                            conditionNo: item.conditionNo(),
-                            yearHolidayCode: item.yearHolidayCode(),
-                            year: item.lengthOfServiceYears(),
-                            month: item.lengthOfServiceMonths(),
-                            grantDays: item.grantDays(),
-                            limitTimeHd: item.limitedTimeHdDays(),
-                            limitDayYear: item.limitedHalfHdCnt(),
-                            standGrantDay: item.grantReferenceDate(),
-                            allowStatus: item.grantSimultaneity() ? 1 : 0
-                        });
+                         if(item.grantDays() !== "") {
+                             grantHolidayTblList.push({
+                                grantNum: item.grantYearHolidayNo(),
+                                conditionNo: item.conditionNo(),
+                                yearHolidayCode: item.yearHolidayCode(),
+                                year: item.lengthOfServiceYears(),
+                                month: item.lengthOfServiceMonths(),
+                                grantDays: item.grantDays(),
+                                limitTimeHd: item.limitedTimeHdDays(),
+                                limitDayYear: item.limitedHalfHdCnt(),
+                                standGrantDay: item.grantReferenceDate(),
+                                allowStatus: item.grantSimultaneity() ? 1 : 0
+                            });
+                        }
                     }
                 }); 
                 
@@ -393,7 +395,16 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             });
             
             if(checkErr){
-                service.addYearHolidayGrant(grantHolidayTblList).done(function(){
+                let data = [];
+                _.forEach(grantHolidayTblList, function(item) {
+                    if((item.year != null || item.month != null) && item.grantDays != null) {
+                        if((item.year != "" || item.month != "") && item.grantDays != "") {
+                            data.push(item);
+                        }
+                    }
+                });
+                
+                service.addYearHolidayGrant(data).done(function(){
                     nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", true);
                     self.checkDataExisted(true);
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });

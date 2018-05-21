@@ -1,8 +1,10 @@
 package nts.uk.ctx.workflow.app.find.approvermanagement.workroot;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
-@Value
+@Data
+@AllArgsConstructor
 public class ApproverDto {
 	/**承認者ID*/
 	private String approverId;

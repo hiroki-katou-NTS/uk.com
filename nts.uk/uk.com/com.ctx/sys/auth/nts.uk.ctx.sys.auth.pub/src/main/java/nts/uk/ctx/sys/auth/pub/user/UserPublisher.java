@@ -19,4 +19,6 @@ public interface UserPublisher {
 	Optional<UserExport> getUserByAssociateId(String associatePersonId);
 	
 	List<UserExport> getListUserByListAsId(List<String> listAssociatePersonId);
+	
+	Optional<UserExport> getByUserId(String userId);
 }

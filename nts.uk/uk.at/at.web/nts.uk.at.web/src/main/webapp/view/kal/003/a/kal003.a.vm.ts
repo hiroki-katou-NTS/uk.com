@@ -35,6 +35,9 @@ module nts.uk.at.view.kal003.a.viewmodel {
         tabCheckCondition: tab.CheckConditionTab;
         //tab fixed check condition
         tabFixedCondition: tab.FixedCheckConditionTab;
+//        //tab fixed check condition
+//        tabFixedConMonthly: tab.FixedCheckConMonthlyTab;
+        
         
         selectCategoryFromDialog: KnockoutObservable<boolean> = ko.observable(false);
         afterDelete: KnockoutObservable<boolean> = ko.observable(false);
@@ -44,9 +47,40 @@ module nts.uk.at.view.kal003.a.viewmodel {
 
             self.tabs = ko.observableArray([
                 { id: 'tab-1', title: getText('KAL003_15'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-2', title: getText('KAL003_51'), content: '.tab-content-2', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY }, this) },
-                { id: 'tab-3', title: getText('KAL003_16'), content: '.tab-content-3', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY || self.selectedCategory() == model.CATEGORY.SCHEDULE_4_WEEK }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY || self.selectedCategory() == model.CATEGORY.SCHEDULE_4_WEEK }, this) },
-                { id: 'tab-4', title: getText('KAL003_67'), content: '.tab-content-4', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY }, this) }
+                { id: 'tab-2', title: getText('KAL003_51'), content: '.tab-content-2', enable: ko.computed(() => { 
+                        return self.selectedCategory() == model.CATEGORY.DAILY 
+                    }, this), visible: ko.computed(() => { 
+                        return self.selectedCategory() == model.CATEGORY.DAILY 
+                    }, this) 
+                },
+                { id: 'tab-3', title: getText('KAL003_16'), content: '.tab-content-3', enable: ko.computed(() => {
+                     return self.selectedCategory() == model.CATEGORY.DAILY
+                      || self.selectedCategory() == model.CATEGORY.SCHEDULE_4_WEEK }, this), visible: ko.computed(() => {
+                           return self.selectedCategory() == model.CATEGORY.DAILY 
+                           || self.selectedCategory() == model.CATEGORY.SCHEDULE_4_WEEK 
+                      }, this) 
+                },
+                { id: 'tab-4', title: getText('KAL003_67'), content: '.tab-content-4', 
+                    enable: ko.computed(() => { 
+                        return self.selectedCategory() == model.CATEGORY.DAILY 
+                    }, this), visible: ko.computed(() => { 
+                        return self.selectedCategory() == model.CATEGORY.DAILY 
+                    }, this) 
+                },
+                { id: 'tab-5', title: getText('KAL003_67'), content: '.tab-content-5', 
+                    enable: ko.computed(() => { 
+                        return self.selectedCategory() == model.CATEGORY.MONTHLY 
+                    }, this), visible: ko.computed(() => { 
+                        return self.selectedCategory() == model.CATEGORY.MONTHLY 
+                    }, this) 
+                },
+                { id: 'tab-6', title: getText('KAL003_67'), content: '.tab-content-6', 
+                    enable: ko.computed(() => { 
+                        return self.selectedCategory() == model.CATEGORY.MONTHLY 
+                    }, this), visible: ko.computed(() => { 
+                        return self.selectedCategory() == model.CATEGORY.MONTHLY 
+                    }, this) 
+                }
             ]);
             self.selectedTab = ko.observable('tab-1');
 
@@ -54,6 +88,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
             self.tabDailyErrorAlarm = new tab.DailyPerformanceTab();
             self.tabCheckCondition = new tab.CheckConditionTab(self.selectedCategory());
             self.tabFixedCondition = new tab.FixedCheckConditionTab();
+//            self.tabFixedConMonthly = new tab.FixedCheckConMonthlyTab();
 
             self.selectedCategory.subscribe((data) => {
                 self.switchCategory(data);
@@ -149,6 +184,12 @@ module nts.uk.at.view.kal003.a.viewmodel {
         registerAlarmCheckCondition() {
             let self = this,
                 data: model.AlarmCheckConditionByCategory = new model.AlarmCheckConditionByCategory(self.selectedAlarmCheckCondition().code(), self.selectedAlarmCheckCondition().name(), new model.ItemModel(self.selectedAlarmCheckCondition().category(), self.selectedAlarmCheckCondition().displayCategory), self.selectedAlarmCheckCondition().availableRoles(), self.selectedAlarmCheckCondition().targetCondition());
+            
+            $(".nts-input").trigger("validate");
+            if ($(".nts-input").ntsError("hasError")){ 
+                return;
+            }
+            
             //block.invisible();
             data.targetCondition(self.tabScopeCheck.targetCondition());
             data.action(self.screenMode());

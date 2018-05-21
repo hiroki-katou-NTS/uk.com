@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.AutoCalOverTimeAttr;
@@ -50,39 +51,43 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.VacationAddTimeSet;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * 日別実績の�?定�?時間
+ * 日別実績の所定内時間
  * @author keisuke_hoshina
  *
  */
 @Getter
 public class WithinStatutoryTimeOfDaily {
 	//就業時間
+	@Setter
 	private AttendanceTime workTime;
 	//実働就業時間
 	private AttendanceTime actualWorkTime = new AttendanceTime(0);
-	//�?定�?割増時�?
+	//所定内割増時間
 	private AttendanceTime withinPrescribedPremiumTime = new AttendanceTime(0);
-	//�?定�?深夜時�?
+	//所定内深夜時間
 	private WithinStatutoryMidNightTime withinStatutoryMidNightTime = new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)));
-	//休暇�?算時�?
+	//休暇加算時間
 	private AttendanceTime vacationAddTime = new AttendanceTime(0);  
 	
 	/**
 	 * Constructor
 	 * @param workTime 就業時間
+	 * @param actualTime 
 	 */
-	private WithinStatutoryTimeOfDaily(AttendanceTime workTime,WithinStatutoryMidNightTime midNightTime) {
+	private WithinStatutoryTimeOfDaily(AttendanceTime workTime,AttendanceTime actualTime, WithinStatutoryMidNightTime midNightTime) {
 		this.workTime = workTime;
+		this.actualWorkTime = actualTime;
 		this.withinStatutoryMidNightTime = midNightTime;
 	}
 	
 	/**
-	 * 全メンバ�?法定�?時間(�?定�?時間)計算指示を�?すクラス
+	 * 全メンバを算出するために計算指示を出す
 	 * @param calcMethod 
 	 * @param autoCalcAtr 
 	 * @param flexCalcMethod 
@@ -95,8 +100,8 @@ public class WithinStatutoryTimeOfDaily {
 															   Optional<PersonalLaborCondition> personalCondition,
 			   												   VacationClass vacationClass,
 			   												   WorkType workType,
-			   												   boolean late,  //日別実績の計算区�?.�?��早�?の自動計算設�?.�?��
-			   												   boolean leaveEarly,  //日別実績の計算区�?.�?��早�?の自動計算設�?.早�?
+			   												   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
+			   												   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 			   												   WorkingSystem workingSystem,
 			   												   WorkDeformedLaborAdditionSet illegularAddSetting,
 			   												   WorkFlexAdditionSet flexAddSetting,
@@ -107,30 +112,50 @@ public class WithinStatutoryTimeOfDaily {
 			   												   CalcMethodOfNoWorkingDay calcMethod, 
 			   												   AutoCalOverTimeAttr autoCalcAtr, 
 			   												   Optional<SettingOfFlexWork> flexCalcMethod, 
-			   												   TimeLimitUpperLimitSetting flexLimitSetting, 
 			   												   WorkTimeDailyAtr workTimeDailyAtr, 
-			   												   Optional<WorkTimeCode> workTimeCode) {
-		//法定�?時間の計�?
-		AttendanceTime workTime = calcWithinStatutoryTime(oneDay,personalCondition,vacationClass,workType,
+			   												   Optional<WorkTimeCode> workTimeCode,
+			   												   AttendanceTime preFlexTime,Optional<CoreTimeSetting> coreTimeSetting) {
+		AttendanceTime workTime = new AttendanceTime(0);
+		AttendanceTime actualTime = new AttendanceTime(0);
+		//就業時間の計算
+		workTime = calcWithinStatutoryTime(oneDay,personalCondition,vacationClass,workType,
 														  late,leaveEarly,workingSystem,illegularAddSetting,
 														  flexAddSetting,regularAddSetting,holidayAddtionSet,holidayCalcMethodSet,
-														  calcMethod,autoCalcAtr,flexCalcMethod,flexLimitSetting,workTimeDailyAtr,workTimeCode);
-		//�?定�?深夜時間�?計�?
+														  calcMethod,autoCalcAtr,flexCalcMethod,workTimeDailyAtr,workTimeCode,preFlexTime,coreTimeSetting);
+		//実働時間の計算
+		if(oneDay.getWithinWorkingTimeSheet().isPresent())
+			actualTime =  oneDay.getWithinWorkingTimeSheet().get().calcWorkTime(PremiumAtr.RegularWork,
+																						   CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME,
+																						   vacationClass,
+																						   oneDay.getTimeVacationAdditionRemainingTime().get(),
+																						   StatutoryDivision.Nomal,workType,oneDay.getPredetermineTimeSetForCalc(),
+																						   workTimeCode,
+																						   personalCondition,
+																						   late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
+																						   leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
+																						   workingSystem,
+																						   illegularAddSetting,
+																						   flexAddSetting,
+																						   regularAddSetting,
+																						   holidayAddtionSet,
+																						   holidayCalcMethodSet);
+			
+		//所定内深夜時間の計算
 		WithinStatutoryMidNightTime midNightTime = WithinStatutoryMidNightTime.calcPredetermineMidNightTime(oneDay,autoCalcSet);
 
 		 
-		return new WithinStatutoryTimeOfDaily(workTime,midNightTime);
+		return new WithinStatutoryTimeOfDaily(workTime,actualTime,midNightTime);
 	}
 	
 	
 	/**
-	 * 日別実績の法定�?時間の計�?
+	 * 日別実績の法定内時間の計算
 	 */
 	public static AttendanceTime calcWithinStatutoryTime(CalculationRangeOfOneDay oneDay,	Optional<PersonalLaborCondition> personalCondition,
 			   												   VacationClass vacationClass,
 			   												   WorkType workType,
-			   												   boolean late,  //日別実績の計算区�?.�?��早�?の自動計算設�?.�?��
-			   												   boolean leaveEarly,  //日別実績の計算区�?.�?��早�?の自動計算設�?.早�?
+			   												   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
+			   												   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 			   												   WorkingSystem workingSystem,
 			   												   WorkDeformedLaborAdditionSet illegularAddSetting,
 			   												   WorkFlexAdditionSet flexAddSetting,
@@ -140,21 +165,21 @@ public class WithinStatutoryTimeOfDaily {
 			   												   CalcMethodOfNoWorkingDay calcMethod, 
 			   												   AutoCalOverTimeAttr autoCalcAtr, 
 			   												   Optional<SettingOfFlexWork> flexCalcMethod,
-			   												   TimeLimitUpperLimitSetting flexLimitSetting,
-			   												   WorkTimeDailyAtr workTimeDailyAtr, Optional<WorkTimeCode> workTimeCode) {
+			   												   WorkTimeDailyAtr workTimeDailyAtr, Optional<WorkTimeCode> workTimeCode,
+			   												   AttendanceTime preFlexTime,Optional<CoreTimeSetting> coreTimeSetting) {
 		AttendanceTime workTime = new AttendanceTime(0);
 		if(oneDay.getWithinWorkingTimeSheet().isPresent()) {
 			if(workTimeDailyAtr.isFlex()) {
 				FlexWithinWorkTimeSheet changedFlexTimeSheet = (FlexWithinWorkTimeSheet)oneDay.getWithinWorkingTimeSheet().get();
 				workTime = changedFlexTimeSheet.calcWorkTime(PremiumAtr.RegularWork,
-															 CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME,
+															 flexAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
 						  									 vacationClass,
 						  									 oneDay.getTimeVacationAdditionRemainingTime().get(),
 						  									 StatutoryDivision.Nomal,workType,oneDay.getPredetermineTimeSetForCalc(),
 						  									 workTimeCode,
 						  									 personalCondition,
-						  									 late,  //日別実績の計算区�?.�?��早�?の自動計算設�?.�?��
-						  									 leaveEarly,  //日別実績の計算区�?.�?��早�?の自動計算設�?.早�?
+						  									 late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
+						  									 leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 						  									 workingSystem,
 						  									 illegularAddSetting,
 						  									 flexAddSetting,
@@ -164,19 +189,20 @@ public class WithinStatutoryTimeOfDaily {
 						  									 calcMethod,
 						  									 autoCalcAtr,
 						  									 flexCalcMethod.get(),
-						  									 flexLimitSetting
+						  									 TimeLimitUpperLimitSetting.NOUPPERLIMIT,
+						  									 preFlexTime,coreTimeSetting
 						   );
 			}
 			else {
 				workTime =  oneDay.getWithinWorkingTimeSheet().get().calcWorkTime(PremiumAtr.RegularWork,
-																				  CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME,
+																				  regularAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
 						  														  vacationClass,
 						  														  oneDay.getTimeVacationAdditionRemainingTime().get(),
 						  														  StatutoryDivision.Nomal,workType,oneDay.getPredetermineTimeSetForCalc(),
 						  														  workTimeCode,
 						  														  personalCondition,
-						  														  late,  //日別実績の計算区�?.�?��早�?の自動計算設�?.�?��
-						  														  leaveEarly,  //日別実績の計算区�?.�?��早�?の自動計算設�?.早�?
+						  														  late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
+						  														  leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 						  														  workingSystem,
 						  														  illegularAddSetting,
 						  														  flexAddSetting,
@@ -193,7 +219,7 @@ public class WithinStatutoryTimeOfDaily {
 	}
 	
 	/**
-	 * �?��した引数で日別実績の法定�?時間を作�?する
+	 * 受け取った引数で日別実績の法定内時間を作成する
 	 * @author ken_takasu
 	 * @param workTime
 	 * @param workTimeIncludeVacationTime
@@ -207,7 +233,7 @@ public class WithinStatutoryTimeOfDaily {
 																	   AttendanceTime withinPrescribedPremiumTime,
 																	   WithinStatutoryMidNightTime withinStatutoryMidNightTime,
 																	   AttendanceTime vacationAddTime) {
-		WithinStatutoryTimeOfDaily withinStatutoryTimeOfDaily = new WithinStatutoryTimeOfDaily(workTime,withinStatutoryMidNightTime);
+		WithinStatutoryTimeOfDaily withinStatutoryTimeOfDaily = new WithinStatutoryTimeOfDaily(workTime,actualWorkTime,withinStatutoryMidNightTime);
 		withinStatutoryTimeOfDaily.actualWorkTime = actualWorkTime;
 		withinStatutoryTimeOfDaily.withinPrescribedPremiumTime = withinPrescribedPremiumTime;
 		withinStatutoryTimeOfDaily.withinStatutoryMidNightTime = withinStatutoryMidNightTime;
@@ -231,11 +257,20 @@ public class WithinStatutoryTimeOfDaily {
 	}
 	
 	/**
-	 * 就業時間から休�?未使用時間を減�?(大塚モード専用処�?)
-	 * @param unUseBreakTime 休�?未取得時�?
+	 * 就業時間から休憩未使用時間を減算(大塚モード専用処理)
+	 * @param unUseBreakTime 休憩未取得時間
 	 */
 	public void workTimeMinusUnUseBreakTimeForOotsuka(AttendanceTime unUseBreakTime) {
 		this.workTime = this.workTime.minusMinutes(unUseBreakTime.valueAsMinutes());
 		this.actualWorkTime = this.actualWorkTime.minusMinutes(unUseBreakTime.valueAsMinutes());
 	}
+	
+	/**
+	 * 乖離時間のみ再計算
+	 * @return
+	 */
+	public WithinStatutoryTimeOfDaily calcDiverGenceTime() {
+		return new WithinStatutoryTimeOfDaily(this.workTime,this.actualWorkTime,this.withinStatutoryMidNightTime!=null?this.withinStatutoryMidNightTime.calcDiverGenceTime():this.withinStatutoryMidNightTime);
+	}
+	
 }

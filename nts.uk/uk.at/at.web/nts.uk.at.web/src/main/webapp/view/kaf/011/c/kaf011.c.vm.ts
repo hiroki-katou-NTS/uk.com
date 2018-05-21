@@ -51,14 +51,10 @@ module nts.uk.at.view.kaf011.c.screenModel {
 
         constructor() {
             let self = this;
-            let param = nts.uk.ui.windows.getShared('KAF_011_PARAMS');
-            if (param) {
-                self.prePostSelectedCode(param.prePostSelectedCode);
-                self.reason(param.reason);
-                self.appReasonSelectedID(param.appReasonSelectedID);
-                self.absWk(new common.AppItems(param.absApp));
-                self.version(param.version);
-            }
+
+
+
+
         }
 
         start(): JQueryPromise<any> {
@@ -68,7 +64,7 @@ module nts.uk.at.view.kaf011.c.screenModel {
                 startParam = {
                     sID: null,
                     appDate: self.appDate(),
-                    uiType: 10
+                    uiType: 0
                 };
 
             service.start_c(startParam).done((data: common.IHolidayShipment) => {
@@ -82,8 +78,7 @@ module nts.uk.at.view.kaf011.c.screenModel {
             });
             return dfd.promise();
         }
-
-        saveAbs() {
+        genSaveCmd(): common.ISaveHolidayShipmentCommand {
             let self = this,
                 saveCmd: common.ISaveHolidayShipmentCommand = {
                     recCmd: ko.mapping.toJS(self.recWk()),
@@ -97,20 +92,57 @@ module nts.uk.at.view.kaf011.c.screenModel {
                         enteredPersonSID: self.employeeID(),
                         appVersion: self.version(),
                     }
-                },
-                selectedReason = _.find(self.appReasons(), { 'reasonID': self.appReasonSelectedID() }),
-                appReason = self.getReason();;
-
+                }, selectedReason = self.appReasonSelectedID() ? _.find(self.appReasons(), { 'reasonID': self.appReasonSelectedID() }) : null;
             saveCmd.absCmd.changeWorkHoursType = saveCmd.absCmd.changeWorkHoursType ? 1 : 0;
             if (selectedReason) {
                 saveCmd.appCmd.appReasonText = selectedReason.reasonTemp;
             }
+            return saveCmd;
+
+        }
+        enablePrepost() {
+            let self = this;
+            return self.screenModeNew() && self.appTypeSet().canClassificationChange() != 0;
+        }
+
+        showAppReason(): boolean {
+            let self = this;
+
+
+            return self.appTypeSet().displayAppReason() != 0 || self.appTypeSet().displayFixedReason() != 0;
+
+        }
+
+        checkReason(): boolean {
+            let self = this,
+                appReason = self.getReason();
+            let appReasonError = !nts.uk.at.view.kaf000.shr.model.CommonProcess.checkAppReason(true, self.appTypeSet().displayFixedReason() != 0, self.appTypeSet().displayAppReason() != 0, appReason);
+            if (appReasonError) {
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' });
+                return false;
+            }
             let isCheckLengthError: boolean = !nts.uk.at.view.kaf000.shr.model.CommonProcess.checklenghtReason(appReason, "#appReason");
             if (isCheckLengthError) {
-                return;
-            };
+                return false;
+            }
+            return true;
+        }
+        validateControl() {
+            let self = this;
+            $(".nts-input").trigger("validate");
 
-            saveCmd.absCmd.changeWorkHoursType = saveCmd.absCmd.changeWorkHoursType ? 1 : 0;;
+        }
+
+        saveAbs() {
+            let self = this,
+                saveCmd = self.genSaveCmd();
+
+            if (nts.uk.ui.errors.hasError()) { return; }
+            let isCheckReasonError = !self.checkReason();
+            if (isCheckReasonError) {
+                return;
+            }
+            self.validateControl();
             block.invisible();
             service.changeAbsDate(saveCmd).done((data) => {
                 dialog({ messageId: 'Msg_15' }).then(function() {
@@ -118,7 +150,13 @@ module nts.uk.at.view.kaf011.c.screenModel {
                     nts.uk.ui.windows.close();
                 });
             }).fail((error) => {
-                alError({ messageId: error.messageId, messageParams: error.parameterIds });
+                alError({ messageId: error.messageId, messageParams: error.parameterIds }).then(() => {
+                    if (error.messageId == 'Msg_198') {
+                        nts.uk.ui.windows.setShared('KAF_011_C_PARAMS', 'Msg_198');
+                        nts.uk.ui.windows.close();
+                    }
+
+                });
 
             }).always(() => {
                 block.clear();
@@ -146,7 +184,10 @@ module nts.uk.at.view.kaf011.c.screenModel {
         }
 
         setDataFromStart(data: common.IHolidayShipment) {
-            let self = this;
+            let self = this,
+                param = nts.uk.ui.windows.getShared('KAF_011_PARAMS');
+
+
             if (data) {
                 self.prePostSelectedCode(data.preOrPostType);
                 self.appReasons(data.appReasonComboItems || []);
@@ -155,7 +196,21 @@ module nts.uk.at.view.kaf011.c.screenModel {
                 self.displayPrePostFlg(data.applicationSetting.displayPrePostFlg);
                 self.appTypeSet(new common.AppTypeSet(data.appTypeSet || null));
                 self.employeeID(data.employeeID || '');
+
             }
+
+            if (param) {
+                self.prePostSelectedCode(param.prePostSelectedCode);
+                if (self.appTypeSet().displayAppReason() != 0) {
+                    self.reason(param.reason);
+                }
+                self.absWk(new common.AppItems(param.absApp));
+                self.version(param.version);
+                if (param.appReasonSelectedID) {
+                    self.appReasonSelectedID(param.appReasonSelectedID);
+                }
+            }
+            self.absWk().appDate('');
         }
 
         closeDialog() {

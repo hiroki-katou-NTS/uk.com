@@ -68,8 +68,8 @@ module cps008.c.viewmodel {
                     if (error.message == 'Msg_3') {
                         showDialog.alert({ messageId: "Msg_3" }).then(function() {
                             unblock();
+                            $("#C_INP_CODE").focus();
                             setShared('CPS008C_RESPONE', null);
-                            self.close();
                         });
                     }
                 });

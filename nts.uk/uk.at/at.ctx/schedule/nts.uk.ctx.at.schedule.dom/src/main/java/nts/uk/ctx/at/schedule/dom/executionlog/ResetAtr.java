@@ -26,6 +26,9 @@ public class ResetAtr extends DomainObject {
 	// 申し送り時間を再設定
 	private Boolean resetTimeAssignment;
 
+	public ResetAtr() {
+	}
+	
 	/**
 	 * To domain.
 	 *
@@ -68,10 +71,5 @@ public class ResetAtr extends DomainObject {
 	public void setResetTimeAssignment(Boolean resetTimeAssignment) {
 		this.resetTimeAssignment = resetTimeAssignment;
 	}
-
-	public ResetAtr() {
-	}
 	
-	
-
 }

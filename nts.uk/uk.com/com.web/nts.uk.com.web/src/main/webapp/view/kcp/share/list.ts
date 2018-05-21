@@ -153,6 +153,8 @@ module kcp.share.list {
          * Optional column datasource
          */
         optionalColumnDatasource?: KnockoutObservableArray<OptionalColumnDataSource>;
+
+        subscriptions?: Array<KnockoutSubscription>;
     }
     
     export class ClosureSelectionType {
@@ -265,6 +267,13 @@ module kcp.share.list {
             var self = this;
             $(document).undelegate('#' + self.componentGridId, 'iggriddatarendered');
             ko.cleanNode($input[0]);
+
+            // clear subscriptions
+            if (data.subscriptions) {
+                _.each(data.subscriptions, sub => {
+                    sub.dispose();
+                });
+            }
             
             // Init self data.
             if (!nts.uk.util.isNullOrUndefined(data) && !nts.uk.util.isNullOrUndefined(data.isMultipleUse)) { 
@@ -288,9 +297,7 @@ module kcp.share.list {
             // Init data for employment list component.
             if (data.listType == ListType.EMPLOYMENT) {
                 self.selectedClosureId = data.selectedClosureId ? data.selectedClosureId : ko.observable(null);
-                self.selectedClosureId.subscribe(id => {
-                    self.reloadEmployment(id);
-                })
+                self.initClosureSubscription(data.subscriptions);
                 self.isDisplayClosureSelection = data.isDisplayClosureSelection ? true : false;
                 self.isDisplayFullClosureOption = data.isDisplayFullClosureOption ? true : false;
                 self.closureSelectionType = data.closureSelectionType ? data.closureSelectionType : ClosureSelectionType.NO_SELECT;
@@ -321,12 +328,9 @@ module kcp.share.list {
             
             // With list type is employee list, use employee input.
             if (self.listType == ListType.EMPLOYEE) {
+                self.initEmployeeSubscription(data);
                 self.initComponent(data, data.employeeInputList(), $input).done(function() {
                     dfd.resolve();
-                });
-                data.employeeInputList.subscribe(dataList => {
-                    self.addAreadySettingAttr(dataList, self.alreadySettingList());
-                    self.itemList(dataList);
                 });
                 return dfd.promise();
             }
@@ -338,6 +342,34 @@ module kcp.share.list {
                 });
             });
             return dfd.promise();
+        }
+
+        private initClosureSubscription(subscriptions: Array<KnockoutSubscription>): void {
+            let self = this;
+            if (subscriptions) {
+                subscriptions.push(self.selectedClosureId.subscribe(id => {
+                    self.reloadEmployment(id);
+                }));
+            } else {
+                self.selectedClosureId.subscribe(id => {
+                    self.reloadEmployment(id);
+                });
+            }
+        }
+
+        private initEmployeeSubscription(data: ComponentOption): void {
+            let self = this;
+            if (data.subscriptions) {
+                data.subscriptions.push(data.employeeInputList.subscribe(dataList => {
+                    self.addAreadySettingAttr(dataList, self.alreadySettingList());
+                    self.itemList(dataList);
+                }));
+            } else {
+                data.employeeInputList.subscribe(dataList => {
+                    self.addAreadySettingAttr(dataList, self.alreadySettingList());
+                    self.itemList(dataList);
+                });
+            }
         }
 
         /**
@@ -686,11 +718,20 @@ module kcp.share.list {
             var minTotalSize = this.isHasButtonSelectAll ? 415 : 350;
             var totalRowsHeight = heightOfRow * this.maxRows + 24;
             var totalHeight: number = this.hasBaseDate || this.isDisplayClosureSelection ? 101 : 55;
-            codeColumnSize = data.maxWidth ? '15%': codeColumnSize;
-            var nameColumnSize = data.maxWidth ? '30%' : 170;
-            var workplaceColumnSize = data.maxWidth ? '20%' : 150;
-            var alreadySetColumnSize = data.maxWidth ? '15%' : 70;
-            var optionalColumnSize = data.maxWidth ? '20%' : 150;
+            var optionalColumnSize = 0;
+
+            if (this.showOptionalColumn) {
+                codeColumnSize = data.maxWidth ? '15%': codeColumnSize;
+                var nameColumnSize = data.maxWidth ? '30%' : 170;
+                var workplaceColumnSize = data.maxWidth ? '20%' : 150;
+                var alreadySetColumnSize = data.maxWidth ? '15%' : 70;
+                optionalColumnSize = data.maxWidth ? '20%' : 150;
+            } else {
+                codeColumnSize = data.maxWidth ? '25%' : codeColumnSize;
+                var nameColumnSize = data.maxWidth ? '30%' : 170;
+                var workplaceColumnSize = data.maxWidth ? '30%' : 150;
+                var alreadySetColumnSize = data.maxWidth ? '15%' : 70;
+            }
             this.gridStyle = {
                 codeColumnSize: codeColumnSize,
                 totalColumnSize: Math.max(minTotalSize, totalColumnSize),
@@ -791,7 +832,14 @@ module kcp.share.list {
                 }
                 self.itemList(data);
                 self.initNoSelectRow(self.isShowNoSelectRow);
-                self.selectedCodes(self.isMultipleSelect ? [] : null);
+
+                // set selected codes
+                const selectedCodes = _.filter(self.selectedCodes(), code => _.find(data, item => code == item.code));
+                if (nts.uk.util.isNullOrEmpty(selectedCodes)) {
+                    self.selectedCodes(self.isMultipleSelect ? [] : null);
+                } else {
+                    self.selectedCodes(selectedCodes);
+                }
             })
         }
         

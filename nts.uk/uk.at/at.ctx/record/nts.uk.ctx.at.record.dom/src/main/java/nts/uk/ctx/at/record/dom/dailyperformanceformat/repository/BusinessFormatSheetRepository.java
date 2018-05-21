@@ -15,5 +15,7 @@ public interface BusinessFormatSheetRepository {
 	void update(BusinessFormatSheet businessFormatSheet);
 	
 	void add(BusinessFormatSheet businessFormatSheet);
+	
+	void deleteBusBySheetNo(String companyId, String businessTypeCode, BigDecimal sheetNo);
 
 }

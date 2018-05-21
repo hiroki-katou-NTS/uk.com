@@ -1,8 +1,12 @@
 module nts.uk.at.view.kmk003.a {
-    
+
     export module service {
         export module model {
             export module common {
+
+                export interface SettingFlexWorkDto {
+                    flexWorkManaging: number;
+                }
 
                 export interface CommonRestSettingDto {
                     calculateMethod: number;
@@ -55,14 +59,14 @@ module nts.uk.at.view.kmk003.a {
 
                 export interface FixedWorkRestSetDto {
                     commonRestSet: CommonRestSettingDto;
+                    isPlanActualNotMatchMasterRefer: boolean;
                     fixedRestCalculateMethod: number;
                 }
 
                 export interface FlowFixedRestSetDto {
-                    isReferRestTime: boolean;
-                    usePrivateGoOutRest: boolean;
-                    useAssoGoOutRest: boolean;
                     calculateMethod: number;
+                    calculateFromSchedule: ScheduleBreakCalculationDto;
+                    calculateFromStamp: StampBreakCalculationDto;
                 }
 
                 export interface FlowRestSetDto {
@@ -87,6 +91,7 @@ module nts.uk.at.view.kmk003.a {
                     flowRestSetting: FlowRestSetDto;
                     flowFixedRestSetting: FlowFixedRestSetDto;
                     usePluralWorkRestTime: boolean;
+                    roundingBreakMultipleWork: TimeRoundingSettingDto;
                 }
 
                 export interface FlowWorkRestSettingDto {
@@ -257,11 +262,14 @@ module nts.uk.at.view.kmk003.a {
                     shortTimeWorkSet: WorkTimezoneShortTimeWorkSetDto;
                     extraordTimeSet: WorkTimezoneExtraordTimeSetDto;
                     lateEarlySet: WorkTimezoneLateEarlySetDto;
+                    holidayCalculation: HolidayCalculationDto;
                 }
 
                 export interface WorkTimeCommonDto {
                     predseting: predset.PredetemineTimeSettingDto;
                     worktimeSetting: worktimeset.WorkTimeSettingDto;
+                    displayMode: worktimeset.WorkTimeDisplayModeDto;
+                    manageEntryExit: worktimeset.ManageEntryExitDto;
                 }
 
                 export interface WorkTimeSettingInfoDto extends WorkTimeCommonDto {
@@ -270,33 +278,77 @@ module nts.uk.at.view.kmk003.a {
                     flowWorkSetting: flowset.FlWorkSettingDto;
                     diffTimeWorkSetting: difftimeset.DiffTimeWorkSettingDto;
                 }
-                
+
                 export interface FixedWorkTimezoneSetDto {
                     lstWorkingTimezone: EmTimeZoneSetDto[];
                     lstOTTimezone: OverTimeOfTimeZoneSetDto[];
                 }
 
+                export interface HolidayCalculationDto {
+                    isCalculate: number;
+                }
+
+                export interface OverTimeCalcNoBreakDto {
+                    calcMethod: number;
+                    inLawOT: number;
+                    notInLawOT: number;
+                }
+
+                export interface ExceededPredAddVacationCalcDto {
+                    calcMethod: number;
+                    otFrameNo: number;
+                }
+
+                export interface FixedWorkCalcSettingDto {
+                    exceededPredAddVacationCalc: ExceededPredAddVacationCalcDto;
+                    overTimeCalcNoBreak: OverTimeCalcNoBreakDto;
+                }
+
+                export interface ScheduleBreakCalculationDto {
+                    isReferRestTime: boolean;
+                    isCalcFromSchedule: boolean;
+                }
                 
+                export interface StampBreakCalculationDto {
+                    usePrivateGoOutRest: boolean;
+                    useAssoGoOutRest: boolean;
+                }
                 
                 // Common Enum
                 export enum LateEarlyAtr {
                     LATE,
                     EARLY
-                }               
-                
+                }
+
                 export enum SubHolidayOriginAtr {
                     FROM_OVER_TIME,
                     WORK_DAY_OFF_TIME
                 }
-                
+
                 export enum SubHolTransferSetAtr {
                     SPECIFIED_TIME_SUB_HOL,
                     CERTAIN_TIME_EXC_SUB_HOL
                 }
-                
+
                 export enum WorkSystemAtr {
                     DAY_SHIFT,
                     NIGHT_SHIFT
+                }
+                
+                export enum StampPiorityAtr {
+                    GOING_WORK,
+                    LEAVE_WORK,
+                    ENTERING,
+                    EXIT,
+                    PCLOGIN,
+                    PC_LOGOUT
+                }
+                
+                export enum Superiority {
+                    ATTENDANCE,
+                    OFFICE_WORK,
+                    GO_OUT,
+                    TURN_BACK
                 }
             }
         }

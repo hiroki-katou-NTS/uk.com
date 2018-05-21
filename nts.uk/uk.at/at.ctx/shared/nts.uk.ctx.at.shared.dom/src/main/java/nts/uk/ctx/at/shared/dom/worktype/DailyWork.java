@@ -115,13 +115,31 @@ public class DailyWork extends DomainObject { // 1日の勤務
 		}
 	}
 	
+	public boolean isHolidayType() {
+		if (this.workTypeUnit == WorkTypeUnit.OneDay) {
+			if (this.oneDay.isHolidayType()) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			if (this.morning.isHolidayType() && this.afternoon.isHolidayType()) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+	}
+	
 	/**
 	 * 所定時間の取得先を判定する
 	 * @return　出勤休出区分
 	 */
 	public AttendanceHolidayAttr decisionNeedPredTime() {
 		if (this.workTypeUnit == WorkTypeUnit.OneDay) {
-			if (this.oneDay.isHoliday()) {
+//			if (this.oneDay.isHoliday()) {
+			if (this.oneDay.isHolidayType()) {
 				return AttendanceHolidayAttr.HOLIDAY;
 			} else {
 				return AttendanceHolidayAttr.FULL_TIME;
@@ -129,9 +147,11 @@ public class DailyWork extends DomainObject { // 1日の勤務
 		} else {
 			if (this.morning.isWeekDayAttendance() && this.afternoon.isWeekDayAttendance()) {
 				return AttendanceHolidayAttr.FULL_TIME;
-			} else if (this.morning.isWeekDayAttendance() && this.afternoon.isHoliday()) {
+//			} else if (this.morning.isWeekDayAttendance() && this.afternoon.isHoliday()) {
+			} else if (this.morning.isWeekDayAttendance() && !this.afternoon.isWeekDayAttendance()) {
 				return AttendanceHolidayAttr.MORNING;
-			} else if (this.morning.isHoliday() && this.afternoon.isWeekDayAttendance()) {
+//			} else if (this.morning.isHoliday() && this.afternoon.isWeekDayAttendance()) {
+			} else if (!this.morning.isWeekDayAttendance() && this.afternoon.isWeekDayAttendance()) {
 				return AttendanceHolidayAttr.AFTERNOON;
 			} else {
 				return AttendanceHolidayAttr.HOLIDAY;
@@ -217,6 +237,7 @@ public class DailyWork extends DomainObject { // 1日の勤務
 		}
 	}
 	
+	
 	/**
 	 * 特別休暇の場合であるか
 	 * @return 特別休暇である
@@ -266,5 +287,22 @@ public class DailyWork extends DomainObject { // 1日の勤務
 			return WorkTypeRangeForPred.AFTERNOON;
 		}
 		return WorkTypeRangeForPred.NOTHING;
+	}
+	
+	
+	/**
+	 * 1日休日系か判定する
+	 * @return
+	 */
+	public boolean getDecidionAttendanceHolidayAttr() {
+		if (this.workTypeUnit == WorkTypeUnit.OneDay) {
+			if (this.oneDay.isHolidayType()) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
 	}
 }

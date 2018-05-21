@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/dialog.xhtml">
+			<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 920,
+					height : 740	
+				};
+			</script>
+				<com:scriptfile set="IGNITE" />
+				<com:stylefile path="kbt002.h.main.css" />
+				<com:scriptfile path="kbt002.h.service.js" />
+				<com:scriptfile path="kbt002.h.vm.js" />
+				<com:scriptfile path="kbt002.h.start.js" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="contents-area">
+				<div class="label-top">
+				<label>#{i18n.getText('KBT002_151')}</label>
+				</div>
+				<div class="top-content">
+				<div id="daterangepicker" tabindex="1" data-bind="ntsDateRangePicker: { required: required, enable: enable, value: dateValue}"/>
+				<button tabindex="2" class="searchType" data-bind="click: search">#{i18n.getText('KBT002_154')}</button>
+				</div>
+					<table tabindex="3" id="grid"></table>
+				</div>
+				<div id="functions-area-bottom">
+					<button tabindex="6" data-bind="click: closeDialog">#{i18n.getText('KBT002_134')}</button>
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>

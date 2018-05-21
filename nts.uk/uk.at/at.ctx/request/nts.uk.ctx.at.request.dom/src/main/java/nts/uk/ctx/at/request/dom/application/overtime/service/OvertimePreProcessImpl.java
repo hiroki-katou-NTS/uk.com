@@ -179,7 +179,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	}
 
 	@Override
-	public DisplayPrePost getDisplayPrePost(String companyID, int uiType, String appDate,int appType) {
+	public DisplayPrePost getDisplayPrePost(String companyID, int uiType, String appDate,int appType,int overtimeAtr) {
 		Optional<ApplicationSetting> applicationSetting = applicationSettingRepository
 				.getApplicationSettingByComID(companyID);
 		DisplayPrePost result = new DisplayPrePost();
@@ -198,7 +198,14 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 						result.setPrePostAtr(discreteSetting.get().getPrePostInitFlg().value);
 						result.setPrePostCanChangeFlg(discreteSetting.get().getPrePostCanChangeFlg().value == 1 ? true : false);
 					}
-				} else {
+				} else if (uiType == 2){
+					Optional<AppTypeDiscreteSetting> discreteSetting = discreteRepo
+							.getAppTypeDiscreteSettingByAppType(companyID, appType);
+					if (discreteSetting.isPresent()) {
+						result.setPrePostAtr(discreteSetting.get().getPrePostInitFlg().value);
+					}
+					result.setPrePostCanChangeFlg(false);
+				}else{
 					// 事後申請として起動する(khoi dong cai xin sau len)
 					result.setPrePostAtr(InitValueAtr.POST.value);
 
@@ -208,7 +215,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 				result.setDisplayPrePostFlg(AppDisplayAtr.NOTDISPLAY.value);
 				result.setPrePostAtr(this.otherCommonAlgorithm.preliminaryJudgmentProcessing(
 						EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class),
-						appDate == null ? GeneralDate.today() :GeneralDate.fromString(appDate, DATE_FORMAT)).value);
+						appDate == null ? GeneralDate.today() :GeneralDate.fromString(appDate, DATE_FORMAT),overtimeAtr).value);
 			}
 		}
 		return result;

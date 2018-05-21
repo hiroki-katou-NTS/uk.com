@@ -23,4 +23,8 @@ public interface EmployeeDailyPerErrorRepository {
 	
 	void removeParam(String sid, GeneralDate date);
 	
+	boolean checkExistRecordErrorListDate(String companyID, String employeeID, List<GeneralDate> lstDate);
+	
+	boolean checkEmployeeHasErrorOnProcessingDate(String employeeID, GeneralDate processingDate);
+	
 }

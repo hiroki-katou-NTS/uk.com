@@ -20,6 +20,8 @@ public class WorkTimeOfTimeSeries {
 	
 	/** 法定内時間 */
 	private WithinStatutoryTimeOfDaily legalTime;
+	/** 休暇加算時間 */
+	private AttendanceTime vacationAddTime;
 	
 	/**
 	 * コンストラクタ
@@ -34,20 +36,24 @@ public class WorkTimeOfTimeSeries {
 				new AttendanceTime(0),
 				new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
 				new AttendanceTime(0));
+		this.vacationAddTime = new AttendanceTime(0);
 	}
 	
 	/**
 	 * ファクトリー
 	 * @param ymd 年月日
 	 * @param legalTime 法定内時間
+	 * @param vacationAddTime 休暇加算時間
 	 * @return 時系列の就業時間
 	 */
 	public static WorkTimeOfTimeSeries of(
 			GeneralDate ymd,
-			WithinStatutoryTimeOfDaily legalTime){
+			WithinStatutoryTimeOfDaily legalTime,
+			AttendanceTime vacationAddTime){
 		
 		val domain = new WorkTimeOfTimeSeries(ymd);
 		domain.legalTime = legalTime;
+		domain.vacationAddTime = vacationAddTime;
 		return domain;
 	}
 	
