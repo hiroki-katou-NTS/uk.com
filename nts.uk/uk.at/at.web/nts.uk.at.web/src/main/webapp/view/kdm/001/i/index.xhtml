@@ -11,6 +11,7 @@
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="kdm001.i.vm.js" />
+			<com:scriptfile path="kdm001.i.service.js" />
 			<com:scriptfile path="kdm001.i.start.js" />
 			<com:stylefile path="kdm001.i.style.css" />
 		</ui:define>
@@ -166,7 +167,7 @@
 				<div id="process" data-bind="visible: true"
 					style="text-align: center;">
 					<!-- I31_1 登録 -->
-					<button id="stopExecute" data-bind="click: createDialog"
+					<button id="stopExecute" data-bind="click: submitData"
 						class="proceed">#{i18n.getText('KDM001_89')}</button>
 					<!-- I31_1 キャンセル -->
 					<button id="closeDialog" data-bind="click: closeDialog">#{i18n.getText('KDM001_90')}</button>

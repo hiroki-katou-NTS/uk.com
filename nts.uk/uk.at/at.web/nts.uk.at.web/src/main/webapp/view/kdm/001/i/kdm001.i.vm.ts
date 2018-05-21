@@ -1,6 +1,7 @@
 module nts.uk.at.view.kdm001.i.viewmodel {
     import model = kdm001.share.model;
     export class ScreenModel {
+        employeeId: KnockoutObservable<string> = ko.observable('');
         workCode: KnockoutObservable<string> = ko.observable('');
         workplaceName: KnockoutObservable<string> = ko.observable('');
         employeeCode: KnockoutObservable<string> = ko.observable('');
@@ -46,8 +47,24 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         /**
          * closeDialog
          */
-        public createDialog() {
-            let data = new ReportInfor(holidayRemainingOutputCondition, lstSelectedEployee);
+        public submitData() {
+            let self = this;
+            let data = {
+                employeeId: "ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570",
+                checkedHoliday: self.checkedHoliday(),
+                dateHoliday: moment.utc(self.dateHoliday(), 'YYYY/MM/DD').toISOString(),
+                selectedCodeHoliday: self.selectedCodeHoliday(),
+                duedateHoliday: moment.utc(self.duedateHoliday(), 'YYYY/MM/DD').toISOString(),
+                checkedSubHoliday: self.checkedSubHoliday(),
+                dateSubHoliday: moment.utc(self.dateSubHoliday(), 'YYYY/MM/DD').toISOString(),
+                selectedCodeSubHoliday: self.selectedCodeSubHoliday(),
+                checkedSplit: self.checkedSplit(),
+                dateOptionSubHoliday: moment.utc(self.dateOptionSubHoliday(), 'YYYY/MM/DD').toISOString(),
+                selectedCodeOptionSubHoliday: self.selectedCodeOptionSubHoliday(),
+                dayRemaining: self.dayRemaining()
+            };
+
+            console.log(data);
             service.add(data).done(() => {
 
             }).fail(function(res: any) {
@@ -60,13 +77,6 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         }
     }
 
-    class ReportInfor {
-        holidayRemainingOutputCondition: any;
-        lstEmpIds: any[];
-        constructor(holidayRemainingOutputCondition: any, lstEmpIds: any[]) {
-            this.holidayRemainingOutputCondition = holidayRemainingOutputCondition;
-            this.lstEmpIds = lstEmpIds;
-        }
-    }
+
 }
 

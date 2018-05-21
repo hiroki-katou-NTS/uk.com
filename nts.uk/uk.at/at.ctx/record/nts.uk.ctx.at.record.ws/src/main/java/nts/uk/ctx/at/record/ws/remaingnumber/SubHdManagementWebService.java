@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.at.record.ws.subhdmana;
+package nts.uk.ctx.at.record.ws.remaingnumber;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.record.app.command.remainingnumber.subhdmana.AddSubHdManage
  *
  */
 
-@Path("at/record/subhdmana")
+@Path("at/record/remaingnumber")
 @Produces("application/json")
 public class SubHdManagementWebService extends WebService{
 	@Inject
