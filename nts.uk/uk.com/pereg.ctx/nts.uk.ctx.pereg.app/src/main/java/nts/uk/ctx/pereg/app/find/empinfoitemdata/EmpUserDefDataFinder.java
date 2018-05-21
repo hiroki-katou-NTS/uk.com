@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
 import nts.uk.shr.pereg.app.find.PeregEmpOptRepository;
-import nts.uk.shr.pereg.app.find.dto.EmpOptionalDto;
+import nts.uk.shr.pereg.app.find.dto.OptionalItemDataDto;
 
 @Stateless
 public class EmpUserDefDataFinder implements PeregEmpOptRepository{
@@ -17,7 +17,7 @@ public class EmpUserDefDataFinder implements PeregEmpOptRepository{
 	private EmpInfoItemDataRepository empInfoItemDataRepository;
 	
 	@Override
-	public List<EmpOptionalDto> getData(String recordId) {
+	public List<OptionalItemDataDto> getData(String recordId) {
 		return empInfoItemDataRepository.getAllInfoItemByRecordId(recordId).stream()
 				.map(x -> x.genToPeregDto()).collect(Collectors.toList());
 	}

@@ -200,7 +200,7 @@ public class AppHolidayWorkFinder {
 			// 3.事前事後の判断処理(事前事後非表示する場合)
 			PrePostAtr prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(
 					EnumAdaptor.valueOf(ApplicationType.BREAK_TIME_APPLICATION.value, ApplicationType.class),
-					appCommonSettingOutput.generalDate);
+					appCommonSettingOutput.generalDate,0);
 			if(prePostAtrJudgment != null){
 				prePostAtr = prePostAtrJudgment.value;
 			}
@@ -505,7 +505,7 @@ public class AppHolidayWorkFinder {
 		result.setHolidayInstructInformation(holidayWorkInstruction.getHolidayWorkInstructInfomation());
 		//01-02_時間外労働を取得 : waitting
 		// 01-13_事前事後区分を取得
-		DisplayPrePost displayPrePost =	iOvertimePreProcess.getDisplayPrePost(companyID, uiType,appDate,ApplicationType.BREAK_TIME_APPLICATION.value);
+		DisplayPrePost displayPrePost =	iOvertimePreProcess.getDisplayPrePost(companyID, uiType,appDate,ApplicationType.BREAK_TIME_APPLICATION.value,0);
 		result.setDisplayPrePostFlg(displayPrePost.getDisplayPrePostFlg());
 		applicationDto.setPrePostAtr(displayPrePost.getPrePostAtr());
 		result.setApplication(applicationDto);

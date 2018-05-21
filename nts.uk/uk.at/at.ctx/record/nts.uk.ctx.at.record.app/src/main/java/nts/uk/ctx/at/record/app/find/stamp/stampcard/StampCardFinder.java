@@ -6,14 +6,13 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.app.find.stamp.StampDto;
-import nts.uk.ctx.at.record.app.find.stamp.StampDetailParamDto;
-import nts.uk.ctx.at.record.dom.stamp.card.StampCardRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.StampCardtemRepository;
 
 @Stateless
 public class StampCardFinder {
+
 	@Inject
-	private StampCardRepository stampCardRepo;
+	private StampCardtemRepository stampCardRepo;
 	
 	/**
 	 * 

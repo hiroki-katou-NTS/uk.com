@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceName
 import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceDto;
 import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceTypeDivergenceAdapter;
 import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceTypeDivergenceAdapterDto;
+import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.AttendanceItemNameAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -23,6 +24,9 @@ public class DivergenceItemSetFinder {
 	//user contexts
 	@Inject
 	private AttendanceNameDivergenceAdapter atName;
+	
+	@Inject
+	private AttendanceItemNameAdapter attendanceItemNameAdapter;
 	
 	public List<DivergenceItemSetDto> getAllDivReasonByCode(String divTimeId){
 		String companyId = AppContexts.user().companyId();
@@ -43,4 +47,15 @@ public class DivergenceItemSetFinder {
 		List<AttendanceNameDivergenceDto> data = atName.getDailyAttendanceItemName(dailyAttendanceItemIds);
 		return data;
 	}
+	
+	public List<AttendanceNameDivergenceDto> getMonthlyAtName(
+			List<Integer> monthlyAttendanceItemIds) {
+		List<AttendanceNameDivergenceDto> data = attendanceItemNameAdapter
+				.getMonthlyAttendanceItemName(monthlyAttendanceItemIds).stream()
+				.map(item -> new AttendanceNameDivergenceDto(item.getAttendanceItemId(),
+						item.getAttendanceItemName(), item.getAttendanceItemDisplayNumber()))
+				.collect(Collectors.toList());
+		return data;
+	}
+
 }

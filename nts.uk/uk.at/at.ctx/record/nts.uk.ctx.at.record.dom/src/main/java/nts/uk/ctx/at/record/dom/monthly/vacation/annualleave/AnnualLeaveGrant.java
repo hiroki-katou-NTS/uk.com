@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.common.days.YearlyDays;
  */
 @Getter
 @Setter
-public class AnnualLeaveGrant {
+public class AnnualLeaveGrant implements Cloneable {
 
 	/** 付与日数 */
 	private AnnualLeaveGrantDayNumber grantDays;
@@ -72,5 +72,23 @@ public class AnnualLeaveGrant {
 		domain.deductedDaysAfterGrant = deductedDaysAfterGrant;
 		domain.attendanceRate = attendanceRate;
 		return domain;
+	}
+	
+	@Override
+	public AnnualLeaveGrant clone() {
+		AnnualLeaveGrant cloned = new AnnualLeaveGrant();
+		try {
+			cloned.grantDays = new AnnualLeaveGrantDayNumber(this.grantDays.v());
+			cloned.grantWorkingDays = new YearlyDays(this.grantWorkingDays.v());
+			cloned.grantPrescribedDays = new YearlyDays(this.grantPrescribedDays.v());
+			cloned.grantDeductedDays = new YearlyDays(this.grantDeductedDays.v());
+			cloned.deductedDaysBeforeGrant = new MonthlyDays(this.deductedDaysBeforeGrant.v());
+			cloned.deductedDaysAfterGrant = new MonthlyDays(this.deductedDaysAfterGrant.v());
+			cloned.attendanceRate = new AttendanceRate(this.attendanceRate.v().doubleValue());
+		}
+		catch (Exception e){
+			throw new RuntimeException("AnnualLeaveGrant clone error.");
+		}
+		return cloned;
 	}
 }

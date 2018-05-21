@@ -40,14 +40,14 @@ module nts.uk.com.view.cps016.a.viewmodel {
                     service.getPerInfoSelectionItem(x).done((_perInfoSelectionItem: ISelectionItem1) => {
                         if (_perInfoSelectionItem) {
                             perInfoSelectionItem.selectionItemName(_perInfoSelectionItem.selectionItemName);
-                            
+
                             perInfoSelectionItem.characterType(_perInfoSelectionItem.characterType);
                             perInfoSelectionItem.codeLength(_perInfoSelectionItem.codeLength);
                             perInfoSelectionItem.nameLength(_perInfoSelectionItem.nameLength);
                             perInfoSelectionItem.extraCodeLength(_perInfoSelectionItem.extraCodeLength);
-                            
+
                             perInfoSelectionItem.shareChecked(_perInfoSelectionItem.shareChecked);
-                            
+
                             perInfoSelectionItem.memo(_perInfoSelectionItem.memo);
                             perInfoSelectionItem.integrationCode(_perInfoSelectionItem.integrationCode);
                         }
@@ -64,7 +64,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
             let dfd = $.Deferred();
 
             nts.uk.ui.errors.clearAll();
-            
+
             // get selection items
             self.getAllSelectionItems().done(() => {
                 if (self.param && !nts.uk.util.isNullOrUndefined(self.param.selectionItemId)) {
@@ -76,10 +76,10 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 $("#selectionItemName").focus();
                 dfd.resolve();
             });
-           
+
             return dfd.promise();
         }
-        
+
         getAllSelectionItems(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
@@ -101,20 +101,20 @@ module nts.uk.com.view.cps016.a.viewmodel {
             let self = this;
             let perInfoSelectionItem: SelectionItem1 = self.perInfoSelectionItem();
             nts.uk.ui.errors.clearAll();
-            
+
             perInfoSelectionItem.selectionItemId('');
             perInfoSelectionItem.selectionItemName('');
-            
+
             perInfoSelectionItem.characterType(false);
             perInfoSelectionItem.codeLength('');
             perInfoSelectionItem.nameLength('');
             perInfoSelectionItem.extraCodeLength('');
-            
+
             perInfoSelectionItem.shareChecked(false);
-            
+
             perInfoSelectionItem.integrationCode('');
             perInfoSelectionItem.memo('');
-            
+
             self.checkCreate(true);
             $("#selectionItemName").focus();
         }
@@ -145,7 +145,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
         add() {
             let self = this;
             let command = ko.toJS(self.perInfoSelectionItem());
-            
+
             //「個人情報の選択項目」を登録する
             service.addDataSelectionItem(command).done(function(selectId) {
                 self.listItems.removeAll();
@@ -209,26 +209,30 @@ module nts.uk.com.view.cps016.a.viewmodel {
             let self = this;
             let currentItem: SelectionItem1 = self.perInfoSelectionItem();
             let listItems: Array<SelectionItem1> = self.listItems();
-            
+
             let oldIndex = _.findIndex(listItems, x => x.selectionItemId == currentItem.selectionItemId());
             let lastIndex = listItems.length - 1;
-            
+
             let command = ko.toJS(currentItem);
 
             confirm({ messageId: "Msg_551" }).ifYes(() => {
                 service.removeDataSelectionItem(command).done(function() {
-                    self.listItems.removeAll();
-                    self.getAllSelectionItems().done(() => {
-                        if (self.listItems().length > 0) {
-                            if (oldIndex == lastIndex) {
-                                oldIndex--;
-                            }
-                            let newItem = self.listItems()[oldIndex];
-                            currentItem.selectionItemId(newItem.selectionItemId);
-                        }
-                        self.listItems.valueHasMutated();
-                    });
                     
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                        self.listItems.removeAll();
+                        self.getAllSelectionItems().done(() => {
+                            if (self.listItems().length > 0) {
+                                if (oldIndex == lastIndex) {
+                                    oldIndex--;
+                                }
+                                let newItem = self.listItems()[oldIndex];
+                                currentItem.selectionItemId(newItem.selectionItemId);
+                            }
+                            //                        self.listItems.valueHasMutated();
+                        });
+                    });
+                    self.listItems.valueHasMutated();
+
                 }).fail(error => {
                     alertError({ messageId: "Msg_521" });
                 });
@@ -262,53 +266,53 @@ module nts.uk.com.view.cps016.a.viewmodel {
     }
 
     interface ISelectionItem1 {
-        
+
         selectionItemId: string;
         selectionItemName: string;
-        
+
         characterType: number;
         codeLength: number;
         nameLength: number;
         extraCodeLength: number;
-        
-        shareChecked : boolean;
-        
+
+        shareChecked: boolean;
+
         integrationCode?: string;
         memo?: string;
-        
+
     }
-    
+
     class SelectionItem1 {
         selectionItemId: KnockoutObservable<string> = ko.observable('');
         selectionItemName: KnockoutObservable<string> = ko.observable('');
-        
+
         characterType: KnockoutObservable<boolean> = ko.observable(false);
         codeLength: KnockoutObservable<number> = ko.observable('');
         nameLength: KnockoutObservable<number> = ko.observable('');
         extraCodeLength: KnockoutObservable<number> = ko.observable('');
-        
+
         shareChecked: KnockoutObservable<boolean> = ko.observable(false);
-        
+
         integrationCode: KnockoutObservable<string> = ko.observable('');
         memo: KnockoutObservable<string> = ko.observable('');
-        
+
         constructor(param: ISelectionItem1) {
             let self = this;
             self.selectionItemId(param.selectionItemId || '');
             self.selectionItemName(param.selectionItemName || '');
-            
+
             self.characterType(param.characterType === 1 ? true : false);
             self.codeLength(param.codeLength || '');
             self.nameLength(param.nameLength || '');
             self.extraCodeLength(param.extraCodeLength || '');
-            
+
             self.shareChecked(param.shareChecked);
-            
+
             self.integrationCode(param.integrationCode || '');
             self.memo(param.memo || '');
         }
     }
-    
+
     interface IRule {
         id: number;
         name: string;

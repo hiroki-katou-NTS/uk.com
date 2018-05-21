@@ -690,10 +690,27 @@ module nts.uk.at.view.kal003.b.viewmodel{
             });
         }
         
-        getListItemByAtr(conditionAtr) {
+        //getListItemByAtr(conditionAtr) {
+        //    let self = this;
+        //    return service.getAttendanceItemByAtr(conditionAtr);
+      // }
+          getListItemByAtr(conditionAtr) {
             let self = this;
-            return service.getAttendanceItemByAtr(conditionAtr);
+            if (self.workRecordExtractingCondition().checkItem() === 0 ||self.workRecordExtractingCondition().checkItem() === 4) {
+                //With type 回数 - Times
+                return service.getAttendanceItemByAtr(5);
+            } else if (self.workRecordExtractingCondition().checkItem() === 1) {
+                //With type 時間 - Time
+                return service.getAttendanceItemByAtr(2);
+            } else if (self.workRecordExtractingCondition().checkItem() === 2) {
+                //With type 時刻 - TimeWithDay
+                return service.getAttendanceItemByAtr(3);
+            } else if (self.workRecordExtractingCondition().checkItem() === 3) {
+                //With type 金額 - AmountMoney
+                return service.getAttendanceItemByAtr(6);
+            }
         }
+
         
         fillTextDisplayTarget(defered, currentAtdItemCondition) {
             let self = this;

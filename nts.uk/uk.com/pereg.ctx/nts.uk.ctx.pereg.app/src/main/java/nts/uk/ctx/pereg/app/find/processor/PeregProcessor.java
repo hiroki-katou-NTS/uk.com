@@ -2,7 +2,6 @@ package nts.uk.ctx.pereg.app.find.processor;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +18,7 @@ import nts.uk.ctx.at.record.app.find.dailyperformanceformat.businesstype.Busines
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.pereg.app.find.common.InitDefaultValue;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
+import nts.uk.ctx.pereg.app.find.common.StampCardLength;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
@@ -27,7 +27,6 @@ import nts.uk.ctx.pereg.app.find.person.category.PerInfoCategoryFinder;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutFinder;
-import nts.uk.ctx.pereg.app.find.person.info.item.SingleItemDto;
 import nts.uk.ctx.pereg.dom.person.ParamForGetPerItem;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
@@ -39,10 +38,8 @@ import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
-import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
-import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutItemType;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgData;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgDataRepository;
@@ -59,9 +56,8 @@ import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.find.PeregQuery;
-import nts.uk.shr.pereg.app.find.dto.EmpOptionalDto;
+import nts.uk.shr.pereg.app.find.dto.OptionalItemDataDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
-import nts.uk.shr.pereg.app.find.dto.PersonOptionalDto;
 
 @Stateless
 public class PeregProcessor {
@@ -104,9 +100,8 @@ public class PeregProcessor {
 	@Inject
 	private InitDefaultValue initDefaultValue;
 	
-	private static List<String> listCategorys = Arrays.asList("CS00020","CS00025", "CS00026", "CS00027", "CS00028", "CS00029",
-			"CS00030", "CS00031", "CS00032", "CS00033", "CS00034", "CS00049", "CS00050", "CS00051", "CS00052",
-			"CS00053", "CS00054", "CS00055", "CS00056", "CS00057", "CS00058", "CS00035","CS00036");
+	@Inject
+	private StampCardLength stampCardLength;
 	
 	/**
 	 * get person information category and it's children (Hiển thị category và
@@ -187,23 +182,23 @@ public class PeregProcessor {
 		
 		PeregDto peregDto = null;
 		String infoId = query.getInfoId();
-		CategoryType categoryType = perInfoCtg.getCategoryType();
 
-		if ((perInfoCtg.getIsFixed() == IsFixed.FIXED && infoId != null)
-				|| (infoId == null && categoryType == CategoryType.SINGLEINFO)) {
+		if ((perInfoCtg.isFixed() && infoId != null) || (infoId == null && perInfoCtg.isSingleCategory())) {
 			peregDto = layoutingProcessor.findSingle(query);
 		}
 		
 		CheckViewOnlyReturnObj checkViewOnly = new CheckViewOnlyReturnObj();
-		if (categoryType != CategoryType.SINGLEINFO) {
+		
+		if (perInfoCtg.isHistoryCategory()) {
 			checkViewOnly = checkCtgIsViewOnly(peregDto, perInfoCtg, roleId, infoId, loginEmpId.equals(employeeId));
 		}
+		
 		ParamForGetPerItem getItemDefParam = new ParamForGetPerItem(perInfoCtg, infoId, roleId == null ? "" : roleId,
 				companyId, contractCode, loginEmpId.equals(employeeId));
 
 		// map PersonInfoItemDefinition →→ PerInfoItemDefForLayoutDto
 		List<PerInfoItemDefForLayoutDto> lstPerInfoItemDefForLayout = getPerItemDefForLayout(getItemDefParam,
-				loginEmpId, checkViewOnly.isViewOnly, checkViewOnly.startDate);
+				loginEmpId, checkViewOnly.isViewOnly(), checkViewOnly.getStartDate());
 
 		EmpMaintLayoutDto empMaintLayoutDto = new EmpMaintLayoutDto();
 
@@ -213,6 +208,13 @@ public class PeregProcessor {
 
 		List<LayoutPersonInfoClsDto> classItemList = getClassItemList(query, perInfoCtg, lstPerInfoItemDefForLayout,
 				peregDto);
+		
+		// set default value
+		initDefaultValue.setDefaultValue(classItemList);
+		
+		// special process with category CS00069 item IS00779. change string length
+		stampCardLength.updateLength(perInfoCtg, classItemList);
+		
 		empMaintLayoutDto.setClassificationItems(classItemList);
 
 		return empMaintLayoutDto;
@@ -266,9 +268,6 @@ public class PeregProcessor {
 				}
 			}
 		}
-		if(listCategorys.contains(query.getCategoryCode())) {
-			initDefaultValue.setDefaultValueRadio(classItemList);
-		}
 		
 		/*
 		 *	edit with category CS00021 勤務種別
@@ -292,39 +291,23 @@ public class PeregProcessor {
 	}
 	
 	private List<LayoutPersonInfoClsDto> creatClassItemList(List<PerInfoItemDefForLayoutDto> lstClsItem) {
-		List<LayoutPersonInfoClsDto> classItemList = new ArrayList<>();
-		lstClsItem.forEach(item -> {
+		return lstClsItem.stream().map(item -> {
 			LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
 			layoutPerInfoClsDto.setPersonInfoCategoryID(item.getPerInfoCtgId());
+			layoutPerInfoClsDto.setPersonInfoCategoryCD(item.getPerInfoCtgCd());
 			layoutPerInfoClsDto.setLayoutItemType(LayoutItemType.ITEM);
 			layoutPerInfoClsDto.setClassName(item.getItemName());
 			layoutPerInfoClsDto.setDispOrder(item.getDispOrder());
-			layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item, getValue(item)));
+			layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item));
 			if (item.getItemTypeState().getItemType() != 2) {
 				item.getLstChildItemDef().forEach(childItem -> {
 					layoutPerInfoClsDto.setDispOrder(childItem.getDispOrder());
-					layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(childItem, getValue(childItem)));
+					layoutPerInfoClsDto.getItems()
+							.add(LayoutPersonInfoValueDto.initData(childItem));
 				});
 			}
-			classItemList.add(layoutPerInfoClsDto);
-		});
-		return classItemList;
-	}
-	
-	public Object getValue(PerInfoItemDefForLayoutDto item) {
-		Object value = null;
-		if(item.getItemTypeState().getItemType() == ItemType.SINGLE_ITEM.value) {
-			SingleItemDto singleItem = (SingleItemDto) item.getItemTypeState();
-			if(singleItem.getDataTypeState().getDataTypeValue() == DataTypeValue.SELECTION.value) {
-				if(item.getLstComboxBoxValue().size() > 0) {
-					String valueText = item.getLstComboxBoxValue().get(0).getOptionValue();
-					if(!valueText.equals("")) {
-						value = valueText;
-					};
-				}
-			}
-		}
-		return value;
+			return layoutPerInfoClsDto;
+		}).collect(Collectors.toList());
 	}
 	
 	private void setOptionData(PersonInfoCategory perInfoCtg, List<LayoutPersonInfoClsDto> classItemList,
@@ -332,7 +315,7 @@ public class PeregProcessor {
 		if (perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE) {
 			List<EmpInfoCtgData> empInfoCtgDatas = new ArrayList<>();
 			if(query.getInfoId() == null && query.getStandardDate() == null && perInfoCtg.getCategoryType() != CategoryType.SINGLEINFO) {
-				MappingFactory.matchEmpOptionData(null, classItemList, new ArrayList<>());
+				MappingFactory.matchOptionalItemData(null, classItemList, new ArrayList<>());
 			}
 			else {
 				empInfoCtgDatas = empInCtgDataRepo.getByEmpIdAndCtgId(query.getEmployeeId(),
@@ -340,21 +323,21 @@ public class PeregProcessor {
 			}
 			if (!empInfoCtgDatas.isEmpty()) {
 				String recordId = empInfoCtgDatas.get(0).getRecordId();
-				List<EmpOptionalDto> empOptionItemData = empInfoItemDataRepository.getAllInfoItemByRecordId(recordId)
+				List<OptionalItemDataDto> empOptionItemData = empInfoItemDataRepository.getAllInfoItemByRecordId(recordId)
 						.stream().map(x -> x.genToPeregDto()).collect(Collectors.toList());
-				MappingFactory.matchEmpOptionData(recordId, classItemList, empOptionItemData);
+				MappingFactory.matchOptionalItemData(recordId, classItemList, empOptionItemData);
 			}
 		} else {
 			List<PerInfoCtgData> perInfoCtgDatas = new ArrayList<>();
 			if(query.getInfoId() != null || query.getStandardDate() != null)
 				perInfoCtgDatas = perInCtgDataRepo.getByPerIdAndCtgId(query.getPersonId(),
 					perInfoCtg.getPersonInfoCategoryId());
-			else MappingFactory.matchEmpOptionData(null, classItemList, new ArrayList<>());
+			else MappingFactory.matchOptionalItemData(null, classItemList, new ArrayList<>());
 			if (!perInfoCtgDatas.isEmpty()) {
 				String recordId = perInfoCtgDatas.get(0).getRecordId();
-				List<PersonOptionalDto> perOptionItemData = perInfoItemDataRepository.getAllInfoItemByRecordId(recordId)
+				List<OptionalItemDataDto> perOptionItemData = perInfoItemDataRepository.getAllInfoItemByRecordId(recordId)
 						.stream().map(x -> x.genToPeregDto()).collect(Collectors.toList());
-				MappingFactory.matchPerOptionData(recordId, classItemList, perOptionItemData);
+				MappingFactory.matchOptionalItemData(recordId, classItemList, perOptionItemData);
 			}
 		}
 
@@ -363,32 +346,34 @@ public class PeregProcessor {
 	private void setOptionalDataByRecordId(String recordId, PersonEmployeeType type, 
 			List<LayoutPersonInfoClsDto> classItemList ){
 		if (type == PersonEmployeeType.EMPLOYEE) {
-			List<EmpOptionalDto> empOptionItemData = empInfoItemDataRepository
+			List<OptionalItemDataDto> empOptionItemData = empInfoItemDataRepository
 					.getAllInfoItemByRecordId(recordId).stream().map(x -> x.genToPeregDto())
 					.collect(Collectors.toList());
-			MappingFactory.matchEmpOptionData(recordId, classItemList, empOptionItemData);
+			MappingFactory.matchOptionalItemData(recordId, classItemList, empOptionItemData);
 		} else {
-			List<PersonOptionalDto> perOptionItemData = perInfoItemDataRepository
+			List<OptionalItemDataDto> perOptionItemData = perInfoItemDataRepository
 					.getAllInfoItemByRecordId(recordId).stream().map(x -> x.genToPeregDto())
 					.collect(Collectors.toList());
-			MappingFactory.matchPerOptionData(recordId, classItemList, perOptionItemData);
+			MappingFactory.matchOptionalItemData(recordId, classItemList, perOptionItemData);
 		}
 	}
 	
-	private CheckViewOnlyReturnObj checkCtgIsViewOnly(PeregDto peregDto, PersonInfoCategory perInfoCtg, String roleId, String infoId, boolean isSelf) {
+	private CheckViewOnlyReturnObj checkCtgIsViewOnly(PeregDto peregDto, PersonInfoCategory perInfoCtg, String roleId,
+			String infoId, boolean isSelf) {
 		CheckViewOnlyReturnObj returnObject = new CheckViewOnlyReturnObj();
-		PersonInfoCategoryAuth perInfoCtgAuth = perAuth.getDetailPersonCategoryAuthByPId(roleId, perInfoCtg.getPersonInfoCategoryId()).get();
+		PersonInfoCategoryAuth perInfoCtgAuth = perAuth
+				.getDetailPersonCategoryAuthByPId(roleId, perInfoCtg.getPersonInfoCategoryId()).get();
 		String exceptionItemCode = "CS00003";
-		if(infoId == null) {
-			if((perInfoCtgAuth.getOtherAllowAddHis() == PersonInfoPermissionType.NO && !isSelf)
-					||(perInfoCtgAuth.getSelfAllowAddHis() == PersonInfoPermissionType.NO && isSelf)) {
-				returnObject.isViewOnly = false;
+		if (infoId == null) {
+			if ((perInfoCtgAuth.getOtherAllowAddHis() == PersonInfoPermissionType.NO && !isSelf)
+					|| (perInfoCtgAuth.getSelfAllowAddHis() == PersonInfoPermissionType.NO && isSelf)) {
+				returnObject.setViewOnly(false);
 				return returnObject;
 			}
-		}else {
-			String sDateId = "";	
-			String eDateId = "";	
-			if(!perInfoCtg.getCategoryCode().v().equals(exceptionItemCode)) {
+		} else {
+			String sDateId = "";
+			String eDateId = "";
+			if (!perInfoCtg.getCategoryCode().v().equals(exceptionItemCode)) {
 				Optional<DateRangeItem> dateRangeItem = perInfoCtgRepositoty
 						.getDateRangeItemByCategoryId(perInfoCtg.getPersonInfoCategoryId());
 				if (dateRangeItem.isPresent()) {
@@ -396,44 +381,54 @@ public class PeregProcessor {
 					sDateId = dateRangeItem.get().getStartDateItemId();
 				}
 			}
-			
+
 			Object sValue = null;
 			Object eValue = null;
-			if(perInfoCtg.getIsFixed() == IsFixed.FIXED) {			
-				List<Field> fields =  AnnotationUtil.getStreamOfFieldsAnnotated(peregDto.getDtoClass(), PeregItem.class).collect(Collectors.toList());
-				sValue = getDateValueOfFixedCtg(peregDto, perInfoCtg.getCategoryCode().v(), exceptionItemCode, fields, sDateId, true);
-				eValue = getDateValueOfFixedCtg(peregDto, perInfoCtg.getCategoryCode().v(), exceptionItemCode, fields, eDateId, false);
-			}else {
-				if(perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE) {
-					Optional<EmpInfoItemData> dateForStartDate = empInfoItemDataRepository.getInfoItemByItemDefIdAndRecordId(sDateId, infoId);
-					Optional<EmpInfoItemData> dateForEndDate = empInfoItemDataRepository.getInfoItemByItemDefIdAndRecordId(eDateId, infoId);
+			if (perInfoCtg.getIsFixed() == IsFixed.FIXED) {
+				List<Field> fields = AnnotationUtil.getStreamOfFieldsAnnotated(peregDto.getDtoClass(), PeregItem.class)
+						.collect(Collectors.toList());
+				sValue = getDateValueOfFixedCtg(peregDto, perInfoCtg.getCategoryCode().v(), exceptionItemCode, fields,
+						sDateId, true);
+				eValue = getDateValueOfFixedCtg(peregDto, perInfoCtg.getCategoryCode().v(), exceptionItemCode, fields,
+						eDateId, false);
+			} else {
+				if (perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE) {
+					Optional<EmpInfoItemData> dateForStartDate = empInfoItemDataRepository
+							.getInfoItemByItemDefIdAndRecordId(sDateId, infoId);
+					Optional<EmpInfoItemData> dateForEndDate = empInfoItemDataRepository
+							.getInfoItemByItemDefIdAndRecordId(eDateId, infoId);
 					sValue = dateForStartDate.isPresent() ? dateForStartDate.get().getDataState().getDateValue() : null;
 					eValue = dateForEndDate.isPresent() ? dateForEndDate.get().getDataState().getDateValue() : null;
-					
-				}else {
-					Optional<PersonInfoItemData> dateForStartDate = perInfoItemDataRepository.getPerInfoItemDataByItemDefIdAndRecordId(sDateId, infoId);
-					Optional<PersonInfoItemData> dateForEndDate = perInfoItemDataRepository.getPerInfoItemDataByItemDefIdAndRecordId(eDateId, infoId);
+
+				} else {
+					Optional<PersonInfoItemData> dateForStartDate = perInfoItemDataRepository
+							.getPerInfoItemDataByItemDefIdAndRecordId(sDateId, infoId);
+					Optional<PersonInfoItemData> dateForEndDate = perInfoItemDataRepository
+							.getPerInfoItemDataByItemDefIdAndRecordId(eDateId, infoId);
 					sValue = dateForStartDate.isPresent() ? dateForStartDate.get().getDataState().getDateValue() : null;
 					eValue = dateForEndDate.isPresent() ? dateForEndDate.get().getDataState().getDateValue() : null;
-				}			
+				}
 			}
 			Period period = getPeriod(sValue, eValue);
 			GeneralDate sDate = GeneralDate.fromString(sValue.toString(), "yyyy/MM/dd");
-			returnObject.startDate = sDate;
-			if(period == Period.PRESENT) {
-				returnObject.isViewOnly = false;
-				return returnObject;
+			returnObject.setStartDate(sDate);
+			boolean viewOnly = false;
+			if (period == Period.PRESENT) {
+				viewOnly = false;
 			}
-			if(period == Period.FUTURE) {
-				returnObject.isViewOnly = isSelf?perInfoCtgAuth.getSelfFutureHisAuth() == PersonInfoAuthType.REFERENCE : perInfoCtgAuth.getOtherFutureHisAuth() == PersonInfoAuthType.REFERENCE;
-				return returnObject;
-			}else {
-				returnObject.isViewOnly = isSelf?perInfoCtgAuth.getSelfPastHisAuth() == PersonInfoAuthType.REFERENCE : perInfoCtgAuth.getOtherPastHisAuth() == PersonInfoAuthType.REFERENCE;
-				return returnObject;
+			if (period == Period.FUTURE) {
+				viewOnly = isSelf ? perInfoCtgAuth.getSelfFutureHisAuth() == PersonInfoAuthType.REFERENCE
+						: perInfoCtgAuth.getOtherFutureHisAuth() == PersonInfoAuthType.REFERENCE;
+			} else {
+				viewOnly = isSelf ? perInfoCtgAuth.getSelfPastHisAuth() == PersonInfoAuthType.REFERENCE
+						: perInfoCtgAuth.getOtherPastHisAuth() == PersonInfoAuthType.REFERENCE;
 			}
+			returnObject.setViewOnly(viewOnly);
+			return returnObject;
 		}
 		return returnObject;
 	}
+	
 	private Object getDateValueOfFixedCtg(PeregDto peregDto, String ctgCode, String exceptionItemCode, List<Field> fields, String dateId, boolean isStart) {
 		Optional<Field> field = Optional.empty();
 		if(ctgCode.equals(exceptionItemCode)) {
@@ -470,10 +465,11 @@ public class PeregProcessor {
 			boolean isCtgViewOnly, GeneralDate startDate) {
 		// get per info item def with order
 		PersonInfoCategory category = paramObject.getPersonInfoCategory();
+		List<PersonInfoItemDefinition> fullItemDefinitionList = perItemRepo
+				.getAllItemDefByCategoryId(category.getPersonInfoCategoryId(), paramObject.getContractCode());
 
-		List<PersonInfoItemDefinition> itemDefinitionList = perItemRepo.getAllItemByCtgWithAuth(
-				category.getPersonInfoCategoryId(), paramObject.getContractCode(), paramObject.getRoleId(),
-				paramObject.isSelfAuth());
+		List<PersonInfoItemDefinition> itemDefinitionList = fullItemDefinitionList.stream()
+				.filter(item -> item.haveNotParentCode()).collect(Collectors.toList());
 
 		List<PerInfoItemDefForLayoutDto> lstReturn = new ArrayList<>();
 		PersonInfoItemDefinition itemDefinition;
@@ -482,24 +478,31 @@ public class PeregProcessor {
 		Map<String, PersonInfoItemAuth> mapItemAuth = itemAuthRepo
 				.getAllItemAuth(paramObject.getRoleId(), category.getPersonInfoCategoryId()).stream()
 				.collect(Collectors.toMap(e -> e.getPersonItemDefId(), e -> e));
-		
 		for (int i = 0; i < itemDefinitionList.size(); i++) {
 			itemDefinition = itemDefinitionList.get(i);
+
+			// check authority
 			PersonInfoItemAuth personInfoItemAuth = mapItemAuth.get(itemDefinition.getPerInfoItemDefId());
 			PersonInfoAuthType itemRole = paramObject.isSelfAuth() ? personInfoItemAuth.getSelfAuth()
 					: personInfoItemAuth.getOtherAuth();
+			if (itemRole == PersonInfoAuthType.HIDE) {
+				continue;
+			}
+			// convert item-definition to layoutDto
 			ActionRole role = itemRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT;
-
 			PerInfoItemDefForLayoutDto itemDto = itemForLayoutFinder.createItemLayoutDto(category, itemDefinition, i,
 					role, isCtgViewOnly, combobox, employeeId, startDate);
 
-			List<PerInfoItemDefForLayoutDto> childrenItems = itemForLayoutFinder.getChildrenItems(category,
-					itemDefinition, employeeId, i, isCtgViewOnly, startDate, combobox, role);
+			// get and convert childrenItems
+			List<PerInfoItemDefForLayoutDto> childrenItems = itemForLayoutFinder.getChildrenItems(
+					fullItemDefinitionList, category, itemDefinition, employeeId, i, isCtgViewOnly, startDate, combobox,
+					role);
 
 			itemDto.setLstChildItemDef(childrenItems);
 
 			lstReturn.add(itemDto);
 		}
+
 		return lstReturn;
 	}
 	
@@ -509,8 +512,4 @@ public class PeregProcessor {
 		FUTURE(3);
 		Period(int a) {}
 	}
-}
-class CheckViewOnlyReturnObj{
-	boolean isViewOnly;
-	GeneralDate startDate;
 }

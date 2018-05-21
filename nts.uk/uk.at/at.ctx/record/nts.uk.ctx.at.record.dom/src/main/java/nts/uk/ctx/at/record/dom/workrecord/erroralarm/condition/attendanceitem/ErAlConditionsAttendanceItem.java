@@ -78,6 +78,9 @@ public class ErAlConditionsAttendanceItem extends DomainObject {
 	}
 
 	public boolean check(Function<List<Integer>, List<Integer>> getValueFromItemIds) {
+		if(isNotUseAll()){
+			return false;
+		}
 		switch (this.conditionOperator) {
 		case AND:
 			return checkStream(getValueFromItemIds).allMatch(r -> r);
@@ -92,5 +95,9 @@ public class ErAlConditionsAttendanceItem extends DomainObject {
 		return lstErAlAtdItemCon.stream().filter(aic -> aic.getUseAtr() != null && aic.getUseAtr()).map(aic -> {
 			return aic.checkTarget(getValueFromItemIds);
 		});
+	}
+	
+	private boolean isNotUseAll(){
+		return !lstErAlAtdItemCon.stream().filter(aic -> aic.getUseAtr() != null && aic.getUseAtr()).findFirst().isPresent();
 	}
 }

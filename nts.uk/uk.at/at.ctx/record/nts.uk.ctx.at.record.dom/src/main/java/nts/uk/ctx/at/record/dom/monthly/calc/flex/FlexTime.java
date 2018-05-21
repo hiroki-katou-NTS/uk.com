@@ -125,8 +125,11 @@ public class FlexTime {
 	 */
 	public void addOverTimeFrameTime(GeneralDate ymd, OverTimeFrameTime overTimeFrameTime){
 		
-		this.addFlexTimeInTimeSeriesWork(ymd, overTimeFrameTime.getOverTimeWork().getTime().v(),
-				overTimeFrameTime.getOverTimeWork().getCalcTime().v(),
+		this.addFlexTimeInTimeSeriesWork(ymd,
+				overTimeFrameTime.getOverTimeWork().getTime().v() +
+				overTimeFrameTime.getTransferTime().getTime().v(),
+				overTimeFrameTime.getOverTimeWork().getCalcTime().v() +
+				overTimeFrameTime.getTransferTime().getCalcTime().v(),
 				overTimeFrameTime.getBeforeApplicationTime().v());
 	}
 	
@@ -137,8 +140,11 @@ public class FlexTime {
 	 */
 	public void addHolidayWorkTimeFrameTime(GeneralDate ymd, HolidayWorkFrameTime holidayWorkFrameTime){
 		
-		this.addFlexTimeInTimeSeriesWork(ymd, holidayWorkFrameTime.getHolidayWorkTime().get().getTime().v(),
-				holidayWorkFrameTime.getHolidayWorkTime().get().getCalcTime().v(),
+		this.addFlexTimeInTimeSeriesWork(ymd,
+				holidayWorkFrameTime.getHolidayWorkTime().get().getTime().v() +
+				holidayWorkFrameTime.getTransferTime().get().getTime().v(),
+				holidayWorkFrameTime.getHolidayWorkTime().get().getCalcTime().v() +
+				holidayWorkFrameTime.getTransferTime().get().getCalcTime().v(),
 				holidayWorkFrameTime.getBeforeApplicationTime().get().v());
 	}
 	

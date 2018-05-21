@@ -87,6 +87,7 @@ public class JpaAggregateAbsenceDays extends JpaRepository implements AggregateA
 			entity.PK = key;
 		}
 		entity.absenceDays = domain.getDays().v();
+		entity.absenceTime = domain.getTime().v();
 		return entity;
 	}
 }
