@@ -146,8 +146,9 @@ module nts.uk.at.view.kwr008.a {
 
                 nts.uk.request.exportFile('at/function/annualworkschedule/export', data).done(() => {
                     
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
-                nts.uk.ui.block.clear();
             }
 
             openKWR008B() {

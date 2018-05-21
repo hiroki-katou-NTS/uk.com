@@ -9,16 +9,20 @@ import com.aspose.cells.Cell;
 import com.aspose.cells.CellBorderType;
 import com.aspose.cells.Color;
 import com.aspose.cells.HorizontalPageBreakCollection;
+import com.aspose.cells.PageSetup;
 import com.aspose.cells.Range;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.uk.ctx.at.function.dom.annualworkschedule.enums.OutputAgreementTime;
+import nts.uk.ctx.at.function.dom.annualworkschedule.enums.PageBreakIndicator;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.AnnualWorkScheduleData;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.AnnualWorkScheduleGenerator;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.EmployeeData;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.ExportData;
+import nts.uk.ctx.at.function.dom.annualworkschedule.export.HeaderData;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -31,6 +35,8 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 
 	private static final int MAX_EXPORT_ITEM = 10;
 	private static final int ROW_PER_PAGE = 27;
+	/** C2_3 or C2_5 */
+	private static final int MAX_GROUP_MONTHS = 7;
 
 	@Override
 	public void generate(FileGeneratorContext fileContext, ExportData dataSource) {
@@ -39,9 +45,14 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 			WorksheetCollection wsc = wb.getWorksheets();
 			Worksheet ws = wsc.get(0);
 			reportContext.setHeader(0, dataSource.getHeader().getTitle());
+
+			if (dataSource.getHeader().getGroupMonths().size() < MAX_GROUP_MONTHS) {
+				ws.getCells().deleteColumn(wsc.getRangeByName("monthGroup7th").getFirstColumn());
+				PageSetup pageSetup = ws.getPageSetup();
+				pageSetup.setZoom(100);
+			}
 			Range empRange = wsc.getRangeByName("employeeRange");
 			int rowPerEmp = dataSource.getExportItems().size();
-			int empPerPage = ROW_PER_PAGE/rowPerEmp;
 			//delete superfluous rows
 			ws.getCells().deleteRows(empRange.getFirstRow() + empRange.getRowCount() //last row
 									- (MAX_EXPORT_ITEM - rowPerEmp),
@@ -52,29 +63,36 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 			//set border bottom after delete superfluous rows
 			empRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.MEDIUM, Color.getBlack());
 			//print header
-			this.printHeader(wsc);
+			this.printHeader(wsc, dataSource.getHeader());
 
 			HorizontalPageBreakCollection pageBreaks = ws.getHorizontalPageBreaks();
 			List<EmployeeData> emps = dataSource.getEmployees();
 			//set first employee
 			EmployeeData firstEmp = emps.remove(0);
-			print(new RangeCustom(empRange, 0), firstEmp, true);
+			print(wsc, new RangeCustom(empRange, 0), firstEmp, true);
 
 			String workplace = firstEmp.getEmployeeInfo().get(0);
 			RangeCustom newRange = new RangeCustom(empRange, 0);
-			int offset = 0, countEmpPerPage = 1;
+			int offset = 0, sumRowCount = workplaceRange.getRowCount();
+			boolean nextWorkplace;
 			for (EmployeeData emp : emps) {
-				if (!workplace.equals(emp.getEmployeeInfo().get(0)) ||
-					countEmpPerPage == empPerPage) {
+				nextWorkplace = workplace.equals(emp.getEmployeeInfo().get(0));
+				if (nextWorkplace) {
 					workplace = emp.getEmployeeInfo().get(0);
 					newRange = copyRangeDown(workplaceRange, offset);
-					pageBreaks.add(newRange.range.getFirstRow());
-					countEmpPerPage = 1; //reset count
 				} else {
 					newRange = copyRangeDown(empRange, offset);
-					countEmpPerPage ++;
 				}
-				print(newRange, emp, countEmpPerPage == 1);
+				sumRowCount += newRange.range.getRowCount();
+				//break page and print
+				if (sumRowCount > ROW_PER_PAGE ||
+					(nextWorkplace && PageBreakIndicator.WORK_PLACE.equals(dataSource.getPageBreak()))) {
+					pageBreaks.add(newRange.range.getFirstRow());
+					sumRowCount = newRange.range.getRowCount(); //reset sum row count
+					print(wsc, newRange, emp, true);
+				} else {
+					print(wsc, newRange, emp, false);
+				}
 				offset = newRange.offset;
 			}
 
@@ -89,21 +107,44 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 	 * TODO
 	 * @param wsc Work sheet collection
 	 */
-	private void printHeader(WorksheetCollection wsc) {
+	private void printHeader(WorksheetCollection wsc, HeaderData headerData) {
 		// print C1_2
-		wsc.getRangeByName("month1stLabel").setValue("4");
-		wsc.getRangeByName("month2ndLabel").setValue("5");
-		wsc.getRangeByName("month3rdLabel").setValue("6");
-		wsc.getRangeByName("month4thLabel").setValue("7");
-		wsc.getRangeByName("month5thLabel").setValue("8");
-		wsc.getRangeByName("month6thLabel").setValue("9");
-		wsc.getRangeByName("month7thLabel").setValue("10");
-		wsc.getRangeByName("month8thLabel").setValue("11");
-		wsc.getRangeByName("month9thLabel").setValue("12");
-		wsc.getRangeByName("month10thLabel").setValue("1");
-		wsc.getRangeByName("month11thLabel").setValue("2");
-		wsc.getRangeByName("month12thLabel").setValue("3");
-		
+		List<String> months = headerData.getMonths();
+		wsc.getRangeByName("month1stLabel").setValue(months.get(0));
+		wsc.getRangeByName("month2ndLabel").setValue(months.get(1));
+		wsc.getRangeByName("month3rdLabel").setValue(months.get(2));
+		wsc.getRangeByName("month4thLabel").setValue(months.get(3));
+		wsc.getRangeByName("month5thLabel").setValue(months.get(4));
+		wsc.getRangeByName("month6thLabel").setValue(months.get(5));
+		wsc.getRangeByName("month7thLabel").setValue(months.get(6));
+		wsc.getRangeByName("month8thLabel").setValue(months.get(7));
+		wsc.getRangeByName("month9thLabel").setValue(months.get(8));
+		wsc.getRangeByName("month10thLabel").setValue(months.get(9));
+		wsc.getRangeByName("month11thLabel").setValue(months.get(10));
+		wsc.getRangeByName("month12thLabel").setValue(months.get(11));
+		//print B1_1 + B1_2
+		wsc.getRangeByName("period").setValue(headerData.getPeriod());
+		//print C1_1
+		wsc.getRangeByName("empInfoLabel").setValue(headerData.getEmpInfoLabel());
+
+		if (OutputAgreementTime.TWO_MONTH.equals(headerData.getOutputAgreementTime())) {
+			wsc.getRangeByName("outputAgreementTime").setValue("2ヶ月");
+		} else if (OutputAgreementTime.THREE_MONTH.equals(headerData.getOutputAgreementTime())) {
+			wsc.getRangeByName("outputAgreementTime").setValue("3ヶ月");
+		}
+
+		List<String> groupMonths = headerData.getGroupMonths();
+		if (groupMonths != null) {
+			wsc.getRangeByName("monthGroup1st").setValue(groupMonths.get(0));
+			wsc.getRangeByName("monthGroup2nd").setValue(groupMonths.get(1));
+			wsc.getRangeByName("monthGroup3rd").setValue(groupMonths.get(2));
+			wsc.getRangeByName("monthGroup4th").setValue(groupMonths.get(3));
+			wsc.getRangeByName("monthGroup5th").setValue(groupMonths.get(4));
+			wsc.getRangeByName("monthGroup6th").setValue(groupMonths.get(5));
+			if (groupMonths.size() == 7) {
+				wsc.getRangeByName("monthGroup7th").setValue(months.get(6));
+			}
+		}
 	}
 
 	/**
@@ -112,11 +153,14 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 	 * @param emp
 	 * @param isNewPage
 	 */
-	private void print(RangeCustom range, EmployeeData emp, boolean isNewPage) {
+	private void print(WorksheetCollection wsc, RangeCustom range, EmployeeData emp, boolean isNewPage) {
 		if(isNewPage) {
 			String workplace = emp.getEmployeeInfo().get(0);
 			range.cell("workplace").putValue(workplace);
 		}
+		//TODO print all empInfo
+		range.cell("empInfo").setValue(emp.getEmployeeInfo().get(0));
+
 		int rowOffset = 0;
 		for (AnnualWorkScheduleData data: emp.getAnnualWorkSchedule()) {
 			range.cell("item", rowOffset, 0).putValue(data.getName());

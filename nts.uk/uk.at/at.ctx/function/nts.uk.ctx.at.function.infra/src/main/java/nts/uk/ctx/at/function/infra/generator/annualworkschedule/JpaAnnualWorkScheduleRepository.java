@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.function.infra.generator.annualworkschedule;
 
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,7 +11,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.function.dom.annualworkschedule.Employee;
 import nts.uk.ctx.at.function.dom.annualworkschedule.SetOutItemsWoSc;
+import nts.uk.ctx.at.function.dom.annualworkschedule.enums.OutputAgreementTime;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.AnnualWorkScheduleData;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.AnnualWorkScheduleRepository;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.EmployeeData;
@@ -16,6 +21,7 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.export.ExportData;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.ExportItem;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.HeaderData;
 import nts.uk.ctx.at.function.dom.annualworkschedule.repository.SetOutItemsWoScRepository;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
 public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleRepository {
@@ -27,14 +33,43 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	 * TODO linh.nd
 	 */
 	@Override
-	public ExportData getData(String cid, String setItemsOutputCd) {
+	public ExportData getData(String cid, String setItemsOutputCd, String startYearMonth,
+			String endYearMonth, List<Employee> employees) {
 		ExportData data = new ExportData();
 
 		//ドメインモデル「年間勤務表（36チェックリスト）の出力項目設定」を取得する
 		SetOutItemsWoSc setOutItemsWoSc = setOutItemsWoScRepository.getSetOutItemsWoScById(cid, setItemsOutputCd).get();
 		HeaderData header = new HeaderData();
 		header.setTitle(setOutItemsWoSc.getName().v());
-		data.setExportItems(setOutItemsWoSc.getListItemOutTblBook().stream().map(m -> new ExportItem(m.getHeadingName().v())).collect(Collectors.toList()));
+		header.setPeriod(TextResource.localize("KWR008_41") + " " + startYearMonth + "～" + endYearMonth);
+		//出力項目数による個人情報の出力制限について
+		int sizeItemOut = setOutItemsWoSc.getListItemOutTblBook().size();
+		if (sizeItemOut == 1) {
+			header.setEmpInfoLabel(TextResource.localize("KWR008_44"));
+		} else if (sizeItemOut == 2) {
+			header.setEmpInfoLabel(TextResource.localize("KWR008_43"));
+		} else {
+			header.setEmpInfoLabel(TextResource.localize("KWR008_42"));
+		}
+
+		YearMonth startYm = YearMonth.parse(startYearMonth, DateTimeFormatter.ofPattern("uuuu/MM"));
+		YearMonth endYm = YearMonth.parse(endYearMonth, DateTimeFormatter.ofPattern("uuuu/MM"));
+		header.setOutputAgreementTime(setOutItemsWoSc.getDisplayFormat());
+		//set C2_3, C2_5
+		header.setGroupMonths(this.createGroupMonths(startYm, endYm, setOutItemsWoSc.getDisplayFormat()));
+		// C1_2
+		List<String> months = Arrays.asList("", "", "", "", "", "", "", "", "", "", "", "");
+		int i = 0;
+		while (!startYm.isAfter(endYm)) {
+			months.set(i, String.valueOf(startYm.getMonthValue()));
+			startYm = startYm.plusMonths(1);
+			i++;
+		}
+		header.setMonths(months);
+
+		//TODO
+		data.setExportItems(setOutItemsWoSc.getListItemOutTblBook().stream().filter(item -> item.isUseClassification())
+				.map(m -> new ExportItem(m.getHeadingName().v())).collect(Collectors.toList()));
 		data.setHeader(header);
 		
 		//TODO アルゴリズム「年間勤務表の作成」を実行する
@@ -46,56 +81,60 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		} else {
 			
 		}
-
 		//TODO 社員の情報を取得する
-		List<EmployeeData> employees = new ArrayList<>();
-		List<String> workplace1 = Arrays.asList("Workplace1");
-		List<String> workplace2 = Arrays.asList("Workplace2");
-		List<String> workplace3 = Arrays.asList("Workplace3");
-		List<AnnualWorkScheduleData> scheduleDatas = setOutItemsWoSc.getListItemOutTblBook()
-				.stream().map(m -> new AnnualWorkScheduleData(m.getHeadingName().v()))
-				.collect(Collectors.toList());
-		EmployeeData ed = new EmployeeData();
-		EmployeeData ed1 = new EmployeeData();
-		EmployeeData ed2 = new EmployeeData();
-		EmployeeData ed3 = new EmployeeData();
-		EmployeeData ed4 = new EmployeeData();
-		ed.setEmployeeInfo(workplace1);
-		ed.setAnnualWorkSchedule(scheduleDatas);
-		ed1.setEmployeeInfo(workplace1);
-		ed1.setAnnualWorkSchedule(scheduleDatas);
-		ed2.setEmployeeInfo(workplace1);
-		ed2.setAnnualWorkSchedule(scheduleDatas);
-		ed3.setEmployeeInfo(workplace1);
-		ed3.setAnnualWorkSchedule(scheduleDatas);
-		ed4.setEmployeeInfo(workplace1);
-		ed4.setAnnualWorkSchedule(scheduleDatas);
-		employees.addAll(Arrays.asList(ed, ed1, ed2, ed3, ed4));
-		EmployeeData ed5 = new EmployeeData();
-		EmployeeData ed6 = new EmployeeData();
-		EmployeeData ed7 = new EmployeeData();
-		EmployeeData ed8 = new EmployeeData();
-		ed5.setEmployeeInfo(workplace2);
-		ed5.setAnnualWorkSchedule(scheduleDatas);
-		ed6.setEmployeeInfo(workplace2);
-		ed6.setAnnualWorkSchedule(scheduleDatas);
-		ed7.setEmployeeInfo(workplace2);
-		ed7.setAnnualWorkSchedule(scheduleDatas);
-		ed8.setEmployeeInfo(workplace2);
-		ed8.setAnnualWorkSchedule(scheduleDatas);
-		employees.addAll(Arrays.asList(ed5, ed6, ed7, ed8));
-		EmployeeData ed9 = new EmployeeData();
-		EmployeeData ed10 = new EmployeeData();
-		EmployeeData ed11 = new EmployeeData();
-		ed9.setEmployeeInfo(workplace3);
-		ed9.setAnnualWorkSchedule(scheduleDatas);
-		ed10.setEmployeeInfo(workplace3);
-		ed10.setAnnualWorkSchedule(scheduleDatas);
-		ed11.setEmployeeInfo(workplace3);
-		ed11.setAnnualWorkSchedule(scheduleDatas);
-		employees.addAll(Arrays.asList(ed9, ed10, ed11));
+		List<EmployeeData> employeesData = employees.stream()
+			.sorted((m1, m2) -> m1.getWorkplaceName().compareTo(m2.getWorkplaceName()))
+			.map(m -> {
+			EmployeeData emp = new EmployeeData();
+			emp.setEmployeeInfo(Arrays.asList(TextResource.localize("KWR008_50") + " " + m.getWorkplaceName()));
+			//TODO
+			if (sizeItemOut == 1) {
+				emp.getEmployeeInfo().add(m.getEmployeeCode() + " " + m.getName());
+			} else if (sizeItemOut == 2) {
+				emp.getEmployeeInfo().add(m.getEmployeeCode() + " " + m.getName());
+			} else {
+				emp.getEmployeeInfo().add(m.getEmployeeCode() + " " + m.getName());
+			}
+			emp.setAnnualWorkSchedule(new ArrayList<>());
+			data.getExportItems().forEach(item -> emp.getAnnualWorkSchedule().add(new AnnualWorkScheduleData(item.getHeadingName())));
+			return emp;
+		}).collect(Collectors.toList());
+		
 
-		data.setEmployees(employees);
+		data.setEmployees(employeesData);
 		return data;
+	}
+
+	/**
+	 * Create C2_3, C2_5
+	 * @param startYm
+	 * @param endYm
+	 * @param outputAgreementTime
+	 * @return
+	 */
+	private List<String> createGroupMonths(YearMonth startYm, YearMonth endYm, OutputAgreementTime outputAgreementTime) {
+		List<String> groupMonths = null;
+		int standardMonth = 4; //TODO
+		YearMonth stardardYm = YearMonth.of(startYm.getYear(), standardMonth);
+		if (stardardYm.isAfter(startYm)) stardardYm = stardardYm.minusYears(1);
+
+		int distances = 0;
+		if (OutputAgreementTime.TWO_MONTH.equals(outputAgreementTime)) distances = 2;
+		else if (OutputAgreementTime.THREE_MONTH.equals(outputAgreementTime)) distances = 3;
+
+		if (distances != 0) {
+			groupMonths = new ArrayList<>();
+			stardardYm = stardardYm.plusMonths(stardardYm.until(startYm, ChronoUnit.MONTHS)/distances * distances);
+			int groupStartM, groupEndM;
+			do {
+				groupStartM = (stardardYm.isBefore(startYm)? startYm : stardardYm).getMonthValue();
+				stardardYm = stardardYm.plusMonths(distances - 1);
+				groupEndM = (stardardYm.isAfter(endYm)? endYm : stardardYm).getMonthValue();
+				if (groupStartM == groupEndM) groupMonths.add(String.valueOf(groupStartM));
+				else groupMonths.add(groupStartM + "～" + groupEndM);
+				stardardYm = stardardYm.plusMonths(1);
+			} while (!stardardYm.isAfter(endYm));
+		}
+		return groupMonths;
 	}
 }

@@ -25,9 +25,6 @@ public class AddSetOutItemsWoScCommandHandler extends CommandHandler<SetOutItems
 	@Inject
 	private SetOutItemsWoScRepository repository;
 
-	// @Inject
-	// private ItemOutTblBookRepository itemOutputRepo;
-
 	@Inject
 	private AnnualWorkScheduleService domainService;
 

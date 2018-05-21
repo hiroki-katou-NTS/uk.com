@@ -16,5 +16,5 @@ public class AnnualWorkScheduleExportQuery {
 	/** A4_2 定型選択 */
 	private String setItemsOutputCd;
 	/** A6_2 改頁選択 */
-	private String breakPage;
+	private int breakPage;
 }

@@ -17,7 +17,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         valOutFormat: KnockoutObservableArray<any> = ko.observableArray([]);
 
         //B2_2
-        listStandardImportSetting: KnockoutObservableArray<model.OutputSettingCodeDto> = ko.observableArray([]);
+        listStandardImportSetting: KnockoutObservableArray<SetOutputSettingCode> = ko.observableArray([]);
         selectedCode: KnockoutObservable<any> = ko.observable('');
         currentSetOutputSettingCode :KnockoutObservable<SetOutputSettingCode> 
                 = ko.observable(new SetOutputSettingCode(null));
@@ -404,18 +404,17 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 block.clear();
                 return;
             }
-            
-            for (var i = 0; i < itemOutUseClass.length; i++) {
+
+            for (var i = 0; i < itemOutByName.length; i++) {
                 // item Rule 36 - do not checking
-                if (itemOutUseClass[i].item36AgreementTime()) {
+                if (itemOutByName[i].item36AgreementTime()) {
                     continue;
                 }
-                
-                if (itemOutUseClass[i].listOperationSetting().length == 0) {
+                if (itemOutByName[i].listOperationSetting().length == 0) {
                     alertError({ messageId: "Msg_881" });
                     block.clear();
                     return;
-                } else if (itemOutUseClass[i].listOperationSetting().length > 50) {
+                } else if (itemOutByName[i].listOperationSetting().length > 50) {
                     alertError({ messageId: "Msg_882" });
                     block.clear();
                     return;
