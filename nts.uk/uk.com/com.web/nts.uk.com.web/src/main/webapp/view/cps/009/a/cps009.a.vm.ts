@@ -151,14 +151,22 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         });
 
                     });
-
+              _.defer(() => {
                     self.currentCategory().itemList.removeAll();
                     self.currentCategory().itemList(itemConvert);
                     self.lstItemFilter = itemConvert;
+                  _.defer(() => {
+                        $('#ctgName').focus();
+                     });
+                });
                 } else {
-                    self.currentCategory().itemList.removeAll();
-                    self.currentCategory().itemList([]);
-
+                    _.defer(() => {
+                      self.currentCategory().itemList.removeAll();
+                        self.currentCategory().itemList([]);
+                      _.defer(() => {
+                            $('#ctgName').focus();
+                         });
+                    });
                 }
             })
         }
