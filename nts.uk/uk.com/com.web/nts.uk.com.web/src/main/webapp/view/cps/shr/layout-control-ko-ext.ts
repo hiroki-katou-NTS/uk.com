@@ -748,7 +748,7 @@ module nts.custombinding {
                                                             <!-- /ko -->
                                                         </tr>
                                                     </thead>
-                                                    <tbody data-bind="foreach: { data: renders(), as: 'row' }">
+                                                    <tbody data-bind="foreach: { data: renders(), as: 'row', afterRender: function(element, data) { let _renders = _.map(ko.toJS(renders), function(m) { return m.recordId; }); if(_.indexOf(_renders, data.recordId) == _renders.length - 1) { setTimeout(function() { $(element[1]).find('input').unbind('blur'); }, 100) } } }">
                                                         <tr data-bind="attr: { 'data-id': row.recordId }">
                                                             <td>
                                                                 <span data-bind="ntsCheckBox: { checked: row.checked, enable: row.enable }"></span>
