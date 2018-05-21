@@ -8,9 +8,10 @@ module nts.uk.com.view.kwr002.c {
             getAttendanceSingleList: "com/function/attendancerecord/export/getAttendanceListSingle"           
         };
 
-        export function findAllAttendanceRecExportDaily(exportCode: number): JQueryPromise<Array<viewmodel.model.AttendanceRecExp>> {
-            return nts.uk.request.ajax("at", path.findAllAttendanceRecExportDaily, exportCode);
-        }
+//        export function findAllAttendanceRecExportDaily(exportCode: number): JQueryPromise<Array<viewmodel.model.AttendanceRecExp>> {
+//            return nts.uk.request.ajax("at", path.findAllAttendanceRecExportDaily, exportCode);
+//        }
+        
 
         export function getAttendanceSingleList(): JQueryPromise<any> {
             return nts.uk.request.ajax("at", path.getAttendanceSingleList);

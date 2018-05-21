@@ -1,1 +1,15 @@
-@CHARSET "UTF-8";
+.form-group {
+	margin-bottom: 5px;
+}
+
+#contents-area .drag-panel {
+	display:inline-block;
+	vertical-align: top;
+	border: 2px solid #ccc;
+	border-radius: 10px;
+	width: 600px;
+	height: 700px;
+	padding: 30px;
+	box-sizing: border-box;
+}
+

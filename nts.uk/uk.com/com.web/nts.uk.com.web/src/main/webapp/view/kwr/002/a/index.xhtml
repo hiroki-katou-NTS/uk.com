@@ -4,11 +4,9 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-
-
 <body>
-	<ui:composition template="../../../../master/dialog.xhtml">
-		<ui:define name="htmlHead">		
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
 			<com:ValidatorScript>
 				nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName
 			</com:ValidatorScript>
@@ -20,110 +18,60 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<div class="form-label">
-					<!-- <span style="margin-right: 15px"
-						data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KWR002_60')}</span>
-					<span class="label" style="margin-right: 5px"
-						data-bind="attendanceRecCode">01</span> <span class="label"
-						data-bind="attendanceRecName">Default Name 1</span> -->
-						
-						
-						Hello
-				</div>
+				<!-- A1_1 -->
+				<button id="print" tabindex="1" class="proceed group-button-1"
+					data-bind="click: print">#{i18n.getText('KWR002_9')}</button>
+				<!-- A1_2 -->
+				<button id="exportExcel" tabindex="2" class="group-button-1"
+					data-bind="click: exportExcel">#{i18n.getText('KWR002_10')}</button>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
-				<!-- <div>
-					<table>
-						<colgroup>
-							<col width="70px" />
-							<col width="*" />
-						</colgroup>
-
-						<tr class="row">
-							<td>
-								<div class="form-label useSeal"
-									data-bind="ntsFormLabel: { required: false, constraint:['SealColumnName'] }">#{i18n.getText('KWR002_61')}</div>
-							</td>
-							<td>
-								<div class="sealGroup">
-
-									<input class="nts-input seal"
-										data-bind="ntsTextEditor: {
-										  name: '#[KWR002_65]',
-                                          value: sealName1,
-                                          constraint: 'SealColumnName',
-                                          enable: useSealValue,
-                                          required: true}" />															
-								</div>
-
-
-							</td>
-						</tr>
-						<tr>
-							<td colspan="2">
-								<div>
-									<span class="label notice">#{i18n.getText('KWR002_71')}</span>
-								</div>
-							</td>
-						</tr>
-					</table>
-					<div id="left-content" style="float: left"
-						class="bg-green caret-right caret-background fixed-flex-layout-left">
-						<div
-							data-bind="ntsPanel:{width: '340px', direction: 'right', showIcon: true, visible: true}">
-
-							<div style="width: 300px"
-								data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'attendanceCode', comId: 'single-list', 
-											items: attendanceItemList, selected: currentCode, selectedKey: 'attendanceItemName', fields: ['attendanceItemName', 'attendanceItemName'], mode: 'igGrid'}" />
-							<table id="single-list"
-								data-bind="ntsGridList: {
-											height: 320,
-											options: attendanceItemList,
-											optionsValue:'attendanceItemName',
-											columns: columns,
-											multiple: false,
-											value: currentCode
-										}"></table>
+				<div>
+					<div class="drag-panel">
+						<div style="margin-bottom: 10px">
+							<label>#{i18n.getText('KWR002_11')}</label>
 						</div>
 
+						<table id="multi-list"
+							data-bind="ntsGridList: {								
+							height: 610, 
+							options: items,
+							optionsValue: 'code',
+							columns: columns,
+							multiple: true,
+							value: currentCodeList}">
+						</table>
+
 					</div>
-
-					<div id="right-content" class="fixed-flex-layout-right">
-						<div id="tab-panel"
-							data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-							<div class="tab-content-1">
-								<div class="column">
-									<span>#{i18n.getText('KWR002_91')}</span>
-									<div class="panel panel-frame cell">
-										<div class="panel panel-gray-bg sub top">Default
-											1</div>
-										<div class="panel panel-gray-bg sub bot">Default
-											2</div>
-									</div>
-								</div>								
-								<br />
-							</div>
-							<div class="tab-content-2">
-								<div class="column">
-									<span>#{i18n.getText('KWR002_101')}</span>
-									<div class="panel panel-frame cell">
-										<div class="panel panel-gray-bg sub ">Default 1</div>
-										<div class="panel panel-gray-bg sub ">Default 2</div>
-									</div>
-								</div>
-
-								<div class="column">
-									<span>#{i18n.getText('KWR002_102')}</span>
-									<div class="panel panel-frame cell">
-										<div class="panel panel-gray-bg sub ">Default 1</div>
-										<div class="panel panel-gray-bg sub ">Default 2</div>
-									</div>
-								</div>
-							</div>
+					<div class="drag-panel">
+						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KWR002_17')}</div>
+						<div style="padding: 40px; margin-bottom: 40px"
+							id="daterangepicker" tabindex="1"
+							data-bind="ntsDateRangePicker: { required: true, enable: enable, showNextPrevious: true, value: dateValue, maxRange: 'oneMonth'}" />
+						<div style="margin-bottom: 10px">
+							<label>#{i18n.getText('KWR002_26')}</label>
 						</div>
-					</div>
-				</div> -->
+						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KWR002_18')}</div>
 
+						<div id="combo-box"
+							data-bind="ntsComboBox: {
+								options: itemList,
+								optionsValue: 'code',
+								visibleItemsCount: 20,
+								value: selectedCode,
+								optionsText: 'name',
+								editable:  false,
+								enable: true,
+								required: true,
+								columns: [
+									{ prop: 'code', length: 4 },
+									{ prop: 'name', length: 10 }]}">
+						</div>
+						<button id="configuration" tabindex="1" class="group-button-1"
+							data-bind="click: configuration">#{i18n.getText('KWR002_20')}</button>
+
+					</div>
+				</div>
 			</div>
 			<hr></hr>
 			<div id="foot-area" class="fixed-flex-layout">
