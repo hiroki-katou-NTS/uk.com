@@ -51,7 +51,7 @@ public interface LoginParamCheck {
 	 * パラメータチェック（日別実績の確認）
 	 * @param date
 	 */
-	public String checkParamConfirmDaily(String employeeCD, String date);
+	public void checkParamConfirmDaily(String date);
 	
 	/**
 	 * パラメータチェック（残業申請確認）
