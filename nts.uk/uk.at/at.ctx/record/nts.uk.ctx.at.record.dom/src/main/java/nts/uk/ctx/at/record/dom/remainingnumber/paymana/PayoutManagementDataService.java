@@ -13,10 +13,13 @@ public class PayoutManagementDataService {
 	
 	@Inject
 	private PayoutManagementDataRepository payoutManagementDataRepository;
-	
+	@Inject
+	private SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepository;
+	@Inject
+	private PayoutSubofHDManaRepository payoutSubofHDManaRepository;
 	
 	public boolean checkInfoPayMana(PayoutManagementData domain){
-		Optional<PayoutManagementData> payout = payoutManagementDataRepository.findByID(domain.getPayoutId());
+		Optional<PayoutManagementData> payout = payoutManagementDataRepository.find(domain.getCID(), domain.getSID(), domain.getPayoutDate());
 		if (payout.isPresent()){
 			return true;
 		}
@@ -25,7 +28,28 @@ public class PayoutManagementDataService {
 	public GeneralDate getClosingDate(){
 		return null;
 	}
-
+	
+	public void addPayoutManagement( boolean pickUp, boolean pause,
+			PayoutManagementData command, SubstitutionOfHDManagementData subMana, PayoutSubofHDManagement paySub){
+		if (pickUp) {
+			this.checkProcess();
+			payoutManagementDataRepository.create(command);
+		}
+		if (this.checkInfoPayMana(command)) {
+			throw new BusinessException("Msg_737");
+		}
+		if (pause) {
+			if (this.checkInfoPayMana(command)) {
+				throw new BusinessException("Msg_737");
+			} else {
+				substitutionOfHDManaDataRepository.create(subMana);
+			}
+		}
+		if (pickUp && pause) {
+			payoutSubofHDManaRepository.add(paySub);
+		}
+		
+	}
 	/**
 	 * KDM001 screen G
 	 */

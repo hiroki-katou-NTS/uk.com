@@ -13,6 +13,7 @@
 			<com:scriptfile path="kdm001.d.vm.js" />
 			<com:scriptfile path="kdm001.d.start.js" />
 			<com:stylefile path="kdm001.d.style.css" />
+			<com:scriptfile path="kdm001.d.service.js" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area">
@@ -182,7 +183,7 @@
 				<div id="process" data-bind="visible: true"
 					style="text-align: center;">
 					<!-- D31_1 登録 -->
-					<button id="stopExecute" class="proceed">#{i18n.getText('KDM001_89')}</button>
+					<button id="stopExecute" data-bind="click: submitForm" class="proceed">#{i18n.getText('KDM001_89')}</button>
 					<!-- D31_1 キャンセル -->
 					<button id="closeDialog" data-bind="click: closeDialog">#{i18n.getText('KDM001_90')}</button>
 				</div>

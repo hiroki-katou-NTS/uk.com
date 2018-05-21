@@ -30,7 +30,7 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 	private String GET_BYSID_BY_DATECONDITION = String.join(" ", GET_BYSID,
 			" AND dayOff >= :stateDate AND dayOff <= : endDate");
 
-	private String GET_BYSID_BY_HOLIDAYDATECONDITION = "SELECT c FROM KrcmtComDayoffMaData c WHERE c.sID = :employeeId AND c.cID = :cid AND c.dayOff = : dateSubHoliday";
+	private String GET_BYSID_BY_HOLIDAYDATECONDITION = "SELECT c FROM KrcmtComDayoffMaData c WHERE c.sID = :employeeId AND c.cID = :cid AND c.dayOff = :dateSubHoliday";
 
 
 	@Override
