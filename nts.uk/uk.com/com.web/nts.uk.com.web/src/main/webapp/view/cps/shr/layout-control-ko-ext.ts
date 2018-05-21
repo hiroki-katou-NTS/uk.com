@@ -508,6 +508,9 @@ module nts.custombinding {
                     .layout-control .item-classification .form-label {
                         width: 210px;
                         white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        padding-right: 0;
                     }
 
                     .layout-control .item-classification .set-group>.form-label {
