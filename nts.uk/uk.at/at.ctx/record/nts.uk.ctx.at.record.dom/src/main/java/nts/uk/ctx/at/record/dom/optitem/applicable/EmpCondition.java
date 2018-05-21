@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem.applicable;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -86,5 +88,23 @@ public class EmpCondition extends AggregateRoot {
 			return false;
 		return true;
 	}
+	
+	
+	/**
+	 * 適用する雇用条件
+	 * @return
+	 */
+	public boolean checkEmpCondition() {
+		//Imported「所属雇用履歴」を取得
+		String code = "";
+		
+		List<String> codeList = new ArrayList<>();
+		codeList = this.empConditions.stream().filter(ec -> ec.getEmpApplicableAtr()==EmpApplicableAtr.APPLY).map(ec->ec.getEmpCd()).collect(Collectors.toList());
+		if(codeList.contains(code)) {
+			return true;
+		}
+		return false;
+	}
+	
 
 }
