@@ -5,4 +5,12 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface EmployeeDailyPerErrorPub {
 	List<EmployeeDailyPerErrorPubExport> getByErrorCode(String employeeId, DatePeriod datePeriod, List<String> errorCodes);
+	
+	/**
+	 * RequestList No303
+	 * @param employeeId
+	 * @param datePeriod
+	 * @return
+	 */
+	List<EmployeeErrorPubExport> checkEmployeeErrorOnProcessingDate(String employeeId, DatePeriod datePeriod);
 }
