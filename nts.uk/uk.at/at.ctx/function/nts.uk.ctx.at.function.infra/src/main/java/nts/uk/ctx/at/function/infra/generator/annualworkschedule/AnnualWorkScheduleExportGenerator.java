@@ -16,7 +16,6 @@ import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.OutputAgreementTime;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.PageBreakIndicator;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.AnnualWorkScheduleData;
@@ -30,7 +29,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 @Stateless
 public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerator implements AnnualWorkScheduleGenerator {
 
-	private static final String TEMPLATE_FILE = "report/年間勤務表（1ヶ月）.xlsx";
+	private static final String TEMPLATE_FILE = "report/年間勤務表.xlsx";
 
 	private static final String REPORT_FILE_NAME = "年間勤務表.xlsx";
 
@@ -46,19 +45,24 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 			Workbook wb = reportContext.getWorkbook();
 			WorksheetCollection wsc = wb.getWorksheets();
 			Worksheet ws = wsc.get(0);
+			//set A_11
 			reportContext.setHeader(0, dataSource.getHeader().getTitle());
+			//set A1_2
+			reportContext.setHeader(1, "&16" /* font size*/
+										+ dataSource.getHeader().getReportName());
 
+			//delete superfluous column
 			int rowsPerPage = ROW_PER_PAGE_7_GROUP_MONTHS;
 			if (dataSource.getHeader().getGroupMonths() == null || dataSource.getHeader().getGroupMonths().size() < MAX_GROUP_MONTHS) {
 				ws.getCells().deleteColumn(wsc.getRangeByName("monthGroup7").getFirstColumn());
 				PageSetup pageSetup = ws.getPageSetup();
 				pageSetup.setZoom(100);
 				rowsPerPage = ROW_PER_PAGE;
-				wsc.getRangeByName("monthGroup6Range").setOutlineBorder(BorderType.RIGHT_BORDER, CellBorderType.DASH_DOT, Color.getBlack());
+				wsc.getRangeByName("monthGroup6Range").setOutlineBorder(BorderType.RIGHT_BORDER, CellBorderType.DOTTED, Color.getBlack());
 			}
+			//delete superfluous rows
 			Range empRange = wsc.getRangeByName("employeeRange");
 			int rowPerEmp = dataSource.getExportItems().size();
-			//delete superfluous rows
 			ws.getCells().deleteRows(empRange.getFirstRow() + empRange.getRowCount() //last row
 									- (MAX_EXPORT_ITEM - rowPerEmp),
 									MAX_EXPORT_ITEM - rowPerEmp);

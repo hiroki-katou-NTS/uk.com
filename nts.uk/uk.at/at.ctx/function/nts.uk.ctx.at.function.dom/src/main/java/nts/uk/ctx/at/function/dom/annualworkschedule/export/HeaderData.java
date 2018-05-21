@@ -12,6 +12,8 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.enums.OutputAgreementTime;
 public class HeaderData {
 	/** A1_1 タイトル */
 	private String title;
+	/** A1_2 */
+	private String reportName;
 	/** B1_1 期間（見出し） */
 	private String period;
 	/** B1_2 期間 (start) */

@@ -40,7 +40,13 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		//ドメインモデル「年間勤務表（36チェックリスト）の出力項目設定」を取得する
 		SetOutItemsWoSc setOutItemsWoSc = setOutItemsWoScRepository.getSetOutItemsWoScById(cid, setItemsOutputCd).get();
 		HeaderData header = new HeaderData();
+		header.setOutputAgreementTime(setOutItemsWoSc.getDisplayFormat());
 		header.setTitle(setOutItemsWoSc.getName().v());
+		//A1_2
+		header.setReportName("★年間勤務表（1ヶ月）");
+		if (OutputAgreementTime.TWO_MONTH.equals(setOutItemsWoSc.getDisplayFormat())) header.setReportName("★年間勤務表（2ヶ月）");
+		else if (OutputAgreementTime.THREE_MONTH.equals(setOutItemsWoSc.getDisplayFormat())) header.setReportName("★年間勤務表（3ヶ月）");;
+		//B1_1 + B1_2
 		header.setPeriod(TextResource.localize("KWR008_41") + " " + startYearMonth + "～" + endYearMonth);
 		//出力項目数による個人情報の出力制限について
 		int sizeItemOut = setOutItemsWoSc.getListItemOutTblBook().size();
@@ -54,7 +60,6 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 
 		YearMonth startYm = YearMonth.parse(startYearMonth, DateTimeFormatter.ofPattern("uuuu/MM"));
 		YearMonth endYm = YearMonth.parse(endYearMonth, DateTimeFormatter.ofPattern("uuuu/MM"));
-		header.setOutputAgreementTime(setOutItemsWoSc.getDisplayFormat());
 		//set C2_3, C2_5
 		header.setGroupMonths(this.createGroupMonths(startYm, endYm, setOutItemsWoSc.getDisplayFormat()));
 		// C1_2
