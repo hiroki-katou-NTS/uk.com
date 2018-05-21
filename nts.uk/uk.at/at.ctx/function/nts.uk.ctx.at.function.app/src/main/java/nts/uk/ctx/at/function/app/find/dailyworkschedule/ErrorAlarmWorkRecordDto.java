@@ -8,6 +8,7 @@ import lombok.Data;
 
 /**
  * Instantiates a new error alarm work record dto.
+ * @author HoangDD
  */
 @Data
 public class ErrorAlarmWorkRecordDto {

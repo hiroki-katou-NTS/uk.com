@@ -8,6 +8,7 @@ import lombok.Data;
 
 /**
  * The Class TimeitemTobeDisplayDto.
+ * @author HoangDD
  */
 @Data
 public class TimeitemTobeDisplayDto {

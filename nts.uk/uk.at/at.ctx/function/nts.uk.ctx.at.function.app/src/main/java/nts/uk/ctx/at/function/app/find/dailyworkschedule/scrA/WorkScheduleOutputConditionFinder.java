@@ -34,6 +34,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class WorkScheduleOutputConditionFinder.
+ * @author HoangDD
  */
 @Stateless
 public class WorkScheduleOutputConditionFinder {
@@ -172,9 +173,7 @@ public class WorkScheduleOutputConditionFinder {
 		return lstErrorAlarmWorkRecord.stream()
 								.filter(domain -> domain.getUseAtr())
 								.map(domain -> {
-									ErrorAlarmCodeDto alarmCodeDto = new ErrorAlarmCodeDto(domain.getCode().v(), 
-																							domain.getName().v());
-									return alarmCodeDto;
+									return new ErrorAlarmCodeDto(domain.getCode().v(), domain.getName().v());
 								})
 								.sorted(Comparator.comparing(ErrorAlarmCodeDto::getCode))
 								.collect(Collectors.toList());
@@ -184,9 +183,8 @@ public class WorkScheduleOutputConditionFinder {
 	private List<DataInforReturnDto> getOutputItemDailyWorkSchedule(List<OutputItemDailyWorkSchedule> lstOutputItemDailyWorkSchedule) {
 		return lstOutputItemDailyWorkSchedule.stream()
 						.map(domain -> {
-											DataInforReturnDto dto = new DataInforReturnDto(String.valueOf(domain.getItemCode().v()), 
+											return new DataInforReturnDto(String.valueOf(domain.getItemCode().v()), 
 																							domain.getItemName().v());
-											return dto;
 										})
 						.collect(Collectors.toList());
 	}

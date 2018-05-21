@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 
 /**
  * The Class KfnmtPrintRemarkCont.
+ * @author HoangDD
  */
 @Entity
 @Table(name="KFNMT_PRINT_REMARK_CONT")

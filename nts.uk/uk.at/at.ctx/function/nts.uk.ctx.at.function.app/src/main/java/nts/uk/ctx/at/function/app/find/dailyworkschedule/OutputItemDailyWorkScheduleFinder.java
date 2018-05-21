@@ -50,6 +50,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class OutputItemDailyWorkScheduleFinder.
+ * @author HoangDD
  */
 @Stateless
 public class OutputItemDailyWorkScheduleFinder {
@@ -88,6 +89,12 @@ public class OutputItemDailyWorkScheduleFinder {
 	// Input of algorithm when use enum ScreenUseAtr: 勤怠項目を利用する画面
 	private static final int DAILY_WORK_SCHEDULE = 19;
 	
+	/** The Constant USE. */
+	private static final int USE = 1;
+	
+	/** The Constant NOT_USE. */
+	private static final int NOT_USE = 0;
+	
 	/**
 	 * Find by cid.
 	 *
@@ -108,18 +115,16 @@ public class OutputItemDailyWorkScheduleFinder {
 		// Use condition filter to get 画面で利用できる勤怠項目一覧
 		List<AttendanceType> lstAttendanceTypeFilter = lstOptionalItem.stream()
 				.flatMap(domainOptionItem -> lstAttendanceType.stream()
-								.filter(domainAttendance -> {
-									if (domainOptionItem.getPerformanceAtr().value == PerformanceAtr.DAILY_PERFORMANCE.value
-											&& (
-													( domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.TIME.value && domainAttendance.getScreenUseAtr().value == ScreenUseAtr.WORK_TIME.value)
-													|| (domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.NUMBER.value && domainAttendance.getScreenUseAtr().value == ScreenUseAtr.ATTENDANCE_TIMES.value)
-													|| (domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.AMOUNT.value && domainAttendance.getScreenUseAtr().value == ScreenUseAtr.TOTAL_COMMUTING_AMOUNT.value)
-													|| (domainAttendance.getScreenUseAtr().value == ScreenUseAtr.DAILY_WORK_SCHEDULE.value)
-												)) {
-										return true;
-									} 
-									return false;
-								})
+								.filter(domainAttendance -> domainOptionItem.getPerformanceAtr().value == PerformanceAtr.DAILY_PERFORMANCE.value 
+																&& (
+																		( domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.TIME.value 
+																			&& domainAttendance.getScreenUseAtr().value == ScreenUseAtr.WORK_TIME.value)
+																		|| (domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.NUMBER.value 
+																			&& domainAttendance.getScreenUseAtr().value == ScreenUseAtr.ATTENDANCE_TIMES.value)
+																		|| (domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.AMOUNT.value 
+																			&& domainAttendance.getScreenUseAtr().value == ScreenUseAtr.TOTAL_COMMUTING_AMOUNT.value)
+																		|| (domainAttendance.getScreenUseAtr().value == ScreenUseAtr.DAILY_WORK_SCHEDULE.value)
+																))
 								.map(domainAttendance -> {
 									return domainAttendance;
 								}))
@@ -159,6 +164,7 @@ public class OutputItemDailyWorkScheduleFinder {
 										dto.setWorkTypeNameDisplay(domain.getWorkTypeNameDisplay().value);
 										return dto;
 									})
+									.sorted(Comparator.comparing(OutputItemDailyWorkScheduleDto::getItemCode))
 									.collect(Collectors.toList()));
 		}
 		
@@ -184,19 +190,15 @@ public class OutputItemDailyWorkScheduleFinder {
 //		lstFake.add(new DataInforReturnDto("2", "Test"));
 //		return lstFake;
 		
-		// In case of authority
-		if (optFormatPerformanceRepository.get().getSettingUnitType().value == SettingUnitType.AUTHORITY.value) {
+		switch (optFormatPerformanceRepository.get().getSettingUnitType()) {
+		case AUTHORITY: // In case of authority
 			// Get domain 会社の日別実績の修正のフォーマット
 			List<AuthorityDailyPerformanceFormat> lstAuthorityDailyPerformanceFormat = authorityDailyPerformanceFormatRepository.getListCode(companyId);
-			
 			return lstAuthorityDailyPerformanceFormat.stream()
 						.map(obj -> {
-							DataInforReturnDto dto = new DataInforReturnDto(obj.getDailyPerformanceFormatCode().v(), obj.getDailyPerformanceFormatName().v());
-							return dto;
+							return new DataInforReturnDto(obj.getDailyPerformanceFormatCode().v(), obj.getDailyPerformanceFormatName().v());
 						}).collect(Collectors.toList());
-		} 
-		// In case of work type
-		else if (optFormatPerformanceRepository.get().getSettingUnitType().value == SettingUnitType.BUSINESS_TYPE.value) {
+		case BUSINESS_TYPE: // In case of work type
 			// Get doamin 勤務種別日別実績の修正のフォーマット
 			// TODO: hoangdd - chua co repo cua companyId nen dung tam cai duoi cho khong bi loi do
 			List<BusinessTypeFormatDaily> lstBusinessTypeFormatDaily = businessTypeFormatDailyRepository.getBusinessTypeFormat(companyId, "dsf" );
@@ -211,12 +213,10 @@ public class OutputItemDailyWorkScheduleFinder {
 			return lstBusinessType.stream()
 				.filter(domain -> setBusinessTypeFormatDailyCode.contains(domain.getBusinessTypeCode().v()))
 				.map(domain -> {
-					DataInforReturnDto dto = new DataInforReturnDto(domain.getBusinessTypeCode().v(), domain.getBusinessTypeCode().v());
-					return dto;
+					return new DataInforReturnDto(domain.getBusinessTypeCode().v(), domain.getBusinessTypeCode().v());
 				})
 				.collect(Collectors.toList());
 		}
-		
 		return new ArrayList<>();
 	}
 	
@@ -242,16 +242,17 @@ public class OutputItemDailyWorkScheduleFinder {
 		// Get domain 実績修正画面で利用するフォーマット
 		Optional<FormatPerformance> optFormatPerformanceRepository = formatPerformanceRepository.getFormatPerformanceById(companyId);
 		
-		// In case of authority
-		if (optFormatPerformanceRepository.get().getSettingUnitType().value == SettingUnitType.AUTHORITY.value) {
+		switch (optFormatPerformanceRepository.get().getSettingUnitType()) {
+		case AUTHORITY: // In case of authority
 			// get domain 会社の日別実績の修正のフォーマット, Acquire the domain model "format of company's daily performance correction"
 			// TODO: hoangdd - trong giai thuat su dung companyId va code lam doi so nhung repo hien tai moi chi co companyId, request tac gia them repo
 			// 			tam thoi dung tam repo vs doi so companyId
 			AuthorityDailyPerformanceFormat authorityDailyPerformanceFormat = authorityDailyPerformanceFormatRepository.getListCode(companyId).get(0);
-			
-		} else if (optFormatPerformanceRepository.get().getSettingUnitType().value == SettingUnitType.BUSINESS_TYPE.value) { // In case of work type
+			break;
+		case BUSINESS_TYPE:
 			// get domain 勤務種別日別実績の修正のフォーマット 
 			List<BusinessTypeFormatDaily> lstBusinessTypeFormatDaily = businessTypeFormatDailyRepository.getBusinessTypeFormat(companyId, code);
+			break;
 		}
 		
 		// TODO: hoangdd - truong hop if-else o tren co the khong can dung vi tac gia cua domain da tao repo cho viec lay domain con
@@ -303,7 +304,9 @@ public class OutputItemDailyWorkScheduleFinder {
 													dto.setOrderNo(domain.getOrderNo());
 													dto.setAttendanceName(mapCodeManeAttendance.get(String.valueOf(domain.getAttendanceDisplay())));
 													return dto;
-												}).collect(Collectors.toList());
+												})
+												.sorted(Comparator.comparing(TimeitemTobeDisplayDto::getOrderNo))
+												.collect(Collectors.toList());
 		return lstDto;
 	}
 	
@@ -317,11 +320,11 @@ public class OutputItemDailyWorkScheduleFinder {
 		List<PrintRemarksContentDto> lstDto = lstDomainObject.stream()
 												.map(domain -> {
 													PrintRemarksContentDto dto = new PrintRemarksContentDto();
-													dto.setPrintitem(domain.getPrintitem().value);
+													dto.setPrintItem(domain.getPrintItem().value);
 													dto.setUsedClassification(domain.isUsedClassification() == true ? USE : NOT_USE);
 													return dto;
 												})
-												.sorted(Comparator.comparing(PrintRemarksContentDto::getPrintitem))
+												.sorted(Comparator.comparing(PrintRemarksContentDto::getPrintItem))
 												.collect(Collectors.toList());
 		return lstDto;
 	} 
@@ -336,10 +339,4 @@ public class OutputItemDailyWorkScheduleFinder {
 		return lst.stream().collect(
                 Collectors.toMap(DailyAttendanceItemDto::getCode, DailyAttendanceItemDto::getName));
 	}
-	
-	/** The Constant USE. */
-	private static final int USE = 1;
-	
-	/** The Constant NOT_USE. */
-	private static final int NOT_USE = 0;
 }

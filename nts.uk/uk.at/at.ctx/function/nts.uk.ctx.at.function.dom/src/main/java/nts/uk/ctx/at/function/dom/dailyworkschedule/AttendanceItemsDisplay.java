@@ -9,6 +9,7 @@ import nts.arc.layer.dom.DomainObject;
 
 /**
  * The Class AttendanceItemsDisplay.
+ * @author HoangDD
  */
 // 表示する勤怠項目
 @Getter

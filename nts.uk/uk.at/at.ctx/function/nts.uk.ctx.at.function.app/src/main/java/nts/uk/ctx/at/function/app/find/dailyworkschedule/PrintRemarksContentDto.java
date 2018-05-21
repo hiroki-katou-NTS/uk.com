@@ -8,6 +8,7 @@ import lombok.Data;
 
 /**
  * The Class PrintRemarksContentDto.
+ * @author HoangDD
  */
 @Data
 public class PrintRemarksContentDto {
@@ -15,6 +16,6 @@ public class PrintRemarksContentDto {
 	/** The used classification. */
 	private int usedClassification;
 	
-	/** The printitem. */
-	private int printitem;
+	/** The print item. */
+	private int printItem;
 }

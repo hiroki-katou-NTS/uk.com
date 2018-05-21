@@ -16,6 +16,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class OutputItemDailyWorkScheduleCommandSaveHandler.
+ * @author HoangDD
  */
 @Stateless
 public class OutputItemDailyWorkScheduleSaveHandler extends CommandHandler<OutputItemDailyWorkScheduleCommand>{
@@ -33,9 +34,6 @@ public class OutputItemDailyWorkScheduleSaveHandler extends CommandHandler<Outpu
 		String companyId = AppContexts.user().companyId();
 		OutputItemDailyWorkSchedule domain = new OutputItemDailyWorkSchedule(command);
 
-		// execute algorithm アルゴリズム「登録チェック処理」を実行する to check C7_8 exist element?
-		validate(domain);
-		
 		if (command.isNewMode()) {
 			if (repository.findByCidAndCode(companyId, domain.getItemCode().v()).isPresent()) {
 				throw new BusinessException("Msg_3");
@@ -43,17 +41,6 @@ public class OutputItemDailyWorkScheduleSaveHandler extends CommandHandler<Outpu
 			repository.add(domain);
 		} else {
 			repository.update(domain);
-		}
-	}
-	
-	/**
-	 * Validate.
-	 *
-	 * @param domain the domain
-	 */
-	private void validate(OutputItemDailyWorkSchedule domain) {
-		if (domain.getLstDisplayedAttendance().isEmpty() || domain.getLstDisplayedAttendance() == null) {
-			throw new BusinessException("Msg_880");
 		}
 	}
 }

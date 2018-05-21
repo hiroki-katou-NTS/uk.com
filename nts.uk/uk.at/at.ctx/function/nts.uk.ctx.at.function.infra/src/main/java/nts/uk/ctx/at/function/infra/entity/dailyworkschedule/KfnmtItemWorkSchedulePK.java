@@ -13,6 +13,7 @@ import lombok.Setter;
 
 /**
  * The Class KfnmtItemWorkSchedulePK.
+ * @author HoangDD
  */
 @Embeddable
 @Getter

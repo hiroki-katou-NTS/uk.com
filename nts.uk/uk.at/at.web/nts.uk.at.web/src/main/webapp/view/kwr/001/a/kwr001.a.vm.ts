@@ -4,6 +4,12 @@ module nts.uk.at.view.kwr001.a {
     import blockUI = nts.uk.ui.block;
     
     export module viewmodel {
+        
+        const DATE_FORMAT_YYYY_MM_DD = "YYYY/MM/DD";
+        const STRING_EMPTY = "";
+        const SHOW_CHARACTERISTIC = "SHOW_CHARACTERISTIC";
+        const OPEN_SCREEN_C = "Open_ScrC";
+        
         export class ScreenModel {
             dataOutputType: KnockoutObservableArray<any>;
             
@@ -47,9 +53,6 @@ module nts.uk.at.view.kwr001.a {
             employeeList: KnockoutObservableArray<UnitModel>;
             // end KCP005
             
-            requiredTemp: KnockoutObservable<boolean>;
-            enableTemp: KnockoutObservable<boolean>;
-            
             checkedA10_2: KnockoutObservable<boolean>;
             checkedA10_3: KnockoutObservable<boolean>;
             checkedA10_4: KnockoutObservable<boolean>;
@@ -78,8 +81,6 @@ module nts.uk.at.view.kwr001.a {
                 self.enableConfigErrCode = ko.observable(true);
                 self.enableByOutputFormat = ko.observable(true);
                 self.enableBtnConfigure = ko.observable(true);
-                self.requiredTemp = ko.observable(true);
-                self.enableTemp = ko.observable(true);;
                 
                 self.checkedA10_2 = ko.observable(false);
                 self.checkedA10_3 = ko.observable(false);
@@ -482,17 +483,23 @@ module nts.uk.at.view.kwr001.a {
             
             private validateMinimumOneChecked(): boolean {
                 let self = this;
-                if (!self.checkedA10_2() && !self.checkedA10_3() && !self.checkedA10_4() && !self.checkedA10_5()
-                        && !self.checkedA10_6() && self.checkedA10_7() && !self.checkedA10_10() && !self.checkedA10_11()
-                        && !self.checkedA10_12() && !self.checkedA10_13() && !self.checkedA10_14() && !self.checkedA10_15() 
-                        && !self.checkedA10_16() && !self.checkedA10_17() && !self.checkedA10_18()) {
-                    nts.uk.ui.dialog.error({ messageId: "Msg_1141" });
-                    return false;
+                
+                if (self.selectedDataOutputType() == 0) {
+                    if (!self.checkedA10_2() && !self.checkedA10_3() && !self.checkedA10_4() && !self.checkedA10_5()
+                        && !self.checkedA10_6() && !self.checkedA10_7()) {
+                        nts.uk.ui.dialog.error({ messageId: "Msg_1167" });
+                        return false;
+                    }    
+                } else {
+                    if (!self.checkedA10_2() && !self.checkedA10_4() && !self.checkedA10_6() && !self.checkedA10_7()) {
+                        nts.uk.ui.dialog.error({ messageId: "Msg_1167" });
+                        return false;
+                    }
                 }
                 
-                if (!self.checkedA10_2() && !self.checkedA10_3() && !self.checkedA10_4() && !self.checkedA10_5()
-                        && !self.checkedA10_6() && !self.checkedA10_7()) {
-                    nts.uk.ui.dialog.error({ messageId: "Msg_1141" });
+                if (self.checkedA10_7() && !self.checkedA10_10() && !self.checkedA10_11() && !self.checkedA10_12()
+                        && !self.checkedA10_13() && !self.checkedA10_14()) {
+                    nts.uk.ui.dialog.error({ messageId: "Msg_1184" });
                     return false;
                 }
                 return true;
@@ -548,11 +555,6 @@ module nts.uk.at.view.kwr001.a {
                 return moment(strDate, 'YYYY/MM/DD').toDate();
             }
         }
-        
-        const DATE_FORMAT_YYYY_MM_DD = "YYYY/MM/DD";
-        const STRING_EMPTY = "";
-        const SHOW_CHARACTERISTIC = "SHOW_CHARACTERISTIC";
-        const OPEN_SCREEN_C = "Open_ScrC";
         
         export class ListType {
             static EMPLOYMENT = 1;

@@ -12,6 +12,7 @@ import lombok.Setter;
 
 /**
  * The Class KfnmtAttendanceDisplayPK.
+ * @author HoangDD
  */
 @Embeddable
 @Getter

@@ -19,6 +19,7 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.PrintRemarksContent;
 
 /**
  * The Class OutputItemDailyWorkScheduleCommand.
+ * @author HoangDD
  */
 @Setter
 @NoArgsConstructor
@@ -80,7 +81,7 @@ public class OutputItemDailyWorkScheduleCommand implements OutputItemDailyWorkSc
 		return lstRemarkContent.stream()
 									.map(command -> {
 										PrintRemarksContent domainObject = new PrintRemarksContent(command.getUsedClassification(), 
-																									command.getPrintitem());
+																									command.getPrintItem());
 										return domainObject;
 									}).collect(Collectors.toList());
 	}

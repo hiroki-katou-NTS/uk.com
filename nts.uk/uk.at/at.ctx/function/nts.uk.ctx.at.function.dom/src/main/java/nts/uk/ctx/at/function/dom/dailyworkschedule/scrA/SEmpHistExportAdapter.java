@@ -10,6 +10,7 @@ import nts.arc.time.GeneralDate;
 
 /**
  * The Interface SEmpHistExportAdapter.
+ * @author HoangDD
  */
 public interface SEmpHistExportAdapter {
 	

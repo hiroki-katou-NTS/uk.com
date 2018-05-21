@@ -12,6 +12,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class OutputItemDailyWorkScheduleDeleteHandler.
+ * @author HoangDD
  */
 @Stateless
 public class OutputItemDailyWorkScheduleDeleteHandler {

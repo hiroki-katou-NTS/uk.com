@@ -13,6 +13,7 @@ import lombok.Setter;
 
 /**
  * The Class KfnmtPrintRemarkContPK.
+ * @author HoangDD
  */
 @Embeddable
 @Getter

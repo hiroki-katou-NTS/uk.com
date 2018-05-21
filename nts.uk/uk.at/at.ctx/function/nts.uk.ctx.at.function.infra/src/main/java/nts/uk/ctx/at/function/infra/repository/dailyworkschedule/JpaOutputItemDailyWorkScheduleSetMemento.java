@@ -23,6 +23,7 @@ import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtPrintRemarkCon
 
 /**
  * The Class JpaOutputItemDailyWorkScheduleSetMemento.
+ * @author HoangDD
  */
 public class JpaOutputItemDailyWorkScheduleSetMemento implements OutputItemDailyWorkScheduleSetMemento{
 
@@ -100,7 +101,7 @@ public class JpaOutputItemDailyWorkScheduleSetMemento implements OutputItemDaily
 																entity.setUseCls(new BigDecimal(obj.isUsedClassification() == true ? 1 : 0));
 																entity.getId().setCid(this.kfnmtItemWorkSchedule.getId().getCid());
 																entity.getId().setItemCode(this.kfnmtItemWorkSchedule.getId().getItemCode());
-																entity.getId().setPrintItem(obj.getPrintitem().value);
+																entity.getId().setPrintItem(obj.getPrintItem().value);
 																return entity;
 															}).collect(Collectors.toList());
 		kfnmtItemWorkSchedule.setLstKfnmtPrintRemarkCont(lstKfnmtAttendanceDisplay);		

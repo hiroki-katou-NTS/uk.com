@@ -8,6 +8,7 @@ import lombok.Data;
 
 /**
  * Instantiates a new data infor return.
+ * @author HoangDD
  */
 @Data
 public class DataInforReturnDto {

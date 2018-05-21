@@ -41,8 +41,11 @@ module nts.uk.at.view.kwr001.c {
             enableBtnDel: KnockoutObservable<boolean>;
             enableCodeC3_2: KnockoutObservable<boolean>;
             
+            tempBoolean: KnockoutObservable<boolean>;;
+            
             constructor() {
                 var self = this;
+                self.tempBoolean = ko.observable(true);
                 self.allMainDom = ko.observable();
                 self.outputItemPossibleLst = ko.observableArray([]);
                 
@@ -210,21 +213,22 @@ module nts.uk.at.view.kwr001.c {
                     command.lstDisplayedAttendance.push({sortBy: index, itemToDisplay: value.code});
                 });
                 command.lstRemarkContent = [];
-                command.lstRemarkContent.push({usedClassification: self.convertBoolToNum(self.checkedRemarksInput()), printitem: 0});
-                command.lstRemarkContent.push({usedClassification: self.convertBoolToNum(self.checkedMasterUnregistered()), printitem: 1});
-                command.lstRemarkContent.push({usedClassification: self.convertBoolToNum(self.checkedEngraving()), printitem: 2});
-                command.lstRemarkContent.push({usedClassification: self.convertBoolToNum(self.checkedImprintingOrderNotCorrect()), printitem: 3});
-                command.lstRemarkContent.push({usedClassification: self.convertBoolToNum(self.checkedLeavingEarly()), printitem: 4});
-                command.lstRemarkContent.push({usedClassification: self.convertBoolToNum(self.checkedDoubleEngraved()), printitem: 5});
-                command.lstRemarkContent.push({usedClassification: self.convertBoolToNum(self.checkedAcknowledgment()), printitem: 6});
-                command.lstRemarkContent.push({usedClassification: self.convertBoolToNum(self.checkedManualInput()), printitem: 7});
-                command.lstRemarkContent.push({usedClassification: self.convertBoolToNum(self.checkedNotCalculated()), printitem: 8});
-                command.lstRemarkContent.push({usedClassification: self.convertBoolToNum(self.checkedExceedByApplication()), printitem: 9});
+                command.lstRemarkContent.push({usedClassification: self.convertBoolToNum(self.checkedRemarksInput()), printItem: 0});
+                command.lstRemarkContent.push({usedClassification: self.convertBoolToNum(self.checkedMasterUnregistered()), printItem: 1});
+                command.lstRemarkContent.push({usedClassification: self.convertBoolToNum(self.checkedEngraving()), printItem: 2});
+                command.lstRemarkContent.push({usedClassification: self.convertBoolToNum(self.checkedImprintingOrderNotCorrect()), printItem: 3});
+                command.lstRemarkContent.push({usedClassification: self.convertBoolToNum(self.checkedLeavingEarly()), printItem: 4});
+                command.lstRemarkContent.push({usedClassification: self.convertBoolToNum(self.checkedDoubleEngraved()), printItem: 5});
+                command.lstRemarkContent.push({usedClassification: self.convertBoolToNum(self.checkedAcknowledgment()), printItem: 6});
+                command.lstRemarkContent.push({usedClassification: self.convertBoolToNum(self.checkedManualInput()), printItem: 7});
+                command.lstRemarkContent.push({usedClassification: self.convertBoolToNum(self.checkedNotCalculated()), printItem: 8});
+                command.lstRemarkContent.push({usedClassification: self.convertBoolToNum(self.checkedExceedByApplication()), printItem: 9});
                 command.workTypeNameDisplay = self.selectedRuleCode();
-                command.newMode = (_.isUndefined(self.currentCodeList()) || _.isNull(self.currentCodeList())) ? true : false;
-                service.save(command).done(function() { 
+                command.newMode = (_.isUndefined(self.currentCodeList()) || _.isNull(self.currentCodeList()) || _.isEmpty(self.currentCodeList())) ? true : false;
+                service.save(command).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     self.getDataService().done(function(){
+                        self.currentCodeList(self.C3_2_value());
                         dfd.resolve();
                     })
                     
@@ -246,17 +250,11 @@ module nts.uk.at.view.kwr001.c {
             }
             
             private convertBoolToNum(value: boolean): number {
-                if (value) {
-                    return 1;
-                }
-                return 0;
+                return value ? 1 : 0;
             }
             
             private convertNumToBool(value: number): boolean {
-                if (value == 1) {
-                    return true;
-                }
-                return false;
+                return value == 1 ? true : false;
             }
             
             // return to screen A

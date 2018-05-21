@@ -9,6 +9,7 @@ import lombok.Setter;
 
 /**
  * The Class PrintRemarksContentDto.
+ * @author HoangDD
  */
 @Data
 @Setter
@@ -17,6 +18,6 @@ public class PrintRemarksContentCommand {
 	/** The used classification. */
 	private int usedClassification;
 	
-	/** The printitem. */
-	private int printitem;
+	/** The print item. */
+	private int printItem;
 }

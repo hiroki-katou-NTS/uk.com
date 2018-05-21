@@ -6,6 +6,7 @@ package nts.uk.ctx.at.function.dom.dailyworkschedule;
 
 /**
  * The Enum RemarksContentChoice.
+ * @author HoangDD
  */
 // 備考内容選択肢
 public enum RemarksContentChoice {
