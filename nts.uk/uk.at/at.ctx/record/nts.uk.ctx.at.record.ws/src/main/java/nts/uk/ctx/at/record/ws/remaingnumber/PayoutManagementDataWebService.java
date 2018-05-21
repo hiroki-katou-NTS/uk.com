@@ -19,7 +19,7 @@ import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.UpdatePayoutMana
 import nts.uk.ctx.at.record.app.find.remainingnumber.paymana.PayoutManagementDataDto;
 import nts.uk.ctx.at.record.app.find.remainingnumber.paymana.PayoutManagementDataFinder;
 
-@Path("at/record/remainnumber/paymana")
+@Path("at/record/remainnumber")
 @Produces("application/json")
 public class PayoutManagementDataWebService extends WebService{
    

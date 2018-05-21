@@ -49,5 +49,37 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         public closeDialog() {
             nts.uk.ui.windows.close();
         }
+        
+        public submitForm() {
+            let self = this;
+            let data = {
+                pickUp: self.pickup(),
+                dayOff: moment.utc(self.dayOff(), 'YYYY/MM/DD').toISOString(),
+                selectedCodeHoliday: self.selectedCodeHoliday(),
+                expiredDate: moment.utc(self.expiredDate(), 'YYYY/MM/DD').toISOString(),
+                pause: self.pause,
+                subDayoffDate: self.subDayoffDate(),
+                selectedCodeSubHoliday: self.selectedCodeSubHoliday(),
+                checkedSplit: self.checkedSplit(),
+                dateOptionSubHoliday: self.dateOptionSubHoliday(),
+                selectedCodeOptionSubHoliday: self.selectedCodeOptionSubHoliday,
+                dayRemaining: self.dayRemaining()
+            };
+            
+            console.log(data);
+            service.save(data).done(() => {
+
+            }).fail(function(res: any) {
+
+            });
+        }
+    }
+    class ReportInfor {
+        holidayRemainingOutputCondition: any;
+        lstEmpIds: any[];
+        constructor(holidayRemainingOutputCondition: any, lstEmpIds: any[]) {
+            this.holidayRemainingOutputCondition = holidayRemainingOutputCondition;
+            this.lstEmpIds = lstEmpIds;
+        }
     }
 }
