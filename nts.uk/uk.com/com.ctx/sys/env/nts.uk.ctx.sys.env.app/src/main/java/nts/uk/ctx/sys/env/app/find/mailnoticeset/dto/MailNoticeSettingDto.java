@@ -17,14 +17,23 @@ import nts.uk.ctx.sys.env.app.find.mailnoticeset.employee.UseContactSettingDto;
 @Getter
 @Setter
 public class MailNoticeSettingDto {
-	
-//	employee: EmployeeDto;
-//	employeeInfoContact: EmployeeInfoContactDto;
-//	personContact: PersonContactDto;
-//	private passwordPolicy: PasswordPolicyDto;
-	
+
+	/** The employee. */
+	private EmployeeDto employee;
+
+	/** The employee info contact. */
+	private EmployeeInfoContactDto employeeInfoContact;
+
+	/** The person contact. */
+	private PersonContactDto personContact;
+
+	/** The password policy. */
+	private PasswordPolicyDto passwordPolicy;
+
+	/** The list user info use method. */
 	private List<UserInfoUseMethodDto> listUserInfoUseMethod;
 
+	/** The list use contact setting. */
 	private List<UseContactSettingDto> listUseContactSetting;
-	
+
 }
