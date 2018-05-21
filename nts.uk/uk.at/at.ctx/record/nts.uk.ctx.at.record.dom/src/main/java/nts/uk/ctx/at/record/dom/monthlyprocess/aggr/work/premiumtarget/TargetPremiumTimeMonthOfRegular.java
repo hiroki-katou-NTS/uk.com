@@ -40,7 +40,7 @@ public class TargetPremiumTimeMonthOfRegular {
 
 		// 法定内時間を取得する
 		val workTimeOfMonthly = aggregateTotalWorkingTime.getWorkTime();
-		val workTime = workTimeOfMonthly.getTimeSeriesTotalLegalTime(datePeriod);
+		val workTime = workTimeOfMonthly.getTimeSeriesTotalLegalActualTime(datePeriod);
 
 		// 通常勤務の月割増対象時間に就業時間を加算する
 		this.targetPremiumTimeMonth = this.targetPremiumTimeMonth.addMinutes(workTime.v());

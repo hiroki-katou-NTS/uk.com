@@ -97,10 +97,41 @@ public class DailyAggregationProcessService {
 		return listValueExtractAlarm;
 	}
 	
+	public List<ValueExtractAlarm> dailyAggregationProcess(String comId, String checkConditionCode, PeriodByAlarmCategory period, List<EmployeeSearchDto> employee,
+			DatePeriod datePeriod, List<String> employeeIds) {
+		
+		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>(); 		
+		
+		// ドメインモデル「カテゴリ別アラームチェック条件」を取得する
+		alCheckConByCategoryRepo.find(comId, AlarmCategory.DAILY.value, checkConditionCode).ifPresent(alCheckConByCategory -> {
+			// カテゴリアラームチェック条件．抽出条件を元に日次データをチェックする
+			DailyAlarmCondition dailyAlarmCondition = (DailyAlarmCondition) alCheckConByCategory.getExtractionCondition();
+
+			// tab2: 日別実績のエラーアラーム
+			listValueExtractAlarm.addAll(this.extractDailyRecord(dailyAlarmCondition, datePeriod, employee, comId, employeeIds));
+			
+			// tab3: チェック条件
+			listValueExtractAlarm.addAll(this.extractCheckCondition(dailyAlarmCondition, datePeriod, employee, comId, employeeIds));
+			
+			// tab4: 「システム固定のチェック項目」で実績をチェックする
+			List<ValueExtractAlarm> fixed = employee.stream().map(e -> this.extractFixedCondition(dailyAlarmCondition, period, e))
+					.flatMap(List::stream).collect(Collectors.toList());
+			listValueExtractAlarm.addAll(fixed);
+		});
+		
+		return listValueExtractAlarm;
+	}
+	
 	// tab2: 日別実績のエラーアラーム
 	private List<ValueExtractAlarm> extractDailyRecord(DailyAlarmCondition dailyAlarmCondition,
 			PeriodByAlarmCategory period, EmployeeSearchDto employee, String companyID) {
 		return dailyPerformanceService.aggregationProcess(dailyAlarmCondition, period, employee, companyID);
+	}
+	
+	// tab2: 日別実績のエラーアラーム
+	private List<ValueExtractAlarm> extractDailyRecord(DailyAlarmCondition dailyAlarmCondition,
+			DatePeriod period, List<EmployeeSearchDto> employee, String companyID, List<String> employeeIds) {
+		return dailyPerformanceService.aggregationProcess(dailyAlarmCondition, period, employeeIds, employee, companyID);
 	}
 	
 	// tab3: チェック条件
@@ -114,6 +145,24 @@ public class DailyAggregationProcessService {
 		for(ErrorRecordImport errorRecord : listErrorRecord) {
 			if(errorRecord.isError()) {
 				listValueExtractAlarm.add(this.checkConditionGenerateValue(employee, errorRecord.getDate(), mapWorkRecordExtraCon.get(errorRecord.getErAlId()), companyID));				
+			}			
+		}
+		
+		return listValueExtractAlarm;
+	}
+	
+	// tab3: チェック条件
+	private List<ValueExtractAlarm> extractCheckCondition(DailyAlarmCondition dailyAlarmCondition, DatePeriod period, 
+			List<EmployeeSearchDto> employee, String companyID, List<String> emIds) {
+		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>();
+		List<WorkRecordExtraConAdapterDto> listWorkRecordExtraCon=  workRecordExtraConAdapter.getAllWorkRecordExtraConByListID(dailyAlarmCondition.getExtractConditionWorkRecord());
+		Map<String, WorkRecordExtraConAdapterDto> mapWorkRecordExtraCon = listWorkRecordExtraCon.stream().collect(Collectors.toMap(WorkRecordExtraConAdapterDto::getErrorAlarmCheckID, x->x));
+		
+		List<ErrorRecordImport> listErrorRecord = erAlWorkRecordCheckAdapter.check(dailyAlarmCondition.getExtractConditionWorkRecord(), period, emIds);
+		for(ErrorRecordImport errorRecord : listErrorRecord) {
+			if(errorRecord.isError()) {
+				EmployeeSearchDto em = employee.stream().filter(e -> e.getId().equals(errorRecord.getEmployeeId())).findFirst().get();
+				listValueExtractAlarm.add(this.checkConditionGenerateValue(em, errorRecord.getDate(), mapWorkRecordExtraCon.get(errorRecord.getErAlId()), companyID));				
 			}			
 		}
 		
@@ -186,8 +235,8 @@ public class DailyAggregationProcessService {
 			if (!singleCompare(atdItemCon.getCompareOperator())) {
 				
 				if(betweenRange(atdItemCon.getCompareOperator())) {
-					alarmContent = TextResource.localize("KAL010_49", wktypeText, this.formatHourData( atdItemCon.getCompareStartValue().toString()), coupleOperator.getOperatorStart(), attendanceText,
-							coupleOperator.getOperatorEnd(), this.formatHourData(atdItemCon.getCompareEndValue().toString()));
+					alarmContent = TextResource.localize("KAL010_49", wktypeText, this.formatHourData( atdItemCon.getCompareStartValue().toString(), checkItem), coupleOperator.getOperatorStart(), attendanceText,
+							coupleOperator.getOperatorEnd(), this.formatHourData(atdItemCon.getCompareEndValue().toString(), checkItem));
 				}else {
 					alarmContent = TextResource.localize("KAL010_121", wktypeText, attendanceText, coupleOperator.getOperatorStart(), atdItemCon.getCompareStartValue().toString(),
 							atdItemCon.getCompareEndValue().toString(), coupleOperator.getOperatorEnd(), attendanceText);
@@ -195,9 +244,9 @@ public class DailyAggregationProcessService {
 				
 			} else {
 				if (atdItemCon.getConditionType() == ConditionType.FIXED_VALUE.value) {
-					alarmContent = TextResource.localize("KAL010_48", wktypeText, attendanceText, coupleOperator.getOperatorStart(),this.formatHourData( atdItemCon.getCompareStartValue().toString()));
+					alarmContent = TextResource.localize("KAL010_48", wktypeText, attendanceText, coupleOperator.getOperatorStart(),this.formatHourData( atdItemCon.getCompareStartValue().toString(), checkItem));
 				} else {
-					alarmContent = TextResource.localize("KAL010_48", wktypeText, attendanceText, coupleOperator.getOperatorStart(), this.formatHourData(atdItemCon.getSingleAtdItem() + ""));
+					alarmContent = TextResource.localize("KAL010_48", wktypeText, attendanceText, coupleOperator.getOperatorStart(), this.formatHourData(atdItemCon.getSingleAtdItem() + "", checkItem));
 				}
 			}
 			break;
@@ -207,8 +256,8 @@ public class DailyAggregationProcessService {
 			
 			if (!singleCompare(atdItemCon.getCompareOperator())) {
 				if(betweenRange(atdItemCon.getCompareOperator())) {
-					alarmContent = TextResource.localize("KAL010_55", wktypeText, this.formatHourData(atdItemCon.getCompareStartValue().toString()), coupleOperator.getOperatorStart(), attendanceText,
-							coupleOperator.getOperatorEnd(), this.formatHourData(atdItemCon.getCompareEndValue().toString()), workRecordExtraCon.getErrorAlarmCondition().getContinuousPeriod() + "");
+					alarmContent = TextResource.localize("KAL010_55", wktypeText, this.formatHourData(atdItemCon.getCompareStartValue().toString(), checkItem), coupleOperator.getOperatorStart(), attendanceText,
+							coupleOperator.getOperatorEnd(), this.formatHourData(atdItemCon.getCompareEndValue().toString(), checkItem), workRecordExtraCon.getErrorAlarmCondition().getContinuousPeriod() + "");
 				}else {
 					alarmContent = TextResource.localize("KAL010_122", wktypeText, attendanceText , coupleOperator.getOperatorStart(),  atdItemCon.getCompareStartValue().toString(), 
 							 atdItemCon.getCompareEndValue().toString(),
@@ -217,10 +266,10 @@ public class DailyAggregationProcessService {
 
 			} else {
 				if (atdItemCon.getConditionType() == ConditionType.FIXED_VALUE.value) {
-					alarmContent = TextResource.localize("KAL010_54", wktypeText, attendanceText, coupleOperator.getOperatorStart(), this.formatHourData(atdItemCon.getCompareStartValue().toString()),
+					alarmContent = TextResource.localize("KAL010_54", wktypeText, attendanceText, coupleOperator.getOperatorStart(), this.formatHourData(atdItemCon.getCompareStartValue().toString(), checkItem),
 							workRecordExtraCon.getErrorAlarmCondition().getContinuousPeriod() + "");
 				} else {
-					alarmContent = TextResource.localize("KAL010_54", wktypeText, attendanceText, coupleOperator.getOperatorStart(), this.formatHourData(atdItemCon.getSingleAtdItem() + ""),
+					alarmContent = TextResource.localize("KAL010_54", wktypeText, attendanceText, coupleOperator.getOperatorStart(), this.formatHourData(atdItemCon.getSingleAtdItem() + "", checkItem),
 							workRecordExtraCon.getErrorAlarmCondition().getContinuousPeriod() + "");
 				}
 			} 
@@ -257,17 +306,25 @@ public class DailyAggregationProcessService {
 		
 	}
 	
-	private String formatHourData(String  minutes) {
-		String h="", m="";
-		if(minutes !=null && !minutes.equals("")) {
-			Integer hour = Integer.parseInt(minutes);
-			h = hour.intValue()/60 +"";
-			m = hour.intValue()%60 +"";
+	private String formatHourData(String  minutes, TypeCheckWorkRecord checkItem) {
+		if(checkItem ==TypeCheckWorkRecord.TIME || checkItem ==TypeCheckWorkRecord.TIME_OF_DAY) {
+			String h="", m="";
+			if(minutes !=null && !minutes.equals("")) {
+				Integer hour = Integer.parseInt(minutes);
+				h = hour.intValue()/60 +"";
+				m = hour.intValue()%60 +"";
+				if(h.length()<2) h ="0" +h;
+				if(m.length()<2) m ="0" +m;
+				
+				return h+ ":"+ m;
+			}else {
+				return "";
+			}
 			
-			return h+ ":"+ m;
 		}else {
-			return "";
+			return minutes;
 		}
+
 	}
 	
 	private String generateAlarmGroup(ErAlConAttendanceItemAdapterDto group ) {

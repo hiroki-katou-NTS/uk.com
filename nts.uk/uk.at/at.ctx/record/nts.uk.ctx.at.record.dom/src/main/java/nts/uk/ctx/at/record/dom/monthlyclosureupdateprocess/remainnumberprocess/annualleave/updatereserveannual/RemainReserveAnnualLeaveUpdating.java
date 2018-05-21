@@ -64,7 +64,7 @@ public class RemainReserveAnnualLeaveUpdating {
 			for (ReserveLeaveGrantRemainingData data : listData) {
 				ReserveLeaveGrantRemainHistoryData hist = new ReserveLeaveGrantRemainHistoryData(data,
 						period.getYearMonth(), period.getClosureId(), period.getClosureDate());
-				reserveLeaveRemainHistRepo.add(hist, cid);
+				reserveLeaveRemainHistRepo.addOrUpdate(hist, cid);
 			}
 		}
 		updateProcess(output.getAsOfPeriodEnd());

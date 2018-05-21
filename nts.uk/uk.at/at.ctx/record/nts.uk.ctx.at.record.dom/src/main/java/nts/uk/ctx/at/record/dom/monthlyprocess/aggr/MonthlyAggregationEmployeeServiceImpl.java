@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
@@ -33,6 +35,7 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enu
  * @author shuichu_ishida
  */
 @Stateless
+@Transactional(value = TxType.REQUIRES_NEW)
 public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregationEmployeeService {
 
 	/** ドメインサービス：月別実績を集計する */
@@ -138,6 +141,18 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			
 			// 前回集計結果の退避
 			prevAggrResult = value.getAggrResultOfAnnAndRsvLeave();
+			
+			// 計算結果と同月データの削除
+			val oldDatas = this.attendanceTimeRepository.findByYearMonthOrderByStartYmd(employeeId, yearMonth);
+			for (val oldData : oldDatas){
+				boolean isTarget = false;
+				if (oldData.getClosureId().value != closureId.value) isTarget = true;
+				if (!oldData.getClosureDate().getClosureDay().equals(closureDate.getClosureDay())) isTarget = true;
+				if (oldData.getClosureDate().getLastDayOfMonth() != closureDate.getLastDayOfMonth()) isTarget = true;
+				if (!isTarget) continue;
+				this.attendanceTimeRepository.remove(
+						employeeId, yearMonth, oldData.getClosureId(), oldData.getClosureDate());
+			}
 			
 			// 登録する
 			for (val attendanceTime : value.getAttendanceTimeList()){

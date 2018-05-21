@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
@@ -9,6 +7,7 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
+import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 
 /**
  * 月別実績の終業時刻
@@ -77,7 +76,7 @@ public class EndClockOfMonthly {
 			
 			// 時間帯　確認
 			val workNo = timeLeavingWork.getWorkNo();
-			val timezoneUseOpt = predTimeSetForCalc.getTimeSheets(workNo.v());
+			val timezoneUseOpt = predTimeSetForCalc.getTimeSheets(AttendanceHolidayAttr.FULL_TIME, workNo.v());
 			if (!timezoneUseOpt.isPresent()) continue;
 			val timezoneUse = timezoneUseOpt.get();
 			if (timezoneUse.getUseAtr() == UseSetting.NOT_USE) continue;

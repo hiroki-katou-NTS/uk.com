@@ -26,12 +26,14 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaMonthlyCorrectConditionRepository extends JpaRepository implements MonthlyCorrectConditionRepository {
 
 	private final String SELLECT_MONTHLY_CONDITION_BY_COMPANY = "SELECT m FROM KrcmtMonthlyCorrectCon m WHERE m.krcmtMonthlyCorrectConPK.companyId = :companyId";
+	private final String SELECT_CHECKID = "SELECT c FROM KrcmtTimeChkMonthly c WHERE c.eralCheckId = :eralCheckId ";
 
 	@Override
 	public Optional<MonthlyCorrectExtractCondition> findMonthlyConditionByCode(String errCode) {
 		String companyId = AppContexts.user().companyId();
-		Optional<KrcmtMonthlyCorrectCon> entity = this.queryProxy().find(new KrcmtMonthlyCorrectConPK(companyId, errCode), KrcmtMonthlyCorrectCon.class);
-		if(entity.isPresent()){
+		Optional<KrcmtMonthlyCorrectCon> entity = this.queryProxy()
+				.find(new KrcmtMonthlyCorrectConPK(companyId, errCode), KrcmtMonthlyCorrectCon.class);
+		if (entity.isPresent()) {
 			return Optional.of(KrcmtMonthlyCorrectCon.toDomain(entity.get()));
 		} else {
 			return Optional.ofNullable(null);
@@ -48,12 +50,17 @@ public class JpaMonthlyCorrectConditionRepository extends JpaRepository implemen
 
 	@Override
 	public Optional<TimeItemCheckMonthly> findTimeItemCheckMonthlyById(String checkId, String errorAlarmCode) {
-		return Optional.ofNullable(KrcmtTimeChkMonthly.toDomain(this.queryProxy().find(checkId, KrcmtTimeChkMonthly.class).get(), AppContexts.user().companyId(), errorAlarmCode));
+		return Optional.ofNullable(
+				KrcmtTimeChkMonthly.toDomain(this.queryProxy().find(checkId, KrcmtTimeChkMonthly.class).get(),
+						AppContexts.user().companyId(), errorAlarmCode));
 	}
 
 	@Override
 	public MonthlyCorrectExtractCondition updateMonthlyCorrectExtractCondition(MonthlyCorrectExtractCondition domain) {
-		KrcmtMonthlyCorrectCon targetEntity = this.queryProxy().find(new KrcmtMonthlyCorrectConPK(domain.getCompanyId(), domain.getCode().v()), KrcmtMonthlyCorrectCon.class).get();
+		KrcmtMonthlyCorrectCon targetEntity = this.queryProxy()
+				.find(new KrcmtMonthlyCorrectConPK(domain.getCompanyId(), domain.getCode().v()),
+						KrcmtMonthlyCorrectCon.class)
+				.get();
 		domain.setCheckId(targetEntity.eralCheckId);
 		KrcmtMonthlyCorrectCon newEntity = KrcmtMonthlyCorrectCon.fromDomain(domain);
 		targetEntity.errorAlarmName = newEntity.errorAlarmName;
@@ -64,24 +71,13 @@ public class JpaMonthlyCorrectConditionRepository extends JpaRepository implemen
 
 	@Override
 	public void updateTimeItemCheckMonthly(TimeItemCheckMonthly domain) {
-		KrcmtTimeChkMonthly targetEntity =  this.queryProxy().find(domain.getErrorAlarmCheckID(), KrcmtTimeChkMonthly.class).get();
-		domain.setCheckId(targetEntity.eralCheckId);
-		domain.setGroupId1(targetEntity.atdItemConditionGroup1);
-		domain.setGroupId2(targetEntity.atdItemConditionGroup2);
-		KrcmtTimeChkMonthly newEntity = KrcmtTimeChkMonthly.fromDomain(domain);
-		targetEntity.eralCheckId = newEntity.eralCheckId;
-		targetEntity.operatorBetweenGroups = newEntity.operatorBetweenGroups;
-		targetEntity.group2UseAtr = newEntity.group2UseAtr;
-		targetEntity.atdItemConditionGroup1 = newEntity.atdItemConditionGroup1;
-		targetEntity.atdItemConditionGroup2 = newEntity.atdItemConditionGroup2;
-		targetEntity.krcstErAlConGroup1 = newEntity.krcstErAlConGroup1;
-		targetEntity.krcstErAlConGroup2 = newEntity.krcstErAlConGroup2;
-		this.commandProxy().update(targetEntity);
+		this.commandProxy().insert(KrcmtTimeChkMonthly.fromDomain(domain));
 	}
 
 	@Override
 	public void deleteMonthlyCorrectExtractCondition(String errorCd) {
-		this.commandProxy().remove(KrcmtMonthlyCorrectCon.class, new KrcmtMonthlyCorrectConPK(AppContexts.user().companyId(), errorCd));
+		this.commandProxy().remove(KrcmtMonthlyCorrectCon.class,
+				new KrcmtMonthlyCorrectConPK(AppContexts.user().companyId(), errorCd));
 	}
 
 	@Override
@@ -93,6 +89,16 @@ public class JpaMonthlyCorrectConditionRepository extends JpaRepository implemen
 	@Override
 	public void createTimeItemCheckMonthly(TimeItemCheckMonthly domain) {
 		this.commandProxy().insert(KrcmtTimeChkMonthly.fromDomain(domain));
+	}
+
+	@Override
+	public void removeTimeItemCheckMonthly(String errorAlarmCheckID) {
+		KrcmtTimeChkMonthly targetEntity = this.queryProxy().query(SELECT_CHECKID, KrcmtTimeChkMonthly.class)
+				.setParameter("eralCheckId", errorAlarmCheckID).getSingleOrNull();
+		if (targetEntity != null) {
+			this.commandProxy().remove(KrcmtTimeChkMonthly.class, targetEntity.eralCheckId);
+			this.getEntityManager().flush();
+		}
 	}
 
 }

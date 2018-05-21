@@ -3,13 +3,17 @@ package nts.uk.ctx.at.record.infra.repository.monthly;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
@@ -29,6 +33,7 @@ import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.vacationusetime.KrcdtMonVactUseTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.excessoutside.KrcdtMonExcessOutside;
 import nts.uk.ctx.at.record.infra.entity.monthly.excessoutside.KrcdtMonExcoutTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.totalcount.KrcdtMonTotalTimes;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.KrcdtMonVerticalTotal;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workclock.KrcdtMonWorkClock;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonAggrAbsnDays;
@@ -63,6 +68,24 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 			+ "AND a.PK.closureId = :closureId "
 			+ "ORDER BY a.startYmd ";
 
+	private static final String FIND_BY_EMPLOYEES = "SELECT a FROM KrcdtMonAttendanceTime a "
+			+ "WHERE a.PK.employeeId IN :employeeIds "
+			+ "AND a.PK.yearMonth = :yearMonth "
+			+ "AND a.PK.closureId = :closureId "
+			+ "AND a.PK.closureDay = :closureDay "
+			+ "AND a.PK.isLastDay = :isLastDay "
+			+ "ORDER BY a.PK.employeeId ";
+
+	private static final String FIND_BY_SIDS_AND_YEARMONTHS = "SELECT a FROM KrcdtMonAttendanceTime a "
+			+ "WHERE a.PK.employeeId IN :employeeIds "
+			+ "AND a.PK.yearMonth IN :yearMonths "
+			+ "ORDER BY a.PK.employeeId, a.PK.yearMonth, a.startYmd ";
+	
+	private static final String FIND_BY_PERIOD = "SELECT a FROM KrcdtMonAttendanceTime a "
+			+ "WHERE a.PK.employeeId = :employeeId "
+			+ "AND a.startYmd <= :endDate "
+			+ "AND a.endYmd >= :startDate ";
+	
 	private static final String DELETE_BY_YEAR_MONTH = "DELETE FROM KrcdtMonAttendanceTime a "
 			+ "WHERE a.PK.employeeId = :employeeId "
 			+ "AND a.PK.yearMonth = :yearMonth ";
@@ -102,6 +125,51 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 				.setParameter("employeeId", employeeId)
 				.setParameter("yearMonth", yearMonth.v())
 				.setParameter("closureId", closureId.value)
+				.getList(c -> c.toDomain());
+	}
+	
+	/** 検索　（社員IDリスト） */
+	@Override
+	public List<AttendanceTimeOfMonthly> findByEmployees(List<String> employeeIds, YearMonth yearMonth,
+			ClosureId closureId, ClosureDate closureDate) {
+		
+		List<AttendanceTimeOfMonthly> results = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			results.addAll(this.queryProxy().query(FIND_BY_EMPLOYEES, KrcdtMonAttendanceTime.class)
+					.setParameter("employeeIds", splitData)
+					.setParameter("yearMonth", yearMonth.v())
+					.setParameter("closureId", closureId.value)
+					.setParameter("closureDay", closureDate.getClosureDay().v())
+					.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
+					.getList(c -> c.toDomain()));
+		});
+		return results;
+	}
+
+	/** 検索　（社員IDリストと年月リスト） */
+	@Override
+	public List<AttendanceTimeOfMonthly> findBySidsAndYearMonths(List<String> employeeIds, List<YearMonth> yearMonths) {
+		
+		val yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toList());
+		
+		List<AttendanceTimeOfMonthly> results = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_YEARMONTHS, KrcdtMonAttendanceTime.class)
+					.setParameter("employeeIds", splitData)
+					.setParameter("yearMonths", yearMonthValues)
+					.getList(c -> c.toDomain()));
+		});
+		return results;
+	}
+	
+	/** 検索　（基準日） */
+	@Override
+	public List<AttendanceTimeOfMonthly> findByDate(String employeeId, GeneralDate criteriaDate) {
+		
+		return this.queryProxy().query(FIND_BY_PERIOD, KrcdtMonAttendanceTime.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("startDate", criteriaDate)
+				.setParameter("endDate", criteriaDate)
 				.getList(c -> c.toDomain());
 	}
 	
@@ -434,6 +502,25 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 			entity.krcdtMonWorkClock.fromDomainForPersist(domainKey, workclock);
 		}
 		else entity.krcdtMonWorkClock.fromDomainForUpdate(workclock);
+		
+		// 回数集計
+		val totalCountMap = domain.getTotalCount().getTotalCountList();
+		if (entity.krcdtMonTotalTimes == null) entity.krcdtMonTotalTimes = new ArrayList<>();
+		val entityTotalTimesList = entity.krcdtMonTotalTimes;
+		entityTotalTimesList.removeIf(a -> {return !totalCountMap.containsKey(a.PK.totalTimesNo);} );
+		for (val totalCount : totalCountMap.values()){
+			KrcdtMonTotalTimes entityTotalTimes = new KrcdtMonTotalTimes();
+			val entityTotalTimesOpt = entityTotalTimesList.stream()
+					.filter(c -> c.PK.totalTimesNo == totalCount.getTotalCountNo()).findFirst();
+			if (entityTotalTimesOpt.isPresent()){
+				entityTotalTimes = entityTotalTimesOpt.get();
+				entityTotalTimes.fromDomainForUpdate(totalCount);
+			}
+			else {
+				entityTotalTimes.fromDomainForPersist(domainKey, totalCount);
+				entityTotalTimesList.add(entityTotalTimes);
+			}
+		}
 		
 		// 登録が必要な時、登録を実行
 		if (isNeedPersist) this.getEntityManager().persist(entity);

@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.ApplicationGobackScheInforDto;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ApplicationReflectProcessSche;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ReflectScheDto;
@@ -100,6 +101,12 @@ public class ApplicationReflectProcessScheImpl implements ApplicationReflectProc
 				relectSche.getRecruitment().getWorkTime1().getStartTime() != null ? relectSche.getRecruitment().getWorkTime1().getStartTime().v() : null, 
 				relectSche.getRecruitment().getWorkTime1().getEndTime() != null ? relectSche.getRecruitment().getWorkTime1().getEndTime().v() : null);
 		return appReflectSchePub.recruitmentReflectSche(recruitment);
+	}
+
+	@Override
+	public boolean isSche(String employeeId, GeneralDate baseDate) {
+		
+		return appReflectSchePub.isSche(employeeId, baseDate);
 	}
 	
 	

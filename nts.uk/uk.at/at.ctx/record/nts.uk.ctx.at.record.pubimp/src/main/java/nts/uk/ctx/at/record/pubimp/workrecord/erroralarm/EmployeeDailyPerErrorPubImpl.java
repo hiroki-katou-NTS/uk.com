@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.pubimp.workrecord.erroralarm;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -23,11 +24,11 @@ public class EmployeeDailyPerErrorPubImpl implements EmployeeDailyPerErrorPub {
 	@Override
 	public List<EmployeeDailyPerErrorPubExport> getByErrorCode(String employeeId, DatePeriod datePeriod,
 			List<String> errorCodes) {
-		String companyID = AppContexts.user().companyId();
+//		String companyID = AppContexts.user().companyId();
 		List<EmployeeDailyPerError> employeeDailyList = repo.findByPeriodOrderByYmd(employeeId, datePeriod);
 		
 		employeeDailyList = employeeDailyList.stream().filter(
-				e -> e.getCompanyID().equals(companyID) && errorCodes.contains(e.getErrorAlarmWorkRecordCode().v()))
+				e -> errorCodes.contains(e.getErrorAlarmWorkRecordCode().v()))
 				.collect(Collectors.toList());
 		
 		return employeeDailyList.stream().map(e ->new EmployeeDailyPerErrorPubExport(e.getCompanyID(), e.getEmployeeID(), e.getDate(),
@@ -60,6 +61,17 @@ public class EmployeeDailyPerErrorPubImpl implements EmployeeDailyPerErrorPub {
 		}
 
 		return daysBetween;
+	}
+	
+	public List<EmployeeDailyPerErrorPubExport> getByErrorCode(List<String> employeeId, DatePeriod datePeriod,
+			List<String> errorCodes) {
+		List<EmployeeDailyPerError> employeeDailyList = repo.finds(employeeId, datePeriod);
+		
+		employeeDailyList = employeeDailyList.stream().filter(e -> errorCodes.contains(e.getErrorAlarmWorkRecordCode().v()))
+				.collect(Collectors.toList());
+		
+		return employeeDailyList.stream().map(e -> new EmployeeDailyPerErrorPubExport(e.getCompanyID(), e.getEmployeeID(), e.getDate(),
+				e.getErrorAlarmWorkRecordCode().v(), e.getAttendanceItemList(), e.getErrorCancelAble())).collect(Collectors.toList());
 	}
 
 }

@@ -75,10 +75,10 @@ public class RegulationInfoEmployeeQuery {
 	private Boolean includeGoingOnLoan; // 出向に行っている社員を含める
 
 	/** The retire start. */
-	private String retireStart; // 退職日のチェック期間
+	private GeneralDate retireStart; // 退職日のチェック期間
 
 	/** The retire end. */
-	private String retireEnd; // 退職日のチェック期間
+	private GeneralDate retireEnd; // 退職日のチェック期間
 
 	/** The sort order no. */
 	private Integer sortOrderNo; // 並び順NO

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.daily.remark;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -34,13 +35,11 @@ public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements Rema
 								.append(" AND r.krcdtDayRemarksColumnPK.ymd >= :start")
 								.append(" AND r.krcdtDayRemarksColumnPK.ymd <= :end")
 								.toString();
-		
+		TypedQueryWrapper<KrcdtDayRemarksColumn> tpQuery = queryProxy().query(query, KrcdtDayRemarksColumn.class)
+																		.setParameter("start", baseDate.start())
+																		.setParameter("end", baseDate.end());
 		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, sub -> {
-			remarks.addAll(queryProxy().query(query, KrcdtDayRemarksColumn.class)
-										.setParameter("sid", sub)
-										.setParameter("start", baseDate.start())
-										.setParameter("end", baseDate.end())
-										.getList(c -> c.toDomain()));
+			remarks.addAll(tpQuery.setParameter("sid", sub).getList(c -> c.toDomain()));
 		});
 		return remarks;
 	}
@@ -52,23 +51,25 @@ public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements Rema
 								.append(" WHERE r.krcdtDayRemarksColumnPK.sid = :sid")
 								.append(" AND r.krcdtDayRemarksColumnPK.ymd IN ymd")
 								.toString();
-		
+		TypedQueryWrapper<KrcdtDayRemarksColumn> tpQuery = queryProxy().query(query, KrcdtDayRemarksColumn.class)
+				.setParameter("sid", employeeId);
 		CollectionUtil.split(baseDate, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, sub -> {
-			remarks.addAll(queryProxy().query(query, KrcdtDayRemarksColumn.class)
-										.setParameter("sid", sub)
-										.setParameter("ymd", baseDate)
-										.getList(c -> c.toDomain()));
+			remarks.addAll(tpQuery.setParameter("ymd", sub).getList(c -> c.toDomain()));
 		});
 		return remarks;
 	}
 
 	@Override
 	public void update(RemarksOfDailyPerform domain) {
-		queryProxy().find(new KrcdtDayRemarksColumnPK(domain.getEmployeeId(), domain.getYmd(), domain.getRemarkNo()), 
-				KrcdtDayRemarksColumn.class).ifPresent(c -> {
+		Optional<KrcdtDayRemarksColumn> remarks = queryProxy().find(new KrcdtDayRemarksColumnPK(domain.getEmployeeId(), domain.getYmd(), domain.getRemarkNo()), 
+				KrcdtDayRemarksColumn.class);
+		if(remarks.isPresent()){
+			KrcdtDayRemarksColumn c = remarks.get();
 			c.remarks = domain.getRemarks() == null ? null : domain.getRemarks().v();
 			commandProxy().update(c);
-		});
+		} else {
+			add(domain);
+		}
 	}
 
 	@Override

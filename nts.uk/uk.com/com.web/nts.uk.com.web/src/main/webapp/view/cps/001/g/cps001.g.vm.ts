@@ -59,6 +59,7 @@ module nts.uk.com.view.cps001.g.vm {
             // Subsribe table
             _self.currentValue.subscribe(value => {
                 if (value) {
+                     clearError();
                     _self.createMode(false);
                     service.getDetail(value).done((result: IAnnualLeaveGrantRemainingData) => {
                         if (result) {
@@ -69,9 +70,10 @@ module nts.uk.com.view.cps001.g.vm {
                             _self.currentItem(new AnnualLeaveGrantRemainingData(x));
                             _self.loadItemDef();
                         }
+                        clearError();
                         $('#idGrantDate').focus();
                     });
-                    clearError();
+                   
                 }
             });
 
@@ -255,8 +257,8 @@ module nts.uk.com.view.cps001.g.vm {
             }));
             _self.loadItemDef();
             _self.currentValue('');
-            clearError();
             $('#idGrantDate').focus();
+            clearError();
         }
         /**
          * Save sequence

@@ -7,6 +7,6 @@ package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremain
  */
 public interface AnnualLeaveRemainHistRepository {
 
-	public void add(AnnualLeaveRemainingHistory domain);
+	public void addOrUpdate(AnnualLeaveRemainingHistory domain);
 
 }
