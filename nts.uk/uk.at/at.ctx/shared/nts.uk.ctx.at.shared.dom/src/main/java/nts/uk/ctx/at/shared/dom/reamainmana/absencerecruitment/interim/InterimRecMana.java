@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.reamainmana.absencerecruitment.interim;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.reamainmana.interimremain.primitive.OccurrenceDay;
 import nts.uk.ctx.at.shared.dom.reamainmana.interimremain.primitive.StatutoryAtr;
@@ -14,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.reamainmana.interimremain.primitive.UnUsedDay;
  */
 @Getter
 @AllArgsConstructor
-public class InterimRecMana {
+public class InterimRecMana extends AggregateRoot{
 	/**	暫定振出管理データID */
 	private String recruitmentManaId;
 	/**	使用期限日 */

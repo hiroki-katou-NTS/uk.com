@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.reamainmana.breakdayoffmana.interim;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.reamainmana.interimremain.primitive.RequiredDay;
 import nts.uk.ctx.at.shared.dom.reamainmana.interimremain.primitive.RequiredTime;
 import nts.uk.ctx.at.shared.dom.reamainmana.interimremain.primitive.UnOffsetDay;
@@ -15,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.reamainmana.interimremain.primitive.UnOffsetTime
  */
 @Getter
 @AllArgsConstructor
-public class InterimDayOffMana {
+public class InterimDayOffMana extends AggregateRoot{
 	/**	暫定代休管理データID */
 	private String dayOffManaId;
 	/**	必要時間数 */

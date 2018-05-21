@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.reamainmana.interimremain;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.reamainmana.interimremain.primitive.CreaterAtr;
 import nts.uk.ctx.at.shared.dom.reamainmana.interimremain.primitive.RemainAtr;
@@ -13,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.reamainmana.interimremain.primitive.RemainType;
  */
 @Getter
 @AllArgsConstructor
-public class InterimRemain {
+public class InterimRemain extends AggregateRoot{
 	/**
 	 * 残数管理データID
 	 */

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.reamainmana.absencerecruitment.interim;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.reamainmana.interimremain.primitive.ManaDataAtr;
 import nts.uk.ctx.at.shared.dom.reamainmana.interimremain.primitive.SelectedAtr;
 import nts.uk.ctx.at.shared.dom.reamainmana.interimremain.primitive.UseDay;
@@ -12,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.reamainmana.interimremain.primitive.UseDay;
  */
 @Getter
 @AllArgsConstructor
-public class InterimRecAbsMana {
+public class InterimRecAbsMana extends AggregateRoot{
 	/**	振休管理データID */
 	private String absenceManaId;
 	/**	振休管理データ区分 */

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.reamainmana.breakdayoffmana.interim;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.reamainmana.interimremain.primitive.ManaDataAtr;
 import nts.uk.ctx.at.shared.dom.reamainmana.interimremain.primitive.SelectedAtr;
 import nts.uk.ctx.at.shared.dom.reamainmana.interimremain.primitive.UseDay;
@@ -15,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.reamainmana.interimremain.primitive.UseTime;
  */
 @Getter
 @AllArgsConstructor
-public class InterimBreakDayOffMana {
+public class InterimBreakDayOffMana extends AggregateRoot{
 	/**	休出管理データ */
 	private String breakManaId;
 	/**	休出管理データ区分 */
