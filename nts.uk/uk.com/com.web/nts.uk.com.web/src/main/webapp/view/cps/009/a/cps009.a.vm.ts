@@ -106,6 +106,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             }
             if (currentCtg === undefined) { return; }
             self.currentCategory().itemList.removeAll();
+            block.invisible()
             service.getAllItemByCtgId(settingId, ctgId).done((item: Array<any>) => {
                 if (item.length > 0) {
                     let itemConvert = _.map(item, function(obj: any) {
@@ -151,16 +152,24 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         });
 
                     });
-
+              _.defer(() => {
                     self.currentCategory().itemList.removeAll();
                     self.currentCategory().itemList(itemConvert);
                     self.lstItemFilter = itemConvert;
+                  _.defer(() => {
+                        $('#ctgName').focus();
+                     });
+                });
                 } else {
-                    self.currentCategory().itemList.removeAll();
-                    self.currentCategory().itemList([]);
-
+                    _.defer(() => {
+                      self.currentCategory().itemList.removeAll();
+                        self.currentCategory().itemList([]);
+                      _.defer(() => {
+                            $('#ctgName').focus();
+                         });
+                    });
                 }
-            })
+            }).always(()=>{ block.clear()});
         }
 
         start(id: string): JQueryPromise<any> {

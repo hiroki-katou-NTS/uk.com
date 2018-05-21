@@ -2426,6 +2426,11 @@ module nts.custombinding {
                     services.getCats().done((data: any) => {
                         if (data && data.categoryList && data.categoryList.length) {
                             let cats = _.filter(data.categoryList, (x: IItemCategory) => !x.isAbolition && !x.categoryParentCode);
+
+                            if (location.href.indexOf('/view/cps/007/a/') > -1) {
+                                cats = _.filter(cats, (c: IItemCategory) => c.categoryCode != 'CS00069');
+                            }
+
                             if (cats && cats.length) {
                                 opts.combobox.options(cats);
 
@@ -2814,6 +2819,7 @@ module nts.custombinding {
 
     interface IItemCategory {
         id: string;
+        categoryCode?: string;
         categoryName: string;
         categoryType: IT_CAT_TYPE;
         isAbolition?: number;
