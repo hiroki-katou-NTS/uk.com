@@ -1,6 +1,8 @@
 package nts.uk.ctx.bs.person.infra.repository.person.contact;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -12,6 +14,8 @@ import nts.uk.ctx.bs.person.infra.entity.person.contact.BpsmtPersonContactPK;
 
 @Stateless
 public class JpaPersonContactRepository  extends JpaRepository implements PersonContactRepository {
+	
+	private static final String GET_BY_LIST = "SELECT pc FROM BpsmtPersonContact pc WHERE pc.bpsmtPersonContactPK.pid IN :personIdList";
 
 	@Override
 	public void add(PersonContact domain) {
@@ -96,6 +100,13 @@ public class JpaPersonContactRepository  extends JpaRepository implements Person
 		if(entity.isPresent())
 			return Optional.of(toDomain(entity.get()));
 		else return Optional.empty();
+	}
+
+	@Override
+	public List<PersonContact> getByPersonIdList(List<String> personIds) {
+		List<BpsmtPersonContact> entities = this.queryProxy().query(GET_BY_LIST, BpsmtPersonContact.class)
+				.setParameter("personIdList", personIds).getList();
+		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
 	}
 
 }
