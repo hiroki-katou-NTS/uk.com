@@ -46,7 +46,7 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 			Worksheet ws = wsc.get(0);
 			reportContext.setHeader(0, dataSource.getHeader().getTitle());
 
-			if (dataSource.getHeader().getGroupMonths().size() < MAX_GROUP_MONTHS) {
+			if (dataSource.getHeader().getGroupMonths() == null || dataSource.getHeader().getGroupMonths().size() < MAX_GROUP_MONTHS) {
 				ws.getCells().deleteColumn(wsc.getRangeByName("monthGroup7th").getFirstColumn());
 				PageSetup pageSetup = ws.getPageSetup();
 				pageSetup.setZoom(100);
@@ -76,7 +76,7 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 			int offset = 0, sumRowCount = workplaceRange.getRowCount();
 			boolean nextWorkplace;
 			for (EmployeeData emp : emps) {
-				nextWorkplace = workplace.equals(emp.getEmployeeInfo().get(0));
+				nextWorkplace = !workplace.equals(emp.getEmployeeInfo().get(0));
 				if (nextWorkplace) {
 					workplace = emp.getEmployeeInfo().get(0);
 					newRange = copyRangeDown(workplaceRange, offset);
@@ -159,7 +159,7 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 			range.cell("workplace").putValue(workplace);
 		}
 		//TODO print all empInfo
-		range.cell("empInfo").setValue(emp.getEmployeeInfo().get(0));
+		range.cell("empName").setValue(emp.getEmployeeInfo().get(1));
 
 		int rowOffset = 0;
 		for (AnnualWorkScheduleData data: emp.getAnnualWorkSchedule()) {

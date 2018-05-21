@@ -86,20 +86,21 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 			.sorted((m1, m2) -> m1.getWorkplaceName().compareTo(m2.getWorkplaceName()))
 			.map(m -> {
 			EmployeeData emp = new EmployeeData();
-			emp.setEmployeeInfo(Arrays.asList(TextResource.localize("KWR008_50") + " " + m.getWorkplaceName()));
+			List<String> employeeInfo = new ArrayList<>();
+			employeeInfo.add(TextResource.localize("KWR008_50") + " " + m.getWorkplaceName());
 			//TODO
 			if (sizeItemOut == 1) {
-				emp.getEmployeeInfo().add(m.getEmployeeCode() + " " + m.getName());
+				employeeInfo.add(m.getEmployeeCode() + " " + m.getName());
 			} else if (sizeItemOut == 2) {
-				emp.getEmployeeInfo().add(m.getEmployeeCode() + " " + m.getName());
+				employeeInfo.add(m.getEmployeeCode() + " " + m.getName());
 			} else {
-				emp.getEmployeeInfo().add(m.getEmployeeCode() + " " + m.getName());
+				employeeInfo.add(m.getEmployeeCode() + " " + m.getName());
 			}
+			emp.setEmployeeInfo(employeeInfo);
 			emp.setAnnualWorkSchedule(new ArrayList<>());
 			data.getExportItems().forEach(item -> emp.getAnnualWorkSchedule().add(new AnnualWorkScheduleData(item.getHeadingName())));
 			return emp;
 		}).collect(Collectors.toList());
-		
 
 		data.setEmployees(employeesData);
 		return data;
