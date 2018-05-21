@@ -77,11 +77,17 @@
 .notice {
 	margin: 17px 0px 1px 100px;
 }
-#foot-area{
-	width:80%;
-	
+
+#foot-area {
+	width: 80%;
+	margin-bottom: 50px;
 }
-.buttons{
-	margin-left: 700px; 
+
+.buttons {
+	margin-left: 700px;
 	vertical-align: middle;
+}
+
+.tab-master {
+	height: auto;
 }

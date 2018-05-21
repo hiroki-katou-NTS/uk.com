@@ -1,0 +1,25 @@
+@CHARSET "ISO-8859-1";
+.external {
+	margin-top: 10px;
+	margin-left: 10px;
+}
+textarea {
+    background-color: #dce4c4;
+}
+#multiline-textbox {
+	width: 850px; 
+	height: 70px;
+}
+table, tbody, thead, tr, th, td #selected-multi-list{
+	border: 0.5px solid grey;
+}
+table#selected-multi-list {
+	height: 600px;
+	overflow-y: auto;
+}
+#selected-multi-list {
+	height: 350px;'
+}
+tr, td, th {
+	text-align: center;
+}

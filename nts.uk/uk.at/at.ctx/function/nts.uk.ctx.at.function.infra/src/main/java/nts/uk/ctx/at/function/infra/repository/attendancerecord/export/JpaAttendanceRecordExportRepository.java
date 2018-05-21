@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.infra.repository.attendancerecord.export;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -17,9 +18,6 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRecPK_;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec_;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnstAttndRecOutSet;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnstAttndRecOutSetPK_;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnstAttndRecOutSet_;
 
 @Stateless
 public class JpaAttendanceRecordExportRepository extends JpaRepository implements AttendanceRecordExportRepository {
@@ -39,25 +37,27 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 		List<Predicate> predicates = new ArrayList<>();
 
 		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.cid), companyId));
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.exportCd), exportSettingCode));
+		predicates.add(
+				criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.exportCd), exportSettingCode));
 		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.outputAtr), 1));
 
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));
 
-		//query data
+		// query data
 		List<KfnstAttndRec> entityList = em.createQuery(cq).getResultList();
 
 		List<AttendanceRecordExport> domainList = new ArrayList<AttendanceRecordExport>();
 
-		//for each item of entityList
+		// for each item of entityList
 		entityList.forEach(item1 -> {
-			//find domain is exist?,
+			// find domain is exist?,
 			if (!findInList(domainList, item1))
-				//if not exist, toDomain
+				// if not exist, toDomain
 				entityList.forEach(item2 -> {
-					//find if the same columnIndex
-					if (item1.getId().getColumnIndex() == item2.getId().getColumnIndex()) {
+					// find if the same columnIndex
+					if (item1.getId().getColumnIndex() == item2.getId().getColumnIndex()
+							&& item1.getId().getPosition() != item2.getId().getPosition()) {
 						// toDomain
 						AttendanceRecordExport domain = this.toDomain(item1, item2);
 						// Add domain to list
@@ -66,7 +66,7 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 				});
 		});
 
-		return domainList;
+		return domainList.stream().filter(item -> item != null).collect(Collectors.toList());
 	}
 
 	public Boolean findInList(List<AttendanceRecordExport> list, KfnstAttndRec item) {
@@ -93,25 +93,27 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 		List<Predicate> predicates = new ArrayList<>();
 
 		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.cid), companyId));
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.exportCd), exportSettingCode));
+		predicates.add(
+				criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.exportCd), exportSettingCode));
 		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.outputAtr), 2));
 
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));
 
-		//query data
+		// query data
 		List<KfnstAttndRec> entityList = em.createQuery(cq).getResultList();
 
 		List<AttendanceRecordExport> domainList = new ArrayList<AttendanceRecordExport>();
 
-		//for each item of entityList
+		// for each item of entityList
 		entityList.forEach(item1 -> {
-			//find domain is exist?,
+			// find domain is exist?,
 			if (!findInList(domainList, item1))
-				//if not exist, toDomain
+				// if not exist, toDomain
 				entityList.forEach(item2 -> {
-					//find if the same columnIndex
-					if (item1.getId().getColumnIndex() == item2.getId().getColumnIndex()) {
+					// find if the same columnIndex
+					if (item1.getId().getColumnIndex() == item2.getId().getColumnIndex()
+							&& item1.getId().getPosition() != item2.getId().getPosition()) {
 						// toDomain
 						AttendanceRecordExport domain = this.toDomain(item1, item2);
 						// Add domain to list
@@ -120,7 +122,7 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 				});
 		});
 
-		return domainList;
+		return domainList.stream().filter(item -> item != null).collect(Collectors.toList());
 	}
 
 	@Override

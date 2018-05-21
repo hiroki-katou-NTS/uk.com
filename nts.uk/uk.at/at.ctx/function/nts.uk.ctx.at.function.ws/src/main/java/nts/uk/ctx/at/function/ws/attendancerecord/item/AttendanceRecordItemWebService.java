@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.uk.ctx.at.function.app.command.attendancerecord.item.CalculateAttendanceRecordDeleteCommand;
@@ -69,8 +70,8 @@ public class AttendanceRecordItemWebService {
 	@POST
 	@Path("getSingleAttndRecInfo")
 	public SingleAttendanceRecordDto getSingleAttendanceRecordInfo(AttendanceRecordKeyDto attendanceRecordKey) {
-		
-		return this.singleAttendanceRecordFinder.getSingleAttendanceRecord(attendanceRecordKey);
+		SingleAttendanceRecordDto result = this.singleAttendanceRecordFinder.getSingleAttendanceRecord(attendanceRecordKey);
+		return result;
 	}
 
 	/**
@@ -143,10 +144,10 @@ public class AttendanceRecordItemWebService {
 	 * @return the attendance record items by screen use atr
 	 */
 	@POST
-	@Path("getAttndRecItem")
-	public List<AttendanceRecordItemDto> getAttendanceRecordItemsByScreenUseAtr(int screenUseAtr){
-		System.err.println("runned..........................");
+	@Path("getAttndRecItem/{screenUseAtr}")
+	public List<AttendanceRecordItemDto> getAttendanceRecordItemsByScreenUseAtr(@PathParam("screenUseAtr") int screenUseAtr){
 		return this.attendanceItemFinder.getAttendanceItemsByScreenUseAtr(screenUseAtr);
 	}
+
 
 }

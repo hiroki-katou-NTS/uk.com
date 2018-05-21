@@ -169,6 +169,39 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.function.dom.attendancerecord.export.setting.
+	 * AttendanceRecordExportSettingRepository#getSealStamp(java.lang.String,
+	 * long)
+	 */
+	@Override
+	public List<String> getSealStamp(String companyId, long code) {
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<KfnstSealColumn> cq = criteriaBuilder.createQuery(KfnstSealColumn.class);
+		Root<KfnstSealColumn> root = cq.from(KfnstSealColumn.class);
+
+		// build query
+		cq.select(root);
+
+		// create where conditions
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(
+				criteriaBuilder.equal(root.get(KfnstSealColumn_.id).get(KfnstSealColumnPK_.cid), companyId));
+
+		// add where to query
+		cq.where(predicates.toArray(new Predicate[] {}));
+
+		// query data
+		List<KfnstSealColumn> sealStampEntity = em.createQuery(cq).getResultList();
+
+		// return
+		return sealStampEntity.isEmpty() ? new ArrayList<String>()
+				: sealStampEntity.stream().map(entity -> entity.getSealStampName()).collect(Collectors.toList());
+	}
+
 	/**
 	 * To domain.
 	 *
@@ -236,4 +269,5 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository
 		return em.createQuery(cq).getResultList();
 
 	}
+
 }

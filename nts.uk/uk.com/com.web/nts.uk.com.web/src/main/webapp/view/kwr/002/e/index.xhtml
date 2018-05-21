@@ -1,0 +1,168 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 1000,
+					height : 900
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kwr002.e.style.css" />
+			<com:scriptfile path="kwr002.e.service.js" />
+			<com:scriptfile path="kwr002.e.vm.js" />
+			<com:scriptfile path="kwr002.e.start.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="content-area"
+				class="contents-area fixed-flex-layout external"
+				style="display: block;">
+				<div style="display: inline;">
+					<!-- E1_1 -->
+					<div data-bind="ntsFormLabel: {}" class="form-label">#{i18n.getText('KWR002_160')}</div>
+					<!-- E1_2 -->
+					<label data-bind="text: processingCode"></label>
+					<!-- E1_3 -->
+					<label data-bind="text: processingName"></label>
+					<!-- E1_4 -->
+					<label data-bind="text: dailyMonthly"></label>
+					<!-- E1_5 -->
+					<label data-bind="text: columnIndex"></label>
+					<!-- E1_6 -->
+					<label>#{i18n.getText('KWR002_162')}</label>
+					<!-- E1_7 -->
+					<label data-bind="text: topBottom"></label>
+					<!-- E1_8 -->
+					<label>#{i18n.getText('KWR002_163')}</label>
+					<hr></hr>
+				</div>
+				<div style="display: block;" class="external">
+					<div style="display: inline-flex;">
+						<!-- E2_1 -->
+						<div data-bind="ntsFormLabel: {}"
+							class="form-label required external">#{i18n.getText('KWR002_164')}</div>
+						<!-- E2_2 -->
+						<input
+							data-bind="ntsTextEditor: { name: '#{i18n.getText('KWR002_165')}', value: attendanceRecordName}"
+							class="external" />
+					</div>
+					<div class="fixed-flex-layout external">
+						<div class="fixed-flex-layout-left external">
+							<div
+								class="panel ntsPanel caret-background caret-right direction-right"
+								data-bind="ntsPanel:{width: '400px', height: '450px', direction: 'right', showIcon: true, visible: true}"
+								style="margin: unset;">
+								<i class="icon icon-searchbox"></i>
+								<div style="display: inline-flex;">
+									<div>
+										<label>#{i18n.getText('CMM001_42')}</label>
+									</div>
+									<div id="combo-box"
+										data-bind="ntsComboBox: {options: selectionTypeList,
+																		required: true,
+																		optionsValue: 'code',
+																		visibleItemsCount: 5,
+																		value: selectionTypeValue,
+																		optionsText: 'name',
+																		enable: true,
+																		required: false,
+																		selectFirstIfNull: false
+																		}">
+									</div>
+								</div>
+								<div tabindex="6"
+									data-bind="ntsSearchBox:{
+													targetKey: 'code',
+													comId: 'selection-multi-list',
+					                    	        items: gridItems, 
+					                    	        selected: currentCodeList,
+					                    	        selectedKey: 'code',
+					                    	        fields: ['name', 'code'],
+					                    	        mode: 'igGrid'}"
+									style="display: inline;"></div>
+								<div>
+									<table id="selection-multi-list"
+										data-bind="ntsGridList: {
+													options: gridItems,
+													height: 350,
+													optionsValue: 'code',
+													columns: columns,
+													multiple: true,
+													value: currentCodeList}">
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="fixed-flex-layout-right"
+							style="display: inline-flex; margin-top: 50px;">
+							<div style="display: block; margin: 35px;">
+								<!-- E6_1 -->
+								<div>
+									<button tabindex="6" class="small"
+										data-bind="click: writeItemWithAdd">#{i18n.getText('KWR002_178')}</button>
+								</div>
+								<!-- E6_2 -->
+								<div style="margin-top: 50px;">
+									<button tabindex="7" class="small"
+										data-bind="click: writeItemWithSubtract">#{i18n.getText('KWR002_179')}</button>
+								</div>
+							</div>
+							<div class="external">
+								<table id="selected-multi-list"
+									data-bind="name: '#{i18n.getText('KWR002_185')}'">
+									<colgroup>
+										<col width="50px" />
+										<col width="100px" />
+										<col width="100px" />
+										<col width="200px" />
+										<col width="70px" />
+									</colgroup>
+									<thead class="bg-green">
+										<tr>
+											<th></th>
+											<th>#{i18n.getText('KWR002_186')}</th>
+											<th>#{i18n.getText('KWR002_187')}</th>
+											<th>#{i18n.getText('KWR002_188')}</th>
+											<th>#{i18n.getText('KWR002_189')}</th>
+										</tr>
+									</thead>
+									<tbody data-bind="foreach: selectedGridItems">
+										<tr>
+											<td class="bg-green"><span></span></td>
+											<td><span data-bind="text: action"></span></td>
+											<td><span data-bind="text: code"></span></td>
+											<td><span data-bind="text: name"></span></td>
+											<td><button data-bind="ntsIcon: { no: 2, width: 30, height: 30 }"></button></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="external">
+					<!-- E9_1 -->
+					<div data-bind="ntsFormLabel: {}" class="form-label">#{i18n.getText('KWR002_190')}</div>
+				</div>
+				<div class="external">
+					<!-- E9_2 -->
+					<textarea id="multiline-textbox"
+						data-bind="ntsMultilineEditor: {name: '#{i18n.getText('KWR002_191')}'}" />
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<!-- E10_1 -->
+				<button tabindex="10" id="" class="button x-large proceed">#{i18n.getText('KWR002_192')}</button>
+				<!-- E10_2 -->
+				<button tabindex="11" id="" class="button fix-button large">#{i18n.getText('KWR002_193')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

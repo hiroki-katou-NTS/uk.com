@@ -17,6 +17,10 @@ public class AttendanceRecordItemDto {
 
 	/** The screen use item. */
 	private int screenUseItem;
+	
+	/** The type of attendance item. */
+	private int typeOfAttendanceItem;
+	
 
 	/**
 	 * Instantiates a new attendance record item dto.

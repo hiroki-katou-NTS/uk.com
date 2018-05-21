@@ -45,4 +45,13 @@ public interface AttendanceRecordExportSettingRepository {
 	 * @param attendanceRecordOutSet the attendance record out set
 	 */
 	void deleteAttendanceRecExpSet(AttendanceRecordExportSetting attendanceRecordExpSet);
+	
+	/**
+	 * Gets the seal stamp.
+	 *
+	 * @param companyId the company id
+	 * @param code the code
+	 * @return the seal stamp
+	 */
+	List<String> getSealStamp (String companyId, long code);
 }

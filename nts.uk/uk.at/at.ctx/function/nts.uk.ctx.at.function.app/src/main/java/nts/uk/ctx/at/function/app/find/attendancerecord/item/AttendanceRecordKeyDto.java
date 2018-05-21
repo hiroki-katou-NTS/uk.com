@@ -1,8 +1,15 @@
 package nts.uk.ctx.at.function.app.find.attendancerecord.item;
 
-import lombok.Value;
 
-@Value
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class AttendanceRecordKeyDto {
 	
 	/** The code. */
@@ -15,7 +22,7 @@ public class AttendanceRecordKeyDto {
 	private long position;
 	
 	/** The export art. */
-	private long exportArt;
+	private long exportAtr;
 	
 	
 

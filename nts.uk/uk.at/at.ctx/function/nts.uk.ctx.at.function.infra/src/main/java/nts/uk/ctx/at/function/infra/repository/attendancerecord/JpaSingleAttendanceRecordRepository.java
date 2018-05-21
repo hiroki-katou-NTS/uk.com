@@ -45,6 +45,7 @@ public class JpaSingleAttendanceRecordRepository extends JpaRepository implement
 			ExportSettingCode exportSettingCode, long columnIndex, long position, long exportArt) {
 		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, exportSettingCode.v(), columnIndex, exportArt,
 				position);
+		Optional<KfnstAttndRec> entity = this.queryProxy().find(kfnstAttndRecPK, KfnstAttndRec.class);
 		return this.queryProxy().find(kfnstAttndRecPK, KfnstAttndRec.class).map(e -> this.toDomain(e));
 	}
 
@@ -213,7 +214,7 @@ public class JpaSingleAttendanceRecordRepository extends JpaRepository implement
 		List<Predicate> predicates = new ArrayList<>();
 		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.cid), companyId));
 		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.exportCd),
-				exportSettingCode));
+				exportSettingCode.v()));
 		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.columnIndex),
 				columnIndex));
 		predicates.add(
