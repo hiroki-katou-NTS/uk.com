@@ -18,7 +18,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
         //B2_2
         listStandardImportSetting: KnockoutObservableArray<SetOutputSettingCode> = ko.observableArray([]);
-        selectedCode: KnockoutObservable<any> = ko.observable('');
+        selectedCode: KnockoutObservable<string> = ko.observable('');
         currentSetOutputSettingCode :KnockoutObservable<SetOutputSettingCode> 
                 = ko.observable(new SetOutputSettingCode(null));
 
@@ -332,30 +332,10 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 }
             }
         }
-
-        buildIsCheckedAll() {
-            let self = this;
-            let itemOut: any = _.filter(self.outputItem(), (x) => { return !x.useClass(); });
-            if (itemOut && itemOut.length > 0) {
-               // self.isCheckedAll(false);
-            } else {
-                //self.isCheckedAll(true);
-            }
-        }
         //mode update
         updateMode(code: string) {
             let self = this;
-            if (code) {
-                let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd() == code; });
-
-                self.isNewMode(false);
-                if (selectedIndex > -1) {
-                    self.currentSetOutputSettingCode(self.listStandardImportSetting()[selectedIndex]);
-                    $('#B3_3').focus();
-                } else {
-                    self.selectedCode('');
-                }
-            }
+            
             for (var i = self.outputItem().length; i < 10; i++) {
                 self.outputItem.push(new OutputItemData(i + 1,
                 null,
@@ -367,7 +347,20 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 ));
             }
             self.outputItem()[0].outputTargetItem(self.rule36CalculationName);
-            self.buildIsCheckedAll();
+            
+            if (code) {
+                let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd() == code; });
+
+                self.isNewMode(false);
+                if (selectedIndex > -1) {
+                    self.currentSetOutputSettingCode(self.listStandardImportSetting()[selectedIndex]);
+                    $('#B3_3').focus();
+                } else {
+                    $('#B3_2').focus();
+                    self.selectedCode('');
+                }
+            }
+            
         }
 
         //mode register
@@ -376,7 +369,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
             self.isNewMode(true); 
             self.currentSetOutputSettingCode(new SetOutputSettingCode(null));
-            self.selectedCode(null);
+            self.selectedCode('');
             for (var i = 0; i < self.outputItem().length; i++) {
                 self.outputItem()[i].updateData(i + 1,
                     null,
@@ -388,7 +381,6 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     null);
             }
             self.outputItem()[0].outputTargetItem(self.rule36CalculationName);
-            self.buildIsCheckedAll();
             $("#B3_2").focus();
         }
 
@@ -431,11 +423,11 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
             if (self.isNewMode()) {
                 service.registerOutputItemSetting(data).done(() => {
+                    self.currentSetOutputSettingCode().displayCode = self.currentSetOutputSettingCode().cd();
+                    self.currentSetOutputSettingCode().displayName = self.currentSetOutputSettingCode().name();
+                    self.listStandardImportSetting.push(self.currentSetOutputSettingCode());
+                    self.listStandardImportSetting_Sort();
                     info({ messageId: 'Msg_15' }).then(() => {
-                        self.currentSetOutputSettingCode().displayCode = self.currentSetOutputSettingCode().cd();
-                        self.currentSetOutputSettingCode().displayName = self.currentSetOutputSettingCode().name();
-                        self.listStandardImportSetting.push(self.currentSetOutputSettingCode());
-                        self.listStandardImportSetting_Sort();
                         self.selectedCode(self.currentSetOutputSettingCode().cd());
                     });
                 }).fail(err => {
@@ -445,12 +437,14 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 });
             } else {
                 service.updateOutputItemSetting(data).done(() => {
-                    let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd() == self.selectedCode(); });
-                    if (selectedIndex > -1) {
-                        self.currentSetOutputSettingCode().displayName = self.currentSetOutputSettingCode().name();
-                        self.listStandardImportSetting.replace(self.listStandardImportSetting()[selectedIndex], self.currentSetOutputSettingCode());
-                    }
-                    info({ messageId: 'Msg_15' });
+                    info({ messageId: 'Msg_15' }).then(() => {
+                        let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd() == self.selectedCode(); });
+                        if (selectedIndex > -1) {
+                            self.currentSetOutputSettingCode().displayName = self.currentSetOutputSettingCode().name();
+                            self.listStandardImportSetting.replace(self.listStandardImportSetting()[selectedIndex], self.currentSetOutputSettingCode());
+                            self.selectedCode(self.currentSetOutputSettingCode().cd());
+                        }
+                    });
                 }).fail(err => {
                     console.log(err);
                 }).always(function() {
@@ -462,21 +456,20 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         //do delete
         doDelete() {
             var self = this;
-
             confirm({ messageId: 'Msg_18' }).ifYes(() => {
 
                 let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd() == self.selectedCode(); });
 
                 let data = ko.toJS(self.listStandardImportSetting()[selectedIndex]);
+                self.listStandardImportSetting.remove(item=>{return item.cd() == data.cd;});
                 // send request remove item
                 service.deleteOutputItemSetting(data).done(() => {
                     info({ messageId: 'Msg_16' }).then(() => {
-                        self.listStandardImportSetting.splice(selectedIndex, 1);
                         if (self.listStandardImportSetting().length == 0) {
                             self.selectedCode('');
                         } else {
                             if (selectedIndex >= self.listStandardImportSetting().length) {
-                                self.selectedCode(self.listStandardImportSetting()[self.listStandardImportSetting().length].cd());
+                                self.selectedCode(self.listStandardImportSetting()[self.listStandardImportSetting().length - 1].cd());
                             } else {
                                 self.selectedCode(self.listStandardImportSetting()[selectedIndex].cd());
                             }
@@ -508,7 +501,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
     }
     export class OutputItemData {
         sortBy: KnockoutObservable<number>= ko.observable(1);
-        cd: KnockoutObservable<string>= ko.observable(null);
+        cd: KnockoutObservable<string>= ko.observable('');
         useClass: KnockoutObservable<boolean>= ko.observable(false);
         headingName: KnockoutObservable<string>= ko.observable('');
         valOutFormat: KnockoutObservable<number>= ko.observable(0);
