@@ -46,7 +46,7 @@ public class ExecutionLog extends AggregateRoot {
 	 * 対象期間
 	 * start date - end date
 	 */
-	private ObjectPeriod objectPeriod;
+	private Optional<ObjectPeriod> objectPeriod;
 	
 	/** 計算実行設定情報ID */	
 	public String getCalExecutionSetInfoID() {
@@ -93,7 +93,7 @@ public class ExecutionLog extends AggregateRoot {
 		this.existenceError = existenceError;
 		this.executionTime = executionTime;
 		this.processStatus = processStatus;
-		this.objectPeriod = objectPeriod;
+		this.objectPeriod = Optional.ofNullable(objectPeriod);
 		this.reflectApprovalSetInfo = Optional.empty();
 		this.dailyCreationSetInfo =  Optional.empty();
 		this.dailyCalSetInfo =  Optional.empty();

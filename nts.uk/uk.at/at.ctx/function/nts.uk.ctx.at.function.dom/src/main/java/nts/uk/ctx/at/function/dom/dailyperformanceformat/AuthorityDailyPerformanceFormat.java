@@ -6,7 +6,7 @@ import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPer
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatName;
 
 /**
- * 
+ * 会社の日別実績の修正のフォーマット
  * @author nampt
  *
  */

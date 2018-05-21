@@ -11,7 +11,6 @@ module cps002.a.vm {
     import block = nts.uk.ui.block;
     import lv = nts.layout.validate;
     import vc = nts.layout.validation;
-
     export class ViewModel {
 
         date: KnockoutObservable<Date> = ko.observable(moment().toDate());
@@ -31,6 +30,8 @@ module cps002.a.vm {
         createTypeId: KnockoutObservable<number> = ko.observable(3);
 
         currentEmployee: KnockoutObservable<Employee> = ko.observable(new Employee());
+
+        stampCardEditing: StampCardEditing;
 
         categorySelectedCode: KnockoutObservable<string> = ko.observable('');
 
@@ -55,6 +56,7 @@ module cps002.a.vm {
         layoutData: KnockoutObservableArray<any> = ko.observableArray([]);
 
         defaultImgId: KnockoutObservable<string> = ko.observable("");
+        subContraint: KnockoutObservable<boolean> = ko.observable(true);
 
         ccgcomponent: any = {
             /** Common properties */
@@ -227,8 +229,58 @@ module cps002.a.vm {
 
             });
 
-            self.start();
 
+            self.currentEmployee().employeeCode.subscribe((employeeCode) => {
+                var self = this;
+                self.updateCardNumber();
+            });
+
+            self.currentEmployee().cardNo.subscribe((cardNo) => {
+                let self = this;
+                let stampCardMehod = self.stampCardEditing.method;
+                let maxLength = self.stampCardEditing.digitsNumber;
+                if (cardNo.length < maxLength) {
+
+                    let textValue = cardNo;
+                    switch (stampCardMehod) {
+                        case EDIT_METHOD.PreviousZero: {
+                            textValue = self.autoChange('0', POSITION.Previous, textValue, maxLength);
+                            break;
+                        }
+                        case EDIT_METHOD.AfterZero: {
+                            textValue = self.autoChange('0', POSITION.After, textValue, maxLength);
+                            break;
+                        }
+                        case EDIT_METHOD.PreviousSpace: {
+                            textValue = self.autoChange(' ', POSITION.Previous, textValue, maxLength);
+                            break;
+                        }
+                        case EDIT_METHOD.AfterSpace: {
+                            textValue = self.autoChange(' ', POSITION.After, textValue, maxLength);
+                            break;
+                        }
+                        default: {
+                            break;
+                        }
+                    }
+                    self.currentEmployee().cardNo(textValue);
+                }
+            });
+
+            self.start();
+        }
+
+        autoChange(character: string, position: POSITION, textValue: string, maxLength: number): string {
+            if (position == POSITION.Previous) {
+                while (textValue.length < maxLength) {
+                    textValue = character + textValue;
+                }
+            } else {
+                while (textValue.length < maxLength) {
+                    textValue = textValue + character;
+                }
+            }
+            return textValue;
         }
 
         loadCopySettingItemData() {
@@ -259,23 +311,27 @@ module cps002.a.vm {
             let self = this;
             self.currentEmployee().clearData();
 
+            service.getStamCardEdit().done(data => {
+                self.stampCardEditing = new StampCardEditing(data.method, data.digitsNumber);
+                self.subContraint(false);
+                __viewContext.primitiveValueConstraints.StampNumber.maxLength = data.digitsNumber;
+                self.subContraint(true);
+            });
+
             nts.uk.characteristics.restore("NewEmployeeBasicInfo").done((data: IEmployeeBasicInfo) => {
                 self.employeeBasicInfo(data);
             });
             service.getLayout().done((layout) => {
                 if (layout) {
-                    service.getUserSetting().done((result: IUserSetting) => {
-                        if (result) {
-                            self.getEmployeeCode(result).done((empCode) => {
+                    service.getUserSetting().done(userSetting => {
+                        if (userSetting) {
+                            self.getEmployeeCode(userSetting).done((empCode) => {
                                 self.currentEmployee().employeeCode(empCode);
-                                self.getCardNumber(result);
 
                             });
                         }
-
-                        self.currentUseSetting(new UserSetting(result));
-
-                        self.getLastRegHistory(result);
+                        self.currentUseSetting(new UserSetting(userSetting));
+                        self.getLastRegHistory(userSetting);
                         $("#hireDate").focus();
                     });
                 } else {
@@ -322,34 +378,10 @@ module cps002.a.vm {
             return dfd.promise();
         }
 
-        getCardNumber(userSetting: IUserSetting) {
-            //            let self = this,
-            //                genType = userSetting.cardNumberType,
-            //                eployee = self.currentEmployee();
-            //
-            //            if (genType === 1 || genType === 4) {
-            //
-            //                //                service.getCardNumber(genType === 1 ? userSetting.cardNumberLetter : '').done((result) => {
-            //                //
-            //                //                    eployee.cardNo(result);
-            //                //
-            //                //                });
-            //            } else {
-            //
-            //                if (genType === 3) {
-            //
-            //                    eployee.cardNo(eployee.employeeCode());
-            //                }
-            //
-            //                if (genType === 5) {
-            //
-            //                    service.getEmployeeCodeAndComId(userSetting.employeeCodeLetter).done((result) => {
-            //
-            //                        eployee.cardNo(result);
-            //                    });
-            //                }
-            //            }
-
+        updateCardNumber(userSetting: IUserSetting) {
+            let self = this;
+            let employee = self.currentEmployee();
+            employee.cardNo(__viewContext.user.companyCode + employee.employeeCode());
         }
 
         isError() {
@@ -400,6 +432,9 @@ module cps002.a.vm {
                         case "Msg_757":
                             $('#loginId').ntsError('set', { messageId: messageId });
                             break;
+                        case "Msg_346":
+                            $('#cardNumber').ntsError('set', { messageId: messageId });
+                            break;
                     }
 
                 });
@@ -426,14 +461,14 @@ module cps002.a.vm {
             layout.layoutCode('');
             layout.layoutName('');
             layout.listItemCls([]);
-            
+
             let command = ko.toJS(self.currentEmployee());
-            
+
             //add atr
             command.employeeCopyId = self.copyEmployee().employeeId;
             command.initSettingId = self.currentInitSetting().itemId;
             command.createType = self.createTypeId();
-            
+
             service.getLayoutByCreateType(command).done((data: ILayout) => {
                 layout.layoutCode(data.layoutCode || '');
                 layout.layoutName(data.layoutName || '');
@@ -444,12 +479,16 @@ module cps002.a.vm {
 
                 layout.listItemCls(data.itemsClassification || []);
                 if (layout.listItemCls().length > 0) {
-                    new vc(layout.listItemCls());
+                    _.defer(() => {
+                        new vc(layout.listItemCls());
+                        _.defer(() => {
+                            $('.drag-panel input:not(:disabled):first').focus();
+                        });
+                    });
                 }
 
             });
 
-            $("#employeeAvatar").focus();
 
             service.getSelfRoleAuth().done((result: IRoleAuth) => {
 
@@ -461,7 +500,7 @@ module cps002.a.vm {
 
 
         }
-        
+
         completeStep1() {
             let self = this;
             if (self.copyEmployee().employeeId === '' && !self.isUseInitValue()) {
@@ -585,7 +624,7 @@ module cps002.a.vm {
             if (self.currentStep() === 1) {
                 $('#emp_reg_info_wizard').ntsWizard("prev");
             }
-            if (self.currentStep() === 2　&& self.createTypeId() !== 3) {
+            if (self.currentStep() === 2 && self.createTypeId() !== 3) {
                 self.gotoStep1();
             }
             if (self.createTypeId() === 3) {
@@ -658,7 +697,6 @@ module cps002.a.vm {
                 isCardNoMode = param === 'true' ? true : false,
                 useSetting = self.currentUseSetting(),
                 employee = self.currentEmployee();
-
             setShared("cardNoMode", isCardNoMode);
             if (useSetting) {
 
@@ -672,12 +710,13 @@ module cps002.a.vm {
 
                 }
             }
+
             subModal('/view/cps/002/e/index.xhtml', { title: '' }).onClosed(() => {
 
                 let result = getShared("CPS002_PARAM"),
                     currentEmp = self.currentEmployee();
                 if (result) {
-
+                    $("#employeeCode").ntsError("clear");
                     param === isCardNoMode ? currentEmp.cardNo(result) : currentEmp.employeeCode(result);
                 }
             });
@@ -768,7 +807,6 @@ module cps002.a.vm {
             self.avatarId("");
             self.loginId("");
             self.password("");
-
         }
     }
 
@@ -1018,6 +1056,27 @@ module cps002.a.vm {
 
     }
 
+    class StampCardEditing {
+        method: EDIT_METHOD;
+        digitsNumber: number;
 
+        constructor(method: number, digitsNumber: number) {
+            this.method = method;
+            this.digitsNumber = digitsNumber;
+        }
+
+    }
+
+    enum EDIT_METHOD {
+        PreviousZero = 0,
+        AfterZero = 1,
+        PreviousSpace = 2,
+        AfterSpace = 3
+    }
+
+    enum POSITION {
+        Previous = 0,
+        After = 1
+    }
 
 }

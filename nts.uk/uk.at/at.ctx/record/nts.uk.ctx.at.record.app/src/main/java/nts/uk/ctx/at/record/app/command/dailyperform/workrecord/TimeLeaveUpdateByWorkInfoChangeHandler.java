@@ -61,7 +61,7 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandler<TimeL
 			workTypeRepo.findByPK(companyId, wi.getRecordInfo().getWorkTypeCode().v()).ifPresent(wt -> {
 				/** 取得したドメインモデル「勤務種類．一日の勤務．勤務区分」をチェックする */
 				if (wt.isWokingDay()) {
-					val wts = wt.getWorkTypeSetByAtr(WorkAtr.OneDay);
+					val wts = wt.getWorkTypeSetAvailable();
 					if (wts.getAttendanceTime() == WorkTypeSetCheck.CHECK  || wts.getTimeLeaveWork() == WorkTypeSetCheck.CHECK) {
 						val tlo = timeLeaveRepo.findByKey(command.getEmployeeId(), command.getTargetDate());
 						TimeLeavingOfDailyPerformance tl = null;

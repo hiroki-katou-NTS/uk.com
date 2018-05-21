@@ -543,7 +543,16 @@ module nts.uk.request {
         let STORAGE_KEY_USED_LOGIN_PAGE = "nts.uk.request.login.STORAGE_KEY_USED_LOGIN_PAGE";
         let STORAGE_KEY_SERIALIZED_SESSION = "nts.uk.request.login.STORAGE_KEY_SERIALIZED_SESSION";
         
+        export function keepUsedLoginPage(webAppId: WebAppId, path: string);
         export function keepUsedLoginPage(url?: string) {
+            if (arguments.length === 2) {
+                let loginLocator = location.siteRoot
+                                        .mergeRelativePath(WEB_APP_NAME[arguments[0]] + '/')
+                                        .mergeRelativePath(arguments[1]);
+                keepUsedLoginPage.apply(null, [ loginLocator.serialize() ]);
+                return;
+            }
+            
             if (url === undefined) {
                 keepUsedLoginPage(location.current.serialize());
                 return;

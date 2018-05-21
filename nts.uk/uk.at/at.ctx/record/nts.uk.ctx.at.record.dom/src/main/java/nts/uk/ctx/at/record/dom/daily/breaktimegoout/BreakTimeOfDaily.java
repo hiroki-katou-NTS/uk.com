@@ -105,7 +105,6 @@ public class BreakTimeOfDaily {
 									  withinDedTime,
 									  excessDedTime);
 	}
-
 	/**
 	 * 休憩未使用時間の計算
 	 * @param timeLeavingOfDailyPerformance 

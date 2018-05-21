@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord;
 
+import nts.arc.time.GeneralDate;
+
 /**
  * 勤務実績に反映
  * @author do_dt
@@ -30,7 +32,7 @@ public interface AppReflectProcessRecord {
 	 * @param isPre True: 事前, False: 事後
 	 * @return
 	 */
-	public WorkReflectedStatesInfo absenceReflectRecor(CommonReflectPara para, boolean isPre);
+	public boolean absenceReflectRecor(CommonReflectPara para, boolean isPre);
 	/**
 	 * 勤務実績に反映: 事前申請の処理(休日出勤申請)
 	 * @param para
@@ -45,4 +47,20 @@ public interface AppReflectProcessRecord {
 	 * @return
 	 */
 	public boolean workChangeReflectRecord(CommonReflectPara para, boolean isPre);
+	/**
+	 * 振休申請
+	 * @param para
+	 * @param isPre
+	 * @return
+	 */
+	public boolean absenceLeaveReflectRecord(CommonReflectPara para, boolean isPre);
+	/**
+	 * 振出申請
+	 * @param para
+	 * @param isPre
+	 * @return
+	 */
+	public boolean recruitmentReflectRecord(CommonReflectPara para, boolean isPre);
+	
+	public boolean isRecordData(String employeeId, GeneralDate baseDate);
 }

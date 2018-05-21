@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.workrule.closure;
@@ -34,5 +34,13 @@ public class CurrentMonth extends DomainObject {
 	 */
 	public CurrentMonth(Integer value) {
 		this.processingYm = YearMonth.of(value);
+	}
+	
+	/**
+	 * Next month.
+	 * 当月を1ヵ月分進める
+	 */
+	public void nextMonth() {
+		this.processingYm = this.processingYm.nextMonth();
 	}
 }

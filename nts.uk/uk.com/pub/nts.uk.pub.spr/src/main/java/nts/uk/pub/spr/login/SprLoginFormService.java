@@ -24,7 +24,7 @@ public interface SprLoginFormService {
 	 * @param reason
 	 */
 	public LoginUserContextSpr loginFromSpr(String menuCD, String loginEmployeeCD, String employeeCD, String startTime, 
-			String endTime, String date, String selectType, String appID, String reason);
+			String endTime, String date, String selectType, String appID, String reason, String stampFlg);
 	/**
 	 * パラメータチェック
 	 * @param menu
@@ -38,7 +38,7 @@ public interface SprLoginFormService {
 	 * @param reason
 	 */
 	public String paramCheck(String menuCD, String loginEmployeeCD, String employeeCD, String startTime, 
-			String endTime, String date, String selectType, String appID, String reason);
+			String endTime, String date, String selectType, String appID, String reason, String stampFlg);
 	
 	/**
 	 * パラメータチェック（共通）

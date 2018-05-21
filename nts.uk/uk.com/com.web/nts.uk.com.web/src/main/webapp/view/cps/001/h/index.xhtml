@@ -5,18 +5,21 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
+
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 610,
+					width : 647,
 					height : 795
 				};
 			</script>
 			<com:ValidatorScript>
 					nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveGrantDayNumber
-					nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber
 					nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedDayNumber
+					nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveOverLimitDayNumber
+					nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber
+					
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cps001.h.style.css" />
@@ -44,7 +47,6 @@
 						columns: columns,
 						multiple: false,
 						value: currentItem,
-		 				showNumbering: true,
 		 				rows:10
 						}"></table>
 				</div>
@@ -108,7 +110,7 @@
 										<span>5</span><span><input class="realTxt" id="overLimitDays" tabindex='12' data-bind="ntsNumberEditor: {
 											name: lmd,
 		                                    value: overLimitDays,
-		                                    constraint:'ReserveLeaveUsedDayNumber',
+		                                    constraint:'ReserveLeaveOverLimitDayNumber',
 		                                    option: {
 			                                    decimallength: 1
 		                                    },

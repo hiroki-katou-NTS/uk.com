@@ -76,7 +76,7 @@ public class CheckBeforeRegisterHolidayWork {
 		OvertimeCheckResultDto result = new OvertimeCheckResultDto(0, 0, 0, false);
 		OvertimeCheckResult res = new OvertimeCheckResult();
 		// 2-1.新規画面登録前の処理を実行する
-		newBeforeRegister.processBeforeRegister(app);
+		newBeforeRegister.processBeforeRegister(app,0);
 		// 登録前エラーチェック
 		// 計算ボタン未クリックチェック
 		//03-06_計算ボタンチェック
