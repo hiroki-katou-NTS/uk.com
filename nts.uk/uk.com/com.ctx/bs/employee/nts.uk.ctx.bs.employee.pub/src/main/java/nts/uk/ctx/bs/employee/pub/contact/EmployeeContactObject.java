@@ -2,9 +2,11 @@ package nts.uk.ctx.bs.employee.pub.contact;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 public class EmployeeContactObject {
 
 	//社員ID
