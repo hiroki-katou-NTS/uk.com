@@ -78,7 +78,7 @@
 
 							<table id="multi-list"
 								data-bind="ntsGridList: {
-													height: 320,
+													height: 139,
 													options: dataSource,
 													optionsValue: 'attendanceItemId',
 													columns: columns,
@@ -122,7 +122,7 @@
 			<div id="functions-area-bottom">
 				<button class="x-large proceed" tabindex=""
 					data-bind="click: decideButtonClick">#{i18n.getText('KWR002_151')}</button>
-				<button class="large" tabindex="" data-bind="click: close">#{i18n.getText('KWR002_152')}</button>
+				<button class="large" tabindex="" data-bind="click: closeDialog">#{i18n.getText('KWR002_152')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

@@ -84,25 +84,25 @@ module nts.uk.com.view.kwr002.d {
                 blockUI.invisible();
                 var self = this;
                 var dfd = $.Deferred();
-                let attendanceRecordExportShared: any = getShared('attendanceRecordExport');
-                let attendanceRecordExportSharedDemo: viewmodel.model.AttendanceRecordExport = new viewmodel.model.AttendanceRecordExport('Item Top1', 1, 'LayoutNameDemo', 1, 1, 1);
-//                if (attendanceRecordExportShared != null && attendanceRecordExportShared != undefined) {
-//                    self.attendanceRecordExport(attendanceRecordExportShared);
-//                    self.attendanceRecordName(self.attendanceRecordExport().attendanceItemName);
-//                    self.layoutCode(self.attendanceRecordExport().layoutCode);
-//                    self.layoutName(self.attendanceRecordExport().layoutName);
-//                    self.position(self.attendanceRecordExport().position);
-//                    self.columnIndex(self.attendanceRecordExport().columnIndex);
-//                    self.exportAtr(self.attendanceRecordExport().exportAtr);
-//                }
+                let attendanceRecordExportShared: any = getShared('attendanceItem');
+//                let attendanceRecordExportSharedDemo: viewmodel.model.AttendanceRecordExport = new viewmodel.model.AttendanceRecordExport('Item Top1', 1, 'LayoutNameDemo', 1, 1, 1);
+                if (attendanceRecordExportShared != null && attendanceRecordExportShared != undefined) {
+                    self.attendanceRecordExport(attendanceRecordExportShared);
+                    self.attendanceRecordName(self.attendanceRecordExport().attendanceItemName);
+                    self.layoutCode(self.attendanceRecordExport().layoutCode);
+                    self.layoutName(self.attendanceRecordExport().layoutName);
+                    self.position(self.attendanceRecordExport().position);
+                    self.columnIndex(self.attendanceRecordExport().columnIndex);
+                    self.exportAtr(self.attendanceRecordExport().exportAtr);
+                }
                 //demo for test start page area
-                self.attendanceRecordExport(attendanceRecordExportSharedDemo);
-                self.attendanceRecordName(self.attendanceRecordExport().attendanceItemName);
-                self.layoutCode(self.attendanceRecordExport().layoutCode);
-                self.layoutName(self.attendanceRecordExport().layoutName);
-                self.position(self.attendanceRecordExport().position);
-                self.columnIndex(self.attendanceRecordExport().columnIndex);
-                self.exportAtr(self.attendanceRecordExport().exportAtr);
+//                self.attendanceRecordExport(attendanceRecordExportSharedDemo);
+//                self.attendanceRecordName(self.attendanceRecordExport().attendanceItemName);
+//                self.layoutCode(self.attendanceRecordExport().layoutCode);
+//                self.layoutName(self.attendanceRecordExport().layoutName);
+//                self.position(self.attendanceRecordExport().position);
+//                self.columnIndex(self.attendanceRecordExport().columnIndex);
+//                self.exportAtr(self.attendanceRecordExport().exportAtr);
                 
                 
                 self.directText(nts.uk.resource.getText('KWR002_131') + ">" + self.columnIndex() + nts.uk.resource.getText('KWR002_132') + ">" +
