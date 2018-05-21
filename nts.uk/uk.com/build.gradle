@@ -378,6 +378,8 @@ project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.ac') {
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.app')
+		
+		compile project(':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.pub')
 	}
 }
 
