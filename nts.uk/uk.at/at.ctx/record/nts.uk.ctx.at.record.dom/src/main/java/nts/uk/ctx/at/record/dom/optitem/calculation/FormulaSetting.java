@@ -146,20 +146,27 @@ public class FormulaSetting extends DomainObject {
 	 */
 	public CalcItem createCalcItem(FormulaSettingItem formulaSettingItem,CalcItem calcItem,List<ResultOfCalcFormula> resultOfCalcFormulaList,OptionalItemAtr optionalItemAtr) {
 		if(formulaSettingItem.getSettingMethod().isItemSelection()) {//項目選択の場合
-			Optional<ResultOfCalcFormula> resultOfCalcFormula = getResultOfCalcFormula(resultOfCalcFormulaList,formulaSettingItem.getFormulaItemId());
-			if(resultOfCalcFormula.isPresent()) {//計算式の結果が取得できた場合
-				Optional<Integer> result = resultOfCalcFormula.get().getResult(optionalItemAtr);
-				if(result.isPresent()) {
-					calcItem.setValueByOrder(formulaSettingItem.getDispOrder(),result.get());
-					return calcItem;
+			if(formulaSettingItem.getFormulaItemId().isPresent()) {
+				Optional<ResultOfCalcFormula> resultOfCalcFormula = getResultOfCalcFormula(resultOfCalcFormulaList,formulaSettingItem.getFormulaItemId().get());
+				if(resultOfCalcFormula.isPresent()) {//計算式の結果が取得できた場合
+					Optional<Integer> result = resultOfCalcFormula.get().getResult(optionalItemAtr);
+					if(result.isPresent()) {
+						calcItem.setValueByOrder(formulaSettingItem.getDispOrder(),result.get());
+						return calcItem;
+					}
 				}
 			}
 			//結果が取得できない場合0を入れる　←　これで良い？
 			calcItem.setValueByOrder(formulaSettingItem.getDispOrder(),0);
 			return calcItem;
 		}
-		//数値入力の場合
-		calcItem.setValueByOrder(formulaSettingItem.getDispOrder(), formulaSettingItem.getInputValue().v().intValue());
+		if(formulaSettingItem.getInputValue().isPresent()) {
+			//数値入力の場合
+			calcItem.setValueByOrder(formulaSettingItem.getDispOrder(), formulaSettingItem.getInputValue().get().v().intValue());
+			return calcItem;
+		}
+		//入力値が取得できない場合は0　←　これで良い？
+		calcItem.setValueByOrder(formulaSettingItem.getDispOrder(), 0);
 		return calcItem;
 	}
 	
