@@ -36,7 +36,6 @@ public class AddSubHdManagementService {
 	LeaveManaDataRepository repoLeaveManaData;
 	@Inject
 	ComDayOffManaDataRepository repoComDayOffManaData;
-	
 
 	/**
 	 * @param subHdManagementData
@@ -161,7 +160,7 @@ public class AddSubHdManagementService {
 	 * 
 	 * @return
 	 */
-	private List<String> checkHoliday(SubHdManagementData subHdManagementData, Optional<Closure> closure) {
+	public List<String> checkHoliday(SubHdManagementData subHdManagementData, Optional<Closure> closure) {
 		List<String> errorList = new ArrayList<>();
 
 		// 休出（年月日）と締め日をチェックする /(Check 休出（年月日） và 締め日)
@@ -177,11 +176,13 @@ public class AddSubHdManagementService {
 	}
 
 	/**
+	 * 代休（年月日）チェック処理
+	 * 
 	 * @param subHdManagementData
-	 * @ アルゴリズム「代休（年月日）チェック処理」を実行する (Thực hiện thuât toán 「代休（年月日）チェック処理」)
+	 * @param closure
 	 * @return
 	 */
-	private List<String> checkDateHoliday(SubHdManagementData subHdManagementData, Optional<Closure> closure) {
+	public List<String> checkDateHoliday(SubHdManagementData subHdManagementData, Optional<Closure> closure) {
 		List<String> errorList = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
 		// Todo : get closureId, useAtr from screen B
@@ -209,12 +210,12 @@ public class AddSubHdManagementService {
 	}
 
 	/**
-	 * アルゴリズム「休出代休日数チェック処理」を実行する
+	 * 休出代休日数チェック処理
 	 * 
 	 * @param subHdManagementData2
 	 * @return
 	 */
-	private List<String> checkHolidayAndSubHoliday(SubHdManagementData subHdManagementData) {
+	public List<String> checkHolidayAndSubHoliday(SubHdManagementData subHdManagementData) {
 		List<String> errorList = new ArrayList<>();
 		// 代休チェックボックスをチェックする
 		if (subHdManagementData.getCheckedSubHoliday() == true) {
