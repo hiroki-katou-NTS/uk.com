@@ -28,7 +28,7 @@ public class AddSubHdManagementCommand {
 	/**
 	 * 休出日数
 	 */
-	private String selectedCodeHoliday;
+	private Double selectedCodeHoliday;
 	/**
 	 * 期限
 	 */
@@ -47,7 +47,7 @@ public class AddSubHdManagementCommand {
 	/**
 	 * 代休日数
 	 */
-	private String selectedCodeSubHoliday;
+	private Double selectedCodeSubHoliday;
 
 	// Option checked
 	/**
@@ -61,7 +61,7 @@ public class AddSubHdManagementCommand {
 	/**
 	 * 代休日数
 	 */
-	private String selectedCodeOptionSubHoliday;
+	private Double selectedCodeOptionSubHoliday;
 
 	// Domain LeaveComDayOffManagement
 	private String dayRemaining;
