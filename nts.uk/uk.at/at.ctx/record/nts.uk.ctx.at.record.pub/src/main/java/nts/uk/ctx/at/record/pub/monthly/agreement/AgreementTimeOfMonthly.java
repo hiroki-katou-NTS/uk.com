@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.pub.monthlyprocess.agreement;
+package nts.uk.ctx.at.record.pub.monthly.agreement;
 
 import java.util.Optional;
 

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.pub.monthlyprocess.agreement;
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeOfMonthly;
 
 /**
  * 36協定時間一覧

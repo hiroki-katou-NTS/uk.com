@@ -10,8 +10,8 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.GetAgreementTime;
+import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.record.pub.monthlyprocess.agreement.AgreementTimeExport;
-import nts.uk.ctx.at.record.pub.monthlyprocess.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.record.pub.monthlyprocess.agreement.GetAgreementTimePub;
 import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -35,7 +35,6 @@ public class GetAgreementTimePubImpl implements GetAgreementTimePub {
 		
 		val agreementTimeList = this.getAgreementTime.get(companyId, employeeIds, yearMonth, closureId);
 
-		// 結果返却
 		for (val agreementTime : agreementTimeList){
 			val srcConfirmedOpt = agreementTime.getConfirmed();
 			val srcAfterAppReflectOpt = agreementTime.getAfterAppReflect();
