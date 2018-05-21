@@ -510,6 +510,10 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         listOperationSetting: KnockoutObservableArray<OperationCondition> = ko.observableArray([]);
         constructor(sortBy: number, cd: string, useClass: boolean, headingName: string, valOutFormat: number, outputTargetItem: string, item36AgreementTime: boolean) {
             let self = this;
+            self.valOutFormat.subscribe((data)=>{
+                self.buildListOperationSetting([]);
+                self.outputTargetItem('');
+            });
             self.sortBy(sortBy || 1);
             self.cd(cd);
             self.useClass(useClass || false);
