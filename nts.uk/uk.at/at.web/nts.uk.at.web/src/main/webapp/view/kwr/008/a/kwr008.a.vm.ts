@@ -103,12 +103,15 @@ module nts.uk.at.view.kwr008.a {
 
             getOutItemSettingCode() {
                 var self = this;
+                var dfd = $.Deferred();
                 self.outputItem([]);
                 service.getOutItemSettingCode().done((dataArr: Array<share.OutputSettingCodeDto>) => {
                     _.forEach(dataArr, data => {
                         self.outputItem.push(new share.ItemModel(data.cd, data.name));
                     });
+                    dfd.resolve();
                 });
+                return dfd.promise();
             }
             checkInput(): boolean {
                 var self = this;
@@ -292,21 +295,23 @@ module nts.uk.at.view.kwr008.a {
                 });
 
                 //A4
-                self.getOutItemSettingCode();
-                // A6
-                var restoreOutputConditionAnnualWorkSchedule
-                    = self.restoreOutputConditionAnnualWorkSchedule()
-                    .done((data: model.OutputConditionAnnualWorkScheduleChar) => {
-                        if (data) {
-                            self.selectedOutputItem(data.setItemsOutputCd);
-                            self.selectedBreakPage(data.breakPage);
-                        } else if (self.outputItem().length) {
-                            self.selectedOutputItem(self.outputItem()[0].code);
-                        }
-                        if (!self.outputItem().length) {
-                            self.selectedOutputItem(null);
-                        }
-                    });
+                var restoreOutputConditionAnnualWorkSchedule;
+                self.getOutItemSettingCode().done(() => {
+                    // A6
+                    restoreOutputConditionAnnualWorkSchedule
+                        = self.restoreOutputConditionAnnualWorkSchedule()
+                        .done((data: model.OutputConditionAnnualWorkScheduleChar) => {
+                            if (data) {
+                                self.selectedOutputItem(data.setItemsOutputCd);
+                                self.selectedBreakPage(data.breakPage);
+                            } else if (self.outputItem().length) {
+                                self.selectedOutputItem(self.outputItem()[0].code);
+                            }
+                            if (!self.outputItem().length) {
+                                self.selectedOutputItem(null);
+                            }
+                        });
+                });
 
                 var getPageBreakSelection = service.getPageBreakSelection().done((enumRes)=>{
                     self.breakPage(enumRes);
