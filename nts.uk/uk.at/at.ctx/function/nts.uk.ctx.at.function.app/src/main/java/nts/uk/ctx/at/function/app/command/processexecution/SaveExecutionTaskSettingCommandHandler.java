@@ -926,11 +926,15 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 			}
 			cronExpress.append(" ?");
 			if(cronExpress2!=null){
-				cronExpress2.deleteCharAt(cronExpress.length()-1);
-				cronExpress3.append(" ?");
+				if(cronExpress2.toString().endsWith(",")){
+					cronExpress2.deleteCharAt(cronExpress2.length()-1);
+				}
+				cronExpress2.append(" ?");
 			}
 			if(cronExpress3!=null){
-				cronExpress3.deleteCharAt(cronExpress.length()-1);
+				if(cronExpress3.toString().endsWith(",")){
+					cronExpress3.deleteCharAt(cronExpress3.length()-1);
+				}
 				cronExpress3.append(" ?");
 			}
 			
@@ -991,8 +995,10 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 		cronExpress.append("0 ");
 		int startMinuteTemp = startTemp;
 		while(startMinuteTemp<=endTemp){
-			cronExpress.append(startMinuteTemp);
-			cronExpress.append(",");
+			if(startMinuteTemp!=60){
+				cronExpress.append(startMinuteTemp);
+				cronExpress.append(",");	
+			}
 			startMinuteTemp = startMinuteTemp + loopTemp ;
 		}
 		if(cronExpress.toString().endsWith(",")){
@@ -1007,8 +1013,10 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 		cronExpress.append("0 ");
 		int startMinuteTemp = startTemp;
 		while(startMinuteTemp<=endTemp){
+			if(startMinuteTemp!=60){
 			cronExpress.append(startMinuteTemp);
 			cronExpress.append(",");
+			}
 			startMinuteTemp = startMinuteTemp + loopTemp ;
 		}
 		if(cronExpress.toString().endsWith(",")){

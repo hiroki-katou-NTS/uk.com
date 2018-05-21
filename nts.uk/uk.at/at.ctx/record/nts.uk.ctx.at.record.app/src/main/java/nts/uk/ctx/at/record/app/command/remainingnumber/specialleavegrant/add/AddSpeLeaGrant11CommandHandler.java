@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add;
 
+import java.math.BigDecimal;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -18,6 +20,7 @@ public class AddSpeLeaGrant11CommandHandler
 		extends CommandHandlerWithResult<AddSpecialLeaveGrant11Command, PeregAddCommandResult>
 		implements PeregAddCommandHandler<AddSpecialLeaveGrant11Command> {
 
+		
 	@Inject
 	private SpeLeaveGrantCommandHandler addSpeLeaveGrantCommandHandler;
 
@@ -39,13 +42,13 @@ public class AddSpeLeaGrant11CommandHandler
 		SpecialLeaveGrantRemainingData domain = SpecialLeaveGrantRemainingData.createFromJavaType(specialId, cid,
 				command.getSid(), 11, command.getGrantDate(), command.getDeadlineDate(),
 				command.getExpStatus().intValue(), GrantRemainRegisterType.MANUAL.value,
-				command.getNumberDayGrant().doubleValue(),
+				command.getNumberDayGrant(),
 				command.getTimeGrant() != null ? command.getTimeGrant().intValue() : null,
-				command.getNumberDayUse().doubleValue(),
-				command.getTimeUse() != null ? command.getTimeUse().intValue() : null, 0.0,
-				command.getNumberDaysOver().doubleValue(),
+				command.getNumberDayUse(),
+				command.getTimeUse() != null ? command.getTimeUse().intValue() : null, null,
+				command.getNumberDaysOver(),
 				command.getTimeOver() != null ? command.getTimeOver().intValue() : null,
-				command.getNumberDayRemain().doubleValue(),
+				command.getNumberDayRemain(),
 				command.getTimeRemain() != null ? command.getTimeRemain().intValue() : null);
 				
 				return new PeregAddCommandResult(addSpeLeaveGrantCommandHandler.addHandler(domain));

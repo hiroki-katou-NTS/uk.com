@@ -195,4 +195,20 @@ public class PersonInfoCategory extends AggregateRoot {
 		this.initValMasterCls = InitValMasterObjCls.INIT;
 		this.addItemCls = AddItemObjCls.ENABLE;
 	}
+	
+	public boolean isFixed() {
+		return this.isFixed == IsFixed.FIXED;
+	}
+	
+	public boolean isSingleCategory() {
+		return categoryType == CategoryType.SINGLEINFO;
+	}
+	
+	public boolean isHistoryCategory() {
+		return categoryType == CategoryType.CONTINUOUSHISTORY 
+				|| categoryType == CategoryType.NODUPLICATEHISTORY
+				|| categoryType == CategoryType.DUPLICATEHISTORY
+				|| categoryType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE;
+	}
+	
 }

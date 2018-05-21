@@ -3,15 +3,12 @@ package nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata;
 import java.io.Serializable;
 
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -33,11 +30,6 @@ public class SgwmtLockoutData extends UkJpaEntity implements Serializable {
 	/** The lock type. */
 	@Column(name="LOCK_TYPE")
 	private Integer lockType;
-
-	/** The lockout date time. */
-	@Column(name="LOCKOUT_DATE_TIME")
-	@Convert(converter = GeneralDateTimeToDBConverter.class)
-	private GeneralDateTime lockoutDateTime;
 
 	/** The login method. */
 	@Column(name="LOGIN_METHOD")

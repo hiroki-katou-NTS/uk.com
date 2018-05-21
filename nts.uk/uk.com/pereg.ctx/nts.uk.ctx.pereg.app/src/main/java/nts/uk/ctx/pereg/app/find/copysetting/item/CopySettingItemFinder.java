@@ -38,6 +38,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDto;
 @Stateless
 public class CopySettingItemFinder {
 
+
 	@Inject
 	private EmpCopySettingRepository empCopyRepo;
 
@@ -67,7 +68,7 @@ public class CopySettingItemFinder {
 		EmployeeCopyCategory empCopyCategory = getEmpCopyCategory(companyId, perInfoCategory.getPersonInfoCategoryId());
 		
 		List<PersonInfoItemDefinition> itemDefList = itemDefRepo.getItemLstByListId(
-				empCopyCategory.getItemDefIdList(), AppContexts.user().contractCode());
+				empCopyCategory.getItemDefIdList(), AppContexts.user().contractCode(),companyId);
 		
 		// get data
 		Map<String, Object> dataMap = getCategoryData(Arrays.asList(categoryCd), selectedEmployeeId, baseDate);
@@ -100,7 +101,7 @@ public class CopySettingItemFinder {
 		
 		// get item-definition-list
 		List<PersonInfoItemDefinition> itemDefList = itemDefRepo.getItemLstByListId(copySettingItemIdList,
-				AppContexts.user().contractCode());
+				AppContexts.user().contractCode(), companyId);
 		
 		// get data
 		Map<String, Object> dataMap = getCategoryData(categoryCodes, employeeId, baseDate);
@@ -173,7 +174,7 @@ public class CopySettingItemFinder {
 	private Map<String, Object> getCategoryData(List<String> categoryCodes, String employeeId, GeneralDate baseDate) {
 		Map<String, Object> dataMap = new HashMap<>();
 		categoryCodes.forEach(categoryCode -> {
-			PeregDto dto = this.layoutProcessor.findSingle(new PeregQuery(categoryCode, employeeId, null, baseDate));
+			PeregDto dto = this.layoutProcessor.findSingle(PeregQuery.createQueryLayout(categoryCode, employeeId, null, baseDate));
 			if ( dto != null ) {
 				dataMap.putAll(MappingFactory.getFullDtoValue(dto));
 			}
