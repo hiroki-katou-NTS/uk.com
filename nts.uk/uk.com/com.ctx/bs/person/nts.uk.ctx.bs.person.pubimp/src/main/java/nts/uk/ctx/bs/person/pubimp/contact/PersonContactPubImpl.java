@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.person.pubimp.contact;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -13,8 +14,8 @@ import nts.uk.ctx.bs.person.pub.contact.PersonContactObject;
 import nts.uk.ctx.bs.person.pub.contact.PersonContactPub;
 
 @Stateless
-public class PersonContactPubImpl implements PersonContactPub{
-	
+public class PersonContactPubImpl implements PersonContactPub {
+
 	@Inject
 	private PersonContactRepository personContactRepo;
 
@@ -25,12 +26,38 @@ public class PersonContactPubImpl implements PersonContactPub{
 	}
 
 	private PersonContactObject convertToDto(PersonContact p) {
-		EmergencyContact emerContact1 = p.getEmergencyContact1();
-		EmergencyContact emerContact2 = p.getEmergencyContact2();
-		return new PersonContactObject(p.getPersonId(), p.getCellPhoneNumber().v(), p.getMailAdress().v(),
-				p.getMobileMailAdress().v(), emerContact1.getMemo().v(), emerContact1.getContactName().v(),
-				emerContact1.getPhoneNumber().v(), emerContact2.getMemo().v(), emerContact2.getContactName().v(),
-				emerContact2.getPhoneNumber().v());
+
+		PersonContactObject pcObject = new PersonContactObject();
+		pcObject.setPersonId(p.getPersonId());
+		pcObject.setCellPhoneNumber(p.getCellPhoneNumber().isPresent() ? p.getCellPhoneNumber().get().v() : null);
+		pcObject.setMailAdress(p.getMailAdress().isPresent() ? p.getMailAdress().get().v() : null);
+		pcObject.setMobileMailAdress(p.getMobileMailAdress().isPresent() ? p.getMobileMailAdress().get().v() : null);
+
+		Optional<EmergencyContact> emerContact1 = p.getEmergencyContact1();
+		if (emerContact1.isPresent()) {
+			pcObject.setMemo1(emerContact1.get().getMemo().v());
+			pcObject.setContactName1(emerContact1.get().getContactName().v());
+			pcObject.setPhoneNumber1(emerContact1.get().getPhoneNumber().v());
+		}
+		Optional<EmergencyContact> emerContact2 = p.getEmergencyContact2();
+		if (emerContact2.isPresent()) {
+			pcObject.setMemo2(emerContact2.get().getMemo().v());
+			pcObject.setContactName2(emerContact2.get().getContactName().v());
+			pcObject.setPhoneNumber2(emerContact2.get().getPhoneNumber().v());
+		}
+		return pcObject;
+	}
+
+	@Override
+	public void register(String personId, String cellPhoneNumber, String mailAddress, String mobileMailAdress) {
+		Optional<PersonContact> personContactOpt = personContactRepo.getByPId(personId);
+		PersonContact domain = PersonContact.createFromJavaType(personId, cellPhoneNumber, mailAddress,
+				mobileMailAdress);
+		if (personContactOpt.isPresent()) {
+			personContactRepo.update(domain);
+		} else {
+			personContactRepo.add(domain);
+		}
 	}
 
 }
