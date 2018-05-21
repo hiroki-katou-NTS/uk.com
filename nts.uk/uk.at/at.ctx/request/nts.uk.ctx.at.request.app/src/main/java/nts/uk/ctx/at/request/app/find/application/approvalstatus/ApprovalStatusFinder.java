@@ -278,7 +278,7 @@ public class ApprovalStatusFinder {
 		HdAppSetDto hdAppSetDto = HdAppSetDto.convertToDto(appList.getLstHdAppSet().get());
 		List<ApplicationDetailDto> listApplicationDetail = new ArrayList<>();
 		List<ApprovalSttAppDetail> listAppSttDetail = appList.getApprovalSttAppDetail();
-		List<AppCompltLeaveSync> lstCompltLeaveSync = appList.getListSync();
+		//List<AppCompltLeaveSync> lstCompltLeaveSync = appList.getListSync();
 		
 		for (ApprovalSttAppDetail app : listAppSttDetail) {
 			ApplicationDetailDto detail = new ApplicationDetailDto();
@@ -385,7 +385,7 @@ public class ApprovalStatusFinder {
 				break;
 			// 振休振出申請
 			case COMPLEMENT_LEAVE_APPLICATION:
-				appContent = getAppCompltLeaveInfo(appCompltLeaveSync, applicaton_N, companyID, appId);
+				//appContent = getAppCompltLeaveInfo(appCompltLeaveSync, applicaton_N, companyID, appId);
 				break;
 			// 打刻申請（NR形式）
 			case STAMP_NR_APPLICATION:
