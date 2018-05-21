@@ -74,6 +74,22 @@ module nts.uk.at.view.kdm001.j.viewmodel {
             nts.uk.ui.windows.close();
         }
         
+        /**
+         * update
+         */
+        public update():void {
+            var self = this;
+            console.log(new UpdateModel(self.itemsSelected(),"1"));
+            service.update(new UpdateModel(self.itemsSelected(),"1")).done(function(data) {
+                
+            }).fail(function(error) {
+                alertError(error);
+                
+            }).always(() => {
+                
+            });
+        }
+        
         
         public callService():void {
             service.getAll('1').done(function(data) {
@@ -100,4 +116,14 @@ module nts.uk.at.view.kdm001.j.viewmodel {
             this.useNumberDay = useNumberDay;
         }
     }
+    
+    class UpdateModel {
+        daysOffMana: Array<ItemModel>;
+        employeeId: string;
+        constructor(daysOffMana: Array<ItemModel>, employeeId: string) {
+            this.daysOffMana = daysOffMana;
+            this.employeeId = employeeId;
+        }
+    }
+    
 }
