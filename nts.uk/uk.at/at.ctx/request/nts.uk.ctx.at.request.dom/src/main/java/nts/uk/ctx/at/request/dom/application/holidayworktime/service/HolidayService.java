@@ -21,7 +21,7 @@ public interface HolidayService {
 	 * @param personalLablorCodition
 	 * @return
 	 */
-	public WorkTypeHolidayWork getWorkTypeForLeaverApp(String companyID, String employeeID,List<AppEmploymentSetting> appEmploymentSettings,GeneralDate appDate,Optional<WorkingConditionItem> personalLablorCodition);
+	public WorkTypeHolidayWork getWorkTypeForLeaverApp(String companyID, String employeeID,List<AppEmploymentSetting> appEmploymentSettings,GeneralDate appDate,Optional<WorkingConditionItem> personalLablorCodition,Integer paramholidayCls);
 	
 	 /**
 	 * 4.勤務種類を取得する
