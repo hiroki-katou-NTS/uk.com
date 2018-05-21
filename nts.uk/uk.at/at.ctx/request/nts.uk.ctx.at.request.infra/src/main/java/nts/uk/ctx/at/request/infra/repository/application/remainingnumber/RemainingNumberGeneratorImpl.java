@@ -1,13 +1,12 @@
 package nts.uk.ctx.at.request.infra.repository.application.remainingnumber;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import com.aspose.cells.AutoFitterOptions;
 import com.aspose.cells.BorderType;
 import com.aspose.cells.Cell;
 import com.aspose.cells.CellBorderType;
@@ -45,15 +44,15 @@ public class RemainingNumberGeneratorImpl extends AsposeCellsReportGenerator imp
 			Worksheet worksheet = worksheets.get(0);
 			
 			printTemplate(worksheet, dataSource);
-			worksheet.autoFitColumns();
-			printDataSource(worksheet, dataSource);
-			worksheet.autoFitRows();
 			
+			printDataSource(worksheet, dataSource);
+
+			worksheet.autoFitColumns();
 			designer.getDesigner().setWorkbook(workbook);
 			designer.processDesigner();
 			LoginUserContext loginUserContext = AppContexts.user();
 			String fileName = "KDM002_" + loginUserContext.employeeCode() + ".xlsx";
-			
+
 			designer.saveAsExcel(this.createNewFile(generatorContext, this.getReportName(fileName)));
 
 		} catch (Exception e) {
@@ -67,7 +66,6 @@ public class RemainingNumberGeneratorImpl extends AsposeCellsReportGenerator imp
 		Cells cells = worksheet.getCells();
 
 		cells.get(0, 0).setValue(TextResource.localize("KDM002_11"));
-		worksheet.autoFitColumns();
 		setBackgroundHeader(cells.get(0, 0));
 		setBorderStyle(cells.get(0, 0));
 		cells.get(0, 1).setValue(TextResource.localize("KDM002_12"));
@@ -131,29 +129,32 @@ public class RemainingNumberGeneratorImpl extends AsposeCellsReportGenerator imp
 		cells.get(firstRow, 0).setValue(excelInforCommand.getName());
 		setBorderStyle(cells.get(firstRow, 0));
 		cells.get(firstRow, 1).setValue(excelInforCommand.getDateStart());
-		//setBorderStyle(cells.get(firstRow, 1));
+		setBorderStyle(cells.get(firstRow, 1));
 		cells.get(firstRow, 2).setValue(excelInforCommand.getDateEnd());
 		setBorderStyle(cells.get(firstRow, 2));
 		cells.get(firstRow, 3).setValue(excelInforCommand.getDateOffYear());
 		setBorderStyle(cells.get(firstRow, 3));
 		cells.get(firstRow, 4).setValue(excelInforCommand.getDateTargetRemaining());
 		setBorderStyle(cells.get(firstRow, 4));
-		cells.get(firstRow, 5).setValue(excelInforCommand.getDateAnnualRetirement()+TextResource.localize("KDM002_33"));
+		cells.get(firstRow, 5)
+				.setValue(excelInforCommand.getDateAnnualRetirement() + TextResource.localize("KDM002_33"));
 		setBorderStyle(cells.get(firstRow, 5));
-		cells.get(firstRow, 6).setValue(excelInforCommand.getDateAnnualRest()+TextResource.localize("KDM002_33"));
+		cells.get(firstRow, 6).setValue(excelInforCommand.getDateAnnualRest() + TextResource.localize("KDM002_33"));
 		setBorderStyle(cells.get(firstRow, 6));
 		int i = 0;
 		for (String wtCode : htbPlanneds.keySet()) {
 			Optional<NumberOfWorkTypeUsedImport> opNumber = excelInforCommand.getNumberOfWorkTypeUsedImport().stream()
 					.filter(x -> x.getWorkTypeCode().equals(wtCode)).findFirst();
 			if (opNumber.isPresent()) {
-				cells.get(firstRow, 7 + i).setValue(opNumber.get().getAttendanceDaysMonth()+TextResource.localize("KDM002_33"));
+				cells.get(firstRow, 7 + i)
+						.setValue(opNumber.get().getAttendanceDaysMonth() + TextResource.localize("KDM002_33"));
 			}
 			setBorderStyle(cells.get(firstRow, 7 + i));
 			Optional<PlannedVacationListCommand> opPlanVa = excelInforCommand.getPlannedVacationListCommand().stream()
 					.filter(x -> x.getWorkTypeCode().equals(wtCode)).findFirst();
 			if (opPlanVa.isPresent()) {
-				cells.get(firstRow, 8 + i).setValue(opPlanVa.get().getMaxNumberDays()+TextResource.localize("KDM002_33"));
+				cells.get(firstRow, 8 + i)
+						.setValue(opPlanVa.get().getMaxNumberDays() + TextResource.localize("KDM002_33"));
 			}
 			setBorderStyle(cells.get(firstRow, 8 + i));
 			i = i + 2;
@@ -161,18 +162,19 @@ public class RemainingNumberGeneratorImpl extends AsposeCellsReportGenerator imp
 		firstRow += 1;
 		return firstRow;
 	}
-	 private void setBorderStyle(Cell cell) {
-		  Style style = cell.getStyle();
-		  style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
-		  style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
-		  style.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getBlack());
-		  style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
-		  cell.setStyle(style);
-		 }
 
-		 private void setBackgroundHeader(Cell cell){
-		  Style style = cell.getStyle();
-		  style.setForegroundColor(Color.getGainsboro());
-		  cell.setStyle(style);
-		 }
+	private void setBorderStyle(Cell cell) {
+		Style style = cell.getStyle();
+		style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
+		style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+		style.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getBlack());
+		style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
+		cell.setStyle(style);
+	}
+
+	private void setBackgroundHeader(Cell cell) {
+		Style style = cell.getStyle();
+		style.setForegroundColor(Color.getGainsboro());
+		cell.setStyle(style);
+	}
 }
