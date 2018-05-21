@@ -11,5 +11,15 @@ public interface PersonContactPub {
 	 * @return
 	 */
 	List<PersonContactObject> getList(List<String> personIds);
-
+	
+	/**
+	 * 個人連絡先を登録する
+	 * RequestList 381
+	 * @param personId
+	 * @param cellPhoneNumber
+	 * @param mailAdress
+	 * @param mobileMailAdress
+	 */
+	void register(String personId, String cellPhoneNumber, String mailAdress, String mobileMailAdress);
+	
 }
