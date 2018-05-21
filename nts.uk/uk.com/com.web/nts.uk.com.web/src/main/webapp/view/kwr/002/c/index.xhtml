@@ -140,7 +140,7 @@
 							</div> -->
 							<div style="width: 300px"
 								data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'attendanceCode', comId: 'single-list', 
-											items: attendanceItemList, selected: currentCode, selectedKey: 'attendanceItemName', fields: ['attendanceItemName', 'attendanceItemName'], mode: 'igGrid'}" />
+											items: attendanceItemList, selected: currentCode, selectedKey: 'attendanceItemName', fields: ['attendanceItemId', 'attendanceItemName'], mode: 'igGrid'}" />
 							<table id="single-list"
 								data-bind="ntsGridList: {
 											height: 320,
@@ -219,7 +219,7 @@
 									<span>#{i18n.getText('KWR002_99')}</span>
 									<div class="panel panel-frame cell">
 										<div class="panel panel-gray-bg sub top" data-bind="text: attendanceRecExpDaily()[9].upperPosition"></div>
-										<div class="panel panel-gray-bg sub bot" data-bind="text: attendanceRecExpDaily()[9].upperPosition"></div>
+										<div class="panel panel-gray-bg sub bot" data-bind="text: attendanceRecExpDaily()[9].lowwerPosition"></div>
 									</div>
 								</div>
 								<br />
@@ -228,86 +228,86 @@
 								<div class="column">
 									<span>#{i18n.getText('KWR002_101')}</span>
 									<div class="panel panel-frame cell">
-										<div class="panel panel-gray-bg sub top">Default 1</div>
-										<div class="panel panel-gray-bg sub bot">Default 2</div>
+										<div class="panel panel-gray-bg sub top" data-bind="text: attendanceRecExpMonthly()[1].upperPosition"></div>
+										<div class="panel panel-gray-bg sub bot" data-bind="text: attendanceRecExpMonthly()[1].lowwerPosition"></div>
 									</div>
 								</div>
 
 								<div class="column">
 									<span>#{i18n.getText('KWR002_102')}</span>
 									<div class="panel panel-frame cell">
-										<div class="panel panel-gray-bg sub top">Default 1</div>
-										<div class="panel panel-gray-bg sub bot">Default 2</div>
+										<div class="panel panel-gray-bg sub top" data-bind="text: attendanceRecExpMonthly()[2].upperPosition"></div>
+										<div class="panel panel-gray-bg sub bot" data-bind="text: attendanceRecExpMonthly()[2].lowwerPosition"></div>
 									</div>
 								</div>
 								<div class="column">
 									<span>#{i18n.getText('KWR002_103')}</span>
 									<div class="panel panel-frame cell">
-										<div class="panel panel-gray-bg sub top">Default 1</div>
-										<div class="panel panel-gray-bg sub bot">Default 2</div>
+										<div class="panel panel-gray-bg sub top" data-bind="text: attendanceRecExpMonthly()[3].upperPosition"></div>
+										<div class="panel panel-gray-bg sub bot" data-bind="text: attendanceRecExpMonthly()[3].lowwerPosition"></div>
 									</div>
 								</div>
 								<div class="column">
 									<span>#{i18n.getText('KWR002_104')}</span>
 									<div class="panel panel-frame cell">
-										<div class="panel panel-gray-bg sub top">Default 1</div>
-										<div class="panel panel-gray-bg sub bot">Default 2</div>
+										<div class="panel panel-gray-bg sub top" data-bind="text: attendanceRecExpMonthly()[4].upperPosition"></div>
+										<div class="panel panel-gray-bg sub bot" data-bind="text: attendanceRecExpMonthly()[4].lowwerPosition"></div>
 									</div>
 								</div>
 								<div class="column">
 									<span>#{i18n.getText('KWR002_105')}</span>
 									<div class="panel panel-frame cell">
-										<div class="panel panel-gray-bg sub top">Default 1</div>
-										<div class="panel panel-gray-bg sub bot">Default 2</div>
+										<div class="panel panel-gray-bg sub top" data-bind="text: attendanceRecExpMonthly()[5].upperPosition"></div>
+										<div class="panel panel-gray-bg sub bot" data-bind="text: attendanceRecExpMonthly()[5].lowwerPosition"></div>
 									</div>
 								</div>
 								<div class="column">
 									<span>#{i18n.getText('KWR002_106')}</span>
 									<div class="panel panel-frame cell">
-										<div class="panel panel-gray-bg sub top">Default 1</div>
-										<div class="panel panel-gray-bg sub bot">Default 2</div>
+										<div class="panel panel-gray-bg sub top" data-bind="text: attendanceRecExpMonthly()[6].upperPosition"></div>
+										<div class="panel panel-gray-bg sub bot" data-bind="text: attendanceRecExpMonthly()[6].lowwerPosition"></div>
 									</div>
 								</div>
 								<div class="column">
 									<span>#{i18n.getText('KWR002_107')}</span>
 									<div class="panel panel-frame cell">
-										<div class="panel panel-gray-bg sub top">Default 1</div>
-										<div class="panel panel-gray-bg sub bot">Default 2</div>
+										<div class="panel panel-gray-bg sub top" data-bind="text: attendanceRecExpMonthly()[7].upperPosition"></div>
+										<div class="panel panel-gray-bg sub bot" data-bind="text: attendanceRecExpMonthly()[7].lowwerPosition"></div>
 									</div>
 								</div>
 								<div class="column">
 									<span>#{i18n.getText('KWR002_108')}</span>
 									<div class="panel panel-frame cell">
-										<div class="panel panel-gray-bg sub top">Default 1</div>
-										<div class="panel panel-gray-bg sub bot">Default 2</div>
+										<div class="panel panel-gray-bg sub top" data-bind="text: attendanceRecExpMonthly()[8].upperPosition"></div>
+										<div class="panel panel-gray-bg sub bot" data-bind="text: attendanceRecExpMonthly()[8].lowwerPosition"></div>
 									</div>
 								</div>
 								<div class="column">
 									<span>#{i18n.getText('KWR002_109')}</span>
 									<div class="panel panel-frame cell">
-										<div class="panel panel-gray-bg sub top">Default 1</div>
-										<div class="panel panel-gray-bg sub bot">Default 2</div>
+										<div class="panel panel-gray-bg sub top" data-bind="text: attendanceRecExpMonthly()[9].upperPosition"></div>
+										<div class="panel panel-gray-bg sub bot" data-bind="text: attendanceRecExpMonthly()[9].lowwerPosition"></div>
 									</div>
 								</div>
 								<div class="column">
 									<span>#{i18n.getText('KWR002_110')}</span>
 									<div class="panel panel-frame cell">
-										<div class="panel panel-gray-bg sub top">Default 1</div>
-										<div class="panel panel-gray-bg sub bot">Default 2</div>
+										<div class="panel panel-gray-bg sub top" data-bind="text: attendanceRecExpMonthly()[10].upperPosition"></div>
+										<div class="panel panel-gray-bg sub bot" data-bind="text: attendanceRecExpMonthly()[10].lowwerPosition"></div>
 									</div>
 								</div>
 								<div class="column">
 									<span>#{i18n.getText('KWR002_111')}</span>
 									<div class="panel panel-frame cell">
-										<div class="panel panel-gray-bg sub top">Default 1</div>
-										<div class="panel panel-gray-bg sub bot">Default 2</div>
+										<div class="panel panel-gray-bg sub top" data-bind="text: attendanceRecExpMonthly()[11].upperPosition"></div>
+										<div class="panel panel-gray-bg sub bot" data-bind="text: attendanceRecExpMonthly()[11].lowwerPosition"></div>
 									</div>
 								</div>
 								<div class="column">
 									<span>#{i18n.getText('KWR002_112')}</span>
 									<div class="panel panel-frame cell">
-										<div class="panel panel-gray-bg sub top">Default 1</div>
-										<div class="panel panel-gray-bg sub bot">Default 2</div>
+										<div class="panel panel-gray-bg sub top" data-bind="text: attendanceRecExpMonthly()[12].upperPosition"></div>
+										<div class="panel panel-gray-bg sub bot" data-bind="text: attendanceRecExpMonthly()[12].lowwerPosition"></div>
 									</div>
 								</div>
 							</div>

@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.repository.DailyAttendanceItemNameDomainService;
 import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceTypeDivergenceAdapter;
@@ -15,9 +16,13 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class AttendanceIdItemFinder {
 
-	/** The at type. */
+//	/** The at type. */
+//	@Inject
+//	private AttendanceTypeDivergenceAdapter atType;
+	
+	/** The repository. */
 	@Inject
-	private AttendanceTypeDivergenceAdapter atType;
+	private AttendanceTypeRepository atTypeRepo;
 
 	/** The at name. */
 	@Inject
@@ -30,7 +35,7 @@ public class AttendanceIdItemFinder {
 
 		//get attendanceId
 		type.forEach(item -> {
-			attendanceItemList.addAll(atType.getItemByScreenUseAtr(companyId, item).stream()
+			attendanceItemList.addAll(atTypeRepo.getItemByScreenUseAtr(companyId, item).stream()
 					.map(e -> new AttendanceIdItemDto(e.getAttendanceItemId(), null, item)).collect(Collectors.toList()));
 		});
 

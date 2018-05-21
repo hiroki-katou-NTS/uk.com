@@ -122,7 +122,7 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 				});
 		});
 
-		return domainList;
+		return domainList.stream().filter(item -> item != null).collect(Collectors.toList());
 	}
 
 	@Override
