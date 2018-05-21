@@ -88,7 +88,9 @@ public class JpaEmployeeInfoContactRepository extends JpaRepository implements E
 			return new ArrayList<>();
 		}
 		
-		List<BsymtEmpInfoContact> entities = this.queryProxy().query(GET_BY_LIST, BsymtEmpInfoContact.class).getList();
+		List<BsymtEmpInfoContact> entities = this.queryProxy().query(GET_BY_LIST, BsymtEmpInfoContact.class)
+				.setParameter("employeeIds", employeeIds).getList();
+		
 		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
 	}
 
