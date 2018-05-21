@@ -420,7 +420,7 @@ module nts.uk.at.view.kwr001.a {
                 var self = this;
                 var employeeId = '';
                 for (var employee of self.employeeList()) {
-                    if (employee.id === employeeCode) {
+                    if (employee.code === employeeCode) {
                         employeeId = employee.id;
                     }
                 }
@@ -430,11 +430,11 @@ module nts.uk.at.view.kwr001.a {
             /**
              * find employee id in selected
              */
-            private findEmployeeIdsByCodes(employeeCodes: UnitModel[]): string[] {
+            private findEmployeeIdsByCodes(employeeCodes: string[]): string[] {
                 var self = this;
                 var employeeIds: string[] = [];
                 for (var employeeCode of employeeCodes) {
-                    employeeIds.push(self.findEmployeeIdByCode(employeeCode.id));
+                    employeeIds.push(self.findEmployeeIdByCode(employeeCode));
                 }
                 return employeeIds;
             }
@@ -448,9 +448,9 @@ module nts.uk.at.view.kwr001.a {
                     service.restoreCharacteristic(companyId, userId).done(function(data: WorkScheduleOutputConditionDto) {
                         var user: any = __viewContext.user;
                         var dto: WorkScheduleOutputQueryDto = {
-                            lstEmployeeId: self.findEmployeeIdsByCodes(self.employeeList()),
+                            lstEmployeeId: self.findEmployeeIdsByCodes(self.multiSelectedCode()),
                             startDate: self.toDate(self.startDatepicker()),
-                            endDate: self.toDate(self.startDatepicker()),
+                            endDate: self.toDate(self.endDatepicker()),
                             fileType: 0,
                             condition: data
                         };
@@ -469,9 +469,9 @@ module nts.uk.at.view.kwr001.a {
                     service.restoreCharacteristic(companyId, userId).done(function(data: WorkScheduleOutputConditionDto) {
                         var user: any = __viewContext.user;
                         var dto: WorkScheduleOutputQueryDto = {
-                            lstEmployeeId: self.findEmployeeIdsByCodes(self.employeeList()),
+                            lstEmployeeId: self.findEmployeeIdsByCodes(self.multiSelectedCode()),
                             startDate: self.toDate(self.startDatepicker()),
-                            endDate: self.toDate(self.startDatepicker()),
+                            endDate: self.toDate(self.endDatepicker()),
                             fileType: 1,
                             condition: data
                         };

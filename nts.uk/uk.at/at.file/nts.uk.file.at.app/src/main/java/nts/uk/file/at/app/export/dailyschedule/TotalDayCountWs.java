@@ -187,7 +187,7 @@ public class TotalDayCountWs {
 	 * @param totalCountDay
 	 */
 	public void calculateAllDayCount(String employeeId, DateRange dateRange, TotalCountDay totalCountDay) {
-		calculatePredeterminedDay(employeeId, dateRange, totalCountDay);
+		//calculatePredeterminedDay(employeeId, dateRange, totalCountDay);
 		//calculateNonPredeterminedDay(employeeId, dateRange, totalCountDay);
 		//calculateDayCount(employeeId, dateRange, totalCountDay);
 	}
