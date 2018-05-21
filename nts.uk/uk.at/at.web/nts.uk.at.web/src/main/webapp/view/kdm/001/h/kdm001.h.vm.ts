@@ -1,4 +1,4 @@
-module nts.uk.at.view.kdm001.m.viewmodel {
+module nts.uk.at.view.kdm001.h.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import model = kdm001.share.model;
     export class ScreenModel {
@@ -26,11 +26,11 @@ module nts.uk.at.view.kdm001.m.viewmodel {
             self.substituteHolidayDate('20160424');
         }
 
-        closeKDM001M(): void {
+        closeKDM001H(): void {
             nts.uk.ui.windows.close();
         }
-        openKDM001M(): void {
-            modal("/view/kdm/001/m/index.xhtml").onClosed(function() { });
+        openKDM001H(): void {
+            modal("/view/kdm/001/h/index.xhtml").onClosed(function() { });
         }
     }
 }
