@@ -1,10 +1,12 @@
 package nts.uk.screen.at.app.monthlyperformance.correction.param;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.DisplayAndInputMonthlyDto;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 
 @Data
+@NoArgsConstructor
 public class PAttendanceItem {
 	/** ID: 勤怠項目ID */
 	private Integer id;

@@ -33,6 +33,7 @@ import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.vacationusetime.KrcdtMonVactUseTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.excessoutside.KrcdtMonExcessOutside;
 import nts.uk.ctx.at.record.infra.entity.monthly.excessoutside.KrcdtMonExcoutTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.totalcount.KrcdtMonTotalTimes;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.KrcdtMonVerticalTotal;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workclock.KrcdtMonWorkClock;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonAggrAbsnDays;
@@ -501,6 +502,25 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 			entity.krcdtMonWorkClock.fromDomainForPersist(domainKey, workclock);
 		}
 		else entity.krcdtMonWorkClock.fromDomainForUpdate(workclock);
+		
+		// 回数集計
+		val totalCountMap = domain.getTotalCount().getTotalCountList();
+		if (entity.krcdtMonTotalTimes == null) entity.krcdtMonTotalTimes = new ArrayList<>();
+		val entityTotalTimesList = entity.krcdtMonTotalTimes;
+		entityTotalTimesList.removeIf(a -> {return !totalCountMap.containsKey(a.PK.totalTimesNo);} );
+		for (val totalCount : totalCountMap.values()){
+			KrcdtMonTotalTimes entityTotalTimes = new KrcdtMonTotalTimes();
+			val entityTotalTimesOpt = entityTotalTimesList.stream()
+					.filter(c -> c.PK.totalTimesNo == totalCount.getTotalCountNo()).findFirst();
+			if (entityTotalTimesOpt.isPresent()){
+				entityTotalTimes = entityTotalTimesOpt.get();
+				entityTotalTimes.fromDomainForUpdate(totalCount);
+			}
+			else {
+				entityTotalTimes.fromDomainForPersist(domainKey, totalCount);
+				entityTotalTimesList.add(entityTotalTimes);
+			}
+		}
 		
 		// 登録が必要な時、登録を実行
 		if (isNeedPersist) this.getEntityManager().persist(entity);

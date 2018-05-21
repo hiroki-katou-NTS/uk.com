@@ -508,6 +508,9 @@ module nts.custombinding {
                     .layout-control .item-classification .form-label {
                         width: 210px;
                         white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        padding-right: 0;
                     }
 
                     .layout-control .item-classification .set-group>.form-label {
@@ -748,7 +751,7 @@ module nts.custombinding {
                                                             <!-- /ko -->
                                                         </tr>
                                                     </thead>
-                                                    <tbody data-bind="foreach: { data: renders(), as: 'row' }">
+                                                    <tbody data-bind="foreach: { data: renders(), as: 'row', afterRender: function(element, data) { let _renders = _.map(ko.toJS(renders), function(m) { return m.recordId; }); if(_.indexOf(_renders, data.recordId) == _renders.length - 1) { setTimeout(function() { $(element[1]).find('input').unbind('blur'); }, 100) } } }">
                                                         <tr data-bind="attr: { 'data-id': row.recordId }">
                                                             <td>
                                                                 <span data-bind="ntsCheckBox: { checked: row.checked, enable: row.enable }"></span>
@@ -2426,6 +2429,11 @@ module nts.custombinding {
                     services.getCats().done((data: any) => {
                         if (data && data.categoryList && data.categoryList.length) {
                             let cats = _.filter(data.categoryList, (x: IItemCategory) => !x.isAbolition && !x.categoryParentCode);
+
+                            if (location.href.indexOf('/view/cps/007/a/') > -1) {
+                                cats = _.filter(cats, (c: IItemCategory) => c.categoryCode != 'CS00069');
+                            }
+
                             if (cats && cats.length) {
                                 opts.combobox.options(cats);
 
@@ -2814,6 +2822,7 @@ module nts.custombinding {
 
     interface IItemCategory {
         id: string;
+        categoryCode?: string;
         categoryName: string;
         categoryType: IT_CAT_TYPE;
         isAbolition?: number;

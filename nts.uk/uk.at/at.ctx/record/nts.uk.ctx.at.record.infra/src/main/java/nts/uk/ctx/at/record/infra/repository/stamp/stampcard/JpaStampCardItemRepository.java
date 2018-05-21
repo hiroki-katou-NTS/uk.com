@@ -14,15 +14,15 @@ public class JpaStampCardItemRepository extends JpaRepository implements StampCa
 
 
 	private final String SELECT_BY_SID = "SELECT c FROM KwkdtStampCard c"
-			+ " WHERE c.employeeID = :employeeID";
+			+ " WHERE c.sid = :employeeID";
 	
 	private final String SELECT_BY_LIST_PERSON = "SELECT c FROM KwkdtStampCard c"
-			+ " WHERE c.employeeID IN :lstEmployeeId";
+			+ " WHERE c.sid IN :lstEmployeeId";
 
 	private static StampCardItem toDomain(KwkdtStampCard entity) {
 		StampCardItem domain = StampCardItem.createFromJavaType(
-				entity.employeeID, 
-				entity.kwkdtStampCardPK.cardNumber);
+				entity.sid, 
+				entity.cardNo);
 		return domain;
 	}
 

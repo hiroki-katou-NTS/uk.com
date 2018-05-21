@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**

@@ -1569,15 +1569,15 @@ module nts.layout {
             let self = this,
                 finder: IFinder = self.finder,
                 ctrls: Array<IFindData> = finder.finds("CS00069", undefined),
-                empId = ko.toJS(__viewContext.viewModel.employee.employeeId),
-                is_self = __viewContext.user.employeeId == empId;
+                empId = ko.toJS((((__viewContext || {}) .viewModel || {}).employee || {}).employeeId),
+                is_self =  empId && ((__viewContext || {}).user||{}).employeeId == empId;
 
             if (!!ctrls) {
                 let categoryId = ((ctrls[0] || <any>{}).data || <any>{}).categoryId;
                 if (categoryId) {
                     __viewContext
                         .primitiveValueConstraints[ctrls[0].id.replace(/#/g, '')]
-                        .stringExpression = /[a-zA-Z0-9\"\#\$\%\&\(\~\|\{\}\[\]\@\:\`\*\+\?\;\/\_\-\>\<\)]{1,20}/;
+                        .stringExpression = /^[a-zA-Z0-9\"\#\$\%\&\(\~\|\{\}\[\]\@\:\`\*\+\?\;\/\_\-\>\<\)]{1,20}$/;
 
                     fetch.perm((__viewContext || {}).user.role.personalInfo, categoryId).done(perm => {
                         if (perm) {
