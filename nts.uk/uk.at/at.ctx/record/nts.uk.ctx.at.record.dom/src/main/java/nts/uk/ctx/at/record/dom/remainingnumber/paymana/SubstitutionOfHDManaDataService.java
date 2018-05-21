@@ -35,7 +35,7 @@ public class SubstitutionOfHDManaDataService {
 	public void insertSubOfHDMan(SubstitutionOfHDManagementData domain) {
 		String companyId = AppContexts.user().companyId();
 		// ドメインモデル「inported雇用」を読み込む
-		Optional<SEmpHistoryExport> syEmpHist = syEmploymentAdapter.findSEmpHistBySid(companyId, domain.getSID(),
+		Optional<SEmpHistoryImport> syEmpHist = syEmploymentAdapter.findSEmpHistBySid(companyId, domain.getSID(),
 				GeneralDate.today());
 		if (!syEmpHist.isPresent()) {
 			return;
@@ -58,14 +58,14 @@ public class SubstitutionOfHDManaDataService {
 	/**
 	 * KDM001 screen H
 	 */
-	//Q&&A
+	// Q&&A
 	public boolean checkCompensatoryDate() {
 		return false;
 	}
 
 	public boolean checkExpirationDate(GeneralDate expirationDate) {
 		boolean checkExpirationDate = false;
-		if(checkCompensatoryDate()){
+		if (checkCompensatoryDate()) {
 			GeneralDate today = GeneralDate.today();
 			if (today.compareTo(expirationDate) > 0) {
 				throw new BusinessException("Mg_825");
@@ -76,12 +76,12 @@ public class SubstitutionOfHDManaDataService {
 		return checkExpirationDate;
 	}
 
-	public boolean deleteSubsitutionOfHDManaData(GeneralDate expirationDate, String subOfHDID) {
+	public boolean deleteSubsitutionOfHDManaData(GeneralDate expirationDate, String sID, GeneralDate dayOff) {
 		boolean checkError = false;
 		boolean checkExDate = checkExpirationDate(expirationDate);
 		if (checkExDate) {
 			checkError = true;
-			substitutionOfHDManaDataRepository.delete(subOfHDID);
+			substitutionOfHDManaDataRepository.delete(sID, dayOff);
 			// Đang Q&&A
 			// 共通アルゴリズム「残数管理データ更新フラグ更新」を実行する
 			// (Thực hiện thuật toán common 「Update cờ cập nhật quản lý data
@@ -90,8 +90,8 @@ public class SubstitutionOfHDManaDataService {
 		return checkError;
 	}
 
-	public void delete(GeneralDate expirationDate, String subOfHDID) {
-		boolean checkData = deleteSubsitutionOfHDManaData(expirationDate, subOfHDID);
+	public void delete(GeneralDate expirationDate, String sID, GeneralDate dayOff) {
+		boolean checkData = deleteSubsitutionOfHDManaData(expirationDate, sID, dayOff);
 		if (checkData) {
 			throw new BusinessException("Msg_15");
 		} else {

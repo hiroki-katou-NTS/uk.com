@@ -1,26 +1,26 @@
 module nts.uk.at.view.kdm001.i.viewmodel {
     import model = kdm001.share.model;
     export class ScreenModel {
-        workCode: KnockoutObservable<string>      = ko.observable('');
+        workCode: KnockoutObservable<string> = ko.observable('');
         workplaceName: KnockoutObservable<string> = ko.observable('');
-        employeeCode: KnockoutObservable<string>  = ko.observable('');
-        employeeName: KnockoutObservable<string>  = ko.observable('');
-        dayRemaining: KnockoutObservable<string>  = ko.observable('');
-        checkedHoliday: KnockoutObservable<boolean>    = ko.observable(false);;
+        employeeCode: KnockoutObservable<string> = ko.observable('');
+        employeeName: KnockoutObservable<string> = ko.observable('');
+        dayRemaining: KnockoutObservable<string> = ko.observable('');
+        checkedHoliday: KnockoutObservable<boolean> = ko.observable(false);;
         checkedSubHoliday: KnockoutObservable<boolean> = ko.observable(false);
-        checkedSplit: KnockoutObservable<boolean>      = ko.observable(false);
-        dateHoliday: KnockoutObservable<string>        = ko.observable('');
-        duedateHoliday: KnockoutObservable<string>     = ko.observable('');
-        dateSubHoliday: KnockoutObservable<string>     = ko.observable('');
-        dateOptionSubHoliday: KnockoutObservable<string>    = ko.observable('');
+        checkedSplit: KnockoutObservable<boolean> = ko.observable(false);
+        dateHoliday: KnockoutObservable<string> = ko.observable('');
+        duedateHoliday: KnockoutObservable<string> = ko.observable('');
+        dateSubHoliday: KnockoutObservable<string> = ko.observable('');
+        dateOptionSubHoliday: KnockoutObservable<string> = ko.observable('');
         dateOffOptionSubHoliday: KnockoutObservable<string> = ko.observable('');
-        itemListHoliday: KnockoutObservableArray<model.ItemModel>    = ko.observableArray(model.getNumberOfDays());
-        selectedCodeHoliday: KnockoutObservable<string>              = ko.observable('');
+        itemListHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
+        selectedCodeHoliday: KnockoutObservable<string> = ko.observable('');
         itemListSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
-        selectedCodeSubHoliday: KnockoutObservable<string>           = ko.observable('');
+        selectedCodeSubHoliday: KnockoutObservable<string> = ko.observable('');
         itemListOptionSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
-        selectedCodeOptionSubHoliday: KnockoutObservable<string>           = ko.observable('');
-        isOptionSubHolidayEnable: KnockoutObservable<boolean>              = ko.observable(false);
+        selectedCodeOptionSubHoliday: KnockoutObservable<string> = ko.observable('');
+        isOptionSubHolidayEnable: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             let self = this;
@@ -46,8 +46,27 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         /**
          * closeDialog
          */
+        public createDialog() {
+            let data = new ReportInfor(holidayRemainingOutputCondition, lstSelectedEployee);
+            service.add(data).done(() => {
+
+            }).fail(function(res: any) {
+
+            });
+        }
+
         public closeDialog() {
             nts.uk.ui.windows.close();
         }
     }
+
+    class ReportInfor {
+        holidayRemainingOutputCondition: any;
+        lstEmpIds: any[];
+        constructor(holidayRemainingOutputCondition: any, lstEmpIds: any[]) {
+            this.holidayRemainingOutputCondition = holidayRemainingOutputCondition;
+            this.lstEmpIds = lstEmpIds;
+        }
+    }
 }
+

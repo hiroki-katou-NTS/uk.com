@@ -18,6 +18,12 @@ public interface ComDayOffManaDataRepository {
 
 	List<CompensatoryDayOffManaData> getBySid(String cid, String sid);
 
+	List<CompensatoryDayOffManaData> getBySidWithReDayAndDateCondition(String cid, String sid, GeneralDate startDate,
+			GeneralDate endDate);
+
+	List<CompensatoryDayOffManaData> getBySidWithHolidayDateCondition(String cid, String sid,
+			GeneralDate dateSubHoliday);
+
 	void create(CompensatoryDayOffManaData domain);
 
 	/**
