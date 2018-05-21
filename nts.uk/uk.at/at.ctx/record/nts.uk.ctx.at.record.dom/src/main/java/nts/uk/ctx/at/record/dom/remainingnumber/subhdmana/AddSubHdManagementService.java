@@ -36,8 +36,7 @@ public class AddSubHdManagementService {
 	LeaveManaDataRepository repoLeaveManaData;
 	@Inject
 	ComDayOffManaDataRepository repoComDayOffManaData;
-	@Inject
-	SubHdManagementData subHdManagementData;
+	
 
 	/**
 	 * @param subHdManagementData
