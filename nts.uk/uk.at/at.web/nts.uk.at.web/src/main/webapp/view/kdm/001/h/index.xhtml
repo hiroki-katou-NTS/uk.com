@@ -21,17 +21,17 @@
 					<label>#{i18n.getText('KDM001_102')}</label>
 				</div>
 				<div class="margin-bottom">
-					<!-- M2 対象者 -->
+					<!-- H2 対象者 -->
 					<div data-bind="ntsFormLabel: {}">
-						<!-- M2_1 職場コード -->
+						<!-- H2_1 職場コード -->
 						<label data-bind="text: workCode" />
-						<!-- M2_2 職場名称 -->
+						<!-- H2_2 職場名称 -->
 						<label style="margin-right: 10px;" data-bind="text: workName" />
-						<!-- M2_3 ： -->
+						<!-- H2_3 ： -->
 						<label>#{i18n.getText('KDM001_58')}</label>
-						<!-- M2_4 社員コード -->
+						<!-- H2_4 社員コード -->
 						<label data-bind="text: employeeCode" />
-						<!-- M2_5 社員名 -->
+						<!-- H2_5 社員名 -->
 						<label data-bind="text: employeeName" />
 					</div>
 				</div>
@@ -53,7 +53,7 @@
 							<div class="margin-bottom padding-left-15">
 								<!-- H6_1 -->
 								<div class="column-1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDM001_62')}</div>
-								<!-- M6_2 年月日 -->
+								<!-- H6_2 年月日 -->
 								<div id="H6_2"
 									data-bind="ntsDatePicker: {value: substituteHolidayDate, dateFormat: 'YYYY/MM/DD'}"
 									tabindex="1"></div>
@@ -104,11 +104,11 @@
 			</div>
 			<div id="functions-area-bottom">
 				<!--F31_1 登録 -->
-				<button class="proceed" data-bind="click: openKDM001M" tabindex="5">#{i18n.getText('KDM001_89')}</button>
+				<button class="proceed" data-bind="click: openKDM001H" tabindex="5">#{i18n.getText('KDM001_89')}</button>
 				<!-- F31_2 削除 -->
-				<button class="danger" data-bind="click: openKDM001M" tabindex="6">#{i18n.getText('KDM001_100')}</button>
+				<button class="danger" data-bind="click: openKDM001H" tabindex="6">#{i18n.getText('KDM001_100')}</button>
 				<!-- F31_3 キャンセル -->
-				<button data-bind="click: closeKDM001M" tabindex="7">#{i18n.getText('KDM001_90')}</button>
+				<button data-bind="click: closeKDM001H" tabindex="7">#{i18n.getText('KDM001_90')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
