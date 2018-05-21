@@ -9,9 +9,9 @@ import nts.arc.primitive.constraint.TimeRange;
  */
 @TimeRange(max = "48:00", min = "00:00")
 public class OccurrenceTime extends TimeDurationPrimitiveValue<OccurrenceTime>{
-
-	public OccurrenceTime(boolean isNegative, int hourPart, int minutePart) {
-		super(isNegative, hourPart, minutePart);
+	
+	public OccurrenceTime(int timeAsMinutes) {
+		super(timeAsMinutes);
 		// TODO Auto-generated constructor stub
 	}
 

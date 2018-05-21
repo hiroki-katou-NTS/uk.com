@@ -3,7 +3,6 @@ package nts.uk.ctx.at.shared.infra.entity.reamainmana.breakdayoff.interim;
 import java.io.Serializable;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
