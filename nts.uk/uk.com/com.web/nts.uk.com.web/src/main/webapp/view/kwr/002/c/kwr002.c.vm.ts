@@ -128,8 +128,8 @@ module nts.uk.com.view.kwr002.c.viewmodel {
 
                 setShared('attendanceItem', {
                     attendanceItemName: attendanceItemName,
-                    layoutCode: self.attendanceCode,
-                    layoutName: self.attendanceName,
+                    layoutCode: Number(self.attendanceCode()),
+                    layoutName: self.attendanceName(),
                     columnIndex: columnIndex,
                     position: position,
                     exportAtr: exportAtr
@@ -169,7 +169,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
 
 
                         var item: viewmodel.model.AttendanceRecItem;
-                        
+
                         item.layoutCode = attendanceItem.layoutCode;
                         item.layoutName = attendanceItem.layoutName;
                         item.columnIndex = attendanceItem.columnName;
@@ -177,7 +177,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                         item.exportAtr = attendanceItem.exportAtr;
                         item.attendanceId = attendanceItem.attendanceId;
                         item.attendanceItemName = attendanceItem.attendanceItemName;
-                        
+
                         self.updateAttendanceRecItemList(item);
                     }
 
@@ -186,20 +186,21 @@ module nts.uk.com.view.kwr002.c.viewmodel {
 
             });
         }
-        
-        decision():void{
+
+        decision(): void {
             var self = this;
-            setShared('attendanceRecExpDaily',self.attendanceItemListDaily,true);
-            setShared('attendanceRecExpMonthly',self.attendanceItemListMonthly,true);
-            setShared('attendanceRecItemList',self.attendanceRecItemList,true);
-            nts.uk.ui.windows.close();    
+            setShared('attendanceRecExpDaily', self.attendanceItemListDaily(), true);
+            setShared('attendanceRecExpMonthly', self.attendanceItemListMonthly(), true);
+            setShared('attendanceRecItemList', self.attendanceRecItemList(), true);
+            setShared('useSeal', self.useSeal());
+            nts.uk.ui.windows.close();
         }
-        
-        cancel():void{
-            setShared('attendanceRecExpDaily',null,true);
-            setShared('attendanceRecExpMonthly',null,true);
-            setShared('attendanceRecItemList',null,true);
-            nts.uk.ui.windows.close(); 
+
+        cancel(): void {
+            setShared('attendanceRecExpDaily', null, true);
+            setShared('attendanceRecExpMonthly', null, true);
+            setShared('attendanceRecItemList', null, true);
+            nts.uk.ui.windows.close();
         }
 
         findAttendanceRecItem(attendanceRecItem: viewmodel.model.AttendanceRecItem): number {
@@ -230,11 +231,15 @@ module nts.uk.com.view.kwr002.c.viewmodel {
 
             let attendanceRecExpSetCode: any = getShared('attendanceRecExpSetCode');
             let attendanceRecExpSetName: any = getShared('attendanceRecExpSetName');
+            let useSeal: any = getShared('useSeal');
 
+            if (!attendanceRecExpSetCode) self.attendanceCode('1');
             self.attendanceCode(attendanceRecExpSetCode);
             self.attendanceName(attendanceRecExpSetName);
+            self.useSealValue(useSeal == 1 ? true : false);
 
-            service.findAllAttendanceRecExportDaily(1).done(function(listattendanceRecExpDailyList: Array<model.AttendanceRecExp>) {
+            var code: number= Number(self.attendanceCode());
+            service.findAllAttendanceRecExportDaily(code).done(function(listattendanceRecExpDailyList: Array<model.AttendanceRecExp>) {
                 if (listattendanceRecExpDailyList.length > 0) {
                     listattendanceRecExpDailyList.forEach(item => {
                         var columnIndex: number = item.columnIndex;
@@ -244,7 +249,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
 
             });
 
-            service.findAllAttendanceRecExportMonthly(1).done(function(listattendanceRecExpMonthlyList: Array<model.AttendanceRecExp>) {
+            service.findAllAttendanceRecExportMonthly(code).done(function(listattendanceRecExpMonthlyList: Array<model.AttendanceRecExp>) {
                 if (listattendanceRecExpMonthlyList.length > 0) {
                     listattendanceRecExpMonthlyList.forEach(item => {
                         var columnIndex: number = item.columnIndex;
@@ -254,7 +259,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
 
             });
 
-            service.getSealStamp(1).done(function(sealStampList: Array<String>) {
+            service.getSealStamp(code).done(function(sealStampList: Array<String>) {
                 if (sealStampList.length > 0) {
                     self.sealName1(sealStampList[0]);
                     self.sealName2(sealStampList[1]);
