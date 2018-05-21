@@ -81,7 +81,7 @@ public class SprLoginFormImpl implements SprLoginFormService {
 			break;
 		case 5: 
 			// アルゴリズム「パラメータチェック（日別実績の確認）」を実行する
-			employeeID = loginParamCheck.checkParamConfirmDaily(employeeCD, date);
+			loginParamCheck.checkParamConfirmDaily(date);
 			break;
 		case 6:
 			// アルゴリズム「パラメータチェック（残業申請確認）」を実行する
