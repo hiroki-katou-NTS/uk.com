@@ -17,6 +17,8 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 	
 	private String GET_BYSID_WITHREDAY = String.join(" ", GET_BYSID, " AND c.remainDays > 0");
 	
+	private String GET_BYCOMDAYOFFID = String.join(" ", GET_BYSID_WITHREDAY, " AND c.comDayOffID IN (SELECT b.krcmtLeaveDayOffManaPK.comDayOffID FROM KrcmtLeaveDayOffMana b WHERE b.krcmtLeaveDayOffManaPK.leaveID = :leaveID)");
+	
 	@Override
 	public List<CompensatoryDayOffManaData> getBySidWithReDay(String cid, String sid) {
 		List<KrcmtComDayoffMaData> list = this.queryProxy().query(GET_BYSID_WITHREDAY, KrcmtComDayoffMaData.class)
@@ -62,6 +64,16 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 	@Override
 	public void create(CompensatoryDayOffManaData domain) {
 		this.commandProxy().insert(toEnitty(domain));
+	}
+
+	@Override
+	public List<CompensatoryDayOffManaData> getBySidComDayOffIdWithReDay(String cid, String sid, String leaveId) {
+		List<KrcmtComDayoffMaData> list = this.queryProxy().query(GET_BYCOMDAYOFFID, KrcmtComDayoffMaData.class)
+				.setParameter("employeeId", sid)
+				.setParameter("cid", cid)
+				.setParameter("leaveID", leaveId)
+				.getList();
+		return list.stream().map(i->toDomain(i)).collect(Collectors.toList());
 	}
 
 }
