@@ -5,7 +5,7 @@ module nts.uk.at.view.kaf018.d {
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
             _.defer(() => {
-                $('#grid1').focus();
+                $('#grid1_container').focus();
             });
         })
     });

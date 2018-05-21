@@ -776,7 +776,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// ドメインモデル「休暇申請設定」を取得する
 		Optional<HdAppSet> lstHdAppSet = repoHdAppSet.getAll();
 
-		return new ApplicationsListOutput(listApprovalAppDetail, lstHdAppSet);
+		return new ApplicationsListOutput(listApprovalAppDetail, lstHdAppSet, listSync);
 	}
 
 	/**

@@ -11,9 +11,10 @@ module nts.uk.at.view.kaf018.d.viewmodel {
         listStatusEmp: Array<ApprovalStatusEmployee> = [];
 
         columns: KnockoutObservableArray<NtsGridListColumn>;
-        listData: Array<Content> = [];
         listDataDisp: KnockoutObservableArray<ContentDisp> = ko.observableArray([]);
         dispEmpName: string = "";
+        lstAppCompltLeaveSync: Array<AppCompltLeaveSync> = [];
+        lstContent: Array<Content> = [];
         constructor() {
             var self = this;
         }
@@ -36,11 +37,10 @@ module nts.uk.at.view.kaf018.d.viewmodel {
                 listStatusEmp: self.listStatusEmp,
                 selectedEmpId: params.selectedEmpId
             };
-            service.initApprovalSttRequestContentDis(paramsTranfer).done(function(data: Array<Content>) {
-                _.each(data, function(item) {
-                    self.listData.push(new Content(item.appType, item.appName, item.prePostAtr, item.appStartDate, item.appEndDate, item.appContent, item.reflectState, item.approvalStatus, item.phase1, item.phase2, item.phase3, item.phase4, item.phase5));
-                })
-                self.initExTable(self.listData);
+            service.initApprovalSttRequestContentDis(paramsTranfer).done(function(data: ApplicationList) {
+                self.lstContent = data.listAppDetail;
+                self.lstAppCompltLeaveSync = data.lstAppCompltLeaveSync;
+                self.initExTable(self.lstContent, self.lstAppCompltLeaveSync);
                 block.clear();
                 dfd.resolve();
             }).fail(function(data: any) {
@@ -53,40 +53,61 @@ module nts.uk.at.view.kaf018.d.viewmodel {
         /**
          * Create exTable
          */
-        initExTable(listData: Array<Content>): void {
+        initExTable(listData: Array<Content>, lstAppComplt: Array<AppCompltLeaveSync>): void {
             var self = this;
             let index = 0;
             _.each(listData, function(data: Content) {
                 let appStartDate: string = data.appStartDate.toString();
                 let appEndDate: string = '';
-                if (data.appType == shared.ApplicationType.ABSENCE_APPLICATION || data.appType == shared.ApplicationType.WORK_CHANGE_APPLICATION || data.appType == shared.ApplicationType.BUSINESS_TRIP_APPLICATION) {
-                    appEndDate = data.appEndDate.toString();
+                let contentDisp: ContentDisp;
+                if (data.appType == shared.ApplicationType.COMPLEMENT_LEAVE_APPLICATION) {
+                    let complt: AppCompltLeaveSync = self.findCompltLeave(data.applicationID, lstAppComplt);
+                    console.log(complt);
+                    if(!complt) return; 
+                    if (complt.sync==true) {
+                        contentDisp = self.formatCompltSync(data, complt);
+                    } else {
+                        contentDisp = self.formatCompltLeave(data, complt);
+                    }
+                     self.listDataDisp.push(contentDisp);
                 } else {
-                    appEndDate == "";
+                    if (data.appType == shared.ApplicationType.ABSENCE_APPLICATION || data.appType == shared.ApplicationType.WORK_CHANGE_APPLICATION || data.appType == shared.ApplicationType.BUSINESS_TRIP_APPLICATION) {
+                        appEndDate = data.appEndDate;
+                    } else {
+                        appEndDate == "";
+                    }
+                    let dateRange = self.appDateRangeColor(self.convertDateMDW(data.appStartDate), self.convertDateMDW(appEndDate));
+                    let reflectStateContent = self.disReflectionStatus(data.reflectState);
+                    self.listDataDisp.push(new ContentDisp(data.applicationID, data.appName, data.prePostAtr == 1 ? "事後" : "事前", dateRange, data.appContent, data.reflectState, reflectStateContent, self.disApprovalStatus(data.approvalStatus), data.phase1, data.phase2, data.phase3, data.phase4, data.phase5));
                 }
-                let dateRange = self.appDateRangeColor(self.convertDateMDW(appStartDate), self.convertDateMDW(appEndDate));
-                let reflectStateContent = self.disReflectionStatus(data.reflectState);
-                self.listDataDisp.push(new ContentDisp(index, data.appType, data.appName, data.prePostAtr ? "事後" : "事前", dateRange, data.appContent, data.reflectState, reflectStateContent , self.disApprovalStatus(data.approvalStatus), data.phase1, data.phase2, data.phase3, data.phase4, data.phase5));
-                index++;
             });
+            console.log(self.listDataDisp());
             let colorBackGr = self.fillColorbackGr();
             self.reloadGridApplicaion(colorBackGr);
         }
 
+        /**
+         * find application holiday work by id
+         */
+        findCompltLeave(appId: string, lstCompltLeave: Array<AppCompltLeaveSync>): AppCompltLeaveSync {
+            return _.find(lstCompltLeave, function(complt) {
+                return complt.appMain.appID == appId;
+            });
+        }
         reloadGridApplicaion(colorBackGr: any) {
             var self = this;
             $("#grid1").ntsGrid({
                 width: '1120px',
                 height: '500px',
                 dataSource: self.listDataDisp(),
-                primaryKey: 'index',
+                primaryKey: 'appId',
                 virtualization: true,
                 rows: 20,
                 hidePrimaryKey: true,
                 rowVirtualization: true,
                 virtualizationMode: 'continuous',
                 columns: [
-                    { headerText: "", key: 'index', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: "", key: 'appId', dataType: 'string', width: '0px', hidden: true },
                     { headerText: text("KAF018_36"), key: 'appName', dataType: 'string', width: 160 },
                     { headerText: text("KAF018_37"), key: 'prePostAtr', dataType: 'string', width: 120 },
                     { headerText: text("KAF018_38"), key: 'appDate', dataType: 'string', width: 150 },
@@ -124,7 +145,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
             let self = this;
             let result = [];
             _.each(self.listDataDisp(), function(item) {
-                let rowId = item.index;
+                let rowId = item.appId;
                 //fill color in 承認状況
                 if (item.reflectState == shareModel.NOTREFLECTED) {//0 下書き保存/未反映　=　未
                     result.push(new shared.CellState(rowId, 'reflectStateContent', ['unapprovalCell']));
@@ -180,6 +201,141 @@ module nts.uk.at.view.kaf018.d.viewmodel {
                 }
             });
             return disAppStt;
+        }
+
+        /**
+        * 振休振出申請
+        * kaf011 - appType = 10
+        * TO DO
+        */
+        formatCompltLeave(app: Content, complt: AppCompltLeaveSync): ContentDisp {
+            let self = this;
+            //振出 rec typeApp = 1
+            //振休 abs typeApp = 0
+            let prePost: string = app.prePostAtr == 0 ? '事前' : '事後';
+            let content010: string = '';
+            //振出 rec typeApp = 1
+            //振休 abs typeApp = 0
+            if (complt.typeApp == 0) {
+                content010 = self.convertB(complt.appMain, app.applicationDate, app.applicationReason, app.dispReason);
+            } else {
+                content010 = self.convertA(complt.appMain, app.applicationDate, app.applicationReason, app.dispReason);
+            }
+            let appDate = self.appDateColor(self.convertDateMDW(app.applicationDate), '', '');
+            let reflectStateContent = self.disReflectionStatus(app.reflectState);
+            let a: ContentDisp = new ContentDisp(app.applicationID, app.appName, prePost, appDate, content010, app.reflectState,
+                reflectStateContent,self.disApprovalStatus(app.approvalStatus), app.phase1, app.phase2, app.phase3, app.phase4, app.phase5);
+            return a;
+        }
+        /**
+         * 振休振出申請
+         * 同期
+         * kaf011 - appType = 10
+         * TO DO
+         */
+        formatCompltSync(app: Content, complt: AppCompltLeaveSync): ContentDisp {
+            let self = this;
+            let prePost = app.prePostAtr == 0 ? '事前' : '事後';
+            let content010 = '';
+            content010 = self.convertC(app, complt, app.dispReason);
+
+            let appDateAbs = '';
+            let appDateRec = '';
+            let inputDateAbs = '';
+            let inputDateRec = '';
+            //振出 rec typeApp = 1
+            //振休 abs typeApp = 0
+            if (complt.typeApp == 0) {
+                appDateAbs = self.appDateColor(self.convertDateMDW(app.applicationDate), 'abs', '');
+                appDateRec = self.appDateColor(self.convertDateMDW(complt.appDateSub), 'rec', '');
+            } else {
+                appDateRec = self.appDateColor(self.convertDateMDW(app.applicationDate), 'rec', '');
+                appDateAbs = self.appDateColor(self.convertDateMDW(complt.appDateSub), 'abs', '');
+            }
+            let reflectStateContent = self.disReflectionStatus(app.reflectState);
+            let replectStateFull: string = '<div class = "rec" >' + reflectStateContent + '</div>' + '<br/>' + '<div class = "abs" >' + reflectStateContent + '</div>';
+            let appDateFull: string = appDateRec + '<br/>' + appDateAbs;
+            let a: ContentDisp = new ContentDisp(app.applicationID, app.appName, prePost, appDateFull,
+                content010, app.reflectState, replectStateFull,self.disApprovalStatus(app.approvalStatus), app.phase1, app.phase2, app.phase3, app.phase4, app.phase5);
+            return a;
+        }
+
+        //※振出申請のみ同期なし・紐付けなし
+        //申請/承認モード
+        //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)の表示はない（１段）
+        convertA(compltLeave: AppCompltLeaveFull, date: string, reason: string, dispReason: boolean) {
+            let self = this;
+            let time = compltLeave.startTime + text('KAF018_100') + compltLeave.endTime;
+            let reasonApp = dispReason ? '<br/>' + reason : '';
+            return text('KAF018_262') + self.convertDateShort_MD(date) + text('KAF018_230', [compltLeave.workTypeName]) + time + reasonApp;
+        }
+        //※振休申請のみ同期なし・紐付けなし
+        //申請/承認モード
+        //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)の表示はない（１段）
+        convertB(compltLeave: AppCompltLeaveFull, date: string, reason: string, dispReason: boolean) {
+            let self = this;
+            let eTime = compltLeave.endTime == '' ? '' : text('KAF018_100') + compltLeave.endTime;
+            let time = compltLeave.startTime + eTime;
+            let reasonApp = dispReason ? '<br/>' + reason : '';
+            return text('KAF018_263') + self.convertDateShort_MD(date) + text('KAF018_230', [compltLeave.workTypeName]) + time + reasonApp;
+        }
+        //※振休振出申請　同期（あり/なし）・紐付けあり
+        //申請モード/承認モード merge convert C + D
+        //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)表示（２段）
+        //振出(rec) -> 振休(abs)
+        convertC(app: Content, compltSync: AppCompltLeaveSync, dispReason: boolean) {
+            let self = this;
+            let abs = null;
+            let rec = null;
+            let recContent = '';
+            let absContent = '';
+            if (compltSync.typeApp == 0) {
+                abs = compltSync.appMain;
+                rec = compltSync.appSub;
+                recContent = self.convertA(rec, compltSync.appDateSub, '', app.dispReason);
+                absContent = self.convertB(abs, app.applicationDate, app.applicationReason, app.dispReason);
+
+            } else {
+                rec = compltSync.appMain;
+                abs = compltSync.appSub;
+                absContent = self.convertB(abs, compltSync.appDateSub, '', app.dispReason);
+                recContent = self.convertA(rec, app.applicationDate, app.applicationReason, app.dispReason);
+            }
+            return '<div class = "rec" >' + recContent + '</div>' + '<div class = "abs" >' + absContent + '</div>';
+        }
+
+        //Short_MD
+        convertDateShort_MD(date: string) {
+            let a: number = moment(date, 'YYYY/MM/DD').isoWeekday();
+            let toDate = moment(date, 'YYYY/MM/DD').toDate();
+            let dateMDW = (toDate.getMonth() + 1) + '/' + toDate.getDate();
+            return dateMDW;
+        }
+   
+        inputDateColor(input: string, classApp: string): string {
+            let inputDate = '<div class = "' + classApp + '" >' + input + '</div>';
+            //fill color text input date
+            let colorIn = input.substring(11, 12);
+            if (colorIn == '土') {//土
+                inputDate = '<div class = "saturdayCell ' + classApp + '" >' + input + '</div>';
+            }
+            if (colorIn == '日') {//日
+                inputDate = '<div class = "sundayCell ' + classApp + '" >' + input + '</div>';
+            }
+            return inputDate;
+        }
+        appDateColor(date: string, classApp: string, priod: string): string {
+            let appDate = '<div class = "' + classApp + '" >' + date + priod + '</div>';;
+            //color text appDate
+            let a = date.split("(")[1];
+            let color = a.substring(0, 1);
+            if (color == '土') {//土
+                appDate = '<div class = "saturdayCell  ' + classApp + '" >' + date + priod + '</div>';
+            }
+            if (color == '日') {//日 
+                appDate = '<div class = "sundayCell  ' + classApp + '" >' + date + priod + '</div>';
+            }
+            return appDate;
         }
 
         closeUp() {
@@ -255,28 +411,37 @@ module nts.uk.at.view.kaf018.d.viewmodel {
         width: number;
     }
     class Content {
+        // 申請ID
+        applicationID: string;
         appType: shared.ApplicationType;
+        applicationDate: string;
         appName: string;
-        prePostAtr: boolean;
-        appStartDate: Date;
-        appEndDate: Date;
+        prePostAtr: number;
+        appStartDate: string;
+        appEndDate: string;
         appContent: string;
         reflectState: number;
+        applicationReason: string;
+        dispReason: boolean;
         approvalStatus: Array<number>;
         phase1: string;
         phase2: string;
         phase3: string;
         phase4: string;
         phase5: string;
-        constructor(appType: number, appName: string, prePostAtr: boolean, appStartDate: Date, appEndDate: Date, appContent: string, reflectState: number,
+        constructor(applicationID: string, applicationDate: string, appType: number, appName: string, prePostAtr: number, appStartDate: string, appEndDate: string, appContent: string, reflectState: number, applicationReason: string, dispReason: boolean,
             approvalStatus: Array<number>, phase1: string, phase2: string, phase3: string, phase4: string, phase5: string) {
+            this.applicationID = applicationID;
             this.appType = appType;
             this.appName = appName;
+            this.applicationDate = applicationDate;
+            this.dispReason = dispReason;
             this.prePostAtr = prePostAtr;
             this.appStartDate = appStartDate;
             this.appEndDate = appEndDate;
             this.appContent = appContent;
             this.reflectState = reflectState;
+            this.applicationReason = applicationReason;
             this.approvalStatus = approvalStatus;
             this.phase1 = phase1;
             this.phase2 = phase2;
@@ -287,7 +452,6 @@ module nts.uk.at.view.kaf018.d.viewmodel {
     }
 
     class ContentDisp {
-        index: number;
         appId: string;
         appName: string;
         prePostAtr: string;
@@ -301,9 +465,8 @@ module nts.uk.at.view.kaf018.d.viewmodel {
         phase3: string;
         phase4: string;
         phase5: string;
-        constructor(index: number, appId: string, appName: string, prePostAtr: string, appDate: string, appContent: string, reflectState: number, reflectStateContent: string,
+        constructor(appId: string, appName: string, prePostAtr: string, appDate: string, appContent: string, reflectState: number, reflectStateContent: string,
             approvalStatus: string, phase1: string, phase2: string, phase3: string, phase4: string, phase5: string) {
-            this.index = index;
             this.appId = appId;
             this.appName = appName;
             this.prePostAtr = prePostAtr;
@@ -318,5 +481,47 @@ module nts.uk.at.view.kaf018.d.viewmodel {
             this.phase4 = phase4;
             this.phase5 = phase5;
         }
+    }
+
+    export class AppCompltLeaveFull {
+        /**申請ID*/
+        appID: string;
+        /**勤務種類Name*/
+        workTypeName: string;
+        /**勤務時間1.開始時刻*/
+        startTime: string;
+        /**勤務時間1.終了時刻*/
+        endTime: string;
+        constructor(appID: string, workTypeName: string, startTime: string, endTime: string) {
+            this.appID = appID;
+            this.workTypeName = workTypeName;
+            this.startTime = startTime;
+            this.endTime = endTime;
+        }
+    }
+
+    export class AppCompltLeaveSync {
+        //0 - abs
+        //1 - rec
+        typeApp: number;
+        sync: boolean;
+        appMain: AppCompltLeaveFull;
+        appSub: AppCompltLeaveFull;
+        appDateSub: string;
+        appInputSub: string;
+        constructor(typeApp: number, sync: boolean, appMain: AppCompltLeaveFull,
+            appSub: AppCompltLeaveFull, appDateSub: string, appInputSub: string) {
+            this.typeApp = typeApp;
+            this.sync = sync;
+            this.appMain = appMain;
+            this.appSub = appSub;
+            this.appDateSub = appDateSub;
+            this.appInputSub = appInputSub;
+        }
+    }
+
+    export class ApplicationList {
+        listAppDetail: Array<Content>;
+        lstAppCompltLeaveSync: Array<AppCompltLeaveSync>;
     }
 }

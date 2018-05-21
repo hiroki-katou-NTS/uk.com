@@ -11,5 +11,5 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vaca
 public class ApplicationsListOutput {
 	List<ApprovalSttAppDetail> approvalSttAppDetail; 
 	Optional<HdAppSet> lstHdAppSet;
-	//List<AppCompltLeaveSync> listSync;
+	List<AppCompltLeaveSync> listSync;
 }
