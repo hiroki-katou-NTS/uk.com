@@ -44,7 +44,7 @@ module nts.uk.at.view.kal003.a.tab {
             }
 
             self.listAgreementHour.push(defaultAgreementHour);
-            
+
             self.currentRowSelected(self.listAgreementHour()[lengthListAgreementHour].no);
             $("#fixed-table-agreement-hour tr")[lengthListAgreementHour].scrollIntoView();
         }
@@ -54,7 +54,10 @@ module nts.uk.at.view.kal003.a.tab {
             if (self.listAgreementHour().length <= 0 || self.currentRowSelected() == null) {
                 return;
             }
-            let indexRowSelected = self.listAgreementHour().findIndex(x => self.currentRowSelected() == x.no);
+            let indexRowSelected = _.findIndex(self.listAgreementHour(), function(x) {
+                return x.no == self.currentRowSelected();
+            });
+
             _.pullAt(self.listAgreementHour(), [indexRowSelected]);
             self.listAgreementHour(self.listAgreementHour());
             if (self.listAgreementHour().length == 0) {
