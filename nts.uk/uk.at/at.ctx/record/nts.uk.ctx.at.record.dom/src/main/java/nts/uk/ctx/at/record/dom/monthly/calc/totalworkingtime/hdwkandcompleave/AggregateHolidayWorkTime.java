@@ -18,7 +18,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author shuichi_ishida
  */
 @Getter
-public class AggregateHolidayWorkTime {
+public class AggregateHolidayWorkTime implements Cloneable {
 
 	/** 休出枠NO */
 	private final HolidayWorkFrameNo holidayWorkFrameNo;
@@ -79,6 +79,26 @@ public class AggregateHolidayWorkTime {
 		domain.legalHolidayWorkTime = legalHolidayWorkTime;
 		domain.legalTransferHolidayWorkTime = legalTransferHolidayWorkTime;
 		return domain;
+	}
+	
+	@Override
+	public AggregateHolidayWorkTime clone() {
+		AggregateHolidayWorkTime cloned = new AggregateHolidayWorkTime(this.holidayWorkFrameNo);
+		try {
+			cloned.holidayWorkTime = new TimeMonthWithCalculation(
+					new AttendanceTimeMonth(this.holidayWorkTime.getTime().v()),
+					new AttendanceTimeMonth(this.holidayWorkTime.getCalcTime().v()));
+			cloned.beforeHolidayWorkTime = new AttendanceTimeMonth(this.beforeHolidayWorkTime.v());
+			cloned.transferTime = new TimeMonthWithCalculation(
+					new AttendanceTimeMonth(this.transferTime.getTime().v()),
+					new AttendanceTimeMonth(this.transferTime.getCalcTime().v()));
+			cloned.legalHolidayWorkTime = new AttendanceTimeMonth(this.legalHolidayWorkTime.v());
+			cloned.legalTransferHolidayWorkTime = new AttendanceTimeMonth(this.legalTransferHolidayWorkTime.v());
+		}
+		catch (Exception e){
+			throw new RuntimeException("AggregateHolidayWorkTime clone error.");
+		}
+		return cloned;
 	}
 	
 	/**
