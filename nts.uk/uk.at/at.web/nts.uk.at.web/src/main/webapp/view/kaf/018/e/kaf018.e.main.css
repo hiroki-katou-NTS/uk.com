@@ -15,6 +15,7 @@
 
 .fixed-table tbody td{
 	text-align: center;
+	height: 27px;
 }
 
 .fixed-table tbody td:NTH-CHILD(1){
