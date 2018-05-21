@@ -256,7 +256,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                             }
                         }
                     }
-                    dailyPerformance.push(new DailyPerformance(currentDay, performance, hasError));
+                    dailyPerformance.push(new DailyPerformance(self.formatDate(currentDay), performance, hasError));
                     currentDay.setDate(currentDay.getDate() + 1);
                 }
                 listEmpPerformance.push(new EmpPerformance(index.toString(), item.sid, item.sname, monthConfirm, personConfirm, bossConfirm, dailyPerformance));
@@ -530,10 +530,10 @@ module nts.uk.at.view.kaf018.f.viewmodel {
     }
 
     class DailyPerformance {
-        targetDate: Date;
+        targetDate: String;
         performance: Performance;
         hasError: boolean;
-        constructor(targetDate: Date, performance: number, hasError: boolean) {
+        constructor(targetDate: String, performance: number, hasError: boolean) {
             this.targetDate = targetDate;
             this.performance = performance;
             this.hasError = hasError;

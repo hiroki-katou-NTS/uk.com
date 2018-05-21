@@ -26,6 +26,7 @@ import nts.uk.ctx.at.record.dom.application.realitystatus.output.DailyConfirmOut
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.EmpDailyConfirmOutput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.EmpPerformanceOutput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.EmpUnconfirmResultOutput;
+import nts.uk.ctx.at.record.dom.application.realitystatus.output.EmployeeErrorOuput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.ErrorStatusOutput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.MailTranmissionContentResultOutput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.MailTransmissionContentOutput;
@@ -35,11 +36,14 @@ import nts.uk.ctx.at.record.dom.application.realitystatus.output.UseSetingOutput
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.WkpIdMailCheckOutput;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentityProcessUseSetRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class RealityStatusService {
@@ -60,6 +64,9 @@ public class RealityStatusService {
 
 	@Inject
 	IdentificationRepository identificationRepo;
+
+	@Inject
+	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepo;
 
 	/**
 	 * 承認状況職場実績起動
@@ -562,7 +569,7 @@ public class RealityStatusService {
 			EmpDailyConfirmOutput result = this.getApprovalSttByDate(emp.getSId(), wkpId, emp.getStartDate(),
 					emp.getEndDate(), useSetting.isUseBossConfirm(), useSetting.isUsePersonConfirm());
 			// アルゴリズム「承認状況取得日別エラー状況」を実行する
-			List<ErrorStatusOutput> listErrorStatus = this.getErrorStatus(cId, emp.getSId(), wkpId, emp.getStartDate(),
+			List<ErrorStatusOutput> listErrorStatus = this.getErrorStatus(emp.getSId(), wkpId, emp.getStartDate(),
 					emp.getEndDate());
 			// 画面に内容をセットする
 			listEmpPerformance.add(new EmpPerformanceOutput(emp.getSId(), empName, emp.getStartDate(), emp.getEndDate(),
@@ -574,13 +581,51 @@ public class RealityStatusService {
 	/**
 	 * 承認状況取得日別エラー状況
 	 */
-	private List<ErrorStatusOutput> getErrorStatus(String cId, String sId, String wkpId, GeneralDate startDate,
+	private List<ErrorStatusOutput> getErrorStatus(String sId, String wkpId, GeneralDate startDate,
 			GeneralDate endDate) {
 		List<ErrorStatusOutput> listError = new ArrayList<>();
 		// imported（KAF018承認状況の照会）「実績エラー状況＜年月日、boolean＞」を取得する
-		// TODO RequestList303
-		// listError.add(new ErrorStatusOutput(wkpId, sId,
-		// startDate.addDays(1)));
+		List<EmployeeErrorOuput> listEmpError = this.checkEmployeeErrorOnProcessingDate(sId, startDate, endDate);
+		for (EmployeeErrorOuput employeeErrorOuput : listEmpError) {
+			if (employeeErrorOuput.getHasError()) {
+				// エラー状況(リスト)に追加する
+				listError.add(new ErrorStatusOutput(wkpId, sId, employeeErrorOuput.getDate()));
+			}
+		}
 		return listError;
+	}
+
+	/**
+	 * Request list 303
+	 */
+	private List<EmployeeErrorOuput> checkEmployeeErrorOnProcessingDate(String employeeId, GeneralDate startDate,
+			GeneralDate endDate) {
+		List<EmployeeErrorOuput> listEmpErrorOutput = new ArrayList<>();
+		List<GeneralDate> daysBetween = this.getDaysBetween(startDate, endDate);
+
+		List<EmployeeDailyPerError> listEmpDailyError = this.employeeDailyPerErrorRepo
+				.findByPeriodOrderByYmd(employeeId, new DatePeriod(startDate, endDate));
+		for (GeneralDate processingDate : daysBetween) {
+			boolean hasError = true;
+			if (listEmpDailyError.stream().filter(x -> x.getDate().equals(processingDate)).count() == 0) {
+				hasError = false;
+			}
+			EmployeeErrorOuput result = new EmployeeErrorOuput(processingDate, hasError);
+			listEmpErrorOutput.add(result);
+		}
+
+		return listEmpErrorOutput;
+	}
+
+	private List<GeneralDate> getDaysBetween(GeneralDate startDate, GeneralDate endDate) {
+		List<GeneralDate> daysBetween = new ArrayList<>();
+
+		while (startDate.beforeOrEquals(endDate)) {
+			daysBetween.add(startDate);
+			GeneralDate temp = startDate.addDays(1);
+			startDate = temp;
+		}
+
+		return daysBetween;
 	}
 }
