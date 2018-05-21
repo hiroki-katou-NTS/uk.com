@@ -5,23 +5,20 @@ module nts.uk.at.view.ktg027.a.service {
     var paths: any = {
          getListClosure: "screen/at/overtimehours/getlistclosure",
         getOvertimeHours: "screen/at/overtimehours/getovertimehours/",
-        getOvertimeHour : "screen/at/overtimehours/buttonPressingProcess"
+        buttonPressingProcess : "screen/at/overtimehours/buttonPressingProcess/{0}/{1}"
     }
     /** Get ListClosure */
     export function getListClosure(): JQueryPromise<any> {
         return ajax("at", paths.getListClosure);
     }
-    /** Get ListClosure */
+    /** Start page */
     export function getOvertimeHours(targetMonth : number): JQueryPromise<any> {
         return ajax("at", paths.getOvertimeHours + targetMonth);
     }
     
     /** Get ListClosure */
-    export function buttonPressingProcess(targetMonth : number, closureID :number): JQueryPromise<any> {
-        var data = {
-            targetMonth : targetMonth,
-            closureID : closureID };
-        
-        return ajax("at", paths.getOvertimeHours ,data);
+    export function buttonPressingProcess(targetMonth : number, selectedClosureID :number): JQueryPromise<any> {
+       let _path = nts.uk.text.format(paths.buttonPressingProcess, targetMonth, selectedClosureID);
+        return ajax("at", _path);
     }
 }  

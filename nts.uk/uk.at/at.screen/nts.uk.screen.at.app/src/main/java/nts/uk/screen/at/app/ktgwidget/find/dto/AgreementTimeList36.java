@@ -1,24 +1,28 @@
 package nts.uk.screen.at.app.ktgwidget.find.dto;
+
 import lombok.Value;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
+
 @Value
 
 public class AgreementTimeList36 {
 	/** 社員ID */
-	private String employeeID;
+	private String employeeCD;
+
+	private String empName;
 	/** エラーメッセージ */
 	private String errorMessage;
 	/** 確定情報 */
-	private  AgreementTimeOfMonthly confirmed;
+	private AgreementTimeOfMonthlyDto confirmed;
 	/** 申請反映後情報 */
-	private  AgreementTimeOfMonthly afterAppReflect;
-	
-	public AgreementTimeList36(String employeeID, String errorMessage, AgreementTimeOfMonthly confirmed, AgreementTimeOfMonthly afterAppReflect) {
+	private AgreementTimeOfMonthlyDto afterAppReflect;
+
+	public AgreementTimeList36(String employeeCD, String empName, String errorMessage, AgreementTimeOfMonthlyDto confirmed, AgreementTimeOfMonthlyDto afterAppReflect) {
 		super();
-		this.employeeID = employeeID;
+		this.employeeCD = employeeCD;
+		this.empName = empName;
 		this.errorMessage = errorMessage;
 		this.confirmed = confirmed;
 		this.afterAppReflect = afterAppReflect;
 	}
-	
+
 }

@@ -32,8 +32,8 @@ public class OvertimeHoursWebService extends WebService{
 	}
 	
 	@POST
-	@Path("getovertimehours/buttonPressingProcess")
-	public OvertimeHours getOvertimeHours(int targetMonth, int closureID){
-		return finder.buttonPressingProcess(targetMonth, closureID);
+	@Path("buttonPressingProcess/{targetMonth}/{selectedClosureID}")
+	public OvertimeHours getOvertimeHours(@PathParam("targetMonth") int targetMonth, @PathParam("selectedClosureID") int selectedClosureID){
+		return finder.buttonPressingProcess(targetMonth, selectedClosureID);
 	}
 }

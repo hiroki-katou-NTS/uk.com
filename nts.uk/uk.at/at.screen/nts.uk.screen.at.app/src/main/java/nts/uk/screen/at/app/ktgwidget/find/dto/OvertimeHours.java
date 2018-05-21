@@ -6,19 +6,25 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
 
 @NoArgsConstructor
 @Getter
 @Setter
 public class OvertimeHours {
+	
+		List<ClosureResultModel> listclosureID;
 		/** エラーメッセージ */
-		Optional<String> errorMessage;
+		String errorMessage;
 		/** 時間外労働情報 */
-		Optional<List<AgreementTimeList36>> overtimeLaborInfor;
-		public OvertimeHours(Optional<String> errorMessage, Optional<List<AgreementTimeList36>> overtimeLaborInfor) {
+		List<AgreementTimeList36> overtimeLaborInfor;
+		
+		
+		public OvertimeHours(String errorMessage, List<AgreementTimeList36> overtimeLaborInfor) {
 			super();
 			this.errorMessage = errorMessage;
 			this.overtimeLaborInfor = overtimeLaborInfor;
 		}
+		
 		
 }
