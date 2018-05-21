@@ -68,7 +68,7 @@
 					<!-- A4_1申請承認 -->
 					<!-- A4_2日別・月別確認  -->
 					<div class="content-left-top">
-						<div class="format-selected"
+						<div class="format-selected" tabindex="-1"
 							data-bind="ntsRadioBoxGroup: {
 								options: items,
 								optionsValue: 'code',
@@ -77,7 +77,7 @@
 								enable: enable}">
 						</div>
 						<com:ko-if bind="isVisibleComfirm">
-							<div class="format-checkbox"
+							<div class="format-checkbox" tabindex="-1"
 								data-bind="ntsCheckBox: { checked: isDailyComfirm, enable: isEnableDailyComfirm, text: '#{i18n.getText('KAF018_14')}' }"></div>
 						</com:ko-if>
 					</div>

@@ -8,6 +8,11 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
+/**
+ * 
+ * @author Anh.BD
+ *
+ */
 @Data
 @Setter
 @Getter

@@ -757,13 +757,20 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	@Override
 	public ApplicationsListOutput initApprovalSttRequestContentDis(List<ApprovalStatusEmployeeOutput> listStatusEmp) {
 		List<ApplicationApprContent> listAppContents = new ArrayList<>();
+		String companyId = AppContexts.user().companyId();
 		// 期間（リスト）
 		for (ApprovalStatusEmployeeOutput appEmp : listStatusEmp) {
 			// アルゴリズム「承認状況取得申請」を実行する
 			List<ApplicationApprContent> listAppContent = this.getAppSttAcquisitionAppl(appEmp);
 			listAppContents.addAll(listAppContent);
 		}
-		List<Application_New> lstCompltLeaveSync = new ArrayList<>();
+		List<Application_New> listCompltLeaveSync = new ArrayList<>();
+		for(ApplicationApprContent appContent : listAppContents) {
+			if(appContent.getApplication().isAppCompltLeave()) 
+				listCompltLeaveSync.add(appContent.getApplication());
+		}
+		// アルゴリズム「承認状況申請内容取得振休振出」を実行する
+		List<AppCompltLeaveSync> listSync = this.getCompltLeaveSyncOutput(companyId, listCompltLeaveSync);
 		// アルゴリズム「承認状況申請内容追加」を実行する
 		List<ApprovalSttAppDetail> listApprovalAppDetail = this.getApprovalSttAppDetail(listAppContents);
 		// ドメインモデル「休暇申請設定」を取得する
@@ -776,7 +783,6 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	 * 承認状況申請内容追加
 	 */
 	private List<ApprovalSttAppDetail> getApprovalSttAppDetail(List<ApplicationApprContent> listAppContent) {
-		String companyId = AppContexts.user().companyId();
 		List<ApprovalSttAppDetail> listApprovalSttAppDetail = new ArrayList<>();
 		for (ApplicationApprContent appContent : listAppContent) {
 			Application_New app = appContent.getApplication();
@@ -786,10 +792,6 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			List<ApproverOutput> listApprover = this.getApprovalSttApprover(appContent);
 			// アルゴリズム「承認状況申請内容取得実績」を実行する
 			ApprovalSttDetailRecord approvalSttDetail = this.getApplicationDetailRecord(appContent);
-			
-			// アルゴリズム「承認状況申請内容取得振休振出」を実行する
-			//AppCompltLeaveSync sync = this.getCompltLeaveSyncOutput(companyId, app);
-			// this.getAppliDetailAcquisitionOfBreakdown(app, listApplication);
 			// アルゴリズム「承認状況申請内容取得休暇」を実行する
 			String relationshipName = this.getApprovalSttDetailVacation(app);
 			listApprovalSttAppDetail.add(new ApprovalSttAppDetail(appContent, appDispName.get(), listApprover,
@@ -801,43 +803,44 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	/**
 	 * 「承認状況申請内容取得振休振出
 	 */
-	private AppCompltLeaveSync getCompltLeaveSyncOutput(String companyId, List<Application_New> lstCompltLeave) {
+	private List<AppCompltLeaveSync> getCompltLeaveSyncOutput(String companyId, List<Application_New> lstCompltLeave) {
+		List<AppCompltLeaveSync> lstAppCompltLeaveSync = new ArrayList<>();
 		List<String> lstSyncId = new ArrayList<>();
 		for (Application_New app : lstCompltLeave) {
-			if (lstSyncId.contains(app.getAppID())) {
+			if(lstSyncId.contains(app.getAppID())){
 				continue;
 			}
 			AppCompltLeaveFull appMain = null;
 			AppCompltLeaveFull appSub = null;
 			String appDateSub = null;
 			String appInputSub = null;
-			// アルゴリズム「申請一覧リスト取得振休振出」を実行する-(get List App Complement Leave): 6 -
-			// 申請一覧リスト取得振休振出
+			//アルゴリズム「申請一覧リスト取得振休振出」を実行する-(get List App Complement Leave): 6 - 申請一覧リスト取得振休振出
 			AppCompltLeaveSyncOutput sync = otherCommonAlgorithm.getAppComplementLeaveSync(companyId, app.getAppID());
-			if (!sync.isSync()) {// TH k co don lien ket
-				// lay thong tin chi tiet
+			if(!sync.isSync()){//TH k co don lien ket
+				//lay thong tin chi tiet
 				appMain = repoAppDetail.getAppCompltLeaveInfo(companyId, app.getAppID(), sync.getType());
-			} else {// TH co don lien ket
-					// lay thong tin chi tiet A
+			}else{//TH co don lien ket
+				//lay thong tin chi tiet A
 				appMain = repoAppDetail.getAppCompltLeaveInfo(companyId, app.getAppID(), sync.getType());
-				// check B co trong list don xin k?
+				//check B co trong list don xin k?
 				String appIdSync = sync.getType() == 0 ? sync.getRecId() : sync.getAbsId();
 				CheckExitSync checkExit = this.checkExitSync(lstCompltLeave, appIdSync);
-				if (checkExit.isCheckExit()) {// exist
+				if(checkExit.isCheckExit()){//exist
 					lstSyncId.add(appIdSync);
 					appDateSub = checkExit.getAppDateSub().toString("yyyy/MM/dd");
 					appInputSub = checkExit.getInputDateSub().toString("yyyy/MM/dd HH:mm");
-				} else {// not exist
-						// lay thong tin chung
+				}else{//not exist
+					//lay thong tin chung
 					Application_New sub = repoApp.findByID(companyId, appIdSync).get();
 					appDateSub = sub.getAppDate().toString("yyyy/MM/dd");
 					appInputSub = sub.getInputDate().toString("yyyy/MM/dd HH:mm");
 				}
 				appSub = repoAppDetail.getAppCompltLeaveInfo(companyId, appIdSync, sync.getType() == 0 ? 1 : 0);
 			}
+			
+			lstAppCompltLeaveSync.add(new AppCompltLeaveSync(sync.getType(), sync.isSync(), appMain, appSub, appDateSub, appInputSub));
 		}
-		//return new AppCompltLeaveSync(sync.getType(), sync.isSync(), appMain, appSub, appDateSub, appInputSub);
-		return null;
+		return lstAppCompltLeaveSync;
 	}
 
 	private CheckExitSync checkExitSync(List<Application_New> lstCompltLeave, String appId) {

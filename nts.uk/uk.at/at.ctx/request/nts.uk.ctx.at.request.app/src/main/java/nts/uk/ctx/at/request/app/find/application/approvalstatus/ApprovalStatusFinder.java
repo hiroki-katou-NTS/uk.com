@@ -20,8 +20,10 @@ import nts.uk.ctx.at.request.app.find.setting.company.vacationapplicationsetting
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AllDayHalfDayLeaveAtr;
+import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.OverTimeFrame;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppAbsenceFull;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppCompltLeaveFull;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppDetailInfoRepository;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppGoBackInfoFull;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppHolidayWorkFull;
@@ -276,6 +278,8 @@ public class ApprovalStatusFinder {
 		HdAppSetDto hdAppSetDto = HdAppSetDto.convertToDto(appList.getLstHdAppSet().get());
 		List<ApplicationDetailDto> listApplicationDetail = new ArrayList<>();
 		List<ApprovalSttAppDetail> listAppSttDetail = appList.getApprovalSttAppDetail();
+		List<AppCompltLeaveSync> lstCompltLeaveSync = appList.getListSync();
+		
 		for (ApprovalSttAppDetail app : listAppSttDetail) {
 			ApplicationDetailDto detail = new ApplicationDetailDto();
 
@@ -381,7 +385,7 @@ public class ApprovalStatusFinder {
 				break;
 			// 振休振出申請
 			case COMPLEMENT_LEAVE_APPLICATION:
-				appContent = getAppCompltLeaveInfo(applicaton_N, companyID, appId);
+				appContent = getAppCompltLeaveInfo(appCompltLeaveSync, applicaton_N, companyID, appId);
 				break;
 			// 打刻申請（NR形式）
 			case STAMP_NR_APPLICATION:
@@ -411,14 +415,27 @@ public class ApprovalStatusFinder {
 		return listApplicationDetail;
 	}
 
-	private String getAppCompltLeaveInfo(Application_New applicaton_N, String companyID, String appId) {
-		String appContent = "";
-		//AppCompltLeaveFull appComlt = appDetailInfoRepo.getAppCompltLeaveInfo(companyID, appId, 1);
-		appContent += I18NText.getText("KAF018_262");
-		//appContent += appComlt.getStartTime();
-		return null;
+	private String getAppCompltLeaveInfo(AppCompltLeaveSync appCompltLeaveSync, Application_New applicaton_N, String companyID, String appId) {
+		String content = "";
+		if(!appCompltLeaveSync.isSync()) {
+			boolean is0 = appCompltLeaveSync.getTypeApp()==0;
+			AppCompltLeaveFull appMain = appCompltLeaveSync.getAppMain();
+			String eTime = appMain.getEndTime().equals("") ? "" : I18NText.getText("CMM045_100") + appMain.getEndTime();
+	        String time = appMain.getStartTime() + eTime;
+	        String reasonApp = this.isDisplayReason(applicaton_N, companyID) ? applicaton_N.getAppReason().toString() : "";
+	        content = is0 ? I18NText.getText("KAF018_263") : I18NText.getText("KAF018_262")  + convertDateShort_MD(applicaton_N.getAppDate()) + I18NText.getText("KAF018_230", appMain.getWorkTypeName()) + time + reasonApp;
+		} else {
+			
+		}
+		
+		return content;
 	}
 
+	
+	private String convertDateShort_MD(GeneralDate date) {
+		return date.month() +"/"+ date.day();
+	}
+	
 	private String getBreakTimeApp(Application_New applicaton_N, String companyID, String appId) {
 		String appContent = "";
 		AppHolidayWorkFull appHoliday = appDetailInfoRepo.getAppHolidayWorkInfo(companyID, appId);
