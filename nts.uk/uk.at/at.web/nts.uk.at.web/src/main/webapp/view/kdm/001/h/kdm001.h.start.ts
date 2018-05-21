@@ -1,7 +1,7 @@
-module nts.uk.at.view.kdm001.m {
+module nts.uk.at.view.kdm001.h {
     __viewContext.ready(function() {
-        let screenModel =  new nts.uk.at.view.kdm001.m.viewmodel.ScreenModel();
+        let screenModel =  new nts.uk.at.view.kdm001.h.viewmodel.ScreenModel();
         __viewContext.bind(screenModel);
-        $('#M6_2').focus();
+        $('#H6_2').focus();
     });
 }

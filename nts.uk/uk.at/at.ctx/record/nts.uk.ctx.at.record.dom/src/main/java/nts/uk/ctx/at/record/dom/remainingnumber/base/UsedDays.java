@@ -7,7 +7,7 @@ import nts.arc.primitive.constraint.DecimalMaxValue;
 import nts.arc.primitive.constraint.DecimalMinValue;
 
 @DecimalMinValue("0.0")
-@DecimalMaxValue("999.5")
+@DecimalMaxValue("1.0")
 /**
  * 使用日数
  * @author HopNT
