@@ -35,7 +35,7 @@ public class AddAnnuaLeaveCommandHandler extends CommandHandlerWithResult<AddAnn
 
 		maxDataRepo.add(maxData);
 
-		return new PeregAddCommandResult(null);
+		return new PeregAddCommandResult(c.getEmployeeId());
 	}
 
 	@Override

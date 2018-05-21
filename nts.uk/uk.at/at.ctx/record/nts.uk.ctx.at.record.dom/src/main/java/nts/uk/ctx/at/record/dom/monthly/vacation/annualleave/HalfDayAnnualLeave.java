@@ -9,35 +9,48 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class HalfDayAnnualLeave {
+public class HalfDayAnnualLeave implements Cloneable {
 
-	/** 残日数 */
-	private HalfDayAnnLeaRemainingNum remainingDays;
-	/** 使用日数 */
-	private HalfDayAnnLeaUsedNum usedDays;
+	/** 残数 */
+	private HalfDayAnnLeaRemainingNum remainingNum;
+	/** 使用数 */
+	private HalfDayAnnLeaUsedNum usedNum;
 	
 	/**
 	 * コンストラクタ
 	 */
 	public HalfDayAnnualLeave(){
 		
-		this.remainingDays = new HalfDayAnnLeaRemainingNum();
-		this.usedDays = new HalfDayAnnLeaUsedNum();
+		this.remainingNum = new HalfDayAnnLeaRemainingNum();
+		this.usedNum = new HalfDayAnnLeaUsedNum();
 	}
 	
 	/**
 	 * ファクトリー
-	 * @param remainingDays 残日数
-	 * @param usedDays 使用日数
+	 * @param remainingNum 残数
+	 * @param usedNum 使用数
 	 * @return 半日年休
 	 */
 	public static HalfDayAnnualLeave of(
-			HalfDayAnnLeaRemainingNum remainingDays,
-			HalfDayAnnLeaUsedNum usedDays){
+			HalfDayAnnLeaRemainingNum remainingNum,
+			HalfDayAnnLeaUsedNum usedNum){
 		
 		HalfDayAnnualLeave domain = new HalfDayAnnualLeave();
-		domain.remainingDays = remainingDays;
-		domain.usedDays = usedDays;
+		domain.remainingNum = remainingNum;
+		domain.usedNum = usedNum;
 		return domain;
+	}
+	
+	@Override
+	public HalfDayAnnualLeave clone() {
+		HalfDayAnnualLeave cloned = new HalfDayAnnualLeave();
+		try {
+			cloned.remainingNum = this.remainingNum.clone();
+			cloned.usedNum = this.usedNum.clone();
+		}
+		catch (Exception e){
+			throw new RuntimeException("HalfDayAnnualLeave clone error.");
+		}
+		return cloned;
 	}
 }

@@ -12,9 +12,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.query.app.employee.EmployeeSearchQueryDto;
+import nts.uk.query.app.employee.RegulationInfoEmpQueryDto;
 import nts.uk.query.app.employee.RegulationInfoEmployeeDto;
 import nts.uk.query.app.employee.RegulationInfoEmployeeFinder;
+import nts.uk.query.app.employee.SearchEmployeeQuery;
 
 /**
  * The Class RegulationInfoEmployeeWs.
@@ -35,7 +36,56 @@ public class RegulationInfoEmployeeWs {
 	 */
 	@POST
 	@Path("find")
-	public List<RegulationInfoEmployeeDto> findRegulationInfoEmployee(EmployeeSearchQueryDto query) {
+	public List<RegulationInfoEmployeeDto> findRegulationInfoEmployee(RegulationInfoEmpQueryDto query) {
 		return this.finder.find(query);
 	}
+
+	/**
+	 * Find by code.
+	 *
+	 * @param query the query
+	 * @return the list
+	 */
+	@POST
+	@Path("find/code")
+	public List<RegulationInfoEmployeeDto> findByCode(SearchEmployeeQuery query) {
+		return this.finder.findByEmployeeCode(query);
+	}
+
+	/**
+	 * Find by name.
+	 *
+	 * @param query the query
+	 * @return the list
+	 */
+	@POST
+	@Path("find/name")
+	public List<RegulationInfoEmployeeDto> findByName(SearchEmployeeQuery query) {
+		return this.finder.findByEmployeeName(query);
+	}
+
+	/**
+	 * Find by entry date.
+	 *
+	 * @param query the query
+	 * @return the list
+	 */
+	@POST
+	@Path("find/entrydate")
+	public List<RegulationInfoEmployeeDto> findByEntryDate(SearchEmployeeQuery query) {
+		return this.finder.findByEmployeeEntryDate(query);
+	}
+
+	/**
+	 * Find by retirement date.
+	 *
+	 * @param query the query
+	 * @return the list
+	 */
+	@POST
+	@Path("find/retirementdate")
+	public List<RegulationInfoEmployeeDto> findByRetirementDate(SearchEmployeeQuery query) {
+		return this.finder.findByEmployeeRetirementDate(query);
+	}
+
 }

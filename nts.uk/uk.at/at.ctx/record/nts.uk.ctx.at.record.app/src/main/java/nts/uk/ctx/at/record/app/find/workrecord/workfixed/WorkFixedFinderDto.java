@@ -8,6 +8,7 @@ package nts.uk.ctx.at.record.app.find.workrecord.workfixed;
 import lombok.Builder;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.workfixed.ConfirmClsStatus;
 import nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkFixedSetMemento;
 
@@ -126,8 +127,8 @@ public class WorkFixedFinderDto implements WorkFixedSetMemento {
 	 * @see nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkFixedSetMemento#setProcessDate(java.lang.Integer)
 	 */
 	@Override
-	public void setProcessDate(Integer processDate) {
-		this.processDate = processDate;
+	public void setProcessYm(YearMonth processDate) {
+		this.processDate = processDate.v();
 	}
 
 	/* (non-Javadoc)

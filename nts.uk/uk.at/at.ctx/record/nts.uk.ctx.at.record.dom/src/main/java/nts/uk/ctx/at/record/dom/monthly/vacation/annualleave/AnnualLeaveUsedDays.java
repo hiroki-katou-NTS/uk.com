@@ -12,7 +12,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremaini
  */
 @Getter
 @Setter
-public class AnnualLeaveUsedDays {
+public class AnnualLeaveUsedDays implements Cloneable {
 
 	/** 使用日数 */
 	private AnnualLeaveUsedDayNumber usedDays;
@@ -48,6 +48,23 @@ public class AnnualLeaveUsedDays {
 		domain.usedDaysBeforeGrant = usedDaysBeforeGrant;
 		domain.usedDaysAfterGrant = usedDaysAfterGrant;
 		return domain;
+	}
+	
+	@Override
+	protected AnnualLeaveUsedDays clone() {
+		AnnualLeaveUsedDays cloned = new AnnualLeaveUsedDays();
+		try {
+			cloned.usedDays = new AnnualLeaveUsedDayNumber(this.usedDays.v());
+			cloned.usedDaysBeforeGrant = new AnnualLeaveUsedDayNumber(this.usedDaysBeforeGrant.v());
+			if (this.usedDaysAfterGrant.isPresent()){
+				cloned.usedDaysAfterGrant = Optional.of(
+						new AnnualLeaveUsedDayNumber(this.usedDaysAfterGrant.get().v()));
+			}
+		}
+		catch (Exception e){
+			throw new RuntimeException("AnnualLeaveUsedDays clone error.");
+		}
+		return cloned;
 	}
 	
 	/**

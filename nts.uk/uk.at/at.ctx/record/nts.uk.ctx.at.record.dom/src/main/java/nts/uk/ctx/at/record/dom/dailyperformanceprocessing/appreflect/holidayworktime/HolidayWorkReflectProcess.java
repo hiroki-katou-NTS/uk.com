@@ -21,7 +21,8 @@ public interface HolidayWorkReflectProcess {
 			GeneralDate baseDate, 
 			String workTypeCode, 
 			String workTimeCode, 
-			boolean scheReflectFlg, 
+			boolean scheReflectFlg,
+			boolean isPre,
 			ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg,
 			IntegrationOfDaily dailyData);
 	/**
@@ -36,7 +37,7 @@ public interface HolidayWorkReflectProcess {
 	public boolean checkScheWorkTimeReflect(String employeeId, 
 			GeneralDate baseDate, 
 			String workTimeCode, 
-			boolean scheReflectFlg, 
+			boolean scheReflectFlg, boolean isPre,
 			ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg);
 	/**
 	 * 

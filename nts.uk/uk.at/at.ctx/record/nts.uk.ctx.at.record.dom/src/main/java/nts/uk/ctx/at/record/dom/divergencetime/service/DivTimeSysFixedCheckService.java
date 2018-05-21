@@ -21,6 +21,10 @@ import nts.uk.ctx.at.record.dom.adapter.approvalrootstate.AppRootStateConfirmAda
 import nts.uk.ctx.at.record.dom.approvalmanagement.enums.ConfirmationOfManagerOrYouself;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalStatusOfDailyPerforRepository;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployee;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployeeHistory;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeEmpOfHistoryRepository;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeOfEmployeeRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
@@ -120,6 +124,12 @@ public class DivTimeSysFixedCheckService {
 	
 	@Inject
 	private I18NResources resources;
+	
+	@Inject
+	private BusinessTypeEmpOfHistoryRepository bteHisRepo;
+	
+	@Inject
+	private BusinessTypeOfEmployeeRepository bteRepo;
 	
 	public static List<String> SYSTEM_FIXED_CHECK_CODE = Arrays.asList("D001", "D002", "D003", "D004", "D005", 
 			"D006", "D007", "D008", "D009", "D010", "D011", "D012", "D013", "D014", "D015", "D016", "D017", "D018", "D019", "D020");
@@ -286,7 +296,7 @@ public class DivTimeSysFixedCheckService {
 					if(!valid){
 						checkR.add(new EmployeeDailyPerError(companyId, employeeId, workingDate, 
 								erAl.getCode(), Arrays.asList(erAl.getErrorDisplayItem() != null? erAl.getErrorDisplayItem().intValue():null), 
-								erAl.getCancelableAtr() ? 1 : 0, getMessage(isCheckByWorkType, isPcDivergence, companyId, ((numberIn-1) / 2)+1, isAlarm, bsCode)));
+								erAl.getCancelableAtr() ? 1 : 0, getMessage(isWHis, isPcDivergence, companyId, ((numberIn-1) / 2)+1, isAlarm, bsCode)));
 					}
 				});
 //				divergenTime.stream().forEach(dt -> {
@@ -353,8 +363,17 @@ public class DivTimeSysFixedCheckService {
 		if(!isGet){
 			return null;
 		}
-		val workInfo = workInfoRepo.find(employeeId, workingDate).orElse(null);
-		return workInfo == null ? null : new BusinessTypeCode(workInfo.getRecordInfo().getWorkTypeCode().v());
+		
+		BusinessTypeOfEmployeeHistory bteHis = bteHisRepo.findByBaseDate(workingDate, employeeId).orElse(null);
+		if(bteHis == null){
+			return null;
+		}
+		DateHistoryItem hisItem = bteHis.getHistory().stream().filter(c -> c.contains(workingDate)).findFirst().orElse(null);
+		if(hisItem == null){
+			return null;
+		}
+		BusinessTypeOfEmployee bte = bteRepo.findByHistoryId(hisItem.identifier()).orElse(null);
+		return bte == null ? null : bte.getBusinessTypeCode();
 	}
 
 	/** 「乖離時間」を取得する */
@@ -421,7 +440,7 @@ public class DivTimeSysFixedCheckService {
 			return true;
 		}
 		DivergenceReferenceTime sdTime = isAlarm ? standard.getAlarmTime().orElse(null) : standard.getErrorTime().orElse(null);
-		if(sdTime != null){
+		if(sdTime != null && sdTime.v() > 0){
 			boolean isError = divergenceTime >= sdTime.valueAsMinutes();
 			if(isError) {
 				// パラメータ「エラーの解除方法．乖離理由が選択された場合，エラーを解除する」をチェックする
@@ -464,7 +483,7 @@ public class DivTimeSysFixedCheckService {
 			}
 		}
 		if(message != null) {
-			return isWithBonusText ? StringUtils.join(message.v(), resources.localize("KDW003_108")) : message.v();
+			return isWithBonusText ? StringUtils.join(message.v(), resources.localize("KDW003_108").orElse("")) : message.v();
 		}
 		return "";
 	}

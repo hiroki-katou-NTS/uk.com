@@ -91,7 +91,7 @@ public class DailyModifyCommandFacade {
 	public void insertSign(List<DPItemCheckBox> dataCheckSign) {
 		ParamIdentityConfirmDay day = new ParamIdentityConfirmDay(AppContexts.user().employeeId(), dataCheckSign
 				.stream().map(x -> new SelfConfirmDay(x.getDate(), x.isValue())).collect(Collectors.toList()));
-		registerIdentityConfirmDay.registerIdentityOld(day);
+		registerIdentityConfirmDay.registerIdentity(day);
 	}
 	
 	public void insertApproval(List<DPItemCheckBox> dataCheckApproval) {
@@ -99,6 +99,6 @@ public class DailyModifyCommandFacade {
 				dataCheckApproval.stream()
 						.map(x -> new ContentApproval(x.getDate(), x.isValue(), x.getEmployeeId()))
 						.collect(Collectors.toList()));
-		registerDayApproval.registerDayApprovalOld(param);
+		registerDayApproval.registerDayApproval(param);
 	}
 }

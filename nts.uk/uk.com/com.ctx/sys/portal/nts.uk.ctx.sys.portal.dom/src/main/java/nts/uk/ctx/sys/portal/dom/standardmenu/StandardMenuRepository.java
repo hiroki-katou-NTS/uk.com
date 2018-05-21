@@ -118,5 +118,5 @@ public interface StandardMenuRepository {
 	 *            screenId
 	 * @return standard menu
 	 */
-	Optional<StandardMenu> getProgram(String companyId, String programId, String screenId);
+	List<StandardMenu> getProgram(String companyId, String programId, String screenId);
 }

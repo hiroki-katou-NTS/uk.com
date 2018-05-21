@@ -19,7 +19,7 @@ public class JpaNewLayoutRepository extends JpaRepository implements INewLayoutR
 	@Override
 	public void update(NewLayout domain) {
 		String companyId = AppContexts.user().companyId();
-		Optional<NewLayout> update = this.getLayout(true);
+		Optional<NewLayout> update = this.getLayoutWithCreateNew();
 
 		if (update.isPresent()) {
 			PpemtNewLayout entity = this.queryProxy().query(GET_FIRST_LAYOUT, PpemtNewLayout.class)
@@ -33,33 +33,42 @@ public class JpaNewLayoutRepository extends JpaRepository implements INewLayoutR
 			}
 		}
 	}
+	
+	
 
 	@Override
-	public Optional<NewLayout> getLayout(boolean createNewIfNull) {
+	public Optional<NewLayout> getLayoutWithCreateNew() {
 		String companyId = AppContexts.user().companyId();
 		PpemtNewLayout entity = this.queryProxy().query(GET_FIRST_LAYOUT, PpemtNewLayout.class)
 				.setParameter("companyId", companyId).getSingleOrNull();
 
-		if (createNewIfNull) {
-			if (entity == null) {
-				// initial new data (if isn't present)
-				commandProxy().insert(new PpemtNewLayout(new PpemtNewLayoutPk(IdentifierUtil.randomUniqueId()),
-						companyId, "001", "レイアウト"));
-
-				entity = this.queryProxy().query(GET_FIRST_LAYOUT, PpemtNewLayout.class)
-						.setParameter("companyId", companyId).getSingleOrNull();
-			}
-		}
-
 		if (entity == null) {
-			return Optional.empty();
-		} else {
-			return Optional.of(toDomain(entity));
+			// initial new data (if isn't present)
+			commandProxy().insert(new PpemtNewLayout(new PpemtNewLayoutPk(IdentifierUtil.randomUniqueId()),
+					companyId, "001", "レイアウト"));
+
+			entity = this.queryProxy().query(GET_FIRST_LAYOUT, PpemtNewLayout.class)
+					.setParameter("companyId", companyId).getSingleOrNull();
 		}
+
+		return Optional.of(toDomain(entity));
 	}
 
 	private NewLayout toDomain(PpemtNewLayout entity) {
 		return NewLayout.createFromJavaType(entity.companyId, entity.ppemtNewLayoutPk.layoutId, entity.layoutCode,
 				entity.layoutName);
+	}
+
+
+
+	@Override
+	public Optional<NewLayout> getLayout() {
+		String companyId = AppContexts.user().companyId();
+		PpemtNewLayout entity = this.queryProxy().query(GET_FIRST_LAYOUT, PpemtNewLayout.class)
+				.setParameter("companyId", companyId).getSingleOrNull();
+		if (entity == null) {
+			Optional.empty();
+		}
+		return Optional.of(toDomain(entity));
 	}
 }

@@ -138,8 +138,8 @@ public class HolidayShipmentScreenBFinder {
 
 				GeneralDate recAppDate = recAppOutput != null ? recAppOutput.getAppDate() : null;
 				GeneralDate absAppDate = absAppOutput != null ? absAppOutput.getAppDate() : null;
-				String recWorkTypeCD = recApp != null ? recApp.getWorkTypeCD() : null;
-				String absWorkTypeCD = absApp != null ? absApp.getWorkTypeCD() : null;
+				String recWorkTypeCD = recApp != null ? recApp.getWorkTypeCD().v() : null;
+				String absWorkTypeCD = absApp != null ? absApp.getWorkTypeCD().v() : null;
 				String recWorkTimeCD = recApp != null ? recApp.getWorkTimeCD().v() : null;
 				String absWorkTimeCD = absApp != null ? absApp.getWorkTimeCD() : null;
 				GeneralDate refDate = HolidayShipmentScreenAFinder.DetRefDate(recAppDate, absAppDate);
@@ -155,29 +155,31 @@ public class HolidayShipmentScreenBFinder {
 	}
 
 	private void setEmployeeDisplayText(String employeeID, Application_New appOutput) {
-		String employeeDisplayText = "";
-		boolean isSameLoginAndEnteredEmployeeName = appOutput.getEmployeeID().equals(appOutput.getEnteredPersonID());
-		if (isSameLoginAndEnteredEmployeeName) {
+		String resultName = "", appEmployeeID = appOutput.getEnteredPersonID(), loginEmployeeID = employeeID;
 
-			employeeDisplayText = empAdaptor.getEmployeeName(employeeID);
+		boolean isSameLogin = loginEmployeeID.equals(appEmployeeID);
+		if (isSameLogin) {
+
+			resultName = empAdaptor.getEmployeeName(employeeID);
 
 		} else {
-			String loginEmployeeName = empAdaptor.getEmployeeName(appOutput.getEmployeeID());
 
-			String enteredEmployeeName = " (入力者 : " + empAdaptor.getEmployeeName(appOutput.getEnteredPersonID()) + ")";
-
-			employeeDisplayText = loginEmployeeName + enteredEmployeeName;
+			String appEmployeeName = empAdaptor.getEmployeeName(appEmployeeID);
+			String loginEmployeeName = " (入力者 : " + empAdaptor.getEmployeeName(loginEmployeeID) + ")";
+			resultName = appEmployeeName + loginEmployeeName;
 
 		}
-		screenInfo.setEmployeeName(employeeDisplayText);
+		screenInfo.setEmployeeName(resultName);
 
 	}
 
 	private void getAbsApp(String applicationID) {
 		// アルゴリズム「振休申請に同期された振出申請の取得」を実行する
 		SyncState syncState = getCompltLeaveSimMngFromAbsID(applicationID);
-		boolean isSync = syncState.equals(SyncState.SYNCHRONIZING);
-		if (isSync) {
+		boolean isNotSync = syncState.equals(SyncState.ASYNCHRONOUS);
+		if (isNotSync) {
+			// 振休申請をクリアする
+			clearRecApp();
 			// アルゴリズム「振休申請と関連付けた振出情報の取得」を実行する
 			absApp.getSubDigestions().forEach(x -> {
 				if (x.getPayoutMngDataID() != null) {
@@ -223,7 +225,9 @@ public class HolidayShipmentScreenBFinder {
 	private void getRecApp(String applicationID) {
 		// アルゴリズム「振出申請に同期された振休申請の取得」を実行する
 		SyncState syncState = getCompltLeaveSimMngFromRecID(applicationID);
-		if (syncState.equals(SyncState.SYNCHRONIZING)) {
+		if (syncState.equals(SyncState.ASYNCHRONOUS)) {
+			// 振休申請をクリアする
+			clearAbsApp();
 			// アルゴリズム「振出日に関連付いた振休情報の取得」を実行する
 			// TODO chưa có ai làm domain 暫定振出管理データ
 		}
@@ -264,6 +268,14 @@ public class HolidayShipmentScreenBFinder {
 		}
 		return result;
 
+	}
+
+	private void clearRecApp() {
+		screenInfo.setRecApp(null);
+	}
+
+	private void clearAbsApp() {
+		screenInfo.setAbsApp(null);
 	}
 
 	private void setRecApp(RecruitmentApp recruitmentApp) {

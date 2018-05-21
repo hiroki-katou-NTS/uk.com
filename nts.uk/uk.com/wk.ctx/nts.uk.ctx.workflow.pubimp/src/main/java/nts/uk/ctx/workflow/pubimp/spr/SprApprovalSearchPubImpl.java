@@ -13,6 +13,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRep
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
 import nts.uk.ctx.workflow.dom.service.JudgmentApprovalStatusService;
+import nts.uk.ctx.workflow.dom.service.output.ApproverPersonOutput;
 import nts.uk.ctx.workflow.pub.spr.SprApprovalSearchPub;
 import nts.uk.ctx.workflow.pub.spr.export.ApprovalComSprExport;
 import nts.uk.ctx.workflow.pub.spr.export.ApprovalPersonSprExport;
@@ -20,6 +21,7 @@ import nts.uk.ctx.workflow.pub.spr.export.ApprovalPhaseSprExport;
 import nts.uk.ctx.workflow.pub.spr.export.ApprovalRootStateSprExport;
 import nts.uk.ctx.workflow.pub.spr.export.ApprovalWorkplaceSprExport;
 import nts.uk.ctx.workflow.pub.spr.export.ApproverSprExport;
+import nts.uk.ctx.workflow.pub.spr.export.JudgmentSprExport;
 /**
  * 
  * @author Doan Duy Hung
@@ -129,8 +131,13 @@ public class SprApprovalSearchPubImpl implements SprApprovalSearchPub {
 	}
 
 	@Override
-	public boolean judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID) {
-		return judgmentApprovalStatusService.judgmentTargetPersonCanApprove(companyID, rootStateID, employeeID).getAuthorFlag();
+	public JudgmentSprExport judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID, Integer rootType) {
+		ApproverPersonOutput approverPersonOutput = judgmentApprovalStatusService
+				.judgmentTargetPersonCanApprove(companyID, rootStateID, employeeID, rootType);
+		return new JudgmentSprExport(
+				approverPersonOutput.getAuthorFlag(), 
+				approverPersonOutput.getApprovalAtr().value, 
+				approverPersonOutput.getExpirationAgentFlag());
 	}
 	
 }

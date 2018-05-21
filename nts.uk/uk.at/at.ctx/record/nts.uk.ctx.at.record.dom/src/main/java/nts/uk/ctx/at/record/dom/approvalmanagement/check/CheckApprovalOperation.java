@@ -6,8 +6,6 @@ import javax.ejb.Stateless;
 
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.enums.ConfirmationOfManagerOrYouself;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ConfirmOfManagerOrYouself;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FunctionalRestriction;
 
 @Stateless
 public class CheckApprovalOperation {
@@ -24,15 +22,15 @@ public class CheckApprovalOperation {
 		}
 	}
 	
-	public Optional<ConfirmOfManagerOrYouself> checkOld(FunctionalRestriction identityProcessUseSet) {
-		if (identityProcessUseSet.getUseSupervisorConfirm()
-				&& identityProcessUseSet.getSupervisorConfirmError() != null) {
-			if (identityProcessUseSet.getSupervisorConfirmError() == ConfirmOfManagerOrYouself.CAN_CHECK_WHEN_ERROR) {
-				return Optional.of(ConfirmOfManagerOrYouself.CAN_CHECK_WHEN_ERROR);
-			} else
-				return Optional.of(ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR);
-		} else {
-			return Optional.empty();
-		}
-	}
+//	public Optional<ConfirmOfManagerOrYouself> checkOld(FunctionalRestriction identityProcessUseSet) {
+//		if (identityProcessUseSet.getUseSupervisorConfirm()
+//				&& identityProcessUseSet.getSupervisorConfirmError() != null) {
+//			if (identityProcessUseSet.getSupervisorConfirmError() == ConfirmOfManagerOrYouself.CAN_CHECK_WHEN_ERROR) {
+//				return Optional.of(ConfirmOfManagerOrYouself.CAN_CHECK_WHEN_ERROR);
+//			} else
+//				return Optional.of(ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR);
+//		} else {
+//			return Optional.empty();
+//		}
+//	}
 }

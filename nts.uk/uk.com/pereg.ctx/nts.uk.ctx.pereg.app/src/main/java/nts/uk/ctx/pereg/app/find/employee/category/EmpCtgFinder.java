@@ -148,6 +148,7 @@ public class EmpCtgFinder {
 		String contractCode = AppContexts.user().contractCode();
 		String empIdCurrentLogin = AppContexts.user().employeeId();
 		String roleId = AppContexts.user().roles().forPersonalInfo();
+		String categoryId = query.getCategoryId();
 
 		String loginCId = AppContexts.user().companyId();
 		String viewerCId = (employeeRepository.findByEmpId(query.getEmployeeId()).get()).getCompanyId();
@@ -155,23 +156,30 @@ public class EmpCtgFinder {
 		// String roleId = "99900000-0000-0000-0000-000000000001";
 
 		// get category
-		PersonInfoCategory perInfoCtg = perInfoCtgRepositoty.getPerInfoCategory(query.getCategoryId(), contractCode)
+		PersonInfoCategory perInfoCtg = perInfoCtgRepositoty.getPerInfoCategory(categoryId, contractCode)
 				.get();
-		List<ComboBoxObject> infoList = new ArrayList<>();
-		if (!perInfoCategoryFinder.checkPerInfoCtgAuth(query.getEmployeeId(), perInfoCtg.getPersonInfoCategoryId(),
-				roleId)) {
-			return infoList;
+		
+		if (perInfoCtg.getCategoryType() == CategoryType.SINGLEINFO) {
+			return new ArrayList<>();
 		}
-		if (perInfoCtg.getCategoryType() == CategoryType.SINGLEINFO)
-			return infoList;
-		if(perInfoCtg.getCategoryType() == CategoryType.MULTIINFO)
-			return infoList;
+		
+		if (!perInfoCategoryFinder.checkPerInfoCtgAuth(query.getEmployeeId(), categoryId,
+				roleId)) {
+			return new ArrayList<>();
+		}
+		
 		// check ctg auth 
 		PersonInfoCategoryAuth ctgAuth = personInfoCategoryAuthRepository
-				.getDetailPersonCategoryAuthByPId(roleId, perInfoCtg.getPersonInfoCategoryId()).get();
+				.getDetailPersonCategoryAuthByPId(roleId, categoryId).get();
 		boolean isSelf = query.getEmployeeId().equals(empIdCurrentLogin);
-		boolean allowCtgAuth = checkRole(ctgAuth, roleId, query.getCategoryId(), isSelf, isSameCom);
-		if(!allowCtgAuth) return infoList;
+		boolean allowCtgAuth = checkRole(ctgAuth, roleId, categoryId, isSelf, isSameCom);
+		if(!allowCtgAuth) {
+			return new ArrayList<>();	
+		}
+		
+		if(perInfoCtg.getCategoryType() == CategoryType.MULTIINFO) {
+			return layoutingProcessor.getListFirstItems(query);
+		}
 		
 		query.setCtgType(perInfoCtg.getCategoryType().value);
 		// get combobox object
@@ -181,14 +189,15 @@ public class EmpCtgFinder {
 		Optional<PersonInfoItemDefinition> period;
 		if (!perInfoCtg.getCategoryCode().v().equals("CS00003")) {
 			DateRangeItem dateRangeItem = perInfoCtgRepositoty
-					.getDateRangeItemByCategoryId(perInfoCtg.getPersonInfoCategoryId()).get();
+					.getDateRangeItemByCategoryId(categoryId).get();
 			period = lstItemDef.stream().filter(x -> x.getPerInfoItemDefId().equals(dateRangeItem.getDateRangeItemId()))
 					.findFirst();
 
 		} else {
 			period = Optional.of(lstItemDef.get(0));
 		}
-	
+		
+		List<ComboBoxObject> infoList = new ArrayList<>();
 		if (perInfoCtg.getIsFixed() == IsFixed.NOT_FIXED) {
 			infoList = getInfoListOfOptionalCtg(perInfoCtg, query, period);
 		} else {
@@ -201,7 +210,7 @@ public class EmpCtgFinder {
 			resultList.add(new ComboBoxObject(null, period.get().getItemName().v()));
 		return resultList ;
 	}
-
+	
 	private List<ComboBoxObject> getInfoListOfOptionalCtg(PersonInfoCategory perInfoCtg, PeregQuery query, Optional<PersonInfoItemDefinition> period) {
 		if (perInfoCtg.getCategoryType() == CategoryType.SINGLEINFO)
 			return new ArrayList<>();
