@@ -7,19 +7,13 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-<<<<<<< HEAD
-=======
 import nts.arc.time.GeneralDate;
->>>>>>> 5e714995308... RequestList No303
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.EmployeeDailyPerErrorPub;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.EmployeeDailyPerErrorPubExport;
-<<<<<<< HEAD
-=======
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.EmployeeErrorPubExport;
 import nts.uk.shr.com.context.AppContexts;
->>>>>>> 5e714995308... RequestList No303
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -42,17 +36,6 @@ public class EmployeeDailyPerErrorPubImpl implements EmployeeDailyPerErrorPub {
 	}
 
 	@Override
-<<<<<<< HEAD
-	public List<EmployeeDailyPerErrorPubExport> getByErrorCode(List<String> employeeId, DatePeriod datePeriod,
-			List<String> errorCodes) {
-		List<EmployeeDailyPerError> employeeDailyList = repo.finds(employeeId, datePeriod);
-		
-		employeeDailyList = employeeDailyList.stream().filter(e -> errorCodes.contains(e.getErrorAlarmWorkRecordCode().v()))
-				.collect(Collectors.toList());
-		
-		return employeeDailyList.stream().map(e -> new EmployeeDailyPerErrorPubExport(e.getCompanyID(), e.getEmployeeID(), e.getDate(),
-				e.getErrorAlarmWorkRecordCode().v(), e.getAttendanceItemList(), e.getErrorCancelAble())).collect(Collectors.toList());
-=======
 	public List<EmployeeErrorPubExport> checkEmployeeErrorOnProcessingDate(String employeeId, DatePeriod datePeriod) {
 		
 		List<EmployeeErrorPubExport> employeeErrorPubExportList = new ArrayList<>();
@@ -78,7 +61,18 @@ public class EmployeeDailyPerErrorPubImpl implements EmployeeDailyPerErrorPub {
 		}
 
 		return daysBetween;
->>>>>>> 5e714995308... RequestList No303
+	}
+	
+	@Override
+	public List<EmployeeDailyPerErrorPubExport> getByErrorCode(List<String> employeeId, DatePeriod datePeriod,
+			List<String> errorCodes) {
+		List<EmployeeDailyPerError> employeeDailyList = repo.finds(employeeId, datePeriod);
+		
+		employeeDailyList = employeeDailyList.stream().filter(e -> errorCodes.contains(e.getErrorAlarmWorkRecordCode().v()))
+				.collect(Collectors.toList());
+		
+		return employeeDailyList.stream().map(e -> new EmployeeDailyPerErrorPubExport(e.getCompanyID(), e.getEmployeeID(), e.getDate(),
+				e.getErrorAlarmWorkRecordCode().v(), e.getAttendanceItemList(), e.getErrorCancelAble())).collect(Collectors.toList());
 	}
 
 }
