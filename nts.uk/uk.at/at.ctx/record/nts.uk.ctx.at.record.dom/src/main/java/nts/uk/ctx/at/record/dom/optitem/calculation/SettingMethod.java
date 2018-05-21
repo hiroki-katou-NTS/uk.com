@@ -65,4 +65,20 @@ public enum SettingMethod {
 		// Not found.
 		return null;
 	}
+	
+	/**
+	 * 項目選択か判定する
+	 * @return leftならtrue
+	 */
+	public boolean isItemSelection() {
+		return ITEM_SELECTION.equals(this);
+	}
+	
+	/**
+	 * 数値入力か判定する
+	 * @return ｒightならtrue
+	 */
+	public boolean isNumberInput() {
+		return NUMERICAL_INPUT.equals(this);
+	}	
 }

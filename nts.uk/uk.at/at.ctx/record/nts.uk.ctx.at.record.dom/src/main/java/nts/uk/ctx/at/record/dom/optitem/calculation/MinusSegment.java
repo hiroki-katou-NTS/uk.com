@@ -63,4 +63,22 @@ public enum MinusSegment {
 		// Not found.
 		return null;
 	}
+	
+	/**
+	 * 0として扱うか判定する
+	 * @return 0として扱うならtrue
+	 */
+	public boolean isTreatedAsZero() {
+		return TREATED_AS_ZERO.equals(this);
+	}
+	
+	/**
+	 * 0として扱わないか判定する
+	 * @return 0として扱わないならtrue
+	 */
+	public boolean isNotTreatedAsZero() {
+		return NOT_TREATED_AS_ZERO.equals(this);
+	}	
+	
+	
 }

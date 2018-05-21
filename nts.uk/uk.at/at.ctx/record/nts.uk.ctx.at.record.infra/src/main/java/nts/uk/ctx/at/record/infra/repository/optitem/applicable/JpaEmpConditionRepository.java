@@ -91,4 +91,20 @@ public class JpaEmpConditionRepository extends JpaRepository implements EmpCondi
 		return em.createQuery(cq).getResultList();
 	}
 
+	
+	/*
+	 * 会社IDのみで全て取得
+	 * @see
+	 * nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository#find(
+	 * java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<EmpCondition> findAll(String companyId, List<String> optionalItemNoList) {
+		List<EmpCondition> result = new ArrayList<>();
+		for(String optionalItemNo:optionalItemNoList) {
+			result.add(this.find(companyId, optionalItemNo));
+		}
+		return result;
+	}
+	
 }

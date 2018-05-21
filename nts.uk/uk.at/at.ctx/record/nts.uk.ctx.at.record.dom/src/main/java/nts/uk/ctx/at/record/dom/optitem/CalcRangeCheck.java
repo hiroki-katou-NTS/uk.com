@@ -65,5 +65,14 @@ public enum CalcRangeCheck {
 		// Not found.
 		return null;
 	}
+	
+	/**
+	 * 設定するか判定する
+	 * @return 設定するならtrue
+	 */
+	public boolean isSET() {
+		return SET.equals(this);
+	}
+	
 
 }

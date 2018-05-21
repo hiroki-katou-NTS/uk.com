@@ -52,4 +52,24 @@ public class ResultOfCalcFormula {
 				throw new RuntimeException("unknown optionalItemAtr:"+optionalItemAtr);
 		}
 	}
+	
+	
+	/**
+	 *　渡された属性に一致する結果を返す
+	 * @return
+	 */
+	public Optional<Integer> getResult(OptionalItemAtr optionalItemAtr){
+		switch(optionalItemAtr) {
+			case NUMBER:
+				return this.count;
+			case TIME:
+				return this.time;
+			case AMOUNT:
+				return this.money;
+			default:
+				throw new RuntimeException("unknown optionalItemAtr:"+optionalItemAtr);
+		}
+	}
+	
+	
 }
