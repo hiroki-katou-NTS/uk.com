@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.remainingnumber;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -10,6 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.record.infra.entity.remainingnumber.subhdmana.KrcmtComDayoffMaData;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOffManaDataRepository {
@@ -18,6 +20,8 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 
 	private String GET_BYSID_WITHREDAY = String.join(" ", GET_BYSID, " AND c.remainDays > 0");
 
+	private String DELETE_BY_SID_COMDAYOFFID = "DELETE FROM KrcmtComDayoffMaData a WHERE a.cID = :companyId AND a.sID = :employeeId AND a.dayOff = :dayOffDate";
+	
 	private String GET_BYSID_BY_DATECONDITION = String.join(" ", GET_BYSID,
 			" AND dayOff >= :stateDate AND dayOff <= : endDate");
 
@@ -36,6 +40,29 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 				.setParameter("employeeId", sid).setParameter("cid", cid).getList();
 
 		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+
+	@Override
+	public Optional<CompensatoryDayOffManaData> getCompensatoryByComDayOffID(String comDayOffID) {
+		Optional<KrcmtComDayoffMaData> entity = this.queryProxy().find(comDayOffID, KrcmtComDayoffMaData.class);
+		if (entity.isPresent()) {
+			return Optional.ofNullable(toDomain(entity.get()));
+		}
+		return Optional.empty();
+	}
+
+	@Override
+	public void update(CompensatoryDayOffManaData domain) {
+		this.commandProxy().update(toEnitty(domain));
+	}
+
+	@Override
+	public void deleteBySidAndDayOffDate(String employeeId, GeneralDate dayOffDate) {
+		String companyId = AppContexts.user().companyId();
+		this.getEntityManager().createQuery(DELETE_BY_SID_COMDAYOFFID)
+				.setParameter("companyId", companyId)
+				.setParameter("employeeId", employeeId)
+				.setParameter("dayOffDate", dayOffDate);
 	}
 
 	/**
@@ -96,5 +123,4 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 
 		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
-
 }
