@@ -59,15 +59,17 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 			throw new BusinessException("Msg_1009", date);
 		}
 		// フォームデータ「出勤時刻(starttime)」を取得する
-		if(Strings.isBlank(startTime)){
+		if(startTime==null){
 			throw new BusinessException("Msg_1012", "Msg_1026");
 		}
-		// 出勤時刻(starttime)をチェックする
-		try {
-			Integer startTimeValue = Integer.valueOf(startTime);
-			new AttendanceClock(startTimeValue);
-		} catch (Exception e) {
-			throw new BusinessException("Msg_1012", startTime.toString());
+		if(Strings.isNotBlank(startTime)){
+			// 出勤時刻(starttime)をチェックする
+			try {
+				Integer startTimeValue = Integer.valueOf(startTime);
+				new AttendanceClock(startTimeValue);
+			} catch (Exception e) {
+				throw new BusinessException("Msg_1012", startTime.toString());
+			}
 		}
 		// フォームデータ「申請理由(reason)」を取得する　※仕様追加　2018/03/28
 		return opEmployeeSpr.get().getEmployeeID();
@@ -99,15 +101,17 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 			throw new BusinessException("Msg_1009", date);
 		}
 		// フォームデータ「退勤時刻(endtime)」を取得する
-		if(Strings.isBlank(endTime)){
+		if(endTime==null){
 			throw new BusinessException("Msg_1013", "Msg_1026");
 		}
-		// 退勤時刻(endtime)をチェックする
-		try {
-			Integer endTimeValue = Integer.valueOf(endTime);
-			new AttendanceClock(endTimeValue);
-		} catch (Exception e) {
-			throw new BusinessException("Msg_1013", endTime.toString());
+		if(Strings.isNotBlank(endTime)){
+			// 退勤時刻(endtime)をチェックする
+			try {
+				Integer endTimeValue = Integer.valueOf(endTime);
+				new AttendanceClock(endTimeValue);
+			} catch (Exception e) {
+				throw new BusinessException("Msg_1013", endTime.toString());
+			}
 		}
 		// フォームデータ「申請理由(reason)」を取得する　※仕様追加　2018/03/28
 		return opEmployeeSpr.get().getEmployeeID();
@@ -139,26 +143,30 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 			throw new BusinessException("Msg_1009", date);
 		}
 		// フォームデータ「出勤時刻(starttime)」を取得する
-		if(Strings.isBlank(startTime)){
+		if(startTime==null){
 			throw new BusinessException("Msg_1012", "Msg_1026");
 		}
-		// 出勤時刻(starttime)をチェックする
-		try {
-			Integer startTimeValue = Integer.valueOf(startTime);
-			new AttendanceClock(startTimeValue);
-		} catch (Exception e) {
-			throw new BusinessException("Msg_1012", startTime.toString());
+		if(Strings.isNotBlank(startTime)){
+			// 出勤時刻(starttime)をチェックする
+			try {
+				Integer startTimeValue = Integer.valueOf(startTime);
+				new AttendanceClock(startTimeValue);
+			} catch (Exception e) {
+				throw new BusinessException("Msg_1012", startTime.toString());
+			}
 		}
 		// フォームデータ「退勤時刻(endtime)」を取得する
-		if(Strings.isBlank(endTime)){
+		if(endTime==null){
 			throw new BusinessException("Msg_1013", "Msg_1026");
 		}
-		// 退勤時刻(endtime)をチェックする
-		try {
-			Integer endTimeValue = Integer.valueOf(endTime);
-			new AttendanceClock(endTimeValue);
-		} catch (Exception e) {
-			throw new BusinessException("Msg_1013", endTime.toString());
+		if(Strings.isNotBlank(endTime)){
+			// 退勤時刻(endtime)をチェックする
+			try {
+				Integer endTimeValue = Integer.valueOf(endTime);
+				new AttendanceClock(endTimeValue);
+			} catch (Exception e) {
+				throw new BusinessException("Msg_1013", endTime.toString());
+			}
 		}
 		// フォームデータ「打刻保護区分(stampProtection)」を取得する
 		try {
