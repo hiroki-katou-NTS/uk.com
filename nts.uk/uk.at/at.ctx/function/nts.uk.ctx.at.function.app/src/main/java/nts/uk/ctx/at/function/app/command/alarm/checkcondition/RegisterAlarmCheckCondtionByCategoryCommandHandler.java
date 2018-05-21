@@ -247,10 +247,23 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 						: new AlarmCheckCondition4W4D(IdentifierUtil.randomUniqueId(),
 								command.getSchedule4WeekAlarmCheckCondition().getSchedule4WeekCheckCondition());
 				break;
+				
+			case AGREEMENT:
+				// update agree conditon ot
+				List<AgreeCondOtCommand> listOt = new ArrayList<>();
+				listOt = command.getCondAgree36().getListCondOt();
+				if(listOt.isEmpty()){
+					throw new BusinessException("Msg_832"); 
+				}
+				if(listOt.size() > 10){
+					throw new BusinessException("Msg_1242"); 
+				}
+				break;
 			default:
 				break;
 			}
 			
+				
 			AlarmCheckConditionByCategory domain = new AlarmCheckConditionByCategory(companyId, command.getCategory(),
 					command.getCode(), command.getName(),
 					new AlarmCheckTargetCondition(IdentifierUtil.randomUniqueId(),
