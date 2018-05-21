@@ -1577,7 +1577,7 @@ module nts.layout {
                 if (categoryId) {
                     __viewContext
                         .primitiveValueConstraints[ctrls[0].id.replace(/#/g, '')]
-                        .stringExpression = /^[a-zA-Z0-9\"\#\$\%\&\(\~\|\{\}\[\]\@\:\`\*\+\?\;\/\_\-\>\<\)]{1,20}$/;
+                        .stringExpression = /^[a-zA-Z0-9"#$%&(~|{}\[\]@:`*+?;\\/_\-><)]{1,20}$/;
 
                     fetch.perm((__viewContext || {}).user.role.personalInfo, categoryId).done(perm => {
                         if (perm) {
