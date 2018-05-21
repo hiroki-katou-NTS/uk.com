@@ -21,10 +21,8 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 	private String GET_BYSID_WITHREDAY = String.join(" ", GET_BYSID, " AND c.remainDays > 0");
 
 	private String DELETE_BY_SID_COMDAYOFFID = "DELETE FROM KrcmtComDayoffMaData a WHERE a.cID = :companyId AND a.sID = :employeeId AND a.dayOff = :dayOffDate";
-	
 
 	private String GET_BYCOMDAYOFFID = String.join(" ", GET_BYSID_WITHREDAY, " AND c.comDayOffID IN (SELECT b.krcmtLeaveDayOffManaPK.comDayOffID FROM KrcmtLeaveDayOffMana b WHERE b.krcmtLeaveDayOffManaPK.leaveID = :leaveID)");
-	
 
 	private String GET_BYSID_BY_DATECONDITION = String.join(" ", GET_BYSID,
 			" AND dayOff >= :stateDate AND dayOff <= : endDate");
