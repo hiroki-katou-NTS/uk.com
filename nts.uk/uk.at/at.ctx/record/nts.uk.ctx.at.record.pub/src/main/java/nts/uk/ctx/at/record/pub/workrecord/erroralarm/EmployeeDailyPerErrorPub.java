@@ -7,9 +7,8 @@ public interface EmployeeDailyPerErrorPub {
 	
 	List<EmployeeDailyPerErrorPubExport> getByErrorCode(String employeeId, DatePeriod datePeriod, List<String> errorCodes);
 	
-<<<<<<< HEAD
 	List<EmployeeDailyPerErrorPubExport> getByErrorCode(List<String> employeeId, DatePeriod datePeriod, List<String> errorCodes);
-=======
+
 	/**
 	 * RequestList No303
 	 * @param employeeId
@@ -17,5 +16,4 @@ public interface EmployeeDailyPerErrorPub {
 	 * @return
 	 */
 	List<EmployeeErrorPubExport> checkEmployeeErrorOnProcessingDate(String employeeId, DatePeriod datePeriod);
->>>>>>> 5e714995308... RequestList No303
 }
