@@ -175,12 +175,20 @@ public class Formula extends AggregateRoot {
 											/*Optional<> monthlyRecordDto*/) {
 		int calcValue = 0;
 		if(this.getCalcAtr().isItemSelection()) {
-			//計算式による計算
-			calcValue = this.calcFormulaSetting.getFormulaSetting().calculationBycalculationFormula(resultCalcFormula, optionalItem.getOptionalItemAtr());
+			if(this.calcFormulaSetting.getFormulaSetting().isPresent()) {
+				//計算式による計算
+				calcValue = this.calcFormulaSetting.getFormulaSetting().get().calculationBycalculationFormula(resultCalcFormula, optionalItem.getOptionalItemAtr());
+			}
+			//計算式設定が取得できない場合は0 ← これで良い？
+			calcValue = 0;
 		}
 		else if(this.getCalcAtr().isFormulaSetting()) {
-			//項目選択による計算
-			calcValue = this.calcFormulaSetting.getItemSelection().calculationByItemSelection(performanceAtr, dailyRecordDto);
+			if(this.calcFormulaSetting.getItemSelection().isPresent()) {
+				//項目選択による計算
+				calcValue = this.calcFormulaSetting.getItemSelection().get().calculationByItemSelection(performanceAtr, dailyRecordDto);
+			}
+			//計算項目選択が取得できない場合は0 ← これで良い？
+			calcValue = 0;
 		}
 		else {
 			throw new RuntimeException("unknown FormulaSetting"+ this.getCalcAtr());
