@@ -28,11 +28,11 @@ public class FormulaSettingItem extends DomainObject {
 	// ===================== Optional ======================= //
 	/** The input value. */
 	// 入力値
-	private Optional<InputValue> inputValue;
+	private Optional<InputValue> inputValue = Optional.empty();
 
 	/** The formula item id. */
 	// 計算式項目ID
-	private Optional<FormulaId> formulaItemId;
+	private Optional<FormulaId> formulaItemId = Optional.empty();
 
 	/**
 	 * Instantiates a new formula setting item.

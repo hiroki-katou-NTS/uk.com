@@ -30,7 +30,7 @@ public class FormulaDto implements FormulaSetMemento {
 	private String formulaId;
 
 	/** The optional item no. */
-	private String optionalItemNo;
+	private int optionalItemNo;
 
 	/** The symbol value. */
 	private String symbolValue;

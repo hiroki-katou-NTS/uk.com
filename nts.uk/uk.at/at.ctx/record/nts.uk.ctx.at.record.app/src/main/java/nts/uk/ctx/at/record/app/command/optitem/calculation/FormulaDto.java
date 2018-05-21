@@ -34,7 +34,7 @@ public class FormulaDto implements FormulaGetMemento, FormulaDispOrderGetMemento
 	private String formulaId;
 
 	/** The optional item no. */
-	private String optionalItemNo;
+	private int optionalItemNo;
 
 	/** The symbol value. */
 	private String symbolValue;

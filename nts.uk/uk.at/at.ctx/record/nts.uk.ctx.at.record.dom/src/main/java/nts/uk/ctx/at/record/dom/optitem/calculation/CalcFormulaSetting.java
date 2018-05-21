@@ -18,16 +18,16 @@ public class CalcFormulaSetting extends DomainObject {
 
 	/** The CalculatoinAtr. */
 	//計算区分
-	private CalculationAtr calculationAtr;
+	private CalculationAtr calculationAtr = CalculationAtr.ITEM_SELECTION;
 	
 	// ===================== Optional ======================= //
 	/** The formula setting. */
 	// 計算式設定
-	private Optional<FormulaSetting> formulaSetting;
+	private Optional<FormulaSetting> formulaSetting = Optional.empty();
 
 	/** The item selection. */
 	// 計算項目選択
-	private Optional<ItemSelection> itemSelection;
+	private Optional<ItemSelection> itemSelection = Optional.empty();
 
 	/**
 	 * Instantiates a new calc formula setting.

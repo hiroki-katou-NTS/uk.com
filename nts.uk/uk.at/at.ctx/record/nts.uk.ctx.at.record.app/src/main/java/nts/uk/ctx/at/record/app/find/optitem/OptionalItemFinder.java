@@ -68,7 +68,7 @@ public class OptionalItemFinder {
 	 * @param optionalItemNo the optional item no
 	 * @return the optional item dto
 	 */
-	public OptionalItemDto find(String optionalItemNo) {
+	public OptionalItemDto find(Integer optionalItemNo) {
 		OptionalItemDto dto = new OptionalItemDto();
 		OptionalItem optionalItem = this.repository.find(AppContexts.user().companyId(), optionalItemNo);
 		optionalItem.saveToMemento(dto);
@@ -152,7 +152,7 @@ public class OptionalItemFinder {
 	 * @param itemNo the item no
 	 * @return the formula orders
 	 */
-	private Map<FormulaId, Integer> getFormulaOrders(String companyId, String itemNo) {
+	private Map<FormulaId, Integer> getFormulaOrders(String companyId, Integer itemNo) {
 		return this.orderRepo.findByOptItemNo(companyId, itemNo).stream()
 				.collect(Collectors.toMap(FormulaDispOrder::getOptionalItemFormulaId, dod -> dod.getDispOrder().v()));
 	}

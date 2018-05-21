@@ -5,13 +5,14 @@
 package nts.uk.ctx.at.record.app.find.attdItemLinking;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.AttdItemLinkRequest;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.FrameNoAdapter;
@@ -48,19 +49,19 @@ public class AttendanceItemLinkingFinder {
 	 */
 	public List<FrameNoAdapterDto> findByAnyItem(AttdItemLinkRequest request) {
 		// find list optional item by attribute
-		Map<String, String> filteredByAtr = this.optItemRepo
+		List<Integer> filteredByAtr = this.optItemRepo
 				.findByAtr(AppContexts.user().companyId(), request.getFormulaAtr()).stream()
-				.filter(ii -> ii.isUsed())
-				.collect(Collectors.toMap(i -> i.getOptionalItemNo().v(), i -> i.getOptionalItemNo().v()));
+				.filter(ii -> ii.isUsed()).map(OptionalItem::getOptionalItemNo)
+				.map(OptionalItemNo::v).collect(Collectors.toList());
 
 		// filter list optional item by selectable list parameters.
-		Map<Integer, Integer> filteredBySelectableList = request.getAnyItemNos().stream()
-				.filter(itemNo -> filteredByAtr.containsKey(itemNo))
-				.collect(Collectors.toMap(i -> Integer.parseInt(i), i -> Integer.parseInt(i)));
+		List<Integer> filteredBySelectableList = request.getAnyItemNos().stream()
+				.filter(itemNo -> filteredByAtr.contains(itemNo))
+				.collect(Collectors.toList());
 
 		// return list AttendanceItemLinking after filtered by list optional item.
 		return this.frameAdapter.getByAnyItem(convertToFrameType(request.getPerformanceAtr())).stream()
-				.filter(item -> filteredBySelectableList.containsKey(item.getFrameNo())).collect(Collectors.toList());
+				.filter(item -> filteredBySelectableList.contains(item.getFrameNo())).collect(Collectors.toList());
 
 	}
 

@@ -70,7 +70,7 @@ module nts.uk.at.view.kmk002.a {
         class OptionalItem {
             static selectedFormulas: KnockoutObservableArray<number> = ko.observableArray([]);
 
-            optionalItemNo: KnockoutObservable<string>;
+            optionalItemNo: KnockoutObservable<number>;
             optionalItemName: KnockoutObservable<string>;
             optionalItemAtr: KnockoutObservable<number>;
             usageAtr: KnockoutObservable<number>;
@@ -1321,7 +1321,7 @@ module nts.uk.at.view.kmk002.a {
          */
         class Formula {
             formulaId: string;
-            optionalItemNo: string;
+            optionalItemNo: number;
             formulaName: KnockoutObservable<string>;
             formulaAtr: KnockoutObservable<number>;
             symbolValue: string;
