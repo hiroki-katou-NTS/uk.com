@@ -26,6 +26,7 @@ public class UpdateMonthlyCorrectConCmdHandler extends CommandHandler<UpdateMont
 		UpdateMonthlyCorrectConCmd command = context.getCommand();
 		if(this.monthlyCorrectConditionRepository.findMonthlyConditionByCode(command.getCode()).isPresent()){
 			MonthlyCorrectExtractCondition domainMonthly = this.monthlyCorrectConditionRepository.updateMonthlyCorrectExtractCondition(command.toMonthlyCorrectExtractCondition());
+			this.monthlyCorrectConditionRepository.removeTimeItemCheckMonthly(domainMonthly.getErrorAlarmCheckID());
 			this.monthlyCorrectConditionRepository.updateTimeItemCheckMonthly(command.toTimeItemCheckMonthly(domainMonthly.getErrorAlarmCheckID()));
 		} else {
 			MonthlyCorrectExtractCondition domainMonthly = this.monthlyCorrectConditionRepository.createMonthlyCorrectExtractCondition(command.toMonthlyCorrectExtractCondition());

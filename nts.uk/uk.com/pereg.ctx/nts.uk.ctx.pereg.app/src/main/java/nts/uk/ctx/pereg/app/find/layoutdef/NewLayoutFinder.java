@@ -27,17 +27,13 @@ public class NewLayoutFinder {
 	@Inject
 	private LayoutPersonInfoClsFinder clsFinder;
 
+	public Boolean checkLayoutExist() {
+		Optional<NewLayout> layout = repo.getLayout();
+		return layout.isPresent();
+	}
+
 	public NewLayoutDto getLayout() {
-		return getLayout(true);
-
-	}
-
-	public NewLayoutDto getLayoutCanNull() {
-		return getLayout(false);
-	}
-
-	private NewLayoutDto getLayout(boolean canNull) {
-		Optional<NewLayout> layout = repo.getLayout(canNull);
+		Optional<NewLayout> layout = repo.getLayoutWithCreateNew();
 		if (layout.isPresent()) {
 			NewLayout _layout = layout.get();
 			// get classifications

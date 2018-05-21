@@ -9,7 +9,7 @@ module cmm001.a.service {
         findPostCd: "contact/postalcode/findByCode",
         update: "screen/com/cmm001/update",
         add: "screen/com/cmm001/add",
-        
+        getAllMasterCopyCategory: "sys/assist/mastercopy/category/getAllMasterCopyCategory",  
     }
        
      export function getAll(){
@@ -46,5 +46,9 @@ module cmm001.a.service {
     
     export function add(command: any): JQueryPromise<void>{
         return nts.uk.request.ajax(paths.add, command);    
+    }
+    
+    export function getAllMasterCopyCategory() {
+        return nts.uk.request.ajax(paths.getAllMasterCopyCategory);
     }
 }
