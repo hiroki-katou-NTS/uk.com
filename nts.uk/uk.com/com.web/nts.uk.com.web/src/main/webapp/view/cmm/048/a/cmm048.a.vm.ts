@@ -19,7 +19,7 @@ module nts.uk.com.view.cmm048.a {
             tab2Visible: KnockoutObservable<boolean>;
             selectedTab: KnockoutObservable<string>;
             
-            mainModel: MainModel;
+            mainModel: MainModel; 
             
             constructor() {
                 let _self = this;
@@ -33,7 +33,7 @@ module nts.uk.com.view.cmm048.a {
                 ]);
                 _self.selectedTab = ko.observable('tab-1');
                 
-                _self.mainModel = new MainModel();              
+                _self.mainModel = new MainModel();                       
             }
             
             /**
@@ -74,7 +74,9 @@ module nts.uk.com.view.cmm048.a {
                 let command: MailNoticeSetSaveCommand = {
                     isPasswordUpdate: _self.tab1Visible(),
                     isContactUpdate: _self.tab2Visible(),
-                    password: "",
+                    oldPassword: _self.mainModel.oldPassword(),
+                    newPassword: _self.mainModel.newPassword(),
+                    confirmNewPassword: _self.mainModel.confirmNewPassword(),
                     employeeInfoContact: _self.mainModel.employeeInfoContact.toDto(),
                     personContact: _self.mainModel.personContact.toDto(),
                     listUseContactSetting: _.map(_self.mainModel.listUseContactSetting(), item => item.toDto())
@@ -116,7 +118,10 @@ module nts.uk.com.view.cmm048.a {
             personContact: PersonContactModel;
             passwordPolicy: PasswordPolicyModel;
             listUserInfoUseMethod: KnockoutObservableArray<UserInfoUseMethodModel>;
-            listUseContactSetting: KnockoutObservableArray<UseContactSettingModel>;
+            listUseContactSetting: KnockoutObservableArray<UseContactSettingModel>;            
+            oldPassword: KnockoutObservable<string>;
+            newPassword: KnockoutObservable<string>;
+            confirmNewPassword: KnockoutObservable<string>;
             
             constructor() {
                 let _self = this;
@@ -126,6 +131,9 @@ module nts.uk.com.view.cmm048.a {
                 _self.passwordPolicy = new PasswordPolicyModel();
                 _self.listUserInfoUseMethod = ko.observableArray([]);
                 _self.listUseContactSetting = ko.observableArray([]);
+                _self.oldPassword = ko.observable('');
+                _self.newPassword = ko.observable('');
+                _self.confirmNewPassword = ko.observable('');
             }
             
             updateData(dto: MainDto) {

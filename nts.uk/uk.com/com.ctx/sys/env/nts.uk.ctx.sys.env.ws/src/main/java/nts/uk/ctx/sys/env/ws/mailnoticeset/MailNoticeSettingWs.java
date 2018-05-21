@@ -12,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.env.app.command.mailnoticeset.MailNoticeSetSaveCommand;
+import nts.uk.ctx.sys.env.app.command.mailnoticeset.MailNoticeSetSaveCommandHandler;
 import nts.uk.ctx.sys.env.app.find.mailnoticeset.MailNoticeSettingFinder;
 import nts.uk.ctx.sys.env.app.find.mailnoticeset.dto.MailNoticeSettingDto;
 
@@ -25,6 +26,10 @@ public class MailNoticeSettingWs extends WebService {
 	/** The mail notice setting finder. */
 	@Inject
 	private MailNoticeSettingFinder mailNoticeSettingFinder;
+
+	/** The mail notice set save command handler. */
+	@Inject
+	private MailNoticeSetSaveCommandHandler mailNoticeSetSaveCommandHandler;
 
 	/**
 	 * Find.
@@ -46,7 +51,7 @@ public class MailNoticeSettingWs extends WebService {
 	@Path("save")
 	@POST
 	public void save(MailNoticeSetSaveCommand command) {
-		// TODO
+		this.mailNoticeSetSaveCommandHandler.handle(command);
 	}
 
 }

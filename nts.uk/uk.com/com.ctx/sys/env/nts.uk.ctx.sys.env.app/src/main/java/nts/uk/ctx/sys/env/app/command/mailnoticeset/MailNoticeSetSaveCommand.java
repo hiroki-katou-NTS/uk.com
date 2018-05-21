@@ -25,8 +25,14 @@ public class MailNoticeSetSaveCommand {
 	/** The is contact update. */
 	private Boolean isContactUpdate;
 
-	/** The password. */
-	private String password;
+	/** The old password. */
+	private String oldPassword;
+
+	/** The new password. */
+	private String newPassword;
+
+	/** The confirm new password. */
+	private String confirmNewPassword;
 
 	/** The employee info contact. */
 	private EmployeeInfoContactDto employeeInfoContact;

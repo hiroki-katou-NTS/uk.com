@@ -77,7 +77,9 @@ module nts.uk.com.view.cmm048.a {
         export interface MailNoticeSetSaveCommand {     
             isPasswordUpdate: boolean;
             isContactUpdate: boolean;
-            password: string;    
+            oldPassword: string;    
+            newPassword: string;
+            confirmNewPassword: string;
             employeeInfoContact: EmployeeInfoContactDto;
             personContact: PersonContactDto;
             listUseContactSetting: Array<UserInfoUseMethodDto>;
