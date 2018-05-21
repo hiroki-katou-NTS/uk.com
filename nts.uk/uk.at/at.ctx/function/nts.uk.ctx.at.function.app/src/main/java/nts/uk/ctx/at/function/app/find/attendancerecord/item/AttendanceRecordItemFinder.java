@@ -45,8 +45,7 @@ public class AttendanceRecordItemFinder {
 //		List<Integer> attendanceItemIds = atType.getItemByScreenUseAtr(companyId, screenUseAtr).stream().map(e -> e.getAttendanceItemId()).collect(Collectors.toList());
 		//get list AttendanceItem and convert to list attendancerecordItemDto
 		listAttendanceRecordItem = atName.getNameOfDailyAttendanceItem(attendanceItemIds).stream().map(
-				e -> new AttendanceRecordItemDto(e.getAttendanceItemId(),e.getAttendanceItemName(),screenUseAtr)).collect(Collectors.toList());
-		
+				e -> new AttendanceRecordItemDto(e.getAttendanceItemId(),e.getAttendanceItemName(),screenUseAtr,e.getTypeOfAttendanceItem())).collect(Collectors.toList());
 		return listAttendanceRecordItem;
 	}
 }

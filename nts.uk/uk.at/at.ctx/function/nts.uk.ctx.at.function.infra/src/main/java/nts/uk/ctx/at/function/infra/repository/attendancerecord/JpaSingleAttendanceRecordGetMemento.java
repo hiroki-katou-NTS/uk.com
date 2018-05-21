@@ -25,7 +25,11 @@ public class JpaSingleAttendanceRecordGetMemento implements SingleAttendanceReco
 	public JpaSingleAttendanceRecordGetMemento(KfnstAttndRec kfnstAttndRec, KfnstAttndRecItem kfnstAttndRecItem) {
 		super();
 		this.kfnstAttndRec = kfnstAttndRec;
-		this.kfnstAttndRecItem = kfnstAttndRecItem;
+		if (kfnstAttndRecItem != null) {
+			this.kfnstAttndRecItem = kfnstAttndRecItem;
+		}else {
+			this.kfnstAttndRecItem = new KfnstAttndRecItem();
+		}
 	}
 
 	/*
@@ -52,7 +56,7 @@ public class JpaSingleAttendanceRecordGetMemento implements SingleAttendanceReco
 
 	@Override
 	public Integer getTimeItemId() {
-		if (this.kfnstAttndRecItem == null)
+		if (this.kfnstAttndRecItem.getId()== null)
 			return 0;
 		return (int) kfnstAttndRecItem.getId().getTimeItemId();
 	}

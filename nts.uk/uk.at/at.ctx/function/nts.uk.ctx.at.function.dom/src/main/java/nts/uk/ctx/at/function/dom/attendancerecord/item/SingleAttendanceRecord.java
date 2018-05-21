@@ -128,6 +128,7 @@ public class SingleAttendanceRecord extends DomainObject implements AttendanceRe
 		this.attribute = memento.getAttribute();
 		this.name = memento.getName();
 		this.timeItemId = memento.getTimeItemId();
+
 	}
 
 	/**

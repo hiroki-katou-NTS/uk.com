@@ -23,7 +23,7 @@ public class CalculateAttendanceRecordFinder {
 		Optional<CalculateAttendanceRecord> optionalCalculateAttendanceRecord = this.calculateAttendanceRecordRepository
 				.getCalculateAttendanceRecord(AppContexts.user().companyId(),
 						new ExportSettingCode(attendanceRecordKey.getCode()), attendanceRecordKey.getColumnIndex(),
-						attendanceRecordKey.getPosition(), attendanceRecordKey.getExportArt());
+						attendanceRecordKey.getPosition(), attendanceRecordKey.getExportAtr());
 		// convert to dto
 		CalculateAttendanceRecord calculateAttendanceRecord = optionalCalculateAttendanceRecord.isPresent()
 				? optionalCalculateAttendanceRecord.get() : new CalculateAttendanceRecord();

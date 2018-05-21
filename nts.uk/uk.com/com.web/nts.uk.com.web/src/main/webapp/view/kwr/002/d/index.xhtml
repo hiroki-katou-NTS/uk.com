@@ -20,7 +20,7 @@
 		<ui:define name="content">
 			<div id="functions-area" style="margin:0px 10px;">
 				<div data-bind="ntsFormLabel: {}">
-					#{i18n.getText('KWR002_130')} <span data-bind="text:layoutCode"></span>
+					#{i18n.getText('KWR002_130')} <span data-bind="text:layoutCode" style="margin-left:10px"></span>
 					<span style="margin-left: 10px;" data-bind="text:layoutName"></span>
 					<span style="margin-left: 20px;" data-bind="text:directText"></span>
 				</div>
@@ -102,7 +102,7 @@
 					<div id="right-content" class="bg-green" style="float: left;margin-top:30px;">
 						<div class="cf">
 							<div style="float: left">
-								<table tabindex="" id="single-list-dataSource"
+								<table  tabindex="" id="single-list-dataSource"
 									data-bind="ntsGridList:{
 									width: 230,
 									height: 48,
@@ -110,7 +110,7 @@
 									optionsValue: 'attendanceItemId',
 									columns: columns,
 									multiple: false,
-									value:codeSingleAttendanceSelected ,
+									value:codeDemo ,
 									enable: true}">
 								</table>
 							</div>
@@ -121,7 +121,7 @@
 			
 			<div id="functions-area-bottom">
 				<button class="x-large proceed" tabindex=""
-					data-bind="click: ">#{i18n.getText('KWR002_151')}</button>
+					data-bind="click: decideButtonClick">#{i18n.getText('KWR002_151')}</button>
 				<button class="large" tabindex="" data-bind="click: close">#{i18n.getText('KWR002_152')}</button>
 			</div>
 		</ui:define>

@@ -24,10 +24,13 @@ module nts.uk.com.view.kwr002.d {
             exportAtr: KnockoutObservable<number>;
             directText: KnockoutObservable<string>;
 
+            codeDemo: KnockoutObservable<number>;
+
 
 
             constructor() {
                 var self = this;
+                self.codeDemo = ko.observable(0);
                 self.listAttendanceType = ko.observableArray([
                     new viewmodel.model.AttendaceType(13, nts.uk.resource.getMessage("Msg_1206", [])),
                     new viewmodel.model.AttendaceType(14, nts.uk.resource.getMessage("Msg_1207", [])),
@@ -62,16 +65,18 @@ module nts.uk.com.view.kwr002.d {
                         return;
                     }
                     service.getAttendanceRecordItemsByScreenUseAtr(codeChanged).done(function(listAttendanceRecordItem: Array<viewmodel.model.AttendanceRecordItem>) {
+                        //filter for exportAttr = 1 (DAILY) - condition in workFlow
+                        let listAttendanceRecordItemFillExportAtr: Array<viewmodel.model.AttendanceRecordItem> = listAttendanceRecordItem.filter(e => e.typeOfAttendanceItem == 1);
                         //check attendance selected existed 
                         if (self.codeSingleAttendanceSelected() != 0 && self.codeSingleAttendanceSelected() != undefined) {
-                            let attendanceSelected: viewmodel.model.AttendanceRecordItem = listAttendanceRecordItem.filter(e => e.attendanceItemId == self.codeSingleAttendanceSelected())[0];
+                            let attendanceSelected: viewmodel.model.AttendanceRecordItem = listAttendanceRecordItemFillExportAtr.filter(e => e.attendanceItemId == self.codeSingleAttendanceSelected())[0];
                             if (attendanceSelected != null && attendanceSelected != undefined) {
                                 //remove attendanceSelected in dataSource
-                                let indexAttendance = listAttendanceRecordItem.indexOf(attendanceSelected);
-                                listAttendanceRecordItem.splice(indexAttendance, 1);
+                                let indexAttendance = listAttendanceRecordItemFillExportAtr.indexOf(attendanceSelected);
+                                listAttendanceRecordItemFillExportAtr.splice(indexAttendance, 1);
                             }
                         }
-                        self.dataSource(listAttendanceRecordItem);
+                        self.dataSource(listAttendanceRecordItemFillExportAtr);
                     });
                 });
             }
@@ -80,39 +85,66 @@ module nts.uk.com.view.kwr002.d {
                 var self = this;
                 var dfd = $.Deferred();
                 let attendanceRecordExportShared: any = getShared('attendanceRecordExport');
-                if (attendanceRecordExportShared != null && attendanceRecordExportShared != undefined) {
-                    self.attendanceRecordExport(attendanceRecordExportShared);
-                    self.attendanceRecordName(self.attendanceRecordExport().attendanceItemName);
-                    self.layoutCode(self.attendanceRecordExport().layoutCode);
-                    self.layoutName(self.attendanceRecordExport().layoutName);
-                    self.position(self.attendanceRecordExport().position);
-                    self.columnIndex(self.attendanceRecordExport().columnIndex);
-                    self.exportAtr(self.attendanceRecordExport().exportAtr);
-                }
+                let attendanceRecordExportSharedDemo: viewmodel.model.AttendanceRecordExport = new viewmodel.model.AttendanceRecordExport('Item Top1', 1, 'LayoutNameDemo', 1, 1, 1);
+//                if (attendanceRecordExportShared != null && attendanceRecordExportShared != undefined) {
+//                    self.attendanceRecordExport(attendanceRecordExportShared);
+//                    self.attendanceRecordName(self.attendanceRecordExport().attendanceItemName);
+//                    self.layoutCode(self.attendanceRecordExport().layoutCode);
+//                    self.layoutName(self.attendanceRecordExport().layoutName);
+//                    self.position(self.attendanceRecordExport().position);
+//                    self.columnIndex(self.attendanceRecordExport().columnIndex);
+//                    self.exportAtr(self.attendanceRecordExport().exportAtr);
+//                }
+                //demo for test start page area
+                self.attendanceRecordExport(attendanceRecordExportSharedDemo);
+                self.attendanceRecordName(self.attendanceRecordExport().attendanceItemName);
+                self.layoutCode(self.attendanceRecordExport().layoutCode);
+                self.layoutName(self.attendanceRecordExport().layoutName);
+                self.position(self.attendanceRecordExport().position);
+                self.columnIndex(self.attendanceRecordExport().columnIndex);
+                self.exportAtr(self.attendanceRecordExport().exportAtr);
+                
+                
                 self.directText(nts.uk.resource.getText('KWR002_131') + ">" + self.columnIndex() + nts.uk.resource.getText('KWR002_132') + ">" +
                     self.position() + nts.uk.resource.getText('KWR002_133'));
                 var attendanceTypeCodeInit = self.listAttendanceType()[0].attendanceTypeCode;//init attendance type code
                 self.typeAttendanceCodeSelected(attendanceTypeCodeInit);
+                //get list AttendanceItem
                 service.getAttendanceRecordItemsByScreenUseAtr(attendanceTypeCodeInit).done(function(listAttendanceRecordItem: Array<viewmodel.model.AttendanceRecordItem>) {
-
                     blockUI.clear();
-                    if (listAttendanceRecordItem.length == 0 || listAttendanceRecordItem == undefined) {
+                    if (listAttendanceRecordItem == undefined || listAttendanceRecordItem.length == 0) {
                         self.dataSource();
                     } else {
-                        self.dataSource(listAttendanceRecordItem);
+                        //filter for exportAttr = 1 (DAILY) - condition in workFlow
+                        let listAttendanceRecordItemFillExportAtr: Array<viewmodel.model.AttendanceRecordItem> = listAttendanceRecordItem.filter(e => e.typeOfAttendanceItem == 1);
                         //get singleAttendanceRecord selected
                         if (self.attendanceRecordExport() != null && self.attendanceRecordExport() != undefined) {
+                            console.log(self.attendanceRecordExport());
                             let attendanceRecordKey: viewmodel.model.AttendanceRecordKey = new viewmodel.model.AttendanceRecordKey(self.attendanceRecordExport().layoutCode,
                                 self.attendanceRecordExport().columnIndex, self.attendanceRecordExport().position, self.attendanceRecordExport().exportAtr);
+                            console.log(attendanceRecordKey);
+                            //find SingleAttendanceRecord Selected
                             service.findSingleAttendanceRecord(attendanceRecordKey).done(function(singleAttendanceRecord: viewmodel.model.SingleAttendanceRecord) {
-                                self.codeSingleAttendanceSelected(singleAttendanceRecord.itemId);
-                                self.singleAttendanceRecord(singleAttendanceRecord);
-
-                                //kiem tra xem thang nay co thang nao dc chon chua => new co roi thi kiem tra co trong cai list13 ko, neu co  thang list13 phai xoa no di, neu ko co thi thoi
-
+                                //check value existed 
+                                if (singleAttendanceRecord != null && singleAttendanceRecord != undefined) {
+                                    //set value for display
+                                    self.codeSingleAttendanceSelected(singleAttendanceRecord.itemId);
+                                    self.singleAttendanceRecord(singleAttendanceRecord);
+                                    let listDataSelected: Array<viewmodel.model.AttendanceRecordItem> = [new viewmodel.model.AttendanceRecordItem(singleAttendanceRecord.itemId, singleAttendanceRecord.name, 0, 1)];//value 1 is exportAtr: Daily
+                                    self.dataSelected(listDataSelected);
+                                    //remove element selected if this element in default listAttendanceRecord init;
+                                    let attendanceSelected: viewmodel.model.AttendanceRecordItem = listAttendanceRecordItemFillExportAtr.filter(e => e.attendanceItemId == self.codeSingleAttendanceSelected())[0];
+                                    console.log(attendanceSelected);
+                                    if (attendanceSelected != null && attendanceSelected != undefined) {
+                                        //remove attendanceSelected in dataSource
+                                        let indexAttendance = listAttendanceRecordItemFillExportAtr.indexOf(attendanceSelected);
+                                        listAttendanceRecordItemFillExportAtr.splice(indexAttendance, 1);
+                                    }
+                                }
+                                self.dataSource(listAttendanceRecordItemFillExportAtr);
                             });
                         }
-
+                        
                     }
                     dfd.resolve();
                 });
@@ -139,6 +171,9 @@ module nts.uk.com.view.kwr002.d {
                     return;
                 }
                 self.codeSingleAttendanceSelected(self.currentCodeAttendace());
+                let singleAttendanceSelected: viewmodel.model.SingleAttendanceRecord = new viewmodel.model.SingleAttendanceRecord(self.dataSource().filter(e => e.attendanceItemId == self.currentCodeAttendace())[0].attendanceItemName, self.codeSingleAttendanceSelected(), 3); //3 is tempValue
+                self.singleAttendanceRecord(singleAttendanceSelected);
+                console.log(self.singleAttendanceRecord());
                 //add to right-list
                 let listSource: Array<viewmodel.model.AttendanceRecordItem> = self.dataSource();
                 let attendanceSelected = listSource.filter(e => e.attendanceItemId == self.currentCodeAttendace())[0];
@@ -150,7 +185,6 @@ module nts.uk.com.view.kwr002.d {
                 self.dataSource(listSource);
                 //default currenctCodeAttnd (left)
                 self.currentCodeAttendace(0);
-
             }
             //click arrow-left-button
             public removeAttendanceSelected() {
@@ -161,7 +195,6 @@ module nts.uk.com.view.kwr002.d {
                 if (self.codeSingleAttendanceSelected() == 0 || self.codeSingleAttendanceSelected() == undefined) {
                     return;
                 }
-
                 //return left-list
                 var typeAttendanceCodeCurrent = self.typeAttendanceCodeSelected();
                 self.typeAttendanceCodeSelected(typeAttendanceCodeCurrent);
@@ -169,22 +202,31 @@ module nts.uk.com.view.kwr002.d {
                 service.getAttendanceRecordItemsByScreenUseAtr(typeAttendanceCodeCurrent).done(function(listAttendanceRecordItem: Array<viewmodel.model.AttendanceRecordItem>) {
                     //remove right-list
                     self.clearSelected();
-                    self.dataSource(listAttendanceRecordItem);
+                    //filter for exportAttr = 1 (DAILY) - condition in workFlow
+                    let listAttendanceRecordItemFillExportAtr: Array<viewmodel.model.AttendanceRecordItem> = listAttendanceRecordItem.filter(e => e.typeOfAttendanceItem == 1);
+                    self.dataSource(listAttendanceRecordItemFillExportAtr);
                 });
-
-
-
             }
-            public findNameAttendance(attendanceId: number): string {
-                var self = this;
-                let listAttendance: Array<viewmodel.model.AttendanceRecordItem> = self.dataSource();
-                return listAttendance.filter(e => e.attendanceItemId == attendanceId)[0].attendanceItemName;
-            }
+
             private clearSelected() {
                 var self = this;
                 self.dataSelected([]);
                 self.codeSingleAttendanceSelected(0);
                 self.singleAttendanceRecord(null);
+            }
+            // function click btn-decide
+            public decideButtonClick() {
+                var self = this;
+                if (self.singleAttendanceRecord() == null || self.singleAttendanceRecord == undefined) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_1141' });
+                    return;
+                }
+                setShared('singleAttendanceItem', self.singleAttendanceRecord());
+                nts.uk.ui.windows.close();
+            }
+            //function click btn-close
+            public closeDialog() {
+                nts.uk.ui.windows.close();
             }
         }
         export module model {
@@ -202,10 +244,12 @@ module nts.uk.com.view.kwr002.d {
                 attendanceItemId: number;
                 attendanceItemName: string;
                 screenUseItem: number;
-                constructor(attendanceItemId: number, attendanceItemName: string, screenUseItem: number) {
+                typeOfAttendanceItem: number;
+                constructor(attendanceItemId: number, attendanceItemName: string, screenUseItem: number, typeOfAttendanceItem: number) {
                     this.attendanceItemId = attendanceItemId;
                     this.attendanceItemName = attendanceItemName;
                     this.screenUseItem = screenUseItem;
+                    this.typeOfAttendanceItem = typeOfAttendanceItem;
                 }
             }
             export class AttendanceRecordKey {
@@ -217,7 +261,7 @@ module nts.uk.com.view.kwr002.d {
                     this.code = code;
                     this.columnIndex = columnIndex;
                     this.position = position;
-                    this.exportAtr = exportAtr;
+                    this.exportAtr = exportAtr; 
                 }
             }
             export class AttendanceRecordExport {
