@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.remainingnumber.base.CompensatoryDayoffDate;
 
 public interface PayoutManagementDataRepository {
 	
@@ -17,11 +18,13 @@ public interface PayoutManagementDataRepository {
 	
 	void delete(String payoutId);
 	
-	void delete(String sID, GeneralDate dayoff);
+	void delete(String sID, GeneralDate dayOff);
 	
 	void update(PayoutManagementData domain);
 	
 	Optional<PayoutManagementData> findByID(String ID);
+	
+	Optional<PayoutManagementData> find(String sID, String cID,CompensatoryDayoffDate dayoffDate );
 	// ドメイン「振休管理データ」より紐付け対象となるデータを取得する
 	List<PayoutManagementData> getBySidDatePeriod(String sid, String subOfHDID, int digestionAtr);
 	
