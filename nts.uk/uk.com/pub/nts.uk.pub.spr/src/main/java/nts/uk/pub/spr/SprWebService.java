@@ -10,6 +10,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import com.google.common.base.Strings;
+
 import lombok.val;
 import nts.uk.pub.spr.SprStubHelper.ApplicationTargetResult;
 import nts.uk.pub.spr.SprStubHelper.RecordApplicationStatusResult;
@@ -131,13 +133,20 @@ public class SprWebService {
 		paramsMap.put("reason", SprStubHelper.formatParam(reasonReal));
 		paramsMap.put("stampProtection", SprStubHelper.formatParam(stampProtectionReal));
 		
+		String date = null;
+		if(!Strings.isNullOrEmpty(targetDateReal)){
+			if(!Strings.isNullOrEmpty(targetDateReal.trim())){
+				date = loginParamCheck.getDate(targetDateReal).toString();
+			}
+		}
+		
 		val paramsValue = new LinkedHashMap<String, String>();
 		paramsValue.put("menu", menuCDReal);
 		paramsValue.put("loginemployeeCode", loginEmployeeCDReal);
 		paramsValue.put("employeeCode", targetEmployeeCDReal);
 		paramsValue.put("starttime", startTimeReal);
 		paramsValue.put("endtime", endTimeReal);
-		paramsValue.put("date", loginParamCheck.getDate(targetDateReal).toString());
+		paramsValue.put("date", date);
 		paramsValue.put("selecttype", selectTypeReal);
 		paramsValue.put("applicationID", applicationIDReal);
 		paramsValue.put("reason", reasonReal);
