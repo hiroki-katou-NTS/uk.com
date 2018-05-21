@@ -111,7 +111,7 @@ public class RegulationInfoEmployeeFinder {
 		List<String> sIds = searchByEmployeeCode(query.getCode(), query.getSystemType());
 
 		// filter by closure id
-		this.filterByClosure(query, sIds);
+		sIds = this.filterByClosure(query, sIds);
 		
 		return getEmployeeInfo(sIds, query.getReferenceDate());
 	}
@@ -126,7 +126,7 @@ public class RegulationInfoEmployeeFinder {
 		List<String> sIds = searchByEmployeeName(query.getName(), query.getSystemType());
 		
 		// filter by closure id
-		this.filterByClosure(query, sIds);
+		sIds = this.filterByClosure(query, sIds);
 		
 		return getEmployeeInfo(sIds, query.getReferenceDate());
 	}
@@ -141,7 +141,7 @@ public class RegulationInfoEmployeeFinder {
 		List<String> sIds = searchByEntryDate(query.getDatePeriod(), query.getSystemType());
 		
 		// filter by closure id
-		this.filterByClosure(query, sIds);
+		sIds = this.filterByClosure(query, sIds);
 		
 		return getEmployeeInfo(sIds, query.getReferenceDate());
 	}
@@ -156,7 +156,7 @@ public class RegulationInfoEmployeeFinder {
 		List<String> sIds = searchByRetirementDate(query.getDatePeriod(), query.getSystemType());
 		
 		// filter by closure id
-		this.filterByClosure(query, sIds);
+		sIds = this.filterByClosure(query, sIds);
 		
 		return getEmployeeInfo(sIds, query.getReferenceDate());
 	}
