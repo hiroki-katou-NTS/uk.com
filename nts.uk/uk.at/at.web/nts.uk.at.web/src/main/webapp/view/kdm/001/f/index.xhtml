@@ -9,23 +9,23 @@
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 530, height: 530 };</script>
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="Fdm001.f.vm.js" />
-			<com:scriptfile path="Fdm001.f.start.js" />
-			<com:stylefile path="Fdm001.f.style.css" />
+			<com:scriptfile path="Kdm001.f.vm.js" />
+			<com:scriptfile path="Kdm001.f.start.js" />
+			<com:stylefile path="Kdm001.f.style.css" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area">
 				<!-- F1 文言 -->
 				<div>
-					<span id="F1" class="label">#{i18n.getText('FDM001_99')}</span>
+					<span id="F1" class="label">#{i18n.getText('KDM001_99')}</span>
 				</div>
 				<div id="F2">
 					<!-- F2_1 職場コード -->
-					<span id="F2_1" class="label" data-bind="text: worFCode"></span>
+					<span id="F2_1" class="label" data-bind="text: workCode"></span>
 					<!-- F2_2 職場名称 -->
-					<span id="F2_2" class="label" data-bind="text: worFPlaceName"></span>
+					<span id="F2_2" class="label" data-bind="text: workPlaceName"></span>
 					<!-- F2_3 ： -->
-					<span id="F2_3" class="label">#{i18n.getText('FDM001_58')}</span>
+					<span id="F2_3" class="label">#{i18n.getText('KDM001_58')}</span>
 					<!-- F2_4 社員コード -->
 					<span id="F2_4" class="label" data-bind="text: employeeCode"></span>
 					<!-- F2_5 社員名 -->
@@ -47,7 +47,7 @@
 						<table id="multi-list"
 							data-bind="ntsGridList: {
 								options: items,
-								name: '#[FDM001_93]',
+								name: '#[KDM001_93]',
 								optionsValue: 'code',
 								columns: columns,
 								rows:8,
@@ -64,16 +64,16 @@
 				</div>
 				<div style="margin-top: 15px; margin-left: 15px;">
 					<!-- F7_1残 -->
-					<span id="F7_1" class="label">#{i18n.getText('FDM001_98')}</span>
+					<span id="F7_1" class="label">#{i18n.getText('KDM001_98')}</span>
 					<!-- F7_2残 数-->
 					<span id="F7_2" class="label" data-bind="text: residualDay"></span>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
 				<!-- F31_1 登録 -->
-				<button id="F31_1" style="margin-top: 10px" class="proceed " tabindex="2">#{i18n.getText('FDM001_89')}</button>
+				<button id="F31_1" style="margin-top: 10px" class="proceed " tabindex="2">#{i18n.getText('KDM001_89')}</button>
 				<!-- F31_2 キャンセル -->
-				<button id="F31_2" style="margin-top: 10px" data-bind="clicF: closeDialog" tabindex="3">#{i18n.getText('FDM001_90')}</button>
+				<button id="F31_2" style="margin-top: 10px" data-bind="click: closeDialog" tabindex="3">#{i18n.getText('KDM001_90')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

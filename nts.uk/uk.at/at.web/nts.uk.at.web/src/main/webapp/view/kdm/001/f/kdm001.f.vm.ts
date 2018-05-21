@@ -1,4 +1,4 @@
-module nts.uk.at.view.kdm001.k.viewmodel {
+module nts.uk.at.view.kdm001.f.viewmodel {
     export class ScreenModel {
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         columns: KnockoutObservableArray<NtsGridListColumn>;
