@@ -8,6 +8,7 @@ import lombok.Data;
 
 /**
  * Instantiates a new daily attendance item dto.
+ * @author HoangDD
  */
 @Data
 public class DailyAttendanceItemDto {

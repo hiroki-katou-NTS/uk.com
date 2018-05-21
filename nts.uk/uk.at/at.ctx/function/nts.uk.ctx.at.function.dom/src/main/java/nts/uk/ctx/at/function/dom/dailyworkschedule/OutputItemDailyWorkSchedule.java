@@ -7,11 +7,13 @@ package nts.uk.ctx.at.function.dom.dailyworkschedule;
 import java.util.List;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class OutputItemDailyWorkSchedule.
+ * @author HoangDD
  */
 // 日別勤務表の出力項目
 @Getter
@@ -74,5 +76,17 @@ public class OutputItemDailyWorkSchedule extends AggregateRoot{
 		memento.setLstDisplayedAttendance(this.lstDisplayedAttendance);
 		memento.setLstRemarkContent(this.lstRemarkContent);
 		memento.setWorkTypeNameDisplay(this.workTypeNameDisplay);
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.dom.DomainObject#validate()
+	 */
+	@Override
+	public void validate() {
+		super.validate();
+		// execute algorithm アルゴリズム「登録チェック処理」を実行する to check C7_8 exist element?
+		if (this.lstDisplayedAttendance.isEmpty() || this.lstDisplayedAttendance == null) {
+			throw new BusinessException("Msg_880");
+		}
 	}
 }

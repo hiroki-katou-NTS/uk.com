@@ -6,6 +6,7 @@ package nts.uk.ctx.at.function.dom.dailyworkschedule;
 
 /**
  * The Enum NameWorkTypeOrHourZone.
+ * @author HoangDD
  */
 // 勤務種類・就業時間帯の名称
 public enum NameWorkTypeOrHourZone {

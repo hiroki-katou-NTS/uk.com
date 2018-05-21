@@ -32,6 +32,7 @@ import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedu
 
 /**
  * The Class JpaOutputItemDailyWorkScheduleRepository.
+ * @author HoangDD
  */
 @Stateless
 public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository implements OutputItemDailyWorkScheduleRepository{
@@ -103,11 +104,8 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 		// From table
 		Root<KfnmtItemWorkSchedule> root = cq.from(KfnmtItemWorkSchedule.class);
 
-		List<Predicate> predicateList = new ArrayList<Predicate>();
-
 		// Add where condition
-		predicateList.add(builder.equal(root.get(KfnmtItemWorkSchedule_.id).get(KfnmtItemWorkSchedulePK_.cid),companyId));
-		cq.where(predicateList.toArray(new Predicate[] {}));
+		cq.where(builder.equal(root.get(KfnmtItemWorkSchedule_.id).get(KfnmtItemWorkSchedulePK_.cid),companyId));
 		cq.orderBy(builder.asc(root.get(KfnmtItemWorkSchedule_.id).get(KfnmtItemWorkSchedulePK_.cid)));
 		// Get results
 		List<KfnmtItemWorkSchedule> results = em.createQuery(cq).getResultList();
@@ -127,23 +125,6 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 	 */
 	@Override
 	public void deleteByCidAndCode(String companyId, int code) {
-//		EntityManager em = this.getEntityManager();
-//		
-//		CriteriaBuilder cb = em.getCriteriaBuilder();
-//
-//        // create delete
-//        CriteriaDelete<KfnmtItemWorkSchedule> delete = cb.createCriteriaDelete(KfnmtItemWorkSchedule.class);
-//
-//        // set the root class
-//        Root<KfnmtItemWorkSchedule> root = delete.from(KfnmtItemWorkSchedule.class);
-//
-//        // set where clause
-//        delete.where(cb.equal(root.get(KfnmtItemWorkSchedule_.id).get(KfnmtItemWorkSchedulePK_.cid), companyId),
-//        				cb.equal(root.get(KfnmtItemWorkSchedule_.id).get(KfnmtItemWorkSchedulePK_.itemCode), code));
-//
-//        // perform update
-//        em.createQuery(delete).executeUpdate();
-
         KfnmtItemWorkSchedulePK primaryKey = new KfnmtItemWorkSchedulePK();
         primaryKey.setCid(companyId);
         primaryKey.setItemCode(code);

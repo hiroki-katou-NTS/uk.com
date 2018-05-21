@@ -14,10 +14,12 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.PrintRemarksContent;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedule;
+import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedulePK;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class JpaOutputItemDailyWorkScheduleGetMemento.
+ * @author HoangDD
  */
 public class JpaOutputItemDailyWorkScheduleGetMemento implements OutputItemDailyWorkScheduleGetMemento{
 
@@ -30,7 +32,9 @@ public class JpaOutputItemDailyWorkScheduleGetMemento implements OutputItemDaily
 	public JpaOutputItemDailyWorkScheduleGetMemento(KfnmtItemWorkSchedule entity) {
 		this.kfnmtItemWorkSchedule = entity;
 		if (entity.getId() == null) {
-			entity.getId().setCid(AppContexts.user().companyId());
+			KfnmtItemWorkSchedulePK key = new KfnmtItemWorkSchedulePK();
+			key.setCid(AppContexts.user().companyId());
+			entity.setId(key);
 		}
 	}
 	
@@ -65,8 +69,7 @@ public class JpaOutputItemDailyWorkScheduleGetMemento implements OutputItemDaily
 	public List<AttendanceItemsDisplay> getLstDisplayedAttendance() {
 		return this.kfnmtItemWorkSchedule.getLstKfnmtAttendanceDisplay().stream()
 									.map(entity -> {
-										AttendanceItemsDisplay domain = new AttendanceItemsDisplay((int) entity.getId().getOrderNo(), entity.getAtdDisplay().intValue());
-										return domain;
+										return new AttendanceItemsDisplay((int) entity.getId().getOrderNo(), entity.getAtdDisplay().intValue());
 									}).collect(Collectors.toList());
 	}
 
@@ -77,8 +80,7 @@ public class JpaOutputItemDailyWorkScheduleGetMemento implements OutputItemDaily
 	public List<PrintRemarksContent> getLstRemarkContent() {
 		return this.kfnmtItemWorkSchedule.getLstKfnmtPrintRemarkCont().stream()
 									.map(entity -> {
-										PrintRemarksContent domain = new PrintRemarksContent(entity.getUseCls().intValue(), (int) entity.getId().getPrintItem());
-										return domain;
+										return new PrintRemarksContent(entity.getUseCls().intValue(), (int) entity.getId().getPrintItem());
 									}).collect(Collectors.toList());
 	}
 

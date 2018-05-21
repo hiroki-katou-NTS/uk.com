@@ -20,6 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KfnmtAttendanceDisplay.
+ * @author HoangDD
  */
 @Entity
 @NoArgsConstructor

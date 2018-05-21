@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * The Class ErrorAlarmCodeDto.
+ * @author HoangDD
  */
 @NoArgsConstructor
 @Getter

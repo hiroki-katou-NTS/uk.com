@@ -25,6 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KfnmtItemWorkSchedule.
+ * @author HoangDD
  */
 @Getter
 @Setter

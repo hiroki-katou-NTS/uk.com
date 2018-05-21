@@ -9,6 +9,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
  * The Class OutputitemSettingName.
+ * @author HoangDD
  */
 @StringMaxLength(20)
 // 出力項目設定名称
@@ -21,7 +22,6 @@ public class OutputItemSettingName extends StringPrimitiveValue<OutputItemSettin
 	 */
 	public OutputItemSettingName(String rawValue) {
 		super(rawValue);
-		// TODO Auto-generated constructor stub
 	}
 
 	/** The Constant serialVersionUID. */

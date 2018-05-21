@@ -10,6 +10,7 @@ import lombok.Data;
 
 /**
  * The Class OutputItemDailyWorkScheduleDto.
+ * @author HoangDD
  */
 @Data
 public class OutputItemDailyWorkScheduleDto {

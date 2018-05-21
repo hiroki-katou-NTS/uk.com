@@ -23,6 +23,7 @@ import nts.uk.ctx.at.function.app.find.dailyworkschedule.OutputItemDailyWorkSche
 
 /**
  * The Class OutputItemDailyWorkScheduleWS.
+ * @author HoangDD
  */
 @Path("at/function/dailyworkschedule")
 @Produces(MediaType.APPLICATION_JSON)

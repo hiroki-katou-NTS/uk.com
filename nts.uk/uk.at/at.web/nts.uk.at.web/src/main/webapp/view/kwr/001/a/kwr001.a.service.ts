@@ -1,5 +1,8 @@
 module nts.uk.at.view.kwr001.a {
     export module service {
+        
+        const SLASH = "/";
+        
         var paths = {
            getDataStartPage: "at/function/dailyworkschedule/startPage",
            exportExcel: "screen/at/dailyschedule/export"
@@ -21,12 +24,9 @@ module nts.uk.at.view.kwr001.a {
                                                     "_employeeId_" + userId);
         }
         
-        export function exportExcel(data: WorkScheduleOutputQueryDto): JQueryPromise<any> {
+        export function exportExcel(data: any): JQueryPromise<any> {
             return nts.uk.request.ajax('at', paths.exportExcel, data);
         }
-        
-        const SLASH = "/";
-        
     }
 }
 

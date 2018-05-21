@@ -10,6 +10,7 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
 
 /**
  * The Class OutputItemSettingCode.
+ * @author HoangDD
  */
 @IntegerMaxValue(99)
 // 出力項目設定コード
@@ -25,7 +26,6 @@ public class OutputItemSettingCode extends IntegerPrimitiveValue<OutputItemSetti
 	 */
 	public OutputItemSettingCode(Integer rawValue) {
 		super(rawValue);
-		// TODO Auto-generated constructor stub
 	}
 
 

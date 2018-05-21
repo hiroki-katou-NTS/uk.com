@@ -9,6 +9,7 @@ import nts.arc.layer.dom.DomainObject;
 
 /**
  * The Class PrintRemarksContent.
+ * @author HoangDD
  */
 // 印刷する備考内容
 @Getter
@@ -20,7 +21,10 @@ public class PrintRemarksContent extends DomainObject{
 	
 	/** The printitem. */
 	// 印刷項目
-	private RemarksContentChoice printitem;
+	private RemarksContentChoice printItem;
+	
+	/** The Constant USE. */
+	private static final int USE = 1;
 
 	/**
 	 * Instantiates a new prints the remarks content.
@@ -31,9 +35,6 @@ public class PrintRemarksContent extends DomainObject{
 	public PrintRemarksContent(int usedClassification, int printitem) {
 		super();
 		this.usedClassification = usedClassification == USE ? true : false;
-		this.printitem = RemarksContentChoice.valueOf(printitem);
+		this.printItem = RemarksContentChoice.valueOf(printitem);
 	}
-	
-	/** The Constant USE. */
-	private static final int USE = 1;
 }

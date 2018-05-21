@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * The Interface OutputItemDailyWorkScheduleSetMemento.
+ * @author HoangDD
  */
 public interface OutputItemDailyWorkScheduleSetMemento {
 	

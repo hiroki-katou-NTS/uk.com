@@ -20,6 +20,7 @@ import nts.uk.ctx.at.function.app.find.dailyworkschedule.scrB.ErrorAlarmCodeDto;
 
 /**
  * The Class WorkScheduleOutputConditionWS.
+ * @author HoangDD
  */
 @Path("at/function/dailyworkschedule")
 @Produces(MediaType.APPLICATION_JSON)
