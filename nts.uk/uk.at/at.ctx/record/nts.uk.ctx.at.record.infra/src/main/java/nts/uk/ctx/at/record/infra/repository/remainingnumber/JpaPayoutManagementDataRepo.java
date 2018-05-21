@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.record.infra.entity.remainingnumber.paymana.KrcmtPayoutManaData;
@@ -16,6 +17,8 @@ import nts.uk.ctx.at.record.infra.entity.remainingnumber.paymana.KrcmtPayoutMana
 public class JpaPayoutManagementDataRepo extends JpaRepository implements PayoutManagementDataRepository {
 
 	private String QUERY_BYSID = "SELECT p FROM KrcmtPayoutManaData p WHERE p.cID = :cid AND p.sID =:employeeId";
+	
+	private String QUERY_BYSID_CID_DAYOFF = "SELECT p FROM KrcmtPayoutManaData p WHERE p.cID = :cid AND p.sID =:employeeId AND p.dayoffDate = dayoffDate";
 
 	private String QUERY_BYSID_WITH_COND = String.join(" ", QUERY_BYSID, "AND p.stateAtr = :state");
 
@@ -131,6 +134,11 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 				.query(QUERY_BY_SID_DATEPERIOD_NO_DIGES, KrcmtPayoutManaData.class).setParameter("sid", sid)
 				.setParameter("startDate", startDate).setParameter("endDate", endDate).getList();
 		return listSubOfHD.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+
+	@Override
+	public Optional<PayoutManagementData> find(String sID, String cID, CompensatoryDayoffDate dayoffDate) {
+		return this.queryProxy().find(QUERY_BYSID_CID_DAYOFF, KrcmtPayoutManaData.class).map(i -> toDomain(i));
 	}
 
 }
