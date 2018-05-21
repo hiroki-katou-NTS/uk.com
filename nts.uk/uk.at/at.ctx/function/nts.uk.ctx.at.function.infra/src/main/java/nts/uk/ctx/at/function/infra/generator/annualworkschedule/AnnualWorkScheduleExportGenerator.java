@@ -54,6 +54,7 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 				PageSetup pageSetup = ws.getPageSetup();
 				pageSetup.setZoom(100);
 				rowsPerPage = ROW_PER_PAGE;
+				wsc.getRangeByName("monthGroup6Range").setOutlineBorder(BorderType.RIGHT_BORDER, CellBorderType.DASH_DOT, Color.getBlack());
 			}
 			Range empRange = wsc.getRangeByName("employeeRange");
 			int rowPerEmp = dataSource.getExportItems().size();
