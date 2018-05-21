@@ -9,6 +9,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTy
 /**
  * 
  * @author nampt
+ * 月次表示項目一覧
  *
  */
 @Getter
@@ -18,13 +19,23 @@ public class BusinessTypeFormatMonthly extends AggregateRoot {
 
 	/**
 	 * padding left "0"
+	 * 勤務種別コード
 	 */
 	private BusinessTypeCode businessTypeCode;
 
+	/**
+	 * 表示する項目
+	 */
 	private int attendanceItemId;
 
+	/**
+	 * 並び順
+	 */
 	private int order;
 
+	/**
+	 * 列幅
+	 */
 	private BigDecimal columnWidth;
 
 	public BusinessTypeFormatMonthly(String companyId, BusinessTypeCode businessTypeCode, int attendanceItemId, int order,
