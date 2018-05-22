@@ -1,6 +1,12 @@
 module nts.uk.at.view.kdm001.share.model {
     import getText = nts.uk.resource.getText;
 
+    export enum ExecuteMode {
+        INSERT = 0,
+        UPDATE = 1,
+        DELETE = 2
+    }
+
     export function getNumberOfDays(): Array<ItemModel> {
         return [
             new model.ItemModel(1.0, getText('KDM001_127')),
