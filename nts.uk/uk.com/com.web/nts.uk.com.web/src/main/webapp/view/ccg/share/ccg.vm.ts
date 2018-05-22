@@ -500,12 +500,21 @@ module nts.uk.com.view.ccg.share.ccg {
                     }
                 });
                 // when tab to last item of tab 2
-                $("[tabindex='34']").on('keydown', function(e) {
-                    if (e.which == TAB_KEY_CODE) {
-                        // switch to tab 3
-                        self.selectedTab('tab-3');
-                    }
-                });
+                if (self.showEmployeeSelection) {
+                    $("[tabindex='34']").on('keydown', function(e) {
+                        if (e.which == TAB_KEY_CODE) {
+                            // switch to tab 3
+                            self.selectedTab('tab-3');
+                        }
+                    });
+                } else {
+                    $("[tabindex='32']").on('keydown', function(e) {
+                        if (e.which == TAB_KEY_CODE) {
+                            // switch to tab 3
+                            self.selectedTab('tab-3');
+                        }
+                    });
+                }
                 // when tab to last item of tab 3
                 $("[tabindex='43']").on('keydown', function(e) {
                     if (e.which == TAB_KEY_CODE && self.showQuickSearchTab) {
