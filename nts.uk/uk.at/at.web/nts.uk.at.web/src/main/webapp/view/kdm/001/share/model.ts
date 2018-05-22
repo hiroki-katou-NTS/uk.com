@@ -13,6 +13,14 @@ module nts.uk.at.view.kdm001.share.model {
             new model.ItemModel(0.5, getText('KDM001_128')) 
         ];
     }
+    
+    export function getTypeHoliday(): Array<ItemModel> {
+        return [
+            new model.ItemModel("0", getText('KDM001_146')),
+            new model.ItemModel("1", getText('KDM001_147')),
+            new model.ItemModel("2", getText('KDM001_148')) 
+        ];
+    }
 
     export class ItemModel {
         code: any;

@@ -64,7 +64,7 @@
 					options: itemListHoliday,
 					optionsValue: 'code',
 					visibleItemsCount: 5,
-					value: selectedCodeHoliday,
+					value: occurredDays,
 					optionsText: 'name',
 					editable: false,
 					enable: true,
@@ -81,10 +81,10 @@
 					<div id="combo-box-holiday"
 						data-bind="ntsComboBox: {
 					name: '#[KDM001_71]',
-					options: itemListHoliday,
+					options: typeHoliday,
 					optionsValue: 'code',
 					visibleItemsCount: 5,
-					value: selectedCodeHoliday,
+					value: lawAtr,
 					optionsText: 'name',
 					editable: false,
 					enable: true,
@@ -147,7 +147,7 @@
 						<!-- D12_2 年月日 -->
 						<!-- Datepicker -->
 						<div
-							data-bind="ntsDatePicker: {value: dateOptionSubHoliday, dateFormat: 'YYYY/MM/DD', enable: isOptionSubHolidayEnable, name: '#[KDM001_81]'  }"></div>
+							data-bind="ntsDatePicker: {value: holidayDate, dateFormat: 'YYYY/MM/DD', enable: isOptionSubHolidayEnable, name: '#[KDM001_81]'  }"></div>
 						<!-- D12_3 代休日数 -->
 						<span class="label" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_82')}</span>
 						<!-- D12_4 代休日数 -->
@@ -158,7 +158,7 @@
 							options: itemListOptionSubHoliday,
 							optionsValue: 'code',
 							visibleItemsCount: 5,
-							value: selectedCodeOptionSubHoliday,
+							value: requiredDays,
 							optionsText: 'name',
 							editable: false,
 							enable: isOptionSubHolidayEnable,
@@ -176,7 +176,7 @@
 					<!-- D15 残数 -->
 					<div class="labelTitle" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_85')}</div>
 					<!-- D15_1 残数 -->
-					<span class="label" data-bind="text: dayRemaining" ></span>
+					<span class="label" data-bind="text: remainDays" ></span>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
