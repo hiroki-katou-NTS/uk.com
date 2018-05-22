@@ -9,6 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * 暫定振出管理データ
@@ -26,7 +27,7 @@ public class KrcmtInterimRecMana extends UkJpaEntity implements Serializable{
 	public String recruitmentManaId;
 	/**	使用期限日 */
 	@Column(name = "EXPIRATION_DAYS")
-	public Double expirationDays;
+	public GeneralDate expirationDays;
 	/**	発生日数 */
 	@Column(name = "OCCURRENCE_DAYS")
 	public Double occurrenceDays;

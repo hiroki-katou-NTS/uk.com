@@ -69,12 +69,15 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		//ドメインモデル「暫定休出管理データ」を取得する
 		List<InterimRemain> getRemainBySidPriod = remainRepo.getRemainBySidPriod(employeeId, dateData);
 		Double outputData = (double) 0;
-		for (InterimRemain interimRemain : getRemainBySidPriod) {
-			Optional<InterimBreakMana> getBreakManaBybreakManaId = breakDayOffRepo.getBreakManaBybreakManaId(interimRemain.getRemainManaID());
-			if(getBreakManaBybreakManaId.isPresent()) {
-				outputData += getBreakManaBybreakManaId.get().getOccurrenceDays().v();
-			}
+		if(!getRemainBySidPriod.isEmpty()) {
+			for (InterimRemain interimRemain : getRemainBySidPriod) {
+				Optional<InterimBreakMana> getBreakManaBybreakManaId = breakDayOffRepo.getBreakManaBybreakManaId(interimRemain.getRemainManaID());
+				if(getBreakManaBybreakManaId.isPresent()) {
+					outputData += getBreakManaBybreakManaId.get().getOccurrenceDays().v();
+				}
+			}	
 		}
+		
 		//ドメインモデル「休出管理データ」を取得する
 		//TODO cần phai chuyển domain về shared
 		return outputData;
@@ -84,12 +87,15 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		//ドメインモデル「暫定代休管理データ」を取得する
 		List<InterimRemain> getRemainBySidPriod = remainRepo.getRemainBySidPriod(employeeId, dateData);
 		Double outputData = (double) 0;
-		for (InterimRemain interimRemain : getRemainBySidPriod) {
-			Optional<InterimDayOffMana> getDayoffById = breakDayOffRepo.getDayoffById(interimRemain.getRemainManaID());
-			if(getDayoffById.isPresent()) {
-				outputData += getDayoffById.get().getRequiredDay().v();
-			}			
+		if(!getRemainBySidPriod.isEmpty()) {
+			for (InterimRemain interimRemain : getRemainBySidPriod) {
+				Optional<InterimDayOffMana> getDayoffById = breakDayOffRepo.getDayoffById(interimRemain.getRemainManaID());
+				if(getDayoffById.isPresent()) {
+					outputData += getDayoffById.get().getRequiredDay().v();
+				}			
+			}	
 		}
+		
 		//ドメインモデル「休出管理データ」を取得する
 		//TODO can chuyen domain ve shared
 		
