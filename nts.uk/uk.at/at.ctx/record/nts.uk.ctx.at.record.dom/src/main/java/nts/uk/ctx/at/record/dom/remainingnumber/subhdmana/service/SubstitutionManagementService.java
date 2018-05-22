@@ -8,8 +8,6 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SWkpHistImport;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SysWorkplaceAdapter;
-import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.service.output.ExtraHolidayManagementOutput;
-import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.service.output.SubstituteManagementOutput;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -26,6 +24,6 @@ public class SubstitutionManagementService {
 		GeneralDate baseDate = GeneralDate.today();
 		Optional<SWkpHistImport> sWkpHistImport = syWorkplaceAdapter.findBySid(employeeId, baseDate);
 		ExtraHolidayManagementOutput extraHolidayManagementOutput = extraHolidayManagementService.dataExtractionProcessing(employeeId, startDate, endDate);
-		return new SubstituteManagementOutput(sWkpHistImport.get(), extraHolidayManagementOutput);
+		return new SubstituteManagementOutput(sWkpHistImport.isPresent() ? sWkpHistImport.get() : null, extraHolidayManagementOutput);
 	}
 }
