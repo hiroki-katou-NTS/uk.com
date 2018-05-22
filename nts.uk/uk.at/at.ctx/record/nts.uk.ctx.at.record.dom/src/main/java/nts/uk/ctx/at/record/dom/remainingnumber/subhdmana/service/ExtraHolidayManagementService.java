@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -45,7 +46,7 @@ public class ExtraHolidayManagementService {
 		String cid = AppContexts.user().companyId();
 		List<LeaveManagementData> listLeaveData = null;
 		List<CompensatoryDayOffManaData> listCompensatoryData = null;
-		List<LeaveComDayOffManagement> listLeaveComDayOffManagement = null;
+		List<LeaveComDayOffManagement> listLeaveComDayOffManagement = new ArrayList<>();
 		SEmpHistoryImport empHistoryImport = null;
 		ClosureEmployment closureEmploy = null;
 		GeneralDate baseDate = GeneralDate.today();
@@ -56,13 +57,12 @@ public class ExtraHolidayManagementService {
 			listLeaveData = leaveManaDataRepository.getBySidNotUnUsed(cid, employeeId);
 			listCompensatoryData = comDayOffManaDataRepository.getBySidWithReDay(cid, employeeId); 
 		}
-		if (listLeaveData.isEmpty() && listCompensatoryData.isEmpty()){
-			throw new BusinessException("Msg_726");
+		if (!listLeaveData.isEmpty() && !listCompensatoryData.isEmpty()){
+			List<String> listLeaveID = listLeaveData.stream().map(x ->{
+				return x.getID();
+			}).collect(Collectors.toList());
+			listLeaveComDayOffManagement = leaveComDayOffManaRepository.getByListComLeaveID(listLeaveID);
 		}
-		List<String> listLeaveID = listLeaveData.stream().map(x ->{
-			return x.getID();
-		}).collect(Collectors.toList());
-		listLeaveComDayOffManagement = leaveComDayOffManaRepository.getByListComLeaveID(listLeaveID);
 		Optional<SEmpHistoryImport> sEmpHistoryImport = sysEmploymentHisAdapter.findSEmpHistBySid(cid, employeeId, baseDate);
 		if (sEmpHistoryImport.isPresent()){
 			empHistoryImport = sEmpHistoryImport.get();

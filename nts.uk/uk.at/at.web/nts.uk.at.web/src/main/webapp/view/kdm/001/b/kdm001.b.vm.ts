@@ -18,9 +18,12 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         listLeaveData: any;
         listCompensatoryData: any;
         listLeaveComDayOffManagement: any;
+        listEmployee: Array<EmployeeInfo>;
+        leaveSettingExpiredDate: string;
+        compenSettingEmpExpiredDate: string
         //_____CCG001________
         ccgcomponent: GroupOption;
-        listEmployee: KnockoutObservableArray<EmployeeSearchDto>;
+        listEmployeeKCP009: KnockoutObservableArray<EmployeeSearchDto>;
         showinfoSelectedEmployee: KnockoutObservable<boolean>;
         baseDate: KnockoutObservable<Date> = ko.observable(new Date());
         //___________KCP009______________
@@ -57,7 +60,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             });
             self.updateSubstituteDataList();
             //_____CCG001________
-            self.listEmployee = ko.observableArray([]);
+            self.listEmployeeKCP009 = ko.observableArray([]);
             self.showinfoSelectedEmployee = ko.observable(false);
             self.ccgcomponent = {
                 /** Common properties */
@@ -100,21 +103,20 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                     self.showinfoSelectedEmployee(true);
-                    self.listEmployee(data.listEmployee);
+                    self.listEmployeeKCP009(data.listEmployee);
                     self.convertEmployeeCcg01ToKcp009(data.listEmployee);
                 }
             }
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
             self.selectedItem.subscribe(x => {
-                self.selectedEmployee = _.find(self.listEmployee(), item => { return item.employeeId === x; });
+                self.selectedEmployee = _.find(self.listEmployee, item => { return item.employeeId === x; });
                 if (!self.isOnStartUp) {
                     let searchCondition = { employeeId: x, stateDate: null, endDate: null };
                     service.getExtraHolidayData(searchCondition).done(function(result) {
-                        self.closureEmploy = result.extraHolidayManagementDataDto.closureEmploy;
-                        let extraHolidayData = result.extraHolidayManagementDataDto;
-                        self.listLeaveComDayOffManagement = extraHolidayData.listLeaveComDayOffManagement;
-                        self.listCompensatoryData = extraHolidayData.listCompensatoryData;
-                        self.listLeaveData = extraHolidayData.listLeaveData;
+                        self.closureEmploy = result.closureEmploy;
+                        self.listLeaveComDayOffManagement = result.listLeaveComDayOffManagement;
+                        self.listCompensatoryData = result.listCompensatoryData;
+                        self.listLeaveData = result.listLeaveData;
                     }).fail(function(result) {
                         dialog.alertError(result.errorMessage);
                     });
@@ -150,8 +152,13 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             self.showSubstiteDataGrid();
         }
 
-        updateSubstituteDataList1() {
-            //     
+        
+        convertToDisplayList(){
+            var self = this;
+            let substituteDataArray: Array<SubstitutedData> = [];
+            _.forEach(self.listLeaveData, function(data) {
+                substituteDataArray.push(new SubstitutedData(data.id, data.dayOffDate, data.occurredDays, "基", null, null, null, "0.5", "0.5", 0));
+            });
         }
         startPage(): JQueryPromise<any> {
             let self = this;
@@ -168,6 +175,8 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 self.listLeaveComDayOffManagement = extraHolidayData.listLeaveComDayOffManagement;
                 self.listCompensatoryData = extraHolidayData.listCompensatoryData;
                 self.listLeaveData = extraHolidayData.listLeaveData;
+                self.leaveSettingExpiredDate = result.leaveSettingExpiredDate;
+                self.compenSettingEmpExpiredDate = result.compenSettingEmpExpiredDate;
                 self.initKCP009();
             }).fail(function(result) {
                 dialog.alertError(result.errorMessage);
@@ -194,8 +203,10 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         convertEmployeeCcg01ToKcp009(dataList: EmployeeSearchDto[]): void {
             let self = this;
             self.employeeInputList([]);
+            self.listEmployee = [];
             _.each(dataList, function(item) {
-                self.employeeInputList.push(new EmployeeKcp009(item.employeeId, item.employeeCode, item.employeeName, item.workplaceId, item.workplaceCode));
+                self.listEmployee.push(new EmployeeInfo(item.employeeId, item.employeeCode, item.employeeName, item.workplaceId, item.workplaceCode));
+                self.employeeInputList.push(new EmployeeKcp009(item.employeeId, item.employeeCode, item.employeeName, item.workplaceName, ""));
             });
             $('#emp-component').ntsLoadListComponent(self.listComponentOption);
             if (dataList.length == 0) {
@@ -277,32 +288,6 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             }
         }
     }
-    class SubstituteData {
-        id: string;
-        substituedWorkingDate: string;
-        substituedWorkingHours: string;
-        substituedWorkingPeg: string;
-        substituedHolidayDate: string;
-        substituteHolidayHours: string;
-        substituedHolidayPeg: string;
-        remainHolidayHours: string;
-        expiredHolidayHours: string;
-        isLinked: string;
-        constructor(id: string, substituedWorkingDate: string, substituedWorkingHours: string, substituedWorkingPeg: string,
-            substituedHolidayDate: string, substituteHolidayHours: string, substituedHolidayPeg: string, remainHolidayHours: string,
-            expiredHolidayHours: string, isLinked: string) {
-            this.id = id;
-            this.substituedWorkingDate = substituedWorkingDate;
-            this.substituedWorkingHours = substituedWorkingHours;
-            this.substituedWorkingPeg = substituedWorkingPeg;
-            this.substituedHolidayDate = substituedHolidayDate;
-            this.substituteHolidayHours = substituteHolidayHours;
-            this.substituedHolidayPeg = substituedHolidayPeg;
-            this.remainHolidayHours = remainHolidayHours;
-            this.expiredHolidayHours = expiredHolidayHours;
-            this.isLinked = expiredHolidayHours;
-        }
-    }
     export class SubstitutedData {
         id: string;
         substituedWorkingDate: string;
@@ -329,6 +314,21 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             this.isLinked = isLinked;
         }
     }
+    
+    export class EmployeeInfo {
+        employeeId: string;
+        employeeCode: string;
+        employeeName: string;
+        workplaceId: string;
+        workplaceCode: string;
+        constructor(employeeId: string, employeeCode: string, employeeName: string, workplaceId: string, workplaceCode: string) {
+            this.employeeId = employeeId;
+            this.employeeCode = employeeCode;
+            this.employeeName = employeeName;
+            this.workplaceId = workplaceId;
+            this.workplaceCode = workplaceCode;
+        }
+    }
     export class ItemModel {
         value: number;
         name: string;
@@ -347,19 +347,18 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         selectedItem: KnockoutObservable<string>;
         tabIndex: number;
     }
-
     export class EmployeeKcp009 {
-        employeeId: string;
-        employeeCode: string;
-        employeeName: string;
-        workplaceId: string;
-        workplaceCode: string;
-        constructor(employeeId: string, employeeCode: string, employeeName: string, workplaceId: string, workplaceCode: string) {
-            this.employeeId = employeeId;
-            this.employeeCode = employeeCode;
-            this.employeeName = employeeName;
-            this.workplaceId = workplaceId;
-            this.workplaceCode = workplaceCode;
+        id: string;
+        code: string;
+        businessName: string;
+        workplaceName: string;
+        depName: string;
+        constructor(id: string, code: string, businessName: string, workplaceName: string, depName: string) {
+            this.id = id;
+            this.code = code;
+            this.businessName = businessName;
+            this.workplaceName = workplaceName;
+            this.depName = depName;
         }
     }
 
@@ -418,6 +417,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         employeeName: string;
         workplaceId: string;
         workplaceCode: string;
+        workplaceName: string;
     }
 
     export interface Ccg001ReturnedData {
