@@ -157,32 +157,7 @@ module nts.uk.at.view.kal004.g.viewmodel {
             });
 
             self.selectedTab.subscribe((value) => {
-                if (value == "tab-1") {
-                    setTimeout(function() {
-                        $("#start-tab1").focus();
-                    }, 100);
-
-                } else if (value == "tab-2") {
-                    setTimeout(function() {
-                        $("#start-tab-2 input").focus();
-                    }, 100);
-
-                } else if (value == "tab-3") {
-                      setTimeout(function() {
-                        $("#start-tab3").focus();
-                    }, 100);
-                    
-                } else if (value == "tab-4") {
-                      setTimeout(function() {
-                        $("#start-tab4").focus();
-                    }, 100);
-                    
-                } else if (value == "tab-5") {
-                      setTimeout(function() {
-                        $("#start-tab5").focus();
-                    }, 100);
-                   
-                }
+                self.checkForcus(value);
                 nts.uk.ui.errors.clearAll();
             });
         }
@@ -216,7 +191,7 @@ module nts.uk.at.view.kal004.g.viewmodel {
 
             // tab1
             if (self.strSelected() == 0) {
-                if (self.endSelected() == 0 && self.strDay() < self.endDay()) {
+                if (self.endSelected() == 0 && self.strDay() > self.endDay()) {
                     alertError({ messageId: "Msg_812" });
                     return;
                 } else if (self.endSelected() == 1) {
@@ -224,24 +199,24 @@ module nts.uk.at.view.kal004.g.viewmodel {
                     return;
                 }
             } else {
-                if (self.endSelected() == 1 && self.strMonth() < self.endMonth()) {
+                if (self.endSelected() == 1 && self.strMonth() > self.endMonth()) {
                     alertError({ messageId: "Msg_812" });
                     return;
                 }
             }
             // tab2
-            if (self.strMonth2() < self.endMonth2()) {
+            if (self.strMonth2() > self.endMonth2()) {
                 alertError({ messageId: "Msg_812" });
                 return;
             }
 
             // tab3
-            if (self.strSelected3() == 0 && self.strMonth3() < self.endMonth3()) {
+            if (self.strSelected3() == 0 && self.strMonth3() > self.endMonth3()) {
                 alertError({ messageId: "Msg_812" });
                 return;
             }
             // tab4
-            if (self.strSelected4() == 0 && self.strMonth4() < self.endMonth4()) {
+            if (self.strSelected4() == 0 && self.strMonth4() > self.endMonth4()) {
                 alertError({ messageId: "Msg_812" });
                 return;
             }
@@ -329,7 +304,51 @@ module nts.uk.at.view.kal004.g.viewmodel {
             nts.uk.ui.windows.setShared("yearly36Share", yearly36Share);
             nts.uk.ui.windows.close();
         }
+        checkForcus(value): any {
+            let self = this;
+            if (value == "tab-1") {
+                setTimeout(function() {
+                    if (self.strSelected() == 0) {
+                        $("#start-tab1").focus();
+                    } else {
+                        $("#combo-1 input").focus();
+                    }
 
+                }, 50);
+
+            } else if (value == "tab-2") {
+                setTimeout(function() {
+                    $("#start-tab-2 input").focus();
+                }, 50);
+
+            } else if (value == "tab-3") {
+                setTimeout(function() {
+                    if (self.strSelected3() == 0) {
+                        $("#start-tab-3 input").focus();
+                    } else {
+                        $("#edit-3").focus();
+                    }
+
+                }, 50);
+
+            } else if (value == "tab-4") {
+                setTimeout(function() {
+                    if (self.strSelected4() == 0) {
+                        $("#start-tab-4 input").focus();
+                    } else {
+                        $("#edit-4").focus();
+                    }
+                }, 50);
+
+            } else if (value == "tab-5") {
+                setTimeout(function() {
+                    if (self.strSelected4() == 0) {
+                        $("#start-tab-5").focus();
+                    }
+                }, 50);
+
+            }
+        }
         closeDialog(): void {
             nts.uk.ui.windows.close();
         }

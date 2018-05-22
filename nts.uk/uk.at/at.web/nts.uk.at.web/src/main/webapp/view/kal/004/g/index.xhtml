@@ -39,9 +39,9 @@
 						<div class="valign-center control-group start">
 							<span >#{i18n.getText('KAL004_74')}</span>
 							<div class="day">
-								<div id = "start-tab1"
+								<div 
 									data-bind="ntsRadioButton: {checked: strSelected, enable: true, option: dateSpecify()[0], optionValue: 'value', optionText: 'name', group: 'strRadio'}"></div>
-								<input class ='input-box input-str1'
+								<input id = "start-tab1" class ='input-box input-str1'
 									data-bind="ntsNumberEditor: {value:strDay, name: '#[KAL004_78]', constraint:'Day', required: true, enable: (strSelected() == 0)}" /> 
 								<span class ='lableDay'>#{i18n.getText('KAL004_79')}</span>
 								<span class ='lableDay'>#{i18n.getText('KAL004_35')}</span>
@@ -50,7 +50,7 @@
 							<div class="month">
 								<div class="checkMonth"
 									data-bind="ntsRadioButton: {checked: strSelected, enable: true, option: dateSpecify()[1], optionValue: 'value', optionText: '', group: 'strRadio'}"></div>
-								<div  class='comboboxMonth'
+								<div id="combo-1"  class='comboboxMonth'
 									data-bind="ntsComboBox: {
 											options: strComboMonth,
 											optionsValue: 'value',
@@ -81,7 +81,7 @@
 							<div class="month">
 								<div class="checkMonth"
 									data-bind="ntsRadioButton: {checked: endSelected, enable: true, option: dateSpecify()[1], optionValue: 'value', optionText: '', group: 'endRadio'}"></div>
-								<div  class='comboboxMonth'
+								<div id="combo-1-1" class='comboboxMonth'
 									data-bind="ntsComboBox: {
 											options: endComboMonth,
 											optionsValue: 'value',
@@ -135,9 +135,9 @@
 						<div class="valign-center control-group start3">
 							<div><span >#{i18n.getText('KAL004_92')}</span></div>
 							<div class = 'month3'>
-								<div id="start-tab-3" class ='checkMonth3'
+								<div class ='checkMonth3'
 									data-bind="ntsRadioButton: {checked: strSelected3, enable: true, option: yearSpecify()[0], optionValue: 'value', optionText: 'name', group: 'strRadio3'}"></div>
-								<div  class='comboboxMonth3'
+								<div id="start-tab-3" class='comboboxMonth3'
 									data-bind="ntsComboBox: {
 											options: strComboMonth3,
 											optionsValue: 'value',
@@ -152,7 +152,7 @@
 							<div class="year3">
 								<div
 									data-bind="ntsRadioButton: {checked: strSelected3, enable: true, option: yearSpecify()[1], optionValue: 'value', optionText: 'name', group: 'strRadio3'}"></div>
-								<input class ='input-box input-str3'
+								<input id="edit-3" class ='input-box input-str3'
 									data-bind="ntsNumberEditor: {value:strMonthy3, name: '#[KAL004_97]', constraint:'Month', required: true, enable: (strSelected3() == 1)}" /> 
 								<span>#{i18n.getText('KAL004_98')}</span>
 								
@@ -180,9 +180,9 @@
 						<div class="valign-center control-group start4">
 							<div><span >#{i18n.getText('KAL004_100')}</span></div>
 							<div class = 'month4'>
-								<div id="start-tab-4" class ='checkMonth4'
+								<div  class ='checkMonth4'
 									data-bind="ntsRadioButton: {checked: strSelected4, enable: true, option: yearSpecify()[0], optionValue: 'value', optionText: 'name', group: 'strRadio4'}"></div>
-								<div  class='comboboxMonth4'
+								<div id="start-tab-4" class='comboboxMonth4'
 									data-bind="ntsComboBox: {
 											options: strComboMonth4,
 											optionsValue: 'value',
@@ -197,7 +197,7 @@
 							<div class="year4">
 								<div
 									data-bind="ntsRadioButton: {checked: strSelected4, enable: true, option: yearSpecify()[1], optionValue: 'value', optionText: 'name', group: 'strRadio4'}"></div>
-								<input class ='input-box input-str4'
+								<input id="eidt-4" class ='input-box input-str4'
 									data-bind="ntsNumberEditor: {value:strMonthy4, name: '#[KAL004_97]', constraint:'Month', required: true, enable: (strSelected4() == 1)}" /> 
 								<span>#{i18n.getText('KAL004_106')}</span>
 								
@@ -222,10 +222,10 @@
 						</div>							
 					</div>
 					<div  class="tab-content-5 tab-size"  >
-						<div id="start-tab-5" class ='radioButton5'>
+						<div  class ='radioButton5'>
 								<div
 									data-bind="ntsRadioButton: {checked: strSelected5, enable: true, option: yearSpecify()[0], optionValue: 'value', optionText: 'name', group: 'strRadio5'}"></div>							
-								<input class ='input-box5  input-str5'
+								<input id="start-tab-5" class ='input-box5  input-str5'
 									data-bind="ntsNumberEditor: {value:strYear5, name: '#[KAL004_108]', constraint:'YearOfAgreement', required: true, enable: (strSelected5() == 0)}" /> 
 								<span>#{i18n.getText('KAL004_109')}</span>							
 						</div>
