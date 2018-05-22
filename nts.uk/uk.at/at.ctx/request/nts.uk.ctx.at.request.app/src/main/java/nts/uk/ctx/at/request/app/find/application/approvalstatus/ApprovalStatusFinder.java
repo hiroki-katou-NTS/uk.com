@@ -577,7 +577,6 @@ public class ApprovalStatusFinder {
 			// Pending
 			appContent += I18NText.getText("KAF018_279") + I18NText.getText("KAF018_248");
 			appContent += value;
-			appContent += applicaton_N.getApplicationReason();
 		} else if (allDayHaflDay.equals(AllDayHalfDayLeaveAtr.HALF_DAY_LEAVE)) {
 			appContent += I18NText.getText("KAF018_279") + I18NText.getText("KAF018_249");
 			// 休暇申請.就業時間帯コード
