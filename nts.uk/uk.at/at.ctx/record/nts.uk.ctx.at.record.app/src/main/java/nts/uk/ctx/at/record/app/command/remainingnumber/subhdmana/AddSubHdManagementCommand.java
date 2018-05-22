@@ -64,6 +64,6 @@ public class AddSubHdManagementCommand {
 	private Double selectedCodeOptionSubHoliday;
 
 	// Domain LeaveComDayOffManagement
-	private String dayRemaining;
+	private Double dayRemaining;
 
 }
