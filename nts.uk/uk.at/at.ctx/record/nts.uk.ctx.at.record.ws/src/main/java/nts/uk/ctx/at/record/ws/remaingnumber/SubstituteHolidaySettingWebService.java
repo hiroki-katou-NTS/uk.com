@@ -20,7 +20,7 @@ import nts.uk.ctx.at.record.app.command.remainingnumber.subhdmana.UpdateComDayOf
  */
 @Path("at/record/remainnumber/submana/comdayoff")
 @Produces("application/json")
-public class HolidaySettingWebService extends WebService {
+public class SubstituteHolidaySettingWebService extends WebService {
 
 	@Inject
 	private UpdateComDayOffManaCommandHandler udpateComDayCommand;
