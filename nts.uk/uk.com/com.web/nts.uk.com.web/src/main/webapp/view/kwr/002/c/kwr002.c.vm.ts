@@ -134,9 +134,12 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                     position: position,
                     exportAtr: exportAtr
                 }, true)
-
+                var link: string;
+                if (exportAtr == 1 && columnIndex <= 6) link = '/view/kwr/002/d/index.xhtml';
+                else link = '/view/kwr/002/e/index.xhtml';
                 blockUI.grayout();
-                nts.uk.ui.windows.sub.modal('/view/kwr/002/d/index.xhtml').onClosed(function(): any {
+
+                nts.uk.ui.windows.sub.modal(link).onClosed(function(): any {
                     if (attendanceItemName == '') {
 
                         if (exportAtr == 1) {
