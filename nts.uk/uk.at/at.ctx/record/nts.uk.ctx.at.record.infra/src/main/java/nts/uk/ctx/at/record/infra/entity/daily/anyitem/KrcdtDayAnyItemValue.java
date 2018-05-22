@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.daily.anyitem;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,13 +29,13 @@ public class KrcdtDayAnyItemValue extends UkJpaEntity implements Serializable{
 	public KrcdtDayAnyItemValuePK krcdtDayAnyItemValuePK;
 	/* 時間 */
 	@Column(name = "TIME_VALUE")
-	public Integer timeValue;
+	public int timeValue;
 	/* 回数 */
 	@Column(name = "COUNT_VALUE")
-	public Integer countValue;
+	public int countValue;
 	/* 金額 */
 	@Column(name = "MONEY_VALUE")
-	public BigDecimal moneyValue;
+	public int moneyValue;
 	
 	@Override
 	protected Object getKey() {
@@ -78,9 +77,9 @@ public class KrcdtDayAnyItemValue extends UkJpaEntity implements Serializable{
 	
 	public AnyItemValue toDomain() {
 		return new AnyItemValue(new AnyItemNo(krcdtDayAnyItemValuePK.itemNo),
-				Optional.ofNullable(countValue == null ? null : new AnyItemTimes(countValue)), 
-				Optional.ofNullable(moneyValue == null ? null : new AnyItemAmount(moneyValue)),
-				Optional.ofNullable(timeValue == null ? null : new AnyItemTime(timeValue)));
+								Optional.of(new AnyItemTimes(countValue)), 
+								Optional.of(new AnyItemAmount(moneyValue)),
+								Optional.of(new AnyItemTime(timeValue)));
 	}
 	
 	

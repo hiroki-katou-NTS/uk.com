@@ -3,13 +3,16 @@ package nts.uk.ctx.at.record.app.find.dailyperform;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.enterprise.inject.spi.CDI;
+import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.AffiliationInforOfDailyPerforDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.dto.AttendanceLeavingGateOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.dto.CalcAttrOfDailyPerformanceDto;
@@ -40,6 +43,8 @@ import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -48,10 +53,14 @@ import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAttendanceItemConverter {
 
+	@Inject
+	private OptionalItemRepository optionalMasterRepo;
+	
 	private final DailyRecordDto dailyRecord;
 
 	private DailyRecordToAttendanceItemConverterImpl() {
@@ -178,6 +187,18 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 	}
 
 	public DailyRecordToAttendanceItemConverter withAnyItems(AnyItemValueOfDaily domain) {
+		if(optionalMasterRepo == null){
+			optionalMasterRepo = CDI.current().select(OptionalItemRepository.class).get();
+		}
+		List<String> itemIds = domain.getItems().stream().map(i -> i.getItemNo().v())
+				.map(id -> StringUtil.padLeft(String.valueOf(id), 3, '0')).collect(Collectors.toList());
+		if(!itemIds.isEmpty()){
+			Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
+					.findByListNos(AppContexts.user().companyId(), itemIds).stream()
+					.collect(Collectors.toMap(c -> Integer.parseInt(c.getOptionalItemNo().v()), c -> c));
+			this.dailyRecord.optionalItems(OptionalItemOfDailyPerformDto.getDto(domain, optionalMaster));
+			return this;
+		}
 		this.dailyRecord.optionalItems(OptionalItemOfDailyPerformDto.getDto(domain));
 		return this;
 	}
