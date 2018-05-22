@@ -8,7 +8,7 @@
 	<ui:composition>
 		<!-- E 削除設定サマリ-->
 		<div class="contentE">
-			<div class="fixed-flex-layout-left" style="padding-top: 20px; width:600px; padding-left: 20px">
+			<div class="fixed-flex-layout-left" style="padding-top: 20px; width:550px; padding-left: 20px">
 				<div class="label" id = "E3">#{i18n.getText('CMF005_55')}</div>
 			
 			<div class="valign-center control-group">
@@ -96,10 +96,10 @@
 			</div>
 			<!-- left area -->
 			<div class="fixed-flex-layout-right" style="padding-top: 20px; padding-left: 30px;">
-				<div style="float: left; width: 35%;">
+				<div style="float: left; width: 25%;">
 					<div id="E11_1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF005_50')}</div>
 				</div>
-				<div style="float: left; width: 65%; padding-bottom: 20px;">
+				<div style="float: left; width: 75%; padding-bottom: 20px;">
 					<!-- E11_2_1 -->
 					<!-- E11_2_2 -->
 					<div data-bind="ntsRadioBoxGroup: {options: itemTitleAtr,
@@ -124,7 +124,7 @@
 				</div>
 				<!-- List employee -->
 				<!-- button -->
-				<div class="valign-center control-group button-bottom-area" style="padding-top: 70px;">
+				<div class="valign-center control-group button-bottom-area" style="margin-top: 90px;">
 					<button id="E20_1" class="large" tabindex="1" data-bind="click: previousB">#{i18n.getText('CMF005_58')}</button>
 					<button id="E20_2" class="x-large proceed" tabindex="2" data-bind="click: saveManualSetting">#{i18n.getText('CMF005_59')}</button>	
 				</div>
