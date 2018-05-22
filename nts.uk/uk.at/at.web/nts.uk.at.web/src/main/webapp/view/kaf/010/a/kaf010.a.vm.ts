@@ -398,6 +398,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 flexExessTime: ko.toJS(flexExessTimeTmp == null ? -1 : flexExessTimeTmp),
                 divergenceReasonContent: divergenceReason,
                 sendMail: self.manualSendMailAtr(),
+                leaveAppID: self.leaverAppID(),
+                uiType: self.uiType(),
                 calculateFlag: self.calculateFlag()
             };
             //登録前エラーチェック
