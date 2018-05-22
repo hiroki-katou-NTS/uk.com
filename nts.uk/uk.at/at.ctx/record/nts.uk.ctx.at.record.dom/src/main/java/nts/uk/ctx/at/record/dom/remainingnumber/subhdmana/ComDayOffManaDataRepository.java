@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.subhdmana;
 
 import java.util.List;
-import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 
@@ -29,13 +28,6 @@ public interface ComDayOffManaDataRepository {
 			GeneralDate dateSubHoliday);
 
 	void create(CompensatoryDayOffManaData domain);
-
-	/**
-	 * @param comDayOffID
-	 *            代休データID
-	 * @return
-	 */
-	Optional<CompensatoryDayOffManaData> getCompensatoryByComDayOffID(String comDayOffID);
 
 	/**
 	 * Update domain 代休管理データ

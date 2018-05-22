@@ -12,7 +12,8 @@
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="kdm001.g.vm.js" />
 			<com:scriptfile path="kdm001.g.start.js" />
-			<com:stylefile path="kdm001.g.style.css" />
+			<com:scriptfile path="kdm001.g.service.js" />
+			<com:stylefile  path="kdm001.g.style.css" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -52,9 +53,11 @@
 						<tr>
 							<th>
 								<div data-bind="ntsFormLabel: { required: true}"
-									style="width: 80px;">#{i18n.getText('KDM001_62')}</div> <!-- G6_1 年月日 -->
-								<div id="G6_1"
-									data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
+									style="width: 80px;">#{i18n.getText('KDM001_62')}</div> 
+									<!-- G6_2 年月日 -->
+<!-- 								dayOff -->
+								<div id="G6_2"
+									data-bind="ntsDatePicker: {value: dayOff, dateFormat: 'YYYY/MM/DD'}"></div>
 							</th>
 							<th>
 								<div class="down-s set-date valign-center"
@@ -62,14 +65,14 @@
 									<!-- G6_3 -->
 									<div data-bind="ntsFormLabel: { required: true}"
 										style="border-style: none;margin-top: 10px; width: 80px;">#{i18n.getText('KDM001_64')}</div>
-									<!-- G6_4 -->
+									<!-- G6_4  OccurrenceDays-->
 									<div class="combobox-select-day"
 										data-bind="ntsComboBox: {
 									name: '#[KDM001_85]',
 									options: days,
 									optionsValue: 'code',
 									visibleItemsCount: 5,
-									value: selectedCodeDay,
+									value: occurredDays,
 									optionsText: 'name',
 									editable: false,
 									enable: true,
@@ -86,14 +89,14 @@
 						<!-- G7_1 -->
 						<div data-bind="ntsFormLabel: { required: true}"
 							style="margin-top: 10px; width: 80px;">#{i18n.getText('KDM001_70')}</div>
-						<!-- G7_2-->
+						<!-- G7_2  LawAtr-->
 						<div class="combobox-select-day"
 							data-bind="ntsComboBox: {
 								name: '#[KDM001_73]',
 								options: daysOff,
 								optionsValue: 'code',
 								visibleItemsCount: 5,
-								value: selectedCodeDayOff,
+								value: lawAtr,
 								optionsText: 'name',
 								editable: false,
 								enable: true,
@@ -106,9 +109,9 @@
 					
 					<div id="G8_1" data-bind="ntsFormLabel: { required: true}"
 						style="width: 80px;">#{i18n.getText('KDM001_72')}</div>
-					<!--G8_2 -->
+					<!--G8_2 ExpiredDate -->
 					<div id="G8_2"
-						data-bind="ntsDatePicker: {value: deadline, dateFormat: 'YYYY/MM/DD'}"></div>
+						data-bind="ntsDatePicker: {value: expiredDate, dateFormat: 'YYYY/MM/DD'}"></div>
 					<br />
 					
 					<div class="down-s set-date flex valign-center"
@@ -116,14 +119,14 @@
 						<!-- G9_1 -->
 						<div data-bind="ntsFormLabel: { required: true}"
 							style="margin-top: 10px; width: 80px;">#{i18n.getText('KDM001_85')}</div>
-						<!-- G9_2 -->
+						<!-- G9_2  -->
 						<div class="combobox-select-day"
 							data-bind="ntsComboBox: {
 									name: '#[KDM001_85]',
 									options: days,
 									optionsValue: 'code',
 									visibleItemsCount: 5,
-									value: selectedCodeDay,
+									value: unUsedDays,
 									optionsText: 'name',
 									editable: false,
 									enable: true,
@@ -132,7 +135,7 @@
 									]}"></div>
 						<!-- G9_4 -->
 						<div style="margin-left: 30px;"
-							data-bind="ntsCheckBox: { checked: checkedExpired }">#{i18n.getText('KDM001_87')}</div>
+							data-bind="ntsCheckBox: { checked: checkBox }">#{i18n.getText('KDM001_87')}</div>
 					</div>
 				</div>
 			</div>

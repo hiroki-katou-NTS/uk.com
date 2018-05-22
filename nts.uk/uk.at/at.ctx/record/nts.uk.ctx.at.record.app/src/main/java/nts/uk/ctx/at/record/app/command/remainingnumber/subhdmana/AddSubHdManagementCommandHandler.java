@@ -42,7 +42,7 @@ public class AddSubHdManagementCommandHandler
 				command.getCheckedHoliday(), command.getDateHoliday(), command.getSelectedCodeHoliday(),
 				command.getDuedateHoliday(), command.getCheckedSubHoliday(), command.getDateSubHoliday(),
 				command.getSelectedCodeSubHoliday(), command.getCheckedSplit(), command.getDateOptionSubHoliday(),
-				command.getSelectedCodeOptionSubHoliday(), command.getDayRemaining());
+				command.getSelectedCodeOptionSubHoliday(), command.getDayRemaining(), command.getClosureId());
 		
 		//代休管理データの新規追加処理
 		serviceAddSub.addProcessOfSHManagement(subHdManagementData);

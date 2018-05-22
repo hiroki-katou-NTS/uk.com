@@ -25,37 +25,25 @@ module nts.uk.at.view.kdm001.m.viewmodel {
 
         initScreen(): void {
             block.invisible();
-            let self = this;
-            let info = getShared("KDM001_B_DATA");
+            let self = this,
+            info = getShared("KDM001_M_PARAMS");
             if (info) {
-                self.workCode(info.workCode);
-                self.workName(info.workName);
-                self.employeeId(info.employeeId);
-                self.employeeCode(info.employeeCode);
-                self.employeeName(info.employeeName);
-                self.comDayOffID(info.comDayOffID);
+                self.workCode(info.selectedEmployee.workCode);
+                self.workName(info.selectedEmployee.workName);
+                self.employeeId(info.selectedEmployee.employeeId);
+                self.employeeCode(info.selectedEmployee.employeeCode);
+                self.employeeName(info.selectedEmployee.employeeName);
+                
             }
-            //TODO: Mock data
-            self.comDayOffID('5a4470e6-3825-48b6-ae5a-43fd9febcb91');
-            self.employeeId('9bb2f690-b856-4bcc-b9d3-f73cc0f97ba3');
-            service.getCompensatoryByComDayOffID(self.comDayOffID()).done(result => {
-                if (result) {
-                    self.dayOffDate(result.dayOffDate);
-                    self.requireDays(result.requireDays);
-                    self.remainDays(result.remainDays);
-                }
-            }).always(() => {
-                block.clear();
-            });
+            block.clear();
         }
 
         /**
          * 登録
          */
         updateComDayOffMana(): void {
-            block.invisible();
-            let self = this;
-            let command = {
+            let self = this,
+            command = {
                 employeeId: self.employeeId(),
                 comDayOffID: self.comDayOffID(),
                 dayOffDate: self.dayOffDate(),
@@ -63,20 +51,24 @@ module nts.uk.at.view.kdm001.m.viewmodel {
                 remainDays: self.remainDays(),
                 executeMode: model.ExecuteMode.UPDATE
             }
-            service.updateComDayOffMana(command).done(result => {
-                if (result.length > 0) {
-                    let messageId = result[0];
-                    $('#M6_2').ntsError('set', { messageId: messageId});
-                    return;
-                }
-                //情報メッセージ　Msg_15 登録しました。を表示する。
-                dialog.info({ messageId: "Msg_15" }).then(() => {
-                    setShared('KDM001_M_DATA', command);
-                    nts.uk.ui.windows.close();
+            if (!nts.uk.ui.errors.hasError()) {
+                block.invisible();
+                service.updateComDayOffMana(command).done(result => {
+                    if (result.length > 0) {
+                        let messageId = result[0];
+                        $('#M6_2').ntsError('set', { messageId: messageId });
+                        block.clear();
+                        return;
+                    }
+                    //情報メッセージ　Msg_15 登録しました。を表示する。
+                    dialog.info({ messageId: "Msg_15" }).then(() => {
+                        setShared('KDM001_M_PARAMS_RES', command);
+                        nts.uk.ui.windows.close();
+                    });
+                }).always(() => {
+                    block.clear();
                 });
-            }).always(() => {
-                block.clear();
-            });
+            }
         }
 
         /**
@@ -86,8 +78,8 @@ module nts.uk.at.view.kdm001.m.viewmodel {
             block.invisible();
              //確認メッセージ（Msg_18）を表示する
             dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                let self = this;
-                let command = {
+                let self = this,
+                command = {
                     employeeId: self.employeeId(),
                     comDayOffID: self.comDayOffID(),
                     dayOffDate: self.dayOffDate(),
@@ -98,7 +90,7 @@ module nts.uk.at.view.kdm001.m.viewmodel {
                 service.deleteComDayOffMana(command).done(() => {
                     //情報メッセージ　Msg-16を表示する
                     dialog.info({ messageId: "Msg_16" }).then(() => {
-                        setShared('KDM001_M_DATA', command);
+                        setShared('KDM001_M_PARAMS_RES', command);
                         nts.uk.ui.windows.close();
                     });
                 }).fail(error => {

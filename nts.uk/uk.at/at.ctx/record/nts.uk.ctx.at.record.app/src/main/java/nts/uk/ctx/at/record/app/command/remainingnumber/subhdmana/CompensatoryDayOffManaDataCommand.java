@@ -9,6 +9,10 @@ import nts.arc.time.GeneralDate;
  */
 @Getter
 public class CompensatoryDayOffManaDataCommand {
+
+	//closureId
+	private Integer closureId;
+
 	// SID
 	private String employeeId;
 

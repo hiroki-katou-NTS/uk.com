@@ -151,4 +151,37 @@ public class SubstitutionOfHDManaDataService {
 			throw new BusinessException("Message error!!");
 		}
 	}
+	
+	
+	/**
+	 * KDM001 update screen H
+	 */
+	//(Thực hiện thuật toán 「振休（年月日）チェック処理」"xử lý check ngày nghỉ bù (năm tháng ngày)")
+	public boolean checkDayOff(){
+		//đang chờ Q&A
+		return false;
+	}
+	
+	public boolean checkExpirationDateH(GeneralDate exprirationDate){
+		GeneralDate today = GeneralDate.today();
+		boolean check = false;
+		if(today.compareTo(exprirationDate)>0){
+			throw new BusinessException("Mg_825");
+		}else{
+			check = true;
+		}
+		return check;
+	}
+	 public void updateSub(SubstitutionOfHDManagementData data, GeneralDate exprirationDate){
+		 boolean checkDayOff = checkDayOff();
+		 boolean checkExpirationDate = checkExpirationDateH(exprirationDate);
+		 if(checkDayOff){
+			 if(checkExpirationDate){
+				 substitutionOfHDManaDataRepository.update(data);
+			 }
+		 }
+	 }
+
+	
+	
 }
