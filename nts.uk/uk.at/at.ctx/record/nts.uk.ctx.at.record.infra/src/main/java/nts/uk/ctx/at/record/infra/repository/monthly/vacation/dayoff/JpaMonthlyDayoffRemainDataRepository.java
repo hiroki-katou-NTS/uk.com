@@ -23,7 +23,8 @@ public class JpaMonthlyDayoffRemainDataRepository extends JpaRepository implemen
 	private String QUERY_BY_SID_YM_STATUS = "SELECT c FROM KrcdtMonDayoffRemain　c "
 			+ " WHERE c.pk.sid = :employeeId"
 			+ " AND c.pk.ym = :ym"
-			+ " AND c.closureStatus = :status";
+			+ " AND c.closureStatus = :status"
+			+ " ORDER BY c.endDate ASC";
 	@Override
 	public List<MonthlyDayoffRemainData> getDayOffDataBySidYmStatus(String employeeId, YearMonth ym,
 			ClosureStatus status) {
@@ -35,19 +36,19 @@ public class JpaMonthlyDayoffRemainDataRepository extends JpaRepository implemen
 				.getList(c -> toDomain(c));
 	}
 	private MonthlyDayoffRemainData toDomain(KrcdtMonDayoffRemain c) {
-		return new MonthlyDayoffRemainData(c.getPk().getSid(),
-				YearMonth.of(c.getPk().getYm()),
-				c.getPk().getClosureId(),
-				c.getPk().getClosureDay(),
-				c.getPk().getIsLastDay() == 1 ? true : false,
-				EnumAdaptor.valueOf(c.getClosureStatus(), ClosureStatus.class),
-				c.getStartDate(),
-				c.getEndDate(),
-				new DayOffDayAndTimes(new AttendanceDaysMonth(c.getOccurredDays()), Optional.of(new TimeDayoffRemain(c.getOccurredTimes()))),
-				new DayOffDayAndTimes(new AttendanceDaysMonth(c.getUsedDays()), Optional.of(new TimeDayoffRemain(c.getUsedTimes()))),
-				new DayOffRemainDayAndTimes(new ReserveLeaveRemainingDayNumber(c.getRemainingDays()), Optional.of(new RemainingMinutes(c.getRemainingTimes()))),
-				new DayOffRemainDayAndTimes(new ReserveLeaveRemainingDayNumber(c.getCarryforwardDays()), Optional.of(new RemainingMinutes(c.getCarryforwardTimes()))),
-				new DayOffDayAndTimes(new AttendanceDaysMonth(c.getUnUsedDays()), Optional.of(new TimeDayoffRemain(c.getUnUsedTimes()))));
+		return new MonthlyDayoffRemainData(c.pk.sid,
+				YearMonth.of(c.pk.ym),
+				c.pk.closureId,
+				c.pk.closureDay,
+				c.pk.isLastDay == 1 ? true : false,
+				EnumAdaptor.valueOf(c.closureStatus, ClosureStatus.class),
+				c.startDate,
+				c.endDate,
+				new DayOffDayAndTimes(new AttendanceDaysMonth(c.occurredDays), Optional.of(new TimeDayoffRemain(c.occurredTimes))),
+				new DayOffDayAndTimes(new AttendanceDaysMonth(c.usedDays), Optional.of(new TimeDayoffRemain(c.usedTimes))),
+				new DayOffRemainDayAndTimes(new ReserveLeaveRemainingDayNumber(c.remainingDays), Optional.of(new RemainingMinutes(c.remainingTimes))),
+				new DayOffRemainDayAndTimes(new ReserveLeaveRemainingDayNumber(c.carryforwardDays), Optional.of(new RemainingMinutes(c.carryforwardTimes))),
+				new DayOffDayAndTimes(new AttendanceDaysMonth(c.unUsedDays), Optional.of(new TimeDayoffRemain(c.unUsedTimes))));
 	}
 
 }

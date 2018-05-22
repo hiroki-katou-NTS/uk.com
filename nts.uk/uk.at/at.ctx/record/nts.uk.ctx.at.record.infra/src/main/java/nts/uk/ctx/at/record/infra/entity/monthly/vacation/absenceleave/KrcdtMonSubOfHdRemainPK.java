@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.monthly.vacation.dayoff;
+package nts.uk.ctx.at.record.infra.entity.monthly.vacation.absenceleave;
 
 import java.io.Serializable;
 
@@ -7,22 +7,16 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-/**
- * プライマリキー：代休月別残数データ
- * @author do_dt
- *
- */
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
 @EqualsAndHashCode
-public class KrcdtMonDayoffRemainPK implements Serializable{
+public class KrcdtMonSubOfHdRemainPK implements Serializable{
 	/**	社員ID */
 	@Column(name = "SID")
-	public String sid;
+	public String sId;
 	/**	年月 */
 	@Column(name = "YM")
 	public int ym;
@@ -40,5 +34,5 @@ public class KrcdtMonDayoffRemainPK implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	
 }
