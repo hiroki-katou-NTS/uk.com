@@ -1035,6 +1035,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 * @return
 	 */
 	private IntegrationOfDaily calcOptionalItem(IntegrationOfDaily integrationOfDaily) {
+		if(integrationOfDaily.getAnyItemValue().isPresent()) {
+			return integrationOfDaily;
+		}
 		String companyId = AppContexts.user().companyId();
 		String employeeId = integrationOfDaily.getAffiliationInfor().getEmployeeId();
 		GeneralDate targetDate = integrationOfDaily.getAffiliationInfor().getYmd(); 
@@ -1051,11 +1054,36 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//項目選択による計算時に必要なので取得
 		DailyRecordToAttendanceItemConverter dailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(integrationOfDaily); 
 		
+		
+		/* 日別実績の退避(任意項目計算前の値を保持) */
+		val copyIntegrationOfDaily = dailyRecordToAttendanceItemConverter
+				.setData(integrationOfDaily).toDomain();
+		
 		//任意項目の計算
-		AnyItemValueOfDaily result = AnyItemValueOfDaily.caluculationAnyItem(companyId, employeeId, targetDate, optionalItems, formulaList, empCondition, Optional.of(dailyRecordDto),bsEmploymentHistOpt);
+		AnyItemValueOfDaily result = integrationOfDaily.getAnyItemValue().get().caluculationAnyItem(companyId, employeeId, targetDate, optionalItems, formulaList, empCondition, Optional.of(dailyRecordDto),bsEmploymentHistOpt);
 		integrationOfDaily.setAnyItemValue(Optional.of(result));
 		
-		return integrationOfDaily;
+		
+		  // 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
+		  List<Integer> attendanceItemIdList = integrationOfDaily.getEditState().stream().filter(editState -> editState.getEmployeeId().equals(copyIntegrationOfDaily.getAffiliationInfor().getEmployeeId())
+		       && editState.getYmd().equals(copyIntegrationOfDaily.getAffiliationInfor().getYmd()))
+		        .map(editState -> editState.getAttendanceItemId())
+		        .distinct()
+		        .collect(Collectors.toList());
+
+		  IntegrationOfDaily calcResultIntegrationOfDaily = integrationOfDaily;  
+		  if(!attendanceItemIdList.isEmpty()) {
+		   DailyRecordToAttendanceItemConverter beforDailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(copyIntegrationOfDaily); 
+		   List<ItemValue> itemValueList = beforDailyRecordDto.convert(attendanceItemIdList);  
+		   DailyRecordToAttendanceItemConverter afterDailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(integrationOfDaily); 
+		   afterDailyRecordDto.merge(itemValueList);
+		   //手修正された項目の値を計算前に戻す   
+		   calcResultIntegrationOfDaily = afterDailyRecordDto.toDomain();
+		
+		  }
+		
+		
+		return calcResultIntegrationOfDaily;
 	}
 	
 	

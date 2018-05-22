@@ -36,7 +36,7 @@ public class AnyItemValueOfDaily {
      * 任意項目の計算
      * @return
      */
-    public static AnyItemValueOfDaily caluculationAnyItem(String companyId,
+    public AnyItemValueOfDaily caluculationAnyItem(String companyId,
     											   		  String employeeId,
     											   		  GeneralDate ymd,
     											   		  List<OptionalItem> optionalItemList,
@@ -66,16 +66,19 @@ public class AnyItemValueOfDaily {
         	}
         }
         
-        /*パラメータ：任意項目の計算結果から任意項目値クラスへ変換*/
-        List<AnyItemValue> transAnyItem = new ArrayList<>();
+        //任意項目NOの昇順でソート
+        items.sort((c1, c2) -> c1.getItemNo().compareTo(c2.getItemNo()));
+        
+        /*パラメータ：任意項目の計算結果から任意項目値クラスへ変換(上で計算した項目のみ更新する)*/
         for(CalcResultOfAnyItem calcResultOfAnyItem:anyItemList) {
-        	transAnyItem.add(new AnyItemValue(new AnyItemNo(Integer.parseInt(calcResultOfAnyItem.getOptionalItemNo().v())),
-    										  calcResultOfAnyItem.getCount().map(v -> new AnyItemTimes(v)),
-    										  calcResultOfAnyItem.getMoney().map(v -> new AnyItemAmount(BigDecimal.valueOf(v))),
-    										  calcResultOfAnyItem.getTime().map(v -> new AnyItemTime(v))));       	
+        	int itemNo = Integer.parseInt(calcResultOfAnyItem.getOptionalItemNo().v());
+        	items.set(itemNo - 1, new AnyItemValue(new AnyItemNo(itemNo),
+					  calcResultOfAnyItem.getCount().map(v -> new AnyItemTimes(v)),
+					  calcResultOfAnyItem.getMoney().map(v -> new AnyItemAmount(v)),
+					  calcResultOfAnyItem.getTime().map(v -> new AnyItemTime(v)))); 
         }
                 
-        return new AnyItemValueOfDaily(employeeId,ymd,transAnyItem);
+        return this;
     }
     
 }
