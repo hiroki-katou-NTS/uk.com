@@ -34,16 +34,11 @@ module nts.uk.at.view.kdm001.m.viewmodel {
                 self.employeeCode(info.selectedEmployee.employeeCode);
                 self.employeeName(info.selectedEmployee.employeeName);
                 self.comDayOffID(info.id);
+                self.dayOffDate(info.value.substituedHolidayDate);
+                self.requireDays(info.value.substituteHolidayHours);
+                self.remainDays(info.value.remainHolidayHours);
             }
-            service.getCompensatoryByComDayOffID(self.comDayOffID()).done(result => {
-                if (result) {
-                    self.dayOffDate(result.dayOffDate);
-                    self.requireDays(result.requireDays);
-                    self.remainDays(result.remainDays);
-                }
-            }).always(() => {
-                block.clear();
-            });
+            block.clear();
         }
 
         /**
