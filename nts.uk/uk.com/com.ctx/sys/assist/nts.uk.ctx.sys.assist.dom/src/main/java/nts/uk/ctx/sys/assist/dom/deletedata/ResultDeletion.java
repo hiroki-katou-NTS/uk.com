@@ -73,13 +73,13 @@ public class ResultDeletion extends AggregateRoot {
 		
 	// ファイル容量
 	/** The file size. */
-	private int fileSize;
+	private Integer fileSize;
 	
 	public static ResultDeletion createFromJavatype(String delId, String companyId, String delName, 
 			int delType, boolean isDeletedFilesFlg,
 			String delCode, int numberEmployees, int systemType, String sId, int status,
 			GeneralDateTime startDateTimeDel, GeneralDateTime endDateTimeDel, String fileId, String fileName,
-			int fileSize) {
+			Integer fileSize) {
 		return new ResultDeletion(delId, companyId, new DelName(delName),
 				DelType.valueOf(delType), isDeletedFilesFlg,
 				new DelCode(delCode), numberEmployees, SystemTypeEnum.valueOf(systemType), sId, SaveStatus.valueOf(status),

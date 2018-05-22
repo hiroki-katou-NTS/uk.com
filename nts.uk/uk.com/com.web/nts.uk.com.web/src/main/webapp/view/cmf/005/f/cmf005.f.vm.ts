@@ -142,7 +142,7 @@ module nts.uk.com.view.cmf005.f.viewmodel {
         // process when click button interrupt
         public interrupt(): void {
             let self = this;
-            let dataManagementDel = new DataManagementDel(self.delId, 1, 0, 0, 0, 5);
+            let dataManagementDel = new DataManagementDel(self.delId(), 1, 0, 0, 0, 5);
 
             nts.uk.ui.dialog.confirm({ messageId: "Msg_387" })
                 .ifYes(() => {

@@ -353,7 +353,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         private nextFromBToD() {
             let self = this;
             self.next();
-            $("#D4_2").focus();
+//            $("#D4_2").focus();
         }
 
         /**
@@ -502,7 +502,6 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 employeeSearchs.push(new UnitModel(item.employeeCode,
                     item.employeeName, item.workplaceName));
             });
-
             self.employeeList(employeeSearchs);
         }
 
@@ -558,10 +557,12 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             var self = this;
             self.employeeDeletionList.removeAll();
             if (self.selectedTitleAtr() == 1) {
-                for (var i = 0; i < self.selectedEmployeeCode().length; i++) {
-                    for (var j = 0; j < self.employeeList().length; j++) {
-                        if (self.employeeList()[j].code == self.selectedEmployeeCode()[i]) {
-                            let employee = self.employeeList()[j];
+                let empCodeLength = self.selectedEmployeeCode().length;
+                let empListLength = self.employeeList().length;
+                for (var i = 0; i < empCodeLength; i++) {
+                    for (var j = 0; j < empListLength; j++) {
+                        let employee = self.employeeList()[j];
+                        if (employee.code == self.selectedEmployeeCode()[i]) {
                             self.employeeDeletionList.push(
                                 new EmployeeDeletion(employee.code, employee.name,
                                     employee.code, employee.name));
@@ -578,7 +579,6 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             var self = this;
             for (var i = 0; i < self.listDataCategory().length; i++) {
                 let category = self.listDataCategory()[i];
-                console.log(category);
                 self.categoryDeletionList.push(new CategoryDeletion(category.categoryId));
             }
         }
@@ -725,14 +725,14 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         passwordForCompressFile: string;
         haveEmployeeSpecifiedFlg: number;
         employees: Array<EmployeeDeletion>;
-        category: Array<CategoryDeletion>;
+        categories: Array<CategoryDeletion>;
 
         constructor(delName: string, suppleExplanation: string, systemType: number, referenceDate: string,
             executionDateAndTime: string, dayStartDate: string, dayEndDate: string,
             monthStartDate: string, monthEndDate: string,
             startYear: number, endYear: number, isSaveBeforeDeleteFlg: number, isExistCompressPasswordFlg: number,
             passwordForCompressFile: string, haveEmployeeSpecifiedFlg: number, employees: Array<EmployeeDeletion>,
-            category: Array<CategoryDeletion>) {
+            categories: Array<CategoryDeletion>) {
             this.delName = delName;
             this.suppleExplanation = suppleExplanation;
             this.systemType = systemType;
@@ -749,14 +749,21 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             this.passwordForCompressFile = passwordForCompressFile;
             this.haveEmployeeSpecifiedFlg = haveEmployeeSpecifiedFlg;
             this.employees = employees;
-            this.category = category;
+            this.categories = categories;
         }
     }
 
     export class CategoryDeletion {
         categoryId: string;
+        periodDeletion: string;
         constructor(categoryId: string) {
             this.categoryId = categoryId;
+            this.periodDeletion = null;
+        }
+        
+        constructor(categoryId: string,periodDeletion:string) {
+            this.categoryId = categoryId;
+            this.periodDeletion = periodDeletion;
         }
     }
 }

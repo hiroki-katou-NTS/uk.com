@@ -23,10 +23,10 @@ public enum SystemTypeEnum {
 	private final static SystemTypeEnum[] values = SystemTypeEnum.values();
 	
 	/**
-	 * Value of.
+	 * Get SystemTypeEnum bye value
 	 *
-	 * @param value the value
-	 * @return the role type
+	 * @param value of enum
+	 * @return SystemTypeEnum
 	 */
 	public static SystemTypeEnum valueOf(int value) {
 		

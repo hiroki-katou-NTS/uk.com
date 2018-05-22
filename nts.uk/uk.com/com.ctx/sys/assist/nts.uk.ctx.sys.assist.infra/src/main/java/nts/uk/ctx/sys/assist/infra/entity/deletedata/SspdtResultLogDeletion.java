@@ -52,16 +52,19 @@ public class SspdtResultLogDeletion extends UkJpaEntity implements Serializable 
 
 	/** The error content. */
 	// エラー内容
+	@Basic(optional = true)
 	@Column(name = "ERROR_CONTENT")
 	public String errorContent;
 
 	/** The error employee id. */
 	// エラー社員
+	@Basic(optional = true)
 	@Column(name = "ERROR_EMPLOYEE_ID")
 	public String errorEmployeeId;
 
 	/** The error date. */
 	// エラー日付
+	@Basic(optional = true)
 	@Column(name = "ERROR_DATE")
 	public GeneralDate errorDate;
 

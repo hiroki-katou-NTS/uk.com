@@ -2,9 +2,9 @@ package nts.uk.ctx.sys.assist.infra.entity.deletedata;
 
 import java.io.Serializable;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -16,11 +16,11 @@ public class SspdtEmployeesDeletionPK implements Serializable{
 	 
 	private static final long serialVersionUID = 1L;
 	
-	@NotNull
+	@Basic(optional=false)
 	@Column(name = "DEL_ID")
     public String delId;
 	
-	@NotNull
+	@Basic(optional=false)
 	@Column(name = "EMPLOYEE_ID")
     public String employeeId;
 }

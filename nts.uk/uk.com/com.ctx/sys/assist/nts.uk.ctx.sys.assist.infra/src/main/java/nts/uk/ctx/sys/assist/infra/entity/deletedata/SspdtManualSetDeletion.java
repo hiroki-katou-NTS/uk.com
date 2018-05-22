@@ -58,7 +58,7 @@ public class SspdtManualSetDeletion extends UkJpaEntity implements Serializable 
 	
 	/** The password encrypt for compress file. */
 	/** 手動保存の圧縮パスワード */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "PASSWORD_FOR_COMPRESS_FILE")
 	public String passwordCompressFileEncrypt;
 	
@@ -76,13 +76,13 @@ public class SspdtManualSetDeletion extends UkJpaEntity implements Serializable 
 	
 	/** The supplement explanation. */
 	/**  補足説明 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "SUPPLEMENT_EXPLANATION")
 	public String supplementExplanation;
 	
 	/** The reference date.*/
 	/** 基準日 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "REFERENCE_DATE")
 	public GeneralDate referenceDate;
 	

@@ -46,7 +46,7 @@ public class JpaManagementDeletionRepository extends JpaRepository implements Ma
 		ManagementDeletion entity = this.getEntityManager().find(ManagementDeletion.class, delId);
 		entity.delId = delId;
 		entity.totalCategoryCount = totalCategoryCount;
-		this.commandProxy().update(entity);
+		this.commandProxy().update(SspdtManagementDeletion.toEntity(entity));
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class JpaManagementDeletionRepository extends JpaRepository implements Ma
 		entity.delId = delId;
 		entity.categoryCount = categoryCount;
 		entity.operatingCondition = operatingCondition;
-		this.commandProxy().update(entity);
+		this.commandProxy().update(SspdtManagementDeletion.toEntity(entity));
 	}
 
 	@Override
@@ -68,13 +68,13 @@ public class JpaManagementDeletionRepository extends JpaRepository implements Ma
 		ManagementDeletion entity = this.getEntityManager().find(ManagementDeletion.class, delId);
 		entity.delId = delId;
 		entity.categoryCount = categoryCount;
-		this.commandProxy().update(entity);
+		this.commandProxy().update(SspdtManagementDeletion.toEntity(entity));
 	}
 
 	@Override
 	public void updateOperationCond(String delId, OperatingCondition operatingCondition) {
 		ManagementDeletion entity = this.getEntityManager().find(ManagementDeletion.class, delId);
 		entity.operatingCondition = operatingCondition;
-		this.commandProxy().update(entity);
+		this.commandProxy().update(SspdtManagementDeletion.toEntity(entity));
 	}
 }

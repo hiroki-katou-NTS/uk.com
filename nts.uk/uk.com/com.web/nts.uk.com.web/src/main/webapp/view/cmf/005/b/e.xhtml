@@ -38,7 +38,8 @@
 			</div>
 			
 			<div class="valign-center control-group" style="margin-top:20px;">
-					<table id="E6_3" data-bind="ntsGridList: {								
+					<table id="E6_3" data-bind="ntsGridList: {
+						name:'#[CMF005_144]',								
 						height: 400,
 						dataSource: listDataCategory,
 						primaryKey: 'categoryId',
@@ -98,7 +99,7 @@
 				<div style="float: left; width: 35%;">
 					<div id="E11_1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF005_50')}</div>
 				</div>
-				<div style="float: left; width: 60%; padding-bottom: 20px;">
+				<div style="float: left; width: 65%; padding-bottom: 20px;">
 					<!-- E11_2_1 -->
 					<!-- E11_2_2 -->
 					<div data-bind="ntsRadioBoxGroup: {options: itemTitleAtr,
@@ -111,8 +112,7 @@
 				<!-- List employee -->
 				<div class="valign-center control-group">
 					<table id="E12" data-bind="ntsGridList: {								
-						height: 2000,
-						showNumbering: true,
+						height: 2020,
 						dataSource: employeeDeletionList,
 						primaryKey: 'name',
 						columns: columnEmployees,

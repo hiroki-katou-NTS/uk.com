@@ -51,6 +51,7 @@ public class SspdtResultDeletion extends UkJpaEntity implements Serializable {
 	
 	/** The deletion code. */
 	/** 削除セットコード  */
+	@Basic(optional = true)
 	@Column(name = "DEL_CODE")
 	public String delCode;
 	
@@ -86,23 +87,27 @@ public class SspdtResultDeletion extends UkJpaEntity implements Serializable {
 	
 	/** The end date time deletion. */
 	/** 削除終了日時 */
+	@Basic(optional = true)
 	@Column(name = "END_DATE_TIME_DELETE")
 	public GeneralDateTime endDateTimeDel;
 	
 	/** The file id. */
 	/**  ファイルID */
+	@Basic(optional = true)
 	@Column(name = "FILE_ID")
 	public String fileId;
 	
 	/** The file name. */
 	/** 保存ファイル名 */
+	@Basic(optional = true)
 	@Column(name = "FILE_NAME")
 	public String fileName;
 	
 	/** The file size. */
 	/** ファイル容量 */
+	@Basic(optional = true)
 	@Column(name = "FILE_SIZE")
-	public int fileSize;
+	public Integer fileSize;
 	
 	@Override
 	protected Object getKey() {
