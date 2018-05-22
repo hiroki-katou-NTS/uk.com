@@ -5,15 +5,12 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.command.remainingnumber.subhdmana.CompensatoryDayOffManaDataCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.subhdmana.DeleteComDayOffManaCommandHandler;
 import nts.uk.ctx.at.record.app.command.remainingnumber.subhdmana.UpdateComDayOffManaCommandHandler;
-import nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.CompensatoryDayOffManaDataDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.CompensatoryDayOffManaDataFinder;
 
 /**
  * 代休管理データの修正（代休設定）
@@ -23,22 +20,13 @@ import nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.CompensatoryDayOf
  */
 @Path("at/record/remainnumber/submana/comdayoff")
 @Produces("application/json")
-public class SubstitutionManagementDataWebService extends WebService {
-
-	@Inject
-	private CompensatoryDayOffManaDataFinder finder;
+public class SubstituteHolidaySettingWebService extends WebService {
 
 	@Inject
 	private UpdateComDayOffManaCommandHandler udpateComDayCommand;
 
 	@Inject
 	private DeleteComDayOffManaCommandHandler deleteComDayCommand;
-
-	@POST
-	@Path("getSubstitute/{comDayOffID}")
-	public CompensatoryDayOffManaDataDto getCompensatoryByComDayOffID(@PathParam("comDayOffID") String comDayOffID) {
-		return finder.getCompensatoryByComDayOffID(comDayOffID);
-	}
 
 	@POST
 	@Path("update")

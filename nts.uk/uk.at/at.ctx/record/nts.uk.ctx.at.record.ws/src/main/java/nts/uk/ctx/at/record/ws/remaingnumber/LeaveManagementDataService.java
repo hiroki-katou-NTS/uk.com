@@ -10,7 +10,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.remainingnumber.dayoffmanagement.DayOffManaCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.subhdmana.DayOffManaCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.subhdmana.DayOffManaCommandHandler;
 import nts.uk.ctx.at.record.app.find.remainingnumber.dayoffmanagement.DayOffManagementDto;
 import nts.uk.ctx.at.record.app.find.remainingnumber.dayoffmanagement.DayOffManagementFinder;
 
@@ -20,7 +21,10 @@ public class LeaveManagementDataService extends WebService {
 	
 	
 	@Inject
-	DayOffManagementFinder dayOffManagementFinder;
+	private DayOffManagementFinder dayOffManagementFinder;
+	
+	@Inject
+	private DayOffManaCommandHandler dayOffManaCommandHandler;
 	
 	@POST
 	@Path("getAll/{leaveId}")
@@ -31,9 +35,9 @@ public class LeaveManagementDataService extends WebService {
 	}
 	
 	@POST
-	@Path("update")
-	public void update(DayOffManaCommand dayOffManaCommand) {
-		List<DayOffManagementDto> daysOffMana = new ArrayList<>();
+	@Path("updateComDayOff")
+	public List<String> update(DayOffManaCommand dayOffManaCommand) {
+		return dayOffManaCommandHandler.handle(dayOffManaCommand);
 	}
 	
 }

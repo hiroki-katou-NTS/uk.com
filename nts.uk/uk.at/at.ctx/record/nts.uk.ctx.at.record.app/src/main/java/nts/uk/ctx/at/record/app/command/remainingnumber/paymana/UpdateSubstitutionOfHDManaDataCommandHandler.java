@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
+import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SubstitutionOfHDManaDataService;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 
 @Stateless
@@ -15,6 +16,9 @@ public class UpdateSubstitutionOfHDManaDataCommandHandler
 
 	@Inject
 	private SubstitutionOfHDManaDataRepository subHDMDTRepo;
+	
+	@Inject
+	private SubstitutionOfHDManaDataService substitutionOfHDManaDataService;
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateSubstitutionOfHDManaDataCommand> context) {
@@ -22,7 +26,7 @@ public class UpdateSubstitutionOfHDManaDataCommandHandler
 		SubstitutionOfHDManagementData data = new SubstitutionOfHDManagementData(command.getSubOfHDID(),
 				command.getCid(), command.getSID(), command.getHolidayDate(), command.getRequiredDays(),
 				command.getRemainDays());
-		subHDMDTRepo.update(data);
+		substitutionOfHDManaDataService.updateSub(data, command.getExprirationDate());
 	}
 
 }

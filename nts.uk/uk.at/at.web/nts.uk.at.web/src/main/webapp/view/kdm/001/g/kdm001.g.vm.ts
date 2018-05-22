@@ -27,11 +27,6 @@ module nts.uk.at.view.kdm001.g.viewmodel {
         disapearDate: KnockoutObservable<string> = ko.observable('');
         checkBox: KnockoutObservable<boolean> = ko.observable(false);
 
-
-
-        //        listSelection: KnockoutObservableArray<ISelection> = ko.observableArray([]);
-        //        selection: KnockoutObservable<Selection> = ko.observable(new Selection({ payoutID: '', sID: '' }));
-
         constructor() {
             var self = this;
             self.initScreen();
@@ -53,7 +48,6 @@ module nts.uk.at.view.kdm001.g.viewmodel {
             let data = {
                 employeeId: "ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570",
                 cID: "123",
-                sID: "321",
                 unknownDate: moment.utc(self.unknownDate(), 'YYYY/MM/DD').toISOString(),
                 dayOff: moment.utc(self.dayOff(), 'YYYY/MM/DD').toISOString(),
                 expiredDate: moment.utc(self.expiredDate(), 'YYYY/MM/DD').toISOString(),
@@ -67,18 +61,17 @@ module nts.uk.at.view.kdm001.g.viewmodel {
 
             console.log(data);
             service.updatePayout(data).done(() => {
-
+                console.log("Success!");
             }).fail(function(res: any) {
-
+                console.log("fail!!");
             });
         }
 
         public removeData() {
             let self = this;
             let data = {
-               employeeId: "ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570",
-               sID: "456",
-               dayOff: moment.utc(self.dayOff(), 'YYYY/MM/DD').toISOString()
+                employeeId: "ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570",
+                dayOff: moment.utc(self.dayOff(), 'YYYY/MM/DD').toISOString()
             };
             console.log(data);
             service.removePayout(data).done(() => {
@@ -95,72 +88,5 @@ module nts.uk.at.view.kdm001.g.viewmodel {
         public closeDialog(): void {
             nts.uk.ui.windows.close();
         }
-
-
-        //        public update() {
-        //            let self = this,
-        //                currentItem: Selection = self.selection();
-        //            let command = ko.toJS(currentItem);
-        //            service.updatePayout(command).done(function() {
-        //            });
-              console.log('update');
-        //        }
-        
-        //       public remove() {
-        //            let self = this,
-        //                currentItem: Selection = self.selection();
-        //            let command = ko.toJS(currentItem);
-        //            service.removePayout(command).done(function() {
-        //
-        //            });
-        //            console.log('remove');
-        //        }
-
     }
-
-    //    interface ISelection {
-    //        payoutId: string;
-    //        cID: string;
-    //        sID: string;
-    //        unknownDate: string;
-    //        dayOff: string;
-    //        expiredDate: string;
-    //        lawAtr: number;
-    //        occurredDays: number;
-    //        unUsedDays: number;
-    //        stateAtr: number;
-    //        disapearDate: string;
-    //        checkBox : boolean;
-    //    }
-
-    //    export class Selection {
-    //        payoutId: KnockoutObservable<string> = ko.observable('');
-    //        cID: KnockoutObservable<string> = ko.observable('');
-    //        sID: KnockoutObservable<string> = ko.observable('');
-    //        unknownDate: KnockoutObservable<string> = ko.observable('');
-    //        dayOff: KnockoutObservable<string> = ko.observable('');
-    //        expiredDate: KnockoutObservable<string> = ko.observable('');
-    //        lawAtr: KnockoutObservable<number> = ko.observable('');
-    //        occurredDays: KnockoutObservable<number> = ko.observable('');
-    //        unUsedDays: KnockoutObservable<number> = ko.observable('');
-    //        stateAtr: KnockoutObservable<number> = ko.observable('');
-    //        disapearDate: KnockoutObservable<string> = ko.observable('');
-    //        checkBox: KnockoutObservable<boolean> = ko.observable(false);
-    //        
-    //        constructor(payoutId: string, cID: string, sID: string,
-    //            unknownDate: string, dayOff: string, expiredDate: string, lawAtr: number, occurredDays: number, unUsedDays: number, stateAtr: number, disapearDate: number, checkBox: boolean) {
-    //            this.payoutId = payoutId;
-    //            this.cID = cID;
-    //            this.sID = sID;
-    //            this.unknownDate = unknownDate;
-    //            this.dayOff = dayOff;
-    //            this.expiredDate = expiredDate;
-    //            this.lawAtr = lawAtr;
-    //            this.occurredDays = occurredDays;
-    //            this.unUsedDays = unUsedDays;
-    //            this.stateAtr = stateAtr;
-    //            this.disapearDate = disapearDate;
-    //            this.checkBox = checkBox;
-    //        }
-    //    }
 }

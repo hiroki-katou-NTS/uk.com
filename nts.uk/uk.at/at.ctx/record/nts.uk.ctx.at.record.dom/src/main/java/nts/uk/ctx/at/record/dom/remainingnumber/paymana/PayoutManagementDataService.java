@@ -10,27 +10,29 @@ import nts.arc.time.GeneralDate;
 
 @Stateless
 public class PayoutManagementDataService {
-	
+
 	@Inject
 	private PayoutManagementDataRepository payoutManagementDataRepository;
 	@Inject
 	private SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepository;
 	@Inject
 	private PayoutSubofHDManaRepository payoutSubofHDManaRepository;
-	
-	public boolean checkInfoPayMana(PayoutManagementData domain){
-		Optional<PayoutManagementData> payout = payoutManagementDataRepository.find(domain.getCID(), domain.getSID(), domain.getPayoutDate());
-		if (payout.isPresent()){
+
+	public boolean checkInfoPayMana(PayoutManagementData domain) {
+		Optional<PayoutManagementData> payout = payoutManagementDataRepository.find(domain.getCID(), domain.getSID(),
+				domain.getPayoutDate());
+		if (payout.isPresent()) {
 			return true;
 		}
 		return false;
 	}
-	public GeneralDate getClosingDate(){
+
+	public GeneralDate getClosingDate() {
 		return null;
 	}
-	
-	public void addPayoutManagement( boolean pickUp, boolean pause,
-			PayoutManagementData command, SubstitutionOfHDManagementData subMana, PayoutSubofHDManagement paySub){
+
+	public void addPayoutManagement(boolean pickUp, boolean pause, PayoutManagementData command,
+			SubstitutionOfHDManagementData subMana, PayoutSubofHDManagement paySub) {
 		if (pickUp) {
 			this.checkProcess();
 			payoutManagementDataRepository.create(command);
@@ -48,8 +50,9 @@ public class PayoutManagementDataService {
 		if (pickUp && pause) {
 			payoutSubofHDManaRepository.add(paySub);
 		}
-		
+
 	}
+
 	/**
 	 * KDM001 screen G
 	 */
@@ -70,10 +73,10 @@ public class PayoutManagementDataService {
 	}
 
 	// (Thực hiện thuật toán 「Ｇ．振休管理データの修正（振出設定）入力項目チェック処理」)
-	public boolean checkboxData(boolean checkBox, int stateAtr, GeneralDate expiredDate, double unUsedDays) {
+	public boolean checkboxData(boolean checkBox, int lawAtr, GeneralDate expiredDate, double unUsedDays) {
 		boolean check = false;
 		if (checkBox) {
-			if (stateAtr == 2) {
+			if (lawAtr == 2) {
 				// message : エラーメッセージ(Msg_1212)をエラーリストにセットする
 				check = false;
 				throw new BusinessException("Msg_1212");
@@ -97,43 +100,18 @@ public class PayoutManagementDataService {
 		return check;
 	}
 
-	public boolean checkUpdate(PayoutManagementData data, boolean checkBox, int stateAtr, GeneralDate expiredDate,
+	public void update(PayoutManagementData data, boolean checkBox, int lawAtr, GeneralDate expiredDate,
 			double unUsedDays) {
-		boolean update = false;
 		// 振出（年月日）チェック処理
 		boolean check = checkProcess();
 		if (check) {
 			// 振休管理データの修正（振出設定）入力項目チェック処理
-			boolean checkBoxData = checkboxData(checkBox, stateAtr, expiredDate, unUsedDays);
+			boolean checkBoxData = checkboxData(checkBox, lawAtr, expiredDate, unUsedDays);
 			if (checkBoxData) {
 				payoutManagementDataRepository.update(data);
-
-				// **chưa có :(Thực hiện thuật toán 「振休残数管理データ更新フラグ処理」):bât cờ flag
-
-				update = true;
-			} else {
-				// error
-				update = false;
+				// **chưa có :(Thực hiện thuật toán 「振休残数管理データ更新フラグ処理」):bât cờ
+				// flag
 			}
-		} else {
-			// error
-			update = false;
-		}
-		return update;
-	}
-
-	public void update(PayoutManagementData data, boolean checkBox, int stateAtr, GeneralDate expiredDate,
-			double unUsedDays) {
-		boolean update = checkUpdate(data, checkBox, stateAtr, expiredDate, unUsedDays);
-		if (update) {
-			// hiển thị message
-			throw new BusinessException("Mg_15");
-		} else {
-			throw new BusinessException("Error");
-			// error
 		}
 	}
-	
-	
-	
 }
