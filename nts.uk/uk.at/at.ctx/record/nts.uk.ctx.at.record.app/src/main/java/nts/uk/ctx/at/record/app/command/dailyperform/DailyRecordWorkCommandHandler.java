@@ -289,18 +289,40 @@ public class DailyRecordWorkCommandHandler {
 		});
 	}
 	
-	private List<EmployeeDailyPerError> calcIfNeed(Set<String> group, List<DailyRecordWorkCommand> commands){
-		List<IntegrationOfDaily> mapped = commands.stream().map(c -> toDomain(c)).collect(Collectors.toList());
-		List<IntegrationOfDaily> calced = calcService.calculate(mapped);
-		commands.stream().forEach(c -> {
-			calced.stream().filter(d -> d.getAffiliationInfor().getEmployeeId().equals(c.getEmployeeId()) 
-					&& d.getAffiliationInfor().getYmd().equals(c.getWorkDate()))
-			.findFirst().ifPresent(d -> {
-				c.getAttendanceTime().updateDataO(d.getAttendanceTimeOfDailyPerformance());
-			});
-		});
-		group.addAll(DOMAIN_CHANGED_BY_CALCULATE);
-		return calced.stream().map(d -> d.getEmployeeError()).flatMap(List::stream).collect(Collectors.toList());
+	private List<EmployeeDailyPerError> calcIfNeed(Set<String> group, DailyRecordWorkCommand command){
+//		if(group.contains("I") || group.contains("G") 
+//				|| group.contains("E") || group.contains("F") || group.contains("H") || 
+//				group.contains("J") || group.contains("K") || group.contains("L") || 
+//				group.contains("M") || group.contains("O")
+//				){
+			IntegrationOfDaily calced = calcService.calculate(
+					new IntegrationOfDaily(command.getWorkInfo().getData(), command.getCalcAttr().getData(), command.getAffiliationInfo().getData(), 
+							command.getPcLogInfo().getData(), Arrays.asList(command.getErrors().getData()), command.getOutingTime().getData(), command.getBreakTime().getData(), 
+							command.getAttendanceTime().getData(), command.getAttendanceTimeByWork().getData(), command.getTimeLeaving().getData(), 
+							command.getShortWorkTime().getData(), command.getSpecificDateAttr().getData(), command.getAttendanceLeavingGate().getData(), 
+							command.getOptionalItem().getData(), command.getEditState().getData(), command.getTemporaryTime().getData()));
+//			command.getTimeLeaving().updateData(calced.getAttendanceLeave().orElse(null));
+			command.getAttendanceTime().updateData(calced.getAttendanceTimeOfDailyPerformance().orElse(null));
+			command.getOptionalItem().updateData(calced.getAnyItemValue().orElse(null));
+//			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
+//			calced.getBreakTime().stream().forEach(c -> {
+//				command.getBreakTime().updateData(c);
+//			});
+//			command.getAttendanceTimeByWork().updateData(calced.getAttendancetimeByWork().orElse(null));
+//			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
+//			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
+//			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
+//			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
+//			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
+//			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
+//			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
+//			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
+//			command.getLogOnInfo
+//			group.add("I");
+			group.add("G");
+			group.add("M");
+			
+			return calced.getEmployeeError();
 //		}
 	}
 

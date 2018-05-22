@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.record.dom.optitem.calculation.CalcResultOfAnyItem;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 
 /** 日別実績の任意項目*/
 @Getter
@@ -41,7 +42,8 @@ public class AnyItemValueOfDaily {
     											   		  List<OptionalItem> optionalItemList,
     											   		  List<Formula> formulaList,
     											   		  List<EmpCondition> empConditionList,
-    											   		  Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto
+    											   		  Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto,
+    											   		  Optional<BsEmploymentHistoryImport> bsEmploymentHistOpt
 												   		  ) {
     	
                
@@ -51,14 +53,14 @@ public class AnyItemValueOfDaily {
         for(OptionalItem optionalItem : optionalItemList) {
         	
         	Optional<EmpCondition> empCondition = Optional.empty();
-        	List<EmpCondition> findResult = empConditionList.stream().filter(t -> t.getOptItemNo()==optionalItem.getOptionalItemNo()).collect(Collectors.toList());
+        	List<EmpCondition> findResult = empConditionList.stream().filter(t -> t.getOptItemNo().equals(optionalItem.getOptionalItemNo())).collect(Collectors.toList());
         	if(!findResult.isEmpty()) {
         		empCondition = Optional.of(findResult.get(0));
         	}
         	
         	//利用条件の判定
-        	if(optionalItem.checkTermsOfUse(empCondition)) {
-        		List<Formula> test = formulaList.stream().filter(t -> t.getOptionalItemNo()==optionalItem.getOptionalItemNo()).collect(Collectors.toList());
+        	if(optionalItem.checkTermsOfUse(empCondition,bsEmploymentHistOpt)) {
+        		List<Formula> test = formulaList.stream().filter(t -> t.getOptionalItemNo().equals(optionalItem.getOptionalItemNo())).collect(Collectors.toList());
         		//計算処理
                 anyItemList.add(optionalItem.caluculationFormula(companyId, optionalItem, test, dailyRecordDto/*,Optional.empty()　月次用なので日別から呼ぶ場合は何も無し*/));
         	}
@@ -68,9 +70,9 @@ public class AnyItemValueOfDaily {
         List<AnyItemValue> transAnyItem = new ArrayList<>();
         for(CalcResultOfAnyItem calcResultOfAnyItem:anyItemList) {
         	transAnyItem.add(new AnyItemValue(new AnyItemNo(Integer.parseInt(calcResultOfAnyItem.getOptionalItemNo().v())),
-        									  Optional.of(new AnyItemTimes(calcResultOfAnyItem.getCount().get())),
-        									  Optional.of(new AnyItemAmount(BigDecimal.valueOf(calcResultOfAnyItem.getMoney().get()))),
-        									  Optional.of(new AnyItemTime(calcResultOfAnyItem.getTime().get()))));       	
+    										  calcResultOfAnyItem.getCount().map(v -> new AnyItemTimes(v)),
+    										  calcResultOfAnyItem.getMoney().map(v -> new AnyItemAmount(BigDecimal.valueOf(v))),
+    										  calcResultOfAnyItem.getTime().map(v -> new AnyItemTime(v))));       	
         }
                 
         return new AnyItemValueOfDaily(employeeId,ymd,transAnyItem);
