@@ -106,6 +106,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             }
             if (currentCtg === undefined) { return; }
             self.currentCategory().itemList.removeAll();
+            block.invisible()
             service.getAllItemByCtgId(settingId, ctgId).done((item: Array<any>) => {
                 if (item.length > 0) {
                     let itemConvert = _.map(item, function(obj: any) {
@@ -168,7 +169,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                          });
                     });
                 }
-            })
+            }).always(()=>{ block.clear()});
         }
 
         start(id: string): JQueryPromise<any> {

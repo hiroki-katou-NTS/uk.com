@@ -236,51 +236,32 @@ module cps002.a.vm {
             });
 
             self.currentEmployee().cardNo.subscribe((cardNo) => {
-                let self = this;
-                let stampCardMehod = self.stampCardEditing.method;
-                let maxLength = self.stampCardEditing.digitsNumber;
-                if (cardNo.length < maxLength) {
+                let ce = self.stampCardEditing,
+                    emp = self.currentEmployee();
 
-                    let textValue = cardNo;
-                    switch (stampCardMehod) {
+                if (cardNo.length < ce.digitsNumber) {
+                    switch (ce.method) {
                         case EDIT_METHOD.PreviousZero: {
-                            textValue = self.autoChange('0', POSITION.Previous, textValue, maxLength);
+                            emp.cardNo(_.padStart(cardNo, ce.digitsNumber, '0'));
                             break;
                         }
                         case EDIT_METHOD.AfterZero: {
-                            textValue = self.autoChange('0', POSITION.After, textValue, maxLength);
+                            emp.cardNo(_.padEnd(cardNo, ce.digitsNumber, '0'));
                             break;
                         }
                         case EDIT_METHOD.PreviousSpace: {
-                            textValue = self.autoChange(' ', POSITION.Previous, textValue, maxLength);
+                            emp.cardNo(_.padStart(cardNo, ce.digitsNumber, ' '));
                             break;
                         }
                         case EDIT_METHOD.AfterSpace: {
-                            textValue = self.autoChange(' ', POSITION.After, textValue, maxLength);
-                            break;
-                        }
-                        default: {
+                            emp.cardNo(_.padEnd(cardNo, ce.digitsNumber, ' '));
                             break;
                         }
                     }
-                    self.currentEmployee().cardNo(textValue);
                 }
             });
 
             self.start();
-        }
-
-        autoChange(character: string, position: POSITION, textValue: string, maxLength: number): string {
-            if (position == POSITION.Previous) {
-                while (textValue.length < maxLength) {
-                    textValue = character + textValue;
-                }
-            } else {
-                while (textValue.length < maxLength) {
-                    textValue = textValue + character;
-                }
-            }
-            return textValue;
         }
 
         loadCopySettingItemData() {
