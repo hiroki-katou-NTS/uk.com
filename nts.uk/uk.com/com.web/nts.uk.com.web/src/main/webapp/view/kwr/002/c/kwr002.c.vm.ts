@@ -233,12 +233,17 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             let attendanceRecExpSetName: any = getShared('attendanceRecExpSetName');
             let useSeal: any = getShared('useSeal');
 
-            if (!attendanceRecExpSetCode) self.attendanceCode('1');
-            self.attendanceCode(attendanceRecExpSetCode);
-            self.attendanceName(attendanceRecExpSetName);
+            if (!attendanceRecExpSetCode) {
+                self.attendanceCode('1');
+                self.attendanceName('Default Name');
+            }
+            else {
+                self.attendanceCode(attendanceRecExpSetCode);
+                self.attendanceName(attendanceRecExpSetName);
+            }
             self.useSealValue(useSeal == 1 ? true : false);
 
-            var code: number= Number(self.attendanceCode());
+            var code: number = Number(self.attendanceCode());
             service.findAllAttendanceRecExportDaily(code).done(function(listattendanceRecExpDailyList: Array<model.AttendanceRecExp>) {
                 if (listattendanceRecExpDailyList.length > 0) {
                     listattendanceRecExpDailyList.forEach(item => {
