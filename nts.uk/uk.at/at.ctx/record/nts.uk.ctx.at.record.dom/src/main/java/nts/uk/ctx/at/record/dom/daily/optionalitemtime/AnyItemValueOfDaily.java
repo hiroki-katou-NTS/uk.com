@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.record.dom.daily.optionalitemtime;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -10,12 +10,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.record.dom.optitem.calculation.CalcResultOfAnyItem;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.shr.com.context.AppContexts;
 
 /** 日別実績の任意項目*/
 @Getter
@@ -71,11 +74,39 @@ public class AnyItemValueOfDaily {
         for(CalcResultOfAnyItem calcResultOfAnyItem:anyItemList) {
         	transAnyItem.add(new AnyItemValue(new AnyItemNo(Integer.parseInt(calcResultOfAnyItem.getOptionalItemNo().v())),
     										  calcResultOfAnyItem.getCount().map(v -> new AnyItemTimes(v)),
-    										  calcResultOfAnyItem.getMoney().map(v -> new AnyItemAmount(BigDecimal.valueOf(v))),
+    										  calcResultOfAnyItem.getMoney().map(v -> new AnyItemAmount(v)),
     										  calcResultOfAnyItem.getTime().map(v -> new AnyItemTime(v))));       	
         }
                 
         return new AnyItemValueOfDaily(employeeId,ymd,transAnyItem);
+    }
+    
+    public void correctAnyType(OptionalItemRepository optionalMasterRepo){
+    	List<String> itemIds = items.stream().map(i -> i.getItemNo().v())
+				.map(id -> StringUtil.padLeft(String.valueOf(id), 3, '0')).collect(Collectors.toList());
+		Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
+				.findByListNos(AppContexts.user().companyId(), itemIds).stream()
+				.collect(Collectors.toMap(c -> Integer.parseInt(c.getOptionalItemNo().v()), c -> c));
+		if(!optionalMaster.isEmpty()){
+			items.stream().forEach(i -> {
+				OptionalItem master = optionalMaster.get(i.getItemNo().v());
+				if(master != null){
+					switch (master.getOptionalItemAtr()) {
+					case AMOUNT:
+						i.markAsAmount();
+						break;
+					case NUMBER:
+						i.markAsTimes();
+						break;
+					case TIME:
+						i.markAsTime();
+						break;
+					default:
+						break;
+					}
+				}
+			});	
+		}
     }
     
 }

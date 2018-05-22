@@ -24,6 +24,7 @@ public class ConvertHelper {
 		if (value == null) {
 			return null;
 		}
+		
 		return EnumAdaptor.valueOf(value, enumClass);
 	}
 }
