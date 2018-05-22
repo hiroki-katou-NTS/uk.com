@@ -38,6 +38,7 @@ public class DayOffManagementService {
 	public static final String HALF_DAY = "0.5日";
 	
 	public List<String> updateDayOff(DayOffManagementData dayOffManagementData) {
+		int permission = 0;
 		List<String> response = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
 		Optional<SEmpHistoryImport> emHsIm = sysEmploymentHisAdapter.findSEmpHistBySid(companyId, dayOffManagementData.getEmployeeId(), GeneralDate.today());
@@ -46,7 +47,12 @@ public class DayOffManagementService {
 			CompensatoryLeaveEmSetting compensatoryLeaveEmSetting = compensLeaveEmSetRepository.find(companyId, data.getEmploymentCode());
 			
 			if(compensatoryLeaveEmSetting.getCompensatoryAcquisitionUse().getPreemptionPermit().value == 0) {
+				
 				// todo
+				
+				
+			} else {
+				permission = compensatoryLeaveEmSetting.getCompensatoryAcquisitionUse().getPreemptionPermit().value;
 			}
 		    
 			if(dayOffManagementData.getDaysOffMana().size() == 0 ) {
@@ -55,34 +61,48 @@ public class DayOffManagementService {
 					dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(ONE_DAY)) {
 					response.add("Msg_733");
 			} else if (dayOffManagementData.getDaysOffMana().size() == 2) {
-					if (dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(ONE_DAY) &&
-							compensatoryLeaveEmSetting.getCompensatoryAcquisitionUse().getPreemptionPermit().value == 0) {
+					
+				if (dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(ONE_DAY)) {
+					if (permission == 0) {
 						response.add("Msg_733");
+					} else {
+						dayOffManagementData.getDaysOffMana().remove(1);
 					}
-					if(dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(HALF_DAY) &&
-							!dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(HALF_DAY) ) {
+				} else if (dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(HALF_DAY)) {
+					if (!dayOffManagementData.getDaysOffMana().get(1).getRemainDays().equals(HALF_DAY)) {
 						response.add("Msg_739");
 					}
+				}
 			} else {
 				response.add("Msg_739");
 			}
 			
-			List<LeaveComDayOffManagement> leavesComDay = leaveComDayOffManaRepository.getByLeaveID(dayOffManagementData.getLeaveId());
-			if(leavesComDay.size() >=1 ) {
+			if(response.isEmpty()) {
 				
-				// delete  List LeaveComDayOff
-				leaveComDayOffManaRepository.deleteByLeaveId(dayOffManagementData.getLeaveId());
-			}
-			
+				List<LeaveComDayOffManagement> leavesComDay = leaveComDayOffManaRepository
+						.getByLeaveID(dayOffManagementData.getLeaveId());
+				if (leavesComDay.size() >= 1) {
+
+					// delete List LeaveComDayOff
+					leaveComDayOffManaRepository.deleteByLeaveId(dayOffManagementData.getLeaveId());
+				}
+
 				// insert List LeaveComDayOff
 				List<DaysOffMana> daysOff = dayOffManagementData.getDaysOffMana();
-				List<LeaveComDayOffManagement> entitiesLeave = daysOff.stream().map(item->
-				  new LeaveComDayOffManagement(dayOffManagementData.getLeaveId(), item.getComDayOffID(), new BigDecimal(item.getRemainDays()),TargetSelectionAtr.MANUAL.value,TargetSelectionAtr.MANUAL.value)).collect(Collectors.toList());
+				List<LeaveComDayOffManagement> entitiesLeave = daysOff.stream()
+						.map(item -> new LeaveComDayOffManagement(dayOffManagementData.getLeaveId(), item.getComDayOffID(),
+								new BigDecimal(item.getRemainDays()), 0,
+								TargetSelectionAtr.MANUAL.value))
+						.collect(Collectors.toList());
 				leaveComDayOffManaRepository.insertAll(entitiesLeave);
+				response.add("Msg_15");
+			}
+			
 		}
 		
 		return response;
 		
 	}
+	
 	
 }
