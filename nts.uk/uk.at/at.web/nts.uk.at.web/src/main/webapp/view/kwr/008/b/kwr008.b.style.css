@@ -16,6 +16,14 @@
 	height:17px;
 }
 
+#table-output-items tbody tr {
+	height:32px;
+}
+
 .nts-fixed-body-wrapper {
-	height : 311px !important;
+	height:321px !important;
+}
+
+#listStandardImportSetting_headers_v {
+	width : 100% !important;
 }
