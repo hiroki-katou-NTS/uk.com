@@ -33,9 +33,9 @@ public class AttendanceItemServiceImpl implements AttendanceItemService {
 
 	@Inject
 	private DailyRecordWorkFinder fullFinder;
-
-	@Inject
-	private MonthlyRecordWorkFinder monthlyFinder;
+	
+    @Inject
+    private MonthlyRecordWorkFinder monthlyFinder;
 
 	@Override
 	public Optional<AttendanceItemValue> getValueOf(String employeeId, GeneralDate workingDate, int itemId) {

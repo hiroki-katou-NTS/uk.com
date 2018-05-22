@@ -1,8 +1,11 @@
 package nts.uk.ctx.at.record.pubimp.dailyperform;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.absence.AbsenceReflectService;
@@ -23,6 +26,8 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.O
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.recruitment.RecruitmentRelectRecordService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.workchange.PreWorkchangeReflectService;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppCommonPara;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppReflectProcessRecordPub;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.CommonReflectPubParameter;
@@ -48,6 +53,8 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	private AbsenceLeaveReflectService absenceLeaveService;
 	@Inject
 	private RecruitmentRelectRecordService recruitmentService;
+	@Inject
+	private WorkInformationRepository workRepository;
 	@Override
 	public boolean appReflectProcess(AppCommonPara para) {
 		/*CommonCheckParameter paraTemp = new CommonCheckParameter(EnumAdaptor.valueOf(para.getDegressAtr().value, DegreeReflectionAtr.class),
@@ -170,6 +177,16 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	@Override
 	public boolean recruitmentReflect(CommonReflectPubParameter param, boolean isPre) {
 		return recruitmentService.recruitmentReflect(this.toRecordPara(param), isPre);
+	}
+
+	@Override
+	public boolean isRecordData(String employeeId, GeneralDate baseDate) {
+		//日別実績の勤務情報
+		Optional<WorkInfoOfDailyPerformance> optDailyPerfor = workRepository.find(employeeId, baseDate); 
+		if(!optDailyPerfor.isPresent()) {
+			return false;
+		}
+		return true;
 	}
 
 }

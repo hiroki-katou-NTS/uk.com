@@ -3666,7 +3666,8 @@ var nts;
                     $menuItems.append($("<li class='menu-item'/>").text("メニュー選択"));
                     $menuItems.append($("<hr/>").css({ margin: "5px 0px" }));
                     _.forEach(menuSet, function (item, i) {
-                        $menuItems.append($("<li class='menu-item'/>").data("code", item.webMenuCode)
+                        $menuItems.append($("<li class='menu-item'/>")
+                            .data("code", item.companyId + ":" + item.webMenuCode)
                             .text(item.webMenuName).on(constants.CLICK, function () {
                             uk.localStorage.setItem(constants.MENU, $(this).data("code"));
                             $menuNav.find(".category:eq(0)").off();
@@ -3694,8 +3695,9 @@ var nts;
                         createMenuSelect($menuNav, menuSet);
                         var menuCode = uk.localStorage.getItem(constants.MENU);
                         if (menuCode.isPresent()) {
+                            var parts_1 = menuCode.get().split(":");
                             var selectedMenu = _.find(menuSet, function (m) {
-                                return m.webMenuCode === menuCode.get();
+                                return m.companyId === parts_1[0] && m.webMenuCode === parts_1[1];
                             });
                             !uk.util.isNullOrUndefined(selectedMenu) ? generate($menuNav, selectedMenu)
                                 : generate($menuNav, menuSet[0]);
@@ -14179,7 +14181,7 @@ var nts;
                         collision: "none"
                     });
                     var $container = $dialog.closest(".ui-dialog");
-                    var offsetContentsArea = $("#header").height();
+                    var offsetContentsArea = window.parent.$("#header").height();
                     var offsetDialog = $container.offset();
                     if (offsetDialog.top < offsetContentsArea) {
                         offsetDialog.top = offsetContentsArea;
@@ -14195,6 +14197,7 @@ var nts;
                                 $container.offset(offsetDialog);
                                 return false;
                             }
+                            $dialog.data("stopdrop", offsetDialog);
                         } });
                     return $dialog;
                 };
@@ -15694,7 +15697,6 @@ var nts;
                     else {
                         nts.uk.deferred.repeat(function (conf) { return conf
                             .task(function () {
-                            console.log("loop");
                             var def = $.Deferred();
                             self = nts.uk.ui.windows.getSelf();
                             if (!nts.uk.util.isNullOrUndefined(self)) {
@@ -15726,6 +15728,7 @@ var nts;
                         var modal = ko.unwrap(option.modal);
                         var show = ko.unwrap(option.show);
                         var buttons = ko.unwrap(option.buttons);
+                        var displayrows = ko.unwrap(option.displayrows);
                         getCurrentWindow().done(function (self) {
                             var id = 'ntsErrorDialog_' + self.id;
                             var $dialog = $("<div>", { "id": id });
@@ -15743,6 +15746,7 @@ var nts;
                                 var button = buttons_2[_i];
                                 _loop_2(button);
                             }
+                            $dialog.data("winid", self.id);
                             // Calculate width
                             var dialogWidth = 40 + 35 + 17;
                             headers.forEach(function (header, index) {
@@ -15755,7 +15759,6 @@ var nts;
                                     }
                                 }
                             });
-                            var first = true;
                             // Create dialog
                             $dialog.dialog({
                                 title: title,
@@ -15770,17 +15773,35 @@ var nts;
                                     $(this).parent().find('.ui-dialog-buttonset > button.yes').focus();
                                     $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
                                     $('.ui-widget-overlay').last().css('z-index', nts.uk.ui.dialog.getMaxZIndex());
-                                    if (first) {
+                                    var offsetDraged = $dialog.data("stopdrop");
+                                    if (nts.uk.util.isNullOrUndefined(offsetDraged)) {
                                         $dialog.ntsDialogEx("centerUp", self);
                                     }
-                                    first = false;
+                                    else {
+                                        $dialog.closest(".ui-dialog").offset(offsetDraged);
+                                    }
                                 },
                                 close: function (event) {
                                     bindingContext.$data.option().show(false);
                                 }
                             }).dialogPositionControl();
+                            $dialog.on("dialogopen", function () {
+                                var maxrowsHeight = 0;
+                                var index = 0;
+                                $(this).find("table tbody tr").each(function () {
+                                    if (index < displayrows) {
+                                        index++;
+                                        maxrowsHeight += $(this).height();
+                                    }
+                                });
+                                maxrowsHeight = maxrowsHeight + 33 + 20 + 20 + 55 + 4 + $(this).find("table thead").height();
+                                if (maxrowsHeight > $dialog.dialog("option", "maxHeight")) {
+                                    maxrowsHeight = $dialog.dialog("option", "maxHeight");
+                                }
+                                $dialog.dialog("option", "height", maxrowsHeight);
+                            });
                             PS.$("body").bind("dialogclosed", function (evt, eData) {
-                                if ($dialog.attr("id") === eData.dialogId) {
+                                if ($dialog.data("winid") === eData.dialogId) {
                                     $dialog.dialog("close");
                                     $dialog.remove();
                                 }
@@ -15810,8 +15831,8 @@ var nts;
                             else {
                                 while (!nts.uk.util.isNullOrUndefined(self)) {
                                     if (self.isRoot) {
+                                        $dialog = $(self.globalContext.document.getElementById(id));
                                         self = null;
-                                        $dialog = $((nts.uk.ui.windows.getSelf().parent.globalContext.document).getElementById(id));
                                     }
                                     else {
                                         self = self.parent;
@@ -15889,21 +15910,6 @@ var nts;
                                 $dialog.html("");
                                 $dialog.append($errorboard).append($message);
                                 //                $dialog.on("dialogresizestop dialogopen", function() {
-                                $dialog.on("dialogopen", function () {
-                                    var maxrowsHeight = 0;
-                                    var index = 0;
-                                    $(this).find("table tbody tr").each(function () {
-                                        if (index < displayrows) {
-                                            index++;
-                                            maxrowsHeight += $(this).height();
-                                        }
-                                    });
-                                    maxrowsHeight = maxrowsHeight + 33 + 20 + 20 + 55 + 4 + $(this).find("table thead").height();
-                                    if (maxrowsHeight > $dialog.dialog("option", "maxHeight")) {
-                                        maxrowsHeight = $dialog.dialog("option", "maxHeight");
-                                    }
-                                    $dialog.dialog("option", "height", maxrowsHeight);
-                                });
                                 //                if($dialog.dialog("isOpen")){
                                 $dialog.dialog("open");
                                 //                } else {
@@ -19352,6 +19358,8 @@ var nts;
                         var selectedValues = ko.unwrap(data.selectedValues);
                         var singleValue = ko.unwrap(data.value);
                         var rows = ko.unwrap(data.rows);
+                        var virtualization = ko.unwrap(!uk.util.isNullOrUndefined(data.virtualization) ? data.virtualization : false);
+                        var virtualizationMode = ko.unwrap(!uk.util.isNullOrUndefined(data.virtualizationMode) ? data.virtualizationMode : "");
                         // Default.
                         var showCheckBox = data.showCheckBox !== undefined ? ko.unwrap(data.showCheckBox) : true;
                         var enable = data.enable !== undefined ? ko.unwrap(data.enable) : true;
@@ -19441,6 +19449,8 @@ var nts;
                             initialExpandDepth: nts.uk.util.isNullOrUndefined(initialExpandDepth) ? 10 : initialExpandDepth,
                             tabIndex: -1,
                             features: features,
+                            virtualization: virtualization,
+                            virtualizationMode: virtualizationMode,
                             rowExpanded: function (evt, ui) {
                                 if (!$treegrid.data("autoExpanding")) {
                                     var holder = $treegrid.data("expand");
@@ -19821,6 +19831,14 @@ var nts;
                                 //                    $targetElement.igTreeGrid("option", "dataSource", source);
                                 //                    $targetElement.igTreeGrid("dataBind");
                                 //                    data.targetSource(source);
+                                var virtualization = $targetElement.igTreeGrid("option", "virtualization");
+                                if (virtualization) {
+                                    var selectedRow_1 = $targetElement.igTreeGrid("selectedRows")[0];
+                                    setTimeout(function () {
+                                        $targetElement.ntsTreeView("virtualScrollTo", selectedRow_1.id);
+                                    }, 0);
+                                    return;
+                                }
                                 var index = $targetElement.igTreeGrid("selectedRows")[0].index;
                                 if (index !== selected["index"]) {
                                     var scrollTo = _.sumBy(_.filter($target.igTreeGrid("allRows"), function (row) {
@@ -21146,27 +21164,27 @@ var nts;
                         }
                     };
                     function centerUp($dialog, winContainer) {
-                        var currentInfo = winContainer;
+                        //            let currentInfo = winContainer;
                         var top = 0, left = 0;
                         var dialog = $dialog.closest("div[role='dialog']");
                         dialog.addClass("disappear");
-                        if (currentInfo.isRoot) {
+                        if (winContainer.isRoot) {
                             //top = (window.innerHeight - dialog.innerHeight()) / 2;
                             //left = (window.innerWidth - dialog.innerWidth()) / 2;
                         }
                         else {
-                            while (!nts.uk.util.isNullOrUndefined(currentInfo)) {
-                                if (currentInfo.isRoot) {
-                                    currentInfo = null;
-                                }
-                                else {
-                                    var fullDialog = currentInfo.$dialog.closest("div[role='dialog']");
-                                    var offset = fullDialog.offset();
-                                    top += offset.top;
-                                    left += offset.left;
-                                    currentInfo = currentInfo.parent;
-                                }
-                            }
+                            //                while(!nts.uk.util.isNullOrUndefined(currentInfo)){
+                            //                    if(currentInfo.isRoot){
+                            //                        currentInfo = null;
+                            //                    } else {
+                            var offset = winContainer.$dialog.closest("div[role='dialog']").offset();
+                            //                        var offset = fullDialog.offset();
+                            console.log(dialog.offset());
+                            top += offset.top;
+                            left += offset.left;
+                            //                        currentInfo = currentInfo.parent;
+                            //                    }
+                            //                }
                         }
                         setTimeout(function () {
                             var dialogM = winContainer.isRoot ? $("body") : winContainer.$dialog.closest("div[role='dialog']");
@@ -22303,6 +22321,7 @@ var nts;
                         feature_2.CELL_STATE = "CellState";
                         feature_2.ROW_STATE = "RowState";
                         feature_2.TEXT_COLOR = "TextColor";
+                        feature_2.TEXT_STYLE = "TextStyle";
                         feature_2.HEADER_STYLES = "HeaderStyles";
                         feature_2.HIDING = "Hiding";
                         feature_2.SHEET = "Sheet";
@@ -23883,6 +23902,7 @@ var nts;
                                         };
                                         cellFormatter.style($grid, cellElement);
                                         cellFormatter.setTextColor($grid, cellElement);
+                                        cellFormatter.setTextStyle($grid, cellElement);
                                     }
                                 }, 0);
                                 return $container.html();
@@ -25722,6 +25742,9 @@ var nts;
                                 // Text color
                                 this.textColorFeatureDef = feature.find(ntsFeatures, feature.TEXT_COLOR);
                                 this.setTextColorsTableMap(ntsFeatures);
+                                // Text style
+                                this.textStyleFeatureDef = feature.find(ntsFeatures, feature.TEXT_STYLE);
+                                this.setTextStylesTableMap();
                             }
                             /**
                              * Add disable rows.
@@ -25813,6 +25836,22 @@ var nts;
                                     _this.textColorsTable[key] = _.groupBy(_this.textColorsTable[key], function (item) {
                                         return item[columnKeyName];
                                     });
+                                });
+                            };
+                            /**
+                             * Set text styles.
+                             */
+                            CellFormatter.prototype.setTextStylesTableMap = function () {
+                                var _this = this;
+                                if (uk.util.isNullOrUndefined(this.textStyleFeatureDef))
+                                    return;
+                                var rowIdName = this.textStyleFeatureDef.rowId;
+                                var columnKeyName = this.textStyleFeatureDef.columnKey;
+                                var styleName = this.textStyleFeatureDef.style;
+                                var stylesTable = this.textStyleFeatureDef.styles;
+                                this.textStylesTable = _.groupBy(stylesTable, rowIdName);
+                                _.forEach(this.textStylesTable, function (value, key) {
+                                    _this.textStylesTable[key] = _.groupBy(_this.textStylesTable[key], columnKeyName);
                                 });
                             };
                             /**
@@ -26003,6 +26042,26 @@ var nts;
                                         return;
                                     }
                                     cell.$element.addClass(txtColor);
+                                }
+                            };
+                            /**
+                             * Set text style.
+                             */
+                            CellFormatter.prototype.setTextStyle = function ($grid, cell) {
+                                if (uk.util.isNullOrUndefined(this.textStyleFeatureDef))
+                                    return;
+                                var rowIdName = this.textStyleFeatureDef.rowId;
+                                var columnKeyName = this.textStyleFeatureDef.columnKey;
+                                var styleName = this.textStyleFeatureDef.style;
+                                var stylesTable = this.textStyleFeatureDef.styles;
+                                if (!uk.util.isNullOrUndefined(stylesTable) && !uk.util.isNullOrUndefined(rowIdName)
+                                    && !uk.util.isNullOrUndefined(columnKeyName) && !uk.util.isNullOrUndefined(styleName)
+                                    && !uk.util.isNullOrUndefined(this.textStylesTable[cell.id])) {
+                                    var textStyle = this.textStylesTable[cell.id][cell.columnKey];
+                                    if (uk.util.isNullOrUndefined(textStyle) || textStyle.length === 0)
+                                        return;
+                                    var txtStyle = textStyle[0][styleName];
+                                    cell.$element.addClass(txtStyle);
                                 }
                             };
                             return CellFormatter;
@@ -27672,6 +27731,8 @@ var nts;
                                 return setSelected($tree, param);
                             case 'deselectAll':
                                 return deselectAll($tree);
+                            case 'virtualScrollTo':
+                                return virtualScroll($tree, param);
                         }
                     };
                     function getSelected($tree) {
@@ -27697,11 +27758,47 @@ var nts;
                     function setSelected($tree, selectedId) {
                         deselectAll($tree);
                         if ($tree.igTreeGridSelection('option', 'multipleSelection')) {
-                            selectedId.forEach(function (id) { return $tree.igTreeGridSelection('selectRowById', id); });
+                            selectedId.forEach(function (id) {
+                                $tree.igTreeGridSelection('selectRowById', id);
+                                virtualScroll($tree, id);
+                            });
                         }
                         else {
                             $tree.igTreeGridSelection('selectRowById', selectedId);
+                            virtualScroll($tree, id);
                         }
+                    }
+                    function virtualScroll($tree, id) {
+                        var virtualization = $tree.igTreeGrid("option", "virtualization");
+                        if (virtualization) {
+                            var pk = $tree.igTreeGrid("option", "primaryKey");
+                            var childKey = $tree.igTreeGrid("option", "childDataKey");
+                            var ds = $tree.igTreeGrid("option", "dataSource");
+                            var res = findIndex(ds, id, pk, childKey, 0);
+                            if (res.found) {
+                                $tree.igTreeGrid("virtualScrollTo", res.index);
+                            }
+                        }
+                    }
+                    function findIndex(dataSource, id, pk, childKey, cIndex) {
+                        var found = false;
+                        _.forEach(dataSource, function (d) {
+                            if (d[pk] !== id && d[childKey]) {
+                                cIndex++;
+                                var res = findIndex(d[childKey], id, pk, childKey, cIndex);
+                                if (res.found) {
+                                    found = true;
+                                    cIndex = res.index;
+                                    return false;
+                                }
+                                cIndex = res.index;
+                            }
+                            else if (d[pk] === id) {
+                                found = true;
+                                return false;
+                            }
+                        });
+                        return { index: cIndex, found: found };
                     }
                     function deselectAll($grid) {
                         $grid.igTreeGridSelection('clearSelection');

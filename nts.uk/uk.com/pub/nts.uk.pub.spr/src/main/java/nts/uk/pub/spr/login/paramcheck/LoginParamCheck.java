@@ -1,5 +1,7 @@
 package nts.uk.pub.spr.login.paramcheck;
 
+import nts.arc.time.GeneralDate;
+
 /**
  * 
  * @author Doan Duy Hung
@@ -49,12 +51,14 @@ public interface LoginParamCheck {
 	 * パラメータチェック（日別実績の確認）
 	 * @param date
 	 */
-	public String checkParamConfirmDaily(String employeeCD, String date);
+	public void checkParamConfirmDaily(String date);
 	
 	/**
 	 * パラメータチェック（残業申請確認）
 	 * @param appID
 	 */
 	public void checkParamConfirmOvertime(String appID);
+	
+	public GeneralDate getDate(String date);
 	
 }

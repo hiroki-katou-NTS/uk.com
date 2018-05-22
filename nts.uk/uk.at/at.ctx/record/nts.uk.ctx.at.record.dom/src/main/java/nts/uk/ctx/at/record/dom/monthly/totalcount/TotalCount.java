@@ -64,4 +64,14 @@ public class TotalCount implements Cloneable {
 		}
 		return cloned;
 	}
+	
+	/**
+	 * 合算する
+	 * @param target　加算対象
+	 */
+	public void sum(TotalCount target){
+
+		this.count = this.count.addDays(target.count.v());
+		this.time = this.time.addMinutes(this.time.v());
+	}
 }

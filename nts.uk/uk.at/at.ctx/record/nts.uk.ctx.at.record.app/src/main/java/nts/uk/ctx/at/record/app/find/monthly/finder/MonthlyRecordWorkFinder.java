@@ -61,7 +61,7 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, DatePeriod range) {
-		return (List<T>) ConvertHelper.getYearMonthAvailableFrom(range).stream().map(ym -> find(employeeId, ym))
+		return (List<T>) ConvertHelper.yearMonthsBetween(range).stream().map(ym -> find(employeeId, ym))
 				.flatMap(List::stream).collect(Collectors.toList());
 	}
 

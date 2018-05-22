@@ -27,14 +27,13 @@ public class AffiliationInfoOfMonthlyFinder extends MonthlyFinderFacade {
 	@SuppressWarnings("unchecked")
 	public AffiliationInfoOfMonthlyDto find(String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate) {
-		return AffiliationInfoOfMonthlyDto
-				.from(this.repo.find(employeeId, yearMonth, closureId, closureDate).orElse(null));
+		return AffiliationInfoOfMonthlyDto.from(this.repo.find(employeeId, yearMonth, closureId, closureDate).orElse(null));
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, DatePeriod range) {
-		return (List<T>) ConvertHelper.getYearMonthAvailableFrom(range).stream().map(ym -> find(employeeId, ym))
+		return (List<T>) ConvertHelper.yearMonthsBetween(range).stream().map(ym -> find(employeeId, ym))
 				.flatMap(List::stream).collect(Collectors.toList());
 	}
 
