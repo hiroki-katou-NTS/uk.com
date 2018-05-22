@@ -265,7 +265,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
         //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)の表示はない（１段）
         convertA(compltLeave: AppCompltLeaveFull, date: string, reason: string, dispReason: boolean) {
             let self = this;
-            let time = compltLeave.startTime + text('KAF018_100') + compltLeave.endTime;
+            let time = compltLeave.startTime + text('KAF018_220') + compltLeave.endTime;
             let reasonApp = dispReason ? '<br/>' + reason : '';
             return text('KAF018_262') + self.convertDateShort_MD(date) + text('KAF018_230', [compltLeave.workTypeName]) + time + reasonApp;
         }
@@ -274,7 +274,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
         //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)の表示はない（１段）
         convertB(compltLeave: AppCompltLeaveFull, date: string, reason: string, dispReason: boolean) {
             let self = this;
-            let eTime = compltLeave.endTime == '' ? '' : text('KAF018_100') + compltLeave.endTime;
+            let eTime = compltLeave.endTime == '' ? '' : text('KAF018_220') + compltLeave.endTime;
             let time = compltLeave.startTime + eTime;
             let reasonApp = dispReason ? '<br/>' + reason : '';
             return text('KAF018_263') + self.convertDateShort_MD(date) + text('KAF018_230', [compltLeave.workTypeName]) + time + reasonApp;

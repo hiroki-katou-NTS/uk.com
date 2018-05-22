@@ -22,7 +22,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
         listWorkplace: Array<model.WorkplaceInfor>;
         constructor() {
             var self = this;
-            $("#fixed-table").ntsFixedTable({ width: 1000, height: 161 });
+            $("#fixed-table").ntsFixedTable({ width: 1000, height: 163 });
         }
 
         startPage(): JQueryPromise<any> {
@@ -103,7 +103,10 @@ module nts.uk.at.view.kaf018.b.viewmodel {
         }
 
         private getRecord1(value1: number, value2: number): string {
-            return value2 + "/" + (value1 ? value1 + "件" : 0);
+            let val2: string =  value2 > 0 ? value2 : "";
+            let val1: string = value1 > 0 ? value1 + "件" : "";
+            let symb = (val1 != "" && val2 != "") ? "/" : "";
+            return val2 + symb + val1;
         }
 
         private getRecord(value?: number) {

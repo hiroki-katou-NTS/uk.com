@@ -15,15 +15,14 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.setting.company.request.approvallistsetting.ApprovalListDisplaySetDto;
 import nts.uk.ctx.at.request.app.find.setting.company.vacationapplicationsetting.HdAppSetDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AllDayHalfDayLeaveAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.OverTimeFrame;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppAbsenceFull;
-import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppCompltLeaveFull;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppDetailInfoRepository;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppGoBackInfoFull;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppHolidayWorkFull;
@@ -42,7 +41,6 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApp
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
-import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.HolidayAppType;
@@ -84,8 +82,7 @@ public class ApprovalStatusFinder {
 
 	@Inject
 	private RequestSettingRepository repoRequestSet;
-	@Inject
-	private OtherCommonAlgorithm otherCommonAlgorithm;
+
 	/**
 	 * アルゴリズム「承認状況本文起動」を実行する
 	 */
@@ -449,7 +446,7 @@ public class ApprovalStatusFinder {
 				}
 			}
 		}
-		appContent += I18NText.getText("KAF018_276") + "　" + clockShorHm(totalTime) + "（" + contentOther + "）";
+		appContent += I18NText.getText("KAF018_276") + " " + clockShorHm(totalTime) + "（" + contentOther + "）";
 		appContent += "\n" + applicaton_N.getApplicationReason();
 		return appContent;
 	}
@@ -504,9 +501,9 @@ public class ApprovalStatusFinder {
 		appContent += appOverTime.getWorkClockFrom1();
 		appContent += I18NText.getText("KAF018_220");
 		appContent += appOverTime.getWorkClockTo1();
-		appContent += appOverTime.getWorkClockFrom2() != "" ? appOverTime.getWorkClockFrom2() : " ";
-		appContent += appOverTime.getWorkClockTo2() != "" ? I18NText.getText("KAF018_220") : " ";
-		appContent += appOverTime.getWorkClockTo2() != "" ? appOverTime.getWorkClockTo2() : " ";
+		appContent += appOverTime.getWorkClockFrom2() != "" ? appOverTime.getWorkClockFrom2() : "";
+		appContent += appOverTime.getWorkClockTo2() != "" ? I18NText.getText("KAF018_220") : "";
+		appContent += appOverTime.getWorkClockTo2() != "" ? appOverTime.getWorkClockTo2() : "";
 		appContent += "残業合計  ";
 
 		List<OverTimeFrame> lstFrame = appOverTime.getLstFrame();
@@ -574,7 +571,7 @@ public class ApprovalStatusFinder {
 		if (allDayHaflDay.equals(AllDayHalfDayLeaveAtr.ALL_DAY_LEAVE)
 				&& !holidayAppType.equals(HolidayAppType.SPECIAL_HOLIDAY)) {
 			appContent += I18NText.getText("KAF018_279") + I18NText.getText("KAF018_248")
-					+ I18NText.getText("CMM045_230", value) + "\n" + applicaton_N.getApplicationReason();
+					+ I18NText.getText("CMM045_230", value);
 		} else if (holidayAppType.equals(HolidayAppType.SPECIAL_HOLIDAY)) {
 			// TODO
 			// Pending

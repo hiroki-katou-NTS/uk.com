@@ -3,6 +3,10 @@
 	height: auto !important;
 }
 
+.fixed-table tr{
+	height: 27px;
+}
+
 #tbl-control {
 	width: 1000px;
 	margin-bottom: 10px;

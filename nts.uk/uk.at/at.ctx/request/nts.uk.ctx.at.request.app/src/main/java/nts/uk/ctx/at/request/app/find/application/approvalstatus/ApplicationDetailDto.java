@@ -43,12 +43,20 @@ public class ApplicationDetailDto {
 	 */
 	private int reflectState;
 	
-	private List<Integer> approvalStatus; 
-
-	private String applicationDate;
+	private List<Integer> approvalStatus;
 	
+	/**
+	 * 申請日
+	 */
+	private String applicationDate;
+	/**
+	 * 申請ID
+	 */
 	private String applicationID;
 	
+	/**
+	 * 申請理由
+	 */
 	private String applicationReason;
 	
 	private boolean isDispReason;
