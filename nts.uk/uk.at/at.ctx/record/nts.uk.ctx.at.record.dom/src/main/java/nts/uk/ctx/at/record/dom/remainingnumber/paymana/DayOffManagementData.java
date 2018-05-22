@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.dayoffmanagement;
+package nts.uk.ctx.at.record.dom.remainingnumber.paymana;
 
 import java.util.List;
 
