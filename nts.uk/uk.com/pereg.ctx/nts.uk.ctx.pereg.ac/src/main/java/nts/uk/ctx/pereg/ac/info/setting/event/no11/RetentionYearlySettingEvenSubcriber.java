@@ -30,6 +30,10 @@ public class RetentionYearlySettingEvenSubcriber implements DomainEventSubscribe
 	
 	@Inject
 	private PerInfoItemDefRepositoty itemRepo;
+	
+	private static final List<String> ctgCodeLst = Arrays.asList(new String[] { "CS00038", "CS00024" });
+
+	private static final List<String> itemCdLst = Arrays.asList(new String[] { "IS00294" });
 
 	@Override
 	public Class<RetentionYearlySettingDomainEvent> subscribedToEventType() {
@@ -40,14 +44,14 @@ public class RetentionYearlySettingEvenSubcriber implements DomainEventSubscribe
 	public void handle(RetentionYearlySettingDomainEvent domainEvent) {
 		boolean manaDivision = domainEvent.isParameter();
 		String companyId = AppContexts.user().companyId();
-		List<PersonInfoCategory> ctgLst = this.ctgRepo.getPerCtgByListCtgCd(Arrays.asList("CS00038","CS00024"), companyId);
+		List<PersonInfoCategory> ctgLst = this.ctgRepo.getPerCtgByListCtgCd(ctgCodeLst, companyId);
 		updateCS00038(companyId, ctgLst, manaDivision);
 		updateCS00024(ctgLst, manaDivision);
 	
 	}
 	
 	private void updateCS00038(String companyId,List<PersonInfoCategory> ctgLst, boolean manaDivision ) {
-		Optional<PersonInfoCategory> CS00038 = ctgLst.stream().filter(c -> c.getCategoryCode().v().equals("CS00038")).findFirst();
+		Optional<PersonInfoCategory> CS00038 = ctgLst.stream().filter(c -> c.getCategoryCode().v().equals(ctgCodeLst.get(0))).findFirst();
 		if(CS00038.isPresent()) {
 			PersonInfoCategory ctg = CS00038.get();
 			ctg.setAbolish(manaDivision == true? IsAbolition.NOT_ABOLITION : IsAbolition.ABOLITION);
@@ -56,11 +60,10 @@ public class RetentionYearlySettingEvenSubcriber implements DomainEventSubscribe
 	}
 	
 	private void updateCS00024(List<PersonInfoCategory> ctgLst, boolean manaDivision) {
-		Optional<PersonInfoCategory> CS00024 = ctgLst.stream().filter(c -> c.getCategoryCode().v().equals("CS00024")).findFirst();
+		Optional<PersonInfoCategory> CS00024 = ctgLst.stream().filter(c -> c.getCategoryCode().v().equals(ctgCodeLst.get(1))).findFirst();
 		if(CS00024.isPresent()) {
 			List<String> ctgId = Arrays.asList(new String[] {CS00024.get().getPersonInfoCategoryId()});
-			List<String> itemCode = Arrays.asList(new String[] {"IS00294"});
-			List<PersonInfoItemDefinition> itemLst = this.itemRepo.getAllItemId(ctgId, itemCode).stream().map(c->{
+			List<PersonInfoItemDefinition> itemLst = this.itemRepo.getAllItemId(ctgId, itemCdLst).stream().map(c->{
 					c.setIsAbolition(manaDivision == true? IsAbolition.NOT_ABOLITION : IsAbolition.ABOLITION);
 				return c;
 			}).collect(Collectors.toList());

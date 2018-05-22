@@ -26,10 +26,11 @@ public class AnnualPaidLeaveSettingEvenSubcriber implements DomainEventSubscribe
 
 	@Inject
 	private PerInfoCategoryRepositoty ctgRepo;
+	
+	private static final List<String> ctgCodeLst = Arrays.asList(new String[] { "CS00024", "CS00037", "CS00038"});
 
 	@Override
 	public Class<AnnualPaidLeaveSettingDomainEvent> subscribedToEventType() {
-		// TODO Auto-generated method stub
 		return AnnualPaidLeaveSettingDomainEvent.class;
 	}
 
@@ -40,9 +41,9 @@ public class AnnualPaidLeaveSettingEvenSubcriber implements DomainEventSubscribe
 		updateCtgAbolish(manageAnnualSetting, companyId);
 	}
 
-	private void updateCtgAbolish(boolean manageAnnualSetting, String companyId) {
+	private void updateCtgAbolish(boolean params, String companyId) {
 		List<PersonInfoCategory> ctgLst = new ArrayList<>();
-		if (manageAnnualSetting) {
+		if (params) {
 			ctgLst.addAll(ctgRepo.getPerCtgByListCtgCd(Arrays.asList("CS00024"), companyId).stream()
 					.filter(c -> c.getIsAbolition() == IsAbolition.ABOLITION).map(c -> {
 						c.setAbolish(IsAbolition.NOT_ABOLITION);
@@ -50,8 +51,7 @@ public class AnnualPaidLeaveSettingEvenSubcriber implements DomainEventSubscribe
 					}).collect(Collectors.toList()));
 
 		} else {
-
-			ctgLst.addAll(ctgRepo.getPerCtgByListCtgCd(Arrays.asList("CS00024", "CS00037", "CS00038"), companyId)
+			ctgLst.addAll(ctgRepo.getPerCtgByListCtgCd(ctgCodeLst, companyId)
 					.stream().map(c -> {
 						c.setAbolish(IsAbolition.ABOLITION);
 						return c;
