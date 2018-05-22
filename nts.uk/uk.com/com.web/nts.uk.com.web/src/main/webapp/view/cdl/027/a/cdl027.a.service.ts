@@ -3,17 +3,16 @@ module nts.uk.com.view.cdl027.a.service {
     import format = nts.uk.text.format;
 
     var paths = {
-        getLogInfor: "at/record/monthlyclosure/getLogInfors", 
-        getListEmpId: "at/record/monthlyclosure/getListEmpIdByMonthlyClosureLogId/{0}/{1}"
+        getLogInfor: "ctx/sys/log/datacorrectionlog/findAll", 
+        exportCsv: "ctx/sys/log/datacorrectionlog/exportCsv"
     }
 
-    export function getLogInfor(): JQueryPromise<any> {
-        return ajax("at", paths.getLogInfor);
+    export function getLogInfor(params): JQueryPromise<any> {
+        return ajax("com", paths.getLogInfor, params);
     }
     
-    export function getListEmpId(monthlyClosureLogId: string, atr: number): JQueryPromise<any> {
-        let _path = format(paths.getListEmpId, monthlyClosureLogId, atr);
-        return ajax("at", _path);
+    export function exportCsv(params): JQueryPromise<any> {
+        return nts.uk.request.exportFile(paths.exportCsv, params);
     }
-
+    
 }

@@ -7,22 +7,56 @@ module nts.uk.com.view.cdl027.a.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
 
     export class ScreenModel {
-        items: KnockoutObservableArray<ItemModel>;
+        items: KnockoutObservableArray<DataCorrectionLog>;
+        columnsByDate: Array<any> = [
+            { headerText: getText('CDL027_7'), key: 'targetDate', dataType: 'string', width: '120px' },
+            { headerText: getText('CDL027_4'), key: 'targetUser', dataType: 'string', width: '120px' },
+            { headerText: getText('CDL027_8'), key: 'item', dataType: 'string', width: '120px' },
+            { headerText: getText('CDL027_9'), key: 'valueBefore', dataType: 'string', width: '120px' },
+            { headerText: getText('CDL027_10'), key: 'arrow', dataType: 'string', width: '20px' },
+            { headerText: getText('CDL027_11'), key: 'valueAfter', dataType: 'string', width: '120px' },
+            { headerText: getText('CDL027_12'), key: 'modifiedPerson', dataType: 'string', width: '120px' },
+            { headerText: getText('CDL027_13'), key: 'modifiedDateTime', dataType: 'string', width: '120px' },
+            { headerText: getText('CDL027_14'), key: 'correctionAttr', dataType: 'string', width: '120px' }
+        ];
+        columnsByIndividual: Array<any> = [
+            { headerText: getText('CDL027_4'), key: 'targetUser', dataType: 'string', width: '120px' },
+            { headerText: getText('CDL027_7'), key: 'targetDate', dataType: 'string', width: '120px' },
+            { headerText: getText('CDL027_8'), key: 'item', dataType: 'string', width: '120px' },
+            { headerText: getText('CDL027_9'), key: 'valueBefore', dataType: 'string', width: '120px' },
+            { headerText: getText('CDL027_10'), key: 'arrow', dataType: 'string', width: '20px' },
+            { headerText: getText('CDL027_11'), key: 'valueAfter', dataType: 'string', width: '120px' },
+            { headerText: getText('CDL027_12'), key: 'modifiedPerson', dataType: 'string', width: '120px' },
+            { headerText: getText('CDL027_13'), key: 'modifiedDateTime', dataType: 'string', width: '120px' },
+            { headerText: getText('CDL027_14'), key: 'correctionAttr', dataType: 'string', width: '120px' }
+        ];
+        params: any;
 
         constructor() {
             var self = this;
             self.items = ko.observableArray([]);
+            self.params = getShared("CDL027Params");
+            switch (self.params.functionId) {
+                case 2: 
+                case 5:
+                case 6:
+                case 7:
+                    break;
+                default: 
+                    self.columnsByDate.pop();
+                    self.columnsByIndividual.pop();
+                    break;
+            }
         }
 
         startPage(): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred();
+            let self = this, dfd = $.Deferred();
             block.invisible();
-            service.getLogInfor().done((result: Array<any>) => {
+            service.getLogInfor(self.formatParams()).done((result: Array<any>) => {
                 if (result && result.length) {
                     for (var i = 0; i < result.length; i++) {
                         let r = result[i];
-                        self.items.push(new ItemModel(r.monthlyClosureLogId, r.closureId, r.closureName, r.yearMonth, r.executeDT, r.totalEmployee, r.alarmCount, r.errorCount));
+                        self.items.push(new DataCorrectionLog(r.targetDate, r.targetUser, r.item, r.valueBefore, r.valueAfter, r.modifiedPerson, r.modifiedDateTime, r.correctionAttr));
                     }
                 }
                 self.initIGrid();
@@ -35,136 +69,127 @@ module nts.uk.com.view.cdl027.a.viewmodel {
             });
             return dfd.promise();
         }
+        
+        private exportCsv(): void {
+            let self = this;
+            block.invisible();
+            service.exportCsv(self.formatParams()).always(() => {
+                block.clear();
+            });
+        }
 
         private closeDialog() {
             nts.uk.ui.windows.close();
+        }
+        
+        private formatParams(): any {
+            let self = this;
+            let _params = {
+                functionId: self.params.functionId, 
+                listEmployeeId: self.params.listEmployeeId, 
+                displayFormat: self.params.displayFormat, 
+                startYmd: null, endYmd: null, 
+                startYm: null, endYm: null, 
+                startY: null, endY: null
+            };
+            
+            switch (self.params.functionId) {
+                case 1:
+                case 2:
+                    _params.startYmd = moment.utc(self.params.period.startDate, "YYYY/MM/DD").toISOString();
+                    _params.endYmd = moment.utc(self.params.period.endDate, "YYYY/MM/DD").toISOString();
+                    return _params;
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                case 8:
+                case 9:
+                    _params.startYm = parseInt(moment.utc(self.params.period.startDate, "YYYY/MM").format("YYYYMM"), 10);
+                    _params.endYm = parseInt(moment.utc(self.params.period.endDate, "YYYY/MM").format("YYYYMM"), 10);
+                    return _params;
+                default:
+                    _params.startY = parseInt(self.params.period.startDate, 10);
+                    _params.endY = parseInt(self.params.period.endDate, 10);
+                    return _params;
+            }
         }
 
         private initIGrid() {
             let self = this;
             $("#list").igGrid({
                 height: '400px',
+                width: '1000px',
                 dataSource: self.items(),
-                primaryKey: 'logId',
-                columns: [
-                    { headerText: "", key: 'logId', dataType: 'string', hidden: true },
-                    { headerText: getText('KMW006_2'), key: 'column1', dataType: 'string', width: '120px' },
-                    { headerText: getText('KMW006_33'), key: 'column2', dataType: 'string', width: '120px' },
-                    { headerText: getText('KMW006_34'), key: 'column3', dataType: 'string', width: '200px' },
-                    { headerText: "", key: 'totalEmp', dataType: 'number', hidden: true },
-                    { headerText: getText('KMW006_35'), key: 'column4', dataType: 'string', width: '100px', template: "{{if ${totalEmp} > 0}} <a href=\"javascript:void(0)\" class=\"linkLabel dialogDLink\" logId=\"${logId}\">${column4}</a> {{else}} ${column4} {{/if}}" },
-                    { headerText: "", key: 'alarmCount', dataType: 'number', hidden: true },
-                    { headerText: getText('KMW006_56'), key: 'column5', dataType: 'string', width: '100px', template: "{{if ${alarmCount} > 0}} <a href=\"javascript:void(0)\" class=\"linkLabel dialogEALink\" logId=\"${logId}\">${column5}</a> {{else}} ${column5} {{/if}}" },
-                    { headerText: "", key: 'errorCount', dataType: 'number', hidden: true },
-                    { headerText: getText('KMW006_36'), key: 'column6', dataType: 'string', width: '100px', template: "{{if ${errorCount} > 0}} <a href=\"javascript:void(0)\" class=\"linkLabel dialogEELink\" logId=\"${logId}\">${column6}</a> {{else}} ${column6} {{/if}}" }
-                ],
+                columns: self.params.displayFormat == DISPLAY_FORMAT.BY_DATE ? self.columnsByDate : self.columnsByIndividual,
                 features: [
                     {
                         name: 'Paging',
+                        type: "local",
                         pageSize: 15,
                         currentPageIndex: 0,
-                        showPageSizeDropDown: false,
-                        pageIndexChanged: () => {
-                            self.bindLinkClick();
-                        },
+                        showPageSizeDropDown: true,
                         pageCountLimit: 20
+                    },
+                    {
+                        name: "Filtering",
+                        type: "local",
+                        mode: "simple"
                     }
                 ]
             });
         }
-
-        private openKmw006dDialog(logId) {
-            let self = this;
-            block.invisible();
-            service.getListEmpId(logId, ATR.ALL).done((result: Array<string>) => {
-                if (result && result.length) {
-                    let tmp = _.find(self.items(), (x: ItemModel) => x.logId == logId);
-                    setShared("Kmw006dParams", { logId: logId, listEmpId: result, closure: tmp.column1, targetYm: tmp.column2, executionDt: tmp.column3 });
-                    modal("/view/kmw/006/d/index.xhtml").onClosed(() => {
-                    });
-                }
-            }).fail((error) => {
-                alert(error);
-            }).always(() => {
-                block.clear();
-            });
-        }
-
-        private openKmw006eDialog(logId, atr) {
-            let self = this;
-            block.invisible();
-            service.getListEmpId(logId, atr).done((result: Array<string>) => {
-                if (result && result.length) {
-                    let tmp = _.find(self.items(), (x: ItemModel) => x.logId == logId);
-                    setShared("Kmw006eParams", { logId: logId, listEmpId: result, closure: tmp.column1, targetYm: tmp.column2, executionDt: tmp.column3, atr: atr });
-                    modal("/view/kmw/006/e/index.xhtml").onClosed(() => {
-                    });
-                }
-            }).fail((error) => {
-                alert(error);
-            }).always(() => {
-                block.clear();
-            });
-        }
-
-        private openKmw006eDialogA(logId: string) {
-            let self = this;
-            self.openKmw006eDialog(logId, ATR.ALARM);
-        }
-
-        private openKmw006eDialogE(logId: string) {
-            let self = this;
-            self.openKmw006eDialog(logId, ATR.ERROR);
-        }
         
-        public bindLinkClick() {
-            let self = this;
-            $('.dialogDLink').click(function() {
-                var logId = $(this).attr("logId");
-                self.openKmw006dDialog(logId);
-            });
-            $('.dialogEALink').click(function() {
-                var logId = $(this).attr("logId");
-                self.openKmw006eDialogA(logId);
-            });
-            $('.dialogEELink').click(function() {
-                var logId = $(this).attr("logId");
-                self.openKmw006eDialogE(logId);
-            });
-        }
-
     }
 
-    class ItemModel {
-        logId: string;
-        column1: string;
-        column2: string;
-        column3: string;
-        column4: string;
-        column5: string;
-        column6: string;
-        totalEmp: number;
-        alarmCount: number;
-        errorCount: number;
+    class DataCorrectionLog {
+        targetDate: string;
+        targetUser: string;
+        item: string;
+        valueBefore: string;
+        arrow: string = getText('CDL027_10');
+        valueAfter: string;
+        modifiedPerson: string;
+        modifiedDateTime: string;
+        correctionAttr: string;
 
-        constructor(logId: string, closureId: number, closureName: string, targetYm: number, executionDt: string, totalEmployee: number, alarmCount: number, errorCount: number) {
-            this.column1 = getText("KMW006_55", [closureId, closureName]);
-            this.column2 = nts.uk.time.formatYearMonth(targetYm);
-            this.column3 = moment.utc(executionDt).format("YYYY/MM/DD HH:mm:ss");
-            this.column4 = getText("KMW006_37", [totalEmployee]);
-            this.column5 = getText("KMW006_37", [alarmCount]);
-            this.column6 = getText("KMW006_37", [errorCount]);
-            this.logId = logId;
-            this.totalEmp = totalEmployee;
-            this.alarmCount = alarmCount;
-            this.errorCount = errorCount;
+        constructor(targetDate, targetUser, item, valueBefore, valueAfter, modifiedPerson, modifiedDateTime, correctionAttr) {
+            this.targetDate = targetDate;
+            this.targetUser = targetUser;
+            this.item = item;
+            this.valueBefore = valueBefore;
+            this.valueAfter = valueAfter;
+            this.modifiedPerson = modifiedPerson;
+            this.modifiedDateTime = modifiedDateTime;
+            this.correctionAttr = correctionAttr;
         }
     }
 
-    enum ATR {
-        ALL = 0,
-        ALARM = 1,
-        ERROR = 2
+    enum DISPLAY_FORMAT {
+        BY_DATE = 0,
+        BY_INDIVIDUAL = 1
+    }
+
+    enum FUNCTION_ID {
+        Schedule = 1,
+        Daily = 2,
+        Monthly = 3,
+        Any_period = 4,
+        Salary = 5,
+        Bonus = 6,
+        Year_end_adjustment = 7,
+        Monthly_calculation = 8,
+        Raising_rising_back = 9
+    }
+
+    enum CORRECTION_ATTR {
+    
+    }
+
+    enum PERIOD_TYPE {
+        Y = 0,
+        YM = 1,
+        YMD = 2
     }
 
 }

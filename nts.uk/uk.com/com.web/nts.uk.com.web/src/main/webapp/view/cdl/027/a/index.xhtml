@@ -9,25 +9,29 @@
 		<ui:define name="htmlHead">
 			<script>
                 var dialogSize = {
-                    width : 800,
+                    width : 1040,
                     height : 550
                 };
             </script>
 			<com:scriptfile set="IGNITE" />
-<!-- 			<com:stylefile path="kmw006.c.style.css" /> -->
-<!-- 			<com:scriptfile path="kmw006.c.service.js" /> -->
-<!-- 			<com:scriptfile path="kmw006.c.vm.js" /> -->
-<!-- 			<com:scriptfile path="kmw006.c.start.js" /> -->
+			<com:stylefile path="cdl027.a.style.css" />
+			<com:scriptfile path="cdl027.a.service.js" />
+			<com:scriptfile path="cdl027.a.vm.js" />
+			<com:scriptfile path="cdl027.a.start.js" />
 		</ui:define>
 
 		<ui:define name="content">
-			<div class="contents-area">
-<!-- 				<div style="padding: 20px"> -->
-<!-- 					<table id="list"></table> -->
-<!-- 				</div> -->
+			<div id="functions-area">
+				<button tabindex="1" data-bind="click: exportCsv" class="proceed">#{i18n.getText('CDL027_1')}</button>
+				<button tabindex="2" data-bind="click: closeDialog">#{i18n.getText('CDL027_2')}</button>
 			</div>
-			<div id="functions-area-bottom">
-				<button tabindex="4">#{i18n.getText('KMW006_31')}</button>
+			<div class="contents-area">
+				<div style="padding: 20px">
+					<div class="valign-center control-group">
+						<span class="label">#{i18n.getText('CDL027_5')}</span>
+					</div>
+					<table id="list"></table>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>
