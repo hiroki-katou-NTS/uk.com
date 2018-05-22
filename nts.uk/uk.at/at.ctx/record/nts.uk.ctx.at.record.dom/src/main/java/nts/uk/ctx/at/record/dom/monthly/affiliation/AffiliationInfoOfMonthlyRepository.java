@@ -33,7 +33,7 @@ public interface AffiliationInfoOfMonthlyRepository {
 	List<AffiliationInfoOfMonthly> findBySidAndYearMonth(String employeeId, YearMonth yearMonth);
 
 	/**
-	 * 検索　（社員リスト）
+	 * 検索　（社員IDリスト）
 	 * @param employeeIds 社員IDリスト
 	 * @param yearMonth 年月
 	 * @param closureId 締めID
@@ -42,6 +42,14 @@ public interface AffiliationInfoOfMonthlyRepository {
 	 */
 	List<AffiliationInfoOfMonthly> findByEmployees(List<String> employeeIds, YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate);
+
+	/**
+	 * 検索　（社員IDリストと年月リスト）
+	 * @param employeeIds 社員IDリスト
+	 * @param yearMonths 年月リスト
+	 * @return 該当する月別実績の所属情報
+	 */
+	List<AffiliationInfoOfMonthly> findBySidsAndYearMonths(List<String> employeeIds, List<YearMonth> yearMonths);
 
 	/**
 	 * 登録および更新
