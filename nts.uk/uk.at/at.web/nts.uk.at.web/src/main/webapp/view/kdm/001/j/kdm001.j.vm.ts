@@ -79,7 +79,7 @@ module nts.uk.at.view.kdm001.j.viewmodel {
          */
         public update():void {
             var self = this;
-            console.log(new UpdateModel(self.itemsSelected(),"1"));
+            console.log("1111111111");
             service.update(new UpdateModel("1","1",self.itemsSelected())).done(function(data) {
                 
             }).fail(function(error) {

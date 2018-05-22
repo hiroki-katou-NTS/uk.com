@@ -1,22 +1,25 @@
 package nts.uk.ctx.at.record.app.command.remainingnumber.subhdmana;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.DayOffManagementData;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.DaysOffMana;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.service.DayOffManagementService;
 
-public class DayOffManaCommandHandler extends CommandHandler<DayOffManaCommand> {
+@Stateless
+public class DayOffManaCommandHandler extends CommandHandlerWithResult<DayOffManaCommand,List<String>> {
 	
 	@Inject
 	private DayOffManagementService dayOffManaService;
 	
 	@Override
-	protected void handle(CommandHandlerContext<DayOffManaCommand> context) {
+	protected List<String> handle(CommandHandlerContext<DayOffManaCommand> context) {
 
 		DayOffManaCommand dayOffManaCommand = context.getCommand();
 
@@ -25,8 +28,7 @@ public class DayOffManaCommandHandler extends CommandHandler<DayOffManaCommand> 
 					return new DaysOffMana(item.getComDayOffID(), item.getDayOff(), item.getRemainDays());
 				}).collect(Collectors.toList()), dayOffManaCommand.getEmployeeId(), dayOffManaCommand.getLeaveId());
 		 
-		dayOffManaService.updateDayOff(dayOffManagementData);
-
+		return dayOffManaService.updateDayOff(dayOffManagementData);
 	}
 
 }
