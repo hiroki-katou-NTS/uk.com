@@ -1,6 +1,7 @@
 module nts.uk.com.view.cmm049.a {
 
     import ListUserInfoUseMethodDto = nts.uk.com.view.cmm049.a.service.UserInfoUseMethodDto;
+    import serviceB = nts.uk.com.view.cmm049.b.service
     export module viewmodel {
 
         export class ScreenModel {
@@ -100,7 +101,7 @@ module nts.uk.com.view.cmm049.a {
             public bindEnums(data: any) {
                 let _self = this;
                 data.settingUseSendMail.forEach((item: any, index: number) => {
-                    _self.sendMailSetOptions().push({ code: item.value, name: item.localizedName });                  
+                    _self.sendMailSetOptions().push({ code: item.value, name: item.localizedName });
                 });
                 data.selfEditSetting.forEach((item: any, index: number) => {
                     _self.selfEditSetOptions.push({ code: item.value, name: item.localizedName });
@@ -109,7 +110,7 @@ module nts.uk.com.view.cmm049.a {
 
             private bindToScreen(data: any) {
                 let self = this;
-                data.forEach((item: any, index: any)=>{
+                data.forEach((item: any, index: any) => {
                     if (item.settingItem == UserInfoItem.COMPANY_PC_MAIL) {
                         self.selectedPcComSendMailSet(item.settingUseMail);
                         self.selectedPcComSelfEditSet(item.selfEdit);
@@ -142,14 +143,39 @@ module nts.uk.com.view.cmm049.a {
          */
             public openDialogUserInfo(userInfo: number) {
                 let _self = this;
-                nts.uk.ui.block.grayout();
-
-                nts.uk.ui.windows.setShared("CMM049_DIALOG_B_INPUT_DATA", userInfo);
-                nts.uk.ui.windows.sub.modal("/view/cmm/049/b/index.xhtml").onClosed(() => {
-                    nts.uk.ui.block.clear();
-                });
+                let itemName: any;
+                let dfd = $.Deferred<any>();
+                switch (userInfo) {
+                    case UserInfoItem.COMPANY_PC_MAIL:
+                        _self.getData(serviceB.getPCMailCompany, nts.uk.resource.getText("CMM049_16"),userInfo);
+                        break;
+                    case UserInfoItem.PERSONAL_PC_MAIL:
+                        _self.getData(serviceB.getPCMailPerson, nts.uk.resource.getText("CMM049_17"),userInfo);
+                        break;
+                    case UserInfoItem.COMPANY_MOBILE_MAIL:
+                        _self.getData(serviceB.getMobileMailCompany, nts.uk.resource.getText("CMM049_18"),userInfo);
+                        break;
+                    case UserInfoItem.PERSONAL_MOBILE_MAIL:
+                        _self.getData(serviceB.getMobileMailPerson, nts.uk.resource.getText("CMM049_19"),userInfo);
+                        break;
+                    default:
+                }
+                dfd.resolve();
             }
 
+            public getData(service: () => JQueryPromise<any>, text: string,userInfo: number): void {
+                nts.uk.ui.block.invisible();
+                service().done((data: any) => {
+                    nts.uk.ui.windows.setShared("CMM049_DIALOG_B_INPUT_DATA", { listMailFunction: data, userInfoItemName: text ,userInfo :userInfo});
+                    nts.uk.ui.windows.sub.modal("/view/cmm/049/b/index.xhtml");
+                }).fail((res: any) => {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                }).always(() => nts.uk.ui.block.clear());
+            }
+                
+             /**
+             * Save
+             */
             public save() {
                 let self = this;
                 let data1: ListUserInfoUseMethodDto = {

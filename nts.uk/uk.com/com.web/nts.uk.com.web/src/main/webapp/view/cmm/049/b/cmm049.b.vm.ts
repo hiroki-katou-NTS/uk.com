@@ -1,7 +1,7 @@
 module nts.uk.com.view.cmm049.b {
 
-import MailFunctionListDto = nts.uk.com.view.cmm049.b.service.MailFunctionListDto;
-import MailFunctionDto = nts.uk.com.view.cmm049.b.service.MailFunctionDto;
+    import MailFunctionListDto = nts.uk.com.view.cmm049.b.service.MailFunctionListDto;
+    import MailFunctionDto = nts.uk.com.view.cmm049.b.service.MailFunctionDto;
     export module viewmodel {
 
         export class ScreenModel {
@@ -34,7 +34,7 @@ import MailFunctionDto = nts.uk.com.view.cmm049.b.service.MailFunctionDto;
                 let dfd = $.Deferred<any>();
 
                 let dataObject: any = nts.uk.ui.windows.getShared("CMM049_DIALOG_B_INPUT_DATA");
-                _self.settingItem = dataObject;
+                _self.settingItem = dataObject.userInfo;
                 _self.bindingData(dataObject).done(() => {
                     dfd.resolve();
                 });
@@ -47,54 +47,15 @@ import MailFunctionDto = nts.uk.com.view.cmm049.b.service.MailFunctionDto;
             private bindingData(dataObject: any): JQueryPromise<any> {
                 let _self = this;
                 let dfd = $.Deferred<any>();
-                if (nts.uk.util.isNullOrUndefined(dataObject)) {
-                    return;
-                }
-                switch (dataObject) {
-                    case UserInfoItem.COMPANY_PC_MAIL:
-                        _self.userInfoItemName(nts.uk.resource.getText("CMM049_16"));
-                        service.getPCMailCompany().done((data: MailFunctionListDto) => {
-                            _self.loadListMailFunction(data);
-                            dfd.resolve();
-                        }).fail((res: any) => {
-                            nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => { nts.uk.ui.windows.close(); });
-                        });
-                        break;
-                    case UserInfoItem.PERSONAL_PC_MAIL:
-                        _self.userInfoItemName(nts.uk.resource.getText("CMM049_17"));
-                        service.getPCMailPerson().done((data: MailFunctionListDto) => {
-                            _self.loadListMailFunction(data);
-                            dfd.resolve();
-                        }).fail((res: any) => {
-                            nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => { nts.uk.ui.windows.close(); });
-                        });
-                        break;
-                    case UserInfoItem.COMPANY_MOBILE_MAIL:
-                        _self.userInfoItemName(nts.uk.resource.getText("CMM049_18"));
-                        service.getMobileMailCompany().done((data: MailFunctionListDto) => {
-                            _self.loadListMailFunction(data);
-                            dfd.resolve();
-                        }).fail((res: any) => {
-                            nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => { nts.uk.ui.windows.close(); });
-                        });
-
-                        break;
-                    case UserInfoItem.PERSONAL_MOBILE_MAIL:
-                        _self.userInfoItemName(nts.uk.resource.getText("CMM049_19"));
-                        service.getMobileMailPerson().done((data: MailFunctionListDto) => {
-                            _self.loadListMailFunction(data);
-                            dfd.resolve();
-                        }).fail((res: any) => {
-                            nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => { nts.uk.ui.windows.close(); });
-                        });
-                        break;
-                    default:
-                        _self.userInfoItemName("");
-                        dfd.resolve();
-                }
+                _self.userInfoItemName(dataObject.userInfoItemName);
+                _self.loadListMailFunction(dataObject.listMailFunction);
+                dfd.resolve();
                 return dfd.promise();
             }
-
+            
+             /**
+            * load data UI
+            */
             private loadListMailFunction(list: MailFunctionListDto): void {
                 let _self = this;
                 if (list) {
@@ -134,7 +95,7 @@ import MailFunctionDto = nts.uk.com.view.cmm049.b.service.MailFunctionDto;
                         if (check.length > 0) {
                             listOfSendMailFunction.push({
                                 functionId: item,
-                                sendSetting: SendSetting.CAN_EDIT                            
+                                sendSetting: SendSetting.CAN_EDIT
                             });
                         }
                         else {
@@ -205,7 +166,7 @@ import MailFunctionDto = nts.uk.com.view.cmm049.b.service.MailFunctionDto;
                 this.sendSetting = sendSetting;
             }
         }
-        
+
         export enum SendSetting {
             CAN_NOT_EDIT,
             CAN_EDIT
