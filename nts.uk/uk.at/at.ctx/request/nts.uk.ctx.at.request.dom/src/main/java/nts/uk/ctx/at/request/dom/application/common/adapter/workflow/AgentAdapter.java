@@ -19,4 +19,7 @@ public interface AgentAdapter {
     
 	List<AgentInfoImport> findAgentByPeriod(String companyID, List<String> listApprover, 
 			GeneralDate startDate, GeneralDate endDate, Integer agentType);
+	
+	List<AgentDataRequestPubImport> lstAgentBySidData(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate);
+	
 }
