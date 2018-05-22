@@ -103,6 +103,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
 
                 var exportAtr: number;
 
+                 var attItem : model.AttendanceRecExp ;
                 if (position == "upperPosition") {
                     position = 1;
                 }
@@ -115,17 +116,23 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                     else
                         attendanceItemName = self.attendanceRecExpDaily()[columnIndex].lowwerPosition;
 
+                    attItem = self.attendanceRecExpDaily()[columnIndex];
                 } else {
                     exportAtr = 2;
                     if (position == 1)
                         attendanceItemName = self.attendanceRecExpMonthly()[columnIndex].upperPosition;
                     else
                         attendanceItemName = self.attendanceRecExpMonthly()[columnIndex].lowwerPosition;
+                    attItem = self.attendanceRecExpMonthly()[columnIndex];
                 }
 
-
-
-
+                var attendanceItemTemp : model.AttendanceRecItem = new model.AttendanceRecItem("",0,"",columnIndex,position,exportAtr,null,0);
+               
+                var index : number = self.findAttendanceRecItem(attendanceItemTemp);
+                if(index != -1){
+                    setShared('attendanceItem', self.attendanceRecItemList()[index],true);   
+                }
+                else {
                 setShared('attendanceItem', {
                     attendanceItemName: attendanceItemName,
                     layoutCode: Number(self.attendanceCode()),
@@ -134,6 +141,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                     position: position,
                     exportAtr: exportAtr
                 }, true)
+                }
                 var link: string;
                 if (exportAtr == 1 && columnIndex <= 6) link = '/view/kwr/002/d/index.xhtml';
                 else link = '/view/kwr/002/e/index.xhtml';
