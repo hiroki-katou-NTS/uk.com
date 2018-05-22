@@ -70,18 +70,10 @@ public class TimeAnnualSettingEvenSubcriber implements DomainEventSubscriber<Tim
 	private  List<PersonInfoItemDefinition> setAbolition(List<PersonInfoItemDefinition> itemLst, boolean params ){
 		List<PersonInfoItemDefinition> itemUpdateLst = new ArrayList<>();
 		if (itemLst.size() > 0) {
-			if (params) {
-				itemUpdateLst.addAll(itemLst.stream().map(c -> {
-					c.setIsAbolition(IsAbolition.NOT_ABOLITION);
-					return c;
-				}).collect(Collectors.toList()));
-				
-			} else {
-				itemUpdateLst.addAll(itemLst.stream().map(c -> {
-					c.setIsAbolition(IsAbolition.ABOLITION);
-					return c;
-				}).collect(Collectors.toList()));
-			}
+			itemUpdateLst.addAll(itemLst.stream().map(c -> {
+				c.setIsAbolition(params == true? IsAbolition.NOT_ABOLITION: IsAbolition.ABOLITION);
+				return c;
+			}).collect(Collectors.toList()));
 		}
 		return itemUpdateLst;
 	}
