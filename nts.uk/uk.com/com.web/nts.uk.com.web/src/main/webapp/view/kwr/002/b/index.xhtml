@@ -4,13 +4,17 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script></script>
+			<com:ValidatorScript>
+			nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode
+			nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingName
+				</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kwr002.b.style.css" />
-			<!-- <com:scriptfile path="kwr002.b.service.js" /> -->
+			<com:scriptfile path="kwr002.b.service.js" />
 			<!-- <com:scriptfile path="../share/model.js" /> -->
 			<com:scriptfile path="kwr002.b.vm.js" />
 			<com:scriptfile path="kwr002.b.start.js" />
@@ -18,33 +22,47 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button tabindex="1">#{i18n.getText('KWR002_30')}</button>
+				<!-- B1_1 -->
+				<button tabindex="1" data-bind="click: innit">#{i18n.getText('KWR002_30')}</button>
+				<!-- B1_2 -->
 				<button tabindex="2" class="proceed">#{i18n.getText('KWR002_31')}</button>
+				<!-- B1_3 -->
 				<button tabindex="3" class="danger">#{i18n.getText('KWR002_32')}</button>
+				<!-- B1_4 -->
 				<button tabindex="4">#{i18n.getText('KWR002_33')}</button>
 				<!-- <button tabindex="5">#{i18n.getText('B1_5')}</button> -->
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
 				<div class="fixed-flex-layout-left"
 					style="padding-top: 20px; padding-left: 20px">
-					<div data-bind="ntsPanel:{width: 'auto', height: '410px', showIcon: true, visible: true, direction: 'right'}">
-						<div
-							data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list',   
-								        fields: ['name', 'code'], mode: 'igGrid'}"
-							class="nts-searchbbox-wrapper">
-						</div>
-						<div id="B3">
-							<table id="B3_1"
+					<!-- B2_1 -->
+					<div
+						data-bind="ntsPanel:{width: 'auto', height: '410px', showIcon: true, visible: true, direction: 'right'}">
+						<!-- B2_2 -->
+						<div tabindex="5"
+							data-bind="ntsSearchBox: {
+							items:aRES,
+							searchMode: 'filter',
+							targetKey: 'code', 
+							comId: 'multi-list',
+							selected: currentARESCode,
+							selectedKey: 'code',   
+							fields: ['name', 'code'],
+							mode: 'igGrid'}"
+							class="nts-searchbbox-wrapper"></div>
+						<!-- B3_1 -->
+						<div>
+							<table id="multi-list" tabindex="6"
 								data-bind="ntsGridList: {								
 								rows: 15,
 								columns: [
-					                { headerText: '#{i18n.getText('KWR002_35')}', key: 'dispConditionSettingCode', width: 60, formatter: _.escape },
-					                { headerText: '#{i18n.getText('KWR002_36')}', key: 'dispConditionSettingName', width: 260, formatter: _.escape }
+					                { headerText: '#{i18n.getText('KWR002_35')}', key: 'code', width: 60, formatter: _.escape },
+					                { headerText: '#{i18n.getText('KWR002_36')}', key: 'name', width: 260, formatter: _.escape }
 					            ],
-					            dataSource: listStandardImportSetting,
-								primaryKey: 'dispConditionSettingCode', 
+					            options: aRES,
+								optionsValue: 'code', 
 								multiple: false,
-								value: selectedStandardImportSettingCode,
+								value: currentARESCode,
 								height: '390px',
 								width: '390px'
 							}">
@@ -52,129 +70,68 @@
 						</div>
 					</div>
 				</div>
-				<div class="fixed-flex-layout-right" style="padding-top: 100px;">
-					<div>
-						<div data-bind="ntsFormLabel: { required: false }" id="B3_1">#{i18n.getText('kwr002_24')}</div>
-						<input id="B3_2" tabindex="6"
-							data-bind="ntsTextEditor: {name: '#[kwr002_25]', value : inputSettingCode, option : { width : '50px'}}" />
-						<input id="B3_3" tabindex="7"
-							data-bind="ntsTextEditor: {name: '#[kwr002_26]', value : inputProjectName, option : { width : '200px'}}" />
-					</div>
-					<div style="margin-top: 15px;">
-						<div style="margin-bottom: 15px"
-							data-bind="ntsFormLabel: { required: false }" id="B3_1">#{i18n.getText('kwr002_27')}</div>
+				<div class="fixed-flex-layout-right" style="padding-top: 100px;"
+					data-bind="with: currentARES">
 
-						<table id="fixed-table">
-							<colgroup>
-								<col width="34px" />
-								<col width="150px" />
-								<col width="42px" />
-								<col width="200px" />
-								<col width="150px" />
-							</colgroup>
-							<thead>
-								<tr>
-									<th class="ui-widget-header"><div
-											data-bind="ntsCheckBox: {}"></div></th>
-									<th class="ui-widget-header">#{i18n.getText('kwr002_28')}</th>
-									<th class="ui-widget-header"></th>
-									<th class="ui-widget-header">#{i18n.getText('kwr002_29')}</th>
-									<th class="ui-widget-header">#{i18n.getText('kwr002_30')}</th>
-								</tr>
-							</thead>
+					<div class="table fixed-height">
+						<table>
 							<tbody>
-								<tr>
-									<td><div data-bind="ntsCheckBox: {}"></div></td>
-									<td>#{i18n.getText('kwr002_31')}</td>
-									<td><button style="height: 20px" class="small">#{i18n.getText('kwr002_34')}</button></td>
-									<td>q</td>
-									<td>q</td>
+								<tr style="margin-top: 5px;">
+									<td colspan="1" class="th-col1">
+										<div
+											data-bind="ntsFormLabel:{required: true , constraint: 'ExportSettingCode'}">
+											<!-- A3_5 -->
+											<label>#{i18n.getText('KWR002_40')}</label>
+										</div>
+									</td>
+
+									<td colspan="2" class="th-col2">
+										<div>
+											<input id="B6_2" tabindex="7"
+												data-bind="ntsTextEditor: {name: '#{i18n.getText('KWR002_41')}', value:code, constraint: 'ExportSettingCode', option : { width : '50px'}}" />
+											<input id="B6_3" tabindex="8"
+												data-bind="ntsTextEditor: {name: '#{i18n.getText('KWR002_42')}', value:name, constraint: 'ExportSettingName', option : { width : '200px'}}" />
+										</div>
+									</td>
 								</tr>
-								<tr>
-									<td><div data-bind="ntsCheckBox: {}"></div></td>
-									<td>#{i18n.getText('kwr002_31')}</td>
-									<td><button style="height: 20px" class="small">#{i18n.getText('kwr002_34')}</button></td>
-									<td>q</td>
-									<td>q</td>
+								<tr style="margin-top: 20px;">
+									<td colspan="1" class="th-col1">
+										<div class="form-label"
+											data-bind="ntsFormLabel: {  required: false }" id="B7_1">#{i18n.getText('KWR002_43')}
+										</div>
+									</td>
+
+									<td colspan="2" class="th-col2">
+										<div class="cf" tabindex="8"
+											data-bind="ntsSwitchButton: {
+											options: $parent.sealUseAtrSwitchs,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: sealUseAtr
+											}">
+										</div>
+									</td>
 								</tr>
-								<tr>
-									<td><div data-bind="ntsCheckBox: {}"></div></td>
-									<td>#{i18n.getText('kwr002_31')}</td>
-									<td><button style="height: 20px" class="small">#{i18n.getText('kwr002_34')}</button></td>
-									<td>q</td>
-									<td>q</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsCheckBox: {}"></div></td>
-									<td>#{i18n.getText('kwr002_31')}</td>
-									<td><button style="height: 20px" class="small">#{i18n.getText('kwr002_34')}</button></td>
-									<td>q</td>
-									<td>q</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsCheckBox: {}"></div></td>
-									<td>#{i18n.getText('kwr002_31')}</td>
-									<td><button style="height: 20px" class="small">#{i18n.getText('kwr002_34')}</button></td>
-									<td>q</td>
-									<td>q</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsCheckBox: {}"></div></td>
-									<td>#{i18n.getText('kwr002_31')}</td>
-									<td><button style="height: 20px" class="small">#{i18n.getText('kwr002_34')}</button></td>
-									<td>q</td>
-									<td>q</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsCheckBox: {}"></div></td>
-									<td>#{i18n.getText('kwr002_31')}</td>
-									<td><button style="height: 20px" class="small">#{i18n.getText('kwr002_34')}</button></td>
-									<td>q</td>
-									<td>q</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsCheckBox: {}"></div></td>
-									<td>#{i18n.getText('kwr002_31')}</td>
-									<td><button style="height: 20px" class="small">#{i18n.getText('kwr002_34')}</button></td>
-									<td>q</td>
-									<td>q</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsCheckBox: {}"></div></td>
-									<td>#{i18n.getText('kwr002_31')}</td>
-									<td><button style="height: 20px" class="small">#{i18n.getText('kwr002_34')}</button></td>
-									<td>q</td>
-									<td>q</td>
-								</tr>
-								<tr>
-									<td><div data-bind="ntsCheckBox: {}"></div></td>
-									<td>#{i18n.getText('kwr002_31')}</td>
-									<td><button style="height: 20px" class="small">#{i18n.getText('kwr002_34')}</button></td>
-									<td>q</td>
-									<td>q</td>
+								<tr style="margin-top: 20px;">
+									<td colspan="1" class="th-col1">
+										<div class="form-label"
+											data-bind="ntsFormLabel: {  required: false }" id="B8_1">
+											#{i18n.getText('KWR002_47')}</div>
+									</td>
+
+									<td colspan="2" class="th-col2">
+										<div>
+											<button tabindex="10" data-bind="click:openScreenC">#{i18n.getText('KWR002_48')}</button>
+										</div>
+									</td>
 								</tr>
 							</tbody>
 						</table>
-
-					</div>
-					<div style="margin-top: 15px;">
-						<div tabindex="9" id="B5_1"
-							data-bind="ntsCheckBox: { checked: true, enable: true }">${i18n.getText('kwr002_35')}</div>
-					</div>
-					<div style="margin-top: 15px">
-						<label id="B5_2">#{i18n.getText('kwr002_36')}</label>
-						<div tabindex="10" id="B5_3"
-							data-bind="ntsRadioBoxGroup: {
-							options: itemRadio,
-							optionsValue: 'id',
-							optionsText: 'name',
-							value: selectedItemRadio,
-							enable: enable}">
-						</div>
 					</div>
 				</div>
 			</div>
 		</ui:define>
 	</ui:composition>
 </body>
+
 </html>

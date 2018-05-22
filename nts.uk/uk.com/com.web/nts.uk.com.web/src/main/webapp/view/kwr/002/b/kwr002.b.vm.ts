@@ -1,78 +1,154 @@
-module nts.uk.com.view.kwr002.b.viewmodel {
+module nts.uk.com.view.kwr002.b {
     import block = nts.uk.ui.block;
+    import errors = nts.uk.ui.errors;
     import getText = nts.uk.resource.getText;
-//    import model = kwr002.share.model;
-//    import confirm = nts.uk.ui.dialog.confirm;
-//    import alertError = nts.uk.ui.dialog.alertError;
-//    import info = nts.uk.ui.dialog.info;
-//    import modal = nts.uk.ui.windows.sub.modal;
-//    import setShared = nts.uk.ui.windows.setShared;
-//    import getShared = nts.uk.ui.windows.getShared;
-    
+    import setShared = nts.uk.ui.windows.setShared;
+    import modal = nts.uk.ui.windows.sub.modal;
+
     export class ScreenModel {
-//        systemTypes: KnockoutObservableArray<model.BoxModel> = ko.observableArray([]);
-//        systemType: KnockoutObservable<number>;
-//        screenMode: KnockoutObservable<number>;
-        
-        //B5_1
-        checked: KnockoutObservable<boolean>;
-        enable: KnockoutObservable<boolean>;
+
+        aRES: KnockoutObservableArray<IARES>;
+        currentARES: KnockoutObservable<AttendanceRecordExportSetting>;
+        currentARESCode: KnockoutObservable<string>;
+        currentARESName: KnockoutObservable<string>;
+
+        selectedARESCode: KnockoutObservable<string>;
+        aRESCode: KnockoutObservable<string>;
+        aRESName: KnockoutObservable<string>;
+
+        //B3_2 B3_3
+        inputARESCode: KnockoutObservable<string>;
+        inputARESName: KnockoutObservable<string>;
+
+        sealUseAtrSwitchs: KnockoutObservableArray<SealUseAtrSwitch>;
+
+
+        constructor() {
+            let self = this;
+
+            self.aRES = ko.observableArray([]);
+            self.currentARES = ko.observable(null);
+            self.currentARESCode = ko.observable('');
+            self.currentARESName = ko.observable('');
+
+
+            self.selectedARESCode = ko.observable('');
+            self.aRESCode = ko.observable('');
+            self.aRESName = ko.observable('');
+
+            //test
+            self.inputARESCode = ko.observable('');
+            self.inputARESName = ko.observable('');
+
+            self.sealUseAtrSwitchs = ko.observableArray([
+                new SealUseAtrSwitch(1, getText("KWR002_45")),
+                new SealUseAtrSwitch(0, getText("KWR002_46"))
+            ]);
+
+            self.currentARESCode.subscribe((value) => {
+                if (value) {
+                    console.log(value);
+                    let foundItem: IARES = _.find(self.aRES(), (item: IARES) => {
+                        return item.code == value;
+                    });
+
+                    service.getARESByCode(foundItem.code).done((aRESData) => {
+                        console.log(self.currentARES());
+                        self.currentARES(new AttendanceRecordExportSetting(aRESData));
+                        console.log(self.currentARES());
+                    }).fail((error) => {
+                        alert(error.message);
+                    })
+
+                }
+            });
+        }
+
+        /** new mode */
+        innit() {
+            let self = this;
+            errors.clearAll();
+
+            let params = {
+                code: "",
+                name: "",
+                sealUseAtr: false
+            };
+            self.currentARES(new AttendanceRecordExportSetting(params));
+            self.currentARESCode("");
+
+            $("#companyCode").focus();
+        }
 
         
-        //B2_2
-        listStandardImportSetting : KnockoutObservableArray<string>;
-        selectedStandardImportSettingCode : KnockoutObservable<string>;
-        dispConditionSettingCode : KnockoutObservable<string>;
-        dispConditionSettingName : KnockoutObservable<string>;
-        
-        //B3_2 B3_3
-        inputSettingCode: KnockoutObservable<string>;
-        inputProjectName: KnockoutObservable<string>;
-        
-        //B5_3
-        itemRadio: KnockoutObservableArray<any>;
-        selectedItemRadio: KnockoutObservable<number>;
-        
-        //B2_2
-        items: KnockoutObservableArray<model.ItemModel>;
-        columns: KnockoutObservableArray<model.ItemModel>;       
-        
-        constructor() {
-            var self = this;
-            
-            //B2_2
-            self.listStandardImportSetting = ko.observableArray([]);
-            self.selectedStandardImportSettingCode = ko.observable('');
-            self.dispConditionSettingName = ko.observable('');
-            self.dispConditionSettingCode = ko.observable('');
-            
-                 
-            //B5_1
-            self.checked = ko.observable(true);
-            self.enable = ko.observable(true);
-            
-            //B3_2 B3_3
-            self.inputSettingCode = ko.observable('');
-            self.inputProjectName = ko.observable('');
-            
-            //B5_3
-            self.itemRadio = ko.observableArray([
-                {id: 0, name : getText('CMF001_37')},
-                {id: 1, name : getText('CMF001_38')},
-                {id: 2, name : getText('CMF001_39')},
-            ]);
-            self.selectedItemRadio = ko.observable(1);
-            
-            
-            //table fixed
-            $("#fixed-table").ntsFixedTable({ height: 304, width: 900 });
+        start() {
+            block.invisible();
+            let self = this;
+            let dfd = $.Deferred<any>();
+
+            service.getAllARES().done((data) => {
+                if (data.length > 0) {
+                    self.aRES(data);
+                    let firstData = _.first(data);
+                    self.currentARESCode(firstData.code);
+                } else {
+
+                }
+                dfd.resolve();
+            }).fail(function(error) {
+                dfd.reject();
+                alert(error.message);
+            }).always(() => {
+                nts.uk.ui.block.clear();
+            });
+
+            return dfd.promise();
+        }
+
+    }
+
+    interface IARES {
+        code: string;
+        name: string;
+        sealUseAtr: boolean;
+    }
+
+
+    export class AttendanceRecordExportSetting {
+        code: KnockoutObservable<string>;
+        name: KnockoutObservable<string>;
+        sealUseAtr: KnockoutObservable<boolean>;
+
+        constructor(param: IARES) {
+            let self = this;
+            this.code = ko.observable(param.code);
+            this.name = ko.observable(param.name);
+            this.sealUseAtr = ko.observable(param.sealUseAtr);
         }
         
-        startPage(): JQueryPromise<any> {
-            var self = this;
-            
-            var test = $.Deferred();
-            return test.promise();            
+        public openScreenC() {
+            let self = this;
+            block.grayout();
+//            console.log(self.code());
+            setShared('attendanceRecExpSetCode', self.code(), true);
+            setShared('attendanceRecExpSetName', self.name(), true);
+            setShared('useSeal', self.sealUseAtr(), true);
+
+            modal('../c/index.xhtml', { title: getText('KWR002＿3'), }).onClosed(function(): any {
+                
+            })
         }
     }
+
+    class SealUseAtrSwitch {
+        code: number;
+        name: string;
+        constructor(code: number, name: string) {
+            this.code = code
+            this.name = name;
+        }
+    }
+
+
+
 }

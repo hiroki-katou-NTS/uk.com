@@ -1,0 +1,14 @@
+@CHARSET "UTF-8";
+
+
+
+.form-label {
+	margin-bottom: 40px;
+}
+
+.th-col2 {
+	/* width: 400px; */
+	padding-bottom: 40px;
+	/* border: none;
+	height: 30px; */
+}
