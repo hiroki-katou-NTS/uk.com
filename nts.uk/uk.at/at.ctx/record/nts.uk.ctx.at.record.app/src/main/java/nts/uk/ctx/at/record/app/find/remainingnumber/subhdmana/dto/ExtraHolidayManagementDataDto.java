@@ -10,7 +10,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManagementData;
-import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.service.output.ExtraHolidayManagementOutput;
+import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.service.ExtraHolidayManagementOutput;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 
 @AllArgsConstructor

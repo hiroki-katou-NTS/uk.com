@@ -18,7 +18,6 @@ import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepo
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManagementData;
-import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.service.output.ExtraHolidayManagementOutput;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -55,7 +54,7 @@ public class ExtraHolidayManagementService {
 			listCompensatoryData = comDayOffManaDataRepository.getBySidWithReDayAndDateCondition(cid, employeeId, startDate, endDate);
 		} else {
 			listLeaveData = leaveManaDataRepository.getBySidNotUnUsed(cid, employeeId);
-			listCompensatoryData = comDayOffManaDataRepository.getBySidWithReDay(cid, employeeId);
+			listCompensatoryData = comDayOffManaDataRepository.getBySidWithReDay(cid, employeeId); 
 		}
 		if (listLeaveData.isEmpty() && listCompensatoryData.isEmpty()){
 			throw new BusinessException("Msg_726");

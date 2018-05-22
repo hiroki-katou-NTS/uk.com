@@ -7,10 +7,10 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.dto.ExtraHolidayManagementDataDto;
 import nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.dto.SubDataSearchConditionDto;
 import nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.dto.SubstituteDataManagementDto;
+import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.service.ExtraHolidayManagementOutput;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.service.ExtraHolidayManagementService;
+import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.service.SubstituteManagementOutput;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.service.SubstitutionManagementService;
-import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.service.output.ExtraHolidayManagementOutput;
-import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.service.output.SubstituteManagementOutput;
 
 @Stateless
 public class SubstitutionManagementDataFinder {
