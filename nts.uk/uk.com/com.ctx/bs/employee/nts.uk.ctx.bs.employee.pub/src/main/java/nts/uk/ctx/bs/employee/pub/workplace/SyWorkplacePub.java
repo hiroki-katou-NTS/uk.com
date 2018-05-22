@@ -150,4 +150,15 @@ public interface SyWorkplacePub {
 	 */
 	// RequestList324
 	List<WorkPlaceInfoExport> findWkpByWkpId(String companyId, GeneralDate baseDate, List<String> wkpIds);
+	
+	/**
+	 * Gets the wkp cd name.
+	 *
+	 * @param companyId the company id
+	 * @param baseDate the base date
+	 * @param wkpIds the wkp ids
+	 * @return the wkp cd name
+	 */
+	// RequestList164
+	List<WkpCdNameExport> getWkpCdName(String companyId, GeneralDate baseDate, List<String> wkpIds);
 }
