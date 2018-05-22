@@ -59,7 +59,7 @@ public class SelectedAttendanceItem extends DomainObject {
 		case ADD:
 			return result + value;
 		case SUBTRACT:
-			return result + (value - 1);
+			return result + (value * (-1));
 		default:
 			throw new RuntimeException("unknown operator:"+operator);
 		}
