@@ -139,7 +139,7 @@ module nts.custom.component {
                                                                 text: text('CPS001_30')" tabindex="10"></button>
                         <button type="button" class="btn-delete danger" data-bind="
                                                                 click: event.delete, 
-                                                                enable: permisions.delete() &amp;&amp; true,
+                                                                enable: permisions.delete() &amp;&amp; gridlist.value(),
                                                                 text: text('CPS001_31')" tabindex="12"></button>
                     </div>
                     <!-- /ko -->
@@ -208,11 +208,12 @@ module nts.custom.component {
                     'add': () => {
                         let rid = ko.toJS(params.roleId),
                             cid = ko.toJS(params.combobox.value),
-                            is_self = params.employeeId() == params.loginId();
+                            is_self = params.employeeId() == params.loginId(),
+                            categoryType = ko.toJS(params.combobox.object.categoryType);
 
                         fetch.category.perm(rid, cid).done((perm: ICatAuth) => {
-                            if (perm && !!(is_self ? perm.selfAllowAddHis : perm.otherAllowAddHis)) {
-                                if (perm && !!(is_self ? perm.selfAllowAddHis : perm.otherAllowAddHis)) {
+                            if (categoryType == IT_CAT_TYPE.MULTI) {
+                                if (perm && !!(is_self ? perm.selfAllowAddMulti : perm.otherAllowAddMulti)) {
                                     params.gridlist.value(undefined);
 
                                     __viewContext.viewModel.block();
@@ -226,6 +227,23 @@ module nts.custom.component {
                                         ctype: ko.toJS(params.combobox.object.categoryType)
                                     });
                                 }
+                            } else {
+                                if (perm && !!(is_self ? perm.selfAllowAddHis : perm.otherAllowAddHis)) {
+                                    if (perm && !!(is_self ? perm.selfAllowAddHis : perm.otherAllowAddHis)) {
+                                        params.gridlist.value(undefined);
+
+                                        __viewContext.viewModel.block();
+
+                                        params.change.call(null, {
+                                            id: cid,
+                                            iid: undefined,
+                                            tab: TABS.CATEGORY,
+                                            act: 'add',
+                                            ccode: ko.toJS(params.combobox.object.categoryCode),
+                                            ctype: ko.toJS(params.combobox.object.categoryType)
+                                        });
+                                    }
+                                }
                             }
                         });
                     },
@@ -233,7 +251,8 @@ module nts.custom.component {
                         let rid = ko.toJS(params.roleId),
                             cid = ko.toJS(params.combobox.value),
                             iid = ko.toJS(params.gridlist.value),
-                            is_self = params.employeeId() == params.loginId();
+                            is_self = params.employeeId() == params.loginId(),
+                            categoryType = ko.toJS(params.combobox.object.categoryType);
 
                         fetch.category.perm(rid, cid).done((perm: ICatAuth) => {
                             if (perm && !!(is_self ? perm.selfAllowAddHis : perm.otherAllowAddHis)) {
@@ -258,34 +277,65 @@ module nts.custom.component {
                             is_self = params.employeeId() == params.loginId(),
                             got = ko.toJS(params.gridlist.options).map(m => m.optionValue),
                             gov = ko.toJS(params.gridlist.value),
-                            gidx = _.indexOf(got, gov);
+                            gidx = _.indexOf(got, gov),
+                            categoryType = ko.toJS(params.combobox.object.categoryType);
 
                         fetch.category.perm(rid, cid).done((perm: ICatAuth) => {
-                            if (perm && !!(is_self ? perm.selfAllowDelHis : perm.otherAllowDelHis)) {
-                                confirm({ messageId: "Msg_18" }).ifYes(() => {
-                                    let query = {
-                                        recordId: ko.toJS(params.gridlist.value),
-                                        personId: ko.toJS(params.personId),
-                                        employeeId: ko.toJS(params.employeeId),
-                                        categoryId: ko.toJS(params.combobox.object.categoryCode)
-                                    };
 
-                                    __viewContext.viewModel.block();
+                            if (categoryType == IT_CAT_TYPE.MULTI) {
+                                if (perm && !!(is_self ? perm.selfAllowDelMulti : perm.otherAllowDelMulti)) {
+                                    confirm({ messageId: "Msg_18" }).ifYes(() => {
+                                        let query = {
+                                            recordId: ko.toJS(params.gridlist.value),
+                                            personId: ko.toJS(params.personId),
+                                            employeeId: ko.toJS(params.employeeId),
+                                            categoryId: ko.toJS(params.combobox.object.categoryCode)
+                                        };
 
-                                    fetch.category.delete(query).done(x => {
-                                        info({ messageId: "Msg_16" }).then(() => {
-                                            if (gov != got[got.length - 1]) {
-                                                params.gridlist.value(got[gidx + 1]);
-                                            } else {
-                                                params.gridlist.value(got[gidx - 1]);
-                                            }
-                                            params.combobox.value.valueHasMutated();
+                                        __viewContext.viewModel.block();
+
+                                        fetch.category.delete(query).done(x => {
+                                            info({ messageId: "Msg_16" }).then(() => {
+                                                if (gov != got[got.length - 1]) {
+                                                    params.gridlist.value(got[gidx + 1]);
+                                                } else {
+                                                    params.gridlist.value(got[gidx - 1]);
+                                                }
+                                                params.combobox.value.valueHasMutated();
+                                            });
+                                        }).fail(msg => {
+                                            alert(msg);
+                                            __viewContext.viewModel.unblock();
                                         });
-                                    }).fail(msg => {
-                                        alert(msg);
-                                        __viewContext.viewModel.unblock();
                                     });
-                                });
+                                }
+                            } else {
+                                if (perm && !!(is_self ? perm.selfAllowDelHis : perm.otherAllowDelHis)) {
+                                    confirm({ messageId: "Msg_18" }).ifYes(() => {
+                                        let query = {
+                                            recordId: ko.toJS(params.gridlist.value),
+                                            personId: ko.toJS(params.personId),
+                                            employeeId: ko.toJS(params.employeeId),
+                                            categoryId: ko.toJS(params.combobox.object.categoryCode)
+                                        };
+
+                                        __viewContext.viewModel.block();
+
+                                        fetch.category.delete(query).done(x => {
+                                            info({ messageId: "Msg_16" }).then(() => {
+                                                if (gov != got[got.length - 1]) {
+                                                    params.gridlist.value(got[gidx + 1]);
+                                                } else {
+                                                    params.gridlist.value(got[gidx - 1]);
+                                                }
+                                                params.combobox.value.valueHasMutated();
+                                            });
+                                        }).fail(msg => {
+                                            alert(msg);
+                                            __viewContext.viewModel.unblock();
+                                        });
+                                    });
+                                }
                             }
                         });
                     }
@@ -309,8 +359,6 @@ module nts.custom.component {
 
                 __viewContext.viewModel.block();
 
-                params.combobox.options.removeAll();
-                params.gridlist.options.removeAll();
                 if (t == TABS.LAYOUT) {
                     if (!params.hasLayout()) {
                         params.tab(TABS.CATEGORY);
@@ -318,6 +366,8 @@ module nts.custom.component {
                     }
 
                     params.gridlist.row(10);
+                    params.combobox.value(undefined);
+                    
                     fetch.get_layout(sid).done((data: Array<any>) => {
                         if (data.length) {
                             params.gridlist.options(data);
@@ -411,16 +461,43 @@ module nts.custom.component {
                                 break;
                             case IT_CAT_TYPE.MULTI:
                                 params.gridlist.row(10);
-                                params.gridlist.options([]);
-                                $('#category-data_optionText').text('');
+                                let options = ko.toJS(params.gridlist.options),
+                                    oids = _.map(options, o => o.optionValue);
 
-                                params.change.call(null, {
-                                    id: v,
-                                    iid: undefined,
-                                    tab: TABS.CATEGORY,
-                                    act: undefined,
-                                    ccode: cat.categoryCode,
-                                    ctype: cat.categoryType
+                                fetch.get_hist_data(query).done(data => {
+                                    let title = _.find(data, x => !x.optionValue),
+                                        _data = _.filter(data, x => !!x.optionValue),
+                                        ids = _.map(_data, m => m.optionValue),
+                                        id = ko.toJS(params.gridlist.value);
+
+                                    if (title) {
+                                        $('#category-data_optionText').text(title.optionText);
+                                    }
+
+                                    params.gridlist.options(_data);
+                                    if (_data.length) {
+                                        if (id && ids.indexOf(id) == -1 || oval != v) {
+                                            if (ids[0] != id) {
+                                                params.gridlist.value(ids[0]);
+                                            } else {
+                                                params.gridlist.value.valueHasMutated();
+                                            }
+                                        } else {
+                                            let nid = _.find(ids, _i => oids.indexOf(_i) == -1);
+
+                                            if (nid) {
+                                                params.gridlist.value(nid);
+                                            }
+                                            else if (id) {
+                                                params.gridlist.value.valueHasMutated();
+                                            } else {
+                                                params.gridlist.value(ids[0]);
+                                            }
+                                        }
+                                    } else {
+                                        params.event.add();
+                                        params.gridlist.value(undefined);
+                                    }
                                 });
                                 break;
                             case IT_CAT_TYPE.CONTINU:
@@ -496,30 +573,44 @@ module nts.custom.component {
                         categoryType = ko.toJS(params.combobox.object.categoryType);
 
                     fetch.category.perm(rid, cid).done((perm: ICatAuth) => {
-                        if (perm && !!(is_self ? (perm.selfAllowAddHis && perm.selfFutureHisAuth == 3) : (perm.otherAllowAddHis && perm.otherFutureHisAuth == 3))) {
-                            params.permisions.add(true);
-                            params.permisions.copy(true);
-                        } else {
-                            params.permisions.add(false);
-                            params.permisions.copy(false);
-                        }
+                        if (categoryType == IT_CAT_TYPE.MULTI) {
+                            if (perm && !!(is_self ? perm.selfAllowAddMulti : perm.otherAllowAddMulti)) {
+                                params.permisions.add(true);
+                            } else {
+                                params.permisions.add(false);
+                            }
 
-                        if (perm && !!(is_self ? perm.selfAllowDelHis : perm.otherAllowDelHis)) {
-                            if (ids.indexOf(v) > -1) {
-                                if (ids.indexOf(v) == 0) {
-                                    params.permisions.delete(true);
-                                } else {
-                                    if (categoryType == IT_CAT_TYPE.NODUPLICATE) {
-                                        params.permisions.delete(true);
-                                    } else {
-                                        params.permisions.delete(false);
-                                    }
-                                }
+                            if (perm && !!(is_self ? perm.selfAllowDelMulti : perm.otherAllowDelMulti)) {
+                                params.permisions.delete(true);
                             } else {
                                 params.permisions.delete(false);
                             }
                         } else {
-                            params.permisions.delete(false);
+                            if (perm && !!(is_self ? (perm.selfAllowAddHis && perm.selfFutureHisAuth == 3) : (perm.otherAllowAddHis && perm.otherFutureHisAuth == 3))) {
+                                params.permisions.add(true);
+                                params.permisions.copy(true);
+                            } else {
+                                params.permisions.add(false);
+                                params.permisions.copy(false);
+                            }
+
+                            if (perm && !!(is_self ? perm.selfAllowDelHis : perm.otherAllowDelHis)) {
+                                if (ids.indexOf(v) > -1) {
+                                    if (ids.indexOf(v) == 0) {
+                                        params.permisions.delete(true);
+                                    } else {
+                                        if (categoryType == IT_CAT_TYPE.NODUPLICATE) {
+                                            params.permisions.delete(true);
+                                        } else {
+                                            params.permisions.delete(false);
+                                        }
+                                    }
+                                } else {
+                                    params.permisions.delete(false);
+                                }
+                            } else {
+                                params.permisions.delete(false);
+                            }
                         }
                     });
 
