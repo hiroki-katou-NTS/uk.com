@@ -488,6 +488,7 @@ project (':at.ctx:request:nts.uk.ctx.at.request.app') {
 project (':at.ctx:request:nts.uk.ctx.at.request.infra') {
 	dependencies {
 		compile project(':at.ctx:request:nts.uk.ctx.at.request.dom')
+		compile group: 'aspose', name: 'cells', version: '9.0.0'
 	}
 }
 

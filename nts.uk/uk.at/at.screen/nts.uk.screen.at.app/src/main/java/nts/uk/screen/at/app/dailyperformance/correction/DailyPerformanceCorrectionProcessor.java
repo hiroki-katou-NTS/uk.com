@@ -617,7 +617,7 @@ public class DailyPerformanceCorrectionProcessor {
 					if (attendanceAtr == DailyAttendanceAtr.Time.value
 							|| attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
 						//set SPR
-						if(share != null && share.getInitClock() != null && share.getDisplayFormat() == 0 && screenDto.getShowQuestionSPR() != SPRCheck.NOT_INSERT.value){
+						if(share != null && share.getInitClock() != null && share.getDisplayFormat() == 0){
 							boolean change31 = false;
 							boolean change34 = false;
 							if(item.getId() == 31 && data.getEmployeeId().equals(share.getInitClock().getEmployeeId()) && data.getDate().equals(share.getInitClock().getDateSpr())){

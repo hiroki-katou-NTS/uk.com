@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.env.app.command.sysusagesetfinder;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 
@@ -10,6 +11,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class AddSysUsageSetCommand {
 	/**会社ID**/
 	private String companyId;

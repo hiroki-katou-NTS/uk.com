@@ -74,7 +74,6 @@ public class SchedulePerformance {
 		List<TimeLeavingWork> scheduleTimeSheetList = new ArrayList<TimeLeavingWork>(); 
 		for(ScheduleTimeSheet schedule : workInfo.getScheduleTimeSheets()) {
 			WorkStamp attendance = new WorkStamp(schedule.getAttendance(),schedule.getAttendance(), new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET );
-			//TimeLeavingOfDailyPerformance attendanceLeavingOfDaily = timeLeavingOfDailyPerformanceRepository.
 			WorkStamp leaving    = new WorkStamp(schedule.getLeaveWork(),schedule.getLeaveWork(), new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET );
 			TimeActualStamp atStamp = new TimeActualStamp(attendance,attendance,workInfo.getScheduleTimeSheets().size());
 			TimeActualStamp leStamp = new TimeActualStamp(leaving,leaving,workInfo.getScheduleTimeSheets().size());
@@ -151,12 +150,4 @@ public class SchedulePerformance {
 		return integrationOfDaily;
 	}
 	
-
-	
-
-	
-	
-	
-	
-
 }
