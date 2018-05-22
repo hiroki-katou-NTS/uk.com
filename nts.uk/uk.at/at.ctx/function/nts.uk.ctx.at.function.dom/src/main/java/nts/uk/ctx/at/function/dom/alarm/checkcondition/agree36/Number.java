@@ -7,7 +7,7 @@ import nts.arc.primitive.constraint.IntegerRange;
  * @author yennth
  *
  */
-@IntegerRange(max = 10, min = 0)
+@IntegerRange(max = 12, min = 0)
 public class Number extends IntegerPrimitiveValue<Number>{
 
 	public Number(Integer rawValue) {
