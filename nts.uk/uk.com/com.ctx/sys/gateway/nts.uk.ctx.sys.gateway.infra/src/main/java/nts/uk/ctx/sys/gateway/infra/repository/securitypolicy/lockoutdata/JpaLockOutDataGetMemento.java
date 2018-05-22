@@ -37,7 +37,7 @@ public class JpaLockOutDataGetMemento implements LockOutDataGetMemento {
 	 */
 	@Override
 	public GeneralDateTime getLockOutDateTime() {
-		return this.entity.getLockoutDateTime();
+		return this.entity.getSgwmtLockoutDataPK().getLockoutDateTime();
 	}
 
 	/* (non-Javadoc)

@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.request.infra.repository.application.vacaction.history;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.settting.worktype.history.PlanVacationHistory;
 import nts.uk.ctx.at.request.dom.settting.worktype.history.VacationHistoryRepository;
 import nts.uk.ctx.at.request.infra.entity.valication.history.KrqmtVacationHistory;
@@ -66,7 +68,7 @@ public class JpaVacationHistoryRepository extends JpaRepository implements Vacat
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// order by closure id asc
-		cq.orderBy(criteriaBuilder.asc(root.get(KrqmtVacationHistory_.startDate)));
+		cq.orderBy(criteriaBuilder.desc(root.get(KrqmtVacationHistory_.startDate)));
 
 		List<PlanVacationHistory> lstHist = new ArrayList<>();
 		// exclude select
@@ -74,6 +76,89 @@ public class JpaVacationHistoryRepository extends JpaRepository implements Vacat
 				.collect(Collectors.toList());
 
 		//return
+		return lstHist;
+	}
+	
+	@Override
+	public List<PlanVacationHistory> findHistory(String companyId, String historyId) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KCLMT_CLOSURE (KclmtClosure SQL)
+		CriteriaQuery<KrqmtVacationHistory> cq = criteriaBuilder.createQuery(KrqmtVacationHistory.class);
+
+		// root data
+		Root<KrqmtVacationHistory> root = cq.from(KrqmtVacationHistory.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// equal company id
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KrqmtVacationHistory_.krqmtVacationHistoryPK).get(KrqmtVacationHistoryPK_.cid), companyId));
+
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KrqmtVacationHistory_.krqmtVacationHistoryPK).get(KrqmtVacationHistoryPK_.historyId),
+				historyId));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// order by startDate desc
+		cq.orderBy(criteriaBuilder.desc(root.get(KrqmtVacationHistory_.startDate)));
+
+		// exclude select
+		List<PlanVacationHistory> lstHist = em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
+				.collect(Collectors.toList());
+		
+		if (CollectionUtil.isEmpty(lstHist)){
+			return Collections.emptyList();
+		}
+		//return 
+		return lstHist;
+	}
+	
+	@Override
+	public List<PlanVacationHistory> findHistoryByBaseDate(String companyId, GeneralDate baseDate) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KCLMT_CLOSURE (KclmtClosure SQL)
+		CriteriaQuery<KrqmtVacationHistory> cq = criteriaBuilder.createQuery(KrqmtVacationHistory.class);
+
+		// root data
+		Root<KrqmtVacationHistory> root = cq.from(KrqmtVacationHistory.class);
+		
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// equal company id
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KrqmtVacationHistory_.krqmtVacationHistoryPK).get(KrqmtVacationHistoryPK_.cid), companyId));
+		
+		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(root.get(KrqmtVacationHistory_.startDate), baseDate));
+		
+		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KrqmtVacationHistory_.endDate), baseDate));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// exclude select
+		List<PlanVacationHistory> lstHist = em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
+				.collect(Collectors.toList());
+		
+		if (CollectionUtil.isEmpty(lstHist)){
+			return Collections.emptyList();
+		}
+		//return 
 		return lstHist;
 	}
 
@@ -134,17 +219,15 @@ public class JpaVacationHistoryRepository extends JpaRepository implements Vacat
 	 */
 	@Override
 	public void update(PlanVacationHistory vacationHistory) {
-		// TODO Auto-generated method stub
-
+		this.commandProxy().update(toEntity(vacationHistory));
 	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.request.dom.settting.worktype.history.VacationHistoryRepository#removeWkpConfigHist(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void removeWkpConfigHist(String companyId, String historyId) {
-		// TODO Auto-generated method stub
-
+	public void removeVacationHistory(String companyId, String historyId, String workTypeCode){
+		this.commandProxy().remove(KrqmtVacationHistory.class, new KrqmtVacationHistoryPK(companyId, historyId, workTypeCode));
 	}
 
 	/**

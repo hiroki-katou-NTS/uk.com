@@ -83,6 +83,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
 
         //Parameter setting
         monthlyParam: KnockoutObservable<any> = ko.observable(null);
+        reloadParam : KnockoutObservable<any> = ko.observable(null);
         //Date YYYYMM picker
         yearMonth: KnockoutObservable<number>;
         //Combobox display actual time
@@ -90,6 +91,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         actualTimeSelectedCode: KnockoutObservable<number> = ko.observable(0);
         actualTimeDats: KnockoutObservableArray<any> = ko.observableArray([]);;
         actualTimeSelectedDat: KnockoutObservable<any> = ko.observable(null);
+        
+        closureId : KnockoutObservable<number> = ko.observable(0);
+        
         constructor() {
             let self = this;
             self.yearMonth = ko.observable(Number(moment(new Date()).format("YYYYMM")));
@@ -109,6 +113,15 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 correctionOfDaily: null,
                 errorCodes: [],
                 lstLockStatus: []
+            });
+            
+            self.reloadParam({
+                processDate: self.yearMonth,
+                initScreenMode: self.initMode(),
+                //抽出対象社員一覧
+                lstEmployees: [],
+                closureId : self.closureId(),
+                lstAtdItemUnique : []
             });
 
             self.actualTimeSelectedCode.subscribe(value => {
@@ -164,6 +177,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 /*********************************
                  * Screen data
                  *********************************/
+                // closure ID
+                self.closureId(data.closureId);
+                self.reloadParam().closureId = data.closureId;
+                self.reloadParam().lstAtdItemUnique = data.param.lstAtdItemUnique;
                 //Closure name
                 self.closureName(data.closureName);
                 //date process
@@ -212,6 +229,53 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     { colorCode: '#DDDDD2', labelText: nts.uk.resource.getText("KMW003_33") },
                 ]
             };
+        }
+        
+        /**********************************
+         * Button Event 
+         **********************************/
+        /**
+         * 期間を変更する
+         */
+        updateDate(date: any) {
+            let self = this;
+            let dfd = $.Deferred();
+            self.reloadParam().processDate = date;
+            service.updateScreen(self.reloadParam()).done((data) => {
+                self.dataAll(data);
+                self.itemValueAll(data.itemValues);
+                self.receiveData(data);
+                /*********************************
+                 * Screen data
+                 *********************************/
+                // closure ID
+                self.closureId(data.closureId);
+                //Closure name
+                self.closureName(data.closureName);
+                //date process
+                self.yearMonth(data.processDate);
+                //actual times
+                self.actualTimeDats(data.lstActualTimes);
+                self.actualTimeSelectedDat(data.selectedActualTime);
+                self.initActualTime();
+                self.lstEmployee(_.orderBy(data.lstEmployee, ['code'], ['asc']));
+                /*********************************
+                 * Grid data
+                 *********************************/
+                // Fixed Header
+                self.setFixedHeader(data.lstFixedHeader);
+
+                let employeeLogin: any = _.find(self.lstEmployee(), function(data) {
+                    return data.loginUser == true;
+                });
+                self.employIdLogin = employeeLogin;
+                
+                let datasource = self.formatDate(self.dpData);
+                $("#dpGrid").igGrid("option","dataSource", datasource);
+                dfd.resolve();
+            })
+            return dfd.promise();
+            
         }
         /**
          * 実績期間: List<DatePeriod> actualTimeDats
@@ -310,6 +374,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     self.lstEmployee(_.orderBy(self.lstEmployee(), ['code'], ['asc']));
                     //Reload screen
                     self.monthlyParam().lstEmployees = self.lstEmployee();
+                    self.reloadParam().lstEmployees = self.lstEmployee();
                     self.initScreen();
                 },
             }
@@ -591,7 +656,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         if (data != "") {
                             let lock = data.split("|");
                             let tempD = "<span>";
-                            for (let i = 1; i < lock.length; i++) {
+                            for (let i = 0; i < lock.length; i++) {
                                 //月別実績のロック
                                 if (lock[i] == "monthlyResultLock")
                                     tempD += nts.uk.resource.getText("KMW003_35") + '<br/>';
@@ -615,7 +680,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                                     tempD += nts.uk.resource.getText("KMW003_41") + '<br/>';
 
                             }
-                            tempD += nts.uk.resource.getText("KDW003_67") + '</span>';
+                            tempD += '</span>';
                             $('#textLock').html(tempD);
                         }
                         self.helps(evt, "");
@@ -738,17 +803,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             });
             self.lockMessage(data);
             $("#tooltip").show();
-        }
-        /**********************************
-         * Button Event 
-         **********************************/
-        /**
-         * 期間を変更する
-         */
-        updateDate(date: any) {
-            let self = this;
-            self.monthlyParam().yearMonth = date;
-            //self.initScreen();
         }
         /**
          * 実績期間を変更する

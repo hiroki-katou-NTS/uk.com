@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
@@ -33,6 +35,7 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enu
  * @author shuichu_ishida
  */
 @Stateless
+@Transactional(value = TxType.REQUIRES_NEW)
 public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregationEmployeeService {
 
 	/** ドメインサービス：月別実績を集計する */

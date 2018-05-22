@@ -10,6 +10,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import com.google.common.base.Strings;
+
 import lombok.val;
 import nts.uk.pub.spr.SprStubHelper.ApplicationTargetResult;
 import nts.uk.pub.spr.SprStubHelper.RecordApplicationStatusResult;
@@ -20,6 +22,7 @@ import nts.uk.pub.spr.dailystatus.SprDailyStatusService;
 import nts.uk.pub.spr.login.SprLoginFormService;
 import nts.uk.pub.spr.login.output.LoginUserContextSpr;
 import nts.uk.pub.spr.login.output.RoleInfoSpr;
+import nts.uk.pub.spr.login.paramcheck.LoginParamCheck;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 
 @Path("public/spr")
@@ -39,6 +42,9 @@ public class SprWebService {
 	
 	@Inject
 	private LoginUserContextManager loginUserContextManager;
+	
+	@Inject
+	private LoginParamCheck loginParamCheck;
 
 	@POST
 	@Path("01/loginfromspr")
@@ -54,16 +60,16 @@ public class SprWebService {
 			@FormParam("applicationID") String applicationID,
 			@FormParam("reason") String reason,
 			@FormParam("stampProtection") String stampProtection) {
-		String menuCDReal = menuCode.trim();
-		String loginEmployeeCDReal = loginEmployeeCode.trim();
-		String targetEmployeeCDReal = targetEmployeeCode.trim();
-		String startTimeReal = startTime.trim();
-		String endTimeReal = endTime.trim();
-		String targetDateReal = targetDate.trim();
-		String selectTypeReal = selectType.trim();
-		String applicationIDReal = applicationID.trim();
-		String reasonReal = reason.trim();
-		String stampProtectionReal = stampProtection.trim();
+		String menuCDReal = menuCode;
+		String loginEmployeeCDReal = loginEmployeeCode;
+		String targetEmployeeCDReal = targetEmployeeCode;
+		String startTimeReal = startTime;
+		String endTimeReal = endTime;
+		String targetDateReal = targetDate;
+		String selectTypeReal = selectType;
+		String applicationIDReal = applicationID;
+		String reasonReal = reason;
+		String stampProtectionReal = stampProtection;
 		LoginUserContextSpr loginUserContextSpr = sprLoginFormService.loginFromSpr(
 				menuCDReal, 
 				loginEmployeeCDReal, 
@@ -127,13 +133,20 @@ public class SprWebService {
 		paramsMap.put("reason", SprStubHelper.formatParam(reasonReal));
 		paramsMap.put("stampProtection", SprStubHelper.formatParam(stampProtectionReal));
 		
+		String date = null;
+		if(!Strings.isNullOrEmpty(targetDateReal)){
+			if(!Strings.isNullOrEmpty(targetDateReal.trim())){
+				date = loginParamCheck.getDate(targetDateReal).toString();
+			}
+		}
+		
 		val paramsValue = new LinkedHashMap<String, String>();
 		paramsValue.put("menu", menuCDReal);
 		paramsValue.put("loginemployeeCode", loginEmployeeCDReal);
 		paramsValue.put("employeeCode", targetEmployeeCDReal);
 		paramsValue.put("starttime", startTimeReal);
 		paramsValue.put("endtime", endTimeReal);
-		paramsValue.put("date", targetDateReal);
+		paramsValue.put("date", date);
 		paramsValue.put("selecttype", selectTypeReal);
 		paramsValue.put("applicationID", applicationIDReal);
 		paramsValue.put("reason", reasonReal);
@@ -157,10 +170,15 @@ public class SprWebService {
 		
 		val paramStringValue = new StringBuilder();
 		paramsValue.forEach((name,value)->{
-			paramStringValue.append(name+":'"+value+"',");
+			if(value==null){
+				paramStringValue.append(name+":'',");
+			} else {
+				paramStringValue.append(name+":'"+value+"',");
+			}
 		});
 		
 		html.append("<script>");
+		html.append("debugger;");
 		html.append("window.sessionStorage.setItem(\"paramSPR\", JSON.stringify({"+paramStringValue+"}));");
 		html.append("window.location.href = '../../../../view/spr/index.xhtml'");
 		html.append("</script>");

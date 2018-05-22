@@ -22,6 +22,7 @@ import nts.uk.ctx.workflow.pub.spr.SprApprovalSearchPub;
 import nts.uk.ctx.workflow.pub.spr.export.ApprovalRootStateSprExport;
 import nts.uk.ctx.workflow.pub.spr.export.JudgmentSprExport;
 import nts.uk.pub.spr.approvalroot.output.ApprovalRootSpr;
+import nts.uk.pub.spr.login.paramcheck.LoginParamCheck;
 /**
  * 
  * @author Doan Duy Hung
@@ -29,8 +30,6 @@ import nts.uk.pub.spr.approvalroot.output.ApprovalRootSpr;
  */
 @Stateless
 public class SprApprovalRootImpl implements SprApprovalRootService {
-	
-	private final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	@Inject
 	private EmployeeSprPub employeeSprPub;
@@ -40,6 +39,9 @@ public class SprApprovalRootImpl implements SprApprovalRootService {
 	
 	@Inject
 	private ApplicationSprPub applicationSprPub;
+	
+	@Inject
+	private LoginParamCheck loginParamCheck;
 
 	@Override
 	public List<ApprovalRootSpr> getApprovalRoot(String employeeCD, String date) {
@@ -49,7 +51,7 @@ public class SprApprovalRootImpl implements SprApprovalRootService {
 		if(!opEmployeeSpr.isPresent()){
 			throw new BusinessException("Msg_301");
 		}
-		return this.getApproverStatus(companyID, opEmployeeSpr.get().getEmployeeID(), GeneralDate.fromString(date, DATE_FORMAT));
+		return this.getApproverStatus(companyID, opEmployeeSpr.get().getEmployeeID(), loginParamCheck.getDate(date));
 	}
 
 	@Override
@@ -61,9 +63,7 @@ public class SprApprovalRootImpl implements SprApprovalRootService {
 		if(Strings.isBlank(date)){
 			throw new BusinessException("Msg_1009", "Msg_1026");
 		}
-		try {
-			GeneralDate.fromString(date, DATE_FORMAT);
-		} catch (Exception e) {
+		if(loginParamCheck.getDate(date)==null){
 			throw new BusinessException("Msg_1009", date);
 		}
 	}

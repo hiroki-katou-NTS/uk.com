@@ -65,7 +65,7 @@
 #contents-area .layout-control .drag-panel {
 	min-width: 860px;
 	min-height: 445px;
-	height: calc(100vh - 365px) !important;
+	height: calc(100vh - 390px) !important;
 }
 
 #contents-area .category-input .cat-has-childs .layout-control .drag-panel

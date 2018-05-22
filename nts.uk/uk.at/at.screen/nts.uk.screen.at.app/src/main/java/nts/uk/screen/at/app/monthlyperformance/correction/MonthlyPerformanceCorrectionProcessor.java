@@ -20,7 +20,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.at.record.app.find.monthly.root.dto.ClosureDateDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.FormatPerformanceDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.IdentityProcessDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.IdentityProcessFinder;
@@ -33,7 +33,6 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFunRep
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyDto;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyFinder;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -44,9 +43,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DPCellDataDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTime;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPCellDataDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPCellStateDto;
@@ -360,6 +357,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 		 * Get Data
 		 */
 		// アルゴリズム「対象年月に対応する月別実績を取得する」を実行する Lấy monthly result ứng với năm tháng
+		if (param.getLstAtdItemUnique() == null || param.getLstAtdItemUnique().isEmpty()) {
+			throw new BusinessException("Msg_1261");
+		}
 		List<MonthlyModifyResult> results = new ArrayList<>();
 		List<String> listEmployeeIds = screenDto.getLstEmployee().stream().map(e -> e.getId())
 				.collect(Collectors.toList());

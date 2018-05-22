@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.pub.appreflectprocess;
 
+import nts.arc.time.GeneralDate;
+
 public interface AppReflectProcessSchePub {
 	/**
 	 * 	直行直帰申請: 勤務予定への反映
@@ -36,4 +38,5 @@ public interface AppReflectProcessSchePub {
 	 */
 	public boolean recruitmentReflectSche(CommonReflectSchePubParam absenceLeaverParam);
 
+	public boolean isSche(String employeeId, GeneralDate baseDate);
 }

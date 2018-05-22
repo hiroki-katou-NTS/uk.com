@@ -1,7 +1,6 @@
 package nts.uk.ctx.pereg.app.command.layout;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -14,14 +13,9 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.i18n.I18NText;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pereg.app.find.person.category.PerCtgInfoDto;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFinder;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFinder;
-import nts.uk.ctx.pereg.dom.copysetting.item.IsRequired;
-import nts.uk.ctx.pereg.dom.person.info.category.IsAbolition;
-import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
-import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
 import nts.uk.ctx.pereg.dom.person.layout.NewLayout;
 import nts.uk.ctx.pereg.dom.person.layout.classification.ILayoutPersonInfoClsRepository;
@@ -48,14 +42,11 @@ public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
 	@Inject
 	PerInfoCtgFinder itemCtgFinder;
 
-	@Inject
-	private PerInfoCategoryRepositoty perInfoCtgRepositoty;
-
 	@Override
 	protected void handle(CommandHandlerContext<NewLayoutCommand> context) {
 
 		// get new layout domain and command
-		NewLayout update = layoutRepo.getLayout(true).get();
+		NewLayout update = layoutRepo.getLayoutWithCreateNew().get();
 		NewLayoutCommand command = context.getCommand();
 
 		// update layout
