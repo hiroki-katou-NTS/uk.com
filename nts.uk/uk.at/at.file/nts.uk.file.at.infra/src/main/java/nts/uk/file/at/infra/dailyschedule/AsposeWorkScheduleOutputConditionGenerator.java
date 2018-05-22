@@ -343,9 +343,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				Optional<PrintRemarksContent> optRemarkContentLeavingEarly = getRemarkContent(employeeId, x.getWorkingDate(), errorList, RemarksContentChoice.LEAVING_EARLY);
 				Optional<PrintRemarksContent> optRemarkContentManualInput = getRemarkContent(employeeId, x.getWorkingDate(), errorList, RemarksContentChoice.MANUAL_INPUT);
 				if (optRemarkContentLeavingEarly.isPresent())
-					lstRemarkContentStr.add(optRemarkContentLeavingEarly.get().getPrintitem().value);
+					lstRemarkContentStr.add(optRemarkContentLeavingEarly.get().getPrintItem().value);
 				if (optRemarkContentManualInput.isPresent())
-					lstRemarkContentStr.add(optRemarkContentManualInput.get().getPrintitem().value);
+					lstRemarkContentStr.add(optRemarkContentManualInput.get().getPrintItem().value);
 				personalPerformanceDate.detailedErrorData = String.join("、", lstRemarkContentStr.stream().map(y -> String.valueOf(y)).collect(Collectors.toList()));
 				
 				// ER/AL
@@ -406,9 +406,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			Optional<PrintRemarksContent> optRemarkContentLeavingEarly = getRemarkContent(employeeId, x.getWorkingDate(), errorList, RemarksContentChoice.LEAVING_EARLY);
 			Optional<PrintRemarksContent> optRemarkContentManualInput = getRemarkContent(employeeId, x.getWorkingDate(), errorList, RemarksContentChoice.MANUAL_INPUT);
 			if (optRemarkContentLeavingEarly.isPresent())
-				lstRemarkContentStr.add(optRemarkContentLeavingEarly.get().getPrintitem().value);
+				lstRemarkContentStr.add(optRemarkContentLeavingEarly.get().getPrintItem().value);
 			if (optRemarkContentManualInput.isPresent())
-				lstRemarkContentStr.add(optRemarkContentManualInput.get().getPrintitem().value);
+				lstRemarkContentStr.add(optRemarkContentManualInput.get().getPrintItem().value);
 			detailedDate.errorDetail = String.join("、", lstRemarkContentStr.stream().map(y -> String.valueOf(y)).collect(Collectors.toList()));
 			
 			// Dummy
