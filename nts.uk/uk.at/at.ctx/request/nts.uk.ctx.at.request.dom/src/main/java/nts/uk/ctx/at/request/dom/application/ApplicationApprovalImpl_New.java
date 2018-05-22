@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -8,6 +10,8 @@ import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMng;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMngRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
@@ -56,6 +60,8 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService_N
 	
 	@Inject
 	private AppAbsenceRepository appAbsenceRepository;
+	@Inject
+	private BrkOffSupChangeMngRepository brkOffSupChangeMngRepository;
 
 	@Override
 	public void insert(Application_New application) {
@@ -84,6 +90,17 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService_N
 			break;
 		case BREAK_TIME_APPLICATION:
 			appHolidayWorkRepository.delete(companyID, appID);
+			Optional<BrkOffSupChangeMng> brOptional = this.brkOffSupChangeMngRepository.findHolidayAppID(appID);
+			if(brOptional.isPresent()){
+				Optional<Application_New> optapplicationLeaveApp = this.applicationRepository.findByID(companyID, brOptional.get().getAbsenceLeaveAppID());
+				if(optapplicationLeaveApp.isPresent()){
+					Application_New applicationLeaveApp = optapplicationLeaveApp.get();
+					applicationLeaveApp.setVersion(applicationLeaveApp.getVersion());
+					applicationLeaveApp.getReflectionInformation().setStateReflectionReal(ReflectedState_New.NOTREFLECTED);
+					applicationRepository.update(applicationLeaveApp);
+				}
+				this.brkOffSupChangeMngRepository.remove(appID, brOptional.get().getAbsenceLeaveAppID());
+			}
 			break;
 		case COMPLEMENT_LEAVE_APPLICATION:
 			absRepo.remove(appID);

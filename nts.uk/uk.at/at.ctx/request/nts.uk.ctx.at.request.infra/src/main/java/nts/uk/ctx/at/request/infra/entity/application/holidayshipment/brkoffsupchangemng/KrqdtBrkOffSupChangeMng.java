@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMng;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -37,5 +38,8 @@ public class KrqdtBrkOffSupChangeMng extends UkJpaEntity implements Serializable
 	protected Object getKey() {
 		return pk;
 	}
-
+	
+	public BrkOffSupChangeMng toDomain(){
+		return new BrkOffSupChangeMng(this.pk.getLeaveAppID(), this.pk.getAbsenceLeaveAppID());
+	}
 }
