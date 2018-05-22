@@ -7,7 +7,9 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 /**
  * プライマリキー：代休月別残数データ
  * @author do_dt
@@ -15,6 +17,8 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Embeddable
 @EqualsAndHashCode
 public class KrcdtMonDayoffRemainPK implements Serializable{

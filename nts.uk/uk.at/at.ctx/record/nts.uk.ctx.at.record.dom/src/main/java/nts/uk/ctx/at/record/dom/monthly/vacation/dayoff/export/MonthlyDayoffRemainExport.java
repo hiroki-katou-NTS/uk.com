@@ -8,7 +8,6 @@ package nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.export;
 import java.util.List;
 
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainData;
 
 public interface MonthlyDayoffRemainExport {
 	/**
@@ -18,6 +17,6 @@ public interface MonthlyDayoffRemainExport {
 	 * @param endMonth
 	 * @return
 	 */
-	public List<MonthlyDayoffRemainData> lstDayoffCurrentMonthOfEmployee(String employeeId, YearMonth startMonth, YearMonth endMonth);
+	public List<DayoffCurrentMonthOfEmployee> lstDayoffCurrentMonthOfEmployee(String employeeId, YearMonth startMonth, YearMonth endMonth);
 
 }

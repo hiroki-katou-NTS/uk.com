@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.monthly.vacation.dayoff;
 
+
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -8,7 +9,9 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
@@ -18,6 +21,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "KRCDT_MON_DAYOFF_REMAIN")
 public class KrcdtMonDayoffRemain extends UkJpaEntity implements Serializable{
@@ -36,34 +41,34 @@ public class KrcdtMonDayoffRemain extends UkJpaEntity implements Serializable{
 	private GeneralDate endDate;
 	/**	発生日数 */
 	@Column(name = "OCCURRED_DAYS")
-	private int occurredDays;
+	private Double occurredDays;
 	/**	発生時間 */
 	@Column(name = "OCCURRED_TIMES")
-	private int occurredTimes;
+	private Integer occurredTimes;
 	/**	使用日数 */
 	@Column(name = "USED_DAYS")
-	private int usedDays;
+	private Double usedDays;
 	/**使用時間	 */
 	@Column(name = "USED_MINUTES")
-	private int usedTimes;
+	private Integer usedTimes;
 	/**	残日数 */
 	@Column(name = "REMAINING_DAYS")
-	private int remainingDays;
+	private Double remainingDays;
 	/**	残時間 */
 	@Column(name = "REMAINING_MINUTES")
-	private int remainingTims;
+	private Integer remainingTimes;
 	/**	繰越日数 */
 	@Column(name = "CARRYFORWARD_DAYS")
-	private int carryforwardDays;
+	private Double carryforwardDays;
 	/**	繰越時間 */
 	@Column(name = "CARRYFORWARD_MINUTES")
-	private int carryforwardTimes;
+	private Integer carryforwardTimes;
 	/**	未消化日数 */
 	@Column(name = "UNUSED_DAYS")
-	private int unUsedDays;
+	private Double unUsedDays;
 	/**	未消化時間 */
 	@Column(name = "UNUSED_TIMES")
-	private int unUsedTimes;
+	private Integer unUsedTimes;
 	
 	/**
 	 * 

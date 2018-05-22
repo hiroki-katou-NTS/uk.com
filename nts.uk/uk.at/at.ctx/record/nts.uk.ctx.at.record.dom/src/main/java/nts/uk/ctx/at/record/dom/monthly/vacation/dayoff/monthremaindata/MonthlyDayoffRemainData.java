@@ -1,16 +1,13 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata;
 
-import java.time.YearMonth;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
-import nts.uk.ctx.at.record.dom.monthly.TimeDayoffRemain;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDay;
 /**
  * 代休月別残数データ
  * @author do_dt
@@ -25,9 +22,9 @@ public class MonthlyDayoffRemainData extends AggregateRoot{
 	/**年月	 */
 	private YearMonth ym;
 	/**締めID	 */
-	private String closureId;
+	private int closureId;
 	/**	締め日 */
-	private ClosureDay closureDay;
+	private int closureDay;
 	/**	末日とする */
 	private boolean lastDayis;
 	/**	締め処理状態 */
@@ -36,25 +33,15 @@ public class MonthlyDayoffRemainData extends AggregateRoot{
 	private GeneralDate startDate;
 	/**	終了年月日 */
 	private GeneralDate endDate;
-	/**	発生日数 */
-	private AttendanceDaysMonth occurrenceDays;
-	/**	発生時間 */
-	private TimeDayoffRemain occurrenceTimes;
-	/**	使用日数 */
-	private AttendanceDaysMonth useDays;
-	/**	使用時間 */
-	private TimeDayoffRemain useTimes;
-	/**	残日数 */
-	private AttendanceDaysMonth remainingDays;
-	/**	残時間 */
-	private TimeDayoffRemain remainingTimes;
-	/**	繰越日数 */
-	private AttendanceDaysMonth carryForWardDays;
-	/**	繰越時間 */
-	private TimeDayoffRemain carryForWordTimes;
-	/**	未消化日数 */
-	private AttendanceDaysMonth unUsedDays;
-	/**	未消化時間 */
-	private TimeDayoffRemain unUsedTimes;
+	/**	発生 */
+	private DayOffDayAndTimes occurrenceDayTimes;	
+	/**	使用 */
+	private DayOffDayAndTimes useDayTimes;	
+	/**	残日数, 残時間 */
+	private DayOffRemainDayAndTimes remainingDayTimes;
+	/**	繰越日数, 	繰越時間 */
+	private DayOffRemainDayAndTimes carryForWardDayTimes;	
+	/**	未消化日数, 未消化時間 */
+	private DayOffDayAndTimes unUsedDayTimes;
 
 }

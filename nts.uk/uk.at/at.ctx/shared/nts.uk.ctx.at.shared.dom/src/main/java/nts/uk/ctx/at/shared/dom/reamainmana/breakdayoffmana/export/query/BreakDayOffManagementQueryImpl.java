@@ -52,15 +52,15 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 				outPutData.setYm(ym);
 				outPutData.setMonthOccurrence(occurrentDays);
 				outPutData.setMonthUse(useDays);
-				lstData.add(outPutData);
 			} else {
 				//当月の代休残数を集計する
 				outPutData = this.aggregatedDayoffCurrentMonth(employeeId);
 				//月度別代休残数集計を作成する
 				//TODO: can xac nhan lai outputdata trong truong hop nay
 				
-				lstData.add(outPutData);
+				
 			}
+			lstData.add(outPutData);
 		}
 		return lstData;
 	}
@@ -68,7 +68,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 	public Double getTotalOccurrenceDays(String employeeId, DatePeriod dateData) {
 		//ドメインモデル「暫定休出管理データ」を取得する
 		List<InterimRemain> getRemainBySidPriod = remainRepo.getRemainBySidPriod(employeeId, dateData);
-		Double outputData = null;
+		Double outputData = (double) 0;
 		for (InterimRemain interimRemain : getRemainBySidPriod) {
 			Optional<InterimBreakMana> getBreakManaBybreakManaId = breakDayOffRepo.getBreakManaBybreakManaId(interimRemain.getRemainManaID());
 			if(getBreakManaBybreakManaId.isPresent()) {
@@ -83,7 +83,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 	public Double getTotalUseDays(String employeeId, DatePeriod dateData) {
 		//ドメインモデル「暫定代休管理データ」を取得する
 		List<InterimRemain> getRemainBySidPriod = remainRepo.getRemainBySidPriod(employeeId, dateData);
-		Double outputData = null;
+		Double outputData = (double) 0;
 		for (InterimRemain interimRemain : getRemainBySidPriod) {
 			Optional<InterimDayOffMana> getDayoffById = breakDayOffRepo.getDayoffById(interimRemain.getRemainManaID());
 			if(getDayoffById.isPresent()) {

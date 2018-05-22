@@ -29,24 +29,36 @@ public class MonthlyDayoffRemainExportImpl implements MonthlyDayoffRemainExport{
 			GeneralDate endDateRemainingMax = GeneralDate.ymd(ym.year(), ym.month(), 1);
 			GeneralDate endDatecarryMax = GeneralDate.ymd(ym.year(), ym.month(), 1);
 			for (MonthlyDayoffRemainData data : getDayOffDataBySidYmStatus) {
+				//例えば、残数なら
+				//終了日：5/20・・・残数5日
+				//終了日：5/31・・・残数2日
+				//→終了日が遅い5/31の残数2日を返す
 				//残数は締め期間．終了日が遅い方だけ返し、
 				if(data.getEndDate().afterOrEquals(endDateRemainingMax)) {
 					endDateRemainingMax = data.getEndDate();
-					dataOutput.setRemainingDays(data.getRemainingDays().v());
-					dataOutput.setRemainingTimes(data.getRemainingTimes().v());
+					dataOutput.setRemainingDays(data.getRemainingDayTimes().getDays().v());
+					dataOutput.setRemainingTimes(data.getRemainingDayTimes().getTimes().isPresent() ? data.getRemainingDayTimes().getTimes().get().v() : null);
 				}
 				//繰越数は、締め期間．終了日が早い方だけ返します。
-				if(data.getEndDate().after(endDatecarryMax)) {
+				if(data.getEndDate().before(endDatecarryMax)) {
 					endDatecarryMax = data.getEndDate();
-					dataOutput.setCarryForWardDays(data.getCarryForWardDays().v());
-					dataOutput.setCarryForWordTimes(data.getCarryForWordTimes().v());
+					dataOutput.setCarryForWardDays(data.getCarryForWardDayTimes().getDays().v());
+					dataOutput.setCarryForWordTimes(data.getCarryForWardDayTimes().getTimes().isPresent() ? data.getCarryForWardDayTimes().getTimes().get().v() : null);
 				}
-				dataOutput.setOccurrenceDays(dataOutput.getOccurrenceDays() + data.getOccurrenceDays().v());
-				dataOutput.setOccurrenceTimes(dataOutput.getOccurrenceTimes() + data.getOccurrenceTimes().v());
-				dataOutput.setUseDays(dataOutput.getUseDays() + data.getUseDays().v());
-				dataOutput.setUseTimes(dataOutput.getUseTimes() + data.getUseTimes().v());
-				dataOutput.setUnUsedDays(dataOutput.getUnUsedDays() + data.getUnUsedDays().v());
-				dataOutput.setUnUsedTimes(dataOutput.getUnUsedTimes() + data.getUnUsedTimes().v());
+				dataOutput.setOccurrenceDays(dataOutput.getOccurrenceDays() + data.getOccurrenceDayTimes().getDay().v());
+				if(data.getOccurrenceDayTimes().getTime().isPresent()) {
+					dataOutput.setOccurrenceTimes(dataOutput.getOccurrenceTimes() + data.getOccurrenceDayTimes().getTime().get().v());	
+				}				
+				dataOutput.setUseDays(dataOutput.getUseDays() + data.getUseDayTimes().getDay().v());
+				if(data.getUseDayTimes().getTime().isPresent()) {
+					dataOutput.setUseTimes(dataOutput.getUseTimes() + data.getUseDayTimes().getTime().get().v());	
+				}
+				
+				dataOutput.setUnUsedDays(dataOutput.getUnUsedDays() + data.getUnUsedDayTimes().getDay().v());
+				if(data.getUnUsedDayTimes().getTime().isPresent()) {
+					dataOutput.setUnUsedTimes(dataOutput.getUnUsedTimes() + data.getUnUsedDayTimes().getTime().get().v());	
+				}
+				
 			}
 			lstOutput.add(dataOutput);
 		}
