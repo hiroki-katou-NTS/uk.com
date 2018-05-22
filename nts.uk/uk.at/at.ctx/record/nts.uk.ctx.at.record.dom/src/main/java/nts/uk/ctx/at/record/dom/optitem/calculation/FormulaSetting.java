@@ -177,8 +177,8 @@ public class FormulaSetting extends DomainObject {
 	 * @return
 	 */
 	public Optional<ResultOfCalcFormula> getResultOfCalcFormula(List<ResultOfCalcFormula> resultOfCalcFormulaList,FormulaId formulaItemId){
-		List<ResultOfCalcFormula> resultOfCalcFormula = resultOfCalcFormulaList.stream().filter(r -> r.getCalculationFormulaId()==formulaItemId).collect(Collectors.toList());
-		if(resultOfCalcFormula.isEmpty()) {
+		List<ResultOfCalcFormula> resultOfCalcFormula = resultOfCalcFormulaList.stream().filter(r -> r.getCalculationFormulaId().equals(formulaItemId)).collect(Collectors.toList());
+		if(!resultOfCalcFormula.isEmpty()) {
 			return Optional.of(resultOfCalcFormula.get(0));
 		}
 		return Optional.empty();
