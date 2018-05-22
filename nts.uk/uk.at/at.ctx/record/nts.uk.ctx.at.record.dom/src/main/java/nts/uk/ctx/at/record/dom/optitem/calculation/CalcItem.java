@@ -25,8 +25,10 @@ public class CalcItem {
 		switch(dispOrder) {
 		case LEFT:
 			this.leftItemValue = setValue;
+			break;
 		case RIGHT:
 			this.rightItemValue = setValue;
+			break;
 		default:
 			throw new RuntimeException("unknown Item Order:"+dispOrder);
 		}
