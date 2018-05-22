@@ -12,6 +12,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.WpApproverAsAppOutput;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.registerapproval.AppTypes;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.registerapproval.EmployeeRegisterApprovalRoot;
 import nts.uk.file.com.app.HeaderEmployeeUnregisterOutput;
 import nts.uk.shr.com.company.CompanyAdapter;
@@ -28,6 +29,9 @@ public class EmployeeApproverExportService extends ExportService<EmployeeApprove
 	@Inject
 	private CompanyAdapter company;
 
+	/**
+	 * print CMM018 - N
+	 */
 	@Override
 	protected void handle(ExportServiceContext<EmployeeApproverRootQuery> context) {
 		String companyId = AppContexts.user().companyId();
@@ -38,8 +42,9 @@ public class EmployeeApproverExportService extends ExportService<EmployeeApprove
 		List<String> employeeIdLst = employee.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 
 		// get worplaces: employee info
+		//01.申請者としての承認ルートを取得する
 		Map<String, WpApproverAsAppOutput> wpApprover = registerApprovalRoot.lstEmps(companyId, query.getBaseDate(),
-				employeeIdLst, query.getRootAtr(), query.getLstApps());
+				employeeIdLst, query.getLstApps());
 
 		if (wpApprover.isEmpty()) {
 			throw new BusinessException("Msg_7");

@@ -3,7 +3,8 @@ module nts.uk.com.view.cmm018.n {
         let servicePath = {
             getRightList: 'workflow/approvermanagement/workroot/find/applicationType',
             getInforRoot: "workflow/approvermanagement/workroot/getEmployeeRegisterApprovalRoot",
-            saveAsExcel: "approval/report/employee"
+            saveAsExcel: "approval/report/employee",
+            getConfirm: 'workflow/approvermanagement/workroot/find/confirmRootType'
         };
 
         export function getRightList() {
@@ -17,17 +18,19 @@ module nts.uk.com.view.cmm018.n {
         export function saveAsExcel(data: model.appInfor) {
             return request.exportFile(servicePath.saveAsExcel, data);
         }
-
+        
+        export function getConfirmName(){
+            return nts.uk.request.ajax('com',servicePath.getConfirm);
+        }
+        
         export module model {
             export class appInfor {
                 baseDate: any;
-                lstEmpIds: string[];
-                rootAtr: number;
-                lstApps: string[];
-                constructor(baseDate: any, lstEmpIds: string[], rootAtr: number, lstApps: string[]) {
+                lstEmpIds: Array<any>;
+                lstApps: any;
+                constructor(baseDate: any, lstEmpIds: Array<any>, lstApps: any) {
                     this.baseDate = baseDate;
                     this.lstEmpIds = lstEmpIds;
-                    this.rootAtr = rootAtr;
                     this.lstApps = lstApps;
                 }
             }
