@@ -99,6 +99,7 @@
                                         name: '#[KWR008_31]',
                                         value : $data.headingName,
                                         required: false,
+                                        enable: $data.sortBy() > 1,
                                         option : { width : '190px'},
                                         constraint: 'ItemOutTblBookHeadingName'}" />
                                 </td>

@@ -374,7 +374,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 self.outputItem()[i].updateData(i + 1,
                     null,
                     false,
-                    '',
+                    (i == 0) ? self.rule36CalculationName : '',
                     0,
                     '',
                     i == 0, //set is 36協定時間 if it's fist OutputItem
