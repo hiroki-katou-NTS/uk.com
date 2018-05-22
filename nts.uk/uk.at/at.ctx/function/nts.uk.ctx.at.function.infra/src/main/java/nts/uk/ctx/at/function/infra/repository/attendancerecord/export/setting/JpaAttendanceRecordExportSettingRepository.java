@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.infra.repository.attendancerecord.export.setting;
 
+import java.math.BigDecimal;
+import java.rmi.server.UID;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,8 +21,6 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceReco
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstSealColumn;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstSealColumnPK;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstSealColumnPK_;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstSealColumn_;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnstAttndRecOutSet;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnstAttndRecOutSetPK;
@@ -117,8 +117,9 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository
 	 * @return the kfnst seal column
 	 */
 	private KfnstSealColumn toSealStampEntity(String cId, long code, SealColumnName sealName) {
-		KfnstSealColumnPK PK = new KfnstSealColumnPK(cId, code);
-		return new KfnstSealColumn(PK, sealName.toString());
+		UID columnId= new UID();
+		
+		return new KfnstSealColumn(columnId.toString(), cId, new BigDecimal(code), sealName.toString());
 	}
 
 	/**
@@ -189,7 +190,7 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository
 		// create where conditions
 		List<Predicate> predicates = new ArrayList<>();
 		predicates.add(
-				criteriaBuilder.equal(root.get(KfnstSealColumn_.id).get(KfnstSealColumnPK_.cid), companyId));
+				criteriaBuilder.equal(root.get(KfnstSealColumn_.cid), companyId));
 
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));
@@ -258,9 +259,9 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository
 
 		// create where conditions
 		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KfnstSealColumn_.id).get(KfnstSealColumnPK_.cid), companyId));
+		predicates.add(criteriaBuilder.equal(root.get(KfnstSealColumn_.cid), companyId));
 		predicates
-				.add(criteriaBuilder.equal(root.get(KfnstSealColumn_.id).get(KfnstSealColumnPK_.exportCd), exportCode));
+				.add(criteriaBuilder.equal(root.get(KfnstSealColumn_.exportCd), exportCode));
 
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));

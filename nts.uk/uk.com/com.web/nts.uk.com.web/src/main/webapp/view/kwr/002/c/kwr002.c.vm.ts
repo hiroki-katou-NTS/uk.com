@@ -172,15 +172,9 @@ module nts.uk.com.view.kwr002.c.viewmodel {
 
 
                         var item: viewmodel.model.AttendanceRecItem;
-
-                        item.layoutCode = attendanceItem.layoutCode;
-                        item.layoutName = attendanceItem.layoutName;
-                        item.columnIndex = attendanceItem.columnName;
-                        item.position = attendanceItem.position;
-                        item.exportAtr = attendanceItem.exportAtr;
-                        item.attendanceId = attendanceItem.attendanceId;
-                        item.attendanceItemName = attendanceItem.attendanceItemName;
-                        item.attribute = attendanceItem.attribute;
+                        item = new model.AttendanceRecItem(attendanceItem.attendanceItemName, attendanceItem.layoutCode, attendanceItem.layoutName,
+                            attendanceItem.columnIndex, attendanceItem.position, attendanceItem.exportAtr,
+                            attendanceItem.attendanceId, attendanceItem.attribute)
                         self.updateAttendanceRecItemList(item);
                     }
 

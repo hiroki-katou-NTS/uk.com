@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.infra.repository.attendancerecord.export.setting;
 
 import java.math.BigDecimal;
+import java.rmi.server.UID;
 import java.util.List;
 
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport;
@@ -9,7 +10,6 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingC
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingName;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstSealColumn;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstSealColumnPK;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnstAttndRecOutSet;
 
 /**
@@ -131,9 +131,8 @@ public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRec
 	@Override
 	public void setSealStamp(String companyId, ExportSettingCode code, List<SealColumnName> seal) {
 		seal.forEach(item -> {
-			KfnstSealColumn tempEntity = new KfnstSealColumn();
-			tempEntity.setId(new KfnstSealColumnPK(companyId, code.v()));
-			tempEntity.setSealStampName(item.toString());
+			UID columnId = new UID();
+			KfnstSealColumn tempEntity = new KfnstSealColumn(columnId.toString(), companyId, new BigDecimal(code.v()), item.toString());			
 			this.sealColumnEntity.add(tempEntity);
 		});
 
