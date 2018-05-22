@@ -1,8 +1,9 @@
-package nts.uk.ctx.at.record.app.find.realitystatus;
+package nts.uk.ctx.at.record.app.find.application.realitystatus;
 
 import java.util.List;
 
 import lombok.Value;
+import nts.arc.time.GeneralDate;
 
 /**
  * 
@@ -11,8 +12,8 @@ import lombok.Value;
  */
 @Value
 public class RealityStatusActivityParam {
-	private String startDate;
-	private String endDate;
+	private GeneralDate startDate;
+	private GeneralDate endDate;
 	private boolean isConfirmData;
 	private List<String> listWorkplaceId;
 	private List<String> listEmpCd;
