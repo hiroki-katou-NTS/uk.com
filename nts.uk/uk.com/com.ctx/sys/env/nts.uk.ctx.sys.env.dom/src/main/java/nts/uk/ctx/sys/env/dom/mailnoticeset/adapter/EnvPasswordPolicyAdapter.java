@@ -11,7 +11,7 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PasswordPolicyImport;
 /**
  * The Interface PasswordPolicyAdapter.
  */
-public interface PasswordPolicyAdapter {
+public interface EnvPasswordPolicyAdapter {
 
 	/**
 	 * Gets the password policy.

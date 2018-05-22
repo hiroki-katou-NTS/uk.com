@@ -24,7 +24,7 @@ import nts.uk.ctx.sys.env.app.find.mailnoticeset.dto.PersonContactDto;
 import nts.uk.ctx.sys.env.app.find.mailnoticeset.employee.UseContactSettingDto;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.adapter.EmployeeBasicAdapter;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.adapter.EmployeeInfoContactAdapter;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.adapter.PasswordPolicyAdapter;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.adapter.EnvPasswordPolicyAdapter;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.adapter.PersonContactAdapter;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.SelfEditUserInfo;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod;
@@ -66,7 +66,7 @@ public class MailNoticeSettingFinder {
 
 	/** The password policy adapter. */
 	@Inject
-	private PasswordPolicyAdapter passwordPolicyAdapter;
+	private EnvPasswordPolicyAdapter passwordPolicyAdapter;
 
 	/**
 	 * Find all.

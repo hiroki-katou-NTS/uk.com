@@ -9,7 +9,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.sys.env.dom.mailnoticeset.adapter.PasswordPolicyAdapter;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.adapter.EnvPasswordPolicyAdapter;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.ComplexityImport;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PasswordPolicyImport;
 import nts.uk.ctx.sys.gateway.pub.securitypolicy.PasswordPolicyPublisher;
@@ -18,7 +18,7 @@ import nts.uk.ctx.sys.gateway.pub.securitypolicy.PasswordPolicyPublisher;
  * The Class PasswordPolicyAdapterImpl.
  */
 @Stateless
-public class PasswordPolicyAdapterImpl implements PasswordPolicyAdapter {
+public class EnvPasswordPolicyAdapterImpl implements EnvPasswordPolicyAdapter {
 
 	/** The password policy publisher. */
 	@Inject
