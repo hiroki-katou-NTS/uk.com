@@ -25,7 +25,7 @@ public class YearMonthPeriod extends GeneralPeriod<YearMonthPeriod, YearMonth> {
 	}
 	
 	@Override
-	public List<YearMonth> getYearMonthAvailableFrom(){
+	public List<YearMonth> yearMonthsBetween(){
 		List<YearMonth> result = new ArrayList<>();
 		YearMonth startYM = this.start();
 		while (startYM.lessThanOrEqualTo(this.end())) {
@@ -36,7 +36,7 @@ public class YearMonthPeriod extends GeneralPeriod<YearMonthPeriod, YearMonth> {
 	}
 
 	@Override
-	public List<GeneralDate> getDateBetween(){
+	public List<GeneralDate> datesBetween(){
 		List<GeneralDate> result = new ArrayList<>();
 		GeneralDate start = GeneralDate.ymd(this.start().year(), this.start().month(), 1);
 		int lastDateOfEndYM = java.time.YearMonth.of(this.end().year(), this.end().month()).lengthOfMonth();

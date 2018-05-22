@@ -52,7 +52,7 @@ public abstract class GeneralPeriod<S extends GeneralPeriod<S, T>, T extends Com
 
 	protected abstract T max();
 
-	protected abstract List<YearMonth> getYearMonthAvailableFrom();
+	protected abstract List<YearMonth> yearMonthsBetween();
 
-	protected abstract List<GeneralDate> getDateBetween();
+	protected abstract List<GeneralDate> datesBetween();
 }

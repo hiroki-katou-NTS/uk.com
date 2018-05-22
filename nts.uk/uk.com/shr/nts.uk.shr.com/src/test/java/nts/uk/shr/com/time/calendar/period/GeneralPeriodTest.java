@@ -42,7 +42,7 @@ public class GeneralPeriodTest {
 		}
 		
 		@Override
-		public List<YearMonth> getYearMonthAvailableFrom(){
+		public List<YearMonth> yearMonthsBetween(){
 			List<YearMonth> result = new ArrayList<>();
 			YearMonth startYM = this.start().yearMonth();
 			YearMonth endYM = this.end().yearMonth();
@@ -54,7 +54,7 @@ public class GeneralPeriodTest {
 		}
 
 		@Override
-		public List<GeneralDate> getDateBetween(){
+		public List<GeneralDate> datesBetween(){
 			List<GeneralDate> result = new ArrayList<>();
 			GeneralDate start = this.start();
 			while (start.beforeOrEquals(this.end())) {
