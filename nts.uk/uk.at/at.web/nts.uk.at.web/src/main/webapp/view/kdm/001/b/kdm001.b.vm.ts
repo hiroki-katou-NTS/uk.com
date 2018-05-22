@@ -109,8 +109,8 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             }
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
             self.selectedItem.subscribe(x => {
-                self.selectedEmployee = _.find(self.listEmployee, item => { return item.employeeId === x; });
                 if (!self.isOnStartUp) {
+                    self.selectedEmployee = _.find(self.listEmployee, item => { return item.employeeId === x; });
                     let searchCondition = { employeeId: x, stateDate: null, endDate: null };
                     service.getExtraHolidayData(searchCondition).done(function(result) {
                         self.closureEmploy = result.closureEmploy;
@@ -169,12 +169,17 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 let employeeInfo = result.extraHolidayManagementDataDto.sempHistoryImport;
                 let extraHolidayData = result.extraHolidayManagementDataDto;
                 self.closureEmploy = result.extraHolidayManagementDataDto.closureEmploy;
-                self.selectedEmployee = new EmployeeKcp009(employeeInfo.sid,
-                    employeeInfo.employeeCode, employeeInfo.employeeName, wkHistory.workplaceId, wkHistory.workPlaceCode);
-                self.employeeInputList.push(self.selectedEmployee);
-                self.listLeaveComDayOffManagement = extraHolidayData.listLeaveComDayOffManagement;
+                self.listEmployee = [];
+                self.selectedEmployee = new EmployeeInfo(wkHistory.employeeId, 'code', 'name', wkHistory.workplaceId, wkHistory.workplaceCode, wkHistory.workplaceName);
+                self.listEmployee.push(self.selectedEmployee);
+                self.employeeInputList.push(new EmployeeKcp009(employeeInfo.sid,
+                    employeeInfo.employeeCode, employeeInfo.employeeName, wkHistory.workplaceName, wkHistory.wkpDisplayName));
                 self.listCompensatoryData = extraHolidayData.listCompensatoryData;
                 self.listLeaveData = extraHolidayData.listLeaveData;
+                if (extraHolidayData.listCompensatoryData == null && extraHolidayData.listLeaveData == null){
+                    dialog.alertError('Msg_726');
+                }
+                self.listLeaveComDayOffManagement = extraHolidayData.listLeaveComDayOffManagement;
                 self.leaveSettingExpiredDate = result.leaveSettingExpiredDate;
                 self.compenSettingEmpExpiredDate = result.compenSettingEmpExpiredDate;
                 self.initKCP009();
@@ -205,7 +210,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             self.employeeInputList([]);
             self.listEmployee = [];
             _.each(dataList, function(item) {
-                self.listEmployee.push(new EmployeeInfo(item.employeeId, item.employeeCode, item.employeeName, item.workplaceId, item.workplaceCode));
+                self.listEmployee.push(new EmployeeInfo(item.employeeId, item.employeeCode, item.employeeName, item.workplaceId, item.workplaceCode, item.workplaceName));
                 self.employeeInputList.push(new EmployeeKcp009(item.employeeId, item.employeeCode, item.employeeName, item.workplaceName, ""));
             });
             $('#emp-component').ntsLoadListComponent(self.listComponentOption);
@@ -321,12 +326,14 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         employeeName: string;
         workplaceId: string;
         workplaceCode: string;
-        constructor(employeeId: string, employeeCode: string, employeeName: string, workplaceId: string, workplaceCode: string) {
+        workplaceName: string;
+        constructor(employeeId: string, employeeCode: string, employeeName: string, workplaceId: string, workplaceCode: string, workplaceName: string) {
             this.employeeId = employeeId;
             this.employeeCode = employeeCode;
             this.employeeName = employeeName;
             this.workplaceId = workplaceId;
             this.workplaceCode = workplaceCode;
+            this.workplaceName = workplaceName;
         }
     }
     export class ItemModel {
