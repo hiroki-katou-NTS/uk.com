@@ -6,6 +6,7 @@ package nts.uk.ctx.at.request.dom.settting.worktype.history;
 
 import java.util.List;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -28,12 +29,13 @@ public interface VacationHistoryRepository {
 	void update(PlanVacationHistory vacationHistory);
 
     /**
-     * Removes the wkp config hist.
+     * Removes the vacation history.
      *
      * @param companyId the company id
      * @param historyId the history id
+     * @param workTypeCode the work type code
      */
-    void removeWkpConfigHist(String companyId, String historyId);
+    void removeVacationHistory(String companyId, String historyId, String workTypeCode);
 
     /**
      * Find by work type code.
@@ -56,4 +58,21 @@ public interface VacationHistoryRepository {
     public Integer countByDatePeriod(String companyId, String workTypeCode, DatePeriod datePeriod,
 			String histId);
 
+    /**
+     * Find history.
+     *
+     * @param companyId the company id
+     * @param historyId the history id
+     * @return the optional
+     */
+    public List<PlanVacationHistory> findHistory(String companyId, String historyId);
+    
+    /**
+     * Find history by period.
+     *
+     * @param companyId the company id
+     * @param period the period
+     * @return the list
+     */
+    public List<PlanVacationHistory> findHistoryByBaseDate(String companyId, GeneralDate baseDate);
 }

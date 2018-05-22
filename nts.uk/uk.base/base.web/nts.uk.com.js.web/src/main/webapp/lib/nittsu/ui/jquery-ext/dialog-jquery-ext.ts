@@ -15,26 +15,27 @@ module nts.uk.ui.jqueryExtentions {
             }
         };
 
-        function centerUp($dialog: JQuery, winContainer) {
-            let currentInfo = winContainer;
+        function centerUp($dialog: JQuery, winContainer: ScreenWindow) {
+//            let currentInfo = winContainer;
             let top=0, left=0;
             let dialog = $dialog.closest("div[role='dialog']");
             dialog.addClass("disappear");
-            if(currentInfo.isRoot){
+            if(winContainer.isRoot){
                 //top = (window.innerHeight - dialog.innerHeight()) / 2;
                 //left = (window.innerWidth - dialog.innerWidth()) / 2;
             } else {
-                while(!nts.uk.util.isNullOrUndefined(currentInfo)){
-                    if(currentInfo.isRoot){
-                        currentInfo = null;
-                    } else {
-                        var fullDialog = currentInfo.$dialog.closest("div[role='dialog']"); 
-                        var offset = fullDialog.offset();
+//                while(!nts.uk.util.isNullOrUndefined(currentInfo)){
+//                    if(currentInfo.isRoot){
+//                        currentInfo = null;
+//                    } else {
+                        var offset = winContainer.$dialog.closest("div[role='dialog']").offset(); 
+//                        var offset = fullDialog.offset();
+                        console.log(dialog.offset());
                         top += offset.top;
                         left += offset.left;
-                        currentInfo = currentInfo.parent;
-                    }
-                }
+//                        currentInfo = currentInfo.parent;
+//                    }
+//                }
             }
             
             setTimeout(function(){

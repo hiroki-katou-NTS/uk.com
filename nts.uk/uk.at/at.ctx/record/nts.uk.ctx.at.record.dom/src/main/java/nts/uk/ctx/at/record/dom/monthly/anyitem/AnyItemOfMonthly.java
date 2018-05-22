@@ -86,4 +86,37 @@ public class AnyItemOfMonthly extends AggregateRoot {
 		domain.amount = amount;
 		return domain;
 	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(AnyItemOfMonthly target){
+		
+		if (target.time.isPresent()){
+			if (this.time.isPresent()){
+				this.time = Optional.of(new AnyTimeMonth(this.time.get().v() + target.time.get().v()));
+			}
+			else {
+				this.time = Optional.of(new AnyTimeMonth(target.time.get().v()));
+			}
+		}
+		if (target.times.isPresent()){
+			if (this.times.isPresent()){
+				this.times = Optional.of(new AnyTimesMonth(
+						this.times.get().v().doubleValue() + target.times.get().v().doubleValue()));
+			}
+			else {
+				this.times = Optional.of(new AnyTimesMonth(target.times.get().v().doubleValue()));
+			}
+		}
+		if (target.amount.isPresent()){
+			if (this.amount.isPresent()){
+				this.amount = Optional.of(new AnyAmountMonth(this.amount.get().v() + target.amount.get().v()));
+			}
+			else {
+				this.amount = Optional.of(new AnyAmountMonth(target.amount.get().v()));
+			}
+		}
+	}
 }

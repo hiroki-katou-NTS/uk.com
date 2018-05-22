@@ -34,8 +34,8 @@ public class NewLayoutWebservices extends WebService {
 	}
 	
 	@POST
-	@Path("get-layout-can-null")
-	public NewLayoutDto getLayoutCanNull() {
-		return nLayoutFinder.getLayoutCanNull();
+	@Path("check-new-layout")
+	public Boolean checkNewLayout() {
+		return nLayoutFinder.checkLayoutExist();
 	}
 }
