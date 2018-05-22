@@ -6,7 +6,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         workplaceName: KnockoutObservable<string> = ko.observable('');
         employeeCode: KnockoutObservable<string> = ko.observable('');
         employeeName: KnockoutObservable<string> = ko.observable('');
-        dayRemaining: KnockoutObservable<string> = ko.observable('');
+        dayRemaining: KnockoutObservable<number> = ko.observable(0);
         checkedHoliday: KnockoutObservable<boolean> = ko.observable(false);;
         checkedSubHoliday: KnockoutObservable<boolean> = ko.observable(false);
         checkedSplit: KnockoutObservable<boolean> = ko.observable(false);
@@ -34,7 +34,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             self.workplaceName("営業部");
             self.employeeCode("A0000001");
             self.employeeName("日通　太郎");
-            self.dayRemaining("0.5日");
+            self.dayRemaining(0.5);
             self.checkedSplit.subscribe((v) => {
                 if (v == true) {
                     self.isOptionSubHolidayEnable(true);

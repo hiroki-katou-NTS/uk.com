@@ -17,6 +17,8 @@ import nts.uk.ctx.at.record.infra.entity.remainingnumber.paymana.KrcmtPayoutMana
 public class JpaPayoutManagementDataRepo extends JpaRepository implements PayoutManagementDataRepository {
 
 	private String QUERY_BYSID = "SELECT p FROM KrcmtPayoutManaData p WHERE p.cID = :cid AND p.sID =:employeeId";
+	
+	private String QUERY_BYSID_CID_DAYOFF = "SELECT p FROM KrcmtPayoutManaData p WHERE p.cID = :cid AND p.sID =:employeeId AND p.dayoffDate = dayoffDate";
 
 	private String QUERY_BYSID_WITH_COND = String.join(" ", QUERY_BYSID, "AND p.stateAtr = :state");
 
@@ -136,8 +138,7 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 
 	@Override
 	public Optional<PayoutManagementData> find(String sID, String cID, CompensatoryDayoffDate dayoffDate) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.queryProxy().find(QUERY_BYSID_CID_DAYOFF, KrcmtPayoutManaData.class).map(i -> toDomain(i));
 	}
 
 }

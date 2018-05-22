@@ -7,10 +7,11 @@
 <body>
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 430, height: 420 };</script>
+			<script>var dialogSize = { width: 430, height: 450 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="kdm001.m.start.js" />
+			<com:scriptfile path="kdm001.m.service.js" />
 			<com:scriptfile path="kdm001.m.vm.js" />
 			<com:stylefile path="kdm001.m.style.css" />
 		</ui:define>
@@ -92,9 +93,9 @@
 			</div>
 			<div id="functions-area-bottom">
 				<!-- M31_1 登録 -->
-				<button class="proceed" data-bind="click: openKDM001M" tabindex="5">#{i18n.getText('KDM001_89')}</button>
+				<button class="proceed" data-bind="click: updateComDayOffMana" tabindex="5">#{i18n.getText('KDM001_89')}</button>
 				<!-- M31_2 削除 -->
-				<button class="danger" data-bind="click: openKDM001M" tabindex="6">#{i18n.getText('KDM001_100')}</button>
+				<button class="danger" data-bind="click: deleteComDayOffMana" tabindex="6">#{i18n.getText('KDM001_100')}</button>
 				<!-- M31_3 キャンセル -->
 				<button data-bind="click: closeKDM001M" tabindex="7">#{i18n.getText('KDM001_90')}</button>
 			</div>

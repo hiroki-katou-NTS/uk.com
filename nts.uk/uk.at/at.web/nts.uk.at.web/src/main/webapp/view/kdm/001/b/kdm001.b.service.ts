@@ -2,13 +2,13 @@ module nts.uk.at.view.kdm001.b.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     var paths: any = {
-        getInfoEmLogin: "workflow/approvermanagement/workroot/getInforPsLogin",
-        getWpName: "screen/com/kcp010/getLoginWkp"
+        getSubsitutionData: "at/record/remaingnumber/subhdmana/getSubsitutionData",
+        getExtraHolidayData: "at/record/remaingnumber/subhdmana/getExtraHolidayData"
     }
-    export function getInfoEmLogin(): JQueryPromise<any> {
-        return ajax("com", paths.getInfoEmLogin);
+    export function getSubsitutionData(searchCondition): JQueryPromise<any> {
+        return ajax(paths.getSubsitutionData, searchCondition); 
     }
-    export function getWpName(): JQueryPromise<any> {
-        return ajax("com", paths.getWpName);
+    export function getExtraHolidayData(searchCondition): JQueryPromise<any> {
+        return ajax(paths.getExtraHolidayData, searchCondition); 
     }
 }
