@@ -10,7 +10,7 @@ import lombok.Getter;
  * The Class EmployeeDto.
  */
 @Getter
-public class EmployeeDto {
+public class EmployeeBasicDto {
 
 	/** The employee id. */
 	private String employeeId;
@@ -31,7 +31,7 @@ public class EmployeeDto {
 	 * @param employeeName
 	 *            the employee name
 	 */
-	public EmployeeDto(String employeeId, String employeeCode, String employeeName) {
+	public EmployeeBasicDto(String employeeId, String employeeCode, String employeeName) {
 		this.employeeId = employeeId;
 		this.employeeCode = employeeCode;
 		this.employeeName = employeeName;

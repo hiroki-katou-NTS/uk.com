@@ -19,7 +19,7 @@ import nts.uk.ctx.sys.env.app.find.mailnoticeset.employee.UseContactSettingDto;
 public class MailNoticeSettingDto {
 
 	/** The employee. */
-	private EmployeeDto employee;
+	private EmployeeBasicDto employee;
 
 	/** The employee info contact. */
 	private EmployeeInfoContactDto employeeInfoContact;
