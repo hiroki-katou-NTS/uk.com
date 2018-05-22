@@ -12,6 +12,7 @@ public interface LeaveManaDataRepository {
 
 	List<LeaveManagementData> getBySidWithsubHDAtr(String cid, String sid, int state);
 	
+	List<LeaveManagementData> getBySidNotUnUsed(String cid, String sid);
 	
 	List<LeaveManagementData> getBySid(String cid, String sid);
 	

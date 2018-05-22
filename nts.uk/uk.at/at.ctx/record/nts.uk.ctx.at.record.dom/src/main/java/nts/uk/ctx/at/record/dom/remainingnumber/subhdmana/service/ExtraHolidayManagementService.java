@@ -1,9 +1,11 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.paymana.service;
+package nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.service;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
@@ -12,11 +14,15 @@ import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
+import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
+import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.shr.com.context.AppContexts;
 
+@Stateless
 public class ExtraHolidayManagementService {
 	
 	@Inject
@@ -31,25 +37,41 @@ public class ExtraHolidayManagementService {
 	@Inject
 	private SysEmploymentHisAdapter sysEmploymentHisAdapter;
 	
-	public void dataExtractionProcessing (String cid, String employeeId, int state, GeneralDate startDate, GeneralDate endDate){
+	@Inject
+	private LeaveComDayOffManaRepository leaveComDayOffManaRepository;
+	
+	
+	public ExtraHolidayManagementOutput dataExtractionProcessing (String employeeId, GeneralDate startDate, GeneralDate endDate){
+		String cid = AppContexts.user().companyId();
 		List<LeaveManagementData> listLeaveData = null;
 		List<CompensatoryDayOffManaData> listCompensatoryData = null;
+		List<LeaveComDayOffManagement> listLeaveComDayOffManagement = null;
+		SEmpHistoryImport empHistoryImport = null;
+		ClosureEmployment closureEmploy = null;
 		GeneralDate baseDate = GeneralDate.today();
 		if (!Objects.isNull(startDate) && !Objects.isNull(endDate)){
 			listLeaveData = leaveManaDataRepository.getBySidWithsubHDAtrAndDateCondition(cid, employeeId, startDate, endDate);
 			listCompensatoryData = comDayOffManaDataRepository.getBySidWithReDayAndDateCondition(cid, employeeId, startDate, endDate);
 		} else {
-			listLeaveData = leaveManaDataRepository.getBySidWithsubHDAtr(cid, employeeId, state);
-			listCompensatoryData = comDayOffManaDataRepository.getBySidWithReDay(cid, employeeId);
+			listLeaveData = leaveManaDataRepository.getBySidNotUnUsed(cid, employeeId);
+			listCompensatoryData = comDayOffManaDataRepository.getBySidWithReDay(cid, employeeId); 
 		}
 		if (listLeaveData.isEmpty() && listCompensatoryData.isEmpty()){
 			throw new BusinessException("Msg_726");
 		}
+		List<String> listLeaveID = listLeaveData.stream().map(x ->{
+			return x.getID();
+		}).collect(Collectors.toList());
+		listLeaveComDayOffManagement = leaveComDayOffManaRepository.getByListComLeaveID(listLeaveID);
 		Optional<SEmpHistoryImport> sEmpHistoryImport = sysEmploymentHisAdapter.findSEmpHistBySid(cid, employeeId, baseDate);
 		if (sEmpHistoryImport.isPresent()){
-			String sCd = sEmpHistoryImport.get().getEmploymentCode();
+			empHistoryImport = sEmpHistoryImport.get();
+			String sCd = empHistoryImport.getEmploymentCode();
 			Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(cid, sCd);
+			if (closureEmployment.isPresent()){
+				closureEmploy = closureEmployment.get();
+			}
 		}
-		
+		return new ExtraHolidayManagementOutput(listLeaveData, listCompensatoryData, listLeaveComDayOffManagement, empHistoryImport, closureEmploy);
 	}
 }

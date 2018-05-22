@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.paymana.service;
+package nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.service;
 
 import java.util.Optional;
 
@@ -6,10 +6,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SWkpHistImport;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SysWorkplaceAdapter;
-import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -19,16 +17,13 @@ public class SubstitutionManagementService {
 	private SysWorkplaceAdapter syWorkplaceAdapter;
 	
 	@Inject
-	private SysEmploymentHisAdapter sysEmploymentHisAdapter;
+	private ExtraHolidayManagementService extraHolidayManagementService;
 	
-	public void activationProcess(String employeeId){
+	public SubstituteManagementOutput activationProcess(GeneralDate startDate, GeneralDate endDate){
+		String employeeId = AppContexts.user().employeeId();
 		GeneralDate baseDate = GeneralDate.today();
-		String companyId = AppContexts.user().companyId();
 		Optional<SWkpHistImport> sWkpHistImport = syWorkplaceAdapter.findBySid(employeeId, baseDate);
-		if (sWkpHistImport.isPresent()){
-			
-//			Optional<SEmpHistoryImport> sEmpHistoryImport = sysEmploymentHisAdapter.findSEmpHistBySid(companyId, employeeId, baseDate);
-			
-		}
+		ExtraHolidayManagementOutput extraHolidayManagementOutput = extraHolidayManagementService.dataExtractionProcessing(employeeId, startDate, endDate);
+		return new SubstituteManagementOutput(sWkpHistImport.isPresent() ? sWkpHistImport.get() : null, extraHolidayManagementOutput);
 	}
 }
