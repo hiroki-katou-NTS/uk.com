@@ -958,7 +958,7 @@ module nts.uk.com.view.ccg.share.ccg {
             }
 
             private calculateKcp005Rows(marginHeight: number): number {
-                const tabContentHeight = parseInt(document.querySelector('.ccg-tabpanel>#tab-2').style.height);
+                const tabContentHeight = parseInt(document.querySelector('.ccg-tabpanel>#tab-3').style.height);
                 const heightPerRow = 24;
                 return (tabContentHeight - marginHeight) / heightPerRow;
             }
