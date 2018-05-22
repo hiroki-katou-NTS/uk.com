@@ -3,7 +3,6 @@ package nts.uk.ctx.pereg.infra.repository.person.info.item;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -321,6 +320,11 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"ON io.ppemtPerInfoItemPK.perInfoItemDefId = i.ppemtPerInfoItemPK.perInfoItemDefId AND io.perInfoCtgId = i.perInfoCtgId",
 			"WHERE c.cid =:cid  and ic.ppemtPerInfoItemCmPK.contractCd =:contractCd AND ic.itemType = 2 AND  (ic.ppemtPerInfoItemCmPK.itemCd IN :itemCdLst OR ic.itemParentCd IN :itemCdLst) ",
 			"ORDER BY io.disporder");
+	
+	
+	private final static String SEL_ITEM_EVENT = String.join(" ",
+			"SELECT i.ppemtPerInfoItemPK.perInfoItemDefId, i.perInfoCtgId FROM  PpemtPerInfoItem i",
+			"WHERE i.perInfoCtgId IN :perInfoCtgId   AND i.itemCd IN :itemCd");
 
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
@@ -985,10 +989,30 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				.setParameter("itemCd", itemCode)
 				.getSingle().orElse("not itemName");
 	}
-}
 
-class Sortbyroll implements Comparator<Object[]> {
-	public int compare(Object[] a, Object[] b) {
-		return (Integer.parseInt(a[30].toString()) - Integer.parseInt(b[30].toString()));
+	@Override
+	public List<PersonInfoItemDefinition> getAllItemId(List<String> ctgIdLst, List<String> itemCodeLst) {
+		List<PersonInfoItemDefinition> itemIdLst = this.queryProxy().query(SEL_ITEM_EVENT, Object[].class)
+				.setParameter("perInfoCtgId", ctgIdLst)
+				.setParameter("itemCd", itemCodeLst)
+				.getList(c -> toDomain(c));
+		return itemIdLst;
+	}
+	
+
+	@Override
+	public void updateAbolitionItem(List<PersonInfoItemDefinition>itemLst){
+		itemLst.stream().forEach(c ->{
+			Optional<PpemtPerInfoItem> entityOpt = this.queryProxy()
+					.find(new PpemtPerInfoItemPK(c.getPerInfoItemDefId()), PpemtPerInfoItem.class);
+			if (entityOpt.isPresent()) {
+				PpemtPerInfoItem entity = entityOpt.get();
+				if (c.getIsAbolition() != null) {
+					entity.abolitionAtr = c.getIsAbolition().value;
+				}
+				this.commandProxy().update(entity);
+			}
+		});
 	}
 }
+
