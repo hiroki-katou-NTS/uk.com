@@ -115,4 +115,15 @@ public class AttendanceRecordExportSettingWebService {
 	public List<String> getSealStamp(@PathParam("code") long code) {
 		return attendanceEcExpSetFinder.getSealStamp(code);
 	}
+	
+	/**
+	 * Gets the permission.
+	 *
+	 * @return the permission
+	 */
+	@POST
+	@Path("getPermission")
+	public Boolean getPermission(){
+		return attendanceEcExpSetFinder.havePermission();
+	}
 }

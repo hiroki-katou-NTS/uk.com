@@ -180,7 +180,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                         item.exportAtr = attendanceItem.exportAtr;
                         item.attendanceId = attendanceItem.attendanceId;
                         item.attendanceItemName = attendanceItem.attendanceItemName;
-
+                        item.attribute = attendanceItem.attribute;
                         self.updateAttendanceRecItemList(item);
                     }
 
@@ -238,7 +238,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
 
             if (!attendanceRecExpSetCode) {
                 self.attendanceCode('1');
-                self.attendanceName('Default Name');
+                self.attendanceName('デフォルト名');
             }
             else {
                 self.attendanceCode(attendanceRecExpSetCode);
@@ -332,7 +332,8 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             position: number;
             exportAtr: number;
             attendanceId: any;
-            constructor(attendanceItemName: string, layoutCode: number, layoutName: string, indexColumn: number, position: number, exportAtr: number, attendanceId: any) {
+            attribute: number;
+            constructor(attendanceItemName: string, layoutCode: number, layoutName: string, indexColumn: number, position: number, exportAtr: number, attendanceId: any, attribute: number) {
                 this.attendanceItemName = attendanceItemName;
                 this.layoutCode = layoutCode;
                 this.layoutName = layoutName;
@@ -340,6 +341,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                 this.position = position;
                 this.exportAtr = exportAtr;
                 this.attendanceId = attendanceId;
+                this.attribute = attribute;
             }
 
         }

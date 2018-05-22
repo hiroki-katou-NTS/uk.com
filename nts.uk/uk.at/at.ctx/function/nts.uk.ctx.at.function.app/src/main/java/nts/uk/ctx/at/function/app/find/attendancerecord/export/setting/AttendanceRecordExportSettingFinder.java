@@ -9,6 +9,8 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingRepository;
+import nts.uk.ctx.at.function.dom.holidaysremaining.PermissionOfEmploymentForm;
+import nts.uk.ctx.at.function.dom.holidaysremaining.repository.PermissionOfEmploymentFormRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -20,6 +22,9 @@ public class AttendanceRecordExportSettingFinder {
 	/** The attendance rec exp set repo. */
 	@Inject
 	AttendanceRecordExportSettingRepository attendanceRecExpSetRepo;
+
+	@Inject
+	PermissionOfEmploymentFormRepository permissionRepo;
 
 	/**
 	 * Gets the all attendance record export setting.
@@ -73,15 +78,34 @@ public class AttendanceRecordExportSettingFinder {
 		return new AttendanceRecordExportSettingDto();
 
 	}
-	
+
 	/**
 	 * Gets the seal stamp.
 	 *
-	 * @param code the code
+	 * @param code
+	 *            the code
 	 * @return the seal stamp
 	 */
-	public List<String> getSealStamp(long code){
+	public List<String> getSealStamp(long code) {
 		String companyId = AppContexts.user().companyId();
 		return attendanceRecExpSetRepo.getSealStamp(companyId, code);
+	}
+
+	/**
+	 * Have permission.
+	 *
+	 * @return the boolean
+	 */
+	public Boolean havePermission() {
+		String companyId = AppContexts.user().companyId();
+		String roleId = AppContexts.user().roles().forAttendance();
+
+		Optional<PermissionOfEmploymentForm> optionalPermission = permissionRepo.find(companyId, roleId, 3);
+
+		if (optionalPermission.isPresent()) {
+			PermissionOfEmploymentForm permission = optionalPermission.get();
+			return permission.isAvailable();
+		}
+		return false;
 	}
 }
