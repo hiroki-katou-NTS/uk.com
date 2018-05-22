@@ -405,4 +405,79 @@ public class CategoryFieldMt extends AggregateRoot {
 	 */
 	private String parentfield10;
 
+	/**
+	 * 子側結合キー1
+	 */
+	private String fieldChild1;
+
+	/**
+	 * 子側結合キー2
+	 */
+	private String fieldChild2;
+
+	/**
+	 * 子側結合キー3
+	 */
+	private String fieldChild3;
+
+	/**
+	 * 子側結合キー4
+	 */
+	private String fieldChild4;
+
+	/**
+	 * 子側結合キー5
+	 */
+	private String fieldChild5;
+
+	/**
+	 * 子側結合キー6
+	 */
+	private String fieldChild6;
+
+	/**
+	 * 子側結合キー7
+	 */
+	private String fieldChild7;
+
+	/**
+	 * 子側結合キー8
+	 */
+	private String fieldChild8;
+
+	/**
+	 * 子側結合キー9
+	 */
+	private String fieldChild9;
+
+	/**
+	 * 子側結合キー10
+	 */
+	private String fieldChild10;
+
+	/**
+	 * 付加取得項目_会社ID
+	 */
+	private String fieldAcqCid;
+
+	/**
+	 * 付加取得項目_日付
+	 */
+	private String fieldAcqDateTime;
+
+	/**
+	 * 付加取得項目_社員ID
+	 */
+	private String fieldAcqEmployeeId;
+
+	/**
+	 * 付加取得項目_終了日付
+	 */
+	private String fieldAcqEndDate;
+
+	/**
+	 * 付加取得項目_開始日付
+	 */
+	private String fieldAcqStartDate;
+
 }
