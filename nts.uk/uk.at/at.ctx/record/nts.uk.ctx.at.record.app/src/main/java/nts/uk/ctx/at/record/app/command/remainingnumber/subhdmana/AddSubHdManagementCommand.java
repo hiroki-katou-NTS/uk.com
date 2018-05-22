@@ -66,4 +66,5 @@ public class AddSubHdManagementCommand {
 	// Domain LeaveComDayOffManagement
 	private Double dayRemaining;
 
+	private int closureId;
 }

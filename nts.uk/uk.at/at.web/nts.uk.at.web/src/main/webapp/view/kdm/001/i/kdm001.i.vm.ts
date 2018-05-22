@@ -1,5 +1,6 @@
 module nts.uk.at.view.kdm001.i.viewmodel {
     import model = kdm001.share.model;
+    import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel {
         employeeId: KnockoutObservable<string> = ko.observable('');
         workCode: KnockoutObservable<string> = ko.observable('');
@@ -22,18 +23,26 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         itemListOptionSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
         selectedCodeOptionSubHoliday: KnockoutObservable<string> = ko.observable('');
         isOptionSubHolidayEnable: KnockoutObservable<boolean> = ko.observable(false);
-
+        closureId: KnockoutObservable<number> = ko.observable(0);
         constructor() {
             let self = this;
             self.initScreen();
         }
 
         initScreen(): void {
-            let self = this;
-            self.workCode("100");
-            self.workplaceName("営業部");
-            self.employeeCode("A0000001");
-            self.employeeName("日通　太郎");
+            block.invisible();
+            let self = this; 
+            info = getShared("KDM001_I_PARAMS");
+            if (info) {
+                self.workCode(info.selectedEmployee.workCode);
+                self.workplaceName(info.selectedEmployee.workName);
+                self.employeeId(info.selectedEmployee.employeeId);
+                self.employeeCode(info.selectedEmployee.employeeCode);
+                self.employeeName(info.selectedEmployee.employeeName);
+                self.closureId(info.closureEmploy.closureId);
+            }
+            block.clear();
+
             self.dayRemaining(0.5);
             self.checkedSplit.subscribe((v) => {
                 if (v == true) {
@@ -47,7 +56,9 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         /**
          * closeDialog
          */
+
         public submitData() {
+            block.invisible();
             let self = this;
             let data = {
                 employeeId: "ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570",
@@ -61,7 +72,8 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                 checkedSplit: self.checkedSplit(),
                 dateOptionSubHoliday: moment.utc(self.dateOptionSubHoliday(), 'YYYY/MM/DD').toISOString(),
                 selectedCodeOptionSubHoliday: self.selectedCodeOptionSubHoliday(),
-                dayRemaining: self.dayRemaining()
+                dayRemaining: self.dayRemaining(),
+                closureId: self.closureId()
             };
 
             console.log(data);
@@ -70,6 +82,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             }).fail(function(res: any) {
 
             });
+            block.clear();
         }
 
         public closeDialog() {

@@ -33,10 +33,7 @@ module nts.uk.at.view.kdm001.m.viewmodel {
                 self.employeeId(info.selectedEmployee.employeeId);
                 self.employeeCode(info.selectedEmployee.employeeCode);
                 self.employeeName(info.selectedEmployee.employeeName);
-                self.comDayOffID(info.id);
-                self.dayOffDate(info.value.substituedHolidayDate);
-                self.requireDays(info.value.substituteHolidayHours);
-                self.remainDays(info.value.remainHolidayHours);
+                
             }
             block.clear();
         }

@@ -113,7 +113,7 @@ public class AddSubHdManagementService {
 		List<String> errorList = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
 		// Todo : get closureId, useAtr from screen B
-		int closureId = 0;
+		int closureId = subHdManagementData.getClosureId();
 		UseClassification useAtr = null;
 		YearMonth processingYm = GeneralDate.today().yearMonth();
 		// ドメインモデル「締め」を読み込む
@@ -140,7 +140,7 @@ public class AddSubHdManagementService {
 		if (subHdManagementData.getCheckedSubHoliday() == true) {
 			// アルゴリズム「代休（年月日）チェック処理」を実行する (Thực hiện thuât toán 「代休（年月日）チェック処理」)
 			errorList.addAll(checkDateHoliday(Optional.of(subHdManagementData.getDateHoliday()),
-					subHdManagementData.getDateSubHoliday(), closure));
+					subHdManagementData.getDateSubHoliday(), closure, closureId));
 			// ドメインモデル「代休管理データ」を読み込む (đọc domain 「代休管理データ」)
 			String employeeId = subHdManagementData.getEmployeeId();
 			errorList.addAll(checkHoliday(subHdManagementData.getDateHoliday(), closure));
@@ -192,11 +192,11 @@ public class AddSubHdManagementService {
 	 * @return
 	 */
 	public List<String> checkDateHoliday(Optional<GeneralDate> holidayDate, GeneralDate subHolidayDate,
-			Optional<Closure> closure) {
+			Optional<Closure> closure, int closureId) {
 		List<String> errorList = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
 		// Todo : get closureId, useAtr from screen B
-		int closureId = 0;
+
 		UseClassification useAtr = null;
 		YearMonth processingYm = GeneralDate.today().yearMonth();
 
