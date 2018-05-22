@@ -163,6 +163,7 @@ module nts.uk.com.view.kwr002.d {
                 var self = this;
                 //not select yet left element
                 if (self.currentCodeAttendace() == 0 || self.currentCodeAttendace() == undefined) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_1140' });
                     return;
                 }
                 //check dataSelected
