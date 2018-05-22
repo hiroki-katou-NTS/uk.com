@@ -27,6 +27,9 @@ public class SacmtRoleByRoleTies extends UkJpaEntity implements Serializable {
 	@Column(name = "WEB_MENU_CD")
 	public String webMenuCd;
 	
+	@Column(name = "CID")
+	public String companyId;
+	
 	@Override
 	protected Object getKey() {
 		return this.roleId;
@@ -43,7 +46,8 @@ public class SacmtRoleByRoleTies extends UkJpaEntity implements Serializable {
 	public RoleByRoleTies toDomain() {
 		return new RoleByRoleTies(
 				this.roleId,
-				new WebMenuCode(this.webMenuCd)
+				new WebMenuCode(this.webMenuCd),
+				this.companyId
 				);
 	}
 

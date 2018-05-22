@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmw006.a.style.css" />
+			<com:scriptfile path="kmw006.a.service.js" />
+			<com:scriptfile path="kmw006.a.vm.js" />
+			<com:scriptfile path="kmw006.a.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div style="margin: 40px">
+				<table id="A1_1">
+					<colgroup>
+						<col width="200px"/>
+						<col width="550px"/>						
+					</colgroup>
+					<tbody>
+						<tr>
+							<th class="ui-widget-header">#{i18n.getText('KMW006_2')}</th>
+							<td>
+								<div tabindex="1" id="combo-box" style="vertical-align: middle" data-bind="ntsComboBox: {
+									options: itemList,
+									optionsValue: 'code',
+									visibleItemsCount: 5,
+									value: selectedClosureId,
+									optionsText: 'name',
+									option: {width: '90px'},
+									columns: [
+										{ prop: 'name', length: 10 }
+									]
+								}"></div>
+								<span class="label" style="padding-left: 30px" data-bind="text: dispSelectedCurrentMonth"></span>
+								<span class="label" style="padding-left: 30px" data-bind="text: dispSelectedPeriod"></span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<table id="A1_10">
+					<colgroup>
+						<col width="200px"/>
+						<col width="550px"/>						
+					</colgroup>
+					<tbody>
+						<tr>
+							<th class="ui-widget-header">#{i18n.getText('KMW006_6')}</th>
+							<td>
+								<span class="label" style="width: 430px" data-bind="text: dispLatestClosure"></span>
+								<button tabindex="3" data-bind="click: openKmw006cDialog">#{i18n.getText('KMW006_8')}</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<table id="A1_14" data-bind="visible: displayClosurePeriod">
+					<colgroup>
+						<col width="200px"/>
+						<col width="550px"/>
+					</colgroup>
+					<tbody>
+						<tr>
+							<th class="ui-widget-header" rowspan="5">#{i18n.getText('KMW006_57')}</th>
+							<td>
+								<span class="label" style="width: 120px" data-bind="text: dispClosureInfo1"></span>
+								<span class="label" style="width: 120px" data-bind="text: dispClosureCurrentMonth1"></span>
+								<span class="label" data-bind="text: dispClosurePeriod1"></span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span class="label" style="width: 120px" data-bind="text: dispClosureInfo2"></span>
+								<span class="label" style="width: 120px" data-bind="text: dispClosureCurrentMonth2"></span>
+								<span class="label" data-bind="text: dispClosurePeriod2"></span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span class="label" style="width: 120px" data-bind="text: dispClosureInfo3"></span>
+								<span class="label" style="width: 120px" data-bind="text: dispClosureCurrentMonth3"></span>
+								<span class="label" data-bind="text: dispClosurePeriod3"></span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span class="label" style="width: 120px" data-bind="text: dispClosureInfo4"></span>
+								<span class="label" style="width: 120px" data-bind="text: dispClosureCurrentMonth4"></span>
+								<span class="label" data-bind="text: dispClosurePeriod4"></span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span class="label" style="width: 120px" data-bind="text: dispClosureInfo5"></span>
+								<span class="label" style="width: 120px" data-bind="text: dispClosureCurrentMonth5"></span>
+								<span class="label" data-bind="text: dispClosurePeriod5"></span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<button id="A1_31" tabindex="4" data-bind="click: executeClick, enable: executable" class="proceed" style="margin-top: 30px; margin-left: 690px">#{i18n.getText('KMW006_1')}</button>
+			</div>			
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

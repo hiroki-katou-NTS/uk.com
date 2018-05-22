@@ -16,12 +16,13 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttdItemDto;
 import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.ErrorAlarmWorkRecordDto;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.AttendanceItemCondition;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.SimpleWorkTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
@@ -99,23 +100,23 @@ public class DailyAttendanceItemFinder {
 		//> ドメインモデル「任意項目」を取得する 
 		
 		// find list optional item by attribute
-        Map<Integer, Integer> filteredOptionItemByAtr = this.optItemRepo
+        List<Integer> filteredOptionItemByAtr = this.optItemRepo
                 .findByAtr(AppContexts.user().companyId(), convertToOptionalItemAtr(checkItem)).stream()
-                .filter(ii -> ii.isUsed())
-                .collect(Collectors.toMap(i -> Integer.parseInt(i.getOptionalItemNo().v()), i -> Integer.parseInt(i.getOptionalItemNo().v())));
+                .filter(ii -> ii.isUsed()).map(OptionalItem::getOptionalItemNo).map(OptionalItemNo::v)
+                .collect(Collectors.toList());
 
 		//> ドメインモデル「勤怠項目と枠の紐付け」を取得する
         // return list AttendanceItemLinking after filtered by list optional item.
         int TypeOfAttendanceItemDaily = 1; 
         List<FrameNoAdapterDto> listFrameLinkings = this.frameAdapter.getByAnyItem(TypeOfAttendanceItemDaily).stream()
-                .filter(item -> filteredOptionItemByAtr.containsKey(item.getFrameNo())).collect(Collectors.toList());
+                .filter(item -> filteredOptionItemByAtr.contains(item.getFrameNo())).collect(Collectors.toList());
 
-		Map<Integer, Integer> attdItemLinks = listFrameLinkings.stream()
-				.collect(Collectors.toMap(item -> item.getAttendanceItemId(), item -> item.getAttendanceItemId()));
+		List<Integer> attdItemLinks = listFrameLinkings.stream().map(FrameNoAdapterDto::getAttendanceItemId)
+				.collect(Collectors.toList());
 
 		// get list attendance item filtered by attdItemLinks
 		List<AttdItemDto> filtered = this.findAll().stream()
-				.filter(item -> attdItemLinks.containsKey(item.getAttendanceItemId())).collect(Collectors.toList());
+				.filter(item -> attdItemLinks.contains(item.getAttendanceItemId())).collect(Collectors.toList());
 
 		// merge two list attendance items
 		attdItems.addAll(filtered);

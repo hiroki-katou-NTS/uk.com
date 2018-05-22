@@ -10,8 +10,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import optitem.OptionalItemExport;
 import optitem.OptionalItemPub;
@@ -34,11 +32,9 @@ public class OptionalItemPubImp implements OptionalItemPub {
 	 */
 	@Override
 	public List<OptionalItemExport> getOptionalItems(String companyId, List<Integer> optionalItemNos) {
-		val convertedNos = optionalItemNos.stream().map(no -> new OptionalItemNo(no.toString()).v())
-				.collect(Collectors.toList());
-		return this.optItemRepo.findByListNos(companyId, convertedNos).stream()
+		return this.optItemRepo.findByListNos(companyId, optionalItemNos).stream()
 				.map(optItem -> OptionalItemExport.builder().optionalItemName(optItem.getOptionalItemName().v())
-						.optionalItemNo(Integer.parseInt(optItem.getOptionalItemNo().v())).build())
+						.optionalItemNo(optItem.getOptionalItemNo().v()).build())
 				.collect(Collectors.toList());
 	}
 

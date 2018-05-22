@@ -85,7 +85,7 @@ public class CheckShortageFlex {
 			}
 		}
 		// TODO 対象期間の日の承認が済んでいるかチェックする
-		Optional<ApprovalDayComplete> approvalOpt = checkApprovalDayComplete.checkApprovalDayComplete(employeeId, date);
+		Optional<ApprovalDayComplete> approvalOpt = checkApprovalDayComplete.checkApprovalDayComplete(employeeId, datePeriod);
 		if (approvalOpt.isPresent() && !approvalOpt.get().isApproved()) {
 			/// TODO 対象日の本人確認が済んでいるかチェックする
 			return checkIndentityDayConfirm.checkIndentityDay(employeeId, approvalOpt.get().getDate());

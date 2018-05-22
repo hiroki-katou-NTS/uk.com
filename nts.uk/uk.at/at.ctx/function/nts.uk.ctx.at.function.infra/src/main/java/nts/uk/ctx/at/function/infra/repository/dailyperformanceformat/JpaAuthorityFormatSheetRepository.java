@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.infra.repository.dailyperformanceformat;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -10,6 +11,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFormatSheet;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatCode;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatSheetRepository;
+import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityDailyItem;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityFormSheet;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityFormSheetPK;
 
@@ -59,6 +61,9 @@ public class JpaAuthorityFormatSheetRepository extends JpaRepository implements 
 		builderString.append("AND a.kfnmtAuthorityFormSheetPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
 		builderString.append("AND a.kfnmtAuthorityFormSheetPK.sheetNo = :sheetNo ");
 		IS_EXIST_DATA = builderString.toString();
+		
+		
+		
 	}
 
 	@Override
@@ -116,5 +121,25 @@ public class JpaAuthorityFormatSheetRepository extends JpaRepository implements 
 		entity.sheetName = authorityFormatSheet.getSheetName();
 
 		return entity;
+	}
+	
+	private static final String FIND_BY_SHEET = "SELECT c FROM KfnmtAuthorityDailyItem c "
+			+ " WHERE c.kfnmtAuthorityDailyItemPK.companyId = :companyId "
+			+ " AND c.kfnmtAuthorityDailyItemPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode "
+			+ " AND c.kfnmtAuthorityDailyItemPK.sheetNo = :sheetNo ";
+
+	@Override
+	public void deleteBySheetNo(String companyId, String dailyPerformanceFormatCode, BigDecimal sheetNo) {
+		this.commandProxy().remove(KfnmtAuthorityFormSheet.class,new KfnmtAuthorityFormSheetPK(
+					companyId,dailyPerformanceFormatCode,sheetNo
+				));
+		List<KfnmtAuthorityDailyItem> listData = this.queryProxy().query(FIND_BY_SHEET,KfnmtAuthorityDailyItem.class)
+				.setParameter("companyId", companyId)
+				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode)
+				.setParameter("sheetNo", sheetNo)
+				.getList();
+		this.commandProxy().removeAll(listData);
+		
+		
 	}
 }

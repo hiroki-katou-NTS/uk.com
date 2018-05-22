@@ -1,13 +1,17 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -26,6 +30,8 @@ public class SaveChangeAbsDateCommandHandler extends CommandHandlerWithResult<Sa
 	private ApplicationApprovalService_New appImp;
 	@Inject
 	private AbsenceLeaveAppRepository absRepo;
+	@Inject
+	private ApplicationRepository_New appRepo;
 
 	String companyID, appReason, employeeID;
 	ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
@@ -41,6 +47,9 @@ public class SaveChangeAbsDateCommandHandler extends CommandHandlerWithResult<Sa
 		// アルゴリズム「登録前エラーチェック（振休日変更）」を実行する
 		errorCheckBeforeReg();
 
+		// アルゴリズム「詳細画面申請データを取得する」を実行する
+		getDetailApp(absCmd.getAppID());
+
 		// アルゴリズム「振休振出申請の取消」を実行する
 		cancelOldAbsApp();
 		// アルゴリズム「登録前共通処理（新規）」を実行する
@@ -52,6 +61,13 @@ public class SaveChangeAbsDateCommandHandler extends CommandHandlerWithResult<Sa
 
 		return commonApp.getAppID();
 
+	}
+
+	private void getDetailApp(String appID) {
+		Optional<Application_New> app = appRepo.findByID(companyID, appID);
+		if (!app.isPresent()) {
+			throw new BusinessException("Msg_198");
+		}
 	}
 
 	private Application_New createNewCommonApp() {
@@ -81,7 +97,7 @@ public class SaveChangeAbsDateCommandHandler extends CommandHandlerWithResult<Sa
 		// アルゴリズム「事前条件チェック」を実行する
 		appReason = saveHanler.preconditionCheck(command, companyID, appType, ApplicationCombination.Abs.value);
 		// アルゴリズム「同日申請存在チェック」を実行する
-		saveHanler.dateCheck(command);
+		saveHanler.dateCheck(employeeID, null, absCmd.getAppDate(), command);
 
 	}
 

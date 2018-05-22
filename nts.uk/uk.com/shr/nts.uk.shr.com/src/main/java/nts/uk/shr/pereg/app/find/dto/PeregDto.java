@@ -19,25 +19,19 @@ public class PeregDto {
 	 * class of DTO
 	 */
 	private Class<?> dtoClass;
-	
-	private DataClassification dataType;
 
-	private List<PersonOptionalDto> perOptionalData;
+	private List<OptionalItemDataDto> optionalItemData;
 
-	private List<EmpOptionalDto> empOptionalData;
-	
-	public PeregDto(PeregDomainDto dto, Class<?> dtoClass, DataClassification dataType){
+	public PeregDto(PeregDomainDto dto, Class<?> dtoClass) {
 		this.domainDto = dto;
 		this.dtoClass = dtoClass;
-		this.dataType = dataType;
 	}
 
-	public PeregDto(PeregDomainDto dto, Class<?> dtoClass, List<PersonOptionalDto> perOptionalData,
-			List<EmpOptionalDto> empOptionalDatas) {
-		this.domainDto = dto;
+	public PeregDto(PeregDomainDto domainDto, Class<?> dtoClass, List<OptionalItemDataDto> optionalItemData) {
+		super();
+		this.domainDto = domainDto;
 		this.dtoClass = dtoClass;
-		this.perOptionalData = perOptionalData;
-		this.empOptionalData = empOptionalDatas;
+		this.optionalItemData = optionalItemData;
 	}
-	
+
 }

@@ -3,6 +3,8 @@ package nts.uk.screen.at.app.dailyperformance.correction.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.month.DPMonthParent;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.BreakTimeDay;
 
 @Data
@@ -11,16 +13,17 @@ import nts.uk.screen.at.app.dailyperformance.correction.flex.BreakTimeDay;
 public class FlexShortage {
 
 	// フレックス不足時間
-	private String value18;
-	private String value21;
-	private String value189;
-	private String value190;
-	private String value191;
+	private ItemValue value18;
+	private ItemValue value21;
+	private ItemValue value189;
+	private ItemValue value190;
+	private ItemValue value191;
 	private boolean canflex;
 	private BreakTimeDay breakTimeDay;
 	private boolean showFlex;
+	private DPMonthParent monthParent;
 
-	public FlexShortage(String value18, String value21, String value189, String value190, String value191) {
+	public FlexShortage(ItemValue value18, ItemValue value21, ItemValue value189, ItemValue value190, ItemValue value191) {
 		this.value18 = value18;
 		this.value21 = value21;
 		this.value189 = value189;
@@ -40,6 +43,11 @@ public class FlexShortage {
 	
 	public FlexShortage createShowFlex(boolean flex){
 		this.showFlex = flex;
+		return this;
+	}
+	
+	public FlexShortage createMonthParent(DPMonthParent dPMonthParent){
+		this.monthParent = dPMonthParent;
 		return this;
 	}
 }

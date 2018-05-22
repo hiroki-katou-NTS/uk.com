@@ -78,6 +78,9 @@ public class GetDataAppCfDetailFinder {
 		}
 		String employmentCD = empHistImport.getEmploymentCode();
 		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(companyID, employmentCD);
+		if(!closureEmployment.isPresent()){
+			throw new BusinessException("Msg_1134");
+		}
 		Optional<ApplicationDeadline> applicationDeadline = applicationDeadlineRepository.getDeadlineByClosureId(companyID, closureEmployment.get().getClosureId());
 		ApplicationDeadline appDeadline = applicationDeadline.get();
 		//申請種類別設定 - 受付制限設定

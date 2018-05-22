@@ -107,14 +107,16 @@ public class ReflectShortWorkingTimeDomainServiceimpl implements ReflectShortWor
 			TimeLeavingWork timeLeavingWork = timeLeavingWorks.get(i);
 			if (timeLeavingWork.getAttendanceStamp() != null && timeLeavingWork.getAttendanceStamp().isPresent()
 					&& timeLeavingWork.getAttendanceStamp().get().getActualStamp() != null
-					&& timeLeavingWork.getAttendanceStamp().get().getActualStamp().isPresent()) {
+					&& timeLeavingWork.getAttendanceStamp().get().getActualStamp().isPresent()
+					&& timeLeavingWork.getAttendanceStamp().get().getActualStamp().get().getTimeWithDay() != null) {
 				checkReflectWorkInfoOfDailyPerformance = this.reflectWorkInfoOfDailyPerformance(companyId, date,
 						employeeId, WorkInfo);
 				break;
 			}
 			if (timeLeavingWork.getLeaveStamp() != null && timeLeavingWork.getLeaveStamp().isPresent()
 					&& timeLeavingWork.getLeaveStamp().get().getActualStamp() != null
-					&& timeLeavingWork.getLeaveStamp().get().getActualStamp().isPresent()) {
+					&& timeLeavingWork.getLeaveStamp().get().getActualStamp().isPresent()
+					&& timeLeavingWork.getLeaveStamp().get().getActualStamp().get().getTimeWithDay() != null) {
 				checkReflectWorkInfoOfDailyPerformance = this.reflectWorkInfoOfDailyPerformance(companyId, date,
 						employeeId, WorkInfo);
 				break;

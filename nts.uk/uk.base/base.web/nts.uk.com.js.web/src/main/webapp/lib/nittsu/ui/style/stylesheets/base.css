@@ -4407,6 +4407,14 @@ button.nts-switch-button[disabled]:hover {
   background-color: #FAD7A0;
 }
 
+.extable div.target-edited, .extable td.target-edited {
+	background-color: #94B7FE;
+}
+
+.extable div.other-edited, .extable td.other-edited {
+	background-color: #CEE6FF;
+}
+
 /* line 21, ../sass/components/_extable.scss */
 .extable div.xhidden, .extable td.xhidden {
   background-color: #CCC;

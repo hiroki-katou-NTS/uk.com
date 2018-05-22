@@ -1,0 +1,217 @@
+"src/main/webapp/view/kmw/003/a/kmw003.a.style.css"#function-content {
+	width: 1200px;
+}
+
+#dislayFormatLbl, #btnComfirmAttendance, #btnVacationRemaining,
+	#btnExtraction {
+	vertical-align: text-bottom;
+}
+#multi-archieve-message{
+	width:250px;
+	margin-left: 195px;
+}
+#btnVacationRemaining {
+	margin-left: 50px;
+}
+
+#dislayFormatLbl {
+	margin-left: 20px;
+}
+
+#right-content {
+	margin-left: 80px;
+	width: 1200px;
+}
+
+#cbListDate {
+	margin-top: 10px;
+}
+
+#cbListDate {
+	display: none;
+}
+
+#btn-signAll {
+	margin: 3px 0 0 368px;
+}
+#btn-unSignAll {
+	margin: 3px 0 0 20px;
+}
+#btn-saveColumnWidth {
+	/* float: right; */
+	margin: 3px 0 0 30px;
+}
+
+#btn-legend {
+	/* float: left; */
+	margin-top: 3px;
+	margin-left: 80px;
+}
+
+.grid-container {
+	margin: 15px 0 0 0px;
+    margin-top: -36px;
+    float: left;
+}
+
+.setting-container {
+	display: inline-block;
+	margin: 3px ;
+	/* position: relative; */
+	margin-left: 30px;
+}
+
+#setting-content {
+	height: 125px;
+	width: 240px;
+	border: 1px solid gray;
+	border-radius: 5px;
+	position: absolute;
+	z-index: 2;
+	background-color: white;
+	margin-left: 762px;
+    margin-top: 124px;
+	padding: 15px;
+	visibility: hidden;
+	top: -9999px;
+	left: -9999px;
+}
+
+#cbCursorMoveDirection {
+	width: 20px;
+	min-width: 65px;
+	vertical-align: middle;
+	margin-bottom: 10px;
+}
+
+.vacationRemaining-container {
+	display: inline-block;
+	position: relative;
+}
+
+#vacationRemaining-content {
+	height: 68px;
+	width: 340px;
+	border: 1px solid gray;
+	border-radius: 5px;
+	position: absolute;
+	z-index: 2;
+	background-color: white;
+	margin-left: -50px;
+	margin-top: 34px;
+	padding: 15px;
+	visibility: hidden;
+	top: -9999px;
+	left: -9999px;
+}
+
+#vacationRemaining-content button {
+	width: 110px;
+}
+
+.nts-legendbutton-panel {
+	z-index: 2 !IMPORTANT;
+}
+
+#tooltip {
+    display: none;
+    width: 130px;
+    cursor: pointer;
+    background-color:  #ffffdd;
+    text-align: left;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    left: 5px;
+    top: 5px;
+}
+
+#tooltip::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent #ffffdd transparent transparent;
+}
+#fixed-table .ui-widget-header{
+	background-color: #CFF1A5;
+	border: 1px solid #CCC;
+	text-align: center;
+	height: 29px;
+	width: 50px;
+}
+#fixed-table .ui-widget-body{
+	border: 1px solid #CCC;
+	text-align: right;
+    height: 29px;
+}
+/* #fixed-table .ui-widget-body .text-holiday{ 
+	margin-right: 10px;
+} */
+#fixed-table {
+	border: 2px solid #CCC;
+	text-align: center;
+	padding: 0 2px;
+	/* width: 400px; */
+}
+#numberHoliday {
+	/* margin-left: 5px;
+	height: 80px;
+	margin-top: 4px; */
+	float: right;
+	margin-left: 120px;
+	}
+#emp-component{
+	margin-top: -33px;
+	margin-left: -10px;
+}
+.ui-iggrid .ui-iggrid-headercaption, .ui-iggrid .ui-iggrid-header, .ui-iggrid .ui-iggrid-toolbar {
+    background-color: white;
+    border-color: white;
+}
+#content-grid{
+    position: absolute;
+    top: 93px;
+}
+#content-grid-not{
+/* 	height: 20px ;
+	position: relative;
+	bottom: -30px;
+	margin-right: 300px; */
+	margin-top: -3px;
+}
+.ui-iggrid-results{
+	background-color: #e9e9e9;
+    bottom: -9px;
+    position: relative;
+    right: -7px;
+}
+.nts-grid-wrapper table tr td.ui-state-hover, .nts-grid-wrapper table tr.ui-ig-altrecord td.ui-state-hover,  .nts-grid  tr.ui-ig-altrecord td.ui-state-hover{
+	background-color: #f5f5dc ;
+}
+#right-content {
+    margin-left: 121px;
+     width: 1400px !IMPORTANT;
+}
+.nts-grid-sheet-buttons{
+/* 	margin-top:32px; */
+}
+.right-align {
+  text-align: right;
+}
+.center-align {
+  text-align: center !important;
+}
+.ui-iggrid table tr th.ui-widget-header, .ui-iggrid table tr.ui-state-focus th.ui-widget-header, .ui-iggrid table tr.ui-ig-altrecord.ui-state-focus th.ui-widget-header {
+    text-align: center;
+}
+/* .nts-grid  tr.ui-ig-altrecord td.ui-state-active{
+	background-color: #007fff !IMPORTANT;
+} */
+
+/* #contents-area, #function-content {width: 1280px;} */
+#left-content{width: 121px; float: left;}

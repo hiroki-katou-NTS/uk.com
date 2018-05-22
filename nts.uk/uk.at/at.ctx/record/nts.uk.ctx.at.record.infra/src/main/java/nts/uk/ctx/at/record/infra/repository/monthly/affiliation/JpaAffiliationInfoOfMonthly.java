@@ -1,15 +1,20 @@
 package nts.uk.ctx.at.record.infra.repository.monthly.affiliation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthlyRepository;
+import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.affiliation.KrcdtMonAffiliation;
 import nts.uk.ctx.at.record.infra.entity.monthly.affiliation.KrcdtMonAffiliationPK;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
@@ -26,6 +31,13 @@ public class JpaAffiliationInfoOfMonthly extends JpaRepository implements Affili
 			+ "WHERE a.PK.employeeId = :employeeId "
 			+ "AND a.PK.yearMonth = :yearMonth ";
 
+	private static final String FIND_BY_EMPLOYEES = "SELECT a FROM KrcdtMonAffiliation a "
+			+ "WHERE a.PK.employeeId IN :employeeIds "
+			+ "AND a.PK.yearMonth = :yearMonth "
+			+ "AND a.PK.closureId = :closureId "
+			+ "AND a.PK.closureDay = :closureDay "
+			+ "AND a.PK.isLastDay = :isLastDay ";
+	
 	private static final String DELETE_BY_SID_AND_YEAR_MONTH = "DELETE FROM KrcdtMonAffiliation a "
 			+ "WHERE a.PK.employeeId = :employeeId "
 			+ "AND a.PK.yearMonth = :yearMonth ";
@@ -54,6 +66,24 @@ public class JpaAffiliationInfoOfMonthly extends JpaRepository implements Affili
 				.setParameter("employeeId", employeeId)
 				.setParameter("yearMonth", yearMonth.v())
 				.getList(c -> c.toDomain());
+	}
+	
+	/** 検索　（社員リスト） */
+	@Override
+	public List<AffiliationInfoOfMonthly> findByEmployees(List<String> employeeIds, YearMonth yearMonth, ClosureId closureId,
+			ClosureDate closureDate) {
+		
+		List<AffiliationInfoOfMonthly> results = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			results.addAll(this.queryProxy().query(FIND_BY_EMPLOYEES, KrcdtMonAffiliation.class)
+					.setParameter("employeeIds", splitData)
+					.setParameter("yearMonth", yearMonth.v())
+					.setParameter("closureId", closureId.value)
+					.setParameter("closureDay", closureDate.getClosureDay().v())
+					.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
+					.getList(c -> c.toDomain()));
+		});
+		return results;
 	}
 	
 	/** 登録および更新 */

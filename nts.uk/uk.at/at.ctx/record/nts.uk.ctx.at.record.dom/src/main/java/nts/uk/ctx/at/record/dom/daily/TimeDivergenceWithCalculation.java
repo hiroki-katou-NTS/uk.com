@@ -44,6 +44,11 @@ public class TimeDivergenceWithCalculation {
 		
 	}
 	
+	public static TimeDivergenceWithCalculation emptyTime() {
+		return TimeDivergenceWithCalculation.sameTime(null);
+		
+	}
+	
 	/**
 	 * 時間を加算する（返り値なし）
 	 * @param time 時間

@@ -18,13 +18,13 @@ public class JpaNursCareLevRemainInfoRepo extends JpaRepository implements NursC
 	public void add(NursingCareLeaveRemainingInfo obj, String cId) {
 		if(obj.getLeaveType() == LeaveType.CHILD_CARE_LEAVE){
 			KrcmtChildCareHDInfo entity = new KrcmtChildCareHDInfo(obj.getSId(), cId, obj.isUseClassification()? 1 : 0, 
-					obj.getUpperlimitSetting().value, obj.getMaxDayForThisFiscalYear().isPresent() ? obj.getMaxDayForThisFiscalYear().get() : null, 
-							obj.getMaxDayForNextFiscalYear().isPresent() ? obj.getMaxDayForNextFiscalYear().get() : null);
+					obj.getUpperlimitSetting().value, obj.getMaxDayForThisFiscalYear().isPresent() ? obj.getMaxDayForThisFiscalYear().get().v() : null, 
+							obj.getMaxDayForNextFiscalYear().isPresent() ? obj.getMaxDayForNextFiscalYear().get().v() : null);
 			this.commandProxy().insert(entity);
 		}else{
 			KrcmtCareHDInfo entity = new KrcmtCareHDInfo(obj.getSId(), cId, obj.isUseClassification()? 1 : 0, 
-					obj.getUpperlimitSetting().value, obj.getMaxDayForThisFiscalYear().isPresent() ? obj.getMaxDayForThisFiscalYear().get() : null, 
-							obj.getMaxDayForNextFiscalYear().isPresent() ? obj.getMaxDayForNextFiscalYear().get() : null);
+					obj.getUpperlimitSetting().value, obj.getMaxDayForThisFiscalYear().isPresent() ? obj.getMaxDayForThisFiscalYear().get().v() : null, 
+							obj.getMaxDayForNextFiscalYear().isPresent() ? obj.getMaxDayForNextFiscalYear().get().v() : null);
 			this.commandProxy().insert(entity);
 		}
 		
@@ -39,8 +39,8 @@ public class JpaNursCareLevRemainInfoRepo extends JpaRepository implements NursC
 				entity.setCId(cId);
 				entity.setUseAtr(obj.isUseClassification()? 1 : 0);
 				entity.setUpperLimSetAtr(obj.getUpperlimitSetting().value);
-				entity.setMaxDayNextFiscalYear(obj.getMaxDayForNextFiscalYear().isPresent() ? obj.getMaxDayForNextFiscalYear().get() : null);
-				entity.setMaxDayThisFiscalYear(obj.getMaxDayForThisFiscalYear().isPresent() ? obj.getMaxDayForThisFiscalYear().get() : null);
+				entity.setMaxDayNextFiscalYear(obj.getMaxDayForNextFiscalYear().isPresent() ? obj.getMaxDayForNextFiscalYear().get().v() : null);
+				entity.setMaxDayThisFiscalYear(obj.getMaxDayForThisFiscalYear().isPresent() ? obj.getMaxDayForThisFiscalYear().get().v() : null);
 				this.commandProxy().update(entity);
 			}
 		}else{
@@ -50,8 +50,8 @@ public class JpaNursCareLevRemainInfoRepo extends JpaRepository implements NursC
 				entity.setCId(cId);
 				entity.setUseAtr(obj.isUseClassification()? 1 : 0);
 				entity.setUpperLimSetAtr(obj.getUpperlimitSetting().value);
-				entity.setMaxDayNextFiscalYear(obj.getMaxDayForNextFiscalYear().isPresent() ? obj.getMaxDayForNextFiscalYear().get() : null);
-				entity.setMaxDayThisFiscalYear(obj.getMaxDayForThisFiscalYear().isPresent() ? obj.getMaxDayForThisFiscalYear().get() : null);
+				entity.setMaxDayNextFiscalYear(obj.getMaxDayForNextFiscalYear().isPresent() ? obj.getMaxDayForNextFiscalYear().get().v() : null);
+				entity.setMaxDayThisFiscalYear(obj.getMaxDayForThisFiscalYear().isPresent() ? obj.getMaxDayForThisFiscalYear().get().v() : null);
 				this.commandProxy().update(entity);
 			}
 		}		
@@ -80,7 +80,7 @@ public class JpaNursCareLevRemainInfoRepo extends JpaRepository implements NursC
 		if(entityOpt.isPresent()){
 			KrcmtChildCareHDInfo entity = entityOpt.get();
 			return Optional.of(NursingCareLeaveRemainingInfo.createChildCareLeaveInfo(entity.getSId(), entity.getUseAtr(), 
-					entity.getUpperLimSetAtr(), Optional.ofNullable(entity.getMaxDayThisFiscalYear()), Optional.ofNullable(entity.getMaxDayNextFiscalYear())));
+					entity.getUpperLimSetAtr(), entity.getMaxDayThisFiscalYear(), entity.getMaxDayNextFiscalYear()));
 		}
 		return Optional.empty();
 	}
@@ -91,7 +91,7 @@ public class JpaNursCareLevRemainInfoRepo extends JpaRepository implements NursC
 		if(entityOpt.isPresent()){
 			KrcmtCareHDInfo entity = entityOpt.get();
 			return Optional.of(NursingCareLeaveRemainingInfo.createChildCareLeaveInfo(entity.getSId(), entity.getUseAtr(), 
-					entity.getUpperLimSetAtr(), Optional.ofNullable(entity.getMaxDayThisFiscalYear()), Optional.ofNullable(entity.getMaxDayNextFiscalYear())));
+					entity.getUpperLimSetAtr(), entity.getMaxDayThisFiscalYear(), entity.getMaxDayNextFiscalYear()));
 		}
 		return Optional.empty();
 	}

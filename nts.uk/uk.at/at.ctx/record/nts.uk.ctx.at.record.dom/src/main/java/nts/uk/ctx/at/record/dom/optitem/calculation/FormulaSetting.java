@@ -94,7 +94,8 @@ public class FormulaSetting extends DomainObject {
 	 * @return true, if is divide by zero
 	 */
 	private boolean isDivideByZero() {
-		if (this.operator == OperatorAtr.DIVIDE && this.rightItem.getInputValue().v() == BigDecimal.ZERO) {
+		if (this.operator == OperatorAtr.DIVIDE && this.rightItem.getInputValue().isPresent()
+				&& this.rightItem.getInputValue().get().v() == BigDecimal.ZERO) {
 			return true;
 		}
 		return false;

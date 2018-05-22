@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.record.infra.repository.optitem.calculation;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
@@ -96,7 +97,7 @@ public class JpaFormulaSetMemento implements FormulaSetMemento {
 		if (this.entity.getCalcAtr() == CalculationAtr.ITEM_SELECTION.value) {
 			// Save to memento
 			JpaItemSelectionSetMemento memento = new JpaItemSelectionSetMemento(this.entity.getKrcmtOptItemFormulaPK());
-			setting.getItemSelection().saveToMemento(memento);
+			setting.getItemSelection().get().saveToMemento(memento);
 
 			// Set to entity.
 			this.entity.setKrcmtCalcItemSelections(memento.getItemSelections());
@@ -105,7 +106,7 @@ public class JpaFormulaSetMemento implements FormulaSetMemento {
 			// Save to memento
 			JpaFormulaSettingSetMemento memento = new JpaFormulaSettingSetMemento(
 					this.entity.getKrcmtOptItemFormulaPK());
-			setting.getFormulaSetting().saveToMemento(memento);
+			setting.getFormulaSetting().get().saveToMemento(memento);
 
 			// Set to entity.
 			this.entity.setKrcmtFormulaSetting(memento.getSetting());
@@ -144,13 +145,13 @@ public class JpaFormulaSetMemento implements FormulaSetMemento {
 	 * setMonthlyRounding(nts.uk.ctx.at.record.dom.optitem.calculation.Rounding)
 	 */
 	@Override
-	public void setMonthlyRounding(Rounding rounding) {
+	public void setMonthlyRounding(Optional<Rounding> rounding) {
 
 		KrcmtFormulaRounding monthly = new KrcmtFormulaRounding(this.entity.getKrcmtOptItemFormulaPK(),
 				KrcmtFormulaRoundingPK.MONTHLY_ATR);
 
 		// save to memento
-		rounding.saveToMemento(new JpaRoundingSetMemento(monthly));
+		rounding.ifPresent(item -> item.saveToMemento(new JpaRoundingSetMemento(monthly)));
 
 		// save to entity.
 		this.entity.getKrcmtFormulaRoundings().add(monthly);
@@ -163,13 +164,13 @@ public class JpaFormulaSetMemento implements FormulaSetMemento {
 	 * setDailyRounding(nts.uk.ctx.at.record.dom.optitem.calculation.Rounding)
 	 */
 	@Override
-	public void setDailyRounding(Rounding rounding) {
+	public void setDailyRounding(Optional<Rounding> rounding) {
 
 		KrcmtFormulaRounding daily = new KrcmtFormulaRounding(this.entity.getKrcmtOptItemFormulaPK(),
 				KrcmtFormulaRoundingPK.DAILY_ATR);
 
 		// save to memento
-		rounding.saveToMemento(new JpaRoundingSetMemento(daily));
+		rounding.ifPresent(item -> item.saveToMemento(new JpaRoundingSetMemento(daily)));
 
 		// save to entity.
 		this.entity.getKrcmtFormulaRoundings().add(daily);

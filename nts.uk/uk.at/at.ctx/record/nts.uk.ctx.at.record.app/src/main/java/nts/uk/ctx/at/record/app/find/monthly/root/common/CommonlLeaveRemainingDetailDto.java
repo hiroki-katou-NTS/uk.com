@@ -1,0 +1,57 @@
+package nts.uk.ctx.at.record.app.find.monthly.root.common;
+
+import java.util.Optional;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingDetail;
+import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveRemainingDetail;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
+import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+
+@Data
+/** 年休残明細 */
+@NoArgsConstructor
+@AllArgsConstructor
+public class CommonlLeaveRemainingDetailDto {
+
+	/** 付与日 */
+	@AttendanceItemValue(type = ValueType.DATE)
+	@AttendanceItemLayout(jpPropertyName = "付与日", layout = "A")
+	private GeneralDate grantDate;
+
+	/** 日数 */
+	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemLayout(jpPropertyName = "日数", layout = "B")
+	private double days;
+
+	/** 時間 */
+	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemLayout(jpPropertyName = "時間", layout = "C")
+	private Integer time;
+
+	public static CommonlLeaveRemainingDetailDto from(AnnualLeaveRemainingDetail domain) {
+		return domain == null ? null : new CommonlLeaveRemainingDetailDto(domain.getGrantDate(), domain.getDays().v(),
+						domain.getTime().isPresent() ? domain.getTime().get().valueAsMinutes() : null);
+	}
+
+	public AnnualLeaveRemainingDetail toDomain() {
+		return AnnualLeaveRemainingDetail.of(grantDate, new AnnualLeaveRemainingDayNumber(days),
+				Optional.ofNullable(time == null ? null : new AnnualLeaveRemainingTime(time)));
+	}
+	
+	public static CommonlLeaveRemainingDetailDto from(ReserveLeaveRemainingDetail domain) {
+		return domain == null ? null : new CommonlLeaveRemainingDetailDto(domain.getGrantDate(), domain.getDays().v(),
+						null);
+	}
+
+	public ReserveLeaveRemainingDetail toReserveDomain() {
+		return ReserveLeaveRemainingDetail.of(grantDate, new ReserveLeaveRemainingDayNumber(days));
+	}
+}

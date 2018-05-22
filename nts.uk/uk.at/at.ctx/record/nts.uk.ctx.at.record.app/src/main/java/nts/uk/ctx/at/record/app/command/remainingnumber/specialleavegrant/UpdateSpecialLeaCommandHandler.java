@@ -4,7 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.command.AsyncCommandHandler;
+import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.GrantRemainRegisterType;
@@ -13,7 +13,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class UpdateSpecialLeaCommandHandler extends AsyncCommandHandler<SpecialLeaveRemainCommand> {
+public class UpdateSpecialLeaCommandHandler extends CommandHandler<SpecialLeaveRemainCommand> {
 
 	@Inject
 	private SpecialLeaveGrantRepository repo;

@@ -49,10 +49,6 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 	private AttendanceDaysMonth aggregateDays;
 	/** 回数集計 */
 	//aggregateTimes
-	/** 休暇 */
-	//holiday
-	/** 任意項目 */
-	//anyItem
 
 	/**
 	 * コンストラクタ

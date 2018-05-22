@@ -10,7 +10,7 @@ import javax.ws.rs.core.MediaType;
 
 import nts.uk.ctx.pereg.app.find.initsetting.item.InitValueSetItemFinder;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
-import nts.uk.ctx.pereg.app.find.initsetting.item.findInitItemDto;
+import nts.uk.ctx.pereg.app.find.initsetting.item.FindInitItemDto;
 
 /**
  * @author sonnlb
@@ -25,7 +25,7 @@ public class InitValueSetItemWebService {
 
 	@POST
 	@Path("findInit")
-	public List<SettingItemDto> getAllInitItem(findInitItemDto command) {
+	public List<SettingItemDto> getAllInitItem(FindInitItemDto command) {
 		return this.finder.getAllInitItemByCtgCode(true, command);
 	}
 

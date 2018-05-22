@@ -47,7 +47,7 @@ module nts.uk.ui.menu {
      */
     export function request() {
         $("#logo").on(constants.CLICK, function() {
-//            uk.request.jumpToTopPage();
+            uk.request.jumpToTopPage();
         });
         
         displayUserInfo();
@@ -200,13 +200,27 @@ module nts.uk.ui.menu {
      */
     function getProgram() {
         nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function(pg: any) {
+            let programName = "";
+            let queryString = __viewContext.program.queryString;
+            if (queryString) {
+                let program = _.find(pg, function(p) {
+                    return p.param === queryString;
+                });    
+                
+                if (program) {
+                    programName = program.name;
+                }
+            } else if (programName === "" && pg && pg.length > 0) {
+                programName = pg[0].name;
+            }
+            
             // show program name on title of browser
             ui.viewModelBuilt.add(() => {
-                ui._viewModel.kiban.programName(pg);
+                ui._viewModel.kiban.programName(programName);
             });
             
             let $pgArea = $("#pg-area");
-            $("<div/>").attr("id", "pg-name").text(pg).appendTo($pgArea);
+            $("<div/>").attr("id", "pg-name").text(programName).appendTo($pgArea);
             let $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
             let $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
             $manualBtn.on(constants.CLICK, function() {

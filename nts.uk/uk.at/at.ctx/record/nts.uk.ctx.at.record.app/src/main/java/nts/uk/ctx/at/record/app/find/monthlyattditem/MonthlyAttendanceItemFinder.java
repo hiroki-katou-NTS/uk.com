@@ -22,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.FrameNoAdapterDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -55,12 +56,12 @@ public class MonthlyAttendanceItemFinder {
 
 		if (!CollectionUtil.isEmpty(request.getAnyItemNos())) {
 			// get attendance item linking
-			Map<Integer, Integer> attdItemLinks = this.attdItemLinkingFinder.findByAnyItem(request).stream()
-					.collect(Collectors.toMap(item -> item.getAttendanceItemId(), item -> item.getAttendanceItemId()));
+			List<Integer> attdItemLinks = this.attdItemLinkingFinder.findByAnyItem(request).stream()
+					.map(FrameNoAdapterDto::getAttendanceItemId).collect(Collectors.toList());
 
 			// get list attendance item filtered by attdItemLinks
 			List<AttdItemDto> filtered = this.findAll().stream()
-					.filter(item -> attdItemLinks.containsKey(item.getAttendanceItemId())).collect(Collectors.toList());
+					.filter(item -> attdItemLinks.contains(item.getAttendanceItemId())).collect(Collectors.toList());
 
 			// merge two list attendance items
 			attdItems.addAll(filtered);
@@ -133,6 +134,8 @@ public class MonthlyAttendanceItemFinder {
 		attdItemDto.setAttendanceItemName(dom.getAttendanceName().v());
 		attdItemDto.setDailyAttendanceAtr(dom.getMonthlyAttendanceAtr().value);
 		attdItemDto.setNameLineFeedPosition(dom.getNameLineFeedPosition());
+		attdItemDto.setDisplayNumber(dom.getDisplayNumber());
+		attdItemDto.setUserCanUpdateAtr(dom.getUserCanUpdateAtr().value);
 		return attdItemDto;
 
 	}

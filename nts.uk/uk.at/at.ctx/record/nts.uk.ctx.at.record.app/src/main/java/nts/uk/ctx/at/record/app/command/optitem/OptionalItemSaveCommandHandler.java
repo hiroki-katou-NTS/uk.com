@@ -62,7 +62,7 @@ public class OptionalItemSaveCommandHandler extends CommandHandler<OptionalItemS
 		OptionalItem dom = new OptionalItem(command);
 
 		// Get optional item no
-		String optionalItemNo = command.getOptionalItemNo().v();
+		int optionalItemNo = command.getOptionalItemNo().v();
 
 		// Map to list domain Formula
 		List<Formula> formulas = command.getFormulas().stream().map(item -> {

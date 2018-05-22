@@ -119,7 +119,7 @@ public class PerInfoCategoryFinder {
 
 					if ((pernfoItemDefRep.countPerInfoItemDefInCategory(p.getPersonInfoCategoryId(), companyId) > 0)) {
 						return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
-								p.getCategoryType().value, p.getIsAbolition().value, p.getCategoryParentCode().v(),
+								p.getCategoryType().value, p.getCategoryCode().v(), p.getIsAbolition().value, p.getCategoryParentCode().v(),
 								p.getInitValMasterCls().value, p.getAddItemCls().value);
 					}
 					return null;
@@ -141,7 +141,8 @@ public class PerInfoCategoryFinder {
 
 					if (!lstItemDfInCat.isEmpty()) {
 						return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
-								p.getCategoryType().value, p.getIsAbolition().value, p.getCategoryParentCode().v(),
+								p.getCategoryType().value, p.getCategoryCode().v(), p.getIsAbolition().value,
+								p.getCategoryParentCode().v(),
 								p.getInitValMasterCls() == null ? 1 : p.getInitValMasterCls().value,
 								p.getAddItemCls() == null ? 1 : p.getAddItemCls().value);
 					}
@@ -153,30 +154,29 @@ public class PerInfoCategoryFinder {
 	};
 
 	public PerInfoCtgDataEnumDto getAllPerInfoCtgByCompanyRoot() {
-		 
-		// ログイン者がグループ会社管理者かどうか判定する - Kiểm tra quyền  
-//		String roleId = AppContexts.user().roles().forGroupCompaniesAdmin();
-//		if (roleId == null) {
-//			// false Msg_1103
-//			throw new BusinessException("Msg_1103");
-//		} else {
-			// true
-			List<PersonInfoCategory> categoryList = perInfoCtgRepositoty.getAllPerInfoCategory(
-					AppContexts.user().zeroCompanyIdInContract(), AppContexts.user().contractCode());
 
-			List<PerInfoCtgShowDto> x = categoryList.stream().map(p -> {
-				return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
-						p.getCategoryType().value, p.getIsAbolition().value, p.getCategoryParentCode().v(),
-						p.getInitValMasterCls() == null ? 1 : p.getInitValMasterCls().value,
-						p.getAddItemCls() == null ? 1 : p.getAddItemCls().value);
-			}).collect(Collectors.toList());
+		// ログイン者がグループ会社管理者かどうか判定する - Kiểm tra quyền
+		// String roleId = AppContexts.user().roles().forGroupCompaniesAdmin();
+		// if (roleId == null) {
+		// // false Msg_1103
+		// throw new BusinessException("Msg_1103");
+		// } else {
+		// true
+		List<PersonInfoCategory> categoryList = perInfoCtgRepositoty
+				.getAllPerInfoCategory(AppContexts.user().zeroCompanyIdInContract(), AppContexts.user().contractCode());
 
-			List<EnumConstant> historyTypes = EnumAdaptor.convertToValueNameList(HistoryTypes.class,
-					internationalization);
-			
-			return new PerInfoCtgDataEnumDto(historyTypes, x);
+		List<PerInfoCtgShowDto> x = categoryList.stream().map(p -> {
+			return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
+					p.getCategoryType().value, p.getCategoryCode().v(), p.getIsAbolition().value, p.getCategoryParentCode().v(),
+					p.getInitValMasterCls() == null ? 1 : p.getInitValMasterCls().value,
+					p.getAddItemCls() == null ? 1 : p.getAddItemCls().value);
+		}).collect(Collectors.toList());
 
-//		}
+		List<EnumConstant> historyTypes = EnumAdaptor.convertToValueNameList(HistoryTypes.class, internationalization);
+
+		return new PerInfoCtgDataEnumDto(historyTypes, x);
+
+		// }
 	};
 
 	public PerInfoCtgWithItemsNameDto getPerInfoCtgWithItemsName(String perInfoCtgId) {
