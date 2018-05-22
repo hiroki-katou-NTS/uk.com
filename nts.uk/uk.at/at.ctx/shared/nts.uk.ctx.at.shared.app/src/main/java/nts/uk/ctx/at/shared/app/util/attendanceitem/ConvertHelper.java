@@ -30,18 +30,24 @@ public class ConvertHelper {
 		return EnumAdaptor.valueOf(value, enumClass);
 	}
 	
-	public static List<YearMonth> getYearMonthAvailableFrom(DatePeriod range){
+	public static List<YearMonth> yearMonthsBetween(DatePeriod range){
 		List<YearMonth> result = new ArrayList<>();
-		GeneralDate start = range.start();
-		while (start.beforeOrEquals(range.end())) {
-			result.add(toYearMonth(start));
-			int currentDay = start.day();
-			start = start.addMonths(1).addDays(0 - currentDay + 1);
+		YearMonth start = range.start().yearMonth();
+		YearMonth end = range.end().yearMonth();
+		while (start.lessThanOrEqualTo(end)) {
+			result.add(start);
+			start = start.addMonths(1);
 		}
 		return result;
 	}
-
-	private static YearMonth toYearMonth(GeneralDate start) {
-		return YearMonth.of(start.year(), start.month());
+	
+	public static List<GeneralDate> datesBetween(DatePeriod range){
+		List<GeneralDate> result = new ArrayList<>();
+		GeneralDate start = range.start();
+		while (start.beforeOrEquals(range.end())) {
+			result.add(start);
+			start = start.addDays(1);
+		}
+		return result;
 	}
 }
