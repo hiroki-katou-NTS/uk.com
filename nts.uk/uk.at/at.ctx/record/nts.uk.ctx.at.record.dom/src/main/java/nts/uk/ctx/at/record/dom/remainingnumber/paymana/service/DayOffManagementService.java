@@ -1,7 +1,10 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.dayoffmanagement;
+package nts.uk.ctx.at.record.dom.remainingnumber.paymana.service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -9,6 +12,9 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.remainingnumber.base.TargetSelectionAtr;
+import nts.uk.ctx.at.record.dom.remainingnumber.paymana.DayOffManagementData;
+import nts.uk.ctx.at.record.dom.remainingnumber.paymana.DaysOffMana;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
@@ -47,12 +53,13 @@ public class DayOffManagementService {
 			if(dayOffManagementData.getDaysOffMana().size() == 0 ) {
 				throw new BusinessException("Msg_738");
 			} else if (dayOffManagementData.getDaysOffMana().size() == 1 && 
-					dayOffManagementData.getDaysOffMana().get(0).getUseNumberDay().equals(ONE_DAY)) {
+					dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(ONE_DAY)) {
 					throw new BusinessException("Msg_733");
 			} else if (dayOffManagementData.getDaysOffMana().size() == 2) {
-					if (dayOffManagementData.getDaysOffMana().get(0).getUseNumberDay().equals(ONE_DAY) &&
-						dayOffManagementData.getDaysOffMana().get(1).getUseNumberDay().equals(HALF_DAY)) {
+					if (dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(ONE_DAY) &&
+						dayOffManagementData.getDaysOffMana().get(1).getRemainDays().equals(HALF_DAY)) {
 						throw new BusinessException("Msg_733");
+						// to do
 					}
 					if(compensatoryLeaveEmSetting.getCompensatoryAcquisitionUse().getPreemptionPermit().value == 0) {
 						throw new BusinessException("Msg_739");
@@ -64,12 +71,15 @@ public class DayOffManagementService {
 			List<LeaveComDayOffManagement> leavesComDay = leaveComDayOffManaRepository.getByLeaveID(dayOffManagementData.getLeaveId());
 			if(leavesComDay.size() >=1 ) {
 				
-				// to do delete
+				// delete  List LeaveComDayOff
+				leaveComDayOffManaRepository.deleteByLeaveId(dayOffManagementData.getLeaveId());
 			}
 			
-			// insert to data
-			
-			
+				// insert List LeaveComDayOff
+				List<DaysOffMana> daysOff = dayOffManagementData.getDaysOffMana();
+				List<LeaveComDayOffManagement> entitiesLeave = daysOff.stream().map(item->
+				  new LeaveComDayOffManagement(dayOffManagementData.getLeaveId(), item.getComDayOffID(), new BigDecimal(item.getRemainDays()),TargetSelectionAtr.MANUAL.value,TargetSelectionAtr.MANUAL.value)).collect(Collectors.toList());
+				leaveComDayOffManaRepository.insertAll(entitiesLeave);
 		}
 		
 		

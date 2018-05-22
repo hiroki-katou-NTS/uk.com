@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.remainingnumber;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -7,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.record.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.record.infra.entity.remainingnumber.subhdmana.KrcmtLeaveDayOffMana;
@@ -20,6 +22,9 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 	private final String QUERY_BY_COMDAYOFFID = String.join(" ", QUERY," WHERE lc.krcmtLeaveDayOffManaPK.comDayOffID =:comDayOffID");
 	private final String QUERY_BY_LIST_LEAVEID = String.join(" ", QUERY," WHERE lc.krcmtLeaveDayOffManaPK.leaveID IN :leaveID");
 	
+	
+	private static final String GET_LEAVE_COM  = "SELECT c FROM KrcmtLeaveDayOffMana c "
+			+ " WHERE c.krcmtLeaveDayOffManaPK.leaveID = :leaveID";
 	
 	@Override
 	public void add(LeaveComDayOffManagement domain) {
@@ -77,8 +82,29 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 				.setParameter("comDayOffID", comDayOffID).getList();
 		return listLeaveD.stream().map(item->toDomain(item)).collect(Collectors.toList());
 	}
+	
+	@Override
+	public void insertAll(List<LeaveComDayOffManagement> entitiesLeave) {
+		List<KrcmtLeaveDayOffMana> entities = entitiesLeave.stream()
+				.map(c -> newEntities(c.getLeaveID(),c.getComDayOffID(),c.getUsedDays().v(),TargetSelectionAtr.MANUAL.value,TargetSelectionAtr.MANUAL.value)).collect(Collectors.toList());
+		commandProxy().insertAll(entities);
+		this.getEntityManager().flush();
+	}
+	
+	private KrcmtLeaveDayOffMana newEntities(String leaveID, String comDayOffID, BigDecimal usedDays,int usedHours,int targetSelectionAtr) {
+		return new KrcmtLeaveDayOffMana(new KrcmtLeaveDayOffManaPK(leaveID, comDayOffID),
+				usedDays,usedHours,targetSelectionAtr);
+	}
 
 	@Override
+	public void deleteByLeaveId(String leaveId) {
+		List<KrcmtLeaveDayOffMana> data = this.queryProxy().query(GET_LEAVE_COM,KrcmtLeaveDayOffMana.class)
+				.setParameter("leaveId", leaveId)
+				.getList();
+		this.commandProxy().removeAll(data);
+		this.getEntityManager().flush();
+	}
+	
 	public List<LeaveComDayOffManagement> getByListComLeaveID(List<String> listLeaveID) {
 		List<KrcmtLeaveDayOffMana> listLeaveD = this.queryProxy().query(QUERY_BY_LIST_LEAVEID,KrcmtLeaveDayOffMana.class)
 				.setParameter("leaveID", listLeaveID).getList();
@@ -86,5 +112,4 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 	}
 
 	
-
 }
