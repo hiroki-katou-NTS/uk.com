@@ -153,6 +153,9 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	
 	private final static String SELECT_CTG_BY_CTGCD = String.join(" ","SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName",
 			"FROM PpemtPerInfoCtg c WHERE c.categoryCd in :lstCtgCd AND c.cid = :cid");
+	
+	private final static String SELECT_CTG_ID_BY_CTGCD = String.join(" ","SELECT c.ppemtPerInfoCtgPK.perInfoCtgId",
+			"FROM PpemtPerInfoCtg c WHERE c.categoryCd in :lstCtgCd AND c.cid = :cid");
 
 	@Override
 	public List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd) {
@@ -522,6 +525,15 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			}
 		});
 		
+	}
+
+	@Override
+	public List<String> getAllCtgId(List<String> ctgCd, String companyId) {
+		List<String> ctgIdLst = this.queryProxy().query(SELECT_CTG_ID_BY_CTGCD, String.class)
+				.setParameter("lstCtgCd", ctgCd)
+				.setParameter("cid", companyId)
+				.getList();
+		return ctgIdLst;
 	}
 
 	

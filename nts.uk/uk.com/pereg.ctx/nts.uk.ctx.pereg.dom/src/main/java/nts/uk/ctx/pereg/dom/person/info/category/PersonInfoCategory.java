@@ -211,4 +211,8 @@ public class PersonInfoCategory extends AggregateRoot {
 				|| categoryType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE;
 	}
 	
+	public void setAbolish(IsAbolition isAbolition) {
+		this.isAbolition = isAbolition;
+	}
+	
 }
