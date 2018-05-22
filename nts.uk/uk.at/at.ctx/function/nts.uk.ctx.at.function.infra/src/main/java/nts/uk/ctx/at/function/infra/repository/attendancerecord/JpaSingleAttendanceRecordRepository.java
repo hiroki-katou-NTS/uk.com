@@ -45,7 +45,6 @@ public class JpaSingleAttendanceRecordRepository extends JpaRepository implement
 			ExportSettingCode exportSettingCode, long columnIndex, long position, long exportArt) {
 		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, exportSettingCode.v(), columnIndex, exportArt,
 				position);
-		Optional<KfnstAttndRec> entity = this.queryProxy().find(kfnstAttndRecPK, KfnstAttndRec.class);
 		return this.queryProxy().find(kfnstAttndRecPK, KfnstAttndRec.class).map(e -> this.toDomain(e));
 	}
 

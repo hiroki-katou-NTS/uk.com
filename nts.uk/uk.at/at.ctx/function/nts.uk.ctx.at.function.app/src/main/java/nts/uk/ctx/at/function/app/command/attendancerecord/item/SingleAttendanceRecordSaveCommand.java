@@ -10,7 +10,7 @@ import lombok.Setter;
 public class SingleAttendanceRecordSaveCommand {
 
 	/** The export setting code. */
-	private int exportSettingCode;
+	private long exportSettingCode;
 
 	/** The use atr. */
 	private boolean useAtr;
@@ -25,7 +25,7 @@ public class SingleAttendanceRecordSaveCommand {
 	private int position;
 
 	/** The time time id. */
-	private int timeTimeId;
+	private int timeItemId;
 
 	/** The attribute. */
 	private int attribute;

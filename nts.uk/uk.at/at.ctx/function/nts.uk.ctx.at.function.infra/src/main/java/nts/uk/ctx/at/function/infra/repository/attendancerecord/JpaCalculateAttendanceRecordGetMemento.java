@@ -46,16 +46,22 @@ public class JpaCalculateAttendanceRecordGetMemento implements CalculateAttendan
 
 	@Override
 	public List<Integer> getAddedItem() {
-		if(this.kfnstAttndRecItems == null || this.kfnstAttndRecItems.isEmpty())  return new ArrayList<Integer>();
-		return this.kfnstAttndRecItems.stream().filter(e -> e.getFormulaType().compareTo(new BigDecimal(1)) == 0)
-				.map(obj -> (int) obj.getId().getTimeItemId()).collect(Collectors.toList());
+		if (this.kfnstAttndRecItems == null || this.kfnstAttndRecItems.isEmpty())
+			return new ArrayList<Integer>();
+		List<Integer> result = this.kfnstAttndRecItems.stream()
+				.filter(e -> e.getFormulaType().compareTo(new BigDecimal(1)) == 0)
+				.map(e -> (int) e.getId().getTimeItemId()).collect(Collectors.toList());
+		return result;
 	}
 
 	@Override
 	public List<Integer> getSubtractedItem() {
-		if(this.kfnstAttndRecItems == null || this.kfnstAttndRecItems.isEmpty() ) return new ArrayList<Integer>();
-		return this.kfnstAttndRecItems.stream().filter(e -> e.getFormulaType().compareTo(new BigDecimal(2)) == 0)
+		if (this.kfnstAttndRecItems == null || this.kfnstAttndRecItems.isEmpty())
+			return new ArrayList<Integer>();
+		List<Integer> result = this.kfnstAttndRecItems.stream()
+				.filter(e -> e.getFormulaType().compareTo(new BigDecimal(2)) == 0)
 				.map(obj -> (int) obj.getId().getTimeItemId()).collect(Collectors.toList());
+		return result;
 	}
 
 }

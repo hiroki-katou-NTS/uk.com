@@ -42,7 +42,7 @@ public class JpaCalculateAttendanceRecordRepository extends JpaRepository
 	@Override
 	public Optional<CalculateAttendanceRecord> getCalculateAttendanceRecord(String companyId,
 			ExportSettingCode exportSettingCode, long columnIndex, long position, long exportArt) {
-		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, exportSettingCode.v(), columnIndex, exportArt,
+		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, Long.valueOf(exportSettingCode.v()), columnIndex, exportArt,
 				position);
 		return this.queryProxy().find(kfnstAttndRecPK, KfnstAttndRec.class).map(e -> this.toDomain(e));
 	}
@@ -60,7 +60,7 @@ public class JpaCalculateAttendanceRecordRepository extends JpaRepository
 		// update attendanceRecord
 		this.commandProxy().update(this.toEntityAttndRec(exportSettingCode, columnIndex, position, exportArt, useAtr,
 				calculateAttendanceRecord));
-		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, exportSettingCode.v(), columnIndex, exportArt,
+		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, Long.valueOf(exportSettingCode.v()), columnIndex, exportArt,
 				position);
 
 		Optional<KfnstAttndRec> kfnstAttndRec = this.queryProxy().find(kfnstAttndRecPK, KfnstAttndRec.class);
@@ -98,7 +98,7 @@ public class JpaCalculateAttendanceRecordRepository extends JpaRepository
 	public void deleteCalculateAttendanceRecord(String companyId, ExportSettingCode exportSettingCode, int columnIndex,
 		int position, long exportArt, CalculateAttendanceRecord calculateAttendanceRecord) {
 		//find and delete KfnstAttndRec, KfnstAttndRecItem
-		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, exportSettingCode.v(), columnIndex, exportArt, position);
+		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, Long.valueOf(exportSettingCode.v()), columnIndex, exportArt, position);
 		Optional<KfnstAttndRec> optionalKfnstAttndRec = this.queryProxy().find(kfnstAttndRecPK, KfnstAttndRec.class);
 		if(optionalKfnstAttndRec.isPresent()) this.commandProxy().remove(optionalKfnstAttndRec.get());
 
@@ -120,7 +120,7 @@ public class JpaCalculateAttendanceRecordRepository extends JpaRepository
 	private CalculateAttendanceRecord toDomain(KfnstAttndRec kfnstAttndRec) {
 		// get KfnstAttndRecItem by KfnstAttndRecPK
 		List<KfnstAttndRecItem> listKfnstAttndRecItem = this.findAttendanceRecordItems(AppContexts.user().companyId(),
-				new ExportSettingCode(kfnstAttndRec.getId().getExportCd()), kfnstAttndRec.getId().getColumnIndex(),
+				new ExportSettingCode((kfnstAttndRec.getId().getExportCd())), kfnstAttndRec.getId().getColumnIndex(),
 				kfnstAttndRec.getId().getPosition(), kfnstAttndRec.getId().getOutputAtr());
 
 		// create getMemento
@@ -152,7 +152,7 @@ public class JpaCalculateAttendanceRecordRepository extends JpaRepository
 			long exportArt, boolean useAtr, CalculateAttendanceRecord calculateAttendanceRecord) {
 		// find entity KfnstAttndRec by pk
 		String companyId = AppContexts.user().companyId();
-		KfnstAttndRecPK kfnstAttndRecPk = new KfnstAttndRecPK(companyId, exportSettingCode.v(), columnIndex, exportArt,
+		KfnstAttndRecPK kfnstAttndRecPk = new KfnstAttndRecPK(companyId, Long.valueOf(exportSettingCode.v()), columnIndex, exportArt,
 				position);
 		KfnstAttndRec kfnstAttndRec = this.queryProxy().find(kfnstAttndRecPk, KfnstAttndRec.class)
 				.orElse(new KfnstAttndRec());
@@ -189,7 +189,7 @@ public class JpaCalculateAttendanceRecordRepository extends JpaRepository
 	private KfnstAttndRecItem toEntityAttndRecItemSubtracted(ExportSettingCode exportSettingCode, long columnIndex, long position,
 			long exportArt, int timeItemId) {
 		KfnstAttndRecItemPK kfnstAttendRecItemPK = new KfnstAttndRecItemPK(AppContexts.user().companyId(),
-				exportSettingCode.v(), columnIndex, position, exportArt, timeItemId);
+				Long.valueOf(exportSettingCode.v()), columnIndex, position, exportArt, timeItemId);
 		KfnstAttndRecItem kfnstAttendRecItem = new KfnstAttndRecItem(kfnstAttendRecItemPK, new BigDecimal(2));
 		return kfnstAttendRecItem;
 	}
@@ -197,7 +197,7 @@ public class JpaCalculateAttendanceRecordRepository extends JpaRepository
 	private KfnstAttndRecItem toEntityAttndRecItemAdded(ExportSettingCode exportSettingCode, long columnIndex, long position,
 			long exportArt, int timeItemId) {
 		KfnstAttndRecItemPK kfnstAttendRecItemPK = new KfnstAttndRecItemPK(AppContexts.user().companyId(),
-				exportSettingCode.v(), columnIndex, position, exportArt, timeItemId);
+				Long.valueOf(exportSettingCode.v()), columnIndex, position, exportArt, timeItemId);
 		KfnstAttndRecItem kfnstAttendRecItem = new KfnstAttndRecItem(kfnstAttendRecItemPK, new BigDecimal(1));
 		return kfnstAttendRecItem;
 	}
@@ -231,7 +231,7 @@ public class JpaCalculateAttendanceRecordRepository extends JpaRepository
 		List<Predicate> predicates = new ArrayList<>();
 		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.cid), companyId));
 		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.exportCd),
-				exportSettingCode));
+				exportSettingCode.v()));
 		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.columnIndex),
 				columnIndex));
 		predicates.add(

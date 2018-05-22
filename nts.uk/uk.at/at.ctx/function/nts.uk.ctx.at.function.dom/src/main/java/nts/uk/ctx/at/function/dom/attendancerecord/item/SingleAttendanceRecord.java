@@ -27,6 +27,7 @@ public class SingleAttendanceRecord extends DomainObject implements AttendanceRe
 	/** The added item. */
 	// 勤怠項目ID
 	private Integer timeItemId;
+	
 
 	/*
 	 * (non-Javadoc)
@@ -152,5 +153,4 @@ public class SingleAttendanceRecord extends DomainObject implements AttendanceRe
 	public String getNameDisplay() {
 		return this.name.toString();
 	}
-
 }

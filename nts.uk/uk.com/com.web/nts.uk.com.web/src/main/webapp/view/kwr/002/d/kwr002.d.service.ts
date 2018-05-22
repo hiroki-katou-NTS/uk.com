@@ -7,14 +7,14 @@ module nts.uk.com.view.kwr002.d {
             getSingleAttendanceRecordInfo: "at/function/attendancerecord/item/getSingleAttndRecInfo",
             updateSingleAttendanceRecord: "at/function/attendancerecord/item/updateSingleAttndRec",
             deleteSingleAttendanceRecord: "at/function/attendancerecord/item/deleteSingleAttndRec",
-            getAttendanceRecordItemsByScreenUseAtr: "at/function/attendancerecord/item/getAttndRecItem/"
-
+            getAttendanceRecordItemsByScreenUseAtr: "at/function/attendancerecord/item/getAttndRecItem/",
+            testAnotherPath: "at/function/attendancerecord/item/updateSingleAttndRec"
         };
 
         /**
          * get singleAttendanceRecord by key
          */
-        export function findSingleAttendanceRecord(attendanceRecordKey: viewmodel.model.AttendanceRecordKey):JQueryPromise<viewmodel.model.SingleAttendanceRecord> {
+        export function findSingleAttendanceRecord(attendanceRecordKey: viewmodel.model.AttendanceRecordKey): JQueryPromise<viewmodel.model.SingleAttendanceRecord> {
             return nts.uk.request.ajax("at", path.getSingleAttendanceRecordInfo, attendanceRecordKey);
         }
 
@@ -34,8 +34,11 @@ module nts.uk.com.view.kwr002.d {
         /**
          * get list attendanceReocrdItems by screenUseAtr
          */
-        export function getAttendanceRecordItemsByScreenUseAtr(screenUseAtr:number):JQueryPromise<Array<viewmodel.model.AttendanceRecordItem>> {
-            return nts.uk.request.ajax("at", path.getAttendanceRecordItemsByScreenUseAtr+screenUseAtr);
+        export function getAttendanceRecordItemsByScreenUseAtr(screenUseAtr: number): JQueryPromise<Array<viewmodel.model.AttendanceRecordItem>> {
+            return nts.uk.request.ajax("at", path.getAttendanceRecordItemsByScreenUseAtr + screenUseAtr);
+        }
+        export function testAnotherPath(attendanceRecordKey: viewmodel.model.SingleAttendanceRecordSaveCommand) {
+            return nts.uk.request.ajax("at", path.testAnotherPath, attendanceRecordKey);
         }
     }
 }

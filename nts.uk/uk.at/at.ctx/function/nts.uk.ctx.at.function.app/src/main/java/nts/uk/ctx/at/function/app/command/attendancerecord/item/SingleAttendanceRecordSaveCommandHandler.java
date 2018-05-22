@@ -29,7 +29,7 @@ public class SingleAttendanceRecordSaveCommandHandler extends CommandHandler<Sin
 		SingleAttendanceRecord singleAttendanceRecord = new SingleAttendanceRecord(
 																		SingleItemAttributes.valueOf(command.getAttribute()),
 																		new ItemName(command.getName()),
-																		command.getTimeTimeId());
+																		command.getTimeItemId());
 		//update
 		this.singleAttendanceRecordRepository.updateSingleAttendanceRecord(
 																		AppContexts.user().companyId(),

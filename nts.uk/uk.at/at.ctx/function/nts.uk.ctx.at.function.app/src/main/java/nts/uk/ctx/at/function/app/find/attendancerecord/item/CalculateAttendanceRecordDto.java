@@ -47,7 +47,4 @@ public class CalculateAttendanceRecordDto implements AttendanceRecordDisplayDto 
 		this.subtractedItem = subtractedItem;
 		this.attribute = attribute;
 	}
-
-
-
 }
