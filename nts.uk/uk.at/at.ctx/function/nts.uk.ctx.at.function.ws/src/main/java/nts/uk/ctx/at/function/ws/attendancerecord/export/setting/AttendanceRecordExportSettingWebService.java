@@ -62,7 +62,7 @@ public class AttendanceRecordExportSettingWebService {
 	 */
 	@POST
 	@Path("getAttendanceRecExpSet/{code}")
-	public AttendanceRecordExportSettingDto getAttendanceRecExpSet(@PathParam("divTimeId") long code) {
+	public AttendanceRecordExportSettingDto getAttendanceRecExpSet(@PathParam("code") long code) {
 		String companyId = AppContexts.user().companyId();
 		return attendanceEcExpSetFinder.getAttendanceRecordExportSettingDto(companyId, code);
 	}
@@ -114,5 +114,16 @@ public class AttendanceRecordExportSettingWebService {
 	@Path("getSealStamp/{code}")
 	public List<String> getSealStamp(@PathParam("code") long code) {
 		return attendanceEcExpSetFinder.getSealStamp(code);
+	}
+	
+	/**
+	 * Gets the permission.
+	 *
+	 * @return the permission
+	 */
+	@POST
+	@Path("getPermission")
+	public Boolean getPermission(){
+		return attendanceEcExpSetFinder.havePermission();
 	}
 }

@@ -86,12 +86,12 @@ public class JpaAttendanceRecordExportGetMemento implements AttendanceRecordExpo
 	public Optional<AttendanceRecordDisplay> getUpperPosition() {
 
 		// 13 <= Attribute <=15
-		if (this.upperEntity.getAttribute().compareTo(new BigDecimal(0)) == 1
-				&& this.upperEntity.getAttribute().compareTo(new BigDecimal(4)) == -1)
+		if (this.upperEntity.getAttribute().compareTo(new BigDecimal(12)) == 1
+				&& this.upperEntity.getAttribute().compareTo(new BigDecimal(16)) == -1)
 			return Optional.of(new SingleAttendanceRecord(new JpaSingleAttendanceRecordGetMemento(upperEntity, null)));
 		// 16<= Attribute <= 18
-		if (this.upperEntity.getAttribute().compareTo(new BigDecimal(3)) == 1
-				&& this.upperEntity.getAttribute().compareTo(new BigDecimal(7)) == -1)
+		if (this.upperEntity.getAttribute().compareTo(new BigDecimal(15)) == 1
+				&& this.upperEntity.getAttribute().compareTo(new BigDecimal(19)) == -1)
 			return Optional
 					.of(new CalculateAttendanceRecord(new JpaCalculateAttendanceRecordGetMemento(upperEntity, null)));
 
@@ -109,12 +109,12 @@ public class JpaAttendanceRecordExportGetMemento implements AttendanceRecordExpo
 	public Optional<AttendanceRecordDisplay> getLowerPosition() {
 
 		// 13 <= Attribute <=15
-		if (this.lowerEntity.getAttribute().compareTo(new BigDecimal(0)) == 1
-				&& this.lowerEntity.getAttribute().compareTo(new BigDecimal(4)) == -1)
+		if (this.lowerEntity.getAttribute().compareTo(new BigDecimal(12)) == 1
+				&& this.lowerEntity.getAttribute().compareTo(new BigDecimal(16)) == -1)
 			return Optional.of(new SingleAttendanceRecord(new JpaSingleAttendanceRecordGetMemento(lowerEntity, null)));
 		// 16<= Attribute <= 18
-		if (this.lowerEntity.getAttribute().compareTo(new BigDecimal(3)) == 1
-				&& this.lowerEntity.getAttribute().compareTo(new BigDecimal(7)) == -1)
+		if (this.lowerEntity.getAttribute().compareTo(new BigDecimal(15)) == 1
+				&& this.lowerEntity.getAttribute().compareTo(new BigDecimal(19)) == -1)
 			return Optional.of(new CalculateAttendanceRecord(new JpaCalculateAttendanceRecordGetMemento(lowerEntity, null)));
 
 		return Optional.empty();

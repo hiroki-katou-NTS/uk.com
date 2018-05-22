@@ -6,6 +6,7 @@ module nts.uk.com.view.kwr002.c {
     
         mainTab.start_page().done(function(screenModel:any){
             __viewContext.bind(mainTab); 
+            $('#ui-id-1').focus();
         });
     });
 }

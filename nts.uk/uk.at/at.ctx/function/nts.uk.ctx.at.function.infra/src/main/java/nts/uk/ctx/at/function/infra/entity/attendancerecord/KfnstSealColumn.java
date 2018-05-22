@@ -1,10 +1,11 @@
 package nts.uk.ctx.at.function.infra.entity.attendancerecord;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -12,6 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
 
 /**
  * The persistent class for the KFNST_SEAL_COLUMN database table.
@@ -22,18 +24,27 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "KFNST_SEAL_COLUMN")
+@Table(name="KFNST_SEAL_COLUMN")
 public class KfnstSealColumn extends UkJpaEntity implements Serializable {
-
+	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The id. */
-	@EmbeddedId
-	private KfnstSealColumnPK id;
+	/** The column id. */
+	@Id
+	@Column(name="COLUMN_ID")
+	private String columnId;
+
+	/** The cid. */
+	@Column(name="CID")
+	private String cid;
+
+	/** The export cd. */
+	@Column(name="EXPORT_CD")
+	private BigDecimal exportCd;
 
 	/** The seal stamp name. */
-	@Column(name = "SEAL_STAMP_NAME")
+	@Column(name="SEAL_STAMP_NAME")
 	private String sealStampName;
 
 	/* (non-Javadoc)
@@ -41,6 +52,7 @@ public class KfnstSealColumn extends UkJpaEntity implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.id;
+		return this.columnId;
 	}
+
 }
