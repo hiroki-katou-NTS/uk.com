@@ -17,6 +17,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PremiumTimeOfDailyPerformance {
 	
-	List<PremiumTime> premiumTimes;
+	private List<PremiumTime> premiumTimes;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 }
