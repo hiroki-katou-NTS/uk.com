@@ -1248,7 +1248,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 $('#workplaceList').fullView();
 
                 _.defer(() => {
-                    const KCP004Width = $('#multiple-tree-grid_scroll').outerWidth(true);
+                    const KCP004Width = $('#workplaceList').outerWidth(true);
                     const KCPMargin = 30;
                     const expandedWidth = KCP004Width + KCPMargin;
 
