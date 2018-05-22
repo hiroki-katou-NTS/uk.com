@@ -240,6 +240,7 @@ public class DailyRecordWorkCommandHandler {
 							command.getOptionalItem().getData(), command.getEditState().getData(), command.getTemporaryTime().getData()));
 //			command.getTimeLeaving().updateData(calced.getAttendanceLeave().orElse(null));
 			command.getAttendanceTime().updateData(calced.getAttendanceTimeOfDailyPerformance().orElse(null));
+			command.getOptionalItem().updateData(calced.getAnyItemValue().orElse(null));
 //			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
 //			calced.getBreakTime().stream().forEach(c -> {
 //				command.getBreakTime().updateData(c);
@@ -256,6 +257,7 @@ public class DailyRecordWorkCommandHandler {
 //			command.getLogOnInfo
 //			group.add("I");
 			group.add("G");
+			group.add("M");
 			
 			return calced.getEmployeeError();
 //		}

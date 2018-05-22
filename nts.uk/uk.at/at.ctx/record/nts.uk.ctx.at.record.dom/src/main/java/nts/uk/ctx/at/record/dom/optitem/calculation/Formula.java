@@ -174,21 +174,23 @@ public class Formula extends AggregateRoot {
 											Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto
 											/*Optional<> monthlyRecordDto*/) {
 		int calcValue = 0;
-		if(this.getCalcAtr().isItemSelection()) {
+		if(this.getCalcAtr().isFormulaSetting()) {
 			if(this.calcFormulaSetting.getFormulaSetting().isPresent()) {
 				//計算式による計算
 				calcValue = this.calcFormulaSetting.getFormulaSetting().get().calculationBycalculationFormula(resultCalcFormula, optionalItem.getOptionalItemAtr());
+			}else {
+				//計算式設定が取得できない場合は0 ← これで良い？
+				calcValue = 0;
 			}
-			//計算式設定が取得できない場合は0 ← これで良い？
-			calcValue = 0;
 		}
-		else if(this.getCalcAtr().isFormulaSetting()) {
+		else if(this.getCalcAtr().isItemSelection()) {
 			if(this.calcFormulaSetting.getItemSelection().isPresent()) {
 				//項目選択による計算
 				calcValue = this.calcFormulaSetting.getItemSelection().get().calculationByItemSelection(performanceAtr, dailyRecordDto);
+			}else {
+				//計算項目選択が取得できない場合は0 ← これで良い？
+				calcValue = 0;
 			}
-			//計算項目選択が取得できない場合は0 ← これで良い？
-			calcValue = 0;
 		}
 		else {
 			throw new RuntimeException("unknown FormulaSetting"+ this.getCalcAtr());

@@ -17,6 +17,7 @@ import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.record.dom.optitem.calculation.CalcResultOfAnyItem;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.record.dom.optitem.calculation.ResultOfCalcFormula;
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -174,13 +175,13 @@ public class OptionalItem extends AggregateRoot {
 	 * 利用条件の判定
 	 * @return
 	 */
-	public boolean checkTermsOfUse(Optional<EmpCondition> empCondition) {
+	public boolean checkTermsOfUse(Optional<EmpCondition> empCondition,Optional<BsEmploymentHistoryImport> bsEmploymentHistOpt) {
 		//利用区分をチェック
 		if(this.usageAtr.isNotUse()) {
 			return false;
 		}
 		//雇用条件区分をチェック
-		if(!this.empConditionAtr.isNoCondition()) {
+		if(this.empConditionAtr.isNoCondition()) {
 			return true;
 		}
 		//適用する雇用条件が取得できたかチェック
@@ -188,7 +189,7 @@ public class OptionalItem extends AggregateRoot {
 			return true;
 		}
 		//雇用条件判断
-		return empCondition.get().checkEmpCondition();
+		return empCondition.get().checkEmpCondition(bsEmploymentHistOpt);
 	}
 	
 	
@@ -219,7 +220,7 @@ public class OptionalItem extends AggregateRoot {
         //Listが空だった場合
         if(calcResultAnyItem.isEmpty()) {
             return new CalcResultOfAnyItem(this.optionalItemNo,
-										   Optional.of(0),
+            							   Optional.of(0),
 										   Optional.of(0),
 										   Optional.of(0));
         }

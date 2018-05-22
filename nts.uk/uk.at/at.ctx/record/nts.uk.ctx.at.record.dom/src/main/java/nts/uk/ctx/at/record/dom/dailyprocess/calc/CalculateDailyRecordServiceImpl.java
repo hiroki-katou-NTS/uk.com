@@ -225,9 +225,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		// 実績データの計算
 		val afterCalcResult = this.calcDailyAttendancePerformance(integrationOfDaily);
 		//任意項目の計算
-//		val aftercalcOptionalItemResult = this.calcOptionalItem(afterCalcResult);
+		val aftercalcOptionalItemResult = this.calcOptionalItem(afterCalcResult);
 		//エラーチェック
-		return calculationErrorCheckService.errorCheck(afterCalcResult);
+//		return calculationErrorCheckService.errorCheck(afterCalcResult);
+		return calculationErrorCheckService.errorCheck(aftercalcOptionalItemResult);
 		//return afterCalcResult;
 	}
 
@@ -1010,7 +1011,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		DailyRecordToAttendanceItemConverter dailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(integrationOfDaily); 
 		
 		//任意項目の計算
-		AnyItemValueOfDaily result = AnyItemValueOfDaily.caluculationAnyItem(companyId, employeeId, targetDate, optionalItems, formulaList, empCondition, Optional.of(dailyRecordDto));
+		AnyItemValueOfDaily result = AnyItemValueOfDaily.caluculationAnyItem(companyId, employeeId, targetDate, optionalItems, formulaList, empCondition, Optional.of(dailyRecordDto),bsEmploymentHistOpt);
 		integrationOfDaily.setAnyItemValue(Optional.of(result));
 		
 		return integrationOfDaily;
