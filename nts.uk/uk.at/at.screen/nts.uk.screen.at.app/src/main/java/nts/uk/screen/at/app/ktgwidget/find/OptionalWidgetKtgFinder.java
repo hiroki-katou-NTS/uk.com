@@ -15,6 +15,7 @@ import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetAdapter;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.WidgetDisplayItemImport;
 import nts.uk.ctx.at.function.dom.employmentfunction.checksdailyerror.ChecksDailyPerformanceErrorRepository;
+import nts.uk.ctx.at.function.dom.employmentfunction.checksdailyerror.GetNumberOfRemainingHolidaysRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.holidayinstruction.HolidayInstructRepository;
@@ -66,6 +67,9 @@ public class OptionalWidgetKtgFinder {
 	
 	@Inject
 	private ChecksDailyPerformanceErrorRepository checksDailyPerformanceErrorRepo;
+	
+	@Inject
+	private GetNumberOfRemainingHolidaysRepository GetNumberOfRemainingHolidaysRepo;
 
 	public DatePeriodDto getCurrentMonth() {
 		String companyId = AppContexts.user().companyId();
@@ -119,7 +123,6 @@ public class OptionalWidgetKtgFinder {
 	}
 	
 	public OptionalWidgetInfoDto getDataRecord(String code, GeneralDate startDate, GeneralDate endDate) {
-		/*社員ID*/
 		String employeeId = AppContexts.user().employeeId();
 		ClosureEmployment employment = getClosureEmployment();
 		OptionalWidgetInfoDto dto = new OptionalWidgetInfoDto();
@@ -180,7 +183,8 @@ public class OptionalWidgetKtgFinder {
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PLANNED_YEAR_HOLIDAY.value) {
 					
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REMAIN_ALTERNATION_NO.value) {
-					
+					GeneralDate systemDate = GeneralDate.today(); 
+					//dto.setReservedYearsRemainNo(GetNumberOfRemainingHolidaysRepo.getNumberOfRemainingHolidays(employeeId, systemDate));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REMAINS_LEFT.value) {
 					
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PUBLIC_HD_NO.value) {
