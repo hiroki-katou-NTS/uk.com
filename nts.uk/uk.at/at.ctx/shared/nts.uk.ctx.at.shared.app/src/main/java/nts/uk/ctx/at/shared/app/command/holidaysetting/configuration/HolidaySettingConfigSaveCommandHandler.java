@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.ForwardSettingOfPublicHoliday;
@@ -12,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.Fo
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.FourWeekFourHolidayNumberSetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.FourWeekFourHolidayNumberSettingRepository;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySetting;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySettingDomainEvent;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySettingRepository;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.WeekHolidaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.WeekHolidaySettingRepository;
@@ -53,9 +55,11 @@ public class HolidaySettingConfigSaveCommandHandler extends CommandHandler<Holid
 		WeekHolidaySetting weekHdSetDomain = new WeekHolidaySetting(command.getWeekHdSet());
 		PublicHolidaySetting pubHdSetDomain = new PublicHolidaySetting(command.getPubHdSet());
 		
+		// Get info from DB
+		Optional<PublicHolidaySetting> optionalPubHdSet = this.pubHdSetRepo.findByCID(companyId);
+		
 		if (pubHdSetDomain.isManageComPublicHd() == true) {
 			//save PublicHolidaySetting
-			Optional<PublicHolidaySetting> optionalPubHdSet = this.pubHdSetRepo.findByCID(companyId);
 			if(optionalPubHdSet.isPresent()){
 				this.pubHdSetRepo.update(pubHdSetDomain);
 			}else {
@@ -89,7 +93,6 @@ public class HolidaySettingConfigSaveCommandHandler extends CommandHandler<Holid
 			}
 		} else {
 			//save PublicHolidaySetting
-			Optional<PublicHolidaySetting> optionalPubHdSet = this.pubHdSetRepo.findByCID(companyId);
 			if(optionalPubHdSet.isPresent()){
 				PublicHolidaySetting publicHolidaySetting = optionalPubHdSet.get();
 				publicHolidaySetting.setManageComPublicHd(false);
@@ -97,6 +100,14 @@ public class HolidaySettingConfigSaveCommandHandler extends CommandHandler<Holid
 			}else {
 				this.pubHdSetRepo.add(pubHdSetDomain);
 			}
+		}
+		
+		//check managementCategory change
+		if (!optionalPubHdSet.isPresent() || optionalPubHdSet.get().isManageComPublicHd() != command
+				.getPubHdSet().getIsManageComPublicHd()) {
+			val publicHolidaySettingDomainEvent = new PublicHolidaySettingDomainEvent(
+					command.getPubHdSet().getIsManageComPublicHd());
+			publicHolidaySettingDomainEvent.toBePublished();
 		}
 	}
 }
