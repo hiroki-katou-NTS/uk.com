@@ -2,6 +2,8 @@ package nts.uk.ctx.at.shared.infra.repository.remainmana.interimremain;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.remainmana.interimremain.InterimRemain;
@@ -11,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.remainmana.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainmana.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.infra.entity.remainmana.interimremain.KrcmtInterimRemainMana;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
-
+@Stateless
 public class JpaInterimRemainRepository extends JpaRepository  implements InterimRemainRepository{
 	private String QUERY_BY_SID_PRIOD = "SELECT c FROM KrcmtInterimRemainMana c"
 			+ " WHERE c.sId = :employeeId"

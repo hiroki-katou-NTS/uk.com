@@ -2,6 +2,8 @@ package nts.uk.ctx.at.shared.infra.repository.remainmana.absencerecruitment.inte
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.remainmana.absencerecruitment.interim.InterimAbsMana;
@@ -14,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.remainmana.interimremain.primitive.UnOffsetDay;
 import nts.uk.ctx.at.shared.dom.remainmana.interimremain.primitive.UnUsedDay;
 import nts.uk.ctx.at.shared.infra.entity.remainmana.absencerecruitment.interim.KrcmtInterimAbsMana;
 import nts.uk.ctx.at.shared.infra.entity.remainmana.absencerecruitment.interim.KrcmtInterimRecMana;
-
+@Stateless
 public class JpaInterimRecAbasManaRepository extends JpaRepository implements InterimRecAbasManaRepository{
 
 	@Override

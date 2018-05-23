@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.remainmana.absencerecruitment.export.query;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -16,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.remainmana.export.RemainManagementExport;
 import nts.uk.ctx.at.shared.dom.remainmana.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainmana.interimremain.InterimRemainRepository;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
-
+@Stateless
 public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuery{
 	@Inject
 	private RemainManagementExport remainManaExport;
