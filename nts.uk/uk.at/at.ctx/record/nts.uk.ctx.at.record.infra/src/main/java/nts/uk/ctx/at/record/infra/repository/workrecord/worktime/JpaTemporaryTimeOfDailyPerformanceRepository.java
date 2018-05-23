@@ -7,8 +7,11 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
@@ -213,13 +216,18 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 	
 	@Override
 	public List<TemporaryTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd) {
-		StringBuilder query = new StringBuilder();
-		query.append("SELECT a FROM KrcdtDaiTemporaryTime a ");
+		List<TemporaryTimeOfDailyPerformance> result = new ArrayList<>();
+		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDaiTemporaryTime a ");
 		query.append("WHERE a.krcdtDaiTemporaryTimePK.employeeId IN :employeeId ");
 		query.append("AND a.krcdtDaiTemporaryTimePK.ymd <= :end AND a.krcdtDaiTemporaryTimePK.ymd >= :start");
-		return queryProxy().query(query.toString(), KrcdtDaiTemporaryTime.class).setParameter("employeeId", employeeId)
-				.setParameter("start", ymd.start()).setParameter("end", ymd.end()).getList().stream()
-				.map(f -> f.toDomain()).collect(Collectors.toList());
+		TypedQueryWrapper<KrcdtDaiTemporaryTime> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiTemporaryTime.class);
+		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
+			result.addAll(tQuery.setParameter("employeeId", empIds)
+					.setParameter("start", ymd.start())
+					.setParameter("end", ymd.end())
+					.getList().stream().map(f -> f.toDomain()).collect(Collectors.toList()));
+		});
+		return result;
 	}
 
 //	@Override

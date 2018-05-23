@@ -17,7 +17,7 @@ public class ShortTimeOfDailyCommandUpdateHandler extends CommandFacade<ShortTim
 	protected void handle(CommandHandlerContext<ShortTimeOfDailyCommand> context) {
 		ShortTimeOfDailyCommand command = context.getCommand();
 		if(command.getData().isPresent()){
-			repo.updateByKey(command.getData().get());
+			repo.updateByKey(command.toDomain().get());
 		}
 	}
 

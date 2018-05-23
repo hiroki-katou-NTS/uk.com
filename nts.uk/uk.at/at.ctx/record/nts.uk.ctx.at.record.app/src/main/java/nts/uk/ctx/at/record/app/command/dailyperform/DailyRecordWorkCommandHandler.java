@@ -231,11 +231,24 @@ public class DailyRecordWorkCommandHandler {
 //				group.contains("M") || group.contains("O")
 //				){
 			IntegrationOfDaily calced = calcService.calculate(
-					new IntegrationOfDaily(command.getWorkInfo().getData(), command.getCalcAttr().getData(), command.getAffiliationInfo().getData(), 
-							command.getPcLogInfo().getData(), Arrays.asList(command.getErrors().getData()), command.getOutingTime().getData(), command.getBreakTime().getData(), 
-							command.getAttendanceTime().getData(), command.getAttendanceTimeByWork().getData(), command.getTimeLeaving().getData(), 
-							command.getShortWorkTime().getData(), command.getSpecificDateAttr().getData(), command.getAttendanceLeavingGate().getData(), 
-							command.getOptionalItem().getData(), command.getEditState().getData(), command.getTemporaryTime().getData()));
+					new IntegrationOfDaily(
+							command.getWorkInfo().toDomain(), 
+							command.getCalcAttr().toDomain(), 
+							command.getAffiliationInfo().toDomain(),
+							command.getBusinessType().toDomain(), 
+							command.getPcLogInfo().toDomain(), 
+							Arrays.asList(command.getErrors().toDomain()), 
+							command.getOutingTime().toDomain(), 
+							command.getBreakTime().toDomain(), 
+							command.getAttendanceTime().toDomain(), 
+							command.getAttendanceTimeByWork().toDomain(), 
+							command.getTimeLeaving().toDomain(), 
+							command.getShortWorkTime().toDomain(), 
+							command.getSpecificDateAttr().toDomain(), 
+							command.getAttendanceLeavingGate().toDomain(), 
+							command.getOptionalItem().toDomain(), 
+							command.getEditState().toDomain(), 
+							command.getTemporaryTime().toDomain()));
 //			command.getTimeLeaving().updateData(calced.getAttendanceLeave().orElse(null));
 			command.getAttendanceTime().updateData(calced.getAttendanceTimeOfDailyPerformance().orElse(null));
 //			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));

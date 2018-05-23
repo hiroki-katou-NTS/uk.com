@@ -10,7 +10,9 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.AffiliationInforOfDailyPerforFinder;
+import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.BusinessTypeOfDailyPerforFinder;
 import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.AffiliationInforOfDailyPerforDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.BusinessTypeOfDailyPerforDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.AttendanceLeavingGateOfDailyFinder;
 import nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.dto.AttendanceLeavingGateOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.CalcAttrOfDailyPerformanceFinder;
@@ -52,6 +54,8 @@ public class DailyRecordWorkFinder extends FinderFacade {
 	@Inject
 	private AffiliationInforOfDailyPerforFinder affiliInfoFinder;
 	@Inject
+	private BusinessTypeOfDailyPerforFinder businessTypeFinder;
+	@Inject
 	private AttendanceLeavingGateOfDailyFinder attendanceLeavingGateFinder;
 	@Inject
 	private OutingTimeOfDailyPerformanceFinder outingTimeFinder;
@@ -90,6 +94,7 @@ public class DailyRecordWorkFinder extends FinderFacade {
 				.withWorkInfo(workInfoFinder.find(employeeId, baseDate))
 				.withCalcAttr(calcAttrFinder.find(employeeId, baseDate))
 				.withAffiliationInfo(affiliInfoFinder.find(employeeId, baseDate))
+				.withBusinessType(businessTypeFinder.find(employeeId, baseDate))
 				// .withErrors(errorFinder.find(employeeId, baseDate))
 				.outingTime(outingTimeFinder.find(employeeId, baseDate))
 				.addBreakTime(breakItemFinder.finds(employeeId, baseDate))
@@ -116,6 +121,8 @@ public class DailyRecordWorkFinder extends FinderFacade {
 				calcAttrFinder.find(employeeId, baseDate));
 		Map<String, Map<GeneralDate, AffiliationInforOfDailyPerforDto>> affiliInfo = toMap(
 				affiliInfoFinder.find(employeeId, baseDate));
+		Map<String, Map<GeneralDate, BusinessTypeOfDailyPerforDto>> businessType = toMap(
+				businessTypeFinder.find(employeeId, baseDate));
 		// Map<String, Map<GeneralDate, EmployeeDailyPerErrorDto>> errors =
 		// toMap(errorFinder.find(employeeId, baseDate));
 		Map<String, Map<GeneralDate, OutingTimeOfDailyPerformanceDto>> outings = toMap(
@@ -154,6 +161,7 @@ public class DailyRecordWorkFinder extends FinderFacade {
 							.withWorkInfo(getValue(workInfos.get(em), start))
 							.withCalcAttr(getValue(calcAttrs.get(em), start))
 							.withAffiliationInfo(getValue(affiliInfo.get(em), start))
+							.withBusinessType(getValue(businessType.get(em), start))
 							// .withErrors(getValue(errors.get(em), start))
 							.outingTime(getValue(outings.get(em), start))
 							.addBreakTime(getListValue(breaks.get(em), start))

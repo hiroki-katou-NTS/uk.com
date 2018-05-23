@@ -140,15 +140,13 @@ public class TotalWorkingTimeDto {
 		return new TotalWorkingTime(toAttendanceTime(totalWorkingTime), toAttendanceTime(totalCalcTime),
 				toAttendanceTime(actualTime), withinStatutoryTime == null ? null : withinStatutoryTime.toDomain(),
 				excessOfStatutoryTime == null ? null : excessOfStatutoryTime.toDomain(),
-				ConvertHelper.mapTo(lateTime,
-								(c) -> new LateTimeOfDaily(
+				ConvertHelper.mapTo(lateTime, (c) -> new LateTimeOfDaily(
 											createTimeWithCalc(c.getLateTime()),
 											createTimeWithCalc(c.getLateDeductionTime()), new WorkNo(c.getWorkNo()),
 											createTimeValication(c.getBreakUse()),
 											new IntervalExemptionTime(null, null,
 												toAttendanceTime(c.getIntervalExemptionTime())))),
-				ConvertHelper.mapTo(leaveEarlyTime,
-								(c) -> new LeaveEarlyTimeOfDaily(
+				ConvertHelper.mapTo(leaveEarlyTime, (c) -> new LeaveEarlyTimeOfDaily(
 											createTimeWithCalc(c.getLeaveEarlyTime()),
 											createTimeWithCalc(c.getLeaveEarlyDeductionTime()), new WorkNo(c.getWorkNo()),
 											createTimeValication(c.getValicationUseTime()),
@@ -158,8 +156,7 @@ public class TotalWorkingTimeDto {
 				ConvertHelper.mapTo(goOutTimeSheet, c -> c.toDomain()), 
 				raisingSalaryTime == null ? null : raisingSalaryTime.toDomain(),
 				workTimes == null ? null : new WorkTimes(workTimes),
-				new TemporaryTimeOfDaily(ConvertHelper.mapTo(temporaryTime,
-								(c) -> new TemporaryFrameTimeOfDaily(new WorkNo(c.getWorkNo()),
+				new TemporaryTimeOfDaily(ConvertHelper.mapTo(temporaryTime, (c) -> new TemporaryFrameTimeOfDaily(new WorkNo(c.getWorkNo()),
 										toAttendanceTime(c.getTemporaryTime()),
 										toAttendanceTime(c.getTemporaryNightTime())))),
 				shortWorkTime == null ? null : new ShortWorkTimeOfDaily(

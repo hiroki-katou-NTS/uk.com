@@ -9,15 +9,21 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 public class EmployeeDailyPerErrorCommand extends DailyWorkCommonCommand {
 
 	@Getter
-	private EmployeeDailyPerError data;
+	private EmployeeDailyPerErrorDto data;
 
 	@Override
 	public void setRecords(AttendanceItemCommon item) {
-		this.data = item == null || !item.isHaveData() ? null : ((EmployeeDailyPerErrorDto) item).toDomain(getEmployeeId(), getWorkDate());
+		this.data = item == null || !item.isHaveData() ? null : (EmployeeDailyPerErrorDto) item;
 	}
 
 	@Override
 	public void updateData(Object data) {
-		this.data = (EmployeeDailyPerError) data;
+		if(data == null){ return; }
+		setRecords(EmployeeDailyPerErrorDto.getDto((EmployeeDailyPerError) data));
+	}
+
+	@Override
+	public EmployeeDailyPerError toDomain() {
+		return data == null ? null : data.toDomain(getEmployeeId(), getWorkDate());
 	}
 }
