@@ -231,10 +231,11 @@ public class DailyRecordWorkCommandHandler {
 //				group.contains("M") || group.contains("O")
 //				){
 			IntegrationOfDaily calced = calcService.calculate(
-					new IntegrationOfDaily(command.getWorkInfo().getData(), command.getCalcAttr().getData(), command.getAffiliationInfo().getData(), 
-							command.getPcLogInfo().getData(), Arrays.asList(command.getErrors().getData()), command.getOutingTime().getData(), command.getBreakTime().getData(), 
-							command.getAttendanceTime().getData(), command.getAttendanceTimeByWork().getData(), command.getTimeLeaving().getData(), 
-							command.getShortWorkTime().getData(), command.getSpecificDateAttr().getData(), command.getAttendanceLeavingGate().getData(), 
+					new IntegrationOfDaily(command.getWorkInfo().getData(), command.getCalcAttr().getData(), command.getAffiliationInfo().getData(),
+							command.getBusinessType().getData(), command.getPcLogInfo().getData(), Arrays.asList(command.getErrors().getData()), 
+							command.getOutingTime().getData(), command.getBreakTime().getData(), command.getAttendanceTime().getData(), 
+							command.getAttendanceTimeByWork().getData(), command.getTimeLeaving().getData(), command.getShortWorkTime().getData(), 
+							command.getSpecificDateAttr().getData(), command.getAttendanceLeavingGate().getData(), 
 							command.getOptionalItem().getData(), command.getEditState().getData(), command.getTemporaryTime().getData()));
 //			command.getTimeLeaving().updateData(calced.getAttendanceLeave().orElse(null));
 			command.getAttendanceTime().updateData(calced.getAttendanceTimeOfDailyPerformance().orElse(null));

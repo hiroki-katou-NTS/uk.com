@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommand;
+import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.BusinessTypeOfDailyPerformCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.AttendanceLeavingGateOfDailyCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.PCLogInfoOfDailyCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendancetime.AttendanceTimeOfDailyPerformCommand;
@@ -42,6 +43,10 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 	/** 所属情報： 日別実績の所属情報 */
 	@Getter
 	private final AffiliationInforOfDailyPerformCommand affiliationInfo = new AffiliationInforOfDailyPerformCommand();
+	
+	/** 所属情報： 日別実績の所属情報 */
+	@Getter
+	private final BusinessTypeOfDailyPerformCommand businessType = new BusinessTypeOfDailyPerformCommand();
 
 	/** エラー一覧： 社員の日別実績エラー一覧 */
 	// TODO: list?
@@ -113,7 +118,7 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 			command = this.affiliationInfo;
 			break;
 		case "D":
-			command = this.errors;
+			command = this.businessType;
 			break;
 		case "E":
 			command = this.outingTime;
@@ -168,6 +173,7 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 		this.affiliationInfo.setRecords(fullDto.getAffiliationInfo());
 		this.errors.setRecords(fullDto.getErrors());
 		this.outingTime.setRecords(fullDto.getOutingTime().orElse(null));
+		this.businessType.setRecords(fullDto.getBusinessType());
 		fullDto.getBreakTime().stream().forEach(c -> this.breakTime.setRecords(c));
 		this.attendanceTime.setRecords(fullDto.getAttendanceTime().orElse(null));
 		this.attendanceTimeByWork.setRecords(fullDto.getAttendanceTimeByWork().orElse(null));
@@ -189,6 +195,7 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 		this.workInfo.forEmployee(employeId);
 		this.calcAttr.forEmployee(employeId);
 		this.affiliationInfo.forEmployee(employeId);
+		this.businessType.forEmployee(employeId);
 		this.errors.forEmployee(employeId);
 		this.outingTime.forEmployee(employeId);
 		this.breakTime.forEmployee(employeId);
@@ -211,6 +218,7 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 		this.workInfo.withDate(date);
 		this.calcAttr.withDate(date);
 		this.affiliationInfo.withDate(date);
+		this.businessType.withDate(date);
 		this.errors.withDate(date);
 		this.outingTime.withDate(date);
 		this.breakTime.withDate(date);

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.raisesalarytime;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -7,9 +8,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrSheet;
 import nts.uk.ctx.at.record.dom.raisesalarytime.enums.SpecificDateAttr;
@@ -101,18 +104,24 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 
 	@Override
 	public List<SpecificDateAttrOfDailyPerfor> finds(List<String> employeeId, DatePeriod ymd) {
-		StringBuilder query = new StringBuilder();
-		query.append("SELECT a FROM KrcdtDaiSpeDayCla a ");
+		List<SpecificDateAttrOfDailyPerfor> result = new ArrayList<>();
+		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDaiSpeDayCla a ");
 		query.append("WHERE a.krcdtDaiSpeDayClaPK.sid IN :employeeId ");
 		query.append("AND a.krcdtDaiSpeDayClaPK.ymd <= :end AND a.krcdtDaiSpeDayClaPK.ymd >= :start");
-		return queryProxy().query(query.toString(), KrcdtDaiSpeDayCla.class).setParameter("employeeId", employeeId)
-				.setParameter("start", ymd.start()).setParameter("end", ymd.end()).getList().stream()
-				.collect(Collectors.groupingBy(c -> c.krcdtDaiSpeDayClaPK.sid + c.krcdtDaiSpeDayClaPK.ymd.toString()))
-				.entrySet().stream()
-				.map(c -> new SpecificDateAttrOfDailyPerfor(c.getValue().get(0).krcdtDaiSpeDayClaPK.sid,
-						c.getValue().stream().map(x -> specificDateAttr(x)).collect(Collectors.toList()),
-						c.getValue().get(0).krcdtDaiSpeDayClaPK.ymd))
-				.collect(Collectors.toList());
+		TypedQueryWrapper<KrcdtDaiSpeDayCla> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiSpeDayCla.class);
+		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
+			result.addAll(tQuery.setParameter("employeeId", empIds)
+								.setParameter("start", ymd.start())
+								.setParameter("end", ymd.end())
+								.getList().stream().collect(Collectors.groupingBy(
+										c -> c.krcdtDaiSpeDayClaPK.sid + c.krcdtDaiSpeDayClaPK.ymd.toString()))
+								.entrySet().stream()
+								.map(c -> new SpecificDateAttrOfDailyPerfor(c.getValue().get(0).krcdtDaiSpeDayClaPK.sid,
+													c.getValue().stream().map(x -> specificDateAttr(x)).collect(Collectors.toList()),
+													c.getValue().get(0).krcdtDaiSpeDayClaPK.ymd))
+								.collect(Collectors.toList()));
+		});
+		return result;
 	}
 
 	private SpecificDateAttrSheet specificDateAttr(KrcdtDaiSpeDayCla c) {

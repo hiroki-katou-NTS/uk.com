@@ -7,12 +7,17 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.infra.entity.affiliationinformation.KrcdtDaiAffiliationInf;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiLeavingWork;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiLeavingWorkPK;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWork;
@@ -231,13 +236,18 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 
 	@Override
 	public List<TimeLeavingOfDailyPerformance> finds(List<String> employeeIds, DatePeriod ymd) {
-		StringBuilder query = new StringBuilder();
-		query.append("SELECT a FROM KrcdtDaiLeavingWork a ");
+		List<TimeLeavingOfDailyPerformance> result = new ArrayList<>();
+		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDaiLeavingWork a ");
 		query.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId IN :employeeId ");
 		query.append("AND a.krcdtDaiLeavingWorkPK.ymd <= :end AND a.krcdtDaiLeavingWorkPK.ymd >= :start");
-		return queryProxy().query(query.toString(), KrcdtDaiLeavingWork.class).setParameter("employeeId", employeeIds)
-				.setParameter("start", ymd.start()).setParameter("end", ymd.end()).getList().stream()
-				.map(f -> f.toDomain()).collect(Collectors.toList());
+		TypedQueryWrapper<KrcdtDaiLeavingWork> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiLeavingWork.class);
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
+			result.addAll(tQuery.setParameter("employeeId", empIds)
+							.setParameter("start", ymd.start())
+							.setParameter("end", ymd.end())
+							.getList().stream().map(f -> f.toDomain()).collect(Collectors.toList()));
+		});
+		return result;
 	}
 
 	@Override

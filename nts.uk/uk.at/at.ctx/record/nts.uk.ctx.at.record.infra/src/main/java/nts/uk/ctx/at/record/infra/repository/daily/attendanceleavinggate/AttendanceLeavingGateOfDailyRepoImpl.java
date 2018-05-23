@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.daily.attendanceleavinggate;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -7,9 +8,11 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGate;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavingGateOfDailyRepo;
@@ -62,11 +65,15 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 		if (employeeId.isEmpty()) {
 			return Collections.emptyList();
 		}
-		return toList(this.queryProxy()
-				.query("SELECT al FROM KrcdtDayLeaveGate al WHERE al.id.sid IN :sid AND al.id.ymd <= :end AND al.id.ymd >= :start",
-						KrcdtDayLeaveGate.class)
-				.setParameter("end", baseDate.end()).setParameter("start", baseDate.start())
-				.setParameter("sid", employeeId));
+		List<AttendanceLeavingGateOfDaily> result = new ArrayList<>();
+		String query = "SELECT al FROM KrcdtDayLeaveGate al WHERE al.id.sid IN :sid AND al.id.ymd <= :end AND al.id.ymd >= :start";
+		TypedQueryWrapper<KrcdtDayLeaveGate> tQuery=  this.queryProxy().query(query, KrcdtDayLeaveGate.class);
+		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
+			result.addAll(toList(tQuery.setParameter("sid", empIds)
+										.setParameter("end", baseDate.end())
+										.setParameter("start", baseDate.start())));
+		});
+		return result;
 	}
 
 	@Override

@@ -8,8 +8,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
@@ -194,16 +197,19 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 
 	@Override
 	public List<BreakTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd) {
-		StringBuilder query = new StringBuilder();
-		query.append("SELECT a ");
-		query.append("FROM KrcdtDaiBreakTime a ");
+		List<BreakTimeOfDailyPerformance> result = new ArrayList<>();
+		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDaiBreakTime a ");
 		query.append("WHERE a.krcdtDaiBreakTimePK.employeeId IN :employeeId ");
 		query.append("AND a.krcdtDaiBreakTimePK.ymd <= :end AND a.krcdtDaiBreakTimePK.ymd >= :start ");
-		return queryProxy().query(query.toString(), KrcdtDaiBreakTime.class).setParameter("employeeId", employeeId)
-				.setParameter("end", ymd.end()).setParameter("start", ymd.start()).getList().stream()
-				.collect(Collectors
-						.groupingBy(c -> c.krcdtDaiBreakTimePK.employeeId + c.krcdtDaiBreakTimePK.ymd.toString()))
-				.entrySet().stream().map(c -> group(c.getValue())).flatMap(List::stream).collect(Collectors.toList());
+		TypedQueryWrapper<KrcdtDaiBreakTime> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiBreakTime.class);
+		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
+			result.addAll(tQuery.setParameter("employeeId", empIds)
+					.setParameter("end", ymd.end())
+					.setParameter("start", ymd.start()).getList().stream()
+					.collect(Collectors.groupingBy(c -> c.krcdtDaiBreakTimePK.employeeId + c.krcdtDaiBreakTimePK.ymd.toString()))
+					.entrySet().stream().map(c -> group(c.getValue())).flatMap(List::stream).collect(Collectors.toList()));
+		});
+		return result;
 	}
 
 	@Override

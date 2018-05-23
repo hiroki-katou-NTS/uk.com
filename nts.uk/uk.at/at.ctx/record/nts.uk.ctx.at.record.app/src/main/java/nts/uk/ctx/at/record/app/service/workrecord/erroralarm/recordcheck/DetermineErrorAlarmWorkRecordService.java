@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.ConditionAlarmError;
@@ -85,5 +87,25 @@ public class DetermineErrorAlarmWorkRecordService implements ErAlCheckService {
 			}));
 		}
 		return new HashMap<>();
+	}
+
+	@Override
+	public List<EmployeeDailyPerError> checkErrorFor(String companyId, String employeeID, GeneralDate date, ErrorAlarmWorkRecord erAl) {
+		if (erAl.getErrorAlarmCondition() == null || erAl.getErrorDisplayItem() == null) {
+			return new ArrayList<>();
+		}
+		return workRecordCheckService.check(date, Arrays.asList(employeeID), erAl.getErrorAlarmCondition()).entrySet().stream()
+				.filter(ae -> isError(ae.getValue())).map(ae -> {
+					return new EmployeeDailyPerError(companyId, employeeID, date,
+							erAl.getCode(),
+							Arrays.asList(erAl.getErrorDisplayItem().intValue()));
+				}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<EmployeeDailyPerError> checkErrorFor(String companyId, String employeeID, GeneralDate date, ErrorAlarmWorkRecord erAl,
+			IntegrationOfDaily record) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
