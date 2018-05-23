@@ -29,7 +29,7 @@ public class AddEmployeeCommand {
 
 	private final List<ItemsByCategory> inputs;
 	
-	public Optional<ItemsByCategory> getCategory(String categoryCode) {
+	public Optional<ItemsByCategory> getCategoryData(String categoryCode) {
 		return this.inputs.stream().filter(itemByCategory -> itemByCategory.getCategoryCd().equals(categoryCode)).findFirst();
 	}
 	

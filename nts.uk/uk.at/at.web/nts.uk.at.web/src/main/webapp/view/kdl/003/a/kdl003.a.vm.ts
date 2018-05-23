@@ -560,7 +560,7 @@ module nts.uk.at.view.kdl003.a {
     
                         // Set shared data.
                         let workTypeName = self.getWorkTypeName(workTypeCode);
-                        let workTimeName = self.getWorkTimeName(workTimeCode);
+                        let workTimeName = '';
                         let returnedData = {
                             selectedWorkTypeCode: workTypeCode,
                             selectedWorkTypeName: workTypeName,

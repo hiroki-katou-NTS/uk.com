@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.pub.attendanceitemname.AttendanceItemPub;
 import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.AttendanceItemNameAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.MonthlyAttendanceItemNameDto;
 
 @Stateless
 public class AttendanceItemNameRecFinder implements AttendanceItemNameAdapter{
@@ -23,4 +24,12 @@ public class AttendanceItemNameRecFinder implements AttendanceItemNameAdapter{
 				.collect(Collectors.toMap(c -> c.getAttendanceItemId(), c -> c.getAttendanceItemName()));
 	}
 
+	@Override
+	public List<MonthlyAttendanceItemNameDto> getMonthlyAttendanceItemName(List<Integer> dailyAttendanceItemIds) {
+		List<MonthlyAttendanceItemNameDto> data = attendanceItemPub.getAttendanceItemName(dailyAttendanceItemIds, 2)
+				.stream()
+				.map(x -> new MonthlyAttendanceItemNameDto(x.getAttendanceItemId(), x.getAttendanceItemName(), x.getAttendanceItemDisplayNumber()))
+				.collect(Collectors.toList());
+		return data;
+	}
 }

@@ -15,10 +15,19 @@ public class AuthorityFormatSheet {
 
 	private String companyId;
 
+	/**
+	 * 日別実績フォーマットコード
+	 */
 	private DailyPerformanceFormatCode dailyPerformanceFormatCode;
 
+	/**
+	 * シートNO
+	 */
 	private BigDecimal sheetNo;
 
+	/**
+	 * 日別実績のフォーマットのシート名
+	 */
 	private String sheetName;
 
 	public AuthorityFormatSheet(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode,

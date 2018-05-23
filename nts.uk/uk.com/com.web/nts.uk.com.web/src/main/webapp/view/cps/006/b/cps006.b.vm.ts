@@ -1,4 +1,5 @@
 module nts.uk.com.view.cps006.b.viewmodel {
+
     import alert = nts.uk.ui.dialog.alert;
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
@@ -321,6 +322,8 @@ module nts.uk.com.view.cps006.b.viewmodel {
                     return getText('Enum_StringItemType_NUMERIC');
                 case 5:
                     return getText('Enum_StringItemType_KANA');
+                 case 6:
+                    return getText('Enum_StringItemType_CARDNO');
             }
         }
 

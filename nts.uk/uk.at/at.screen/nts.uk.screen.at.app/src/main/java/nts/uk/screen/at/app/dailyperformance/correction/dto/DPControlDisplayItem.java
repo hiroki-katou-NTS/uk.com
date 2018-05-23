@@ -9,8 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.Data;
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.classification.EnumCodeName;
 
@@ -108,12 +110,17 @@ public class DPControlDisplayItem {
 				
 			});
 		});
+		this.lstSheet = this.lstSheet.stream().filter(x -> x.getColumns().size() > 0).collect(Collectors.toList());
 		this.lstSheet.forEach(x -> {
 			if(showButton){
 				x.addColumn("Submitted");
 				x.addColumn("Application");
 			}
 		});
+		
+		if(this.lstSheet.size() == 0){
+			throw new BusinessException("Msg_1261");
+		}
 	}
 	
 	public void setHeaderText(List<DPAttendanceItem> lstAttendanceItem) {
