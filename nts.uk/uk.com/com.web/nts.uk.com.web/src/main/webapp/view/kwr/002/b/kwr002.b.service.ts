@@ -3,6 +3,7 @@ module nts.uk.com.view.kwr002.b.service {
     const paths = {
         getAllARES: "com/function/attendancerecord/export/setting/getAllAttendanceRecExpSet",
         getARESByCode: "com/function/attendancerecord/export/setting/getAttendanceRecExpSet/"
+        // addARES: "com/function/attendancerecord/export/setting/addAttendanceRecExpSet"
     }
 
     export function getAllARES(): JQueryPromise<Array<attendanceRecordExportSetting>> {
@@ -12,4 +13,8 @@ module nts.uk.com.view.kwr002.b.service {
     export function getARESByCode(code: string): JQueryPromise<attendanceRecordExportSetting> {
         return nts.uk.request.ajax("at", paths.getARESByCode + code);
     }
+
+    // export function addARES(command: any): JQueryPromise<void> {
+    //     return nts.uk.request.ajax("at", paths.addARES, command);
+    // }
 }

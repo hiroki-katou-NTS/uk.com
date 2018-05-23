@@ -6,7 +6,7 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
 			nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode
@@ -23,13 +23,13 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- B1_1 -->
-				<button tabindex="1" data-bind="click: innit">#{i18n.getText('KWR002_30')}</button>
+				<button tabindex="1" data-bind="click: onNew">#{i18n.getText('KWR002_30')}</button>
 				<!-- B1_2 -->
-				<button tabindex="2" class="proceed">#{i18n.getText('KWR002_31')}</button>
+				<button tabindex="2" data-bind="click: onRegister" class="proceed">#{i18n.getText('KWR002_31')}</button>
 				<!-- B1_3 -->
-				<button tabindex="3" class="danger">#{i18n.getText('KWR002_32')}</button>
+				<button tabindex="3" data-bind="click: onDelete" class="danger">#{i18n.getText('KWR002_32')}</button>
 				<!-- B1_4 -->
-				<button tabindex="4">#{i18n.getText('KWR002_33')}</button>
+				<button tabindex="4" data-bind="click: onClose">#{i18n.getText('KWR002_33')}</button>
 				<!-- <button tabindex="5">#{i18n.getText('B1_5')}</button> -->
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
@@ -87,9 +87,11 @@
 
 									<td colspan="2" class="th-col2">
 										<div>
-											<input id="B6_2" tabindex="7"
+											<!-- b6-2 -->
+											<input id="code" tabindex="7"
 												data-bind="ntsTextEditor: {name: '#{i18n.getText('KWR002_41')}', value:code, constraint: 'ExportSettingCode', option : { width : '50px'}}" />
-											<input id="B6_3" tabindex="8"
+											<!-- b6-3 -->
+											<input id="name" tabindex="8"
 												data-bind="ntsTextEditor: {name: '#{i18n.getText('KWR002_42')}', value:name, constraint: 'ExportSettingName', option : { width : '200px'}}" />
 										</div>
 									</td>
