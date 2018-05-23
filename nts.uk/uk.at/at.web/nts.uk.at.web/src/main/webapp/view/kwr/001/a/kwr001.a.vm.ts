@@ -282,6 +282,9 @@ module nts.uk.at.view.kwr001.a {
                             case OPEN_SCREEN_C:
                                 self.openScreenC();
                                 break;
+                            case "Msg_1141":
+                                nts.uk.ui.dialog.error({ messageId: "Msg_1141"});
+                                break;
                             default:
                                 break;
                         }
@@ -334,7 +337,9 @@ module nts.uk.at.view.kwr001.a {
                     self.endDatepicker(data.endDate);
                     self.ccg001ComponentOption.baseDate = moment.utc(self.endDatepicker(), DATE_FORMAT_YYYY_MM_DD).toISOString();
                     dfd.resolve(data);
-                })                
+                }).fail(function(error) {
+                   nts.uk.ui.dialog.alertError(error);     
+                });                
                 return dfd.promise();
             }
             

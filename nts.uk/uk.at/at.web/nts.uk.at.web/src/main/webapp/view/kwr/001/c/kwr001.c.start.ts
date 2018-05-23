@@ -1,5 +1,9 @@
 module nts.uk.at.view.kwr001.c {
+    
+    import blockUI = nts.uk.ui.block;
+    
     __viewContext.ready(function() {
+        blockUI.grayout();
         var screenModel = new c.viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
@@ -8,6 +12,7 @@ module nts.uk.at.view.kwr001.c {
             } else {
                 $('#C3_3').focus();    
             }
+            blockUI.clear();
         });
     });
 }

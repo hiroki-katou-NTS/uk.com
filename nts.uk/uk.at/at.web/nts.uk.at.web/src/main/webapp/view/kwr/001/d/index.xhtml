@@ -36,29 +36,29 @@
 						name: '#[KWR001_79]',
 						options: itemList,
 						optionsValue: 'code',
-						visibleItemsCount: 5,
+						visibleItemsCount: 10,
 						value: selectedCode,
 						optionsText: 'name',
 						selectFirstIfNull: true,
 						columns: [
 							{ prop: 'code', length: 6 },
-							{ prop: 'name', length: 8, lengthDropDown: 9 },
+							{ prop: 'name', length: 8 },
 						]}"></div>
 				</div>
 				<div class="row">
 					<!-- D1_5 -->
-					<div class="name" data-bind="ntsFormLabel: {constraint: '', require: true}">#{i18n.getText('KWR001_80')}</div>
+					<div class="name" data-bind="ntsFormLabel: {constraint: ['OutputItemSettingCode', 'OutputItemSettingName'], required: true}">#{i18n.getText('KWR001_80')}</div>
 					<!-- D1_6 -->
-					<input tabindex="2" class="D1_6" data-bind="ntsTextEditor:{
+					<input tabindex="2" class="D1_6 save-error1" data-bind="ntsTextEditor:{
 																	name: '#[KWR001_81]',
 																	value: D1_6_value,
-																	require: true,
+																	required: true,
 																	constraint: 'OutputItemSettingCode'}" />
 					<!-- D1_7 -->
-					<input tabindex="3" class="D1_7" data-bind="ntsTextEditor:{
+					<input tabindex="3" class="D1_7 save-error1" data-bind="ntsTextEditor:{
 																	name: '#[KWR001_82]',
 																	value: D1_7_value,
-																	require: true,
+																	required: true,
 																	constraint: 'OutputItemSettingName'}" />
 				</div>
 				<hr/>

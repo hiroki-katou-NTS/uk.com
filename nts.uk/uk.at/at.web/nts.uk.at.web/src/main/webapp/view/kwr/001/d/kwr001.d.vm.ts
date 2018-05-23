@@ -49,10 +49,19 @@ module nts.uk.at.view.kwr001.d {
              * execute copy
             */
             executeCopy(): void {
-                let self = this;
+                let self = this,
+                    dataReturnScrC: any = {};
+                $('.save-error1').ntsError('validate');
+                $('.save-error1').ntsError('validate');
+                if (nts.uk.ui.errors.hasError()) {
+                    return;    
+                }
                 service.executeCopy(self.D1_6_value(), self.selectedCode()).done(function(data: any) {
                     console.log(data);
-                    nts.uk.ui.windows.setShared('KWR001_D', data);
+                    dataReturnScrC.lstAtdChoose = data;
+                    dataReturnScrC.codeCopy = self.D1_6_value();
+                    dataReturnScrC.nameCopy = self.D1_7_value();
+                    nts.uk.ui.windows.setShared('KWR001_D', dataReturnScrC);
                     nts.uk.ui.windows.close();
                 }).fail(function(err) {
                     nts.uk.ui.dialog.error(err);

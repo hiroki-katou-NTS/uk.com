@@ -195,7 +195,10 @@ module nts.uk.at.view.kwr001.c {
                 var self = this;
                 nts.uk.ui.windows.setShared('KWR001_D', self.currentCodeList(), true);
                 nts.uk.ui.windows.sub.modal('/view/kwr/001/d/index.xhtml').onClosed(function(): any {
-                    nts.uk.ui.windows.getShared('KWR001_D');
+                    self.currentCodeList('');
+                    self.currentCodeListSwap(nts.uk.ui.windows.getShared('KWR001_D').lstAtdChoose);
+                    self.C3_2_value(nts.uk.ui.windows.getShared('KWR001_D').codeCopy);
+                    self.C3_3_value(nts.uk.ui.windows.getShared('KWR001_D').nameCopy);
                 });
             }
             
@@ -204,6 +207,12 @@ module nts.uk.at.view.kwr001.c {
             */
             private saveData(): JQueryPromise<any> {
                 let self = this;
+                
+                $('.save-error').ntsError('validate');
+                if (nts.uk.ui.errors.hasError()) {
+                    return;    
+                }
+                
                 let dfd = $.Deferred();
                 let command: any = {};
                 command.itemCode = self.C3_2_value();

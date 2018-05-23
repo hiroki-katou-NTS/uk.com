@@ -65,20 +65,20 @@
 							<div class="right">
 								<div class="row">
 									<!-- C3_1 -->
-									<div class="label-name" data-bind="ntsFormLabel: { constraint: 'OutputItemSettingCode', 
+									<div class="label-name" data-bind="ntsFormLabel: { constraint: ['OutputItemSettingCode', 'OutputItemSettingName'], 
 																					   required: true,
-																					   name: '#[KWR001_54]', }">#{i18n.getText('KWR001_54')}</div>
+																					   name: '#[KWR001_54]'}">#{i18n.getText('KWR001_54')}</div>
 									<!-- C3_2 -->
-									<input id="C3_2" tabindex="7" class="C3_2" data-bind="ntsTextEditor:{
+									<input id="C3_2" tabindex="7" class="C3_2 save-error" data-bind="ntsTextEditor:{
 											name: '#[KWR001_55]',
-											require: true,
+											required: true,
 											value: C3_2_value,
 											constraint: 'OutputItemSettingCode',
 											enable: enableCodeC3_2}"/>
 									<!-- C3_3 -->
-									<input id="C3_3" class="C3_3" tabindex="8" data-bind="ntsTextEditor:{
+									<input id="C3_3" class="C3_3 save-error" tabindex="8" data-bind="ntsTextEditor:{
 											name: '#[KWR001_56]',
-											require: true,
+											required: true,
 											value: C3_3_value,
 											constraint: 'OutputItemSettingName'}" />
 								</div>

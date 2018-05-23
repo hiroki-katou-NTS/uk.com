@@ -78,11 +78,11 @@ public class JpaOutputItemDailyWorkScheduleSetMemento implements OutputItemDaily
 							= lstDisplayAttendance.stream().map(obj -> {
 																KfnmtAttendanceDisplay entity = new KfnmtAttendanceDisplay();
 																KfnmtAttendanceDisplayPK key = new KfnmtAttendanceDisplayPK();
+																key.setCid(this.kfnmtItemWorkSchedule.getId().getCid());
+																key.setItemCode(this.kfnmtItemWorkSchedule.getId().getItemCode());
+																key.setOrderNo(obj.getOrderNo());
 																entity.setId(key);
 																entity.setAtdDisplay(new BigDecimal(obj.getAttendanceDisplay()));
-																entity.getId().setCid(this.kfnmtItemWorkSchedule.getId().getCid());
-																entity.getId().setItemCode(this.kfnmtItemWorkSchedule.getId().getItemCode());
-																entity.getId().setOrderNo(obj.getOrderNo());
 																return entity;
 															}).collect(Collectors.toList());
 		kfnmtItemWorkSchedule.setLstKfnmtAttendanceDisplay(lstKfnmtAttendanceDisplay);
@@ -97,11 +97,11 @@ public class JpaOutputItemDailyWorkScheduleSetMemento implements OutputItemDaily
 							= lstRemarkContent.stream().map(obj -> {
 																KfnmtPrintRemarkCont entity = new KfnmtPrintRemarkCont();
 																KfnmtPrintRemarkContPK key = new KfnmtPrintRemarkContPK();
+																key.setCid(this.kfnmtItemWorkSchedule.getId().getCid());
+																key.setItemCode(this.kfnmtItemWorkSchedule.getId().getItemCode());
+																key.setPrintItem(obj.getPrintItem().value);
 																entity.setId(key);
 																entity.setUseCls(new BigDecimal(obj.isUsedClassification() == true ? 1 : 0));
-																entity.getId().setCid(this.kfnmtItemWorkSchedule.getId().getCid());
-																entity.getId().setItemCode(this.kfnmtItemWorkSchedule.getId().getItemCode());
-																entity.getId().setPrintItem(obj.getPrintItem().value);
 																return entity;
 															}).collect(Collectors.toList());
 		kfnmtItemWorkSchedule.setLstKfnmtPrintRemarkCont(lstKfnmtAttendanceDisplay);		

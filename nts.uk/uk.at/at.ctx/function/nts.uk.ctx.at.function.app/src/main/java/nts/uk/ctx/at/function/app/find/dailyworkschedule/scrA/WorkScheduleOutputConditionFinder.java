@@ -124,7 +124,7 @@ public class WorkScheduleOutputConditionFinder {
 			if (optPermissionOfEmploymentForm.isPresent()) {
 				dto.setStrReturn(OPEN_SCREEN_C);
 			} else {
-				throw new BusinessException("Msg_1141");
+				dto.setStrReturn("Msg_1141");
 			}
 		}
 		
