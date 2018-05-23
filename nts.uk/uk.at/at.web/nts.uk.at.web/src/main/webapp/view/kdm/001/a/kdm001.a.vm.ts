@@ -6,6 +6,8 @@ module nts.uk.at.view.kdm001.a.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
 
+        closureID: string;
+        selectedEmployeeObject: any;
         periodOptionItem: KnockoutObservableArray<ItemModel>;
         selectedPeriodItem: KnockoutObservable<number>;
         dateValue: KnockoutObservable<any>;
@@ -103,13 +105,17 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
             
             self.selectedItem.subscribe(x =>{
+                self.selectedEmployeeObject = _.find(self.employeeInputList(), item => { return item.id === x; });
                 self.updateDataList();
             });
         }
         
         openNewSubstituteData() {
+            let self = this;
+            setShared('KDM001_A_PARAMS', {selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID});
+            
             modal("/view/kdm/001/d/index.xhtml").onClosed(function() {
-                //TODO
+                self.updateDataList();
                 $('#compositePayOutSubMngDataGrid').focus();
             });
         }
@@ -120,6 +126,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             let isPeriod = self.selectedPeriodItem() == 0 ? false : true;
             let startDate = isPeriod ? moment.utc(self.dateValue().startDate, 'YYYY/MM/DD').format('YYYY-MM-DD') : null;
             let endDate = isPeriod ? moment.utc(self.dateValue().endDate, 'YYYY/MM/DD').format('YYYY-MM-DD') : null;
+            
             service.getFurikyuMngDataExtraction(empId, startDate, endDate, isPeriod).done(function(res: any) {          
                 console.log(res);
                 let arrayResponse = res.compositePayOutSubMngData;
@@ -132,6 +139,9 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 self.compositePayOutSubMngData = ko.observableArray(compositePayOutSubMngDataArray);
                 self.dispTotalRemain(res.numberOfDayLeft);
                 self.expirationDate(res.expirationDate);
+                self.closureID = res.closureID;
+                
+                // update grid
                 self.showDataGrid();
             }).fail(function(res: any) {
                 console.log(res);
@@ -206,16 +216,16 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     { headerText: 'ID', key: 'id', dataType: 'string', width: '0px', hidden: true },
                     { headerText: 'linked', key: 'isLinked', dataType: 'string', width: '0px', hidden: true },
                     { headerText: getText('KDM001_8'), template: '<div style="float:right"> ${dayoffDatePyout} </div>', key: 'dayoffDatePyout', dataType: 'string', width: '120px' },
-                    { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${occurredDays} </div>', key: 'occurredDays', dataType: 'string', width: '100px' },
-                    { headerText: getText('KDM001_124'), key: 'payoutTied', dataType: 'string', width: '100px' },
+                    { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${occurredDays} </div>', key: 'occurredDays', dataType: 'string', width: '80px' },
+                    { headerText: getText('KDM001_124'), key: 'payoutTied', dataType: 'string', width: '80px' },
                     { headerText: getText('KDM001_10'), template: '<div style="float:right"> ${dayoffDateSub} </div>', key: 'dayoffDateSub', dataType: 'string', width: '120px' },
-                    { headerText: getText('KDM001_11'), template: '<div style="float:right"> ${requiredDays} </div>', key: 'requiredDays', dataType: 'string', width: '100px' },
-                    { headerText: getText('KDM001_124'), key: 'subTied', dataType: 'string', width: '100px' },
-                    { headerText: getText('KDM001_12'), template: '<div style="float:right"> ${unUsedDaysInGrid} </div>', key: 'unUsedDaysInGrid', dataType: 'Number', width: '100px' },
-                    { headerText: getText('KDM001_13'), template: '<div style="float:right"> ${expriedDaysInGrid} </div>', key: 'expriedDaysInGrid', dataType: 'Number', width: '100px' },
-                    { headerText: getText('KDM001_14'), template: '<div style="float:right"> ${lawAtr} </div>', key: 'lawAtr', dataType: 'string', width: '100px' },
-                    { headerText: '', key: 'pegSetting', dataType: 'string', width: '85px', unbound: true, ntsControl: 'ButtonPegSetting' },
-                    { headerText: '', key: 'isLinked', dataType: 'string', width: '55px', unbound: true, ntsControl: 'ButtonCorrection' }
+                    { headerText: getText('KDM001_11'), template: '<div style="float:right"> ${requiredDays} </div>', key: 'requiredDays', dataType: 'string', width: '80px' },
+                    { headerText: getText('KDM001_124'), key: 'subTied', dataType: 'string', width: '80px' },
+                    { headerText: getText('KDM001_12'), template: '<div style="float:right"> ${unUsedDaysInGrid} </div>', key: 'unUsedDaysInGrid', dataType: 'Number', width: '80px' },
+                    { headerText: getText('KDM001_13'), template: '<div style="float:right"> ${expriedDaysInGrid} </div>', key: 'expriedDaysInGrid', dataType: 'Number', width: '80px' },
+                    { headerText: getText('KDM001_14'), template: '<div style="float:left"> ${lawAtr} </div>', key: 'lawAtr', dataType: 'string', width: '100px' },
+                    { headerText: '', key: 'link', dataType: 'string', width: '85px', unbound: true, ntsControl: 'ButtonPegSetting' },
+                    { headerText: '', key: 'edit', dataType: 'string', width: '55px', unbound: true, ntsControl: 'ButtonCorrection' }
                 ],
                 features: [
                     {
@@ -231,37 +241,41 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             });
             
             _.forEach(self.compositePayOutSubMngData(), function(value) {
-                if (value.isLinked == 1){
+                if (value.isLinked){
                     let rowId = value.id;
-                    $("#compositePayOutSubMngDataGrid").ntsGrid("disableNtsControlAt", rowId, 'isLinked', 'Button');
+                    $("#compositePayOutSubMngDataGrid").ntsGrid("disableNtsControlAt", rowId, 'edit', 'Button');
                 }
             });
         }
         
         pegSetting(value) {
+            let self = this;
             let selectedRowData = value;
-            setShared('PEGSETTING_PARAMS', value);
-            if (value.substituedWorkingDate.length>0) {
+            setShared('KDM001_EFGH_PARAMS', {rowValue: value, selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID});
+            
+            if (value.dayoffDatePyout.length = 0) {
                 modal("/view/kdm/001/e/index.xhtml").onClosed(function() {
-                    //location.reload();
+                    self.updateDataList();
                 });
             } else {
                 modal("/view/kdm/001/f/index.xhtml").onClosed(function() {
-                    //location.reload();
+                    self.updateDataList();
                 });
             }
         }
         
         doCorrection(value) {
+            let self = this;
             let selectedRowData = value;
-            setShared('CORRECTION_PARAMS', value);
-            if (value.substituedWorkingDate.length>0) {
+            setShared('KDM001_EFGH_PARAMS', {rowValue: value, selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID});
+            
+            if (value.dayoffDatePyout.length > 0) {
                 modal("/view/kdm/001/g/index.xhtml").onClosed(function() {
-                    //location.reload();
+                    self.updateDataList();
                 });
             } else {
                 modal("/view/kdm/001/h/index.xhtml").onClosed(function() {
-                    //location.reload();
+                    self.updateDataList();
                 });
             }
         }
@@ -367,6 +381,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
     }
     
     export class CompositePayOutSubMngData {
+        id: string;
         payoutId: string;
         cID: string;
         sID: string;
@@ -414,6 +429,8 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             this.subTied = params.subTied ? "有" : "";
             
             if ((params.payoutId != null) && (params.payoutId != "")) {
+                this.id = params.payoutId;
+                
                 if (moment.utc(params.expiredDate, 'YYYY/MM/DD').diff(moment.utc()) > 0) {
                     this.unUsedDaysInGrid = params.unUsedDays;
                     this.expriedDaysInGrid = "";
@@ -422,6 +439,8 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     this.expriedDaysInGrid = params.unUsedDays;
                 }
             } else if ((params.subOfHDID != null) && (params.subOfHDID != "")) {
+                this.id = params.subOfHDID;
+                
                 this.unUsedDaysInGrid = params.remainDays * (-1);
                 this.expriedDaysInGrid = "";
             }
