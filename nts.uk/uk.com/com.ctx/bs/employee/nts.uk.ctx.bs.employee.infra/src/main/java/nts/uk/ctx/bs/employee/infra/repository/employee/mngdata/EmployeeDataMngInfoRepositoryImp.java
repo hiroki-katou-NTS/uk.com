@@ -396,7 +396,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	// laitv code start
 
-	@Override
+/*@Override
 	public List<EmployeeDataMngInfo> getByListEmployeeId(List<String> listSid) {
 		// check exist input
 		if (CollectionUtil.isEmpty(listSid)) {
@@ -407,7 +407,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				.setParameter("listSid", listSid).getList(c -> toDomain(c));
 
 		return result;
-	}
+	}*/
 
 	@Override
 	public void updateAfterRemove(EmployeeDataMngInfo domain) {

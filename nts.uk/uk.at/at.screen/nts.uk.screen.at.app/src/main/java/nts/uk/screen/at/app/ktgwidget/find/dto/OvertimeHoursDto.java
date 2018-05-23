@@ -1,16 +1,25 @@
 package nts.uk.screen.at.app.ktgwidget.find.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import java.util.List;
 
-@Getter
-@Setter
-@AllArgsConstructor
+
+import lombok.Value;
+import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
+
+@Value
+
 public class OvertimeHoursDto {
 	
-	private int closureInit;
+	List<ClosureResultModel> listclosureID;
 	
 	private OvertimeHours overtimeHours;
+
+	public OvertimeHoursDto(List<ClosureResultModel> listclosureID, OvertimeHours overtimeHours) {
+		super();
+		this.listclosureID = listclosureID;
+		this.overtimeHours = overtimeHours;
+	}
+
+	
 	
 }
