@@ -38,6 +38,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
 
 
 
+
         constructor() {
             var self = this;
 
@@ -56,13 +57,10 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             self.sealName4 = ko.observable('');
             self.sealName5 = ko.observable('');
             self.sealName6 = ko.observable('');
-
-
             self.currentCode = ko.observable(0);
-            //            self.columns = ko.observableArray([
-            //                { headerText: nts.uk.resource.getText('KWR002_86'), key: 'attendanceCode', width: 100 },
-            //                { headerText: nts.uk.resource.getText('KWR002_87'), key: 'name', formatter: _.escape, width: 200 }
-            //            ]);
+
+            console.log(self.attendanceCode());
+
             this.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText('KWR002_86'), prop: 'attendanceItemId', width: 100 },
                 { headerText: nts.uk.resource.getText('KWR002_87'), prop: 'attendanceItemName', width: 200 }
@@ -91,9 +89,18 @@ module nts.uk.com.view.kwr002.c.viewmodel {
 
             $('.sub').click((element) => {
 
+                //                console.log($(element).attr('id'));
+
                 var bind = element.currentTarget.dataset.bind;
 
-                var columnIndex: number = bind.substr(bind.indexOf('.') - 2, 1);
+                var openSign: number = bind.indexOf('[');
+                var closeSign: number = bind.indexOf(']');
+                var columnIndex: number;
+                if (closeSign - openSign > 2)
+                    columnIndex = bind.substr(bind.indexOf('.') - 3, 2);
+                else
+                    columnIndex = bind.substr(bind.indexOf('.') - 2, 1);
+
 
                 var position = bind.substr(bind.indexOf('.') + 1);
 
@@ -103,7 +110,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
 
                 var exportAtr: number;
 
-                 var attItem : model.AttendanceRecExp ;
+                var attItem: model.AttendanceRecExp;
                 if (position == "upperPosition") {
                     position = 1;
                 }
@@ -126,21 +133,21 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                     attItem = self.attendanceRecExpMonthly()[columnIndex];
                 }
 
-                var attendanceItemTemp : model.AttendanceRecItem = new model.AttendanceRecItem("",0,"",columnIndex,position,exportAtr,null,0);
-               
-                var index : number = self.findAttendanceRecItem(attendanceItemTemp);
-                if(index != -1){
-                    setShared('attendanceItem', self.attendanceRecItemList()[index],true);   
+                var attendanceItemTemp: model.AttendanceRecItem = new model.AttendanceRecItem("", 0, "", columnIndex, position, exportAtr, null, 0);
+
+                var index: number = self.findAttendanceRecItem(attendanceItemTemp);
+                if (index != -1) {
+                    setShared('attendanceItem', self.attendanceRecItemList()[index], true);
                 }
                 else {
-                setShared('attendanceItem', {
-                    attendanceItemName: attendanceItemName,
-                    layoutCode: Number(self.attendanceCode()),
-                    layoutName: self.attendanceName(),
-                    columnIndex: columnIndex,
-                    position: position,
-                    exportAtr: exportAtr
-                }, true)
+                    setShared('attendanceItem', {
+                        attendanceItemName: attendanceItemName,
+                        layoutCode: Number(self.attendanceCode()),
+                        layoutName: self.attendanceName(),
+                        columnIndex: columnIndex,
+                        position: position,
+                        exportAtr: exportAtr
+                    }, true)
                 }
                 var link: string;
                 if (exportAtr == 1 && columnIndex <= 6) link = '/view/kwr/002/d/index.xhtml';
@@ -171,11 +178,11 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                         if (exportAtr == 1) {
                             if (position == 1)
                                 self.attendanceRecExpDaily()[columnIndex].upperPosition = attendanceItem.attendanceItemName;
-                            self.attendanceRecExpDaily()[columnIndex].lowwerPosition = attendanceItem.attendanceItemName;
+                            else self.attendanceRecExpDaily()[columnIndex].lowwerPosition = attendanceItem.attendanceItemName;
                         } else {
                             if (position == 1)
                                 self.attendanceRecExpMonthly()[columnIndex].upperPosition = attendanceItem.attendanceItemName;
-                            self.attendanceRecExpMonthly()[columnIndex].lowwerPosition = attendanceItem.attendanceItemName;
+                            else self.attendanceRecExpMonthly()[columnIndex].lowwerPosition = attendanceItem.attendanceItemName;
                         }
 
 
@@ -184,9 +191,9 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                             attendanceItem.columnIndex, attendanceItem.position, attendanceItem.exportAtr,
                             attendanceItem.attendanceId, attendanceItem.attribute)
                         self.updateAttendanceRecItemList(item);
+                   
+                        $(element).load(window.location.href + element);
                     }
-
-
                 })
 
             });
@@ -297,6 +304,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
 
                     self.attendanceItemList(self.attendanceItemListDaily());
                 }
+                console.log(self.attendanceCode());
                 dfd.resolve();
             })
 

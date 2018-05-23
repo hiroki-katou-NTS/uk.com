@@ -9,7 +9,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 960, height: 520 };</script>
+			<script>var dialogSize = { width: 1350, height: 720 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName
 			</com:ValidatorScript>
@@ -25,8 +25,8 @@
 					<span style="margin-right: 15px"
 						data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KWR002_60')}</span>
 					<span class="label" style="margin-right: 5px"
-						data-bind="attendanceCode">01</span> <span class="label"
-						data-bind="attendanceName">Default Name 1</span>
+						data-bind="text:attendanceCode"></span> <span class="label"
+						data-bind="text:attendanceName"></span>
 				</div>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
@@ -316,7 +316,7 @@
 										<div tabindex="58" class="panel panel-gray-bg sub bot" data-bind="text: attendanceRecExpMonthly()[12].lowwerPosition"></div>
 									</div>
 								</div>
-							</div>
+							</div>							
 						</div>
 					</div>
 				</div>
@@ -325,8 +325,8 @@
 			<hr></hr>
 			<div id="foot-area" class="fixed-flex-layout">
 				<div class="buttons">
-					<button tabindex="59" class="proceed x-large">#{i18n.getText('KWR002_120')}</button>
-					<button tabindex="60" >#{i18n.getText('KWR002_121')}</button>
+					<button tabindex="59" class="proceed x-large" data-bind="click: decision">#{i18n.getText('KWR002_120')}</button>
+					<button tabindex="60" data-bind="click: cancel">#{i18n.getText('KWR002_121')}</button>
 				</div>
 			</div>
 		</ui:define>
