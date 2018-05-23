@@ -1,14 +1,14 @@
 module nts.uk.com.view.cmm048.a {
 
-    import MainDto = nts.uk.com.view.cmm048.a.model.MainDto;
-    import EmployeeDto = nts.uk.com.view.cmm048.a.model.EmployeeDto;
-    import EmployeeInfoContactDto = nts.uk.com.view.cmm048.a.model.EmployeeInfoContactDto;
-    import PersonContactDto = nts.uk.com.view.cmm048.a.model.PersonContactDto;
-    import PasswordPolicyDto = nts.uk.com.view.cmm048.a.model.PasswordPolicyDto;
-    import ComplexityDto = nts.uk.com.view.cmm048.a.model.ComplexityDto;
-    import UserInfoUseMethodDto = nts.uk.com.view.cmm048.a.model.UserInfoUseMethodDto;
-    import UseContactSettingDto = nts.uk.com.view.cmm048.a.model.UseContactSettingDto;
-    import MailNoticeSetSaveCommand = nts.uk.com.view.cmm048.a.model.MailNoticeSetSaveCommand;
+    import MainDto = nts.uk.com.view.cmm048.a.service.model.MainDto;
+    import EmployeeDto = nts.uk.com.view.cmm048.a.service.model.EmployeeDto;
+    import EmployeeInfoContactDto = nts.uk.com.view.cmm048.a.service.model.EmployeeInfoContactDto;
+    import PersonContactDto = nts.uk.com.view.cmm048.a.service.model.PersonContactDto;
+    import PasswordPolicyDto = nts.uk.com.view.cmm048.a.service.model.PasswordPolicyDto;
+    import ComplexityDto = nts.uk.com.view.cmm048.a.service.model.ComplexityDto;
+    import UserInfoUseMethodDto = nts.uk.com.view.cmm048.a.service.model.UserInfoUseMethodDto;
+    import UseContactSettingDto = nts.uk.com.view.cmm048.a.service.model.UseContactSettingDto;
+    import MailNoticeSetSaveCommand = nts.uk.com.view.cmm048.a.service.model.MailNoticeSetSaveCommand;
     
     export module viewmodel {
 
@@ -22,7 +22,6 @@ module nts.uk.com.view.cmm048.a {
             constructor() {
                 let _self = this;
                 
-                //TODO tab visible
                 _self.mainModel = new MainModel(); 
                 _self.tabs = ko.observableArray([
                     {id: 'tab-1', title: nts.uk.resource.getText("CMM048_4"), content: '.tab-content-1', enable: ko.observable(true), visible: _self.mainModel.editPassword},
