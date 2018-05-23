@@ -10,7 +10,7 @@ import nts.uk.ctx.sys.assist.dom.deletedata.ManagementDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.ManagementDeletionRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.OperatingCondition;
 import nts.uk.ctx.sys.assist.infra.entity.deletedata.SspdtManagementDeletion;
-import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtDataStorageMng;
+import nts.uk.ctx.sys.assist.infra.entity.deletedata.SspdtManagementDeletionPK;
 
 @Stateless
 public class JpaManagementDeletionRepository extends JpaRepository implements ManagementDeletionRepository {
@@ -43,19 +43,20 @@ public class JpaManagementDeletionRepository extends JpaRepository implements Ma
 
 	@Override
 	public void updateTotalCatCount(String delId, int totalCategoryCount) {
-		ManagementDeletion entity = this.getEntityManager().find(ManagementDeletion.class, delId);
-		entity.delId = delId;
+		SspdtManagementDeletionPK sspdtManagementDeletionPK = new  SspdtManagementDeletionPK(delId);
+		SspdtManagementDeletion entity = this.queryProxy().find(sspdtManagementDeletionPK, SspdtManagementDeletion.class).get();
 		entity.totalCategoryCount = totalCategoryCount;
-		this.commandProxy().update(SspdtManagementDeletion.toEntity(entity));
+		this.commandProxy().update(entity);
 	}
 
 	@Override
 	public void updateCatCountAnCond(String delId, int categoryCount, OperatingCondition operatingCondition) {
-		ManagementDeletion entity = this.getEntityManager().find(ManagementDeletion.class, delId);
-		entity.delId = delId;
+
+		SspdtManagementDeletionPK sspdtManagementDeletionPK = new  SspdtManagementDeletionPK(delId);
+		SspdtManagementDeletion entity = this.queryProxy().find(sspdtManagementDeletionPK, SspdtManagementDeletion.class).get();
 		entity.categoryCount = categoryCount;
-		entity.operatingCondition = operatingCondition;
-		this.commandProxy().update(SspdtManagementDeletion.toEntity(entity));
+		entity.operatingCondition = operatingCondition.value;
+		this.commandProxy().update(entity);
 	}
 
 	@Override
@@ -65,16 +66,19 @@ public class JpaManagementDeletionRepository extends JpaRepository implements Ma
 	
 	@Override
 	public void updateCatCount(String delId, int categoryCount) {
-		ManagementDeletion entity = this.getEntityManager().find(ManagementDeletion.class, delId);
-		entity.delId = delId;
+
+		SspdtManagementDeletionPK sspdtManagementDeletionPK = new  SspdtManagementDeletionPK(delId);
+		SspdtManagementDeletion entity = this.queryProxy().find(sspdtManagementDeletionPK, SspdtManagementDeletion.class).get();
 		entity.categoryCount = categoryCount;
-		this.commandProxy().update(SspdtManagementDeletion.toEntity(entity));
+		this.commandProxy().update(entity);
 	}
 
 	@Override
 	public void updateOperationCond(String delId, OperatingCondition operatingCondition) {
-		ManagementDeletion entity = this.getEntityManager().find(ManagementDeletion.class, delId);
-		entity.operatingCondition = operatingCondition;
-		this.commandProxy().update(SspdtManagementDeletion.toEntity(entity));
+
+		SspdtManagementDeletionPK sspdtManagementDeletionPK = new  SspdtManagementDeletionPK(delId);
+		SspdtManagementDeletion entity = this.queryProxy().find(sspdtManagementDeletionPK, SspdtManagementDeletion.class).get();
+		entity.operatingCondition = operatingCondition.value;
+		this.commandProxy().update(entity);
 	}
 }

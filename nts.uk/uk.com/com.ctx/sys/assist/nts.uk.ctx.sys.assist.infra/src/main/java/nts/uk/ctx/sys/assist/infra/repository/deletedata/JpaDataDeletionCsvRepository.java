@@ -27,40 +27,38 @@ import nts.uk.ctx.sys.assist.dom.deletedata.TableDeletionDataCsv;
  */
 @Stateless
 public class JpaDataDeletionCsvRepository extends JpaRepository implements DataDeletionCsvRepository {
-
-	private static final String SELECT_TABLE_DEL_DATA_SQL = "select a.delId, a.supplementExplanation, "
-			+ "b.delType, b.delCode, b.delName, c.categoryId, c.timeStore, c.recoveryStorageRange, b.saveForInvest, "
-			+ "c.otherCompanyCls, e.categoryId, e.tableJapanName, e.tableEnglishName, "
-			+ "e.historyCls, e.defaultCondKeyQuery, e.fieldKeyQuery1, e.fieldKeyQuery2, "
-			+ "e.fieldKeyQuery3, e.fieldKeyQuery4, e.fieldKeyQuery5, e.fieldKeyQuery6, "
-			+ "e.fieldKeyQuery7, e.fieldKeyQuery8, e.fieldKeyQuery9, e.fieldKeyQuery10, e.clsKeyQuery1,"
-			+ " e.clsKeyQuery2, e.clsKeyQuery3, e.clsKeyQuery4, e.clsKeyQuery5, e.clsKeyQuery6, "
-			+ "e.clsKeyQuery7, e.clsKeyQuery8, e.clsKeyQuery9, e.clsKeyQuery10, e.filedKeyUpdate1, , "
-			+ "e.filedKeyUpdate2, , e.filedKeyUpdate3,  e.filedKeyUpdate4,  e.filedKeyUpdate5, "
-			+ " e.filedKeyUpdate6, e.filedKeyUpdate7, e.filedKeyUpdate8, e.filedKeyUpdate9, "
-			+ "e.filedKeyUpdate10, e.filedKeyUpdate11, e.filedKeyUpdate12, e.filedKeyUpdate13, "
-			+ "e.filedKeyUpdate14, e.filedKeyUpdate15, e.filedKeyUpdate16, e.filedKeyUpdate17, "
-			+ "e.filedKeyUpdate18, e.filedKeyUpdate19, e.filedKeyUpdate20, e.fieldDate1, , e.fieldDate2, , "
-			+ "e.fieldDate3,  e.fieldDate4,  e.fieldDate5,  e.fieldDate6, e.fieldDate7, e.fieldDate8, "
-			+ "e.fieldDate9, e.fieldDate10, e.fieldDate11, e.fieldDate12, e.fieldDate13, e.fieldDate14, "
-			+ "e.fieldDate15, e.fieldDate16, e.fieldDate17, e.fieldDate18, e.fieldDate19, e.fieldDate20, "
-			+ "e.hasParentTblFlg, e.parentTblName, e.parentTblJapanName, e.fieldAcqDateTime, "
-			+ "e.fieldAcqEndDate, e.fieldAcqEmployeeId, e.fieldAcqStartDate, e.fieldAcqCid, e.fieldParent1, "
-			+ "e.fieldParent2, e.fieldParent3, e.fieldParent4, e.fieldParent5, e.fieldParent6, e.fieldParent7, "
-			+ "e.fieldParent8, e.fieldParent9, e.fieldParent10, e.fieldChild1, e.fieldChild2, e.fieldChild3, "
-			+ "e.fieldChild4, e.fieldChild5, e.fieldChild6, e.fieldChild7, e.fieldChild8, e.fieldChild9, "
-			+ "e.fieldChild10, a.startDateOfDaily, a.endDateOfDaily, a.startMonthOfMonthly, a.endMonthOfMonthly, "
-			+ "a.startYearOfMonthly, a.endYearOfMonthly, a.companyId " + "from SspdtManualSetDeletion a"
-			+ "JOIN SspdtResultDeletion b" + "ON a.delId = b.delId" + "JOIN SspmtCategory c "
-			+ "ON c.categoryId in (SELECT c.categoryId FROM SspdtCategoryDeletion d WHERE b.delId =:delId )"
-			+ "JOIN SspmtCategoryFieldMt e" + "ON e.categoryId = c.categoryId";
+	private static final StringBuilder SELECT_TABLE_DEL_DATA_SQL = new StringBuilder("SELECT a.sspdtManualSetDeletionPK.delId, a.supplementExplanation, ")
+			.append("a.startDateOfDaily, a.endDateOfDaily, a.startMonthOfMonthly, a.endMonthOfMonthly, ")
+			.append("a.startYearOfMonthly, a.endYearOfMonthly, a.companyID, ")
+			.append("b.delType, b.delCode, b.delName, c.categoryId, c.categoryName, c.timeStore, c.recoveryStorageRange, ")
+			.append("c.otherCompanyCls, e.tableJapanName, e.tableEnglishName, ")
+			.append("e.historyCls, e.defaultCondKeyQuery, e.fieldKeyQuery1, e.fieldKeyQuery2, ")
+			.append("e.fieldKeyQuery3, e.fieldKeyQuery4, e.fieldKeyQuery5, e.fieldKeyQuery6, ")
+			.append("e.fieldKeyQuery7, e.fieldKeyQuery8, e.fieldKeyQuery9, e.fieldKeyQuery10, e.clsKeyQuery1,")
+			.append("e.clsKeyQuery2, e.clsKeyQuery3, e.clsKeyQuery4, e.clsKeyQuery5, e.clsKeyQuery6, ")
+			.append("e.clsKeyQuery7, e.clsKeyQuery8, e.clsKeyQuery9, e.clsKeyQuery10, e.filedKeyUpdate1, ")
+			.append("e.filedKeyUpdate2, e.filedKeyUpdate3, e.filedKeyUpdate4, e.filedKeyUpdate5, ")
+			.append("e.filedKeyUpdate6, e.filedKeyUpdate7, e.filedKeyUpdate8, e.filedKeyUpdate9, ")
+			.append("e.filedKeyUpdate10, e.filedKeyUpdate11, e.filedKeyUpdate12, e.filedKeyUpdate13, ")
+			.append("e.filedKeyUpdate14, e.filedKeyUpdate15, e.filedKeyUpdate16, e.filedKeyUpdate17, ")
+			.append("e.filedKeyUpdate18, e.filedKeyUpdate19, e.filedKeyUpdate20, e.fieldDate1, e.fieldDate2, ")
+			.append("e.fieldDate3, e.fieldDate4, e.fieldDate5, e.fieldDate6, e.fieldDate7, e.fieldDate8, ")
+			.append("e.fieldDate9, e.fieldDate10, e.fieldDate11, e.fieldDate12, e.fieldDate13, e.fieldDate14, ")
+			.append("e.fieldDate15, e.fieldDate16, e.fieldDate17, e.fieldDate18, e.fieldDate19, e.fieldDate20, ")
+			.append("e.hasParentTblFlg, e.parentTblName, e.parentTblJapanName, e.fieldAcqDateTime, ")
+			.append("e.fieldAcqEndDate, e.fieldAcqEmployeeId, e.fieldAcqStartDate, e.fieldAcqCid, e.fieldParent1, ")
+			.append("e.fieldParent2, e.fieldParent3, e.fieldParent4, e.fieldParent5, e.fieldParent6, e.fieldParent7, ")
+			.append("e.fieldParent8, e.fieldParent9, e.fieldParent10, e.fieldChild1, e.fieldChild2, e.fieldChild3, ")
+			.append("e.fieldChild4, e.fieldChild5, e.fieldChild6, e.fieldChild7, e.fieldChild8, e.fieldChild9,e.fieldChild10 ")
+			.append("FROM SspdtManualSetDeletion a, SspdtResultDeletion b, SspmtCategory c, SspdtCategoryDeletion d, SspmtCategoryFieldMt e ")
+			.append("WHERE a.sspdtManualSetDeletionPK.delId = b.sspdtResultDeletionPK.delId AND a.sspdtManualSetDeletionPK.delId = d.sspdtCategoryDeletionPK.delId AND c.categoryId = e.categoryFieldMtPk.categoryId AND d.sspdtCategoryDeletionPK.categoryId = c.categoryId AND a.sspdtManualSetDeletionPK.delId = :delId ");
 	
 	private static final String SELECT_COLUMN_NAME_SQL = "select COLUMN_NAME from INFORMATION_SCHEMA.COLUMNS"
 			+ " where TABLE_NAME = :tableName";
 
 	@Override
 	public List<TableDeletionDataCsv> getTableDelDataCsvById(String delId) {
-		List<Object[]> listTemp = this.queryProxy().query(SELECT_TABLE_DEL_DATA_SQL, Object[].class)
+		List<Object[]> listTemp = this.queryProxy().query(SELECT_TABLE_DEL_DATA_SQL.toString(), Object[].class)
 				.setParameter("delId", delId).getList();
 
 		if (listTemp == null || listTemp.isEmpty()) {
@@ -75,118 +73,121 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 	 */
 	private TableDeletionDataCsv createDomainFromEntity(Object[] i) {
 		String delId = String.valueOf(i[0]);
-		int delType = Integer.parseInt(String.valueOf(i[1]));
-		String delCode = String.valueOf(i[2]);
-		String delName = String.valueOf(i[3]);
-		String supplementExplanation = String.valueOf(i[4]);
-		String categoryId = String.valueOf(i[5]);
-		String categoryName = String.valueOf(i[6]);
-		int timeStore = Integer.parseInt(String.valueOf(i[7]));
-		int recoveryStorageRange = Integer.parseInt(String.valueOf(i[8]));
-		int saveForInvest = Integer.parseInt(String.valueOf(i[9]));
-		int otherCompanyCls = Integer.parseInt(String.valueOf(i[10]));
-		String tableJapanName = String.valueOf(i[11]);
-		String tableEnglishName = String.valueOf(i[12]);
-		int historyCls = Integer.parseInt(String.valueOf(i[13]));
-		String defaultCondKeyQuery = String.valueOf(i[14]);
-		String fieldKeyQuery1 = String.valueOf(i[15]);
-		String fieldKeyQuery2 = String.valueOf(i[16]);
-		String fieldKeyQuery3 = String.valueOf(i[17]);
-		String fieldKeyQuery4 = String.valueOf(i[18]);
-		String fieldKeyQuery5 = String.valueOf(i[19]);
-		String fieldKeyQuery6 = String.valueOf(i[20]);
-		String fieldKeyQuery7 = String.valueOf(i[21]);
-		String fieldKeyQuery8 = String.valueOf(i[22]);
-		String fieldKeyQuery9 = String.valueOf(i[23]);
-		String fieldKeyQuery10 = String.valueOf(i[24]);
-		String clsKeyQuery1 = String.valueOf(i[25]);
-		String clsKeyQuery2 = String.valueOf(i[26]);
-		String clsKeyQuery3 = String.valueOf(i[27]);
-		String clsKeyQuery4 = String.valueOf(i[28]);
-		String clsKeyQuery5 = String.valueOf(i[29]);
-		String clsKeyQuery6 = String.valueOf(i[30]);
-		String clsKeyQuery7 = String.valueOf(i[31]);
-		String clsKeyQuery8 = String.valueOf(i[32]);
-		String clsKeyQuery9 = String.valueOf(i[33]);
-		String clsKeyQuery10 = String.valueOf(i[34]);
-		String filedKeyUpdate1 = String.valueOf(i[35]);
-		String filedKeyUpdate2 = String.valueOf(i[36]);
-		String filedKeyUpdate3 = String.valueOf(i[37]);
-		String filedKeyUpdate4 = String.valueOf(i[38]);
-		String filedKeyUpdate5 = String.valueOf(i[39]);
-		String filedKeyUpdate6 = String.valueOf(i[40]);
-		String filedKeyUpdate7 = String.valueOf(i[41]);
-		String filedKeyUpdate8 = String.valueOf(i[42]);
-		String filedKeyUpdate9 = String.valueOf(i[43]);
-		String filedKeyUpdate10 = String.valueOf(i[44]);
-		String filedKeyUpdate11 = String.valueOf(i[45]);
-		String filedKeyUpdate12 = String.valueOf(i[46]);
-		String filedKeyUpdate13 = String.valueOf(i[47]);
-		String filedKeyUpdate14 = String.valueOf(i[48]);
-		String filedKeyUpdate15 = String.valueOf(i[49]);
-		String filedKeyUpdate16 = String.valueOf(i[50]);
-		String filedKeyUpdate17 = String.valueOf(i[51]);
-		String filedKeyUpdate18 = String.valueOf(i[52]);
-		String filedKeyUpdate19 = String.valueOf(i[53]);
-		String filedKeyUpdate20 = String.valueOf(i[54]);
-		String fieldDate1 = String.valueOf(i[55]);
-		String fieldDate2 = String.valueOf(i[56]);
-		String fieldDate3 = String.valueOf(i[57]);
-		String fieldDate4 = String.valueOf(i[58]);
-		String fieldDate5 = String.valueOf(i[59]);
-		String fieldDate6 = String.valueOf(i[60]);
-		String fieldDate7 = String.valueOf(i[61]);
-		String fieldDate8 = String.valueOf(i[62]);
-		String fieldDate9 = String.valueOf(i[63]);
-		String fieldDate10 = String.valueOf(i[64]);
-		String fieldDate11 = String.valueOf(i[65]);
-		String fieldDate12 = String.valueOf(i[66]);
-		String fieldDate13 = String.valueOf(i[67]);
-		String fieldDate14 = String.valueOf(i[68]);
-		String fieldDate15 = String.valueOf(i[69]);
-		String fieldDate16 = String.valueOf(i[70]);
-		String fieldDate17 = String.valueOf(i[71]);
-		String fieldDate18 = String.valueOf(i[72]);
-		String fieldDate19 = String.valueOf(i[73]);
-		String fieldDate20 = String.valueOf(i[74]);
-		int hasParentTblFlg = Integer.parseInt(String.valueOf(i[75]));
-		String parentTblName = String.valueOf(i[76]);
-		String parentTblJapanName = String.valueOf(i[77]);
-		String fieldAcqDateTime = String.valueOf(i[78]);
-		String fieldAcqEndDate = String.valueOf(i[79]);
-		String fieldAcqEmployeeId = String.valueOf(i[80]);
-		String fieldAcqStartDate = String.valueOf(i[81]);
-		String fieldAcqCid = String.valueOf(i[82]);
-		String fieldParent1 = String.valueOf(i[83]);
-		String fieldParent2 = String.valueOf(i[84]);
-		String fieldParent3 = String.valueOf(i[85]);
-		String fieldParent4 = String.valueOf(i[86]);
-		String fieldParent5 = String.valueOf(i[87]);
-		String fieldParent6 = String.valueOf(i[88]);
-		String fieldParent7 = String.valueOf(i[89]);
-		String fieldParent8 = String.valueOf(i[90]);
-		String fieldParent9 = String.valueOf(i[91]);
-		String fieldParent10 = String.valueOf(i[92]);
-		String fieldChild1 = String.valueOf(i[93]);
-		String fieldChild2 = String.valueOf(i[94]);
-		String fieldChild3 = String.valueOf(i[95]);
-		String fieldChild4 = String.valueOf(i[96]);
-		String fieldChild5 = String.valueOf(i[97]);
-		String fieldChild6 = String.valueOf(i[98]);
-		String fieldChild7 = String.valueOf(i[99]);
-		String fieldChild8 = String.valueOf(i[100]);
-		String fieldChild9 = String.valueOf(i[101]);
-		String fieldChild10 = String.valueOf(i[102]);
-		String startDateOfDaily = String.valueOf(i[103]);
-		String endDateOfDaily = String.valueOf(i[104]);
-		String startMonthOfMonthly = String.valueOf(i[105]);
-		String endMonthOfMonthly = String.valueOf(i[106]);
-		String startYearOfMonthly = String.valueOf(i[107]);
-		String endYearOfMonthly = String.valueOf(i[108]);
-		String companyId = String.valueOf(i[109]);
+		String supplementExplanation = String.valueOf(i[1]);
+		String startDateOfDaily = String.valueOf(i[2]);
+		String endDateOfDaily = String.valueOf(i[3]);
+		String startMonthOfMonthly = String.valueOf(i[4]);
+		String endMonthOfMonthly = String.valueOf(i[5]);
+		String startYearOfMonthly = String.valueOf(i[6]);
+		String endYearOfMonthly = String.valueOf(i[7]);
+		String companyId = String.valueOf(i[8]);
+		
+		int delType = Integer.parseInt(String.valueOf(i[9]));
+		String delCode = String.valueOf(i[10]);
+		String delName = String.valueOf(i[11]);
+//		int saveForInvest = Integer.parseInt(String.valueOf(i[12]));
+		String categoryId = String.valueOf(i[12]);
+		String categoryName = String.valueOf(i[13]);
+		int timeStore = Integer.parseInt(String.valueOf(i[14]));
+		int recoveryStorageRange = Integer.parseInt(String.valueOf(i[15]));
+		int otherCompanyCls = Integer.parseInt(String.valueOf(i[16]));
+		String tableJapanName = String.valueOf(i[17]);
+		String tableEnglishName = String.valueOf(i[18]);
+		int historyCls = Integer.parseInt(String.valueOf(i[19]));
+		String defaultCondKeyQuery = String.valueOf(i[20]);
+		String fieldKeyQuery1 = String.valueOf(i[21]);
+		String fieldKeyQuery2 = String.valueOf(i[22]);
+		String fieldKeyQuery3 = String.valueOf(i[23]);
+		String fieldKeyQuery4 = String.valueOf(i[24]);
+		String fieldKeyQuery5 = String.valueOf(i[25]);
+		String fieldKeyQuery6 = String.valueOf(i[26]);
+		String fieldKeyQuery7 = String.valueOf(i[27]);
+		String fieldKeyQuery8 = String.valueOf(i[28]);
+		String fieldKeyQuery9 = String.valueOf(i[29]);
+		String fieldKeyQuery10 = String.valueOf(i[30]);
+		String clsKeyQuery1 = String.valueOf(i[31]);
+		String clsKeyQuery2 = String.valueOf(i[32]);
+		String clsKeyQuery3 = String.valueOf(i[33]);
+		String clsKeyQuery4 = String.valueOf(i[34]);
+		String clsKeyQuery5 = String.valueOf(i[35]);
+		String clsKeyQuery6 = String.valueOf(i[36]);
+		String clsKeyQuery7 = String.valueOf(i[37]);
+		String clsKeyQuery8 = String.valueOf(i[38]);
+		String clsKeyQuery9 = String.valueOf(i[39]);
+		String clsKeyQuery10 = String.valueOf(i[40]);
+		String filedKeyUpdate1 = String.valueOf(i[41]);
+		String filedKeyUpdate2 = String.valueOf(i[42]);
+		String filedKeyUpdate3 = String.valueOf(i[43]);
+		String filedKeyUpdate4 = String.valueOf(i[44]);
+		String filedKeyUpdate5 = String.valueOf(i[45]);
+		String filedKeyUpdate6 = String.valueOf(i[46]);
+		String filedKeyUpdate7 = String.valueOf(i[47]);
+		String filedKeyUpdate8 = String.valueOf(i[48]);
+		String filedKeyUpdate9 = String.valueOf(i[49]);
+		String filedKeyUpdate10 = String.valueOf(i[50]);
+		String filedKeyUpdate11 = String.valueOf(i[51]);
+		String filedKeyUpdate12 = String.valueOf(i[52]);
+		String filedKeyUpdate13 = String.valueOf(i[53]);
+		String filedKeyUpdate14 = String.valueOf(i[54]);
+		String filedKeyUpdate15 = String.valueOf(i[55]);
+		String filedKeyUpdate16 = String.valueOf(i[56]);
+		String filedKeyUpdate17 = String.valueOf(i[57]);
+		String filedKeyUpdate18 = String.valueOf(i[58]);
+		String filedKeyUpdate19 = String.valueOf(i[59]);
+		String filedKeyUpdate20 = String.valueOf(i[60]);
+		String fieldDate1 = String.valueOf(i[61]);
+		String fieldDate2 = String.valueOf(i[62]);
+		String fieldDate3 = String.valueOf(i[63]);
+		String fieldDate4 = String.valueOf(i[64]);
+		String fieldDate5 = String.valueOf(i[65]);
+		String fieldDate6 = String.valueOf(i[66]);
+		String fieldDate7 = String.valueOf(i[67]);
+		String fieldDate8 = String.valueOf(i[68]);
+		String fieldDate9 = String.valueOf(i[69]);
+		String fieldDate10 = String.valueOf(i[70]);
+		String fieldDate11 = String.valueOf(i[71]);
+		String fieldDate12 = String.valueOf(i[72]);
+		String fieldDate13 = String.valueOf(i[73]);
+		String fieldDate14 = String.valueOf(i[74]);
+		String fieldDate15 = String.valueOf(i[75]);
+		String fieldDate16 = String.valueOf(i[76]);
+		String fieldDate17 = String.valueOf(i[77]);
+		String fieldDate18 = String.valueOf(i[78]);
+		String fieldDate19 = String.valueOf(i[79]);
+		String fieldDate20 = String.valueOf(i[80]);
+		int hasParentTblFlg = Integer.parseInt(String.valueOf(i[81]));
+		String parentTblName = String.valueOf(i[82]);
+		String parentTblJapanName = String.valueOf(i[83]);
+		String fieldAcqDateTime = String.valueOf(i[84]);
+		String fieldAcqEndDate = String.valueOf(i[85]);
+		String fieldAcqEmployeeId = String.valueOf(i[86]);
+		String fieldAcqStartDate = String.valueOf(i[87]);
+		String fieldAcqCid = String.valueOf(i[88]);
+		String fieldParent1 = String.valueOf(i[89]);
+		String fieldParent2 = String.valueOf(i[90]);
+		String fieldParent3 = String.valueOf(i[91]);
+		String fieldParent4 = String.valueOf(i[92]);
+		String fieldParent5 = String.valueOf(i[93]);
+		String fieldParent6 = String.valueOf(i[94]);
+		String fieldParent7 = String.valueOf(i[95]);
+		String fieldParent8 = String.valueOf(i[96]);
+		String fieldParent9 = String.valueOf(i[97]);
+		String fieldParent10 = String.valueOf(i[98]);
+		String fieldChild1 = String.valueOf(i[99]);
+		String fieldChild2 = String.valueOf(i[100]);
+		String fieldChild3 = String.valueOf(i[101]);
+		String fieldChild4 = String.valueOf(i[102]);
+		String fieldChild5 = String.valueOf(i[103]);
+		String fieldChild6 = String.valueOf(i[104]);
+		String fieldChild7 = String.valueOf(i[105]);
+		String fieldChild8 = String.valueOf(i[106]);
+		String fieldChild9 = String.valueOf(i[107]);
+		String fieldChild10 = String.valueOf(i[108]);
+		
+		
 
 		TableDeletionDataCsv dataDeletionCsv = new TableDeletionDataCsv(delId, delType, delCode, delName,
-				supplementExplanation, categoryId, categoryName, timeStore, recoveryStorageRange, saveForInvest,
+				supplementExplanation, categoryId, categoryName, timeStore, recoveryStorageRange, 
 				otherCompanyCls, tableJapanName, tableEnglishName, historyCls, defaultCondKeyQuery, fieldKeyQuery1,
 				fieldKeyQuery2, fieldKeyQuery3, fieldKeyQuery4, fieldKeyQuery5, fieldKeyQuery6, fieldKeyQuery7,
 				fieldKeyQuery8, fieldKeyQuery9, fieldKeyQuery10, clsKeyQuery1, clsKeyQuery2, clsKeyQuery3, clsKeyQuery4,

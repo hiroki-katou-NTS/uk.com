@@ -676,7 +676,7 @@ public class TableDeletionDataCsv {
 	 * @param endYearOfMonthly
 	 */
 	public TableDeletionDataCsv(String delId, int delType, String delCode, String delName, String supplementExplanation,
-			String categoryId, String categoryName, int timeStore, int recoveryStorageRange, int saveForInvest,
+			String categoryId, String categoryName, int timeStore, int recoveryStorageRange, 
 			int otherCompanyCls, String tableJapanName, String tableEnglishName, int historyCls,
 			String defaultCondKeyQuery, String fieldKeyQuery1, String fieldKeyQuery2, String fieldKeyQuery3,
 			String fieldKeyQuery4, String fieldKeyQuery5, String fieldKeyQuery6, String fieldKeyQuery7,
@@ -710,7 +710,7 @@ public class TableDeletionDataCsv {
 		this.categoryName = categoryName;
 		this.timeStore = timeStore;
 		this.recoveryStorageRange = recoveryStorageRange;
-		this.saveForInvest = saveForInvest;
+//		this.saveForInvest = saveForInvest;
 		this.otherCompanyCls = otherCompanyCls;
 		this.tableJapanName = tableJapanName;
 		this.tableEnglishName = tableEnglishName;
