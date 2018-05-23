@@ -58,7 +58,7 @@ public class AnnualPaidLeaveSettingEvenSubcriber implements DomainEventSubscribe
 					}).collect(Collectors.toList()));
 		}
 		if (ctgLst.size() > 0) {
-			this.ctgRepo.updateAbolition(ctgLst, companyId);
+			this.ctgRepo.updateAbolition(ctgLst);
 		}
 	}
 

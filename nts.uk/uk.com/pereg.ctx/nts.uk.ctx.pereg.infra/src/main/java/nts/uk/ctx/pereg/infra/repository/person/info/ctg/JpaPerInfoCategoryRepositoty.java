@@ -536,5 +536,19 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 		return ctgIdLst;
 	}
 
+	@Override
+	public void updateAbolition(List<PersonInfoCategory> ctg) {
+		ctg.forEach(x -> {
+			Optional<PpemtPerInfoCtg> entityOpt = this.queryProxy().find(new PpemtPerInfoCtgPK(x.getPersonInfoCategoryId()), PpemtPerInfoCtg.class);
+			if(entityOpt.isPresent())
+			{
+				PpemtPerInfoCtg entity = entityOpt.get();
+				entity.abolitionAtr = x.getIsAbolition().value;
+				this.commandProxy().update(entity);
+			}
+		});
+		
+	}
+
 	
 }

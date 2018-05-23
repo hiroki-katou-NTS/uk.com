@@ -55,7 +55,7 @@ public class RetentionYearlySettingEvenSubcriber implements DomainEventSubscribe
 		if(CS00038.isPresent()) {
 			PersonInfoCategory ctg = CS00038.get();
 			ctg.setAbolish(manaDivision == true? IsAbolition.NOT_ABOLITION : IsAbolition.ABOLITION);
-			this.ctgRepo.updateAbolition(Arrays.asList(new PersonInfoCategory[] {ctg}), companyId);
+			this.ctgRepo.updateAbolition(Arrays.asList(new PersonInfoCategory[] {ctg}));
 		}
 	}
 	

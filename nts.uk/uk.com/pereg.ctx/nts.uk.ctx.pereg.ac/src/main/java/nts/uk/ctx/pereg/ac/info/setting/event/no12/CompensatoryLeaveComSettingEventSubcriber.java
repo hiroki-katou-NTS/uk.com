@@ -33,7 +33,7 @@ public class CompensatoryLeaveComSettingEventSubcriber
 	private PerInfoItemDefRepositoty itemRepo;
 
 	private static final String ctgCode = "CS00035";
-	private static final List<String> itemCodeLst = Arrays.asList(new String[] { "IS00365", "IS00366" });
+	private static final List<String> itemCodeLst = Arrays.asList(new String[] {"IS00366" });
 
 	@Override
 	public Class<CompensatoryLeaveComSettingDomainEvent> subscribedToEventType() {
