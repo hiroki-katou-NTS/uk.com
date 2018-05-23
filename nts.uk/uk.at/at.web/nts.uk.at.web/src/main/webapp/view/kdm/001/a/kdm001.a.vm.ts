@@ -11,8 +11,8 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         dateValue: KnockoutObservable<any>;
         startDateString: KnockoutObservable<string>;
         endDateString: KnockoutObservable<string>;
-        dispTotalRemainHours: KnockoutObservable<string> = ko.observable(null);
-        dispTotalExpiredHours: KnockoutObservable<string> = ko.observable(null);
+        dispTotalRemain: KnockoutObservable<string> = ko.observable(null);
+        expirationDate: KnockoutObservable<string> = ko.observable(null);
         //_____CCG001________
         ccgcomponent: GroupOption;
         selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
@@ -26,7 +26,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         listComponentOption: ComponentOption;
         selectedItem: KnockoutObservable<string> = ko.observable(null);
         tabindex: number = -1;
-        substituteData: KnockoutObservableArray<SubstitutedData>;
+        compositePayOutSubMngData: KnockoutObservableArray<CompositePayOutSubMngData>;
         
         constructor() {
             var self = this;
@@ -51,7 +51,6 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 self.dateValue.valueHasMutated();
             });
             
-            self.updateSubstituteDataList();
             //_____CCG001________
             self.selectedEmployee = ko.observableArray([]);
             self.showinfoSelectedEmployee = ko.observable(false);
@@ -102,54 +101,47 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             }
             
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
+            
             self.selectedItem.subscribe(x =>{
-                //TODO
-                // CALL SERVICE
-                // RELOAD SUBSTITUTE DATA TABLE
+                self.updateDataList();
             });
         }
         
         openNewSubstituteData() {
-            modal("/view/kdm/001/i/index.xhtml").onClosed(function() {
+            modal("/view/kdm/001/d/index.xhtml").onClosed(function() {
                 //TODO
-                $('#substituteDataGrid').focus();
+                $('#compositePayOutSubMngDataGrid').focus();
             });
         }
         
-        filterByPeriod() {
-            // TODO
-            //$('#substituteDataGrid').focus();
-            var self = this;
-            self.updateSubstituteDataList1();
-        }
-        
-        updateSubstituteDataList(){
-            var self = this;
-            let substituteDataArray: Array<SubstitutedData> = [];
-            for (var i = 1 ; i <= 100; i++){
-                var date1 = i + '/1/2018';
-                var date2 = i + '/1/2018';
-                var hours = Math.floor(Math.random() * 8) + 1 ;
-                var isLinked = i %4 == 0 ? 1 : 0;
-                substituteDataArray.push(new SubstitutedData(i, i%2 == 0 ? date1 : null, i%2 == 0 ? hours : null, i%2 == 0 ?"基" : "", i%2 == 1 ? date2 : null, i%2 == 1 ? hours : null, i%2 == 1 ?"基" : "", 0.5, 0.5, isLinked)); 
-            }
-            self.substituteData = ko.observableArray(substituteDataArray);
-            self.dispTotalRemainHours(_.sumBy(substituteDataArray, function(x) { return x.remainHolidayHours }) + getText('KDM001_27'));
-            self.dispTotalExpiredHours(_.sumBy(substituteDataArray, function(x) { return x.expiredHolidayHours }) + getText('KDM001_31'));
-            self.showSubstiteDataGrid();
-        }
-        
-        updateSubstituteDataList1(){
-            let i = 9999;
-            let hours = 8;
-            let date1 = 'Tao test';
-            let date2 = 'Tao test 2';
-            $(".substituteDataGrid").ntsGrid("updateRow", 15, new SubstitutedData(i, i%2 == 0 ? date1 : null, i%2 == 0 ? hours : null, i%2 == 0 ?"基" : "", i%2 == 1 ? date2 : null, i%2 == 1 ? hours : null, i%2 == 1 ?"基" : "", 0.5, 0.5, 1));   
+        updateDataList() {
+            let self = this;
+            let empId = self.selectedItem();
+            let isPeriod = self.selectedPeriodItem() == 0 ? false : true;
+            let startDate = isPeriod ? moment.utc(self.dateValue().startDate, 'YYYY/MM/DD').format('YYYY-MM-DD') : null;
+            let endDate = isPeriod ? moment.utc(self.dateValue().endDate, 'YYYY/MM/DD').format('YYYY-MM-DD') : null;
+            service.getFurikyuMngDataExtraction(empId, startDate, endDate, isPeriod).done(function(res: any) {          
+                console.log(res);
+                let arrayResponse = res.compositePayOutSubMngData;
+                let compositePayOutSubMngDataArray: Array<CompositePayOutSubMngData> = [];
+                for (var i = 0 ; i < arrayResponse.length; i++){
+                    compositePayOutSubMngDataArray.push(new CompositePayOutSubMngData(arrayResponse[i]));
+                }
+                
+                // update data to view
+                self.compositePayOutSubMngData = ko.observableArray(compositePayOutSubMngDataArray);
+                self.dispTotalRemain(res.numberOfDayLeft);
+                self.expirationDate(res.expirationDate);
+                self.showDataGrid();
+            }).fail(function(res: any) {
+                console.log(res);
+            });
         }
         
         startPage(): JQueryPromise<any> {
             let self = this;
             var dfd = $.Deferred();
+            
             service.getInfoEmLogin().done(function(employeeInfo) {
                 service.getWpName().done(function(wpName) {
                     self.employeeInputList.push(new EmployeeKcp009(employeeInfo.sid,
@@ -199,12 +191,12 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             })
         }
         
-        showSubstiteDataGrid() {
+        showDataGrid() {
             var self = this;
-            $("#substituteDataGrid").ntsGrid({
+            $("#compositePayOutSubMngDataGrid").ntsGrid({
                 height: '405px',
                 name: 'Grid name',
-                dataSource: self.substituteData(),
+                dataSource: self.compositePayOutSubMngData(),
                 primaryKey: 'id',
                 virtualization: true,
                 hidePrimaryKey: true,
@@ -213,14 +205,15 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 columns: [
                     { headerText: 'ID', key: 'id', dataType: 'string', width: '0px', hidden: true },
                     { headerText: 'linked', key: 'isLinked', dataType: 'string', width: '0px', hidden: true },
-                    { headerText: getText('KDM001_33'), template: '<div style="float:right"> ${substituedWorkingDate} </div>', key: 'substituedWorkingDate', dataType: 'string', width: '120px' },
-                    { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${substituedWorkingHours} </div>', key: 'substituedWorkingHours', dataType: 'string', width: '100px' },
-                    { headerText: getText('KDM001_124'), key: 'substituedWorkingPeg', dataType: 'string', width: '100px' },
-                    { headerText: getText('KDM001_34'), template: '<div style="float:right"> ${substituedHolidayDate} </div>', key: 'substituedHolidayDate', dataType: 'string', width: '120px' },
-                    { headerText: getText('KDM001_11'), template: '<div style="float:right"> ${substituteHolidayHours} </div>', key: 'substituteHolidayHours', dataType: 'string', width: '100px' },
-                    { headerText: getText('KDM001_124'), key: 'substituedHolidayPeg', dataType: 'string', width: '100px' },
-                    { headerText: getText('KDM001_37'), template: '<div style="float:right"> ${remainHolidayHours} </div>', key: 'remainHolidayHours', dataType: 'string', width: '100px' },
-                    { headerText: getText('KDM001_20'), template: '<div style="float:right"> ${expiredHolidayHours} </div>', key: 'expiredHolidayHours', dataType: 'string', width: '100px' },
+                    { headerText: getText('KDM001_8'), template: '<div style="float:right"> ${dayoffDatePyout} </div>', key: 'dayoffDatePyout', dataType: 'string', width: '120px' },
+                    { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${occurredDays} </div>', key: 'occurredDays', dataType: 'string', width: '100px' },
+                    { headerText: getText('KDM001_124'), key: 'payoutTied', dataType: 'string', width: '100px' },
+                    { headerText: getText('KDM001_10'), template: '<div style="float:right"> ${dayoffDateSub} </div>', key: 'dayoffDateSub', dataType: 'string', width: '120px' },
+                    { headerText: getText('KDM001_11'), template: '<div style="float:right"> ${requiredDays} </div>', key: 'requiredDays', dataType: 'string', width: '100px' },
+                    { headerText: getText('KDM001_124'), key: 'subTied', dataType: 'string', width: '100px' },
+                    { headerText: getText('KDM001_12'), template: '<div style="float:right"> ${unUsedDaysInGrid} </div>', key: 'unUsedDaysInGrid', dataType: 'Number', width: '100px' },
+                    { headerText: getText('KDM001_13'), template: '<div style="float:right"> ${expriedDaysInGrid} </div>', key: 'expriedDaysInGrid', dataType: 'Number', width: '100px' },
+                    { headerText: getText('KDM001_14'), template: '<div style="float:right"> ${lawAtr} </div>', key: 'lawAtr', dataType: 'string', width: '100px' },
                     { headerText: '', key: 'pegSetting', dataType: 'string', width: '85px', unbound: true, ntsControl: 'ButtonPegSetting' },
                     { headerText: '', key: 'isLinked', dataType: 'string', width: '55px', unbound: true, ntsControl: 'ButtonCorrection' }
                 ],
@@ -237,10 +230,10 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 ]
             });
             
-            _.forEach(self.substituteData(), function(value) {
+            _.forEach(self.compositePayOutSubMngData(), function(value) {
                 if (value.isLinked == 1){
                     let rowId = value.id;
-                    $("#substituteDataGrid").ntsGrid("disableNtsControlAt", rowId, 'isLinked', 'Button');
+                    $("#compositePayOutSubMngDataGrid").ntsGrid("disableNtsControlAt", rowId, 'isLinked', 'Button');
                 }
             });
         }
@@ -249,11 +242,11 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             let selectedRowData = value;
             setShared('PEGSETTING_PARAMS', value);
             if (value.substituedWorkingDate.length>0) {
-                modal("/view/kdm/001/j/index.xhtml").onClosed(function() {
+                modal("/view/kdm/001/e/index.xhtml").onClosed(function() {
                     //location.reload();
                 });
             } else {
-                modal("/view/kdm/001/k/index.xhtml").onClosed(function() {
+                modal("/view/kdm/001/f/index.xhtml").onClosed(function() {
                     //location.reload();
                 });
             }
@@ -263,41 +256,14 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             let selectedRowData = value;
             setShared('CORRECTION_PARAMS', value);
             if (value.substituedWorkingDate.length>0) {
-                modal("/view/kdm/001/l/index.xhtml").onClosed(function() {
+                modal("/view/kdm/001/g/index.xhtml").onClosed(function() {
                     //location.reload();
                 });
             } else {
-                modal("/view/kdm/001/m/index.xhtml").onClosed(function() {
+                modal("/view/kdm/001/h/index.xhtml").onClosed(function() {
                     //location.reload();
                 });
             }
-        }
-    }
-    
-    export class SubstitutedData {
-        id: number;
-        substituedWorkingDate: string;
-        substituedWorkingHours: number;
-        substituedWorkingPeg: string;
-        substituedHolidayDate: string;
-        substituteHolidayHours: number;
-        substituedHolidayPeg: string;
-        remainHolidayHours: number;
-        expiredHolidayHours: number;
-        isLinked: number;
-        constructor(id: number, substituedWorkingDate: string, substituedWorkingHours: number, substituedWorkingPeg: string,
-            substituedHolidayDate: string, substituteHolidayHours: number, substituedHolidayPeg: string, remainHolidayHours: number,
-            expiredHolidayHours: number, isLinked: number) {
-            this.id = id;
-            this.substituedWorkingDate = substituedWorkingDate;
-            this.substituedWorkingHours = substituedWorkingHours;
-            this.substituedWorkingPeg = substituedWorkingPeg;
-            this.substituedHolidayDate = substituedHolidayDate;
-            this.substituteHolidayHours = substituteHolidayHours;
-            this.substituedHolidayPeg = substituedHolidayPeg;
-            this.remainHolidayHours = remainHolidayHours;
-            this.expiredHolidayHours = expiredHolidayHours;
-            this.isLinked = isLinked;
         }
     }
     
@@ -398,6 +364,82 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         periodStart: string; // 対象期間（開始)
         periodEnd: string; // 対象期間（終了）
         listEmployee: Array<EmployeeSearchDto>; // 検索結果
+    }
+    
+    export class CompositePayOutSubMngData {
+        payoutId: string;
+        cID: string;
+        sID: string;
+        unknownDatePayout: boolean;
+        dayoffDatePyout: string;
+        expiredDate: string;
+        lawAtr: number;
+        occurredDays: number;
+        unUsedDays: number;
+        stateAtr: number;
+        payoutTied: boolean;
+        subOfHDID: string;
+        unknownDateSub: boolean;
+        dayoffDateSub: string;
+        requiredDays: number;
+        remainDays: number;
+        subTied: boolean;
+        
+        //add to fill grid A4_2_5
+        unUsedDaysInGrid: number;
+        
+        //add to fill grid A4_2_6
+        expriedDaysInGrid: number;
+        
+        //add to check enable button
+        isLinked: boolean;
+        
+        constructor(params) {
+            this.payoutId = params.payoutId;
+            this.cID = params.cid;
+            this.sID = params.sid;
+            this.unknownDatePayout = params.unknownDatePayout;
+            this.dayoffDatePyout = params.unknownDatePayout ? params.dayoffDatePyout + "※" : params.dayoffDatePyout;
+            this.expiredDate = params.expiredDate;
+            this.lawAtr = this.getLawAtr(params.lawAtr);
+            this.occurredDays = params.occurredDays;
+            this.unUsedDays = params.unUsedDays;
+            this.stateAtr = params.stateAtr;
+            this.payoutTied = params.payoutTied ? "有" : "";
+            this.subOfHDID = params.subOfHDID;
+            this.unknownDateSub = params.unknownDateSub;
+            this.dayoffDateSub = params.unknownDateSub ? params.dayoffDateSub + "※" : params.dayoffDateSub;
+            this.requiredDays = params.requiredDays;
+            this.remainDays = params.remainDays;
+            this.subTied = params.subTied ? "有" : "";
+            
+            if ((params.payoutId != null) && (params.payoutId != "")) {
+                if (moment.utc(params.expiredDate, 'YYYY/MM/DD').diff(moment.utc()) > 0) {
+                    this.unUsedDaysInGrid = params.unUsedDays;
+                    this.expriedDaysInGrid = "";
+                } else {
+                    this.unUsedDaysInGrid = "";
+                    this.expriedDaysInGrid = params.unUsedDays;
+                }
+            } else if ((params.subOfHDID != null) && (params.subOfHDID != "")) {
+                this.unUsedDaysInGrid = params.remainDays * (-1);
+                this.expriedDaysInGrid = "";
+            }
+            
+            this.isLinked = (params.payoutTied || params.subTied) ? true : false;
+        }
+        
+        getLawAtr(value) {
+            if(value == 0) {
+                return "法定内休日";
+            } else if(value == 1) {
+                return "法定外休日";
+            } else if(value == 2) {
+                return "祝日";
+            } else {
+                return "";
+            }
+        }
     }
 }
 

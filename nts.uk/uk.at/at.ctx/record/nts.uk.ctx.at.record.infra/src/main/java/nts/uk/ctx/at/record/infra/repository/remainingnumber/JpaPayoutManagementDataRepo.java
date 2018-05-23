@@ -23,12 +23,12 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 
 	private String QUERY_BYSID_WITH_COND = String.join(" ", QUERY_BYSID, "AND p.stateAtr = :state");
 
-	private final String QUERY_BY_SID_DATEPERIOD = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID =:employeeId "
+	private final String QUERY_BY_SID_DATEPERIOD = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID =:sid "
 			+ " AND (p.stateAtr = :state OR p.payoutId in (SELECT ps.krcmtPayoutSubOfHDManaPK.payoutId FROM KrcmtPayoutSubOfHDMana WHERE ps.krcmtPayoutSubOfHDManaPK.subOfHDID =:subOfHDID))";
 
-	private final String QUERY_BY_SID_DATEPERIOD_DIF = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID =:employeeId AND p.dayOff >= :startDate AND p.dayOff <= :endDate AND p.stateAtr <> :state";
+	private final String QUERY_BY_SID_DATEPERIOD_DIF = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID =:sid AND p.dayOff >= :startDate AND p.dayOff <= :endDate AND p.stateAtr <> :state";
 
-	private final String QUERY_BY_SID_DATEPERIOD_NO_DIGES = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID =:employeeId AND p.dayOff >= :startDate AND p.dayOff <= :endDate";
+	private final String QUERY_BY_SID_DATEPERIOD_NO_DIGES = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID =:sid AND p.dayOff >= :startDate AND p.dayOff <= :endDate";
 
 	private String DELETE_QUERY = "DELETE FROM KrcmtPayoutManaData a WHERE a.sID = :sID AND a.dayOff = :dayOff";
 
@@ -54,7 +54,7 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 	 */
 	private PayoutManagementData toDomain(KrcmtPayoutManaData entity) {
 		return new PayoutManagementData(entity.payoutId, entity.cID, entity.sID, entity.unknownDate, entity.dayOff,
-				entity.expiredDate, entity.lawAtr, entity.occurredDays, entity.occurredDays, entity.stateAtr);
+				entity.expiredDate, entity.lawAtr, entity.unUsedDays, entity.occurredDays, entity.stateAtr);
 	}
 
 	@Override
