@@ -29,7 +29,7 @@ public class KfnmtAttendanceDisplayPK implements Serializable {
 
 	/** The item code. */
 	@Column(name="ITEM_CD")
-	private long itemCode;
+	private String itemCode;
 
 	/** The order no. */
 	@Column(name="ORDER_NO")
@@ -49,7 +49,7 @@ public class KfnmtAttendanceDisplayPK implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((cid == null) ? 0 : cid.hashCode());
-		result = prime * result + (int) (itemCode ^ (itemCode >>> 32));
+		result = prime * result + ((itemCode == null) ? 0 : itemCode.hashCode());
 		result = prime * result + (int) (orderNo ^ (orderNo >>> 32));
 		return result;
 	}
@@ -71,7 +71,10 @@ public class KfnmtAttendanceDisplayPK implements Serializable {
 				return false;
 		} else if (!cid.equals(other.cid))
 			return false;
-		if (itemCode != other.itemCode)
+		if (itemCode == null) {
+			if (other.itemCode != null)
+				return false;
+		} else if (!itemCode.equals(other.itemCode))
 			return false;
 		if (orderNo != other.orderNo)
 			return false;

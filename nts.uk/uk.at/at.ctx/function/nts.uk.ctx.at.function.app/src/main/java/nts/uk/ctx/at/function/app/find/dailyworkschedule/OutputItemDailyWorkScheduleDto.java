@@ -16,7 +16,7 @@ import lombok.Data;
 public class OutputItemDailyWorkScheduleDto {
 
 	/** The item code. */
-	private int itemCode;
+	private String itemCode;
 	
 	/** The item name. */
 	private String itemName;

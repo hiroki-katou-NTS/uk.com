@@ -26,7 +26,7 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.PrintRemarksContent;
 public class OutputItemDailyWorkScheduleCommand implements OutputItemDailyWorkScheduleGetMemento{
 
 	/** The item code. */
-	private int itemCode;
+	private String itemCode;
 	
 	/** The item name. */
 	private String itemName;

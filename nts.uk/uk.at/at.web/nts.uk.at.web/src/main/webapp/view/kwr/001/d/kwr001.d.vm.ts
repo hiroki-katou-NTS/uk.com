@@ -18,7 +18,7 @@ module nts.uk.at.view.kwr001.d {
                 var self = this;
                 self.itemList = ko.observableArray([]);
         
-                self.selectedCode = ko.observable('1');
+                self.selectedCode = ko.observable('');
                 self.isEnable = ko.observable(true);
                 self.isEditable = ko.observable(true);
                 self.D1_6_value = ko.observable('');
@@ -41,19 +41,22 @@ module nts.uk.at.view.kwr001.d {
                 return dfd.promise();
             }
             
-            initData() : JQueryPromise<any> {
-                let self = this;
-                let dfd = $.Deferred();
-                dfd.resolve();
-                return dfd.promise();
-            }
-            
             closeDialog(): void {
                 nts.uk.ui.windows.close();
             }
         
-            closeSaveDialog(): void {
-                nts.uk.ui.windows.close();
+            /*
+             * execute copy
+            */
+            executeCopy(): void {
+                let self = this;
+                service.executeCopy(self.D1_6_value(), self.selectedCode()).done(function(data: any) {
+                    console.log(data);
+                    nts.uk.ui.windows.setShared('KWR001_D', data);
+                    nts.uk.ui.windows.close();
+                }).fail(function(err) {
+                    nts.uk.ui.dialog.error(err);
+                })
             }
         };
         

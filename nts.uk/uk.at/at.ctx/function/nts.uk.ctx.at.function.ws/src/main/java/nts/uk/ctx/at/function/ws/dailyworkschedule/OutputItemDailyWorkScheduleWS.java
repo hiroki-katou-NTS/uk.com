@@ -70,13 +70,24 @@ public class OutputItemDailyWorkScheduleWS extends WebService{
 	 */
 	@Path("delete/{code}")
 	@POST
-	public void delete(@PathParam("code") int code){
+	public void delete(@PathParam("code") String code){
 		this.outputItemDailyWorkScheduleDeleteHandler.delete(code);
 	}
 	
+	/**
+	 * Find copy.
+	 *
+	 * @return the list
+	 */
 	@Path("findCopy")
 	@POST
 	public List<DataInforReturnDto> findCopy(){
 		return this.outputItemDailyWorkScheduleFinder.getFormatDailyPerformance();
+	}
+	
+	@Path("executeCopy/{codeCopy}/{codeSourceSerivce}")
+	@POST
+	public List<DataInforReturnDto> executeCopy(@PathParam("codeCopy") String codeCopy, @PathParam("codeSourceSerivce") String codeSourceSerivce){
+		return this.outputItemDailyWorkScheduleFinder.executeCopy(codeCopy, codeSourceSerivce);
 	}
 }

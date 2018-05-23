@@ -20,10 +20,10 @@
 			</com:ValidatorScript>
 		
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="kwr001.d.start.js" />
+			<com:stylefile path="kwr001.d.main.css" />
 			<com:scriptfile path="kwr001.d.service.js" />
 			<com:scriptfile path="kwr001.d.vm.js" />
-			<com:stylefile path="kwr001.d.main.css" />
+			<com:scriptfile path="kwr001.d.start.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -33,7 +33,7 @@
 					<div class="D1_1" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR001_78')}</div>
 					<!-- D1_2 -->
 					<div tabindex="1" id="combo-box-scrD" data-bind="ntsComboBox: {
-						name: 'Sample List',
+						name: '#[KWR001_79]',
 						options: itemList,
 						optionsValue: 'code',
 						visibleItemsCount: 5,
@@ -41,8 +41,8 @@
 						optionsText: 'name',
 						selectFirstIfNull: true,
 						columns: [
-							{ prop: 'code', length: 1 },
-							{ prop: 'name', length: 10 },
+							{ prop: 'code', length: 6 },
+							{ prop: 'name', length: 8, lengthDropDown: 9 },
 						]}"></div>
 				</div>
 				<div class="row">
@@ -51,9 +51,9 @@
 					<!-- D1_6 -->
 					<input tabindex="2" class="D1_6" data-bind="ntsTextEditor:{
 																	name: '#[KWR001_81]',
-																	value: D1_6_value},
+																	value: D1_6_value,
 																	require: true,
-																	constraint: 'OutputItemSettingCode'" />
+																	constraint: 'OutputItemSettingCode'}" />
 					<!-- D1_7 -->
 					<input tabindex="3" class="D1_7" data-bind="ntsTextEditor:{
 																	name: '#[KWR001_82]',
@@ -64,7 +64,7 @@
 				<hr/>
 				<div class="confirm">
 					<!-- D1_9 -->
-					<button data-bind="click: closeSaveDialog" tabindex="4" class="proceed">#{i18n.getText('KWR001_83')}</button>
+					<button data-bind="click: executeCopy" tabindex="4" class="proceed">#{i18n.getText('KWR001_83')}</button>
 					<!-- D1_10 -->
 					<button data-bind="click: closeDialog" tabindex="5">#{i18n.getText('KWR001_45')}</button>
 				</div>

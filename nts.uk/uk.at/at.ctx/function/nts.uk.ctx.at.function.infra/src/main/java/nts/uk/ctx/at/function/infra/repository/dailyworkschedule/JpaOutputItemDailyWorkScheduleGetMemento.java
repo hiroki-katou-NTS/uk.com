@@ -51,7 +51,7 @@ public class JpaOutputItemDailyWorkScheduleGetMemento implements OutputItemDaily
 	 */
 	@Override
 	public OutputItemSettingCode getItemCode() {
-		return new OutputItemSettingCode((int) this.kfnmtItemWorkSchedule.getId().getItemCode());
+		return new OutputItemSettingCode(this.kfnmtItemWorkSchedule.getId().getItemCode());
 	}
 
 	/* (non-Javadoc)

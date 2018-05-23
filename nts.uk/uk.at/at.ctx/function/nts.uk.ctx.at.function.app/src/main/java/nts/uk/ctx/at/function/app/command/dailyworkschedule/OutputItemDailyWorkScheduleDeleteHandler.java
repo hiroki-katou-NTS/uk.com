@@ -26,7 +26,7 @@ public class OutputItemDailyWorkScheduleDeleteHandler {
 	 *
 	 * @param code the code
 	 */
-	public void delete(int code) {
+	public void delete(String code) {
 		String companyId = AppContexts.user().companyId();
 		
 		repository.deleteByCidAndCode(companyId, code);

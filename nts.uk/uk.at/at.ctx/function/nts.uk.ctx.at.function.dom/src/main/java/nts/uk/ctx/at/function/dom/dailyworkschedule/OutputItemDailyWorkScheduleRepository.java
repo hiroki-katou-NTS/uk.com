@@ -19,7 +19,7 @@ public interface OutputItemDailyWorkScheduleRepository {
 	 * @param code the code
 	 * @return the optional
 	 */
-	public Optional<OutputItemDailyWorkSchedule> findByCode(int code);
+	public Optional<OutputItemDailyWorkSchedule> findByCode(String code);
 	
 	/**
 	 * Find by cid and code.
@@ -27,7 +27,7 @@ public interface OutputItemDailyWorkScheduleRepository {
 	 * @param code the code
 	 * @return the optional
 	 */
-	public Optional<OutputItemDailyWorkSchedule> findByCidAndCode(String companyId, int code);
+	public Optional<OutputItemDailyWorkSchedule> findByCidAndCode(String companyId, String code);
 	
 	/**
 	 * Find by cid.
@@ -64,5 +64,5 @@ public interface OutputItemDailyWorkScheduleRepository {
 	 * @param companyId the company id
 	 * @param code the code
 	 */
-	void deleteByCidAndCode(String companyId, int code);
+	void deleteByCidAndCode(String companyId, String code);
 }

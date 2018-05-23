@@ -32,7 +32,7 @@ import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedu
 
 /**
  * The Class JpaOutputItemDailyWorkScheduleRepository.
- * @author HoangDD
+ * author: HoangDD
  */
 @Stateless
 public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository implements OutputItemDailyWorkScheduleRepository{
@@ -41,7 +41,7 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository#findByCode(int)
 	 */
 	@Override
-	public Optional<OutputItemDailyWorkSchedule> findByCode(int code) {
+	public Optional<OutputItemDailyWorkSchedule> findByCode(String code) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -124,7 +124,7 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository#deleteByCidAndCode(java.lang.String, int)
 	 */
 	@Override
-	public void deleteByCidAndCode(String companyId, int code) {
+	public void deleteByCidAndCode(String companyId, String code) {
         KfnmtItemWorkSchedulePK primaryKey = new KfnmtItemWorkSchedulePK();
         primaryKey.setCid(companyId);
         primaryKey.setItemCode(code);
@@ -135,7 +135,7 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository#findByCidAndCode(java.lang.String, int)
 	 */
 	@Override
-	public Optional<OutputItemDailyWorkSchedule> findByCidAndCode(String companyId, int code) {
+	public Optional<OutputItemDailyWorkSchedule> findByCidAndCode(String companyId, String code) {
 		KfnmtItemWorkSchedulePK key = new KfnmtItemWorkSchedulePK();
 		key.setCid(companyId);
 		key.setItemCode(code);

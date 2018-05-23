@@ -4,29 +4,32 @@
  *****************************************************************/
 package nts.uk.ctx.at.function.dom.dailyworkschedule;
 
-import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.IntegerMaxValue;
+import nts.arc.primitive.PrimitiveValue;
+import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.constraint.CharType;
+import nts.arc.primitive.constraint.StringCharType;
+import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.ZeroPaddedCode;
 
 /**
  * The Class OutputItemSettingCode.
  * @author HoangDD
  */
-@IntegerMaxValue(99)
+@StringCharType(CharType.NUMERIC)
+@StringMaxLength(2)
+@ZeroPaddedCode
 // 出力項目設定コード
-public class OutputItemSettingCode extends IntegerPrimitiveValue<OutputItemSettingCode>{
+public class OutputItemSettingCode extends StringPrimitiveValue<PrimitiveValue<String>>{
 	
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 957215815666122627L;
-
 	/**
 	 * Instantiates a new output item setting code.
 	 *
 	 * @param rawValue the raw value
 	 */
-	public OutputItemSettingCode(Integer rawValue) {
+	public OutputItemSettingCode(String rawValue) {
 		super(rawValue);
 	}
 
-
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 957215815666122627L;
 }
