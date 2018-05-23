@@ -41,7 +41,7 @@
 					<hr />
 				</div>
 				<!-- I4 休出 -->
-				<div tabindex="1" id="checkedHoliday"
+				<div  tabindex="1" id="I4"
 					data-bind="ntsCheckBox: { checked: checkedHoliday, enable: true, text: '#{i18n.getText('KDM001_101')}' }"></div>
 				<!-- I5 罫線 -->
 				<div class="set-row">
@@ -53,7 +53,7 @@
 						data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_62')}</div>
 					<!-- I6_1 年月日 -->
 					<!-- Datepicker -->
-					<div tabindex="2"
+					<div id="I6_1" tabindex="2"
 						data-bind="ntsDatePicker: {value: dateHoliday, dateFormat: 'YYYY/MM/DD'}"></div>
 					<!-- I6_2 休出日数 -->
 					<span class="label" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_111')}</span>
@@ -99,7 +99,7 @@
 						data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_75')}</div>
 					<!-- I11_1 年月日 -->
 					<!-- Datepicker -->
-					<div
+					<div id="I11_1"
 						data-bind="ntsDatePicker: {value: dateSubHoliday, dateFormat: 'YYYY/MM/DD', name: '#[KDM001_76]'}"></div>
 					<!-- I11_2 代休日数 -->
 					<span class="label" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_115')}</span>

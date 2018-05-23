@@ -130,29 +130,31 @@ public class AddSubHdManagementService {
 			List<LeaveManagementData> leaveManagementDatas = repoLeaveManaData.getBySidWithHolidayDate(companyId,
 					employeeId, dateHoliday);
 			if (!leaveManagementDatas.isEmpty()) {
-				errorList.add("Msg_737");
+				errorList.add("Msg_737_holiday");
+			}
+			
+			// チェックボタン「代休」をチェックする (Check checkbox 「代休」)
+			if (subHdManagementData.getCheckedSubHoliday() == true) {
+				// アルゴリズム「代休（年月日）チェック処理」を実行する (Thực hiện thuât toán 「代休（年月日）チェック処理」)
+				errorList.addAll(checkDateHoliday(Optional.of(subHdManagementData.getDateHoliday()),
+						subHdManagementData.getDateSubHoliday(), closure, closureId));
+				// ドメインモデル「代休管理データ」を読み込む (đọc domain 「代休管理データ」)
+
+				errorList.addAll(checkHoliday(subHdManagementData.getDateHoliday(), closure));
+				String sid = employeeId;
+				String cid = companyId;
+				GeneralDate dateSubHoliday = subHdManagementData.getDateSubHoliday();
+				List<CompensatoryDayOffManaData> compensatoryDayOffManaDatas = repoComDayOffManaData
+						.getBySidWithHolidayDateCondition(cid, sid, dateSubHoliday);
+				if (!compensatoryDayOffManaDatas.isEmpty()) {
+					errorList.add("Msg_737_sub_holiday");
+				}
 			}
 
 		} else {
 			errorList.add("Msg_728");
 		}
-		// チェックボタン「代休」をチェックする (Check checkbox 「代休」)
-		if (subHdManagementData.getCheckedSubHoliday() == true) {
-			// アルゴリズム「代休（年月日）チェック処理」を実行する (Thực hiện thuât toán 「代休（年月日）チェック処理」)
-			errorList.addAll(checkDateHoliday(Optional.of(subHdManagementData.getDateHoliday()),
-					subHdManagementData.getDateSubHoliday(), closure, closureId));
-			// ドメインモデル「代休管理データ」を読み込む (đọc domain 「代休管理データ」)
-			String employeeId = subHdManagementData.getEmployeeId();
-			errorList.addAll(checkHoliday(subHdManagementData.getDateHoliday(), closure));
-			String sid = employeeId;
-			String cid = companyId;
-			GeneralDate dateSubHoliday = subHdManagementData.getDateSubHoliday();
-			List<CompensatoryDayOffManaData> compensatoryDayOffManaDatas = repoComDayOffManaData
-					.getBySidWithHolidayDateCondition(cid, sid, dateSubHoliday);
-			if (!compensatoryDayOffManaDatas.isEmpty()) {
-				errorList.add("Msg_737");
-			}
-		}
+		
 
 		// アルゴリズム「休出代休日数チェック処理」を実行する
 		errorList.addAll(checkHolidayAndSubHoliday(subHdManagementData));

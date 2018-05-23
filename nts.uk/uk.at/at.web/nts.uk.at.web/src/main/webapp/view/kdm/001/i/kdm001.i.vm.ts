@@ -1,6 +1,8 @@
 module nts.uk.at.view.kdm001.i.viewmodel {
     import model = kdm001.share.model;
     import getShared = nts.uk.ui.windows.getShared;
+    import block = nts.uk.ui.block;
+    import dialog    = nts.uk.ui.dialog;
     export class ScreenModel {
         employeeId: KnockoutObservable<string> = ko.observable('');
         workCode: KnockoutObservable<string> = ko.observable('');
@@ -27,23 +29,6 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         constructor() {
             let self = this;
             self.initScreen();
-        }
-
-        initScreen(): void {
-            block.invisible();
-            let self = this; 
-            info = getShared("KDM001_I_PARAMS");
-            if (info) {
-                self.workCode(info.selectedEmployee.workCode);
-                self.workplaceName(info.selectedEmployee.workName);
-                self.employeeId(info.selectedEmployee.employeeId);
-                self.employeeCode(info.selectedEmployee.employeeCode);
-                self.employeeName(info.selectedEmployee.employeeName);
-                self.closureId(info.closureEmploy.closureId);
-            }
-            block.clear();
-
-            self.dayRemaining(0.5);
             self.checkedSplit.subscribe((v) => {
                 if (v == true) {
                     self.isOptionSubHolidayEnable(true);
@@ -51,6 +36,24 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     self.isOptionSubHolidayEnable(false);
                 }
             });
+        }
+
+        initScreen(): void {
+            block.invisible();
+            let self = this,
+                info = getShared("KDM001_I_PARAMS");
+            if (info) {
+                self.workCode(info.selectedEmployee.workplaceCode);
+                self.workplaceName(info.selectedEmployee.workplaceName);
+                self.employeeId(info.selectedEmployee.employeeId);
+                self.employeeCode(info.selectedEmployee.employeeCode);
+                self.employeeName(info.selectedEmployee.employeeName);
+                self.closureId(info.closure.closureId);
+            }
+            block.clear();
+
+            self.dayRemaining(0.5);
+
         }
 
         /**
@@ -61,7 +64,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             block.invisible();
             let self = this;
             let data = {
-                employeeId: "ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570",
+                employeeId: self.employeeId(),
                 checkedHoliday: self.checkedHoliday(),
                 dateHoliday: moment.utc(self.dateHoliday(), 'YYYY/MM/DD').toISOString(),
                 selectedCodeHoliday: self.selectedCodeHoliday(),
@@ -77,8 +80,28 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             };
 
             console.log(data);
-            service.add(data).done(() => {
-
+            service.add(data).done(result => {
+                if (result && result.length > 0) {
+                    
+                    for (let error of result) {
+                        
+                        if (error === "Msg_737_holiday") {
+                            $('#I6_1').ntsError('set', { messageId: "Msg_737" });
+                        }
+                        if (error === "Msg_728") {
+                            $('#I4').ntsError('set', { messageId: error });
+                        }
+                        
+                        if (error === "Msg_737_sub_holiday") {
+                            $('#I11_1').ntsError('set', { messageId: "Msg_737" });
+                        }
+                    }
+                    return;
+                }
+                //情報メッセージ　Msg_15 登録しました。を表示する。
+                dialog.info({ messageId: "Msg_15" }).then(() => {
+                    nts.uk.ui.windows.close();
+                });
             }).fail(function(res: any) {
 
             });

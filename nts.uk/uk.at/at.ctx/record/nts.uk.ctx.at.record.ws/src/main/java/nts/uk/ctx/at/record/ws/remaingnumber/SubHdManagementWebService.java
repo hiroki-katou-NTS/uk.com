@@ -3,6 +3,8 @@
  */
 package nts.uk.ctx.at.record.ws.remaingnumber;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -32,8 +34,8 @@ public class SubHdManagementWebService extends WebService{
 	
 	@POST
 	@Path("add")
-	public void addBusinessTypeName(AddSubHdManagementCommand command){
-		this.add.handle(command);
+	public List<String> addBusinessTypeName(AddSubHdManagementCommand command){
+		return this.add.handle(command);
 	}
 	
 	@POST
