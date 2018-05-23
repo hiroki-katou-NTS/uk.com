@@ -264,7 +264,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                         if (operationName) {
                             operationName = operationName + " - " + name;
                         } else {
-                            operationName = name;
+                            operationName = " - " + name;
                         }
                     }
                 }).always(function() {
