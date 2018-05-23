@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.find.realitystatus;
+package nts.uk.ctx.at.record.app.find.application.realitystatus;
 
 import lombok.Value;
 

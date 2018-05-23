@@ -16,5 +16,4 @@ public interface EmployeeDailyPerErrorPub {
 	List<EmployeeErrorPubExport> checkEmployeeErrorOnProcessingDate(String employeeId, DatePeriod datePeriod);
 
 	List<EmployeeDailyPerErrorPubExport> getByErrorCode(List<String> employeeId, DatePeriod datePeriod, List<String> errorCodes);
-
 }
