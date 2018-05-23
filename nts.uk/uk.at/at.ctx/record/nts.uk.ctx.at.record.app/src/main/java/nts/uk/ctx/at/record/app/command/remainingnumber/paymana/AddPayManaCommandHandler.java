@@ -27,9 +27,17 @@ public class AddPayManaCommandHandler extends CommandHandler<PayManaRemainComman
 		String cId = AppContexts.user().companyId();
 		String newIDPayout = IdentifierUtil.randomUniqueId();
 		String newIDSub = IdentifierUtil.randomUniqueId();
-		PayoutManagementData payMana = new PayoutManagementData(newIDPayout,cId, command.getSID(), command.getUnknownDate(), command.getDayOff(), command.getExpiredDate(), command.getLawAtr(),
-				command.getOccurredDays(), command.getUnUsedDays(), command.getStateAtr());
-		SubstitutionOfHDManagementData subMana = new SubstitutionOfHDManagementData(newIDSub, cId, command.getSID(),command.isSubUnknownDate(), command.getSubDayoffDate(), command.getRequiredDays(), command.getRemainDays());
+		int stateAtr = 0;
+		Double UnUsedDays = new Double(0);
+		boolean unknowDate = false;
+		// test
+		Double remainday = new Double(0);
+		if (remainday == 0){
+			stateAtr = 1;
+		}
+		PayoutManagementData payMana = new PayoutManagementData(newIDPayout,cId, command.getSID(), unknowDate, command.getDayOff(), command.getExpiredDate(), command.getLawAtr(),
+				command.getOccurredDays(), UnUsedDays, stateAtr);
+		SubstitutionOfHDManagementData subMana = new SubstitutionOfHDManagementData(newIDSub, cId, command.getSID(), unknowDate, command.getSubDayoffDate(), command.getRequiredDays(), remainday);
 		PayoutSubofHDManagement paySub = new PayoutSubofHDManagement(newIDPayout, newIDSub, new BigDecimal(0), TargetSelectionAtr.MANUAL.value);
 		
 		payoutManaDataService.addPayoutManagement(command.getPickUp(), command.getPause(), payMana, subMana, paySub);

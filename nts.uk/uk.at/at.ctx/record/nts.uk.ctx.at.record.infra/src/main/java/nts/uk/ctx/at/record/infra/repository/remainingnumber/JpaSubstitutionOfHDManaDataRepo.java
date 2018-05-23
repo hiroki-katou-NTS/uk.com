@@ -102,7 +102,7 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 	public List<SubstitutionOfHDManagementData> getBySidDatePeriod(String sid, String payoutID, Double remainDays) {
 		List<KrcmtSubOfHDManaData> listSubOfHD = this.queryProxy()
 				.query(QUERY_BY_SID_DATEPERIOD, KrcmtSubOfHDManaData.class).setParameter("sid", sid)
-				.setParameter("remainDays", remainDays).setParameter("payoutId", payoutID).getList();
+				.setParameter("remainDays", remainDays).setParameter("payoutID", payoutID).getList();
 		return listSubOfHD.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
 

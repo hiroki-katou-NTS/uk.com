@@ -36,7 +36,7 @@ public class CompensatoryDataDto {
 	private int remainTimes;
 
 	public static CompensatoryDataDto convertToDto(CompensatoryDayOffManaData compensatoryData) {
-		return new CompensatoryDataDto(compensatoryData.getCID(), compensatoryData.getSID(), compensatoryData.getCID(),
+		return new CompensatoryDataDto(compensatoryData.getComDayOffID(), compensatoryData.getSID(), compensatoryData.getCID(),
 				compensatoryData.getDayOffDate().getDayoffDate().get(), compensatoryData.getRequireDays().v(),
 				compensatoryData.getRequiredTimes().v(), compensatoryData.getRemainDays().v(),
 				compensatoryData.getRemainTimes().v());

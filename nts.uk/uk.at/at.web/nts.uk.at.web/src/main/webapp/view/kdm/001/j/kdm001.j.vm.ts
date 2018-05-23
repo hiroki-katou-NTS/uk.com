@@ -1,4 +1,6 @@
 module nts.uk.at.view.kdm001.j.viewmodel {
+    import getShared = nts.uk.ui.windows.getShared;
+    import block     = nts.uk.ui.block;
     export class ScreenModel {
         itemsSelected: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
@@ -17,28 +19,31 @@ module nts.uk.at.view.kdm001.j.viewmodel {
             var self = this;
             self.callService();
             self.columns = ko.observableArray([
-                { headerText: 'コード', key: 'code', width: 100, hidden: true },
-                { headerText: nts.uk.resource.getText("KDM001_95"), key: 'date', width: 110 },
-                { headerText: nts.uk.resource.getText("KDM001_96"), key: 'useNumberDay', width: 100 }
+                { headerText: 'コード', key: 'comDayOffID', width: 100, hidden: true },
+                { headerText: nts.uk.resource.getText("KDM001_95"), key: 'dayOff', width: 110 },
+                { headerText: nts.uk.resource.getText("KDM001_96"), key: 'remainDays', width: 100 }
             ]);
             self.initScreen();
+            
+            console.log(getShared("KDM001_J_PARAMS"));
+            
             
             self.currentCodeList.subscribe(function(codesSelect) {
                 self.itemsSelected.removeAll();
                 var sumNum = 0;
                 if(codesSelect.length > 0) {
                     _.each(codesSelect, x => {
-                        let item = _.find(self.items(), x1 => { return x === x1.code });
+                        let item = _.find(self.items(), x1 => { return x === x1.comDayOffID });
                         if (item) {
                             self.itemsSelected.push(item);
                         }
                     });
                     _.each(self.itemsSelected(), x => {
                         
-                        if(self.dateHoliday() === x.date){
+                        if(self.dateHoliday() === x.dayOff){
                             nts.uk.ui.dialog.info({ messageId: "Msg_730" });
                         }  
-                        var iNum = parseFloat(x.useNumberDay);
+                        var iNum = parseFloat(x.remainDays);
                         var day = parseFloat(self.numberDay());
                         sumNum = sumNum + iNum;
                         self.residualDay((day-sumNum)+' 日');
@@ -79,9 +84,13 @@ module nts.uk.at.view.kdm001.j.viewmodel {
          */
         public update():void {
             var self = this;
-            console.log(new UpdateModel(self.itemsSelected(),"1"));
-            service.update(new UpdateModel(self.itemsSelected(),"1")).done(function(data) {
-                
+            service.update(new UpdateModel("1","1",self.itemsSelected())).done(function(data) {
+                if (data.length > 0) {
+                        let messageId = data[0];
+                        $('#multi-list').ntsError('set', { messageId: messageId });
+                        block.clear();
+                        return;
+                    }
             }).fail(function(error) {
                 alertError(error);
                 
@@ -107,22 +116,24 @@ module nts.uk.at.view.kdm001.j.viewmodel {
     }
 
     class ItemModel {
-        code: string;
-        date: string;
-        useNumberDay: string;
-        constructor(code: string, date: string, useNumberDay?: string) {
-            this.code = code;
-            this.date = date;
-            this.useNumberDay = useNumberDay;
+        comDayOffID: string;
+        dayOff: string;
+        remainDays: string;
+        constructor(comDayOffID: string, dayOff: string, remainDays: string) {
+            this.comDayOffID = comDayOffID;
+            this.dayOff = dayOff;
+            this.remainDays = remainDays;
         }
     }
     
     class UpdateModel {
-        daysOffMana: Array<ItemModel>;
         employeeId: string;
-        constructor(daysOffMana: Array<ItemModel>, employeeId: string) {
-            this.daysOffMana = daysOffMana;
+        leaveId: string;
+        comDayOffManaDtos: Array<ItemModel>;
+        constructor(employeeId: string,leaveId: string, comDayOffManaDtos: Array<ItemModel>) {
             this.employeeId = employeeId;
+            this.leaveId = leaveId;
+            this.comDayOffManaDtos = comDayOffManaDtos;
         }
     }
     

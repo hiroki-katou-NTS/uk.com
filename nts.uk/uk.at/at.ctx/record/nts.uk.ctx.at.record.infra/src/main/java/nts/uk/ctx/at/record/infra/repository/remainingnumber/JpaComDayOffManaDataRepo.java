@@ -49,15 +49,6 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 	}
 
 	@Override
-	public Optional<CompensatoryDayOffManaData> getCompensatoryByComDayOffID(String comDayOffID) {
-		Optional<KrcmtComDayoffMaData> entity = this.queryProxy().find(comDayOffID, KrcmtComDayoffMaData.class);
-		if (entity.isPresent()) {
-			return Optional.ofNullable(toDomain(entity.get()));
-		}
-		return Optional.empty();
-	}
-
-	@Override
 	public void update(CompensatoryDayOffManaData domain) {
 		this.commandProxy().update(toEnitty(domain));
 	}
