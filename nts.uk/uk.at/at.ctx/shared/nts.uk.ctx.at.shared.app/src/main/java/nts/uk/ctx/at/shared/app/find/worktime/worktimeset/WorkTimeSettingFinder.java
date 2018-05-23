@@ -282,11 +282,8 @@ public class WorkTimeSettingFinder {
 	 * @return the string
 	 */
 	private String createWorkTimeField(UseSetting useAtr, TimeWithDayAttr start, TimeWithDayAttr end) {
-		TimeWithDayAttr startNew = new TimeWithDayAttr(start.v() < 0 ? 60 * 24 + start.v() : start.v());
-		TimeWithDayAttr endNew = new TimeWithDayAttr(end.v() < 0 ? 60 * 24 + end.v() : end.v());
-
-		return start.dayAttr().description + startNew.getRawTimeWithFormat() + " ~ " + end.dayAttr().description
-				+ endNew.getRawTimeWithFormat();
+		return start.getDayDivision().description + start.getInDayTimeWithFormat() + " ~ " + end.getDayDivision().description
+				+ end.getInDayTimeWithFormat();
 	}
 
 	/**
