@@ -5,7 +5,7 @@ module nts.uk.com.view.cas001.c.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
-
+    import block = nts.uk.ui.block;
     export class ScreenModel {
         roleList: KnockoutObservableArray<any> = ko.observableArray([]);
         roleCodeArray = [];
@@ -53,13 +53,16 @@ module nts.uk.com.view.cas001.c.viewmodel {
             if (self.roleCodeArray.length > 0) {
                dialog.confirm({messageId: "Msg_64"}).ifYes(() => {
                     let roleObj = { roleIdDestination: self.roleCopy().personRole.roleId , roleIds: self.roleCodeArray };
+                    block.invisible();  
                     service.update(roleObj).done(function(obj) {
                         dialog.info({ messageId: "Msg_926" }).then(function() {
                             close();
                         });
                     }).fail(function(res: any) {
                         dialog.alert(res.message);
-                    })
+                    }).always(()=>{
+                          block.clear();
+                    });  
 
                 }).ifCancel(function() {
                 })

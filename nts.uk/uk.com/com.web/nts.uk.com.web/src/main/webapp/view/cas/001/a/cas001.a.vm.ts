@@ -574,7 +574,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
         }
 
 
-        // hÃ m khá»Ÿi táº¡o
+        // hàm khởi tạo
         loadRoleItems(roleId, CategoryId): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred(),
@@ -902,7 +902,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
 function makeIcon(value, row) {
     if (value == "true")
-        return "â—�";
+         return "●";
     return '';
 }
 
