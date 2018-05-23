@@ -1,4 +1,6 @@
 module nts.uk.at.view.kdm001.j.viewmodel {
+    import getShared = nts.uk.ui.windows.getShared;
+    import block     = nts.uk.ui.block;
     export class ScreenModel {
         itemsSelected: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
@@ -22,6 +24,9 @@ module nts.uk.at.view.kdm001.j.viewmodel {
                 { headerText: nts.uk.resource.getText("KDM001_96"), key: 'remainDays', width: 100 }
             ]);
             self.initScreen();
+            
+            console.log(getShared("KDM001_J_PARAMS"));
+            
             
             self.currentCodeList.subscribe(function(codesSelect) {
                 self.itemsSelected.removeAll();
@@ -79,9 +84,13 @@ module nts.uk.at.view.kdm001.j.viewmodel {
          */
         public update():void {
             var self = this;
-            console.log("1111111111");
             service.update(new UpdateModel("1","1",self.itemsSelected())).done(function(data) {
-                
+                if (data.length > 0) {
+                        let messageId = data[0];
+                        $('#multi-list').ntsError('set', { messageId: messageId });
+                        block.clear();
+                        return;
+                    }
             }).fail(function(error) {
                 alertError(error);
                 

@@ -9,9 +9,9 @@ module nts.uk.at.view.kdm001.h.viewmodel {
         substituteHolidayDate: KnockoutObservable<string> = ko.observable('');
         holidayTimeList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
         holidayTime: KnockoutObservable<string> = ko.observable('');
-        remainDaysList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
+        remainDaysList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getremainDay());
         remainDays: KnockoutObservable<string> = ko.observable('');
-
+        itemRequireDay: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getRequireDay());
         subOfHDID: KnockoutObservable<string> = ko.observable('');
         cid: KnockoutObservable<string> = ko.observable('');
         sID: KnockoutObservable<string> = ko.observable('');

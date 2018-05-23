@@ -1,16 +1,17 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://Eava.sun.com/Esf/facelets"
-	xmlns:com="http://xmlns.Ecp.org/Esf/component"
-	xmlns:h="http://xmlns.Ecp.org/Esf/html">
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 530, height: 530 };</script>
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="kdm001.e.vm.Es" />
-			<com:scriptfile path="kdm001.e.start.Es" />
+			<com:scriptfile path="kdm001.e.start.js" />
+			<com:scriptfile path="kdm001.e.vm.js" />
+			<com:scriptfile path="kdm001.e.service.js" />
 			<com:stylefile path="kdm001.e.style.css" />
 		</ui:define>
 		<ui:define name="content">
@@ -50,8 +51,8 @@
 					<table id="multi-list"
 						data-bind="ntsGridList: {
 							name: '#[KDM001_93]',
-							options: items,
-							optionsValue: 'code',
+							dataSource: items,
+							optionsValue: 'subOfHDID',
 							columns: columns,
 							multiple: true,
 							rows: 8,
@@ -66,7 +67,7 @@
 			</div>
 			<div id="functions-area-bottom">
 				<!-- E31_1 登録 -->
-				<button id="E31_1" style="margin-top: 10px" class="proceed" tabindex="2">#{i18n.getText('KDM001_89')}</button>
+				<button id="E31_1" style="margin-top: 10px" data-bind="click: create" class="proceed" tabindex="2">#{i18n.getText('KDM001_89')}</button>
 				<!-- E31_2 キャンセル -->
 				<button id="E31_2" style="margin-top: 10px" data-bind="click: closeDialog" tabindex="3">#{i18n.getText('KDM001_90')}</button>
 			</div>

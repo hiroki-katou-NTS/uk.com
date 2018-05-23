@@ -12,6 +12,8 @@ import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.DeleteSubstitutionOfHDManaDataCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.DeleteSubstitutionOfHDManaDataCommandHandler;
+import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.PayoutSubofHDManagementCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.PayoutSubofHDManagementCommandHandler;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.UpdateSubstitutionOfHDManaDataCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.UpdateSubstitutionOfHDManaDataCommandHandler;
 import nts.uk.ctx.at.record.app.find.remainingnumber.paymana.SubstitutionOfHDManagementDataDto;
@@ -32,7 +34,10 @@ public class SubstitutionOfHDManagementDataWebService extends WebService {
 	private UpdateSubstitutionOfHDManaDataCommandHandler updateSub;
 	
 	@Inject
-	SubstitutionOfHDManagementDataFinder finder;
+	private SubstitutionOfHDManagementDataFinder finder;
+	
+	@Inject
+	private PayoutSubofHDManagementCommandHandler payoutSubofHDManagementCommandHandler;
 	
 	@Inject
 	private SubstitutionManagementDataFinder subManagementFinder;
@@ -70,9 +75,16 @@ public class SubstitutionOfHDManagementDataWebService extends WebService {
 		return finder.getBySidRemainDayAndInPayout(employeeId);
 	}
 
+	@POST
 	@Path("getBySidDatePeriod/{empId}/{payoutID}")
 	public List<SubstitutionOfHDManagementDataDto> getBySidDatePeriod(@PathParam("empId")String sid,@PathParam("payoutID")String payoutID) {
 		return finder.getBySidDatePeriod(sid,payoutID);
+	}
+	
+	@POST
+	@Path("insertSubOfHDMan")
+	public void insertSubOfHDMan(PayoutSubofHDManagementCommand command){
+		payoutSubofHDManagementCommandHandler.handle(command);
 	}
 	
 	@POST

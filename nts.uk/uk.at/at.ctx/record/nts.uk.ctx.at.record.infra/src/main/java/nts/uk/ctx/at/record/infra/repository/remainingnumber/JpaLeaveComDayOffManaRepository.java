@@ -99,7 +99,7 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 	@Override
 	public void deleteByLeaveId(String leaveId) {
 		List<KrcmtLeaveDayOffMana> data = this.queryProxy().query(GET_LEAVE_COM,KrcmtLeaveDayOffMana.class)
-				.setParameter("leaveId", leaveId)
+				.setParameter("leaveID", leaveId)
 				.getList();
 		this.commandProxy().removeAll(data);
 		this.getEntityManager().flush();
