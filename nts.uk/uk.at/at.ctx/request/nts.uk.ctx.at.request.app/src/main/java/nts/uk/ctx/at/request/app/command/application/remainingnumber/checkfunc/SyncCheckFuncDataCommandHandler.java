@@ -157,11 +157,6 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 					break;
 				}
 				
-				System.out.println("====================");
-				for (YearlyHolidaysTimeRemainingImport yearlyHolidaysTimeRemaining : yearlyHolidaysTimeRemainingImport) {
-				System.out.println("--------:" + yearlyHolidaysTimeRemaining.getAnnualHolidayGrantDay());
-				}
-				System.out.println("====================");
 				// パラメータ.年休残数をチェックする
 				//(Check số phép còn lại trong param -パラメータ.年休残数)
 				if (command.getMaxDay() != null) {
