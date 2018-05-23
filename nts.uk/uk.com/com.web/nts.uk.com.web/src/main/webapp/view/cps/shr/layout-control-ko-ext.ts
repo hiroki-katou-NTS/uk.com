@@ -2083,7 +2083,7 @@ module nts.custombinding {
                                     _row = {
                                         recordId: recordId,
                                         checked: ko.observable(false),
-                                        enable: true,
+                                        enable: ko.observable(true),
                                         items: []
                                     };
 
@@ -2141,7 +2141,7 @@ module nts.custombinding {
 
                         let _rows = ko.toJS(renders),
                             _row = _.last(_rows);
-
+                        
                         if (!editable) {
                             renders.removeAll();
                             _.each([1, 2, 3], r => {

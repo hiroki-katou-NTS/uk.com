@@ -204,22 +204,7 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 	}
 
 	@Override
-	public String checkParamConfirmDaily(String employeeCD, String date) {
-		// 契約コード固定：　000000000000
-		// 会社コード固定：　0001
-		// 会社ID固定：　000000000000-0001
-		String companyID = "000000000000-0001";
-		// フォームデータ「対象社員コード(employeeCode)」を取得する
-		if(Strings.isBlank(employeeCD)){
-			throw new BusinessException("Msg_1000", "Msg_1026");
-		}
-		// 対象社員コード(employeeCode)をチェックする
-		employeeSprPub.validateEmpCodeSpr(employeeCD.trim());
-		// （基幹・社員Export）アルゴリズム「「会社ID」「社員コード」より社員基本情報を取得」を実行する　RequestList No.18
-		Optional<EmpSprExport> opEmployeeSpr = employeeSprPub.getEmployeeID(companyID, employeeCD.trim());
-		if(!opEmployeeSpr.isPresent()){
-			throw new BusinessException("Msg_1000", "Msg_1027");
-		}
+	public void checkParamConfirmDaily(String date) {
 		// フォームデータ「対象日(date)」を取得する
 		if(Strings.isBlank(date)){
 			throw new BusinessException("Msg_1009", "Msg_1026");
@@ -228,7 +213,6 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 		if(this.getDate(date)==null){
 			throw new BusinessException("Msg_1009", date);
 		}
-		return opEmployeeSpr.get().getEmployeeID();
 	}
 
 	@Override

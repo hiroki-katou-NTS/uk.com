@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.ac.employee;
 
+import java.util.Objects;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -15,6 +17,8 @@ public class EmployeeRecordAdapterImpl implements EmployeeRecordAdapter{
 	@Override
 	public EmployeeRecordImport getPersonInfor(String employeeId) {
 		EmployeeBasicInfoExport infor = employeePub.findBySId(employeeId);
+		if (Objects.isNull(infor))
+			return null;
 		EmployeeRecordImport data = new EmployeeRecordImport(infor.getPId(),
 				infor.getPName(),
 				infor.getEntryDate(),
