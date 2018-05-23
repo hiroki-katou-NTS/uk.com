@@ -6,8 +6,8 @@ module nts.uk.at.view.kaf018.b {
         });
         let screenModel = new kaf018.b.viewmodel.ScreenModel();        
         screenModel.startPage().done(function(){
+            $("#fixed-table").focus(); 
             __viewContext.bind(screenModel);          
-            // $("#H3_1_1").focus(); 
         })
     });
 }

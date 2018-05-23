@@ -101,4 +101,27 @@ public class AgentPubImpl implements AgentPub {
 				})
 				.collect(Collectors.toList());
 	}
+
+	@Override
+	public List<AgentDataPubExport> getAgentBySidDate(String companyId, String employeeId, GeneralDate startDate,
+			GeneralDate endDate) {
+		List<AgentDataPubExport> lstData = agentRepository.getAgentBySidDate(companyId, employeeId, startDate, endDate)
+				.stream()
+				.map(x -> new AgentDataPubExport(companyId, 
+						x.getEmployeeId(), 
+						x.getRequestId(), 
+						x.getStartDate(), 
+						x.getEndDate(), 
+						x.getAgentSid1(), 
+						EnumAdaptor.valueOf(x.getAgentAppType1().value, AgentAppTypeExport.class),
+						x.getAgentSid2(),
+						EnumAdaptor.valueOf(x.getAgentAppType2().value, AgentAppTypeExport.class), 
+						x.getAgentSid3(),
+						EnumAdaptor.valueOf(x.getAgentAppType3().value, AgentAppTypeExport.class),
+						x.getAgentSid4(), 
+						EnumAdaptor.valueOf(x.getAgentAppType4().value, AgentAppTypeExport.class)))
+				.collect(Collectors.toList());
+		return lstData;
+	}
+	
 }
