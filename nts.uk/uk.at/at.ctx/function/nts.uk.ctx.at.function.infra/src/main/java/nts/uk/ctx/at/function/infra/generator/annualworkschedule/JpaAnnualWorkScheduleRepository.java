@@ -6,12 +6,14 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.dom.annualworkschedule.Employee;
+import nts.uk.ctx.at.function.dom.annualworkschedule.ItemOutTblBook;
 import nts.uk.ctx.at.function.dom.annualworkschedule.SetOutItemsWoSc;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.OutputAgreementTime;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.AnnualWorkScheduleData;
@@ -28,7 +30,10 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 
 	@Inject
 	private SetOutItemsWoScRepository setOutItemsWoScRepository;
-
+	/**
+	 * 36協定時間
+	 */
+	private final String CD_36_AGREEMENT_TIME = "01";
 	/**
 	 * TODO linh.nd
 	 */
@@ -79,9 +84,10 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		
 		//TODO アルゴリズム「年間勤務表の作成」を実行する
 		//36協定時間を出力するかのチェックをする (2018/05/03: always true)
-		boolean outputAgreementTime36 = true;
+		Optional<ItemOutTblBook> outputAgreementTime36 = setOutItemsWoSc.getListItemOutTblBook()
+				.stream().filter(m -> CD_36_AGREEMENT_TIME.equals(m.getCd())).findFirst();
 		//
-		if (outputAgreementTime36) {
+		if (outputAgreementTime36.isPresent()) {
 			
 		} else {
 			
@@ -120,7 +126,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	 */
 	private List<String> createGroupMonths(YearMonth startYm, YearMonth endYm, OutputAgreementTime outputAgreementTime) {
 		List<String> groupMonths = null;
-		int standardMonth = 4; //TODO
+		int standardMonth = 4; //36協定の起算月⇒4月の場合
 		YearMonth stardardYm = YearMonth.of(startYm.getYear(), standardMonth);
 		if (stardardYm.isAfter(startYm)) stardardYm = stardardYm.minusYears(1);
 
