@@ -20,6 +20,6 @@ public class DeleteComDayOffManaCommandHandler extends CommandHandler<Compensato
 	@Override
 	protected void handle(CommandHandlerContext<CompensatoryDayOffManaDataCommand> context) {
 		CompensatoryDayOffManaDataCommand command = context.getCommand();
-		this.comDayRepo.deleteBySidAndDayOffDate(command.getEmployeeId(), command.getDayOffDate());
+		this.comDayRepo.deleteBySidAndDayOffDate(command.getComDayOffID(), command.getEmployeeId(), command.getDayOffDate());
 	}
 }
