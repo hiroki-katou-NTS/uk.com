@@ -4,15 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.sys.env.app.command.mailnoticeset.employee.dto;
 
-import lombok.Value;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PersonContactGetMemento;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class PersonContactDto.
  */
-@Value
-public class PersonContactDto {
+public class PersonContactDto implements PersonContactGetMemento {
 
 	/** The person id. */
+	@SuppressWarnings("unused")
 	private String personId;
 
 	/** The mail address. */
@@ -23,5 +24,49 @@ public class PersonContactDto {
 
 	/** The cell phone no. */
 	private String cellPhoneNo;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PersonContactGetMemento#
+	 * getPersonId()
+	 */
+	@Override
+	public String getPersonId() {
+		return AppContexts.user().personId();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PersonContactGetMemento#
+	 * getMailAddress()
+	 */
+	@Override
+	public String getMailAddress() {
+		return this.mailAddress;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PersonContactGetMemento#
+	 * getMobileMailAddress()
+	 */
+	@Override
+	public String getMobileMailAddress() {
+		return this.mobileMailAddress;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PersonContactGetMemento#
+	 * getCellPhoneNo()
+	 */
+	@Override
+	public String getCellPhoneNo() {
+		return this.cellPhoneNo;
+	}
 
 }

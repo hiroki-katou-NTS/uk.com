@@ -15,8 +15,6 @@ module nts.uk.com.view.cmm048.a {
         export class ScreenModel {
             
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
-            tab1Visible: KnockoutObservable<boolean>;
-            tab2Visible: KnockoutObservable<boolean>;
             selectedTab: KnockoutObservable<string>;
             
             mainModel: MainModel; 
@@ -25,15 +23,12 @@ module nts.uk.com.view.cmm048.a {
                 let _self = this;
                 
                 //TODO tab visible
-                _self.tab1Visible = ko.observable(true);
-                _self.tab2Visible = ko.observable(true);
+                _self.mainModel = new MainModel(); 
                 _self.tabs = ko.observableArray([
-                    {id: 'tab-1', title: nts.uk.resource.getText("CMM048_4"), content: '.tab-content-1', enable: ko.observable(true), visible: _self.tab1Visible},
-                    {id: 'tab-2', title: nts.uk.resource.getText("CMM048_5"), content: '.tab-content-2', enable: ko.observable(true), visible: _self.tab2Visible}
+                    {id: 'tab-1', title: nts.uk.resource.getText("CMM048_4"), content: '.tab-content-1', enable: ko.observable(true), visible: _self.mainModel.editPassword},
+                    {id: 'tab-2', title: nts.uk.resource.getText("CMM048_5"), content: '.tab-content-2', enable: ko.observable(true), visible: _self.mainModel.notSpecialUser}
                 ]);
-                _self.selectedTab = ko.observable('tab-1');
-                
-                _self.mainModel = new MainModel();                       
+                _self.selectedTab = ko.observable('tab-1');                                   
             }
             
             /**
@@ -72,8 +67,8 @@ module nts.uk.com.view.cmm048.a {
                 
                 nts.uk.ui.block.grayout();
                 let command: MailNoticeSetSaveCommand = {
-                    isPasswordUpdate: _self.tab1Visible(),
-                    isContactUpdate: _self.tab2Visible(),
+                    isPasswordUpdate: _self.mainModel.editPassword(),
+                    isContactUpdate: _self.mainModel.notSpecialUser(),
                     oldPassword: _self.mainModel.oldPassword(),
                     newPassword: _self.mainModel.newPassword(),
                     confirmNewPassword: _self.mainModel.confirmNewPassword(),
@@ -113,6 +108,8 @@ module nts.uk.com.view.cmm048.a {
         }
         
         export class MainModel {
+            editPassword: KnockoutObservable<boolean>;
+            notSpecialUser: KnockoutObservable<boolean>;
             employee: EmployeeModel;
             employeeInfoContact: EmployeeInfoContactModel;
             personContact: PersonContactModel;
@@ -125,6 +122,8 @@ module nts.uk.com.view.cmm048.a {
             
             constructor() {
                 let _self = this;
+                _self.editPassword = ko.observable(false);  
+                _self.notSpecialUser = ko.observable(false);                
                 _self.employee = new EmployeeModel();
                 _self.employeeInfoContact = new EmployeeInfoContactModel();
                 _self.personContact = new PersonContactModel();
@@ -138,6 +137,8 @@ module nts.uk.com.view.cmm048.a {
             
             updateData(dto: MainDto) {
                 let _self = this;
+                _self.editPassword(dto.editPassword);
+                _self.notSpecialUser(dto.notSpecialUser);
                 if (!nts.uk.util.isNullOrUndefined(dto.employee)) _self.employee.updateData(dto.employee);
                 if (!nts.uk.util.isNullOrUndefined(dto.employeeInfoContact)) _self.employeeInfoContact.updateData(dto.employeeInfoContact);
                 if (!nts.uk.util.isNullOrUndefined(dto.personContact)) _self.personContact.updateData(dto.personContact);

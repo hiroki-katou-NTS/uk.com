@@ -18,6 +18,12 @@ import nts.uk.ctx.sys.env.app.find.mailnoticeset.employee.UseContactSettingDto;
 @Setter
 public class MailNoticeSettingDto {
 
+	/** The edit password. */
+	private Boolean editPassword;
+
+	/** The not special user. */
+	private Boolean notSpecialUser;
+
 	/** The employee. */
 	private EmployeeBasicDto employee;
 

@@ -6,6 +6,7 @@ package nts.uk.ctx.sys.env.infra.repository.mailnoticeset.employee;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -14,11 +15,14 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSetting;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSettingRepository;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevstUseContactSet;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevstUseContactSetPK;
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevstUseContactSetPK_;
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevstUseContactSet_;
 
@@ -39,6 +43,19 @@ public class JpaUseContactSettingRepository extends JpaRepository implements Use
 	@Override
 	public void add(UseContactSetting useContactSetting, String companyId) {
 		this.commandProxy().insert(this.toEntity(useContactSetting, companyId));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSettingRepository
+	 * #update(nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSetting,
+	 * java.lang.String)
+	 */
+	@Override
+	public void update(UseContactSetting useContactSetting, String companyId) {
+		this.commandProxy().update(this.toEntity(useContactSetting, companyId));
 	}
 
 	/**
@@ -92,6 +109,21 @@ public class JpaUseContactSettingRepository extends JpaRepository implements Use
 		}
 
 		return lstReturn;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSettingRepository
+	 * #find(java.lang.String, java.lang.String,
+	 * nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem)
+	 */
+	@Override
+	public Optional<UseContactSetting> find(String companyId, String employeeId, UserInfoItem settingItem) {
+		val pk = new SevstUseContactSetPK(companyId, employeeId, settingItem.value);
+		return this.queryProxy().find(pk, SevstUseContactSet.class)
+				.map(entity -> new UseContactSetting(new JpaUseContactSettingGetMemento(entity)));
 	}
 
 }

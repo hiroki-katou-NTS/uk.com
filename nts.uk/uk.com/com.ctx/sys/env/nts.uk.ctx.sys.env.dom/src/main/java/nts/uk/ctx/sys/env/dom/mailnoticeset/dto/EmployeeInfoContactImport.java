@@ -49,4 +49,30 @@ public class EmployeeInfoContactImport {
 		this.cellPhoneNo = cellPhoneNo;
 	}
 
+	/**
+	 * Instantiates a new employee info contact import.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public EmployeeInfoContactImport(EmployeeInfoContactGetMemento memento) {
+		this.employeeId = memento.getEmployeeId();
+		this.mailAddress = memento.getMailAddress();
+		this.mobileMailAddress = memento.getMobileMailAddress();
+		this.cellPhoneNo = memento.getCellPhoneNo();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public void saveToMemento(EmployeeInfoContactSetMemento memento) {
+		memento.setEmployeeId(this.employeeId);
+		memento.setMailAddress(this.mailAddress);
+		memento.setMobileMailAddress(this.mobileMailAddress);
+		memento.setCellPhoneNo(this.cellPhoneNo);
+	}
+
 }

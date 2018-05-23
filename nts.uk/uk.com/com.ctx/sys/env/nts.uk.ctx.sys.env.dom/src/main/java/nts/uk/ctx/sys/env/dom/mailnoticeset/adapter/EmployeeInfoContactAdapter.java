@@ -21,4 +21,10 @@ public interface EmployeeInfoContactAdapter {
 	 */
 	List<EmployeeInfoContactImport> getListContact(List<String> employeeIds);
 
+	/**
+	 * Register.
+	 *
+	 * @param employee the employee
+	 */
+	void register(EmployeeInfoContactImport employee);
 }

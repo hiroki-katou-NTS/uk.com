@@ -48,4 +48,30 @@ public class PersonContactImport {
 		this.cellPhoneNo = cellPhoneNo;
 	}
 
+	/**
+	 * Instantiates a new person contact import.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public PersonContactImport(PersonContactGetMemento memento) {
+		this.personId = memento.getPersonId();
+		this.mailAddress = memento.getMailAddress();
+		this.mobileMailAddress = memento.getMobileMailAddress();
+		this.cellPhoneNo = memento.getCellPhoneNo();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public void saveToMemento(PersonContactSetMemento memento) {
+		memento.setPersonId(this.personId);
+		memento.setMailAddress(this.mailAddress);
+		memento.setMobileMailAddress(this.mobileMailAddress);
+		memento.setCellPhoneNo(this.cellPhoneNo);
+	}
+
 }

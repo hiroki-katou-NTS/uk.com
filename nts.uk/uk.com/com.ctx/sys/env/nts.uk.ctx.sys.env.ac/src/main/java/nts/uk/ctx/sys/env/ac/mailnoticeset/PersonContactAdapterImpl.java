@@ -4,14 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.sys.env.ac.mailnoticeset;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 
-import nts.uk.ctx.bs.person.pub.contact.PersonContactObject;
-import nts.uk.ctx.bs.person.pub.contact.PersonContactPub;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.adapter.PersonContactAdapter;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PersonContactImport;
 
@@ -22,8 +19,8 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PersonContactImport;
 public class PersonContactAdapterImpl implements PersonContactAdapter {
 
 	/** The person contact pub. */
-	@Inject
-	private PersonContactPub personContactPub;
+//	@Inject
+//	private PersonContactPub personContactPub;
 
 	/*
 	 * (non-Javadoc)
@@ -33,14 +30,23 @@ public class PersonContactAdapterImpl implements PersonContactAdapter {
 	 */
 	@Override
 	public List<PersonContactImport> getListContact(List<String> personIds) {
-		List<PersonContactObject> listContact = this.personContactPub.getList(personIds);
-		return listContact.stream()
-				.map(item -> new PersonContactImport(
-						item.getPersonId(), 
-						item.getMailAdress(),
-						item.getMobileMailAdress(), 
-						item.getCellPhoneNumber()))
-				.collect(Collectors.toList());
+//		List<PersonContactObject> listContact = this.personContactPub.getList(personIds);
+//		return listContact.stream().map(item -> new PersonContactImport(item.getPersonId(), item.getMailAdress(),
+//				item.getMobileMailAdress(), item.getCellPhoneNumber())).collect(Collectors.toList());
+		return new ArrayList<>();//TODO
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.adapter.PersonContactAdapter#
+	 * register(nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PersonContactImport)
+	 */
+	@Override
+	public void register(PersonContactImport person) {
+//		this.personContactPub.register(personContactPub.getEmployeeId(), personContactPub.getCellPhoneNo(),
+//				personContactPub.getMailAddress(), personContactPub.getMobileMailAddress());
+		//TODO
 	}
 
 }

@@ -5,13 +5,14 @@
 package nts.uk.ctx.sys.env.app.find.mailnoticeset.dto;
 
 import lombok.Getter;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.EmployeeInfoContactSetMemento;
 
 /**
  * The Class EmployeeInfoContactDto.
  */
 //社員連絡先
 @Getter
-public class EmployeeInfoContactDto {
+public class EmployeeInfoContactDto implements EmployeeInfoContactSetMemento {
 
 	// 社員ID
 	/** The employee id. */
@@ -29,22 +30,51 @@ public class EmployeeInfoContactDto {
 	/** The cell phone no. */
 	private String cellPhoneNo;
 
-	/**
-	 * Instantiates a new employee info contact dto.
-	 *
-	 * @param employeeId
-	 *            the employee id
-	 * @param mailAddress
-	 *            the mail address
-	 * @param mobileMailAddress
-	 *            the mobile mail address
-	 * @param cellPhoneNo
-	 *            the cell phone no
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.env.dom.mailnoticeset.dto.EmployeeInfoContactSetMemento#
+	 * setEmployeeId(java.lang.String)
 	 */
-	public EmployeeInfoContactDto(String employeeId, String mailAddress, String mobileMailAddress, String cellPhoneNo) {
+	@Override
+	public void setEmployeeId(String employeeId) {
 		this.employeeId = employeeId;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.env.dom.mailnoticeset.dto.EmployeeInfoContactSetMemento#
+	 * setMailAddress(java.lang.String)
+	 */
+	@Override
+	public void setMailAddress(String mailAddress) {
 		this.mailAddress = mailAddress;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.env.dom.mailnoticeset.dto.EmployeeInfoContactSetMemento#
+	 * setMobileMailAddress(java.lang.String)
+	 */
+	@Override
+	public void setMobileMailAddress(String mobileMailAddress) {
 		this.mobileMailAddress = mobileMailAddress;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.env.dom.mailnoticeset.dto.EmployeeInfoContactSetMemento#
+	 * setCellPhoneNo(java.lang.String)
+	 */
+	@Override
+	public void setCellPhoneNo(String cellPhoneNo) {
 		this.cellPhoneNo = cellPhoneNo;
 	}
 

@@ -5,13 +5,14 @@
 package nts.uk.ctx.sys.env.app.find.mailnoticeset.dto;
 
 import lombok.Getter;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PersonContactSetMemento;
 
 /**
  * The Class PersonContactDto.
  */
 // 個人連絡先
 @Getter
-public class PersonContactDto {
+public class PersonContactDto implements PersonContactSetMemento {
 
 	// 個人ID
 	/** The person id. */
@@ -29,22 +30,47 @@ public class PersonContactDto {
 	/** The cell phone no. */
 	private String cellPhoneNo;
 
-	/**
-	 * Instantiates a new person contact dto.
-	 *
-	 * @param personId
-	 *            the person id
-	 * @param mailAddress
-	 *            the mail address
-	 * @param mobileMailAddress
-	 *            the mobile mail address
-	 * @param cellPhoneNo
-	 *            the cell phone no
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PersonContactSetMemento#
+	 * setPersonId(java.lang.String)
 	 */
-	public PersonContactDto(String personId, String mailAddress, String mobileMailAddress, String cellPhoneNo) {
+	@Override
+	public void setPersonId(String personId) {
 		this.personId = personId;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PersonContactSetMemento#
+	 * setMailAddress(java.lang.String)
+	 */
+	@Override
+	public void setMailAddress(String mailAddress) {
 		this.mailAddress = mailAddress;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PersonContactSetMemento#
+	 * setMobileMailAddress(java.lang.String)
+	 */
+	@Override
+	public void setMobileMailAddress(String mobileMailAddress) {
 		this.mobileMailAddress = mobileMailAddress;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PersonContactSetMemento#
+	 * setCellPhoneNo(java.lang.String)
+	 */
+	@Override
+	public void setCellPhoneNo(String cellPhoneNo) {
 		this.cellPhoneNo = cellPhoneNo;
 	}
 

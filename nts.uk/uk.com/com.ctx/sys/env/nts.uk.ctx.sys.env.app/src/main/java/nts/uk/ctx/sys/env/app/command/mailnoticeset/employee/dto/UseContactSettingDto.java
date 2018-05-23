@@ -1,20 +1,21 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.sys.env.app.command.mailnoticeset.employee.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Value;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSettingGetMemento;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class UseContactSettingDto.
  */
-@Getter
-@Setter
-public class UseContactSettingDto {
-	
-	/** The Employee ID. */
+@Value
+public class UseContactSettingDto implements UseContactSettingGetMemento {
+
+	/** The employee id. */
 	// 社員ID
 	public String employeeId;
 
@@ -25,5 +26,41 @@ public class UseContactSettingDto {
 	/** The use mail setting. */
 	// メール利用設定
 	public Boolean useMailSetting;
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSettingGetMemento
+	 * #getEmployeeID()
+	 */
+	@Override
+	public String getEmployeeID() {
+		return AppContexts.user().employeeId();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSettingGetMemento
+	 * #getSettingItem()
+	 */
+	@Override
+	public UserInfoItem getSettingItem() {
+		return UserInfoItem.valueOf(this.settingItem);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSettingGetMemento
+	 * #isUseMailSetting()
+	 */
+	@Override
+	public boolean isUseMailSetting() {
+		return this.useMailSetting;
+	}
+
 }

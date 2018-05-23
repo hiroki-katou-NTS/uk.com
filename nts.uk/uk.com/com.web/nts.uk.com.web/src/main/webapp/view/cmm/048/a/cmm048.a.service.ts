@@ -20,6 +20,8 @@ module nts.uk.com.view.cmm048.a {
     export module model {
         
         export interface MainDto {
+            editPassword: boolean;
+            notSpecialUser: boolean;
             employee: EmployeeDto;
             employeeInfoContact: EmployeeInfoContactDto;
             personContact: PersonContactDto;

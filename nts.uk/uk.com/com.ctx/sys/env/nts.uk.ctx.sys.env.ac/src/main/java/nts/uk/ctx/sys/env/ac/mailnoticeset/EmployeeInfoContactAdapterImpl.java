@@ -35,13 +35,22 @@ public class EmployeeInfoContactAdapterImpl implements EmployeeInfoContactAdapte
 	@Override
 	public List<EmployeeInfoContactImport> getListContact(List<String> employeeIds) {
 		List<EmployeeContactObject> listContact = this.employeeContactPub.getList(employeeIds);
-		return listContact.stream()
-				.map(item -> new EmployeeInfoContactImport(
-						item.getSid(), 
-						item.getMailAddress(),
-						item.getPhoneMailAddress(), 
-						item.getCellPhoneNo()))
-				.collect(Collectors.toList());
+		return listContact.stream().map(item -> new EmployeeInfoContactImport(item.getSid(), item.getMailAddress(),
+				item.getPhoneMailAddress(), item.getCellPhoneNo())).collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.env.dom.mailnoticeset.adapter.EmployeeInfoContactAdapter#
+	 * register(nts.uk.ctx.sys.env.dom.mailnoticeset.dto.
+	 * EmployeeInfoContactImport)
+	 */
+	@Override
+	public void register(EmployeeInfoContactImport employee) {
+		this.employeeContactPub.register(employee.getEmployeeId(), employee.getMailAddress(),
+				employee.getMobileMailAddress(), employee.getCellPhoneNo());
 	}
 
 }

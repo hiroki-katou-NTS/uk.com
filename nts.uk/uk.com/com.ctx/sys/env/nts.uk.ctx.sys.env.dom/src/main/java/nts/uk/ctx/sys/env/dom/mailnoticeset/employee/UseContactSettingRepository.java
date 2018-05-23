@@ -5,11 +5,22 @@
 package nts.uk.ctx.sys.env.dom.mailnoticeset.employee;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The Interface UseContactSettingRepository.
  */
 public interface UseContactSettingRepository {
+
+	/**
+	 * Find.
+	 *
+	 * @param companyId the company id
+	 * @param employeeId the employee id
+	 * @param settingItem the setting item
+	 * @return the optional
+	 */
+	Optional<UseContactSetting> find(String companyId, String employeeId, UserInfoItem settingItem);
 
 	/**
 	 * Find by employee id.
@@ -26,5 +37,13 @@ public interface UseContactSettingRepository {
 	 * @param useContactSetting the use contact setting
 	 * @param companyId the company id
 	 */
-	void add(UseContactSetting useContactSetting,String companyId);
+	void add(UseContactSetting useContactSetting, String companyId);
+
+	/**
+	 * Update.
+	 *
+	 * @param useContactSetting the use contact setting
+	 * @param companyId the company id
+	 */
+	void update(UseContactSetting useContactSetting, String companyId);
 }

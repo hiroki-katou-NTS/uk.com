@@ -21,4 +21,11 @@ public interface PersonContactAdapter {
 	 */
 	List<PersonContactImport> getListContact(List<String> personIds);
 
+	/**
+	 * Register.
+	 *
+	 * @param person the person
+	 */
+	void register(PersonContactImport person);
+
 }

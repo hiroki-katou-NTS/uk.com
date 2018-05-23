@@ -81,20 +81,32 @@ public class MailNoticeSettingFinder {
 			item.saveToMemento(memento);
 			return memento;
 		}).collect(Collectors.toList()));
+		
+		// Check if password is editable
+		Optional<UserInfoUseMethod> opUserInfoUseMethod = listUserInfoUseMethod.stream()
+				.filter(item -> UserInfoItem.PASSWORD.equals(item.getSettingItem()))
+				.findFirst();
+		if (opUserInfoUseMethod.isPresent() && SelfEditUserInfo.CAN_EDIT.equals(opUserInfoUseMethod.get().getSelfEdit())) {
+			dto.setEditPassword(true);
+		} else {
+			dto.setEditPassword(false);
+		}		
 
 		// Check if special user or not
 		String employeeId = AppContexts.user().employeeId();
 		String personId = AppContexts.user().personId();
 		if (StringUtil.isNullOrEmpty(employeeId, true)) {
 			// Special user
-			Optional<UserInfoUseMethod> opUserInfoUseMethod = listUserInfoUseMethod.stream()
-					.filter(item -> UserInfoItem.PASSWORD.equals(item.getSettingItem())).findFirst();
-			if (!opUserInfoUseMethod.isPresent()
-					|| SelfEditUserInfo.CAN_NOT_EDIT.equals(opUserInfoUseMethod.get().getSelfEdit())) {
+			dto.setNotSpecialUser(false);	
+			
+			// Throw exception if password can not be edited
+			if (!dto.getEditPassword()) {
 				throw new BusinessException("Msg_1177");
-			}
+			}			
 		} else {
 			// Not special user
+			dto.setNotSpecialUser(true);
+			
 			// Get domain 連絡先使用設定
 			List<UseContactSetting> listUseContactSetting = this.useContactSettingRepository
 					.findByEmployeeId(employeeId, companyId);
@@ -111,11 +123,11 @@ public class MailNoticeSettingFinder {
 					.getListContact(employeeIds).stream()
 					.filter(item -> item.getEmployeeId().equals(employeeId))
 					.findAny()
-					.map(item -> new EmployeeInfoContactDto(
-						item.getEmployeeId(), 
-						item.getMailAddress(),
-						item.getMobileMailAddress(),
-						item.getCellPhoneNo()));
+					.map(item -> {
+						EmployeeInfoContactDto memento = new EmployeeInfoContactDto();
+						item.saveToMemento(memento);
+						return memento;
+					});
 			dto.setEmployeeInfoContact(opEmployeeInfoContact.orElse(null));
 
 			// Get import domain 個人連絡先 (from Request List 379)
@@ -125,11 +137,11 @@ public class MailNoticeSettingFinder {
 					.stream()
 					.filter(item -> item.getPersonId().equals(personId))
 					.findAny()
-					.map(item -> new PersonContactDto(
-						item.getPersonId(),
-						item.getMailAddress(),
-						item.getMobileMailAddress(),
-						item.getCellPhoneNo()));
+					.map(item -> {
+						PersonContactDto memento = new PersonContactDto();
+						item.saveToMemento(memento);
+						return memento;
+					});
 			dto.setPersonContact(opPersonContactImport.orElse(null));
 		}
 
