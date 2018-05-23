@@ -1608,30 +1608,38 @@ module nts.layout {
                         .stringExpression = /^[a-zA-Z0-9\s"#$%&(~|{}\[\]@:`*+?;\\/_\-><)]{1,20}$/;
 
                     fetch.get_stc_setting().done((stt: StampCardEditing) => {
-                        $(document).on('change', `[id=${ctrls[0].id.replace(/#/g, '')}]`, (event) => {
-                            let $ipc = $(event.target),
-                                value = $ipc.val(),
-                                len = value.length;
+                        let _bind = $(document).data('_nts_bind') || {};
 
-                            if (len < stt.digitsNumber) {
-                                switch (stt.method) {
-                                    case EDIT_METHOD.PreviousZero:
-                                        $ipc.val(_.padStart(value, stt.digitsNumber, '0'));
-                                        break;
-                                    case EDIT_METHOD.AfterZero:
-                                        $ipc.val(_.padEnd(value, stt.digitsNumber, '0'));
-                                        break;
-                                    case EDIT_METHOD.PreviousSpace:
-                                        $ipc.val(_.padStart(value, stt.digitsNumber, ' '));
-                                        break;
-                                    case EDIT_METHOD.AfterSpace:
-                                        $ipc.val(_.padEnd(value, stt.digitsNumber, ' '));
-                                        break;
-                                }
+                        if (!_bind["TIME_CARD_VALIDATE"]) {
+                            _bind["TIME_CARD_VALIDATE"] = true;
+                            $(document).data('_nts_bind', _bind);
 
-                                $ipc.trigger('change');
-                            }
-                        });
+                            $(document)
+                                .on('change', `[id=${ctrls[0].id.replace(/#/g, '')}]`, (event) => {
+                                    let $ipc = $(event.target),
+                                        value = $ipc.val(),
+                                        len = value.length;
+
+                                    if (value && len < stt.digitsNumber) {
+                                        switch (stt.method) {
+                                            case EDIT_METHOD.PreviousZero:
+                                                $ipc.val(_.padStart(value, stt.digitsNumber, '0'));
+                                                break;
+                                            case EDIT_METHOD.AfterZero:
+                                                $ipc.val(_.padEnd(value, stt.digitsNumber, '0'));
+                                                break;
+                                            case EDIT_METHOD.PreviousSpace:
+                                                $ipc.val(_.padStart(value, stt.digitsNumber, ' '));
+                                                break;
+                                            case EDIT_METHOD.AfterSpace:
+                                                $ipc.val(_.padEnd(value, stt.digitsNumber, ' '));
+                                                break;
+                                        }
+
+                                        $ipc.trigger('change');
+                                    }
+                                });
+                        }
                     });
 
                     fetch.perm((__viewContext || {}).user.role.personalInfo, categoryId).done(perm => {
