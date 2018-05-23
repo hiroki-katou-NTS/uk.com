@@ -47,9 +47,64 @@ public class OptionalItemValueDto {
 	}
 
 	public AnyItemValue toDomain() {
-		return new AnyItemValue(new AnyItemNo(this.itemNo),
-								Optional.of(new AnyItemTimes(this.isTimesItem ? this.value : 0)),
-								Optional.of(new AnyItemAmount(this.isAmountItem ? this.value : 0)),
-								Optional.of(new AnyItemTime(this.isTimeItem ? this.value : 0)));
+		return new AnyItemValue(new AnyItemNo(this.itemNo), 
+						this.isTimesItem ? Optional.of(new AnyItemTimes(new BigDecimal(this.value))) : Optional.empty(),
+						this.isAmountItem ? Optional.of(new AnyItemAmount(new BigDecimal(this.value))) : Optional.empty(),
+						this.isTimeItem ? Optional.of(new AnyItemTime(Integer.valueOf(this.value))) : Optional.empty());
+	}
+	
+	public static OptionalItemValueDto from(AnyItemOfMonthly c) {
+		if(c != null) {
+			boolean isTimes = c.getTimes().isPresent();
+			boolean isAmount = c.getAmount().isPresent();
+			boolean isTime = c.getTime().isPresent();
+			String value = isTimes ? c.getTimes().get().v().toString()
+					: isAmount ? String.valueOf(c.getAmount().get().v())
+							: String.valueOf(c.getTime().get().valueAsMinutes());
+			return new OptionalItemValueDto(value, c.getAnyItemId(), isTime, isTimes, isAmount);
+		}
+		return null;
+	}
+	
+	public Integer getDailyTime(){
+		if(isTimeItem){
+			return Integer.parseInt(value);
+		}
+		return null;
+	}
+	
+	public Integer getDailyTimes(){
+		if(isTimesItem){
+			return Integer.parseInt(value);
+		}
+		return null;
+	}
+	
+	public BigDecimal getDailyAmount(){
+		if(isAmountItem){
+			return new BigDecimal(value);
+		}
+		return null;
+	}
+	
+	public AnyTimeMonth getMonthlyTime(){
+		if(isTimeItem){
+			return new AnyTimeMonth(Integer.parseInt(value));
+		}
+		return null;
+	}
+	
+	public AnyTimesMonth getMonthlyTimes(){
+		if(isTimesItem){
+			return new AnyTimesMonth(Double.parseDouble(value));
+		}
+		return null;
+	}
+	
+	public AnyAmountMonth getMonthlyAmount(){
+		if(isAmountItem){
+			return new AnyAmountMonth(Integer.parseInt(value));
+		}
+		return null;
 	}
 }
