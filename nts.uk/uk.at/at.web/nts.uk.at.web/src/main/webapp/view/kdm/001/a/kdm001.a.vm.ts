@@ -120,6 +120,11 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             });
         }
         
+        clickGetDataList() {
+            updateDataList();
+            $('#compositePayOutSubMngDataGrid').focus();
+        }
+        
         updateDataList() {
             let self = this;
             let empId = self.selectedItem();
