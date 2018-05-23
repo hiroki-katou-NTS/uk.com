@@ -15,7 +15,6 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.env.app.find.mailnoticeset.company.dto.UserInfoUseMethodDto;
-import nts.uk.ctx.sys.env.app.find.mailnoticeset.dto.ComplexityDto;
 import nts.uk.ctx.sys.env.app.find.mailnoticeset.dto.EmployeeBasicDto;
 import nts.uk.ctx.sys.env.app.find.mailnoticeset.dto.EmployeeInfoContactDto;
 import nts.uk.ctx.sys.env.app.find.mailnoticeset.dto.MailNoticeSettingDto;
@@ -156,16 +155,9 @@ public class MailNoticeSettingFinder {
 		// Get import domain パスワードポリシー (from Request List 385)
 		Optional<PasswordPolicyDto> opPasswordPolicy = this.passwordPolicyAdapter.getPasswordPolicy(contractCode)
 				.map(item -> {
-					ComplexityDto complexityDto = new ComplexityDto(
-							item.getComplexity().getAlphabetDigit(),
-							item.getComplexity().getNumberOfDigits(),
-							item.getComplexity().getNumberOfChar());
-					return new PasswordPolicyDto(
-							item.getIsUse(),
-							complexityDto,
-							item.getLowestDigits(),
-							item.getHistoryCount(),
-							item.getValidityPeriod());
+					PasswordPolicyDto memento = new PasswordPolicyDto();
+					item.saveToMemento(memento);
+					return memento;
 				});
 		dto.setPasswordPolicy(opPasswordPolicy.orElse(null));
 		return dto;

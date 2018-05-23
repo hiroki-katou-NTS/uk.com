@@ -54,4 +54,34 @@ public class PasswordPolicyImport {
 		this.validityPeriod = validityPeriod;
 	}
 
+	/**
+	 * Instantiates a new password policy import.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public PasswordPolicyImport(PasswordPolicyGetMemento memento) {
+		this.contractCode = memento.getContractCode();
+		this.isUse = memento.getIsUse();
+		this.lowestDigits = memento.getLowestDigits();
+		this.complexity = memento.getComplexity();
+		this.historyCount = memento.getHistoryCount();
+		this.validityPeriod = memento.getValidityPeriod();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public void saveToMemento(PasswordPolicySetMemento memento) {
+		memento.setContractCode(this.contractCode);
+		memento.setIsUse(this.isUse);
+		memento.setLowestDigits(this.lowestDigits);
+		memento.setComplexity(this.complexity);
+		memento.setHistoryCount(this.historyCount);
+		memento.setValidityPeriod(this.validityPeriod);
+	}
+
 }

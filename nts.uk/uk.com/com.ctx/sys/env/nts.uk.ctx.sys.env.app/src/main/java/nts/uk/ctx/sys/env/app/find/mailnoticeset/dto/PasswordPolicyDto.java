@@ -5,12 +5,14 @@
 package nts.uk.ctx.sys.env.app.find.mailnoticeset.dto;
 
 import lombok.Getter;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.ComplexityImport;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PasswordPolicySetMemento;
 
 /**
  * The Class PasswordPolicyDto.
  */
 @Getter
-public class PasswordPolicyDto {
+public class PasswordPolicyDto implements PasswordPolicySetMemento {
 
 	/** The is use. */
 	private Boolean isUse;
@@ -27,26 +29,71 @@ public class PasswordPolicyDto {
 	/** The validity period. */
 	private Integer validityPeriod;
 
-	/**
-	 * Instantiates a new password policy dto.
-	 *
-	 * @param isUse
-	 *            the is use
-	 * @param complexity
-	 *            the complexity
-	 * @param lowestDigits
-	 *            the lowest digits
-	 * @param historyCount
-	 *            the history count
-	 * @param validityPeriod
-	 *            the validity period
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PasswordPolicySetMemento#
+	 * setContractCode(java.lang.String)
 	 */
-	public PasswordPolicyDto(Boolean isUse, ComplexityDto complexity, Integer lowestDigits, Integer historyCount,
-			Integer validityPeriod) {
+	@Override
+	public void setContractCode(String contractCode) {
+		// Do nothing
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PasswordPolicySetMemento#
+	 * setIsUse(java.lang.Boolean)
+	 */
+	@Override
+	public void setIsUse(Boolean isUse) {
 		this.isUse = isUse;
-		this.complexity = complexity;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PasswordPolicySetMemento#
+	 * setLowestDigits(java.lang.Integer)
+	 */
+	@Override
+	public void setLowestDigits(Integer lowestDigits) {
 		this.lowestDigits = lowestDigits;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PasswordPolicySetMemento#
+	 * setComplexity(nts.uk.ctx.sys.env.dom.mailnoticeset.dto.ComplexityImport)
+	 */
+	@Override
+	public void setComplexity(ComplexityImport complexity) {
+		ComplexityDto memento = new ComplexityDto();
+		complexity.saveToMemento(memento);
+		this.complexity = memento;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PasswordPolicySetMemento#
+	 * setHistoryCount(java.lang.Integer)
+	 */
+	@Override
+	public void setHistoryCount(Integer historyCount) {
 		this.historyCount = historyCount;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PasswordPolicySetMemento#
+	 * setValidityPeriod(java.lang.Integer)
+	 */
+	@Override
+	public void setValidityPeriod(Integer validityPeriod) {
 		this.validityPeriod = validityPeriod;
 	}
 

@@ -5,12 +5,13 @@
 package nts.uk.ctx.sys.env.app.find.mailnoticeset.dto;
 
 import lombok.Getter;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.ComplexitySetMemento;
 
 /**
  * The Class ComplexityDto.
  */
 @Getter
-public class ComplexityDto {
+public class ComplexityDto implements ComplexitySetMemento {
 
 	/** The alphabet digit. */
 	private Integer alphabetDigit;
@@ -21,19 +22,36 @@ public class ComplexityDto {
 	/** The number of char. */
 	private Integer numberOfChar;
 
-	/**
-	 * Instantiates a new complexity dto.
-	 *
-	 * @param alphabetDigit
-	 *            the alphabet digit
-	 * @param numberOfDigits
-	 *            the number of digits
-	 * @param numberOfChar
-	 *            the number of char
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.dto.ComplexitySetMemento#
+	 * setAlphabetDigit(java.lang.Integer)
 	 */
-	public ComplexityDto(Integer alphabetDigit, Integer numberOfDigits, Integer numberOfChar) {
+	@Override
+	public void setAlphabetDigit(Integer alphabetDigit) {
 		this.alphabetDigit = alphabetDigit;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.dto.ComplexitySetMemento#
+	 * setNumberOfDigits(java.lang.Integer)
+	 */
+	@Override
+	public void setNumberOfDigits(Integer numberOfDigits) {
 		this.numberOfDigits = numberOfDigits;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.dto.ComplexitySetMemento#
+	 * setNumberOfChar(java.lang.Integer)
+	 */
+	@Override
+	public void setNumberOfChar(Integer numberOfChar) {
 		this.numberOfChar = numberOfChar;
 	}
 

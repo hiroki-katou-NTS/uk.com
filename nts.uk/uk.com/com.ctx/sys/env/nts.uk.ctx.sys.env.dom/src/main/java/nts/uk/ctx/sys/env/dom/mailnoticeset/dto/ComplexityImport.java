@@ -38,4 +38,28 @@ public class ComplexityImport {
 		this.numberOfChar = numberOfChar;
 	}
 
+	/**
+	 * Instantiates a new person contact import.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public ComplexityImport(ComplexityGetMemento memento) {
+		this.alphabetDigit = memento.getAlphabetDigit();
+		this.numberOfDigits = memento.getNumberOfDigits();
+		this.numberOfChar = memento.getNumberOfChar();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public void saveToMemento(ComplexitySetMemento memento) {
+		memento.setAlphabetDigit(this.alphabetDigit);
+		memento.setNumberOfDigits(this.numberOfDigits);
+		memento.setNumberOfChar(this.numberOfChar);
+	}
+	
 }
