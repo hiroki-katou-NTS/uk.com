@@ -23,7 +23,10 @@ module nts.uk.ui.koExtentions {
 
             // Container.
             var container = $(element);
-
+            if (nts.uk.util.isNullOrUndefined(container.attr("tabindex")))
+                container.attr("tabindex", "0");
+            
+            container.data("tabindex", container.attr("tabindex"));
             // Create title.
             container.prepend('<ul></ul>');
             var titleContainer = container.children('ul');
@@ -52,6 +55,7 @@ module nts.uk.ui.koExtentions {
                 create: function(event: Event, ui: any) {
                     container.find('.ui-tabs-panel').addClass('disappear');
                     ui.panel.removeClass('disappear'); 
+                    container.find(".ui-tabs-tab").attr('tabindex', container.data("tabindex"));
                 },
                 activate: function(evt: Event, ui: any) {
                     data.active(ui.newPanel[0].id);
