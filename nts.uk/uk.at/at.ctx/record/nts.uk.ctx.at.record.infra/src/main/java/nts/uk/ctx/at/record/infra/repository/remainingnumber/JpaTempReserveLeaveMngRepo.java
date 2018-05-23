@@ -29,6 +29,10 @@ public class JpaTempReserveLeaveMngRepo extends JpaRepository implements TempRes
 	private static final String DELETE_PAST_YMD = "DELETE FROM KrcdtRsvleaMngTemp a "
 			+ "WHERE a.PK.employeeId = :employeeId " + "AND a.PK.ymd <= :criteriaDate ";
 
+	private static final String SELECT_BY_EMPLOYEEID = "SELECT a FROM KrcdtRsvleaMngTemp a "
+			+ "WHERE a.PK.employeeId = :employeeId "
+			+ "ORDER BY a.PK.ymd ";
+	
 	/** 検索 */
 	@Override
 	public Optional<TempReserveLeaveManagement> find(String employeeId, GeneralDate ymd) {
@@ -85,5 +89,12 @@ public class JpaTempReserveLeaveMngRepo extends JpaRepository implements TempRes
 				.setParameter("employeeId", employeeId).setParameter("startYmd", period.start())
 				.setParameter("endYmd", period.end()).getList();
 		this.commandProxy().removeAll(listEntity);
+	}
+
+	@Override
+	public List<TempReserveLeaveManagement> findByEmployeeId(String employeeId) {
+		return this.queryProxy().query(SELECT_BY_EMPLOYEEID, KrcdtRsvleaMngTemp.class)
+				.setParameter("employeeId", employeeId)
+				.getList(c -> c.toDomain());
 	}
 }
