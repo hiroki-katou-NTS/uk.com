@@ -50,22 +50,24 @@ public class TotalDayCountWs {
 	 * @param lstDate
 	 */
 	private void calculatePredeterminedDay(String employeeId, DateRange dateRange, TotalCountDay totalCountDay) {
-		// ドメインモデル「画面で利用できる勤怠項目一覧」を取得する
-		AttendanceType attendanceType = attendanceTypeRepository.getItemByScreenUseAtr(AppContexts.user().companyId(), 19)
-				.stream().filter(x -> x.getAttendanceItemId() == 1 && x.getAttendanceItemType().value == 1).findFirst().get();
-		
 		// ドメインモデル「勤務種類」を取得する
-		Optional<WorkType> optWorkType = workTypeRepository.findByPK(AppContexts.user().companyId(), "001");
-		
-		if (optWorkType.isPresent()) {
+		List<WorkType> lstWorkType = workTypeRepository.findByCompanyId(AppContexts.user().companyId()).stream().filter(x -> 
+			x.getDailyWork().getOneDay().isAttendance() || x.getDailyWork().getMorning().isAttendance() || x.getDailyWork().getAfternoon().isAttendance() 
+		).collect(Collectors.toList());
+		if (lstWorkType.size() > 0) {
 			// ドメインモデル「日別実績の勤務情報」を取得する
 			List<String> empList = new ArrayList<>();
 			empList.add(employeeId);
 			// 予定勤務種類コードを取得する
 			List<WorkInfoOfDailyPerformanceDetailDto> dailyPerformanceList = dailyPerformanceRepo.find(empList, dateRange);
 			
+			int dayCount = 0;
+			for (WorkType workType: lstWorkType) {
+				dayCount += dailyPerformanceList.stream().filter(x -> x.getScheduleWorkInformation().getWorkTypeCode() == workType.getWorkTypeCode().v()).collect(Collectors.toList()).size();
+			}
+			
 			// 所定日数をカウントする
-			totalCountDay.setPredeterminedDay(dailyPerformanceList.stream().filter(x -> x.getScheduleWorkInformation().getWorkTypeCode() == optWorkType.get().getWorkTypeCode().v()).collect(Collectors.toList()).size());
+			totalCountDay.setPredeterminedDay(dayCount);
 		}
 		totalCountDay.setPredeterminedDay(0);
 	}
@@ -187,8 +189,8 @@ public class TotalDayCountWs {
 	 * @param totalCountDay
 	 */
 	public void calculateAllDayCount(String employeeId, DateRange dateRange, TotalCountDay totalCountDay) {
-		//calculatePredeterminedDay(employeeId, dateRange, totalCountDay);
-		//calculateNonPredeterminedDay(employeeId, dateRange, totalCountDay);
-		//calculateDayCount(employeeId, dateRange, totalCountDay);
+		calculatePredeterminedDay(employeeId, dateRange, totalCountDay);
+		calculateNonPredeterminedDay(employeeId, dateRange, totalCountDay);
+		calculateDayCount(employeeId, dateRange, totalCountDay);
 	}
 }

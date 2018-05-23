@@ -16,7 +16,7 @@ import nts.uk.file.at.app.export.dailyschedule.totalsum.TotalValue;
 public class EmployeeReportData {
 	
 	/** The employee id. */
-	public String employeeId;
+	public String employeeCode;
 	
 	/** The employee name. */
 	public String employeeName;

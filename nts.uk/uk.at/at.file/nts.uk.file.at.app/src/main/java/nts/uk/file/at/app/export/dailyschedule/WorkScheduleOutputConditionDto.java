@@ -16,7 +16,7 @@ public class WorkScheduleOutputConditionDto {
 	// 帳票出力種類
 	private int outputType;
 	// 出力項目設定コード
-	private int code;
+	private String code;
 	// 改ページ区分
 	private int pageBreakIndicator;
 	// 日別勤務表用明細・合計出力設定
