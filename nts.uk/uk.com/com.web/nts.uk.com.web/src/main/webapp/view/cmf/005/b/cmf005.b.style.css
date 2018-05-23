@@ -28,7 +28,7 @@
 	overflow: visible;
 }
 #contents-area {
-	overflow-x: hidden;
+	overflow: auto;
 }
 
 .contentAll {
