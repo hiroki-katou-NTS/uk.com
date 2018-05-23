@@ -168,6 +168,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         itemValueMonthParent: any = {};
         valueUpdateMonth: any = null;
         valueFlexCheck: any;
+        
+        textStyles: any = [];
         constructor(dataShare: any) {
             var self = this;
             self.initLegendButton();
@@ -582,6 +584,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.optionalHeader = data.lstControlDisplayItem.lstHeader;
             self.sheetsGrid(data.lstControlDisplayItem.lstSheet);
             self.sheetsGrid.valueHasMutated();
+            self.textStyles = data.textStyles;
         }
 
         proceed() {
@@ -1867,7 +1870,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 { name: 'CellState', rowId: 'rowId', columnKey: 'columnKey', state: 'state', states: self.cellStates() },
                 { name: 'RowState', rows: self.rowStates() },
                 { name: 'TextColor', rowId: 'rowId', columnKey: 'columnKey', color: 'color', colorsTable: self.textColors() },
-                { name: 'HeaderStyles', columns: self.headerColors() }
+                { name: 'HeaderStyles', columns: self.headerColors() },
+                {
+                    name: 'TextStyle',
+                    rowId: 'rowId',
+                    columnKey: 'columnKey',
+                    style: 'style',
+                    styles: self.textStyles
+                },
             ];
             //            let lzyLoad = {
             //                name: "LoadOnDemand",
