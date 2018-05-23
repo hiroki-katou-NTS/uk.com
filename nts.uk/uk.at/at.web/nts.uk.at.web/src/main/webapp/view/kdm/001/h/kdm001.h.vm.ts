@@ -1,6 +1,11 @@
 module nts.uk.at.view.kdm001.h.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import model = kdm001.share.model;
+    import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
+    import dialog = nts.uk.ui.dialog;
+    import block = nts.uk.ui.block;
+    import model = kdm001.share.model;
     export class ScreenModel {
         workCode: KnockoutObservable<string> = ko.observable('');
         workName: KnockoutObservable<string> = ko.observable('');
@@ -20,7 +25,7 @@ module nts.uk.at.view.kdm001.h.viewmodel {
         dayOff: KnockoutObservable<string> = ko.observable('');
         expirationDate: KnockoutObservable<string> = ko.observable('');
         unknownDate: KnockoutObservable<string> = ko.observable('');
-
+        employeeId: KnockoutObservable<string> = ko.observable('');
 
         constructor() {
             let self = this;
@@ -28,13 +33,23 @@ module nts.uk.at.view.kdm001.h.viewmodel {
         }
 
         initScreen(): void {
-            let self = this;
-            self.workCode('100');
-            self.workName('営業部');
-            self.employeeCode('A0000001');
-            self.employeeName('日通　太郎');
-            self.substituteHolidayDate('20160424');
-        
+            let self = this,
+            info = getShared("KDM001_EFGH_PARAMS");
+            if (info) {
+                self.workCode(info.selectedEmployee.workplaceId);
+                self.workName(info.selectedEmployee.workplaceName);
+                self.employeeId(info.selectedEmployee.employeeId);
+                self.employeeCode(info.selectedEmployee.employeeCode);
+                self.employeeName(info.selectedEmployee.employeeName);
+
+                
+                self.employeeId(info.selectedEmployee.sID);
+                self.dayOff(info.rowValue.dayOffDate);
+                self.requiredDays(info.rowValue.requiredDays);
+                self.remainDays(info.rowValue.remainDays);
+                self.expirationDate(info.rowValue.expiredDate);
+            }
+            block.clear();
         }
 
         closeKDM001H(): void {
@@ -44,13 +59,12 @@ module nts.uk.at.view.kdm001.h.viewmodel {
         public updateData() {
             let self = this;
             let data = {
-                employeeId: "ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570",
-                holidayDate: moment.utc(self.holidayDate(), 'YYYY/MM/DD').toISOString(),
+                employeeId: self.employeeId(),
                 requiredDays: self.requiredDays(),
-                dayOff: moment.utc(self.dayOff(), 'YYYY/MM/DD').toISOString(),
-                expirationDate: moment.utc(self.expirationDate(), 'YYYY/MM/DD').toISOString(),
-                unknownDate: moment.utc(self.unknownDate(), 'YYYY/MM/DD').toISOString(),
-                remainDays: self.remainDays()
+                dayOff:   self.dayOff(),
+                unknownDate:  false,
+                remainDays: self.remainDays(),
+                expirationDate: self.expirationDate()
             };
             console.log(data);
             service.updatesubOfHD(data).done(() => {
@@ -61,18 +75,30 @@ module nts.uk.at.view.kdm001.h.viewmodel {
         }
 
         public removeData() {
-            let self = this;
-            let data = {
-                employeeId: "ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570",
-                sID: "456",
-                dayOff: moment.utc(self.dayOff(), 'YYYY/MM/DD').toISOString()
-            };
-            console.log(data);
-            service.removeSubOfHD(data).done(() => {
-                console.log("Success delete!");
-            }).fail(function(res: any) {
-                console.log("Fail delete!");
+            block.invisible();
+            dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                let self = this;
+                let data = {
+                    employeeId: self.employeeId(),
+                    dayOff: self.dayOff()
+                };
+                console.log(data);
+                service.removeSubOfHD(data).done(() => {
+                    dialog.info({ messageId: "Msg_16" }).then(() => {
+                        nts.uk.ui.windows.close();
+                    });
+                }).fail(error => {
+                    dialog.alertError(error);
+                }).always(function() {
+                    block.clear();
+                });
+            }).then(() => {
+                block.clear();
             });
+
+
+
+
         }
 
         openKDM001H(): void {

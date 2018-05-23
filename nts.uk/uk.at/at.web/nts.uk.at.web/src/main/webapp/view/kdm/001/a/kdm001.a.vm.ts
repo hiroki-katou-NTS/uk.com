@@ -120,6 +120,11 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             });
         }
         
+        clickGetDataList() {
+            updateDataList();
+            $('#compositePayOutSubMngDataGrid').focus();
+        }
+        
         updateDataList() {
             let self = this;
             let empId = self.selectedItem();
@@ -127,8 +132,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             let startDate = isPeriod ? moment.utc(self.dateValue().startDate, 'YYYY/MM/DD').format('YYYY-MM-DD') : null;
             let endDate = isPeriod ? moment.utc(self.dateValue().endDate, 'YYYY/MM/DD').format('YYYY-MM-DD') : null;
             
-            service.getFurikyuMngDataExtraction(empId, startDate, endDate, isPeriod).done(function(res: any) {          
-                console.log(res);
+            service.getFurikyuMngDataExtraction(empId, startDate, endDate, isPeriod).done(function(res: any) {
                 let arrayResponse = res.compositePayOutSubMngData;
                 let compositePayOutSubMngDataArray: Array<CompositePayOutSubMngData> = [];
                 for (var i = 0 ; i < arrayResponse.length; i++){
@@ -138,8 +142,12 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 // update data to view
                 self.compositePayOutSubMngData = ko.observableArray(compositePayOutSubMngDataArray);
                 self.dispTotalRemain(res.numberOfDayLeft);
-                self.expirationDate(res.expirationDate);
+                self.expirationDate(self.getExpirationTime(res.expirationDate));
                 self.closureID = res.closureID;
+                
+                if(arrayResponse.length = 0) {
+                    dialog.alertError({ messageId: "Msg_725" });
+                }
                 
                 // update grid
                 self.showDataGrid();
@@ -204,7 +212,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         showDataGrid() {
             var self = this;
             $("#compositePayOutSubMngDataGrid").ntsGrid({
-                height: '405px',
+                height: '520px',
                 name: 'Grid name',
                 dataSource: self.compositePayOutSubMngData(),
                 primaryKey: 'id',
@@ -231,7 +239,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     {
                         name: 'Paging',
                         type: "local",
-                        pageSize: 10
+                        pageSize: 14
                     }
                 ],
                 ntsControls: [
@@ -253,7 +261,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             let selectedRowData = value;
             setShared('KDM001_EFGH_PARAMS', {rowValue: value, selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID});
             
-            if (value.dayoffDatePyout.length = 0) {
+            if (value.dayoffDatePyout.length == 0) {
                 modal("/view/kdm/001/e/index.xhtml").onClosed(function() {
                     self.updateDataList();
                 });
@@ -277,6 +285,50 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 modal("/view/kdm/001/h/index.xhtml").onClosed(function() {
                     self.updateDataList();
                 });
+            }
+        }
+        
+        getExpirationTime(value) {
+            if(value == 0) {
+                return "当月";
+            } else if(value == 1) {
+                return "法定外休日";
+            } else if(value == 2) {
+                return "年度末クリア";
+            } else if(value == 3) {
+                return "1ヶ月";
+            } else if(value == 4) {
+                return "2ヶ月";
+            } else if(value == 5) {
+                return "3ヶ月";
+            } else if(value == 6) {
+                return "4ヶ月";
+            } else if(value == 7) {
+                return "5ヶ月";
+            } else if(value == 8) {
+                return "6ヶ月";
+            } else if(value == 9) {
+                return "7ヶ月";
+            } else if(value == 10) {
+                return "8ヶ月";
+            } else if(value == 11) {
+                return "9ヶ月";
+            } else if(value == 12) {
+                return "10ヶ月";
+            } else if(value == 13) {
+                return "11ヶ月";
+            } else if(value == 14) {
+                return "1年";
+            } else if(value == 15) {
+                return "2年";
+            } else if(value == 16) {
+                return "3年";
+            } else if(value == 17) {
+                return "4年";
+            } else if(value == 18) {
+                return "5年";
+            } else {
+                return "";
             }
         }
     }

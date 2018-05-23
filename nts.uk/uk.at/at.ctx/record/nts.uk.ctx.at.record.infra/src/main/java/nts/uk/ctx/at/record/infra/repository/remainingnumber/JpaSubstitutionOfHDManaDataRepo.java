@@ -80,8 +80,8 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 	}
 
 	@Override
-	public void delete(String sID, GeneralDate dayOff) {
-		this.getEntityManager().createQuery(DELETE_QUERY).setParameter("sID", sID).setParameter("dayOff", dayOff);
+	public void delete(String employeeId, GeneralDate dayOff) {
+		this.getEntityManager().createQuery(DELETE_QUERY).setParameter("sID", employeeId).setParameter("dayOff", dayOff);
 	}
 
 	@Override

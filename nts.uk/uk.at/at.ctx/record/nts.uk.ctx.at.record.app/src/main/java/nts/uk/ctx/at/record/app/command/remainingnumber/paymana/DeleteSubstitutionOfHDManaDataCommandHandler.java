@@ -12,14 +12,12 @@ import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SubstitutionOfHDManaData
 public class DeleteSubstitutionOfHDManaDataCommandHandler extends CommandHandler<DeleteSubstitutionOfHDManaDataCommand> {
    
 	@Inject
-	private SubstitutionOfHDManaDataRepository SHDMDRepo;
-	
-	private SubstitutionOfHDManaDataService substitutionOfHDManaDataService;
+	private SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepository;
 	
 	@Override
 	protected void handle(CommandHandlerContext<DeleteSubstitutionOfHDManaDataCommand> context) {
 		DeleteSubstitutionOfHDManaDataCommand command = context.getCommand();
-	    substitutionOfHDManaDataService.deleteSubsitutionOfHDManaData(command.expirationDate, command.getSID(), command.getDayOff());
+	    substitutionOfHDManaDataRepository.delete(command.getEmployeeId(), command.getDayOff());
 	}
 
 }

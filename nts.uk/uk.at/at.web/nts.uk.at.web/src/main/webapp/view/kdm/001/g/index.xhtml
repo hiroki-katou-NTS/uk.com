@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 430, height: 545 };</script>
+			<script>var dialogSize = { width: 500, height: 600 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="kdm001.g.vm.js" />
@@ -93,7 +93,7 @@
 						<div class="combobox-select-day"
 							data-bind="ntsComboBox: {
 								name: '#[KDM001_73]',
-								options: daysOff,
+								options:days,
 								optionsValue: 'code',
 								visibleItemsCount: 5,
 								value: lawAtr,
