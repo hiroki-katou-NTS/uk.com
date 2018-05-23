@@ -734,20 +734,28 @@ public class ProgramsManager {
 			"/view/ksu/006/c/index.xhtml");
 
 	/** The Constant CCG007. */
-	public static final Program CCG007A = new Program(WebAppId.COM, ProgramIdConsts.CCG007A, "CCG007_9",
+	public static final Program CCG007A = new Program(WebAppId.COM, ProgramIdConsts.CCG007A, "CCG007_51",
 			"/view/ccg/007/a/index.xhtml");
 
 	/** The Constant CCG007B. */
-	public static final Program CCG007B = new Program(WebAppId.COM, ProgramIdConsts.CCG007B, "CCG007_2",
+	public static final Program CCG007B = new Program(WebAppId.COM, ProgramIdConsts.CCG007B, "CCG007_52",
 			"/view/ccg/007/b/index.xhtml");
 
 	/** The Constant CCG007C. */
-	public static final Program CCG007C = new Program(WebAppId.COM, ProgramIdConsts.CCG007C, "CCG007_3",
+	public static final Program CCG007C = new Program(WebAppId.COM, ProgramIdConsts.CCG007C, "CCG007_53",
 			"/view/ccg/007/c/index.xhtml");
 
 	/** The Constant CCG007D. */
-	public static final Program CCG007D = new Program(WebAppId.COM, ProgramIdConsts.CCG007D, "CCG007_4",
+	public static final Program CCG007D = new Program(WebAppId.COM, ProgramIdConsts.CCG007D, "CCG007_54",
 			"/view/ccg/007/d/index.xhtml");
+	
+	/** The Constant CCG007F. */
+	public static final Program CCG007F = new Program(WebAppId.COM, ProgramIdConsts.CCG007F, "CCG007_56",
+			"/view/ccg/007/f/index.xhtml");
+	
+	/** The Constant CCG007G. */
+	public static final Program CCG007G = new Program(WebAppId.COM, ProgramIdConsts.CCG007G, "CCG007_57",
+			"/view/ccg/007/g/index.xhtml");
 
 	/** The Constant KMK004A. */
 	public static final Program KMK004A = new Program(WebAppId.AT, ProgramIdConsts.KMK004A, "KMK004_1",
