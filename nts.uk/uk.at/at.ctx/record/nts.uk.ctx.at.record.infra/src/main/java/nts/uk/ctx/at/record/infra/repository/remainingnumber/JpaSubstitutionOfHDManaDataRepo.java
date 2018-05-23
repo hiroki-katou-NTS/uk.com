@@ -26,7 +26,7 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 	private final String QUERY_BY_SID_DATEPERIOD_NO_REMAIN = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND s.dayOff >= :startDate AND s.dayOff <= :endDate";
 
 	private final String QUERY_BY_SID_REMAIN_AND_IN_PAYOUT = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND (s.remainDays <> 0 OR s.subOfHDID in "
-			+ "(SELECT pm.subOfHDID FROM KrcmtPayoutSubOfHDMana pm inner join KrcmtPayoutManaData ps on ps.payoutId = pm.krcmtPayoutSubOfHDManaPK.payoutId where ps.stateAtr = 0))";
+			+ "(SELECT pm.krcmtPayoutSubOfHDManaPK.subOfHDID FROM KrcmtPayoutSubOfHDMana pm inner join KrcmtPayoutManaData ps on ps.payoutId = pm.krcmtPayoutSubOfHDManaPK.payoutId where ps.stateAtr = 0))";
 
 	private String DELETE_QUERY = "DELETE FROM KrcmtSubOfHDManaData a WHERE a.sID = :sID AND a.dayOff = :dayOff";
 

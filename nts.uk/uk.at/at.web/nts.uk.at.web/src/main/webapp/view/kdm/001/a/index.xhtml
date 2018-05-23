@@ -91,7 +91,7 @@
 								<!-- A3_5  抽出 -->
 								<div class="div-table-row-2">
 									<button id ="A3_5" tabindex="5"
-										data-bind="click: filterByPeriod">#{i18n.getText('KDM001_7')}</button>
+										data-bind="click: updateDataList">#{i18n.getText('KDM001_7')}</button>
 								</div>
 							</div>
 						</div>
@@ -100,7 +100,7 @@
 							<!-- A4_0  説明 -->
 							<label>#{i18n.getText('KDM001_123')}</label>
 							<!-- A4_1 -->
-							<table tabindex = "8" id="substituteDataGrid"></table>
+							<table tabindex = "8" id="compositePayOutSubMngDataGrid"></table>
 						</div>
 					</div>
 					<!-- A5 個人情報パネル-->
@@ -109,7 +109,7 @@
 							<!-- A5_2 振休残数合計-->
 							<label>#{i18n.getText('KDM001_25')}</label>
 							<!-- A5_3 振休残数合計-->
-							<label data-bind="text: dispTotalRemainHours"></label>
+							<label data-bind="text: dispTotalRemain"></label>
 							<!-- A5_4 日-->
 							<label>#{i18n.getText('KDM001_27')}</label>
 						</div>
@@ -117,7 +117,7 @@
 							<!-- A5_6 振休使用期限-->
 							<label>#{i18n.getText('KDM001_29')}</label>
 							<!-- A5_7 振休使用期限-->
-							<label data-bind="text: dispTotalExpiredHours"></label>
+							<label data-bind="text: expirationDate"></label>
 							<!-- A5_8 月-->
 							<label>#{i18n.getText('KDM001_31')}</label>
 						</div>

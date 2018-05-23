@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.ws.remaingnumber;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -21,8 +19,11 @@ public class FurikyuMngDataExtractionWebService extends WebService {
 
 	@POST
 	@Path("getFurikyuMngDataExtraction/{empId}/{startDate}/{endDate}/{isPeriod}")
-	public List<FurikyuMngDataExtractionDto> getFurikyuMngDataExtraction(@PathParam("empId") String empId,
-			GeneralDate startDate, GeneralDate endDate, boolean isPeriod) {
-		return finder.getFurikyuMngDataExtraction(empId, startDate, endDate, isPeriod);
-	}
+	public FurikyuMngDataExtractionDto getFurikyuMngDataExtraction(@PathParam("empId") String empId,
+			@PathParam("startDate") String startDate, @PathParam("endDate") String endDate, @PathParam("isPeriod") boolean isPeriod) {
+		
+		GeneralDate startDateFormat = isPeriod ? GeneralDate.fromString(startDate, "yyyy-MM-dd") : null;
+		GeneralDate endDateFormat = isPeriod ? GeneralDate.fromString(endDate, "yyyy-MM-dd") : null;
+		return finder.getFurikyuMngDataExtraction(empId, startDateFormat, endDateFormat, isPeriod);
+	}	
 }
