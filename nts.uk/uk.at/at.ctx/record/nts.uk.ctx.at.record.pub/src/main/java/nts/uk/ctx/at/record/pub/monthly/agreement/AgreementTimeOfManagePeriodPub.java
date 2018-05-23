@@ -26,6 +26,5 @@ public interface AgreementTimeOfManagePeriodPub {
 	 * @param range 期間
 	 * @return 該当する管理期間の36協定時間　（年月順）
 	 */
-	// RequestList421
 	List<AgreementTimeOfManagePeriod> findByRange(String employeeId, DatePeriod range);
 }

@@ -9,6 +9,8 @@
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kaf018.f.main.css" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="kaf018.f.start.js" />
 			<com:scriptfile path="kaf018.f.service.js" />
 			<com:scriptfile path="kaf018.f.vm.js" />
 			<com:scriptfile path="kaf018.f.start.js" />
@@ -18,9 +20,9 @@
 			<div id="functions-area">
 				<!-- F1_1 -->
 				<a class="goback"
-					data-bind="ntsLinkButton: { jump: '/view/kaf/018/a/index.xhtml' }">振込元銀行の登録へ</a>
+					data-bind="ntsLinkButton: { jump: '/view/kaf/018/a/index.xhtml' }">#{i18n.getText('KAF018_17')}</a>
 				<!-- F1_2 -->
-				<button tabindex="1" data-bind="">#{i18n.getText('KAF018_59')}</button>
+				<button tabindex="1" data-bind="click: backToE">#{i18n.getText('KAF018_59')}</button>
 			</div>
 			<div id="contents-area">
 				<table class="tbl-control">
@@ -31,16 +33,18 @@
 					<tr>
 						<td>
 							<!-- F2_1 -->
-							<button class="auto-height">
+							<button class="auto-height" tabindex="2"
+								data-bind="click: preWkp, enable: enablePre">
 								#{i18n.getText('KAF018_27')}<i class="img-icon icon-prev"></i>
 							</button> <!-- F2_2 -->
-							<button class="auto-height">
+							<button class="auto-height" tabindex="3"
+								data-bind="click: nextWkp, enable: enableNext">
 								#{i18n.getText('KAF018_28')}<i class="img-icon icon-next"></i>
 							</button>
 						</td>
 						<td>
 							<!-- F2_3 -->
-							<div class="label">000 1232s 13213 sdas</div>
+							<div class="label" data-bind="text: selectedWplName"></div>
 						</td>
 					</tr>
 				</table>
@@ -48,7 +52,7 @@
 					<colgroup>
 						<col width="100px" />
 						<col width="300px" />
-						<col width="500px" />
+						<col width="730px" />
 						<col width="100px" />
 					</colgroup>
 					<tr>
@@ -58,22 +62,25 @@
 						</td>
 						<td>
 							<!-- F3_1 -->
-							<div class="limited-label label" style="width: 290px;">13123
-								21s 12321 312 sad asd q2</div>
+							<div class="limited-label label" style="width: 290px;"
+								data-bind="text: closureName"></div>
 						</td>
 						<td>
 							<!-- F4 --> <!-- F4_1 -->
-							<div class="limited-label label" style="width: 490px;">2017/04(2017/01/01
-								~ 2017/04/30)</div>
+							<div class="limited-label label" style="width: 490px;">
+								<span data-bind="text: processingYm"></span>(<span
+									data-bind="text: startDateFormat"></span> ~ <span
+									data-bind="text: endDateFormat"></span>)
+							</div>
 						</td>
 						<td class="align-right">
 							<!-- F10 -->
-							<button data-bind="ntsLegendButton: legendOptions">#{i18n.getText('KAF018_65')}</button>
+							<button tabindex="-1" data-bind="ntsLegendButton: legendOptions">#{i18n.getText('KAF018_65')}</button>
 						</td>
 					</tr>
 				</table>
 				<!-- F5 -->
-				<div id="extable"></div>
+				<div tabindex="4" id="extable"></div>
 			</div>
 		</ui:define>
 	</ui:composition>
