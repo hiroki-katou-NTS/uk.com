@@ -24,7 +24,7 @@ public class UpdateSubstitutionOfHDManaDataCommandHandler
 	protected void handle(CommandHandlerContext<UpdateSubstitutionOfHDManaDataCommand> context) {
 		UpdateSubstitutionOfHDManaDataCommand command = context.getCommand();
 		SubstitutionOfHDManagementData data = new SubstitutionOfHDManagementData(command.getSubOfHDID(),
-				command.getCid(), command.getSID(), command.getHolidayDate(), command.getRequiredDays(),
+				command.getCid(), command.getSID(),false, command.getDayoffDate(), command.getRequiredDays(),
 				command.getRemainDays());
 		substitutionOfHDManaDataService.updateSub(data, command.getExprirationDate());
 	}

@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 430, height: 420 };</script>
+			<script>var dialogSize = { width: 480, height: 500 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="kdm001.h.start.js" />
@@ -56,7 +56,7 @@
 								<div class="column-1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDM001_62')}</div>
 								<!-- H6_2  HolidayDate  -->
 								<div id="H6_2"
-									data-bind="ntsDatePicker: {value: holidayDate, dateFormat: 'YYYY/MM/DD'}"
+									data-bind="ntsDatePicker: {value: dayOff, dateFormat: 'YYYY/MM/DD'}"
 									tabindex="1"></div>
 							</div>
 						</th>

@@ -8,7 +8,7 @@ public class DeleteSubstitutionOfHDManaDataCommand {
 
 	String subOfHDID;
 	
-	String sID;
+	String employeeId;
 	
 	GeneralDate dayOff;
 	

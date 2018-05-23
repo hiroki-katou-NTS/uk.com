@@ -67,7 +67,7 @@ public class PayoutManagementDataService {
 			check = true;
 		} else {
 			check = false;
-			throw new BusinessException("Mg_740");
+			throw new BusinessException("Msg_740");
 		}
 		return check;
 	}
@@ -84,7 +84,7 @@ public class PayoutManagementDataService {
 				GeneralDate today = GeneralDate.today();
 				if (today.before(expiredDate)) {
 					check = false;
-					throw new BusinessException("Mg_825");
+					throw new BusinessException("Msg_825");
 				} else {
 					check = true;
 				}
@@ -92,7 +92,7 @@ public class PayoutManagementDataService {
 		} else {
 			if (unUsedDays == 0) {
 				check = false;
-				throw new BusinessException("Mg_1213");
+				throw new BusinessException("Msg_1213");
 			} else {
 				check = true;
 			}
@@ -114,4 +114,5 @@ public class PayoutManagementDataService {
 			}
 		}
 	}
+	
 }

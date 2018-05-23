@@ -1,4 +1,10 @@
 module nts.uk.at.view.kdm001.g.viewmodel {
+    import modal = nts.uk.ui.windows.sub.modal;
+    import model = kdm001.share.model;
+    import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
+    import dialog = nts.uk.ui.dialog;
+    import block = nts.uk.ui.block;
     import model = kdm001.share.model;
     export class ScreenModel {
         workCode: KnockoutObservable<string> = ko.observable('');
@@ -13,7 +19,7 @@ module nts.uk.at.view.kdm001.g.viewmodel {
         selectedCodeDay: KnockoutObservable<string> = ko.observable('');
         checkedExpired: KnockoutObservable<boolean> = ko.observable(false);
 
-
+        employeeId: KnockoutObservable<string> = ko.observable('');
         payoutId: KnockoutObservable<string> = ko.observable('');
         cID: KnockoutObservable<string> = ko.observable('');
         sID: KnockoutObservable<string> = ko.observable('');
@@ -28,34 +34,42 @@ module nts.uk.at.view.kdm001.g.viewmodel {
         checkBox: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
-            var self = this;
+            let self = this;
             self.initScreen();
         }
 
         public initScreen(): void {
-            var self = this;
-            self.workCode('100');
-            self.workPlaceName('営業部');
-            self.employeeCode('A000001');
-            self.employeeName('日通　太郎');
-            self.date('20160424');
-            self.deadline('20160724');
+            let self = this,
+            info = getShared("KDM001_EFGH_PARAMS");
+            if (info) {
+
+                self.workCode(info.selectedEmployee.workplaceId);
+                self.workPlaceName(info.selectedEmployee.workplaceName);
+                self.employeeId(info.selectedEmployee.employeeId);
+                self.employeeCode(info.selectedEmployee.employeeCode);
+                self.employeeName(info.selectedEmployee.employeeName);
+
+//                self.employeeId(info.selectedEmployee.sID);
+                self.dayOff(info.rowValue.dayOffDate);
+                self.occurredDays(info.rowValue.occurredDays);
+                self.lawAtr(info.rowValue.lawAtr);
+                self.expiredDate(info.rowValue.expiredDate);
+                self.unUsedDays(info.rowValue.unUsedDays);
+            }
+            block.clear();
         }
 
 
         public updateData() {
             let self = this;
             let data = {
-                employeeId: "ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570",
-                cID: "123",
-                unknownDate: moment.utc(self.unknownDate(), 'YYYY/MM/DD').toISOString(),
-                dayOff: moment.utc(self.dayOff(), 'YYYY/MM/DD').toISOString(),
-                expiredDate: moment.utc(self.expiredDate(), 'YYYY/MM/DD').toISOString(),
+                employeeId: self.employeeId(),
+                unknownDate: false,
+                dayOff:self.dayOff(),
+                expiredDate:self.expiredDate(),
                 lawAtr: self.lawAtr(),
                 occurredDays: self.occurredDays(),
                 unUsedDays: self.unUsedDays(),
-                stateAtr: self.stateAtr(),
-                disapearDate: moment.utc(self.disapearDate(), 'YYYY/MM/DD').toISOString(),
                 checkBox: self.checkBox()
             };
 
@@ -68,17 +82,28 @@ module nts.uk.at.view.kdm001.g.viewmodel {
         }
 
         public removeData() {
-            let self = this;
-            let data = {
-                employeeId: "ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570",
-                dayOff: moment.utc(self.dayOff(), 'YYYY/MM/DD').toISOString()
-            };
-            console.log(data);
-            service.removePayout(data).done(() => {
-
-            }).fail(function(res: any) {
-
+            block.invisible();
+            dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                let self = this;
+                let data = {
+                    employeeId: self.employeeId(),
+                    dayOff: self.dayOff()
+                };
+                console.log(data);
+                service.removePayout(data).done(() => {
+                    dialog.info({ messageId: "Msg_16" }).then(() => {
+                        nts.uk.ui.windows.close();
+                    });
+                }).fail(error => {
+                    dialog.alertError(error);
+                }).always(function() {
+                    block.clear();
+                });
+            }).then(() => {
+                block.clear();
             });
+
+
         }
 
 
