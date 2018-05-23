@@ -29,10 +29,6 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.adapter.PersonContactAdapter;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.SelfEditUserInfo;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethodRepository;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.EmployeeBasicImport;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.EmployeeInfoContactImport;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PasswordPolicyImport;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PersonContactImport;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSetting;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSettingRepository;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
@@ -111,54 +107,55 @@ public class MailNoticeSettingFinder {
 			// Get import domain 社員連絡先 (from Request List 378)
 			List<String> employeeIds = new ArrayList<>();
 			employeeIds.add(employeeId);
-			Optional<EmployeeInfoContactImport> opEmployeeInfoContact = this.employeeInfoContactAdapter
-					.getListContact(employeeIds).stream().filter(item -> item.getEmployeeId().equals(employeeId))
-					.findAny();
-			if (opEmployeeInfoContact.isPresent()) {
-				EmployeeInfoContactDto employeeInfoContactDto = new EmployeeInfoContactDto(
-						opEmployeeInfoContact.get().getEmployeeId(), opEmployeeInfoContact.get().getMailAddress(),
-						opEmployeeInfoContact.get().getMobileMailAddress(),
-						opEmployeeInfoContact.get().getCellPhoneNo());
-				dto.setEmployeeInfoContact(employeeInfoContactDto);
-			}
+			Optional<EmployeeInfoContactDto> opEmployeeInfoContact = this.employeeInfoContactAdapter
+					.getListContact(employeeIds).stream()
+					.filter(item -> item.getEmployeeId().equals(employeeId))
+					.findAny()
+					.map(item -> new EmployeeInfoContactDto(
+						item.getEmployeeId(), 
+						item.getMailAddress(),
+						item.getMobileMailAddress(),
+						item.getCellPhoneNo()));
+			dto.setEmployeeInfoContact(opEmployeeInfoContact.orElse(null));
 
 			// Get import domain 個人連絡先 (from Request List 379)
 			List<String> personIds = new ArrayList<>();
 			personIds.add(personId);
-			Optional<PersonContactImport> opPersonContactImport = this.personContactAdapter.getListContact(personIds)
-					.stream().filter(item -> item.getPersonId().equals(personId)).findAny();
-			if (opPersonContactImport.isPresent()) {
-				PersonContactDto personContactDto = new PersonContactDto(opPersonContactImport.get().getPersonId(),
-						opPersonContactImport.get().getMailAddress(),
-						opPersonContactImport.get().getMobileMailAddress(),
-						opPersonContactImport.get().getCellPhoneNo());
-				dto.setPersonContact(personContactDto);
-			}
+			Optional<PersonContactDto> opPersonContactImport = this.personContactAdapter.getListContact(personIds)
+					.stream()
+					.filter(item -> item.getPersonId().equals(personId))
+					.findAny()
+					.map(item -> new PersonContactDto(
+						item.getPersonId(),
+						item.getMailAddress(),
+						item.getMobileMailAddress(),
+						item.getCellPhoneNo()));
+			dto.setPersonContact(opPersonContactImport.orElse(null));
 		}
 
 		// Get import domain 社員 (from Request List 377)
-		Optional<EmployeeBasicImport> opEmployeeBasic = this.employeeAdapter.getEmpBasicBySId(employeeId);
-		if (opEmployeeBasic.isPresent()) {
-			EmployeeBasicDto employeeBasicDto = new EmployeeBasicDto(opEmployeeBasic.get().getEmployeeId(),
-					opEmployeeBasic.get().getEmployeeCode(), opEmployeeBasic.get().getEmployeeName());
-			dto.setEmployee(employeeBasicDto);
-		}
+		Optional<EmployeeBasicDto> opEmployeeBasic = this.employeeAdapter.getEmpBasicBySId(employeeId)
+				.map(item -> new EmployeeBasicDto(
+						item.getEmployeeId(),
+						item.getEmployeeCode(), 
+						item.getEmployeeName()));
+		dto.setEmployee(opEmployeeBasic.orElse(null));
 
 		// Get import domain パスワードポリシー (from Request List 385)
-		Optional<PasswordPolicyImport> opPasswordPolicy = this.passwordPolicyAdapter.getPasswordPolicy(contractCode);
-		if (opPasswordPolicy.isPresent()) {
-			ComplexityDto complexityDto = new ComplexityDto(
-					opPasswordPolicy.get().getComplexity().getAlphabetDigit(),
-					opPasswordPolicy.get().getComplexity().getNumberOfDigits(),
-					opPasswordPolicy.get().getComplexity().getNumberOfChar());
-			PasswordPolicyDto passwordPolicyDto = new PasswordPolicyDto(
-					opPasswordPolicy.get().getIsUse(),
-					complexityDto,
-					opPasswordPolicy.get().getLowestDigits(),
-					opPasswordPolicy.get().getHistoryCount(),
-					opPasswordPolicy.get().getValidityPeriod());
-			dto.setPasswordPolicy(passwordPolicyDto);
-		}
+		Optional<PasswordPolicyDto> opPasswordPolicy = this.passwordPolicyAdapter.getPasswordPolicy(contractCode)
+				.map(item -> {
+					ComplexityDto complexityDto = new ComplexityDto(
+							item.getComplexity().getAlphabetDigit(),
+							item.getComplexity().getNumberOfDigits(),
+							item.getComplexity().getNumberOfChar());
+					return new PasswordPolicyDto(
+							item.getIsUse(),
+							complexityDto,
+							item.getLowestDigits(),
+							item.getHistoryCount(),
+							item.getValidityPeriod());
+				});
+		dto.setPasswordPolicy(opPasswordPolicy.orElse(null));
 		return dto;
 	}
 
