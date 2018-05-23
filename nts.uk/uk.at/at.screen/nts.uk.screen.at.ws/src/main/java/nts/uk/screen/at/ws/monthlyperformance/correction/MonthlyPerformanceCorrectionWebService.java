@@ -13,9 +13,11 @@ import javax.ws.rs.Produces;
 import nts.uk.ctx.at.function.app.find.monthlycorrection.fixedformatmonthly.MonPfmCorrectionFormatFinder;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceFormatDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.MonthlyPerformanceCorrectionProcessor;
+import nts.uk.screen.at.app.monthlyperformance.correction.MonthlyPerformanceReload;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ErrorAlarmWorkRecordDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.param.MonthlyPerformanceParam;
+import nts.uk.screen.at.app.monthlyperformance.correction.param.ReloadMonthlyPerformanceParam;
 import nts.uk.screen.at.ws.monthlyperformance.MPParams;
 
 /**
@@ -25,14 +27,22 @@ import nts.uk.screen.at.ws.monthlyperformance.MPParams;
 @Produces("application/json")
 public class MonthlyPerformanceCorrectionWebService {
 	@Inject
-	MonthlyPerformanceCorrectionProcessor processor;
+	private MonthlyPerformanceCorrectionProcessor processor;
 	/** 会社の月別実績の修正のフォーマット */
 	@Inject
-	MonPfmCorrectionFormatFinder monPfmCorrectionFormatFinder;
+	private MonPfmCorrectionFormatFinder monPfmCorrectionFormatFinder;
+	@Inject
+	private MonthlyPerformanceReload monthlyPerformanceReload;
+	
 	@POST
 	@Path("startScreen")
 	public MonthlyPerformanceCorrectionDto startScreen(MonthlyPerformanceParam param) throws InterruptedException {
 		return processor.initScreen(param);
+	}
+	@POST
+	@Path("updateScreen")
+	public MonthlyPerformanceCorrectionDto updateScreen(ReloadMonthlyPerformanceParam param) throws InterruptedException {
+		return monthlyPerformanceReload.reloadScreen(param);
 	}
 	@POST
 	@Path("getErrorList")

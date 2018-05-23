@@ -7,6 +7,7 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 public interface AttendanceItemService {
 
@@ -30,6 +31,13 @@ public interface AttendanceItemService {
 
 	/** RequestList421 */
 	public List<MonthlyAttendanceResult> getMonthlyValueOf(String employeeId, DatePeriod range, Collection<Integer> itemIds);
+	
+	/** RequestList421 */
+	public List<MonthlyAttendanceResult> getMonthlyValueOf(Collection<String> employeeId, YearMonthPeriod range,
+			Collection<Integer> itemIds);
+
+	/** RequestList421 */
+	public List<MonthlyAttendanceResult> getMonthlyValueOf(String employeeId, YearMonthPeriod range, Collection<Integer> itemIds);
 
 	public List<MonthlyAttendanceResult> getMonthlyValueOf(Collection<String> employeeId, YearMonth ym,
 			Collection<Integer> itemIds);

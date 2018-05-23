@@ -139,7 +139,7 @@ module nts.custom.component {
                                                                 text: text('CPS001_30')" tabindex="10"></button>
                         <button type="button" class="btn-delete danger" data-bind="
                                                                 click: event.delete, 
-                                                                enable: permisions.delete() &amp;&amp; true,
+                                                                enable: permisions.delete() &amp;&amp; gridlist.value(),
                                                                 text: text('CPS001_31')" tabindex="12"></button>
                     </div>
                     <!-- /ko -->

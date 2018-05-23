@@ -89,9 +89,9 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 				getAnnLeaRemNumWithinPeriod.
 				algorithm(companyId, 
 						employeeId, 
-						new DatePeriod(startDate.get(), designatedPeriod.end().addDays(-1)), 
+						new DatePeriod(startDate.get(), designatedPeriod.end()), 
 						TempAnnualLeaveMngMode.OTHER, 
-						designatedPeriod.end().addDays(-1), 
+						designatedPeriod.end(), 
 						false, 
 						false, 
 						Optional.of(false),
@@ -110,17 +110,17 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 										null, 
 										annualLeaveInfoe.getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays().v());
 						// List<指定日時点の年休残数>の年休残数を全て更新
-						yhtre.setAnnualRemaining(aggrResultOfAnnualLeave.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays().v());
+						//yhtre.setAnnualRemaining(aggrResultOfAnnualLeave.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays().v());
 						yearlyHolidaysTimeRemainingExport.add(yhtre );
 //					}
 				}
 			}
-			/*
+			
 			// List<指定日時点の年休残数>の年休残数を全て更新
 			for (YearlyHolidaysTimeRemainingExport yyearlyHolidaysTimeRemainingExport : yearlyHolidaysTimeRemainingExport) {
 				yyearlyHolidaysTimeRemainingExport.setAnnualRemaining(aggrResultOfAnnualLeave.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays().v());
 			}
-			*/
+			
 		}
 		
 		return yearlyHolidaysTimeRemainingExport;
@@ -150,6 +150,12 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 			if (!grantHdTblSetOpt.isPresent()){
 				return nextAnnualLeaveGrant;
 			}
+			
+			GeneralDate date = null;
+			System.out.println("employeeRecordImport1: " + employeeRecordImport.getEntryDate());
+			System.out.println("employeeRecordImport2: " + employeeRecordImport.getEmployeeId());
+			
+			System.out.println("employeeRecordImport3: " + date);
 			
 			//○次回年休付与を取得する
 			nextAnnualLeaveGrant = getNextAnnualLeaveGrant

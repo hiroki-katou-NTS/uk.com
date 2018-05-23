@@ -111,7 +111,7 @@ public class RegulationInfoEmployeeFinder {
 		List<String> sIds = searchByEmployeeCode(query.getCode(), query.getSystemType());
 
 		// filter by closure id
-		this.filterByClosure(query, sIds);
+		sIds = this.filterByClosure(query, sIds);
 		
 		return getEmployeeInfo(sIds, query.getReferenceDate());
 	}
@@ -126,7 +126,7 @@ public class RegulationInfoEmployeeFinder {
 		List<String> sIds = searchByEmployeeName(query.getName(), query.getSystemType());
 		
 		// filter by closure id
-		this.filterByClosure(query, sIds);
+		sIds = this.filterByClosure(query, sIds);
 		
 		return getEmployeeInfo(sIds, query.getReferenceDate());
 	}
@@ -141,7 +141,7 @@ public class RegulationInfoEmployeeFinder {
 		List<String> sIds = searchByEntryDate(query.getDatePeriod(), query.getSystemType());
 		
 		// filter by closure id
-		this.filterByClosure(query, sIds);
+		sIds = this.filterByClosure(query, sIds);
 		
 		return getEmployeeInfo(sIds, query.getReferenceDate());
 	}
@@ -156,7 +156,7 @@ public class RegulationInfoEmployeeFinder {
 		List<String> sIds = searchByRetirementDate(query.getDatePeriod(), query.getSystemType());
 		
 		// filter by closure id
-		this.filterByClosure(query, sIds);
+		sIds = this.filterByClosure(query, sIds);
 		
 		return getEmployeeInfo(sIds, query.getReferenceDate());
 	}
@@ -175,6 +175,10 @@ public class RegulationInfoEmployeeFinder {
 	 */
 	// 検索条件の職場一覧を参照範囲に基いて変更する
 	private boolean changeWorkplaceListByRole(RegulationInfoEmpQueryDto queryDto) {
+		if (queryDto.getReferenceRange() == null) {
+			return false;
+		}
+
 		// get RoleId
 		String roleId = this.workPlaceAdapter.findRoleIdBySystemType(queryDto.getSystemType());
 		boolean isSearchOnlyMe = false;
