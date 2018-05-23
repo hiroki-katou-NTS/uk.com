@@ -60,7 +60,7 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 		// ドメインモデル「申請」と紐付き「承認フェーズ」「承認枠」「反映情報」をUpdateする
 		application_New.setReversionReason(new AppReason(""));
 		application_New.getReflectionInformation().setStateReflectionReal(ReflectedState_New.NOTREFLECTED);
-		applicationRepository.update(application_New);
+		applicationRepository.updateWithVersion(application_New);
 		
 		// 承認を行った承認者一覧に項目があるかチェックする
 		if (CollectionUtil.isEmpty(approverApprovedImport.getListApprover())) {

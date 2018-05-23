@@ -139,7 +139,7 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 		}
 		
 		lateOrLeaveEarlyRepository.update(lateOrLeaveEarly);
-		applicationRepository_New.update(lateOrLeaveEarly.getApplication());
+		applicationRepository_New.updateWithVersion(lateOrLeaveEarly.getApplication());
 	}
 
 	@Override
