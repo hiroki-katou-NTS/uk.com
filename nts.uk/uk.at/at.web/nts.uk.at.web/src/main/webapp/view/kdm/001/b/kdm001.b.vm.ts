@@ -4,6 +4,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import getText = nts.uk.resource.getText;
     import modal = nts.uk.ui.windows.sub.modal;
+    import getDecimal = nts.uk.ntsNumber.getDecimal;
     export class ScreenModel {
 
         periodOptionItem: KnockoutObservableArray<ItemModel>;
@@ -12,7 +13,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         startDateString: KnockoutObservable<string>;
         endDateString: KnockoutObservable<string>;
         dispTotalRemainHours: KnockoutObservable<string> = ko.observable(null);
-        dispTotalExpiredHours: KnockoutObservable<string> = ko.observable(null);
+        dispTotalExpiredDate: KnockoutObservable<string> = ko.observable(null);
         closureEmploy: any;
         selectedEmployee: any;
         listLeaveData: any;
@@ -143,35 +144,45 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             if (self.listLeaveData == null && self.listCompensatoryData == null) {
                 dialog.alertError({ messageId: "Msg_726" });
             } else {
-                let isLinked = 0, substituteDataArray: any = [], today = new Date(), remain = null, expired = null;
+                let isLinked = 0, substituteDataArray: Array<SubstitutedDataInfo> = [], today = new Date(), remain = null, expired = null, totalRemain = 0;
                 _.forEach(self.listLeaveData, data => {
                     remain = null
                     expired = null;
-                    isLinked = (_.find(self.listLeaveComDayOffManagement, x => { return x.leaveID === data.id; })).length > 0 ? 1 : 0;
-                    if (new Date(data.dayOffDate) <= today) {
-                        remain = data.unUsedDays + getText('KDM001_27');
+                    isLinked = (_.find(self.listLeaveComDayOffManagement, x => { return x.leaveID === data.id; })) != null ? 1 : 0;
+                    if (new Date(data.dayOffDate) >= today) {
+                        totalRemain += data.unUsedDays;
+                        remain = data.unUsedDays.toFixed(1) + getText('KDM001_27');
                     } else {
-                        expired = data.unUsedDays + getText('KDM001_27');
+                        expired = data.unUsedDays.toFixed(1) + getText('KDM001_27');
                     }
-                    substituteDataArray.push(new SubstitutedData(data.id, data.dayOffDate, data.occurredDays, isLinked ? getText('KDM001_124') : "", null, null, null, remain, expired, isLinked));
+                    substituteDataArray.push(new SubstitutedDataInfo(data.id, 0, data.dayOffDate, data.occurredDays.toFixed(1) +getText('KDM001_27'), remain, expired, isLinked));
                 });
                 _.forEach(self.listCompensatoryData, data => {
                     remain = null
                     expired = null;
-                    isLinked = (_.find(self.listLeaveComDayOffManagement, x => { return x.comDayOffID === data.id; })).length > 0 ? 1 : 0;
-                    if (new Date(data.dayOffDate) <= today) {
-                        remain = data.unUsedDays + getText('KDM001_27');
+                    isLinked = (_.find(self.listLeaveComDayOffManagement, x => { return x.comDayOffID === data.id; })) != null ? 1 : 0;
+                    if (new Date(data.dayOffDate) >= today) {
+                        totalRemain += data.remainDays;
+                        remain  = data.remainDays.toFixed(1) + getText('KDM001_27');
                     } else {
-                        expired = data.unUsedDays + getText('KDM001_27');
+                        expired = data.remainDays.toFixed(1) + getText('KDM001_27');
                     }
-                    substituteDataArray.push(new SubstitutedData(data.id, null, null, null, data.dayOffDate, data.occurredDays, isLinked ? getText('KDM001_124') : "", remain, expired, isLinked));
+                    substituteDataArray.push(new SubstitutedDataInfo(data.comDayOffID, 1, data.dayOffDate, data.requireDays.toFixed(1) +getText('KDM001_27'), remain, expired, isLinked));
                 });
                 substituteDataArray.sort(function(x, y) {
-                    if (x.substituedWorkingDate != null && y.substituedWorkingDate != null){
-                        return 
+                    return (new Date(x.workingDate) <= new Date(y.workingDate)) ? -1 : 1;
+                });
+                self.subData = [];
+                let i = 1;
+                _.forEach(substituteDataArray, data => {
+                    i ++;
+                    if (data.dataType ==0){
+                        self.subData.push(new SubstitutedData(data.id, data.workingDate, data.workingHours, data.isLinked ==1 ? getText('KDM001_124') : "", null, null, null, data.remainHours, data. expiredHours, data.isLinked));
+                    } else {
+                        self.subData.push(new SubstitutedData(data.id, null, null, null, data.workingDate, data.workingHours, data.isLinked ==1 ? getText('KDM001_124') : "", data.remainHours, data. expiredHours, data.isLinked));
                     }
                 });
-                self.subData = substituteDataArray;
+                self.dispTotalRemainHours(totalRemain + getText('KDM001_124'));
             }
             self.showSubstiteDataGrid();
         }
@@ -193,8 +204,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 self.listLeaveData = extraHolidayData.listLeaveData;
                 self.listLeaveComDayOffManagement = extraHolidayData.listLeaveComDayOffManagement;
                 self.updateSubstituteDataList();
-                self.leaveSettingExpiredDate = result.leaveSettingExpiredDate;
-                self.compenSettingEmpExpiredDate = result.compenSettingEmpExpiredDate;
+                self.dispTotalExpiredDate = result.leaveSettingExpiredDate;
                 self.initKCP009();
             }).fail(function(result) {
                 dialog.alertError(result.errorMessage);
@@ -245,15 +255,14 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             var self = this;
             $("#substituteDataGrid").ntsGrid({
                 height: '405px',
-                dataSource: this.subData,
+                dataSource: self.subData,
                 primaryKey: 'id',
                 virtualization: true,
                 hidePrimaryKey: true,
                 rowVirtualization: true,
                 virtualizationMode: 'continuous',
-                //                            enter: 'right',
                 columns: [
-                    { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', hidden: true },
+                    { headerText: 'ID', key: 'id', dataType: 'string', width: '50px', hidden: true },
                     { headerText: getText('KDM001_33'), template: '<div style="float:right"> ${substituedWorkingDate} </div>', key: 'substituedWorkingDate', dataType: 'string', width: '120px' },
                     { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${substituedWorkingHours} </div>', key: 'substituedWorkingHours', dataType: 'string', width: '100px' },
                     { headerText: getText('KDM001_124'), key: 'substituedWorkingPeg', dataType: 'string', width: '100px' },
@@ -295,7 +304,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             $("#substituteDataGrid").ntsGrid("enableNtsControlAt", value.id, 'correction', 'Button');
         }
         doCorrection(value) {
-            var self = this;=
+            var self = this;
             if (value.substituedWorkingDate.length > 0) {
                 modal("/view/kdm/001/l/index.xhtml").onClosed(function() {
                     setShared('KDM001_L_PARAMS', { row: value, selectedEmployee: self.selectedEmployee, closure: self.closureEmploy });
@@ -309,6 +318,27 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             }
         }
     }
+    
+    export class SubstitutedDataInfo {
+        id: string;
+        dataType : number;
+        workingDate: string;
+        workingHours: string;
+        remainHours: string;
+        expiredHours: string;
+        isLinked: number;
+        constructor(id: string, dataType : number, workingDate: string, workingHours: string,remainHours: string, expiredHours: string, isLinked: number) {
+            this.id = id;
+            this.dataType = dataType;
+            this.workingDate = workingDate;
+            this.workingHours = workingHours;
+            this.remainHours = remainHours;
+            this.expiredHours = expiredHours;
+            this.isLinked = isLinked;
+        }
+        
+    }
+    
     export class SubstitutedData {
         id: string;
         substituedWorkingDate: string;
