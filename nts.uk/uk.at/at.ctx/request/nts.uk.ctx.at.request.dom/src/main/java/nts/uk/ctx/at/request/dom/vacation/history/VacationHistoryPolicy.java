@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.settting.worktype.history;
+package nts.uk.ctx.at.request.dom.vacation.history;
 
 /**
  * The Interface VacationHistoryPolicy.

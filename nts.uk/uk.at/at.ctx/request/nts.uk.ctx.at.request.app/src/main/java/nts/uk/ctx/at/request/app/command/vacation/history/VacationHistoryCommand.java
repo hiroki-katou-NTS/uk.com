@@ -2,18 +2,26 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.request.app.command.setting.vacation.history;
+package nts.uk.ctx.at.request.app.command.vacation.history;
+
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.request.app.command.setting.vacation.history.dto.VacationHistoryDto;
 
 @Setter
 @Getter
-public class RemoveVacationHistoryCommand {
+public class VacationHistoryCommand {
 	
-	/** The history id. */
-	private String historyId;
+	/** The is create mode. */
+	private Boolean isCreated;
+	
+	/** The max day. */
+	private Integer maxDay;
 	
 	/** The work type code. */
 	private String workTypeCode;
+	
+	/** The vacation dto. */
+	private VacationHistoryDto vacationHistory;
 }

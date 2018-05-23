@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.request.app.command.setting.vacation.history;
+package nts.uk.ctx.at.request.app.command.vacation.history;
 
 import java.util.List;
 
@@ -12,10 +12,10 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.request.dom.settting.worktype.history.OptionalMaxDay;
-import nts.uk.ctx.at.request.dom.settting.worktype.history.PlanVacationHistory;
-import nts.uk.ctx.at.request.dom.settting.worktype.history.VacationHistoryPolicy;
-import nts.uk.ctx.at.request.dom.settting.worktype.history.VacationHistoryRepository;
+import nts.uk.ctx.at.request.dom.vacation.history.OptionalMaxDay;
+import nts.uk.ctx.at.request.dom.vacation.history.PlanVacationHistory;
+import nts.uk.ctx.at.request.dom.vacation.history.VacationHistoryPolicy;
+import nts.uk.ctx.at.request.dom.vacation.history.VacationHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

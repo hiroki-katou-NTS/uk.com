@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.request.dom.settting.worktype.history;
+package nts.uk.ctx.at.request.dom.vacation.history;
 
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 

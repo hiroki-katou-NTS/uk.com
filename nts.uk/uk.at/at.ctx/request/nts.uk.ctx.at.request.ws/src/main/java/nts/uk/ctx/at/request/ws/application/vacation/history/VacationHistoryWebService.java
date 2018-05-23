@@ -14,13 +14,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.request.app.command.setting.vacation.history.RemoveVacationHistoryCommand;
-import nts.uk.ctx.at.request.app.command.setting.vacation.history.RemoveVacationHistoryCommandHandler;
-import nts.uk.ctx.at.request.app.command.setting.vacation.history.SaveVacationHistCommandHandler;
-import nts.uk.ctx.at.request.app.command.setting.vacation.history.VacationHistoryCommand;
 import nts.uk.ctx.at.request.app.command.setting.vacation.history.dto.VacationHistoryReturnDto;
-import nts.uk.ctx.at.request.dom.settting.worktype.history.PlanVacationHistory;
-import nts.uk.ctx.at.request.dom.settting.worktype.history.VacationHistoryRepository;
+import nts.uk.ctx.at.request.app.command.vacation.history.RemoveVacationHistoryCommand;
+import nts.uk.ctx.at.request.app.command.vacation.history.RemoveVacationHistoryCommandHandler;
+import nts.uk.ctx.at.request.app.command.vacation.history.SaveVacationHistCommandHandler;
+import nts.uk.ctx.at.request.app.command.vacation.history.VacationHistoryCommand;
+import nts.uk.ctx.at.request.dom.vacation.history.PlanVacationHistory;
+import nts.uk.ctx.at.request.dom.vacation.history.VacationHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

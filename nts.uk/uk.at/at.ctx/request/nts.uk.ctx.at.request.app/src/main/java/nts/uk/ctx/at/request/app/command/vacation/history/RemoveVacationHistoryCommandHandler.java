@@ -1,11 +1,11 @@
-package nts.uk.ctx.at.request.app.command.setting.vacation.history;
+package nts.uk.ctx.at.request.app.command.vacation.history;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.request.dom.settting.worktype.history.VacationHistoryRepository;
+import nts.uk.ctx.at.request.dom.vacation.history.VacationHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
