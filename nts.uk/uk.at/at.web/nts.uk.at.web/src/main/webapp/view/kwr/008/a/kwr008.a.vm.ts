@@ -319,11 +319,13 @@ module nts.uk.at.view.kwr008.a {
                     console.log(`fail : ${enumError}`);
                 });
 
-                $.when(getPermissionOfEmploymentForm, getPeriod,
-                       restoreOutputConditionAnnualWorkSchedule,
-                       getPageBreakSelection).done(() => {
-                            dfd.resolve(self);
-                       })
+                $.when( getPermissionOfEmploymentForm,
+                        getPeriod,
+                        restoreOutputConditionAnnualWorkSchedule,
+                        getPageBreakSelection).done(() => {
+                        dfd.resolve(self);
+                        $('#A1_1').focus();
+                    });
                 return dfd.promise();
             }
             public validate(): boolean {
