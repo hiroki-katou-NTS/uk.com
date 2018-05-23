@@ -10,7 +10,6 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 public abstract class MonthlyFinderFacade extends FinderFacade {
 
@@ -28,8 +27,6 @@ public abstract class MonthlyFinderFacade extends FinderFacade {
 	}
 	
 	public abstract <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, DatePeriod range);
-	
-	public abstract <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, YearMonthPeriod range);
 	
 	public abstract <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, YearMonth yearMonth);
 }

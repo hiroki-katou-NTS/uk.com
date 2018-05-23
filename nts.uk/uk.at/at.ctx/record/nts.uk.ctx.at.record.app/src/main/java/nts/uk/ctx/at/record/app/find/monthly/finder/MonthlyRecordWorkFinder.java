@@ -65,8 +65,7 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 		return (List<T>) ConvertHelper.yearMonthsBetween(range).stream().map(ym -> find(employeeId, ym))
 				.flatMap(List::stream).collect(Collectors.toList());
 	}
-	
-	@Override
+
 	@SuppressWarnings("unchecked")
 	public <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, YearMonthPeriod range) {
 		return (List<T>) ConvertHelper.yearMonthsBetween(range).stream().map(ym -> find(employeeId, ym))
