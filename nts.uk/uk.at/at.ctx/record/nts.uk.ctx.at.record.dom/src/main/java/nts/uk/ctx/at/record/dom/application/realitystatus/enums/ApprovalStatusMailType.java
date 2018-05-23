@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.application.realitystatus.enums;
 
-public enum TransmissionAttr {
+public enum ApprovalStatusMailType {
 	/**
 	 * 本人
 	 */
@@ -16,7 +16,7 @@ public enum TransmissionAttr {
 
 	public final int value;
 
-	private TransmissionAttr(int value) {
+	private ApprovalStatusMailType(int value) {
 		this.value = value;
 	}
 }

@@ -9,8 +9,8 @@ import nts.arc.time.GeneralDate;
  */
 @AllArgsConstructor
 @Value
-public class EmploymentOutput {
-	private String empCd;
+public class UnApprovalPerson {
+	private String sId;
 	private GeneralDate startDate;
 	private GeneralDate endDate;
 }

@@ -31,6 +31,8 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 	private static final String SELECT_AGENT_BY_APPROVER_DATE;
 	
 	private static final String SELECT_AGENT_BY_TYPE;
+	
+	private static final String SELECT_AGENT_BY_SID_DATE;
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
@@ -100,6 +102,15 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		builderString.append(" AND e.startDate <= :endDate");
 		builderString.append(" AND e.endDate >= :startDate");
 		SELECT_AGENT_BY_TYPE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM CmmmtAgent e");
+		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId"); 
+		builderString.append(" AND e.cmmmtAgentPK.employeeId = :employeeId");
+		builderString.append(" AND e.startDate <= :startDate");
+		builderString.append(" AND e.endDate >= :endDate");
+		SELECT_AGENT_BY_SID_DATE = builderString.toString();
 		}
 	
 		
@@ -301,6 +312,16 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 			resultList.addAll(findList);
 		});
 		return resultList;
+	}
+
+	@Override
+	public List<Agent> getAgentBySidDate(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate) {
+		return this.queryProxy().query(SELECT_AGENT_BY_SID_DATE, CmmmtAgent.class)
+				.setParameter("companyId", companyId)
+				.setParameter("employeeId", employeeId)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.getList(c -> convertToDomain(c));
 	}
 
 }
