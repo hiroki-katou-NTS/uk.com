@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.app.command.alarm.checkcondition;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -34,6 +35,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeConditionEr
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckConEvent;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -233,7 +235,12 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				String monAlarmCheckConID = IdentifierUtil.randomUniqueId();
 				
 				extractionCondition = command.getMonAlarmCheckCon() == null ? null
-						: new MonAlarmCheckCon(monAlarmCheckConID);
+						: new MonAlarmCheckCon(monAlarmCheckConID,
+								command.getMonAlarmCheckCon().getArbExtraCon().stream().map(c->c.getErrorAlarmCheckID()).collect(Collectors.toList())
+								);
+				//add list mon
+				MonAlarmCheckConEvent event = new MonAlarmCheckConEvent(monAlarmCheckConID,false,true,false,command.getMonAlarmCheckCon().getArbExtraCon());
+				event.toBePublished();
 				//add list fixedExtraMonFun
 				for(FixedExtraMonFunImport fixedExtraMonFun : command.getMonAlarmCheckCon().getListFixExtraMon()) {
 					fixedExtraMonFun.setMonAlarmCheckID(monAlarmCheckConID);

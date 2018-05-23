@@ -385,6 +385,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         }
 
                         if (item.category() == model.CATEGORY.MONTHLY) {
+                            //tab extraResult
                             //tab fix
                             if (item.monAlarmCheckCon().listFixExtraMon().length > 0) {
                                 self.tabAlarmcheck.listFixedExtraMonFun(item.monAlarmCheckCon().listFixExtraMon());
