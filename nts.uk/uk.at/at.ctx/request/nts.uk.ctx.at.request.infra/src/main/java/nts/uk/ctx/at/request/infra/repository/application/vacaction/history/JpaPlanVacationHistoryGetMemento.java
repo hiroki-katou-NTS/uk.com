@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.request.infra.repository.application.vacaction.history;
 
-import nts.uk.ctx.at.request.dom.settting.worktype.history.OptionalMaxDay;
-import nts.uk.ctx.at.request.dom.settting.worktype.history.PlanVacationHistoryGetMemento;
+import nts.uk.ctx.at.request.dom.vacation.history.OptionalMaxDay;
+import nts.uk.ctx.at.request.dom.vacation.history.PlanVacationHistoryGetMemento;
 import nts.uk.ctx.at.request.infra.entity.valication.history.KrqmtVacationHistory;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
