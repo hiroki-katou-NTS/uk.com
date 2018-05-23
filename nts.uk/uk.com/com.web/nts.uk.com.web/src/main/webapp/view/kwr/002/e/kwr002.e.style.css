@@ -3,23 +3,44 @@
 	margin-top: 10px;
 	margin-left: 10px;
 }
+
 textarea {
     background-color: #dce4c4;
 }
+
 #multiline-textbox {
-	width: 850px; 
+	width: 960px; 
 	height: 70px;
 }
-table, tbody, thead, tr, th, td #selected-multi-list{
+
+#selected-multi-list table, tbody, thead, tr, th, td {
 	border: 0.5px solid grey;
 }
+
+#selected-multi-list tbody, #selected-multi-list thead {
+	display: block;
+}
+
+#selected-multi-list tbody {
+	overflow-y: scroll;
+	height: 430px;
+	width: 400px;
+}
+
 table#selected-multi-list {
-	height: 600px;
-	overflow-y: auto;
+    counter-reset: rowNumber;
+    height: 450px;
 }
-#selected-multi-list {
-	height: 350px;'
+
+table#selected-multi-list tr > td:first-child {
+    counter-increment: rowNumber;
 }
-tr, td, th {
-	text-align: center;
+
+table#selected-multi-list tr td:first-child::before {
+    content: counter(rowNumber);
+    min-width: 1em;
+    margin-right: 0.5em;
+}
+tr#selected-multi-list {
+	height: 40px;
 }

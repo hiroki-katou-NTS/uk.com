@@ -9,15 +9,14 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.repository.DailyAttendanceItemNameDomainService;
-import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceTypeDivergenceAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AttendanceRecordItemFinder {
 
-	/** The at type. */
-	@Inject
-	private AttendanceTypeDivergenceAdapter atType;
+//	/** The at type. */
+//	@Inject
+//	private AttendanceTypeDivergenceAdapter atType;
 	
 	@Inject
 	private AttendanceTypeRepository attendanceTypeRepository;
@@ -47,5 +46,12 @@ public class AttendanceRecordItemFinder {
 		listAttendanceRecordItem = atName.getNameOfDailyAttendanceItem(attendanceItemIds).stream().map(
 				e -> new AttendanceRecordItemDto(e.getAttendanceItemId(),e.getAttendanceItemName(),screenUseAtr,e.getTypeOfAttendanceItem())).collect(Collectors.toList());
 		return listAttendanceRecordItem;
+	}
+	
+	public List<AttendanceRecordItemDto> findAttendanceItemsById(List<Integer> listAttendanceId){
+		List<AttendanceRecordItemDto> result = new ArrayList<>();
+		result = atName.getNameOfDailyAttendanceItem(listAttendanceId).stream().map(
+				e -> new AttendanceRecordItemDto(e.getAttendanceItemId(),e.getAttendanceItemName(),0,e.getTypeOfAttendanceItem())).collect(Collectors.toList());
+		return result;
 	}
 }

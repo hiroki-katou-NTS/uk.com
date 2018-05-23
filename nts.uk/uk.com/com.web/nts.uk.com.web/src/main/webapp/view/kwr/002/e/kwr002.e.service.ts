@@ -19,22 +19,20 @@ module nts.uk.com.view.kwr002.e {
         }
         
         export class GridItem {
-            isSelect: boolean;
             code: string;
             name: string;
             
-            constructor(isSelect: boolean, code: string, name: string){
-                this.isSelect = isSelect;
+            constructor(code: string, name: string){
                 this.code = code;
                 this.name = name;
             }
         }
         
         export class SelectedItem {
-            action: number;
+            action: string;
             code: string;
             name: string;
-            constructor(action: number, code: string, name: string) {
+            constructor(action: string, code: string, name: string) {
                 this.action = action;
                 this.code = code;
                 this.name = name;

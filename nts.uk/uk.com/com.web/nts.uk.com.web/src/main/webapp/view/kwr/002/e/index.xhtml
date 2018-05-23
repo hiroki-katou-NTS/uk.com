@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 1000,
-					height : 900
+					width : 1100,
+					height : 890
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -27,9 +27,9 @@
 					<!-- E1_1 -->
 					<div data-bind="ntsFormLabel: {}" class="form-label">#{i18n.getText('KWR002_160')}</div>
 					<!-- E1_2 -->
-					<label data-bind="text: processingCode"></label>
+					<label data-bind="text: layoutCode"></label>
 					<!-- E1_3 -->
-					<label data-bind="text: processingName"></label>
+					<label data-bind="text: layoutName"></label>
 					<!-- E1_4 -->
 					<label data-bind="text: dailyMonthly"></label>
 					<!-- E1_5 -->
@@ -37,7 +37,7 @@
 					<!-- E1_6 -->
 					<label>#{i18n.getText('KWR002_162')}</label>
 					<!-- E1_7 -->
-					<label data-bind="text: topBottom"></label>
+					<label data-bind="text: position"></label>
 					<!-- E1_8 -->
 					<label>#{i18n.getText('KWR002_163')}</label>
 					<hr></hr>
@@ -56,14 +56,15 @@
 						<div class="fixed-flex-layout-left external">
 							<div
 								class="panel ntsPanel caret-background caret-right direction-right"
-								data-bind="ntsPanel:{width: '400px', height: '450px', direction: 'right', showIcon: true, visible: true}"
+								data-bind="ntsPanel:{width: '400px', height: '460px', direction: 'right', showIcon: true, visible: true}"
 								style="margin: unset;">
 								<i class="icon icon-searchbox"></i>
-								<div style="display: inline-flex;">
-									<div>
+								<div style="display: inline-flex; margin-bottom: 10px;"
+									class="external">
+									<div class="external">
 										<label>#{i18n.getText('CMM001_42')}</label>
 									</div>
-									<div id="combo-box"
+									<div id="combo-box" class="external"
 										data-bind="ntsComboBox: {options: selectionTypeList,
 																		required: true,
 																		optionsValue: 'code',
@@ -76,8 +77,9 @@
 																		}">
 									</div>
 								</div>
-								<div tabindex="6"
+								<div tabindex="6" class="external"
 									data-bind="ntsSearchBox:{
+													searchMode: 'filter',
 													targetKey: 'code',
 													comId: 'selection-multi-list',
 					                    	        items: gridItems, 
@@ -86,7 +88,7 @@
 					                    	        fields: ['name', 'code'],
 					                    	        mode: 'igGrid'}"
 									style="display: inline;"></div>
-								<div>
+								<div class="external">
 									<table id="selection-multi-list"
 										data-bind="ntsGridList: {
 													options: gridItems,
@@ -100,7 +102,7 @@
 							</div>
 						</div>
 						<div class="fixed-flex-layout-right"
-							style="display: inline-flex; margin-top: 50px;">
+							style="display: inline-flex; margin-top: 40px; margin-right: 20px;">
 							<div style="display: block; margin: 35px;">
 								<!-- E6_1 -->
 								<div>
@@ -113,11 +115,11 @@
 										data-bind="click: writeItemWithSubtract">#{i18n.getText('KWR002_179')}</button>
 								</div>
 							</div>
-							<div class="external">
-								<table id="selected-multi-list"
+							<div class="external" style="height: 450px;">
+								<table id="selected-multi-list" class="fixed-table"
 									data-bind="name: '#{i18n.getText('KWR002_185')}'">
 									<colgroup>
-										<col width="50px" />
+										<col width="40px" />
 										<col width="100px" />
 										<col width="100px" />
 										<col width="200px" />
@@ -134,11 +136,16 @@
 									</thead>
 									<tbody data-bind="foreach: selectedGridItems">
 										<tr>
-											<td class="bg-green"><span></span></td>
-											<td><span data-bind="text: action"></span></td>
+											<td style="text-align: right;" class="bg-green"><span></span></td>
+											<td style="text-align: center;"><span
+												data-bind="text: action"></span></td>
 											<td><span data-bind="text: code"></span></td>
 											<td><span data-bind="text: name"></span></td>
-											<td><button data-bind="ntsIcon: { no: 2, width: 30, height: 30 }"></button></td>
+											<td style="text-align: center;"><button
+													data-bind="click: function() {$parent.deleteItem($data)}"
+													class="small">
+													<i data-bind="ntsIcon: { no: 2, width: 20, height: 20 }" />
+												</button></td>
 										</tr>
 									</tbody>
 								</table>
@@ -146,21 +153,23 @@
 						</div>
 					</div>
 				</div>
-				<div class="external">
+				<div class="external" style="margin-left: 30px;">
 					<!-- E9_1 -->
 					<div data-bind="ntsFormLabel: {}" class="form-label">#{i18n.getText('KWR002_190')}</div>
 				</div>
-				<div class="external">
+				<div class="external" style="margin-left: 30px;">
 					<!-- E9_2 -->
 					<textarea id="multiline-textbox"
-						data-bind="ntsMultilineEditor: {name: '#{i18n.getText('KWR002_191')}'}" />
+						data-bind="ntsMultilineEditor: {value: formulaContent, readonly: true, name: '#{i18n.getText('KWR002_191')}'}" />
 				</div>
 			</div>
-			<div id="functions-area-bottom">
+			<div id="functions-area-bottom" style="display: block;">
 				<!-- E10_1 -->
-				<button tabindex="10" id="" class="button x-large proceed">#{i18n.getText('KWR002_192')}</button>
+				<button tabindex="10" id="" class="button x-large proceed"
+					data-bind="click: decide">#{i18n.getText('KWR002_192')}</button>
 				<!-- E10_2 -->
-				<button tabindex="11" id="" class="button fix-button large">#{i18n.getText('KWR002_193')}</button>
+				<button tabindex="11" id="" class="button fix-button large"
+					data-bind="click: cancel">#{i18n.getText('KWR002_193')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
