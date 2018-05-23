@@ -21,7 +21,7 @@ public class WorkInformationOfDailyPerformCommandUpdateHandler extends CommandFa
 
 	@Override
 	protected void handle(CommandHandlerContext<WorkInformationOfDailyPerformCommand> context) {
-		WorkInfoOfDailyPerformance domain = context.getCommand().getData();
+		WorkInfoOfDailyPerformance domain = context.getCommand().toDomain();
 		/** check worktype*/
 		checkWorkType(domain);
 		

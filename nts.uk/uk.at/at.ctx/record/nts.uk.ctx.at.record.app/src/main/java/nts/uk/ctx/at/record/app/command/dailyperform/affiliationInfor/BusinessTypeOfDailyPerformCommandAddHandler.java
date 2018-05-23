@@ -15,6 +15,6 @@ public class BusinessTypeOfDailyPerformCommandAddHandler extends CommandFacade<B
 
 	@Override
 	protected void handle(CommandHandlerContext<BusinessTypeOfDailyPerformCommand> context) {
-		repo.add(context.getCommand().getData());
+		repo.add(context.getCommand().toDomain());
 	}
 }

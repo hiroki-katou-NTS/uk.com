@@ -15,7 +15,7 @@ public class BusinessTypeOfDailyPerformCommandUpdateHandler extends CommandFacad
 
 	@Override
 	protected void handle(CommandHandlerContext<BusinessTypeOfDailyPerformCommand> context) {
-		repo.update(context.getCommand().getData());
+		repo.update(context.getCommand().toDomain());
 	}
 
 }

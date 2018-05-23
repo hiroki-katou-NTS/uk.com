@@ -9,16 +9,20 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 public class BusinessTypeOfDailyPerformCommand extends DailyWorkCommonCommand {
 
 	@Getter
-	private WorkTypeOfDailyPerformance data;
+	private BusinessTypeOfDailyPerforDto data;
 
 	@Override
 	public void setRecords(AttendanceItemCommon item) {
-		this.data = item == null || !item.isHaveData() ? null : ((BusinessTypeOfDailyPerforDto) item).toDomain(getEmployeeId(), getWorkDate());
+		this.data = item == null || !item.isHaveData() ? null : (BusinessTypeOfDailyPerforDto) item;
 	}
 
 	@Override
 	public void updateData(Object data) {
-		this.data = (WorkTypeOfDailyPerformance) data;
+		this.data = (BusinessTypeOfDailyPerforDto) data;
 	}
-
+	
+	@Override
+	public WorkTypeOfDailyPerformance toDomain() {
+		return data == null ? null : data.toDomain(getEmployeeId(), getWorkDate());
+	}
 }
