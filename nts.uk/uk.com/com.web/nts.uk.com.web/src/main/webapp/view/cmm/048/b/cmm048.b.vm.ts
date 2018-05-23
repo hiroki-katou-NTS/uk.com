@@ -1,6 +1,5 @@
 module nts.uk.com.view.cmm048.b {
 
-    import MainDto = nts.uk.com.view.cmm048.b.model.MainDto;
     import FunctionSettingDto = nts.uk.com.view.cmm048.b.model.FunctionSettingDto;
     
     export module viewmodel {  
@@ -18,8 +17,8 @@ module nts.uk.com.view.cmm048.b {
                 
                 _self.columnSetting = ko.observableArray([
                     { headerText: "", key: 'functionId', width: 150,  hidden: true },
-                    { headerText: nts.uk.resource.getText("CMM048_52"), key: 'functionName', width: 120 },
-                    { headerText: nts.uk.resource.getText("CMM048_53"), key: 'sendSettingName', width: 120 }
+                    { headerText: nts.uk.resource.getText("CMM048_52"), key: 'functionName', width: 150 },
+                    { headerText: nts.uk.resource.getText("CMM048_53"), key: 'sendSettingName', width: 150 }
                 ]);
             }
             
@@ -46,7 +45,7 @@ module nts.uk.com.view.cmm048.b {
                 if (nts.uk.util.isNullOrUndefined(dataObject)) {                                   
                     return;
                 }
-                _self.mainModel.updateData(dataObject.userInfo);                          
+                _self.mainModel.updateData(dataObject);                          
             }   
             
             /**
@@ -70,34 +69,26 @@ module nts.uk.com.view.cmm048.b {
                 _self.selectedItem = ko.observable(null);
             }
             
-            updateData(userInfo: UserInfoItem) {
+            updateData(dataObject: any) {
                 let _self = this;
-                
-                switch (userInfo) {
+                let data:any = dataObject.data; 
+                switch (dataObject.userInfo) {
                     case UserInfoItem.COMPANY_PC_MAIL:
                         _self.userInfoItemName(nts.uk.resource.getText("CMM048_46"));
-                        service.findCompanyPcMail().done((data: Array<FunctionSettingDto>) => {
-                            _self.listFunctionSetting(_.map(data, (item) => new FunctionSettingModel(item)));
-                        });
-                    break;
+                        _self.listFunctionSetting(_.map(data, (item:any) => new FunctionSettingModel(item)));
+                        break;
                     case UserInfoItem.PERSONAL_PC_MAIL:
                         _self.userInfoItemName(nts.uk.resource.getText("CMM048_47"));
-                        service.findPersonalPcMail().done((data: Array<FunctionSettingDto>) => {
-                            _self.listFunctionSetting(_.map(data, (item) => new FunctionSettingModel(item)));
-                        });
-                    break;
+                        _self.listFunctionSetting(_.map(data, (item:any) => new FunctionSettingModel(item)));
+                        break;
                     case UserInfoItem.COMPANY_MOBILE_MAIL:
                         _self.userInfoItemName(nts.uk.resource.getText("CMM048_48"));
-                        service.findCompanyMobileMail().done((data: Array<FunctionSettingDto>) => {
-                            _self.listFunctionSetting(_.map(data, (item) => new FunctionSettingModel(item)));
-                        });
-                    break;
+                        _self.listFunctionSetting(_.map(data, (item:any) => new FunctionSettingModel(item)));
+                        break;
                     case UserInfoItem.PERSONAL_MOBILE_MAIL:
                         _self.userInfoItemName(nts.uk.resource.getText("CMM048_49"));
-                        service.findPersonalMobileMail().done((data: Array<FunctionSettingDto>) => {
-                            _self.listFunctionSetting(_.map(data, (item) => new FunctionSettingModel(item)));
-                        });
-                    break;
+                        _self.listFunctionSetting(_.map(data, (item:any) => new FunctionSettingModel(item)));
+                        break;
                     default:
                         _self.userInfoItemName("");
                 }          

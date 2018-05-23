@@ -5,7 +5,8 @@ module a2 {
     import PersonContactModel = nts.uk.com.view.cmm048.a.viewmodel.PersonContactModel;
     import UserInfoUseMethodModel = nts.uk.com.view.cmm048.a.viewmodel.UserInfoUseMethodModel;
     import UseContactSettingModel = nts.uk.com.view.cmm048.a.viewmodel.UseContactSettingModel;
-    
+    import bservice = nts.uk.com.view.cmm048.b.service;
+    import FunctionSettingDto = nts.uk.com.view.cmm048.b.model.FunctionSettingDto;
     class ScreenModel {
 
         mainModel: MainModel;
@@ -85,13 +86,41 @@ module a2 {
         public openDialogUserInfo(userInfo: number) {
             let _self = this;
             nts.uk.ui.block.grayout();
-            
-            let dataObject: any = {
-                userInfo: userInfo
-            };
-            nts.uk.ui.windows.setShared("CMM048_DIALOG_B_INPUT_DATA", dataObject);
-            nts.uk.ui.windows.sub.modal("/view/cmm/048/b/index.xhtml").onClosed(() => {
-                nts.uk.ui.block.clear();
+            let data:any = null;
+            //get data
+            switch (userInfo) {
+                case UserInfoItem.COMPANY_PC_MAIL:
+                    _self.doOpenDialog(bservice.findCompanyPcMail, userInfo);
+                    break;
+                case UserInfoItem.PERSONAL_PC_MAIL:
+                    _self.doOpenDialog(bservice.findPersonalPcMail, userInfo);
+                    break;
+                case UserInfoItem.COMPANY_MOBILE_MAIL:
+                    _self.doOpenDialog(bservice.findCompanyMobileMail, userInfo);
+                    break;
+                case UserInfoItem.PERSONAL_MOBILE_MAIL:
+                    _self.doOpenDialog(bservice.findPersonalMobileMail, userInfo);
+                    break;
+                default: break;
+            } 
+        }
+        
+        private doOpenDialog(serviceFunction: () => JQueryPromise<any>, userInfo: any) {
+            serviceFunction().done((data: Array<FunctionSettingDto>) => {
+                if (data && data.length > 0) {
+                    let dataObject: any = {
+                        userInfo: userInfo,
+                        data: _.sortBy(data, item => item.functionName)//sort ASC
+                    };
+                    nts.uk.ui.windows.setShared("CMM048_DIALOG_B_INPUT_DATA", dataObject);
+                    nts.uk.ui.windows.sub.modal("/view/cmm/048/b/index.xhtml").onClosed(() => {
+                        nts.uk.ui.block.clear();
+                    });
+                }
+            }).fail((res: any) => {
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => {
+                    nts.uk.ui.block.clear();
+                });
             });
         }
         

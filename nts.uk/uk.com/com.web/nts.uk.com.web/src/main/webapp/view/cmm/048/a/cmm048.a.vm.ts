@@ -40,7 +40,7 @@ module nts.uk.com.view.cmm048.a {
                 service.getData().done((data: MainDto) => {
                     _self.mainModel.updateData(data);
                     dfd.resolve();
-                }).fail(res => {
+                }).fail((res:any) => {
                     // Jump to CCG008 in case of error
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => {
                         nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
@@ -76,11 +76,11 @@ module nts.uk.com.view.cmm048.a {
                     listUseContactSetting: _.map(_self.mainModel.listUseContactSetting(), item => item.toDto())
                 }
                 service.save(command)
-                    .done((res) => {
+                    .done((res:any) => {
                         nts.uk.ui.block.clear();
                         nts.uk.ui.dialog.info({ messageId: 'Msg_15' });                       
                     })
-                    .fail((err) => {
+                    .fail((err:any) => {
                         nts.uk.ui.block.clear();
                         _self.showMessageError(err);
                     });

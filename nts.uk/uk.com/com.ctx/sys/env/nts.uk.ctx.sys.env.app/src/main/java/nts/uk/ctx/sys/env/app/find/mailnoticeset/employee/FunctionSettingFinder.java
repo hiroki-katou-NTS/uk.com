@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.MailFunctionRepository;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.MailDestinationFunction;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.MailDestinationFunctionRepository;
@@ -47,6 +48,10 @@ public class FunctionSettingFinder {
 		List<FunctionSettingDto> listResult = this.mailFunctionRepository.findAll(true).stream()
 				.map(item -> new FunctionSettingDto(item.getFunctionId().v(), item.getFunctionName().v(), false))
 				.collect(Collectors.toList());	
+
+		if (listResult.isEmpty()) {
+			throw new BusinessException("Msg_1183");
+		}
 		MailDestinationFunction mailDestinationFunction = this.mailDestinationFunctionRepository.findByCidAndSettingItem(companyId, userInfoItem);
 		
 		// In case the mail destination function is not found
