@@ -16,9 +16,6 @@ module nts.custom.component {
         }
     };
 
-    // add support virtual element to let control
-    ko.virtualElements.allowedBindings.let = true;
-
     window["ko"].components.register('layout-tabs', {
         template: `<!-- ko let: {
                         text: nts.uk.resource.getText,
