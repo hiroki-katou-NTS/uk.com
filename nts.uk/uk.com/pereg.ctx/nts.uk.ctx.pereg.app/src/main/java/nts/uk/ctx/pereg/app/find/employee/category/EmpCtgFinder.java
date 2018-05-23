@@ -154,7 +154,8 @@ public class EmpCtgFinder {
 		}
 	}
 	
-	private List<ComboBoxObject> getListOfMultiCategory(PeregQuery query, PersonInfoCategory perInfoCtg, List<PersonInfoItemDefinition> lstItemDef) {
+	private List<ComboBoxObject> getListOfMultiCategory(PeregQuery query, PersonInfoCategory perInfoCtg,
+			List<PersonInfoItemDefinition> lstItemDef) {
 		PersonInfoItemDefinition firstItem = lstItemDef.get(0);
 		
 		List<ComboBoxObject> infoList;
@@ -162,25 +163,32 @@ public class EmpCtgFinder {
 			infoList = layoutingProcessor.getListFirstItems(query);
 		} else {
 			if (perInfoCtg.isEmployeeType()) {
-				List<String> recordIds = emInfoCtgDataRepository
-						.getByEmpIdAndCtgId(query.getEmployeeId(), query.getCategoryId()).stream()
-						.map(data -> data.getRecordId()).collect(Collectors.toList());
-				List<EmpInfoItemData> itemData = empInfoItemDataRepository.getItemsData(firstItem.getPerInfoItemDefId(),
-						recordIds);
-				infoList = itemData.stream().map( data -> new ComboBoxObject(data.getRecordId(), data.getValue().toString()))
-						.collect(Collectors.toList());
+				infoList = getInfoItemEmployeeType(query, firstItem.getPerInfoItemDefId());
 			} else {
-				List<String> recordIds = perInfoCtgDataRepository.getByPerIdAndCtgId(query.getPersonId(),
-						query.getCategoryId()).stream().map(data -> data.getRecordId()).collect(Collectors.toList());
-				List<PersonInfoItemData> itemData  = perInfoItemDataRepository.getItemData(firstItem.getPerInfoItemDefId(), recordIds);
-				infoList = itemData.stream()
-						.map(data -> new ComboBoxObject(data.getRecordId(), data.getValue().toString()))
-						.collect(Collectors.toList());
+				infoList = getInfoItemPersonType(query, firstItem.getPerInfoItemDefId());
 			}
 		}
 		infoList.add(new ComboBoxObject(null, firstItem.getItemName().v()));
-		
+
 		return infoList;
+	}
+	
+	private List<ComboBoxObject> getInfoItemEmployeeType(PeregQuery query, String itemId) {
+		List<String> recordIds = emInfoCtgDataRepository
+				.getByEmpIdAndCtgId(query.getEmployeeId(), query.getCategoryId()).stream()
+				.map(data -> data.getRecordId()).collect(Collectors.toList());
+		List<EmpInfoItemData> itemData = empInfoItemDataRepository.getItemsData(itemId, recordIds);
+		return itemData.stream().map(data -> new ComboBoxObject(data.getRecordId(), data.getValue().toString()))
+				.collect(Collectors.toList());
+	}
+	
+	private List<ComboBoxObject> getInfoItemPersonType(PeregQuery query, String itemId) {
+		List<String> recordIds = perInfoCtgDataRepository.getByPerIdAndCtgId(query.getPersonId(),
+				query.getCategoryId()).stream().map(data -> data.getRecordId()).collect(Collectors.toList());
+		List<PersonInfoItemData> itemData  = perInfoItemDataRepository.getItemData(itemId, recordIds);
+		return itemData.stream()
+				.map(data -> new ComboBoxObject(data.getRecordId(), data.getValue().toString()))
+				.collect(Collectors.toList());
 	}
 	
 	private List<ComboBoxObject> getListOfHistoryCategory(PeregQuery query, PersonInfoCategory perInfoCtg,
