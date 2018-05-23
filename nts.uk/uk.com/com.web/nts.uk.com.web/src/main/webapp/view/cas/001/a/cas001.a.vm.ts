@@ -224,11 +224,12 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
             nts.uk.ui.windows.sub.modal('/view/cas/001/c/index.xhtml', { title: '' }).onClosed(function(): any {
 
-                if (!getShared('isCanceled')) {
+                let objSetofScreenC = getShared('isCanceled');
+                if (!objSetofScreenC.isCancel) {
                     self.reload().always(() => {
-
-
-
+                        if(objSetofScreenC.id !== null && objSetofScreenC.id != undefined){
+                            self.component.currentCode(objSetofScreenC.id);
+                        }
                     });
                 }
             });
