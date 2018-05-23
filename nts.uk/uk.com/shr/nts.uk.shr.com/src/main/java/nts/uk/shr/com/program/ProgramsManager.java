@@ -752,6 +752,15 @@ public class ProgramsManager {
 	/** The Constant KMK004A. */
 	public static final Program KMK004A = new Program(WebAppId.AT, ProgramIdConsts.KMK004A, "KMK004_1",
 			"/view/kmk/004/a/index.xhtml");
+	
+	public static final Program KMK004B = new Program(WebAppId.AT, ProgramIdConsts.KMK004B, "KMK004_1",
+			"/view/kmk/004/b/index.xhtml");
+	
+	public static final Program KMK004C = new Program(WebAppId.AT, ProgramIdConsts.KMK004C, "KMK004_1",
+			"/view/kmk/004/c/index.xhtml");
+	
+	public static final Program KMK004D = new Program(WebAppId.AT, ProgramIdConsts.KMK004D, "KMK004_1",
+			"/view/kmk/004/d/index.xhtml");
 
 	/** The Constant KMK004E. */
 	public static final Program KMK004E = new Program(WebAppId.AT, ProgramIdConsts.KMK004E, "KMK004_2",
@@ -1818,6 +1827,24 @@ public class ProgramsManager {
 	public static final Program KMW006F = new Program(WebAppId.AT, ProgramIdConsts.KMW006F, "KMW006_46",
 			"/view/kmw/006/f/index.xhtml");
 
+	/** KAF018 */
+	public static final Program KAF018A = new Program(WebAppId.AT, ProgramIdConsts.KAF018A, "KAF018_1",
+			"/view/kaf/018/a/index.xhtml");
+	public static final Program KAF018B = new Program(WebAppId.AT, ProgramIdConsts.KAF018B, "KAF018_2",
+			"/view/kaf/018/b/index.xhtml");
+	public static final Program KAF018C = new Program(WebAppId.AT, ProgramIdConsts.KAF018C, "KAF018_3",
+			"/view/kaf/018/c/index.xhtml");
+	public static final Program KAF018D = new Program(WebAppId.AT, ProgramIdConsts.KAF018D, "KAF018_4",
+			"/view/kaf/018/d/index.xhtml");
+	public static final Program KAF018E = new Program(WebAppId.AT, ProgramIdConsts.KAF018E, "KAF018_5",
+			"/view/kaf/018/e/index.xhtml");
+	public static final Program KAF018F = new Program(WebAppId.AT, ProgramIdConsts.KAF018F, "KAF018_6",
+			"/view/kaf/018/f/index.xhtml");
+	public static final Program KAF018G = new Program(WebAppId.AT, ProgramIdConsts.KAF018G, "KAF018_7",
+			"/view/kaf/018/g/index.xhtml"); 
+	public static final Program KAF018H = new Program(WebAppId.AT, ProgramIdConsts.KAF018H, "KAF018_8",
+			"/view/kaf/018/h/index.xhtml");
+	
 	/**
 	 * KDM002.
 	 */
