@@ -17,7 +17,7 @@ public class PayoutSubofHDManagementCommandHandler extends CommandHandler<Payout
 	@Override
 	protected void handle(CommandHandlerContext<PayoutSubofHDManagementCommand> context) {
 		val command = context.getCommand();
-		SubstitutionOfHDManaDataService.insertSubOfHDMan(command.getSid(),command.getPayoutID(), command.getSubofHD());
+		SubstitutionOfHDManaDataService.insertSubOfHDMan(command.getSid(),command.getPayoutID(),command.getRemainNumber(), command.getSubofHD());
 	}
 
 }

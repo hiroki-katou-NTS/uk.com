@@ -4,6 +4,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         columns: KnockoutObservableArray<NtsGridListColumn>;
         currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
+        currentList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         workCode: KnockoutObservable<string> = ko.observable('');
         workPlaceName: KnockoutObservable<string> = ko.observable('');
         employeeCode: KnockoutObservable<string> = ko.observable('');
@@ -11,9 +12,9 @@ module nts.uk.at.view.kdm001.e.viewmodel {
         dateHoliday: KnockoutObservable<any> = ko.observable('');
         numberDay: KnockoutObservable<any> = ko.observable('');
         residualDay: KnockoutObservable<any> = ko.observable('');
-        employee : any = getShared('KDM001A_EMPLOYEE');
-        payoutItem : any = getShared('KDM001A_PAYOUT');
-   
+//        employee : any = getShared('KDM001A_EMPLOYEE');
+//        payoutItem : any = getShared('KDM001A_PAYOUT');
+        info: any = getShared("KDM001_EFGH_PARAMS");
         constructor() {
             let self = this;
             self.workCode('100');
@@ -23,6 +24,15 @@ module nts.uk.at.view.kdm001.e.viewmodel {
             self.dateHoliday('2016/10/2');
             self.numberDay('1.0日');
             self.residualDay('0日');
+//            
+//            if (self.info) {
+//                self.workCode(self.info.selectedEmployee.workCode);
+//                self.workName(self.info.selectedEmployee.workName);
+//                self.employeeId(self.info.selectedEmployee.employeeId);
+//                self.employeeCode(self.info.selectedEmployee.employeeCode);
+//                self.employeeName(self.info.selectedEmployee.employeeName);
+//                
+//            }
             self.columns = ko.observableArray([
                 { headerText: 'コード', key: 'subOfHDID', width: 100, hidden: true },
                 { headerText: nts.uk.resource.getText("KDM001_95"), key: 'dayoffDate', width: 110 },
@@ -31,20 +41,6 @@ module nts.uk.at.view.kdm001.e.viewmodel {
 //            self.initScreen();
         }
 
-//        public initScreen(): void {
-//            let self = this;
-//            self.workCode('100');
-//            self.workPlaceName('営業部');
-//            self.employeeCode('A000001');
-//            self.employeeName('日通　太郎');
-//            self.dateHoliday('2016/10/2');
-//            self.numberDay('1.0日');
-//            self.residualDay('0日');
-//            for (let i = 1; i < 100; i++) {
-//                self.items.push(new ItemModel('00' + i, "2010/1/10", "1.0E"));
-//            }
-//            self.currentCodeList.push('001')
-//        }
         public initScreen(annID?: string): JQueryPromise<any> {
             let self = this;
             service.getBySidDatePeriod(/*employee.employeeId*/ 'ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570', /*payoutItem.payoutId*/'de1b6c4f-833c-4bca-b257-4e44269ed230').done((data: ItemModel )=>{
@@ -55,7 +51,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
                             return currentItem.linked == true;
                         });
                         if (code) {
-                            self.currentCodeList.push(code);
+                            self.currentCodeList.push(code.subOfHDID);
                         }
                     });
                 }
@@ -65,12 +61,42 @@ module nts.uk.at.view.kdm001.e.viewmodel {
         }
         
         public create(): void {
-            let self = this,
-                command = new PayoutSubofHDManagementCommand(employee.employeeId, payoutItem.payoutId, self.items());
+            let self = this;
+            self.currentList.removeAll();
+            _.forEach(self.currentCodeList(),function(item){
+                let code = _.find(self.items(), function(currentItem: ItemModel) {
+                            return currentItem.subOfHDID === item;
+                 });
+                if (code) {
+                    
+                    self.currentList.push(code);
+                }
+            })
+            let command = new PayoutSubofHDManagementCommand(/*self.info.selectedEmployee.employeeId, self.info.payout.payoutId,*/'ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570', /*payoutItem.payoutId*/'de1b6c4f-833c-4bca-b257-4e44269ed230',self.residualDay(), self.currentList());
+                
+                if (self.currentCodeList().length == 0){
+                    $('#multi-list').ntsError('set', { messageId: "Msg_738" });
+                    return;
+                } else if (self.currentCodeList().length >= 3){
+                    $('#multi-list').ntsError('set', { messageId: "Msg_739" });
+                    return;
+                } else if (self.currentCodeList().length == 1 && self.currentList()[0].remainDays !== 1){
+                    $('#multi-list').ntsError('set', { messageId: "Msg_731" });
+                    return;
+                } else if (self.currentCodeList().length == 2){
+                    if (self.currentList()[0].remainDays === 1){
+                        $('#multi-list').ntsError('set', { messageId: "Msg_739" });
+                        return;
+                    }
+                    if (self.currentList()[0].remainDays === 0.5 && self.currentList()[0].remainDays !== 0.5){
+                        $('#multi-list').ntsError('set', { messageId: "Msg_731" });
+                        return;
+                    }
+                }
                 service.insertSubOfHDMan(command).done(()=>{
                 
-                }).fail(()=>{
-                    
+                }).fail((res)=>{
+                    $('#multi-list').ntsError('set', { messageId: res.messageId });
                 })
         }
         
@@ -105,11 +131,13 @@ module nts.uk.at.view.kdm001.e.viewmodel {
     class PayoutSubofHDManagementCommand {
         sid: string;
         payoutID: string;
+        remainNumber: number;
         subofHD: Array<ItemModel>;
-        constructor(sid: string, payoutID: string, subofHD: Array<ItemModel>) {
+        constructor(sid: string, payoutID: string, remainNumber: number, subofHD: Array<ItemModel>) {
             this.subofHD = subofHD;
             this.sid = sid;
             this.payoutID = payoutID;
+            this.remainNumber = remainNumber;
         }
     }
 }

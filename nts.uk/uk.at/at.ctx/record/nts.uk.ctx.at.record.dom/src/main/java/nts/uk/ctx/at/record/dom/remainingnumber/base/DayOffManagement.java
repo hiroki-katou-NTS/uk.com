@@ -1,18 +1,20 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.base;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class DayOffManagement {
 
-	private String code;
-	private String date;
-	private Double useNumberDay;
+	private String subOfHDID;
+	private String dayoffDate;
+	private Double remainDays;
 
-	public DayOffManagement(String code, String date, Double useNumberDay) {
+	public DayOffManagement(String subOfHDID, String dayoffDate, Double remainDays) {
 		super();
-		this.code = code;
-		this.date = date;
-		this.useNumberDay = useNumberDay;
+		this.subOfHDID = subOfHDID;
+		this.dayoffDate = dayoffDate;
+		this.remainDays = remainDays;
 	}
 }

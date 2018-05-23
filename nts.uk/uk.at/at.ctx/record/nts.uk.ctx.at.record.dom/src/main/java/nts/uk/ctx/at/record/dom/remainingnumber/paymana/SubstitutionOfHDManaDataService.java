@@ -42,7 +42,7 @@ public class SubstitutionOfHDManaDataService {
 	/**
 	 * KDM001 screen E
 	 */
-	public void insertSubOfHDMan(String sid, String payoutId, List<DayOffManagement> subOfHDId) {
+	public void insertSubOfHDMan(String sid, String payoutId, Double remainNumber, List<DayOffManagement> subOfHDId) {
 		String companyId = AppContexts.user().companyId();
 		// ドメインモデル「inported雇用」を読み込む
 		Optional<SEmpHistoryImport> syEmpHist = syEmploymentAdapter.findSEmpHistBySid(companyId, sid,
@@ -65,23 +65,23 @@ public class SubstitutionOfHDManaDataService {
 		allowPrepaidLeave = empSubstVacation.get().getSetting().getAllowPrepaidLeave();
 		
 		// １件もない エラーメッセージ(Msg_738) 	エラーリストにセットする
-		if (subOfHDId.isEmpty()){
-			throw new BusinessException("Msg_738");
-		}
+//		if (subOfHDId.isEmpty()){
+//			throw new BusinessException("Msg_738");
+//		}
 		
 		// ３件以上あり エラーメッセージ(Msg_739)	エラーリストにセットする
-		if (subOfHDId.size() >= 3){
-			throw new BusinessException("Msg_739");
-		}
+//		if (subOfHDId.size() >= 3){
+//			throw new BusinessException("Msg_739");
+//		}
 		
 		if (subOfHDId.size() == 1){
-			if (subOfHDId.get(0).getUseNumberDay() != ItemDays.ONE_DAY.value){
+			if (subOfHDId.get(0).getRemainDays().compareTo(ItemDays.ONE_DAY.value) != 0){
 				// エラーメッセージ(Msg_731) エラーリストにセットする
 				throw new BusinessException("Msg_731");
 			}
 		}
 		if (subOfHDId.size() == 2){
-			if (subOfHDId.get(0).getUseNumberDay() == ItemDays.ONE_DAY.value){
+			if (subOfHDId.get(0).getRemainDays().compareTo(ItemDays.ONE_DAY.value) == 0){
 				
 				if (allowPrepaidLeave == ApplyPermission.NOT_ALLOW){
 					// エラーメッセージ(Msg_739)	エラーリストにセットする
@@ -89,8 +89,8 @@ public class SubstitutionOfHDManaDataService {
 				}
 				
 			}
-			if (subOfHDId.get(0).getUseNumberDay() == ItemDays.HALF_DAY.value 
-					&& subOfHDId.get(1).getUseNumberDay() != ItemDays.HALF_DAY.value){
+			if (subOfHDId.get(0).getRemainDays().compareTo(ItemDays.HALF_DAY.value) == 0 
+					&& subOfHDId.get(1).getRemainDays().compareTo(ItemDays.HALF_DAY.value) != 0){
 				// エラーメッセージ(Msg_731) エラーリストにセットする
 				throw new BusinessException("Msg_731");
 			}
@@ -101,10 +101,21 @@ public class SubstitutionOfHDManaDataService {
 		}
 		
 		subOfHDId.forEach(i->{ 
-			payoutSubofHDManaRepository.add(new PayoutSubofHDManagement(payoutId, i.getCode(),
-					new BigDecimal(i.getUseNumberDay()), TargetSelectionAtr.MANUAL.value));
+			payoutSubofHDManaRepository.add(new PayoutSubofHDManagement(payoutId, i.getSubOfHDID(),
+					new BigDecimal(i.getRemainDays()), TargetSelectionAtr.MANUAL.value));
+			// Update remain days 振休管理データ
+			Optional<SubstitutionOfHDManagementData> subMana =  substitutionOfHDManaDataRepository.findByID(i.getSubOfHDID());
+			if (subMana.isPresent()){
+				subMana.get().setRemainsDayToZero();
+				substitutionOfHDManaDataRepository.update(subMana.get());
+			}
 		});
-		
+		// Update 振出管理データ  残数
+		Optional<PayoutManagementData> payoutData =  payoutManagementDataRepository.findByID(payoutId);
+		if (payoutData.isPresent()){
+			payoutData.get().setRemainNumber(remainNumber);
+			payoutManagementDataRepository.update(payoutData.get());
+		}
 		
 	}
 

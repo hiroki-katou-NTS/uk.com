@@ -11,7 +11,7 @@ module nts.uk.at.view.kdm001.e {
         }
         
         export function insertSubOfHDMan(command: any): JQueryPromise<any> {
-            return nts.uk.request.ajax(format(paths.insertSubOfHDMan, command));
+            return nts.uk.request.ajax(paths.insertSubOfHDMan, command);
         }
 
     }
