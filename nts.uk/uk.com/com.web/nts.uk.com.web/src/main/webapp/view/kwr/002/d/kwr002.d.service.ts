@@ -8,7 +8,8 @@ module nts.uk.com.view.kwr002.d {
             updateSingleAttendanceRecord: "at/function/attendancerecord/item/updateSingleAttndRec",
             deleteSingleAttendanceRecord: "at/function/attendancerecord/item/deleteSingleAttndRec",
             getAttendanceRecordItemsByScreenUseAtr: "at/function/attendancerecord/item/getAttndRecItem/",
-            testAnotherPath: "at/function/attendancerecord/item/updateSingleAttndRec"
+            testAnotherPath: "at/function/attendancerecord/item/updateSingleAttndRec",
+            getAllAttendanceDaily: "at/function/attendancerecord/item/getAllAttndDaily"
         };
 
         /**
@@ -36,6 +37,9 @@ module nts.uk.com.view.kwr002.d {
          */
         export function getAttendanceRecordItemsByScreenUseAtr(screenUseAtr: number): JQueryPromise<Array<viewmodel.model.AttendanceRecordItem>> {
             return nts.uk.request.ajax("at", path.getAttendanceRecordItemsByScreenUseAtr + screenUseAtr);
+        }
+        export function getAllAttendanceDaily(): JQueryPromise<Array<viewmodel.model.AttendanceRecordItem>> {
+            return nts.uk.request.ajax("at", path.getAllAttendanceDaily);
         }
         export function testAnotherPath(attendanceRecordKey: viewmodel.model.SingleAttendanceRecordSaveCommand) {
             return nts.uk.request.ajax("at", path.testAnotherPath, attendanceRecordKey);

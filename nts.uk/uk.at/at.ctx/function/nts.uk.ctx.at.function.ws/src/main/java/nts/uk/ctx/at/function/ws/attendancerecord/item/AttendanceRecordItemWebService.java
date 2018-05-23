@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.ws.attendancerecord.item;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -147,6 +148,21 @@ public class AttendanceRecordItemWebService {
 	@Path("getAttndRecItem/{screenUseAtr}")
 	public List<AttendanceRecordItemDto> getAttendanceRecordItemsByScreenUseAtr(@PathParam("screenUseAtr") int screenUseAtr){
 		return this.attendanceItemFinder.getAttendanceItemsByScreenUseAtr(screenUseAtr);
+	}
+	
+	/**
+	 * Gets the all attendance record daily.
+	 *
+	 * @return the all attendance record daily
+	 */
+	@POST
+	@Path("getAllAttndDaily")
+	public List<AttendanceRecordItemDto> getAllAttendanceRecordDaily(){
+		List<Integer> screenUse = new ArrayList<Integer>();
+		screenUse.add(13);
+		screenUse.add(14);
+		screenUse.add(15);
+		return attendanceItemFinder.getAllAttendanceDaily(screenUse);
 	}
 
 

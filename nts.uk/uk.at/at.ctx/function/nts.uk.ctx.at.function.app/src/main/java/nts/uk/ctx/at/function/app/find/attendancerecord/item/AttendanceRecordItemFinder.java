@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
+import nts.uk.ctx.at.function.dom.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.repository.DailyAttendanceItemNameDomainService;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -48,10 +49,42 @@ public class AttendanceRecordItemFinder {
 		return listAttendanceRecordItem;
 	}
 	
+	/**
+	 * Find attendance items by id.
+	 *
+	 * @param listAttendanceId the list attendance id
+	 * @return the list
+	 */
 	public List<AttendanceRecordItemDto> findAttendanceItemsById(List<Integer> listAttendanceId){
 		List<AttendanceRecordItemDto> result = new ArrayList<>();
 		result = atName.getNameOfDailyAttendanceItem(listAttendanceId).stream().map(
 				e -> new AttendanceRecordItemDto(e.getAttendanceItemId(),e.getAttendanceItemName(),0,e.getTypeOfAttendanceItem())).collect(Collectors.toList());
 		return result;
 	}
+	
+	public List<AttendanceRecordItemDto> getAllAttendanceDaily(List<Integer> listScreenUseAtr){
+		
+		String companyId = AppContexts.user().companyId();
+		List<AttendanceRecordItemDto> attendanceItemList = new ArrayList<AttendanceRecordItemDto>();
+
+		//get attendanceId
+		listScreenUseAtr.forEach(item -> {
+			attendanceItemList.addAll(attendanceTypeRepository.getItemByScreenUseAtr(companyId, item).stream()
+					.map(e -> new AttendanceRecordItemDto(e.getAttendanceItemId(), null, item,e.getAttendanceItemType().value)).collect(Collectors.toList()));
+		});
+
+		//get attendanceName
+		List<DailyAttendanceItem> dailyAttendanceItems = atName.getNameOfDailyAttendanceItem(
+				attendanceItemList.stream().map(e -> e.getAttendanceItemId()).collect(Collectors.toList()));
+
+		//map attendanceId,attendanceName,ScreenUseItem
+		attendanceItemList.forEach(attendanceItem -> {
+			for (DailyAttendanceItem attendanceName : dailyAttendanceItems) {
+				if (attendanceItem.getAttendanceItemId() == attendanceName.getAttendanceItemId())
+					attendanceItem.setAttendanceItemName(attendanceName.getAttendanceItemName());
+			}
+		});
+		return attendanceItemList;
+	}
+	
 }
