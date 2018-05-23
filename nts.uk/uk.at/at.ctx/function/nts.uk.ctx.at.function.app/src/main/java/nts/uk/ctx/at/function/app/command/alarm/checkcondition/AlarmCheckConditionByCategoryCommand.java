@@ -5,6 +5,9 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.DeleteAgreeCondOtCommand;
+import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.DeleteAgreeConditionErrorCommand;
+import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.UpdateAgree36Command;
 
 /**
  * 
@@ -33,10 +36,20 @@ public class AlarmCheckConditionByCategoryCommand {
 	
 	private int action;
 
+	private MonAlarmCheckConCommand monAlarmCheckCon;
+	
+	private UpdateAgree36Command condAgree36; 
+	
+	List<DeleteAgreeConditionErrorCommand> deleteCondError;
+	
+	List<DeleteAgreeCondOtCommand> deleteCondOt;
+	
 	public AlarmCheckConditionByCategoryCommand(String code, String name, int category,
 			AlarmCheckTargetConditionCommand targetCondition, List<String> availableRoles,
 			DailyAlarmCheckConditionCommand dailyAlarmCheckCondition,
-			Schedule4WeekAlarmCheckConditionCommand schedule4WeekAlarmCheckCondition, int action) {
+			Schedule4WeekAlarmCheckConditionCommand schedule4WeekAlarmCheckCondition, int action,
+			MonAlarmCheckConCommand monAlarmCheckCon,
+			UpdateAgree36Command agree36) {
 		super();
 		this.code = code;
 		this.name = name;
@@ -46,6 +59,8 @@ public class AlarmCheckConditionByCategoryCommand {
 		this.dailyAlarmCheckCondition = dailyAlarmCheckCondition;
 		this.schedule4WeekAlarmCheckCondition = schedule4WeekAlarmCheckCondition;
 		this.action = action;
+		this.monAlarmCheckCon = monAlarmCheckCon;
+		this.condAgree36 = agree36;
 	}
 
 }
