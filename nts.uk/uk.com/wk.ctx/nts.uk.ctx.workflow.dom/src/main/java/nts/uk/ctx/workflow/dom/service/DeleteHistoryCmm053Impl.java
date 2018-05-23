@@ -48,7 +48,7 @@ public class DeleteHistoryCmm053Impl implements DeleteHistoryCmm053Service {
 					String phaseId = approvalPhase.get().getApprovalPhaseId();
 					// 「個人別就業承認ルート」に紐付く「分岐」「承認ルート」を削除する
 					this.repoApprover.deleteAllApproverByAppPhId(companyId, phaseId);
-					this.repoAppPhase.deleteApprovalFirstPhase(companyId, branchId);
+					this.repoAppPhase.deleteAllAppPhaseByBranchId(companyId, branchId);
 					this.repoBranch.deleteBranch(companyId, branchId);
 				}
 				// 「個人別就業承認ルート」を削除する
