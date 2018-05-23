@@ -1645,10 +1645,18 @@ module nts.layout {
                     fetch.perm((__viewContext || {}).user.role.personalInfo, categoryId).done(perm => {
                         if (perm) {
                             let remove = _.find(ctrls, c => c.data.recordId && c.data.recordId.indexOf("NID_") > -1);
-
+                            
                             if (is_self) {
                                 if (!perm.selfAllowAddMulti && remove) {
-                                    finder.remove(remove.data);
+                                    if (!ctrls[0].data.recordId) {
+                                        _.each(ctrls, c => {
+                                            if (ko.isObservable(c.data.editable)) {
+                                                c.data.editable(false);
+                                            }
+                                        });
+                                    } else {
+                                        finder.remove(remove.data);
+                                    }
                                 }
 
                                 _.each(ctrls, c => {
@@ -1658,7 +1666,15 @@ module nts.layout {
                                 });
                             } else {
                                 if (!perm.otherAllowAddMulti && remove) {
-                                    finder.remove(remove.data);
+                                    if (!ctrls[0].data.recordId) {
+                                        _.each(ctrls, c => {
+                                            if (ko.isObservable(c.data.editable)) {
+                                                c.data.editable(false);
+                                            }
+                                        });
+                                    } else {
+                                        finder.remove(remove.data);
+                                    }
                                 }
 
                                 _.each(ctrls, c => {
@@ -1739,6 +1755,7 @@ module nts.layout {
         itemParentCode?: string;
         itemName?: string;
         categoryId?: string;
+        recordId?: string;
     }
 
     interface IComboboxItem {
