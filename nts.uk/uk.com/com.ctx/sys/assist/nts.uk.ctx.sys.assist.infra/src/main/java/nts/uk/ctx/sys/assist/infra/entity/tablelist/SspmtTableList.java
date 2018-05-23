@@ -12,7 +12,10 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.HistoryDiviSion;
+import nts.uk.ctx.sys.assist.dom.tablelist.ReferenceMonth;
+import nts.uk.ctx.sys.assist.dom.tablelist.ReferenceYear;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -65,43 +68,43 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 * テーブル物理名
 	 */
 	@Basic(optional = false)
-	@Column(name = "TABLE_PHYSICAL_NAME")
-	public String tablePhysicalName;
+	@Column(name = "PARENT_TBL_NAME")
+	public String tableEnglishName;
 
 	/**
 	 * 付加取得項目_会社ID
 	 */
 	@Basic(optional = false)
-	@Column(name = "ACQUISITION_ITEM_COMPANYID")
-	public String acquisitionItemCompanyId;
+	@Column(name = "FIELD_ACQC_ID")
+	public String fieldAcqCid;
 
 	/**
 	 * 付加取得項目_日付
 	 */
 	@Basic(optional = false)
-	@Column(name = "ACQUISITION_ITEM_DATE")
-	public String acquisitionItemDate;
+	@Column(name = "FIELD_ACQ_DATE_TIME")
+	public String fieldAcqDateTime;
 
 	/**
 	 * 付加取得項目_社員ID
 	 */
 	@Basic(optional = false)
-	@Column(name = "ACQUISITION_ITEM_EMPLOYEE_ID")
-	public String acquisitionItemEmployeeId;
+	@Column(name = "FIELD_ACQ_EMPLOYEE_ID")
+	public String fieldAcqEmployeeId;
 
 	/**
 	 * 付加取得項目_終了日付
 	 */
 	@Basic(optional = false)
-	@Column(name = "ACQUISITION_ITEM_END_DATE")
-	public String acquisitionItemEndDate;
+	@Column(name = "FIELD_ACQ_END_DATE")
+	public String fieldAcqEndDate;
 
 	/**
 	 * 付加取得項目_開始日付
 	 */
 	@Basic(optional = false)
-	@Column(name = "ACQUISITION_ITEM_START_DATE")
-	public String acquisitionItemStartDate;
+	@Column(name = "FIELD_ACQ_START_DATE")
+	public String fieldAcqStartDate;
 
 	/**
 	 * 保存セットコード
@@ -178,14 +181,14 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = false)
 	@Column(name = "REFERENCE_YEAR")
-	public String referenceYear;
+	public int referenceYear;
 
 	/**
 	 * 参照月
 	 */
 	@Basic(optional = false)
 	@Column(name = "REFERENCE_MONTH")
-	public String referenceMonth;
+	public int referenceMonth;
 
 	/**
 	 * 圧縮ファイル名
@@ -198,70 +201,70 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 * 子側結合キー1
 	 */
 	@Basic(optional = false)
-	@Column(name = "CHILD_SIDE_KEY_1")
-	public String childSideKey1;
+	@Column(name = "FIELD_CHILD_1")
+	public String fieldChild1;
 
 	/**
 	 * 子側結合キー2
 	 */
 	@Basic(optional = false)
-	@Column(name = "CHILD_SIDE_KEY_2")
-	public String childSideKey2;
+	@Column(name = "FIELD_CHILD_2")
+	public String fieldChild2;
 
 	/**
 	 * 子側結合キー3
 	 */
 	@Basic(optional = false)
-	@Column(name = "CHILD_SIDE_KEY_3")
-	public String childSideKey3;
+	@Column(name = "FIELD_CHILD_3")
+	public String fieldChild3;
 
 	/**
 	 * 子側結合キー4
 	 */
 	@Basic(optional = false)
-	@Column(name = "CHILD_SIDE_KEY_4")
-	public String childSideKey4;
+	@Column(name = "FIELD_CHILD_4")
+	public String fieldChild4;
 
 	/**
 	 * 子側結合キー5
 	 */
 	@Basic(optional = false)
-	@Column(name = "CHILD_SIDE_KEY_5")
-	public String childSideKey5;
+	@Column(name = "FIELD_CHILD_5")
+	public String fieldChild5;
 
 	/**
 	 * 子側結合キー6
 	 */
 	@Basic(optional = false)
-	@Column(name = "CHILD_SIDE_KEY_6")
-	public String childSideKey6;
+	@Column(name = "FIELD_CHILD_6")
+	public String fieldChild6;
 
 	/**
 	 * 子側結合キー7
 	 */
 	@Basic(optional = false)
-	@Column(name = "CHILD_SIDE_KEY_7")
-	public String childSideKey7;
+	@Column(name = "FIELD_CHILD_7")
+	public String fieldChild7;
 	/**
 	 * 子側結合キー8
 	 */
 	@Basic(optional = false)
-	@Column(name = "CHILD_SIDE_KEY_8")
-	public String childSideKey8;
+	@Column(name = "FIELD_CHILD_8")
+	public String fieldChild8;
 
 	/**
 	 * 子側結合キー9
 	 */
 	@Basic(optional = false)
-	@Column(name = "CHILD_SIDE_KEY_9")
-	public String childSideKey9;
+	@Column(name = "FIELD_CHILD_9")
+	public String fieldChild9;
 
 	/**
 	 * 子側結合キー10
 	 */
 	@Basic(optional = false)
-	@Column(name = "CHILD_SIDE_KEY_10")
-	public String childSideKey10;
+	@Column(name = "FIELD_CHILD_10")
+	public String fieldChild10;
 
 	/**
 	 * 履歴区分
@@ -288,141 +291,141 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 * 抽出キー区分1
 	 */
 	@Basic(optional = false)
-	@Column(name = "EXTRACTKEY_CLS_1")
-	public String extractKeyCls1;
+	@Column(name = "CLS_KEY_QUERY_1")
+	public String clsKeyQuery1;
 
 	/**
 	 * 抽出キー区分2
 	 */
 	@Basic(optional = false)
-	@Column(name = "EXTRACTKEY_CLS_2")
-	public String extractKeyCls2;
+	@Column(name = "CLS_KEY_QUERY_2")
+	public String clsKeyQuery2;
 
 	/**
 	 * 抽出キー区分3
 	 */
 	@Basic(optional = false)
-	@Column(name = "EXTRACTKEY_CLS_3")
-	public String extractKeyCls3;
+	@Column(name = "CLS_KEY_QUERY_3")
+	public String clsKeyQuery3;
 
 	/**
 	 * 抽出キー区分4
 	 */
 	@Basic(optional = false)
-	@Column(name = "EXTRACTKEY_CLS_4")
-	public String extractKeyCls4;
+	@Column(name = "CLS_KEY_QUERY_4")
+	public String clsKeyQuery4;
 
 	/**
 	 * 抽出キー区分5
 	 */
 	@Basic(optional = false)
-	@Column(name = "EXTRACTKEY_CLS_5")
-	public String extractKeyCls5;
+	@Column(name = "CLS_KEY_QUERY_5")
+	public String clsKeyQuery5;
 
 	/**
 	 * 抽出キー区分6
 	 */
 	@Basic(optional = false)
-	@Column(name = "EXTRACTKEY_CLS_6")
-	public String extractKeyCls6;
+	@Column(name = "CLS_KEY_QUERY_6")
+	public String clsKeyQuery6;
 
 	/**
 	 * 抽出キー区分7
 	 */
 	@Basic(optional = false)
-	@Column(name = "EXTRACTKEY_CLS_7")
-	public String extractKeyCls7;
+	@Column(name = "CLS_KEY_QUERY_7")
+	public String clsKeyQuery7;
 
 	/**
 	 * 抽出キー区分8
 	 */
 	@Basic(optional = false)
-	@Column(name = "EXTRACTKEY_CLS_8")
-	public String extractKeyCls8;
+	@Column(name = "CLS_KEY_QUERY_8")
+	public String clsKeyQuery8;
 
 	/**
 	 * 抽出キー区分9
 	 */
 	@Basic(optional = false)
-	@Column(name = "EXTRACTKEY_CLS_9")
-	public String extractKeyCls9;
+	@Column(name = "CLS_KEY_QUERY_9")
+	public String clsKeyQuery9;
 
 	/**
 	 * 抽出キー区分10
 	 */
 	@Basic(optional = false)
-	@Column(name = "EXTRACTKEY_CLS_10")
-	public String extractKeyCls10;
+	@Column(name = "CLS_KEY_QUERY_10")
+	public String clsKeyQuery10;
 
 	/**
 	 * 抽出キー項目1
 	 */
 	@Basic(optional = false)
-	@Column(name = "EXTRACTKEY_ITEM_1")
-	public String extractKeyItem1;
+	@Column(name = "FIELD_KEY_QUERY_1")
+	public String fieldKeyQuery1;
 
 	/**
 	 * 抽出キー項目2
 	 */
 	@Basic(optional = false)
-	@Column(name = "EXTRACTKEY_ITEM_2")
-	public String extractKeyItem2;
+	@Column(name = "FIELD_KEY_QUERY_2")
+	public String fieldKeyQuery2;
 
 	/**
 	 * 抽出キー項目3
 	 */
 	@Basic(optional = false)
-	@Column(name = "EXTRACTKEY_ITEM_3")
-	public String extractKeyItem3;
+	@Column(name = "FIELD_KEY_QUERY_3")
+	public String fieldKeyQuery3;
 
 	/**
 	 * 抽出キー項目4
 	 */
 	@Basic(optional = false)
-	@Column(name = "EXTRACTKEY_ITEM_4")
-	public String extractKeyItem4;
+	@Column(name = "FIELD_KEY_QUERY_4")
+	public String fieldKeyQuery4;
 
 	/**
 	 * 抽出キー項目
 	 */
 	@Basic(optional = false)
-	@Column(name = "EXTRACTKEY_ITEM_5")
-	public String extractKeyItem5;
+	@Column(name = "FIELD_KEY_QUERY_5")
+	public String fieldKeyQuery5;
 
 	/**
 	 * 抽出キー項目6
 	 */
 	@Basic(optional = false)
-	@Column(name = "EXTRACTKEY_ITEM_6")
-	public String extractKeyItem6;
+	@Column(name = "FIELD_KEY_QUERY_6")
+	public String fieldKeyQuery6;
 
 	/**
 	 * 抽出キー項目7
 	 */
 	@Basic(optional = false)
-	@Column(name = "EXTRACTKEY_ITEM_7")
-	public String extractKeyItem7;
+	@Column(name = "FIELD_KEY_QUERY_7")
+	public String fieldKeyQuery7;
 
 	/**
 	 * 抽出キー項目8
 	 */
 	@Basic(optional = false)
-	@Column(name = "EXTRACTKEY_ITEM_8")
-	public String extractKeyItem8;
+	@Column(name = "FIELD_KEY_QUERY_8")
+	public String fieldKeyQuery8;
 
 	/**
 	 * 抽出キー項目9
 	 */
 	@Basic(optional = false)
-	@Column(name = "EXTRACTKEY_ITEM_9")
-	public String extractKeyItem9;
+	@Column(name = "FIELD_KEY_QUERY_9")
+	public String fieldKeyQuery9;
 
 	/**
 	 * 抽出キー項目10
 	 */
 	@Basic(optional = false)
-	@Column(name = "EXTRACTKEY_ITEM_10")
-	public String extractKeyItem10;
+	@Column(name = "FIELD_KEY_QUERY_10")
+	public String fieldKeyQuery10;
 
 	/**
 	 * 抽出条件キー固定
@@ -435,281 +438,281 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 * 日付項目1
 	 */
 	@Basic(optional = false)
-	@Column(name = "DATE_ITEM_1")
-	public String dateItem1;
+	@Column(name = "FIELD_DATE_1")
+	public String fieldDate1;
 
 	/**
 	 * 日付項目2
 	 */
 	@Basic(optional = false)
-	@Column(name = "DATE_ITEM_2")
-	public String dateItem2;
+	@Column(name = "FIELD_DATE_2")
+	public String fieldDate2;
 
 	/**
 	 * 日付項目3
 	 */
 	@Basic(optional = false)
-	@Column(name = "DATE_ITEM_3")
-	public String dateItem3;
+	@Column(name = "FIELD_DATE_3")
+	public String fieldDate3;
 
 	/**
 	 * 日付項目4
 	 */
 	@Basic(optional = false)
-	@Column(name = "DATE_ITEM_4")
-	public String dateItem4;
+	@Column(name = "FIELD_DATE_4")
+	public String fieldDate4;
 
 	/**
 	 * 日付項目5
 	 */
 	@Basic(optional = false)
-	@Column(name = "DATE_ITEM_5")
-	public String dateItem5;
+	@Column(name = "FIELD_DATE_5")
+	public String fieldDate5;
 
 	/**
 	 * 日付項目6
 	 */
 	@Basic(optional = false)
-	@Column(name = "DATE_ITEM_6")
-	public String dateItem6;
+	@Column(name = "FIELD_DATE_6")
+	public String fieldDate6;
 
 	/**
 	 * 日付項目7
 	 */
 	@Basic(optional = false)
-	@Column(name = "DATE_ITEM_7")
-	public String dateItem7;
+	@Column(name = "FIELD_DATE_7")
+	public String fieldDate7;
 
 	/**
 	 * 日付項目8
 	 */
 	@Basic(optional = false)
-	@Column(name = "DATE_ITEM_8")
-	public String dateItem8;
+	@Column(name = "FIELD_DATE_8")
+	public String fieldDate8;
 
 	/**
 	 * 日付項目9
 	 */
 	@Basic(optional = false)
-	@Column(name = "DATE_ITEM_9")
-	public String dateItem9;
+	@Column(name = "FIELD_DATE_9")
+	public String fieldDate9;
 
 	/**
 	 * 日付項目10
 	 */
 	@Basic(optional = false)
-	@Column(name = "DATE_ITEM_10")
-	public String dateItem10;
+	@Column(name = "FIELD_DATE_10")
+	public String fieldDate10;
 
 	/**
 	 * 日付項目11
 	 */
 	@Basic(optional = false)
-	@Column(name = "DATE_ITEM_11")
-	public String dateItem11;
+	@Column(name = "FIELD_DATE_11")
+	public String fieldDate11;
 
 	/**
 	 * 日付項目12
 	 */
 	@Basic(optional = false)
-	@Column(name = "DATE_ITEM_12")
-	public String dateItem12;
+	@Column(name = "FIELD_DATE_12")
+	public String fieldDate12;
 
 	/**
 	 * 日付項目13
 	 */
 	@Basic(optional = false)
-	@Column(name = "DATE_ITEM_13")
-	public String dateItem13;
+	@Column(name = "FIELD_DATE_13")
+	public String fieldDate13;
 
 	/**
 	 * 日付項目14
 	 */
 	@Basic(optional = false)
-	@Column(name = "DATE_ITEM_14")
-	public String dateItem14;
+	@Column(name = "FIELD_DATE_14")
+	public String fieldDate14;
 
 	/**
 	 * 日付項目15
 	 */
 	@Basic(optional = false)
-	@Column(name = "DATE_ITEM_15")
-	public String dateItem15;
+	@Column(name = "FIELD_DATE_15")
+	public String fieldDate15;
 
 	/**
 	 * 日付項目16
 	 */
 	@Basic(optional = false)
-	@Column(name = "DATE_ITEM_16")
-	public String dateItem16;
+	@Column(name = "FIELD_DATE_16")
+	public String fieldDate16;
 
 	/**
 	 * 日付項目17
 	 */
 	@Basic(optional = false)
-	@Column(name = "DATE_ITEM_17")
-	public String dateItem17;
+	@Column(name = "FIELD_DATE_17")
+	public String fieldDate17;
 
 	/**
 	 * 日付項目18
 	 */
 	@Basic(optional = false)
-	@Column(name = "DATE_ITEM_18")
-	public String dateItem18;
+	@Column(name = "FIELD_DATE_18")
+	public String fieldDate18;
 
 	/**
 	 * 日付項目19
 	 */
 	@Basic(optional = false)
-	@Column(name = "DATE_ITEM_19")
-	public String dateItem19;
+	@Column(name = "FIELD_DATE_19")
+	public String fieldDate19;
 
 	/**
 	 * 日付項目20
 	 */
 	@Basic(optional = false)
-	@Column(name = "DATE_ITEM_20")
-	public String dateItem20;
+	@Column(name = "FIELD_DATE_20")
+	public String fieldDate20;
 
 	/**
 	 * 更新キー項目1
 	 */
 	@Basic(optional = false)
-	@Column(name = "UPDATE_KEY_ITEM_1")
-	public String updateKeyItem1;
+	@Column(name = "FILED_KEY_UPDATE_1")
+	public String filedKeyUpdate1;
 
 	/**
 	 * 更新キー項目2
 	 */
 	@Basic(optional = false)
-	@Column(name = "UPDATE_KEY_ITEM_2")
-	public String updateKeyItem2;
+	@Column(name = "FILED_KEY_UPDATE_2")
+	public String filedKeyUpdate2;
 
 	/**
 	 * 更新キー項目3
 	 */
 	@Basic(optional = false)
-	@Column(name = "UPDATE_KEY_ITEM_3")
-	public String updateKeyItem3;
+	@Column(name = "FILED_KEY_UPDATE_3")
+	public String filedKeyUpdate3;
 
 	/**
 	 * 更新キー項目4
 	 */
 	@Basic(optional = false)
-	@Column(name = "UPDATE_KEY_ITEM_4")
-	public String updateKeyItem4;
+	@Column(name = "FILED_KEY_UPDATE_4")
+	public String filedKeyUpdate4;
 
 	/**
 	 * 更新キー項目5
 	 */
 	@Basic(optional = false)
-	@Column(name = "UPDATE_KEY_ITEM_5")
-	public String updateKeyItem5;
+	@Column(name = "FILED_KEY_UPDATE_5")
+	public String filedKeyUpdate5;
 
 	/**
 	 * 更新キー項目6
 	 */
 	@Basic(optional = false)
-	@Column(name = "UPDATE_KEY_ITEM_6")
-	public String updateKeyItem6;
+	@Column(name = "FILED_KEY_UPDATE_6")
+	public String filedKeyUpdate6;
 
 	/**
 	 * 更新キー項目7
 	 */
 	@Basic(optional = false)
-	@Column(name = "UPDATE_KEY_ITEM_7")
-	public String updateKeyItem7;
+	@Column(name = "FILED_KEY_UPDATE_7")
+	public String filedKeyUpdate7;
 
 	/**
 	 * 更新キー項目8
 	 */
 	@Basic(optional = false)
-	@Column(name = "UPDATE_KEY_ITEM_8")
-	public String updateKeyItem8;
+	@Column(name = "FILED_KEY_UPDATE_8")
+	public String filedKeyUpdate8;
 
 	/**
 	 * 更新キー項目9
 	 */
 	@Basic(optional = false)
-	@Column(name = "UPDATE_KEY_ITEM_9")
-	public String updateKeyItem9;
+	@Column(name = "FILED_KEY_UPDATE_9")
+	public String filedKeyUpdate9;
 
 	/**
 	 * 更新キー項目10
 	 */
 	@Basic(optional = false)
-	@Column(name = "UPDATE_KEY_ITEM_10")
-	public String updateKeyItem10;
+	@Column(name = "FILED_KEY_UPDATE_10")
+	public String filedKeyUpdate10;
 
 	/**
 	 * 更新キー項目11
 	 */
 	@Basic(optional = false)
-	@Column(name = "UPDATE_KEY_ITEM_11")
-	public String updateKeyItem11;
+	@Column(name = "FILED_KEY_UPDATE_11")
+	public String filedKeyUpdate11;
 
 	/**
 	 * 更新キー項目12
 	 */
 	@Basic(optional = false)
-	@Column(name = "UPDATE_KEY_ITEM_12")
-	public String updateKeyItem12;
+	@Column(name = "FILED_KEY_UPDATE_12")
+	public String filedKeyUpdate12;
 
 	/**
 	 * 更新キー項目13
 	 */
 	@Basic(optional = false)
-	@Column(name = "UPDATE_KEY_ITEM_13")
-	public String updateKeyItem13;
+	@Column(name = "FILED_KEY_UPDATE_13")
+	public String filedKeyUpdate13;
 
 	/**
 	 * 更新キー項目14
 	 */
 	@Basic(optional = false)
-	@Column(name = "UPDATE_KEY_ITEM_14")
-	public String updateKeyItem14;
+	@Column(name = "FILED_KEY_UPDATE_14")
+	public String filedKeyUpdate14;
 
 	/**
 	 * 更新キー項目15
 	 */
 	@Basic(optional = false)
-	@Column(name = "UPDATE_KEY_ITEM_15")
-	public String updateKeyItem15;
+	@Column(name = "FILED_KEY_UPDATE_15")
+	public String filedKeyUpdate15;
 
 	/**
 	 * 更新キー項目16
 	 */
 	@Basic(optional = false)
-	@Column(name = "UPDATE_KEY_ITEM_16")
-	public String updateKeyItem16;
+	@Column(name = "FILED_KEY_UPDATE_16")
+	public String filedKeyUpdate16;
 
 	/**
 	 * 更新キー項目17
 	 */
 	@Basic(optional = false)
-	@Column(name = "UPDATE_KEY_ITEM_17")
-	public String updateKeyItem17;
+	@Column(name = "FILED_KEY_UPDATE_17")
+	public String filedKeyUpdate17;
 
 	/**
 	 * 更新キー項目18
 	 */
 	@Basic(optional = false)
-	@Column(name = "UPDATE_KEY_ITEM_18")
-	public String updateKeyItem18;
+	@Column(name = "FILED_KEY_UPDATE_18")
+	public String filedKeyUpdate18;
 
 	/**
 	 * 更新キー項目19
 	 */
 	@Basic(optional = false)
-	@Column(name = "UPDATE_KEY_ITEM_19")
-	public String updateKeyItem19;
+	@Column(name = "FILED_KEY_UPDATE_19")
+	public String filedKeyUpdate19;
 
 	/**
 	 * 更新キー項目20
 	 */
 	@Basic(optional = false)
-	@Column(name = "UPDATE_KEY_ITEM_20")
-	public String updateKeyItem20;
+	@Column(name = "FILED_KEY_UPDATE_20")
+	public String filedKeyUpdate20;
 
 	/**
 	 * 画面保存期間
@@ -729,8 +732,8 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 * 親テーブル日本語名
 	 */
 	@Basic(optional = false)
-	@Column(name = "PARENT_TABLE_JAPANE_NAME")
-	public String parentTableJapaneName;
+	@Column(name = "PARENT_TBL_JP_NAME")
+	public String parenttbljpname;
 
 	/**
 	 * 親テーブル有無
@@ -743,85 +746,85 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 * 親テーブル物理名
 	 */
 	@Basic(optional = false)
-	@Column(name = "PARENT_TABLE_PHYSICAL_NAME")
-	public String parentTablePhysicalName;
+	@Column(name = "PARENT_TBL_NAME")
+	public String parenttblname;
 
 	/**
 	 * 親側結合キー1
 	 */
 	@Basic(optional = false)
-	@Column(name = "PARENT_SIDED_KEY_1")
-	public String parentSidedKey1;
+	@Column(name = "PARENT_FIELD_1")
+	public String parentfield1;
 
 	/**
 	 * 親側結合キー2
 	 */
 	@Basic(optional = false)
-	@Column(name = "PARENT_SIDED_KEY_2")
-	public String parentSidedKey2;
+	@Column(name = "PARENT_FIELD_2")
+	public String parentfield2;
 
 	/**
 	 * 親側結合キー3
 	 */
 	@Basic(optional = false)
-	@Column(name = "PARENT_SIDED_KEY_3")
-	public String parentSidedKey3;
+	@Column(name = "PARENT_FIELD_3")
+	public String parentfield3;
 
 	/**
 	 * 親側結合キー4
 	 */
 	@Basic(optional = false)
-	@Column(name = "PARENT_SIDED_KEY_4")
-	public String parentSidedKey4;
+	@Column(name = "PARENT_FIELD_4")
+	public String parentfield4;
 
 	/**
 	 * 親側結合キー5
 	 */
 	@Basic(optional = false)
-	@Column(name = "PARENT_SIDED_KEY_5")
-	public String parentSidedKey5;
+	@Column(name = "PARENT_FIELD_5")
+	public String parentfield5;
 
 	/**
 	 * 親側結合キー6
 	 */
 	@Basic(optional = false)
-	@Column(name = "PARENT_SIDED_KEY_6")
-	public String parentSidedKey6;
+	@Column(name = "PARENT_FIELD_6")
+	public String parentfield6;
 
 	/**
 	 * 親側結合キー7
 	 */
 	@Basic(optional = false)
-	@Column(name = "PARENT_SIDED_KEY_7")
-	public String parentSidedKey7;
+	@Column(name = "PARENT_FIELD_7")
+	public String parentfield7;
 
 	/**
 	 * 親側結合キー8
 	 */
 	@Basic(optional = false)
-	@Column(name = "PARENT_SIDED_KEY_8")
-	public String parentSidedKey8;
+	@Column(name = "PARENT_FIELD_8")
+	public String parentfield8;
 
 	/**
 	 * 親側結合キー9
 	 */
 	@Basic(optional = false)
-	@Column(name = "PARENT_SIDED_KEY_9")
-	public String parentSidedKey9;
+	@Column(name = "PARENT_FIELD_9")
+	public String parentfield9;
 
 	/**
 	 * 親側結合キー10
 	 */
 	@Basic(optional = false)
-	@Column(name = "PARENT_SIDED_KEY_10")
-	public String parentSidedKey10;
+	@Column(name = "PARENT_FIELD_10")
+	public String parentfield10;
 
 	/**
 	 * 調査用保存
 	 */
 	@Basic(optional = false)
 	@Column(name = "SURVEY_PRESERVATION")
-	public String surveyPreservation;
+	public int surveyPreservation;
 
 	@Override
 	protected Object getKey() {
@@ -829,74 +832,66 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	}
 
 	public TableList toDomain() {
-		return new TableList(tableListPk.categoryId, categoryName,
-				dataStorageProcessingId, dataRecoveryProcessId,
-				tableListPk.tableNo, tableJapaneseName, tablePhysicalName,
-				acquisitionItemCompanyId, acquisitionItemDate, acquisitionItemEmployeeId, acquisitionItemEndDate, acquisitionItemStartDate,
-				saveSetCode, saveSetName, saveFileName, saveForm, saveDateFrom, saveDateTo,
-				storageRangeSaved,
-				retentionPeriodCls, internalFileName, anotherComCls,
-				referenceYear, referenceMonth, compressedFileName,
-				childSideKey1, childSideKey2, childSideKey3, childSideKey4, childSideKey5, childSideKey6, childSideKey7,
-				childSideKey8, childSideKey9, childSideKey10,
-				EnumAdaptor.valueOf(this.historyCls, HistoryDiviSion.class), canNotBeOld, selectionTargetForRes,
-				extractKeyCls1, extractKeyCls2, extractKeyCls3, extractKeyCls4, extractKeyCls5, extractKeyCls6,
-				extractKeyCls7, extractKeyCls8, extractKeyCls9, extractKeyCls10,
-				extractKeyItem1, extractKeyItem2, extractKeyItem3, extractKeyItem4, extractKeyItem5, extractKeyItem6, extractKeyItem7, extractKeyItem8,
-				extractKeyItem9, extractKeyItem10,
-				extractCondKeyFix,
-				dateItem1, dateItem2, dateItem3, dateItem4,dateItem5, dateItem6, dateItem7, dateItem8,
-				dateItem9, dateItem10, dateItem11, dateItem12, dateItem13,
-				dateItem14, dateItem15, dateItem16, dateItem17, dateItem18, dateItem19, dateItem20,
-				updateKeyItem1, updateKeyItem2, updateKeyItem3, updateKeyItem4, updateKeyItem5, updateKeyItem6, updateKeyItem7,
-				updateKeyItem8, updateKeyItem9, updateKeyItem10, updateKeyItem11, updateKeyItem12, updateKeyItem13,
-				updateKeyItem14, updateKeyItem15, updateKeyItem16, updateKeyItem17, updateKeyItem18, updateKeyItem19, updateKeyItem20,
-				screenRetentionPeriod, supplementaryExplanation,
-				parentTableJapaneName, withParentTable, parentTablePhysicalName, 
-				parentSidedKey1, parentSidedKey2, parentSidedKey3, parentSidedKey4, parentSidedKey5,
-				parentSidedKey6, parentSidedKey7, parentSidedKey8, parentSidedKey9,parentSidedKey10,
-				surveyPreservation);
+		return new TableList(tableListPk.categoryId, categoryName, dataStorageProcessingId, dataRecoveryProcessId,
+				tableListPk.tableNo, tableJapaneseName, tableEnglishName, fieldAcqCid, fieldAcqDateTime,
+				fieldAcqEmployeeId, fieldAcqEndDate, fieldAcqStartDate, saveSetCode, saveSetName, saveFileName,
+				saveForm, saveDateFrom, saveDateTo, storageRangeSaved, retentionPeriodCls, internalFileName,
+				anotherComCls, EnumAdaptor.valueOf(this.referenceYear, ReferenceYear.class),
+				EnumAdaptor.valueOf(this.referenceYear, ReferenceMonth.class), compressedFileName, fieldChild1,
+				fieldChild2, fieldChild3, fieldChild4, fieldChild5, fieldChild6, fieldChild7, fieldChild8, fieldChild9,
+				fieldChild10, EnumAdaptor.valueOf(this.historyCls, HistoryDiviSion.class), canNotBeOld,
+				selectionTargetForRes, clsKeyQuery1, clsKeyQuery2, clsKeyQuery3, clsKeyQuery4, clsKeyQuery5,
+				clsKeyQuery6, clsKeyQuery7, clsKeyQuery8, clsKeyQuery9, clsKeyQuery10, fieldKeyQuery1, fieldKeyQuery2,
+				fieldKeyQuery3, fieldKeyQuery4, fieldKeyQuery5, fieldKeyQuery6, fieldKeyQuery7, fieldKeyQuery8,
+				fieldKeyQuery9, fieldKeyQuery10, extractCondKeyFix, fieldDate1, fieldDate2, fieldDate3, fieldDate4,
+				fieldDate5, fieldDate6, fieldDate7, fieldDate8, fieldDate9, fieldDate10, fieldDate11, fieldDate12,
+				fieldDate13, fieldDate14, fieldDate15, fieldDate16, fieldDate17, fieldDate18, fieldDate19, fieldDate20,
+				filedKeyUpdate1, filedKeyUpdate2, filedKeyUpdate3, filedKeyUpdate4, filedKeyUpdate5, filedKeyUpdate6,
+				filedKeyUpdate7, filedKeyUpdate8, filedKeyUpdate9, filedKeyUpdate10, filedKeyUpdate11, filedKeyUpdate12,
+				filedKeyUpdate13, filedKeyUpdate14, filedKeyUpdate15, filedKeyUpdate16, filedKeyUpdate17,
+				filedKeyUpdate18, filedKeyUpdate19, filedKeyUpdate20, screenRetentionPeriod, supplementaryExplanation,
+				parenttbljpname, withParentTable, parenttblname, parentfield1, parentfield2, parentfield3, parentfield4,
+				parentfield5, parentfield6, parentfield7, parentfield8, parentfield9, parentfield10,
+				EnumAdaptor.valueOf(this.surveyPreservation, NotUseAtr.class)
+				);
 	}
 
 	public static SspmtTableList toEntity(TableList domain) {
 		return new SspmtTableList(new SspmtTableListPk(domain.getCategoryId(), domain.getTableNo()),
 				domain.getCategoryName(), domain.getDataStorageProcessingId(), domain.getDataRecoveryProcessId(),
-				domain.getTableJapaneseName(), domain.getParentTablePhysicalName(),
-				domain.getAcquisitionItemCompanyId(), domain.getAcquisitionItemDate(),
-				domain.getAcquisitionItemEmployeeId(), domain.getAcquisitionItemEndDate(),
-				domain.getAcquisitionItemStartDate(), domain.getSaveSetCode(), domain.getSaveSetName(),
+				domain.getTableJapaneseName(), domain.getTableEnglishName(), domain.getFieldAcqCid(),
+				domain.getFieldAcqDateTime(), domain.getFieldAcqEmployeeId(), domain.getFieldAcqEndDate(),
+				domain.getFieldAcqStartDate(), domain.getSaveSetCode(), domain.getSaveSetName(),
 				domain.getSaveFileName(), domain.getSaveForm(), domain.getSaveDateFrom(), domain.getSaveDateTo(),
 				domain.getStorageRangeSaved(), domain.getRetentionPeriodCls(), domain.getInternalFileName(),
-				domain.getAnotherComCls(), domain.getReferenceYear(), domain.getReferenceMonth(),
-				domain.getCompressedFileName(), domain.getChildSideKey1(), domain.getChildSideKey2(),
-				domain.getChildSideKey3(), domain.getChildSideKey4(), domain.getChildSideKey5(),
-				domain.getChildSideKey6(), domain.getChildSideKey7(), domain.getChildSideKey8(),
-				domain.getChildSideKey9(), domain.getChildSideKey10(), domain.getHistoryCls().value, domain.getCanNotBeOld(),
-				domain.getSelectionTargetForRes(), domain.getExtractKeyCls1(), domain.getExtractKeyCls2(),
-				domain.getExtractKeyCls3(), domain.getExtractKeyCls4(), domain.getExtractKeyCls5(),
-				domain.getExtractKeyCls6(), domain.getExtractKeyCls7(), domain.getExtractKeyCls8(),
-				domain.getExtractKeyCls9(), domain.getExtractKeyCls10(), domain.getExtractKeyItem1(),
-				domain.getExtractKeyItem2(), domain.getExtractKeyItem3(), domain.getExtractKeyItem4(),
-				domain.getExtractKeyItem5(), domain.getExtractKeyItem6(), domain.getExtractKeyItem7(),
-				domain.getExtractKeyItem8(), domain.getExtractKeyItem9(), domain.getExtractKeyItem10(),
-				domain.getExtractCondKeyFix(), domain.getDateItem1(), domain.getDateItem2(), domain.getDateItem3(),
-				domain.getDateItem4(), domain.getDateItem5(), domain.getDateItem6(), domain.getDateItem7(),
-				domain.getDateItem8(), domain.getDateItem9(), domain.getDateItem10(), domain.getDateItem11(),
-				domain.getDateItem12(), domain.getDateItem13(), domain.getDateItem14(), domain.getDateItem15(),
-				domain.getDateItem16(), domain.getDateItem17(), domain.getDateItem18(), domain.getDateItem19(),
-				domain.getDateItem20(), domain.getUpdateKeyItem1(), domain.getUpdateKeyItem2(),
-				domain.getUpdateKeyItem3(), domain.getUpdateKeyItem4(), domain.getUpdateKeyItem5(),
-				domain.getUpdateKeyItem6(), domain.getUpdateKeyItem7(), domain.getUpdateKeyItem8(),
-				domain.getUpdateKeyItem9(), domain.getUpdateKeyItem10(), domain.getUpdateKeyItem11(),
-				domain.getUpdateKeyItem12(), domain.getUpdateKeyItem13(), domain.getUpdateKeyItem14(),
-				domain.getUpdateKeyItem15(), domain.getUpdateKeyItem16(), domain.getUpdateKeyItem17(),
-				domain.getUpdateKeyItem18(), domain.getUpdateKeyItem19(), domain.getUpdateKeyItem20(),
-				domain.getScreenRetentionPeriod(), domain.getSupplementaryExplanation(),
-				domain.getParentTableJapaneName(), domain.getWithParentTable(), domain.getParentTablePhysicalName(),
-				domain.getParentSidedKey1(), domain.getParentSidedKey2(), domain.getParentSidedKey3(),
-				domain.getParentSidedKey4(), domain.getParentSidedKey5(), domain.getParentSidedKey6(),
-				domain.getParentSidedKey7(), domain.getParentSidedKey8(), domain.getParentSidedKey9(),
-				domain.getParentSidedKey10(), domain.getSurveyPreservation());
+				domain.getAnotherComCls(), domain.getReferenceYear().value, domain.getReferenceMonth().value,
+				domain.getCompressedFileName(), domain.getFieldChild1(), domain.getFieldChild2(),
+				domain.getFieldChild3(), domain.getFieldChild4(), domain.getFieldChild5(), domain.getFieldChild6(),
+				domain.getFieldChild7(), domain.getFieldChild8(), domain.getFieldChild9(), domain.getFieldChild10(),
+				domain.getHistoryCls().value, domain.getCanNotBeOld(), domain.getSelectionTargetForRes(),
+				domain.getClsKeyQuery1(), domain.getClsKeyQuery2(), domain.getClsKeyQuery3(), domain.getClsKeyQuery4(),
+				domain.getClsKeyQuery5(), domain.getClsKeyQuery6(), domain.getClsKeyQuery7(), domain.getClsKeyQuery8(),
+				domain.getClsKeyQuery9(), domain.getClsKeyQuery10(), domain.getFieldKeyQuery1(),
+				domain.getFieldKeyQuery2(), domain.getFieldKeyQuery3(), domain.getFieldKeyQuery4(),
+				domain.getFieldKeyQuery5(), domain.getFieldKeyQuery6(), domain.getFieldKeyQuery7(),
+				domain.getFieldKeyQuery8(), domain.getFieldKeyQuery9(), domain.getFieldKeyQuery10(),
+				domain.getExtractCondKeyFix(), domain.getFieldDate1(), domain.getFieldDate2(), domain.getFieldDate3(),
+				domain.getFieldDate4(), domain.getFieldDate5(), domain.getFieldDate6(), domain.getFieldDate7(),
+				domain.getFieldDate8(), domain.getFieldDate9(), domain.getFieldDate10(), domain.getFieldDate11(),
+				domain.getFieldDate12(), domain.getFieldDate13(), domain.getFieldDate14(), domain.getFieldDate15(),
+				domain.getFieldDate16(), domain.getFieldDate17(), domain.getFieldDate18(), domain.getFieldDate19(),
+				domain.getFieldDate20(), domain.getFiledKeyUpdate1(), domain.getFiledKeyUpdate2(),
+				domain.getFiledKeyUpdate3(), domain.getFiledKeyUpdate4(), domain.getFiledKeyUpdate5(),
+				domain.getFiledKeyUpdate6(), domain.getFiledKeyUpdate7(), domain.getFiledKeyUpdate8(),
+				domain.getFiledKeyUpdate9(), domain.getFiledKeyUpdate10(), domain.getFiledKeyUpdate11(),
+				domain.getFiledKeyUpdate12(), domain.getFiledKeyUpdate13(), domain.getFiledKeyUpdate14(),
+				domain.getFiledKeyUpdate15(), domain.getFiledKeyUpdate16(), domain.getFiledKeyUpdate17(),
+				domain.getFiledKeyUpdate18(), domain.getFiledKeyUpdate19(), domain.getFiledKeyUpdate20(),
+				domain.getScreenRetentionPeriod(), domain.getSupplementaryExplanation(), domain.getParenttbljpname(),
+				domain.getWithParentTable(), domain.getParenttblname(), domain.getParentfield1(),
+				domain.getParentfield2(), domain.getParentfield3(), domain.getParentfield4(), domain.getParentfield5(),
+				domain.getParentfield6(), domain.getParentfield7(), domain.getParentfield8(), domain.getParentfield9(),
+				domain.getParentfield10(), domain.getSurveyPreservation().value);
 	}
 
 }

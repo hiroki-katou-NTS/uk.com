@@ -350,6 +350,11 @@ public class CategoryFieldMt extends AggregateRoot {
 	 * 親テーブル日本語名
 	 */
 	private String parenttbljpname;
+	
+	/**
+	 * 親テーブル有無
+	 */
+	private String withParentTable;
 
 	/**
 	 * 親テーブル物理名

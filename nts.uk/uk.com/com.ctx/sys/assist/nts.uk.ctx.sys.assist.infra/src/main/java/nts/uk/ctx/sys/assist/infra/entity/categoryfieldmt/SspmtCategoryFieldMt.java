@@ -492,6 +492,13 @@ public class SspmtCategoryFieldMt extends UkJpaEntity implements Serializable {
 	@Basic(optional = true)
 	@Column(name = "PARENT_TBL_JP_NAME")
 	public String parenttbljpname;
+	
+	/**
+	 * 親テーブル有無
+	 */
+	@Basic(optional = true)
+	@Column(name = "WITH_PARENT_TABLE")
+	public String withParentTable;
 
 	/**
 	 * 親テーブル物理名
@@ -696,7 +703,7 @@ public class SspmtCategoryFieldMt extends UkJpaEntity implements Serializable {
 				this.filedKeyUpdate11, this.filedKeyUpdate12, this.filedKeyUpdate13, this.filedKeyUpdate14,
 				this.filedKeyUpdate15, this.filedKeyUpdate16, this.filedKeyUpdate17, this.filedKeyUpdate18,
 				this.filedKeyUpdate19, this.filedKeyUpdate20,
-				EnumAdaptor.valueOf(this.historyCls, HistoryDiviSion.class), this.parenttbljpname, this.parenttblname,
+				EnumAdaptor.valueOf(this.historyCls, HistoryDiviSion.class), this.parenttbljpname,this.withParentTable, this.parenttblname,
 				this.parentfield1, this.parentfield2, this.parentfield3, this.parentfield4, this.parentfield5,
 				this.parentfield6, this.parentfield7, this.parentfield8, this.parentfield9, this.parentfield10,
 				this.fieldChild1, this.fieldChild2, this.fieldChild3, this.fieldChild4, this.fieldChild5,
@@ -726,7 +733,7 @@ public class SspmtCategoryFieldMt extends UkJpaEntity implements Serializable {
 				domain.getFiledKeyUpdate12(), domain.getFiledKeyUpdate13(), domain.getFiledKeyUpdate14(),
 				domain.getFiledKeyUpdate15(), domain.getFiledKeyUpdate16(), domain.getFiledKeyUpdate17(),
 				domain.getFiledKeyUpdate18(), domain.getFiledKeyUpdate19(), domain.getFiledKeyUpdate20(),
-				domain.getHistoryCls().value, domain.getParenttbljpname(), domain.getParenttblname(),
+				domain.getHistoryCls().value, domain.getParenttbljpname(),domain.getWithParentTable(), domain.getParenttblname(),
 				domain.getParentfield1(), domain.getParentfield2(), domain.getParentfield3(), domain.getParentfield4(),
 				domain.getParentfield5(), domain.getParentfield6(), domain.getParentfield7(), domain.getParentfield8(),
 				domain.getParentfield9(), domain.getParentfield10(), domain.getFieldChild1(), domain.getFieldChild2(),

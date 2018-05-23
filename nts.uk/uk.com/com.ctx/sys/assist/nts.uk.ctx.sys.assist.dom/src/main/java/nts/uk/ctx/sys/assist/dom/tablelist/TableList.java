@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.HistoryDiviSion;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * テーブル一覧
@@ -44,32 +45,32 @@ public class TableList extends AggregateRoot {
 	/**
 	 * テーブル物理名
 	 */
-	private String tablePhysicalName;
+	private String tableEnglishName;
 
 	/**
 	 * 付加取得項目_会社ID
 	 */
-	private String acquisitionItemCompanyId;
+	private String fieldAcqCid;
 
 	/**
 	 * 付加取得項目_日付
 	 */
-	private String acquisitionItemDate;
+	private String fieldAcqDateTime;
 
 	/**
 	 * 付加取得項目_社員ID
 	 */
-	private String acquisitionItemEmployeeId;
+	private String fieldAcqEmployeeId;
 
 	/**
 	 * 付加取得項目_終了日付
 	 */
-	private String acquisitionItemEndDate;
+	private String fieldAcqEndDate;
 
 	/**
 	 * 付加取得項目_開始日付
 	 */
-	private String acquisitionItemStartDate;
+	private String fieldAcqStartDate;
 
 	/**
 	 * 保存セットコード
@@ -124,12 +125,12 @@ public class TableList extends AggregateRoot {
 	/**
 	 * 参照年
 	 */
-	private String referenceYear;
+	private ReferenceYear referenceYear;
 
 	/**
 	 * 参照月
 	 */
-	private String referenceMonth;
+	private ReferenceMonth referenceMonth;
 
 	/**
 	 * 圧縮ファイル名
@@ -139,52 +140,52 @@ public class TableList extends AggregateRoot {
 	/**
 	 * 子側結合キー1
 	 */
-	private String childSideKey1;
+	private String fieldChild1;
 
 	/**
 	 * 子側結合キー2
 	 */
-	private String childSideKey2;
+	private String fieldChild2;
 
 	/**
 	 * 子側結合キー3
 	 */
-	private String childSideKey3;
+	private String fieldChild3;
 
 	/**
 	 * 子側結合キー4
 	 */
-	private String childSideKey4;
+	private String fieldChild4;
 
 	/**
 	 * 子側結合キー5
 	 */
-	private String childSideKey5;
+	private String fieldChild5;
 
 	/**
 	 * 子側結合キー6
 	 */
-	private String childSideKey6;
+	private String fieldChild6;
 
 	/**
 	 * 子側結合キー7
 	 */
-	private String childSideKey7;
+	private String fieldChild7;
 
 	/**
 	 * 子側結合キー8
 	 */
-	private String childSideKey8;
+	private String fieldChild8;
 
 	/**
 	 * 子側結合キー9
 	 */
-	private String childSideKey9;
+	private String fieldChild9;
 
 	/**
 	 * 子側結合キー10
 	 */
-	private String childSideKey10;
+	private String fieldChild10;
 
 	/**
 	 * 履歴区分
@@ -204,102 +205,102 @@ public class TableList extends AggregateRoot {
 	/**
 	 * 抽出キー区分1
 	 */
-	private String extractKeyCls1;
+	private String clsKeyQuery1;
 
 	/**
 	 * 抽出キー区分2
 	 */
-	private String extractKeyCls2;
+	private String clsKeyQuery2;
 
 	/**
 	 * 抽出キー区分3
 	 */
-	private String extractKeyCls3;
+	private String clsKeyQuery3;
 
 	/**
 	 * 抽出キー区分4
 	 */
-	private String extractKeyCls4;
+	private String clsKeyQuery4;
 
 	/**
 	 * 抽出キー区分5
 	 */
-	private String extractKeyCls5;
+	private String clsKeyQuery5;
 
 	/**
 	 * 抽出キー区分6
 	 */
-	private String extractKeyCls6;
+	private String clsKeyQuery6;
 
 	/**
 	 * 抽出キー区分7
 	 */
-	private String extractKeyCls7;
+	private String clsKeyQuery7;
 
 	/**
 	 * 抽出キー区分8
 	 */
-	private String extractKeyCls8;
+	private String clsKeyQuery8;
 
 	/**
 	 * 抽出キー区分9
 	 */
-	private String extractKeyCls9;
+	private String clsKeyQuery9;
 
 	/**
 	 * 抽出キー区分10
 	 */
-	private String extractKeyCls10;
+	private String clsKeyQuery10;
 
 	/**
 	 * 抽出キー項目1
 	 */
-	private String extractKeyItem1;
+	private String fieldKeyQuery1;
 
 	/**
 	 * 抽出キー項目2
 	 */
-	private String extractKeyItem2;
+	private String fieldKeyQuery2;
 
 	/**
 	 * 抽出キー項目3
 	 */
-	private String extractKeyItem3;
+	private String fieldKeyQuery3;
 
 	/**
 	 * 抽出キー項目4
 	 */
-	private String extractKeyItem4;
+	private String fieldKeyQuery4;
 
 	/**
 	 * 抽出キー項目5
 	 */
-	private String extractKeyItem5;
+	private String fieldKeyQuery5;
 
 	/**
 	 * 抽出キー項目6
 	 */
-	private String extractKeyItem6;
+	private String fieldKeyQuery6;
 
 	/**
 	 * 抽出キー項目7
 	 */
-	private String extractKeyItem7;
+	private String fieldKeyQuery7;
 
 	/**
 	 * 抽出キー項目8
 	 */
-	private String extractKeyItem8;
+	private String fieldKeyQuery8;
 
 	/**
 	 * 抽出キー項目9
 	 */
-	private String extractKeyItem9;
+	private String fieldKeyQuery9;
 
 	/**
 	 * 抽出キー項目10
 	 */
-	private String extractKeyItem10;
+	private String fieldKeyQuery10;
 
 	/**
 	 * 抽出条件キー固定
@@ -309,201 +310,201 @@ public class TableList extends AggregateRoot {
 	/**
 	 * 日付項目1
 	 */
-	private String dateItem1;
+	private String fieldDate1;
 
 	/**
-	 * 日付項目
+	 * 日付項目2
 	 */
-	private String dateItem2;
+	private String fieldDate2;
 
 	/**
 	 * 日付項目3
 	 */
-	private String dateItem3;
+	private String fieldDate3;
 
 	/**
 	 * 日付項目4
 	 */
-	private String dateItem4;
+	private String fieldDate4;
 
 	/**
 	 * 日付項目5
 	 */
-	private String dateItem5;
+	private String fieldDate5;
 
 	/**
 	 * 日付項目6
 	 */
-	private String dateItem6;
+	private String fieldDate6;
 
 	/**
 	 * 日付項目7
 	 */
-	private String dateItem7;
+	private String fieldDate7;
 
 	/**
 	 * 日付項目8
 	 */
-	private String dateItem8;
+	private String fieldDate8;
 
 	/**
 	 * 日付項目9
 	 */
-	private String dateItem9;
+	private String fieldDate9;
 
 	/**
 	 * 日付項目10
 	 */
-	private String dateItem10;
+	private String fieldDate10;
 
 	/**
 	 * 日付項目11
 	 */
-	private String dateItem11;
+	private String fieldDate11;
 
 	/**
 	 * 日付項目12
 	 */
-	private String dateItem12;
+	private String fieldDate12;
 
 	/**
 	 * 日付項目13
 	 */
-	private String dateItem13;
+	private String fieldDate13;
 
 	/**
 	 * 日付項目14
 	 */
-	private String dateItem14;
+	private String fieldDate14;
 
 	/**
 	 * 日付項目15
 	 */
-	private String dateItem15;
+	private String fieldDate15;
 
 	/**
 	 * 日付項目16
 	 */
-	private String dateItem16;
+	private String fieldDate16;
 
 	/**
 	 * 日付項目17
 	 */
-	private String dateItem17;
+	private String fieldDate17;
 
 	/**
 	 * 日付項目18
 	 */
-	private String dateItem18;
+	private String fieldDate18;
 	/**
 	 * 日付項目19
 	 */
-	private String dateItem19;
+	private String fieldDate19;
 
 	/**
 	 * 日付項目20
 	 */
-	private String dateItem20;
+	private String fieldDate20;
 
 	/**
 	 * 更新キー項目1
 	 */
-	private String updateKeyItem1;
+	private String filedKeyUpdate1;
 
 	/**
 	 * 更新キー項目2
 	 */
-	private String updateKeyItem2;
+	private String filedKeyUpdate2;
 
 	/**
 	 * 更新キー項目3
 	 */
-	private String updateKeyItem3;
+	private String filedKeyUpdate3;
 
 	/**
 	 * 更新キー項目4
 	 */
-	private String updateKeyItem4;
+	private String filedKeyUpdate4;
 
 	/**
 	 * 更新キー項目5
 	 */
-	private String updateKeyItem5;
+	private String filedKeyUpdate5;
 
 	/**
 	 * 更新キー項目6
 	 */
-	private String updateKeyItem6;
+	private String filedKeyUpdate6;
 
 	/**
 	 * 更新キー項目7
 	 */
-	private String updateKeyItem7;
+	private String filedKeyUpdate7;
 
 	/**
 	 * 更新キー項目8
 	 */
-	private String updateKeyItem8;
+	private String filedKeyUpdate8;
 
 	/**
 	 * 更新キー項目9
 	 */
-	private String updateKeyItem9;
+	private String filedKeyUpdate9;
 
 	/**
 	 * 更新キー項目10
 	 */
-	private String updateKeyItem10;
+	private String filedKeyUpdate10;
 
 	/**
 	 * 更新キー項目11
 	 */
-	private String updateKeyItem11;
+	private String filedKeyUpdate11;
 
 	/**
 	 * 更新キー項目12
 	 */
-	private String updateKeyItem12;
+	private String filedKeyUpdate12;
 
 	/**
 	 * 更新キー項目13
 	 */
-	private String updateKeyItem13;
+	private String filedKeyUpdate13;
 
 	/**
 	 * 更新キー項目14
 	 */
-	private String updateKeyItem14;
+	private String filedKeyUpdate14;
 
 	/**
 	 * 更新キー項目15
 	 */
-	private String updateKeyItem15;
+	private String filedKeyUpdate15;
 
 	/**
 	 * 更新キー項目16
 	 */
-	private String updateKeyItem16;
+	private String filedKeyUpdate16;
 
 	/**
 	 * 更新キー項目17
 	 */
-	private String updateKeyItem17;
+	private String filedKeyUpdate17;
 
 	/**
 	 * 更新キー項目18
 	 */
-	private String updateKeyItem18;
+	private String filedKeyUpdate18;
 
 	/**
 	 * 更新キー項目19
 	 */
-	private String updateKeyItem19;
+	private String filedKeyUpdate19;
 
 	/**
 	 * 更新キー項目20
 	 */
-	private String updateKeyItem20;
+	private String filedKeyUpdate20;
 
 	/**
 	 * 画面保存期間
@@ -518,7 +519,7 @@ public class TableList extends AggregateRoot {
 	/**
 	 * 親テーブル日本語名
 	 */
-	private String parentTableJapaneName;
+	private String parenttbljpname;
 
 	/**
 	 * 親テーブル有無
@@ -528,62 +529,62 @@ public class TableList extends AggregateRoot {
 	/**
 	 * 親テーブル物理名
 	 */
-	private String parentTablePhysicalName;
+	private String parenttblname;
 
 	/**
 	 * 親側結合キー1
 	 */
-	private String parentSidedKey1;
+	private String parentfield1;
 
 	/**
 	 * 親側結合キー2
 	 */
-	private String parentSidedKey2;
+	private String parentfield2;
 
 	/**
 	 * 親側結合キー3
 	 */
-	private String parentSidedKey3;
+	private String parentfield3;
 
 	/**
 	 * 親側結合キー4
 	 */
-	private String parentSidedKey4;
+	private String parentfield4;
 
 	/**
 	 * 親側結合キー5
 	 */
-	private String parentSidedKey5;
+	private String parentfield5;
 
 	/**
 	 * 親側結合キー6
 	 */
-	private String parentSidedKey6;
+	private String parentfield6;
 
 	/**
 	 * 親側結合キー7
 	 */
-	private String parentSidedKey7;
+	private String parentfield7;
 
 	/**
 	 * 親側結合キー8
 	 */
-	private String parentSidedKey8;
+	private String parentfield8;
 
 	/**
 	 * 親側結合キー9
 	 */
-	private String parentSidedKey9;
+	private String parentfield9;
 
 	/**
 	 * 親側結合キー10
 	 */
-	private String parentSidedKey10;
+	private String parentfield10;
 
 	/**
 	 * 調査用保存
 	 */
-	private String surveyPreservation;
+	private NotUseAtr surveyPreservation;
 	
 	
 	
