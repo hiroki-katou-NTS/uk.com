@@ -18,7 +18,7 @@ public class TemporaryTimeOfDailyPerformanceCommandUpdateHandler
 	protected void handle(CommandHandlerContext<TemporaryTimeOfDailyPerformanceCommand> context) {
 		TemporaryTimeOfDailyPerformanceCommand command = context.getCommand();
 		if(command.getData().isPresent()){
-			repo.update(command.getData().get());
+			repo.update(command.toDomain().get());
 		}
 	}
 }

@@ -11,15 +11,21 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 public class OptionalItemOfDailyPerformCommand extends DailyWorkCommonCommand {
 
 	@Getter
-	private Optional<AnyItemValueOfDaily> data;
+	private Optional<OptionalItemOfDailyPerformDto> data;
 
 	@Override
 	public void setRecords(AttendanceItemCommon item) {
-		this.data = item == null || !item.isHaveData() ? Optional.empty() : Optional.of(((OptionalItemOfDailyPerformDto) item).toDomain(getEmployeeId(), getWorkDate()));
+		this.data = item == null || !item.isHaveData() ? Optional.empty() : Optional.of((OptionalItemOfDailyPerformDto) item);
 	}
 
 	@Override
 	public void updateData(Object item) {
-		this.data = item == null ? Optional.empty() : Optional.of((AnyItemValueOfDaily) item);
+		if(data == null){ return; }
+		setRecords(OptionalItemOfDailyPerformDto.getDto((AnyItemValueOfDaily) item));
+	}
+
+	@Override
+	public Optional<AnyItemValueOfDaily> toDomain() {
+		return data == null ? null : data.map(c -> c.toDomain(getEmployeeId(), getWorkDate()));
 	}
 }

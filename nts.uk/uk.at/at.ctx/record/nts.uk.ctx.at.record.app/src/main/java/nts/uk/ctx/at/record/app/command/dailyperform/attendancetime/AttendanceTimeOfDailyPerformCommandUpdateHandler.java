@@ -18,7 +18,7 @@ public class AttendanceTimeOfDailyPerformCommandUpdateHandler
 	protected void handle(CommandHandlerContext<AttendanceTimeOfDailyPerformCommand> context) {
 		AttendanceTimeOfDailyPerformCommand command = context.getCommand();
 		if (command.getData().isPresent()) {
-			repo.update(command.getData().get());
+			repo.update(command.toDomain().get());
 		}
 	}
 

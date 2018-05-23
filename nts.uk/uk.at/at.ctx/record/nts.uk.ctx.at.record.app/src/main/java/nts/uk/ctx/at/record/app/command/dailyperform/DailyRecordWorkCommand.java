@@ -29,7 +29,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 
 public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
-	
+
 	private final List<ItemValue> itemValues = new ArrayList<>();
 
 	/** 勤務情報： 日別実績の勤務情報 */
@@ -96,7 +96,7 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 	/** 臨時出退勤: 日別実績の臨時出退勤 */
 	@Getter
 	private final TemporaryTimeOfDailyPerformanceCommand temporaryTime = new TemporaryTimeOfDailyPerformanceCommand();
-	
+
 	/** PCログオン情報: 日別実績のPCログオン情報 */
 	@Getter
 	private final PCLogInfoOfDailyCommand pcLogInfo = new PCLogInfoOfDailyCommand();
@@ -105,7 +105,7 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 	@Getter
 	private final RemarkOfDailyCommand remarks = new RemarkOfDailyCommand();
 
-	public DailyWorkCommonCommand getCommand(String group){
+	public DailyWorkCommonCommand getCommand(String group) {
 		DailyWorkCommonCommand command = null;
 		switch (group) {
 		case "A":
@@ -164,7 +164,7 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 		}
 		return command;
 	}
-	
+
 	@Override
 	public void setRecords(AttendanceItemCommon item) {
 		DailyRecordDto fullDto = (DailyRecordDto) item;
@@ -233,32 +233,55 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 		this.pcLogInfo.withDate(date);
 		this.remarks.withDate(date);
 	}
-	
-	public static DailyRecordWorkCommand open(){
+
+	public DailyRecordDto toDto() {
+		return DailyRecordDto.builder()
+				.breakTime(breakTime.getData())
+				.editStates(editState.getData())
+				.attendanceLeavingGate(attendanceLeavingGate.getData().orElse(null))
+				.attendanceTime(attendanceTime.getData().orElse(null))
+				.attendanceTimeByWork(attendanceTimeByWork.getData().orElse(null))
+				.employeeId(getEmployeeId())
+				.optionalItems(optionalItem.getData().orElse(null))
+				.outingTime(outingTime.getData().orElse(null))
+				.pcLogInfo(pcLogInfo.getData().orElse(null))
+				.shortWorkTime(shortWorkTime.getData().orElse(null))
+				.specificDateAttr(specificDateAttr.getData().orElse(null))
+				.temporaryTime(temporaryTime.getData().orElse(null))
+				.timeLeaving(timeLeaving.getData().orElse(null))
+				.withAffiliationInfo(affiliationInfo.getData())
+				.withCalcAttr(calcAttr.getData())
+				.withErrors(errors.getData())
+				.withWorkInfo(workInfo.getData())
+				.workingDate(getWorkDate())
+				.complete();
+	}
+
+	public static DailyRecordWorkCommand open() {
 		return new DailyRecordWorkCommand();
 	}
-			
-	public DailyRecordWorkCommand forEmployeeId(String employeeId){
+
+	public DailyRecordWorkCommand forEmployeeId(String employeeId) {
 		this.forEmployee(employeeId);
 		return this;
 	}
-	
-	public DailyRecordWorkCommand withWokingDate(GeneralDate workDate){
+
+	public DailyRecordWorkCommand withWokingDate(GeneralDate workDate) {
 		this.withDate(workDate);
 		return this;
 	}
-	
-	public DailyRecordWorkCommand fromItems(List<ItemValue> itemValues){
+
+	public DailyRecordWorkCommand fromItems(List<ItemValue> itemValues) {
 		this.itemValues.addAll(itemValues);
 		return this;
 	}
-	
-	public DailyRecordWorkCommand withData(DailyRecordDto data){
+
+	public DailyRecordWorkCommand withData(DailyRecordDto data) {
 		this.setRecords(data);
 		return this;
 	}
-	
-	public List<ItemValue> itemValues(){
+
+	public List<ItemValue> itemValues() {
 		return new ArrayList<>(this.itemValues);
 	}
 
