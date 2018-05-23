@@ -75,8 +75,23 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 					List<Integer> allDayAtrs = new ArrayList<>();
 					allDayAtrs.add(convertHolidayType(holidayType));
 					List<Integer> halfDay = new ArrayList<>();
-					halfDay.add(convertHolidayType(holidayType));
-					result = this.workTypeRepository.findWorkTypeForAllDayAndHalfDay(companyID, halfDay, lstWorkTypeCodes, allDayAtrs);
+					// 休日
+					halfDay.add(1);
+					// 年休
+					halfDay.add(2);
+					//積立年休
+					halfDay.add(3);
+					// 特別休暇
+					halfDay.add(4);
+					// 欠勤
+					halfDay.add(5);
+					// 代休
+					halfDay.add(6);
+					// 振休
+					halfDay.add(8);
+					//時間消化休暇
+					halfDay.add(9);
+					result = this.workTypeRepository.findWorkTypeForAppHolidayAppType(companyID,allDayAtrs,halfDay,halfDay,convertHolidayType(holidayType),convertHolidayType(holidayType));
 				}else{
 					//勤務種類組み合わせ全表示チェック = OFF
 					result = this.workTypeRepository.findWorkTypeByCodes(companyID, lstWorkTypeCodes, 0, 0);
