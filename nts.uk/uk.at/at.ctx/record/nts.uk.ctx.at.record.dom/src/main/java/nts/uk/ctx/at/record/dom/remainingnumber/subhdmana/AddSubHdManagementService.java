@@ -56,7 +56,7 @@ public class AddSubHdManagementService {
 				int equivalentHalfDay = 0;
 				int equivalentADay = 0;
 
-				LeaveManagementData domainLeaveManagementData = new LeaveManagementData(IdentifierUtil.randomUniqueId(),
+				LeaveManagementData domainLeaveManagementData = new LeaveManagementData(leaveId,
 						AppContexts.user().companyId(), subHdManagementData.getEmployeeId(), false,
 						subHdManagementData.getDateHoliday(), subHdManagementData.getDuedateHoliday(),
 						subHdManagementData.getSelectedCodeHoliday(), 0, Double.valueOf(0), 0, subHDAtr, equivalentADay,
