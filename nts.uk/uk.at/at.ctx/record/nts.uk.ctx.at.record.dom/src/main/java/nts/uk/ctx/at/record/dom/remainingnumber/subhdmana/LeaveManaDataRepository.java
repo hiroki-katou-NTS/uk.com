@@ -16,7 +16,7 @@ public interface LeaveManaDataRepository {
 	
 	List<LeaveManagementData> getBySid(String cid, String sid);
 	
-	List<LeaveManagementData> getBySidWithsubHDAtrAndDateCondition (String cid, String sid, GeneralDate startDate, GeneralDate endDate);
+	List<LeaveManagementData> getByDateCondition (String cid, String sid, GeneralDate startDate, GeneralDate endDate);
 	
 	List<LeaveManagementData> getBySidWithHolidayDate(String cid, String sid, GeneralDate dateHoliday);
 	

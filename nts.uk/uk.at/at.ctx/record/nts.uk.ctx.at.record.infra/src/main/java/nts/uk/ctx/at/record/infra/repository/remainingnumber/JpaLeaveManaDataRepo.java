@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.infra.repository.remainingnumber;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -17,9 +19,6 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	private String QUERY_BYSID = "SELECT l FROM KrcmtLeaveManaData l WHERE l.cID = :cid AND l.sID =:employeeId ";
 
 	private String QUERY_BYSIDWITHSUBHDATR = String.join(" ", QUERY_BYSID, "AND l.subHDAtr =:subHDAtr");
-
-	private String QUERY_BYSIDANDDATECONDITION = String.join(" ", QUERY_BYSIDWITHSUBHDATR,
-			"AND l.dayOff >= :startDate AND l.dayOff <= :endDate");
 
 	private String QUERY_BYSIDANDHOLIDAYDATECONDITION = "SELECT l FROM KrcmtLeaveManaData l WHERE l.cID = :cid AND l.sID =:employeeId AND l.dayOff = :dateHoliday";
 	
@@ -47,14 +46,14 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	 * @return
 	 */
 	private LeaveManagementData toDomain(KrcmtLeaveManaData entity) {
-		return new LeaveManagementData(entity.ID, entity.cID, entity.sID, entity.unknownDate, entity.dayOff,
+		return new LeaveManagementData(entity.leaveID, entity.cID, entity.sID, entity.unknownDate, entity.dayOff,
 				entity.expiredDate, entity.occurredDays, entity.occurredTimes, entity.unUsedDays, entity.unUsedTimes,
 				entity.subHDAtr, entity.fullDayTime, entity.halfDayTime);
 	}
 
 	private KrcmtLeaveManaData toEntity(LeaveManagementData domain) {
 		KrcmtLeaveManaData entity = new KrcmtLeaveManaData();
-		entity.ID = domain.getID();
+		entity.leaveID = domain.getID();
 		entity.cID = domain.getCID();
 		entity.sID = domain.getSID();
 		entity.unknownDate = domain.getComDayOffDate().isUnknownDate();
@@ -77,12 +76,32 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	}
 
 	@Override
-	public List<LeaveManagementData> getBySidWithsubHDAtrAndDateCondition(String cid, String sid, GeneralDate startDate,
+	public List<LeaveManagementData> getByDateCondition(String cid, String sid, GeneralDate startDate,
 			GeneralDate endDate) {
-		List<KrcmtLeaveManaData> listLeaveData = this.queryProxy()
-				.query(QUERY_BYSIDANDDATECONDITION, KrcmtLeaveManaData.class).setParameter("cid", cid)
-				.setParameter("employeeId", sid).setParameter("startDate", startDate).setParameter("endDate", endDate)
-				.getList();
+		List<KrcmtLeaveManaData> listLeaveData = new ArrayList<>();
+		String query = "";
+		if (!Objects.isNull(startDate) && !Objects.isNull(endDate)) {
+			query = "SELECT a FROM KrcmtLeaveManaData a WHERE a.cID = :cid AND a.sID =:employeeId AND a.dayOff BETWEEN :startDate AND :endDate OR "
+					+ "a.leaveID IN (SELECT c.krcmtLeaveDayOffManaPK.leaveID FROM KrcmtComDayoffMaData b JOIN KrcmtLeaveDayOffMana c ON b.comDayOffID = c.krcmtLeaveDayOffManaPK.comDayOffID WHERE b.cID = :cid AND b.sID =:employeeId AND b.dayOff BETWEEN :startDate AND :endDate)";
+			listLeaveData = this.queryProxy().query(query, KrcmtLeaveManaData.class).setParameter("cid", cid)
+					.setParameter("employeeId", sid).setParameter("startDate", startDate)
+					.setParameter("endDate", endDate).getList();
+		} else if (!Objects.isNull(startDate)) {
+			query = "SELECT a FROM KrcmtLeaveManaData a WHERE a.cID = :cid AND a.sID =:employeeId AND a.dayOff >= :startDate OR "
+					+ "a.leaveID IN (SELECT c.krcmtLeaveDayOffManaPK.leaveID FROM KrcmtComDayoffMaData b JOIN KrcmtLeaveDayOffMana c ON b.comDayOffID = c.krcmtLeaveDayOffManaPK.comDayOffID WHERE b.cID = :cid AND b.sID =:employeeId AND b.dayOff >= :startDate)";
+			listLeaveData = this.queryProxy().query(query, KrcmtLeaveManaData.class).setParameter("cid", cid)
+					.setParameter("employeeId", sid).setParameter("startDate", startDate).getList();
+		} else if (!Objects.isNull(endDate)) {
+			query = "SELECT a FROM KrcmtLeaveManaData a WHERE a.cID = :cid AND a.sID =:employeeId AND a.dayOff <= :endDate OR "
+					+ "a.leaveID IN (SELECT c.krcmtLeaveDayOffManaPK.leaveID FROM KrcmtComDayoffMaData b JOIN KrcmtLeaveDayOffMana c ON b.comDayOffID = c.krcmtLeaveDayOffManaPK.comDayOffID WHERE b.cID = :cid AND b.sID =:employeeId AND b.dayOff <= :endDate)";
+			listLeaveData = this.queryProxy().query(query, KrcmtLeaveManaData.class).setParameter("cid", cid)
+					.setParameter("employeeId", sid).setParameter("endDate", endDate).getList();
+		} else {
+			query = "SELECT a FROM KrcmtLeaveManaData a WHERE a.cID = :cid AND a.sID =:employeeId OR "
+					+ "a.leaveID IN (SELECT c.krcmtLeaveDayOffManaPK.leaveID FROM KrcmtComDayoffMaData b JOIN KrcmtLeaveDayOffMana c ON b.comDayOffID = c.krcmtLeaveDayOffManaPK.comDayOffID WHERE b.cID = :cid AND b.sID =:employeeId)";
+			listLeaveData = this.queryProxy().query(query, KrcmtLeaveManaData.class).setParameter("cid", cid)
+					.setParameter("employeeId", sid).getList();
+		}
 		return listLeaveData.stream().map(x -> toDomain(x)).collect(Collectors.toList());
 	}
 
