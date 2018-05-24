@@ -12,7 +12,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         employeeCode: KnockoutObservable<string> = ko.observable('');
         employeeName: KnockoutObservable<string> = ko.observable('');
         dayRemaining: KnockoutObservable<string> = ko.observable("0");
-        checkedHoliday: KnockoutObservable<boolean> = ko.observable(false);;
+        checkedHoliday: KnockoutObservable<boolean> = ko.observable(false);
         checkedSubHoliday: KnockoutObservable<boolean> = ko.observable(false);
         checkedSplit: KnockoutObservable<boolean> = ko.observable(false);
         dateHoliday: KnockoutObservable<string> = ko.observable('');
@@ -34,7 +34,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         numberSplitHoliday: KnockoutObservable<string> = ko.observable('');
         totalDay: KnockoutObservable<number> = ko.observable(null);
         //Require 分割消化
-        checkRequire: KnockoutObservable<boolean> = ko.observable(false); 
+        checkRequire: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
             self.initScreen();
@@ -43,32 +43,54 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     self.isOptionSubHolidayEnable(false);
                 } else {
                     self.isOptionSubHolidayEnable(true);
-                    self.selectedCodeOptionSubHoliday.subscribe((selectSplitHoli) => {
-                        self.numberSplitHoliday((selectSplitHoli).toFixed(1));
-                        self.totalDay(self.selectedCodeHoliday() - (self.selectedCodeSubHoliday() + parseFloat(self.numberSplitHoliday())));
-                        self.dayRemaining(self.totalDay().toString());    
-                    });
+//                    self.selectedCodeOptionSubHoliday.subscribe((selectSplitHoli) => {
+//                        self.numberSplitHoliday((selectSplitHoli).toFixed(1));
+//                        self.totalDay(self.selectedCodeHoliday() - (self.selectedCodeSubHoliday() + parseFloat(self.numberSplitHoliday())));
+//                        self.dayRemaining(self.totalDay().toString());
+//                    });
                 }
             });
-            self.selectedCodeHoliday.subscribe((selectHoli) => {
-                self.numberHoliday((selectHoli).toFixed(1));
-                self.totalDay(parseFloat(self.numberHoliday()) - self.selectedCodeSubHoliday());
-                self.dayRemaining(self.totalDay().toString());     
-            });
-            self.selectedCodeSubHoliday.subscribe((selectSubHoli) => {
-                self.numberSubHoliday((selectSubHoli).toFixed(1));
-                self.totalDay(self.selectedCodeHoliday() - parseFloat(self.numberSubHoliday()));
-                self.dayRemaining(self.totalDay().toString());     
-            });
+//            self.selectedCodeHoliday.subscribe((selectHoli) => {
+//                self.numberHoliday((selectHoli).toFixed(1));
+//                self.totalDay(parseFloat(self.numberHoliday()) - self.selectedCodeSubHoliday());
+//                self.dayRemaining(self.totalDay().toString());
+//            });
+//            self.selectedCodeSubHoliday.subscribe((selectSubHoli) => {
+//                self.numberSubHoliday((selectSubHoli).toFixed(1));
+//                self.totalDay(self.selectedCodeHoliday() - parseFloat(self.numberSubHoliday()));
+//                self.dayRemaining(self.totalDay().toString());
+//            });
 
             //Check require
             self.checkedSubHoliday.subscribe((v) => {
                 if (!v) {
                     self.checkRequire(false);
-                }else{
+                } else {
                     self.checkRequire(true);
                 }
             });
+            
+            
+            //休出残数算出処理
+            self.selectedCodeHoliday.subscribe((v) => {
+                if (self.checkedHoliday() && !self.checkedSubHoliday()) {
+                    self.dayRemaining(v);
+                }
+            });
+            
+            self.selectedCodeSubHoliday.subscribe((v) => {
+                if (self.checkedSubHoliday()) {
+                    self.dayRemaining(self.selectedCodeHoliday() - v);                
+                }
+            });
+            
+            self.selectedCodeOptionSubHoliday.subscribe((v) => {
+                if (self.checkedSubHoliday()) {
+                    self.dayRemaining(self.selectedCodeHoliday() - self.selectedCodeSubHoliday() -  v);                
+                }
+            });
+            
+            
         }
         initScreen(): void {
             block.invisible();
