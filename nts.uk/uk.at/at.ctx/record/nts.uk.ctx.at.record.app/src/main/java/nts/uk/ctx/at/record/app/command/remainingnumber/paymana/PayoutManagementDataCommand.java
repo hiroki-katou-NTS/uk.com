@@ -21,7 +21,7 @@ public class PayoutManagementDataCommand {
 	// 社員ID
 	private String sID;
 
-
+    private String employeeId;
 	// 日付不明
 	private boolean unknownDate;
 	

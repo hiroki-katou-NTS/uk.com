@@ -1,6 +1,5 @@
 module nts.uk.at.view.kdm001.g.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
-    import model = kdm001.share.model;
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
     import dialog = nts.uk.ui.dialog;
@@ -24,7 +23,7 @@ module nts.uk.at.view.kdm001.g.viewmodel {
         cID: KnockoutObservable<string> = ko.observable('');
         sID: KnockoutObservable<string> = ko.observable('');
         unknownDate: KnockoutObservable<string> = ko.observable('');
-        dayOff: KnockoutObservable<string> = ko.observable('');
+        dayoffDate: KnockoutObservable<string> = ko.observable('');
         expiredDate: KnockoutObservable<string> = ko.observable('');
         lawAtr: KnockoutObservable<number> = ko.observable('');
         occurredDays: KnockoutObservable<number> = ko.observable('');
@@ -40,7 +39,7 @@ module nts.uk.at.view.kdm001.g.viewmodel {
 
         public initScreen(): void {
             let self = this,
-            info = getShared("KDM001_EFGH_PARAMS");
+                info = getShared("KDM001_EFGH_PARAMS");
             if (info) {
 
                 self.workCode(info.selectedEmployee.workplaceId);
@@ -49,36 +48,52 @@ module nts.uk.at.view.kdm001.g.viewmodel {
                 self.employeeCode(info.selectedEmployee.employeeCode);
                 self.employeeName(info.selectedEmployee.employeeName);
 
-//                self.employeeId(info.selectedEmployee.sID);
-                self.dayOff(info.rowValue.dayOffDate);
+                //self.employ()eeId(info.selectedEmployee.sID);
+                self.payoutId(info.rowValue.id);
+                self.dayoffDate(info.rowValue.dayoffDatePyout);
                 self.occurredDays(info.rowValue.occurredDays);
                 self.lawAtr(info.rowValue.lawAtr);
                 self.expiredDate(info.rowValue.expiredDate);
                 self.unUsedDays(info.rowValue.unUsedDays);
+                self.unknownDate(info.rowValue.unknownDatePayout);
             }
             block.clear();
         }
 
 
         public updateData() {
-            let self = this;
-            let data = {
-                employeeId: self.employeeId(),
-                unknownDate: false,
-                dayOff:self.dayOff(),
-                expiredDate:self.expiredDate(),
-                lawAtr: self.lawAtr(),
-                occurredDays: self.occurredDays(),
-                unUsedDays: self.unUsedDays(),
-                checkBox: self.checkBox()
-            };
+            nts.uk.ui.errors.clearAll();
+            if (!nts.uk.ui.errors.hasError()) {
+                let self = this;
+                let data = {
+                    payoutId:self.payoutId(),
+                    employeeId: self.employeeId(),
+                    unknownDate: self.unknownDate(),
+                    dayoffDate: self.dayoffDate(),
+                    expiredDate: moment.utc(self.expiredDate(), 'YYYY/MM/DD').toISOString(),
+//                    lawAtr: self.lawAtr().parsedInteger(),
+                    lawAtr: 1,
+//                    occurredDays: self.occurredDays(),
+                    occurredDays: 1,
+                    unUsedDays: self.unUsedDays(),
+                    checkBox: self.checkBox()
+                };
 
-            console.log(data);
-            service.updatePayout(data).done(() => {
-                console.log("Success!");
-            }).fail(function(res: any) {
-                console.log("fail!!");
-            });
+                console.log(data);
+                service.updatePayout(data).done(result => {
+                    if (result.length > 0) {
+                        $('#G6_2').ntsError('set', { messageId: result[0] });
+                        block.clear();
+                        return;
+                    }
+                    dialog.info({ messageId: "Msg_15" }).then(() => {
+                        setShared('KDM001_A_PARAMS', {isSuccess: true});
+                        nts.uk.ui.windows.close();
+                    });
+                }).always(() => {
+                    block.clear();
+                });
+            }
         }
 
         public removeData() {
@@ -87,7 +102,7 @@ module nts.uk.at.view.kdm001.g.viewmodel {
                 let self = this;
                 let data = {
                     employeeId: self.employeeId(),
-                    dayOff: self.dayOff()
+                    dayoffDate: self.dayoffDate()
                 };
                 console.log(data);
                 service.removePayout(data).done(() => {

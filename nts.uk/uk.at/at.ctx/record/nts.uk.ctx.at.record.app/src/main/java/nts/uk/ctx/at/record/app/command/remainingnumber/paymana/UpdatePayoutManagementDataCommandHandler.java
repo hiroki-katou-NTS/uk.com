@@ -7,6 +7,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutManagementDataService;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class UpdatePayoutManagementDataCommandHandler extends CommandHandler<PayoutManagementDataCommand> {
@@ -17,10 +18,11 @@ public class UpdatePayoutManagementDataCommandHandler extends CommandHandler<Pay
 	@Override
 	protected void handle(CommandHandlerContext<PayoutManagementDataCommand> context) {
 		PayoutManagementDataCommand command = context.getCommand();
-		PayoutManagementData data = new PayoutManagementData(command.getPayoutId(), command.getCID(), command.getSID(),
+		String cID = AppContexts.user().companyId();
+		PayoutManagementData data = new PayoutManagementData(command.getPayoutId(), cID, command.getEmployeeId(),
 				command.isUnknownDate(), command.getDayoffDate(), command.getExpiredDate(), command.getLawAtr(),
 				command.getOccurredDays(), command.getUnUsedDays(), command.getStateAtr());
-		payoutMNDRSer.update(data, command.isCheckBox(), command.getLawAtr(), command.getExpiredDate(),
+		payoutMNDRSer.update(data, command.isCheckBox(), command.getLawAtr(),command.getDayoffDate(), command.getExpiredDate(),
 				command.getUnUsedDays());
 	}
 

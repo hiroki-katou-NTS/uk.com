@@ -17,7 +17,7 @@ public class DeleteSubstitutionOfHDManaDataCommandHandler extends CommandHandler
 	@Override
 	protected void handle(CommandHandlerContext<DeleteSubstitutionOfHDManaDataCommand> context) {
 		DeleteSubstitutionOfHDManaDataCommand command = context.getCommand();
-	    substitutionOfHDManaDataRepository.delete(command.getEmployeeId(), command.getDayOff());
+		substitutionOfHDManaDataRepository.delete(command.getEmployeeId(), command.getDayoffDate());
 	}
 
 }

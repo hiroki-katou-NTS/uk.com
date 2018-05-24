@@ -56,14 +56,15 @@
 								<div class="column-1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDM001_62')}</div>
 								<!-- H6_2  HolidayDate  -->
 								<div id="H6_2"
-									data-bind="ntsDatePicker: {value: dayOff, dateFormat: 'YYYY/MM/DD'}"
+									data-bind="ntsDatePicker: {value: dayoffDate, dateFormat: 'YYYY/MM/DD'}"
 									tabindex="1"></div>
 							</div>
 						</th>
 						<th>
 							<div class="flex valign-center margin-bottom padding-left-15">
 								<!--H6_3-->
-								<div style="border-style: none !important;" class="column-1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDM001_77')}</div>
+								<div style="border-style: none !important;" class="column-1"
+									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDM001_77')}</div>
 								<!--H6_4  NumberOfDays -->
 								<div class="combobox-select-day"
 									data-bind="ntsComboBox: {

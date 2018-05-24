@@ -6,10 +6,12 @@ import nts.arc.time.GeneralDate;
 @Getter
 public class DeletePayoutManagementDataCommand {
 
-	String payoutId;
+	private String payoutId;
 	
-	String employeeId;
+	private String employeeId;
 	
-	GeneralDate dayOff;
+	private GeneralDate dayOff;
+	
+	private GeneralDate dayoffDate;
 	
 }
