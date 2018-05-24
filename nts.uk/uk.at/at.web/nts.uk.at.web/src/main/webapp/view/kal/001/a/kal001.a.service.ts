@@ -70,10 +70,12 @@ module nts.uk.at.view.kal001.a.service {
         export interface CheckConditionTimeDto{
             category : number;
             categoryName: string;
+            tabOrder: number;
             startDate :   string;
             endDate: string;
             startMonth: string;
             endMonth: string;  
+            year: number;
         }
         export class PeriodByCategoryCommand{
                 category: number;  
@@ -81,15 +83,47 @@ module nts.uk.at.view.kal001.a.service {
                 startDate: string;                
                 endDate : string; 
                 constructor(p: model.PeriodByCategory){
+                    
+                    this.category = p.category;
+                    this.name = p.categoryName;     
+                                        
                     if(p.category==2|| p.category==5){
                         this.startDate =nts.uk.time.parseMoment(p.dateValue().startDate).momentObject.toISOString() ;
                         this.endDate = nts.uk.time.parseMoment(p.dateValue().endDate).momentObject.toISOString() ;
+                        
                     }else if(p.category ==7){
                         this.startDate = null ;
                         this.endDate = null;
+                        
+                    }else if(p.category==12){
+                        this.name=nts.uk.resource.getText("KAL010_208");
+                        if(p.categoryName =="36協定　1・2・4週間"){
+                            this.startDate =nts.uk.time.parseMoment(p.dateValue().startDate).momentObject.toISOString() ;
+                            this.endDate = nts.uk.time.parseMoment(p.dateValue().endDate).momentObject.toISOString() ;
+                                                        
+                        } else if(p.categoryName=="36協定　年間"){
+                            let sDate =p.year() +'/' + p.dateValue().startDate.slice(5, 7) +"/01";
+                            let eDate =(p.year() + 1) +'/' + p.dateValue().endDate.slice(5,7) ;
+                            
+                            let lastDay = new Date(Number(eDate.slice(0, 4)), Number(eDate.slice(5, 7)), 0);
+                            eDate = eDate + "/"  +(lastDay.getDate() <10? "0" + lastDay.getDate() : lastDay.getDate());                            
+                            
+                            this.startDate =nts.uk.time.parseMoment(sDate).momentObject.toISOString() ;
+                            this.endDate = nts.uk.time.parseMoment(eDate).momentObject.toISOString() ;    
+                                                    
+                        } else{
+                            let sDate =p.dateValue().startDate + '/01';
+                            let eDate = p.dateValue().endDate;
+
+                            let lastDay = new Date(Number(eDate.slice(0, 4)), Number(eDate.slice(5, 7)), 0);
+                            eDate = eDate + "/"  +(lastDay.getDate() <10? "0" + lastDay.getDate() : lastDay.getDate());
+                                                        
+                            this.startDate =nts.uk.time.parseMoment(sDate).momentObject.toISOString() ;
+                            this.endDate = nts.uk.time.parseMoment(eDate).momentObject.toISOString() ;                                 
+                        }
+                        
                     }
-                    this.category = p.category;
-                    this.name = p.categoryName;                            
+                       
                 }   
         }
         export class ExtractAlarmCommand{
@@ -100,7 +134,7 @@ module nts.uk.at.view.kal001.a.service {
             constructor(listEmployee: Array<model.UnitModel>,  alarmCode: string, listPeriodByCategory: Array<PeriodByCategoryCommand>){
                 this.listEmployee = listEmployee;
                 this.alarmCode = alarmCode;
-                this.listPeriodByCategory = listPeriodByCategory;
+                this.listPeriodByCategory = _.uniqWith(listPeriodByCategory, _.isEqual);
             }
         }
         

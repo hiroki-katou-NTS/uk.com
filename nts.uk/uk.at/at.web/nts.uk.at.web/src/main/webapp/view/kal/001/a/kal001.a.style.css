@@ -20,7 +20,7 @@
 }
 
 #fixed-table{
-    overflow-y: scroll
+    overflow-y: scroll;
 }
 .inputDate .periodTime{
 	align: "center";
