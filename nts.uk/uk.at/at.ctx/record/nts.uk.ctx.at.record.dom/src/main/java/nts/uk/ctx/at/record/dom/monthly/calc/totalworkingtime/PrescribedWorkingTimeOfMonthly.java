@@ -17,7 +17,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author shuichi_ishida
  */
 @Getter
-public class PrescribedWorkingTimeOfMonthly {
+public class PrescribedWorkingTimeOfMonthly implements Cloneable {
 
 	/** 計画所定労働時間 */
 	private AttendanceTimeMonth schedulePrescribedWorkingTime;
@@ -52,24 +52,20 @@ public class PrescribedWorkingTimeOfMonthly {
 		domain.recordPrescribedWorkingTime = recordPrescribedWorkingTime;
 		return domain;
 	}
-
-	/**
-	 * 複写
-	 * @param schedulePrescribedWorkingTime 計画所定労働時間
-	 * @param recordPrescribedWorkingTime 実績所定労働時間
-	 * @param timeSeriesWorks 時系列ワーク
-	 * @return 月別実績の所定労働時間
-	 */
-	public static PrescribedWorkingTimeOfMonthly copyFrom(
-			AttendanceTimeMonth schedulePrescribedWorkingTime,
-			AttendanceTimeMonth recordPrescribedWorkingTime,
-			List<PrescribedWorkingTimeOfTimeSeries> timeSeriesWorks){
-		
-		val domain = new PrescribedWorkingTimeOfMonthly();
-		domain.schedulePrescribedWorkingTime = new AttendanceTimeMonth(schedulePrescribedWorkingTime.valueAsMinutes());
-		domain.recordPrescribedWorkingTime = new AttendanceTimeMonth(recordPrescribedWorkingTime.valueAsMinutes());
-		domain.timeSeriesWorks = timeSeriesWorks;
-		return domain;
+	
+	@Override
+	public PrescribedWorkingTimeOfMonthly clone() {
+		PrescribedWorkingTimeOfMonthly cloned = new PrescribedWorkingTimeOfMonthly();
+		try {
+			cloned.schedulePrescribedWorkingTime = new AttendanceTimeMonth(this.schedulePrescribedWorkingTime.v());
+			cloned.recordPrescribedWorkingTime = new AttendanceTimeMonth(this.recordPrescribedWorkingTime.v());
+			// ※　Shallow Copy.
+			cloned.timeSeriesWorks = timeSeriesWorks;
+		}
+		catch (Exception e){
+			throw new RuntimeException("PrescribedWorkingTimeOfMonthly clone error.");
+		}
+		return cloned;
 	}
 	
 	/**

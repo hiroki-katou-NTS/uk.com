@@ -108,7 +108,7 @@ public class WorkRecordExtraConAcFinder implements WorkRecordExtraConAdapter {
 				);
 	}
 	
-	private AttendanceItemConAdapterDto convertToAttendanceItemCon (AttendanceItemConditionPubExport export) {
+	public static AttendanceItemConAdapterDto convertToAttendanceItemCon (AttendanceItemConditionPubExport export) {
 		return new AttendanceItemConAdapterDto(
 				export.getOperatorBetweenGroups(),
 				convertToErAlConAttendanceItem(export.getGroup1()),
@@ -117,14 +117,14 @@ public class WorkRecordExtraConAcFinder implements WorkRecordExtraConAdapter {
 				);
 	}
 	
-	private ErAlConAttendanceItemAdapterDto convertToErAlConAttendanceItem(ErAlConditionsAttendanceItemPubExport export) {
+	public static ErAlConAttendanceItemAdapterDto convertToErAlConAttendanceItem(ErAlConditionsAttendanceItemPubExport export) {
 		return new  ErAlConAttendanceItemAdapterDto(
 				export.getAtdItemConGroupId(),
 				export.getConditionOperator(),
 				export.getLstErAlAtdItemCon().stream().map(c->convertToErAlAtdItemCon(c)).collect(Collectors.toList())
 				);
 	}
-	private ErAlAtdItemConAdapterDto convertToErAlAtdItemCon(ErAlAtdItemConditionPubExport export) {
+	public static ErAlAtdItemConAdapterDto convertToErAlAtdItemCon(ErAlAtdItemConditionPubExport export) {
 		return new ErAlAtdItemConAdapterDto(
 				export.getTargetNO(),
 				export.getConditionAtr(),

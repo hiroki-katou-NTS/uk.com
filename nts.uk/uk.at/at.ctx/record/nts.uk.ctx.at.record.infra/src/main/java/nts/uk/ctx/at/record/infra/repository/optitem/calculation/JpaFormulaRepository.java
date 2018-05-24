@@ -60,7 +60,7 @@ public class JpaFormulaRepository extends JpaRepository implements FormulaReposi
 	 * java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void remove(String comId, String optItemNo) {
+	public void remove(String comId, Integer optItemNo) {
 		this.commandProxy().removeAll(this.findEntity(comId, optItemNo));
 	}
 
@@ -71,7 +71,7 @@ public class JpaFormulaRepository extends JpaRepository implements FormulaReposi
 	 * findByOptItemNo(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public List<Formula> findByOptItemNo(String companyId, String optItemNo) {
+	public List<Formula> findByOptItemNo(String companyId, Integer optItemNo) {
 
 		List<KrcmtOptItemFormula> results = this.findEntity(companyId, optItemNo);
 
@@ -90,7 +90,7 @@ public class JpaFormulaRepository extends JpaRepository implements FormulaReposi
 	 * @param optItemNo the opt item no
 	 * @return the list
 	 */
-	private List<KrcmtOptItemFormula> findEntity(String companyId, String optItemNo) {
+	private List<KrcmtOptItemFormula> findEntity(String companyId, Integer optItemNo) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 
@@ -123,7 +123,6 @@ public class JpaFormulaRepository extends JpaRepository implements FormulaReposi
 	 * find(java.lang.String)
 	 */
 	public List<Formula> find(String companyId) {
-		// TODO Auto-generated method stub
 		List<KrcmtOptItemFormula> results = this.findEntityByCompanyId(companyId);
 
 		// Return
@@ -171,7 +170,7 @@ public class JpaFormulaRepository extends JpaRepository implements FormulaReposi
 	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Formula findById(String companyId, String optItemNo, String formulaId) {
+	public Formula findById(String companyId, Integer optItemNo, String formulaId) {
 		KrcmtOptItemFormula entity = this.queryProxy()
 				.find(new KrcmtOptItemFormulaPK(companyId, optItemNo, formulaId), KrcmtOptItemFormula.class).get();
 		return new Formula(new JpaFormulaGetMemento(entity));

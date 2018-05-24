@@ -17,12 +17,12 @@ public class CareLeaveDataFinder {
 	public CareLeaveDataDto getCareLeaveRemaining(String empId){
 		Optional<NursingCareLeaveRemainingData> domain = repo.getCareByEmpId(empId);
 		if(!domain.isPresent()) return null;
-		return new CareLeaveDataDto(domain.get().getSId(), domain.get().getNumOfUsedDay());
+		return new CareLeaveDataDto(domain.get().getSId(), domain.get().getNumOfUsedDay().v());
 	}
 	
 	public CareLeaveDataDto getChildCareLeaveRemaining(String empId){
 		Optional<NursingCareLeaveRemainingData> domain = repo.getChildCareByEmpId(empId);
 		if(!domain.isPresent()) return null;
-		return new CareLeaveDataDto(domain.get().getSId(), domain.get().getNumOfUsedDay());
+		return new CareLeaveDataDto(domain.get().getSId(), domain.get().getNumOfUsedDay().v());
 	}
 }

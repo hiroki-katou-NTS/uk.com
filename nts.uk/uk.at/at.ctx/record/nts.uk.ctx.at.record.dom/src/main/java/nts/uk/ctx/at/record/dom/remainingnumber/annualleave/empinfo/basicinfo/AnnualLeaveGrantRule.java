@@ -26,11 +26,11 @@ public class AnnualLeaveGrantRule {
 	}
 	
 	public String nextTimeGrantDays() {
-		return "0";
+		return "0.0日";
 	}
 	
 	public String nextTimeMaxTime() {
-		return "0";
+		return "0:00";
 	}
 	
 }

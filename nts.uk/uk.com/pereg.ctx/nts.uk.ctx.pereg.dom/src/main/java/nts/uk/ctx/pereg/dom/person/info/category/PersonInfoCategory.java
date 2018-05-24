@@ -96,6 +96,23 @@ public class PersonInfoCategory extends AggregateRoot {
 		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
 		this.isFixed = EnumAdaptor.valueOf(isFixed, IsFixed.class);
 	}
+	
+	// đối ứng cho việc thêm 2 trường mới initObj, addObj
+	private PersonInfoCategory(String personInfoCategoryId, String companyId, String categoryCode,
+			String categoryParentCode, String categoryName, int personEmployeeType, int isAbolition, int categoryType,
+			int isFixed, int addObj, int initObj) {
+		super();
+		this.personInfoCategoryId = personInfoCategoryId;
+		this.categoryCode = new CategoryCode(categoryCode);
+		this.categoryParentCode = new CategoryCode(categoryParentCode);
+		this.categoryName = new CategoryName(categoryName);
+		this.personEmployeeType = EnumAdaptor.valueOf(personEmployeeType, PersonEmployeeType.class);
+		this.isAbolition = EnumAdaptor.valueOf(isAbolition, IsAbolition.class);
+		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
+		this.isFixed = EnumAdaptor.valueOf(isFixed, IsFixed.class);
+		this.addItemCls = EnumAdaptor.valueOf(addObj, AddItemObjCls.class);
+		this.initValMasterCls = EnumAdaptor.valueOf(initObj, InitValMasterObjCls.class);
+	}
 
 	private PersonInfoCategory(String personInfoCategoryId, String companyId, int categoryType) {
 		super();
@@ -113,6 +130,14 @@ public class PersonInfoCategory extends AggregateRoot {
 		return new PersonInfoCategory(companyId, categoryCode, categoryName, categoryType);
 	}
 
+	public static PersonInfoCategory createFromEntity(String personInfoCategoryId, String companyId,
+			String categoryCode, String categoryParentCode, String categoryName, int personEmployeeType,
+			int isAbolition, int categoryType, int isFixed,
+			int addObj, int initObj) {
+		return new PersonInfoCategory(personInfoCategoryId, companyId, categoryCode, categoryParentCode, categoryName,
+				personEmployeeType, isAbolition, categoryType, isFixed, addObj, initObj);
+	}
+	
 	public static PersonInfoCategory createFromEntity(String personInfoCategoryId, String companyId,
 			String categoryCode, String categoryParentCode, String categoryName, int personEmployeeType,
 			int isAbolition, int categoryType, int isFixed) {
@@ -170,4 +195,20 @@ public class PersonInfoCategory extends AggregateRoot {
 		this.initValMasterCls = InitValMasterObjCls.INIT;
 		this.addItemCls = AddItemObjCls.ENABLE;
 	}
+	
+	public boolean isFixed() {
+		return this.isFixed == IsFixed.FIXED;
+	}
+	
+	public boolean isSingleCategory() {
+		return categoryType == CategoryType.SINGLEINFO;
+	}
+	
+	public boolean isHistoryCategory() {
+		return categoryType == CategoryType.CONTINUOUSHISTORY 
+				|| categoryType == CategoryType.NODUPLICATEHISTORY
+				|| categoryType == CategoryType.DUPLICATEHISTORY
+				|| categoryType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE;
+	}
+	
 }

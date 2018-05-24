@@ -37,26 +37,26 @@ public class SprLoginFormImpl implements SprLoginFormService {
 	
 	@Override
 	public LoginUserContextSpr loginFromSpr(String menuCD, String loginEmployeeCD, String employeeCD, String startTime, 
-			String endTime, String date, String selectType, String appID, String reason){
+			String endTime, String date, String selectType, String appID, String reason, String stampFlg){
 		// 契約コード固定：　000000000000
 		// 会社コード固定：　0001
 		// 会社ID固定：　000000000000-0001
 		String companyID = "000000000000-0001";
 		
 		// アルゴリズム「パラメータチェック」を実行する
-		String employeeID = this.paramCheck(menuCD, loginEmployeeCD, employeeCD, startTime, endTime, date, selectType, appID, reason);
+		String employeeID = this.paramCheck(menuCD, loginEmployeeCD, employeeCD, startTime, endTime, date, selectType, appID, reason, stampFlg);
 		
 		// （基幹・社員Export）アルゴリズム「「会社ID」「社員コード」より社員基本情報を取得」を実行する　RequestList No.18
-		Optional<EmpSprExport> opEmployeeSpr = employeeSprPub.getEmployeeID(companyID, loginEmployeeCD);
+		Optional<EmpSprExport> opEmployeeSpr = employeeSprPub.getEmployeeID(companyID, loginEmployeeCD.trim());
 		if(!opEmployeeSpr.isPresent()){
 			throw new BusinessException("Msg_301");
 		}
-		return this.generateSession(loginEmployeeCD, opEmployeeSpr.get().getEmployeeID(), opEmployeeSpr.get().getPersonID(), employeeID);
+		return this.generateSession(loginEmployeeCD.trim(), opEmployeeSpr.get().getEmployeeID(), opEmployeeSpr.get().getPersonID(), employeeID);
 	}
 
 	@Override
 	public String paramCheck(String menuCD, String loginEmployeeCD, String employeeCD, String startTime, 
-			String endTime, String date, String selectType, String appID, String reason) {
+			String endTime, String date, String selectType, String appID, String reason, String stampFlg) {
 		// アルゴリズム「パラメータチェック（共通）」を実行する
 		this.paramCheckBasic(menuCD, loginEmployeeCD);
 		Integer menuValue = Integer.valueOf(menuCD);
@@ -73,7 +73,7 @@ public class SprLoginFormImpl implements SprLoginFormService {
 			break;
 		case 3: 
 			// アルゴリズム「パラメータチェック（日別実績の修正）」を実行する
-			employeeID = loginParamCheck.checkParamAdjustDaily(employeeCD, startTime, endTime, date, reason);
+			employeeID = loginParamCheck.checkParamAdjustDaily(employeeCD, startTime, endTime, date, reason, stampFlg);
 			break;
 		case 4: 
 			// アルゴリズム「パラメータチェック（承認一覧）」を実行する
@@ -100,7 +100,7 @@ public class SprLoginFormImpl implements SprLoginFormService {
 			throw new BusinessException("Msg_999", "Msg_1026");
 		}
 		// ログイン社員コード(loginemployeeCode)をチェックする
-		employeeSprPub.validateEmpCodeSpr(loginEmployeeCD);
+		employeeSprPub.validateEmpCodeSpr(loginEmployeeCD.trim());
 		// フォームデータ「遷移先画面(menu)」を取得する
 		Integer menuValue = null;
 		try {
@@ -130,8 +130,8 @@ public class SprLoginFormImpl implements SprLoginFormService {
 				"000000000000-0001", // 固定
 				"0001", // 固定
 				personID, 
-				loginEmployeeCD, 
 				loginEmployeeID, 
+				loginEmployeeCD, 
 				roleList,
 				employeeID);
 		

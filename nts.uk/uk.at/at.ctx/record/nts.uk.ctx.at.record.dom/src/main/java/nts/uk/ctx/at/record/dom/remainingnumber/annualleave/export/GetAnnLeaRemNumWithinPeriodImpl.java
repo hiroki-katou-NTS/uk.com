@@ -127,8 +127,7 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 
 			// 年休の消滅・付与・消化
 			aggrResult = annualLeaveInfo.lapsedGrantDigest(companyId, employeeId, aggregatePeriodWork,
-					tempAnnualLeaveMngs, isGetNextMonthData, isCalcAttendanceRate, aggrResult,
-					annualLeaveSet, this.grantRemainingDatas);
+					tempAnnualLeaveMngs, isGetNextMonthData, isCalcAttendanceRate, aggrResult, annualLeaveSet);
 		}
 		
 		// 「年休の集計結果」を返す
@@ -198,20 +197,13 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 
 		// 締め開始日>=集計開始日　or 締め開始日がnull　の時
 		
-		// 「年休付与残数データ」を取得
-		List<AnnualLeaveGrantRemainingData> annLeaGrantRemDatas = new ArrayList<>();
-		for (val grantRemainingData : this.grantRemainingDatas){
-			if (!this.aggrPeriod.contains(grantRemainingData.getGrantDate())) continue;
-			annLeaGrantRemDatas.add(grantRemainingData);
-		}
-		
 		// 「年休上限データ」を取得
 		val annLeaMaxDataOpt = this.annLeaMaxDataRepo.get(this.employeeId);
 		if (!annLeaMaxDataOpt.isPresent()) return emptyInfo;
 		val annLeaMaxData = annLeaMaxDataOpt.get();
 
 		// 取得内容をもとに年休情報を作成
-		return this.createInfoFromRemainingData(annLeaGrantRemDatas, annLeaMaxData);
+		return this.createInfoFromRemainingData(this.grantRemainingDatas, annLeaMaxData);
 	}
 	
 	/**

@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
@@ -15,9 +17,12 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonthRepository;
+import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonthRepository;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.AggregateMonthlyRecordService;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageResource;
@@ -30,6 +35,7 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enu
  * @author shuichu_ishida
  */
 @Stateless
+@Transactional(value = TxType.REQUIRES_NEW)
 public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregationEmployeeService {
 
 	/** ドメインサービス：月別実績を集計する */
@@ -53,6 +59,12 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	/** リポジトリ：管理時間の36協定時間 */
 	@Inject
 	private AgreementTimeOfManagePeriodRepository agreementTimeRepository;
+	/** 年休月別残数データ */
+	@Inject
+	private AnnLeaRemNumEachMonthRepository annLeaRemNumEachMonthRepo;
+	/** 積立年休月別残数データ */
+	@Inject
+	private RsvLeaRemNumEachMonthRepository rsvLeaRemNumEachMonthRepo;
 	/** エラーメッセージ情報 */
 	@Inject
 	private ErrMessageInfoRepository errMessageInfoRepository;
@@ -72,6 +84,9 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 		
 		ProcessState status = ProcessState.SUCCESS;
 		val dataSetter = asyncContext.getDataSetter();
+		
+		// 前回集計結果　（年休積立年休の集計結果）
+		AggrResultOfAnnAndRsvLeave prevAggrResult = new AggrResultOfAnnAndRsvLeave();
 		
 		// 集計期間の判断　（実締め毎集計期間だけをすべて取り出す）
 		List<AggrPeriodEachActualClosure> aggrPeriods = new ArrayList<>();
@@ -97,7 +112,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			
 			// 月別実績を集計する　（アルゴリズム）
 			val value = this.aggregateMonthlyRecordService.aggregate(companyId, employeeId,
-					yearMonth, closureId, closureDate, datePeriod);
+					yearMonth, closureId, closureDate, datePeriod, prevAggrResult);
 			if (value.getErrorInfos().size() > 0) {
 
 				// 「エラーあり」に更新
@@ -124,6 +139,21 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 				}
 			}
 			
+			// 前回集計結果の退避
+			prevAggrResult = value.getAggrResultOfAnnAndRsvLeave();
+			
+			// 計算結果と同月データの削除
+			val oldDatas = this.attendanceTimeRepository.findByYearMonthOrderByStartYmd(employeeId, yearMonth);
+			for (val oldData : oldDatas){
+				boolean isTarget = false;
+				if (oldData.getClosureId().value != closureId.value) isTarget = true;
+				if (!oldData.getClosureDate().getClosureDay().equals(closureDate.getClosureDay())) isTarget = true;
+				if (oldData.getClosureDate().getLastDayOfMonth() != closureDate.getLastDayOfMonth()) isTarget = true;
+				if (!isTarget) continue;
+				this.attendanceTimeRepository.remove(
+						employeeId, yearMonth, oldData.getClosureId(), oldData.getClosureDate());
+			}
+			
 			// 登録する
 			for (val attendanceTime : value.getAttendanceTimeList()){
 				this.attendanceTimeRepository.persistAndUpdate(attendanceTime);
@@ -136,6 +166,12 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			}
 			for (val agreementTime : value.getAgreementTimeList()){
 				this.agreementTimeRepository.persistAndUpdate(agreementTime);
+			}
+			for (val annLeaRemNum : value.getAnnLeaRemNumEachMonthList()){
+				this.annLeaRemNumEachMonthRepo.persistAndUpdate(annLeaRemNum);
+			}
+			for (val rsvLeaRemNum : value.getRsvLeaRemNumEachMonthList()){
+				this.rsvLeaRemNumEachMonthRepo.persistAndUpdate(rsvLeaRemNum);
 			}
 		}
 		return status;

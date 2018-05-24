@@ -17,6 +17,6 @@ public class KrcstOptionalItemPK_ {
 	public static volatile SingularAttribute<KrcstOptionalItemPK, String> cid;
 
 	/** The optional item no. */
-	public static volatile SingularAttribute<KrcstOptionalItemPK, String> optionalItemNo;
+	public static volatile SingularAttribute<KrcstOptionalItemPK, Integer> optionalItemNo;
 
 }

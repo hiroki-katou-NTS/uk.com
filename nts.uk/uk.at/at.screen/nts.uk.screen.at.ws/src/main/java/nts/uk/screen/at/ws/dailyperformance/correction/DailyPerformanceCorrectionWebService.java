@@ -4,6 +4,7 @@
 package nts.uk.screen.at.ws.dailyperformance.correction;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
 import nts.arc.enums.EnumConstant;
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -41,8 +43,12 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorr
 import nts.uk.screen.at.app.dailyperformance.correction.dto.EmpAndDate;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
+import nts.uk.screen.at.app.dailyperformance.correction.flex.CalcFlexDto;
+import nts.uk.screen.at.app.dailyperformance.correction.flex.CheckBeforeCalcFlex;
 import nts.uk.screen.at.app.dailyperformance.correction.selecterrorcode.DailyPerformanceErrorCodeProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.selectitem.DailyPerformanceSelectItemProcessor;
+import nts.uk.screen.at.app.monthlyperformance.correction.command.MonthModifyCommandFacade;
+import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
 
 /**
  * @author hungnm
@@ -79,6 +85,12 @@ public class DailyPerformanceCorrectionWebService {
 	@Inject
 	private PersonalTightCommandFacade personalTightCommandFacade;
 	
+	@Inject
+	private MonthModifyCommandFacade monthModifyCommandFacade;
+	
+	@Inject
+	private CheckBeforeCalcFlex checkBeforeCalcFlex;
+	
 	@POST
 	@Path("startScreen")
 	public DailyPerformanceCorrectionDto startScreen(DPParams params ) throws InterruptedException{
@@ -88,7 +100,7 @@ public class DailyPerformanceCorrectionWebService {
 	@POST
 	@Path("errorCode")
 	public DailyPerformanceCorrectionDto condition(DPParams params ) throws InterruptedException{
-		return this.errorProcessor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.displayFormat, params.correctionOfDaily, params.errorCodes, params.formatCodes);
+		return this.errorProcessor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.mode, params.displayFormat, params.correctionOfDaily, params.errorCodes, params.formatCodes);
 	}
 	
 	@POST
@@ -125,6 +137,17 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("addAndUpdate")
 	public Map<Integer, List<DPItemValue>> addAndUpdate(DPItemParent dataParent) {
 		Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
+		// insert flex 
+		if (dataParent.getMonthValue() != null) {
+			val month = dataParent.getMonthValue();
+			if (month != null && month.getItems() != null) {
+				monthModifyCommandFacade.handleUpdate(new MonthlyModifyQuery(month.getItems().stream().map(x -> {
+					return ItemValue.builder().itemId(x.getItemId()).layout(x.getLayoutCode()).value(x.getValue())
+							.valueType(ValueType.valueOf(x.getValueType())).withPath("");
+				}).collect(Collectors.toList()), month.getYearMonth(), month.getEmployeeId(), month.getClosureId(),
+						month.getClosureDate(), Collections.emptyList()));
+			}
+		}
 		List<DPItemValue> itemValueChild= dataParent.getItemValues().stream().map(x -> {
 			DPItemValue item = x;
 			if (x.getTypeGroup() == TypeLink.POSSITION.value) {
@@ -213,5 +236,11 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("getApplication")
 	public List<EnumConstant> getApplicationName() {
 		return dataDialogWithTypeProcessor.getNameAppliction();
+	}
+	
+	@POST
+	@Path("getFlexCheck")
+	public JavaTypeResult<String>  getValueTimeFlex(CalcFlexDto calc) {
+		return new JavaTypeResult<String>(checkBeforeCalcFlex.getConditionCalcFlex(calc));
 	}
 }

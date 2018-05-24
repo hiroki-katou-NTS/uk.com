@@ -49,3 +49,11 @@
 	margin-left: 17px;
 	margin-top: 5px;
 }
+
+#targetGroup{
+	margin-left: 25px;
+}
+
+#targetGroup .ntsRadioBox {
+	margin-right: 50px;
+}

@@ -18,8 +18,13 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.adapter.approvalrootstate.AppRootStateConfirmAdapter;
+import nts.uk.ctx.at.record.dom.approvalmanagement.enums.ConfirmationOfManagerOrYouself;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalStatusOfDailyPerforRepository;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployee;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployeeHistory;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeEmpOfHistoryRepository;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeOfEmployeeRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
@@ -43,6 +48,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
+import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.enums.SelfConfirmError;
@@ -119,6 +125,12 @@ public class DivTimeSysFixedCheckService {
 	@Inject
 	private I18NResources resources;
 	
+	@Inject
+	private BusinessTypeEmpOfHistoryRepository bteHisRepo;
+	
+	@Inject
+	private BusinessTypeOfEmployeeRepository bteRepo;
+	
 	public static List<String> SYSTEM_FIXED_CHECK_CODE = Arrays.asList("D001", "D002", "D003", "D004", "D005", 
 			"D006", "D007", "D008", "D009", "D010", "D011", "D012", "D013", "D014", "D015", "D016", "D017", "D018", "D019", "D020");
 	private final String WORKTYPE_HISTORY_ITEM = "W_HIS";
@@ -164,24 +176,35 @@ public class DivTimeSysFixedCheckService {
 	/** 確認解除 */
 	private List<EmployeeDailyPerError> removeconfirm(String companyId, String employeeId, GeneralDate workingDate, 
 			List<EmployeeDailyPerError> errors, IdentityProcessUseSet identityPUS) {
-		if(identityPUS.isUseConfirmByYourself()) {
-			identityRepo.findByCode(employeeId, workingDate).ifPresent(id -> {
-				List<SelfConfirmContent> content = errors.stream().map(c -> new SelfConfirmContent(c.getDate(), false)).collect(Collectors.toList());
-				registryIdentity(companyId, identityPUS, new SelfConfirmContentRegistry(content, employeeId));
+		List<EmployeeDailyPerError> errorDivergence = errors.stream().filter(c -> c.getErrorAlarmWorkRecordCode() != null
+				&& (c.getErrorAlarmWorkRecordCode().v().equals(SystemFixedErrorAlarm.DIVERGENCE_ERROR_6.value)
+				|| c.getErrorAlarmWorkRecordCode().v().equals(SystemFixedErrorAlarm.DIVERGENCE_ERROR_7.value))
+				&& c.getDate().equals(workingDate) && c.getEmployeeID().equals(employeeId)).collect(Collectors.toList());
+		
+		if (identityPUS.isUseConfirmByYourself()) {
+			val identity = identityRepo.findByCode(employeeId, workingDate);
+			if (identity.isPresent()) {
+				List<SelfConfirmContent> content = errorDivergence.stream().map(c -> new SelfConfirmContent(c.getDate(), false))
+						.collect(Collectors.toList());
+				removeSelfIdentity(companyId, identityPUS, new SelfConfirmContentRegistry(content, employeeId));
+			}
+		}
+		
+		if (!errorDivergence.isEmpty()) {
+			approvalSettingRepo.findByCompanyId(companyId).ifPresent(as -> {
+				if (as.getUseDayApproverConfirm() != null && as.getUseDayApproverConfirm()
+						&& as.getSupervisorConfirmErrorAtr() != null
+						&& !as.getSupervisorConfirmErrorAtr().equals(ConfirmationOfManagerOrYouself.CAN_CHECK)) {
+					approvalStatRepo.find(employeeId, workingDate).ifPresent(asd -> {
+						/** 承認状態をすべてクリアする */
+						appRootStateAdapter.clearAppRootstate(asd.getRootInstanceID());
+					});
+				}
 			});
 		}
-//		approvalSettingRepo.findByCompanyId(companyId).ifPresent(as -> {
-//			if(as.getUseDayApproverConfirm() != null && as.getUseDayApproverConfirm()) {
-//				approvalStatRepo.find(employeeId, workingDate).ifPresent(asd -> {
-//					/** 承認状態をすべてクリアする */
-//					appRootStateAdapter.clearAppRootstate(asd.getRootInstanceID());
-//				});
-//			}
-//		});
 		return errors;
 	}
-	
-	
+		
 	/** 日の本人確認を登録する */
 	private void registryIdentity(String companyId, IdentityProcessUseSet identityPUS, SelfConfirmContentRegistry selfConfirm) {
 		if(!identityPUS.getYourSelfConfirmError().isPresent()) {
@@ -214,6 +237,20 @@ public class DivTimeSysFixedCheckService {
 //		selfConfirm.content.stream().filter(c -> c.confirmStatus).forEach(c -> {
 //			identityRepo.insert(new Identification(companyId, selfConfirm.empId, c.ymd, today));
 //		});
+	}
+	
+	/** 日の本人確認を解除する */
+	private void removeSelfIdentity(String companyId, IdentityProcessUseSet identityPUS, SelfConfirmContentRegistry selfConfirm) {
+		if(!identityPUS.getYourSelfConfirmError().isPresent()) {
+			return;
+		}
+		if (identityPUS.getYourSelfConfirmError().get() != SelfConfirmError.CAN_CONFIRM_WHEN_ERROR) {
+			// fix remove ドメインモデル「日の本人確認」を削除する Thanh
+			selfConfirm.content.stream().filter(c -> !c.confirmStatus).forEach(c -> {
+				identityRepo.remove(companyId, selfConfirm.empId, c.ymd);
+			});
+			return;
+		}
 	}
 	
 	/** システム固定エラー：　乖離時間をチェックする */
@@ -259,7 +296,7 @@ public class DivTimeSysFixedCheckService {
 					if(!valid){
 						checkR.add(new EmployeeDailyPerError(companyId, employeeId, workingDate, 
 								erAl.getCode(), Arrays.asList(erAl.getErrorDisplayItem() != null? erAl.getErrorDisplayItem().intValue():null), 
-								erAl.getCancelableAtr() ? 1 : 0, getMessage(isCheckByWorkType, isPcDivergence, companyId, ((numberIn-1) / 2)+1, isAlarm, bsCode)));
+								erAl.getCancelableAtr() ? 1 : 0, getMessage(isWHis, isPcDivergence, companyId, ((numberIn-1) / 2)+1, isAlarm, bsCode)));
 					}
 				});
 //				divergenTime.stream().forEach(dt -> {
@@ -326,8 +363,17 @@ public class DivTimeSysFixedCheckService {
 		if(!isGet){
 			return null;
 		}
-		val workInfo = workInfoRepo.find(employeeId, workingDate).orElse(null);
-		return workInfo == null ? null : new BusinessTypeCode(workInfo.getRecordInfo().getWorkTypeCode().v());
+		
+		BusinessTypeOfEmployeeHistory bteHis = bteHisRepo.findByBaseDate(workingDate, employeeId).orElse(null);
+		if(bteHis == null){
+			return null;
+		}
+		DateHistoryItem hisItem = bteHis.getHistory().stream().filter(c -> c.contains(workingDate)).findFirst().orElse(null);
+		if(hisItem == null){
+			return null;
+		}
+		BusinessTypeOfEmployee bte = bteRepo.findByHistoryId(hisItem.identifier()).orElse(null);
+		return bte == null ? null : bte.getBusinessTypeCode();
 	}
 
 	/** 「乖離時間」を取得する */
@@ -394,7 +440,7 @@ public class DivTimeSysFixedCheckService {
 			return true;
 		}
 		DivergenceReferenceTime sdTime = isAlarm ? standard.getAlarmTime().orElse(null) : standard.getErrorTime().orElse(null);
-		if(sdTime != null){
+		if(sdTime != null && sdTime.v() > 0){
 			boolean isError = divergenceTime >= sdTime.valueAsMinutes();
 			if(isError) {
 				// パラメータ「エラーの解除方法．乖離理由が選択された場合，エラーを解除する」をチェックする
@@ -437,7 +483,7 @@ public class DivTimeSysFixedCheckService {
 			}
 		}
 		if(message != null) {
-			return isWithBonusText ? StringUtils.join(message.v(), resources.localize("KDW003_108")) : message.v();
+			return isWithBonusText ? StringUtils.join(message.v(), resources.localize("KDW003_108").orElse("")) : message.v();
 		}
 		return "";
 	}

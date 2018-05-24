@@ -10,6 +10,7 @@ import nts.arc.layer.ws.preprocess.RequestFilterMapping;
 import nts.arc.layer.ws.preprocess.filters.RequestPerformanceLogFilter;
 import nts.arc.security.csrf.CsrfProtectionFilter;
 import nts.uk.shr.com.program.nosession.PathsNoSession;
+import nts.uk.shr.infra.application.auth.WindowsAccountCatcher;
 import nts.uk.shr.infra.web.session.ScreenLoginSessionValidator;
 import nts.uk.shr.infra.web.session.SharingSessionFilter;
 import nts.uk.shr.infra.web.session.WebApiLoginSessionValidator;
@@ -21,7 +22,7 @@ public class UkRequestFilterCollector implements RequestFilterCollector {
 		static final String ALL_REQUESTS = ".*";
 		static final String ALL_SCREENS = ".*\\.xhtml.*";
 		static final String ALL_WEB_APIS = ".*/webapi/.*";
-
+		static final String LOGIN_SCREENS = ".*/view/ccg/007/.*";
 	}
 	
 	private static final List<RequestFilterMapping> FILTERS = Arrays.asList(
@@ -31,7 +32,8 @@ public class UkRequestFilterCollector implements RequestFilterCollector {
 			RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new ProgramIdDetector()),
 			RequestFilterMapping.map(PathPattern.ALL_SCREENS, new ScreenLoginSessionValidator()),
 			RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new WebApiLoginSessionValidator()),
-			RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new CsrfProtectionFilter(PathsNoSession.WEB_APIS))
+			RequestFilterMapping.map(PathPattern.LOGIN_SCREENS, new WindowsAccountCatcher())
+//			RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new CsrfProtectionFilter(PathsNoSession.WEB_APIS))
 			);
 
 	@Override

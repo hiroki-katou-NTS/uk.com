@@ -14,20 +14,9 @@ import nts.uk.shr.pereg.app.command.PeregInputContainer;
 @Produces("application/json")
 public class FacadePeregWebService extends WebService {
 
+
 	@Inject
 	private PeregCommandFacade commandFacade;
-	
-	@POST
-	@Path("add")
-	public void add(PeregInputContainer inputContainer) {
-		this.commandFacade.add(inputContainer);
-	}
-	
-	@POST
-	@Path("update")
-	public void update(PeregInputContainer inputContainer) {
-		this.commandFacade.update(inputContainer);
-	}
 	
 	@POST
 	@Path("delete")

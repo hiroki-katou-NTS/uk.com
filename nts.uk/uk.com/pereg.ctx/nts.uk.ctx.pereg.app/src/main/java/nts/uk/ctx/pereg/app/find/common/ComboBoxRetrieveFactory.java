@@ -77,6 +77,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDto;
 @Stateless
 public class ComboBoxRetrieveFactory {
 
+
 	@Inject
 	private SelectionFinder selectionFinder;
 
@@ -168,7 +169,7 @@ public class ComboBoxRetrieveFactory {
 	private final String JP_SPACE = "　";
 
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(SelectionItemDto selectionItemDto, String employeeId,
-			GeneralDate standardDate, boolean isRequired, PersonEmployeeType perEmplType, boolean isDataType6) {
+			GeneralDate standardDate, boolean isRequired, PersonEmployeeType perEmplType, boolean isDataType6, String categoryCode) {
 
 		if (standardDate == null) {
 			standardDate = GeneralDate.today();
@@ -190,7 +191,7 @@ public class ComboBoxRetrieveFactory {
 			refCd = masterRefTypeDto.getMasterType();
 			break;
 		}
-		return getComboBox(RefType, refCd, standardDate, employeeId, null, isRequired, perEmplType, isDataType6);
+		return getComboBox(RefType, refCd, standardDate, employeeId, null, isRequired, perEmplType, isDataType6, categoryCode);
 	}
 
 	/**
@@ -217,12 +218,12 @@ public class ComboBoxRetrieveFactory {
 			break;
 		}
 		return getComboBox(referenceType, referenceCode, comboBoxParam.getStandardDate(), comboBoxParam.getEmployeeId(),
-				comboBoxParam.getWorkplaceId(), comboBoxParam.isRequired(), perEmplType, true);
+				comboBoxParam.getWorkplaceId(), comboBoxParam.isRequired(), perEmplType, true, null);
 
 	}
 
 	private List<ComboBoxObject> getMasterComboBox(String masterType, String employeeId, GeneralDate standardDate,
-			String workplaceId) {
+			String workplaceId, String categoryCode) {
 		String companyId = AppContexts.user().companyId();
 		switch (masterType) {
 
@@ -278,7 +279,7 @@ public class ComboBoxRetrieveFactory {
 			// return new ArrayList<>();
 			// 就業時間帯マスタ
 			if (workplaceId == null ) {
-				PeregDto resultDto = layoutingProcessor.findSingle(new PeregQuery("CS00017", employeeId, "", standardDate));
+				PeregDto resultDto = layoutingProcessor.findSingle(PeregQuery.createQueryLayout("CS00017", employeeId, "", standardDate));
 				if (resultDto != null) {
 					AffWorlplaceHistItemDto workPlaceItem = (AffWorlplaceHistItemDto) resultDto.getDomainDto();
 					workplaceId = workPlaceItem.getWorkplaceCode();
@@ -349,7 +350,9 @@ public class ComboBoxRetrieveFactory {
 							grantTable.getYearHolidayName().v()))
 					.collect(Collectors.toList());
 		case "M00017":
-			return yearServiceRepo.getAllPer(companyId).stream()
+			Integer specialHolidayCode = convertFromCategoryCode(categoryCode);
+			if (specialHolidayCode == null ) return new ArrayList<>();
+			return yearServiceRepo.findAllPer(companyId, specialHolidayCode).stream()
 					.map(yearServicePer -> new ComboBoxObject(yearServicePer.getYearServiceCode().v(),
 							yearServicePer.getYearServiceName().v()))
 					.collect(Collectors.toList());
@@ -408,10 +411,36 @@ public class ComboBoxRetrieveFactory {
 		}
 		return comboBoxList;
 	}
+	
+	private Integer convertFromCategoryCode(String categoryCode) {
+		Map<String, Integer> map = new HashMap<>();
+		map.put("CS00025", 1);
+		map.put("CS00026", 2);
+		map.put("CS00027", 3);
+		map.put("CS00028", 4);
+		map.put("CS00029", 5);
+		map.put("CS00030", 6);
+		map.put("CS00031", 7);
+		map.put("CS00032", 8);
+		map.put("CS00033", 9);
+		map.put("CS00034", 10);
+		map.put("CS00049", 11);
+		map.put("CS00050", 12);
+		map.put("CS00051", 13);
+		map.put("CS00052", 14);
+		map.put("CS00053", 15);
+		map.put("CS00054", 16);
+		map.put("CS00055", 17);
+		map.put("CS00056", 18);
+		map.put("CS00057", 19);
+		map.put("CS00058", 20);
+		return map.get(categoryCode);
+	}
+
 
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(ReferenceTypes referenceType, String referenceCode,
 			GeneralDate standardDate, String employeeId, String workplaceId, boolean isRequired,
-			PersonEmployeeType perEmplType, boolean isDataType6) {
+			PersonEmployeeType perEmplType, boolean isDataType6, String categoryCode) {
 
 		List<ComboBoxObject> resultList = new ArrayList<ComboBoxObject>();
 		List<ComboBoxObject> comboboxItems = new ArrayList<ComboBoxObject>();
@@ -423,7 +452,7 @@ public class ComboBoxRetrieveFactory {
 			resultList = getCodeNameComboBox(referenceCode, standardDate, perEmplType);
 			break;
 		case DESIGNATED_MASTER:
-			resultList = getMasterComboBox(referenceCode, employeeId, standardDate, workplaceId);
+			resultList = getMasterComboBox(referenceCode, employeeId, standardDate, workplaceId, categoryCode);
 			break;
 
 		}

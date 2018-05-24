@@ -29,7 +29,7 @@ public class KrcmtOptItemFormulaPK implements Serializable {
 
 	/** The optional item no. */
 	@Column(name = "OPTIONAL_ITEM_NO")
-	private String optionalItemNo;
+	private Integer optionalItemNo;
 
 	/** The formula id. */
 	@Column(name = "FORMULA_ID")
@@ -49,7 +49,7 @@ public class KrcmtOptItemFormulaPK implements Serializable {
 	 * @param optionalItemNo the optional item no
 	 * @param formulaId the formula id
 	 */
-	public KrcmtOptItemFormulaPK(String cid, String optionalItemNo, String formulaId) {
+	public KrcmtOptItemFormulaPK(String cid, Integer optionalItemNo, String formulaId) {
 		this.cid = cid;
 		this.optionalItemNo = optionalItemNo;
 		this.formulaId = formulaId;

@@ -681,15 +681,15 @@ public class ScheCreExeWorkTimeHandler {
 	 */
 	// 勤務予定時間帯を取得する
 	public Optional<PrescribedTimezoneSetting> getScheduleWorkHour(WorkTimeSetGetterCommand command) {
+		if (StringUtil.isNullOrEmpty(command.getWorkingCode(), true)) {
+			return Optional.empty();
+		}
 		// call service check work day
 		WorkStyle workStyle = this.basicScheduleService.checkWorkDay(command.getWorktypeCode());
 		switch (workStyle) {
 			case ONE_DAY_REST :
 				return Optional.empty();
 			case ONE_DAY_WORK :
-				if (command.getWorkingCode() == null) {
-					return Optional.empty();
-				}
 				return Optional
 						.of(this.predTimeRepository.findByWorkTimeCode(command.getCompanyId(), command.getWorkingCode())
 								.get().getPrescribedTimezoneSetting());

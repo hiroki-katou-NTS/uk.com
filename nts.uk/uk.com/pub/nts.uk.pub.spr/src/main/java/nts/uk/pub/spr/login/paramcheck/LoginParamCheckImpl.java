@@ -22,7 +22,13 @@ import nts.uk.shr.com.time.AttendanceClock;
 @Stateless
 public class LoginParamCheckImpl implements LoginParamCheck {
 
-	private final String DATE_FORMAT = "yyyy/MM/dd";
+	private final String DATE_FORMAT1 = "yyyy/MM/dd";
+	
+	private final String DATE_FORMAT2 = "yyyy/MM/d";
+	
+	private final String DATE_FORMAT3 = "yyyy/M/dd";
+	
+	private final String DATE_FORMAT4 = "yyyy/M/d";
 	
 	@Inject
 	private EmployeeSprPub employeeSprPub;
@@ -38,9 +44,9 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 			throw new BusinessException("Msg_1000", "Msg_1026");
 		}
 		// 対象社員コード(employeeCode)をチェックする
-		employeeSprPub.validateEmpCodeSpr(employeeCD);
+		employeeSprPub.validateEmpCodeSpr(employeeCD.trim());
 		// （基幹・社員Export）アルゴリズム「「会社ID」「社員コード」より社員基本情報を取得」を実行する　RequestList No.18
-		Optional<EmpSprExport> opEmployeeSpr = employeeSprPub.getEmployeeID(companyID, employeeCD);
+		Optional<EmpSprExport> opEmployeeSpr = employeeSprPub.getEmployeeID(companyID, employeeCD.trim());
 		if(!opEmployeeSpr.isPresent()){
 			throw new BusinessException("Msg_1000", "Msg_1027");
 		}
@@ -48,22 +54,22 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 		if(Strings.isBlank(date)){
 			throw new BusinessException("Msg_1009", "Msg_1026");
 		}
-		// 対象日(date)の形式をチェックする　日付型（yyyy/mm/dd）
-		try {
-			GeneralDate.fromString(date, DATE_FORMAT);
-		} catch (Exception e) {
+		// 対象日(date)の形式をチェックする　日付型
+		if(this.getDate(date)==null){
 			throw new BusinessException("Msg_1009", date);
 		}
 		// フォームデータ「出勤時刻(starttime)」を取得する
 		if(startTime==null){
 			throw new BusinessException("Msg_1012", "Msg_1026");
 		}
-		// 出勤時刻(starttime)をチェックする
-		Integer startTimeValue = Integer.valueOf(startTime);
-		try {
-			new AttendanceClock(startTimeValue);
-		} catch (Exception e) {
-			throw new BusinessException("Msg_1012", startTime.toString());
+		if(Strings.isNotBlank(startTime)){
+			// 出勤時刻(starttime)をチェックする
+			try {
+				Integer startTimeValue = Integer.valueOf(startTime);
+				new AttendanceClock(startTimeValue);
+			} catch (Exception e) {
+				throw new BusinessException("Msg_1012", startTime.toString());
+			}
 		}
 		// フォームデータ「申請理由(reason)」を取得する　※仕様追加　2018/03/28
 		return opEmployeeSpr.get().getEmployeeID();
@@ -80,9 +86,9 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 			throw new BusinessException("Msg_1000", "Msg_1026");
 		}
 		// 対象社員コード(employeeCode)をチェックする
-		employeeSprPub.validateEmpCodeSpr(employeeCD);
+		employeeSprPub.validateEmpCodeSpr(employeeCD.trim());
 		// （基幹・社員Export）アルゴリズム「「会社ID」「社員コード」より社員基本情報を取得」を実行する　RequestList No.18
-		Optional<EmpSprExport> opEmployeeSpr = employeeSprPub.getEmployeeID(companyID, employeeCD);
+		Optional<EmpSprExport> opEmployeeSpr = employeeSprPub.getEmployeeID(companyID, employeeCD.trim());
 		if(!opEmployeeSpr.isPresent()){
 			throw new BusinessException("Msg_1000", "Msg_1027");
 		}
@@ -90,29 +96,29 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 		if(Strings.isBlank(date)){
 			throw new BusinessException("Msg_1009", "Msg_1026");
 		}
-		// 対象日(date)の形式をチェックする　日付型（yyyy/mm/dd）
-		try {
-			GeneralDate.fromString(date, DATE_FORMAT);
-		} catch (Exception e) {
+		// 対象日(date)の形式をチェックする　日付型
+		if(this.getDate(date)==null){
 			throw new BusinessException("Msg_1009", date);
 		}
 		// フォームデータ「退勤時刻(endtime)」を取得する
 		if(endTime==null){
 			throw new BusinessException("Msg_1013", "Msg_1026");
 		}
-		// 退勤時刻(endtime)をチェックする
-		Integer endTimeValue = Integer.valueOf(endTime);
-		try {
-			new AttendanceClock(endTimeValue);
-		} catch (Exception e) {
-			throw new BusinessException("Msg_1013", endTime.toString());
+		if(Strings.isNotBlank(endTime)){
+			// 退勤時刻(endtime)をチェックする
+			try {
+				Integer endTimeValue = Integer.valueOf(endTime);
+				new AttendanceClock(endTimeValue);
+			} catch (Exception e) {
+				throw new BusinessException("Msg_1013", endTime.toString());
+			}
 		}
 		// フォームデータ「申請理由(reason)」を取得する　※仕様追加　2018/03/28
 		return opEmployeeSpr.get().getEmployeeID();
 	}
 
 	@Override
-	public String checkParamAdjustDaily(String employeeCD, String startTime, String endTime, String date, String reason) {
+	public String checkParamAdjustDaily(String employeeCD, String startTime, String endTime, String date, String reason, String stampFlg) {
 		// 契約コード固定：　000000000000
 		// 会社コード固定：　0001
 		// 会社ID固定：　000000000000-0001
@@ -122,9 +128,9 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 			throw new BusinessException("Msg_1000", "Msg_1026");
 		}
 		// 対象社員コード(employeeCode)をチェックする
-		employeeSprPub.validateEmpCodeSpr(employeeCD);
+		employeeSprPub.validateEmpCodeSpr(employeeCD.trim());
 		// （基幹・社員Export）アルゴリズム「「会社ID」「社員コード」より社員基本情報を取得」を実行する　RequestList No.18
-		Optional<EmpSprExport> opEmployeeSpr = employeeSprPub.getEmployeeID(companyID, employeeCD);
+		Optional<EmpSprExport> opEmployeeSpr = employeeSprPub.getEmployeeID(companyID, employeeCD.trim());
 		if(!opEmployeeSpr.isPresent()){
 			throw new BusinessException("Msg_1000", "Msg_1027");
 		}
@@ -132,33 +138,45 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 		if(Strings.isBlank(date)){
 			throw new BusinessException("Msg_1009", "Msg_1026");
 		}
-		// 対象日(date)の形式をチェックする　日付型（yyyy/mm/dd）
-		try {
-			GeneralDate.fromString(date, DATE_FORMAT);
-		} catch (Exception e) {
+		// 対象日(date)の形式をチェックする　日付型
+		if(this.getDate(date)==null){
 			throw new BusinessException("Msg_1009", date);
 		}
 		// フォームデータ「出勤時刻(starttime)」を取得する
 		if(startTime==null){
 			throw new BusinessException("Msg_1012", "Msg_1026");
 		}
-		// 出勤時刻(starttime)をチェックする
-		Integer startTimeValue = Integer.valueOf(startTime);
-		try {
-			new AttendanceClock(startTimeValue);
-		} catch (Exception e) {
-			throw new BusinessException("Msg_1012", startTime.toString());
+		if(Strings.isNotBlank(startTime)){
+			// 出勤時刻(starttime)をチェックする
+			try {
+				Integer startTimeValue = Integer.valueOf(startTime);
+				new AttendanceClock(startTimeValue);
+			} catch (Exception e) {
+				throw new BusinessException("Msg_1012", startTime.toString());
+			}
 		}
 		// フォームデータ「退勤時刻(endtime)」を取得する
-		Integer endTimeValue = Integer.valueOf(endTime);
 		if(endTime==null){
 			throw new BusinessException("Msg_1013", "Msg_1026");
 		}
-		// 退勤時刻(endtime)をチェックする
+		if(Strings.isNotBlank(endTime)){
+			// 退勤時刻(endtime)をチェックする
+			try {
+				Integer endTimeValue = Integer.valueOf(endTime);
+				new AttendanceClock(endTimeValue);
+			} catch (Exception e) {
+				throw new BusinessException("Msg_1013", endTime.toString());
+			}
+		}
+		// フォームデータ「打刻保護区分(stampProtection)」を取得する
 		try {
-			new AttendanceClock(endTimeValue);
-		} catch (Exception e) {
-			throw new BusinessException("Msg_1013", endTime.toString());
+			Integer stampFlgValue = Integer.valueOf(stampFlg);
+			// 打刻保護区分(stampProtection)をチェックする
+			if(stampFlgValue != 0 && stampFlgValue != 1){
+				throw new BusinessException("Msg_1194", stampFlg);
+			}
+		} catch (NumberFormatException e) {
+			throw new BusinessException("Msg_1194", "Msg_1026");
 		}
 		return opEmployeeSpr.get().getEmployeeID();
 	}
@@ -169,20 +187,19 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 		if(Strings.isBlank(date)){
 			throw new BusinessException("Msg_1009", "Msg_1026");
 		}
-		// 対象日(date)の形式をチェックする　日付型（yyyy/mm/dd）
-		try {
-			GeneralDate.fromString(date, DATE_FORMAT);
-		} catch (Exception e) {
+		// 対象日(date)の形式をチェックする　日付型
+		if(this.getDate(date)==null){
 			throw new BusinessException("Msg_1009", date);
 		}
 		// フォームデータ「抽出対象(selecttype)」を取得する
-		Integer selectTypeValue = Integer.valueOf(selectType);
-		if(selectType == null){
+		try {
+			Integer selectTypeValue = Integer.valueOf(selectType.trim());
+			// 抽出対象(selecttype)をチェックする
+			if(selectTypeValue != 0 && selectTypeValue != 1){
+				throw new BusinessException("Msg_1014", selectType.toString());
+			}
+		} catch (NumberFormatException e) {
 			throw new BusinessException("Msg_1014", "Msg_1026");
-		}
-		// 抽出対象(selecttype)をチェックする
-		if(selectTypeValue != 0 || selectTypeValue != 1){
-			throw new BusinessException("Msg_1014", selectType.toString());
 		}
 	}
 
@@ -192,10 +209,8 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 		if(Strings.isBlank(date)){
 			throw new BusinessException("Msg_1009", "Msg_1026");
 		}
-		// 対象日(date)の形式をチェックする　日付型（yyyy/mm/dd）
-		try {
-			GeneralDate.fromString(date, DATE_FORMAT);
-		} catch (Exception e) {
+		// 対象日(date)の形式をチェックする　日付型
+		if(this.getDate(date)==null){
 			throw new BusinessException("Msg_1009", date);
 		}
 	}
@@ -212,6 +227,31 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 		} catch (Exception e) {
 			throw new BusinessException("Msg_1025", appID);
 		}
+	}
+	
+	private boolean checkDateFormat(String date, String dateFormat){
+		try {
+			GeneralDate.fromString(date, dateFormat);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	public GeneralDate getDate(String date) {
+		if(checkDateFormat(date, DATE_FORMAT1)){
+			return GeneralDate.fromString(date, DATE_FORMAT1);
+		}
+		if(checkDateFormat(date, DATE_FORMAT2)){
+			return GeneralDate.fromString(date, DATE_FORMAT2);
+		}
+		if(checkDateFormat(date, DATE_FORMAT3)){
+			return GeneralDate.fromString(date, DATE_FORMAT3);
+		}
+		if(checkDateFormat(date, DATE_FORMAT4)){
+			return GeneralDate.fromString(date, DATE_FORMAT4);
+		}
+		return null;
 	}
 
 }
