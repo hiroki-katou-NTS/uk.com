@@ -38,7 +38,7 @@ public class SubstitutionManagementService {
 		Optional<SWkpHistImport> sWkpHistImport = syWorkplaceAdapter.findBySid(employeeId, baseDate);
 		CompensatoryLeaveEmSetting compenLeaveEmpSetting = null;
 		CompensatoryLeaveComSetting compensatoryLeaveComSetting = null;
-		ExtraHolidayManagementOutput extraHolidayManagementOutput = extraHolidayManagementService.dataExtractionProcessing(employeeId, startDate, endDate);
+		ExtraHolidayManagementOutput extraHolidayManagementOutput = extraHolidayManagementService.dataExtractionProcessing(0, employeeId, startDate, endDate);
 		if (!Objects.isNull(extraHolidayManagementOutput.getSEmpHistoryImport())){
 			compenLeaveEmpSetting = compensLeaveEmSetRepository.find(cid, extraHolidayManagementOutput.getSEmpHistoryImport().getEmploymentCode());
 		}
