@@ -119,20 +119,20 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                 if (self.selectedTab() == "tab-1") {
                     exportAtr = 1;
                     if (position == 1)
-                        if (!self.attendanceRecExpDaily()[columnIndex].upperPosition) attendanceItemName = "";
+                        if (!self.attendanceRecExpDaily()[columnIndex].upperPosition()) attendanceItemName = "";
                         else attendanceItemName = self.attendanceRecExpDaily()[columnIndex].upperPosition();
                     else
-                        if (!self.attendanceRecExpDaily()[columnIndex].lowwerPosition) attendanceItemName = "";
+                        if (!self.attendanceRecExpDaily()[columnIndex].lowwerPosition()) attendanceItemName = "";
                         else attendanceItemName = self.attendanceRecExpDaily()[columnIndex].lowwerPosition();
 
                     attItem = self.attendanceRecExpDaily()[columnIndex];
                 } else {
                     exportAtr = 2;
                     if (position == 1)
-                        if (!self.attendanceRecExpDaily()[columnIndex].upperPosition) attendanceItemName = "";
+                        if (!self.attendanceRecExpMonthly()[columnIndex].upperPosition()) attendanceItemName = "";
                         else attendanceItemName = self.attendanceRecExpMonthly()[columnIndex].upperPosition();
                     else
-                        if (!self.attendanceRecExpDaily()[columnIndex].lowwerPosition) attendanceItemName = "";
+                        if (!self.attendanceRecExpMonthly()[columnIndex].lowwerPosition()) attendanceItemName = "";
                         else attendanceItemName = self.attendanceRecExpMonthly()[columnIndex].lowwerPosition();
                     attItem = self.attendanceRecExpMonthly()[columnIndex];
                 }
