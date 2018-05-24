@@ -23,11 +23,12 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 			+ " AND (s.remainDays <> :remainDays OR s.subOfHDID in "
 			+ "(SELECT ps.krcmtPayoutSubOfHDManaPK.subOfHDID FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.payoutId =:payoutID))";
 
-	private final String QUERY_BY_SID_DATEPERIOD_NO_REMAIN = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND s.dayOff >= :startDate AND s.dayOff <= :endDate";
-
 	private final String QUERY_BY_SID_REMAIN_AND_IN_PAYOUT = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND (s.remainDays <> 0 OR s.subOfHDID in "
-			+ "(SELECT pm.krcmtPayoutSubOfHDManaPK.subOfHDID FROM KrcmtPayoutSubOfHDMana pm inner join KrcmtPayoutManaData ps on ps.payoutId = pm.krcmtPayoutSubOfHDManaPK.payoutId where ps.stateAtr = 0))";
+			+ "(SELECT ps.krcmtPayoutSubOfHDManaPK.subOfHDID FROM KrcmtPayoutSubOfHDMana ps inner join KrcmtPayoutManaData p on p.payoutId = ps.krcmtPayoutSubOfHDManaPK.payoutId where p.stateAtr = 0))";
 
+	private final String QUERY_BY_SID_PERIOD_AND_IN_PAYOUT = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND ((s.dayOff >= :startDate AND s.dayOff <= :endDate) OR s.subOfHDID in "
+			+ "(SELECT ps.krcmtPayoutSubOfHDManaPK.subOfHDID FROM KrcmtPayoutSubOfHDMana ps inner join KrcmtPayoutManaData p on p.payoutId = ps.krcmtPayoutSubOfHDManaPK.payoutId where p.dayOff >= :startDate AND p.dayOff <= :endDate))";
+	
 	private String DELETE_QUERY = "DELETE FROM KrcmtSubOfHDManaData a WHERE a.sID = :sID AND a.dayOff = :dayOff";
 
 	@Override
@@ -106,18 +107,19 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 		return listSubOfHD.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
 
-	public List<SubstitutionOfHDManagementData> getBySidDatePeriodNoRemainDay(String sid, GeneralDate startDate,
-			GeneralDate endDate) {
-		List<KrcmtSubOfHDManaData> listSubOfHD = this.queryProxy()
-				.query(QUERY_BY_SID_DATEPERIOD_NO_REMAIN, KrcmtSubOfHDManaData.class).setParameter("sid", sid)
-				.setParameter("startDate", startDate).setParameter("endDate", endDate).getList();
-		return listSubOfHD.stream().map(i -> toDomain(i)).collect(Collectors.toList());
-	}
-
 	public List<SubstitutionOfHDManagementData> getBySidRemainDayAndInPayout(String sid) {
 		List<KrcmtSubOfHDManaData> listSubOfHD = this.queryProxy()
 				.query(QUERY_BY_SID_REMAIN_AND_IN_PAYOUT, KrcmtSubOfHDManaData.class).setParameter("sid", sid)
 				.getList();
+		return listSubOfHD.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<SubstitutionOfHDManagementData> getBySidPeriodAndInPayout(String sid, GeneralDate startDate,
+			GeneralDate endDate) {
+		List<KrcmtSubOfHDManaData> listSubOfHD = this.queryProxy()
+				.query(QUERY_BY_SID_PERIOD_AND_IN_PAYOUT, KrcmtSubOfHDManaData.class).setParameter("sid", sid)
+				.setParameter("startDate", startDate).setParameter("endDate", endDate).getList();
 		return listSubOfHD.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
 

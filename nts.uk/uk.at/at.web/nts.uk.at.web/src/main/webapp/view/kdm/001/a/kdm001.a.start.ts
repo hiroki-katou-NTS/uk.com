@@ -3,7 +3,7 @@ module nts.uk.at.view.kdm001.a {
         var screenModel = new nts.uk.at.view.kdm001.a.viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
-            $('#btn_show_list').focus();
+            $('#emp-component').focus();
         });
     });
 }
