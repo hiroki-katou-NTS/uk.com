@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -15,10 +16,9 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * @author nam.lh
@@ -26,14 +26,18 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class AddSubHdManagementService {
+
 	@Inject
-	ClosureRepository repoClosure;
+	private ClosureService closureService;
+
 	@Inject
-	LeaveManaDataRepository repoLeaveManaData;
+	private LeaveManaDataRepository repoLeaveManaData;
+
 	@Inject
-	ComDayOffManaDataRepository repoComDayOffManaData;
+	private ComDayOffManaDataRepository repoComDayOffManaData;
+
 	@Inject
-	LeaveComDayOffManaRepository repoLeaveComDayOffMana;
+	private LeaveComDayOffManaRepository repoLeaveComDayOffMana;
 
 	/**
 	 * @param subHdManagementData
@@ -72,7 +76,7 @@ public class AddSubHdManagementService {
 						Double.valueOf(subHdManagementData.getDayRemaining()), 0);
 				repoComDayOffManaData.create(domainCompensatoryDayOffManaData);
 				if (subHdManagementData.getCheckedSplit() == true) {
-					// Todo #118200
+					// TODO #118200
 				}
 			}
 
@@ -96,10 +100,6 @@ public class AddSubHdManagementService {
 						comDayOffID, usedDays, usedHours, targetSelectionAtr);
 				repoLeaveComDayOffMana.add(domainLeaveComDayOffManagement);
 			}
-
-			// アルゴリズム「代休残数管理データ更新フラグ処理」を実行する
-			// (THực hiện thuật toán 「代休残数管理データ更新フラグ処理」)
-			// Todo Pending
 		}
 		return Collections.emptyList();
 	}
@@ -112,17 +112,14 @@ public class AddSubHdManagementService {
 	private List<String> addSubSHManagement(SubHdManagementData subHdManagementData) {
 		List<String> errorList = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
-		// Todo : get closureId, useAtr from screen B
 		int closureId = subHdManagementData.getClosureId();
-		UseClassification useAtr = null;
-		YearMonth processingYm = GeneralDate.today().yearMonth();
+		YearMonth processYearMonth = GeneralDate.today().yearMonth();
 		// ドメインモデル「締め」を読み込む
-		// Todo #118092
-		Optional<Closure> closure = repoClosure.find(companyId, closureId, useAtr, processingYm);
+		Optional<GeneralDate> closureDate = this.getClosureDate(closureId, processYearMonth);
 
 		if (subHdManagementData.getCheckedHoliday() == true) {
 			String employeeId = subHdManagementData.getEmployeeId();
-			errorList.addAll(checkHoliday(subHdManagementData.getDateHoliday(), closure));
+			errorList.addAll(this.checkHoliday(subHdManagementData.getDateHoliday(), closureDate));
 
 			// ドメインモデル「休出管理データ」を読み込む (Đọc domain 「休出管理データ」)
 			// Todo #118097
@@ -136,25 +133,20 @@ public class AddSubHdManagementService {
 			// チェックボタン「代休」をチェックする (Check checkbox 「代休」)
 			if (subHdManagementData.getCheckedSubHoliday() == true) {
 				// アルゴリズム「代休（年月日）チェック処理」を実行する (Thực hiện thuât toán 「代休（年月日）チェック処理」)
-				errorList.addAll(checkDateHoliday(Optional.of(subHdManagementData.getDateHoliday()),
-						subHdManagementData.getDateSubHoliday(), closure, closureId));
+				errorList.addAll(this.checkDateHoliday(Optional.of(subHdManagementData.getDateHoliday()),
+						subHdManagementData.getDateSubHoliday(), closureDate, closureId));
 				// ドメインモデル「代休管理データ」を読み込む (đọc domain 「代休管理データ」)
-
-				errorList.addAll(checkHoliday(subHdManagementData.getDateHoliday(), closure));
-				String sid = employeeId;
-				String cid = companyId;
+				errorList.addAll(this.checkHoliday(subHdManagementData.getDateHoliday(), closureDate));
 				GeneralDate dateSubHoliday = subHdManagementData.getDateSubHoliday();
 				List<CompensatoryDayOffManaData> compensatoryDayOffManaDatas = repoComDayOffManaData
-						.getBySidWithHolidayDateCondition(cid, sid, dateSubHoliday);
+						.getBySidWithHolidayDateCondition(employeeId, companyId, dateSubHoliday);
 				if (!compensatoryDayOffManaDatas.isEmpty()) {
 					errorList.add("Msg_737_sub_holiday");
 				}
 			}
-
 		} else {
 			errorList.add("Msg_728");
 		}
-		
 
 		// アルゴリズム「休出代休日数チェック処理」を実行する
 		errorList.addAll(checkHolidayAndSubHoliday(subHdManagementData));
@@ -171,14 +163,12 @@ public class AddSubHdManagementService {
 	 * 
 	 * @return
 	 */
-	public List<String> checkHoliday(GeneralDate holidayDate, Optional<Closure> closure) {
+	public List<String> checkHoliday(GeneralDate holidayDate, Optional<GeneralDate> closureDate) {
 		List<String> errorList = new ArrayList<>();
 
 		// 休出（年月日）と締め日をチェックする /(Check 休出（年月日） và 締め日)
-		if (closure.isPresent()) {
-			// Todo #118092
-			GeneralDate closingDate = holidayDate;
-			if (holidayDate.after(closingDate)) {
+		if (closureDate.isPresent()) {
+			if (holidayDate.after(closureDate.get())) {
 				errorList.add("Msg_745");
 			}
 		}
@@ -194,26 +184,20 @@ public class AddSubHdManagementService {
 	 * @return
 	 */
 	public List<String> checkDateHoliday(Optional<GeneralDate> holidayDate, GeneralDate subHolidayDate,
-			Optional<Closure> closure, int closureId) {
+			Optional<GeneralDate> closureDate, int closureId) {
 		List<String> errorList = new ArrayList<>();
-		String companyId = AppContexts.user().companyId();
-		// Todo : get closureId, useAtr from screen B
-
-		UseClassification useAtr = null;
-		YearMonth processingYm = GeneralDate.today().yearMonth();
+		YearMonth processYearMonth = GeneralDate.today().yearMonth();
 
 		// 既にドメインモデル「締め」を読み込んでいるかチェックする (Check xem đã đọc domain 「締め」 chưa)
-		if (!closure.isPresent()) {
-			closure = repoClosure.find(companyId, closureId, useAtr, processingYm);
+		if (!closureDate.isPresent()) {
+			closureDate = this.getClosureDate(closureId, processYearMonth);
 		}
 		// 代休（年月日）と締め日をチェックする (Check 代休（年月日） và 締め日)
-		// Todo #118092
-		GeneralDate closingDate = subHolidayDate;
-		if (subHolidayDate.after(closingDate)) {
+		if(closureDate.isPresent() && subHolidayDate.after(closureDate.get())){
 			errorList.add("Msg_746");
 		}
 		// 休出（年月日）と代休（年月日）をチェックする (Check 休出（年月日） và 代休（年月日）)
-		if (holidayDate.isPresent() && subHolidayDate == holidayDate.get()) {
+		if (holidayDate.isPresent() && subHolidayDate.compareTo(holidayDate.get()) == 0) {
 			errorList.add("Msg_730");
 		}
 
@@ -274,4 +258,18 @@ public class AddSubHdManagementService {
 		return errorList;
 	}
 
+	/**
+	 * Get 締め日
+	 * 
+	 * @param closureId
+	 * @param processYearMonth
+	 * @return
+	 */
+	public Optional<GeneralDate> getClosureDate(int closureId, YearMonth processYearMonth) {
+		DatePeriod closurePeriod = closureService.getClosurePeriod(closureId, processYearMonth);
+		if (Objects.isNull(closurePeriod)) {
+			return Optional.empty();
+		}
+		return Optional.of(closurePeriod.start());
+	}
 }

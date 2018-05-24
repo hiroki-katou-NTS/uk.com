@@ -12,7 +12,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.record.infra.entity.remainingnumber.subhdmana.KrcmtComDayoffMaData;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOffManaDataRepository {
@@ -20,8 +19,6 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 	private String GET_BYSID = "SELECT c FROM KrcmtComDayoffMaData c WHERE c.sID = :employeeId AND c.cID = :cid";
 
 	private String GET_BYSID_WITHREDAY = String.join(" ", GET_BYSID, " AND c.remainDays > 0");
-
-	private String DELETE_BY_SID_DAYOFF_DATE = "DELETE FROM KrcmtComDayoffMaData a WHERE a.cID = :companyId AND a.sID = :employeeId AND a.dayOff = :dayOffDate";
 
 	private String GET_BYCOMDAYOFFID = String.join(" ", GET_BYSID_WITHREDAY, " AND c.comDayOffID IN (SELECT b.krcmtLeaveDayOffManaPK.comDayOffID FROM KrcmtLeaveDayOffMana b WHERE b.krcmtLeaveDayOffManaPK.leaveID = :leaveID)");
 
@@ -52,16 +49,12 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 	}
 
 	@Override
-	public void deleteBySidAndDayOffDate(String comDayOffID, String employeeId, GeneralDate dayOffDate) {
-		String companyId = AppContexts.user().companyId();
+	public void deleteByComDayOffId(String comDayOffID) {
 		KrcmtComDayoffMaData entity = this.getEntityManager().find(KrcmtComDayoffMaData.class, comDayOffID);
 		if(Objects.isNull(entity)){
 			throw new BusinessException("Msg_198");
 		}
-		this.getEntityManager().createQuery(DELETE_BY_SID_DAYOFF_DATE)
-				.setParameter("companyId", companyId)
-				.setParameter("employeeId", employeeId)
-				.setParameter("dayOffDate", dayOffDate).executeUpdate();
+		this.commandProxy().remove(entity);
 	}
 
 	/**

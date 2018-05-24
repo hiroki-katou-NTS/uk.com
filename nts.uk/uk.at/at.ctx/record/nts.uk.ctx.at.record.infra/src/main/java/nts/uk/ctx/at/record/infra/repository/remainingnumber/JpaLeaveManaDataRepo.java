@@ -1,10 +1,13 @@
 package nts.uk.ctx.at.record.infra.repository.remainingnumber;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
@@ -22,9 +25,9 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 			"AND l.dayOff >= :startDate AND l.dayOff <= :endDate");
 
 	private String QUERY_BYSIDANDHOLIDAYDATECONDITION = "SELECT l FROM KrcmtLeaveManaData l WHERE l.cID = :cid AND l.sID =:employeeId AND l.dayOff = :dateHoliday";
-	
+
 	private String QUERY_BYSID_AND_NOT_UNUSED = String.join(" ", QUERY_BYSID, "AND l.subHDAtr !=:subHDAtr");
-	
+
 	@Override
 	public List<LeaveManagementData> getBySidWithsubHDAtr(String cid, String sid, int state) {
 		List<KrcmtLeaveManaData> listListMana = this.queryProxy()
@@ -100,12 +103,32 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 				.setParameter("employeeId", sid).setParameter("dateHoliday", dateHoliday).getList();
 		return listLeaveData.stream().map(x -> toDomain(x)).collect(Collectors.toList());
 	}
-	
+
 	@Override
 	public List<LeaveManagementData> getBySidNotUnUsed(String cid, String sid) {
 		List<KrcmtLeaveManaData> listListMana = this.queryProxy()
 				.query(QUERY_BYSID_AND_NOT_UNUSED, KrcmtLeaveManaData.class).setParameter("cid", cid)
 				.setParameter("employeeId", sid).setParameter("subHDAtr", 0).getList();
 		return listListMana.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+
+	@Override
+	public Optional<LeaveManagementData> getByLeaveId(String leaveManaId) {
+		KrcmtLeaveManaData entity = this.getEntityManager().find(KrcmtLeaveManaData.class, leaveManaId);
+		return Optional.ofNullable(toDomain(entity));
+	}
+
+	@Override
+	public void udpate(LeaveManagementData domain) {
+		this.commandProxy().update(this.toEntity(domain));
+	}
+
+	@Override
+	public void deleteByLeaveId(String leaveId) {
+		KrcmtLeaveManaData entity = this.getEntityManager().find(KrcmtLeaveManaData.class, leaveId);
+		if(Objects.isNull(entity)){
+			throw new BusinessException("Msg_198");
+		}
+		this.commandProxy().remove(entity);
 	}
 }
