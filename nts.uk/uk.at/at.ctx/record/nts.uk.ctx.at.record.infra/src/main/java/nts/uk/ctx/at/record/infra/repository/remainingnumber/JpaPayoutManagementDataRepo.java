@@ -19,7 +19,7 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 
 	private String QUERY_BYSID = "SELECT p FROM KrcmtPayoutManaData p WHERE p.cID = :cid AND p.sID =:employeeId";
 	
-	private String QUERY_BYSID_CID_DAYOFF = "SELECT p FROM KrcmtPayoutManaData p WHERE p.cID = :cid AND p.sID =:employeeId AND p.dayoffDate = dayoffDate";
+	private String QUERY_BY_SID_CID_DAYOFF = "SELECT p FROM KrcmtPayoutManaData p WHERE p.cID = :cid AND p.sID =:employeeId AND p.dayoffDate = dayoffDate";
 
 	private String QUERY_BYSID_WITH_COND = String.join(" ", QUERY_BYSID, "AND p.stateAtr = :state");
 
@@ -139,7 +139,7 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 
 	@Override
 	public Optional<PayoutManagementData> find(String sID, String cID, CompensatoryDayoffDate dayoffDate) {
-		return this.queryProxy().find(QUERY_BYSID_CID_DAYOFF, KrcmtPayoutManaData.class).map(i -> toDomain(i));
+		return this.queryProxy().find(QUERY_BY_SID_CID_DAYOFF, KrcmtPayoutManaData.class).map(i -> toDomain(i));
 	}
 
 }

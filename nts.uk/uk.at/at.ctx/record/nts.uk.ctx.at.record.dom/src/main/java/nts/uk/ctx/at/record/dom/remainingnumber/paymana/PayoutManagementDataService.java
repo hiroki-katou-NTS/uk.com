@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.paymana;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -26,30 +28,46 @@ public class PayoutManagementDataService {
 		}
 		return false;
 	}
+	
+	public boolean checkInfoSubPayMana(SubstitutionOfHDManagementData subDomain) {
+		Optional<SubstitutionOfHDManagementData> subPayout = substitutionOfHDManaDataRepository.find(subDomain.getCid(), subDomain.getSID(),
+				subDomain.getHolidayDate());
+		if (subPayout.isPresent()) {
+			return true;
+		}
+		return false;
+	}
 
 	public GeneralDate getClosingDate() {
 		return null;
 	}
 
-	public void addPayoutManagement(boolean pickUp, boolean pause, PayoutManagementData command,
+	public List<String> addPayoutManagement(boolean pickUp, boolean pause, PayoutManagementData payMana,
 			SubstitutionOfHDManagementData subMana, PayoutSubofHDManagement paySub) {
+		List<String> errors = new ArrayList<String>();
 		if (pickUp) {
-			//this.checkProcess();
-			payoutManagementDataRepository.create(command);
-		}
-		if (this.checkInfoPayMana(command)) {
-			throw new BusinessException("Msg_737");
-		}
-		if (pause) {
-			if (this.checkInfoPayMana(command)) {
-				throw new BusinessException("Msg_737");
-			} else {
-				substitutionOfHDManaDataRepository.create(subMana);
+			//this.checkProcess(); Wait QA
+			if (this.checkInfoPayMana(payMana)) {
+				errors.add("Msg_737_PayMana");
+			}
+			if (errors.isEmpty()) {
+				payoutManagementDataRepository.create(payMana);
 			}
 		}
+		if (pause) {
+			//this.checkProcess(); Wait QA
+			if (this.checkInfoSubPayMana(subMana)) {
+				errors.add("Msg_737_SubPay");
+			}
+			if (errors.isEmpty()) {
+				substitutionOfHDManaDataRepository.create(subMana);
+			}	
+		}
 		if (pickUp && pause) {
+			if (errors.isEmpty())
 			payoutSubofHDManaRepository.add(paySub);
 		}
+		return errors;
 
 	}
 

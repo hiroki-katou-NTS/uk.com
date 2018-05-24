@@ -1,6 +1,7 @@
 module nts.uk.at.view.kdm001.d.viewmodel {
     import model = kdm001.share.model;
     import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
     import block = nts.uk.ui.block;
     import dialog    = nts.uk.ui.dialog;
     export class ScreenModel {
@@ -47,9 +48,9 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             if (info) {
                 self.workCode(info.selectedEmployee.workplaceCode);
                 self.workplaceName(info.selectedEmployee.workplaceName);
-                self.employeeCode(info.selectedEmployee.Code);
-                self.employeeId(info.selectedEmployee.Id);
-                self.employeeName(info.selectedEmployee.employeeName);
+                self.employeeCode(info.selectedEmployee.code);
+                self.employeeId(info.selectedEmployee.id);
+                self.employeeName(info.selectedEmployee.businessName);
             }
             block.clear();
             self.remainDays(0.5);
@@ -66,10 +67,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         public submitForm() {
             let self = this;
             let data = {
-                payoutId: "00000000000",
-                cID: "999999999",
-                subOfHDID: "77777",
-                employeeId: "000000000",
+                employeeId: self.employeeId(),
                 pickUp: self.pickUp(),
                 dayOff: moment.utc(self.dayOff(), 'YYYY/MM/DD').toISOString(),
                 occurredDays: self.occurredDays(),
@@ -83,13 +81,28 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             };
             
             console.log(data);
-            service.save(data).done(() => {
-                dialog.info({ messageId: "Msg_725" }).then(() => {
-         
-                });
+            service.save(data).done(result => {
+                if (result && result.length > 0) {
+                    
+                    for (let error of result) { 
+                        if (error === "Msg_737_PayMana") {
+                            $('#D6_1').ntsError('set', { messageId: "Msg_737" });
+                        }
+                        
+                        if (error === "Msg_737_SubPay") {
+                            $('#D11_1').ntsError('set', { messageId: "Msg_737" });
+                        }
+                    }
+                    return;
+                } else {
+                    setShared('KDM001_A_PARAMS', {isSuccess: true});
+                    dialog.info({ messageId: "Msg_15" }).then(() => {
+                        nts.uk.ui.windows.close();
+                    });
+                }
             }).fail(function(res: any) {
                 dialog.info({ messageId: "Msg_737" }).then(() => {
-         
+                    setShared('KDM001_A_PARAMS', {isSuccess: false});
                 });
             });
         }
