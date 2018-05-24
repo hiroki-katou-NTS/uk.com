@@ -1,143 +1,165 @@
-module nts.uk.at.view.kmf004 {
+module nts.uk.at.view.kmf004.b {
+    import flat = nts.uk.util.flatArray;
     import getText = nts.uk.resource.getText;
     import alert = nts.uk.ui.dialog.alert;
     import confirm = nts.uk.ui.dialog.confirm;
-    import href = nts.uk.request.jump;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-
+    
     let __viewContext: any = window["__viewContext"] || {};
 
     export module viewmodel {
-        export class TabScreenModel {
-            title: KnockoutObservable<string> = ko.observable('');
-            removeAble: KnockoutObservable<boolean> = ko.observable(true);
-            tabs: KnockoutObservableArray<TabModel> = ko.observableArray([
-                new TabModel({ id: 'B', name: getText('Com_Company'), active: true }),
-                new TabModel({ id: 'C', name: getText('Com_Person') })
-            ]);
-            currentTab: KnockoutObservable<string> = ko.observable('B');
-            //radio
-
-            constructor() {
-                let self = this;
-                //get use setting 
-
-                self.tabs().map((t) => {
-                    // set title for tab
-
-                    if (t.active() == true) {
-                        self.title(t.name);
-                        self.changeTab(t);
-                    }
-                });
-            }
-
-            changeTab(tab: TabModel) {
-                let self = this,
-                    view: any = __viewContext.viewModel,
-                    oldtab: TabModel = _.find(self.tabs(), t => t.active());
-                
-                // cancel action if tab self click
-                if (oldtab.id == tab.id) {
-                    return;
-                }
-                //set not display remove button first when change tab
-                //__viewContext.viewModel.tabView.removeAble(false);
-                tab.active(true);
-                self.title(tab.name);
-                self.tabs().map(t => (t.id != tab.id) && t.active(false));
-
-                // call start function on view at here
-                switch (tab.id) {
-                    case 'B':
-                        self.currentTab('B');
-                        if (!!view.viewmodelB && typeof view.viewmodelB.start == 'function') {
-                            view.viewmodelB.start();
-                            nts.uk.ui.errors.clearAll();
-                        }
-                        break;
-                    case 'C':
-                        self.currentTab('C');
-                        if (!!view.viewmodelC && typeof view.viewmodelC.start == 'function') {
-                            view.viewmodelC.start();
-                            nts.uk.ui.errors.clearAll();
-                        }
-                        break;
-                }
-            }
-        }
-
-        interface ITabModel {
-            id: string;
-            name: string;
-            active?: boolean;
-            display?: boolean;
-        }
-
-        class TabModel {
-            id: string;
-            name: string;
-            active: KnockoutObservable<boolean> = ko.observable(false);
-            display: KnockoutObservable<boolean> = ko.observable(true);
-
-            constructor(param: ITabModel) {
-                this.id = param.id;
-                this.name = param.name;
-                this.active(param.active || false);
-                this.display(param.display || true);
-            }
-
-            changeTab() {
-                // call parent view action
-                __viewContext.viewModel.tabView.changeTab(this);
-            }
-        }
-    }
-
-    export module b.viewmodel {
         export class ScreenModel {
+            //search
+            baseDate: KnockoutObservable<Date> = ko.observable(new Date());
+
+            //Grid data
+            columns: KnockoutObservable<any>;
+            singleSelectedCode: KnockoutObservable<any>;
+            items: KnockoutObservableArray<ItemModel>;
+
+            model: KnockoutObservable<BonusPaySetting> = ko.observable(new BonusPaySetting({ id: '', name: '' }));
+            
+            code: KnockoutObservable<string>;
+            editMode: KnockoutObservable<boolean>;
+            name: KnockoutObservable<string>;
             itemList: KnockoutObservableArray<any>;
-            selectedId: KnockoutObservable<number>;
-            value: KnockoutObservable<string>;
-            enable: KnockoutObservable<boolean>;
-            items: KnockoutObservableArray<Item>;
+            selectedBaseDateId: any;
+            standardDate: KnockoutObservable<string>;
+            dataItems: KnockoutObservableArray<Item>;
             specialHolidayCode: KnockoutObservable<string>;
-            monthDaysReq: KnockoutObservable<boolean>;
+            standardDateEnable: KnockoutObservable<boolean>;
+            standardDateReq: KnockoutObservable<boolean>;
+            provisionCheck: KnockoutObservable<boolean>;
+            provisionDeactive: KnockoutObservable<boolean>;
             
             constructor() {
-                let self = this;
-                self.itemList = ko.observableArray([
-                    new BoxModel(0, nts.uk.resource.getText("KMF004_75")),
-                    new BoxModel(1, nts.uk.resource.getText("KMF004_77")),
-                    new BoxModel(2, nts.uk.resource.getText("KMF004_78"))
-                ]);
+                let self = this,
+                   
+                model = self.model();
 
-                self.value = ko.observable('');
-                self.enable = ko.observable(true);
-                self.monthDaysReq = ko.observable(true);
-                self.selectedId = ko.observable(0);
+                //Grid data
                 self.items = ko.observableArray([]);
                 
-                self.selectedId.subscribe(function(value) {
+                self.columns = ko.observableArray([
+                    { headerText: nts.uk.resource.getText("KMF004_7"), prop: 'code', width: 50 },
+                    { headerText: nts.uk.resource.getText("KMF004_8"), prop: 'name', width: 200, formatter: _.escape }
+                ]);
+                
+                self.singleSelectedCode = ko.observable("");
+                
+                self.provisionCheck = ko.observable(false);  
+                self.provisionDeactive = ko.observable(true);
+                
+                self.code = ko.observable("");
+                self.editMode = ko.observable(true);  
+                self.name = ko.observable(""); 
+                
+                self.itemList = ko.observableArray([
+                    { code: 0, name: nts.uk.resource.getText("KMF004_75") },
+                    { code: 1, name: nts.uk.resource.getText("KMF004_77") },
+                    { code: 2, name: nts.uk.resource.getText("KMF004_78") }
+                ]);
+                
+                self.selectedBaseDateId = ko.observable(0); 
+                self.standardDate = ko.observable("");
+                self.standardDateEnable = ko.observable(true);
+                
+                self.standardDateReq = ko.observable(true);
+                
+                self.dataItems = ko.observableArray([]);
+                
+                // Get codes from A screen
+                self.specialHolidayCode = ko.observable(getShared("KMF004B_SPHD_CD"));
+                
+                //Bind data to from when user select item on grid
+                self.singleSelectedCode.subscribe(function(value) {
+                    // clear all error
+                    nts.uk.ui.errors.clearAll();
+                    
+                    if(value.length > 0){
+                        service.getPerByCode(self.specialHolidayCode(), value).done(function(data) {
+                            self.editMode(false);
+                            self.code(data.personalGrantDateCode);
+                            self.name(data.personalGrantDateName);
+                            self.provisionCheck(data.provision == 1 ? true : false);
+                            if(data.provision == 1) {
+                                self.provisionDeactive(false);
+                            } else {
+                                self.provisionDeactive(true);
+                            }
+                            self.selectedBaseDateId(data.grantDateAtr),
+                            self.standardDate(data.grantDateAtr != 0 ? "" : data.grantDate),
+                            self.bindPerSetData(data.personalGrantDateCode)
+                            $("#input-name").focus();
+                            nts.uk.ui.errors.clearAll();
+                        }).fail(function(res) {
+                              
+                        });
+                    }
+                });  
+                
+                self.selectedBaseDateId.subscribe(function(value) {
                     if(value == 0){
-                        self.enable(true);
-                        self.monthDaysReq(true);
+                        self.standardDateEnable(true);
+                        self.standardDateReq(true);
                     } else {
-                        self.enable(false);
-                        self.monthDaysReq(false);
-                        self.value("");
-                        $("#month-day-input").ntsError("clear");
+                        self.standardDateEnable(false);
+                        self.standardDateReq(false);
+                        self.standardDate("");
+                        $("#standard-date-input").ntsError("clear");
                     }
                 }); 
                 
-                // Get special holiday code from A screen
-                self.specialHolidayCode = ko.observable(getShared("KMF004B_SPHD_CD"));
-                
-                self.start();
+                self.bindPerSetData("");
             }
 
+            /**
+             * Bind Per Set data.
+             */
+            bindPerSetData(personalGrantDateCode: string){
+                var self = this;
+                
+                if(personalGrantDateCode != "") {
+                    self.dataItems.removeAll();
+                    
+                    service.getPerSetByCode(self.specialHolidayCode(), personalGrantDateCode).done(function(data){
+                        for(var i = 0; i < data.length; i++){
+                            var item : IItem = {
+                                year: data[i].grantDateYear,
+                                month: data[i].grantDateMonth,
+                                setNo: data[i].grantDateNo
+                            };
+                            
+                            self.dataItems.push(new Item(item));
+                        }
+                        
+                        for(var i = data.length; i < 20; i++) {
+                            var item : IItem = {
+                                year: null,
+                                month: null,
+                                setNo: i + 1
+                            };
+                            
+                            self.dataItems.push(new Item(item));    
+                        }          
+                    }).fail(function(res) {
+                          
+                    });
+                } else {
+                    for(var i = 0; i < 20; i++) {
+                        var item : IItem = {
+                            year: null,
+                            month: null,
+                            setNo: i + 1
+                        };
+                        
+                        self.dataItems.push(new Item(item));    
+                    }
+                }
+            }
+            
             /**
              * Start page.
              */
@@ -145,8 +167,14 @@ module nts.uk.at.view.kmf004 {
                 var self = this;
                 var dfd = $.Deferred();
                 
-                service.getComByCode(self.specialHolidayCode()).done(function(data){
-                    self.bindData(data);                
+                $.when(self.getData()).done(function() {
+                                    
+                    if (self.items().length > 0) {
+                        self.singleSelectedCode(self.items()[0].code);
+                    } else {
+                        self.newBtn();    
+                    }
+                    
                     dfd.resolve();
                 }).fail(function(res) {
                     dfd.reject(res);    
@@ -156,81 +184,86 @@ module nts.uk.at.view.kmf004 {
             }
             
             /**
-             * Bind data.
+             * Get data.
              */
-            bindData(data: any) {
+            getData(): JQueryPromise<any> {
                 var self = this;
-            
-                if(data != undefined) {
-                    self.items.removeAll();
-                    
-                    self.selectedId(data.grantDateAtr);
-                    self.value(data.grantDate);
-                    
-                    service.getAllSetByCode(data.specialHolidayCode).done(function(data: Array<any>){
-                        for(var i = 0; i < data.length; i++){
-                            var item : IItem = {
-                                year: data[i].grantDateYear,
-                                month: data[i].grantDateMonth
-                            };
-                            
-                            self.items.push(new Item(item));
-                        }
-                        
-                        for(var i = data.length; i < 20; i++) {
-                            var item : IItem = {
-                                year: null,
-                                month: null
-                            };
-                            
-                            self.items.push(new Item(item));    
-                        }
-                    }).fail(function(res) {
-                          
+                var dfd = $.Deferred();
+                self.items([]);
+                service.getAllPerByCode(self.specialHolidayCode()).done(function(data) {
+                    _.forEach(data, function(item) {
+                        self.items.push(new ItemModel(item.personalGrantDateCode, item.personalGrantDateName));
                     });
-                } else {
-                    self.selectedId(0);
-                    self.value("");
-                    self.items.removeAll();
                     
-                    for(var i = 0; i < 20; i++) {
-                        var item : IItem = {
-                            year: null,
-                            month: null
-                        };
-                        
-                        self.items.push(new Item(item));    
-                    }
-                }
+                    dfd.resolve(data);
+                }).fail(function(res) {
+                    dfd.reject(res);    
+                });
+                
+                return dfd.promise();
             }
-                        
+            
             /**
-             * Save data to db.
+             * New function.
              */
-            saveData(){
+            newBtn(){
                 var self = this;
                 
-                if (self.selectedId() === 0) {
-                    if (self.value() == null || self.value() == "" || self.value() == undefined) {
-                        self.monthDaysReq(true);
-                    }
-                    $("#month-day-input").trigger("validate");
+                self.code("");
+                self.editMode(true);  
+                self.name(""); 
+                self.provisionCheck(false);
+                self.provisionDeactive(true);
+                self.selectedBaseDateId(0); 
+                self.standardDate("");
+                self.standardDateReq(true);
+                
+                self.dataItems.removeAll();
+                
+                for(var i = 0; i < 20; i++) {
+                    var item : IItem = {
+                        year: null,
+                        month: null,
+                        setNo: i + 1
+                    };
+                    
+                    self.dataItems.push(new Item(item));    
                 }
-                                
+                
+                self.singleSelectedCode("");
+                $("#input-code").focus();
+            }
+            
+            /**
+             * Register function.
+             */
+            registerBtn(){
+                var self = this;
+                nts.uk.ui.errors.clearAll();
+                var perSetData = [];
+                var index = 1;
+                
+                $("#input-code").trigger("validate");
+                $("#input-name").trigger("validate");
+                if (self.selectedBaseDateId() === 0) {
+                    if (self.standardDate() == null || self.standardDate() == "" || self.standardDate() == undefined) {
+                        self.standardDateReq(true);
+                    }
+                    $("#standard-date-input").trigger("validate");
+                }
+                
                 if (nts.uk.ui.errors.hasError()) {
                     return;    
                 }
                 
                 nts.uk.ui.block.invisible();
                 
-                var setData = [];
-                var index = 1;
-                
-                _.forEach(self.items(), function(item) {
+                _.forEach(self.dataItems(), function(item) {
                     if(item.month() || item.year()) {
                         if(item.month() !== 0 || item.year() !== 0) {
-                            setData.push({
+                            perSetData.push({
                                 specialHolidayCode: self.specialHolidayCode(),
+                                personalGrantDateCode: self.code(),
                                 grantDateNo: index,
                                 grantDateMonth: Number(item.month()),
                                 grantDateYear: Number(item.year())
@@ -241,78 +274,200 @@ module nts.uk.at.view.kmf004 {
                     index++;
                 });
                 
-                var dataItem : service.ComItem = {
+                var perItem : service.GrantDatePerItem = {
                     specialHolidayCode: self.specialHolidayCode(),
-                    grantDateAtr: self.selectedId(),
-                    grantDate: new Date(self.value()),
-                    grantDateSets: ko.toJS(setData)
-                }; 
+                    personalGrantDateCode: self.code(),
+                    personalGrantDateName: self.name(),
+                    provision: self.provisionCheck() ? 1 : 0,
+                    grantDate: new Date(self.standardDate()),
+                    grantDateAtr: self.selectedBaseDateId(),
+                    grantDatePerSet: ko.toJS(perSetData)
+                };
                 
-                service.addGrantDateCom(dataItem).done(function(errors){
-                    if (!errors || errors.length == 0) {
-                        self.bindData(dataItem);
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    } else {
-                        self.addListError(errors);
-                    }
-                    
-                }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error.message);    
-                }).always(function() {
-                    nts.uk.ui.block.clear();    
-                });
+                if(!self.editMode() && self.code() !== ""){
+                    service.UpdatePer(perItem).done(function(errors) {
+                        if (errors && errors.length > 0) {
+                            self.addListError(errors);    
+                        } else {  
+                            self.getData();         
+                            self.singleSelectedCode(self.code());
+                            self.singleSelectedCode.valueHasMutated();
+                            
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
+                                $("#input-name").focus();
+                            });
+                        }
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alertError(res.message);
+                    }).always(function() {
+                        nts.uk.ui.block.clear();
+                    });
+                } else {
+                    service.addPer(perItem).done(function(errors) {
+                        if (errors && errors.length > 0) {
+                            self.addListError(errors);    
+                        } else {  
+                            self.getData();         
+                            self.singleSelectedCode(self.code());
+                            
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
+                                $("#input-name").focus();
+                            });
+                        }
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alertError(res.message);
+                    }).always(function() {
+                        nts.uk.ui.block.clear();
+                    });
+                }
             }
             
             /**
-             * Close dialog.
+             * Delete function.
              */
-            cancel() {
+            deleteBtn(){
+                var self = this;
+                
+                nts.uk.ui.block.invisible();
+                
+                let count = 0;
+                for (let i = 0; i <= self.items().length; i++){
+                    if(self.items()[i].code == self.singleSelectedCode()){
+                        count = i;
+                        break;
+                    }
+                }
+                
+                if(self.provisionCheck()) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1219" });
+                    nts.uk.ui.block.clear();
+                    return;
+                }
+                
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    service.removePer(self.specialHolidayCode(), self.code()).done(function() {
+                        self.getData().done(function(){
+                            // if number of item from list after delete == 0 
+                            if(self.items().length==0){
+                                self.newBtn();
+                                return;
+                            }
+                            // delete the last item
+                            if(count == ((self.items().length))){
+                                self.singleSelectedCode(self.items()[count-1].code);
+                                return;
+                            }
+                            // delete the first item
+                            if(count == 0 ){
+                                self.singleSelectedCode(self.items()[0].code);
+                                return;
+                            }
+                            // delete item at mediate list 
+                            else if(count > 0 && count < self.items().length){
+                                self.singleSelectedCode(self.items()[count].code);    
+                                return;
+                            }
+                        });
+                        
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    }).always(function() {
+                        nts.uk.ui.block.clear();      
+                    });
+                }).ifNo(()=> { nts.uk.ui.block.clear(); });
+            }
+            
+            /**
+             * Close dialog function.
+             */
+            closeBtn(){
                 nts.uk.ui.windows.close();
             }
             
-             /**
+            /**
              * Add list error.
              */
             addListError(errorsRequest: Array<string>) {
-                var messages = {};
+                var self = this;
+                var errors = [];
                 _.forEach(errorsRequest, function(err) {
-                    messages[err] = nts.uk.resource.getMessage(err);
+                    errors.push({ message: nts.uk.resource.getMessage(err), messageId: err, supplements: {} });
                 });
     
-                var errorVm = {
-                    messageId: errorsRequest,
-                    messages: messages
-                };
-    
-                nts.uk.ui.dialog.bundledErrors(errorVm);
+                nts.uk.ui.dialog.bundledErrors({ errors: errors });
             }
         }
         
-        class BoxModel {
-            id: number;
+        class ItemModel {
+            code: string;
             name: string;
-            constructor(id, name) {
-                var self = this;
-                self.id = id;
-                self.name = name;
+            constructor(code: string, name: string) {
+                this.code = code;
+                this.name = name;       
             }
-        }
+        } 
         
         export class Item {
             year: KnockoutObservable<number>;
             month: KnockoutObservable<number>;
+            setNo: KnockoutObservable<number>;
             
             constructor(param: IItem) {
                 var self = this;
                 self.year = ko.observable(param.year);
                 self.month = ko.observable(param.month);
-        
+                self.setNo = ko.observable(param.setNo);
             }
         }
         
         export interface IItem {
             year: number;
             month: number;
+            setNo: number;
+        }
+
+        interface IBonusPaySetting {
+            id: string;
+            name: string;
+            wid?: string; // workplace id
+            wname?: string; // workplace name
+        }
+
+        class BonusPaySetting {
+            id: KnockoutObservable<string> = ko.observable('');
+            name: KnockoutObservable<string> = ko.observable('');
+            wid: KnockoutObservable<string> = ko.observable('');
+            wname: KnockoutObservable<string> = ko.observable('');
+
+            constructor(param: IBonusPaySetting) {
+                let self = this;
+
+                self.id(param.id);
+                self.name(param.name);
+                self.wid(param.wid || '');
+                self.wname(param.wname || '');
+
+                self.id.subscribe(x => {
+                    let view = __viewContext.viewModel && __viewContext.viewModel.tabView,
+                        acts: any = view && _.find(view.tabs(), (t: any) => t.active());
+                    if (acts && acts.id == 'H') {
+                        view.removeAble(!!x);
+                    }
+                });
+            }
+        }
+
+        interface ITreeGrid {
+            treeType: number;
+            selectType: number;
+            isDialog: boolean;
+            isMultiSelect: boolean;
+            isShowAlreadySet: boolean;
+            isShowSelectButton: boolean;
+            baseDate: KnockoutObservable<any>;
+            selectedWorkplaceId: KnockoutObservable<any>;
+            alreadySettingList: KnockoutObservableArray<any>;
         }
     }
 }
