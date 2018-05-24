@@ -5,6 +5,7 @@ module nts.uk.com.view.kwr002.e {
     
         mainTab.start(16).done(function(screenModel:any){
             __viewContext.bind(mainTab); 
+             $('#attendance_name').focus();
         });
     });
 }

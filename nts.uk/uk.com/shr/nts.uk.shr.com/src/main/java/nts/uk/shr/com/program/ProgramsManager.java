@@ -1765,6 +1765,11 @@ public class ProgramsManager {
 	 */
 	public static final Program KWR002A = new Program(WebAppId.COM, ProgramIdConsts.KWR002A, "KWR002_1",
 			"/view/kwr/002/a/index.xhtml");
+	/**
+	 * KWR002E
+	 */
+	public static final Program KWR002E = new Program(WebAppId.COM, ProgramIdConsts.KWR002E, "KWR002_5",
+			"/view/kwr/002/e/index.xhtml");
 
 	/**
 	 * All programs map.
