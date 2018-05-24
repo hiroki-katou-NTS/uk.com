@@ -12,7 +12,9 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.adapter.EmployeeInfoContactAdapter;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.adapter.EnvPasswordAdapter;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.adapter.PersonContactAdapter;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.EmployeeInfoContactImport;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PersonContactImport;
@@ -39,6 +41,10 @@ public class MailNoticeSetSaveCommandHandler extends CommandHandler<MailNoticeSe
 	@Inject
 	private PersonContactAdapter personContactAdapter;
 
+	/** The password adapter. */
+	@Inject
+	private EnvPasswordAdapter passwordAdapter;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -54,10 +60,13 @@ public class MailNoticeSetSaveCommandHandler extends CommandHandler<MailNoticeSe
 
 		if (command.getIsPasswordUpdate()) {
 
-			// TODO Check password - Request List 383
+			// TODO Check password - Request List 383 (dung EnvPasswordAdapter)
 
-			// TODO Update password - Request List 384
-
+			// Update password - Request List 384
+			String newPassword = command.getNewPassword();
+			if (!StringUtil.isNullOrEmpty(newPassword, true)) {
+				this.passwordAdapter.updatePassword(newPassword);
+			}
 		}
 
 		if (command.getIsContactUpdate()) {
@@ -79,19 +88,5 @@ public class MailNoticeSetSaveCommandHandler extends CommandHandler<MailNoticeSe
 			});
 		}
 	}
-
-	/**
-	 * Validate password.
-	 *
-	 * @param oldPass
-	 *            the old pass
-	 * @param newPass
-	 *            the new pass
-	 * @param confirmNewPass
-	 *            the confirm new pass
-	 * @return true, if successful
-	 */
-	private boolean validatePassword(String oldPass, String newPass, String confirmNewPass) {
-		return true;
-	}
+	
 }

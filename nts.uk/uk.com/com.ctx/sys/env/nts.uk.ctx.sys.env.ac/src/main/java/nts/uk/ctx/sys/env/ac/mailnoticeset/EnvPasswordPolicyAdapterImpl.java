@@ -7,9 +7,12 @@ package nts.uk.ctx.sys.env.ac.mailnoticeset;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import nts.uk.ctx.sys.env.dom.mailnoticeset.adapter.EnvPasswordPolicyAdapter;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.ComplexityImport;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PasswordPolicyImport;
+import nts.uk.ctx.sys.gateway.pub.securitypolicy.PasswordPolicyPublisher;
 
 /**
  * The Class PasswordPolicyAdapterImpl.
@@ -18,8 +21,8 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PasswordPolicyImport;
 public class EnvPasswordPolicyAdapterImpl implements EnvPasswordPolicyAdapter {
 
 	/** The password policy publisher. */
-//	@Inject
-//	private PasswordPolicyPublisher passwordPolicyPublisher;
+	@Inject
+	private PasswordPolicyPublisher passwordPolicyPublisher;
 
 	/*
 	 * (non-Javadoc)
@@ -29,15 +32,13 @@ public class EnvPasswordPolicyAdapterImpl implements EnvPasswordPolicyAdapter {
 	 */
 	@Override
 	public Optional<PasswordPolicyImport> getPasswordPolicy(String contractCode) {
-//		return this.passwordPolicyPublisher.getPasswordPolicy(contractCode)
-//				.map(item -> {
-//						ComplexityImport complexityImport = new ComplexityImport(item.getAlphabetDigit(), item.getNumberOfDigits(),
-//								item.getSymbolCharacters());
-//						return new PasswordPolicyImport(item.isUse(), item.getLowestDigits(), complexityImport,
-//								item.getHistoryCount(), item.getValidityPeriod());
-//				});
-		//TODO
-		return Optional.empty();
+		return this.passwordPolicyPublisher.getPasswordPolicy(contractCode)
+				.map(item -> {
+						ComplexityImport complexityImport = new ComplexityImport(item.getAlphabetDigit(), item.getNumberOfDigits(),
+								item.getSymbolCharacters());
+						return new PasswordPolicyImport(item.isUse(), item.getLowestDigits(), complexityImport,
+								item.getHistoryCount(), item.getValidityPeriod());
+				});
 	}
 
 }
