@@ -70,7 +70,7 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 * テーブル物理名
 	 */
 	@Basic(optional = false)
-	@Column(name = "PARENT_TBL_NAME")
+	@Column(name = "TABLE_ENGLISH_NAME")
 	public String tableEnglishName;
 
 	/**
