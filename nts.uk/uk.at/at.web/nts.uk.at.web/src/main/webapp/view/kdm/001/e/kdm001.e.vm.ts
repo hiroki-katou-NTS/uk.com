@@ -2,7 +2,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel {
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-        columns: KnockoutObservableArray<NtsGridListColumn>;
+        columns: KnockoutObservableArray<any>;
         currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
         currentList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         workCode: KnockoutObservable<string> = ko.observable('');
@@ -12,8 +12,6 @@ module nts.uk.at.view.kdm001.e.viewmodel {
         dateHoliday: KnockoutObservable<any> = ko.observable('');
         numberDay: KnockoutObservable<any> = ko.observable('');
         residualDay: KnockoutObservable<any> = ko.observable('');
-//        employee : any = getShared('KDM001A_EMPLOYEE');
-//        payoutItem : any = getShared('KDM001A_PAYOUT');
         info: any = getShared("KDM001_EFGH_PARAMS");
         constructor() {
             let self = this;
@@ -38,12 +36,38 @@ module nts.uk.at.view.kdm001.e.viewmodel {
                 { headerText: nts.uk.resource.getText("KDM001_95"), key: 'dayoffDate', width: 110 },
                 { headerText: nts.uk.resource.getText("KDM001_96"), key: 'remainDays', formatter:self.formatterDay, width: 100 }
             ]);
-//            self.initScreen();
+            
+            self.currentCodeList.subscribe(()=> {
+                if (self.currentList().length > 0) {
+                     self.currentList.removeAll();
+                 }
+                _.forEach(self.currentCodeList(),function(item){
+                    let code = _.find(self.items(), function(currentItem: ItemModel) {
+                                return currentItem.subOfHDID === item;
+                     });
+                    if (code) {
+                        
+                        self.currentList.push(code);
+                    }
+                })
+                let sumNum = 0;
+                _.each(self.currentList(), function (x) {
+                    if (self.dateHoliday() === x.dayoffDate) {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_729" });
+                    }
+                    var iNum = parseFloat(x.remainDays);
+                    
+                    sumNum = sumNum + iNum;
+                    
+                });
+                let day = parseFloat(self.residualDay());
+                self.residualDay((day - sumNum) + ' 日');
+            });
         }
 
-        public initScreen(annID?: string): JQueryPromise<any> {
+        public initScreen(): JQueryPromise<any> {
             let self = this;
-            service.getBySidDatePeriod(/*employee.employeeId*/ 'ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570', /*payoutItem.payoutId*/'de1b6c4f-833c-4bca-b257-4e44269ed230').done((data: ItemModel )=>{
+            service.getBySidDatePeriod(/*self.info.selectedEmployee.employeeId*/ 'ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570', /*payoutItem.payoutId*/'de1b6c4f-833c-4bca-b257-4e44269ed230').done((data: Array<ItemModel> )=>{
                 if (data && data.length > 0) {
                     self.items(data);
                     _.forEach(data, function(item) {
@@ -62,16 +86,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
         
         public create(): void {
             let self = this;
-            self.currentList.removeAll();
-            _.forEach(self.currentCodeList(),function(item){
-                let code = _.find(self.items(), function(currentItem: ItemModel) {
-                            return currentItem.subOfHDID === item;
-                 });
-                if (code) {
-                    
-                    self.currentList.push(code);
-                }
-            })
+           
             let command = new PayoutSubofHDManagementCommand(/*self.info.selectedEmployee.employeeId, self.info.payout.payoutId,*/'ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570', /*payoutItem.payoutId*/'de1b6c4f-833c-4bca-b257-4e44269ed230',self.residualDay(), self.currentList());
                 
                 if (self.currentCodeList().length == 0){
@@ -94,7 +109,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
                     }
                 }
                 service.insertSubOfHDMan(command).done(()=>{
-                
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 }).fail((res)=>{
                     $('#multi-list').ntsError('set', { messageId: res.messageId });
                 })

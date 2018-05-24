@@ -5,7 +5,6 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.CompensatoryDayoffDate;
@@ -49,7 +48,9 @@ public class SubstitutionOfHDManagementData extends AggregateRoot {
 		this.remainDays = new ManagementDataRemainUnit(remainDays);
 	}
 	
-	public void setRemainsDayToZero(){
-		this.remainDays = new ManagementDataRemainUnit(0d);
+	public void setRemainsDay(Double remainNumber){
+		this.remainDays = new ManagementDataRemainUnit(remainNumber);
 	}
+	
+	
 }

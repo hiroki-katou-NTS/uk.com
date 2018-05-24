@@ -106,7 +106,7 @@ public class SubstitutionOfHDManaDataService {
 			// Update remain days 振休管理データ
 			Optional<SubstitutionOfHDManagementData> subMana =  substitutionOfHDManaDataRepository.findByID(i.getSubOfHDID());
 			if (subMana.isPresent()){
-				subMana.get().setRemainsDayToZero();
+				subMana.get().setRemainsDay(0d);
 				substitutionOfHDManaDataRepository.update(subMana.get());
 			}
 		});

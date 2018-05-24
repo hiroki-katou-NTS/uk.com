@@ -1,11 +1,12 @@
 module nts.uk.at.view.kdm001.f {
+    import format = nts.uk.text.format;
     export module service {
         var paths: any = {
-            getBySidDatePeriod: "at/record/remainnumber/paymana/getBySidDatePeriod",
+            getBySidDatePeriod: "at/record/remainnumber/getBySidDatePeriod/{0}/{1}",
         }
         
-        export function getBySidDatePeriod(command): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.getBySidDatePeriod, command);
+        export function getBySidDatePeriod(empId:string,subOfHDID:string): JQueryPromise<any> {
+            return nts.uk.request.ajax(format(paths.getBySidDatePeriod, empId, subOfHDID));
         }
 
     }

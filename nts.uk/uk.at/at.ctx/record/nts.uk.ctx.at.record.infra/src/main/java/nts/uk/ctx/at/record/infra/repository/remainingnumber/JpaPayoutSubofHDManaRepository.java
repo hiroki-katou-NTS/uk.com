@@ -20,6 +20,7 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 	private final String QUERY_BY_PAYOUTID = String.join(" ",QUERY, " WHERE ps.krcmtPayoutSubOfHDManaPK.payoutId =:payoutId");
 	private final String QUERY_BY_SUBID = String.join(" ",QUERY, " WHERE ps.krcmtPayoutSubOfHDManaPK.subOfHDID =:subOfHDID");
 	private final String DELETE_BY_PAYOUTID = "DELETE FROM KrcmtPayoutSubOfHDMana WHERE ps.krcmtPayoutSubOfHDManaPK.payoutId =:payoutId";
+	private final String DELETE_BY_SUBID = "DELETE FROM KrcmtPayoutSubOfHDMana WHERE ps.krcmtPayoutSubOfHDManaPK.subOfHDID =:subOfHDID";
 	
 	@Override
 	public void add(PayoutSubofHDManagement domain) {
@@ -73,7 +74,7 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 
 	@Override
 	public List<PayoutSubofHDManagement> getBySubId(String subID) {
-		List<KrcmtPayoutSubOfHDMana> listpayoutSub = this.queryProxy().query(QUERY_BY_PAYOUTID,KrcmtPayoutSubOfHDMana.class)
+		List<KrcmtPayoutSubOfHDMana> listpayoutSub = this.queryProxy().query(QUERY_BY_SUBID,KrcmtPayoutSubOfHDMana.class)
 				.setParameter("subOfHDID", subID).getList();
 		return listpayoutSub.stream().map(item->toDomain(item)).collect(Collectors.toList());
 	}
@@ -82,6 +83,13 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 	public void delete(String payoutId) {
 		this.getEntityManager().createQuery(DELETE_BY_PAYOUTID).setParameter("payoutId", payoutId);
 		this.getEntityManager().flush();
+	}
+
+	@Override
+	public void deleteBySubID(String subID) {
+		this.getEntityManager().createQuery(DELETE_BY_SUBID).setParameter("subOfHDID", subID);
+		this.getEntityManager().flush();
+		
 	}
 
 }
