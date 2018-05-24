@@ -20,8 +20,9 @@ public class LeaveDataDto {
 
 	// 社員ID
 	private String sID;
-
+	
 	// 休出日
+	private int unknownDate;
 	private GeneralDate dayOffDate;
 
 	// 使用期限日
@@ -53,7 +54,7 @@ public class LeaveDataDto {
 
 	public static LeaveDataDto convertToDto(LeaveManagementData leaveData) {
 		return new LeaveDataDto(leaveData.getID(), leaveData.getCID(), leaveData.getSID(),
-				leaveData.getComDayOffDate().getDayoffDate().get(), leaveData.getExpiredDate(),
+				leaveData.getComDayOffDate().isUnknownDate() ? 1 : 0, leaveData.getComDayOffDate().getDayoffDate().get(), leaveData.getExpiredDate(),
 				leaveData.getOccurredDays().v().doubleValue(), leaveData.getOccurredTimes().v().intValue(),
 				leaveData.getUnUsedDays().v().doubleValue(), leaveData.getUnUsedTimes().v().intValue(),
 				leaveData.getSubHDAtr().value, leaveData.getFullDayTime().v().intValue(),

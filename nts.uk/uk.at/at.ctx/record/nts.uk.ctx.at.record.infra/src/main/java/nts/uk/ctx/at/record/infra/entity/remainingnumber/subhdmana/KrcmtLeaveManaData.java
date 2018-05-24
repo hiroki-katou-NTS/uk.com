@@ -13,7 +13,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class KrcmtLeaveManaData extends UkJpaEntity {
 	@Id
 	@Column(name="LEAVE_MANA_ID")
-	public String ID;
+	public String leaveID;
 	
 	@Column(name="CID")
 	public String cID;
@@ -56,7 +56,7 @@ public class KrcmtLeaveManaData extends UkJpaEntity {
 
 	@Override
 	protected Object getKey() {
-		return this.ID;
+		return this.leaveID;
 	}
 
 }

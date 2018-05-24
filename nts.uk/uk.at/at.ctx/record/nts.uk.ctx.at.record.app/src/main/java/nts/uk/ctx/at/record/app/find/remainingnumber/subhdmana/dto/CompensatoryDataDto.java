@@ -21,6 +21,7 @@ public class CompensatoryDataDto {
 	private String cID;
 
 	// 代休日
+	private int unknownDate;
 	private GeneralDate dayOffDate;
 
 	// 必要日数
@@ -37,7 +38,7 @@ public class CompensatoryDataDto {
 
 	public static CompensatoryDataDto convertToDto(CompensatoryDayOffManaData compensatoryData) {
 		return new CompensatoryDataDto(compensatoryData.getComDayOffID(), compensatoryData.getSID(), compensatoryData.getCID(),
-				compensatoryData.getDayOffDate().getDayoffDate().get(), compensatoryData.getRequireDays().v(),
+				compensatoryData.getDayOffDate().isUnknownDate() ? 1 : 0, compensatoryData.getDayOffDate().getDayoffDate().get(), compensatoryData.getRequireDays().v(),
 				compensatoryData.getRequiredTimes().v(), compensatoryData.getRemainDays().v(),
 				compensatoryData.getRemainTimes().v());
 	}

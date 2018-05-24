@@ -16,9 +16,12 @@ import nts.uk.ctx.at.record.dom.remainingnumber.paymana.DayOffManagementData;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.DaysOffMana;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
+import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -34,8 +37,14 @@ public class DayOffManagementService {
 	@Inject
 	private LeaveComDayOffManaRepository leaveComDayOffManaRepository;
 	
-	public static final String ONE_DAY = "1.0日";
-	public static final String HALF_DAY = "0.5日";
+	@Inject
+	private ComDayOffManaDataRepository comDayOffManaDataRepository;
+	
+	@Inject
+	private CompensLeaveComSetRepository compensLeaveComSetRepository;
+	
+	public static final String ONE_DAY = "1.0";
+	public static final String HALF_DAY = "0.5";
 	
 	public List<String> updateDayOff(DayOffManagementData dayOffManagementData) {
 		int permission = 0;
@@ -44,12 +53,13 @@ public class DayOffManagementService {
 		Optional<SEmpHistoryImport> emHsIm = sysEmploymentHisAdapter.findSEmpHistBySid(companyId, dayOffManagementData.getEmployeeId(), GeneralDate.today());
 		if (emHsIm.isPresent()) {
 			val data = emHsIm.get();
+			
+			// permission 
 			CompensatoryLeaveEmSetting compensatoryLeaveEmSetting = compensLeaveEmSetRepository.find(companyId, data.getEmploymentCode());
+			CompensatoryLeaveComSetting compensatoryLeaveComSetting = compensLeaveComSetRepository.find(companyId);
 			
 			if(compensatoryLeaveEmSetting.getCompensatoryAcquisitionUse().getPreemptionPermit().value == 0) {
-				
-				// todo
-				
+				permission = compensatoryLeaveComSetting.getCompensatoryAcquisitionUse().getPreemptionPermit().value;
 				
 			} else {
 				permission = compensatoryLeaveEmSetting.getCompensatoryAcquisitionUse().getPreemptionPermit().value;
@@ -63,17 +73,15 @@ public class DayOffManagementService {
 			} else if (dayOffManagementData.getDaysOffMana().size() == 2) {
 					
 				if (dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(ONE_DAY)) {
-					if (permission == 0) {
+					
 						response.add("Msg_733");
-					} else {
-						dayOffManagementData.getDaysOffMana().remove(1);
-					}
+					
 				} else if (dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(HALF_DAY)) {
 					if (!dayOffManagementData.getDaysOffMana().get(1).getRemainDays().equals(HALF_DAY)) {
 						response.add("Msg_739");
 					}
 				}
-			} else {
+			} else if (dayOffManagementData.getDaysOffMana().size() >= 3) {
 				response.add("Msg_739");
 			}
 			
@@ -95,6 +103,10 @@ public class DayOffManagementService {
 								TargetSelectionAtr.MANUAL.value))
 						.collect(Collectors.toList());
 				leaveComDayOffManaRepository.insertAll(entitiesLeave);
+				
+				List<String> comDayIds = daysOff.stream().map(item -> new String(item.getComDayOffID())).collect(Collectors.toList());
+				comDayOffManaDataRepository.updateReDayByComDayId(comDayIds);
+				
 				response.add("Msg_15");
 			}
 			

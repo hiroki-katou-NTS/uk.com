@@ -33,11 +33,11 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         constructor() {
             var self = this;
             
+            self.compositePayOutSubMngData = ko.observableArray([]);
             self.periodOptionItem = ko.observableArray([
                 new ItemModel(0, getText("KDM001_4")),
                 new ItemModel(1, getText("KDM001_5"))
             ]);
-            
             self.selectedPeriodItem = ko.observable(0);
             self.startDateString = ko.observable("");
             self.endDateString = ko.observable("");
@@ -105,23 +105,75 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
             
             self.selectedItem.subscribe(x =>{
-                self.selectedEmployeeObject = _.find(self.employeeInputList(), item => { return item.id === x; });
+                if(self.selectedEmployee().length > 0) {
+                    self.selectedEmployeeObject = _.find(self.selectedEmployee(), item => { return item.employeeId === x; });
+                }
+                    
                 self.updateDataList();
+            });
+            
+            $("#compositePayOutSubMngDataGrid").ntsGrid({
+                height: '520px',
+                name: 'Grid name',
+                dataSource: self.compositePayOutSubMngData(),
+                primaryKey: 'id',
+                virtualization: true,
+                hidePrimaryKey: true,
+                rowVirtualization: true,
+                virtualizationMode: 'continuous',
+                columns: [
+                    { headerText: 'ID', key: 'id', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: 'linked', key: 'isLinked', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: getText('KDM001_8'), template: '<div style="float:right"> ${dayoffDatePyout} </div>', key: 'dayoffDatePyout', dataType: 'string', width: '120px' },
+                    { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${occurredDays} </div>', key: 'occurredDays', dataType: 'Number', width: '80px' },
+                    { headerText: getText('KDM001_124'), key: 'payoutTied', dataType: 'string', width: '80px' },
+                    { headerText: getText('KDM001_10'), template: '<div style="float:right"> ${dayoffDateSub} </div>', key: 'dayoffDateSub', dataType: 'string', width: '120px' },
+                    { headerText: getText('KDM001_11'), template: '<div style="float:right"> ${requiredDays} </div>', key: 'requiredDays', dataType: 'Number', width: '80px' },
+                    { headerText: getText('KDM001_124'), key: 'subTied', dataType: 'string', width: '80px' },
+                    { headerText: getText('KDM001_12'), template: '<div style="float:right"> ${unUsedDaysInGrid} </div>', key: 'unUsedDaysInGrid', dataType: 'Number', width: '80px' },
+                    { headerText: getText('KDM001_13'), template: '<div style="float:right"> ${expriedDaysInGrid} </div>', key: 'expriedDaysInGrid', dataType: 'Number', width: '80px' },
+                    { headerText: getText('KDM001_14'), formatter: getLawAtr, key: 'lawAtr', dataType: 'string', width: '100px' },
+                    { headerText: '', key: 'link', dataType: 'string', width: '85px', unbound: true, ntsControl: 'ButtonPegSetting' },
+                    { headerText: '', key: 'edit', dataType: 'string', width: '55px', unbound: true, ntsControl: 'ButtonCorrection' }
+                ],
+                features: [
+                    {
+                        name: 'Paging',
+                        type: "local",
+                        pageSize: 14
+                    }
+                ],
+                ntsControls: [
+                    { name: 'ButtonPegSetting', text: getText('KDM001_22'), click: function(value) { self.pegSetting(value) }, controlType: 'Button' },
+                    { name: 'ButtonCorrection', text: getText('KDM001_23'), click: function(value) { self.doCorrection(value) }, controlType: 'Button' }
+                ]
             });
         }
         
         openNewSubstituteData() {
             let self = this;
-            setShared('KDM001_A_PARAMS', {selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID});
+            setShared('KDM001_D_PARAMS', {selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID});
             
             modal("/view/kdm/001/d/index.xhtml").onClosed(function() {
-                self.updateDataList();
+                let params = getShared('KDM001_A_PARAMS');
+                
+                if (params.isSuccess) {
+                    self.updateDataList();
+                }
+                
                 $('#compositePayOutSubMngDataGrid').focus();
             });
         }
         
+        goToKDR004() {
+            let self = this;
+            setShared('KDM001_PARAMS', {selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID, dateRange: dateValue(),
+                    selectedPeriodItem: self.selectedPeriodItem(), dispTotalRemain: self.dispTotalRemain(), expirationDate: self.expirationDate()});
+            nts.uk.request.jump("/view/kdr/004/a/index.xhtml");
+        }
+        
         clickGetDataList() {
-            updateDataList();
+            self.updateDataList();
             $('#compositePayOutSubMngDataGrid').focus();
         }
         
@@ -150,7 +202,15 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 }
                 
                 // update grid
-                self.showDataGrid();
+                $("#compositePayOutSubMngDataGrid").igGrid("dataSourceObject", self.compositePayOutSubMngData()).igGrid("dataBind");
+                
+                // disable edit button
+                _.forEach(self.compositePayOutSubMngData(), function(value) {
+                    if (value.isLinked){
+                        let rowId = value.id;
+                        $("#compositePayOutSubMngDataGrid").ntsGrid("disableNtsControlAt", rowId, 'edit', 'Button');
+                    }
+                });
             }).fail(function(res: any) {
                 console.log(res);
             });
@@ -160,10 +220,12 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             let self = this;
             var dfd = $.Deferred();
             
-            service.getInfoEmLogin().done(function(employeeInfo) {
-                service.getWpName().done(function(wpName) {
-                    self.employeeInputList.push(new EmployeeKcp009(employeeInfo.sid,
-                        employeeInfo.employeeCode, employeeInfo.employeeName, wpName.name, wpName.name));
+            service.getInfoEmLogin().done(function(emp) {
+                service.getWpName().done(function(wp) {
+                    self.selectedEmployeeObject = {employeeId: emp.sid, employeeCode: emp.employeeCode, employeeName: emp.employeeName, 
+                            workplaceId: wp.workplaceId, workplaceCode: wp.code, workplaceName: wp.name};
+                    self.employeeInputList.push(new EmployeeKcp009(emp.sid,
+                            emp.employeeCode, emp.employeeName, wp.name, wp.name));
                     self.initKCP009();
                 });
             });
@@ -209,53 +271,6 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             })
         }
         
-        showDataGrid() {
-            var self = this;
-            $("#compositePayOutSubMngDataGrid").ntsGrid({
-                height: '520px',
-                name: 'Grid name',
-                dataSource: self.compositePayOutSubMngData(),
-                primaryKey: 'id',
-                virtualization: true,
-                hidePrimaryKey: true,
-                rowVirtualization: true,
-                virtualizationMode: 'continuous',
-                columns: [
-                    { headerText: 'ID', key: 'id', dataType: 'string', width: '0px', hidden: true },
-                    { headerText: 'linked', key: 'isLinked', dataType: 'string', width: '0px', hidden: true },
-                    { headerText: getText('KDM001_8'), template: '<div style="float:right"> ${dayoffDatePyout} </div>', key: 'dayoffDatePyout', dataType: 'string', width: '120px' },
-                    { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${occurredDays} </div>', key: 'occurredDays', dataType: 'string', width: '80px' },
-                    { headerText: getText('KDM001_124'), key: 'payoutTied', dataType: 'string', width: '80px' },
-                    { headerText: getText('KDM001_10'), template: '<div style="float:right"> ${dayoffDateSub} </div>', key: 'dayoffDateSub', dataType: 'string', width: '120px' },
-                    { headerText: getText('KDM001_11'), template: '<div style="float:right"> ${requiredDays} </div>', key: 'requiredDays', dataType: 'string', width: '80px' },
-                    { headerText: getText('KDM001_124'), key: 'subTied', dataType: 'string', width: '80px' },
-                    { headerText: getText('KDM001_12'), template: '<div style="float:right"> ${unUsedDaysInGrid} </div>', key: 'unUsedDaysInGrid', dataType: 'Number', width: '80px' },
-                    { headerText: getText('KDM001_13'), template: '<div style="float:right"> ${expriedDaysInGrid} </div>', key: 'expriedDaysInGrid', dataType: 'Number', width: '80px' },
-                    { headerText: getText('KDM001_14'), template: '<div style="float:left"> ${lawAtr} </div>', key: 'lawAtr', dataType: 'string', width: '100px' },
-                    { headerText: '', key: 'link', dataType: 'string', width: '85px', unbound: true, ntsControl: 'ButtonPegSetting' },
-                    { headerText: '', key: 'edit', dataType: 'string', width: '55px', unbound: true, ntsControl: 'ButtonCorrection' }
-                ],
-                features: [
-                    {
-                        name: 'Paging',
-                        type: "local",
-                        pageSize: 14
-                    }
-                ],
-                ntsControls: [
-                    { name: 'ButtonPegSetting', text: getText('KDM001_22'), click: function(value) { self.pegSetting(value) }, controlType: 'Button' },
-                    { name: 'ButtonCorrection', text: getText('KDM001_23'), click: function(value) { self.doCorrection(value) }, controlType: 'Button' }
-                ]
-            });
-            
-            _.forEach(self.compositePayOutSubMngData(), function(value) {
-                if (value.isLinked){
-                    let rowId = value.id;
-                    $("#compositePayOutSubMngDataGrid").ntsGrid("disableNtsControlAt", rowId, 'edit', 'Button');
-                }
-            });
-        }
-        
         pegSetting(value) {
             let self = this;
             let selectedRowData = value;
@@ -263,11 +278,19 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             
             if (value.dayoffDatePyout.length == 0) {
                 modal("/view/kdm/001/e/index.xhtml").onClosed(function() {
-                    self.updateDataList();
+                    let params = getShared('KDM001_A_PARAMS');
+                
+                    if (params.isSuccess) {
+                        self.updateDataList();
+                    }
                 });
             } else {
                 modal("/view/kdm/001/f/index.xhtml").onClosed(function() {
-                    self.updateDataList();
+                    let params = getShared('KDM001_A_PARAMS');
+                
+                    if (params.isSuccess) {
+                        self.updateDataList();
+                    }
                 });
             }
         }
@@ -279,11 +302,19 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             
             if (value.dayoffDatePyout.length > 0) {
                 modal("/view/kdm/001/g/index.xhtml").onClosed(function() {
-                    self.updateDataList();
+                    let params = getShared('KDM001_A_PARAMS');
+                
+                    if (params.isSuccess) {
+                        self.updateDataList();
+                    }
                 });
             } else {
                 modal("/view/kdm/001/h/index.xhtml").onClosed(function() {
-                    self.updateDataList();
+                    let params = getShared('KDM001_A_PARAMS');
+                
+                    if (params.isSuccess) {
+                        self.updateDataList();
+                    }
                 });
             }
         }
@@ -468,7 +499,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             this.unknownDatePayout = params.unknownDatePayout;
             this.dayoffDatePyout = params.unknownDatePayout ? params.dayoffDatePyout + "※" : params.dayoffDatePyout;
             this.expiredDate = params.expiredDate;
-            this.lawAtr = this.getLawAtr(params.lawAtr);
+            this.lawAtr = params.lawAtr;
             this.occurredDays = params.occurredDays;
             this.unUsedDays = params.unUsedDays;
             this.stateAtr = params.stateAtr;
@@ -499,17 +530,17 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             
             this.isLinked = (params.payoutTied || params.subTied) ? true : false;
         }
-        
-        getLawAtr(value) {
-            if(value == 0) {
-                return "法定内休日";
-            } else if(value == 1) {
-                return "法定外休日";
-            } else if(value == 2) {
-                return "祝日";
-            } else {
-                return "";
-            }
+    }
+    
+    function getLawAtr(value, row) {
+        if (value && value === '0') {
+            return '法定内休日';
+        } else if (value && value === '1') {
+            return '法定外休日';
+        } else if (value && value === '2') {
+            return '祝日';
+        } else {
+            return '';
         }
     }
 }

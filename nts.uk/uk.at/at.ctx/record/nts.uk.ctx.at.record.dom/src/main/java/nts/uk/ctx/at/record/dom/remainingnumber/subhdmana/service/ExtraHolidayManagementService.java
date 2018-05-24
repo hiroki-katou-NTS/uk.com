@@ -2,14 +2,12 @@ package nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
@@ -42,7 +40,7 @@ public class ExtraHolidayManagementService {
 	private LeaveComDayOffManaRepository leaveComDayOffManaRepository;
 	
 	
-	public ExtraHolidayManagementOutput dataExtractionProcessing (String employeeId, GeneralDate startDate, GeneralDate endDate){
+	public ExtraHolidayManagementOutput dataExtractionProcessing (int searchMode, String employeeId, GeneralDate startDate, GeneralDate endDate){
 		String cid = AppContexts.user().companyId();
 		List<LeaveManagementData> listLeaveData = null;
 		List<CompensatoryDayOffManaData> listCompensatoryData = null;
@@ -50,12 +48,12 @@ public class ExtraHolidayManagementService {
 		SEmpHistoryImport empHistoryImport = null;
 		ClosureEmployment closureEmploy = null;
 		GeneralDate baseDate = GeneralDate.today();
-		if (!Objects.isNull(startDate) && !Objects.isNull(endDate)){
-			listLeaveData = leaveManaDataRepository.getBySidWithsubHDAtrAndDateCondition(cid, employeeId, startDate, endDate);
-			listCompensatoryData = comDayOffManaDataRepository.getBySidWithReDayAndDateCondition(cid, employeeId, startDate, endDate);
-		} else {
+		if (searchMode == 0){
 			listLeaveData = leaveManaDataRepository.getBySidNotUnUsed(cid, employeeId);
 			listCompensatoryData = comDayOffManaDataRepository.getBySidWithReDay(cid, employeeId); 
+		} else {
+			listLeaveData = leaveManaDataRepository.getByDateCondition(cid, employeeId, startDate, endDate);
+			listCompensatoryData = comDayOffManaDataRepository.getByDateCondition(cid, employeeId, startDate, endDate);
 		}
 		if (!listLeaveData.isEmpty() && !listCompensatoryData.isEmpty()){
 			List<String> listLeaveID = listLeaveData.stream().map(x ->{
