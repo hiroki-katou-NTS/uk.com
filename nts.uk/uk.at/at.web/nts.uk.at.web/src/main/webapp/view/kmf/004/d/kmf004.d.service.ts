@@ -1,27 +1,25 @@
 module nts.uk.at.view.kmf004.d.service {
-    import ajax = nts.uk.request.ajax;
-    import format = nts.uk.text.format;
-
-    let paths: any = {
-        find: "at/shared/yearserviceset/findAll/",
-        findCom: "at/shared/yearservicecom/findAll/",
-        add: 'at/shared/yearservicecom/add',
-        update: 'at/shared/yearservicecom/update'
-    }
-
-    export function findAll(specialHolidayCode: String) : JQueryPromise<any>{
-        return nts.uk.request.ajax(paths.find + specialHolidayCode);
+    
+    var paths: any = {
+        getAllPer: "at/shared/yearserviceper/findAllPer/",
+        update: "at/shared/yearserviceper/update",
+        add: "at/shared/yearserviceper/add",
+        remove: "at/shared/yearserviceper/delete"  
     }
     
-    export function findCom(specialHolidayCode: String) : JQueryPromise<any>{
-        return nts.uk.request.ajax(paths.findCom + specialHolidayCode);
+    export function getAll(specialHolidayCode: String) : JQueryPromise<any>{
+        return nts.uk.request.ajax(paths.getAllPer + specialHolidayCode);    
     }
-
-    export function add(command: Array<d.viewmodel.Item>): JQueryPromise<void>{
-        return ajax("at", paths.add, command);
+    
+    export function update(command: viewmodel.Per): JQueryPromise<Array<string>>{
+        return nts.uk.request.ajax(paths.update, command);    
     }
-
-    export function update(command): JQueryPromise<Array<string>>{
-        return ajax("at", paths.update, command);
-    }    
-}
+    
+    export function add(command: viewmodel.Per): JQueryPromise<void>{
+        return nts.uk.request.ajax(paths.add, command);    
+    }
+    
+    export function remove(command: viewmodel.Per): JQueryPromise<void>{
+        return nts.uk.request.ajax(paths.remove, command);    
+    }   
+}          

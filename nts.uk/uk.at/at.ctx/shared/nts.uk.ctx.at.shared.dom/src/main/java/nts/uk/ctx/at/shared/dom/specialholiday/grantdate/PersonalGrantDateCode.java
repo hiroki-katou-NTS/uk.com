@@ -6,7 +6,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
 import nts.uk.shr.com.primitive.ZeroPaddedCode;
 
-@StringCharType(CharType.ALPHA_NUMERIC)
+@StringCharType(CharType.NUMERIC)
 @StringMaxLength(2)
 @ZeroPaddedCode
 public class PersonalGrantDateCode extends CodePrimitiveValue<PersonalGrantDateCode> {
