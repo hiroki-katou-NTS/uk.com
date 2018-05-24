@@ -25,9 +25,9 @@
 					<div
 						data-bind="ntsDatePicker: { value: targetMonth, dateFormat: 'yearmonth', valueFormat: 'YYYYMM',showJumpButtons: true}"></div>
 				</div>
-				<div class="valign-center control-group">
+				<div class="valign-center control-group" style ="min-width: 600px;">
 					<label>#{i18n.getText('KTG027_4')}</label>
-					<div id="combo-box" style = "margin-left: 68px;" 
+					<div id="combo-box" style = "margin-left: 19px;" 
 						data-bind="ntsComboBox: {
 							name: 'Sample List',
 							options: closureResultModel,
@@ -36,7 +36,7 @@
 							value: selectedClosureID,
 							optionsText: 'closureName',
 							columns: [
-								{ prop: 'closureName', length: 7 },
+								{ prop: 'closureName', length: 5},
 							]}"></div>
 					<button data-bind = "click : clickExtractionBtn">#{i18n.getText('KTG027_5')}</button>
 					<button data-bind = " click : printData">#{i18n.getText('KTG027_13')} </button>
