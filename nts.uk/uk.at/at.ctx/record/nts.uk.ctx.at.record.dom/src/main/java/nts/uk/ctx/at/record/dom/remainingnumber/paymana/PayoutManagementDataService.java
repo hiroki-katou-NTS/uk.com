@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.paymana;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -7,6 +9,9 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.remainingnumber.base.TargetSelectionAtr;
+import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.ItemDays;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class PayoutManagementDataService {
@@ -17,6 +22,9 @@ public class PayoutManagementDataService {
 	private SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepository;
 	@Inject
 	private PayoutSubofHDManaRepository payoutSubofHDManaRepository;
+	
+	@Inject
+	private SysEmploymentHisAdapter syEmploymentAdapter;
 
 	public boolean checkInfoPayMana(PayoutManagementData domain) {
 		Optional<PayoutManagementData> payout = payoutManagementDataRepository.find(domain.getCID(), domain.getSID(),
@@ -113,5 +121,55 @@ public class PayoutManagementDataService {
 				// flag
 			}
 		}
+	}
+	
+	/**
+	 * KDM001 screen E
+	 */
+	public void insertPayoutSubofHD(String sid, String subId, Double remainNumber, List<SubOfHDManagement> subOfHDId) {
+		String companyId = AppContexts.user().companyId();
+		// ドメインモデル「inported雇用」を読み込む
+		Optional<SEmpHistoryImport> syEmpHist = syEmploymentAdapter.findSEmpHistBySid(companyId, sid,
+				GeneralDate.today());
+		if (!syEmpHist.isPresent()) {
+			return;
+		}
+		
+		if (subOfHDId.size() == 1){
+			if (subOfHDId.get(0).getRemainDays().compareTo(ItemDays.ONE_DAY.value) != 0){
+				// エラーメッセージ(Msg_731) エラーリストにセットする
+				throw new BusinessException("Msg_731");
+			}
+		}
+		if (subOfHDId.size() == 2){
+		
+			if (subOfHDId.get(0).getRemainDays().compareTo(ItemDays.HALF_DAY.value) == 0 
+					&& subOfHDId.get(1).getRemainDays().compareTo(ItemDays.HALF_DAY.value) != 0){
+				// エラーメッセージ(Msg_731) エラーリストにセットする
+				throw new BusinessException("Msg_731");
+			}
+		}
+		
+		if (!payoutSubofHDManaRepository.getBySubId(subId).isEmpty()){
+			payoutSubofHDManaRepository.deleteBySubID(subId);
+		}
+		
+		subOfHDId.forEach(i->{ 
+			payoutSubofHDManaRepository.add(new PayoutSubofHDManagement(i.getPayoutId(), subId,
+					new BigDecimal(i.getRemainDays()), TargetSelectionAtr.MANUAL.value));
+			// Update remain days 振出管理データ
+			Optional<PayoutManagementData> payoutMan =  payoutManagementDataRepository.findByID(i.getPayoutId());
+			if (payoutMan.isPresent()){
+				payoutMan.get().setRemainNumber(0d);
+				payoutManagementDataRepository.update(payoutMan.get());
+			}
+		});
+		// Update 振出管理データ  残数
+		Optional<SubstitutionOfHDManagementData> subofHD =  substitutionOfHDManaDataRepository.findByID(subId);
+		if (subofHD.isPresent()){
+			subofHD.get().setRemainsDay(remainNumber);
+			substitutionOfHDManaDataRepository.update(subofHD.get());
+		}
+		
 	}
 }
