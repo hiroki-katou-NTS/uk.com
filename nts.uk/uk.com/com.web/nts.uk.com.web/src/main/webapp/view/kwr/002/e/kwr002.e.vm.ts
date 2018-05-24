@@ -32,19 +32,19 @@ module nts.uk.com.view.kwr002.e {
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText('KWR002_176'), key: 'code' },
                     { headerText: nts.uk.resource.getText('KWR002_177'), key: 'name' }
-                ]); 
+                ]);
                 self.gridItems = ko.observableArray([]);
                 self.selectionTypeList = ko.observableArray([
-                    new model.SelectionType(16, nts.uk.resource.getMessage("Msg_1209", [])),
-                    new model.SelectionType(17, nts.uk.resource.getMessage("Msg_1210", [])),
-                    new model.SelectionType(18, nts.uk.resource.getMessage("Msg_1211", [])),
+                    new model.SelectionType(16, nts.uk.resource.getText('KWR002_171')),
+                    new model.SelectionType(17, nts.uk.resource.getText('KWR002_172')),
+                    new model.SelectionType(18, nts.uk.resource.getText('KWR002_173')),
                 ]);
-                self.selectionTypeValue = ko.observable(0);
+                self.selectionTypeValue = ko.observable(16);
                 self.selectionTypeValue.subscribe(function(codeChange) {
                     self.gridItems([]);
                     self.currentCodeList([]);
                     self.selectedGridItems([]);
-                    self.start(codeChange);
+                    self.findAttndRecByScreen(codeChange);
                 });
                 self.selectedGridItems = ko.observableArray([]);
                 self.selectedGridItems.subscribe(function(changeList) {
@@ -62,38 +62,68 @@ module nts.uk.com.view.kwr002.e {
             start(value: number): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-
-                service.findAttndRecByScreen(value).done(function(attData: Array<model.AttendanceRecordItemDto>) {
-                    if (attData.length > 0) {
-                        var itemList: Array<model.GridItem> = [];
-                        attData.forEach(item => {
-                            itemList.push(new model.GridItem(item.attendanceItemId, item.attendanceItemName));
-                        });
-                        self.gridItems(itemList);
-                    }
-                    dfd.resolve();
-                });
+                
+                self.findAttndRecByScreen(value);
+                
                 var attendanceItem = nts.uk.ui.windows.getShared('attendanceItem');
                 self.attendanceItem(attendanceItem);
-                self.layoutCode(attendanceItem.layoutCode);
-                self.layoutName(attendanceItem.layoutName);
+                if(attendanceItem.attendanceId != null || attendanceItem.attendanceId != undefined) {
+                    self.selectedGridItems(self.attendanceItem().attendanceId);
+                    dfd.resolve();
+                } 
+                else {
+                    var attendanceRecordKey: model.AttendanceRecordKeyDto = {
+                        code: self.attendanceItem().layoutCode,
+                        columnIndex: self.attendanceItem().columnIndex,
+                        position: self.attendanceItem().position,
+                        exportAtr: self.attendanceItem().exportAtr
+                    };
+                    service.getCalculateAttndRecInfo(attendanceRecordKey).done(function(calculateAttendanceRecordDto: model.CalculateAttendanceRecordDto) {
+                        var calculateAttendanceRecordList: Array<model.SelectedItem> = [];
+                        calculateAttendanceRecordDto.addedItem.forEach(function(item) {
+                            calculateAttendanceRecordList.push(new model.SelectedItem(model.Action.ADDITION.toString(), item.attendanceItemId, item.attendanceItemName));
+                        });
+                        calculateAttendanceRecordDto.subtractedItem.forEach(function(item) {
+                            calculateAttendanceRecordList.push(new model.SelectedItem(model.Action.SUBTRACTION.toString(), item.attendanceItemId, item.attendanceItemName));
+                        });
+                        calculateAttendanceRecordList.sort(function(a, b) { return a.code - b.code; });
+                        self.selectedGridItems(calculateAttendanceRecordList);
+                        dfd.resolve();
+                    });
+                }
+                self.layoutCode(self.attendanceItem().layoutCode);
+                self.layoutName(self.attendanceItem().layoutName);
                 // process display
-                if (attendanceItem.exportAtr == 1) {
+                if (self.attendanceItem().exportAtr == 1) {
                     self.dailyMonthly('日次');
                 }
                 else {
                     self.dailyMonthly('月次');
                 }
-                self.columnIndex(attendanceItem.columnIndex);
+                self.columnIndex(self.attendanceItem().columnIndex);
                 // process display
-                if (attendanceItem.position == 1) {
+                if (self.attendanceItem().position == 1) {
                     self.position('上');
                 }
                 else {
                     self.position('下');
                 }
-                self.attendanceRecordName(attendanceItem.attendanceItemName);
+                self.attendanceRecordName(self.attendanceItem().attendanceItemName);
+
                 return dfd.promise();
+            }
+            
+            private findAttndRecByScreen(value: number) : void {
+                var self = this;
+                var itemList: Array<model.GridItem> = [];
+                service.findAttndRecByScreen(value).done(function(attData: Array<model.AttendanceRecordItemDto>) {
+                    if (attData.length > 0) {
+                        attData.forEach(item => {
+                            itemList.push(new model.GridItem(item.attendanceItemId, item.attendanceItemName));
+                        });
+                    }
+                    self.gridItems(itemList);
+                });
             }
 
             writeItemWithAdd() {
@@ -109,7 +139,7 @@ module nts.uk.com.view.kwr002.e {
                 }
                 else {
                     _.forEach(selectedItems, function(item: model.GridItem) {
-                        self.selectedGridItems.push(new model.SelectedItem(model.Action.ADDITION, item.code, item.name));
+                        self.selectedGridItems.push(new model.SelectedItem(model.Action.ADDITION.toString(), item.code, item.name));
                     });
                 }
             }
@@ -127,7 +157,7 @@ module nts.uk.com.view.kwr002.e {
                 }
                 else {
                     _.forEach(selectedItems, function(item: model.GridItem) {
-                        self.selectedGridItems.push(new model.SelectedItem(model.Action.SUBTRACTION, item.code, item.name));
+                        self.selectedGridItems.push(new model.SelectedItem(model.Action.SUBTRACTION.toString(), item.code, item.name));
                     });
                 }
             }
@@ -159,19 +189,15 @@ module nts.uk.com.view.kwr002.e {
                     return;
                 }
                 else {
-                    var outputTimeIDs: Array<{ id: string, action: string }> = [];
-                    outputItems.forEach(function(item) {
-                        outputTimeIDs.push({id: item.code, action: item.action});
-                    });
-                    nts.uk.ui.windows.setShared('attendanceItemSetting', {
-                        attendanceItemName: self.attendanceRecordName,
+                    nts.uk.ui.windows.setShared('attendanceRecordExport', {
+                        attendanceItemName: self.attendanceRecordName(),
                         layoutCode: self.attendanceItem().layoutCode,
                         layoutName: self.attendanceItem().layoutName,
                         columnIndex: self.attendanceItem().columnIndex,
                         position: self.attendanceItem().position,
                         exportAtr: self.attendanceItem().exportAtr,
-                        attendanceId: outputTimeIDs,
-                        attribute: 16
+                        attendanceId: outputItems,
+                        attribute: self.selectionTypeValue()
                     }, true);
                 }
                 nts.uk.ui.windows.close();
