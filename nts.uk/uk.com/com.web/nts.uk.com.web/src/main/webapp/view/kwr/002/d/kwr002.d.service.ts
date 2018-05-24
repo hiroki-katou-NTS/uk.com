@@ -8,8 +8,9 @@ module nts.uk.com.view.kwr002.d {
             updateSingleAttendanceRecord: "at/function/attendancerecord/item/updateSingleAttndRec",
             deleteSingleAttendanceRecord: "at/function/attendancerecord/item/deleteSingleAttndRec",
             getAttendanceRecordItemsByScreenUseAtr: "at/function/attendancerecord/item/getAttndRecItem/",
-            testAnotherPath: "at/function/attendancerecord/item/updateSingleAttndRec",
-            getAllAttendanceDaily: "at/function/attendancerecord/item/getAllAttndDaily"
+            testAnotherPath: "at/function/attendancerecord/item/updateCalculateAttndRec",
+            getAllAttendanceDaily: "at/function/attendancerecord/item/getAllAttndDaily",
+           
         };
 
         /**
@@ -41,8 +42,11 @@ module nts.uk.com.view.kwr002.d {
         export function getAllAttendanceDaily(): JQueryPromise<Array<viewmodel.model.AttendanceRecordItem>> {
             return nts.uk.request.ajax("at", path.getAllAttendanceDaily);
         }
-        export function testAnotherPath(attendanceRecordKey: viewmodel.model.SingleAttendanceRecordSaveCommand) {
+        export function testAnotherPath(attendanceRecordKey: viewmodel.model.CalculateAttendanceRecordSaveCommand) {
             return nts.uk.request.ajax("at", path.testAnotherPath, attendanceRecordKey);
+        }
+        export function testSingleHandle(singleCommand:viewmodel.model.SingleAttendanceCommand) {
+            return nts.uk.request.ajax("at", path.updateSingleAttendanceRecord,singleCommand);
         }
     }
 }

@@ -33,7 +33,7 @@ public class JpaSingleAttendanceRecordSetMemento implements SingleAttendanceReco
 	public JpaSingleAttendanceRecordSetMemento(KfnstAttndRec kfnstAttndRec, KfnstAttndRecItem kfnstAttndRecItem) {
 		super();
 		this.kfnstAttndRec = kfnstAttndRec;
-		this.kfnstAttndRecItem = kfnstAttndRecItem;
+		this.kfnstAttndRecItem = kfnstAttndRecItem==null ? new KfnstAttndRecItem() : kfnstAttndRecItem;
 	}
 
 	/* (non-Javadoc)

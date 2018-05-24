@@ -58,11 +58,12 @@ public class JpaCalculateAttendanceRecordRepository extends JpaRepository
 	public void updateCalculateAttendanceRecord(String companyId, ExportSettingCode exportSettingCode, int columnIndex,
 			int position, long exportArt, boolean useAtr, CalculateAttendanceRecord calculateAttendanceRecord) {
 		// update attendanceRecord
-		this.commandProxy().update(this.toEntityAttndRec(exportSettingCode, columnIndex, position, exportArt, useAtr,
-				calculateAttendanceRecord));
+//		this.commandProxy().update(this.toEntityAttndRec(exportSettingCode, columnIndex, position, exportArt, useAtr,
+//				calculateAttendanceRecord));
+		
+		//check and update AttendanceRecord
 		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, Long.valueOf(exportSettingCode.v()), columnIndex, exportArt,
 				position);
-
 		Optional<KfnstAttndRec> kfnstAttndRec = this.queryProxy().find(kfnstAttndRecPK, KfnstAttndRec.class);
 		if (kfnstAttndRec.isPresent()) {
 			this.commandProxy().update(this.toEntityAttndRec(exportSettingCode, columnIndex, position, exportArt,
@@ -75,7 +76,7 @@ public class JpaCalculateAttendanceRecordRepository extends JpaRepository
 		List<KfnstAttndRecItem> listKfnstAttndRecItemAdded = calculateAttendanceRecord.getAddedItem().stream().map(e -> 
 		toEntityAttndRecItemAdded(exportSettingCode, columnIndex, position, exportArt, e.intValue())).collect(Collectors.toList());
 		
-		List<KfnstAttndRecItem> listKfnstAttndRecItemSubtracted = calculateAttendanceRecord.getAddedItem().stream().map(e -> 
+		List<KfnstAttndRecItem> listKfnstAttndRecItemSubtracted = calculateAttendanceRecord.getSubtractedItem().stream().map(e -> 
 		toEntityAttndRecItemSubtracted(exportSettingCode, columnIndex, position, exportArt, e.intValue())).collect(Collectors.toList());
 		
 		List<KfnstAttndRecItem> kfnstAttndRecItems = new ArrayList<KfnstAttndRecItem>();

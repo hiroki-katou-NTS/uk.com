@@ -15,4 +15,12 @@ public class TimeItemDto {
 	/** The time item id. */
 	private int timeItemId;
 
+	/**
+	 * Instantiates a new time item dto.
+	 */
+	public TimeItemDto() {
+		super();
+	}
+	
+
 }

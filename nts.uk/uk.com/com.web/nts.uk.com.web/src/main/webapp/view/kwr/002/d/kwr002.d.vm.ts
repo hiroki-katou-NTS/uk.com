@@ -142,10 +142,10 @@ module nts.uk.com.view.kwr002.d {
                         }
 
                     }
-                    
+
                     dfd.resolve();
                 });
-                
+
                 return dfd.promise();
             }
 
@@ -158,7 +158,8 @@ module nts.uk.com.view.kwr002.d {
                     return;
                 }
                 //check dataSelected
-                if (self.dataSelected != undefined && self.dataSelected().length > 0) {
+                var singleAttendance = self.singleAttendanceRecord();
+                if (singleAttendance != null && singleAttendance.itemId != null) {
                     return;
                 }
                 self.codeSingleAttendanceSelected(self.currentCodeAttendace());
@@ -207,7 +208,7 @@ module nts.uk.com.view.kwr002.d {
                 var self = this;
                 var allAttendanceDaily = self.allAttendanceDaily();
                 if (allAttendanceDaily != undefined && allAttendanceDaily.length != 0) {
-                    var result =  allAttendanceDaily.filter(e => e.attendanceItemId==attendanceId).map(e => e.attendanceItemName)[0]
+                    var result = allAttendanceDaily.filter(e => e.attendanceItemId == attendanceId).map(e => e.attendanceItemName)[0]
                     return result;
                 }
                 return null;
@@ -216,39 +217,40 @@ module nts.uk.com.view.kwr002.d {
             // function click btn-decide
             public decideButtonClick() {
                 var self = this;
-                if (self.singleAttendanceRecord() == null || self.singleAttendanceRecord == undefined) {
-                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_1141' });
-                    return;
-                }
-                var attendanceRecord: model.AttendanceRecordExport = new model.AttendanceRecordExport(
-                    self.attendanceRecordName(),
-                    self.attendanceRecordExport().layoutCode,
-                    self.layoutName(),
-                    self.attendanceRecordExport().columnIndex,
-                    self.attendanceRecordExport().position,
-                    1,
-                    self.singleAttendanceRecord().itemId,
-                    self.singleAttendanceRecord().attribute);
-                setShared('attendanceRecordExport', attendanceRecord);
-                nts.uk.ui.windows.close();
+                $('.nts-input').trigger("validate");
+                _.defer(() => {
+                    if (!$('.nts-editor').ntsError("hasError")) {
+                        if (!nts.uk.text.isNullOrEmpty(self.singleAttendanceRecord())) {
+                            nts.uk.ui.dialog.alertError({ messageId: 'Msg_1141' });
+                            return;
+                        }
+                        var attendanceRecord: model.AttendanceRecordExport = new model.AttendanceRecordExport(
+                            self.attendanceRecordName(),
+                            self.attendanceRecordExport().layoutCode,
+                            self.layoutName(),
+                            self.attendanceRecordExport().columnIndex,
+                            self.attendanceRecordExport().position,
+                            1,
+                            self.singleAttendanceRecord().itemId,
+                            self.singleAttendanceRecord().attribute);
+                        setShared('attendanceRecordExport', attendanceRecord);
+                        nts.uk.ui.windows.close();
+                    }
+                });
+
             }
             //function click btn-close
             public closeDialog() {
                 nts.uk.ui.windows.close();
             }
             public methodTestWebservice() {
-                alert("run test");
                 var attendanceRecordPK: model.AttendanceRecordKey = new model.AttendanceRecordKey(1, 1, 1, 1);
-                var singleAttendaceSave: model.SingleAttendanceRecordSaveCommand = new model.SingleAttendanceRecordSaveCommand(
-                    1,
-                    false,
-                    1,
-                    1,
-                    1,
-                    237,
-                    14,
-                    'ItemName update');
-                service.testAnotherPath(singleAttendaceSave).done(function() {
+                var singleCommand = new model.SingleAttendanceCommand(1, true, 1, 1, 1, 222, 13);
+
+                var timeItems = [new model.TimeItemDto(2, 252), new model.TimeItemDto(1, 256), new model.TimeItemDto(2, 257)];
+
+                var calculateAttendanceRecord: model.CalculateAttendanceRecordSaveCommand = new model.CalculateAttendanceRecordSaveCommand(1, true, 2, 8, 1, timeItems, 16);
+                service.testSingleHandle(singleCommand).done(function() {
                     console.log('updated');
                 });
             }
@@ -280,25 +282,52 @@ module nts.uk.com.view.kwr002.d {
                     this.attribute = attribute;
                 }
             }
-            export class SingleAttendanceRecordSaveCommand {
+            //demo class
+            export class CalculateAttendanceRecordSaveCommand {
                 exportSettingCode: number;
                 useAtr: boolean;
                 exportAtr: number;
                 columnIndex: number;
                 position: number;
-                timeItemId: number;
+                timeItems: Array<TimeItemDto>;
                 attribute: number;
-                name: string;
-                constructor(exportSettingCode: number, useAtr: boolean, exportAtr: number, columnIndex: number, position: number, timeItemId: number, attribute: number, name: string) {
+                constructor(exportSettingCode: number, useAtr: boolean, exportAtr: number, columnIndex: number, position: number, timeItems: Array<TimeItemDto>, attribute: number) {
                     this.exportSettingCode = exportSettingCode;
                     this.useAtr = useAtr;
                     this.exportAtr = exportAtr;
                     this.columnIndex = columnIndex;
                     this.position = position;
-                    this.timeItemId = timeItemId;
+                    this.timeItems = timeItems;
                     this.attribute = attribute;
-                    this.name = name;
                 }
+            }
+            //demo class
+            export class SingleAttendanceCommand {
+                exportSettingCode: number;
+                useAtr: boolean;
+                exportAtr: number;
+                columnIndex: number;
+                position: number;
+                timeItems: number;
+                attribute: number;
+                constructor(exportSettingCode: number, useAtr: boolean, exportAtr: number, columnIndex: number, position: number, timeItems: number, attribute: number) {
+                    this.exportSettingCode = exportSettingCode;
+                    this.useAtr = useAtr;
+                    this.exportAtr = exportAtr;
+                    this.columnIndex = columnIndex;
+                    this.position = position;
+                    this.timeItems = timeItems;
+                    this.attribute = attribute;
+                }
+            }
+            export class TimeItemDto {
+                formulaType: number;
+                timeItemId: number;
+                constructor(formulaType: number, timeItemId: number) {
+                    this.formulaType = formulaType;
+                    this.timeItemId = timeItemId;
+                }
+
             }
             export class AttendanceRecordItem {
                 attendanceItemId: number;
