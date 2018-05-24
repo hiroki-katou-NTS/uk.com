@@ -148,6 +148,7 @@ module nts.uk.com.view.cmf005.f.viewmodel {
                 .ifYes(() => {
                     service.setInterruptDeleting(dataManagementDel).done(function(res: any) {
                         self.dialogMode("done");
+                        $("#F10_2").focus();
                     }).fail(function(res: any) {
 
                     });

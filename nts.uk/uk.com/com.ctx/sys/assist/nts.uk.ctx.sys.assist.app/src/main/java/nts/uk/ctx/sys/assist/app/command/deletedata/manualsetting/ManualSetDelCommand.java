@@ -6,7 +6,8 @@ package nts.uk.ctx.sys.assist.app.command.deletedata.manualsetting;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.Value;
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.deletedata.BusinessName;
@@ -22,7 +23,8 @@ import nts.uk.ctx.sys.assist.dom.deletedata.SupplementExplanation;
  * @author hiep.th
  *
  */
-@Value
+@Setter
+@Getter
 public class ManualSetDelCommand {
 	
 	private String delName;
