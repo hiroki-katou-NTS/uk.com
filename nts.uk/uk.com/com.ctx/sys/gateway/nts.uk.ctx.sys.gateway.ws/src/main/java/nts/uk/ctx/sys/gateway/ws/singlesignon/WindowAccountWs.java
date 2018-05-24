@@ -6,7 +6,6 @@ package nts.uk.ctx.sys.gateway.ws.singlesignon;
 
 import java.util.List;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
