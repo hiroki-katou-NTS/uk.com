@@ -1,16 +1,17 @@
 package nts.uk.shr.infra.web.session;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import javax.enterprise.inject.spi.CDI;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.NewCookie;
 
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 import nts.arc.security.csrf.CsrfToken;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
+import nts.uk.shr.com.context.loginuser.SessionLowLayer;
 
 @Slf4j
 public class SessionContextCookie {
@@ -30,11 +31,23 @@ public class SessionContextCookie {
 				});
 	}
 	
-	public static void setCookieFromSession(HttpServletResponse httpResponse) {
+	public static Optional<NewCookie> createNewCookieFromSession() {
 		
-		val newSessionContextCookie = new Cookie(COOKIE_SESSION_CONTEXT, createStringSessionContext());
-		newSessionContextCookie.setPath("/");
-		httpResponse.addCookie(newSessionContextCookie);
+		if (!CDI.current().select(SessionLowLayer.class).get().isLoggedIn()) {
+			return Optional.empty();
+		}
+		
+		return Optional.of(new NewCookie(
+				COOKIE_SESSION_CONTEXT,
+				createStringSessionContext(),
+				"/",
+				null,
+				NewCookie.DEFAULT_VERSION,
+				null,
+				NewCookie.DEFAULT_MAX_AGE,
+				null,
+				false,
+				false));
 	}
 	
 	private static final String DELIMITER = "@";
