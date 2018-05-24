@@ -33,6 +33,9 @@ public class KshstGrantDatePer extends UkJpaEntity implements Serializable {
 	@Column(name = "PERSONAL_GRANT_DATE_NAME")
 	public String personalGrantDateName;
 	
+	@Column(name = "PROVISION")
+	public int provision;
+	
 	/* 一律基準日 */
 	@Column(name = "GRANT_DATE")
 	public GeneralDate grantDate;

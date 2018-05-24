@@ -37,8 +37,15 @@ public class UpdateYearServicePerCommandHandler extends CommandHandlerWithResult
 		}
 		if(!yearServicePerOld.isPresent()){
 			throw new RuntimeException("対象データがありません。");
-		}else{
-			YearServicePer yearServicePerNew = YearServicePer.createFromJavaType(companyId, context.getCommand().getSpecialHolidayCode(), context.getCommand().getYearServiceCode(), context.getCommand().getYearServiceName(), context.getCommand().getYearServiceCls(), yearServicePerSets);
+		} else {
+			if(context.getCommand().getProvision() == 1 && yearServicePerOld.get().getProvision() == 0) {
+				yearServicePerRep.changeAllProvision(context.getCommand().getSpecialHolidayCode());
+			}
+			
+			YearServicePer yearServicePerNew = YearServicePer.createFromJavaType(companyId, context.getCommand().getSpecialHolidayCode(), 
+					context.getCommand().getYearServiceCode(), context.getCommand().getYearServiceName(), context.getCommand().getProvision(), 
+					context.getCommand().getYearServiceCls(), yearServicePerSets);
+			
 			yearServicePerRep.updatePer(yearServicePerNew);
 		}
 		return errors;
