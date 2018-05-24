@@ -45,7 +45,7 @@ public class SaveVacationHistCommandHandler extends CommandHandler<VacationHisto
 		String companyId = AppContexts.user().companyId();
 
 		// check isNewMode
-		if (command.getIsCreated()) {
+		if (command.getIsCreateMode()) {
 			// Add
 			this.addVacationHistory(companyId, command);
 		} else {
@@ -67,7 +67,7 @@ public class SaveVacationHistCommandHandler extends CommandHandler<VacationHisto
 				command.getVacationHistory().getEndDate());
 		
 		//check validate
-		this.vacationPolicy.validate(command.getIsCreated(), history);
+		this.vacationPolicy.validate(command.getIsCreateMode(), history);
 
 		// insert
 		this.vacationHistoryRepository.add(history);
@@ -89,11 +89,11 @@ public class SaveVacationHistCommandHandler extends CommandHandler<VacationHisto
 		}
 		
 		PlanVacationHistory history = new PlanVacationHistory(companyId, command.getWorkTypeCode(),
-				new OptionalMaxDay(command.getMaxDay()), command.getVacationHistory().getHistoryId(),
+				new OptionalMaxDay(command.getMaxDay()), 
 				command.getVacationHistory().getStartDate(), command.getVacationHistory().getEndDate());
 		
 		//check validate
-		this.vacationPolicy.validate(command.getIsCreated(), history);
+		this.vacationPolicy.validate(command.getIsCreateMode(), history);
 
 		this.vacationHistoryRepository.update(history);
 	}
