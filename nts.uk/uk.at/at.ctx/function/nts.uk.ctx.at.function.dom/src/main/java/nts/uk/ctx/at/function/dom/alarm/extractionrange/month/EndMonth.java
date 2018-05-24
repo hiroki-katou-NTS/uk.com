@@ -41,5 +41,11 @@ public class EndMonth {
 		this.endMonthNo = Optional.ofNullable(endMonthNo);
 	}
 	
+	public boolean isSpecifyPeriod() {
+		return this.specifyEndMonth == SpecifyEndMonth.SPECIFY_PERIOD_START_MONTH;
+	}
+	public boolean isSpecifyClose() {
+		return this.specifyEndMonth == SpecifyEndMonth.SPECIFY_CLOSE_END_MONTH;
+	}
 	
 }

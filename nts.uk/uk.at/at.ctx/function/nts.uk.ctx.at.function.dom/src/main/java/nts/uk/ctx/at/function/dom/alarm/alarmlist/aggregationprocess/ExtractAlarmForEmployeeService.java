@@ -74,10 +74,10 @@ public class ExtractAlarmForEmployeeService {
 					List<ValueExtractAlarm> w4d4AlarmList = w4D4AlarmService.calculateTotal4W4D(employee, period, checkConditionCode);
 					result.addAll(w4d4AlarmList);
 				}
-			}
+			} 
 			// カテゴリ：月次のチェック条件 (monthly)
 			else if (checkCondition.isMonthly()) {
-				// tạm thời chưa làm
+				
 			}
 			
 
@@ -95,10 +95,12 @@ public class ExtractAlarmForEmployeeService {
 		// 次のチェック条件コードで集計する(loop list by category)
 		for (CheckCondition checkCondition : checkConList) {
 			// get Period by category
-			listPeriodByCategory.stream().filter(c -> c.getCategory() == checkCondition.getAlarmCategory().value).findFirst().ifPresent(periodByAlarmCategory -> {
-				DatePeriod period = new DatePeriod(periodByAlarmCategory.getStartDate(), periodByAlarmCategory.getEndDate());
-				
-				List<WorkplaceImport>  optWorkplaceImport = workplaceAdapter.getWorlkplaceHistory(employeeIds, periodByAlarmCategory.getEndDate());
+			List<PeriodByAlarmCategory> periodAlarms = listPeriodByCategory.stream().filter(c -> c.getCategory() == checkCondition.getAlarmCategory().value).collect(Collectors.toList());			
+			List<DatePeriod> datePeriods = periodAlarms.stream().map(e -> 
+				new DatePeriod(e.getStartDate(), e.getEndDate())).collect(Collectors.toList());
+			
+			
+				List<WorkplaceImport>  optWorkplaceImport = workplaceAdapter.getWorlkplaceHistory(employeeIds, datePeriods.get(0).end());
 				
 				optWorkplaceImport.stream().forEach(wp -> {
 					employee.stream().filter(e -> e.getId().equals(wp.getEmployeeId())).findFirst().ifPresent(e -> {
@@ -113,22 +115,27 @@ public class ExtractAlarmForEmployeeService {
 					for (String checkConditionCode : checkCondition.getCheckConditionList()) {						
 						// アルゴリズム「日次の集計処理」を実行する
 						result.addAll(dailyAggregationProcessService.dailyAggregationProcess(comId, checkConditionCode, 
-								periodByAlarmCategory, employee, period, employeeIds));
+								periodAlarms.get(0), employee, datePeriods.get(0), employeeIds));
 					}
 				}
 				// カテゴリ：4週4休のチェック条件(4 week 4 day)
 				else if (checkCondition.is4W4D()) {
 					// アルゴリズム「4週4休の集計処理」を実行する
 					for (String checkConditionCode : checkCondition.getCheckConditionList()) {
-						List<ValueExtractAlarm> w4d4AlarmList = w4D4AlarmService.calculateTotal4W4D(employee, period, checkConditionCode, employeeIds);
+						List<ValueExtractAlarm> w4d4AlarmList = w4D4AlarmService.calculateTotal4W4D(employee, datePeriods.get(0), checkConditionCode, employeeIds);
 						result.addAll(w4d4AlarmList);
 					}
+				}
+				// カテゴリ：36協定
+				else if(checkCondition.isAgrrement()) {
+					
+					
 				}
 				// カテゴリ：月次のチェック条件 (monthly)
 				else if (checkCondition.isMonthly()) {
 					// tạm thời chưa làm
 				}
-			});
+
 		}
 		return result;
 	}

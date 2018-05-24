@@ -7,6 +7,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -16,13 +18,15 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.EndSpecify;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ExtractionPeriodDaily;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.ExtractionPeriodMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.periodunit.ExtractionPeriodUnit;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.year.AYear;
+import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfPublicHoliday;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHoliday;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayGrantDate;
@@ -31,6 +35,8 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.Pu
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -42,7 +48,8 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 	private ClosureService closureService;
 	@Inject
 	private PublicHolidaySettingRepository publicHolidaySettingRepo; 
-	
+	@Inject
+	private CompanyAdapter companyAdapter;
 	
 
 	@Override
@@ -52,31 +59,141 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		List<CheckCondition> checkConList = alarmRepo.getCheckCondition(companyId, alarmCode);
 
 		checkConList.forEach(c -> {
-			if (c.getAlarmCategory() == AlarmCategory.DAILY) {
-
+			
+			if (c.isDaily()) {
 				CheckConditionTimeDto daily = this.getDailyTime(c, closureId, new YearMonth(processingYm));
 				result.add(daily);
-			} else if (c.getAlarmCategory() == AlarmCategory.SCHEDULE_4WEEK) {
-
+				
+			} else if (c.is4W4D()) {
 				CheckConditionTimeDto schedual_4week = this.get4WeekTime(c, closureId, new YearMonth(processingYm), companyId);
 				result.add(schedual_4week);
-			} else if(c.getAlarmCategory() == AlarmCategory.MONTHLY) {
+				
+			} else if(c.isMonthly()) {
 				CheckConditionTimeDto other = new CheckConditionTimeDto(c.getAlarmCategory().value,
 						EnumAdaptor.convertToValueName(c.getAlarmCategory()).getLocalizedName(), null, null, null, null);
 				result.add(other);
+				
+			} else if(c.isAgrrement()) {
+				result.addAll(this.getAgreementTime(c, closureId, new YearMonth(processingYm)));
+				
 			}
 
 		});
-		result.sort((a, b) ->  a.getCategory()- b.getCategory());
+		
+        Collections.sort(result, Comparator.comparing(CheckConditionTimeDto::getCategory)
+                .thenComparing(CheckConditionTimeDto::getTabOrder));
 		return result;
 	}
+	
+	
+	private List<CheckConditionTimeDto> getAgreementTime(CheckCondition c, int closureId, YearMonth yearMonth){
+		List<CheckConditionTimeDto> result = new ArrayList<CheckConditionTimeDto>();
+		
+		DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+		Date startDate = null;
+		Date endDate = null;
+		String startMonth =null;
+		String endMonth = null;
+		int year = 0;
+		
+		for(ExtractionRangeBase extractBase : c.getExtractPeriodList()) {
+			
+			if(extractBase instanceof ExtractionPeriodDaily) {
+				ExtractionPeriodDaily extraction = (ExtractionPeriodDaily) extractBase;				
+				CheckConditionPeriod period  = this.getPeriodDaily(extraction, closureId, yearMonth);
+				startDate = period.getStartDate();
+				endDate = period.getEndDate();
+				CheckConditionTimeDto dailyDto = new CheckConditionTimeDto(c.getAlarmCategory().value, textAgreementTime(1), formatter.format(startDate), formatter.format(endDate), null, null);
+				dailyDto.setTabOrder(1);
+				result.add(dailyDto);
+				
+			}else if(extractBase instanceof ExtractionPeriodMonth) {
+				ExtractionPeriodMonth extraction = (ExtractionPeriodMonth) extractBase;
+				
+				if(extraction.getStartMonth().isDesignateMonth()) {
+					startMonth = yearMonth.year() +"/" + (yearMonth.month()<10 ? "0" + yearMonth.month(): yearMonth.month());
+				}else {
+					int sMonth = yearMonth.month() - extraction.getStartMonth().getFixedMonthly().get().getDesignatedMonth();
+					startMonth = yearMonth.year() +"/" + (sMonth<10 ? "0" + sMonth: sMonth);					
+				}
+				
+				if(extraction.getEndMonth().isSpecifyClose()) {
+					endMonth = yearMonth.year() +"/" + (yearMonth.month()<10 ? "0" + yearMonth.month(): yearMonth.month());
+				}else {
+					int eMonth = yearMonth.month() - extraction.getEndMonth().getEndMonthNo().get().getMonthNo();
+					endMonth = yearMonth.year() +"/" + (eMonth <10 ? "0"+eMonth : eMonth);
+				}
+				
+				CheckConditionTimeDto monthDto = new CheckConditionTimeDto(c.getAlarmCategory().value, textAgreementTime(extraction.getNumberOfMonth().value +2), null, null, startMonth, endMonth);
+				monthDto.setTabOrder(extraction.getNumberOfMonth().value +2);
+				result.add(monthDto);
+				
+			}else if(extractBase instanceof AYear) {
+				AYear extraction = (AYear) extractBase;
+				int firstMonth=  companyAdapter.getFirstMonth(AppContexts.user().companyId()).getStartMonth();
+				
+				if(extraction.isToBeThisYear()){
+					if(firstMonth <= yearMonth.month()) {
+						startMonth = yearMonth.year() +"/" + (firstMonth<10 ? "0" + firstMonth: firstMonth);
+						firstMonth = firstMonth-1;
+						endMonth = (yearMonth.year()+1) +"/" + (firstMonth<10 ? "0" + firstMonth: firstMonth);
+						year = yearMonth.year();
+					}else {
+						startMonth = (yearMonth.year()-1) +"/" + (firstMonth<10 ? "0" + firstMonth: firstMonth);
+						firstMonth = firstMonth-1;
+						endMonth = yearMonth.year() +"/" + (firstMonth<10 ? "0" + firstMonth: firstMonth);
+						year = yearMonth.year()-1;
+					}
+				}else {
+					startMonth = extraction.getYear() + "/" + (firstMonth <10 ? "0" + firstMonth: firstMonth);
+					firstMonth = firstMonth-1;
+					endMonth = (extraction.getYear() +1) + "/" + (firstMonth <10 ? "0" + firstMonth: firstMonth);
+					year = extraction.getYear();
+				}
+				CheckConditionTimeDto yearDto = new CheckConditionTimeDto(c.getAlarmCategory().value, textAgreementTime(5), null, null, startMonth, endMonth, year );
+				yearDto.setTabOrder(5);
+				result.add(yearDto);
+			}
+		}
+		
+		result.sort((a, b) ->  a.getCategoryName().compareTo(b.getCategoryName()));
+		return result;
+	}
+	
+	private String textAgreementTime(int tabOrder) {
+		switch(tabOrder) {
+			case 1 : return TextResource.localize("KAL010_208") + "　" + TextResource.localize("KAL004_69");
+			case 2 : return TextResource.localize("KAL010_208") + "　" + TextResource.localize("KAL004_70"); 
+			case 3 : return TextResource.localize("KAL010_208") + "　" + TextResource.localize("KAL004_71"); 
+			case 4 : return TextResource.localize("KAL010_208") + "　" + TextResource.localize("KAL004_72"); 
+			case 5 : return TextResource.localize("KAL010_208") + "　" + TextResource.localize("KAL004_73"); 
+			default : return "";
+		}
+		
+	}
+	
 
 	public CheckConditionTimeDto getDailyTime(CheckCondition c, int closureId, YearMonth yearMonth) {
 		DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 		Date startDate = null;
 		Date endDate = null;
+	
 		ExtractionPeriodDaily extraction = (ExtractionPeriodDaily) c.getExtractPeriodList().get(0);
-
+		
+		CheckConditionPeriod period = this.getPeriodDaily(extraction, closureId, yearMonth);
+		startDate = period.getStartDate();
+		endDate = period.getEndDate();
+		
+		return new CheckConditionTimeDto(c.getAlarmCategory().value,
+				EnumAdaptor.convertToValueName(c.getAlarmCategory()).getLocalizedName(), formatter.format(startDate),
+				formatter.format(endDate), null, null);
+	}
+	
+	
+	private CheckConditionPeriod getPeriodDaily(ExtractionPeriodDaily extraction, int closureId, YearMonth yearMonth ) {
+		
+		Date startDate =null;
+		Date endDate =null;
 		// Calculate start date
 		if (extraction.getStartDate().getStartSpecify() == StartSpecify.DAYS) {
 			Calendar calendar = Calendar.getInstance();
@@ -105,9 +222,10 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 			DatePeriod datePeriod = closureService.getClosurePeriod(closureId, yearMonth);
 			endDate = datePeriod.end().date();
 		}
-		return new CheckConditionTimeDto(c.getAlarmCategory().value,
-				EnumAdaptor.convertToValueName(c.getAlarmCategory()).getLocalizedName(), formatter.format(startDate),
-				formatter.format(endDate), null, null);
+		
+		  
+		return new CheckConditionPeriod(startDate, endDate);
+		
 	}
 
 	public CheckConditionTimeDto get4WeekTime(CheckCondition c, int closureId, YearMonth yearMonth, String companyId) {
