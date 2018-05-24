@@ -11,6 +11,8 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.sys.assist.dom.category.RecoverFormCompanyOther;
+import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.HistoryDiviSion;
 import nts.uk.ctx.sys.assist.dom.tablelist.ReferenceMonth;
 import nts.uk.ctx.sys.assist.dom.tablelist.ReferenceYear;
@@ -75,7 +77,7 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 * 付加取得項目_会社ID
 	 */
 	@Basic(optional = false)
-	@Column(name = "FIELD_ACQC_ID")
+	@Column(name = "FIELD_ACQC_CID")
 	public String fieldAcqCid;
 
 	/**
@@ -160,7 +162,7 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = false)
 	@Column(name = "RETENTION_PERIODCLS")
-	public String retentionPeriodCls;
+	public int retentionPeriodCls;
 
 	/**
 	 * 内部ファイル名
@@ -174,7 +176,7 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = false)
 	@Column(name = "ANOTHER_COMCLS")
-	public String anotherComCls;
+	public int anotherComCls;
 
 	/**
 	 * 参照年
@@ -835,8 +837,9 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 		return new TableList(tableListPk.categoryId, categoryName, dataStorageProcessingId, dataRecoveryProcessId,
 				tableListPk.tableNo, tableJapaneseName, tableEnglishName, fieldAcqCid, fieldAcqDateTime,
 				fieldAcqEmployeeId, fieldAcqEndDate, fieldAcqStartDate, saveSetCode, saveSetName, saveFileName,
-				saveForm, saveDateFrom, saveDateTo, storageRangeSaved, retentionPeriodCls, internalFileName,
-				anotherComCls, EnumAdaptor.valueOf(this.referenceYear, ReferenceYear.class),
+				saveForm, saveDateFrom, saveDateTo, storageRangeSaved,
+				EnumAdaptor.valueOf(this.retentionPeriodCls, TimeStore.class), internalFileName,EnumAdaptor.valueOf(this.anotherComCls, RecoverFormCompanyOther.class)
+				,EnumAdaptor.valueOf(this.referenceYear, ReferenceYear.class),
 				EnumAdaptor.valueOf(this.referenceYear, ReferenceMonth.class), compressedFileName, fieldChild1,
 				fieldChild2, fieldChild3, fieldChild4, fieldChild5, fieldChild6, fieldChild7, fieldChild8, fieldChild9,
 				fieldChild10, EnumAdaptor.valueOf(this.historyCls, HistoryDiviSion.class), canNotBeOld,
@@ -863,8 +866,8 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 				domain.getFieldAcqDateTime(), domain.getFieldAcqEmployeeId(), domain.getFieldAcqEndDate(),
 				domain.getFieldAcqStartDate(), domain.getSaveSetCode(), domain.getSaveSetName(),
 				domain.getSaveFileName(), domain.getSaveForm(), domain.getSaveDateFrom(), domain.getSaveDateTo(),
-				domain.getStorageRangeSaved(), domain.getRetentionPeriodCls(), domain.getInternalFileName(),
-				domain.getAnotherComCls(), domain.getReferenceYear().value, domain.getReferenceMonth().value,
+				domain.getStorageRangeSaved(), domain.getRetentionPeriodCls().value, domain.getInternalFileName(),
+				domain.getAnotherComCls().value, domain.getReferenceYear().value, domain.getReferenceMonth().value,
 				domain.getCompressedFileName(), domain.getFieldChild1(), domain.getFieldChild2(),
 				domain.getFieldChild3(), domain.getFieldChild4(), domain.getFieldChild5(), domain.getFieldChild6(),
 				domain.getFieldChild7(), domain.getFieldChild8(), domain.getFieldChild9(), domain.getFieldChild10(),

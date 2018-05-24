@@ -3,6 +3,8 @@ package nts.uk.ctx.sys.assist.dom.tablelist;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.sys.assist.dom.category.RecoverFormCompanyOther;
+import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.HistoryDiviSion;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -110,7 +112,7 @@ public class TableList extends AggregateRoot {
 	/**
 	 * 保存期間区分
 	 */
-	private String retentionPeriodCls;
+	private TimeStore retentionPeriodCls;
 
 	/**
 	 * 内部ファイル名
@@ -120,7 +122,7 @@ public class TableList extends AggregateRoot {
 	/**
 	 * 別会社区分
 	 */
-	private String anotherComCls;
+	private RecoverFormCompanyOther anotherComCls;
 
 	/**
 	 * 参照年
