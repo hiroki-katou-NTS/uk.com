@@ -8,12 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.at.function.app.command.attendancerecord.export.setting.AttendanceRecordExportSettingAddCommand;
-import nts.uk.ctx.at.function.app.command.attendancerecord.export.setting.AttendanceRecordExportSettingAddCommandHandler;
-import nts.uk.ctx.at.function.app.command.attendancerecord.export.setting.AttendanceRecordExportSettingDeleteCommand;
-import nts.uk.ctx.at.function.app.command.attendancerecord.export.setting.AttendanceRecordExportSettingDeleteCommandHandler;
-import nts.uk.ctx.at.function.app.command.attendancerecord.export.setting.AttendanceRecordExportSettingSaveCommand;
-import nts.uk.ctx.at.function.app.command.attendancerecord.export.setting.AttendanceRecordExportSettingSaveCommandHandler;
+import nts.uk.ctx.at.function.app.command.attendancerecord.export.setting.*;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.AttendanceRecordExportSettingDto;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.AttendanceRecordExportSettingFinder;
 import nts.uk.shr.com.context.AppContexts;
@@ -34,12 +29,15 @@ public class AttendanceRecordExportSettingWebService {
 	AttendanceRecordExportSettingSaveCommandHandler attendanceEcExpSetSaveCommandHandler;
 
 	/** The attendance ec exp set add command handler. */
-	@Inject
-	AttendanceRecordExportSettingAddCommandHandler attendanceEcExpSetAddCommandHandler;
+//	@Inject
+//	AttendanceRecordExportSettingAddCommandHandler attendanceEcExpSetAddCommandHandler;
 
 	/** The attendance ec exp set delete command handler. */
 	@Inject
 	AttendanceRecordExportSettingDeleteCommandHandler attendanceEcExpSetDeleteCommandHandler;
+
+	@Inject
+	NewAttendanceRecordExportSettingCommandHandler handler;
 
 	/**
 	 * Gets the all attendance rec out set.
@@ -75,8 +73,8 @@ public class AttendanceRecordExportSettingWebService {
 	 */
 	@POST
 	@Path("addAttendanceRecExpSet")
-	public void AddAttendanceRecExpSet(AttendanceRecordExportSettingAddCommand command) {
-		this.attendanceEcExpSetAddCommandHandler.handle(command);
+	public void AddAttendanceRecExpSet(NewAttendanceRecordExportSettingCommand command) {
+		this.handler.handle(command);
 	}
 
 	/**
