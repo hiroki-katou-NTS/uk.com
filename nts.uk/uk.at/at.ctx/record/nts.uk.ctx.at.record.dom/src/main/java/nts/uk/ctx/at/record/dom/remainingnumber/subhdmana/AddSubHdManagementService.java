@@ -168,6 +168,7 @@ public class AddSubHdManagementService {
 		}
 		return errorList;
 	}
+
 	/**
 	 * 代休（年月日）チェック処理
 	 * 
@@ -217,8 +218,10 @@ public class AddSubHdManagementService {
 							if (subHdManagementData.getCheckedSplit() == true) {
 								// 休出日数をチェックする
 								if (ItemDays.ONE_DAY.value.equals(subHdManagementData.getSelectedCodeHoliday())) {
-									if (ItemDays.HALF_DAY.value.equals(subHdManagementData.getSelectedCodeSubHoliday())) {
-										if (!ItemDays.HALF_DAY.value.equals(subHdManagementData.getSelectedCodeOptionSubHoliday())) {
+									if (ItemDays.HALF_DAY.value
+											.equals(subHdManagementData.getSelectedCodeSubHoliday())) {
+										if (!ItemDays.HALF_DAY.value
+												.equals(subHdManagementData.getSelectedCodeOptionSubHoliday())) {
 											errorList.add("Msg_1260_1");
 										}
 									} else {
@@ -229,8 +232,8 @@ public class AddSubHdManagementService {
 								}
 							} else {
 								// 休出日数と１日目代休日数をチェックする
-								if (subHdManagementData.getSelectedCodeHoliday() != subHdManagementData
-										.getSelectedCodeSubHoliday()) {
+								if (!subHdManagementData.getSelectedCodeHoliday()
+										.equals(subHdManagementData.getSelectedCodeSubHoliday())) {
 									errorList.add("Msg_1259");
 								}
 							}
