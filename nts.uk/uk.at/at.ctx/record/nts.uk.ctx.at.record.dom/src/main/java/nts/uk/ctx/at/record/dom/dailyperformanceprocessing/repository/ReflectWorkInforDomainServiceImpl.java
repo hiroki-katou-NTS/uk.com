@@ -458,7 +458,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		// status
 		// 正常終了 : 0
 		// 中断 : 1
-
 		List<ErrMessageInfo> errMesInfos = new ArrayList<>();
 
 		// result of stamp part
@@ -747,9 +746,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				// data");
 				// }
 			}
-
 			if (errMesInfos.isEmpty()) {
-
 				// pharse 2 start ----
 				// 特定日を日別実績に反映する
 				SpecificDateAttrOfDailyPerfor specificDateAttrOfDailyPerfor = reflectSpecificDate(companyId, employeeID,
@@ -775,24 +772,28 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				WorkStyle workStyle = basicScheduleService
 						.checkWorkDay(workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTypeCode().v());
 				if (workStyle != WorkStyle.ONE_DAY_REST) {
-
 					TimeLeavingOfDailyPerformance timeLeavingOptional = createStamp(companyId, workInfoOfDailyPerformanceUpdate, workingConditionItem, null,
 							employeeID, day);
 					// check tay
 					stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId, employeeID, day,
 							workInfoOfDailyPerformanceUpdate, timeLeavingOptional, empCalAndSumExecLogID,
 							reCreateAttr);
-
 				}
-
 				this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId, employeeID, day,
 						stampOutput, affiliationInforOfDailyPerfor, workInfoOfDailyPerformanceUpdate,
 						specificDateAttrOfDailyPerfor, calAttrOfDailyPerformance, workTypeOfDailyPerformance,
 						breakTimeOfDailyPerformance.isPresent() ? breakTimeOfDailyPerformance.get() : null);
 
+				specificDateAttrOfDailyPerfor = null;
+				calAttrOfDailyPerformance = null;
 			}
 		}
-
+		stampOutput = null;
+		breakTimeOfDailyPerformance = null;
+		affiliationInforOfDailyPerfor = null;
+		workTypeOfDailyPerformance = null;
+		errMesInfos = null;
+		workingConditionItem = null;
 	}
 
 	/**
@@ -1011,6 +1012,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		CalAttrOfDailyPerformance calAttrOfDailyPerformance = new CalAttrOfDailyPerformance(employeeId, day,
 				autoCalFlexOvertimeSetting, autoCalRaisingSalarySetting, holidayTimeSetting, overtimeSetting,
 				autoCalOfLeaveEarlySetting, autoCalcSetOfDivergenceTime);
+		autoCalFlexOvertimeSetting = null;
+		autoCalRaisingSalarySetting = null;
+		holidayTimeSetting = null;
+		overtimeSetting = null;
+		autoCalOfLeaveEarlySetting = null;
+		autoCalcSetOfDivergenceTime = null;
 		return calAttrOfDailyPerformance;
 	}
 
@@ -1125,6 +1132,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						timeLeavingWorkOutput.setAttendanceStamp(attendanceStampTemp);
 						timeLeavingWorkOutput.setLeaveStamp(leaveStampTemp);
 						timeLeavingWorkTemps.add(timeLeavingWorkOutput);
+						timeLeavingWorkOutput = null;
+						leaveStampTemp = null;
+						attendanceStampTemp = null;
 					});
 				} else {
 					// 出勤休日区分を確認する (Xác nhận 出勤休日区分)
@@ -1194,6 +1204,11 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 									timeLeavingWorkOutput.setAttendanceStamp(attendanceTimeActualStampOutPut);
 									timeLeavingWorkOutput.setLeaveStamp(leaveTimeActualStampOutPut);
 									timeLeavingWorkTemps.add(timeLeavingWorkOutput);
+									timeLeavingWorkOutput = null;
+									leaveTimeActualStampOutPut = null;
+									attendanceTimeActualStampOutPut = null;
+									leaveActualStamp = null;
+									actualStamp = null;
 								}
 							}
 
@@ -1245,6 +1260,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						attendanceStamp == null ? null : attendanceStamp, leaveStamp);
 			}).collect(Collectors.toList());
 			automaticStampSetDetailDto.setTimeLeavingWorks(timeLeavingWorks);
+			timeLeavingWorks = null;
 
 			Calendar toDay = Calendar.getInstance();
 			Date date2 = toDay.getTime();
@@ -1346,12 +1362,15 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				// leavingStamp.setTimeLeavingWork(timeLeavingWork.getWorkNo(),
 				// Optional.of(attendanceStamp), Optional.of(leaveStamp));
 				timeLeavingWorkList.add(leavingStamp);
+				attendanceStamp = null;
+				leaveStamp = null;
 			}
 			;
 			timeLeavingOptional.setWorkTimes(new WorkTimes(1));
 			timeLeavingOptional.setEmployeeId(employeeID);
 			timeLeavingOptional.setYmd(day);
 			timeLeavingOptional.setTimeLeavingWorks(timeLeavingWorkList);
+			timeLeavingWorkList = null;
 		} else {
 			timeLeavingOptional = null;
 		}
