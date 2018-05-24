@@ -44,11 +44,11 @@ module nts.uk.com.view.cmm007.a {
              * on select tab handle
              */
             public onSelectTabB(): void {
-                $('#com_person').focus();
+                $('#com_company').focus();
                 $("#sidebar").ntsSideBar("init", {
                     active: SideBarTabIndex.FIRST,
                     activate: (event, info) => {
-                        $('#com_person').focus();
+                        $('#com_company').focus();
                         let _self = this;
                         _self.start_page();
                         _self.removeErrorMonitor();
