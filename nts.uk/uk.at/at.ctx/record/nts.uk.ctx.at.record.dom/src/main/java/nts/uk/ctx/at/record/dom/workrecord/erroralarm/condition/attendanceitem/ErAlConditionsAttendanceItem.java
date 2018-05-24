@@ -103,7 +103,7 @@ public class ErAlConditionsAttendanceItem extends DomainObject {
 		this.atdItemConGroupId = atdItemConGroupId;
 		this.conditionOperator = conditionOperator;
 		this.lstErAlAtdItemCon = lstErAlAtdItemCon;
-	
+	}
 	private boolean isNotUseAll(){
 		return !lstErAlAtdItemCon.stream().filter(aic -> aic.getUseAtr() != null && aic.getUseAtr()).findFirst().isPresent();
 	}
