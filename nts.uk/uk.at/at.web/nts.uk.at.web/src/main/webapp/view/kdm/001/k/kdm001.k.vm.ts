@@ -1,5 +1,8 @@
 module nts.uk.at.view.kdm001.k.viewmodel {
+    import getShared = nts.uk.ui.windows.getShared;
+    import block     = nts.uk.ui.block;
     export class ScreenModel {
+        itemsSelected: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         columns: KnockoutObservableArray<NtsGridListColumn>;
         currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -24,7 +27,9 @@ module nts.uk.at.view.kdm001.k.viewmodel {
                 self.employeeId(info.selectedEmployee.employeeId);
                 self.employeeCode(info.selectedEmployee.employeeCode);
                 self.employeeName(info.selectedEmployee.employeeName);
-                self.comDayOffId(info.row.id);
+                self.comDayOffId(info.row.comDayOffID);
+                self.dateHoliday(info.row.dayOffDate);
+                self.numberDay(info.row.requireDays+' 日');
             }
             
             self.callService(self.comDayOffId(),self.employeeId());
@@ -32,7 +37,8 @@ module nts.uk.at.view.kdm001.k.viewmodel {
             self.columns = ko.observableArray([
                 { headerText: 'コード', dataType: 'string', key: 'leaveManaID', width: 100, hidden: true },
                 { headerText: nts.uk.resource.getText("KDM001_95"), key: 'dayOff', width: 100 },
-                { headerText: nts.uk.resource.getText("KDM001_96"), key: 'remainDays', width: 100 }
+                { headerText: nts.uk.resource.getText("KDM001_96"), key: 'remainDaysString', width: 100 },
+                { headerText: nts.uk.resource.getText("KDM001_96"), key: 'remainDays', width: 100, hidden: true}
             ]);
             self.initScreen();
             
@@ -67,9 +73,6 @@ module nts.uk.at.view.kdm001.k.viewmodel {
 
         public initScreen(): void {
             var self = this;
-            
-            self.dateHoliday('2016/10/2');
-            self.numberDay('1.0日');
             self.residualDay('0日');
             
         }
@@ -103,14 +106,11 @@ module nts.uk.at.view.kdm001.k.viewmodel {
         }
         
          public callService(comDayOffId,employeeId):void {
-            console.log(comDayOffId);
              var self = this;
             service.getAll(comDayOffId,employeeId).done(function(data) {
-                console.log(data.length); 
                 for (let i = 0; i < data.length; i++) {
-                    self.items.push(new ItemModel(data[i].leaveManaID, data[i].dateHoliday, data[i].numberDay+" 日"));
+                    self.items.push(new ItemModel(data[i].leaveManaID, data[i].dateHoliday,data[i].numberDay, data[i].numberDay+" 日"));
                     if(data[i].usedDay == true) {
-                        console.log(data[i].leaveManaID);
                         self.currentCodeList.push(data[i].leaveManaID);
                     }
                     
@@ -130,10 +130,12 @@ module nts.uk.at.view.kdm001.k.viewmodel {
         leaveManaID: string;
         dayOff: string;
         remainDays: string;
-        constructor(leaveManaID: string, dayOff: string, remainDays: string) {
+        remainDaysString: string;
+        constructor(leaveManaID: string, dayOff: string, remainDays: string, remainDaysString: string) {
             this.leaveManaID = leaveManaID;
             this.dayOff = dayOff;
             this.remainDays = remainDays;
+            this.remainDaysString = remainDaysString;
         }
     }
     

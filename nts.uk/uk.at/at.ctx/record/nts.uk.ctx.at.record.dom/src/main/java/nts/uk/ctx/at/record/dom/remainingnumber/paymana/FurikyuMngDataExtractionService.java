@@ -35,7 +35,6 @@ public class FurikyuMngDataExtractionService {
 	private ClosureEmploymentRepository closureEmploymentRepository;
 	
 	public FurikyuMngDataExtractionData getFurikyuMngDataExtraction(String sid, GeneralDate startDate, GeneralDate endDate, boolean isPeriod) {
-		String cid = AppContexts.user().companyId();
 		List<PayoutManagementData> payoutManagementData;
 		List<SubstitutionOfHDManagementData> substitutionOfHDManagementData;
 		Double numberOfDayLeft;
@@ -44,11 +43,11 @@ public class FurikyuMngDataExtractionService {
 		
 		// select 過去の結果
 		if(isPeriod) {
-			payoutManagementData = payoutManagementDataRepository.getBySidDatePeriodNoDigestion(sid, startDate, endDate);
-			substitutionOfHDManagementData = substitutionOfHDManaDataRepository.getBySidDatePeriodNoRemainDay(sid, startDate, endDate);
+			payoutManagementData = payoutManagementDataRepository.getBySidPeriodAndInSub(sid, startDate, endDate);
+			substitutionOfHDManagementData = substitutionOfHDManaDataRepository.getBySidPeriodAndInPayout(sid, startDate, endDate);
 		// select 現在の残数状況
 		} else {
-			payoutManagementData = payoutManagementDataRepository.getSidWithCod(cid, sid, 0);
+			payoutManagementData = payoutManagementDataRepository.getBySidStateAndInSub(sid);
 			substitutionOfHDManagementData = substitutionOfHDManaDataRepository.getBySidRemainDayAndInPayout(sid);
 		}
 		

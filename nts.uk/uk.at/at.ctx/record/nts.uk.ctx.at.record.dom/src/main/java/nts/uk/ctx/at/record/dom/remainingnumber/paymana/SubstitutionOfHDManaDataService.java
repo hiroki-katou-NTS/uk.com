@@ -36,9 +36,10 @@ public class SubstitutionOfHDManaDataService {
 
 	@Inject
 	private PayoutManagementDataRepository payoutManagementDataRepository;
-	
-	@Inject 
+
+	@Inject
 	private PayoutSubofHDManaRepository payoutSubofHDManaRepository;
+
 	/**
 	 * KDM001 screen E
 	 */
@@ -63,125 +64,65 @@ public class SubstitutionOfHDManaDataService {
 		}
 
 		allowPrepaidLeave = empSubstVacation.get().getSetting().getAllowPrepaidLeave();
-		
-		// １件もない エラーメッセージ(Msg_738) 	エラーリストにセットする
-		if (subOfHDId.isEmpty()){
+
+		// １件もない エラーメッセージ(Msg_738) エラーリストにセットする
+		if (subOfHDId.isEmpty()) {
 			throw new BusinessException("Msg_738");
 		}
-		
-		// ３件以上あり エラーメッセージ(Msg_739)	エラーリストにセットする
-		if (subOfHDId.size() >= 3){
+
+		// ３件以上あり エラーメッセージ(Msg_739) エラーリストにセットする
+		if (subOfHDId.size() >= 3) {
 			throw new BusinessException("Msg_739");
 		}
-		
-		if (subOfHDId.size() == 1){
-			if (subOfHDId.get(0).getUseNumberDay() != ItemDays.ONE_DAY.value){
+
+		if (subOfHDId.size() == 1) {
+			if (subOfHDId.get(0).getUseNumberDay() != ItemDays.ONE_DAY.value) {
 				// エラーメッセージ(Msg_731) エラーリストにセットする
 				throw new BusinessException("Msg_731");
 			}
 		}
-		if (subOfHDId.size() == 2){
-			if (subOfHDId.get(0).getUseNumberDay() == ItemDays.ONE_DAY.value){
-				
-				if (allowPrepaidLeave == ApplyPermission.NOT_ALLOW){
-					// エラーメッセージ(Msg_739)	エラーリストにセットする
+		if (subOfHDId.size() == 2) {
+			if (subOfHDId.get(0).getUseNumberDay() == ItemDays.ONE_DAY.value) {
+
+				if (allowPrepaidLeave == ApplyPermission.NOT_ALLOW) {
+					// エラーメッセージ(Msg_739) エラーリストにセットする
 					throw new BusinessException("Msg_739");
 				}
-				
+
 			}
-			if (subOfHDId.get(0).getUseNumberDay() == ItemDays.HALF_DAY.value 
-					&& subOfHDId.get(1).getUseNumberDay() != ItemDays.HALF_DAY.value){
+			if (subOfHDId.get(0).getUseNumberDay() == ItemDays.HALF_DAY.value
+					&& subOfHDId.get(1).getUseNumberDay() != ItemDays.HALF_DAY.value) {
 				// エラーメッセージ(Msg_731) エラーリストにセットする
 				throw new BusinessException("Msg_731");
 			}
 		}
-		
-		if (!payoutSubofHDManaRepository.getByPayoutId(payoutId).isEmpty()){
+
+		if (!payoutSubofHDManaRepository.getByPayoutId(payoutId).isEmpty()) {
 			payoutSubofHDManaRepository.delete(payoutId);
 		}
-		
-		subOfHDId.forEach(i->{ 
+
+		subOfHDId.forEach(i -> {
 			payoutSubofHDManaRepository.add(new PayoutSubofHDManagement(payoutId, i.getCode(),
 					new BigDecimal(i.getUseNumberDay()), TargetSelectionAtr.MANUAL.value));
 		});
-		
-		
+
 	}
 
-	/**
-	 * KDM001 screen H
-	 */
-	// Q&&A
-	public boolean checkCompensatoryDate() {
-		return false;
-	}
-
-	public boolean checkExpirationDate(GeneralDate expirationDate) {
-		boolean checkExpirationDate = false;
-		if (checkCompensatoryDate()) {
-			GeneralDate today = GeneralDate.today();
-			if (today.compareTo(expirationDate) > 0) {
-				throw new BusinessException("Mg_825");
-			} else {
-				checkExpirationDate = true;
-			}
-		}
-		return checkExpirationDate;
-	}
-
-	public boolean deleteSubsitutionOfHDManaData(GeneralDate expirationDate, String sID, GeneralDate dayOff) {
-		boolean checkError = false;
-		boolean checkExDate = checkExpirationDate(expirationDate);
-		if (checkExDate) {
-			checkError = true;
-			substitutionOfHDManaDataRepository.delete(sID, dayOff);
-			// Đang Q&&A
-			// 共通アルゴリズム「残数管理データ更新フラグ更新」を実行する
-			// (Thực hiện thuật toán common 「Update cờ cập nhật quản lý data
-			// còn lại」 )
-		}
-		return checkError;
-	}
-
-	public void delete(GeneralDate expirationDate, String sID, GeneralDate dayOff) {
-		boolean checkData = deleteSubsitutionOfHDManaData(expirationDate, sID, dayOff);
-		if (checkData) {
-			throw new BusinessException("Msg_15");
-		} else {
-			throw new BusinessException("Message error!!");
-		}
-	}
-	
-	
 	/**
 	 * KDM001 update screen H
 	 */
-	//(Thực hiện thuật toán 「振休（年月日）チェック処理」"xử lý check ngày nghỉ bù (năm tháng ngày)")
-	public boolean checkDayOff(){
-		//đang chờ Q&A
-		return false;
+	// (Thực hiện thuật toán 「振休（年月日）チェック処理」"xử lý check ngày nghỉ bù (năm tháng
+	// ngày)")
+	public boolean checkDayOff() {
+		// đang chờ Q&A
+		return true;
 	}
-	
-	public boolean checkExpirationDateH(GeneralDate exprirationDate){
-		GeneralDate today = GeneralDate.today();
-		boolean check = false;
-		if(today.compareTo(exprirationDate)>0){
-			throw new BusinessException("Mg_825");
-		}else{
-			check = true;
-		}
-		return check;
-	}
-	 public void updateSub(SubstitutionOfHDManagementData data, GeneralDate exprirationDate){
-		 boolean checkDayOff = checkDayOff();
-		 boolean checkExpirationDate = checkExpirationDateH(exprirationDate);
-		 if(checkDayOff){
-			 if(checkExpirationDate){
-				 substitutionOfHDManaDataRepository.update(data);
-			 }
-		 }
-	 }
 
-	
-	
+	public void updateSub(SubstitutionOfHDManagementData data) {
+		boolean checkDayOff = checkDayOff();
+		if (checkDayOff) {
+			substitutionOfHDManaDataRepository.update(data);
+		}
+	}
+
 }

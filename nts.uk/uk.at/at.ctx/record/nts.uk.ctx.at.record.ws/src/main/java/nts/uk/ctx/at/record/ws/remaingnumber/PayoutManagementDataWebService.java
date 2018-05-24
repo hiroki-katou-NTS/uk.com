@@ -9,7 +9,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.AddPayManaCommandHandler;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.DeletePayoutManagementDataCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.DeletePayoutManagementDataCommandHandler;
@@ -66,9 +65,4 @@ public class PayoutManagementDataWebService extends WebService{
 		return finder.getBySidDatePeriod(sid, subOfHDID);
 	}
 	
-	@POST
-	@Path("getBySidDatePeriodNoDigestion/{empId}/{startDate}/{endDate}")
-	public List<PayoutManagementDataDto> getBySidDatePeriodNoDigestion(@PathParam("empId")String sid, GeneralDate startDate, GeneralDate endDate) {
-		return finder.getBySidDatePeriodNoDigestion(sid, startDate, endDate);
-	}
 }
