@@ -1,34 +1,105 @@
-@CHARSET "UTF-8";
-
-.sidebar-html #master-content {
-	height: calc(100% - 93px) !important;
+div[class^=screen-h] {
+	padding-top: 30px;
+	padding-left: 30px;
 }
 
-hr {
-	margin-bottom: 16px;
+#contents-area {
+	height: auto !important;
 }
 
-#monthdays {
-	margin: -105px 304px;
+.contents-area {
+    padding: 20px 10px !important;
+}
+
+.screen-h .panel.ntsPanel {
+	margin-right: 35px;
+}
+
+.screen-h .infomation,
+.screen-h .panel.ntsPanel {
+	float: left;
+	display: block;
+}
+
+.screen-h .controls-group {
+	padding-left: 30px;
+}
+
+.screen-h .form-group {
+	margin-bottom: 10px;
+}
+
+.screen-h #tree-grid{
+	width: 500px;
+	float: left;
+	margin-right: 30px; 
+}
+
+.screen-h .ntsSearchBox {
+	min-width: 300px;
+}
+
+.contents-area{
+	padding: 20px;
+}
+
+.left-contents{
+	float: left;
+    padding-left: 10px;
+}
+
+.base-date-inputs{
+	float: left;
+    width: 270px;
+}
+
+table.form-input-tbl {
+	width: 630px;
+}
+
+.form-input-tbl tr{
+	height: 20px;
+}
+
+.form-input-tbl td{
+	vertical-align: top;
+	width: 155px;
+}
+
+label.ntsRadioBox {
+    height: 32px;
+}
+
+.input-code{
+	width: 18px;
+}
+
+.left-text-header{
     float: left;
 }
 
-#radio {
-	margin-top: -31px;
-	margin-left: 182px;
-	padding: 5px !important;
-	width: 278px;
+.left-help-btn{
+    margin: -5px 15px;
+    float: right;
 }
 
-table.data-items thead {
+hr.nav{
+    margin: 35px 0px;
+}
+
+table.data-setting-time{
+    margin-top: -15px;
+}
+
+table.data-setting-time thead {
 	background-color: #c7f391;
 }
 
-table.data-items tr {
+table.data-setting-time tr {
 	height: 32px;
 }
 
-table.data-items td {
+table.data-setting-time td {
 	border-bottom: 1px solid #CCC;
 	border-top: 1px solid #CCC;
 	border-left: 1px solid #CCC;
@@ -36,40 +107,27 @@ table.data-items td {
     text-align: center;
 }
 
-table.data-items thead, table.data-items tbody {
+table.data-setting-time thead, table.data-setting-time tbody {
 	display: block;
 }
 
-table.data-items tbody {
-	height: 350px;
+table.data-setting-time tbody {
+	height: 280px;
 	overflow-y: auto;
 	overflow-x: hidden;
 	border: 1px solid #CCC;
 }
 
-table.data-items tr td:first-child{
+table.data-setting-time tr td:first-child{
 	background-color: #c7f391;
 }
 
-.screen-b{
-    padding: 0 40px 0px 40px;
+.bot-form {
+    float: left;
+    width: 760px;
+    padding-top: 62px;
 }
 
-.title {
-    padding-right: 120px !important;
-}
-
-.hidden-right-border{
-    border-right-style: hidden;
-}
-
-.setting-title{
-	float: left;
-	width: -webkit-fill-available;
-    padding: 15px 0px;
-}
-
-.help-button{
-	float: right;
-	margin: -40px 0px;
+#monthdays {
+	margin: -100px 140px;
 }
