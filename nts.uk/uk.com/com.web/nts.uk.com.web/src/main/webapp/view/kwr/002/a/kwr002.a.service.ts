@@ -1,21 +1,19 @@
-module nts.uk.com.view.kwr002.c {
+module nts.uk.com.view.kwr002.a {
     export module service {
         /**
          * define path to service
          */
         var path: any = {
-            findAllAttendanceRecExportDaily: "com/function/attendancerecord/export/getAllAttendanceRecordExportDaily",
-            getAttendanceSingleList: "com/function/attendancerecord/export/getAttendanceListSingle"           
+            getAllAttendanceRecExpSet: "com/function/attendancerecord/export/setting/getAllAttendanceRecExpSet",
+            getPermission: "com/function/attendancerecord/export/setting/getPermission"
         };
 
-//        export function findAllAttendanceRecExportDaily(exportCode: number): JQueryPromise<Array<viewmodel.model.AttendanceRecExp>> {
-//            return nts.uk.request.ajax("at", path.findAllAttendanceRecExportDaily, exportCode);
-//        }
-        
+        export function getAllAttendanceRecExpSet(): JQueryPromise<Array<a.viewModel.AttendanceRecordExportSettingDto>> {
+            return nts.uk.request.ajax("at", path.getAllAttendanceRecExpSet);
+        }   
 
-        export function getAttendanceSingleList(): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", path.getAttendanceSingleList);
+        export function getPermission(): JQueryPromise<boolean> {
+            return nts.uk.request.ajax("at", path.getPermission);
         }
-
     }
 }
