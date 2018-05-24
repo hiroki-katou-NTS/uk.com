@@ -57,7 +57,7 @@ public class AddSubHdManagementService {
 				}
 				int equivalentHalfDay = 0;
 				int equivalentADay = 0;
-				LeaveManagementData domainLeaveManagementData = new LeaveManagementData(leaveId,
+				LeaveManagementDataAgg domainLeaveManagementData = new LeaveManagementDataAgg(leaveId,
 						AppContexts.user().companyId(), subHdManagementData.getEmployeeId(), false,
 						subHdManagementData.getDateHoliday(), subHdManagementData.getDuedateHoliday(),
 						subHdManagementData.getSelectedCodeHoliday(), 0, Double.valueOf(0), 0, subHDAtr, equivalentADay,
@@ -120,7 +120,7 @@ public class AddSubHdManagementService {
 			errorList.addAll(this.checkHoliday(subHdManagementData.getDateHoliday(), closureDate, closureId));
 			// ドメインモデル「休出管理データ」を読み込む
 			GeneralDate dateHoliday = subHdManagementData.getDateHoliday();
-			List<LeaveManagementData> leaveManagementDatas = repoLeaveManaData.getBySidWithHolidayDate(companyId,
+			List<LeaveManagementDataAgg> leaveManagementDatas = repoLeaveManaData.getBySidWithHolidayDate(companyId,
 					employeeId, dateHoliday);
 			if (!leaveManagementDatas.isEmpty()) {
 				errorList.add("Msg_737_holiday");

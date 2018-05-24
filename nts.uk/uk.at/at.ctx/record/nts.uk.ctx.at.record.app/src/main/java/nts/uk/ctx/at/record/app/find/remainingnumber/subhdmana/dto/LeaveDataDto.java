@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManagementData;
+import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManagementDataAgg;
 
 /**
  * @author hiep.ld
@@ -51,7 +51,7 @@ public class LeaveDataDto {
 	// 消滅日
 	private GeneralDate disapearDate;
 
-	public static LeaveDataDto convertToDto(LeaveManagementData leaveData) {
+	public static LeaveDataDto convertToDto(LeaveManagementDataAgg leaveData) {
 		return new LeaveDataDto(leaveData.getID(), leaveData.getCID(), leaveData.getSID(),
 				leaveData.getComDayOffDate().getDayoffDate().get(), leaveData.getExpiredDate(),
 				leaveData.getOccurredDays().v().doubleValue(), leaveData.getOccurredTimes().v().intValue(),

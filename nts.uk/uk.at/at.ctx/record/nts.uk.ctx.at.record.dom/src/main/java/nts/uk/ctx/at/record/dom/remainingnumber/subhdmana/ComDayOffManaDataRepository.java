@@ -42,4 +42,6 @@ public interface ComDayOffManaDataRepository {
 	void deleteByComDayOffId(String comDayOffID);
 	
 	void updateReDayByComDayId(List<String> comDayIds);
+	
+	void updateNotReDayByComDayId(List<String> comDayIds);
 }
