@@ -70,6 +70,7 @@
         } else {
             formattedValue = values[0];
         }
+        formattedValue = text.removeFromStart(text.removeFromStart(formattedValue, '0'), groupSeperator);
         if (values[1] === undefined || decimalLength > values[1].length) {
             values[1] = text.padRight(values[1] ? values[1] : "", '0', values[1] ? decimalLength : decimalLength + 1);
         } else {
