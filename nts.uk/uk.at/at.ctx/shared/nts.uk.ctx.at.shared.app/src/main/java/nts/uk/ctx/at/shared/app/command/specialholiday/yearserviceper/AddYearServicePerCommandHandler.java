@@ -44,6 +44,7 @@ public class AddYearServicePerCommandHandler extends CommandHandlerWithResult<Ad
 																			context.getCommand().getSpecialHolidayCode(), 
 																			context.getCommand().getYearServiceCode(), 
 																			context.getCommand().getYearServiceName(), 
+																			context.getCommand().getProvision(), 
 																			context.getCommand().getYearServiceCls(), 
 																			yearServicePerSets);
 		Optional<YearServicePer> yearServicePerOld = yearServicePerRep.findPer(companyId, 
@@ -52,7 +53,13 @@ public class AddYearServicePerCommandHandler extends CommandHandlerWithResult<Ad
 		if(yearServicePerOld.isPresent()){
 			throw new BusinessException("Msg_3");
 		}
+		
+		if(yearServicePer.getProvision() == 1) {
+			yearServicePerRep.changeAllProvision(context.getCommand().getSpecialHolidayCode());
+		}
+		
 		yearServicePerRep.insertPer(yearServicePer);
+		
 		return errors;
 	}
 	

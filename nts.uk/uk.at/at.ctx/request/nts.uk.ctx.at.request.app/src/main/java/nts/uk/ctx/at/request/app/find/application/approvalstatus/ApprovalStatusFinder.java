@@ -447,7 +447,7 @@ public class ApprovalStatusFinder {
 			}
 		}
 		appContent += I18NText.getText("KAF018_276") + " " + clockShorHm(totalTime) + "（" + contentOther + "）";
-		appContent += "\n" + applicaton_N.getApplicationReason();
+		appContent += "<br/>" + applicaton_N.getApplicationReason();
 		return appContent;
 	}
 
@@ -591,7 +591,7 @@ public class ApprovalStatusFinder {
 			appContent += appabsence.getEndTime2();
 		}
 		if (isDisplayReason(applicaton_N, companyID)) {
-			appContent += "\n" + applicaton_N.getApplicationReason();
+			appContent += "<br/>" + applicaton_N.getApplicationReason();
 		}
 		return appContent;
 	}

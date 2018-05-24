@@ -41,6 +41,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.Employ
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeOrderApproverAsAppOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.WpApproverAsAppOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.registerapproval.AppTypes;
+import nts.uk.ctx.workflow.dom.service.output.ErrorFlag;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 @Stateless
@@ -393,58 +394,38 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 				}
 			}
 
-			// KIỂM TRA XEM ĐỘ DÀI CÁC PHRASE
-			// NẾU BẰNG 0 THÌ IN RA CỘT THỨ 13
-			// NGƯỢC LẠI THÌ KHÔNG IN HAY GÌ ĐÓ
-			if (appLst.size() == 0) {//TH khong co nguoi approver
+			// TÌM RA SỐ DÒNG MAX ĐỂ MERGE CELL CHO CỘT 4
+			int j = 4;
+
+			// IN RA CỘT THỨ 4 CỦA PHRASE I
+				// TODO
+				for (int k = 1; k <= 5; k++) {//in 5 phase
+					//find phase k
+					ApproverAsApplicationInforOutput app = this.findPhaseByOder(appLst, k);
+					//print phase k
+					printEachPhrase(cells, firstRow, max, app, j, rowMergered);
+					//tang column index 2 don vi (chuyen sang vi tri phase ke tiep)
+					if ((j + 2) < 14) {
+						j = j + 2;
+					}
+				}
+
+				//column 14
+				String text14 = this.stateColumn14(typeApp.getErr());
+				if (max > 1) {
+					cells.merge(firstRow, 14, max, 1);
+				}
 				Cell notice = cells.get(firstRow, COLUMN_INDEX[14]);
-				notice.setValue("マスタなし");
-				Color color = Color.getRed();
-				Font font = notice.getStyle().getFont();
-				font.setColor(color);
-				setTitleStyle(notice);
-				notice.setStyle(notice.getStyle());
-				firstRow = firstRow + 1;
-			} 
-			else {//TH co nguoi approver
-
-				// TÌM RA SỐ DÒNG MAX ĐỂ MERGE CELL CHO CỘT 4
-
-				int j = 4;
-
-				// IN RA CỘT THỨ 4 CỦA PHRASE I
-					// TODO
-					for (int k = 1; k <= 5; k++) {//in 5 phase
-						//find phase k
-						ApproverAsApplicationInforOutput app = this.findPhaseByOder(appLst, k);
-						//print phase k
-						printEachPhrase(cells, firstRow, max, app, j, rowMergered);
-						//tang column index 2 don vi (chuyen sang vi tri phase ke tiep)
-						if ((j + 2) < 14) {
-							j = j + 2;
-						}
+				notice.setValue(text14);
+				for (int i = 0; i < max; i++) {
+					Cell style_Form = cells.get(firstRow + i, COLUMN_INDEX[14]);
+					if (i == (max - 1)) {
+						setTitleStyle(style_Form);
+					} else {
+						setTitleStyleMerge(style_Form);
 					}
-
-					//column 14
-					if (max > 1) {
-						cells.merge(firstRow, 14, max, 1);
-					}
-					Cell notice = cells.get(firstRow, COLUMN_INDEX[14]);
-					notice.setValue("");
-					for (int i = 0; i < max; i++) {
-						Cell style_Form = cells.get(firstRow + i, COLUMN_INDEX[14]);
-						if (i == (max - 1)) {
-							setTitleStyle(style_Form);
-						} else {
-							setTitleStyleMerge(style_Form);
-						}
-					}
-					firstRow = firstRow + max;
-
-//				}
-
-			}
-
+				}
+				firstRow = firstRow + max;
 		} 
 		else {//TH khong ngat trang
 
@@ -474,21 +455,6 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 					setTitleStyleMerge(style_Form);
 				}
 			}
-
-			// KIỂM TRA XEM ĐỘ DÀI CÁC PHRASE
-			// NẾU BẰNG 0 THÌ IN RA CỘT THỨ 13
-			// NGƯỢC LẠI THÌ KHÔNG IN HAY GÌ ĐÓ
-			if (appLst.size() == 0) {
-				Cell notice = cells.get(firstRow, COLUMN_INDEX[14]);
-				notice.setValue("マスタなし");
-				Color color = Color.getRed();
-				Font font = notice.getStyle().getFont();
-				font.setColor(color);
-				setTitleStyle(notice);
-				notice.setStyle(notice.getStyle());
-				firstRow = firstRow + 1;
-			} else {
-
 				// TÌM RA SỐ DÒNG MAX ĐỂ MERGE CELL CHO CỘT 3, 4
 
 				int j = 4;
@@ -509,8 +475,9 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 					if (max > 1) {
 						cells.merge(firstRow, 14, max, 1);
 					}
+					String text14 = this.stateColumn14(typeApp.getErr());
 					Cell notice = cells.get(firstRow, COLUMN_INDEX[14]);
-					notice.setValue("");
+					notice.setValue(text14);
 					for (int i = 0; i < max; i++) {
 						Cell style_Form = cells.get(firstRow + i, COLUMN_INDEX[14]);
 						if (i == (max - 1)) {
@@ -531,7 +498,7 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 							}
 
 					}
-
+					//column 14
 					if (max > 1) {
 						cells.merge(firstRow, 14, max, 1);
 					}
@@ -549,21 +516,28 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 
 				}
 
-			}
-		}
-		String text14 = this.checkColumn14(appLst);
-		if(!Strings.isBlank(text14)){
-			Cell notice = cells.get((firstRow-1), COLUMN_INDEX[14]);
-			notice.setValue(text14);
-			Color color = Color.getRed();
-			Font font = notice.getStyle().getFont();
-			font.setColor(color);
-			setTitleStyle(notice);
-			notice.setStyle(notice.getStyle());
 		}
 		return firstRow;
 	}
 
+	private String stateColumn14(ErrorFlag err){
+		if(err == null){
+			return "マスタなし";
+		}
+		if(err.equals(ErrorFlag.NO_APPROVER)){
+			return "承認者なし";
+		}
+		if(err.equals(ErrorFlag.NO_ERROR)){
+			return "";
+		}
+		if(err.equals(ErrorFlag.NO_CONFIRM_PERSON)){
+			return "確定者なし ";
+		}
+		if(err.equals(ErrorFlag.APPROVER_UP_10)){
+			return "承認者10人以上";
+		}
+		return "マスタなし";
+	}
 	private String checkColumn14(List<ApproverAsApplicationInforOutput> appLst){
 		for (ApproverAsApplicationInforOutput appr : appLst) {
 			if(appr.getLstEmpInfo() != null && !appr.getLstEmpInfo().isEmpty()){
@@ -592,7 +566,12 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 					cells.merge(firstRow, j, rowMergered, 1, true);
 				}
 				Cell appPhrase = cells.get(firstRow, COLUMN_INDEX[j]);
-				appPhrase.setValue(app.getApprovalForm());
+//				appPhrase.setValue(app.getApprovalForm());
+				if(app.getLstEmpInfo() != null && app.getLstEmpInfo().size() > 0){
+					appPhrase.setValue(app.getApprovalForm());
+				}else{
+					appPhrase.setValue("");
+				}
 				// SET STYLE CHO CỘT THỨ ApprovalForm
 				for (int i = 0; i < max; i++) {
 					Cell style_Form = cells.get(firstRow + i, COLUMN_INDEX[j]);
@@ -612,18 +591,17 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 						app_name.setValue(app.getApprovalForm());
 					}
 				}
-				
-				
-				
-				
-				
-				
 			}else{//TH khong phan trang
 				if (max > 1) {
 					cells.merge(firstRow, j, max, 1, true);
 				}
 				Cell appPhrase = cells.get(firstRow, COLUMN_INDEX[j]);
-				appPhrase.setValue(app.getApprovalForm());
+				if(app.getLstEmpInfo() != null && app.getLstEmpInfo().size() > 0){
+					appPhrase.setValue(app.getApprovalForm());
+				}else{
+					appPhrase.setValue("");
+				}
+				
 				// SET STYLE
 				for (int i = 0; i < max; i++) {
 					Cell style_Form = cells.get(firstRow + i, COLUMN_INDEX[j]);
@@ -636,7 +614,7 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 			}
 
 			// IN RA CỘT THỨ 5 CỦA PHRASE I
-			if (!CollectionUtil.isEmpty(app.getLstEmpInfo()) || app.getLstEmpInfo() != null) {
+			if (app.getLstEmpInfo() != null && app.getLstEmpInfo().size() > 0) {
 				//TH: list approver = 0
 				List<EmployeeOrderApproverAsAppOutput> employeelst = app.getLstEmpInfo();
 				int i = 0;

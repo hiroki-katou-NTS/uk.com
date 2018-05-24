@@ -109,6 +109,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerfo
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHistItemAtScreen;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.style.TextStyle;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceIdPeriodAtScreen;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.FlexInfoDisplay;
@@ -259,31 +260,8 @@ public class DailyPerformanceCorrectionProcessor {
 		
 		//<<Public>> パラメータに初期値を設定する
 		///期間を変更する
-		if (dateRange == null) {
-			if (objectShare != null && objectShare.getStartDate() != null && objectShare.getEndDate() != null) {
-				// get employmentCode
-				dateRange = new DateRange(objectShare.getStartDate(), objectShare.getEndDate());
-				screenDto.setEmploymentCode(getEmploymentCode(dateRange, sId));
-			} else {
-				Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
-						.findByEmploymentCD(companyId,
-								getEmploymentCode(new DateRange(null, GeneralDate.today()), sId));
-				if (closureEmploymentOptional.isPresent()) {
-					Optional<PresentClosingPeriodExport> closingPeriod = shClosurePub.find(companyId,
-							closureEmploymentOptional.get().getClosureId());
-					if (closingPeriod.isPresent()) {
-						dateRange = new DateRange(closingPeriod.get().getClosureStartDate(),
-								closingPeriod.get().getClosureEndDate());
-					} else {
-						dateRange = new DateRange(GeneralDate.legacyDate(new Date()).addMonths(-1).addDays(+1),
-								GeneralDate.legacyDate(new Date()));
-					}
-				} else {
-					dateRange = new DateRange(GeneralDate.legacyDate(new Date()).addMonths(-1).addDays(+1),
-							GeneralDate.legacyDate(new Date()));
-				}
-			}
-		}
+		dateRange = changeDateRange(dateRange, objectShare, companyId, sId, screenDto);
+		
 		/**
 		 * システム日付を基準に1ヵ月前の期間を設定する | Set date range one month before system date
 		 */
@@ -504,9 +482,12 @@ public class DailyPerformanceCorrectionProcessor {
 						lock = true;
 					}
 				}
-				if(displayFormat == 0 && objectShare != null){
+				if(displayFormat == 0 && objectShare != null && objectShare.getInitClock() != null){
 					// set question SPR 
 					screenDto.setShowQuestionSPR(checkSPR(companyId, disItem.getLstAtdItemUnique(), data.getState(), approvalUseSettingDtoOpt.get(), identityProcessDtoOpt.get(), data.isApproval(), data.isSign()).value);
+				    if(data.getDate().equals(objectShare.getEndDate())){
+				    	screenDto.getTextStyles().add(new TextStyle("_"+data.getId(), "date", "italic-text"));
+				    }
 				}
 				itemValueMap = resultOfOneRow.getItems().stream()
 						.collect(Collectors.toMap(x -> mergeString(String.valueOf(x.getItemId()), "|",
@@ -1409,6 +1390,46 @@ public class DailyPerformanceCorrectionProcessor {
 		if(!shareSPR.getInitClock().isCanEdit())  return new ChangeSPR(false, false);
 		return new ChangeSPR(change31 && checkSPR31, change34 && checkSPR34);
 		//insertStampSourceInfo(employeeId, date, true, true);
+	}
+	
+	public DateRange changeDateRange(DateRange dateRange, ObjectShare objectShare, String companyId, String sId, DailyPerformanceCorrectionDto screenDto){
+		
+		if (dateRange != null)
+			return dateRange;
+
+		boolean isObjectShare = objectShare != null && objectShare.getStartDate() != null
+				&& objectShare.getEndDate() != null;
+
+		if (isObjectShare && objectShare.getInitClock() == null) {
+			// get employmentCode
+			screenDto.setEmploymentCode(getEmploymentCode(dateRange, sId));
+			return new DateRange(objectShare.getStartDate(), objectShare.getEndDate());
+		} else {
+
+			GeneralDate dateRefer = GeneralDate.today();
+			if (isObjectShare && objectShare.getInitClock() != null) {
+				dateRefer = objectShare.getEndDate();
+			}
+
+			Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
+					.findByEmploymentCD(companyId, getEmploymentCode(new DateRange(null, dateRefer), sId));
+
+			if (closureEmploymentOptional.isPresent()) {
+				Optional<PresentClosingPeriodExport> closingPeriod = (isObjectShare
+						&& objectShare.getInitClock() != null)
+								? shClosurePub.find(companyId, closureEmploymentOptional.get().getClosureId(),
+										dateRefer)
+								: shClosurePub.find(companyId, closureEmploymentOptional.get().getClosureId());
+				if (closingPeriod.isPresent()) {
+					dateRange = new DateRange(closingPeriod.get().getClosureStartDate(),
+							closingPeriod.get().getClosureEndDate());
+					return dateRange;
+				}
+			}
+
+			return new DateRange(GeneralDate.legacyDate(new Date()).addMonths(-1).addDays(+1),
+					GeneralDate.legacyDate(new Date()));
+		}
 	}
 }
  

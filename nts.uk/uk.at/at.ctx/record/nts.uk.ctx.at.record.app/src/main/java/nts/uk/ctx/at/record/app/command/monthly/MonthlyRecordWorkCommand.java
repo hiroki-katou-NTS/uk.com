@@ -70,9 +70,9 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 		MonthlyRecordWorkDto fullDto = (MonthlyRecordWorkDto) item;
 		this.affiliationInfo.setRecords(fullDto.getAffiliation());
 		this.attendanceTime.setRecords(fullDto.getAttendanceTime());
-		this.anyItem.setRecords(fullDto.getAffiliation());
-		this.annualLeave.setRecords(fullDto.getAttendanceTime());
-		this.reserveLeave.setRecords(fullDto.getAffiliation());
+		this.anyItem.setRecords(fullDto.getAnyItem());
+		this.annualLeave.setRecords(fullDto.getAnnLeave());
+		this.reserveLeave.setRecords(fullDto.getRsvLeave());
 	}
 
 	@Override
