@@ -358,9 +358,10 @@ module nts.custombinding {
                     }
                 
                     .layout-control .item-controls th div {
-                        top: 0;    
+                        top: 0;
                         height: 31px;
                         color: #000;
+                        padding: 0;
                         overflow: hidden;
                         line-height: 31px;
                         text-align: center;
@@ -370,8 +371,13 @@ module nts.custombinding {
                         border-left: 1px solid #aaa;
                     }
 
+                    .layout-control .item-controls th div>i,
+                    .layout-control .item-controls th div>label {
+                        line-height: 31px;                        
+                    }
+
                     .layout-control .item-controls th div.required {
-                        background-color: #fcc;
+                        background-color: #FAC002;
                     }
                 
                     .layout-control .item-controls thead>tr:first-child div {
@@ -740,11 +746,15 @@ module nts.custombinding {
                                                             <!-- ko foreach: { data: _.first(renders()).items, as: 'header' } -->
                                                                 <!-- ko let: { __wdt: ko.observable(0) } -->
                                                                 <th data-bind="ntsProp: { width: __wdt }">
-                                                                    <div data-bind="text: header.itemName,
+                                                                    <div data-bind="ntsFormLabel: { 
+                                                                            text: header.itemName,
+                                                                            required: header.required,
+                                                                            constraint: header.constraint,
+                                                                            inline: true
+                                                                        },
                                                                         style: {
                                                                             'width': __wdt() + 'px',
-                                                                            'margin-left': (__flft() - __lft()) + 'px',
-                                                                            'background-color': header.required ? '#FAC002' : 'transparent'
+                                                                            'margin-left': (__flft() - __lft()) + 'px'
                                                                         }"></div>
                                                                 </th>
                                                                 <!-- /ko -->
