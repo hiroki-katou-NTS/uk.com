@@ -28,8 +28,19 @@ public class EmployeeDeletion {
 	/** The business name. */
 	private BusinessName businessName;
 	
+	
+	
 	public static EmployeeDeletion createFromJavatype(String delId, 
 			String employeeId, String employeeCode, String businessName) {
 		return new EmployeeDeletion(delId, employeeId, new EmployeeCode(employeeCode), new BusinessName(businessName));
+	}
+
+
+
+	public EmployeeDeletion(String employeeId, String employeeCode, String businessName) {
+		super();
+		this.employeeId = employeeId;
+		this.employeeCode = new EmployeeCode(employeeCode);
+		this.businessName = new BusinessName(businessName);
 	}
 }
