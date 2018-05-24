@@ -10,7 +10,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         employeeCode: KnockoutObservable<string>  = ko.observable('');
         employeeId: KnockoutObservable<string>  = ko.observable('');
         employeeName: KnockoutObservable<string>  = ko.observable('');
-        remainDays: KnockoutObservable<number>    = ko.observable('');
+        remainDays: KnockoutObservable<number>    = ko.observable(0);
         unit: KnockoutObservable<string>          = ko.observable('');
         lawAtr: KnockoutObservable<number>        = ko.observable('');
         pickUp: KnockoutObservable<boolean>    = ko.observable(false);;
@@ -20,12 +20,12 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         expiredDate: KnockoutObservable<string>     = ko.observable('');
         subDayoffDate: KnockoutObservable<string>     = ko.observable('');
         holidayDate: KnockoutObservable<string>    = ko.observable('');
-        requiredDays: KnockoutObservable<number> = ko.observable('');
+        requiredDays: KnockoutObservable<number> = ko.observable(0);
         typeHoliday: KnockoutObservableArray<model.ItemModel>     = ko.observableArray(model.getTypeHoliday());
         itemListHoliday: KnockoutObservableArray<model.ItemModel>    = ko.observableArray(model.getNumberOfDays());
         occurredDays: KnockoutObservable<number>              = ko.observable('');
         itemListSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
-        selectedCodeSubHoliday: KnockoutObservable<string>           = ko.observable('');
+        subDay: KnockoutObservable<number>           = ko.observable(0);
         itemListOptionSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
         isOptionSubHolidayEnable: KnockoutObservable<boolean>              = ko.observable(false);
 
@@ -39,24 +39,33 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                     self.isOptionSubHolidayEnable(false);
                 }
              });
+            self.occurredDays.subscribe((x) =>{
+                self.remainDays(x - self.subDay() - self.requiredDays());
+            });
+            self.subDay.subscribe((x) =>{
+                self.remainDays(self.occurredDays() - x - self.requiredDays());
+            });
+            self.requiredDays.subscribe((x) =>{
+                self.remainDays(self.occurredDays() - x - self.subDay());
+            });
         }
 
         initScreen(): void {
             block.invisible();
             let self = this,
-                info = getShared("KDM001_A_PARAMS");
+                info = getShared("KDM001_D_PARAMS");
             if (info) {
                 self.workCode(info.selectedEmployee.workplaceCode);
                 self.workplaceName(info.selectedEmployee.workplaceName);
-                self.employeeCode(info.selectedEmployee.code);
-                self.employeeId(info.selectedEmployee.id);
-                self.employeeName(info.selectedEmployee.businessName);
+                self.employeeCode(info.selectedEmployee.employeeCode);
+                self.employeeId(info.selectedEmployee.employeeId);
+                self.employeeName(info.selectedEmployee.employeeName);
             }
             block.clear();
-            self.remainDays(0.5);
+            self.remainDays(0);
             self.unit("日");
         }
-
+        
         /**
          * closeDialog
          */
@@ -83,7 +92,6 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             console.log(data);
             service.save(data).done(result => {
                 if (result && result.length > 0) {
-                    
                     for (let error of result) { 
                         if (error === "Msg_737_PayMana") {
                             $('#D6_1').ntsError('set', { messageId: "Msg_737" });
@@ -95,14 +103,12 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                     }
                     return;
                 } else {
-                    setShared('KDM001_A_PARAMS', {isSuccess: true});
                     dialog.info({ messageId: "Msg_15" }).then(() => {
                         nts.uk.ui.windows.close();
                     });
                 }
             }).fail(function(res: any) {
                 dialog.info({ messageId: "Msg_737" }).then(() => {
-                    setShared('KDM001_A_PARAMS', {isSuccess: false});
                 });
             });
         }
