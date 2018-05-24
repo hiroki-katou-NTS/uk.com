@@ -6,7 +6,8 @@ module nts.uk.com.view.kwr002.b {
     import getShared = nts.uk.ui.windows.getShared;
     import modal = nts.uk.ui.windows.sub.modal;
     import windows = nts.uk.ui.windows;
-    import cModel = nts.uk.com.view.kwr002.c.viewmodel.model;
+    import alertError = nts.uk.ui.dialog.alertError;
+    import confirm = nts.uk.ui.dialog.confirm;
 
     export class ScreenModel {
 
@@ -76,6 +77,26 @@ module nts.uk.com.view.kwr002.b {
         }
 
         onDelete() {
+            let self = this;
+            errors.clearAll();
+            confirm({messageId: 'Msg_18'}).ifYes(()=>{
+                confirm({messageId: 'Msg_35'}).ifYes(()=> {
+                    let currentData = self.currentARES();
+                    let aRESCommand = {
+                        code: Number(currentData.code()),
+                        name: currentData.name(),
+                        // sealUseAtr: currentData.sealUseAtr(),
+                        // sealStamp: rcdExport.sealStamp
+                    };
+                    service.delARES(aRESCommand).done(()=>{
+                        console.log("ahihi");
+                    });
+                })
+            }).ifNo(()=>{
+                confirm({messageId: 'Msg_36'}).ifYes(()=> {
+                    return;
+                })
+            });
 
         }
 
@@ -103,31 +124,69 @@ module nts.uk.com.view.kwr002.b {
 
             $("#code").trigger("validate");
 
-            let newARES = {
-                code: currentData.code(),
-                name: currentData.name(),
-                sealUseAtr: currentData.sealUseAtr()
+            let rcdExport = {
+                attendanceRecExpDaily: getShared('attendanceRecExpDaily'),//=9
+                attendanceRecExpMonthly: getShared('attendanceRecExpMonthly'),//>=9
+                attendanceRecItemList: getShared('attendanceRecItemList'),
+                sealStamp: getShared('useSeal'),
+
+                isInvalid: function () {
+                    return this.attendanceRecExpDaily < 9 && this.attendanceRecExpMonthly < 9;
+                }
             };
 
-            if (self.updateMode()) { //is in update mode
+            let aRESCommand = {
+                code: currentData.code(),
+                name: currentData.name(),
+                sealUseAtr: currentData.sealUseAtr(),
+                sealStamp: rcdExport.sealStamp
+            };
+
+            let sARCommand = {
+                exportSettingCode: currentData.code(),
+                useAtr: false,
+                exportAtr: rcdExport.attendanceRecItemList.exportAtr,
+                columnIndex: rcdExport.attendanceRecItemList.columnIndex,
+                position: rcdExport.attendanceRecItemList.position,
+                timeItemId: rcdExport.attendanceRecItemList.attendanceId,
+                attribute: rcdExport.attendanceRecItemList.attribute,
+                name: rcdExport.attendanceRecItemList.layoutName,//not sure
+            };
+
+            let cARCommand = {
+                exportSettingCode: currentData.code(),
+                useAtr: false,
+                exportAtr: rcdExport.attendanceRecItemList.exportAtr,
+                columnIndex: rcdExport.attendanceRecItemList.columnIndex,
+                position: rcdExport.attendanceRecItemList.position,
+                timeItems: '',
+                attribute: rcdExport.attendanceRecItemList.attribute,
+                name: rcdExport.attendanceRecItemList.layoutName,//not sure
+            };
+
+            let data = {
+                aRESCommand: aRESCommand,
+                sARCommand: sARCommand,
+                cARCommand: cARCommand
+            };
+
+            if (self.updateMode()) { //in update mode
 
             } else { // in new mode
                 // insert a company
-                service.getARESByCode(newARES.code).done((exist) => {
-                    if (!_.isNull(exist.code)) {
-                        nts.uk.ui.dialog.alertError({messageId: 'Msg_3'})
+                service.getARESByCode(currentData.code()).done((rs) => {
+                    if (!_.isNull(rs.code)) {
+                        alertError({messageId: 'Msg_3'});
                     } else {
-                        let attendanceRecExpDaily: Array<cModel.AttendanceItem> = getShared('attendanceRecExpDaily');
-                        let attendanceRecExpMonthly: Array<cModel.AttendanceItem> = getShared('attendanceRecExpMonthly');
-                        let attendanceRecItemList: Array<cModel.AttendanceRecItem> = getShared('attendanceRecItemList');
-                        let useSeal: any = getShared('useSeal');
-
-                        if (!(attendanceRecExpDaily || attendanceRecExpMonthly || attendanceRecItemList || useSeal)) {
-                            nts.uk.ui.dialog.alertError({messageId: 'Msg_1130'})
+                        if (rcdExport.isInvalid) {
+                            alertError({messageId: 'Msg_1130'});
                         }
+
+                        //add new ARES
+                        service.addARES(data).done((rs) => {
+                        });
                     }
                 }).fail(error => {
-                }).then(() => {
 
                 }).always(() => {
                     nts.uk.ui.block.clear();
