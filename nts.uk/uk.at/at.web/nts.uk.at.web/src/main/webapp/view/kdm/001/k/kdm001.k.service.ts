@@ -4,8 +4,8 @@ module nts.uk.at.view.kdm001.k {
     export module service {
         
         var paths = {
-            getAll: "at/record/remainnumber/subhd/getAll/{0}/{1}",
-            update: "at/record/remainnumber/subhd/updateComDayOff",
+            getAll: "at/record/remainnumber/subhd/getAllLeave/{0}/{1}",
+            update: "at/record/remainnumber/subhd/updateLeaveMana",
         }
         /**
          * get list day off 

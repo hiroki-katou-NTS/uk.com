@@ -28,6 +28,8 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 	
 	
 	private String GET_BY_LISTID = " SELECT c FROM KrcmtComDayoffMaData c WHERE c.comDayOffID IN :comDayOffIDs";
+	
+	private String GET_BY_NOT_LISTID = " SELECT c FROM KrcmtComDayoffMaData c WHERE c.comDayOffID  IN :comDayOffIDs";
 
 	@Override
 	public List<CompensatoryDayOffManaData> getBySidWithReDay(String cid, String sid) {
@@ -163,4 +165,17 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 		}
 		this.commandProxy().updateAll(KrcmtComDayoffMaData);
 	}
+	
+	@Override
+	public void updateNotReDayByComDayId(List<String> comDayIds) {
+		List<KrcmtComDayoffMaData> KrcmtComDayoffMaData = this.queryProxy()
+				.query(GET_BY_NOT_LISTID, KrcmtComDayoffMaData.class)
+				.setParameter("comDayOffIDs",comDayIds)
+				.getList();
+		for(KrcmtComDayoffMaData busItem: KrcmtComDayoffMaData){
+			busItem.remainDays =  busItem.requiredDays;
+		}
+		this.commandProxy().updateAll(KrcmtComDayoffMaData);
+	}
+	
 }

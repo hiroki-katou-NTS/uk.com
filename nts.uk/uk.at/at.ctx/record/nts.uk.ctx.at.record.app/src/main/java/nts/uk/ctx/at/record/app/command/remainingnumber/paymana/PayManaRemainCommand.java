@@ -9,13 +9,11 @@ public class PayManaRemainCommand {
 
 	@Setter
 	private String payoutId;
-	private String cId;
 	private String employeeId;
 	private GeneralDate dayOff;
 	private GeneralDate expiredDate;
 	private int lawAtr;
 	private Double occurredDays;
-	private String subOfHDID;
 	private GeneralDate subDayoffDate;
 	private Double requiredDays;	
 	private Double remainDays;

@@ -1,12 +1,13 @@
 package nts.uk.ctx.at.record.app.command.remainingnumber.paymana;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutManagementData;
@@ -16,13 +17,13 @@ import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SubstitutionOfHDManageme
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class AddPayManaCommandHandler extends CommandHandler<PayManaRemainCommand>{
+public class AddPayManaCommandHandler extends CommandHandlerWithResult<PayManaRemainCommand, List<String>>{
 
 	@Inject
 	private PayoutManagementDataService payoutManaDataService;
 	
 	@Override
-	protected void handle(CommandHandlerContext<PayManaRemainCommand> context) {
+	protected List<String> handle(CommandHandlerContext<PayManaRemainCommand> context) {
 		PayManaRemainCommand command = context.getCommand();
 		String cId = AppContexts.user().companyId();
 		String newIDPayout = IdentifierUtil.randomUniqueId();
@@ -38,7 +39,8 @@ public class AddPayManaCommandHandler extends CommandHandler<PayManaRemainComman
 		SubstitutionOfHDManagementData subMana = new SubstitutionOfHDManagementData(newIDSub, cId, command.getEmployeeId(), unknowDate, command.getSubDayoffDate(), command.getRequiredDays(), command.getRemainDays());
 		PayoutSubofHDManagement paySub = new PayoutSubofHDManagement(newIDPayout, newIDSub, new BigDecimal(0), TargetSelectionAtr.MANUAL.value);
 		
-		payoutManaDataService.addPayoutManagement(command.getPickUp(), command.getPause(), payMana, subMana, paySub);
+		List<String> error = payoutManaDataService.addPayoutManagement(command.getPickUp(), command.getPause(), payMana, subMana, paySub);
+		return error;
 	}
 
 

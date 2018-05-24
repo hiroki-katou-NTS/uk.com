@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.paymana;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,30 +35,46 @@ public class PayoutManagementDataService {
 		}
 		return false;
 	}
+	
+	public boolean checkInfoSubPayMana(SubstitutionOfHDManagementData subDomain) {
+		Optional<SubstitutionOfHDManagementData> subPayout = substitutionOfHDManaDataRepository.find(subDomain.getCid(), subDomain.getSID(),
+				subDomain.getHolidayDate());
+		if (subPayout.isPresent()) {
+			return true;
+		}
+		return false;
+	}
 
 	public GeneralDate getClosingDate() {
 		return null;
 	}
 
-	public void addPayoutManagement(boolean pickUp, boolean pause, PayoutManagementData command,
+	public List<String> addPayoutManagement(boolean pickUp, boolean pause, PayoutManagementData payMana,
 			SubstitutionOfHDManagementData subMana, PayoutSubofHDManagement paySub) {
+		List<String> errors = new ArrayList<String>();
 		if (pickUp) {
-			//this.checkProcess();
-			payoutManagementDataRepository.create(command);
-		}
-		if (this.checkInfoPayMana(command)) {
-			throw new BusinessException("Msg_737");
-		}
-		if (pause) {
-			if (this.checkInfoPayMana(command)) {
-				throw new BusinessException("Msg_737");
-			} else {
-				substitutionOfHDManaDataRepository.create(subMana);
+			//this.checkProcess(); Wait QA
+			if (this.checkInfoPayMana(payMana)) {
+				errors.add("Msg_737_PayMana");
+			}
+			if (errors.isEmpty()) {
+				payoutManagementDataRepository.create(payMana);
 			}
 		}
+		if (pause) {
+			//this.checkProcess(); Wait QA
+			if (this.checkInfoSubPayMana(subMana)) {
+				errors.add("Msg_737_SubPay");
+			}
+			if (errors.isEmpty()) {
+				substitutionOfHDManaDataRepository.create(subMana);
+			}	
+		}
 		if (pickUp && pause) {
+			if (errors.isEmpty())
 			payoutSubofHDManaRepository.add(paySub);
 		}
+		return errors;
 
 	}
 
@@ -75,13 +92,13 @@ public class PayoutManagementDataService {
 			check = true;
 		} else {
 			check = false;
-			throw new BusinessException("Msg_740");
+//			throw new BusinessException("Msg_740");
 		}
-		return check;
+		return true;
 	}
-
+	
 	// (Thực hiện thuật toán 「Ｇ．振休管理データの修正（振出設定）入力項目チェック処理」)
-	public boolean checkboxData(boolean checkBox, int lawAtr, GeneralDate expiredDate, double unUsedDays) {
+	public boolean checkboxData(boolean checkBox, int lawAtr, GeneralDate dayoffDate, GeneralDate expiredDate, double unUsedDays) {
 		boolean check = false;
 		if (checkBox) {
 			if (lawAtr == 2) {
@@ -89,8 +106,8 @@ public class PayoutManagementDataService {
 				check = false;
 				throw new BusinessException("Msg_1212");
 			} else {
-				GeneralDate today = GeneralDate.today();
-				if (today.before(expiredDate)) {
+				
+				if (dayoffDate.compareTo(expiredDate) >0) {
 					check = false;
 					throw new BusinessException("Msg_825");
 				} else {
@@ -108,13 +125,13 @@ public class PayoutManagementDataService {
 		return check;
 	}
 
-	public void update(PayoutManagementData data, boolean checkBox, int lawAtr, GeneralDate expiredDate,
+	public void update(PayoutManagementData data, boolean checkBox, int lawAtr,GeneralDate dayoffDate, GeneralDate expiredDate,
 			double unUsedDays) {
 		// 振出（年月日）チェック処理
 		boolean check = checkProcess();
 		if (check) {
 			// 振休管理データの修正（振出設定）入力項目チェック処理
-			boolean checkBoxData = checkboxData(checkBox, lawAtr, expiredDate, unUsedDays);
+			boolean checkBoxData = checkboxData(checkBox, lawAtr,dayoffDate, expiredDate, unUsedDays);
 			if (checkBoxData) {
 				payoutManagementDataRepository.update(data);
 				// **chưa có :(Thực hiện thuật toán 「振休残数管理データ更新フラグ処理」):bât cờ

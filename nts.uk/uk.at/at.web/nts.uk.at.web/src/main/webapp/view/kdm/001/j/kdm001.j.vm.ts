@@ -28,6 +28,8 @@ module nts.uk.at.view.kdm001.j.viewmodel {
                 self.employeeCode(info.selectedEmployee.employeeCode);
                 self.employeeName(info.selectedEmployee.employeeName);
                 self.leaveId(info.row.id);
+                self.dateHoliday(info.row.dayOffDate);
+                self.numberDay(info.row.occurredDays+' 日');
             }
             
             
@@ -75,8 +77,7 @@ module nts.uk.at.view.kdm001.j.viewmodel {
         public initScreen(): void {
             var self = this;
             
-            self.dateHoliday('2016/10/2');
-            self.numberDay('1.0日');
+            
             self.residualDay('0日');
            
         }
@@ -143,6 +144,7 @@ module nts.uk.at.view.kdm001.j.viewmodel {
         comDayOffID: string;
         dayOff: string;
         remainDays: string;
+        remainDaysString: string;
         constructor(comDayOffID: string, dayOff: string, remainDays: string, remainDaysString: string) {
             this.comDayOffID = comDayOffID;
             this.dayOff = dayOff;
