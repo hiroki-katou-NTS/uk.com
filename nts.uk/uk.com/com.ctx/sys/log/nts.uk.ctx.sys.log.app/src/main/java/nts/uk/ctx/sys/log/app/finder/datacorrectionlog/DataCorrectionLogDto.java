@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.log.app.finder.datacorrectionlog;
 
 import lombok.Value;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 
 /**
@@ -12,13 +13,14 @@ import nts.arc.time.GeneralDateTime;
 @Value
 public class DataCorrectionLogDto {
 
-	private String targetDate;
+	private GeneralDate targetDate;
 	private String targetUser;
 	private String item;
 	private String valueBefore;
 	private String valueAfter;
+	private int dataType;
 	private String modifiedPerson;
 	private GeneralDateTime modifiedDateTime;
-	private String correctionAttr;
+	private int correctionAttr;
 	
 }
