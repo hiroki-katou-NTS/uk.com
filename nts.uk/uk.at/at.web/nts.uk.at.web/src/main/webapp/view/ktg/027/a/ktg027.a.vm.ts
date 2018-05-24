@@ -40,6 +40,7 @@ module nts.uk.at.view.ktg027.a.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+             block.invisible();
             service.getOvertimeHours(self.targetMonth()).done((data) => {
                 console.log(data);
                 self.closureResultModel(data.listclosureID);
@@ -60,7 +61,7 @@ module nts.uk.at.view.ktg027.a.viewmodel {
                     if (status == 2 || status == 5) { backgroundColor = '#F6F636'; color = '#ff0000'; }
                     else if (status == 1 || status == 4) { backgroundColor = '#FD4D4D'; color = '#ffffff'; }
                     else if (status == 3) { backgroundColor = '#eb9152'; }
-
+                                                                             
                     if (!nts.uk.text.isNullOrEmpty(e.afterAppReflect.exceptionLimitErrorTime) || e.afterAppReflect.exceptionLimitErrorTime == "") {
                         timeLimit = e.afterAppReflect.exceptionLimitErrorTime;
                     }
@@ -78,6 +79,7 @@ module nts.uk.at.view.ktg027.a.viewmodel {
                 nts.uk.ui.dialog.alertError({ messageId: MsgID, messageParams: [nts.uk.resource.getText("MsgID")] })
 
                 dfd.resolve();
+                block.clear();
             });
 
             // Init Fixed Table
@@ -141,7 +143,12 @@ module nts.uk.at.view.ktg027.a.viewmodel {
             });
             block.clear();
         }
-
+         printData(): void {
+              block.invisible();
+                let self = this;
+                service.saveAsCsv(self.inforOvertime());
+              block.clear();
+            }
 
     }
     export class ClosureResultModel {
