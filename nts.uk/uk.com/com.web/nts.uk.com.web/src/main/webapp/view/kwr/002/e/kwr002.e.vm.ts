@@ -190,27 +190,32 @@ module nts.uk.com.view.kwr002.e {
             }
 
             decide() {
-                var self = this;
-                var outputItems: Array<model.SelectedItem>;
-                outputItems = self.selectedGridItems();
+                $('.nts-input').trigger("validate");
+                _.defer(() => {
+                    if (!$('.nts-editor').ntsError("hasError")) {
+                        var self = this;
+                        var outputItems: Array<model.SelectedItem>;
+                        outputItems = self.selectedGridItems();
 
-                if (outputItems.length == 0) {
-                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_1141' });
-                    return;
-                }
-                else {
-                    nts.uk.ui.windows.setShared('attendanceRecordExport', {
-                        attendanceItemName: self.attendanceRecordName(),
-                        layoutCode: self.attendanceItem().layoutCode,
-                        layoutName: self.attendanceItem().layoutName,
-                        columnIndex: self.attendanceItem().columnIndex,
-                        position: self.attendanceItem().position,
-                        exportAtr: self.attendanceItem().exportAtr,
-                        attendanceId: outputItems,
-                        attribute: self.selectionTypeValue()
-                    }, true);
-                }
-                nts.uk.ui.windows.close();
+                        if (outputItems.length == 0) {
+                            nts.uk.ui.dialog.alertError({ messageId: 'Msg_1141' });
+                            return;
+                        }
+                        else {
+                            nts.uk.ui.windows.setShared('attendanceRecordExport', {
+                                attendanceItemName: self.attendanceRecordName(),
+                                layoutCode: self.attendanceItem().layoutCode,
+                                layoutName: self.attendanceItem().layoutName,
+                                columnIndex: self.attendanceItem().columnIndex,
+                                position: self.attendanceItem().position,
+                                exportAtr: self.attendanceItem().exportAtr,
+                                attendanceId: outputItems,
+                                attribute: self.selectionTypeValue()
+                            }, true);
+                        }
+                        nts.uk.ui.windows.close();
+                    }
+                });
             }
 
             cancel() {
