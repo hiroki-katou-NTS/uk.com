@@ -168,7 +168,6 @@ public class AddSubHdManagementService {
 		}
 		return errorList;
 	}
-
 	/**
 	 * 代休（年月日）チェック処理
 	 * 
@@ -209,18 +208,17 @@ public class AddSubHdManagementService {
 			// 分割消化フラグをチェックする
 			if (subHdManagementData.getCheckedSplit() == true) {
 				// １日目の代休日数をチェックする
-				if (!ItemDays.HALF_DAY.equals(subHdManagementData.getSelectedCodeSubHoliday())) {
+				if (!ItemDays.HALF_DAY.value.equals(subHdManagementData.getSelectedCodeSubHoliday())) {
 					errorList.add("Msg_1256_1");
-				} else if (ItemDays.HALF_DAY.equals(subHdManagementData.getSelectedCodeSubHoliday())) {
-					if (ItemDays.HALF_DAY.equals(subHdManagementData.getSelectedCodeOptionSubHoliday())) {
+				} else if (ItemDays.HALF_DAY.value.equals(subHdManagementData.getSelectedCodeSubHoliday())) {
+					if (ItemDays.HALF_DAY.value.equals(subHdManagementData.getSelectedCodeOptionSubHoliday())) {
 						// 休出チェックボックスをチェックする
 						if (subHdManagementData.getCheckedHoliday() == true) {
 							if (subHdManagementData.getCheckedSplit() == true) {
 								// 休出日数をチェックする
-								if (ItemDays.ONE_DAY.equals(subHdManagementData.getSelectedCodeHoliday())) {
-									if (ItemDays.HALF_DAY.equals(subHdManagementData.getSelectedCodeSubHoliday())) {
-										if (!ItemDays.HALF_DAY
-												.equals(subHdManagementData.getSelectedCodeOptionSubHoliday())) {
+								if (ItemDays.ONE_DAY.value.equals(subHdManagementData.getSelectedCodeHoliday())) {
+									if (ItemDays.HALF_DAY.value.equals(subHdManagementData.getSelectedCodeSubHoliday())) {
+										if (!ItemDays.HALF_DAY.value.equals(subHdManagementData.getSelectedCodeOptionSubHoliday())) {
 											errorList.add("Msg_1260_1");
 										}
 									} else {
