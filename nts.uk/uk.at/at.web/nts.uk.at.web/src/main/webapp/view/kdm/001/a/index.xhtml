@@ -47,7 +47,7 @@
 					<!-- A1_2 振休確認 -->
 					<div style="margin-left: auto;">
 						<a id = "A1_2" tabindex="7" class="goout"
-							data-bind="click: goToKDR004">#{i18n.getText('KDM001_2')}</a>
+							data-bind="ntsLinkButton: { action: goToKDR004 }">#{i18n.getText('KDM001_2')}</a>
 					</div>
 
 				</div>
@@ -84,7 +84,7 @@
 								<div class="div-table-row-1"></div>
 								<!-- A3_4  期間範囲 -->
 							    <div class="div-table-row-2" id="daterangepicker" tabindex="4"
-										data-bind="ntsDateRangePicker: { required: selectedPeriodItem()==1, enable: selectedPeriodItem()==1, showNextPrevious: true, value: dateValue, maxRange: 'oneMonth'}" />
+										data-bind="ntsDateRangePicker: { required: selectedPeriodItem()==1, enable: selectedPeriodItem()==1, showNextPrevious: true, value: dateValue}" />
 							</div>
 							<div class="div-table-col-big">
 								<div class="div-table-row-1"></div>

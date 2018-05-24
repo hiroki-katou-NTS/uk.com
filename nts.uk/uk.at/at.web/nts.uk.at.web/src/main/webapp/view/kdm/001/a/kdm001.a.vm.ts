@@ -167,14 +167,19 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         
         goToKDR004() {
             let self = this;
-            setShared('KDM001_PARAMS', {selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID, dateRange: dateValue(),
+            setShared('KDM001_PARAMS', {selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID, dateRange: self.dateValue(),
                     selectedPeriodItem: self.selectedPeriodItem(), dispTotalRemain: self.dispTotalRemain(), expirationDate: self.expirationDate()});
             nts.uk.request.jump("/view/kdr/004/a/index.xhtml");
         }
         
         clickGetDataList() {
-            self.updateDataList();
-            $('#compositePayOutSubMngDataGrid').focus();
+            let self = this;
+            
+            $(".ntsDatepicker").trigger("validate");
+            if (!nts.uk.ui.errors.hasError()) {
+                self.updateDataList();
+                $('#compositePayOutSubMngDataGrid').focus();
+            }
         }
         
         updateDataList() {

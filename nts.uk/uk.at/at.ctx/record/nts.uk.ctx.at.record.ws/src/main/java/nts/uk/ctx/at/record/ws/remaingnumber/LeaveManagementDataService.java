@@ -27,7 +27,7 @@ public class LeaveManagementDataService extends WebService {
 	private LeaveManaCommandHandler leaveManaCommandHandler;
 	
 	@POST
-	@Path("getAll/{comDayOffID}/{employeeId}")
+	@Path("getAllLeave/{comDayOffID}/{employeeId}")
 	public List<LeaveManaDto> getComDayOffId(@PathParam("comDayOffID") String comDayOffID,@PathParam("employeeId") String employeeId) {
 		List<LeaveManaDto> leaveDataDtos = new ArrayList<>();
 		leaveDataDtos = leaveManaFinder.getByComDayOffId(comDayOffID, employeeId);

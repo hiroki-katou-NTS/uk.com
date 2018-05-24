@@ -9,7 +9,7 @@ import lombok.Data;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
-import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManagementData;
+import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManagementDataAgg;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.service.ExtraHolidayManagementOutput;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 
@@ -25,7 +25,7 @@ public class ExtraHolidayManagementDataDto {
 
 	public static ExtraHolidayManagementDataDto convertToDto(ExtraHolidayManagementOutput extraHolidayManagementOutput){
 		// From domain
-		List<LeaveManagementData> listLeaveData = extraHolidayManagementOutput.getListLeaveData();
+		List<LeaveManagementDataAgg> listLeaveData = extraHolidayManagementOutput.getListLeaveData();
 		List<CompensatoryDayOffManaData> listCompensatoryData = extraHolidayManagementOutput.getListCompensatoryData();
 		List<LeaveComDayOffManagement> listLeaveComDayOffManagement = extraHolidayManagementOutput.getListLeaveComDayOffManagement();
 		SEmpHistoryImport sEmpHistoryImport = extraHolidayManagementOutput.getSEmpHistoryImport();

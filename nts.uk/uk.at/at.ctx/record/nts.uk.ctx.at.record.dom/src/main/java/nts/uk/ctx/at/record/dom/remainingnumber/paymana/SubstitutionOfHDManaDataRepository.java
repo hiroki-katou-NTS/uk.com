@@ -29,7 +29,6 @@ public interface SubstitutionOfHDManaDataRepository {
 	// ドメイン「振休管理データ」より紐付け対象となるデータを取得する
 	List<SubstitutionOfHDManagementData> getBySidDatePeriod(String sid,String payoutID, Double remainDays);
 	
-	List<SubstitutionOfHDManagementData> getBySidDatePeriodNoRemainDay(String sid, GeneralDate startDate, GeneralDate endDate);
-	
 	List<SubstitutionOfHDManagementData> getBySidRemainDayAndInPayout(String sid);
+	List<SubstitutionOfHDManagementData> getBySidPeriodAndInPayout(String sid, GeneralDate startDate, GeneralDate endDate);
 }
