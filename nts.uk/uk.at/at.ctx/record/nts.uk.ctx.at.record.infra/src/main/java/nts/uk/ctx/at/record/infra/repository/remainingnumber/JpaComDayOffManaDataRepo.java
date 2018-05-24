@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.remainingnumber;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
+import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypeDaily;
 import nts.uk.ctx.at.record.infra.entity.remainingnumber.subhdmana.KrcmtComDayoffMaData;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -25,13 +27,15 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 	
 	private String GET_BY_SID_COMDAYOFFID = "SELECT a FROM KrcmtComDayoffMaData a WHERE a.cID = :companyId AND a.sID = :employeeId AND a.dayOff = :dayOffDate";
 
-	private String GET_BYCOMDAYOFFID = String.join(" ", GET_BYSID_WITHREDAY, " AND c.comDayOffID IN (SELECT b.krcmtLeaveDayOffManaPK.comDayOffID FROM KrcmtLeaveDayOffMana b WHERE b.krcmtLeaveDayOffManaPK.leaveID = :leaveID)");
+	private String GET_BYCOMDAYOFFID = String.join(" ", GET_BYSID, " AND c.comDayOffID IN (SELECT b.krcmtLeaveDayOffManaPK.comDayOffID FROM KrcmtLeaveDayOffMana b WHERE b.krcmtLeaveDayOffManaPK.leaveID = :leaveID)");
 
 	private String GET_BYSID_BY_DATECONDITION = String.join(" ", GET_BYSID,
 			" AND dayOff >= :stateDate AND dayOff <= : endDate");
 
 	private String GET_BYSID_BY_HOLIDAYDATECONDITION = "SELECT c FROM KrcmtComDayoffMaData c WHERE c.sID = :employeeId AND c.cID = :cid AND c.dayOff = :dateSubHoliday";
-
+	
+	
+	private String GET_BY_LISTID = " SELECT c FROM KrcmtComDayoffMaData c WHERE c.comDayOffID IN :comDayOffIDs";
 
 	@Override
 	public List<CompensatoryDayOffManaData> getBySidWithReDay(String cid, String sid) {
@@ -141,6 +145,18 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 				.setParameter("cid", cid).setParameter("dateSubHoliday", dateSubHoliday).getList();
 
 		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+
+	@Override
+	public void updateReDayByComDayId(List<String> comDayIds) {
+		List<KrcmtComDayoffMaData> KrcmtComDayoffMaData = this.queryProxy()
+				.query(GET_BY_LISTID, KrcmtComDayoffMaData.class)
+				.setParameter("comDayOffIDs",comDayIds)
+				.getList();
+		for(KrcmtComDayoffMaData busItem: KrcmtComDayoffMaData){
+			busItem.remainDays =  new Double(0);
+		}
+		this.commandProxy().updateAll(KrcmtComDayoffMaData);
 	}
 
 }

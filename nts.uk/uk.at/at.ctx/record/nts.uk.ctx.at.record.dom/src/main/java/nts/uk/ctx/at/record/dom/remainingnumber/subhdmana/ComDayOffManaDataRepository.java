@@ -41,4 +41,7 @@ public interface ComDayOffManaDataRepository {
 	 * @param dayOffDate 代休日
 	 */
 	void deleteBySidAndDayOffDate(String employeeId, GeneralDate dayOffDate);
+	
+	void updateReDayByComDayId(List<String> comDayIds);
+	
 }

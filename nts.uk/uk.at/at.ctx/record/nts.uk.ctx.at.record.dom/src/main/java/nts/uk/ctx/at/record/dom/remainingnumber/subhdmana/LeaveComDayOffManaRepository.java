@@ -17,6 +17,9 @@ public interface LeaveComDayOffManaRepository {
 	void insertAll(List<LeaveComDayOffManagement> entitiesLeave);
 	
 	void deleteByLeaveId(String leaveId);
+	
+	void deleteByComDayOffID(String comDayOffID);
 
 	List<LeaveComDayOffManagement> getByListComLeaveID(List<String> listLeaveID);
+	
 }

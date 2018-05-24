@@ -4,10 +4,11 @@ import java.util.List;
 
 import lombok.Getter;
 
-
 @Getter
-public class DayOffManaCommand {
+public class LeaveManaComand {
+	
 	private String employeeId;
-	private String leaveId;
-	private List<ComDayOffManaComand> comDayOffManaDtos;
+	private String comDayOffID;
+	private List<LeaveManaDto> leaveManaDtos;
+	
 }

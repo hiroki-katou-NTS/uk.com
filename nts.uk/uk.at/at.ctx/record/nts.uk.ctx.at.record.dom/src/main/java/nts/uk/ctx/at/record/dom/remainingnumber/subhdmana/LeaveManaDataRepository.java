@@ -12,6 +12,8 @@ public interface LeaveManaDataRepository {
 
 	List<LeaveManagementData> getBySidWithsubHDAtr(String cid, String sid, int state);
 	
+	List<LeaveManagementData> getByComDayOffId(String cid, String sid, String comDayOffID);
+	
 	List<LeaveManagementData> getBySidNotUnUsed(String cid, String sid);
 	
 	List<LeaveManagementData> getBySid(String cid, String sid);
@@ -21,4 +23,7 @@ public interface LeaveManaDataRepository {
 	List<LeaveManagementData> getBySidWithHolidayDate(String cid, String sid, GeneralDate dateHoliday);
 	
 	void create(LeaveManagementData domain);
+	
+	void updateByLeaveIds(List<String> leaveIds);
+	
 }

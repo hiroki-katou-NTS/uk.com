@@ -7,8 +7,10 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManagementData;
+import nts.uk.ctx.at.record.infra.entity.remainingnumber.subhdmana.KrcmtComDayoffMaData;
 import nts.uk.ctx.at.record.infra.entity.remainingnumber.subhdmana.KrcmtLeaveManaData;
 
 @Stateless
@@ -20,10 +22,14 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 
 	private String QUERY_BYSIDANDDATECONDITION = String.join(" ", QUERY_BYSIDWITHSUBHDATR,
 			"AND l.dayOff >= :startDate AND l.dayOff <= :endDate");
-
+	
+	private String QUERY_LEAVEDAYOFF = String.join(" ", QUERY_BYSID, "AND c.ID IN (SELECT b.krcmtLeaveDayOffManaPK.comDayOffID FROM KrcmtLeaveDayOffMana b WHERE b.krcmtLeaveDayOffManaPK.comDayOffID = :comDayOffID )");
+	
 	private String QUERY_BYSIDANDHOLIDAYDATECONDITION = "SELECT l FROM KrcmtLeaveManaData l WHERE l.cID = :cid AND l.sID =:employeeId AND l.dayOff = :dateHoliday";
 	
 	private String QUERY_BYSID_AND_NOT_UNUSED = String.join(" ", QUERY_BYSID, "AND l.subHDAtr !=:subHDAtr");
+	
+	private String QUERY_BYID = "SELECT l FROM KrcmtLeaveManaData l WHERE l.ID IN :Ids";
 	
 	@Override
 	public List<LeaveManagementData> getBySidWithsubHDAtr(String cid, String sid, int state) {
@@ -107,5 +113,24 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 				.query(QUERY_BYSID_AND_NOT_UNUSED, KrcmtLeaveManaData.class).setParameter("cid", cid)
 				.setParameter("employeeId", sid).setParameter("subHDAtr", 0).getList();
 		return listListMana.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<LeaveManagementData> getByComDayOffId(String cid, String sid, String comDayOffID) {
+		List<KrcmtLeaveManaData> listListMana = this.queryProxy()
+				.query(QUERY_LEAVEDAYOFF, KrcmtLeaveManaData.class).setParameter("cid", cid)
+				.setParameter("employeeId", sid).setParameter("comDayOffID", comDayOffID).getList();
+		return listListMana.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+
+	@Override
+	public void updateByLeaveIds(List<String> leaveIds) {
+		List<KrcmtLeaveManaData> listListMana = this.queryProxy()
+				.query(QUERY_BYID, KrcmtLeaveManaData.class)
+				.setParameter("Ids", leaveIds).getList();
+		for(KrcmtLeaveManaData busItem: listListMana){
+			busItem.subHDAtr =  DigestionAtr.USED.value;
+		}
+		this.commandProxy().updateAll(listListMana);
 	}
 }
