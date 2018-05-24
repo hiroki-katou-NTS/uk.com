@@ -67,13 +67,13 @@ public class PayoutManagementDataService {
 			check = true;
 		} else {
 			check = false;
-			throw new BusinessException("Msg_740");
+//			throw new BusinessException("Msg_740");
 		}
-		return check;
+		return true;
 	}
-
+	
 	// (Thực hiện thuật toán 「Ｇ．振休管理データの修正（振出設定）入力項目チェック処理」)
-	public boolean checkboxData(boolean checkBox, int lawAtr, GeneralDate expiredDate, double unUsedDays) {
+	public boolean checkboxData(boolean checkBox, int lawAtr, GeneralDate dayoffDate, GeneralDate expiredDate, double unUsedDays) {
 		boolean check = false;
 		if (checkBox) {
 			if (lawAtr == 2) {
@@ -81,8 +81,8 @@ public class PayoutManagementDataService {
 				check = false;
 				throw new BusinessException("Msg_1212");
 			} else {
-				GeneralDate today = GeneralDate.today();
-				if (today.before(expiredDate)) {
+				
+				if (dayoffDate.compareTo(expiredDate) >0) {
 					check = false;
 					throw new BusinessException("Msg_825");
 				} else {
@@ -100,13 +100,13 @@ public class PayoutManagementDataService {
 		return check;
 	}
 
-	public void update(PayoutManagementData data, boolean checkBox, int lawAtr, GeneralDate expiredDate,
+	public void update(PayoutManagementData data, boolean checkBox, int lawAtr,GeneralDate dayoffDate, GeneralDate expiredDate,
 			double unUsedDays) {
 		// 振出（年月日）チェック処理
 		boolean check = checkProcess();
 		if (check) {
 			// 振休管理データの修正（振出設定）入力項目チェック処理
-			boolean checkBoxData = checkboxData(checkBox, lawAtr, expiredDate, unUsedDays);
+			boolean checkBoxData = checkboxData(checkBox, lawAtr,dayoffDate, expiredDate, unUsedDays);
 			if (checkBoxData) {
 				payoutManagementDataRepository.update(data);
 				// **chưa có :(Thực hiện thuật toán 「振休残数管理データ更新フラグ処理」):bât cờ
