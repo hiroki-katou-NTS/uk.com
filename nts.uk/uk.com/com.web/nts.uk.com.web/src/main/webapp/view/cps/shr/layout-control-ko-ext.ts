@@ -358,9 +358,10 @@ module nts.custombinding {
                     }
                 
                     .layout-control .item-controls th div {
-                        top: 0;    
+                        top: 0;
                         height: 31px;
                         color: #000;
+                        padding: 0;
                         overflow: hidden;
                         line-height: 31px;
                         text-align: center;
@@ -370,8 +371,13 @@ module nts.custombinding {
                         border-left: 1px solid #aaa;
                     }
 
+                    .layout-control .item-controls th div>i,
+                    .layout-control .item-controls th div>label {
+                        line-height: 31px;                        
+                    }
+
                     .layout-control .item-controls th div.required {
-                        background-color: #fcc;
+                        background-color: #FAC002;
                     }
                 
                     .layout-control .item-controls thead>tr:first-child div {
@@ -508,6 +514,9 @@ module nts.custombinding {
                     .layout-control .item-classification .form-label {
                         width: 210px;
                         white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        padding-right: 0;
                     }
 
                     .layout-control .item-classification .set-group>.form-label {
@@ -737,18 +746,22 @@ module nts.custombinding {
                                                             <!-- ko foreach: { data: _.first(renders()).items, as: 'header' } -->
                                                                 <!-- ko let: { __wdt: ko.observable(0) } -->
                                                                 <th data-bind="ntsProp: { width: __wdt }">
-                                                                    <div data-bind="text: header.itemName,
+                                                                    <div data-bind="ntsFormLabel: { 
+                                                                            text: header.itemName,
+                                                                            required: header.required,
+                                                                            constraint: header.constraint,
+                                                                            inline: true
+                                                                        },
                                                                         style: {
                                                                             'width': __wdt() + 'px',
-                                                                            'margin-left': (__flft() - __lft()) + 'px',
-                                                                            'background-color': header.required ? '#FAC002' : 'transparent'
+                                                                            'margin-left': (__flft() - __lft()) + 'px'
                                                                         }"></div>
                                                                 </th>
                                                                 <!-- /ko -->
                                                             <!-- /ko -->
                                                         </tr>
                                                     </thead>
-                                                    <tbody data-bind="foreach: { data: renders(), as: 'row' }">
+                                                    <tbody data-bind="foreach: { data: renders(), as: 'row', afterRender: function(element, data) { let _renders = _.map(ko.toJS(renders), function(m) { return m.recordId; }); if(_.indexOf(_renders, data.recordId) == _renders.length - 1) { setTimeout(function() { $(element[1]).find('input').unbind('blur'); }, 100) } } }">
                                                         <tr data-bind="attr: { 'data-id': row.recordId }">
                                                             <td>
                                                                 <span data-bind="ntsCheckBox: { checked: row.checked, enable: row.enable }"></span>
@@ -1634,32 +1647,39 @@ module nts.custombinding {
                                         let id1 = '#' + prev.itemDefId.replace(/[-_]/g, ""),
                                             id2 = '#' + next.itemDefId.replace(/[-_]/g, "");
 
-                                        $(document).on('blur', `${id1}, ${id2}`, (evt) => {
-                                            setTimeout(() => {
-                                                let dom1 = $(id1),
-                                                    dom2 = $(id2),
-                                                    pv = ko.toJS(prev.value),
-                                                    nv = ko.toJS(next.value),
-                                                    tpt = _.isNumber(pv),
-                                                    tnt = _.isNumber(nv);
+                                        let _bind = $(document).data('_nts_bind') || {};
 
-                                                if (!tpt && tnt) {
-                                                    if (!dom1.is(':disabled') && !dom1.ntsError('hasError')) {
-                                                        dom1.ntsError('set', { messageId: "Msg_858" });
-                                                    }
-                                                } else {
-                                                    rmError(dom1, "Msg_858");
-                                                }
+                                        if (!_bind[`BLUR_${id1}_${id2}`]) {
+                                            _bind[`BLUR_${id1}_${id2}`] = true;
+                                            $(document).data('_nts_bind', _bind);
 
-                                                if (tpt && !tnt) {
-                                                    if (!dom2.is(':disabled') && !dom2.ntsError('hasError')) {
-                                                        dom2.ntsError('set', { messageId: "Msg_858" });
+                                            $(document).on('blur', `${id1}, ${id2}`, (evt) => {
+                                                setTimeout(() => {
+                                                    let dom1 = $(id1),
+                                                        dom2 = $(id2),
+                                                        pv = ko.toJS(prev.value),
+                                                        nv = ko.toJS(next.value),
+                                                        tpt = _.isNumber(pv),
+                                                        tnt = _.isNumber(nv);
+
+                                                    if (!tpt && tnt) {
+                                                        if (!dom1.is(':disabled') && !dom1.ntsError('hasError')) {
+                                                            dom1.ntsError('set', { messageId: "Msg_858" });
+                                                        }
+                                                    } else {
+                                                        rmError(dom1, "Msg_858");
                                                     }
-                                                } else {
-                                                    rmError(dom2, "Msg_858");
-                                                }
-                                            }, 5);
-                                        });
+
+                                                    if (tpt && !tnt) {
+                                                        if (!dom2.is(':disabled') && !dom2.ntsError('hasError')) {
+                                                            dom2.ntsError('set', { messageId: "Msg_858" });
+                                                        }
+                                                    } else {
+                                                        rmError(dom2, "Msg_858");
+                                                    }
+                                                }, 5);
+                                            });
+                                        }
                                     };
 
                                 if (first.item.dataTypeValue == second.item.dataTypeValue) {
@@ -2080,7 +2100,7 @@ module nts.custombinding {
                                     _row = {
                                         recordId: recordId,
                                         checked: ko.observable(false),
-                                        enable: true,
+                                        enable: ko.observable(true),
                                         items: []
                                     };
 

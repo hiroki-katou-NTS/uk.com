@@ -1,11 +1,8 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.annualleave;
 
-import java.util.Optional;
-
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveGrantDayNumber;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
 import nts.uk.ctx.at.shared.dom.common.days.YearlyDays;
 

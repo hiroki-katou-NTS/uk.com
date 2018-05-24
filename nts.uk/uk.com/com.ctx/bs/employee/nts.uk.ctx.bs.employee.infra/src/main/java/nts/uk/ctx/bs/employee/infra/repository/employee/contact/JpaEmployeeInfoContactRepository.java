@@ -49,10 +49,15 @@ public class JpaEmployeeInfoContactRepository extends JpaRepository implements E
 	 * @return
 	 */
 	private BsymtEmpInfoContact toEntity(EmployeeInfoContact domain) {
-		BsymtEmpInfoContactPK key = new BsymtEmpInfoContactPK(domain.getSid());
-		BsymtEmpInfoContact entity = new BsymtEmpInfoContact(key, domain.getCId(), domain.getCellPhoneNo().v(),
-				domain.getMailAddress().v(), domain.getPhoneMailAddress().v(), domain.getSeatDialIn().v(),
-				domain.getSeatExtensionNo().v());
+		BsymtEmpInfoContact entity = new BsymtEmpInfoContact();
+		entity.bsymtEmpInfoContactPK = new BsymtEmpInfoContactPK(domain.getSid());
+		entity.cid = domain.getCId();
+		entity.cellPhoneNo = domain.getCellPhoneNo().isPresent() ? domain.getCellPhoneNo().get().v() : null;
+		entity.mailAdress = domain.getMailAddress().isPresent() ? domain.getMailAddress().get().v() : null;
+		entity.phoneMailAddress = domain.getPhoneMailAddress().isPresent() ? domain.getPhoneMailAddress().get().v()
+				: null;
+		entity.seatDialIn = domain.getSeatDialIn().isPresent() ? domain.getSeatDialIn().get().v() : null;
+		entity.seatExtensionNo = domain.getSeatExtensionNo().isPresent() ? domain.getSeatExtensionNo().get().v() : null;
 		return entity;
 	}
 
@@ -63,11 +68,12 @@ public class JpaEmployeeInfoContactRepository extends JpaRepository implements E
 	 * @param entity
 	 */
 	private void updateEntity(EmployeeInfoContact domain, BsymtEmpInfoContact entity) {
-		entity.mailAdress = domain.getMailAddress().v();
-		entity.seatDialIn = domain.getSeatDialIn().v();
-		entity.seatExtensionNo = domain.getSeatExtensionNo().v();
-		entity.phoneMailAddress = domain.getPhoneMailAddress().v();
-		entity.cellPhoneNo = domain.getCellPhoneNo().v();
+		entity.cellPhoneNo = domain.getCellPhoneNo().isPresent() ? domain.getCellPhoneNo().get().v() : null;
+		entity.mailAdress = domain.getMailAddress().isPresent() ? domain.getMailAddress().get().v() : null;
+		entity.phoneMailAddress = domain.getPhoneMailAddress().isPresent() ? domain.getPhoneMailAddress().get().v()
+				: null;
+		entity.seatDialIn = domain.getSeatDialIn().isPresent() ? domain.getSeatDialIn().get().v() : null;
+		entity.seatExtensionNo = domain.getSeatExtensionNo().isPresent() ? domain.getSeatExtensionNo().get().v() : null;
 	}
 
 	@Override

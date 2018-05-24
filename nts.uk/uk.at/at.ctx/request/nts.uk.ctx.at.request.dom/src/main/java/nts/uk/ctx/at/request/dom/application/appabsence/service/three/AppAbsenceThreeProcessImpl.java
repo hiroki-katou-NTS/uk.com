@@ -31,7 +31,7 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 			AbsenceWorkType absenceWorkType = new AbsenceWorkType(workType.getWorkTypeCode().toString(), workType.getWorkTypeCode().toString() +"　　" + workType.getName().toString());
 			absenceWorkTypes.add(absenceWorkType);
 		}
-		// ドメインモデル「休暇申請設定」．「休暇申請未選択の設定」．未選択を表示するをチェックする(kiểm tra domain ドメインモデル「休暇申請設定」．「休暇申請未選択の設定」．未選択を表示する):TODO bên anh chình chưa làm.
+		// ドメインモデル「休暇申請設定」．「休暇申請未選択の設定」．未選択を表示するをチェックする(kiểm tra domain ドメインモデル「休暇申請設定」．「休暇申請未選択の設定」．未選択を表示する): bên anh chình chưa làm.
 		if(hdAppSet.isPresent()){
 			if(hdAppSet.get().getHdType().value == holidayType && hdAppSet.get().getDisplayUnselect() == 1 ? true : false){
 				AbsenceWorkType absenceWorkType = new AbsenceWorkType("", "未選択");
@@ -73,10 +73,25 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 				if(displayHalfDayValue){
 					// 勤務種類組み合わせ全表示チェック = ON
 					List<Integer> allDayAtrs = new ArrayList<>();
-					allDayAtrs.add(holidayType);
+					allDayAtrs.add(convertHolidayType(holidayType));
 					List<Integer> halfDay = new ArrayList<>();
-					halfDay.add(holidayType);
-					result = this.workTypeRepository.findWorkTypeForAllDayAndHalfDay(companyID, halfDay, lstWorkTypeCodes, allDayAtrs);
+					// 休日
+					halfDay.add(1);
+					// 年休
+					halfDay.add(2);
+					//積立年休
+					halfDay.add(3);
+					// 特別休暇
+					halfDay.add(4);
+					// 欠勤
+					halfDay.add(5);
+					// 代休
+					halfDay.add(6);
+					// 振休
+					halfDay.add(8);
+					//時間消化休暇
+					halfDay.add(9);
+					result = this.workTypeRepository.findWorkTypeForAppHolidayAppType(companyID,allDayAtrs,halfDay,halfDay,convertHolidayType(holidayType),convertHolidayType(holidayType));
 				}else{
 					//勤務種類組み合わせ全表示チェック = OFF
 					result = this.workTypeRepository.findWorkTypeByCodes(companyID, lstWorkTypeCodes, 0, 0);
@@ -272,5 +287,45 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 		result = this.workTypeRepository.findWorkTypeForAppHolidayAppType(companyID,allDayAtrs,halfAtrs,halfAtrs,morningAndAfternoon,morningAndAfternoon);
 		return result;
 		
+	}
+	private int convertHolidayType(int holiday){
+		int result = 2;
+		switch(holiday){
+		case 0:
+			// 年休
+			result =  2;
+			break;
+		case 1:
+			// 代休
+			result = 6;
+			break;
+		case 2:
+			// 欠勤
+			result = 5;
+			break;
+		case 3:
+			// 特別休暇
+			result = 4;
+			break;
+		case 4:
+			//積立年休
+			result = 3;
+			break;
+		case 5:
+			// 休日
+			result = 1;
+			break;
+		case 6:
+			//時間消化休暇
+			result = 9;
+			break;
+		case 7:
+			// 振休
+			result = 8;
+			break;
+		default:
+			break;
+		}
+		return result;
 	}
 }

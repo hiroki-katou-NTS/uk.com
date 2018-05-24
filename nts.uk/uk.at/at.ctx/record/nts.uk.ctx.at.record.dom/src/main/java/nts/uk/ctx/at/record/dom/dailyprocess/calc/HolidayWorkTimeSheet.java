@@ -79,8 +79,8 @@ public class HolidayWorkTimeSheet{
 		for(HolidayWorkFrameTimeSheetForCalc holidayWorkFrameTime:sortedFrameTimeSheet) {
 			AttendanceTime calcDedTime = holidayWorkFrameTime.correctCalculationTime(holidayAutoCalcSetting,DeductionAtr.Deduction);
 			AttendanceTime calcRecTime = holidayWorkFrameTime.correctCalculationTime(holidayAutoCalcSetting,DeductionAtr.Appropriate);
-			
-			numberOrder.add(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo());
+			if(!numberOrder.contains(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo()))
+				numberOrder.add(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo());
 			//加算だけ
 			if(holidayTimeFrameList.containsKey(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo().v())) {
 				val frame = holidayTimeFrameList.get(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo().v());

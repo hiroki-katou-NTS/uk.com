@@ -29,7 +29,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
- * 月別実績の縦計
+ * 期間別の縦計
  * @author shuichu_ishida
  */
 @Getter

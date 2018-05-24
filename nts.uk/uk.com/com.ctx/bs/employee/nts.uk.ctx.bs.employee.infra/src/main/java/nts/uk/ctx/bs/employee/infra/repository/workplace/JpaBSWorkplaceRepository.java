@@ -286,4 +286,55 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
         return new Workplace(new JpaWorkplaceGetMemento(lstBsymtWorkplaceHist));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository#findWorkplaces(
+	 * java.lang.String, java.util.List, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public List<Workplace> findWorkplaces(String companyId, List<String> workplaceIds,
+			GeneralDate baseDate) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<BsymtWorkplaceHist> cq = criteriaBuilder
+				.createQuery(BsymtWorkplaceHist.class);
+		Root<BsymtWorkplaceHist> root = cq.from(BsymtWorkplaceHist.class);
+
+		// select root
+		cq.select(root);
+
+		List<BsymtWorkplaceHist> resultList = new ArrayList<>();
+
+		CollectionUtil.split(workplaceIds, MAX_ELEMENTS, (subList) -> {
+			// add where
+	        List<Predicate> lstpredicateWhere = new ArrayList<>();
+	        lstpredicateWhere.add(criteriaBuilder.equal(
+	                root.get(BsymtWorkplaceHist_.bsymtWorkplaceHistPK).get(BsymtWorkplaceHistPK_.cid), companyId));
+	        lstpredicateWhere.add(
+	                root.get(BsymtWorkplaceHist_.bsymtWorkplaceHistPK).get(BsymtWorkplaceHistPK_.wkpid).in(subList));
+	        lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(root.get(BsymtWorkplaceHist_.endD), baseDate));
+	        lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(root.get(BsymtWorkplaceHist_.strD), baseDate));
+
+	        cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+	        cq.orderBy(criteriaBuilder.desc(root.get(BsymtWorkplaceHist_.strD)));
+
+			resultList.addAll(em.createQuery(cq).getResultList());
+		});
+		
+		List<String> existWkpIds = resultList.stream()
+				.map(item -> item.getBsymtWorkplaceHistPK().getWkpid())
+				.collect(Collectors.toList());
+		
+		return existWkpIds.stream().map(wkpId -> {
+			List<BsymtWorkplaceHist> subListEntity = resultList.stream()
+					.filter(entity -> entity.getBsymtWorkplaceHistPK().getWkpid().equals(wkpId))
+					.collect(Collectors.toList());
+			return new Workplace(new JpaWorkplaceGetMemento(subListEntity));
+		}).collect(Collectors.toList());
+	}
+
 }

@@ -357,6 +357,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 		 * Get Data
 		 */
 		// アルゴリズム「対象年月に対応する月別実績を取得する」を実行する Lấy monthly result ứng với năm tháng
+		if (param.getLstAtdItemUnique() == null || param.getLstAtdItemUnique().isEmpty()) {
+			throw new BusinessException("Msg_1261");
+		}
 		List<MonthlyModifyResult> results = new ArrayList<>();
 		List<String> listEmployeeIds = screenDto.getLstEmployee().stream().map(e -> e.getId())
 				.collect(Collectors.toList());

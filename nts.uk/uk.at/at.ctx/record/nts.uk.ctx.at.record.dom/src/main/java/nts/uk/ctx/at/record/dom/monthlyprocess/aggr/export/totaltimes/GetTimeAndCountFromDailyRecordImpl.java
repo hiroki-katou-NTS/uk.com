@@ -87,7 +87,7 @@ public class GetTimeAndCountFromDailyRecordImpl implements GetTimeAndCountFromDa
 		
 		// 「期間」を取得
 		GeneralDate procDate = this.period.start();
-		while (procDate.before(this.period.end())){
+		for ( ; procDate.before(this.period.end()); procDate = procDate.addDays(1)){
 
 			// 勤務情報が取得できない日は、集計しない
 			val workInfoOpt = this.getWorkInfo.getRecord(procDate);
@@ -199,8 +199,6 @@ public class GetTimeAndCountFromDailyRecordImpl implements GetTimeAndCountFromDa
 			// 回数・時間を加算する
 			result.addCount(count);
 			result.addTime(this.getAttendanceStatus.getTotalTime(procDate).v());
-			
-			procDate = procDate.addDays(1);
 		}
 		
 		// 回数集計結果情報を返す

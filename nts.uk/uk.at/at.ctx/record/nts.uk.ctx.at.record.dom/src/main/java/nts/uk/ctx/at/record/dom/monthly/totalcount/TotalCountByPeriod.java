@@ -1,13 +1,15 @@
 package nts.uk.ctx.at.record.dom.monthly.totalcount;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -18,14 +20,14 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class TotalCountByPeriod implements Cloneable {
 
 	/** 回数集計 */
-	private List<TotalCount> totalCountList;
+	private Map<Integer, TotalCount> totalCountList;
 	
 	/**
 	 * コンストラクタ
 	 */
 	public TotalCountByPeriod(){
 		
-		this.totalCountList = new ArrayList<>();
+		this.totalCountList = new HashMap<>();
 	}
 
 	/**
@@ -37,7 +39,10 @@ public class TotalCountByPeriod implements Cloneable {
 			List<TotalCount> totalCountList){
 		
 		TotalCountByPeriod domain = new TotalCountByPeriod();
-		domain.totalCountList = totalCountList;
+		for (val totalCount : totalCountList){
+			int totalCountNo = totalCount.getTotalCountNo();
+			domain.totalCountList.putIfAbsent(totalCountNo, totalCount);
+		}
 		return domain;
 	}
 	
@@ -45,7 +50,9 @@ public class TotalCountByPeriod implements Cloneable {
 	public TotalCountByPeriod clone() {
 		TotalCountByPeriod cloned = new TotalCountByPeriod();
 		try {
-			for (val totalCount : this.totalCountList) cloned.totalCountList.add(totalCount.clone());
+			for (val totalCount : this.totalCountList.entrySet()){
+				cloned.totalCountList.put(totalCount.getKey(), totalCount.getValue().clone());
+			}
 		}
 		catch (Exception e){
 			throw new RuntimeException("TotalCountbyPeriod clone error.");
@@ -74,14 +81,37 @@ public class TotalCountByPeriod implements Cloneable {
 		for (val totalTimes : totalTimesList){
 			val totalCountNo = totalTimes.getTotalCountNo();
 			
+			// するしないを確認する
+			if (totalTimes.getUseAtr() == UseAtr.NotUse) continue;
+			
 			// 集計処理
 			val result = timeAndCount.getResult(totalTimes);
 			
 			// 回数集計を返す　（集計結果を追加する）
-			this.totalCountList.add(TotalCount.of(
+			this.totalCountList.putIfAbsent(
 					totalCountNo,
-					new AttendanceDaysMonth(result.getCount().v()),
-					new AttendanceTimeMonth(result.getTime().v())));
+					TotalCount.of(
+							totalCountNo,
+							new AttendanceDaysMonth(result.getCount().v()),
+							new AttendanceTimeMonth(result.getTime().v())));
+		}
+	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(TotalCountByPeriod target){
+
+		for (val totalCount : this.totalCountList.values()){
+			val totalCountNo = totalCount.getTotalCountNo();
+			if (target.totalCountList.containsKey(totalCountNo)){
+				totalCount.sum(target.totalCountList.get(totalCountNo));
+			}
+		}
+		for (val targetTotalCount : target.getTotalCountList().values()){
+			val totalCountNo = targetTotalCount.getTotalCountNo();
+			this.totalCountList.putIfAbsent(totalCountNo, targetTotalCount);
 		}
 	}
 }

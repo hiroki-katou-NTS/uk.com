@@ -19,9 +19,9 @@ public class RealityStatusEmployeeImport {
 	/**
 	 * 開始日
 	 */
-	private GeneralDate closureStart;
+	private GeneralDate startDate;
 	/**
 	 * 終了日
 	 */
-	private GeneralDate closureEnd;
+	private GeneralDate endDate;
 }

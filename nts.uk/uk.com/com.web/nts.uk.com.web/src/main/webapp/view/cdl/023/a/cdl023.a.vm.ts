@@ -98,8 +98,8 @@ module nts.uk.com.view.cdl023.a.viewmodel {
             }
             
             // if not override, remove items is saved setting.
-            _.remove(self.lstSelected(), function(obj) {
-               return _.includes(self.itemListSetting, obj);
+            _.remove(self.lstSelected(), function(obj) {               
+                return _.find(self.itemListSetting, (item) => { return item.id == obj; } ) != undefined;
             });
             return self.lstSelected();
         }

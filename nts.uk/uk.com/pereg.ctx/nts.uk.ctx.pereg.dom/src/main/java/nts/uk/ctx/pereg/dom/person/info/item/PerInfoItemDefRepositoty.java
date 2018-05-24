@@ -1,6 +1,7 @@
 package nts.uk.ctx.pereg.dom.person.info.item;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.uk.ctx.pereg.dom.person.info.order.PerInfoItemDefOrder;
@@ -14,6 +15,9 @@ public interface PerInfoItemDefRepositoty {
 	 * @return
 	 */
 	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCategoryId, String contractCd);
+	
+	
+	Map<String, List<Object[]>> getAllPerInfoItemDefByListCategoryId(List<String> lstPerInfoCategoryId, String contractCd);
 	
 	/**
 	 * all items

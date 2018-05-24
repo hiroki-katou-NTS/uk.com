@@ -38,7 +38,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author shuichi_ishida
  */
 @Getter
-public class OverTimeOfMonthly {
+public class OverTimeOfMonthly implements Cloneable {
 
 	/** 残業合計時間 */
 	@Setter
@@ -84,6 +84,27 @@ public class OverTimeOfMonthly {
 			domain.aggregateOverTimeMap.putIfAbsent(overTimeFrameNo, aggregateOverTime);
 		}
 		return domain;
+	}
+	
+	@Override
+	public OverTimeOfMonthly clone() {
+		OverTimeOfMonthly cloned = new OverTimeOfMonthly();
+		try {
+			cloned.totalOverTime = new TimeMonthWithCalculation(
+					new AttendanceTimeMonth(this.totalOverTime.getTime().v()),
+					new AttendanceTimeMonth(this.totalOverTime.getCalcTime().v()));
+			cloned.beforeOverTime = new AttendanceTimeMonth(this.beforeOverTime.v());
+			cloned.totalTransferOverTime = new TimeMonthWithCalculation(
+					new AttendanceTimeMonth(this.totalTransferOverTime.getTime().v()),
+					new AttendanceTimeMonth(this.totalTransferOverTime.getCalcTime().v()));
+			for (val aggrOverTime : this.aggregateOverTimeMap.entrySet()){
+				cloned.aggregateOverTimeMap.putIfAbsent(aggrOverTime.getKey(), aggrOverTime.getValue().clone());
+			}
+		}
+		catch (Exception e){
+			throw new RuntimeException("OverTimeOfMonthly clone error.");
+		}
+		return cloned;
 	}
 	
 	/**

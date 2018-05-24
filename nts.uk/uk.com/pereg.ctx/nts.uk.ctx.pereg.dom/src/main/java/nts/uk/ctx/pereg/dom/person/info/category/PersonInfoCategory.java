@@ -204,6 +204,10 @@ public class PersonInfoCategory extends AggregateRoot {
 		return categoryType == CategoryType.SINGLEINFO;
 	}
 	
+	public boolean isMultiCategory() {
+		return categoryType == CategoryType.MULTIINFO;
+	}
+	
 	public boolean isHistoryCategory() {
 		return categoryType == CategoryType.CONTINUOUSHISTORY 
 				|| categoryType == CategoryType.NODUPLICATEHISTORY
@@ -211,8 +215,17 @@ public class PersonInfoCategory extends AggregateRoot {
 				|| categoryType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE;
 	}
 	
+
 	public void setAbolish(IsAbolition isAbolition) {
 		this.isAbolition = isAbolition;
+	}
+		
+	public boolean isEmployeeType() {
+		return personEmployeeType == PersonEmployeeType.EMPLOYEE;
+	}
+	
+	public boolean isPersonType() {
+		return personEmployeeType == PersonEmployeeType.PERSON;
 	}
 	
 }
