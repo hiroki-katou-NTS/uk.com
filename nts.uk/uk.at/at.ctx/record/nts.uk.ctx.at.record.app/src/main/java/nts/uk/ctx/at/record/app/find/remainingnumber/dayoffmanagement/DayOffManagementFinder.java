@@ -18,17 +18,20 @@ public class DayOffManagementFinder {
 	private ComDayOffManaDataRepository comDayOffManaDataRepository;
 	
 	
-	public List<DayOffManagementDto> getBySidWithReDay(String leaveId) {
+	public List<DayOffManagementDto> getBySidWithReDay(String leaveId, String employeeId) {
 		List<DayOffManagementDto> resultDaysOffMana = new ArrayList<>();
+		List<DayOffManagementDto> resultDayFreeMana = new ArrayList<>();
+		List<DayOffManagementDto> results = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
-		String employeeId = AppContexts.user().employeeId();
 		List<CompensatoryDayOffManaData> daysFreeOffMana = new ArrayList<>();
 		daysFreeOffMana = comDayOffManaDataRepository.getBySidWithReDay(companyId, employeeId);
 		List<CompensatoryDayOffManaData> daysOffMana = new ArrayList<>();
 		daysOffMana = comDayOffManaDataRepository.getBySidComDayOffIdWithReDay(companyId, employeeId, leaveId);
-		resultDaysOffMana = daysFreeOffMana.stream().map(p -> new DayOffManagementDto(p.getDayOffDate().toString(),p.getRemainDays().toString(),false)).collect(Collectors.toList());
-		resultDaysOffMana = daysOffMana.stream().map(p -> new DayOffManagementDto(p.getDayOffDate().toString(),p.getRemainDays().toString(),true)).collect(Collectors.toList());
-		return resultDaysOffMana;
+		resultDayFreeMana = daysFreeOffMana.stream().map(p -> new DayOffManagementDto(p.getDayOffDate().getDayoffDate().get(),p.getRemainDays().toString(),false,p.getComDayOffID())).collect(Collectors.toList());
+		resultDaysOffMana = daysOffMana.stream().map(p -> new DayOffManagementDto(p.getDayOffDate().getDayoffDate().get(),p.getRemainDays().toString(),true,p.getComDayOffID())).collect(Collectors.toList());
+		results.addAll(resultDayFreeMana);
+		results.addAll(resultDaysOffMana);
+		return results;
 	}
 	
 }

@@ -40,4 +40,6 @@ public interface ComDayOffManaDataRepository {
 	 * @param comDayOffID ID
 	 */
 	void deleteByComDayOffId(String comDayOffID);
+	
+	void updateReDayByComDayId(List<String> comDayIds);
 }

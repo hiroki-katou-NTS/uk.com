@@ -10,6 +10,7 @@
 			<script>var dialogSize = { width: 530, height: 530 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="kdm001.k.vm.js" />
+			<com:scriptfile path="kdm001.k.service.js" />
 			<com:scriptfile path="kdm001.k.start.js" />
 			<com:stylefile path="kdm001.k.style.css" />
 		</ui:define>
@@ -48,7 +49,7 @@
 							data-bind="ntsGridList: {
 								options: items,
 								name: '#[KDM001_93]',
-								optionsValue: 'code',
+								optionsValue: 'leaveManaID',
 								columns: columns,
 								rows:8,
 								multiple: true,
@@ -71,7 +72,7 @@
 			</div>
 			<div id="functions-area-bottom">
 				<!-- K31_1 登録 -->
-				<button id="K31_1" style="margin-top: 10px" class="proceed " tabindex="2">#{i18n.getText('KDM001_89')}</button>
+				<button id="K31_1" style="margin-top: 10px" class="proceed " data-bind="click: update" tabindex="2">#{i18n.getText('KDM001_89')}</button>
 				<!-- K31_2 キャンセル -->
 				<button id="K31_2" style="margin-top: 10px" data-bind="click: closeDialog" tabindex="3">#{i18n.getText('KDM001_90')}</button>
 			</div>

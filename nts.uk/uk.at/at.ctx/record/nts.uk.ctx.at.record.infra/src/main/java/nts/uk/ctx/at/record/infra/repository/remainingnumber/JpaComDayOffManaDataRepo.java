@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.remainingnumber;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -21,10 +22,12 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 
 	private String GET_BYSID_WITHREDAY = String.join(" ", GET_BYSID, " AND c.remainDays > 0");
 
-	private String GET_BYCOMDAYOFFID = String.join(" ", GET_BYSID_WITHREDAY, " AND c.comDayOffID IN (SELECT b.krcmtLeaveDayOffManaPK.comDayOffID FROM KrcmtLeaveDayOffMana b WHERE b.krcmtLeaveDayOffManaPK.leaveID = :leaveID)");
+	private String GET_BYCOMDAYOFFID = String.join(" ", GET_BYSID, " AND c.comDayOffID IN (SELECT b.krcmtLeaveDayOffManaPK.comDayOffID FROM KrcmtLeaveDayOffMana b WHERE b.krcmtLeaveDayOffManaPK.leaveID = :leaveID)");
 
 	private String GET_BYSID_BY_HOLIDAYDATECONDITION = "SELECT c FROM KrcmtComDayoffMaData c WHERE c.sID = :employeeId AND c.cID = :cid AND c.dayOff = :dateSubHoliday";
-
+	
+	
+	private String GET_BY_LISTID = " SELECT c FROM KrcmtComDayoffMaData c WHERE c.comDayOffID IN :comDayOffIDs";
 
 	@Override
 	public List<CompensatoryDayOffManaData> getBySidWithReDay(String cid, String sid) {
@@ -149,4 +152,15 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
 
+	@Override
+	public void updateReDayByComDayId(List<String> comDayIds) {
+		List<KrcmtComDayoffMaData> KrcmtComDayoffMaData = this.queryProxy()
+				.query(GET_BY_LISTID, KrcmtComDayoffMaData.class)
+				.setParameter("comDayOffIDs",comDayIds)
+				.getList();
+		for(KrcmtComDayoffMaData busItem: KrcmtComDayoffMaData){
+			busItem.remainDays =  new Double(0);
+		}
+		this.commandProxy().updateAll(KrcmtComDayoffMaData);
+	}
 }

@@ -22,7 +22,6 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 	private final String QUERY_BY_COMDAYOFFID = String.join(" ", QUERY," WHERE lc.krcmtLeaveDayOffManaPK.comDayOffID =:comDayOffId");
 	private final String QUERY_BY_LIST_LEAVEID = String.join(" ", QUERY," WHERE lc.krcmtLeaveDayOffManaPK.leaveID IN :leaveID");
 	
-	
 	private static final String GET_LEAVE_COM  = "SELECT c FROM KrcmtLeaveDayOffMana c "
 			+ " WHERE c.krcmtLeaveDayOffManaPK.leaveID = :leaveID";
 	
@@ -78,7 +77,7 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 
 	@Override
 	public List<LeaveComDayOffManagement> getBycomDayOffID(String comDayOffID) {
-		List<KrcmtLeaveDayOffMana> listLeaveD = this.queryProxy().query(QUERY_BY_LEAVEID,KrcmtLeaveDayOffMana.class)
+		List<KrcmtLeaveDayOffMana> listLeaveD = this.queryProxy().query(QUERY_BY_COMDAYOFFID,KrcmtLeaveDayOffMana.class)
 				.setParameter("comDayOffID", comDayOffID).getList();
 		return listLeaveD.stream().map(item->toDomain(item)).collect(Collectors.toList());
 	}
@@ -111,6 +110,16 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 		return listLeaveD.stream().map(item->toDomain(item)).collect(Collectors.toList());
 	}
 
+	@Override
+	public void deleteByComDayOffID(String comDayOffID) {
+		List<KrcmtLeaveDayOffMana> data = this.queryProxy().query(QUERY_BY_COMDAYOFFID,KrcmtLeaveDayOffMana.class)
+				.setParameter("comDayOffID", comDayOffID)
+				.getList();
+		this.commandProxy().removeAll(data);
+		this.getEntityManager().flush();
+	}
+
+	
 	@Override
 	public void deleteByComDayOffId(String comDayOffId) {
 		Optional<KrcmtLeaveDayOffMana> entity = this.queryProxy()

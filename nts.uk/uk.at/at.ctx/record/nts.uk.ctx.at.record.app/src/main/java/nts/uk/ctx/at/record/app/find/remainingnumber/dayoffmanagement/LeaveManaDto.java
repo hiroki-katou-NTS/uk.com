@@ -4,29 +4,20 @@ import lombok.Data;
 import nts.arc.time.GeneralDate;
 
 @Data
-public class DayOffManagementDto {
-	/*
-	 * 振休日
-	 */
+public class LeaveManaDto {
+	
 	private GeneralDate dateHoliday;
-	
-	/*
-	 * 消化数
-	 */
 	private String numberDay;
-	
 	private boolean usedDay;
+	private String leaveManaID;
 	
-	private String comDayOffId;
-
-	public DayOffManagementDto(GeneralDate dateHoliday, String numberDay, boolean usedDay, String comDayOffId) {
+	public LeaveManaDto(GeneralDate dateHoliday, String numberDay, boolean usedDay, String leaveManaID) {
 		super();
 		this.dateHoliday = dateHoliday;
 		this.numberDay = numberDay;
 		this.usedDay = usedDay;
-		this.comDayOffId = comDayOffId;
+		this.leaveManaID = leaveManaID;
 	}
-	
 	
 	
 }
