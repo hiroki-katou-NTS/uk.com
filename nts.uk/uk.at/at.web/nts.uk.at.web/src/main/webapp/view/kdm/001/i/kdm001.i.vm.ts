@@ -27,7 +27,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         selectedCodeOptionSubHoliday: KnockoutObservable<string> = ko.observable('');
         isOptionSubHolidayEnable: KnockoutObservable<boolean> = ko.observable(false);
         closureId: KnockoutObservable<number> = ko.observable(0);
-
+        //RemaningDay
         numberHoliday: KnockoutObservable<string> = ko.observable('');
         numberSubHoliday: KnockoutObservable<string> = ko.observable('');
         numberSplitHoliday: KnockoutObservable<string> = ko.observable('');
@@ -48,24 +48,17 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     });
                 }
             });
-
             self.selectedCodeHoliday.subscribe((selectHoli) => {
                 self.numberHoliday((selectHoli).toFixed(1));
                 self.totalDay(parseFloat(self.numberHoliday()) - self.selectedCodeSubHoliday());
                 self.dayRemaining(self.totalDay().toString());     
             });
-
             self.selectedCodeSubHoliday.subscribe((selectSubHoli) => {
                 self.numberSubHoliday((selectSubHoli).toFixed(1));
                 self.totalDay(self.selectedCodeHoliday() - parseFloat(self.numberSubHoliday()));
                 self.dayRemaining(self.totalDay().toString());     
             });
-
-           
-
-
         }
-
         initScreen(): void {
             block.invisible();
             let self = this,
@@ -79,15 +72,10 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                 self.closureId(info.closure.closureId);
             }
             block.clear();
-
-
-
         }
-
         /**
          * closeDialog
          */
-
         public submitData() {
             let self = this;
             errors.clearAll();
@@ -109,7 +97,6 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     dayRemaining: self.dayRemaining(),
                     closureId: self.closureId()
                 };
-
                 console.log(data);
                 service.add(data).done(result => {
                     if (result && result.length > 0) {
@@ -117,11 +104,35 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                             if (errorId === "Msg_737_holiday") {
                                 $('#I6_1').ntsError('set', { messageId: "Msg_737" });
                             }
-                            if (errorId === "Msg_728") {
+                            else if (errorId === "Msg_728") {
                                 $('#I4').ntsError('set', { messageId: errorId });
                             }
-                            if (errorId === "Msg_737_sub_holiday") {
+                            else if (errorId === "Msg_737_sub_holiday") {
                                 $('#I11_1').ntsError('set', { messageId: "Msg_737" });
+                            }
+                            else if (errorId === "Msg_745") {
+                                $('#I6_1').ntsError('set', { messageId: "Msg_745" });
+                            }
+                            else if (errorId === "Msg_730") {
+                                $('#I11_1').ntsError('set', { messageId: "Msg_730" });
+                            }
+                            else if (errorId === "Msg_1259") {
+                                $('#I12_4').ntsError('set', { messageId: "Msg_1259" });
+                            }
+                            else if (errorId === "Msg_1256_1") {
+                                $('#I11_3').ntsError('set', { messageId: "Msg_1256" });
+                            }
+                            else if (errorId === "Msg_1256_2") {
+                                $('#I12_4').ntsError('set', { messageId: "Msg_1256" });
+                            }
+                            else if (errorId === "Msg_1256_3") {
+                                $('#I6_3').ntsError('set', { messageId: "Msg_1256" });
+                            }
+                            else if (errorId === "Msg_1260_1") {
+                                $('#I11_3').ntsError('set', { messageId: "Msg_1260" });
+                            }
+                            else if (errorId === "Msg_1260_2") {
+                                $('#I12_4').ntsError('set', { messageId: "Msg_1260" });
                             }
                         }
                         return;
@@ -136,7 +147,6 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                 block.clear();
             }
         }
-
         public closeDialog() {
             nts.uk.ui.windows.close();
         }
