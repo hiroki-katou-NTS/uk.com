@@ -41,6 +41,7 @@ public class YearServicePerFinder {
 			return new YearServicePerDto(item.getSpecialHolidayCode(), 
 											item.getYearServiceCode().v(), 
 											item.getYearServiceName().v(), 
+											item.getProvision(),
 											item.getYearServiceCls().value, 
 											item.getYearServicePerSets()
 					.stream()

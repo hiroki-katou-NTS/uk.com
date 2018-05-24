@@ -40,6 +40,7 @@
 			<!-- Disable weaving change tracking, for entity is always updated with 
 				JPA -->
 			<property name="eclipselink.weaving.changetracking" value="false" />
+			<property name="eclipselink.profiler" value="nts.arc.layer.infra.data.log.QueryLogging"/>
 		</properties>
 	</persistence-unit>
 </persistence>

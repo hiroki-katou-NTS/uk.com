@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.app.find.application.approvalstatus;
 
+import java.util.Objects;
+
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTemp;
@@ -20,17 +22,17 @@ public class ApprovalStatusMailTempDto {
 	/**
 	 * URL承認埋込
 	 */
-	private int urlApprovalEmbed;
+	private Integer urlApprovalEmbed;
 
 	/**
 	 * URL日別埋込
 	 */
-	private int urlDayEmbed;
+	private Integer urlDayEmbed;
 
 	/**
 	 * URL月別埋込
 	 */
-	private int urlMonthEmbed;
+	private Integer urlMonthEmbed;
 
 	/**
 	 * メール件名
@@ -45,8 +47,10 @@ public class ApprovalStatusMailTempDto {
 	private int editMode;
 
 	public static ApprovalStatusMailTempDto fromDomain(ApprovalStatusMailTemp domain) {
-		return new ApprovalStatusMailTempDto(domain.getMailType().value, domain.getUrlApprovalEmbed().value,
-				domain.getUrlDayEmbed().value, domain.getUrlMonthEmbed().value, domain.getMailSubject().v(),
-				domain.getMailContent().v(), 1);
+		return new ApprovalStatusMailTempDto(domain.getMailType().value,
+				Objects.isNull(domain.getUrlApprovalEmbed()) ? null : domain.getUrlApprovalEmbed().value,
+				Objects.isNull(domain.getUrlDayEmbed()) ? null : domain.getUrlDayEmbed().value,
+				Objects.isNull(domain.getUrlMonthEmbed()) ? null : domain.getUrlMonthEmbed().value,
+				domain.getMailSubject().v(), domain.getMailContent().v(), 1);
 	}
 }

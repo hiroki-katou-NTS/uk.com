@@ -7508,7 +7508,10 @@ var nts;
                         if (styleMaker && _.isFunction(styleMaker)) {
                             var style_1 = styleMaker(rowIdx, columnKey, innerIdx, valueObj);
                             if (style_1) {
-                                $cell.style.color = style_1.textColor;
+                                if (style_1.class)
+                                    helper.addClass($cell, style_1.class);
+                                else
+                                    $cell.style.color = style_1.textColor;
                                 makeUp($grid, rowIdx, columnKey, style_1);
                             }
                         }
@@ -7576,7 +7579,10 @@ var nts;
                                     if (styleMaker && _.isFunction(styleMaker)) {
                                         var style_2 = styleMaker(rowIdx, key, -1, cData);
                                         if (style_2) {
-                                            $target.style.color = style_2.textColor;
+                                            if (style_2.class)
+                                                helper.addClass($target, style_2.class);
+                                            else
+                                                $target.style.color = style_2.textColor;
                                             makeUp($grid, rowIdx, key, style_2);
                                         }
                                     }
@@ -12550,6 +12556,8 @@ var nts;
                     function getLockCells($container) {
                         var tbl = helper.getMainTable($container[0]);
                         var det = $.data(tbl, internal.DET);
+                        if (!det)
+                            return [];
                         var cells = [];
                         Object.keys(det).forEach(function (k) {
                             if (!uk.util.isNullOrUndefined(det[k])) {
@@ -20493,7 +20501,7 @@ var nts;
 /// <reference path="ui/ko-ext/wizard-ko-ext.ts"/>
 /// <reference path="ui/ko-ext/legendbutton-ko-ext.ts"/>
 /// <reference path="ui/ko-ext/charset-setting-ko-ext.ts"/>
-/// <reference path="ui/function-wrap/contextmenu.ts"/> 
+/// <reference path="ui/function-wrap/contextmenu.ts"/>
 /// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
