@@ -8,22 +8,19 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.sys.assist.dom.deletedata.EmployeeDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.SyEmployeeAdapter;
-import nts.uk.ctx.bs.employee.pubimp.employee.SyEmployeePub;
+import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 
 @Stateless
 public class SyEmployeeAdapterImpl implements SyEmployeeAdapter {
 
-	/** The RoleExportRepo pub. */
+	/** The SyEmployeePub pub. */
 	@Inject
 	private SyEmployeePub syEmployeePub;
 
 	@Override
 	public List<EmployeeDeletion> getListEmployeeByCompanyId(String cid) {
 		return syEmployeePub.getListEmpOfLoginCompany(cid).stream().map(x -> {
-			return new EmployeeDeletion(null, x.sid(), x.scode(), x.bussinesName());
+			return new EmployeeDeletion(x.getSid(), x.getScd(), x.getBussinesName());
 		}).collect(Collectors.toList());
-		return null;
-		
 	}
-
 }
