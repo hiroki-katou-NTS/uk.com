@@ -232,6 +232,11 @@
 	position: relative;
 	top: -58px;
 	width: 131px;}
+	
+.italic-text{
+	 font-style: italic;
+	 font-weight: bold;
+}
 /* .nts-grid  tr.ui-ig-altrecord td.ui-state-active{
 	background-color: #007fff !IMPORTANT;
 } */

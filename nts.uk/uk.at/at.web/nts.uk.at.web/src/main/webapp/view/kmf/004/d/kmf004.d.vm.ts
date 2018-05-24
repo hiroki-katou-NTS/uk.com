@@ -1,238 +1,404 @@
-module nts.uk.at.view.kmf004 {
-    import getText = nts.uk.resource.getText;
-    import alert = nts.uk.ui.dialog.alert;
-    import confirm = nts.uk.ui.dialog.confirm;
-    import href = nts.uk.request.jump;
-    import modal = nts.uk.ui.windows.sub.modal;
-
-    let __viewContext: any = window["__viewContext"] || {};
-
-    export module viewmodel1 {
-        export class TabScreenModel {
-            title: KnockoutObservable<string> = ko.observable('');
-            removeAble: KnockoutObservable<boolean> = ko.observable(true);
-            tabs: KnockoutObservableArray<TabModel> = ko.observableArray([
-                new TabModel({ id: 'd', name: getText('Com_Company'), active: true }),
-                new TabModel({ id: 'e', name: getText('Com_Person') })
-            ]);
-            currentTab: KnockoutObservable<string> = ko.observable('d');
-
-            //radio     
-
-            constructor() {
-                let self = this;
-                //get use setting 
-
-                self.tabs().map((t) => {
-                    // set title for tab
-
-                    if (t.active() == true) {
-                        self.title(t.name);
-                        self.changeTab(t);
-                    }
-                });
-            }
-
-            changeTab(tab: TabModel) {
-                let self = this,
-                    view: any = __viewContext.viewModel,
-                    oldtab: TabModel = _.find(self.tabs(), t => t.active());
-
-                // cancel action if tab self click
-                if (oldtab.id == tab.id) {
-                    return;
-                }
-                //set not display remove button first when change tab
-                //__viewContext.viewModel.tabView.removeAble(false);
-                tab.active(true);
-                self.title(tab.name);
-                self.tabs().map(t => (t.id != tab.id) && t.active(false));
-
-                // call start function on view at here
-                switch (tab.id) {
-                    case 'd':
-                        self.currentTab('d');
-                        if (!!view.viewmodelD && typeof view.viewmodelD.start == 'function') {
-                            view.viewmodelD.start();
-                        }
-                        break;
-                    case 'e':
-                        self.currentTab('e');
-                        if (!!view.viewmodelE && typeof view.viewmodelE.startPage == 'function') {
-                            view.viewmodelE.startPage();
-                        }
-                        break;
-                }
-            }
-        }
-
-        interface ITabModel {
-            id: string;
-            name: string;
-            active?: boolean;
-            display?: boolean;
-        }
-
-        class TabModel {
-            id: string;
-            name: string;
-            active: KnockoutObservable<boolean> = ko.observable(false);
-            display: KnockoutObservable<boolean> = ko.observable(true);
-
-            constructor(param: ITabModel) {
-                this.id = param.id;
-                this.name = param.name;
-                this.active(param.active || false);
-                this.display(param.display || true);
-            }
-
-            changeTab() {
-                // call parent view action
-                __viewContext.viewModel.tabView.changeTab(this);
-            }
-        }
-    }
-
-    export module d.viewmodel {
-        export class ScreenModel {
-            itemList: KnockoutObservableArray<any>;
-            selectedId: KnockoutObservable<number>;
-            value: KnockoutObservable<string>;
-            enable: KnockoutObservable<boolean>;
-            display: KnockoutObservable<boolean>;
-            items: KnockoutObservableArray<Item>;
-            lst: KnockoutObservableArray<Item>;
-            constructor() {
-                let self = this;
-                self.itemList = ko.observableArray([
+module nts.uk.at.view.kmf004.d.viewmodel {
+    export class ScreenModel {
+        // radio box
+        itemList: KnockoutObservableArray<any>;
+        // selected radio box
+        selectedId: KnockoutObservable<number>;
+        display: KnockoutObservable<boolean>;
+        // list business type A2_2
+        lstPer: KnockoutObservableArray<Per>;
+        // column in list
+        gridListColumns: KnockoutObservableArray<any>;
+        // selected code 
+        selectedCode: KnockoutObservable<string>;
+        // selected item
+        selectedOption: KnockoutObservable<Per>;
+        // binding to text box name A3_3
+        selectedName: KnockoutObservable<string>;
+        // binding to text box code A3_2
+        codeObject: KnockoutObservable<string>;
+        // check new mode or not
+        check: KnockoutObservable<boolean>;
+        // check update or insert
+        checkUpdate: KnockoutObservable<boolean>;
+        // year month date
+        items: KnockoutObservableArray<Item>;
+        provisionCheck: KnockoutObservable<boolean>;
+        editMode: KnockoutObservable<boolean>;
+        provisionDeactive: KnockoutObservable<boolean>;
+        
+        constructor() {
+            let self = this;
+            self.itemList = ko.observableArray([
                     new BoxModel(0, nts.uk.resource.getText("KMF004_95")),
                     new BoxModel(1, nts.uk.resource.getText("KMF004_96"))
                 ]);
-                self.value = ko.observable('');
-                self.enable = ko.observable(true);
-                self.selectedId = ko.observable(0);
-                self.items = ko.observableArray([]);  
-                self.lst = ko.observableArray([]);
-                self.display = ko.observable(false);
-                self.start();
-            }
- 
-            start() {
-                var self = this;
-                var dfd = $.Deferred();
-                service.findCom(nts.uk.ui.windows.getShared('KMF004D_SPHD_CD')).done((lstData)=>{
-                    if(lstData){
-                    self.selectedId(lstData.lengthServiceYearAtr);
-                    }else{return;};
-                })
-                service.findAll(nts.uk.ui.windows.getShared('KMF004D_SPHD_CD')).done((lstData) => {
-                    nts.uk.ui.errors.clearAll();
-                    let sortedData = _.orderBy(lstData, ['yearServiceNo'], ['asc']);
+            self.gridListColumns = ko.observableArray([
+                { headerText: nts.uk.resource.getText("KMF004_7"), key: 'yearServiceCode', width: 60 },
+                { headerText: nts.uk.resource.getText("KMF004_8"), key: 'yearServiceName', width: 160, formatter: _.escape}
+            ]);
+            self.provisionCheck = ko.observable(false);
+            self.provisionDeactive = ko.observable(true);
+            self.selectedId = ko.observable(0);
+            self.lstPer = ko.observableArray([]);
+            self.selectedCode = ko.observable("");
+            self.selectedName = ko.observable("");
+            self.selectedOption = ko.observable(null);
+            self.check = ko.observable(false);
+            self.codeObject = ko.observable("");
+            self.checkUpdate = ko.observable(false);
+            self.display = ko.observable(false);
+            self.items = ko.observableArray([]);
+            self.editMode = ko.observable(true); 
+            self.selectedCode.subscribe((code) => {   
+                if (code) {
+                    let foundItem: Per = _.find(self.lstPer(), (item: Per) => {
+                        return (ko.toJS(item.yearServiceCode) == code);
+                    });
+                    self.checkUpdate(true);
+                    $("#inpPattern").focus();
+                    self.selectedOption(foundItem);
+                    self.selectedId(self.selectedOption().yearServiceCls);
+                    self.selectedOption().yearServicePerSets;
                     self.items([]);
-                    $("#button_radio").focus();
+                    _.forEach(self.selectedOption().yearServicePerSets, o => {
+                        self.items.push(ko.mapping.fromJS(o));    
+                    });
                     for (let i = 0; i < 20; i++) {
-                        if (sortedData[i]) {
-                            var param: IItem = {
-                                yearServiceNo: i + 1,
-                                month: sortedData[i].month,
-                                year: sortedData[i].year,
-                                date: sortedData[i].date
-                            };
-                            self.items.push(new Item(param));
-                        } else {
-                            var param: IItem = {
-                                yearServiceNo: i + 1,
-                                month: null,
-                                year: null,
-                                date: null
-                            };
-                            self.items.push(new Item(param));
-                        }  
+                        if(self.items()[i] == undefined){
+                            let t : item = {
+                            yearServiceNo: ko.mapping.fromJS(i),
+                            month: ko.mapping.fromJS(null),
+                            year: ko.mapping.fromJS(null),
+                            date: ko.mapping.fromJS(null)
+                            }
+                            self.items.push(new Item(t));
+                        }
                     }
-                    dfd.resolve();
-                }).fail(function(error) {
-                    dfd.reject();
-                    alert(error.message);
-                })
-                return dfd.promise();
-            }
+                    self.selectedName(self.selectedOption().yearServiceName);
+                    self.codeObject(ko.toJS(self.selectedOption().yearServiceCode));
+                    self.check(false);
+                    self.provisionCheck(self.selectedOption().provision == 1 ? true : false);
+                    if(self.selectedOption().provision == 1) {
+                        self.provisionDeactive(false);
+                    } else {
+                        self.provisionDeactive(true);
+                    }
+                    self.editMode(false);
+                    nts.uk.ui.errors.clearAll();   
+                }
+            });
+        }
 
-            register() {
-                nts.uk.ui.block.invisible();
-                var self = this;
-                let b = this.value();
-                let a = self.items();
-                let i = 0;
-                var items = _.filter(self.items(), function(item: Item) {
+        /** get data to list **/
+        getData(): JQueryPromise<any>{
+            let self = this;  
+            let dfd = $.Deferred();
+            service.getAll(nts.uk.ui.windows.getShared('KMF004D_SPHD_CD')).done((lstData: Array<viewmodel.Per>) => {
+                if(lstData.length == 0){
+                    self.check(true);
+                    self.selectedId(0);
+                }
+                let sortedData = _.orderBy(lstData, ['yearServiceCode'], ['asc']);
+                self.lstPer(sortedData);
+                dfd.resolve();
+            }).fail(function(error){
+                    dfd.reject();
+                    $('#inpCode').ntsError('set', error);
+                });
+              return dfd.promise();      
+        }
+
+        /** get data when start dialog **/
+        startPage(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+            let specialHolidayCode = nts.uk.ui.windows.getShared('KMF004D_SPHD_CD');
+            service.getAll(specialHolidayCode).done((lstData: Array<Per>) => {
+                nts.uk.ui.errors.clearAll();
+                if(lstData.length == 0){
+                    self.selectedId(0);
+                    self.check(true);
+                    self.codeObject(null);
+                    self.selectedName(null);
+                    self.checkUpdate(false);
+                    self.provisionCheck(false);
+                    self.provisionDeactive(true);
+                    self.items([]);
+                    for (let i = 0; i < 20; i++) {
+                        if(self.items()[i] == undefined){
+                            let t : item = {
+                                yearServiceNo: ko.mapping.fromJS(i),
+                                month: ko.mapping.fromJS(null),
+                                year: ko.mapping.fromJS(null),
+                                date: ko.mapping.fromJS(null)
+                            }
+                            self.items.push(new Item(t));
+                        }
+                    }
+                    
+                    $("#inpCode").focus();
+                } else {
+                    let sortedData : KnockoutObservableArray<any> = ko.observableArray([]);
+                    sortedData(_.orderBy(lstData, ['yearServiceCode'], ['asc']));
+                     $("#inpPattern").focus();
+                    self.lstPer(sortedData());
+                    self.selectedOption(self.lstPer()[0]);
+                    self.selectedId(self.selectedOption().yearServiceCls);
+                    self.selectedCode(ko.toJS(self.lstPer()[0].yearServiceCode));
+                    self.selectedName(self.lstPer()[0].yearServiceName);
+                    self.provisionCheck(self.lstPer()[0].provision == 1 ? true : false);
+                    if(self.lstPer()[0].provision == 1) {
+                        self.provisionDeactive(false);
+                    } else {
+                        self.provisionDeactive(true);
+                    }
+                    self.codeObject(ko.toJS(self.lstPer()[0].yearServiceCode));                   
+                }
+                
+                dfd.resolve();
+            }).fail(function(error) {
+                dfd.reject();
+                $('#inpCode').ntsError('set', error);
+            });
+            return dfd.promise();
+        }  
+        
+        getListItems(){
+            let self = this;
+            let data = self.items();
+            let lstReturn = _.filter(data, function(item){
                     return item.date() || item.month() || item.year();
                 });
-
-                var dataTranfer = {
-                    specialHolidayCode: nts.uk.ui.windows.getShared('KMF004D_SPHD_CD'), // TODO
-                    lengthServiceYearAtr: self.selectedId(),
-                    yearServiceSets: ko.toJS(items)
-                }
-                if(!nts.uk.ui.errors.hasError()){
-                    service.update(dataTranfer).done(function(errors) {
-                        if (errors && errors.length > 0) {
-                            self.addListError(errors);
-                        } else {
-                            nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(function(){
-                                self.start();
-                                $("#button_radio").focus();
-                            });
-                        }
-                    }).fail(function(error) {
-                        alert(error.message);
-                    });
-                }
-                nts.uk.ui.block.clear();
-            }   
-   
-            closeDialog() {
-                nts.uk.ui.windows.close();
+            for(let i = 0; i < lstReturn.length; i++){
+                lstReturn[i].yearServiceNo(i);
+            }  
+            return lstReturn;
+        }
+        
+        /** update or insert data when click button register **/
+        register() {   
+            nts.uk.ui.block.invisible();
+            
+            let self = this;
+            $("#inpCode").trigger("validate");
+            $("#inpPattern").trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return;       
+            }
+            let code = "";    
+            var items = _.filter(self.items(), function(tam: item) {
+                    return tam.date() || tam.month() || tam.year();
+                });
+            let listSet = {
+                specialHolidayCode: nts.uk.ui.windows.getShared('KMF004D_SPHD_CD'),
+                lengthServiceYearAtr: self.selectedId(),
+                yearServiceSets: ko.toJS(items)
+            }
+            let dataTransfer = {
+                specialHolidayCode: nts.uk.ui.windows.getShared('KMF004D_SPHD_CD'),
+                yearServiceCode: ko.toJS(self.codeObject()), 
+                yearServiceName: self.selectedName(),
+                provision: self.provisionCheck() ? 1 : 0,
+                yearServiceCls: self.selectedId(),
+                yearServicePerSets: ko.toJS(self.getListItems()),   
             }
             
-            /**
-             * Set error
-             */
-            addListError(errorsRequest: Array<string>) {
-                var errors = [];
-                _.forEach(errorsRequest, function(err) {
-                    errors.push({message: nts.uk.resource.getMessage(err), messageId: err, supplements: {} });
+            code = self.codeObject();
+            
+            if(self.lstPer().length <= 0) {
+                self.checkUpdate(false);
+            }
+          
+            if (nts.uk.ui.errors.hasError() === false) {
+                // update item to list  
+                if(self.checkUpdate()){
+                    $("#inpPattern").focus(); 
+                      
+                    service.update(dataTransfer).done(function(errors: Array<string>){
+                        self.getData().done(function(){
+                            if (errors.length > 0) {
+                               self.addListError(errors);
+                            } else {
+                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                                    self.selectedCode(code); 
+                                    self.selectedCode.valueHasMutated(); 
+                                    $("#inpPattern").focus();
+                                });
+                            }
+                        });
+          
+                    }).fail(function(res){
+                        $('#inpCode').ntsError('set', res);
+                    }).always(function(){
+                        nts.uk.ui.block.clear();    
+                    });
+                } else {
+                    self.selectedOption(null);
+                    // insert item to list
+                    service.add(dataTransfer).done(function(errors: Array<string>){
+                        self.getData().done(function(){
+                            if (errors.length > 0) {
+                               self.addListError(errors);
+                            }else{
+                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                                    self.selectedCode(code); 
+                                    $("#inpPattern").focus();
+                                });
+                            }
+                        });
+                    }).fail(function(res){
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_3" }).then(() => { 
+                            $('#inpCode').focus();
+                        });
+                    }).always(function(){
+                        nts.uk.ui.block.clear();    
+                    });
+                }
+            }   
+        } 
+        
+        //  new mode 
+        newMode() {
+//            var t0 = performance.now(); 
+            let self = this;
+            self.check(true);
+            self.checkUpdate(false);
+            $("#inpCode").focus(); 
+            self.selectedCode("");
+            self.codeObject("");
+            self.selectedName("");
+            self.items([]);
+            self.provisionCheck(false);
+            self.provisionDeactive(true);
+            self.selectedId(0);
+            self.editMode(true);  
+            
+            for (let i = 0; i < 20; i++) {
+                    let t : item = {
+                    yearServiceNo: ko.mapping.fromJS(i),
+                    month: ko.mapping.fromJS(null),
+                    year: ko.mapping.fromJS(null),
+                    date: ko.mapping.fromJS(null)
+                    }
+                    self.items.push(new Item(t));
+            }
+            
+            nts.uk.ui.errors.clearAll();                 
+        }
+        
+        /** remove item from list **/
+        remove() {
+            let self = this;
+            let count = 0;
+            for (let i = 0; i <= self.lstPer().length; i++){
+                if(ko.toJS(self.lstPer()[i].yearServiceCode) == self.selectedCode()){
+                    count = i;
+                    break;
+                }
+            }
+            
+            // Add error before check remove
+            if(self.provisionCheck()) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_1219" });
+                return;
+            }
+            
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => { 
+                service.remove(self.selectedOption()).done(function(){
+                    self.getData().done(function(){
+                        // if number of item from list after delete == 0 
+                        if(self.lstPer().length==0){
+                            self.newMode();
+                            return;
+                        }
+                        // delete the last item
+                        if(count == ((self.lstPer().length))){
+                            self.selectedCode(ko.toJS(self.lstPer()[count-1].yearServiceCode));
+                            return;
+                        }
+                        // delete the first item
+                        if(count == 0 ){
+                            self.selectedCode(ko.toJS(self.lstPer()[0].yearServiceCode));
+                            return;
+                        }
+                        // delete item at mediate list 
+                        else if(count > 0 && count < self.lstPer().length){
+                            self.selectedCode(ko.toJS(self.lstPer()[count].yearServiceCode));    
+                            return;
+                        }                        
+                    });
+                    
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error.message);
                 });
                 
-                nts.uk.ui.dialog.bundledErrors({ errors: errors});
-            }
+                
+            }).ifCancel(() => {  
+               
+            }); 
+        } 
+        
+        
+        closeDialog(){
+            nts.uk.ui.windows.close();
         }
-        class BoxModel {
-            id: number;
-            name: string;
-            constructor(id, name) {
-                var self = this;
-                self.id = id;
-                self.name = name;
-            }
-        }  
-        export class Item {
-            yearServiceNo: KnockoutObservable<number>;
-            month: KnockoutObservable<number>;
-            year: KnockoutObservable<number>;
-            date: KnockoutObservable<number>;
+        
+        /**
+             * Set error
+             */
+        addListError(errorsRequest: Array<string>) {
+            var errors = [];
+            _.forEach(errorsRequest, function(err) {
+                errors.push({message: nts.uk.resource.getMessage(err), messageId: err, supplements: {} });
+            });
+            
+            nts.uk.ui.dialog.bundledErrors({ errors: errors});
+        }
+    } 
+    export interface Per{
+        specialHolidayCode: string
+        yearServiceCode: string;
+        yearServiceName: string;
+        provision: number;
+        yearServiceCls: number;
+        yearServicePerSets: Array<Item>;
+    }
+    
+    export interface item{
+        yearServiceNo: KnockoutObservable<number>;
+        month: KnockoutObservable<number>;
+        year: KnockoutObservable<number>;
+        date: KnockoutObservable<number>;
+    }
+    
+    export class Item {
+        yearServiceNo: KnockoutObservable<number>;
+        month: KnockoutObservable<number>;
+        year: KnockoutObservable<number>;
+        date: KnockoutObservable<number>;
 
-            constructor(param: IItem) {
-                var self = this;
-                self.yearServiceNo = ko.observable(param.yearServiceNo);
-                self.month = ko.observable(param.month);
-                self.year = ko.observable(param.year);
-                self.date = ko.observable(param.date);
-            }
+        constructor(param: item) {
+            var self = this;
+            self.yearServiceNo = ko.observable(param.yearServiceNo());
+            self.month = ko.observable(param.month());
+            self.year = ko.observable(param.year());
+            self.date = ko.observable(param.date());
         }
-        export interface IItem {
-            yearServiceNo: number
-            month: number;
-            year: number;
-            date: number;
+    }
+    
+    class BoxModel {
+        id: number;
+        name: string;
+        constructor(id, name) {
+            var self = this;
+            self.id = id;
+            self.name = name;
         }
     }
 }
+
+
+
+
