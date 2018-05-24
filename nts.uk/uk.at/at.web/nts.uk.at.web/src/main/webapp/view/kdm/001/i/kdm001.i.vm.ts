@@ -32,7 +32,8 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         numberSubHoliday: KnockoutObservable<string> = ko.observable('');
         numberSplitHoliday: KnockoutObservable<string> = ko.observable('');
         totalDay: KnockoutObservable<number> = ko.observable(null);
-
+        //Require 分割消化
+        checkRequire: KnockoutObservable<boolean> = ko.observable(false); 
         constructor() {
             let self = this;
             self.initScreen();
@@ -57,6 +58,15 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                 self.numberSubHoliday((selectSubHoli).toFixed(1));
                 self.totalDay(self.selectedCodeHoliday() - parseFloat(self.numberSubHoliday()));
                 self.dayRemaining(self.totalDay().toString());     
+            });
+
+            //Check require
+            self.checkedSubHoliday.subscribe((v) => {
+                if (!v) {
+                    self.checkRequire(false);
+                }else{
+                    self.checkRequire(true);
+                }
             });
         }
         initScreen(): void {
