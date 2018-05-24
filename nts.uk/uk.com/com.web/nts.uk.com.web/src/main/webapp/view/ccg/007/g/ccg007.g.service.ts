@@ -16,6 +16,7 @@ module nts.uk.pr.view.ccg007.g {
         
         export interface CallerParameter {
             companyCode: string;
+            companyName: string;
             employeeCode : string;
             contractCode: string;
         }

@@ -21,11 +21,11 @@ module nts.uk.pr.view.ccg007.c {
           * Function is used to get employee login setting
           */
         export function getEmployeeLoginSetting(contractCode: string): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.getEmployeeLoginSetting+"/"+contractCode);
+            return nts.uk.request.ajax(servicePath.getEmployeeLoginSetting +"/"+ contractCode);
         }
         
         export function getCompanyInfo(companyId: string): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.getCompanyInfo, companyId);
+            return nts.uk.request.ajax(servicePath.getCompanyInfo +"/"+ companyId);
         }
 
         /**

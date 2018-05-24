@@ -172,8 +172,8 @@ public class LoginWs extends WebService {
 	 * @return the company infor by code
 	 */
 	@POST
-	@Path("getcompanybycode")
-	public CompanyInformationImport getCompanyInforByCode(String companyId) {
+	@Path("getcompanybycode/{companyId}")
+	public CompanyInformationImport getCompanyInforByCode(@PathParam("companyId") String companyId) {
 		return companyInformationFinder.getCompanyInforByCode(companyId);
 	}
 
