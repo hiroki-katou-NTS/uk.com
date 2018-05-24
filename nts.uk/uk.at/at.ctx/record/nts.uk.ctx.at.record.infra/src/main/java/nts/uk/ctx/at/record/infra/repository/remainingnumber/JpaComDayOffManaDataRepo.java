@@ -97,7 +97,7 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 	}
 
 
-	public List<CompensatoryDayOffManaData> getBySidWithReDayAndDateCondition(String cid, String sid,
+	public List<CompensatoryDayOffManaData> getByDateCondition(String cid, String sid,
 			GeneralDate startDate, GeneralDate endDate) {
 		String query = "";
 		List<KrcmtComDayoffMaData> list = new ArrayList<>();

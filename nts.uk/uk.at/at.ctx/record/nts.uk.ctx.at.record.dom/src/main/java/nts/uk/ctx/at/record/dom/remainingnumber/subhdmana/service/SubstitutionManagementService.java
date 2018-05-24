@@ -7,6 +7,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
+import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SWkpHistImport;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SysWorkplaceAdapter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
@@ -30,6 +32,8 @@ public class SubstitutionManagementService {
 	@Inject
 	private CompensLeaveComSetRepository compensLeaveComSetRepository;
 	
+	@Inject
+	private EmployeeRecordAdapter employeeRecordAdapter;
 	
 	public SubstituteManagementOutput activationProcess(GeneralDate startDate, GeneralDate endDate){
 		String employeeId = AppContexts.user().employeeId();
@@ -43,6 +47,7 @@ public class SubstitutionManagementService {
 			compenLeaveEmpSetting = compensLeaveEmSetRepository.find(cid, extraHolidayManagementOutput.getSEmpHistoryImport().getEmploymentCode());
 		}
 		compensatoryLeaveComSetting = compensLeaveComSetRepository.find(cid);
-		return new SubstituteManagementOutput(sWkpHistImport.isPresent() ? sWkpHistImport.get() : null, extraHolidayManagementOutput, compenLeaveEmpSetting, compensatoryLeaveComSetting);
+		EmployeeRecordImport employeeInfo = employeeRecordAdapter.getPersonInfor(employeeId);
+		return new SubstituteManagementOutput(sWkpHistImport.isPresent() ? sWkpHistImport.get() : null, extraHolidayManagementOutput, compenLeaveEmpSetting, compensatoryLeaveComSetting, employeeInfo);
 	}
 }
