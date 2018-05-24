@@ -44,14 +44,12 @@ public class PayoutManagementDataWebService extends WebService{
 	@POST
 	@Path("update")
 	public void update(PayoutManagementDataCommand command){
-		System.out.println("******************update");
 		updatePayout.handle(command);
 	}
 	
 	@POST
 	@Path("delete")
 	public void delete(DeletePayoutManagementDataCommand command){
-		System.out.println("******************update");
 		deletePayout.handle(command);
 	}
 	

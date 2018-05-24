@@ -37,8 +37,9 @@ public interface ComDayOffManaDataRepository {
 
 	/**
 	 * Delete domain 代休管理データ
+	 * @param comDayOffID ID
 	 * @param employeeId 社員ID
 	 * @param dayOffDate 代休日
 	 */
-	void deleteBySidAndDayOffDate(String employeeId, GeneralDate dayOffDate);
+	void deleteBySidAndDayOffDate(String comDayOffID, String employeeId, GeneralDate dayOffDate);
 }

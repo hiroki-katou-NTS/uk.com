@@ -8,8 +8,8 @@ module nts.uk.at.view.kdm001.d {
             };
         
         
-        export function save() : JQueryPromise<any> {
-            return nts.uk.request.ajax("at", path.save);
+        export function save(command: any) : JQueryPromise<any> {
+            return nts.uk.request.ajax("at", path.save,command);
         }
 
     }

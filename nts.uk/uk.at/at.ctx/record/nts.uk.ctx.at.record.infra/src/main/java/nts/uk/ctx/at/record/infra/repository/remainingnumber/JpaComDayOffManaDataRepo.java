@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.remainingnumber;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -21,9 +21,7 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 
 	private String GET_BYSID_WITHREDAY = String.join(" ", GET_BYSID, " AND c.remainDays > 0");
 
-	private String DELETE_BY_SID_COMDAYOFFID = "DELETE FROM KrcmtComDayoffMaData a WHERE a.cID = :companyId AND a.sID = :employeeId AND a.dayOff = :dayOffDate";
-	
-	private String GET_BY_SID_COMDAYOFFID = "SELECT a FROM KrcmtComDayoffMaData a WHERE a.cID = :companyId AND a.sID = :employeeId AND a.dayOff = :dayOffDate";
+	private String DELETE_BY_SID_DAYOFF_DATE = "DELETE FROM KrcmtComDayoffMaData a WHERE a.cID = :companyId AND a.sID = :employeeId AND a.dayOff = :dayOffDate";
 
 	private String GET_BYCOMDAYOFFID = String.join(" ", GET_BYSID_WITHREDAY, " AND c.comDayOffID IN (SELECT b.krcmtLeaveDayOffManaPK.comDayOffID FROM KrcmtLeaveDayOffMana b WHERE b.krcmtLeaveDayOffManaPK.leaveID = :leaveID)");
 
@@ -54,24 +52,16 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 	}
 
 	@Override
-	public void deleteBySidAndDayOffDate(String employeeId, GeneralDate dayOffDate) {
+	public void deleteBySidAndDayOffDate(String comDayOffID, String employeeId, GeneralDate dayOffDate) {
 		String companyId = AppContexts.user().companyId();
-		Optional<KrcmtComDayoffMaData> entity = this.getBySidAndDayOffDate(companyId, employeeId, dayOffDate);
-		if(!entity.isPresent()){
+		KrcmtComDayoffMaData entity = this.getEntityManager().find(KrcmtComDayoffMaData.class, comDayOffID);
+		if(Objects.isNull(entity)){
 			throw new BusinessException("Msg_198");
 		}
-		this.getEntityManager().createQuery(DELETE_BY_SID_COMDAYOFFID)
+		this.getEntityManager().createQuery(DELETE_BY_SID_DAYOFF_DATE)
 				.setParameter("companyId", companyId)
 				.setParameter("employeeId", employeeId)
 				.setParameter("dayOffDate", dayOffDate).executeUpdate();
-	}
-
-	private Optional<KrcmtComDayoffMaData> getBySidAndDayOffDate(String companyId, String employeeId, GeneralDate dayOffDate){
-		return this.queryProxy().query(GET_BY_SID_COMDAYOFFID, KrcmtComDayoffMaData.class)
-				.setParameter("companyId", companyId)
-				.setParameter("employeeId", employeeId)
-				.setParameter("dayOffDate", dayOffDate)
-				.getSingle();
 	}
 
 	/**

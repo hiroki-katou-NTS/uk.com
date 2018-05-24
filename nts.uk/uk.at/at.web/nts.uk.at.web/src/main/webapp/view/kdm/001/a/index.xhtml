@@ -80,18 +80,20 @@
 										data-bind="ntsRadioButton: {checked: selectedPeriodItem, option: periodOptionItem()[1], optionValue: 'value', optionText: 'name', group: 'periodOption'}"></div>
 								</div>
 							</div>
-							<div class="div-table-col-big">
-								<div class="div-table-row-1"></div>
-								<!-- A3_4  期間範囲 -->
-								<div class="div-table-row-2" id="daterangepicker" tabindex="4"
-									data-bind="ntsDateRangePicker: { required: false, enable: selectedPeriodItem()==1, showNextPrevious: true, value: dateValue, maxRange: 'oneMonth'}" />
-							</div>
+							<com:ko-if bind="selectedPeriodItem() == 1">
+								<div class="div-table-col-big">
+									<div class="div-table-row-1"></div>
+									<!-- A3_4  期間範囲 -->
+								    <div class="div-table-row-2" id="daterangepicker" tabindex="4"
+											data-bind="ntsDateRangePicker: { required: selectedPeriodItem()==1, enable: selectedPeriodItem()==1, showNextPrevious: true, value: dateValue, maxRange: 'oneMonth'}" />
+								</div>
+							</com:ko-if>
 							<div class="div-table-col-big">
 								<div class="div-table-row-1"></div>
 								<!-- A3_5  抽出 -->
 								<div class="div-table-row-2">
 									<button id ="A3_5" tabindex="5"
-										data-bind="click: updateDataList">#{i18n.getText('KDM001_7')}</button>
+										data-bind="click: clickGetDataList">#{i18n.getText('KDM001_7')}</button>
 								</div>
 							</div>
 						</div>
@@ -105,21 +107,24 @@
 					</div>
 					<!-- A5 個人情報パネル-->
 					<div class="panel panel-frame person-info-panel flex valign-center">
-						<div>
-							<!-- A5_2 振休残数合計-->
-							<label>#{i18n.getText('KDM001_25')}</label>
-							<!-- A5_3 振休残数合計-->
-							<label data-bind="text: dispTotalRemain"></label>
-							<!-- A5_4 日-->
-							<label>#{i18n.getText('KDM001_27')}</label>
-						</div>
-						<div style="margin-left: auto;">
+						<com:ko-if bind="selectedPeriodItem() == 0">
+							<div style="margin-left: 10px;">
+								<!-- A5_2 振休残数合計-->
+								<label style="margin-right: 10px;">#{i18n.getText('KDM001_25')}</label>
+								<!-- A5_3 振休残数合計-->
+								<label data-bind="text: dispTotalRemain"></label>
+								<!-- A5_4 日-->
+								<label>#{i18n.getText('KDM001_27')}</label>
+							</div>
+						</com:ko-if>
+						<div style="margin-left: auto; margin-right: 10px;">
 							<!-- A5_6 振休使用期限-->
 							<label>#{i18n.getText('KDM001_29')}</label>
+							<label style="margin-right: 5px;">:</label>
 							<!-- A5_7 振休使用期限-->
 							<label data-bind="text: expirationDate"></label>
-							<!-- A5_8 月-->
-							<label>#{i18n.getText('KDM001_31')}</label>
+							<!-- A5_8 月 - Design stupid-->
+							<!-- <label>#{i18n.getText('KDM001_31')}</label> -->
 						</div>
 					</div>
 				</div>
