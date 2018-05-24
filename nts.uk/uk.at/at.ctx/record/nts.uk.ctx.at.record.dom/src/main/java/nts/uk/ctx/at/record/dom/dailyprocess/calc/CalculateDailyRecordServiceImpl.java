@@ -238,7 +238,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//エラーチェック
 //		return calculationErrorCheckService.errorCheck(afterCalcResult);
 		return calculationErrorCheckService.errorCheck(aftercalcOptionalItemResult);
-		//return afterCalcResult;
+//		return afterCalcResult;
 	}
 
 	private IntegrationOfDaily calcDailyAttendancePerformance(IntegrationOfDaily integrationOfDaily, ManagePerCompanySet companyCommonSetting) {
@@ -1035,7 +1035,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 * @return
 	 */
 	private IntegrationOfDaily calcOptionalItem(IntegrationOfDaily integrationOfDaily) {
-		if(integrationOfDaily.getAnyItemValue().isPresent()) {
+		if(!integrationOfDaily.getAnyItemValue().isPresent()) {
 			return integrationOfDaily;
 		}
 		String companyId = AppContexts.user().companyId();

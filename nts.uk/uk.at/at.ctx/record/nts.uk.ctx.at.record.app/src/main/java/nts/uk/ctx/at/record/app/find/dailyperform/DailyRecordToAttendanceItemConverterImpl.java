@@ -185,6 +185,20 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 	}
 
 	public DailyRecordToAttendanceItemConverter withAnyItems(AnyItemValueOfDaily domain) {
+		if(domain != null) {
+			if(optionalMasterRepo == null){
+				optionalMasterRepo = CDI.current().select(OptionalItemRepository.class).get();
+			}
+			List<String> itemIds = domain.getItems().stream().map(i -> i.getItemNo().v())
+					.map(id -> StringUtil.padLeft(String.valueOf(id), 3, '0')).collect(Collectors.toList());
+			if(!itemIds.isEmpty()){
+				Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
+						.findByListNos(AppContexts.user().companyId(), itemIds).stream()
+						.collect(Collectors.toMap(c -> Integer.parseInt(c.getOptionalItemNo().v()), c -> c));
+				this.dailyRecord.optionalItems(OptionalItemOfDailyPerformDto.getDto(domain, optionalMaster));
+				return this;
+			}
+		}
 		this.dailyRecord.optionalItems(OptionalItemOfDailyPerformDto.getDto(domain));
 		return this;
 	}
