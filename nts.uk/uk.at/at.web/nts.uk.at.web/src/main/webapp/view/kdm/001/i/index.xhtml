@@ -54,7 +54,7 @@
 					<!-- I6_1 年月日 -->
 					<!-- Datepicker -->
 					<div id="I6_1" tabindex="2"
-						data-bind="ntsDatePicker: {value: dateHoliday, dateFormat: 'YYYY/MM/DD'}"></div>
+						data-bind="ntsDatePicker: {value: dateHoliday, dateFormat: 'YYYY/MM/DD', required: true}"></div>
 					<!-- I6_2 休出日数 -->
 					<span class="label" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_111')}</span>
 					<!-- I6_3 休出日数 -->
@@ -81,7 +81,7 @@
 					<!-- I8_1 期限 -->
 					<!-- Datepicker -->
 					<div tabindex="4"
-						data-bind="ntsDatePicker: {value: duedateHoliday, dateFormat: 'YYYY/MM/DD', name: '#[KDM001_73]'}"></div>
+						data-bind="ntsDatePicker: {value: duedateHoliday, dateFormat: 'YYYY/MM/DD', name: '#[KDM001_73]', required: true}"></div>
 				</div>
 
 				<div class="down-s">
@@ -100,7 +100,7 @@
 					<!-- I11_1 年月日 -->
 					<!-- Datepicker -->
 					<div id="I11_1"
-						data-bind="ntsDatePicker: {value: dateSubHoliday, dateFormat: 'YYYY/MM/DD', name: '#[KDM001_76]'}"></div>
+						data-bind="ntsDatePicker: {value: dateSubHoliday, dateFormat: 'YYYY/MM/DD', name: '#[KDM001_76]',required: true}"></div>
 					<!-- I11_2 代休日数 -->
 					<span class="label" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_115')}</span>
 					<!-- I11_3 代休日数 -->

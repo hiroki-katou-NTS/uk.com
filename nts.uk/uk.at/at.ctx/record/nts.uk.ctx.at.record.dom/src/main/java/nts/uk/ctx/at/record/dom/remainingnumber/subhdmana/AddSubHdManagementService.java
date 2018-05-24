@@ -69,7 +69,7 @@ public class AddSubHdManagementService {
 				CompensatoryDayOffManaData domainCompensatoryDayOffManaData = new CompensatoryDayOffManaData(
 						comDayOffID, AppContexts.user().companyId(), subHdManagementData.getEmployeeId(), false,
 						subHdManagementData.getDateSubHoliday(), subHdManagementData.getSelectedCodeSubHoliday(), 0,
-						Double.valueOf(0), 0);
+						Double.valueOf(subHdManagementData.getDayRemaining()), 0);
 				repoComDayOffManaData.create(domainCompensatoryDayOffManaData);
 				if (subHdManagementData.getCheckedSplit() == true) {
 					// Todo #118200
