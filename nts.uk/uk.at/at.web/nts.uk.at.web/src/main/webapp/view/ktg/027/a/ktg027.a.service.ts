@@ -21,4 +21,8 @@ module nts.uk.at.view.ktg027.a.service {
        let _path = nts.uk.text.format(paths.buttonPressingProcess, targetMonth, selectedClosureID);
         return ajax("at", _path);
     }
+    /** Print */
+    export function saveAsCsv(data:any): JQueryPromise<any> {
+            return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "overtime", domainType: "OvertimeHours", languageId: 'ja', reportType: 3 ,data:data});
+        }
 }  

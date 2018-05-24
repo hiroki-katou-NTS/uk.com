@@ -13,7 +13,6 @@ import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
 @Setter
 public class OvertimeHours {
 	
-		List<ClosureResultModel> listclosureID;
 		/** エラーメッセージ */
 		String errorMessage;
 		/** 時間外労働情報 */
