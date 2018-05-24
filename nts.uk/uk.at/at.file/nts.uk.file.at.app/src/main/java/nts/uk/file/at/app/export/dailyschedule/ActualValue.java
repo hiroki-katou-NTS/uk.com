@@ -2,6 +2,11 @@ package nts.uk.file.at.app.export.dailyschedule;
 
 import java.math.BigDecimal;
 
+import org.apache.commons.lang3.StringUtils;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 
@@ -19,7 +24,8 @@ import nts.arc.time.GeneralDate;
  * @param value the value
  * @param valueType the value type
  */
-@Value
+@Getter
+@Setter
 public class ActualValue {
 	
 	/** The Constant INTEGER. */
@@ -66,4 +72,28 @@ public class ActualValue {
 			throw new RuntimeException("invalid type: " + this.valueType);
 		}
 	}
+
+	public ActualValue() {
+		super();
+	}
+
+	public ActualValue(int attendanceId, String value, int valueType) {
+		super();
+		this.attendanceId = attendanceId;
+		this.value = value;
+		this.valueType = valueType;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object val) {
+		if (val instanceof ActualValue) {
+			ActualValue actualValue = (ActualValue) val;
+			return this.attendanceId == actualValue.attendanceId && StringUtils.equals(this.value, actualValue.value) && this.valueType == actualValue.valueType;
+		}
+		return false;
+	}
+	
 }

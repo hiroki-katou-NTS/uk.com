@@ -7,6 +7,7 @@ public class WorkScheOutputConstants {
 	public static final String DAYMONTH = "月日";
 	public static final String DAY = "曜";
 	public static final String REMARK = "備考";
+	public static final String PERSONAL_NAME = "個人名";
 	
 	// Calculation text
 	public static final String TOTAL_EMPLOYEE = "個人計";
@@ -26,6 +27,7 @@ public class WorkScheOutputConstants {
 	// Personal total
 	public static final String PERSONAL_TOTAL = "個人計";
 	public static final String WORKPLACE_TOTAL = "職場計";
+	public static final String GROSS_TOTAL = "総合計";
 	
 	// DAY_COUNT
 	public static final String DAY_COUNT = "日数計";

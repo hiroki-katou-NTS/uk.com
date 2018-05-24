@@ -19,6 +19,9 @@ public class DailyWorkplaceData {
 	/** The workplace name. */
 	public String workplaceName;
 	
+	/** The level. */
+	public int level;
+	
 	/** The lst daily personal data. */
 	public List<DailyPersonalPerformanceData> lstDailyPersonalData;
 	

@@ -65,6 +65,7 @@ public class TotalDayCountWs {
 			for (WorkType workType: lstWorkType) {
 				dayCount += dailyPerformanceList.stream().filter(x -> x.getScheduleWorkInformation().getWorkTypeCode() == workType.getWorkTypeCode().v()).collect(Collectors.toList()).size();
 			}
+			//dayCount = lstWorkType.size();
 			
 			// 所定日数をカウントする
 			totalCountDay.setPredeterminedDay(dayCount);
@@ -81,26 +82,28 @@ public class TotalDayCountWs {
 	 */
 	private void calculateNonPredeterminedDay(String employeeId, DateRange dateRange, TotalCountDay totalCountDay) {
 		// ドメインモデル「画面で利用できる勤怠項目一覧」を取得する
-		AttendanceType attendanceType = attendanceTypeRepository.getItemByScreenUseAtr(AppContexts.user().companyId(), 19)
-				.stream().filter(x -> x.getAttendanceItemId() == 58 && x.getAttendanceItemType().value == 1).findFirst().get();
+//		AttendanceType attendanceType = attendanceTypeRepository.getItemByScreenUseAtr(AppContexts.user().companyId(), 19)
+//				.stream().filter(x -> x.getAttendanceItemId() == 58 && x.getAttendanceItemType().value == 1).findFirst().get();
 		
 		for (DayType dayType : DayType.values()) {
 			// ドメインモデル「勤務種類」を取得する
-			Optional<WorkType> optWorkType = workTypeRepository.findByPK(AppContexts.user().companyId(), String.valueOf(attendanceType.getAttendanceItemId()));
+			List<WorkType> lstWorkType = workTypeRepository.findByCompanyId(AppContexts.user().companyId()).stream().filter(x -> 
+				x.getDailyWork().getOneDay().value == dayType.value || 
+				x.getDailyWork().getMorning().value == dayType.value || 
+				x.getDailyWork().getAfternoon().value == dayType.value).collect(Collectors.toList());
 			
-			if (optWorkType.isPresent()) {
-				WorkType workType = optWorkType.get();
+			if (lstWorkType.size() > 0) {
 				
-				if (workType.getDailyWork().getMorning().value == dayType.value) {
-					// ドメインモデル「日別実績の勤務情報」を取得する
-					List<String> empList = new ArrayList<>();
-					empList.add(employeeId);
-					// 予定勤務種類コードを取得する
-					List<WorkInfoOfDailyPerformanceDetailDto> dailyPerformanceList = dailyPerformanceRepo.find(empList, dateRange);
-					
+				// ドメインモデル「日別実績の勤務情報」を取得する
+				List<String> empList = new ArrayList<>();
+				empList.add(employeeId);
+				// 予定勤務種類コードを取得する
+				List<WorkInfoOfDailyPerformanceDetailDto> dailyPerformanceList = dailyPerformanceRepo.find(empList, dateRange);
+				
+				for (WorkType workType: lstWorkType) {
 					// 日数をカウントする
 					int dayCount = dailyPerformanceList.stream().filter(x -> x.getScheduleWorkInformation().getWorkTypeCode() == workType.getWorkTypeCode().v()).collect(Collectors.toList()).size();
-					
+					//int dayCount = lstWorkType.size();
 					switch (dayType) {
 					case ATTEND:
 						totalCountDay.setWorkingDay(dayCount);
@@ -122,6 +125,7 @@ public class TotalDayCountWs {
 						break;
 					}
 				}
+				
 			}
 		}
 	}
@@ -141,9 +145,9 @@ public class TotalDayCountWs {
 		lstAttendanceId.add(610);
 		
 		// ドメインモデル「画面で利用できる勤怠項目一覧」を取得する
-		AttendanceType attendanceType = attendanceTypeRepository.getItemByScreenUseAtr(AppContexts.user().companyId(), 19)
-				.stream().filter(x -> lstAttendanceId.contains(x.getAttendanceItemId()) && 
-									   x.getAttendanceItemType().value == 1).findFirst().get();
+//		AttendanceType attendanceType = attendanceTypeRepository.getItemByScreenUseAtr(AppContexts.user().companyId(), 19)
+//				.stream().filter(x -> lstAttendanceId.contains(x.getAttendanceItemId()) && 
+//									   x.getAttendanceItemType().value == 1).findFirst().get();
 		
 		List<String> lstEmployeeId = new ArrayList<>();
 		lstEmployeeId.add(employeeId);
