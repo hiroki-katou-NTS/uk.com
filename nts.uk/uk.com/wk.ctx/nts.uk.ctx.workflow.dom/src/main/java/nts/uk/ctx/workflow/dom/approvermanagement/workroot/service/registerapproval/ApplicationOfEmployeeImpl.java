@@ -39,6 +39,12 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 				.filter(x -> x.getEmployeeId().equals(sId) 
 						&& this.checkByType(x.getConfirmationRootType(), x.getEmploymentRootAtr(), x.getApplicationType(), appType))
 				.collect(Collectors.toList());
+		if(lstPsRoots.isEmpty()){//TH: set cua type khong co -> lay theo common
+			lstPsRoots = lstPersonRootInfor
+					.stream()
+					.filter(x -> x.getEmployeeId().equals(sId) && x.isCommon())
+					.collect(Collectors.toList());
+		}
 		//データが１件以上取得した場合(data >= 1)
 		if(!CollectionUtil.isEmpty(lstPsRoots)) {
 			List<ApprovalPhase> lstPhase = new ArrayList<>();
@@ -79,6 +85,13 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 					.filter(x -> (x.getWorkplaceId().equals(wpId) 
 							&& this.checkByType(x.getConfirmationRootType(), x.getEmploymentRootAtr(), x.getApplicationType(), appType)))
 					.collect(Collectors.toList());
+			if(lstWpRoots.isEmpty()){//TH: set cua type khong co -> lay theo common
+				lstWpRoots = lstWorkpalceRootInfor
+						.stream()
+						.filter(x -> x.getWorkplaceId().equals(wpId) && x.isCommon())
+						.collect(Collectors.toList());
+			}
+			
 			//データが１件以上取得した場合(data >= 1)
 			if(!CollectionUtil.isEmpty(lstWpRoots)) {
 				List<ApprovalPhase> lstPhase = new ArrayList<>();
@@ -114,6 +127,12 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 					.filter(x -> x.getCompanyId().equals(companyID)
 								&& this.checkByType(x.getConfirmationRootType(), x.getEmploymentRootAtr(), x.getApplicationType(), appType))
 					.collect(Collectors.toList());
+			if(lstRoots.isEmpty()){//TH: set cua type khong co -> lay theo common
+				lstRoots = lstCompanyRootInfor
+						.stream()
+						.filter(x -> x.getCompanyId().equals(companyID) && x.isCommon())
+						.collect(Collectors.toList());
+			}
 			//データが１件以上取得した場合(data >= 1)
 			if(!CollectionUtil.isEmpty(lstRoots)) {
 				List<ApprovalPhase> lstPhase = new ArrayList<>();
@@ -158,7 +177,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 		//ドメインモデル「個人別就業承認ルート」を取得する(láy du lieu domain「個人別就業承認ルート」 ): 申請本人の社員ID, 就業ルート区分(共通)
 		List<PersonApprovalRoot> lstPsCommonRoots = lstPersonRootInfor
 				.stream()
-				.filter(x -> x.getEmployeeId().equals(sId) && x.getEmploymentRootAtr() == EmploymentRootAtr.COMMON)
+				.filter(x -> x.getEmployeeId().equals(sId) && x.isCommon())
 				.collect(Collectors.toList());
 		//データが１件以上取得した場合(data >= 1)
 		if(!CollectionUtil.isEmpty(lstPsCommonRoots)) {
@@ -187,7 +206,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 			List<WorkplaceApprovalRoot> lstWpCommonRoots = lstWorkpalceRootInfor
 					.stream()
 					.filter(x -> x.getWorkplaceId().equals(wpId) 
-							&& x.getEmploymentRootAtr() == EmploymentRootAtr.COMMON)
+							&& x.isCommon())
 					.collect(Collectors.toList());
 			//データが１件以上取得した場合(data >= 1)
 			if(!CollectionUtil.isEmpty(lstWpCommonRoots)) {
@@ -211,7 +230,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 		}
 		//ドメインモデル「会社別就業承認ルート」を取得する(lấy dữ liệu domain「会社別就業承認ルート」): 就業ルート区分(共通)
 		List<CompanyApprovalRoot> lstComRoots = lstCompanyRootInfor.stream()
-				.filter(x -> x.getEmploymentRootAtr() == EmploymentRootAtr.COMMON 
+				.filter(x -> x.isCommon()
 						&& x.getCompanyId().equals(companyID))
 				.collect(Collectors.toList());
 		//データが１件以上取得した場合(data >= 1)
