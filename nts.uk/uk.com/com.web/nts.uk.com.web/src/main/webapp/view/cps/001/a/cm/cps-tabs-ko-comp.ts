@@ -631,7 +631,8 @@ module nts.custom.component {
                         iid: v,
                         tab: TABS.CATEGORY,
                         act: undefined,
-                        ctype: ko.toJS(params.combobox.object.categoryType)
+                        ctype: ko.toJS(params.combobox.object.categoryType),
+                        ccode: ko.toJS(params.combobox.object.categoryCode)
                     });
                 }
             });
