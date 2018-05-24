@@ -272,7 +272,7 @@ public class KrcdtDayHolidyWork extends UkJpaEntity implements Serializable{
 	/*法定外休日出勤深夜乖離時間*/
 	@Column(name = "DIV_ILLEG_HOLI_WORK_MIDN")
 	public int divIllegHoliWorkMidn;
-	/*振替乖離時間１0*/
+	/*祝日出勤深夜乖離時間*/
 	@Column(name = "DIV_PB_HOLI_WORK_MIDN")
 	public int divPbHoliWorkMidn;
 	
