@@ -2,9 +2,6 @@ package nts.uk.ctx.at.record.app.command.remainingnumber.paymana;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.base.CompensatoryDayoffDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.base.ManagementDataDaysAtr;
-import nts.uk.ctx.at.record.dom.remainingnumber.base.ManagementDataRemainUnit;
 
 @Getter
 public class UpdateSubstitutionOfHDManaDataCommand {
@@ -19,13 +16,14 @@ public class UpdateSubstitutionOfHDManaDataCommand {
 		private String sID;
 		
 		private GeneralDate  exprirationDate;
-		// 振休日
-		private CompensatoryDayoffDate holidayDate;
+		
+		// 年月日
+		private GeneralDate dayoffDate;
 		
 		// 必要日数
-		private ManagementDataDaysAtr requiredDays;	
+		private Double requiredDays;	
 		
 		// 未相殺日数
-		private ManagementDataRemainUnit remainDays;
+		private Double remainDays;
 	
 }

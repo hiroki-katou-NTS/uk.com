@@ -53,10 +53,6 @@ public class FurikyuMngDataExtractionService {
 			substitutionOfHDManagementData = substitutionOfHDManaDataRepository.getBySidRemainDayAndInPayout(sid);
 		}
 		
-		if (payoutManagementData.isEmpty() && substitutionOfHDManagementData.isEmpty()){
-			throw new BusinessException("Msg_725");
-		}
-		
 		numberOfDayLeft = getNumberOfDayLeft(sid);
 		expirationDate = getExpirationDate(sid);
 		closureId = getClosureId(sid);

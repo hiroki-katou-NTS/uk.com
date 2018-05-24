@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.remainingnumber.paymana;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -36,6 +37,16 @@ public class FurikyuMngDataExtractionFinder {
 			compositePayOutSubMngData.add(new CompositePayOutSubMngData(item));
 		}
 
+		compositePayOutSubMngData.sort(new Comparator<CompositePayOutSubMngData>() {
+		    @Override
+		    public int compare(CompositePayOutSubMngData m1, CompositePayOutSubMngData m2) {
+		    	GeneralDate date1 = (m1.getPayoutId() != null) ? m1.getDayoffDatePyout() : m1.getDayoffDateSub();
+		    	GeneralDate date2 = (m2.getPayoutId() != null) ? m2.getDayoffDatePyout() : m2.getDayoffDateSub();
+		    	
+		    	return date1.before(date2) ? -1 : 1;
+		    }
+		});
+		
 		return new FurikyuMngDataExtractionDto(compositePayOutSubMngData, furikyuMngDataExtractionData.getExpirationDate(),
 				furikyuMngDataExtractionData.getNumberOfDayLeft(), furikyuMngDataExtractionData.getClosureId());
 	}
