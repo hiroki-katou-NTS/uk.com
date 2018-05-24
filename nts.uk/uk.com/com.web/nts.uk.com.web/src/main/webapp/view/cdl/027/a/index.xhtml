@@ -10,7 +10,7 @@
 			<script>
                 var dialogSize = {
                     width : 1040,
-                    height : 550
+                    height : 555
                 };
             </script>
 			<com:scriptfile set="IGNITE" />
@@ -29,6 +29,9 @@
 				<div style="padding: 20px">
 					<div class="valign-center control-group">
 						<span class="label">#{i18n.getText('CDL027_5')}</span>
+						<span class="label" data-bind="text: targetStart"></span>
+						<span class="label">#{i18n.getText('CDL027_6')}</span>
+						<span class="label" data-bind="text: targetEnd"></span>
 					</div>
 					<table id="list"></table>
 				</div>
