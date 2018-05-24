@@ -56,6 +56,7 @@ module nts.uk.ui.koExtentions {
                     container.find('.ui-tabs-panel').addClass('disappear');
                     ui.panel.removeClass('disappear'); 
                     container.find(".ui-tabs-tab").attr('tabindex', container.data("tabindex"));
+		    container.attr('tabindex', container.data("tabindex"));	
                 },
                 activate: function(evt: Event, ui: any) {
                     data.active(ui.newPanel[0].id);
