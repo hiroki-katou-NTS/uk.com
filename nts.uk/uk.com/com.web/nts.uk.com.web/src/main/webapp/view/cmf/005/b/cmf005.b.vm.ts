@@ -542,7 +542,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         private validateD(): boolean {
             var self = this;
             if ((self.selectedTitleAtr() == 1 && self.selectedEmployeeCode() && self.selectedEmployeeCode().length > 0)
-                || (self.selectedTitleAtr() == 0 && self.initEmployeeList() && self.initEmployeeList().length > 0)) {
+                || (self.selectedTitleAtr() == 0 )) {
                 return true;
             } else {
                 nts.uk.ui.dialog.error({ messageId: "Msg_498", messageParams: ["X", "Y"] });
@@ -618,7 +618,9 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 params.saveBeforDelete = self.isSaveBeforeDeleteFlg();
 
             setShared("CMF005_E_PARAMS", params);
-            modal("/view/cmf/005/f/index.xhtml");
+            modal("/view/cmf/005/f/index.xhtml").onClosed(() => {
+                nts.uk.request.jump("/view/cmf/005/a/index.xhtml");
+            });
         }
 
         private saveManualSetting(): void {
