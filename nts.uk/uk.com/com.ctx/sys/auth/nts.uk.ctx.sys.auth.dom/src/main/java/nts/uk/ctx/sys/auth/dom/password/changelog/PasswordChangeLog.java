@@ -1,15 +1,10 @@
 package nts.uk.ctx.sys.auth.dom.password.changelog;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.auth.dom.user.HashPassword;
 
 @Getter
-@Setter
-@AllArgsConstructor
 public class PasswordChangeLog extends AggregateRoot{
 	
 	/** The login ID. */
@@ -29,17 +24,27 @@ public class PasswordChangeLog extends AggregateRoot{
 	private HashPassword password;
 	
 	/**
-	 * Creates the from javatype.
+	 * Save to memento.
 	 *
-	 * @param loginId the login ID
-	 * @param userID the user ID
-	 * @param modifiedDate the modified date
-	 * @param password the password
-	 * @return the password change log
+	 * @param memento the memento
 	 */
-	public static PasswordChangeLog createFromJavatype(String loginID, String userID, GeneralDateTime modifiedDate, String password) {
+	public void saveToMemento(PasswordChangeLogSetMemento memento) {
+		memento.setLoginId(this.loginID);
+		memento.setUserId(this.userID);
+		memento.setModifiedDate(this.modifiedDate);
+		memento.setPassword(this.password);
+	}
 
-		return new PasswordChangeLog(new LoginId(loginID), userID, modifiedDate, new HashPassword(password));
+	/**
+	 * Instantiates a new password change log.
+	 *
+	 * @param memento the memento
+	 */
+	public PasswordChangeLog(PasswordChangeLogGetMemento memento) {
+		this.loginID = memento.getLoginId();
+		this.userID = memento.getUserId();
+		this.modifiedDate = memento.getModifiedDateTime();
+		this.password = memento.getPassword();
 	}
 
 }
