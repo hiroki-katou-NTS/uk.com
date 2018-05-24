@@ -79,9 +79,8 @@ module nts.uk.com.view.kwr002.e {
                     service.getCalculateAttndRecInfo(attendanceRecordKey).done(function(calculateAttendanceRecordDto: model.CalculateAttendanceRecordDto) {
                         if(calculateAttendanceRecordDto != null) {
                             if(calculateAttendanceRecordDto.attribute != null || calculateAttendanceRecordDto.attribute != undefined) {
-                            self.findAttndRecByScreen(calculateAttendanceRecordDto.attribute);
-                            }
-                            else {
+                                self.findAttndRecByScreen(calculateAttendanceRecordDto.attribute);
+                            } else {
                                 self.findAttndRecByScreen(16);
                             }
                             var calculateAttendanceRecordList: Array<model.SelectedItem> = [];
@@ -93,8 +92,11 @@ module nts.uk.com.view.kwr002.e {
                             });
                             calculateAttendanceRecordList.sort(function(a, b) { return a.code - b.code; });
                             self.selectedGridItems(calculateAttendanceRecordList);
-                            dfd.resolve();
                         }
+                        else {
+                            self.findAttndRecByScreen(16);
+                        }
+                        dfd.resolve();
                     });
                 }
                 self.layoutCode(self.attendanceItem().layoutCode);
