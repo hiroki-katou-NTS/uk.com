@@ -437,14 +437,17 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 });
             } else {
                 service.updateOutputItemSetting(data).done(() => {
-                    info({ messageId: 'Msg_15' }).then(() => {
-                        let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd() == self.selectedCode(); });
-                        if (selectedIndex > -1) {
-                            self.currentSetOutputSettingCode().displayName = self.currentSetOutputSettingCode().name();
+                    let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd() == self.selectedCode(); });
+                    if (selectedIndex > -1) {
+                        if (self.currentSetOutputSettingCode().displayName == self.currentSetOutputSettingCode().name()) {
+                            self.currentSetOutputSettingCode().displayName = self.currentSetOutputSettingCode().displayName + " ";
                             self.listStandardImportSetting.replace(self.listStandardImportSetting()[selectedIndex], self.currentSetOutputSettingCode());
-                            self.selectedCode(self.currentSetOutputSettingCode().cd());
-                        }
-                    });
+                        } 
+                        self.currentSetOutputSettingCode().displayName = self.currentSetOutputSettingCode().name();
+                        self.listStandardImportSetting.replace(self.listStandardImportSetting()[selectedIndex], self.currentSetOutputSettingCode());
+                        self.selectedCode(self.currentSetOutputSettingCode().cd());
+                    }
+                    info({ messageId: 'Msg_15' });
                 }).fail(err => {
                     console.log(err);
                 }).always(function() {
