@@ -6,12 +6,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
-import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -47,18 +45,6 @@ public class PayoutManagementDataFinder {
 		String cid = AppContexts.user().companyId();
 
 		return payoutManagementDataRepository.getSidWithCod(cid, empId, state).stream().map(item -> PayoutManagementDataDto.createFromDomain(item))
-				.collect(Collectors.toList());
-	}
-	
-	public List<PayoutManagementDataDto> getBySidDatePeriodDif(String empId, GeneralDate startDate, GeneralDate endDate, int state) {
-
-		return payoutManagementDataRepository.getBySidDatePeriodDif(empId, startDate, endDate, state).stream().map(item -> PayoutManagementDataDto.createFromDomain(item))
-				.collect(Collectors.toList());
-	}
-	
-	public List<PayoutManagementDataDto> getBySidDatePeriodNoDigestion(String empId, GeneralDate startDate, GeneralDate endDate) {
-
-		return payoutManagementDataRepository.getBySidDatePeriodNoDigestion(empId, startDate, endDate).stream().map(item -> PayoutManagementDataDto.createFromDomain(item))
 				.collect(Collectors.toList());
 	}
 }

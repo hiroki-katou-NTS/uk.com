@@ -173,8 +173,13 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         }
         
         clickGetDataList() {
-            self.updateDataList();
-            $('#compositePayOutSubMngDataGrid').focus();
+            let self = this;
+            
+            $(".ntsDatepicker").trigger("validate");
+            if (!nts.uk.ui.errors.hasError()) {
+                self.updateDataList();
+                $('#compositePayOutSubMngDataGrid').focus();
+            }
         }
         
         updateDataList() {
