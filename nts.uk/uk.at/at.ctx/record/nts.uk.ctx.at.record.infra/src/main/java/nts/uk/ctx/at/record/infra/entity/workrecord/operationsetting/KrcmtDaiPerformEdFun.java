@@ -81,20 +81,6 @@ public class KrcmtDaiPerformEdFun extends UkJpaEntity implements Serializable
     public int breakTimeAutoAtr;
     
     /**
-    * 休日の場合、出勤/退勤時刻をクリアにする
-    */
-    @Basic(optional = false)
-    @Column(name = "BREAK_CLR_TIME_ATR")
-    public int breakClrTimeAtr;
-    
-    /**
-    * 出勤/退勤時刻を自動で設定する
-    */
-    @Basic(optional = false)
-    @Column(name = "AUTO_SET_TIME_ATR")
-    public int autoSetTimeAtr;
-    
-    /**
     * 早出計算区分を変更する場合、早出残業深夜計算区分を変更する
     */
     @Basic(optional = false)
@@ -136,8 +122,6 @@ public class KrcmtDaiPerformEdFun extends UkJpaEntity implements Serializable
 							        		this.flexDispAtr, 
 							        		this.breakCalcUpdAtr, 
 							        		this.breakTimeAutoAtr, 
-							        		this.breakClrTimeAtr, 
-							        		this.autoSetTimeAtr, 
 							        		this.ealyCalcUpdAtr, 
 							        		this.overtimeCalcUpdAtr, 
 							        		this.lawOverCalcUpdAtr, 
@@ -151,8 +135,6 @@ public class KrcmtDaiPerformEdFun extends UkJpaEntity implements Serializable
 						        		domain.getFlexDispAtr(), 
 						        		domain.getBreakCalcUpdAtr(), 
 						        		domain.getBreakTimeAutoAtr(), 
-						        		domain.getBreakClrTimeAtr(), 
-						        		domain.getAutoSetTimeAtr(), 
 						        		domain.getEalyCalcUpdAtr(), 
 						        		domain.getOvertimeCalcUpdAtr(), 
 						        		domain.getLawOverCalcUpdAtr(), 

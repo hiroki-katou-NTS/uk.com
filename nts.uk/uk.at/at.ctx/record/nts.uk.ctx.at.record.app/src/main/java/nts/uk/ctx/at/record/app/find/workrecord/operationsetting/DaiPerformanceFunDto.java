@@ -53,16 +53,6 @@ public class DaiPerformanceFunDto
     private int breakTimeAutoAtr;
     
     /**
-    * 休日の場合、出勤/退勤時刻をクリアにする
-    */
-    private int breakClrTimeAtr;
-    
-    /**
-    * 出勤/退勤時刻を自動で設定する
-    */
-    private int autoSetTimeAtr;
-    
-    /**
     * 早出計算区分を変更する場合、早出残業深夜計算区分を変更する
     */
     private int ealyCalcUpdAtr;
@@ -92,8 +82,6 @@ public class DaiPerformanceFunDto
 						        		domain.getFlexDispAtr(), 
 						        		domain.getBreakCalcUpdAtr(), 
 						        		domain.getBreakTimeAutoAtr(), 
-						        		domain.getBreakClrTimeAtr(), 
-						        		domain.getAutoSetTimeAtr(), 
 						        		domain.getEalyCalcUpdAtr(), 
 						        		domain.getOvertimeCalcUpdAtr(), 
 						        		domain.getLawOverCalcUpdAtr(), 

@@ -27,8 +27,6 @@ public class UpdateDaiPerformanceFunCommandHandler extends CommandHandler<DaiPer
         		updateCommand.isFlexDispAtr() ? 1 : 0, 
         		updateCommand.isBreakCalcUpdAtr() ? 1 : 0, 
         		updateCommand.isBreakTimeAutoAtr() ? 1 : 0, 
-        		updateCommand.isBreakClrTimeAtr() ? 1 : 0, 
-        		updateCommand.isAutoSetTimeAtr() ? 1 : 0, 
         		updateCommand.isEalyCalcUpdAtr() ? 1 : 0, 
         		updateCommand.isOvertimeCalcUpdAtr() ? 1 : 0, 
         		updateCommand.isLawOverCalcUpdAtr() ? 1 : 0, 

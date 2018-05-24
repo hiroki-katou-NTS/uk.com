@@ -27,8 +27,6 @@ public class AddDaiPerformanceFunCommandHandler extends CommandHandler<DaiPerfor
 																addCommand.isFlexDispAtr() ? 1 : 0, 
 																addCommand.isBreakCalcUpdAtr() ? 1 : 0, 
 																addCommand.isBreakTimeAutoAtr() ? 1 : 0, 
-																addCommand.isBreakClrTimeAtr() ? 1 : 0, 
-																addCommand.isAutoSetTimeAtr() ? 1 : 0, 
 																addCommand.isEalyCalcUpdAtr() ? 1 : 0, 
 																addCommand.isOvertimeCalcUpdAtr() ? 1 : 0, 
 																addCommand.isLawOverCalcUpdAtr() ? 1 : 0, 

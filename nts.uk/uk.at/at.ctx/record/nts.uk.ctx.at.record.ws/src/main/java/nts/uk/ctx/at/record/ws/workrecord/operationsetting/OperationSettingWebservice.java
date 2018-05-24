@@ -82,7 +82,6 @@ public class OperationSettingWebservice extends WebService {
 	public DaiPerformanceFunDto getDaiPerformanceFunById() {
 		String companyId = AppContexts.user().companyId();
 		DaiPerformanceFunDto dto =  daiPerformanceFunFinder.getDaiPerformanceFunById(companyId);
-		
 		return dto;
 	}
 	
