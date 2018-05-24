@@ -3,9 +3,9 @@ package nts.uk.ctx.at.record.app.command.remainingnumber.subhdmana;
 import lombok.Data;
 
 @Data
-public class ComDayOffManaDto {
+public class LeaveManaDto {
 	
-	private String comDayOffID;
+	private String leaveManaID;
 	private String dayOff;
 	private String remainDays;
 }

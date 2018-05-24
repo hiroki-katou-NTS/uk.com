@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -41,11 +40,6 @@ public class SubstitutionOfHDManagementDataFinder {
 		
 		String cid = AppContexts.user().companyId();
 		return substitutionOfHDManaDataRepository.getBysiDRemCod(cid, empId).stream().map(item -> SubstitutionOfHDManagementDataDto.createFromDomain(item))
-				.collect(Collectors.toList());
-	}
-	
-	public List<SubstitutionOfHDManagementDataDto> getBySidDatePeriodNoRemainDay(String sid, GeneralDate startDate, GeneralDate endDate) {
-		return substitutionOfHDManaDataRepository.getBySidDatePeriodNoRemainDay(sid, startDate, endDate).stream().map(item -> SubstitutionOfHDManagementDataDto.createFromDomain(item))
 				.collect(Collectors.toList());
 	}
 	

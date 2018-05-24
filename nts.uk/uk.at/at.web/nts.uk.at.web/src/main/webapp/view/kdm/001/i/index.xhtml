@@ -41,8 +41,8 @@
 					<hr />
 				</div>
 				<!-- I4 休出 -->
-				<div  tabindex="1" id="I4"
-					data-bind="ntsCheckBox: { checked: checkedHoliday, enable: true, text: '#{i18n.getText('KDM001_101')}' }"></div>
+				<div tabindex="1" id="I4"
+					data-bind="ntsCheckBox: { checked: checkedHoliday, enable: true, text: '#{i18n.getText('KDM001_110')}' }"></div>
 				<!-- I5 罫線 -->
 				<div class="set-row">
 					<hr />
@@ -54,12 +54,12 @@
 					<!-- I6_1 年月日 -->
 					<!-- Datepicker -->
 					<div id="I6_1" tabindex="2"
-						data-bind="ntsDatePicker: {value: dateHoliday, dateFormat: 'YYYY/MM/DD'}"></div>
+						data-bind="ntsDatePicker: {value: dateHoliday, dateFormat: 'YYYY/MM/DD', required: true, name: '#[KDM001_62]'}"></div>
 					<!-- I6_2 休出日数 -->
 					<span class="label" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_111')}</span>
 					<!-- I6_3 休出日数 -->
 					<!-- Combobox -->
-					<div tabindex="3" id="combo-box-holiday" 
+					<div tabindex="3" id="combo-box-holiday"
 						data-bind="ntsComboBox: {
 					name: '#[KDM001_112]',
 					options: itemListHoliday,
@@ -81,7 +81,7 @@
 					<!-- I8_1 期限 -->
 					<!-- Datepicker -->
 					<div tabindex="4"
-						data-bind="ntsDatePicker: {value: duedateHoliday, dateFormat: 'YYYY/MM/DD', name: '#[KDM001_73]'}"></div>
+						data-bind="ntsDatePicker: {value: duedateHoliday, dateFormat: 'YYYY/MM/DD', name: '#[KDM001_73]', required: true}"></div>
 				</div>
 
 				<div class="down-s">
@@ -100,12 +100,12 @@
 					<!-- I11_1 年月日 -->
 					<!-- Datepicker -->
 					<div id="I11_1"
-						data-bind="ntsDatePicker: {value: dateSubHoliday, dateFormat: 'YYYY/MM/DD', name: '#[KDM001_76]'}"></div>
+						data-bind="ntsDatePicker: {value: dateSubHoliday, dateFormat: 'YYYY/MM/DD', name: '#[KDM001_76]', required: checkRequire}"></div>
 					<!-- I11_2 代休日数 -->
 					<span class="label" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_115')}</span>
 					<!-- I11_3 代休日数 -->
 					<!-- Combobox -->
-					<div tabindex="6" id="combo-box-sub-holiday"
+					<div tabindex="6" id="I11_3" class="combo-box-sub-holiday"
 						data-bind="ntsComboBox: {
 					name: '#[KDM001_116]',
 					options: itemListSubHoliday,
@@ -135,7 +135,7 @@
 						<span class="label" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_115')}</span>
 						<!-- I12_4 代休日数 -->
 						<!-- Combobox -->
-						<div tabindex="8" id="combo-box-option-sub-holiday"
+						<div tabindex="8" id="I12_4" class="combo-box-option-sub-holiday"
 							data-bind="ntsComboBox: {
 							name: '#[KDM001_116]',
 							options: itemListOptionSubHoliday,
@@ -170,7 +170,8 @@
 					<button tabindex="9" id="stopExecute" data-bind="click: submitData"
 						class="proceed">#{i18n.getText('KDM001_89')}</button>
 					<!-- I31_2 キャンセル -->
-					<button tabindex="10" id="closeDialog" data-bind="click: closeDialog">#{i18n.getText('KDM001_90')}</button>
+					<button tabindex="10" id="closeDialog"
+						data-bind="click: closeDialog">#{i18n.getText('KDM001_90')}</button>
 				</div>
 			</div>
 		</ui:define>

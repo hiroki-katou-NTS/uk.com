@@ -10,34 +10,34 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.remainingnumber.subhdmana.DayOffManaCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.subhdmana.DayOffManaCommandHandler;
-import nts.uk.ctx.at.record.app.find.remainingnumber.dayoffmanagement.DayOffManagementDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.dayoffmanagement.DayOffManagementFinder;
+import nts.uk.ctx.at.record.app.command.remainingnumber.subhdmana.LeaveManaComand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.subhdmana.LeaveManaCommandHandler;
+import nts.uk.ctx.at.record.app.find.remainingnumber.dayoffmanagement.LeaveManaDto;
+import nts.uk.ctx.at.record.app.find.remainingnumber.dayoffmanagement.LeaveManaFinder;
+
 
 @Path("at/record/remainnumber/subhd")
 @Produces("application/json")
 public class LeaveManagementDataService extends WebService {
 	
+	@Inject
+	private LeaveManaFinder leaveManaFinder;
 	
 	@Inject
-	private DayOffManagementFinder dayOffManagementFinder;
-	
-	@Inject
-	private DayOffManaCommandHandler dayOffManaCommandHandler;
+	private LeaveManaCommandHandler leaveManaCommandHandler;
 	
 	@POST
-	@Path("getAll/{leaveId}")
-	public List<DayOffManagementDto> getByRemainOrDayOffManagement(@PathParam("leaveId") String leaveId) {
-		List<DayOffManagementDto> daysOffMana = new ArrayList<>();
-		daysOffMana = dayOffManagementFinder.getBySidWithReDay(leaveId);
-		return daysOffMana;
+	@Path("getAll/{comDayOffID}/{employeeId}")
+	public List<LeaveManaDto> getComDayOffId(@PathParam("comDayOffID") String comDayOffID,@PathParam("employeeId") String employeeId) {
+		List<LeaveManaDto> leaveDataDtos = new ArrayList<>();
+		leaveDataDtos = leaveManaFinder.getByComDayOffId(comDayOffID, employeeId);
+		return leaveDataDtos;
 	}
 	
 	@POST
-	@Path("updateComDayOff")
-	public List<String> update(DayOffManaCommand dayOffManaCommand) {
-		return dayOffManaCommandHandler.handle(dayOffManaCommand);
+	@Path("updateLeaveMana")
+	public List<String> update(LeaveManaComand leaveManaCommand) {
+		return leaveManaCommandHandler.handle(leaveManaCommand);
 	}
 	
 }

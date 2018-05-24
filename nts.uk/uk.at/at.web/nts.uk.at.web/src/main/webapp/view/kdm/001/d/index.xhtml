@@ -177,13 +177,14 @@
 					<div class="labelTitle" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_85')}</div>
 					<!-- D15_1 残数 -->
 					<span class="label" data-bind="text: remainDays" ></span>
+					<span class="label" data-bind="text: unit" ></span>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
 				<div id="process" data-bind="visible: true"
 					style="text-align: center;">
 					<!-- D31_1 登録 -->
-					<button id="stopExecute" data-bind="click: submitForm" class="proceed">#{i18n.getText('KDM001_89')}</button>
+					<button id="stopExecute" data-bind="click: createData" class="proceed">#{i18n.getText('KDM001_89')}</button>
 					<!-- D31_1 キャンセル -->
 					<button id="closeDialog" data-bind="click: closeDialog">#{i18n.getText('KDM001_90')}</button>
 				</div>

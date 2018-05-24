@@ -27,7 +27,7 @@ public class SubstitutionManagementDataFinder {
 	}
 	
 	public ExtraHolidayManagementDataDto getExtraHolidayManagementData(SubDataSearchConditionDto dto){
-		ExtraHolidayManagementOutput extraHolidayOutput = extraHolidayManagementService.dataExtractionProcessing(dto.getEmployeeId(), dto.getStartDate(), dto.getEndDate());
+		ExtraHolidayManagementOutput extraHolidayOutput = extraHolidayManagementService.dataExtractionProcessing(dto.getSearchMode(), dto.getEmployeeId(), dto.getStartDate(), dto.getEndDate());
 		return ExtraHolidayManagementDataDto.convertToDto(extraHolidayOutput);
 	}
 }

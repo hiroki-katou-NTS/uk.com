@@ -9,5 +9,5 @@ import lombok.Getter;
 public class DayOffManaCommand {
 	private String employeeId;
 	private String leaveId;
-	private List<ComDayOffManaDto> comDayOffManaDtos;
+	private List<ComDayOffManaComand> comDayOffManaDtos;
 }

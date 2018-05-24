@@ -21,7 +21,7 @@ public interface ComDayOffManaDataRepository {
 
 	List<CompensatoryDayOffManaData> getBySid(String cid, String sid);
 
-	List<CompensatoryDayOffManaData> getBySidWithReDayAndDateCondition(String cid, String sid, GeneralDate startDate,
+	List<CompensatoryDayOffManaData> getByDateCondition(String cid, String sid, GeneralDate startDate,
 			GeneralDate endDate);
 
 	List<CompensatoryDayOffManaData> getBySidWithHolidayDateCondition(String cid, String sid,
@@ -38,8 +38,8 @@ public interface ComDayOffManaDataRepository {
 	/**
 	 * Delete domain 代休管理データ
 	 * @param comDayOffID ID
-	 * @param employeeId 社員ID
-	 * @param dayOffDate 代休日
 	 */
-	void deleteBySidAndDayOffDate(String comDayOffID, String employeeId, GeneralDate dayOffDate);
+	void deleteByComDayOffId(String comDayOffID);
+	
+	void updateReDayByComDayId(List<String> comDayIds);
 }

@@ -7,6 +7,7 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 @Getter
 public class SubDataSearchConditionDto {
+	private int searchMode;
 	private String employeeId;
 	private GeneralDate startDate;
 	private GeneralDate endDate;

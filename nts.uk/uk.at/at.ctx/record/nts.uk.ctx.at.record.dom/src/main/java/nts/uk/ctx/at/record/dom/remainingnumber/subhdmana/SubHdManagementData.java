@@ -64,7 +64,7 @@ public class SubHdManagementData {
 
 	// Domain LeaveComDayOffManagement
 	private Double dayRemaining;
-	
+
 	private int closureId;
 
 	/**
@@ -84,7 +84,7 @@ public class SubHdManagementData {
 	public SubHdManagementData(String employeeId, Boolean checkedHoliday, GeneralDate dateHoliday,
 			Double selectedCodeHoliday, GeneralDate duedateHoliday, Boolean checkedSubHoliday,
 			GeneralDate dateSubHoliday, Double selectedCodeSubHoliday, Boolean checkedSplit,
-			GeneralDate dateOptionSubHoliday, Double selectedCodeOptionSubHoliday, Double dayRemaining, int closureId ) {
+			GeneralDate dateOptionSubHoliday, Double selectedCodeOptionSubHoliday, Double dayRemaining, int closureId) {
 		super();
 		this.employeeId = employeeId;
 		this.checkedHoliday = checkedHoliday;
@@ -98,5 +98,6 @@ public class SubHdManagementData {
 		this.dateOptionSubHoliday = dateOptionSubHoliday;
 		this.selectedCodeOptionSubHoliday = selectedCodeOptionSubHoliday;
 		this.dayRemaining = dayRemaining;
+		this.closureId = closureId;
 	}
 }

@@ -1,15 +1,17 @@
 module nts.uk.at.view.kdm001.i.viewmodel {
     import model = kdm001.share.model;
     import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
     import block = nts.uk.ui.block;
-    import dialog    = nts.uk.ui.dialog;
+    import errors = nts.uk.ui.errors;
+    import dialog = nts.uk.ui.dialog;
     export class ScreenModel {
         employeeId: KnockoutObservable<string> = ko.observable('');
         workCode: KnockoutObservable<string> = ko.observable('');
         workplaceName: KnockoutObservable<string> = ko.observable('');
         employeeCode: KnockoutObservable<string> = ko.observable('');
         employeeName: KnockoutObservable<string> = ko.observable('');
-        dayRemaining: KnockoutObservable<number> = ko.observable(0);
+        dayRemaining: KnockoutObservable<string> = ko.observable("0");
         checkedHoliday: KnockoutObservable<boolean> = ko.observable(false);;
         checkedSubHoliday: KnockoutObservable<boolean> = ko.observable(false);
         checkedSplit: KnockoutObservable<boolean> = ko.observable(false);
@@ -19,25 +21,55 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         dateOptionSubHoliday: KnockoutObservable<string> = ko.observable('');
         dateOffOptionSubHoliday: KnockoutObservable<string> = ko.observable('');
         itemListHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
-        selectedCodeHoliday: KnockoutObservable<string> = ko.observable('');
+        selectedCodeHoliday: KnockoutObservable<number> = ko.observable(null);
         itemListSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
-        selectedCodeSubHoliday: KnockoutObservable<string> = ko.observable('');
+        selectedCodeSubHoliday: KnockoutObservable<number> = ko.observable(null);
         itemListOptionSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
         selectedCodeOptionSubHoliday: KnockoutObservable<string> = ko.observable('');
         isOptionSubHolidayEnable: KnockoutObservable<boolean> = ko.observable(false);
         closureId: KnockoutObservable<number> = ko.observable(0);
+        //RemaningDay
+        numberHoliday: KnockoutObservable<string> = ko.observable('');
+        numberSubHoliday: KnockoutObservable<string> = ko.observable('');
+        numberSplitHoliday: KnockoutObservable<string> = ko.observable('');
+        totalDay: KnockoutObservable<number> = ko.observable(null);
+        //Require 分割消化
+        checkRequire: KnockoutObservable<boolean> = ko.observable(false); 
         constructor() {
             let self = this;
             self.initScreen();
             self.checkedSplit.subscribe((v) => {
-                if (v == true) {
-                    self.isOptionSubHolidayEnable(true);
-                } else {
+                if (!v) {
                     self.isOptionSubHolidayEnable(false);
+                } else {
+                    self.isOptionSubHolidayEnable(true);
+                    self.selectedCodeOptionSubHoliday.subscribe((selectSplitHoli) => {
+                        self.numberSplitHoliday((selectSplitHoli).toFixed(1));
+                        self.totalDay(self.selectedCodeHoliday() - (self.selectedCodeSubHoliday() + parseFloat(self.numberSplitHoliday())));
+                        self.dayRemaining(self.totalDay().toString());    
+                    });
+                }
+            });
+            self.selectedCodeHoliday.subscribe((selectHoli) => {
+                self.numberHoliday((selectHoli).toFixed(1));
+                self.totalDay(parseFloat(self.numberHoliday()) - self.selectedCodeSubHoliday());
+                self.dayRemaining(self.totalDay().toString());     
+            });
+            self.selectedCodeSubHoliday.subscribe((selectSubHoli) => {
+                self.numberSubHoliday((selectSubHoli).toFixed(1));
+                self.totalDay(self.selectedCodeHoliday() - parseFloat(self.numberSubHoliday()));
+                self.dayRemaining(self.totalDay().toString());     
+            });
+
+            //Check require
+            self.checkedSubHoliday.subscribe((v) => {
+                if (!v) {
+                    self.checkRequire(false);
+                }else{
+                    self.checkRequire(true);
                 }
             });
         }
-
         initScreen(): void {
             block.invisible();
             let self = this,
@@ -51,63 +83,82 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                 self.closureId(info.closure.closureId);
             }
             block.clear();
-
-            self.dayRemaining(0.5);
-
         }
-
         /**
          * closeDialog
          */
-
         public submitData() {
-            block.invisible();
             let self = this;
-            let data = {
-                employeeId: self.employeeId(),
-                checkedHoliday: self.checkedHoliday(),
-                dateHoliday: moment.utc(self.dateHoliday(), 'YYYY/MM/DD').toISOString(),
-                selectedCodeHoliday: self.selectedCodeHoliday(),
-                duedateHoliday: moment.utc(self.duedateHoliday(), 'YYYY/MM/DD').toISOString(),
-                checkedSubHoliday: self.checkedSubHoliday(),
-                dateSubHoliday: moment.utc(self.dateSubHoliday(), 'YYYY/MM/DD').toISOString(),
-                selectedCodeSubHoliday: self.selectedCodeSubHoliday(),
-                checkedSplit: self.checkedSplit(),
-                dateOptionSubHoliday: moment.utc(self.dateOptionSubHoliday(), 'YYYY/MM/DD').toISOString(),
-                selectedCodeOptionSubHoliday: self.selectedCodeOptionSubHoliday(),
-                dayRemaining: self.dayRemaining(),
-                closureId: self.closureId()
-            };
-
-            console.log(data);
-            service.add(data).done(result => {
-                if (result && result.length > 0) {
-                    
-                    for (let error of result) {
-                        
-                        if (error === "Msg_737_holiday") {
-                            $('#I6_1').ntsError('set', { messageId: "Msg_737" });
+            errors.clearAll();
+            $(".ntsDatepicker").trigger("validate");
+            if (!errors.hasError()) {
+                block.invisible();
+                let data = {
+                    employeeId: self.employeeId(),
+                    checkedHoliday: self.checkedHoliday(),
+                    dateHoliday: moment.utc(self.dateHoliday(), 'YYYY/MM/DD').toISOString(),
+                    selectedCodeHoliday: self.selectedCodeHoliday(),
+                    duedateHoliday: moment.utc(self.duedateHoliday(), 'YYYY/MM/DD').toISOString(),
+                    checkedSubHoliday: self.checkedSubHoliday(),
+                    dateSubHoliday: moment.utc(self.dateSubHoliday(), 'YYYY/MM/DD').toISOString(),
+                    selectedCodeSubHoliday: self.selectedCodeSubHoliday(),
+                    checkedSplit: self.checkedSplit(),
+                    dateOptionSubHoliday: moment.utc(self.dateOptionSubHoliday(), 'YYYY/MM/DD').toISOString(),
+                    selectedCodeOptionSubHoliday: self.selectedCodeOptionSubHoliday(),
+                    dayRemaining: self.dayRemaining(),
+                    closureId: self.closureId()
+                };
+                console.log(data);
+                service.add(data).done(result => {
+                    if (result && result.length > 0) {
+                        for (let errorId of result) {
+                            if (errorId === "Msg_737_holiday") {
+                                $('#I6_1').ntsError('set', { messageId: "Msg_737" });
+                            }
+                            else if (errorId === "Msg_728") {
+                                $('#I4').ntsError('set', { messageId: errorId });
+                            }
+                            else if (errorId === "Msg_737_sub_holiday") {
+                                $('#I11_1').ntsError('set', { messageId: "Msg_737" });
+                            }
+                            else if (errorId === "Msg_745") {
+                                $('#I6_1').ntsError('set', { messageId: "Msg_745" });
+                            }
+                            else if (errorId === "Msg_730") {
+                                $('#I11_1').ntsError('set', { messageId: "Msg_730" });
+                            }
+                            else if (errorId === "Msg_1259") {
+                                $('#I12_4').ntsError('set', { messageId: "Msg_1259" });
+                            }
+                            else if (errorId === "Msg_1256_1") {
+                                $('#I11_3').ntsError('set', { messageId: "Msg_1256" });
+                            }
+                            else if (errorId === "Msg_1256_2") {
+                                $('#I12_4').ntsError('set', { messageId: "Msg_1256" });
+                            }
+                            else if (errorId === "Msg_1256_3") {
+                                $('#I6_3').ntsError('set', { messageId: "Msg_1256" });
+                            }
+                            else if (errorId === "Msg_1260_1") {
+                                $('#I11_3').ntsError('set', { messageId: "Msg_1260" });
+                            }
+                            else if (errorId === "Msg_1260_2") {
+                                $('#I12_4').ntsError('set', { messageId: "Msg_1260" });
+                            }
                         }
-                        if (error === "Msg_728") {
-                            $('#I4').ntsError('set', { messageId: error });
-                        }
-                        
-                        if (error === "Msg_737_sub_holiday") {
-                            $('#I11_1').ntsError('set', { messageId: "Msg_737" });
-                        }
+                        return;
                     }
-                    return;
-                }
-                //情報メッセージ　Msg_15 登録しました。を表示する。
-                dialog.info({ messageId: "Msg_15" }).then(() => {
-                    nts.uk.ui.windows.close();
+                    //情報メッセージ　Msg_15 登録しました。を表示する。
+                    dialog.info({ messageId: "Msg_15" }).then(() => {
+                        setShared('KDM001_I_PARAMS_RES', { isChanged: true });
+                        nts.uk.ui.windows.close();
+                    });
+                }).fail(function(res: any) {
+
                 });
-            }).fail(function(res: any) {
-
-            });
-            block.clear();
+                block.clear();
+            }
         }
-
         public closeDialog() {
             nts.uk.ui.windows.close();
         }

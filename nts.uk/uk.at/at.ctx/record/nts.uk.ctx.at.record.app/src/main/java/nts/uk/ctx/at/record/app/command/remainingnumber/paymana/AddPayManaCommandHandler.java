@@ -30,14 +30,12 @@ public class AddPayManaCommandHandler extends CommandHandler<PayManaRemainComman
 		int stateAtr = 0;
 		Double UnUsedDays = new Double(0);
 		boolean unknowDate = false;
-		// test
-		Double remainday = new Double(0);
-		if (remainday == 0){
+		if (command.getRemainDays() == 0){
 			stateAtr = 1;
 		}
-		PayoutManagementData payMana = new PayoutManagementData(newIDPayout,cId, command.getSID(), unknowDate, command.getDayOff(), command.getExpiredDate(), command.getLawAtr(),
+		PayoutManagementData payMana = new PayoutManagementData(newIDPayout,cId, command.getEmployeeId(), unknowDate, command.getDayOff(), command.getExpiredDate(), command.getLawAtr(),
 				command.getOccurredDays(), UnUsedDays, stateAtr);
-		SubstitutionOfHDManagementData subMana = new SubstitutionOfHDManagementData(newIDSub, cId, command.getSID(), unknowDate, command.getSubDayoffDate(), command.getRequiredDays(), remainday);
+		SubstitutionOfHDManagementData subMana = new SubstitutionOfHDManagementData(newIDSub, cId, command.getEmployeeId(), unknowDate, command.getSubDayoffDate(), command.getRequiredDays(), command.getRemainDays());
 		PayoutSubofHDManagement paySub = new PayoutSubofHDManagement(newIDPayout, newIDSub, new BigDecimal(0), TargetSelectionAtr.MANUAL.value);
 		
 		payoutManaDataService.addPayoutManagement(command.getPickUp(), command.getPause(), payMana, subMana, paySub);

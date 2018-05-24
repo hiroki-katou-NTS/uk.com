@@ -8,7 +8,7 @@ public class DeletePayoutManagementDataCommand {
 
 	String payoutId;
 	
-	String siD;
+	String employeeId;
 	
 	GeneralDate dayOff;
 	

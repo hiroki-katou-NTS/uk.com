@@ -1,13 +1,14 @@
 package nts.uk.ctx.at.record.app.find.remainingnumber.dayoffmanagement;
 
 import lombok.Data;
+import nts.arc.time.GeneralDate;
 
 @Data
 public class DayOffManagementDto {
 	/*
 	 * 振休日
 	 */
-	private String dateHoliday;
+	private GeneralDate dateHoliday;
 	
 	/*
 	 * 消化数
@@ -15,12 +16,15 @@ public class DayOffManagementDto {
 	private String numberDay;
 	
 	private boolean usedDay;
+	
+	private String comDayOffId;
 
-	public DayOffManagementDto(String dateHoliday, String numberDay, boolean usedDay) {
+	public DayOffManagementDto(GeneralDate dateHoliday, String numberDay, boolean usedDay, String comDayOffId) {
 		super();
 		this.dateHoliday = dateHoliday;
 		this.numberDay = numberDay;
 		this.usedDay = usedDay;
+		this.comDayOffId = comDayOffId;
 	}
 	
 	
