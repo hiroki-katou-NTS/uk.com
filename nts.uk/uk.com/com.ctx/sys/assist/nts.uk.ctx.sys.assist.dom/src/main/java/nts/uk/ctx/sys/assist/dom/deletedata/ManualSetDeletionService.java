@@ -5,8 +5,10 @@ package nts.uk.ctx.sys.assist.dom.deletedata;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -343,7 +345,9 @@ public class ManualSetDeletionService extends ExportService<Object> {
 
 		// ファイル圧縮実行
 		boolean isExistCompressPassFlg = domain.isExistCompressPassFlg();
-		String nameFile = domain.getCompanyId() + domain.getDelName() + FILE_EXTENSION;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		String executeDate = sdf.format(new Date()); 
+		String nameFile = domain.getCompanyId()+"_" + domain.getDelName() + "_" + executeDate + FILE_EXTENSION;
 		if (!isExistCompressPassFlg) {
 			applicationTemporaryFilesContainer.zipWithName(generatorContext, nameFile);
 		} else {
