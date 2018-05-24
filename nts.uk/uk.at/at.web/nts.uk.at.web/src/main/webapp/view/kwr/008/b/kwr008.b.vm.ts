@@ -445,9 +445,11 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                         } 
                         self.currentSetOutputSettingCode().displayName = self.currentSetOutputSettingCode().name();
                         self.listStandardImportSetting.replace(self.listStandardImportSetting()[selectedIndex], self.currentSetOutputSettingCode());
-                        self.selectedCode(self.currentSetOutputSettingCode().cd());
                     }
-                    info({ messageId: 'Msg_15' });
+                    info({ messageId: 'Msg_15' }).then(() => {
+                        self.selectedCode(self.currentSetOutputSettingCode().cd());
+                        $('#B3_3').focus();
+                    });
                 }).fail(err => {
                     console.log(err);
                 }).always(function() {
