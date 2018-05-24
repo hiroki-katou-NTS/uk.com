@@ -1,6 +1,7 @@
 module nts.uk.at.view.kdm001.i.viewmodel {
     import model = kdm001.share.model;
     import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
     import block = nts.uk.ui.block;
     import errors = nts.uk.ui.errors;
     import dialog = nts.uk.ui.dialog;
@@ -149,6 +150,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     }
                     //情報メッセージ　Msg_15 登録しました。を表示する。
                     dialog.info({ messageId: "Msg_15" }).then(() => {
+                        setShared('KDM001_I_PARAMS_RES', { isChanged: true });
                         nts.uk.ui.windows.close();
                     });
                 }).fail(function(res: any) {
