@@ -3,7 +3,7 @@ module nts.uk.com.view.kwr002.e {
     __viewContext.ready(function() {
         let mainTab = new viewModel.ScreenModel();
     
-        mainTab.start(16).done(function(screenModel:any){
+        mainTab.start().done(function(screenModel:any){
             __viewContext.bind(mainTab); 
              $('#attendance_name').focus();
         });

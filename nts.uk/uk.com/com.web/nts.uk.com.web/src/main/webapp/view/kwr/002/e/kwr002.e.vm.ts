@@ -59,11 +59,9 @@ module nts.uk.com.view.kwr002.e {
 
             }
 
-            start(value: number): JQueryPromise<any> {
+            start(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-                
-                self.findAttndRecByScreen(value);
                 
                 var attendanceItem = nts.uk.ui.windows.getShared('attendanceItem');
                 self.attendanceItem(attendanceItem);
@@ -79,16 +77,24 @@ module nts.uk.com.view.kwr002.e {
                         exportAtr: self.attendanceItem().exportAtr
                     };
                     service.getCalculateAttndRecInfo(attendanceRecordKey).done(function(calculateAttendanceRecordDto: model.CalculateAttendanceRecordDto) {
-                        var calculateAttendanceRecordList: Array<model.SelectedItem> = [];
-                        calculateAttendanceRecordDto.addedItem.forEach(function(item) {
-                            calculateAttendanceRecordList.push(new model.SelectedItem(model.Action.ADDITION.toString(), item.attendanceItemId, item.attendanceItemName));
-                        });
-                        calculateAttendanceRecordDto.subtractedItem.forEach(function(item) {
-                            calculateAttendanceRecordList.push(new model.SelectedItem(model.Action.SUBTRACTION.toString(), item.attendanceItemId, item.attendanceItemName));
-                        });
-                        calculateAttendanceRecordList.sort(function(a, b) { return a.code - b.code; });
-                        self.selectedGridItems(calculateAttendanceRecordList);
-                        dfd.resolve();
+                        if(calculateAttendanceRecordDto != null) {
+                            if(calculateAttendanceRecordDto.attribute != null || calculateAttendanceRecordDto.attribute != undefined) {
+                            self.findAttndRecByScreen(calculateAttendanceRecordDto.attribute);
+                            }
+                            else {
+                                self.findAttndRecByScreen(16);
+                            }
+                            var calculateAttendanceRecordList: Array<model.SelectedItem> = [];
+                            calculateAttendanceRecordDto.addedItem.forEach(function(item) {
+                                calculateAttendanceRecordList.push(new model.SelectedItem(model.Action.ADDITION.toString(), item.attendanceItemId, item.attendanceItemName));
+                            });
+                            calculateAttendanceRecordDto.subtractedItem.forEach(function(item) {
+                                calculateAttendanceRecordList.push(new model.SelectedItem(model.Action.SUBTRACTION.toString(), item.attendanceItemId, item.attendanceItemName));
+                            });
+                            calculateAttendanceRecordList.sort(function(a, b) { return a.code - b.code; });
+                            self.selectedGridItems(calculateAttendanceRecordList);
+                            dfd.resolve();
+                        }
                     });
                 }
                 self.layoutCode(self.attendanceItem().layoutCode);
@@ -141,6 +147,7 @@ module nts.uk.com.view.kwr002.e {
                     _.forEach(selectedItems, function(item: model.GridItem) {
                         self.selectedGridItems.push(new model.SelectedItem(model.Action.ADDITION.toString(), item.code, item.name));
                     });
+                    self.selectedGridItems(self.selectedGridItems().sort(function(a, b) { return a.code - b.code; }));
                 }
             }
 
@@ -159,6 +166,7 @@ module nts.uk.com.view.kwr002.e {
                     _.forEach(selectedItems, function(item: model.GridItem) {
                         self.selectedGridItems.push(new model.SelectedItem(model.Action.SUBTRACTION.toString(), item.code, item.name));
                     });
+                    self.selectedGridItems(self.selectedGridItems().sort(function(a, b) { return a.code - b.code; }));
                 }
             }
             
