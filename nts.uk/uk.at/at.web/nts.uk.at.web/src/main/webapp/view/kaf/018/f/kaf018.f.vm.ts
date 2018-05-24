@@ -271,6 +271,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         initExTable(): JQueryPromise<any> {
             let self = this;
             var dfd = $.Deferred();
+            shareModel.clearStorageExTable();
             self.getEmpPerformance().done(function(listData: any) {
                 let sv1 = self.setColorForCellHeaderDetail();
                 let sv2 = self.setColorForCellContentDetail(listData);

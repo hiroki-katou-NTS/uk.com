@@ -143,4 +143,10 @@ module nts.uk.at.view.kaf018.share.model {
             this.yearMonthDay = this.year + moment(ymd).format('MM') + moment(ymd).format('DD');
         }
     }
+
+    export function clearStorageExTable() {
+        let url = window.location.origin + window.location.pathname;
+        localStorage.removeItem(url + "/extable/areawidths");
+        localStorage.removeItem(url + "/extable/tableheight");
+    }
 }
