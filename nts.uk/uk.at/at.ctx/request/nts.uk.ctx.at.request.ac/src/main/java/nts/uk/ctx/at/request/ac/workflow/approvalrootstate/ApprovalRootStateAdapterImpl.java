@@ -117,33 +117,43 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 
 	@Override
 	public void insertByAppType(String companyID, String employeeID, Integer appTypeValue, GeneralDate date, String appID) {
+
 		approvalRootStatePub.insertAppRootType(companyID, employeeID, appTypeValue, date, appID, 0);
+
 	}
 
 	@Override
 	public List<String> getNextApprovalPhaseStateMailList(String companyID, String rootStateID,
 			Integer approvalPhaseStateNumber, Boolean isCreate, String employeeID, Integer appTypeValue,
 			GeneralDate appDate) {
+
 		return approvalRootStatePub.getNextApprovalPhaseStateMailList(companyID, rootStateID, 
 				approvalPhaseStateNumber, isCreate, employeeID, appTypeValue, appDate, 0);
+
 	}
 
 	@Override
 	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate,
 			Integer appTypeValue, GeneralDate appDate, String memo) {
+
 		return approvalRootStatePub.doApprove(companyID, rootStateID, employeeID, isCreate, appTypeValue, appDate, memo, 0);
+
 	}
 
 	@Override
 	public Boolean isApproveAllComplete(String companyID, String rootStateID, String employeeID, Boolean isCreate,
 			Integer appTypeValue, GeneralDate appDate) {
 		// TODO Auto-generated method stub
+
 		return approvalRootStatePub.isApproveAllComplete(companyID, rootStateID, employeeID, isCreate, appTypeValue, appDate, 0);
+
 	}
 
 	@Override
 	public void doReleaseAllAtOnce(String companyID, String rootStateID) {
+
 		approvalRootStatePub.doReleaseAllAtOnce(companyID, rootStateID, 0);
+
 	}
 
 	@Override
@@ -153,6 +163,7 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 				approverApprovedExport.getListApproverWithFlagOutput().stream()
 					.map(x -> new ApproverWithFlagImport_New(x.getEmployeeID(), x.getAgentFlag())).collect(Collectors.toList()), 
 				approverApprovedExport.getListApprover());
+
 	}
 
 	@Override
@@ -181,12 +192,12 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	@Override
 	public List<String> getMailNotifierList(String companyID, String rootStateID) {
 		return approvalRootStatePub.getMailNotifierList(companyID, rootStateID, 0);
+
 	}
 
 	@Override
 	public void deleteApprovalRootState(String rootStateID) {
 		approvalRootStatePub.deleteApprovalRootState(rootStateID, 0);
-		
 	}
 
 	@Override

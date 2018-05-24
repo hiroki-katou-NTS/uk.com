@@ -20,6 +20,9 @@
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousPeriod
             </com:ValidatorScript>
+            <com:EnumScript>
+				nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeMonCheckItem
+			</com:EnumScript>
             <com:scriptfile set="IGNITE" />
             <com:scriptfile path="../share/model.js" />
             <com:scriptfile path="../share/kal003utils.js" />
@@ -33,6 +36,7 @@
         <ui:define name="content">
             <div id="contents-area">
                 <!-- <div class="form-group" -->
+                <com:ko-if bind="category() == 5">
                 <div id="content" class="cf"
                     data-bind="with: workRecordExtractingCondition">
                     <!--  B1 -->
@@ -584,6 +588,10 @@
                      </table>
                 </div>
                 </div>
+                </com:ko-if>
+                <com:ko-if bind="category() == 7">
+                erereerd
+                </com:ko-if>
             </div>
             <div id="functions-area-bottom">
                     <!-- B4-2 : Decision-->

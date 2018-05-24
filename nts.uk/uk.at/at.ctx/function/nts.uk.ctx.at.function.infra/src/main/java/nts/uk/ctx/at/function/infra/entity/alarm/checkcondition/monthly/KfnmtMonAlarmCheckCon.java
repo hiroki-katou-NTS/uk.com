@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.monthly;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -77,7 +78,10 @@ public class KfnmtMonAlarmCheckCon extends UkJpaEntity implements Serializable {
 	}
 	
 	public MonAlarmCheckCon toDomain() {
-		return new MonAlarmCheckCon(this.monAlarmCheckConID);
+		return new MonAlarmCheckCon(
+				this.monAlarmCheckConID,
+				this.listMonAlarmCode.stream().map(c->c.kfnmtMonAlarmCodePK.errorAlarmCheckID).collect(Collectors.toList())
+				);
 	}
 
 
