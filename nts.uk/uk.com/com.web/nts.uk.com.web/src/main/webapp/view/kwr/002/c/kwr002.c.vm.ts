@@ -119,17 +119,21 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                 if (self.selectedTab() == "tab-1") {
                     exportAtr = 1;
                     if (position == 1)
-                        attendanceItemName = self.attendanceRecExpDaily()[columnIndex].upperPosition;
+                        if (!self.attendanceRecExpDaily()[columnIndex].upperPosition) attendanceItemName = "";
+                        else attendanceItemName = self.attendanceRecExpDaily()[columnIndex].upperPosition;
                     else
-                        attendanceItemName = self.attendanceRecExpDaily()[columnIndex].lowwerPosition;
+                        if (!self.attendanceRecExpDaily()[columnIndex].lowwerPosition) attendanceItemName = "";
+                        else attendanceItemName = self.attendanceRecExpDaily()[columnIndex].lowwerPosition;
 
                     attItem = self.attendanceRecExpDaily()[columnIndex];
                 } else {
                     exportAtr = 2;
                     if (position == 1)
-                        attendanceItemName = self.attendanceRecExpMonthly()[columnIndex].upperPosition;
+                        if (!self.attendanceRecExpDaily()[columnIndex].upperPosition) attendanceItemName = "";
+                        else attendanceItemName = self.attendanceRecExpMonthly()[columnIndex].upperPosition;
                     else
-                        attendanceItemName = self.attendanceRecExpMonthly()[columnIndex].lowwerPosition;
+                        if (!self.attendanceRecExpDaily()[columnIndex].lowwerPosition) attendanceItemName = "";
+                        else attendanceItemName = self.attendanceRecExpMonthly()[columnIndex].lowwerPosition;
                     attItem = self.attendanceRecExpMonthly()[columnIndex];
                 }
 
@@ -191,7 +195,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                             attendanceItem.columnIndex, attendanceItem.position, attendanceItem.exportAtr,
                             attendanceItem.attendanceId, attendanceItem.attribute)
                         self.updateAttendanceRecItemList(item);
-                   
+
                         $(element).load(window.location.href + element);
                     }
                 })
@@ -262,6 +266,12 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                         var columnIndex: number = item.columnIndex;
                         self.attendanceRecExpDaily()[columnIndex] = item;
                     })
+
+                    for (var i: number = 1; i <= 9; i++) {
+                        if (!self.attendanceRecExpDaily()[i]) {
+                            self.attendanceRecExpDaily()[i] = new viewmodel.model.AttendanceRecExp(1, i, false, "", "");
+                        }
+                    }
                 }
 
             });
@@ -272,6 +282,12 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                         var columnIndex: number = item.columnIndex;
                         self.attendanceRecExpMonthly()[columnIndex] = item;
                     })
+                    
+                    for (var i: number = 1; i <= 12; i++) {
+                        if (!self.attendanceRecExpMonthly()[i]) {
+                            self.attendanceRecExpMonthly()[i] = new viewmodel.model.AttendanceRecExp(1, i, false, "", "");
+                        }
+                    }
                 }
 
             });
