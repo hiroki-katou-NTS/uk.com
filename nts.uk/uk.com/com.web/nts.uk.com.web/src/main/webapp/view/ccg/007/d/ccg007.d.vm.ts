@@ -137,6 +137,7 @@ module nts.uk.pr.view.ccg007.d {
                     //check msgError
                     if (!nts.uk.util.isNullOrEmpty(isError)) {
                         nts.uk.ui.dialog.alertError({ messageId: isError });
+                        self.password("");
                     } else {
                         nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/d/index.xhtml");
                         //Remove LoginInfo
