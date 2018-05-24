@@ -120,20 +120,20 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                     exportAtr = 1;
                     if (position == 1)
                         if (!self.attendanceRecExpDaily()[columnIndex].upperPosition) attendanceItemName = "";
-                        else attendanceItemName = self.attendanceRecExpDaily()[columnIndex].upperPosition;
+                        else attendanceItemName = self.attendanceRecExpDaily()[columnIndex].upperPosition();
                     else
                         if (!self.attendanceRecExpDaily()[columnIndex].lowwerPosition) attendanceItemName = "";
-                        else attendanceItemName = self.attendanceRecExpDaily()[columnIndex].lowwerPosition;
+                        else attendanceItemName = self.attendanceRecExpDaily()[columnIndex].lowwerPosition();
 
                     attItem = self.attendanceRecExpDaily()[columnIndex];
                 } else {
                     exportAtr = 2;
                     if (position == 1)
                         if (!self.attendanceRecExpDaily()[columnIndex].upperPosition) attendanceItemName = "";
-                        else attendanceItemName = self.attendanceRecExpMonthly()[columnIndex].upperPosition;
+                        else attendanceItemName = self.attendanceRecExpMonthly()[columnIndex].upperPosition();
                     else
                         if (!self.attendanceRecExpDaily()[columnIndex].lowwerPosition) attendanceItemName = "";
-                        else attendanceItemName = self.attendanceRecExpMonthly()[columnIndex].lowwerPosition;
+                        else attendanceItemName = self.attendanceRecExpMonthly()[columnIndex].lowwerPosition();
                     attItem = self.attendanceRecExpMonthly()[columnIndex];
                 }
 
@@ -181,12 +181,12 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                     if (attendanceItem) {
                         if (exportAtr == 1) {
                             if (position == 1)
-                                self.attendanceRecExpDaily()[columnIndex].upperPosition = attendanceItem.attendanceItemName;
-                            else self.attendanceRecExpDaily()[columnIndex].lowwerPosition = attendanceItem.attendanceItemName;
+                                self.attendanceRecExpDaily()[columnIndex].upperPosition(attendanceItem.attendanceItemName);
+                            else self.attendanceRecExpDaily()[columnIndex].lowwerPosition(attendanceItem.attendanceItemName);
                         } else {
                             if (position == 1)
-                                self.attendanceRecExpMonthly()[columnIndex].upperPosition = attendanceItem.attendanceItemName;
-                            else self.attendanceRecExpMonthly()[columnIndex].lowwerPosition = attendanceItem.attendanceItemName;
+                                self.attendanceRecExpMonthly()[columnIndex].upperPosition(attendanceItem.attendanceItemName);
+                            else self.attendanceRecExpMonthly()[columnIndex].lowwerPosition(attendanceItem.attendanceItemName);
                         }
 
 
@@ -263,8 +263,9 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             service.findAllAttendanceRecExportDaily(code).done(function(listattendanceRecExpDailyList: Array<model.AttendanceRecExp>) {
                 if (listattendanceRecExpDailyList.length > 0) {
                     listattendanceRecExpDailyList.forEach(item => {
+                        
                         var columnIndex: number = item.columnIndex;
-                        self.attendanceRecExpDaily()[columnIndex] = item;
+                        self.attendanceRecExpDaily()[columnIndex] = new viewmodel.model.AttendanceRecExp (item.exportAtr,item.columnIndex,item.userAtr,item.upperPosition,item.lowwerPosition);
                     })
 
                     for (var i: number = 1; i <= 9; i++) {
@@ -280,12 +281,12 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                 if (listattendanceRecExpMonthlyList.length > 0) {
                     listattendanceRecExpMonthlyList.forEach(item => {
                         var columnIndex: number = item.columnIndex;
-                        self.attendanceRecExpMonthly()[columnIndex] = item;
+                        self.attendanceRecExpMonthly()[columnIndex] = new viewmodel.model.AttendanceRecExp (item.exportAtr,item.columnIndex,item.userAtr,item.upperPosition,item.lowwerPosition);
                     })
                     
                     for (var i: number = 1; i <= 12; i++) {
                         if (!self.attendanceRecExpMonthly()[i]) {
-                            self.attendanceRecExpMonthly()[i] = new viewmodel.model.AttendanceRecExp(1, i, false, "", "");
+                            self.attendanceRecExpMonthly()[i] = new viewmodel.model.AttendanceRecExp(2, i, false, "", "");
                         }
                     }
                 }
@@ -336,16 +337,16 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             exportAtr: number;
             columnIndex: number;
             userAtr: Boolean;
-            upperPosition: String;
-            lowwerPosition: String;
+            upperPosition: KnockoutObservable<string>;
+            lowwerPosition: KnockoutObservable<string>;
 
-            constructor(exportAtr: number, columnIndex: number, userAtr: Boolean, upperPosition: String, lowwerPosition: String) {
+            constructor(exportAtr: number, columnIndex: number, userAtr: Boolean, upperPosition: string, lowwerPosition: string) {
 
                 this.exportAtr = exportAtr;
                 this.columnIndex = columnIndex;
                 this.userAtr = userAtr;
-                this.upperPosition = upperPosition;
-                this.lowwerPosition = lowwerPosition;
+                this.upperPosition =ko.observable( upperPosition);
+                this.lowwerPosition = ko.observable(lowwerPosition);
             }
         }
 
