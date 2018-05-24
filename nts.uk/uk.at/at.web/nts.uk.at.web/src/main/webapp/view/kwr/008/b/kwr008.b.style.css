@@ -27,3 +27,7 @@
 #listStandardImportSetting_headers_v {
 	width : 100% !important;
 }
+
+.limited-label-view {
+	max-width: 1000px;
+}
