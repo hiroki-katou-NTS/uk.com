@@ -8,9 +8,9 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.ctx.at.record.dom.remainingnumber.paymana.DayOffManagementData;
-import nts.uk.ctx.at.record.dom.remainingnumber.paymana.DaysOffMana;
-import nts.uk.ctx.at.record.dom.remainingnumber.paymana.service.DayOffManagementService;
+import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.DayOffManagementData;
+import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.DaysOffMana;
+import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.service.DayOffManagementService;
 
 @Stateless
 public class DayOffManaCommandHandler extends CommandHandlerWithResult<DayOffManaCommand,List<String>> {

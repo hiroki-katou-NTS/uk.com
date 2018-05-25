@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.paymana;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,8 +10,10 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.DayOffManagement;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.TargetSelectionAtr;
+import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.AddSubHdManagementService;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.ItemDays;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
@@ -40,8 +43,16 @@ public class SubstitutionOfHDManaDataService {
 	@Inject
 	private PayoutSubofHDManaRepository payoutSubofHDManaRepository;
 
+	@Inject
+	private AddSubHdManagementService addSubHdManagementService;
+
 	/**
-	 * KDM001 screen E
+	 * Ｅ．振休管理データの紐付設定（振休選択）登録処理
+	 * 
+	 * @param sid
+	 * @param payoutId
+	 * @param remainNumber
+	 * @param subOfHDId
 	 */
 	public void insertSubOfHDMan(String sid, String payoutId, Double remainNumber, List<DayOffManagement> subOfHDId) {
 		String companyId = AppContexts.user().companyId();
@@ -64,123 +75,94 @@ public class SubstitutionOfHDManaDataService {
 		}
 
 		allowPrepaidLeave = empSubstVacation.get().getSetting().getAllowPrepaidLeave();
-		
-		// １件もない エラーメッセージ(Msg_738) 	エラーリストにセットする
-//		if (subOfHDId.isEmpty()){
-//			throw new BusinessException("Msg_738");
-//		}
-		
-		// ３件以上あり エラーメッセージ(Msg_739)	エラーリストにセットする
-//		if (subOfHDId.size() >= 3){
-//			throw new BusinessException("Msg_739");
-//		}
-		
-		if (subOfHDId.size() == 1){
-			if (subOfHDId.get(0).getRemainDays().compareTo(ItemDays.ONE_DAY.value) != 0){
 
-				// エラーメッセージ(Msg_731) エラーリストにセットする
-				throw new BusinessException("Msg_731");
-			}
-		}
-		if (subOfHDId.size() == 2){
-			if (subOfHDId.get(0).getRemainDays().compareTo(ItemDays.ONE_DAY.value) == 0){
-				
-				if (allowPrepaidLeave == ApplyPermission.NOT_ALLOW){
-					// エラーメッセージ(Msg_739)	エラーリストにセットする
+		// １件もない エラーメッセージ(Msg_738) エラーリストにセットする
+		// if (subOfHDId.isEmpty()){
+		// throw new BusinessException("Msg_738");
+		// }
 
-					throw new BusinessException("Msg_739");
+		// ３件以上あり エラーメッセージ(Msg_739) エラーリストにセットする
+		// if (subOfHDId.size() >= 3){
+		// throw new BusinessException("Msg_739");
+		// }
+
+		if (subOfHDId.size() == 1) {
+			if (subOfHDId.get(0).getRemainDays().compareTo(ItemDays.ONE_DAY.value) != 0) {
+
+				if (subOfHDId.size() == 1) {
+					if (subOfHDId.get(0).getRemainDays().compareTo(ItemDays.ONE_DAY.value) != 0) {
+
+						// エラーメッセージ(Msg_731) エラーリストにセットする
+						throw new BusinessException("Msg_731");
+					}
+				}
+				if (subOfHDId.size() == 2) {
+					if (subOfHDId.get(0).getRemainDays().compareTo(ItemDays.ONE_DAY.value) == 0) {
+
+						if (allowPrepaidLeave == ApplyPermission.NOT_ALLOW) {
+							// エラーメッセージ(Msg_739) エラーリストにセットする
+
+							throw new BusinessException("Msg_739");
+						}
+
+					}
+					if (subOfHDId.get(0).getRemainDays().compareTo(ItemDays.HALF_DAY.value) == 0
+							&& subOfHDId.get(1).getRemainDays().compareTo(ItemDays.HALF_DAY.value) != 0) {
+						// エラーメッセージ(Msg_731) エラーリストにセットする
+						throw new BusinessException("Msg_731");
+					}
+				}
+
+				if (!payoutSubofHDManaRepository.getByPayoutId(payoutId).isEmpty()) {
+					payoutSubofHDManaRepository.delete(payoutId);
+				}
+
+				subOfHDId.forEach(i -> {
+					payoutSubofHDManaRepository.add(new PayoutSubofHDManagement(payoutId, i.getSubOfHDID(),
+							new BigDecimal(i.getRemainDays()), TargetSelectionAtr.MANUAL.value));
+					// Update remain days 振休管理データ
+					Optional<SubstitutionOfHDManagementData> subMana = substitutionOfHDManaDataRepository
+							.findByID(i.getSubOfHDID());
+					if (subMana.isPresent()) {
+						subMana.get().setRemainsDay(0d);
+						substitutionOfHDManaDataRepository.update(subMana.get());
+					}
+				});
+				// Update 振出管理データ 残数
+				Optional<PayoutManagementData> payoutData = payoutManagementDataRepository.findByID(payoutId);
+				if (payoutData.isPresent()) {
+					payoutData.get().setRemainNumber(remainNumber);
+					payoutManagementDataRepository.update(payoutData.get());
 				}
 
 			}
-			if (subOfHDId.get(0).getRemainDays().compareTo(ItemDays.HALF_DAY.value) == 0 
-					&& subOfHDId.get(1).getRemainDays().compareTo(ItemDays.HALF_DAY.value) != 0){
-				// エラーメッセージ(Msg_731) エラーリストにセットする
-				throw new BusinessException("Msg_731");
-			}
 		}
-
-		if (!payoutSubofHDManaRepository.getByPayoutId(payoutId).isEmpty()) {
-			payoutSubofHDManaRepository.delete(payoutId);
-		}
-		
-		subOfHDId.forEach(i->{ 
-			payoutSubofHDManaRepository.add(new PayoutSubofHDManagement(payoutId, i.getSubOfHDID(),
-					new BigDecimal(i.getRemainDays()), TargetSelectionAtr.MANUAL.value));
-			// Update remain days 振休管理データ
-			Optional<SubstitutionOfHDManagementData> subMana =  substitutionOfHDManaDataRepository.findByID(i.getSubOfHDID());
-			if (subMana.isPresent()){
-				subMana.get().setRemainsDay(0d);
-				substitutionOfHDManaDataRepository.update(subMana.get());
-			}
-		});
-		// Update 振出管理データ  残数
-		Optional<PayoutManagementData> payoutData =  payoutManagementDataRepository.findByID(payoutId);
-		if (payoutData.isPresent()){
-			payoutData.get().setRemainNumber(remainNumber);
-			payoutManagementDataRepository.update(payoutData.get());
-		}
-		
-	}
-
-	/**
-	 * KDM001 screen H
-	 */
-	// Q&&A
-	public boolean checkCompensatoryDate() {
-		return false;
-	}
-
-	public boolean checkExpirationDate(GeneralDate expirationDate) {
-		boolean checkExpirationDate = false;
-		if (checkCompensatoryDate()) {
-			GeneralDate today = GeneralDate.today();
-			if (today.compareTo(expirationDate) > 0) {
-				throw new BusinessException("Mg_825");
-			} else {
-				checkExpirationDate = true;
-			}
-		}
-		return checkExpirationDate;
 	}
 
 	/**
 	 * KDM001 update screen H
 	 */
-	// (Thực hiện thuật toán 「振休（年月日）チェック処理」"xử lý check ngày nghỉ bù (năm tháng
-	// ngày)")
-	public boolean checkDayOff() {
-		// đang chờ Q&A
-		return true;
+	public List<String> checkClosureDate(int closureId, GeneralDate dayoffDate, String subOfHDID) {
+		List<String> errorList = new ArrayList<>();
+		YearMonth processYearMonth = GeneralDate.today().yearMonth();
+		Optional<GeneralDate> closureDate = addSubHdManagementService.getClosureDate(closureId, processYearMonth);
+		if (dayoffDate.compareTo(closureDate.get()) >= 0) {
+			errorList.add("Msg_744");
+		}
+		// Q&A todo something
+		List<PayoutManagementData> listPayout = payoutManagementDataRepository.getDayoffDateBysubOfHDID(subOfHDID);
+
+		return errorList;
 	}
 
-	public void updateSub(SubstitutionOfHDManagementData data) {
-		boolean checkDayOff = checkDayOff();
-		if (checkDayOff) {
+	public List<String> updateSubOfHD(SubstitutionOfHDManagementData data, int closureId, GeneralDate dayoffDate,
+			String subOfHDID) {
+		List<String> errorList = new ArrayList<>();
+		List<String> errorListClosureDate = checkClosureDate(closureId, dayoffDate, subOfHDID);
+		if (!errorListClosureDate.isEmpty()) {
 			substitutionOfHDManaDataRepository.update(data);
 		}
-	}
-	
-	public boolean deleteSubsitutionOfHDManaData(GeneralDate expirationDate, String sID, GeneralDate dayOff) {
-		boolean checkError = false;
-		boolean checkExDate = checkExpirationDate(expirationDate);
-		if (checkExDate) {
-			checkError = true;
-			substitutionOfHDManaDataRepository.delete(sID, dayOff);
-			// Đang Q&&A
-			// 共通アルゴリズム「残数管理データ更新フラグ更新」を実行する
-			// (Thực hiện thuật toán common 「Update cờ cập nhật quản lý data
-			// còn lại」 )
-		}
-		return checkError;
-	}
-
-	public void delete(GeneralDate expirationDate, String sID, GeneralDate dayOff) {
-		boolean checkData = deleteSubsitutionOfHDManaData(expirationDate, sID, dayOff);
-		if (checkData) {
-			throw new BusinessException("Msg_15");
-		} else {
-			throw new BusinessException("Message error!!");
-		}
+		return errorList;
 	}
 
 }

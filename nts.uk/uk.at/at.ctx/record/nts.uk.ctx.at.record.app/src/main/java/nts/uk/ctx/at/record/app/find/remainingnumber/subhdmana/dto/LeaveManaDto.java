@@ -1,9 +1,13 @@
-package nts.uk.ctx.at.record.app.find.remainingnumber.dayoffmanagement;
+package nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.dto;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
 @Data
+@Getter 
+@Setter
 public class LeaveManaDto {
 	
 	private GeneralDate dateHoliday;

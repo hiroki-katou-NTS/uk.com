@@ -5,7 +5,6 @@ module nts.uk.at.view.kdm001.a.viewmodel {
     import getText = nts.uk.resource.getText;
     import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
-
         closureID: string;
         selectedEmployeeObject: any;
         periodOptionItem: KnockoutObservableArray<ItemModel>;
@@ -102,7 +101,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 }
             }
             
-            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
+            $('#ccgcomponentA').ntsGroupComponent(self.ccgcomponent);
             
             self.selectedItem.subscribe(x =>{
                 if(self.selectedEmployee().length > 0) {
@@ -202,7 +201,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 self.expirationDate(self.getExpirationTime(res.expirationDate));
                 self.closureID = res.closureID;
                 
-                if(arrayResponse.length = 0) {
+                if(arrayResponse.length == 0) {
                     dialog.alertError({ messageId: "Msg_725" });
                 }
                 
@@ -268,6 +267,8 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 let sortByEmployeeCode = _.orderBy(dataList, ["employeeCode"], ["asc"]);
                 if (item == undefined) self.selectedItem(sortByEmployeeCode[0].employeeId);
             }
+            
+            __viewContext.viewModel.viewmodelB.screenItem().employeeInputList(ko.toJS(self.employeeInputList));
         }
 
         findIdSelected(dataList: Array<any>, selectedItem: string): any {

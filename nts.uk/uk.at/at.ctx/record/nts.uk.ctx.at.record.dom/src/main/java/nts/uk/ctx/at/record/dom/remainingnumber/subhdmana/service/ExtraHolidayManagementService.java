@@ -16,7 +16,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.CompensatoryDayOffMana
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
-import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManagementDataAgg;
+import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -42,7 +42,7 @@ public class ExtraHolidayManagementService {
 	
 	public ExtraHolidayManagementOutput dataExtractionProcessing (int searchMode, String employeeId, GeneralDate startDate, GeneralDate endDate){
 		String cid = AppContexts.user().companyId();
-		List<LeaveManagementDataAgg> listLeaveData = null;
+		List<LeaveManagementData> listLeaveData = null;
 		List<CompensatoryDayOffManaData> listCompensatoryData = null;
 		List<LeaveComDayOffManagement> listLeaveComDayOffManagement = new ArrayList<>();
 		SEmpHistoryImport empHistoryImport = null;

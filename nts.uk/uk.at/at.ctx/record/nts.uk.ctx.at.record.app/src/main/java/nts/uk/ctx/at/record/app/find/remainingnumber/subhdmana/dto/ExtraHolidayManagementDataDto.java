@@ -1,15 +1,16 @@
 package nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
-import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManagementDataAgg;
+import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.service.ExtraHolidayManagementOutput;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 
@@ -17,47 +18,60 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 @Data
 public class ExtraHolidayManagementDataDto {
 
-	List<LeaveDataDto> listLeaveData;
-	List<CompensatoryDataDto> listCompensatoryData;
-	List<LeaveComDayOffManaDto> listLeaveComDayOffManagement;
+	List<DataExtractDto> extraData;
 	SEmpHistoryDto sEmpHistoryImport;
 	ClosureEmploymentDto closureEmploy;
 
 	public static ExtraHolidayManagementDataDto convertToDto(ExtraHolidayManagementOutput extraHolidayManagementOutput){
 		// From domain
-		List<LeaveManagementDataAgg> listLeaveData = extraHolidayManagementOutput.getListLeaveData();
+		List<LeaveManagementData> listLeaveData = extraHolidayManagementOutput.getListLeaveData();
 		List<CompensatoryDayOffManaData> listCompensatoryData = extraHolidayManagementOutput.getListCompensatoryData();
 		List<LeaveComDayOffManagement> listLeaveComDayOffManagement = extraHolidayManagementOutput.getListLeaveComDayOffManagement();
 		SEmpHistoryImport sEmpHistoryImport = extraHolidayManagementOutput.getSEmpHistoryImport();
 		ClosureEmployment closureEmploy = extraHolidayManagementOutput.getClosureEmploy();
 		// Dto
-		List<LeaveDataDto> listLeaveDataDto = null;
-		List<CompensatoryDataDto> listCompensatoryDataDto = null;
-		List<LeaveComDayOffManaDto> listLeaveComDayOffManagementDto = null;
+		List<DataExtractDto> listExtraData = new ArrayList<>();
 		SEmpHistoryDto sEmpHistoryDto = null;
 		ClosureEmploymentDto closureEmployDto = null;
+		for(LeaveManagementData data : listLeaveData){
+			DataExtractDto dto = DataExtractDto.convertFromLeaveDataToDto(0, data);
+			if(listLeaveComDayOffManagement.stream().filter(o -> o.getLeaveID().equals(data.getID())).findFirst().isPresent()){
+				dto.setLinked(1);
+			} else {
+				dto.setLinked(0);
+			}
+			if (data.getComDayOffDate().getDayoffDate().get().after(GeneralDate.today())){
+				dto.setExpired(data.getUnUsedDays().v());
+			} else {
+				dto.setRemain(data.getUnUsedDays().v());
+			}
+			listExtraData.add(dto);
+		}
+		for(CompensatoryDayOffManaData data : listCompensatoryData){
+			DataExtractDto dto = DataExtractDto.convertFromCompensatoryDataToDto(1, data);
+			if(listLeaveComDayOffManagement.stream().filter(o -> o.getComDayOffID().equals(data.getComDayOffID())).findFirst().isPresent()){
+				dto.setLinked(1);
+			} else {
+				dto.setLinked(0);
+			}
+			if (data.getDayOffDate().getDayoffDate().get().after(GeneralDate.today())){
+				dto.setExpired(data.getRemainDays().v());
+			} else {
+				dto.setExpired(data.getRemainDays().v());
+			}
+			
+			listExtraData.add(dto);
+		}
+		listExtraData.sort((m1, m2)->{
+			return m1.getDayOffDate().before(m2.getDayOffDate()) ? -1 : 1;
+		});
 		
-		if (!listLeaveData.isEmpty()){
-			listLeaveDataDto = extraHolidayManagementOutput.getListLeaveData().stream().map(x ->{
-				return LeaveDataDto.convertToDto(x);
-			}).collect(Collectors.toList());
-		}
-		if (!listCompensatoryData.isEmpty()){
-			listCompensatoryDataDto = listCompensatoryData.stream().map(x ->{
-				return CompensatoryDataDto.convertToDto(x);
-			}).collect(Collectors.toList());
-		}
-		if (!listLeaveComDayOffManagement.isEmpty()){
-			listLeaveComDayOffManagementDto = listLeaveComDayOffManagement.stream().map(x ->{
-				return LeaveComDayOffManaDto.convertToDto(x);
-			}).collect(Collectors.toList());
-		}
 		if (!Objects.isNull(sEmpHistoryImport)){
 			sEmpHistoryDto = SEmpHistoryDto.convertToDto(sEmpHistoryImport);
 		}
 		if (!Objects.isNull(closureEmploy)){
 			closureEmployDto = ClosureEmploymentDto.convertToDto(closureEmploy);
 		}
-		return new ExtraHolidayManagementDataDto(listLeaveDataDto, listCompensatoryDataDto, listLeaveComDayOffManagementDto, sEmpHistoryDto, closureEmployDto);
+		return new ExtraHolidayManagementDataDto(listExtraData, sEmpHistoryDto, closureEmployDto);
 	}
 }

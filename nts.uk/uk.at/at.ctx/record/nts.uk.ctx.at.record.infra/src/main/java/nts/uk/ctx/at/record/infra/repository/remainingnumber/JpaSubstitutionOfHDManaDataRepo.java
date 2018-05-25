@@ -34,6 +34,8 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 	
 	private String DELETE_QUERY = "DELETE FROM KrcmtSubOfHDManaData a WHERE a.sID = :sID AND a.dayOff = :dayOff";
 
+	
+	
 	@Override
 	public List<SubstitutionOfHDManagementData> getBysiD(String cid, String sid) {
 		List<KrcmtSubOfHDManaData> list = this.queryProxy().query(QUERY_BYSID, KrcmtSubOfHDManaData.class)
@@ -85,7 +87,7 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 
 	@Override
 	public void delete(String employeeId, GeneralDate dayOff) {
-		this.getEntityManager().createQuery(DELETE_QUERY).setParameter("sID", employeeId).setParameter("dayOff", dayOff);
+		this.getEntityManager().createQuery(DELETE_QUERY).setParameter("sID", employeeId).setParameter("dayOff", dayOff).executeUpdate();
 	}
 
 	@Override
@@ -130,5 +132,7 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 	public Optional<SubstitutionOfHDManagementData> find(String sID, String cID, CompensatoryDayoffDate holidayDate) {
 		return this.queryProxy().find(QUERY_BY_SID_CID_HOLIDAYDATE, KrcmtSubOfHDManaData.class).map(i -> toDomain(i));
 	}
+
+
 
 }

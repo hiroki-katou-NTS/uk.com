@@ -13,7 +13,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class UpdatePayoutManagementDataCommandHandler extends CommandHandler<PayoutManagementDataCommand> {
 
 	@Inject
-	private PayoutManagementDataService payoutMNDRSer;
+	private PayoutManagementDataService payoutManagementDataService;
 
 	@Override
 	protected void handle(CommandHandlerContext<PayoutManagementDataCommand> context) {
@@ -22,7 +22,8 @@ public class UpdatePayoutManagementDataCommandHandler extends CommandHandler<Pay
 		PayoutManagementData data = new PayoutManagementData(command.getPayoutId(), cID, command.getEmployeeId(),
 				command.isUnknownDate(), command.getDayoffDate(), command.getExpiredDate(), command.getLawAtr(),
 				command.getOccurredDays(), command.getUnUsedDays(), command.getStateAtr());
-		payoutMNDRSer.update(data, command.isCheckBox(), command.getLawAtr(),command.getDayoffDate(), command.getExpiredDate(),
+		payoutManagementDataService.update(data, command.getClosureId(), command.isCheckBox(), command.getLawAtr(),
+				command.getDayoffDate(), command.getExpiredDate(),
 				command.getUnUsedDays());
 	}
 

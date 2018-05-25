@@ -1,18 +1,18 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.paymana;
+package nts.uk.ctx.at.record.dom.remainingnumber.subhdmana;
 
 import java.util.List;
 
 import lombok.Getter;
 
 @Getter
-public class LeaveManagementData {
+public class LeaveManaData {
 	
 
-	private List<LeaveMana> leaveMana;
+	private List<LeavesManaData> leaveMana;
 	private String employeeId;
 	private String comDayOffID;
 	
-	public LeaveManagementData(List<LeaveMana> leaveMana, String employeeId, String comDayOffID) {
+	public LeaveManaData(List<LeavesManaData> leaveMana, String employeeId, String comDayOffID) {
 		super();
 		this.leaveMana = leaveMana;
 		this.employeeId = employeeId;

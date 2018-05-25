@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class LeaveManagementDataAgg extends AggregateRoot {
+public class LeaveManagementData extends AggregateRoot {
 	
 	// ID
 	private String ID;
@@ -64,7 +64,7 @@ public class LeaveManagementDataAgg extends AggregateRoot {
 	// 消滅日
 	public GeneralDate disapearDate;
 	
-	public LeaveManagementDataAgg(String id, String cid, String sid, boolean unknowDate, GeneralDate dayoffDate, GeneralDate expiredDate,
+	public LeaveManagementData(String id, String cid, String sid, boolean unknowDate, GeneralDate dayoffDate, GeneralDate expiredDate,
 			Double occurredDays, int occurredTimes, Double unUsedDays, int unUsedTimes, int subHDAtr, int equivalentADay, int equivalentHalfDay){
 		this.ID = id;
 		this.cID = cid;
@@ -82,7 +82,7 @@ public class LeaveManagementDataAgg extends AggregateRoot {
 	}
 	
 	
-	public LeaveManagementDataAgg(String id, String cid, String sid, boolean unknowDate, GeneralDate dayoffDate, GeneralDate expiredDate,
+	public LeaveManagementData(String id, String cid, String sid, boolean unknowDate, GeneralDate dayoffDate, GeneralDate expiredDate,
 			Double occurredDays, int occurredTimes, Double unUsedDays, int unUsedTimes, int subHDAtr, int equivalentADay, int equivalentHalfDay, GeneralDate disapearDate){
 		this.ID = id;
 		this.cID = cid;
