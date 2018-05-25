@@ -157,6 +157,9 @@ public class JpaCalculateAttendanceRecordRepository extends JpaRepository
 				position);
 		KfnstAttndRec kfnstAttndRec = this.queryProxy().find(kfnstAttndRecPk, KfnstAttndRec.class)
 				.orElse(new KfnstAttndRec());
+		if(kfnstAttndRec.getId()==null) {
+			kfnstAttndRec.setId(kfnstAttndRecPk);
+		}
 
 //		// find entity KfnstAttndRecItem by pk
 //		List<KfnstAttndRecItem> kfnstAttndRecItems = this.findAttendanceRecordItems(companyId, exportSettingCode,

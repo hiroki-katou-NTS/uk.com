@@ -17,7 +17,6 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingC
 import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecord;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecordGetMemento;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecordRepository;
-import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleItemAttributes;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRecPK;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecItem;
@@ -94,12 +93,15 @@ public class JpaSingleAttendanceRecordRepository extends JpaRepository implement
 					useAtr, singleAttendanceRecord));
 		}
 		// check and update attendanceRecordItem
-		KfnstAttndRecItem kfnstAttndRecItem = this.getAttndRecItems(kfnstAttndRecPK).get(0);
+		List<KfnstAttndRecItem> listKfnstAttndRecItem = this.getAttndRecItems(kfnstAttndRecPK);
+		KfnstAttndRecItem kfnstAttndRecItem = (listKfnstAttndRecItem!=null && listKfnstAttndRecItem.size()!=0) ? listKfnstAttndRecItem.get(0) : null;
 		if (kfnstAttndRecItem!=null) {
 			this.commandProxy().remove(kfnstAttndRecItem);
 			this.commandProxy().insert(this.toEntityAttndRecItem(exportSettingCode, columnIndex, position, exportArt,
 					singleAttendanceRecord));
 		} else {
+			KfnstAttndRecItemPK pk = new KfnstAttndRecItemPK(companyId, exportSettingCode.v(), columnIndex, position, exportArt, singleAttendanceRecord.getTimeItemId());
+			kfnstAttndRecItem = new KfnstAttndRecItem(pk,new BigDecimal(3));
 			this.commandProxy().insert(kfnstAttndRecItem);
 		}
 		this.getEntityManager().flush();
@@ -178,10 +180,14 @@ public class JpaSingleAttendanceRecordRepository extends JpaRepository implement
 		KfnstAttndRecPK kfnstAttndRecPk = new KfnstAttndRecPK(companyId, exportSettingCode.v(), columnIndex, exportArt,
 				position);
 		KfnstAttndRec kfnstAttndRec = this.queryProxy().find(kfnstAttndRecPk, KfnstAttndRec.class)
-				.orElse(new KfnstAttndRec());
+				.orElse(new KfnstAttndRec(kfnstAttndRecPk, new BigDecimal(0), null, new BigDecimal(0)));
 		// find entites KfnstAttndRecItem by attendanceRecordPK
 		List<KfnstAttndRecItem> listAttndRecItemEntity = this.getAttndRecItems(kfnstAttndRecPk);
 		KfnstAttndRecItem attendanceRecItemEntity = listAttndRecItemEntity==null||listAttndRecItemEntity.isEmpty() ? new KfnstAttndRecItem() : listAttndRecItemEntity.get(0);
+		if(attendanceRecItemEntity.getId()==null) {
+			KfnstAttndRecItemPK attendanceRecItemPK = new KfnstAttndRecItemPK(companyId, exportSettingCode.v(), columnIndex, position, exportArt,singleAttendanceRecord.getAttribute().value );
+			attendanceRecItemEntity.setId(attendanceRecItemPK);
+		}
 		singleAttendanceRecord.saveToMemento(new JpaSingleAttendanceRecordSetMemento(kfnstAttndRec, attendanceRecItemEntity));
 		int useAtrValue = useAtr ? 1 : 0;
 		kfnstAttndRec.setUseAtr(new BigDecimal(useAtrValue));
