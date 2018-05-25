@@ -6,6 +6,7 @@ module nts.uk.pr.view.ccg007.g {
         export class ScreenModel {
             
             companyCode: KnockoutObservable<string>;
+            companyName: KnockoutObservable<string>;
             employeeCode: KnockoutObservable<string>;
             
             // Parameter from caller screen.
@@ -15,6 +16,7 @@ module nts.uk.pr.view.ccg007.g {
                 var self = this;
                 
                 self.companyCode = ko.observable(null);
+                self.companyName = ko.observable(null);
                 self.employeeCode = ko.observable(null);
                 
                 //parent data
@@ -31,7 +33,7 @@ module nts.uk.pr.view.ccg007.g {
                 // block ui
                 nts.uk.ui.block.invisible();
                 
-                self.companyCode(self.callerParameter.companyCode);
+                self.companyName(self.callerParameter.companyName);
                 self.employeeCode(self.callerParameter.employeeCode);
                 
                 dfd.resolve();

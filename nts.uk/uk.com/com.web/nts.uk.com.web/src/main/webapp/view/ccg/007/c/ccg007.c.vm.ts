@@ -88,18 +88,13 @@ module nts.uk.pr.view.ccg007.c {
                             self.submitLogin(isSignOn);
                         }
                         else {
-                            service.getCompanyInfo(self.companyCode()).done(function(data: CompanyItemModel) {
-                                //get list company from server 
-                                self.companyName(data.companyName);
-                                
-                                //get login infor from local storeage 
+                            //get login infor from local storeage 
                             nts.uk.characteristics.restore("form2LoginInfo").done(function(loginInfo:any) {
-                                    if (loginInfo) {
-                                        self.companyCode(loginInfo.companyCode);
-                                        self.employeeCode(loginInfo.employeeCode);
-                                    }
-                                    dfd.resolve();
-                                });
+                                if (loginInfo) {
+                                    self.companyCode(loginInfo.companyCode);
+                                    self.employeeCode(loginInfo.employeeCode);
+                                }
+                                dfd.resolve();
                             });
                         }
                     }
@@ -181,9 +176,18 @@ module nts.uk.pr.view.ccg007.c {
             OpenDialogG() {
                 let self = this;
                 
+                if(!nts.uk.util.isNullOrEmpty(self.companyCode())){
+                    let companyId = self.contractCode() + "-" + self.companyCode();
+                    service.getCompanyInfo(companyId).done(function(data: CompanyItemModel) {
+                        //get list company from server 
+                        self.companyName(data.companyName);
+                    });
+                }
+                
                 //set LoginId to dialog
                 nts.uk.ui.windows.setShared('parentCodes', {
                     companyCode: self.companyCode(),
+                    companyName: self.companyName(),
                     employeeCode : self.employeeCode()
                 }, true);
 

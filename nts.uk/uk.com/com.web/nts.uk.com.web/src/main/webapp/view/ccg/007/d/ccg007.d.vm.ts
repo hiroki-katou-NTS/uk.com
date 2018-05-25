@@ -180,7 +180,8 @@ module nts.uk.pr.view.ccg007.d {
                 
                 //set LoginId to dialog
                 nts.uk.ui.windows.setShared('parentCodes', {
-                    companyCode: self.companyName(),
+                    companyCode: self.selectedCompanyCode(),
+                    companyName: self.companyName(),
                     employeeCode : self.employeeCode()
                 }, true);
 
