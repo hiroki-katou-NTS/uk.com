@@ -195,7 +195,6 @@ public class AddSubHdManagementService {
 		}
 		return errorList;
 	}
-
 	/**
 	 * 休出代休日数チェック処理
 	 * 
@@ -216,13 +215,15 @@ public class AddSubHdManagementService {
 					if (!ItemDays.HALF_DAY.value.equals(subHdManagementData.getSelectedCodeOptionSubHoliday())) {
 						errorList.add("Msg_1256_2");
 					} else {
-						checkHolidayAfterSubHoliday(subHdManagementData);
+						errorList = checkHolidayAfterSubHoliday(subHdManagementData);
 					}
 				}
+			}else{
+				errorList = checkHolidayAfterSubHoliday(subHdManagementData);
 			}
 		} else {
 			{
-				checkHolidayAfterSubHoliday(subHdManagementData);
+				errorList = checkHolidayAfterSubHoliday(subHdManagementData);
 			}
 		}
 		return errorList;
