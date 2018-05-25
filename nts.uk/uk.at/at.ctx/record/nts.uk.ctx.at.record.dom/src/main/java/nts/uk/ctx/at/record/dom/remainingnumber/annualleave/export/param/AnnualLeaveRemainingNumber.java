@@ -8,7 +8,6 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeave;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveMaxRemainingTime;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnualLeave;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.RealAnnualLeave;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 
 /**
  * 年休情報残数
@@ -102,7 +101,7 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 	 * @param afterGrantAtr 付与後フラグ
 	 */
 	public void updateRemainingNumber(
-			List<AnnualLeaveGrantRemainingData> remainingDataList, boolean afterGrantAtr){
+			List<AnnualLeaveGrantRemaining> remainingDataList, boolean afterGrantAtr){
 		
 		// 年休付与残数データから年休（マイナスあり）を作成
 		this.annualLeaveWithMinus.createRemainingNumberFromGrantRemaining(remainingDataList, afterGrantAtr);

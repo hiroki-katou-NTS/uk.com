@@ -116,13 +116,15 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 	 * @param companyId 会社ID
 	 * @param datePeriod 期間
 	 * @param workingConditionItem 労働制
+	 * @param startWeekNo 開始週NO
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void prepareAggregation(String companyId, DatePeriod datePeriod, WorkingConditionItem workingConditionItem,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			int startWeekNo, RepositoriesRequiredByMonthlyAggr repositories){
 		
 		this.monthlyCalculation.prepareAggregation(companyId, this.employeeId, this.yearMonth,
-				this.closureId, this.closureDate, datePeriod, workingConditionItem, Optional.empty(), repositories);
+				this.closureId, this.closureDate, datePeriod, workingConditionItem, Optional.empty(),
+				startWeekNo, repositories);
 	}
 
 	/**
