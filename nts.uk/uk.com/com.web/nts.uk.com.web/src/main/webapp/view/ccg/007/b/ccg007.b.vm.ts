@@ -153,6 +153,30 @@ module nts.uk.pr.view.ccg007.b {
                     blockUI.clear();
                 });
             }
+            
+            //open dialog F 
+            OpenDialogF() {
+                let self = this;
+                
+                //set LoginId to dialog
+                nts.uk.ui.windows.setShared('parentCodes', {
+                    loginId: self.loginId(),
+                    contractCode : self.contractCode()
+                }, true);
+
+                nts.uk.ui.windows.sub.modal('/view/ccg/007/f/index.xhtml',{
+                    width : 520,
+                    height : 350
+                }).onClosed(function(): any {
+                    //view all code of selected item 
+                    var childData = nts.uk.ui.windows.getShared('childData');
+                    if (childData) {
+//                        self.timeHistory(childData.timeHistory);
+//                        self.startTime(childData.start);
+//                        self.endTime(childData.end);
+                    }
+                })
+            }
         }
     }
 }

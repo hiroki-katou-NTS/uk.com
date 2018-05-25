@@ -12,11 +12,11 @@ public enum LegalOTSetting {
 
 	/** The legal internal time. */
 	// 法定内の残業時間を法定内時間として扱う
-	LEGAL_INTERNAL_TIME(0, "Enum_LegalOTSetting_allEmployee", "法定内の残業時間を法定内時間として扱う"),
+	LEGAL_INTERNAL_TIME(1, "Enum_LegalOTSetting_allEmployee", "法定内の残業時間を法定内時間として扱う"),
 
 	/** The outside legal time. */
 	// 法定内の残業時間を法定外時間として扱う
-	OUTSIDE_LEGAL_TIME(1, "Enum_LegalOTSetting_departmentAndChild", "法定内の残業時間を法定外時間として扱う");
+	OUTSIDE_LEGAL_TIME(0, "Enum_LegalOTSetting_departmentAndChild", "法定内の残業時間を法定外時間として扱う");
 
 	/** The value. */
 	public final int value;

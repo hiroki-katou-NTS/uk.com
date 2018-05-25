@@ -1,0 +1,74 @@
+/******************************************************************
+ * Copyright (c) 2018 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
+package nts.uk.ctx.sys.auth.dom.password.changelog;
+
+import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.auth.dom.user.HashPassword;
+
+/**
+ * The Class PasswordChangeLog.
+ */
+@Getter
+public class PasswordChangeLog extends AggregateRoot{
+	
+	/** The login ID. */
+	//ログID
+	private LoginId loginID;
+	
+	/** The user ID. */
+	//ユーザID
+	private String userID;
+	
+	/** The modified date. */
+	//変更日時
+	private GeneralDateTime modifiedDate;
+	
+	/** The password. */
+	//パスワード
+	private HashPassword password;
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(PasswordChangeLogSetMemento memento) {
+		memento.setLoginId(this.loginID);
+		memento.setUserId(this.userID);
+		memento.setModifiedDate(this.modifiedDate);
+		memento.setPassword(this.password);
+	}
+
+	/**
+	 * Instantiates a new password change log.
+	 *
+	 * @param memento the memento
+	 */
+	public PasswordChangeLog(PasswordChangeLogGetMemento memento) {
+		this.loginID = memento.getLoginId();
+		this.userID = memento.getUserId();
+		this.modifiedDate = memento.getModifiedDateTime();
+		this.password = memento.getPassword();
+	}
+
+	/**
+	 * Instantiates a new password change log.
+	 *
+	 * @param loginID the login ID
+	 * @param userID the user ID
+	 * @param modifiedDate the modified date
+	 * @param password the password
+	 */
+	public PasswordChangeLog(LoginId loginID, String userID, GeneralDateTime modifiedDate, HashPassword password) {
+		super();
+		this.loginID = loginID;
+		this.userID = userID;
+		this.modifiedDate = modifiedDate;
+		this.password = password;
+	}
+
+}

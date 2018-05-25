@@ -8,6 +8,7 @@ module nts.uk.pr.view.ccg007.d {
             password: KnockoutObservable<string>;
             companyList: KnockoutObservableArray<CompanyItemModel>;
             selectedCompanyCode: KnockoutObservable<string>;
+            companyName: KnockoutObservable<string>;
             isSaveLoginInfo: KnockoutObservable<boolean>;
             contractCode: KnockoutObservable<string>;
             contractPassword: KnockoutObservable<string>;
@@ -17,6 +18,7 @@ module nts.uk.pr.view.ccg007.d {
                 self.password = ko.observable('');
                 self.companyList = ko.observableArray([]);
                 self.selectedCompanyCode = ko.observable('');
+                self.companyName = ko.observable('');
                 self.isSaveLoginInfo = ko.observable(true);
                 self.contractCode = ko.observable('');
                 self.contractPassword = ko.observable('');
@@ -117,6 +119,7 @@ module nts.uk.pr.view.ccg007.d {
                                 self.companyList(data);
                                 if (data.length > 0) {
                                     self.selectedCompanyCode(self.companyList()[0].companyCode);
+                                    self.companyName(self.companyList()[0].companyName);
                                 }
                                 //get local storage info and set here
                                 nts.uk.characteristics.restore("form3LoginInfo").done(function(loginInfo:any) {
@@ -169,6 +172,31 @@ module nts.uk.pr.view.ccg007.d {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
                     blockUI.clear();
                 });
+            }
+            
+            //open dialog G
+            OpenDialogG() {
+                let self = this;
+                
+                //set LoginId to dialog
+                nts.uk.ui.windows.setShared('parentCodes', {
+                    companyCode: self.selectedCompanyCode(),
+                    companyName: self.companyName(),
+                    employeeCode : self.employeeCode()
+                }, true);
+
+                nts.uk.ui.windows.sub.modal('/view/ccg/007/g/index.xhtml',{
+                    width : 520,
+                    height : 350
+                }).onClosed(function(): any {
+                    //view all code of selected item 
+                    var childData = nts.uk.ui.windows.getShared('childData');
+                    if (childData) {
+//                        self.timeHistory(childData.timeHistory);
+//                        self.startTime(childData.start);
+//                        self.endTime(childData.end);
+                    }
+                })
             }
         }
         export class CompanyItemModel {
