@@ -35,14 +35,10 @@ public class AttendanceRecordExportSettingDeleteCommandHandler
 		AttendanceRecordExportSettingDeleteCommand command = context.getCommand();
 
 		// convert to domain
-
 		AttendanceRecordExportSetting domain = new AttendanceRecordExportSetting();
 		domain.setCompanyId(AppContexts.user().companyId());
 		domain.setCode(new ExportSettingCode(command.getCode()));
 		domain.setName(new ExportSettingName(command.getName()));
-//		domain.setSealStamp(
-//				command.getSealStamp().stream().map(item -> new SealColumnName(item)).collect(Collectors.toList()));
-//		domain.setSealUseAtr(command.getSealUseAtr());
 
 		// Delete
 		attendanceRecExpSetRepo.deleteAttendanceRecExpSet(domain);

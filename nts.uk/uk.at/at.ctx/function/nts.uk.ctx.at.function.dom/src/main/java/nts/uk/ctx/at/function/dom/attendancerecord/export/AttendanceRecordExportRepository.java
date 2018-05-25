@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.dom.attendancerecord.export;
 
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
+
 import java.util.List;
 
 /**
@@ -40,4 +42,5 @@ public interface AttendanceRecordExportRepository {
 	 */
 	void addAttendanceRecordExport(AttendanceRecordExport attendanceRecordExport);
 
+	void deleteAttendanceRecord(String companyId, ExportSettingCode exportSettingCode);
 }

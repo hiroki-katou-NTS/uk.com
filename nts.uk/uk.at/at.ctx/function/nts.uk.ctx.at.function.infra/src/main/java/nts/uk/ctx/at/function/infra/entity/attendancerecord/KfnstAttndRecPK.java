@@ -4,12 +4,14 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 /**
  * The primary key class for the KFNST_ATTND_REC database table.
  * 
  */
 @AllArgsConstructor
+@NoArgsConstructor
 @Embeddable
 public class KfnstAttndRecPK implements Serializable {
 	// default serial version id, required for serializable classes.
@@ -29,9 +31,6 @@ public class KfnstAttndRecPK implements Serializable {
 
 	@Column(name = "[POSITION]")
 	private long position;
-
-	public KfnstAttndRecPK() {
-	}
 
 	public String getCid() {
 		return this.cid;

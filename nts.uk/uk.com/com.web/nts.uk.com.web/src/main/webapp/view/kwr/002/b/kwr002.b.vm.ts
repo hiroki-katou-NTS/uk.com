@@ -79,21 +79,28 @@ module nts.uk.com.view.kwr002.b {
         onDelete() {
             let self = this;
             errors.clearAll();
-            confirm({messageId: 'Msg_18'}).ifYes(()=>{
-                confirm({messageId: 'Msg_35'}).ifYes(()=> {
+            confirm({ messageId: 'Msg_18' }).ifYes(() => {
+                confirm({ messageId: 'Msg_35' }).ifYes(() => {
                     let currentData = self.currentARES();
-                    let aRESCommand = {
+                    let delARESCmd = {
                         code: Number(currentData.code()),
-                        name: currentData.name(),
-                        // sealUseAtr: currentData.sealUseAtr(),
-                        // sealStamp: rcdExport.sealStamp
+                        exportCode: Number(currentData.code()),
+                        exportSettingCode: Number(currentData.code()),
+                        name: currentData.name()
                     };
-                    service.delARES(aRESCommand).done(()=>{
+                                      
+                    let cmd = {
+                        delARESCmd: delARESCmd,
+                        delARECmd: delARESCmd,
+                        delARICmd: delARESCmd
+                    };
+
+                    service.delARES(cmd).done(() => {
                         console.log("ahihi");
                     });
                 })
-            }).ifNo(()=>{
-                confirm({messageId: 'Msg_36'}).ifYes(()=> {
+            }).ifNo(() => {
+                confirm({ messageId: 'Msg_36' }).ifYes(() => {
                     return;
                 })
             });
@@ -159,7 +166,7 @@ module nts.uk.com.view.kwr002.b {
                 exportAtr: rcdExport.attendanceRecItemList.exportAtr,
                 columnIndex: rcdExport.attendanceRecItemList.columnIndex,
                 position: rcdExport.attendanceRecItemList.position,
-                timeItems: '',
+                timeItems: rcdExport.attendanceRecItemList.attendanceId,
                 attribute: rcdExport.attendanceRecItemList.attribute,
                 name: rcdExport.attendanceRecItemList.layoutName,//not sure
             };
@@ -247,7 +254,7 @@ module nts.uk.com.view.kwr002.b {
             setShared('attendanceRecExpSetName', self.name(), true);
             setShared('useSeal', self.sealUseAtr(), true);
 
-            modal('../c/index.xhtml', {title: getText('KWR002＿3'),}).onClosed(function (): any {
+            modal('../c/index.xhtml', {title: getText('KWR002�ｼｿ3'),}).onClosed(function (): any {
 
             })
         }

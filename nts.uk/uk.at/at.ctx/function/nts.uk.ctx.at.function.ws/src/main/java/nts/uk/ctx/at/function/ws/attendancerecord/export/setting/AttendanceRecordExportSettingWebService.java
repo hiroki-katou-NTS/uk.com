@@ -37,7 +37,10 @@ public class AttendanceRecordExportSettingWebService {
 	AttendanceRecordExportSettingDeleteCommandHandler attendanceEcExpSetDeleteCommandHandler;
 
 	@Inject
-	NewAttendanceRecordExportSettingCommandHandler handler;
+	NewAttendanceRecordExportSettingCommandHandler addHandler;
+
+	@Inject
+	DeleteAttendanceRecordExportSettingCommandHandler delHandler;
 
 	/**
 	 * Gets the all attendance rec out set.
@@ -74,7 +77,7 @@ public class AttendanceRecordExportSettingWebService {
 	@POST
 	@Path("addAttendanceRecExpSet")
 	public void AddAttendanceRecExpSet(NewAttendanceRecordExportSettingCommand command) {
-		this.handler.handle(command);
+		this.addHandler.handle(command);
 	}
 
 	/**
@@ -97,8 +100,8 @@ public class AttendanceRecordExportSettingWebService {
 	 */
 	@POST
 	@Path("deteleAttendanceRecExpSet")
-	public void DeleteAttendanceRecExpSet(AttendanceRecordExportSettingDeleteCommand command) {
-		this.attendanceEcExpSetDeleteCommandHandler.handle(command);
+	public void DeleteAttendanceRecExpSet(DeleteAttendanceRecordExportSettingCommand command) {
+		this.delHandler.handle(command);
 	}
 
 	/**

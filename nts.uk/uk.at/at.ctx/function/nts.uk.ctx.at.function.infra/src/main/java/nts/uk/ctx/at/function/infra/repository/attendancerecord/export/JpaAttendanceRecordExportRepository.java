@@ -1,8 +1,13 @@
 package nts.uk.ctx.at.function.infra.repository.attendancerecord.export;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExportGetMemento;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExportRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRecPK_;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec_;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -10,14 +15,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
-import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExportGetMemento;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExportRepository;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRecPK_;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec_;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 public class JpaAttendanceRecordExportRepository extends JpaRepository implements AttendanceRecordExportRepository {
@@ -137,6 +137,15 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 
 	}
 
+	@Override
+	public void deleteAttendanceRecord(String companyId, ExportSettingCode exportSettingCode) {
+		List<KfnstAttndRec> items = this.findAllAttendanceRecord(companyId, exportSettingCode);
+		if (items != null && !items.isEmpty()) {
+			this.removeAllAttndRec(items);
+			this.getEntityManager().flush();
+		}
+	}
+
 	/**
 	 * To domain.
 	 *
@@ -151,6 +160,37 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 		AttendanceRecordExportGetMemento memento = new JpaAttendanceRecordExportGetMemento(upperEntity, lowerEntity);
 
 		return new AttendanceRecordExport(memento);
+
+	}
+
+	private List<KfnstAttndRec> findAllAttendanceRecord(String companyId, ExportSettingCode exportSettingCode) {
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<KfnstAttndRec> criteriaQuery = criteriaBuilder.createQuery(KfnstAttndRec.class);
+		Root<KfnstAttndRec> root = criteriaQuery.from(KfnstAttndRec.class);
+
+		// Build query
+		criteriaQuery.select(root);
+
+		// create condition
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.cid), companyId));
+		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.exportCd),
+				exportSettingCode.v()));
+
+		criteriaQuery.where(predicates.toArray(new Predicate[] {}));
+
+		// query data
+		List<KfnstAttndRec> kfnstAttndRecs = em.createQuery(criteriaQuery).getResultList();
+		return kfnstAttndRecs.isEmpty() ? new ArrayList<>() : kfnstAttndRecs;
+	}
+
+
+	public void removeAllAttndRec(List<KfnstAttndRec> items) {
+		if (!items.isEmpty()) {
+			this.commandProxy().removeAll(items);
+			this.getEntityManager().flush();
+		}
 
 	}
 

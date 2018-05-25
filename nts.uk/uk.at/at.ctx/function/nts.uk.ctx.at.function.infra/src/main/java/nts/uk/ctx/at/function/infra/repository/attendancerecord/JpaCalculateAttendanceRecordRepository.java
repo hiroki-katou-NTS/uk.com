@@ -193,61 +193,16 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 	}
 
 	/**
-	 * Find attendance record items.
-	 *
-	 * @param companyId
-	 *            the company id
-	 * @param exportSettingCode
-	 *            the export setting code
-	 * @param columnIndex
-	 *            the column index
-	 * @param position
-	 *            the position
-	 * @param exportArt
-	 *            the export art
-	 * @return the list
-	 */
-//	public List<KfnstAttndRecItem> findAttendanceRecordItems(String companyId, ExportSettingCode exportSettingCode,
-//			long columnIndex, long position, long exportArt) {
-//		EntityManager em = this.getEntityManager();
-//		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-//		CriteriaQuery<KfnstAttndRecItem> criteriaQuery = criteriaBuilder.createQuery(KfnstAttndRecItem.class);
-//		Root<KfnstAttndRecItem> root = criteriaQuery.from(KfnstAttndRecItem.class);
-//
-//		// Build query
-//		criteriaQuery.select(root);
-//
-//		// create condition
-//		List<Predicate> predicates = new ArrayList<>();
-//		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.cid), companyId));
-//		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.exportCd),
-//				exportSettingCode.v()));
-//		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.columnIndex),
-//				columnIndex));
-//		predicates.add(
-//				criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.position), position));
-//		predicates.add(
-//				criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.outputAtr), exportArt));
-//
-//		criteriaQuery.where(predicates.toArray(new Predicate[] {}));
-//
-//		// query data
-//		List<KfnstAttndRecItem> kfnstAttndRecItems = em.createQuery(criteriaQuery).getResultList();
-//		return kfnstAttndRecItems.isEmpty() ? new ArrayList<KfnstAttndRecItem>() : kfnstAttndRecItems;
-//	}
-
-	/**
 	 * Removes the all attnd rec item.
 	 *
 	 * @param listKfnstAttndRecItem
 	 *            the list kfnst attnd rec item
 	 */
 	public void removeAllAttndRecItem(List<KfnstAttndRecItem> listKfnstAttndRecItem) {
-		if (!listKfnstAttndRecItem.isEmpty() && listKfnstAttndRecItem != null) {
+		if (!listKfnstAttndRecItem.isEmpty()) {
 			this.commandProxy().removeAll(listKfnstAttndRecItem);
 			this.getEntityManager().flush();
 		}
-
 	}
 
 }
