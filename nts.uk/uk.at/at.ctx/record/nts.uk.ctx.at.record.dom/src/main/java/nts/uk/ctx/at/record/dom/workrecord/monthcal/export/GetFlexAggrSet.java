@@ -14,12 +14,11 @@ public interface GetFlexAggrSet {
 	/**
 	 * 集計設定の取得（フレックス）
 	 * @param companyId 会社ID
-	 * @param workplaceId 職場ID
 	 * @param employmentCd 雇用コード
 	 * @param employeeId 社員ID
 	 * @param criteriaDate 基準日
 	 * @return フレックス時間勤務の月の集計設定
 	 */
-	Optional<FlexMonthWorkTimeAggrSet> get(String companyId, String workplaceId, String employmentCd,
+	Optional<FlexMonthWorkTimeAggrSet> get(String companyId, String employmentCd,
 			String employeeId, GeneralDate criteriaDate);
 }
