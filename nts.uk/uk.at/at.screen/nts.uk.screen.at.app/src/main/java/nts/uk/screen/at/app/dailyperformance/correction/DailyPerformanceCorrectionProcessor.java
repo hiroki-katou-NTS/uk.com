@@ -1354,7 +1354,7 @@ public class DailyPerformanceCorrectionProcessor {
 	
 	//出退勤打刻の初期値を埋める
 	public SPRCheck checkSPR(String companyId, List<Integer> itemIds, String lock, ApprovalUseSettingDto approval, IdentityProcessUseSetDto indentity, boolean checkApproval, boolean checkIndentity){
-		if (lock.matches(".*[AD].*"))
+		if (lock.matches(".*[D].*"))
 			return SPRCheck.NOT_INSERT;
 		List<Integer> items = itemIds.stream().filter(x -> (x == 31 || x == 34)).collect(Collectors.toList());
 		if (items.size() == 0)
