@@ -313,17 +313,17 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
             switch (self.currentItem().itemTypeState.dataTypeState.stringItemType) {
                 case 1:
-                    return getText('Enum_StringItemType_ANY');
+                    return getText('CPS006_66');
                 case 2:
-                    return getText('Enum_StringItemType_ANYHALFWIDTH');
+                    return getText('CPS006_67');
                 case 3:
-                    return getText('Enum_StringItemType_ALPHANUMERIC');
+                    return getText('CPS006_68');
                 case 4:
-                    return getText('Enum_StringItemType_NUMERIC');
+                    return getText('CPS006_69');
                 case 5:
-                    return getText('Enum_StringItemType_KANA');
+                    return getText('CPS006_70');
                  case 6:
-                    return getText('Enum_StringItemType_CARDNO');
+                    return getText('CPS006_68');
             }
         }
 
