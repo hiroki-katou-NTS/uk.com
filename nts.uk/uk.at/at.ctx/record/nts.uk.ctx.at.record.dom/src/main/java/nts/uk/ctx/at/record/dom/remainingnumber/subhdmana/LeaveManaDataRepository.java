@@ -11,19 +11,19 @@ public interface LeaveManaDataRepository {
 	// 社員ID=パラメータ「社員ID」
 	// 代休消化区分=未消化
 
-	List<LeaveManagementDataAgg> getBySidWithsubHDAtr(String cid, String sid, int state);
+	List<LeaveManagementData> getBySidWithsubHDAtr(String cid, String sid, int state);
 	
-	List<LeaveManagementDataAgg> getByComDayOffId(String cid, String sid, String comDayOffID);
+	List<LeaveManagementData> getByComDayOffId(String cid, String sid, String comDayOffID);
 	
-	List<LeaveManagementDataAgg> getBySidNotUnUsed(String cid, String sid);
+	List<LeaveManagementData> getBySidNotUnUsed(String cid, String sid);
 	
-	List<LeaveManagementDataAgg> getBySid(String cid, String sid);
+	List<LeaveManagementData> getBySid(String cid, String sid);
 	
-	List<LeaveManagementDataAgg> getByDateCondition (String cid, String sid, GeneralDate startDate, GeneralDate endDate);
+	List<LeaveManagementData> getByDateCondition (String cid, String sid, GeneralDate startDate, GeneralDate endDate);
 	
-	List<LeaveManagementDataAgg> getBySidWithHolidayDate(String cid, String sid, GeneralDate dateHoliday);
+	List<LeaveManagementData> getBySidWithHolidayDate(String cid, String sid, GeneralDate dateHoliday);
 
-	void create(LeaveManagementDataAgg domain);
+	void create(LeaveManagementData domain);
 	
 	void updateByLeaveIds(List<String> leaveIds);
 	
@@ -35,13 +35,13 @@ public interface LeaveManaDataRepository {
 	 *            ID
 	 * @return
 	 */
-	Optional<LeaveManagementDataAgg> getByLeaveId(String leaveManaId);
+	Optional<LeaveManagementData> getByLeaveId(String leaveManaId);
 
 	/**
 	 * Update domain 休出管理データ
 	 * @param domain
 	 */
-	void udpate(LeaveManagementDataAgg domain);
+	void udpate(LeaveManagementData domain);
 
 	/**
 	 * Delete domain 休出管理データ

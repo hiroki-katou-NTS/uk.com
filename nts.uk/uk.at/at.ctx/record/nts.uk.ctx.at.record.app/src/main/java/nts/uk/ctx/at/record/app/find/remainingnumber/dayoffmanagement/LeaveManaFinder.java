@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
-import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManagementDataAgg;
+import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -24,9 +24,9 @@ public class LeaveManaFinder {
 		List<LeaveManaDto> resultLeaveFreeMana = new ArrayList<>();
 		List<LeaveManaDto> result = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
-		List<LeaveManagementDataAgg> leaveManaFree = new ArrayList<>();
+		List<LeaveManagementData> leaveManaFree = new ArrayList<>();
 		leaveManaFree = leaveManaDataRepository.getBySidWithsubHDAtr(companyId, employeeId, DigestionAtr.UNUSED.value);
-		List<LeaveManagementDataAgg> leaveMana = new ArrayList<>();
+		List<LeaveManagementData> leaveMana = new ArrayList<>();
 		leaveMana = leaveManaDataRepository.getByComDayOffId(companyId, employeeId, comDayOffID);
 		resultLeaveFreeMana = leaveManaFree.stream().map(p -> new LeaveManaDto(p.getComDayOffDate().getDayoffDate().get(),p.getOccurredDays().v().toString(), false,p.getID())).collect(Collectors.toList());
 		resultLeaveMana = leaveMana.stream().map(p -> new LeaveManaDto(p.getComDayOffDate().getDayoffDate().get(),p.getOccurredDays().v().toString(), true,p.getID())).collect(Collectors.toList());

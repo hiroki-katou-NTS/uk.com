@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.paymana;
+package nts.uk.ctx.at.record.dom.remainingnumber.subhdmana;
 
 import java.util.List;
 

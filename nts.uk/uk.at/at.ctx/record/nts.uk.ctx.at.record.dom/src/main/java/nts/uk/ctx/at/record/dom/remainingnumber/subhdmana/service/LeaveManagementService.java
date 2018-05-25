@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.paymana.service;
+package nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -9,12 +9,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.remainingnumber.base.TargetSelectionAtr;
-import nts.uk.ctx.at.record.dom.remainingnumber.paymana.LeaveMana;
-import nts.uk.ctx.at.record.dom.remainingnumber.paymana.LeaveManagementData;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
+import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManaData;
+import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeavesManaData;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
-import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManagementDataAgg;
+import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -30,7 +30,7 @@ public class LeaveManagementService {
 	public static final String ONE_DAY = "1.0";
 	public static final String HALF_DAY = "0.5";
 	
-	public List<String> updateDayOff(LeaveManagementData leaveManagementData) {
+	public List<String> updateDayOff(LeaveManaData leaveManagementData) {
 		
 		List<String> response = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
@@ -61,7 +61,7 @@ public class LeaveManagementService {
 					.getBycomDayOffID(leaveManagementData.getComDayOffID());
 
 			// update Ustr current leave
-			List<LeaveManagementDataAgg> leaveManaUpdate = new ArrayList<>();
+			List<LeaveManagementData> leaveManaUpdate = new ArrayList<>();
 			leaveManaUpdate = leaveManaDataRepository.getByComDayOffId(companyId, leaveManagementData.getEmployeeId(),
 					leaveManagementData.getComDayOffID());
 			List<String> currentLeaveMana = leaveManaUpdate.stream().map(item -> new String(item.getID()))
@@ -79,7 +79,7 @@ public class LeaveManagementService {
 			}
 
 			// insert List LeaveComDayOff
-			List<LeaveMana> leaveMana = leaveManagementData.getLeaveMana();
+			List<LeavesManaData> leaveMana = leaveManagementData.getLeaveMana();
 			List<LeaveComDayOffManagement> entitiesLeave = leaveMana.stream()
 					.map(item -> new LeaveComDayOffManagement(item.getLeaveManaID(),
 							leaveManagementData.getComDayOffID(), new BigDecimal(item.getRemainDays()), 0,

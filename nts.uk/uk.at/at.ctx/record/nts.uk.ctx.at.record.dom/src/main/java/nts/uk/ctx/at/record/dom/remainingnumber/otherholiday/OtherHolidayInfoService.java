@@ -21,7 +21,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.publicholiday.PublicHolidayRemai
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
-import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManagementDataAgg;
+import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
@@ -210,7 +210,7 @@ public class OtherHolidayInfoService {
 	 */
 	private void remainNumberIsMoreThanZero(String cid, String sid, BigDecimal remainNumber) {
 		BigDecimal remainNumberTpm = remainNumber;
-		LeaveManagementDataAgg leaveMana = null;
+		LeaveManagementData leaveMana = null;
 		String newID = null;
 		// 1日相当時間←指定時間．1日の時間
 		// 半日相当時間←指定時間．半日の時間
@@ -221,12 +221,12 @@ public class OtherHolidayInfoService {
 		while (remainNumberTpm.compareTo(ZERO) > 0) {
 			newID = IdentifierUtil.randomUniqueId();
 			if (remainNumberTpm.compareTo(ONE) >= 0) {
-				leaveMana = new LeaveManagementDataAgg(newID, cid, sid, true, null, GeneralDate.max(), 1d, 0, 1d, 0,
+				leaveMana = new LeaveManagementData(newID, cid, sid, true, null, GeneralDate.max(), 1d, 0, 1d, 0,
 						DigestionAtr.UNUSED.value, aDay, aHalf);
 
 				remainNumberTpm = remainNumberTpm.subtract(ONE);
 			} else if (remainNumberTpm.compareTo(AHALF) == 0) {
-				leaveMana = new LeaveManagementDataAgg(newID, cid, sid, true, null, GeneralDate.max(), 0.5d, 0, 0.5d, 0,
+				leaveMana = new LeaveManagementData(newID, cid, sid, true, null, GeneralDate.max(), 0.5d, 0, 0.5d, 0,
 						DigestionAtr.UNUSED.value, aDay, aHalf);
 				remainNumberTpm = remainNumberTpm.subtract(AHALF);
 			}

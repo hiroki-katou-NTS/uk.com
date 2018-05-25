@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.paymana.service;
+package nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -9,10 +9,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.remainingnumber.base.TargetSelectionAtr;
-import nts.uk.ctx.at.record.dom.remainingnumber.paymana.DayOffManagementData;
-import nts.uk.ctx.at.record.dom.remainingnumber.paymana.DaysOffMana;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
+import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.DayOffManagementData;
+import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.DaysOffMana;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.shr.com.context.AppContexts;
