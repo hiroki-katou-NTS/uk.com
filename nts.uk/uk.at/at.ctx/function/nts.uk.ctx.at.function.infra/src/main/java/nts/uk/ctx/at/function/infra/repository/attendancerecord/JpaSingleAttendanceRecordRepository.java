@@ -116,8 +116,7 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, exportSettingCode.v(), columnIndex, exportArt,
 				position);
 		Optional<KfnstAttndRec> optionalKfnstAttndRec = this.queryProxy().find(kfnstAttndRecPK, KfnstAttndRec.class);
-		if (optionalKfnstAttndRec.isPresent())
-			this.commandProxy().remove(optionalKfnstAttndRec.get());
+		optionalKfnstAttndRec.ifPresent(kfnstAttndRec -> this.commandProxy().remove(kfnstAttndRec));
 
 		// find and delete KfnstAttndRecItem
 		List<KfnstAttndRecItem> listKfnstAttndRecItem = this.findAttendanceRecordItems(kfnstAttndRecPK);
@@ -220,40 +219,5 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 		return kfnstAttndRecItem;
 	}
 
-
-
-//	/**
-//	 * Find attendance record items.
-//	 *
-//	 * @param kfnstAttndRecPK the kfnst attnd rec PK
-//	 * @return the list
-//	 */
-//	private List<KfnstAttndRecItem> findAttendanceRecordItems(KfnstAttndRecPK kfnstAttndRecPK) {
-//		EntityManager em = this.getEntityManager();
-//		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-//		CriteriaQuery<KfnstAttndRecItem> criteriaQuery = criteriaBuilder.createQuery(KfnstAttndRecItem.class);
-//		Root<KfnstAttndRecItem> root = criteriaQuery.from(KfnstAttndRecItem.class);
-//
-//		// Build query
-//		criteriaQuery.select(root);
-//
-//		// create condition
-//		List<Predicate> predicates = new ArrayList<>();
-//		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.cid), kfnstAttndRecPK.getCid() ));
-//		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.exportCd),
-//				kfnstAttndRecPK.getExportCd()));
-//		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.columnIndex),
-//				kfnstAttndRecPK.getColumnIndex()));
-//		predicates.add(
-//				criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.position), kfnstAttndRecPK.getPosition()));
-//		predicates.add(
-//				criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.outputAtr), kfnstAttndRecPK.getOutputAtr()));
-//
-//		criteriaQuery.where(predicates.toArray(new Predicate[] {}));
-//
-//		// query data
-//		List<KfnstAttndRecItem> kfnstAttndRecItems = em.createQuery(criteriaQuery).getResultList();
-//		return kfnstAttndRecItems.isEmpty() ? new ArrayList<KfnstAttndRecItem>() : kfnstAttndRecItems;
-//	}
 
 }
