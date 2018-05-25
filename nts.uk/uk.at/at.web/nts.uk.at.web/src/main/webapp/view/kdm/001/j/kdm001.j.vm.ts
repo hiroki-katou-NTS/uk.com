@@ -94,14 +94,13 @@ module nts.uk.at.view.kdm001.j.viewmodel {
             service.update(new UpdateModel(self.employeeId(),self.leaveId(),self.itemsSelected())).done(function(data) {
                 if (data.length > 0) {
                         let messageId = data[0];
+                        nts.uk.ui.windows.close();
                         if(messageId === 'Msg_15') {
                              nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         }else {
                                 $('#multi-list').ntsError('set', { messageId: messageId });
                             }
-                        
                         block.clear();
-                        return;
                     }
             }).fail(function(error) {
                
@@ -117,14 +116,18 @@ module nts.uk.at.view.kdm001.j.viewmodel {
              var self = this;
             service.getAll(leaveId,employeeId).done(function(data) {
 
-                for (let i = 0; i < data.length; i++) {
-                    self.items.push(new ItemModel(data[i].comDayOffId, data[i].dateHoliday,data[i].numberDay, data[i].numberDay+" 日"));
-                    if(data[i].usedDay == true) {
-                        console.log(data[i].comDayOffId);
-                        self.currentCodeList.push(data[i].comDayOffId);
+                for (let i = 0; i < data.listDayOff.length; i++) {
+                    self.items.push(new ItemModel(data.listDayOff[i].comDayOffId, data.listDayOff[i].dateHoliday,data.listDayOff[i].numberDay, data.listDayOff[i].numberDay+" 日"));
+                    if(data.listDayOff[i].usedDay == true) {
+                        self.currentCodeList.push(data.listDayOff[i].comDayOffId);
                     }
                     
                 }
+                
+                if(data.errorCode != null) {
+                    nts.uk.ui.dialog.alertError({ messageId: data.errorCode });
+                }
+                
             }).fail(function(error) {
                 
             }).always(() => {
