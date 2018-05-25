@@ -9,7 +9,7 @@ module nts.uk.at.view.kbt002.b {
         }
     
         export function findWorkplaceTree(baseDate: Date, systemType : number): JQueryPromise<any> {
-            return nts.uk.request.ajax('com', paths.findWorkplaceTree, { baseDate: baseDate, systemType: systemType });
+            return nts.uk.request.ajax('com', paths.findWorkplaceTree, { baseDate: baseDate, systemType: systemType,restrictionOfReferenceRange: false });
         }
         
         export function getEnumDataList(): JQueryPromise<any> {

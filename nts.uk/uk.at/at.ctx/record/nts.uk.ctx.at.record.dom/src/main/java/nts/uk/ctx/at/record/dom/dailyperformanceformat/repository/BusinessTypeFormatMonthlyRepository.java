@@ -15,5 +15,7 @@ public interface BusinessTypeFormatMonthlyRepository {
 	void add(List<BusinessTypeFormatMonthly> businessTypeFormatMonthlyAdds);
 	
 	boolean checkExistData(String companyId, String businessTypeCode);
+	
+	List<BusinessTypeFormatMonthly> getMonthlyDetailByCompanyId(String companyId);
 
 }

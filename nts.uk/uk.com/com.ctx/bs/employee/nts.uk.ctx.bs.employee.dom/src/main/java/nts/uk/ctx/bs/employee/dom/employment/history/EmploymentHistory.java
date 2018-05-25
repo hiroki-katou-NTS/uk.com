@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.dom.employment.history;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -41,6 +42,10 @@ public class EmploymentHistory extends AggregateRoot
 	@Override
 	public List<DateHistoryItem> items() {
 		return historyItems;
+	}
+	
+	public List<String> getHistoryIds() {
+		return historyItems.stream().map( item -> item.identifier()).collect(Collectors.toList());
 	}
 
 }
