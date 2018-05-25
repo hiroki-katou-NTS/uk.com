@@ -33,18 +33,18 @@
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
 				<!--The component container-->
-				<div id="ccgcomponent" tabindex="6"></div>
-				
+				<div id="ccgcomponent" tabindex="3"></div>
+
 				<div class="drag-panel" style="margin-left: 85px">
 					<div style="margin-bottom: 10px">
 						<label>#{i18n.getText('KWR002_11')}</label>
 					</div>
 
-					<table id="multi-list"
+					<table tabindex="4" id="multi-list"
 						data-bind="ntsGridList: {								
 							height: 610, 
 							options: employeeList,
-							optionsValue: 'code',
+							optionsValue: 'id',
 							columns: columns,
 							multiple: true,
 							value: currentCodeList}">
@@ -54,14 +54,14 @@
 				<div class="drag-panel" style="margin-left: 30px">
 					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KWR002_17')}</div>
 					<div style="padding: 40px; margin-bottom: 40px"
-						id="daterangepicker" tabindex="1"
+						id="daterangepicker" tabindex="5"
 						data-bind="ntsDateRangePicker: { required: true, enable: enable, showNextPrevious: true, value: dateValue, maxRange: 'oneMonth', type: 'yearmonth'}" />
 					<div style="margin-bottom: 10px">
 						<label>#{i18n.getText('KWR002_26')}</label>
 					</div>
 					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KWR002_18')}</div>
 
-					<div id="combo-box"
+					<div id="combo-box" tabindex="6"
 						data-bind="ntsComboBox: {
 								options: attendanceRecordList,
 								optionsValue: 'code',
@@ -75,7 +75,7 @@
 									{ prop: 'code', length: 4 },
 									{ prop: 'name', length: 10 }]}">
 					</div>
-					<button id="openBDialog" tabindex="1" class="group-button-1"
+					<button id="openBDialog" tabindex="7" class="group-button-1"
 						data-bind="click: openBDialog, disable: false">#{i18n.getText('KWR002_20')}</button>
 
 				</div>

@@ -48,6 +48,7 @@ module nts.uk.com.view.kwr002.a {
                 self.endDateString = ko.observable("");
                 self.dateValue = ko.observable({ startDate: currentDate, endDate: currentDate });
                 self.exportDto = ko.observable<exportDto>();
+                
                 self.startDateString.subscribe(function(value) {
                     self.dateValue().startDate = value;
                     self.dateValue.valueHasMutated();
@@ -63,6 +64,7 @@ module nts.uk.com.view.kwr002.a {
                 self.selectedCode = ko.observable('');
 
                 self.columns = ko.observableArray([
+                    { headerText: nts.uk.resource.getText("KWR002_13"), key: 'id', width: 140, hidden: true },
                     { headerText: nts.uk.resource.getText("KWR002_13"), key: 'code', width: 140 },
                     { headerText: nts.uk.resource.getText("KWR002_14"), key: 'name', width: 200 },
                     { headerText: nts.uk.resource.getText("KWR002_15"), key: 'workplaceName', width: 150 }
@@ -128,11 +130,11 @@ module nts.uk.com.view.kwr002.a {
                     }
                 }
 
-                self.currentCodeList.subscribe(function(employeeCode: any) {
+                self.currentCodeList.subscribe(function(employeeId: any) {
                     let employee;
                     self.selectedEmployee.removeAll();
-                    for (let i of employeeCode) {
-                        employee = self.findByCodeEmployee(i);
+                    for (let i of employeeId) {
+                        employee = self.findByIdEmployee(i);
                         self.selectedEmployee.push(employee);
                     }
                     console.log(self.selectedEmployee());
@@ -180,6 +182,7 @@ module nts.uk.com.view.kwr002.a {
                 let employeeSearchs: UnitModel[] = [];
                 for (let employeeSearch of dataList) {
                     let employee: UnitModel = {
+                        id: employeeSearch.employeeId,
                         code: employeeSearch.employeeCode,
                         name: employeeSearch.employeeName,
                         workplaceName: employeeSearch.workplaceName
@@ -243,16 +246,34 @@ module nts.uk.com.view.kwr002.a {
                     }
                 }
                 return employee;
-            }
+            }          
+            
+            /**
+             * update selected employee kcp005 => detail
+             */
+            public findByIdEmployee(employeeId: string): UnitModel {
+                let employee: UnitModel;
+                let self = this;
+                for (let employeeSelect of self.employeeList()) {
+                    if (employeeSelect.id === employeeId) {
+                        employee = employeeSelect;
+                        break;
+                    }
+                }
+                return employee;
+            }          
 
             public print() {
                 let self = this;
+                let startDate;
+                let endDate;
+                console.log(self.currentCodeList());
                 if (self.selectedEmployee().length <= 0) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_1129" });
                     return;
                 }
-
-                self.exportDto(new exportDto(self.currentCodeList(), self.dateValue, self.selectedCode()));
+                self.exportDto(new exportDto(self.currentCodeList(), self.dateValue().startDate, self.dateValue().endDate, self.selectedCode()));
+                console.log(self.exportDto());
             }
 
             public exportExcel() {
@@ -262,7 +283,7 @@ module nts.uk.com.view.kwr002.a {
                     return;
                 }
 
-                self.exportDto(new exportDto(self.currentCodeList(), self.dateValue, self.selectedCode()));
+                self.exportDto(new exportDto(self.currentCodeList(), self.dateValue().startDate, self.dateValue().endDate, self.selectedCode()));
             }
 
             public openBDialog(): void {
@@ -332,10 +353,12 @@ module nts.uk.com.view.kwr002.a {
         }
 
         export class EmployeeSearchDto {
+            employeeId: string;
             employeeCode: string;
             employeeName: string;
             workplaceName: string;
-            constructor(employeeCode: string, employeeName: string, workplaceName: string) {
+            constructor(employeeId: string, employeeCode: string, employeeName: string, workplaceName: string) {
+                this.employeeId = employeeId;
                 this.employeeCode = employeeCode;
                 this.employeeName = employeeName;
                 this.workplaceName = workplaceName;
@@ -343,25 +366,17 @@ module nts.uk.com.view.kwr002.a {
         }
 
         export class exportDto {
-            employeeCodeList: Array<string>;
-            period: any;
+            employeeIdList: Array<string>;
+            startDate: string;
+            endDate: string;
             layout: string;
 
-            constructor(employeeCodeList: Array<string>, period: any, layout: string) {
-                this.employeeCodeList = employeeCodeList;
-                this.period = period;
+            constructor(employeeIdList: Array<string>, startDate: string, endDate: string, layout: string) {
+                this.employeeIdList = employeeIdList;
+                this.startDate = startDate;
+                this.endDate = endDate;
                 this.layout = layout;
             }
         }
-
-        //        export class period {
-        //            startDate: string;
-        //            endDate: string;
-        //            
-        //            constructor(startDate: string, endDate: string){
-        //                this.startDate = startDate;
-        //                this.endDate = endDate;
-        //            }
-        //        }
     }
 }
