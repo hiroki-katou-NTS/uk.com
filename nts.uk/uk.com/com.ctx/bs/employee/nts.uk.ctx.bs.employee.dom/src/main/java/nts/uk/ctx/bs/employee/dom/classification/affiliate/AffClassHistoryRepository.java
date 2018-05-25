@@ -3,10 +3,12 @@
  */
 package nts.uk.ctx.bs.employee.dom.classification.affiliate;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * @author danpv
@@ -44,6 +46,14 @@ public interface AffClassHistoryRepository {
 	 * @return
 	 */
 	Optional<AffClassHistory> getByEmployeeIdDesc(String cid, String employeeId);
+	
+	/**
+	 * request-list 398
+	 * @param employeeIds
+	 * @param period
+	 * @return
+	 */
+	List<AffClassHistory> getByEmployeeListWithPeriod(List<String> employeeIds, DatePeriod period);
 	
 	/**
 	 * add domain history

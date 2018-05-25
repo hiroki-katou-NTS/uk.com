@@ -458,7 +458,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		// status
 		// 正常終了 : 0
 		// 中断 : 1
-
 		List<ErrMessageInfo> errMesInfos = new ArrayList<>();
 
 		// result of stamp part
@@ -747,9 +746,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				// data");
 				// }
 			}
-
 			if (errMesInfos.isEmpty()) {
-
 				// pharse 2 start ----
 				// 特定日を日別実績に反映する
 				SpecificDateAttrOfDailyPerfor specificDateAttrOfDailyPerfor = reflectSpecificDate(companyId, employeeID,
@@ -775,24 +772,19 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				WorkStyle workStyle = basicScheduleService
 						.checkWorkDay(workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTypeCode().v());
 				if (workStyle != WorkStyle.ONE_DAY_REST) {
-
 					TimeLeavingOfDailyPerformance timeLeavingOptional = createStamp(companyId, workInfoOfDailyPerformanceUpdate, workingConditionItem, null,
 							employeeID, day);
 					// check tay
 					stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId, employeeID, day,
 							workInfoOfDailyPerformanceUpdate, timeLeavingOptional, empCalAndSumExecLogID,
 							reCreateAttr);
-
 				}
-
 				this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId, employeeID, day,
 						stampOutput, affiliationInforOfDailyPerfor, workInfoOfDailyPerformanceUpdate,
 						specificDateAttrOfDailyPerfor, calAttrOfDailyPerformance, workTypeOfDailyPerformance,
 						breakTimeOfDailyPerformance.isPresent() ? breakTimeOfDailyPerformance.get() : null);
-
 			}
 		}
-
 	}
 
 	/**
@@ -1011,6 +1003,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		CalAttrOfDailyPerformance calAttrOfDailyPerformance = new CalAttrOfDailyPerformance(employeeId, day,
 				autoCalFlexOvertimeSetting, autoCalRaisingSalarySetting, holidayTimeSetting, overtimeSetting,
 				autoCalOfLeaveEarlySetting, autoCalcSetOfDivergenceTime);
+		autoCalFlexOvertimeSetting = null;
+		autoCalRaisingSalarySetting = null;
+		holidayTimeSetting = null;
+		overtimeSetting = null;
+		autoCalOfLeaveEarlySetting = null;
+		autoCalcSetOfDivergenceTime = null;
 		return calAttrOfDailyPerformance;
 	}
 
