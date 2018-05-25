@@ -59,17 +59,27 @@ public class PersonInfoItemData extends AggregateRoot {
 			String stringValue, BigDecimal intValue, GeneralDate dateValue) {
 
 		return new PersonInfoItemData(new ItemCode(itemCode), perInfoDefId, recordId, perInfoCtgId, perInfoCtgCd,
-				itemName, EnumAdaptor.valueOf(isRequired, IsRequired.class), createDataState(
-						EnumAdaptor.valueOf(dataStateType, DataStateType.class), stringValue, intValue, dateValue));
+				itemName, EnumAdaptor.valueOf(isRequired, IsRequired.class),
+				createDataState(dataStateType, stringValue, intValue, dateValue));
 
 	}
 
-	private static DataState createDataState(DataStateType dataStateType, String stringValue, BigDecimal intValue,
+	/**
+	 * ORIGINAL version
+	 * @return
+	 */
+	public static PersonInfoItemData createFromJavaType(String perInfoDefId, String recordId, int dataStateType,
+			String stringValue, BigDecimal intValue, GeneralDate dateValue) {
+		return new PersonInfoItemData(perInfoDefId, recordId,
+				createDataState(dataStateType, stringValue, intValue, dateValue));
+
+	}
+
+	private static DataState createDataState(int dataStateType, String stringValue, BigDecimal intValue,
 			GeneralDate dateValue) {
-
 		DataState resultState = new DataState();
-
-		switch (dataStateType) {
+		DataStateType dataStateTypeEnum = EnumAdaptor.valueOf(dataStateType, DataStateType.class);
+		switch (dataStateTypeEnum) {
 		case String:
 			resultState = DataState.createFromStringValue(stringValue);
 			break;
@@ -84,6 +94,19 @@ public class PersonInfoItemData extends AggregateRoot {
 
 		}
 		return resultState;
+	}
+	
+	public Object getValue() {
+		switch (this.dataState.dataStateType) {
+		case String:
+			this.dataState.getStringValue();
+
+		case Numeric:
+			this.dataState.getNumberValue();
+		case Date:
+			this.dataState.getDateValue();
+		}
+		return null;
 	}
 
 	public OptionalItemDataDto genToPeregDto() {
