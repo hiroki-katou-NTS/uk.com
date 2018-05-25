@@ -62,19 +62,20 @@ public class DayOffManagementService {
 			List<LeaveComDayOffManagement> leavesComDay = leaveComDayOffManaRepository
 					.getByLeaveID(dayOffManagementData.getLeaveId());
 
-			// update remianDay current selected
+			
 			List<CompensatoryDayOffManaData> daysOffMana = new ArrayList<>();
 			daysOffMana = comDayOffManaDataRepository.getBySidComDayOffIdWithReDay(companyId,
 					dayOffManagementData.getEmployeeId(), dayOffManagementData.getLeaveId());
 			List<String> currentComDaySelect = daysOffMana.stream().map(item -> new String(item.getComDayOffID()))
 					.collect(Collectors.toList());
+			
+			// update remainDays by current selected
 			if (!currentComDaySelect.isEmpty()) {
-				comDayOffManaDataRepository.updateNotReDayByComDayId(currentComDaySelect);
+				comDayOffManaDataRepository.updateReDayReqByComDayId(currentComDaySelect);
 			}
-
+			
+			// delete List LeaveComDayOff
 			if (leavesComDay.size() >= 1) {
-
-				// delete List LeaveComDayOff
 				leaveComDayOffManaRepository.deleteByLeaveId(dayOffManagementData.getLeaveId());
 			}
 
@@ -88,7 +89,7 @@ public class DayOffManagementService {
 
 			List<String> comDayIds = daysOff.stream().map(item -> new String(item.getComDayOffID()))
 					.collect(Collectors.toList());
-			// update ComDayOff
+			// update remainDays by new ComDayOff
 			if (!comDayIds.isEmpty()) {
 				comDayOffManaDataRepository.updateReDayByComDayId(comDayIds);
 			}

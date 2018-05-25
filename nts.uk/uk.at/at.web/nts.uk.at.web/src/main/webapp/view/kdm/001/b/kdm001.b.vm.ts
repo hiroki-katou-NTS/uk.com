@@ -288,7 +288,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 });
             } else {
                 let rowDataInfo = _.find(self.screenItem().listExtractData, x => {
-                    return x.id === value.id;
+                    return x.comDayOffID === value.id;
                 });
                 setShared('KDM001_K_PARAMS', { row: rowDataInfo, selectedEmployee: self.screenItem().selectedEmployee, closure: self.screenItem().closureEmploy });
                 modal("/view/kdm/001/k/index.xhtml").onClosed(function() {
@@ -304,7 +304,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             var self = this;
             if (value.substituedWorkingDate.length > 0) {
                 let rowDataInfo = _.find(self.screenItem().listExtractData, x => {
-                    return x.comDayOffID === value.id;
+                    return x.id === value.id;
                 });
                 setShared('KDM001_L_PARAMS', { row: rowDataInfo, selectedEmployee: self.screenItem().selectedEmployee, closure: self.screenItem().closureEmploy });
                 modal("/view/kdm/001/l/index.xhtml").onClosed(function() {

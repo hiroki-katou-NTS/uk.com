@@ -63,21 +63,20 @@ public class LeaveManagementService {
 			List<LeaveComDayOffManagement> leavesComDay = leaveComDayOffManaRepository
 					.getBycomDayOffID(leaveManagementData.getComDayOffID());
 
-			// update Ustr current leave
+			
 			List<LeaveManagementData> leaveManaUpdate = new ArrayList<>();
 			leaveManaUpdate = leaveManaDataRepository.getByComDayOffId(companyId, leaveManagementData.getEmployeeId(),
 					leaveManagementData.getComDayOffID());
 			List<String> currentLeaveMana = leaveManaUpdate.stream().map(item -> new String(item.getID()))
 					.collect(Collectors.toList());
-
+			// update Sub by current leave
 			if (!currentLeaveMana.isEmpty()) {
-				leaveManaDataRepository.updateNotByLeaveIds(currentLeaveMana);
+				leaveManaDataRepository.updateSubByLeaveId(currentLeaveMana);
 
 			}
-
+			
+			// delete List LeaveComDayOff
 			if (leavesComDay.size() >= 1) {
-
-				// delete List LeaveComDayOff
 				leaveComDayOffManaRepository.deleteByComDayOffID(leaveManagementData.getComDayOffID());
 			}
 
@@ -90,7 +89,7 @@ public class LeaveManagementService {
 					.collect(Collectors.toList());
 			leaveComDayOffManaRepository.insertAll(entitiesLeave);
 
-			// update Leave
+			// update Sub by new Leave
 			List<String> listId = leaveMana.stream().map(item -> new String(item.getLeaveManaID()))
 					.collect(Collectors.toList());
 			if (!listId.isEmpty()) {
