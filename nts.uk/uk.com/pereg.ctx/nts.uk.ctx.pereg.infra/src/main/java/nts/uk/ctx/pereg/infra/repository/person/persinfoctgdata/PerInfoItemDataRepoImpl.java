@@ -60,6 +60,9 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 			+ " WHERE pm.ppemtPerInfoItemCmPK.itemCd =:itemCd"
 			+ " AND pi.perInfoCtgId IN :perInfoCtgId";
 	
+	private static final String GET_ITEM_DATA_WITH_RECORD_IDS = "SELECT id FROM PpemtPerInfoItemData id "
+			+ "WHERE id.primaryKey.perInfoDefId = :itemDefId AND id.primaryKey.recordId IN :recordIds";
+	
 
 	private PersonInfoItemData toDomain(Object[] entity) {
 
@@ -199,6 +202,21 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 		return this.queryProxy().query(GET_BY_ITEM_DEF_ID_AND_RECORD_ID)
 				.setParameter("recordId", recordId)
 				.setParameter("perInfoDefId", perInfoDefId).getSingle(data -> toDomainNew(data));
+	}
+	
+	@Override
+	public List<PersonInfoItemData> getItemData(String itemDefId, List<String> recordIds) {
+		if (recordIds.isEmpty()) {
+			return new ArrayList<>();
+		}
+		List<PpemtPerInfoItemData> entities = this.queryProxy()
+				.query(GET_ITEM_DATA_WITH_RECORD_IDS, PpemtPerInfoItemData.class).setParameter("itemDefId", itemDefId)
+				.setParameter("recordIds", recordIds).getList();
+		
+		return entities.stream().map(ent -> PersonInfoItemData.createFromJavaType(itemDefId, ent.primaryKey.recordId,
+				ent.saveDataAtr, ent.stringVal, ent.intVal, ent.dateVal)).collect(Collectors.toList());
+		
+		
 	}
 
 	@Override

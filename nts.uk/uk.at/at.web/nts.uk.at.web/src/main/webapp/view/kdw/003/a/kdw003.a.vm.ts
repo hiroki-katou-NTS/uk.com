@@ -168,6 +168,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         itemValueMonthParent: any = {};
         valueUpdateMonth: any = null;
         valueFlexCheck: any;
+        
+        textStyles: any = [];
         constructor(dataShare: any) {
             var self = this;
             self.initLegendButton();
@@ -490,14 +492,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         // update check
                         if (!data.changeSPR.change31) {
                             let objectName = {};
-                            objectName["A31"] = "" + self.shareObject().initClock.goOut;
+                            objectName["A31"] = "" + self.convertMinute(self.shareObject().initClock.goOut);
                             $("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId31, objectName);
                             sprStamp.change31 = true;
                         }
 
                         if (!data.changeSPR.change34) {
                             let objectName = {};
-                            objectName["A34"] = "" + self.shareObject().initClock.liveTime;
+                            objectName["A34"] = "" + self.convertMinute(self.shareObject().initClock.liveTime);
                             $("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId34, objectName);
                             sprStamp.change34 = true;
                         }
@@ -520,14 +522,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let sprStamp = { employeeId: "", date: "", change31: false, change34: false };
                     if (!data.changeSPR.change31) {
                         let objectName = {};
-                        objectName["A31"] = "" + self.shareObject().initClock.goOut;
+                        objectName["A31"] = "" + self.convertMinute(self.shareObject().initClock.goOut);
                         $("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId31, objectName);
                         sprStamp.change31 = true;
                     }
 
                     if (!data.changeSPR.change34) {
                         let objectName = {};
-                        objectName["A34"] = "" + self.shareObject().initClock.liveTime;
+                        objectName["A34"] = "" + self.convertMinute(self.shareObject().initClock.liveTime);
                         $("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId34, objectName);
                         sprStamp.change34 = true;
                     }
@@ -537,7 +539,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 //update
             }
         }
-
+ 
+        convertMinute(value) : string{
+            return Math.floor(value / 60) + ':' + value % 60;
+        }
+        
         processFlex(data) : JQueryPromise<any>{
             let dfd = $.Deferred();
             let self = this;
@@ -582,6 +588,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.optionalHeader = data.lstControlDisplayItem.lstHeader;
             self.sheetsGrid(data.lstControlDisplayItem.lstSheet);
             self.sheetsGrid.valueHasMutated();
+            self.textStyles = data.textStyles;
         }
 
         proceed() {
@@ -1867,7 +1874,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 { name: 'CellState', rowId: 'rowId', columnKey: 'columnKey', state: 'state', states: self.cellStates() },
                 { name: 'RowState', rows: self.rowStates() },
                 { name: 'TextColor', rowId: 'rowId', columnKey: 'columnKey', color: 'color', colorsTable: self.textColors() },
-                { name: 'HeaderStyles', columns: self.headerColors() }
+                { name: 'HeaderStyles', columns: self.headerColors() },
+                {
+                    name: 'TextStyle',
+                    rowId: 'rowId',
+                    columnKey: 'columnKey',
+                    style: 'style',
+                    styles: self.textStyles
+                },
             ];
             //            let lzyLoad = {
             //                name: "LoadOnDemand",
