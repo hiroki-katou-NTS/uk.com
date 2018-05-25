@@ -29,6 +29,8 @@ public class PathsNoSession implements PathsToCheckCsrf {
 			ProgramsManager.CCG007B.getPPath(),
 			ProgramsManager.CCG007C.getPPath(),
 			ProgramsManager.CCG007D.getPPath(),
+			ProgramsManager.CCG007F.getPPath(),
+			ProgramsManager.CCG007G.getPPath(),
 			ProgramsManager.KDW003A.getPPath()
 			);
 

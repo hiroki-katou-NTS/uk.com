@@ -6,7 +6,6 @@ module nts.uk.at.view.kal003.b.viewmodel{
     import resource = nts.uk.resource;
     import sharemodel = nts.uk.at.view.kal003.share.model;
     import shareutils = nts.uk.at.view.kal003.share.kal003utils;
-    import modelShare = kal003.share.model;
 
     export class ScreenModel {
         workRecordExtractingCondition: KnockoutObservable<sharemodel.WorkRecordExtractingCondition>;
@@ -24,7 +23,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
         displayWorkTypeSelections_BA1_4         : KnockoutObservable<string> = ko.observable('');
         displayAttendanceItemSelections_BA2_3   : KnockoutObservable<string> = ko.observable('');
         displayWorkingTimeSelections_BA5_3  : KnockoutObservable<string> = ko.observable('');
-        required_BA1_4 : KnockoutObservable<boolean> = ko.observable(true);
+        required_BA1_4 : KnockoutObservable<boolean>;
                 
         private setting : sharemodel.WorkRecordExtractingCondition;
         swANDOR_B5_3 : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
@@ -36,57 +35,44 @@ module nts.uk.at.view.kal003.b.viewmodel{
         
         
         //monthly
-        listEnumTypeMonCheckItem: KnockoutObservableArray<any>;
-        category : KnockoutObservable<number> ;
+        listEnumRoleType: KnockoutObservableArray<any>;
         
         constructor() {
             let self = this;
             let option = windows.getShared('inputKal003b');
-            self.setting = $.extend({}, shareutils.getDefaultWorkRecordExtractingCondition(0), option.data);
-            self.category = ko.observable(option.category);
+            self.setting = $.extend({}, shareutils.getDefaultWorkRecordExtractingCondition(0), option);
             
-            switch(self.category()){
-                case modelShare.CATEGORY.DAILY:
-                    service.getEnumTypeCheckWorkRecord().done((rs) => {
-                        self.listTypeCheckWorkRecords(self.getLocalizedNameForEnum(rs));
-                    });
-                    let workRecordExtractingCond = shareutils.convertTransferDataToWorkRecordExtractingCondition(self.setting);
-                    self.workRecordExtractingCondition = ko.observable(workRecordExtractingCond);
-                    self.comparisonRange = ko.observable(self.initComparisonValueRange());
-                    self.checkItemTemp = ko.observable(self.workRecordExtractingCondition().checkItem());
-                    self.required_BA1_4(self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual()>0);
-                    
-                    // change select item check
-                    self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
-                        errors.clearAll();
-                        if ((itemCheck && itemCheck != undefined) || itemCheck === 0) {
-                            self.initialScreen().then(function() {
-                                if ((self.checkItemTemp() || self.checkItemTemp() == 0) && self.checkItemTemp() != itemCheck) {
-                                    setTimeout(function() {self.displayAttendanceItemSelections_BA2_3("");},200);   
-                                }
-                            });
+            //monthly
+            self.listEnumRoleType = ko.observableArray(__viewContext.enums.RoleType);
+            
+            let workRecordExtractingCond = shareutils.convertTransferDataToWorkRecordExtractingCondition(self.setting);
+            self.workRecordExtractingCondition = ko.observable(workRecordExtractingCond);
+            // setting comparison value range
+
+            self.comparisonRange = ko.observable(self.initComparisonValueRange());
+            
+            self.checkItemTemp = ko.observable(self.workRecordExtractingCondition().checkItem());
+            
+            // change select item check
+            self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
+                errors.clearAll();
+                if ((itemCheck && itemCheck != undefined) || itemCheck === 0) {
+                    self.initialScreen().then(function() {
+                        if ((self.checkItemTemp() || self.checkItemTemp() == 0) && self.checkItemTemp() != itemCheck) {
+                            setTimeout(function() {self.displayAttendanceItemSelections_BA2_3("");},200);   
                         }
-                        $(".nts-input").ntsError("clear");
                     });
-                    self.comparisonRange().comparisonOperator.subscribe((operN) => {
-                        self.settingEnableComparisonMaxValueField();
-                    });
-                    
-                    self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual.subscribe((newV)=>{
-                        self.required_BA1_4(newV>0);
-                        $(".nts-input").ntsError("clear");
-                    }); 
-                    break;
-                case modelShare.CATEGORY.MONTHLY:
-                    self.listTypeCheckWorkRecords(_.map(__viewContext.enums.TypeMonCheckItem, acc => {
-                        return new model.EnumModel({ value: acc.value, fieldName: null, localizedName: acc.name });
-                    }));
-                break;
-                default :break;
-                    
-            }
-            
-            // setting comparison value range                       
+                }
+                $(".nts-input").ntsError("clear");
+            });
+            self.comparisonRange().comparisonOperator.subscribe((operN) => {
+                self.settingEnableComparisonMaxValueField();
+            });
+            self.required_BA1_4 = ko.observable(self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual()>0);
+            self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual.subscribe((newV)=>{
+                self.required_BA1_4(newV>0);
+                $(".nts-input").ntsError("clear");
+            });                        
         }
 
         //initial screen
@@ -95,20 +81,12 @@ module nts.uk.at.view.kal003.b.viewmodel{
             let self = this,
                 dfd = $.Deferred();
             errors.clearAll();
-            if(self.category()==modelShare.CATEGORY.DAILY){
-               $.when(self.getAllEnums(), self.initialScreen()).done(function() {
-                    //initial screen - in case update
-                    dfd.resolve();
-               }).fail(() => {
-                   dfd.reject();
-               }); 
-            }else if(self.category()==modelShare.CATEGORY.MONTHLY){
+            $.when(self.getAllEnums(), self.initialScreen()).done(function() {
+                //initial screen - in case update
                 dfd.resolve();
-            }else{
-                dfd.resolve();
-            }
-            
-            
+           }).fail(() => {
+               dfd.reject();
+           });
             return dfd.promise();
         }
 
@@ -175,9 +153,9 @@ module nts.uk.at.view.kal003.b.viewmodel{
             let self = this,
             dfd = $.Deferred();
 
-            
             $.when(service.getEnumSingleValueCompareTypse(),
                     service.getEnumRangeCompareType(),
+                    service.getEnumTypeCheckWorkRecord(),
                     service.getEnumTargetSelectionRange(),
                     service.getEnumTargetServiceType(),
                     service.getEnumLogicalOperator()).done((
@@ -189,6 +167,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
                             listLogicalOperator : Array<model.EnumModel>) => {
                     self.listSingleValueCompareTypes(self.getLocalizedNameForEnum(listSingleValueCompareTypse));
                     self.listRangeCompareTypes(self.getLocalizedNameForEnum(lstRangeCompareType));
+                    self.listTypeCheckWorkRecords(self.getLocalizedNameForEnum(listTypeCheckWorkRecord));
                     let listTargetRangeWithName = self.getLocalizedNameForEnum(listTargetSelectionRange);
                     self.itemListTargetSelectionRange_BA1_5(listTargetRangeWithName);
                     self.itemListTargetServiceType_BA1_2(self.getLocalizedNameForEnum(listTargetServiceType));
@@ -718,27 +697,10 @@ module nts.uk.at.view.kal003.b.viewmodel{
             });
         }
         
-        //getListItemByAtr(conditionAtr) {
-        //    let self = this;
-        //    return service.getAttendanceItemByAtr(conditionAtr);
-      // }
-          getListItemByAtr(conditionAtr) {
+        getListItemByAtr(conditionAtr) {
             let self = this;
-            if (self.workRecordExtractingCondition().checkItem() === 0 ||self.workRecordExtractingCondition().checkItem() === 4) {
-                //With type 回数 - Times
-                return service.getAttendanceItemByAtr(5);
-            } else if (self.workRecordExtractingCondition().checkItem() === 1) {
-                //With type 時間 - Time
-                return service.getAttendanceItemByAtr(2);
-            } else if (self.workRecordExtractingCondition().checkItem() === 2) {
-                //With type 時刻 - TimeWithDay
-                return service.getAttendanceItemByAtr(3);
-            } else if (self.workRecordExtractingCondition().checkItem() === 3) {
-                //With type 金額 - AmountMoney
-                return service.getAttendanceItemByAtr(6);
-            }
+            return service.getAttendanceItemByAtr(conditionAtr);
         }
-
         
         fillTextDisplayTarget(defered, currentAtdItemCondition) {
             let self = this;

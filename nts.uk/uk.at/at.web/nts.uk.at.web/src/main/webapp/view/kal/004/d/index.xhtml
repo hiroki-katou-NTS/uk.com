@@ -30,7 +30,7 @@
 					<div class="valign-center control-group start">
 						<span class="label">#{i18n.getText('KAL004_29')}</span>
 						<div class="month">
-							<div class="combo-box" style="margin-top: -15px;" tabindex="5"
+							<div id="start-month" class="combo-box" tabindex="1" style="margin-top: -15px;"
 								data-bind="ntsComboBox: {
 										options: strComboMonth,
 										optionsValue: 'value',
@@ -65,7 +65,7 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="11" data-bind="click :Decide" class="x-large">#{i18n.getText('KAL004_44')}</button>
+				<button tabindex="11" data-bind="click :Decide" class="proceed x-large">#{i18n.getText('KAL004_44')}</button>
 				<button tabindex="12" data-bind="click :closeDialog" class="large">#{i18n.getText('KAL004_45')}</button>
 			</div>
 		</ui:define>

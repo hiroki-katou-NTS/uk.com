@@ -92,13 +92,16 @@ module nts.uk.at.view.kmw005.b {
              */
             private bindLockHistByYM(): void {
                 let self = this;
+                if(nts.uk.ui.errors.hasError()){
+                   return; 
+                }
                 service.findHistByTargetYM(self.selectedClosure(), 
-                self.yearMonth()).done(function(data: Array<ActualLockHistFindDto>) {
-                    self.setLockHistList(data);
-                    self.addLockIcon();
-                }).fail(function() {
-                    return;
-                });
+                    self.yearMonth()).done(function(data: Array<ActualLockHistFindDto>) {
+                        self.setLockHistList(data);
+                        self.addLockIcon();
+                    }).fail(function() {
+                        return;
+                    });
             }
             
             /**

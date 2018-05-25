@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface AffJobTitleHistoryRepository {
 	
@@ -72,4 +73,12 @@ public interface AffJobTitleHistoryRepository {
  	 * @return the list
  	 */
  	List<AffJobTitleHistory> findAllJobTitleHistory(GeneralDate baseDate, List<String> employeeIds) ;
+ 	
+ 	/**
+	 * request-list 398
+	 * @param employeeIds
+	 * @param period
+	 * @return
+	 */
+	List<AffJobTitleHistory> getByEmployeeListPeriod(List<String> employeeIds, DatePeriod period);
 }

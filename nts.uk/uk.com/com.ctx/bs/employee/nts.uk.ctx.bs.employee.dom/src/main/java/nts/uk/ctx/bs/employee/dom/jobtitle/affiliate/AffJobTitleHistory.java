@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.dom.jobtitle.affiliate;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -67,6 +68,10 @@ public class AffJobTitleHistory extends AggregateRoot
 		this.companyId = companyId;
 		this.employeeId = employeeId;
 		this.historyItems = historyItems;
+	}
+	
+	public List<String> getHistoryIds() {
+		return historyItems.stream().map(x -> x.identifier()).collect(Collectors.toList());
 	}
 
 }

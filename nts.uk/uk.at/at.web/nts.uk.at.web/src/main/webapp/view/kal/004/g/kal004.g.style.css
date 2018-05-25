@@ -35,7 +35,10 @@ hr {
 
 
 .tab-size{
-	height: 250px; 
+	height: 250px !important; 
+}
+#tab-5{
+	height: 250px !important; 
 }
 
 /* tab2 */
