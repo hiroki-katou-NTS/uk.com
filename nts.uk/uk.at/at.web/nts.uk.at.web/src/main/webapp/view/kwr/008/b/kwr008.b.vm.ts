@@ -542,16 +542,23 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
         buildListOperationSetting(listOperation: Array<any>) {
             let self = this;
+            
+            self.listOperationSetting([]);
+            
+            //agreement 36
+            self.listOperationSetting.push(new OperationCondition(
+            202,
+            1,
+            getText('KWR008_32')));
+            
             if (listOperation && listOperation.length > 0) {
-                for (var i = 0; i < listOperation.length; i++) {
-                    self.listOperationSetting.push(new OperationCondition(
+                for (var i = self.listOperationSetting().length; i < listOperation.length; i++) {
+                        self.listOperationSetting.push(new OperationCondition(
                         listOperation[i].attendanceItemId,
                         listOperation[i].operation,
                         listOperation[i].name));
                 }
-            } else {
-                self.listOperationSetting([]);
-            }
+            } 
         }
     }
     
