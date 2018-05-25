@@ -40,9 +40,8 @@ module nts.uk.at.view.ktg027.a.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-             block.invisible();
+             block.grayout();
             service.getOvertimeHours(self.targetMonth()).done((data) => {
-                console.log(data);
                 self.closureResultModel(data.listclosureID);
                 var inforOvertime = [];
                 var inforOvertimeFooter = [];
@@ -90,9 +89,8 @@ module nts.uk.at.view.ktg027.a.viewmodel {
         clickExtractionBtn() {
             var self = this;
             var dfd = $.Deferred();
-            block.invisible();
+               block.grayout();
             service.buttonPressingProcess(self.targetMonth(), self.selectedClosureID()).done((data) => {
-                console.log(data);
                 //self.inforOvertime(data.overtimeLaborInfor());
                 var inforOvertime = [];
                 /*  _.forEach(data.overtimeLaborInfor, function(value) {
