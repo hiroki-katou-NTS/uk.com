@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.dom.attendancerecord.item;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
@@ -44,6 +45,7 @@ public interface CalculateAttendanceRecordRepositoty {
 	 * @param columnIndex            the column index
 	 * @param position            the position
 	 * @param exportArt the export art
+	 * @param useAtr the use atr
 	 * @param calculateAttendanceRecord            the calculate attendance record
 	 */
 	void updateCalculateAttendanceRecord(String companyId, ExportSettingCode exportSettingCode, int columnIndex,
@@ -61,4 +63,24 @@ public interface CalculateAttendanceRecordRepositoty {
 	 */
 	void deleteCalculateAttendanceRecord(String companyId, ExportSettingCode exportSettingCode, int columnIndex,
 			int position, long exportArt, CalculateAttendanceRecord calculateAttendanceRecord);
+	
+	/**
+	 * Gets the id calculate attendance record daily by position.
+	 *
+	 * @param companyId the company id
+	 * @param exportCode the export code
+	 * @param position the position
+	 * @return the id calculate attendance record daily by position
+	 */
+	List<CalculateAttendanceRecord> getIdCalculateAttendanceRecordDailyByPosition(String companyId, long exportCode, long position);
+	
+	/**
+	 * Gets the id calculate attendance record monthly by position.
+	 *
+	 * @param companyId the company id
+	 * @param exportCode the export code
+	 * @param position the position
+	 * @return the id calculate attendance record monthly by position
+	 */
+	List<CalculateAttendanceRecord> getIdCalculateAttendanceRecordMonthlyByPosition(String companyId, long exportCode, long position);
 }

@@ -7,6 +7,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecord;
@@ -14,6 +19,8 @@ import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecor
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordRepositoty;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRecPK;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRecPK_;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec_;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecItem;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecItemPK;
 import nts.uk.shr.com.context.AppContexts;
@@ -205,4 +212,65 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordRepositoty#getIdCalculateAttendanceRecordDailyByPosition(java.lang.String, long, long)
+	 */
+	@Override
+	public List<CalculateAttendanceRecord> getIdCalculateAttendanceRecordDailyByPosition(String companyId,
+			long exportCode, long position) {
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<KfnstAttndRec> criteriaQuery = criteriaBuilder.createQuery(KfnstAttndRec.class);
+		Root<KfnstAttndRec> root = criteriaQuery.from(KfnstAttndRec.class);
+
+		// Build query
+		criteriaQuery.select(root);
+
+		// create condition
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.cid), companyId));
+		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.exportCd), exportCode));
+		predicates.add(criteriaBuilder
+				.greaterThanOrEqualTo(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.columnIndex), (long) 7));
+		predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.columnIndex),
+				(long) 9));
+		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.position), position));
+		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.outputAtr), 1));
+
+		criteriaQuery.where(predicates.toArray(new Predicate[] {}));
+
+		// query data
+		List<KfnstAttndRec> kfnstAttndRecItems = em.createQuery(criteriaQuery).getResultList();
+		return kfnstAttndRecItems.isEmpty() ? new ArrayList<CalculateAttendanceRecord>()
+				: kfnstAttndRecItems.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordRepositoty#getIdCalculateAttendanceRecordMonthlyByPosition(java.lang.String, long, long)
+	 */
+	@Override
+	public List<CalculateAttendanceRecord> getIdCalculateAttendanceRecordMonthlyByPosition(String companyId,
+			long exportCode, long position) {
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<KfnstAttndRec> criteriaQuery = criteriaBuilder.createQuery(KfnstAttndRec.class);
+		Root<KfnstAttndRec> root = criteriaQuery.from(KfnstAttndRec.class);
+
+		// Build query
+		criteriaQuery.select(root);
+
+		// create condition
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.cid), companyId));
+		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.exportCd), exportCode));
+		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.position), position));
+		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.outputAtr), 1));
+
+		criteriaQuery.where(predicates.toArray(new Predicate[] {}));
+
+		// query data
+		List<KfnstAttndRec> kfnstAttndRecItems = em.createQuery(criteriaQuery).getResultList();
+		return kfnstAttndRecItems.isEmpty() ? new ArrayList<CalculateAttendanceRecord>()
+				: kfnstAttndRecItems.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
+	}
 }

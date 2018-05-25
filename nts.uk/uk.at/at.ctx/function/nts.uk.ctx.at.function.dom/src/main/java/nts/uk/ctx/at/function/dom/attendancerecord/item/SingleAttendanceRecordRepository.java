@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.dom.attendancerecord.item;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
@@ -52,5 +53,15 @@ public interface SingleAttendanceRecordRepository {
 	 * @param singleAttendanceRecord the single attendance record
 	 */
 	void deleteSingleAttendanceRecord(String companyId, ExportSettingCode exportSettingCode, long columnIndex, long position,long exportArt, SingleAttendanceRecord singleAttendanceRecord);
+	
+	/**
+	 * Gets the id single attendance record by position.
+	 *
+	 * @param companyId the company id
+	 * @param exportCode the export code
+	 * @param position the position
+	 * @return the id single attendance record by position
+	 */
+	List<Integer> getIdSingleAttendanceRecordByPosition(String companyId, long exportCode, long position);
 	
 }
