@@ -50,7 +50,7 @@ public class JpaAttendanceRecordExportGetMemento implements AttendanceRecordExpo
 	 */
 	@Override
 	public ExportAtr getExportAtr() {
-		return ExportAtr.valueOf((int)this.upperEntity.getId().getOutputAtr());
+		return ExportAtr.valueOf((int) this.upperEntity.getId().getOutputAtr());
 	}
 
 	/*
@@ -85,16 +85,19 @@ public class JpaAttendanceRecordExportGetMemento implements AttendanceRecordExpo
 	@Override
 	public Optional<AttendanceRecordDisplay> getUpperPosition() {
 
-		// 13 <= Attribute <=15
-		if (this.upperEntity.getAttribute().compareTo(new BigDecimal(12)) == 1
-				&& this.upperEntity.getAttribute().compareTo(new BigDecimal(16)) == -1)
-			return Optional.of(new SingleAttendanceRecord(new JpaSingleAttendanceRecordGetMemento(upperEntity, null)));
-		// 16<= Attribute <= 18
-		if (this.upperEntity.getAttribute().compareTo(new BigDecimal(15)) == 1
-				&& this.upperEntity.getAttribute().compareTo(new BigDecimal(19)) == -1)
-			return Optional
-					.of(new CalculateAttendanceRecord(new JpaCalculateAttendanceRecordGetMemento(upperEntity, null)));
+		if (upperEntity != null) {
 
+			// 13 <= Attribute <=15
+			if (this.upperEntity.getAttribute().compareTo(new BigDecimal(12)) == 1
+					&& this.upperEntity.getAttribute().compareTo(new BigDecimal(16)) == -1)
+				return Optional
+						.of(new SingleAttendanceRecord(new JpaSingleAttendanceRecordGetMemento(upperEntity, null)));
+			// 16<= Attribute <= 18
+			if (this.upperEntity.getAttribute().compareTo(new BigDecimal(15)) == 1
+					&& this.upperEntity.getAttribute().compareTo(new BigDecimal(19)) == -1)
+				return Optional.of(
+						new CalculateAttendanceRecord(new JpaCalculateAttendanceRecordGetMemento(upperEntity, null)));
+		}
 		return Optional.empty();
 
 	}
@@ -108,15 +111,18 @@ public class JpaAttendanceRecordExportGetMemento implements AttendanceRecordExpo
 	@Override
 	public Optional<AttendanceRecordDisplay> getLowerPosition() {
 
-		// 13 <= Attribute <=15
-		if (this.lowerEntity.getAttribute().compareTo(new BigDecimal(12)) == 1
-				&& this.lowerEntity.getAttribute().compareTo(new BigDecimal(16)) == -1)
-			return Optional.of(new SingleAttendanceRecord(new JpaSingleAttendanceRecordGetMemento(lowerEntity, null)));
-		// 16<= Attribute <= 18
-		if (this.lowerEntity.getAttribute().compareTo(new BigDecimal(15)) == 1
-				&& this.lowerEntity.getAttribute().compareTo(new BigDecimal(19)) == -1)
-			return Optional.of(new CalculateAttendanceRecord(new JpaCalculateAttendanceRecordGetMemento(lowerEntity, null)));
-
+		if (lowerEntity != null) {
+			// 13 <= Attribute <=15
+			if (this.lowerEntity.getAttribute().compareTo(new BigDecimal(12)) == 1
+					&& this.lowerEntity.getAttribute().compareTo(new BigDecimal(16)) == -1)
+				return Optional
+						.of(new SingleAttendanceRecord(new JpaSingleAttendanceRecordGetMemento(lowerEntity, null)));
+			// 16<= Attribute <= 18
+			if (this.lowerEntity.getAttribute().compareTo(new BigDecimal(15)) == 1
+					&& this.lowerEntity.getAttribute().compareTo(new BigDecimal(19)) == -1)
+				return Optional.of(
+						new CalculateAttendanceRecord(new JpaCalculateAttendanceRecordGetMemento(lowerEntity, null)));
+		}
 		return Optional.empty();
 	}
 
