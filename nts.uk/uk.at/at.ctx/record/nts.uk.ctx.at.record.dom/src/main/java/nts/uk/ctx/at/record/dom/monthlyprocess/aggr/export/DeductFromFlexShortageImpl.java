@@ -50,7 +50,7 @@ public class DeductFromFlexShortageImpl implements DeductFromFlexShortage {
 		
 		// 履歴ごとに月別実績を集計する
 		monthlyCalculation.prepareAggregation(companyId, employeeId, yearMonth, closureId, closureDate,
-				period, workConditionItem, Optional.empty(), this.repositories);
+				period, workConditionItem, Optional.empty(), 1, this.repositories);
 		for (val errorInfo : monthlyCalculation.getErrorInfos()){
 			if (errorInfo.getResourceId().compareTo("002") == 0) return returnValue;
 		}

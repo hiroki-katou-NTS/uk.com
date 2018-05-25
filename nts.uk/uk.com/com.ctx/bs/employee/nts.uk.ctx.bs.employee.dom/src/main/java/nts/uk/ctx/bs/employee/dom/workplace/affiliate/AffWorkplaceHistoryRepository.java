@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface AffiliationWorkplaceHistoryRepository.
@@ -34,6 +35,8 @@ public interface AffWorkplaceHistoryRepository {
 	Optional<AffWorkplaceHistory> getByEmployeeIdDesc(String companyId, String employeeId);
 	
 	List<AffWorkplaceHistory> findByEmployees(List<String> employeeIds, GeneralDate date);
+	
+	List<AffWorkplaceHistory> findByEmployeesWithPeriod(List<String> employeeIds, DatePeriod period);
 	
 	Optional<AffWorkplaceHistory> getByHistIdAndBaseDate(String histId, GeneralDate date);
 	/**

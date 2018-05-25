@@ -26,6 +26,7 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByM
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByDefo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByFlex;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByReg;
+import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
@@ -105,7 +106,11 @@ public class MonthlyCalculation {
 	private Map<GeneralDate, WorkInformation> workInformationOfDailyMap;
 	/** 月別実績の勤怠時間　（集計前） */
 	private Optional<AttendanceTimeOfMonthly> originalData;
-	
+	/** 週別実績の勤怠時間 */
+	private List<AttendanceTimeOfWeekly> attendanceTimeWeeks;
+
+	/** 処理週NO */
+	private int procWeekNo;
 	/** 年度 */
 	private Year year;
 	/** 管理期間の36協定時間 */
@@ -150,7 +155,9 @@ public class MonthlyCalculation {
 		this.attendanceTimeOfDailyMap = new HashMap<>();
 		this.workInformationOfDailyMap = new HashMap<>();
 		this.originalData = null;
+		this.attendanceTimeWeeks = new ArrayList<>();
 
+		this.procWeekNo = 0;
 		this.year = new Year(0);
 		this.agreementTimeOfManagePeriod = new AgreementTimeOfManagePeriod(this.employeeId, this.yearMonth);
 		this.errorInfos = new ArrayList<>();
@@ -197,6 +204,7 @@ public class MonthlyCalculation {
 	 * @param procPeriod 期間
 	 * @param workingConditionItem 労働条件項目
 	 * @param attendanceTimeOfDailysOpt 日別実績の勤怠時間リスト
+	 * @param startWeekNo 開始週NO
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void prepareAggregation(
@@ -204,6 +212,7 @@ public class MonthlyCalculation {
 			ClosureId closureId, ClosureDate closureDate,
 			DatePeriod procPeriod, WorkingConditionItem workingConditionItem,
 			Optional<List<AttendanceTimeOfDailyPerformance>> attendanceTimeOfDailysOpt,
+			int startWeekNo,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		this.companyId = companyId;
@@ -253,7 +262,7 @@ public class MonthlyCalculation {
 		
 		// 通常勤務月別実績集計設定　取得　（基準：期間終了日）
 		val regularAggrSetOpt = repositories.getRegularAggrSet().get(
-				companyId, this.workplaceId, this.employmentCd, employeeId, procPeriod.end());
+				companyId, this.employmentCd, employeeId, procPeriod.end());
 		if (!regularAggrSetOpt.isPresent()){
 			this.errorInfos.add(new MonthlyAggregationErrorInfo(
 					"002", new ErrMessageContent("通常勤務月別実績集計設定が取得できません。")));
@@ -263,7 +272,7 @@ public class MonthlyCalculation {
 
 		// 変形労働月別実績集計設定　取得　（基準：期間終了日）
 		val deforAggrSetOpt = repositories.getDeforAggrSet().get(
-				companyId, this.workplaceId, this.employmentCd, employeeId, procPeriod.end());
+				companyId, this.employmentCd, employeeId, procPeriod.end());
 		if (!deforAggrSetOpt.isPresent()){
 			this.errorInfos.add(new MonthlyAggregationErrorInfo(
 					"002", new ErrMessageContent("変形労働月別実績集計設定が取得できません。")));
@@ -273,7 +282,7 @@ public class MonthlyCalculation {
 
 		// フレックス月別実績集計設定　取得　（基準：期間終了日）
 		val flexAggrSetOpt = repositories.getFlexAggrSet().get(
-				companyId, this.workplaceId, this.employmentCd, employeeId, procPeriod.end());
+				companyId, this.employmentCd, employeeId, procPeriod.end());
 		if (!flexAggrSetOpt.isPresent()){
 			this.errorInfos.add(new MonthlyAggregationErrorInfo(
 					"002", new ErrMessageContent("フレックス月別実績集計設定が取得できません。")));
@@ -408,6 +417,9 @@ public class MonthlyCalculation {
 		this.originalData = repositories.getAttendanceTimeOfMonthly().find(
 				employeeId, yearMonth, closureId, closureDate);
 		
+		// 週NO　確認
+		this.procWeekNo = startWeekNo;
+		
 		// 年度　設定
 		this.year = new Year(this.yearMonth.year());
 	}
@@ -445,12 +457,14 @@ public class MonthlyCalculation {
 				this.workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
 			
 			// 通常・変形労働勤務の月別実績を集計する
-			val aggrValue = this.actualWorkingTime.aggregateMonthly(this.companyId, this.employeeId,
-					this.yearMonth, aggrPeriod, this.workingSystem, this.closureOpt, aggrAtr,
-					this.settingsByReg, this.settingsByDefo,
+			val aggrValue = this.actualWorkingTime.aggregateMonthly(
+					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
+					aggrPeriod, this.workingSystem, this.closureOpt, aggrAtr,
+					this.employmentCd, this.settingsByReg, this.settingsByDefo,
 					this.attendanceTimeOfDailyMap, this.workInformationOfDailyMap,
-					this.aggregateTime, null, repositories);
+					this.aggregateTime, null, this.procWeekNo, repositories);
 			this.aggregateTime = aggrValue.getAggregateTotalWorkingTime();
+			this.attendanceTimeWeeks.addAll(aggrValue.getAttendanceTimeWeeks());
 			
 			// 通常・変形労働勤務の月単位の時間を集計する
 			this.actualWorkingTime.aggregateMonthlyHours(this.companyId, this.employeeId,
@@ -470,6 +484,7 @@ public class MonthlyCalculation {
 					this.settingsByFlex, this.attendanceTimeOfDailyMap, this.aggregateTime, null,
 					repositories);
 			this.aggregateTime = aggrValue.getAggregateTotalWorkingTime();
+			this.attendanceTimeWeeks.addAll(aggrValue.getAttendanceTimeWeeks());
 			
 			// フレックス勤務の月単位の時間を集計する
 			this.flexTime.aggregateMonthlyHours(this.companyId, this.employeeId,
@@ -632,6 +647,7 @@ public class MonthlyCalculation {
 
 		// 項目の数だけループ
 		MonthlyCalculation agreementCalc = null;
+		int weekNo = 1;
 		for (val workingConditionItem : this.workingConditionItems){
 
 			// 「労働条件」の該当履歴から期間を取得
@@ -649,7 +665,7 @@ public class MonthlyCalculation {
 			// 集計準備
 			MonthlyCalculation calcWork = new MonthlyCalculation();
 			calcWork.prepareAggregation(companyId, employeeId, aggrPeriod.getYearMonth(), closureId, closureDate,
-					period, workingConditionItem, attendanceTimeOfDailysOpt, repositories);
+					period, workingConditionItem, attendanceTimeOfDailysOpt, weekNo, repositories);
 			for (val errorInfo : calcWork.errorInfos){
 				if (errorInfo.getResourceId().compareTo("002") == 0) return Optional.empty();
 			}
