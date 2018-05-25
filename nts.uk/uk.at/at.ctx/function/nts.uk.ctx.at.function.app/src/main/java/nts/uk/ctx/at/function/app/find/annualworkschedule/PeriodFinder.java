@@ -31,7 +31,7 @@ public class PeriodFinder {
 
 		YearMonth startYm = YearMonth.of(startYear, startMonth);
 		//取得した起算年月の12ヶ月先の年月を取得する
-		YearMonth endYm   = startYm.addMonths(11);
+		YearMonth endYm = startYm.addMonths(11);
 		return new PeriodDto(startYm.year() + "" + startYm.month(), endYm.year() + "" + endYm.month());
 	}
 }

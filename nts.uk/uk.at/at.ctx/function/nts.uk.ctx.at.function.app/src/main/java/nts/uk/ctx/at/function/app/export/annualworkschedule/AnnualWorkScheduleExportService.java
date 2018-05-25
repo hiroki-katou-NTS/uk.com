@@ -30,7 +30,8 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 
 		ExportData data = this.repostory.getData(companyId, query.getSetItemsOutputCd(),
 				query.getStartYearMonth(), query.getEndYearMonth(),
-				query.getEmployees().stream().map(m -> new Employee(m.getCode(), m.getName(), m.getWorkplaceName()))
+				query.getEmployees().stream().map(m -> new Employee(m.getEmployeeId(), m.getCode(),
+						m.getName(), m.getWorkplaceName()))
 				.collect(Collectors.toList()));
 
 		data.setPageBreak(EnumAdaptor.valueOf(query.getBreakPage(), PageBreakIndicator.class));

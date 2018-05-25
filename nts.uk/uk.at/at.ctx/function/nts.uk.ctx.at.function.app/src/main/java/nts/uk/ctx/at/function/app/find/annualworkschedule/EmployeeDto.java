@@ -6,6 +6,7 @@ import lombok.Value;
 @AllArgsConstructor
 @Value
 public class EmployeeDto {
+	private String employeeId;
 	private String code;
 	private String name;
 	private String workplaceName;

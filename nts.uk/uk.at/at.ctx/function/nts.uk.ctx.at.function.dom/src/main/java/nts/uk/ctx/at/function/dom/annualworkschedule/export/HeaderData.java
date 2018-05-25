@@ -27,5 +27,5 @@ public class HeaderData {
 	/** C2_2 or C2_4*/
 	private OutputAgreementTime outputAgreementTime;
 	/** C2_3 or C2_5 */
-	private List<String> groupMonths;
+	private List<String> monthPeriodLabels;
 }

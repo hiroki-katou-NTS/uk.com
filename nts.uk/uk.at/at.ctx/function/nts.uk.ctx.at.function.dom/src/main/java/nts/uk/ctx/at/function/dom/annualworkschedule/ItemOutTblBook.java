@@ -20,7 +20,7 @@ public class ItemOutTblBook extends DomainObject {
 	private String cid;
 
 	/**
-	* コード
+	* 年間勤務表（36チェックリスト）の出力項目設定.コード
 	*/
 	private String setOutCd;
 
