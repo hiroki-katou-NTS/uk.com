@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.persistence.Query;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
@@ -54,7 +56,7 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 			.append("WHERE a.sspdtManualSetDeletionPK.delId = b.sspdtResultDeletionPK.delId AND a.sspdtManualSetDeletionPK.delId = d.sspdtCategoryDeletionPK.delId AND c.categoryId = e.categoryFieldMtPk.categoryId AND d.sspdtCategoryDeletionPK.categoryId = c.categoryId AND a.sspdtManualSetDeletionPK.delId = :delId ");
 	
 	private static final String SELECT_COLUMN_NAME_SQL = "select COLUMN_NAME from INFORMATION_SCHEMA.COLUMNS"
-			+ " where TABLE_NAME = :tableName";
+			+ " where TABLE_NAME = ?tableName";
 
 	@Override
 	public List<TableDeletionDataCsv> getTableDelDataCsvById(String delId) {
@@ -217,13 +219,12 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 	public List<List<String>> getDataForEachCaegory(TableDeletionDataCsv tableDelData, List<EmployeeDeletion> employeeDeletions) {
 		Map<String, Object> parrams = new HashMap<>();
 		String sqlStr = buildGetDataForEachCatSql(tableDelData, employeeDeletions, parrams);
-		TypedQueryWrapper<Object[]> query = (TypedQueryWrapper<Object[]>)this.queryProxy()
-				.namedQuery(sqlStr, Object[].class);
+		Query query = this.getEntityManager().createNativeQuery(sqlStr);
 		for(Entry<String, Object> entry : parrams.entrySet()) {
 			query.setParameter(entry.getKey(), entry.getValue());
 		}
 		
-		List<Object[]> listTemp = query.getList();
+		List<Object[]> listTemp = (List<Object[]>)query.getResultList();
 		return listTemp.stream().map(objects -> {
 			List<String> record = new ArrayList<String>();
 			for (Object field : objects) {
@@ -284,32 +285,32 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 			tblAcq = parentTblName;
 		}
 
-		buffer.append(" select ");
+		buffer.append("SELECT ");
 		// acqCidField
 		if (acqCidField != null && !"null".equals(acqCidField)) {
-			buffer.append(tblAcq + "." + acqCidField + " as h_cid, ");
+			buffer.append(tblAcq + "." + acqCidField + " AS H_CID, ");
 		}
 		// acqEmployeeField
 		if (acqEmployeeField != null && !"null".equals(acqEmployeeField)) {
-			buffer.append(tblAcq + "." + acqEmployeeField + " as h_sid, ");
+			buffer.append(tblAcq + "." + acqEmployeeField + " AS H_SID, ");
 		}
 		// acqDateField
 		if (acqDateField != null && !"null".equals(acqDateField)) {
-			buffer.append(tblAcq + "." + acqDateField + " as h_date, ");
+			buffer.append(tblAcq + "." + acqDateField + " AS H_DATE, ");
 		} else {
-			buffer.append(" NULL as h_date, ");
+			buffer.append(" NULL AS H_DATE, ");
 		}
 		// acqStartDateField
 		if (acqStartDateField != null && !"null".equals(acqStartDateField)) {
-			buffer.append(tblAcq + "." + acqStartDateField + " as h_date_start, ");
+			buffer.append(tblAcq + "." + acqStartDateField + " AS H_DATE_START, ");
 		} else {
-			buffer.append(" NULL as h_date_start, ");
+			buffer.append(" NULL AS H_DATE_START, ");
 		}
 		// acqEndDateField
 		if (acqEndDateField != null && !"null".equals(acqEndDateField)) {
-			buffer.append(tblAcq + "." + acqEndDateField + " as h_date_end, ");
+			buffer.append(tblAcq + "." + acqEndDateField + " AS H_DATE_END, ");
 		} else {
-			buffer.append(" NULL as h_date_end, ");
+			buffer.append(" NULL AS H_DATE_END, ");
 		}
 		
 		if (hasParentTbl) {
@@ -325,7 +326,7 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 	 * @param tblName
 	 */
 	private void buildFromPart(StringBuffer buffer, String tblName) {
-		buffer.append(" from " + tblName + " as " + tblName);
+		buffer.append(" FROM " + tblName + " AS " + tblName);
 	}
 	
 	/**
@@ -423,25 +424,25 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		
 		//company id
 		if (tableDelData.getFieldAcqCid() != null && !"null".equals(tableDelData.getFieldAcqCid())) {
-			buffer.append("AND" + tblAcq + "." + tableDelData.getFieldAcqCid() + " = :cid ");
+			buffer.append("AND " + tblAcq + "." + tableDelData.getFieldAcqCid() + " = ?cid ");
 			parrams.put("cid", tableDelData.getCompanyId());
 		}
 		
 		//employee id
 		if (tableDelData.getFieldAcqEmployeeId() != null && !"null".equals(tableDelData.getFieldAcqEmployeeId())) {
-			buffer.append(" AND " + tblAcq + "." + tableDelData.getFieldAcqEmployeeId() + " IN (:employeeIds) ");
-			parrams.put("employeeIds", employeeIds);
+			buffer.append("AND " + tblAcq + "." + tableDelData.getFieldAcqEmployeeId() + " IN ( ?employeeIds ) ");
+			parrams.put("employeeIds", StringUtils.join(employeeIds, ","));
 		}
 		
 		//date
 		String acqDateTimeField = tableDelData.getFieldAcqDateTime();
 		if (acqDateTimeField != null && !"null".equals(acqDateTimeField)) {
 			if (!isDateFieldInOracle(acqDateTimeField, tableDelData)) {
-				buffer.append(" AND " + tblAcq + "." + acqDateTimeField + " >= :startDate ");
-				buffer.append(" AND " + tblAcq + "." + acqDateTimeField + " <= :endDate ");
+				buffer.append("AND " + tblAcq + "." + acqDateTimeField + " >= ?startDate ");
+				buffer.append("AND " + tblAcq + "." + acqDateTimeField + " <= ?endDate ");
 			} else {
-				buffer.append(" AND " + tblAcq + "." + acqDateTimeField + " >= " + toDateOracle(timeStore, ":startDate"));
-				buffer.append(" AND " + tblAcq + "." + acqDateTimeField + " <= " + toDateOracle(timeStore, ":endDate"));
+				buffer.append("AND " + tblAcq + "." + acqDateTimeField + " >= " + toDateOracle(timeStore, " ?startDate "));
+				buffer.append("AND " + tblAcq + "." + acqDateTimeField + " <= " + toDateOracle(timeStore, " ?endDate "));
 			}
 			setDateParrams(tableDelData, parrams);
 		}
@@ -453,18 +454,18 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		if (acqStartDateField != null && !"null".equals(acqStartDateField)
 				&& acqEndDateField != null && !"null".equals(acqEndDateField)) {
 			if (!isDateFieldInOracle(acqStartDateField, tableDelData)) {
-				buffer.append(" AND " + tblAcq + "." + acqStartDateField + " >= :startDate ");
-				buffer.append(" AND " + tblAcq + "." + acqEndDateField + " <= :endDate ");
+				buffer.append("AND " + tblAcq + "." + acqStartDateField + " >= :startDate ");
+				buffer.append("AND " + tblAcq + "." + acqEndDateField + " <= :endDate ");
 			} else {
-				buffer.append(" AND " + tblAcq + "." + acqStartDateField + " >= " + toDateOracle(timeStore, ":startDate"));
-				buffer.append(" AND " + tblAcq + "." + acqEndDateField + " <= " + toDateOracle(timeStore, ":endDate"));
+				buffer.append("AND " + tblAcq + "." + acqStartDateField + " >= " + toDateOracle(timeStore, " :startDate "));
+				buffer.append("AND " + tblAcq + "." + acqEndDateField + " <= " + toDateOracle(timeStore, " :endDate "));
 			}
 			setDateParrams(tableDelData, parrams);
 		}
 		
 		//condition default
 		if (tableDelData.getDefaultCondKeyQuery() != null && !"null".equals(tableDelData.getDefaultCondKeyQuery())) {
-			buffer.append(" AND " + tableDelData.getDefaultCondKeyQuery());
+			buffer.append("AND " + tableDelData.getDefaultCondKeyQuery());
 		}
 	}
 	
@@ -532,8 +533,8 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 	 */
 	@Override
 	public List<String> getColumnName(String nameTable) {
-		List<Object[]> listTemp = this.queryProxy().query(SELECT_COLUMN_NAME_SQL, Object[].class)
-				.setParameter("tableName", nameTable).getList();
+		List<String> listTemp = this.getEntityManager().createNativeQuery(SELECT_COLUMN_NAME_SQL)
+				.setParameter("tableName", nameTable).getResultList();
 
 		if (listTemp == null || listTemp.isEmpty()) {
 			return Collections.emptyList();
@@ -550,7 +551,7 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 	public int deleteData(TableDeletionDataCsv tableDelData, List<EmployeeDeletion> employeeDeletions) {
 		Map<String, Object> parrams = new HashMap<>();
 		String sqlStr = buildDelDataForEachCatSql(tableDelData, employeeDeletions, parrams);
-		Query query = this.getEntityManager().createQuery(sqlStr);
+		Query query = this.getEntityManager().createNativeQuery(sqlStr);
 		for(Entry<String, Object> entry : parrams.entrySet()) {
 			query.setParameter(entry.getKey(), entry.getValue());
 		}

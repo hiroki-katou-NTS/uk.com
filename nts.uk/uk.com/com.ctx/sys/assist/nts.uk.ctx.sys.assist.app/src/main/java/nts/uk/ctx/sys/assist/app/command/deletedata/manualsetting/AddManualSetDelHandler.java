@@ -57,8 +57,7 @@ public class AddManualSetDelHandler extends CommandHandlerWithResult<ManualSetDe
 		String delId = IdentifierUtil.randomUniqueId();
 		// encrypt password
 		if(manualSetCmd.getPasswordForCompressFile()!=null){
-			byte[] passEnCode = Base64.getEncoder().encode(manualSetCmd.getPasswordForCompressFile().getBytes());
-			manualSetCmd.setPasswordForCompressFile(new String(passEnCode));
+			manualSetCmd.setPasswordForCompressFile(Base64.getEncoder().encodeToString(manualSetCmd.getPasswordForCompressFile().getBytes()));
 		}
 		
 		 // get login info

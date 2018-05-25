@@ -354,7 +354,7 @@ public class ManualSetDeletionService extends ExportService<Object> {
 		} else {
 			String password = domain.getPasswordCompressFileEncrypt().v();
 			applicationTemporaryFilesContainer.zipWithName(generatorContext, nameFile,
-					CommonKeyCrypt.decrypt(password));
+					Base64.getDecoder().decode(password).toString());
 		}
 
 		Path compressedFile = applicationTemporaryFilesContainer.getPath();
@@ -573,8 +573,7 @@ public class ManualSetDeletionService extends ExportService<Object> {
 			Map<String, Object> rowCsv2 = new HashMap<>();
 			rowCsv2.put(headerCsv2.get(0), employeeDeletion.getEmployeeId());
 			rowCsv2.put(headerCsv2.get(1), employeeDeletion.getEmployeeCode());
-			byte[] businessNameEncode = Base64.getEncoder().encode(employeeDeletion.getBusinessName().v().getBytes());
-			rowCsv2.put(headerCsv2.get(2), new String(businessNameEncode));
+			rowCsv2.put(headerCsv2.get(2), Base64.getEncoder().encodeToString(employeeDeletion.getBusinessName().v().getBytes()));
 //			rowCsv2.put(headerCsv2.get(2), CommonKeyCrypt.encrypt(employeeDeletion.getBusinessName().v()));  << error Illegal key size
 			dataSourceCsv2.add(rowCsv2);
 		}
