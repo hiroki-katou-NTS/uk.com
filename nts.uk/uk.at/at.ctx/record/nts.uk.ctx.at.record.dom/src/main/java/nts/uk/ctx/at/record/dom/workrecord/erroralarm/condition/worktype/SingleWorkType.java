@@ -22,7 +22,7 @@ public class SingleWorkType extends WorkTypeCondition {
 	private TargetWorkType targetWorkType;
 
 	/* Constructor from Superclass */
-	private SingleWorkType(Boolean useAtr, FilterByCompare comparePlanAndActual) {
+	private SingleWorkType(boolean useAtr, FilterByCompare comparePlanAndActual) {
 		super(useAtr, comparePlanAndActual);
 	}
 

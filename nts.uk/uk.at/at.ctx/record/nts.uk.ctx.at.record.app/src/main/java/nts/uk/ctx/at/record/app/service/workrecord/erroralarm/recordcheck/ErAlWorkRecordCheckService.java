@@ -260,6 +260,9 @@ public class ErAlWorkRecordCheckService {
 		}
 
 		return cRecord.stream().map(c -> {
+			if(checkCondition.getCheckTargetCondtion() == null){
+				return null;
+			}
 			if(!canCheck(c.getBusinessType(), c.getAffiliationInfo(), workingDate, checkCondition.getCheckTargetCondtion())){
 				return null;
 			}
@@ -322,8 +325,11 @@ public class ErAlWorkRecordCheckService {
 	}
 
 	private boolean checkErrorAlarmCondition(DailyRecordDto record, ErrorAlarmCondition condition) {
-		if(canCheck(record.getBusinessType(), record.getAffiliationInfo(), record.getDate(), condition.getCheckTargetCondtion())){
-			
+		if(condition.getCheckTargetCondtion() == null){
+			return false;
+		}
+		if(!canCheck(record.getBusinessType(), record.getAffiliationInfo(), record.getDate(), condition.getCheckTargetCondtion())){
+			return false;
 		}
 		WorkInfoOfDailyPerformance workInfo = record.getWorkInfo().toDomain(record.employeeId(), record.getDate());
 		return condition.checkWith(workInfo, item -> {

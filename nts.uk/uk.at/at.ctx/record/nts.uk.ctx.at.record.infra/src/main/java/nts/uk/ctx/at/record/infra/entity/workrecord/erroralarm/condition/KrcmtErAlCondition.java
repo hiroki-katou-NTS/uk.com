@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -79,52 +78,52 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@Basic(optional = true)
 	@Column(name = "MESSAGE_DISPLAY")
 	public String messageDisplay;
-	
+
 	@Column(name = "CONTINUOUS_PERIOD")
-	public BigDecimal continuousPeriod;
+	public int continuousPeriod;
 
 	@Column(name = "FILTER_BY_BUSINESS_TYPE")
-	public BigDecimal filterByBusinessType;
+	public int filterByBusinessType;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlBusinessType> lstBusinessType;
 
 	@Column(name = "FILTER_BY_JOB_TITLE")
-	public BigDecimal filterByJobTitle;
+	public int filterByJobTitle;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlJobTitle> lstJobTitle;
 
 	@Column(name = "FILTER_BY_EMPLOYMENT")
-	public BigDecimal filterByEmployment;
+	public int filterByEmployment;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlEmployment> lstEmployment;
 
 	@Column(name = "FILTER_BY_CLASSIFICATION")
-	public BigDecimal filterByClassification;
+	public int filterByClassification;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlClass> lstClassification;
 
 	@Column(name = "WORKTYPE_USE_ATR")
-	public BigDecimal workTypeUseAtr;
+	public int workTypeUseAtr;
 
 	@Column(name = "WT_PLAN_ACTUAL_OPERATOR")
-	public BigDecimal wtPlanActualOperator;
+	public int wtPlanActualOperator;
 
 	@Column(name = "WT_PLAN_FILTER_ATR")
-	public BigDecimal wtPlanFilterAtr;
+	public Integer wtPlanFilterAtr;
 
 	@Column(name = "WT_ACTUAL_FILTER_ATR")
-	public BigDecimal wtActualFilterAtr;
+	public Integer wtActualFilterAtr;
 
 	@Column(name = "WT_COMPARE_ATR")
-	public BigDecimal wtCompareAtr;
+	public Integer wtCompareAtr;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
@@ -135,19 +134,19 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	public List<KrcstErAlWtPlan> lstWtPlan;
 
 	@Column(name = "WORKING_HOURS_USE_ATR")
-	public BigDecimal workingHoursUseAtr;
+	public int workingHoursUseAtr;
 
 	@Column(name = "WH_PLAN_ACTUAL_OPERATOR")
-	public BigDecimal whPlanActualOperator;
+	public int whPlanActualOperator;
 
 	@Column(name = "WH_PLAN_FILTER_ATR")
-	public BigDecimal whPlanFilterAtr;
+	public Integer whPlanFilterAtr;
 
 	@Column(name = "WH_ACTUAL_FILTER_ATR")
-	public BigDecimal whActualFilterAtr;
+	public Integer whActualFilterAtr;
 
 	@Column(name = "WH_COMPARE_ATR")
-	public BigDecimal whCompareAtr;
+	public Integer whCompareAtr;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
@@ -158,10 +157,10 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	public List<KrcstErAlWhPlan> lstWhPlan;
 
 	@Column(name = "OPERATOR_BETWEEN_GROUPS")
-	public BigDecimal operatorBetweenGroups;
+	public int operatorBetweenGroups;
 
 	@Column(name = "GROUP2_USE_ATR")
-	public BigDecimal group2UseAtr;
+	public int group2UseAtr;
 
 	@Basic(optional = true)
 	@Column(name = "ATD_ITEM_CONDITION_GROUP1")
@@ -187,17 +186,16 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 		return this.eralCheckId;
 	}
 
-	public KrcmtErAlCondition(String eralCheckId, String messageDisplay, BigDecimal filterByBusinessType,
-			List<KrcstErAlBusinessType> lstBusinessType, BigDecimal filterByJobTitle,
-			List<KrcstErAlJobTitle> lstJobTitle, BigDecimal filterByEmployment, List<KrcstErAlEmployment> lstEmployment,
-			BigDecimal filterByClassification, List<KrcstErAlClass> lstClassification, BigDecimal workTypeUseAtr,
-			BigDecimal wtPlanActualOperator, BigDecimal wtPlanFilterAtr, BigDecimal wtActualFilterAtr,
-			BigDecimal wtCompareAtr, List<KrcstErAlWtActual> lstWtActual, List<KrcstErAlWtPlan> lstWtPlan,
-			BigDecimal workingHoursUseAtr, BigDecimal whPlanActualOperator, BigDecimal whPlanFilterAtr,
-			BigDecimal whActualFilterAtr, BigDecimal whCompareAtr, List<KrcstErAlWhActual> lstWhActual,
-			List<KrcstErAlWhPlan> lstWhPlan, BigDecimal operatorBetweenGroups, BigDecimal group2UseAtr,
-			String atdItemConditionGroup1, KrcstErAlConGroup krcstErAlConGroup1, String atdItemConditionGroup2,
-			KrcstErAlConGroup krcstErAlConGroup2, BigDecimal continuousPeriod) {
+	public KrcmtErAlCondition(String eralCheckId, String messageDisplay, int filterByBusinessType,
+			List<KrcstErAlBusinessType> lstBusinessType, int filterByJobTitle, List<KrcstErAlJobTitle> lstJobTitle,
+			int filterByEmployment, List<KrcstErAlEmployment> lstEmployment, int filterByClassification,
+			List<KrcstErAlClass> lstClassification, int workTypeUseAtr, int wtPlanActualOperator,
+			Integer wtPlanFilterAtr, Integer wtActualFilterAtr, Integer wtCompareAtr,
+			List<KrcstErAlWtActual> lstWtActual, List<KrcstErAlWtPlan> lstWtPlan, int workingHoursUseAtr,
+			int whPlanActualOperator, Integer whPlanFilterAtr, Integer whActualFilterAtr, Integer whCompareAtr,
+			List<KrcstErAlWhActual> lstWhActual, List<KrcstErAlWhPlan> lstWhPlan, int operatorBetweenGroups,
+			int group2UseAtr, String atdItemConditionGroup1, KrcstErAlConGroup krcstErAlConGroup1,
+			String atdItemConditionGroup2, KrcstErAlConGroup krcstErAlConGroup2, int continuousPeriod) {
 		super();
 		this.eralCheckId = eralCheckId;
 		this.messageDisplay = messageDisplay;
@@ -235,368 +233,325 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	public static KrcmtErAlCondition fromDomain(ErrorAlarmCondition conditionDomain) {
 		String eralCheckId = conditionDomain.getErrorAlarmCheckID();
 		String displayMessage = conditionDomain.getDisplayMessage().v();
-		KrcmtErAlCondition krcmtErAlCondition = new KrcmtErAlCondition(eralCheckId, displayMessage, new BigDecimal(0),
-				Collections.emptyList(), new BigDecimal(0), Collections.emptyList(), new BigDecimal(0),
-				Collections.emptyList(), new BigDecimal(0), Collections.emptyList(), new BigDecimal(0),
-				new BigDecimal(0), null, null, null, Collections.emptyList(), Collections.emptyList(),
-				new BigDecimal(0), new BigDecimal(0), null, null, null, Collections.emptyList(),
-				Collections.emptyList(), new BigDecimal(0), new BigDecimal(0), "0", null, null, null, null);
-			// Set Check target condition
-		//if (!domain.getFixedAtr()) {
-			BigDecimal filterByBusinessType = conditionDomain.getCheckTargetCondtion().getFilterByBusinessType()
-					? new BigDecimal(1) : new BigDecimal(0);
-			BigDecimal filterByJobTitle = new BigDecimal(
-					conditionDomain.getCheckTargetCondtion().getFilterByJobTitle() ? 1 : 0);
-			BigDecimal filterByEmployment = new BigDecimal(
-					conditionDomain.getCheckTargetCondtion().getFilterByEmployment() ? 1 : 0);
-			BigDecimal filterByClassification = new BigDecimal(
-					conditionDomain.getCheckTargetCondtion().getFilterByClassification() ? 1 : 0);
-			List<KrcstErAlBusinessType> lstBusinessType = conditionDomain.getCheckTargetCondtion()
-					.getLstBusinessTypeCode().stream().map(businessTypeCd -> new KrcstErAlBusinessType(
-							new KrcstErAlBusinessTypePK(eralCheckId, businessTypeCd.v())))
+		KrcmtErAlCondition krcmtErAlCondition = new KrcmtErAlCondition(eralCheckId, displayMessage, 0,
+				Collections.emptyList(), 0, Collections.emptyList(), 0, Collections.emptyList(), 0,
+				Collections.emptyList(), 0, 0, null, null, null, Collections.emptyList(), Collections.emptyList(), 0, 0,
+				null, null, null, Collections.emptyList(), Collections.emptyList(), 0, 0, "0", null, null, null, 0);
+		// Set Check target condition
+		// if (!domain.getFixedAtr()) {
+		int filterByBusinessType = conditionDomain.getCheckTargetCondtion().getFilterByBusinessType() ? 1 : 0;
+		int filterByJobTitle = conditionDomain.getCheckTargetCondtion().getFilterByJobTitle() ? 1 : 0;
+		int filterByEmployment = conditionDomain.getCheckTargetCondtion().getFilterByEmployment() ? 1 : 0;
+		int filterByClassification = conditionDomain.getCheckTargetCondtion().getFilterByClassification() ? 1 : 0;
+		List<KrcstErAlBusinessType> lstBusinessType = conditionDomain.getCheckTargetCondtion().getLstBusinessTypeCode()
+				.stream().map(businessTypeCd -> new KrcstErAlBusinessType(
+						new KrcstErAlBusinessTypePK(eralCheckId, businessTypeCd.v())))
+				.collect(Collectors.toList());
+		List<KrcstErAlJobTitle> lstJobTitle = conditionDomain.getCheckTargetCondtion().getLstJobTitleId().stream()
+				.map(jobTitleId -> new KrcstErAlJobTitle(new KrcstErAlJobTitlePK(eralCheckId, jobTitleId)))
+				.collect(Collectors.toList());
+		List<KrcstErAlEmployment> lstEmployment = conditionDomain.getCheckTargetCondtion().getLstEmploymentCode()
+				.stream().map(emptCd -> new KrcstErAlEmployment(new KrcstErAlEmploymentPK(eralCheckId, emptCd.v())))
+				.collect(Collectors.toList());
+		List<KrcstErAlClass> lstClassification = conditionDomain.getCheckTargetCondtion().getLstClassificationCode()
+				.stream().map(clssCd -> new KrcstErAlClass(new KrcstErAlClassPK(eralCheckId, clssCd.v())))
+				.collect(Collectors.toList());
+		// Set worktype condition
+		int workTypeUseAtr = conditionDomain.getWorkTypeCondition().isUse() ? 1 : 0;
+		int wtCompareAtr = conditionDomain.getWorkTypeCondition().getComparePlanAndActual().value;
+		int wtPlanActualOperator = 0;
+		int wtPlanFilterAtr = 0;
+		int wtActualFilterAtr = 0;
+		List<KrcstErAlWtPlan> lstWtPlan = new ArrayList<>();
+		List<KrcstErAlWtActual> lstWtActual = new ArrayList<>();
+		if (wtCompareAtr != FilterByCompare.EXTRACT_SAME.value) {
+			PlanActualWorkType wtypeCondition = (PlanActualWorkType) conditionDomain.getWorkTypeCondition();
+			wtPlanActualOperator = wtypeCondition.getOperatorBetweenPlanActual().value;
+			wtPlanFilterAtr = wtypeCondition.getWorkTypePlan().isUse() ? 1 : 0;
+			wtActualFilterAtr = wtypeCondition.getWorkTypeActual().isUse() ? 1 : 0;
+			lstWtPlan = wtypeCondition.getWorkTypePlan().getLstWorkType().stream()
+					.map(wtCode -> new KrcstErAlWtPlan(new KrcstErAlWtPlanActualPK(eralCheckId, wtCode.v())))
 					.collect(Collectors.toList());
-			List<KrcstErAlJobTitle> lstJobTitle = conditionDomain.getCheckTargetCondtion().getLstJobTitleId().stream()
-					.map(jobTitleId -> new KrcstErAlJobTitle(new KrcstErAlJobTitlePK(eralCheckId, jobTitleId)))
+			lstWtActual = wtypeCondition.getWorkTypeActual().getLstWorkType().stream()
+					.map(wtCode -> new KrcstErAlWtActual(new KrcstErAlWtPlanActualPK(eralCheckId, wtCode.v())))
 					.collect(Collectors.toList());
-			List<KrcstErAlEmployment> lstEmployment = conditionDomain.getCheckTargetCondtion().getLstEmploymentCode()
-					.stream().map(emptCd -> new KrcstErAlEmployment(new KrcstErAlEmploymentPK(eralCheckId, emptCd.v())))
+		} else {
+			SingleWorkType wtypeCondition = (SingleWorkType) conditionDomain.getWorkTypeCondition();
+			wtPlanFilterAtr = wtypeCondition.getTargetWorkType().isUse() ? 1 : 0;
+			lstWtPlan = wtypeCondition.getTargetWorkType().getLstWorkType().stream()
+					.map(wtCode -> new KrcstErAlWtPlan(new KrcstErAlWtPlanActualPK(eralCheckId, wtCode.v())))
 					.collect(Collectors.toList());
-			List<KrcstErAlClass> lstClassification = conditionDomain.getCheckTargetCondtion().getLstClassificationCode()
-					.stream().map(clssCd -> new KrcstErAlClass(new KrcstErAlClassPK(eralCheckId, clssCd.v())))
+		}
+		// Set worktime condition
+		int workingHoursUseAtr = conditionDomain.getWorkTimeCondition().isUse() ? 1 : 0;
+		int whCompareAtr = conditionDomain.getWorkTimeCondition().getComparePlanAndActual().value;
+		int whPlanActualOperator = 0;
+		int whPlanFilterAtr = 0;
+		int whActualFilterAtr = 0;
+		List<KrcstErAlWhPlan> lstWhPlan = new ArrayList<>();
+		List<KrcstErAlWhActual> lstWhActual = new ArrayList<>();
+		if (whCompareAtr != FilterByCompare.EXTRACT_SAME.value) {
+			PlanActualWorkTime wtimeCondition = (PlanActualWorkTime) conditionDomain.getWorkTimeCondition();
+			whPlanActualOperator = wtimeCondition.getOperatorBetweenPlanActual().value;
+			whPlanFilterAtr = wtimeCondition.getWorkTimePlan().isUse() ? 1 : 0;
+			whActualFilterAtr = wtimeCondition.getWorkTimeActual().isUse() ? 1 : 0;
+			lstWhPlan = wtimeCondition.getWorkTimePlan().getLstWorkTime().stream()
+					.map(wtCode -> new KrcstErAlWhPlan(new KrcstErAlWhPlanActualPK(eralCheckId, wtCode.v())))
 					.collect(Collectors.toList());
-			// Set worktype condition
-			BigDecimal workTypeUseAtr = new BigDecimal(conditionDomain.getWorkTypeCondition().getUseAtr() ? 1 : 0);
-			BigDecimal wtCompareAtr = new BigDecimal(
-					conditionDomain.getWorkTypeCondition().getComparePlanAndActual().value);
-			BigDecimal wtPlanActualOperator = new BigDecimal(0);
-			BigDecimal wtPlanFilterAtr = new BigDecimal(0);
-			BigDecimal wtActualFilterAtr = new BigDecimal(0);
-			List<KrcstErAlWtPlan> lstWtPlan = new ArrayList<>();
-			List<KrcstErAlWtActual> lstWtActual = new ArrayList<>();
-			if (wtCompareAtr.intValue() != FilterByCompare.EXTRACT_SAME.value) {
-				PlanActualWorkType wtypeCondition = (PlanActualWorkType) conditionDomain.getWorkTypeCondition();
-				wtPlanActualOperator = new BigDecimal(wtypeCondition.getOperatorBetweenPlanActual().value);
-				wtPlanFilterAtr = new BigDecimal(wtypeCondition.getWorkTypePlan().getFilterAtr() ? 1 : 0);
-				wtActualFilterAtr = new BigDecimal(wtypeCondition.getWorkTypeActual().getFilterAtr() ? 1 : 0);
-				lstWtPlan = wtypeCondition.getWorkTypePlan().getLstWorkType().stream()
-						.map(wtCode -> new KrcstErAlWtPlan(new KrcstErAlWtPlanActualPK(eralCheckId, wtCode.v())))
-						.collect(Collectors.toList());
-				lstWtActual = wtypeCondition.getWorkTypeActual().getLstWorkType().stream()
-						.map(wtCode -> new KrcstErAlWtActual(new KrcstErAlWtPlanActualPK(eralCheckId, wtCode.v())))
-						.collect(Collectors.toList());
-			} else {
-				SingleWorkType wtypeCondition = (SingleWorkType) conditionDomain.getWorkTypeCondition();
-				wtPlanFilterAtr = new BigDecimal(wtypeCondition.getTargetWorkType().getFilterAtr() ? 1 : 0);
-				lstWtPlan = wtypeCondition.getTargetWorkType().getLstWorkType().stream()
-						.map(wtCode -> new KrcstErAlWtPlan(new KrcstErAlWtPlanActualPK(eralCheckId, wtCode.v())))
-						.collect(Collectors.toList());
-			}
-			// Set worktime condition
-			BigDecimal workingHoursUseAtr = new BigDecimal(conditionDomain.getWorkTimeCondition().getUseAtr() ? 1 : 0);
-			BigDecimal whCompareAtr = new BigDecimal(
-					conditionDomain.getWorkTimeCondition().getComparePlanAndActual().value);
-			BigDecimal whPlanActualOperator = new BigDecimal(0);
-			BigDecimal whPlanFilterAtr = new BigDecimal(0);
-			BigDecimal whActualFilterAtr = new BigDecimal(0);
-			List<KrcstErAlWhPlan> lstWhPlan = new ArrayList<>();
-			List<KrcstErAlWhActual> lstWhActual = new ArrayList<>();
-			if (whCompareAtr.intValue() != FilterByCompare.EXTRACT_SAME.value) {
-				PlanActualWorkTime wtimeCondition = (PlanActualWorkTime) conditionDomain.getWorkTimeCondition();
-				whPlanActualOperator = new BigDecimal(wtimeCondition.getOperatorBetweenPlanActual().value);
-				whPlanFilterAtr = new BigDecimal(wtimeCondition.getWorkTimePlan().getFilterAtr() ? 1 : 0);
-				whActualFilterAtr = new BigDecimal(wtimeCondition.getWorkTimeActual().getFilterAtr() ? 1 : 0);
-				lstWhPlan = wtimeCondition.getWorkTimePlan().getLstWorkTime().stream()
-						.map(wtCode -> new KrcstErAlWhPlan(new KrcstErAlWhPlanActualPK(eralCheckId, wtCode.v())))
-						.collect(Collectors.toList());
-				lstWhActual = wtimeCondition.getWorkTimeActual().getLstWorkTime().stream()
-						.map(wtCode -> new KrcstErAlWhActual(new KrcstErAlWhPlanActualPK(eralCheckId, wtCode.v())))
-						.collect(Collectors.toList());
-			} else {
-				SingleWorkTime wtimeCondition = (SingleWorkTime) conditionDomain.getWorkTimeCondition();
-				whPlanFilterAtr = new BigDecimal(wtimeCondition.getTargetWorkTime().getFilterAtr() ? 1 : 0);
-				lstWhPlan = wtimeCondition.getTargetWorkTime().getLstWorkTime().stream()
-						.map(wtCode -> new KrcstErAlWhPlan(new KrcstErAlWhPlanActualPK(eralCheckId, wtCode.v())))
-						.collect(Collectors.toList());
-			}
-			// Set attendance item condition
-			BigDecimal operatorBetweenGroups = new BigDecimal(
-					conditionDomain.getAtdItemCondition().getOperatorBetweenGroups().value);
-			BigDecimal group2UseAtr = new BigDecimal(conditionDomain.getAtdItemCondition().getGroup2UseAtr() ? 1 : 0);
-			String atdItemConditionGroup1 = conditionDomain.getAtdItemCondition().getGroup1().getAtdItemConGroupId();
-			String atdItemConditionGroup2 = conditionDomain.getAtdItemCondition().getGroup2().getAtdItemConGroupId();
-			BigDecimal conditionOperator1 = new BigDecimal(
-					conditionDomain.getAtdItemCondition().getGroup1().getConditionOperator().value);
-			List<KrcmtErAlAtdItemCon> lstAtdItemCon1 = conditionDomain.getAtdItemCondition().getGroup1()
-					.getLstErAlAtdItemCon().stream()
-					.map(erAlAtdItemCon -> getKrcmtErAlAtdItemConFromDomain(atdItemConditionGroup1, erAlAtdItemCon))
+			lstWhActual = wtimeCondition.getWorkTimeActual().getLstWorkTime().stream()
+					.map(wtCode -> new KrcstErAlWhActual(new KrcstErAlWhPlanActualPK(eralCheckId, wtCode.v())))
 					.collect(Collectors.toList());
-			KrcstErAlConGroup krcstErAlConGroup1 = new KrcstErAlConGroup(atdItemConditionGroup1, conditionOperator1,
-					lstAtdItemCon1);
-			BigDecimal conditionOperator2 = new BigDecimal(
-					conditionDomain.getAtdItemCondition().getGroup2().getConditionOperator().value);
-			List<KrcmtErAlAtdItemCon> lstAtdItemCon2 = conditionDomain.getAtdItemCondition().getGroup2()
-					.getLstErAlAtdItemCon().stream()
-					.map(erAlAtdItemCon -> getKrcmtErAlAtdItemConFromDomain(atdItemConditionGroup2, erAlAtdItemCon))
+		} else {
+			SingleWorkTime wtimeCondition = (SingleWorkTime) conditionDomain.getWorkTimeCondition();
+			whPlanFilterAtr = (wtimeCondition.getTargetWorkTime().isUse() ? 1 : 0);
+			lstWhPlan = wtimeCondition.getTargetWorkTime().getLstWorkTime().stream()
+					.map(wtCode -> new KrcstErAlWhPlan(new KrcstErAlWhPlanActualPK(eralCheckId, wtCode.v())))
 					.collect(Collectors.toList());
-			KrcstErAlConGroup krcstErAlConGroup2 = new KrcstErAlConGroup(atdItemConditionGroup2, conditionOperator2,
-					lstAtdItemCon2);
-			krcmtErAlCondition = new KrcmtErAlCondition(eralCheckId, displayMessage, filterByBusinessType,
-					lstBusinessType, filterByJobTitle, lstJobTitle, filterByEmployment, lstEmployment,
-					filterByClassification, lstClassification, workTypeUseAtr, wtPlanActualOperator, wtPlanFilterAtr,
-					wtActualFilterAtr, wtCompareAtr, lstWtActual, lstWtPlan, workingHoursUseAtr, whPlanActualOperator,
-					whPlanFilterAtr, whActualFilterAtr, whCompareAtr, lstWhActual, lstWhPlan, operatorBetweenGroups,
-					group2UseAtr, atdItemConditionGroup1, krcstErAlConGroup1, atdItemConditionGroup2,
-					krcstErAlConGroup2, conditionDomain.getContinuousPeriod() != null
-							? new BigDecimal(conditionDomain.getContinuousPeriod().v()) : null);
-		//}
+		}
+		// Set attendance item condition
+		int operatorBetweenGroups = conditionDomain.getAtdItemCondition().getOperatorBetweenGroups().value;
+		int group2UseAtr = conditionDomain.getAtdItemCondition().isUseGroup2() ? 1 : 0;
+		String atdItemConditionGroup1 = conditionDomain.getAtdItemCondition().getGroup1().getAtdItemConGroupId();
+		String atdItemConditionGroup2 = conditionDomain.getAtdItemCondition().getGroup2().getAtdItemConGroupId();
+		int conditionOperator1 = conditionDomain.getAtdItemCondition().getGroup1().getConditionOperator().value;
+		List<KrcmtErAlAtdItemCon> lstAtdItemCon1 = conditionDomain.getAtdItemCondition().getGroup1()
+				.getLstErAlAtdItemCon().stream()
+				.map(erAlAtdItemCon -> getKrcmtErAlAtdItemConFromDomain(atdItemConditionGroup1, erAlAtdItemCon))
+				.collect(Collectors.toList());
+		KrcstErAlConGroup krcstErAlConGroup1 = new KrcstErAlConGroup(atdItemConditionGroup1, conditionOperator1,
+				lstAtdItemCon1);
+		int conditionOperator2 = conditionDomain.getAtdItemCondition().getGroup2().getConditionOperator().value;
+		List<KrcmtErAlAtdItemCon> lstAtdItemCon2 = conditionDomain.getAtdItemCondition().getGroup2()
+				.getLstErAlAtdItemCon().stream()
+				.map(erAlAtdItemCon -> getKrcmtErAlAtdItemConFromDomain(atdItemConditionGroup2, erAlAtdItemCon))
+				.collect(Collectors.toList());
+		KrcstErAlConGroup krcstErAlConGroup2 = new KrcstErAlConGroup(atdItemConditionGroup2, conditionOperator2,
+				lstAtdItemCon2);
+		krcmtErAlCondition = new KrcmtErAlCondition(eralCheckId, displayMessage, filterByBusinessType, lstBusinessType,
+				filterByJobTitle, lstJobTitle, filterByEmployment, lstEmployment, filterByClassification,
+				lstClassification, workTypeUseAtr, wtPlanActualOperator, wtPlanFilterAtr, wtActualFilterAtr,
+				wtCompareAtr, lstWtActual, lstWtPlan, workingHoursUseAtr, whPlanActualOperator, whPlanFilterAtr,
+				whActualFilterAtr, whCompareAtr, lstWhActual, lstWhPlan, operatorBetweenGroups, group2UseAtr,
+				atdItemConditionGroup1, krcstErAlConGroup1, atdItemConditionGroup2, krcstErAlConGroup2,
+				conditionDomain.getContinuousPeriod() != null ? (conditionDomain.getContinuousPeriod().v()) : 0);
+		// }
 		return krcmtErAlCondition;
 	}
+
 	private static KrcmtErAlAtdItemCon getKrcmtErAlAtdItemConFromDomain(String atdItemConditionGroup1,
 			ErAlAttendanceItemCondition<?> erAlAtdItemCon) {
 		KrcmtErAlAtdItemConPK krcmtErAlAtdItemConPK = new KrcmtErAlAtdItemConPK(atdItemConditionGroup1,
-				new BigDecimal(erAlAtdItemCon.getTargetNO()));
+				(erAlAtdItemCon.getTargetNO()));
 		List<KrcstErAlAtdTarget> lstAtdItemTarget = new ArrayList<>();
 		if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY) {
-			lstAtdItemTarget.add(new KrcstErAlAtdTarget(
-					new KrcstErAlAtdTargetPK(atdItemConditionGroup1, new BigDecimal(erAlAtdItemCon.getTargetNO()),
-							new BigDecimal(erAlAtdItemCon.getUncountableTarget().getAttendanceItem())),
-					new BigDecimal(2)));
+			lstAtdItemTarget.add(new KrcstErAlAtdTarget(new KrcstErAlAtdTargetPK(atdItemConditionGroup1,
+					(erAlAtdItemCon.getTargetNO()), (erAlAtdItemCon.getUncountableTarget().getAttendanceItem())), 2));
 		} else {
 			List<KrcstErAlAtdTarget> lstAtdItemTargetAdd = erAlAtdItemCon.getCountableTarget()
 					.getAddSubAttendanceItems().getAdditionAttendanceItems().stream()
-					.map(atdItemId -> new KrcstErAlAtdTarget(
-							new KrcstErAlAtdTargetPK(atdItemConditionGroup1,
-									new BigDecimal(erAlAtdItemCon.getTargetNO()), new BigDecimal(atdItemId)),
-							new BigDecimal(0)))
+					.map(atdItemId -> new KrcstErAlAtdTarget(new KrcstErAlAtdTargetPK(atdItemConditionGroup1,
+							(erAlAtdItemCon.getTargetNO()), (atdItemId)), 0))
 					.collect(Collectors.toList());
 			List<KrcstErAlAtdTarget> lstAtdItemTargetSub = erAlAtdItemCon.getCountableTarget()
 					.getAddSubAttendanceItems().getSubstractionAttendanceItems().stream()
-					.map(atdItemId -> new KrcstErAlAtdTarget(
-							new KrcstErAlAtdTargetPK(atdItemConditionGroup1,
-									new BigDecimal(erAlAtdItemCon.getTargetNO()), new BigDecimal(atdItemId)),
-							new BigDecimal(1)))
+					.map(atdItemId -> new KrcstErAlAtdTarget(new KrcstErAlAtdTargetPK(atdItemConditionGroup1,
+							(erAlAtdItemCon.getTargetNO()), (atdItemId)), 1))
 					.collect(Collectors.toList());
 			lstAtdItemTarget.addAll(lstAtdItemTargetAdd);
 			lstAtdItemTarget.addAll(lstAtdItemTargetSub);
 		}
-		BigDecimal compareAtr = new BigDecimal(0);
-		BigDecimal conditionType = new BigDecimal(0);
-		BigDecimal startValue = new BigDecimal(0);
-		BigDecimal endValue = new BigDecimal(0);
+		int compareAtr = 0;
+		int conditionType = 0;
+		int startValue = 0;
+		int endValue = 0;
 		KrcstErAlCompareSingle erAlCompareSingle = null;
 		KrcstErAlCompareRange erAlCompareRange = null;
 		KrcstErAlSingleFixed erAlSingleFixed = null;
 		List<KrcstErAlSingleAtd> erAlSingleAtd = new ArrayList<>();
 		if (erAlAtdItemCon.getCompareRange() != null) {
-			compareAtr = new BigDecimal(erAlAtdItemCon.getCompareRange().getCompareOperator().value);
+			compareAtr = erAlAtdItemCon.getCompareRange().getCompareOperator().value;
 			if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.AMOUNT_VALUE) {
-				startValue = new BigDecimal(
-						((CheckedAmountValue) erAlAtdItemCon.getCompareRange().getStartValue()).v());
-				endValue = new BigDecimal(((CheckedAmountValue) erAlAtdItemCon.getCompareRange().getEndValue()).v());
+				startValue = ((CheckedAmountValue) erAlAtdItemCon.getCompareRange().getStartValue()).v();
+				endValue = ((CheckedAmountValue) erAlAtdItemCon.getCompareRange().getEndValue()).v();
 			} else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIME_DURATION) {
-				startValue = new BigDecimal(
-						((CheckedTimeDuration) erAlAtdItemCon.getCompareRange().getStartValue()).v());
-				endValue = new BigDecimal(((CheckedTimeDuration) erAlAtdItemCon.getCompareRange().getEndValue()).v());
+				startValue = ((CheckedTimeDuration) erAlAtdItemCon.getCompareRange().getStartValue()).v();
+				endValue = ((CheckedTimeDuration) erAlAtdItemCon.getCompareRange().getEndValue()).v();
 			} else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY) {
-				startValue = new BigDecimal(((TimeWithDayAttr) erAlAtdItemCon.getCompareRange().getStartValue()).v());
-				endValue = new BigDecimal(((TimeWithDayAttr) erAlAtdItemCon.getCompareRange().getEndValue()).v());
+				startValue = ((TimeWithDayAttr) erAlAtdItemCon.getCompareRange().getStartValue()).v();
+				endValue = ((TimeWithDayAttr) erAlAtdItemCon.getCompareRange().getEndValue()).v();
 			} else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIMES) {
-				startValue = new BigDecimal(((CheckedTimesValue) erAlAtdItemCon.getCompareRange().getStartValue()).v());
-				endValue = new BigDecimal(((CheckedTimesValue) erAlAtdItemCon.getCompareRange().getEndValue()).v());
+				startValue = ((CheckedTimesValue) erAlAtdItemCon.getCompareRange().getStartValue()).v();
+				endValue = ((CheckedTimesValue) erAlAtdItemCon.getCompareRange().getEndValue()).v();
 			}
 			erAlCompareRange = new KrcstErAlCompareRange(
-					new KrcstErAlCompareRangePK(atdItemConditionGroup1, new BigDecimal(erAlAtdItemCon.getTargetNO())),
-					compareAtr, startValue, endValue);
+					new KrcstErAlCompareRangePK(atdItemConditionGroup1, (erAlAtdItemCon.getTargetNO())), compareAtr,
+					startValue, endValue);
 		} else if (erAlAtdItemCon.getCompareSingleValue() != null) {
-			compareAtr = new BigDecimal(erAlAtdItemCon.getCompareSingleValue().getCompareOpertor().value);
-			conditionType = new BigDecimal(erAlAtdItemCon.getCompareSingleValue().getConditionType().value);
+			compareAtr = erAlAtdItemCon.getCompareSingleValue().getCompareOpertor().value;
+			conditionType = erAlAtdItemCon.getCompareSingleValue().getConditionType().value;
 			erAlCompareSingle = new KrcstErAlCompareSingle(
-					new KrcstErAlCompareSinglePK(atdItemConditionGroup1, new BigDecimal(erAlAtdItemCon.getTargetNO())),
-					compareAtr, conditionType);
+					new KrcstErAlCompareSinglePK(atdItemConditionGroup1, erAlAtdItemCon.getTargetNO()), compareAtr,
+					conditionType);
 			if (erAlAtdItemCon.getCompareSingleValue().getConditionType() == ConditionType.FIXED_VALUE) {
-				BigDecimal fixedValue = new BigDecimal(0);
+				int fixedValue = 0;
 				if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.AMOUNT_VALUE) {
-					fixedValue = new BigDecimal(
-							((CheckedAmountValue) erAlAtdItemCon.getCompareSingleValue().getValue()).v());
+					fixedValue = ((CheckedAmountValue) erAlAtdItemCon.getCompareSingleValue().getValue()).v();
 				} else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIME_DURATION) {
-					fixedValue = new BigDecimal(
-							((CheckedTimeDuration) erAlAtdItemCon.getCompareSingleValue().getValue()).v());
+					fixedValue = ((CheckedTimeDuration) erAlAtdItemCon.getCompareSingleValue().getValue()).v();
 				} else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY) {
-					fixedValue = new BigDecimal(
-							((TimeWithDayAttr) erAlAtdItemCon.getCompareSingleValue().getValue()).v());
+					fixedValue = ((TimeWithDayAttr) erAlAtdItemCon.getCompareSingleValue().getValue()).v();
 				} else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIMES) {
-					fixedValue = new BigDecimal(
-							((CheckedTimesValue) erAlAtdItemCon.getCompareSingleValue().getValue()).v());
+					fixedValue = ((CheckedTimesValue) erAlAtdItemCon.getCompareSingleValue().getValue()).v();
 				}
-				erAlSingleFixed = new KrcstErAlSingleFixed(new KrcstErAlSingleFixedPK(atdItemConditionGroup1,
-						new BigDecimal(erAlAtdItemCon.getTargetNO())), fixedValue);
+				erAlSingleFixed = new KrcstErAlSingleFixed(
+						new KrcstErAlSingleFixedPK(atdItemConditionGroup1, (erAlAtdItemCon.getTargetNO())), fixedValue);
 			} else {
-				erAlSingleAtd.add(new KrcstErAlSingleAtd(
-						new KrcstErAlSingleAtdPK(atdItemConditionGroup1, new BigDecimal(erAlAtdItemCon.getTargetNO()),
-								(((AttendanceItemId) erAlAtdItemCon.getCompareSingleValue().getValue()).v())),
-						new BigDecimal(2)));
+				erAlSingleAtd
+						.add(new KrcstErAlSingleAtd(
+								new KrcstErAlSingleAtdPK(atdItemConditionGroup1, (erAlAtdItemCon.getTargetNO()),
+										(((AttendanceItemId) erAlAtdItemCon.getCompareSingleValue().getValue()).v())),
+								2));
 			}
 		}
-		return new KrcmtErAlAtdItemCon(krcmtErAlAtdItemConPK, new BigDecimal(erAlAtdItemCon.getConditionAtr().value),
-				new BigDecimal(erAlAtdItemCon.getUseAtr() ? 1 : 0), lstAtdItemTarget, erAlCompareSingle,
-				erAlCompareRange, erAlSingleFixed, erAlSingleAtd);
+		return new KrcmtErAlAtdItemCon(krcmtErAlAtdItemConPK, erAlAtdItemCon.getConditionAtr().value,
+				erAlAtdItemCon.isUse() ? 1 : 0, lstAtdItemTarget, erAlCompareSingle, erAlCompareRange,
+				erAlSingleFixed, erAlSingleAtd);
 	}
-	
+
 	public static ErrorAlarmCondition toDomain(KrcmtErAlCondition entity, String companyId, String errorAlarmCode) {
 		ErrorAlarmCondition condition = ErrorAlarmCondition.init();
 		condition.setDisplayMessage(entity.messageDisplay);
-		if (entity.continuousPeriod != null) {
-			condition.setContinuousPeriod(entity.continuousPeriod.intValue());
+		condition.setContinuousPeriod(entity.continuousPeriod);
+		// if (entity.fixedAtr != 1) {
+		// Set AlCheckTargetCondition
+		condition.createAlCheckTargetCondition(entity.filterByBusinessType == 1, entity.filterByJobTitle == 1,
+				entity.filterByEmployment == 1, entity.filterByClassification == 1,
+				Optional.ofNullable(entity.lstBusinessType).orElse(Collections.emptyList()).stream()
+						.map(businessType -> businessType.krcstErAlBusinessTypePK.businessTypeCd)
+						.collect(Collectors.toList()),
+				Optional.ofNullable(entity.lstJobTitle).orElse(Collections.emptyList()).stream()
+						.map(jobTitle -> jobTitle.krcstErAlJobTitlePK.jobId).collect(Collectors.toList()),
+				Optional.ofNullable(entity.lstEmployment).orElse(Collections.emptyList()).stream()
+						.map(empt -> empt.krcstErAlEmploymentPK.emptcd).collect(Collectors.toList()),
+				Optional.ofNullable(entity.lstClassification).orElse(Collections.emptyList()).stream()
+						.map(clss -> clss.krcstErAlClassPK.clscd).collect(Collectors.toList()));
+		// Set WorkTypeCondition
+
+		condition.createWorkTypeCondition(entity.workTypeUseAtr == 1, entity.wtCompareAtr == null ? 0 : entity.wtCompareAtr);
+		if (entity.wtCompareAtr != null && entity.wtCompareAtr != FilterByCompare.EXTRACT_SAME.value) {
+			condition.setWorkTypePlan((entity.wtPlanFilterAtr != null && entity.wtPlanFilterAtr == 1),
+					Optional.ofNullable(entity.lstWtPlan).orElse(Collections.emptyList()).stream()
+							.map(wtype -> wtype.krcstErAlWtPlanPK.workTypeCode).collect(Collectors.toList()));
+			condition.setWorkTypeActual((entity.wtActualFilterAtr != null && entity.wtActualFilterAtr == 1),
+					Optional.ofNullable(entity.lstWtActual).orElse(Collections.emptyList()).stream()
+							.map(wtype -> wtype.krcstErAlWtPlanActualPK.workTypeCode).collect(Collectors.toList()));
+			condition.chooseWorkTypeOperator(entity.wtPlanActualOperator);
+		} else {
+			condition.setWorkTypeSingle((entity.wtPlanFilterAtr != null && entity.wtPlanFilterAtr == 1),
+					Optional.ofNullable(entity.lstWtPlan).orElse(Collections.emptyList()).stream()
+							.map(wtype -> wtype.krcstErAlWtPlanPK.workTypeCode).collect(Collectors.toList()));
 		}
-		//if (entity.fixedAtr.intValue() != 1) {
-			// Set AlCheckTargetCondition
-			condition.createAlCheckTargetCondition((entity.filterByBusinessType != null && entity.filterByBusinessType.intValue() == 1),
-					(entity.filterByJobTitle != null && entity.filterByJobTitle.intValue() == 1),
-					(entity.filterByEmployment != null && entity.filterByEmployment.intValue() == 1),
-					(entity.filterByClassification != null && entity.filterByClassification.intValue() == 1),
-					Optional.ofNullable(entity.lstBusinessType).orElse(Collections.emptyList())
-							.stream().map(businessType -> businessType.krcstErAlBusinessTypePK.businessTypeCd)
-							.collect(Collectors.toList()),
-					Optional.ofNullable(entity.lstJobTitle).orElse(Collections.emptyList()).stream()
-							.map(jobTitle -> jobTitle.krcstErAlJobTitlePK.jobId).collect(Collectors.toList()),
-					Optional.ofNullable(entity.lstEmployment).orElse(Collections.emptyList())
-							.stream().map(empt -> empt.krcstErAlEmploymentPK.emptcd).collect(Collectors.toList()),
-					Optional.ofNullable(entity.lstClassification).orElse(Collections.emptyList())
-							.stream().map(clss -> clss.krcstErAlClassPK.clscd).collect(Collectors.toList()));
-			// Set WorkTypeCondition
-			
-			condition.createWorkTypeCondition((entity.workTypeUseAtr != null && entity.workTypeUseAtr.intValue() == 1),
-					(entity.wtCompareAtr == null ? 0 : entity.wtCompareAtr.intValue()));
-			if (entity.wtCompareAtr != null && entity.wtCompareAtr.intValue() != FilterByCompare.EXTRACT_SAME.value) {
-				condition.setWorkTypePlan((entity.wtPlanFilterAtr != null && entity.wtPlanFilterAtr.intValue() == 1),
-						Optional.ofNullable(entity.lstWtPlan).orElse(Collections.emptyList())
-								.stream().map(wtype -> wtype.krcstErAlWtPlanPK.workTypeCode)
-								.collect(Collectors.toList()));
-				condition.setWorkTypeActual((entity.wtActualFilterAtr != null &&entity.wtActualFilterAtr.intValue() == 1),
-						Optional.ofNullable(entity.lstWtActual).orElse(Collections.emptyList())
-								.stream().map(wtype -> wtype.krcstErAlWtPlanActualPK.workTypeCode)
-								.collect(Collectors.toList()));
-				condition.chooseWorkTypeOperator(entity.wtPlanActualOperator == null ? 0 : entity.wtPlanActualOperator.intValue());
-			} else {
-				condition.setWorkTypeSingle((entity.wtPlanFilterAtr != null && entity.wtPlanFilterAtr.intValue() == 1),
-						Optional.ofNullable(entity.lstWtPlan).orElse(Collections.emptyList())
-								.stream().map(wtype -> wtype.krcstErAlWtPlanPK.workTypeCode)
-								.collect(Collectors.toList()));
-			}
-			// Set WorkTimeCondtion
-			condition.createWorkTimeCondition((entity.workingHoursUseAtr != null && entity.workingHoursUseAtr.intValue() == 1),
-					entity.whCompareAtr == null ? 0 : entity.whCompareAtr.intValue());
-			if (entity.whCompareAtr != null && entity.whCompareAtr.intValue() != FilterByCompare.EXTRACT_SAME.value) {
-				condition.setWorkTimePlan((entity.whPlanFilterAtr != null && entity.whPlanFilterAtr.intValue() == 1),
-						Optional.ofNullable(entity.lstWhPlan).orElse(Collections.emptyList())
-								.stream().map(wtime -> wtime.krcstErAlWhPlanActualPK.workTimeCode)
-								.collect(Collectors.toList()));
-				condition.setWorkTimeActual((entity.whActualFilterAtr != null && entity.whActualFilterAtr.intValue() == 1),
-						Optional.ofNullable(entity.lstWhActual).orElse(Collections.emptyList())
-								.stream().map(wtime -> wtime.krcstErAlWhPlanActualPK.workTimeCode)
-								.collect(Collectors.toList()));
-				condition.chooseWorkTimeOperator(entity.whPlanActualOperator == null ? 0 : entity.whPlanActualOperator.intValue());
-			} else {
-				condition.setWorkTimeSingle((entity.whPlanFilterAtr != null && entity.whPlanFilterAtr.intValue() == 1),
-						Optional.ofNullable(entity.lstWhPlan).orElse(Collections.emptyList())
-								.stream().map(wtime -> wtime.krcstErAlWhPlanActualPK.workTimeCode)
-								.collect(Collectors.toList()));
-			}
-			// Set AttendanceItemCondition
-			List<ErAlAttendanceItemCondition<?>> conditionsGroup1 = Optional
-					.ofNullable(entity.krcstErAlConGroup1)
-					.orElse(new KrcstErAlConGroup("", new BigDecimal(0), new ArrayList<>())).lstAtdItemCon.stream()
-							.map(atdItemCon -> convertKrcmtErAlAtdItemConToDomain(entity, atdItemCon, companyId, errorAlarmCode))
-							.collect(Collectors.toList());
-			List<ErAlAttendanceItemCondition<?>> conditionsGroup2 = Optional
-					.ofNullable(entity.krcstErAlConGroup2)
-					.orElse(new KrcstErAlConGroup("", new BigDecimal(0), new ArrayList<>())).lstAtdItemCon.stream()
-							.map(atdItemCon -> convertKrcmtErAlAtdItemConToDomain(entity, atdItemCon, companyId, errorAlarmCode))
-							.collect(Collectors.toList());
-			condition
-					.createAttendanceItemCondition((entity.operatorBetweenGroups == null ? 0 : entity.operatorBetweenGroups.intValue()),
-							(entity.group2UseAtr != null && entity.group2UseAtr.intValue() == 1))
-					.setAttendanceItemConditionGroup1(Optional.ofNullable(entity.krcstErAlConGroup1)
-							.orElse(new KrcstErAlConGroup("", new BigDecimal(0), new ArrayList<>())).conditionOperator
-									.intValue(),
-							conditionsGroup1)
-					.setAttendanceItemConditionGroup2(Optional.ofNullable(entity.krcstErAlConGroup2)
-							.orElse(new KrcstErAlConGroup("", new BigDecimal(0), new ArrayList<>())).conditionOperator
-									.intValue(),
-							conditionsGroup2);
-		//}
+		// Set WorkTimeCondtion
+		condition.createWorkTimeCondition(entity.workingHoursUseAtr == 1,
+				entity.whCompareAtr == null ? 0 : entity.whCompareAtr);
+		if (entity.whCompareAtr != null && entity.whCompareAtr != FilterByCompare.EXTRACT_SAME.value) {
+			condition.setWorkTimePlan((entity.whPlanFilterAtr != null && entity.whPlanFilterAtr == 1),
+					Optional.ofNullable(entity.lstWhPlan).orElse(Collections.emptyList()).stream()
+							.map(wtime -> wtime.krcstErAlWhPlanActualPK.workTimeCode).collect(Collectors.toList()));
+			condition.setWorkTimeActual(entity.whActualFilterAtr == 1,
+					Optional.ofNullable(entity.lstWhActual).orElse(Collections.emptyList()).stream()
+							.map(wtime -> wtime.krcstErAlWhPlanActualPK.workTimeCode).collect(Collectors.toList()));
+			condition.chooseWorkTimeOperator(entity.whPlanActualOperator);
+		} else {
+			condition.setWorkTimeSingle((entity.whPlanFilterAtr != null && entity.whPlanFilterAtr == 1),
+					Optional.ofNullable(entity.lstWhPlan).orElse(Collections.emptyList()).stream()
+							.map(wtime -> wtime.krcstErAlWhPlanActualPK.workTimeCode).collect(Collectors.toList()));
+		}
+		// Set AttendanceItemCondition
+		List<ErAlAttendanceItemCondition<?>> conditionsGroup1 = Optional.ofNullable(entity.krcstErAlConGroup1)
+				.orElse(new KrcstErAlConGroup("", 0, new ArrayList<>())).lstAtdItemCon.stream().map(
+						atdItemCon -> convertKrcmtErAlAtdItemConToDomain(entity, atdItemCon, companyId, errorAlarmCode))
+						.collect(Collectors.toList());
+		List<ErAlAttendanceItemCondition<?>> conditionsGroup2 = Optional.ofNullable(entity.krcstErAlConGroup2)
+				.orElse(new KrcstErAlConGroup("", 0, new ArrayList<>())).lstAtdItemCon.stream().map(
+						atdItemCon -> convertKrcmtErAlAtdItemConToDomain(entity, atdItemCon, companyId, errorAlarmCode))
+						.collect(Collectors.toList());
+		condition.createAttendanceItemCondition(entity.operatorBetweenGroups, entity.group2UseAtr == 1)
+				.setAttendanceItemConditionGroup1(
+						Optional.ofNullable(entity.krcstErAlConGroup1)
+								.orElse(new KrcstErAlConGroup("", 0, new ArrayList<>())).conditionOperator,
+						conditionsGroup1)
+				.setAttendanceItemConditionGroup2(
+						Optional.ofNullable(entity.krcstErAlConGroup2)
+								.orElse(new KrcstErAlConGroup("", 0, new ArrayList<>())).conditionOperator,
+						conditionsGroup2);
+		// }
 		condition.setCheckId(entity.eralCheckId);
 		return condition;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private static <V> ErAlAttendanceItemCondition<V> convertKrcmtErAlAtdItemConToDomain(KrcmtErAlCondition entity,
 			KrcmtErAlAtdItemCon atdItemCon, String companyId, String errorAlarmCode) {
-		ErAlAttendanceItemCondition<V> atdItemConDomain = new ErAlAttendanceItemCondition<V>(
-				companyId, errorAlarmCode,
-				(atdItemCon.krcmtErAlAtdItemConPK.atdItemConNo == null ? 0 : atdItemCon.krcmtErAlAtdItemConPK.atdItemConNo.intValue())
-				, (atdItemCon.conditionAtr == null ? 0 : atdItemCon.conditionAtr.intValue())
-				, (atdItemCon.useAtr != null && atdItemCon.useAtr.intValue() == 1));
+		ErAlAttendanceItemCondition<V> atdItemConDomain = new ErAlAttendanceItemCondition<V>(companyId, errorAlarmCode,
+				atdItemCon.krcmtErAlAtdItemConPK.atdItemConNo, atdItemCon.conditionAtr, atdItemCon.useAtr == 1);
 		// Set Target
-		if (atdItemCon.conditionAtr != null && atdItemCon.conditionAtr.intValue() == ConditionAtr.TIME_WITH_DAY.value) {
-			atdItemConDomain.setUncountableTarget(
-					Optional.ofNullable(atdItemCon.lstAtdItemTarget).orElse(Collections.emptyList()).stream()
-							.filter(atdItemTarget -> (atdItemTarget.targetAtr != null && atdItemTarget.targetAtr.intValue() == 2)).findFirst()
-							.get().krcstErAlAtdTargetPK.attendanceItemId.intValue());
+		if (atdItemCon.conditionAtr == ConditionAtr.TIME_WITH_DAY.value) {
+			atdItemConDomain.setUncountableTarget(Optional.ofNullable(atdItemCon.lstAtdItemTarget)
+					.orElse(Collections.emptyList()).stream().filter(atdItemTarget -> (atdItemTarget.targetAtr == 2))
+					.findFirst().get().krcstErAlAtdTargetPK.attendanceItemId);
 		} else {
 			atdItemConDomain.setCountableTarget(
 					Optional.ofNullable(atdItemCon.lstAtdItemTarget).orElse(Collections.emptyList()).stream()
-							.filter(atdItemTarget -> atdItemTarget.targetAtr.intValue() == 0)
-							.map(addItem -> addItem.krcstErAlAtdTargetPK.attendanceItemId.intValue())
-							.collect(Collectors.toList()),
+							.filter(atdItemTarget -> atdItemTarget.targetAtr == 0)
+							.map(addItem -> addItem.krcstErAlAtdTargetPK.attendanceItemId).collect(Collectors.toList()),
 					Optional.ofNullable(atdItemCon.lstAtdItemTarget).orElse(Collections.emptyList()).stream()
-							.filter(atdItemTarget -> atdItemTarget.targetAtr.intValue() == 1)
-							.map(addItem -> addItem.krcstErAlAtdTargetPK.attendanceItemId.intValue())
+							.filter(atdItemTarget -> atdItemTarget.targetAtr == 1)
+							.map(addItem -> addItem.krcstErAlAtdTargetPK.attendanceItemId)
 							.collect(Collectors.toList()));
 		}
 		// Set Compare
 		if (atdItemCon.erAlCompareRange != null) {
-			if (atdItemCon.conditionAtr != null && atdItemCon.conditionAtr.intValue() == ConditionAtr.AMOUNT_VALUE.value) {
-				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr.intValue(),
-						(V) new CheckedAmountValue(atdItemCon.erAlCompareRange.startValue.intValue()),
-						(V) new CheckedAmountValue(atdItemCon.erAlCompareRange.endValue.intValue()));
-			} else if (atdItemCon.conditionAtr != null && atdItemCon.conditionAtr.intValue() == ConditionAtr.TIME_DURATION.value) {
-				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr.intValue(),
-						(V) new CheckedTimeDuration(atdItemCon.erAlCompareRange.startValue.intValue()),
-						(V) new CheckedTimeDuration(atdItemCon.erAlCompareRange.endValue.intValue()));
-			} else if (atdItemCon.conditionAtr != null && atdItemCon.conditionAtr.intValue() == ConditionAtr.TIME_WITH_DAY.value) {
-				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr.intValue(),
-						(V) new TimeWithDayAttr(atdItemCon.erAlCompareRange.startValue.intValue()),
-						(V) new TimeWithDayAttr(atdItemCon.erAlCompareRange.endValue.intValue()));
-			} else if (atdItemCon.conditionAtr != null && atdItemCon.conditionAtr.intValue() == ConditionAtr.TIMES.value) {
-				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr.intValue(),
-						(V) new CheckedTimesValue(atdItemCon.erAlCompareRange.startValue.intValue()),
-						(V) new CheckedTimesValue(atdItemCon.erAlCompareRange.endValue.intValue()));
+			if (atdItemCon.conditionAtr == ConditionAtr.AMOUNT_VALUE.value) {
+				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr,
+						(V) new CheckedAmountValue(atdItemCon.erAlCompareRange.startValue),
+						(V) new CheckedAmountValue(atdItemCon.erAlCompareRange.endValue));
+			} else if (atdItemCon.conditionAtr == ConditionAtr.TIME_DURATION.value) {
+				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr,
+						(V) new CheckedTimeDuration(atdItemCon.erAlCompareRange.startValue),
+						(V) new CheckedTimeDuration(atdItemCon.erAlCompareRange.endValue));
+			} else if (atdItemCon.conditionAtr == ConditionAtr.TIME_WITH_DAY.value) {
+				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr,
+						(V) new TimeWithDayAttr(atdItemCon.erAlCompareRange.startValue),
+						(V) new TimeWithDayAttr(atdItemCon.erAlCompareRange.endValue));
+			} else if (atdItemCon.conditionAtr == ConditionAtr.TIMES.value) {
+				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr,
+						(V) new CheckedTimesValue(atdItemCon.erAlCompareRange.startValue),
+						(V) new CheckedTimesValue(atdItemCon.erAlCompareRange.endValue));
 			}
 		} else if (atdItemCon.erAlCompareSingle != null) {
-			if (atdItemCon.erAlCompareSingle.conditionType != null 
-					&& atdItemCon.erAlCompareSingle.conditionType.intValue() == ConditionType.FIXED_VALUE.value) {
-				if (atdItemCon.conditionAtr != null && atdItemCon.conditionAtr.intValue() == ConditionAtr.AMOUNT_VALUE.value) {
-					atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr.intValue(),
-							atdItemCon.erAlCompareSingle.conditionType.intValue(),
-							(V) new CheckedAmountValue(atdItemCon.erAlSingleFixed.fixedValue.intValue()));
-				} else if (atdItemCon.conditionAtr != null && atdItemCon.conditionAtr.intValue() == ConditionAtr.TIME_DURATION.value) {
-					atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr == null ? 0 : atdItemCon.erAlCompareSingle.compareAtr.intValue(),
-							atdItemCon.erAlCompareSingle.conditionType == null ? 0 : atdItemCon.erAlCompareSingle.conditionType.intValue(),
-							(V) new CheckedTimeDuration(atdItemCon.erAlSingleFixed.fixedValue == null ? 0 : atdItemCon.erAlSingleFixed.fixedValue.intValue()));
-				} else if (atdItemCon.conditionAtr != null && atdItemCon.conditionAtr.intValue() == ConditionAtr.TIME_WITH_DAY.value) {
-					atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr == null ? 0 : atdItemCon.erAlCompareSingle.compareAtr.intValue(),
-							atdItemCon.erAlCompareSingle.conditionType == null ? 0 : atdItemCon.erAlCompareSingle.conditionType.intValue(),
-							(V) new TimeWithDayAttr(atdItemCon.erAlSingleFixed.fixedValue == null ? 0 : atdItemCon.erAlSingleFixed.fixedValue.intValue()));
-				} else if (atdItemCon.conditionAtr != null && atdItemCon.conditionAtr.intValue() == ConditionAtr.TIMES.value) {
-					atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr == null ? 0 : atdItemCon.erAlCompareSingle.compareAtr.intValue(),
-							atdItemCon.erAlCompareSingle.conditionType == null ? 0 : atdItemCon.erAlCompareSingle.conditionType.intValue(),
-							(V) new CheckedTimesValue(atdItemCon.erAlSingleFixed.fixedValue == null ? 0 : atdItemCon.erAlSingleFixed.fixedValue.intValue()));
+			if (atdItemCon.erAlCompareSingle.conditionType == ConditionType.FIXED_VALUE.value) {
+				if (atdItemCon.conditionAtr == ConditionAtr.AMOUNT_VALUE.value) {
+					atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr,
+							atdItemCon.erAlCompareSingle.conditionType,
+							(V) new CheckedAmountValue(atdItemCon.erAlSingleFixed.fixedValue));
+				} else if (atdItemCon.conditionAtr == ConditionAtr.TIME_DURATION.value) {
+					atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr,
+							atdItemCon.erAlCompareSingle.conditionType,
+							(V) new CheckedTimeDuration(atdItemCon.erAlSingleFixed.fixedValue));
+				} else if (atdItemCon.conditionAtr == ConditionAtr.TIME_WITH_DAY.value) {
+					atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr,
+							atdItemCon.erAlCompareSingle.conditionType,
+							(V) new TimeWithDayAttr(atdItemCon.erAlSingleFixed.fixedValue));
+				} else if (atdItemCon.conditionAtr == ConditionAtr.TIMES.value) {
+					atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr,
+							atdItemCon.erAlCompareSingle.conditionType,
+							(V) new CheckedTimesValue(atdItemCon.erAlSingleFixed.fixedValue));
 				}
 			} else {
-				atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr == null ? 0 : atdItemCon.erAlCompareSingle.compareAtr.intValue(),
-						atdItemCon.erAlCompareSingle.conditionType == null ? 0 : atdItemCon.erAlCompareSingle.conditionType.intValue(),
-						(V) new AttendanceItemId(atdItemCon.erAlSingleAtd.get(0).krcstEralSingleAtdPK.attendanceItemId));
+				atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr,
+						atdItemCon.erAlCompareSingle.conditionType, (V) new AttendanceItemId(
+								atdItemCon.erAlSingleAtd.get(0).krcstEralSingleAtdPK.attendanceItemId));
 			}
 		}
 		return atdItemConDomain;

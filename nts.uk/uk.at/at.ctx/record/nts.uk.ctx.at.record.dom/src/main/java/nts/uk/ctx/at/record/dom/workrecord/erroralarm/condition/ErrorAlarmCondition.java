@@ -96,8 +96,8 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	 * @param lstClassificationCode
 	 * @return itself
 	 */
-	public ErrorAlarmCondition createAlCheckTargetCondition(Boolean filterByBusinessType, Boolean filterByJobTitle,
-			Boolean filterByEmployment, Boolean filterByClassification, List<String> lstBusinessTypeCode,
+	public ErrorAlarmCondition createAlCheckTargetCondition(boolean filterByBusinessType, boolean filterByJobTitle,
+			boolean filterByEmployment, boolean filterByClassification, List<String> lstBusinessTypeCode,
 			List<String> lstJobTitleId, List<String> lstEmploymentCode, List<String> lstClassificationCode) {
 		this.checkTargetCondtion = new AlCheckTargetCondition(filterByBusinessType, filterByJobTitle,
 				filterByEmployment, filterByClassification, lstBusinessTypeCode, lstJobTitleId, lstEmploymentCode,
@@ -319,7 +319,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 						validRangeOfErAlCondition(data.getCompareRange());
 					}
 				}
-				if (this.atdItemCondition.getGroup2UseAtr()) {
+				if (this.atdItemCondition.isUseGroup2()) {
 					List<ErAlAttendanceItemCondition<?>> lstErAlAttendanceItemCondition2 = this.atdItemCondition.getGroup2().getLstErAlAtdItemCon();
 					if (lstErAlAttendanceItemCondition2 != null && !lstErAlAttendanceItemCondition2.isEmpty()) {
 						for(ErAlAttendanceItemCondition<?> data : lstErAlAttendanceItemCondition2) {

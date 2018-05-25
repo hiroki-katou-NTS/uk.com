@@ -150,7 +150,7 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 		TypedQueryWrapper<KrcstHolAutoCalSet> tHolQuery=  this.queryProxy()
 						.query("SELECT c FROM KrcstHolAutoCalSet c WHERE c.holWorkTimeId IN :ids", KrcstHolAutoCalSet.class);
 		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
-			List<KrcstDaiCalculationSet> calces = tCalcQuery.setParameter("employeeId", empIds)
+			List<KrcstDaiCalculationSet> calces = tCalcQuery.setParameter("ids", empIds)
 								.setParameter("start", baseDate.start())
 								.setParameter("end", baseDate.end()).getList();
 			if (!calces.isEmpty()) {

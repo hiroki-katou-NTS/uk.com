@@ -3,21 +3,17 @@
  */
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ErrorAlarmClassification;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordName;
-import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
 
 /**
  * @author hungnm 勤務実績のエラーアラーム
@@ -50,7 +46,7 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 	private Boolean cancelableAtr;
 
 	/* エラー表示項目 */
-	private BigDecimal errorDisplayItem;
+	private Integer errorDisplayItem;
 
 	/* エラー解除ロールID */
 	private String cancelRoleId;
@@ -70,7 +66,7 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 	/* Constructor */
 	private ErrorAlarmWorkRecord(String companyId, ErrorAlarmWorkRecordCode code, ErrorAlarmWorkRecordName name,
 			boolean fixedAtr, boolean useAtr, ErrorAlarmClassification typeAtr, ErrorAlarmMessage message,
-			boolean cancelableAtr, BigDecimal errorDisplayItem, List<Integer> lstApplication,
+			boolean cancelableAtr, Integer errorDisplayItem, List<Integer> lstApplication,
 			String errorAlarmCheckID) {
 		super();
 		this.companyId = companyId;
@@ -94,7 +90,7 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 	 **/
 	public static ErrorAlarmWorkRecord createFromJavaType(String companyId, String code, String name, boolean fixedAtr,
 			boolean useAtr, int typeAtr, boolean boldAtr, String messageColor, boolean cancelableAtr,
-			BigDecimal errorDisplayItem, List<Integer> lstApplication, String errorAlarmCheckID) {
+			Integer errorDisplayItem, List<Integer> lstApplication, String errorAlarmCheckID) {
 		ErrorAlarmWorkRecord errorAlarmWorkRecord = new ErrorAlarmWorkRecord(companyId,
 				new ErrorAlarmWorkRecordCode(code), new ErrorAlarmWorkRecordName(name), fixedAtr, useAtr,
 				EnumAdaptor.valueOf(typeAtr, ErrorAlarmClassification.class),
@@ -111,7 +107,7 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 	 **/
 	public static ErrorAlarmWorkRecord init(String companyId, String code, String name, boolean fixedAtr,
 			boolean useAtr, int typeAtr, boolean boldAtr, String messageColor, boolean cancelableAtr,
-			BigDecimal errorDisplayItem, List<Integer> lstApplication) {
+			Integer errorDisplayItem, List<Integer> lstApplication) {
 		ErrorAlarmWorkRecord errorAlarmWorkRecord = new ErrorAlarmWorkRecord(companyId,
 				code.length() < 4 ? new ErrorAlarmWorkRecordCode("U" + code) : new ErrorAlarmWorkRecordCode(code),
 				new ErrorAlarmWorkRecordName(name), fixedAtr, useAtr,

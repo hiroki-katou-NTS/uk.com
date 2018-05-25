@@ -41,8 +41,8 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 	
 	@Override
 	public IntegrationOfDaily errorCheck(IntegrationOfDaily integrationOfDaily) {
-		
-		val errorItemList = errorAlarmWorkRecordRepository.getListErrorAlarmWorkRecord(AppContexts.user().companyId());
+		String companyID = AppContexts.user().companyId();
+		val errorItemList = errorAlarmWorkRecordRepository.getAllErAlCompanyAndUseAtr(companyID, true);
 		List<EmployeeDailyPerError> addItemList = new ArrayList<>();
 //		if(!integrationOfDaily.getEmployeeError().isEmpty() &&  integrationOfDaily.getEmployeeError() != null)
 //			addItemList = integrationOfDaily.getEmployeeError();
@@ -73,7 +73,8 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 			}
 			//ユーザ設定
 			else {
-				val addItems = erAlCheckService.checkErrorFor(integrationOfDaily.getAffiliationInfor().getEmployeeId(), integrationOfDaily.getAffiliationInfor().getYmd());
+				val addItems = erAlCheckService.checkErrorFor(companyID, integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
+						integrationOfDaily.getAffiliationInfor().getYmd(), errorItem, integrationOfDaily);
 				if(!addItems.isEmpty() && addItems != null) {
 					for(val item : addItems) {
 						Boolean flg = true;

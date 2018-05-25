@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
@@ -41,7 +42,7 @@ public class DetermineErrorAlarmWorkRecordService implements ErAlCheckService {
 				if (!erAl.getValue().isEmpty() && isError(erAl.getValue().get(employeeID) && erAl.getKey().getErrorDisplayItem() != null)) {
 					createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, date,
 							new ErrorAlarmWorkRecordCode(erAl.getKey().getCode().v()),
-							Arrays.asList(erAl.getKey().getErrorDisplayItem().intValue()));
+							Arrays.asList(erAl.getKey().getErrorDisplayItem()));
 
 				}
 			});
@@ -55,7 +56,7 @@ public class DetermineErrorAlarmWorkRecordService implements ErAlCheckService {
 				.filter(ae -> !ae.getValue().isEmpty() && isError(ae.getValue().get(employeeID))).map(ae -> {
 					return new EmployeeDailyPerError(companyID, employeeID, date,
 							new ErrorAlarmWorkRecordCode(ae.getKey().getCode().v()),
-							Arrays.asList(ae.getKey().getErrorDisplayItem().intValue()));
+							Arrays.asList(ae.getKey().getErrorDisplayItem()));
 				}).collect(Collectors.toList());
 	}
 	
@@ -69,6 +70,31 @@ public class DetermineErrorAlarmWorkRecordService implements ErAlCheckService {
 				//}
 			}
 		}
+	}
+
+	@Override
+	public List<EmployeeDailyPerError> checkErrorFor(String companyId, String employeeID, GeneralDate date, ErrorAlarmWorkRecord erAl) {
+		return checkErrorFor(companyId, employeeID, date, erAl, null);
+	}
+
+	@Override
+	public List<EmployeeDailyPerError> checkErrorFor(String companyId, String employeeID, GeneralDate date, ErrorAlarmWorkRecord erAl,
+			IntegrationOfDaily record) {
+		if (erAl.getErrorAlarmCondition() == null || erAl.getErrorDisplayItem() == null) {
+			return new ArrayList<>();
+		}
+		List<DailyRecordDto> data = null;
+		if(record != null){
+			DailyRecordDto recordDto = DailyRecordDto.from(record);
+			data = Arrays.asList(recordDto);
+		}
+		return workRecordCheckService.check(date, Arrays.asList(employeeID), erAl.getErrorAlarmCondition(), data)
+										.entrySet().stream()
+										.filter(ae -> isError(ae.getValue())).map(ae -> {
+											return new EmployeeDailyPerError(companyId, employeeID, date,
+													erAl.getCode(),
+													Arrays.asList(erAl.getErrorDisplayItem()));
+										}).collect(Collectors.toList());
 	}
 
 	private Boolean isError(Boolean erAl) {
@@ -87,25 +113,5 @@ public class DetermineErrorAlarmWorkRecordService implements ErAlCheckService {
 			}));
 		}
 		return new HashMap<>();
-	}
-
-	@Override
-	public List<EmployeeDailyPerError> checkErrorFor(String companyId, String employeeID, GeneralDate date, ErrorAlarmWorkRecord erAl) {
-		if (erAl.getErrorAlarmCondition() == null || erAl.getErrorDisplayItem() == null) {
-			return new ArrayList<>();
-		}
-		return workRecordCheckService.check(date, Arrays.asList(employeeID), erAl.getErrorAlarmCondition()).entrySet().stream()
-				.filter(ae -> isError(ae.getValue())).map(ae -> {
-					return new EmployeeDailyPerError(companyId, employeeID, date,
-							erAl.getCode(),
-							Arrays.asList(erAl.getErrorDisplayItem().intValue()));
-				}).collect(Collectors.toList());
-	}
-
-	@Override
-	public List<EmployeeDailyPerError> checkErrorFor(String companyId, String employeeID, GeneralDate date, ErrorAlarmWorkRecord erAl,
-			IntegrationOfDaily record) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }
