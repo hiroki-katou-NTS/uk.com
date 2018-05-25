@@ -51,7 +51,7 @@ public class RegisterAtApproveReflectionInfoDefault_New implements RegisterAtApp
 			Application_New application_New = applicationRepository.findByID(application.getCompanyID(), application.getAppID()).get();
 			// 「反映情報」．実績反映状態を「反映待ち」にする
 			application_New.getReflectionInformation().setStateReflectionReal(ReflectedState_New.WAITREFLECTION);
-			applicationRepository.updateWithVersion(application_New);
+			applicationRepository.update(application_New);
 			if((application.getPrePostAtr().equals(PrePostAtr.PREDICT)&&
 					(application.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)
 					|| application.getAppType().equals(ApplicationType.BREAK_TIME_APPLICATION)))

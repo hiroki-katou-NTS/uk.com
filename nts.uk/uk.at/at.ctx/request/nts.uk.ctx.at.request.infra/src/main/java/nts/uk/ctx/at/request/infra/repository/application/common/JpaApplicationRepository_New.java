@@ -86,10 +86,23 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	}
 
 	@Override
+	public void update(Application_New application) {
+		this.getEntityManager().createQuery(UPDATE)
+			.setParameter("version", application.getVersion())
+			.setParameter("companyID", application.getCompanyID())
+			.setParameter("appID", application.getAppID())
+			.setParameter("reversionReason", application.getReversionReason().v())
+			.setParameter("appReason", application.getAppReason().v())
+			.setParameter("stateReflectionReal", application.getReflectionInformation().getStateReflectionReal().value)			
+			.executeUpdate();
+		this.getEntityManager().flush();
+	}
+
+	@Override
 	public void updateWithVersion(Application_New application) {
 		KrqdtApplication_New krqdtApplication = this.queryProxy()
 			.find(new KrqdpApplicationPK_New(application.getCompanyID(), application.getAppID()), KrqdtApplication_New.class).get();
-		// krqdtApplication.version = application.getVersion();
+		krqdtApplication.version = application.getVersion();
 		krqdtApplication.reversionReason = application.getReversionReason().v();
 		krqdtApplication.appReason = application.getAppReason().v();
 		krqdtApplication.stateReflectionReal = application.getReflectionInformation().getStateReflectionReal().value;
