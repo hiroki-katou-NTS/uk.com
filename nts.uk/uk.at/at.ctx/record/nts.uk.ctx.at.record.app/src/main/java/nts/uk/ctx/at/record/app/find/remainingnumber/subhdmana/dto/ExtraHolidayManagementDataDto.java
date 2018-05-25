@@ -1,13 +1,12 @@
 package nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.dto;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.app.find.remainingnumber.paymana.CompositePayOutSubMngData;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
@@ -63,12 +62,6 @@ public class ExtraHolidayManagementDataDto {
 			
 			listExtraData.add(dto);
 		}
-//		listExtraData.sort(new Comparator<DataExtractDto>() {
-//		    @Override
-//		    public int compare(DataExtractDto m1, DataExtractDto m2) {
-//		    	return m1.getDayOffDate().before(m2.getDayOffDate()) ? -1 : 1;
-//		    }
-//		});
 		listExtraData.sort((m1, m2)->{
 			return m1.getDayOffDate().before(m2.getDayOffDate()) ? -1 : 1;
 		});

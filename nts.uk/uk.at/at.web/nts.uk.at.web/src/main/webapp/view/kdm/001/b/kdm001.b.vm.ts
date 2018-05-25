@@ -275,7 +275,10 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         pegSetting(value) {
             var self = this;
             if (value.substituedWorkingDate.length > 0) {
-                setShared('KDM001_J_PARAMS', { row: value, selectedEmployee: self.screenItem().selectedEmployee, closure: self.screenItem().closureEmploy });
+                let rowDataInfo = _.find(self.screenItem().listExtractData, x => {
+                    return x.id === value.id;
+                });
+                setShared('KDM001_J_PARAMS', { row: rowDataInfo, selectedEmployee: self.screenItem().selectedEmployee, closure: self.screenItem().closureEmploy });
                 modal("/view/kdm/001/j/index.xhtml").onClosed(function() {
                     let isDataChanged = getShared("KDM001_J_PARAMS_RES").isChanged;
                     if (isDataChanged) {
@@ -284,7 +287,10 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     }
                 });
             } else {
-                setShared('KDM001_K_PARAMS', { row: value, selectedEmployee: self.screenItem().selectedEmployee, closure: self.screenItem().closureEmploy });
+                let rowDataInfo = _.find(self.screenItem().listExtractData, x => {
+                    return x.id === value.id;
+                });
+                setShared('KDM001_K_PARAMS', { row: rowDataInfo, selectedEmployee: self.screenItem().selectedEmployee, closure: self.screenItem().closureEmploy });
                 modal("/view/kdm/001/k/index.xhtml").onClosed(function() {
                     let isDataChanged = getShared("KDM001_K_PARAMS_RES").isChanged;
                     if (isDataChanged) {
@@ -297,7 +303,10 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         doCorrection(value) {
             var self = this;
             if (value.substituedWorkingDate.length > 0) {
-                setShared('KDM001_L_PARAMS', { row: value, selectedEmployee: self.screenItem().selectedEmployee, closure: self.screenItem().closureEmploy });
+                let rowDataInfo = _.find(self.screenItem().listExtractData, x => {
+                    return x.comDayOffID === value.id;
+                });
+                setShared('KDM001_L_PARAMS', { row: rowDataInfo, selectedEmployee: self.screenItem().selectedEmployee, closure: self.screenItem().closureEmploy });
                 modal("/view/kdm/001/l/index.xhtml").onClosed(function() {
                     let isDataChanged = getShared("KDM001_L_PARAMS_RES").isChanged;
                     if (isDataChanged) {
@@ -306,10 +315,10 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     }
                 });
             } else {
-//                let rowDataInfo = _.find(self.listCompensatoryData, x => {
-//                    return x.comDayOffID === value.id;
-//                });
-                setShared('KDM001_M_PARAMS', { row: value, selectedEmployee: self.screenItem().selectedEmployee, closure: self.screenItem().closureEmploy });
+                let rowDataInfo = _.find(self.screenItem().listExtractData, x => {
+                    return x.comDayOffID === value.id;
+                });
+                setShared('KDM001_M_PARAMS', { row: rowDataInfo, selectedEmployee: self.screenItem().selectedEmployee, closure: self.screenItem().closureEmploy });
                 modal("/view/kdm/001/m/index.xhtml").onClosed(function() {
                     let isDataChanged = getShared("KDM001_M_PARAMS_RES").isChanged;
                     if (isDataChanged) {
