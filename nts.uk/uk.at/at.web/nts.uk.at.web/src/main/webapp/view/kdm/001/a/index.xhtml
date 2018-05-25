@@ -36,6 +36,8 @@
 			</ul>
 		</ui:define>
 		<ui:define name="sidebar-content">
+			<!-- CCG001 -->
+			<div id="ccgcomponentA"></div>
 			<!-- 残数管理データ登録_振休管理 -->
 			<div id="tabpanel-1" role="tabpanel" data-bind="with: viewmodelA">
 				<!-- A1 -->
@@ -50,19 +52,17 @@
 					<!-- A1_2 振休確認 -->
 					<div style="margin-left: auto;">
 						<a id = "A1_2" tabindex="7" class="goout"
-							data-bind="ntsLinkButton: { action: $context.goToKDR004 }">#{i18n.getText('KDM001_2')}</a>
+							data-bind="ntsLinkButton: { action: goToKDR004 }">#{i18n.getText('KDM001_2')}</a>
 					</div>
 
 				</div>
 				<div class="contents-area">
-					<!-- CCG001 -->
-<!-- 					<div id="ccgcomponentA"></div> -->
 					<!-- A2 -->
 					<div class="div-table">
 						<!-- KCP009  対象者  -->
-<!-- 						<div class = "emp-component-size"> -->
-<!-- 							<div tabindex="1" id="emp-component"></div> -->
-<!-- 						</div> -->
+						<div class = "emp-component-size">
+							<div tabindex="1" id="emp-component"></div>
+						</div>
 						<!-- A3 -->
 						<div class="div-table-row">
 							<div class="div-table-col">
@@ -74,13 +74,13 @@
 								<!-- A3_2  現在の残数状況 -->
 								<div class="div-table-row-1">
 									<div id = "A3_2" tabindex="2" class="cell"
-										data-bind="ntsRadioButton: {checked: selectedPeriodItem, option: periodOptionItem()[0], optionValue: 'value', optionText: 'name', group: 'periodOption'}"></div>
+										data-bind="ntsRadioButton: {checked: selectedPeriodItem, option: periodOptionItem()[0], optionValue: 'value', optionText: 'name', group: 'periodOptionA'}"></div>
 								</div>
 
 								<!-- A3_3  過去の結果 -->
 								<div class="div-table-row-2">
 									<div id ="A3_3" class="cell" tabindex="3"
-										data-bind="ntsRadioButton: {checked: selectedPeriodItem, option: periodOptionItem()[1], optionValue: 'value', optionText: 'name', group: 'periodOption'}"></div>
+										data-bind="ntsRadioButton: {checked: selectedPeriodItem, option: periodOptionItem()[1], optionValue: 'value', optionText: 'name', group: 'periodOptionA'}"></div>
 								</div>
 							</div>
 							<div class="div-table-col-big">
