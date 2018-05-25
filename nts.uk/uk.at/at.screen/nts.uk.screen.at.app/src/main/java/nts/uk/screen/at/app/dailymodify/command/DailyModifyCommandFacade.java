@@ -70,7 +70,7 @@ public class DailyModifyCommandFacade {
 		DailyRecordDto oldValues = finder.find(query.getEmployeeId(), query.getBaseDate());
 		oldValues = AttendanceItemUtil.fromItemValues(oldValues, query.getItemValues());
 		oldValues.getTimeLeaving().ifPresent(dto -> {
-			dto.getWorkAndLeave().removeIf(tl -> tl.getWorking() == null && tl.getLeave() == null);
+			if(dto.getWorkAndLeave() != null) dto.getWorkAndLeave().removeIf(tl -> tl.getWorking() == null && tl.getLeave() == null);
 		});
 		return oldValues;
 	}
