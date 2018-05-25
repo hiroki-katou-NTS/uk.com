@@ -19,10 +19,11 @@ public class YearServicePer extends AggregateRoot{
 	private YearServiceCode yearServiceCode;
 	/**名称**/
 	private YearServiceName yearServiceName;
+	private int provision;
 	private YearServiceIdCls yearServiceCls;
 	private List<YearServicePerSet> yearServicePerSets;
 	
-	public static YearServicePer createFromJavaType(String companyId, int specialHolidayCode, String yearServiceCode, String yearServiceName, int yearServiceCls, List<YearServicePerSet> yearServicePerSets){
-		return new YearServicePer(companyId, specialHolidayCode,new YearServiceCode(yearServiceCode), new YearServiceName(yearServiceName), EnumAdaptor.valueOf(yearServiceCls, YearServiceIdCls.class) , yearServicePerSets);
+	public static YearServicePer createFromJavaType(String companyId, int specialHolidayCode, String yearServiceCode, String yearServiceName, int provision, int yearServiceCls, List<YearServicePerSet> yearServicePerSets){
+		return new YearServicePer(companyId, specialHolidayCode,new YearServiceCode(yearServiceCode), new YearServiceName(yearServiceName), provision, EnumAdaptor.valueOf(yearServiceCls, YearServiceIdCls.class) , yearServicePerSets);
 	}
 }

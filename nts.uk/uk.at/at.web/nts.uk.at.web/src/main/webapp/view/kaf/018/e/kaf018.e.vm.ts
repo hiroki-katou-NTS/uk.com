@@ -6,16 +6,20 @@ module nts.uk.at.view.kaf018.e.viewmodel {
     import error = nts.uk.ui.dialog.alertError;
     import confirm = nts.uk.ui.dialog.confirm;
     import block = nts.uk.ui.block;
+    import shareModel = kaf018.share.model;
 
     export class ScreenModel {
-        listWkpStatusConfirm: Array<model.ApprovalStatusActivity>;
-        useSetting: UseSetting;
+        listWkpStatusConfirm: Array<ApprovalStatusActivity>;
+        useSetting: shareModel.UseSetting;
         closureId: string;
         closureName: string;
         processingYm: string;
-        startDate: string;
-        endDate: string;
+        startDateFormat: string;
+        endDateFormat: string;
+        startDate: Date;
+        endDate: Date;
         isConfirmData: boolean
+        listWkpActive: any;
         listWorkplaceId: Array<string>;
         listEmpCd: Array<string>;
 
@@ -25,11 +29,12 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 
         constructor() {
             var self = this;
-            $("#fixed-table").ntsFixedTable({ width: 1000, height: 186 });
+
             self.listWkpStatusConfirm = [];
-            self.person = model.TransmissionAttr.PERSON;
-            self.daily = model.TransmissionAttr.DAILY;
-            self.monthly = model.TransmissionAttr.MONTHLY;
+            self.listWkpActive = [];
+            self.person = TransmissionAttr.PERSON;
+            self.daily = TransmissionAttr.DAILY;
+            self.monthly = TransmissionAttr.MONTHLY;
         }
 
         /**
@@ -44,27 +49,35 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                 self.closureId = params.closureId;
                 self.closureName = params.closureName;
                 self.processingYm = params.processingYm;
-                self.startDate = formatDate(new Date(params.startDate), 'yyyy/MM/dd');
-                self.endDate = formatDate(new Date(params.endDate), 'yyyy/MM/dd');
+                self.startDateFormat = formatDate(new Date(params.startDate), 'yyyy/MM/dd');
+                self.endDateFormat = formatDate(new Date(params.endDate), 'yyyy/MM/dd');
+                self.startDate = params.startDate;
+                self.endDate = params.endDate;
                 self.isConfirmData = params.isConfirmData;
-                self.listWorkplaceId = params.listWorkplaceId;
+                let listWorkplace = params.listWorkplace;
                 self.listEmpCd = params.listEmployeeCode;
 
+                let listWorkplaceId = [];
+                _.each(listWorkplace, function(item) {
+                    listWorkplaceId.push(item.code)
+                })
                 let obj = {
                     startDate: self.startDate,
                     endDate: self.endDate,
                     isConfirmData: self.isConfirmData,
-                    listWorkplaceId: self.listWorkplaceId,
+                    listWorkplaceId: listWorkplaceId,
                     listEmpCd: self.listEmpCd
                 };
 
                 service.getUseSetting().done(function(setting) {
                     self.useSetting = setting;
-                    console.log(self.useSetting);
                     service.getStatusActivity(obj).done(function(data: any) {
                         _.each(data, function(item) {
-                            self.listWkpStatusConfirm.push(new model.ApprovalStatusActivity(item.wkpId, item.wkpId, item.monthConfirm, item.monthUnconfirm, item.bossConfirm, item.bossUnconfirm, item.personConfirm, item.personUnconfirm))
+                            let wkp = _.find(listWorkplace, { code: item.wkpId });
+                            self.listWkpStatusConfirm.push(new ApprovalStatusActivity(item.wkpId, wkp.name, item.monthUnconfirm, item.monthConfirm, item.bossUnconfirm, item.bossConfirm, item.personUnconfirm, item.personConfirm))
+                            self.listWkpActive.push({ code: item.wkpId, name: wkp.name });
                         })
+
                         dfd.resolve();
                     }).always(function() {
                         block.clear();
@@ -79,7 +92,23 @@ module nts.uk.at.view.kaf018.e.viewmodel {
             return dfd.promise();
         }
 
-        sendMail(value: model.TransmissionAttr) {
+        initFixedTable() {
+            var self = this;
+            let width = 500;
+            if (self.useSetting.monthlyConfirm) {
+                width += 100;
+            }
+            if (self.useSetting.useBossConfirm) {
+                width += 200;
+            }
+            if (self.useSetting.usePersonConfirm) {
+                width += 200;
+            }
+            $("#fixed-table").ntsFixedTable({ width: width, height: 186 });
+            self.focusE5();
+        }
+
+        sendMail(value: TransmissionAttr) {
             var self = this;
             block.invisible();
             let listWkp = [];
@@ -88,7 +117,19 @@ module nts.uk.at.view.kaf018.e.viewmodel {
             })
             //アルゴリズム「承認状況未確認メール送信」を実行する
             service.checkSendUnconfirmedMail(listWkp).done(function() {
-                confirm({ messageId: "Msg_797" }).ifYes(() => {
+                let messageId = "";
+                switch (value) {
+                    case TransmissionAttr.PERSON:
+                        messageId = "Msg_796";
+                        break;
+                    case TransmissionAttr.DAILY:
+                        messageId = "Msg_797";
+                        break;
+                    case TransmissionAttr.MONTHLY:
+                        messageId = "Msg_798";
+                        break;
+                }
+                confirm({ messageId: messageId }).ifYes(() => {
                     block.invisible();
                     // アルゴリズム「承認状況未確認メール送信実行」を実行する
                     let obj = {
@@ -108,6 +149,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                     }).fail(function(err) {
                         error({ messageId: err.messageId });
                     }).always(function() {
+                        self.focusE5();
                         block.clear();
                     });
                 })
@@ -118,63 +160,72 @@ module nts.uk.at.view.kaf018.e.viewmodel {
             });
         }
 
-        private getRecord(value?: number) {
+        getRecord(value?: number) {
             return value ? value + "件" : "";
         }
+
+        focusE5() {
+            $("#fixed-table").focus();
+        }
+
+        gotoF(index) {
+            var self = this;
+
+            let params = {
+                closureId: self.closureId,
+                closureName: self.closureName,
+                processingYm: self.processingYm,
+                startDate: self.startDate,
+                endDate: self.endDate,
+                isConfirmData: self.isConfirmData,
+                listWkp: self.listWkpActive,
+                selectedWplIndex: index(),
+                listEmployeeCode: self.listEmpCd,
+            };
+            nts.uk.request.jump('/view/kaf/018/f/index.xhtml', params);
+        }
     }
 
-    export module model {
-        export class ApprovalStatusActivity {
-            code: string;
-            name: string;
-            monthConfirm: number;
-            monthUnconfirm: number;
-            dayBossUnconfirm: number;
-            dayBossConfirm: number;
-            dayPrincipalUnconfirm: number;
-            dayPrincipalConfirm: number;
-            check: KnockoutObservable<boolean>;
-            enable: boolean;
 
-            constructor(code: string, name: string, monthConfirm: number, monthUnconfirm: number, dayBossUnconfirm: number, dayBossConfirm: number, dayPrincipalUnconfirm: number, dayPrincipalConfirm: number) {
-                this.code = code;
-                this.name = name;
-                this.monthConfirm = monthConfirm ? monthConfirm : 1;
-                this.monthUnconfirm = monthUnconfirm ? monthUnconfirm : 1;
-                this.dayBossUnconfirm = dayBossUnconfirm ? dayBossUnconfirm : 1;
-                this.dayBossConfirm = dayBossConfirm ? dayBossConfirm : 1;
-                this.dayPrincipalUnconfirm = dayPrincipalUnconfirm ? dayPrincipalUnconfirm : 1;
-                this.dayPrincipalConfirm = dayPrincipalConfirm ? dayPrincipalConfirm : 1;
-                if (dayPrincipalUnconfirm == 0 && dayBossUnconfirm == 0 && monthUnconfirm == 0) {
-                    //this.enable = false;
-                    this.enable = true;
-                    this.check = ko.observable(this.enable);
-                }
-                else {
-                    this.enable = true;
-                    this.check = ko.observable(this.enable);
-                }
+    class ApprovalStatusActivity {
+        code: string;
+        name: string;
+        monthConfirm: number;
+        monthUnconfirm: number;
+        dayBossUnconfirm: number;
+        dayBossConfirm: number;
+        dayPrincipalUnconfirm: number;
+        dayPrincipalConfirm: number;
+        check: KnockoutObservable<boolean>;
+        enable: boolean;
 
+        constructor(code: string, name: string, monthUnconfirm: number, monthConfirm: number, dayBossUnconfirm: number, dayBossConfirm: number, dayPrincipalUnconfirm: number, dayPrincipalConfirm: number) {
+            this.code = code;
+            this.name = name;
+            this.monthUnconfirm = monthUnconfirm ? monthUnconfirm : null;
+            this.monthConfirm = monthConfirm ? monthConfirm : null;
+            this.dayBossUnconfirm = dayBossUnconfirm ? dayBossUnconfirm : null;
+            this.dayBossConfirm = dayBossConfirm ? dayBossConfirm : null;
+            this.dayPrincipalUnconfirm = dayPrincipalUnconfirm ? dayPrincipalUnconfirm : null;
+            this.dayPrincipalConfirm = dayPrincipalConfirm ? dayPrincipalConfirm : null;
+            if (dayPrincipalUnconfirm == 0 && dayBossUnconfirm == 0 && monthUnconfirm == 0) {
+                this.enable = false;
             }
-        }
-
-        //送信区分
-        export enum TransmissionAttr {
-            //本人
-            PERSON = 1,
-            //日次
-            DAILY = 2,
-            //月次
-            MONTHLY = 3
-        }
-
-        export class UseSetting {
-            //月別確認を利用する
-            monthlyConfirm: boolean;
-            //上司確認を利用する
-            useBossConfirm: boolean;
-            //本人確認を利用する
-            usePersonConfirm: boolean;
+            else {
+                this.enable = true;
+            }
+            this.check = ko.observable(false);
         }
     }
+
+    //送信区分
+    enum TransmissionAttr {
+        //本人
+        PERSON = 1,
+        //日次
+        DAILY = 2,
+        //月次
+        MONTHLY = 3
+    }
+
 }

@@ -16,9 +16,10 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHist;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -60,6 +61,10 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 	private static final String SELECT_BY_EMPIDS = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
 			+ " INNER JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId"
 			+ " WHERE aw.sid IN :employeeIds AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
+	
+	private static final String SELECT_BY_EMPIDS_PERIOD = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
+			+ " WHERE aw.sid IN :employeeIds AND aw.strDate <= :endDate AND aw.endDate >= :startDate"
+			+ " ORDER BY aw.sid, aw.strDate";
 
 	private static final String SELECT_BY_WKPID_PERIOD = "SELECT DISTINCT  a.sid FROM BsymtAffiWorkplaceHist a"
 			+ " INNER JOIN BsymtAffiWorkplaceHistItem b ON a.hisId = b.hisId"
@@ -200,6 +205,38 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 			return this.toDomainTemp(resultMap.get(key));
 		}).collect(Collectors.toList());
 	}
+	
+	@Override
+	public List<AffWorkplaceHistory> findByEmployeesWithPeriod(List<String> employeeIds, DatePeriod period) {
+		if (CollectionUtil.isEmpty(employeeIds)) {
+			return new ArrayList<>();
+		}
+		
+		String companyId = AppContexts.user().companyId();
+		
+		List<BsymtAffiWorkplaceHist> workPlaceEntities = this.queryProxy()
+				.query(SELECT_BY_EMPIDS_PERIOD, BsymtAffiWorkplaceHist.class).setParameter("employeeIds", employeeIds)
+				.setParameter("startDate", period.start()).setParameter("endDate", period.end()).getList();
+		
+		Map<String, List<BsymtAffiWorkplaceHist>> workPlaceByEmployeeId = workPlaceEntities.stream()
+				.collect(Collectors.groupingBy(BsymtAffiWorkplaceHist::getEmployeeId));
+		
+		List<AffWorkplaceHistory> workplaceHistoryList = new ArrayList<>();
+		
+		workPlaceByEmployeeId.forEach((employeeId, entities) -> {
+			List<DateHistoryItem> historyItems = convertToHistoryItems(entities);
+			workplaceHistoryList.add(new AffWorkplaceHistory(companyId, employeeId, historyItems));
+		});
+		
+		return workplaceHistoryList;
+	}
+	
+	public List<DateHistoryItem> convertToHistoryItems(List<BsymtAffiWorkplaceHist> entities) {
+		return entities.stream()
+				.map(ent -> new DateHistoryItem(ent.getHisId(), new DatePeriod(ent.getStrDate(), ent.getEndDate())))
+				.collect(Collectors.toList());
+	}
+	
 
 	@Override
 	public Optional<AffWorkplaceHistory> getByHistIdAndBaseDate(String histId, GeneralDate date) {

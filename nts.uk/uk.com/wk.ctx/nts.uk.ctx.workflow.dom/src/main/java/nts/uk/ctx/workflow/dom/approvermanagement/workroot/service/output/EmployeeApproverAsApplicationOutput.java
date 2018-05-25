@@ -5,6 +5,8 @@ import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.registerapproval.AppTypes;
+import nts.uk.ctx.workflow.dom.service.output.ErrorFlag;
 
 @Data
 @AllArgsConstructor
@@ -16,5 +18,5 @@ public class EmployeeApproverAsApplicationOutput {
 	/**
 	 * apptype 
 	 */
-	Map<Integer, List<ApproverAsApplicationInforOutput>> mapAppTypeAsApprover;
+	Map<AppTypes, List<ApproverAsApplicationInforOutput>> mapAppTypeAsApprover;
 }

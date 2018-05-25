@@ -73,5 +73,23 @@ public interface WorkplaceRepository {
     Optional<Workplace> findByHistoryId(String companyId, String historyId);
     
     
+    /**
+     * Find workplace.
+     *
+     * @param companyId the company id
+     * @param workplaceId the workplace id
+     * @param baseDate the base date
+     * @return the workplace
+     */
     Workplace findWorkplace(String companyId, String workplaceId, GeneralDate baseDate);
+    
+    /**
+     * Find workplaces.
+     *
+     * @param companyId the company id
+     * @param workplaceIds the workplace ids
+     * @param baseDate the base date
+     * @return the list
+     */
+    List<Workplace> findWorkplaces(String companyId, List<String> workplaceIds, GeneralDate baseDate);
 }

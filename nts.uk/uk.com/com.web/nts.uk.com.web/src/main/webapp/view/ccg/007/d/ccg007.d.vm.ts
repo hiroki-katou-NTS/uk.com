@@ -8,6 +8,7 @@ module nts.uk.pr.view.ccg007.d {
             password: KnockoutObservable<string>;
             companyList: KnockoutObservableArray<CompanyItemModel>;
             selectedCompanyCode: KnockoutObservable<string>;
+            companyName: KnockoutObservable<string>;
             isSaveLoginInfo: KnockoutObservable<boolean>;
             contractCode: KnockoutObservable<string>;
             contractPassword: KnockoutObservable<string>;
@@ -17,6 +18,7 @@ module nts.uk.pr.view.ccg007.d {
                 self.password = ko.observable('');
                 self.companyList = ko.observableArray([]);
                 self.selectedCompanyCode = ko.observable('');
+                self.companyName = ko.observable('');
                 self.isSaveLoginInfo = ko.observable(true);
                 self.contractCode = ko.observable('');
                 self.contractPassword = ko.observable('');
@@ -24,20 +26,29 @@ module nts.uk.pr.view.ccg007.d {
             start(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-
+                let defaultContractCode:string = "000000000000";
                 //get system config
                 blockUI.invisible();
-                nts.uk.characteristics.restore("contractInfo").done(function(data) {
+                nts.uk.characteristics.restore("contractInfo").done(function(data:any) {
                     self.contractCode(data ? data.contractCode : "");
                     self.contractPassword(data ? data.contractPassword : "");
                     service.checkContract({ contractCode: data ? data.contractCode : "", contractPassword: data ? data.contractPassword : "" })
                         .done(function(showContractData: any) {
                             //check ShowContract
-                            if (showContractData.showContract) {
-                                self.openContractAuthDialog();
+                            if (showContractData.onpre) {
+                                nts.uk.characteristics.remove("contractInfo");
+                                nts.uk.characteristics.save("contractInfo", { contractCode:defaultContractCode, contractPassword: null });
+                                self.contractCode(defaultContractCode);
+                                self.contractPassword(null);
+                                self.getEmployeeLoginSetting(defaultContractCode);
                             }
                             else {
-                                self.getEmployeeLoginSetting(data?data.contractCode:null);
+                                if (showContractData.showContract && !showContractData.onpre) {
+                                    self.openContractAuthDialog();
+                                }
+                                else {
+                                    self.getEmployeeLoginSetting(data ? data.contractCode : null);
+                                }
                             }
                             dfd.resolve();
                             blockUI.clear();
@@ -93,7 +104,7 @@ module nts.uk.pr.view.ccg007.d {
                 //get check signon
                 let url = _.toLower(_.trim(_.trim($(location).attr('href')), '%20'));
                 let isSignOn = url.indexOf('signon=on') >= 0;
-                service.getEmployeeLoginSetting(contractCode).done(function(data) {
+                service.getEmployeeLoginSetting(contractCode).done(function(data:any) {
                     if (data.gotoForm1) {
                         nts.uk.request.jump("/view/ccg/007/b/index.xhtml");
                     }
@@ -108,9 +119,10 @@ module nts.uk.pr.view.ccg007.d {
                                 self.companyList(data);
                                 if (data.length > 0) {
                                     self.selectedCompanyCode(self.companyList()[0].companyCode);
+                                    self.companyName(self.companyList()[0].companyName);
                                 }
                                 //get local storage info and set here
-                                nts.uk.characteristics.restore("form3LoginInfo").done(function(loginInfo) {
+                                nts.uk.characteristics.restore("form3LoginInfo").done(function(loginInfo:any) {
                                     if (loginInfo) {
                                         self.selectedCompanyCode(loginInfo.companyCode);
                                         self.employeeCode(loginInfo.employeeCode);
@@ -133,10 +145,11 @@ module nts.uk.pr.view.ccg007.d {
                 submitData.contractCode = _.escape(self.contractCode());
                 submitData.contractPassword = _.escape(self.contractPassword());
                 blockUI.invisible();
-                service.submitLogin(submitData).done(function(isError) {
+                service.submitLogin(submitData).done(function(isError:any) {
                     //check msgError
                     if (!nts.uk.util.isNullOrEmpty(isError)) {
                         nts.uk.ui.dialog.alertError({ messageId: isError });
+                        self.password("");
                     } else {
                         nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/d/index.xhtml");
                         //Remove LoginInfo
@@ -154,11 +167,36 @@ module nts.uk.pr.view.ccg007.d {
                         });
                     }
                     blockUI.clear();
-                }).fail(function(res) {
+                }).fail(function(res:any) {
                     //Return Dialog Error
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
                     blockUI.clear();
                 });
+            }
+            
+            //open dialog G
+            OpenDialogG() {
+                let self = this;
+                
+                //set LoginId to dialog
+                nts.uk.ui.windows.setShared('parentCodes', {
+                    companyCode: self.selectedCompanyCode(),
+                    companyName: self.companyName(),
+                    employeeCode : self.employeeCode()
+                }, true);
+
+                nts.uk.ui.windows.sub.modal('/view/ccg/007/g/index.xhtml',{
+                    width : 520,
+                    height : 350
+                }).onClosed(function(): any {
+                    //view all code of selected item 
+                    var childData = nts.uk.ui.windows.getShared('childData');
+                    if (childData) {
+//                        self.timeHistory(childData.timeHistory);
+//                        self.startTime(childData.start);
+//                        self.endTime(childData.end);
+                    }
+                })
             }
         }
         export class CompanyItemModel {

@@ -7,16 +7,16 @@ public enum StampCardEditMethod {
 
 	
 	//前ゼロ
-	PreviousZero(0),
+	PreviousZero(1),
 	
 	//後ゼロ
-	AfterZero(1),
+	AfterZero(2),
 	
 	//前スペース
-	PreviousSpace(2),
+	PreviousSpace(3),
 	
 	//後スペース
-	AfterSpace(3);
+	AfterSpace(4);
 	
 	public final int value;
 	
