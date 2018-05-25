@@ -5,7 +5,6 @@ module nts.uk.at.view.kdm001.a.viewmodel {
     import getText = nts.uk.resource.getText;
     import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
-
         closureID: string;
         selectedEmployeeObject: any;
         periodOptionItem: KnockoutObservableArray<ItemModel>;
@@ -102,7 +101,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 }
             }
             
-            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
+            $('#ccgcomponentA').ntsGroupComponent(self.ccgcomponent);
             
             self.selectedItem.subscribe(x =>{
                 if(self.selectedEmployee().length > 0) {

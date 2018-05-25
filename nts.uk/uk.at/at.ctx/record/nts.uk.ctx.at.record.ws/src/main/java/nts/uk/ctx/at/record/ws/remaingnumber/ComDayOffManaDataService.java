@@ -12,8 +12,8 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.command.remainingnumber.subhdmana.DayOffManaCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.subhdmana.DayOffManaCommandHandler;
-import nts.uk.ctx.at.record.app.find.remainingnumber.dayoffmanagement.DayOffManagementDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.dayoffmanagement.DayOffManagementFinder;
+import nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.DayOffManagementFinder;
+import nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.dto.DayOffManagementDto;
 
 @Path("at/record/remainnumber/subhd")
 @Produces("application/json")

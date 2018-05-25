@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.find.remainingnumber.dayoffmanagement;
+package nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.dto.LeaveManaDto;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManagementData;

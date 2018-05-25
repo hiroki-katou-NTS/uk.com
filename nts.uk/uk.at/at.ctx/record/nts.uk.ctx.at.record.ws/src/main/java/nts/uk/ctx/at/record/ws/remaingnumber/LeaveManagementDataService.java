@@ -12,8 +12,8 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.command.remainingnumber.subhdmana.LeaveManaComand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.subhdmana.LeaveManaCommandHandler;
-import nts.uk.ctx.at.record.app.find.remainingnumber.dayoffmanagement.LeaveManaDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.dayoffmanagement.LeaveManaFinder;
+import nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.LeaveManaFinder;
+import nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.dto.LeaveManaDto;
 
 
 @Path("at/record/remainnumber/subhd")

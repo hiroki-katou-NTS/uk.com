@@ -1,8 +1,13 @@
 module nts.uk.at.view.kdm001.a {
     __viewContext.ready(function() {
-        var screenModel = new nts.uk.at.view.kdm001.a.viewmodel.ScreenModel();
-        screenModel.startPage().done(function() {
-            __viewContext.bind(screenModel);
+        var screenModelA = new nts.uk.at.view.kdm001.a.viewmodel.ScreenModel();
+        var screenModelB = new nts.uk.at.view.kdm001.b.viewmodel.ScreenModel();
+        screenModelA.startPage().done(function() {
+            __viewContext.viewModel = {
+                viewmodelA: screenModelA,
+                viewmodelA: screenModelB
+            };
+            __viewContext.bind(__viewContext.viewModel);
             $('#emp-component').focus();
         });
     });
