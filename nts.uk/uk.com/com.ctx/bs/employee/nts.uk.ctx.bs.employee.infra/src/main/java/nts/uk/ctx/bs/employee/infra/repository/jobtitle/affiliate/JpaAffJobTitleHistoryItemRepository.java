@@ -174,6 +174,9 @@ public class JpaAffJobTitleHistoryItemRepository extends JpaRepository
 
 	@Override
 	public List<AffJobTitleHistoryItem> findByHitoryIds(List<String> historyIds) {
+		if (historyIds.isEmpty()) {
+			return new ArrayList<>();
+		}
 		List<BsymtAffJobTitleHistItem> entities = this.queryProxy()
 				.query(GET_ALL_BY_HISTID, BsymtAffJobTitleHistItem.class).setParameter("histIds", historyIds).getList();
 		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
