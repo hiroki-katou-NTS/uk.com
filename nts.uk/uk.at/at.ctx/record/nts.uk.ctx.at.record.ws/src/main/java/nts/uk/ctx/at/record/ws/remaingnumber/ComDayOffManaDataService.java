@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.app.command.remainingnumber.subhdmana.DayOffManaComm
 import nts.uk.ctx.at.record.app.command.remainingnumber.subhdmana.DayOffManaCommandHandler;
 import nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.DayOffManagementFinder;
 import nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.dto.DayOffManagementDto;
+import nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.dto.DayOffResult;
 
 @Path("at/record/remainnumber/subhd")
 @Produces("application/json")
@@ -28,8 +29,8 @@ public class ComDayOffManaDataService extends WebService {
 	
 	@POST
 	@Path("getAll/{leaveId}/{employeeId}")
-	public List<DayOffManagementDto> getByRemainOrDayOffManagement(@PathParam("leaveId") String leaveId,@PathParam("employeeId") String employeeId) {
-		List<DayOffManagementDto> daysOffMana = new ArrayList<>();
+	public DayOffResult getByRemainOrDayOffManagement(@PathParam("leaveId") String leaveId,@PathParam("employeeId") String employeeId) {
+		DayOffResult daysOffMana = new DayOffResult();
 		daysOffMana = dayOffManagementFinder.getBySidWithReDay(leaveId,employeeId);
 		return daysOffMana;
 	}

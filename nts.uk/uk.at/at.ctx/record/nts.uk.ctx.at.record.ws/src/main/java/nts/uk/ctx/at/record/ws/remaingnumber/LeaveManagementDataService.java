@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.ws.remaingnumber;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -13,7 +12,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.command.remainingnumber.subhdmana.LeaveManaComand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.subhdmana.LeaveManaCommandHandler;
 import nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.LeaveManaFinder;
-import nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.dto.LeaveManaDto;
+import nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.dto.LeaveManaResult;
 
 
 @Path("at/record/remainnumber/subhd")
@@ -28,8 +27,8 @@ public class LeaveManagementDataService extends WebService {
 	
 	@POST
 	@Path("getAllLeave/{comDayOffID}/{employeeId}")
-	public List<LeaveManaDto> getComDayOffId(@PathParam("comDayOffID") String comDayOffID,@PathParam("employeeId") String employeeId) {
-		List<LeaveManaDto> leaveDataDtos = new ArrayList<>();
+	public LeaveManaResult getComDayOffId(@PathParam("comDayOffID") String comDayOffID,@PathParam("employeeId") String employeeId) {
+		LeaveManaResult leaveDataDtos = new LeaveManaResult();
 		leaveDataDtos = leaveManaFinder.getByComDayOffId(comDayOffID, employeeId);
 		return leaveDataDtos;
 	}

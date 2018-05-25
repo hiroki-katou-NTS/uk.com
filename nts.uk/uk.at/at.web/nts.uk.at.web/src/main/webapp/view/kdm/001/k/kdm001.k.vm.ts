@@ -110,13 +110,18 @@ module nts.uk.at.view.kdm001.k.viewmodel {
          public callService(comDayOffId,employeeId):void {
              var self = this;
             service.getAll(comDayOffId,employeeId).done(function(data) {
-                for (let i = 0; i < data.length; i++) {
-                    self.items.push(new ItemModel(data[i].leaveManaID, data[i].dateHoliday,data[i].numberDay, data[i].numberDay+" 日"));
-                    if(data[i].usedDay == true) {
-                        self.currentCodeList.push(data[i].leaveManaID);
+                for (let i = 0; i < data.listLeaveMana.length; i++) {
+                    self.items.push(new ItemModel(data.listLeaveMana[i].leaveManaID, data.listLeaveMana[i].dateHoliday,data.listLeaveMana[i].numberDay, data.listLeaveMana[i].numberDay+" 日"));
+                    if(data.listLeaveMana[i].usedDay == true) {
+                        self.currentCodeList.push(data.listLeaveMana[i].leaveManaID);
                     }
                     
                 }
+                
+                if(data.errorCode != null) {
+                     nts.uk.ui.dialog.alertError({ messageId: data.errorCode });
+                }
+                
             }).fail(function(error) {
                 
             }).always(() => {
