@@ -81,13 +81,13 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 					GeneralDate.localDate(endYmd), true, false, true, true, false, false)).forEach(emp -> {
 						data.getEmployees().put(emp.getEmployeeId(),
 								EmployeeData.builder()
-								.employeeInfo(new EmployeeInfo(emp.getWorkplace() == null? null : emp.getWorkplace().getWorkplaceCode(),
-																emp.getWorkplace() == null? null : TextResource.localize("KWR008_50") 
+								.employeeInfo(new EmployeeInfo(emp.getWorkplace() == null? "" : emp.getWorkplace().getWorkplaceCode(),
+																emp.getWorkplace() == null? "" : TextResource.localize("KWR008_50") 
 																		+ " " + emp.getWorkplace().getWorkplaceName(),
 																emp.getEmployeeCode(),
 																empNameMap.get(emp.getEmployeeId()),
-																emp.getEmployment() == null? null : emp.getEmployment().getEmploymentName(),
-																emp.getPosition() == null? null : emp.getPosition().getPositionName()))
+																emp.getEmployment() == null? "" : emp.getEmployment().getEmploymentName(),
+																emp.getPosition() == null? "" : emp.getPosition().getPositionName()))
 								.annualWorkSchedule(new HashMap<>()).build());
 					});
 
