@@ -9,6 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 530, height: 530 };</script>
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="kdm001.e.start.js" />
 			<com:scriptfile path="kdm001.e.vm.js" />
 			<com:scriptfile path="kdm001.e.service.js" />
@@ -63,7 +64,7 @@
 				<span id="E7_1" style="margin-left: 210px; margin-top: 15px;"
 					class="label">#{i18n.getText('KDM001_98')}</span>
 				<!-- E7_2残数-->
-				<span id="E7_2" class="label" data-bind="text: residualDay"></span>
+				<span id="E7_2" class="label" data-bind="text: residualDayDispay"></span>
 			</div>
 			<div id="functions-area-bottom">
 				<!-- E31_1 登録 -->
