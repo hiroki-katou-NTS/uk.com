@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem.calculation;
 
+import java.util.Optional;
+
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -74,12 +76,12 @@ public interface FormulaGetMemento {
 	 *
 	 * @return the monthly rounding
 	 */
-	Rounding getMonthlyRounding();
+	Optional<Rounding> getMonthlyRounding();
 
 	/**
 	 * Gets the daily rounding.
 	 *
 	 * @return the daily rounding
 	 */
-	Rounding getDailyRounding();
+	Optional<Rounding> getDailyRounding();
 }

@@ -17,6 +17,7 @@ import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeCondOtRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeConditionErrorRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckConEvent;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -62,13 +63,16 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 		}
 		
 		if (command.getCategory() == AlarmCategory.MONTHLY.value) {
-			// delete List Work Record Extract Condition by list Error Alarm Code
+			String monAlarmCheckID = "";
 			
 			// delete List Fixed Work Record Extract Condition by list Error Alarm Code
 			if(command.getMonAlarmCheckCon().getListFixExtraMon().size()>0) {
-				String monAlarmCheckID =  command.getMonAlarmCheckCon().getListFixExtraMon().get(0).getMonAlarmCheckID();
+				monAlarmCheckID =  command.getMonAlarmCheckCon().getListFixExtraMon().get(0).getMonAlarmCheckID();
 				this.fixedExtraMonFunAdapter.deleteFixedExtraMon(monAlarmCheckID);
 			}
+			// delete List Work Record Extract Condition by list Error Alarm Code
+			MonAlarmCheckConEvent event = new MonAlarmCheckConEvent(monAlarmCheckID,false,false,true,command.getMonAlarmCheckCon().getArbExtraCon());
+			event.toBePublished();
 		}
 		if (command.getCategory() == AlarmCategory.AGREEMENT.value) {
 			List<DeleteAgreeConditionErrorCommand> listErrorDel = command.getCondAgree36().getListCondError().stream()

@@ -51,7 +51,7 @@ public class JpaEmpConditionRepository extends JpaRepository implements EmpCondi
 	 * java.lang.String, java.lang.String)
 	 */
 	@Override
-	public EmpCondition find(String companyId, String optionalItemNo) {
+	public EmpCondition find(String companyId, Integer optionalItemNo) {
 
 		List<KrcstApplEmpCon> entityEmpCons = this.findByItemNo(companyId, optionalItemNo);
 
@@ -65,7 +65,7 @@ public class JpaEmpConditionRepository extends JpaRepository implements EmpCondi
 	 * @param optionalItemNo the optional item no
 	 * @return the list
 	 */
-	private List<KrcstApplEmpCon> findByItemNo(String companyId, String optionalItemNo) {
+	private List<KrcstApplEmpCon> findByItemNo(String companyId, Integer optionalItemNo) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 

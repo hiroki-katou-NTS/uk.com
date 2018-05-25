@@ -18,7 +18,7 @@ module nts.uk.at.view.kal003.share.model {
 //            new ItemModel(9, getText('Enum_AlarmCategory_MULTIPLE_MONTH')),
 //            new ItemModel(10, getText('Enum_AlarmCategory_ANY_PERIOD')),
 //            new ItemModel(11, getText('Enum_AlarmCategory_ATTENDANCE_RATE_FOR_HOLIDAY')),
-//            new ItemModel(12, getText('Enum_AlarmCategory_AGREEMENT')),
+            new ItemModel(12, getText('Enum_AlarmCategory_AGREEMENT')),
 //            new ItemModel(13, getText('Enum_AlarmCategory_MAN_HOUR_CHECK'))
         ];
     }
@@ -290,6 +290,46 @@ module nts.uk.at.view.kal003.share.model {
         ALARM = 1,
         OTHER = 2
     }
+    // class and interface : ExtraResultMonthly
+    export interface IExtraResultMonthly{
+        errorAlarmCheckID : string;
+        sortBy : number;
+        nameAlarmExtraCon : string;
+        useAtr : boolean;
+        typeCheckItem : number;
+        messageBold : boolean;
+        messageColor : string;
+        displayMessage : string;
+        checkConMonthly : AttendanceItemCondition;
+        rowId: number;
+    }
+    
+    export class ExtraResultMonthly{
+        errorAlarmCheckID : string;
+        sortBy : number;
+        nameAlarmExtraCon : KnockoutObservable<string> = ko.observable('');
+        useAtr : KnockoutObservable<boolean> = ko.observable(false);
+        typeCheckItem : KnockoutObservable<number> = ko.observable(0);
+        messageBold : KnockoutObservable<boolean> = ko.observable(false);
+        messageColor : KnockoutObservable<string> = ko.observable('');
+        displayMessage : KnockoutObservable<string> = ko.observable('');
+        checkConMonthly : KnockoutObservable<AttendanceItemCondition>;
+        rowId: KnockoutObservable<number> = ko.observable(0);
+        constructor(param: IExtraResultMonthly) {
+            let self = this;
+            self.errorAlarmCheckID = param.errorAlarmCheckID || '';
+            self.sortBy = param.sortBy || 0;
+            self.nameAlarmExtraCon(param.nameAlarmExtraCon);
+            self.useAtr(param.useAtr || false);
+            self.typeCheckItem(param.typeCheckItem || 0);
+            self.messageBold(param.messageBold);
+            self.messageColor(param.messageColor);
+            self.displayMessage(param.displayMessage || '');
+            self.checkConMonthly = ko.observable(param && param.checkConMonthly ? param.checkConMonthly : null);
+            self.rowId(param.rowId || 0);
+        }
+    }
+    
 
     export interface IWorkRecordExtractingCondition {
         errorAlarmCheckID: string;
@@ -851,8 +891,11 @@ module nts.uk.at.view.kal003.share.model {
     //monthly
     export class MonAlarmCheckCon {
         listFixExtraMon: KnockoutObservableArray<FixedExtraMonFun>;
-        constructor(listFixExtraMon: KnockoutObservableArray<FixedExtraMonFun>) {
+        listExtraResultMonthly : KnockoutObservableArray<ExtraResultMonthly>;
+        constructor(listFixExtraMon: KnockoutObservableArray<FixedExtraMonFun>,listExtraResultMonthly : KnockoutObservableArray<ExtraResultMonthly>
+            ) {
             this.listFixExtraMon = ko.observableArray(listFixExtraMon);
+            this.listExtraResultMonthly = ko.observableArray(listExtraResultMonthly);
         }
     }
 

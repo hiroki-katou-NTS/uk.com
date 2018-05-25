@@ -59,7 +59,7 @@ module nts.uk.at.view.kal003.a.service {
     }
     
     export function getJobNamesByIds(data: Array<string>): JQueryPromise<any> {
-        return ajax("com", paths.getJobNamesByIds);
+        return ajax("com", paths.getJobNamesByIds, data);
     }
 
     

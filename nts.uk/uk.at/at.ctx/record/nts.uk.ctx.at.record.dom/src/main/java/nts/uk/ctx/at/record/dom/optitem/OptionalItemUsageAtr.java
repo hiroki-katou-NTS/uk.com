@@ -11,12 +11,12 @@ package nts.uk.ctx.at.record.dom.optitem;
 public enum OptionalItemUsageAtr {
 
 	/** The not use. */
-	// 利用する
-	NOT_USE(0, "Enum_OptionalItemUsageAtr_NOT_USE", "利用する"),
+	// 利用しない
+	NOT_USE(0, "Enum_OptionalItemUsageAtr_NOT_USE", "利用しない"),
 
 	/** The use. */
-	// 利用しない
-	USE(1, "Enum_OptionalItemUsageAtr_USE", "利用しない");
+	// 利用する
+	USE(1, "Enum_OptionalItemUsageAtr_USE", "利用する");
 
 	/** The value. */
 	public int value;
@@ -33,9 +33,12 @@ public enum OptionalItemUsageAtr {
 	/**
 	 * Instantiates a new optional item usage atr.
 	 *
-	 * @param value the value
-	 * @param nameId the name id
-	 * @param description the description
+	 * @param value
+	 *            the value
+	 * @param nameId
+	 *            the name id
+	 * @param description
+	 *            the description
 	 */
 	private OptionalItemUsageAtr(int value, String nameId, String description) {
 		this.value = value;
@@ -46,7 +49,8 @@ public enum OptionalItemUsageAtr {
 	/**
 	 * Value of.
 	 *
-	 * @param value the value
+	 * @param value
+	 *            the value
 	 * @return the optional item usage atr
 	 */
 	public static OptionalItemUsageAtr valueOf(Integer value) {

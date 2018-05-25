@@ -46,17 +46,17 @@ public class KrcstErAlConGroup extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@Id
-	@Basic(optional = false)
-	@NotNull
-	@Size(min = 1, max = 36)
-	@Column(name = "CONDITION_GROUP_ID")
-	public String conditionGroupId;
-	@Basic(optional = false)
-	@NotNull
-	@Column(name = "CONDITION_OPERATOR")
-	public BigDecimal conditionOperator;
-
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 36)
+    @Column(name = "CONDITION_GROUP_ID")
+    public String conditionGroupId;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "CONDITION_OPERATOR")
+    public BigDecimal conditionOperator;
+    
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "CONDITION_GROUP_ID", nullable = true) })
 	public List<KrcmtErAlAtdItemCon> lstAtdItemCon;
 

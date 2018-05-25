@@ -17,7 +17,7 @@ public class KrcstApplEmpConPK_ {
 	public static volatile SingularAttribute<KrcstApplEmpConPK, String> cid;
 
 	/** The optional item no. */
-	public static volatile SingularAttribute<KrcstApplEmpConPK, String> optionalItemNo;
+	public static volatile SingularAttribute<KrcstApplEmpConPK, Integer> optionalItemNo;
 
 	/** The emp cd. */
 	public static volatile SingularAttribute<KrcstApplEmpConPK, String> empCd;

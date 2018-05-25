@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity      
-@Table(name = "KRCMT_36_AGREEMENT_CHECK")
+@Table(name = "KFNMT_MON_CHECK_PK")
 public class KfnmtMonAlarmCode extends UkJpaEntity implements Serializable {
 
 

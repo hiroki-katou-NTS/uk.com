@@ -36,7 +36,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author shuichi_ishida
  */
 @Getter
-public class AggregateTotalWorkingTime {
+public class AggregateTotalWorkingTime implements Cloneable {
 
 	/** 就業時間 */
 	private WorkTimeOfMonthly workTime;
@@ -44,12 +44,12 @@ public class AggregateTotalWorkingTime {
 	private OverTimeOfMonthly overTime;
 	/** 休出時間 */
 	private HolidayWorkTimeOfMonthly holidayWorkTime;
-	/** 臨時時間 */
-	//temporaryTime
 	/** 休暇使用時間 */
 	private VacationUseTimeOfMonthly vacationUseTime;
 	/** 所定労働時間 */
 	private PrescribedWorkingTimeOfMonthly prescribedWorkingTime;
+	/** 臨時時間 */
+	//temporaryTime
 	
 	/**
 	 * コンストラクタ
@@ -86,6 +86,22 @@ public class AggregateTotalWorkingTime {
 		domain.vacationUseTime = vacationUseTime;
 		domain.prescribedWorkingTime = prescribedWorkingTime;
 		return domain;
+	}
+	
+	@Override
+	public AggregateTotalWorkingTime clone() {
+		AggregateTotalWorkingTime cloned = new AggregateTotalWorkingTime();
+		try {
+			cloned.workTime = this.workTime.clone();
+			cloned.overTime = this.overTime.clone();
+			cloned.holidayWorkTime = this.holidayWorkTime.clone();
+			cloned.vacationUseTime = this.vacationUseTime.clone();
+			cloned.prescribedWorkingTime = this.prescribedWorkingTime.clone();
+		}
+		catch (Exception e){
+			throw new RuntimeException("AggregateTotalWorkingTime clone error.");
+		}
+		return cloned;
 	}
 	
 	/**

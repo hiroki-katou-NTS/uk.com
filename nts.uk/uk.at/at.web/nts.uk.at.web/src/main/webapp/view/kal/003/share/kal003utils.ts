@@ -83,6 +83,22 @@ module nts.uk.at.view.kal003.share {
                 continuousPeriod: 0
             });
         }
+        
+        export function getDefaultExtraResultMonthly(typeCheckItem : number):model.ExtraResultMonthly{
+            let extraResultMonthly = new model.ExtraResultMonthly({
+                errorAlarmCheckID: '',
+                sortBy :0,
+                nameAlarmExtraCon : '',
+                useAtr : false,
+                typeCheckItem : typeCheckItem ||0,
+                messageBold: false,
+                messageColor: '',
+                displayMessage : '',
+                checkConMonthly :getDefaultAttendanceItemCondition(),
+                rowId: 0
+            });
+            return extraResultMonthly;
+        }
 
         /**
         * initial default value for WorkRecordExtractingCondition Object
@@ -101,6 +117,42 @@ module nts.uk.at.view.kal003.share {
                 rowId: 0
             });
             return workRecordExtractingCondition;
+        }
+        //monthly
+        export function convertTransferDataToExtraResultMonthly(
+            extraResultMonthly): model.ExtraResultMonthly {
+            let convertExtraResultMonthly = new model.ExtraResultMonthly(extraResultMonthly);
+            convertExtraResultMonthly
+            .checkConMonthly(new model.AttendanceItemCondition(extraResultMonthly.checkConMonthly));
+            
+             //group 1
+            convertExtraResultMonthly.checkConMonthly()
+                .group1(new model.ErAlConditionsAttendanceItem(extraResultMonthly.checkConMonthly.group1));
+            //ErAlAtdItemCondition
+            let lstErAlAtdItemCon1 = extraResultMonthly.checkConMonthly.group1.lstErAlAtdItemCon;
+            convertExtraResultMonthly.checkConMonthly.group1().lstErAlAtdItemCon = ko.observableArray([]);
+            if (lstErAlAtdItemCon1) {
+                for (var i = 0; i < lstErAlAtdItemCon1.length; i++) {
+                    var erAlAtdItemCondition1 = new model.ErAlAtdItemCondition(lstErAlAtdItemCon1[i].targetNO, lstErAlAtdItemCon1[i]);
+                    convertExtraResultMonthly.checkConMonthly.group1().lstErAlAtdItemCon().push(erAlAtdItemCondition1);
+                }
+            }
+
+            //group 2
+            convertExtraResultMonthly.checkConMonthly
+                .group2(new model.ErAlConditionsAttendanceItem(extraResultMonthly.checkConMonthly.group2));
+            //ErAlAtdItemCondition
+            let lstErAlAtdItemCon2 = extraResultMonthly.checkConMonthly.group2.lstErAlAtdItemCon;
+            convertExtraResultMonthly.checkConMonthly.group2().lstErAlAtdItemCon = ko.observableArray([]);
+
+            if (lstErAlAtdItemCon2) {
+                for (var i = 0; i < lstErAlAtdItemCon2.length; i++) {
+                    var erAlAtdItemCondition2 = new model.ErAlAtdItemCondition(lstErAlAtdItemCon2[i].targetNO, lstErAlAtdItemCon2[i]);
+                    convertExtraResultMonthly.checkConMonthly.group2().lstErAlAtdItemCon().push(erAlAtdItemCondition2);
+                }
+            }
+            
+            return convertExtraResultMonthly;
         }
 
         export function convertTransferDataToWorkRecordExtractingCondition(
@@ -147,6 +199,12 @@ module nts.uk.at.view.kal003.share {
             }
             return convertWorkRecordExtractingCondition;
         }
+        //monthly
+         export function convertArrayOfExtraResultMonthlyToJS(dataJS: any,
+            extraResultMonthly :model.ExtraResultMonthly):any {
+             dataJS.checkConMonthly = convertArrayOfAttendanceItemCondition(dataJS.checkConMonthly, extraResultMonthly.checkConMonthly());
+             return dataJS;
+         }
 
         export function convertArrayOfWorkRecordExtractingConditionToJS(dataJS: any,
             workRecordExtractingCondition: model.WorkRecordExtractingCondition): any {

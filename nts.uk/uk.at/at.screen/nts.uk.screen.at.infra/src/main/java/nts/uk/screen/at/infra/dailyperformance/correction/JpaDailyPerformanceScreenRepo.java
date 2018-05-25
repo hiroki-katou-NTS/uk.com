@@ -58,6 +58,7 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KalmtA
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveCom;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstCom60hVacation;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstComSubstVacation;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond;
 import nts.uk.ctx.at.shared.infra.entity.workplace.KshmtWorkTimeWorkplace;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmpClosureEmploymentPK;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosureEmployment;
@@ -194,6 +195,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	private final static String SEL_FIND_ER_AL_APP;
 
 	private final static String FIND_DVGC_TIME;
+	
+	private final static String FIND_WORK_CONDITION;
 
 	private final String GET_DAI_PER_AUTH_WITH_ROLE = "SELECT da FROM KrcmtDaiPerformanceAut da WHERE da.pk.roleId =:roleId";
 
@@ -493,7 +496,14 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append(" LEFT JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId");
 		builderString.append(" WHERE aw.sid IN :listSid");
 		SELECT_BY_LISTSID_WPH = builderString.toString();
-
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT w FROM KshmtWorkingCond w");
+		builderString.append(" WHERE w.kshmtWorkingCondPK.historyId IN :historyId");
+		builderString.append(" AND w.kshmtWorkingCondPK.sid = :sid");
+		builderString.append(" ORDER BY w.endD DESC");
+		FIND_WORK_CONDITION = builderString.toString();
+		
 	}
 
 	@Override
@@ -1264,5 +1274,11 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		} else {
 			return Collections.emptyList();
 		}
+	}
+
+	@Override
+	public String findWorkConditionLastest(List<String> hists, String employeeId) {
+		List<KshmtWorkingCond> entitys = this.queryProxy().query(FIND_WORK_CONDITION, KshmtWorkingCond.class).setParameter("historyId", hists).setParameter("sid", employeeId).getList();
+		return entitys.isEmpty() ? "" : entitys.get(0).getKshmtWorkingCondItem().getHistoryId();
 	}
 }
