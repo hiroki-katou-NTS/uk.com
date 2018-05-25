@@ -25,8 +25,9 @@ public interface EnvPasswordAdapter {
 	/**
 	 * Update password.
 	 *
+	 * @param userId the user id
 	 * @param newPassword the new password
 	 */
-	void updatePassword(String newPassword);
+	void updatePassword(String userId,String newPassword);
 
 }

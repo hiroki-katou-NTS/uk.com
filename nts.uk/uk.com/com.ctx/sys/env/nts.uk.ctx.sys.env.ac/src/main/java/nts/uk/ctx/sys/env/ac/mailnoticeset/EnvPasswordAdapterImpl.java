@@ -7,6 +7,7 @@ package nts.uk.ctx.sys.env.ac.mailnoticeset;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.sys.auth.pub.user.ChangeUserPasswordPublisher;
 import nts.uk.ctx.sys.auth.pub.user.CheckBeforeChangePassOutput;
 import nts.uk.ctx.sys.auth.pub.user.CheckBeforePasswordPublisher;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.adapter.EnvPasswordAdapter;
@@ -22,6 +23,8 @@ public class EnvPasswordAdapterImpl implements EnvPasswordAdapter {
 	@Inject
 	private CheckBeforePasswordPublisher checkBeforePasswordPublisher;
 
+	@Inject
+	private ChangeUserPasswordPublisher changeUserPasswordPublisher;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -43,9 +46,8 @@ public class EnvPasswordAdapterImpl implements EnvPasswordAdapter {
 	 * updatePassword(java.lang.String)
 	 */
 	@Override
-	public void updatePassword(String newPassword) {
-		// TODO Auto-generated method stub
-
+	public void updatePassword(String userId, String newPassword) {
+		changeUserPasswordPublisher.changePass(userId, newPassword);
 	}
 
 }
