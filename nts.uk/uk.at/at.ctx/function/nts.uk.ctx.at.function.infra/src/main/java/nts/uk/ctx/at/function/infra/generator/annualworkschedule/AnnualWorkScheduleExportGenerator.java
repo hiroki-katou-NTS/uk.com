@@ -105,8 +105,8 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 				sumRowCount += newRange.range.getRowCount();
 				//break page and print
 				boolean isNewPage = sumRowCount > rowsPerPage ||
-									(nextWorkplace && PageBreakIndicator.WORK_PLACE.equals(dataSource.getPageBreak()));
-				print(wsc, newRange, emp, isNewPage);
+						(nextWorkplace && PageBreakIndicator.WORK_PLACE.equals(dataSource.getPageBreak()));
+				print(wsc, newRange, emp, isNewPage || nextWorkplace);
 				if (isNewPage) {
 					pageBreaks.add(newRange.range.getFirstRow());
 					sumRowCount = newRange.range.getRowCount(); //reset sum row count
