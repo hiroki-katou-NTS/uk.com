@@ -63,7 +63,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 			+ " WHERE aw.sid IN :employeeIds AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
 	
 	private static final String SELECT_BY_EMPIDS_PERIOD = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
-			+ " WHERE aw.sid IN :employeeIds AND aw.strDate <= :startDate AND aw.endDate >= :endDate"
+			+ " WHERE aw.sid IN :employeeIds AND aw.strDate <= :endDate AND aw.endDate >= :startDate"
 			+ " ORDER BY aw.sid, aw.strDate";
 
 	private static final String SELECT_BY_WKPID_PERIOD = "SELECT DISTINCT  a.sid FROM BsymtAffiWorkplaceHist a"
