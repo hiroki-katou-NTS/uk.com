@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2018 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.auth.infra.entity.password.changelog;
 
 import java.io.Serializable;
@@ -43,6 +47,16 @@ public class SacdtPasswordChangeLog extends UkJpaEntity implements Serializable 
 	@Override
 	protected Object getKey() {
 		return this.sacdtPasswordChangeLogPK;
+	}
+
+	/**
+	 * Instantiates a new sacdt password change log.
+	 *
+	 * @param sacdtPasswordChangeLogPK the sacdt password change log PK
+	 */
+	public SacdtPasswordChangeLog(SacdtPasswordChangeLogPK sacdtPasswordChangeLogPK) {
+		super();
+		this.sacdtPasswordChangeLogPK = sacdtPasswordChangeLogPK;
 	}
 
 }
