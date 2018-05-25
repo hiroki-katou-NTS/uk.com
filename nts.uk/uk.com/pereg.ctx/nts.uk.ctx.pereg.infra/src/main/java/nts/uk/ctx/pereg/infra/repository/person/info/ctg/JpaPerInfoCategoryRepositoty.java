@@ -30,8 +30,19 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
 			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND"
 			+ " ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd AND ca.cid = :cid ORDER BY po.disporder";
+			+ " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd AND ca.cid = :cid  ORDER BY po.disporder";
+	
+	private final static String GET_ALL_CATEGORY_FOR_CPS007_CPS008 = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
+			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
+			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder"
+			+ " FROM PpemtPerInfoCtg ca INNER JOIN PpemtPerInfoCtgCm co"
+			+ " ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
+			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND"
+			+ " ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd AND ca.cid = :cid AND ca.abolitionAtr = 0 ORDER BY po.disporder";
 
+	
+	
 	private final static String SELECT_CATEGORY_NO_MUL_DUP_BY_COMPANY_ID_QUERY = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
 			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder"
@@ -146,6 +157,14 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	@Override
 	public List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd) {
 		return this.queryProxy().query(SELECT_CATEGORY_BY_COMPANY_ID_QUERY, Object[].class)
+				.setParameter("contractCd", contractCd).setParameter("cid", companyId).getList(c -> {
+					return createDomainFromEntity(c);
+				});
+	}
+	
+	@Override
+	public List<PersonInfoCategory> getAllCategoryForCPS007(String companyId, String contractCd) {
+		return this.queryProxy().query(GET_ALL_CATEGORY_FOR_CPS007_CPS008, Object[].class)
 				.setParameter("contractCd", contractCd).setParameter("cid", companyId).getList(c -> {
 					return createDomainFromEntity(c);
 				});
@@ -504,4 +523,6 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 		});
 		
 	}
+
+	
 }

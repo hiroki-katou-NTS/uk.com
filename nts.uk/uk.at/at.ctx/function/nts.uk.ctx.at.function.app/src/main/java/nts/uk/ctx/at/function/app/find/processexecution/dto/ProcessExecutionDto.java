@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
+import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.TargetGroupClassification;
 
 @Data
 @AllArgsConstructor
@@ -82,11 +83,13 @@ public class ProcessExecutionDto {
 	private GeneralDate refDate;
 	
     private List<String> workplaceList;
+    
+    /* 対象者区分 */
+	private int targetGroupClassification;
 	
 	public ProcessExecutionDto() {
 		super();
 	}
-	
 	public static ProcessExecutionDto fromDomain(ProcessExecution domain) {
 		List<String> workplaceList =
 				domain.getExecScope().getWorkplaceIdList()
@@ -116,6 +119,6 @@ public class ProcessExecutionDto {
 				domain.getExecSetting().getWkpAlarm().isWkpMailMng(),
 				domain.getExecScope().getExecScopeCls().value,
 				domain.getExecScope().getRefDate(),
-				workplaceList);
+				workplaceList,domain.getExecSetting().getDailyPerf().getTargetGroupClassification().value);
 	}
 }

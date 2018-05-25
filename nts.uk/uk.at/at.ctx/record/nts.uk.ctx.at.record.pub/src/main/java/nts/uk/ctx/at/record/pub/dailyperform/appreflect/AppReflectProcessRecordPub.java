@@ -1,4 +1,5 @@
 package nts.uk.ctx.at.record.pub.dailyperform.appreflect;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.GobackReflectPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.PreOvertimePubParameter;
 
@@ -73,5 +74,7 @@ public interface AppReflectProcessRecordPub {
 	 * @return
 	 */
 	public boolean recruitmentReflect(CommonReflectPubParameter param, boolean isPre);
+	
+	public boolean isRecordData(String employeeId, GeneralDate baseDate);
 	
 }

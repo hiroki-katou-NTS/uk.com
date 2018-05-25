@@ -32,11 +32,11 @@ module nts.uk.com.view.ccg001.a {
             closed: KnockoutObservable<boolean>; // 休業区分
             retirement: KnockoutObservable<boolean>; // 退職区分
             systemType: KnockoutObservable<number>;
-            showClosure: KnockoutObservable<boolean>; // 就業締め日利用
             showBaseDate: KnockoutObservable<boolean>; // 基準日利用
             showAllClosure: KnockoutObservable<boolean>; // 全締め表示
             showPeriod: KnockoutObservable<boolean>; // 対象期間利用
             periodFormatYM: KnockoutObservable<boolean>; // 対象期間精度
+            lazyLoad: KnockoutObservable<boolean>;
 
             constructor() {
                 var self = this;
@@ -52,11 +52,6 @@ module nts.uk.com.view.ccg001.a {
                 // Init component.
                 self.reloadCcg001();
                 
-                self.periodFormatYM.subscribe(item => {
-                    if (item){
-                        self.showClosure(true);    
-                    }
-                });
             }
 
             /**
@@ -85,11 +80,11 @@ module nts.uk.com.view.ccg001.a {
                 self.closed = ko.observable(true); // 休業区分
                 self.retirement = ko.observable(true); // 退職区分
                 self.systemType = ko.observable(1);
-                self.showClosure = ko.observable(true); // 就業締め日利用
                 self.showBaseDate = ko.observable(true); // 基準日利用
                 self.showAllClosure = ko.observable(true); // 全締め表示
-                self.showPeriod = ko.observable(true); // 対象期間利用
+                self.showPeriod = ko.observable(false); // 対象期間利用
                 self.periodFormatYM = ko.observable(false); // 対象期間精度
+                self.lazyLoad = ko.observable(false);
             }
 
             /**
@@ -109,8 +104,8 @@ module nts.uk.com.view.ccg001.a {
                 $('#ccg001-partg-start').ntsError('clear');
                 $('#ccg001-partg-end').ntsError('clear');
                 
-                if (!self.showBaseDate() && !self.showClosure() && !self.showPeriod()){
-                    nts.uk.ui.dialog.alertError("Base Date or Closure or Period must be shown!" );
+                if (!self.showBaseDate() && !self.showPeriod()){
+                    nts.uk.ui.dialog.alertError("Base Date or Period must be shown!" );
                     return;
                 }
                 self.ccg001ComponentOption = {
@@ -120,7 +115,6 @@ module nts.uk.com.view.ccg001.a {
                     showQuickSearchTab: self.isQuickSearchTab(), // クイック検索
                     showAdvancedSearchTab: self.isAdvancedSearchTab(), // 詳細検索
                     showBaseDate: self.showBaseDate(), // 基準日利用
-                    showClosure: self.showClosure(), // 就業締め日利用
                     showAllClosure: self.showAllClosure(), // 全締め表示
                     showPeriod: self.showPeriod(), // 対象期間利用
                     periodFormatYM: self.periodFormatYM(), // 対象期間精度
@@ -147,6 +141,7 @@ module nts.uk.com.view.ccg001.a {
                     showJobTitle: self.showJobTitle(), // 職位条件
                     showWorktype: self.showWorktype(), // 勤種条件
                     isMutipleCheck: self.isMutipleCheck(), // 選択モード
+                    isTab2Lazy: self.lazyLoad(),
 
                     /** Return data */
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {

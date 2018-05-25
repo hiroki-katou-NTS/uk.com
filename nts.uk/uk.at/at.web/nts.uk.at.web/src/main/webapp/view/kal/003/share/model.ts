@@ -6,20 +6,20 @@ module nts.uk.at.view.kal003.share.model {
 
     export function getListCategory(): Array<ItemModel> {
         return [
-            new ItemModel(0, getText('Enum_AlarmCategory_SCHEDULE_DAILY')),
-            new ItemModel(1, getText('Enum_AlarmCategory_SCHEDULE_WEEKLY')),
+//            new ItemModel(0, getText('Enum_AlarmCategory_SCHEDULE_DAILY')),
+//            new ItemModel(1, getText('Enum_AlarmCategory_SCHEDULE_WEEKLY')),
             new ItemModel(2, getText('Enum_AlarmCategory_SCHEDULE_4WEEK')),
-            new ItemModel(3, getText('Enum_AlarmCategory_SCHEDULE_MONTHLY')),
-            new ItemModel(4, getText('Enum_AlarmCategory_SCHEDULE_YEAR')),
+//            new ItemModel(3, getText('Enum_AlarmCategory_SCHEDULE_MONTHLY')),
+//            new ItemModel(4, getText('Enum_AlarmCategory_SCHEDULE_YEAR')),
             new ItemModel(5, getText('Enum_AlarmCategory_DAILY')),
-            new ItemModel(6, getText('Enum_AlarmCategory_WEEKLY')),
+//            new ItemModel(6, getText('Enum_AlarmCategory_WEEKLY')),
             new ItemModel(7, getText('Enum_AlarmCategory_MONTHLY')),
-            new ItemModel(8, getText('Enum_AlarmCategory_APPLICATION_APPROVAL')),
-            new ItemModel(9, getText('Enum_AlarmCategory_MULTIPLE_MONTH')),
-            new ItemModel(10, getText('Enum_AlarmCategory_ANY_PERIOD')),
-            new ItemModel(11, getText('Enum_AlarmCategory_ATTENDANCE_RATE_FOR_HOLIDAY')),
+//            new ItemModel(8, getText('Enum_AlarmCategory_APPLICATION_APPROVAL')),
+//            new ItemModel(9, getText('Enum_AlarmCategory_MULTIPLE_MONTH')),
+//            new ItemModel(10, getText('Enum_AlarmCategory_ANY_PERIOD')),
+//            new ItemModel(11, getText('Enum_AlarmCategory_ATTENDANCE_RATE_FOR_HOLIDAY')),
             new ItemModel(12, getText('Enum_AlarmCategory_AGREEMENT')),
-            new ItemModel(13, getText('Enum_AlarmCategory_MAN_HOUR_CHECK'))
+//            new ItemModel(13, getText('Enum_AlarmCategory_MAN_HOUR_CHECK'))
         ];
     }
 
@@ -63,10 +63,10 @@ module nts.uk.at.view.kal003.share.model {
         constructor(code: string, name: string, category: ItemModel, availableRoles: Array<string>, targetCondition: AlarmCheckTargetCondition) {
             this.code = ko.observable(code);
             this.name = ko.observable(name);
-            this.category = ko.observable(category.code);
+            this.category = ko.observable(category != null ? category.code : null);
             this.displayCode = code;
             this.displayName = name;
-            this.displayCategory = category.name;
+            this.displayCategory = category != null ? category.name : "";
             this.availableRoles = ko.observableArray(availableRoles);
             this.targetCondition = ko.observable(targetCondition);
             this.displayAvailableRoles = ko.computed(function() {
@@ -363,7 +363,7 @@ module nts.uk.at.view.kal003.share.model {
             let self = this;
             self.targetNO = ko.observable(NO);
             self.conditionAtr = param ? ko.observable(param.conditionAtr) : ko.observable(0);
-            self.useAtr = param ? ko.observable(param.useAtr) : ko.observable(false);
+            self.useAtr = param ? ko.observable(param.useAtr) : ko.observable(true);
             self.uncountableAtdItem = param ? ko.observable(param.uncountableAtdItem) : ko.observable(null);
             self.countableAddAtdItems(param && param.countableAddAtdItems ? param.countableAddAtdItems : []);
             self.countableSubAtdItems(param && param.countableSubAtdItems ? param.countableSubAtdItems : []);

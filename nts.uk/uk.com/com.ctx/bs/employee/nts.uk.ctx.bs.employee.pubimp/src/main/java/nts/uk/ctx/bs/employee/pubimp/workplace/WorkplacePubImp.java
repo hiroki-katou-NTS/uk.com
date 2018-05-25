@@ -443,11 +443,11 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		List<AffAtWorkplaceExport> result = new ArrayList<AffAtWorkplaceExport>();
 
 		if (sids.isEmpty() || baseDate == null)
-			return null;
+			return Collections.emptyList();
 
 		List<AffWorkplaceHistory> lstAffWkpHist = affWorkplaceHistoryRepository.getByListSid(sids);
 		if (lstAffWkpHist.isEmpty())
-			return null;
+			return Collections.emptyList();
 
 		List<String> historyIds = new ArrayList<>();
 
@@ -466,7 +466,7 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		});
 
 		if (historyIds.isEmpty())
-			return null;
+			return Collections.emptyList();
 
 		List<AffWorkplaceHistoryItem> affWrkPlcItems = affWorkplaceHistoryItemRepository.findByHistIds(historyIds);
 
@@ -507,5 +507,20 @@ public class WorkplacePubImp implements SyWorkplacePub {
 
 		return wkpInfors.stream().map(item -> WorkPlaceInfoExport.builder().workplaceId(item.getWorkplaceId())
 				.workPlaceName(item.getWorkplaceName().v()).build()).collect(Collectors.toList());
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub#getWkpCdName(java.lang.String, nts.arc.time.GeneralDate, java.util.List)
+	 */
+	@Override
+	public List<WkpCdNameExport> getWkpCdName(String companyId, GeneralDate baseDate,
+			List<String> wkpIds) {
+		List<WorkplaceInfo> optWorkplaceInfos = workplaceInfoRepo.findByBaseDateWkpIds(companyId,
+				baseDate, wkpIds);
+
+		return optWorkplaceInfos.stream()
+				.map(wkpInfo -> WkpCdNameExport.builder().wkpCode(wkpInfo.getWorkplaceCode().v())
+						.wkpName(wkpInfo.getWorkplaceName().v()).build())
+				.collect(Collectors.toList());
 	}
 }

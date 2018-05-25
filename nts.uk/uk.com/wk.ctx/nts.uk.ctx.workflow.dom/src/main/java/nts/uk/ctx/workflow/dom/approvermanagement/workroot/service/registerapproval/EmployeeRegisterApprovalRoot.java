@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.WpApproverAsAppOutput;
 /**
  * 01.申請者としての承認ルートを取得する
@@ -22,5 +20,5 @@ public interface EmployeeRegisterApprovalRoot {
 	 * @param lstApps 選択する申請対象
 	 * @return
 	 */
-	Map<String, WpApproverAsAppOutput> lstEmps(String companyID, GeneralDate baseDate, List<String> lstEmpIds, int rootAtr, List<String> lstApps);
+	Map<String, WpApproverAsAppOutput> lstEmps(String companyID, GeneralDate baseDate, List<String> lstEmpIds, List<AppTypes> lstApps);
 }

@@ -9,6 +9,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTy
 /**
  * 
  * @author nampt
+ * 日次表示項目シート一覧
  *
  */
 @Getter
@@ -18,15 +19,28 @@ public class BusinessTypeFormatDaily extends AggregateRoot {
 
 	/**
 	 * padding left "0"
+	 * 勤務種別コード
 	 */
 	private BusinessTypeCode businessTypeCode;
 
+	/**
+	 * 日次表示項目一覧
+	 */
 	private int attendanceItemId;
 
+	/**
+	 * 並び順
+	 */
 	private BigDecimal sheetNo;
 
+	/**
+	 * 並び順
+	 */
 	private int order;
 
+	/**
+	 * 列幅
+	 */
 	private BigDecimal columnWidth;
 
 	public BusinessTypeFormatDaily(String companyId, BusinessTypeCode businessTypeCode, int attendanceItemId,

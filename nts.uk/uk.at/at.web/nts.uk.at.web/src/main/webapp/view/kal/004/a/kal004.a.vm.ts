@@ -101,6 +101,9 @@ module nts.uk.at.view.kal004.a.model {
                 block.clear();
                 errors.clearAll();
                 dfd.resolve();
+                
+            }).always(()=>{
+                self.setFocus();    
             });
             return dfd.promise();
         }
@@ -158,14 +161,24 @@ module nts.uk.at.view.kal004.a.model {
                     if (categoryInputed) {
                         let daily = categoryInputed.extractionDaily == null ? null : new share.ExtractionPeriodDailyCommand(categoryInputed.extractionDaily);
                         let unit = categoryInputed.extractionUnit == null ? null : new share.PeriodUnitCommand(categoryInputed.extractionUnit);
-                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, daily, unit));
+                        let listMonthly = categoryInputed.listExtractionMonthly == [] ? [] : _.map(categoryInputed.listExtractionMonthly, (item)=>{ return new share.ExtractionPeriodMonthlyCommand(item)});
+                        let yearly = categoryInputed.extractionYear ==null ? null : new share.ExtractionRangeYearCommand(categoryInputed.extractionYear);
+                        
+                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, daily, unit, listMonthly, yearly));
                     } else {
-                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, null, null));
+                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, null, null, [], null));
                     }
 
                 });
                 self.periodSetting.listCheckConditionCode(shareTab2);
-
+                let shareCategoryIds = _.map(shareTab2, (item) =>{
+                    return item.alarmCategory;    
+                });
+                if(shareCategoryIds.indexOf(12) ==-1) self.periodSetting.selectedTab('tab-1');
+                let shareStorage : Array<share.CheckConditionCommand> = self.periodSetting.listStorageCheckCondition().filter( (x) =>shareCategoryIds.indexOf(x.alarmCategory)>-1 );
+                self.periodSetting.listStorageCheckCondition(shareStorage);
+                
+                
             });
 
         }

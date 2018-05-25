@@ -22,4 +22,6 @@ public interface BusinessTypeFormatDailyRepository {
 	
 	// Set header width
 	void updateColumnsWidth(Map<Integer, Integer> lstHeader);
+	
+	List<BusinessTypeFormatDaily> getBusinessTypeFormatByCompanyId(String companyId);
 }

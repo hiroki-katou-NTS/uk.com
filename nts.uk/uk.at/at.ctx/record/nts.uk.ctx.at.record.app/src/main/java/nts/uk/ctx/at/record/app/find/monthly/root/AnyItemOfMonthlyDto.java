@@ -1,15 +1,20 @@
 package nts.uk.ctx.at.record.app.find.monthly.root;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.dailyperform.optionalitem.dto.OptionalItemValueDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
-import nts.uk.ctx.at.record.app.find.monthly.root.dto.ClosureDateDto;
+import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 @Data
 @NoArgsConstructor
@@ -21,7 +26,7 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 	private String employeeId;
 
 	/** 締めID: 締めID */
-	private int closureId;
+	private int closureID = 1;
 
 	/** 締め日: 日付 */
 	private ClosureDateDto closureDate;
@@ -31,22 +36,24 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 	
 	/** 任意項目値: 集計任意項目 */
 	@AttendanceItemLayout(layout = "A", jpPropertyName = "任意項目値", listMaxLength = 200, indexField = "itemNo")
-	private List<OptionalItemValueDto> values;
+	private List<OptionalItemValueDto> values = new ArrayList<>();
 	@Override
 	public String employeeId() {
 		return this.employeeId;
 	}
 
 	@Override
-	public Object toDomain() {
+	public List<AnyItemOfMonthly> toDomain() {
 		if (this.isHaveData()) {
-//			return AnyItemOfMonthly.of(employeeId, yearMonth, 
-//					ConvertHelper.getEnum(closureId, ClosureId.class),
-//					closureDate == null ? null : closureDate.toDomain(),
-//					startMonthInfo == null ? null : startMonthInfo.toDomain(),
-//					endMonthInfo == null ? null : endMonthInfo.toDomain());
+			return ConvertHelper.mapTo(values, any -> AnyItemOfMonthly.of(employeeId, yearMonth, 
+					ConvertHelper.getEnum(closureID, ClosureId.class),
+					closureDate == null ? null : closureDate.toDomain(),
+					any.getItemNo(),
+					Optional.ofNullable(any.getMonthlyTime()),
+					Optional.ofNullable(any.getMonthlyTimes()), 
+					Optional.ofNullable(any.getMonthlyAmount())));
 		}
-		return null;
+		return new ArrayList<>();
 	}
 
 	@Override
@@ -54,13 +61,29 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 		return yearMonth;
 	}
 
-	public static AnyItemOfMonthlyDto from(Object domain) {
+	public static AnyItemOfMonthlyDto from(AnyItemOfMonthly domain) {
 		AnyItemOfMonthlyDto dto = new AnyItemOfMonthlyDto();
 		if (domain != null) {
-//			dto.setClosureDate(ClosureDateDto.from(domain.getClosureDate()));
-//			dto.setClosureId(domain.getClosureId() == null ? 1 : domain.getClosureId().value);
-//			dto.setEmployeeId(domain.getEmployeeId());
-//			dto.setYearMonth(domain.getYearMonth());
+			dto.setClosureDate(ClosureDateDto.from(domain.getClosureDate()));
+			dto.setClosureID(domain.getClosureId() == null ? 1 : domain.getClosureId().value);
+			dto.setEmployeeId(domain.getEmployeeId());
+			dto.setYearMonth(domain.getYearMonth());
+			dto.getValues().add(OptionalItemValueDto.from(domain));
+			dto.exsistData();
+		}
+		return dto;
+	}
+	
+	public static AnyItemOfMonthlyDto from(List<AnyItemOfMonthly> domain) {
+		AnyItemOfMonthlyDto dto = new AnyItemOfMonthlyDto();
+		if (domain != null && !domain.isEmpty()) {
+			dto.setClosureDate(ClosureDateDto.from(domain.get(0).getClosureDate()));
+			dto.setClosureID(domain.get(0).getClosureId() == null ? 1 : domain.get(0).getClosureId().value);
+			dto.setEmployeeId(domain.get(0).getEmployeeId());
+			dto.setYearMonth(domain.get(0).getYearMonth());
+			domain.stream().forEach(d -> {
+				dto.getValues().add(OptionalItemValueDto.from(d));
+			});
 			dto.exsistData();
 		}
 		return dto;
