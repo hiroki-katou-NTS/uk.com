@@ -73,7 +73,9 @@ public class BsymtAffiWorkplaceHist extends UkJpaEntity implements Serializable 
 		return this.hisId;
 	}
 
-	
+	public String getEmployeeId() {
+		return sid;
+	}
 
 
 }
