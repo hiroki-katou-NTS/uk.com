@@ -51,7 +51,7 @@ public class AddManualSettingHandler extends AsyncCommandHandler<ManualSettingCo
 
 		}
 		
-		repo.addManualSetting(domain);
+//		repo.addManualSetting(domain);
 
 		manualSetOfDataSaveService.start(storeProcessingId);
 

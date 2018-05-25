@@ -636,8 +636,8 @@ module nts.uk.com.view.cmf003.b {
                 
                 setShared("CMF001_E_PARAMS", params);
                 
-                //self.saveManualSetting();
-                nts.uk.ui.windows.sub.modal("/view/cmf/003/f/index.xhtml");
+                self.saveManualSetting();
+               // nts.uk.ui.windows.sub.modal("/view/cmf/003/f/index.xhtml");
             }
             
             private saveManualSetting(): void {

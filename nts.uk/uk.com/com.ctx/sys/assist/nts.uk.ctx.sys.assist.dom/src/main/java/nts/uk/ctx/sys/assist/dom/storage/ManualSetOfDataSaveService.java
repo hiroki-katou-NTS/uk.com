@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.sys.assist.dom.storage;
 
+import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,8 +16,11 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 
-import nts.arc.enums.EnumAdaptor;
+import com.google.common.base.Strings;
+
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
@@ -61,7 +65,8 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	private TargetEmployeesRepository repoTargetEmp;
 	@Inject
 	private CSVReportGenerator generator;
-
+	@Inject
+	private TableListRepository repoTableList;
 	@Inject
 	private ApplicationTemporaryFileFactory applicationTemporaryFileFactory;
 	@Inject
@@ -261,7 +266,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			generalCsv2(storeProcessingId, generatorContext);
 
 			// Add Table to CSV Auto
-			generalCsvAuto(csvTarRepo, generatorContext, categoryIds);
+			//generalCsvAuto(csvTarRepo, generatorContext, categoryIds);
 
 			// Add folder temp to zip
 			// applicationTemporaryFilesContainer.addFile(generatorContext);
@@ -416,51 +421,169 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	}
 
 	private void generalCsvAuto(List<SaveTargetCsv> csvTarRepo, FileGeneratorContext generatorContext,
-			List<String> categoryIds) {
-		StringBuffer sql = null;
-		List<CategoryFieldMt> categoryFieldMts = repoCateField.getCategoryFieldMtByListId(categoryIds);
-		List<String> listColumCond = categoryFieldMts.stream().map(x -> {
-			return x.getClsKeyQuery2();
-		}).collect(Collectors.toList());
+			List<String> categoryIds, ManualSetOfDataSave optManualSetting) {		
+		List<TableList> tableLists = new ArrayList<TableList>();
+		for (TableList tableList : tableLists) {
+			Class<?> tableExport = repoTableList.getTypeForTableName(tableList.getTableEnglishName());		
 
-		for (SaveTargetCsv item : csvTarRepo) {
-			sql = new StringBuffer("SELECT ");
+			StringBuffer query = new StringBuffer("");
+			// Select
+			query.append("SELECT t");
 
-			sql.append("").append("");
-			sql.append("").append("FROM");
-			sql.append(" ").append(item.getTableEnglishName());
+			// From
+			query.append(" FROM ").append(tableExport.getSimpleName()).append(" t");
+			Class<?> tableParent = null;
+			if (tableList.getHasParentTable() == NotUseAtr.USE) {
+				tableParent = repoTableList.getTypeForTableName(tableList.getParentTblName());
+				query.append(" INNER JOIN ").append(tableParent.getSimpleName()).append(" p ON ");
 
-			int key = 0;
+				String[] parentFields = { tableList.getFieldParent1(), tableList.getFieldParent2(),
+						tableList.getFieldParent3(), tableList.getFieldParent4(), tableList.getFieldParent5(),
+						tableList.getFieldParent6(), tableList.getFieldParent7(), tableList.getFieldParent8(),
+						tableList.getFieldParent9(), tableList.getFieldParent10() };
 
-			// WHERE Get condition
-			// listColumCond = "";
-			ExtractionKeyCategory keyEn = EnumAdaptor.valueOf(key, ExtractionKeyCategory.class);
-			switch (keyEn) {
-			case COMPANY_CD:
+				String[] childFields = { tableList.getFieldChild1(), tableList.getFieldChild2(),
+						tableList.getFieldChild3(), tableList.getFieldChild4(), tableList.getFieldChild5(),
+						tableList.getFieldChild6(), tableList.getFieldChild7(), tableList.getFieldChild8(),
+						tableList.getFieldChild9(), tableList.getFieldChild10() };
 
+				boolean isFirstOnStatement = true;
+				for (int i = 0; i < parentFields.length; i++) {
+					String onStatement = getOnStatement(tableParent, parentFields[i], tableExport, childFields[i]);
+					if (Strings.isNullOrEmpty(onStatement)) {
+						if (!isFirstOnStatement) {
+							query.append(" AND ");
+						}	
+						isFirstOnStatement = false;
+						query.append(onStatement);
+					}
+				}
+			}			
+
+			String[] fieldKeyQuerys = { tableList.getFieldKeyQuery1(), tableList.getFieldKeyQuery2(),
+					tableList.getFieldKeyQuery3(), tableList.getFieldKeyQuery4(), tableList.getFieldKeyQuery5(),
+					tableList.getFieldKeyQuery6(), tableList.getFieldKeyQuery7(), tableList.getFieldKeyQuery8(),
+					tableList.getFieldKeyQuery9(), tableList.getFieldKeyQuery10() };
+			ExtractionKeyCategory[] clsKeyQuerys = { tableList.getClsKeyQuery1(), tableList.getClsKeyQuery2(),
+					tableList.getClsKeyQuery3(), tableList.getClsKeyQuery4(), tableList.getClsKeyQuery5(),
+					tableList.getClsKeyQuery6(), tableList.getClsKeyQuery7(), tableList.getClsKeyQuery8(),
+					tableList.getClsKeyQuery9(), tableList.getClsKeyQuery10() };
+
+			for (int i = 0; i < clsKeyQuerys.length; i++) {
+				if (clsKeyQuerys[i] == ExtractionKeyCategory.EMPLOYEE_CD){
+					if (tableList.getHasParentTable() == NotUseAtr.USE) {
+						query.append(" INNER JOIN SspmtTargetEmployees e ON e.targetEmployeesPk.Sid = p.");
+						query.append(repoTableList.getFieldForColumnName(tableParent, fieldKeyQuerys[i]));
+					}
+					else {
+						query.append(" INNER JOIN SspmtTargetEmployees e ON e.targetEmployeesPk.Sid = t.");
+						query.append(repoTableList.getFieldForColumnName(tableExport, fieldKeyQuerys[i]));
+					}
+				}
+			}
+			
+			// Where
+			query.append(" WHERE ");
+			
+			List<Integer> companyCdIndexs = new ArrayList<Integer>();
+			List<Integer> yearIndexs = new ArrayList<Integer>();
+			List<Integer> yearMonthIndexs = new ArrayList<Integer>();
+			List<Integer> yearMonthDayIndexs = new ArrayList<Integer>();
+			for (int i = 0; i < clsKeyQuerys.length; i++) {
+				switch (clsKeyQuerys[i]) {
+				case COMPANY_CD:
+					companyCdIndexs.add(i);
+					break;				
+					
+				case YEAR:
+					yearIndexs.add(i);
+					break;
+
+				case YEAR_MONTH:
+					yearMonthIndexs.add(i);
+					break;
+
+				case YEAR_MONTH_DAY:
+					yearMonthDayIndexs.add(i);
+					break;
+					
+				case EMPLOYEE_CD:
+					break;
+				}
+			}
+			
+			boolean isFirstWhereStatement = true;
+			if (companyCdIndexs.size() > 0) {
+				if (!isFirstWhereStatement) {
+					query.append(" AND ");				
+				}
+				isFirstWhereStatement = false;
+				query.append(" ( ");
+				boolean isFirstOrStatement = true;
+				for (Integer index : companyCdIndexs) {
+					if (!isFirstOrStatement) {
+						query.append(" OR ");				
+					}
+					isFirstOrStatement = false;
+					query.append(" t.");
+					query.append(repoTableList.getFieldForColumnName(tableExport, fieldKeyQuerys[index]));
+					query.append(" = :companyId ");
+				}
+				query.append(" ) ");		
+			}
+			List<Integer> indexs = new ArrayList<Integer>();
+			switch (tableList.getRetentionPeriodCls()) {
+			case ANNUAL:
+				indexs = yearIndexs;
+				break;
+			case MONTHLY:
+				indexs = yearMonthIndexs;
+				break;
+			case DAILY:
+				indexs = yearMonthDayIndexs;
 				break;
 
-			case EMPLOYEE_CD:
-
-				break;
-
-			case YEAR:
-
-				break;
-
-			case YEAR_MONTH:
-
-				break;
-
-			case YEAR_MONTH_DAY:
-
+			default:
 				break;
 			}
+			
+			if (indexs.size() > 0) {
+				if (!isFirstWhereStatement) {
+					query.append(" AND ");				
+				}
+				isFirstWhereStatement = false;
+				query.append(" ( ");
+				boolean isFirstOrStatement = true;
+				for (Integer index : yearIndexs) {
+					if (!isFirstOrStatement) {
+						query.append(" OR ");				
+					}
+					isFirstOrStatement = false;
+					query.append(" (t.");
+					query.append(repoTableList.getFieldForColumnName(tableExport, fieldKeyQuerys[index]));
+					query.append(" >= :startDate ");
+					query.append(" AND ");	
+					query.append(" t.");
+					query.append(repoTableList.getFieldForColumnName(tableExport, fieldKeyQuerys[index]));
+					query.append(" <= :endDate) ");
+				}
+				query.append(" ) ");		
+			}
+
+			List<?> listObject = repoTableList.getAutoObject(query.toString(), tableExport, tableList.getSaveDateFrom(), tableList.getSaveDateTo());
 
 		}
-
 	}
 
+	private String getOnStatement(Class<?> parentTable, String parentColumn, Class<?> childTable, String childColumn) {
+		if (!Strings.isNullOrEmpty(parentColumn) && !Strings.isNullOrEmpty(childColumn)) {
+			String parentColumnJpa = repoTableList.getFieldForColumnName(parentTable, parentColumn);
+			String childColumnJpa = repoTableList.getFieldForColumnName(childTable, childColumn);
+			return "p." + parentColumnJpa + "=" + "t." + childColumnJpa;
+		}
+		return "";
+	}
+	
 	private static final List<String> LST_NAME_ID_HEADER_TABLE = Arrays.asList("CMF003_500", "CMF003_501", "CMF003_502",
 			"CMF003_503", "CMF003_504", "CMF003_505", "CMF003_506", "CMF003_507", "CMF003_508", "CMF003_509",
 			"CMF003_510", "CMF003_511", "CMF003_512", "CMF003_513", "CMF003_514", "CMF003_515", "CMF003_516",
@@ -502,6 +625,25 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		for (String nameId : LST_NAME_ID_HEADER_TABLE_CSV2) {
 			lstHeader.add(TextResource.localize(nameId));
 		}
+		return lstHeader;
+	}
+	
+	private List<String> getTextHeaderCsv3(Class<?> type) {
+		List<String> lstHeader = new ArrayList<>();
+		for (Field field : type.getDeclaredFields()) {
+			if (field.isAnnotationPresent(EmbeddedId.class)) {
+				Class<?> pk = field.getType();
+				for (Field fieldPk : pk.getDeclaredFields()) {
+					Column columnPk = fieldPk.getDeclaredAnnotation(Column.class);
+					if (columnPk != null)
+						lstHeader.add(columnPk.name());
+				}
+			}
+			Column column = field.getDeclaredAnnotation(Column.class);
+			if (column != null)
+				lstHeader.add(column.name());
+		}
+
 		return lstHeader;
 	}
 
