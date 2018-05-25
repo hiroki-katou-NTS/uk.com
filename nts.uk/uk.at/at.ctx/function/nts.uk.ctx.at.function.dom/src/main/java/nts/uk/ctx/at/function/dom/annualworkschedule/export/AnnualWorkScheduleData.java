@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.Collections;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -42,6 +44,8 @@ public class AnnualWorkScheduleData {
 	private BigDecimal period5th;
 	private BigDecimal period6th;
 	private BigDecimal period7th;
+
+	private Integer maxDigitAfterDecimalPoint = null;
 
 	public void setMonthlyData(BigDecimal value, YearMonth startYm, YearMonth ym) {
 		int monthIndex = (int) startYm.until(ym, ChronoUnit.MONTHS);
@@ -104,10 +108,37 @@ public class AnnualWorkScheduleData {
 		.add(month11th == null? BigDecimal.valueOf(0): month11th)
 		.add(month12th == null? BigDecimal.valueOf(0): month12th);
 
-		this.average = this.sum.divide(BigDecimal.valueOf(this.numMonth), 2, RoundingMode.HALF_UP); //TODO
+		this.average = this.sum.divide(BigDecimal.valueOf(this.numMonth), this.getMaxDigitAfterDecimalPoint(), RoundingMode.HALF_UP); //TODO
 		return this;
 	}
 
+	private int getMaxDigitAfterDecimalPoint() {
+		if (maxDigitAfterDecimalPoint == null) {
+			maxDigitAfterDecimalPoint
+			= Collections.max(
+					Arrays.asList(this.getDigitAfterDecimalPoint(this.month1st),
+					this.getDigitAfterDecimalPoint(this.month2nd),
+					this.getDigitAfterDecimalPoint(this.month3rd),
+					this.getDigitAfterDecimalPoint(this.month4th),
+					this.getDigitAfterDecimalPoint(this.month5th),
+					this.getDigitAfterDecimalPoint(this.month6th),
+					this.getDigitAfterDecimalPoint(this.month7th),
+					this.getDigitAfterDecimalPoint(this.month8th),
+					this.getDigitAfterDecimalPoint(this.month9th),
+					this.getDigitAfterDecimalPoint(this.month10th),
+					this.getDigitAfterDecimalPoint(this.month11th),
+					this.getDigitAfterDecimalPoint(this.month12th)));
+		}
+		return maxDigitAfterDecimalPoint;
+	}
+
+	private int getDigitAfterDecimalPoint(BigDecimal value) {
+		if (value == null) return 0;
+		String valueStr = value.toString();
+		int indexPoint = valueStr.indexOf('.');
+		if (indexPoint < 0) return 0;
+		return valueStr.length() - (indexPoint + 1);
+	}
 	/**
 	 * TODO
 	 * @param value

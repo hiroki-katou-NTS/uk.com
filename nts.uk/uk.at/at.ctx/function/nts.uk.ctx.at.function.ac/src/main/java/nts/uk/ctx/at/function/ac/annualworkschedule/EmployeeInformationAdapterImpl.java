@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
@@ -19,7 +20,8 @@ import nts.uk.query.pub.employee.EmployeeInformationExport;
 import nts.uk.query.pub.employee.EmployeeInformationPub;
 import nts.uk.query.pub.employee.EmployeeInformationQueryDto;
 
-public class EmployeeInformationAdapterImpl implements EmployeeInformationAdapter{
+@Stateless
+public class EmployeeInformationAdapterImpl implements EmployeeInformationAdapter {
 	
 	@Inject
 	EmployeeInformationPub employeeInformationPub;
@@ -48,11 +50,11 @@ public class EmployeeInformationAdapterImpl implements EmployeeInformationAdapte
 				f.getEmployeeId(),
 				f.getEmployeeCode(),
 				f.getBusinessName(),
-				new WorkplaceImport(f.getWorkplace().getWorkplaceCode(), f.getWorkplace().getWorkplaceGenericName(), f.getWorkplace().getWorkplaceName()),
-				new ClassificationImport(f.getClassification().getClassificationCode(), f.getClassification().getClassificationName()),
-				new DepartmentImport(f.getDepartment().getDepartmentCode(), f.getDepartment().getDepartmentName(), f.getDepartment().getDepartmentGenericName()),
-				new PositionImport(f.getPosition().getPositionCode(), f.getPosition().getPositionName()),
-				new EmploymentImport(f.getEmployment().getEmploymentCode(), f.getEmployment().getEmploymentName()),
+				f.getWorkplace() == null? null : new WorkplaceImport(f.getWorkplace().getWorkplaceCode(), f.getWorkplace().getWorkplaceGenericName(), f.getWorkplace().getWorkplaceName()),
+				f.getClassification() == null? null : new ClassificationImport(f.getClassification().getClassificationCode(), f.getClassification().getClassificationName()),
+				f.getDepartment() == null? null : new DepartmentImport(f.getDepartment().getDepartmentCode(), f.getDepartment().getDepartmentName(), f.getDepartment().getDepartmentGenericName()),
+				f.getPosition() == null? null : new PositionImport(f.getPosition().getPositionCode(), f.getPosition().getPositionName()),
+				f.getEmployment() == null? null : new EmploymentImport(f.getEmployment().getEmploymentCode(), f.getEmployment().getEmploymentName()),
 				f.getEmploymentCls()
 				))
 				.collect(Collectors.toList());

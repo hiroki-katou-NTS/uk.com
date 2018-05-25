@@ -87,17 +87,17 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 			EmployeeData firstEmp = dataSource.getEmployees().get(empIds.remove(0));
 			print(wsc, new RangeCustom(empRange, 0), firstEmp, true);
 
-			String workplace = firstEmp.getEmployeeInfo().getWorkplace();
+			String workplaceCd = firstEmp.getEmployeeInfo().getWorkplaceCode();
 			RangeCustom newRange = new RangeCustom(empRange, 0);
 			int offset = 0, sumRowCount = workplaceRange.getRowCount();
 			boolean nextWorkplace;
 			for (String empId : empIds) {
 				EmployeeData emp = dataSource.getEmployees().get(empId);
-				nextWorkplace = !workplace.equals(emp.getEmployeeInfo().getWorkplace());
+				nextWorkplace = !workplaceCd.equals(emp.getEmployeeInfo().getWorkplaceCode());
 
 				//check next work place or new page
 				if (nextWorkplace || (sumRowCount + empRange.getRowCount() > rowsPerPage)) {
-					workplace = emp.getEmployeeInfo().getWorkplace();
+					workplaceCd = emp.getEmployeeInfo().getWorkplaceCode();
 					newRange = copyRangeDown(workplaceRange, offset);
 				} else {
 					newRange = copyRangeDown(empRange, offset);
@@ -167,11 +167,19 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 	 */
 	private void print(WorksheetCollection wsc, RangeCustom range, EmployeeData emp, boolean isPrintWorkplace) {
 		if(isPrintWorkplace) {
-			String workplace = emp.getEmployeeInfo().getWorkplace();
+			String workplace = emp.getEmployeeInfo().getWorkplaceName();
 			range.cell("workplace").putValue(workplace);
 		}
-		//TODO print all empInfo
-		range.cell("empName").setValue(emp.getEmployeeInfo().getEmployeeCode() + " " + emp.getEmployeeInfo().getEmployeeName());
+		//print employee info
+		if (this.itemBooks.size() >= 1) {
+			range.cell("empName").setValue(emp.getEmployeeInfo().getEmployeeCode() + " " + emp.getEmployeeInfo().getEmployeeName());
+		}
+		if (this.itemBooks.size() >= 2) {
+			range.cell("employmentName").setValue(emp.getEmployeeInfo().getEmploymentName());
+		}
+		if (this.itemBooks.size() >= 3) {
+			range.cell("jobTitle").setValue(emp.getEmployeeInfo().getJobTitle());
+		}
 
 		int rowOffset = 0;
 		for (ExportItem itemBook: this.itemBooks) {

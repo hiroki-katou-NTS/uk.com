@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.infra.generator.annualworkschedule;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -16,6 +17,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationAdapter;
+import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationQueryDtoImport;
 import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.AttendanceItemValueImport;
 import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.MonthlyAttendanceItemAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.MonthlyAttendanceResultImport;
@@ -42,6 +46,8 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	private SetOutItemsWoScRepository setOutItemsWoScRepository;
 	@Inject
 	private MonthlyAttendanceItemAdapter monthlyAttendanceItemAdapter;
+	@Inject
+	private EmployeeInformationAdapter employeeInformationAdapter;
 	/**
 	 * 36協定時間
 	 */
@@ -57,20 +63,33 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 			String endYearMonth, List<Employee> employees) {
 		this.startYmFinal = YearMonth.parse(startYearMonth, DateTimeFormatter.ofPattern("uuuu/MM"));
 		this.endYmFinal = YearMonth.parse(endYearMonth, DateTimeFormatter.ofPattern("uuuu/MM"));
+		LocalDate endYmd = LocalDate.of(this.endYmFinal.getYear(), this.endYmFinal.getMonthValue(), 1)
+				.plus(1, ChronoUnit.MONTHS)
+				.minus(1, ChronoUnit.DAYS);
 		this.numMonth = (int) this.startYmFinal.until(this.endYmFinal, ChronoUnit.MONTHS);
 		ExportData data = new ExportData();
-		//TODO sort by employee code
+		//sort by employee code
 		data.setEmployeeIds(employees.stream()
 				.sorted(Comparator.comparing(Employee::getWorkplaceName).thenComparing(Employee::getEmployeeCode))
 				.map(m -> m.getEmployeeId()).collect(Collectors.toList()));
+
 		data.setEmployees(new HashMap<>());
-		//init employee data
-		employees.forEach(emp -> {
-			data.getEmployees().put(emp.getEmployeeId(),
-					EmployeeData.builder()
-					.employeeInfo(new EmployeeInfo(emp.getWorkplaceName(), emp.getEmployeeCode(), emp.getName()))
-					.annualWorkSchedule(new HashMap<>()).build());
-		});
+		Map<String, String> empNameMap = employees.stream()
+				.collect(Collectors.toMap(Employee::getEmployeeId, Employee::getName));
+		employeeInformationAdapter.getEmployeeInfo(
+				new EmployeeInformationQueryDtoImport(data.getEmployeeIds(),
+					GeneralDate.localDate(endYmd), true, false, true, true, false, false)).forEach(emp -> {
+						data.getEmployees().put(emp.getEmployeeId(),
+								EmployeeData.builder()
+								.employeeInfo(new EmployeeInfo(emp.getWorkplace() == null? null : emp.getWorkplace().getWorkplaceCode(),
+																emp.getWorkplace() == null? null : TextResource.localize("KWR008_50") 
+																		+ " " + emp.getWorkplace().getWorkplaceName(),
+																emp.getEmployeeCode(),
+																empNameMap.get(emp.getEmployeeId()),
+																emp.getEmployment() == null? null : emp.getEmployment().getEmploymentName(),
+																emp.getPosition() == null? null : emp.getPosition().getPositionName()))
+								.annualWorkSchedule(new HashMap<>()).build());
+					});
 
 		//ドメインモデル「年間勤務表（36チェックリスト）の出力項目設定」を取得する
 		SetOutItemsWoSc setOutItemsWoSc = setOutItemsWoScRepository.getSetOutItemsWoScById(cid, setItemsOutputCd).get();
