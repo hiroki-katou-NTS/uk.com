@@ -7,9 +7,9 @@ package nts.uk.ctx.sys.auth.dom.password.changelog;
 public interface PasswordChangeLogRepository {
   
   /**
-   * Register.
+   * Adds the.
    *
    * @param passwordChangeLog the password change log
    */
-  void register(PasswordChangeLog passwordChangeLog);
+  void add(PasswordChangeLog passwordChangeLog);
 }
