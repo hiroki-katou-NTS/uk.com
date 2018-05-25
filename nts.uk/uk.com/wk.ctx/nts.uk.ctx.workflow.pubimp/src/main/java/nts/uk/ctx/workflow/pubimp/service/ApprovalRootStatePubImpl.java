@@ -396,6 +396,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 			
 			ApprovalStatus approvalStatus = new ApprovalStatus();
 			List<Integer> phaseOfApprover = new ArrayList<>();
+			boolean statusFrame  = false;
 			for(int i =0; i < listApprovalPhaseState.size();i++){
 				// add approver
 				for(ApprovalFrame approvalFrame : listApprovalPhaseState.get(i).getListApprovalFrame()){
@@ -406,42 +407,42 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 								phaseOfApprover.add(listApprovalPhaseState.get(i).getPhaseOrder());
 							}
 						}
-					}			
+					}
+					if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
+						statusFrame = true;
+					}
 				}
 				//1.承認フェーズ毎の承認者を取得する(getApproverFromPhase)
 				List<String> approverFromPhases = judgmentApprovalStatusService.getApproverFromPhase(listApprovalPhaseState.get(i));
 				if(!CollectionUtil.isEmpty(approverFromPhases)){
-					// 承認中のフェーズ＝ループ中のフェーズ．順序
-					int approverPhase = i;
-					// フェーズ承認区分＝ループ中のフェーズ．承認区分
-					int approverPhaseIndicator = listApprovalPhaseState.get(i).getApprovalAtr().value;
+					if(!listApprovalPhaseState.get(i).getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
+						// 承認中のフェーズ＝ループ中のフェーズ．順序
+						int approverPhase = i;
+						// フェーズ承認区分＝ループ中のフェーズ．承認区分
+						int approverPhaseIndicator = listApprovalPhaseState.get(i).getApprovalAtr().value;
+					}
 					//1.承認状況の判断
 					ApprovalStatusOutput approvalStatusOutput = judgmentApprovalStatusService.judmentApprovalStatusNodataDatabaseAcess(companyID, listApprovalPhaseState.get(i), approverID,agents);
-					if(approverPhaseFlag == true && approvalStatusOutput.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
+					if(listApprovalPhaseState.get(i).getPhaseOrder().equals(5) && listApprovalPhaseState.get(i).getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED) ){
+						checkStatusFrame(approvalStatusOutput,approvalStatus);
+						employeephase = i;
+						break;
+					}
+					if(approverPhaseFlag == true && listApprovalPhaseState.get(i).getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
 						break;
 					}
 					if(approvalStatusOutput.getApprovalFlag() == true && approvalStatusOutput.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
 						approverPhaseFlag = true;
 					}
-					// output「ルート状況」をセットする
-					if(approvalStatusOutput.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED) && approvalStatusOutput.getApprovableFlag() == true){
-						approvalStatus.setReleaseDivision(EnumAdaptor.valueOf(ReleasedProprietyDivision.RELEASE.value, ReleasedProprietyDivision.class));
-					}else{
-						approvalStatus.setReleaseDivision(EnumAdaptor.valueOf(ReleasedProprietyDivision.NOT_RELEASE.value, ReleasedProprietyDivision.class));
-					}
-					//承認状況．基準社員の承認アクション
-					if(approvalStatusOutput.getApprovableFlag() == false){
-						approvalStatus.setApprovalActionByEmpl(EnumAdaptor.valueOf(ApprovalActionByEmpl.NOT_APPROVAL.value, ApprovalActionByEmpl.class));
-					}else if(approvalStatusOutput.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
-						approvalStatus.setApprovalActionByEmpl(EnumAdaptor.valueOf(ApprovalActionByEmpl.APPROVAL_REQUIRE.value, ApprovalActionByEmpl.class));
-					}else{
-						approvalStatus.setApprovalActionByEmpl(EnumAdaptor.valueOf(ApprovalActionByEmpl.APPROVALED.value, ApprovalActionByEmpl.class));
-					}
+					checkStatusFrame(approvalStatusOutput,approvalStatus);
 					//基準社員のフェーズ＝ループ中のフェーズ．順序
 					if(approvalStatusOutput.getApprovalFlag() == true){
-						employeephase = approverPhase;
+						employeephase = i;
 					}
 					if(approvalStatusOutput.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
+						break;
+					}
+					if(statusFrame){
 						break;
 					}
 				}
@@ -465,6 +466,22 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		result.setEmployeeStandard(approverID);
 		result.setApprovalRootSituations(approvalRootSituations);
 		return result;
+	}
+	private void checkStatusFrame(ApprovalStatusOutput approvalStatusOutput,ApprovalStatus approvalStatus ){
+		// output「ルート状況」をセットする
+		if(approvalStatusOutput.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED) && approvalStatusOutput.getApprovableFlag() == true){
+			approvalStatus.setReleaseDivision(EnumAdaptor.valueOf(ReleasedProprietyDivision.RELEASE.value, ReleasedProprietyDivision.class));
+		}else{
+			approvalStatus.setReleaseDivision(EnumAdaptor.valueOf(ReleasedProprietyDivision.NOT_RELEASE.value, ReleasedProprietyDivision.class));
+		}
+		//承認状況．基準社員の承認アクション
+		if(approvalStatusOutput.getApprovableFlag() == false){
+			approvalStatus.setApprovalActionByEmpl(EnumAdaptor.valueOf(ApprovalActionByEmpl.NOT_APPROVAL.value, ApprovalActionByEmpl.class));
+		}else if(approvalStatusOutput.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
+			approvalStatus.setApprovalActionByEmpl(EnumAdaptor.valueOf(ApprovalActionByEmpl.APPROVAL_REQUIRE.value, ApprovalActionByEmpl.class));
+		}else{
+			approvalStatus.setApprovalActionByEmpl(EnumAdaptor.valueOf(ApprovalActionByEmpl.APPROVALED.value, ApprovalActionByEmpl.class));
+		}
 	}
 	private boolean checkPhase(int phaseOrderApprover,List<Integer> phaseOrders, int type){
 		boolean result = false;
