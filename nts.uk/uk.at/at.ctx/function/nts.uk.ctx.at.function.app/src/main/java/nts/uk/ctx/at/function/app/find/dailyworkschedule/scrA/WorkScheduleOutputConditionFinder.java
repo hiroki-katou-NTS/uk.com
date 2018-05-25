@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.DataInforReturnDto;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.scrB.ErrorAlarmCodeDto;
@@ -91,16 +90,18 @@ public class WorkScheduleOutputConditionFinder {
 		
 		String companyId = AppContexts.user().companyId();
 		String roleId = AppContexts.user().roles().forAttendance();
-		int functionNo = FUNCTION_NO;
 		GeneralDate systemDate = GeneralDate.today();
 		String employeeId = AppContexts.user().employeeId();
 		
 		// ドメインモデル「就業帳票の権限」を取得する(Acquire the domain model "authority of employment form")
-		Optional<PermissionOfEmploymentForm> optPermissionOfEmploymentForm = permissionOfEmploymentFormRepository.find(companyId, roleId, functionNo);
+		Optional<PermissionOfEmploymentForm> optPermissionOfEmploymentForm = permissionOfEmploymentFormRepository.find(companyId, roleId, FUNCTION_NO);
 		if (optPermissionOfEmploymentForm.isPresent()) {
 			if (!optPermissionOfEmploymentForm.get().isAvailable()) {
 				optPermissionOfEmploymentForm = Optional.empty();
 			}
+			dto.setExistAuthority(true);
+		} else {
+			dto.setExistAuthority(false);
 		}
 		
 		// アルゴリズム「社員に対応する締め期間を取得する」を実行する(Execute the algorithm "Acquire closing period corresponding to employee")

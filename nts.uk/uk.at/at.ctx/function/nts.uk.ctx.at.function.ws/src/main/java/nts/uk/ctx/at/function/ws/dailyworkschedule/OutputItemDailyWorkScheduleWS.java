@@ -14,12 +14,16 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkScheduleCommand;
 import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkScheduleDeleteHandler;
 import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkScheduleSaveHandler;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.DataInforReturnDto;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.OutputItemDailyWorkScheduleFinder;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.NameWorkTypeOrHourZone;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarksContentChoice;
 
 /**
  * The Class OutputItemDailyWorkScheduleWS.
@@ -85,9 +89,38 @@ public class OutputItemDailyWorkScheduleWS extends WebService{
 		return this.outputItemDailyWorkScheduleFinder.getFormatDailyPerformance();
 	}
 	
+	/**
+	 * Execute copy.
+	 *
+	 * @param codeCopy the code copy
+	 * @param codeSourceSerivce the code source serivce
+	 * @return the list
+	 */
 	@Path("executeCopy/{codeCopy}/{codeSourceSerivce}")
 	@POST
 	public List<DataInforReturnDto> executeCopy(@PathParam("codeCopy") String codeCopy, @PathParam("codeSourceSerivce") String codeSourceSerivce){
 		return this.outputItemDailyWorkScheduleFinder.executeCopy(codeCopy, codeSourceSerivce);
+	}
+	
+	/**
+	 * Gets the enum name.
+	 *
+	 * @return the enum name
+	 */
+	@Path("enumName")
+	@POST
+	public List<EnumConstant> getEnumName(){
+		return EnumAdaptor.convertToValueNameList(NameWorkTypeOrHourZone.class);
+	}
+	
+	/**
+	 * Gets the enum remark content choice.
+	 *
+	 * @return the enum remark content choice
+	 */
+	@Path("enumRemarkContentChoice")
+	@POST
+	public List<EnumConstant> getEnumRemarkContentChoice(){
+		return EnumAdaptor.convertToValueNameList(RemarksContentChoice.class);
 	}
 }

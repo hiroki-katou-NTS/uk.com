@@ -6,7 +6,6 @@ package nts.uk.ctx.at.function.app.find.dailyworkschedule;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +27,8 @@ import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPer
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityDailyPerformanceFormatRepository;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatDailyRepository;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.AttendanceItemsDisplay;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.FormatPerformanceAdapter;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.FormatPerformanceImport;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
@@ -43,9 +44,6 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FormatPerformance;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FormatPerformanceRepository;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -80,13 +78,13 @@ public class OutputItemDailyWorkScheduleFinder {
 	private BusinessTypeFormatDailyRepository businessTypeFormatDailyRepository;
 	
 	@Inject
-	private FormatPerformanceRepository formatPerformanceRepository;
-	
-	@Inject
 	private AuthorityFormatDailyRepository authorityFormatDailyRepository;
 	
 	@Inject
 	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepository;
+	
+	@Inject
+	private FormatPerformanceAdapter formatPerformanceAdapter;
 	
 	// Input of algorithm when use enum ScreenUseAtr: 勤怠項目を利用する画面
 	private static final int DAILY_WORK_SCHEDULE = 19;
@@ -96,6 +94,14 @@ public class OutputItemDailyWorkScheduleFinder {
 	
 	/** The Constant NOT_USE. */
 	private static final int NOT_USE = 0;
+	
+	/** The Constant AUTHORITY. */
+	// SettingUnitType.AUTHORITY.value
+	private static final int AUTHORITY = 0;
+	
+	/** The Constant BUSINESS_TYPE. */
+	// SettingUnitType.BUSINESS_TYPE.value
+	private static final int BUSINESS_TYPE = 1;
 	
 	/**
 	 * Find by cid.
@@ -182,11 +188,10 @@ public class OutputItemDailyWorkScheduleFinder {
 	// algorithm for screen D: start screen
 	public List<DataInforReturnDto> getFormatDailyPerformance() {
 		String companyId = AppContexts.user().companyId();
-		// TODO: hoangdd - doi request list 402, do chua tach domain nen dung domain cu: OpOfDailyPerformance
-		// Get domain 実績修正画面で利用するフォーマット
-		Optional<FormatPerformance> optFormatPerformanceRepository = formatPerformanceRepository.getFormatPerformanceById(companyId);
-
-		switch (optFormatPerformanceRepository.get().getSettingUnitType()) 
+		// Get domain 実績修正画面で利用するフォーマット from request list 402
+		Optional<FormatPerformanceImport> optFormatPerformanceImport = formatPerformanceAdapter.getFormatPerformance(companyId);
+		
+		switch (optFormatPerformanceImport.get().getSettingUnitType()) 
 		{
 			case AUTHORITY: // In case of authority
 				// Get domain 会社の日別実績の修正のフォーマット
@@ -232,13 +237,12 @@ public class OutputItemDailyWorkScheduleFinder {
 	
 	// アルゴリズム「日別勤務表用フォーマットをコンバートする」を実行する(Execute algorithm "Convert daily work table format")
 	private List<DataInforReturnDto> getDomConvertDailyWork(String companyId, String code) {
-		// TODO: hoangdd - doi request list 402, do chua tach domain nen dung domain cu: OpOfDailyPerformance
-		// Get domain 実績修正画面で利用するフォーマット
-		Optional<FormatPerformance> optFormatPerformanceRepository = formatPerformanceRepository.getFormatPerformanceById(companyId);
+		// Get domain 実績修正画面で利用するフォーマット from request list 402
+		Optional<FormatPerformanceImport> optFormatPerformanceImport = formatPerformanceAdapter.getFormatPerformance(companyId);
 		
 		List<DataInforReturnDto> lstDataReturn = new ArrayList<>();
 		
-		switch (optFormatPerformanceRepository.get().getSettingUnitType()) 
+		switch (optFormatPerformanceImport.get().getSettingUnitType()) 
 		{
 			case AUTHORITY: // In case of authority
 				// ドメインモデル「会社の日別実績の修正のフォーマット」を取得する (Acquire the domain model "format of company's daily performance correction")

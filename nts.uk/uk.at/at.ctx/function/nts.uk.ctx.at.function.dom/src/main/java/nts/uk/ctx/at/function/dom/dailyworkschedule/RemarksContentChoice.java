@@ -6,7 +6,6 @@ package nts.uk.ctx.at.function.dom.dailyworkschedule;
 
 /**
  * The Enum RemarksContentChoice.
- * @author HoangDD
  */
 // 備考内容選択肢
 public enum RemarksContentChoice {
@@ -31,25 +30,29 @@ public enum RemarksContentChoice {
 	// 遅刻早退
 	LEAVING_EARLY(4, "Enum_LeavingEarly"),
 	
+	/** The holiday stampt. */
+	// 休日打刻
+	HOLIDAY_STAMP(5, "Enum_HolidayStamp"),
+	
 	/** The double engraved. */
 	// 二重打刻 
-	DOUBLE_ENGRAVED(5, "Enum_DoubleEngraved"),
+	DOUBLE_ENGRAVED(6, "Enum_DoubleEngraved"),
 	
 	/** The acknowledgment. */
 	// 承認反映
-	ACKNOWLEDGMENT(6, "Enum_Acknowledgment"),
+	ACKNOWLEDGMENT(7, "Enum_Acknowledgment"),
 	
 	/** The manual input. */
 	// 手入力
-	MANUAL_INPUT(7, "Enum_ManualInput"),
+	MANUAL_INPUT(8, "Enum_ManualInput"),
 	
 	/** The not calculated. */
 	// 未計算
-	NOT_CALCULATED(8, "Enum_NotCalculated"),
+	NOT_CALCULATED(9, "Enum_NotCalculated"),
 	
 	/** The exceed by application. */
 	// 事前申請超過
-	EXCEED_BY_APPLICATION(9, "Enum_ExceedByApplication");
+	EXCEED_BY_APPLICATION(10, "Enum_ExceedByApplication");
 
 	/** The value. */
 	public final int value;

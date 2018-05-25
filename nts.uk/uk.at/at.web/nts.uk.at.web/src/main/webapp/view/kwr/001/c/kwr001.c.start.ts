@@ -10,7 +10,7 @@ module nts.uk.at.view.kwr001.c {
             if (_.isEmpty(screenModel.currentCodeList()) || _.isNull(screenModel.currentCodeList())) {
                 $('#C3_2').focus();
             } else {
-                $('#C3_3').focus();    
+                $('#C3_3').focus();
             }
             blockUI.clear();
         });

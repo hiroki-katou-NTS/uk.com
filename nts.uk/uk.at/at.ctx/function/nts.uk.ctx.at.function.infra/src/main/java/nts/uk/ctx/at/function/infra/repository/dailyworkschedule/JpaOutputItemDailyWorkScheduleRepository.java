@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.function.infra.repository.dailyworkschedule;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +14,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
@@ -36,15 +34,6 @@ import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedu
  */
 @Stateless
 public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository implements OutputItemDailyWorkScheduleRepository{
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository#findByCode(int)
-	 */
-	@Override
-	public Optional<OutputItemDailyWorkSchedule> findByCode(String code) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository#add(nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule)

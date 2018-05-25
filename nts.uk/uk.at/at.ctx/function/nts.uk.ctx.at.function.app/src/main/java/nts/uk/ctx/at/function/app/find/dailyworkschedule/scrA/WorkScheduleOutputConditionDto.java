@@ -36,6 +36,9 @@ public class WorkScheduleOutputConditionDto {
 	/** The lst output item daily work schedule. */
 	private List<DataInforReturnDto> lstOutputItemDailyWorkSchedule;
 	
+	/** The exist authority. */
+	private boolean existAuthority;
+	
 	/**
 	 * Instantiates a new work schedule output condition dto.
 	 *
@@ -44,12 +47,13 @@ public class WorkScheduleOutputConditionDto {
 	 * @param strReturn the str return
 	 * @param lstOutputItemDailyWorkSchedule the lst output item daily work schedule
 	 */
-	public WorkScheduleOutputConditionDto(GeneralDate startDate, GeneralDate endDate, String strReturn, List<DataInforReturnDto> lstOutputItemDailyWorkSchedule) {
+	public WorkScheduleOutputConditionDto(GeneralDate startDate, GeneralDate endDate, String strReturn, List<DataInforReturnDto> lstOutputItemDailyWorkSchedule, boolean existAuthority) {
 		super();
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.strReturn = strReturn;
 		this.lstOutputItemDailyWorkSchedule = lstOutputItemDailyWorkSchedule;
+		this.existAuthority = existAuthority;
 	}
 }
 

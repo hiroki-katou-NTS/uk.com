@@ -14,14 +14,6 @@ import java.util.Optional;
 public interface OutputItemDailyWorkScheduleRepository {
 	
 	/**
-	 * Find by code.
-	 *
-	 * @param code the code
-	 * @return the optional
-	 */
-	public Optional<OutputItemDailyWorkSchedule> findByCode(String code);
-	
-	/**
 	 * Find by cid and code.
 	 *
 	 * @param code the code

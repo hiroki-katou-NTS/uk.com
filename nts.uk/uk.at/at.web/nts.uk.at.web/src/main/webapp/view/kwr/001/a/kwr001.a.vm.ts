@@ -74,10 +74,12 @@ module nts.uk.at.view.kwr001.a {
             enableByOutputFormat: KnockoutObservable<boolean>;
             enableBtnConfigure: KnockoutObservable<boolean>;
             enableConfigErrCode: KnockoutObservable<boolean>;
+            isAuthority: KnockoutObservable<boolean>;
             
             constructor() {
                 let self = this;
                 
+                self.isAuthority = ko.observable(true);
                 self.enableConfigErrCode = ko.observable(true);
                 self.enableByOutputFormat = ko.observable(true);
                 self.enableBtnConfigure = ko.observable(true);
@@ -200,7 +202,6 @@ module nts.uk.at.view.kwr001.a {
                 })
                 self.selectedDataOutputType.valueHasMutated();
 
-                // TODO: hoangdd - lay du lieu tu service
                 self.itemListCodeTemplate = ko.observableArray([]);
                 
                 // TODO: hoangdd - lay du lieu tu service
@@ -230,6 +231,10 @@ module nts.uk.at.view.kwr001.a {
                 })
                 self.selectedCodeA13_1.valueHasMutated();
                 
+                self.isAuthority.subscribe(function(value) {
+                    self.enableBtnConfigure(value);
+                })
+                
                 // start define KCP005
                 self.multiSelectedCode = ko.observableArray([]);
                 self.isShowAlreadySet = ko.observable(false);
@@ -239,7 +244,7 @@ module nts.uk.at.view.kwr001.a {
                 self.isMultiSelect = ko.observable(true);
                 self.isShowWorkPlaceName = ko.observable(false);
                 self.isShowSelectAllButton = ko.observable(false);
-                this.employeeList = ko.observableArray<UnitModel>([]);
+                self.employeeList = ko.observableArray<UnitModel>([]);
                 self.listComponentOption = {
                     isShowAlreadySet: self.isShowAlreadySet(),
                     isMultiSelect: self.isMultiSelect(),
@@ -262,15 +267,12 @@ module nts.uk.at.view.kwr001.a {
                 var dfd = $.Deferred<void>();
                 var self = this;
                 
-                // TODO - hoangdd: goi service lay domain cho A7_6. gio dang fix cung
-                self.enableBtnConfigure(true);
-                
                 $.when(self.getDataCharateristic()).done(function(dataCharacteristic: any) {
                     let isExist = !(_.isUndefined(dataCharacteristic) || _.isNull(dataCharacteristic));
                     self.getDataStartPageService(isExist).done(function(dataService: any) {
                         
                         self.itemListCodeTemplate(dataService.lstOutputItemDailyWorkSchedule);
-                        
+                        self.isAuthority(dataService.existAuthority);
                         switch(dataService.strReturn) {
                             // return screen A, show data from characteristic
                             case SHOW_CHARACTERISTIC:

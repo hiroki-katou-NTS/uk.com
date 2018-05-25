@@ -51,8 +51,7 @@ module nts.uk.at.view.kwr001.d {
             executeCopy(): void {
                 let self = this,
                     dataReturnScrC: any = {};
-                $('.save-error1').ntsError('validate');
-                $('.save-error1').ntsError('validate');
+                $('.save-error').ntsError('check');
                 if (nts.uk.ui.errors.hasError()) {
                     return;    
                 }

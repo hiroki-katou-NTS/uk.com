@@ -88,3 +88,9 @@
 	padding-top: 1px;
 	padding-bottom: 2px
 }
+
+/* popup error of kiban team show fail position --> override css */
+#func-notifier-errors {
+    top: 60px;
+    left: 10px;
+}
