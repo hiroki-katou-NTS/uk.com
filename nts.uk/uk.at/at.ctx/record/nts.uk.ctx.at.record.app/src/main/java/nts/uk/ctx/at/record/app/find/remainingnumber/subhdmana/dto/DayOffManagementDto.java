@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.find.remainingnumber.dayoffmanagement;
+package nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.dto;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;

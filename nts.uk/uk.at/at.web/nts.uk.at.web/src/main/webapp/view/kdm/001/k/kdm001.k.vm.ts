@@ -19,18 +19,8 @@ module nts.uk.at.view.kdm001.k.viewmodel {
         
         constructor() {
             var self = this;
-            
             info = getShared("KDM001_K_PARAMS");
-            if (info) {
-                self.workCode(info.selectedEmployee.workplaceCode);
-                self.workPlaceName(info.selectedEmployee.workplaceName);
-                self.employeeId(info.selectedEmployee.employeeId);
-                self.employeeCode(info.selectedEmployee.employeeCode);
-                self.employeeName(info.selectedEmployee.employeeName);
-                self.comDayOffId(info.row.comDayOffID);
-                self.dateHoliday(info.row.dayOffDate);
-                self.numberDay(info.row.requireDays+' 日');
-            }
+            self.initScreen(info);
             
             self.callService(self.comDayOffId(),self.employeeId());
             
@@ -40,7 +30,6 @@ module nts.uk.at.view.kdm001.k.viewmodel {
                 { headerText: nts.uk.resource.getText("KDM001_96"), key: 'remainDaysString', width: 100 },
                 { headerText: nts.uk.resource.getText("KDM001_96"), key: 'remainDays', width: 100, hidden: true}
             ]);
-            self.initScreen();
             
             
             self.currentCodeList.subscribe(function(codesSelect) {
@@ -61,19 +50,28 @@ module nts.uk.at.view.kdm001.k.viewmodel {
                         var iNum = parseFloat(x.remainDays);
                         var day = parseFloat(self.numberDay());
                         sumNum = sumNum + iNum;
-                        self.residualDay((day-sumNum)+' 日');
+                        self.residualDay(parseFloat((day-sumNum)).toFixed(1)+' 日');
                     });
                 } else {
                    var day = parseFloat(self.numberDay());
-                   self.residualDay(parseFloat(self.numberDay())+' 日');
+                   self.residualDay(parseFloat(self.numberDay()).toFixed(1)+' 日');
                 }
             });
             
         }
 
-        public initScreen(): void {
+        public initScreen(info): void {
             var self = this;
-            self.residualDay('0日');
+            if (info) {
+                self.workCode(info.selectedEmployee.workplaceCode);
+                self.workPlaceName(info.selectedEmployee.workplaceName);
+                self.employeeId(info.selectedEmployee.employeeId);
+                self.employeeCode(info.selectedEmployee.employeeCode);
+                self.employeeName(info.selectedEmployee.employeeName);
+                self.comDayOffId(info.row.comDayOffID);
+                self.dateHoliday(info.row.dayOffDate);
+                self.numberDay(parseFloat(info.row.requireDays).toFixed(1) +' 日');
+            }
             
         }
 
@@ -93,7 +91,11 @@ module nts.uk.at.view.kdm001.k.viewmodel {
             service.update(new UpdateModel(self.employeeId(),self.comDayOffId(),self.itemsSelected())).done(function(data) {
                 if (data.length > 0) {
                         let messageId = data[0];
-                        $('#multi-list').ntsError('set', { messageId: messageId });
+                       if(messageId === 'Msg_15') {
+                             nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        }else {
+                                $('#multi-list').ntsError('set', { messageId: messageId });
+                            }
                         block.clear();
                         return;
                     }
