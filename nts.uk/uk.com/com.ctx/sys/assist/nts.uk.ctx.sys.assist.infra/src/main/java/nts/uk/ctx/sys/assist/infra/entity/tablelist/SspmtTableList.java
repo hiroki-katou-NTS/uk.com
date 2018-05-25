@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.assist.dom.category.RecoverFormCompanyOther;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.HistoryDiviSion;
@@ -18,6 +19,7 @@ import nts.uk.ctx.sys.assist.dom.tablelist.ReferenceMonth;
 import nts.uk.ctx.sys.assist.dom.tablelist.ReferenceYear;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -141,14 +143,14 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = false)
 	@Column(name = "SAVE_DATE_FROM")
-	public String saveDateFrom;
+	public GeneralDate saveDateFrom;
 
 	/**
 	 * 保存日付To
 	 */
 	@Basic(optional = false)
 	@Column(name = "SAVE_DATE_TO")
-	public String saveDateTo;
+	public GeneralDate saveDateTo;
 
 	/**
 	 * 保存時保存範囲
@@ -721,7 +723,7 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = false)
 	@Column(name = "SCREEN_RETENTION_PERIOD")
-	public String screenRetentionPeriod;
+	public DatePeriod screenRetentionPeriod;
 
 	/**
 	 * 補足説明
@@ -735,91 +737,91 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = false)
 	@Column(name = "PARENT_TBL_JP_NAME")
-	public String parenttbljpname;
+	public String parentTblJpName;
 
 	/**
 	 * 親テーブル有無
 	 */
 	@Basic(optional = false)
-	@Column(name = "WITH_PARENT_TABLE")
-	public String withParentTable;
+	@Column(name = "HAS_PARENT_TABLE")
+	public int hasParentTable;
 
 	/**
 	 * 親テーブル物理名
 	 */
 	@Basic(optional = false)
 	@Column(name = "PARENT_TBL_NAME")
-	public String parenttblname;
+	public String parentTblName;
 
 	/**
 	 * 親側結合キー1
 	 */
 	@Basic(optional = false)
-	@Column(name = "PARENT_FIELD_1")
-	public String parentfield1;
+	@Column(name = "FIELD_PARENT_1")
+	public String Fieldparent1;
 
 	/**
 	 * 親側結合キー2
 	 */
 	@Basic(optional = false)
-	@Column(name = "PARENT_FIELD_2")
-	public String parentfield2;
+	@Column(name = "FIELD_PARENT_2")
+	public String Fieldparent2;
 
 	/**
 	 * 親側結合キー3
 	 */
 	@Basic(optional = false)
-	@Column(name = "PARENT_FIELD_3")
-	public String parentfield3;
+	@Column(name = "FIELD_PARENT_3")
+	public String Fieldparent3;
 
 	/**
 	 * 親側結合キー4
 	 */
 	@Basic(optional = false)
-	@Column(name = "PARENT_FIELD_4")
-	public String parentfield4;
+	@Column(name = "FIELD_PARENT_4")
+	public String Fieldparent4;
 
 	/**
 	 * 親側結合キー5
 	 */
 	@Basic(optional = false)
-	@Column(name = "PARENT_FIELD_5")
-	public String parentfield5;
+	@Column(name = "FIELD_PARENT_5")
+	public String Fieldparent5;
 
 	/**
 	 * 親側結合キー6
 	 */
 	@Basic(optional = false)
-	@Column(name = "PARENT_FIELD_6")
-	public String parentfield6;
+	@Column(name = "FIELD_PARENT_6")
+	public String Fieldparent6;
 
 	/**
 	 * 親側結合キー7
 	 */
 	@Basic(optional = false)
-	@Column(name = "PARENT_FIELD_7")
-	public String parentfield7;
+	@Column(name = "FIELD_PARENT_7")
+	public String Fieldparent7;
 
 	/**
 	 * 親側結合キー8
 	 */
 	@Basic(optional = false)
-	@Column(name = "PARENT_FIELD_8")
-	public String parentfield8;
+	@Column(name = "FIELD_PARENT_8")
+	public String Fieldparent8;
 
 	/**
 	 * 親側結合キー9
 	 */
 	@Basic(optional = false)
-	@Column(name = "PARENT_FIELD_9")
-	public String parentfield9;
+	@Column(name = "FIELD_PARENT_9")
+	public String Fieldparent9;
 
 	/**
 	 * 親側結合キー10
 	 */
 	@Basic(optional = false)
-	@Column(name = "PARENT_FIELD_10")
-	public String parentfield10;
+	@Column(name = "FIELD_PARENT_10")
+	public String Fieldparent10;
 
 	/**
 	 * 調査用保存
@@ -838,8 +840,9 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 				tableListPk.tableNo, tableJapaneseName, tableEnglishName, fieldAcqCid, fieldAcqDateTime,
 				fieldAcqEmployeeId, fieldAcqEndDate, fieldAcqStartDate, saveSetCode, saveSetName, saveFileName,
 				saveForm, saveDateFrom, saveDateTo, storageRangeSaved,
-				EnumAdaptor.valueOf(this.retentionPeriodCls, TimeStore.class), internalFileName,EnumAdaptor.valueOf(this.anotherComCls, RecoverFormCompanyOther.class)
-				,EnumAdaptor.valueOf(this.referenceYear, ReferenceYear.class),
+				EnumAdaptor.valueOf(this.retentionPeriodCls, TimeStore.class), internalFileName,
+				EnumAdaptor.valueOf(this.anotherComCls, RecoverFormCompanyOther.class),
+				EnumAdaptor.valueOf(this.referenceYear, ReferenceYear.class),
 				EnumAdaptor.valueOf(this.referenceYear, ReferenceMonth.class), compressedFileName, fieldChild1,
 				fieldChild2, fieldChild3, fieldChild4, fieldChild5, fieldChild6, fieldChild7, fieldChild8, fieldChild9,
 				fieldChild10, EnumAdaptor.valueOf(this.historyCls, HistoryDiviSion.class), canNotBeOld,
@@ -853,10 +856,9 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 				filedKeyUpdate7, filedKeyUpdate8, filedKeyUpdate9, filedKeyUpdate10, filedKeyUpdate11, filedKeyUpdate12,
 				filedKeyUpdate13, filedKeyUpdate14, filedKeyUpdate15, filedKeyUpdate16, filedKeyUpdate17,
 				filedKeyUpdate18, filedKeyUpdate19, filedKeyUpdate20, screenRetentionPeriod, supplementaryExplanation,
-				parenttbljpname, withParentTable, parenttblname, parentfield1, parentfield2, parentfield3, parentfield4,
-				parentfield5, parentfield6, parentfield7, parentfield8, parentfield9, parentfield10,
-				EnumAdaptor.valueOf(this.surveyPreservation, NotUseAtr.class)
-				);
+				parentTblJpName, EnumAdaptor.valueOf(this.hasParentTable, NotUseAtr.class), parentTblName, Fieldparent1,
+				Fieldparent2, Fieldparent3, Fieldparent4, Fieldparent5, Fieldparent6, Fieldparent7, Fieldparent8,
+				Fieldparent9, Fieldparent10, EnumAdaptor.valueOf(this.surveyPreservation, NotUseAtr.class));
 	}
 
 	public static SspmtTableList toEntity(TableList domain) {
@@ -890,11 +892,10 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 				domain.getFiledKeyUpdate12(), domain.getFiledKeyUpdate13(), domain.getFiledKeyUpdate14(),
 				domain.getFiledKeyUpdate15(), domain.getFiledKeyUpdate16(), domain.getFiledKeyUpdate17(),
 				domain.getFiledKeyUpdate18(), domain.getFiledKeyUpdate19(), domain.getFiledKeyUpdate20(),
-				domain.getScreenRetentionPeriod(), domain.getSupplementaryExplanation(), domain.getParenttbljpname(),
-				domain.getWithParentTable(), domain.getParenttblname(), domain.getParentfield1(),
-				domain.getParentfield2(), domain.getParentfield3(), domain.getParentfield4(), domain.getParentfield5(),
-				domain.getParentfield6(), domain.getParentfield7(), domain.getParentfield8(), domain.getParentfield9(),
-				domain.getParentfield10(), domain.getSurveyPreservation().value);
+				domain.getScreenRetentionPeriod(), domain.getSupplementaryExplanation(), domain.getParentTblJpName(),
+				domain.getHasParentTable().value, domain.getParentTblName(), domain.getFieldparent1(),
+				domain.getFieldparent2(), domain.getFieldparent3(), domain.getFieldparent4(), domain.getFieldparent5(),
+				domain.getFieldparent6(), domain.getFieldparent7(), domain.getFieldparent8(), domain.getFieldparent9(),
+				domain.getFieldparent10(), domain.getSurveyPreservation().value);
 	}
-
 }

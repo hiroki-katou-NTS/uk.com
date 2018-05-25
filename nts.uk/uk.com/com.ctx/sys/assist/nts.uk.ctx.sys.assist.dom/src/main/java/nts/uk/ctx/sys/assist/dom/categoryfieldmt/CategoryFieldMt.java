@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.assist.dom.categoryfieldmt;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * カテゴリ項目マスタ
@@ -349,66 +350,66 @@ public class CategoryFieldMt extends AggregateRoot {
 	/**
 	 * 親テーブル日本語名
 	 */
-	private String parenttbljpname;
+	private String parentTblJpName;
 	
 	/**
 	 * 親テーブル有無
 	 */
-	private String withParentTable;
+	private NotUseAtr hasParentTable;
 
 	/**
 	 * 親テーブル物理名
 	 */
-	private String parenttblname;
+	private String parentTblName;
 
 	/**
 	 * 親側結合キー1
 	 */
-	private String parentfield1;
+	private String fieldParent1;
 
 	/**
 	 * 親側結合キー2
 	 */
-	private String parentfield2;
+	private String fieldParent2;
 
 	/**
 	 * 親側結合キー3
 	 */
-	private String parentfield3;
+	private String fieldParent3;
 
 	/**
 	 * 親側結合キー4
 	 */
-	private String parentfield4;
+	private String fieldParent4;
 
 	/**
 	 * 親側結合キー5
 	 */
-	private String parentfield5;
+	private String fieldParent5;
 	/**
 	 * 親側結合キー6
 	 */
-	private String parentfield6;
+	private String fieldParent6;
 
 	/**
 	 * 親側結合キー7
 	 */
-	private String parentfield7;
+	private String fieldParent7;
 
 	/**
 	 * 親側結合キー8
 	 */
-	private String parentfield8;
+	private String fieldParent8;
 
 	/**
 	 * 親側結合キー9
 	 */
-	private String parentfield9;
+	private String fieldParent9;
 
 	/**
 	 * 親側結合キー10
 	 */
-	private String parentfield10;
+	private String fieldParent10;
 
 	/**
 	 * 子側結合キー1

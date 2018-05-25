@@ -3,10 +3,12 @@ package nts.uk.ctx.sys.assist.dom.tablelist;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.assist.dom.category.RecoverFormCompanyOther;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.HistoryDiviSion;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * テーブル一覧
@@ -97,12 +99,12 @@ public class TableList extends AggregateRoot {
 	/**
 	 * 保存日付From
 	 */
-	private String saveDateFrom;
+	private GeneralDate saveDateFrom;
 
 	/**
 	 * 保存日付To
 	 */
-	private String saveDateTo;
+	private GeneralDate saveDateTo;
 
 	/**
 	 * 保存時保存範囲
@@ -511,7 +513,7 @@ public class TableList extends AggregateRoot {
 	/**
 	 * 画面保存期間
 	 */
-	private String screenRetentionPeriod;
+	private DatePeriod screenRetentionPeriod;
 
 	/**
 	 * 補足説明
@@ -521,67 +523,67 @@ public class TableList extends AggregateRoot {
 	/**
 	 * 親テーブル日本語名
 	 */
-	private String parenttbljpname;
+	private String parentTblJpName;
 
 	/**
 	 * 親テーブル有無
 	 */
-	private String withParentTable;
+	private NotUseAtr hasParentTable;
 
 	/**
 	 * 親テーブル物理名
 	 */
-	private String parenttblname;
+	private String parentTblName;
 
 	/**
 	 * 親側結合キー1
 	 */
-	private String parentfield1;
+	private String Fieldparent1;
 
 	/**
 	 * 親側結合キー2
 	 */
-	private String parentfield2;
+	private String Fieldparent2;
 
 	/**
 	 * 親側結合キー3
 	 */
-	private String parentfield3;
+	private String Fieldparent3;
 
 	/**
 	 * 親側結合キー4
 	 */
-	private String parentfield4;
+	private String Fieldparent4;
 
 	/**
 	 * 親側結合キー5
 	 */
-	private String parentfield5;
+	private String Fieldparent5;
 
 	/**
 	 * 親側結合キー6
 	 */
-	private String parentfield6;
+	private String Fieldparent6;
 
 	/**
 	 * 親側結合キー7
 	 */
-	private String parentfield7;
+	private String Fieldparent7;
 
 	/**
 	 * 親側結合キー8
 	 */
-	private String parentfield8;
+	private String Fieldparent8;
 
 	/**
 	 * 親側結合キー9
 	 */
-	private String parentfield9;
+	private String Fieldparent9;
 
 	/**
 	 * 親側結合キー10
 	 */
-	private String parentfield10;
+	private String Fieldparent10;
 
 	/**
 	 * 調査用保存
