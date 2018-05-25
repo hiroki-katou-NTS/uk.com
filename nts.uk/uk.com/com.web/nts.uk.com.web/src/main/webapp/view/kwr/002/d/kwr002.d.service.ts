@@ -30,7 +30,7 @@ module nts.uk.com.view.kwr002.d {
         /**
          * delete singleAttendanceRecord
          */
-        export function deleteSingleAttendance(singleAttendanceRecord: viewmodel.model.SingleAttendanceRecord) {
+        export function deleteSingleAttendance(singleAttendanceRecord: viewmodel.model.SingleAttendanceCommand) {
             return nts.uk.request.ajax("at", path.deleteSingleAttendanceRecord, singleAttendanceRecord);
         }
         /**
@@ -47,6 +47,9 @@ module nts.uk.com.view.kwr002.d {
         }
         export function testSingleHandle(singleCommand:viewmodel.model.SingleAttendanceCommand) {
             return nts.uk.request.ajax("at", path.updateSingleAttendanceRecord,singleCommand);
+        }
+        export function testCalculateHandle(singleCommand:viewmodel.model.CalculateAttendanceRecordSaveCommand) {
+            return nts.uk.request.ajax("at", path.testAnotherPath,singleCommand);
         }
     }
 }
