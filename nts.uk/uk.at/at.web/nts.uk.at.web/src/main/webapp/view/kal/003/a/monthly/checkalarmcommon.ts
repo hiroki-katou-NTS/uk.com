@@ -30,7 +30,7 @@ module nts.uk.at.view.kal003.a.tab {
             
             self.dataItems = ko.observableArray([]);
             //
-            self.category = ko.observable(category);
+            self.category = ko.observable(model.CATEGORY.MONTHLY);
             
             
             let temp = [];
@@ -130,6 +130,7 @@ module nts.uk.at.view.kal003.a.tab {
             let self = this;
             block.invisible();
             if (self.currentRowSelected() < 1 || self.currentRowSelected() > self.listExtraResultMonthly().length) {
+                block.clear();
                 return;
             }
             self.listExtraResultMonthly.remove(function(item) { return item.rowId() == (self.currentRowSelected()); })
