@@ -41,13 +41,16 @@ public class DayOffManagementService {
 			response.add("Msg_733");
 		} else if (dayOffManagementData.getDaysOffMana().size() == 2) {
 
-			if (dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(ONE_DAY)) {
+			if (dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(ONE_DAY) ||
+					dayOffManagementData.getDaysOffMana().get(1).getRemainDays().equals(ONE_DAY)) {
 
-				response.add("Msg_733");
+				response.add("Msg_739");
 
-			} else if (dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(HALF_DAY)) {
-				if (!dayOffManagementData.getDaysOffMana().get(1).getRemainDays().equals(HALF_DAY)) {
-					response.add("Msg_739");
+			} else if (dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(HALF_DAY) ||
+					dayOffManagementData.getDaysOffMana().get(1).getRemainDays().equals(HALF_DAY)) {
+				if (!dayOffManagementData.getDaysOffMana().get(1).getRemainDays().equals(HALF_DAY) ||
+						!dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(HALF_DAY)) {
+					response.add("Msg_733");
 				}
 			}
 		} else if (dayOffManagementData.getDaysOffMana().size() >= 3) {

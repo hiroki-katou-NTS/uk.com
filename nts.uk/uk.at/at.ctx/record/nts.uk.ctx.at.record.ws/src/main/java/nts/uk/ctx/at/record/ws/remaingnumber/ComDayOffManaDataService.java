@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.ws.remaingnumber;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -13,7 +12,6 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.command.remainingnumber.subhdmana.DayOffManaCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.subhdmana.DayOffManaCommandHandler;
 import nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.DayOffManagementFinder;
-import nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.dto.DayOffManagementDto;
 import nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.dto.DayOffResult;
 
 @Path("at/record/remainnumber/subhd")

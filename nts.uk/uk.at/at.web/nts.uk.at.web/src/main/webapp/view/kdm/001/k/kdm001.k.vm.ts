@@ -91,13 +91,13 @@ module nts.uk.at.view.kdm001.k.viewmodel {
             service.update(new UpdateModel(self.employeeId(),self.comDayOffId(),self.itemsSelected())).done(function(data) {
                 if (data.length > 0) {
                         let messageId = data[0];
+                        nts.uk.ui.windows.close();
                        if(messageId === 'Msg_15') {
                              nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         }else {
                                 $('#multi-list').ntsError('set', { messageId: messageId });
                             }
                         block.clear();
-                        return;
                     }
             }).fail(function(error) {
                
