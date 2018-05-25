@@ -34,6 +34,16 @@ module nts.uk.at.view.kdm001.share.model {
             new model.ItemModel(0.5, getText('KDM001_128'))
         ];
     }
+    
+    export function formatterDay(value) {
+            if (value) {
+                return value >= 0 ? "&nbsp;" + value + '日' : value + '日';
+            } else {
+                return "&nbsp;0日";
+            }
+        
+    }
+    
     export class ItemModel {
         code: any;
         name: string;

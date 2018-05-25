@@ -1,5 +1,6 @@
 module nts.uk.at.view.kdm001.e.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
+    import model     = kdm001.share.model;
     export class ScreenModel {
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         columns: KnockoutObservableArray<any>;
@@ -34,7 +35,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
             self.columns = ko.observableArray([
                 { headerText: 'コード', key: 'subOfHDID', width: 100, hidden: true },
                 { headerText: nts.uk.resource.getText("KDM001_95"), key: 'dayoffDate', width: 110 },
-                { headerText: nts.uk.resource.getText("KDM001_96"), key: 'remainDays', formatter:self.formatterDay, width: 100 }
+                { headerText: nts.uk.resource.getText("KDM001_96"), key: 'remainDays', formatter:model.formatterDay, width: 100 }
             ]);
             
             self.currentCodeList.subscribe(()=> {
@@ -120,14 +121,6 @@ module nts.uk.at.view.kdm001.e.viewmodel {
          */
         public closeDialog():void {
             nts.uk.ui.windows.close();
-        }
-        
-        formatterDay(value) {
-            if (value) {
-                return value >= 0 ? "&nbsp;" + value + '日' : value + '日';
-            } else {
-                return "&nbsp;0日";
-            }
         }
     }
 

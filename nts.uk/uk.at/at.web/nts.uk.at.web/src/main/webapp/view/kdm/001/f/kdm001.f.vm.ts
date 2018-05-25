@@ -1,4 +1,5 @@
 module nts.uk.at.view.kdm001.f.viewmodel {
+    import model     = kdm001.share.model;
     export class ScreenModel {
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         columns: KnockoutObservableArray<any>;
@@ -16,7 +17,7 @@ module nts.uk.at.view.kdm001.f.viewmodel {
             self.columns = ko.observableArray([
                 { headerText: 'コード', key: 'payoutId', width: 100, hidden: true },
                 { headerText: nts.uk.resource.getText("KDM001_95"), key: 'dayoffDate', width: 100 },
-                { headerText: nts.uk.resource.getText("KDM001_96"), key: 'occurredDays', width: 100 }
+                { headerText: nts.uk.resource.getText("KDM001_96"), key: 'occurredDays', formatter:model.formatterDay, width: 100 }
             ]);
             self.initScreen();
             
