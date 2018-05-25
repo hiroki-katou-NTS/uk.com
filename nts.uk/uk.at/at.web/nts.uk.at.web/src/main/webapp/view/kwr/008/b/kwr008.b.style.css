@@ -1,6 +1,6 @@
 .combo-box{
-	width: 90px;
-	height: 30px;
+	width: 80px;
+	height: 23px;
 	display: block;
 }
 
@@ -13,17 +13,25 @@
 }
 
 .headingName {
-	height:17px;
+	height:12px;
 }
 
 #table-output-items tbody tr {
-	height:32px;
+	height:28px;
+}
+
+#table-output-items .small {
+	height:20px !important;
 }
 
 .nts-fixed-body-wrapper {
-	height:321px !important;
+	height:281px !important;
 }
 
 #listStandardImportSetting_headers_v {
 	width : 100% !important;
+}
+
+.limited-label-view {
+	max-width: 1000px;
 }

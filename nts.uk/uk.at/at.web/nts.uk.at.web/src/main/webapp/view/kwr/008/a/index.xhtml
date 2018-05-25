@@ -27,7 +27,7 @@
 				<!-- A1_1 -->
 				<button tabindex="1" id="A1_1" class="proceed"
 				data-bind="click: exportReport,
-							enable: $root.errors.isEmpty &amp;&amp; checkInput()">#{i18n.getText('KWR008_3')}</button>
+							enable: checkInput() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KWR008_3')}</button>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
 				<!-- A2_1  CCG001-->
@@ -91,7 +91,7 @@
 								optionsText: 'localizedName',
 								required: true,
 								columns: [
-									{ prop: 'localizedName', length: 2 }
+									{ prop: 'localizedName', length: 10, lengthDropDown: 12}
 								]}"></div>
 						</div>
 						

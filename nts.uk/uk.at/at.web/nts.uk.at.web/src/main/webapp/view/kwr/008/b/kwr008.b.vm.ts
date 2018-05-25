@@ -264,7 +264,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                         if (operationName) {
                             operationName = operationName + " - " + name;
                         } else {
-                            operationName = name;
+                            operationName = " - " + name;
                         }
                     }
                 }).always(function() {
@@ -437,13 +437,18 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 });
             } else {
                 service.updateOutputItemSetting(data).done(() => {
-                    info({ messageId: 'Msg_15' }).then(() => {
-                        let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd() == self.selectedCode(); });
-                        if (selectedIndex > -1) {
-                            self.currentSetOutputSettingCode().displayName = self.currentSetOutputSettingCode().name();
+                    let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd() == self.selectedCode(); });
+                    if (selectedIndex > -1) {
+                        if (self.currentSetOutputSettingCode().displayName == self.currentSetOutputSettingCode().name()) {
+                            self.currentSetOutputSettingCode().displayName = self.currentSetOutputSettingCode().displayName + " ";
                             self.listStandardImportSetting.replace(self.listStandardImportSetting()[selectedIndex], self.currentSetOutputSettingCode());
-                            self.selectedCode(self.currentSetOutputSettingCode().cd());
-                        }
+                        } 
+                        self.currentSetOutputSettingCode().displayName = self.currentSetOutputSettingCode().name();
+                        self.listStandardImportSetting.replace(self.listStandardImportSetting()[selectedIndex], self.currentSetOutputSettingCode());
+                    }
+                    info({ messageId: 'Msg_15' }).then(() => {
+                        self.selectedCode(self.currentSetOutputSettingCode().cd());
+                        $('#B3_3').focus();
                     });
                 }).fail(err => {
                     console.log(err);

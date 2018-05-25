@@ -24,3 +24,7 @@ body .fixed-flex-layout-right {
 .form-label {
 	width: 110px;
 }
+
+#outputItem .ui-igcombo-list {
+	width: 265px;
+}
