@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -496,8 +497,8 @@ public class ManualSetDeletionService extends ExportService<Object> {
 			rowCsv.put(headerCsv.get(75), dataTarget.getFieldDate17());
 			rowCsv.put(headerCsv.get(76), dataTarget.getFieldDate18());
 			rowCsv.put(headerCsv.get(77), dataTarget.getFieldDate19());
-			rowCsv.put(headerCsv.get(78), dataTarget.getFieldDate20());
 
+			rowCsv.put(headerCsv.get(78), dataTarget.getFieldDate20());
 			// set time of deletion
 			setFromToTimeDel(rowCsv, headerCsv, dataTarget);
 
@@ -572,7 +573,9 @@ public class ManualSetDeletionService extends ExportService<Object> {
 			Map<String, Object> rowCsv2 = new HashMap<>();
 			rowCsv2.put(headerCsv2.get(0), employeeDeletion.getEmployeeId());
 			rowCsv2.put(headerCsv2.get(1), employeeDeletion.getEmployeeCode());
-			rowCsv2.put(headerCsv2.get(2), CommonKeyCrypt.encrypt(employeeDeletion.getBusinessName().v()));
+			byte[] businessNameEncode = Base64.getEncoder().encode(employeeDeletion.getBusinessName().v().getBytes());
+			rowCsv2.put(headerCsv2.get(2), new String(businessNameEncode));
+//			rowCsv2.put(headerCsv2.get(2), CommonKeyCrypt.encrypt(employeeDeletion.getBusinessName().v()));  << error Illegal key size
 			dataSourceCsv2.add(rowCsv2);
 		}
 

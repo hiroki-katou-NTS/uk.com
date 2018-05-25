@@ -217,9 +217,8 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 	public List<List<String>> getDataForEachCaegory(TableDeletionDataCsv tableDelData, List<EmployeeDeletion> employeeDeletions) {
 		Map<String, Object> parrams = new HashMap<>();
 		String sqlStr = buildGetDataForEachCatSql(tableDelData, employeeDeletions, parrams);
-		
 		TypedQueryWrapper<Object[]> query = (TypedQueryWrapper<Object[]>)this.queryProxy()
-				.query(sqlStr, Object[].class);
+				.namedQuery(sqlStr, Object[].class);
 		for(Entry<String, Object> entry : parrams.entrySet()) {
 			query.setParameter(entry.getKey(), entry.getValue());
 		}
@@ -287,30 +286,30 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 
 		buffer.append(" select ");
 		// acqCidField
-		if (acqCidField != null) {
+		if (acqCidField != null && !"null".equals(acqCidField)) {
 			buffer.append(tblAcq + "." + acqCidField + " as h_cid, ");
 		}
 		// acqEmployeeField
-		if (acqEmployeeField != null) {
+		if (acqEmployeeField != null && !"null".equals(acqEmployeeField)) {
 			buffer.append(tblAcq + "." + acqEmployeeField + " as h_sid, ");
 		}
 		// acqDateField
-		if (acqDateField != null) {
+		if (acqDateField != null && !"null".equals(acqDateField)) {
 			buffer.append(tblAcq + "." + acqDateField + " as h_date, ");
 		} else {
 			buffer.append(" NULL as h_date, ");
 		}
 		// acqStartDateField
-		if (acqStartDateField != null) {
+		if (acqStartDateField != null && !"null".equals(acqStartDateField)) {
 			buffer.append(tblAcq + "." + acqStartDateField + " as h_date_start, ");
 		} else {
 			buffer.append(" NULL as h_date_start, ");
 		}
 		// acqEndDateField
-		if (acqEndDateField != null) {
+		if (acqEndDateField != null && !"null".equals(acqEndDateField)) {
 			buffer.append(tblAcq + "." + acqEndDateField + " as h_date_end, ");
 		} else {
-			buffer.append(" NULL as h_date_start, ");
+			buffer.append(" NULL as h_date_end, ");
 		}
 		
 		if (hasParentTbl) {
@@ -326,7 +325,7 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 	 * @param tblName
 	 */
 	private void buildFromPart(StringBuffer buffer, String tblName) {
-		buffer.append(" FROM " + tblName );
+		buffer.append(" from " + tblName + " as " + tblName);
 	}
 	
 	/**
@@ -339,52 +338,62 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		String parentTblName = tableDelData.getParentTblName();
 		buffer.append(" INNER　JOIN " + parentTblName + " ON ");
 		
-		if (tableDelData.getFieldChild1() != null && tableDelData.getFieldParent1() != null) {
+		if (tableDelData.getFieldChild1() != null && !"null".equals(tableDelData.getFieldChild1()) 
+				&& tableDelData.getFieldParent1() != null && !"null".equals(tableDelData.getFieldParent1())) {
 			buffer.append(tblName+ tableDelData.getFieldChild1() 
 				+ " = " + parentTblName + tableDelData.getFieldParent1());
 		}
 		
-		if (tableDelData.getFieldChild2() != null && tableDelData.getFieldParent2() != null) {
+		if (tableDelData.getFieldChild2()  != null && !"null".equals(tableDelData.getFieldChild2())
+				&& tableDelData.getFieldParent2() != null && !"null".equals(tableDelData.getFieldParent2())) {
 			buffer.append(" AND " + tblName + "." + tableDelData.getFieldChild2() 
 				+ " = " + parentTblName + "." + tableDelData.getFieldParent2());
 		}
 		
-		if (tableDelData.getFieldChild3() != null && tableDelData.getFieldParent3() != null) {
+		if (tableDelData.getFieldChild3() != null && !"null".equals(tableDelData.getFieldChild3())
+				&& tableDelData.getFieldParent3() != null && !"null".equals(tableDelData.getFieldParent3())) {
 			buffer.append(" AND " + tblName + "." + tableDelData.getFieldChild3() 
 				+ " = " + parentTblName + "." + tableDelData.getFieldParent3());
 		}
 		
-		if (tableDelData.getFieldChild4() != null && tableDelData.getFieldParent4() != null) {
+		if (tableDelData.getFieldChild4() != null && !"null".equals(tableDelData.getFieldChild4())
+				&& tableDelData.getFieldParent4() != null && !"null".equals(tableDelData.getFieldChild4())) {
 			buffer.append(" AND " + tblName + "." + tableDelData.getFieldChild4() 
 				+ " = " + parentTblName + "." + tableDelData.getFieldParent4());
 		}
 		
-		if (tableDelData.getFieldChild5() != null && tableDelData.getFieldParent5() != null) {
+		if (tableDelData.getFieldChild5() != null && !"null".equals(tableDelData.getFieldChild5())
+				&& tableDelData.getFieldParent5() != null && !"null".equals(tableDelData.getFieldChild5())) {
 			buffer.append(" AND " + tblName + "." + tableDelData.getFieldChild5() 
 				+ " = " + parentTblName + "." + tableDelData.getFieldParent5());
 		}
 		
-		if (tableDelData.getFieldChild6() != null && tableDelData.getFieldParent6() != null) {
+		if (tableDelData.getFieldChild6() != null && !"null".equals(tableDelData.getFieldChild6())
+				&& tableDelData.getFieldParent6() != null && !"null".equals(tableDelData.getFieldChild6())) {
 			buffer.append(" AND " + tblName + "." + tableDelData.getFieldChild6() 
 				+ " = " + parentTblName + "." + tableDelData.getFieldParent6());
 		}
 		
-		if (tableDelData.getFieldChild7() != null && tableDelData.getFieldParent7() != null) {
+		if (tableDelData.getFieldChild7() != null  && !"null".equals(tableDelData.getFieldChild7())
+				&& tableDelData.getFieldParent7() != null && !"null".equals(tableDelData.getFieldChild7())) {
 			buffer.append(" AND " + tblName + "." + tableDelData.getFieldChild7() 
 				+ " = " + parentTblName + "." + tableDelData.getFieldParent7());
 		}
 		
-		if (tableDelData.getFieldChild8() != null && tableDelData.getFieldParent8() != null) {
+		if (tableDelData.getFieldChild8() != null  && !"null".equals(tableDelData.getFieldChild8())
+				&& tableDelData.getFieldParent8() != null && !"null".equals(tableDelData.getFieldChild8())) {
 			buffer.append(" AND " + tblName + "." + tableDelData.getFieldChild8() 
 				+ " = " + parentTblName + "." + tableDelData.getFieldParent8());
 		}
 		
-		if (tableDelData.getFieldChild9() != null && tableDelData.getFieldParent9() != null) {
+		if (tableDelData.getFieldChild9() != null  && !"null".equals(tableDelData.getFieldChild9())
+				&& tableDelData.getFieldParent9() != null && !"null".equals(tableDelData.getFieldChild9())) {
 			buffer.append(" AND " + tblName + "." + tableDelData.getFieldChild9() 
 				+ " = " + parentTblName + "." + tableDelData.getFieldParent9());
 		}
 		
-		if (tableDelData.getFieldChild10() != null && tableDelData.getFieldParent10() != null) {
+		if (tableDelData.getFieldChild10() != null  && !"null".equals(tableDelData.getFieldChild10())
+				&& tableDelData.getFieldParent10() != null && !"null".equals(tableDelData.getFieldChild10())) {
 			buffer.append(" AND " + tblName + "." + tableDelData.getFieldChild10() 
 				+ " = " + parentTblName + "." + tableDelData.getFieldParent10());
 		}
@@ -410,23 +419,23 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 			employeeIds.add(employeeDeletion.getEmployeeId());
 		}
 		
-		buffer.append(" WHERE ");
+		buffer.append(" WHERE 1 = 1 ");
 		
 		//company id
-		if (tableDelData.getFieldAcqCid() != null) {
-			buffer.append(tblAcq + "." + tableDelData.getFieldAcqCid() + " = :cid ");
+		if (tableDelData.getFieldAcqCid() != null && !"null".equals(tableDelData.getFieldAcqCid())) {
+			buffer.append("AND" + tblAcq + "." + tableDelData.getFieldAcqCid() + " = :cid ");
 			parrams.put("cid", tableDelData.getCompanyId());
 		}
 		
 		//employee id
-		if (tableDelData.getFieldAcqEmployeeId() != null) {
+		if (tableDelData.getFieldAcqEmployeeId() != null && !"null".equals(tableDelData.getFieldAcqEmployeeId())) {
 			buffer.append(" AND " + tblAcq + "." + tableDelData.getFieldAcqEmployeeId() + " IN (:employeeIds) ");
 			parrams.put("employeeIds", employeeIds);
 		}
 		
 		//date
 		String acqDateTimeField = tableDelData.getFieldAcqDateTime();
-		if (acqDateTimeField != null) {
+		if (acqDateTimeField != null && !"null".equals(acqDateTimeField)) {
 			if (!isDateFieldInOracle(acqDateTimeField, tableDelData)) {
 				buffer.append(" AND " + tblAcq + "." + acqDateTimeField + " >= :startDate ");
 				buffer.append(" AND " + tblAcq + "." + acqDateTimeField + " <= :endDate ");
@@ -441,7 +450,8 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		String acqStartDateField = tableDelData.getFieldAcqStartDate();
 		String acqEndDateField = tableDelData.getFieldAcqEndDate();
 		
-		if (acqStartDateField != null && acqEndDateField != null) {
+		if (acqStartDateField != null && !"null".equals(acqStartDateField)
+				&& acqEndDateField != null && !"null".equals(acqEndDateField)) {
 			if (!isDateFieldInOracle(acqStartDateField, tableDelData)) {
 				buffer.append(" AND " + tblAcq + "." + acqStartDateField + " >= :startDate ");
 				buffer.append(" AND " + tblAcq + "." + acqEndDateField + " <= :endDate ");
@@ -453,7 +463,7 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		}
 		
 		//condition default
-		if (tableDelData.getDefaultCondKeyQuery() != null) {
+		if (tableDelData.getDefaultCondKeyQuery() != null && !"null".equals(tableDelData.getDefaultCondKeyQuery())) {
 			buffer.append(" AND " + tableDelData.getDefaultCondKeyQuery());
 		}
 	}

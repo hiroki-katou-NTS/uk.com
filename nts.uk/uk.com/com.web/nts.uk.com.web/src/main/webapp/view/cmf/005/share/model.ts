@@ -1,8 +1,8 @@
 module nts.uk.com.view.cmf005.share.model {
 
     export enum SAVE_BEFOR_DELETE_ATR {
-        YES = 0,
-        NO = 1
+        YES = 1,
+        NO = 0
     }
 
     export enum SYSTEM_TYPE {
