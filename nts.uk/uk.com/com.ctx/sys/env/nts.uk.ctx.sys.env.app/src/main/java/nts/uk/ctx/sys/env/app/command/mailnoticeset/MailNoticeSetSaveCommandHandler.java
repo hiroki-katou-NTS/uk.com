@@ -10,12 +10,14 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.adapter.EmployeeInfoContactAdapter;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.adapter.EnvPasswordAdapter;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.adapter.PersonContactAdapter;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.CheckChangePassOutput;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.EmployeeInfoContactImport;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PersonContactImport;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSetting;
@@ -56,16 +58,30 @@ public class MailNoticeSetSaveCommandHandler extends CommandHandler<MailNoticeSe
 	protected void handle(CommandHandlerContext<MailNoticeSetSaveCommand> context) {
 
 		String companyId = AppContexts.user().companyId();
+		String userId = AppContexts.user().userId();
 		MailNoticeSetSaveCommand command = context.getCommand();
 
 		if (command.getIsPasswordUpdate()) {
-
-			// TODO Check password - Request List 383 (dung EnvPasswordAdapter)
-
-			// Update password - Request List 384
+			String oldPassword = command.getOldPassword();
 			String newPassword = command.getNewPassword();
-			if (!StringUtil.isNullOrEmpty(newPassword, true)) {
-				this.passwordAdapter.updatePassword(newPassword);
+			String confirmNewPassword = command.getConfirmNewPassword();
+			
+			if (!StringUtil.isNullOrEmpty(oldPassword, true)
+					&& !StringUtil.isNullOrEmpty(newPassword, true)
+					&& !StringUtil.isNullOrEmpty(confirmNewPassword, true)) {
+				// Check password - Request List 383
+				CheckChangePassOutput checkResult = this.passwordAdapter.checkBeforeChangePassword(userId, oldPassword, newPassword, confirmNewPassword);
+				if (checkResult.isError()) {
+					// Throw error list
+					BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
+					checkResult.getMessage().forEach(bundledBusinessExceptions::addMessage);
+					if (!bundledBusinessExceptions.cloneExceptions().isEmpty()) {
+						throw bundledBusinessExceptions;
+					}
+				} else {
+					// Update password - Request List 384				
+					this.passwordAdapter.updatePassword(newPassword);
+				}	
 			}
 		}
 
