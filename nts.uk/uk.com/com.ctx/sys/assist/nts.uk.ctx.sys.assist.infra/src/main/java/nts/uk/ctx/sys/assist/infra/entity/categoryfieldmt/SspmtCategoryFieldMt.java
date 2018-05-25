@@ -58,77 +58,77 @@ public class SspmtCategoryFieldMt extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "CLS_KEY_QUERY_1")
-	public String clsKeyQuery1;
+	public int clsKeyQuery1;
 
 	/**
 	 * 抽出キー区分2
 	 */
 	@Basic(optional = true)
 	@Column(name = "CLS_KEY_QUERY_2")
-	public String clsKeyQuery2;
+	public int clsKeyQuery2;
 
 	/**
 	 * 抽出キー区分3
 	 */
 	@Basic(optional = true)
 	@Column(name = "CLS_KEY_QUERY_3")
-	public String clsKeyQuery3;
+	public int clsKeyQuery3;
 
 	/**
 	 * 抽出キー区分4
 	 */
 	@Basic(optional = true)
 	@Column(name = "CLS_KEY_QUERY_4")
-	public String clsKeyQuery4;
+	public int clsKeyQuery4;
 
 	/**
 	 * 抽出キー区分5
 	 */
 	@Basic(optional = true)
 	@Column(name = "CLS_KEY_QUERY_5")
-	public String clsKeyQuery5;
+	public int clsKeyQuery5;
 
 	/**
 	 * 抽出キー区分6
 	 */
 	@Basic(optional = true)
 	@Column(name = "CLS_KEY_QUERY_6")
-	public String clsKeyQuery6;
+	public int clsKeyQuery6;
 
 	/**
 	 * 抽出キー区分7
 	 */
 	@Basic(optional = true)
 	@Column(name = "CLS_KEY_QUERY_7")
-	public String clsKeyQuery7;
+	public int clsKeyQuery7;
 
 	/**
 	 * 抽出キー区分8
 	 */
 	@Basic(optional = true)
 	@Column(name = "CLS_KEY_QUERY_8")
-	public String clsKeyQuery8;
+	public int clsKeyQuery8;
 
 	/**
 	 * 抽出キー区分9
 	 */
 	@Basic(optional = true)
 	@Column(name = "CLS_KEY_QUERY_9")
-	public String clsKeyQuery9;
+	public int clsKeyQuery9;
 
 	/**
 	 * 抽出キー区分10
 	 */
 	@Basic(optional = true)
 	@Column(name = "CLS_KEY_QUERY_10")
-	public String clsKeyQuery10;
+	public int clsKeyQuery10;
 
 	/**
 	 * 抽出キー条件固定
 	 */
 	@Basic(optional = true)
-	@Column(name = "DEFAULT_COND_KEY_QUERY")
-	public String defaultCondKeyQuery;
+	@Column(name = "EXTRACT_COND_KEY_FIX")
+	public String extractCondKeyFix;
 
 	/**
 	 * 抽出キー項目1
@@ -493,7 +493,7 @@ public class SspmtCategoryFieldMt extends UkJpaEntity implements Serializable {
 	@Basic(optional = true)
 	@Column(name = "PARENT_TBL_JP_NAME")
 	public String parentTblJpName;
-	
+
 	/**
 	 * 親テーブル有無
 	 */
@@ -692,7 +692,7 @@ public class SspmtCategoryFieldMt extends UkJpaEntity implements Serializable {
 		return new CategoryFieldMt(this.categoryFieldMtPk.categoryId, this.categoryFieldMtPk.tableNo,
 				this.tableJapanName, this.tableEnglishName, this.timeStopDelete, this.clsKeyQuery1, this.clsKeyQuery2,
 				this.clsKeyQuery3, this.clsKeyQuery4, this.clsKeyQuery5, this.clsKeyQuery6, this.clsKeyQuery7,
-				this.clsKeyQuery8, this.clsKeyQuery9, this.clsKeyQuery10, this.defaultCondKeyQuery, this.fieldKeyQuery1,
+				this.clsKeyQuery8, this.clsKeyQuery9, this.clsKeyQuery10, this.extractCondKeyFix, this.fieldKeyQuery1,
 				this.fieldKeyQuery2, this.fieldKeyQuery3, this.fieldKeyQuery4, this.fieldKeyQuery5, this.fieldKeyQuery6,
 				this.fieldKeyQuery7, this.fieldKeyQuery8, this.fieldKeyQuery9, this.fieldKeyQuery10, this.fieldDate1,
 				this.fieldDate2, this.fieldDate3, this.fieldDate4, this.fieldDate5, this.fieldDate6, this.fieldDate7,
@@ -703,48 +703,45 @@ public class SspmtCategoryFieldMt extends UkJpaEntity implements Serializable {
 				this.filedKeyUpdate7, this.filedKeyUpdate8, this.filedKeyUpdate9, this.filedKeyUpdate10,
 				this.filedKeyUpdate11, this.filedKeyUpdate12, this.filedKeyUpdate13, this.filedKeyUpdate14,
 				this.filedKeyUpdate15, this.filedKeyUpdate16, this.filedKeyUpdate17, this.filedKeyUpdate18,
-				this.filedKeyUpdate19, this.filedKeyUpdate20,
-				EnumAdaptor.valueOf(this.historyCls, HistoryDiviSion.class), this.parentTblJpName,
-				EnumAdaptor.valueOf(this.hasParentTable, NotUseAtr.class)
-				, this.parentTblName,
-				this.fieldParent1, this.fieldParent2, this.fieldParent3, this.fieldParent4, this.fieldParent5,
-				this.fieldParent6, this.fieldParent7, this.fieldParent8, this.fieldParent9, this.fieldParent10,
-				this.fieldChild1, this.fieldChild2, this.fieldChild3, this.fieldChild4, this.fieldChild5,
-				this.fieldChild6, this.fieldChild7, this.fieldChild8, this.fieldChild9, this.fieldChild10,
-				this.fieldAcqCid, this.fieldAcqDateTime, this.fieldAcqEmployeeId, this.fieldAcqEndDate,
-				this.fieldAcqStartDate);
+				this.filedKeyUpdate19, this.filedKeyUpdate20, this.historyCls, this.parentTblJpName,
+				this.hasParentTable, this.parentTblName, this.fieldParent1, this.fieldParent2, this.fieldParent3,
+				this.fieldParent4, this.fieldParent5, this.fieldParent6, this.fieldParent7, this.fieldParent8,
+				this.fieldParent9, this.fieldParent10, this.fieldChild1, this.fieldChild2, this.fieldChild3,
+				this.fieldChild4, this.fieldChild5, this.fieldChild6, this.fieldChild7, this.fieldChild8,
+				this.fieldChild9, this.fieldChild10, this.fieldAcqCid, this.fieldAcqDateTime, this.fieldAcqEmployeeId,
+				this.fieldAcqEndDate, this.fieldAcqStartDate);
 	}
 
 	public static SspmtCategoryFieldMt toEntity(CategoryFieldMt domain) {
 		return new SspmtCategoryFieldMt(new SspmtCategoryFieldMtPk(domain.getCategoryId(), domain.getTableNo()),
 				domain.getTableJapanName(), domain.getTableEnglishName(), domain.getTimeStopDelete(),
-				domain.getClsKeyQuery1(), domain.getClsKeyQuery2(), domain.getClsKeyQuery3(), domain.getClsKeyQuery4(),
-				domain.getClsKeyQuery5(), domain.getClsKeyQuery6(), domain.getClsKeyQuery7(), domain.getClsKeyQuery8(),
-				domain.getClsKeyQuery9(), domain.getClsKeyQuery10(), domain.getDefaultCondKeyQuery(),
-				domain.getFieldKeyQuery1(), domain.getFieldKeyQuery2(), domain.getFieldKeyQuery3(),
-				domain.getFieldKeyQuery4(), domain.getFieldKeyQuery5(), domain.getFieldKeyQuery6(),
-				domain.getFieldKeyQuery7(), domain.getFieldKeyQuery8(), domain.getFieldKeyQuery9(),
-				domain.getFieldKeyQuery10(), domain.getFieldDate1(), domain.getFieldDate2(), domain.getFieldDate3(),
-				domain.getFieldDate4(), domain.getFieldDate5(), domain.getFieldDate6(), domain.getFieldDate7(),
-				domain.getFieldDate8(), domain.getFieldDate9(), domain.getFieldDate10(), domain.getFieldDate11(),
-				domain.getFieldDate12(), domain.getFieldDate13(), domain.getFieldDate14(), domain.getFieldDate15(),
-				domain.getFieldDate16(), domain.getFieldDate17(), domain.getFieldDate18(), domain.getFieldDate19(),
-				domain.getFieldDate20(), domain.getFiledKeyUpdate1(), domain.getFiledKeyUpdate2(),
-				domain.getFiledKeyUpdate3(), domain.getFiledKeyUpdate4(), domain.getFiledKeyUpdate5(),
-				domain.getFiledKeyUpdate6(), domain.getFiledKeyUpdate7(), domain.getFiledKeyUpdate8(),
-				domain.getFiledKeyUpdate9(), domain.getFiledKeyUpdate10(), domain.getFiledKeyUpdate11(),
-				domain.getFiledKeyUpdate12(), domain.getFiledKeyUpdate13(), domain.getFiledKeyUpdate14(),
-				domain.getFiledKeyUpdate15(), domain.getFiledKeyUpdate16(), domain.getFiledKeyUpdate17(),
-				domain.getFiledKeyUpdate18(), domain.getFiledKeyUpdate19(), domain.getFiledKeyUpdate20(),
-				domain.getHistoryCls().value, domain.getParentTblJpName(),domain.getHasParentTable().value, domain.getParentTblName(),
+				domain.getClsKeyQuery1().value, domain.getClsKeyQuery2().value, domain.getClsKeyQuery3().value,
+				domain.getClsKeyQuery4().value, domain.getClsKeyQuery5().value, domain.getClsKeyQuery6().value,
+				domain.getClsKeyQuery7().value, domain.getClsKeyQuery8().value, domain.getClsKeyQuery9().value,
+				domain.getClsKeyQuery10().value, domain.getExtractCondKeyFix(), domain.getFieldKeyQuery1(),
+				domain.getFieldKeyQuery2(), domain.getFieldKeyQuery3(), domain.getFieldKeyQuery4(),
+				domain.getFieldKeyQuery5(), domain.getFieldKeyQuery6(), domain.getFieldKeyQuery7(),
+				domain.getFieldKeyQuery8(), domain.getFieldKeyQuery9(), domain.getFieldKeyQuery10(),
+				domain.getFieldDate1(), domain.getFieldDate2(), domain.getFieldDate3(), domain.getFieldDate4(),
+				domain.getFieldDate5(), domain.getFieldDate6(), domain.getFieldDate7(), domain.getFieldDate8(),
+				domain.getFieldDate9(), domain.getFieldDate10(), domain.getFieldDate11(), domain.getFieldDate12(),
+				domain.getFieldDate13(), domain.getFieldDate14(), domain.getFieldDate15(), domain.getFieldDate16(),
+				domain.getFieldDate17(), domain.getFieldDate18(), domain.getFieldDate19(), domain.getFieldDate20(),
+				domain.getFiledKeyUpdate1(), domain.getFiledKeyUpdate2(), domain.getFiledKeyUpdate3(),
+				domain.getFiledKeyUpdate4(), domain.getFiledKeyUpdate5(), domain.getFiledKeyUpdate6(),
+				domain.getFiledKeyUpdate7(), domain.getFiledKeyUpdate8(), domain.getFiledKeyUpdate9(),
+				domain.getFiledKeyUpdate10(), domain.getFiledKeyUpdate11(), domain.getFiledKeyUpdate12(),
+				domain.getFiledKeyUpdate13(), domain.getFiledKeyUpdate14(), domain.getFiledKeyUpdate15(),
+				domain.getFiledKeyUpdate16(), domain.getFiledKeyUpdate17(), domain.getFiledKeyUpdate18(),
+				domain.getFiledKeyUpdate19(), domain.getFiledKeyUpdate20(), domain.getHistoryCls().value,
+				domain.getParentTblJpName(), domain.getHasParentTable().value, domain.getParentTblName(),
 				domain.getFieldParent1(), domain.getFieldParent2(), domain.getFieldParent3(), domain.getFieldParent4(),
 				domain.getFieldParent5(), domain.getFieldParent6(), domain.getFieldParent7(), domain.getFieldParent8(),
 				domain.getFieldParent9(), domain.getFieldParent10(), domain.getFieldChild1(), domain.getFieldChild2(),
 				domain.getFieldChild3(), domain.getFieldChild4(), domain.getFieldChild5(), domain.getFieldChild6(),
 				domain.getFieldChild7(), domain.getFieldChild8(), domain.getFieldChild9(), domain.getFieldChild10(),
 				domain.getFieldAcqCid(), domain.getFieldAcqDateTime(), domain.getFieldAcqEmployeeId(),
-				domain.getFieldAcqEndDate(), domain.getFieldAcqStartDate()
-		);
+				domain.getFieldAcqEndDate(), domain.getFieldAcqStartDate());
 	}
 
 }

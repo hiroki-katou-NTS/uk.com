@@ -10,15 +10,9 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.assist.dom.category.RecoverFormCompanyOther;
-import nts.uk.ctx.sys.assist.dom.category.TimeStore;
-import nts.uk.ctx.sys.assist.dom.categoryfieldmt.HistoryDiviSion;
-import nts.uk.ctx.sys.assist.dom.tablelist.ReferenceMonth;
-import nts.uk.ctx.sys.assist.dom.tablelist.ReferenceYear;
+import nts.uk.ctx.sys.assist.dom.storage.Explanation;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -185,14 +179,14 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = false)
 	@Column(name = "REFERENCE_YEAR")
-	public int referenceYear;
+	public String referenceYear;
 
 	/**
 	 * 参照月
 	 */
 	@Basic(optional = false)
 	@Column(name = "REFERENCE_MONTH")
-	public int referenceMonth;
+	public String referenceMonth;
 
 	/**
 	 * 圧縮ファイル名
@@ -296,70 +290,70 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = false)
 	@Column(name = "CLS_KEY_QUERY_1")
-	public String clsKeyQuery1;
+	public int clsKeyQuery1;
 
 	/**
 	 * 抽出キー区分2
 	 */
 	@Basic(optional = false)
 	@Column(name = "CLS_KEY_QUERY_2")
-	public String clsKeyQuery2;
+	public int clsKeyQuery2;
 
 	/**
 	 * 抽出キー区分3
 	 */
 	@Basic(optional = false)
 	@Column(name = "CLS_KEY_QUERY_3")
-	public String clsKeyQuery3;
+	public int clsKeyQuery3;
 
 	/**
 	 * 抽出キー区分4
 	 */
 	@Basic(optional = false)
 	@Column(name = "CLS_KEY_QUERY_4")
-	public String clsKeyQuery4;
+	public int clsKeyQuery4;
 
 	/**
 	 * 抽出キー区分5
 	 */
 	@Basic(optional = false)
 	@Column(name = "CLS_KEY_QUERY_5")
-	public String clsKeyQuery5;
+	public int clsKeyQuery5;
 
 	/**
 	 * 抽出キー区分6
 	 */
 	@Basic(optional = false)
 	@Column(name = "CLS_KEY_QUERY_6")
-	public String clsKeyQuery6;
+	public int clsKeyQuery6;
 
 	/**
 	 * 抽出キー区分7
 	 */
 	@Basic(optional = false)
 	@Column(name = "CLS_KEY_QUERY_7")
-	public String clsKeyQuery7;
+	public int clsKeyQuery7;
 
 	/**
 	 * 抽出キー区分8
 	 */
 	@Basic(optional = false)
 	@Column(name = "CLS_KEY_QUERY_8")
-	public String clsKeyQuery8;
+	public int clsKeyQuery8;
 
 	/**
 	 * 抽出キー区分9
 	 */
 	@Basic(optional = false)
 	@Column(name = "CLS_KEY_QUERY_9")
-	public String clsKeyQuery9;
+	public int clsKeyQuery9;
 
 	/**
 	 * 抽出キー区分10
 	 */
 	@Basic(optional = false)
 	@Column(name = "CLS_KEY_QUERY_10")
-	public String clsKeyQuery10;
+	public int clsKeyQuery10;
 
 	/**
 	 * 抽出キー項目1
@@ -730,7 +724,7 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = false)
 	@Column(name = "SUPPLEMENTARY_EXPLANATION")
-	public String supplementaryExplanation;
+	public Explanation supplementaryExplanation;
 
 	/**
 	 * 親テーブル日本語名
@@ -758,70 +752,70 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = false)
 	@Column(name = "FIELD_PARENT_1")
-	public String Fieldparent1;
+	public String fieldParent1;
 
 	/**
 	 * 親側結合キー2
 	 */
 	@Basic(optional = false)
 	@Column(name = "FIELD_PARENT_2")
-	public String Fieldparent2;
+	public String fieldParent2;
 
 	/**
 	 * 親側結合キー3
 	 */
 	@Basic(optional = false)
 	@Column(name = "FIELD_PARENT_3")
-	public String Fieldparent3;
+	public String fieldParent3;
 
 	/**
 	 * 親側結合キー4
 	 */
 	@Basic(optional = false)
 	@Column(name = "FIELD_PARENT_4")
-	public String Fieldparent4;
+	public String fieldParent4;
 
 	/**
 	 * 親側結合キー5
 	 */
 	@Basic(optional = false)
 	@Column(name = "FIELD_PARENT_5")
-	public String Fieldparent5;
+	public String fieldParent5;
 
 	/**
 	 * 親側結合キー6
 	 */
 	@Basic(optional = false)
 	@Column(name = "FIELD_PARENT_6")
-	public String Fieldparent6;
+	public String fieldParent6;
 
 	/**
 	 * 親側結合キー7
 	 */
 	@Basic(optional = false)
 	@Column(name = "FIELD_PARENT_7")
-	public String Fieldparent7;
+	public String fieldParent7;
 
 	/**
 	 * 親側結合キー8
 	 */
 	@Basic(optional = false)
 	@Column(name = "FIELD_PARENT_8")
-	public String Fieldparent8;
+	public String fieldParent8;
 
 	/**
 	 * 親側結合キー9
 	 */
 	@Basic(optional = false)
 	@Column(name = "FIELD_PARENT_9")
-	public String Fieldparent9;
+	public String fieldParent9;
 
 	/**
 	 * 親側結合キー10
 	 */
 	@Basic(optional = false)
 	@Column(name = "FIELD_PARENT_10")
-	public String Fieldparent10;
+	public String fieldParent10;
 
 	/**
 	 * 調査用保存
@@ -839,26 +833,22 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 		return new TableList(tableListPk.categoryId, categoryName, dataStorageProcessingId, dataRecoveryProcessId,
 				tableListPk.tableNo, tableJapaneseName, tableEnglishName, fieldAcqCid, fieldAcqDateTime,
 				fieldAcqEmployeeId, fieldAcqEndDate, fieldAcqStartDate, saveSetCode, saveSetName, saveFileName,
-				saveForm, saveDateFrom, saveDateTo, storageRangeSaved,
-				EnumAdaptor.valueOf(this.retentionPeriodCls, TimeStore.class), internalFileName,
-				EnumAdaptor.valueOf(this.anotherComCls, RecoverFormCompanyOther.class),
-				EnumAdaptor.valueOf(this.referenceYear, ReferenceYear.class),
-				EnumAdaptor.valueOf(this.referenceYear, ReferenceMonth.class), compressedFileName, fieldChild1,
-				fieldChild2, fieldChild3, fieldChild4, fieldChild5, fieldChild6, fieldChild7, fieldChild8, fieldChild9,
-				fieldChild10, EnumAdaptor.valueOf(this.historyCls, HistoryDiviSion.class), canNotBeOld,
-				selectionTargetForRes, clsKeyQuery1, clsKeyQuery2, clsKeyQuery3, clsKeyQuery4, clsKeyQuery5,
-				clsKeyQuery6, clsKeyQuery7, clsKeyQuery8, clsKeyQuery9, clsKeyQuery10, fieldKeyQuery1, fieldKeyQuery2,
-				fieldKeyQuery3, fieldKeyQuery4, fieldKeyQuery5, fieldKeyQuery6, fieldKeyQuery7, fieldKeyQuery8,
-				fieldKeyQuery9, fieldKeyQuery10, extractCondKeyFix, fieldDate1, fieldDate2, fieldDate3, fieldDate4,
-				fieldDate5, fieldDate6, fieldDate7, fieldDate8, fieldDate9, fieldDate10, fieldDate11, fieldDate12,
-				fieldDate13, fieldDate14, fieldDate15, fieldDate16, fieldDate17, fieldDate18, fieldDate19, fieldDate20,
-				filedKeyUpdate1, filedKeyUpdate2, filedKeyUpdate3, filedKeyUpdate4, filedKeyUpdate5, filedKeyUpdate6,
-				filedKeyUpdate7, filedKeyUpdate8, filedKeyUpdate9, filedKeyUpdate10, filedKeyUpdate11, filedKeyUpdate12,
-				filedKeyUpdate13, filedKeyUpdate14, filedKeyUpdate15, filedKeyUpdate16, filedKeyUpdate17,
-				filedKeyUpdate18, filedKeyUpdate19, filedKeyUpdate20, screenRetentionPeriod, supplementaryExplanation,
-				parentTblJpName, EnumAdaptor.valueOf(this.hasParentTable, NotUseAtr.class), parentTblName, Fieldparent1,
-				Fieldparent2, Fieldparent3, Fieldparent4, Fieldparent5, Fieldparent6, Fieldparent7, Fieldparent8,
-				Fieldparent9, Fieldparent10, EnumAdaptor.valueOf(this.surveyPreservation, NotUseAtr.class));
+				saveForm, saveDateFrom, saveDateTo, storageRangeSaved, retentionPeriodCls, internalFileName,
+				anotherComCls, referenceYear, referenceMonth, compressedFileName, fieldChild1, fieldChild2, fieldChild3,
+				fieldChild4, fieldChild5, fieldChild6, fieldChild7, fieldChild8, fieldChild9, fieldChild10, historyCls,
+				canNotBeOld, selectionTargetForRes, clsKeyQuery1, clsKeyQuery2, clsKeyQuery3, clsKeyQuery4,
+				clsKeyQuery5, clsKeyQuery6, clsKeyQuery7, clsKeyQuery8, clsKeyQuery9, clsKeyQuery10, fieldKeyQuery1,
+				fieldKeyQuery2, fieldKeyQuery3, fieldKeyQuery4, fieldKeyQuery5, fieldKeyQuery6, fieldKeyQuery7,
+				fieldKeyQuery8, fieldKeyQuery9, fieldKeyQuery10, extractCondKeyFix, fieldDate1, fieldDate2, fieldDate3,
+				fieldDate4, fieldDate5, fieldDate6, fieldDate7, fieldDate8, fieldDate9, fieldDate10, fieldDate11,
+				fieldDate12, fieldDate13, fieldDate14, fieldDate15, fieldDate16, fieldDate17, fieldDate18, fieldDate19,
+				fieldDate20, filedKeyUpdate1, filedKeyUpdate2, filedKeyUpdate3, filedKeyUpdate4, filedKeyUpdate5,
+				filedKeyUpdate6, filedKeyUpdate7, filedKeyUpdate8, filedKeyUpdate9, filedKeyUpdate10, filedKeyUpdate11,
+				filedKeyUpdate12, filedKeyUpdate13, filedKeyUpdate14, filedKeyUpdate15, filedKeyUpdate16,
+				filedKeyUpdate17, filedKeyUpdate18, filedKeyUpdate19, filedKeyUpdate20, screenRetentionPeriod,
+				supplementaryExplanation, parentTblJpName, hasParentTable, parentTblName, fieldParent1, fieldParent2,
+				fieldParent3, fieldParent4, fieldParent5, fieldParent6, fieldParent7, fieldParent8, fieldParent9,
+				fieldParent10, 1);
 	}
 
 	public static SspmtTableList toEntity(TableList domain) {
@@ -869,33 +859,34 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 				domain.getFieldAcqStartDate(), domain.getSaveSetCode(), domain.getSaveSetName(),
 				domain.getSaveFileName(), domain.getSaveForm(), domain.getSaveDateFrom(), domain.getSaveDateTo(),
 				domain.getStorageRangeSaved(), domain.getRetentionPeriodCls().value, domain.getInternalFileName(),
-				domain.getAnotherComCls().value, domain.getReferenceYear().value, domain.getReferenceMonth().value,
+				domain.getAnotherComCls().value, domain.getReferenceYear(), domain.getReferenceMonth(),
 				domain.getCompressedFileName(), domain.getFieldChild1(), domain.getFieldChild2(),
 				domain.getFieldChild3(), domain.getFieldChild4(), domain.getFieldChild5(), domain.getFieldChild6(),
 				domain.getFieldChild7(), domain.getFieldChild8(), domain.getFieldChild9(), domain.getFieldChild10(),
 				domain.getHistoryCls().value, domain.getCanNotBeOld(), domain.getSelectionTargetForRes(),
-				domain.getClsKeyQuery1(), domain.getClsKeyQuery2(), domain.getClsKeyQuery3(), domain.getClsKeyQuery4(),
-				domain.getClsKeyQuery5(), domain.getClsKeyQuery6(), domain.getClsKeyQuery7(), domain.getClsKeyQuery8(),
-				domain.getClsKeyQuery9(), domain.getClsKeyQuery10(), domain.getFieldKeyQuery1(),
-				domain.getFieldKeyQuery2(), domain.getFieldKeyQuery3(), domain.getFieldKeyQuery4(),
-				domain.getFieldKeyQuery5(), domain.getFieldKeyQuery6(), domain.getFieldKeyQuery7(),
-				domain.getFieldKeyQuery8(), domain.getFieldKeyQuery9(), domain.getFieldKeyQuery10(),
-				domain.getExtractCondKeyFix(), domain.getFieldDate1(), domain.getFieldDate2(), domain.getFieldDate3(),
-				domain.getFieldDate4(), domain.getFieldDate5(), domain.getFieldDate6(), domain.getFieldDate7(),
-				domain.getFieldDate8(), domain.getFieldDate9(), domain.getFieldDate10(), domain.getFieldDate11(),
-				domain.getFieldDate12(), domain.getFieldDate13(), domain.getFieldDate14(), domain.getFieldDate15(),
-				domain.getFieldDate16(), domain.getFieldDate17(), domain.getFieldDate18(), domain.getFieldDate19(),
-				domain.getFieldDate20(), domain.getFiledKeyUpdate1(), domain.getFiledKeyUpdate2(),
-				domain.getFiledKeyUpdate3(), domain.getFiledKeyUpdate4(), domain.getFiledKeyUpdate5(),
-				domain.getFiledKeyUpdate6(), domain.getFiledKeyUpdate7(), domain.getFiledKeyUpdate8(),
-				domain.getFiledKeyUpdate9(), domain.getFiledKeyUpdate10(), domain.getFiledKeyUpdate11(),
-				domain.getFiledKeyUpdate12(), domain.getFiledKeyUpdate13(), domain.getFiledKeyUpdate14(),
-				domain.getFiledKeyUpdate15(), domain.getFiledKeyUpdate16(), domain.getFiledKeyUpdate17(),
-				domain.getFiledKeyUpdate18(), domain.getFiledKeyUpdate19(), domain.getFiledKeyUpdate20(),
-				domain.getScreenRetentionPeriod(), domain.getSupplementaryExplanation(), domain.getParentTblJpName(),
-				domain.getHasParentTable().value, domain.getParentTblName(), domain.getFieldparent1(),
-				domain.getFieldparent2(), domain.getFieldparent3(), domain.getFieldparent4(), domain.getFieldparent5(),
-				domain.getFieldparent6(), domain.getFieldparent7(), domain.getFieldparent8(), domain.getFieldparent9(),
-				domain.getFieldparent10(), domain.getSurveyPreservation().value);
+				domain.getClsKeyQuery1().value, domain.getClsKeyQuery2().value, domain.getClsKeyQuery3().value,
+				domain.getClsKeyQuery4().value, domain.getClsKeyQuery5().value, domain.getClsKeyQuery6().value,
+				domain.getClsKeyQuery7().value, domain.getClsKeyQuery8().value, domain.getClsKeyQuery9().value,
+				domain.getClsKeyQuery10().value, domain.getFieldKeyQuery1(), domain.getFieldKeyQuery2(),
+				domain.getFieldKeyQuery3(), domain.getFieldKeyQuery4(), domain.getFieldKeyQuery5(),
+				domain.getFieldKeyQuery6(), domain.getFieldKeyQuery7(), domain.getFieldKeyQuery8(),
+				domain.getFieldKeyQuery9(), domain.getFieldKeyQuery10(), domain.getExtractCondKeyFix(),
+				domain.getFieldDate1(), domain.getFieldDate2(), domain.getFieldDate3(), domain.getFieldDate4(),
+				domain.getFieldDate5(), domain.getFieldDate6(), domain.getFieldDate7(), domain.getFieldDate8(),
+				domain.getFieldDate9(), domain.getFieldDate10(), domain.getFieldDate11(), domain.getFieldDate12(),
+				domain.getFieldDate13(), domain.getFieldDate14(), domain.getFieldDate15(), domain.getFieldDate16(),
+				domain.getFieldDate17(), domain.getFieldDate18(), domain.getFieldDate19(), domain.getFieldDate20(),
+				domain.getFiledKeyUpdate1(), domain.getFiledKeyUpdate2(), domain.getFiledKeyUpdate3(),
+				domain.getFiledKeyUpdate4(), domain.getFiledKeyUpdate5(), domain.getFiledKeyUpdate6(),
+				domain.getFiledKeyUpdate7(), domain.getFiledKeyUpdate8(), domain.getFiledKeyUpdate9(),
+				domain.getFiledKeyUpdate10(), domain.getFiledKeyUpdate11(), domain.getFiledKeyUpdate12(),
+				domain.getFiledKeyUpdate13(), domain.getFiledKeyUpdate14(), domain.getFiledKeyUpdate15(),
+				domain.getFiledKeyUpdate16(), domain.getFiledKeyUpdate17(), domain.getFiledKeyUpdate18(),
+				domain.getFiledKeyUpdate19(), domain.getFiledKeyUpdate20(), domain.getScreenRetentionPeriod(),
+				domain.getSupplementaryExplanation(), domain.getParentTblJpName(), domain.getHasParentTable().value,
+				domain.getParentTblName(), domain.getFieldParent1(), domain.getFieldParent2(), domain.getFieldParent3(),
+				domain.getFieldParent4(), domain.getFieldParent5(), domain.getFieldParent6(), domain.getFieldParent7(),
+				domain.getFieldParent8(), domain.getFieldParent9(), domain.getFieldParent10(),
+				domain.getSurveyPreservation().value);
 	}
 }

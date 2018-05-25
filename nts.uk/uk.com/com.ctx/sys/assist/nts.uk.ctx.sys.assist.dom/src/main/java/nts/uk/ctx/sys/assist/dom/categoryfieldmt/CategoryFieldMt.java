@@ -2,7 +2,9 @@ package nts.uk.ctx.sys.assist.dom.categoryfieldmt;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.sys.assist.dom.storage.ExtractionKeyCategory;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -40,57 +42,57 @@ public class CategoryFieldMt extends AggregateRoot {
 	/**
 	 * 抽出キー区分1
 	 */
-	private String clsKeyQuery1;
+	private ExtractionKeyCategory clsKeyQuery1;
 
 	/**
 	 * 抽出キー区分2
 	 */
-	private String clsKeyQuery2;
+	private ExtractionKeyCategory clsKeyQuery2;
 
 	/**
 	 * 抽出キー区分3
 	 */
-	private String clsKeyQuery3;
+	private ExtractionKeyCategory clsKeyQuery3;
 
 	/**
 	 * 抽出キー区分4
 	 */
-	private String clsKeyQuery4;
+	private ExtractionKeyCategory clsKeyQuery4;
 
 	/**
 	 * 抽出キー区分5
 	 */
-	private String clsKeyQuery5;
+	private ExtractionKeyCategory clsKeyQuery5;
 
 	/**
 	 * 抽出キー区分6
 	 */
-	private String clsKeyQuery6;
+	private ExtractionKeyCategory clsKeyQuery6;
 
 	/**
 	 * 抽出キー区分7
 	 */
-	private String clsKeyQuery7;
+	private ExtractionKeyCategory clsKeyQuery7;
 
 	/**
 	 * 抽出キー区分8
 	 */
-	private String clsKeyQuery8;
+	private ExtractionKeyCategory clsKeyQuery8;
 
 	/**
 	 * 抽出キー区分9
 	 */
-	private String clsKeyQuery9;
+	private ExtractionKeyCategory clsKeyQuery9;
 
 	/**
 	 * 抽出キー区分10
 	 */
-	private String clsKeyQuery10;
+	private ExtractionKeyCategory clsKeyQuery10;
 
 	/**
 	 * 抽出キー条件固定
 	 */
-	private String defaultCondKeyQuery;
+	private String extractCondKeyFix;
 
 	/**
 	 * 抽出キー項目1
@@ -486,4 +488,127 @@ public class CategoryFieldMt extends AggregateRoot {
 	 */
 	private String fieldAcqStartDate;
 
+	public CategoryFieldMt(String categoryId, int tableNo, String tableJapanName, String tableEnglishName,
+			String timeStopDelete, int clsKeyQuery1, int clsKeyQuery2,
+			int clsKeyQuery3, int clsKeyQuery4, int clsKeyQuery5,
+			int clsKeyQuery6, int clsKeyQuery7, int clsKeyQuery8,
+			int clsKeyQuery9, int clsKeyQuery10, String extractCondKeyFix,
+			String fieldKeyQuery1, String fieldKeyQuery2, String fieldKeyQuery3, String fieldKeyQuery4,
+			String fieldKeyQuery5, String fieldKeyQuery6, String fieldKeyQuery7, String fieldKeyQuery8,
+			String fieldKeyQuery9, String fieldKeyQuery10, String fieldDate1, String fieldDate2, String fieldDate3,
+			String fieldDate4, String fieldDate5, String fieldDate6, String fieldDate7, String fieldDate8,
+			String fieldDate9, String fieldDate10, String fieldDate11, String fieldDate12, String fieldDate13,
+			String fieldDate14, String fieldDate15, String fieldDate16, String fieldDate17, String fieldDate18,
+			String fieldDate19, String fieldDate20, String filedKeyUpdate1, String filedKeyUpdate2,
+			String filedKeyUpdate3, String filedKeyUpdate4, String filedKeyUpdate5, String filedKeyUpdate6,
+			String filedKeyUpdate7, String filedKeyUpdate8, String filedKeyUpdate9, String filedKeyUpdate10,
+			String filedKeyUpdate11, String filedKeyUpdate12, String filedKeyUpdate13, String filedKeyUpdate14,
+			String filedKeyUpdate15, String filedKeyUpdate16, String filedKeyUpdate17, String filedKeyUpdate18,
+			String filedKeyUpdate19, String filedKeyUpdate20, int historyCls, String parentTblJpName,
+			int hasParentTable, String parentTblName, String fieldParent1, String fieldParent2,
+			String fieldParent3, String fieldParent4, String fieldParent5, String fieldParent6, String fieldParent7,
+			String fieldParent8, String fieldParent9, String fieldParent10, String fieldChild1, String fieldChild2,
+			String fieldChild3, String fieldChild4, String fieldChild5, String fieldChild6, String fieldChild7,
+			String fieldChild8, String fieldChild9, String fieldChild10, String fieldAcqCid, String fieldAcqDateTime,
+			String fieldAcqEmployeeId, String fieldAcqEndDate, String fieldAcqStartDate) {
+		super();
+		this.categoryId = categoryId;
+		this.tableNo = tableNo;
+		this.tableJapanName = tableJapanName;
+		this.tableEnglishName = tableEnglishName;
+		this.timeStopDelete = timeStopDelete;
+		this.clsKeyQuery1 = EnumAdaptor.valueOf(clsKeyQuery1, ExtractionKeyCategory.class);
+		this.clsKeyQuery2 = EnumAdaptor.valueOf(clsKeyQuery2, ExtractionKeyCategory.class);
+		this.clsKeyQuery3 = EnumAdaptor.valueOf(clsKeyQuery3, ExtractionKeyCategory.class);
+		this.clsKeyQuery4 = EnumAdaptor.valueOf(clsKeyQuery4, ExtractionKeyCategory.class);
+		this.clsKeyQuery5 = EnumAdaptor.valueOf(clsKeyQuery6, ExtractionKeyCategory.class);
+		this.clsKeyQuery6 = EnumAdaptor.valueOf(clsKeyQuery6, ExtractionKeyCategory.class);
+		this.clsKeyQuery7 = EnumAdaptor.valueOf(clsKeyQuery7, ExtractionKeyCategory.class);
+		this.clsKeyQuery8 = EnumAdaptor.valueOf(clsKeyQuery8, ExtractionKeyCategory.class);
+		this.clsKeyQuery9 = EnumAdaptor.valueOf(clsKeyQuery9, ExtractionKeyCategory.class);
+		this.clsKeyQuery10 = EnumAdaptor.valueOf(clsKeyQuery10, ExtractionKeyCategory.class);
+		this.extractCondKeyFix = extractCondKeyFix;
+		this.fieldKeyQuery1 = fieldKeyQuery1;
+		this.fieldKeyQuery2 = fieldKeyQuery2;
+		this.fieldKeyQuery3 = fieldKeyQuery3;
+		this.fieldKeyQuery4 = fieldKeyQuery4;
+		this.fieldKeyQuery5 = fieldKeyQuery5;
+		this.fieldKeyQuery6 = fieldKeyQuery6;
+		this.fieldKeyQuery7 = fieldKeyQuery7;
+		this.fieldKeyQuery8 = fieldKeyQuery8;
+		this.fieldKeyQuery9 = fieldKeyQuery9;
+		this.fieldKeyQuery10 = fieldKeyQuery10;
+		this.fieldDate1 = fieldDate1;
+		this.fieldDate2 = fieldDate2;
+		this.fieldDate3 = fieldDate3;
+		this.fieldDate4 = fieldDate4;
+		this.fieldDate5 = fieldDate5;
+		this.fieldDate6 = fieldDate6;
+		this.fieldDate7 = fieldDate7;
+		this.fieldDate8 = fieldDate8;
+		this.fieldDate9 = fieldDate9;
+		this.fieldDate10 = fieldDate10;
+		this.fieldDate11 = fieldDate11;
+		this.fieldDate12 = fieldDate12;
+		this.fieldDate13 = fieldDate13;
+		this.fieldDate14 = fieldDate14;
+		this.fieldDate15 = fieldDate15;
+		this.fieldDate16 = fieldDate16;
+		this.fieldDate17 = fieldDate17;
+		this.fieldDate18 = fieldDate18;
+		this.fieldDate19 = fieldDate19;
+		this.fieldDate20 = fieldDate20;
+		this.filedKeyUpdate1 = filedKeyUpdate1;
+		this.filedKeyUpdate2 = filedKeyUpdate2;
+		this.filedKeyUpdate3 = filedKeyUpdate3;
+		this.filedKeyUpdate4 = filedKeyUpdate4;
+		this.filedKeyUpdate5 = filedKeyUpdate5;
+		this.filedKeyUpdate6 = filedKeyUpdate6;
+		this.filedKeyUpdate7 = filedKeyUpdate7;
+		this.filedKeyUpdate8 = filedKeyUpdate8;
+		this.filedKeyUpdate9 = filedKeyUpdate9;
+		this.filedKeyUpdate10 = filedKeyUpdate10;
+		this.filedKeyUpdate11 = filedKeyUpdate11;
+		this.filedKeyUpdate12 = filedKeyUpdate12;
+		this.filedKeyUpdate13 = filedKeyUpdate13;
+		this.filedKeyUpdate14 = filedKeyUpdate14;
+		this.filedKeyUpdate15 = filedKeyUpdate15;
+		this.filedKeyUpdate16 = filedKeyUpdate16;
+		this.filedKeyUpdate17 = filedKeyUpdate17;
+		this.filedKeyUpdate18 = filedKeyUpdate18;
+		this.filedKeyUpdate19 = filedKeyUpdate19;
+		this.filedKeyUpdate20 = filedKeyUpdate20;
+		this.historyCls = EnumAdaptor.valueOf(historyCls, HistoryDiviSion.class);
+		this.parentTblJpName = parentTblJpName;
+		this.historyCls = EnumAdaptor.valueOf(hasParentTable, HistoryDiviSion.class);
+		this.parentTblName = parentTblName;
+		this.fieldParent1 = fieldParent1;
+		this.fieldParent2 = fieldParent2;
+		this.fieldParent3 = fieldParent3;
+		this.fieldParent4 = fieldParent4;
+		this.fieldParent5 = fieldParent5;
+		this.fieldParent6 = fieldParent6;
+		this.fieldParent7 = fieldParent7;
+		this.fieldParent8 = fieldParent8;
+		this.fieldParent9 = fieldParent9;
+		this.fieldParent10 = fieldParent10;
+		this.fieldChild1 = fieldChild1;
+		this.fieldChild2 = fieldChild2;
+		this.fieldChild3 = fieldChild3;
+		this.fieldChild4 = fieldChild4;
+		this.fieldChild5 = fieldChild5;
+		this.fieldChild6 = fieldChild6;
+		this.fieldChild7 = fieldChild7;
+		this.fieldChild8 = fieldChild8;
+		this.fieldChild9 = fieldChild9;
+		this.fieldChild10 = fieldChild10;
+		this.fieldAcqCid = fieldAcqCid;
+		this.fieldAcqDateTime = fieldAcqDateTime;
+		this.fieldAcqEmployeeId = fieldAcqEmployeeId;
+		this.fieldAcqEndDate = fieldAcqEndDate;
+		this.fieldAcqStartDate = fieldAcqStartDate;
+	}
+
+	
+	
 }

@@ -4,6 +4,7 @@
 package nts.uk.ctx.sys.assist.dom.storage;
 
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -21,15 +22,20 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFileFactory;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFilesContainer;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.ctx.sys.assist.dom.category.Category;
 import nts.uk.ctx.sys.assist.dom.category.CategoryRepository;
+import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMt;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMtRepository;
+import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
+import nts.uk.ctx.sys.assist.dom.tablelist.TableListRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.file.csv.CSVFileData;
 import nts.uk.shr.infra.file.csv.CSVReportGenerator;
 
@@ -60,6 +66,9 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	private ApplicationTemporaryFileFactory applicationTemporaryFileFactory;
 	@Inject
 	private SaveTargetCsvRepository csvRepo;
+
+	@Inject
+	private TableListRepository tableListRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -126,6 +135,108 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			}).collect(Collectors.toList());
 			List<Category> categorys = repoCategory.getCategoryByListId(categoryIds);
 			List<CategoryFieldMt> categoryFieldMts = repoCateField.getCategoryFieldMtByListId(categoryIds);
+			// TODO insert to table list
+
+			for (CategoryFieldMt categoryFieldMt : categoryFieldMts) {
+				String categoryName = "";
+				String storageRangeSaved = "";
+				TimeStore retentionPeriodCls = null;
+				int anotherComCls = 0;
+				DatePeriod screenRetentionPeriod = null;
+				GeneralDate saveDateFrom = null;
+				GeneralDate saveDateTo = null;
+				int surveyPreservation = optManualSetting.get().getIdentOfSurveyPre().value;
+				String compressedFileName = "";
+				Optional<Category> category = categorys.stream()
+						.filter(c -> c.getCategoryId().equals(categoryFieldMt.getCategoryId())).findFirst();
+				if (category.isPresent()) {
+					categoryName = category.get().getCategoryName().v();
+					storageRangeSaved = category.get().getStorageRangeSaved().toString();
+					retentionPeriodCls = category.get().getTimeStore();
+					anotherComCls = category.get().getOtherCompanyCls().value;
+				}
+
+				switch (retentionPeriodCls) {
+				case DAILY:
+					saveDateFrom = optManualSetting.get().getDaySaveStartDate();
+					saveDateTo = optManualSetting.get().getDaySaveEndDate();
+					screenRetentionPeriod = new DatePeriod(saveDateFrom, saveDateTo);
+					break;
+				case MONTHLY:
+					saveDateFrom = optManualSetting.get().getMonthSaveStartDate();
+					saveDateTo = optManualSetting.get().getMonthSaveEndDate();
+					screenRetentionPeriod = new DatePeriod(saveDateFrom, saveDateTo);
+					break;
+				case ANNUAL:
+					saveDateFrom = GeneralDate.ymd(optManualSetting.get().getStartYear().v(), 1, 1);
+					saveDateTo = GeneralDate.ymd(optManualSetting.get().getEndYear().v(), 12, 31);
+					screenRetentionPeriod = new DatePeriod(saveDateFrom, saveDateTo);
+					break;
+				default:
+					break;
+				}
+				// B42
+				String datetimenow = LocalDateTime.now().toString();
+				SaveSetName savename = optManualSetting.get().getSaveSetName();
+				compressedFileName = storeProcessingId + savename.toString() + datetimenow;
+
+				String internalFileName = storeProcessingId + categoryName + categoryFieldMt.getTableJapanName();
+
+				TableList listtable = new TableList(categoryFieldMt.getCategoryId(), categoryName, storeProcessingId,
+						"", categoryFieldMt.getTableNo(), categoryFieldMt.getTableJapanName(), "",
+						categoryFieldMt.getFieldAcqCid(), categoryFieldMt.getFieldAcqDateTime(),
+						categoryFieldMt.getFieldAcqEmployeeId(), categoryFieldMt.getFieldAcqEndDate(),
+						categoryFieldMt.getFieldAcqStartDate(), "", optManualSetting.get().getSaveSetName().toString(),
+						"", "0", saveDateFrom, saveDateTo, storageRangeSaved, retentionPeriodCls.value,
+						internalFileName, anotherComCls, "", "", compressedFileName, categoryFieldMt.getFieldChild1(),
+						categoryFieldMt.getFieldChild2(), categoryFieldMt.getFieldChild3(),
+						categoryFieldMt.getFieldChild4(), categoryFieldMt.getFieldChild5(),
+						categoryFieldMt.getFieldChild6(), categoryFieldMt.getFieldChild7(),
+						categoryFieldMt.getFieldChild8(), categoryFieldMt.getFieldChild9(),
+						categoryFieldMt.getFieldChild10(), categoryFieldMt.getHistoryCls().value, "", "",
+						categoryFieldMt.getClsKeyQuery1().value, categoryFieldMt.getClsKeyQuery2().value,
+						categoryFieldMt.getClsKeyQuery3().value, categoryFieldMt.getClsKeyQuery4().value,
+						categoryFieldMt.getClsKeyQuery5().value, categoryFieldMt.getClsKeyQuery6().value,
+						categoryFieldMt.getClsKeyQuery7().value, categoryFieldMt.getClsKeyQuery8().value,
+						categoryFieldMt.getClsKeyQuery9().value, categoryFieldMt.getClsKeyQuery10().value,
+						categoryFieldMt.getFieldKeyQuery1(), categoryFieldMt.getFieldKeyQuery2(),
+						categoryFieldMt.getFieldKeyQuery3(), categoryFieldMt.getFieldKeyQuery4(),
+						categoryFieldMt.getFieldKeyQuery5(), categoryFieldMt.getFieldKeyQuery6(),
+						categoryFieldMt.getFieldKeyQuery7(), categoryFieldMt.getFieldKeyQuery8(),
+						categoryFieldMt.getFieldKeyQuery9(), categoryFieldMt.getFieldKeyQuery10(),
+						categoryFieldMt.getExtractCondKeyFix(), categoryFieldMt.getFieldDate1(),
+						categoryFieldMt.getFieldDate2(), categoryFieldMt.getFieldDate3(),
+						categoryFieldMt.getFieldDate4(), categoryFieldMt.getFieldDate5(),
+						categoryFieldMt.getFieldDate6(), categoryFieldMt.getFieldDate7(),
+						categoryFieldMt.getFieldDate8(), categoryFieldMt.getFieldDate9(),
+						categoryFieldMt.getFieldDate10(), categoryFieldMt.getFieldDate11(),
+						categoryFieldMt.getFieldDate12(), categoryFieldMt.getFieldDate13(),
+						categoryFieldMt.getFieldDate14(), categoryFieldMt.getFieldDate15(),
+						categoryFieldMt.getFieldDate16(), categoryFieldMt.getFieldDate17(),
+						categoryFieldMt.getFieldDate18(), categoryFieldMt.getFieldDate19(),
+						categoryFieldMt.getFieldDate20(), categoryFieldMt.getFiledKeyUpdate1(),
+						categoryFieldMt.getFiledKeyUpdate2(), categoryFieldMt.getFiledKeyUpdate3(),
+						categoryFieldMt.getFiledKeyUpdate4(), categoryFieldMt.getFiledKeyUpdate5(),
+						categoryFieldMt.getFiledKeyUpdate6(), categoryFieldMt.getFiledKeyUpdate7(),
+						categoryFieldMt.getFiledKeyUpdate8(), categoryFieldMt.getFiledKeyUpdate9(),
+						categoryFieldMt.getFiledKeyUpdate10(), categoryFieldMt.getFiledKeyUpdate11(),
+						categoryFieldMt.getFiledKeyUpdate12(), categoryFieldMt.getFiledKeyUpdate13(),
+						categoryFieldMt.getFiledKeyUpdate14(), categoryFieldMt.getFiledKeyUpdate15(),
+						categoryFieldMt.getFiledKeyUpdate16(), categoryFieldMt.getFiledKeyUpdate17(),
+						categoryFieldMt.getFiledKeyUpdate18(), categoryFieldMt.getFiledKeyUpdate19(),
+						categoryFieldMt.getFiledKeyUpdate20(), screenRetentionPeriod,
+						optManualSetting.get().getSuppleExplanation(), categoryFieldMt.getParentTblJpName(),
+						categoryFieldMt.getHasParentTable().value, categoryFieldMt.getParentTblName(),
+						categoryFieldMt.getFieldParent1(), categoryFieldMt.getFieldParent2(),
+						categoryFieldMt.getFieldParent3(), categoryFieldMt.getFieldParent4(),
+						categoryFieldMt.getFieldParent5(), categoryFieldMt.getFieldParent6(),
+						categoryFieldMt.getFieldParent7(), categoryFieldMt.getFieldParent8(),
+						categoryFieldMt.getFieldParent9(), categoryFieldMt.getFieldParent10(), surveyPreservation);
+
+				tableListRepo.add(listtable);
+			}
+
+			// end
 
 			// update domain 「データ保存動作管理」 Data storage operation management
 			storeProcessingId = domain.getStoreProcessingId();
