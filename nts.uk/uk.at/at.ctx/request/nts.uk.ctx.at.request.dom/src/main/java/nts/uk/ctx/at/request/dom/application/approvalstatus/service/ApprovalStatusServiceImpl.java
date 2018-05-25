@@ -678,8 +678,12 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 				continue;
 			// Imported（就業）「個人社員基本情報」を取得する
 			// RequestList126
+			String empName = "";
 			List<EmployeeBasicInfoImport> listEmpInfor = this.workplaceAdapter.findBySIds(listEmpId);
-			String empName = !listEmpInfor.isEmpty() ? listEmpInfor.stream().findFirst().get().getPName() : "";
+			if(!listEmpInfor.isEmpty()){
+				EmployeeBasicInfoImport empInfo = listEmpInfor.stream().findFirst().get();
+				empName = empInfo.getEmployeeCode() + "　" + empInfo.getPName();
+			}
 			// アルゴリズム「承認状況取得申請」を実行する
 			List<ApplicationApprContent> listAppSttAcquisitionAppl = this.getAppSttAcquisitionAppl(appStt);
 			List<Application_New> listApprovalContent = new ArrayList<>();
