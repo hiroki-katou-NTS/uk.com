@@ -80,7 +80,7 @@ public class MailNoticeSetSaveCommandHandler extends CommandHandler<MailNoticeSe
 					}
 				} else {
 					// Update password - Request List 384				
-					this.passwordAdapter.updatePassword(newPassword);
+					this.passwordAdapter.updatePassword(userId,newPassword);
 				}	
 			}
 		}

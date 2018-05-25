@@ -5,10 +5,9 @@
 package nts.uk.ctx.sys.auth.infra.repository.password.changelog;
 
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.auth.dom.password.changelog.HashPassword;
 import nts.uk.ctx.sys.auth.dom.password.changelog.LoginId;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLogGetMemento;
-import nts.uk.ctx.sys.auth.infra.entity.password.changelog.SacdtPasswordChangeLog;
+import nts.uk.ctx.sys.auth.dom.user.HashPassword;
 
 /**
  * The Class JpaPasswordChangeLogGetMemento.
