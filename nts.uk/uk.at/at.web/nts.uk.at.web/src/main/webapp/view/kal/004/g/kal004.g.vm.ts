@@ -191,7 +191,7 @@ module nts.uk.at.view.kal004.g.viewmodel {
 
             // tab1
             if (self.strSelected() == 0) {
-                if (self.endSelected() == 0 && self.strDay() > self.endDay()) {
+                if (self.endSelected() == 0 && self.strDay() < self.endDay()) {
                     alertError({ messageId: "Msg_812" });
                     return;
                 } else if (self.endSelected() == 1) {
@@ -199,24 +199,24 @@ module nts.uk.at.view.kal004.g.viewmodel {
                     return;
                 }
             } else {
-                if (self.endSelected() == 1 && self.strMonth() > self.endMonth()) {
+                if (self.endSelected() == 1 && self.strMonth() < self.endMonth()) {
                     alertError({ messageId: "Msg_812" });
                     return;
                 }
             }
             // tab2
-            if (self.strMonth2() > self.endMonth2()) {
+            if (self.strMonth2() < self.endMonth2()) {
                 alertError({ messageId: "Msg_812" });
                 return;
             }
 
             // tab3
-            if (self.strSelected3() == 0 && self.strMonth3() > self.endMonth3()) {
+            if (self.strSelected3() == 0 && self.strMonth3() < self.endMonth3()) {
                 alertError({ messageId: "Msg_812" });
                 return;
             }
             // tab4
-            if (self.strSelected4() == 0 && self.strMonth4() > self.endMonth4()) {
+            if (self.strSelected4() == 0 && self.strMonth4() < self.endMonth4()) {
                 alertError({ messageId: "Msg_812" });
                 return;
             }

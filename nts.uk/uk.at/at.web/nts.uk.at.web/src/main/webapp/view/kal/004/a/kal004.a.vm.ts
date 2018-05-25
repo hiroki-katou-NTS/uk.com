@@ -101,6 +101,9 @@ module nts.uk.at.view.kal004.a.model {
                 block.clear();
                 errors.clearAll();
                 dfd.resolve();
+                
+            }).always(()=>{
+                self.setFocus();    
             });
             return dfd.promise();
         }
@@ -168,7 +171,14 @@ module nts.uk.at.view.kal004.a.model {
 
                 });
                 self.periodSetting.listCheckConditionCode(shareTab2);
-
+                let shareCategoryIds = _.map(shareTab2, (item) =>{
+                    return item.alarmCategory;    
+                });
+                if(shareCategoryIds.indexOf(12) ==-1) self.periodSetting.selectedTab('tab-1');
+                let shareStorage : Array<share.CheckConditionCommand> = self.periodSetting.listStorageCheckCondition().filter( (x) =>shareCategoryIds.indexOf(x.alarmCategory)>-1 );
+                self.periodSetting.listStorageCheckCondition(shareStorage);
+                
+                
             });
 
         }
