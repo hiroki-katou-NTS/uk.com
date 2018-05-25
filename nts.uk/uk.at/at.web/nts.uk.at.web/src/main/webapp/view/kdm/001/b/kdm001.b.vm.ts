@@ -65,7 +65,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     self.convertEmployeeCcg01ToKcp009(data.listEmployee);
                 }
             }
-            $('#ccgcomponent').ntsGroupComponent(self.screenItem().ccgcomponent);
+            $('#ccgcomponent_B').ntsGroupComponent(self.screenItem().ccgcomponent);
             self.screenItem().selectedItem.subscribe(x => {
                 if (!self.screenItem().isOnStartUp) {
                     self.screenItem().selectedEmployee = _.find(self.screenItem().listEmployee, item => { return item.employeeId === x; });
@@ -91,7 +91,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             };
             nts.uk.request.jump("/view/kdr/003/a/index.xhtml", { 'param': data});
         }
-        openNewSubstituteData() {
+        openNewSubstituteData_B() {
             var self = this;
             setShared('KDM001_I_PARAMS', { selectedEmployee: self.screenItem().selectedEmployee, closure: self.screenItem().closureEmploy });
             modal("/view/kdm/001/i/index.xhtml").onClosed(function() {
@@ -106,7 +106,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 $('#substituteDataGrid').focus();
             });
         }
-        filterByPeriod() {
+        filterByPeriod_B() {
             var self = this;
             let startDate = moment.utc(self.screenItem().dateValue().startDate, 'YYYY/MM/DD').toISOString();
             let endDate = moment.utc(self.screenItem().dateValue().endDate, 'YYYY/MM/DD').toISOString();
@@ -191,8 +191,8 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     }
                 ],
                 ntsControls: [
-                    { name: 'ButtonPegSetting', text: getText('KDM001_22'), click: function(value) { self.pegSetting(value) }, controlType: 'Button' },
-                    { name: 'ButtonCorrection', text: getText('KDM001_23'), click: function(value) { self.doCorrection(value) }, controlType: 'Button' }
+                    { name: 'ButtonPegSetting', text: getText('KDM001_22'), click: function(value) { self.pegSetting_B(value) }, controlType: 'Button' },
+                    { name: 'ButtonCorrection', text: getText('KDM001_23'), click: function(value) { self.doCorrection_B(value) }, controlType: 'Button' }
                 ]
             });
         }
@@ -246,7 +246,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 selectedItem: self.screenItem().selectedItem,
                 tabIndex: self.screenItem().tabindex
             };
-            $('#emp-component').ntsLoadListComponent(self.screenItem().listComponentOption);
+            $('#emp-component_B').ntsLoadListComponent(self.screenItem().listComponentOption);
         }
 
         convertEmployeeCcg01ToKcp009(dataList: EmployeeSearchDto[]): void {
@@ -272,7 +272,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 return obj.employeeId == selectedItem;
             })
         }
-        pegSetting(value) {
+        pegSetting_B(value) {
             var self = this;
             if (value.substituedWorkingDate.length > 0) {
                 let rowDataInfo = _.find(self.screenItem().listExtractData, x => {
@@ -300,7 +300,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 });
             }
         }
-        doCorrection(value) {
+        doCorrection_B(value) {
             var self = this;
             if (value.substituedWorkingDate.length > 0) {
                 let rowDataInfo = _.find(self.screenItem().listExtractData, x => {
