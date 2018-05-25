@@ -41,7 +41,11 @@ public class SubstitutionOfHDManaDataService {
 	private PayoutSubofHDManaRepository payoutSubofHDManaRepository;
 
 	/**
-	 * KDM001 screen E
+	 * Ｅ．振休管理データの紐付設定（振休選択）登録処理
+	 * @param sid
+	 * @param payoutId
+	 * @param remainNumber
+	 * @param subOfHDId
 	 */
 	public void insertSubOfHDMan(String sid, String payoutId, Double remainNumber, List<DayOffManagement> subOfHDId) {
 		String companyId = AppContexts.user().companyId();
@@ -64,16 +68,6 @@ public class SubstitutionOfHDManaDataService {
 		}
 
 		allowPrepaidLeave = empSubstVacation.get().getSetting().getAllowPrepaidLeave();
-		
-		// １件もない エラーメッセージ(Msg_738) 	エラーリストにセットする
-//		if (subOfHDId.isEmpty()){
-//			throw new BusinessException("Msg_738");
-//		}
-		
-		// ３件以上あり エラーメッセージ(Msg_739)	エラーリストにセットする
-//		if (subOfHDId.size() >= 3){
-//			throw new BusinessException("Msg_739");
-//		}
 		
 		if (subOfHDId.size() == 1){
 			if (subOfHDId.get(0).getRemainDays().compareTo(ItemDays.ONE_DAY.value) != 0){
