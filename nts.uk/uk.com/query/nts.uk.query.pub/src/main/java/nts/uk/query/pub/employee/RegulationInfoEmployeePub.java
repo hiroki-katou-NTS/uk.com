@@ -6,6 +6,8 @@ package nts.uk.query.pub.employee;
 
 import java.util.List;
 
+import nts.arc.time.GeneralDateTime;
+
 /**
  * The Interface RegulationInfoEmployeePub.
  */
@@ -18,4 +20,19 @@ public interface RegulationInfoEmployeePub {
 	 * @return the list
 	 */
 	public List<RegulationInfoEmployeeExport> find(EmployeeSearchQueryDto query);
+
+	/**
+	 * Sort employee.
+	 *
+	 * @param comId the com id
+	 * @param sIds the s ids
+	 * @param systemType the system type
+	 * @param orderNo the order no
+	 * @param nameType the name type
+	 * @param referenceDate the reference date
+	 * @return the list
+	 */
+	// <<Public>> 社員を並び替える
+	public List<String> sortEmployee(String comId, List<String> sIds, Integer systemType, Integer orderNo,
+			Integer nameType, GeneralDateTime referenceDate);
 }
