@@ -33,6 +33,7 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFunRep
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyDto;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyFinder;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -188,6 +189,11 @@ public class MonthlyPerformanceCorrectionProcessor {
 
 			// アルゴリズム「月別実績を表示する」を実行する Hiển thị monthly result
 			displayMonthlyResult(screenDto, yearMonth, closureId);
+			
+			// set data of lstControlDisplayItem
+			List<Integer> attdanceIds = screenDto.getParam().getLstAtdItemUnique().keySet().stream().collect(Collectors.toList());
+			screenDto.getLstControlDisplayItem().setItemIds(attdanceIds);
+			screenDto.getLstControlDisplayItem().getLstAttendanceItem();
 
 			// 画面項目の非活制御をする
 			// アルゴリズム「実績の時系列をチェックする」を実行する (Check actual time)
@@ -367,6 +373,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 				.collect(Collectors.toList());
 		results = new GetDataMonthly(listEmployeeIds, new YearMonth(yearMonth), ClosureId.valueOf(closureId),
 				screenDto.getClosureDate().toDomain(), attdanceIds, monthlyModifyQueryProcessor).call();
+		if(results.size() > 0){
+			screenDto.getItemValues().addAll(results.get(0).getItems());
+		}
 		Map<String, MonthlyModifyResult> employeeDataMap = results.stream()
 				.collect(Collectors.toMap(x -> x.getEmployeeId(), Function.identity(), (x, y) -> x));
 
@@ -395,10 +404,11 @@ public class MonthlyPerformanceCorrectionProcessor {
 						// TODO item.getValueType().value
 						String attendanceAtrAsString = String.valueOf(item.getValueType());
 						String attendanceKey = mergeString(ADD_CHARACTER, "" + item.getItemId());
+						PAttendanceItem pA = param.getLstAtdItemUnique().get(item.getItemId());
 						List<String> cellStatus = new ArrayList<>();
 						int attendanceAtr = item.getValueType().value;
 
-						if (attendanceAtr == ValueType.INTEGER.value) {
+						if (pA.getAttendanceAtr() == 1) {
 							int minute = 0;
 							if (item.getValue() != null) {
 								if (Integer.parseInt(item.getValue()) >= 0) {

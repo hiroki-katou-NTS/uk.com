@@ -32,11 +32,11 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 	private ClosureDateDto closureDate;
 
 	/** 月別実績の所属情報: 月別実績の所属情報 */
-	@AttendanceItemLayout(jpPropertyName = "月別実績の所属情報", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = "月別実績の所属情報", layout = "A")
 	private AffiliationInfoOfMonthlyDto affiliation;
 
 	/** 月別実績の勤怠時間: 月別実績の勤怠時間 */
-	@AttendanceItemLayout(jpPropertyName = "月別実績の勤怠時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = "月別実績の勤怠時間", layout = "B")
 	private AttendanceTimeOfMonthlyDto attendanceTime;
 
 	/** 月別実績の任意項目 */

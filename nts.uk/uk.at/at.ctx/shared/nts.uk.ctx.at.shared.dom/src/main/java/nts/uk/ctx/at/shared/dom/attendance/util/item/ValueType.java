@@ -7,7 +7,7 @@ public enum ValueType {
 	DECIMAL(2, "DECIMAL", "回数"),
 	DATE(3, "DATE", "年月日"),
 	BOOLEAN(4, "BOOLEAN", "年月日"),
-	DOUBLE(4, "DOUBLE", "日数");
+	DOUBLE(5, "DOUBLE", "日数");
 
 	public final int value;
 	public final String name;
