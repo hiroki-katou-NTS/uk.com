@@ -1,7 +1,5 @@
 package nts.uk.ctx.sys.auth.pubimp.user;
 
-import java.util.Date;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -29,7 +27,7 @@ public class ChangeUserPasswordPublisherImpl implements ChangeUserPasswordPublis
 		PasswordChangeLog passwordChangeLog = new PasswordChangeLog(new LoginId(loginId), userId, GeneralDateTime.now(),new HashPassword( newPassHash));
 		
 		//ドメインモデル「パスワード変更ログ」を登録する
-		this.passwordChangeLogRepository.register(passwordChangeLog);
+		this.passwordChangeLogRepository.add(passwordChangeLog);
 		
 		
 	}

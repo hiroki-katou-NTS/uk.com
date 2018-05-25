@@ -6,6 +6,7 @@ package nts.uk.ctx.sys.auth.pubimp.user;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -13,6 +14,8 @@ import javax.inject.Inject;
 import nts.gul.security.hash.password.PasswordHash;
 import nts.uk.ctx.sys.auth.dom.adapter.securitypolicy.PasswordPolicyAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.securitypolicy.PasswordPolicyImport;
+import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLog;
+import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLogRepository;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.ctx.sys.auth.pub.user.CheckBeforeChangePassOutput;
@@ -27,6 +30,10 @@ public class CheckBeforePasswordPublisherImpl implements CheckBeforePasswordPubl
 	/** The user repo. */
 	@Inject
 	private UserRepository userRepo;
+
+	/** The password change log repository. */
+	@Inject
+	private PasswordChangeLogRepository passwordChangeLogRepository;
 
 	/** The password policy adap. */
 	@Inject
@@ -80,7 +87,7 @@ public class CheckBeforePasswordPublisherImpl implements CheckBeforePasswordPubl
 	// パスワードポリシーチェック
 	private CheckBeforeChangePassOutput passwordPolicyCheck(String userId, String newPass,
 			PasswordPolicyImport passwordPolicyImport) {
-		
+
 		List<String> messages = new ArrayList<>();
 		PasswordPolicyCountChar countChar = this.getCountChar(newPass);
 		int lengthPass = newPass.length();
@@ -99,21 +106,41 @@ public class CheckBeforePasswordPublisherImpl implements CheckBeforePasswordPubl
 				messages.add("#Msg_1189" + "," + passwordPolicyImport.getNumberOfDigits());
 			}
 			if (symbolCharacters < passwordPolicyImport.getSymbolCharacters()) {
-				messages.add("#Msg_1190" + "," + passwordPolicyImport.getNumberOfDigits());
+				messages.add("#Msg_1190" + "," + passwordPolicyImport.getSymbolCharacters());
 			}
 			if (passwordPolicyImport.getHistoryCount() > 0) {
+				// Check password history
 				String newPassHash = PasswordHash.generate(newPass, userId);
-				// TODO Check pass history
-				// TODO パスワード履歴チェック
-				// domain パスワード変更ログ PasswordChangeLog
+				if (this.isHistoryPassError(userId, passwordPolicyImport.getHistoryCount(), newPassHash)) {
+					messages.add("#Msg_1187" + "," + passwordPolicyImport.getHistoryCount());
+				}
 			}
-			
 		}
 		if (messages.isEmpty()) {
 			return new CheckBeforeChangePassOutput(false, messages);
 		} else {
 			return new CheckBeforeChangePassOutput(true, messages);
 		}
+	}
+
+	/**
+	 * Checks if is history pass error.
+	 *
+	 * @param userId
+	 *            the user id
+	 * @param historyCount
+	 *            the history count
+	 * @param newPassHash
+	 *            the new pass hash
+	 * @return true, if is history pass error
+	 */
+	private boolean isHistoryPassError(String userId, int historyCount, String newPassHash) {
+		// domain パスワード変更ログ PasswordChangeLog
+		List<PasswordChangeLog> listPasswordChangeLog = this.passwordChangeLogRepository.findByUserId(userId,
+				historyCount + 1);
+		Optional<PasswordChangeLog> duplicatePassword = listPasswordChangeLog.stream()
+				.filter(item -> item.getPassword().v().equals(newPassHash)).findFirst();
+		return duplicatePassword.isPresent();
 	}
 
 	/**
