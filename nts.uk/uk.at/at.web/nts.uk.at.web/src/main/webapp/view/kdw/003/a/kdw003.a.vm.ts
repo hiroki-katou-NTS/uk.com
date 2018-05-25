@@ -2743,16 +2743,18 @@ module nts.uk.at.view.kdw003.a.viewmodel {
     class FlexShortage {
         shortageTime: KnockoutObservable<any> = ko.observable();
         nextMonthTransferredMoneyTime: KnockoutObservable<string> = ko.observable("");
-        noOfHolidays: KnockoutObservable<any> = ko.observable();
+        noOfHolidays: KnockoutObservable<any> = ko.observable("");
         nameNoOfHolidays: any;
         absentDeductionTime: KnockoutObservable<any> = ko.observable();
         nameAbsentDeductionTime: any;
         initLoad = 0;
+        messageRed: KnockoutObservable<any> = ko.observable();
 
         constructor(parent: any, dataCalc: CalcFlex, breakTimeDay: BreakTimeDay) {
             let self = this;
             this.nameNoOfHolidays = nts.uk.resource.getText('Com_PaidHoliday');
             this.nameAbsentDeductionTime = nts.uk.resource.getText('KDW003_79');
+            this.messageRed(nts.uk.resource.getText('KDW003_80', ["-15:00"]));
             self.bindData(dataCalc, breakTimeDay);
             self.noOfHolidays.subscribe(val => {
                 let parent = ko.toJS(__viewContext.vm);
@@ -2863,6 +2865,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let param = __viewContext.vm.valueFlexCheck;
             param.date = moment(param.date).utc().toISOString()
             service.findFlexCheck(param).done((data) => {
+                 self.messageRed(nts.uk.resource.getText('KDW003_80', [data]));
                 self.checkColorDetail(data, value, breakTimeDay);
                 dfd.resolve();
             }).fail(() =>{

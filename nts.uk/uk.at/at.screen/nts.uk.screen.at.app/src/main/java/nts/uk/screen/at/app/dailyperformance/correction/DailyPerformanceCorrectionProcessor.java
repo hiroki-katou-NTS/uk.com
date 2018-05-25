@@ -467,7 +467,7 @@ public class DailyPerformanceCorrectionProcessor {
 		//	}
 			DailyModifyResult resultOfOneRow = getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
 			if (resultOfOneRow != null && (displayFormat == 2 ? !data.getError().equals("") : true)) {
-				lockDataCheckbox(sId, screenDto, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, approveRootStatus);
+				lockDataCheckbox(sId, screenDto, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, approveRootStatus, mode);
 
 				boolean lock = checkLockAndSetState(employeeAndDateRange, data);
 
@@ -718,7 +718,7 @@ public class DailyPerformanceCorrectionProcessor {
 	}
 
 	public void lockDataCheckbox(String sId, DailyPerformanceCorrectionDto screenDto, 
-			DPDataDto data, Optional<IdentityProcessUseSetDto> identityProcessUseSetDto, Optional<ApprovalUseSettingDto> approvalUseSettingDto, ApproveRootStatusForEmpDto approveRootStatus) {
+			DPDataDto data, Optional<IdentityProcessUseSetDto> identityProcessUseSetDto, Optional<ApprovalUseSettingDto> approvalUseSettingDto, ApproveRootStatusForEmpDto approveRootStatus, int mode) {
 		// disable, enable check sign no 10
 		if (!sId.equals(data.getEmployeeId())) {
 			screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
@@ -741,8 +741,12 @@ public class DailyPerformanceCorrectionProcessor {
 			}
 		}
 
-		if (!approvalUseSettingDto.isPresent()) {
+		if (approvalUseSettingDto.isPresent()) {
 			// lock approval
+			if(mode == ScreenMode.NORMAL.value){
+				screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
+				return;
+			}
 			int supervisorConfirmError = approvalUseSettingDto.get().getSupervisorConfirmErrorAtr();
 			if (supervisorConfirmError == YourselfConfirmError.CANNOT_CHECKED_WHEN_ERROR.value) {
 				if (data.getError().contains("ER") && data.isApproval()) {
@@ -815,7 +819,7 @@ public class DailyPerformanceCorrectionProcessor {
 
 	public void setHideCheckbok(DailyPerformanceCorrectionDto screenDto, Optional<IdentityProcessUseSetDto> indentity, Optional<ApprovalUseSettingDto> approval, String companyId, int mode) {
 			screenDto.setShowPrincipal(indentity.isPresent() && indentity.get().isUseConfirmByYourself());
-			screenDto.setShowSupervisor(approval.isPresent() && approval.get().getUseDayApproverConfirm() == true ? ScreenMode.APPROVAL.value == mode : false);
+			screenDto.setShowSupervisor(approval.isPresent() && approval.get().getUseDayApproverConfirm());
 	}
 
 	public List<DPErrorDto> getErrorList(DailyPerformanceCorrectionDto screenDto, List<String> listEmployeeId) {
@@ -1414,7 +1418,7 @@ public class DailyPerformanceCorrectionProcessor {
 
 		if (isObjectShare && objectShare.getInitClock() == null) {
 			// get employmentCode
-			screenDto.setEmploymentCode(getEmploymentCode(dateRange, sId));
+			//screenDto.setEmploymentCode(getEmploymentCode(dateRange, sId));
 			return new DateRange(objectShare.getStartDate(), objectShare.getEndDate());
 		} else {
 
