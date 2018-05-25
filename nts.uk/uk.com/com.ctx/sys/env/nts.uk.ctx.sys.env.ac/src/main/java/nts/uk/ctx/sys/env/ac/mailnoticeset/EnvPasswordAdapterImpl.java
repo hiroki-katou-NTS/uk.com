@@ -23,8 +23,10 @@ public class EnvPasswordAdapterImpl implements EnvPasswordAdapter {
 	@Inject
 	private CheckBeforePasswordPublisher checkBeforePasswordPublisher;
 
+	/** The change user password publisher. */
 	@Inject
 	private ChangeUserPasswordPublisher changeUserPasswordPublisher;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -34,8 +36,9 @@ public class EnvPasswordAdapterImpl implements EnvPasswordAdapter {
 	 */
 	@Override
 	public CheckChangePassOutput checkBeforeChangePassword(String userId, String currentPass, String newPass,
-			String reNewPass) {		
-		CheckBeforeChangePassOutput result = this.checkBeforePasswordPublisher.checkBeforeChangePassword(userId, currentPass, newPass, reNewPass);
+			String reNewPass) {
+		CheckBeforeChangePassOutput result = this.checkBeforePasswordPublisher.checkBeforeChangePassword(userId,
+				currentPass, newPass, reNewPass);
 		return new CheckChangePassOutput(result.isError(), result.getMessage());
 	}
 
