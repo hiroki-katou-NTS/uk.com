@@ -16,7 +16,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
         selectedTab: KnockoutObservable<string>;
 
         cbbItemList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getListCategory());
-        selectedCategory: KnockoutObservable<number> = ko.observable(model.CATEGORY.SCHEDULE_DAILY);
+        selectedCategory: KnockoutObservable<number> = ko.observable(model.CATEGORY.SCHEDULE_4_WEEK);
 
         radioItemList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getConditionToExtractDaily());
         selectedDataCondition: KnockoutObservable<number> = ko.observable(model.DATA_CONDITION_TO_EXTRACT.ALL);
