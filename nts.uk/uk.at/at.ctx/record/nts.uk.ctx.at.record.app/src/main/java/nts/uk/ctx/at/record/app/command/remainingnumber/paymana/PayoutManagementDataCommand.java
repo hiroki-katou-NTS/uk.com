@@ -44,5 +44,7 @@ public class PayoutManagementDataCommand {
 	private int stateAtr;
 	
 	private boolean checkBox;
+	
+	private int closureId;
 
 }

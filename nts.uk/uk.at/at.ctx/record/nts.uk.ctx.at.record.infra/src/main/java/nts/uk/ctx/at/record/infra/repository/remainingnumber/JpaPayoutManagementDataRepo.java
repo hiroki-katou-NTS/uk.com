@@ -11,6 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutManagementDataRepository;
+import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 import nts.uk.ctx.at.record.infra.entity.remainingnumber.paymana.KrcmtPayoutManaData;
 
 
@@ -34,6 +35,8 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 	
 	private String DELETE_QUERY = "DELETE FROM KrcmtPayoutManaData a WHERE a.sID = :sID AND a.dayOff = :dayOff";
 
+	private String QUERY_BY_SUBID = "SELECT * FROM KrcmtPayoutManaData p where p.payoutId (SELECT ps.krcmtPayoutSubOfHDManaPK.payoutId FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.subOfHDID =:subOfHDID)";
+	
 	@Override
 	public List<PayoutManagementData> getSid(String cid, String sid) {
 		List<KrcmtPayoutManaData> list = this.queryProxy().query(QUERY_BYSID, KrcmtPayoutManaData.class)
@@ -94,7 +97,7 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 
 	@Override
 	public void delete(String employeeId, GeneralDate dayOff) {
-		this.getEntityManager().createQuery(DELETE_QUERY).setParameter("sID", employeeId).setParameter("dayOff", dayOff);
+		this.getEntityManager().createQuery(DELETE_QUERY).setParameter("sID", employeeId).setParameter("dayOff", dayOff).executeUpdate();
 
 	}
 
@@ -135,6 +138,12 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 		List<KrcmtPayoutManaData> listpayout = this.queryProxy()
 				.query(QUERY_BY_SID_PERIOD_AND_IN_SUB, KrcmtPayoutManaData.class).setParameter("sid", sid)
 				.setParameter("startDate", startDate).setParameter("endDate", endDate).getList();
+		return listpayout.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<PayoutManagementData> getDayoffDateBysubOfHDID(String subOfHDID) {
+		List<KrcmtPayoutManaData> listpayout = this.queryProxy().query(QUERY_BY_SUBID, KrcmtPayoutManaData.class ).setParameter("subOfHDID", subOfHDID).getList(); 
 		return listpayout.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
 

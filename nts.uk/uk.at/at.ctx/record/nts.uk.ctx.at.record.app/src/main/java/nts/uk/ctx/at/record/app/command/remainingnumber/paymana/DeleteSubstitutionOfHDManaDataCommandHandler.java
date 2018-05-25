@@ -9,11 +9,12 @@ import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SubstitutionOfHDManaData
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SubstitutionOfHDManaDataService;
 
 @Stateless
-public class DeleteSubstitutionOfHDManaDataCommandHandler extends CommandHandler<DeleteSubstitutionOfHDManaDataCommand> {
-   
+public class DeleteSubstitutionOfHDManaDataCommandHandler
+		extends CommandHandler<DeleteSubstitutionOfHDManaDataCommand> {
+
 	@Inject
 	private SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepository;
-	
+
 	@Override
 	protected void handle(CommandHandlerContext<DeleteSubstitutionOfHDManaDataCommand> context) {
 		DeleteSubstitutionOfHDManaDataCommand command = context.getCommand();
