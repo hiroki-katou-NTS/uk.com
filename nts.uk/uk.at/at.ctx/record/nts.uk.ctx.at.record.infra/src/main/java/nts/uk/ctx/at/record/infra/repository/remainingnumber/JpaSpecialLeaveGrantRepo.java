@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
 import nts.uk.ctx.at.record.infra.entity.remainingnumber.KrcmtSpecialLeaveReam;
@@ -21,6 +23,14 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 	private String GET_ALL_BY_SID_SPECIALCODE_STATUS = "SELECT a FROM KrcmtSpecialLeaveReam a WHERE a.employeeId = :employeeId AND a.specialLeaCode = :specialLeaCode AND a.expStatus = :expStatus order by a.grantDate";
 
 	private String DELETE_QUERY = "DELETE FROM KrcmtSpecialLeaveReam a" + " WHERE a.specialLeaID = :specialid ";
+	
+	private String GET_BY_PERIOD_STATUS = "SELECT a FROM KrcmtSpecialLeaveReam a"
+			+ " WHERE a.employeeId = :employeeId"
+			+ " AND a.specialLeaCode = :specialLeaCode"
+			+ " AND a.expStatus = :expStatus"
+			+ " AND a.grantDate <= :grantDate"
+			+ " AND a.deadlineDate >= :deadlineDate"
+			+ " ORDER BY a.grantDate ASC";
 
 	@Override
 	public List<SpecialLeaveGrantRemainingData> getAll(String employeeId, int specialCode) {
@@ -192,6 +202,29 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 						x.timeGrant, x.numberDayUse, x.timeUse, x.useSavingDays, x.numberOverDays, x.timeOver,
 						x.numberDayRemain, x.timeRemain))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<SpecialLeaveGrantRemainingData> getByPeriodStatus(String sid, int specialLeaveCode,
+			LeaveExpirationStatus expirationStatus, GeneralDate grantDate, GeneralDate deadlineDate) {
+		List<KrcmtSpecialLeaveReam> entities = this.queryProxy()
+				.query(GET_BY_PERIOD_STATUS, KrcmtSpecialLeaveReam.class)
+				.setParameter("employeeId", sid)
+				.setParameter("specialLeaCode", specialLeaveCode)
+				.setParameter("expStatus", expirationStatus)
+				.setParameter("grantDate", grantDate)
+				.setParameter("deadlineDate", deadlineDate)
+				.getList();
+
+		return entities.stream()
+				.map(x -> toDomainSpe(x))
+				.collect(Collectors.toList());
+	}
+	private SpecialLeaveGrantRemainingData toDomainSpe(KrcmtSpecialLeaveReam x) {
+		return SpecialLeaveGrantRemainingData.createFromJavaType(x.specialLeaID, x.cId, x.employeeId,
+				x.specialLeaCode, x.grantDate, x.deadlineDate, x.expStatus, x.registerType, x.numberDayGrant,
+				x.timeGrant, x.numberDayUse, x.timeUse, x.useSavingDays, x.numberOverDays, x.timeOver,
+				x.numberDayRemain, x.timeRemain);
 	}
 
 }

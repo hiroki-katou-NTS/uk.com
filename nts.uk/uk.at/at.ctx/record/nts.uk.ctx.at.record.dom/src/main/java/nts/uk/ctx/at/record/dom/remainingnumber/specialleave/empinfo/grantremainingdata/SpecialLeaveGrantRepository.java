@@ -3,6 +3,9 @@ package nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremai
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.remainingnumber.base.LeaveExpirationStatus;
+
 public interface SpecialLeaveGrantRepository {
 
 	List<SpecialLeaveGrantRemainingData> getAll(String employeeId, int specialCode);
@@ -16,5 +19,16 @@ public interface SpecialLeaveGrantRepository {
 	void delete(String specialid);
 
 	Optional<SpecialLeaveGrantRemainingData> getBySpecialId(String specialId);
+	/**
+	 * 特別休暇付与残数データ
+	 * @param sid ・社員ID=INPUT．社員ID
+	 * @param specialLeaveCode ・特別休暇コード=INPUT．特別休暇コード
+	 * @param expirationStatus ・期限切れ状態＝”使用可能”
+	 * @param grantDate ・付与日<=集計終了日
+	 * @param deadlineDate ・集計開始日<=期限日
+	 * @return
+	 */
+	List<SpecialLeaveGrantRemainingData> getByPeriodStatus(String sid, int specialLeaveCode, LeaveExpirationStatus expirationStatus,
+			GeneralDate grantDate, GeneralDate deadlineDate);
 
 }
