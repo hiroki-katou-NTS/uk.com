@@ -43,23 +43,8 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     self.isOptionSubHolidayEnable(false);
                 } else {
                     self.isOptionSubHolidayEnable(true);
-//                    self.selectedCodeOptionSubHoliday.subscribe((selectSplitHoli) => {
-//                        self.numberSplitHoliday((selectSplitHoli).toFixed(1));
-//                        self.totalDay(self.selectedCodeHoliday() - (self.selectedCodeSubHoliday() + parseFloat(self.numberSplitHoliday())));
-//                        self.dayRemaining(self.totalDay().toString());
-//                    });
                 }
             });
-//            self.selectedCodeHoliday.subscribe((selectHoli) => {
-//                self.numberHoliday((selectHoli).toFixed(1));
-//                self.totalDay(parseFloat(self.numberHoliday()) - self.selectedCodeSubHoliday());
-//                self.dayRemaining(self.totalDay().toString());
-//            });
-//            self.selectedCodeSubHoliday.subscribe((selectSubHoli) => {
-//                self.numberSubHoliday((selectSubHoli).toFixed(1));
-//                self.totalDay(self.selectedCodeHoliday() - parseFloat(self.numberSubHoliday()));
-//                self.dayRemaining(self.totalDay().toString());
-//            });
 
             //Check require
             self.checkedSubHoliday.subscribe((v) => {
@@ -69,28 +54,90 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     self.checkRequire(true);
                 }
             });
-            
-            
             //休出残数算出処理
+            self.checkedHoliday.subscribe((v) => {
+                let remainDayObject = {
+                    checkBox1: v,
+                    checkBox2: self.checkedSubHoliday(),
+                    checkBox3: self.checkedSplit(),
+                    value1: self.selectedCodeHoliday(),
+                    value2: self.selectedCodeSubHoliday(),
+                    value3: self.selectedCodeOptionSubHoliday()
+                }
+                self.dayRemaining(self.getRemainDay(remainDayObject));
+            });
+
+            self.checkedSubHoliday.subscribe((v) => {
+                let remainDayObject = {
+                    checkBox1: self.checkedHoliday(),
+                    checkBox2: v,
+                    checkBox3: self.checkedSplit(),
+                    value1: self.selectedCodeHoliday(),
+                    value2: self.selectedCodeSubHoliday(),
+                    value3: self.selectedCodeOptionSubHoliday()
+                }
+                self.dayRemaining(self.getRemainDay(remainDayObject));
+            });
+
+            self.checkedSplit.subscribe((v) => {
+                let remainDayObject = {
+                    checkBox1: self.checkedHoliday(),
+                    checkBox2: self.checkedSubHoliday(),
+                    checkBox3: v,
+                    value1: self.selectedCodeHoliday(),
+                    value2: self.selectedCodeSubHoliday(),
+                    value3: self.selectedCodeOptionSubHoliday()
+                }
+                self.dayRemaining(self.getRemainDay(remainDayObject));
+            });
+
             self.selectedCodeHoliday.subscribe((v) => {
-                if (self.checkedHoliday() && !self.checkedSubHoliday()) {
-                    self.dayRemaining(v);
+                let remainDayObject = {
+                    checkBox1: self.checkedHoliday(),
+                    checkBox2: self.checkedSubHoliday(),
+                    checkBox3: self.checkedSplit(),
+                    value1: v,
+                    value2: self.selectedCodeSubHoliday(),
+                    value3: self.selectedCodeOptionSubHoliday()
                 }
+                self.dayRemaining(self.getRemainDay(remainDayObject));
             });
-            
+
             self.selectedCodeSubHoliday.subscribe((v) => {
-                if (self.checkedSubHoliday()) {
-                    self.dayRemaining(self.selectedCodeHoliday() - v);                
+                let remainDayObject = {
+                    checkBox1: self.checkedHoliday(),
+                    checkBox2: self.checkedSubHoliday(),
+                    checkBox3: self.checkedSplit(),
+                    value1: self.selectedCodeHoliday(),
+                    value2: v,
+                    value3: self.selectedCodeOptionSubHoliday()
                 }
+                self.dayRemaining(self.getRemainDay(remainDayObject));
             });
-            
+
             self.selectedCodeOptionSubHoliday.subscribe((v) => {
-                if (self.checkedSubHoliday()) {
-                    self.dayRemaining(self.selectedCodeHoliday() - self.selectedCodeSubHoliday() -  v);                
+                let remainDayObject = {
+                    checkBox1: self.checkedHoliday(),
+                    checkBox2: self.checkedSubHoliday(),
+                    checkBox3: self.checkedSplit(),
+                    value1: self.selectedCodeHoliday(),
+                    value2: self.selectedCodeSubHoliday(),
+                    value3: v
                 }
+                self.dayRemaining(self.getRemainDay(remainDayObject));
             });
-            
-            
+        }
+
+        getRemainDay(remainObject: any): string {
+            if (!remainObject.checkBox1) {
+                return "0";
+            } else if (remainObject.checkBox1 && !remainObject.checkBox2 && !remainObject.checkBox3) {
+                return remainObject.value1;
+            } else if (remainObject.checkBox1 && remainObject.checkBox2 && !remainObject.checkBox3) {
+                return (remainObject.value1 - remainObject.value2).toString();
+            } else if (remainObject.checkBox1 && remainObject.checkBox2 && remainObject.checkBox3) {
+                return (remainObject.value1 - remainObject.value2 - remainObject.value3).toString();
+            }
         }
         initScreen(): void {
             block.invisible();
