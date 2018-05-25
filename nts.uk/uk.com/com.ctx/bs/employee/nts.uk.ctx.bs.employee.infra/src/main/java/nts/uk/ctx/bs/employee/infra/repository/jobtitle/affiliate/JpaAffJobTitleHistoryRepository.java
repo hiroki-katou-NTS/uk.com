@@ -40,8 +40,9 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 			+ " where h.sid = :sid and h.hisId = :hisId";
 	
 	private final String GET_BY_EMPIDS_PERIOD = "select h from BsymtAffJobTitleHist h"
-			+ " where h.sid IN :lstSid and h.strDate <= :startDate and h.endDate >= :endDate";
-
+			+ " where h.sid IN :lstSid and h.strDate <= :endDate and h.endDate >= :startDate"
+			+ " ORDER BY h.sid, h.strDate";
+	
 	/**
 	 * Convert from domain to entity
 	 * @param employeeId

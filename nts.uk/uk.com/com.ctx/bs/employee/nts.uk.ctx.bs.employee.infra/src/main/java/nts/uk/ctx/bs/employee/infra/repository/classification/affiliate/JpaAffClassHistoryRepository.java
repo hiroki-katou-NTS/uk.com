@@ -37,9 +37,9 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 			+ " where h.sid = :sid and h.startDate <= :standardDate and h.endDate >= :standardDate";
 	
 	private final String GET_BY_SID_LIST_PERIOD = "select h from BsymtAffClassHistory h"
-			+ " where h.sid IN :employeeIds and h.startDate <= :startDate and h.endDate >= :endDate"
+			+ " where h.sid IN :employeeIds and h.startDate <= :endDate and h.endDate >= :startDate"
 			+ " ORDER BY h.sid, h.startDate";
-
+			
 	@Override
 	public Optional<DateHistoryItem> getByHistoryId(String historyId) {
 
