@@ -340,6 +340,7 @@ module nts.uk.at.view.kwr008.a {
                 var employeeSearchs: UnitModel[] = [];
                 for (var employeeSearch of dataList) {
                     var employee: UnitModel = {
+                        employeeId: employeeSearch.employeeId,
                         code: employeeSearch.employeeCode,
                         name: employeeSearch.employeeName,
                         workplaceName: employeeSearch.workplaceName
@@ -411,6 +412,7 @@ module nts.uk.at.view.kwr008.a {
         }
 
         export interface UnitModel {
+            employeeId: string;
             code: string;
             name?: string;
             workplaceName?: string;
