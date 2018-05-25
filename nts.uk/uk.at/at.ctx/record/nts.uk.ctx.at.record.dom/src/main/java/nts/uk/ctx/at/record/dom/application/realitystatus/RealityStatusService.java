@@ -555,7 +555,7 @@ public class RealityStatusService {
 			// imported（就業）「社員基本情報」を取得する
 			// RequestList1
 			EmployeeRecordImport empInfo = employeeRecordAdapter.getPersonInfor(emp.getSId());
-			String empName = Objects.isNull(empInfo) ? "" : empInfo.getPname();
+			String empName = Objects.isNull(empInfo) ? "" : empInfo.getEmployeeCode() + "　 " +empInfo.getPname();
 
 			if (useSetting.isMonthlyConfirm()) {
 				// imported（ワークフロー）「承認ルート状況」を取得する
