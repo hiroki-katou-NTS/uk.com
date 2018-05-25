@@ -20,5 +20,7 @@ public class PayManaRemainCommand {
 	private Boolean pickUp;
 	private Boolean pause;
 	private GeneralDate holidayDate;
+	private Double subDays;
+	private int closureId;
 	
 }

@@ -53,6 +53,8 @@ public class PayoutManagementData extends AggregateRoot {
 	// 消滅日
 	public GeneralDate disapearDate;
 	
+	private GeneralDate dayoffDate;
+	
 	public PayoutManagementData(String payoutId,String cid, String sid, boolean unknowDate, GeneralDate dayoffDate, GeneralDate expiredDate, int lawId,
 			Double occurredDays, Double unUsedDays, int stateAtr){
 		this.payoutId = payoutId;
@@ -64,6 +66,7 @@ public class PayoutManagementData extends AggregateRoot {
 		this.occurredDays = new ManagementDataDaysAtr(occurredDays);
 		this.unUsedDays = new ManagementDataRemainUnit(unUsedDays);
 		this.stateAtr = EnumAdaptor.valueOf(stateAtr, DigestionAtr.class);
+		this.dayoffDate = dayoffDate;
 	}
 	
 	public PayoutManagementData(String payoutId,String cid, String sid, boolean unknowDate, GeneralDate dayoffDate, GeneralDate expiredDate, int lawId,
