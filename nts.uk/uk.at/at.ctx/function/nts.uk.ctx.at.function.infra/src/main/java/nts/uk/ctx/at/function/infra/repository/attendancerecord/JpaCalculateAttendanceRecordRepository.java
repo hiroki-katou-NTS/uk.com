@@ -7,13 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
-import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecord;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordGetMemento;
@@ -22,12 +16,10 @@ import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRecPK;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecItem;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecItemPK;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecItemPK_;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecItem_;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class JpaCalculateAttendanceRecordRepository extends JpaRepository
+public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordRepository
 		implements CalculateAttendanceRecordRepositoty {
 
 	/*
@@ -57,9 +49,6 @@ public class JpaCalculateAttendanceRecordRepository extends JpaRepository
 	@Override
 	public void updateCalculateAttendanceRecord(String companyId, ExportSettingCode exportSettingCode, int columnIndex,
 			int position, long exportArt, boolean useAtr, CalculateAttendanceRecord calculateAttendanceRecord) {
-		// update attendanceRecord
-//		this.commandProxy().update(this.toEntityAttndRec(exportSettingCode, columnIndex, position, exportArt, useAtr,
-//				calculateAttendanceRecord));
 		
 		//check and update AttendanceRecord
 		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, Long.valueOf(exportSettingCode.v()), columnIndex, exportArt,
@@ -72,6 +61,7 @@ public class JpaCalculateAttendanceRecordRepository extends JpaRepository
 			this.commandProxy().insert(this.toEntityAttndRec(exportSettingCode, columnIndex, position, exportArt,
 					useAtr, calculateAttendanceRecord));
 		}
+		
 		//get listItemAdded, listItemSubtracted
 		List<KfnstAttndRecItem> listKfnstAttndRecItemAdded = calculateAttendanceRecord.getAddedItem().stream().map(e -> 
 		toEntityAttndRecItemAdded(exportSettingCode, columnIndex, position, exportArt, e.intValue())).collect(Collectors.toList());
@@ -84,8 +74,7 @@ public class JpaCalculateAttendanceRecordRepository extends JpaRepository
 		kfnstAttndRecItems.addAll(listKfnstAttndRecItemSubtracted);
 		
 		// check and update attendanceRecordItems
-		List<KfnstAttndRecItem> kfnstAttndRecItemsOld = this.findAttendanceRecordItems(companyId, exportSettingCode,
-				columnIndex, position, exportArt);
+		List<KfnstAttndRecItem> kfnstAttndRecItemsOld = this.findAttendanceRecordItems(kfnstAttndRecPK);
 		if (kfnstAttndRecItemsOld != null && !kfnstAttndRecItemsOld.isEmpty()) {
 			this.removeAllAttndRecItem(kfnstAttndRecItemsOld);
 		} 
@@ -104,7 +93,7 @@ public class JpaCalculateAttendanceRecordRepository extends JpaRepository
 		if(optionalKfnstAttndRec.isPresent()) this.commandProxy().remove(optionalKfnstAttndRec.get());
 
 		//find and delete KfnstAttndRecItem
-		List<KfnstAttndRecItem> kfnstAttndRecItems = this.findAttendanceRecordItems(companyId, exportSettingCode, columnIndex, position, exportArt);
+		List<KfnstAttndRecItem> kfnstAttndRecItems = this.findAttendanceRecordItems(kfnstAttndRecPK);
 		if(kfnstAttndRecItems!=null && !kfnstAttndRecItems.isEmpty()) {
 			this.commandProxy().removeAll(kfnstAttndRecItems);
 		}
@@ -120,9 +109,8 @@ public class JpaCalculateAttendanceRecordRepository extends JpaRepository
 	 */
 	private CalculateAttendanceRecord toDomain(KfnstAttndRec kfnstAttndRec) {
 		// get KfnstAttndRecItem by KfnstAttndRecPK
-		List<KfnstAttndRecItem> listKfnstAttndRecItem = this.findAttendanceRecordItems(AppContexts.user().companyId(),
-				new ExportSettingCode((kfnstAttndRec.getId().getExportCd())), kfnstAttndRec.getId().getColumnIndex(),
-				kfnstAttndRec.getId().getPosition(), kfnstAttndRec.getId().getOutputAtr());
+		KfnstAttndRecPK kfnstAttndRecPK = kfnstAttndRec.getId();
+		List<KfnstAttndRecItem> listKfnstAttndRecItem = this.findAttendanceRecordItems(kfnstAttndRecPK);
 
 		// create getMemento
 		CalculateAttendanceRecordGetMemento getMemento = new JpaCalculateAttendanceRecordGetMemento(kfnstAttndRec,
@@ -221,34 +209,34 @@ public class JpaCalculateAttendanceRecordRepository extends JpaRepository
 	 *            the export art
 	 * @return the list
 	 */
-	public List<KfnstAttndRecItem> findAttendanceRecordItems(String companyId, ExportSettingCode exportSettingCode,
-			long columnIndex, long position, long exportArt) {
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<KfnstAttndRecItem> criteriaQuery = criteriaBuilder.createQuery(KfnstAttndRecItem.class);
-		Root<KfnstAttndRecItem> root = criteriaQuery.from(KfnstAttndRecItem.class);
-
-		// Build query
-		criteriaQuery.select(root);
-
-		// create condition
-		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.cid), companyId));
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.exportCd),
-				exportSettingCode.v()));
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.columnIndex),
-				columnIndex));
-		predicates.add(
-				criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.position), position));
-		predicates.add(
-				criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.outputAtr), exportArt));
-
-		criteriaQuery.where(predicates.toArray(new Predicate[] {}));
-
-		// query data
-		List<KfnstAttndRecItem> kfnstAttndRecItems = em.createQuery(criteriaQuery).getResultList();
-		return kfnstAttndRecItems.isEmpty() ? new ArrayList<KfnstAttndRecItem>() : kfnstAttndRecItems;
-	}
+//	public List<KfnstAttndRecItem> findAttendanceRecordItems(String companyId, ExportSettingCode exportSettingCode,
+//			long columnIndex, long position, long exportArt) {
+//		EntityManager em = this.getEntityManager();
+//		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+//		CriteriaQuery<KfnstAttndRecItem> criteriaQuery = criteriaBuilder.createQuery(KfnstAttndRecItem.class);
+//		Root<KfnstAttndRecItem> root = criteriaQuery.from(KfnstAttndRecItem.class);
+//
+//		// Build query
+//		criteriaQuery.select(root);
+//
+//		// create condition
+//		List<Predicate> predicates = new ArrayList<>();
+//		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.cid), companyId));
+//		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.exportCd),
+//				exportSettingCode.v()));
+//		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.columnIndex),
+//				columnIndex));
+//		predicates.add(
+//				criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.position), position));
+//		predicates.add(
+//				criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.outputAtr), exportArt));
+//
+//		criteriaQuery.where(predicates.toArray(new Predicate[] {}));
+//
+//		// query data
+//		List<KfnstAttndRecItem> kfnstAttndRecItems = em.createQuery(criteriaQuery).getResultList();
+//		return kfnstAttndRecItems.isEmpty() ? new ArrayList<KfnstAttndRecItem>() : kfnstAttndRecItems;
+//	}
 
 	/**
 	 * Removes the all attnd rec item.
