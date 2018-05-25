@@ -68,7 +68,11 @@ public class DailyModifyCommandFacade {
 
 	private DailyRecordDto toDto(DailyModifyQuery query) {
 		DailyRecordDto oldValues = finder.find(query.getEmployeeId(), query.getBaseDate());
-		return AttendanceItemUtil.fromItemValues(oldValues, query.getItemValues());
+		oldValues = AttendanceItemUtil.fromItemValues(oldValues, query.getItemValues());
+		oldValues.getTimeLeaving().ifPresent(dto -> {
+			if(dto.getWorkAndLeave() != null) dto.getWorkAndLeave().removeIf(tl -> tl.getWorking() == null && tl.getLeave() == null);
+		});
+		return oldValues;
 	}
 
 	private DailyRecordWorkCommand createCommand(DailyRecordDto dto, DailyModifyQuery query) {
