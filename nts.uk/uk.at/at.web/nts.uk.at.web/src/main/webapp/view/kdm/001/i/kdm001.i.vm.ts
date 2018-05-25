@@ -35,6 +35,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         totalDay: KnockoutObservable<number> = ko.observable(null);
         //Require 分割消化
         checkRequire: KnockoutObservable<boolean> = ko.observable(false);
+        checkRequireOptionSubHoliday: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
             self.initScreen();
@@ -54,6 +55,15 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     self.checkRequire(true);
                 }
             });
+            //Check require option sub holiday
+            self.checkedSplit.subscribe((v) => {
+                if (!v) {
+                    self.checkRequireOptionSubHoliday(false);
+                } else {
+                    self.checkRequireOptionSubHoliday(true);
+                }
+            });
+
             //休出残数算出処理
             self.checkedHoliday.subscribe((v) => {
                 let remainDayObject = {
@@ -197,7 +207,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                                 $('#I11_1').ntsError('set', { messageId: "Msg_730" });
                             }
                             else if (errorId === "Msg_1259") {
-                                $('#I12_4').ntsError('set', { messageId: "Msg_1259" });
+                                $('#I11_3').ntsError('set', { messageId: "Msg_1259" });
                             }
                             else if (errorId === "Msg_1256_1") {
                                 $('#I11_3').ntsError('set', { messageId: "Msg_1256" });
