@@ -94,3 +94,17 @@
     top: 60px;
     left: 10px;
 }
+
+#save {
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+#delete {
+	margin-left: 40px;
+	margin-right: 10px;
+}
+
+.btn-control {
+	width: 70px;
+}

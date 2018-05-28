@@ -29,15 +29,15 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<!-- C1_1 -->
-				<button tabindex="1" class="proceed" data-bind="click: newMode">#{i18n.getText('KWR001_46')}</button>
+				<button tabindex="1" class="proceed btn-control" data-bind="click: newMode">#{i18n.getText('KWR001_46')}</button>
 				<!-- C1_2 -->
-				<button tabindex="2" class="proceed" data-bind="click: saveData, enable: $root.errors.isEmpty">#{i18n.getText('KWR001_47')}</button>
+				<button tabindex="2" id="save" class="proceed btn-control" data-bind="click: saveData, enable: $root.errors.isEmpty">#{i18n.getText('KWR001_47')}</button>
 				<!-- C1_3 -->
 				<button tabindex="3" data-bind="click: openScreenD">#{i18n.getText('KWR001_48')}</button>
 				<!-- C1_4 -->
-				<button tabindex="4" class="danger C1_4" data-bind="click: removeData, enable: enableBtnDel">#{i18n.getText('KWR001_49')}</button>
+				<button tabindex="4" id="delete" class="danger C1_4 btn-control" data-bind="click: removeData, enable: enableBtnDel">#{i18n.getText('KWR001_49')}</button>
 				<!-- C1_5 -->
-				<button tabindex="5" data-bind="click: closeScreenC" >#{i18n.getText('KWR001_50')}</button>
+				<button tabindex="5" class="btn-control" data-bind="click: closeScreenC" >#{i18n.getText('KWR001_50')}</button>
 				
 				<!-- C1_6 -->
 				<hr/>
