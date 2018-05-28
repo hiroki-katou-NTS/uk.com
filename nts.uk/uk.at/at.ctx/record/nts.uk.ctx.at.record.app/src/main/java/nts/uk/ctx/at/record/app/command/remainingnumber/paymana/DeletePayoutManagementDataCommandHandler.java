@@ -7,18 +7,16 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 
-
 @Stateless
 public class DeletePayoutManagementDataCommandHandler extends CommandHandler<DeletePayoutManagementDataCommand> {
-    
-	
+
 	@Inject
-	private PayoutManagementDataRepository payoutMNDTRepo;
-	
+	private PayoutManagementDataRepository payoutManagementDataRepository;
+
 	@Override
 	protected void handle(CommandHandlerContext<DeletePayoutManagementDataCommand> context) {
 		DeletePayoutManagementDataCommand command = context.getCommand();
-		payoutMNDTRepo.delete(command.getEmployeeId(), command.getDayoffDate());
+		payoutManagementDataRepository.delete(command.getEmployeeId(), command.getDayoffDate());
 	}
 
 }
