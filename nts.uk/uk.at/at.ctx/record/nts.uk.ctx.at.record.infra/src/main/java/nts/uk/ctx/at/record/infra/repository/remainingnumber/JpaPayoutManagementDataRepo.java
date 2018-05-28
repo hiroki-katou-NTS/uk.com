@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.CompensatoryDayoffDate;
@@ -34,8 +35,9 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 	
 	private String DELETE_QUERY = "DELETE FROM KrcmtPayoutManaData a WHERE a.sID = :sID AND a.dayOff = :dayOff";
 
-	private String QUERY_BY_SUBID = "SELECT * FROM KrcmtPayoutManaData p where p.payoutId (SELECT ps.krcmtPayoutSubOfHDManaPK.payoutId FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.subOfHDID =:subOfHDID)";
+	private String QUERY_BY_SUBID = "SELECT p FROM KrcmtPayoutManaData p where p.payoutId IN (SELECT ps.krcmtPayoutSubOfHDManaPK.payoutId FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.subOfHDID =:subOfHDID)";
 	
+	private String QUERY_DELETE_SUB = "DELETE FROM KrcmtPayoutSubOfHDMana p WHERE p.krcmtPayoutSubOfHDManaPK.payoutId = :payoutId ";
 	@Override
 	public List<PayoutManagementData> getSid(String cid, String sid) {
 		List<KrcmtPayoutManaData> list = this.queryProxy().query(QUERY_BYSID, KrcmtPayoutManaData.class)
@@ -58,7 +60,7 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 	 */
 	private PayoutManagementData toDomain(KrcmtPayoutManaData entity) {
 		return new PayoutManagementData(entity.payoutId, entity.cID, entity.sID, entity.unknownDate, entity.dayOff,
-				entity.expiredDate, entity.lawAtr, entity.unUsedDays, entity.occurredDays, entity.stateAtr);
+				entity.expiredDate, entity.lawAtr, entity.occurredDays, entity.unUsedDays, entity.stateAtr);
 	}
 
 	@Override
@@ -90,14 +92,20 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 	}
 
 	@Override
-	public void delete(String payoutId) {
-		this.commandProxy().remove(KrcmtPayoutManaData.class, payoutId);
+	public void deletePayoutSubOfHDMana(String payoutId) {
+		this.getEntityManager().createQuery(QUERY_DELETE_SUB).setParameter("payoutId", payoutId).executeUpdate();
 	}
 
 	@Override
-	public void delete(String employeeId, GeneralDate dayOff) {
-		this.getEntityManager().createQuery(DELETE_QUERY).setParameter("sID", employeeId).setParameter("dayOff", dayOff).executeUpdate();
-
+	public void delete(String payoutId, String employeeId, GeneralDate dayOff) {
+		Optional<KrcmtPayoutManaData> entity = this.queryProxy().find(payoutId, KrcmtPayoutManaData.class);
+		if (entity.isPresent()) {
+			this.getEntityManager().createQuery(DELETE_QUERY).setParameter("sID", employeeId).setParameter("dayOff", dayOff).executeUpdate();
+			deletePayoutSubOfHDMana(payoutId);
+		}else{
+			throw new BusinessException("Msg_198");
+		}
+		
 	}
 
 	@Override

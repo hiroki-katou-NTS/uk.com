@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
@@ -20,7 +21,7 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 	private final String QUERY_BY_PAYOUTID = String.join(" ",QUERY, " WHERE ps.krcmtPayoutSubOfHDManaPK.payoutId =:payoutId");
 	private final String QUERY_BY_SUBID = String.join(" ",QUERY, " WHERE ps.krcmtPayoutSubOfHDManaPK.subOfHDID =:subOfHDID");
 	private final String DELETE_BY_PAYOUTID = "DELETE FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.payoutId =:payoutId";
-	private final String DELETE_BY_SUBID = "DELETE FROM KrcmtPayoutSubOfHDMana WHERE ps.krcmtPayoutSubOfHDManaPK.subOfHDID =:subOfHDID";
+	private final String DELETE_BY_SUBID = "DELETE FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.subOfHDID =:subOfHDID";
 	
 	@Override
 	public void add(PayoutSubofHDManagement domain) {
@@ -82,14 +83,11 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 	@Override
 	public void delete(String payoutId) {
 		this.getEntityManager().createQuery(DELETE_BY_PAYOUTID).setParameter("payoutId", payoutId).executeUpdate();
-		this.getEntityManager().flush();
 	}
 
 	@Override
 	public void deleteBySubID(String subID) {
 		this.getEntityManager().createQuery(DELETE_BY_SUBID).setParameter("subOfHDID", subID).executeUpdate();
-		this.getEntityManager().flush();
-		
 	}
 
 }

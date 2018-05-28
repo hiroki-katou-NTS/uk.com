@@ -17,22 +17,20 @@ module nts.uk.at.view.kdm001.h.viewmodel {
         remainDays: KnockoutObservable<string> = ko.observable('');
         itemRequireDay: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getRequireDay());
         subOfHDID: KnockoutObservable<string> = ko.observable('');
-        cId: KnockoutObservable<string> = ko.observable('');
-        sID: KnockoutObservable<string> = ko.observable('');
         holidayDate: KnockoutObservable<string> = ko.observable('');
         requiredDays: KnockoutObservable<string> = ko.observable('');
         dayoffDate: KnockoutObservable<string> = ko.observable('');
-        expirationDate: KnockoutObservable<string> = ko.observable('');
         unknownDate: KnockoutObservable<string> = ko.observable('');
         employeeId: KnockoutObservable<string> = ko.observable('');
         closureId: KnockoutObservable<string> = ko.observable('');
-        
+
         constructor() {
             let self = this;
             self.initScreen();
         }
 
         initScreen(): void {
+            block.invisible();
             let self = this,
                 info = getShared("KDM001_EFGH_PARAMS");
             if (info) {
@@ -41,14 +39,13 @@ module nts.uk.at.view.kdm001.h.viewmodel {
                 self.employeeId(info.selectedEmployee.employeeId);
                 self.employeeCode(info.selectedEmployee.employeeCode);
                 self.employeeName(info.selectedEmployee.employeeName);
-                
+
                 self.closureId(info.closureId);
-                
+
                 self.subOfHDID(info.rowValue.id);
                 self.dayoffDate(info.rowValue.dayoffDateSub);
                 self.requiredDays(info.rowValue.requiredDays);
                 self.remainDays(info.rowValue.remainDays);
-                self.expirationDate(info.rowValue.expiredDate);
                 self.unknownDate(info.rowValue.unknownDateSub);
             }
             block.clear();
@@ -64,28 +61,37 @@ module nts.uk.at.view.kdm001.h.viewmodel {
                 block.invisible();
                 let self = this;
                 let data = {
-                    closureId:self.closureId(),
-                    subOfHDID:self.subOfHDID(),
+                    closureId: self.closureId(),
+                    subOfHDID: self.subOfHDID(),
                     employeeId: self.employeeId(),
                     requiredDays: self.requiredDays(),
                     dayoffDate: self.dayoffDate(),
                     unknownDate: self.unknownDate(),
                     remainDays: self.remainDays(),
-                    expirationDate: self.expirationDate()
                 };
-                console.log(data);
                 service.updatesubOfHD(data).done(result => {
-//                    if (result.length > 0) {
-//                        $('#H6_2').ntsError('set', { messageId: result[0] });
-//                        block.clear();
-//                        return;
-//                    }
+                    if (result && result.length > 0) {
+                        for (let messageId of result) {
+                            switch (messageId) {
+                                case "Msg_744": {
+                                    $('#H6_2').ntsError('set', { messageId: messageId });
+                                    break;
+                                }
+                                case "Msg_729": {
+                                    $('#H6_2').ntsError('set', { messageId: messageId });
+                                    break;
+                                }
+                            }
+                        }
+                        block.clear();
+                        setShared('KDM001_A_PARAMS', { isSuccess: false });
+                        return;
+                    }
                     dialog.info({ messageId: "Msg_15" }).then(() => {
-                        setShared('KDM001_A_PARAMS', {isSuccess: true});
+                        setShared('KDM001_A_PARAMS', { isSuccess: true });
                         nts.uk.ui.windows.close();
                     });
-                }).fail(error => {
-                    setShared('KDM001_A_PARAMS', {isSuccess: false});
+
                 }).always(() => {
                     block.clear();
                 });
@@ -98,17 +104,19 @@ module nts.uk.at.view.kdm001.h.viewmodel {
             dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 let self = this;
                 let data = {
+                    subOfHDID: self.subOfHDID(),
                     employeeId: self.employeeId(),
                     dayoffDate: self.dayoffDate()
                 };
                 console.log(data);
-                service.removeSubOfHD(data).done(() => {
+                service.removeSubOfHD(data).done(result => {
                     dialog.info({ messageId: "Msg_16" }).then(() => {
-                        setShared('KDM001_A_PARAMS', {isSuccess: true});
+                        setShared('KDM001_A_PARAMS', { isSuccess: true });
                         nts.uk.ui.windows.close();
                     });
-                }).fail(error => {
+                }).fail(function(error: any) {
                     dialog.alertError(error);
+                    setShared('KDM001_A_PARAMS', { isSuccess: false });
                 }).always(function() {
                     block.clear();
                 });
@@ -122,7 +130,9 @@ module nts.uk.at.view.kdm001.h.viewmodel {
         }
 
         openKDM001H(): void {
-            modal("/view/kdm/001/h/index.xhtml").onClosed(function() { });
+            modal("/view/kdm/001/h/index.xhtml").onClosed(function() {
+                setShared('KDM001_A_PARAMS', { isSuccess: false });
+            });
         }
     }
 

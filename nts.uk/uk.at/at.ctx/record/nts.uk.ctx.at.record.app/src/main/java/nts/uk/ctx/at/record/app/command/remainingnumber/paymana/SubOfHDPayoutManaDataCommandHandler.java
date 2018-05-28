@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.command.remainingnumber.paymana;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
@@ -9,6 +10,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutManagementDataService;
 
 @Stateless
+@Transactional
 public class SubOfHDPayoutManaDataCommandHandler extends CommandHandler<SubOfHDPayoutManaDataCommand>{
 
 	@Inject

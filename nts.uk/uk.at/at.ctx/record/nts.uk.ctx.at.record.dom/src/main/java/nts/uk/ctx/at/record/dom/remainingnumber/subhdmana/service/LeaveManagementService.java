@@ -34,29 +34,44 @@ public class LeaveManagementService {
 		
 		List<String> response = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
+		
+		if(leaveManagementData.getNumberDayParam().equals(ONE_DAY)) {
+			
+			if (leaveManagementData.getLeaveMana().size() == 0) {
+				response.add("Msg_736");
+			} else if (leaveManagementData.getLeaveMana().size() == 1
+					&& !leaveManagementData.getLeaveMana().get(0).getRemainDays().equals(ONE_DAY)) {
+				response.add("Msg_734");
+			} else if (leaveManagementData.getLeaveMana().size() == 2) {
 
-		if (leaveManagementData.getLeaveMana().size() == 0) {
-			response.add("Msg_736");
-		} else if (leaveManagementData.getLeaveMana().size() == 1
-				&& !leaveManagementData.getLeaveMana().get(0).getRemainDays().equals(ONE_DAY)) {
-			response.add("Msg_734");
-		} else if (leaveManagementData.getLeaveMana().size() == 2) {
+				if (leaveManagementData.getLeaveMana().get(0).getRemainDays().equals(ONE_DAY) ||
+						leaveManagementData.getLeaveMana().get(1).getRemainDays().equals(ONE_DAY)) {
 
-			if (leaveManagementData.getLeaveMana().get(0).getRemainDays().equals(ONE_DAY) ||
-					leaveManagementData.getLeaveMana().get(1).getRemainDays().equals(ONE_DAY)) {
+					response.add("Msg_743");
 
-				response.add("Msg_743");
-
-			} else if (leaveManagementData.getLeaveMana().get(0).getRemainDays().equals(HALF_DAY) ||
-					leaveManagementData.getLeaveMana().get(1).getRemainDays().equals(HALF_DAY)) {
-				if (!leaveManagementData.getLeaveMana().get(0).getRemainDays().equals(HALF_DAY) ||
-						!leaveManagementData.getLeaveMana().get(1).getRemainDays().equals(HALF_DAY)) {
-					response.add("Msg_734");
+				} else if (leaveManagementData.getLeaveMana().get(0).getRemainDays().equals(HALF_DAY) ||
+						leaveManagementData.getLeaveMana().get(1).getRemainDays().equals(HALF_DAY)) {
+					if (!leaveManagementData.getLeaveMana().get(0).getRemainDays().equals(HALF_DAY) ||
+							!leaveManagementData.getLeaveMana().get(1).getRemainDays().equals(HALF_DAY)) {
+						response.add("Msg_734");
+					}
 				}
+			} else if (leaveManagementData.getLeaveMana().size() >= 3) {
+				response.add("Msg_743");
 			}
-		} else if (leaveManagementData.getLeaveMana().size() >= 3) {
-			response.add("Msg_743");
+		} else if(leaveManagementData.getNumberDayParam().equals(HALF_DAY)) {
+			
+			if (leaveManagementData.getLeaveMana().size() == 0) {
+				response.add("Msg_736");
+			} else if(leaveManagementData.getLeaveMana().size() == 1 &&
+					!leaveManagementData.getLeaveMana().get(0).getRemainDays().equals(HALF_DAY)) {
+				response.add("Msg_734");
+			} else if(leaveManagementData.getLeaveMana().size() >=2) {
+				response.add("Msg_743");
+			}
 		}
+		
+		
 
 		if (response.isEmpty()) {
 

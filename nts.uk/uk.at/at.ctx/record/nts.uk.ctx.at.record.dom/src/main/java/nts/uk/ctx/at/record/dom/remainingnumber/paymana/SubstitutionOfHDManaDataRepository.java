@@ -16,9 +16,9 @@ public interface SubstitutionOfHDManaDataRepository {
 	
 	List<SubstitutionOfHDManagementData> getBysiD(String cid, String sid);
 	
-	void delete(String subOfHDID);
+	void deletePayoutSubOfHDMana(String subOfHDID);
 	
-	void delete(String sID, GeneralDate dayOff);
+	void delete(String subOfHDID);
 	
 	void update(SubstitutionOfHDManagementData domain);
 	

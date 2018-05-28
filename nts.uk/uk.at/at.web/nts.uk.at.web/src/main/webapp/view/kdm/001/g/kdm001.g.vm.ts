@@ -39,6 +39,7 @@ module nts.uk.at.view.kdm001.g.viewmodel {
         }
 
         public initScreen(): void {
+            block.invisible();
             let self = this,
                 info = getShared("KDM001_EFGH_PARAMS");
             if (info) {
@@ -67,31 +68,49 @@ module nts.uk.at.view.kdm001.g.viewmodel {
             if (!nts.uk.ui.errors.hasError()) {
                 let self = this;
                 let data = {
-                    closureId:self.closureId(),
-                    payoutId:self.payoutId(),
+                    closureId: self.closureId(),
+                    payoutId: self.payoutId(),
                     employeeId: self.employeeId(),
                     unknownDate: self.unknownDate(),
                     dayoffDate: self.dayoffDate(),
-                    expiredDate: moment.utc(self.expiredDate(), 'YYYY/MM/DD').toISOString(),
+//                    expiredDate: moment.utc(self.expiredDate(), 'YYYY/MM/DD').toISOString(),
+                    expiredDate: self.expiredDate(), 
                     lawAtr: parseInt(self.lawAtr()),
-                    occurredDays:parseInt(self.occurredDays()),
+                    occurredDays: parseInt(self.occurredDays()),
                     unUsedDays: self.unUsedDays(),
                     checkBox: self.checkBox()
                 };
-
-                console.log(data);
                 service.updatePayout(data).done(result => {
-//                    if (result.length > 0) {
-//                        $('#G6_2').ntsError('set', { messageId: result[0] });
-//                        block.clear();
-//                        return;
-//                    }
+                    if (result && result.length > 0) {
+                        for (let messageId of result) {
+                            switch (messageId) {
+                                case "Msg_740": {
+                                    $('#G6_2').ntsError('set', { messageId: messageId });
+                                    break;
+                                }
+                                case "Msg_825": {
+                                    $('#G6_2').ntsError('set', { messageId: messageId });
+                                    break;
+                                }
+                                case "Msg_1212": {
+                                    $('#G6_2').ntsError('set', { messageId: messageId });
+                                    break;
+                                }
+                                case "Msg_1213": {
+                                    $('#G6_2').ntsError('set', { messageId: messageId });
+                                    break;
+                                }
+                            }
+                        }
+                        setShared('KDM001_A_PARAMS', { isSuccess: false });
+                        block.clear();
+                        return;
+                    }
                     dialog.info({ messageId: "Msg_15" }).then(() => {
-                        setShared('KDM001_A_PARAMS', {isSuccess: true});
+                        setShared('KDM001_A_PARAMS', { isSuccess: true });
                         nts.uk.ui.windows.close();
                     });
-                }).fail(error => {
-                    setShared('KDM001_A_PARAMS', {isSuccess: false});
+
                 }).always(() => {
                     block.clear();
                 });
@@ -103,17 +122,19 @@ module nts.uk.at.view.kdm001.g.viewmodel {
             dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 let self = this;
                 let data = {
+                    payoutId: self.payoutId(),
                     employeeId: self.employeeId(),
                     dayoffDate: self.dayoffDate()
                 };
                 console.log(data);
                 service.removePayout(data).done(() => {
                     dialog.info({ messageId: "Msg_16" }).then(() => {
-                        setShared('KDM001_A_PARAMS', {isSuccess: true});
+                        setShared('KDM001_A_PARAMS', { isSuccess: true });
                         nts.uk.ui.windows.close();
                     });
-                }).fail(error => {
-                    dialog.alertError(error);
+                }).fail(function() {
+                    nts.uk.ui.dialog.alertError({messageId: 'Msg_198'});
+                    setShared('KDM001_A_PARAMS', { isSuccess: false });
                 }).always(function() {
                     block.clear();
                 });
@@ -129,6 +150,7 @@ module nts.uk.at.view.kdm001.g.viewmodel {
         * closeDialog
         */
         public closeDialog(): void {
+            setShared('KDM001_A_PARAMS', { isSuccess: false });
             nts.uk.ui.windows.close();
         }
     }
