@@ -652,7 +652,7 @@ public class SspmtCategoryFieldMt extends UkJpaEntity implements Serializable {
 	 * 付加取得項目_会社ID
 	 */
 	@Basic(optional = true)
-	@Column(name = "FIELD_ACQC_ID")
+	@Column(name = "FIELD_ACQC_CID")
 	public String fieldAcqCid;
 
 	/**
