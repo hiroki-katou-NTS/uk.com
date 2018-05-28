@@ -7,6 +7,7 @@ module nts.uk.at.view.kwr001.b {
             items: KnockoutObservableArray<ItemModel>;
             columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
             currentCodeList: KnockoutObservableArray<any>;
+            showTableInIE: KnockoutObservable<boolean>;
             
             constructor() {
                 let self = this;
@@ -16,6 +17,7 @@ module nts.uk.at.view.kwr001.b {
                     { headerText: nts.uk.resource.getText("KWR001_43"), key: 'name', width: 350}
                 ]); 
                 self.currentCodeList = ko.observableArray([]);
+                self.showTableInIE = ko.observable(false || !!document['documentMode']);
             }
             
              startPage(): JQueryPromise<any> {

@@ -10,7 +10,7 @@
 			<script>
 				var dialogSize = {
 					width : 620,
-					height : 550
+					height : 565
 				};
 			</script>
 		
@@ -27,18 +27,35 @@
 					<!-- B1_1 -->
 					<span class="label">#{i18n.getText('KWR001_40')}</span>
 					<br/>
-					<!-- B2_1 -->
-					<div id="multi-list-div" tabindex="1">
-						<table id="multi-list" data-bind="ntsGridList: {
-							name: '#[KWR001_41]',
-							height: 380,
-							width: 575,
-							dataSource: items,
-							primaryKey: 'code',
-							columns: columns,
-							multiple: true,
-							value: currentCodeList
-						}"></table>
+					<!-- B2_1, show when use IE-->
+					<div data-bind="if: showTableInIE">
+						<div id="multi-list-div" tabindex="1">
+							<table id="multi-list" data-bind="ntsGridList: {
+								name: '#[KWR001_41]',
+								height: 392,
+								width: 575,
+								dataSource: items,
+								primaryKey: 'code',
+								columns: columns,
+								multiple: true,
+								value: currentCodeList
+							}"></table>
+						</div>
+					</div>
+					<!-- B2_1, show when use not IE-->
+					<div data-bind="ifnot: showTableInIE">
+						<div id="multi-list-div" tabindex="1">
+							<table id="multi-list" data-bind="ntsGridList: {
+								name: '#[KWR001_41]',
+								height: 385,
+								width: 575,
+								dataSource: items,
+								primaryKey: 'code',
+								columns: columns,
+								multiple: true,
+								value: currentCodeList
+							}"></table>
+						</div>
 					</div>
 				</div>
 				
