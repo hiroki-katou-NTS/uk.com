@@ -239,6 +239,8 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             setShared('attendanceRecExpDaily', null, true);
             setShared('attendanceRecExpMonthly', null, true);
             setShared('attendanceRecItemList', null, true);
+            setShared('sealStamp', null, true);
+            setShared('useSeal', null,true);
             nts.uk.ui.windows.close();
         }
 

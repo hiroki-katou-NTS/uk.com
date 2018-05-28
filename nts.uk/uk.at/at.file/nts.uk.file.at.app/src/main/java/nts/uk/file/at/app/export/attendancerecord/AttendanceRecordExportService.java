@@ -74,59 +74,59 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 				if (yearMonthMax.greaterThanOrEqualTo(request.getStartDate().yearMonth())
 						&& yearMonthMax.lessThanOrEqualTo(request.getEndDate().yearMonth())) {
-
-					// lấy danh sách hàng ngày hàng trên single
+					
+					// get upper-daily-singleItem list
 					List<Integer> singleIdUpper = this.singleAttendanceRepo
 							.getIdSingleAttendanceRecordByPosition(companyId, request.getLayout(), UPPER_POSITION);
 
-					// trả về danh sách giá trị hàng ngày hàng trên single
-					/** Chưa làm **/
+					// return result upper-daily-singleItems
+					/** To do**/
 
-					// Lấy về danh sách hàng ngày hàng trên calculate
+					//  get upper-daily-calculateItem list
 
 					List<CalculateAttendanceRecord> calculateUpperDaily = this.calculateAttendanceRepo
 							.getIdCalculateAttendanceRecordDailyByPosition(companyId, request.getLayout(),
 									UPPER_POSITION);
 
-					// Trả về danh sách giá trị hàng ngày hàng trên calculate
-					/** chưa làm **/
+					//  return result upper-daily-calculateItems
+					/** To do **/
 
-					/** Tổng hợp hàng trên hàng dưới **/
+					/** get upper-daily result**/
 
-					// lấy danh sách hàng ngày hàng dưới single
+					// get lower-daily-singleItem list
 					List<Integer> singleIdLower = this.singleAttendanceRepo
 							.getIdSingleAttendanceRecordByPosition(companyId, request.getLayout(), LOWER_POSITION);
 
-					// trả về danh sách gia trị hàng ngày hàng dưới single
-					/** Chưa làm **/
+					// return result lower-daily-singleItems
+					/** To do**/
 
-					// Lấy về danh sách hàng ngày hàng dưới calculate
+					// get lower-daily-CalculateItem list
 
 					List<CalculateAttendanceRecord> calculateLowerDaily = this.calculateAttendanceRepo
 							.getIdCalculateAttendanceRecordDailyByPosition(companyId, request.getLayout(),
 									LOWER_POSITION);
 
-					// trả về danh sách gia trị hàng ngày hàng dưới calculate
-					/** Chưa làm **/
+					// return result lower-daily-calculateItems
+					/** To do **/
 
-					/*** Tổng hợp gia trị hàng dưới **/
+					/** get lower-daily result**/
 
-					// Lấy về danh sách hàng tháng hàng trên
+					// get upper-monthly-Item list
 					List<CalculateAttendanceRecord> calculateUpperMonthly = this.calculateAttendanceRepo
 							.getIdCalculateAttendanceRecordMonthlyByPosition(companyId, request.getLayout(),
 									UPPER_POSITION);
 
-					// Trả về giá trị hàng tháng hàng trên
-					/** chưa làm **/
+					// return result upper-monthly-Items
+					/** To do **/
 					
 
-					// Lấy về danh sách hàng tháng hàng dưới
+					// get lower-monthly-Item list
 					List<CalculateAttendanceRecord> calculateLowerMonthly = this.calculateAttendanceRepo
 							.getIdCalculateAttendanceRecordMonthlyByPosition(companyId, request.getLayout(),
 									LOWER_POSITION);
 
-					// Trả về giá trị hàng tháng hàng dưới
-					/** chưa làm **/
+					// return result lower-monthly-Items
+					/** To do**/
 
 				}
 
