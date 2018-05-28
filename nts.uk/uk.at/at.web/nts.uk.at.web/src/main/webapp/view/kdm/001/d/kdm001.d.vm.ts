@@ -121,31 +121,45 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 lawAtr: self.lawAtr(),
                 requiredDays: self.requiredDays(),
                 remainDays: self.remainDays(),
+                checkedSplit: self.checkedSplit(),
+                closureId: self.closureId(),
                 holidayDate: moment.utc(self.holidayDate(), 'YYYY/MM/DD').toISOString()
             };
             
             console.log(data);
             service.save(data).done(result => {
+                console.log(result);
                 if (result && result.length > 0) {
                     for (let error of result) { 
                         if (error === "Msg_737_PayMana") {
                             $('#D6_1').ntsError('set', { messageId: "Msg_737" });
                         }
-                        
                         if (error === "Msg_737_SubPay") {
                             $('#D11_1').ntsError('set', { messageId: "Msg_737" });
                         }
-                        if (error === "Msg_740_PayMana") {
+                        if (error === "Msg_740") {
                             $('#D6_3').ntsError('set', { messageId: "Msg_740" });
                         }
-                        if (error === "Msg_740_SubPay") {
-                            $('#D8_1').ntsError('set', { messageId: "Msg_740" });
+                        if (error === "Msg_744") {
+                            $('#D8_1').ntsError('set', { messageId: "Msg_744" });
                         }
                         if (error === "Msg_1256_PayMana") {
                             $('#D6_1').ntsError('set', { messageId: "Msg_1256" });
                         }
                         if (error === "Msg_1256_PayMana") {
                             $('#D8_1').ntsError('set', { messageId: "Msg_1256" });
+                        }
+                        if (error === "Msg_1256_OccurredDays") {
+                            $('#D6_3').ntsError('set', { messageId: "Msg_1256" });
+                        }
+                        if (error === "Msg_1257_OccurredDays") {
+                            $('#D6_3').ntsError('set', { messageId: "Msg_1257" });
+                        }
+                        if (error === "Msg_1256_SubDays") {
+                            $('#D11_1').ntsError('set', { messageId: "Msg_1256" });
+                        }
+                        if (error === "Msg_1256_RequiredDays") {
+                            $('#D12_2').ntsError('set', { messageId: "Msg_1256" });
                         }
                         if (error === "Msg_1257") {
                             $('#D6_1').ntsError('set', { messageId: "Msg_1257" });
@@ -160,6 +174,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 }
             }).fail(function(res: any) {
                 dialog.info({ messageId: "Msg_737" }).then(() => {
+                    setShared('KDM001_A_PARAMS', {isSuccess: false});
                 });
             });
         }
