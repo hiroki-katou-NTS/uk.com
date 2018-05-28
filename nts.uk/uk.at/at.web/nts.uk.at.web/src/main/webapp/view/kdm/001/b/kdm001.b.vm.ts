@@ -226,7 +226,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     self.screenItem().listExtractData = result.extraHolidayManagementDataDto.extraData;
                     self.convertToDisplayList();
                     self.updateSubstituteDataList();
-                    self.screenItem().dispTotalExpiredDate = result.leaveSettingExpiredDate;
+                    self.screenItem().dispTotalExpiredDate = result.compenSettingEmpExpiredDate;
                     self.initKCP009();
                     self.disableLinkedData();
                     dfd.resolve();

@@ -33,7 +33,7 @@ public class SubstitutionManagementService {
 	public SubstituteManagementOutput activationProcess(GeneralDate startDate, GeneralDate endDate){
 		String employeeId = AppContexts.user().employeeId();
 		GeneralDate baseDate = GeneralDate.today();
-		String cid = AppContexts.user().employeeId();
+		String cid = AppContexts.user().companyId();
 		Optional<SWkpHistImport> sWkpHistImport = syWorkplaceAdapter.findBySid(employeeId, baseDate);
 		CompensatoryLeaveEmSetting compenLeaveEmpSetting = null;
 		CompensatoryLeaveComSetting compensatoryLeaveComSetting = null;
