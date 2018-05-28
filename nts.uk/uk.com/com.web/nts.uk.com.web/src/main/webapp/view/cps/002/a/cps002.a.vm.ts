@@ -31,7 +31,10 @@ module cps002.a.vm {
 
         currentEmployee: KnockoutObservable<Employee> = ko.observable(new Employee());
 
-        stampCardEditing: StampCardEditing;
+        stampCardEditing: KnockoutObservable<IStampCardEditing> = ko.observable({
+            method: EDIT_METHOD.PreviousZero,
+            digitsNumber: 20
+        });
 
         categorySelectedCode: KnockoutObservable<string> = ko.observable('');
 
@@ -103,6 +106,7 @@ module cps002.a.vm {
 
         constructor() {
             let self = this;
+
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
 
             self.createTypeId.subscribe((newValue) => {
@@ -185,48 +189,46 @@ module cps002.a.vm {
 
             });
 
+            self.categorySelectedCode.subscribe(code => {
+                if (code) {
+                    self.itemSettingList.removeAll();
+                    if (self.isUseInitValue()) {
+                        let command = ko.toJS(self.currentEmployee());
 
+                        command = _.omit(command, ['initSettingId', 'baseDate', 'categoryCd']);
 
-            self.categorySelectedCode.subscribe((categoryCode) => {
+                        command = _.extend(command, {
+                            categoryCd: code,
+                            baseDate: self.currentEmployee().hireDate(),
+                            initSettingId: self.currentInitSetting().itemId
+                        });
 
-                if (categoryCode == '') {
-                    return;
-                }
-                self.itemSettingList.removeAll();
-                if (self.isUseInitValue()) {
-                    let command = ko.toJS(self.currentEmployee());
-                    command.initSettingId = self.currentInitSetting().itemId;
-                    command.baseDate = self.currentEmployee().hireDate();
-                    command.categoryCd = categoryCode;
-                    service.getAllInitValueItemSetting(command).done((result: Array<SettingItem>) => {
-                        if (result.length) {
-                            self.itemSettingList(_.map(result, item => {
-                                return new SettingItem(item);
-                            }));
-                        }
-                    });
-                } else {
-
-                    self.loadCopySettingItemData();
-
-
+                        service.getAllInitValueItemSetting(command).done((result: Array<SettingItem>) => {
+                            if (result.length) {
+                                self.itemSettingList(_.map(result, item => {
+                                    return new SettingItem(item);
+                                }));
+                            }
+                        });
+                    } else {
+                        self.loadCopySettingItemData();
+                    }
                 }
             });
 
             self.currentEmployee().avatarId.subscribe((avartarId) => {
-
-
-                var self = this,
+                let self = this,
                     avartarContent = $("#employeeAvatar");
 
                 if (avartarId != "") {
-
-                    avartarContent.html("");
-                    avartarContent.append($("<img/>").attr("src", liveView(avartarId)).attr("id", "employeeAvatar"));
+                    avartarContent.empty()
+                        .append($("<img>", {
+                            id: "employeeAvatar",
+                            src: liveView(avartarId),
+                        }));
                 } else {
-                    avartarContent.html("");
+                    avartarContent.empty();
                 }
-
             });
 
 
@@ -236,11 +238,11 @@ module cps002.a.vm {
             });
 
             self.currentEmployee().cardNo.subscribe((cardNo) => {
-                
+
                 if (cardNo === "") {
                     return;
                 }
-                
+
                 let ce = self.stampCardEditing,
                     emp = self.currentEmployee();
 
@@ -277,7 +279,6 @@ module cps002.a.vm {
                 baseDate = nts.uk.time.formatDate(self.currentEmployee().hireDate(), 'yyyyMMdd');
 
             if (currentCopyEmployeeId != "" && categorySelectedCode) {
-
                 service.getAllCopySettingItem(currentCopyEmployeeId, categorySelectedCode, baseDate).done((result: Array<SettingItem>) => {
                     if (result.length) {
                         self.itemSettingList(_.map(result, item => {
@@ -285,20 +286,17 @@ module cps002.a.vm {
                         }));
                     }
                 }).fail(error => {
-
                     dialog({ messageId: error.message });
-
                 });
             }
         }
 
         start() {
-
             let self = this;
             self.currentEmployee().clearData();
 
             service.getStamCardEdit().done(data => {
-                self.stampCardEditing = new StampCardEditing(data.method, data.digitsNumber);
+                self.stampCardEditing(data);
                 self.subContraint(false);
                 __viewContext.primitiveValueConstraints.StampNumber.maxLength = data.digitsNumber;
                 self.subContraint(true);
@@ -1042,15 +1040,9 @@ module cps002.a.vm {
 
     }
 
-    class StampCardEditing {
+    interface IStampCardEditing {
         method: EDIT_METHOD;
         digitsNumber: number;
-
-        constructor(method: number, digitsNumber: number) {
-            this.method = method;
-            this.digitsNumber = digitsNumber;
-        }
-
     }
 
     enum EDIT_METHOD {
