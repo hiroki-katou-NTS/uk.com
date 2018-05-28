@@ -72,9 +72,6 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	@Inject
 	private SaveTargetCsvRepository csvRepo;
 
-	@Inject
-	private TableListRepository tableListRepo;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -84,6 +81,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	 */
 	@Override
 	protected void handle(ExportServiceContext<Object> context) {
+		generalCsvAuto();
 		String storeProcessingId = context.getQuery().toString();
 		serverManualSaveProcessing(storeProcessingId, context.getGeneratorContext());
 	}
@@ -199,11 +197,11 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 						categoryFieldMt.getFieldChild6(), categoryFieldMt.getFieldChild7(),
 						categoryFieldMt.getFieldChild8(), categoryFieldMt.getFieldChild9(),
 						categoryFieldMt.getFieldChild10(), categoryFieldMt.getHistoryCls().value, "", "",
-						categoryFieldMt.getClsKeyQuery1().value, categoryFieldMt.getClsKeyQuery2().value,
-						categoryFieldMt.getClsKeyQuery3().value, categoryFieldMt.getClsKeyQuery4().value,
-						categoryFieldMt.getClsKeyQuery5().value, categoryFieldMt.getClsKeyQuery6().value,
-						categoryFieldMt.getClsKeyQuery7().value, categoryFieldMt.getClsKeyQuery8().value,
-						categoryFieldMt.getClsKeyQuery9().value, categoryFieldMt.getClsKeyQuery10().value,
+						categoryFieldMt.getClsKeyQuery1().toString(), categoryFieldMt.getClsKeyQuery2().toString(),
+						categoryFieldMt.getClsKeyQuery3().toString(), categoryFieldMt.getClsKeyQuery4().toString(),
+						categoryFieldMt.getClsKeyQuery5().toString(), categoryFieldMt.getClsKeyQuery6().toString(),
+						categoryFieldMt.getClsKeyQuery7().toString(), categoryFieldMt.getClsKeyQuery8().toString(),
+						categoryFieldMt.getClsKeyQuery9().toString(), categoryFieldMt.getClsKeyQuery10().toString(),
 						categoryFieldMt.getFieldKeyQuery1(), categoryFieldMt.getFieldKeyQuery2(),
 						categoryFieldMt.getFieldKeyQuery3(), categoryFieldMt.getFieldKeyQuery4(),
 						categoryFieldMt.getFieldKeyQuery5(), categoryFieldMt.getFieldKeyQuery6(),
@@ -229,16 +227,16 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 						categoryFieldMt.getFiledKeyUpdate14(), categoryFieldMt.getFiledKeyUpdate15(),
 						categoryFieldMt.getFiledKeyUpdate16(), categoryFieldMt.getFiledKeyUpdate17(),
 						categoryFieldMt.getFiledKeyUpdate18(), categoryFieldMt.getFiledKeyUpdate19(),
-						categoryFieldMt.getFiledKeyUpdate20(), screenRetentionPeriod,
-						optManualSetting.get().getSuppleExplanation(), categoryFieldMt.getParentTblJpName(),
-						categoryFieldMt.getHasParentTable().value, categoryFieldMt.getParentTblName(),
-						categoryFieldMt.getFieldParent1(), categoryFieldMt.getFieldParent2(),
-						categoryFieldMt.getFieldParent3(), categoryFieldMt.getFieldParent4(),
-						categoryFieldMt.getFieldParent5(), categoryFieldMt.getFieldParent6(),
-						categoryFieldMt.getFieldParent7(), categoryFieldMt.getFieldParent8(),
-						categoryFieldMt.getFieldParent9(), categoryFieldMt.getFieldParent10(), surveyPreservation);
+						categoryFieldMt.getFiledKeyUpdate20(), "", optManualSetting.get().getSuppleExplanation(),
+						categoryFieldMt.getParentTblJpName(), categoryFieldMt.getHasParentTable().value,
+						categoryFieldMt.getParentTblName(), categoryFieldMt.getFieldParent1(),
+						categoryFieldMt.getFieldParent2(), categoryFieldMt.getFieldParent3(),
+						categoryFieldMt.getFieldParent4(), categoryFieldMt.getFieldParent5(),
+						categoryFieldMt.getFieldParent6(), categoryFieldMt.getFieldParent7(),
+						categoryFieldMt.getFieldParent8(), categoryFieldMt.getFieldParent9(),
+						categoryFieldMt.getFieldParent10(), surveyPreservation);
 
-				tableListRepo.add(listtable);
+				repoTableList.add(listtable);
 			}
 
 			// end
@@ -266,7 +264,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			generalCsv2(storeProcessingId, generatorContext);
 
 			// Add Table to CSV Auto
-			//generalCsvAuto(csvTarRepo, generatorContext, categoryIds);
+			// generalCsvAuto(csvTarRepo, generatorContext, categoryIds);
 
 			// Add folder temp to zip
 			// applicationTemporaryFilesContainer.addFile(generatorContext);
@@ -420,11 +418,10 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 	}
 
-	private void generalCsvAuto(List<SaveTargetCsv> csvTarRepo, FileGeneratorContext generatorContext,
-			List<String> categoryIds, ManualSetOfDataSave optManualSetting) {		
-		List<TableList> tableLists = new ArrayList<TableList>();
+	private void generalCsvAuto() {
+		List<TableList> tableLists = repoTableList.getAllTableList();
 		for (TableList tableList : tableLists) {
-			Class<?> tableExport = repoTableList.getTypeForTableName(tableList.getTableEnglishName());		
+			Class<?> tableExport = repoTableList.getTypeForTableName(tableList.getTableEnglishName());
 
 			StringBuffer query = new StringBuffer("");
 			// Select
@@ -453,83 +450,85 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					if (Strings.isNullOrEmpty(onStatement)) {
 						if (!isFirstOnStatement) {
 							query.append(" AND ");
-						}	
+						}
 						isFirstOnStatement = false;
 						query.append(onStatement);
 					}
 				}
-			}			
+			}
 
 			String[] fieldKeyQuerys = { tableList.getFieldKeyQuery1(), tableList.getFieldKeyQuery2(),
 					tableList.getFieldKeyQuery3(), tableList.getFieldKeyQuery4(), tableList.getFieldKeyQuery5(),
 					tableList.getFieldKeyQuery6(), tableList.getFieldKeyQuery7(), tableList.getFieldKeyQuery8(),
 					tableList.getFieldKeyQuery9(), tableList.getFieldKeyQuery10() };
-			ExtractionKeyCategory[] clsKeyQuerys = { tableList.getClsKeyQuery1(), tableList.getClsKeyQuery2(),
+			String[] clsKeyQuerys = { tableList.getClsKeyQuery1(), tableList.getClsKeyQuery2(),
 					tableList.getClsKeyQuery3(), tableList.getClsKeyQuery4(), tableList.getClsKeyQuery5(),
 					tableList.getClsKeyQuery6(), tableList.getClsKeyQuery7(), tableList.getClsKeyQuery8(),
 					tableList.getClsKeyQuery9(), tableList.getClsKeyQuery10() };
 
 			for (int i = 0; i < clsKeyQuerys.length; i++) {
-				if (clsKeyQuerys[i] == ExtractionKeyCategory.EMPLOYEE_CD){
+				if (clsKeyQuerys[i] == "5") {
 					if (tableList.getHasParentTable() == NotUseAtr.USE) {
 						query.append(" INNER JOIN SspmtTargetEmployees e ON e.targetEmployeesPk.Sid = p.");
 						query.append(repoTableList.getFieldForColumnName(tableParent, fieldKeyQuerys[i]));
-					}
-					else {
+					} else {
 						query.append(" INNER JOIN SspmtTargetEmployees e ON e.targetEmployeesPk.Sid = t.");
 						query.append(repoTableList.getFieldForColumnName(tableExport, fieldKeyQuerys[i]));
 					}
 				}
 			}
-			
+
 			// Where
 			query.append(" WHERE ");
-			
+
 			List<Integer> companyCdIndexs = new ArrayList<Integer>();
 			List<Integer> yearIndexs = new ArrayList<Integer>();
 			List<Integer> yearMonthIndexs = new ArrayList<Integer>();
 			List<Integer> yearMonthDayIndexs = new ArrayList<Integer>();
 			for (int i = 0; i < clsKeyQuerys.length; i++) {
+				if (clsKeyQuerys[i] == null)
+					continue;
 				switch (clsKeyQuerys[i]) {
-				case COMPANY_CD:
+				case "0":
 					companyCdIndexs.add(i);
-					break;				
-					
-				case YEAR:
+					break;
+
+				case "6":
 					yearIndexs.add(i);
 					break;
 
-				case YEAR_MONTH:
+				case "7":
 					yearMonthIndexs.add(i);
 					break;
 
-				case YEAR_MONTH_DAY:
+				case "8":
 					yearMonthDayIndexs.add(i);
 					break;
-					
-				case EMPLOYEE_CD:
+
+				default:
 					break;
 				}
 			}
-			
+			boolean hasCid = false, hasStartDate = false, hasEndDate = false;
 			boolean isFirstWhereStatement = true;
 			if (companyCdIndexs.size() > 0) {
 				if (!isFirstWhereStatement) {
-					query.append(" AND ");				
+					query.append(" AND ");
 				}
 				isFirstWhereStatement = false;
 				query.append(" ( ");
 				boolean isFirstOrStatement = true;
 				for (Integer index : companyCdIndexs) {
 					if (!isFirstOrStatement) {
-						query.append(" OR ");				
+						query.append(" OR ");
 					}
 					isFirstOrStatement = false;
 					query.append(" t.");
 					query.append(repoTableList.getFieldForColumnName(tableExport, fieldKeyQuerys[index]));
 					query.append(" = :companyId ");
+					hasCid = true;
 				}
-				query.append(" ) ");		
+				query.append(" ) ");
 			}
 			List<Integer> indexs = new ArrayList<Integer>();
 			switch (tableList.getRetentionPeriodCls()) {
@@ -546,32 +545,49 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			default:
 				break;
 			}
-			
+
 			if (indexs.size() > 0) {
 				if (!isFirstWhereStatement) {
-					query.append(" AND ");				
+					query.append(" AND ");
 				}
 				isFirstWhereStatement = false;
 				query.append(" ( ");
 				boolean isFirstOrStatement = true;
 				for (Integer index : yearIndexs) {
 					if (!isFirstOrStatement) {
-						query.append(" OR ");				
+						query.append(" OR ");
 					}
 					isFirstOrStatement = false;
 					query.append(" (t.");
 					query.append(repoTableList.getFieldForColumnName(tableExport, fieldKeyQuerys[index]));
 					query.append(" >= :startDate ");
-					query.append(" AND ");	
+					hasStartDate = true;
+					query.append(" AND ");
 					query.append(" t.");
 					query.append(repoTableList.getFieldForColumnName(tableExport, fieldKeyQuerys[index]));
 					query.append(" <= :endDate) ");
+					hasEndDate = true;
 				}
-				query.append(" ) ");		
+				query.append(" ) ");
 			}
 
-			List<?> listObject = repoTableList.getAutoObject(query.toString(), tableExport, tableList.getSaveDateFrom(), tableList.getSaveDateTo());
+			// 抽出条件キー固定
+			String extractCondKeyFix = tableList.getExtractCondKeyFix();
+			if (!Strings.isNullOrEmpty(extractCondKeyFix)) {
+				String[] extractCondArray = extractCondKeyFix.split(" ");
+				for (int i = 0; i < extractCondArray.length; i++) {
+					String fieldName = repoTableList.getFieldForColumnName(tableExport, extractCondArray[i]);
+					if (!Strings.isNullOrEmpty(fieldName)) {
+						extractCondArray[i] = "t." + fieldName;
+					}
+				}
 
+				query.append(String.join(" ", extractCondArray));
+			}
+
+			List<?> listObject = repoTableList.getAutoObject(query.toString(), tableExport, hasCid, hasStartDate,
+					hasEndDate, tableList.getSaveDateFrom(), tableList.getSaveDateTo());
+			// Todo Export
 		}
 	}
 
@@ -583,7 +599,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		}
 		return "";
 	}
-	
+
 	private static final List<String> LST_NAME_ID_HEADER_TABLE = Arrays.asList("CMF003_500", "CMF003_501", "CMF003_502",
 			"CMF003_503", "CMF003_504", "CMF003_505", "CMF003_506", "CMF003_507", "CMF003_508", "CMF003_509",
 			"CMF003_510", "CMF003_511", "CMF003_512", "CMF003_513", "CMF003_514", "CMF003_515", "CMF003_516",
@@ -627,7 +643,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		}
 		return lstHeader;
 	}
-	
+
 	private List<String> getTextHeaderCsv3(Class<?> type) {
 		List<String> lstHeader = new ArrayList<>();
 		for (Field field : type.getDeclaredFields()) {

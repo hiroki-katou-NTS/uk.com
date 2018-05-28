@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.assist.dom.storage.Explanation;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -73,7 +72,7 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 * 付加取得項目_会社ID
 	 */
 	@Basic(optional = false)
-	@Column(name = "FIELD_ACQC_CID")
+	@Column(name = "FIELD_ACQ_CID")
 	public String fieldAcqCid;
 
 	/**
@@ -290,70 +289,70 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = false)
 	@Column(name = "CLS_KEY_QUERY_1")
-	public int clsKeyQuery1;
+	public String clsKeyQuery1;
 
 	/**
 	 * 抽出キー区分2
 	 */
 	@Basic(optional = false)
 	@Column(name = "CLS_KEY_QUERY_2")
-	public int clsKeyQuery2;
+	public String clsKeyQuery2;
 
 	/**
 	 * 抽出キー区分3
 	 */
 	@Basic(optional = false)
 	@Column(name = "CLS_KEY_QUERY_3")
-	public int clsKeyQuery3;
+	public String clsKeyQuery3;
 
 	/**
 	 * 抽出キー区分4
 	 */
 	@Basic(optional = false)
 	@Column(name = "CLS_KEY_QUERY_4")
-	public int clsKeyQuery4;
+	public String clsKeyQuery4;
 
 	/**
 	 * 抽出キー区分5
 	 */
 	@Basic(optional = false)
 	@Column(name = "CLS_KEY_QUERY_5")
-	public int clsKeyQuery5;
+	public String clsKeyQuery5;
 
 	/**
 	 * 抽出キー区分6
 	 */
 	@Basic(optional = false)
 	@Column(name = "CLS_KEY_QUERY_6")
-	public int clsKeyQuery6;
+	public String clsKeyQuery6;
 
 	/**
 	 * 抽出キー区分7
 	 */
 	@Basic(optional = false)
 	@Column(name = "CLS_KEY_QUERY_7")
-	public int clsKeyQuery7;
+	public String clsKeyQuery7;
 
 	/**
 	 * 抽出キー区分8
 	 */
 	@Basic(optional = false)
 	@Column(name = "CLS_KEY_QUERY_8")
-	public int clsKeyQuery8;
+	public String clsKeyQuery8;
 
 	/**
 	 * 抽出キー区分9
 	 */
 	@Basic(optional = false)
 	@Column(name = "CLS_KEY_QUERY_9")
-	public int clsKeyQuery9;
+	public String clsKeyQuery9;
 
 	/**
 	 * 抽出キー区分10
 	 */
 	@Basic(optional = false)
 	@Column(name = "CLS_KEY_QUERY_10")
-	public int clsKeyQuery10;
+	public String clsKeyQuery10;
 
 	/**
 	 * 抽出キー項目1
@@ -717,7 +716,7 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = false)
 	@Column(name = "SCREEN_RETENTION_PERIOD")
-	public DatePeriod screenRetentionPeriod;
+	public String screenRetentionPeriod;
 
 	/**
 	 * 補足説明
@@ -864,10 +863,10 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 				domain.getFieldChild3(), domain.getFieldChild4(), domain.getFieldChild5(), domain.getFieldChild6(),
 				domain.getFieldChild7(), domain.getFieldChild8(), domain.getFieldChild9(), domain.getFieldChild10(),
 				domain.getHistoryCls().value, domain.getCanNotBeOld(), domain.getSelectionTargetForRes(),
-				domain.getClsKeyQuery1().value, domain.getClsKeyQuery2().value, domain.getClsKeyQuery3().value,
-				domain.getClsKeyQuery4().value, domain.getClsKeyQuery5().value, domain.getClsKeyQuery6().value,
-				domain.getClsKeyQuery7().value, domain.getClsKeyQuery8().value, domain.getClsKeyQuery9().value,
-				domain.getClsKeyQuery10().value, domain.getFieldKeyQuery1(), domain.getFieldKeyQuery2(),
+				domain.getClsKeyQuery1(), domain.getClsKeyQuery2(), domain.getClsKeyQuery3(),
+				domain.getClsKeyQuery4(), domain.getClsKeyQuery5(), domain.getClsKeyQuery6(),
+				domain.getClsKeyQuery7(), domain.getClsKeyQuery8(), domain.getClsKeyQuery9(),
+				domain.getClsKeyQuery10(), domain.getFieldKeyQuery1(), domain.getFieldKeyQuery2(),
 				domain.getFieldKeyQuery3(), domain.getFieldKeyQuery4(), domain.getFieldKeyQuery5(),
 				domain.getFieldKeyQuery6(), domain.getFieldKeyQuery7(), domain.getFieldKeyQuery8(),
 				domain.getFieldKeyQuery9(), domain.getFieldKeyQuery10(), domain.getExtractCondKeyFix(),

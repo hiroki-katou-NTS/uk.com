@@ -10,10 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMt;
-import nts.uk.ctx.sys.assist.dom.categoryfieldmt.HistoryDiviSion;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -652,7 +649,7 @@ public class SspmtCategoryFieldMt extends UkJpaEntity implements Serializable {
 	 * 付加取得項目_会社ID
 	 */
 	@Basic(optional = true)
-	@Column(name = "FIELD_ACQC_CID")
+	@Column(name = "FIELD_ACQ_CID")
 	public String fieldAcqCid;
 
 	/**

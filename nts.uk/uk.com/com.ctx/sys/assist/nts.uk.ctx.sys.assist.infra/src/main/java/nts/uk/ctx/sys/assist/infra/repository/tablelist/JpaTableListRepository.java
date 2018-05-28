@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.EntityType;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableListRepository;
@@ -19,19 +20,31 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaTableListRepository extends JpaRepository implements TableListRepository {
 
+	private static final String SELECT_ALL_QUERY_STRING = "SELECT t FROM SspmtTableList t";
+	
 	@Override
 	public void add(TableList domain) {
 		this.commandProxy().insert(SspmtTableList.toEntity(domain));
 	}
 
 	@Override
-	public List<?> getAutoObject(String query, Class<?> type, GeneralDate startDate, GeneralDate endDate) {
-		String companyId = AppContexts.user().companyId();
-		return this.queryProxy().query(query, type)
-				.setParameter("companyId", companyId)
-				.setParameter("startDate", startDate)
-				.setParameter("endDate", endDate)
-				.getList();
+	public List<?> getAutoObject(String query, Class<?> type, boolean hasCid, boolean hasStartDate, boolean hasEndDate, GeneralDate startDate, GeneralDate endDate) {
+		
+		TypedQueryWrapper<?> queryWrapper = this.queryProxy().query(query, type);
+		if (hasCid)
+		{
+			String companyId = AppContexts.user().companyId();
+			queryWrapper = queryWrapper.setParameter("companyId", companyId);
+		}
+		if (hasStartDate)
+		{
+			queryWrapper = queryWrapper.setParameter("startDate", startDate);
+		}
+		if (hasEndDate)
+		{
+			queryWrapper = queryWrapper.setParameter("endDate", endDate);
+		}
+		return queryWrapper.getList();
 	}
 
 	@Override
@@ -53,7 +66,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 				for (Field fieldPk : pk.getDeclaredFields()) {
 					Column columnPk = fieldPk.getDeclaredAnnotation(Column.class);
 					if (columnPk != null && columnPk.name().equals(columnName)) {
-						return pk.getName() + "." + fieldPk.getName();
+						return field.getName() + "." + fieldPk.getName();
 					}
 				}
 			}
@@ -63,6 +76,12 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public List<TableList> getAllTableList() {
+		 return this.queryProxy().query(SELECT_ALL_QUERY_STRING, SspmtTableList.class)
+        .getList(item -> item.toDomain());
 	}
 
 }

@@ -7,7 +7,8 @@ import nts.arc.time.GeneralDate;
 public interface TableListRepository {
 	
 	void add(TableList domain);
-	List<?> getAutoObject(String query, Class<?> type, GeneralDate startDate, GeneralDate endDate);
+	List<?> getAutoObject(String query, Class<?> type, boolean hasCid, boolean hasStartDate, boolean hasEndDate, GeneralDate startDate, GeneralDate endDate);
 	Class<?> getTypeForTableName(String tableName);
 	String getFieldForColumnName(Class<?> tableType, String columnName);
+	List<TableList> getAllTableList();
 }
