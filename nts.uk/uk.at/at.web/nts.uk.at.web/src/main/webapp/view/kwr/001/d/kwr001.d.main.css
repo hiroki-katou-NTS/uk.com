@@ -35,6 +35,7 @@ button {
 
 .D1_7 {
 	margin-left: 10px;
+	width: 192px !important;
 }
 
 /* popup error of kiban team show fail position --> override css */
