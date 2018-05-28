@@ -47,6 +47,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
+import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
@@ -207,6 +208,13 @@ public class ActualWorkingTimeOfDaily {
 											overTimeAutoCalcSet,
 											dailyUnit,
 											oneDay.getAttendanceLeavingWork());
+		
+		/*大塚モードの計算（欠勤控除時間）*/
+		//1日出勤系の場合は処理を呼ばないように作成が必要
+//		if(workType.getDailyWork().decisionNeedPredTime() != AttendanceHolidayAttr.FULL_TIME) {
+//			//2018/05/25はここからスタート
+//			calcResultOotsuka = calcResultOotsuka.reCalcLateLeave(holidayCalculation);
+//		}
 		
 		/*拘束差異時間*/
 		val constraintDifferenceTime = new AttendanceTime(0);

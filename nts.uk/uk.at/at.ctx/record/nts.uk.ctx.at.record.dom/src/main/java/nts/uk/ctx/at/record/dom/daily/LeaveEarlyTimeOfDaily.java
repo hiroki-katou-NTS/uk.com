@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.Getter;
 import lombok.Value;
 import lombok.val;
 import nts.arc.time.GeneralDate;
@@ -33,7 +34,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author ken_takasu
  *
  */
-@Value
+@Getter
 public class LeaveEarlyTimeOfDaily {
 	//早退時間
 	private TimeWithCalculation leaveEarlyTime;
@@ -54,6 +55,14 @@ public class LeaveEarlyTimeOfDaily {
 		this.workNo = workNo;
 		this.timePaidUseTime = timePaidUseTime;
 		this.intervalTime = exemptionTime;
+	}
+	
+	/**
+	 * 早退時間のみ更新
+	 * @param leaveEarlyTime
+	 */
+	public void rePlaceLeaveEarlyTime(TimeWithCalculation leaveEarlyTime) {
+		this.leaveEarlyTime = leaveEarlyTime;
 	}
 	
 	public static LeaveEarlyTimeOfDaily noLeaveEarlyTimeOfDaily() {

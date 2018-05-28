@@ -55,6 +55,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryO
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
+import nts.uk.ctx.at.shared.dom.worktime.common.HolidayCalculation;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
@@ -467,5 +468,91 @@ public class TotalWorkingTime {
 			this.withinStatutoryTimeOfDaily.setWorkTime(predetermineTime);
 	}
 		
+	
+	/**
+	 * 大塚モードの計算（遅刻早退）
+	 * @return
+	 */
+	public TotalWorkingTime reCalcLateLeave(HolidayCalculation holidayCalculation) {
+		TotalWorkingTime result = this;
+		//休暇時に計算する設定かどうか判断
+		if(holidayCalculation.getIsCalculate().isNotUse()) {
+			return result;
+		}
+		//遅刻早退の合計時間を取得
+		TimeWithCalculation lateLeaveTotalTime = this.calcLateLeaveTotalTime();
+		//欠勤控除時間の計算
+		TimeWithCalculation absenteeismDeductionTime = this.calcAbsenteeismDeductionTime(lateLeaveTotalTime);
+		
+		if(!this.lateTimeOfDaily.isEmpty()) {
+			//勤務NOの昇順でソート
+			this.lateTimeOfDaily.sort((c1, c2) -> c1.getWorkNo().compareTo(c2.getWorkNo()));
+			//欠勤控除時間を遅刻時間とする
+			this.lateTimeOfDaily.get(0).rePlaceLateTime(absenteeismDeductionTime);
+		}
+		
+		if(!this.leaveEarlyTimeOfDaily.isEmpty()) {
+			//勤務NOの昇順でソート
+			this.leaveEarlyTimeOfDaily.sort((c1, c2) -> c1.getWorkNo().compareTo(c2.getWorkNo()));
+			//早退時間をクリア
+			this.leaveEarlyTimeOfDaily.get(0).rePlaceLeaveEarlyTime(TimeWithCalculation.sameTime(new AttendanceTime(0)));
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * 遅刻早退の合計時間を取得
+	 * 大塚専用処理なので遅刻早退クラスに実装しない
+	 * @return
+	 */
+	public TimeWithCalculation calcLateLeaveTotalTime() {
+		
+		AttendanceTime time = new AttendanceTime(0);
+		AttendanceTime calcTime = new AttendanceTime(0);
+		//日別実績の遅刻時間の取得（遅刻早退合計時間への追加）
+		if(!this.lateTimeOfDaily.isEmpty()) {
+			List<LateTimeOfDaily> list = this.lateTimeOfDaily.stream().filter(l -> l.getWorkNo().equals(new WorkNo(1))).collect(Collectors.toList());
+			if(!list.isEmpty()) {
+				LateTimeOfDaily lateTimeOfDaily = list.get(0);
+				time = time.addMinutes(lateTimeOfDaily.getLateTime().getTime().valueAsMinutes());
+				calcTime = calcTime.addMinutes(lateTimeOfDaily.getLateTime().getCalcTime().valueAsMinutes());
+			}
+		}
+		//日別実績の早退時間の取得（遅刻早退合計時間への追加）
+		if(!this.leaveEarlyTimeOfDaily.isEmpty()) {
+			List<LeaveEarlyTimeOfDaily> list = this.leaveEarlyTimeOfDaily.stream().filter(l -> l.getWorkNo().equals(new WorkNo(1))).collect(Collectors.toList());
+			if(!list.isEmpty()) {
+				LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily = list.get(0);
+				time = time.addMinutes(leaveEarlyTimeOfDaily.getLeaveEarlyTime().getTime().valueAsMinutes());
+				calcTime = calcTime.addMinutes(leaveEarlyTimeOfDaily.getLeaveEarlyTime().getCalcTime().valueAsMinutes());
+			}
+		}		
+		return TimeWithCalculation.createTimeWithCalculation(time, calcTime);
+	}
+	
+	/**
+	 * 欠勤控除時間の計算
+	 * @return
+	 */
+	public TimeWithCalculation calcAbsenteeismDeductionTime(TimeWithCalculation lateLeaveTotalTime) {
 
+		//時間、計算時間から休暇加算時間を減算
+		AttendanceTime time = lateLeaveTotalTime.getTime().minusMinutes(this.vacationAddTime.valueAsMinutes());;
+		AttendanceTime calcTime = lateLeaveTotalTime.getCalcTime().minusMinutes(this.vacationAddTime.valueAsMinutes());
+		
+		//0:00以下なら0：00に補正
+		if(time.valueAsMinutes()<0) {
+			time = new AttendanceTime(0);
+		}
+		if(calcTime.valueAsMinutes()<0) {
+			calcTime = new AttendanceTime(0);
+		}
+		
+		return TimeWithCalculation.createTimeWithCalculation(time, calcTime);
+	}
+	
+	
+	
+	
 }
