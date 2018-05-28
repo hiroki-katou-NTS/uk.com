@@ -25,6 +25,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDail
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
@@ -32,6 +33,9 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlChec
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -113,6 +117,16 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	@Inject 
 	private ErAlCheckService determineErrorAlarmWorkRecordService;
 	
+	
+	//リポジトリ：労働条件
+	@Inject
+	private WorkingConditionItemRepository workingConditionItemRepository;
+
+	//リポジトリ；法定労働
+	@Inject
+	private DailyStatutoryWorkingHours dailyStatutoryWorkingHours;
+	
+	
 	/**
 	 * 社員の日別実績を計算
 	 * @param asyncContext 同期コマンドコンテキスト
@@ -124,7 +138,8 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 */
 	@Override
 	public ProcessState calculate(AsyncCommandHandlerContext asyncContext, String employeeId,
-			DatePeriod datePeriod, String empCalAndSumExecLogID, ExecutionType executionType) {
+			DatePeriod datePeriod, String empCalAndSumExecLogID, ExecutionType executionType,
+			ManagePerCompanySet companyCommonSetting) {
 		
 		ProcessState status = ProcessState.SUCCESS;
 		val dataSetter = asyncContext.getDataSetter();
@@ -133,10 +148,23 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		//*****（未）　期間分をまとめて取得するリポジトリメソッド等をここで使い、読み込んだデータは、最終的にIntegrationへ入れる。
 		//*****（未）　データがない日も含めて、毎日ごとに処理するなら、下のループをデータ単位→日単位に変え、Integrationへの取得はループ内で行う。
 		List<IntegrationOfDaily> integrationOfDailys = createIntegrationOfDaily(employeeId,datePeriod);
-		org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(this.getClass());
-		log.info("日別実績を取得できています");
+
+		/*社員毎に取得するデータ(労働条件)*/
+		val personalInfo = workingConditionItemRepository.getBySidAndStandardDate(employeeId,datePeriod.start());		
+		//↑で取得したデータのセット
+		companyCommonSetting.setPersonInfo(personalInfo);
+		EmploymentCode nowEmpCode = new EmploymentCode("");
+		
+
 		// 取得データ分ループ
 		for (IntegrationOfDaily integrationOfDaily : integrationOfDailys) {
+			
+			//社員、日付毎に取得した法定労働時間
+			if(!integrationOfDaily.getAffiliationInfor().getEmploymentCode().equals(nowEmpCode)) {
+				nowEmpCode = integrationOfDaily.getAffiliationInfor().getEmploymentCode(); 
+				val dailyUnit = dailyStatutoryWorkingHours.getDailyUnit(AppContexts.user().companyId(),nowEmpCode.toString(), employeeId, datePeriod.start(), personalInfo.get().getLaborSystem());
+				companyCommonSetting.setDailyUnit(dailyUnit);
+			}
 			
 			// 中断処理　（中断依頼が出されているかチェックする）
 			if (asyncContext.hasBeenRequestedToCancel()) {
@@ -157,7 +185,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			String employmentCd = "dummy";
 			
 			// 計算処理　（勤務情報を取得して計算）
-			val value = this.calculateDailtRecordService.calculate(integrationOfDaily);
+			val value = this.calculateDailtRecordService.calculate(integrationOfDaily,companyCommonSetting);
 			/*
 			// 状態確認
 			//*****（未）　IntegrationOfDailyの中に、boolean error;を置いて、処理内でのエラー有無を返し、ここで、エラー処理につなぐ。
@@ -170,18 +198,13 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 				return ProcessState.INTERRUPTION;
 			}
 			*/
-			log.info("データ更新のために勤怠時間をチェックします");
 			// データ更新
 			//*****（未）　日別実績の勤怠情報だけを更新する場合。まとめて更新するなら、integrationOfDailyを入出できるよう調整する。
 			if(value.getAttendanceTimeOfDailyPerformance().isPresent()) {
-				log.info("勤怠時間が見つかりました");
 				employeeDailyPerErrorRepository.removeParam(value.getAttendanceTimeOfDailyPerformance().get().getEmployeeId(), 
 						value.getAttendanceTimeOfDailyPerformance().get().getYmd());
 				this.registAttendanceTime(value.getAttendanceTimeOfDailyPerformance().get());
 				determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(value.getEmployeeError());
-			}
-			else {
-				log.info("勤怠時間が見つかりませんでした");
 			}
 		}
 		return status;
@@ -198,11 +221,9 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		// キー値確認
 		val employeeId = attendanceTime.getEmployeeId();
 		val ymd = attendanceTime.getYmd();
-		org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(this.getClass());
 		//if (this.attendanceTimeRepository.find(employeeId, ymd).isPresent()){
 //		if(attendanceTime != null)
 			
-			log.info("更新され始めます");
 			// 更新
 			this.attendanceTimeRepository.update(attendanceTime);
 //		}

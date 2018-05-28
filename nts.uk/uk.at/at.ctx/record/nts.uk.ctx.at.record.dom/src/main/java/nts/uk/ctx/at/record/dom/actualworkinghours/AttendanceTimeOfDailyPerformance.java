@@ -132,7 +132,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	 * @param integrationOfDaily2 
 	 * @return 日別実績(Work)クラス
 	 */
-	public static IntegrationOfDaily calcTimeResult(CalculationRangeOfOneDay oneDay,IntegrationOfDaily integrationOfDaily,AutoCalOvertimeSetting overTimeAutoCalcSet,AutoCalSetting holidayAutoCalcSetting,
+	public static IntegrationOfDaily calcTimeResult(CalculationRangeOfOneDay recordOneDay,CalculationRangeOfOneDay scheOneDay,IntegrationOfDaily integrationOfDaily,AutoCalOvertimeSetting overTimeAutoCalcSet,AutoCalSetting holidayAutoCalcSetting,
 			   Optional<PersonalLaborCondition> personalCondition,
 			   VacationClass vacationClass,
 			   WorkType recordWorkType,
@@ -165,7 +165,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   AutoCalFlexOvertimeSetting flexAutoCalSet,
 			   DailyUnit dailyUnit,
 			   int breakCount,Optional<CoreTimeSetting> coreTimeSetting) {
-		integrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(collectCalculationResult(oneDay,oneDay, overTimeAutoCalcSet,holidayAutoCalcSetting,
+		integrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(collectCalculationResult(recordOneDay,scheOneDay, overTimeAutoCalcSet,holidayAutoCalcSetting,
 				   																		personalCondition,
 				   																		 vacationClass,
 				   																		 recordWorkType,

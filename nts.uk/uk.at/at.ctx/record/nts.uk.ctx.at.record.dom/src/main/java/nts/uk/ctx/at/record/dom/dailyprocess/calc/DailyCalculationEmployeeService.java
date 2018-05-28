@@ -19,8 +19,9 @@ public interface DailyCalculationEmployeeService {
 	 * @param datePeriod 期間
 	 * @param empCalAndSumExecLogID 就業計算と集計実行ログID
 	 * @param executionType 実行種別　（通常、再実行）
+	 * @param companyCommonSetting 
 	 */
 	ProcessState calculate(AsyncCommandHandlerContext asyncContext,
 			String employeeId, DatePeriod datePeriod,
-			String empCalAndSumExecLogID, ExecutionType executionType);
+			String empCalAndSumExecLogID, ExecutionType executionType, ManagePerCompanySet companyCommonSetting);
 }

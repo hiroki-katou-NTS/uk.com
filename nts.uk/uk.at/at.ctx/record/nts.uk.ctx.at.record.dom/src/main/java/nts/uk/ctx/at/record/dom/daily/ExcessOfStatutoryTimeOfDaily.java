@@ -367,4 +367,25 @@ public class ExcessOfStatutoryTimeOfDaily {
 		return new ExcessOfStatutoryTimeOfDaily(excessOfStatutoryMidNightTime,overtime,holiday); 
 	}
 	
+	public AttendanceTime reCalcMidNightTime() {
+		AttendanceTime overMidTime = new AttendanceTime(0);
+		AttendanceTime holidayMidTime = new AttendanceTime(0);
+		if(this.getOverTimeWork().isPresent()
+			&& this.getOverTimeWork().get().getExcessOverTimeWorkMidNightTime().isPresent()) {
+			overMidTime = this.getOverTimeWork().get().getExcessOverTimeWorkMidNightTime().get().getTime().getCalcTime();
+		}
+		if(this.getWorkHolidayTime().isPresent()
+			&& this.getWorkHolidayTime().get().getHolidayMidNightWork().isPresent()) {
+			holidayMidTime = this.getWorkHolidayTime().get().getHolidayMidNightWork().get().calcAllMidTime();
+		}
+		return overMidTime.addMinutes(holidayMidTime.valueAsMinutes());
+	}
+	
+	/**
+	 * 深夜時間の上限時間調整処理
+	 * @param upperTime 上限時間
+	 */
+	public void controlMidTimeUpper(AttendanceTime upperTime) {
+		this.excessOfStatutoryMidNightTime.controlUpperTime(upperTime);
+	}
 }
