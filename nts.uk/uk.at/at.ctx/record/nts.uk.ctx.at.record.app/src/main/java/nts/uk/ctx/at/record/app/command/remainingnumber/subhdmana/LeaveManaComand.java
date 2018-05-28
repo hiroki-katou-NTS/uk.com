@@ -10,5 +10,6 @@ public class LeaveManaComand {
 	private String employeeId;
 	private String comDayOffID;
 	private List<LeaveManaDto> leaveManaDtos;
+	private String numberDayParam;
 	
 }
