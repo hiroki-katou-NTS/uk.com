@@ -625,6 +625,7 @@ public class DailyPerformanceCorrectionProcessor {
 								screenDto.setChangeSPR(changeSPR34.setRow34(data.getId()));
 							}
 							//insertStampSourceInfo(data.getEmployeeId(), data.getDate(), att, leav);
+							screenDto.getChangeSPR().setShowSupervisor(data.isApproval());
 						}
 						if (!value.isEmpty()) {
 							// convert HH:mm
