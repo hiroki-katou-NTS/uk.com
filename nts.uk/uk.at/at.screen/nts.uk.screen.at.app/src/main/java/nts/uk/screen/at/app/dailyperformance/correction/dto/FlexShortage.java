@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.month.DPMonthParent;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.BreakTimeDay;
+import nts.uk.screen.at.app.dailyperformance.correction.flex.CalcFlexDto;
 
 @Data
 @AllArgsConstructor
@@ -22,6 +23,8 @@ public class FlexShortage {
 	private BreakTimeDay breakTimeDay;
 	private boolean showFlex;
 	private DPMonthParent monthParent;
+	private boolean retiredFlag;
+	private CalcFlexDto calc;
 
 	public FlexShortage(ItemValue value18, ItemValue value21, ItemValue value189, ItemValue value190, ItemValue value191) {
 		this.value18 = value18;
@@ -48,6 +51,16 @@ public class FlexShortage {
 	
 	public FlexShortage createMonthParent(DPMonthParent dPMonthParent){
 		this.monthParent = dPMonthParent;
+		return this;
+	}
+	
+	public FlexShortage createRetiredFlag(boolean flag){
+		this.retiredFlag = flag;
+		return this;
+	}
+	
+	public FlexShortage createCalcFlex(CalcFlexDto calc){
+		this.calc = calc;
 		return this;
 	}
 }
