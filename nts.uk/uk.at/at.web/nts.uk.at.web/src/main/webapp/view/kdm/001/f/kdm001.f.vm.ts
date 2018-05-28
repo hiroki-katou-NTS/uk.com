@@ -1,6 +1,9 @@
 module nts.uk.at.view.kdm001.f.viewmodel {
     import model     = kdm001.share.model;
     import dialog    = nts.uk.ui.dialog;
+    import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
+    import block     = nts.uk.ui.block;
     export class ScreenModel {
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         columns: KnockoutObservableArray<any>;
@@ -13,8 +16,20 @@ module nts.uk.at.view.kdm001.f.viewmodel {
         dateHoliday: KnockoutObservable<any> = ko.observable('');
         numberDay: KnockoutObservable<any> = ko.observable('');
         residualDay: KnockoutObservable<any> = ko.observable('');
+        info: any = getShared("KDM001_EFGH_PARAMS");
         constructor() {
             let self = this;
+            
+            // set init value from screen a
+            if (self.info) {
+                self.workCode(self.info.selectedEmployee.workplaceCode);
+                self.workPlaceName(self.info.selectedEmployee.workplaceName);
+                self.employeeCode(self.info.selectedEmployee.employeeCode);
+                self.employeeName(self.info.selectedEmployee.employeeName);
+                self.dateHoliday(self.info.rowValue.dayoffDateSub);
+                self.numberDay(self.info.rowValue.requiredDays+' 日');
+            }
+            
             self.columns = ko.observableArray([
                 { headerText: 'コード', key: 'payoutId', width: 100, hidden: true },
                 { headerText: nts.uk.resource.getText("KDM001_95"), key: 'dayoffDate', width: 100 },
@@ -51,19 +66,14 @@ module nts.uk.at.view.kdm001.f.viewmodel {
         }
 
         public initScreen(): void {
-            var self = this;
-            self.workCode('100');
-            self.workPlaceName('営業部');
-            self.employeeCode('A000001');
-            self.employeeName('日通　太郎');
-            self.dateHoliday('2016/10/2');
-            self.numberDay('0.5日');
+            block.invisible();
+            let self = this;
             self.residualDay('0日');
 //            for (let i = 1; i < 100; i++) {
 //                self.items.push(new ItemModel('00' + i, "2010/1/10", "1.0F"));
 //            }
             
-            service.getBySidDatePeriod(/*employee.employeeId*/ 'ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570', /*payoutItem.payoutId*/'de1b6c4f-833c-4bca-b257-4e44269ed230').done((data: Array<ItemModel> )=>{
+            service.getBySidDatePeriod(self.info.selectedEmployee.employeeId, self.info.rowValue.id).done((data: Array<ItemModel> )=>{
                 if (data && data.length > 0) {
                     self.items(data);
                     _.forEach(data, function(item) {
@@ -75,8 +85,10 @@ module nts.uk.at.view.kdm001.f.viewmodel {
                         }
                     });
                 }
+                block.clear();
             }).fail((error)=>{
                 dialog.alertError(error);
+                block.clear();
             })
             
             
@@ -84,16 +96,21 @@ module nts.uk.at.view.kdm001.f.viewmodel {
         
         public create(): void {
             let self = this;
-           
-            let command = new SubOfHDPayoutManaDataCommand(/*self.info.selectedEmployee.employeeId, self.info.payout.payoutId,*/'ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570', /*payoutItem.payoutId*/'de1b6c4f-833c-4bca-b257-4e44269ed230',self.residualDay(), self.currentList());
+            block.invisible();
+            let command = new SubOfHDPayoutManaDataCommand(self.info.selectedEmployee.employeeId, self.info.rowValue.id,self.residualDay(), self.currentList());
                 
                 if (!self.validate()){
                     return;
                 }
                 service.insertpayoutMan(command).done(()=>{
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    dialog.info({ messageId: "Msg_15" }).then(() => {
+                        setShared('KDM001_A_PARAMS', {isSuccess: true});
+                        nts.uk.ui.windows.close();
+                    });
+                    block.clear();
                 }).fail((res)=>{
                     $('#multi-list').ntsError('set', { messageId: res.messageId });
+                    block.clear();
                 })
             
         }
@@ -125,6 +142,7 @@ module nts.uk.at.view.kdm001.f.viewmodel {
          * closeDialog
          */
         public closeDialog(): void {
+            setShared('KDM001_A_PARAMS', {isSuccess: false});
             nts.uk.ui.windows.close();
         }
     }

@@ -190,7 +190,7 @@ public class PayoutManagementDataService {
 	}
 
 	/**
-	 * KDM001 screen F
+	 * Ｆ．振休管理データの紐付設定（振出選択）登録処理
 	 */
 	public void insertPayoutSubofHD(String sid, String subId, Double remainNumber, List<SubOfHDManagement> subOfHDId) {
 		String companyId = AppContexts.user().companyId();

@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
@@ -80,12 +81,14 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 	}
 
 	@Override
+	@Transactional
 	public void delete(String payoutId) {
 		this.getEntityManager().createQuery(DELETE_BY_PAYOUTID).setParameter("payoutId", payoutId).executeUpdate();
 		this.getEntityManager().flush();
 	}
 
 	@Override
+	@Transactional
 	public void deleteBySubID(String subID) {
 		this.getEntityManager().createQuery(DELETE_BY_SUBID).setParameter("subOfHDID", subID).executeUpdate();
 		this.getEntityManager().flush();
