@@ -86,7 +86,8 @@ public class JpaProcessExecutionRepository extends JpaRepository
 		old.indvMailMng = update.indvMailMng;
 		old.wkpAlarmCls = update.wkpAlarmCls;
 		old.wkpMailMng = update.wkpMailMng;
-		old.targetGroupClassification = update.targetGroupClassification;
+		old.recreateTypeChangePerson = update.recreateTypeChangePerson;
+		old.recreateTransfers = update.recreateTransfers;
 		return old;
 	}
 }

@@ -18,9 +18,7 @@ public class DailyPerformanceCreation extends DomainObject {
 	/* 作成・計算項目 */
 	private DailyPerformanceItem dailyPerfItem;
 
-	/* 途中入社は入社日からにする */
-	private boolean midJoinEmployee;
-
+	
 	/* 対象者区分 */
 	private TargetGroupClassification targetGroupClassification;
 }

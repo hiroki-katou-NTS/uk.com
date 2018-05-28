@@ -29,13 +29,15 @@ module nts.uk.at.view.kbt002.b {
 
             settingEnum: ExecItemEnumDto;
 
-            targetGroupClass: KnockoutObservableArray<any>;
+            //targetGroupClass: KnockoutObservableArray<any>;
             constructor() {
                 var self = this;
+                /*
                   self.targetGroupClass = ko.observableArray([
                  new TargetGroupClass(0, getText('KBT002_162')),
                 new TargetGroupClass(1, getText('KBT002_163'))
             ]);
+                */
                 self.selectedExecCd.subscribe(execItemCd => {
                     self.initProcExec();
                     if (nts.uk.text.isNullOrEmpty(execItemCd)) {
@@ -369,7 +371,8 @@ module nts.uk.at.view.kbt002.b {
                 command.execScopeCls = self.currentExecItem().execScopeCls();
                 command.refDate = nts.uk.text.isNullOrEmpty(self.currentExecItem().refDate()) ? null : new Date(self.currentExecItem().refDate());
                 command.workplaceList = self.currentExecItem().workplaceList();
-                command.targetGroupClassification = self.currentExecItem().targetGroupClassification();
+                command.recreateTypeChangePerson = self.currentExecItem().recreateTypeChangePerson();
+                command.recreateTransfers =  self.currentExecItem().recreateTransfers();
                 return command;
             }
 
@@ -434,7 +437,8 @@ module nts.uk.at.view.kbt002.b {
             execScopeCls: number;
             refDate: string;
             workplaceList: Array<string>;
-            targetGroupClassification: number;
+            recreateTypeChangePerson: boolean;
+            recreateTransfers: boolean;
         }
 
         export class ExecutionItem {
@@ -463,7 +467,8 @@ module nts.uk.at.view.kbt002.b {
             execScopeCls: KnockoutObservable<number> = ko.observable(null);
             refDate: KnockoutObservable<string> = ko.observable('');
             workplaceList: KnockoutObservableArray<string> = ko.observableArray([]);
-            targetGroupClassification: KnockoutObservable<number> = ko.observable(0);
+            recreateTypeChangePerson: KnockoutObservable<boolean> = ko.observable(false);
+            recreateTransfers: KnockoutObservable<boolean> = ko.observable(false);
             constructor(param: IExecutionItem) {
                 let self = this;
                 if (param && param != null) {
@@ -492,7 +497,8 @@ module nts.uk.at.view.kbt002.b {
                     self.execScopeCls(param.execScopeCls);
                     self.refDate(param.refDate || moment().format("YYYY/MM/DD"));
                     self.workplaceList(param.workplaceList || []);
-                    self.targetGroupClassification(param.targetGroupClassification);
+                    self.recreateTypeChangePerson(param.recreateTypeChangePerson||false);
+                    self.recreateTransfers(param.recreateTransfers||false)
                 } else {
                     self.companyId('');
                     self.execItemCd('');
@@ -519,7 +525,8 @@ module nts.uk.at.view.kbt002.b {
                     self.execScopeCls(0);
                     self.refDate(moment().format("YYYY/MM/DD"));
                     self.workplaceList([]);
-                    self.targetGroupClassification(0);
+                    self.recreateTypeChangePerson(false);
+                    self.recreateTransfers(false)
                 }
                 
                   self.targetDate.subscribe(x=>{

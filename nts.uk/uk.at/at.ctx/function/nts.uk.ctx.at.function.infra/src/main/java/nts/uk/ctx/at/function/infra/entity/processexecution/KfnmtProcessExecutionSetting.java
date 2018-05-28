@@ -67,7 +67,7 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 	@Column(name = "DAILY_PERF_ITEM")
 	public int dailyPerfItem;
 
-	/* 途中入社は入社日からにする */
+	/* 途中入社は入社日からにする _> 新入社員を再作成する */
 	@Column(name = "MID_JOIN_EMP")
 	public int midJoinEmployee;
 	
@@ -99,10 +99,13 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 	@Column(name = "WKP_MAIL_MNG")
 	public int wkpMailMng;
 	
-	/* 対象者区分 */
-	@Column(name = "TARGET_GROUP_CLS")
-	public int targetGroupClassification;
+	/* 更新処理の日別処理対象者区分.勤務種別変更者を再作成 */
+	@Column(name = "RE_TYPE_CHANGE_PER")
+	public int recreateTypeChangePerson;
 	
+	/* 更新処理の日別処理対象者区分.異動者を再作成する */
+	@Column(name = "RE_TRANSFER")
+	public int recreateTransfers;
 	
 	@OneToOne
 	@JoinColumns({
@@ -120,7 +123,7 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 			int targetMonth, Integer targetDate, Integer creationPeriod, int creationTarget, int recreateWorkType,
 			int manualCorrection, int createEmployee, int recreateTransfer, int dailyPerfCls, int dailyPerfItem,
 			int midJoinEmployee, int reflectResultCls, int monthlyAggCls, int indvAlarmCls, int indvMailPrin,
-			int indvMailMng, int wkpAlarmCls, int wkpMailMng,int targetGroupClassification) {
+			int indvMailMng, int wkpAlarmCls, int wkpMailMng,int recreateTypeChangePerson, int recreateTransfers) {
 		super();
 		this.kfnmtProcExecSetPK = kfnmtProcExecSetPK;
 		this.perScheduleCls = perScheduleCls;
@@ -142,6 +145,7 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 		this.indvMailMng = indvMailMng;
 		this.wkpAlarmCls = wkpAlarmCls;
 		this.wkpMailMng = wkpMailMng;
-		this.targetGroupClassification =targetGroupClassification; 
+		this.recreateTypeChangePerson =recreateTypeChangePerson;
+		this.recreateTransfers = recreateTransfers;
 	}
 }
