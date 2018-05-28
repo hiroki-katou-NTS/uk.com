@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.HolidayAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.AddSubHdManagementService;
@@ -194,6 +195,7 @@ public class PayoutManagementDataService {
 			Optional<PayoutManagementData> payoutMan = payoutManagementDataRepository.findByID(item.getPayoutId());
 			if (payoutMan.isPresent()) {
 				payoutMan.get().setRemainNumber(Double.valueOf(item.getUsedDays().v().intValue()));
+				payoutMan.get().setStateAtr(DigestionAtr.UNUSED.value);
 				payoutManagementDataRepository.update(payoutMan.get());
 			}
 		});
@@ -204,6 +206,7 @@ public class PayoutManagementDataService {
 			Optional<PayoutManagementData> payoutMan = payoutManagementDataRepository.findByID(i.getPayoutId());
 			if (payoutMan.isPresent()) {
 				payoutMan.get().setRemainNumber(0d);
+				payoutMan.get().setStateAtr(DigestionAtr.USED.value);
 				payoutManagementDataRepository.update(payoutMan.get());
 			}
 		});

@@ -86,4 +86,8 @@ public class PayoutManagementData extends AggregateRoot {
 	public void setRemainNumber(Double remain){
 		this.unUsedDays = new ManagementDataRemainUnit(remain);
 	}
+	
+	public void setStateAtr(int stateAtr){
+		this.stateAtr = EnumAdaptor.valueOf(stateAtr, DigestionAtr.class);
+	}
 }

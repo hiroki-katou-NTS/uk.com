@@ -8,32 +8,15 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.DayOffManagement;
+import nts.uk.ctx.at.record.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.AddSubHdManagementService;
-import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.ItemDays;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
-import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlyPolicy;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class SubstitutionOfHDManaDataService {
-
-	@Inject
-	private SysEmploymentHisAdapter syEmploymentAdapter;
-
-	@Inject
-	private EmpSubstVacationRepository empSubstVacationRepository;
-
-	@Inject
-	private ComSubstVacationRepository comSubstVacationRepository;
 
 	@Inject
 	private SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepository;
@@ -88,6 +71,9 @@ public class SubstitutionOfHDManaDataService {
 		Optional<PayoutManagementData> payoutData = payoutManagementDataRepository.findByID(payoutId);
 		if (payoutData.isPresent()) {
 			payoutData.get().setRemainNumber(remainNumber);
+			if (remainNumber == 0){
+				payoutData.get().setStateAtr(DigestionAtr.USED.value);
+			}
 			payoutManagementDataRepository.update(payoutData.get());
 		}
 
