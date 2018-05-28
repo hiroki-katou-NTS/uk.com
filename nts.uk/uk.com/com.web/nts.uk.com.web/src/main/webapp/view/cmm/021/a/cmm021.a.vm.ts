@@ -506,8 +506,8 @@ module nts.uk.com.view.cmm021.a {
                 }
                 else if (_self.enable_WinAcc1() == false) {
                     win1.userId = _self.userId();
-                    win1.hostName = "";
-                    win1.userName = "";
+                    win1.hostName = _self.hostName1();
+                    win1.userName = _self.userName1();
                     win1.no = 1;
                     win1.useAtr = 0;
                     saveCommand.winAcc1 = win1;
@@ -523,8 +523,8 @@ module nts.uk.com.view.cmm021.a {
                 }
                 else if (_self.enable_WinAcc2() == false) {
                     win2.userId = _self.userId();
-                    win2.hostName = "";
-                    win2.userName = "";
+                    win2.hostName = _self.hostName2();
+                    win2.userName = _self.userName2();
                     win2.no = 2;
                     win2.useAtr = 0;
                     saveCommand.winAcc2 = win2;
@@ -541,8 +541,8 @@ module nts.uk.com.view.cmm021.a {
                 }
                 else if (_self.enable_WinAcc3() == false) {
                     win3.userId = _self.userId();
-                    win3.hostName = "";
-                    win3.userName = "";
+                    win3.hostName = _self.hostName3();
+                    win3.userName = _self.userName3();
                     win3.no = 3;
                     win3.useAtr = 0;
                     saveCommand.winAcc3 = win3;
@@ -558,8 +558,8 @@ module nts.uk.com.view.cmm021.a {
                 }
                 else if (_self.enable_WinAcc4() == false) {
                     win4.userId = _self.userId();
-                    win4.hostName = "";
-                    win4.userName = "";
+                    win4.hostName = _self.hostName4();
+                    win4.userName = _self.userName4();
                     win4.no = 4;
                     win4.useAtr = 0;
                     saveCommand.winAcc4 = win4;
@@ -575,8 +575,8 @@ module nts.uk.com.view.cmm021.a {
                 }
                 else if (_self.enable_WinAcc5() == false) {
                     win5.userId = _self.userId();
-                    win5.hostName = "";
-                    win5.userName = "";
+                    win5.hostName = _self.hostName5();
+                    win5.userName = _self.userName5();
                     win5.no = 5;
                     win5.useAtr = 0;
                     saveCommand.winAcc5 = win5;
@@ -1276,8 +1276,8 @@ module nts.uk.com.view.cmm021.a {
                     otherAcc.useAtr = 1;
                 } else if (_self.enable_otherAcc() == false) {
                     otherAcc.userId = _self.userIdBeChoosen();
-                    otherAcc.companyCode = "";
-                    otherAcc.userName = "";
+                    otherAcc.companyCode = _self.companyCode6();
+                    otherAcc.userName = _self.userName6();
                     otherAcc.useAtr = 0;
                 }
                 if (otherAcc.userId != undefined) {

@@ -9,8 +9,8 @@ import nts.arc.time.GeneralDate;
 @Setter
 @NoArgsConstructor
 public class PeregQuery {
-
-
+	
+	// add new
 	private String categoryId;
 
 	private String categoryCode;
@@ -22,8 +22,6 @@ public class PeregQuery {
 	private GeneralDate standardDate;
 
 	private String infoId;
-	
-	private int ctgType;
 	
 	public static PeregQuery createQueryLayout(String categoryCode, String employeeId, String personId,
 			GeneralDate standardDate) {

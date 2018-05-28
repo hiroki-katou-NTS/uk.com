@@ -5,9 +5,8 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/dialogsidebar.xhtml">
-		<ui:define name="sidebar-head">
-			<script>var dialogSize = { width: 1200, height: 800 };</script>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
 			<com:ValidatorScript>
 				nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper.primitives.YearServiceCode
 				nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper.primitives.YearServiceName
@@ -15,130 +14,152 @@
 				nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceset.primitives.Month
 				nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceset.primitives.Date
 			</com:ValidatorScript>
+			
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kmf004.d.main.css" />
-			<com:stylefile path="../e/kmf004.e.main.css" />
-
 			<com:scriptfile path="kmf004.d.vm.js" />
 			<com:scriptfile path="kmf004.d.service.js" />
 			<com:scriptfile path="kmf004.d.start.js" />
-
-			<com:scriptfile path="../e/kmf004.e.vm.js" />
-			<com:scriptfile path="../e/kmf004.e.service.js" />
+			<script>var dialogSize = { width: 960, height: 670 };</script>
 		</ui:define>
-		<ui:define name="sidebar">
-			<div data-bind="with: tabView">
-				<ul class="navigator"
-					data-bind="foreach: tabs().filter(function(t) { return t.display() == true})">
-					<li><a
-						data-bind="text: name, click: changeTab, css: { 'active': active }, attr: { href: '#tabpanel-' + id.toLowerCase() }"></a></li>
-				</ul>
+		
+		<ui:define name="content">
+			<!-- BEGIN FUNCTION AREA-->
+			<div id="functions-area">
+				<!-- E1_1: Button New -->
+				<button tabindex="1" id="btn_001" class="button separate-button fix-button"  data-bind="enable: !editMode(), click: newMode">#{i18n.getText('KMF004_1')}</button>
+				<!-- E1_2: Button Registration -->
+				<button tabindex="2" id="btn_002" class="button proceed separate-button fix-button" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KMF004_2')}</button>
+				<!-- E1_3: Button Delete -->
+				<button tabindex="3" id="btn_004" class="button danger separate-button fix-button" data-bind="enable: !editMode(), click: remove" >#{i18n.getText('KMF004_3')}</button>
+				<!-- E1_1: Button New -->
+				<button tabindex="4" id="btn_005" class="button separate-button fix-button"  data-bind="click: closeDialog">#{i18n.getText('KMF004_4')}</button>
 			</div>
-		</ui:define>
-		<ui:define name="sidebar-content">
-			<div class="sidebar-content-header" data-bind="with: tabView">
-				<span class="title" data-bind="text: title"></span>
-				<com:ko-if bind="currentTab()==='d'">
-					<button class="proceed"
-						data-bind="enable: $root.errors.isEmpty, click: $parent.viewmodelD.register.bind($parent.viewmodelD)">#{i18n.getText('KMF004_2')}</button>
-					<button class="cancel"
-						data-bind="click: $parent.viewmodelD.closeDialog">#{i18n.getText('KMF004_4')}</button>
-				</com:ko-if>	
-				<com:ko-if bind="currentTab()==='e'">
-					<!-- E1_1: Button New -->
-					<button tabindex="1" id="btn_001" class="button separate-button fix-button"  data-bind="enable: $parent.viewmodelE.lstPer().length>0, click: $parent.viewmodelE.newMode.bind($parent.viewmodelE)">#{i18n.getText('KMF004_1')}</button>
-					<!-- E1_2: Button Registration -->
-					<button tabindex="2" id="btn_002" class="button proceed separate-button fix-button" data-bind="click: $parent.viewmodelE.register.bind($parent.viewmodelE), enable: $root.errors.isEmpty">#{i18n.getText('KMF004_2')}</button>
-					<!-- E1_3: Button Delete -->
-					<button tabindex="3" id="btn_004" class="button danger separate-button fix-button" data-bind="enable: $parent.viewmodelE.lstPer().length>0, click: $parent.viewmodelE.remove.bind($parent.viewmodelE)" >#{i18n.getText('KMF004_3')}</button>
-					<!-- E1_1: Button New -->
-					<button tabindex="4" id="btn_005" class="button separate-button fix-button"  data-bind="click: $parent.viewmodelE.closeDialog">#{i18n.getText('KMF004_4')}</button>
-				</com:ko-if>	
-			</div>
-			<div id="tabpanel-d" role="tabpanel" class="screen-d"
-				data-bind="with: viewmodelD">
-				<div class="contents-area">
+			<!-- END FUNCTION AREA-->
+			
+			<div id="content-area" class="contents-area cf">
+				<div id="left-content" class="bg-green caret-right caret-background">
+					<div style="margin-top: 20px; margin-left: 20px" >
+						<!-- E2_3: List -->
+						<table id="lstBusinessType" tabindex="5" data-bind="ntsGridList: {								
+						height: 362,
+						options: lstPer,
+						optionsValue: 'yearServiceCode',
+						columns: gridListColumns,
+						multiple: false,
+						value: selectedCode}"></table>
+					</div>
+				</div>
+				
+				<div id="right-content">
 					<table>
 						<colgroup>
-							<col width="280px" />
+							<col width="240px" />
 							<col width="*" />
 						</colgroup>
+						
 						<tr class="row">
 							<td>
-								<div id="label" data-bind="ntsFormLabel: { required: true }"
-									class="form-label-1 required">#{i18n.getText('KMF004_93')}</div>
+								<!-- E3_1: Label -->
+								<div id="label" data-bind="ntsFormLabel: {required: true, constraint:['YearServiceCode','YearServiceName'] }">#{i18n.getText('KMF004_91')}</div>
 							</td>
 							<td>
-								<div id="button_radio"
-									data-bind="ntsRadioBoxGroup: {
+								<!-- E3_2: Code -->
+								<input tabindex="6" class="nts-input" id="inpCode" data-bind="ntsTextEditor: { 	value: codeObject,
+																												constraint: 'YearServiceCode',
+																												required: true,
+																												name: '#[KMF004_89]',
+																												immediate: true,
+																												option: {autofill:true, filldirection:'left'},
+																												enable: check}"/>
+								<!-- A3_3: Name--> 
+								<input tabindex="7" class="nts-input" id="inpPattern"  data-bind="ntsTextEditor: { 	value: selectedName,
+																												constraint: 'YearServiceName',
+																												name: '#[KMF004_90]',
+																												required: true,
+																												enable: true}"/>
+							</td>
+						</tr>
+						<tr>
+							<td class="radio-text">
+								
+							</td>
+							<td>
+								<div style="margin-left: -5px; padding-top: 10px;" data-bind="ntsCheckBox: { checked: provisionCheck, enable: provisionDeactive }">#{i18n.getText('KMF004_141')}</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="radio-text">
+								<!-- E3_4: Label -->
+								<div id="label_down"  data-bind="ntsFormLabel: {required: true,}">#{i18n.getText('KMF004_93')}</div>
+							</td>
+							<td>
+								<div tabindex = "8" id="button_radio" data-bind="ntsRadioBoxGroup: {
 														options: itemList,
 														optionsValue: 'id',
 														optionsText: 'name',
 														value: selectedId,
-														enable: true}, hasFocus: true">
+														enable: true}">
 								</div>
 							</td>
 						</tr>
+						<tr>
+							<td colspan = "2">
+								<span id="text">#{i18n.getText('KMF004_97')}
+								<button tabindex="9" id="help" data-bind="ntsHelpButton: {image: 'image/IMG_KMF004_2.png', position: 'bottom right', enable: true }">?</button>
+								</span>
+								<hr/>
+								<div class="contents-area-bottom"></div>
+							</td>
+						</tr>
 					</table>
-
+					
+					<table tabindex = "10" class="data-items">
+						<thead>
+							<tr>
+								<td width="19"></td>
+								<td colspan="2" width="134">#{i18n.getText('KMF004_98')}</td>
+								<td width="0">#{i18n.getText('KMF004_31')}</td>
+							</tr>
+						</thead>
+						<tbody data-bind="foreach: items">
+							<tr>
+								<td data-bind="text: $index() + 1"></td>
+								<td class="hidden-right-border">
+									<input id="year" tabindex="-1" data-bind="ntsNumberEditor: {
+											value: year, 
+											constraint: 'Year',
+											name: '#[KMF004_99]',
+											option: ko.mapping.fromJS({
+												unitID: 'YEARS',
+												width: '50'
+											})}" />
+								</td>
+								<td>
+									<input id="month" tabindex="-1" data-bind="ntsNumberEditor: {
+											value: month, 
+											constraint: 'Month',
+											name: '#[KMF004_100]',
+											option: ko.mapping.fromJS({
+												unitID: 'MONTHS',
+												width: '60'
+											})}" />
+								</td>
+								<td>
+									<input id="year" tabindex="-1" data-bind="ntsNumberEditor: {
+											value: date, 
+											constraint: 'Date',
+											name: '#[KMF004_31]',
+											option: ko.mapping.fromJS({
+												unitID: 'DAYS',
+												width: '60'
+											})}" />
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					
 				</div>
-				<span id="text" class="text">#{i18n.getText('KMF004_97')}
-					<button id="help" class="help-btn"
-						data-bind="ntsHelpButton: {image: 'image/IMG_KMF004_2.png', position: 'left top', enable: enable }">?</button>
-				</span>
-				<hr class="spegator" />
-<!-- 				<div></div> -->
-				<div class="contents-area-bottom"></div>
-				<table class="contents-header">
-					<thead>
-						<tr>
-							<td rowspan="2" class="numbers"></td>
-							<td rowspan="2" class="input-units">#{i18n.getText('KMF004_98')}</td>
-							<td rowspan="2" class="date-input-field">#{i18n.getText('KMF004_31')}</td>
-						</tr>
-					</thead>
-					<tbody></tbody>
-				</table>
-				<table class="contents-data" style="width: 293px">
-					<thead></thead>
-					<tbody style="margin-left: 10px; height: 380px" data-bind="foreach: items">
-						<tr>
-							<td data-bind="text: $index() + 1" class="numbers"></td>
-							<td class="input-units-year"><input id="year" 
-								class="year-input"
-								data-bind="ntsNumberEditor: {
-										constraint: 'Year',
-										name: '#[KMF004_99]',
-										value: year, 
-										option: ko.mapping.fromJS({
-											unitID: 'YEARS',
-											width: '50'
-										})}" />
-								<input id="month" class="months-input"
-								data-bind="ntsNumberEditor: {
-										constraint: 'Month',
-										name: '#[KMF004_100]',
-										value: month, 
-										option: ko.mapping.fromJS({
-											unitID: 'MONTHS',
-											width: '60'
-										})}" /></td>
-
-							<td class="input-units"><input class="days-input"
-								data-bind="ntsNumberEditor: {
-										constraint: 'Date',
-										name: '#[KMF004_31]',
-										value: date, 
-										option: ko.mapping.fromJS({
-											unitID: 'DAYS',
-											width: '50'
-										})}" /></td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div id="tabpanel-e" role="tabpanel" class="screen-e" data-bind="with: viewmodelE">
-				<ui:include src="../e/index.xhtml" />
 			</div>
 		</ui:define>
 	</ui:composition>
