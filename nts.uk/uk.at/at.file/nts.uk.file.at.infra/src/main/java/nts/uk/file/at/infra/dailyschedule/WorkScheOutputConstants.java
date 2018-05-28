@@ -9,6 +9,11 @@ public class WorkScheOutputConstants {
 	public static final String REMARK = "備考";
 	public static final String PERSONAL_NAME = "個人名";
 	
+	public static final String PERIOD = "[期間]";
+	
+	// File/Sheet name
+	public static final String SHEET_FILE_NAME = "日別勤務表";
+	
 	// Calculation text
 	public static final String TOTAL_EMPLOYEE = "個人計";
 	public static final String TOTAL_DAY = "日数計";
@@ -28,6 +33,7 @@ public class WorkScheOutputConstants {
 	public static final String PERSONAL_TOTAL = "個人計";
 	public static final String WORKPLACE_TOTAL = "職場計";
 	public static final String GROSS_TOTAL = "総合計";
+	public static final String WORKPLACE_HIERARCHY_TOTAL = "職場累計";
 	
 	// DAY_COUNT
 	public static final String DAY_COUNT = "日数計";
