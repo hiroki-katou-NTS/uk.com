@@ -28,6 +28,7 @@ module nts.uk.at.view.kaf010.b {
             typeSiftVisible: KnockoutObservable<boolean> = ko.observable(true);
             // 申請日付
             appDate: KnockoutObservable<string> = ko.observable(moment().format(this.DATE_FORMAT));
+            enbAppDate: KnockoutObservable<boolean> = ko.observable(true);
             //TIME LINE 1
             timeStart1: KnockoutObservable<number> = ko.observable(null);
             timeEnd1: KnockoutObservable<number> = ko.observable(null);

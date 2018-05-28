@@ -83,7 +83,7 @@
 			<div data-bind="if: screenModeNew" style="display: inline-block;">
 				<!--A3_6 申請日入力-->
 				<div tabindex="6" id="inputdate" class ="fix-margin-left"
-					data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF010_33')}',required:true, value: appDate, dateFormat: 'YYYY/MM/DD'}, acceptJapaneseCalendar: true"></div>
+					data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF010_33')}',required:true, value: appDate, dateFormat: 'YYYY/MM/DD',enable: enbAppDate}, acceptJapaneseCalendar: true"></div>
 			</div>
 			<div data-bind="if: !screenModeNew()" style="display: inline-block;">
 				<span class="label fix-margin-left-kaf010" data-bind="text: appDate"></span>
