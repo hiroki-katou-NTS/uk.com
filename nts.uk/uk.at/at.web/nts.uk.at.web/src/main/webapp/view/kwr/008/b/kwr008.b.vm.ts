@@ -318,14 +318,13 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             return dfd.promise();
         }
 
+        //check list output when start page
         checkListItemOutput() {
             var self = this;
 
             if (self.listStandardImportSetting().length == 0) {
-
                 self.registerMode();
             } else {
-
                 if (!self.selectedCode()) {
                     self.selectedCode(self.listStandardImportSetting()[0].cd());
                     self.updateMode(self.listStandardImportSetting()[0].cd());
@@ -384,7 +383,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             $("#B3_2").focus();
         }
 
-        //do register
+        //do register or update
         doRegister() {
             let self = this;
             block.invisible();
@@ -417,11 +416,22 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 block.clear();
                 return;
             }
+            
+            //insert item 36
+            if(itemOutByName[0].listOperationSetting().length == 0){
+                itemOutByName[0].listOperationSetting.push(
+                    new OperationCondition(
+                        202, //attendanceItemId
+                        1, // operation
+                        getText('KWR008_32')
+                    )
+                );
+            }
 
             self.currentSetOutputSettingCode().buildListItemOutput(ko.toJS(itemOutByName));
             let data: model.OutputSettingCodeDto = ko.toJS(self.currentSetOutputSettingCode);
 
-            if (self.isNewMode()) {
+            if (self.isNewMode()) { //register
                 service.registerOutputItemSetting(data).done(() => {
                     self.currentSetOutputSettingCode().displayCode = self.currentSetOutputSettingCode().cd();
                     self.currentSetOutputSettingCode().displayName = self.currentSetOutputSettingCode().name();
@@ -435,7 +445,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 }).always(function() {
                     block.clear();
                 });
-            } else {
+            } else { //update
                 service.updateOutputItemSetting(data).done(() => {
                     let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd() == self.selectedCode(); });
                     if (selectedIndex > -1) {
@@ -542,23 +552,16 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
         buildListOperationSetting(listOperation: Array<any>) {
             let self = this;
-            
-            self.listOperationSetting([]);
-            
-            //agreement 36
-            self.listOperationSetting.push(new OperationCondition(
-            202,
-            1,
-            getText('KWR008_32')));
-            
             if (listOperation && listOperation.length > 0) {
-                for (var i = self.listOperationSetting().length; i < listOperation.length; i++) {
-                        self.listOperationSetting.push(new OperationCondition(
+                for (var i = 0; i < listOperation.length; i++) {
+                    self.listOperationSetting.push(new OperationCondition(
                         listOperation[i].attendanceItemId,
                         listOperation[i].operation,
                         listOperation[i].name));
                 }
-            } 
+            } else {
+                self.listOperationSetting([]);
+            }
         }
     }
     
