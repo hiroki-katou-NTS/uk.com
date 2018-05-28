@@ -105,7 +105,7 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 		val provisionalDailyRecord = replaceDeductionTimeSheet(provisionalRecord.get(), breakTimeSheets,
 				outingTimeSheets, shortWorkingTimeSheets, employeeId, targetDate);
 		// ドメインモデル「日別実績の勤怠時間」を返す
-		val test = calculateDailyRecordService.calculate(provisionalDailyRecord);
+		val test = calculateDailyRecordService.calculate(provisionalDailyRecord,null);
 		return Optional.of(test);
 
 	}

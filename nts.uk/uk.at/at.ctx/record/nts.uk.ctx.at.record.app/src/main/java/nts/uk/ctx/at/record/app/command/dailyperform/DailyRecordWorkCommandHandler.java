@@ -235,7 +235,7 @@ public class DailyRecordWorkCommandHandler {
 							command.getPcLogInfo().getData(), Arrays.asList(command.getErrors().getData()), command.getOutingTime().getData(), command.getBreakTime().getData(), 
 							command.getAttendanceTime().getData(), command.getAttendanceTimeByWork().getData(), command.getTimeLeaving().getData(), 
 							command.getShortWorkTime().getData(), command.getSpecificDateAttr().getData(), command.getAttendanceLeavingGate().getData(), 
-							command.getOptionalItem().getData(), command.getEditState().getData(), command.getTemporaryTime().getData()));
+							command.getOptionalItem().getData(), command.getEditState().getData(), command.getTemporaryTime().getData()),null);
 //			command.getTimeLeaving().updateData(calced.getAttendanceLeave().orElse(null));
 			command.getAttendanceTime().updateData(calced.getAttendanceTimeOfDailyPerformance().orElse(null));
 //			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));

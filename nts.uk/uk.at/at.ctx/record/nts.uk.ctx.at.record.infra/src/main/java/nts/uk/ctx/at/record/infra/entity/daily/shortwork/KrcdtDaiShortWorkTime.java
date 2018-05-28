@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
+import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -76,11 +77,16 @@ public class KrcdtDaiShortWorkTime extends UkJpaEntity implements Serializable {
     @Column(name = "DEDUCTION_TIME")
     public int deductionTime;
     
-    @ManyToOne
+//    @ManyToOne
+//	@JoinColumns(value = {
+//			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+//			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
+//	public KrcdtDayAttendanceTime krcdtDayAttendanceTime;
+	@ManyToOne
 	@JoinColumns(value = {
 			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
-	public KrcdtDayAttendanceTime krcdtDayAttendanceTime;
+	public KrcdtDayTime krcdtDayTime;
     
 
     public KrcdtDaiShortWorkTime() {

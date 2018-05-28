@@ -16,7 +16,8 @@ public interface CalculateDailyRecordService {
 	 * @param employeeId 社員ID
 	 * @param targetDate 対象年月日
 	 * @param integrationOfDaily 日別実績(Work) 
+	 * @param companyCommonSetting 
 	 * @return 日別実績(Work)
 	 */
-	public IntegrationOfDaily calculate(IntegrationOfDaily integrationOfDaily);
+	public IntegrationOfDaily calculate(IntegrationOfDaily integrationOfDaily, ManagePerCompanySet companyCommonSetting);
 }
