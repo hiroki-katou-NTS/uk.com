@@ -1,0 +1,46 @@
+.contents-area{
+	width: 300px;
+	height: 450px;
+	margin-left: 200px;
+}
+
+#D1_1 {
+	margin-top: 15px;
+}
+
+#D1_3 {
+	margin-top: 15px;
+}
+
+#D1_5 {
+	margin-top: 15px;
+	
+}
+
+#D2_1 {
+	margin-top: 15px;
+	margin-left: 100px;
+}
+
+#D2_3 {
+	margin-top: 15px;
+	margin-left: 100px;
+}
+
+#D2_5 {
+	margin-top: 15px;
+	margin-left: 100px;
+}
+
+#D3_1 {
+	margin-top: 25px;
+	margin-left: 12px;
+	width: 90px;
+}
+
+#D3_2 {
+	margin-top: 65px;
+	margin-left: 36px;
+	width: 90px;
+	height: 40px;
+}

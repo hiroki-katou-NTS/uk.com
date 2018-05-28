@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/dialog.xhtml">
+			<ui:define name="htmlHead">
+				<script>var dialogSize = { width: 160, height: 250 };</script>
+				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="cmf004.c.vm.js" />
+				<com:scriptfile path="cmf004.c.start.js" />
+				<com:stylefile path="cmf004.c.style.css" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div class="contents-area dialog-content"  >
+					<div data-bind="ntsFormLabel: {}" id ="C1_1" class = "label-left">#{i18n.getText('CMF004_50')}</div>
+					<span>復旧ファイル名(tên file khô phục)</span>
+					<br/>
+					<div data-bind="ntsFormLabel: {}" id ="C1_3" class = "label-left">#{i18n.getText('CMF004_51')}</div>
+					<input tabindex="11" id="B4_32" class="form-B"
+										data-bind="ntsTextEditor: {
+											name: '#[CMF003_73]',
+											value: password,
+											option: {textmode: 'password',width: '152px'},
+											enable: true,
+											readonly: false
+											}" />
+					<br/>
+					<div>
+						<button class="large proceed" data-bind="click: processing" id ="C1_5">#{i18n.getText('CMF004_52')}</button>
+					</div>
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>
