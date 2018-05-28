@@ -151,7 +151,7 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	private final static String SELECT_CAT_ID_BY_CODE = String.join(" ", "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId",
 			"FROM PpemtPerInfoCtg c", "WHERE c.categoryCd = :categoryCd AND c.cid = :cId");
 	
-	private final static String SELECT_CTG_BY_CTGCD = String.join(" ","SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName",
+	private final static String SELECT_CTG_BY_CTGCD = String.join(" ","SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, c.abolitionAtr",
 			"FROM PpemtPerInfoCtg c WHERE c.categoryCd in :lstCtgCd AND c.cid = :cid");
 	
 	private final static String SELECT_CTG_ID_BY_CTGCD = String.join(" ","SELECT c.ppemtPerInfoCtgPK.perInfoCtgId",
@@ -314,9 +314,8 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	}
 	
 	private PersonInfoCategory createDomainWithAbolition(Object[] c){
-		return PersonInfoCategory.createDomainWithAbolition(c[0].toString(), c[1].toString(), c[2].toString());
+		return PersonInfoCategory.createDomainWithAbolition(c[0].toString(), c[1].toString(), c[2].toString(), Integer.parseInt(c[3].toString()));
 	}
-
 	private PpemtPerInfoCtg createPerInfoCtgFromDomain(PersonInfoCategory perInfoCtg) {
 		PpemtPerInfoCtgPK perInfoCtgPK = new PpemtPerInfoCtgPK(perInfoCtg.getPersonInfoCategoryId());
 		return new PpemtPerInfoCtg(perInfoCtgPK, perInfoCtg.getCompanyId(), perInfoCtg.getCategoryCode().v(),
