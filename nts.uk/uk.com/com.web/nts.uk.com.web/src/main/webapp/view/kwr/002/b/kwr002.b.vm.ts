@@ -88,7 +88,7 @@ module nts.uk.com.view.kwr002.b {
                         exportSettingCode: Number(currentData.code()),
                         name: currentData.name()
                     };
-                                      
+
                     let cmd = {
                         delARESCmd: delARESCmd,
                         delARECmd: delARESCmd,
@@ -96,7 +96,11 @@ module nts.uk.com.view.kwr002.b {
                     };
 
                     service.delARES(cmd).done(() => {
-                        console.log("ahihi");
+                        let newVal = _.reject(self.aRES(),['code',currentData.code()]);
+                        // console.log(newVal);
+                        self.aRES(newVal);
+                        let firstData = _.first(self.aRES());
+                        self.currentARESCode(firstData.code);
                     });
                 })
             }).ifNo(() => {
@@ -135,7 +139,8 @@ module nts.uk.com.view.kwr002.b {
                 attendanceRecExpDaily: getShared('attendanceRecExpDaily'),//=9
                 attendanceRecExpMonthly: getShared('attendanceRecExpMonthly'),//>=9
                 attendanceRecItemList: getShared('attendanceRecItemList'),
-                sealStamp: getShared('useSeal'),
+                sealStamp: getShared('sealStamp'),
+                useSeal: getShared('useSeal'),
 
                 isInvalid: function () {
                     return this.attendanceRecExpDaily < 9 && this.attendanceRecExpMonthly < 9;
@@ -254,7 +259,12 @@ module nts.uk.com.view.kwr002.b {
             setShared('attendanceRecExpSetName', self.name(), true);
             setShared('useSeal', self.sealUseAtr(), true);
 
-            modal('../c/index.xhtml', {title: getText('KWR002�ｼｿ3'),}).onClosed(function (): any {
+            setShared('attendanceRecExpDaily', getShared('attendanceRecExpDaily'), true);
+            setShared('attendanceRecExpMonthly', getShared('attendanceRecExpMonthly'), true);
+            setShared('attendanceRecItemList', getShared('attendanceRecItemList'), true);
+            setShared('sealStamp', getShared('sealStamp'), true);
+
+            modal('../c/index.xhtml', { title: getText('KWR002�ｼｿ3'), }).onClosed(function(): any {
 
             })
         }
