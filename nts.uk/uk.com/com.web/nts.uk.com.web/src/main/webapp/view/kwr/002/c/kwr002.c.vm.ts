@@ -208,7 +208,15 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             setShared('attendanceRecExpDaily', self.attendanceItemListDaily(), true);
             setShared('attendanceRecExpMonthly', self.attendanceItemListMonthly(), true);
             setShared('attendanceRecItemList', self.attendanceRecItemList(), true);
-            setShared('useSeal', self.useSeal());
+
+            self.sealStamp().push(self.sealName1());
+            self.sealStamp().push(self.sealName2());
+            self.sealStamp().push(self.sealName3());
+            self.sealStamp().push(self.sealName4());
+            self.sealStamp().push(self.sealName5());
+            self.sealStamp().push(self.sealName6());
+            setShared('sealStamp', self.sealStamp(), true);
+            setShared('useSeal', self.useSealValue());
             nts.uk.ui.windows.close();
         }
 
@@ -245,8 +253,12 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             var self = this;
             var dfd = $.Deferred();
 
+            let attendanceRecExpDaily = getShared('attendanceRecExpDaily');
+            let attendanceRecExpMonthly = getShared('attendanceRecExpMonthly');
+            let attendanceRecItemList = getShared('attendanceRecItemList');
             let attendanceRecExpSetCode: any = getShared('attendanceRecExpSetCode');
             let attendanceRecExpSetName: any = getShared('attendanceRecExpSetName');
+            let useSealSet: any = getShared('useSealSet');
             let useSeal: any = getShared('useSeal');
 
             if (!attendanceRecExpSetCode) {
@@ -259,51 +271,62 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             }
             self.useSealValue(useSeal == 1 ? true : false);
 
-            var code: number = Number(self.attendanceCode());
-            service.findAllAttendanceRecExportDaily(code).done(function(listattendanceRecExpDailyList: Array<model.AttendanceRecExp>) {
-                if (listattendanceRecExpDailyList.length > 0) {
-                    listattendanceRecExpDailyList.forEach(item => {
-                        
-                        var columnIndex: number = item.columnIndex;
-                        self.attendanceRecExpDaily()[columnIndex] = new viewmodel.model.AttendanceRecExp (item.exportAtr,item.columnIndex,item.userAtr,item.upperPosition,item.lowwerPosition);
-                    })
+            if (attendanceRecExpDaily != null || attendanceRecExpMonthly != null || attendanceRecItemList != null) {
 
-                    for (var i: number = 1; i <= 9; i++) {
-                        if (!self.attendanceRecExpDaily()[i]) {
-                            self.attendanceRecExpDaily()[i] = new viewmodel.model.AttendanceRecExp(1, i, false, "", "");
+                self.attendanceRecExpDaily = attendanceRecExpDaily;
+                self.attendanceRecExpMonthly = attendanceRecExpMonthly;
+                self.attendanceRecItemList = attendanceRecItemList;
+
+            }
+            else {
+
+                var code: number = Number(self.attendanceCode());
+                service.findAllAttendanceRecExportDaily(code).done(function(listattendanceRecExpDailyList: Array<model.AttendanceRecExp>) {
+                    if (listattendanceRecExpDailyList.length > 0) {
+                        listattendanceRecExpDailyList.forEach(item => {
+
+                            var columnIndex: number = item.columnIndex;
+                            self.attendanceRecExpDaily()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition, item.lowwerPosition);
+                        })
+
+                        for (var i: number = 1; i <= 9; i++) {
+                            if (!self.attendanceRecExpDaily()[i]) {
+                                self.attendanceRecExpDaily()[i] = new viewmodel.model.AttendanceRecExp(1, i, false, "", "");
+                            }
                         }
                     }
-                }
 
-            });
+                });
 
-            service.findAllAttendanceRecExportMonthly(code).done(function(listattendanceRecExpMonthlyList: Array<model.AttendanceRecExp>) {
-                if (listattendanceRecExpMonthlyList.length > 0) {
-                    listattendanceRecExpMonthlyList.forEach(item => {
-                        var columnIndex: number = item.columnIndex;
-                        self.attendanceRecExpMonthly()[columnIndex] = new viewmodel.model.AttendanceRecExp (item.exportAtr,item.columnIndex,item.userAtr,item.upperPosition,item.lowwerPosition);
-                    })
-                    
-                    for (var i: number = 1; i <= 12; i++) {
-                        if (!self.attendanceRecExpMonthly()[i]) {
-                            self.attendanceRecExpMonthly()[i] = new viewmodel.model.AttendanceRecExp(2, i, false, "", "");
+                service.findAllAttendanceRecExportMonthly(code).done(function(listattendanceRecExpMonthlyList: Array<model.AttendanceRecExp>) {
+                    if (listattendanceRecExpMonthlyList.length > 0) {
+                        listattendanceRecExpMonthlyList.forEach(item => {
+                            var columnIndex: number = item.columnIndex;
+                            self.attendanceRecExpMonthly()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition, item.lowwerPosition);
+                        })
+
+                        for (var i: number = 1; i <= 12; i++) {
+                            if (!self.attendanceRecExpMonthly()[i]) {
+                                self.attendanceRecExpMonthly()[i] = new viewmodel.model.AttendanceRecExp(2, i, false, "", "");
+                            }
                         }
                     }
-                }
 
-            });
+                });
 
-            service.getSealStamp(code).done(function(sealStampList: Array<String>) {
-                if (sealStampList.length > 0) {
-                    self.sealName1(sealStampList[0]);
-                    self.sealName2(sealStampList[1]);
-                    self.sealName3(sealStampList[2]);
-                    self.sealName4(sealStampList[3]);
-                    self.sealName5(sealStampList[4]);
-                    self.sealName6(sealStampList[5]);
+                service.getSealStamp(code).done(function(sealStampList: Array<String>) {
+                    if (sealStampList.length > 0) {
+                        self.sealName1(sealStampList[0]);
+                        self.sealName2(sealStampList[1]);
+                        self.sealName3(sealStampList[2]);
+                        self.sealName4(sealStampList[3]);
+                        self.sealName5(sealStampList[4]);
+                        self.sealName6(sealStampList[5]);
 
-                }
-            });
+                    }
+                });
+            }
+            //***
             service.getAttendanceSingleList().done(function(listAttendanceItem: Array<model.AttendanceItem>) {
                 if (listAttendanceItem.length != 0) {
                     self.attendanceItemListDaily(listAttendanceItem);
@@ -345,7 +368,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                 this.exportAtr = exportAtr;
                 this.columnIndex = columnIndex;
                 this.userAtr = userAtr;
-                this.upperPosition =ko.observable( upperPosition);
+                this.upperPosition = ko.observable(upperPosition);
                 this.lowwerPosition = ko.observable(lowwerPosition);
             }
         }
