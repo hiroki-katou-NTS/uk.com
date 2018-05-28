@@ -70,5 +70,12 @@ public interface ApprovalStatusAdapter {
 	 */
 	public List<ApproveRootStatusForEmpImport> getApprovalByListEmplAndListApprovalRecordDate(List<GeneralDate> approvalRecordDates, List<String> employeeID,Integer rootType);
 	
+	/**
+	 * RequestList 403
+	 * 承認状態をすべてクリアする
+	 * @param rootStateID
+	 */
+	public void cleanApprovalRootState(String rootStateID, Integer rootType);
+	
 	
 }

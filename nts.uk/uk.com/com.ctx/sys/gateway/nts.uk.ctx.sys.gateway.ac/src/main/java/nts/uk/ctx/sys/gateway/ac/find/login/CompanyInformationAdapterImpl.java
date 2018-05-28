@@ -54,5 +54,4 @@ public class CompanyInformationAdapterImpl implements CompanyInformationAdapter 
 				companyExport.getCompanyCode(), companyExport.getCompanyName());
 		return companyInformationImport;
 	}
-
 }

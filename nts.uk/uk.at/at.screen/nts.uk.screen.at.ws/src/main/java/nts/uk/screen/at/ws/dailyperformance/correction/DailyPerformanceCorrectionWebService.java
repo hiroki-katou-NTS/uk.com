@@ -148,6 +148,11 @@ public class DailyPerformanceCorrectionWebService {
 						month.getClosureDate(), Collections.emptyList()));
 			}
 		}
+		
+		if(dataParent.getSpr() != null){
+			processor.insertStampSourceInfo(dataParent.getSpr().getEmployeeId(), dataParent.getSpr().getDate(), dataParent.getSpr().isChange31(), dataParent.getSpr().isChange34());
+		}
+		
 		List<DPItemValue> itemValueChild= dataParent.getItemValues().stream().map(x -> {
 			DPItemValue item = x;
 			if (x.getTypeGroup() == TypeLink.POSSITION.value) {
@@ -215,9 +220,6 @@ public class DailyPerformanceCorrectionWebService {
 			}
 		}
 		
-		if(dataParent.getSpr() != null){
-			processor.insertStampSourceInfo(dataParent.getSpr().getEmployeeId(), dataParent.getSpr().getDate(), dataParent.getSpr().isChange31(), dataParent.getSpr().isChange34());
-		}
 		return resultError;
 	}
 	

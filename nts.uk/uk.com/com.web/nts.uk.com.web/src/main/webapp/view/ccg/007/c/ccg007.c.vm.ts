@@ -5,6 +5,7 @@ module nts.uk.pr.view.ccg007.c {
         import blockUI = nts.uk.ui.block;
         export class ScreenModel {
             companyCode: KnockoutObservable<string>;
+            companyName: KnockoutObservable<string>;
             employeeCode: KnockoutObservable<string>;
             password: KnockoutObservable<string>;
             isSaveLoginInfo: KnockoutObservable<boolean>;
@@ -13,6 +14,7 @@ module nts.uk.pr.view.ccg007.c {
             constructor() {
                 var self = this;
                 self.companyCode = ko.observable('');
+                self.companyName = ko.observable('');
                 self.employeeCode = ko.observable('');
                 self.password = ko.observable('');
                 self.isSaveLoginInfo = ko.observable(true);
@@ -169,6 +171,44 @@ module nts.uk.pr.view.ccg007.c {
                     blockUI.clear();
                 });
             }
+            
+            //open dialog G
+            OpenDialogG() {
+                let self = this;
+                
+                if(!nts.uk.util.isNullOrEmpty(self.companyCode())){
+                    let companyId = self.contractCode() + "-" + self.companyCode();
+                    service.getCompanyInfo(companyId).done(function(data: CompanyItemModel) {
+                        //get list company from server 
+                        self.companyName(data.companyName);
+                    });
+                }
+                
+                //set LoginId to dialog
+                nts.uk.ui.windows.setShared('parentCodes', {
+                    companyCode: self.companyCode(),
+                    companyName: self.companyName(),
+                    employeeCode : self.employeeCode()
+                }, true);
+
+                nts.uk.ui.windows.sub.modal('/view/ccg/007/g/index.xhtml',{
+                    width : 520,
+                    height : 350
+                }).onClosed(function(): any {
+                    //view all code of selected item 
+                    var childData = nts.uk.ui.windows.getShared('childData');
+                    if (childData) {
+//                        self.timeHistory(childData.timeHistory);
+//                        self.startTime(childData.start);
+//                        self.endTime(childData.end);
+                    }
+                })
+            }
+        }
+        export class CompanyItemModel {
+            companyId: string;
+            companyCode: string;
+            companyName: string;
         }
     }
 }
