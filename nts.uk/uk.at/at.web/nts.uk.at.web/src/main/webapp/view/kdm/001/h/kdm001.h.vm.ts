@@ -79,11 +79,11 @@ module nts.uk.at.view.kdm001.h.viewmodel {
                         for (let messageId of result) {
                             switch (messageId) {
                                 case "Msg_744": {
-                                    $('#L6_2').ntsError('set', { messageId: messageId });
+                                    $('#H6_2').ntsError('set', { messageId: messageId });
                                     break;
                                 }
                                 case "Msg_729": {
-                                    $('#L6_2').ntsError('set', { messageId: messageId });
+                                    $('#H6_2').ntsError('set', { messageId: messageId });
                                     break;
                                 }
                             }
