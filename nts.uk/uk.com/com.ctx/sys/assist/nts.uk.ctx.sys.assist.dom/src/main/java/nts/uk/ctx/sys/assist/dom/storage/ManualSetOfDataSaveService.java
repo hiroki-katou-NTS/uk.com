@@ -49,6 +49,11 @@ import nts.uk.shr.infra.file.csv.CSVReportGenerator;
  */
 @Stateless
 public class ManualSetOfDataSaveService extends ExportService<Object> {
+	private static final String COMPANY_CD = "0";
+	private static final String EMPLOYEE_CD = "5";
+	private static final String YEAR = "6";
+	private static final String YEAR_MONTH = "7";
+	private static final String YEAR_MONTH_DAY = "8";
 	@Inject
 	private ResultOfSavingRepository repoResultSaving;
 	@Inject
@@ -467,7 +472,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					tableList.getClsKeyQuery9(), tableList.getClsKeyQuery10() };
 
 			for (int i = 0; i < clsKeyQuerys.length; i++) {
-				if (clsKeyQuerys[i] == "5") {
+				if (clsKeyQuerys[i] == EMPLOYEE_CD) {
 					if (tableList.getHasParentTable() == NotUseAtr.USE) {
 						query.append(" INNER JOIN SspmtTargetEmployees e ON e.targetEmployeesPk.Sid = p.");
 						query.append(repoTableList.getFieldForColumnName(tableParent, fieldKeyQuerys[i]));
@@ -489,19 +494,19 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 				if (clsKeyQuerys[i] == null)
 					continue;
 				switch (clsKeyQuerys[i]) {
-				case "0":
+				case COMPANY_CD:
 					companyCdIndexs.add(i);
 					break;
 
-				case "6":
+				case YEAR:
 					yearIndexs.add(i);
 					break;
 
-				case "7":
+				case YEAR_MONTH:
 					yearMonthIndexs.add(i);
 					break;
 
-				case "8":
+				case YEAR_MONTH_DAY:
 					yearMonthDayIndexs.add(i);
 					break;
 
