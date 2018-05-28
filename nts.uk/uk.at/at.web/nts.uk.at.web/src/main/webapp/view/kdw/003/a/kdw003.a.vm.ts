@@ -172,6 +172,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         textStyles: any = [];
         showTextStyle: boolean = true;
         clickFromExtract: boolean = true;
+        
+        sprRemoveApprovalAll: any;
+        
         constructor(dataShare: any) {
             var self = this;
             self.initLegendButton();
@@ -517,6 +520,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             let objectName = {};
                             objectName["approval"] = false;
                             $("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId31, objectName);
+                            self.sprRemoveApprovalAll = "_" + data.changeSPR.rowId31;
                         }
                         if ((data.changeSPR.change31 || data.changeSPR.change34) && self.shareObject().initClock.canEdit) {
                             self.sprStampSourceInfo(sprStamp);
@@ -678,9 +682,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                     } else {
                         if (data.columnKey == "sign") {
-                            dataCheckSign.push({ rowId: data.rowId, itemId: "sign", value: data.value, employeeId: dataTemp.employeeId, date: dataTemp.dateDetail.utc().toISOString() });
+                            dataCheckSign.push({ rowId: data.rowId, itemId: "sign", value: data.value, employeeId: dataTemp.employeeId, date: dataTemp.dateDetail.utc().toISOString(), flagRemoveAll: false });
                         } else {
-                            dataCheckApproval.push({ rowId: data.rowId, itemId: "approval", value: data.value, employeeId: dataTemp.employeeId, date: dataTemp.dateDetail.utc().toISOString() });
+                            let flag = false;
+                            if(data.rowId == self.sprRemoveApprovalAll){
+                               flag = true; 
+                               self.sprRemoveApprovalAll = null;
+                            }
+                            dataCheckApproval.push({ rowId: data.rowId, itemId: "approval", value: data.value, employeeId: dataTemp.employeeId, date: dataTemp.dateDetail.utc().toISOString(), flagRemoveAll: flag});
                         }
                     }
                 });
@@ -1510,23 +1519,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let pageSize = $("#dpGrid").igGridPaging("option", "pageSize");
             let startIndex: any = currentPageIndex * pageSize;
             let endIndex: any = startIndex + pageSize;
-            //let total = moment.duration("0");
             let total = 0;
-            ///let zA = 1;
             _.forEach(data, function(d, i) {
                 if (i < startIndex || i >= endIndex) return;
                 if (d != "") {
                     total = total + moment.duration(d).asMinutes();
                 }
             });
-            //            let time = total.asHours();
-            //            let hour = Math.floor(time);
-            //            let minute = (time - hour) * 60;
-            //            let roundMin = Math.round(minute);
-            //            let minuteStr = roundMin < 10 ? ("0" + roundMin) : String(roundMin);
-            let hours = (total - Math.abs(total % 60)) / 60;
-            let minus = Math.abs(total) % 60 < 10 ? "0" + Math.abs(total) % 60 : Math.abs(total) % 60;
-            return hours + ":" + minus;
+            let hours =  total > 0 ?   Math.floor(total/60) :  Math.ceil(total/60);
+            let minus = Math.abs(total%60);
+            minus = (minus < 10) ? '0'+minus : minus;
+            return ((total< 0 && hours == 0 ) ? "-"+hours : hours)  + ":" + minus;
         }
 
         totalMoney(data) {

@@ -101,7 +101,7 @@ public class DailyModifyCommandFacade {
 	public void insertApproval(List<DPItemCheckBox> dataCheckApproval) {
 		ParamDayApproval param = new ParamDayApproval(AppContexts.user().employeeId(),
 				dataCheckApproval.stream()
-						.map(x -> new ContentApproval(x.getDate(), x.isValue(), x.getEmployeeId()))
+						.map(x -> new ContentApproval(x.getDate(), x.isValue(), x.getEmployeeId(), x.isFlagRemoveAll()))
 						.collect(Collectors.toList()));
 		registerDayApproval.registerDayApproval(param);
 	}
