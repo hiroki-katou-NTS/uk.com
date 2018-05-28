@@ -185,7 +185,7 @@ module nts.custom.component {
             <div class="left-area">
                 <div class="bg-green caret-right caret-background">
                     <table data-bind="attr: { 
-                                NameID: text('CPS001_9') + '一覧', 
+                                NameID: text('CPS001_9'), 
                                 id: nts.uk.util.randomId().replace(/-/g, '')
                             }, 
                             ntsGridList: {                              
@@ -193,8 +193,8 @@ module nts.custom.component {
                                 multiple: false,
                                 columns: [
                                     { headerText: 'コード', key: 'employeeId', width: 100, hidden: true },
-                                    { headerText: text('Com_Person') + '一覧', key: 'employeeCode', width: 115, hidden: false },
-                                    { headerText: text('Com_Person'), key: 'employeeName', width: 125, hidden: false }
+                                    { headerText: text('CPS001_9'), key: 'employeeCode', width: 115, hidden: false },
+                                    { headerText: text('CPS001_10'), key: 'employeeName', width: 125, hidden: false }
                                 ],
                                 primaryKey: 'employeeId',
                                 value: employeeId,
@@ -213,7 +213,7 @@ module nts.custom.component {
                         <div class="active-panel">
                             <div class="person-info">
                                 <div class="row cf">
-                                    <div class="info bg-calendar-ym-set" data-bind="text: text('Com_Person') + 'コード/氏名'"></div>
+                                    <div class="info bg-calendar-ym-set" data-bind="text: text('CPS001_11')"></div>
                                     <div class="info">
                                         <span data-bind="text: employee.code, attr: { title: employee.code }"></span>
                                         <span data-bind="text: employee.name, attr: { title: employee.name }"></span>
@@ -234,9 +234,9 @@ module nts.custom.component {
                                     </div>
                                 </div>
                                 <div class="row cf">
-                                    <div class="info bg-calendar-ym-set" data-bind="text: text('Com_Jobtitle')"></div>
+                                    <div class="info bg-calendar-ym-set" data-bind="text: text('CPS001_15')"></div>
                                     <div class="info first" data-bind="text: constract.position"></div>
-                                    <div class="info bg-calendar-ym-set" data-bind="text: text('Com_Employment')"></div>
+                                    <div class="info bg-calendar-ym-set" data-bind="text: text('CPS001_16')"></div>
                                     <div class="info" data-bind="text: constract.contractType"></div>
                                 </div>
                             </div>
