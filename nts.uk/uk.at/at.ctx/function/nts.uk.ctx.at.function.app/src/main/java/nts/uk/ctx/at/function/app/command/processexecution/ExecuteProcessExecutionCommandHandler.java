@@ -1049,7 +1049,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 
 		// ドメインモデル「就業締め日」を取得する
 		List<Closure> closureList = this.closureRepo.findAllActive(companyId, UseClassification.UseClass_Use);
-		DatePeriod period = this.findClosurePeriod(companyId, closureList);
+		DatePeriod period = this.findClosureMinMaxPeriod(companyId, closureList);
 
 		// ドメインモデル「実行ログ」を新規登録する
 		ExecutionLog dailyCreateLog = new ExecutionLog(execId, ExecutionContent.DAILY_CREATION, ErrorPresent.NO_ERROR,
@@ -1457,7 +1457,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	
 	
 
-	private DatePeriod findClosurePeriod(String companyId, List<Closure> closureList) {
+	private DatePeriod findClosureMinMaxPeriod(String companyId, List<Closure> closureList) {
 		YearMonth startYearMonth = null;
 		YearMonth endYearMonth = null;
 		for (Closure closure : closureList) {
@@ -1785,7 +1785,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 
 			// ドメインモデル「就業締め日」を取得する
 			List<Closure> closureList = this.closureRepo.findAllActive(companyId, UseClassification.UseClass_Use);
-			DatePeriod closurePeriod = this.findClosurePeriod(companyId, closureList);
+			DatePeriod closurePeriod = this.findClosureMinMaxPeriod(companyId, closureList);
 			
 			DatePeriod newClosurePeriod =  new DatePeriod(closurePeriod.start(), GeneralDate.ymd(9999, 12, 31));
 			
@@ -1829,9 +1829,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 
 			// 新入社員を作成するか判定
 			if (setting.isCreateEmployee()) {
-				//request 211
+				//request list 211
 				// Imported「所属会社履歴（社員別）」を取得する
-				List<AffCompanyHistImport> employeeHistList = this.employeeHistAdapter.getWplByListSidAndPeriod(employeeIdList, newClosurePeriod);
+				 List<nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport> employeeHistList = this.syCompanyRecordAdapter.getAffCompanyHistByEmployee(employeeIdList, newClosurePeriod);
 				// 取得したドメインモデル「所属開始履歴（社員別）」.社員IDを新入社員とする
 				employeeHistList.forEach(x -> newEmployeeList.add(x.getEmployeeId()));
 			}
@@ -2156,7 +2156,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		List<Closure> lstClosure = this.closureRepo.findAllUse(companyId);
 
 		// ドメインモデル「実行ログ」を新規登録する
-		DatePeriod period = this.findClosurePeriod(companyId, lstClosure);
+		DatePeriod period = this.findClosureMinMaxPeriod(companyId, lstClosure);
 		GeneralDateTime now = GeneralDateTime.now();
 		ExecutionLog executionLog = new ExecutionLog(execId, ExecutionContent.MONTHLY_AGGREGATION,
 				ErrorPresent.NO_ERROR, new ExecutionTime(now, now), ExecutionStatus.INCOMPLETE,
@@ -2879,6 +2879,19 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			return true;
 		}
 		return false;
+	}
+	//異動者、勤務種別変更者の作成期間の計算
+	private void calPeriodTransferWorkType(List<String> lstEmpId,String companyId){
+		//全締めから一番早い期間.開始日を取得する
+		DatePeriod minPeriodFromStartDate = this.getMinPeriodFromStartDate(companyId);
+		
+	}
+	//全締めから一番早い期間.開始日を取得する
+	private DatePeriod getMinPeriodFromStartDate(String companyId){
+		// ドメインモデル「就業締め日」を取得する
+		List<Closure> closureList = this.closureRepo.findAllActive(companyId, UseClassification.UseClass_Use);
+		//全締めから一番早い期間.開始日を取得する
+		return this.findClosureMinMaxPeriod(companyId, closureList);
 	}
 
 }

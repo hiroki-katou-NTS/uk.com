@@ -1815,9 +1815,9 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 
 			// 新入社員を作成するか判定
 			if (setting.isCreateEmployee()) {
-				//request 211
+				//request list 211
 				// Imported「所属会社履歴（社員別）」を取得する
-				List<AffCompanyHistImport> employeeHistList = this.employeeHistAdapter.getWplByListSidAndPeriod(employeeIdList, newClosurePeriod);
+				 List<nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport> employeeHistList = this.syCompanyRecordAdapter.getAffCompanyHistByEmployee(employeeIdList, newClosurePeriod);
 				// 取得したドメインモデル「所属開始履歴（社員別）」.社員IDを新入社員とする
 				employeeHistList.forEach(x -> newEmployeeList.add(x.getEmployeeId()));
 			}
