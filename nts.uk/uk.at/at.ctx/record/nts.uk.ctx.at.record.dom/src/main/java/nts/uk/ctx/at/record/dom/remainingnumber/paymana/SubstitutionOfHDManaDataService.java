@@ -56,65 +56,23 @@ public class SubstitutionOfHDManaDataService {
 	 * @param subOfHDId
 	 */
 	public void insertSubOfHDMan(String sid, String payoutId, Double remainNumber, List<DayOffManagement> subOfHDId) {
-		String companyId = AppContexts.user().companyId();
-		// ドメインモデル「inported雇用」を読み込む
-		Optional<SEmpHistoryImport> syEmpHist = syEmploymentAdapter.findSEmpHistBySid(companyId, sid,
-				GeneralDate.today());
-		if (!syEmpHist.isPresent()) {
-			return;
-		}
-		ApplyPermission allowPrepaidLeave = ApplyPermission.NOT_ALLOW;
-		// ドメインモデル「雇用振休管理設定」を」読み込む
-		Optional<EmpSubstVacation> empSubstVacation = empSubstVacationRepository.findById(companyId,
-				syEmpHist.get().getEmploymentCode());
-		if (!empSubstVacation.isPresent()) {
-			// ドメインモデル「振休管理設定」を」読み込む
-			Optional<ComSubstVacation> comSubstVacation = comSubstVacationRepository.findById(companyId);
-			if (comSubstVacation.isPresent()) {
-				allowPrepaidLeave = comSubstVacation.get().getSetting().getAllowPrepaidLeave();
-			}
-		}
 
-		allowPrepaidLeave = empSubstVacation.get().getSetting().getAllowPrepaidLeave();
-
-		// １件もない エラーメッセージ(Msg_738) エラーリストにセットする
-		// if (subOfHDId.isEmpty()){
-		// throw new BusinessException("Msg_738");
-		// }
-
-		// ３件以上あり エラーメッセージ(Msg_739) エラーリストにセットする
-		// if (subOfHDId.size() >= 3){
-		// throw new BusinessException("Msg_739");
-		// }
-
-		if (subOfHDId.size() == 1) {
-			if (subOfHDId.get(0).getRemainDays().compareTo(ItemDays.ONE_DAY.value) != 0) {
-
-				// エラーメッセージ(Msg_731) エラーリストにセットする
-				throw new BusinessException("Msg_731");
-			}
-		}
-		if (subOfHDId.size() == 2) {
-			if (subOfHDId.get(0).getRemainDays().compareTo(ItemDays.ONE_DAY.value) == 0) {
-
-				if (allowPrepaidLeave == ApplyPermission.NOT_ALLOW) {
-					// エラーメッセージ(Msg_739) エラーリストにセットする
-
-					throw new BusinessException("Msg_739");
-				}
-
-			}
-			if (subOfHDId.get(0).getRemainDays().compareTo(ItemDays.HALF_DAY.value) == 0
-					&& subOfHDId.get(1).getRemainDays().compareTo(ItemDays.HALF_DAY.value) != 0) {
-				// エラーメッセージ(Msg_731) エラーリストにセットする
-				throw new BusinessException("Msg_731");
-			}
-		}
-
-		if (!payoutSubofHDManaRepository.getByPayoutId(payoutId).isEmpty()) {
+		List<PayoutSubofHDManagement> listPayoutSub = payoutSubofHDManaRepository.getByPayoutId(payoutId);
+		if (!listPayoutSub.isEmpty()) {
 			payoutSubofHDManaRepository.delete(payoutId);
 		}
-
+		
+		// Set all item to free
+		listPayoutSub.forEach(item->{
+			// Update remain days 振休管理データ
+			Optional<SubstitutionOfHDManagementData> subMana = substitutionOfHDManaDataRepository
+					.findByID(item.getSubOfHDID());
+			if (subMana.isPresent()) {
+				subMana.get().setRemainsDay(Double.valueOf(item.getUsedDays().v().intValue()));
+				substitutionOfHDManaDataRepository.update(subMana.get());
+			}
+		});
+		
 		subOfHDId.forEach(i -> {
 			payoutSubofHDManaRepository.add(new PayoutSubofHDManagement(payoutId, i.getSubOfHDID(),
 					new BigDecimal(i.getRemainDays()), TargetSelectionAtr.MANUAL.value));
