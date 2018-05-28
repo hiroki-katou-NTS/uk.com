@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.Map.Entry;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
@@ -46,6 +48,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * ドメインサービス：日別計算　（社員の日別実績を計算）
  * @author shuichu_ishida
  */
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmployeeService {
 
@@ -226,6 +229,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 * データ更新
 	 * @param attendanceTime 日別実績の勤怠時間
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	private void registAttendanceTime(AttendanceTimeOfDailyPerformance attendanceTime){
 
 		//*****（未）　この中で、必要なデータ更新処理を書く。下は、仮実装なので、正確な内容は別途確認する事。
