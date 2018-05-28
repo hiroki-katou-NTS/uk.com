@@ -178,14 +178,20 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                             if (errorId === "Msg_737_holiday") {
                                 $('#I6_1').ntsError('set', { messageId: "Msg_737" });
                             }
+                            else if (errorId === "Msg_746") {
+                                $('#I11_1').ntsError('set', { messageId: "Msg_746" });
+                            }
                             else if (errorId === "Msg_728") {
                                 $('#I4').ntsError('set', { messageId: errorId });
                             }
                             else if (errorId === "Msg_737_sub_holiday") {
                                 $('#I11_1').ntsError('set', { messageId: "Msg_737" });
                             }
-                            else if (errorId === "Msg_745") {
+                            else if (errorId === "Msg_745_1") {
                                 $('#I6_1').ntsError('set', { messageId: "Msg_745" });
+                            }
+                            else if (errorId === "Msg_745_2") {
+                                $('#I11_1').ntsError('set', { messageId: "Msg_745" });
                             }
                             else if (errorId === "Msg_730") {
                                 $('#I11_1').ntsError('set', { messageId: "Msg_730" });
