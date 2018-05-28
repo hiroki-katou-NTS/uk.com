@@ -236,6 +236,11 @@ module cps002.a.vm {
             });
 
             self.currentEmployee().cardNo.subscribe((cardNo) => {
+                
+                if (cardNo === "") {
+                    return;
+                }
+                
                 let ce = self.stampCardEditing,
                     emp = self.currentEmployee();
 
