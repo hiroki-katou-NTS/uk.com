@@ -25,6 +25,8 @@ module nts.uk.ui.jqueryExtentions {
                     return setSelected($tree, param);
                 case 'deselectAll':
                     return deselectAll($tree);
+                case 'virtualScrollTo':
+                    return virtualScroll($tree, param);
             }
         };
 
@@ -53,10 +55,47 @@ module nts.uk.ui.jqueryExtentions {
             deselectAll($tree);
 
             if ($tree.igTreeGridSelection('option', 'multipleSelection')) {
-                (<Array<string>>selectedId).forEach(id => $tree.igTreeGridSelection('selectRowById', id));
+                (<Array<string>>selectedId).forEach(id => { 
+                    $tree.igTreeGridSelection('selectRowById', id);
+                    virtualScroll($tree, id);
+                });
             } else {
                 $tree.igTreeGridSelection('selectRowById', selectedId);
+                virtualScroll($tree, id);
             }
+        }
+        
+        function virtualScroll($tree: JQuery, id: any) {
+            let virtualization = $tree.igTreeGrid("option", "virtualization");
+            if (virtualization) {
+                let pk = $tree.igTreeGrid("option", "primaryKey");
+                let childKey = $tree.igTreeGrid("option", "childDataKey");
+                let ds = $tree.igTreeGrid("option", "dataSource");
+                let res = findIndex(ds, id, pk, childKey, 0);
+                if (res.found) { 
+                    $tree.igTreeGrid("virtualScrollTo", res.index);
+                }
+            }
+        }
+        
+        function findIndex(dataSource: Array<any>, id: any, pk: string, childKey: string, cIndex: number) {
+            let found = false;
+            _.forEach(dataSource, d => {
+                if (d[pk] !== id && d[childKey]) {
+                    cIndex++;
+                    let res = findIndex(d[childKey], id, pk, childKey, cIndex);
+                    if (res.found) {
+                        found = true;
+                        cIndex = res.index;
+                        return false;
+                    }
+                    cIndex = res.index;
+                } else if (d[pk] === id) {
+                    found = true;
+                    return false;
+                }
+            });
+            return { index: cIndex, found: found };
         }
 
         function deselectAll($grid: JQuery) {

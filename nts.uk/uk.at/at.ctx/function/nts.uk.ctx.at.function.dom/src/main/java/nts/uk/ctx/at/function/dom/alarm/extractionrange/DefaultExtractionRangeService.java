@@ -15,7 +15,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.error.BusinessException;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
@@ -76,7 +75,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 		Date startDate = null;
 		Date endDate = null;
-		ExtractionPeriodDaily extraction = (ExtractionPeriodDaily) c.getExtractPeriod();
+		ExtractionPeriodDaily extraction = (ExtractionPeriodDaily) c.getExtractPeriodList().get(0);
 
 		// Calculate start date
 		if (extraction.getStartDate().getStartSpecify() == StartSpecify.DAYS) {
@@ -115,7 +114,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		LocalDate sDate = null;
 		LocalDate eDate = null;
 
-		ExtractionPeriodUnit periodUnit = (ExtractionPeriodUnit) c.getExtractPeriod();
+		ExtractionPeriodUnit periodUnit = (ExtractionPeriodUnit) c.getExtractPeriodList().get(0);
 		
 		LocalDate countingDate;
 		boolean isYMD;

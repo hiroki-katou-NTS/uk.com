@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.adapter.bs;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.AffWorkplaceImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.ConcurrentEmployeeRequest;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
@@ -55,5 +56,5 @@ public interface EmployeeRequestAdapter {
 	 * @param endDate
 	 * @return
 	 */
-	List<String> getListSIdByWkpIdAndPeriod(String workplaceId, GeneralDate startDate, GeneralDate endDate);
+	List<AffWorkplaceImport> getListSIdByWkpIdAndPeriod(String workplaceId, GeneralDate startDate, GeneralDate endDate);
 }

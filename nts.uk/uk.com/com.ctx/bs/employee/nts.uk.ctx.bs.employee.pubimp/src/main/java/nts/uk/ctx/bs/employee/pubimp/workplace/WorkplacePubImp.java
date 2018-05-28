@@ -443,11 +443,11 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		List<AffAtWorkplaceExport> result = new ArrayList<AffAtWorkplaceExport>();
 
 		if (sids.isEmpty() || baseDate == null)
-			return null;
+			return Collections.emptyList();
 
 		List<AffWorkplaceHistory> lstAffWkpHist = affWorkplaceHistoryRepository.getByListSid(sids);
 		if (lstAffWkpHist.isEmpty())
-			return null;
+			return Collections.emptyList();
 
 		List<String> historyIds = new ArrayList<>();
 
@@ -466,7 +466,7 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		});
 
 		if (historyIds.isEmpty())
-			return null;
+			return Collections.emptyList();
 
 		List<AffWorkplaceHistoryItem> affWrkPlcItems = affWorkplaceHistoryItemRepository.findByHistIds(historyIds);
 

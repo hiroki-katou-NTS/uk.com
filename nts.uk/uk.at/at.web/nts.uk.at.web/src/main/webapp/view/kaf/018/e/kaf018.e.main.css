@@ -1,5 +1,6 @@
 #contents-area{
 	margin: 20px;
+	height: auto !important;
 }
 #tbl-control{
 	width: 1000px;
@@ -14,6 +15,7 @@
 
 .fixed-table tbody td{
 	text-align: center;
+	height: 27px;
 }
 
 .fixed-table tbody td:NTH-CHILD(1){

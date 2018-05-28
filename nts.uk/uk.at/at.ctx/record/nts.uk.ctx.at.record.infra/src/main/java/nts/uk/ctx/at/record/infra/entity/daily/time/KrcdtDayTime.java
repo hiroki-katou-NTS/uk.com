@@ -496,11 +496,10 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 	public int vactnAddTime;
 	/*計算所定内深夜時間*/
 	@Column(name = "CALC_PRS_INCLD_MIDN_TIME")
-	public int calcPrsIncldMidnTime;	
+	public int calcPrsIncldMidnTime;
 	/*所定内深夜乖離時間*/
 	@Column(name = "DIV_PRS_INCLD_MIDN_TIME")
 	public int divPrsIncldMidnTime;
-	
 	/*----------------------日別実績の所定内時間------------------------------*/
 	
 	/*----------------------日別実績の残業時間------------------------------*/
@@ -1031,21 +1030,21 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 		return this.krcdtDayTimePK;
 	}
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime", orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true)
 	public List<KrcdtDayLeaveEarlyTime> krcdtDayLeaveEarlyTime;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime", orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true)
 	public List<KrcdtDayLateTime> krcdtDayLateTime;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime", orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true)
 	public List<KrcdtDaiShortWorkTime> krcdtDaiShortWorkTime;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime", orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true)
 	public List<KrcdtDayShorttime> KrcdtDayShorttime;
 	
-	public static KrcdtDayAttendanceTime toEntity(AttendanceTimeOfDailyPerformance attendanceTime) {
-		val entity = new KrcdtDayAttendanceTime();
-		entity.krcdtDayAttendanceTimePK = new KrcdtDayAttendanceTimePK(attendanceTime.getEmployeeId(),
+	public static KrcdtDayTime toEntity(AttendanceTimeOfDailyPerformance attendanceTime) {
+		val entity = new KrcdtDayTime();
+		entity.krcdtDayTimePK = new KrcdtDayTimePK(attendanceTime.getEmployeeId(),
 				attendanceTime.getYmd());
 		entity.setData(attendanceTime);
 		return entity;
@@ -1481,15 +1480,14 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 						if(withinDomain.getWithinStatutoryMidNightTime() != null){
 							TimeDivergenceWithCalculation winthinTime = withinDomain.getWithinStatutoryMidNightTime().getTime();
 							/*所定内深夜時間*/
-							this.prsIncldMidnTime = winthinTime == null || winthinTime.getTime() == null ? 0 
-									: withinDomain.getWithinStatutoryMidNightTime().getTime().getTime().valueAsMinutes();
-							/*計算所定内深夜時間*/
-							this.calcPrsIncldMidnTime = winthinTime == null || winthinTime.getCalcTime() == null ? 0 
-									: withinDomain.getWithinStatutoryMidNightTime().getTime().getCalcTime().valueAsMinutes();							
+						    this.prsIncldMidnTime = winthinTime == null || winthinTime.getTime() == null ? 0 
+						         : withinDomain.getWithinStatutoryMidNightTime().getTime().getTime().valueAsMinutes();
+						    /*計算所定内深夜時間*/
+						    this.calcPrsIncldMidnTime = winthinTime == null || winthinTime.getCalcTime() == null ? 0 
+						         : withinDomain.getWithinStatutoryMidNightTime().getTime().getCalcTime().valueAsMinutes();
 							/*所定内深夜乖離時間*/
 							this.divPrsIncldMidnTime = winthinTime == null || winthinTime.getDivergenceTime() == null ? 0
 									: withinDomain.getWithinStatutoryMidNightTime().getTime().getDivergenceTime().valueAsMinutes();
-							
 						}
 						/*休暇加算時間*/
 						this.vactnAddTime = withinDomain.getVacationAddTime() == null ? 0 : withinDomain.getVacationAddTime().valueAsMinutes();
@@ -2105,14 +2103,14 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 		val divergence = new DivergenceTimeOfDaily(divergenceTimeList);
 		/*日別実績の遅刻時間*/
 		List<LateTimeOfDaily> lateTime = new ArrayList<>();
-		for (KrcdtDayLateTime krcdt : getKrcdtDayLateTime()) {
-			lateTime.add(krcdt.toDomain());
-		}
+//		for (KrcdtDayLateTime krcdt : getKrcdtDayLateTime()) {
+//			lateTime.add(krcdt.toDomain());
+//		}
 		/*日別実績の早退時間*/
 		List<LeaveEarlyTimeOfDaily> leaveEarly = new ArrayList<>();
-		for (KrcdtDayLeaveEarlyTime krcdt : getKrcdtDayLeaveEarlyTime()) {
-			leaveEarly.add(krcdt.toDomain());
-		}
+//		for (KrcdtDayLeaveEarlyTime krcdt : getKrcdtDayLeaveEarlyTime()) {
+//			leaveEarly.add(krcdt.toDomain());
+//		}
 		/*日別実績の勤怠時間*/
 		// 日別実績の総労働時間
 		TotalWorkingTime totalTime = new TotalWorkingTime(new AttendanceTime(this.totalAttTime),
@@ -2149,11 +2147,11 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 		
 	}
 	
-	public List<KrcdtDayLeaveEarlyTime> getKrcdtDayLeaveEarlyTime() {
-		return krcdtDayLeaveEarlyTime == null ? new ArrayList<>() : krcdtDayLeaveEarlyTime;
-	}
-
-	public List<KrcdtDayLateTime> getKrcdtDayLateTime() {
-		return krcdtDayLateTime == null ? new ArrayList<>() : krcdtDayLateTime;
-	}
+//	public List<KrcdtDayLeaveEarlyTime> getKrcdtDayLeaveEarlyTime() {
+//		return krcdtDayLeaveEarlyTime == null ? new ArrayList<>() : krcdtDayLeaveEarlyTime;
+//	}
+//
+//	public List<KrcdtDayLateTime> getKrcdtDayLateTime() {
+//		return krcdtDayLateTime == null ? new ArrayList<>() : krcdtDayLateTime;
+//	}
 }

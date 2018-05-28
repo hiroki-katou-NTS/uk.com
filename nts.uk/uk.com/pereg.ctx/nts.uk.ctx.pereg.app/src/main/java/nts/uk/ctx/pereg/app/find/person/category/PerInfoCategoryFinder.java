@@ -133,7 +133,7 @@ public class PerInfoCategoryFinder {
 		String companyId = AppContexts.user().companyId();
 		String contractCode = AppContexts.user().contractCode();
 
-		List<PerInfoCtgShowDto> categoryList = perInfoCtgRepositoty.getAllPerInfoCategory(companyId, contractCode)
+		List<PerInfoCtgShowDto> categoryList = perInfoCtgRepositoty.getAllCategoryForCPS007(companyId, contractCode)
 				.stream().map(p -> {
 					List<PerInfoItemDefDto> lstItemDfInCat = this.perInfoItemDfFinder
 							.getAllPerInfoItemDefByCtgIdForLayout(p.getPersonInfoCategoryId()).stream()

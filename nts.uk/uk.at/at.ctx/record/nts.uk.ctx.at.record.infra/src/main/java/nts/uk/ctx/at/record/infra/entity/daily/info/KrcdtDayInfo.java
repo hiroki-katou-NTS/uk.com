@@ -2,14 +2,9 @@ package nts.uk.ctx.at.record.infra.entity.daily.info;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
-import lombok.val;
-import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 public class KrcdtDayInfo extends UkJpaEntity implements Serializable{
@@ -18,7 +13,7 @@ public class KrcdtDayInfo extends UkJpaEntity implements Serializable{
 	/* 主キー */
 	@EmbeddedId
 	public KrcdtDayInfoPK krcdtDayInfoPK;
-	/*日別実績の勤務情報*/
+	
 	// 勤務実績の勤務情報. 勤務種類コード
 	@Column(name = "RECORD_WORK_WORKTYPE_CODE")
 	public String recordWorkWorktypeCode;
@@ -43,7 +38,6 @@ public class KrcdtDayInfo extends UkJpaEntity implements Serializable{
 
 	@Column(name = "BACK_STRAIGHT_ATR")
 	public Integer backStraightAttribute;
-	/*日別実績の勤務情報*/
 	
 	/*日別実績の所属情報*/
 	@Column(name = "DAY_OF_WEEK")
@@ -173,20 +167,10 @@ public class KrcdtDayInfo extends UkJpaEntity implements Serializable{
     @Column(name = "LEGAL_MID_OT_LIMIT_SET")
     public int legalMidOtLimitSet;
     /*残業時間の自動計算設定*/
-    
-    
 	
 	@Override
 	protected Object getKey() {
 		return this.krcdtDayInfoPK;
-	}
-	
-	public XXXX toDomain() {
-		val affiliation = new AffiliationInforOfDailyPerfor(employmentCode,
-															this.krcdtDayInfoPK.employeeID,
-															this.krcdtDayInfoPK.generalDate,
-															
-															);
 	}
 	
 	

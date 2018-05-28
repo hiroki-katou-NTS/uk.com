@@ -159,17 +159,17 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		// 取得データ分ループ
 		for (IntegrationOfDaily integrationOfDaily : integrationOfDailys) {
 			
+			// 中断処理　（中断依頼が出されているかチェックする）
+			if (asyncContext.hasBeenRequestedToCancel()) {
+				asyncContext.finishedAsCancelled();
+				return ProcessState.INTERRUPTION;
+			}
+			
 			//社員、日付毎に取得した法定労働時間
 			if(!integrationOfDaily.getAffiliationInfor().getEmploymentCode().equals(nowEmpCode)) {
 				nowEmpCode = integrationOfDaily.getAffiliationInfor().getEmploymentCode(); 
 				val dailyUnit = dailyStatutoryWorkingHours.getDailyUnit(AppContexts.user().companyId(),nowEmpCode.toString(), employeeId, datePeriod.start(), personalInfo.get().getLaborSystem());
 				companyCommonSetting.setDailyUnit(dailyUnit);
-			}
-			
-			// 中断処理　（中断依頼が出されているかチェックする）
-			if (asyncContext.hasBeenRequestedToCancel()) {
-				asyncContext.finishedAsCancelled();
-				return ProcessState.INTERRUPTION;
 			}
 			
 			// アルゴリズム「実績ロックされているか判定する」を実行する

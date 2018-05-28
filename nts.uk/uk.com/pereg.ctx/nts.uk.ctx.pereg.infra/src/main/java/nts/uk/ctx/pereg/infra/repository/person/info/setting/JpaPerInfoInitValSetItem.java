@@ -302,7 +302,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		domain.setSaveDataType(Integer.valueOf(saveDataType));
 
 		domain.setStringValue(entity[7] == null ? "" : entity[7].toString());
-		domain.setIntValue(entity[8] == null ? new BigDecimal(0) : new BigDecimal(entity[8].toString()));
+		domain.setIntValue(entity[8] == null ? null : new BigDecimal(entity[8].toString()));
 
 		String dateValue;
 

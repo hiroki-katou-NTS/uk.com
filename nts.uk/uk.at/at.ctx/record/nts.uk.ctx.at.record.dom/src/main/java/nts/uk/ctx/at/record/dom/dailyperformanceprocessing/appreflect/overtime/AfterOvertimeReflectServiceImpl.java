@@ -63,7 +63,7 @@ public class AfterOvertimeReflectServiceImpl implements AfterOvertimeReflectServ
 			
 			//日別実績の修正からの計算
 			//○日別実績を置き換える Replace daily performance		
-			IntegrationOfDaily calculateData = calculate.calculate(preOvertimeService.calculateForAppReflect(overtimePara.getEmployeeId(), overtimePara.getDateInfo()));
+			IntegrationOfDaily calculateData = calculate.calculate(preOvertimeService.calculateForAppReflect(overtimePara.getEmployeeId(), overtimePara.getDateInfo()),null);
 			attendanceTime.updateFlush(calculateData.getAttendanceTimeOfDailyPerformance().get());
 			return true;
 			
