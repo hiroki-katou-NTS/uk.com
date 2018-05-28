@@ -28,6 +28,7 @@
 			<com:ValidatorScript>
 				nts.uk.ctx.sys.auth.dom.user.MailAddress
 				nts.uk.ctx.bs.person.dom.person.contact.PhoneNumber
+				nts.uk.ctx.sys.gateway.dom.login.RawPassword
 			</com:ValidatorScript>
 			
 		</ui:define>
@@ -38,13 +39,13 @@
 			</div>
 			<div id="contents-area">
 				<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-					<div class="tab-content-1">
+					<div class="tab-content-1" tabindex="2">
 						<div class="tab-outline" data-bind="ntsCMM048A1: {
 							model: mainModel
 						}">
 						</div>
 					</div>
-					<div class="tab-content-2">
+					<div class="tab-content-2" tabindex="3">
 						<div class="tab-outline" data-bind="ntsCMM048A2: {
 							model: mainModel
 						}">

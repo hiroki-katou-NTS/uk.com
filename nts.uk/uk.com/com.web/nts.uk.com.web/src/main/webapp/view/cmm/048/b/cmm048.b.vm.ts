@@ -91,7 +91,8 @@ module nts.uk.com.view.cmm048.b {
                         break;
                     default:
                         _self.userInfoItemName("");
-                }          
+                }   
+                _self.listFunctionSetting(_.sortBy(_self.listFunctionSetting(), item => item.functionName));       
             }
         }
         

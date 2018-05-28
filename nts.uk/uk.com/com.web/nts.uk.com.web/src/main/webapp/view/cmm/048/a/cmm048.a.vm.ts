@@ -55,7 +55,7 @@ module nts.uk.com.view.cmm048.a {
              * Set focus
              */
             public setInitialFocus(): void {
-                $('button-save').focus();
+                $('#button-save').focus();
             }
             
             /**
@@ -136,7 +136,8 @@ module nts.uk.com.view.cmm048.a {
             
             updateData(dto: MainDto) {
                 let _self = this;
-                _self.editPassword(dto.editPassword);
+               // _self.editPassword(dto.editPassword);
+                _self.editPassword(true);
                 _self.notSpecialUser(dto.notSpecialUser);
                 if (!nts.uk.util.isNullOrUndefined(dto.employee)) _self.employee.updateData(dto.employee);
                 if (!nts.uk.util.isNullOrUndefined(dto.employeeInfoContact)) _self.employeeInfoContact.updateData(dto.employeeInfoContact);
