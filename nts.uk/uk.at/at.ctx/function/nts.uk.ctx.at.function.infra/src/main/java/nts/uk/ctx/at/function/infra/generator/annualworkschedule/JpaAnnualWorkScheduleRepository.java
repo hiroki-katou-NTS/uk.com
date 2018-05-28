@@ -87,7 +87,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 						data.getEmployees().put(emp.getEmployeeId(),
 								EmployeeData.builder()
 								.employeeInfo(new EmployeeInfo(emp.getWorkplace() == null? "" : emp.getWorkplace().getWorkplaceCode(),
-																emp.getWorkplace() == null? "" : TextResource.localize("KWR008_50") 
+																emp.getWorkplace() == null? "マスタ未登録" : TextResource.localize("KWR008_50") 
 																		+ " " + emp.getWorkplace().getWorkplaceName(),
 																emp.getEmployeeCode(),
 																empNameMap.get(emp.getEmployeeId()),
