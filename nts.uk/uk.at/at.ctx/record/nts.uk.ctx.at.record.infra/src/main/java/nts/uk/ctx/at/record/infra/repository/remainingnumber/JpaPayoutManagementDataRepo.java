@@ -61,7 +61,7 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 	 */
 	private PayoutManagementData toDomain(KrcmtPayoutManaData entity) {
 		return new PayoutManagementData(entity.payoutId, entity.cID, entity.sID, entity.unknownDate, entity.dayOff,
-				entity.expiredDate, entity.lawAtr, entity.unUsedDays, entity.occurredDays, entity.stateAtr);
+				entity.expiredDate, entity.lawAtr, entity.occurredDays, entity.unUsedDays, entity.stateAtr);
 	}
 
 	@Override

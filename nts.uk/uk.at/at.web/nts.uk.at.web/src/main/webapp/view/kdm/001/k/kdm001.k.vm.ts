@@ -15,13 +15,14 @@ module nts.uk.at.view.kdm001.k.viewmodel {
         residualDay: KnockoutObservable<any> = ko.observable('');
         comDayOffId: KnockoutObservable<any> = ko.observable('');
         employeeId: KnockoutObservable<any> = ko.observable('');
+        numberDayParam: KnockoutObservable<any> = ko.observable('');
         
         
         constructor() {
             var self = this;
-            info = getShared("KDM001_K_PARAMS");
+            let info = getShared("KDM001_K_PARAMS");
             self.initScreen(info);
-            
+            self.residualDay(parseFloat(self.numberDay()).toFixed(1)+' 日');
             self.callService(self.comDayOffId(),self.employeeId());
             
             self.columns = ko.observableArray([
@@ -34,7 +35,7 @@ module nts.uk.at.view.kdm001.k.viewmodel {
             
             self.currentCodeList.subscribe(function(codesSelect) {
                 self.itemsSelected.removeAll();
-                var sumNum = 0;
+                let sumNum = 0;
                 if(codesSelect.length > 0) {
                     _.each(codesSelect, x => {
                         let item = _.find(self.items(), x1 => { return x === x1.leaveManaID });
@@ -47,13 +48,13 @@ module nts.uk.at.view.kdm001.k.viewmodel {
                         if(self.dateHoliday() === x.dayOff){
                             nts.uk.ui.dialog.info({ messageId: "Msg_730" });
                         }  
-                        var iNum = parseFloat(x.remainDays);
-                        var day = parseFloat(self.numberDay());
+                        let iNum = parseFloat(x.remainDays);
+                        let day = parseFloat(self.numberDay());
                         sumNum = sumNum + iNum;
                         self.residualDay(parseFloat((day-sumNum)).toFixed(1)+' 日');
                     });
                 } else {
-                   var day = parseFloat(self.numberDay());
+                   let day = parseFloat(self.numberDay());
                    self.residualDay(parseFloat(self.numberDay()).toFixed(1)+' 日');
                 }
             });
@@ -71,6 +72,7 @@ module nts.uk.at.view.kdm001.k.viewmodel {
                 self.comDayOffId(info.row.comDayOffID);
                 self.dateHoliday(info.row.dayOffDate);
                 self.numberDay(parseFloat(info.row.requireDays).toFixed(1) +' 日');
+                self.numberDayParam(parseFloat(info.row.requireDays).toFixed(1));
             }
             
         }
@@ -88,7 +90,7 @@ module nts.uk.at.view.kdm001.k.viewmodel {
          */
         public update():void {
             var self = this;
-            service.update(new UpdateModel(self.employeeId(),self.comDayOffId(),self.itemsSelected())).done(function(data) {
+            service.update(new UpdateModel(self.employeeId(),self.comDayOffId(),self.itemsSelected(),self.numberDayParam())).done(function(data) {
                 if (data.length > 0) {
                         let messageId = data[0];
                        if(messageId === 'Msg_15') {
@@ -150,10 +152,12 @@ module nts.uk.at.view.kdm001.k.viewmodel {
         employeeId: string;
         comDayOffID: string;
         leaveManaDtos: Array<ItemModel>;
-        constructor(employeeId: string,comDayOffID: string, leaveManaDtos: Array<ItemModel>) {
+        numberDayParam : string;
+        constructor(employeeId: string,comDayOffID: string, leaveManaDtos: Array<ItemModel>, numberDayParam : string) {
             this.employeeId = employeeId;
             this.comDayOffID = comDayOffID;
             this.leaveManaDtos = leaveManaDtos;
+            this.numberDayParam = numberDayParam;
         }
     }
     

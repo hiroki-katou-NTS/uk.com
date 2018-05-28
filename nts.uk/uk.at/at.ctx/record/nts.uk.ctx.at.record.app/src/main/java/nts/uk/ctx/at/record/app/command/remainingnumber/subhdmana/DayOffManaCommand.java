@@ -10,4 +10,5 @@ public class DayOffManaCommand {
 	private String employeeId;
 	private String leaveId;
 	private List<ComDayOffManaComand> comDayOffManaDtos;
+	private String numberDayParam;
 }

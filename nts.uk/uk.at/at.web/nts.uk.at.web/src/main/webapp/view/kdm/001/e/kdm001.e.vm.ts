@@ -49,7 +49,11 @@ module nts.uk.at.view.kdm001.e.viewmodel {
                         self.currentList.push(code);
                     }
                 })
-                let sumNum = 0;
+                self.caculRemainNumber();
+            });
+        }
+        private caculRemainNumber(): void{
+            let sumNum = 0, self = this;
                 _.each(self.currentList(), function (x) {
                     if (self.dateHoliday() === x.dayoffDate) {
                         nts.uk.ui.dialog.info({ messageId: "Msg_729" });
@@ -61,12 +65,12 @@ module nts.uk.at.view.kdm001.e.viewmodel {
                 let day = parseFloat(self.numberDay());
                 self.residualDay((day - sumNum));
                 self.residualDayDispay((day - sumNum) + ' 日');
-            });
         }
-
-        public initScreen(): JQueryPromise<any> {
+        
+        public initScreen(): void {
             let self = this;
              block.invisible();
+            self.caculRemainNumber();
             service.getBySidDatePeriod(self.info.selectedEmployee.employeeId, self.info.rowValue.id).done((data: Array<ItemModel> )=>{
                 if (data && data.length > 0) {
                     self.items(data);
@@ -81,7 +85,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
                 }
                 block.clear();
             }).fail((res)=>{
-                dialog.alertError(res);
+                dialog.alertError({ messageId: res.messageId });
                 block.clear();
             })
         }
@@ -91,6 +95,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
            block.invisible();
             let command = new PayoutSubofHDManagementCommand(self.info.selectedEmployee.employeeId, self.info.rowValue.id,self.residualDay(), self.currentList());
                 if (!self.validate()){
+                    block.clear();
                     return;
                 }
                 service.insertSubOfHDMan(command).done(()=>{
@@ -113,7 +118,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
             } else if (self.currentCodeList().length >= 3){
                 $('#multi-list').ntsError('set', { messageId: "Msg_739" });
                 return false;
-            } else if (self.currentCodeList().length == 1 && self.currentList()[0].remainDays !== 1){
+            } else if (self.currentCodeList().length == 1 && self.currentList()[0].remainDays !== parseFloat(self.numberDay())){
                 $('#multi-list').ntsError('set', { messageId: "Msg_731" });
                 return false;
             } else if (self.currentCodeList().length == 2){
@@ -121,7 +126,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
                     $('#multi-list').ntsError('set', { messageId: "Msg_739" });
                     return false;
                 }
-                if (self.currentList()[0].remainDays === 0.5 && self.currentList()[1].remainDays !== 0.5){
+                if (parseFloat(self.numberDay()) !== (self.currentList()[0].remainDays + self.currentList()[1].remainDays)){
                     $('#multi-list').ntsError('set', { messageId: "Msg_731" });
                     return false;
                 }

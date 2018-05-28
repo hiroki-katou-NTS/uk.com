@@ -25,7 +25,7 @@ public class LeaveManaCommandHandler extends CommandHandlerWithResult<LeaveManaC
 				leaveManaComand.getLeaveManaDtos().stream().map(item -> {
 					return new LeavesManaData(item.getLeaveManaID(), item.getDayOff(), item.getRemainDays());
 				}).collect(Collectors.toList())
-				,leaveManaComand.getEmployeeId(),leaveManaComand.getComDayOffID());
+				,leaveManaComand.getEmployeeId(),leaveManaComand.getComDayOffID(), leaveManaComand.getNumberDayParam());
 		return leaveManagementService.updateDayOff(leaveManagementData);
 	} 
 

@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.paymana;
 
 import java.math.BigDecimal;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -10,15 +9,12 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.HolidayAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.AddSubHdManagementService;
-import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.ItemDays;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -39,9 +35,6 @@ public class PayoutManagementDataService {
 	@Inject
 	private AddSubHdManagementService addSubHdManagementService;
 
-	@Inject
-	private SysEmploymentHisAdapter syEmploymentAdapter;
-	
 	private static final int EMPTY = 0;
 
 	public boolean checkInfoPayMana(PayoutManagementData domain) {
@@ -190,36 +183,23 @@ public class PayoutManagementDataService {
 	 * Ｆ．振休管理データの紐付設定（振出選択）登録処理
 	 */
 	public void insertPayoutSubofHD(String sid, String subId, Double remainNumber, List<SubOfHDManagement> subOfHDId) {
-		String companyId = AppContexts.user().companyId();
-		// ドメインモデル「inported雇用」を読み込む
-		Optional<SEmpHistoryImport> syEmpHist = syEmploymentAdapter.findSEmpHistBySid(companyId, sid,
-				GeneralDate.today());
-		if (!syEmpHist.isPresent()) {
-			return;
-		}
-
-		if (subOfHDId.size() == 1) {
-			if (subOfHDId.get(0).getRemainDays().compareTo(ItemDays.ONE_DAY.value) != 0) {
-				// エラーメッセージ(Msg_731) エラーリストにセットする
-				throw new BusinessException("Msg_731");
-			}
-		}
-		if (subOfHDId.size() == 2) {
-
-			if (subOfHDId.get(0).getRemainDays().compareTo(ItemDays.HALF_DAY.value) == 0
-					&& subOfHDId.get(1).getRemainDays().compareTo(ItemDays.HALF_DAY.value) != 0) {
-				// エラーメッセージ(Msg_731) エラーリストにセットする
-				throw new BusinessException("Msg_731");
-			}
-		}
-
-		if (!payoutSubofHDManaRepository.getBySubId(subId).isEmpty()) {
+		List<PayoutSubofHDManagement>  listPayoutSub = payoutSubofHDManaRepository.getBySubId(subId);
+		if (!listPayoutSub.isEmpty()) {
 			payoutSubofHDManaRepository.deleteBySubID(subId);
 		}
-
+		
+		// Set all item to free
+		listPayoutSub.forEach(item->{
+			// Update remain days 振出管理データ
+			Optional<PayoutManagementData> payoutMan = payoutManagementDataRepository.findByID(item.getPayoutId());
+			if (payoutMan.isPresent()) {
+				payoutMan.get().setRemainNumber(Double.valueOf(item.getUsedDays().v().intValue()));
+				payoutManagementDataRepository.update(payoutMan.get());
+			}
+		});
 		subOfHDId.forEach(i -> {
 			payoutSubofHDManaRepository.add(new PayoutSubofHDManagement(i.getPayoutId(), subId,
-					new BigDecimal(i.getRemainDays()), TargetSelectionAtr.MANUAL.value));
+					new BigDecimal(i.getOccurredDays()), TargetSelectionAtr.MANUAL.value));
 			// Update remain days 振出管理データ
 			Optional<PayoutManagementData> payoutMan = payoutManagementDataRepository.findByID(i.getPayoutId());
 			if (payoutMan.isPresent()) {
@@ -227,7 +207,7 @@ public class PayoutManagementDataService {
 				payoutManagementDataRepository.update(payoutMan.get());
 			}
 		});
-		// Update 振出管理データ 残数
+		// Update 振休管理データ
 		Optional<SubstitutionOfHDManagementData> subofHD = substitutionOfHDManaDataRepository.findByID(subId);
 		if (subofHD.isPresent()) {
 			subofHD.get().setRemainsDay(remainNumber);
