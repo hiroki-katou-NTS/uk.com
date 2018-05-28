@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSetRepository;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaFlexMonthActCalSetRepository;
@@ -38,10 +39,13 @@ public class GetFlexAggrSetImpl implements GetFlexAggrSet {
 	/** 社員別 */
 	@Inject
 	private ShaFlexMonthActCalSetRepository shaSetRepo;
+	/** 職場情報の取得 */
+	@Inject
+	private AffWorkplaceAdapter affWorkplaceAdapter;
 	
 	/** 取得 */
 	@Override
-	public Optional<FlexMonthWorkTimeAggrSet> get(String companyId, String workplaceId, String employmentCd,
+	public Optional<FlexMonthWorkTimeAggrSet> get(String companyId, String employmentCd,
 			String employeeId, GeneralDate criteriaDate) {
 		
 		// 利用単位　確認
@@ -57,8 +61,15 @@ public class GetFlexAggrSetImpl implements GetFlexAggrSet {
 		
 		// 職場別設定　確認
 		if (usageUnitSet.isWorkPlace()){
-			val wkpSetOpt = this.wkpSetRepo.find(companyId, workplaceId);
-			if (wkpSetOpt.isPresent()) return Optional.of(wkpSetOpt.get().getAggrSetting());
+			
+			// 所属職場を含む上位階層の職場IDを取得
+			val workplaceIds = this.affWorkplaceAdapter.findAffiliatedWorkPlaceIdsToRoot(
+					companyId, employeeId, criteriaDate);
+			
+			for (val workplaceId : workplaceIds){
+				val wkpSetOpt = this.wkpSetRepo.find(companyId, workplaceId);
+				if (wkpSetOpt.isPresent()) return Optional.of(wkpSetOpt.get().getAggrSetting());
+			}
 		}
 		
 		// 雇用別設定　確認

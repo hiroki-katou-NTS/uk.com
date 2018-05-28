@@ -62,6 +62,9 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 			//set info to session
 			context.getCommand().getRequest().changeSessionId();
 			this.initSession(user.get());
+			
+			//アルゴリズム「ログイン記録」を実行する１
+			this.checkAfterLogin(user.get());
 		}
 		return null;
 	}
