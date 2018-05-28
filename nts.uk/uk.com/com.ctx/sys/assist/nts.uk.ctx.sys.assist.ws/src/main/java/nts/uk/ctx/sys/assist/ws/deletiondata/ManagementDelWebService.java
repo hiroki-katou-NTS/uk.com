@@ -34,7 +34,7 @@ public class ManagementDelWebService extends WebService {
 	
 	@POST
 	@Path("setInterruptDeleting")
-	public void setInterruptSaving(ManagementDelCommand command) {
+	public void setInterruptDeleting(ManagementDelCommand command) {
 		this.updateManagementDelCommandHandler.handle(command);
 	}
 	

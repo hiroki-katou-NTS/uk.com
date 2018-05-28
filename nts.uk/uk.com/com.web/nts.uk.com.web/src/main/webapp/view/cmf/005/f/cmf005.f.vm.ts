@@ -73,7 +73,7 @@ module nts.uk.com.view.cmf005.f.viewmodel {
             self.categoryCount = ko.observable(0);
             self.categoryTotalCount = ko.observable(0);
             self.categoryPercentProcess = ko.observable("0/0");
-            self.errorCount = ko.observable(0+"件");
+            self.errorCount = ko.observable("0件");
             self.dialogMode = ko.observable("deleting"); 
              $("#F10_1").focus();
 
@@ -94,9 +94,10 @@ module nts.uk.com.view.cmf005.f.viewmodel {
         public confirmProcess(): void {
             let self = this;
             let delId = self.delId();
+           
             service.findManagementDel(delId).done(function(res: any) {
                 var managementDel = res;
-
+                    
                 // F2_1_2 set time over 
                 self.timeNow = new Date();
                 let over = (self.timeNow.getSeconds() + self.timeNow.getMinutes() * 60 + self.timeNow.getHours() * 60) - (self.timeStart.getSeconds() + self.timeStart.getMinutes() * 60 + self.timeStart.getHours() * 60);
