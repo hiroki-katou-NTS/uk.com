@@ -20,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
+import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlyPolicy;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -137,27 +138,35 @@ public class SubstitutionOfHDManaDataService {
 	/**
 	 * KDM001 update screen H
 	 */
-	public List<String> checkClosureDate(int closureId, GeneralDate dayoffDate, String subOfHDID) {
+	private List<String> checkClosureDate(int closureId, GeneralDate dayoffDate, String subOfHDID) {
 		List<String> errorList = new ArrayList<>();
 		YearMonth processYearMonth = GeneralDate.today().yearMonth();
 		Optional<GeneralDate> closureDate = addSubHdManagementService.getClosureDate(closureId, processYearMonth);
 		if (dayoffDate.compareTo(closureDate.get()) >= 0) {
 			errorList.add("Msg_744");
 		}
-		// Q&A todo something
 		List<PayoutManagementData> listPayout = payoutManagementDataRepository.getDayoffDateBysubOfHDID(subOfHDID);
+		if (!listPayout.isEmpty()) {
+			for (PayoutManagementData payout : listPayout) {
+				Optional<GeneralDate> dayoffDateOfPayout = payout.getPayoutDate().getDayoffDate();
+				if (dayoffDateOfPayout.isPresent()) {
+					if (dayoffDate.equals(dayoffDateOfPayout.get())) {
+						errorList.add("Msg_729");
+					}
+				}
+			}
 
+		}
 		return errorList;
 	}
 
-	public List<String> updateSubOfHD(SubstitutionOfHDManagementData data, int closureId, GeneralDate dayoffDate,
-			String subOfHDID) {
-		List<String> errorList = new ArrayList<>();
-		List<String> errorListClosureDate = checkClosureDate(closureId, dayoffDate, subOfHDID);
+	public List<String> updateSubOfHD(SubstitutionOfHDManagementData data, int closureId) {
+		List<String> errorListClosureDate = checkClosureDate(closureId, data.getHolidayDate().getDayoffDate().get(),
+				data.getSubOfHDID());
 		if (!errorListClosureDate.isEmpty()) {
 			substitutionOfHDManaDataRepository.update(data);
 		}
-		return errorList;
+		return errorListClosureDate;
 	}
 
 }

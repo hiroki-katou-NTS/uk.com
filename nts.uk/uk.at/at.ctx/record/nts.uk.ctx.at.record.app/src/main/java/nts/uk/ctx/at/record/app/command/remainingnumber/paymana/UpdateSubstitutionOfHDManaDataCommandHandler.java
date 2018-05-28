@@ -23,8 +23,7 @@ public class UpdateSubstitutionOfHDManaDataCommandHandler
 		SubstitutionOfHDManagementData data = new SubstitutionOfHDManagementData(command.getSubOfHDID(), cID,
 				command.getEmployeeId(), false, command.getDayoffDate(), command.getRequiredDays(),
 				command.getRemainDays());
-		substitutionOfHDManaDataService.updateSubOfHD(data, command.getClosureId(), command.getDayoffDate(),
-				command.getSubOfHDID());
+		substitutionOfHDManaDataService.updateSubOfHD(data, command.getClosureId());
 	}
 
 }

@@ -16,9 +16,9 @@ public interface PayoutManagementDataRepository {
 	
 	List<PayoutManagementData> getSid(String cid, String sid);
 	
-	void delete(String payoutId);
+	void deletePayoutSubOfHDMana(String payoutId);
 	
-	void delete(String sID, GeneralDate dayOff);
+	void delete(String payoutId,String sID, GeneralDate dayOff);
 	
 	void update(PayoutManagementData domain);
 	
