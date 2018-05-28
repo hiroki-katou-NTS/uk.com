@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Map.Entry;
@@ -46,8 +47,9 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	private CalculateDailyRecordService calculate;
 	
 	@Override
-	public List<IntegrationOfDaily> calculate(List<IntegrationOfDaily> integrationOfDaily,DatePeriod date) {
+	public List<IntegrationOfDaily> calculate(List<IntegrationOfDaily> integrationOfDaily) {
 		
+		if(integrationOfDaily.isEmpty()) return Collections.emptyList();
 		//会社共通の設定を
 		val companyCommonSetting = new ManagePerCompanySet(holidayAddtionRepository.findByCompanyId(AppContexts.user().companyId()),
 														   holidayAddtionRepository.findByCId(AppContexts.user().companyId()),
@@ -58,36 +60,36 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		EmploymentCode nowEmpCode = new EmploymentCode("");
 		String employeeId = "";
 		
-		/*労働条件取得*/
-		val personalInfo = workingConditionItemRepository.getBySidAndPeriodOrderByStrDWithDatePeriod(employeeId, date);
-		//今の日付の労働条件
-		Optional<Entry<DateHistoryItem, WorkingConditionItem>> nowCondition = personalInfo.getItemAtDate(date.start());
-		if(!nowCondition.isPresent()) return integrationOfDaily;
+		//計算してほしい範囲を取得
+		val startDate = integrationOfDaily.get(0).getAffiliationInfor().getYmd();
+		val endDate  = integrationOfDaily.get(integrationOfDaily.size() - 1).getAffiliationInfor().getYmd();
 		
+		/*労働条件取得*/
+		val personalInfo = workingConditionItemRepository.getBySidAndPeriodOrderByStrDWithDatePeriod(employeeId, new DatePeriod(startDate, endDate));
+		if(personalInfo.getMappingItems().isEmpty())return integrationOfDaily;
 		/*return用のクラス*/
 		List<IntegrationOfDaily> returnList = new ArrayList<>(); 
 		
 		for(IntegrationOfDaily targetIntegration:integrationOfDaily) {
-			
-			if(!nowCondition.get().getKey().contains(targetIntegration.getAffiliationInfor().getYmd())) {
+			//労働条件を取得
+			val test = personalInfo.getItemAtDate(targetIntegration.getAffiliationInfor().getYmd());
+			if(test.isPresent()) {
 				//労働条件
-				/*社員毎に取得するデータ(労働条件)*/
-				nowCondition = personalInfo.getItemAtDate(targetIntegration.getAffiliationInfor().getYmd());
-				if(!nowCondition.isPresent()) continue;
 				//↑で取得したデータのセット
-				companyCommonSetting.setPersonInfo(Optional.of(nowCondition.get().getValue()));
+				companyCommonSetting.setPersonInfo(Optional.of(test.get().getValue()));
+				//社員、日付毎に取得した法定労働時間
+				if(!targetIntegration.getAffiliationInfor().getEmploymentCode().equals(nowEmpCode)) {
+					nowEmpCode = targetIntegration.getAffiliationInfor().getEmploymentCode(); 
+					val dailyUnit = dailyStatutoryWorkingHours.getDailyUnit(AppContexts.user().companyId(),
+																			nowEmpCode.toString(),
+																			employeeId,
+																			targetIntegration.getAffiliationInfor().getYmd(),
+																			test.get().getValue().getLaborSystem());
+					companyCommonSetting.setDailyUnit(dailyUnit);
+					returnList.add(calculate.calculate(targetIntegration, companyCommonSetting));
+				}
 			}
-			//社員、日付毎に取得した法定労働時間
-			if(!targetIntegration.getAffiliationInfor().getEmploymentCode().equals(nowEmpCode)) {
-				nowEmpCode = targetIntegration.getAffiliationInfor().getEmploymentCode(); 
-				val dailyUnit = dailyStatutoryWorkingHours.getDailyUnit(AppContexts.user().companyId(),
-																		nowEmpCode.toString(),
-																		employeeId,
-																		targetIntegration.getAffiliationInfor().getYmd(),
-																		nowCondition.get().getValue().getLaborSystem());
-				companyCommonSetting.setDailyUnit(dailyUnit);
-			}
-			returnList.add(calculate.calculate(targetIntegration, companyCommonSetting));
+
 		}
 		return returnList;
 	}
