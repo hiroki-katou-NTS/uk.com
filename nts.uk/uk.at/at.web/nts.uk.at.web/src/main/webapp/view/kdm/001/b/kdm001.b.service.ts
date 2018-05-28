@@ -3,12 +3,16 @@ module nts.uk.at.view.kdm001.b.service {
     import format = nts.uk.text.format;
     var paths: any = {
         getSubsitutionData: "at/record/remainnumber/subhd/getSubsitutionData",
-        getExtraHolidayData: "at/record/remainnumber/subhd/getExtraHolidayData"
+        getExtraHolidayData: "at/record/remainnumber/subhd/getExtraHolidayData",
+        getInfoEmLogin: "workflow/approvermanagement/workroot/getInforPsLogin",
     }
     export function getSubsitutionData(searchCondition): JQueryPromise<any> {
         return ajax(paths.getSubsitutionData, searchCondition); 
     }
     export function getExtraHolidayData(searchCondition): JQueryPromise<any> {
         return ajax(paths.getExtraHolidayData, searchCondition);  
+    }
+    export function getInfoEmLogin(): JQueryPromise<any> {
+        return ajax("com", paths.getInfoEmLogin);
     }
 }
