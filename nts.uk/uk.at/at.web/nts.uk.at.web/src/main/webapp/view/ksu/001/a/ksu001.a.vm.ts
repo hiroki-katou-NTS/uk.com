@@ -961,6 +961,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     //                    $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, {});
 
                     setTimeout(function() { $("#extable").exTable("scrollBack", 2); }, 1000);
+                    
+                    //set lock cell
+                        _.forEach(self.dataSource(), (x) => {
+                            if (x.confirmedAtr == 1) {
+                                $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
+                            }
+                        });
 
                     self.stopRequest(true);
                 });
@@ -1031,6 +1038,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         //                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
 
                         setTimeout(function() { $("#extable").exTable("scrollBack", 2); }, 1000);
+                        
+                        //set lock cell
+                        _.forEach(self.dataSource(), (x) => {
+                            if (x.confirmedAtr == 1) {
+                                $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
+                            }
+                        });
                     });
                 }).always(() => {
                     self.stopRequest(true);
@@ -1101,6 +1115,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         //                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
 
                         setTimeout(function() { $("#extable").exTable("scrollBack", 2); }, 1000);
+                        
+                        //set lock cell
+                        _.forEach(self.dataSource(), (x) => {
+                            if (x.confirmedAtr == 1) {
+                                $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
+                            }
+                        });
                     });
                 }).always(() => {
                     self.stopRequest(true);
