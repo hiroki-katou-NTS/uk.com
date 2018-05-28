@@ -46,24 +46,14 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     self.isOptionSubHolidayEnable(true);
                 }
             });
-
             //Check require
-            self.checkedSubHoliday.subscribe((v) => {
-                if (!v) {
-                    self.checkRequire(false);
-                } else {
-                    self.checkRequire(true);
-                }
+            self.checkedSubHoliday.subscribe(v => {
+                self.checkRequire(v);
             });
             //Check require option sub holiday
-            self.checkedSplit.subscribe((v) => {
-                if (!v) {
-                    self.checkRequireOptionSubHoliday(false);
-                } else {
-                    self.checkRequireOptionSubHoliday(true);
-                }
+            self.checkedSplit.subscribe(v => {
+                self.checkRequireOptionSubHoliday(v);
             });
-
             //休出残数算出処理
             self.checkedHoliday.subscribe((v) => {
                 let remainDayObject = {
@@ -76,7 +66,6 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                 }
                 self.dayRemaining(self.getRemainDay(remainDayObject));
             });
-
             self.checkedSubHoliday.subscribe((v) => {
                 let remainDayObject = {
                     checkBox1: self.checkedHoliday(),
@@ -88,7 +77,6 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                 }
                 self.dayRemaining(self.getRemainDay(remainDayObject));
             });
-
             self.checkedSplit.subscribe((v) => {
                 let remainDayObject = {
                     checkBox1: self.checkedHoliday(),
@@ -100,7 +88,6 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                 }
                 self.dayRemaining(self.getRemainDay(remainDayObject));
             });
-
             self.selectedCodeHoliday.subscribe((v) => {
                 let remainDayObject = {
                     checkBox1: self.checkedHoliday(),
@@ -112,7 +99,6 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                 }
                 self.dayRemaining(self.getRemainDay(remainDayObject));
             });
-
             self.selectedCodeSubHoliday.subscribe((v) => {
                 let remainDayObject = {
                     checkBox1: self.checkedHoliday(),
@@ -124,7 +110,6 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                 }
                 self.dayRemaining(self.getRemainDay(remainDayObject));
             });
-
             self.selectedCodeOptionSubHoliday.subscribe((v) => {
                 let remainDayObject = {
                     checkBox1: self.checkedHoliday(),
@@ -137,7 +122,6 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                 self.dayRemaining(self.getRemainDay(remainDayObject));
             });
         }
-
         getRemainDay(remainObject: any): string {
             if (!remainObject.checkBox1) {
                 return "0";
@@ -218,12 +202,6 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                             else if (errorId === "Msg_1256_3") {
                                 $('#I6_3').ntsError('set', { messageId: "Msg_1256" });
                             }
-                            else if (errorId === "Msg_1260_1") {
-                                $('#I11_3').ntsError('set', { messageId: "Msg_1260" });
-                            }
-                            else if (errorId === "Msg_1260_2") {
-                                $('#I12_4').ntsError('set', { messageId: "Msg_1260" });
-                            }
                         }
                         return;
                     }
@@ -232,8 +210,6 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                         setShared('KDM001_I_PARAMS_RES', { isChanged: true });
                         nts.uk.ui.windows.close();
                     });
-                }).fail(function(res: any) {
-
                 });
                 block.clear();
             }
@@ -242,7 +218,5 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             nts.uk.ui.windows.close();
         }
     }
-
-
 }
 

@@ -237,14 +237,8 @@ public class AddSubHdManagementService {
 				// 休出日数をチェックする
 				if (ItemDays.ONE_DAY.value.equals(subHdManagementData.getSelectedCodeHoliday())) {
 					if (ItemDays.HALF_DAY.value.equals(subHdManagementData.getSelectedCodeSubHoliday())) {
-						if (!ItemDays.HALF_DAY.value.equals(subHdManagementData.getSelectedCodeOptionSubHoliday())) {
-							errorList.add("Msg_1260_1");
-						}
-					} else {
-						errorList.add("Msg_1260_2");
+						errorList.add("Msg_1256_3");
 					}
-				} else {
-					errorList.add("Msg_1256_3");
 				}
 			} else {
 				// 休出日数と１日目代休日数をチェックする
