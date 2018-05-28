@@ -4,6 +4,7 @@
 package nts.uk.ctx.bs.employee.dom.classification.affiliate;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -42,6 +43,10 @@ public class AffClassHistory extends AggregateRoot
 	@Override
 	public List<DateHistoryItem> items() {
 		return periods;
+	}
+	
+	public List<String> getHistoryIds() {
+		return periods.stream().map( period -> period.identifier()).collect(Collectors.toList());
 	}
 	
 }

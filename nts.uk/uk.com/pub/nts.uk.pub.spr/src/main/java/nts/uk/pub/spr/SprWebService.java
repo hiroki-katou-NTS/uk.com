@@ -1,5 +1,7 @@
 package nts.uk.pub.spr;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -70,17 +72,34 @@ public class SprWebService {
 		String applicationIDReal = applicationID;
 		String reasonReal = reason;
 		String stampProtectionReal = stampProtection;
-		LoginUserContextSpr loginUserContextSpr = sprLoginFormService.loginFromSpr(
-				menuCDReal, 
-				loginEmployeeCDReal, 
-				targetEmployeeCDReal, 
-				startTimeReal, 
-				endTimeReal, 
-				targetDateReal, 
-				selectTypeReal, 
-				applicationIDReal, 
-				reasonReal,
-				stampProtectionReal);
+		LoginUserContextSpr loginUserContextSpr = null;
+		try {
+			loginUserContextSpr = sprLoginFormService.loginFromSpr(
+					menuCDReal, 
+					loginEmployeeCDReal, 
+					targetEmployeeCDReal, 
+					startTimeReal, 
+					endTimeReal, 
+					targetDateReal, 
+					selectTypeReal, 
+					applicationIDReal, 
+					reasonReal,
+					stampProtectionReal);
+		} catch (nts.arc.error.BusinessException ex){
+		    val html = new StringBuilder();
+		    html.append("<!DOCTYPE html>");
+		    html.append("<html><head><meta charset=\"UTF-8\"></head><body>");
+		    html.append(""+ ex.getMessage() +"");
+		    html.append("</body></html>");            
+		    return html.toString();
+		} catch (Exception e) {
+			val html = new StringBuilder();
+		    html.append("<!DOCTYPE html>");
+		    html.append("<html><head><meta charset=\"UTF-8\"></head><body>");
+		    html.append(""+ e.getMessage() +"");
+		    html.append("</body></html>");            
+		    return html.toString();
+		}
 		loginUserContextManager.loggedInAsEmployee(
 				loginUserContextSpr.getUserID(), 
 				loginUserContextSpr.getPersonID(), 
@@ -167,7 +186,6 @@ public class SprWebService {
 			html.append(name + " : " + value + "<br/>");
 			
 		});
-		
 		val paramStringValue = new StringBuilder();
 		paramsValue.forEach((name,value)->{
 			if(value==null){
@@ -176,15 +194,12 @@ public class SprWebService {
 				paramStringValue.append(name+":'"+value+"',");
 			}
 		});
-		
 		html.append("<script>");
 		html.append("debugger;");
 		html.append("window.sessionStorage.setItem(\"paramSPR\", JSON.stringify({"+paramStringValue+"}));");
 		html.append("window.location.href = '../../../../view/spr/index.xhtml'");
 		html.append("</script>");
 		html.append("</body></html>");
-		
-		
 		return html.toString();
 	}
 	
