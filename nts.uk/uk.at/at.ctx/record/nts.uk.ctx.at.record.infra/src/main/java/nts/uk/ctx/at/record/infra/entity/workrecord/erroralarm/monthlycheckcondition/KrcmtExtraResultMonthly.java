@@ -137,7 +137,7 @@ public class KrcmtExtraResultMonthly extends UkJpaEntity implements Serializable
 				new Boolean(this.group2UseAtr.intValue()==1?true:false)
 				);
 			attdItemCon.setGroup1(krcstErAlConGroup1.toDomain(AppContexts.user().companyId(), this.errorAlarmCheckID));
-			attdItemCon.setGroup2(krcstErAlConGroup2.toDomain(AppContexts.user().companyId(), this.errorAlarmCheckID));
+			attdItemCon.setGroup2(krcstErAlConGroup2 ==null?null :krcstErAlConGroup2.toDomain(AppContexts.user().companyId(), this.errorAlarmCheckID));
 		
 		
 		return new ExtraResultMonthly(

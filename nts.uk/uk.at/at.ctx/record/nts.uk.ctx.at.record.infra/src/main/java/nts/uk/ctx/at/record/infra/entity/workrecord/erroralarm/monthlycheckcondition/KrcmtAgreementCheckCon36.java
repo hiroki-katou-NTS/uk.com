@@ -29,7 +29,7 @@ public class KrcmtAgreementCheckCon36 extends UkJpaEntity implements Serializabl
 	@Column(name = "COMPARE_OPERATOR")
 	public int compareOperator;
 	
-	@Column(name = "FIX_EXTRA_ITEM_MON_NAME")
+	@Column(name = "ERAL_BEFORE_TIME")
 	public BigDecimal eralBeforeTime;
 	
 	@Override

@@ -29,8 +29,8 @@ public class SpecHolidayCheckConPubImpl implements SpecHolidayCheckConPub {
 		return new SpecHolidayCheckConPubEx(
 				domain.getErrorAlarmCheckID(),
 				domain.getCompareOperator(),
-				Integer.parseInt(domain.getNumberDayDiffHoliday1().toString()),
-				!domain.getNumberDayDiffHoliday2().isPresent()?null:Integer.parseInt(domain.getNumberDayDiffHoliday2().get().toString())
+				domain.getNumberDayDiffHoliday1().v().intValue(),
+				!domain.getNumberDayDiffHoliday2().isPresent()?null:domain.getNumberDayDiffHoliday2().get().v().intValue()
 				);
 	}
 

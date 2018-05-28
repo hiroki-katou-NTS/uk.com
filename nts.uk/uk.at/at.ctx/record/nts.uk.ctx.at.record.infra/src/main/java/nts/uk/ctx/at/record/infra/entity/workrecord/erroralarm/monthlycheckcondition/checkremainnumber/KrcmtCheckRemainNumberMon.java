@@ -71,7 +71,7 @@ public class KrcmtCheckRemainNumberMon extends UkJpaEntity implements Serializab
 
 	public CheckRemainNumberMon toDomain() {
 		CheckedCondition checkedCondition = new CheckedCondition();
-		if (this.checkOperatorType == 0) {
+		if (this.checkOperatorType == 1) {
 			checkedCondition = this.krcmtCompareRange.toDomain();
 		} else {
 			checkedCondition = this.krcmtCompareSingleVal.toDomain();

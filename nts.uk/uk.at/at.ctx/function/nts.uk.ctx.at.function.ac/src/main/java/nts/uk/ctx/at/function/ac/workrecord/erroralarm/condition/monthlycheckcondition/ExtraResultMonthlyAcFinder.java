@@ -7,7 +7,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.ac.workrecord.erroralarm.condition.WorkRecordExtraConAcFinder;
+import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.AgreementCheckCon36FunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.ExtraResultMonthlyFunAdapter;
+import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.SpecHolidayCheckConFunAdapter;
+import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.checkremainnumber.CheckRemainNumberMonFunAdapter;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.dtoevent.ExtraResultMonthlyDomainEventDto;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.ExtraResultMonthlyPub;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.ExtraResultMonthlyPubEx;
@@ -17,11 +20,28 @@ public class ExtraResultMonthlyAcFinder implements ExtraResultMonthlyFunAdapter 
 
 	@Inject
 	private ExtraResultMonthlyPub repo;
+	
+	@Inject
+	private SpecHolidayCheckConFunAdapter specHolidayCheckConRepo;
+	
+	@Inject
+	private CheckRemainNumberMonFunAdapter checkRemainNumberMonRepo;
+	
+	@Inject
+	private AgreementCheckCon36FunAdapter agreementCheckCon36Repo;
 
 	@Override
 	public List<ExtraResultMonthlyDomainEventDto> getListExtraResultMonByListEralID(List<String> listEralCheckID) {
 		List<ExtraResultMonthlyDomainEventDto> data = repo.getListExtraResultMonByListEralID(listEralCheckID)
 				.stream().map(c -> convertToExport(c)).collect(Collectors.toList());
+		for(ExtraResultMonthlyDomainEventDto extraResultMonthly : data) {
+			//get SpecHolidayCheckCon
+			extraResultMonthly.setSpecHolidayCheckCon(specHolidayCheckConRepo.getSpecHolidayCheckConById(extraResultMonthly.getErrorAlarmCheckID()));
+			//get CheckRemainNumberMon
+			extraResultMonthly.setCheckRemainNumberMon(checkRemainNumberMonRepo.getByEralCheckID(extraResultMonthly.getErrorAlarmCheckID()));
+			//get list AgreementCheckCon36
+			extraResultMonthly.setListAgreementCheckCon36(agreementCheckCon36Repo.getAgreementCheckCon36ById(extraResultMonthly.getErrorAlarmCheckID()));
+		}
 		return data;
 	}
 
