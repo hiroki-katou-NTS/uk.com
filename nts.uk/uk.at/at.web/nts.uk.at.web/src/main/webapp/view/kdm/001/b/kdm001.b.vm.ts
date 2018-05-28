@@ -105,7 +105,8 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         filterByPeriod() {
             var self = this;
             self.getSubstituteDataList(self.getSearchCondition());
-        }
+            $('#substituteDataGrid').focus();
+        } 
         getSubstituteDataList(searchCondition: any) {
             var self = this;
             service.getExtraHolidayData(searchCondition).done(function(result) {
@@ -211,7 +212,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             }
         }
         startPage(): JQueryPromise<any> {
-            let self = this;
+            var self = this;
             var dfd = $.Deferred();
             let searchCondition = { employeeId: null, stateDate: null, endDate: null };
             service.getInfoEmLogin().done(function(loginerInfo) {
@@ -243,7 +244,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             return dfd.promise();
         }
         initKCP009() {
-            let self = this;
+            var self = this;
             //_______KCP009_______
             // Initial listComponentOption
             self.screenItem().listComponentOption = {
@@ -258,7 +259,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         }
 
         convertEmployeeCcg01ToKcp009(dataList: EmployeeSearchDto[]): void {
-            let self = this;
+            var self = this;
             self.screenItem().employeeInputList([]);
             self.screenItem().listEmployee = [];
             _.each(dataList, function(item) {
