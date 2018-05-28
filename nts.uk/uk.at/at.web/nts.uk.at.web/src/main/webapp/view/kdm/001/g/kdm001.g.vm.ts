@@ -85,19 +85,19 @@ module nts.uk.at.view.kdm001.g.viewmodel {
                         for (let messageId of result) {
                             switch (messageId) {
                                 case "Msg_740": {
-                                    $('#L6_2').ntsError('set', { messageId: messageId });
+                                    $('#G6_2').ntsError('set', { messageId: messageId });
                                     break;
                                 }
                                 case "Msg_825": {
-                                    $('#L6_2').ntsError('set', { messageId: messageId });
+                                    $('#G6_2').ntsError('set', { messageId: messageId });
                                     break;
                                 }
                                 case "Msg_1212": {
-                                    $('#L10_4').ntsError('set', { messageId: messageId });
+                                    $('#G10_4').ntsError('set', { messageId: messageId });
                                     break;
                                 }
                                 case "Msg_1213": {
-                                    $('#L10_2').ntsError('set', { messageId: messageId });
+                                    $('#G10_2').ntsError('set', { messageId: messageId });
                                     break;
                                 }
                             }
