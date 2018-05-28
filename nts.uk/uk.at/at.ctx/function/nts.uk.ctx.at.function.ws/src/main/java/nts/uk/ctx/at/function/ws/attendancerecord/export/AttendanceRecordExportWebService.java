@@ -71,7 +71,7 @@ public class AttendanceRecordExportWebService {
 		screenUse.add(14);
 		screenUse.add(15);
 
-		return attendanceItemFinder.getAttendanceItem(screenUse);
+		return attendanceItemFinder.getAttendanceItem(screenUse,1);
 
 	}
 	
@@ -81,14 +81,14 @@ public class AttendanceRecordExportWebService {
 	 * @return the attendance calculate
 	 */
 	@POST
-	@Path("getAttendanceListCalculate")
-	public List<AttendanceIdItemDto> getAttendanceCalculate() {
+	@Path("getAttendanceListCalculate/{type}")
+	public List<AttendanceIdItemDto> getAttendanceCalculate(@PathParam("type") int attendanceType) {
 		List<Integer> screenUse = new ArrayList<Integer>();
 		screenUse.add(16);
 		screenUse.add(17);
 		screenUse.add(18);
 
-		return attendanceItemFinder.getAttendanceItem(screenUse);
+		return attendanceItemFinder.getAttendanceItem(screenUse, attendanceType);
 
 	}
 }

@@ -28,14 +28,14 @@ public class AttendanceIdItemFinder {
 	@Inject
 	private DailyAttendanceItemNameDomainService atName;
 
-	public List<AttendanceIdItemDto> getAttendanceItem(List<Integer> type) {
+	public List<AttendanceIdItemDto> getAttendanceItem(List<Integer> screenUse , int attendanceType) {
 		String companyId = AppContexts.user().companyId();
 
 		List<AttendanceIdItemDto> attendanceItemList = new ArrayList<AttendanceIdItemDto>();
 
 		//get attendanceId
-		type.forEach(item -> {
-			attendanceItemList.addAll(atTypeRepo.getItemByScreenUseAtr(companyId, item).stream()
+		screenUse.forEach(item -> {
+			attendanceItemList.addAll(atTypeRepo.getItemByAtrandType(companyId, item, attendanceType).stream()
 					.map(e -> new AttendanceIdItemDto(e.getAttendanceItemId(), null, item)).collect(Collectors.toList()));
 		});
 

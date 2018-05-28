@@ -7,7 +7,7 @@ module nts.uk.com.view.kwr002.c{
             findAllAttendanceRecExportDaily: "com/function/attendancerecord/export/getAllAttendanceRecordDailyExport/",
             findAllAttendanceRecExportMonthly: "com/function/attendancerecord/export/getAllAttendanceRecordExportMonthly/",
             getAttendanceSingleList: "com/function/attendancerecord/export/getAttendanceListSingle",
-            getAttendanceCalculateList: "com/function/attendancerecord/export/getAttendanceListCalculate",
+            getAttendanceCalculateList: "com/function/attendancerecord/export/getAttendanceListCalculate/",
             getSealStamp:"com/function/attendancerecord/export/setting/getSealStamp/"
         };    
         
@@ -23,8 +23,8 @@ module nts.uk.com.view.kwr002.c{
             return nts.uk.request.ajax("at",path.getAttendanceSingleList);    
         }
         
-        export function getAttendanceCalculateList():JQueryPromise<any>{
-            return nts.uk.request.ajax("at",path.getAttendanceCalculateList);    
+        export function getAttendanceCalculateList( attendanceType:number):JQueryPromise<any>{
+            return nts.uk.request.ajax("at",path.getAttendanceCalculateList + attendanceType);
         }
         
         export function getSealStamp(exportCode : number): JQueryPromise<Array<String>>{

@@ -59,11 +59,21 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 					if (item1.getId().getColumnIndex() == item2.getId().getColumnIndex()
 							&& item1.getId().getPosition() != item2.getId().getPosition()) {
 						// toDomain
-						AttendanceRecordExport domain = this.toDomain(item1, item2);
+						AttendanceRecordExport domain = new AttendanceRecordExport();
+						if (item1.getId().getPosition() == 1)
+							domain = this.toDomain(item1, item2);
+						else
+							domain = this.toDomain(item2, item1);
 						// Add domain to list
 						domainList.add(domain);
 					}
 				});
+			if (!findInList(domainList, item1)) {
+				AttendanceRecordExport domain = new AttendanceRecordExport();
+				domain = this.toDomain(item1, null);
+				// Add domain to list
+				domainList.add(domain);
+			}
 		});
 
 		return domainList.stream().filter(item -> item != null).collect(Collectors.toList());
@@ -127,6 +137,8 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 			if (!findInList(domainList, item1)) {
 				AttendanceRecordExport domain = new AttendanceRecordExport();
 				domain = this.toDomain(item1, null);
+				// Add domain to list
+				domainList.add(domain);
 			}
 		});
 
