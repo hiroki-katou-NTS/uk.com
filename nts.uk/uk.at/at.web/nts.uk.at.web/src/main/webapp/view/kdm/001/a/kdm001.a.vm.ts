@@ -124,6 +124,8 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     { headerText: 'ID', key: 'id', dataType: 'string', width: '0px', hidden: true },
                     { headerText: 'linked', key: 'isLinked', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'expiredDate', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: '', key: 'unknownDatePayout', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: '', key: 'unknownDateSub', dataType: 'string', width: '0px', hidden: true },
                     { headerText: getText('KDM001_8'), template: '<div style="float:right"> ${dayoffDatePyout} </div>', key: 'dayoffDatePyout', dataType: 'string', width: '120px' },
                     { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${occurredDays} </div>', key: 'occurredDays', dataType: 'Number', width: '80px' },
                     { headerText: getText('KDM001_124'), key: 'payoutTied', dataType: 'string', width: '80px' },
