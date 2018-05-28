@@ -225,7 +225,7 @@ module nts.uk.at.view.kwr001.c {
             */
             openScreenD () {
                 var self = this;
-                nts.uk.ui.windows.setShared('KWR001_D', self.currentCodeList(), true);
+                nts.uk.ui.windows.setShared('KWR001_D', self.outputItemPossibleLst(), true);
                 nts.uk.ui.windows.sub.modal('/view/kwr/001/d/index.xhtml').onClosed(function(): any {
                     nts.uk.ui.errors.clearAll();
                     if (!_.isEmpty(nts.uk.ui.windows.getShared('KWR001_D'))) {

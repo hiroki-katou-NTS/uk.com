@@ -18,6 +18,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkScheduleCopyCommand;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceType;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
 import nts.uk.ctx.at.function.dom.attendancetype.ScreenUseAtr;
@@ -222,7 +223,7 @@ public class OutputItemDailyWorkScheduleFinder {
 	}
 	
 	// algorithm for screen D: copy
-	public List<DataInforReturnDto> executeCopy(String codeCopy, String codeSourceSerivce) {
+	public List<DataInforReturnDto> executeCopy(String codeCopy, String codeSourceSerivce, List<OutputItemDailyWorkScheduleCopyCommand> lstCommandCopy) {
 		String companyId = AppContexts.user().companyId();
 		
 		// get domain 日別勤務表の出力項目
@@ -231,12 +232,12 @@ public class OutputItemDailyWorkScheduleFinder {
 		if (optOutputItemDailyWorkSchedule.isPresent()) {
 			throw new BusinessException("Msg_3");
 		} else {
-			return getDomConvertDailyWork(companyId, codeSourceSerivce);
+			return getDomConvertDailyWork(companyId, codeSourceSerivce, lstCommandCopy);
 		}
 	}
 	
 	// アルゴリズム「日別勤務表用フォーマットをコンバートする」を実行する(Execute algorithm "Convert daily work table format")
-	private List<DataInforReturnDto> getDomConvertDailyWork(String companyId, String code) {
+	private List<DataInforReturnDto> getDomConvertDailyWork(String companyId, String code, List<OutputItemDailyWorkScheduleCopyCommand> lstCommandCopy) {
 		// Get domain 実績修正画面で利用するフォーマット from request list 402
 		Optional<FormatPerformanceImport> optFormatPerformanceImport = formatPerformanceAdapter.getFormatPerformance(companyId);
 		
@@ -267,6 +268,17 @@ public class OutputItemDailyWorkScheduleFinder {
 														.collect(Collectors.toList());
 				break;
 		}
+		
+		Map<String, String> mapCodeName =  lstCommandCopy.stream()
+				.collect(Collectors.toMap(OutputItemDailyWorkScheduleCopyCommand::getCode, 
+										  OutputItemDailyWorkScheduleCopyCommand::getName));
+		lstDataReturn = lstDataReturn.stream()
+				.filter(domain -> mapCodeName.containsKey(domain.getCode()))
+				.map(domain -> {
+					domain.setName(mapCodeName.get(domain.getCode()));
+					return domain;
+				}).collect(Collectors.toList());
+		
 		if (lstDataReturn.size() <= 48) {
 			return lstDataReturn;
 		} else {

@@ -123,3 +123,7 @@ hr {
 #output-format {
 	margin-left: 43px;
 }
+
+#nts-component-list {
+	outline: none;
+}

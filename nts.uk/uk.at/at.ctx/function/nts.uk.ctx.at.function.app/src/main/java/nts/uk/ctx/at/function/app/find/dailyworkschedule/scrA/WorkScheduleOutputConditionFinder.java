@@ -78,6 +78,8 @@ public class WorkScheduleOutputConditionFinder {
 	/** The Constant OPEN_SCREEN_C. */
 	private static final String OPEN_SCREEN_C = "Open_ScrC";
 	
+	private static final Integer TRUE = 1;
+	
 	/**
 	 * Start scr.
 	 *
@@ -168,11 +170,9 @@ public class WorkScheduleOutputConditionFinder {
 	public List<ErrorAlarmCodeDto> getErrorAlarmCodeDto() {
 		String companyId = AppContexts.user().companyId();
 		
-		// TODO - hoangdd: can repo voi 2 doi so la companyId va 使用する = true, hien tai tu filter = tay
 		// ドメインモデル「勤務実績のエラーアラーム」を取得する(Acquire domain model "work error actual alarm")
-		List<ErrorAlarmWorkRecord> lstErrorAlarmWorkRecord = errorAlarmWorkRecordRepository.getListErrorAlarmWorkRecord(companyId);
+		List<ErrorAlarmWorkRecord> lstErrorAlarmWorkRecord = errorAlarmWorkRecordRepository.getAllErAlCompanyAndUseAtr(companyId, TRUE);
 		return lstErrorAlarmWorkRecord.stream()
-								.filter(domain -> domain.getUseAtr())
 								.map(domain -> {
 									return new ErrorAlarmCodeDto(domain.getCode().v(), domain.getName().v());
 								})
