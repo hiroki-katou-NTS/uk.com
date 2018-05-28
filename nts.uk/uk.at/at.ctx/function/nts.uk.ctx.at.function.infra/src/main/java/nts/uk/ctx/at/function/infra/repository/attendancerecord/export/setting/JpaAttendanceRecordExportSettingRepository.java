@@ -234,9 +234,11 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository
 		KfnstAttndRecOutSet entity = this.queryProxy().find(PK, KfnstAttndRecOutSet.class)
 				.orElse(new KfnstAttndRecOutSet());
 
-//		domain.saveToMemento(new JpaAttendanceRecordExportSettingSetMemento(entity, null));
-		return entity;
+		if(entity.getId()==null){
+			domain.saveToMemento(new JpaAttendanceRecordExportSettingSetMemento(entity, new ArrayList<>()));
+		}
 
+		return entity;
 	}
 
 	/**

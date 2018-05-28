@@ -58,4 +58,10 @@ public interface AttendanceRecordExportSettingGetMemento {
 	 */
 	List<SealColumnName> getSealStamp();
 
+	/**
+	 *
+	 * @return
+	 */
+	Integer getNameUseAtr();
+
 }

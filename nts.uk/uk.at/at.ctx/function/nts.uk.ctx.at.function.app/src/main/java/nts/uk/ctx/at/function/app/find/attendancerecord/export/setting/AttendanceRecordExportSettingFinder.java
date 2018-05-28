@@ -44,6 +44,7 @@ public class AttendanceRecordExportSettingFinder {
 			dto.setCode(item.getCode().toString());
 			dto.setName(item.getName().toString());
 			dto.setSealUseAtr(item.getSealUseAtr());
+			dto.setNameUseAtr(item.getNameUseAtr().value);
 			return dto;
 		}).collect(Collectors.toList());
 

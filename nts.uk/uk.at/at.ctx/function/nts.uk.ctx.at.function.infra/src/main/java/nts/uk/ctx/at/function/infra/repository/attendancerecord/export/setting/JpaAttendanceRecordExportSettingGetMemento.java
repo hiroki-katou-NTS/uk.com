@@ -128,4 +128,9 @@ public class JpaAttendanceRecordExportSettingGetMemento implements AttendanceRec
 		});
 		return list;
 	}
+
+	@Override
+	public Integer getNameUseAtr() {
+		return this.getNameUseAtr();
+	}
 }

@@ -47,6 +47,9 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 	// 印鑑欄
 	private List<SealColumnName> sealStamp;
 
+	//名称使用区分
+	private NameUseAtr nameUseAtr;
+
 	/**
 	 * Instantiates a new attendance record export setting.
 	 */
@@ -68,6 +71,8 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 		this.code = memento.getCode();
 		this.name = memento.getName();
 		this.sealStamp = memento.getSealStamp();
+		this.nameUseAtr =  NameUseAtr.valueOf(memento.getNameUseAtr());
+
 	}
 
 	/**
@@ -83,6 +88,8 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 		memento.setName(this.name);
 		memento.setSealStamp(this.companyId, this.code, this.sealStamp);
 		memento.setSealUseAtr(this.sealUseAtr);
+		if (this.nameUseAtr != null)
+			memento.setNameUseAtr(this.nameUseAtr.value);
 	}
 
 	/**

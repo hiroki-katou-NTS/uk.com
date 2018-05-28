@@ -2,8 +2,7 @@ package nts.uk.ctx.at.function.app.command.attendancerecord.export.setting;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.function.app.command.attendancerecord.item.CalculateAttendanceRecordAddCommandHandler;
-import nts.uk.ctx.at.function.app.command.attendancerecord.item.SingleAttendanceRecordAddCommandHandler;
+import nts.uk.ctx.at.function.app.command.attendancerecord.item.AttendanceRecordAddCommandHandler;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -17,20 +16,15 @@ import javax.transaction.Transactional;
 public class NewAttendanceRecordExportSettingCommandHandler extends CommandHandler<NewAttendanceRecordExportSettingCommand>{
 
     @Inject
-    AttendanceRecordExportSettingAddCommandHandler aRESHandler;
+    AttendanceRecordExportSettingAddCommandHandler cmdHandler;
 
     @Inject
-    SingleAttendanceRecordAddCommandHandler sARHandler;
-
-    @Inject
-    CalculateAttendanceRecordAddCommandHandler cARHandler;
-
+    AttendanceRecordAddCommandHandler itemCmdHandler;
 
     @Override
     protected void handle(CommandHandlerContext<NewAttendanceRecordExportSettingCommand> context) {
         NewAttendanceRecordExportSettingCommand command = context.getCommand();
-        aRESHandler.handle(command.getARESCommand());//done
-        sARHandler.handle(command.getSARCommand());//done
-        cARHandler.handle(command.getCARCommand());//done
+        cmdHandler.handle(command.getCmd());//done
+        itemCmdHandler.handle(command.getItemCmd());//done
     }
 }

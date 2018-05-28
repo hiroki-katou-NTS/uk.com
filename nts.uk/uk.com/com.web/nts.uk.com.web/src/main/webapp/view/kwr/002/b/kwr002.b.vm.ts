@@ -46,7 +46,7 @@ module nts.uk.com.view.kwr002.b {
 
             self.sealUseAtrSwitchs = ko.observableArray([
                 new SealUseAtrSwitch(1, getText("KWR002_45")),
-                new SealUseAtrSwitch(0, getText("KWR002_46"))
+                new SealUseAtrSwitch(2, getText("KWR002_46"))
             ]);
 
             self.updateMode = ko.observable(true);
@@ -79,8 +79,8 @@ module nts.uk.com.view.kwr002.b {
         onDelete() {
             let self = this;
             errors.clearAll();
-            confirm({ messageId: 'Msg_18' }).ifYes(() => {
-                confirm({ messageId: 'Msg_35' }).ifYes(() => {
+            confirm({messageId: 'Msg_18'}).ifYes(() => {
+                confirm({messageId: 'Msg_35'}).ifYes(() => {
                     let currentData = self.currentARES();
                     let delARESCmd = {
                         code: Number(currentData.code()),
@@ -96,7 +96,7 @@ module nts.uk.com.view.kwr002.b {
                     };
 
                     service.delARES(cmd).done(() => {
-                        let newVal = _.reject(self.aRES(),['code',currentData.code()]);
+                        let newVal = _.reject(self.aRES(), ['code', currentData.code()]);
                         // console.log(newVal);
                         self.aRES(newVal);
                         let firstData = _.first(self.aRES());
@@ -104,7 +104,7 @@ module nts.uk.com.view.kwr002.b {
                     });
                 })
             }).ifNo(() => {
-                confirm({ messageId: 'Msg_36' }).ifYes(() => {
+                confirm({messageId: 'Msg_36'}).ifYes(() => {
                     return;
                 })
             });
@@ -119,7 +119,8 @@ module nts.uk.com.view.kwr002.b {
             let params = {
                 code: "",
                 name: "",
-                sealUseAtr: false
+                sealUseAtr: false,
+                nameUseAtr: 1
             };
             self.currentARES(new AttendanceRecordExportSetting(params));
             self.currentARESCode("");
@@ -134,6 +135,7 @@ module nts.uk.com.view.kwr002.b {
             let currentData = self.currentARES();
 
             $("#code").trigger("validate");
+            $("#name").trigger("validate");
 
             let rcdExport = {
                 attendanceRecExpDaily: getShared('attendanceRecExpDaily'),//=9
@@ -143,68 +145,104 @@ module nts.uk.com.view.kwr002.b {
                 useSeal: getShared('useSeal'),
 
                 isInvalid: function () {
-                    return this.attendanceRecExpDaily < 9 && this.attendanceRecExpMonthly < 9;
+                    return ((!_.isArray(this.attendanceRecExpDaily) || !_.isArray(this.attendanceRecExpMonthly))
+                        ||(this.attendanceRecExpDaily.length < 9 && this.attendanceRecExpMonthly.length < 9));
+
                 }
             };
 
-            let aRESCommand = {
-                code: currentData.code(),
-                name: currentData.name(),
-                sealUseAtr: currentData.sealUseAtr(),
-                sealStamp: rcdExport.sealStamp
-            };
-
-            let sARCommand = {
-                exportSettingCode: currentData.code(),
-                useAtr: false,
-                exportAtr: rcdExport.attendanceRecItemList.exportAtr,
-                columnIndex: rcdExport.attendanceRecItemList.columnIndex,
-                position: rcdExport.attendanceRecItemList.position,
-                timeItemId: rcdExport.attendanceRecItemList.attendanceId,
-                attribute: rcdExport.attendanceRecItemList.attribute,
-                name: rcdExport.attendanceRecItemList.layoutName,//not sure
-            };
-
-            let cARCommand = {
-                exportSettingCode: currentData.code(),
-                useAtr: false,
-                exportAtr: rcdExport.attendanceRecItemList.exportAtr,
-                columnIndex: rcdExport.attendanceRecItemList.columnIndex,
-                position: rcdExport.attendanceRecItemList.position,
-                timeItems: rcdExport.attendanceRecItemList.attendanceId,
-                attribute: rcdExport.attendanceRecItemList.attribute,
-                name: rcdExport.attendanceRecItemList.layoutName,//not sure
-            };
-
-            let data = {
-                aRESCommand: aRESCommand,
-                sARCommand: sARCommand,
-                cARCommand: cARCommand
-            };
+            console.log("is Invalid:" + rcdExport.isInvalid());
 
             if (self.updateMode()) { //in update mode
-
+                if (rcdExport.isInvalid()) {
+                    alertError({messageId: 'Msg_1130'});
+                } else {
+                    let data = self.createTransferData(currentData, rcdExport);
+                    //update ARES
+                    service.addARES(data).done((rs) => {
+                    });
+                }
             } else { // in new mode
-                // insert a company
                 service.getARESByCode(currentData.code()).done((rs) => {
                     if (!_.isNull(rs.code)) {
                         alertError({messageId: 'Msg_3'});
                     } else {
-                        if (rcdExport.isInvalid) {
+                        if (rcdExport.isInvalid()) {
                             alertError({messageId: 'Msg_1130'});
+                        } else {
+                            let data = self.createTransferData(currentData, rcdExport);
+                            //add new ARES
+                            service.addARES(data).done((rs) => {
+                            });
                         }
-
-                        //add new ARES
-                        service.addARES(data).done((rs) => {
-                        });
                     }
-                }).fail(error => {
-
-                }).always(() => {
-                    nts.uk.ui.block.clear();
-                });
+                })
             }
-        }
+
+            nts.uk.ui.block.clear();
+        };
+
+        createTransferData(currentData, rcdExport) {
+            let cmd = {
+                code: Number(currentData.code()),
+                name: currentData.name(),
+                sealUseAtr: currentData.sealUseAtr(),
+                sealStamp: rcdExport.sealStamp,
+                nameUseAtr: currentData.nameUseAtr(),
+            };
+
+            let itemCmd = {
+                singleList: [],
+                calculateList: []
+            };
+
+            _.forEach(rcdExport.attendanceRecItemList, (o) => {
+                let code = Number(currentData.code());
+                let name = o.attendanceItemName;
+                let timeItemId = o.attendanceId;
+                let columnIndex = Number(o.columnIndex);
+                if (_.isArray(o.timeItemId)) {
+                    let timeItems = timeItemId;
+                    let item = new CalculateAttendanceRecordExportCommand(code, o.useAtr, o.exportAtr,
+                        columnIndex, o.position, timeItems, o.attribute, name);
+                    itemCmd.calculateList.push(item);
+                } else {
+                    let item = new SingleAttendanceRecordExportCommand(code, o.useAtr, o.exportAtr,
+                        columnIndex, o.position, timeItemId, o.attribute, name);
+                    itemCmd.singleList.push(item)
+                }
+            });
+
+            // let sARCommand = {
+            //     exportSettingCode: currentData.code(),
+            //     useAtr: false,
+            //     exportAtr: rcdExport.attendanceRecItemList.exportAtr,
+            //     columnIndex: rcdExport.attendanceRecItemList.columnIndex,
+            //     position: rcdExport.attendanceRecItemList.position,
+            //     timeItemId: rcdExport.attendanceRecItemList.attendanceId,
+            //     attribute: rcdExport.attendanceRecItemList.attribute,
+            //     name: rcdExport.attendanceRecItemList.layoutName,//not sure
+            // };
+            //
+            // let cARCommand = {
+            //     exportSettingCode: currentData.code(),
+            //     useAtr: false,
+            //     exportAtr: rcdExport.attendanceRecItemList.exportAtr,
+            //     columnIndex: rcdExport.attendanceRecItemList.columnIndex,
+            //     position: rcdExport.attendanceRecItemList.position,
+            //     timeItems: rcdExport.attendanceRecItemList.attendanceId,
+            //     attribute: rcdExport.attendanceRecItemList.attribute,
+            //     name: rcdExport.attendanceRecItemList.layoutName,//not sure
+            // };
+
+            let data = {
+                cmd: cmd,
+                itemCmd: itemCmd,
+                // cARCommand: cARCommand
+            };
+
+            return data;
+        };
 
         start() {
             block.invisible();
@@ -217,7 +255,7 @@ module nts.uk.com.view.kwr002.b {
                     let firstData = _.first(data);
                     self.currentARESCode(firstData.code);
                 } else {
-
+                    self.onNew();
                 }
                 dfd.resolve();
             }).fail(function (error) {
@@ -232,23 +270,80 @@ module nts.uk.com.view.kwr002.b {
 
     }
 
+    class SingleAttendanceRecordExportCommand {
+        exportSettingCode: number;
+        useAtr: false;
+        exportAtr: number;
+        columnIndex: number;
+        position: number;
+        timeItemId: number;
+        attribute: number;
+        name: string;
+
+
+        constructor(exportSettingCode: number, useAtr: false, exportAtr: number, columnIndex: number, position: number, timeItemId: number, attribute: number, name: string) {
+            this.exportSettingCode = exportSettingCode;
+            this.useAtr = useAtr;
+            this.exportAtr = exportAtr;
+            this.columnIndex = columnIndex;
+            this.position = position;
+            this.timeItemId = timeItemId;
+            this.attribute = attribute;
+            this.name = name;
+        }
+    }
+
+    class CalculateAttendanceRecordExportCommand {
+        exportSettingCode: number;
+        useAtr: false;
+        exportAtr: number;
+        columnIndex: number;
+        position: number;
+        timeItems: Array<TimeItem>;
+        attribute: number;
+        name: string;
+
+        constructor(exportSettingCode: number, useAtr: false, exportAtr: number, columnIndex: number, position: number, timeItems: Array<nts.uk.com.view.kwr002.b.TimeItem>, attribute: number, name: string) {
+            this.exportSettingCode = exportSettingCode;
+            this.useAtr = useAtr;
+            this.exportAtr = exportAtr;
+            this.columnIndex = columnIndex;
+            this.position = position;
+            this.timeItems = timeItems;
+            this.attribute = attribute;
+            this.name = name;
+        }
+    }
+
+    export class TimeItem {
+        formulaType: number;
+        timeItemId: number;
+
+        constructor(formulaType: number, timeItemId: number) {
+            this.formulaType = formulaType;
+            this.timeItemId = timeItemId;
+        }
+    }
+
     interface IARES {
         code: string;
         name: string;
         sealUseAtr: boolean;
+        nameUseAtr: number;
     }
-
 
     export class AttendanceRecordExportSetting {
         code: KnockoutObservable<string>;
         name: KnockoutObservable<string>;
         sealUseAtr: KnockoutObservable<boolean>;
+        nameUseAtr: KnockoutObservable<number>;
 
         constructor(param: IARES) {
             let self = this;
             this.code = ko.observable(param.code);
             this.name = ko.observable(param.name);
             this.sealUseAtr = ko.observable(param.sealUseAtr);
+            this.nameUseAtr = ko.observable(param.nameUseAtr);
         }
 
         public openScreenC() {
@@ -264,7 +359,7 @@ module nts.uk.com.view.kwr002.b {
             setShared('attendanceRecItemList', getShared('attendanceRecItemList'), true);
             setShared('sealStamp', getShared('sealStamp'), true);
 
-            modal('../c/index.xhtml', { title: getText('KWR002�ｼｿ3'), }).onClosed(function(): any {
+            modal('../c/index.xhtml', {title: getText('KWR002�ｼｿ3'),}).onClosed(function (): any {
 
             })
         }

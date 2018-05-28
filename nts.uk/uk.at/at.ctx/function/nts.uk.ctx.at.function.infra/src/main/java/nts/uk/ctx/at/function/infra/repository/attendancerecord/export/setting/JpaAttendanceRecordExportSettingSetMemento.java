@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.infra.repository.attendancerecord.export.setting;
 
 import java.math.BigDecimal;
 import java.rmi.server.UID;
+import java.util.ArrayList;
 import java.util.List;
 
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport;
@@ -11,6 +12,7 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingN
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstSealColumn;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnstAttndRecOutSet;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnstAttndRecOutSetPK;
 
 /**
  * The Class JpaAttendanceRecordExportSettingSetMemento.
@@ -42,6 +44,9 @@ public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRec
 			List<KfnstSealColumn> sealColumnEntity) {
 		this.entity = entity;
 		this.sealColumnEntity = sealColumnEntity;
+		if(this.entity.getId()==null){
+			this.entity.setId(new KfnstAttndRecOutSetPK());
+		}
 	}
 
 	/*
@@ -136,6 +141,11 @@ public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRec
 			this.sealColumnEntity.add(tempEntity);
 		});
 
+	}
+
+	@Override
+	public void setNameUseAtr(Integer nameUseAtr) {
+		this.entity.setNameUseAtr(new BigDecimal(nameUseAtr));
 	}
 
 }

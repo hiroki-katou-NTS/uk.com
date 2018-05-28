@@ -27,6 +27,8 @@ public class AttendanceRecordExportSettingDto {
 	/** The monthly export item. */
 	List<AttendanceRecordExportDto> monthlyExportItem;
 
+	Integer nameUseAtr;
+
 	/** The seal use atr. */
 	Boolean sealUseAtr;
 

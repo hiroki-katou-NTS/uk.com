@@ -25,6 +25,8 @@ public class AttendanceRecordExportSettingAddCommand {
 	
 	/** The seal use atr. */
 	Boolean sealUseAtr;
+
+	Integer nameUseAtr;
 	
 	/**
 	 * Instantiates a new attendance record export setting add command.
