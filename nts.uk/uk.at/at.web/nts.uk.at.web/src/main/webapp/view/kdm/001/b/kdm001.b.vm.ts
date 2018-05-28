@@ -70,13 +70,9 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             self.screenItem().selectedItem.subscribe(x => {
                 if (!self.screenItem().isOnStartUp) {
                     self.screenItem().selectedEmployee = _.find(self.screenItem().listEmployee, item => { return item.employeeId === x; });
-                    let searchCondition = { employeeId: x, stateDate: null, endDate: null };
-                    self.getSubstituteDataList(searchCondition);
+                    self.getSubstituteDataList(self.getSearchCondition());
                 }
                 self.screenItem().isOnStartUp = false;
-                //TODO
-                // CALL SERVICE
-                // RELOAD SUBSTITUTE DATA TABLE
             });
         }
         openConfirmScreen() {
@@ -100,8 +96,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 if (resParam) {
                     let isDataChanged = resParam.isChanged;
                     if (isDataChanged) {
-                        let searchCondition = { employeeId: self.screenItem().selectedEmployee.employeeId, stateDate: null, endDate: null };
-                        self.getSubstituteDataList(searchCondition);
+                        self.getSubstituteDataList(self.getSearchCondition());
                     }
                 }
                 $('#substituteDataGrid').focus();
@@ -109,16 +104,9 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         }
         filterByPeriod() {
             var self = this;
-            let startDate = moment.utc(self.screenItem().dateValue().startDate, 'YYYY/MM/DD').toISOString();
-            let endDate = moment.utc(self.screenItem().dateValue().endDate, 'YYYY/MM/DD').toISOString();
-            let searchCondition = null;
-            if (self.screenItem().selectedPeriodItem() == 1) {
-                searchCondition = { searchMode: 1, employeeId: self.screenItem().selectedEmployee.employeeId, startDate: startDate, endDate: endDate };
-            } else {
-                searchCondition = { searchMode: 0, employeeId: self.screenItem().selectedEmployee.employeeId, startDate: null, endDate: null };
-            }
-            self.getSubstituteDataList(searchCondition);
-        }
+            self.getSubstituteDataList(self.getSearchCondition());
+            $('#substituteDataGrid').focus();
+        } 
         getSubstituteDataList(searchCondition: any) {
             var self = this;
             service.getExtraHolidayData(searchCondition).done(function(result) {
@@ -130,6 +118,18 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 dialog.alertError(result.errorMessage);
             });
         }
+        getSearchCondition(){
+            var self = this;
+            let startDate = moment.utc(self.screenItem().dateValue().startDate, 'YYYY/MM/DD').toISOString();
+            let endDate = moment.utc(self.screenItem().dateValue().endDate, 'YYYY/MM/DD').toISOString();
+            let searchCondition = null;
+            if (self.screenItem().selectedPeriodItem() == 1) {
+                searchCondition = { searchMode: 1, employeeId: self.screenItem().selectedEmployee.employeeId, startDate: startDate, endDate: endDate };
+            } else {
+                searchCondition = { searchMode: 0, employeeId: self.screenItem().selectedEmployee.employeeId, startDate: null, endDate: null };
+            }
+            return searchCondition;
+        }
         convertToDisplayList() {
             var self = this;
             let totalRemain = 0;
@@ -140,12 +140,15 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 if (data.unknowDate == 1) {
                     dayOffDate += '※';
                 }
-                if (data.type == 0) { 
+                if (data.type == 0) {
                     listData.push(new SubstitutedData(data.id, dayOffDate, data.unUsedDays + getText('KDM001_27'), data.linked == 1 ? '有' : "", null, null, null, data.remain + getText('KDM001_27'), data.expired + getText('KDM001_27'), data.linked));
                 } else {
                     listData.push(new SubstitutedData(data.comDayOffID, null, null, null, dayOffDate, data.remainDays + getText('KDM001_27'), data.linked == 1 ? '有' : "", data.remain + getText('KDM001_27'), data.expired + getText('KDM001_27'), data.linked));
                 }
             });
+            if (self.screenItem().listExtractData.length == 0) {
+                dialog.alertError({ messageId: 'Msg_726' });
+            }
             self.screenItem().subData = listData;
             self.screenItem().dispTotalRemainHours(totalRemain + getText('KDM001_27'));
         }
@@ -209,7 +212,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             }
         }
         startPage(): JQueryPromise<any> {
-            let self = this;
+            var self = this;
             var dfd = $.Deferred();
             let searchCondition = { employeeId: null, stateDate: null, endDate: null };
             service.getInfoEmLogin().done(function(loginerInfo) {
@@ -234,14 +237,14 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     dialog.alertError(result.errorMessage);
                     dfd.reject();
                 });
-            }).fail(function(result){
+            }).fail(function(result) {
                 dialog.alertError(result.errorMessage);
                 dfd.reject();
             });
             return dfd.promise();
         }
         initKCP009() {
-            let self = this;
+            var self = this;
             //_______KCP009_______
             // Initial listComponentOption
             self.screenItem().listComponentOption = {
@@ -256,7 +259,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         }
 
         convertEmployeeCcg01ToKcp009(dataList: EmployeeSearchDto[]): void {
-            let self = this;
+            var self = this;
             self.screenItem().employeeInputList([]);
             self.screenItem().listEmployee = [];
             _.each(dataList, function(item) {
@@ -288,8 +291,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 modal("/view/kdm/001/j/index.xhtml").onClosed(function() {
                     let isDataChanged = getShared("KDM001_J_PARAMS_RES").isChanged;
                     if (isDataChanged) {
-                        let searchCondition = { employeeId: self.screenItem().selectedEmployee.employeeId, stateDate: null, endDate: null };
-                        self.getSubstituteDataList(searchCondition);
+                        self.getSubstituteDataList(self.getSearchCondition());
                     }
                 });
             } else {
@@ -300,8 +302,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 modal("/view/kdm/001/k/index.xhtml").onClosed(function() {
                     let isDataChanged = getShared("KDM001_K_PARAMS_RES").isChanged;
                     if (isDataChanged) {
-                        let searchCondition = { employeeId: self.screenItem().selectedEmployee.employeeId, stateDate: null, endDate: null };
-                        self.getSubstituteDataList(searchCondition);
+                        self.getSubstituteDataList(self.getSearchCondition());
                     }
                 });
             }
@@ -316,8 +317,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 modal("/view/kdm/001/l/index.xhtml").onClosed(function() {
                     let isDataChanged = getShared("KDM001_L_PARAMS_RES").isChanged;
                     if (isDataChanged) {
-                        let searchCondition = { employeeId: self.screenItem().selectedEmployee.employeeId, stateDate: null, endDate: null };
-                        self.getSubstituteDataList(searchCondition);
+                        self.getSubstituteDataList(self.getSearchCondition());
                     }
                 });
             } else {
@@ -328,8 +328,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 modal("/view/kdm/001/m/index.xhtml").onClosed(function() {
                     let isDataChanged = getShared("KDM001_M_PARAMS_RES").isChanged;
                     if (isDataChanged) {
-                        let searchCondition = { employeeId: self.screenItem().selectedEmployee.employeeId, stateDate: null, endDate: null };
-                        self.getSubstituteDataList(searchCondition);
+                        self.getSubstituteDataList(self.getSearchCondition());
                     }
                 });
             }
