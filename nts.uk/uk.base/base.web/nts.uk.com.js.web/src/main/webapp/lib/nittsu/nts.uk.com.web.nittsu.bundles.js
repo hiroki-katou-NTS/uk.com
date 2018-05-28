@@ -4278,7 +4278,7 @@ var nts;
                             }
                             if (!util.isNullOrUndefined(option) && option.isCheckExpression === true) {
                                 if (!uk.text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
-                                    result.fail('This field is not valid with pattern!', '');
+                                    result.fail(nts.uk.resource.getMessage('Msg_1285'), 'Msg_1285');
                                     return result;
                                 }
                             }
@@ -16316,7 +16316,7 @@ var nts;
                         if (data.constraint == "PostCode") {
                             return new validation.PostCodeValidator(name, constraintName, { required: required });
                         }
-                        if (data.constraint == "PunchCardNo") {
+                        if (data.constraint == "StampNumber") {
                             return new validation.PunchCardNoValidator(name, constraintName, { required: required });
                         }
                         return new validation.StringValidator(name, constraintName, { required: required });
