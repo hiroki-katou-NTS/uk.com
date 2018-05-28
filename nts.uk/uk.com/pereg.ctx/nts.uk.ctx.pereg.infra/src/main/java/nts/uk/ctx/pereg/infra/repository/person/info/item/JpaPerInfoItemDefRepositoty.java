@@ -1049,6 +1049,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				this.commandProxy().update(entity);
 			}
 		});
+	}
 
 	public List<PersonInfoItemDefinition> getItemLstByListId(List<String> listItemDefId, String ctgId,
 			String categoryCd, String contractCd) {
