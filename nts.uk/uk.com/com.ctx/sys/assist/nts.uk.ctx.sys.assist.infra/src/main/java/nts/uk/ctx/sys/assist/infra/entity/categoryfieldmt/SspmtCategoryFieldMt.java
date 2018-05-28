@@ -124,8 +124,8 @@ public class SspmtCategoryFieldMt extends UkJpaEntity implements Serializable {
 	 * 抽出キー条件固定
 	 */
 	@Basic(optional = true)
-	@Column(name = "EXTRACT_COND_KEY_FIX")
-	public String extractCondKeyFix;
+	@Column(name = "DEFAULT_COND_KEY_QUERY")
+	public String defaultCondKeyQuery;
 
 	/**
 	 * 抽出キー項目1
@@ -689,7 +689,7 @@ public class SspmtCategoryFieldMt extends UkJpaEntity implements Serializable {
 		return new CategoryFieldMt(this.categoryFieldMtPk.categoryId, this.categoryFieldMtPk.tableNo,
 				this.tableJapanName, this.tableEnglishName, this.timeStopDelete, this.clsKeyQuery1, this.clsKeyQuery2,
 				this.clsKeyQuery3, this.clsKeyQuery4, this.clsKeyQuery5, this.clsKeyQuery6, this.clsKeyQuery7,
-				this.clsKeyQuery8, this.clsKeyQuery9, this.clsKeyQuery10, this.extractCondKeyFix, this.fieldKeyQuery1,
+				this.clsKeyQuery8, this.clsKeyQuery9, this.clsKeyQuery10, this.defaultCondKeyQuery, this.fieldKeyQuery1,
 				this.fieldKeyQuery2, this.fieldKeyQuery3, this.fieldKeyQuery4, this.fieldKeyQuery5, this.fieldKeyQuery6,
 				this.fieldKeyQuery7, this.fieldKeyQuery8, this.fieldKeyQuery9, this.fieldKeyQuery10, this.fieldDate1,
 				this.fieldDate2, this.fieldDate3, this.fieldDate4, this.fieldDate5, this.fieldDate6, this.fieldDate7,
@@ -715,7 +715,7 @@ public class SspmtCategoryFieldMt extends UkJpaEntity implements Serializable {
 				domain.getClsKeyQuery1().value, domain.getClsKeyQuery2().value, domain.getClsKeyQuery3().value,
 				domain.getClsKeyQuery4().value, domain.getClsKeyQuery5().value, domain.getClsKeyQuery6().value,
 				domain.getClsKeyQuery7().value, domain.getClsKeyQuery8().value, domain.getClsKeyQuery9().value,
-				domain.getClsKeyQuery10().value, domain.getExtractCondKeyFix(), domain.getFieldKeyQuery1(),
+				domain.getClsKeyQuery10().value, domain.getDefaultCondKeyQuery(), domain.getFieldKeyQuery1(),
 				domain.getFieldKeyQuery2(), domain.getFieldKeyQuery3(), domain.getFieldKeyQuery4(),
 				domain.getFieldKeyQuery5(), domain.getFieldKeyQuery6(), domain.getFieldKeyQuery7(),
 				domain.getFieldKeyQuery8(), domain.getFieldKeyQuery9(), domain.getFieldKeyQuery10(),

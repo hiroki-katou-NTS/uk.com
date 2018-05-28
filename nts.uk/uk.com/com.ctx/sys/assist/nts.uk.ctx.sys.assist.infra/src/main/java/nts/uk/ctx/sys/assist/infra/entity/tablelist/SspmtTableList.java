@@ -428,8 +428,8 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 * 抽出条件キー固定
 	 */
 	@Basic(optional = false)
-	@Column(name = "EXTRACT_COND_KEY_FIX")
-	public String extractCondKeyFix;
+	@Column(name = "DEFAULT_COND_KEY_QUERY")
+	public String defaultCondKeyQuery;
 
 	/**
 	 * 日付項目1
@@ -838,7 +838,7 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 				canNotBeOld, selectionTargetForRes, clsKeyQuery1, clsKeyQuery2, clsKeyQuery3, clsKeyQuery4,
 				clsKeyQuery5, clsKeyQuery6, clsKeyQuery7, clsKeyQuery8, clsKeyQuery9, clsKeyQuery10, fieldKeyQuery1,
 				fieldKeyQuery2, fieldKeyQuery3, fieldKeyQuery4, fieldKeyQuery5, fieldKeyQuery6, fieldKeyQuery7,
-				fieldKeyQuery8, fieldKeyQuery9, fieldKeyQuery10, extractCondKeyFix, fieldDate1, fieldDate2, fieldDate3,
+				fieldKeyQuery8, fieldKeyQuery9, fieldKeyQuery10, defaultCondKeyQuery, fieldDate1, fieldDate2, fieldDate3,
 				fieldDate4, fieldDate5, fieldDate6, fieldDate7, fieldDate8, fieldDate9, fieldDate10, fieldDate11,
 				fieldDate12, fieldDate13, fieldDate14, fieldDate15, fieldDate16, fieldDate17, fieldDate18, fieldDate19,
 				fieldDate20, filedKeyUpdate1, filedKeyUpdate2, filedKeyUpdate3, filedKeyUpdate4, filedKeyUpdate5,
@@ -869,7 +869,7 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 				domain.getClsKeyQuery10(), domain.getFieldKeyQuery1(), domain.getFieldKeyQuery2(),
 				domain.getFieldKeyQuery3(), domain.getFieldKeyQuery4(), domain.getFieldKeyQuery5(),
 				domain.getFieldKeyQuery6(), domain.getFieldKeyQuery7(), domain.getFieldKeyQuery8(),
-				domain.getFieldKeyQuery9(), domain.getFieldKeyQuery10(), domain.getExtractCondKeyFix(),
+				domain.getFieldKeyQuery9(), domain.getFieldKeyQuery10(), domain.getDefaultCondKeyQuery(),
 				domain.getFieldDate1(), domain.getFieldDate2(), domain.getFieldDate3(), domain.getFieldDate4(),
 				domain.getFieldDate5(), domain.getFieldDate6(), domain.getFieldDate7(), domain.getFieldDate8(),
 				domain.getFieldDate9(), domain.getFieldDate10(), domain.getFieldDate11(), domain.getFieldDate12(),

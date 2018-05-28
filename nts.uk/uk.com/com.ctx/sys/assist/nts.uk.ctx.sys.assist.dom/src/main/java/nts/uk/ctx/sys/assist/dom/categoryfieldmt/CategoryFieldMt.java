@@ -92,7 +92,7 @@ public class CategoryFieldMt extends AggregateRoot {
 	/**
 	 * 抽出キー条件固定
 	 */
-	private String extractCondKeyFix;
+	private String defaultCondKeyQuery;
 
 	/**
 	 * 抽出キー項目1
@@ -492,7 +492,7 @@ public class CategoryFieldMt extends AggregateRoot {
 			String timeStopDelete, int clsKeyQuery1, int clsKeyQuery2,
 			int clsKeyQuery3, int clsKeyQuery4, int clsKeyQuery5,
 			int clsKeyQuery6, int clsKeyQuery7, int clsKeyQuery8,
-			int clsKeyQuery9, int clsKeyQuery10, String extractCondKeyFix,
+			int clsKeyQuery9, int clsKeyQuery10, String defaultCondKeyQuery,
 			String fieldKeyQuery1, String fieldKeyQuery2, String fieldKeyQuery3, String fieldKeyQuery4,
 			String fieldKeyQuery5, String fieldKeyQuery6, String fieldKeyQuery7, String fieldKeyQuery8,
 			String fieldKeyQuery9, String fieldKeyQuery10, String fieldDate1, String fieldDate2, String fieldDate3,
@@ -527,7 +527,7 @@ public class CategoryFieldMt extends AggregateRoot {
 		this.clsKeyQuery8 = EnumAdaptor.valueOf(clsKeyQuery8, ExtractionKeyCategory.class);
 		this.clsKeyQuery9 = EnumAdaptor.valueOf(clsKeyQuery9, ExtractionKeyCategory.class);
 		this.clsKeyQuery10 = EnumAdaptor.valueOf(clsKeyQuery10, ExtractionKeyCategory.class);
-		this.extractCondKeyFix = extractCondKeyFix;
+		this.defaultCondKeyQuery = defaultCondKeyQuery;
 		this.fieldKeyQuery1 = fieldKeyQuery1;
 		this.fieldKeyQuery2 = fieldKeyQuery2;
 		this.fieldKeyQuery3 = fieldKeyQuery3;

@@ -308,7 +308,7 @@ public class TableList extends AggregateRoot {
 	/**
 	 * 抽出条件キー固定
 	 */
-	private String extractCondKeyFix;
+	private String defaultCondKeyQuery;
 
 	/**
 	 * 日付項目1
@@ -602,7 +602,7 @@ public class TableList extends AggregateRoot {
 			String clsKeyQuery6, String clsKeyQuery7, String clsKeyQuery8, String clsKeyQuery9, String clsKeyQuery10,
 			String fieldKeyQuery1, String fieldKeyQuery2, String fieldKeyQuery3, String fieldKeyQuery4,
 			String fieldKeyQuery5, String fieldKeyQuery6, String fieldKeyQuery7, String fieldKeyQuery8,
-			String fieldKeyQuery9, String fieldKeyQuery10, String extractCondKeyFix, String fieldDate1,
+			String fieldKeyQuery9, String fieldKeyQuery10, String defaultCondKeyQuery, String fieldDate1,
 			String fieldDate2, String fieldDate3, String fieldDate4, String fieldDate5, String fieldDate6,
 			String fieldDate7, String fieldDate8, String fieldDate9, String fieldDate10, String fieldDate11,
 			String fieldDate12, String fieldDate13, String fieldDate14, String fieldDate15, String fieldDate16,
@@ -675,7 +675,7 @@ public class TableList extends AggregateRoot {
 		this.fieldKeyQuery8 = fieldKeyQuery8;
 		this.fieldKeyQuery9 = fieldKeyQuery9;
 		this.fieldKeyQuery10 = fieldKeyQuery10;
-		this.extractCondKeyFix = extractCondKeyFix;
+		this.defaultCondKeyQuery = defaultCondKeyQuery;
 		this.fieldDate1 = fieldDate1;
 		this.fieldDate2 = fieldDate2;
 		this.fieldDate3 = fieldDate3;
