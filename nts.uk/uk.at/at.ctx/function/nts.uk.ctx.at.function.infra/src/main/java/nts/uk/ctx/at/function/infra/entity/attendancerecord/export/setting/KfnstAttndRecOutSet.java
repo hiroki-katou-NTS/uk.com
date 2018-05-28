@@ -41,6 +41,10 @@ public class KfnstAttndRecOutSet extends UkJpaEntity implements Serializable {
 	/** The seal use atr. */
 	@Column(name="SEAL_USE_ATR")
 	private BigDecimal sealUseAtr;
+	
+	/** The name use atr. */
+	@Column(name="NAME_USE_ATR")
+	private BigDecimal nameUseAtr;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
