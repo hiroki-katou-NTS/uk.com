@@ -166,7 +166,7 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 	}
 	
 	@Override
-	public void updateNotReDayByComDayId(List<String> comDayIds) {
+	public void updateReDayReqByComDayId(List<String> comDayIds) {
 		List<KrcmtComDayoffMaData> KrcmtComDayoffMaData = this.queryProxy()
 				.query(GET_BY_LISTID, KrcmtComDayoffMaData.class)
 				.setParameter("comDayOffIDs",comDayIds)

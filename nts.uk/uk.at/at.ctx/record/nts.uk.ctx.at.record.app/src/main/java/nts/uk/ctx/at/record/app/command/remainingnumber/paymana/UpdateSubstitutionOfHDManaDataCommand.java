@@ -26,5 +26,7 @@ public class UpdateSubstitutionOfHDManaDataCommand {
 
 	// 未相殺日数
 	private Double remainDays;
+	
+	private int closureId;
 
 }

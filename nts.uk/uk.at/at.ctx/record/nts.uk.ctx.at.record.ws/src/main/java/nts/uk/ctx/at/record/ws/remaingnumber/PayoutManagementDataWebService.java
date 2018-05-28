@@ -14,6 +14,8 @@ import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.DeletePayoutMana
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.DeletePayoutManagementDataCommandHandler;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.PayManaRemainCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.PayoutManagementDataCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.SubOfHDPayoutManaDataCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.SubOfHDPayoutManaDataCommandHandler;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.UpdatePayoutManagementDataCommandHandler;
 import nts.uk.ctx.at.record.app.find.remainingnumber.paymana.PayoutManagementDataDto;
 import nts.uk.ctx.at.record.app.find.remainingnumber.paymana.PayoutManagementDataFinder;
@@ -33,6 +35,9 @@ public class PayoutManagementDataWebService extends WebService{
 	
 	@Inject
 	private PayoutManagementDataFinder finder;
+	
+	@Inject
+	private SubOfHDPayoutManaDataCommandHandler subOfHDPayoutManaDataCommandHandler;
 
 	@POST
 	@Path("save")
@@ -63,6 +68,12 @@ public class PayoutManagementDataWebService extends WebService{
 	@Path("getBySidDatePeriod/{empId}/{subOfHDID}")
 	public List<PayoutManagementDataDto> getBySidDatePeriod(@PathParam("empId")String sid,@PathParam("subOfHDID")String subOfHDID) {
 		return finder.getBySidDatePeriod(sid, subOfHDID);
+	}
+	
+	@POST
+	@Path("insertpayoutMan")
+	public void insertpayoutMan(SubOfHDPayoutManaDataCommand command){
+		subOfHDPayoutManaDataCommandHandler.handle(command);
 	}
 	
 }

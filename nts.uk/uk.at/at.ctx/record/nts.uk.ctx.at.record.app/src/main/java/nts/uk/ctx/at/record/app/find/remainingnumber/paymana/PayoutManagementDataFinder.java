@@ -22,6 +22,7 @@ public class PayoutManagementDataFinder {
 	private PayoutSubofHDManaRepository payoutSubofHDManaRepository;
 	/**
 	 * ドメイン「振休管理データ」より紐付け対象となるデータを取得する
+	 * Ｆ．振休管理データの紐付設定（振出選択）画面表示処理
 	 * @param sid
 	 * @return List<PayoutManagementDataDto>
 	 */

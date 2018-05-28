@@ -16,14 +16,12 @@ public class SubstituteDataManagementDto {
 	public ExtraHolidayManagementDataDto extraHolidayManagementDataDto;
 	public String leaveSettingExpiredDate;
 	public String compenSettingEmpExpiredDate;
-	public EmployeeBasicInfoDto loginerInfo;
 	
 	public static SubstituteDataManagementDto convertToDto(SubstituteManagementOutput subDataOutput){
 		SWkpHistImport sWkpHistImport = subDataOutput.getSWkpHistImport();
 		SWkpHistDto sWkpHist = null;
 		String leaveSettingExpiredDate = "";
 		String compenSettingEmpExpiredDate = "";
-		EmployeeBasicInfoDto loginerInfo = null;
 		if (!Objects.isNull(sWkpHistImport)){
 			sWkpHist = SWkpHistDto.convertToDto(sWkpHistImport);
 		}
@@ -32,12 +30,8 @@ public class SubstituteDataManagementDto {
 			leaveSettingExpiredDate = subDataOutput.getCompensatoryLeaveEmSetting().getCompensatoryAcquisitionUse().getExpirationTime().name();
 		}
 		if (!Objects.isNull(subDataOutput.getCompensatoryLeaveComSetting())){
-			compenSettingEmpExpiredDate = subDataOutput.getCompensatoryLeaveComSetting().getCompensatoryAcquisitionUse().getExpirationTime().name();
+			compenSettingEmpExpiredDate = subDataOutput.getCompensatoryLeaveComSetting().getCompensatoryAcquisitionUse().getExpirationTime().description;
 		}
-		if (!Objects.isNull(subDataOutput.getEmployeeInfo())){
-			EmployeeRecordImport employeeInfo = subDataOutput.getEmployeeInfo();
-			loginerInfo = new EmployeeBasicInfoDto(employeeInfo.getEmployeeId(), employeeInfo.getEmployeeCode(), employeeInfo.getPname());
-		}
-		return new SubstituteDataManagementDto(sWkpHist, ExtraHolidayManagementDataDto.convertToDto(extraHolidayManagementOutput), leaveSettingExpiredDate, compenSettingEmpExpiredDate, loginerInfo);
+		return new SubstituteDataManagementDto(sWkpHist, ExtraHolidayManagementDataDto.convertToDto(extraHolidayManagementOutput), leaveSettingExpiredDate, compenSettingEmpExpiredDate);
 	}
 }

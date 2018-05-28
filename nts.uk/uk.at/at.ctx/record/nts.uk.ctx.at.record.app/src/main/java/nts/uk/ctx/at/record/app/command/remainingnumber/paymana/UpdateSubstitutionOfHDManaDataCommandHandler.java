@@ -5,7 +5,6 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SubstitutionOfHDManaDataService;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 import nts.uk.shr.com.context.AppContexts;
@@ -24,7 +23,8 @@ public class UpdateSubstitutionOfHDManaDataCommandHandler
 		SubstitutionOfHDManagementData data = new SubstitutionOfHDManagementData(command.getSubOfHDID(), cID,
 				command.getEmployeeId(), false, command.getDayoffDate(), command.getRequiredDays(),
 				command.getRemainDays());
-		substitutionOfHDManaDataService.updateSub(data);
+		substitutionOfHDManaDataService.updateSubOfHD(data, command.getClosureId(), command.getDayoffDate(),
+				command.getSubOfHDID());
 	}
 
 }

@@ -1,7 +1,7 @@
 module nts.uk.at.view.kdm001.e {
     import format = nts.uk.text.format;
     export module service {
-        var paths: any = {
+        let paths: any = {
             getBySidDatePeriod: "at/record/remainnumber/subhd/getBySidDatePeriod/{0}/{1}",
             insertSubOfHDMan: "at/record/remainnumber/subhd/insertSubOfHDMan",
         }

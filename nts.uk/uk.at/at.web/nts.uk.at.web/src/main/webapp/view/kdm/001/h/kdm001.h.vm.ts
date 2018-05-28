@@ -25,7 +25,8 @@ module nts.uk.at.view.kdm001.h.viewmodel {
         expirationDate: KnockoutObservable<string> = ko.observable('');
         unknownDate: KnockoutObservable<string> = ko.observable('');
         employeeId: KnockoutObservable<string> = ko.observable('');
-
+        closureId: KnockoutObservable<string> = ko.observable('');
+        
         constructor() {
             let self = this;
             self.initScreen();
@@ -35,11 +36,13 @@ module nts.uk.at.view.kdm001.h.viewmodel {
             let self = this,
                 info = getShared("KDM001_EFGH_PARAMS");
             if (info) {
-                self.workCode(info.selectedEmployee.workplaceId);
+                self.workCode(info.selectedEmployee.workplaceCode);
                 self.workName(info.selectedEmployee.workplaceName);
                 self.employeeId(info.selectedEmployee.employeeId);
                 self.employeeCode(info.selectedEmployee.employeeCode);
                 self.employeeName(info.selectedEmployee.employeeName);
+                
+                self.closureId(info.closureId);
                 
                 self.subOfHDID(info.rowValue.id);
                 self.dayoffDate(info.rowValue.dayoffDateSub);
@@ -61,7 +64,7 @@ module nts.uk.at.view.kdm001.h.viewmodel {
                 block.invisible();
                 let self = this;
                 let data = {
-                    
+                    closureId:self.closureId(),
                     subOfHDID:self.subOfHDID(),
                     employeeId: self.employeeId(),
                     requiredDays: self.requiredDays(),
@@ -72,15 +75,17 @@ module nts.uk.at.view.kdm001.h.viewmodel {
                 };
                 console.log(data);
                 service.updatesubOfHD(data).done(result => {
-                    if (result.length > 0) {
-                        $('#H6_2').ntsError('set', { messageId: result[0] });
-                        block.clear();
-                        return;
-                    }
+//                    if (result.length > 0) {
+//                        $('#H6_2').ntsError('set', { messageId: result[0] });
+//                        block.clear();
+//                        return;
+//                    }
                     dialog.info({ messageId: "Msg_15" }).then(() => {
                         setShared('KDM001_A_PARAMS', {isSuccess: true});
                         nts.uk.ui.windows.close();
                     });
+                }).fail(error => {
+                    setShared('KDM001_A_PARAMS', {isSuccess: false});
                 }).always(() => {
                     block.clear();
                 });
@@ -99,6 +104,7 @@ module nts.uk.at.view.kdm001.h.viewmodel {
                 console.log(data);
                 service.removeSubOfHD(data).done(() => {
                     dialog.info({ messageId: "Msg_16" }).then(() => {
+                        setShared('KDM001_A_PARAMS', {isSuccess: true});
                         nts.uk.ui.windows.close();
                     });
                 }).fail(error => {

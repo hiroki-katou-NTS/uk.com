@@ -31,6 +31,7 @@ module nts.uk.at.view.kdm001.g.viewmodel {
         stateAtr: KnockoutObservable<number> = ko.observable('');
         disapearDate: KnockoutObservable<string> = ko.observable('');
         checkBox: KnockoutObservable<boolean> = ko.observable(false);
+        closureId: KnockoutObservable<string> = ko.observable('');
 
         constructor() {
             let self = this;
@@ -42,13 +43,13 @@ module nts.uk.at.view.kdm001.g.viewmodel {
                 info = getShared("KDM001_EFGH_PARAMS");
             if (info) {
 
-                self.workCode(info.selectedEmployee.workplaceId);
+                self.workCode(info.selectedEmployee.workplaceCode);
                 self.workPlaceName(info.selectedEmployee.workplaceName);
                 self.employeeId(info.selectedEmployee.employeeId);
                 self.employeeCode(info.selectedEmployee.employeeCode);
                 self.employeeName(info.selectedEmployee.employeeName);
 
-                //self.employ()eeId(info.selectedEmployee.sID);
+                self.closureId(info.closureId);
                 self.payoutId(info.rowValue.id);
                 self.dayoffDate(info.rowValue.dayoffDatePyout);
                 self.occurredDays(info.rowValue.occurredDays);
@@ -66,30 +67,31 @@ module nts.uk.at.view.kdm001.g.viewmodel {
             if (!nts.uk.ui.errors.hasError()) {
                 let self = this;
                 let data = {
+                    closureId:self.closureId(),
                     payoutId:self.payoutId(),
                     employeeId: self.employeeId(),
                     unknownDate: self.unknownDate(),
                     dayoffDate: self.dayoffDate(),
                     expiredDate: moment.utc(self.expiredDate(), 'YYYY/MM/DD').toISOString(),
-//                    lawAtr: self.lawAtr().parsedInteger(),
-                    lawAtr: 1,
-//                    occurredDays: self.occurredDays(),
-                    occurredDays: 1,
+                    lawAtr: parseInt(self.lawAtr()),
+                    occurredDays:parseInt(self.occurredDays()),
                     unUsedDays: self.unUsedDays(),
                     checkBox: self.checkBox()
                 };
 
                 console.log(data);
                 service.updatePayout(data).done(result => {
-                    if (result.length > 0) {
-                        $('#G6_2').ntsError('set', { messageId: result[0] });
-                        block.clear();
-                        return;
-                    }
+//                    if (result.length > 0) {
+//                        $('#G6_2').ntsError('set', { messageId: result[0] });
+//                        block.clear();
+//                        return;
+//                    }
                     dialog.info({ messageId: "Msg_15" }).then(() => {
                         setShared('KDM001_A_PARAMS', {isSuccess: true});
                         nts.uk.ui.windows.close();
                     });
+                }).fail(error => {
+                    setShared('KDM001_A_PARAMS', {isSuccess: false});
                 }).always(() => {
                     block.clear();
                 });
@@ -107,6 +109,7 @@ module nts.uk.at.view.kdm001.g.viewmodel {
                 console.log(data);
                 service.removePayout(data).done(() => {
                     dialog.info({ messageId: "Msg_16" }).then(() => {
+                        setShared('KDM001_A_PARAMS', {isSuccess: true});
                         nts.uk.ui.windows.close();
                     });
                 }).fail(error => {
