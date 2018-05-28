@@ -19,8 +19,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
-import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
 import nts.uk.ctx.pereg.app.find.common.InitDefaultValue;
+import nts.uk.ctx.pereg.app.find.common.LayoutControlComBoBox;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.common.StampCardLength;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
@@ -31,7 +31,6 @@ import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsFin
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.definition.LayoutPersonInfoClsDefFinder;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
-import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
@@ -100,9 +99,6 @@ public class LayoutFinder {
 	private IMaintenanceLayoutRepository layoutRepo;
 
 	@Inject
-	private ComboBoxRetrieveFactory comboBoxFactory;
-
-	@Inject
 	private LayoutPersonInfoClsDefFinder clsItemDefFinder;
 
 	@Inject
@@ -110,6 +106,9 @@ public class LayoutFinder {
 	
 	@Inject
 	private StampCardLength stampCardLength;
+	
+	@Inject
+	private LayoutControlComBoBox layoutControlComboBox;
 	
 	public List<SimpleEmpMainLayoutDto> getSimpleLayoutList(String browsingEmpId) {
 
@@ -421,29 +420,11 @@ public class LayoutFinder {
 		}
 
 		// For each classification item to get combo box list
-		getComboBoxListForSelectionItems(employeeId, perInfoCategory, classItemList, comboBoxStandardDate);
+		layoutControlComboBox.getComboBoxListForSelectionItems(employeeId, perInfoCategory, classItemList, comboBoxStandardDate);
 
 		// set default value
 		initDefaultValue.setDefaultValue(classItemList);
 
-	}
-
-	private void getComboBoxListForSelectionItems(String employeeId, PersonInfoCategory perInfoCategory,
-			List<LayoutPersonInfoClsDto> classItemList, GeneralDate comboBoxStandardDate) {
-		// For each classification item to get combo box list
-		for (LayoutPersonInfoClsDto classItem : classItemList) {
-			for (LayoutPersonInfoValueDto valueItem : classItem.getItems()) {
-
-				if (valueItem.isComboBoxItem()) {
-					SelectionItemDto selectionItemDto = (SelectionItemDto) valueItem.getItem();
-					boolean isDataType6 = valueItem.isSelectionItem();
-					valueItem.setLstComboBoxValue(comboBoxFactory.getComboBox(selectionItemDto, employeeId,
-							comboBoxStandardDate, valueItem.isRequired(), perInfoCategory.getPersonEmployeeType(),
-							isDataType6, perInfoCategory.getCategoryCode().v()));
-				}
-				
-			}
-		}
 	}
 
 	private void getDataforListItem(PersonInfoCategory perInfoCategory, LayoutPersonInfoClsDto classItem,

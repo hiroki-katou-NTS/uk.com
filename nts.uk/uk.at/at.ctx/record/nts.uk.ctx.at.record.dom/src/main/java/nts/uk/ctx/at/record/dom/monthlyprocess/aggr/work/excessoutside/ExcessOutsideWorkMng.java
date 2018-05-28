@@ -112,6 +112,9 @@ public class ExcessOutsideWorkMng {
 	/** 月別実績の丸め設定 */
 	private RoundingSetOfMonthly roundingSet;
 	
+	/** 時間外超過累積時間 */
+	private AttendanceTimeMonth totalExcessOutside;
+	
 	/**
 	 * コンストラクタ
 	 * @param companyId 会社ID
@@ -155,6 +158,8 @@ public class ExcessOutsideWorkMng {
 		
 		this.outsideOTSetOpt = Optional.empty();
 		this.roundingSet = new RoundingSetOfMonthly(this.companyId);
+		
+		this.totalExcessOutside = new AttendanceTimeMonth(0);
 	}
 	
 	/**
@@ -245,12 +250,13 @@ public class ExcessOutsideWorkMng {
 		if (workingSystem == WorkingSystem.REGULAR_WORK || workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
 			
 			// 通常・変形労働時間勤務の月別実績を集計する
-			aggrValue = regAndIrgTime.aggregateMonthly(this.companyId, this.employeeId,
-					this.yearMonth, this.procPeriod, this.workingSystem, this.closureOpt,
+			aggrValue = regAndIrgTime.aggregateMonthly(
+					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
+					this.procPeriod, this.workingSystem, this.closureOpt,
 					MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
-					this.settingsByReg, this.settingsByDefo,
+					this.employmentCd, this.settingsByReg, this.settingsByDefo,
 					this.attendanceTimeOfDailyMap, this.workInformationOfDailyMap,
-					aggregateTotalWorkingTime, this, repositories);
+					aggregateTotalWorkingTime, this, 1, repositories);
 			
 			// 通常・変形労働時間勤務の月単位の時間を集計する
 			regAndIrgTime.aggregateMonthlyHours(
@@ -315,12 +321,13 @@ public class ExcessOutsideWorkMng {
 			this.workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
 			
 			// 通常・変形労働時間勤務の月別実績を集計する
-			aggrValue = regAndIrgTime.aggregateMonthly(this.companyId, this.employeeId,
-					this.yearMonth, this.procPeriod, this.workingSystem, this.closureOpt,
+			aggrValue = regAndIrgTime.aggregateMonthly(
+					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
+					this.procPeriod, this.workingSystem, this.closureOpt,
 					MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
-					this.settingsByReg, this.settingsByDefo,
+					this.employmentCd, this.settingsByReg, this.settingsByDefo,
 					this.attendanceTimeOfDailyMap, this.workInformationOfDailyMap,
-					aggregateTotalWorkingTime, this, repositories);
+					aggregateTotalWorkingTime, this, 1, repositories);
 			
 			// 通常・変形労働時間勤務の月単位の時間を集計する
 			regAndIrgTime.aggregateMonthlyHours(
@@ -851,6 +858,9 @@ public class ExcessOutsideWorkMng {
 	 */
 	private void assignExcessOutsideWorkBreakdownForAfterAggregate(){
 		
+		// 「時間外超過累積時間」を作成する
+		this.totalExcessOutside = new AttendanceTimeMonth(0);
+		
 		// 「時間外超過の内訳項目」を取得する
 		List<OutsideOTBRDItem> outsideOTBDItems = new ArrayList<>();
 		if (this.outsideOTSetOpt.isPresent()){
@@ -881,6 +891,9 @@ public class ExcessOutsideWorkMng {
 	 */
 	private void assignExcessOutsideWorkBreakdownForTimeSeries(){
 		
+		// 「時間外超過累積時間」を作成する
+		this.totalExcessOutside = new AttendanceTimeMonth(0);
+		
 		// 「期間．開始日」を処理日にする
 		GeneralDate procDate = this.procPeriod.start();
 		while (procDate.beforeOrEquals(this.procPeriod.end())){
@@ -893,27 +906,29 @@ public class ExcessOutsideWorkMng {
 		}
 		
 		// 丸め差分時間を時間外超過の値に割り当てる
-		// 「時間外超過の内訳項目」を取得する
-		List<OutsideOTBRDItem> outsideOTBDItems = new ArrayList<>();
-		if (this.outsideOTSetOpt.isPresent()){
-			outsideOTBDItems = this.outsideOTSetOpt.get().getBreakdownItems();
-		}
-		outsideOTBDItems.removeIf(a -> { return a.getUseClassification() != UseClassification.UseClass_Use; });
-		outsideOTBDItems.sort((a, b) -> a.getProductNumber().value - b.getProductNumber().value);
-		for (val outsideOTBDItem : outsideOTBDItems){
-			
-			// 内訳項目に設定されている項目の値を取得する
-			val roundDiffTime = this.excessOutsideWorkDetail.getRoundDiffTime();
-			AttendanceTimeMonth breakdownItemTime = new AttendanceTimeMonth(0);
-			for (val attendanceItemId : outsideOTBDItem.getAttendanceItemIds()){
-				breakdownItemTime = breakdownItemTime.addMinutes(
-						roundDiffTime.getTimeOfAttendanceItemId(attendanceItemId).v());
+		{
+			// 「時間外超過の内訳項目」を取得する
+			List<OutsideOTBRDItem> outsideOTBDItems = new ArrayList<>();
+			if (this.outsideOTSetOpt.isPresent()){
+				outsideOTBDItems = this.outsideOTSetOpt.get().getBreakdownItems();
 			}
-			if (breakdownItemTime.greaterThan(0)){
-			
-				// 内訳項目ごとに時間外超過の値を求める
-				val breakdownItemNo =  outsideOTBDItem.getBreakdownItemNo().value;
-				this.askExcessOutsideWorkEachBreakdown(breakdownItemTime, breakdownItemNo);
+			outsideOTBDItems.removeIf(a -> { return a.getUseClassification() != UseClassification.UseClass_Use; });
+			outsideOTBDItems.sort((a, b) -> a.getProductNumber().value - b.getProductNumber().value);
+			for (val outsideOTBDItem : outsideOTBDItems){
+				
+				// 内訳項目に設定されている項目の値を取得する
+				val roundDiffTime = this.excessOutsideWorkDetail.getRoundDiffTime();
+				AttendanceTimeMonth breakdownItemTime = new AttendanceTimeMonth(0);
+				for (val attendanceItemId : outsideOTBDItem.getAttendanceItemIds()){
+					breakdownItemTime = breakdownItemTime.addMinutes(
+							roundDiffTime.getTimeOfAttendanceItemId(attendanceItemId).v());
+				}
+				if (breakdownItemTime.greaterThan(0)){
+				
+					// 内訳項目ごとに時間外超過の値を求める
+					val breakdownItemNo =  outsideOTBDItem.getBreakdownItemNo().value;
+					this.askExcessOutsideWorkEachBreakdown(breakdownItemTime, breakdownItemNo);
+				}
 			}
 		}
 	}
@@ -963,14 +978,11 @@ public class ExcessOutsideWorkMng {
 		overTimes.removeIf(a -> { return a.getUseClassification() != UseClassification.UseClass_Use; });
 		overTimes.sort((a, b) -> a.getOvertime().v() - b.getOvertime().v());
 		
-		// 時間外超過の時間を合計する　→　時間外超過累積時間
-		val totalExcessOutside = this.excessOutsideWork.getTotalBreakdownTime();
-		
 		for (int ixOverTime = 0; ixOverTime < overTimes.size(); ixOverTime++){
 			val overTime = overTimes.get(ixOverTime);
 			
 			// 時間外超過累積時間＋内訳項目時間と超過時間を比較する
-			if (totalExcessOutside.v() + breakdownItemTime.v() <= overTime.getOvertime().v()) break;
+			if (this.totalExcessOutside.v() + breakdownItemTime.v() <= overTime.getOvertime().v()) break;
 			
 			// 次の超過時間を取得する
 			Overtime nextOverTime = null;
@@ -978,7 +990,10 @@ public class ExcessOutsideWorkMng {
 			
 			// 時間外超過の時間に加算する
 			this.excessOutsideWork.addTimeFromBreakdownItemTime(
-					totalExcessOutside, breakdownItemTime, overTime, nextOverTime, breakdownItemNo);
+					this.totalExcessOutside, breakdownItemTime, overTime, nextOverTime, breakdownItemNo);
 		}
+		
+		// 「内訳項目時間」を「時間外超過累積時間」に加算する
+		this.totalExcessOutside = this.totalExcessOutside.addMinutes(breakdownItemTime.v());
 	}
 }

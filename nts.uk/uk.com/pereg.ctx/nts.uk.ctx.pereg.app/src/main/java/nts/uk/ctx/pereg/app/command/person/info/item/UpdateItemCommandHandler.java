@@ -20,7 +20,6 @@ import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
-import nts.uk.ctx.pereg.dom.person.setting.init.item.ReferenceMethodType;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.Selection;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionRepository;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
@@ -81,7 +80,9 @@ public class UpdateItemCommandHandler extends CommandHandlerWithResult<UpdateIte
 		}
 
 		if (this.isCheckData(oldItem.getItemCode().toString(), categoryIdList)) {
-			throw new BusinessException("Msg_233");
+			oldItem.setItemName(itemName);
+			this.pernfoItemDefRep.updatePerInfoItemDefRoot(oldItem, contractCd);
+            return "Msg_233";
 		}
 		oldItem.setItemName(itemName);
 		PersonInfoItemDefinition newItem = MappingDtoToDomain.mappingFromDomaintoCommandForUpdate(itemCommand, oldItem);
@@ -128,7 +129,7 @@ public class UpdateItemCommandHandler extends CommandHandlerWithResult<UpdateIte
 					AppContexts.user().zeroCompanyIdInContract(), itemCommand.getSingleItem().getSelectionItemId(),
 					GeneralDate.today());
 			if (selection == null || selection.size() == 0) {
-				throw new BusinessException("Msg_587");
+				throw new BusinessException("Msg_587"); 
 			}
 		}
 		}

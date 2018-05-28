@@ -3,6 +3,7 @@ package nts.uk.ctx.pereg.app.find.person.info.item;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -244,6 +245,13 @@ public class PerInfoItemDefFinder {
 		List<PerInfoItemDefOrder> itemOrders = this.pernfoItemDefRep.getPerInfoItemDefOrdersByCtgId(perInfoCtgId);
 
 		return mappingItemAndOrder(itemDefs, itemOrders);
+	};
+	
+	// Function get List Category Combobox CPS007
+	public Map<String, List<Object[]>> mapCategoryIdAndLstItemDf(List<String> lstPerInfoCtgId) {
+		
+		return this.pernfoItemDefRep.getAllPerInfoItemDefByListCategoryId(lstPerInfoCtgId, AppContexts.user().contractCode());
+		
 	};
 
 	// Function get item used for Layout
