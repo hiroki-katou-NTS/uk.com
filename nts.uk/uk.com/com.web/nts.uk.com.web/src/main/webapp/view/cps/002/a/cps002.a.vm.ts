@@ -233,20 +233,17 @@ module cps002.a.vm {
 
 
             self.currentEmployee().employeeCode.subscribe((employeeCode) => {
-                var self = this;
-                self.updateCardNumber();
+                let self = this,
+                    employee = self.currentEmployee();
+
+                employee.cardNo(__viewContext.user.companyCode + employee.employeeCode());
             });
 
             self.currentEmployee().cardNo.subscribe((cardNo) => {
-
-                if (cardNo === "") {
-                    return;
-                }
-
-                let ce = self.stampCardEditing,
+                let ce = ko.toJS(self.stampCardEditing),
                     emp = self.currentEmployee();
 
-                if (cardNo.length < ce.digitsNumber) {
+                if (cardNo && cardNo.length < ce.digitsNumber) {
                     switch (ce.method) {
                         case EDIT_METHOD.PreviousZero: {
                             emp.cardNo(_.padStart(cardNo, ce.digitsNumber, '0'));
@@ -362,12 +359,6 @@ module cps002.a.vm {
             return dfd.promise();
         }
 
-        updateCardNumber(userSetting: IUserSetting) {
-            let self = this;
-            let employee = self.currentEmployee();
-            employee.cardNo(__viewContext.user.companyCode + employee.employeeCode());
-        }
-
         isError() {
             let self = this;
             if (self.currentStep() == 2) {
@@ -394,18 +385,15 @@ module cps002.a.vm {
                 };
             if (!self.isError()) {
                 service.validateEmpInfo(command).done(() => {
-
                     if (self.createTypeId() === 3) {
-
                         self.gotoStep2();
                         return;
                     }
 
                     self.gotoStep1();
-
                 }).fail((error) => {
-
                     let messageId = error.messageId;
+
                     switch (messageId) {
                         case "Msg_345":
                             $('#employeeCode').ntsError('set', { messageId: messageId });
@@ -420,17 +408,11 @@ module cps002.a.vm {
                             $('#cardNumber').ntsError('set', { messageId: messageId });
                             break;
                     }
-
                 });
             }
-
-
-
         }
 
-
         backToStep0() {
-
             let self = this;
 
             self.currentStep(0);
@@ -442,6 +424,7 @@ module cps002.a.vm {
             let self = this;
             self.currentStep(2);
             let layout = self.layout();
+
             layout.layoutCode('');
             layout.layoutName('');
             layout.listItemCls([]);
