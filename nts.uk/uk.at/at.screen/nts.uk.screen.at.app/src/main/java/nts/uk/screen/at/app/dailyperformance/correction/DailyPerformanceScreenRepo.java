@@ -211,4 +211,6 @@ public interface DailyPerformanceScreenRepo {
 	Map<String, List<WorkPlaceIdPeriodAtScreen>> getWplByListSidAndPeriod(List<String> sids);
 	
 	Map<String, List<AffComHistItemAtScreen>>getAffCompanyHistoryOfEmployee(String cid, List<String> employeeIds);
+	
+	String findWorkConditionLastest(List<String> hists, String employeeId);
  }
