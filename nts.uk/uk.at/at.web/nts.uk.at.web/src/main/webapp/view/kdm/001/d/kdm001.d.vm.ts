@@ -20,34 +20,69 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         expiredDate: KnockoutObservable<string>     = ko.observable('');
         subDayoffDate: KnockoutObservable<string>     = ko.observable('');
         holidayDate: KnockoutObservable<string>    = ko.observable('');
-        requiredDays: KnockoutObservable<number> = ko.observable(0);
+        requiredDays: KnockoutObservable<number> = ko.observable();
         typeHoliday: KnockoutObservableArray<model.ItemModel>     = ko.observableArray(model.getTypeHoliday());
         itemListHoliday: KnockoutObservableArray<model.ItemModel>    = ko.observableArray(model.getNumberOfDays());
-        occurredDays: KnockoutObservable<number>              = ko.observable('');
+        occurredDays: KnockoutObservable<number>              = ko.observable();
         itemListSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
-        subDay: KnockoutObservable<number>           = ko.observable(0);
+        subDay: KnockoutObservable<number>           = ko.observable();
         itemListOptionSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
         isOptionSubHolidayEnable: KnockoutObservable<boolean>              = ko.observable(false);
-
+        closureId: KnockoutObservable<number> = ko.observable(0);
+        totalDay: KnockoutObservable<number> = ko.observable(0);
         constructor() {
             let self = this;
             self.initScreen();
             self.checkedSplit.subscribe((v) => {
-                if (v == true) {
+                if (v) {
                     self.isOptionSubHolidayEnable(true);
                 } else {
                     self.isOptionSubHolidayEnable(false);
                 }
              });
-            self.occurredDays.subscribe((x) =>{
-                self.remainDays(x - self.subDay() - self.requiredDays());
+            self.occurredDays.subscribe((x) => {
+                self.calRemainDays();
             });
-            self.subDay.subscribe((x) =>{
-                self.remainDays(self.occurredDays() - x - self.requiredDays());
+            self.subDay.subscribe((x) => {
+                self.calRemainDays();
             });
-            self.requiredDays.subscribe((x) =>{
-                self.remainDays(self.occurredDays() - x - self.subDay());
+            self.requiredDays.subscribe((x) => {
+                self.calRemainDays();
             });
+            self.pickUp.subscribe((v) => {
+                self.calRemainDays();
+            });
+            self.pause.subscribe((v) => {
+                self.calRemainDays();
+            });
+            self.checkedSplit.subscribe((v) => {
+                self.calRemainDays();
+            });
+        }
+        
+        public calRemainDays(){
+            let self = this;
+            if (self.pickUp()) {
+                if (self.pause()) {
+                    if (self.checkedSplit()) {
+                        self.remainDays(self.occurredDays() - self.subDay() - self.requiredDays());
+                    } else {
+                        self.remainDays(self.occurredDays() - self.subDay());
+                    }
+                } else {
+                    self.remainDays(self.occurredDays());
+                }
+            } else {
+                if (self.pause()) {
+                    if (self.checkedSplit()) {
+                        self.remainDays(self.totalDay - self.subDay() - self.requiredDays());
+                    } else {
+                        self.remainDays(self.totalDay - self.subDay());
+                    }
+                } else {
+                    self.remainDays(0);
+                }
+            }
         }
 
         initScreen(): void {
@@ -60,9 +95,9 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 self.employeeCode(info.selectedEmployee.employeeCode);
                 self.employeeId(info.selectedEmployee.employeeId);
                 self.employeeName(info.selectedEmployee.employeeName);
+                self.closureId(info.closureId);
             }
             block.clear();
-            self.remainDays(0);
             self.unit("日");
         }
         
@@ -100,10 +135,26 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                         if (error === "Msg_737_SubPay") {
                             $('#D11_1').ntsError('set', { messageId: "Msg_737" });
                         }
+                        if (error === "Msg_740_PayMana") {
+                            $('#D6_3').ntsError('set', { messageId: "Msg_740" });
+                        }
+                        if (error === "Msg_740_SubPay") {
+                            $('#D8_1').ntsError('set', { messageId: "Msg_740" });
+                        }
+                        if (error === "Msg_1256_PayMana") {
+                            $('#D6_1').ntsError('set', { messageId: "Msg_1256" });
+                        }
+                        if (error === "Msg_1256_PayMana") {
+                            $('#D8_1').ntsError('set', { messageId: "Msg_1256" });
+                        }
+                        if (error === "Msg_1257") {
+                            $('#D6_1').ntsError('set', { messageId: "Msg_1257" });
+                        }
                     }
                     return;
                 } else {
                     dialog.info({ messageId: "Msg_15" }).then(() => {
+                        setShared('KDM001_A_PARAMS', {isSuccess: true});
                         nts.uk.ui.windows.close();
                     });
                 }

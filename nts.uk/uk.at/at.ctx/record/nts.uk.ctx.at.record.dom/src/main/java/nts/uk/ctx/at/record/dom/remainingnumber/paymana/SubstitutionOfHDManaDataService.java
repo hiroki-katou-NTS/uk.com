@@ -90,54 +90,49 @@ public class SubstitutionOfHDManaDataService {
 		if (subOfHDId.size() == 1) {
 			if (subOfHDId.get(0).getRemainDays().compareTo(ItemDays.ONE_DAY.value) != 0) {
 
-				if (subOfHDId.size() == 1) {
-					if (subOfHDId.get(0).getRemainDays().compareTo(ItemDays.ONE_DAY.value) != 0) {
+				// エラーメッセージ(Msg_731) エラーリストにセットする
+				throw new BusinessException("Msg_731");
+			}
+		}
+		if (subOfHDId.size() == 2) {
+			if (subOfHDId.get(0).getRemainDays().compareTo(ItemDays.ONE_DAY.value) == 0) {
 
-						// エラーメッセージ(Msg_731) エラーリストにセットする
-						throw new BusinessException("Msg_731");
-					}
-				}
-				if (subOfHDId.size() == 2) {
-					if (subOfHDId.get(0).getRemainDays().compareTo(ItemDays.ONE_DAY.value) == 0) {
+				if (allowPrepaidLeave == ApplyPermission.NOT_ALLOW) {
+					// エラーメッセージ(Msg_739) エラーリストにセットする
 
-						if (allowPrepaidLeave == ApplyPermission.NOT_ALLOW) {
-							// エラーメッセージ(Msg_739) エラーリストにセットする
-
-							throw new BusinessException("Msg_739");
-						}
-
-					}
-					if (subOfHDId.get(0).getRemainDays().compareTo(ItemDays.HALF_DAY.value) == 0
-							&& subOfHDId.get(1).getRemainDays().compareTo(ItemDays.HALF_DAY.value) != 0) {
-						// エラーメッセージ(Msg_731) エラーリストにセットする
-						throw new BusinessException("Msg_731");
-					}
-				}
-
-				if (!payoutSubofHDManaRepository.getByPayoutId(payoutId).isEmpty()) {
-					payoutSubofHDManaRepository.delete(payoutId);
-				}
-
-				subOfHDId.forEach(i -> {
-					payoutSubofHDManaRepository.add(new PayoutSubofHDManagement(payoutId, i.getSubOfHDID(),
-							new BigDecimal(i.getRemainDays()), TargetSelectionAtr.MANUAL.value));
-					// Update remain days 振休管理データ
-					Optional<SubstitutionOfHDManagementData> subMana = substitutionOfHDManaDataRepository
-							.findByID(i.getSubOfHDID());
-					if (subMana.isPresent()) {
-						subMana.get().setRemainsDay(0d);
-						substitutionOfHDManaDataRepository.update(subMana.get());
-					}
-				});
-				// Update 振出管理データ 残数
-				Optional<PayoutManagementData> payoutData = payoutManagementDataRepository.findByID(payoutId);
-				if (payoutData.isPresent()) {
-					payoutData.get().setRemainNumber(remainNumber);
-					payoutManagementDataRepository.update(payoutData.get());
+					throw new BusinessException("Msg_739");
 				}
 
 			}
+			if (subOfHDId.get(0).getRemainDays().compareTo(ItemDays.HALF_DAY.value) == 0
+					&& subOfHDId.get(1).getRemainDays().compareTo(ItemDays.HALF_DAY.value) != 0) {
+				// エラーメッセージ(Msg_731) エラーリストにセットする
+				throw new BusinessException("Msg_731");
+			}
 		}
+
+		if (!payoutSubofHDManaRepository.getByPayoutId(payoutId).isEmpty()) {
+			payoutSubofHDManaRepository.delete(payoutId);
+		}
+
+		subOfHDId.forEach(i -> {
+			payoutSubofHDManaRepository.add(new PayoutSubofHDManagement(payoutId, i.getSubOfHDID(),
+					new BigDecimal(i.getRemainDays()), TargetSelectionAtr.MANUAL.value));
+			// Update remain days 振休管理データ
+			Optional<SubstitutionOfHDManagementData> subMana = substitutionOfHDManaDataRepository
+					.findByID(i.getSubOfHDID());
+			if (subMana.isPresent()) {
+				subMana.get().setRemainsDay(0d);
+				substitutionOfHDManaDataRepository.update(subMana.get());
+			}
+		});
+		// Update 振出管理データ 残数
+		Optional<PayoutManagementData> payoutData = payoutManagementDataRepository.findByID(payoutId);
+		if (payoutData.isPresent()) {
+			payoutData.get().setRemainNumber(remainNumber);
+			payoutManagementDataRepository.update(payoutData.get());
+		}
+
 	}
 
 	/**

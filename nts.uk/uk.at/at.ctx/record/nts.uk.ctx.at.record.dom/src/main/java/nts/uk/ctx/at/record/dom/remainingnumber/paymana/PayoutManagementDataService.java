@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -16,10 +17,15 @@ import nts.uk.ctx.at.record.dom.remainingnumber.base.HolidayAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.AddSubHdManagementService;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.ItemDays;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class PayoutManagementDataService {
+	
+	@Inject
+	private ClosureService closureService;
 
 	@Inject
 	private PayoutManagementDataRepository payoutManagementDataRepository;
@@ -55,38 +61,76 @@ public class PayoutManagementDataService {
 		}
 		return false;
 	}
-
+	
 	public GeneralDate getClosingDate() {
 		return null;
 	}
 
-	public List<String> addPayoutManagement(boolean pickUp, boolean pause, PayoutManagementData payMana,
-			SubstitutionOfHDManagementData subMana, PayoutSubofHDManagement paySub) {
+	public List<String> addPayoutManagement(Boolean pickUp, Boolean pause, Double remainDays, PayoutManagementData payMana,
+			SubstitutionOfHDManagementData subMana, PayoutSubofHDManagement paySub, Double occurredDays, Double subDays, int closureId) {
 		List<String> errors = new ArrayList<String>();
+		YearMonth processYearMonth = GeneralDate.today().yearMonth();
+		Optional<GeneralDate> closureDate = this.getClosureDate(closureId, processYearMonth);
 		if (pickUp) {
-			// this.checkProcess(); Wait QA
+			if (this.checkDate(payMana.getDayoffDate(), closureDate, closureId))
+				errors.add("Msg_740_PayMana");
 			if (this.checkInfoPayMana(payMana)) {
 				errors.add("Msg_737_PayMana");
 			}
-			if (errors.isEmpty()) {
-				payoutManagementDataRepository.create(payMana);
-			}
 		}
 		if (pause) {
-			// this.checkProcess(); Wait QA
+			if (this.checkDate(subMana.getDayoffDate(), closureDate, closureId))
+				errors.add("Msg_740_SubPay");
 			if (this.checkInfoSubPayMana(subMana)) {
 				errors.add("Msg_737_SubPay");
+			}	
+		}
+		if (pickUp) {
+			if (pause) {
+				if (occurredDays != 0.5) {
+					errors.add("Msg_1256_PayMana");
+				} else if (subDays != 0.5){
+					errors.add("Msg_1256_SubPay");
+					}
 			}
-			if (errors.isEmpty()) {
+			else {
+				if (occurredDays != 1){
+					errors.add("Msg_1257");
+				}
+			}
+		}
+		if (errors.isEmpty()) {
+			if (pickUp) {
+				payoutManagementDataRepository.create(payMana);
+			}
+			if (pause) {
 				substitutionOfHDManaDataRepository.create(subMana);
 			}
-		}
-		if (pickUp && pause) {
-			if (errors.isEmpty())
+			if (pause && pickUp) {
 				payoutSubofHDManaRepository.add(paySub);
+			}
 		}
+		
 		return errors;
-
+	}
+	
+	public Optional<GeneralDate> getClosureDate(int closureId, YearMonth processYearMonth) {
+		DatePeriod closurePeriod = closureService.getClosurePeriod(closureId, processYearMonth);
+		if (Objects.isNull(closurePeriod)) {
+			return Optional.empty();
+		}
+		return Optional.of(closurePeriod.start());
+	}
+	
+	public boolean checkDate(GeneralDate date, Optional<GeneralDate> closureDate, int closureId) {
+		YearMonth processYearMonth = GeneralDate.today().yearMonth();
+		if (!closureDate.isPresent()) {
+			closureDate = this.getClosureDate(closureId, processYearMonth);
+		}
+		if (date.after(closureDate.get())) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -143,7 +187,7 @@ public class PayoutManagementDataService {
 	}
 
 	/**
-	 * KDM001 screen F
+	 * Ｆ．振休管理データの紐付設定（振出選択）登録処理
 	 */
 	public void insertPayoutSubofHD(String sid, String subId, Double remainNumber, List<SubOfHDManagement> subOfHDId) {
 		String companyId = AppContexts.user().companyId();

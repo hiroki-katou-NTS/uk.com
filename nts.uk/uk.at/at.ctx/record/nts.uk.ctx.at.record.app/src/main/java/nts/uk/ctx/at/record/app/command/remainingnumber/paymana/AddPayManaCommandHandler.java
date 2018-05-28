@@ -39,7 +39,7 @@ public class AddPayManaCommandHandler extends CommandHandlerWithResult<PayManaRe
 		SubstitutionOfHDManagementData subMana = new SubstitutionOfHDManagementData(newIDSub, cId, command.getEmployeeId(), unknowDate, command.getSubDayoffDate(), command.getRequiredDays(), command.getRemainDays());
 		PayoutSubofHDManagement paySub = new PayoutSubofHDManagement(newIDPayout, newIDSub, new BigDecimal(0), TargetSelectionAtr.MANUAL.value);
 		
-		List<String> error = payoutManaDataService.addPayoutManagement(command.getPickUp(), command.getPause(), payMana, subMana, paySub);
+		List<String> error = payoutManaDataService.addPayoutManagement(command.getPickUp(), command.getPause(), command.getRemainDays(), payMana, subMana, paySub, command.getOccurredDays(), command.getSubDays(), command.getClosureId());
 		return error;
 	}
 

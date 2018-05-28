@@ -1,7 +1,9 @@
 module nts.uk.at.view.kdm001.e.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
     import model     = kdm001.share.model;
     import dialog    = nts.uk.ui.dialog;
+    import block     = nts.uk.ui.block;
     export class ScreenModel {
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         columns: KnockoutObservableArray<any>;
@@ -18,13 +20,6 @@ module nts.uk.at.view.kdm001.e.viewmodel {
         info: any = getShared("KDM001_EFGH_PARAMS");
         constructor() {
             let self = this;
-//            self.workCode('100');
-//            self.workPlaceName('営業部');
-//            self.employeeCode('A000001');
-//            self.employeeName('日通　太郎');
-//            self.dateHoliday('2016/10/2');
-//            self.numberDay('1.0日');
-//            self.residualDay('0日');
             
             if (self.info) {
                 self.workCode(self.info.selectedEmployee.workplaceCode);
@@ -71,34 +66,40 @@ module nts.uk.at.view.kdm001.e.viewmodel {
 
         public initScreen(): JQueryPromise<any> {
             let self = this;
+             block.invisible();
             service.getBySidDatePeriod(self.info.selectedEmployee.employeeId, self.info.rowValue.id).done((data: Array<ItemModel> )=>{
                 if (data && data.length > 0) {
                     self.items(data);
-                    _.forEach(data, function(item) {
-                        let code = _.find(self.items(), function(currentItem: ItemModel) {
-                            return currentItem.linked == true;
-                        });
-                        if (code) {
-                            self.currentCodeList.push(code.subOfHDID);
-                        }
+                    let code = _.find(self.items(), function(currentItem: ItemModel) {
+                        return currentItem.linked == true;
                     });
+                    if (code) {
+                        self.currentCodeList.push(code.subOfHDID);
+                    }
                 }
+                block.clear();
             }).fail((res)=>{
                 dialog.alertError(res);
+                block.clear();
             })
         }
         
         public create(): void {
             let self = this;
-           
+           block.invisible();
             let command = new PayoutSubofHDManagementCommand(self.info.selectedEmployee.employeeId, self.info.rowValue.id,self.residualDay(), self.currentList());
                 if (!self.validate()){
                     return;
                 }
                 service.insertSubOfHDMan(command).done(()=>{
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    dialog.info({ messageId: "Msg_15" }).then(() => {
+                        setShared('KDM001_A_PARAMS', {isSuccess: true});
+                        nts.uk.ui.windows.close();
+                    });
+                    block.clear();
                 }).fail((res)=>{
                     $('#multi-list').ntsError('set', { messageId: res.messageId });
+                    block.clear();
                 })
         }
         
@@ -129,6 +130,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
          * closeDialog
          */
         public closeDialog():void {
+            setShared('KDM001_A_PARAMS', {isSuccess: false});
             nts.uk.ui.windows.close();
         }
     }

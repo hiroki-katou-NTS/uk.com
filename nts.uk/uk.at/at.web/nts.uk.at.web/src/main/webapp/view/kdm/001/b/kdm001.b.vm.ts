@@ -140,14 +140,14 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 if (data.unknowDate == 1) {
                     dayOffDate += '※';
                 }
-                if (data.type == 0) {
-                    listData.push(new SubstitutedData(data.id, dayOffDate, data.unUsedDays, data.linked == 1 ? '有' : "", null, null, null, data.remain, data.expired, data.linked));
+                if (data.type == 0) { 
+                    listData.push(new SubstitutedData(data.id, dayOffDate, data.unUsedDays + getText('KDM001_27'), data.linked == 1 ? '有' : "", null, null, null, data.remain + getText('KDM001_27'), data.expired + getText('KDM001_27'), data.linked));
                 } else {
-                    listData.push(new SubstitutedData(data.comDayOffID, null, null, null, dayOffDate, data.remainDays, data.isLinked == 1 ? '有' : "", data.remain, data.expired, data.linked));
+                    listData.push(new SubstitutedData(data.comDayOffID, null, null, null, dayOffDate, data.remainDays + getText('KDM001_27'), data.linked == 1 ? '有' : "", data.remain + getText('KDM001_27'), data.expired + getText('KDM001_27'), data.linked));
                 }
             });
             self.screenItem().subData = listData;
-            self.screenItem().dispTotalRemainHours(totalRemain + getText('KDM001_124'));
+            self.screenItem().dispTotalRemainHours(totalRemain + getText('KDM001_27'));
         }
         initSubstituteDataList() {
             var self = this;
@@ -212,28 +212,32 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             let self = this;
             var dfd = $.Deferred();
             let searchCondition = { employeeId: null, stateDate: null, endDate: null };
-            service.getSubsitutionData(searchCondition).done(function(result) {
-                let wkHistory = result.wkHistory;
-                let employeeInfo = result.extraHolidayManagementDataDto.sempHistoryImport;
-                let extraHolidayData = result.extraHolidayManagementDataDto;
-                let loginerInfo = result.loginerInfo;
-                self.screenItem().closureEmploy = result.extraHolidayManagementDataDto.closureEmploy;
-                self.screenItem().listEmployee = [];
-                self.screenItem().selectedEmployee = new EmployeeInfo(wkHistory.employeeId, loginerInfo.employeeCode, loginerInfo.employeeName, wkHistory.workplaceId, wkHistory.workplaceCode, wkHistory.workplaceName);
-                self.screenItem().listEmployee.push(self.screenItem().selectedEmployee);
-                self.screenItem().employeeInputList.push(new EmployeeKcp009(loginerInfo.employeeId,
-                    loginerInfo.employeeCode, loginerInfo.employeeName, wkHistory.workplaceName, wkHistory.wkpDisplayName));
-                self.screenItem().listExtractData = result.extraHolidayManagementDataDto.extraData;
-                self.convertToDisplayList();
-                self.updateSubstituteDataList();
-                self.screenItem().dispTotalExpiredDate = result.leaveSettingExpiredDate;
-                self.initKCP009();
-                self.disableLinkedData();
-            }).fail(function(result) {
+            service.getInfoEmLogin().done(function(loginerInfo) {
+                service.getSubsitutionData(searchCondition).done(function(result) {
+                    let wkHistory = result.wkHistory;
+                    let employeeInfo = result.extraHolidayManagementDataDto.sempHistoryImport;
+                    let extraHolidayData = result.extraHolidayManagementDataDto;
+                    self.screenItem().closureEmploy = result.extraHolidayManagementDataDto.closureEmploy;
+                    self.screenItem().listEmployee = [];
+                    self.screenItem().selectedEmployee = new EmployeeInfo(loginerInfo.sid, loginerInfo.employeeCode, loginerInfo.employeeName, wkHistory.workplaceId, wkHistory.workplaceCode, wkHistory.workplaceName);
+                    self.screenItem().listEmployee.push(self.screenItem().selectedEmployee);
+                    self.screenItem().employeeInputList.push(new EmployeeKcp009(loginerInfo.sid,
+                        loginerInfo.employeeCode, loginerInfo.employeeName, wkHistory.workplaceName, wkHistory.wkpDisplayName));
+                    self.screenItem().listExtractData = result.extraHolidayManagementDataDto.extraData;
+                    self.convertToDisplayList();
+                    self.updateSubstituteDataList();
+                    self.screenItem().dispTotalExpiredDate = result.compenSettingEmpExpiredDate;
+                    self.initKCP009();
+                    self.disableLinkedData();
+                    dfd.resolve();
+                }).fail(function(result) {
+                    dialog.alertError(result.errorMessage);
+                    dfd.reject();
+                });
+            }).fail(function(result){
                 dialog.alertError(result.errorMessage);
+                dfd.reject();
             });
-
-            dfd.resolve();
             return dfd.promise();
         }
         initKCP009() {
@@ -361,24 +365,9 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         tabindex: number;
 
         constructor() {
-            //            this.periodOptionItem: KnockoutObservableArray<ItemModel>;
-            //            this.selectedPeriodItem: KnockoutObservable<number>;
-            //            this.dateValue: KnockoutObservable<any>;
             this.dispTotalRemainHours = ko.observable(null);
             this.dispTotalExpiredDate = ko.observable(null);
-            //            this.closureEmploy;
-            //            this.selectedEmployee;
-            //            this.listExtractData;
             this.subData = null;
-            //            this.listEmployee;
-            //            this.leaveSettingExpiredDate;
-            //            this.compenSettingEmpExpiredDate;
-            //_____CCG001________
-            //            this.ccgcomponent;
-            //            this.listEmployeeKCP009;
-            //            this.showinfoSelectedEmployee;
-            //            this.baseDate = ko.observable(new Date());
-            //___________KCP009______________
             this.employeeInputList = ko.observableArray([]);
             this.systemReference = ko.observable(SystemType.EMPLOYMENT);
             this.isDisplayOrganizationName = ko.observable(false);
