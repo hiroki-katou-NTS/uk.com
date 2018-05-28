@@ -36,7 +36,7 @@ public class EmployeeInformationAdapterImpl implements EmployeeInformationAdapte
 					.toGetWorkplace(param.isToGetWorkplace())
 					.toGetDepartment(param.isToGetDepartment())
 					.toGetPosition(param.isToGetPosition())
-					.toGetEmploymentCls(param.isToGetEmployment())
+					.toGetEmployment(param.isToGetEmployment())
 					.toGetClassification(param.isToGetClassification())
 					.toGetEmploymentCls(param.isToGetEmploymentCls())
 					.build();
