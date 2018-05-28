@@ -8,9 +8,8 @@ module nts.uk.com.view.kwr002.d {
             updateSingleAttendanceRecord: "at/function/attendancerecord/item/updateSingleAttndRec",
             deleteSingleAttendanceRecord: "at/function/attendancerecord/item/deleteSingleAttndRec",
             getAttendanceRecordItemsByScreenUseAtr: "at/function/attendancerecord/item/getAttndRecItem/",
-            testAnotherPath: "at/function/attendancerecord/item/updateCalculateAttndRec",
-            getAllAttendanceDaily: "at/function/attendancerecord/item/getAllAttndDaily",
-           
+            getAllAttendanceDaily: "at/function/attendancerecord/item/getAllAttndDaily",    
+            getAllAttndByAtrAndType: "at/function/attendancerecord/item/getAttndRecByAttndTypeKey"
         };
 
         /**
@@ -39,17 +38,18 @@ module nts.uk.com.view.kwr002.d {
         export function getAttendanceRecordItemsByScreenUseAtr(screenUseAtr: number): JQueryPromise<Array<viewmodel.model.AttendanceRecordItem>> {
             return nts.uk.request.ajax("at", path.getAttendanceRecordItemsByScreenUseAtr + screenUseAtr);
         }
+        /**
+         * get all attendance item
+         */
         export function getAllAttendanceDaily(): JQueryPromise<Array<viewmodel.model.AttendanceRecordItem>> {
             return nts.uk.request.ajax("at", path.getAllAttendanceDaily);
         }
-        export function testAnotherPath(attendanceRecordKey: viewmodel.model.CalculateAttendanceRecordSaveCommand) {
-            return nts.uk.request.ajax("at", path.testAnotherPath, attendanceRecordKey);
+        /**
+         * get all attendance by srceenUseAtr and attendanceType
+         */
+        export function getAllAttndByAtrAndType(attendanceTypeKey:viewmodel.model.AttendanceTypeKey):JQueryPromise<Array<viewmodel.model.AttendanceRecordItem>> {
+            return nts.uk.request.ajax("at", path.getAllAttndByAtrAndType,attendanceTypeKey);
         }
-        export function testSingleHandle(singleCommand:viewmodel.model.SingleAttendanceCommand) {
-            return nts.uk.request.ajax("at", path.updateSingleAttendanceRecord,singleCommand);
-        }
-        export function testCalculateHandle(singleCommand:viewmodel.model.CalculateAttendanceRecordSaveCommand) {
-            return nts.uk.request.ajax("at", path.testAnotherPath,singleCommand);
-        }
+
     }
 }

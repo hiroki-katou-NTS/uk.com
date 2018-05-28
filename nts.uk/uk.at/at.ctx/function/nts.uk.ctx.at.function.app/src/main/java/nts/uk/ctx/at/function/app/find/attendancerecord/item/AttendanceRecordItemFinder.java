@@ -15,10 +15,10 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class AttendanceRecordItemFinder {
 
-//	/** The at type. */
-//	@Inject
-//	private AttendanceTypeDivergenceAdapter atType;
-	
+	// /** The at type. */
+	// @Inject
+	// private AttendanceTypeDivergenceAdapter atType;
+
 	@Inject
 	private AttendanceTypeRepository attendanceTypeRepository;
 
@@ -26,58 +26,78 @@ public class AttendanceRecordItemFinder {
 	@Inject
 	private DailyAttendanceItemNameDomainService atName;
 
+	/**
+	 * Gets the attnd items by atr and type.
+	 *
+	 * @param screenUseAtr the screen use atr
+	 * @param attendanceType the attendance type
+	 * @return the attnd items by atr and type
+	 */
+	public List<AttendanceRecordItemDto> getAttndItemsByAtrAndType(AttendanceTypeKeyDto attendanceTypeKey) {
+		List<AttendanceRecordItemDto> listAttendanceRecordItem = new ArrayList<AttendanceRecordItemDto>();
+		String companyId = AppContexts.user().companyId();
+		// get list AttendanceItemId by screenUseAtr,attendanceType
+		List<Integer> attendanceItemIds = attendanceTypeRepository.getItemByAtrandType(companyId, attendanceTypeKey.getScreenUseAtr(),attendanceTypeKey.getAttendanceType())
+				.stream().map(e -> e.getAttendanceItemId()).collect(Collectors.toList());
+		// get list AttendanceItem and convert to list attendancerecordItemDto
+		listAttendanceRecordItem = atName.getNameOfDailyAttendanceItem(attendanceItemIds).stream()
+				.map(e -> new AttendanceRecordItemDto(e.getAttendanceItemId(), e.getAttendanceItemName(), attendanceTypeKey.getScreenUseAtr(),
+						e.getTypeOfAttendanceItem()))
+				.collect(Collectors.toList());
+		return listAttendanceRecordItem;
+	}
 
 	/**
 	 * Gets the attendance items by screen use atr.
 	 *
-	 * @param screenUseAtr the screen use atr
+	 * @param screenUseAtr
+	 *            the screen use atr
 	 * @return the attendance items by screen use atr
 	 */
-	public List<AttendanceRecordItemDto> getAttendanceItemsByScreenUseAtr(int screenUseAtr){
-		String companyId = AppContexts.user().companyId();
-		
-		List<Integer> attendanceItemIds = attendanceTypeRepository.getItemByScreenUseAtr(companyId, screenUseAtr)
-				.stream()
-				.map(e -> e.getAttendanceItemId())
-				.collect(Collectors.toList());
-		//get list AttendanceItem by screenUseAtr
+	public List<AttendanceRecordItemDto> getAttendanceItemsByScreenUseAtr(int screenUseAtr) {
 		List<AttendanceRecordItemDto> listAttendanceRecordItem = new ArrayList<AttendanceRecordItemDto>();
-//		List<Integer> attendanceItemIds = atType.getItemByScreenUseAtr(companyId, screenUseAtr).stream().map(e -> e.getAttendanceItemId()).collect(Collectors.toList());
-		//get list AttendanceItem and convert to list attendancerecordItemDto
-		listAttendanceRecordItem = atName.getNameOfDailyAttendanceItem(attendanceItemIds).stream().map(
-				e -> new AttendanceRecordItemDto(e.getAttendanceItemId(),e.getAttendanceItemName(),screenUseAtr,e.getTypeOfAttendanceItem())).collect(Collectors.toList());
+		String companyId = AppContexts.user().companyId();
+		// get list AttendanceItem by screenUseAtr
+		List<Integer> attendanceItemIds = attendanceTypeRepository.getItemByScreenUseAtr(companyId, screenUseAtr)
+				.stream().map(e -> e.getAttendanceItemId()).collect(Collectors.toList());
+		// get list AttendanceItem and convert to list attendancerecordItemDto
+		listAttendanceRecordItem = atName.getNameOfDailyAttendanceItem(attendanceItemIds).stream()
+				.map(e -> new AttendanceRecordItemDto(e.getAttendanceItemId(), e.getAttendanceItemName(), screenUseAtr,
+						e.getTypeOfAttendanceItem()))
+				.collect(Collectors.toList());
 		return listAttendanceRecordItem;
 	}
-	
+
 	/**
 	 * Find attendance items by id.
 	 *
-	 * @param listAttendanceId the list attendance id
+	 * @param listAttendanceId
+	 *            the list attendance id
 	 * @return the list
 	 */
-	public List<AttendanceRecordItemDto> findAttendanceItemsById(List<Integer> listAttendanceId){
+	public List<AttendanceRecordItemDto> findAttendanceItemsById(List<Integer> listAttendanceId) {
 		List<AttendanceRecordItemDto> result = new ArrayList<>();
-		result = atName.getNameOfDailyAttendanceItem(listAttendanceId).stream().map(
-				e -> new AttendanceRecordItemDto(e.getAttendanceItemId(),e.getAttendanceItemName(),0,e.getTypeOfAttendanceItem())).collect(Collectors.toList());
+		result = atName.getNameOfDailyAttendanceItem(listAttendanceId).stream()
+				.map(e -> new AttendanceRecordItemDto(e.getAttendanceItemId(), e.getAttendanceItemName(), 0,
+						e.getTypeOfAttendanceItem()))
+				.collect(Collectors.toList());
 		return result;
 	}
-	
-	public List<AttendanceRecordItemDto> getAllAttendanceDaily(List<Integer> listScreenUseAtr){
-		
+
+	public List<AttendanceRecordItemDto> getAllAttendanceDaily(List<Integer> listScreenUseAtr) {
 		String companyId = AppContexts.user().companyId();
 		List<AttendanceRecordItemDto> attendanceItemList = new ArrayList<AttendanceRecordItemDto>();
-
-		//get attendanceId
+		// get attendanceId
 		listScreenUseAtr.forEach(item -> {
 			attendanceItemList.addAll(attendanceTypeRepository.getItemByScreenUseAtr(companyId, item).stream()
-					.map(e -> new AttendanceRecordItemDto(e.getAttendanceItemId(), null, item,e.getAttendanceItemType().value)).collect(Collectors.toList()));
+					.map(e -> new AttendanceRecordItemDto(e.getAttendanceItemId(), null, item,
+							e.getAttendanceItemType().value))
+					.collect(Collectors.toList()));
 		});
-
-		//get attendanceName
+		// get attendanceName
 		List<DailyAttendanceItem> dailyAttendanceItems = atName.getNameOfDailyAttendanceItem(
 				attendanceItemList.stream().map(e -> e.getAttendanceItemId()).collect(Collectors.toList()));
-
-		//map attendanceId,attendanceName,ScreenUseItem
+		// map attendanceId,attendanceName,ScreenUseItem
 		attendanceItemList.forEach(attendanceItem -> {
 			for (DailyAttendanceItem attendanceName : dailyAttendanceItems) {
 				if (attendanceItem.getAttendanceItemId() == attendanceName.getAttendanceItemId())
@@ -86,5 +106,5 @@ public class AttendanceRecordItemFinder {
 		});
 		return attendanceItemList;
 	}
-	
+
 }

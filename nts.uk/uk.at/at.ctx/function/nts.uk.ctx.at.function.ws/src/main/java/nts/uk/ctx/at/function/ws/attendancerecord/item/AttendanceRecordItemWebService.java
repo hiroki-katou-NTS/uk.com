@@ -20,6 +20,7 @@ import nts.uk.ctx.at.function.app.command.attendancerecord.item.SingleAttendance
 import nts.uk.ctx.at.function.app.find.attendancerecord.item.AttendanceRecordItemDto;
 import nts.uk.ctx.at.function.app.find.attendancerecord.item.AttendanceRecordItemFinder;
 import nts.uk.ctx.at.function.app.find.attendancerecord.item.AttendanceRecordKeyDto;
+import nts.uk.ctx.at.function.app.find.attendancerecord.item.AttendanceTypeKeyDto;
 import nts.uk.ctx.at.function.app.find.attendancerecord.item.CalculateAttendanceRecordDto;
 import nts.uk.ctx.at.function.app.find.attendancerecord.item.CalculateAttendanceRecordFinder;
 import nts.uk.ctx.at.function.app.find.attendancerecord.item.SingleAttendanceRecordDto;
@@ -163,6 +164,18 @@ public class AttendanceRecordItemWebService {
 		screenUse.add(14);
 		screenUse.add(15);
 		return attendanceItemFinder.getAllAttendanceDaily(screenUse);
+	}
+	
+	/**
+	 * Gets the all attnd by atr and type.
+	 *
+	 * @param attendanceTypeKey the attendance type key
+	 * @return the all attnd by atr and type
+	 */
+	@POST
+	@Path("getAttndRecByAttndTypeKey")
+	public List<AttendanceRecordItemDto> getAllAttndByAtrAndType(AttendanceTypeKeyDto attendanceTypeKey){
+		return this.attendanceItemFinder.getAttndItemsByAtrAndType(attendanceTypeKey);
 	}
 
 
