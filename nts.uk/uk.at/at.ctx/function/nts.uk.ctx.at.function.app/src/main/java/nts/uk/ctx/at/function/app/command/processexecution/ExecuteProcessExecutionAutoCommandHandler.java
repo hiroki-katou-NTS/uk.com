@@ -2869,24 +2869,6 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 
 }
 
-class CreateDailyException extends Exception {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	public CreateDailyException() {
-	}
-}
-
-class DailyCalculateException extends Exception {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	public DailyCalculateException() {
-	}
 }
 
 
