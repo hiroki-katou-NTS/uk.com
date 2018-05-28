@@ -58,6 +58,7 @@ module nts.uk.ui.exTable {
         features: any;
         // Settings
         areaResize: boolean;
+        remainSizes: boolean;
         heightSetter: any;
         // dynamic or fixed
         bodyHeightSetMode: string = DYNAMIC;
@@ -83,6 +84,7 @@ module nts.uk.ui.exTable {
             this.horzSumBodyHeight = options.horizontalSumBodyHeight;
             this.horzSumBodyRowHeight = options.horizontalSumBodyRowHeight;
             this.areaResize = options.areaResize;
+            this.remainSizes = !util.isNullOrUndefined(options.remainSizes) ? options.remainSizes : true;
             this.heightSetter = options.heightSetter;
             this.bodyHeightSetMode = options.bodyHeightMode;
             this.windowXOccupation = options.windowXOccupation;
@@ -423,7 +425,7 @@ module nts.uk.ui.exTable {
          */
         generalSettings(headerWrappers: Array<HTMLElement>, bodyWrappers: Array<HTMLElement>) {
             let self = this;
-            self.$container.addXEventListener(events.BODY_HEIGHT_CHANGED, resize.onBodyHeightChanged);
+            self.$container.addXEventListener(events.BODY_HEIGHT_CHANGED, resize.onBodyHeightChanged.bind(self));
 //            if (self.heightSetter && self.heightSetter.showBodyHeightButton) {
 //                
 //                let $lastHeader = headerWrappers[headerWrappers.length - 1];
@@ -489,8 +491,11 @@ module nts.uk.ui.exTable {
                 new resize.AreaAdjuster(self.$container, headerWrappers, bodyWrappers, self.$follower).handle();
                 self.$container.addXEventListener(events.AREA_RESIZE_END, resize.onAreaComplete.bind(self));
             }
-            storage.area.init(self.$container, headerWrappers);
-            storage.tableHeight.init(self.$container);
+            
+            if (self.remainSizes) {
+                storage.area.init(self.$container, headerWrappers);
+                storage.tableHeight.init(self.$container);
+            }
             
             // Edit done
             update.editDone(self.$container);
@@ -554,7 +559,7 @@ module nts.uk.ui.exTable {
         export function process($container: HTMLElement, options: any, isUpdate?: boolean) {
             let levelStruct = synthesizeHeaders(options);
             options.levelStruct = levelStruct;
-            if (isUpdate && !util.isNullOrUndefined($container.style.maxWidth)) {
+            if (isUpdate && !util.isNullOrUndefined($container.style.maxWidth) && !_.isEmpty($container.style.maxWidth)) {
                 let maxWidth = calcWidth(options.columns);
                 if (!options.isHeader && options.overflow === "scroll") {
                     $container.style.maxWidth = (maxWidth + helper.getScrollWidth()) + "px";
@@ -1191,7 +1196,7 @@ module nts.uk.ui.exTable {
         /**
          * CalcWidth.
          */
-        function calcWidth(columns: Array<any>) {
+        export function calcWidth(columns: Array<any>) {
             let width = 0;
             columns.forEach(function(c, i) {
                 if (c.group) {
@@ -4452,6 +4457,10 @@ module nts.uk.ui.exTable {
                 $container.style.width = (parseFloat($container.style.width) + (width - parseFloat($detailBody.style.width))) + "px";
                 $detailHeader.style.width = width + "px";
                 $detailBody.style.width = width + "px";
+                
+                if (storage.area.getPartWidths($container).isPresent()) {
+                    storage.area.save($container, $.data($detailHeader, internal.EX_PART), width);
+                }
                 let $horzSumHeader = $container.querySelector("." + HEADER_PRF + HORIZONTAL_SUM);
                 if ($horzSumHeader) {
                     $horzSumHeader.style.width = width + "px";
@@ -4483,6 +4492,9 @@ module nts.uk.ui.exTable {
             $container.style.width = (parseFloat($container.style.width) 
                     + (width - parseFloat($detailBody.style.width))) + "px";
             $detailBody.style.width = width + "px";
+            if (storage.area.getPartWidths($container).isPresent()) {
+                storage.area.save($container, $.data($detailHeader, internal.EX_PART), width);
+            }
             if ($horzSumHeader && $horzSumHeader.style.display !== "none") {
                 $horzSumHeader.style.width = (width - scrollWidth) + "px";
                 $horzSumContent.style.width = width + "px";
@@ -4572,10 +4584,12 @@ module nts.uk.ui.exTable {
         /**
          * On area complete.
          */
-        export function onAreaComplete(event: any, $leftArea: HTMLElement, $rightArea: HTMLElement, 
-                                        leftWidth: number, rightWidth: number) {
+        export function onAreaComplete(args: any) {
             let self = this;
-            saveSizes(self.$container, $leftArea, $rightArea, leftWidth, rightWidth);
+            let detail = args.detail;
+            if (self.remainSizes) {
+                saveSizes(self.$container, detail[0], detail[1], detail[2], detail[3]);
+            }
         }
         
         /**
@@ -4595,9 +4609,12 @@ module nts.uk.ui.exTable {
          * On body height changed.
          */
         export function onBodyHeightChanged(event: any) {
+            let self = this;
             let $container = event.target;
-            let height = event.detail;
-            storage.tableHeight.save($container, height);
+            if (self.remainSizes) {
+                let height = event.detail;
+                storage.tableHeight.save($container, height);
+            }
             repositionHorzSum($container);
         }
     }
@@ -4744,7 +4761,7 @@ module nts.uk.ui.exTable {
                 }
                 let $bodies = $container.querySelectorAll("div[class*='" + BODY_PRF + "']");
                 if ($bodies.length === 0) return;
-                save($container, $bodies[0].style.height);
+                save($container, parseFloat($bodies[0].style.height));
             }
             
             /**
@@ -5658,17 +5675,44 @@ module nts.uk.ui.exTable {
          */
         function updateLeftmost($container: JQuery, header: any, body: any) {
             let exTable: any = $container.data(NAMESPACE);
+            let sizeAdjust, left, width, offsetWidth = 0;
+            if (!exTable.middleHeader && !exTable.leftHorzSumHeader 
+                && !exTable.horizontalSumHeader && !exTable.verticalSumHeader
+                && !exTable.areaResize) {
+                sizeAdjust = true;
+            }
+            
             if (header) {
                 _.assignIn(exTable.leftmostHeader, header);
                 let $header = $container.find("." + HEADER_PRF + LEFTMOST);
+                if (sizeAdjust && header.columns) {
+                    width = render.calcWidth(header.columns);
+                    exTable.leftmostHeader.width = width + "px";
+                    offsetWidth = Math.abs($header.width() - width);
+                    if (offsetWidth > 0) {
+                        let $detailH = $container.find("." + HEADER_PRF + DETAIL);
+                        let $detailB = $container.find("." + BODY_PRF + DETAIL);
+                        let op = $header.width() > width ? -1 : 1;
+                        $header.width(width);
+                        left = parseFloat($detailH.css("left"));
+                        left = left + op * offsetWidth;
+                        $detailH.css("left", left);
+                        $detailB.css("left", left);
+                    }
+                }
+                
                 let pu = $header.find("table").data(internal.POPUP);
                 $header.empty();
                 render.process($header[0], exTable.leftmostHeader, true);
                 if (pu && pu.css("display") !== "none") pu.hide();
             }
+            
             if (body) {
                 _.assignIn(exTable.leftmostContent, body);
                 let $body = $container.find("." + BODY_PRF + LEFTMOST);
+                if (offsetWidth > 0 && width) {
+                    $body.width(width);
+                }
                 $body.empty();
                 render.process($body[0], exTable.leftmostContent, true);
             }

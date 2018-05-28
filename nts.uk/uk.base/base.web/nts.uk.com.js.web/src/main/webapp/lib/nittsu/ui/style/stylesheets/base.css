@@ -4425,6 +4425,27 @@ button.nts-switch-button[disabled]:hover {
   background-color: #CCC;
 }
 
+.extable div.bg-weekdays, .extable td.bg-weekdays, .xheader td.bg-weekdays {
+    background-color: #D9D9D9;
+}
+
+.extable div.bg-schedule-specific-date, .extable td.bg-schedule-specific-date, 
+.xheader td.bg-schedule-specific-date {
+    background-color: #ffc0cb;
+}
+
+.extable div.bg-schedule-sunday, .extable td.bg-schedule-sunday, .xheader td.bg-schedule-sunday {
+    background-color: #fabf8f;
+}
+
+.extable div.bg-schedule-saturday, .extable td.bg-schedule-saturday, .xheader td.bg-schedule-saturday {
+    background-color: #8bd8ff;
+}
+
+.extable div.bg-schedule-that-day, .extable td.bg-schedule-that-day, .xheader td.bg-schedule-that-day {
+    background-color: #ffff00;
+}
+
 /* line 27, ../sass/components/_extable.scss */
 .extable div.highlight, .extable td.highlight, .xheader td.highlight {
   background-color: #FFFFCC;
