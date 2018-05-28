@@ -156,9 +156,9 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                     let initExTable = self.setFormatData(detailHeaderDeco, self.listDailyStatus);
 
                     new nts.uk.ui.exTable.ExTable($("#extable"), {
-                        headerHeight: "30px", bodyRowHeight: "17px", bodyHeight: "340px",
+                        headerHeight: "30px", bodyRowHeight: "22px", bodyHeight: "330px",
                         horizontalSumBodyRowHeight: "0px",
-                        areaResize: true,
+                        areaResize: false,
                         bodyHeightMode: "fixed",
                         windowXOccupation: 50,
                         windowYOccupation: 20,
@@ -215,7 +215,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                 {
                     headerText: text("KAF018_29"),
                     key: "empName",
-                    width: "150px",
+                    width: "200px",
                     control: "link",
                     handler: function(rData, rowIdx, key) { self.goToD(rData); }
                 }
@@ -223,7 +223,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             leftmostHeader = {
                 columns: leftmostColumns,
                 rowHeight: "30px",
-                width: "150px"
+                width: "200px"
             };
             leftmostContent = {
                 columns: leftmostColumns,
@@ -274,11 +274,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         }
 
         getDay(time: shareModel.Time): string {
-            if (time.day == "1") {
-                return time.month + '/' + time.day;
-            } else {
-                return time.day;
-            }
+            return time.day;
         }
 
         /**
@@ -477,7 +473,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                     this.width = "50px";
                     break;
                 case 4:
-                    this.width = "50px";
+                    this.width = "60px";
                     break;
             }
         }

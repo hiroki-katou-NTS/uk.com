@@ -278,7 +278,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 $.when(sv1, sv2).done(function(detailHeaderDeco, detailContentDeco) {
                     let initExTable = self.setFormatData(detailHeaderDeco, detailContentDeco, listData);
                     new nts.uk.ui.exTable.ExTable($("#extable"), {
-                        headerHeight: "50px", bodyRowHeight: "18px", bodyHeight: "324px",
+                        headerHeight: "64px", bodyRowHeight: "22px", bodyHeight: "308px",
                         horizontalSumBodyRowHeight: "0px",
                         areaResize: false,
                         bodyHeightMode: "fixed",
@@ -331,26 +331,26 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 
             //create leftMost Header and Content            
             leftmostColumns = [
-                { headerText: text("KAF018_60"), key: "sName", width: "165px", control: "link", handler: function(rData, rowIdx, key) { } }
+                { headerText: text("KAF018_60"), key: "sName", width: "200px", control: "link", handler: function(rData, rowIdx, key) { } }
             ];
-            leftmostHeaderWidth += 165;
+            leftmostHeaderWidth += 200;
 
             if (self.useSetting.monthlyConfirm) {
-                leftmostColumns.push({ headerText: formatText(text("KAF018_61"), self.currentMonth), key: "monthConfirm", width: "35px", headerControl: "link", headerHandler: function() { } });
-                leftmostHeaderWidth += 35;
+                leftmostColumns.push({ headerText: formatText(text("KAF018_61"), self.currentMonth), key: "monthConfirm", width: "45px", headerControl: "link", headerHandler: function() { } });
+                leftmostHeaderWidth += 45;
             }
             if (self.useSetting.usePersonConfirm) {
-                leftmostColumns.push({ headerText: text("KAF018_62"), key: "personConfirm", width: "45px" });
-                leftmostHeaderWidth += 45;
+                leftmostColumns.push({ headerText: text("KAF018_62"), key: "personConfirm", width: "55px" });
+                leftmostHeaderWidth += 55;
             }
             if (self.useSetting.useBossConfirm) {
-                leftmostColumns.push({ headerText: text("KAF018_63"), key: "bossConfirm", width: "45px" });
-                leftmostHeaderWidth += 45;
+                leftmostColumns.push({ headerText: text("KAF018_63"), key: "bossConfirm", width: "55px" });
+                leftmostHeaderWidth += 55;
             }
 
             leftmostHeader = {
                 columns: leftmostColumns,
-                rowHeight: "50px",
+                rowHeight: "64px",
                 width: leftmostHeaderWidth + "px"
             };
             leftmostContent = {
@@ -378,11 +378,11 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                     headerText: text("KAF018_64"),
                     group: detailHeaderColumns
                 }],
-                width: "930px",
+                width: "870px",
                 features: [
                     {
                         name: "HeaderRowHeight",
-                        rows: { 0: "20px", 1: "30px" }
+                        rows: { 0: "22px", 1: "42px" }
                     },
                     {
                         name: "HeaderCellStyle",
