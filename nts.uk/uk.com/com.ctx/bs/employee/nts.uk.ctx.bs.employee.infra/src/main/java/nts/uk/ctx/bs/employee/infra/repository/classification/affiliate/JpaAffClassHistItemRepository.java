@@ -32,6 +32,9 @@ import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate.BsymtAffClas
  */
 @Stateless
 public class JpaAffClassHistItemRepository extends JpaRepository implements AffClassHistItemRepository {
+	
+	private static final String GET_BY_HISTID_LIST = "SELECT ci FROM BsymtAffClassHistItem ci" 
+			+ " WHERE ci.historyId IN :historyIds";
 
 	@Override
 	public Optional<AffClassHistItem> getByHistoryId(String historyId) {
@@ -205,6 +208,16 @@ public class JpaAffClassHistItemRepository extends JpaRepository implements AffC
 		// convert.
 		return resultList.stream().map(category -> toDomain(category))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<AffClassHistItem> getByHistoryIds(List<String> historyIds) {
+		if (historyIds.isEmpty()) {
+			return new ArrayList<>();
+		}
+		List<BsymtAffClassHistItem> entities = this.queryProxy().query(GET_BY_HISTID_LIST, BsymtAffClassHistItem.class)
+				.setParameter("historyIds", historyIds).getList();
+		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
 	}
 
 }

@@ -1225,7 +1225,8 @@ module nts.uk.ui.exTable {
             if (styleMaker && _.isFunction(styleMaker)) {
                 let style = styleMaker(rowIdx, columnKey, innerIdx, valueObj);
                 if (style) {
-                    $cell.style.color = style.textColor;
+                    if (style.class) helper.addClass($cell, style.class);
+                    else $cell.style.color = style.textColor;
                     makeUp($grid, rowIdx, columnKey, style);
                 }
             }
@@ -1290,7 +1291,8 @@ module nts.uk.ui.exTable {
                         if (styleMaker && _.isFunction(styleMaker)) {
                             let style = styleMaker(rowIdx, key, -1, cData);
                             if (style) {
-                                $target.style.color = style.textColor;
+                                if (style.class) helper.addClass($target, style.class);
+                                else $target.style.color = style.textColor;
                                 makeUp($grid, rowIdx, key, style);
                             }
                         }
@@ -6160,6 +6162,7 @@ module nts.uk.ui.exTable {
         function getLockCells($container: JQuery) {
             let tbl = helper.getMainTable($container[0]);
             let det = $.data(tbl, internal.DET); 
+            if (!det) return [];
             let cells = [];
             Object.keys(det).forEach(function(k) {
                 if (!util.isNullOrUndefined(det[k])) {

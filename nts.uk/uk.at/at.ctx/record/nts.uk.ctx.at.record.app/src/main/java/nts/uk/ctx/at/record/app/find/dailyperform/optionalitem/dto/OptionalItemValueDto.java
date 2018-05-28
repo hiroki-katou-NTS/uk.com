@@ -14,6 +14,9 @@ import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValue;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth;
+import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
+import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -48,19 +51,19 @@ public class OptionalItemValueDto {
 	
 	public AnyItemValue toDomain() {
 		return new AnyItemValue(new AnyItemNo(this.itemNo), 
-						this.isTimesItem ? Optional.of(new AnyItemTimes(Integer.valueOf(this.value))) : Optional.empty(),
+						this.isTimesItem ? Optional.of(new AnyItemTimes(new BigDecimal(this.value))) : Optional.empty(),
 						this.isAmountItem ? Optional.of(new AnyItemAmount(new BigDecimal(this.value))) : Optional.empty(),
 						this.isTimeItem ? Optional.of(new AnyItemTime(Integer.valueOf(this.value))) : Optional.empty());
 	}
 	
 	public static OptionalItemValueDto from(AnyItemOfMonthly c) {
 		if(c != null) {
-			boolean isTimes = c.getTimes().v().doubleValue() > 0;
-			boolean isAmount = c.getAmount().v() > 0;
-			boolean isTime = c.getTime().valueAsMinutes() > 0;
-			String value = isTimes ? c.getTimes().v().toString()
-					: isAmount ? String.valueOf(c.getAmount().v())
-							: String.valueOf(c.getTime().valueAsMinutes());
+			boolean isTimes = c.getTimes().isPresent();
+			boolean isAmount = c.getAmount().isPresent();
+			boolean isTime = c.getTime().isPresent();
+			String value = isTimes ? c.getTimes().get().v().toString()
+					: isAmount ? String.valueOf(c.getAmount().get().v())
+							: String.valueOf(c.getTime().get().valueAsMinutes());
 			return new OptionalItemValueDto(value, c.getAnyItemId(), isTime, isTimes, isAmount);
 		}
 		return null;
@@ -87,24 +90,24 @@ public class OptionalItemValueDto {
 		return null;
 	}
 	
-	public int getMonthlyTime(){
+	public AnyTimeMonth getMonthlyTime(){
 		if(isTimeItem){
-			return Integer.parseInt(value);
+			return new AnyTimeMonth(Integer.parseInt(value));
 		}
-		return 0;
+		return null;
 	}
 	
-	public double getMonthlyTimes(){
+	public AnyTimesMonth getMonthlyTimes(){
 		if(isTimesItem){
-			return Double.parseDouble(value);
+			return new AnyTimesMonth(Double.parseDouble(value));
 		}
-		return 0d;
+		return null;
 	}
 	
-	public int getMonthlyAmount(){
+	public AnyAmountMonth getMonthlyAmount(){
 		if(isAmountItem){
-			return Integer.parseInt(value);
+			return new AnyAmountMonth(Integer.parseInt(value));
 		}
-		return 0;
+		return null;
 	}
 }

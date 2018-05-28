@@ -87,4 +87,8 @@ public class PerInfoItemDefDto {
 		this.selectionItemRefType = itemDefinition.getSelectionItemRefType();
 
 	}
+	
+	public boolean isSingleItem() {
+		return itemTypeState.itemType == ItemType.SINGLE_ITEM.value;
+	}
 }

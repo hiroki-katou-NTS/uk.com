@@ -1,4 +1,5 @@
 module cps001.h.vm {
+
     import text = nts.uk.resource.getText;
     import alert = nts.uk.ui.dialog.alert;
     import error = nts.uk.ui.dialog.alertError;
@@ -80,7 +81,7 @@ module cps001.h.vm {
                 { headerText: text("CPS001_121"), key: 'useDays', width: 80, formatter: self.formatterDate },
                 { headerText: text("CPS001_130"), key: 'overLimitDays', width: 80, formatter: self.formatterDate },
                 { headerText: text("CPS001_123"), key: 'remainingDays', width: 80, formatter: self.formatterDate },
-                { headerText: text("CPS001_129"), key: 'expirationStatus', width: 80, formatter: self.formatterExState }
+                { headerText: text("CPS001_129"), key: 'expirationStatus', width: 90, formatter: self.formatterExState }
             ]);
         }
 

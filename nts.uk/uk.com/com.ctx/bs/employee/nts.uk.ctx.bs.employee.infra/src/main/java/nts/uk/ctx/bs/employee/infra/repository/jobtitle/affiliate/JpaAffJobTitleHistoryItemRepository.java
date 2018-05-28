@@ -3,6 +3,7 @@ package nts.uk.ctx.bs.employee.infra.repository.jobtitle.affiliate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -30,7 +31,10 @@ public class JpaAffJobTitleHistoryItemRepository extends JpaRepository
 	private final String GET_BY_LIST_EID_DATE = "select hi from BsymtAffJobTitleHistItem hi"
 			+ " inner join BsymtAffJobTitleHist h on hi.hisId = h.hisId"
 			+ " where h.sid IN :lstSid and h.strDate <= :referDate and h.endDate >= :referDate";
-
+	
+	private final String GET_ALL_BY_HISTID = "select hi from BsymtAffJobTitleHistItem hi"
+			+ " where hi.hisId IN :histIds";
+	
 	/**
 	 * Convert from domain to entity
 	 * 
@@ -167,4 +171,15 @@ public class JpaAffJobTitleHistoryItemRepository extends JpaRepository
 		}
 		return null;
 	}
+
+	@Override
+	public List<AffJobTitleHistoryItem> findByHitoryIds(List<String> historyIds) {
+		if (historyIds.isEmpty()) {
+			return new ArrayList<>();
+		}
+		List<BsymtAffJobTitleHistItem> entities = this.queryProxy()
+				.query(GET_ALL_BY_HISTID, BsymtAffJobTitleHistItem.class).setParameter("histIds", historyIds).getList();
+		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
+	}
+
 }

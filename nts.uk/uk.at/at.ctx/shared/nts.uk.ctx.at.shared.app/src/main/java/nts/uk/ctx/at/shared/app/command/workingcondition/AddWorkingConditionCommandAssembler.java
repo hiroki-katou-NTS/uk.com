@@ -22,7 +22,6 @@ import nts.uk.ctx.at.shared.dom.workingcondition.ScheduleMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZoneScheduledMasterAtr;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBusCal;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleMasterReferenceAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -175,11 +174,10 @@ public class AddWorkingConditionCommandAssembler {
 						WorkScheduleMasterReferenceAtr.class) : null,command.getReferenceType() != null ? EnumAdaptor.valueOf(command.getReferenceType().intValue(),
 						TimeZoneScheduledMasterAtr.class) : null);
 		// MonthlyPatternWorkScheduleCre
-		// Set default to FOLLOW_MASTER_REFERENCE
-		MonthlyPatternWorkScheduleCre monthlySchedule = new MonthlyPatternWorkScheduleCre( TimeZoneScheduledMasterAtr.FOLLOW_MASTER_REFERENCE);
-		ScheduleMethod scheduleMethod = new ScheduleMethod(
-				command.getBasicCreateMethod()!=null? EnumAdaptor.valueOf(command.getBasicCreateMethod().intValue(), WorkScheduleBasicCreMethod.class) :null,
-				busCal, monthlySchedule);
+		MonthlyPatternWorkScheduleCre monthlySchedule = new MonthlyPatternWorkScheduleCre(
+				command.getReferenceType().intValue());
+		ScheduleMethod scheduleMethod = new ScheduleMethod(command.getBasicCreateMethod().intValue(), busCal,
+				monthlySchedule);
 		WorkingConditionItem workingCond = new WorkingConditionItem(histId,
 				// Default value is Use する
 				EnumAdaptor.valueOf(
@@ -199,9 +197,11 @@ public class AddWorkingConditionCommandAssembler {
 						command.getVacationAddedTimeAtr() != null ? command.getVacationAddedTimeAtr().intValue() : NotUseAtr.NOTUSE.value,
 						NotUseAtr.class),
 				// Default vaule is 0
-				command.getContractTime() != null ? new LaborContractTime(command.getContractTime().intValue()) : new LaborContractTime(0),
-						command.getLaborSystem() != null ? EnumAdaptor.valueOf(command.getLaborSystem().intValue(),
-						WorkingSystem.class) : null,
+				command.getContractTime() != null ? new LaborContractTime(command.getContractTime().intValue())
+						: new LaborContractTime(0),
+				command.getLaborSystem() != null
+						? EnumAdaptor.valueOf(command.getLaborSystem().intValue(), WorkingSystem.class)
+						: WorkingSystem.REGULAR_WORK,
 				// HourlyPaymentAtr default value is 時給者以外
 				holidayAddTimeSet, scheduleMethod, command.getHourlyPaymentAtr() != null? command.getHourlyPaymentAtr().intValue() : HourlyPaymentAtr.OOUTSIDE_TIME_PAY.value,
 				command.getTimeApply() != null ? new BonusPaySettingCode(command.getTimeApply()) : null,

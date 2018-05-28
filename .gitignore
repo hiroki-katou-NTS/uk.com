@@ -7,7 +7,6 @@
 **/.nb-gradle*
 **/.settings*
 **/.ide*
-**/out*
 
 #ignore sass-cache folder
 **/.sass-cache*

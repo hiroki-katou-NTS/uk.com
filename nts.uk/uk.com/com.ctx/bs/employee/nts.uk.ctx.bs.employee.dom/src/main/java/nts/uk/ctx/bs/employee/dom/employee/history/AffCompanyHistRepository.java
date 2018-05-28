@@ -31,6 +31,13 @@ public interface AffCompanyHistRepository {
 	AffCompanyHist getAffCompanyHistoryOfEmployeeDesc(String cid, String employeeId);
 	
 	List<AffCompanyHist> getAffCompanyHistoryOfEmployees(List<String> employeeIds);
+	
+	/**
+	 * return AffCompanyHistByEmployee
+	 * @param employeeIds
+	 * @return
+	 */
+	List<AffCompanyHistByEmployee> getAffEmployeeHistory(List<String> employeeIds);
 
 	AffCompanyHist getAffCompanyHistoryOfEmployeeAndBaseDate(String employeeId, GeneralDate baseDate);
 

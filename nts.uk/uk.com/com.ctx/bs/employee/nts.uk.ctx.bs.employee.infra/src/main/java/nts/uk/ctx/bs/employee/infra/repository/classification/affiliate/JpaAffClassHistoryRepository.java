@@ -5,7 +5,9 @@ package nts.uk.ctx.bs.employee.infra.repository.classification.affiliate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -14,6 +16,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistory;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
 import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate.BsymtAffClassHistory;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -32,7 +35,11 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 
 	private final String GET_BY_SID_DATE = "select h from BsymtAffClassHistory h"
 			+ " where h.sid = :sid and h.startDate <= :standardDate and h.endDate >= :standardDate";
-
+	
+	private final String GET_BY_SID_LIST_PERIOD = "select h from BsymtAffClassHistory h"
+			+ " where h.sid IN :employeeIds and h.startDate <= :endDate and h.endDate >= :startDate"
+			+ " ORDER BY h.sid, h.startDate";
+			
 	@Override
 	public Optional<DateHistoryItem> getByHistoryId(String historyId) {
 
@@ -88,6 +95,34 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 				.query(GET_BY_EID_DESC, BsymtAffClassHistory.class).setParameter("sid", employeeId)
 				.setParameter("cid", cid).getList();
 		return toDomain(entities);
+	}
+	
+	@Override
+	public List<AffClassHistory> getByEmployeeListWithPeriod(List<String> employeeIds, DatePeriod period) {
+		if (employeeIds.isEmpty()) {
+			return new ArrayList<>();
+		}
+		List<BsymtAffClassHistory> entities = this.queryProxy()
+				.query(GET_BY_SID_LIST_PERIOD, BsymtAffClassHistory.class).setParameter("employeeIds", employeeIds)
+				.setParameter("startDate", period.start()).setParameter("endDate", period.end()).getList();
+		
+		Map<String, List<BsymtAffClassHistory>> entitiesByEmployee = entities.stream()
+				.collect(Collectors.groupingBy(BsymtAffClassHistory::getEmployeeId));
+		
+		String companyId = AppContexts.user().companyId();
+		List<AffClassHistory> resultList = new ArrayList<>();
+		entitiesByEmployee.forEach((employeeId, entitiesOfEmp) -> {
+			List<DateHistoryItem> historyItems = convertToHistoryItems(entitiesOfEmp);
+			resultList.add(new AffClassHistory(companyId, employeeId, historyItems));
+		});
+		return resultList;
+		
+	}
+	
+	private List<DateHistoryItem> convertToHistoryItems(List<BsymtAffClassHistory> entities) {
+		return entities.stream()
+				.map(ent -> new DateHistoryItem(ent.historyId, new DatePeriod(ent.startDate, ent.endDate)))
+				.collect(Collectors.toList());
 	}
 
 	@Override

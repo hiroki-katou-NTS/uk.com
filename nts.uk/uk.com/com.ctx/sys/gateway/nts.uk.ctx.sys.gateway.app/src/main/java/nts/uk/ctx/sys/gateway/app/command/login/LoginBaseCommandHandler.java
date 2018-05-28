@@ -262,6 +262,12 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		}
 		this.setRoleId(user.getUserId());
 	}
+	
+	protected void checkAfterLogin(UserImport user) {
+		
+//		user.
+		
+	}
 
 	/**
 	 * Sets the role id.

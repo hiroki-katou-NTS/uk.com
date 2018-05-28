@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;

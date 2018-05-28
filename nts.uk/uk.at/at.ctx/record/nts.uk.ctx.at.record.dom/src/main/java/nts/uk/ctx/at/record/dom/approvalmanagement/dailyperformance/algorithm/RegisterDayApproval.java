@@ -14,9 +14,11 @@ import org.apache.commons.lang3.tuple.Pair;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
+import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalStatusOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.approvalmanagement.check.CheckApprovalOperation;
 import nts.uk.ctx.at.record.dom.approvalmanagement.enums.ConfirmationOfManagerOrYouself;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
+import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalStatusOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
@@ -40,6 +42,9 @@ public class RegisterDayApproval {
 	// code old
 //	@Inject
 //	private OpOfDailyPerformance opOfDailyPerformance;
+	
+	@Inject
+	private ApprovalStatusOfDailyPerforRepository approvalStatusOfDailyPerforRepository;
 
 	@Inject
 	private ApprovalStatusAdapter approvalStatusAdapter;
@@ -48,6 +53,7 @@ public class RegisterDayApproval {
 		String companyId = AppContexts.user().companyId();
 		Map<Pair<String, GeneralDate>, GeneralDate> employeeIdInsert = new HashMap<>();
 		Map<Pair<String, GeneralDate>, GeneralDate> employeeIdRealse = new HashMap<>();
+		Map<Pair<String, GeneralDate>, GeneralDate> employeeIdRealseAll = new HashMap<>();
 		Optional<ApprovalProcessingUseSetting> approvalSetting = approvalProcessingRepository
 				.findByCompanyId(companyId);
 		if (!approvalSetting.isPresent())
@@ -57,7 +63,10 @@ public class RegisterDayApproval {
 			return;
 		if (checkOpt.get().value == ConfirmationOfManagerOrYouself.CAN_CHECK.value) {
 			param.getContentApproval().forEach(x -> {
-				if (x.isStatus()) {
+				if(x.isFlagRemmoveAll()){
+					employeeIdRealseAll.put(Pair.of(x.getEmployeeId(), x.getDate()), x.getDate());
+				}
+				else if (x.isStatus()) {
 					employeeIdInsert.put(Pair.of(x.getEmployeeId(), x.getDate()), x.getDate());
 				} else {
 					employeeIdRealse.put(Pair.of(x.getEmployeeId(), x.getDate()), x.getDate());
@@ -77,7 +86,10 @@ public class RegisterDayApproval {
 					}
 				}
 				if (isNotError) {
-					if (data.isStatus()) {
+					if(data.isFlagRemmoveAll()){
+						employeeIdRealseAll.put(Pair.of(data.getEmployeeId(), data.getDate()), data.getDate());
+					}
+					else if (data.isStatus()) {
 						employeeIdInsert.put(Pair.of(data.getEmployeeId(), data.getDate()), data.getDate());
 					} else {
 						employeeIdRealse.put(Pair.of(data.getEmployeeId(), data.getDate()), data.getDate());
@@ -95,6 +107,15 @@ public class RegisterDayApproval {
 			approvalStatusAdapter.registerApproval(param.getEmployeeId(),
 					employeeIdInsert.values().stream().collect(Collectors.toList()),
 					employeeIdInsert.keySet().stream().map(x -> x.getKey()).collect(Collectors.toList()), 1, companyId);
+		
+		if(!employeeIdRealseAll.isEmpty()){
+			employeeIdRealseAll.entrySet().forEach(x ->{
+				Optional<ApprovalStatusOfDailyPerfor> dailyPerforOpt= approvalStatusOfDailyPerforRepository.find(x.getKey().getLeft(), x.getKey().getRight());
+				if(dailyPerforOpt.isPresent()){
+					approvalStatusAdapter.cleanApprovalRootState(dailyPerforOpt.get().getRootInstanceID(), 1);
+				}
+			});
+		}
 	}
 
 //	public void registerDayApprovalOldaaa(ParamDayApproval param) {

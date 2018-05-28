@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper.YearServicePer;
@@ -25,6 +26,11 @@ public class DeleteYearServicePerCommandHandler extends CommandHandler<DeleteYea
 		if(!yearServicePerOld.isPresent()){
 			throw new RuntimeException("対象データがありません。");
 		}
+		
+		if(yearServicePerOld.get().getProvision() == 1) {
+			throw new BusinessException("Msg_1219");
+		}
+		
 		yearServicePerRep.delete(companyId, context.getCommand().getSpecialHolidayCode(), context.getCommand().yearServiceCode);
 	}
 	

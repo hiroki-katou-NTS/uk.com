@@ -66,6 +66,7 @@ import nts.uk.ctx.at.record.app.command.remainingnumber.nursingcareleave.UpdateC
 import nts.uk.ctx.at.record.app.command.remainingnumber.otherhdinfo.AddOtherHolidayInfoCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.otherhdinfo.DeleteOtherHolidayInfoCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.otherhdinfo.UpdateOtherHolidayInfoCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.AddResvLeaRemainPeregCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant10Command;
 import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant11Command;
 import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant12Command;
@@ -86,7 +87,9 @@ import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.Ad
 import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant7Command;
 import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant8Command;
 import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant9Command;
-import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.AddResvLeaRemainPeregCommand;
+import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.add.AddStampCardCommand;
+import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.delete.DeleteStampCardCommand;
+import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.update.UpdateStampCardCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.AddShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.DeleteShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.UpdateShortWorkTimeCommand;
@@ -127,6 +130,7 @@ import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 @Stateless
 @SuppressWarnings("serial")
 public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerCollector {
+
 	/** Add handlers */
 	private static final List<TypeLiteral<?>> ADD_HANDLER_CLASSES = Arrays.asList(
 			//CS00001	社員データ管理
@@ -246,7 +250,9 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			//CS00067	特別休暇１９付与残数
 			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant19Command>>(){},
 			//CS00068	特別休暇２０付与残数
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant20Command>>(){}
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant20Command>>(){},
+			//CS00069 打刻カード番号
+			new TypeLiteral<PeregAddCommandHandler<AddStampCardCommand>>(){}
 			);
 	/** Update handlers */
 	private static final List<TypeLiteral<?>> UPDATE_HANDLER_CLASSES = Arrays.asList(
@@ -323,7 +329,9 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			//CS00057	特別休暇１９情報
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave19informationCommand>>(){},
 			//CS00058	特別休暇２０情報
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave20informationCommand>>(){}
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave20informationCommand>>(){},
+			//CS00069 打刻カード番号
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateStampCardCommand>>(){}
 			);
 	
 	
@@ -356,7 +364,9 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			//CS00024	年休情報
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteAnnuaLeaveCommand>>(){},
 			//CS00035	その他休暇情報
-			new TypeLiteral<PeregDeleteCommandHandler<DeleteOtherHolidayInfoCommand>>(){}
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteOtherHolidayInfoCommand>>(){},
+			//CS00069 打刻カード番号
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteStampCardCommand>>(){}
 			);
 	
 	@Override

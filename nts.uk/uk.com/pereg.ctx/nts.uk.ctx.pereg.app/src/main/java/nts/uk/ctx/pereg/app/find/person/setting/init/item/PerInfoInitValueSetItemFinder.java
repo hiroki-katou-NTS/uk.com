@@ -127,6 +127,13 @@ public class PerInfoInitValueSetItemFinder {
 			}).collect(Collectors.toList());
 
 		}
+		
+		if (ctgCode.equals("CS00003")) {
+			items = items.stream().filter(c -> {
+				return !c.getItemCode().equals("IS00020");
+			}).collect(Collectors.toList());
+
+		}
 		if (ctgCode.equals("CS00020")) {
 			itemDto = items.stream().map(item -> {
 
@@ -211,6 +218,10 @@ public class PerInfoInitValueSetItemFinder {
 		} else if (ctgCode.equals("CS00001")) {
 			filteredItems = items.stream().filter(c -> {
 				return !c.getItemCode().equals("IS00001");
+			}).collect(Collectors.toList());
+		} else if (ctgCode.equals("CS00003")) {
+			filteredItems = items.stream().filter(c -> {
+				return !c.getItemCode().equals("IS00020");
 			}).collect(Collectors.toList());
 		} else {
 			filteredItems = items;
