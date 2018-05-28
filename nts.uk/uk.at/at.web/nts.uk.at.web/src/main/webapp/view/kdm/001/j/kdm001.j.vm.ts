@@ -16,6 +16,7 @@ module nts.uk.at.view.kdm001.j.viewmodel {
         residualDay: KnockoutObservable<any> = ko.observable('');
         leaveId: KnockoutObservable<any> = ko.observable('');
         employeeId: KnockoutObservable<any> = ko.observable('');
+        numberDayParam: KnockoutObservable<any> = ko.observable('');
         
         constructor() {
             var self = this,
@@ -74,6 +75,7 @@ module nts.uk.at.view.kdm001.j.viewmodel {
                 self.leaveId(info.row.id);
                 self.dateHoliday(info.row.dayOffDate);
                 self.numberDay(parseFloat(info.row.occurredDays).toFixed(1)+' 日');
+                self.numberDayParam(parseFloat(info.row.occurredDays).toFixed(1));
             }
            
         }
@@ -91,7 +93,7 @@ module nts.uk.at.view.kdm001.j.viewmodel {
         public update():void {
             var self = this;
             
-            service.update(new UpdateModel(self.employeeId(),self.leaveId(),self.itemsSelected())).done(function(data) {
+            service.update(new UpdateModel(self.employeeId(),self.leaveId(),self.itemsSelected(),self.numberDayParam())).done(function(data) {
                 if (data.length > 0) {
                         let messageId = data[0];
                         if(messageId === 'Msg_15') {
@@ -157,10 +159,12 @@ module nts.uk.at.view.kdm001.j.viewmodel {
         employeeId: string;
         leaveId: string;
         comDayOffManaDtos: Array<ItemModel>;
-        constructor(employeeId: string,leaveId: string, comDayOffManaDtos: Array<ItemModel>) {
+        numberDayParam: string;
+        constructor(employeeId: string,leaveId: string, comDayOffManaDtos: Array<ItemModel>, numberDayParam: string) {
             this.employeeId = employeeId;
             this.leaveId = leaveId;
             this.comDayOffManaDtos = comDayOffManaDtos;
+            this.numberDayParam = numberDayParam;
         }
     }
     
