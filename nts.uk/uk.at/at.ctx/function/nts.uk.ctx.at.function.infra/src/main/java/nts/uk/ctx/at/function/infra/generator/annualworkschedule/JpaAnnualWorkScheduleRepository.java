@@ -37,6 +37,8 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.export.ExportData;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.ExportItem;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.HeaderData;
 import nts.uk.ctx.at.function.dom.annualworkschedule.repository.SetOutItemsWoScRepository;
+import nts.uk.shr.com.company.CompanyAdapter;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
@@ -49,6 +51,8 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	private MonthlyAttendanceItemAdapter monthlyAttendanceItemAdapter;
 	@Inject
 	private EmployeeInformationAdapter employeeInformationAdapter;
+	@Inject
+	private CompanyAdapter companyAdapter;
 	/**
 	 * 36協定時間
 	 */
@@ -97,7 +101,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		data.setOutNumExceedTime36Agr(setOutItemsWoSc.isOutNumExceedTime36Agr());
 		HeaderData header = new HeaderData();
 		header.setOutputAgreementTime(setOutItemsWoSc.getDisplayFormat());
-		header.setTitle(setOutItemsWoSc.getName().v());
+		header.setTitle(companyAdapter.getCurrentCompany().map(m -> m.getCompanyName()).orElse(""));
 		//A1_2
 		header.setReportName("★年間勤務表（1ヶ月）");
 		if (OutputAgreementTime.TWO_MONTH.equals(setOutItemsWoSc.getDisplayFormat())) header.setReportName("★年間勤務表（2ヶ月）");
