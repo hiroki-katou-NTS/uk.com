@@ -13,6 +13,7 @@ import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScEmploymentStatusAdapter
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScShortWorkTimeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
+import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
 import nts.uk.ctx.at.schedule.dom.adapter.workplace.SWkpHistImported;
 import nts.uk.ctx.at.schedule.dom.adapter.workplace.SyWorkplaceAdapter;
 import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
@@ -72,7 +73,7 @@ public class ScheCreExeMonthlyPatternHandler {
 	 * @param workingConditionItem
 	 */
 	public void createScheduleWithMonthlyPattern(ScheduleCreatorExecutionCommand command,
-			WorkingConditionItem workingConditionItem) {
+			WorkingConditionItem workingConditionItem, EmployeeGeneralInfoImported empGeneralInfo) {
 		// ドメインモデル「月間勤務就業設定」を取得する
 		Optional<WorkMonthlySetting> workMonthlySetOpt = this.workMonthlySettingRepo.findById(command.getCompanyId(),
 				workingConditionItem.getMonthlyPattern().get().v(), command.getToDate());
@@ -143,7 +144,7 @@ public class ScheCreExeMonthlyPatternHandler {
 				// 取得した情報をもとに「勤務予定基本情報」を作成する (create basic schedule)
 				// 予定確定区分を取得し、「勤務予定基本情報. 確定区分」に設定する
 				scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command, workingConditionItem.getEmployeeId(),
-						workTypeOpt.get(), workTimeOpt != null ? workTimeOpt.get() : null);
+						workTypeOpt.get(), workTimeOpt != null ? workTimeOpt.get() : null, empGeneralInfo);
 			}
 		}
 
