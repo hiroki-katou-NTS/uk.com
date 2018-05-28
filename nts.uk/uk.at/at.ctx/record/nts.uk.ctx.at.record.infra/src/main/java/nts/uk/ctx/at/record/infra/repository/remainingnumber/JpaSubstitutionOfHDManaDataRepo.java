@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.CompensatoryDayoffDate;
@@ -32,7 +33,10 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 	private final String QUERY_BY_SID_PERIOD_AND_IN_PAYOUT = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND ((s.dayOff >= :startDate AND s.dayOff <= :endDate) OR s.subOfHDID in "
 			+ "(SELECT ps.krcmtPayoutSubOfHDManaPK.subOfHDID FROM KrcmtPayoutSubOfHDMana ps inner join KrcmtPayoutManaData p on p.payoutId = ps.krcmtPayoutSubOfHDManaPK.payoutId where p.dayOff >= :startDate AND p.dayOff <= :endDate))";
 	
-	private String DELETE_QUERY = "DELETE FROM KrcmtSubOfHDManaData a WHERE a.sID = :sID AND a.dayOff = :dayOff";
+	private String DELETE_QUERY = "DELETE FROM KrcmtSubOfHDManaData a WHERE a.subOfHDID = :subOfHDID";
+	
+	private String QUERY_DELETE_SUB = "DELETE FROM KrcmtPayoutSubOfHDMana p WHERE p.krcmtPayoutSubOfHDManaPK.subOfHDID = :subOfHDID ";
+
 
 	
 	
@@ -81,13 +85,19 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 	}
 
 	@Override
-	public void delete(String subOfHDID) {
-		this.commandProxy().remove(KrcmtSubOfHDManaData.class, subOfHDID);
+	public void deletePayoutSubOfHDMana(String subOfHDID) {
+		this.getEntityManager().createQuery(QUERY_DELETE_SUB).setParameter("subOfHDID", subOfHDID).executeUpdate();
 	}
 
 	@Override
-	public void delete(String employeeId, GeneralDate dayOff) {
-		this.getEntityManager().createQuery(DELETE_QUERY).setParameter("sID", employeeId).setParameter("dayOff", dayOff).executeUpdate();
+	public void delete(String subOfHDID) {
+		Optional<KrcmtSubOfHDManaData> entity = this.queryProxy().find(subOfHDID, KrcmtSubOfHDManaData.class);
+		if(entity.isPresent()){
+			this.getEntityManager().createQuery(DELETE_QUERY).setParameter("subOfHDID", subOfHDID).executeUpdate();
+			this.getEntityManager().createQuery(QUERY_DELETE_SUB).setParameter("subOfHDID", subOfHDID).executeUpdate();
+		}else{
+			throw new  BusinessException("Msg_198");
+		}
 	}
 
 	@Override

@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.remainingnumber.base.HolidayAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.AddSubHdManagementService;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.ItemDays;
@@ -40,6 +41,8 @@ public class PayoutManagementDataService {
 
 	@Inject
 	private SysEmploymentHisAdapter syEmploymentAdapter;
+	
+	private static final int EMPTY = 0;
 
 	public boolean checkInfoPayMana(PayoutManagementData domain) {
 		Optional<PayoutManagementData> payout = payoutManagementDataRepository.find(domain.getCID(), domain.getSID(),
@@ -133,60 +136,54 @@ public class PayoutManagementDataService {
 	/**
 	 * KDM001 screen G
 	 */
-	public List<String> checkClosureDate(int closureId, GeneralDate dayoffDate) {
+	private List<String> checkClosureDate(int closureId, GeneralDate dayoffDate) {
 		List<String> errorList = new ArrayList<>();
 		YearMonth processYearMonth = GeneralDate.today().yearMonth();
 		Optional<GeneralDate> closureDate = addSubHdManagementService.getClosureDate(closureId, processYearMonth);
-		if (dayoffDate.compareTo(closureDate.get()) >= 0) {
-			errorList.add("Msg_740");
+		if (closureDate.isPresent()) {
+			if (dayoffDate.compareTo(closureDate.get()) >= 0) {
+				errorList.add("Msg_740");
+			}
 		}
 		return errorList;
 	}
 
-	public List<String> checkBox(boolean checkBox, int lawAtr, GeneralDate dayoffDate, GeneralDate expiredDate,
+	private List<String> checkBox(boolean checkBox, int lawAtr, GeneralDate dayoffDate, GeneralDate expiredDate,
 			double unUsedDays) {
 		List<String> errorList = new ArrayList<>();
 		if (checkBox) {
-			if (lawAtr == 2) {
+			if (lawAtr == HolidayAtr.PUBLICHOLIDAY.value) {
 				errorList.add("Msg_1212");
-			} else {
-				if (dayoffDate.compareTo(expiredDate) > 0) {
-					errorList.add("Msg_825");
-				}
+				return errorList;
+			} else if (dayoffDate.compareTo(expiredDate) > 0) {
+				errorList.add("Msg_825");
 			}
+			return errorList;
 		} else {
-			if (unUsedDays == 0) {
+			if (unUsedDays == EMPTY) {
 				errorList.add("Msg_1213");
 			}
+			return errorList;
 		}
-		return errorList;
 	}
 
-	public List<String> update(PayoutManagementData data, int closureId, boolean checkBox, int lawAtr,
-			GeneralDate dayoffDate, GeneralDate expiredDate, double unUsedDays) {
+	public List<String> update(PayoutManagementData data, int closureId, boolean checkBox) {
 		List<String> errorList = new ArrayList<>();
-		List<String> errorListClosureDate = checkClosureDate(closureId, dayoffDate);
-		if(!errorListClosureDate.isEmpty()){
+		List<String> errorListClosureDate = checkClosureDate(closureId, data.getPayoutDate().getDayoffDate().get());
+		if (!errorListClosureDate.isEmpty()) {
 			errorList.addAll(errorListClosureDate);
-		}else{
-			List<String> errorListCheckBox = checkBox(checkBox, lawAtr, dayoffDate, expiredDate, unUsedDays);
-			if(!errorListCheckBox.isEmpty()){
+			return errorList;
+		} else {
+			List<String> errorListCheckBox = checkBox(checkBox, data.getLawAtr().value,
+					data.getPayoutDate().getDayoffDate().get(), data.getExpiredDate(), data.getUnUsedDays().v());
+			if (!errorListCheckBox.isEmpty()) {
 				errorList.addAll(errorListCheckBox);
-			}else{
+				return errorList;
+			} else {
 				payoutManagementDataRepository.update(data);
+				return errorList;
 			}
 		}
-//		if (errorListClosureDate.size() == 0) {
-//			List<String> errorListCheckBox = checkBox(checkBox, lawAtr, dayoffDate, expiredDate, unUsedDays);
-//			if (errorListCheckBox.size() == 0) {
-//				payoutManagementDataRepository.update(data);
-//			} else {
-//				errorList.addAll(errorListCheckBox);
-//			}
-//		} else {
-//			errorList.addAll(errorListClosureDate);
-//		}
-		return errorList;
 	}
 
 	/**

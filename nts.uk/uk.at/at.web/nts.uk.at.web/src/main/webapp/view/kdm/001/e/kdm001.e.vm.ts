@@ -70,14 +70,14 @@ module nts.uk.at.view.kdm001.e.viewmodel {
             service.getBySidDatePeriod(self.info.selectedEmployee.employeeId, self.info.rowValue.id).done((data: Array<ItemModel> )=>{
                 if (data && data.length > 0) {
                     self.items(data);
-                    _.forEach(data, function(item) {
-                        let code = _.find(self.items(), function(currentItem: ItemModel) {
-                            return currentItem.linked == true;
-                        });
-                        if (code) {
-                            self.currentCodeList.push(code.subOfHDID);
-                        }
+                    let code = _.filter(self.items(), function(currentItem: ItemModel) {
+                        return currentItem.linked == true;
                     });
+                    if (code) {
+                        _.forEach(code, function(item: ItemModel) {
+                          self.currentCodeList.push(item.subOfHDID);
+                        });
+                    }
                 }
                 block.clear();
             }).fail((res)=>{

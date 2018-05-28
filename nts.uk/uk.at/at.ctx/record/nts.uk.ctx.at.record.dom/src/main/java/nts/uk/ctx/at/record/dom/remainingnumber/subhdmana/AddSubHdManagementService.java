@@ -118,6 +118,11 @@ public class AddSubHdManagementService {
 		if (subHdManagementData.getCheckedHoliday() == true) {
 			String employeeId = subHdManagementData.getEmployeeId();
 			errorList.addAll(this.checkHoliday(subHdManagementData.getDateHoliday(), closureDate, closureId));
+			for (int i = 0; i < errorList.size(); i++) {
+				if (errorList.get(i).equals("Msg_745")) {
+					errorList.get(i).replace("Msg_745", "Msg_745_1");
+				}
+			}
 			// ドメインモデル「休出管理データ」を読み込む
 			GeneralDate dateHoliday = subHdManagementData.getDateHoliday();
 			List<LeaveManagementData> leaveManagementDatas = repoLeaveManaData.getBySidWithHolidayDate(companyId,
@@ -132,6 +137,11 @@ public class AddSubHdManagementService {
 						subHdManagementData.getDateSubHoliday(), closureDate, closureId));
 				// 代休管理データ
 				errorList.addAll(this.checkHoliday(subHdManagementData.getDateHoliday(), closureDate, closureId));
+				for (int i = 0; i < errorList.size(); i++) {
+					if (errorList.get(i).equals("Msg_745")) {
+						errorList.get(i).replace("Msg_745", "Msg_745_2");
+					}
+				}
 				GeneralDate dateSubHoliday = subHdManagementData.getDateSubHoliday();
 				List<CompensatoryDayOffManaData> compensatoryDayOffManaDatas = repoComDayOffManaData
 						.getBySidWithHolidayDateCondition(employeeId, companyId, dateSubHoliday);
@@ -162,9 +172,10 @@ public class AddSubHdManagementService {
 		if (!closureDate.isPresent()) {
 			closureDate = this.getClosureDate(closureId, processYearMonth);
 		}
-		// 休出（年月日）と締め日をチェックする
+		// 休出（年月日）と締め日をチェックする		
 		if (holidayDate.after(closureDate.get())) {
 			errorList.add("Msg_745");
+			return errorList;
 		}
 		return errorList;
 	}
@@ -237,14 +248,8 @@ public class AddSubHdManagementService {
 				// 休出日数をチェックする
 				if (ItemDays.ONE_DAY.value.equals(subHdManagementData.getSelectedCodeHoliday())) {
 					if (ItemDays.HALF_DAY.value.equals(subHdManagementData.getSelectedCodeSubHoliday())) {
-						if (!ItemDays.HALF_DAY.value.equals(subHdManagementData.getSelectedCodeOptionSubHoliday())) {
-							errorList.add("Msg_1260_1");
-						}
-					} else {
-						errorList.add("Msg_1260_2");
+						errorList.add("Msg_1256_3");
 					}
-				} else {
-					errorList.add("Msg_1256_3");
 				}
 			} else {
 				// 休出日数と１日目代休日数をチェックする

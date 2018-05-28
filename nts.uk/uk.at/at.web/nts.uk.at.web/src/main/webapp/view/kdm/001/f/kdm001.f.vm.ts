@@ -26,8 +26,8 @@ module nts.uk.at.view.kdm001.f.viewmodel {
                 self.workPlaceName(self.info.selectedEmployee.workplaceName);
                 self.employeeCode(self.info.selectedEmployee.employeeCode);
                 self.employeeName(self.info.selectedEmployee.employeeName);
-                self.dateHoliday(self.info.rowValue.dayoffDateSub);
-                self.numberDay(self.info.rowValue.requiredDays+' 日');
+                self.dateHoliday(self.info.rowValue.dayoffDatePyout);
+                self.numberDay(self.info.rowValue.occurredDays+' 日');
             }
             
             self.columns = ko.observableArray([
@@ -76,14 +76,15 @@ module nts.uk.at.view.kdm001.f.viewmodel {
             service.getBySidDatePeriod(self.info.selectedEmployee.employeeId, self.info.rowValue.id).done((data: Array<ItemModel> )=>{
                 if (data && data.length > 0) {
                     self.items(data);
-                    _.forEach(data, function(item) {
-                        let code = _.find(self.items(), function(currentItem: ItemModel) {
-                            return currentItem.linked == true;
-                        });
-                        if (code) {
-                            self.currentCodeList.push(code.payoutId);
-                        }
+                    let code = _.filter(self.items(), function(currentItem: ItemModel) {
+                        return currentItem.linked == true;
                     });
+                    
+                    if (code) {
+                        _.forEach(code, function(item: ItemModel) {
+                          self.currentCodeList.push(item.payoutId);
+                        });
+                    }
                 }
                 block.clear();
             }).fail((error)=>{
