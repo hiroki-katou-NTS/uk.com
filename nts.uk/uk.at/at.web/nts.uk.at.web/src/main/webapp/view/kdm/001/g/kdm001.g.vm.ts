@@ -67,31 +67,48 @@ module nts.uk.at.view.kdm001.g.viewmodel {
             if (!nts.uk.ui.errors.hasError()) {
                 let self = this;
                 let data = {
-                    closureId:self.closureId(),
-                    payoutId:self.payoutId(),
+                    closureId: self.closureId(),
+                    payoutId: self.payoutId(),
                     employeeId: self.employeeId(),
                     unknownDate: self.unknownDate(),
                     dayoffDate: self.dayoffDate(),
-                    expiredDate: moment.utc(self.expiredDate(), 'YYYY/MM/DD').toISOString(),
+                    expiredDate:self.expiredDate(), 
                     lawAtr: parseInt(self.lawAtr()),
-                    occurredDays:parseInt(self.occurredDays()),
+                    occurredDays: parseInt(self.occurredDays()),
                     unUsedDays: self.unUsedDays(),
                     checkBox: self.checkBox()
                 };
 
                 console.log(data);
                 service.updatePayout(data).done(result => {
-//                    if (result.length > 0) {
-//                        $('#G6_2').ntsError('set', { messageId: result[0] });
-//                        block.clear();
-//                        return;
-//                    }
+                    if (result && result.length > 0) {
+                        for (let messageId of result) {
+                            switch (messageId) {
+                                case "Msg_740": {
+                                    $('#L6_2').ntsError('set', { messageId: messageId });
+                                    break;
+                                }
+                                case "Msg_825": {
+                                    $('#L6_2').ntsError('set', { messageId: messageId });
+                                    break;
+                                }
+                                case "Msg_1212": {
+                                    $('#L10_4').ntsError('set', { messageId: messageId });
+                                    break;
+                                }
+                                case "Msg_1213": {
+                                    $('#L10_2').ntsError('set', { messageId: messageId });
+                                    break;
+                                }
+                            }
+                        }
+                        block.clear();
+                        return;
+                    }
                     dialog.info({ messageId: "Msg_15" }).then(() => {
-                        setShared('KDM001_A_PARAMS', {isSuccess: true});
+                        setShared('KDM001_A_PARAMS', { isChanged: true });
                         nts.uk.ui.windows.close();
                     });
-                }).fail(error => {
-                    setShared('KDM001_A_PARAMS', {isSuccess: false});
                 }).always(() => {
                     block.clear();
                 });
@@ -107,12 +124,12 @@ module nts.uk.at.view.kdm001.g.viewmodel {
                     dayoffDate: self.dayoffDate()
                 };
                 console.log(data);
-                service.removePayout(data).done(() => {
+                service.removePayout(data).done(result => {
                     dialog.info({ messageId: "Msg_16" }).then(() => {
-                        setShared('KDM001_A_PARAMS', {isSuccess: true});
+                        setShared('KDM001_A_PARAMS', { isChanged: true });
                         nts.uk.ui.windows.close();
                     });
-                }).fail(error => {
+                }).fail(function(error: any) {
                     dialog.alertError(error);
                 }).always(function() {
                     block.clear();

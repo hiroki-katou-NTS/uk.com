@@ -22,9 +22,7 @@ public class UpdatePayoutManagementDataCommandHandler extends CommandHandler<Pay
 		PayoutManagementData data = new PayoutManagementData(command.getPayoutId(), cID, command.getEmployeeId(),
 				command.isUnknownDate(), command.getDayoffDate(), command.getExpiredDate(), command.getLawAtr(),
 				command.getOccurredDays(), command.getUnUsedDays(), command.getStateAtr());
-		payoutManagementDataService.update(data, command.getClosureId(), command.isCheckBox(), command.getLawAtr(),
-				command.getDayoffDate(), command.getExpiredDate(),
-				command.getUnUsedDays());
+		payoutManagementDataService.update(data, command.getClosureId(), command.isCheckBox());
 	}
 
 }
