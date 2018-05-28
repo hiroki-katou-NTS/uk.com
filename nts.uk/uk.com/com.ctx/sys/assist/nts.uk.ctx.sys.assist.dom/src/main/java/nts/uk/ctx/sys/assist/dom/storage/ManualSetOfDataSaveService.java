@@ -207,7 +207,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 						categoryFieldMt.getFieldKeyQuery5(), categoryFieldMt.getFieldKeyQuery6(),
 						categoryFieldMt.getFieldKeyQuery7(), categoryFieldMt.getFieldKeyQuery8(),
 						categoryFieldMt.getFieldKeyQuery9(), categoryFieldMt.getFieldKeyQuery10(),
-						categoryFieldMt.getExtractCondKeyFix(), categoryFieldMt.getFieldDate1(),
+						categoryFieldMt.getDefaultCondKeyQuery(), categoryFieldMt.getFieldDate1(),
 						categoryFieldMt.getFieldDate2(), categoryFieldMt.getFieldDate3(),
 						categoryFieldMt.getFieldDate4(), categoryFieldMt.getFieldDate5(),
 						categoryFieldMt.getFieldDate6(), categoryFieldMt.getFieldDate7(),
@@ -572,7 +572,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			}
 
 			// 抽出条件キー固定
-			String extractCondKeyFix = tableList.getExtractCondKeyFix();
+			String extractCondKeyFix = tableList.getDefaultCondKeyQuery();
 			if (!Strings.isNullOrEmpty(extractCondKeyFix)) {
 				String[] extractCondArray = extractCondKeyFix.split(" ");
 				for (int i = 0; i < extractCondArray.length; i++) {
