@@ -9,10 +9,17 @@
 	margin: auto !important;
 }
 
-.label, hr {
+.label {
 	margin: 15px;
 }
 
+hr {
+	margin: 15px -10px;
+}
+
+button {
+	width: 100px;
+}
 /* #multi-list_headers_v {
 	width: unset !important;
 } */

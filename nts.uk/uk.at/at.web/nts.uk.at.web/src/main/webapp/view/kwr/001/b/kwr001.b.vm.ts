@@ -13,8 +13,8 @@ module nts.uk.at.view.kwr001.b {
                 let self = this;
                 self.items = ko.observableArray([]);
                 self.columns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText("KWR001_42"), key: 'code', width: 150},
-                    { headerText: nts.uk.resource.getText("KWR001_43"), key: 'name', width: 350}
+                    { headerText: nts.uk.resource.getText("KWR001_42"), key: 'code', width: 70},
+                    { headerText: nts.uk.resource.getText("KWR001_43"), key: 'name', width: 280}
                 ]); 
                 self.currentCodeList = ko.observableArray([]);
                 self.showTableInIE = ko.observable(false || !!document['documentMode']);
