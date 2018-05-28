@@ -799,6 +799,7 @@ project (':com.ctx:sys:env:nts.uk.ctx.sys.env.ac') {
 		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
 		compile project(':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.pub')
 		compile project(':com.ctx:bs:person:nts.uk.ctx.bs.person.pub')
+		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
 	}
 }
 

@@ -68,7 +68,11 @@ public class DailyModifyCommandFacade {
 
 	private DailyRecordDto toDto(DailyModifyQuery query) {
 		DailyRecordDto oldValues = finder.find(query.getEmployeeId(), query.getBaseDate());
-		return AttendanceItemUtil.fromItemValues(oldValues, query.getItemValues());
+		oldValues = AttendanceItemUtil.fromItemValues(oldValues, query.getItemValues());
+		oldValues.getTimeLeaving().ifPresent(dto -> {
+			if(dto.getWorkAndLeave() != null) dto.getWorkAndLeave().removeIf(tl -> tl.getWorking() == null && tl.getLeave() == null);
+		});
+		return oldValues;
 	}
 
 	private DailyRecordWorkCommand createCommand(DailyRecordDto dto, DailyModifyQuery query) {
@@ -97,7 +101,7 @@ public class DailyModifyCommandFacade {
 	public void insertApproval(List<DPItemCheckBox> dataCheckApproval) {
 		ParamDayApproval param = new ParamDayApproval(AppContexts.user().employeeId(),
 				dataCheckApproval.stream()
-						.map(x -> new ContentApproval(x.getDate(), x.isValue(), x.getEmployeeId()))
+						.map(x -> new ContentApproval(x.getDate(), x.isValue(), x.getEmployeeId(), x.isFlagRemoveAll()))
 						.collect(Collectors.toList()));
 		registerDayApproval.registerDayApproval(param);
 	}
