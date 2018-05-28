@@ -12,12 +12,12 @@ public class CheckConValueRemainingNumberEx {
 	
 	private int daysValue;
 	
-	private Optional<Integer> timeValue;
+	private Integer timeValue;
 
 	public CheckConValueRemainingNumberEx(int daysValue, Integer timeValue) {
 		super();
 		this.daysValue = daysValue;
-		this.timeValue = Optional.ofNullable(timeValue);
+		this.timeValue = timeValue;
 	}
 	
 }

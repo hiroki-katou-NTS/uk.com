@@ -58,7 +58,7 @@ public class CheckRemainNumberMonAcFinder implements CheckRemainNumberMonFunAdap
 	private CheckConValueRemainNumberImport converToCheckConValueRemainNumberEx(CheckConValueRemainingNumberEx export) {
 		return new CheckConValueRemainNumberImport(
 				export.getDaysValue(),
-				export.getTimeValue().get()
+				export.getTimeValue()
 				);
 	}
 

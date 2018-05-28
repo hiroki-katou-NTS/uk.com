@@ -5,9 +5,7 @@ import java.util.List;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 import nts.arc.layer.dom.event.DomainEvent;
 import nts.uk.ctx.at.function.pub.alarm.checkcondition.eventdto.ExtraResultMonthlyDomainEventPubDto;
 
