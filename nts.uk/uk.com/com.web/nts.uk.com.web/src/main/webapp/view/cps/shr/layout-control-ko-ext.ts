@@ -392,6 +392,10 @@ module nts.custombinding {
                         top: 70px;
                     }
 
+                    .layout-control .item-controls tr * {
+                        background-color: transparent;
+                    }
+
                     .layout-control .item-control td input,
                     .layout-control .item-control td textarea,
                     .layout-control .item-controls td input,
@@ -762,7 +766,7 @@ module nts.custombinding {
                                                         </tr>
                                                     </thead>
                                                     <tbody data-bind="foreach: { data: renders(), as: 'row', afterRender: function(element, data) { let _renders = _.map(ko.toJS(renders), function(m) { return m.recordId; }); if(_.indexOf(_renders, data.recordId) == _renders.length - 1) { setTimeout(function() { $(element[1]).find('input').unbind('blur'); }, 100) } } }">
-                                                        <tr data-bind="attr: { 'data-id': row.recordId }">
+                                                        <tr data-bind="attr: { 'data-id': row.recordId }, style: {'background-color': ko.toJS(row.checked) ? '#aaa' : '#fff'}">
                                                             <td>
                                                                 <span data-bind="ntsCheckBox: { checked: row.checked, enable: row.enable }"></span>
                                                             </td>

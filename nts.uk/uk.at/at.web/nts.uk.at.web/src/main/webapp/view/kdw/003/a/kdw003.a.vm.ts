@@ -1526,7 +1526,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     total = total + moment.duration(d).asMinutes();
                 }
             });
-            let hours =  Math.trunc(total/60);
+            let hours =  total > 0 ?   Math.floor(total/60) :  Math.ceil(total/60);
             let minus = Math.abs(total%60);
             minus = (minus < 10) ? '0'+minus : minus;
             return ((total< 0 && hours == 0 ) ? "-"+hours : hours)  + ":" + minus;

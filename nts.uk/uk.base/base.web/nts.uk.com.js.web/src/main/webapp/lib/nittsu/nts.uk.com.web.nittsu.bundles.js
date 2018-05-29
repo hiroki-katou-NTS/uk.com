@@ -83,6 +83,7 @@ var nts;
                 else {
                     formattedValue = values[0];
                 }
+                formattedValue = uk.text.removeFromStart(uk.text.removeFromStart(formattedValue, '0'), groupSeperator);
                 if (values[1] === undefined || decimalLength > values[1].length) {
                     values[1] = uk.text.padRight(values[1] ? values[1] : "", '0', values[1] ? decimalLength : decimalLength + 1);
                 }
@@ -4277,7 +4278,7 @@ var nts;
                             }
                             if (!util.isNullOrUndefined(option) && option.isCheckExpression === true) {
                                 if (!uk.text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
-                                    result.fail('This field is not valid with pattern!', '');
+                                    result.fail(nts.uk.resource.getMessage('Msg_1285'), 'Msg_1285');
                                     return result;
                                 }
                             }
@@ -6348,6 +6349,7 @@ var nts;
                         this.horzSumBodyHeight = options.horizontalSumBodyHeight;
                         this.horzSumBodyRowHeight = options.horizontalSumBodyRowHeight;
                         this.areaResize = options.areaResize;
+                        this.remainSizes = !uk.util.isNullOrUndefined(options.remainSizes) ? options.remainSizes : true;
                         this.heightSetter = options.heightSetter;
                         this.bodyHeightSetMode = options.bodyHeightMode;
                         this.windowXOccupation = options.windowXOccupation;
@@ -6687,7 +6689,7 @@ var nts;
                      */
                     ExTable.prototype.generalSettings = function (headerWrappers, bodyWrappers) {
                         var self = this;
-                        self.$container.addXEventListener(events.BODY_HEIGHT_CHANGED, resize.onBodyHeightChanged);
+                        self.$container.addXEventListener(events.BODY_HEIGHT_CHANGED, resize.onBodyHeightChanged.bind(self));
                         //            if (self.heightSetter && self.heightSetter.showBodyHeightButton) {
                         //                
                         //                let $lastHeader = headerWrappers[headerWrappers.length - 1];
@@ -6756,8 +6758,10 @@ var nts;
                             new resize.AreaAdjuster(self.$container, headerWrappers, bodyWrappers, self.$follower).handle();
                             self.$container.addXEventListener(events.AREA_RESIZE_END, resize.onAreaComplete.bind(self));
                         }
-                        storage.area.init(self.$container, headerWrappers);
-                        storage.tableHeight.init(self.$container);
+                        if (self.remainSizes) {
+                            storage.area.init(self.$container, headerWrappers);
+                            storage.tableHeight.init(self.$container);
+                        }
                         // Edit done
                         update.editDone(self.$container);
                         document.addXEventListener(events.CLICK_EVT, function (evt) {
@@ -6820,7 +6824,7 @@ var nts;
                     function process($container, options, isUpdate) {
                         var levelStruct = synthesizeHeaders(options);
                         options.levelStruct = levelStruct;
-                        if (isUpdate && !uk.util.isNullOrUndefined($container.style.maxWidth)) {
+                        if (isUpdate && !uk.util.isNullOrUndefined($container.style.maxWidth) && !_.isEmpty($container.style.maxWidth)) {
                             var maxWidth = calcWidth(options.columns);
                             if (!options.isHeader && options.overflow === "scroll") {
                                 $container.style.maxWidth = (maxWidth + helper.getScrollWidth()) + "px";
@@ -7485,6 +7489,7 @@ var nts;
                         });
                         return width;
                     }
+                    render.calcWidth = calcWidth;
                     /**
                      * Grid cell.
                      */
@@ -10824,6 +10829,9 @@ var nts;
                             $container.style.width = (parseFloat($container.style.width) + (width - parseFloat($detailBody.style.width))) + "px";
                             $detailHeader.style.width = width + "px";
                             $detailBody.style.width = width + "px";
+                            if (storage.area.getPartWidths($container).isPresent()) {
+                                storage.area.save($container, $.data($detailHeader, internal.EX_PART), width);
+                            }
                             var $horzSumHeader_1 = $container.querySelector("." + HEADER_PRF + HORIZONTAL_SUM);
                             if ($horzSumHeader_1) {
                                 $horzSumHeader_1.style.width = width + "px";
@@ -10854,6 +10862,9 @@ var nts;
                         $container.style.width = (parseFloat($container.style.width)
                             + (width - parseFloat($detailBody.style.width))) + "px";
                         $detailBody.style.width = width + "px";
+                        if (storage.area.getPartWidths($container).isPresent()) {
+                            storage.area.save($container, $.data($detailHeader, internal.EX_PART), width);
+                        }
                         if ($horzSumHeader && $horzSumHeader.style.display !== "none") {
                             $horzSumHeader.style.width = (width - scrollWidth) + "px";
                             $horzSumContent.style.width = width + "px";
@@ -10944,9 +10955,12 @@ var nts;
                     /**
                      * On area complete.
                      */
-                    function onAreaComplete(event, $leftArea, $rightArea, leftWidth, rightWidth) {
+                    function onAreaComplete(args) {
                         var self = this;
-                        saveSizes(self.$container, $leftArea, $rightArea, leftWidth, rightWidth);
+                        var detail = args.detail;
+                        if (self.remainSizes) {
+                            saveSizes(self.$container, detail[0], detail[1], detail[2], detail[3]);
+                        }
                     }
                     resize.onAreaComplete = onAreaComplete;
                     /**
@@ -10965,9 +10979,12 @@ var nts;
                      * On body height changed.
                      */
                     function onBodyHeightChanged(event) {
+                        var self = this;
                         var $container = event.target;
-                        var height = event.detail;
-                        storage.tableHeight.save($container, height);
+                        if (self.remainSizes) {
+                            var height = event.detail;
+                            storage.tableHeight.save($container, height);
+                        }
                         repositionHorzSum($container);
                     }
                     resize.onBodyHeightChanged = onBodyHeightChanged;
@@ -11117,7 +11134,7 @@ var nts;
                             var $bodies = $container.querySelectorAll("div[class*='" + BODY_PRF + "']");
                             if ($bodies.length === 0)
                                 return;
-                            save($container, $bodies[0].style.height);
+                            save($container, parseFloat($bodies[0].style.height));
                         }
                         tableHeight.init = init;
                         /**
@@ -12049,9 +12066,30 @@ var nts;
                      */
                     function updateLeftmost($container, header, body) {
                         var exTable = $container.data(NAMESPACE);
+                        var sizeAdjust, left, width, offsetWidth = 0;
+                        if (!exTable.middleHeader && !exTable.leftHorzSumHeader
+                            && !exTable.horizontalSumHeader && !exTable.verticalSumHeader
+                            && !exTable.areaResize) {
+                            sizeAdjust = true;
+                        }
                         if (header) {
                             _.assignIn(exTable.leftmostHeader, header);
                             var $header = $container.find("." + HEADER_PRF + LEFTMOST);
+                            if (sizeAdjust && header.columns) {
+                                width = render.calcWidth(header.columns);
+                                exTable.leftmostHeader.width = width + "px";
+                                offsetWidth = Math.abs($header.width() - width);
+                                if (offsetWidth > 0) {
+                                    var $detailH = $container.find("." + HEADER_PRF + DETAIL);
+                                    var $detailB = $container.find("." + BODY_PRF + DETAIL);
+                                    var op = $header.width() > width ? -1 : 1;
+                                    $header.width(width);
+                                    left = parseFloat($detailH.css("left"));
+                                    left = left + op * offsetWidth;
+                                    $detailH.css("left", left);
+                                    $detailB.css("left", left);
+                                }
+                            }
                             var pu = $header.find("table").data(internal.POPUP);
                             $header.empty();
                             render.process($header[0], exTable.leftmostHeader, true);
@@ -12061,6 +12099,9 @@ var nts;
                         if (body) {
                             _.assignIn(exTable.leftmostContent, body);
                             var $body = $container.find("." + BODY_PRF + LEFTMOST);
+                            if (offsetWidth > 0 && width) {
+                                $body.width(width);
+                            }
                             $body.empty();
                             render.process($body[0], exTable.leftmostContent, true);
                         }
@@ -16275,7 +16316,7 @@ var nts;
                         if (data.constraint == "PostCode") {
                             return new validation.PostCodeValidator(name, constraintName, { required: required });
                         }
-                        if (data.constraint == "PunchCardNo") {
+                        if (data.constraint == "StampNumber") {
                             return new validation.PunchCardNoValidator(name, constraintName, { required: required });
                         }
                         return new validation.StringValidator(name, constraintName, { required: required });
@@ -19172,6 +19213,9 @@ var nts;
                         var direction = ko.unwrap(data.direction || "horizontal");
                         // Container.
                         var container = $(element);
+                        if (nts.uk.util.isNullOrUndefined(container.attr("tabindex")))
+                            container.attr("tabindex", "0");
+                        container.data("tabindex", container.attr("tabindex"));
                         // Create title.
                         container.prepend('<ul></ul>');
                         var titleContainer = container.children('ul');
@@ -19258,7 +19302,8 @@ var nts;
                                 container.children('ul').children('li[aria-controls="' + tab.id + '"]').show();
                             }
                         });
-                        _.defer(function () { container.children('ul').children('li').attr("tabindex", "-1"); });
+                        container.attr('tabindex', container.data("tabindex"));
+                        _.defer(function () { container.children('ul').children('li').attr("tabindex", container.data("tabindex")); });
                     };
                     return TabPanelBindingHandler;
                 }());
