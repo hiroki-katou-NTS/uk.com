@@ -14,12 +14,11 @@ public interface GetDeforAggrSet {
 	/**
 	 * 集計設定の取得（変形労働）
 	 * @param companyId 会社ID
-	 * @param workplaceId 職場ID
 	 * @param employmentCd 雇用コード
 	 * @param employeeId 社員ID
 	 * @param criteriaDate 基準日
 	 * @return 変形労働時間勤務の法定内集計設定
 	 */
-	Optional<DeforWorkTimeAggrSet> get(String companyId, String workplaceId, String employmentCd,
+	Optional<DeforWorkTimeAggrSet> get(String companyId, String employmentCd,
 			String employeeId, GeneralDate criteriaDate);
 }

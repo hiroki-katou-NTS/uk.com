@@ -1,0 +1,147 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:com="http://xmlns.jcp.org/jsf/component"
+    xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+    <ui:composition template="../../../../master/dialog.xhtml">
+        <ui:define name="htmlHead">
+            <script>
+                var dialogSize = {
+                    width : 1200,
+                    height : 550
+                };
+            </script>
+            <com:ValidatorScript>
+                nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.OutItemsWoScCode
+                nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.OutItemsWoScName
+                nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.ItemOutTblBookHeadingName
+            </com:ValidatorScript>
+            <com:scriptfile set="IGNITE" />
+            <com:scriptfile path="../share/model.js" />
+            <com:stylefile path="kwr008.b.style.css" />
+            <com:scriptfile path="kwr008.b.start.js" />
+            <com:scriptfile path="kwr008.b.vm.js" />
+            <com:scriptfile path="kwr008.b.service.js" />
+        </ui:define>
+
+        <ui:define name="content">
+            <div id="functions-area">
+                <button tabindex="1" data-bind="click: registerMode, enable: !isNewMode()">#{i18n.getText('KWR008_18')}</button>
+                <button tabindex="2" data-bind="click: doRegister, enable: $root.errors.isEmpty" class="proceed">#{i18n.getText('KWR008_19')}</button>
+                <button tabindex="3" data-bind="click: doDelete, enable: !isNewMode()" class="danger">#{i18n.getText('KWR008_20')}</button>
+                <button tabindex="4" data-bind="click: doCancel">#{i18n.getText('KWR008_21')}</button>
+            </div>
+            <div id="contents-area" class="fixed-flex-layout">
+                <div class="fixed-flex-layout-left"
+                    style="padding-left: 20px">
+                    <div data-bind="ntsPanel:{width: '340px', height: '370px', showIcon: false, visible: true, direction: 'right'}">
+                        <div id="B2_1">
+                            <!-- B2_2 -->
+                            <table tabindex="5" id="listStandardImportSetting" data-bind="ntsGridList: {
+                                rows: 15,
+                                columns: [
+                                    { headerText: '#{i18n.getText('KWR008_22')}', key: 'displayCode', width: 60, formatter: _.escape },
+                                    { headerText: '#{i18n.getText('KWR008_23')}', key: 'displayName', width: 260, formatter: _.escape }
+                                ],
+                                dataSource: listStandardImportSetting,
+                                primaryKey: 'displayCode', 
+                                multiple: false,
+                                value: selectedCode,
+                                height: '390px' 
+                            }">
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="fixed-flex-layout-right">
+                    <div data-bind="with: currentSetOutputSettingCode">
+                        <!-- B3_1 -->
+                        <div data-bind ="ntsFormLabel: { required: true }">#{i18n.getText('KWR008_24')}</div> 
+                        
+                        <!-- B3_2 -->
+                        <input id="B3_2" tabindex="6" data-bind="ntsTextEditor: {name: '#[KWR008_25]', value : cd, required: true, enable: $parent.isNewMode(), option : { width : '25px'}, constraint : 'OutItemsWoScCode'}" />
+                        
+                        <!-- B3_3 -->
+                        <input id="B3_3" tabindex="7" data-bind="ntsTextEditor: {name: '#[KWR008_26]', value : name, required: true, option : { width : '200px'}, constraint: 'OutItemsWoScName'}" />
+                        
+                    </div>
+
+                    <!-- B4 -->
+                    <div style="margin-top: 5px;">
+                        <!-- B4_1 -->
+                        <div style="margin-bottom: 5px" data-bind ="ntsFormLabel: { required: true }" >#{i18n.getText('KWR008_27')}</div>
+                        <div tabindex="8">
+                        <table id="table-output-items" >
+                           <colgroup>
+                                <col width="38"/>
+                                <col width="220"/>
+                                <col width="50"/>
+                                <col width="85"/>
+                                <col width="250"/>
+                           </colgroup>
+                           <thead>
+                              <tr> 
+                                  <th class="ui-widget-header"  style ="text-align: center;"><div data-bind="ntsCheckBox: {checked: isCheckedAll}"></div></th>
+                                  <th class="ui-widget-header"  style ="text-align: center;">#{i18n.getText('KWR008_28')}</th>
+                                  <th class="ui-widget-header"  style ="text-align: center;"></th>
+                                  <th class="ui-widget-header"  style ="text-align: center;">#{i18n.getText('KWR008_30')}</th>
+                                  <th class="ui-widget-header"  style ="text-align: center;">#{i18n.getText('KWR008_29')}</th>
+                                  
+                              </tr>
+                           </thead>
+                           <tbody data-bind = "foreach: outputItem()">
+                              <tr>
+                                <td style="text-align: center;"><div tabindex="9" data-bind="ntsCheckBox: {checked: $data.useClass}"></div></td>
+                                <td>
+                                    <input class="headingName" data-bind="ntsTextEditor: {
+                                        name: '#[KWR008_31]',
+                                        value : $data.headingName,
+                                        required: false,
+                                        enable: $data.sortBy() > 1,
+                                        option : { width : '190px'},
+                                        constraint: 'ItemOutTblBookHeadingName'}" />
+                                </td>
+                                <td style="text-align:center;"><button id="btnSettingB16_5" class="small" data-bind="click: function() {$parent.openKDW007($data.sortBy)}, enable: true, visible: $data.sortBy() > 1">#{i18n.getText('KWR008_34')}</button></td>
+                                <td>
+                                    <div class="combo-box"
+                                                data-bind="ntsComboBox: {
+                                                    options: $parent.valOutFormat,
+                                                    optionsValue: 'code',
+                                                    visibleItemsCount: 5,
+                                                    name:'#[KWR008_30]',
+                                                    value: $data.valOutFormat,
+                                                    optionsText: 'name',
+                                                    enable: $data.sortBy() > 1,
+                                                    columns: [{ prop: 'name', length: 2 }]
+                                                }">
+                                    </div>
+                                 </td>
+                                <td><span class="limited-label" data-bind="text: $data.outputTargetItem"></span></td>
+                              </tr>
+                           </tbody>
+                       </table>
+                       </div>
+                    </div>
+                    <div data-bind="with: currentSetOutputSettingCode" style="margin-top: 3px;">
+                        <!-- B5_1 -->
+                        <div tabindex="9" data-bind="ntsCheckBox: { checked: outNumExceedTime36Agr }">${i18n.getText('KWR008_35')}</div>
+                    </div>
+                    <div data-bind="with: currentSetOutputSettingCode" style="margin-top: 3px; margin-bottom:5px">
+                        <!-- B5_2 -->
+                        <span class="label">#{i18n.getText('KWR008_36')}</span>
+                        <!-- B5_3 -->
+                        <div id="B5_3" tabindex="10"  data-bind="ntsRadioBoxGroup: {
+                            options: $parent.itemRadio,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: displayFormat}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ui:define>
+    </ui:composition>
+</body>
+</html>

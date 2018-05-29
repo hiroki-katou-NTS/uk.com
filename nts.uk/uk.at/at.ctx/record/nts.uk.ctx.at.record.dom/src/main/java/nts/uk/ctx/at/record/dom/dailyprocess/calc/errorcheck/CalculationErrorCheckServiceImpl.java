@@ -41,15 +41,15 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 	private DailyRecordToAttendanceItemConverter dailyRecordToAttendanceItemConverter;
 	
 	@Override
-	public IntegrationOfDaily errorCheck(IntegrationOfDaily integrationOfDaily) {
+	public IntegrationOfDaily errorCheck(IntegrationOfDaily integrationOfDaily, List<ErrorAlarmWorkRecord> errorAlarm) {
+		
 		String companyID = AppContexts.user().companyId();
-		val errorItemList = errorAlarmWorkRecordRepository.getAllErAlCompanyAndUseAtr(companyID, true);
 		List<EmployeeDailyPerError> addItemList = new ArrayList<>();
 //		if(!integrationOfDaily.getEmployeeError().isEmpty() &&  integrationOfDaily.getEmployeeError() != null)
 //			addItemList = integrationOfDaily.getEmployeeError();
 		DailyRecordToAttendanceItemConverter attendanceItemConverter = this.dailyRecordToAttendanceItemConverter.setData(integrationOfDaily);
 		//勤務実績のエラーアラーム数分ループ
-		for(ErrorAlarmWorkRecord errorItem : errorItemList) {
+		for(ErrorAlarmWorkRecord errorItem : errorAlarm) {
 			//使用しない
 			if(!errorItem.getUseAtr()) continue;
 			

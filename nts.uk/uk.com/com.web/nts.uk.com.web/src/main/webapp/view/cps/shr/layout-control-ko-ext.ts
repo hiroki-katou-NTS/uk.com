@@ -1647,32 +1647,39 @@ module nts.custombinding {
                                         let id1 = '#' + prev.itemDefId.replace(/[-_]/g, ""),
                                             id2 = '#' + next.itemDefId.replace(/[-_]/g, "");
 
-                                        $(document).on('blur', `${id1}, ${id2}`, (evt) => {
-                                            setTimeout(() => {
-                                                let dom1 = $(id1),
-                                                    dom2 = $(id2),
-                                                    pv = ko.toJS(prev.value),
-                                                    nv = ko.toJS(next.value),
-                                                    tpt = _.isNumber(pv),
-                                                    tnt = _.isNumber(nv);
+                                        let _bind = $(document).data('_nts_bind') || {};
 
-                                                if (!tpt && tnt) {
-                                                    if (!dom1.is(':disabled') && !dom1.ntsError('hasError')) {
-                                                        dom1.ntsError('set', { messageId: "Msg_858" });
-                                                    }
-                                                } else {
-                                                    rmError(dom1, "Msg_858");
-                                                }
+                                        if (!_bind[`BLUR_${id1}_${id2}`]) {
+                                            _bind[`BLUR_${id1}_${id2}`] = true;
+                                            $(document).data('_nts_bind', _bind);
 
-                                                if (tpt && !tnt) {
-                                                    if (!dom2.is(':disabled') && !dom2.ntsError('hasError')) {
-                                                        dom2.ntsError('set', { messageId: "Msg_858" });
+                                            $(document).on('blur', `${id1}, ${id2}`, (evt) => {
+                                                setTimeout(() => {
+                                                    let dom1 = $(id1),
+                                                        dom2 = $(id2),
+                                                        pv = ko.toJS(prev.value),
+                                                        nv = ko.toJS(next.value),
+                                                        tpt = _.isNumber(pv),
+                                                        tnt = _.isNumber(nv);
+
+                                                    if (!tpt && tnt) {
+                                                        if (!dom1.is(':disabled') && !dom1.ntsError('hasError')) {
+                                                            dom1.ntsError('set', { messageId: "Msg_858" });
+                                                        }
+                                                    } else {
+                                                        rmError(dom1, "Msg_858");
                                                     }
-                                                } else {
-                                                    rmError(dom2, "Msg_858");
-                                                }
-                                            }, 5);
-                                        });
+
+                                                    if (tpt && !tnt) {
+                                                        if (!dom2.is(':disabled') && !dom2.ntsError('hasError')) {
+                                                            dom2.ntsError('set', { messageId: "Msg_858" });
+                                                        }
+                                                    } else {
+                                                        rmError(dom2, "Msg_858");
+                                                    }
+                                                }, 5);
+                                            });
+                                        }
                                     };
 
                                 if (first.item.dataTypeValue == second.item.dataTypeValue) {
@@ -2151,7 +2158,7 @@ module nts.custombinding {
 
                         let _rows = ko.toJS(renders),
                             _row = _.last(_rows);
-                        
+
                         if (!editable) {
                             renders.removeAll();
                             _.each([1, 2, 3], r => {

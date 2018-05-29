@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMon
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
+import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -30,6 +31,8 @@ public class AggregateMonthlyRecordValue {
 
 	/** 月別実績の勤怠時間 */
 	private List<AttendanceTimeOfMonthly> attendanceTimeList;
+	/** 週別実績の勤怠時間 */
+	private List<AttendanceTimeOfWeekly> attendanceTimeWeeks;
 	/** 月別実績の所属情報 */
 	private List<AffiliationInfoOfMonthly> affiliationInfoList;
 	/** 月別実績の任意項目 */
@@ -56,6 +59,7 @@ public class AggregateMonthlyRecordValue {
 	public AggregateMonthlyRecordValue(){
 		
 		this.attendanceTimeList = new ArrayList<>();
+		this.attendanceTimeWeeks = new ArrayList<>();
 		this.affiliationInfoList = new ArrayList<>();
 		this.anyItemList = new ArrayList<>();
 		this.agreementTimeList = new ArrayList<>();

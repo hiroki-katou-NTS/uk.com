@@ -37,4 +37,18 @@ public class AffCompanyHistItem extends HistoryItem<DatePeriod, GeneralDate> {
 	public void changeSpan(DatePeriod newSpan) {
 		datePeriod = newSpan;
 	}
+	
+	public boolean includePeriod(DatePeriod period) {
+		return this.datePeriod.start().beforeOrEquals(period.end())
+				&& this.datePeriod.end().afterOrEquals(period.start());
+	}
+	
+	public boolean beforeOrEqualsStandardDate(GeneralDate standardDate) {
+		return datePeriod.end().beforeOrEquals(standardDate);
+	}
+	
+	public boolean afterOrEqualsStandardDate(GeneralDate standardDate) {
+		return datePeriod.start().afterOrEquals(standardDate);
+	}
+	
 }

@@ -121,7 +121,7 @@ public class GetDataAppCfDetailFinder {
 		}
 		//ドメインモデル「事後の受付制限」．未来日許可しないがtrue
 		toDateSystem = GeneralDate.today();
-		if(appTypeDiscreteSetting.getRetrictPostAllowFutureFlg() == AllowAtr.NOTALLOW) {
+		if(appTypeDiscreteSetting.getRetrictPostAllowFutureFlg() == AllowAtr.ALLOW) {
 			//事後受付日
 			deadline +=  strMessageAfter + toDateSystem.month() + strMonth + toDateSystem.day() + strDay + strBunMade;
 			chkShow = true;
