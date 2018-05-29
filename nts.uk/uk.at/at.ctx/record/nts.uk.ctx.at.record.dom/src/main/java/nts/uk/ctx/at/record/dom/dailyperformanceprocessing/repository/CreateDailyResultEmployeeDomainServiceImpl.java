@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.EmployeeAndClosureOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
@@ -62,7 +63,8 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
 	public ProcessState createDailyResultEmployee(AsyncCommandHandlerContext asyncContext, String employeeId,
-			DatePeriod periodTime, String companyId, String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog, boolean reCreateWorkType) {
+			DatePeriod periodTime, String companyId, String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog, boolean reCreateWorkType,
+			EmployeeGeneralInfoImport employeeGeneralInfoImport) {
 				
 		// 正常終了 : 0
 		// 中断 : 1
@@ -115,11 +117,11 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 								this.resetDailyPerforDomainService.resetDailyPerformance(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr);
 							} else {
 								this.reflectWorkInforDomainService.reflectWorkInformation(companyId, employeeId, day,
-										empCalAndSumExecLogID, reCreateAttr, reCreateWorkType);
+										empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, employeeGeneralInfoImport);
 							}
 						} else{
 							this.reflectWorkInforDomainService.reflectWorkInformation(companyId, employeeId, day,
-									empCalAndSumExecLogID, reCreateAttr, reCreateWorkType);
+									empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, employeeGeneralInfoImport);
 						}
 					} 
 					if (asyncContext.hasBeenRequestedToCancel()) {

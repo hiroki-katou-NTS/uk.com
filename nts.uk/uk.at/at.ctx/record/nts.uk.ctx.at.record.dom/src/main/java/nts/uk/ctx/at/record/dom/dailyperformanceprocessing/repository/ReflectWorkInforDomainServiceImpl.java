@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -26,6 +27,15 @@ import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificati
 import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationSidImport;
 import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentImport;
+import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
+import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.ExClassificationHistItemImport;
+import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.ExClassificationHistoryImport;
+import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.ExEmploymentHistItemImport;
+import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.ExEmploymentHistoryImport;
+import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.ExJobTitleHistItemImport;
+import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.ExJobTitleHistoryImport;
+import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.ExWorkPlaceHistoryImport;
+import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
 import nts.uk.ctx.at.record.dom.adapter.specificdatesetting.RecSpecificDateSettingAdapter;
 import nts.uk.ctx.at.record.dom.adapter.specificdatesetting.RecSpecificDateSettingImport;
 import nts.uk.ctx.at.record.dom.adapter.statusofemployee.RecStatusOfEmployeeAdapter;
@@ -223,7 +233,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 	@Override
 	public void reflectWorkInformation(String companyId, String employeeId, GeneralDate day,
-			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType) {
+			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType,
+			EmployeeGeneralInfoImport employeeGeneralInfoImport) {
 
 		// pharse 2
 		// start --
@@ -231,12 +242,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		if (reCreateAttr == ExecutionType.RERUN) {
 			this.deleteWorkInfoOfDaiPerService.deleteWorkInfoOfDaiPerService(employeeId, day);
 
-			this.reflect(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType);
+			this.reflect(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, employeeGeneralInfoImport);
 		} else {
 			// ドメインモデル「日別実績の勤務情報」を取得する - not rerun
 			if (!this.workInformationRepository.find(employeeId, day).isPresent()) {
 
-				this.reflect(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType);
+				this.reflect(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, employeeGeneralInfoImport);
 			} else {
 				// 勤務種別変更時に再作成する
 				ExitStatus exitStatus = this.reCreateWorkType(employeeId, day, empCalAndSumExecLogID, reCreateWorkType);
@@ -244,7 +255,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				if (exitStatus == ExitStatus.RECREATE) {
 					this.deleteWorkInfoOfDaiPerService.deleteWorkInfoOfDaiPerService(employeeId, day);
 
-					this.reflect(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType);
+					this.reflect(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, employeeGeneralInfoImport);
 				} else {
 					WorkInfoOfDailyPerformance workInfoOfDailyPerformance = this.workInformationRepository.find(employeeId, day).get();	
 					Boolean existsDailyInfo = workInfoOfDailyPerformance != null;
@@ -263,14 +274,17 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	}
 
 	private void reflect(String companyId, String employeeId, GeneralDate day, String empCalAndSumExecLogID,
-			ExecutionType reCreateAttr, boolean reCreateWorkType) {
+			ExecutionType reCreateAttr, boolean reCreateWorkType, EmployeeGeneralInfoImport employeeGeneralInfoImport) {
 		// 勤務種別を反映する
 		WorkTypeOfDailyPerformance workTypeOfDailyPerformance = reflectWorkType(employeeId, day, empCalAndSumExecLogID);
 
 		if (workTypeOfDailyPerformance != null) {
+			
+			val affiliationInforOfDailyPerforState = createAffiliationInforState(companyId, employeeId, day,
+			empCalAndSumExecLogID, employeeGeneralInfoImport);
 
-			val affiliationInforOfDailyPerforState = createAffiliationInforOfDailyPerfor(companyId, employeeId, day,
-					empCalAndSumExecLogID);
+//			val affiliationInforOfDailyPerforState = createAffiliationInforOfDailyPerfor(companyId, employeeId, day,
+//					empCalAndSumExecLogID);
 
 			if (affiliationInforOfDailyPerforState.getErrMesInfos().isEmpty()) {
 				// Imported(就業.勤務実績)「社員の勤務予定管理」を取得する
@@ -282,6 +296,98 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					this.errMessageInfoRepository.add(action);
 				});
 			}
+		}
+	}
+	
+	private AffiliationInforState createAffiliationInforState(String companyId, String employeeId,
+			GeneralDate day, String empCalAndSumExecLogID, EmployeeGeneralInfoImport employeeGeneralInfoImport){
+
+		// employment
+		Map<String, List<ExEmploymentHistItemImport>> mapEmploymentHist = employeeGeneralInfoImport.getEmploymentHistoryImports().stream()
+				.collect(Collectors.toMap(ExEmploymentHistoryImport::getEmployeeId,
+						ExEmploymentHistoryImport::getEmploymentItems));
+		
+		Optional<ExEmploymentHistItemImport> employmentHistItemImport = Optional.empty();
+		List<ExEmploymentHistItemImport> exEmploymentHistItemImports = mapEmploymentHist.get(employeeId);
+		if (exEmploymentHistItemImports != null) {
+			employmentHistItemImport = exEmploymentHistItemImports.stream()
+					.filter(empHistItem -> empHistItem.getPeriod().contains(day)).findFirst();	
+		}
+		
+		// classification
+		Map<String, List<ExClassificationHistItemImport>> mapClassificationHist = employeeGeneralInfoImport
+				.getExClassificationHistoryImports().stream()
+				.collect(Collectors.toMap(ExClassificationHistoryImport::getEmployeeId,
+						ExClassificationHistoryImport::getClassificationItems));
+		
+		Optional<ExClassificationHistItemImport> classificationHistItemImport  = Optional.empty();
+		List<ExClassificationHistItemImport> exClassificationHistItemImports = mapClassificationHist.get(employeeId);
+		if (exClassificationHistItemImports != null) {
+			classificationHistItemImport = exClassificationHistItemImports.stream()
+					.filter(item -> item.getPeriod().contains(day)).findFirst();
+		}
+
+		// Job title
+		Map<String, List<ExJobTitleHistItemImport>> mapJobTitleHist = employeeGeneralInfoImport.getExJobTitleHistoryImports().stream()
+				.collect(Collectors.toMap(ExJobTitleHistoryImport::getEmployeeId,
+						ExJobTitleHistoryImport::getJobTitleItems));
+		
+		Optional<ExJobTitleHistItemImport> jobTitleHistItemImport = Optional.empty();
+		List<ExJobTitleHistItemImport> exJobTitleHistItemImports = mapJobTitleHist.get(employeeId);
+		if (exJobTitleHistItemImports != null) {
+			jobTitleHistItemImport = exJobTitleHistItemImports.stream()
+					.filter(item -> item.getPeriod().contains(day)).findFirst();
+		}
+
+		// workPlace
+		Map<String, List<ExWorkplaceHistItemImport>> mapWorkplaceHist = employeeGeneralInfoImport.getExWorkPlaceHistoryImports().stream()
+				.collect(Collectors.toMap(ExWorkPlaceHistoryImport::getEmployeeId,
+						ExWorkPlaceHistoryImport::getWorkplaceItems));
+		
+		Optional<ExWorkplaceHistItemImport> workplaceHistItemImport = Optional.empty();
+		List<ExWorkplaceHistItemImport> exWorkplaceHistItemImports = mapWorkplaceHist.get(employeeId);
+		if (exWorkplaceHistItemImports != null) {
+			workplaceHistItemImport = exWorkplaceHistItemImports.stream()
+					.filter(item -> item.getPeriod().contains(day)).findFirst();
+		}
+		
+		// Get Data
+		List<ErrMessageInfo> errMesInfos = new ArrayList<>();
+		// 存在しない - no data
+		if (!employmentHistItemImport.isPresent()) {
+			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
+					new ErrMessageResource("001"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
+					new ErrMessageContent(TextResource.localize("Msg_426")));
+			errMesInfos.add(employmentErrMes);
+		}
+		if (!workplaceHistItemImport.isPresent()) {
+			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
+					new ErrMessageResource("002"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
+					new ErrMessageContent(TextResource.localize("Msg_427")));
+			errMesInfos.add(employmentErrMes);
+		}
+		if (!classificationHistItemImport.isPresent()) {
+			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
+					new ErrMessageResource("003"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
+					new ErrMessageContent(TextResource.localize("Msg_428")));
+			errMesInfos.add(employmentErrMes);
+		}
+		if (!jobTitleHistItemImport.isPresent()) {
+			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
+					new ErrMessageResource("004"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
+					new ErrMessageContent(TextResource.localize("Msg_429")));
+			errMesInfos.add(employmentErrMes);
+		}
+		// 存在する - has data
+		if (employmentHistItemImport.isPresent() && workplaceHistItemImport.isPresent() && classificationHistItemImport.isPresent()
+				&& jobTitleHistItemImport.isPresent()) {
+			return new AffiliationInforState(Collections.emptyList(),
+					Optional.of(new AffiliationInforOfDailyPerfor(
+							new EmploymentCode(employmentHistItemImport.get().getEmploymentCode()), employeeId,
+							jobTitleHistItemImport.get().getJobTitleId(), workplaceHistItemImport.get().getWorkplaceId(), day,
+							new ClassificationCode(classificationHistItemImport.get().getClassificationCode()), null)));
+		} else {
+			return new AffiliationInforState(errMesInfos, Optional.empty());
 		}
 	}
 
