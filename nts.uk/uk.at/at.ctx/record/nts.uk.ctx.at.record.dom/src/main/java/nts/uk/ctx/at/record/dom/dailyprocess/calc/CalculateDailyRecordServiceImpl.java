@@ -207,7 +207,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	public IntegrationOfDaily calculate(IntegrationOfDaily integrationOfDaily, ManagePerCompanySet companyCommonSetting) {
 		// /*日別実績(Work)の退避*/
 		// val copyIntegrationOfDaily = integrationOfDaily;
-		if (integrationOfDaily.getAffiliationInfor() == null)
+		if (integrationOfDaily.getAffiliationInfor() == null || companyCommonSetting == null)
 			return integrationOfDaily;
 		// 実績データの計算
 		val afterCalcResult = this.calcDailyAttendancePerformance(integrationOfDaily,companyCommonSetting);

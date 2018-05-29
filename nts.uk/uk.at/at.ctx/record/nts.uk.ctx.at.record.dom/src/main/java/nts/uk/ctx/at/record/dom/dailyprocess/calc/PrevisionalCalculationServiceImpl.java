@@ -66,7 +66,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class PrevisionalCalculationServiceImpl implements ProvisionalCalculationService {
 
 	@Inject
-	private CalculateDailyRecordService calculateDailyRecordService;
+	private CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter;
 
 	@Inject
 	private WorkInformationRepository workInformationRepository;
@@ -104,9 +104,11 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 		// 控除置き換え
 		val provisionalDailyRecord = replaceDeductionTimeSheet(provisionalRecord.get(), breakTimeSheets,
 				outingTimeSheets, shortWorkingTimeSheets, employeeId, targetDate);
+		List<IntegrationOfDaily> integraionList = new ArrayList<>();
+		integraionList.add(provisionalDailyRecord);
 		// ドメインモデル「日別実績の勤怠時間」を返す
-		val test = calculateDailyRecordService.calculate(provisionalDailyRecord,null);
-		return Optional.of(test);
+		val test = calculateDailyRecordServiceCenter.calculate(integraionList);
+		return test.stream().findFirst();
 
 	}
 
