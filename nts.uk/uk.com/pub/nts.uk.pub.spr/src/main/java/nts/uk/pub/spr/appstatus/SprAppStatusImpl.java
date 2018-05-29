@@ -18,6 +18,7 @@ import nts.uk.ctx.at.request.pub.spr.export.AppOvertimeStatusSprExport;
 import nts.uk.ctx.bs.employee.pub.spr.EmployeeSprPub;
 import nts.uk.ctx.bs.employee.pub.spr.export.EmpSprExport;
 import nts.uk.pub.spr.appstatus.output.AppStatusSpr;
+import nts.uk.pub.spr.login.paramcheck.LoginParamCheck;
 /**
  * 
  * @author Doan Duy Hung
@@ -26,13 +27,14 @@ import nts.uk.pub.spr.appstatus.output.AppStatusSpr;
 @Stateless
 public class SprAppStatusImpl implements SprAppStatusService {
 	
-	private final String DATE_FORMAT = "yyyy/MM/dd";
-	
 	@Inject
 	private EmployeeSprPub employeeSprPub;
 	
 	@Inject
 	private ApplicationSprPub applicationSprService;
+	
+	@Inject
+	private LoginParamCheck loginParamCheck;
 
 	@Override
 	public List<AppStatusSpr> getAppStatus(String loginEmpCD, String employeeCD, String startDate, String endDate) {
@@ -47,8 +49,8 @@ public class SprAppStatusImpl implements SprAppStatusService {
 		// アルゴリズム「事前残業申請の有無」を実行する
 		return this.getOverTimeAppStatus(
 				opEmployeeSpr.get().getEmployeeID(), 
-				GeneralDate.fromString(startDate, DATE_FORMAT), 
-				GeneralDate.fromString(endDate, DATE_FORMAT));
+				loginParamCheck.getDate(startDate), 
+				loginParamCheck.getDate(endDate));
 		
 	}
 
@@ -70,23 +72,19 @@ public class SprAppStatusImpl implements SprAppStatusService {
 		if(Strings.isBlank(startDate)){
 			throw new BusinessException("Msg_1001", "Msg_1026");
 		}
-		GeneralDate startD;
-		// 取得期間の開始日(startdate)の形式をチェックする　日付型（yyyy/mm/dd）
-		try {
-			startD = GeneralDate.fromString(startDate, DATE_FORMAT);
-		} catch (Exception e) {
+		GeneralDate startD = loginParamCheck.getDate(startDate);
+		// 取得期間の開始日(startdate)の形式をチェックする　日付型
+		if(startD==null){
 			throw new BusinessException("Msg_1001", startDate);
 		}
 		// フォームデータ「取得期間の終了日(enddate)」を取得する
 		if(Strings.isBlank(endDate)){
 			throw new BusinessException("Msg_1002", "Msg_1026");
 		}
-		GeneralDate endD;
-		// 取得期間の終了日(enddate)の形式をチェックする　日付型（yyyy/mm/dd）
-		try {
-			endD = GeneralDate.fromString(endDate, DATE_FORMAT);
-		} catch (Exception e) {
-			throw new BusinessException("Msg_1002", endDate);
+		GeneralDate endD = loginParamCheck.getDate(endDate);
+		// 取得期間の終了日(enddate)の形式をチェックする　日付型
+		if(endD==null){
+			throw new BusinessException("Msg_1002", startDate);
 		}
 		// 取得期間の開始日、終了日の逆転チェック
 		if(startD.after(endD)){
@@ -97,9 +95,6 @@ public class SprAppStatusImpl implements SprAppStatusService {
 	@Override
 	public List<AppStatusSpr> getOverTimeAppStatus(String employeeID, GeneralDate startDate, GeneralDate endDate) {
 		List<AppStatusSpr> appOvertimeStatusSprList = new ArrayList<>();
-		/*if(startDate.addDays(31).beforeOrEquals(endDate)){
-			endDate = startDate.addDays(30);
-		}*/
 		// 取得期間を日単位でループする（開始日～終了日）　MAX 31日
 		for(int i = 0; startDate.addDays(i).compareTo(endDate) <= 0; i++){
 			if(i==31){

@@ -50,12 +50,15 @@ module nts.uk.ui.validation {
         validate(inputText: string, option?: any): ValidationResult {
             var result = new ValidationResult();
             // Check Required
-            if (this.required !== undefined && this.required !== false) {
-                if (util.isNullOrEmpty(inputText)) {
+            if (util.isNullOrEmpty(inputText)) {
+                if (this.required !== undefined && this.required !== false) {
                     result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ this.name ]), 'FND_E_REQ_INPUT');
                     return result;
-                }
+                } 
+                result.success(inputText);
+                return result; 
             }
+            
             let validateResult;
             // Check CharType
             result= checkCharType(inputText,this.charType);
@@ -124,12 +127,11 @@ module nts.uk.ui.validation {
         validate(inputText: string, option?: any): ValidationResult {
             var result = new ValidationResult();
             // Check Required
-            if (this.required !== undefined && this.required !== false) {
-                if (util.isNullOrEmpty(inputText)) {
+            if (util.isNullOrEmpty(inputText)) {
+                if (this.required !== undefined && this.required !== false) {
                     result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ this.name ]), 'FND_E_REQ_INPUT');
                     return result;
-                }
-            } else if (util.isNullOrEmpty(inputText)) {
+                } 
                 result.success(inputText);
                 return result;
             }
@@ -173,11 +175,13 @@ module nts.uk.ui.validation {
         validate(inputText: string, option?: any): ValidationResult {
             var result = new ValidationResult();
             // Check Required
-            if (this.required !== undefined && this.required !== false) {
-                if (util.isNullOrEmpty(inputText)) {
+            if (util.isNullOrEmpty(inputText)) {
+                if (this.required !== undefined && this.required !== false) {
                     result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ this.name ]), 'FND_E_REQ_INPUT');
                     return result;
-                }
+                } 
+                result.success(inputText);
+                return result;
             }
             let validateResult;
             // Check CharType
@@ -220,11 +224,13 @@ module nts.uk.ui.validation {
         validate(inputText: string, option?: any): ValidationResult {
             var result = new ValidationResult();
             // Check Required
-            if (this.required !== undefined && this.required !== false) {
-                if (util.isNullOrEmpty(inputText)) {
+            if (util.isNullOrEmpty(inputText)) {
+                if (this.required !== undefined && this.required !== false) {
                     result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ this.name ]), 'FND_E_REQ_INPUT');
                     return result;
-                }
+                } 
+                result.success(inputText);
+                return result;
             }
             let validateResult;
             // Check CharType
@@ -271,11 +277,13 @@ module nts.uk.ui.validation {
         validate(inputText: string, option?: any): ValidationResult {
             var result = new ValidationResult();
             // Check Required
-            if (this.required !== undefined && this.required !== false) {
-                if (util.isNullOrEmpty(inputText)) {
+            if (util.isNullOrEmpty(inputText)) {
+                if (this.required !== undefined && this.required !== false) {
                     result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ this.name ]), 'FND_E_REQ_INPUT');
                     return result;
-                }
+                } 
+                result.success(inputText);
+                return result;
             }
             let validateResult;
             // Check CharType

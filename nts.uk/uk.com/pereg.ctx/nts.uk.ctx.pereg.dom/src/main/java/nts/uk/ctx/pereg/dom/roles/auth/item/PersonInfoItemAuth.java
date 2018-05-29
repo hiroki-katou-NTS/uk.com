@@ -49,5 +49,13 @@ public class PersonInfoItemAuth extends AggregateRoot {
 		this.otherAuth = EnumAdaptor.valueOf(otherAuth, PersonInfoAuthType.class);
 
 	}
+	
+	public boolean seflDiplayItem() {
+		return !(this.selfAuth == PersonInfoAuthType.HIDE);
+	}
+	
+	public boolean otherDiplayItem() {
+		return !(this.otherAuth == PersonInfoAuthType.HIDE);
+	}
 
 }

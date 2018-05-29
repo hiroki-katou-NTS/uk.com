@@ -13,6 +13,7 @@ public class UpdateYearServicePerCommand {
 	private String yearServiceCode;
 	private int yearServiceNo;
 	private String yearServiceName;
+	private int provision;
 	private Integer yearServiceCls;
 	private List<YearServicePerSetCommand> yearServicePerSets;
 }

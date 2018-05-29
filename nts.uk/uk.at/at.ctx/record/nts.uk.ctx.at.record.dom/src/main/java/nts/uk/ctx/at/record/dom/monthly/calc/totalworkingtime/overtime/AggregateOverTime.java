@@ -18,7 +18,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author shuichi_ishida
  */
 @Getter
-public class AggregateOverTime {
+public class AggregateOverTime implements Cloneable {
 
 	/** 残業枠NO */
 	private final OverTimeFrameNo overTimeFrameNo;
@@ -79,6 +79,28 @@ public class AggregateOverTime {
 		domain.legalOverTime = legalOverTime;
 		domain.legalTransferOverTime = legalTransferOverTime;
 		return domain;
+	}
+	
+	@Override
+	public AggregateOverTime clone() {
+		AggregateOverTime cloned = new AggregateOverTime(this.overTimeFrameNo);
+		try {
+			cloned.overTime = new TimeMonthWithCalculation(
+					new AttendanceTimeMonth(this.overTime.getTime().v()),
+					new AttendanceTimeMonth(this.overTime.getCalcTime().v()));
+			cloned.beforeOverTime = new AttendanceTimeMonth(this.beforeOverTime.v());
+			cloned.transferOverTime = new TimeMonthWithCalculation(
+					new AttendanceTimeMonth(this.transferOverTime.getTime().v()),
+					new AttendanceTimeMonth(this.transferOverTime.getCalcTime().v()));
+			cloned.legalOverTime = new AttendanceTimeMonth(this.legalOverTime.v());
+			cloned.legalTransferOverTime = new AttendanceTimeMonth(this.legalTransferOverTime.v());
+			// ※　Shallow Copy.
+			cloned.timeSeriesWorks = this.timeSeriesWorks;
+		}
+		catch (Exception e){
+			throw new RuntimeException("AggregateOverTime clone error.");
+		}
+		return cloned;
 	}
 	
 	/**

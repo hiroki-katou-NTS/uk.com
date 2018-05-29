@@ -49,7 +49,7 @@ public class KrcstErAlConGroup extends UkJpaEntity implements Serializable {
     @Column(name = "CONDITION_OPERATOR")
     public BigDecimal conditionOperator;
     
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "CONDITION_GROUP_ID", nullable = true) })
 	public List<KrcmtErAlAtdItemCon> lstAtdItemCon;
 	

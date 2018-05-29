@@ -1,0 +1,111 @@
+.align-right {
+	text-align: right;
+}
+
+#contents-area {
+	padding: 10px 0px 0px 20px;
+}
+
+.tbl-control {
+	width: auto;
+	margin-bottom: 5px;
+}
+
+.tbl-control td {
+	padding: 0px 5px;
+}
+
+.fixed-table th {
+	text-align: center;
+	white-space: normal;
+}
+
+#extable td, #extable td>* {
+	font-size: 10.5px;
+}
+
+.xheader * {
+	text-align: center;
+}
+
+.button_Closeup {
+	margin-left: 550px;
+	margin-top: 10px;
+}
+
+.clear {
+	clear: both;
+}
+
+.unapprovaled-remand {
+	color: #ff0000;
+}
+
+.approvaled {
+	color: #BFEA60;
+}
+
+.denied {
+	color: #FD4D4D;
+}
+
+.dateRange {
+	float: left;
+}
+
+.saturdayCell {
+	color: #0000ff;
+}
+
+.sundayCell {
+	color: #ff0000;
+}
+
+.unapprovalCell {
+	background-color: #ffffff;
+}
+
+.approvalCell {
+	background-color: #BFEA60;
+}
+
+.remandCell {
+	background-color: #FD4D4D;
+}
+
+.denialCell {
+	background-color: #FD4D4D;
+}
+
+.cancelCell {
+	background-color: #F6F636;
+}
+
+.reflectCell {
+	background-color: #CEE6FF;
+}
+
+.text-unapproval {
+	color: #ff0000;
+	padding-right: 20px;
+}
+
+.text-approval {
+	color: #BFEA60;
+	padding-right: 20px;
+}
+
+.text-denial {
+	color: #FD4D4D;
+	padding-right: 20px;
+}
+
+.text-status {
+	text-align: right;
+}
+.rec{
+	height: auto;
+}
+.abs{
+	height: auto;
+}

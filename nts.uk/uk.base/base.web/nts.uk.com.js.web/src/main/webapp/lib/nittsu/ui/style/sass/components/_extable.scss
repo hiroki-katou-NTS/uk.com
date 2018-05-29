@@ -18,6 +18,12 @@
 .extable div.edited, .extable td.edited {
 	background-color: #FAD7A0;
 }
+.extable div.target-edited, .extable td.target-edited {
+	background-color: #94B7FE;
+}
+.extable div.other-edited, .extable td.other-edited {
+	background-color: #CEE6FF;
+}
 .extable div.xhidden, .extable td.xhidden {
 	background-color: #CCC;
 }
