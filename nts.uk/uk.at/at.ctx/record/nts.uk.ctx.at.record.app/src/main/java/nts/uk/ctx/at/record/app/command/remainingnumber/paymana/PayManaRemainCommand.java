@@ -22,5 +22,6 @@ public class PayManaRemainCommand {
 	private GeneralDate holidayDate;
 	private Double subDays;
 	private int closureId;
+	private Boolean checkedSplit;
 	
 }

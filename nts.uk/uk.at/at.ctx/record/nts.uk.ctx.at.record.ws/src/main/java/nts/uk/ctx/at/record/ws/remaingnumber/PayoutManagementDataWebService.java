@@ -41,8 +41,8 @@ public class PayoutManagementDataWebService extends WebService{
 
 	@POST
 	@Path("save")
-	public void save(PayManaRemainCommand command) {
-		addHandler.handle(command);
+	public List<String> save(PayManaRemainCommand command) {
+		return addHandler.handle(command);
 	}
 	
 	@POST
