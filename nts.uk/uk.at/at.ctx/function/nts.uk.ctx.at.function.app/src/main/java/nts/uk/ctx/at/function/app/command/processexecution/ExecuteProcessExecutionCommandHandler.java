@@ -2626,7 +2626,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		} else {
 			try {
 				processState = this.dailyCalculationEmployeeService.calculate(asyContext, employeeId, period,
-						empCalAndSumExeLog.getEmpCalAndSumExecLogID(), ExecutionType.NORMAL_EXECUTION,null);
+						empCalAndSumExeLog.getEmpCalAndSumExecLogID(), ExecutionType.NORMAL_EXECUTION, null);
 			} catch (Exception e) {
 				throw new DailyCalculateException();
 			}
@@ -2864,7 +2864,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		try {
 			// 社員の日別実績を計算
 			 ProcessState2 = this.dailyCalculationEmployeeService.calculate(asyncContext, empId, period,
-					empCalAndSumExeLogId, ExecutionType.NORMAL_EXECUTION,null);
+					empCalAndSumExeLogId, ExecutionType.NORMAL_EXECUTION, null);
 		} catch (Exception e) {
 			throw new DailyCalculateException();
 		}

@@ -2,8 +2,10 @@ package nts.uk.ctx.at.record.infra.entity.daily.info;
 
 import java.io.Serializable;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
+import javax.validation.constraints.NotNull;
 
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
