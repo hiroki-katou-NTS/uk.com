@@ -38,8 +38,6 @@ public class SubstitutionOfHDManagementData extends AggregateRoot {
 	// 未相殺日数
 	private ManagementDataRemainUnit remainDays;
 	
-	private GeneralDate dayoffDate;
-	
 	public SubstitutionOfHDManagementData(String id, String cid, String sid, boolean unknowDate, GeneralDate dayoffDate,
 			Double requiredDays, Double remainDays) {
 		this.subOfHDID = id;
