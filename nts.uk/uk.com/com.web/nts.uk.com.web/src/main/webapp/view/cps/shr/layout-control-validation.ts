@@ -1553,10 +1553,18 @@ module nts.layout {
             let self = this,
                 finder: IFinder = self.finder,
                 haft_int: Array<IHaftInt> = [
-                    //{
-                    //'ctgCode': 'CS00035',
-                    //'inpCode': 'IS00369'
-                    //},
+                    {
+                        'ctgCode': 'CS00035',
+                        'inpCode': 'IS00366'
+                    },
+                    {
+                        'ctgCode': 'CS00035',
+                        'inpCode': 'IS00368'
+                    },
+                    {
+                        'ctgCode': 'CS00035',
+                        'inpCode': 'IS00369'
+                    },
                     {
                         'ctgCode': 'CS00036',
                         'inpCode': 'IS00377'
@@ -1645,7 +1653,7 @@ module nts.layout {
                     fetch.perm((__viewContext || {}).user.role.personalInfo, categoryId).done(perm => {
                         if (perm) {
                             let remove = _.find(ctrls, c => c.data.recordId && c.data.recordId.indexOf("NID_") > -1);
-                            
+
                             if (is_self) {
                                 if (!perm.selfAllowAddMulti && remove) {
                                     if (!ctrls[0].data.recordId) {

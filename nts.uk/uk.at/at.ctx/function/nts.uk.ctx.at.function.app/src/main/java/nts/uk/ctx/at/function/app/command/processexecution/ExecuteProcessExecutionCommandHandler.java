@@ -2616,7 +2616,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		if ("日別作成".equals(typeExecution)) {
 			try {
 				// ⑤社員の日別実績を作成する 
-				processState = this.createDailyService.createDailyResultEmployee(asyContext, employeeId, period,
+				processState = this.createDailyService.createDailyResultEmployeeWithNoInfoImport(asyContext, employeeId, period,
 						empCalAndSumExeLog.getCompanyID(), empCalAndSumExeLog.getEmpCalAndSumExecLogID(),Optional.ofNullable(dailyCreateLog),
 						processExecution.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()? true
 								: false);
@@ -2626,7 +2626,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		} else {
 			try {
 				processState = this.dailyCalculationEmployeeService.calculate(asyContext, employeeId, period,
-						empCalAndSumExeLog.getEmpCalAndSumExecLogID(), ExecutionType.NORMAL_EXECUTION);
+						empCalAndSumExeLog.getEmpCalAndSumExecLogID(), ExecutionType.NORMAL_EXECUTION, null);
 			} catch (Exception e) {
 				throw new DailyCalculateException();
 			}
@@ -2854,7 +2854,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				ProcessState processState1;
 		try {
 			// ⑤社員の日別実績を作成する
-			 processState1 = this.createDailyService.createDailyResultEmployee(asyncContext, empId, period,
+			 processState1 = this.createDailyService.createDailyResultEmployeeWithNoInfoImport(asyncContext, empId, period,
 					companyId, empCalAndSumExeLogId, null, true);
 		} catch (Exception e) {
 			throw new CreateDailyException();
@@ -2864,7 +2864,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		try {
 			// 社員の日別実績を計算
 			 ProcessState2 = this.dailyCalculationEmployeeService.calculate(asyncContext, empId, period,
-					empCalAndSumExeLogId, ExecutionType.NORMAL_EXECUTION);
+					empCalAndSumExeLogId, ExecutionType.NORMAL_EXECUTION, null);
 		} catch (Exception e) {
 			throw new DailyCalculateException();
 		}
