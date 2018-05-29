@@ -1,5 +1,5 @@
 module nts.uk.at.view.kdm001.l.viewmodel {
-    import model = kdm001.share.model;
+    import model = nts.uk.at.view.kdm001.share.model;
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
     import dialog    = nts.uk.ui.dialog;
@@ -20,13 +20,13 @@ module nts.uk.at.view.kdm001.l.viewmodel {
         closureId: KnockoutObservable<number>       = ko.observable(0);
 
         constructor() {
-            var self = this;
+            let self = this;
             self.initScreen();
         }
 
         public initScreen(): void {
             block.invisible();
-            var self = this,
+            let self = this,
             info = getShared("KDM001_L_PARAMS");
              if (info) {
                 self.workCode(info.selectedEmployee.workplaceCode);
@@ -39,7 +39,7 @@ module nts.uk.at.view.kdm001.l.viewmodel {
                 self.expiredDate(info.row.expiredDate);
                 self.occurredDays(info.row.occurredDays);
                 self.unUsedDays(info.row.unUsedDays);
-                self.checkedExpired(info.row.subHDAtr == 1 ? true : false);
+                self.checkedExpired(info.row.subHDAtr == 1);
                 self.closureId(info.closure.closureId);
             }
             block.clear();
@@ -134,7 +134,7 @@ module nts.uk.at.view.kdm001.l.viewmodel {
         /**
         * closeDialog
         */
-        public closeDialog(): void {
+        public static closeDialog(): void {
             nts.uk.ui.windows.close();
         }
     }

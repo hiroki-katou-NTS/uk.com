@@ -75,9 +75,9 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             } else {
                 if (self.pause()) {
                     if (self.checkedSplit()) {
-                        self.remainDays(self.totalDay - self.subDay() - self.requiredDays());
+                        self.remainDays(self.totalDay() - self.subDay() - self.requiredDays());
                     } else {
-                        self.remainDays(self.totalDay - self.subDay());
+                        self.remainDays(self.totalDay() - self.subDay());
                     }
                 } else {
                     self.remainDays(0);
