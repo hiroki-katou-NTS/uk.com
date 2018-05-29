@@ -1,19 +1,21 @@
-package nts.uk.ctx.bs.employee.pub.generalinfo.employment;
+package nts.uk.ctx.at.schedule.dom.adapter.generalinfo.employment;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Data;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
+/**
+ * 
+ * @author sonnh1
+ *
+ */
 @AllArgsConstructor
-@NoArgsConstructor
-@Getter
-public class ExEmploymentHistItemDto {
+@Data
+public class ExEmploymentHistItemImported {
 	
 	private String historyId;
-	
+
 	private DatePeriod period;
-	
+
 	private String employmentCode;
-	
 }
