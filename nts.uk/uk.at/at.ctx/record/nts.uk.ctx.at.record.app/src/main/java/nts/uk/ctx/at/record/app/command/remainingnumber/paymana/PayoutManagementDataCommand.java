@@ -1,14 +1,7 @@
 package nts.uk.ctx.at.record.app.command.remainingnumber.paymana;
 
-import java.util.Optional;
-
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.base.CompensatoryDayoffDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.base.DigestionAtr;
-import nts.uk.ctx.at.record.dom.remainingnumber.base.HolidayAtr;
-import nts.uk.ctx.at.record.dom.remainingnumber.base.ManagementDataDaysAtr;
-import nts.uk.ctx.at.record.dom.remainingnumber.base.ManagementDataRemainUnit;
 
 @Getter
 public class PayoutManagementDataCommand {
@@ -21,10 +14,10 @@ public class PayoutManagementDataCommand {
 	// 社員ID
 	private String sID;
 
-    private String employeeId;
+	private String employeeId;
 	// 日付不明
 	private boolean unknownDate;
-	
+
 	// 年月日
 	private GeneralDate dayoffDate;
 
@@ -42,9 +35,9 @@ public class PayoutManagementDataCommand {
 
 	// 振休消化区分
 	private int stateAtr;
-	
+
 	private boolean checkBox;
-	
+
 	private int closureId;
 
 }

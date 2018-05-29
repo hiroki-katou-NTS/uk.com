@@ -16,7 +16,8 @@ public class DeletePayoutManagementDataCommandHandler extends CommandHandler<Del
 	@Override
 	protected void handle(CommandHandlerContext<DeletePayoutManagementDataCommand> context) {
 		DeletePayoutManagementDataCommand command = context.getCommand();
-		payoutManagementDataRepository.delete(command.getPayoutId() ,command.getEmployeeId(), command.getDayoffDate());
+		payoutManagementDataRepository.delete(command.getPayoutId());
+		payoutManagementDataRepository.deletePayoutSubOfHDMana(command.getPayoutId());
 	}
 
 }

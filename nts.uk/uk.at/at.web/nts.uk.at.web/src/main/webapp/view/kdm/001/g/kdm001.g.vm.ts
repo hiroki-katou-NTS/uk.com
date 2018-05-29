@@ -135,8 +135,8 @@ module nts.uk.at.view.kdm001.g.viewmodel {
                         setShared('KDM001_A_PARAMS', { isSuccess: true });
                         nts.uk.ui.windows.close();
                     });
-                }).fail(function() {
-                    nts.uk.ui.dialog.alertError({messageId: 'Msg_198'});
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError({messageId: res.messageId});
                     setShared('KDM001_A_PARAMS', { isSuccess: false });
                 }).always(function() {
                     block.clear();

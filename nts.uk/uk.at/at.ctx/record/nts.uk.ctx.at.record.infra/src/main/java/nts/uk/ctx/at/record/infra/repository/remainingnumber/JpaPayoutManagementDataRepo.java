@@ -12,7 +12,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutManagementDataRepository;
-import nts.uk.ctx.at.record.infra.entity.remainingnumber.paymana.KrcmtPayoutManaData;
 
 
 @Stateless
@@ -33,7 +32,7 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 	private final String  QUERY_BY_SID_PERIOD_AND_IN_SUB = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID = :sid AND ((p.dayOff >= :startDate AND p.dayOff <= :endDate) OR p.payoutId in "
 			+ "(SELECT ps.krcmtPayoutSubOfHDManaPK.payoutId FROM KrcmtPayoutSubOfHDMana ps inner join KrcmtSubOfHDManaData s on s.subOfHDID = ps.krcmtPayoutSubOfHDManaPK.subOfHDID where s.sID =:sid AND s.dayOff >= :startDate AND s.dayOff <= :endDate))";
 	
-	private String DELETE_QUERY = "DELETE FROM KrcmtPayoutManaData a WHERE a.sID = :sID AND a.dayOff = :dayOff";
+	private String DELETE_QUERY = "DELETE FROM KrcmtPayoutManaData a WHERE apayoutId= :payoutId";
 
 	private String QUERY_BY_SUBID = "SELECT p FROM KrcmtPayoutManaData p where p.payoutId IN (SELECT ps.krcmtPayoutSubOfHDManaPK.payoutId FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.subOfHDID =:subOfHDID)";
 	
@@ -97,11 +96,10 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 	}
 
 	@Override
-	public void delete(String payoutId, String employeeId, GeneralDate dayOff) {
+	public void delete(String payoutId) {
 		Optional<KrcmtPayoutManaData> entity = this.queryProxy().find(payoutId, KrcmtPayoutManaData.class);
 		if (entity.isPresent()) {
-			this.getEntityManager().createQuery(DELETE_QUERY).setParameter("sID", employeeId).setParameter("dayOff", dayOff).executeUpdate();
-			deletePayoutSubOfHDMana(payoutId);
+			this.getEntityManager().createQuery(DELETE_QUERY).setParameter("payoutId", payoutId).executeUpdate();
 		}else{
 			throw new BusinessException("Msg_198");
 		}

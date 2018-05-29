@@ -94,7 +94,6 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 		Optional<KrcmtSubOfHDManaData> entity = this.queryProxy().find(subOfHDID, KrcmtSubOfHDManaData.class);
 		if(entity.isPresent()){
 			this.getEntityManager().createQuery(DELETE_QUERY).setParameter("subOfHDID", subOfHDID).executeUpdate();
-			this.getEntityManager().createQuery(QUERY_DELETE_SUB).setParameter("subOfHDID", subOfHDID).executeUpdate();
 		}else{
 			throw new  BusinessException("Msg_198");
 		}
