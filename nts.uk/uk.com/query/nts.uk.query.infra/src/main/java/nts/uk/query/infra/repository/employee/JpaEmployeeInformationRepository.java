@@ -110,6 +110,7 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 					.department(Optional.empty())
 					.employment(Optional.empty())
 					.employmentCls(Optional.empty())
+					.position(Optional.empty())
 					.build();
 		}).collect(Collectors.toMap(EmployeeInformation::getEmployeeId, v -> v));
 
