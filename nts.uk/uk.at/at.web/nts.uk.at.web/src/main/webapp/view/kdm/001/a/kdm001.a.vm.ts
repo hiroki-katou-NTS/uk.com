@@ -174,6 +174,10 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             nts.uk.request.jump("/view/kdr/004/a/index.xhtml");
         }
         
+        goToScreenB() {
+            nts.uk.request.jump("/view/kdm/001/b/index.xhtml");
+        }
+        
         clickGetDataList() {
             let self = this;
             
@@ -270,8 +274,6 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 let sortByEmployeeCode = _.orderBy(dataList, ["employeeCode"], ["asc"]);
                 if (item == undefined) self.selectedItem(sortByEmployeeCode[0].employeeId);
             }
-            
-            __viewContext.viewModel.viewmodelB.screenItem().employeeInputList(ko.toJS(self.employeeInputList));
         }
 
         findIdSelected(dataList: Array<any>, selectedItem: string): any {
