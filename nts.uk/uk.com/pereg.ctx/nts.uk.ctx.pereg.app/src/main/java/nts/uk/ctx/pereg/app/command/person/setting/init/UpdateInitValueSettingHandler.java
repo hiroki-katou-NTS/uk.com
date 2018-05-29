@@ -402,7 +402,7 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 					BusinessException message = new BusinessException("Msg_824", c.getItemName());
 					message.setSuppliment("NameID", c.getItemName());
 					exceptions.addMessage(message);
-				} else if (c.getDataType() == 5 && c.getTime() == null && c.getIsRequired() == 1) {
+				} else if (c.getDataType() == 5 && c.getTime() == null && c.getCtgCode() != "CS0020") {
 					BusinessException message = new BusinessException("Msg_824", c.getItemName());
 					message.setSuppliment("NameID", c.getItemName());
 					exceptions.addMessage(message);

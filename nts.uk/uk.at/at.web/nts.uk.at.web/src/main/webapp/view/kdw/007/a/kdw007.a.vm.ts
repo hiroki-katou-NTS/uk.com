@@ -1253,7 +1253,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
 
         clear() {
             let self = this;
-            self.setData(0, null);
+            self.setData(self.targetNO(), null);
         }
 
         setData(NO, param) {

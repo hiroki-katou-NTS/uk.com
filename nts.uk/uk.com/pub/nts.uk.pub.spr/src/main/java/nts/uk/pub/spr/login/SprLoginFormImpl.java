@@ -47,11 +47,11 @@ public class SprLoginFormImpl implements SprLoginFormService {
 		String employeeID = this.paramCheck(menuCD, loginEmployeeCD, employeeCD, startTime, endTime, date, selectType, appID, reason, stampFlg);
 		
 		// （基幹・社員Export）アルゴリズム「「会社ID」「社員コード」より社員基本情報を取得」を実行する　RequestList No.18
-		Optional<EmpSprExport> opEmployeeSpr = employeeSprPub.getEmployeeID(companyID, loginEmployeeCD);
+		Optional<EmpSprExport> opEmployeeSpr = employeeSprPub.getEmployeeID(companyID, loginEmployeeCD.trim());
 		if(!opEmployeeSpr.isPresent()){
 			throw new BusinessException("Msg_301");
 		}
-		return this.generateSession(loginEmployeeCD, opEmployeeSpr.get().getEmployeeID(), opEmployeeSpr.get().getPersonID(), employeeID);
+		return this.generateSession(loginEmployeeCD.trim(), opEmployeeSpr.get().getEmployeeID(), opEmployeeSpr.get().getPersonID(), employeeID);
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class SprLoginFormImpl implements SprLoginFormService {
 			break;
 		case 5: 
 			// アルゴリズム「パラメータチェック（日別実績の確認）」を実行する
-			employeeID = loginParamCheck.checkParamConfirmDaily(employeeCD, date);
+			loginParamCheck.checkParamConfirmDaily(date);
 			break;
 		case 6:
 			// アルゴリズム「パラメータチェック（残業申請確認）」を実行する
@@ -100,7 +100,7 @@ public class SprLoginFormImpl implements SprLoginFormService {
 			throw new BusinessException("Msg_999", "Msg_1026");
 		}
 		// ログイン社員コード(loginemployeeCode)をチェックする
-		employeeSprPub.validateEmpCodeSpr(loginEmployeeCD);
+		employeeSprPub.validateEmpCodeSpr(loginEmployeeCD.trim());
 		// フォームデータ「遷移先画面(menu)」を取得する
 		Integer menuValue = null;
 		try {

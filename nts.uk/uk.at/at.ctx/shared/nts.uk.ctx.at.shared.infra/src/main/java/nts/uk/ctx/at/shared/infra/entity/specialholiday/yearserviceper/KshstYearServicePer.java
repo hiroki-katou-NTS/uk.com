@@ -29,6 +29,8 @@ public class KshstYearServicePer extends UkJpaEntity implements Serializable {
 	/**名称**/
 	@Column(name = "YEAR_SERVICE_NAME")
 	public String yearServiceName;
+	@Column(name = "PROVISION")
+	public int provision;
 	@Column(name = "YEAR_SERVICE_CLS")
 	public Integer yearServiceCls;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kshstYearServicePer", orphanRemoval = true)

@@ -172,5 +172,13 @@ public class PersonInfoCategoryAuth extends AggregateRoot {
 		this.allowOtherRef = EnumAdaptor.valueOf(allowOtherRef, PersonInfoPermissionType.class);
 
 	}
+	
+	public boolean allowPersonRef() {
+		return allowPersonRef == PersonInfoPermissionType.YES;
+	}
+	
+	public boolean allowOtherRef() {
+		return allowOtherRef == PersonInfoPermissionType.YES;
+	}
 
 }

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.identity.monthly;
 
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ public class IdentityConfirmProcess {
 		//対応するドメインモデル「本人確認処理の利用設定」を取得する
 		Optional<IdentityProcess> identityOp = identityProcessRepo.getIdentityProcessById(cId);
 		if(!identityOp.isPresent())
-			return false;
+			return true;
 		//取得したドメインモデル「本人確認処理の利用設定．日の本人確認を利用する」チェックする
 		if(identityOp.get().getUseDailySelfCk() == 0){
 			//利用しない場合
@@ -44,20 +45,11 @@ public class IdentityConfirmProcess {
 		//ドメインモデル「日の本人確認」を取得する
 		List<Identification> listIdentification = identificationRepository.findByEmployeeID(employeeID, startDate, endDate);
 		//取得した「日の本人確認」をもとにListを作成する
-		GeneralDate date = GeneralDate.localDate(startDate.localDate());
-		while(date.before(endDate)) {
-			boolean checkExist = false;
-			//対応するドメインモデル「日の本人確認」がすべて存在するかチェックする
-			for(Identification identification : listIdentification) {
-				if(date.equals(identification.getIndentificationYmd())){
-					checkExist = true;
-					continue;
-				}
-			}
-			if(!checkExist)
-				return false;
-			date = date.addDays(1);
+		
+		if (listIdentification.size() == ChronoUnit.DAYS.between(startDate.localDate(), endDate.localDate())+1) {
+			return true;
+		} else {
+			return false;
 		}
-		return false;
 	}
 }

@@ -126,6 +126,25 @@ module nts.uk.ui.gridlist {
             }
         }
         
+        class TextStyle {
+            rowId: any;
+            columnKey: string;
+            style: string;
+            constructor(rowId: any, columnKey: string, style: string) {
+                this.rowId = rowId;
+                this.columnKey = columnKey;
+                this.style = style;
+            }
+        }
+        let textStyles = [];
+        for (let i = 0; i < 10; i++) {
+            if (i % 3 === 0) { 
+                textStyles.push(new TextStyle(i, "header0", "italic-text"));
+            } else {
+                textStyles.push(new TextStyle(i, "header0", "bold-text"));
+            } 
+        }
+        
         class RowState {
             rowId: number;
             disable: boolean;
@@ -353,6 +372,13 @@ module nts.uk.ui.gridlist {
                                                 columnKey: 'columnKey',
                                                 color: 'color',
                                                 colorsTable: colorsTable
+                                            },
+                                            {
+                                                name: 'TextStyle',
+                                                rowId: 'rowId',
+                                                columnKey: 'columnKey',
+                                                style: 'style',
+                                                styles: textStyles
                                             },
                                             {
                                                 name: 'HeaderStyles',

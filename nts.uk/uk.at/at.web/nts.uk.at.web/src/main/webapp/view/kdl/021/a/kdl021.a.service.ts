@@ -1,6 +1,7 @@
 module kdl021.a.service {
     var paths = {
-        getPossibleAttendanceItem: "at/record/divergencetime/AttendanceDivergenceName"
+        getPossibleAttendanceItem: "at/record/divergencetime/AttendanceDivergenceName",
+        getMonthlyAttendanceDivergenceName: "at/record/divergencetime/getMonthlyAttendanceDivergenceName"
     }
     /**
     * get all divergence item id(id co the chon)
@@ -8,6 +9,11 @@ module kdl021.a.service {
     export function getPossibleItem(arrPossible: Array<number>): JQueryPromise<Array<model.AttendanceItem>> {
         return nts.uk.request.ajax("at", paths.getPossibleAttendanceItem , arrPossible);
     }
+    
+    export function getMonthlyAttendanceDivergenceName(arrPossible: Array<number>): JQueryPromise<Array<model.AttendanceItem>> {
+        return nts.uk.request.ajax("at", paths.getMonthlyAttendanceDivergenceName , arrPossible);
+    }
+    
     export module model {
         export class AttendanceItem {
             id: number;
