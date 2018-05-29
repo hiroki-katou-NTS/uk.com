@@ -1,8 +1,10 @@
-package nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection;
+package nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionorder;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionorder.primitive.Disporder;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionorder.primitive.InitSelection;
 
 @AllArgsConstructor
 @Getter

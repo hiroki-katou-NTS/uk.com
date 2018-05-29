@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.dom.person.setting.selectionitem;
+package nts.uk.ctx.pereg.dom.person.setting.selectionitem.history;
 
 import java.util.List;
 import java.util.Optional;
