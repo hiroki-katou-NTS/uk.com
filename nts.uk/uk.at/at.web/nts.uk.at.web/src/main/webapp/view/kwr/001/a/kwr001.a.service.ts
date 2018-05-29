@@ -25,7 +25,7 @@ module nts.uk.at.view.kwr001.a {
         }
         
         export function exportExcel(data: any): JQueryPromise<any> {
-            return nts.uk.request.ajax('at', paths.exportExcel, data);
+            return nts.uk.request.exportFile(paths.exportExcel, data);
         }
     }
 }

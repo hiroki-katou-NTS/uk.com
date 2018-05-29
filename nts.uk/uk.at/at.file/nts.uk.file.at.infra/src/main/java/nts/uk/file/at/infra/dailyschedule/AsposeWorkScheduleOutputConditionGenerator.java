@@ -170,8 +170,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	/** The Constant DATA_COLUMN_INDEX. */
 	private static final int[] DATA_COLUMN_INDEX = {3, 8, 10, 14, 16, 39};
 	
-	private static final String REPORT_ID = "EXCEL_PDF_GENERATOR";
-	
 	/* (non-Javadoc)
 	 * @see nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputGenerator#generate(nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputCondition, nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo, nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputQuery)
 	 */
@@ -277,11 +275,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			
 			// Save workbook
 			if (query.getFileType() == FileOutputType.FILE_TYPE_EXCEL)
-				reportContext.saveAsExcel(this.createNewFile(generatorContext, WorkScheOutputConstants.SHEET_FILE_NAME));
+				reportContext.saveAsExcel(this.createNewFile(generatorContext, WorkScheOutputConstants.SHEET_FILE_NAME + ".xlsx"));
 			else {
 				// Create print area
 				createPrintArea(currentRow, sheet);
-				reportContext.saveAsPdf(this.createNewFile(generatorContext, WorkScheOutputConstants.SHEET_FILE_NAME));
+				reportContext.saveAsPdf(this.createNewFile(generatorContext, WorkScheOutputConstants.SHEET_FILE_NAME + ".pdf"));
 			}
 			
 		} catch (Exception e) {
