@@ -96,7 +96,6 @@ module nts.uk.at.view.kdm001.h.viewmodel {
                     block.clear();
                 });
             }
-
         }
 
         public removeData() {
@@ -115,7 +114,7 @@ module nts.uk.at.view.kdm001.h.viewmodel {
                         nts.uk.ui.windows.close();
                     });
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError({messageId: res.messageId});
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                     setShared('KDM001_A_PARAMS', { isSuccess: false });
                 }).always(function() {
                     block.clear();
@@ -123,10 +122,6 @@ module nts.uk.at.view.kdm001.h.viewmodel {
             }).then(() => {
                 block.clear();
             });
-
-
-
-
         }
 
         openKDM001H(): void {
