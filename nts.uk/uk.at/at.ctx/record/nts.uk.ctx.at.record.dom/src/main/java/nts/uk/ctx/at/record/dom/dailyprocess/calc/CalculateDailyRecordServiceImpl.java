@@ -1069,7 +1069,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		// ドメインモデル「個人労働条件」を取得する
 		Optional<WorkingConditionItem> personalLablorCodition = companyCommonSetting.getPersonInfo();
 		
-		if (personalLablorCodition==null && !personalLablorCodition.isPresent()) {
+		if (personalLablorCodition==null || !personalLablorCodition.isPresent()) {
 //			throw new RuntimeException("Can't get WorkingSystem");
 			return null;
 		}
