@@ -281,7 +281,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT w FROM BsymtAffiWorkplaceHistItem w JOIN ");
-		builderString.append("BsymtAffiWorkplaceHist a ");
+		builderString.append("BsymtAffiWorkplaceHist a ON  w.hisId = a.hisId");
 		builderString.append("WHERE a.sid = :sId ");
 		builderString.append("AND a.strDate <= :baseDate ");
 		builderString.append("AND a.endDate >= :baseDate ");
@@ -818,11 +818,10 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				.getList().stream().map(s -> {
 					return new DPErrorSettingDto(s.kwrmtErAlWorkRecordPK.companyId,
 							s.kwrmtErAlWorkRecordPK.errorAlarmCode, s.errorAlarmName,
-							s.fixedAtr.intValue() == 1 ? true : false, s.useAtr.intValue() == 1 ? true : false,
-							s.typeAtr.intValue(),
-							s.krcmtErAlCondition == null ? "" : s.krcmtErAlCondition.messageDisplay,
-							s.boldAtr.intValue() == 1 ? true : false, s.messageColor,
-							s.cancelableAtr.intValue() == 1 ? true : false,
+							s.fixedAtr == 1 ? true : false, s.useAtr == 1 ? true : false,
+							s.typeAtr, s.krcmtErAlCondition == null ? "" : s.krcmtErAlCondition.messageDisplay, 
+							s.boldAtr == 1 ? true : false, s.messageColor,
+							s.cancelableAtr == 1 ? true : false, 
 							s.errorDisplayItem == null ? null : s.errorDisplayItem.intValue());
 				}).collect(Collectors.toList());
 	}
@@ -1183,8 +1182,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		if (!entity.isEmpty()) {
 			return entity.stream().map(x -> {
 				return new EnumConstant(
-						x.krcstErAlApplicationPK.appTypeCd.intValue(), EnumAdaptor
-								.valueOf(x.krcstErAlApplicationPK.appTypeCd.intValue(), ApplicationType.class).nameId,
+						x.krcstErAlApplicationPK.appTypeCd, EnumAdaptor
+								.valueOf(x.krcstErAlApplicationPK.appTypeCd, ApplicationType.class).nameId,
 						"");
 			}).collect(Collectors.toList());
 		} else {

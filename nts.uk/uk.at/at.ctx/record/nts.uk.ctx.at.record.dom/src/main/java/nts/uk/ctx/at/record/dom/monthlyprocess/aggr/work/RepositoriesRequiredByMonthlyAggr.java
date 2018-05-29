@@ -14,12 +14,14 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.GetVacationAddSet;
 import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.PayItemCountOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.workform.flex.MonthlyAggrSetOfFlexRepository;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthlyRepository;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.period.GetWeekPeriod;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.GetWeekStart;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.MonthlyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
@@ -39,7 +41,6 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriodRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
-import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetWeekStart;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.flex.GetFlexPredWorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetHolidayWorkAndTransferOrder;
@@ -135,7 +136,9 @@ public interface RepositoriesRequiredByMonthlyAggr {
 	OptionalItemRepository getOptionalItem();
 
 	/** 週開始の取得 */
-	GetWeekStart getGetWeekStart();
+	GetWeekStart getWeekStart();
+	/** 週集計期間を取得する */
+	GetWeekPeriod getWeekPeriod();
 	
 	/** 時間外超過設定の取得 */
 	OutsideOTSettingRepository getOutsideOTSet();

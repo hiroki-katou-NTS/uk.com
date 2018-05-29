@@ -410,7 +410,9 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	/**
 	 * 承認状況メール埋込URL取得
 	 */
-	private String getEmbeddedURL(String eid, ApprovalStatusMailTemp domain, ApprovalStatusMailType mailType) {
+	//Chưa đối ứng phần EmbeddedURL
+	//TODO
+/*	private String getEmbeddedURL(String eid, ApprovalStatusMailTemp domain, ApprovalStatusMailType mailType) {
 		List<String> listUrl = new ArrayList<>();
 		// 承認状況メールテンプレート.URL承認埋込
 		if (NotUseAtr.USE.equals(domain.getUrlApprovalEmbed())) {
@@ -445,7 +447,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		String url = StringUtils.join(listUrl, "/n");
 		return title + "/n" + url;
 	}
-
+*/
 	@Override
 	public String confirmApprovalStatusMailSender() {
 		String sId = AppContexts.user().userId();
@@ -676,8 +678,12 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 				continue;
 			// Imported（就業）「個人社員基本情報」を取得する
 			// RequestList126
+			String empName = "";
 			List<EmployeeBasicInfoImport> listEmpInfor = this.workplaceAdapter.findBySIds(listEmpId);
-			String empName = !listEmpInfor.isEmpty() ? listEmpInfor.stream().findFirst().get().getPName() : "";
+			if(!listEmpInfor.isEmpty()){
+				EmployeeBasicInfoImport empInfo = listEmpInfor.stream().findFirst().get();
+				empName = empInfo.getEmployeeCode() + "　" + empInfo.getPName();
+			}
 			// アルゴリズム「承認状況取得申請」を実行する
 			List<ApplicationApprContent> listAppSttAcquisitionAppl = this.getAppSttAcquisitionAppl(appStt);
 			List<Application_New> listApprovalContent = new ArrayList<>();

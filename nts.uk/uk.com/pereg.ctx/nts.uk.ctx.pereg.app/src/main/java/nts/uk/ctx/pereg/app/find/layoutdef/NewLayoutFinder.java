@@ -32,19 +32,12 @@ public class NewLayoutFinder {
 		return layout.isPresent();
 	}
 
-	public NewLayoutDto getLayout() {
-		Optional<NewLayout> layout = repo.getLayoutWithCreateNew();
-		if (layout.isPresent()) {
-			NewLayout _layout = layout.get();
-			// get classifications
-
+	public Optional<NewLayoutDto> getLayout() {
+		return repo.getLayout().map(m -> {
 			// Get list Classification Item by layoutID
-			List<LayoutPersonInfoClsDto> listItemCls = this.clsFinder.getListClsDto(_layout.getLayoutID());
+			List<LayoutPersonInfoClsDto> listItemCls = this.clsFinder.getListClsDto(m.getLayoutID());
 
-			return NewLayoutDto.fromDomain(_layout, listItemCls);
-		} else {
-			return null;
-		}
+			return NewLayoutDto.fromDomain(m, listItemCls);
+		});
 	}
-
 }

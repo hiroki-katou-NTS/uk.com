@@ -291,8 +291,6 @@ public class ApprovalStatusFinder {
 			detail.setPrePostAtr(applicaton_N.getPrePostAtr());
 			detail.setApplicationDate(applicaton_N.getApplicationDate());
 			detail.setApplicationID(applicaton_N.getApplicationID());
-			detail.setApplicationReason(applicaton_N.getApplicationReason());
-			detail.setDispReason(isDisplayReason(applicaton_N, companyID));
 			List<ApprovalPhaseStateImport_New> listApprovalPhase = app.getAppContent().getApprRootContentExport()
 					.getApprovalRootState().getListApprovalPhaseState();
 			listApprovalPhase.sort((ApprovalPhaseStateImport_New x1,
@@ -447,7 +445,6 @@ public class ApprovalStatusFinder {
 			}
 		}
 		appContent += I18NText.getText("KAF018_276") + " " + clockShorHm(totalTime) + "（" + contentOther + "）";
-		appContent += "\n" + applicaton_N.getApplicationReason();
 		return appContent;
 	}
 
@@ -590,26 +587,9 @@ public class ApprovalStatusFinder {
 					: I18NText.getText("KAF018_220");
 			appContent += appabsence.getEndTime2();
 		}
-		if (isDisplayReason(applicaton_N, companyID)) {
-			appContent += "\n" + applicaton_N.getApplicationReason();
-		}
 		return appContent;
 	}
-
-	private boolean isDisplayReason(ApplicationDto_New applicaton_N, String companyID) {
-		Optional<RequestSetting> requestSet = repoRequestSet.findByCompany(companyID);
-		ApprovalListDisplaySetting appDisplaySet = null;
-		ApprovalListDisplaySetDto displaySet = null;
-		if (requestSet.isPresent()) {
-			appDisplaySet = requestSet.get().getApprovalListDisplaySetting();
-			displaySet = ApprovalListDisplaySetDto.fromDomain(appDisplaySet);
-		}
-		if (displaySet.getAppReasonDisAtr() == 1 && !Objects.isNull(applicaton_N.getApplicationReason())) {
-			return true;
-		}
-		return false;
-	}
-
+	
 	private String clockShorHm(Integer minute) {
 		return (minute / 60 + ":" + (minute % 60 < 10 ? "0" + minute % 60 : minute % 60));
 	}

@@ -89,7 +89,7 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 				getAnnLeaRemNumWithinPeriod.
 				algorithm(companyId, 
 						employeeId, 
-						new DatePeriod(startDate.get(), designatedPeriod.end()), 
+						new DatePeriod(startDate.get(), designatedPeriod.end().addDays(-1)), 
 						TempAnnualLeaveMngMode.OTHER, 
 						designatedPeriod.end(), 
 						false, 
@@ -104,15 +104,13 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 				for (AnnualLeaveInfo annualLeaveInfoe : optListAnnus.get()) {
 					// 「年休の集計結果」で付与された年月日をチェック
 				    // 計算期間．開始日<=年休情報．年月日<=計算期間．終了日
-//					if (designatedPeriod.start().beforeOrEquals(annualLeaveInfoe.getYmd()) && designatedPeriod.end().afterOrEquals(annualLeaveInfoe.getYmd())) {
+					if (designatedPeriod.start().beforeOrEquals(annualLeaveInfoe.getYmd()) && designatedPeriod.end().afterOrEquals(annualLeaveInfoe.getYmd())) {
 						YearlyHolidaysTimeRemainingExport yhtre = 
 								new YearlyHolidaysTimeRemainingExport(annualLeaveInfoe.getYmd(), 
 										null, 
 										annualLeaveInfoe.getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays().v());
-						// List<指定日時点の年休残数>の年休残数を全て更新
-						//yhtre.setAnnualRemaining(aggrResultOfAnnualLeave.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays().v());
 						yearlyHolidaysTimeRemainingExport.add(yhtre );
-//					}
+					}
 				}
 			}
 			

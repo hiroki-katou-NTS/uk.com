@@ -36,6 +36,7 @@ module nts.uk.com.view.ccg001.a {
             showAllClosure: KnockoutObservable<boolean>; // 全締め表示
             showPeriod: KnockoutObservable<boolean>; // 対象期間利用
             periodFormatYM: KnockoutObservable<boolean>; // 対象期間精度
+            lazyLoad: KnockoutObservable<boolean>;
 
             constructor() {
                 var self = this;
@@ -83,6 +84,7 @@ module nts.uk.com.view.ccg001.a {
                 self.showAllClosure = ko.observable(true); // 全締め表示
                 self.showPeriod = ko.observable(false); // 対象期間利用
                 self.periodFormatYM = ko.observable(false); // 対象期間精度
+                self.lazyLoad = ko.observable(false);
             }
 
             /**
@@ -139,6 +141,7 @@ module nts.uk.com.view.ccg001.a {
                     showJobTitle: self.showJobTitle(), // 職位条件
                     showWorktype: self.showWorktype(), // 勤種条件
                     isMutipleCheck: self.isMutipleCheck(), // 選択モード
+                    isTab2Lazy: self.lazyLoad(),
 
                     /** Return data */
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {

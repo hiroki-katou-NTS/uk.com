@@ -9,16 +9,22 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 public class AffiliationInforOfDailyPerformCommand extends DailyWorkCommonCommand {
 
 	@Getter
-	private AffiliationInforOfDailyPerfor data;
+	private AffiliationInforOfDailyPerforDto data;
 
 	@Override
 	public void setRecords(AttendanceItemCommon item) {
-		this.data = item == null || !item.isHaveData() ? null : ((AffiliationInforOfDailyPerforDto) item).toDomain(getEmployeeId(), getWorkDate());
+		this.data = item == null || !item.isHaveData() ? null : (AffiliationInforOfDailyPerforDto) item;
 	}
 
 	@Override
 	public void updateData(Object data) {
-		this.data = (AffiliationInforOfDailyPerfor) data;
+		if(data == null){ return; }
+		setRecords(AffiliationInforOfDailyPerforDto.getDto((AffiliationInforOfDailyPerfor) data));
+	}
+
+	@Override
+	public AffiliationInforOfDailyPerfor toDomain() {
+		return data == null ? null : data.toDomain(getEmployeeId(), getWorkDate());
 	}
 
 }

@@ -121,7 +121,9 @@ public class LoginWs extends WebService {
 	/**
 	 * Submit login form 1.
 	 *
+	 * @param request the request
 	 * @param command the command
+	 * @return the java type result
 	 */
 	@POST
 	@Path("submit/form1")
@@ -137,7 +139,9 @@ public class LoginWs extends WebService {
 	/**
 	 * Submit login form 2.
 	 *
+	 * @param request the request
 	 * @param command the command
+	 * @return the java type result
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@POST
@@ -160,11 +164,25 @@ public class LoginWs extends WebService {
 	public List<CompanyInformationImport> getAllCompany() {
 		return companyInformationFinder.findAll();
 	}
+	
+	/**
+	 * Gets the company infor by code.
+	 *
+	 * @param companyId the company id
+	 * @return the company infor by code
+	 */
+	@POST
+	@Path("getcompanybycode/{companyId}")
+	public CompanyInformationImport getCompanyInforByCode(@PathParam("companyId") String companyId) {
+		return companyInformationFinder.getCompanyInforByCode(companyId);
+	}
 
 	/**
 	 * Submit login form 3.
 	 *
+	 * @param request the request
 	 * @param command the command
+	 * @return the java type result
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@POST

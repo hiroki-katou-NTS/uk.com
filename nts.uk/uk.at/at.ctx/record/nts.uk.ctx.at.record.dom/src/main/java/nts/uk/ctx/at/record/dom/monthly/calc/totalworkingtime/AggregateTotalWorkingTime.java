@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.byperiod.FlexTimeByPeriod;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTime;
@@ -22,6 +23,7 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransf
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByDefo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByReg;
+import nts.uk.ctx.at.record.dom.weekly.RegAndIrgTimeOfWeekly;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.ExcessOutsideTimeSetReg;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -111,15 +113,15 @@ public class AggregateTotalWorkingTime implements Cloneable {
 	 */
 	public void aggregateSharedItem(DatePeriod datePeriod,
 			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap){
-
-		// 就業時間を集計する
-		this.workTime.confirm(datePeriod, attendanceTimeOfDailyMap);
 	
 		// 休暇使用時間を集計する
 		this.vacationUseTime.confirm(datePeriod, attendanceTimeOfDailyMap);
 		
 		// 所定労働時間を集計する
 		this.prescribedWorkingTime.confirm(datePeriod, attendanceTimeOfDailyMap);
+
+		// 就業時間を集計する
+		this.workTime.confirm(datePeriod, attendanceTimeOfDailyMap);
 	}
 	
 	/**
@@ -251,6 +253,36 @@ public class AggregateTotalWorkingTime implements Cloneable {
 		
 		// 就業時間を集計する
 		this.workTime.aggregate(datePeriod, workingSystem, actualWorkingTime, flexTime,
+				this.overTime, this.holidayWorkTime);
+	}
+	
+	/**
+	 * 実働時間の集計　（週別集計用）
+	 * @param datePeriod 期間
+	 * @param workingSystem 労働制
+	 * @param actualWorkingTime 実働時間
+	 * @param flexTime フレックス時間
+	 */
+	public void aggregateActualWorkingTimeForWeek(
+			DatePeriod datePeriod,
+			WorkingSystem workingSystem,
+			RegAndIrgTimeOfWeekly actualWorkingTime,
+			FlexTimeByPeriod flexTime){
+		
+		// 残業合計時間を集計する
+		this.overTime.aggregateTotal(datePeriod);
+		
+		// 休出合計時間を集計する
+		this.holidayWorkTime.aggregateTotal(datePeriod);
+		
+		// 休暇使用時間を集計する
+		this.vacationUseTime.aggregate(datePeriod);
+		
+		// 所定労働時間を集計する
+		this.prescribedWorkingTime.aggregate(datePeriod);
+		
+		// 就業時間を集計する
+		this.workTime.aggregateForWeek(datePeriod, workingSystem, actualWorkingTime, flexTime,
 				this.overTime, this.holidayWorkTime);
 	}
 	

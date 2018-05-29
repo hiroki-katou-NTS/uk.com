@@ -217,7 +217,7 @@ public class FlexTimeOfMonthly {
 			procDate = procDate.addDays(1);
 		}
 		
-		return AggregateMonthlyValue.of(aggregateTotalWorkingTime, excessOutsideWorkMng);
+		return AggregateMonthlyValue.of(aggregateTotalWorkingTime, excessOutsideWorkMng, new ArrayList<>());
 	}
 	
 	/**
