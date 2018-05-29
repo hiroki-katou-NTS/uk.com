@@ -10,10 +10,10 @@ import nts.uk.ctx.at.function.dom.attendancetype.ScreenUseAtr;
 public enum FormOutputType {
 	
 	// 日付別
-	BY_DATE(0),
+	BY_DATE(1),
 	
 	// 個人別
-	BY_EMPLOYEE(1);
+	BY_EMPLOYEE(0);
 	
 	/** The output type. */
 	public final int outputType;

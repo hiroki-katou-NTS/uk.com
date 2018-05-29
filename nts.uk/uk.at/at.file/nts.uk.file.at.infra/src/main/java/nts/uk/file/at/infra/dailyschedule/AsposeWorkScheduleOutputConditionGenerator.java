@@ -681,7 +681,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					TotalValue totalVal = new TotalValue();
 					totalVal.setAttendanceId(attendanceId.getAttendanceDisplay());
 					totalVal.setValue("0");
-					totalVal.setValueType(0);
+					totalVal.setValueType(TotalValue.INTEGER);
 					lstTotalValue.add(totalVal);
 				});
 				
@@ -733,20 +733,22 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		if (performanceData != null && performanceData.size() > 0) {
 			for (DailyPersonalPerformanceData data: performanceData) {
 				List<ActualValue> lstActualValue = data.getActualValue();
+				if (lstActualValue == null) continue;
 				lstActualValue.forEach(actualValue -> {
 					Optional<TotalValue> optTotalVal = lstTotalValue.stream().filter(x -> x.getAttendanceId() == actualValue.getAttendanceId()).findFirst();
 					TotalValue totalValue;
 					if (optTotalVal.isPresent()) {
 						totalValue = optTotalVal.get();
-						if (totalValue.getValueType() == ActualValue.INTEGER || totalValue.getValueType() == ActualValue.BIG_DECIMAL) {
+						if (totalValue.getValueType() == TotalValue.INTEGER || totalValue.getValueType() == TotalValue.BIG_DECIMAL) {
 							totalValue.setValue(String.valueOf(Integer.parseInt(totalValue.getValue()) + Integer.parseInt(actualValue.getValue())));
 						}
 					}
 					else {
 						totalValue = new TotalValue();
 						totalValue.setAttendanceId(actualValue.getAttendanceId());
-						if (totalValue.getValueType() == ActualValue.INTEGER || totalValue.getValueType() == ActualValue.BIG_DECIMAL)
+						if (totalValue.getValueType() == TotalValue.INTEGER || totalValue.getValueType() == TotalValue.BIG_DECIMAL)
 							totalValue.setValue(actualValue.getValue());
+						totalValue.setValueType(actualValue.getValueType());
 						lstTotalValue.add(totalValue);
 					}
 				});
@@ -771,6 +773,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					totalValue.setAttendanceId(actualValue.getAttendanceId());
 					if (totalValue.getValueType() == ActualValue.INTEGER || totalValue.getValueType() == ActualValue.BIG_DECIMAL)
 						totalValue.setValue(actualValue.getValue());
+					totalValue.setValueType(actualValue.getValueType());
 					lstTotalValue.add(totalValue);
 				}
 			});
@@ -1441,6 +1444,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			
 			// Employee data
 			for (DailyPersonalPerformanceData employee : employeeReportData){
+				List<ActualValue> lstItem = employee.getActualValue();
+				if (lstItem == null) continue; 
+				
 				Range dateRangeTemp;
 				if (colorWhite) // White row
 					dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_WHITE_ROW + dataRowCount);
@@ -1461,8 +1467,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				employeeRange.merge();
 				
 				// B5_3
-				List<ActualValue> lstItem = employee.getActualValue();
-				
 				// Divide list into smaller lists (max 16 items)
 				int numOfChunks = (int)Math.ceil((double)lstItem.size() / CHUNK_SIZE);
 	

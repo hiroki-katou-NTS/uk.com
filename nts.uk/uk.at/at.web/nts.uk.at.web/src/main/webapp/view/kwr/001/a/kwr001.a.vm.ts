@@ -487,6 +487,7 @@ module nts.uk.at.view.kwr001.a {
                             fileType: 1,
                             condition: data
                         };
+                        nts.uk.ui.block.grayout();
                         service.exportExcel(dto).done(function(){
                         }).always(function() {
                            nts.uk.ui.block.clear(); 
