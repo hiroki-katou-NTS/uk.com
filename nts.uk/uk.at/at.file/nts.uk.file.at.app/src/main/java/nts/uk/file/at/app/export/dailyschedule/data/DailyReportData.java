@@ -1,18 +1,19 @@
 package nts.uk.file.at.app.export.dailyschedule.data;
 
+import java.util.List;
+
 import lombok.Data;
-import nts.arc.time.GeneralDate;
+import nts.uk.file.at.app.export.dailyschedule.totalsum.TotalValue;
 
 /**
- * Instantiates a new daily report data.
+ * The Class DailyReportData.
  * @author HoangNDH
  */
 @Data
 public class DailyReportData {
+	/** The lst daily report data. */
+	public List<WorkplaceDailyReportData> lstDailyReportData;
 	
-	/** The date. */
-	public GeneralDate date;
-	
-	/** The lst workplace data. */
-	public DailyWorkplaceData lstWorkplaceData;
+	/** The list total value. */
+	public List<TotalValue> listTotalValue;
 }

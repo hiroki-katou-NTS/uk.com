@@ -24,7 +24,7 @@ public class WorkScheduleSettingTotalOutput {
 	// 職場累計
 	private boolean cumulativeWorkplace;
 	// 職場階層累計
-	private TotalWorkplaceHierachy workplaceHierachyTotal;
+	private TotalWorkplaceHierachy workplaceHierarchyTotal;
 	
 //	public static WorkScheduleSettingTotalOutput convertToDomain(WorkScheduleSettingTotalOutputDto dto) {
 //		WorkScheduleSettingTotalOutput output = new WorkScheduleSettingTotalOutput();

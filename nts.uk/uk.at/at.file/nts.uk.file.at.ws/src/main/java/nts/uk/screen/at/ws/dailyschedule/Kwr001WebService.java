@@ -5,6 +5,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
 import nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputCondition;
@@ -16,12 +17,12 @@ import nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputQueryDto;
 @Produces("application/json")
 public class Kwr001WebService extends WebService {
 	@Inject
-	WorkScheduleOutputGenerator generator;
+	DailyPerformanceExportService service;
 	
 	@POST
 	@Path("export")
-	public void exportData(WorkScheduleOutputQueryDto dto) {
+	public ExportServiceResult exportData(WorkScheduleOutputQueryDto dto) {
 		WorkScheduleOutputQuery query = WorkScheduleOutputQuery.createFromJavaType(dto);
-		generator.generate(query);
+		return service.start(query);
 	}
 }

@@ -1,7 +1,5 @@
 package nts.uk.file.at.app.export.dailyschedule;
 
-import java.util.Optional;
-
 import lombok.Data;
 
 /**
@@ -11,6 +9,18 @@ import lombok.Data;
  */
 @Data
 public class TotalWorkplaceHierachy {
+	
+	// Level constants
+	public static final int FIRST_LEVEL = 1;
+	public static final int SECOND_LEVEL = 2;
+	public static final int THIRD_LEVEL = 3;
+	public static final int FOURTH_LEVEL = 4;
+	public static final int FIFTH_LEVEL = 5;
+	public static final int SIXTH_LEVEL = 6;
+	public static final int SEVENTH_LEVEL = 7;
+	public static final int EIGHTH_LEVEL = 8;
+	public static final int NINTH_LEVEL = 9;
+	
 	// 1階層
 	private Boolean firstLevel;
 	// 2階層
@@ -37,28 +47,41 @@ public class TotalWorkplaceHierachy {
 	 */
 	public boolean checkLevelEnabled(int level) {
 		switch (level) {
-		case 1:
+		case FIRST_LEVEL:
 			return firstLevel != null && firstLevel;
-		case 2:
+		case SECOND_LEVEL:
 			return secondLevel != null && firstLevel;
-		case 3:
+		case THIRD_LEVEL:
 			return thirdLevel != null && thirdLevel;
-		case 4:
+		case FOURTH_LEVEL:
 			return fourthLevel != null && fourthLevel;
-		case 5:
+		case FIFTH_LEVEL:
 			return fifthLevel != null && fifthLevel;
-		case 6:
+		case SIXTH_LEVEL:
 			return sixthLevel != null && sixthLevel;
-		case 7:
+		case SEVENTH_LEVEL:
 			return seventhLevel != null && seventhLevel;
-		case 8:
+		case EIGHTH_LEVEL:
 			return eightLevel != null && eightLevel;
-		case 9:
+		case NINTH_LEVEL:
 			return ninthLevel != null && ninthLevel;
 		default:
 			return false;
 		}
 	}
+	
+	public int getHighestLevelEnabled() {
+		return  checkLevelEnabled(FIRST_LEVEL)? FIRST_LEVEL : 
+			 	checkLevelEnabled(SECOND_LEVEL)? SECOND_LEVEL :
+			 	checkLevelEnabled(THIRD_LEVEL)? THIRD_LEVEL :
+		 		checkLevelEnabled(FOURTH_LEVEL)? FOURTH_LEVEL :
+	 			checkLevelEnabled(FIFTH_LEVEL)? FIFTH_LEVEL :
+ 				checkLevelEnabled(SIXTH_LEVEL)? SIXTH_LEVEL :
+				checkLevelEnabled(SEVENTH_LEVEL)? SEVENTH_LEVEL:
+				checkLevelEnabled(EIGHTH_LEVEL)? EIGHTH_LEVEL :
+				checkLevelEnabled(NINTH_LEVEL)? NINTH_LEVEL : -1;
+	}
+	
 //	
 //	public static TotalWorkplaceHierachy convertToDomain(TotalWorkplaceHierachyDto dto) {
 //		TotalWorkplaceHierachy hierachy = new TotalWorkplaceHierachy();
