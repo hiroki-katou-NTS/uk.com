@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 315,
+					height : 315
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kdw006.h.main.css" />
+			<com:scriptfile path="kdw006.h.start.js" />
+			<com:scriptfile path="kdw006.h.vm.js" />
+			<com:scriptfile path="kdw006.h.service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+			    
+			</div>
+			<div id="functions-area-bottom">
+				<button class="proceed" data-bind="click: returnData, enable: $root.errors.isEmpty">#{i18n.getText('KDW007_97')}</button>
+				<button data-bind="click: closeDialog">#{i18n.getText('KDW007_98')}</button>
+			</div>
+			
+		</ui:define>
+
+	</ui:composition>
+</body>
+</html>

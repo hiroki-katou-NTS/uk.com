@@ -9,14 +9,14 @@ module nts.uk.at.view.kdw006.c.viewmodel {
         itemList: KnockoutObservableArray<any>;
         hiddenYourself: KnockoutObservable<boolean>;
         hiddenSuper: KnockoutObservable<boolean>;
-        
+
         sideBar: KnockoutObservable<number>;
         constructor() {
             let self = this;
             self.itemList = ko.observableArray([]);
             self.hiddenYourself = ko.observable(true);
-            self.hiddenSuper= ko.observable(true);
-            
+            self.hiddenSuper = ko.observable(true);
+
             self.sideBar = ko.observable(0);
             let yourSelf = __viewContext.enums.YourselfConfirmError;
             _.forEach(yourSelf, (a) => {
@@ -75,11 +75,11 @@ module nts.uk.at.view.kdw006.c.viewmodel {
 
             return dfd.promise();
         }
-        
-        jumpTo(sidebar) : JQueryPromise<any> {
-                let self = this;
-                nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject: sidebar() });
-            }
+
+        jumpTo(sidebar): JQueryPromise<any> {
+            let self = this;
+            nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject: sidebar() });
+        }
 
 
         //Get IdentityProcess 本人確認処理の利用設定
@@ -159,7 +159,17 @@ module nts.uk.at.view.kdw006.c.viewmodel {
                     nts.uk.ui.block.clear();
                 });
             }
-            
+
+        }
+
+        opentHDialog() {
+            let self = this;
+            nts.uk.ui.windows.sub.modal("../h/index.xhtml", { title: "計算式の設定" }).onClosed(() => {
+                let output = getShared("kdw007BResult");
+            });
+//            nts.uk.ui.windows.sub.modal("at", "/view/kdw/006/h/index.xhtml", { title: "計算式の設定" }).onClosed(() => {
+//                let output = getShared("kdw007BResult");
+//            });
         }
     }
     class BoxModel {

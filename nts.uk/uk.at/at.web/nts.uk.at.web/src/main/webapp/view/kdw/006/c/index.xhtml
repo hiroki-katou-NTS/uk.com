@@ -32,6 +32,7 @@
 				<div id="screen-d">
 					<!-- C2_1 -->
 					<div id="label11" class="label">#{i18n.getText('KDW006_35')}</div>
+
 					<!-- C2_2 -->
 					<div id="checkBox21" class="check-box-atr" tabindex="3"
 						data-bind="ntsCheckBox: { checked: identityProcessDto().useDailySelfCk}">#{i18n.getText('KDW006_36')}</div>
@@ -77,6 +78,15 @@
 					<!-- C2_12 -->
 					<div id="checkBox101" class="check-box-atr" tabindex="13"
 						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().clearManuAtr }">#{i18n.getText('KDW006_70')}</div>
+						
+					<!-- C2_13 -->
+					<div id="label13" class="label">#{i18n.getText('KDW006_35')}</div>
+					<!-- C2_14 -->
+					<button id="dialog" data-bind="click: opentHDialog">#{i18n.getText('KDW006_26')}</button>
+					<!-- C2_15 -->
+					<input id="textbox" data-bind="ntsTextEditor: {value: daiPerformanceFunDto().disp36Atr,
+							   	  name: '#[KDW006_35]',
+							   	  readonly: true"></input>
 					<div>
 						<!-- C3_1 -->
 						<div id="label11" class="label">#{i18n.getText('KDW006_60')}</div>
