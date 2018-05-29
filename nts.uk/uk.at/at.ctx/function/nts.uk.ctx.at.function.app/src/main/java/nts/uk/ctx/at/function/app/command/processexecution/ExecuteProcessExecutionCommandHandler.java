@@ -2138,7 +2138,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		}
 		this.procExecLogRepo.update(ProcessExecutionLog);
 		// 月別集計の判定
-		boolean reflectResultCls = processExecution.getExecSetting().isReflectResultCls();
+		boolean reflectResultCls = processExecution.getExecSetting().isMonthlyAggCls();
 		if (!reflectResultCls) {
 			// ドメインモデル「更新処理自動実行ログ」を更新する
 			for (int i = 0; i < size; i++) {
