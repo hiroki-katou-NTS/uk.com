@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.dom.person.setting.selectionitem;
+package nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.primitive.format;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;

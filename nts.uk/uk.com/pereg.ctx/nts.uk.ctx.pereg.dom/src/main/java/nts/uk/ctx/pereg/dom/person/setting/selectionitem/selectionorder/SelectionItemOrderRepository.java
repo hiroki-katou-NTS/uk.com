@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection;
+package nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionorder;
 
 import java.util.List;
 

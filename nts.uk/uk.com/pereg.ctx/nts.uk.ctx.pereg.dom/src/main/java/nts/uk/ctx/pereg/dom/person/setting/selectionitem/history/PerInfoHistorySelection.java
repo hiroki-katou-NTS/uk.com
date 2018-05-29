@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.dom.person.setting.selectionitem;
+package nts.uk.ctx.pereg.dom.person.setting.selectionitem.history;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

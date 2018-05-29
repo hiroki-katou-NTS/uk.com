@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.dom.person.setting.selectionitem;
+package nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem;
 
 import java.util.Optional;
 
@@ -6,6 +6,11 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.primitive.FormatSelection;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.primitive.IntegrationCode;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.primitive.Memo;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.primitive.SelectionItemClassification;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.primitive.SelectionItemName;
 
 /**
  * 
