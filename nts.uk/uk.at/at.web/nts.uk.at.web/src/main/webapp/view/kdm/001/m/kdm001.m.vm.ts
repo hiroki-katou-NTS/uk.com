@@ -70,7 +70,7 @@ module nts.uk.at.view.kdm001.m.viewmodel {
                     //情報メッセージ　Msg_15 登録しました。を表示する。
                     dialog.info({ messageId: "Msg_15" }).then(() => {
                         setShared('KDM001_M_PARAMS_RES', { isChanged: true });
-                        nts.uk.ui.windows.close();
+                        self.closeKDM001M();
                     });
                 }).always(() => {
                     block.clear();
@@ -98,7 +98,7 @@ module nts.uk.at.view.kdm001.m.viewmodel {
                     //情報メッセージ　Msg-16を表示する
                     dialog.info({ messageId: "Msg_16" }).then(() => {
                         setShared('KDM001_M_PARAMS_RES', { isChanged: true });
-                        nts.uk.ui.windows.close();
+                        self.closeKDM001M();
                     });
                 }).fail(error => {
                     dialog.alertError(error);
@@ -110,7 +110,7 @@ module nts.uk.at.view.kdm001.m.viewmodel {
             });
         }
 
-        public static closeKDM001M(): void {
+        closeKDM001M(): void {
             nts.uk.ui.windows.close();
         }
     }
