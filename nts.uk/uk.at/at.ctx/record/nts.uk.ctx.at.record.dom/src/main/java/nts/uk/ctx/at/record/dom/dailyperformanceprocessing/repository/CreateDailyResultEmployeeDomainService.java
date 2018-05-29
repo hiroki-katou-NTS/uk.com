@@ -18,5 +18,19 @@ public interface CreateDailyResultEmployeeDomainService {
 	ProcessState createDailyResultEmployee(AsyncCommandHandlerContext asyncContext, String employeeId,
 			DatePeriod periodTimes, String companyId, String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog,
 			boolean reCreateWorkType, EmployeeGeneralInfoImport employeeGeneralInfoImport);
+	/**
+	 * create method for kbt002 call
+	 * @param asyncContext
+	 * @param employeeId
+	 * @param periodTimes
+	 * @param companyId
+	 * @param empCalAndSumExecLogID
+	 * @param executionLog
+	 * @param reCreateWorkType
+	 * @return
+	 */
+	ProcessState createDailyResultEmployeeWithNoInfoImport(AsyncCommandHandlerContext asyncContext, String employeeId,
+			DatePeriod periodTimes, String companyId, String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog,
+			boolean reCreateWorkType);
 
 }

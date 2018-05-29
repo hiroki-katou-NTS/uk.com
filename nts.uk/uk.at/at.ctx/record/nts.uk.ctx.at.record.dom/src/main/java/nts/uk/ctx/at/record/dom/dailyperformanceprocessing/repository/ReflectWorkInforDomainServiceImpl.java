@@ -273,6 +273,47 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		}
 	}
 
+	@Override
+	public void reflectWorkInformationWithNoInfoImport(String companyId, String employeeId, GeneralDate day,
+			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType) {
+
+		// pharse 2
+		// start --
+		// ドメインモデル「日別実績の勤務情報」を削除する - rerun
+		if (reCreateAttr == ExecutionType.RERUN) {
+			this.deleteWorkInfoOfDaiPerService.deleteWorkInfoOfDaiPerService(employeeId, day);
+
+			this.reflectWithNoInfoImport(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType);
+		} else {
+			// ドメインモデル「日別実績の勤務情報」を取得する - not rerun
+			if (!this.workInformationRepository.find(employeeId, day).isPresent()) {
+
+				this.reflectWithNoInfoImport(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType);
+			} else {
+				// 勤務種別変更時に再作成する
+				ExitStatus exitStatus = this.reCreateWorkType(employeeId, day, empCalAndSumExecLogID, reCreateWorkType);
+
+				if (exitStatus == ExitStatus.RECREATE) {
+					this.deleteWorkInfoOfDaiPerService.deleteWorkInfoOfDaiPerService(employeeId, day);
+
+					this.reflectWithNoInfoImport(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType);
+				} else {
+					WorkInfoOfDailyPerformance workInfoOfDailyPerformance = this.workInformationRepository.find(employeeId, day).get();	
+					Boolean existsDailyInfo = workInfoOfDailyPerformance != null;
+					ReflectStampOutput stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId, employeeId, day,
+							workInfoOfDailyPerformance, null, empCalAndSumExecLogID,
+							reCreateAttr);
+//					this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId, employeeId, day,
+//							stampOutput, null, workInfoOfDailyPerformance,
+//							null, null, null, null);
+					this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId, employeeId, day,
+							stampOutput, null, existsDailyInfo? null:workInfoOfDailyPerformance/*既に勤務情報が存在する場合は更新しない*/,
+							null, null, null, null);
+				}
+			}
+		}
+	}
+
 	private void reflect(String companyId, String employeeId, GeneralDate day, String empCalAndSumExecLogID,
 			ExecutionType reCreateAttr, boolean reCreateWorkType, EmployeeGeneralInfoImport employeeGeneralInfoImport) {
 		// 勤務種別を反映する
@@ -285,6 +326,32 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 //			val affiliationInforOfDailyPerforState = createAffiliationInforOfDailyPerfor(companyId, employeeId, day,
 //					empCalAndSumExecLogID);
+
+			if (affiliationInforOfDailyPerforState.getErrMesInfos().isEmpty()) {
+				// Imported(就業.勤務実績)「社員の勤務予定管理」を取得する
+				this.workschedule(companyId, employeeId, day, empCalAndSumExecLogID,
+						affiliationInforOfDailyPerforState.getAffiliationInforOfDailyPerfor().get(), reCreateAttr,
+						workTypeOfDailyPerformance, reCreateWorkType);
+			} else {
+				affiliationInforOfDailyPerforState.getErrMesInfos().forEach(action -> {
+					this.errMessageInfoRepository.add(action);
+				});
+			}
+		}
+	}
+
+	private void reflectWithNoInfoImport(String companyId, String employeeId, GeneralDate day, String empCalAndSumExecLogID,
+			ExecutionType reCreateAttr, boolean reCreateWorkType) {
+		// 勤務種別を反映する
+		WorkTypeOfDailyPerformance workTypeOfDailyPerformance = reflectWorkType(employeeId, day, empCalAndSumExecLogID);
+
+		if (workTypeOfDailyPerformance != null) {
+			
+//			val affiliationInforOfDailyPerforState = createAffiliationInforState(companyId, employeeId, day,
+//			empCalAndSumExecLogID, employeeGeneralInfoImport);
+
+			val affiliationInforOfDailyPerforState = createAffiliationInforOfDailyPerfor(companyId, employeeId, day,
+					empCalAndSumExecLogID);
 
 			if (affiliationInforOfDailyPerforState.getErrMesInfos().isEmpty()) {
 				// Imported(就業.勤務実績)「社員の勤務予定管理」を取得する
