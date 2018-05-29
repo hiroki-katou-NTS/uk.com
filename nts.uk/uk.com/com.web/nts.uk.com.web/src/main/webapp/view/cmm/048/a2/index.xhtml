@@ -41,7 +41,7 @@
 							<div class="label">#{i18n.getText('CMM048_32')}</div>
 						</com:ko>
 						<com:ko tag="if" bind="userInfoCompanyPcMail.isPersonal">
-							<div class="cf" data-bind="ntsSwitchButton: {
+							<div class="cf" tabindex="11" data-bind="ntsSwitchButton: {
 									name: '#[CMM048_36]',
 									options: listSelfEdit,
 									optionsValue: 'value',
@@ -74,8 +74,8 @@
 						<com:ko tag="if" bind="userInfoPersonalPcMail.isUse">
 							<div class="label">#{i18n.getText('CMM048_32')}</div>
 						</com:ko>
-						<com:ko tag="if" bind="userInfoPersonalPcMail.isPersonal">
-							<div class="cf" data-bind="ntsSwitchButton: {
+						<com:ko tag="if"  bind="userInfoPersonalPcMail.isPersonal">
+							<div class="cf" tabindex="14" data-bind="ntsSwitchButton: {
 									name: '#[CMM048_36]',
 									options: listSelfEdit,
 									optionsValue: 'value',
@@ -86,7 +86,7 @@
 						</com:ko>
 					</td>
 					<td style="text-align: center;">
-						<button style="width: 80px;" tabindex="16" data-bind="
+						<button style="width: 80px;" tabindex="15" data-bind="
 								click: openDialogUserInfo.bind($data, 1), 
 								enable: enableSettingPersonalPcMail">#{i18n.getText('CMM048_34')}</button>
 					</td>
@@ -96,7 +96,7 @@
 					<td class="bg-green" rowspan="2">#{i18n.getText('CMM048_37')}</td>
 					<td class="bg-green">#{i18n.getText('CMM048_28')}</td>
 					<td style="text-align: center;">
-						<input tabindex="17" data-bind="ntsTextEditor: {
+						<input tabindex="16" data-bind="ntsTextEditor: {
 								name: '#[CMM048_38]',
 								value: employeeInfoContact.mobileMailAddress,
 								enable: userInfoCompanyMobileMail.enableEdit,
@@ -111,7 +111,7 @@
 							<div class="label">#{i18n.getText('CMM048_32')}</div>
 						</com:ko>
 						<com:ko tag="if" bind="userInfoCompanyMobileMail.isPersonal">
-							<div class="cf" data-bind="ntsSwitchButton: {
+							<div class="cf" tabindex="17" data-bind="ntsSwitchButton: {
 									name: '#[CMM048_36]',
 									options: listSelfEdit,
 									optionsValue: 'value',
@@ -122,7 +122,7 @@
 						</com:ko>
 					</td>
 					<td style="text-align: center;">
-						<button style="width: 80px;" tabindex="19" data-bind="
+						<button style="width: 80px;" tabindex="18" data-bind="
 								click: openDialogUserInfo.bind($data, 2), 
 								enable: enableSettingCompanyMobileMail">#{i18n.getText('CMM048_34')}</button>
 					</td>
@@ -130,7 +130,7 @@
 				<tr>
 					<td class="bg-green">#{i18n.getText('CMM048_29')}</td>
 					<td style="text-align: center;">
-						<input tabindex="20" data-bind="ntsTextEditor: {
+						<input tabindex="19" data-bind="ntsTextEditor: {
 								name: '#[CMM048_39]',
 								value: personContact.mobileMailAddress,
 								enable: userInfoPersonalMobileMail.enableEdit,
@@ -145,7 +145,7 @@
 							<div class="label">#{i18n.getText('CMM048_32')}</div>
 						</com:ko>
 						<com:ko tag="if" bind="userInfoPersonalMobileMail.isPersonal">
-							<div class="cf" data-bind="ntsSwitchButton: {
+							<div class="cf" tabindex="20" data-bind="ntsSwitchButton: {
 									name: '#[CMM048_36]',
 									options: listSelfEdit,
 									optionsValue: 'value',
@@ -156,7 +156,7 @@
 						</com:ko>
 					</td>
 					<td style="text-align: center;">
-						<button style="width: 80px;" tabindex="23" data-bind="
+						<button style="width: 80px;" tabindex="21" data-bind="
 								click: openDialogUserInfo.bind($data, 3), 
 								enable: enableSettingPersonalMobileMail">#{i18n.getText('CMM048_34')}</button>
 					</td>
@@ -166,7 +166,7 @@
 					<td class="bg-green" rowspan="2">#{i18n.getText('CMM048_40')}</td>
 					<td class="bg-green">#{i18n.getText('CMM048_28')}</td>
 					<td colspan="2" style="padding-left: 14px; padding-right: 14px;">
-						<input tabindex="24" data-bind="ntsTextEditor: {
+						<input tabindex="22" data-bind="ntsTextEditor: {
 								name: '#[CMM048_41]',
 								value: employeeInfoContact.cellPhoneNo,
 								enable: userInfoCompanyMobilePhone.enableEdit,
@@ -179,7 +179,7 @@
 				<tr>
 					<td class="bg-green">#{i18n.getText('CMM048_29')}</td>
 					<td colspan="2" style="padding-left: 14px; padding-right: 14px;">
-						<input tabindex="25" data-bind="ntsTextEditor: {
+						<input tabindex="23" data-bind="ntsTextEditor: {
 								name: '#[CMM048_43]',
 								value: personContact.cellPhoneNo,
 								enable: userInfoPersonalMobilePhone.enableEdit,
