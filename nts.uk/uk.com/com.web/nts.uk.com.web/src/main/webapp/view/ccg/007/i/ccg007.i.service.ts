@@ -4,21 +4,27 @@ module nts.uk.pr.view.ccg007.i {
 
         // Service paths.
         var servicePath = {
-            submitSendMail: "ctx/sys/gateway/sendmail/submit"
+            getPasswordPolicy: "ctx/sys/gateway/securitypolicy/getPasswordPolicy"
         }
 
         /**
           * Function is used to check contract.
           */
-        export function submitSendMail(data : CallerParameter): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.submitSendMail, data);
+        export function getPasswordPolicy(): JQueryPromise<PassWordPolicyDto> {
+            return nts.uk.request.ajax(servicePath.getPasswordPolicy);
         }
         
-        export interface CallerParameter {
-            companyCode: string;
-            companyName: string;
-            employeeCode : string;
-            contractCode: string;
+        export interface PassWordPolicyDto {
+            notificationPasswordChange: number;
+            loginCheck: boolean;
+            initialPasswordChange: boolean;
+            isUse: boolean;
+            historyCount: number;
+            lowestDigits: number;
+            validityPeriod: number;
+            numberOfDigits: number;
+            symbolCharacters: number;
+            alphabetDigit: number;    
         }
     }
 }
