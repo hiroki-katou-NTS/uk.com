@@ -4,12 +4,11 @@ module nts.uk.at.view.kdm001.b.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import getText = nts.uk.resource.getText;
     import modal = nts.uk.ui.windows.sub.modal;
-    import getDecimal = nts.uk.ntsNumber.getDecimal;
     export class ScreenModel {
         screenItem: KnockoutObservable<ScreenItem>;
 
         constructor() {
-            var self = this;
+            let self = this;
             self.screenItem = ko.observable(new ScreenItem());
             self.initSubstituteDataList();
             self.screenItem().periodOptionItem = ko.observableArray([
@@ -76,7 +75,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             });
         }
         openConfirmScreen() {
-            var self = this;
+            let self = this;
             let data = {
                 workplaceCode: self.screenItem().selectedEmployee.workplaceCode,
                 workplaceName: self.screenItem().selectedEmployee.workplaceName,
@@ -89,7 +88,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             nts.uk.request.jump("/view/kdr/003/a/index.xhtml", { 'param': data });
         }
         openNewSubstituteData() {
-            var self = this;
+            let self = this;
             setShared('KDM001_I_PARAMS', { selectedEmployee: self.screenItem().selectedEmployee, closure: self.screenItem().closureEmploy });
             modal("/view/kdm/001/i/index.xhtml").onClosed(function() {
                 let resParam = getShared("KDM001_I_PARAMS_RES");
@@ -106,12 +105,12 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             nts.uk.request.jump("/view/kdm/001/a/index.xhtml");
         }
         filterByPeriod() {
-            var self = this;
+            let self = this;
             self.getSubstituteDataList(self.getSearchCondition());
             $('#substituteDataGrid').focus();
         } 
         getSubstituteDataList(searchCondition: any) {
-            var self = this;
+            let self = this;
             service.getExtraHolidayData(searchCondition).done(function(result) {
                 self.screenItem().closureEmploy = result.closureEmploy;
                 self.screenItem().listExtractData = result.extraData;
@@ -122,7 +121,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             });
         }
         getSearchCondition(){
-            var self = this;
+            let self = this;
             let startDate = moment.utc(self.screenItem().dateValue().startDate, 'YYYY/MM/DD').toISOString();
             let endDate = moment.utc(self.screenItem().dateValue().endDate, 'YYYY/MM/DD').toISOString();
             let searchCondition = null;
@@ -134,7 +133,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             return searchCondition;
         }
         convertToDisplayList() {
-            var self = this;
+            let self = this;
             let totalRemain = 0;
             let listData = [];
             _.forEach(self.screenItem().listExtractData, data => {
@@ -156,18 +155,18 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             self.screenItem().dispTotalRemainHours(totalRemain + getText('KDM001_27'));
         }
         initSubstituteDataList() {
-            var self = this;
+            let self = this;
             self.showSubstiteDataGrid();
 
         }
         updateSubstituteDataList() {
-            var self = this;
+            let self = this;
             $("#substituteDataGrid").igGrid("dataSourceObject", self.screenItem().subData).igGrid("dataBind");
             self.disableLinkedData();
         }
 
         showSubstiteDataGrid() {
-            var self = this;
+            let self = this;
             $("#substituteDataGrid").ntsGrid({
                 height: '520px',
                 name: 'Grid name',
@@ -205,7 +204,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             });
         }
         disableLinkedData() {
-            var self = this;
+            let self = this;
             if (self.screenItem().subData) {
                 for (let data of self.screenItem().subData) {
                     if (data.isLinked == 1) {
@@ -215,14 +214,12 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             }
         }
         startPage(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
+            let self = this;
+            let dfd = $.Deferred();
             let searchCondition = { employeeId: null, stateDate: null, endDate: null };
             service.getInfoEmLogin().done(function(loginerInfo) {
                 service.getSubsitutionData(searchCondition).done(function(result) {
                     let wkHistory = result.wkHistory;
-                    let employeeInfo = result.extraHolidayManagementDataDto.sempHistoryImport;
-                    let extraHolidayData = result.extraHolidayManagementDataDto;
                     self.screenItem().closureEmploy = result.extraHolidayManagementDataDto.closureEmploy;
                     self.screenItem().listEmployee = [];
                     self.screenItem().selectedEmployee = new EmployeeInfo(loginerInfo.sid, loginerInfo.employeeCode, loginerInfo.employeeName, wkHistory.workplaceId, wkHistory.workplaceCode, wkHistory.workplaceName);
@@ -247,7 +244,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             return dfd.promise();
         }
         initKCP009() {
-            var self = this;
+            let self = this;
             //_______KCP009_______
             // Initial listComponentOption
             self.screenItem().listComponentOption = {
@@ -262,7 +259,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         }
 
         convertEmployeeCcg01ToKcp009(dataList: EmployeeSearchDto[]): void {
-            var self = this;
+            let self = this;
             self.screenItem().employeeInputList([]);
             self.screenItem().listEmployee = [];
             _.each(dataList, function(item) {
@@ -285,7 +282,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             })
         }
         pegSetting(value) {
-            var self = this;
+            let self = this;
             if (value.substituedWorkingDate.length > 0) {
                 let rowDataInfo = _.find(self.screenItem().listExtractData, x => {
                     return x.id === value.id;
@@ -311,7 +308,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             }
         }
         doCorrection(value) {
-            var self = this;
+            let self = this;
             if (value.substituedWorkingDate.length > 0) {
                 let rowDataInfo = _.find(self.screenItem().listExtractData, x => {
                     return x.id === value.id;
@@ -374,34 +371,10 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             this.systemReference = ko.observable(SystemType.EMPLOYMENT);
             this.isDisplayOrganizationName = ko.observable(false);
             this.targetBtnText = getText("KCP009_3");
-            this.listComponentOption;
             this.selectedItem = ko.observable(null);
             this.isOnStartUp = true;
             this.tabindex = -1;
         }
-    }
-
-
-    export class SubstitutedDataInfo {
-        id: string;
-        dataType: number;
-        unknowDate: number;
-        date: string;
-        hours: string;
-        remainHours: string;
-        expiredHours: string;
-        isLinked: number;
-        constructor(id: string, dataType: number, unknowDate: number, date: string, hours: string, remainHours: string, expiredHours: string, isLinked: number) {
-            this.id = id;
-            this.dataType = dataType;
-            this.unknowDate = unknowDate;
-            this.date = date;
-            this.hours = hours;
-            this.remainHours = remainHours;
-            this.expiredHours = expiredHours;
-            this.isLinked = isLinked;
-        }
-
     }
 
     export class SubstitutedData {

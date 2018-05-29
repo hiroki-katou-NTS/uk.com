@@ -4,7 +4,6 @@ import java.util.Objects;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SWkpHistImport;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.service.ExtraHolidayManagementOutput;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.service.SubstituteManagementOutput;
