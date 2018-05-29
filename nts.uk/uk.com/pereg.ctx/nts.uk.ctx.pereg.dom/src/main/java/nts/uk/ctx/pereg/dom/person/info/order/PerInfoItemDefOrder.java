@@ -10,7 +10,7 @@ public class PerInfoItemDefOrder extends AggregateRoot {
 	private DispOrder dispOrder;
 	private DispOrder displayOrder;
 
-	private PerInfoItemDefOrder(String perInfoItemDefId, String perInfoCtgId, int dispOrder, int displayOrder) {
+	public PerInfoItemDefOrder(String perInfoItemDefId, String perInfoCtgId, int dispOrder, int displayOrder) {
 		super();
 		this.perInfoItemDefId = perInfoItemDefId;
 		this.perInfoCtgId = perInfoCtgId;
