@@ -63,11 +63,11 @@ public class MonthlyPerformanceCorrectionWebService {
 	@POST
 	@Path("getFormatCodeList")
 	public List<DailyPerformanceFormatDto> getAll() {		
-//		return monPfmCorrectionFormatFinder.getAllMonPfmCorrectionFormat()
-//				.stream()
-//				.map(x->new DailyPerformanceFormatDto(x.getCompanyID(), x.getMonthlyPfmFormatCode(), x.getMonPfmCorrectionFormatName()))
-//				.collect(Collectors.toList());
-		return null;
+		return monPfmCorrectionFormatFinder.getAllMonPfmCorrectionFormat()
+				.stream()
+				.map(x->new DailyPerformanceFormatDto(x.getCompanyID(), x.getMonthlyPfmFormatCode(), x.getMonPfmCorrectionFormatName()))
+				.collect(Collectors.toList());
+//		return null;
 	}
 	@POST
 	@Path("addAndUpdate")

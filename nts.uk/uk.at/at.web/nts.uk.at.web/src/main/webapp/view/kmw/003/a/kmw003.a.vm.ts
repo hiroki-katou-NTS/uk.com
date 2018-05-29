@@ -352,7 +352,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             let dfd = $.Deferred();
             self.reloadParam().processDate = date;
             service.updateScreen(self.reloadParam()).done((data) => {
-                self.dataAll(data);
                 //self.itemValueAll(data.itemValues);
                 self.receiveData(data);
                 /*********************************
@@ -482,10 +481,13 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         };
                     }));
                     self.lstEmployee(_.orderBy(self.lstEmployee(), ['code'], ['asc']));
+//                    self.lstEmployee(_.orderBy(self.lstEmployee(), ['code'], ['asc']));
                     //Reload screen
+                    $("#dpGrid").ntsGrid("destroy");
                     self.monthlyParam().lstEmployees = self.lstEmployee();
                     self.reloadParam().lstEmployees = self.lstEmployee();
                     self.initScreen();
+//                    self.updateDate(self.yearMonth());
                 },
             }
         };
