@@ -121,7 +121,9 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				break;
 			case MONTHLY:
 				MonAlarmCheckCon monAlarmCheckCon = (MonAlarmCheckCon) domain.getExtractionCondition() ;
-				//TODO: 
+				//add list mon
+				MonAlarmCheckConEvent event = new MonAlarmCheckConEvent(monAlarmCheckCon.getMonAlarmCheckConID(),true,false,false,command.getMonAlarmCheckCon().getArbExtraCon());
+				event.toBePublished();
 		
 				//update list fixedExtraMonFun
 				for(FixedExtraMonFunImport fixedExtraMonFun : command.getMonAlarmCheckCon().getListFixExtraMon()) {
@@ -233,7 +235,6 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				break;
 			case MONTHLY:
 				String monAlarmCheckConID = IdentifierUtil.randomUniqueId();
-				
 				extractionCondition = command.getMonAlarmCheckCon() == null ? null
 						: new MonAlarmCheckCon(monAlarmCheckConID,
 								command.getMonAlarmCheckCon().getArbExtraCon().stream().map(c->c.getErrorAlarmCheckID()).collect(Collectors.toList())

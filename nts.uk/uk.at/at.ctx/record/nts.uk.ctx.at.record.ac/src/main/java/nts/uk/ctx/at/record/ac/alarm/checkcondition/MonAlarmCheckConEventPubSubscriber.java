@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.ac.alarm.checkcondition;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -8,24 +9,45 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.event.DomainEventSubscriber;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.pub.alarm.checkcondition.MonAlarmCheckConEventPub;
+import nts.uk.ctx.at.function.pub.alarm.checkcondition.eventdto.AgreementCheckCon36AdapterPubDto;
+import nts.uk.ctx.at.function.pub.alarm.checkcondition.eventdto.CheckRemainNumberMonAdapterPubDto;
+import nts.uk.ctx.at.function.pub.alarm.checkcondition.eventdto.CompareRangeAdapterPubDto;
+import nts.uk.ctx.at.function.pub.alarm.checkcondition.eventdto.CompareSingleValueAdapterPubDto;
 import nts.uk.ctx.at.function.pub.alarm.checkcondition.eventdto.ErAlAtdItemConAdapterPubDto;
 import nts.uk.ctx.at.function.pub.alarm.checkcondition.eventdto.ExtraResultMonthlyDomainEventPubDto;
+import nts.uk.ctx.at.function.pub.alarm.checkcondition.eventdto.SpecHolidayCheckConAdapterPubDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.AttendanceItemCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CheckedCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlConditionsAttendanceItem;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.SingleValueCompareType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.AgreementCheckCon36;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.AgreementCheckCon36Repository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.ErrorAlarmRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.ExtraResultMonthly;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.ExtraResultMonthlyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.HowDisplayMessage;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.MessageDisplay;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.NameAlarmExtractionCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.SpecHolidayCheckCon;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.SpecHolidayCheckConRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeCheckVacation;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeMonCheckItem;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.checkremainnumber.CheckConValueRemainingNumber;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.checkremainnumber.CheckOperatorType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.checkremainnumber.CheckRemainNumberMon;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.checkremainnumber.CheckRemainNumberMonRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AttendanceItemId;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue;
+import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 @Stateless
 public class MonAlarmCheckConEventPubSubscriber implements DomainEventSubscriber<MonAlarmCheckConEventPub>{
@@ -34,6 +56,14 @@ public class MonAlarmCheckConEventPubSubscriber implements DomainEventSubscriber
 	@Inject
 	private ExtraResultMonthlyRepository extraResultMonthlyRepo;
 	
+	@Inject
+	private SpecHolidayCheckConRepository specHolidayCheckConRepo;
+	
+	@Inject
+	private CheckRemainNumberMonRepository checkRemainNumberMonRepo;
+	
+	@Inject
+	private AgreementCheckCon36Repository agreementCheckCon36Repo;
 	@Override
 	public Class<MonAlarmCheckConEventPub> subscribedToEventType() {
 		return MonAlarmCheckConEventPub.class;
@@ -41,24 +71,150 @@ public class MonAlarmCheckConEventPubSubscriber implements DomainEventSubscriber
 
 	@Override
 	public void handle(MonAlarmCheckConEventPub domainEvent) {
-		String errorAlarmCheckID = domainEvent.getMonAlarmCheckConID();
 		List<ExtraResultMonthlyDomainEventPubDto> listCheckConMonthly = domainEvent.getListExtraResultMonthly();
 		
 		if(domainEvent.isCheckAdd()) {
 			for(ExtraResultMonthlyDomainEventPubDto extraResultMonthly : listCheckConMonthly) {
+				//add ExtraResultMonthly
+				String errorAlarmCheckID = IdentifierUtil.randomUniqueId();
+				extraResultMonthly.setErrorAlarmCheckID(errorAlarmCheckID);
 				extraResultMonthlyRepo.addExtraResultMonthly(convertToExtraResultMonDto(extraResultMonthly));
+				//add SpecHolidayCheckCon
+				extraResultMonthly.getSpecHolidayCheckCon().setErrorAlarmCheckID(errorAlarmCheckID);
+				SpecHolidayCheckCon specHolidayCheckCon = convertToSpecHolidayCheckConDto(extraResultMonthly.getSpecHolidayCheckCon());
+				specHolidayCheckConRepo.addSpecHolidayCheckCon(specHolidayCheckCon);
+				//add CheckRemainNumberMon
+				extraResultMonthly.getCheckRemainNumberMon().setErrorAlarmCheckID(errorAlarmCheckID);
+				CheckRemainNumberMon checkRemainNumberMon = convertToCheckRemainNumberMonAdapterPubDto(extraResultMonthly.getCheckRemainNumberMon());
+				checkRemainNumberMonRepo.addCheckRemainNumberMon(checkRemainNumberMon);
+				//add listAgreementCheckCon36
+				for(AgreementCheckCon36AdapterPubDto agreementCheckCon36Dto : extraResultMonthly.getListAgreementCheckCon36()) {
+					agreementCheckCon36Dto.setErrorAlarmCheckID(errorAlarmCheckID);
+					AgreementCheckCon36 agreementCheckCon36 = convertToAgreementCheckCon36AdapterPubDto(agreementCheckCon36Dto);
+					agreementCheckCon36Repo.addAgreementCheckCon36(agreementCheckCon36);
+				}
+				
 			}
 		}else if(domainEvent.isCheckUpdate()){
-			
+			for(ExtraResultMonthlyDomainEventPubDto extraResultMonthly : listCheckConMonthly) {
+				String errorAlarmCheckID = extraResultMonthly.getErrorAlarmCheckID();
+				//update ExtraResultMonthly
+				if(extraResultMonthlyRepo.getExtraResultMonthlyByID(errorAlarmCheckID).isPresent()) {
+					extraResultMonthlyRepo.updateExtraResultMonthly(convertToExtraResultMonDto(extraResultMonthly));
+				}else {
+					extraResultMonthlyRepo.addExtraResultMonthly(convertToExtraResultMonDto(extraResultMonthly));
+				}
+				//update SpecHolidayCheckCon
+				if(specHolidayCheckConRepo.getSpecHolidayCheckConById(errorAlarmCheckID).isPresent()) {
+					specHolidayCheckConRepo.updateSpecHolidayCheckCon(convertToSpecHolidayCheckConDto(extraResultMonthly.getSpecHolidayCheckCon()));
+				}else {
+					specHolidayCheckConRepo.addSpecHolidayCheckCon(convertToSpecHolidayCheckConDto(extraResultMonthly.getSpecHolidayCheckCon()));
+				}
+				//update CheckRemainNumberMon
+				CheckRemainNumberMon checkRemainNumberMon = convertToCheckRemainNumberMonAdapterPubDto(extraResultMonthly.getCheckRemainNumberMon());
+				if(checkRemainNumberMonRepo.getByEralCheckID(errorAlarmCheckID).isPresent()) {
+					checkRemainNumberMonRepo.updateCheckRemainNumberMon(checkRemainNumberMon);
+				}else {
+					checkRemainNumberMonRepo.addCheckRemainNumberMon(checkRemainNumberMon);
+				}
+				//update listAgreementCheckCon36
+				if(agreementCheckCon36Repo.getAgreementCheckCon36ById(errorAlarmCheckID).isEmpty()) {
+					for(AgreementCheckCon36AdapterPubDto agreementCheckCon36Dto : extraResultMonthly.getListAgreementCheckCon36()) {
+						AgreementCheckCon36 agreementCheckCon36 = convertToAgreementCheckCon36AdapterPubDto(agreementCheckCon36Dto);
+						agreementCheckCon36Repo.addAgreementCheckCon36(agreementCheckCon36);
+					}
+				}else {
+					for(AgreementCheckCon36AdapterPubDto agreementCheckCon36Dto : extraResultMonthly.getListAgreementCheckCon36()) {
+						AgreementCheckCon36 agreementCheckCon36 = convertToAgreementCheckCon36AdapterPubDto(agreementCheckCon36Dto);
+						agreementCheckCon36Repo.updateAgreementCheckCon36(agreementCheckCon36);
+					}
+				}
+			}
 		}else if(domainEvent.isCheckDelete()) {
-			
+			List<String> listEralID = listCheckConMonthly
+				     .stream().map(c->c.getErrorAlarmCheckID()).collect(Collectors.toList());
+			for(String eralCheckID : listEralID) {
+				//delete ExtraResultMonthly
+				if(extraResultMonthlyRepo.getExtraResultMonthlyByID(eralCheckID).isPresent())
+					extraResultMonthlyRepo.deleteExtraResultMonthly(eralCheckID);
+				//delete SpecHolidayCheckCon
+				if(specHolidayCheckConRepo.getSpecHolidayCheckConById(eralCheckID).isPresent())
+					specHolidayCheckConRepo.deleteSpecHolidayCheckCon(eralCheckID);
+				//delete DheckRemainNumberMon
+				if(checkRemainNumberMonRepo.getByEralCheckID(eralCheckID).isPresent())
+					checkRemainNumberMonRepo.deleteCheckRemainNumberMon(eralCheckID);
+				//delete agreementCheckCon36
+				if(!agreementCheckCon36Repo.getAgreementCheckCon36ById(eralCheckID).isEmpty())
+					agreementCheckCon36Repo.deleteAgreementCheckCon36(eralCheckID);
+			}
 		}
 	}
 	
+	private  AgreementCheckCon36 convertToAgreementCheckCon36AdapterPubDto (AgreementCheckCon36AdapterPubDto dto) {
+		return new AgreementCheckCon36(
+				dto.getErrorAlarmCheckID(),
+				EnumAdaptor.valueOf(dto.getClassification(), ErrorAlarmRecord.class),
+				EnumAdaptor.valueOf(dto.getCompareOperator(), SingleValueCompareType.class),
+				dto.getEralBeforeTime()
+				);
+	}
+	
+	private CheckRemainNumberMon convertToCheckRemainNumberMonAdapterPubDto(CheckRemainNumberMonAdapterPubDto dto){
+		CheckedCondition checkedCondition = new CheckedCondition();
+		if(dto.getCheckOperatorType() ==1) {
+			checkedCondition = convertToCompareSingleValueAdapterPubDto(dto.getCompareSingleValueEx());
+		}else {
+			checkedCondition = convertToCompareRangeAdapterPubDto(dto.getCompareRangeEx());
+		}
+		return new CheckRemainNumberMon(
+				dto.getErrorAlarmCheckID(),
+				EnumAdaptor.valueOf(dto.getCheckVacation(), TypeCheckVacation.class),
+				checkedCondition,
+				EnumAdaptor.valueOf(dto.getCheckOperatorType(), CheckOperatorType.class)
+				);
+	}
+	
+	private CompareRange<CheckConValueRemainingNumber> convertToCompareRangeAdapterPubDto(CompareRangeAdapterPubDto dto){
+		CheckConValueRemainingNumber startValue = new CheckConValueRemainingNumber(dto.getStartValue().getDaysValue(), 
+				dto.getStartValue().getTimeValue()==null?null:Optional.of(dto.getStartValue().getTimeValue())
+				);
+		CheckConValueRemainingNumber endValue = new CheckConValueRemainingNumber(dto.getEndValue().getDaysValue(), 
+				dto.getEndValue().getTimeValue()==null?null:Optional.of(dto.getEndValue().getTimeValue())
+				);
+		
+		CompareRange<CheckConValueRemainingNumber> data = new CompareRange<>(dto.getCompareOperator());
+		data.setStartValue(startValue);
+		data.setEndValue(endValue);
+		return data;
+	}
+	
+	
+	private CompareSingleValue<CheckConValueRemainingNumber> convertToCompareSingleValueAdapterPubDto(CompareSingleValueAdapterPubDto dto) {
+		CheckConValueRemainingNumber value = new CheckConValueRemainingNumber(dto.getValue().getDaysValue(), 
+				dto.getValue().getTimeValue()==null?null:Optional.of(dto.getValue().getTimeValue())
+				);
+		CompareSingleValue<CheckConValueRemainingNumber> data = new CompareSingleValue<>(dto.getCompareOpertor(),0);
+		data.setValue(value);
+		return data;
+	}
+	
+	
+	private SpecHolidayCheckCon convertToSpecHolidayCheckConDto(SpecHolidayCheckConAdapterPubDto dto) {
+		return new SpecHolidayCheckCon(
+				dto.getErrorAlarmCheckID(),
+				dto.getCompareOperator(),
+				new MonthlyDays( Double.valueOf(dto.getNumberDayDiffHoliday1())),
+				dto.getNumberDayDiffHoliday2()==null?null:new MonthlyDays( Double.valueOf(dto.getNumberDayDiffHoliday2()))
+				);
+		
+	}
+	
 	private ExtraResultMonthly convertToExtraResultMonDto(ExtraResultMonthlyDomainEventPubDto toDto) {
+		
 		/* EA is worng, don't need these fields (companyId and errorAlarmCode */
 		String companyId = "";
 		String errorAlarmCode = "";
+		
 		AttendanceItemCondition attendanceItemCon = null;
 		if(toDto.getCheckConMonthly()!=null) {
 			List<ErAlAttendanceItemCondition<?>> conditionsGroup1 = toDto.getCheckConMonthly().getGroup1().getLstErAlAtdItemCon().stream()
@@ -149,22 +305,6 @@ public class MonAlarmCheckConEventPubSubscriber implements DomainEventSubscriber
 			}
 		}
 		return atdItemConDomain;
-	}
-	
-	
-	
-	private void abc () {
-//		List<ErAlAttendanceItemCondition<?>> conditionsGroup1 = this.attendanceItemCondition.getGroup1().getLstErAlAtdItemCon().stream()
-//				.filter(item -> item.getCompareStartValue() != null)
-//				.map(atdItemCon -> convertAtdIemConToDomain(atdItemCon, companyId, errorAlarmCode)).collect(Collectors.toList());
-//		List<ErAlAttendanceItemCondition<?>> conditionsGroup2 = this.attendanceItemCondition.getGroup2().getLstErAlAtdItemCon().stream()
-//				.filter(item -> item.getCompareStartValue() != null)
-//				.map(atdItemCon -> convertAtdIemConToDomain(atdItemCon, companyId, errorAlarmCode)).collect(Collectors.toList());
-//		
-//		condition.createAttendanceItemCondition(this.attendanceItemCondition.getOperatorBetweenGroups(),
-//					this.attendanceItemCondition.isGroup2UseAtr())
-//				.setAttendanceItemConditionGroup1(this.attendanceItemCondition.getGroup1().getConditionOperator(), conditionsGroup1)
-//				.setAttendanceItemConditionGroup2(this.attendanceItemCondition.getGroup2().getConditionOperator(), conditionsGroup2);
 	}
 
 }

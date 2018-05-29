@@ -95,10 +95,66 @@ module nts.uk.at.view.kal003.share {
                 messageColor: '',
                 displayMessage : '',
                 checkConMonthly :getDefaultAttendanceItemCondition(),
-                rowId: 0
+                rowId: 0,
+                specHolidayCheckCon : getDefaultSpecHolidayCheckCon(),
+                checkRemainNumberMon : getDefaultCheckRemainNumberMon() ,
+                listAgreementCheckCon36 : [] 
+                
             });
             return extraResultMonthly;
         }
+        
+        export function getDefaultSpecHolidayCheckCon(): model.SpecHolidayCheckCon {
+            return new model.SpecHolidayCheckCon({
+                errorAlarmCheckID: '',
+                compareOperator: 0,
+                numberDayDiffHoliday1: 0,
+                numberDayDiffHoliday2: null
+            });
+        }
+        
+        export function getDefaultAgreementCheckCon36(): model.AgreementCheckCon36 {
+            return new model.AgreementCheckCon36({
+                errorAlarmCheckID: '',
+                classification: 0,
+                compareOperator: 0,
+                eralBeforeTime: 0
+            });
+        }
+        
+        export function getDefaultCheckRemainNumberMon(): model.CheckRemainNumberMon {
+            return new model.CheckRemainNumberMon({
+                errorAlarmCheckID: '',
+                checkVacation: 0,
+                checkOperatorType: 0,
+                compareRangeEx: getDefaultCompareRangeImport(),
+                compareSingleValueEx : getDefaultCompareSingleValueImport()
+            });
+        }
+        
+        
+        export function getDefaultCompareRangeImport(): model.CompareRangeImport {
+            return new model.CompareRangeImport({
+                compareOperator : 0,
+                startValue: getDefaultCheckConValueRemainNumberImport(),
+                endValue: getDefaultCheckConValueRemainNumberImport()
+            });
+        }
+        
+        export function getDefaultCompareSingleValueImport(): model.CompareSingleValueImport {
+            return new model.CompareSingleValueImport({
+                compareOperator : 0,
+                value: getDefaultCheckConValueRemainNumberImport()
+            });
+        }
+        
+         export function getDefaultCheckConValueRemainNumberImport(): model.CheckConValueRemainNumberImport {
+            return new model.CheckConValueRemainNumberImport({
+                daysValue : 0,
+                timeValue: 0
+            });
+        }
+
 
         /**
         * initial default value for WorkRecordExtractingCondition Object
@@ -130,25 +186,25 @@ module nts.uk.at.view.kal003.share {
                 .group1(new model.ErAlConditionsAttendanceItem(extraResultMonthly.checkConMonthly.group1));
             //ErAlAtdItemCondition
             let lstErAlAtdItemCon1 = extraResultMonthly.checkConMonthly.group1.lstErAlAtdItemCon;
-            convertExtraResultMonthly.checkConMonthly.group1().lstErAlAtdItemCon = ko.observableArray([]);
+            convertExtraResultMonthly.checkConMonthly().group1().lstErAlAtdItemCon = ko.observableArray([]);
             if (lstErAlAtdItemCon1) {
                 for (var i = 0; i < lstErAlAtdItemCon1.length; i++) {
                     var erAlAtdItemCondition1 = new model.ErAlAtdItemCondition(lstErAlAtdItemCon1[i].targetNO, lstErAlAtdItemCon1[i]);
-                    convertExtraResultMonthly.checkConMonthly.group1().lstErAlAtdItemCon().push(erAlAtdItemCondition1);
+                    convertExtraResultMonthly.checkConMonthly().group1().lstErAlAtdItemCon().push(erAlAtdItemCondition1);
                 }
             }
 
             //group 2
-            convertExtraResultMonthly.checkConMonthly
+            convertExtraResultMonthly.checkConMonthly()
                 .group2(new model.ErAlConditionsAttendanceItem(extraResultMonthly.checkConMonthly.group2));
             //ErAlAtdItemCondition
             let lstErAlAtdItemCon2 = extraResultMonthly.checkConMonthly.group2.lstErAlAtdItemCon;
-            convertExtraResultMonthly.checkConMonthly.group2().lstErAlAtdItemCon = ko.observableArray([]);
+            convertExtraResultMonthly.checkConMonthly().group2().lstErAlAtdItemCon = ko.observableArray([]);
 
             if (lstErAlAtdItemCon2) {
                 for (var i = 0; i < lstErAlAtdItemCon2.length; i++) {
                     var erAlAtdItemCondition2 = new model.ErAlAtdItemCondition(lstErAlAtdItemCon2[i].targetNO, lstErAlAtdItemCon2[i]);
-                    convertExtraResultMonthly.checkConMonthly.group2().lstErAlAtdItemCon().push(erAlAtdItemCondition2);
+                    convertExtraResultMonthly.checkConMonthly().group2().lstErAlAtdItemCon().push(erAlAtdItemCondition2);
                 }
             }
             

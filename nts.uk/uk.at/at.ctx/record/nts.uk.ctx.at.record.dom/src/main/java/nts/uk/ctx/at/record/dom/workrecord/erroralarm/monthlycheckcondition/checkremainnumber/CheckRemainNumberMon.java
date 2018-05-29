@@ -19,15 +19,15 @@ public class CheckRemainNumberMon extends AggregateRoot {
 	/**チェック条件*/
 	private CheckedCondition checkCondition;
 	
-	public CheckRemainNumberMon(String errorAlarmCheckID, TypeCheckVacation checkVacation, CheckedCondition checkCondition) {
+	//classify  single value and range value
+	private CheckOperatorType checkOperatorType;
+
+	public CheckRemainNumberMon(String errorAlarmCheckID, TypeCheckVacation checkVacation, CheckedCondition checkCondition, CheckOperatorType checkOperatorType) {
 		super();
 		this.errorAlarmCheckID = errorAlarmCheckID;
 		this.checkVacation = checkVacation;
 		this.checkCondition = checkCondition;
+		this.checkOperatorType = checkOperatorType;
 	}
-	
-	
-	
-	
 
 }

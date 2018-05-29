@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.C
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeCheckVacation;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.checkremainnumber.CheckConValueRemainingNumber;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.checkremainnumber.CheckOperatorType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.checkremainnumber.CheckRemainNumberMon;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -34,6 +35,10 @@ public class KrcmtCheckRemainNumberMon extends UkJpaEntity implements Serializab
 	@Column(name = "TYPE_CHECK_VACATION")
 	public int typeCheckVacation;
 
+	@Column(name = "CHECK_OPERATOR_TYPE")
+	public int checkOperatorType;
+	
+	
 	@OneToOne(mappedBy = "comparerange")
 	public KrcmtCompareRange krcmtCompareRange;
 
@@ -45,39 +50,37 @@ public class KrcmtCheckRemainNumberMon extends UkJpaEntity implements Serializab
 		return errorAlarmCheckID;
 	}
 
-	public KrcmtCheckRemainNumberMon(String errorAlarmCheckID, int typeCheckVacation, KrcmtCompareRange krcmtCompareRange, KrcmtCompareSingleVal krcmtCompareSingleVal) {
+	public KrcmtCheckRemainNumberMon(String errorAlarmCheckID, int typeCheckVacation, int checkOperatorType, KrcmtCompareRange krcmtCompareRange, KrcmtCompareSingleVal krcmtCompareSingleVal) {
 		super();
 		this.errorAlarmCheckID = errorAlarmCheckID;
 		this.typeCheckVacation = typeCheckVacation;
+		this.checkOperatorType = checkOperatorType;
 		this.krcmtCompareRange = krcmtCompareRange;
 		this.krcmtCompareSingleVal = krcmtCompareSingleVal;
 	}
-
-	//
-	// public KrcmtCheckRemainNumberMon(String errorAlarmCheckID, int
-	// typeCheckVacation, KrcmtCompareSingleVal krcmtCompareSingleVal) {
-	// super();
-	// this.errorAlarmCheckID = errorAlarmCheckID;
-	// this.typeCheckVacation = typeCheckVacation;
-	// this.krcmtCompareSingleVal = krcmtCompareSingleVal;
-	// }
+	
 
 	public static KrcmtCheckRemainNumberMon toEntity(CheckRemainNumberMon domain) {
 		return new KrcmtCheckRemainNumberMon(domain.getErrorAlarmCheckID(), domain.getCheckVacation().value,
-				domain.getCheckVacation().value == 1 ? KrcmtCompareRange.toEntity(domain.getErrorAlarmCheckID(), 
-						(CompareRange<CheckConValueRemainingNumber>) domain.getCheckCondition()) : null,
-				domain.getCheckVacation().value != 1 ? KrcmtCompareSingleVal.toEntity(domain.getErrorAlarmCheckID(), 
-						(CompareSingleValue<CheckConValueRemainingNumber>) domain.getCheckCondition()) : null);
+				domain.getCheckOperatorType().value,
+				domain.getCheckOperatorType() == CheckOperatorType.RANGE_VALUE ? KrcmtCompareRange.toEntity(domain.getErrorAlarmCheckID(), (CompareRange<CheckConValueRemainingNumber>) domain.getCheckCondition()) : null,
+				domain.getCheckOperatorType() == CheckOperatorType.SINGLE_VALUE ? KrcmtCompareSingleVal.toEntity(domain.getErrorAlarmCheckID(), (CompareSingleValue<CheckConValueRemainingNumber>) domain.getCheckCondition()) : null
+						);
 
 	}
 
 	public CheckRemainNumberMon toDomain() {
 		CheckedCondition checkedCondition = new CheckedCondition();
-		if (this.typeCheckVacation == 1) {
+		if (this.checkOperatorType == 1) {
 			checkedCondition = this.krcmtCompareRange.toDomain();
 		} else {
 			checkedCondition = this.krcmtCompareSingleVal.toDomain();
 		}
-		return new CheckRemainNumberMon(this.errorAlarmCheckID, EnumAdaptor.valueOf(this.typeCheckVacation, TypeCheckVacation.class), checkedCondition);
+		return new CheckRemainNumberMon(this.errorAlarmCheckID, EnumAdaptor.valueOf(this.typeCheckVacation, TypeCheckVacation.class), checkedCondition,
+			   EnumAdaptor.valueOf(this.checkOperatorType, CheckOperatorType.class));
 	}
+
+
+
+	
 }

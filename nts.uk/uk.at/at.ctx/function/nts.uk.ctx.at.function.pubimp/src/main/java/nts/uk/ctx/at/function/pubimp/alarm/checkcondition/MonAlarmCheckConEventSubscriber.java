@@ -6,13 +6,25 @@ import nts.arc.layer.dom.event.DomainEventSubscriber;
 import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.AttendanceItemConAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.ErAlAtdItemConAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.ErAlConAttendanceItemAdapterDto;
+import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.AgreementCheckCon36FunImport;
+import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.SpecHolidayCheckConFunImport;
+import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.checkremainnumber.CheckConValueRemainNumberImport;
+import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.checkremainnumber.CheckRemainNumberMonFunImport;
+import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.checkremainnumber.CompareRangeImport;
+import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.checkremainnumber.CompareSingleValueImport;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckConEvent;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.dtoevent.ExtraResultMonthlyDomainEventDto;
 import nts.uk.ctx.at.function.pub.alarm.checkcondition.MonAlarmCheckConEventPub;
+import nts.uk.ctx.at.function.pub.alarm.checkcondition.eventdto.AgreementCheckCon36AdapterPubDto;
 import nts.uk.ctx.at.function.pub.alarm.checkcondition.eventdto.AttendanceItemConAdapterPubDto;
+import nts.uk.ctx.at.function.pub.alarm.checkcondition.eventdto.CheckConValueRemainNumberAdapterPubDto;
+import nts.uk.ctx.at.function.pub.alarm.checkcondition.eventdto.CheckRemainNumberMonAdapterPubDto;
+import nts.uk.ctx.at.function.pub.alarm.checkcondition.eventdto.CompareRangeAdapterPubDto;
+import nts.uk.ctx.at.function.pub.alarm.checkcondition.eventdto.CompareSingleValueAdapterPubDto;
 import nts.uk.ctx.at.function.pub.alarm.checkcondition.eventdto.ErAlAtdItemConAdapterPubDto;
 import nts.uk.ctx.at.function.pub.alarm.checkcondition.eventdto.ErAlConAttendanceItemAdapterPubDto;
 import nts.uk.ctx.at.function.pub.alarm.checkcondition.eventdto.ExtraResultMonthlyDomainEventPubDto;
+import nts.uk.ctx.at.function.pub.alarm.checkcondition.eventdto.SpecHolidayCheckConAdapterPubDto;
 
 public class MonAlarmCheckConEventSubscriber implements DomainEventSubscriber<MonAlarmCheckConEvent> {
 
@@ -48,10 +60,62 @@ public class MonAlarmCheckConEventSubscriber implements DomainEventSubscriber<Mo
 				export.isMessageBold(),
 				export.getMessageColor(),
 				export.getDisplayMessage(),
-				convertToAttendanceItemCon(export.getCheckConMonthly())
+				convertToAttendanceItemCon(export.getCheckConMonthly()),
+				convertToSpecHolidayCheckConFunImport(export.getSpecHolidayCheckCon()),
+				convertToCheckRemainNumberMonFunImport(export.getCheckRemainNumberMon()),
+				export.getListAgreementCheckCon36().stream().map(c->convertToAgreementCheckCon36Import(c)).collect(Collectors.toList())
 				);
 	}
 	
+	private SpecHolidayCheckConAdapterPubDto convertToSpecHolidayCheckConFunImport(SpecHolidayCheckConFunImport specHolidayCheckCon) {
+		return new SpecHolidayCheckConAdapterPubDto(
+				specHolidayCheckCon.getErrorAlarmCheckID(),
+				specHolidayCheckCon.getCompareOperator(),
+				specHolidayCheckCon.getNumberDayDiffHoliday1(),
+				specHolidayCheckCon.getNumberDayDiffHoliday2()
+				);
+	}
+	
+	private CheckRemainNumberMonAdapterPubDto convertToCheckRemainNumberMonFunImport(CheckRemainNumberMonFunImport checkRemainNumberMon) {
+		return new CheckRemainNumberMonAdapterPubDto(
+				checkRemainNumberMon.getErrorAlarmCheckID(),
+				checkRemainNumberMon.getCheckVacation(),
+				checkRemainNumberMon.getCheckOperatorType(),
+				convertToCompareRangeImport(checkRemainNumberMon.getCompareRangeEx()),
+				convertToCompareSingleValueImport(checkRemainNumberMon.getCompareSingleValueEx())
+				);
+	}
+	
+	private CompareRangeAdapterPubDto convertToCompareRangeImport (CompareRangeImport compareRange) {
+		return new CompareRangeAdapterPubDto(
+				compareRange.getCompareOperator(),
+				convertToCheckConValueRemainNumberFunImport(compareRange.getStartValue()),
+				convertToCheckConValueRemainNumberFunImport(compareRange.getEndValue())
+				);
+	}
+	
+	 private CompareSingleValueAdapterPubDto convertToCompareSingleValueImport (CompareSingleValueImport compareSingleValue) {
+		 return new CompareSingleValueAdapterPubDto(
+				 compareSingleValue.getCompareOpertor(),
+				 convertToCheckConValueRemainNumberFunImport(compareSingleValue.getValue())
+				 );
+	 }
+	
+	private CheckConValueRemainNumberAdapterPubDto convertToCheckConValueRemainNumberFunImport(CheckConValueRemainNumberImport checkConValueRemainNumber) {
+		return new CheckConValueRemainNumberAdapterPubDto(
+				checkConValueRemainNumber.getDaysValue(),
+				checkConValueRemainNumber.getTimeValue()
+				);
+	}
+	
+	private AgreementCheckCon36AdapterPubDto convertToAgreementCheckCon36Import(AgreementCheckCon36FunImport agreementCheckCon36) {
+		return new AgreementCheckCon36AdapterPubDto(
+				agreementCheckCon36.getErrorAlarmCheckID(),
+				agreementCheckCon36.getClassification(),
+				agreementCheckCon36.getCompareOperator(),
+				agreementCheckCon36.getEralBeforeTime()
+				);
+	}
 	
 	private AttendanceItemConAdapterPubDto convertToAttendanceItemCon (AttendanceItemConAdapterDto export) {
 		return new AttendanceItemConAdapterPubDto(
