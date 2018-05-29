@@ -17,4 +17,8 @@ import nts.uk.ctx.at.function.app.command.attendancerecord.item.SingleAttendance
 public class NewAttendanceRecordExportSettingCommand {
     private AttendanceRecordExportSettingAddCommand cmd;
     private AttendanceRecordAddCommand itemCmd;
+	public NewAttendanceRecordExportSettingCommand() {
+		super();
+	}
+    
 }
