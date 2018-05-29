@@ -1,6 +1,8 @@
 package nts.uk.ctx.bs.employee.pubimp.contact;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -9,8 +11,13 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.dom.employee.contact.EmployeeInfoContact;
 import nts.uk.ctx.bs.employee.dom.employee.contact.EmployeeInfoContactRepository;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.pub.contact.EmployeeContactObject;
 import nts.uk.ctx.bs.employee.pub.contact.EmployeeContactPub;
+import nts.uk.ctx.bs.employee.pub.contact.PersonContactObjectOfEmployee;
+import nts.uk.ctx.bs.person.dom.person.contact.EmergencyContact;
+import nts.uk.ctx.bs.person.dom.person.contact.PersonContact;
+import nts.uk.ctx.bs.person.dom.person.contact.PersonContactRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -18,6 +25,12 @@ public class EmployeeContactPubImpl implements EmployeeContactPub {
 
 	@Inject
 	private EmployeeInfoContactRepository empContactRepo;
+	
+	@Inject
+	private EmployeeDataMngInfoRepository empDataMngInfoRepo;
+	
+	@Inject
+	private PersonContactRepository personContactRepo;
 
 	@Override
 	public List<EmployeeContactObject> getList(List<String> employeeIds) {
@@ -65,6 +78,47 @@ public class EmployeeContactPubImpl implements EmployeeContactPub {
 		} else {
 			empContactRepo.add(domain);
 		}
+	}
+
+	@Override
+	public List<PersonContactObjectOfEmployee> getListOfEmployees(List<String> employeeIds) {
+		Map<String, String> employeeIdPersonIdMap = empDataMngInfoRepo.findByListEmployeeId(employeeIds).stream()
+				.collect(Collectors.toMap(x -> x.getEmployeeId(), x -> x.getPersonId()));
+
+		Map<String, PersonContact> personContacts = personContactRepo
+				.getByPersonIdList(new ArrayList<>(employeeIdPersonIdMap.values())).stream()
+				.collect(Collectors.toMap(x -> x.getPersonId(), x -> x));
+		List<PersonContactObjectOfEmployee> resultList = new ArrayList<>();
+		employeeIdPersonIdMap.forEach((empId, perId) -> {
+			PersonContact personContact = personContacts.get(perId);
+			PersonContactObjectOfEmployee personContactOfEmp = convert(empId, personContact);
+			resultList.add(personContactOfEmp);
+		});
+		return resultList;
+	}
+	
+	private PersonContactObjectOfEmployee convert(String employeeId, PersonContact p) {
+		PersonContactObjectOfEmployee pcObject = new PersonContactObjectOfEmployee();
+		pcObject.setEmployeeId(employeeId);
+		pcObject.setPersonId(p.getPersonId());
+		pcObject.setCellPhoneNumber(p.getCellPhoneNumber().isPresent() ? p.getCellPhoneNumber().get().v() : null);
+		pcObject.setMailAdress(p.getMailAdress().isPresent() ? p.getMailAdress().get().v() : null);
+		pcObject.setMobileMailAdress(p.getMobileMailAdress().isPresent() ? p.getMobileMailAdress().get().v() : null);
+
+		Optional<EmergencyContact> emerContact1 = p.getEmergencyContact1();
+		if (emerContact1.isPresent()) {
+			pcObject.setMemo1(emerContact1.get().getMemo().v());
+			pcObject.setContactName1(emerContact1.get().getContactName().v());
+			pcObject.setPhoneNumber1(emerContact1.get().getPhoneNumber().v());
+		}
+		Optional<EmergencyContact> emerContact2 = p.getEmergencyContact2();
+		if (emerContact2.isPresent()) {
+			pcObject.setMemo2(emerContact2.get().getMemo().v());
+			pcObject.setContactName2(emerContact2.get().getContactName().v());
+			pcObject.setPhoneNumber2(emerContact2.get().getPhoneNumber().v());
+		}
+		return pcObject;
+
 	}
 
 }
