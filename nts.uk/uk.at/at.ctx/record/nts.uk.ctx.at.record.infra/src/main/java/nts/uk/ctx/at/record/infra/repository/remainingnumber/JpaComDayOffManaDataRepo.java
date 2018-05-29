@@ -19,6 +19,8 @@ import nts.uk.ctx.at.record.infra.entity.remainingnumber.subhdmana.KrcmtComDayof
 public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOffManaDataRepository {
 
 	private String GET_BYSID = "SELECT a FROM KrcmtComDayoffMaData a WHERE a.sID = :employeeId AND a.cID = :cid";
+	
+	private String GET_BY_REDAY = String.join(" ", GET_BYSID, " AND a.remainDays > 0");
 
 	private String GET_BYSID_WITHREDAY = String.join(" ", GET_BYSID, " AND a.remainDays > 0 OR a.comDayOffID IN  (SELECT c.krcmtLeaveDayOffManaPK.comDayOffID FROM KrcmtLeaveDayOffMana c "
 					+ "INNER JOIN KrcmtLeaveManaData b ON b.leaveID = c.krcmtLeaveDayOffManaPK.leaveID WHERE b.cID = :cid AND"
@@ -177,6 +179,13 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 			busItem.remainDays =  busItem.requiredDays;
 		}
 		this.commandProxy().updateAll(KrcmtComDayoffMaData);
+	}
+
+	@Override
+	public List<CompensatoryDayOffManaData> getByReDay(String cid, String sid) {
+		List<KrcmtComDayoffMaData> list = this.queryProxy().query(GET_BY_REDAY, KrcmtComDayoffMaData.class)
+				.setParameter("employeeId", sid).setParameter("cid", cid).getList();
+		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
 	
 }

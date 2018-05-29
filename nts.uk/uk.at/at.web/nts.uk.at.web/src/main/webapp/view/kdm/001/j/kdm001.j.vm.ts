@@ -48,16 +48,30 @@ module nts.uk.at.view.kdm001.j.viewmodel {
                     _.each(self.itemsSelected(), x => {
                         
                         if(self.dateHoliday() === x.dayOff){
+                            self.currentCodeList.remove(x.comDayOffID);
                             nts.uk.ui.dialog.info({ messageId: "Msg_730" });
+                        } else {
+                            let iNum = parseFloat(x.remainDays);
+                            let day = parseFloat(self.numberDay());
+                            sumNum = sumNum + iNum;
+                            self.residualDay(parseFloat((day-sumNum)).toFixed(1)+' 日');
+                            
+                            if(parseFloat(self.residualDay()) < 0) {
+                                $( "#J7_2" ).css( "color", "red" );
+                            } else {
+                                $( "#J7_2" ).css( "color", "" );
+                            }
                         }  
-                        let iNum = parseFloat(x.remainDays);
-                        let day = parseFloat(self.numberDay());
-                        sumNum = sumNum + iNum;
-                        self.residualDay(parseFloat((day-sumNum)).toFixed(1)+' 日');
+                        
                     });
                 } else {
                    let day = parseFloat(self.numberDay());
                    self.residualDay(parseFloat(self.numberDay()).toFixed(1)+' 日');
+                   if(parseFloat(self.residualDay()) < 0) {
+                            $( "#J7_2" ).css( "color", "red" );
+                    } else {
+                            $( "#J7_2" ).css( "color", "" );
+                   }
                 }
             });
             
@@ -123,6 +137,10 @@ module nts.uk.at.view.kdm001.j.viewmodel {
                     self.items.push(new ItemModel(data.listDayOff[i].comDayOffId, data.listDayOff[i].dateHoliday,data.listDayOff[i].numberDay, data.listDayOff[i].numberDay+" 日"));
                     if(data.listDayOff[i].usedDay == true) {
                         self.currentCodeList.push(data.listDayOff[i].comDayOffId);
+                    }
+                    
+                    if(data.listDayOff[i].numberDay > self.numberDayParam() ) {
+                        $("#multi-list").ntsGrid("disableNtsControlAt", data.listDayOff[i].comDayOffId);
                     }
                     
                 }

@@ -27,13 +27,13 @@ public class DayOffManagementFinder {
 		DayOffResult dayOffResult = new DayOffResult();
 		String companyId = AppContexts.user().companyId();
 		List<CompensatoryDayOffManaData> daysFreeOffMana = new ArrayList<>();
-		daysFreeOffMana = comDayOffManaDataRepository.getBySidWithReDay(companyId, employeeId);
+		daysFreeOffMana = comDayOffManaDataRepository.getByReDay(companyId, employeeId);
 		List<CompensatoryDayOffManaData> daysOffMana = new ArrayList<>();
 		daysOffMana = comDayOffManaDataRepository.getBySidComDayOffIdWithReDay(companyId, employeeId, leaveId);
 		resultDayFreeMana = daysFreeOffMana.stream().map(p -> new DayOffManagementDto(p.getDayOffDate().getDayoffDate().get(),p.getRequireDays().v().toString(),false,p.getComDayOffID())).collect(Collectors.toList());
 		resultDaysOffMana = daysOffMana.stream().map(p -> new DayOffManagementDto(p.getDayOffDate().getDayoffDate().get(),p.getRequireDays().v().toString(),true,p.getComDayOffID())).collect(Collectors.toList());
-		dayOffAll.addAll(resultDayFreeMana);
 		dayOffAll.addAll(resultDaysOffMana);
+		dayOffAll.addAll(resultDayFreeMana);
 		dayOffResult.setListDayOff(dayOffAll);
 		if(dayOffAll.isEmpty()) {
 			dayOffResult.setErrorCode("Msg_1073");
