@@ -94,22 +94,27 @@ public class MappingFactory {
 	public static void matchOptionalItemData(String recordId, List<LayoutPersonInfoClsDto> classItemList,
 			List<OptionalItemDataDto> dataItems) {
 		for (LayoutPersonInfoClsDto classItem : classItemList) {
-			for (LayoutPersonInfoValueDto valueItem : classItem.getItems()) {
-				
-				// update 2018/02/22 bug 87560
-				valueItem.setShowColor(false);
-				
-				// data
-				for (OptionalItemDataDto dataItem : dataItems) {
-					if (valueItem.getItemCode().equals(dataItem.getItemCode())) {
-						// recordId
-						valueItem.setRecordId(recordId);
-						valueItem.setValue(dataItem.getValue());
-					}
+			matchDataToValueItems(recordId, classItem.getItems(), dataItems);
+		}
+
+	}
+	
+	public static void matchDataToValueItems(String recordId, List<LayoutPersonInfoValueDto> valueItems,
+			List<OptionalItemDataDto> dataItems) {
+		for (LayoutPersonInfoValueDto valueItem : valueItems) {
+
+			// update 2018/02/22 bug 87560
+			valueItem.setShowColor(false);
+
+			// data
+			for (OptionalItemDataDto dataItem : dataItems) {
+				if (valueItem.getItemCode().equals(dataItem.getItemCode())) {
+					// recordId
+					valueItem.setRecordId(recordId);
+					valueItem.setValue(dataItem.getValue());
 				}
 			}
 		}
-
 	}
 
 }

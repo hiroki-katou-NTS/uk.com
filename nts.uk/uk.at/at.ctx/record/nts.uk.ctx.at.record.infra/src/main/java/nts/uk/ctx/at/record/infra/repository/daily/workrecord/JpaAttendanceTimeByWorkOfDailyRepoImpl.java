@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.daily.workrecord;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -41,6 +42,12 @@ public class JpaAttendanceTimeByWorkOfDailyRepoImpl extends JpaRepository implem
 
 	@Override
 	public List<AttendanceTimeByWorkOfDaily> finds(List<String> employeeId, DatePeriod ymd) {
+		// TODO Auto-generated method stub
+		return Collections.emptyList();
+	}
+
+	@Override
+	public List<AttendanceTimeByWorkOfDaily> finds(Map<String, GeneralDate> param) {
 		// TODO Auto-generated method stub
 		return Collections.emptyList();
 	}
