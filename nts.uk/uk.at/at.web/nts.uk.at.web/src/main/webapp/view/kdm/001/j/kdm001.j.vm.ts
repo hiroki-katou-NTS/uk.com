@@ -1,5 +1,6 @@
 module nts.uk.at.view.kdm001.j.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
     import block     = nts.uk.ui.block;
     export class ScreenModel {
         itemsSelected: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
@@ -112,8 +113,11 @@ module nts.uk.at.view.kdm001.j.viewmodel {
                 if (data.length > 0) {
                         let messageId = data[0];
                         if(messageId === 'Msg_15') {
-                             nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                             nts.uk.ui.windows.close();
+                            
+                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                    setShared('KDM001_J_PARAMS_RES', { isChanged: true });
+                                    nts.uk.ui.windows.close();
+                             });
                         }else {
                                 $('#multi-list').ntsError('set', { messageId: messageId });
                             }
