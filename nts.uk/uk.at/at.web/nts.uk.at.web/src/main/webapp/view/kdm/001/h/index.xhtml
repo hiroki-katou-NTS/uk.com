@@ -56,8 +56,7 @@
 								<div class="column-1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDM001_62')}</div>
 								<!-- H6_2  HolidayDate  -->
 								<div id="H6_2" tabindex="1"
-									data-bind="ntsDatePicker: {value: dayoffDate, dateFormat: 'YYYY/MM/DD'}"
-									tabindex="1"></div>
+									data-bind="ntsDatePicker: {value: dayoffDate, dateFormat: 'YYYY/MM/DD'}"></div>
 							</div>
 						</th>
 						<th>
@@ -106,9 +105,11 @@
 			</div>
 			<div id="functions-area-bottom">
 				<!--F31_1 登録 -->
-				<button class="proceed" tabindex="4"  data-bind="click: updateData" tabindex="5">#{i18n.getText('KDM001_89')}</button>
+				<button class="proceed" tabindex="4" data-bind="click: updateData"
+					tabindex="5">#{i18n.getText('KDM001_89')}</button>
 				<!-- F31_2 削除 -->
-				<button class="danger" tabindex="5" data-bind="click: removeData" tabindex="6">#{i18n.getText('KDM001_100')}</button>
+				<button class="danger" tabindex="5" data-bind="click: removeData"
+					tabindex="6">#{i18n.getText('KDM001_100')}</button>
 				<!-- F31_3 キャンセル -->
 				<button data-bind="click: closeKDM001H" tabindex="6">#{i18n.getText('KDM001_90')}</button>
 			</div>
