@@ -29,8 +29,10 @@ import com.aspose.cells.WorkbookDesigner;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
+import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.DailyAttendanceItem;
@@ -168,11 +170,14 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	/** The Constant DATA_COLUMN_INDEX. */
 	private static final int[] DATA_COLUMN_INDEX = {3, 8, 10, 14, 16, 39};
 	
+	private static final String REPORT_ID = "EXCEL_PDF_GENERATOR";
+	
 	/* (non-Javadoc)
 	 * @see nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputGenerator#generate(nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputCondition, nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo, nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputQuery)
 	 */
 	@Override
-	public void generate(WorkScheduleOutputQuery query) {
+	public void generate(FileGeneratorContext generatorContext, WorkScheduleOutputQuery query) {
+		val reportContext = this.createEmptyContext(REPORT_ID);
 		WorkScheduleOutputCondition condition = query.getCondition();
 		
 		// Dummy area
@@ -188,7 +193,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		
 		Workbook workbook;
 		try {
-			workbook = new Workbook(Thread.currentThread().getContextClassLoader().getResourceAsStream(filename));
+			//workbook = new Workbook(Thread.currentThread().getContextClassLoader().getResourceAsStream(filename));
+			workbook = reportContext.getWorkbook();
 			
 			WorkbookDesigner designer = new WorkbookDesigner();
 			designer.setWorkbook(workbook);
@@ -260,7 +266,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			}
 			
 			// Rename sheet
-			sheet.setName(value);
+			sheet.setName(WorkScheOutputConstants.SHEET_FILE_NAME);
 			
 			// Move to first position
 			sheet.moveTo(0);
@@ -272,16 +278,18 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			}
 			
 			// Process designer
-			designer.process(false);
+			reportContext.processDesigner();
 			
 			// Save workbook
 			if (query.getFileType() == FileOutputType.FILE_TYPE_EXCEL)
-				workbook.save("D:/Dummy" + WorkScheOutputConstants.SHEET_FILE_NAME +".xlsx");
+				//workbook.save("D:/Dummy/" + WorkScheOutputConstants.SHEET_FILE_NAME +".xlsx");
+				reportContext.saveAsExcel(this.createNewFile(generatorContext, WorkScheOutputConstants.SHEET_FILE_NAME));
 			else {
-				workbook.save("D:/Dummy" + WorkScheOutputConstants.SHEET_FILE_NAME +".pdf", FileFormatType.PDF);
+				// Create print area
+				createPrintArea(currentRow, sheet);
+				reportContext.saveAsPdf(this.createNewFile(generatorContext, WorkScheOutputConstants.SHEET_FILE_NAME));
+				//workbook.save("D:/Dummy/" + WorkScheOutputConstants.SHEET_FILE_NAME +".pdf", FileFormatType.PDF);
 			}
-			
-			System.out.println("Done");
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -601,8 +609,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			}
 			
 			detailedDate.actualValue = new ArrayList<>();
-			//x.getAttendanceItems().stream().forEach(a -> detailedDate.actualValue.add(new ActualValue(a.getItemId(), a.getValue(), a.getValueType())));
-			x.getAttendanceItems().stream().forEach(a -> detailedDate.actualValue.add(new ActualValue(a.getItemId(), "1", 0)));
+			x.getAttendanceItems().stream().forEach(a -> detailedDate.actualValue.add(new ActualValue(a.getItemId(), a.getValue(), a.getValueType())));
+			//x.getAttendanceItems().stream().forEach(a -> detailedDate.actualValue.add(new ActualValue(a.getItemId(), "1", 0)));
 		});
 		return employeeData;
 	}
@@ -1572,6 +1580,20 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		if (numOfChunks == 0) currentRow++;
 		
 		return currentRow;
+	}
+	
+	/**
+	 * Create print area of the entire report, important for exporting to PDF
+	 * @param currentRow
+	 */
+	public void createPrintArea(int currentRow, Worksheet sheet) {
+		// Get the last column and row name
+		Cells cells = sheet.getCells();
+		Cell lastCell = cells.get(currentRow, 39);
+		String lastCellName = lastCell.getName();
+		
+		PageSetup pageSetup = sheet.getPageSetup();
+		pageSetup.setPrintArea("A1:" + lastCellName);
 	}
 	
 	/**
