@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.format;
+package nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.primitive.format;
 
 import lombok.AllArgsConstructor;
 import nts.arc.primitive.constraint.IntegerRange;

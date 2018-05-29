@@ -1,11 +1,11 @@
-package nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem;
+package nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.primitive;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.format.SelectionCodeCharacterType;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.format.SelectionCodeLength;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.format.SelectionExternalCDLength;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.format.SelectionNameLength;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.primitive.format.SelectionCodeCharacterType;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.primitive.format.SelectionCodeLength;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.primitive.format.SelectionExternalCDLength;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.primitive.format.SelectionNameLength;
 
 /**
  * 
