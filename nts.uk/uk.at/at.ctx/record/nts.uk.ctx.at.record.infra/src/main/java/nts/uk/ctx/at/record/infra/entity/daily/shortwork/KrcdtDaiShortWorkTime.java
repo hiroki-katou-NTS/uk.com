@@ -77,16 +77,16 @@ public class KrcdtDaiShortWorkTime extends UkJpaEntity implements Serializable {
     @Column(name = "DEDUCTION_TIME")
     public int deductionTime;
     
-//    @ManyToOne
-//	@JoinColumns(value = {
-//			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
-//			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
-//	public KrcdtDayAttendanceTime krcdtDayAttendanceTime;
-	@ManyToOne
+    @ManyToOne
 	@JoinColumns(value = {
 			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
-	public KrcdtDayTime krcdtDayTime;
+	public KrcdtDayAttendanceTime krcdtDayAttendanceTime;
+//	@ManyToOne
+//	@JoinColumns(value = {
+//			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+//			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
+//	public KrcdtDayTime krcdtDayTime;
     
 
     public KrcdtDaiShortWorkTime() {
