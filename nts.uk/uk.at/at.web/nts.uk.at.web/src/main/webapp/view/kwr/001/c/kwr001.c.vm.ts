@@ -59,10 +59,10 @@ module nts.uk.at.view.kwr001.c {
                 self.C3_3_value = ko.observable("");
                 
                 self.roundingRules = ko.observableArray([
-                    { code: '1', name: nts.uk.resource.getText("KWR001_58") },
-                    { code: '2', name: nts.uk.resource.getText("KWR001_59") }
+                    { code: '0', name: nts.uk.resource.getText("KWR001_58") },
+                    { code: '1', name: nts.uk.resource.getText("KWR001_59") }
                 ]);
-                self.selectedRuleCode = ko.observable(1);
+                self.selectedRuleCode = ko.observable(0);
                 self.currentCodeListSwap = ko.observableArray([]);
                 self.test = ko.observableArray([]);
                 
@@ -72,17 +72,17 @@ module nts.uk.at.view.kwr001.c {
                 self.enableCodeC3_2 = ko.observable(false);
                 
                 self.currentCodeList.subscribe(function(value) {
-                    
-                    let codeChoose = _.find(self.outputItemList(), function(o: any) { 
-                        return value == o.code; 
+                    let codeChoose = _.find(self.allMainDom(), function(o: any) { 
+                        return value == o.itemCode; 
                     });
                     if (!_.isUndefined(codeChoose) && !_.isNull(codeChoose)) {
                         nts.uk.ui.errors.clearAll();
-                        self.C3_2_value(codeChoose.code);
-                        self.C3_3_value(codeChoose.name);
+                        self.C3_2_value(codeChoose.itemCode);
+                        self.C3_3_value(codeChoose.itemName);
                         self.getOutputItemDailyWorkSchedule(_.find(self.allMainDom(), function(o: any) {
-                                                                return codeChoose.code == o.itemCode;             
+                                                                return codeChoose.itemCode == o.itemCode;             
                                                             }));
+                        self.selectedRuleCode(codeChoose.workTypeNameDisplay);
                         self.enableBtnDel(true);
                         self.enableCodeC3_2(false);
                     } else {
@@ -91,7 +91,7 @@ module nts.uk.at.view.kwr001.c {
                         self.getOutputItemDailyWorkSchedule([]);
                         self.enableBtnDel(false);
                         self.enableCodeC3_2(true);
-                    }                    
+                    }
                 })
                 
                 self.checkedRemarksInput = ko.observable(false);
@@ -142,7 +142,8 @@ module nts.uk.at.view.kwr001.c {
                     self.checkedAcknowledgment(self.convertNumToBool(data.lstRemarkContent[7].usedClassification));
                     self.checkedManualInput(self.convertNumToBool(data.lstRemarkContent[8].usedClassification));
                     self.checkedNotCalculated(self.convertNumToBool(data.lstRemarkContent[9].usedClassification));
-                    self.checkedExceedByApplication(self.convertNumToBool(data.lstRemarkContent[10].usedClassification));    
+                    self.checkedExceedByApplication(self.convertNumToBool(data.lstRemarkContent[10].usedClassification));
+                    self.selectedRuleCode(data.workTypeNameDisplay);
                 } else {
                     self.setRemarksContentDefault();
                 }
