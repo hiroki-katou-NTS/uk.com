@@ -160,6 +160,8 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		val personalInfo = workingConditionItemRepository.getBySidAndPeriodOrderByStrDWithDatePeriod(employeeId, datePeriod);
 		//今の日付の労働条件
 		Optional<Entry<DateHistoryItem, WorkingConditionItem>> nowCondition = personalInfo.getItemAtDate(datePeriod.start());
+		if(!nowCondition.isPresent()) return status;
+		companyCommonSetting.setPersonInfo(Optional.of(nowCondition.get().getValue()));
 		EmploymentCode nowEmpCode = new EmploymentCode("");
 		
 
