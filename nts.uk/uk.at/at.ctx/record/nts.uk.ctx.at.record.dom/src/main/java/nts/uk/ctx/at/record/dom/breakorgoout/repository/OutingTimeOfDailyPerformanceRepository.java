@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.breakorgoout.repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -18,6 +19,8 @@ public interface OutingTimeOfDailyPerformanceRepository {
 	Optional<OutingTimeOfDailyPerformance> findByEmployeeIdAndDate(String employeeId, GeneralDate ymd);
 	
 	List<OutingTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd);
+	
+	List<OutingTimeOfDailyPerformance> finds(Map<String, GeneralDate> param);
 	
 	void add(OutingTimeOfDailyPerformance outing);
 	
