@@ -102,6 +102,9 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 $('#substituteDataGrid').focus();
             });
         }
+        goToScreenA() {
+            nts.uk.request.jump("/view/kdm/001/a/index.xhtml");
+        }
         filterByPeriod() {
             var self = this;
             self.getSubstituteDataList(self.getSearchCondition());

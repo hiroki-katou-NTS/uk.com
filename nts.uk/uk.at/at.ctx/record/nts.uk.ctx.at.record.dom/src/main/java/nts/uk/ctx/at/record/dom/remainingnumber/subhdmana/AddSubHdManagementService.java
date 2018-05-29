@@ -172,8 +172,8 @@ public class AddSubHdManagementService {
 		if (!closureDate.isPresent()) {
 			closureDate = this.getClosureDate(closureId, processYearMonth);
 		}
-		// 休出（年月日）と締め日をチェックする		
-		if(closureDate.get().before(holidayDate)) {
+		// 休出（年月日）と締め日をチェックする
+		if (closureDate.get().before(holidayDate)) {
 			errorList.add("Msg_745");
 			return errorList;
 		}
@@ -205,8 +205,11 @@ public class AddSubHdManagementService {
 		if (holidayDate.isPresent() && subHolidayDate.compareTo(holidayDate.get()) == 0) {
 			errorList.add("Msg_730");
 		}
+		//TODO チェックボタン「分割消化」をチェックする
+		
 		return errorList;
 	}
+
 	/**
 	 * 休出代休日数チェック処理
 	 * 
@@ -216,29 +219,21 @@ public class AddSubHdManagementService {
 	public List<String> checkHolidayAndSubHoliday(SubHdManagementData subHdManagementData) {
 		List<String> errorList = new ArrayList<>();
 		// 代休チェックボックスをチェックする
-		if (subHdManagementData.getCheckedSubHoliday() == true) {
+		if (subHdManagementData.getCheckedSubHoliday()) {
 			// 分割消化フラグをチェックする
-			if (subHdManagementData.getCheckedSplit() == true) {
+			if (subHdManagementData.getCheckedSplit()) {
 				// １日目の代休日数をチェックする
 				if (!ItemDays.HALF_DAY.value.equals(subHdManagementData.getSelectedCodeSubHoliday().doubleValue())) {
 					errorList.add("Msg_1256_1");
-				} else {
-					// ２日目の代休日数をチェックする
-					if (!ItemDays.HALF_DAY.value.equals(subHdManagementData.getSelectedCodeOptionSubHoliday().doubleValue())) {
-						errorList.add("Msg_1256_2");
-					} else {
-						errorList = checkHolidayAfterSubHoliday(subHdManagementData);
-					}
-					
+				} else if (!ItemDays.HALF_DAY.value.equals(subHdManagementData.getSelectedCodeOptionSubHoliday().doubleValue())){
+					errorList.add("Msg_1256_2");
 				}
-			}else{
-				errorList = checkHolidayAfterSubHoliday(subHdManagementData);
-			}
-		} else {
-			{
-				errorList = checkHolidayAfterSubHoliday(subHdManagementData);
+				if(!errorList.isEmpty()){
+					return errorList;
+				}
 			}
 		}
+		errorList.addAll(this.checkHolidayAfterSubHoliday(subHdManagementData));
 		return errorList;
 	}
 
@@ -253,7 +248,7 @@ public class AddSubHdManagementService {
 						errorList.add("Msg_1256_3");
 					}
 				}
-			} else if(subHdManagementData.getCheckedSubHoliday()) {
+			} else if (subHdManagementData.getCheckedSubHoliday()) {
 				// 休出日数と１日目代休日数をチェックする
 				if (!subHdManagementData.getSelectedCodeHoliday()
 						.equals(subHdManagementData.getSelectedCodeSubHoliday())) {

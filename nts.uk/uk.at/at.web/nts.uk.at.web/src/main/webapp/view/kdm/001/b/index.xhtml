@@ -1,5 +1,42 @@
-<!-- 残数管理データ登録_代休管理 -->
-<div id="tabpanel-2" role="tabpanel" data-bind="with: screenItem">
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/sidebar.xhtml">
+		<ui:define name="sidebar-head">
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js"
+				of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			<!-- COMPONENT KCP009 -->
+			<com:scriptfile path="/view/kcp/009/kcp009.js" of="/nts.uk.com.web" />
+			<com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="kdm001.b.start.js" />
+			<com:scriptfile path="kdm001.b.service.js" />
+			<com:scriptfile path="kdm001.b.vm.js" />
+			<com:stylefile path="kdm001.b.main.css" />
+		</ui:define>
+		<ui:define name="sidebar">
+			<ul class="navigator">
+				<!-- 残数管理データ登録_振休管理 -->
+				<li><a tabindex="-1" data-bind="click: goToScreenA" role="tab-navigator">#{i18n.getText('KDM001_149')}</a></li>
+				<!-- 残数管理データ登録_代休管理 -->
+				<li><a tabindex="-1" href="#tabpanel-2" role="tab-navigator" class="tabB">#{i18n.getText('KDM001_150')}</a></li>
+				<!-- 残数管理データ登録_６０Ｈ超休管理 -->
+				<li><a tabindex="-1" href="#tabpanel-3" role="tab-navigator">#{i18n.getText('KDM001_151')}</a></li>
+			</ul>
+		</ui:define>
+		<ui:define name="sidebar-content">
+			<!-- 残数管理データ登録_振休管理 -->
+			<div id="tabpanel-1" role="tabpanel"></div>
+			<!-- 残数管理データ登録_代休管理 -->
+			<div id="tabpanel-2" role="tabpanel" data-bind="with: screenItem">
 				<!-- B1 -->
 				<div
 					class="sidebar-content-header flex valign-center ">
@@ -7,23 +44,23 @@
 					<span class="title">#{i18n.getText('KDM001_150')}</span>
 					<!-- B1_1 新規 -->
 					<div>
-						<button id ="B1_1" tabindex="6" data-bind="click: function(){ $parent.openNewSubstituteData_B()}">#{i18n.getText('KDM001_1')}</button>
+						<button id ="B1_1" tabindex="6" data-bind="click: function(){ $parent.openNewSubstituteData()}">#{i18n.getText('KDM001_1')}</button>
 					</div>
 					<!-- B1_2 「代休確認表」出力画面へ遷移する -->
 					<div style="margin-left: auto;">
 						<a id = "B1_2" tabindex="7" class="goout"
-							data-bind="ntsLinkButton: {}, click: function(){ $parent.openConfirmScreen_B()}">#{i18n.getText('KDM001_32')}</a>
+							data-bind="ntsLinkButton: {}, click: function(){ $parent.openConfirmScreen()}">#{i18n.getText('KDM001_32')}</a>
 					</div> 
 
 				</div>
 				<div class="contents-area">
 					<!-- CCG001 -->
-<!-- 					<div id="ccgcomponent_B"></div> -->
+					<div id="ccgcomponent"></div>
 					<!-- B2 -->
 					<div class="div-table">
 						<!-- KCP009  対象者  -->
 						<div class = "emp-component-size">
-						<div tabindex="1" id="emp-component_B"></div>
+						<div tabindex="1" id="emp-component"></div>
 						</div>
 						<!-- B3 -->
 						<div class="div-table-row">
@@ -81,3 +118,8 @@
 					</div>
 				</div>
 			</div>
+			<div id="tabpanel-3" role="tabpanel"></div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
