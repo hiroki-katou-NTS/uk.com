@@ -143,6 +143,9 @@ public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRec
 
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingSetMemento#setNameUseAtr(java.lang.Integer)
+	 */
 	@Override
 	public void setNameUseAtr(Integer nameUseAtr) {
 		this.entity.setNameUseAtr(new BigDecimal(nameUseAtr));

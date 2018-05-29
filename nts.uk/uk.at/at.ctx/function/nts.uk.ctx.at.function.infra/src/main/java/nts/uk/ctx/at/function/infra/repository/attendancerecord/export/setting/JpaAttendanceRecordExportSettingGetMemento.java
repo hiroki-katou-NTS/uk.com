@@ -129,8 +129,11 @@ public class JpaAttendanceRecordExportSettingGetMemento implements AttendanceRec
 		return list;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingGetMemento#getNameUseAtr()
+	 */
 	@Override
 	public Integer getNameUseAtr() {
-		return this.getNameUseAtr();
+		return this.attendanceEntity.getNameUseAtr().intValue();
 	}
 }

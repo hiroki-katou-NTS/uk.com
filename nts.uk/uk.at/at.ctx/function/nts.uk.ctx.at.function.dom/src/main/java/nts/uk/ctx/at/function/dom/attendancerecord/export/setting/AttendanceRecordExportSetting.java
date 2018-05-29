@@ -47,6 +47,7 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 	// 印鑑欄
 	private List<SealColumnName> sealStamp;
 
+	/** The name use atr. */
 	//名称使用区分
 	private NameUseAtr nameUseAtr;
 
@@ -82,6 +83,7 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 	 *            the memento
 	 */
 	public void saveToMemento(AttendanceRecordExportSettingSetMemento memento) {
+		memento.setCompanyId(this.companyId);
 		memento.setCode(this.code);
 		memento.setDailyExportItem(this.dailyExportItem);
 		memento.setMonthlyExportItem(this.monthlyExportItem);
