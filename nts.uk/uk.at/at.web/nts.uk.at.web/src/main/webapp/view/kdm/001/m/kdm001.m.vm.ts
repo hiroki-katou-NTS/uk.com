@@ -1,10 +1,10 @@
 module nts.uk.at.view.kdm001.m.viewmodel {
-    import modal     = nts.uk.ui.windows.sub.modal;
-    import model     = kdm001.share.model;
+    import model     = nts.uk.at.view.kdm001.share.model;
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
     import dialog    = nts.uk.ui.dialog;
     import block     = nts.uk.ui.block;
+
     export class ScreenModel {
         workCode: KnockoutObservable<string>     = ko.observable('');
         workName: KnockoutObservable<string>     = ko.observable('');
@@ -60,7 +60,7 @@ module nts.uk.at.view.kdm001.m.viewmodel {
                     remainDays: self.remainDays(),
                     closureId: self.closureId(),
                     executeMode: model.ExecuteMode.UPDATE
-                }
+                };
                 service.updateComDayOffMana(command).done(result => {
                     if (result.length > 0) {
                         $('#M6_2').ntsError('set', { messageId: result[0]});
@@ -93,7 +93,7 @@ module nts.uk.at.view.kdm001.m.viewmodel {
                     requireDays: self.requireDays(),
                     remainDays: self.remainDays(),
                     executeMode: model.ExecuteMode.DELETE
-                }
+                };
                 service.deleteComDayOffMana(command).done(() => {
                     //情報メッセージ　Msg-16を表示する
                     dialog.info({ messageId: "Msg_16" }).then(() => {
@@ -110,7 +110,7 @@ module nts.uk.at.view.kdm001.m.viewmodel {
             });
         }
 
-        closeKDM001M(): void {
+        public static closeKDM001M(): void {
             nts.uk.ui.windows.close();
         }
     }
