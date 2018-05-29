@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
@@ -46,6 +47,10 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	@Inject
 	private CalculateDailyRecordService calculate;
 	
+	//エラーアラーム設定
+	@Inject
+	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepository;
+	
 	@Override
 	public List<IntegrationOfDaily> calculate(List<IntegrationOfDaily> integrationOfDaily) {
 		
@@ -55,7 +60,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 														   holidayAddtionRepository.findByCId(AppContexts.user().companyId()),
 														   specificWorkRuleRepository.findCalcMethodByCid(AppContexts.user().companyId()),
 														   compensLeaveComSetRepository.find(AppContexts.user().companyId()),
-														   divergenceTimeRepository.getAllDivTime(AppContexts.user().companyId()));
+														   divergenceTimeRepository.getAllDivTime(AppContexts.user().companyId()),
+														   errorAlarmWorkRecordRepository.getListErrorAlarmWorkRecord(AppContexts.user().companyId()));
 
 		EmploymentCode nowEmpCode = new EmploymentCode("");
 		String employeeId = "";
@@ -67,6 +73,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		/*労働条件取得*/
 		val personalInfo = workingConditionItemRepository.getBySidAndPeriodOrderByStrDWithDatePeriod(employeeId, new DatePeriod(startDate, endDate));
 		if(personalInfo.getMappingItems().isEmpty())return integrationOfDaily;
+		
 		/*return用のクラス*/
 		List<IntegrationOfDaily> returnList = new ArrayList<>(); 
 		
