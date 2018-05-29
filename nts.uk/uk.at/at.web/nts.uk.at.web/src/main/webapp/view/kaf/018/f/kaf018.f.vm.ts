@@ -46,7 +46,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         colorExcluded = 'bg-actual-excluded';
 
         dateFormat = "yyyy/MM/dd";
-        
+
         constructor() {
             var self = this;
             this.legendOptions = {
@@ -189,13 +189,15 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 else {
                     monthConfirm = "";
                 }
-                if (_.filter(item.listDailyConfirm, { bossConfirm: false, personConfirm: false }).length == 0) {
+                if (_.filter(item.listDailyConfirm, { bossConfirm: false, personConfirm: false }).length == 0
+                    && _.filter(item.listDailyConfirm, { personConfirm: true }).length > 1) {
                     personConfirm = text("KAF018_92");
                 }
                 else {
                     personConfirm = "";
                 }
-                if (_.filter(item.listDailyConfirm, { bossConfirm: false }).length == 0) {
+                if (_.filter(item.listDailyConfirm, { bossConfirm: false }).length == 0
+                    && _.filter(item.listDailyConfirm, { bossConfirm: true }).length > 0) {
                     bossConfirm = text("KAF018_92");
                 }
                 else {
@@ -223,10 +225,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                         hasError = false;
                     } else {
                         let objDaily = _.find(item.listDailyConfirm, { targetDate: self.formatDate(currentDay) });
-                        if (objDaily == null) {
-                            performance = Performance.NONE;
-                            hasError = false;
-                        } else {
+                        if (objDaily != null) {
                             if (self.useSetting.usePersonConfirm && self.useSetting.useBossConfirm) {
                                 if (!objDaily.personConfirm && !objDaily.bossConfirm) {
                                     performance = Performance.PERSON_UNCONFIRM;
@@ -333,26 +332,26 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             leftmostColumns = [
                 { headerText: text("KAF018_60"), key: "sName", width: "200px", control: "link", handler: function(rData, rowIdx, key) { } }
             ];
-            leftmostEmpNameHeaderWidth += 355;
+            leftmostEmpNameHeaderWidth += 352;
 
             if (self.useSetting.monthlyConfirm) {
-                leftmostColumns.push({ headerText: formatText(text("KAF018_61"), self.currentMonth), key: "monthConfirm", width: "45px", headerControl: "link", headerHandler: function() { } });
-                leftmostEmpNameHeaderWidth -= 45;
+                leftmostColumns.push({ headerText: formatText(text("KAF018_61"), self.currentMonth), key: "monthConfirm", width: "44px", headerControl: "link", headerHandler: function() { } });
+                leftmostEmpNameHeaderWidth -= 44;
             }
             if (self.useSetting.usePersonConfirm) {
-                leftmostColumns.push({ headerText: text("KAF018_62"), key: "personConfirm", width: "55px" });
-                leftmostEmpNameHeaderWidth -= 55;
+                leftmostColumns.push({ headerText: text("KAF018_62"), key: "personConfirm", width: "54px" });
+                leftmostEmpNameHeaderWidth -= 54;
             }
             if (self.useSetting.useBossConfirm) {
-                leftmostColumns.push({ headerText: text("KAF018_63"), key: "bossConfirm", width: "55px" });
-                leftmostEmpNameHeaderWidth -= 55;
+                leftmostColumns.push({ headerText: text("KAF018_63"), key: "bossConfirm", width: "54px" });
+                leftmostEmpNameHeaderWidth -= 54;
             }
             leftmostColumns[0].width = leftmostEmpNameHeaderWidth;
 
             leftmostHeader = {
                 columns: leftmostColumns,
                 rowHeight: "64px",
-                width: "355px"
+                width: "352px"
             };
             leftmostContent = {
                 columns: leftmostColumns,
