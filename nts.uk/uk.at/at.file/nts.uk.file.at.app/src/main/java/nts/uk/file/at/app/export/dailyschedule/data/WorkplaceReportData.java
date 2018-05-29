@@ -26,6 +26,9 @@ public class WorkplaceReportData {
 	/** The level. */
 	public int level;
 	
+	/** Parent workplace */
+	public WorkplaceReportData parent;
+	
 	/** The lst employee report data. */
 	public List<EmployeeReportData> lstEmployeeReportData;
 	

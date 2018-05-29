@@ -22,6 +22,9 @@ public class DailyWorkplaceData {
 	/** The level. */
 	public int level;
 	
+	/** Parent workplace */
+	public DailyWorkplaceData parent;
+	
 	/** The lst daily personal data. */
 	public List<DailyPersonalPerformanceData> lstDailyPersonalData;
 	

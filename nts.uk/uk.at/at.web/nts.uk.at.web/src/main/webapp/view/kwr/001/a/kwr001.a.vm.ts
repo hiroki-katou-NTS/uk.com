@@ -462,7 +462,11 @@ module nts.uk.at.view.kwr001.a {
                             fileType: 0,
                             condition: data
                         };
-                        service.exportExcel(dto);
+                        nts.uk.ui.block.grayout();
+                        service.exportExcel(dto).done(function(){
+                        }).always(function() {
+                           nts.uk.ui.block.clear(); 
+                        });
                     });
                 }
                 
@@ -483,7 +487,10 @@ module nts.uk.at.view.kwr001.a {
                             fileType: 1,
                             condition: data
                         };
-                        service.exportExcel(dto);
+                        service.exportExcel(dto).done(function(){
+                        }).always(function() {
+                           nts.uk.ui.block.clear(); 
+                        });
                     });
                 }
             }

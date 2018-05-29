@@ -177,11 +177,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 */
 	@Override
 	public void generate(FileGeneratorContext generatorContext, WorkScheduleOutputQuery query) {
-		val reportContext = this.createEmptyContext(REPORT_ID);
+		val reportContext = this.createContext(filename);
 		WorkScheduleOutputCondition condition = query.getCondition();
-		
-		// Dummy area
-		//condition.setOutputType(FormOutputType.BY_DATE);
 		
 		// ドメインモデル「日別勤務表の出力項目」を取得する
 		Optional<OutputItemDailyWorkSchedule> optOutputItemDailyWork = outputItemRepo.findByCidAndCode(AppContexts.user().companyId(), query.getCondition().getCode().v());
@@ -189,11 +186,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			throw new BusinessException(new RawErrorMessage("Msg_1141"));
 		}
 		
-		//List<AttendanceItemsDisplay> lstAttendanceDisplay = optOutputItemDailyWork.get().getLstDisplayedAttendance();
-		
 		Workbook workbook;
 		try {
-			//workbook = new Workbook(Thread.currentThread().getContextClassLoader().getResourceAsStream(filename));
+			workbook = new Workbook(Thread.currentThread().getContextClassLoader().getResourceAsStream(filename));
 			workbook = reportContext.getWorkbook();
 			
 			WorkbookDesigner designer = new WorkbookDesigner();
@@ -282,13 +277,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			
 			// Save workbook
 			if (query.getFileType() == FileOutputType.FILE_TYPE_EXCEL)
-				//workbook.save("D:/Dummy/" + WorkScheOutputConstants.SHEET_FILE_NAME +".xlsx");
 				reportContext.saveAsExcel(this.createNewFile(generatorContext, WorkScheOutputConstants.SHEET_FILE_NAME));
 			else {
 				// Create print area
 				createPrintArea(currentRow, sheet);
 				reportContext.saveAsPdf(this.createNewFile(generatorContext, WorkScheOutputConstants.SHEET_FILE_NAME));
-				//workbook.save("D:/Dummy/" + WorkScheOutputConstants.SHEET_FILE_NAME +".pdf", FileFormatType.PDF);
 			}
 			
 		} catch (Exception e) {
@@ -353,7 +346,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					wrp.level = key.length() / 3;
 					wrp.lstEmployeeReportData = new ArrayList<>();
 					wrp.lstChildWorkplaceReportData = new TreeMap<>();
-					
+					wrp.parent = data;
 					data.lstChildWorkplaceReportData.put(key, wrp);
 				}
 			}
@@ -401,6 +394,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						dailyWorkplaceData.setLstDailyPersonalData(new ArrayList<>());
 						dailyWorkplaceData.setLstChildWorkplaceData(new TreeMap<>());
 						dailyWorkplaceData.level = hierarchyCode.length() / 3;
+						dailyWorkplaceData.parent = x.getLstWorkplaceData();
 						x.getLstWorkplaceData().lstChildWorkplaceData.put(hierarchyCode, dailyWorkplaceData);
 					});
 				}
@@ -449,6 +443,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 */
 	private void collectedEmployeePerformanceData(DailyPerformanceReportData reportData, WorkScheduleOutputQuery query,
 			List<AttendanceResultImport> lstAttendanceResultImport, List<GeneralDate> datePeriod) {
+		// Get all error alarm code
+		List<ErrorAlarmWorkRecordCode> lstErAlCode = query.getCondition().getErrorAlarmCode().get();
+		
 		for (String employeeId: query.getEmployeeId()) {
 			EmployeeDto employeeDto = employeeAdapter.findByEmployeeId(employeeId);
 			
@@ -461,22 +458,30 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					dailyWorkplaceData.getLstDailyPersonalData().add(personalPerformanceDate);
 					
 					lstAttendanceResultImport.stream().filter(x -> (x.getEmployeeId().equals(employeeId) && x.getWorkingDate().compareTo(date) == 0)).forEach(x -> {
-						if (query.getCondition().getConditionSetting() == OutputConditionSetting.USE_CONDITION) {
-							// ドメインモデル「社員の日別実績エラー一覧」を取得する
-							List<EmployeeDailyPerError> errorList = errorAlarmRepository.find(employeeId, x.getWorkingDate());
-							List<String> lstRemarkContentStr = new ArrayList<>();
-							if (query.getCondition().getErrorAlarmCode().isPresent()) {
-								List<ErrorAlarmWorkRecordCode> lstErAlCode = query.getCondition().getErrorAlarmCode().get();
-								Optional<PrintRemarksContent> optRemarkContentLeavingEarly = getRemarkContent(employeeId, x.getWorkingDate(), errorList, RemarksContentChoice.LEAVING_EARLY, lstErAlCode);
-								Optional<PrintRemarksContent> optRemarkContentManualInput = getRemarkContent(employeeId, x.getWorkingDate(), errorList, RemarksContentChoice.MANUAL_INPUT, lstErAlCode);
-								if (optRemarkContentLeavingEarly.isPresent())
-									lstRemarkContentStr.add(TextResource.localize(optRemarkContentLeavingEarly.get().getPrintItem().nameId));
-								if (optRemarkContentManualInput.isPresent())
-									lstRemarkContentStr.add(TextResource.localize(optRemarkContentManualInput.get().getPrintItem().nameId));
-								personalPerformanceDate.detailedErrorData = String.join("、", lstRemarkContentStr);
-							}
+						
+						// ドメインモデル「社員の日別実績エラー一覧」を取得する
+						List<EmployeeDailyPerError> errorList = errorAlarmRepository.find(employeeId, x.getWorkingDate());
+						List<String> lstRemarkContentStr = new ArrayList<>();
+						if (query.getCondition().getErrorAlarmCode().isPresent()) {
+							// Always has item because this has passed error check
+							OutputItemDailyWorkSchedule outSche = outputItemRepo.findByCidAndCode(AppContexts.user().companyId(), query.getCondition().getCode().v()).get();
 							
-							// ER/AL
+							// Get list remark check box from screen C (UI)
+							List<PrintRemarksContent> lstRemarkContent = outSche.getLstRemarkContent();
+							lstRemarkContent.stream().filter(remark -> remark.isUsedClassification()).forEach(remark -> {
+								// Get possible content based on remark choice
+								Optional<PrintRemarksContent> optContent = getRemarkContent(employeeId, x.getWorkingDate(), errorList, remark.getPrintItem(), lstErAlCode);
+								if (optContent.isPresent()) {
+									// Add to remark
+									lstRemarkContentStr.add(TextResource.localize(optContent.get().getPrintItem().nameId));
+								}
+							});
+							
+							personalPerformanceDate.detailedErrorData = String.join("、", lstRemarkContentStr);
+						}
+						
+						// ER/AL
+						if (query.getCondition().getConditionSetting() == OutputConditionSetting.USE_CONDITION) {
 							boolean erMark = false, alMark = false;
 							
 							List<String> lstErrorCode = errorList.stream().map(error -> error.getErrorAlarmWorkRecordCode().v()).collect(Collectors.toList());
@@ -531,6 +536,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		WorkplaceReportData workplaceData = findWorkplace(employeeId, reportData.getWorkplaceReportData(), query.getEndDate());
 		EmployeeReportData employeeData = new EmployeeReportData();
 		
+		List<ErrorAlarmWorkRecordCode> lstErAlCode = query.getCondition().getErrorAlarmCode().get();
+		
 		// Employee code and name
 		EmployeeDto employeeDto = employeeAdapter.findByEmployeeId(employeeId);
 		employeeData.employeeName = employeeDto.getEmployeeName();
@@ -562,22 +569,29 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			detailedDate.setDayOfWeek(String.valueOf(x.getWorkingDate().dayOfWeek()));
 			employeeData.lstDetailedPerformance.add(detailedDate);
 			
-			if (query.getCondition().getConditionSetting() == OutputConditionSetting.USE_CONDITION) {
-				// ドメインモデル「社員の日別実績エラー一覧」を取得する
-				List<EmployeeDailyPerError> errorList = errorAlarmRepository.find(employeeId, x.getWorkingDate());
-				List<String> lstRemarkContentStr = new ArrayList<>();
-				if (query.getCondition().getErrorAlarmCode().isPresent()) {
-					List<ErrorAlarmWorkRecordCode> lstErAlCode = query.getCondition().getErrorAlarmCode().get();
-					Optional<PrintRemarksContent> optRemarkContentLeavingEarly = getRemarkContent(employeeId, x.getWorkingDate(), errorList, RemarksContentChoice.LEAVING_EARLY, lstErAlCode);
-					Optional<PrintRemarksContent> optRemarkContentManualInput = getRemarkContent(employeeId, x.getWorkingDate(), errorList, RemarksContentChoice.MANUAL_INPUT, lstErAlCode);
-					if (optRemarkContentLeavingEarly.isPresent())
-						lstRemarkContentStr.add(TextResource.localize(optRemarkContentLeavingEarly.get().getPrintItem().nameId));
-					if (optRemarkContentManualInput.isPresent())
-						lstRemarkContentStr.add(TextResource.localize(optRemarkContentManualInput.get().getPrintItem().nameId));
-					detailedDate.errorDetail = String.join("、", lstRemarkContentStr);
-				}
+			// ドメインモデル「社員の日別実績エラー一覧」を取得する
+			List<EmployeeDailyPerError> errorList = errorAlarmRepository.find(employeeId, x.getWorkingDate());
+			List<String> lstRemarkContentStr = new ArrayList<>();
+			if (query.getCondition().getErrorAlarmCode().isPresent()) {
+				// Always has item because this has passed error check
+				OutputItemDailyWorkSchedule outSche = outputItemRepo.findByCidAndCode(AppContexts.user().companyId(), query.getCondition().getCode().v()).get();
 				
-				// ER/AL
+				// Get list remark check box from screen C (UI)
+				List<PrintRemarksContent> lstRemarkContent = outSche.getLstRemarkContent();
+				lstRemarkContent.stream().filter(remark -> remark.isUsedClassification()).forEach(remark -> {
+					// Get possible content based on remark choice
+					Optional<PrintRemarksContent> optContent = getRemarkContent(employeeId, x.getWorkingDate(), errorList, remark.getPrintItem(), lstErAlCode);
+					if (optContent.isPresent()) {
+						// Add to remark
+						lstRemarkContentStr.add(TextResource.localize(optContent.get().getPrintItem().nameId));
+					}
+				});
+				
+				detailedDate.errorDetail = String.join("、", lstRemarkContentStr);
+			}
+			
+			// ER/AL
+			if (query.getCondition().getConditionSetting() == OutputConditionSetting.USE_CONDITION) {
 				boolean erMark = false, alMark = false;
 				List<String> lstErrorCode = errorList.stream().map(error -> error.getErrorAlarmWorkRecordCode().v()).collect(Collectors.toList());
 				// ドメインモデル「勤務実績のエラーアラーム」を取得する
@@ -909,6 +923,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				wrp.workplaceName = wpi.getWorkplaceName().v();
 				wrp.lstEmployeeReportData = new ArrayList<>();
 				wrp.level = k.length() / 3;
+				wrp.parent = parent;
 				parent.lstChildWorkplaceReportData.put(wrp.workplaceCode, wrp);
 				
 				lstAddedWorkplace.add(wCode);
@@ -938,6 +953,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				wrp.workplaceName = wpi.getWorkplaceName().v();
 				wrp.lstDailyPersonalData = new ArrayList<>();
 				wrp.level = k.length() / 3;
+				wrp.parent = parent;
 				parent.lstChildWorkplaceData.put(wrp.workplaceCode, wrp);
 				lstAddedWorkplace.add(wCode);
 			}
@@ -1620,13 +1636,19 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		List<EditStateOfDailyPerformanceDto> editStateDto = editStateFinder.finds(employeeId, currentDate);
 		List<GeneralDate> lstEditStateDate = new ArrayList<>();
 		// Likely lstEditStateDate only has 0-1 element
-		editStateDto.stream().filter(x -> x.getEditStateSetting() == EditStateSetting.HAND_CORRECTION_MYSELF.value).forEach(x -> lstEditStateDate.add(x.getYmd()));
+		editStateDto.stream().filter(x -> x.getEditStateSetting() == EditStateSetting.HAND_CORRECTION_MYSELF.value
+									   || x.getEditStateSetting() == EditStateSetting.HAND_CORRECTION_OTHER.value).forEach(x -> lstEditStateDate.add(x.getYmd()));
 		
 		if (lstEditStateDate.size() > 0 && choice == RemarksContentChoice.MANUAL_INPUT) {
 			printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.MANUAL_INPUT.value);
 		}
 		
 		// 承認反映
+		List<GeneralDate> lstReflectApprovalDate = new ArrayList<>();
+		lstReflectApprovalDate = editStateDto.stream().filter(x -> x.getEditStateSetting() == EditStateSetting.REFLECT_APPLICATION.value).map(x -> {return x.getYmd();}).collect(Collectors.toList());
+		if (lstReflectApprovalDate.size() > 0 && choice == RemarksContentChoice.ACKNOWLEDGMENT) {
+			printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.ACKNOWLEDGMENT.value);
+		}
 		
 		return printRemarksContent == null? Optional.empty() : Optional.of(printRemarksContent);
 	}

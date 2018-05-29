@@ -23,6 +23,8 @@ public class Kwr001WebService extends WebService {
 	@Path("export")
 	public ExportServiceResult exportData(WorkScheduleOutputQueryDto dto) {
 		WorkScheduleOutputQuery query = WorkScheduleOutputQuery.createFromJavaType(dto);
-		return service.start(query);
+		ExportServiceResult result = service.start(query);
+		String taskId = result.getTaskId();
+		return result;
 	}
 }
