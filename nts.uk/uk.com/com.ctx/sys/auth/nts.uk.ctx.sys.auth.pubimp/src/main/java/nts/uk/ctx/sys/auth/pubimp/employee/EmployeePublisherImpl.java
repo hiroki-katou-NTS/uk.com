@@ -80,7 +80,6 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 		// imported（権限管理）「社員」を取得する Request No1
 		// employeeID = employeeID login
 		String employeeIDLogin = AppContexts.user().employeeId();
-		sID.add(employeeIDLogin);
 		List<String> result = new ArrayList<>();
 		Optional<EmployeeBasicInforAuthImport> employeeImport = personAdapter.getPersonInfor(employeeIDLogin);
 		// List<String> listEmployeeID = listEmployeeImport.stream().map(c ->
@@ -95,9 +94,9 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 				return Optional.empty();
 			} else {
 				Optional<Role> role = empReferenceRangeService.getByUserIDAndReferenceDate(useExport.get().getUserID(), roleType, GeneralDate.today());
-				if (role.get().getEmployeeReferenceRange() == EmployeeReferenceRange.ALL_EMPLOYEE) {
+				if (role.isPresent() && role.get().getEmployeeReferenceRange() == EmployeeReferenceRange.ALL_EMPLOYEE) {
 					return Optional.of(new NarrowEmpByReferenceRange(sID));
-				} else if (role.get().getEmployeeReferenceRange() == EmployeeReferenceRange.ONLY_MYSELF) {
+				} else if (role.isPresent() && role.get().getEmployeeReferenceRange() == EmployeeReferenceRange.ONLY_MYSELF) {
 					sID.remove(employeeIDLogin);
 					return Optional.of(new NarrowEmpByReferenceRange(sID));
 				} else {
@@ -110,7 +109,7 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 					Optional<AffWorkplaceHistImport> workPlace = workplaceAdapter.findWkpByBaseDateAndEmployeeId(GeneralDate.today(), employeeIDLogin);
 					String workPlaceID1 = workPlace.get().getWorkplaceId();
 					List<String> listWorkPlaceID3 = new ArrayList<>();
-					if (role.get().getEmployeeReferenceRange() == EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
+					if (role.isPresent() && role.get().getEmployeeReferenceRange() == EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
 						// 配下の職場をすべて取得する
 						// Lay RequestList No.154
 						listWorkPlaceID3 = workplaceAdapter.findListWorkplaceIdByCidAndWkpIdAndBaseDate(AppContexts.user().companyId(), workPlaceID1, GeneralDate.today());

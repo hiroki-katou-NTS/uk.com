@@ -197,7 +197,7 @@ module nts.uk.at.view.kbt002.c {
                     } else {
                         monthDaysText += value;
                     }
-                    monthDaysText += '目';
+                    monthDaysText += '日';
                     if (index < listSize - 1) {
                         monthDaysText += " + "
                     }

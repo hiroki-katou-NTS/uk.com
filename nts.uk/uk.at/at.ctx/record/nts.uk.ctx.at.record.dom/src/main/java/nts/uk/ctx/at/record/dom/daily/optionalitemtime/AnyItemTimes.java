@@ -1,12 +1,14 @@
 package nts.uk.ctx.at.record.dom.daily.optionalitemtime;
 
-import nts.arc.primitive.IntegerPrimitiveValue;
+import java.math.BigDecimal;
 
-public class AnyItemTimes extends IntegerPrimitiveValue<AnyItemTimes>{
+import nts.arc.primitive.DecimalPrimitiveValue;
+
+public class AnyItemTimes extends DecimalPrimitiveValue<AnyItemTimes>{
 
 	private static final long serialVersionUID = 1L;
 	
-	public AnyItemTimes(Integer rawValue) {
+	public AnyItemTimes(BigDecimal rawValue) {
 		super(rawValue);
 	}
 }

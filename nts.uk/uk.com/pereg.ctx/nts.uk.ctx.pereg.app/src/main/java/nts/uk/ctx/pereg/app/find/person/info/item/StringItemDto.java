@@ -21,5 +21,9 @@ public class StringItemDto extends DataTypeStateDto {
 	public static StringItemDto createFromJavaType(int stringItemLength, int stringItemType, int stringItemDataType) {
 		return new StringItemDto(stringItemLength, stringItemType, stringItemDataType);
 	}
+	
+	public void updateStringLength(int length) {
+		this.stringItemLength = length;
+	}
 
 }

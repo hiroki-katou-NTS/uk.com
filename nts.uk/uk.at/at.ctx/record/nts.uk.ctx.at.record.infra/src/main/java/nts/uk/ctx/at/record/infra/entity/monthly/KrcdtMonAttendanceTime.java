@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.entity.monthly;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -24,6 +25,7 @@ import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregul
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.totalcount.TotalCountByPeriod;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.KrcdtMonAggrTotalSpt;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.KrcdtMonAgreementTime;
@@ -37,6 +39,7 @@ import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.vacationusetime.KrcdtMonVactUseTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.excessoutside.KrcdtMonExcessOutside;
 import nts.uk.ctx.at.record.infra.entity.monthly.excessoutside.KrcdtMonExcoutTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.totalcount.KrcdtMonTotalTimes;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.KrcdtMonVerticalTotal;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workclock.KrcdtMonWorkClock;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonAggrAbsnDays;
@@ -177,6 +180,10 @@ public class KrcdtMonAttendanceTime extends UkJpaEntity implements Serializable 
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
 	public KrcdtMonWorkClock krcdtMonWorkClock;
 	
+	/** 回数集計 */
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
+	public List<KrcdtMonTotalTimes> krcdtMonTotalTimes;
+	
 	/**
 	 * キー取得
 	 */
@@ -257,6 +264,13 @@ public class KrcdtMonAttendanceTime extends UkJpaEntity implements Serializable 
 					this.krcdtMonWorkClock);
 		}
 		
+		// 期間別の回数集計
+		TotalCountByPeriod totalCount = new TotalCountByPeriod();
+		if (this.krcdtMonTotalTimes != null){
+			totalCount = TotalCountByPeriod.of(
+					this.krcdtMonTotalTimes.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+		}
+		
 		return AttendanceTimeOfMonthly.of(
 				this.PK.employeeId,
 				new YearMonth(this.PK.yearMonth),
@@ -266,6 +280,7 @@ public class KrcdtMonAttendanceTime extends UkJpaEntity implements Serializable 
 				monthlyCalculation,
 				excessOutsideWork,
 				verticalTotal,
+				totalCount,
 				new AttendanceDaysMonth(this.aggregateDays));
 	}
 	

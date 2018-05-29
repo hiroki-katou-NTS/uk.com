@@ -1,0 +1,28 @@
+#contents-area {
+	padding: 10px 0px 0px 20px;
+}
+
+.tbl-control {
+	width: auto;
+	margin-bottom: 5px;
+}
+
+.tbl-control td {
+	padding: 0px 5px;
+}
+
+.fixed-table th {
+	text-align: center;
+	white-space: normal;
+}
+
+#extable td, #extable td>* {
+	font-size: 10.5px;
+}
+
+.xheader * {
+	text-align: center;
+}
+.text-status {
+	padding-left: 100px;
+}

@@ -10,6 +10,7 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
+import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthlyRepository;
@@ -17,11 +18,14 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.GetVacationAddSet;
 import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.PayItemCountOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.workform.flex.MonthlyAggrSetOfFlexRepository;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthlyRepository;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.period.GetWeekPeriod;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.GetWeekStart;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.MonthlyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
@@ -33,12 +37,14 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.attdstatus.GetAttendanceStatus;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.algorithm.GetTimeAndCountFromDailyRecord;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriodRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
-import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetWeekStart;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.flex.GetFlexPredWorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetHolidayWorkAndTransferOrder;
@@ -98,6 +104,9 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	/** 社員の日別積実績エラー一覧 */
 	@Inject
 	public EmployeeDailyPerErrorRepository employeeDailyError;
+	/** 日別実績の任意項目の取得 */
+	@Inject
+	public AnyItemValueOfDailyRepo anyItemValueOfDaily;
 	
 	/** 勤務情報の取得 */
 	@Inject
@@ -162,10 +171,19 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	/** 休暇加算設定を取得する */
 	@Inject
 	public GetVacationAddSet vacationAddSet;
+	/** 回数集計 */
+	@Inject
+	public TotalTimesRepository totalTimes;
+	/** 任意項目 */
+	@Inject
+	public OptionalItemRepository optionalItem;
 	
 	/** 週開始の取得 */
 	@Inject
-	public GetWeekStart getWeekStart;
+	public GetWeekStart weekStart;
+	/** 週集計期間を取得する */
+	@Inject
+	public GetWeekPeriod weekPeriod;
 	
 	/** 時間外超過設定の取得 */
 	@Inject
@@ -181,12 +199,17 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	@Inject
 	public AgreementMonthSettingRepository agreementMonthSet;
 	
-	/** 月別実績の縦計方法の取得 */
-	//
+	/** 出勤状態を取得する */
+	@Inject
+	public GetAttendanceStatus attendanceStatus;
 	/** 月別実績の給与項目カウントの取得 */
 	@Inject
 	public PayItemCountOfMonthlyRepository payItemCountOfMonthly;
 	/** 月別実績の丸め設定の取得 */
 	@Inject
 	public RoundingSetOfMonthlyRepository roundingSetOfMonthly;
+
+	/** 日別実績から回数集計結果を取得する */
+	@Inject
+	public GetTimeAndCountFromDailyRecord timeAndCountFromDailyRecord;
 }

@@ -603,7 +603,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 			int numberOfPage = (firstRow + sizeOfForm) / numberRowOfPage;
 
 			int numberOfRowMerge = (numberRowOfPage * numberOfPage) - firstRow;
-			if (numberOfRowMerge < 0) {
+			if (numberOfRowMerge <= 0) {
 
 				// in ra name app , time app
 
@@ -765,7 +765,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 			int numberOfPage = (firstRow + sizeOfForm) / numberRowOfPage;
 
 			int numberOfRowMerge = (numberRowOfPage * numberOfPage) - firstRow;
-			if (numberOfRowMerge < 0) {
+			if (numberOfRowMerge <= 0) {
 
 				// in ra name app , time app
 

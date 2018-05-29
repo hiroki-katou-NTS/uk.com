@@ -15,6 +15,8 @@ public interface PersonInfoItemAuthRepository {
 	boolean hasItemData(String itemCd, List<String> perInfoCtgId);
 	
 	Map<String, List<PersonInfoItemAuth>> getByRoleIdAndCategories(String roleId, List<String> categoryIdList);
+	
+	Map<String, List<PersonInfoItemAuth>> getByRoleId(String roleId);
 
 	Optional<PersonInfoItemAuth> getItemDetai(String roleId, String categoryId, String perInfoItemDefId);
 

@@ -26,14 +26,16 @@ module cps007.a.vm {
 
             // get layout info on startup
             service.getData().done((lt: ILayout) => {
-                layout.id(lt.id);
-                layout.code(lt.code);
-                layout.name(lt.name);
+                if (lt) {
+                    layout.id(lt.id);
+                    layout.code(lt.code);
+                    layout.name(lt.name);
 
-                // remove all sibling sperators
-                lv.removeDoubleLine(lt.itemsClassification);
+                    // remove all sibling sperators
+                    lv.removeDoubleLine(lt.itemsClassification);
 
-                layout.itemsClassification(lt.itemsClassification);
+                    layout.itemsClassification(lt.itemsClassification);
+                }
             });
         }
 

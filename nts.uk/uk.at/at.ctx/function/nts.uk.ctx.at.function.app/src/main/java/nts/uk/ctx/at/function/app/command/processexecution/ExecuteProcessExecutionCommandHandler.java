@@ -661,17 +661,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				
 				ScheduleCreatorExecutionCommand scheduleCommand = getScheduleCreatorExecutionAllEmp(execId, procExec,
 						loginContext, calculateSchedulePeriod,empIds);
-				AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctx = new AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>(scheduleCommand);
-				ctx.setTaskId(context.asAsync().getTaskId());
-				this.scheduleExecution.handle(ctx);
-					// find execution log by id
-					Optional<ScheduleExecutionLog> domainOpt = this.scheduleExecutionLogRepository
-							.findById(loginContext.companyId(), execId);
-					if (domainOpt.isPresent()) {
-						if (domainOpt.get().getCompletionStatus().value == CompletionStatus.COMPLETION_ERROR.value) {
-							return false;
-						}
-					}
+				//AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctx = new AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>(scheduleCommand);
+				//ctx.setTaskId(context.asAsync().getTaskId());
+				this.scheduleExecution.handle(scheduleCommand);
 					/*
 					// ドメインモデル「更新処理自動実行ログ」を更新する
 					this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.SUCCESS);
@@ -686,28 +678,28 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				 this.filterEmployeeList(procExec, empIds, period, reEmployeeList, newEmployeeList);
 				if(!CollectionUtil.isEmpty(reEmployeeList)&& !CollectionUtil.isEmpty(newEmployeeList)){
 					ScheduleCreatorExecutionCommand scheduleCreatorExecutionRe = this.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext, calculateSchedulePeriod,reEmployeeList);
-					AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctxRe = new AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>(scheduleCreatorExecutionRe);
-					ctxRe.setTaskId(context.asAsync().getTaskId());
-					this.scheduleExecution.handle(ctxRe);
+					//AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctxRe = new AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>(scheduleCreatorExecutionRe);
+					//ctxRe.setTaskId(context.asAsync().getTaskId());
+					this.scheduleExecution.handle(scheduleCreatorExecutionRe);
 					ScheduleCreatorExecutionCommand scheduleCreatorExecutionNew = this.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext, calculateSchedulePeriod,newEmployeeList);
-					AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctxNew = new AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>(scheduleCreatorExecutionNew);
-					ctxNew.setTaskId(context.asAsync().getTaskId());
-					this.scheduleExecution.handle(ctxNew);
+					//AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctxNew = new AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>(scheduleCreatorExecutionNew);
+					//ctxNew.setTaskId(context.asAsync().getTaskId());
+					this.scheduleExecution.handle(scheduleCreatorExecutionNew);
 				}else{
 					// 社員ID（新入社員）（List）のみ
 					if (!CollectionUtil.isEmpty(newEmployeeList)) {
 						ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp = this.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext, calculateSchedulePeriod,newEmployeeList);
-						AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctxNew = new AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>(scheduleCreatorExecutionOneEmp);
-						ctxNew.setTaskId(context.asAsync().getTaskId());
-						this.scheduleExecution.handle(ctxNew);
+						//AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctxNew = new AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>(scheduleCreatorExecutionOneEmp);
+						//ctxNew.setTaskId(context.asAsync().getTaskId());
+						this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp);
 					}
 				
 					// 社員ID（異動者、勤務種別変更者）（List）のみ
 					if (!CollectionUtil.isEmpty(reEmployeeList)) {
 						ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp = this.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext, calculateSchedulePeriod,reEmployeeList);
-						AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctxRe = new AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>(scheduleCreatorExecutionOneEmp);
-						ctxRe.setTaskId(context.asAsync().getTaskId());
-						this.scheduleExecution.handle(ctxRe);
+						//AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctxRe = new AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>(scheduleCreatorExecutionOneEmp);
+						//ctxRe.setTaskId(context.asAsync().getTaskId());
+						this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp);
 					}
 
 				}
@@ -717,12 +709,56 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			// ドメインモデル「更新処理自動実行ログ」を更新する
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.ABNORMAL_END);
 		}
+		int timeOut=1;
+		boolean isError =false;
+		if(isException){
+		while(true){
+			// find execution log by id
+			Optional<ScheduleExecutionLog> domainOpt = this.scheduleExecutionLogRepository
+					.findById(loginContext.companyId(), execId);
+			if (domainOpt.isPresent()) {
+				if (domainOpt.get().getCompletionStatus().value == CompletionStatus.COMPLETION_ERROR.value) {
+					this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.ABNORMAL_END);
+					isError=true;
+					break;
+				}
+				if (domainOpt.get().getCompletionStatus().value == CompletionStatus.INTERRUPTION.value) {
+					this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.ABNORMAL_END);
+					isError=true;
+					break;
+				}
+				if(domainOpt.get().getCompletionStatus().value == CompletionStatus.DONE.value){
+					this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.SUCCESS);
+					break;
+				}
+				
+			}
+			if(timeOut==24){
+			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.ABNORMAL_END);
+			isError=true;
+				break;
+			}
+			timeOut++;
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		}
+		
+		
+		/*
 		if(isException){
 			// ドメインモデル「更新処理自動実行ログ」を更新する
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.SUCCESS);
 		}
+		*/
 		TaskDataSetter dataSetter = context.asAsync().getDataSetter();
 		dataSetter.setData("createSchedule", "done");
+		if(isError){
+			return false;
+		}
 		return true;
 	}
 

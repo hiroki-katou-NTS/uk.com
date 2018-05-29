@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -22,5 +23,14 @@ public class MonthlyItemControlByAuthFinder {
 			return MonthlyItemControlByAuthDto.fromDomain(data.get());
 		return null;
 	}
+	
+	public MonthlyItemControlByAuthDto getMonthlyItemControlByToUse(String companyID ,String roleID,List<Integer> itemMonthlyID, int toUse ) {
+		Optional<MonthlyItemControlByAuthority> data = this.repo.getMonthlyAttdItemByUse(companyID, roleID, itemMonthlyID, toUse);
+		if(data.isPresent())
+			return MonthlyItemControlByAuthDto.fromDomain(data.get());
+		return null;
+	}
+	
+	
 
 }
