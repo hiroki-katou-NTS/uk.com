@@ -114,7 +114,7 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 		List<ExEmploymentHistItemImported> listEmpHistItem = mapEmploymentHist.get(employeeId);
 		if (listEmpHistItem != null) {
 			Optional<ExEmploymentHistItemImported> optEmpHistItem = listEmpHistItem.stream()
-					.filter(empHistItem -> empHistItem.getPeriod().contains(baseDate) == true).findFirst();
+					.filter(empHistItem -> empHistItem.getPeriod().contains(baseDate)).findFirst();
 			if (optEmpHistItem.isPresent()) {
 				result.get().setEmployeeCode(optEmpHistItem.get().getEmploymentCode());
 				return true;
@@ -241,7 +241,7 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 		List<ExWorkplaceHistItemImported> listWorkplaceHistItem = mapWorkplaceHist.get(employeeId);
 		if (listWorkplaceHistItem != null) {
 			Optional<ExWorkplaceHistItemImported> optWorkplaceHistItem = listWorkplaceHistItem.stream()
-					.filter(workplaceHistItem -> workplaceHistItem.getPeriod().contains(baseDate) == true).findFirst();
+					.filter(workplaceHistItem -> workplaceHistItem.getPeriod().contains(baseDate)).findFirst();
 			if (optWorkplaceHistItem.isPresent()) {
 				result.get().setWorkplaceId(optWorkplaceHistItem.get().getWorkplaceId());
 				return true;

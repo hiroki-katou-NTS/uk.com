@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -16,6 +17,8 @@ public interface PCLogOnInfoOfDailyRepo {
 	public List<PCLogOnInfoOfDaily> find(String employeeId);
 	
 	public List<PCLogOnInfoOfDaily> finds(List<String> employeeId, DatePeriod baseDate);
+	
+	public List<PCLogOnInfoOfDaily> finds(Map<String, GeneralDate> param);
 
 	public void update(PCLogOnInfoOfDaily domain);
 

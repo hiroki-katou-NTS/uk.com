@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.schedule.app.command.executionlog.internal;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -14,8 +16,8 @@ import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScShortWorkTimeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
-import nts.uk.ctx.at.schedule.dom.adapter.workplace.SWkpHistImported;
-import nts.uk.ctx.at.schedule.dom.adapter.workplace.SyWorkplaceAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.workplace.ExWorkPlaceHistoryImported;
+import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.workplace.ExWorkplaceHistItemImported;
 import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.RebuildTargetAtr;
@@ -55,8 +57,6 @@ public class ScheCreExeMonthlyPatternHandler {
 	private ScEmploymentStatusAdapter scEmploymentStatusAdapter;
 	@Inject
 	private ScheCreExeBasicScheduleHandler scheCreExeBasicScheduleHandler;
-	@Inject
-	private SyWorkplaceAdapter syWorkplaceAdapter;
 	@Inject
 	private ScShortWorkTimeAdapter scShortWorkTimeAdapter;
 	@Inject
@@ -114,8 +114,8 @@ public class ScheCreExeMonthlyPatternHandler {
 			}
 
 			// アルゴリズム「スケジュール作成判定処理」を実行する
-			if (!this.scheduleCreationDeterminationProcess(command, basicSche, employmentStatus,
-					workingConditionItem)) {
+			if (!this.scheduleCreationDeterminationProcess(command, basicSche, employmentStatus, workingConditionItem,
+					empGeneralInfo)) {
 				return;
 			}
 			// 登録前削除区分をTrue（削除する）とする(chuyển 登録前削除区分 = true)
@@ -274,7 +274,8 @@ public class ScheCreExeMonthlyPatternHandler {
 	 * アルゴリズム「スケジュール作成判定処理」を実行する
 	 */
 	public boolean scheduleCreationDeterminationProcess(ScheduleCreatorExecutionCommand command,
-			BasicSchedule basicSche, EmploymentStatusDto employmentStatus, WorkingConditionItem workingConditionItem) {
+			BasicSchedule basicSche, EmploymentStatusDto employmentStatus, WorkingConditionItem workingConditionItem,
+			EmployeeGeneralInfoImported empGeneralInfo) {
 		// 再作成対象区分を判定する
 		if (command.getContent().getReCreateContent().getRebuildTargetAtr() == RebuildTargetAtr.ALL) {
 			return true;
@@ -282,7 +283,7 @@ public class ScheCreExeMonthlyPatternHandler {
 		// 異動者を再作成するか判定する
 		boolean valueIsCreate = this.isCreate(workingConditionItem.getEmployeeId(), command.getToDate(),
 				command.getContent().getReCreateContent().getRebuildTargetDetailsAtr().getRecreateConverter(),
-				basicSche.getWorkScheduleMaster().getWorkplaceId());
+				basicSche.getWorkScheduleMaster().getWorkplaceId(), empGeneralInfo);
 		if (!valueIsCreate)
 			return false;
 
@@ -338,19 +339,37 @@ public class ScheCreExeMonthlyPatternHandler {
 	 * @param wkpId
 	 * @return
 	 */
-	private boolean isCreate(String empId, GeneralDate targetDate, Boolean recreateConverter, String wkpId) {
+	private boolean isCreate(String empId, GeneralDate targetDate, Boolean recreateConverter, String wkpId,
+			EmployeeGeneralInfoImported empGeneralInfo) {
 		if (!recreateConverter) {
 			return true;
 		}
 		// Imported「所属職場履歴」から職場IDを取得する(lấy職場ID từ Imported「所属職場履歴」)
-		Optional<SWkpHistImported> swkpHisOptional = this.syWorkplaceAdapter.findBySid(empId, targetDate);
-		if (!swkpHisOptional.isPresent()) {
-			return true;
+		// Optional<SWkpHistImported> swkpHisOptional =
+		// this.syWorkplaceAdapter.findBySid(empId, targetDate);
+		// if (!swkpHisOptional.isPresent()) {
+		// return true;
+		// }
+
+		Map<String, List<ExWorkplaceHistItemImported>> mapWorkplaceHist = empGeneralInfo.getWorkplaceDto().stream()
+				.collect(Collectors.toMap(ExWorkPlaceHistoryImported::getEmployeeId,
+						ExWorkPlaceHistoryImported::getWorkplaceItems));
+
+		List<ExWorkplaceHistItemImported> listWorkplaceHistItem = mapWorkplaceHist.get(empId);
+		Optional<ExWorkplaceHistItemImported> optWorkplaceHistItem = Optional.empty();
+		if (listWorkplaceHistItem != null) {
+			optWorkplaceHistItem = listWorkplaceHistItem.stream()
+					.filter(workplaceHistItem -> workplaceHistItem.getPeriod().contains(targetDate)).findFirst();
+			if (!optWorkplaceHistItem.isPresent()) {
+				return true;
+			}
 		}
+
 		// 取得した職場IDとパラメータ.職場IDを比較する
-		if (swkpHisOptional.get().getWorkplaceId() != wkpId) {
+		if (!optWorkplaceHistItem.get().getWorkplaceId().equals(wkpId)) {
 			return true;
 		}
+		
 		return false;
 	}
 

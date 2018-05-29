@@ -22,6 +22,8 @@ import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeBasicS
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeMonthlyPatternHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTimeHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTypeHandler;
+import nts.uk.ctx.at.schedule.dom.adapter.employmentstatus.EmploymentStatusAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.employmentstatus.EmploymentStatusImported;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.ScEmployeeGeneralInfoAdapter;
@@ -117,6 +119,9 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 	@Inject
 	private ScEmployeeGeneralInfoAdapter scEmpGeneralInfoAdapter;
+
+	@Inject
+	private EmploymentStatusAdapter employmentStatusAdapter;
 
 	/** The Constant DEFAULT_CODE. */
 	public static final String DEFAULT_CODE = "000";
@@ -439,7 +444,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				|| basicSchedule.getConfirmedAtr().equals(ConfirmedAtr.UNSETTLED)) {
 			// アルゴリズム「スケジュール作成判定処理」を実行する
 			if (this.scheCreExeMonthlyPatternHandler.scheduleCreationDeterminationProcess(command, basicSchedule,
-					employmentStatus, workingConditionItem)) {
+					employmentStatus, workingConditionItem, empGeneralInfo)) {
 				this.scheCreExeWorkTypeHandler.createWorkSchedule(command, workingConditionItem, empGeneralInfo);
 			}
 		}
@@ -464,6 +469,9 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			this.executionLogCreationProcess(scheduleExecutionLog, scheduleCreateContent, scheduleCreators);
 		}
 
+		DatePeriod dateAfterCorrection = new DatePeriod(scheduleExecutionLog.getPeriod().start(),
+				scheduleExecutionLog.getPeriod().end());
+
 		// get all data creator
 		List<ScheduleCreator> scheduleCreators = this.scheduleCreatorRepository.findAll(exeId);
 		List<String> employeeIds = scheduleCreators.stream().map(item -> item.getEmployeeId())
@@ -471,6 +479,10 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 		EmployeeGeneralInfoImported empGeneralInfo = this.scEmpGeneralInfoAdapter.getPerEmpInfo(employeeIds,
 				scheduleExecutionLog.getPeriod());
+
+		// List<EmploymentStatusImported> listEmploymentStatus =
+		// this.employmentStatusAdapter
+		// .findListOfEmployee(employeeIds, dateAfterCorrection);
 
 		// get info by context
 		val asyncTask = context.asAsync();
@@ -485,8 +497,6 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				break;
 			}
 			// アルゴリズム「対象期間を締め開始日以降に補正する」を実行する
-			DatePeriod dateAfterCorrection = new DatePeriod(scheduleExecutionLog.getPeriod().start(),
-					scheduleExecutionLog.getPeriod().end());
 			boolean isTargetPeriod = this.correctTargetPeriodAfterClosingStartDate(command.getCompanyId(),
 					scheduleCreator.getEmployeeId(), dateAfterCorrection, empGeneralInfo);
 			if (!isTargetPeriod)
