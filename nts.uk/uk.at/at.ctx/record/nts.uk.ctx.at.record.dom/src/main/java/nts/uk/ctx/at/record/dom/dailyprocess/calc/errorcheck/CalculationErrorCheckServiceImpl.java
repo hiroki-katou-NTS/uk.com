@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -182,9 +183,11 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 					return divTimeSysFixedCheckService.divergenceTimeCheckBySystemFixed(AppContexts.user().companyId(), 
 																			 	 integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
 																			 	 integrationOfDaily.getAffiliationInfor().getYmd(),
-																			 	 integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime().getDivergenceTime()
-																			 	);
+																			 	 integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime().getDivergenceTime(),
+																			 	integrationOfDaily.getAttendanceLeave(),
+																			 	Arrays.asList(errorItem));
 				}
+				return Collections.emptyList();
 			//遅刻
 			case LATE:
 				return integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
