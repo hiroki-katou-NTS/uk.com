@@ -21,7 +21,7 @@ public class SubstitutionOfHDManagementDataDto{
 	private GeneralDate dayoffDate;
 	
 	// 必要日数
-	private Double remainDays;
+	private Double requiredDays;
 	
 	private boolean isLinked;
 
@@ -30,7 +30,7 @@ public class SubstitutionOfHDManagementDataDto{
 		this.cid = cid;
 		this.sID = sID;
 		this.dayoffDate = dayoffDate;
-		this.remainDays = required;
+		this.requiredDays = required;
 	}
 	
 	public static SubstitutionOfHDManagementDataDto createFromDomain(SubstitutionOfHDManagementData domain){

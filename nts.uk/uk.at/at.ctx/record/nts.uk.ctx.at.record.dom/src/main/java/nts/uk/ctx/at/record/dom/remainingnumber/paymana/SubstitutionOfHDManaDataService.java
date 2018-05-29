@@ -58,7 +58,7 @@ public class SubstitutionOfHDManaDataService {
 		
 		subOfHDId.forEach(i -> {
 			payoutSubofHDManaRepository.add(new PayoutSubofHDManagement(payoutId, i.getSubOfHDID(),
-					new BigDecimal(i.getRemainDays()), TargetSelectionAtr.MANUAL.value));
+					new BigDecimal(i.getRequiredDays()), TargetSelectionAtr.MANUAL.value));
 			// Update remain days 振休管理データ
 			Optional<SubstitutionOfHDManagementData> subMana = substitutionOfHDManaDataRepository
 					.findByID(i.getSubOfHDID());
