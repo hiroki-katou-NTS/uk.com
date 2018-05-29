@@ -94,7 +94,6 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.ENUM.Calc
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentContractHistory;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
@@ -215,9 +214,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 //		//任意項目の計算
 //		val aftercalcOptionalItemResult = this.calcOptionalItem(afterCalcResult);
 //		//エラーチェック
-//		return calculationErrorCheckService.errorCheck(afterCalcResult);
+		return calculationErrorCheckService.errorCheck(afterCalcResult,companyCommonSetting.errorAlarm);
 //		return calculationErrorCheckService.errorCheck(aftercalcOptionalItemResult);
-		return afterCalcResult;
+//		return afterCalcResult;
 	}
 
 	private IntegrationOfDaily calcDailyAttendancePerformance(IntegrationOfDaily integrationOfDaily, ManagePerCompanySet companyCommonSetting) {
