@@ -85,6 +85,8 @@ module nts.uk.at.view.kal003.share {
         }
         
         export function getDefaultExtraResultMonthly(typeCheckItem : number):model.ExtraResultMonthly{
+            
+            
             let extraResultMonthly = new model.ExtraResultMonthly({
                 errorAlarmCheckID: '',
                 sortBy :0,
@@ -98,7 +100,7 @@ module nts.uk.at.view.kal003.share {
                 rowId: 0,
                 specHolidayCheckCon : getDefaultSpecHolidayCheckCon(),
                 checkRemainNumberMon : getDefaultCheckRemainNumberMon() ,
-                listAgreementCheckCon36 : [] 
+                agreementCheckCon36 : getDefaultAgreementCheckCon36()
                 
             });
             return extraResultMonthly;

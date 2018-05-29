@@ -300,11 +300,11 @@ module nts.uk.at.view.kal003.share.model {
         messageBold : boolean;
         messageColor : string;
         displayMessage : string;
-        checkConMonthly : AttendanceItemCondition;
+        checkConMonthly : IAttendanceItemCondition;
         rowId: number;
-        specHolidayCheckCon : SpecHolidayCheckCon;
-        checkRemainNumberMon : CheckRemainNumberMon;
-        listAgreementCheckCon36 : Array<AgreementCheckCon36>;
+        specHolidayCheckCon : ISpecHolidayCheckCon;
+        checkRemainNumberMon : ICheckRemainNumberMon;
+        agreementCheckCon36 : IAgreementCheckCon36;
         
     }
     
@@ -321,7 +321,7 @@ module nts.uk.at.view.kal003.share.model {
         rowId: KnockoutObservable<number> = ko.observable(0);
         specHolidayCheckCon : KnockoutObservable<SpecHolidayCheckCon> = ko.observable(null);
         checkRemainNumberMon : KnockoutObservable<CheckRemainNumberMon> = ko.observable(null);
-        listAgreementCheckCon36 : KnockoutObservableArray<AgreementCheckCon36> = ko.observableArray([]); 
+        agreementCheckCon36 : KnockoutObservable<AgreementCheckCon36> = ko.observable(null); 
         constructor(param: IExtraResultMonthly) {
             let self = this;
             self.errorAlarmCheckID = param.errorAlarmCheckID || '';
@@ -332,11 +332,11 @@ module nts.uk.at.view.kal003.share.model {
             self.messageBold(param.messageBold);
             self.messageColor(param.messageColor);
             self.displayMessage(param.displayMessage || '');
-            self.checkConMonthly = ko.observable(param && param.checkConMonthly ? param.checkConMonthly : null);
+            self.checkConMonthly = ko.observable(param && param.checkConMonthly ? new AttendanceItemCondition(param.checkConMonthly) : null);
             self.rowId(param.rowId || 0);
-            self.specHolidayCheckCon( param && param.specHolidayCheckCon?param.specHolidayCheckCon :null);
-            self.checkRemainNumberMon( param && param.checkRemainNumberMon?param.checkRemainNumberMon :null);
-            self.listAgreementCheckCon36( param && param.listAgreementCheckCon36?param.listAgreementCheckCon36 : []);
+            self.specHolidayCheckCon( param && param.specHolidayCheckCon?new SpecHolidayCheckCon(param.specHolidayCheckCon) :null);
+            self.checkRemainNumberMon( param && param.checkRemainNumberMon?new CheckRemainNumberMon (param.checkRemainNumberMon) :null);
+            self.agreementCheckCon36( param && param.agreementCheckCon36?  new AgreementCheckCon36(param.agreementCheckCon36) : null);
         }
     }
     
@@ -366,8 +366,8 @@ module nts.uk.at.view.kal003.share.model {
         errorAlarmCheckID : string ;
         checkVacation : number;
         checkOperatorType : number;
-        compareRangeEx : CompareRangeImport;
-        compareSingleValueEx : CompareSingleValueImport;
+        compareRangeEx : ICompareRangeImport;
+        compareSingleValueEx : ICompareSingleValueImport;
     }
     
     export class CheckRemainNumberMon{
@@ -380,40 +380,54 @@ module nts.uk.at.view.kal003.share.model {
             this.errorAlarmCheckID = data.errorAlarmCheckID;
             this.checkVacation(data.checkVacation || 0);
             this.checkOperatorType(data.checkOperatorType || 0);
-            this.compareRangeEx(data.compareRangeEx || null);
-            this.compareSingleValueEx(data.compareSingleValueEx || null);
+            this.compareRangeEx(data && data.compareRangeEx?new CompareRangeImport(data.compareRangeEx) : null);
+            this.compareSingleValueEx(data && data.compareSingleValueEx? new CompareSingleValueImport( data.compareSingleValueEx) : null);
             
         }
+    }
+    
+    export interface ICompareRangeImport{
+        compareOperator : number;
+        startValue : ICheckConValueRemainNumberImport;
+        endValue :  ICheckConValueRemainNumberImport;
     }
     
     export class CompareRangeImport{
         compareOperator : KnockoutObservable<number> = ko.observable(0);
         startValue : KnockoutObservable<CheckConValueRemainNumberImport> = ko.observable(null);
         endValue : KnockoutObservable<CheckConValueRemainNumberImport> = ko.observable(null);   
-        constructor(compareOperator : number,
-        startValue : CheckConValueRemainNumberImport,
-        endValue : CheckConValueRemainNumberImport  ){
-        this.compareOperator(compareOperator ||0);
-            this.startValue(startValue || null);    
-            this.endValue(endValue || null);
+        constructor(data : ICompareRangeImport ){
+        this.compareOperator(data.compareOperator ||0);
+            this.startValue(data && data.startValue?new CheckConValueRemainNumberImport(data.startValue) : null);    
+            this.endValue(data && data.endValue?new CheckConValueRemainNumberImport(data.endValue) : null);
         }
     }
+    
+    export interface ICompareSingleValueImport{
+        compareOperator : number;
+        value : ICheckConValueRemainNumberImport;
+    }
+    
     export class CompareSingleValueImport{
         compareOperator : KnockoutObservable<number> = ko.observable(0);
         value : KnockoutObservable<CheckConValueRemainNumberImport> = ko.observable(null);
-        constructor(compareOperator : number,
-        value : CheckConValueRemainNumberImport){
-        this.compareOperator(compareOperator ||0);
-        this.value(value || null);
+        constructor(data : ICompareSingleValueImport){
+        this.compareOperator(data.compareOperator ||0);
+        this.value(data && data.value?new CheckConValueRemainNumberImport(data.value) : null);
         }
+    }
+    
+    export interface ICheckConValueRemainNumberImport{
+        daysValue : number;
+        timeValue :number;
     }
     
     export class CheckConValueRemainNumberImport {
         daysValue : KnockoutObservable<number> = ko.observable(0);
         timeValue : KnockoutObservable<number> = ko.observable(0);
-        constructor(daysValue : number,timeValue:number){
-            this.daysValue(daysValue || 0);
-            this.timeValue(timeValue || null); 
+        constructor(data : ICheckConValueRemainNumberImport){
+            this.daysValue(data.daysValue || 0);
+            this.timeValue(data.timeValue || null); 
         }
     }
     
@@ -730,7 +744,7 @@ module nts.uk.at.view.kal003.share.model {
     export interface IErAlConditionsAttendanceItem {
         atdItemConGroupId: string;
         conditionOperator: number; //0: OR|1: AND
-        lstErAlAtdItemCon: Array<ErAlAtdItemCondition>;// max 3
+        lstErAlAtdItemCon: Array<IErAlAtdItemCondition>;// max 3
     }
 
     export class ErAlConditionsAttendanceItem {
@@ -741,15 +755,15 @@ module nts.uk.at.view.kal003.share.model {
             let self = this;
             self.atdItemConGroupId = ko.observable(param ? param.atdItemConGroupId || '' : '');
             self.conditionOperator = ko.observable(param ? param.conditionOperator || 0 : 0);
-            self.lstErAlAtdItemCon = ko.observableArray(param ? param.lstErAlAtdItemCon || [] : []);
+            self.lstErAlAtdItemCon = ko.observableArray(param ? _.map(param.lstErAlAtdItemCon,acc =>{ return new ErAlAtdItemCondition(acc); }) || [] : []);
         }
     }
 
     // BA2_3 - group1 and group2UseAtr is false
     export interface IAttendanceItemCondition {
-        group1: ErAlConditionsAttendanceItem;
+        group1: IErAlConditionsAttendanceItem;
         group2UseAtr: boolean; // B17-1
-        group2: ErAlConditionsAttendanceItem;
+        group2: IErAlConditionsAttendanceItem;
         operatorBetweenGroups: number; // B18-2: 0: OR, 1: AND
     }
     export class AttendanceItemCondition {
@@ -759,9 +773,9 @@ module nts.uk.at.view.kal003.share.model {
         operatorBetweenGroups: KnockoutObservable<number> = ko.observable(0);
         constructor(param: IAttendanceItemCondition) {
             let self = this;
-            self.group1 = ko.observable(param ? param.group1 : null);
+            self.group1 = ko.observable(param ? new ErAlConditionsAttendanceItem(param.group1) : null);
             self.group2UseAtr(param ? param.group2UseAtr || false : false);
-            self.group2 = ko.observable(param ? param.group2 : null);
+            self.group2 = ko.observable(param ? new ErAlConditionsAttendanceItem(param.group2) : null);
             self.operatorBetweenGroups(param ? param.operatorBetweenGroups || 0 : 0);
         }
     }

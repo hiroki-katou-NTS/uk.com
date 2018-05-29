@@ -6,6 +6,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
     import resource = nts.uk.resource;
     import sharemodel = nts.uk.at.view.kal003.share.model;
     import shareutils = nts.uk.at.view.kal003.share.kal003utils;
+    
 
     export class ScreenModel {
         workRecordExtractingCondition: KnockoutObservable<sharemodel.WorkRecordExtractingCondition>;
@@ -26,6 +27,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
         required_BA1_4 : KnockoutObservable<boolean>;
                 
         private setting : sharemodel.WorkRecordExtractingCondition;
+        
         swANDOR_B5_3 : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         swANDOR_B6_3 : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         swANDOR_B7_2 : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
@@ -33,46 +35,62 @@ module nts.uk.at.view.kal003.b.viewmodel{
         comparisonRange : KnockoutObservable<model.ComparisonValueRange>;
         checkItemTemp: KnockoutObservable<number> = ko.observable(null);
         
-        
+        category : KnockoutObservable<number> = ko.observable(0);
         //monthly
         listEnumRoleType: KnockoutObservableArray<any>;
+        private settingExtraMon : sharemodel.ExtraResultMonthly;
+        extraResultMonthly : KnockoutObservable<sharemodel.ExtraResultMonthly>;
+        
+        minTimeValueMon : KnockoutObservable<number> = ko.observable(0);
+        maxTimeValueMon : KnockoutObservable<number> = ko.observable(0);
         
         constructor() {
             let self = this;
             let option = windows.getShared('inputKal003b');
-            self.setting = $.extend({}, shareutils.getDefaultWorkRecordExtractingCondition(0), option);
+            self.category(option.category);
+            switch(self.category()){
+                case sharemodel.CATEGORY.DAILY :
+                    self.setting = $.extend({}, shareutils.getDefaultWorkRecordExtractingCondition(0), option.data);
             
-            //monthly
-            self.listEnumRoleType = ko.observableArray(__viewContext.enums.RoleType);
-            
-            let workRecordExtractingCond = shareutils.convertTransferDataToWorkRecordExtractingCondition(self.setting);
-            self.workRecordExtractingCondition = ko.observable(workRecordExtractingCond);
-            // setting comparison value range
-
-            self.comparisonRange = ko.observable(self.initComparisonValueRange());
-            
-            self.checkItemTemp = ko.observable(self.workRecordExtractingCondition().checkItem());
-            
-            // change select item check
-            self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
-                errors.clearAll();
-                if ((itemCheck && itemCheck != undefined) || itemCheck === 0) {
-                    self.initialScreen().then(function() {
-                        if ((self.checkItemTemp() || self.checkItemTemp() == 0) && self.checkItemTemp() != itemCheck) {
-                            setTimeout(function() {self.displayAttendanceItemSelections_BA2_3("");},200);   
+                    let workRecordExtractingCond = shareutils.convertTransferDataToWorkRecordExtractingCondition(self.setting);
+                    self.workRecordExtractingCondition = ko.observable(workRecordExtractingCond);
+                    // setting comparison value range
+        
+                    self.comparisonRange = ko.observable(self.initComparisonValueRange());
+                    
+                    self.checkItemTemp = ko.observable(self.workRecordExtractingCondition().checkItem());
+                    
+                    // change select item check
+                    self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
+                        errors.clearAll();
+                        if ((itemCheck && itemCheck != undefined) || itemCheck === 0) {
+                            self.initialScreen().then(function() {
+                                if ((self.checkItemTemp() || self.checkItemTemp() == 0) && self.checkItemTemp() != itemCheck) {
+                                    setTimeout(function() {self.displayAttendanceItemSelections_BA2_3("");},200);   
+                                }
+                            });
                         }
+                        $(".nts-input").ntsError("clear");
                     });
-                }
-                $(".nts-input").ntsError("clear");
-            });
-            self.comparisonRange().comparisonOperator.subscribe((operN) => {
-                self.settingEnableComparisonMaxValueField();
-            });
-            self.required_BA1_4 = ko.observable(self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual()>0);
-            self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual.subscribe((newV)=>{
-                self.required_BA1_4(newV>0);
-                $(".nts-input").ntsError("clear");
-            });                        
+                    self.comparisonRange().comparisonOperator.subscribe((operN) => {
+                        self.settingEnableComparisonMaxValueField();
+                    });
+                    self.required_BA1_4 = ko.observable(self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual()>0);
+                    self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual.subscribe((newV)=>{
+                        self.required_BA1_4(newV>0);
+                        $(".nts-input").ntsError("clear");
+                    });  
+                break;
+                case sharemodel.CATEGORY.MONTHLY :
+                    //monthly
+                    self.listEnumRoleType = ko.observableArray(__viewContext.enums.TypeMonCheckItem);
+                    self.settingExtraMon = $.extend({}, shareutils.getDefaultExtraResultMonthly(0), option.data);
+                    let extraResultMonthly = shareutils.convertTransferDataToExtraResultMonthly(self.settingExtraMon);
+                    self.extraResultMonthly = ko.observable(extraResultMonthly);
+                break ;
+                default :break;
+            }
+                                  
         }
 
         //initial screen
@@ -81,12 +99,24 @@ module nts.uk.at.view.kal003.b.viewmodel{
             let self = this,
                 dfd = $.Deferred();
             errors.clearAll();
-            $.when(self.getAllEnums(), self.initialScreen()).done(function() {
-                //initial screen - in case update
-                dfd.resolve();
-           }).fail(() => {
-               dfd.reject();
-           });
+            switch(self.category()){
+                case sharemodel.CATEGORY.DAILY :
+                   $.when(self.getAllEnums(), self.initialScreen()).done(function() {
+                        dfd.resolve();
+                   }).fail(() => {
+                       dfd.reject();
+                   });
+                break;
+                case sharemodel.CATEGORY.MONTHLY :
+                    $.when(self.getAllEnums()).done(function() {
+                        dfd.resolve();
+                   }).fail(() => {
+                       dfd.reject();
+                   }); 
+                break ;
+                default :break;
+            }
+           
             return dfd.promise();
         }
 

@@ -1,9 +1,5 @@
 package nts.uk.ctx.at.function.ac.workrecord.erroralarm.condition.monthlycheckcondition;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -19,11 +15,11 @@ public class AgreementCheckCon36AcFinder implements AgreementCheckCon36FunAdapte
 	private AgreementCheckCon36Pub repo;
 
 	@Override
-	public List<AgreementCheckCon36FunImport> getAgreementCheckCon36ById(String errorAlarmCheckID) {
-		List<AgreementCheckCon36PubEx> data = repo.getAgreementCheckCon36ById(errorAlarmCheckID);
-		if(data.isEmpty())
-			return Collections.emptyList();
-		return data.stream().map(c->convertToExport(c)).collect(Collectors.toList());
+	public AgreementCheckCon36FunImport getAgreementCheckCon36ById(String errorAlarmCheckID) {
+		AgreementCheckCon36PubEx data = repo.getAgreementCheckCon36ById(errorAlarmCheckID);
+		if(data ==null)
+			return null;
+		return convertToExport(data);
 	} 
 	
 	private AgreementCheckCon36FunImport convertToExport (AgreementCheckCon36PubEx export) {
