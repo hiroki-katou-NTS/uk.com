@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Map.Entry;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -22,6 +23,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
+@Stateless
 public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyRecordServiceCenter{
 	//休暇加算設定
 	@Inject
@@ -35,6 +37,9 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	//乖離
 	@Inject 
 	private DivergenceTimeRepository divergenceTimeRepository;
+	//エラーアラーム設定
+	@Inject
+	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepository;
 	
 	//リポジトリ：労働条件
 	@Inject
@@ -47,9 +52,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	@Inject
 	private CalculateDailyRecordService calculate;
 	
-	//エラーアラーム設定
-	@Inject
-	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepository;
+
 	
 	@Override
 	public List<IntegrationOfDaily> calculate(List<IntegrationOfDaily> integrationOfDaily) {
