@@ -129,7 +129,6 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             });
         }
         getRemainDay(remainObject: any): string {
-            let a = 1;
             if (!remainObject.checkBox1) {
                 return "0";
             } else if (remainObject.checkBox1 && !remainObject.checkBox2 && !remainObject.checkBox3) {
