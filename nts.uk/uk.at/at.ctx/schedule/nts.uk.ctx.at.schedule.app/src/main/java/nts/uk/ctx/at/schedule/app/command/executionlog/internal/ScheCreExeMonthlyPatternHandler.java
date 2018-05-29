@@ -9,7 +9,6 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
-import nts.uk.ctx.at.schedule.dom.adapter.employmentstatus.EmploymentStatusImported;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScEmploymentStatusAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScShortWorkTimeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
@@ -74,7 +73,7 @@ public class ScheCreExeMonthlyPatternHandler {
 	 * @param workingConditionItem
 	 */
 	public void createScheduleWithMonthlyPattern(ScheduleCreatorExecutionCommand command,
-			WorkingConditionItem workingConditionItem, EmployeeGeneralInfoImported empGeneralInfo, List<EmploymentStatusImported> listEmploymentStatus) {
+			WorkingConditionItem workingConditionItem, EmployeeGeneralInfoImported empGeneralInfo) {
 		// ドメインモデル「月間勤務就業設定」を取得する
 		Optional<WorkMonthlySetting> workMonthlySetOpt = this.workMonthlySettingRepo.findById(command.getCompanyId(),
 				workingConditionItem.getMonthlyPattern().get().v(), command.getToDate());
@@ -116,7 +115,7 @@ public class ScheCreExeMonthlyPatternHandler {
 
 			// アルゴリズム「スケジュール作成判定処理」を実行する
 			if (!this.scheduleCreationDeterminationProcess(command, basicSche, employmentStatus,
-					workingConditionItem, listEmploymentStatus)) {
+					workingConditionItem)) {
 				return;
 			}
 			// 登録前削除区分をTrue（削除する）とする(chuyển 登録前削除区分 = true)
@@ -275,7 +274,7 @@ public class ScheCreExeMonthlyPatternHandler {
 	 * アルゴリズム「スケジュール作成判定処理」を実行する
 	 */
 	public boolean scheduleCreationDeterminationProcess(ScheduleCreatorExecutionCommand command,
-			BasicSchedule basicSche, EmploymentStatusDto employmentStatus, WorkingConditionItem workingConditionItem, List<EmploymentStatusImported> listEmploymentStatus) {
+			BasicSchedule basicSche, EmploymentStatusDto employmentStatus, WorkingConditionItem workingConditionItem) {
 		// 再作成対象区分を判定する
 		if (command.getContent().getReCreateContent().getRebuildTargetAtr() == RebuildTargetAtr.ALL) {
 			return true;
@@ -283,7 +282,7 @@ public class ScheCreExeMonthlyPatternHandler {
 		// 異動者を再作成するか判定する
 		boolean valueIsCreate = this.isCreate(workingConditionItem.getEmployeeId(), command.getToDate(),
 				command.getContent().getReCreateContent().getRebuildTargetDetailsAtr().getRecreateConverter(),
-				basicSche.getWorkScheduleMaster().getWorkplaceId(), listEmploymentStatus);
+				basicSche.getWorkScheduleMaster().getWorkplaceId());
 		if (!valueIsCreate)
 			return false;
 
@@ -339,7 +338,7 @@ public class ScheCreExeMonthlyPatternHandler {
 	 * @param wkpId
 	 * @return
 	 */
-	private boolean isCreate(String empId, GeneralDate targetDate, Boolean recreateConverter, String wkpId, List<EmploymentStatusImported> listEmploymentStatus) {
+	private boolean isCreate(String empId, GeneralDate targetDate, Boolean recreateConverter, String wkpId) {
 		if (!recreateConverter) {
 			return true;
 		}
