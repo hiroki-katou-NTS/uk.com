@@ -46,16 +46,28 @@ module nts.uk.at.view.kdm001.k.viewmodel {
                     _.each(self.itemsSelected(), x => {
                         
                         if(self.dateHoliday() === x.dayOff){
+                            self.currentCodeList.remove(x.leaveManaID);
                             nts.uk.ui.dialog.info({ messageId: "Msg_730" });
-                        }  
-                        let iNum = parseFloat(x.remainDays);
-                        let day = parseFloat(self.numberDay());
-                        sumNum = sumNum + iNum;
-                        self.residualDay(parseFloat((day-sumNum)).toFixed(1)+' 日');
+                        } else {
+                            let iNum = parseFloat(x.remainDays);
+                            let day = parseFloat(self.numberDay());
+                            sumNum = sumNum + iNum;
+                            self.residualDay(parseFloat((day-sumNum)).toFixed(1)+' 日');
+                            if(parseFloat(self.residualDay()) < 0) {
+                                $( "#K7_2" ).css( "color", "red" );
+                            } else {
+                                $( "#K7_2" ).css( "color", "" );
+                            }
+                        }
                     });
                 } else {
                    let day = parseFloat(self.numberDay());
                    self.residualDay(parseFloat(self.numberDay()).toFixed(1)+' 日');
+                    if(parseFloat(self.residualDay()) < 0) {
+                            $( "#K7_2" ).css( "color", "red" );
+                    } else {
+                            $( "#K7_2" ).css( "color", "" );    
+                    }
                 }
             });
             

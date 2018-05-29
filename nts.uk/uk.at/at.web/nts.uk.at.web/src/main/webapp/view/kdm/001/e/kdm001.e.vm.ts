@@ -32,7 +32,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
             self.columns = ko.observableArray([
                 { headerText: 'コード', key: 'subOfHDID', width: 100, hidden: true },
                 { headerText: nts.uk.resource.getText("KDM001_95"), key: 'dayoffDate', width: 110 },
-                { headerText: nts.uk.resource.getText("KDM001_96"), key: 'remainDays', formatter:model.formatterDay, width: 100 }
+                { headerText: nts.uk.resource.getText("KDM001_96"), key: 'requiredDays', formatter:model.formatterDay, width: 100 }
             ]);
             
             self.currentCodeList.subscribe(()=> {
@@ -59,7 +59,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
                         nts.uk.ui.dialog.info({ messageId: "Msg_729" });
                     }
                     
-                    sumNum = sumNum + x.remainDays;
+                    sumNum = sumNum + x.requiredDays;
                     
                 });
                 let day = parseFloat(self.numberDay());
@@ -118,15 +118,15 @@ module nts.uk.at.view.kdm001.e.viewmodel {
             } else if (self.currentCodeList().length >= 3){
                 $('#multi-list').ntsError('set', { messageId: "Msg_739" });
                 return false;
-            } else if (self.currentCodeList().length == 1 && self.currentList()[0].remainDays !== parseFloat(self.numberDay())){
+            } else if (self.currentCodeList().length == 1 && self.currentList()[0].requiredDays !== parseFloat(self.numberDay())){
                 $('#multi-list').ntsError('set', { messageId: "Msg_731" });
                 return false;
             } else if (self.currentCodeList().length == 2){
-                if (self.currentList()[0].remainDays === 1){
+                if (self.currentList()[0].requiredDays === 1){
                     $('#multi-list').ntsError('set', { messageId: "Msg_739" });
                     return false;
                 }
-                if (parseFloat(self.numberDay()) !== (self.currentList()[0].remainDays + self.currentList()[1].remainDays)){
+                if (parseFloat(self.numberDay()) !== (self.currentList()[0].requiredDays + self.currentList()[1].requiredDays)){
                     $('#multi-list').ntsError('set', { messageId: "Msg_731" });
                     return false;
                 }
@@ -145,12 +145,12 @@ module nts.uk.at.view.kdm001.e.viewmodel {
     class ItemModel {
         subOfHDID: string;
         dayoffDate: string;
-        remainDays: number;
+        requiredDays: number;
         linked: boolean;
-        constructor(subOfHDID: string, dayoffDate: string, remainDays?: number) {
+        constructor(subOfHDID: string, dayoffDate: string, requiredDays?: number) {
             this.subOfHDID = subOfHDID;
             this.dayoffDate = dayoffDate;
-            this.remainDays = remainDays;
+            this.requiredDays = requiredDays;
         }
     }
 

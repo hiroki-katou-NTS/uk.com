@@ -3,5 +3,6 @@ module nts.uk.at.view.kdm001.j {
         let screenModel = new nts.uk.at.view.kdm001.j.viewmodel.ScreenModel();
             __viewContext.bind(screenModel);
             $("#multi-list").focus();
+            
     });
 }

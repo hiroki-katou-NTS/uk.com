@@ -34,44 +34,32 @@ public class DayOffManagementService {
 		List<String> response = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
 		
-		if(dayOffManagementData.getNumberDayParam().equals(ONE_DAY)) {
-			if (dayOffManagementData.getDaysOffMana().size() == 0) {
-				response.add("Msg_738");
-			} else if (dayOffManagementData.getDaysOffMana().size() == 1
-					&& !dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(ONE_DAY)) {
-				response.add("Msg_733");
-			} else if (dayOffManagementData.getDaysOffMana().size() == 2) {
+		if (dayOffManagementData.getDaysOffMana().size() == 0) {
+			response.add("Msg_738");
+		} else if (dayOffManagementData.getDaysOffMana().size() == 1
+				&& !dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(dayOffManagementData.getNumberDayParam())) {
+			response.add("Msg_733");
+		} else if (dayOffManagementData.getDaysOffMana().size() == 2) {
+			
+			if(dayOffManagementData.getNumberDayParam().equals(HALF_DAY)) {
+				response.add("Msg_739");
+			}
+			
+			if (dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(ONE_DAY)
+					|| dayOffManagementData.getDaysOffMana().get(1).getRemainDays().equals(ONE_DAY)) {
 
-				if (dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(ONE_DAY) ||
-						dayOffManagementData.getDaysOffMana().get(1).getRemainDays().equals(ONE_DAY)) {
+				response.add("Msg_739");
 
-					response.add("Msg_739");
-
-				} else if (dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(HALF_DAY) ||
-						dayOffManagementData.getDaysOffMana().get(1).getRemainDays().equals(HALF_DAY)) {
-					if (!dayOffManagementData.getDaysOffMana().get(1).getRemainDays().equals(HALF_DAY) ||
-							!dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(HALF_DAY)) {
-						response.add("Msg_733");
-					}
+			} else if (dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(HALF_DAY)
+					|| dayOffManagementData.getDaysOffMana().get(1).getRemainDays().equals(HALF_DAY)) {
+				if (!dayOffManagementData.getDaysOffMana().get(1).getRemainDays().equals(HALF_DAY)
+						|| !dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(HALF_DAY)) {
+					response.add("Msg_733");
 				}
-			} else if (dayOffManagementData.getDaysOffMana().size() >= 3) {
-				response.add("Msg_739");
 			}
-		
-		} else if(dayOffManagementData.getNumberDayParam().equals(HALF_DAY)) {
-			
-			if(dayOffManagementData.getDaysOffMana().size() == 0) {
-				response.add("Msg_738");
-			} else if (dayOffManagementData.getDaysOffMana().size() == 1 &&
-					!dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(HALF_DAY)) {
-				response.add("Msg_733");
-			} else if(dayOffManagementData.getDaysOffMana().size() >=2){
-				response.add("Msg_739");
-			}
-			
+		} else if (dayOffManagementData.getDaysOffMana().size() >= 3) {
+			response.add("Msg_739");
 		}
-		
-		
 
 		if (response.isEmpty()) {
 
