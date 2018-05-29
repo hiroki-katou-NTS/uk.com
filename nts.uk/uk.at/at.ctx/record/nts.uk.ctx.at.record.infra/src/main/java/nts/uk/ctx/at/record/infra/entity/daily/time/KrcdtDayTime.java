@@ -1030,17 +1030,17 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 		return this.krcdtDayTimePK;
 	}
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true)
-	public List<KrcdtDayLeaveEarlyTime> krcdtDayLeaveEarlyTime;
-
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true)
-	public List<KrcdtDayLateTime> krcdtDayLateTime;
-
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true)
-	public List<KrcdtDaiShortWorkTime> krcdtDaiShortWorkTime;
-	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true)
-	public List<KrcdtDayShorttime> KrcdtDayShorttime;
+//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true)
+//	public List<KrcdtDayLeaveEarlyTime> krcdtDayLeaveEarlyTime;
+//
+//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true)
+//	public List<KrcdtDayLateTime> krcdtDayLateTime;
+//
+//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true)
+//	public List<KrcdtDaiShortWorkTime> krcdtDaiShortWorkTime;
+//	
+//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true)
+//	public List<KrcdtDayShorttime> KrcdtDayShorttime;
 	
 	public static KrcdtDayTime toEntity(AttendanceTimeOfDailyPerformance attendanceTime) {
 		val entity = new KrcdtDayTime();
