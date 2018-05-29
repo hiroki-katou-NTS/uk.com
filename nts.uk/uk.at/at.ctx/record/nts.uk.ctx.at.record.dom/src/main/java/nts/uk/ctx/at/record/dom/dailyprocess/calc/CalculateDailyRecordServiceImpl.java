@@ -442,14 +442,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		if (workTime.get().getWorkTimeDivision().getWorkTimeDailyAtr().isFlex()) {
 			/* フレックス勤務 */
-//			val flexWorkSetOpt = flexWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v());
-			//val flexWork = holidayAddtionRepository.findByCId(employeeId);
 			if(timeSheetAtr.isSchedule()) {
 				flexWorkSetOpt.get().getOffdayWorkTime().getRestTimezone().restoreFixRestTime(true);
 				flexWorkSetOpt.get().getRestSetting().getCommonRestSetting().changeCalcMethodToRecordUntilLeaveWork();
 				flexWorkSetOpt.get().getRestSetting().getFlowRestSetting().getFlowFixedRestSetting().changeCalcMethodToSchedule();
 			}
-			//val flexWork = holidayAddtionRepository.findByCId(employeeId);
 			AggregateRoot aggregateRoot = map.get("flexWork");
 			//フレックス勤務の加算設定
 			WorkFlexAdditionSet WorkRegularAdditionSet = aggregateRoot!=null?(WorkFlexAdditionSet)aggregateRoot:null;
@@ -494,7 +491,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 												workTime.get(),flexWorkSetOpt.get(),goOutTimeSheetList,oneRange.getOneDayOfRange(),oneRange.getAttendanceLeavingWork(),
 												workTime.get().getWorkTimeDivision(),breakTimeOfDailyList,midNightTimeSheet,personalInfo,
 												holidayCalcMethodSet,
-												//new WorkTimeCalcMethodDetailOfHoliday(1,1),
 												Optional.of(flexWorkSetOpt.get().getCoreTimeSetting()),
 												dailyUnit,breakTimeList,
 												vacation, 
@@ -530,13 +526,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				WorkRegularAdditionSet WorkRegularAdditionSet = aggregateRoot!=null?(WorkRegularAdditionSet)aggregateRoot:null;
 				//通常勤務の加算設定.休暇の計算方法の設定
 				holidayCalcMethodSet = WorkRegularAdditionSet!=null?WorkRegularAdditionSet.getVacationCalcMethodSet():holidayCalcMethodSet;
-				//パターン１
-//				ootsukaFixedWorkSet = Optional.of(new FixedWorkCalcSetting(new ExceededPredAddVacationCalc(CalcMethodExceededPredAddVacation.CALC_AS_WORKING,new OTFrameNo(1)),
-//														   new OverTimeCalcNoBreak(CalcMethodNoBreak.CALC_AS_WORKING,new OTFrameNo(2),new OTFrameNo(3))));
-				//パターン2
-//				ootsukaFixedWorkSet = Optional.of(new FixedWorkCalcSetting(new ExceededPredAddVacationCalc(CalcMethodExceededPredAddVacation.CALC_AS_OVERTIME,new OverTimeFrameNo(1)),
-//						   								   new OverTimeCalcNoBreak(CalcMethodNoBreak.CALC_AS_OVERTIME,new OverTimeFrameNo(2),new OverTimeFrameNo(3))));
-				
+
 				ootsukaFixedWorkSet = fixedWorkSetting.get().getCalculationSetting();
 				
 				List<nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime> a = new ArrayList<>();
@@ -621,7 +611,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						dailyUnit,
 						breakTimeList,
 						vacation, 
-                		oneRange.getTimeVacationAdditionRemainingTime().get(), //oneDay.getTimeVacationAdditionRemainingTime().get()
+                		oneRange.getTimeVacationAdditionRemainingTime().get(), 
                 		Optional.of(workInfo.getRecordInfo().getWorkTimeCode()), 
                 		Optional.of(personalLabor), 
                 		integrationOfDaily.getCalAttr().getLeaveEarlySetting().getLeaveLate().isUse(), 
@@ -653,9 +643,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		}
 		
 		Optional<CoreTimeSetting> coreTimeSetting = Optional.empty();
-//		if(flexWorkSetOpt.isPresent()) {
-//			coreTimeSetting = Optional.of(flexWorkSetOpt.get().getCoreTimeSetting());
-//		}
+
+		
 		if(flexWorkSetOpt.isPresent()) {//暫定的にここに処理を記載しているが、本来は別のクラスにあるべき
 			if(beforeWorkType.isPresent()) {
 				if(beforeWorkType.get().isWeekDayAttendance()) {
@@ -668,7 +657,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			}
 		}
 		
-		//beforeWorkType,workType
 		return ManageReGetClass.canCalc(oneRange, integrationOfDaily, workTime,beforeWorkType , subhol, personalInfo ,dailyUnit ,fixRestTimeSet,ootsukaFixedWorkSet,holidayCalcMethodSet,breakCount,
 										regularAddSetting,flexAddSetting,hourlyPaymentAddSetting,illegularAddSetting,holidayAddtionSetting.get(),coreTimeSetting);
 	}
@@ -1012,7 +1000,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		Optional<WorkingConditionItem> personalLablorCodition = companyCommonSetting.getPersonInfo();
 		
 		if (personalLablorCodition==null || !personalLablorCodition.isPresent()) {
-//			throw new RuntimeException("Can't get WorkingSystem");
 			return null;
 		}
 		// 労働制
