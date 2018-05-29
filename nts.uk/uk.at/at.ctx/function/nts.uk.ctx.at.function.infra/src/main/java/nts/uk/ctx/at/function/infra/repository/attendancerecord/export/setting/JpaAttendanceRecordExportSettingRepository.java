@@ -15,6 +15,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingGetMemento;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingRepository;
@@ -199,6 +200,8 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository
 		List<Predicate> predicates = new ArrayList<>();
 		predicates.add(
 				criteriaBuilder.equal(root.get(KfnstSealColumn_.cid), companyId));
+		predicates.add(
+				criteriaBuilder.equal(root.get(KfnstSealColumn_.exportCd), code));
 
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));
@@ -208,7 +211,7 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository
 
 		// return
 		return sealStampEntity.isEmpty() ? new ArrayList<String>()
-				: sealStampEntity.stream().map(entity -> entity.getSealStampName()).collect(Collectors.toList());
+				: sealStampEntity.stream().map(KfnstSealColumn::getSealStampName).collect(Collectors.toList());
 	}
 
 	/**
@@ -242,7 +245,7 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository
 		KfnstAttndRecOutSet entity = this.queryProxy().find(PK, KfnstAttndRecOutSet.class)
 				.orElse(new KfnstAttndRecOutSet(PK,null,new BigDecimal(0),new BigDecimal(1)));
 
-		domain.saveToMemento(new JpaAttendanceRecordExportSettingSetMemento(entity, new ArrayList<>()));
+		domain.saveToMemento(new JpaAttendanceRecordExportSettingSetMemento(entity, domain.getSealStamp()));
 
 		return entity;
 	}

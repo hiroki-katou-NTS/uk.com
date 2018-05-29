@@ -2,7 +2,6 @@ package nts.uk.ctx.at.function.infra.repository.attendancerecord.export.setting;
 
 import java.math.BigDecimal;
 import java.rmi.server.UID;
-import java.util.ArrayList;
 import java.util.List;
 
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport;
@@ -25,6 +24,8 @@ public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRec
 	/** The seal column entity. */
 	private List<KfnstSealColumn> sealColumnEntity;
 
+	private List<SealColumnName> sealColumnNames;
+
 	/**
 	 * Instantiates a new jpa attendance record export setting set memento.
 	 */
@@ -37,13 +38,13 @@ public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRec
 	 *
 	 * @param entity
 	 *            the entity
-	 * @param sealColumnEntity
+	 * @param sealColumnNames
 	 *            the seal column entity
 	 */
 	public JpaAttendanceRecordExportSettingSetMemento(KfnstAttndRecOutSet entity,
-			List<KfnstSealColumn> sealColumnEntity) {
+			List<SealColumnName> sealColumnNames) {
 		this.entity = entity;
-		this.sealColumnEntity = sealColumnEntity;
+		this.sealColumnNames = sealColumnNames;
 		if(this.entity.getId()==null){
 			this.entity.setId(new KfnstAttndRecOutSetPK());
 		}
