@@ -163,7 +163,27 @@ module nts.uk.at.view.kal003.a.viewmodel {
 
             if (self.selectedCategory() == model.CATEGORY._36_AGREEMENT) {
                 self.tabAgreementHour.listAgreementHour([]);
-                self.tabAgreementError.listAgreementError([]);
+//                self.tabAgreementError.listAgreementError([]);
+                let listName = [];
+                let i = 0;
+                service.getName().done((data: Array<any>) => {
+                    _.forEach(data, value => {
+                        let temp = {
+                            category: self.selectedCategory(),
+                            code: self.selectedAlarmCheckConditionCode(),
+                            id: i+1,
+                            useAtr: 0,
+                            period: value.period,
+                            errorAlarm: value.errorAlarm,
+                            messageDisp: null,
+                            name: value.name,
+                        }
+                        let conError = new model.AgreeConditionErrorDto(temp);
+                        listName.push(conError);
+                    });
+                    self.tabAgreementError.listAgreementError(_.orderBy(listName, ['period'], ['asc']));
+                    i = 0;
+                });
             }
 
             self.screenMode(model.SCREEN_MODE.NEW);
@@ -296,7 +316,8 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 var output = getShared("outputKAL003d");
                 if (!nts.uk.util.isNullOrUndefined(output)) {
                     if (self.selectedAlarmCheckCondition().category() == model.CATEGORY._36_AGREEMENT) {
-                        self.tabAgreementError.listAgreementError([]);
+                       
+
                         self.tabAgreementHour.listAgreementHour([]);
                     }
                     self.selectCategoryFromDialog(true);
@@ -379,7 +400,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                             let listAgreementHourKnockout = _.map(item.condAgree36().listCondOt(), y => {
                                 return new model.AgreeCondOt(y);
                             });
-                            
+
                             self.tabAgreementError.listAgreementError(listAgreementErrorKnockout);
                             self.tabAgreementHour.listAgreementHour(_.sortBy(listAgreementHourKnockout, ['no']));
                         }
