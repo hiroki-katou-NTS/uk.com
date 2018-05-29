@@ -42,6 +42,7 @@ module nts.uk.at.view.kwr001.d {
             }
             
             closeDialog(): void {
+                nts.uk.ui.windows.setShared('KWR001_D', null);
                 nts.uk.ui.windows.close();
             }
         

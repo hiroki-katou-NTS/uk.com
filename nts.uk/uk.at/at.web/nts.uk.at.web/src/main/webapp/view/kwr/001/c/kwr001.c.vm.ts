@@ -41,12 +41,10 @@ module nts.uk.at.view.kwr001.c {
             
             enableBtnDel: KnockoutObservable<boolean>;
             enableCodeC3_2: KnockoutObservable<boolean>;
-            
-            tempBoolean: KnockoutObservable<boolean>;;
+            storeCurrentCodeBeforeCopy: KnockoutObservable<string>;
             
             constructor() {
                 var self = this;
-                self.tempBoolean = ko.observable(true);
                 self.allMainDom = ko.observable();
                 self.outputItemPossibleLst = ko.observableArray([]);
                 
@@ -107,6 +105,8 @@ module nts.uk.at.view.kwr001.c {
                 self.checkedManualInput = ko.observable(false);
                 self.checkedNotCalculated = ko.observable(false);
                 self.checkedExceedByApplication = ko.observable(false);
+                
+                self.storeCurrentCodeBeforeCopy = ko.observable('');
             }
             
             /*
@@ -226,6 +226,9 @@ module nts.uk.at.view.kwr001.c {
             openScreenD () {
                 var self = this;
                 nts.uk.ui.windows.setShared('KWR001_D', self.outputItemPossibleLst(), true);
+                if (!_.isEmpty(self.currentCodeList())) {
+                    self.storeCurrentCodeBeforeCopy(self.currentCodeList());
+                }
                 nts.uk.ui.windows.sub.modal('/view/kwr/001/d/index.xhtml').onClosed(function(): any {
                     nts.uk.ui.errors.clearAll();
                     if (!_.isEmpty(nts.uk.ui.windows.getShared('KWR001_D'))) {
@@ -239,6 +242,8 @@ module nts.uk.at.view.kwr001.c {
                         
                         self.C3_2_value(nts.uk.ui.windows.getShared('KWR001_D').codeCopy);
                         self.C3_3_value(nts.uk.ui.windows.getShared('KWR001_D').nameCopy);
+                    } else {
+                        self.currentCodeList(self.storeCurrentCodeBeforeCopy());
                     }
                 });
             }
