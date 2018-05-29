@@ -285,8 +285,9 @@ module nts.uk.at.view.kwr001.c {
                 service.save(command).done(function() {
                     self.getDataService().done(function(){
                         self.currentCodeList(self.C3_2_value());
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        $('#C3_3').focus();
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function () {
+                           $('#C3_3').focus(); 
+                        });
                         dfd.resolve();
                     })
                     
