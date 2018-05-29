@@ -30,16 +30,20 @@ button {
 }
 
 #combo-box-scrD {
-	width: 264px;
+	width: 300px;
 }
 
 .D1_7 {
 	margin-left: 10px;
-	width: 192px !important;
+	width: 228px !important;
 }
 
 /* popup error of kiban team show fail position --> override css */
 #func-notifier-errors {
     top: 10px;
     left: 10px;
+}
+
+hr {
+	margin-top: 150px;
 }
