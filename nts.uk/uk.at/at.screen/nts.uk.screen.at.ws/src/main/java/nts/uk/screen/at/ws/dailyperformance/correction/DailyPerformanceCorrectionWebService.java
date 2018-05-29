@@ -194,8 +194,8 @@ public class DailyPerformanceCorrectionWebService {
 							.collect(Collectors.toList()).stream().filter(distinctByKey(p -> p.itemId()))
 							.collect(Collectors.toList());
 					if (!itemCovert.isEmpty())
-						dailyModifyCommandFacade.handleUpdate(new DailyModifyQuery(x.getValue().get(0).getEmployeeId(),
-								x.getValue().get(0).getDate(), itemCovert));
+						dailyModifyCommandFacade.handleUpdate(new DailyModifyQuery(x.getKey().getKey(),
+								x.getKey().getValue(), itemCovert));
 				});
 				// insert cell edit
 				dailyModifyCommandFacade.handleEditCell(itemValueChild);

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +29,8 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckService{
 
-
+	@Inject
+	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepository; 
 	@Inject
 	private DivTimeSysFixedCheckService divTimeSysFixedCheckService;
 	
@@ -41,6 +43,7 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 	@Override
 	public IntegrationOfDaily errorCheck(IntegrationOfDaily integrationOfDaily, List<ErrorAlarmWorkRecord> errorAlarm) {
 		
+		String companyID = AppContexts.user().companyId();
 		List<EmployeeDailyPerError> addItemList = new ArrayList<>();
 //		if(!integrationOfDaily.getEmployeeError().isEmpty() &&  integrationOfDaily.getEmployeeError() != null)
 //			addItemList = integrationOfDaily.getEmployeeError();
@@ -71,7 +74,8 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 			}
 			//ユーザ設定
 			else {
-				val addItems = erAlCheckService.checkErrorFor(integrationOfDaily.getAffiliationInfor().getEmployeeId(), integrationOfDaily.getAffiliationInfor().getYmd());
+				val addItems = erAlCheckService.checkErrorFor(companyID, integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
+						integrationOfDaily.getAffiliationInfor().getYmd(), errorItem, integrationOfDaily);
 				if(!addItems.isEmpty() && addItems != null) {
 					for(val item : addItems) {
 						Boolean flg = true;
@@ -179,9 +183,11 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 					return divTimeSysFixedCheckService.divergenceTimeCheckBySystemFixed(AppContexts.user().companyId(), 
 																			 	 integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
 																			 	 integrationOfDaily.getAffiliationInfor().getYmd(),
-																			 	 integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime().getDivergenceTime()
-																			 	);
+																			 	 integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime().getDivergenceTime(),
+																			 	integrationOfDaily.getAttendanceLeave(),
+																			 	Arrays.asList(errorItem));
 				}
+				return Collections.emptyList();
 			//遅刻
 			case LATE:
 				return integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
