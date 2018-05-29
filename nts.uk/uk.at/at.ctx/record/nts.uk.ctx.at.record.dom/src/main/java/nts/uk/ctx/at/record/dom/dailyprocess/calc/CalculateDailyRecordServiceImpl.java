@@ -701,9 +701,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																		   OvertimeTimesheetCalculationSetting.CalculateAutomatic,
 																		   HolidayTimesheetCalculationSetting.CalculateAutomatical);
 
-		// 個人労働条件
-		PersonalLaborCondition personalLabor = new PersonalLaborCondition(
-				recordReGetClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc().getAdditionSet());
 		// 休暇クラス
 		VacationClass vacation = new VacationClass(new HolidayOfDaily(new AbsenceOfDaily(new AttendanceTime(0)),
 				new TimeDigestOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
