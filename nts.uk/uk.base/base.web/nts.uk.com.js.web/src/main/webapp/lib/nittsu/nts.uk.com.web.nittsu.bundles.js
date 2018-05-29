@@ -23534,6 +23534,7 @@ var nts;
                         functions.CHECK_ALL = "checkAll";
                         functions.UNCHECK_ALL = "uncheckAll";
                         functions.HEADER_TEXT = "headerText";
+                        functions.SELECTED_SHEET = "selectedSheet";
                         functions.DESTROY = "destroy";
                         /**
                          * Actions
@@ -23581,6 +23582,8 @@ var nts;
                                 case functions.DESTROY:
                                     destroy($grid);
                                     break;
+                                case functions.SELECTED_SHEET:
+                                    return getSelectedSheet($grid);
                                 case functions.UPDATED_CELLS:
                                     return $grid.data(internal.UPDATED_CELLS);
                                 case functions.ERRORS:
@@ -23870,6 +23873,17 @@ var nts;
                                 }
                             });
                             return updated;
+                        }
+                        /**
+                         * Get selected sheet.
+                         */
+                        function getSelectedSheet($grid) {
+                            var sheet = $grid.data(internal.SHEETS);
+                            if (!sheet || !sheet.currentSheet)
+                                return;
+                            return _.find(sheet.sheets, function (s) {
+                                return s.name === sheet.currentSheet;
+                            });
                         }
                         /**
                          * Destroy
