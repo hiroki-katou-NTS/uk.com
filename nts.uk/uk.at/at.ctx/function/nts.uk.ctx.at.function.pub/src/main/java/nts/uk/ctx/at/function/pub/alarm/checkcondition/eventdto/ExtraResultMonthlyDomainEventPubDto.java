@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.function.pub.alarm.checkcondition.eventdto;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -33,10 +31,10 @@ public class ExtraResultMonthlyDomainEventPubDto {
 	
 	private CheckRemainNumberMonAdapterPubDto checkRemainNumberMon;
 	
-	private List<AgreementCheckCon36AdapterPubDto> listAgreementCheckCon36;
+	private AgreementCheckCon36AdapterPubDto agreementCheckCon36;
 
 	public ExtraResultMonthlyDomainEventPubDto(String errorAlarmCheckID, int sortBy, String nameAlarmExtraCon, boolean useAtr, int typeCheckItem, boolean messageBold, String messageColor, String displayMessage,
-			AttendanceItemConAdapterPubDto checkConMonthly, SpecHolidayCheckConAdapterPubDto specHolidayCheckCon, CheckRemainNumberMonAdapterPubDto checkRemainNumberMon, List<AgreementCheckCon36AdapterPubDto> listAgreementCheckCon36) {
+			AttendanceItemConAdapterPubDto checkConMonthly, SpecHolidayCheckConAdapterPubDto specHolidayCheckCon, CheckRemainNumberMonAdapterPubDto checkRemainNumberMon, AgreementCheckCon36AdapterPubDto agreementCheckCon36) {
 		super();
 		this.errorAlarmCheckID = errorAlarmCheckID;
 		this.sortBy = sortBy;
@@ -49,8 +47,9 @@ public class ExtraResultMonthlyDomainEventPubDto {
 		this.checkConMonthly = checkConMonthly;
 		this.specHolidayCheckCon = specHolidayCheckCon;
 		this.checkRemainNumberMon = checkRemainNumberMon;
-		this.listAgreementCheckCon36 = listAgreementCheckCon36;
+		this.agreementCheckCon36 = agreementCheckCon36;
 	}
+
 	
 	
 	

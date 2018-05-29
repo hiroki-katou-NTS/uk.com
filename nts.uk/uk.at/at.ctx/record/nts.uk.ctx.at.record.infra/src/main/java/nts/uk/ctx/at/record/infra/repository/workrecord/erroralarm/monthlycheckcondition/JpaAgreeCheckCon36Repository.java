@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm.monthlycheckcondition;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -18,10 +17,10 @@ public class JpaAgreeCheckCon36Repository extends JpaRepository implements Agree
 	
 	
 	@Override
-	public List<AgreementCheckCon36> getAgreementCheckCon36ById(String errorAlarmCheckID) {
-		List<AgreementCheckCon36> data = this.queryProxy().query(SELECT_AGREE_BY_ID,KrcmtAgreementCheckCon36.class)
+	public Optional<AgreementCheckCon36> getAgreementCheckCon36ById(String errorAlarmCheckID) {
+		Optional<AgreementCheckCon36> data = this.queryProxy().query(SELECT_AGREE_BY_ID,KrcmtAgreementCheckCon36.class)
 				.setParameter("errorAlarmCheckID", errorAlarmCheckID)
-				.getList(c->c.toDomain());
+				.getSingle(c->c.toDomain());
 		return data;
 	}
 
@@ -42,10 +41,10 @@ public class JpaAgreeCheckCon36Repository extends JpaRepository implements Agree
 
 	@Override
 	public void deleteAgreementCheckCon36(String errorAlarmCheckID) {
-		List<KrcmtAgreementCheckCon36> newEntity = this.queryProxy().query(SELECT_AGREE_BY_ID,KrcmtAgreementCheckCon36.class)
+		Optional<KrcmtAgreementCheckCon36> newEntity = this.queryProxy().query(SELECT_AGREE_BY_ID,KrcmtAgreementCheckCon36.class)
 				.setParameter("errorAlarmCheckID", errorAlarmCheckID)
-				.getList();
-		this.commandProxy().removeAll(newEntity);
+				.getSingle();
+		this.commandProxy().remove(newEntity);
 		
 	}
 

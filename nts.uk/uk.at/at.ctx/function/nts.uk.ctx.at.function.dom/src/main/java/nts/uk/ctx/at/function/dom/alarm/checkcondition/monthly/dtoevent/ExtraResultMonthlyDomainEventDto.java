@@ -1,8 +1,5 @@
 package nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.dtoevent;
 
-import java.util.List;
-import java.util.Optional;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -38,7 +35,7 @@ public class ExtraResultMonthlyDomainEventDto {
 	
 	private CheckRemainNumberMonFunImport checkRemainNumberMon;
 	
-	private List<AgreementCheckCon36FunImport> listAgreementCheckCon36;
+	private AgreementCheckCon36FunImport agreementCheckCon36;
 	
 	public ExtraResultMonthlyDomainEventDto(String errorAlarmCheckID, int sortBy, String nameAlarmExtraCon, boolean useAtr, int typeCheckItem, boolean messageBold, String messageColor, String displayMessage,
 			AttendanceItemConAdapterDto checkConMonthly) {

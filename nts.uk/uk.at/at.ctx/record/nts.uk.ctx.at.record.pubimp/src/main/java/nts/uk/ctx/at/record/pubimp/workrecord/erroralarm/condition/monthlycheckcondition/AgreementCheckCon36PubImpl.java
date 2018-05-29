@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.record.pubimp.workrecord.erroralarm.condition.monthlycheckcondition;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -19,12 +17,11 @@ public class AgreementCheckCon36PubImpl implements AgreementCheckCon36Pub {
 	private AgreementCheckCon36Repository repo;
 	
 	@Override
-	public List<AgreementCheckCon36PubEx> getAgreementCheckCon36ById(String errorAlarmCheckID) {
-		List<AgreementCheckCon36PubEx> data = repo.getAgreementCheckCon36ById(errorAlarmCheckID)
-				.stream().map(c->fromDomain(c)).collect(Collectors.toList());
-		if(data.isEmpty())
-			return Collections.emptyList();
-		return data;
+	public AgreementCheckCon36PubEx getAgreementCheckCon36ById(String errorAlarmCheckID) {
+		Optional<AgreementCheckCon36> data = repo.getAgreementCheckCon36ById(errorAlarmCheckID);
+		if(data.isPresent())
+			return fromDomain(data.get());
+		return null;
 	}
 	
 	private AgreementCheckCon36PubEx fromDomain(AgreementCheckCon36 domain) {

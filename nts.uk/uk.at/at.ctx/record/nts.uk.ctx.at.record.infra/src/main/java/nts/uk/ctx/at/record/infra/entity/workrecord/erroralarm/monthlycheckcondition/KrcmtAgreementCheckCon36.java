@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
@@ -23,8 +24,12 @@ public class KrcmtAgreementCheckCon36 extends UkJpaEntity implements Serializabl
 	
 	private static final long serialVersionUID = 1L;
 
-	@EmbeddedId
-	public KrcmtAgreementCheckCon36PK krcmtAgreementCheckCon36PK;
+	@Id
+	@Column(name = "ERAL_CHECK_ID")
+	public String errorAlarmCheckID;
+	
+	@Column(name = "CLASSIFICATION")
+	public int classification;
 	
 	@Column(name = "COMPARE_OPERATOR")
 	public int compareOperator;
@@ -34,21 +39,21 @@ public class KrcmtAgreementCheckCon36 extends UkJpaEntity implements Serializabl
 	
 	@Override
 	protected Object getKey() {
-		return krcmtAgreementCheckCon36PK;
+		return errorAlarmCheckID;
 	}
 	
-	public KrcmtAgreementCheckCon36(KrcmtAgreementCheckCon36PK krcmtAgreementCheckCon36PK, int compareOperator, BigDecimal eralBeforeTime) {
+	public KrcmtAgreementCheckCon36(String errorAlarmCheckID, int classification, int compareOperator, BigDecimal eralBeforeTime) {
 		super();
-		this.krcmtAgreementCheckCon36PK = krcmtAgreementCheckCon36PK;
+		this.errorAlarmCheckID = errorAlarmCheckID;
+		this.classification = classification;
 		this.compareOperator = compareOperator;
 		this.eralBeforeTime = eralBeforeTime;
 	}
 	
 	public static KrcmtAgreementCheckCon36 toEntity(AgreementCheckCon36 domain) {
 		return new  KrcmtAgreementCheckCon36(
-				new KrcmtAgreementCheckCon36PK(
-					domain.getErrorAlarmCheckID(),
-					domain.getClassification().value),
+				domain.getErrorAlarmCheckID(),
+				domain.getClassification().value,
 				domain.getCompareOperator().value,
 				domain.getEralBeforeTime()
 				);
@@ -56,12 +61,16 @@ public class KrcmtAgreementCheckCon36 extends UkJpaEntity implements Serializabl
 	
 	public AgreementCheckCon36 toDomain() {
 		return new AgreementCheckCon36(
-				this.krcmtAgreementCheckCon36PK.errorAlarmCheckID,
-				EnumAdaptor.valueOf(this.krcmtAgreementCheckCon36PK.classification, ErrorAlarmRecord.class),
+				this.errorAlarmCheckID,
+				EnumAdaptor.valueOf(this.classification, ErrorAlarmRecord.class),
 				EnumAdaptor.valueOf(this.compareOperator, SingleValueCompareType.class),
 				this.eralBeforeTime
 				);
 	}
+
+
+
+	
 
 
 

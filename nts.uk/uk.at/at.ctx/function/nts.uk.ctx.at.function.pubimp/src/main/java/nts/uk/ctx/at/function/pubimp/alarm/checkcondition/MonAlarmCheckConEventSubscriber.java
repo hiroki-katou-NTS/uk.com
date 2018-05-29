@@ -63,7 +63,7 @@ public class MonAlarmCheckConEventSubscriber implements DomainEventSubscriber<Mo
 				convertToAttendanceItemCon(export.getCheckConMonthly()),
 				convertToSpecHolidayCheckConFunImport(export.getSpecHolidayCheckCon()),
 				convertToCheckRemainNumberMonFunImport(export.getCheckRemainNumberMon()),
-				export.getListAgreementCheckCon36().stream().map(c->convertToAgreementCheckCon36Import(c)).collect(Collectors.toList())
+				convertToAgreementCheckCon36Import(export.getAgreementCheckCon36())
 				);
 	}
 	

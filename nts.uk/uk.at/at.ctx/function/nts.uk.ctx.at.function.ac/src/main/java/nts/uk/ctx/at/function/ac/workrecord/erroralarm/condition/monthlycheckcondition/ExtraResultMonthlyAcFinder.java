@@ -40,7 +40,7 @@ public class ExtraResultMonthlyAcFinder implements ExtraResultMonthlyFunAdapter 
 			//get CheckRemainNumberMon
 			extraResultMonthly.setCheckRemainNumberMon(checkRemainNumberMonRepo.getByEralCheckID(extraResultMonthly.getErrorAlarmCheckID()));
 			//get list AgreementCheckCon36
-			extraResultMonthly.setListAgreementCheckCon36(agreementCheckCon36Repo.getAgreementCheckCon36ById(extraResultMonthly.getErrorAlarmCheckID()));
+			extraResultMonthly.setAgreementCheckCon36(agreementCheckCon36Repo.getAgreementCheckCon36ById(extraResultMonthly.getErrorAlarmCheckID()));
 		}
 		return data;
 	}
