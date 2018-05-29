@@ -7,22 +7,16 @@
 
     <body>
 		
-        <ui:composition template="../../../../master/base.xhtml">
+        <ui:composition template="../../../../../master/base.xhtml">
             <ui:define name="htmlHead">
             	<script>var dialogSize = { width: 800, height: 800 };</script>
             	
 				<com:ValidatorScript>
-                    nts.arc.time.YearMonth
-                    nts.uk.shr.com.primitive.sample.ResidenceCode
-                    nts.uk.shr.com.primitive.sample.ProcessingNo
-                    nts.uk.shr.com.primitive.sample.PersonalWageCode
-                    nts.uk.shr.com.primitive.sample.CommonAmount
-                    nts.uk.shr.com.primitive.sample.SampleKana
-					nts.uk.shr.com.primitive.sample.SampleCode
+                    nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber
    				</com:ValidatorScript>
-				<com:stylefile path="../../catalog/catalog.css" />
-				<com:scriptfile path="text-editor.js" />
-				<com:scriptfile path="../../catalog/catalog.js" />
+				<com:stylefile path="../../../catalog/catalog.css" />
+				<com:scriptfile path="special-editor.js" />
+				<com:scriptfile path="../../../catalog/catalog.js" />
             </ui:define>
             
             <ui:define name="content">
@@ -31,45 +25,19 @@
             	<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
-						<h1>TextEditor</h1>
+						<h1>TextEditor for special values</h1>
 						<h2>Overview</h2>
 						
-						<h3>Reset Value</h3>
-						<div class="control-group valign-center">
-							<input data-bind="ntsTextEditor: {value: defaultvalue}"></input>
-							<button id="reset" data-bind="click: setDefault">Reset</button>
-						</div>
+						<span data-bind="ntsCheckBox: {checked: required}">Required</span>
 						
-						<h3>Auto padding code</h3>
+						<h3>StampNumber (カードNO)</h3>
 						<div class="control-group valign-center">
-							<input id="text-1" data-name="text-1" data-bind="ntsTextEditor: {
-								name: '#[FND_L_SEARCH_RELEASE]',
-								value: value,
-								constraint: 'SampleCode',
-								required: required,
-								enable: enable,
-								readonly: readonly}" />
-							<span data-bind="ntsCheckBox: {checked: required}">Required</span>
-							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
-							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
-							<button data-bind="click: clear">Clear Error</button>
-						</div>
-						
-						<h3>Kana</h3>
-						<div class="control-group valign-center">
-							<div data-bind="ntsFormLabel: { constraint: 'SampleKana' }">SampleKana</div>
-							<input id="kana-txt" data-bind="ntsTextEditor: { name: '#[FND_N_SPAN_YM_END, FND_L_SEARCH_RELEASE]', value: valueKana, constraint: 'SampleKana' }"/>
-						</div>
-						
-						<h3>Upper case alpha numeric</h3>
-						<div class="control-group valign-center">
-							<div data-bind="ntsFormLabel: { constraint: 'PersonalWageCode' }">PersonalWageCode</div>
-							<input id="an-txt" data-bind="ntsTextEditor: { name: 'Uppercase', value: valueUan, constraint: 'PersonalWageCode' }"/>
-						</div>
-						
-						<h3>Handle enter key</h3>
-						<div class="control-group valign-center">
-							<input data-bind="ntsTextEditor: { value: value, enterkey: submit }"></input>
+							<div data-bind="ntsFormLabel: { constraint: 'StampNumber' }">StampNumber</div>
+							<input data-bind="ntsTextEditor: {
+								name: 'カードNO',
+								value: stampNumber,
+								constraint: 'StampNumber',
+								required: required }" />
 						</div>
 						
 						<article class="cf">

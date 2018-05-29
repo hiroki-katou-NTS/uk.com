@@ -188,7 +188,7 @@ public class EmploymentStatusPubImpl implements EmploymentStatusPub{
 	private List<EmploymentInfo> checkWithTempAbsence(AffCompanyHistItem responseHistory,
 			TempAbsenceHistory tempAbsence, Map<String, TempAbsenceHisItem> mapTempAbsItemMap) {
 		if (tempAbsence == null) {
-			// do something
+			return checkWithoutTempAbsence(responseHistory);
 		}
 		List<GeneralDate> datesBetween = responseHistory.getDatePeriod().datesBetween();
 		return datesBetween.stream().map(date -> {
@@ -205,6 +205,12 @@ public class EmploymentStatusPubImpl implements EmploymentStatusPub{
 			}
 		}).collect(Collectors.toList());
 
+	}
+	
+	private List<EmploymentInfo> checkWithoutTempAbsence(AffCompanyHistItem responseHistory) {
+		List<GeneralDate> datesBetween = responseHistory.getDatePeriod().datesBetween();
+		return datesBetween.stream().map(date -> convertToEmpInfo(date, EmploymentState.INCUMBENT, Optional.empty()))
+				.collect(Collectors.toList());
 	}
 	
 	private int getTempAbsNo(Map<String, TempAbsenceHisItem> mapTempAbsItemMap, String historyId) {
