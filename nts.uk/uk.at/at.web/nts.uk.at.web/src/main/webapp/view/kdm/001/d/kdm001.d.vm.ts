@@ -13,8 +13,8 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         remainDays: KnockoutObservable<number>    = ko.observable(0);
         unit: KnockoutObservable<string>          = ko.observable('');
         lawAtr: KnockoutObservable<number>        = ko.observable('');
-        pickUp: KnockoutObservable<boolean>    = ko.observable(false);;
-        pause: KnockoutObservable<boolean> = ko.observable(false);
+        pickUp: KnockoutObservable<boolean>    = ko.observable(true);;
+        pause: KnockoutObservable<boolean> = ko.observable(true);
         checkedSplit: KnockoutObservable<boolean>      = ko.observable(false);
         dayOff: KnockoutObservable<string>        = ko.observable('');
         expiredDate: KnockoutObservable<string>     = ko.observable('');
@@ -30,6 +30,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         isOptionSubHolidayEnable: KnockoutObservable<boolean>              = ko.observable(false);
         closureId: KnockoutObservable<number> = ko.observable(0);
         totalDay: KnockoutObservable<number> = ko.observable(0);
+        enableSplit: KnockoutObservable<boolean>              = ko.observable(false);
         constructor() {
             let self = this;
             self.initScreen();
@@ -41,6 +42,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 }
              });
             self.occurredDays.subscribe((x) => {
+                self.setSplit();
                 self.calRemainDays();
             });
             self.subDay.subscribe((x) => {
@@ -80,9 +82,26 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                         self.remainDays(self.totalDay() - self.subDay());
                     }
                 } else {
-                    self.remainDays(0);
+                    if (self.checkedSplit()) {
+                        self.remainDays(self.totalDay() - self.requiredDays());
+                    } else {
+                        self.remainDays(0);
+                    }
                 }
             }
+        }
+        
+        public setSplit(){
+            let self = this;
+            if (self.occurredDays() == 1) {
+                if (self.pickUp()) {
+                    self.checkedSplit(false);
+                    self.enableSplit(false);
+                } 
+            } else {
+                self.enableSplit(true);
+               
+             }
         }
 
         initScreen(): void {
@@ -105,6 +124,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
          * closeDialog
          */
         public closeDialog() {
+            setShared('KDM001_A_PARAMS', {isSuccess: false});
             nts.uk.ui.windows.close();
         }
         
