@@ -23,6 +23,7 @@ import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeMonthl
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTimeHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTypeHandler;
 import nts.uk.ctx.at.schedule.dom.adapter.employmentstatus.EmploymentStatusAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.employmentstatus.EmploymentStatusImported;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.ScEmployeeGeneralInfoAdapter;
@@ -443,7 +444,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				|| basicSchedule.getConfirmedAtr().equals(ConfirmedAtr.UNSETTLED)) {
 			// アルゴリズム「スケジュール作成判定処理」を実行する
 			if (this.scheCreExeMonthlyPatternHandler.scheduleCreationDeterminationProcess(command, basicSchedule,
-					employmentStatus, workingConditionItem)) {
+					employmentStatus, workingConditionItem, empGeneralInfo)) {
 				this.scheCreExeWorkTypeHandler.createWorkSchedule(command, workingConditionItem, empGeneralInfo);
 			}
 		}
@@ -479,8 +480,9 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		EmployeeGeneralInfoImported empGeneralInfo = this.scEmpGeneralInfoAdapter.getPerEmpInfo(employeeIds,
 				scheduleExecutionLog.getPeriod());
 
-//		List<EmploymentStatusImported> listEmploymentStatus = this.employmentStatusAdapter
-//				.findListOfEmployee(employeeIds, dateAfterCorrection);
+		// List<EmploymentStatusImported> listEmploymentStatus =
+		// this.employmentStatusAdapter
+		// .findListOfEmployee(employeeIds, dateAfterCorrection);
 
 		// get info by context
 		val asyncTask = context.asAsync();
