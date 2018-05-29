@@ -38,12 +38,14 @@ public class SingleAttendanceRecordFinder {
 						attendanceRecordKey.getPosition(), attendanceRecordKey.getExportAtr());
 
 		// convert to Dto
+		
 		if (optionalSingleAttendanceRecord.isPresent()) {
 			SingleAttendanceRecord singleAttendanceRecord = optionalSingleAttendanceRecord.get();
+			int atrribute = singleAttendanceRecord.getAttribute()!=null ? singleAttendanceRecord.getAttribute().value : 0;
 			SingleAttendanceRecordDto singleAttendanceRecordDto = new SingleAttendanceRecordDto(
 																	singleAttendanceRecord.getName().toString(),
 																	singleAttendanceRecord.getTimeItemId(),
-																	singleAttendanceRecord.getAttribute().value);
+																	atrribute);
 			return singleAttendanceRecordDto;
 		} else {
 			return new SingleAttendanceRecordDto();
