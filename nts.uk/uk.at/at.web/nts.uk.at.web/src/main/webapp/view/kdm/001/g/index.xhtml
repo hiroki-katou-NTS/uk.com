@@ -56,7 +56,7 @@
 									style="width: 80px;">#{i18n.getText('KDM001_62')}</div> 
 									<!-- G6_2 年月日 -->
 <!-- 								dayOff -->
-								<div id="G6_2"
+								<div id="G6_2"  tabindex="1"
 									data-bind="ntsDatePicker: {value: dayoffDate, dateFormat: 'YYYY/MM/DD'}"></div>
 							</th>
 							<th>
@@ -66,7 +66,7 @@
 									<div data-bind="ntsFormLabel: { required: true}"
 										style="border-style: none;margin-top: 10px; width: 80px;">#{i18n.getText('KDM001_64')}</div>
 									<!-- G6_4  OccurrenceDays-->
-									<div class="combobox-select-day"
+									<div class="combobox-select-day" tabindex="2"
 										data-bind="ntsComboBox: {
 									name: '#[KDM001_85]',
 									options: days,
@@ -90,7 +90,7 @@
 						<div data-bind="ntsFormLabel: { required: true}"
 							style="margin-top: 10px; width: 80px;">#{i18n.getText('KDM001_70')}</div>
 						<!-- G7_2  LawAtr-->
-						<div class="combobox-select-day"
+						<div class="combobox-select-day" tabindex="3"
 							data-bind="ntsComboBox: {
 								name: '#[KDM001_73]',
 								options:days,
@@ -110,8 +110,8 @@
 					<div id="G8_1" data-bind="ntsFormLabel: { required: true}"
 						style="width: 80px;">#{i18n.getText('KDM001_72')}</div>
 					<!--G8_2 ExpiredDate -->
-					<div id="G8_2"
-						data-bind="ntsDatePicker: {value: expiredDate, dateFormat: 'YYYY/MM/DD'}"></div>
+					<div id="G8_2" tabindex="4"
+						data-bind="ntsDatePicker: {value: expiredDate, dateFormat: 'YYYY/MM/DD'}" ></div>
 					<br />
 					
 					<div class="down-s set-date flex valign-center"
@@ -120,7 +120,7 @@
 						<div data-bind="ntsFormLabel: { required: true}"
 							style="margin-top: 10px; width: 80px;">#{i18n.getText('KDM001_85')}</div>
 						<!-- G9_2  -->
-						<div class="combobox-select-day"
+						<div class="combobox-select-day" tabindex="5"
 							data-bind="ntsComboBox: {
 									name: '#[KDM001_85]',
 									options: days,
@@ -134,18 +134,18 @@
 										{ prop: 'name', length: 10 },
 									]}"></div>
 						<!-- G9_4 -->
-						<div style="margin-left: 30px;"
+						<div style="margin-left: 30px;" tabindex="6"
 							data-bind="ntsCheckBox: { checked: checkBox }">#{i18n.getText('KDM001_87')}</div>
 					</div>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
 				<!-- G31_1 登録 -->
-				<button id="G31_1" class="proceed" data-bind="click: updateData" >#{i18n.getText('KDM001_89')}</button>
+				<button id="G31_1" tabindex="7" class="proceed" data-bind="click: updateData" >#{i18n.getText('KDM001_89')}</button>
 				<!-- G31_2 削除 -->
-				<button id="G31_2" class="danger" data-bind="click: removeData"  >#{i18n.getText('KDM001_100')}</button>
+				<button id="G31_2" tabindex="8" class="danger" data-bind="click: removeData"  >#{i18n.getText('KDM001_100')}</button>
 				<!-- G31_3 キャンセル -->
-				<button id="G31_3" data-bind="click: closeDialog">#{i18n.getText('KDM001_90')}</button>
+				<button id="G31_3" tabindex="9" data-bind="click: closeDialog">#{i18n.getText('KDM001_90')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

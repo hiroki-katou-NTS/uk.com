@@ -9,12 +9,12 @@ public class SubOfHDManagement {
 
 	private String payoutId;
 	private String dayoffDate;
-	private Double remainDays;
+	private Double occurredDays;
 
-	public SubOfHDManagement(String payoutId, String dayoffDate, Double remainDays) {
+	public SubOfHDManagement(String payoutId, String dayoffDate, Double occurredDays) {
 		super();
 		this.payoutId = payoutId;
 		this.dayoffDate = dayoffDate;
-		this.remainDays = remainDays;
+		this.occurredDays = occurredDays;
 	}
 }
