@@ -271,6 +271,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		if(!workTime.isPresent()) return ManageReGetClass.cantCalc();
 		/* 労働制 */
 		DailyCalculationPersonalInformation personalInfo = getPersonInfomation(integrationOfDaily, companyCommonSetting);
+		if(personalInfo==null) return ManageReGetClass.cantCalc(); 
 		/**
 		 * 勤務種類が休日系なら、所定時間の時間を変更する
 		 */
@@ -1068,8 +1069,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		// ドメインモデル「個人労働条件」を取得する
 		Optional<WorkingConditionItem> personalLablorCodition = companyCommonSetting.getPersonInfo();
 		
-		if (!personalLablorCodition.isPresent()) {
-			throw new RuntimeException("Can't get WorkingSystem");
+		if (personalLablorCodition!=null && !personalLablorCodition.isPresent()) {
+//			throw new RuntimeException("Can't get WorkingSystem");
+			return null;
 		}
 		// 労働制
 		return getOfStatutoryWorkTime.getDailyTimeFromStaturoyWorkTime(
