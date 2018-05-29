@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 960, height: 520 };</script>
+			<script>var dialogSize = { width: 960, height: 800 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName
 			</com:ValidatorScript>
@@ -80,7 +80,7 @@
 							<table tabindex="4" id="multi-list"
 								data-bind="ntsGridList: {
 													name: '#[KWR002_145]',
-													height: 139,
+													height: 417,
 													options: dataSource,
 													optionsValue: 'attendanceItemId',
 													columns: columns,
