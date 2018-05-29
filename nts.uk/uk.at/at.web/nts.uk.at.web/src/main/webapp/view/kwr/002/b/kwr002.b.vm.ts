@@ -160,7 +160,7 @@ module nts.uk.com.view.kwr002.b {
                     let data = self.createTransferData(currentData, rcdExport);
                     //update ARES
                     service.addARES(data).done((rs) => {
-                        self.callGetAll();
+                        self.callGetAll(self);
                     });
                 }
             } else { // in new mode
