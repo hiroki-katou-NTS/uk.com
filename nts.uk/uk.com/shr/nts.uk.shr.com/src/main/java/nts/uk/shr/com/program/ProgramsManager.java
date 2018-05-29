@@ -1828,13 +1828,11 @@ public class ProgramsManager {
 			"/view/kmw/006/f/index.xhtml");
 
 	/**
-	 * KWR002A
+	 * KWR002
 	 */
 	public static final Program KWR002A = new Program(WebAppId.COM, ProgramIdConsts.KWR002A, "KWR002_1",
 			"/view/kwr/002/a/index.xhtml");
-	/**
-	 * KWR002E
-	 */
+	public static final Program KWR002D = new Program(WebAppId.AT, ProgramIdConsts.KWR002D, "KWR002_4", "/view/kwr/002/d/index.xhtml");
 	public static final Program KWR002E = new Program(WebAppId.COM, ProgramIdConsts.KWR002E, "KWR002_5",
 			"/view/kwr/002/e/index.xhtml");
 	
