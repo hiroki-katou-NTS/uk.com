@@ -8,9 +8,10 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.CancelHolidayShipmentCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.HolidayShipmentCommand;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMng;
@@ -33,6 +34,8 @@ public class CreateHolidayWorkCommandHandler extends CommandHandlerWithResult<Cr
 	private ApplicationRepository_New applicationRepository_New;
 	@Inject
 	private BrkOffSupChangeMngRepository brkOffSupChangeMngRepository;
+	@Inject
+	private CancelHolidayShipmentCommandHandler cancelHolidayShipmentCommandHandler;
 	@Override
 	protected String handle(CommandHandlerContext<CreateHolidayWorkCommand> context) {
 		
@@ -67,10 +70,8 @@ public class CreateHolidayWorkCommandHandler extends CommandHandlerWithResult<Cr
 			// 9.振休申請取り消し
 			Optional<Application_New> optapplicationLeaveApp = this.applicationRepository_New.findByID(companyId, command.getLeaveAppID());
 			if(optapplicationLeaveApp.isPresent()){
-				Application_New applicationLeaveApp = optapplicationLeaveApp.get();
-				applicationLeaveApp.setVersion(applicationLeaveApp.getVersion());
-				applicationLeaveApp.getReflectionInformation().setStateReflectionReal(ReflectedState_New.CANCELED);
-				applicationRepository_New.update(applicationLeaveApp);
+				HolidayShipmentCommand commandHoliday = new HolidayShipmentCommand(command.getLeaveAppID(), null, optapplicationLeaveApp.get().getVersion(), null);	
+				this.cancelHolidayShipmentCommandHandler.handle(commandHoliday);
 			}
 			// 10.関連マスタ更新
 			BrkOffSupChangeMng brkOffSupChangeMng = new BrkOffSupChangeMng(appID, command.getLeaveAppID());
