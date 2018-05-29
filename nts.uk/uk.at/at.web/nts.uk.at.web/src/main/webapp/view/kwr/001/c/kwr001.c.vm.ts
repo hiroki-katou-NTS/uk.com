@@ -364,7 +364,13 @@ module nts.uk.at.view.kwr001.c {
                         self.currentCodeList(self.outputItemList()[indexCurrentCode+1].code);
                     }
                     self.getDataService().done(function(){
-                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                            if (_.isEmpty(self.currentCodeList())) {
+                                $('#C3_2').focus();
+                            } else {
+                                $('#C3_3').focus();
+                            }     
+                        });
                     })
                 })
             }
