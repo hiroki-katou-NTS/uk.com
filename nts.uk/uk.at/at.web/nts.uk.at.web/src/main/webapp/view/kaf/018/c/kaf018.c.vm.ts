@@ -145,7 +145,6 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         initExTable(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            shareModel.clearStorageExTable();
             self.getStatusSymbol().done(function(data: any) {
                 self.listApprovalEmployee = data.listAppSttEmp;
                 self.listDailyStatus = data.listDailyStt;
@@ -159,6 +158,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                         headerHeight: "30px", bodyRowHeight: "22px", bodyHeight: "330px",
                         horizontalSumBodyRowHeight: "0px",
                         areaResize: false,
+                        remainSizes: false,
                         bodyHeightMode: "fixed",
                         windowXOccupation: 50,
                         windowYOccupation: 20,
