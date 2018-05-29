@@ -1,8 +1,8 @@
 package nts.uk.ctx.pereg.app.find.person.setting.selectionitem;
 
 import lombok.Data;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoSelectionItem;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.SelectionItemClassification;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.PerInfoSelectionItem;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.SelectionItemClassification;
 
 @Data
 public class PerInfoSelectionItemDto {
