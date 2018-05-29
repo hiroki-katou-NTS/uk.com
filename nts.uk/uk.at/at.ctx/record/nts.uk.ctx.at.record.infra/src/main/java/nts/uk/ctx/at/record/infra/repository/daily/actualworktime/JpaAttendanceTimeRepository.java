@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.record.infra.repository.daily.actualworktime;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -387,5 +389,22 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 		
 //		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEEID_AND_DATE).setParameter("employeeId", employeeId)
 //				.setParameter("ymd", ymd).executeUpdate();
+	}
+
+	@Override
+	public List<AttendanceTimeOfDailyPerformance> finds(Map<String, GeneralDate> param) {
+		List<AttendanceTimeOfDailyPerformance> result = new ArrayList<>();
+		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDayAttendanceTime a ");
+		query.append("WHERE a.krcdtDayAttendanceTimePK.employeeID IN :employeeId ");
+		query.append("AND a.krcdtDayAttendanceTimePK.generalDate IN :date");
+		TypedQueryWrapper<KrcdtDayAttendanceTime> tQuery=  this.queryProxy().query(query.toString(), KrcdtDayAttendanceTime.class);
+		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
+			result.addAll(tQuery.setParameter("employeeId", p.keySet())
+							.setParameter("date", new HashSet<>(p.values()))
+							.getList().stream()
+							.filter(c -> c.krcdtDayAttendanceTimePK.generalDate.equals(p.get(c.krcdtDayAttendanceTimePK.employeeID)))
+							.map(x -> x.toDomain()).collect(Collectors.toList()));
+		});
+		return result;
 	}
 }

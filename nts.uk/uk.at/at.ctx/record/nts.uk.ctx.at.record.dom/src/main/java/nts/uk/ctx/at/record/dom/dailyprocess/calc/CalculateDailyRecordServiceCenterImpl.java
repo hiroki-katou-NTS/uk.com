@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Map.Entry;
 
 import javax.inject.Inject;
 
@@ -16,10 +15,8 @@ import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyRecordServiceCenter{
@@ -56,12 +53,13 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		
 		if(integrationOfDaily.isEmpty()) return Collections.emptyList();
 		//会社共通の設定を
-		val companyCommonSetting = new ManagePerCompanySet(holidayAddtionRepository.findByCompanyId(AppContexts.user().companyId()),
-														   holidayAddtionRepository.findByCId(AppContexts.user().companyId()),
-														   specificWorkRuleRepository.findCalcMethodByCid(AppContexts.user().companyId()),
-														   compensLeaveComSetRepository.find(AppContexts.user().companyId()),
-														   divergenceTimeRepository.getAllDivTime(AppContexts.user().companyId()),
-														   errorAlarmWorkRecordRepository.getListErrorAlarmWorkRecord(AppContexts.user().companyId()));
+		String companyId = AppContexts.user().companyId();
+		val companyCommonSetting = new ManagePerCompanySet(holidayAddtionRepository.findByCompanyId(companyId),
+														   holidayAddtionRepository.findByCId(companyId),
+														   specificWorkRuleRepository.findCalcMethodByCid(companyId),
+														   compensLeaveComSetRepository.find(companyId),
+														   divergenceTimeRepository.getAllDivTime(companyId),
+														   errorAlarmWorkRecordRepository.getAllErAlCompanyAndUseAtr(companyId, true));
 
 		EmploymentCode nowEmpCode = new EmploymentCode("");
 		String employeeId = "";

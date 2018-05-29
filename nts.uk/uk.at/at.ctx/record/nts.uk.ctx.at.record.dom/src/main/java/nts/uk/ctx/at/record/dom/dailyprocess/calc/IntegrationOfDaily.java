@@ -43,10 +43,10 @@ public class IntegrationOfDaily {
 	//日別実績の所属情報
 	private AffiliationInforOfDailyPerfor affiliationInfor;
 	
-	/**日別実績の勤務種別*/
-	private WorkTypeOfDailyPerformance businessType;
-	
 	/**-------------Optional--------------**/
+	/**日別実績の勤務種別*/
+	private Optional<WorkTypeOfDailyPerformance> businessType;
+	
 	//日別実績のPCログオン情報
 	private Optional<PCLogOnInfoOfDaily> pcLogOnInfo;
 	//社員の日別実績エラー一覧
@@ -102,7 +102,7 @@ public class IntegrationOfDaily {
 	 * @param tempTime 日別実績の臨時出退勤
 	 */
 	public IntegrationOfDaily(WorkInfoOfDailyPerformance workInformation, CalAttrOfDailyPerformance calAttr,
-			AffiliationInforOfDailyPerfor affiliationInfor, WorkTypeOfDailyPerformance businessType,
+			AffiliationInforOfDailyPerfor affiliationInfor, Optional<WorkTypeOfDailyPerformance> businessType,
 			Optional<PCLogOnInfoOfDaily> pcLogOnInfo,
 			List<EmployeeDailyPerError> employeeError, Optional<OutingTimeOfDailyPerformance> outingTime,
 			List<BreakTimeOfDailyPerformance> breakTime,

@@ -223,6 +223,12 @@ public class ErAlWorkRecordCheckService {
 	
 	private boolean canCheck(BusinessTypeOfDailyPerforDto budinessType, AffiliationInforOfDailyPerforDto affiliation, 
 			GeneralDate workingDate, AlCheckTargetCondition checkCondition){
+		if(isTrue(checkCondition.getFilterByBusinessType())){
+			if(!budinessType.isHaveData() || !checkCondition.getLstBusinessTypeCode()
+					.contains(new BusinessTypeCode(budinessType.getBusinessTypeCode()))){
+				return false;
+			}
+		}
 		if(isTrue(checkCondition.getFilterByEmployment())){
 			if(!checkCondition.getLstEmploymentCode().contains(new EmploymentCode(affiliation.getEmploymentCode()))){
 				return false;
@@ -235,11 +241,6 @@ public class ErAlWorkRecordCheckService {
 		}
 		if(isTrue(checkCondition.getFilterByJobTitle())){
 			if(!checkCondition.getLstJobTitleId().contains(affiliation.getJobId())){
-				return false;
-			}
-		}
-		if(isTrue(checkCondition.getFilterByBusinessType())){
-			if(!checkCondition.getLstBusinessTypeCode().contains(new BusinessTypeCode(budinessType.getBusinessTypeCode()))){
 				return false;
 			}
 		}
@@ -263,7 +264,8 @@ public class ErAlWorkRecordCheckService {
 			if(checkCondition.getCheckTargetCondtion() == null){
 				return null;
 			}
-			if(!canCheck(c.getBusinessType(), c.getAffiliationInfo(), workingDate, checkCondition.getCheckTargetCondtion())){
+			if(!canCheck(c.getBusinessType().orElse(new BusinessTypeOfDailyPerforDto()), c.getAffiliationInfo(), 
+					workingDate, checkCondition.getCheckTargetCondtion())){
 				return null;
 			}
 			boolean result = checkErrorAlarmCondition(c, checkCondition);
@@ -328,7 +330,8 @@ public class ErAlWorkRecordCheckService {
 		if(condition.getCheckTargetCondtion() == null){
 			return false;
 		}
-		if(!canCheck(record.getBusinessType(), record.getAffiliationInfo(), record.getDate(), condition.getCheckTargetCondtion())){
+		if(!canCheck(record.getBusinessType().orElse(new BusinessTypeOfDailyPerforDto()), record.getAffiliationInfo(), 
+				record.getDate(), condition.getCheckTargetCondtion())){
 			return false;
 		}
 		WorkInfoOfDailyPerformance workInfo = record.getWorkInfo().toDomain(record.employeeId(), record.getDate());

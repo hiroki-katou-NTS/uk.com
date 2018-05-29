@@ -282,7 +282,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 					workInf.get(),
 					calAttr,
 					affiInfo.get(),
-					businessType.get(),
+					businessType,
 					pcLogOnInfoOfDailyRepo.find(employeeId, attendanceTime.getYmd()),/** リポジトリ：日別実績のPCログオン情報 */
 					employeeDailyPerErrorRepository.findByPeriodOrderByYmd(employeeId, datePeriod),/** リポジトリ:社員の日別実績エラー一覧 */
 					outingTimeOfDailyPerformanceRepository.findByEmployeeIdAndDate(employeeId, attendanceTime.getYmd()),/** リポジトリ：日別実績の外出時間帯 */

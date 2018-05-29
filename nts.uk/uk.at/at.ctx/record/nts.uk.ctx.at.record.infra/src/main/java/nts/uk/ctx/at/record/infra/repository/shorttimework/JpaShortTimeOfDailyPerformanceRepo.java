@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.record.infra.repository.shorttimework;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -116,6 +118,29 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEEID_AND_DATE).setParameter("employeeId", employeeId)
 				.setParameter("ymd", ymd).executeUpdate();
 		this.getEntityManager().flush();
+	}
+
+	@Override
+	public List<ShortTimeOfDailyPerformance> finds(Map<String, GeneralDate> param) {
+		List<ShortTimeOfDailyPerformance> result = new ArrayList<>();
+		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDaiShortWorkTime a ");
+		query.append("WHERE a.krcdtDaiShortWorkTimePK.sid IN :employeeId ");
+		query.append("AND a.krcdtDaiShortWorkTimePK.ymd <= :date");
+		TypedQueryWrapper<KrcdtDaiShortWorkTime> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiShortWorkTime.class);
+		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
+			result.addAll(tQuery.setParameter("employeeId", p.keySet())
+								.setParameter("date", new HashSet<>(p.values()))
+								.getList().stream()
+								.filter(c -> c.krcdtDaiShortWorkTimePK.ymd.equals(p.get(c.krcdtDaiShortWorkTimePK.sid)))
+								.collect(Collectors.groupingBy(
+										c -> c.krcdtDaiShortWorkTimePK.sid + c.krcdtDaiShortWorkTimePK.ymd.toString()))
+								.entrySet().stream()
+								.map(c -> new ShortTimeOfDailyPerformance(c.getValue().get(0).krcdtDaiShortWorkTimePK.sid,
+												c.getValue().stream().map(x -> shortWorkTime(x)).collect(Collectors.toList()),
+												c.getValue().get(0).krcdtDaiShortWorkTimePK.ymd))
+								.collect(Collectors.toList()));
+		});
+		return result;
 	}
 
 }

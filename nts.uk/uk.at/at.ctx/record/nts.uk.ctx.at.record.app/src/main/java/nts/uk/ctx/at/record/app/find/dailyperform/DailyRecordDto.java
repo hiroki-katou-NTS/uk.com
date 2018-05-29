@@ -53,8 +53,8 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	private AffiliationInforOfDailyPerforDto affiliationInfo;
 
 	/** 日別実績の勤務種別 */
-	@AttendanceItemLayout(layout = "D", jpPropertyName = "日別実績の勤務種別")
-	private BusinessTypeOfDailyPerforDto businessType;
+	@AttendanceItemLayout(layout = "D", jpPropertyName = "日別実績の勤務種別", isOptional = true)
+	private Optional<BusinessTypeOfDailyPerforDto> businessType = Optional.empty();
 
 	/** エラー一覧： 社員の日別実績エラー一覧 */
 	// TODO: list?
@@ -119,7 +119,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 			dto.setWorkInfo(WorkInformationOfDailyDto.getDto(domain.getWorkInformation()));
 			dto.setCalcAttr(CalcAttrOfDailyPerformanceDto.getDto(domain.getCalAttr()));
 			dto.setAffiliationInfo(AffiliationInforOfDailyPerforDto.getDto(domain.getAffiliationInfor()));
-			dto.setBusinessType(BusinessTypeOfDailyPerforDto.getDto(domain.getBusinessType()));
+			dto.setBusinessType(domain.getBusinessType().map(b -> BusinessTypeOfDailyPerforDto.getDto(b)));
 			if(domain.getEmployeeError() != null && !domain.getEmployeeError().isEmpty()) {
 				dto.setErrors(EmployeeDailyPerErrorDto.getDto(domain.getEmployeeError().get(0)));
 			}
@@ -155,7 +155,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	}
 
 	public DailyRecordDto withBusinessType(BusinessTypeOfDailyPerforDto businessType) {
-		this.businessType = businessType;
+		this.businessType = Optional.ofNullable(businessType);
 		return this;
 	}
 
@@ -306,7 +306,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 				this.workInfo == null ? null : this.workInfo.toDomain(employeeId, date), 
 				this.calcAttr == null ? null : this.calcAttr.toDomain(employeeId, date), 
 				this.affiliationInfo == null ? null : this.affiliationInfo.toDomain(employeeId, date),
-				this.businessType == null ? null : this.businessType.toDomain(employeeId, date),
+				this.businessType.map(b -> b.toDomain(employeeId, date)),
 				this.pcLogInfo.map(pc -> pc.toDomain(employeeId, date)),
 				this.errors == null ? new ArrayList<>() : Arrays.asList(this.errors.toDomain(employeeId, date)),
 				this.outingTime.map(ot -> ot.toDomain(employeeId, date)),

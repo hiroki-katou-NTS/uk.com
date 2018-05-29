@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.record.infra.repository.calculationattribute;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -269,6 +271,45 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 		this.getEntityManager().createQuery(REMOVE_BY_KEY).setParameter("employeeId", employeeId)
 				.setParameter("ymd", baseDate).executeUpdate();
 		this.getEntityManager().flush();
+	}
+
+	@Override
+	public List<CalAttrOfDailyPerformance> finds(Map<String, GeneralDate> param) {
+		List<CalAttrOfDailyPerformance> result = new ArrayList<>();
+		StringBuilder builder = new StringBuilder("SELECT c FROM KrcstDaiCalculationSet c ");
+		builder.append("WHERE c.krcstDaiCalculationSetPK.sid IN :ids ");
+		builder.append("AND c.krcstDaiCalculationSetPK.ymd IN :date");
+		TypedQueryWrapper<KrcstDaiCalculationSet> tCalcQuery=  this.queryProxy().query(builder.toString(), KrcstDaiCalculationSet.class);
+		TypedQueryWrapper<KrcstOtAutoCalSet> tOtQuery=  this.queryProxy()
+						.query("SELECT c FROM KrcstOtAutoCalSet c WHERE c.overTimeWorkId IN :ids", KrcstOtAutoCalSet.class);
+		TypedQueryWrapper<KrcstFlexAutoCalSet> tFlexQuery=  this.queryProxy()
+						.query("SELECT c FROM KrcstFlexAutoCalSet c WHERE c.flexExcessTimeId IN :ids", KrcstFlexAutoCalSet.class);
+		TypedQueryWrapper<KrcstHolAutoCalSet> tHolQuery=  this.queryProxy()
+						.query("SELECT c FROM KrcstHolAutoCalSet c WHERE c.holWorkTimeId IN :ids", KrcstHolAutoCalSet.class);
+		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
+			List<KrcstDaiCalculationSet> calces = tCalcQuery.setParameter("ids", p.keySet())
+								.setParameter("date", new HashSet<>(p.values())).getList();
+			calces = calces.stream().filter(c -> c.krcstDaiCalculationSetPK.ymd.equals(p.get(c.krcstDaiCalculationSetPK.sid)))
+									.collect(Collectors.toList());
+			if (!calces.isEmpty()) {
+				List<KrcstOtAutoCalSet> ots = tOtQuery.setParameter("ids", 
+						calces.stream().map(c -> c.overTimeWorkId).collect(Collectors.toList())).getList();
+				List<KrcstFlexAutoCalSet> flexes = tFlexQuery.setParameter("ids", 
+						calces.stream().map(c -> c.flexExcessTimeId).collect(Collectors.toList())).getList();
+				List<KrcstHolAutoCalSet> holies = tHolQuery.setParameter("ids", 
+						calces.stream().map(c -> c.holWorkTimeId).collect(Collectors.toList())).getList();
+				result.addAll(calces.stream().map(c -> {
+					KrcstFlexAutoCalSet flex = flexes.stream().filter(f -> f.flexExcessTimeId.equals(c.flexExcessTimeId))
+							.findFirst().orElse(null);
+					KrcstOtAutoCalSet ot = ots.stream().filter(f -> f.overTimeWorkId.equals(c.overTimeWorkId)).findFirst()
+							.orElse(null);
+					KrcstHolAutoCalSet holi = holies.stream().filter(f -> f.holWorkTimeId.equals(c.holWorkTimeId)).findFirst()
+							.orElse(null);
+					return toDomain(c, flex, holi, ot);
+				}).collect(Collectors.toList()));
+			}
+		});
+		return result;
 	}
 
 }

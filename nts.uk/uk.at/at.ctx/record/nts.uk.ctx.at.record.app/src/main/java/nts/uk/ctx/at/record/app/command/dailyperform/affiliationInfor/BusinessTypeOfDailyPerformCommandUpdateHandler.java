@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
 
@@ -15,7 +16,9 @@ public class BusinessTypeOfDailyPerformCommandUpdateHandler extends CommandFacad
 
 	@Override
 	protected void handle(CommandHandlerContext<BusinessTypeOfDailyPerformCommand> context) {
-		repo.update(context.getCommand().toDomain());
+		context.getCommand().getData().ifPresent(d -> {
+			repo.update((WorkTypeOfDailyPerformance) d.toDomain());
+		});
 	}
 
 }

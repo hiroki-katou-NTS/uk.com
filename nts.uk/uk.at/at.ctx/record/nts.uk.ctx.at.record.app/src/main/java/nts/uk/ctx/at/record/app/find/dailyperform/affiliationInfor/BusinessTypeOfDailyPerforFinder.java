@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -32,5 +33,12 @@ public class BusinessTypeOfDailyPerforFinder extends FinderFacade {
 	public <T extends ConvertibleAttendanceItem> List<T> find(List<String> employeeId, DatePeriod baseDate) {
 		return (List<T>) this.repo.finds(employeeId, baseDate).stream()
 				.map(c -> BusinessTypeOfDailyPerforDto.getDto(c)).collect(Collectors.toList());
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends ConvertibleAttendanceItem> List<T> find(Map<String, GeneralDate> param) {
+		return (List<T>) this.repo.finds(param).stream()
+			.map(c -> BusinessTypeOfDailyPerforDto.getDto(c)).collect(Collectors.toList());
 	}
 }

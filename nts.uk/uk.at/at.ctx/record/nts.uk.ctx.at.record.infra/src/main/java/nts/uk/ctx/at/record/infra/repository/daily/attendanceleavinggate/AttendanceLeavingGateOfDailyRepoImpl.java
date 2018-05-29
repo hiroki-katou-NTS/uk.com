@@ -2,9 +2,12 @@ package nts.uk.ctx.at.record.infra.repository.daily.attendanceleavinggate;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 
@@ -50,14 +53,16 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 		return toList(this.queryProxy()
 				.query("SELECT al FROM KrcdtDayLeaveGate al WHERE al.id.sid = :sid AND al.id.ymd IN :ymd",
 						KrcdtDayLeaveGate.class)
-				.setParameter("ymd", baseDate).setParameter("sid", employeeId));
+				.setParameter("ymd", baseDate).setParameter("sid", employeeId)
+				.getList().stream());
 	}
 
 	@Override
 	public List<AttendanceLeavingGateOfDaily> find(String employeeId) {
 		return toList(this.queryProxy()
 				.query("SELECT al FROM KrcdtDayLeaveGate al WHERE al.id.sid = :sid", KrcdtDayLeaveGate.class)
-				.setParameter("sid", employeeId));
+				.setParameter("sid", employeeId)
+				.getList().stream());
 	}
 
 	@Override
@@ -71,7 +76,26 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
 			result.addAll(toList(tQuery.setParameter("sid", empIds)
 										.setParameter("end", baseDate.end())
-										.setParameter("start", baseDate.start())));
+										.setParameter("start", baseDate.start())
+										.getList().stream()));
+		});
+		return result;
+	}
+
+	@Override
+	public List<AttendanceLeavingGateOfDaily> finds(Map<String, GeneralDate> param) {
+		if (param.isEmpty()) {
+			return Collections.emptyList();
+		}
+		List<AttendanceLeavingGateOfDaily> result = new ArrayList<>();
+		String query = "SELECT al FROM KrcdtDayLeaveGate al WHERE al.id.sid IN :sid AND al.id.ymd IN :date";
+		TypedQueryWrapper<KrcdtDayLeaveGate> tQuery=  this.queryProxy().query(query, KrcdtDayLeaveGate.class);
+		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
+			result.addAll(toList(tQuery.setParameter("sid", p.keySet())
+										.setParameter("date", new HashSet<>(p.values()))
+										.getList().stream()
+										.filter(c -> c.id.ymd.equals(p.get(c.id.sid)))
+										));
 		});
 		return result;
 	}
@@ -129,9 +153,8 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 				.setParameter("employeeId", employeeId).setParameter("ymd", baseDate);
 	}
 
-	private List<AttendanceLeavingGateOfDaily> toList(TypedQueryWrapper<KrcdtDayLeaveGate> query) {
-		return query.getList().stream()
-				.collect(Collectors.groupingBy(c -> c.id.sid + c.id.ymd.toString(), Collectors.toList()))
+	private List<AttendanceLeavingGateOfDaily> toList(Stream<KrcdtDayLeaveGate> query) {
+		return query.collect(Collectors.groupingBy(c -> c.id.sid + c.id.ymd.toString(), Collectors.toList()))
 				.entrySet().stream()
 				.map(c -> new AttendanceLeavingGateOfDaily(c.getValue().get(0).id.sid, c.getValue().get(0).id.ymd,
 						c.getValue().stream().map(pc -> pc.toDomain()).collect(Collectors.toList())))

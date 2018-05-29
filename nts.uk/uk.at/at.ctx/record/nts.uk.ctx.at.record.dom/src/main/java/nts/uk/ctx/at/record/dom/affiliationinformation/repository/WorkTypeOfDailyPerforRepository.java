@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.affiliationinformation.repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -18,5 +19,7 @@ public interface WorkTypeOfDailyPerforRepository {
 	Optional<WorkTypeOfDailyPerformance> findByKey(String employeeId, GeneralDate processingDate);
 	
 	List<WorkTypeOfDailyPerformance> finds(List<String> employeeId, DatePeriod baseDate);
+	
+	List<WorkTypeOfDailyPerformance> finds(Map<String, GeneralDate> param);
 
 }

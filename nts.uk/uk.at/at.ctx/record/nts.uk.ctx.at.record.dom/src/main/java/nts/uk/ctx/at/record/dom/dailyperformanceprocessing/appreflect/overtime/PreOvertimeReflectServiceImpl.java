@@ -175,7 +175,7 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 		IntegrationOfDaily integration = new IntegrationOfDaily(workInfor, 
 				calAtrrOfDailyData, 
 				findByKey.get(),
-				workType.get(),
+				workType,
 				pcLogOnDarta, 
 				findEror, 
 				findByEmployeeIdAndDate, 
