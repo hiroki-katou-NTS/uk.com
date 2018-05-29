@@ -12,6 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutManagementDataRepository;
+import nts.uk.ctx.at.record.infra.entity.remainingnumber.paymana.KrcmtPayoutManaData;
 
 
 @Stateless
