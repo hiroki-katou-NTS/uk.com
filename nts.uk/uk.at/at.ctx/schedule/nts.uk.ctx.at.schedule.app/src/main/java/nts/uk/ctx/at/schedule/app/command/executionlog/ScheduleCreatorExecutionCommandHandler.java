@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.command.executionlog;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -22,6 +23,8 @@ import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeBasicS
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeMonthlyPatternHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTimeHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTypeHandler;
+import nts.uk.ctx.at.schedule.dom.adapter.employmentstatus.EmploymentStatusAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.employmentstatus.EmploymentStatusImported;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.ScEmployeeGeneralInfoAdapter;
@@ -117,6 +120,9 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 	@Inject
 	private ScEmployeeGeneralInfoAdapter scEmpGeneralInfoAdapter;
+
+	@Inject
+	private EmploymentStatusAdapter employmentStatusAdapter;
 
 	/** The Constant DEFAULT_CODE. */
 	public static final String DEFAULT_CODE = "000";
@@ -312,7 +318,8 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 */
 	private void createScheduleBasedPerson(ScheduleCreatorExecutionCommand command, ScheduleCreator creator,
 			ScheduleExecutionLog domain, CommandHandlerContext<ScheduleCreatorExecutionCommand> context,
-			DatePeriod dateAfterCorrection, EmployeeGeneralInfoImported empGeneralInfo) {
+			DatePeriod dateAfterCorrection, EmployeeGeneralInfoImported empGeneralInfo,
+			List<EmploymentStatusImported> listEmploymentStatus) {
 
 		// get info by context
 		val asyncTask = context.asAsync();
@@ -348,13 +355,13 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 						.getBasicCreateMethod() == WorkScheduleBasicCreMethod.BUSINESS_DAY_CALENDAR) {
 					// アルゴリズム「営業日カレンダーで勤務予定を作成する」を実行する
 					this.createWorkScheduleByBusinessDayCalenda(command, domain, workingConditionItem.get(), context,
-							empGeneralInfo);
+							empGeneralInfo, listEmploymentStatus);
 				} else if (workingConditionItem.get().getScheduleMethod().get()
 						.getBasicCreateMethod() == WorkScheduleBasicCreMethod.MONTHLY_PATTERN) {
 					// アルゴリズム「月間パターンで勤務予定を作成する」を実行する
 					// create schedule by monthly pattern
 					this.scheCreExeMonthlyPatternHandler.createScheduleWithMonthlyPattern(command,
-							workingConditionItem.get(), empGeneralInfo);
+							workingConditionItem.get(), empGeneralInfo, listEmploymentStatus);
 				} else {
 					// アルゴリズム「個人曜日別で勤務予定を作成する」を実行する
 					// TODO
@@ -381,8 +388,8 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 */
 	private void createWorkScheduleByBusinessDayCalenda(ScheduleCreatorExecutionCommand command,
 			ScheduleExecutionLog domain, WorkingConditionItem workingConditionItem,
-			CommandHandlerContext<ScheduleCreatorExecutionCommand> context,
-			EmployeeGeneralInfoImported empGeneralInfo) {
+			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, EmployeeGeneralInfoImported empGeneralInfo,
+			List<EmploymentStatusImported> listEmploymentStatus) {
 		// アルゴリズム「在職状態を取得」を実行し、在職状態を判断: get status employment
 		EmploymentStatusDto employmentStatus = this.scheCreExeWorkTimeHandler
 				.getStatusEmployment(workingConditionItem.getEmployeeId(), command.getToDate());
@@ -407,7 +414,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				// check parameter implementAtr recreate (入力パラメータ「実施区分」を判断)
 				if (command.getContent().getImplementAtr().value == ImplementAtr.RECREATE.value) {
 					this.createWorkScheduleByRecreate(command, basicSchedule, workingConditionItem, employmentStatus,
-							empGeneralInfo);
+							empGeneralInfo, listEmploymentStatus);
 				}
 			} else {
 				// 登録前削除区分をTrue（削除する）とする
@@ -431,7 +438,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 */
 	private void createWorkScheduleByRecreate(ScheduleCreatorExecutionCommand command, BasicSchedule basicSchedule,
 			WorkingConditionItem workingConditionItem, EmploymentStatusDto employmentStatus,
-			EmployeeGeneralInfoImported empGeneralInfo) {
+			EmployeeGeneralInfoImported empGeneralInfo, List<EmploymentStatusImported> listEmploymentStatus) {
 		// 入力パラメータ「再作成区分」を判断 - check parameter ReCreateAtr onlyUnconfirm
 		// 取得したドメインモデル「勤務予定基本情報」の「予定確定区分」を判断
 		// (kiểm tra thông tin 「予定確定区分」 của domain 「勤務予定基本情報」)
@@ -439,7 +446,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				|| basicSchedule.getConfirmedAtr().equals(ConfirmedAtr.UNSETTLED)) {
 			// アルゴリズム「スケジュール作成判定処理」を実行する
 			if (this.scheCreExeMonthlyPatternHandler.scheduleCreationDeterminationProcess(command, basicSchedule,
-					employmentStatus, workingConditionItem)) {
+					employmentStatus, workingConditionItem, listEmploymentStatus)) {
 				this.scheCreExeWorkTypeHandler.createWorkSchedule(command, workingConditionItem, empGeneralInfo);
 			}
 		}
@@ -464,6 +471,9 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			this.executionLogCreationProcess(scheduleExecutionLog, scheduleCreateContent, scheduleCreators);
 		}
 
+		DatePeriod dateAfterCorrection = new DatePeriod(scheduleExecutionLog.getPeriod().start(),
+				scheduleExecutionLog.getPeriod().end());
+
 		// get all data creator
 		List<ScheduleCreator> scheduleCreators = this.scheduleCreatorRepository.findAll(exeId);
 		List<String> employeeIds = scheduleCreators.stream().map(item -> item.getEmployeeId())
@@ -471,6 +481,11 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 		EmployeeGeneralInfoImported empGeneralInfo = this.scEmpGeneralInfoAdapter.getPerEmpInfo(employeeIds,
 				scheduleExecutionLog.getPeriod());
+
+		// List<EmploymentStatusImported> listEmploymentStatus =
+		// this.employmentStatusAdapter
+		// .findListOfEmployee(employeeIds, dateAfterCorrection);
+		List<EmploymentStatusImported> listEmploymentStatus = new ArrayList<>();
 
 		// get info by context
 		val asyncTask = context.asAsync();
@@ -485,8 +500,6 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				break;
 			}
 			// アルゴリズム「対象期間を締め開始日以降に補正する」を実行する
-			DatePeriod dateAfterCorrection = new DatePeriod(scheduleExecutionLog.getPeriod().start(),
-					scheduleExecutionLog.getPeriod().end());
 			boolean isTargetPeriod = this.correctTargetPeriodAfterClosingStartDate(command.getCompanyId(),
 					scheduleCreator.getEmployeeId(), dateAfterCorrection, empGeneralInfo);
 			if (!isTargetPeriod)
@@ -509,7 +522,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				// 入力パラメータ「作成方法区分」を判断-check parameter CreateMethodAtr
 				if (command.getContent().getCreateMethodAtr() == CreateMethodAtr.PERSONAL_INFO) {
 					this.createScheduleBasedPerson(command, scheduleCreator, scheduleExecutionLog, context,
-							dateAfterCorrection, empGeneralInfo);
+							dateAfterCorrection, empGeneralInfo, listEmploymentStatus);
 				}
 			}
 			scheduleCreator.updateToCreated();
