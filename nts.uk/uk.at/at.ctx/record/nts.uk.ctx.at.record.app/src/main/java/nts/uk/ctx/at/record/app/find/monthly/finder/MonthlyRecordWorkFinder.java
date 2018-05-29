@@ -79,7 +79,7 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 		List<AttendanceTimeOfMonthlyDto> att = attendanceTime.find(employeeId, yearMonth);
 		List<AnyItemOfMonthlyDto> any = anyItemFinder.find(employeeId, yearMonth);
 		List<AnnLeaRemNumEachMonthDto> ann = annLeaFinder.find(employeeId, yearMonth);
-		List<RsvLeaRemNumEachMonthDto> rsv = anyItemFinder.find(employeeId, yearMonth);
+		List<RsvLeaRemNumEachMonthDto> rsv = rsvLeaFinder.find(employeeId, yearMonth);
 		return (List<T>) aff.stream().map(a -> {
 			MonthlyRecordWorkDto dto = new MonthlyRecordWorkDto();
 			dto.setClosureDate(a.getClosureDate());
