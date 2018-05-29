@@ -345,6 +345,9 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"WHERE ic.ppemtPerInfoItemCmPK.contractCd =:contractCd AND  (ic.ppemtPerInfoItemCmPK.itemCd IN :itemCdLst OR ic.itemParentCd IN :itemCdLst) ",
 			" AND ic.ppemtPerInfoItemCmPK.categoryCd =:categoryCd AND i.perInfoCtgId =:ctgId",
 			"ORDER BY io.disporder");
+	
+	private final static String SELECT_ALL_DISORDER__BY_CTC_ID_QUERY = String.join(" ",
+			"SELECT  o FROM PpemtPerInfoItemOrder o WHERE o.perInfoCtgId =:perInfoCtgId ");
 
 
 	@Override
@@ -795,6 +798,12 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	}
 	// Sonnlb Code start
 
+	private PerInfoItemDefOrder toDomainItemOrder(PpemtPerInfoItemOrder entity) {
+		return new PerInfoItemDefOrder(String.valueOf(entity.ppemtPerInfoItemPK.perInfoItemDefId),
+				String.valueOf(entity.perInfoCtgId), Integer.parseInt(String.valueOf(entity.disporder)),
+				Integer.parseInt(String.valueOf(entity.displayOrder)));
+	}
+	
 	@Override
 	public void updatePerInfoItemDef(PersonInfoItemDefinition perInfoItemDef) {
 		this.commandProxy().update(createPerInfoItemDefFromDomain(perInfoItemDef));
@@ -1087,5 +1096,10 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		}
 	}
 
+	@Override
+	public List<PerInfoItemDefOrder> getItemOrderByCtgId(String ctgId) {
+		return this.queryProxy().query(SELECT_ALL_DISORDER__BY_CTC_ID_QUERY, PpemtPerInfoItemOrder.class)
+				.setParameter("perInfoCtgId", ctgId).getList( c -> toDomainItemOrder(c));
+	}
 }
 

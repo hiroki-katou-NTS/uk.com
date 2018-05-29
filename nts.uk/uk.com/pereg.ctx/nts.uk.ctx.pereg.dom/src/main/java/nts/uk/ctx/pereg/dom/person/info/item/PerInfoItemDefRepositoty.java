@@ -139,6 +139,7 @@ public interface PerInfoItemDefRepositoty {
 	List<PersonInfoItemDefinition> getItemLstByListId(List<String> listItemDefId, String ctgId, String categoryCd,
 			String contractCd);
 
+	List<PerInfoItemDefOrder> getItemOrderByCtgId(String ctgId);
 	String getItemName(String contractCode, String companyId, String categoryCode, String itemCode);
 	
 	List<PersonInfoItemDefinition> getAllItemId(List<String> ctgIdLst, List<String> itemCodeLst);

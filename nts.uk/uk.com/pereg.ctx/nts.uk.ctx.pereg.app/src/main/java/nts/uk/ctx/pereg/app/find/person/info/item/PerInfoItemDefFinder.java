@@ -40,9 +40,9 @@ import nts.uk.ctx.pereg.dom.person.info.stringitem.StringItemDataType;
 import nts.uk.ctx.pereg.dom.person.info.stringitem.StringItemType;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.SelectionItemClassification;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.Selection;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionRepository;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.primitive.SelectionItemClassification;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
@@ -560,5 +560,20 @@ public class PerInfoItemDefFinder {
 
 		return itemDefs.stream().map(x -> new SimpleItemDef(x.getItemCode().v(), x.getItemName().v(),
 				x.getIsAbolition() == IsAbolition.NOT_ABOLITION)).collect(Collectors.toList());
+	}
+	
+
+	public List<ItemOrder> getAllItemOrderByCtgId(String ctgId, List<String> itemId, String ctgCode) {
+		String contractCd = AppContexts.user().contractCode();
+		List<PersonInfoItemDefinition> itemLst = this.pernfoItemDefRep.getItemLstByListId(itemId, ctgId, ctgCode,
+				contractCd);
+		List<PerInfoItemDefOrder> itemOrder = this.pernfoItemDefRep.getItemOrderByCtgId(ctgId);
+		return itemLst.stream().map(c -> {
+			PerInfoItemDefOrder io = itemOrder.stream()
+					.filter(order -> order.getPerInfoItemDefId().equals(c.getPerInfoItemDefId())).findFirst().get();
+				return new ItemOrder(io.getPerInfoItemDefId(), io.getPerInfoCtgId(), c.getItemCode().v(),
+						c.getItemParentCode().v(), io.getDispOrder().v(), io.getDisplayOrder().v());
+		}).collect(Collectors.toList());
+
 	}
 }

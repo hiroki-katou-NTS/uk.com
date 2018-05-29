@@ -18,7 +18,7 @@ public class OptionalItemOfDailyPerformCommandAddHandler extends CommandFacade<O
 	protected void handle(CommandHandlerContext<OptionalItemOfDailyPerformCommand> context) {
 		OptionalItemOfDailyPerformCommand command = context.getCommand();
 		if(command.getData().isPresent()){
-			repo.add(command.getData().get());
+			repo.add(command.toDomain().get());
 		}
 	}
 

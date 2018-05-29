@@ -4,7 +4,6 @@
 package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -43,6 +42,6 @@ public class KrcstErAlApplicationPK implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "APP_TYPE_CD")
-    public BigDecimal appTypeCd;
+    public int appTypeCd;
 	
 }
