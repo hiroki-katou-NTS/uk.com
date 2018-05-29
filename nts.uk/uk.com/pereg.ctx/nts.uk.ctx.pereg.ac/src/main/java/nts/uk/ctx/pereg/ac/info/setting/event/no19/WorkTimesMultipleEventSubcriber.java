@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.layer.dom.event.DomainEventSubscriber;
+import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleDomainEvent;
 import nts.uk.ctx.pereg.dom.person.info.category.IsAbolition;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
@@ -17,13 +19,13 @@ import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * Event:複数回勤務項目の廃止区分の切り替え
+ * Event:複数回勤務項目の廃止区分の切り替え WorkManagementMultipleDomainEvent
  * 
  * @author lanlt
  *
  */
 @Stateless
-public class WorkTimesMultipleEventSubcriber {
+public class WorkTimesMultipleEventSubcriber implements DomainEventSubscriber<WorkManagementMultipleDomainEvent>{
 	@Inject
 	private PerInfoCategoryRepositoty ctgRepo;
 
@@ -38,9 +40,15 @@ public class WorkTimesMultipleEventSubcriber {
 			"IS00207", "IS00208", "IS00209", "IS00216", "IS00217", "IS00218", "IS00225", "IS00226", "IS00227",
 			"IS00234", "IS00235", "IS00236", "IS00243", "IS00244", "IS00245", "IS00189", "IS00190", "IS00191" });
 
-	private void updateItem(boolean params) {
+	@Override
+	public Class<WorkManagementMultipleDomainEvent> subscribedToEventType() {
+		return WorkManagementMultipleDomainEvent.class;
+	}
+
+	@Override
+	public void handle(WorkManagementMultipleDomainEvent domainEvent) {
 		List<PersonInfoItemDefinition> itemUpdateLst = new ArrayList<>();
-		itemUpdateLst.addAll(setAbolition( getItemLst() , params));
+		itemUpdateLst.addAll(setAbolition( getItemLst() , domainEvent.isUseAtr()));
 		if (itemUpdateLst.size() > 0)
 			this.itemRepo.updateAbolitionItem(itemUpdateLst);
 	}
@@ -65,4 +73,6 @@ public class WorkTimesMultipleEventSubcriber {
 		}
 		return itemUpdateLst;
 	}
+
+
 }
