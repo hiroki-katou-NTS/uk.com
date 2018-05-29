@@ -160,6 +160,7 @@ module nts.uk.com.view.kwr002.b {
                     let data = self.createTransferData(currentData, rcdExport);
                     //update ARES
                     service.addARES(data).done((rs) => {
+                        self.callGetAll();
                     });
                 }
             } else { // in new mode
@@ -173,6 +174,7 @@ module nts.uk.com.view.kwr002.b {
                             let data = self.createTransferData(currentData, rcdExport);
                             //add new ARES
                             service.addARES(data).done((rs) => {
+                                self.callGetAll(self);
                             });
                         }
                     }
@@ -180,6 +182,20 @@ module nts.uk.com.view.kwr002.b {
             }
 
             nts.uk.ui.block.clear();
+        };
+        
+        callGetAll(self) {
+            service.getAllARES().done((data) => {
+                if (data.length > 0) {
+                    self.aRES(data);
+                    let firstData = _.first(data);
+                    self.currentARESCode(firstData.code);
+                } else {
+                    self.onNew();
+                }
+            }).always(() => {
+                nts.uk.ui.block.clear();
+            });
         };
 
         createTransferData(currentData, rcdExport) {
@@ -199,16 +215,15 @@ module nts.uk.com.view.kwr002.b {
             _.forEach(rcdExport.attendanceRecItemList, (o) => {
                 let code = Number(currentData.code());
                 let name = o.attendanceItemName;
-                let timeItemId = o.attendanceId;
+                let timeItems = o.attendanceId;
                 let columnIndex = Number(o.columnIndex);
-                if (_.isArray(o.timeItemId)) {
-                    let timeItems = timeItemId;
+                if (_.isArray(timeItems)) {
                     let item = new CalculateAttendanceRecordExportCommand(code, o.useAtr, o.exportAtr,
                         columnIndex, o.position, timeItems, o.attribute, name);
                     itemCmd.calculateList.push(item);
                 } else {
                     let item = new SingleAttendanceRecordExportCommand(code, o.useAtr, o.exportAtr,
-                        columnIndex, o.position, timeItemId, o.attribute, name);
+                        columnIndex, o.position, timeItems, o.attribute, name);
                     itemCmd.singleList.push(item)
                 }
             });
@@ -353,13 +368,16 @@ module nts.uk.com.view.kwr002.b {
             setShared('attendanceRecExpSetCode', self.code(), true);
             setShared('attendanceRecExpSetName', self.name(), true);
             setShared('useSeal', self.sealUseAtr(), true);
+            
 
-            setShared('attendanceRecExpDaily', getShared('attendanceRecExpDaily'), true);
-            setShared('attendanceRecExpMonthly', getShared('attendanceRecExpMonthly'), true);
-            setShared('attendanceRecItemList', getShared('attendanceRecItemList'), true);
-            setShared('sealStamp', getShared('sealStamp'), true);
+            if (_.isArray(getShared('attendanceRecItemList')) && _.first(getShared('attendanceRecItemList')).layoutCode == self.code) {
+                setShared('attendanceRecExpDaily', getShared('attendanceRecExpDaily'), true);
+                setShared('attendanceRecExpMonthly', getShared('attendanceRecExpMonthly'), true);
+                setShared('attendanceRecItemList', getShared('attendanceRecItemList'), true);
+                setShared('sealStamp', getShared('sealStamp'), true);
+            }
 
-            modal('../c/index.xhtml', {title: getText('KWR002�ｼｿ3'),}).onClosed(function (): any {
+            modal('../c/index.xhtml', {title: getText('KWR002�ｿｽ�ｽｼ�ｽｿ3'),}).onClosed(function (): any {
 
             })
         }

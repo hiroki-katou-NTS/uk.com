@@ -58,7 +58,7 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 			int position, long exportArt, boolean useAtr, CalculateAttendanceRecord calculateAttendanceRecord) {
 		
 		//check and update AttendanceRecord
-		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, Long.valueOf(exportSettingCode.v()), columnIndex, exportArt,
+		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, exportSettingCode.v(), columnIndex, exportArt,
 				position);
 		Optional<KfnstAttndRec> kfnstAttndRec = this.queryProxy().find(kfnstAttndRecPK, KfnstAttndRec.class);
 		if (kfnstAttndRec.isPresent()) {
@@ -71,10 +71,10 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 		
 		//get listItemAdded, listItemSubtracted
 		List<KfnstAttndRecItem> listKfnstAttndRecItemAdded = calculateAttendanceRecord.getAddedItem().stream().map(e -> 
-		toEntityAttndRecItemAdded(exportSettingCode, columnIndex, position, exportArt, e.intValue())).collect(Collectors.toList());
+		toEntityAttndRecItemAdded(exportSettingCode, columnIndex, position, exportArt, e)).collect(Collectors.toList());
 		
 		List<KfnstAttndRecItem> listKfnstAttndRecItemSubtracted = calculateAttendanceRecord.getSubtractedItem().stream().map(e -> 
-		toEntityAttndRecItemSubtracted(exportSettingCode, columnIndex, position, exportArt, e.intValue())).collect(Collectors.toList());
+		toEntityAttndRecItemSubtracted(exportSettingCode, columnIndex, position, exportArt, e)).collect(Collectors.toList());
 		
 		List<KfnstAttndRecItem> kfnstAttndRecItems = new ArrayList<KfnstAttndRecItem>();
 		kfnstAttndRecItems.addAll(listKfnstAttndRecItemAdded);
