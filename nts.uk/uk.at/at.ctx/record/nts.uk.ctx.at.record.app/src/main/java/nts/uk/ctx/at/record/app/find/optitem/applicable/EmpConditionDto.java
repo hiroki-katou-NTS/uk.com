@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class EmpConditionDto implements EmpConditionSetMemento {
 
 	/** The optional item no. */
-	private String optionalItemNo;
+	private Integer optionalItemNo;
 
 	/** The emp conditions. */
 	private List<EmploymentConditionDto> empConditions;

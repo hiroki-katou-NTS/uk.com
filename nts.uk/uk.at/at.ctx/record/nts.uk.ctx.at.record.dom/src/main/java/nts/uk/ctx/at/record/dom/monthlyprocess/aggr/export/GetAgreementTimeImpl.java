@@ -168,7 +168,7 @@ public class GetAgreementTimeImpl implements GetAgreementTime {
 		val monthlyCalculation = attendanceTimeOfMonthly.getMonthlyCalculation();
 		val agreementTimeOpt = monthlyCalculation.aggregateAgreementTime(
 				this.companyId, employeeId, this.yearMonth, this.closureId, this.closureDate, aggrPeriod,
-				attendanceTimeOfDailysOpt, this.repositories);
+				attendanceTimeOfDailysOpt, Optional.empty(), Optional.empty(), this.repositories);
 		if (agreementTimeOpt.isPresent()){
 			
 			// エラーメッセージがあれば、エラーメッセージを入れる

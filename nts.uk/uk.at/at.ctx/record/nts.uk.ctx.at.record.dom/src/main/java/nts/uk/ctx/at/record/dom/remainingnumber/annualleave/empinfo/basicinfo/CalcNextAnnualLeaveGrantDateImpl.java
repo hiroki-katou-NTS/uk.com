@@ -39,7 +39,7 @@ public class CalcNextAnnualLeaveGrantDateImpl implements CalcNextAnnualLeaveGran
 	private List<NextAnnualLeaveGrant> nextAnnualLeaveGrantList;
 	
 	/**
-	 * 次回年休付与日を計算
+	 * 次回年休付与を計算
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param period 期間

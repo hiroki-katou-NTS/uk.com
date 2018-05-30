@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -29,11 +31,14 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTy
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
+import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTime;
+import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeHistory;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeHistoryRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeUsageUnitRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeValue;
+import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeHistoryRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.message.DivergenceTimeErrorAlarmMessage;
@@ -43,7 +48,6 @@ import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeEr
 import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageRepository;
 import nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
@@ -54,6 +58,7 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessU
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.enums.SelfConfirmError;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentityProcessUseSetRepository;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -61,15 +66,12 @@ import nts.uk.shr.com.history.DateHistoryItem;
 
 @Stateless
 public class DivTimeSysFixedCheckService {
-	
+
 	@Inject
 	private CompanyDivergenceReferenceTimeRepository comDivRefTime;
 	
 	@Inject
 	private AttendanceTimeRepository attendanceTimeRepo;
-	
-	@Inject
-	private WorkInformationRepository workInfoRepo;
 	
 	@Inject
 	private DivergenceTimeRepository diverTimeRepo;
@@ -140,6 +142,34 @@ public class DivTimeSysFixedCheckService {
 	private final int LOGOFF_DIV_NO = 7;
 	/** ・勤怠項目ID　34（退勤時刻1） */
 	private final int TIME_LEAVE_ITEM = 34;
+	
+	private final String EMPTY_STRING = "";
+
+	private final String PATTERN_1 = "[0-9]+$";
+
+	private final String RUNTIME_ERROR_1 = "勤務実績のエラーアラームのコードのフォーマットが正しくない：　";
+
+	private final String DIVERGENCE_MESSAGE_KEY = "DivergenceMessage";
+
+	private final String KDW003_108_KEY = "KDW003_108";
+
+	private final String COM_DIV_REF_TIME_KEY = "ComDivRefTime";
+
+	private final String WT_DIV_REF_TIME_KEY = "WTDivRefTime";
+
+	private final String BUSINESS_TYPE_HISTORY_KEY = "BusinessTypeOfEmployeeHistory";
+
+	private final String COM_DIV_REF_TIME_HISTORY_KEY = "CompanyDivergenceReferenceTimeHistory";
+
+	private final String TIME_NOW_KEY = "TimeNow";
+
+	private final String TODAY_KEY = "Today";
+
+	private final String APPROVAL_SETTING_KEY = "ApprovalSetting";
+
+	private final String IDENTITY_PUS_KEY = "IdentityPUS";
+
+	private final String DIVERGENCE_TIME_KEY = "DivergenceTime";
 
 	
 	
@@ -156,19 +186,40 @@ public class DivTimeSysFixedCheckService {
 	/** 乖離時間（確認解除） */
 	public List<EmployeeDailyPerError> divergenceTimeCheckBySystemFixed(String companyId, String employeeId, GeneralDate workingDate,
 			List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime> divergenTime){
-		return divergenceTimeCheckBySystemFixed(companyId, employeeId, workingDate, divergenTime, null);
+		return divergenceTimeCheckBySystemFixed(companyId, employeeId, workingDate, divergenTime, null, Optional.empty());
 	}
 	
 	/** 乖離時間（確認解除） */
 	public List<EmployeeDailyPerError> divergenceTimeCheckBySystemFixed(String companyId, String employeeId, GeneralDate workingDate,
-			List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime> divergenTime, IdentityProcessUseSet identityPUS){
-		List<EmployeeDailyPerError> errors = check(companyId, employeeId, workingDate, divergenTime);
+			List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime> divergenTime, Optional<TimeLeavingOfDailyPerformance> timeLeave){
+		return divergenceTimeCheckBySystemFixed(companyId, employeeId, workingDate, divergenTime, null, timeLeave);
+	}
+	
+	/** 乖離時間（確認解除） */
+	public List<EmployeeDailyPerError> divergenceTimeCheckBySystemFixed(String companyId, String employeeId, GeneralDate workingDate,
+			List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime> divergenTime, 
+			Optional<TimeLeavingOfDailyPerformance> timeLeave, List<ErrorAlarmWorkRecord> erAlConditions){
+		return divergenceTimeCheckBySystemFixed(companyId, employeeId, workingDate, divergenTime, null, timeLeave, erAlConditions);
+	}
+	
+	/** 乖離時間（確認解除） */
+	public List<EmployeeDailyPerError> divergenceTimeCheckBySystemFixed(String companyId, String employeeId, GeneralDate workingDate,
+			List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime> divergenTime, IdentityProcessUseSet identityPUS, 
+			Optional<TimeLeavingOfDailyPerformance> timeLeave){
+		return divergenceTimeCheckBySystemFixed(companyId, employeeId, workingDate, divergenTime, identityPUS, timeLeave, null);
+	}
+	
+	/** 乖離時間（確認解除） */
+	public List<EmployeeDailyPerError> divergenceTimeCheckBySystemFixed(String companyId, String employeeId, GeneralDate workingDate,
+			List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime> divergenTime, IdentityProcessUseSet identityPUS, 
+			Optional<TimeLeavingOfDailyPerformance> timeLeave, List<ErrorAlarmWorkRecord> erAlConditions){
+		List<EmployeeDailyPerError> errors = check(companyId, employeeId, workingDate, divergenTime, timeLeave, erAlConditions);
 		if(errors.isEmpty()) {
 			return errors;
 		}
 		if(identityPUS == null) {
-			identityPUS = identityPSURepo.findByKey(companyId).orElseThrow(() 
-									-> new RuntimeException("本人確認処理の利用設定 not found!!!"));
+			identityPUS = getShared(IDENTITY_PUS_KEY, () -> identityPSURepo.findByKey(companyId).orElseThrow(() 
+															-> new RuntimeException("本人確認処理の利用設定 not found!!!")));
 		}
 		return removeconfirm(companyId, employeeId, workingDate, errors, identityPUS);
 	}
@@ -191,7 +242,7 @@ public class DivTimeSysFixedCheckService {
 		}
 		
 		if (!errorDivergence.isEmpty()) {
-			approvalSettingRepo.findByCompanyId(companyId).ifPresent(as -> {
+			getShared(APPROVAL_SETTING_KEY, () -> approvalSettingRepo.findByCompanyId(companyId)).ifPresent(as -> {
 				if (as.getUseDayApproverConfirm() != null && as.getUseDayApproverConfirm()
 						&& as.getSupervisorConfirmErrorAtr() != null
 						&& !as.getSupervisorConfirmErrorAtr().equals(ConfirmationOfManagerOrYouself.CAN_CHECK)) {
@@ -230,13 +281,6 @@ public class DivTimeSysFixedCheckService {
 				}
 			}
 		}
-//		selfConfirm.content.stream().filter(c -> !c.confirmStatus).forEach(c -> {
-//			identityRepo.remove(companyId, selfConfirm.empId, c.ymd);
-//		});
-//		GeneralDate today = GeneralDate.today();
-//		selfConfirm.content.stream().filter(c -> c.confirmStatus).forEach(c -> {
-//			identityRepo.insert(new Identification(companyId, selfConfirm.empId, c.ymd, today));
-//		});
 	}
 	
 	/** 日の本人確認を解除する */
@@ -255,19 +299,22 @@ public class DivTimeSysFixedCheckService {
 	
 	/** システム固定エラー：　乖離時間をチェックする */
 	private List<EmployeeDailyPerError> check(String companyId, String employeeId, GeneralDate workingDate,
-			List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime> divergenTime) {
+			List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime> divergenTime, 
+			Optional<TimeLeavingOfDailyPerformance> timeLeave, List<ErrorAlarmWorkRecord> erAlConditions) {
 		List<EmployeeDailyPerError> checkR = new ArrayList<>(); 
 		boolean isCheckByWorkType = isCheckWithWorkType(companyId);
-		boolean isToday = GeneralDate.today().equals(workingDate);
+		boolean isToday = getShared(TODAY_KEY, () -> GeneralDate.today()).equals(workingDate);
 		
-		List<ErrorAlarmWorkRecord> erAlConditions = getErrorAlarmCheck(companyId);
+		if(erAlConditions == null || erAlConditions.isEmpty()){
+			erAlConditions = getErrorAlarmCheck(companyId);
+		}
 		if(erAlConditions.isEmpty()) {
 			return checkR;
 		}
 		List<Integer> divergenceCheckNos = erAlConditions.stream()
-				.map(c -> getNumberFromString(c.getCode().v()) / 2).distinct().collect(Collectors.toList());
+				.map(c -> getNo(getNumberFromString(c.getCode().v()))).distinct().collect(Collectors.toList());
 
-		val divergenceTimeErAls = getDivergenceTimeErAl(companyId, divergenceCheckNos);
+		Map<Integer, DivergenceTime> divergenceTimeErAls = getDivergenceTimeErAl(companyId, divergenceCheckNos);
 		if(divergenceTimeErAls.isEmpty()) {
 			return checkR;
 		}
@@ -275,53 +322,59 @@ public class DivTimeSysFixedCheckService {
 		boolean isWHis = historyR.get(WORKTYPE_HISTORY_ITEM) != null;
 		val historyItem = (DateHistoryItem) (isWHis ? historyR.get(WORKTYPE_HISTORY_ITEM) : historyR.get(COMPANY_HISTORY_ITEM));
 		val bsCode = isWHis ? (BusinessTypeCode) historyR.get(WORKTYPE_CODE) : null; 
+		if(historyItem == null){
+			return checkR;
+		}
+		shareDivRefTime(isCheckByWorkType, historyItem.identifier(), divergenceCheckNos, bsCode);
 		erAlConditions.stream().forEach(erAl -> {
 			int numberIn = getNumberFromString(erAl.getCode().v());
 			boolean isAlarm = numberIn % 2 == 0;
-			val divergenceTimeErAl = divergenceTimeErAls.get(((numberIn-1) / 2)+1);
-			if(divergenceTimeErAl!=null&&divergenceTimeErAl.isDivergenceTimeUse()){
-				divergenTime.stream().filter(dt -> dt.getDivTimeId() == divergenceTimeErAl.getDivergenceTimeNo()).findFirst().ifPresent(dt -> {
+			val divergenceTimeErAl = divergenceTimeErAls.get(getNo(numberIn));
+			if(divergenceTimeErAl != null && divergenceTimeErAl.isDivergenceTimeUse()){
+				divergenTime.stream().filter(dt -> dt.getDivTimeId() == divergenceTimeErAl.getDivergenceTimeNo())
+										.findFirst().ifPresent(dt -> {
 					int divergenceTime = 0;
 					boolean isPcDivergence = dt.getDivTimeId() == LOGOFF_DIV_NO && isToday;
 					if(isPcDivergence) {
-						divergenceTime = calcCurrentDivergenceTime(employeeId, workingDate);
+						divergenceTime = calcCurrentDivergenceTime(employeeId, workingDate, timeLeave);
 					} else if (dt.getDivTimeAfterDeduction() != null) {
 						divergenceTime = dt.getDivTimeAfterDeduction().valueAsMinutes();
 					}
 					// add DivResonCode to check Thanh
-					boolean valid = evaluateDivergenceTime(((numberIn-1) / 2)+1, divergenceTime, 
-							isAlarm, isWHis, historyItem, bsCode,
-							divergenceTimeErAl.getErrorCancelMedthod().isReasonInputed(), divergenceTimeErAl.getErrorCancelMedthod().isReasonSelected(),
+					boolean valid = evaluateDivergenceTime(getNo(numberIn), divergenceTime, 
+							isAlarm, isWHis, historyItem.identifier(), bsCode,
+							divergenceTimeErAl.getErrorCancelMedthod().isReasonInputed(), 
+							divergenceTimeErAl.getErrorCancelMedthod().isReasonSelected(),
 							dt.getDivReason(), dt.getDivResonCode());
 					if(!valid){
-						checkR.add(new EmployeeDailyPerError(companyId, employeeId, workingDate, 
-								erAl.getCode(), Arrays.asList(erAl.getErrorDisplayItem() != null? erAl.getErrorDisplayItem().intValue():null), 
-								erAl.getCancelableAtr() ? 1 : 0, getMessage(isWHis, isPcDivergence, companyId, ((numberIn-1) / 2)+1, isAlarm, bsCode)));
+						checkR.add(new EmployeeDailyPerError(
+											companyId, employeeId, workingDate, 
+											erAl.getCode(), Arrays.asList(erAl.getErrorDisplayItem()), 
+											erAl.getCancelableAtr() ? 1 : 0, 
+											getMessage(isWHis, isPcDivergence, companyId, getNo(numberIn), isAlarm, bsCode)));
 					}
 				});
-//				divergenTime.stream().forEach(dt -> {
-//					boolean valid = evaluateDivergenceTime(numberIn / 2, dt.getDivTimeAfterDeduction(), 
-//							isAlarm, isWHis, historyItem, bsCode);
-//					if(!valid){
-//						checkR.add(new EmployeeDailyPerError(companyId, employeeId, workingDate, 
-//								erAl.getCode(), Arrays.asList(erAl.getErrorDisplayItem().intValue()), 
-//								erAl.getCancelableAtr() ? 1 : 0));
-//					}
-//				});
 			}
 		});
 		return checkR;
 	}
 
+	private int getNo(int numberIn) {
+		return (numberIn + 1) / 2;
+	}
+
 	/** 上記の計算で求めた時間を発生した乖離時間として処理を進める */
-	private int calcCurrentDivergenceTime(String employeeId, GeneralDate workingDate) {
-		val timeLeave = timeLeaveRepo.findByKey(employeeId, workingDate);
+	private int calcCurrentDivergenceTime(String employeeId, GeneralDate workingDate, 
+			Optional<TimeLeavingOfDailyPerformance> timeLeave) {
+		if(!timeLeave.isPresent()){
+			timeLeave = timeLeaveRepo.findByKey(employeeId, workingDate);
+		}
 		/** 勤怠項目ID　34（退勤時刻1） */
 		if(timeLeave.isPresent()) {
 			val valued = convertHelper.withTimeLeaving(timeLeave.get()).convert(TIME_LEAVE_ITEM);
 			if(valued.isPresent() && valued.get().value() != null) {
-				GeneralDateTime now = GeneralDateTime.now();
-				int currentTime = now.hours()*60 + now.minutes();
+				GeneralDateTime now = getShared(TIME_NOW_KEY, () -> GeneralDateTime.now());
+				int currentTime = now.hours() * 60 + now.minutes();
 				int divergenceTime = currentTime - (int) valued.get().value();
 				return divergenceTime;
 			}
@@ -335,12 +388,13 @@ public class DivTimeSysFixedCheckService {
 			return getComHistory(workingDate, companyId);
 		}
 		
-		val workTypeCode = getWorkInfo(isCheckByWorkType, employeeId, workingDate);
+		val workTypeCode = getWorkInfo(companyId, isCheckByWorkType, employeeId, workingDate);
 		if(workTypeCode == null){
 			return getComHistory(workingDate, companyId);
 		}
-		DateHistoryItem history = wtDivHisRepo.findAll(companyId, workTypeCode).items()
-				.stream().filter(c -> c.contains(workingDate)).findFirst().orElse(null);
+		DateHistoryItem history = null;	
+		history = getShared(companyId + workTypeCode, () -> wtDivHisRepo.findAll(companyId, workTypeCode))
+						.items().stream().filter(c -> c.contains(workingDate)).findFirst().orElse(null);
 		if(history == null){
 			return getComHistory(workingDate, companyId);
 		}
@@ -350,21 +404,33 @@ public class DivTimeSysFixedCheckService {
 		return res;
 	}
 
+	@SuppressWarnings("unchecked")
+	private <T> T getShared(String key, Supplier<T> getData) {
+		T history;
+		if(DivCheckSharedData.isShared(key)){
+			history = (T) DivCheckSharedData.getShared(key);
+		} else {
+			history = getData.get();
+			DivCheckSharedData.share(key, history);
+		}
+		return history;
+	}
+
 	private Map<String, Object> getComHistory(GeneralDate workingDate, String companyId) {
 		Map<String, Object> res = new HashMap<>();
-		DateHistoryItem history;
-		val historyM = comDivHisRepo.findAll(companyId);
-		history = historyM.items().stream().filter(c -> c.contains(workingDate)).findFirst().orElse(null);
+		CompanyDivergenceReferenceTimeHistory historyM = getShared(COM_DIV_REF_TIME_HISTORY_KEY, 
+																	() -> comDivHisRepo.findAll(companyId));
+		DateHistoryItem history = historyM.items().stream().filter(c -> c.contains(workingDate)).findFirst().orElse(null);
 		res.put(COMPANY_HISTORY_ITEM, history);
 		return res;
 	}
 	
-	private BusinessTypeCode getWorkInfo(boolean isGet, String employeeId, GeneralDate workingDate){
+	private BusinessTypeCode getWorkInfo(String companyId, boolean isGet, String employeeId, GeneralDate workingDate){
 		if(!isGet){
 			return null;
 		}
-		
-		BusinessTypeOfEmployeeHistory bteHis = bteHisRepo.findByBaseDate(workingDate, employeeId).orElse(null);
+		BusinessTypeOfEmployeeHistory bteHis = getShared(BUSINESS_TYPE_HISTORY_KEY, 
+													() -> bteHisRepo.findByEmployee(companyId, employeeId).orElse(null));
 		if(bteHis == null){
 			return null;
 		}
@@ -379,8 +445,11 @@ public class DivTimeSysFixedCheckService {
 	/** 「乖離時間」を取得する */
 	private Map<Integer, DivergenceTime> getDivergenceTimeErAl(
 			String companyId, List<Integer> divergenceCheckNos) {
-		return diverTimeRepo.getDivTimeListByNo(companyId, divergenceCheckNos).stream()
-				.collect(Collectors.toMap(c -> c.getDivergenceTimeNo(), c -> c));
+		Map<Integer, DivergenceTime> divergenceTimeErAls = getShared(DIVERGENCE_TIME_KEY, () -> {
+					return diverTimeRepo.getDivTimeListByNo(companyId, divergenceCheckNos).stream()
+								.collect(Collectors.toMap(c -> c.getDivergenceTimeNo(), c -> c));
+				});
+		return divergenceTimeErAls;
 	}
 
 	/** 「勤務実績のエラーアラーム」を取得する */
@@ -396,73 +465,92 @@ public class DivTimeSysFixedCheckService {
 	
 	/** 乖離時間のチェック */
 	private boolean evaluateDivergenceTime(int divNo, int divergenceTime, 
-			boolean isAlarm, boolean isCheckByWorkType, DateHistoryItem history, BusinessTypeCode bsCode,
-			boolean isRemoveErrorByInputReason, boolean isRemoveErrorBySelectReasonCode, DivergenceReasonContent reason,  DiverdenceReasonCode reasonCode){
+			boolean isAlarm, boolean isCheckByWorkType, String history, BusinessTypeCode bsCode,
+			boolean isRemoveErrorByInputReason, boolean isRemoveErrorBySelectReasonCode, 
+			DivergenceReasonContent reason,  DiverdenceReasonCode reasonCode){
 		if(history == null){
 			return true;
 		}
 		if(isCheckByWorkType){
-			return evaluateByWorkType(divNo, history, divergenceTime, isAlarm, bsCode, isRemoveErrorByInputReason, isRemoveErrorBySelectReasonCode, reason, reasonCode);
+			return evaluateByWorkType(divNo, history, divergenceTime, isAlarm, bsCode, 
+					isRemoveErrorByInputReason, isRemoveErrorBySelectReasonCode, reason, reasonCode);
 		} else {
-			return evaluateByCompany(divNo, divergenceTime, isAlarm, history, isRemoveErrorByInputReason, isRemoveErrorBySelectReasonCode, reason, reasonCode);
+			return evaluateByCompany(divNo, divergenceTime, isAlarm, history, 
+					isRemoveErrorByInputReason, isRemoveErrorBySelectReasonCode, reason, reasonCode);
+		}
+	}
+	
+	private void shareDivRefTime(boolean isBussiness, String hisId, List<Integer> divNos, BusinessTypeCode bsCode){
+		if(isBussiness){
+			DivCheckSharedData.share(WT_DIV_REF_TIME_KEY + hisId + bsCode, 
+					wtDivRefTime.findByHistoryIdAndDivergenceTimeNos(bsCode, hisId, divNos));
+		} else {
+			DivCheckSharedData.share(COM_DIV_REF_TIME_KEY + hisId, comDivRefTime.findByHistoryIdAndDivergenceTimeNos(hisId, divNos));
 		}
 	}
 
 	/** 勤務種別ごとの乖離基準時間でチェックする */
-	public boolean evaluateByWorkType(int divNo, DateHistoryItem history, int divergenceTime, 
-			boolean isAlarm, BusinessTypeCode bsCode, boolean isRemoveErrorByInputReason, boolean isRemoveErrorBySelectReasonCode, DivergenceReasonContent reason, DiverdenceReasonCode reasonCode){
-		val divTimeBaseByWT = wtDivRefTime.findByKey(history.identifier(), bsCode, divNo).orElse(null);
+	private boolean evaluateByWorkType(int divNo, String history, int divergenceTime, 
+			boolean isAlarm, BusinessTypeCode bsCode, boolean isRemoveErrorByInputReason,
+			boolean isRemoveErrorBySelectReasonCode, DivergenceReasonContent reason, DiverdenceReasonCode reasonCode){
+		WorkTypeDivergenceReferenceTime divTimeBaseByWT = getWTDivRefTime(divNo, history, bsCode);
 		if(divTimeBaseByWT == null || !divTimeBaseByWT.getDivergenceReferenceTimeValue().isPresent()){
 			return true;
 		}
 		return evaluate(divergenceTime, isAlarm, divTimeBaseByWT.getNotUseAtr() == NotUseAtr.USE, 
-				divTimeBaseByWT.getDivergenceReferenceTimeValue().get(), isRemoveErrorByInputReason, isRemoveErrorBySelectReasonCode, reason, reasonCode);
+						divTimeBaseByWT.getDivergenceReferenceTimeValue().get(), isRemoveErrorByInputReason,
+						isRemoveErrorBySelectReasonCode, reason, reasonCode);
 	}
 
 	/** 会社の履歴項目でチェックする */
-	public boolean evaluateByCompany(int divNo,  int divergenceTime, boolean isAlarm, DateHistoryItem history,
-			boolean isRemoveErrorByInputReason, boolean isRemoveErrorBySelectReasonCode, DivergenceReasonContent reason, DiverdenceReasonCode reasonCode){
-		if(history == null){
-			return true;
-		}
-		val divTimeBaseByCom = comDivRefTime.findByKey(history.identifier(), divNo).orElse(null);
+	private boolean evaluateByCompany(int divNo,  int divergenceTime, boolean isAlarm, String history,
+			boolean isRemoveErrorByInputReason, boolean isRemoveErrorBySelectReasonCode, 
+			DivergenceReasonContent reason, DiverdenceReasonCode reasonCode){
+		CompanyDivergenceReferenceTime divTimeBaseByCom = getComDivRefTime(divNo, history);
 		if(divTimeBaseByCom == null || !divTimeBaseByCom.getDivergenceReferenceTimeValue().isPresent()){
 			return true;
 		}
 		return evaluate(divergenceTime, isAlarm, divTimeBaseByCom.getNotUseAtr() == NotUseAtr.USE,
-				divTimeBaseByCom.getDivergenceReferenceTimeValue().get(), isRemoveErrorByInputReason, isRemoveErrorBySelectReasonCode, reason, reasonCode);
+						divTimeBaseByCom.getDivergenceReferenceTimeValue().get(), isRemoveErrorByInputReason, 
+						isRemoveErrorBySelectReasonCode, reason, reasonCode);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private WorkTypeDivergenceReferenceTime getWTDivRefTime(int divNo, String history, BusinessTypeCode bsCode) {
+		List<WorkTypeDivergenceReferenceTime> lst = (List<WorkTypeDivergenceReferenceTime>) 
+												DivCheckSharedData.getShared(WT_DIV_REF_TIME_KEY + history + bsCode);
+		return lst.stream().filter(d -> d.getDivergenceTimeNo() == divNo).findFirst().orElse(null);
+	}
+
+	@SuppressWarnings("unchecked")
+	private CompanyDivergenceReferenceTime getComDivRefTime(int divNo, String history) {
+		List<CompanyDivergenceReferenceTime> lst = (List<CompanyDivergenceReferenceTime>) 
+												DivCheckSharedData.getShared(COM_DIV_REF_TIME_KEY + history);
+		return lst.stream().filter(d -> d.getDivergenceTimeNo() == divNo).findFirst().orElse(null);
 	}
 
 	/** 乖離時間を判定する */
-	public boolean evaluate(int divergenceTime, boolean isAlarm, boolean isUse, DivergenceReferenceTimeValue standard, 
-			boolean isRemoveErrorByInputReason, boolean isRemoveErrorBySelectReasonCode, DivergenceReasonContent reason, DiverdenceReasonCode reasonCode){
+	private boolean evaluate(int divergenceTime, boolean isAlarm, boolean isUse, DivergenceReferenceTimeValue standard, 
+			boolean isRemoveErrorByInputReason, boolean isRemoveErrorBySelectReasonCode, 
+			DivergenceReasonContent reason, DiverdenceReasonCode reasonCode){
 		if(!isUse || standard == null){
 			return true;
 		}
 		DivergenceReferenceTime sdTime = isAlarm ? standard.getAlarmTime().orElse(null) : standard.getErrorTime().orElse(null);
 		if(sdTime != null && sdTime.v() > 0){
-			boolean isError = divergenceTime >= sdTime.valueAsMinutes();
-			if(isError) {
+			if(divergenceTime >= sdTime.valueAsMinutes()) {
 				// パラメータ「エラーの解除方法．乖離理由が選択された場合，エラーを解除する」をチェックする
 				if(isRemoveErrorBySelectReasonCode) {
-					if(reasonCode == null || reasonCode.v() == null || reasonCode.v().isEmpty()) {
-					}
-					else {
+					if(reasonCode != null && !reasonCode.v().isEmpty()) {
 						return true;
 					}
 				}
-				
 				if(isRemoveErrorByInputReason) {
-					if(reason == null || reason.v() == null || reason.v().isEmpty()) {
-					}
-					else {
+					if(reason != null && !reason.v().isEmpty()) {
 						return true;
 					}
 				}
 				return false;
-			}
-			else {
-				return true;
 			}
 		}
 		return true;
@@ -472,25 +560,28 @@ public class DivTimeSysFixedCheckService {
 	private String getMessage(boolean isByWt, boolean isWithBonusText, String comId, int divNo, boolean isAlarm, BusinessTypeCode wtCode) {
 		ErrorAlarmMessage message = null;
 		if(!isByWt) {
-			DivergenceTimeErrorAlarmMessage mes = this.divMesRepo.findByDivergenceTimeNo(new CompanyId(comId), divNo).orElse(null);
+			DivergenceTimeErrorAlarmMessage mes = getShared(DIVERGENCE_MESSAGE_KEY + comId + divNo, 
+					() -> this.divMesRepo.findByDivergenceTimeNo(new CompanyId(comId), divNo).orElse(null));
 			if(mes != null) {
 				message = isAlarm ? mes.getAlarmMessage().orElse(null) : mes.getErrorMessage().orElse(null);
 			}
 		} else {
-			WorkTypeDivergenceTimeErrorAlarmMessage mes = this.wtDivMesRepo.getByDivergenceTimeNo(divNo, new CompanyId(comId), wtCode).orElse(null);
+			WorkTypeDivergenceTimeErrorAlarmMessage mes = getShared(DIVERGENCE_MESSAGE_KEY + comId + divNo + wtCode, 
+					() -> this.wtDivMesRepo.getByDivergenceTimeNo(divNo, new CompanyId(comId), wtCode).orElse(null));
 			if(mes != null) {
 				message = isAlarm ? mes.getAlarmMessage().orElse(null) : mes.getErrorMessage().orElse(null);
 			}
 		}
 		if(message != null) {
-			return isWithBonusText ? StringUtils.join(message.v(), resources.localize("KDW003_108").orElse("")) : message.v();
+			return !isWithBonusText ? message.v() : StringUtils.join(message.v(), 
+									getShared(KDW003_108_KEY, () -> resources.localize(KDW003_108_KEY).orElse(EMPTY_STRING)));
 		}
-		return "";
+		return EMPTY_STRING;
 	}
 	
 	private int getNumberFromString(String code){
-		String number = code.replaceAll(code.replaceAll("[0-9]+$", ""), "");
-		if(number.isEmpty()){ throw new RuntimeException("勤務実績のエラーアラームのコードのフォーマットが正しくない：　" + code); }
+		String number = code.replace(code.replaceAll(PATTERN_1, EMPTY_STRING), EMPTY_STRING);
+		if(number.isEmpty()){ throw new RuntimeException(RUNTIME_ERROR_1 + code); }
 		return Integer.parseInt(number);
 	}
 	

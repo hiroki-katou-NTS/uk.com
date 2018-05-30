@@ -8,6 +8,7 @@ module nts.uk.ui.gridlist {
             currentCode: KnockoutObservable<any>;
             currentCodeList: KnockoutObservableArray<any>;
             codeList: KnockoutObservableArray<any>;
+            disables: KnockoutObservableArray<any>;
             count: number = 100;
             enable: KnockoutObservable<boolean>;
             index: KnockoutObservable<number> = ko.observable(0);
@@ -15,11 +16,16 @@ module nts.uk.ui.gridlist {
                 var self = this;
                 this.enable = ko.observable(true);
                 this.items = ko.observableArray([]);
+                this.disables = ko.observableArray([]);
                 this.dragItems = ko.observableArray([]);
 
                 for (let i = 1; i < 100; i++) {
                     this.items.push(new ItemModel('00' + i, '基本給 基本給', "description " + i, i % 3 === 0, "2010/1/1"));
                     this.dragItems.push(new ItemModel('00' + i, '基本給 ', "description " + i, i % 3 === 0, "2010/1/1"));
+                    
+                    if (i % 6 === 0) {
+                        this.disables.push("00" + i);
+                    }
                 }
 
                 this.columns = ko.observableArray([
