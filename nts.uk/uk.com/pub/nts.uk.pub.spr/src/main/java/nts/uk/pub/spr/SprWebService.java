@@ -1,7 +1,6 @@
 package nts.uk.pub.spr;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -70,10 +69,15 @@ public class SprWebService {
 		String targetDateReal = targetDate;
 		String selectTypeReal = selectType;
 		String applicationIDReal = applicationID;
-		String reasonReal = reason;
+		String reasonReal = "";
 		String stampProtectionReal = stampProtection;
 		LoginUserContextSpr loginUserContextSpr = null;
 		try {
+			byte[] reasonBytes = new byte[reason.length()];
+			for (int i = 0; i < reason.length(); i++) {
+				reasonBytes[i] = (byte)(reason.codePointAt(i));
+			}
+			reasonReal = new String(reasonBytes, "sjis");
 			loginUserContextSpr = sprLoginFormService.loginFromSpr(
 					menuCDReal, 
 					loginEmployeeCDReal, 
@@ -85,6 +89,13 @@ public class SprWebService {
 					applicationIDReal, 
 					reasonReal,
 					stampProtectionReal);
+		} catch (UnsupportedEncodingException e1) {
+			val html = new StringBuilder();
+		    html.append("<!DOCTYPE html>");
+		    html.append("<html><head><meta charset=\"UTF-8\"></head><body>");
+		    html.append(""+ e1.getMessage() +"");
+		    html.append("</body></html>");            
+		    return html.toString();
 		} catch (nts.arc.error.BusinessException ex){
 		    val html = new StringBuilder();
 		    html.append("<!DOCTYPE html>");
@@ -181,7 +192,7 @@ public class SprWebService {
 		
 		val html = new StringBuilder()
 				.append("<!DOCTYPE html>")
-				.append("<html><body>");
+				.append("<html><head><meta charset=\"UTF-8\"></head><body>");
 		paramsMap.forEach((name, value) -> {
 			html.append(name + " : " + value + "<br/>");
 			

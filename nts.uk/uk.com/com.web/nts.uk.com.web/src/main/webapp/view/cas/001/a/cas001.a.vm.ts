@@ -849,7 +849,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
             });
 
             this.items = _.map(itemLst, x => new PersonRoleItemCommand(x));
-            console.log(this.items);
             //add child item
             this.addChildItem(this.items);
         }

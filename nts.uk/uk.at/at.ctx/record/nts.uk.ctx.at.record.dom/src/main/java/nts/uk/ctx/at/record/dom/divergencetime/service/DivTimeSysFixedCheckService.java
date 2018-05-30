@@ -312,7 +312,7 @@ public class DivTimeSysFixedCheckService {
 			return checkR;
 		}
 		List<Integer> divergenceCheckNos = erAlConditions.stream()
-				.map(c -> getNumberFromString(c.getCode().v()) / 2).distinct().collect(Collectors.toList());
+				.map(c -> getNo(getNumberFromString(c.getCode().v()))).distinct().collect(Collectors.toList());
 
 		Map<Integer, DivergenceTime> divergenceTimeErAls = getDivergenceTimeErAl(companyId, divergenceCheckNos);
 		if(divergenceTimeErAls.isEmpty()) {
@@ -360,7 +360,7 @@ public class DivTimeSysFixedCheckService {
 	}
 
 	private int getNo(int numberIn) {
-		return ((numberIn-1) / 2) + 1;
+		return (numberIn + 1) / 2;
 	}
 
 	/** 上記の計算で求めた時間を発生した乖離時間として処理を進める */
