@@ -9,4 +9,13 @@ public interface EmployeeContactAdapter {
 	 * @return
 	 */
 	List<EmployeeContactObjectImport> getList(List<String> employeeIds);
+	
+	
+	/**
+	 * 社員ID（List）から個人連絡先を取得
+	 * RequestList420
+	 * @param employeeIds
+	 * @return
+	 */
+	List<PersonContactObjectOfEmployeeImport> getListOfEmployees(List<String> employeeIds);
 }
