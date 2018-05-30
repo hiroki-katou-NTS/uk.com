@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Map.Entry;
 
@@ -159,7 +161,9 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		List<IntegrationOfDaily> integrationOfDailys = createIntegrationOfDaily(employeeId,datePeriod);
 
 		/*労働条件取得*/
-		val personalInfo = workingConditionItemRepository.getBySidAndPeriodOrderByStrDWithDatePeriod(employeeId, datePeriod);
+		Map<String,DatePeriod> id = new HashMap<>();
+		id.put(employeeId, datePeriod);
+		val personalInfo = workingConditionItemRepository.getBySidAndPeriodOrderByStrDWithDatePeriod(id, datePeriod.start(),datePeriod.end());
 		//今の日付の労働条件
 		Optional<Entry<DateHistoryItem, WorkingConditionItem>> nowCondition = personalInfo.getItemAtDate(datePeriod.start());
 		if(!nowCondition.isPresent()) return status;
