@@ -35,7 +35,7 @@
 							<div tabindex="1"
 								data-bind="ntsRadioButton: {checked: strSelected, enable: enable, option: dateSpecify()[0], optionValue: 'value', optionText: 'name', group: 'strRadio'}"></div>
 							<input class="input-box input-str" tabindex="2"
-								data-bind="ntsNumberEditor: {value:strDay, name: '#[KAL004_33]', constraint:'Day', required: true, enable: (strSelected() == 0)}" />
+								data-bind="ntsNumberEditor: {value:strDay, name: '#[KAL004_78]', constraint:'Day', required: true, enable: (strSelected() == 0)}" />
 							<span class="label txt">#{i18n.getText('KAL004_34')}</span>
 							<com:ko-if bind="getCategoryId() == 0 || getCategoryId() == 8">
 								<div class="combo-box combo-day" tabindex="3"
@@ -78,7 +78,7 @@
 							<div tabindex="6" 
 								data-bind="ntsRadioButton: {checked: endSelected, enable: enable, option: dateSpecify()[0], optionValue: 'value', optionText: 'name', group: 'endRadio'}"></div>
 							<input class="input-box input-end" tabindex="7"
-								data-bind="ntsNumberEditor: {value:endDay, name: '#[KAL004_39]', constraint:'Day', required: true, enable: (endSelected() == 0)}" />
+								data-bind="ntsNumberEditor: {value:endDay, name: '#[KAL004_83]', constraint:'Day', required: true, enable: (endSelected() == 0)}" />
 							<span class="label txt">#{i18n.getText('KAL004_34')}</span>
 							<com:ko-if bind="getCategoryId() == 0 || getCategoryId() == 8">
 								<div class="combo-box combo-day" tabindex="8"

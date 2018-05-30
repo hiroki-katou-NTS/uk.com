@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.dom.remainingnumber.paymana;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -225,20 +227,17 @@ public class PayoutManagementDataService {
 	}
 
 	public List<String> update(PayoutManagementData data, int closureId, boolean checkBox) {
-		List<String> errorList = new ArrayList<>();
 		List<String> errorListClosureDate = checkClosureDate(closureId, data.getPayoutDate().getDayoffDate().get());
 		if (!errorListClosureDate.isEmpty()) {
-			errorList.addAll(errorListClosureDate);
-			return errorList;
+			return errorListClosureDate;
 		} else {
 			List<String> errorListCheckBox = checkBox(checkBox, data.getLawAtr().value,
 					data.getPayoutDate().getDayoffDate().get(), data.getExpiredDate(), data.getUnUsedDays().v());
 			if (!errorListCheckBox.isEmpty()) {
-				errorList.addAll(errorListCheckBox);
-				return errorList;
+				return errorListCheckBox;
 			} else {
 				payoutManagementDataRepository.update(data);
-				return errorList;
+				return Collections.emptyList();
 			}
 		}
 	}

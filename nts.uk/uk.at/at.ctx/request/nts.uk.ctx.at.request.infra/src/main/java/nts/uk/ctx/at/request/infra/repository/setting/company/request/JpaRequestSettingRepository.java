@@ -281,11 +281,11 @@ public class JpaRequestSettingRepository extends JpaRepository implements Reques
 				temp.otRestrictPreDay = item.getBeforehandRestriction().getDateBeforehandRestriction().value;
 				
 				// 利用する - 残業申請事前の受付制限
-				temp.otToUse = item.getBeforehandRestriction().getToUse() == true ? 1 : 0;
+				temp.otToUse = item.getBeforehandRestriction().getOtToUse() ? 1 : 0;
 				
 				// 未来日許可しない - retrictPostAllowFutureFlg - RETRICT_POST_ALLOW_FUTURE_FLG
-				temp.retrictPostAllowFutureFlg = item.getAfterhandRestriction().getAllowFutureDay() == true ? 1: 0;
-				this.commandProxy().update(oldEntity1.get());
+				temp.retrictPostAllowFutureFlg = item.getAfterhandRestriction().getAllowFutureDay() ? 1: 0;
+				this.commandProxy().update(temp);
 			}
 		}
 		// filter list app type setting need update (if list insert don't need update)

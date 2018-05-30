@@ -3,6 +3,7 @@ module nts.uk.at.view.kdm001.b {
         var screenModel = new nts.uk.at.view.kdm001.b.viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
+            $('#ccgcomponent').ntsGroupComponent(screenModel.ccgcomponent);
             $('.tabB').trigger('click');
             $('#emp-component').focus();
         });

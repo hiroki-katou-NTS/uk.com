@@ -1,6 +1,11 @@
 module nts.uk.at.view.kaf018.a.viewmodel {
     import text = nts.uk.resource.getText;
     import character = nts.uk.characteristics;
+    import service = nts.uk.at.view.kaf018.a.service;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+    import error = nts.uk.ui.dialog.alertError;
+    import block = nts.uk.ui.block;
     var lstWkp = [];
     export class ScreenModel {
         targets: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -13,12 +18,12 @@ module nts.uk.at.view.kaf018.a.viewmodel {
         isDailyComfirm: KnockoutObservable<boolean>;
         startDate: KnockoutObservable<Date>;
         endDate: KnockoutObservable<Date>;
-        approvalConfirm: KnockoutObservable<model.ApprovalComfirm> = ko.observable(null);
         processingYm: KnockoutObservable<string> = ko.observable('');
         processYm: KnockoutObservable<number> = ko.observable(0);
         closureName: KnockoutObservable<string>;
         listEmployeeCode: KnockoutObservableArray<any> = ko.observableArray([]);
-
+        isEnableDailyComfirm: KnockoutObservable<boolean> = ko.observable(true);
+        isVisibleComfirm: KnockoutObservable<boolean> = ko.observable(false);
         //Control component
         baseDate: KnockoutObservable<Date>;
         selectType: KnockoutObservable<number> = ko.observable(1);
@@ -27,18 +32,20 @@ module nts.uk.at.view.kaf018.a.viewmodel {
         treeGrid: any;
         isMultiSelect: KnockoutObservable<boolean> = ko.observable(true);
         isBindingTreeGrid: KnockoutObservable<boolean>;
+
         constructor() {
             var self = this;
             self.items = ko.observableArray([
                 { code: 0, name: text('KAF018_12') },
-                { code: 1, name: text('KAF018_13') }
             ]);
+
+
             self.isDailyComfirm = ko.observable(false);
             self.startDate = ko.observable(new Date());
             self.endDate = ko.observable(new Date());
             self.enable = ko.observable(true);
-            self.checked = ko.observable(true);
-            self.selectTarget = ko.observable(1);
+            self.checked = ko.observable(false);
+            self.selectTarget = ko.observable(-1);
             self.closureName = ko.observable('');
 
             //Control component
@@ -62,54 +69,77 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                 systemType: 2
             };
             self.isBindingTreeGrid = ko.observable(true);
-            //character.save('NewWorkplaceListOption', kaf018WorkplaceListOption);
 
-            $('#tree-grid').ntsTreeComponent(self.treeGrid).done(() => {
-                self.reloadData();
-                $('#tree-grid').focusTreeGridComponent();
-            });
-            
-            service.findAllClosure().done((data: any) => {
-                self.targets(data.closuresDto);
-                let closures = _.find(data.closuresDto, x => { return x.closureId === data.selectedClosureId });
-                self.startDate(new Date(data.startDate));
-                self.endDate(new Date(data.endDate));
-                self.processYm = data.processingYm;
-                self.processingYm(nts.uk.time.formatYearMonth(data.processingYm));
-                self.baseDate(new Date(data.endDate));
-                self.closureName(closures.closeName);
-                self.listEmployeeCode(data.employeesCode);
-                $('#tree-grid').ntsTreeComponent(self.treeGrid).done(() => {
-                    self.reloadData();
-                    $('#tree-grid').focusTreeGridComponent();
-                });
-            });
-            
             self.selectTarget.subscribe((value) => {
-                service.getApprovalStatusPerior(value, self.processYm).done((data: any) => {
+                block.invisible();
+                service.getApprovalStatusPerior(value).done((data: any) => {
                     self.startDate(new Date(data.startDate));
                     self.endDate(new Date(data.endDate));
-                    self.listEmployeeCode(data.listEmployeeCode);
+                    self.listEmployeeCode(data.employeesCode);
                     self.baseDate(new Date(data.endDate));
                     self.processingYm(nts.uk.time.formatYearMonth(data.yearMonth));
                     $('#tree-grid').ntsTreeComponent(self.treeGrid).done(() => {
-                        self.reloadData();
-                        $('#tree-grid').focusTreeGridComponent();
+                        self.reloadData().done(() => {
+                            block.clear();
+                        });
                     });
                 });
+                service.saveSelectedClosureId(value);
             });
         }
 
 
-        reloadData() {
+        startPage(): JQueryPromise<any> {
             var self = this;
+            var dfd = $.Deferred();
+
+            let svClosure = service.findAllClosure();
+            let svUseSet = service.getUseSetting();
+
+            $.when(svClosure, svUseSet).done(function(closure: any, useSet: any) {
+                // findAllClosure
+                self.targets(closure.closuresDto);
+                let closures = _.find(self.targets(), x => { return x.closureId == closure.selectedClosureId });
+                self.startDate(new Date(closure.startDate));
+                self.endDate(new Date(closure.endDate));
+                self.processYm = closure.processingYm;
+                self.processingYm(nts.uk.time.formatYearMonth(closure.processingYm));
+                self.baseDate(new Date(closure.endDate));
+                self.closureName(closures.closeName);
+                self.listEmployeeCode(closure.employeesCode);
+
+                // getUseSetting
+                // Confirm checkbox A4_2_1
+                if ((useSet.monthlyConfirm || useSet.useBossConfirm || useSet.usePersonConfirm)) {
+                    self.items().push({ code: 1, name: text('KAF018_13') });
+                    self.isVisibleComfirm(true);
+                }
+
+                service.restoreSelectedClosureId().done(value => {
+                    if (value) {
+                        self.selectTarget(value);
+                    } else {
+                        self.selectTarget(1);
+                    }
+                    dfd.resolve();
+                });
+            });
+            return dfd.promise();
+        }
+
+        reloadData(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+
             lstWkp = self.flattenWkpTree(_.cloneDeep($('#tree-grid').getDataList()));
             nts.uk.ui.block.invisible();
-            nts.uk.at.view.kaf018.a.service.getAll(lstWkp.map((wkp) => { return wkp.workplaceId; })).done((dataResults: Array<model.IApplicationApprovalSettingWkp>) => {
-                self.alreadySettingList(dataResults.map((data) => { return { workplaceId: data.wkpId, isAlreadySetting: true}; }));
+            service.getAll(lstWkp.map((wkp) => { return wkp.workplaceId; })).done((dataResults: Array<model.IApplicationApprovalSettingWkp>) => {
+                self.alreadySettingList(dataResults.map((data) => { return { workplaceId: data.wkpId, isAlreadySetting: true }; }));
+                self.multiSelectedWorkplaceId([]);
                 self.multiSelectedWorkplaceId.valueHasMutated();
-                nts.uk.ui.block.clear();
+                dfd.resolve();
             });
+            return dfd.promise();
         }
 
         flattenWkpTree(wkpTree) {
@@ -130,54 +160,36 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 
         choiceNextScreen() {
             var self = this;
+            let listWorkplace = [];
+            console.log(self.multiSelectedWorkplaceId());
+            _.forEach(self.multiSelectedWorkplaceId(), function(item) {
+                let data = _.find(lstWkp, (wkp) => { return wkp.workplaceId == item });
+                listWorkplace.push({ code: data.workplaceId, name: data.nodeText });
+            })
             let params = {
-                closureId: self.selectTarget(),
+                closureId: self.selectTarget,
                 processingYm: self.processingYm(),
                 startDate: self.startDate(),
                 endDate: self.endDate(),
                 closureName: self.closureName(),
-                listWorkplaceId: self.multiSelectedWorkplaceId(),
-                isConfirmData: self.isDailyComfirm,
+                listWorkplace: listWorkplace,
+                isConfirmData: self.isDailyComfirm(),
                 listEmployeeCode: self.listEmployeeCode(),
+                multiSelectedWorkplaceId: self.multiSelectedWorkplaceId()
             };
-            if (self.selectedValue() == 0) {
-                nts.uk.request.jump('/view/kaf/018/b/index.xhtml', params);
+            if (self.multiSelectedWorkplaceId().length == 0) {
+                error({ messageId: 'Msg_786' });
             } else {
-                nts.uk.request.jump('/view/kaf/018/e/index.xhtml', params);
+                if (self.selectedValue() == 0) {
+                    nts.uk.request.jump('/view/kaf/018/b/index.xhtml', params);
+                } else {
+                    nts.uk.request.jump('/view/kaf/018/e/index.xhtml', params);
+                }
             }
         }
     }
 
     export module model {
-        export class ApprovalComfirm {
-            /** The closure id. */
-            closureId: number;
-
-            /** The start date. */
-            startDate: string;
-
-            /** The end date. */
-            endDate: string;
-
-            /** The closure name. */
-            closureName: string;
-
-            /** The closure date. */
-            //処理年月
-            closureDate: number;
-
-            employeeCodes: Array<String>;
-
-            constructor(closureId: number, closureName: string, startDate: string, endDate: string, closureDate: number, employeeCodes: Array<String>) {
-                this.closureId = closureId;
-                this.closureName = closureName;
-                this.startDate = startDate;
-                this.endDate = endDate;
-                this.closureDate = closureDate;
-                this.employeeCodes = employeeCodes;
-            }
-        }
-        
         export interface IApplicationApprovalSettingWkp {
             // 会社ID
             companyId: string;
@@ -188,46 +200,46 @@ module nts.uk.at.view.kaf018.a.viewmodel {
             // 申請承認機能設定
             approvalFunctionSettingDtoLst: Array<IApprovalFunctionSetting>;
         }
-        
+
         export interface IApprovalFunctionSetting {
-        //申請種類
-        appType: number;
-        //備考
-        memo: string;
-        //利用区分
-        useAtr: number;
-        //休出時間申請の事前必須設定
-        prerequisiteForpauseFlg: number;
-        // 残業申請の事前必須設定
-        otAppSettingFlg: number;
-        //時間年休申請の時刻計算を利用する
-        holidayTimeAppCalFlg: number;
-        // 遅刻早退取消申請の実績取消
-        lateOrLeaveAppCancelFlg: number;
-        //遅刻早退取消申請の実績取消を申請時に選択
-        lateOrLeaveAppSettingFlg: number;
-        //休憩入力欄を表示する
-        breakInputFieldDisFlg: number;
-        //休憩時間を表示する
-        breakTimeDisFlg: number;
-        //出退勤時刻初期表示区分
-        atworkTimeBeginDisFlg: number;
-        //実績から外出を初期表示する
-        goOutTimeBeginDisFlg: number;
-        // 時刻計算利用区分
-        timeCalUseAtr: number;
-        //時間入力利用区分
-        timeInputUseAtr: number;
-        //退勤時刻初期表示区分
-        timeEndDispFlg: number;
-        //指示が必須
-        requiredInstructionFlg: number;
-        //指示利用設定 - 指示区分
-        instructionAtr: number;
-        //指示利用設定 - 備考
-        instructionMemo: string;
-        //指示利用設定 - 利用区分
-        instructionUseAtr: number;
+            //申請種類
+            appType: number;
+            //備考
+            memo: string;
+            //利用区分
+            useAtr: number;
+            //休出時間申請の事前必須設定
+            prerequisiteForpauseFlg: number;
+            // 残業申請の事前必須設定
+            otAppSettingFlg: number;
+            //時間年休申請の時刻計算を利用する
+            holidayTimeAppCalFlg: number;
+            // 遅刻早退取消申請の実績取消
+            lateOrLeaveAppCancelFlg: number;
+            //遅刻早退取消申請の実績取消を申請時に選択
+            lateOrLeaveAppSettingFlg: number;
+            //休憩入力欄を表示する
+            breakInputFieldDisFlg: number;
+            //休憩時間を表示する
+            breakTimeDisFlg: number;
+            //出退勤時刻初期表示区分
+            atworkTimeBeginDisFlg: number;
+            //実績から外出を初期表示する
+            goOutTimeBeginDisFlg: number;
+            // 時刻計算利用区分
+            timeCalUseAtr: number;
+            //時間入力利用区分
+            timeInputUseAtr: number;
+            //退勤時刻初期表示区分
+            timeEndDispFlg: number;
+            //指示が必須
+            requiredInstructionFlg: number;
+            //指示利用設定 - 指示区分
+            instructionAtr: number;
+            //指示利用設定 - 備考
+            instructionMemo: string;
+            //指示利用設定 - 利用区分
+            instructionUseAtr: number;
         }
     }
 }

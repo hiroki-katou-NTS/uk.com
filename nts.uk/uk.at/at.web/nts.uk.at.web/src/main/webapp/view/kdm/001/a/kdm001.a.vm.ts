@@ -30,7 +30,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         compositePayOutSubMngData: KnockoutObservableArray<CompositePayOutSubMngData>;
         
         constructor() {
-            var self = this;
+            let self = this;
             
             self.compositePayOutSubMngData = ko.observableArray([]);
             self.periodOptionItem = ko.observableArray([
@@ -205,7 +205,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             service.getFurikyuMngDataExtraction(empId, startDate, endDate, isPeriod).done(function(res: any) {
                 let arrayResponse = res.compositePayOutSubMngData;
                 let compositePayOutSubMngDataArray: Array<CompositePayOutSubMngData> = [];
-                for (var i = 0 ; i < arrayResponse.length; i++){
+                for (let i = 0 ; i < arrayResponse.length; i++){
                     compositePayOutSubMngDataArray.push(new CompositePayOutSubMngData(arrayResponse[i]));
                 }
                 
@@ -236,7 +236,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         
         startPage(): JQueryPromise<any> {
             let self = this;
-            var dfd = $.Deferred();
+            let dfd = $.Deferred();
             
             service.getInfoEmLogin().done(function(emp) {
                 service.getWpName().done(function(wp) {
@@ -339,43 +339,43 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         
         getExpirationTime(value) {
             if(value == 0) {
-                return "当月";
+                return getText("Enum_ExpirationTime_THIS_MONTH");
             } else if(value == 1) {
-                return "法定外休日";
+                return getText("Enum_ExpirationTime_UNLIMITED");
             } else if(value == 2) {
-                return "年度末クリア";
+                return getText("Enum_ExpirationTime_END_OF_YEAR");
             } else if(value == 3) {
-                return "1ヶ月";
+                return getText("Enum_ExpirationTime_ONE_MONTH");
             } else if(value == 4) {
-                return "2ヶ月";
+                return getText("Enum_ExpirationTime_TWO_MONTH");
             } else if(value == 5) {
-                return "3ヶ月";
+                return getText("Enum_ExpirationTime_THREE_MONTH");
             } else if(value == 6) {
-                return "4ヶ月";
+                return getText("Enum_ExpirationTime_FOUR_MONTH");
             } else if(value == 7) {
-                return "5ヶ月";
+                return getText("Enum_ExpirationTime_FIVE_MONTH");
             } else if(value == 8) {
-                return "6ヶ月";
+                return getText("Enum_ExpirationTime_SIX_MONTH");
             } else if(value == 9) {
-                return "7ヶ月";
+                return getText("Enum_ExpirationTime_SEVEN_MONTH");
             } else if(value == 10) {
-                return "8ヶ月";
+                return getText("Enum_ExpirationTime_EIGHT_MONTH");
             } else if(value == 11) {
-                return "9ヶ月";
+                return getText("Enum_ExpirationTime_NINE_MONTH");
             } else if(value == 12) {
-                return "10ヶ月";
+                return getText("Enum_ExpirationTime_TEN_MONTH");
             } else if(value == 13) {
-                return "11ヶ月";
+                return getText("Enum_ExpirationTime_ELEVEN_MONTH");
             } else if(value == 14) {
-                return "1年";
+                return getText("Enum_ExpirationTime_ONE_YEAR");
             } else if(value == 15) {
-                return "2年";
+                return getText("Enum_ExpirationTime_TWO_YEAR");
             } else if(value == 16) {
-                return "3年";
+                return getText("Enum_ExpirationTime_THREE_YEAR");
             } else if(value == 17) {
-                return "4年";
+                return getText("Enum_ExpirationTime_FOUR_YEAR");
             } else if(value == 18) {
-                return "5年";
+                return getText("Enum_ExpirationTime_FIVE_YEAR");
             } else {
                 return "";
             }
@@ -493,13 +493,13 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         occurredDays: number;
         unUsedDays: number;
         stateAtr: number;
-        payoutTied: boolean;
+        payoutTied: string;
         subOfHDID: string;
         unknownDateSub: boolean;
         dayoffDateSub: string;
         requiredDays: number;
         remainDays: number;
-        subTied: boolean;
+        subTied: string;
         
         //add to fill grid A4_2_5
         unUsedDaysInGrid: number;
@@ -537,10 +537,12 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             
             if((params.occurredDays != null) && (params.occurredDays > 0)) {
                 this.occurredDaysText = "日";
+                this.occurredDays = this.occurredDays.toFixed(1);
             }
             
             if((params.requiredDays != null) && (params.requiredDays > 0)) {
                 this.requiredDaysText = "日";
+                this.requiredDays = this.requiredDays.toFixed(1);
             }
             
             if ((params.payoutId != null) && (params.payoutId != "")) {
@@ -548,23 +550,26 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 
                 if (moment.utc(params.expiredDate, 'YYYY/MM/DD').diff(moment.utc()) > 0) {
                     this.unUsedDaysInGrid = params.unUsedDays;
-                    this.expriedDaysInGrid = "";
+                    this.expriedDaysInGrid = null;
                     if(params.unUsedDays > 0) {
                         this.unUsedDaysInGridText = "日";
+                        this.unUsedDaysInGrid = this.unUsedDaysInGrid.toFixed(1);
                     }
                 } else {
-                    this.unUsedDaysInGrid = "";
+                    this.unUsedDaysInGrid = null;
                     this.expriedDaysInGrid = params.unUsedDays;
                     if(params.unUsedDays > 0) {
                         this.expriedDaysInGridText = "日";
+                        this.expriedDaysInGrid = this.expriedDaysInGrid.toFixed(1);
                     }
                 }
             } else if ((params.subOfHDID != null) && (params.subOfHDID != "")) {
                 this.id = params.subOfHDID;
                 this.unUsedDaysInGrid = params.remainDays * (-1);
-                this.expriedDaysInGrid = "";
+                this.expriedDaysInGrid = null;
                 if(params.remainDays > 0) {
                     this.unUsedDaysInGridText = "日";
+                    this.unUsedDaysInGrid = this.unUsedDaysInGrid.toFixed(1);
                 }
             }
             
@@ -574,11 +579,11 @@ module nts.uk.at.view.kdm001.a.viewmodel {
     
     function getLawAtr(value, row) {
         if (value && value === '0') {
-            return '法定内休日';
+            return getText("Enum_HolidayAtr_STATUTORY_HOLIDAYS");
         } else if (value && value === '1') {
-            return '法定外休日';
+            return getText("Enum_HolidayAtr_NON_STATUTORY_HOLIDAYS");
         } else if (value && value === '2') {
-            return '祝日';
+            return getText("Enum_HolidayAtr_PUBLIC_HOLIDAY");
         } else {
             return '';
         }

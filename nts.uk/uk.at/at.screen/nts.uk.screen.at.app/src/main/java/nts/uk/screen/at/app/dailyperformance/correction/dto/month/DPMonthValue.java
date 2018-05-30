@@ -4,7 +4,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.app.find.monthly.root.dto.ClosureDateDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 
 @NoArgsConstructor

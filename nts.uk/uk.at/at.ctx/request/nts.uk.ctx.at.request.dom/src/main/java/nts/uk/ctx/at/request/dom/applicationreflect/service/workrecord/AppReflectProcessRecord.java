@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord;
 
+import nts.arc.time.GeneralDate;
+
 /**
  * 勤務実績に反映
  * @author do_dt
@@ -59,4 +61,6 @@ public interface AppReflectProcessRecord {
 	 * @return
 	 */
 	public boolean recruitmentReflectRecord(CommonReflectPara para, boolean isPre);
+	
+	public boolean isRecordData(String employeeId, GeneralDate baseDate);
 }

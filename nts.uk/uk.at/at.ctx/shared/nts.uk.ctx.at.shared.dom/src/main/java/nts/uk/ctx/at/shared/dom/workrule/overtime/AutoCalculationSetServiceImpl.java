@@ -67,20 +67,20 @@ public class AutoCalculationSetServiceImpl implements AutoCalculationSetService 
 		BaseAutoCalSetting baseAutoCalSetting = new BaseAutoCalSetting();
 
 		// 必要な個人情報を取得(get required info)
-		boolean getInfo = this.getRequiredPersonalInfo(employeeID, processingDate);
+//		boolean getInfo = this.getRequiredPersonalInfo(employeeID, processingDate);		
+		Optional<SharedAffJobTitleHisImport> jobTitleImport = this.sharedAffJobtitleHisAdapter
+				.findAffJobTitleHis(employeeID, processingDate);
+		Optional<SharedAffWorkPlaceHisImport> workPlaceImport = this.sharedAffWorkPlaceHisAdapter
+				.getAffWorkPlaceHis(employeeID, processingDate);
 		
 		// has data
-		if (getInfo == true) {
+		if (jobTitleImport.isPresent() && workPlaceImport.isPresent()) {
 			// ドメインモデル「時間外の自動計算の利用単位設定」を取得する(get data domain 「時間外の自動計算の利用単位設定」)
 			Optional<UseUnitAutoCalSetting> useUnitAutoCalSetting = this.useUnitAutoCalSettingRepository
 					.getAllUseUnitAutoCalSetting(companyID);
 
-			if (useUnitAutoCalSetting.isPresent()) {
-				Optional<SharedAffJobTitleHisImport> jobTitleImport = this.sharedAffJobtitleHisAdapter
-						.findAffJobTitleHis(employeeID, processingDate);
-				Optional<SharedAffWorkPlaceHisImport> workPlaceImport = this.sharedAffWorkPlaceHisAdapter
-						.getAffWorkPlaceHis(employeeID, processingDate);
-
+			if (useUnitAutoCalSetting.isPresent()) {				
+				
 				// 職場・職位の自動計算設定をする＝TRUE
 				if (useUnitAutoCalSetting.get().getUseJobwkpSet() == ApplyAtr.USE) {
 					// ドメインモデル「職場・職位別自動計算設定」を取得(get data domain 「職場・職位別自動計算設定」)

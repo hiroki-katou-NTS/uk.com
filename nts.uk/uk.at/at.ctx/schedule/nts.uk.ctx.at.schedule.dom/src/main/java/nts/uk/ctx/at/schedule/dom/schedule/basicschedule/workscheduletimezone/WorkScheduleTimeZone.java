@@ -4,10 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
@@ -43,14 +46,15 @@ public class WorkScheduleTimeZone extends DomainObject {
 		super.validate();
 	}
 
-	public void validateTime() {
+	public Map<String, String> validateTime() {
+		Map<String, String> msgErrMap = new HashMap<String, String>();
 		if (this.scheduleStartClock == null) {
-			throw new BusinessException("Msg_438", "73"); //#KSU001_73
+			msgErrMap.put("KSU001_73", "Msg_438");
 		}
-
 		if (this.scheduleEndClock == null) {
-			throw new BusinessException("Msg_438", "74"); //#KSU001_74
+			msgErrMap.put("KSU001_74", "Msg_438");
 		}
+		return msgErrMap;
 	}
 
 	/**

@@ -4,23 +4,47 @@ module nts.uk.at.view.kdm001.b.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import getText = nts.uk.resource.getText;
     import modal = nts.uk.ui.windows.sub.modal;
+    import block = nts.uk.ui.block;
     export class ScreenModel {
-        screenItem: KnockoutObservable<ScreenItem>;
-
+        periodOptionItem: KnockoutObservableArray<ItemModel>;
+        selectedPeriodItem: KnockoutObservable<number>;
+        dateValue: KnockoutObservable<any>;
+        dispTotalRemainHours: KnockoutObservable<string> = ko.observable(null);
+        dispTotalExpiredDate: KnockoutObservable<string> = ko.observable(null);
+        closureEmploy: any;
+        selectedEmployee: EmployeeInfo;
+        listExtractData: Array<any>;
+        subData: Array<any> = null;
+        listEmployee: Array<EmployeeInfo>;
+        leaveSettingExpiredDate: string;
+        compenSettingEmpExpiredDate: string
+        //_____CCG001________
+        ccgcomponent: GroupOption;
+        listEmployeeKCP009: KnockoutObservableArray<EmployeeSearchDto>;
+        showinfoSelectedEmployee: KnockoutObservable<boolean>;
+        baseDate: KnockoutObservable<Date>;
+        //___________KCP009______________
+        employeeInputList: KnockoutObservableArray<EmployeeKcp009> = ko.observableArray([]);
+        systemReference: KnockoutObservable<number> = ko.observable(SystemType.EMPLOYMENT);
+        isDisplayOrganizationName: KnockoutObservable<boolean> = ko.observable(false);
+        targetBtnText: string = getText("KCP009_3");
+        listComponentOption: ComponentOption;
+        selectedItem: KnockoutObservable<string> = ko.observable(null);
+        isOnStartUp: boolean = true;
+        tabindex: number = -1;
         constructor() {
             let self = this;
-            self.screenItem = ko.observable(new ScreenItem());
             self.initSubstituteDataList();
-            self.screenItem().periodOptionItem = ko.observableArray([
+            self.periodOptionItem = ko.observableArray([
                 new ItemModel(0, getText("KDM001_4")),
                 new ItemModel(1, getText("KDM001_5"))
             ]);
-            self.screenItem().selectedPeriodItem = ko.observable(0);
-            self.screenItem().dateValue = ko.observable({});
+            self.selectedPeriodItem = ko.observable(0);
+            self.dateValue = ko.observable({});
             //_____CCG001________
-            self.screenItem().listEmployeeKCP009 = ko.observableArray([]);
-            self.screenItem().showinfoSelectedEmployee = ko.observable(false);
-            self.screenItem().ccgcomponent = {
+            self.listEmployeeKCP009 = ko.observableArray([]);
+            self.showinfoSelectedEmployee = ko.observable(false);
+            self.ccgcomponent = {
                 /** Common properties */
                 systemType: 1,
                 showEmployeeSelection: false,
@@ -60,36 +84,35 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 * @param: data: the data return from CCG001
                 */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-                    self.screenItem().showinfoSelectedEmployee(true);
-                    self.screenItem().listEmployeeKCP009(data.listEmployee);
+                    self.showinfoSelectedEmployee(true);
+                    self.listEmployeeKCP009(data.listEmployee);
                     self.convertEmployeeCcg01ToKcp009(data.listEmployee);
                 }
             }
-            $('#ccgcomponent').ntsGroupComponent(self.screenItem().ccgcomponent);
-            self.screenItem().selectedItem.subscribe(x => {
-                if (!self.screenItem().isOnStartUp) {
-                    self.screenItem().selectedEmployee = _.find(self.screenItem().listEmployee, item => { return item.employeeId === x; });
+            self.selectedItem.subscribe(x => {
+                if (!self.isOnStartUp) {
+                    self.selectedEmployee = _.find(self.listEmployee, item => { return item.employeeId === x; });
                     self.getSubstituteDataList(self.getSearchCondition());
                 }
-                self.screenItem().isOnStartUp = false;
+                self.isOnStartUp = false;
             });
         }
         openConfirmScreen() {
             let self = this, data;
             data = {
-                workplaceCode: self.screenItem().selectedEmployee.workplaceCode,
-                workplaceName: self.screenItem().selectedEmployee.workplaceName,
-                employeeCode: self.screenItem().selectedEmployee.employeeCode,
-                employeeName: self.screenItem().selectedEmployee.employeeName,
-                periodRange: self.screenItem().dateValue,
-                substituteData: self.screenItem().subData,
-                totalRemainHours: self.screenItem().dispTotalRemainHours()
+                workplaceCode: self.selectedEmployee.workplaceCode,
+                workplaceName: self.selectedEmployee.workplaceName,
+                employeeCode: self.selectedEmployee.employeeCode,
+                employeeName: self.selectedEmployee.employeeName,
+                periodRange: self.dateValue,
+                substituteData: self.subData,
+                totalRemainHours: self.dispTotalRemainHours()
             };
             nts.uk.request.jump("/view/kdr/003/a/index.xhtml", { 'param': data });
         }
         openNewSubstituteData() {
             let self = this;
-            setShared('KDM001_I_PARAMS', { selectedEmployee: self.screenItem().selectedEmployee, closure: self.screenItem().closureEmploy });
+            setShared('KDM001_I_PARAMS', { selectedEmployee: self.selectedEmployee, closure: self.closureEmploy });
             modal("/view/kdm/001/i/index.xhtml").onClosed(function() {
                 let resParam = getShared("KDM001_I_PARAMS_RES");
                 if (resParam) {
@@ -112,8 +135,8 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         getSubstituteDataList(searchCondition: any) {
             let self = this;
             service.getExtraHolidayData(searchCondition).done(function(result) {
-                self.screenItem().closureEmploy = result.closureEmploy;
-                self.screenItem().listExtractData = result.extraData;
+                self.closureEmploy = result.closureEmploy;
+                self.listExtractData = result.extraData;
                 self.convertToDisplayList();
                 self.updateSubstituteDataList();
             }).fail(function(result) {
@@ -122,20 +145,20 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         }
         getSearchCondition() {
             let self = this, startDate, endDate, searchCondition = null;
-            startDate = moment.utc(self.screenItem().dateValue().startDate, 'YYYY/MM/DD').toISOString();
-            endDate = moment.utc(self.screenItem().dateValue().endDate, 'YYYY/MM/DD').toISOString();
+            startDate = moment.utc(self.dateValue().startDate, 'YYYY/MM/DD').toISOString();
+            endDate = moment.utc(self.dateValue().endDate, 'YYYY/MM/DD').toISOString();
             searchCondition = null;
-            if (self.screenItem().selectedPeriodItem() == 1) {
-                searchCondition = { searchMode: 1, employeeId: self.screenItem().selectedEmployee.employeeId, startDate: startDate, endDate: endDate };
+            if (self.selectedPeriodItem() == 1) {
+                searchCondition = { searchMode: 1, employeeId: self.selectedEmployee.employeeId, startDate: startDate, endDate: endDate };
             } else {
-                searchCondition = { searchMode: 0, employeeId: self.screenItem().selectedEmployee.employeeId, startDate: null, endDate: null };
+                searchCondition = { searchMode: 0, employeeId: self.selectedEmployee.employeeId, startDate: null, endDate: null };
             }
             return searchCondition;
         }
         convertToDisplayList() {
             let self = this;
             let totalRemain = 0, dayOffDate, unUse, remain, expired, remainDays, listData = [];
-            _.forEach(self.screenItem().listExtractData, data => {
+            _.forEach(self.listExtractData, data => {
                 dayOffDate = data.dayOffDate;
                 remain = data.remain;
                 expired = data.expired;
@@ -163,11 +186,11 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     listData.push(new SubstitutedData(data.comDayOffID, null, null, null, dayOffDate, remainDays + getText('KDM001_27'), data.linked == 1 ? '有' : "", remain, expired, data.linked));
                 }
             });
-            if (self.screenItem().listExtractData.length == 0) {
+            if (self.listExtractData.length == 0) {
                 dialog.alertError({ messageId: 'Msg_726' });
             }
-            self.screenItem().subData = listData;
-            self.screenItem().dispTotalRemainHours(totalRemain + getText('KDM001_27'));
+            self.subData = listData;
+            self.dispTotalRemainHours(totalRemain + getText('KDM001_27'));
         }
         initSubstituteDataList() {
             let self = this;
@@ -176,7 +199,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         }
         updateSubstituteDataList() {
             let self = this;
-            $("#substituteDataGrid").igGrid("dataSourceObject", self.screenItem().subData).igGrid("dataBind");
+            $("#substituteDataGrid").igGrid("dataSourceObject", self.subData).igGrid("dataBind");
             self.disableLinkedData();
         }
 
@@ -185,7 +208,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             $("#substituteDataGrid").ntsGrid({
                 height: '520px',
                 name: 'Grid name',
-                dataSource: self.screenItem().subData,
+                dataSource: self.subData,
                 primaryKey: 'id',
                 virtualization: true,
                 hidePrimaryKey: true,
@@ -220,30 +243,33 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         }
         disableLinkedData() {
             let self = this;
-            if (self.screenItem().subData) {
-                for (let data of self.screenItem().subData) {
+            if (self.subData) {
+                for (let data of self.subData) {
                     if (data.isLinked == 1) {
                         $("#substituteDataGrid").ntsGrid("disableNtsControlAt", data.id, "edit", 'Button');
+                    } else {
+                        $("#substituteDataGrid").ntsGrid("enableNtsControlAt", data.id, "edit", 'Button');
                     }
                 }
             }
         }
         startPage(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred(), searchCondition;
+            block.invisible();
             searchCondition = { employeeId: null, stateDate: null, endDate: null };
             service.getInfoEmLogin().done(function(loginerInfo) {
                 service.getSubsitutionData(searchCondition).done(function(result) {
                     let wkHistory = result.wkHistory;
-                    self.screenItem().closureEmploy = result.extraHolidayManagementDataDto.closureEmploy;
-                    self.screenItem().listEmployee = [];
-                    self.screenItem().selectedEmployee = new EmployeeInfo(loginerInfo.sid, loginerInfo.employeeCode, loginerInfo.employeeName, wkHistory.workplaceId, wkHistory.workplaceCode, wkHistory.workplaceName);
-                    self.screenItem().listEmployee.push(self.screenItem().selectedEmployee);
-                    self.screenItem().employeeInputList.push(new EmployeeKcp009(loginerInfo.sid,
+                    self.closureEmploy = result.extraHolidayManagementDataDto.closureEmploy;
+                    self.listEmployee = [];
+                    self.selectedEmployee = new EmployeeInfo(loginerInfo.sid, loginerInfo.employeeCode, loginerInfo.employeeName, wkHistory.workplaceId, wkHistory.workplaceCode, wkHistory.workplaceName);
+                    self.listEmployee.push(self.selectedEmployee);
+                    self.employeeInputList.push(new EmployeeKcp009(loginerInfo.sid,
                         loginerInfo.employeeCode, loginerInfo.employeeName, wkHistory.workplaceName, wkHistory.wkpDisplayName));
-                    self.screenItem().listExtractData = result.extraHolidayManagementDataDto.extraData;
+                    self.listExtractData = result.extraHolidayManagementDataDto.extraData;
                     self.convertToDisplayList();
                     self.updateSubstituteDataList();
-                    self.screenItem().dispTotalExpiredDate = result.compenSettingEmpExpiredDate;
+                    self.dispTotalExpiredDate = result.compenSettingEmpExpiredDate;
                     self.initKCP009();
                     self.disableLinkedData();
                     dfd.resolve();
@@ -261,32 +287,32 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             let self = this;
             //_______KCP009_______
             // Initial listComponentOption
-            self.screenItem().listComponentOption = {
-                systemReference: self.screenItem().systemReference(),
-                isDisplayOrganizationName: self.screenItem().isDisplayOrganizationName(),
-                employeeInputList: self.screenItem().employeeInputList,
-                targetBtnText: self.screenItem().targetBtnText,
-                selectedItem: self.screenItem().selectedItem,
-                tabIndex: self.screenItem().tabindex
+            self.listComponentOption = {
+                systemReference: self.systemReference(),
+                isDisplayOrganizationName: self.isDisplayOrganizationName(),
+                employeeInputList: self.employeeInputList,
+                targetBtnText: self.targetBtnText,
+                selectedItem: self.selectedItem,
+                tabIndex: self.tabindex
             };
-            $('#emp-component').ntsLoadListComponent(self.screenItem().listComponentOption);
+            $('#emp-component').ntsLoadListComponent(self.listComponentOption);
         }
 
         convertEmployeeCcg01ToKcp009(dataList: EmployeeSearchDto[]): void {
             let self = this;
-            self.screenItem().employeeInputList([]);
-            self.screenItem().listEmployee = [];
+            self.employeeInputList([]);
+            self.listEmployee = [];
             _.each(dataList, function(item) {
-                self.screenItem().listEmployee.push(new EmployeeInfo(item.employeeId, item.employeeCode, item.employeeName, item.workplaceId, item.workplaceCode, item.workplaceName));
-                self.screenItem().employeeInputList.push(new EmployeeKcp009(item.employeeId, item.employeeCode, item.employeeName, item.workplaceName, ""));
+                self.listEmployee.push(new EmployeeInfo(item.employeeId, item.employeeCode, item.employeeName, item.workplaceId, item.workplaceCode, item.workplaceName));
+                self.employeeInputList.push(new EmployeeKcp009(item.employeeId, item.employeeCode, item.employeeName, item.workplaceName, ""));
             });
-            $('#emp-component').ntsLoadListComponent(self.screenItem().listComponentOption);
+            $('#emp-component').ntsLoadListComponent(self.listComponentOption);
             if (dataList.length == 0) {
-                self.screenItem().selectedItem('');
+                self.selectedItem('');
             } else {
-                let item = self.findIdSelected(dataList, self.screenItem().selectedItem());
+                let item = self.findIdSelected(dataList, self.selectedItem());
                 let sortByEmployeeCode = _.orderBy(dataList, ["employeeCode"], ["asc"]);
-                if (item == undefined) self.screenItem().selectedItem(sortByEmployeeCode[0].employeeId);
+                if (item == undefined) self.selectedItem(sortByEmployeeCode[0].employeeId);
             }
         }
 
@@ -298,10 +324,10 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         pegSetting(value) {
             let self = this, rowDataInfo;
             if (value.substituedWorkingDate.length > 0) {
-                rowDataInfo = _.find(self.screenItem().listExtractData, x => {
+                rowDataInfo = _.find(self.listExtractData, x => {
                     return x.id === value.id;
                 });
-                setShared('KDM001_J_PARAMS', { row: rowDataInfo, selectedEmployee: self.screenItem().selectedEmployee, closure: self.screenItem().closureEmploy });
+                setShared('KDM001_J_PARAMS', { row: rowDataInfo, selectedEmployee: self.selectedEmployee, closure: self.closureEmploy });
                 modal("/view/kdm/001/j/index.xhtml").onClosed(function() {
                     let resParam = getShared("KDM001_J_PARAMS_RES");
                     if (resParam) {
@@ -313,10 +339,10 @@ module nts.uk.at.view.kdm001.b.viewmodel {
 
                 });
             } else {
-                rowDataInfo = _.find(self.screenItem().listExtractData, x => {
+                rowDataInfo = _.find(self.listExtractData, x => {
                     return x.comDayOffID === value.id;
                 });
-                setShared('KDM001_K_PARAMS', { row: rowDataInfo, selectedEmployee: self.screenItem().selectedEmployee, closure: self.screenItem().closureEmploy });
+                setShared('KDM001_K_PARAMS', { row: rowDataInfo, selectedEmployee: self.selectedEmployee, closure: self.closureEmploy });
                 modal("/view/kdm/001/k/index.xhtml").onClosed(function() {
                     let resParam = getShared("KDM001_K_PARAMS_RES");
                     if (resParam) {
@@ -331,10 +357,10 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         doCorrection(value) {
             let self = this, rowDataInfo;
             if (value.substituedWorkingDate.length > 0) {
-                rowDataInfo = _.find(self.screenItem().listExtractData, x => {
+                rowDataInfo = _.find(self.listExtractData, x => {
                     return x.id === value.id;
                 });
-                setShared('KDM001_L_PARAMS', { row: rowDataInfo, selectedEmployee: self.screenItem().selectedEmployee, closure: self.screenItem().closureEmploy });
+                setShared('KDM001_L_PARAMS', { row: rowDataInfo, selectedEmployee: self.selectedEmployee, closure: self.closureEmploy });
                 modal("/view/kdm/001/l/index.xhtml").onClosed(function() {
                     let resParam = getShared("KDM001_L_PARAMS_RES");
                     if (resParam) {
@@ -345,10 +371,10 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     }
                 });
             } else {
-                rowDataInfo = _.find(self.screenItem().listExtractData, x => {
+                rowDataInfo = _.find(self.listExtractData, x => {
                     return x.comDayOffID === value.id;
                 });
-                setShared('KDM001_M_PARAMS', { row: rowDataInfo, selectedEmployee: self.screenItem().selectedEmployee, closure: self.screenItem().closureEmploy });
+                setShared('KDM001_M_PARAMS', { row: rowDataInfo, selectedEmployee: self.selectedEmployee, closure: self.closureEmploy });
                 modal("/view/kdm/001/m/index.xhtml").onClosed(function() {
                     let resParam = getShared("KDM001_M_PARAMS_RES");
                     if (resParam) {
@@ -359,48 +385,6 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     }
                 });
             }
-        }
-    }
-
-    export class ScreenItem {
-        periodOptionItem: KnockoutObservableArray<ItemModel>;
-        selectedPeriodItem: KnockoutObservable<number>;
-        dateValue: KnockoutObservable<any>;
-        dispTotalRemainHours: KnockoutObservable<string>;
-        dispTotalExpiredDate: KnockoutObservable<string>;
-        closureEmploy: any;
-        selectedEmployee: EmployeeInfo;
-        listExtractData: Array<any>;
-        subData: Array<any>;
-        listEmployee: Array<EmployeeInfo>;
-        leaveSettingExpiredDate: string;
-        compenSettingEmpExpiredDate: string
-        //_____CCG001________
-        ccgcomponent: GroupOption;
-        listEmployeeKCP009: KnockoutObservableArray<EmployeeSearchDto>;
-        showinfoSelectedEmployee: KnockoutObservable<boolean>;
-        baseDate: KnockoutObservable<Date>;
-        //___________KCP009______________
-        employeeInputList: KnockoutObservableArray<EmployeeKcp009>;
-        systemReference: KnockoutObservable<number>;
-        isDisplayOrganizationName: KnockoutObservable<boolean>;
-        targetBtnText: string;
-        listComponentOption: ComponentOption;
-        selectedItem: KnockoutObservable<string>;
-        isOnStartUp: boolean;
-        tabindex: number;
-
-        constructor() {
-            this.dispTotalRemainHours = ko.observable(null);
-            this.dispTotalExpiredDate = ko.observable(null);
-            this.subData = null;
-            this.employeeInputList = ko.observableArray([]);
-            this.systemReference = ko.observable(SystemType.EMPLOYMENT);
-            this.isDisplayOrganizationName = ko.observable(false);
-            this.targetBtnText = getText("KCP009_3");
-            this.selectedItem = ko.observable(null);
-            this.isOnStartUp = true;
-            this.tabindex = -1;
         }
     }
 

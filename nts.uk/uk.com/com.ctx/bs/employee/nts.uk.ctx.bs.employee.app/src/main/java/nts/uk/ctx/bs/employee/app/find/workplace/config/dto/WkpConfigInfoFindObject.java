@@ -20,4 +20,7 @@ public class WkpConfigInfoFindObject {
 	
 	/** The system type. */
 	private Integer systemType = 5;
+
+	/** The restriction of reference range. */
+	private Boolean restrictionOfReferenceRange;
 }

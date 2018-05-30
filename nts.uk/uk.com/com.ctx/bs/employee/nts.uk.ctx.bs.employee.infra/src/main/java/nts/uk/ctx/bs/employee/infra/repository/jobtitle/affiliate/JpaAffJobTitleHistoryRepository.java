@@ -3,6 +3,7 @@ package nts.uk.ctx.bs.employee.infra.repository.jobtitle.affiliate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -37,7 +38,11 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 	
 	private final String GET_BY_HID_SID = "select h from BsymtAffJobTitleHist h"
 			+ " where h.sid = :sid and h.hisId = :hisId";
-
+	
+	private final String GET_BY_EMPIDS_PERIOD = "select h from BsymtAffJobTitleHist h"
+			+ " where h.sid IN :lstSid and h.strDate <= :endDate and h.endDate >= :startDate"
+			+ " ORDER BY h.sid, h.strDate";
+	
 	/**
 	 * Convert from domain to entity
 	 * @param employeeId
@@ -242,6 +247,31 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 					.setParameter("lstSid", subList).setParameter("standardDate", baseDate).getList());
 		});
 		return resultList.stream().map(entity -> this.toDomain(entity)).collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<AffJobTitleHistory> getByEmployeeListPeriod(List<String> employeeIds, DatePeriod period) {
+		Map<String, List<BsymtAffJobTitleHist>> entitiesByEmployee = this.queryProxy()
+				.query(GET_BY_EMPIDS_PERIOD, BsymtAffJobTitleHist.class).setParameter("lstSid", employeeIds)
+				.setParameter("startDate", period.start()).setParameter("endDate", period.end()).getList().stream()
+				.collect(Collectors.groupingBy(x -> x.sid));
+
+		String companyId = AppContexts.user().companyId();
+
+		List<AffJobTitleHistory> resultList = new ArrayList<>();
+
+		entitiesByEmployee.forEach((employeeId, entitiesOfEmp) -> {
+			List<DateHistoryItem> historyItems = convertToDateHistoryItem(entitiesOfEmp);
+			resultList.add(new AffJobTitleHistory(companyId, employeeId, historyItems));
+		});
+		return resultList;
+	}
+	
+	private List<DateHistoryItem> convertToDateHistoryItem(List<BsymtAffJobTitleHist> entities) {
+		return entities.stream()
+				.map(ent -> new DateHistoryItem(ent.bsymtAffJobTitleHistItem.hisId,
+						new DatePeriod(ent.strDate, ent.endDate)))
+				.collect(Collectors.toList());
 	}
 
 }

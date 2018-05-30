@@ -2,7 +2,9 @@ package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremain
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
@@ -14,6 +16,8 @@ import nts.uk.ctx.at.record.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.LeaveExpirationStatus;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 // domain name: 年休付与残数データ
 public class AnnualLeaveGrantRemainingData extends AggregateRoot {
 

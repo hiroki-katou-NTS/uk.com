@@ -45,7 +45,7 @@ public class JpaLockOutDataSetMemento implements LockOutDataSetMemento {
 	 */
 	@Override
 	public void setLogoutDateTime(GeneralDateTime logoutDateTime) {
-		this.sgwmtLockoutData.setLockoutDateTime(logoutDateTime);;
+		this.sgwmtLockoutData.getSgwmtLockoutDataPK().setLockoutDateTime(logoutDateTime);;
 	}
 
 	/**

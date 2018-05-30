@@ -106,6 +106,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             }
             if (currentCtg === undefined) { return; }
             self.currentCategory().itemList.removeAll();
+            block.invisible()
             service.getAllItemByCtgId(settingId, ctgId).done((item: Array<any>) => {
                 if (item.length > 0) {
                     let itemConvert = _.map(item, function(obj: any) {
@@ -151,16 +152,24 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         });
 
                     });
-
+              _.defer(() => {
                     self.currentCategory().itemList.removeAll();
                     self.currentCategory().itemList(itemConvert);
                     self.lstItemFilter = itemConvert;
+                  _.defer(() => {
+                        $('#ctgName').focus();
+                     });
+                });
                 } else {
-                    self.currentCategory().itemList.removeAll();
-                    self.currentCategory().itemList([]);
-
+                    _.defer(() => {
+                      self.currentCategory().itemList.removeAll();
+                        self.currentCategory().itemList([]);
+                      _.defer(() => {
+                            $('#ctgName').focus();
+                         });
+                    });
                 }
-            })
+            }).always(()=>{ block.clear()});
         }
 
         start(id: string): JQueryPromise<any> {
@@ -402,16 +411,16 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         };
                     })
                 },
-                dateInputList = $(".table-container").find('tbody').find('tr').find('#date'),
-                dateInputListOfYear = $(".table-container").find('tbody').find('tr').find('#datey'),
+                dateInputList = $('tr').find('#date'),
+                dateInputListOfYear = $('tr').find('#datey'),
                 itemList: Array<any> = _.filter(ko.toJS(self.currentCategory().itemList()), function(item: PerInfoInitValueSettingItemDto) {
                     return item.dataType === 3 && item.selectedRuleCode === 2;
                 });
             if (dateInputList.length > 0 || dateInputListOfYear.length > 0) {
                 let i: number = 0;
                 _.each(itemList, function(item: PerInfoInitValueSettingItemDto) {
-                    let $input1 = $(".table-container").find('tbody').find('tr').find('#date')[i],
-                        $input2 = $(".table-container").find('tbody').find('tr').find('#datey')[i];
+                    let $input1 = dateInputList[i],
+                        $input2 = dateInputListOfYear[i];
                     if ($input1 != undefined) {
                         $input1.setAttribute("nameid", item.itemName);
                     }
@@ -547,6 +556,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
             if ((Browser.indexOf('MSIE ') > 0) || !!Browser.match(/Trident.*rv\:11\./)) {
                 $("#sub-right>table>tbody").css("height", "495px");
             }
+        }
+        
+        checkError(itemList : Array<any>){
+        
         }
 
     }
@@ -853,7 +866,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             self.saveDataType = ko.observable(params.saveDataType || 0);
             self.stringValue = ko.observable(params.stringValue || null);
-           
+
             self.intValue = ko.observable(params.intValue);
             self.dateWithDay = ko.observable(params.dateWithDay);
             self.timePoint = ko.observable(params.timePoint || "");
@@ -915,20 +928,13 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 self.selectionItemRefType = params.selectionItemRefType || undefined;
 
                 self.selection = ko.observableArray(params.selection || []);
-                self.selectedCode = ko.observable((params.stringValue == null?  params.selectionItemId: params.stringValue)|| undefined);
+                self.selectedCode = ko.observable((params.stringValue == null ? params.selectionItemId : params.stringValue) || undefined);
 
             }
 
             if (params.dataType === 8) {
-                if (params.stringValue !== undefined) {
-                    let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == params.stringValue) { return c } });
-                    self.selectionName = ko.observable((objSel == undefined ? (params.stringValue == null ? params.selectionItemId: params.stringValue) + " " + text("CPS001_107") : objSel.optionText) || (params.stringValue == null ? params.selectionItemId: params.stringValue) + " " + text("CPS001_107"));
-                    console.log(self.selectionName());
-                } else {
-                    let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == params.selectionItemId) { return c } });
-                    self.selectionName = ko.observable((objSel == undefined ? params.selectionItemId + " " + text("CPS001_107") : objSel.optionText) || params.selectionItemId + " " + text("CPS001_107"));
-                    console.log(self.selectionName());
-                }
+                let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == params.stringValue) { return c } });
+                self.selectionName = ko.observable((objSel == undefined ? " " : objSel.optionText) || " ");
             }
 
 
@@ -953,7 +959,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 self.selectionItemRefType = params.selectionItemRefType || undefined;
 
                 self.selection = ko.observableArray(params.selection || []);
-                self.selectedCode = ko.observable(params.stringValue || "1");
+                self.selectedCode = ko.observable(params.stringValue || "0");
             }
 
 

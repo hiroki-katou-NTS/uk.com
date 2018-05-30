@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.pubimp.application.approvalstatus;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -59,9 +60,11 @@ public class ApprovalStatusPubImpl implements ApprovalStatusPub {
 		if (data == null) {
 			return null;
 		}
-		return new ApprovalStatusMailTempExport(data.getMailType().value, data.getUrlApprovalEmbed().value,
-				data.getUrlDayEmbed().value, data.getUrlMonthEmbed().value, data.getMailSubject().v(),
-				data.getMailContent().v());
+		return new ApprovalStatusMailTempExport(data.getMailType().value,
+				Objects.isNull(data.getUrlApprovalEmbed()) ? null : data.getUrlApprovalEmbed().value,
+				Objects.isNull(data.getUrlDayEmbed()) ? null : data.getUrlDayEmbed().value,
+				Objects.isNull(data.getUrlMonthEmbed()) ? null : data.getUrlMonthEmbed().value,
+				data.getMailSubject().v(), data.getMailContent().v());
 	}
 
 	@Override
@@ -86,7 +89,7 @@ public class ApprovalStatusPubImpl implements ApprovalStatusPub {
 
 	@Override
 	public SendMailResultExport exeApprovalStatusMailTransmission(List<MailTransmissionContentExport> listMailContent,
-			ApprovalStatusMailTempExport domain) {
+			ApprovalStatusMailTempExport domain, int mailType) {
 		List<MailTransmissionContentOutput> listMail = new ArrayList<>();
 
 		for (MailTransmissionContentExport item : listMailContent) {
@@ -96,11 +99,15 @@ public class ApprovalStatusPubImpl implements ApprovalStatusPub {
 		}
 		ApprovalStatusMailTemp domainMail = new ApprovalStatusMailTemp("",
 				EnumAdaptor.valueOf(domain.getMailType(), ApprovalStatusMailType.class),
-				EnumAdaptor.valueOf(domain.getUrlApprovalEmbed(), NotUseAtr.class),
-				EnumAdaptor.valueOf(domain.getUrlDayEmbed(), NotUseAtr.class),
-				EnumAdaptor.valueOf(domain.getUrlMonthEmbed(), NotUseAtr.class), new Subject(domain.getMailSubject()),
-				new Content(domain.getMailContent()));
-		SendMailResultOutput result = approvalStatusService.exeApprovalStatusMailTransmission(listMail, domainMail);
+				Objects.isNull(domain.getUrlApprovalEmbed()) ? null
+						: EnumAdaptor.valueOf(domain.getUrlApprovalEmbed(), NotUseAtr.class),
+				Objects.isNull(domain.getUrlDayEmbed()) ? null
+						: EnumAdaptor.valueOf(domain.getUrlDayEmbed(), NotUseAtr.class),
+				Objects.isNull(domain.getUrlMonthEmbed()) ? null
+						: EnumAdaptor.valueOf(domain.getUrlMonthEmbed(), NotUseAtr.class),
+				new Subject(domain.getMailSubject()), new Content(domain.getMailContent()));
+		SendMailResultOutput result = approvalStatusService.exeApprovalStatusMailTransmission(listMail, domainMail,
+				EnumAdaptor.valueOf(mailType, ApprovalStatusMailType.class));
 		return new SendMailResultExport(result.isOK(), result.getListError());
 	}
 }
