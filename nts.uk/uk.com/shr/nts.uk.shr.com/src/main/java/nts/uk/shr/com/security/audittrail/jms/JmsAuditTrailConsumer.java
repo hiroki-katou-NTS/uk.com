@@ -12,11 +12,11 @@ import nts.uk.shr.com.security.audittrail.AuditTrailTransaction;
 
 import javax.ejb.ActivationConfigProperty;
 
-@MessageDriven(name = "JmsAuditTrailConsumer", activationConfig = {
-        @ActivationConfigProperty(propertyName = "destination", propertyValue = "java:jboss/jms/queue/UKAuditTrail"),
-        @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge"),
-        @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue")
-})
+//@MessageDriven(name = "JmsAuditTrailConsumer", activationConfig = {
+//        @ActivationConfigProperty(propertyName = "destination", propertyValue = "java:jboss/jms/queue/UKAuditTrail"),
+//        @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge"),
+//        @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue")
+//})
 public class JmsAuditTrailConsumer implements MessageListener {
 
 	@Override

@@ -16,7 +16,7 @@ import lombok.val;
 import nts.uk.shr.com.security.audittrail.correction.CorrectionLoggingAgent;
 import nts.uk.shr.com.security.audittrail.correction.CorrectionProcessorId;
 
-@ApplicationScoped
+//@ApplicationScoped
 public class JmsAuditTrailProducer implements CorrectionLoggingAgent {
 
     @Resource(lookup = "java:/ConnectionFactory")
