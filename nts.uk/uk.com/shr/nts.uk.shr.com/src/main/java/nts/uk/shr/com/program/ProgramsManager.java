@@ -1832,7 +1832,7 @@ public class ProgramsManager {
 	 */
 	public static final Program KWR002A = new Program(WebAppId.COM, ProgramIdConsts.KWR002A, "KWR002_1",
 			"/view/kwr/002/a/index.xhtml");
-	public static final Program KWR002C = new Program(WebAppId.AT, ProgramIdConsts.KWR002C, "KWR002_4", "/view/kwr/002/c/index.xhtml");
+	public static final Program KWR002C = new Program(WebAppId.AT, ProgramIdConsts.KWR002C, "KWR002_3", "/view/kwr/002/c/index.xhtml");
 	public static final Program KWR002D = new Program(WebAppId.AT, ProgramIdConsts.KWR002D, "KWR002_4", "/view/kwr/002/d/index.xhtml");
 	public static final Program KWR002E = new Program(WebAppId.COM, ProgramIdConsts.KWR002E, "KWR002_5",
 			"/view/kwr/002/e/index.xhtml");
