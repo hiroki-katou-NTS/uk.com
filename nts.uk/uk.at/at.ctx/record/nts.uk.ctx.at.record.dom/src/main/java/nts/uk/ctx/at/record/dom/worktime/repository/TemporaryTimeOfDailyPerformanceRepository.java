@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.worktime.repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -18,6 +19,8 @@ public interface TemporaryTimeOfDailyPerformanceRepository {
 	List<TemporaryTimeOfDailyPerformance> findbyPeriodOrderByYmd(String employeeId, DatePeriod datePeriod);
 
 	List<TemporaryTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd);
+
+	List<TemporaryTimeOfDailyPerformance> finds(Map<String, GeneralDate> param);
 
 	void add(TemporaryTimeOfDailyPerformance temporaryTime);
 

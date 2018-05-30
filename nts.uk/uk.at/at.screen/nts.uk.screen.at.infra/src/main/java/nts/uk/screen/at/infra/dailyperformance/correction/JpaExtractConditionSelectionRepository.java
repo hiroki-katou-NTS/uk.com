@@ -26,10 +26,10 @@ public class JpaExtractConditionSelectionRepository extends JpaRepository implem
 	private static ErrorAlarmWorkRecordDto toDto(KwrmtErAlWorkRecord entity) {
 		return new ErrorAlarmWorkRecordDto(entity.kwrmtErAlWorkRecordPK.companyId,
 										entity.kwrmtErAlWorkRecordPK.errorAlarmCode,
-										entity.errorAlarmName, entity.fixedAtr.intValue(),
-										entity.useAtr.intValue(), entity.typeAtr.intValue(),
-										entity.eralCheckId, entity.boldAtr.intValue(),
-										entity.messageColor, entity.cancelableAtr.intValue(),
+										entity.errorAlarmName, entity.fixedAtr,
+										entity.useAtr, entity.typeAtr,
+										entity.eralCheckId, entity.boldAtr,
+										entity.messageColor, entity.cancelableAtr,
 										entity.errorDisplayItem);
 	}
 }

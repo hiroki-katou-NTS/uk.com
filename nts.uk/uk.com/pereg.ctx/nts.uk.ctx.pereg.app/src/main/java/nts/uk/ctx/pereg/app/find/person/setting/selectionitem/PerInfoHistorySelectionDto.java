@@ -2,7 +2,7 @@ package nts.uk.ctx.pereg.app.find.person.setting.selectionitem;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoHistorySelection;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.history.PerInfoHistorySelection;
 
 @Value
 public class PerInfoHistorySelectionDto {

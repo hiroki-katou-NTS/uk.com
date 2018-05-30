@@ -19,6 +19,5 @@ public interface GetAgreementTimePub {
 	 * @param closureId 締めID
 	 * @return 36協定時間一覧
 	 */
-	// RequestList287
 	List<AgreementTimeExport> get(String companyId, List<String> employeeIds, YearMonth yearMonth, ClosureId closureId);
 }

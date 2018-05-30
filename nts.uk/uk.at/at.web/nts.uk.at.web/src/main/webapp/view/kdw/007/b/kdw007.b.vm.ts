@@ -29,21 +29,23 @@ module nts.uk.at.view.kdw007.b.viewmodel {
         currentAtdItemCondition: any;
         displayTargetAtdItems: KnockoutObservable<string> = ko.observable("");
         displayCompareAtdItems: KnockoutObservable<string> = ko.observable("");
+        mode: number;
 
         constructor() {
             let self = this,
                 caic = self.currentAtdItemCondition,
                 param = nts.uk.ui.windows.getShared("KDW007BParams");
+            self.mode = param.mode;
 
             /*param.countableAddAtdItems = _.values(param.countableAddAtdItems || []);
             param.countableSubAtdItems = _.values(param.countableSubAtdItems || []);*/
 
-            ko.utils.extend(param, {
-                countableAddAtdItems: _.values(param.countableAddAtdItems || []),
-                countableSubAtdItems: _.values(param.countableSubAtdItems || [])
+            ko.utils.extend(param.data, {
+                countableAddAtdItems: _.values(param.data.countableAddAtdItems || []),
+                countableSubAtdItems: _.values(param.data.countableSubAtdItems || [])
             });
 
-            self.currentAtdItemCondition = caic = ko.mapping.fromJS(param);
+            self.currentAtdItemCondition = caic = ko.mapping.fromJS(param.data);
 
             caic.conditionAtr.subscribe(v => {
 
@@ -291,6 +293,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 } else {
                     //Open dialog KDW007C
                     let param = {
+                        attr: self.mode,
                         lstAllItems: lstItemCode,
                         lstAddItems: self.currentAtdItemCondition.countableAddAtdItems(),
                         lstSubItems: self.currentAtdItemCondition.countableSubAtdItems()

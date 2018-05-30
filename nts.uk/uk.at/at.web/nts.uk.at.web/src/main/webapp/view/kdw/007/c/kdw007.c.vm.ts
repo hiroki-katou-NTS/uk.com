@@ -2,8 +2,7 @@ module nts.uk.at.view.kdw007.c.viewmodel {
 
     export class ScreenModel {
         lstAllItems: KnockoutObservableArray<any> = ko.observableArray([]);
-        lstAddSubItems: KnockoutObservableArray<any> = ko.observableArray([
-        ]);
+        lstAddSubItems: KnockoutObservableArray<any> = ko.observableArray([]);
         allListColumns: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: nts.uk.resource.getText("KDW007_30"), prop: 'code', width: 50 },
             { headerText: nts.uk.resource.getText("KDW007_31"), prop: 'name', width: 180 },
@@ -32,41 +31,47 @@ module nts.uk.at.view.kdw007.c.viewmodel {
             let dfdLstAdd = $.Deferred();
             let dfdLstSub = $.Deferred();
             if (param.lstAllItems.length > 0) {
-                service.getAttendanceItemByCodes(param.lstAllItems).done((lstItems) => {
-                    let lstAllItems = [];
-                    _.forEach(lstItems, (item) => {
-                        lstAllItems.push({ code: item.attendanceItemId, name: item.attendanceItemName, displayOrder: item.attendanceItemDisplayNumber });
+                if (param.attr == ATTR.MONTHLY) {
+                    service.getMonthlyAttendanceItemByCodes(param.lstAllItems).done((lstItems) => {
+                        self.handleListResult(lstItems, 0);
+                        dfdLstAll.resolve();
                     });
-                    self.lstAllItems(lstAllItems);
-                    self.sortGridList();
-                    dfdLstAll.resolve();
-                });
+                } else {
+                    service.getDailyAttendanceItemByCodes(param.lstAllItems).done((lstItems) => {
+                        self.handleListResult(lstItems, 0);
+                        dfdLstAll.resolve();
+                    });
+                }
             } else {
                 dfdLstAll.resolve();
             }
             if (param.lstAddItems.length > 0) {
-                service.getAttendanceItemByCodes(param.lstAddItems).done((lstItems) => {
-                    let lstAddSubItems = self.lstAddSubItems();
-                    _.forEach(lstItems, (item) => {
-                        lstAddSubItems.push({ code: item.attendanceItemId, name: item.attendanceItemName, operator: '+', displayOrder: item.attendanceItemDisplayNumber });
+                if (param.attr == ATTR.MONTHLY) {
+                    service.getMonthlyAttendanceItemByCodes(param.lstAddItems).done((lstItems) => {
+                        self.handleListResult(lstItems, 1);
+                        dfdLstAdd.resolve();
                     });
-                    self.lstAddSubItems(lstAddSubItems);
-                    self.sortGridList();
-                    dfdLstAdd.resolve();
-                });
+                } else {
+                    service.getDailyAttendanceItemByCodes(param.lstAddItems).done((lstItems) => {
+                        self.handleListResult(lstItems, 1);
+                        dfdLstAdd.resolve();
+                    });
+                }
             } else {
                 dfdLstAdd.resolve();
             }
             if (param.lstSubItems.length > 0) {
-                service.getAttendanceItemByCodes(param.lstSubItems).done((lstItems) => {
-                    let lstAddSubItems = self.lstAddSubItems();
-                    _.forEach(lstItems, (item) => {
-                        lstAddSubItems.push({ code: item.attendanceItemId, name: item.attendanceItemName, operator: '-', displayOrder: item.attendanceItemDisplayNumber });
+                if (param.attr == ATTR.MONTHLY) {
+                    service.getMonthlyAttendanceItemByCodes(param.lstSubItems).done((lstItems) => {
+                        self.handleListResult(lstItems, 2);
+                        dfdLstSub.resolve();
                     });
-                    self.lstAddSubItems(lstAddSubItems);
-                    self.sortGridList();
-                    dfdLstSub.resolve();
-                });
+                } else {
+                    service.getDailyAttendanceItemByCodes(param.lstSubItems).done((lstItems) => {
+                        self.handleListResult(lstItems, 2);
+                        dfdLstSub.resolve();
+                    });
+                }
             } else {
                 dfdLstSub.resolve();
             }
@@ -74,6 +79,23 @@ module nts.uk.at.view.kdw007.c.viewmodel {
                 dfdAll.resolve();
             });
             return dfdAll;
+        }
+        
+        handleListResult(lstItems: Array<any>, listType: number) {
+            let self = this,
+            listItems = [];
+            _.forEach(lstItems, (item) => {
+                listItems.push({ code: item.attendanceItemId, name: item.attendanceItemName, operator: '-', displayOrder: item.attendanceItemDisplayNumber });
+            });
+            switch (listType) {
+                case 0: // list All items
+                    self.lstAllItems(listItems);
+                    break;
+                default: // list Add or Sub items
+                    self.lstAddSubItems(listItems);
+                    break;
+            }
+            self.sortGridList();
         }
 
         removeDupplicateItems() {
@@ -159,6 +181,11 @@ module nts.uk.at.view.kdw007.c.viewmodel {
             nts.uk.ui.windows.setShared("KDW007CResults", resultData);
             nts.uk.ui.windows.close();
         }
+    }
+    
+    enum ATTR {
+        DAILY = 0,
+        MONTHLY = 1
     }
 
 }
