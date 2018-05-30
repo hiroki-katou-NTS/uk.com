@@ -148,6 +148,13 @@ public class AddSubHdManagementService {
 				if (!compensatoryDayOffManaDatas.isEmpty()) {
 					errorList.add("Msg_737_sub_holiday");
 				}
+				//チェックボタン「分割消化」をチェックする
+				if (subHdManagementData.getCheckedSubHoliday()) {
+					List<CompensatoryDayOffManaData> dayoff =  repoComDayOffManaData.getBySidWithHolidayDateCondition(companyId, employeeId, dateSubHoliday);
+					if (dayoff.isEmpty()) {
+						errorList.add("Msg_737_sub_option_holiday");
+					}
+				}
 			}
 		} else {
 			errorList.add("Msg_728");
@@ -205,7 +212,6 @@ public class AddSubHdManagementService {
 		if (holidayDate.isPresent() && subHolidayDate.compareTo(holidayDate.get()) == 0) {
 			errorList.add("Msg_730");
 		}
-		// TODO チェックボタン「分割消化」をチェックする
 		return errorList;
 	}
 
@@ -242,9 +248,10 @@ public class AddSubHdManagementService {
 		// 休出チェックボックスをチェックする
 		if (subHdManagementData.getCheckedHoliday()) {
 			// 休出日数をチェックする
-			if (subHdManagementData.getCheckedSplit()
-					&& !ItemDays.ONE_DAY.value.equals(subHdManagementData.getSelectedCodeHoliday())) {
-				errorList.add("Msg_1256_3");
+			if (subHdManagementData.getCheckedSplit()) {
+				if (!ItemDays.ONE_DAY.value.equals(subHdManagementData.getSelectedCodeHoliday())) {
+					errorList.add("Msg_1256_3");
+				}
 			} else {
 				// 休出日数と１日目代休日数をチェックする
 				if (!subHdManagementData.getSelectedCodeHoliday()
