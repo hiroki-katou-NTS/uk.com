@@ -796,8 +796,10 @@ public class ProgramIdConsts {
 	 * KWR002
 	 */
 	public static final String KWR002A = "KWR002A";
-	public static final String KWR002E = "KWR002E";
+	public static final String KWR002C = "KWR002C";
 	public static final String KWR002D = "KWR002D";
+	public static final String KWR002E = "KWR002E";
+	
 	
 	/**
 	 * KAF018
