@@ -1,0 +1,37 @@
+.combo-box{
+	width: 80px;
+	height: 23px;
+	display: block;
+}
+
+#B5_3 label{
+	margin-right:30px;
+}
+
+#B5_3{
+	margin-left:30px;
+}
+
+.headingName {
+	height:12px;
+}
+
+#table-output-items tbody tr {
+	height:28px;
+}
+
+#table-output-items .small {
+	height:20px !important;
+}
+
+.nts-fixed-body-wrapper {
+	height:281px !important;
+}
+
+#listStandardImportSetting_headers_v {
+	width : 100% !important;
+}
+
+.limited-label-view {
+	max-width: 1000px;
+}

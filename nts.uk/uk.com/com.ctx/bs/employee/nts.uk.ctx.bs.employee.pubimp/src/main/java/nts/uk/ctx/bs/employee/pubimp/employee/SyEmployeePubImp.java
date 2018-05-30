@@ -228,20 +228,24 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 		AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(emp.getEmployeeId());
 
-		AffCompanyHistItem affComHistItem = new AffCompanyHistItem();
+		Optional.ofNullable(affComHistByEmp).ifPresent(f -> {
+			if (f.items() != null) {
 
-		if (affComHistByEmp.items() != null) {
+				List<AffCompanyHistItem> filter = f.getLstAffCompanyHistoryItem().stream().filter(m -> {
+					return m.end().afterOrEquals(systemDate) && m.start().beforeOrEquals(systemDate);
+				}).collect(Collectors.toList());
 
-			List<AffCompanyHistItem> filter = affComHistByEmp.getLstAffCompanyHistoryItem().stream().filter(m -> {
-				return m.end().afterOrEquals(systemDate) && m.start().beforeOrEquals(systemDate);
-			}).collect(Collectors.toList());
+				// get min date of start and set to entryDate
+				filter.stream().map(m -> m.getDatePeriod().start()).min(GeneralDate::compareTo).ifPresent(_sd -> {
+					result.setEntryDate(_sd);
+				});
 
-			if (!filter.isEmpty()) {
-				affComHistItem = filter.get(0);
-				result.setRetiredDate(affComHistItem.end());
-				result.setEntryDate(affComHistItem.start());
+				// get max date of end and set to retireDate
+				filter.stream().map(m -> m.getDatePeriod().end()).max(GeneralDate::compareTo).ifPresent(_ed -> {
+					result.setRetiredDate(_ed);
+				});
 			}
-		}
+		});
 
 		return result;
 	}
@@ -548,7 +552,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		result.setEmployeeId(emp.getEmployeeId());
 		result.setBusinessName(person.getPersonNameGroup().getBusinessName().v());
 		result.setEmployeeCode(emp.getEmployeeCode().v());
-		
+
 		return result;
 	}
 

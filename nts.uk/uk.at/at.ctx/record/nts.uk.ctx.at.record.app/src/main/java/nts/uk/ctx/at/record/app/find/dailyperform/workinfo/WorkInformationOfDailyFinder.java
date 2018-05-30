@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.workinfo;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -25,10 +26,17 @@ public class WorkInformationOfDailyFinder extends FinderFacade {
 		return WorkInformationOfDailyDto.getDto(this.workInfoRepo.find(employeeId, baseDate).orElse(null));
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
+	@SuppressWarnings("unchecked")
 	public <T extends ConvertibleAttendanceItem> List<T> find(List<String> employeeId, DatePeriod baseDate) {
 		return (List<T>) this.workInfoRepo.findByListEmployeeId(employeeId, baseDate).stream()
 				.map(c -> WorkInformationOfDailyDto.getDto(c)).collect(Collectors.toList());
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends ConvertibleAttendanceItem> List<T> find(Map<String, GeneralDate> param) {
+		return (List<T>) this.workInfoRepo.finds(param).stream()
+			.map(c -> WorkInformationOfDailyDto.getDto(c)).collect(Collectors.toList());
 	}
 }
