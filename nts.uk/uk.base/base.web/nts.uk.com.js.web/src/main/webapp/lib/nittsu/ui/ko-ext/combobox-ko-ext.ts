@@ -156,6 +156,10 @@ module nts.uk.ui.koExtentions {
                     }
                 })
                 .igCombo({
+                    loadOnDemandSettings: {
+                        enabled: true,
+                        pageSize: 15
+                    },
                     dataSource: options,
                     placeHolder: '',
                     textKey: 'nts_' + optionsText,
@@ -179,6 +183,18 @@ module nts.uk.ui.koExtentions {
                             .parent()
                             .append($show)
                             .css('overflow', 'hidden');
+                    },
+                    itemsRendered: (evt, ui) => {
+                        let data = $element.data(DATA) || {},
+                            cws = data[CWIDTH] || [],
+                            ks = _.keys(cws);
+
+                        // calc new size of template columns
+                        _.each(ks, k => {
+                            $("[class*=ui-igcombo-orientation]")
+                                .find(`.${k.toLowerCase()}:not(:last-child)`)
+                                .css('min-width', `${cws[k] * WoC}px`);
+                        });
                     },
                     selectionChanged: (evt, ui) => {
                         if (!_.size(ui.items)) {
