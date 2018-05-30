@@ -326,7 +326,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 	}
 	
 	@Override
-	public List<String> getByLstWplIdAndPeriod(String lstWkpId, GeneralDate startDate, GeneralDate endDate) {
+	public List<String> getByLstWplIdAndPeriod(List<String> lstWkpId, GeneralDate startDate, GeneralDate endDate) {
 		List<String> listWkpHist = this.queryProxy().query(SELECT_BY_LIST_WKPID_PERIOD, String.class)
 				.setParameter("lstWkpId", lstWkpId).setParameter("startDate", startDate)
 				.setParameter("endDate", endDate).getList();
