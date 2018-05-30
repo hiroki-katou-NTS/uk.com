@@ -2581,7 +2581,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			// アルゴリズム「開始日を入社日にする」を実行する
 			DatePeriod employeeDatePeriod = this.makeStartDateForHiringDate(processExecution,
 					lstEmpId.get(i), period);
-			if(employeeDatePeriod==null){
+			if(employeeDatePeriod==null && processExecution.getExecSetting().getDailyPerf().getTargetGroupClassification().isMidJoinEmployee()){
 				continue;
 			}
 			boolean executionDaily = this.executionDaily(companyId,context, processExecution,
