@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
+import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -65,7 +66,7 @@ public class ScheCreExeWorkTypeHandler {
 	 */
 	// 営業日カレンダーで勤務予定を作成する
 	public void createWorkSchedule(ScheduleCreatorExecutionCommand command,
-			WorkingConditionItem workingConditionItem) {
+			WorkingConditionItem workingConditionItem, EmployeeGeneralInfoImported empGeneralInfo) {
 
 		// 登録前削除区分をTrue（削除する）とする
 		//command.setIsDeleteBeforInsert(true); FIX BUG #87113
@@ -89,19 +90,19 @@ public class ScheCreExeWorkTypeHandler {
 		}
 		
 		//勤務種類を取得する(lấy dữ liệu worktype)
-		Optional<WorktypeDto> optWorktype = this.getWorktype(commandWorktypeGetter);
+		Optional<WorktypeDto> optWorktype = this.getWorktype(commandWorktypeGetter, empGeneralInfo);
 
 		if (optWorktype.isPresent()) {
 			WorkTimeGetterCommand commandWorkTimeGetter = commandWorktypeGetter.toWorkTime();
 			commandWorkTimeGetter.setWorkTypeCode(optWorktype.get().getWorktypeCode());	
 			//就業時間帯を取得する(lấy dữ liệu worktime)
-			Optional<String> optionalWorkTime = this.scheCreExeWorkTimeHandler.getWorktime(commandWorkTimeGetter);
+			Optional<String> optionalWorkTime = this.scheCreExeWorkTimeHandler.getWorktime(commandWorkTimeGetter, empGeneralInfo);
 
 			if (optionalWorkTime == null || optionalWorkTime.isPresent()) {
 				// update all basic schedule
 				this.scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command,
 						workingConditionItem.getEmployeeId(), optWorktype.get(),
-						optionalWorkTime == null ? null : optionalWorkTime.get());
+						optionalWorkTime == null ? null : optionalWorkTime.get(), empGeneralInfo);
 			}
 
 		}
@@ -289,14 +290,14 @@ public class ScheCreExeWorkTypeHandler {
 	 * @param command the command
 	 * @return the worktype
 	 */
-	public Optional<WorktypeDto> getWorktype(WorkTypeGetterCommand command) {
+	public Optional<WorktypeDto> getWorktype(WorkTypeGetterCommand command, EmployeeGeneralInfoImported empGeneralInfo) {
 
 		// setup command getter
 		BasicWorkSettingGetterCommand commandBasicGetter = command.toBasicWorkSetting();
 		
 		// get basic work setting.
 		Optional<BasicWorkSetting> optionalBasicWorkSetting = this.scheCreExeBasicWorkSettingHandler
-				.getBasicWorkSetting(commandBasicGetter);
+				.getBasicWorkSetting(commandBasicGetter, empGeneralInfo);
 
 		if (optionalBasicWorkSetting.isPresent()) {
 			// setup command employment status getter

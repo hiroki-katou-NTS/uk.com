@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.app.util.attendanceitem;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 
-public abstract class DailyWorkCommonCommand implements SetterCommonCommand {
+public abstract class DailyWorkCommonCommand implements GetSetCommonCommand {
 
 	@Getter
 	private String employeeId;
@@ -20,6 +20,4 @@ public abstract class DailyWorkCommonCommand implements SetterCommonCommand {
 	public void withDate(GeneralDate date) {
 		this.workDate = date;
 	}
-	
-	public abstract void updateData(Object data);
 }

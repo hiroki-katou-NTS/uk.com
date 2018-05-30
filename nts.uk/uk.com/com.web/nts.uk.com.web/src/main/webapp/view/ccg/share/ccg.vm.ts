@@ -677,7 +677,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.showClosure = self.showPeriod; // specs update ver3.1
                 // if ShowPeriod = false then period accuracy must be false too. 
                 self.showPeriodYM = nts.uk.util.isNullOrUndefined(self.showPeriod) ? false : (self.showPeriod ? options.periodFormatYM : false);
-                self.isTab2Lazy = nts.uk.util.isNullOrUndefined(options.isTab2Lazy) ? false : options.isTab2Lazy;
+                self.isTab2Lazy = nts.uk.util.isNullOrUndefined(options.isTab2Lazy) ? true : options.isTab2Lazy;
 
                 /** Required parameter */
                 self.inputBaseDate(nts.uk.util.isNullOrUndefined(options.baseDate) ? moment().toISOString() : options.baseDate);

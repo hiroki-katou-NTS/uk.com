@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.actualworkinghours.repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -17,6 +18,9 @@ public interface AttendanceTimeRepository {
 	List<AttendanceTimeOfDailyPerformance> findByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod);
 	
 	List<AttendanceTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd);
+	
+	List<AttendanceTimeOfDailyPerformance> finds(Map<String, GeneralDate> param);
+	
 	void updateFlush(AttendanceTimeOfDailyPerformance attendanceTime);
 	
 	void deleteByEmployeeIdAndDate(String employeeId, GeneralDate ymd);

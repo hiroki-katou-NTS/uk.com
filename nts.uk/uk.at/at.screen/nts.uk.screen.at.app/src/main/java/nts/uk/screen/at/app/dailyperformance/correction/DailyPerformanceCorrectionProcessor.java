@@ -467,7 +467,7 @@ public class DailyPerformanceCorrectionProcessor {
 		//	}
 			DailyModifyResult resultOfOneRow = getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
 			if (resultOfOneRow != null && (displayFormat == 2 ? !data.getError().equals("") : true)) {
-				lockDataCheckbox(sId, screenDto, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, approveRootStatus);
+				lockDataCheckbox(sId, screenDto, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, approveRootStatus, mode);
 
 				boolean lock = checkLockAndSetState(employeeAndDateRange, data);
 
@@ -482,7 +482,7 @@ public class DailyPerformanceCorrectionProcessor {
 						lock = true;
 					}
 				}
-				if(displayFormat == 0 && objectShare != null && objectShare.getInitClock() != null){
+				if(displayFormat == 0 && objectShare != null && objectShare.getInitClock() != null && data.getDate().equals(objectShare.getEndDate())){
 					// set question SPR 
 					screenDto.setShowQuestionSPR(checkSPR(companyId, disItem.getLstAtdItemUnique(), data.getState(), approvalUseSettingDtoOpt.get(), identityProcessDtoOpt.get(), data.isApproval(), data.isSign()).value);
 				    if(data.getDate().equals(objectShare.getEndDate())){
@@ -506,6 +506,11 @@ public class DailyPerformanceCorrectionProcessor {
 						&& optWorkInfoOfDailyPerformanceDto.get().getState() == CalculationState.No_Calculated)
 					screenDto.setAlarmCellForFixedColumn(data.getId());
 			}
+		}
+		// chech ca hai gia tri spr thay doi 
+		if (displayFormat == 0 && objectShare != null && objectShare.getInitClock() != null) {
+			screenDto.setShowQuestionSPR((screenDto.getChangeSPR().isChange31() || screenDto.getChangeSPR().isChange34()) && screenDto.getShowQuestionSPR() != SPRCheck.INSERT.value
+					? SPRCheck.SHOW_CONFIRM.value : SPRCheck.INSERT.value);
 		}
 		System.out.println("time get data into cell : " + (System.currentTimeMillis() - start2));
 		screenDto.setLstData(lstData);
@@ -598,22 +603,29 @@ public class DailyPerformanceCorrectionProcessor {
 					if (attendanceAtr == DailyAttendanceAtr.Time.value
 							|| attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
 						//set SPR
-						if(share != null && share.getInitClock() != null && share.getDisplayFormat() == 0){
+						if(share != null && share.getInitClock() != null && share.getDisplayFormat() == 0 && data.getDate().equals(share.getEndDate()) && screenDto.getShowQuestionSPR() != SPRCheck.NOT_INSERT.value){
 							boolean change31 = false;
 							boolean change34 = false;
 							if(item.getId() == 31 && data.getEmployeeId().equals(share.getInitClock().getEmployeeId()) && data.getDate().equals(share.getInitClock().getDateSpr())){
 								//value = share.getInitClock().getGoOut() != null ?  share.getInitClock().getGoOut() : "";
-								if(!value.equals(share.getInitClock().getGoOut()))  change31 = true;
+								if (!share.getInitClock().getGoOut().equals("")) {
+									if (value.equals("") || (Integer.parseInt(value) != Integer.parseInt(share.getInitClock().getGoOut())))
+										change31 = true;
+								}
 								ChangeSPR changeSPR31 = processSPR(data.getEmployeeId(), data.getDate(), share, change31, false);
 								changeSPR31.setChange34(screenDto.getChangeSPR().isChange34());
 								screenDto.setChangeSPR(changeSPR31.setRow31(data.getId()));
 							}else if(item.getId() == 34 && data.getEmployeeId().equals(share.getInitClock().getEmployeeId()) && data.getDate().equals(share.getInitClock().getDateSpr())){
-								if(!value.equals(share.getInitClock().getLiveTime()))  change34 = true;
+								if (!share.getInitClock().getLiveTime().equals("")) {
+									if (value.equals("") || (Integer.parseInt(value) != Integer.parseInt(share.getInitClock().getLiveTime())))
+										change34 = true;
+								}
 								ChangeSPR changeSPR34 = processSPR(data.getEmployeeId(), data.getDate(), share, false, change34);
 								changeSPR34.setChange31(screenDto.getChangeSPR().isChange31());
 								screenDto.setChangeSPR(changeSPR34.setRow34(data.getId()));
 							}
 							//insertStampSourceInfo(data.getEmployeeId(), data.getDate(), att, leav);
+							screenDto.getChangeSPR().setShowSupervisor(data.isApproval());
 						}
 						if (!value.isEmpty()) {
 							// convert HH:mm
@@ -707,7 +719,7 @@ public class DailyPerformanceCorrectionProcessor {
 	}
 
 	public void lockDataCheckbox(String sId, DailyPerformanceCorrectionDto screenDto, 
-			DPDataDto data, Optional<IdentityProcessUseSetDto> identityProcessUseSetDto, Optional<ApprovalUseSettingDto> approvalUseSettingDto, ApproveRootStatusForEmpDto approveRootStatus) {
+			DPDataDto data, Optional<IdentityProcessUseSetDto> identityProcessUseSetDto, Optional<ApprovalUseSettingDto> approvalUseSettingDto, ApproveRootStatusForEmpDto approveRootStatus, int mode) {
 		// disable, enable check sign no 10
 		if (!sId.equals(data.getEmployeeId())) {
 			screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
@@ -730,8 +742,12 @@ public class DailyPerformanceCorrectionProcessor {
 			}
 		}
 
-		if (!approvalUseSettingDto.isPresent()) {
+		if (approvalUseSettingDto.isPresent()) {
 			// lock approval
+			if(mode == ScreenMode.NORMAL.value){
+				screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
+				return;
+			}
 			int supervisorConfirmError = approvalUseSettingDto.get().getSupervisorConfirmErrorAtr();
 			if (supervisorConfirmError == YourselfConfirmError.CANNOT_CHECKED_WHEN_ERROR.value) {
 				if (data.getError().contains("ER") && data.isApproval()) {
@@ -804,7 +820,7 @@ public class DailyPerformanceCorrectionProcessor {
 
 	public void setHideCheckbok(DailyPerformanceCorrectionDto screenDto, Optional<IdentityProcessUseSetDto> indentity, Optional<ApprovalUseSettingDto> approval, String companyId, int mode) {
 			screenDto.setShowPrincipal(indentity.isPresent() && indentity.get().isUseConfirmByYourself());
-			screenDto.setShowSupervisor(approval.isPresent() && approval.get().getUseDayApproverConfirm() == true ? ScreenMode.APPROVAL.value == mode : false);
+			screenDto.setShowSupervisor(approval.isPresent() && approval.get().getUseDayApproverConfirm());
 	}
 
 	public List<DPErrorDto> getErrorList(DailyPerformanceCorrectionDto screenDto, List<String> listEmployeeId) {
@@ -1275,7 +1291,7 @@ public class DailyPerformanceCorrectionProcessor {
 		if (timeLeavingOpt.isPresent()) {
 			TimeLeavingOfDailyPerformance timeLeaving = timeLeavingOpt.get();
 			if (!timeLeaving.getTimeLeavingWorks().isEmpty()) {
-				timeLeaving.getTimeLeavingWorks().stream().forEach(x -> {
+				timeLeaving.getTimeLeavingWorks().stream().filter(x -> x.getWorkNo() != null && x.getWorkNo().v() == 1).forEach(x -> {
 					Optional<TimeActualStamp> attOpt = x.getAttendanceStamp();
 					if (attOpt.isPresent()) {
 						Optional<WorkStamp> workStampOpt = attOpt.get().getStamp();
@@ -1339,10 +1355,10 @@ public class DailyPerformanceCorrectionProcessor {
 	
 	//出退勤打刻の初期値を埋める
 	public SPRCheck checkSPR(String companyId, List<Integer> itemIds, String lock, ApprovalUseSettingDto approval, IdentityProcessUseSetDto indentity, boolean checkApproval, boolean checkIndentity){
-		if (lock.matches(".*[AD].*"))
+		if (lock.matches(".*[D].*"))
 			return SPRCheck.NOT_INSERT;
 		List<Integer> items = itemIds.stream().filter(x -> (x == 31 || x == 34)).collect(Collectors.toList());
-		if (items.size() != 2)
+		if (items.size() == 0)
 			return SPRCheck.NOT_INSERT;
 		//check 取得しているドメインモデル「本人確認処理の利用設定」、「承認処理の利用設定」をチェックする 
 		//false
@@ -1352,6 +1368,7 @@ public class DailyPerformanceCorrectionProcessor {
 			//TODO  xu ly insert SPR va load 
 			return SPRCheck.INSERT;
 		}
+		//
 		return SPRCheck.SHOW_CONFIRM;
 		
 	}
@@ -1359,36 +1376,36 @@ public class DailyPerformanceCorrectionProcessor {
 	//ドメインモデル「日別実績の出退勤」を取得する
 	public ChangeSPR processSPR(String employeeId, GeneralDate date, ObjectShare shareSPR, boolean change31, boolean change34){
 		//ChangeSPR changeSPR = new ChangeSPR(change31, change31);
-		Optional<TimeLeavingOfDailyPerformance> timeLeavingOpt = timeLeavingOfDailyPerformanceRepository
-				.findByKey(employeeId, date);
-		if(!timeLeavingOpt.isPresent()) return  new ChangeSPR(false, false);
-		boolean checkSPR31 = false;
-		boolean checkSPR34 = false;
-	    List<TimeLeavingWork> timeLeaving = timeLeavingOpt.get().getTimeLeavingWorks().stream().filter(x -> x.getWorkNo().v() == 1).collect(Collectors.toList());
-	    if(!timeLeaving.isEmpty()){
-	    	TimeLeavingWork x = timeLeaving.get(0);
-	    	Optional<TimeActualStamp> attOpt = x.getAttendanceStamp();
-			if (attOpt.isPresent()) {
-				Optional<WorkStamp> workStampOpt = attOpt.get().getStamp();
-				if (workStampOpt.isPresent()) {
-					if (workStampOpt.get().getStampSourceInfo() == StampSourceInfo.SPR) {
-						checkSPR31 = true;
-					}
-				}
-			}
-			
-			Optional<TimeActualStamp> leavOpt = x.getLeaveStamp();
-			if (leavOpt.isPresent()) {
-				Optional<WorkStamp> workStampOpt = leavOpt.get().getStamp();
-				if (workStampOpt.isPresent()) {
-					if (workStampOpt.get().getStampSourceInfo() == StampSourceInfo.SPR) {
-						checkSPR31 = true;
-					}
-				}
-			}
-	    }
-		if(!shareSPR.getInitClock().isCanEdit())  return new ChangeSPR(false, false);
-		return new ChangeSPR(change31 && checkSPR31, change34 && checkSPR34);
+//		Optional<TimeLeavingOfDailyPerformance> timeLeavingOpt = timeLeavingOfDailyPerformanceRepository
+//				.findByKey(employeeId, date);
+//		if(!timeLeavingOpt.isPresent()) return  new ChangeSPR(false, false);
+//		boolean checkSPR31 = false;
+//		boolean checkSPR34 = false;
+//	    List<TimeLeavingWork> timeLeaving = timeLeavingOpt.get().getTimeLeavingWorks().stream().filter(x -> x.getWorkNo().v() == 1).collect(Collectors.toList());
+//	    if(!timeLeaving.isEmpty()){
+//	    	TimeLeavingWork x = timeLeaving.get(0);
+//	    	Optional<TimeActualStamp> attOpt = x.getAttendanceStamp();
+//			if (attOpt.isPresent()) {
+//				Optional<WorkStamp> workStampOpt = attOpt.get().getStamp();
+//				if (workStampOpt.isPresent()) {
+//					if (workStampOpt.get().getStampSourceInfo() == StampSourceInfo.SPR) {
+//						checkSPR31 = true;
+//					}
+//				}
+//			}
+//			
+//			Optional<TimeActualStamp> leavOpt = x.getLeaveStamp();
+//			if (leavOpt.isPresent()) {
+//				Optional<WorkStamp> workStampOpt = leavOpt.get().getStamp();
+//				if (workStampOpt.isPresent()) {
+//					if (workStampOpt.get().getStampSourceInfo() == StampSourceInfo.SPR) {
+//						checkSPR31 = true;
+//					}
+//				}
+//			}
+//	    }
+		//if(!shareSPR.getInitClock().isCanEdit())  return new ChangeSPR(false, false);
+		return new ChangeSPR(change31, change34);
 		//insertStampSourceInfo(employeeId, date, true, true);
 	}
 	
@@ -1402,7 +1419,7 @@ public class DailyPerformanceCorrectionProcessor {
 
 		if (isObjectShare && objectShare.getInitClock() == null) {
 			// get employmentCode
-			screenDto.setEmploymentCode(getEmploymentCode(dateRange, sId));
+			//screenDto.setEmploymentCode(getEmploymentCode(dateRange, sId));
 			return new DateRange(objectShare.getStartDate(), objectShare.getEndDate());
 		} else {
 

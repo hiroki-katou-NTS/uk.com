@@ -112,7 +112,7 @@ public interface SyWorkplacePub {
 	
 	/**
 	 * Gets the wpl by list sid and period.
-	 *
+	 * RequestList189
 	 * @param sid the sid
 	 * @param datePeriod the date period
 	 * @return the list
@@ -161,4 +161,7 @@ public interface SyWorkplacePub {
 	 */
 	// RequestList164
 	List<WkpCdNameExport> getWkpCdName(String companyId, GeneralDate baseDate, List<String> wkpIds);
+	
+	// RequestList120 version2
+	List<AffWorkplaceExport> getByLstWkpIdAndPeriod(List<String> lstWkpId, GeneralDate startDate,GeneralDate endDate);
 }

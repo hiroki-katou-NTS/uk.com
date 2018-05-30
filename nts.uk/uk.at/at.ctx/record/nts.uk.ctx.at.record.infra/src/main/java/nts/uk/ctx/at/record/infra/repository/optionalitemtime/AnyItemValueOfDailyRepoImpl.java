@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.optionalitemtime;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -35,6 +36,12 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 
 	@Override
 	public List<AnyItemValueOfDaily> finds(List<String> employeeId, DatePeriod baseDate) {
+		// TODO Auto-generated method stub
+		return Collections.emptyList();
+	}
+
+	@Override
+	public List<AnyItemValueOfDaily> finds(Map<String, GeneralDate> param) {
 		// TODO Auto-generated method stub
 		return Collections.emptyList();
 	}
