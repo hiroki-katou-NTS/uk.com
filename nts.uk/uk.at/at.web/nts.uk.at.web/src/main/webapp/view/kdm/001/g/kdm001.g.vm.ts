@@ -94,15 +94,15 @@ module nts.uk.at.view.kdm001.g.viewmodel {
                                     break;
                                 }
                                 case "Msg_825": {
-                                    $('#G6_2').ntsError('set', { messageId: messageId });
+                                    $('#G8_2').ntsError('set', { messageId: messageId });
                                     break;
                                 }
                                 case "Msg_1212": {
-                                    $('#G6_2').ntsError('set', { messageId: messageId });
+                                    $('#G7_2').ntsError('set', { messageId: messageId });
                                     break;
                                 }
                                 case "Msg_1213": {
-                                    $('#G6_2').ntsError('set', { messageId: messageId });
+                                    $('#G9_2').ntsError('set', { messageId: messageId });
                                     break;
                                 }
                             }
