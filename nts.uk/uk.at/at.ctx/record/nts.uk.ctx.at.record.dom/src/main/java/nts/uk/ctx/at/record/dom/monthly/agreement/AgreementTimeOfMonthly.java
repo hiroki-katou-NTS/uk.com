@@ -113,6 +113,35 @@ public class AgreementTimeOfMonthly {
 		}
 	}
 	
+	
+	/**
+	 * エラーアラーム値の取得　（週用）
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @param criteriaDate 基準日
+	 * @param workingSystem 労働制
+	 * @param repositories 月次集計が必要とするリポジトリ
+	 */
+	public void getErrorAlarmValueForWeek(
+			String companyId,
+			String employeeId,
+			GeneralDate criteriaDate,
+			WorkingSystem workingSystem,
+			RepositoriesRequiredByMonthlyAggr repositories){
+		
+		// 初期設定
+		this.limitErrorTime = new LimitOneMonth(0);
+		this.limitAlarmTime = new LimitOneMonth(0);
+		this.exceptionLimitErrorTime = Optional.empty();
+		this.exceptionLimitAlarmTime = Optional.empty();
+		
+		// 「36協定基本設定」を取得する
+		val basicAgreementSet = repositories.getAgreementDomainService().getBasicSet(
+				companyId, employeeId, criteriaDate, workingSystem);
+		this.limitErrorTime = new LimitOneMonth(basicAgreementSet.getErrorWeek().v());
+		this.limitAlarmTime = new LimitOneMonth(basicAgreementSet.getAlarmWeek().v());
+	}
+	
 	/**
 	 * エラーチェック
 	 */

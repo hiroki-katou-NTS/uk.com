@@ -38,7 +38,7 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 	private final String WORKPLACE_QUERY = "SELECT awh.sid, wi.wkpcd, wi.wkpGenericName, wi.wkpName"
 			+ " FROM BsymtAffiWorkplaceHist awh"
 			+ " LEFT JOIN BsymtAffiWorkplaceHistItem awhi ON awhi.hisId = awh.hisId"
-			+ " LEFT JOIN BsymtWorkplaceHist wh ON wh.bsymtWorkplaceHistPK.historyId = awhi.hisId"
+			+ " LEFT JOIN BsymtWorkplaceHist wh ON awhi.workPlaceId = wh.bsymtWorkplaceHistPK.wkpid"
 			+ " LEFT JOIN BsymtWorkplaceInfo wi ON wi.bsymtWorkplaceInfoPK.historyId = wh.bsymtWorkplaceHistPK.historyId"
 			+ " WHERE awh.sid IN :listSid"
 			+ " AND awh.strDate <= :refDate"

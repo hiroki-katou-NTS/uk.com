@@ -17,7 +17,7 @@ public class KrcmtCalcItemSelectionPK_ {
 	public static volatile SingularAttribute<KrcmtCalcItemSelectionPK, String> cid;
 
 	/** The optional item no. */
-	public static volatile SingularAttribute<KrcmtCalcItemSelectionPK, String> optionalItemNo;
+	public static volatile SingularAttribute<KrcmtCalcItemSelectionPK, Integer> optionalItemNo;
 
 	/** The formula id. */
 	public static volatile SingularAttribute<KrcmtCalcItemSelectionPK, String> formulaId;

@@ -25,8 +25,6 @@ import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalcSetOfDivergenceTime
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.LeaveAttr;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.SalaryCalAttr;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.SpecificSalaryCalAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectWorkInforDomainService;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkingTimeSheet;
@@ -193,10 +191,10 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 		// return new IntegrationOfDaily(workInformation, timeAttendance,
 		// attendanceTime.get());
 		return Optional.of(new IntegrationOfDaily(workInformation, calAttrOfDailyPerformance,
-				employeeState.getAffiliationInforOfDailyPerfor().get(), Optional.empty(), Collections.emptyList(),
-				goOutTimeSheet, breakTimeSheet, attendanceTime, Optional.empty(), Optional.of(timeAttendance),
-				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Collections.emptyList(),
-				Optional.empty()));
+				employeeState.getAffiliationInforOfDailyPerfor().get(), Optional.empty(), Optional.empty(), 
+				Collections.emptyList(), goOutTimeSheet, breakTimeSheet, attendanceTime, Optional.empty(), 
+				Optional.of(timeAttendance), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), 
+				Collections.emptyList(), Optional.empty()));
 	}
 
 	private IntegrationOfDaily replaceDeductionTimeSheet(IntegrationOfDaily provisionalRecord,

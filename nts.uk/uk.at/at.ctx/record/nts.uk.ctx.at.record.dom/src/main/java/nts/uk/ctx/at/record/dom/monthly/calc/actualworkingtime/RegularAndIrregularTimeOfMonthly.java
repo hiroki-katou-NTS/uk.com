@@ -13,6 +13,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateMonthlyValue;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
+import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
@@ -103,9 +104,9 @@ public class RegularAndIrregularTimeOfMonthly {
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param yearMonth 年月（度）
-	 * @param datePeriod 期間
 	 * @param closureId 締めID
 	 * @param closureDate 締め日付
+	 * @param datePeriod 期間
 	 * @param workingSystem 労働制
 	 * @param closureOpt 締め
 	 * @param aggregateAtr 集計区分
@@ -192,36 +193,44 @@ public class RegularAndIrregularTimeOfMonthly {
 			}
 			
 			// 週の集計をする日か確認する
-			if (this.isAggregateDayOfWeek(procDate, weekStart, datePeriod, closureOpt)){
+			if (MonthlyCalculation.isAggregateWeek(procDate, weekStart, datePeriod, closureOpt)){
 			
-				// 週集計期間を求める
+				// 週の期間を計算
 				this.weekAggrPeriod = new DatePeriod(procDate.addDays(-6), procDate);
+				if (this.weekAggrPeriod.start().before(datePeriod.start())) {
+					this.weekAggrPeriod = new DatePeriod(datePeriod.start(), procDate);
+				}
 				
 				// 対象の「週別実績の勤怠時間」を作成する
 				val newWeek = new AttendanceTimeOfWeekly(employeeId, yearMonth, closureId, closureDate,
 						procWeekNo, this.weekAggrPeriod);
+				procWeekNo += 1;
 				
 				// 週別実績を集計する
 				{
 					// 週の計算
 					val weekCalc = newWeek.getWeeklyCalculation();
-					weekCalc.aggregate(companyId, employeeId, datePeriod, this.weekAggrPeriod,
+					weekCalc.aggregate(companyId, employeeId, yearMonth, datePeriod, this.weekAggrPeriod,
 							workingSystem, aggregateAtr, procDate,
-							settingsByReg, settingsByDefo, aggregateTotalWorkingTime, weekStart);
+							settingsByReg, settingsByDefo, aggregateTotalWorkingTime, weekStart,
+							attendanceTimeOfDailyMap, repositories);
 					resultWeeks.add(newWeek);
-					procWeekNo += 1;
 					
 					// 月の週割増合計へ
 					val weekTime = weekCalc.getRegAndIrgTime();
 					this.weeklyTotalPremiumTime = this.weeklyTotalPremiumTime.addMinutes(
 							weekTime.getWeeklyTotalPremiumTime().v());
-
+					
 					// 集計区分を確認する
 					if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK && excessOutsideWorkMng != null){
 					
+						// 時間外超過の集計
+						newWeek.getExcessOutside().aggregate(excessOutsideWorkMng.getOutsideOTSetOpt(),
+								weekCalc, repositories);
+						
 						// 時間外超過の時、週割増時間を逆時系列で割り当てる
 						excessOutsideWorkMng.assignWeeklyPremiumTimeByReverseTimeSeries(
-								this.weekAggrPeriod, weekTime.getWeeklyTotalPremiumTime(),
+								weekTime.getWeekPremiumProcPeriod(), weekTime.getWeeklyTotalPremiumTime(),
 								aggregateTotalWorkingTime, repositories);
 					}
 				}
@@ -232,68 +241,6 @@ public class RegularAndIrregularTimeOfMonthly {
 		
 		return AggregateMonthlyValue.of(aggregateTotalWorkingTime, excessOutsideWorkMng, resultWeeks);
 	}
-	
-	/**
-	 * 週の集計をする日か確認する
-	 * @param procYmd 処理日
-	 * @param weekStart 週開始
-	 * @param datePeriod 期間（月別集計用）
-	 * @param closureOpt 締め
-	 * @return true：集計する、false：集計しない
-	 */
-	private boolean isAggregateDayOfWeek(GeneralDate procYmd, WeekStart weekStart, DatePeriod datePeriod,
-			Optional<Closure> closureOpt){
-		
-		// 週開始から集計する曜日を求める　（週開始の曜日の前日の曜日が「集計する曜日」）
-		int aggregateWeek = 0;
-		switch (weekStart){
-		case Monday:
-			aggregateWeek = 7;
-			break;
-		case Tuesday:
-			aggregateWeek = 1;
-			break;
-		case Wednesday:
-			aggregateWeek = 2;
-			break;
-		case Thursday:
-			aggregateWeek = 3;
-			break;
-		case Friday:
-			aggregateWeek = 4;
-			break;
-		case Saturday:
-			aggregateWeek = 5;
-			break;
-		case Sunday:
-			aggregateWeek = 6;
-			break;
-		case TighteningStartDate:
-			
-			// 締め開始日を取得する
-			GeneralDate closureDate = datePeriod.start();
-			if (closureOpt.isPresent()){
-				val closure = closureOpt.get();
-				val closurePeriodOpt = closure.getClosurePeriodByYmd(datePeriod.start());
-				if (closurePeriodOpt.isPresent()){
-					closureDate = closurePeriodOpt.get().getPeriod().start();
-				}
-			}
-			
-			// 締め開始日の曜日から集計する曜日を求める
-			aggregateWeek = closureDate.dayOfWeek() - 1;
-			if (aggregateWeek == 0) aggregateWeek = 7;
-			break;
-		}
-		
-		// 集計する曜日を処理日の曜日と比較する
-		val procWeek = procYmd.dayOfWeek();
-		if (procWeek != aggregateWeek){
-			if (!procYmd.equals(datePeriod.end())) return false;
-		}
-		return true;
-	}
-	
 	/**
 	 * 月単位の時間を集計する
 	 * @param companyId 会社ID
