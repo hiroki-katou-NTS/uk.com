@@ -21,8 +21,11 @@ module nts.uk.com.view.cmf005.b.viewmodel {
     import UnitAlreadySettingModel = kcp.share.list.UnitAlreadySettingModel;
 
     export class ScreenModel {
-
-
+    
+        //wizard
+        stepList: Array<NtsWizardStep> = [];
+        stepSelected: KnockoutObservable<NtsWizardStep>;
+        activeStep: KnockoutObservable<number>;
         //Radio button
         rdSelected: KnockoutObservable<any>;
         optionCategory: KnockoutObservable<any>;

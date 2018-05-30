@@ -91,4 +91,9 @@ public class JpaManagementDeletionRepository extends JpaRepository implements Ma
 		entity.isInterruptedFlg = interruptedFlg;
 		this.commandProxy().update(entity);
 	}
+	
+	@Override
+    public void remove(String delId){
+        this.commandProxy().remove(SspdtManagementDeletion.class, delId); 
+    }
 }
