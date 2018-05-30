@@ -51,32 +51,46 @@ public class DailyRecordWorkFinder extends FinderFacade {
 
 	@Inject
 	private AttendanceTimeOfDailyPerformFinder attendanceTimeFinder;
+	
 	@Inject
 	private AffiliationInforOfDailyPerforFinder affiliInfoFinder;
+	
 	@Inject
 	private BusinessTypeOfDailyPerforFinder businessTypeFinder;
+	
 	@Inject
 	private AttendanceLeavingGateOfDailyFinder attendanceLeavingGateFinder;
+	
 	@Inject
 	private OutingTimeOfDailyPerformanceFinder outingTimeFinder;
+	
 	@Inject
 	private OptionalItemOfDailyPerformFinder optionalItemFinder;
+	
 	@Inject
 	private PCLogOnInforOfDailyPerformFinder pcLogOnInfoFinder;
+	
 	@Inject
 	private BreakTimeDailyFinder breakItemFinder;
+	
 	@Inject
 	private SpecificDateAttrOfDailyPerforFinder specificDateAttrFinder;
+	
 	@Inject
 	private TemporaryTimeOfDailyPerformanceFinder temporaryTimeFinder;
+	
 	@Inject
 	private WorkInformationOfDailyFinder workInfoFinder;
+	
 	@Inject
 	private TimeLeavingOfDailyPerformanceFinder timeLeavingFinder;
+	
 	@Inject
 	private CalcAttrOfDailyPerformanceFinder calcAttrFinder;
+	
 	@Inject
 	private ShortTimeOfDailyFinder shortWorkFinder;
+	
 	@Inject
 	private EditStateOfDailyPerformanceFinder editStateFinder;
 	// @Inject
@@ -86,6 +100,67 @@ public class DailyRecordWorkFinder extends FinderFacade {
 	
 	@Inject
 	private RemarksOfDailyFinder remarkFinder;
+	
+	@Override
+	public FinderFacade getFinder(String layout){
+		FinderFacade finder = null;
+		switch (layout) {
+		case "A":
+			finder = this.workInfoFinder;
+			break;
+		case "B":
+			finder = this.calcAttrFinder;
+			break;
+		case "C":
+			finder = this.affiliInfoFinder;
+			break;
+		case "D":
+			finder = this.businessTypeFinder;
+			break;
+		case "E":
+			finder = this.outingTimeFinder;
+			break;
+		case "F":
+			finder = this.breakItemFinder;
+			break;
+		case "G":
+			finder = this.attendanceTimeFinder;
+			break;
+		case "H":
+			finder = this.attendanceTimeByWorkFinder;
+			break;
+		case "I":
+			finder = this.timeLeavingFinder;
+			break;
+		case "J":
+			finder = this.shortWorkFinder;
+			break;
+		case "K":
+			finder = this.specificDateAttrFinder;
+			break;
+		case "L":
+			finder = this.attendanceLeavingGateFinder;
+			break;
+		case "M":
+			finder = this.optionalItemFinder;
+			break;
+		case "N":
+			finder = this.editStateFinder;
+			break;
+		case "O":
+			finder = this.temporaryTimeFinder;
+			break;
+		case "P":
+			finder = this.pcLogOnInfoFinder;
+			break;
+		case "Q":
+			finder = this.remarkFinder;
+			break;
+		default:
+			break;
+		}
+		return finder;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override

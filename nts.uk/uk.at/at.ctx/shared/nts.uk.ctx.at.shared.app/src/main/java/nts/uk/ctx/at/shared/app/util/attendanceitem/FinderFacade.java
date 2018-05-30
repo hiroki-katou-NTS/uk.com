@@ -11,16 +11,20 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public abstract class FinderFacade {
 
 	public abstract <T extends ConvertibleAttendanceItem> T find(String employeeId, GeneralDate baseDate);
-	
-	public <T extends ConvertibleAttendanceItem> List<T> finds(String employeeId, GeneralDate baseDate){
+
+	public <T extends ConvertibleAttendanceItem> List<T> finds(String employeeId, GeneralDate baseDate) {
 		return Collections.emptyList();
 	}
-	
-	public <T extends ConvertibleAttendanceItem> List<T> find(List<String> employeeId, DatePeriod baseDate){
+
+	public <T extends ConvertibleAttendanceItem> List<T> find(List<String> employeeId, DatePeriod baseDate) {
 		return Collections.emptyList();
 	}
 	
 	public <T extends ConvertibleAttendanceItem> List<T> find(Map<String, List<GeneralDate>> param){
 		return Collections.emptyList();
+	}
+
+	public FinderFacade getFinder(String layout) {
+		return this;
 	}
 }
