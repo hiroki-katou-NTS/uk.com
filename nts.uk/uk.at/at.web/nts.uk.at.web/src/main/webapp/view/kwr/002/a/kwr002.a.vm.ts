@@ -48,7 +48,7 @@ module nts.uk.com.view.kwr002.a {
                 self.endDateString = ko.observable("");
                 self.dateValue = ko.observable({ startDate: currentDate, endDate: currentDate });
                 self.exportDto = ko.observable<exportDto>();
-                
+
                 self.startDateString.subscribe(function(value) {
                     self.dateValue().startDate = value;
                     self.dateValue.valueHasMutated();
@@ -92,7 +92,7 @@ module nts.uk.com.view.kwr002.a {
                     /** Common properties */
                     systemType: 1, // システム区分
                     showEmployeeSelection: false, // 検索タイプ
-                    showQuickSearchTab: false, // クイック検索
+                    showQuickSearchTab: true, // クイック検索
                     showAdvancedSearchTab: true, // 詳細検索
                     showBaseDate: false, // 基準日利用
                     showClosure: false, // 就業締め日利用
@@ -157,6 +157,8 @@ module nts.uk.com.view.kwr002.a {
                 service.getAllAttendanceRecExpSet().done(function(listAttendance: Array<AttendanceRecordExportSettingDto>) {
                     if (listAttendance === undefined || listAttendance.length == 0) {
                         self.attendanceRecordList();
+                        $('#print').attr("disabled","disabled")
+                        $('#exportExcel').attr("disabled","disabled")
                     } else {
                         self.attendanceRecordList(listAttendance);
                         self.selectedCode = ko.observable(listAttendance[0].code);
@@ -246,8 +248,8 @@ module nts.uk.com.view.kwr002.a {
                     }
                 }
                 return employee;
-            }          
-            
+            }
+
             /**
              * update selected employee kcp005 => detail
              */
@@ -261,9 +263,10 @@ module nts.uk.com.view.kwr002.a {
                     }
                 }
                 return employee;
-            }          
+            }
 
             public print() {
+                // mode = 1 for export file excel
                 let self = this;
                 let startDate;
                 let endDate;
@@ -272,18 +275,19 @@ module nts.uk.com.view.kwr002.a {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_1129" });
                     return;
                 }
-                self.exportDto(new exportDto(self.currentCodeList(), self.dateValue().startDate, self.dateValue().endDate, self.selectedCode()));
+                self.exportDto(new exportDto(self.selectedEmployee(), self.dateValue().startDate, self.dateValue().endDate, self.selectedCode(), 1));
                 console.log(self.exportDto());
             }
 
             public exportExcel() {
+                // mode = 2 for export file excel
                 let self = this;
                 if (self.selectedEmployee.length <= 0) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_1129" });
                     return;
                 }
 
-                self.exportDto(new exportDto(self.currentCodeList(), self.dateValue().startDate, self.dateValue().endDate, self.selectedCode()));
+                self.exportDto(new exportDto(self.selectedEmployee(), self.dateValue().startDate, self.dateValue().endDate, self.selectedCode(), 2));
             }
 
             public openBDialog(): void {
@@ -366,16 +370,18 @@ module nts.uk.com.view.kwr002.a {
         }
 
         export class exportDto {
-            employeeIdList: Array<string>;
+            employeeList: Array<EmployeeSearchDto>;
             startDate: string;
             endDate: string;
             layout: string;
+            mode: number;
 
-            constructor(employeeIdList: Array<string>, startDate: string, endDate: string, layout: string) {
-                this.employeeIdList = employeeIdList;
+            constructor(employeeList: Array<EmployeeSearchDto>, startDate: string, endDate: string, layout: string, mode: number) {
+                this.employeeList = employeeList;
                 this.startDate = startDate;
                 this.endDate = endDate;
                 this.layout = layout;
+                this.mode = mode;
             }
         }
     }
