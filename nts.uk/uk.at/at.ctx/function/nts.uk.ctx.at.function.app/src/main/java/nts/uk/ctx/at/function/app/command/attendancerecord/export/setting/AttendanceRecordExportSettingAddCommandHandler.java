@@ -19,7 +19,7 @@ public class AttendanceRecordExportSettingAddCommandHandler
 
 	/** The Attendance rec exp set repo. */
 	@Inject
-	AttendanceRecordExportSettingRepository AttendanceRecExpSetRepo;
+	AttendanceRecordExportSettingRepository attendanceRecExpSetRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -39,13 +39,12 @@ public class AttendanceRecordExportSettingAddCommandHandler
 		domain.setCompanyId(AppContexts.user().companyId());
 		domain.setCode(new ExportSettingCode(command.getCode()));
 		domain.setName(new ExportSettingName(command.getName()));
-		domain.setSealStamp(
-				command.getSealStamp().stream().map(SealColumnName::new).collect(Collectors.toList()));
+		domain.setSealStamp(command.getSealStamp().stream().map(SealColumnName::new).collect(Collectors.toList()));
 		domain.setSealUseAtr(command.getSealUseAtr());
 		domain.setNameUseAtr(NameUseAtr.valueOf(command.getNameUseAtr()));
 
 		// Add
-		AttendanceRecExpSetRepo.addAttendanceRecExpSet(domain);
+		attendanceRecExpSetRepo.addAttendanceRecExpSet(domain);
 	}
 
 }

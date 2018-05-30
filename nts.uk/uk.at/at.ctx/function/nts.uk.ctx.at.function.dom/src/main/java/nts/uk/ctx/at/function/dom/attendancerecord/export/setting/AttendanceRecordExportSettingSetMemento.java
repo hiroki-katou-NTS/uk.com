@@ -57,7 +57,7 @@ public interface AttendanceRecordExportSettingSetMemento {
 	 *
 	 * @param seal the new seal stamp
 	 */
-	void setSealStamp(String companyId, ExportSettingCode code, List<SealColumnName> seal);
+	void setSealStamp(List<SealColumnName> seal);
 
 	/**
 	 * Sets the name use atr.

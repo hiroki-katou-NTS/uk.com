@@ -375,15 +375,16 @@ module nts.uk.com.view.kwr002.b {
             setShared('attendanceRecExpSetName', self.name(), true);
             setShared('useSeal', self.sealUseAtr(), true);
 
+            let itemList = getShared('attendanceRecItemList');
 
-            if (_.isArray(getShared('attendanceRecItemList')) && _.first(getShared('attendanceRecItemList')).layoutCode == self.code) {
+            if (_.isArray(itemList) && !_.isEmpty(itemList) && _.first(itemList).layoutCode == self.code) {
                 setShared('attendanceRecExpDaily', getShared('attendanceRecExpDaily'), true);
                 setShared('attendanceRecExpMonthly', getShared('attendanceRecExpMonthly'), true);
                 setShared('attendanceRecItemList', getShared('attendanceRecItemList'), true);
                 setShared('sealStamp', getShared('sealStamp'), true);
             }
 
-            modal('../c/index.xhtml', {title: getText('KWR002�ｿｽ�ｽｿ�ｽｽ�ｿｽ�ｽｽ�ｽｼ�ｿｽ�ｽｽ�ｽｿ3'),}).onClosed(function (): any {
+            modal('../c/index.xhtml', {}).onClosed(function (): any {
 
             })
         }

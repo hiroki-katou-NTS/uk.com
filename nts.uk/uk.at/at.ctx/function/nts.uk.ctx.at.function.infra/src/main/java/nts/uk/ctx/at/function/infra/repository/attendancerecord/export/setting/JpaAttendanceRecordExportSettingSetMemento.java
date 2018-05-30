@@ -1,30 +1,34 @@
 package nts.uk.ctx.at.function.infra.repository.attendancerecord.export.setting;
 
-import java.math.BigDecimal;
-import java.rmi.server.UID;
-import java.util.List;
-
+import lombok.Getter;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingSetMemento;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingName;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstSealColumn;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnstAttndRecOutSet;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnstAttndRecOutSetPK;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+
 /**
  * The Class JpaAttendanceRecordExportSettingSetMemento.
  */
+@Getter
 public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRecordExportSettingSetMemento {
 
 	/** The entity. */
 	private KfnstAttndRecOutSet entity;
 
 	/** The seal column entity. */
-	private List<KfnstSealColumn> sealColumnEntity;
+	private List<KfnstSealColumn> sealColumnEntity = new ArrayList<>();
 
-	private List<SealColumnName> sealColumnNames;
+	private List<KfnstAttndRec> attndRecSettingEntity = new ArrayList<>();
 
 	/**
 	 * Instantiates a new jpa attendance record export setting set memento.
@@ -41,10 +45,8 @@ public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRec
 	 * @param sealColumnNames
 	 *            the seal column entity
 	 */
-	public JpaAttendanceRecordExportSettingSetMemento(KfnstAttndRecOutSet entity,
-			List<SealColumnName> sealColumnNames) {
+	public JpaAttendanceRecordExportSettingSetMemento(KfnstAttndRecOutSet entity) {
 		this.entity = entity;
-		this.sealColumnNames = sealColumnNames;
 		if(this.entity.getId()==null){
 			this.entity.setId(new KfnstAttndRecOutSetPK());
 		}
@@ -96,9 +98,9 @@ public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRec
 	 */
 	@Override
 	public void setSealUseAtr(Boolean atr) {
-		this.entity.setSealUseAtr(atr ? BigDecimal.ONE : BigDecimal.ZERO);
-
-	}
+        if (atr != null)
+            this.entity.setSealUseAtr(atr ? BigDecimal.ONE : BigDecimal.ZERO);
+    }
 
 	/*
 	 * (non-Javadoc)
@@ -135,12 +137,7 @@ public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRec
 	 * ExportSettingCode, java.util.List)
 	 */
 	@Override
-	public void setSealStamp(String companyId, ExportSettingCode code, List<SealColumnName> seal) {
-		seal.forEach(item -> {
-			UID columnId = new UID();
-			KfnstSealColumn tempEntity = new KfnstSealColumn(columnId.toString(), companyId, new BigDecimal(code.v()), item.toString());			
-			this.sealColumnEntity.add(tempEntity);
-		});
+	public void setSealStamp(List<SealColumnName> seal) {
 
 	}
 
