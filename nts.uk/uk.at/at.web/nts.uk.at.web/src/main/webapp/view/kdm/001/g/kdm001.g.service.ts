@@ -5,10 +5,10 @@ module nts.uk.at.view.kdm001.g.service {
         updatePayout: "at/record/remainnumber/update",
         removePayout: "at/record/remainnumber/delete"
     }
-    export function updatePayout(command){
+    export function updatePayout(command): JQueryPromise<any>{
         return ajax(paths.updatePayout, command);
     }
-    export function removePayout(command){
+    export function removePayout(command): JQueryPromise<any>{
         return ajax(paths.removePayout, command);
     }
 }

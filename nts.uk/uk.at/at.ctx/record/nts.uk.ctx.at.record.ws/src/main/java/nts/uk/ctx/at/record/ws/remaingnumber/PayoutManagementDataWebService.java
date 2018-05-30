@@ -47,8 +47,8 @@ public class PayoutManagementDataWebService extends WebService{
 	
 	@POST
 	@Path("update")
-	public void update(PayoutManagementDataCommand command){
-		updatePayout.handle(command);
+	public List<String> update(PayoutManagementDataCommand command){
+		return updatePayout.handle(command);
 	}
 	
 	@POST

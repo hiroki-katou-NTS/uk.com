@@ -493,13 +493,13 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         occurredDays: number;
         unUsedDays: number;
         stateAtr: number;
-        payoutTied: boolean;
+        payoutTied: string;
         subOfHDID: string;
         unknownDateSub: boolean;
         dayoffDateSub: string;
         requiredDays: number;
         remainDays: number;
-        subTied: boolean;
+        subTied: string;
         
         //add to fill grid A4_2_5
         unUsedDaysInGrid: number;
@@ -548,12 +548,12 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 
                 if (moment.utc(params.expiredDate, 'YYYY/MM/DD').diff(moment.utc()) > 0) {
                     this.unUsedDaysInGrid = params.unUsedDays;
-                    this.expriedDaysInGrid = "";
+                    this.expriedDaysInGrid = null;
                     if(params.unUsedDays > 0) {
                         this.unUsedDaysInGridText = "日";
                     }
                 } else {
-                    this.unUsedDaysInGrid = "";
+                    this.unUsedDaysInGrid = null;
                     this.expriedDaysInGrid = params.unUsedDays;
                     if(params.unUsedDays > 0) {
                         this.expriedDaysInGridText = "日";
@@ -562,7 +562,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             } else if ((params.subOfHDID != null) && (params.subOfHDID != "")) {
                 this.id = params.subOfHDID;
                 this.unUsedDaysInGrid = params.remainDays * (-1);
-                this.expriedDaysInGrid = "";
+                this.expriedDaysInGrid = null;
                 if(params.remainDays > 0) {
                     this.unUsedDaysInGridText = "日";
                 }
