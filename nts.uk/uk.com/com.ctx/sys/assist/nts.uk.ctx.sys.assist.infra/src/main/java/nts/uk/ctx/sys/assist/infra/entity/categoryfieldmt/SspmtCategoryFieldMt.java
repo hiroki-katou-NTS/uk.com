@@ -390,7 +390,7 @@ public class SspmtCategoryFieldMt extends UkJpaEntity implements Serializable {
 	 * 更新キー項目8
 	 */
 	@Basic(optional = true)
-	@Column(name = " FILED_KEY_UPDATE_8")
+	@Column(name = "FILED_KEY_UPDATE_8")
 	public String filedKeyUpdate8;
 
 	/**
@@ -411,7 +411,7 @@ public class SspmtCategoryFieldMt extends UkJpaEntity implements Serializable {
 	 * 更新キー項目11
 	 */
 	@Basic(optional = true)
-	@Column(name = " FILED_KEY_UPDATE_11")
+	@Column(name = "FILED_KEY_UPDATE_11")
 	public String filedKeyUpdate11;
 
 	/**
@@ -446,7 +446,7 @@ public class SspmtCategoryFieldMt extends UkJpaEntity implements Serializable {
 	 * 更新キー項目16
 	 */
 	@Basic(optional = true)
-	@Column(name = " FILED_KEY_UPDATE_16")
+	@Column(name = "FILED_KEY_UPDATE_16")
 	public String filedKeyUpdate16;
 
 	/**
@@ -509,70 +509,70 @@ public class SspmtCategoryFieldMt extends UkJpaEntity implements Serializable {
 	 * 親側結合キー1
 	 */
 	@Basic(optional = true)
-	@Column(name = "PARENT_FIELD_1")
+	@Column(name = "FIELD_PARENT_1")
 	public String fieldParent1;
 
 	/**
 	 * 親側結合キー2
 	 */
 	@Basic(optional = true)
-	@Column(name = "PARENT_FIELD_2")
+	@Column(name = "FIELD_PARENT_2")
 	public String fieldParent2;
 
 	/**
 	 * 親側結合キー3
 	 */
 	@Basic(optional = true)
-	@Column(name = "PARENT_FIELD_3")
+	@Column(name = "FIELD_PARENT_3")
 	public String fieldParent3;
 
 	/**
 	 * 親側結合キー4
 	 */
 	@Basic(optional = true)
-	@Column(name = "PARENT_FIELD_4")
+	@Column(name = "FIELD_PARENT_4")
 	public String fieldParent4;
 
 	/**
 	 * 親側結合キー5
 	 */
 	@Basic(optional = true)
-	@Column(name = "PARENT_FIELD_5")
+	@Column(name = "FIELD_PARENT_5")
 	public String fieldParent5;
 
 	/**
 	 * 親側結合キー6
 	 */
 	@Basic(optional = true)
-	@Column(name = "PARENT_FIELD_6")
+	@Column(name = "FIELD_PARENT_6")
 	public String fieldParent6;
 
 	/**
 	 * 親側結合キー7
 	 */
 	@Basic(optional = true)
-	@Column(name = "PARENT_FIELD_7")
+	@Column(name = "FIELD_PARENT_7")
 	public String fieldParent7;
 
 	/**
 	 * 親側結合キー8
 	 */
 	@Basic(optional = true)
-	@Column(name = "PARENT_FIELD_8")
+	@Column(name = "FIELD_PARENT_8")
 	public String fieldParent8;
 
 	/**
 	 * 親側結合キー9
 	 */
 	@Basic(optional = true)
-	@Column(name = "PARENT_FIELD_9")
+	@Column(name = "FIELD_PARENT_9")
 	public String fieldParent9;
 
 	/**
 	 * 親側結合キー10
 	 */
 	@Basic(optional = true)
-	@Column(name = "PARENT_FIELD_10")
+	@Column(name = "FIELD_PARENT_10")
 	public String fieldParent10;
 
 	/**

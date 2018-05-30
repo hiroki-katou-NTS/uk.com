@@ -7,7 +7,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.assist.dom.category.RecoverFormCompanyOther;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.HistoryDiviSion;
-import nts.uk.ctx.sys.assist.dom.storage.Explanation;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -517,7 +516,7 @@ public class TableList extends AggregateRoot {
 	/**
 	 * 補足説明
 	 */
-	private Explanation supplementaryExplanation;
+	private String supplementaryExplanation;
 
 	/**
 	 * 親テーブル日本語名
@@ -612,7 +611,7 @@ public class TableList extends AggregateRoot {
 			String filedKeyUpdate10, String filedKeyUpdate11, String filedKeyUpdate12, String filedKeyUpdate13,
 			String filedKeyUpdate14, String filedKeyUpdate15, String filedKeyUpdate16, String filedKeyUpdate17,
 			String filedKeyUpdate18, String filedKeyUpdate19, String filedKeyUpdate20, String screenRetentionPeriod,
-			Explanation supplementaryExplanation, String parentTblJpName, int hasParentTable,
+			String supplementaryExplanation, String parentTblJpName, int hasParentTable,
 			String parentTblName, String fieldParent1, String fieldParent2, String fieldParent3, String fieldParent4,
 			String fieldParent5, String fieldParent6, String fieldParent7, String fieldParent8, String fieldParent9,
 			String fieldParent10, int surveyPreservation) {

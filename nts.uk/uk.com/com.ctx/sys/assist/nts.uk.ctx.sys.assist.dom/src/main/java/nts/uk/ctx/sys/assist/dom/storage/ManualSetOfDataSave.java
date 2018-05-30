@@ -81,7 +81,7 @@ public class ManualSetOfDataSave extends AggregateRoot {
 	/**
 	 * 補足説明
 	 */
-	private Explanation suppleExplanation;
+	private String suppleExplanation;
 
 	/**
 	 * 年次終了年
@@ -130,7 +130,7 @@ public class ManualSetOfDataSave extends AggregateRoot {
 		this.daySaveStartDate = daySaveStartDate;
 		this.monthSaveEndDate = monthSaveEndDate;
 		this.monthSaveStartDate = monthSaveStartDate;
-		this.suppleExplanation = new Explanation(suppleExplanation);
+		this.suppleExplanation = suppleExplanation;
 		this.endYear = new Year(endYear);
 		this.startYear = new Year(startYear);
 		this.presenceOfEmployee = EnumAdaptor.valueOf(presenceOfEmployee, NotUseAtr.class);
@@ -158,7 +158,7 @@ public class ManualSetOfDataSave extends AggregateRoot {
 		this.daySaveStartDate = daySaveStartDate;
 		this.monthSaveEndDate = monthSaveEndDate;
 		this.monthSaveStartDate = monthSaveStartDate;
-		this.suppleExplanation = new Explanation(suppleExplanation);
+		this.suppleExplanation = suppleExplanation;
 		this.endYear = new Year(endYear);
 		this.startYear = new Year(startYear);
 		this.presenceOfEmployee = EnumAdaptor.valueOf(presenceOfEmployee, NotUseAtr.class);

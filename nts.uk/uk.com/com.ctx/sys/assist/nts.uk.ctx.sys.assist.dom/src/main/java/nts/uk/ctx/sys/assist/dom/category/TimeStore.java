@@ -1,5 +1,11 @@
 package nts.uk.ctx.sys.assist.dom.category;
 
+/**
+ * 
+ * @author thanh.tq
+ * 保存期間区分
+ */
+
 public enum TimeStore {
 	
 	FULL_TIME(0,"Enum_TimeStore_FULL_TIME"),

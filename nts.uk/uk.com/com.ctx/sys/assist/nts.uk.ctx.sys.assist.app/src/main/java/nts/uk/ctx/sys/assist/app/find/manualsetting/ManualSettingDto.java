@@ -41,7 +41,7 @@ public class ManualSettingDto {
 				domain.getPasswordAvailability().value, domain.getSaveSetName().v(), domain.getReferenceDate(),
 				domain.getCompressedPassword().v(), domain.getExecutionDateAndTime(), domain.getDaySaveEndDate(),
 				domain.getDaySaveStartDate(), domain.getMonthSaveEndDate(), domain.getMonthSaveStartDate(),
-				domain.getSuppleExplanation().v(), domain.getSystemType().value, domain.getEndYear().v(),
+				domain.getSuppleExplanation(), domain.getSystemType().value, domain.getEndYear().v(),
 				domain.getStartYear().v(), domain.getPresenceOfEmployee().value, domain.getIdentOfSurveyPre().value,
 				domain.getPractitioner());
 	}

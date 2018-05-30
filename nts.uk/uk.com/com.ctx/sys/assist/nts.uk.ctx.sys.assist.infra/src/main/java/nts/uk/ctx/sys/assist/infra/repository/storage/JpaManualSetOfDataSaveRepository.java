@@ -38,7 +38,7 @@ public class JpaManualSetOfDataSaveRepository extends JpaRepository implements M
 				dom.getPasswordAvailability().value, dom.getSaveSetName().v(), dom.getReferenceDate(),
 				dom.getCompressedPassword().v(), dom.getExecutionDateAndTime(), dom.getDaySaveEndDate(),
 				dom.getDaySaveStartDate(), dom.getMonthSaveEndDate(), dom.getMonthSaveStartDate(),
-				dom.getSuppleExplanation().v(), dom.getEndYear().v().intValue(), dom.getStartYear().v().intValue(),
+				dom.getSuppleExplanation(), dom.getEndYear().v().intValue(), dom.getStartYear().v().intValue(),
 				dom.getPresenceOfEmployee().value, dom.getIdentOfSurveyPre().value, dom.getPractitioner());
 	}
 

@@ -5,8 +5,8 @@ import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -34,13 +34,8 @@ public class SspmtCategory extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
     
-    /**
-    * ID
-    */
-    @Id
-    @Column(name = "CATEGORY_ID")
-    public String categoryId;
-    
+    @EmbeddedId
+	public SspmtCategoryPk categoryPk;
     /**
     * オフィスヘルパーの使用可否
     */
@@ -112,17 +107,19 @@ public class SspmtCategory extends UkJpaEntity implements Serializable
     public int storageRangeSaved;
 
     public Category toDomain() {
-        return new Category(EnumAdaptor.valueOf(this.schelperSystem, SystemUsability.class), new CategoryId(this.categoryId), new CategoryName(this.categoryName), EnumAdaptor.valueOf(this.possibilitySystem, SystemUsability.class), 
+        return new Category(EnumAdaptor.valueOf(this.schelperSystem, SystemUsability.class), new CategoryId(this.categoryPk.categoryId), new CategoryName(this.categoryName), EnumAdaptor.valueOf(this.possibilitySystem, SystemUsability.class), 
         		EnumAdaptor.valueOf(this.storedProcedureSpecified, StoredProcedureSpecified.class), EnumAdaptor.valueOf(this.timeStore, TimeStore.class), EnumAdaptor.valueOf(this.otherCompanyCls, RecoverFormCompanyOther.class), EnumAdaptor.valueOf(this.attendanceSystem, SystemUsability.class), 
         		EnumAdaptor.valueOf(this.recoveryStorageRange, RecoveryStorageRange.class), EnumAdaptor.valueOf(this.paymentAvailability, SystemUsability.class), EnumAdaptor.valueOf(this.storageRangeSaved, StorageRangeSaved.class));
     }
     public static SspmtCategory toEntity(Category domain) {
-        return new SspmtCategory(domain.getCategoryId().v(), domain.getSchelperSystem().value, domain.getCategoryName().v(), 
+        return new SspmtCategory(
+        		new SspmtCategoryPk(domain.getCategoryId().v()),
+        		domain.getSchelperSystem().value, domain.getCategoryName().v(), 
         		domain.getPossibilitySystem().value, domain.getStoredProcedureSpecified().value, domain.getTimeStore().value, domain.getOtherCompanyCls().value, domain.getAttendanceSystem().value, domain.getRecoveryStorageRange().value, domain.getPaymentAvailability().value, domain.getStorageRangeSaved().value);
     }
 	@Override
 	protected Object getKey() {
-		return categoryId;
+		return categoryPk;
 	}
 
 }
