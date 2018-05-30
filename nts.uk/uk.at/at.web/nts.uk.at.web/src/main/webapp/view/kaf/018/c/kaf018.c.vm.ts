@@ -155,7 +155,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                     let initExTable = self.setFormatData(detailHeaderDeco, self.listDailyStatus);
 
                     new nts.uk.ui.exTable.ExTable($("#extable"), {
-                        headerHeight: "30px", bodyRowHeight: "22px", bodyHeight: "330px",
+                        headerHeight: "42px", bodyRowHeight: "22px", bodyHeight: "330px",
                         horizontalSumBodyRowHeight: "0px",
                         remainSizes: false,
                         bodyHeightMode: "fixed",
@@ -220,7 +220,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             ];
             leftmostHeader = {
                 columns: leftmostColumns,
-                rowHeight: "30px",
+                rowHeight: "42px",
                 width: "200px"
             };
             leftmostContent = {
@@ -249,7 +249,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                 features: [
                     {
                         name: "HeaderRowHeight",
-                        rows: { 0: "30px" }
+                        rows: { 0: "42px" }
                     },
                     {
                         name: "HeaderCellStyle",
@@ -272,7 +272,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         }
 
         getDay(time: shareModel.Time): string {
-            return time.day;
+            return time.day + "<br/>" + time.weekDay;
         }
 
         /**
