@@ -35,9 +35,9 @@ module nts.uk.com.view.kwr002.e {
                 ]);
                 self.gridItems = ko.observableArray([]);
                 self.selectionTypeList = ko.observableArray([
-                    new model.SelectionType(16, nts.uk.resource.getText('KWR002_171')),
-                    new model.SelectionType(17, nts.uk.resource.getText('KWR002_172')),
-                    new model.SelectionType(18, nts.uk.resource.getText('KWR002_173')),
+                    new model.SelectionType(16, nts.uk.resource.getMessage("Msg_1209", [])),
+                    new model.SelectionType(17, nts.uk.resource.getMessage("Msg_1210", [])),
+                    new model.SelectionType(18, nts.uk.resource.getMessage("Msg_1211", [])),
                 ]);
                 self.selectionTypeValue = ko.observable(16);
                 self.selectionTypeValue.subscribe(function(codeChange) {
@@ -150,6 +150,7 @@ module nts.uk.com.view.kwr002.e {
                         self.selectedGridItems.push(new model.SelectedItem(model.Action.ADDITION.toString(), item.code, item.name));
                     });
                     self.selectedGridItems(self.selectedGridItems().sort(function(a, b) { return a.code - b.code; }));
+                    self.currentCodeList([]);
                 }
             }
 
@@ -169,6 +170,7 @@ module nts.uk.com.view.kwr002.e {
                         self.selectedGridItems.push(new model.SelectedItem(model.Action.SUBTRACTION.toString(), item.code, item.name));
                     });
                     self.selectedGridItems(self.selectedGridItems().sort(function(a, b) { return a.code - b.code; }));
+                    self.currentCodeList([]);
                 }
             }
             

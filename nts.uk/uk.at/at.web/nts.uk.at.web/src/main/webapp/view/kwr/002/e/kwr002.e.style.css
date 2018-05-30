@@ -1,4 +1,7 @@
 @CHARSET "ISO-8859-1";
+body {
+	display: flex;
+}
 .external {
 	margin-top: 10px;
 	margin-left: 10px;
@@ -9,11 +12,19 @@ textarea {
 }
 
 #multiline-textbox {
-	width: 960px; 
+	width: 1020px; 
 	height: 70px;
+	border-radius: 5px;
 }
 
-#selected-list table, tbody, thead, tr, th, td {
+table#selected-list {
+	border: 0.5px solid grey;
+}
+table .ui-iggrid-layout-helper {
+	border: 0.5px solid grey;
+}
+
+#selected-list tbody, thead, tr, th, td {
 	border: 0.5px solid grey;
 }
 
