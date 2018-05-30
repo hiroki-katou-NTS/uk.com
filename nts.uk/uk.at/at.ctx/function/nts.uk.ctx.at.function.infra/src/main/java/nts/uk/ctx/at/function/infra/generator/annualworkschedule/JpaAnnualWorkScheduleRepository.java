@@ -109,11 +109,14 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		//B1_1 + B1_2
 		String periodStr = startYmFinal.until(endYmFinal, ChronoUnit.MONTHS) == 0? startYearMonth: startYearMonth + "～" + endYearMonth;
 		header.setPeriod(TextResource.localize("KWR008_41") + " " + periodStr);
+		//TODO
+		List<ItemOutTblBook> listItemOut = setOutItemsWoSc.getListItemOutTblBook().stream()
+				.filter(item -> item.isUseClassification()).collect(Collectors.toList());
+		data.setExportItems(listItemOut.stream().map(m -> new ExportItem(m.getCd().v(), m.getHeadingName().v())).collect(Collectors.toList()));
 		//出力項目数による個人情報の出力制限について
-		int sizeItemOut = setOutItemsWoSc.getListItemOutTblBook().size();
-		if (sizeItemOut == 1) {
+		if (listItemOut.size() == 1) {
 			header.setEmpInfoLabel(TextResource.localize("KWR008_44"));
-		} else if (sizeItemOut == 2) {
+		} else if (listItemOut.size() == 2) {
 			header.setEmpInfoLabel(TextResource.localize("KWR008_43"));
 		} else {
 			header.setEmpInfoLabel(TextResource.localize("KWR008_42"));
@@ -128,14 +131,11 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		//set C1_2
 		header.setMonths(this.createMonthLabels(startYm, endYm));
 
-		//TODO
-		data.setExportItems(setOutItemsWoSc.getListItemOutTblBook().stream().filter(item -> item.isUseClassification())
-				.map(m -> new ExportItem(m.getCd().v(), m.getHeadingName().v())).collect(Collectors.toList()));
 		data.setHeader(header);
 
 		//アルゴリズム「年間勤務表の作成」を実行する
-		Optional<ItemOutTblBook> outputAgreementTime36 = setOutItemsWoSc.getListItemOutTblBook()
-				.stream().filter(m -> CD_36_AGREEMENT_TIME.equals(m.getCd().v())).findFirst();
+		Optional<ItemOutTblBook> outputAgreementTime36 = listItemOut.stream()
+				.filter(m -> CD_36_AGREEMENT_TIME.equals(m.getCd().v())).findFirst();
 		//TODO 36協定時間を出力するかのチェックをする
 		if (outputAgreementTime36.isPresent()) {
 			List<MonthlyAttendanceResultImport> monthlyAttendanceResult
@@ -146,8 +146,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 			this.buildAnnualWorkScheduleData(data, outputAgreementTime36.get(), monthlyAttendanceResult);
 		}
 
-		setOutItemsWoSc.getListItemOutTblBook()
-			.stream().filter(item -> !CD_36_AGREEMENT_TIME.equals(item.getCd().v()))
+		listItemOut.stream().filter(item -> !CD_36_AGREEMENT_TIME.equals(item.getCd().v()))
 			.forEach(item -> {
 				List<MonthlyAttendanceResultImport> monthlyAttendanceResult
 					= monthlyAttendanceItemAdapter.getMonthlyValueOf(employees.stream()

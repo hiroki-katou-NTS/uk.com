@@ -79,7 +79,7 @@ public class ErrorAlarmWorkRecordDto {
 		ErAlAtdItemConditionDto erAlAtdItemConditionDto = new ErAlAtdItemConditionDto();
 		erAlAtdItemConditionDto.setTargetNO(itemDomain.getTargetNO());
 		erAlAtdItemConditionDto.setConditionAtr(itemDomain.getConditionAtr().value);
-		erAlAtdItemConditionDto.setUseAtr(itemDomain.getUseAtr());
+		erAlAtdItemConditionDto.setUseAtr(itemDomain.isUse());
 		// Check Target
 		// チェック対象
 		if (itemDomain.getConditionAtr() == ConditionAtr.TIME_WITH_DAY) {
@@ -226,7 +226,7 @@ public class ErrorAlarmWorkRecordDto {
 				domain.getFixedAtr() ? 0
 						: conditionDomain.getAtdItemCondition().getGroup2()
 								.getConditionOperator().value,
-				domain.getFixedAtr() ? false : conditionDomain.getAtdItemCondition().getGroup2UseAtr());
+				domain.getFixedAtr() ? false : conditionDomain.getAtdItemCondition().isUseGroup2());
 		if (!domain.getFixedAtr()) {
 			// Set AlarmCheckTargetConditionDto
 			errorAlarmWorkRecordDto.setAlCheckTargetCondition(new AlarmCheckTargetConditionDto(
@@ -248,11 +248,11 @@ public class ErrorAlarmWorkRecordDto {
 					.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME) {
 				PlanActualWorkType wtypeConditionDomain = (PlanActualWorkType) conditionDomain
 						.getWorkTypeCondition();
-				wtypeConditionDto.setActualFilterAtr(wtypeConditionDomain.getWorkTypeActual().getFilterAtr());
+				wtypeConditionDto.setActualFilterAtr(wtypeConditionDomain.getWorkTypeActual().isUse());
 				wtypeConditionDto.setActualLstWorkType(wtypeConditionDomain.getWorkTypeActual().getLstWorkType()
 						.stream().map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
-				wtypeConditionDto.setUseAtr(wtypeConditionDomain.getUseAtr());
-				wtypeConditionDto.setPlanFilterAtr(wtypeConditionDomain.getWorkTypePlan().getFilterAtr());
+				wtypeConditionDto.setUseAtr(wtypeConditionDomain.isUse());
+				wtypeConditionDto.setPlanFilterAtr(wtypeConditionDomain.getWorkTypePlan().isUse());
 				wtypeConditionDto.setPlanLstWorkType(wtypeConditionDomain.getWorkTypePlan().getLstWorkType().stream()
 						.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
 				errorAlarmWorkRecordDto
@@ -260,8 +260,8 @@ public class ErrorAlarmWorkRecordDto {
 			} else {
 				SingleWorkType wtypeConditionDomain = (SingleWorkType) conditionDomain
 						.getWorkTypeCondition();
-				wtypeConditionDto.setUseAtr(wtypeConditionDomain.getUseAtr());
-				wtypeConditionDto.setPlanFilterAtr(wtypeConditionDomain.getTargetWorkType().getFilterAtr());
+				wtypeConditionDto.setUseAtr(wtypeConditionDomain.isUse());
+				wtypeConditionDto.setPlanFilterAtr(wtypeConditionDomain.getTargetWorkType().isUse());
 				wtypeConditionDto.setPlanLstWorkType(wtypeConditionDomain.getTargetWorkType().getLstWorkType().stream()
 						.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
 			}
@@ -273,18 +273,18 @@ public class ErrorAlarmWorkRecordDto {
 					.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME) {
 				PlanActualWorkTime wtimeConditionDomain = (PlanActualWorkTime) conditionDomain
 						.getWorkTimeCondition();
-				wtimeConditionDto.setActualFilterAtr(wtimeConditionDomain.getWorkTimeActual().getFilterAtr());
+				wtimeConditionDto.setActualFilterAtr(wtimeConditionDomain.getWorkTimeActual().isUse());
 				wtimeConditionDto.setActualLstWorkTime(wtimeConditionDomain.getWorkTimeActual().getLstWorkTime()
 						.stream().map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
-				wtimeConditionDto.setUseAtr(wtimeConditionDomain.getUseAtr());
-				wtimeConditionDto.setPlanFilterAtr(wtimeConditionDomain.getWorkTimePlan().getFilterAtr());
+				wtimeConditionDto.setUseAtr(wtimeConditionDomain.isUse());
+				wtimeConditionDto.setPlanFilterAtr(wtimeConditionDomain.getWorkTimePlan().isUse());
 				wtimeConditionDto.setPlanLstWorkTime(wtimeConditionDomain.getWorkTimePlan().getLstWorkTime().stream()
 						.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
 			} else {
 				SingleWorkTime wtimeConditionDomain = (SingleWorkTime) conditionDomain
 						.getWorkTimeCondition();
-				wtimeConditionDto.setUseAtr(wtimeConditionDomain.getUseAtr());
-				wtimeConditionDto.setPlanFilterAtr(wtimeConditionDomain.getTargetWorkTime().getFilterAtr());
+				wtimeConditionDto.setUseAtr(wtimeConditionDomain.isUse());
+				wtimeConditionDto.setPlanFilterAtr(wtimeConditionDomain.getTargetWorkTime().isUse());
 				wtimeConditionDto.setPlanLstWorkTime(wtimeConditionDomain.getTargetWorkTime().getLstWorkTime().stream()
 						.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
 			}

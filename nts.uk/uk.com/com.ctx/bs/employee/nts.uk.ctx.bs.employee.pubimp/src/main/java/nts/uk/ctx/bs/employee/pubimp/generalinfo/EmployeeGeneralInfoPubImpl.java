@@ -98,7 +98,7 @@ public class EmployeeGeneralInfoPubImpl implements EmployeeGeneralInfoPub {
 			}).collect(Collectors.toList());
 			resultList.add(new ExEmploymentHistoryDto(eh.getEmployeeId(), employmentItems));
 		}
-		return null;
+		return resultList;
 	}
 
 	private List<ExClassificationHistoryDto> getClassificationDto(List<String> employeeIds, DatePeriod period) {

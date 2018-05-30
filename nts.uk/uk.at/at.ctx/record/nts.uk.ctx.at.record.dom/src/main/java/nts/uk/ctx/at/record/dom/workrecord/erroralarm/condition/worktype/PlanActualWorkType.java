@@ -29,7 +29,7 @@ public class PlanActualWorkType extends WorkTypeCondition {
 	private TargetWorkType workTypeActual;
 
 	/* Constructor from Superclass */
-	private PlanActualWorkType(Boolean useAtr, FilterByCompare comparePlanAndActual) {
+	private PlanActualWorkType(boolean useAtr, FilterByCompare comparePlanAndActual) {
 		super(useAtr, comparePlanAndActual);
 	}
 
