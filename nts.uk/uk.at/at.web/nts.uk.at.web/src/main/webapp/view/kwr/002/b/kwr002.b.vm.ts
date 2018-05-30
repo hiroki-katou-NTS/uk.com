@@ -8,6 +8,7 @@ module nts.uk.com.view.kwr002.b {
     import windows = nts.uk.ui.windows;
     import alertError = nts.uk.ui.dialog.alertError;
     import confirm = nts.uk.ui.dialog.confirm;
+    import info = nts.uk.ui.dialog.info;
 
     export class ScreenModel {
 
@@ -80,7 +81,7 @@ module nts.uk.com.view.kwr002.b {
             let self = this;
             errors.clearAll();
             confirm({messageId: 'Msg_18'}).ifYes(() => {
-                confirm({messageId: 'Msg_35'}).ifYes(() => {
+                info({messageId: 'Msg_35'}).then(() => {
                     let currentData = self.currentARES();
                     let delARESCmd = {
                         code: Number(currentData.code()),
@@ -97,14 +98,20 @@ module nts.uk.com.view.kwr002.b {
 
                     service.delARES(cmd).done(() => {
                         let newVal = _.reject(self.aRES(), ['code', currentData.code()]);
-                        // console.log(newVal);
                         self.aRES(newVal);
-                        let firstData = _.first(self.aRES());
-                        self.currentARESCode(firstData.code);
+
+                        if(_.isEmpty(newVal)){
+                            this.onNew()
+                        }else{
+                            // console.log(newVal);
+                            self.aRES(newVal);
+                            let firstData = _.first(self.aRES());
+                            self.currentARESCode(firstData.code);
+                        }
                     });
                 })
             }).ifNo(() => {
-                confirm({messageId: 'Msg_36'}).ifYes(() => {
+                info({messageId: 'Msg_36'}).then(() => {
                     return;
                 })
             });
