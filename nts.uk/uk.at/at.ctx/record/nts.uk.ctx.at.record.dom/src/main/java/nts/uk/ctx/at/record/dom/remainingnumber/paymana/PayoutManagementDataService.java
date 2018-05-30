@@ -39,32 +39,28 @@ public class PayoutManagementDataService {
 	
 	private static final int EMPTY = 0;
 	
-	private List<String> checkHolidate(Boolean pickUp, Boolean pause,Boolean checkedSplit, Double subDays, Double requiredDays, Double occurredDays){
+	private List<String> checkHolidate(Boolean pickUp, Boolean pause,Boolean checkedSplit, Double requiredDays,Double subDays, Double occurredDays){
 		List<String> errors = new ArrayList<String>();
 		if (pause) {
 			if (checkedSplit) {
-				if (ItemDays.HALF_DAY.value.equals(subDays)) {
-					if (!ItemDays.HALF_DAY.value.equals(requiredDays)){
-						errors.add("Msg_1256_SubDays");
-						return errors;
-					} else {
+				if (!ItemDays.HALF_DAY.value.equals(subDays)) {
+					errors.add("Msg_1256_SubDays");
+					return errors;
+				} else if (!ItemDays.HALF_DAY.value.equals(requiredDays)){
 					errors.add("Msg_1256_RequiredDays");
 					return errors;
-					}
-				}
+				} 
 			}
 		}
 		if (pickUp) {
 			if (checkedSplit) {
-				if (!ItemDays.HALF_DAY.value.equals(occurredDays)) {
+				if (!ItemDays.ONE_DAY.value.equals(occurredDays)) {
 					errors.add("Msg_1256_OccurredDays");
 					return errors;
 				}
-			} else {
-				if (!ItemDays.HALF_DAY.value.equals(occurredDays)) {
+			} else if (pause && !occurredDays.equals(subDays)){
 					errors.add("Msg_1257_OccurredDays");
 					return errors;
-				}	
 			}
 		}
 		
@@ -108,8 +104,8 @@ public class PayoutManagementDataService {
 			}
 		}
 		if (pause) {
-				errors.addAll(this.checkDateClosing(subMana.getHolidayDate().getDayoffDate().get(), payMana.getPayoutDate().getDayoffDate().get(),
-						splitMana.getHolidayDate().getDayoffDate().get(), closureDate, closureId, checkedSplit));
+				errors.addAll(this.checkDateClosing(subMana.getHolidayDate().getDayoffDate().orElse(null), payMana.getPayoutDate().getDayoffDate().orElse(null),
+						splitMana.getHolidayDate().getDayoffDate().orElse(null), closureDate, closureId, checkedSplit));
 			if (subMana.getHolidayDate().getDayoffDate().get().equals(payMana.getPayoutDate().getDayoffDate().orElse(null))) {
 				errors.add("Msg_729_SubPay");
 			}
@@ -120,7 +116,7 @@ public class PayoutManagementDataService {
 				if(this.checkDateClosing(splitMana.getHolidayDate().getDayoffDate().get(), closureDate, closureId)) {
 					errors.add("Msg_744");
 				}
-				if(payMana.getPayoutDate().getDayoffDate().get().equals(splitMana.getHolidayDate().getDayoffDate().orElse(null))) {
+				if(splitMana.getHolidayDate().getDayoffDate().get().equals(payMana.getPayoutDate().getDayoffDate().orElse(null))) {
 					errors.add("Msg_729");
 				}
 			}
@@ -140,15 +136,11 @@ public class PayoutManagementDataService {
 				substitutionOfHDManaDataRepository.create(splitMana);
 			}
 			if (pause && pickUp) {
-				int targetSelectionAtr = 2;
-				Double usedDay = subMana.getRequiredDays().v() + subMana.getRequiredDays().v();
+				PayoutSubofHDManagement paySub = new PayoutSubofHDManagement(payMana.getPayoutId(), subMana.getSubOfHDID(), BigDecimal.valueOf(subMana.getRequiredDays().v()), TargetSelectionAtr.MANUAL.value);
+				payoutSubofHDManaRepository.add(paySub);
 				if (checkedSplit) {
-					usedDay = subMana.getRequiredDays().v();
-					PayoutSubofHDManagement paySplit = new PayoutSubofHDManagement(payMana.getPayoutId(), splitMana.getSubOfHDID(), BigDecimal.valueOf(usedDay), targetSelectionAtr);
+					PayoutSubofHDManagement paySplit = new PayoutSubofHDManagement(payMana.getPayoutId(), splitMana.getSubOfHDID(), BigDecimal.valueOf(splitMana.getRequiredDays().v()), TargetSelectionAtr.MANUAL.value);
 					payoutSubofHDManaRepository.add(paySplit);
-				} else {
-					PayoutSubofHDManagement paySub = new PayoutSubofHDManagement(payMana.getPayoutId(), subMana.getSubOfHDID(), BigDecimal.valueOf(usedDay), targetSelectionAtr);
-					payoutSubofHDManaRepository.add(paySub);
 				}
 			}
 		}
