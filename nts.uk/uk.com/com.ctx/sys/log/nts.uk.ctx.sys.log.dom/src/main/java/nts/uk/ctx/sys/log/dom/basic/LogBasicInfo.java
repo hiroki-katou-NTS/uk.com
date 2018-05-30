@@ -6,8 +6,8 @@ import java.util.Optional;
 
 public class LogBasicInfo {
 
-	private final String operationId;
-	private final String companyId;
+	private final String operationId = "";
+	private final String companyId = "";
 //	private final UserInfo userInfo;
 	
 	
