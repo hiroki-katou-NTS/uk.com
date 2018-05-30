@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.base.CompensatoryDayoffDate;
 
 public interface SubstitutionOfHDManaDataRepository {
 	
@@ -24,7 +23,7 @@ public interface SubstitutionOfHDManaDataRepository {
 	
 	Optional<SubstitutionOfHDManagementData> findByID(String Id);
 	
-	Optional<SubstitutionOfHDManagementData> find(String sID, String cID,CompensatoryDayoffDate holidayDate );
+	Optional<SubstitutionOfHDManagementData> find(String sID, String cID,GeneralDate holidayDate );
 	
 	// ドメイン「振休管理データ」より紐付け対象となるデータを取得する
 	List<SubstitutionOfHDManagementData> getBySidDatePeriod(String sid,String payoutID, Double remainDays);

@@ -196,7 +196,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                                 $('#I11_1').ntsError('set', { messageId: "Msg_737" });
                             }
                             else if (errorId === "Msg_737_sub_option_holiday") {
-                                $('#I12_2').ntsError('set', { messageId: "Msg_737" });
+                                $('#I11_1').ntsError('set', { messageId: "Msg_737" });
                             }    
                             else if (errorId === "Msg_745_1") {
                                 $('#I6_1').ntsError('set', { messageId: "Msg_745" });

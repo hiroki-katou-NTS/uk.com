@@ -75,7 +75,7 @@ public class PayoutManagementDataService {
 	
 	private boolean checkInfoPayMana(PayoutManagementData domain) {
 		Optional<PayoutManagementData> payout = payoutManagementDataRepository.find(domain.getCID(), domain.getSID(),
-				domain.getPayoutDate());
+				domain.getPayoutDate().getDayoffDate().orElse(null));
 		if (payout.isPresent()) {
 			return true;
 		}
@@ -84,7 +84,7 @@ public class PayoutManagementDataService {
 
 	private boolean checkInfoSubPayMana(SubstitutionOfHDManagementData subDomain) {
 		Optional<SubstitutionOfHDManagementData> subPayout = substitutionOfHDManaDataRepository.find(subDomain.getCid(),
-				subDomain.getSID(), subDomain.getHolidayDate());
+				subDomain.getSID(), subDomain.getHolidayDate().getDayoffDate().orElse(null));
 		if (subPayout.isPresent()) {
 			return true;
 		}
@@ -92,7 +92,7 @@ public class PayoutManagementDataService {
 	}
 	
 	public List<String> addPayoutManagement(Boolean pickUp, Boolean pause,Boolean checkedSplit, PayoutManagementData payMana,SubstitutionOfHDManagementData subMana,
-				SubstitutionOfHDManagementData splitMana, Double occurredDays, Double subDays, Double remainDays, Double requiredDays,  int closureId) {
+				SubstitutionOfHDManagementData splitMana,  Double requiredDays,  int closureId) {
 		List<String> errors = new ArrayList<String>();
 		YearMonth processYearMonth = GeneralDate.today().yearMonth();
 		Optional<GeneralDate> closureDate = this.getClosureDate(closureId, processYearMonth);
@@ -112,17 +112,17 @@ public class PayoutManagementDataService {
 		if (pause) {
 				errors.addAll(this.checkDateClosing(subMana.getHolidayDate().getDayoffDate().get(), payMana.getPayoutDate().getDayoffDate().get(),
 						splitMana.getHolidayDate().getDayoffDate().get(), closureDate, closureId, checkedSplit));
-			if (payMana.getPayoutDate().equals(subMana.getHolidayDate())) {
+			if (subMana.getHolidayDate().getDayoffDate().get().equals(payMana.getPayoutDate().getDayoffDate().orElse(null))) {
 				errors.add("Msg_729_SubPay");
 			}
 			if (checkedSplit) {
-				if(subMana.getHolidayDate().equals(splitMana.getHolidayDate())) {
+				if(subMana.getHolidayDate().getDayoffDate().get().equals(splitMana.getHolidayDate().getDayoffDate().orElse(null))) {
 					errors.add("Msg_744");
 				}
 				if(this.checkDateClosing(splitMana.getHolidayDate().getDayoffDate().get(), closureDate, closureId)) {
 					errors.add("Msg_744");
 				}
-				if(payMana.getPayoutDate().equals(splitMana.getHolidayDate())) {
+				if(payMana.getPayoutDate().getDayoffDate().get().equals(splitMana.getHolidayDate().getDayoffDate().orElse(null))) {
 					errors.add("Msg_729");
 				}
 			}
@@ -130,7 +130,7 @@ public class PayoutManagementDataService {
 				errors.add("Msg_737_SubPay");
 			}
 		}
-		errors.addAll(checkHolidate(pickUp, pause, checkedSplit, subDays, requiredDays, occurredDays ));
+		errors.addAll(checkHolidate(pickUp, pause, checkedSplit, subMana.getRequiredDays().v(), splitMana.getRequiredDays().v(), payMana.getOccurredDays().v() ));
 		if (errors.isEmpty()) {
 			if (pickUp) {
 				payoutManagementDataRepository.create(payMana);
@@ -142,13 +142,14 @@ public class PayoutManagementDataService {
 				substitutionOfHDManaDataRepository.create(splitMana);
 			}
 			if (pause && pickUp) {
-				Double usedDay = subDays + subDays;
+				int targetSelectionAtr = 2;
+				Double usedDay = subMana.getRequiredDays().v() + subMana.getRequiredDays().v();
 				if (checkedSplit) {
-					usedDay = subDays;
-					PayoutSubofHDManagement paySplit = new PayoutSubofHDManagement(payMana.getPayoutId(), splitMana.getSubOfHDID(), BigDecimal.valueOf(usedDay), TargetSelectionAtr.MANUAL.value);
+					usedDay = subMana.getRequiredDays().v();
+					PayoutSubofHDManagement paySplit = new PayoutSubofHDManagement(payMana.getPayoutId(), splitMana.getSubOfHDID(), BigDecimal.valueOf(usedDay), targetSelectionAtr);
 					payoutSubofHDManaRepository.add(paySplit);
 				} else {
-					PayoutSubofHDManagement paySub = new PayoutSubofHDManagement(payMana.getPayoutId(), subMana.getSubOfHDID(), BigDecimal.valueOf(usedDay), TargetSelectionAtr.MANUAL.value);
+					PayoutSubofHDManagement paySub = new PayoutSubofHDManagement(payMana.getPayoutId(), subMana.getSubOfHDID(), BigDecimal.valueOf(usedDay), targetSelectionAtr);
 					payoutSubofHDManaRepository.add(paySub);
 				}
 			}

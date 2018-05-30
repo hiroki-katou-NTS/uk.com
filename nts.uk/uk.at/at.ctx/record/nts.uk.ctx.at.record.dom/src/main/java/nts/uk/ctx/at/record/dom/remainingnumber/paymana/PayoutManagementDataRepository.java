@@ -24,7 +24,7 @@ public interface PayoutManagementDataRepository {
 	
 	Optional<PayoutManagementData> findByID(String ID);
 	
-	Optional<PayoutManagementData> find(String sID, String cID,CompensatoryDayoffDate payoutDate );
+	Optional<PayoutManagementData> find(String sID, String cID,GeneralDate payoutDate );
 	
 	// ドメイン「振休管理データ」より紐付け対象となるデータを取得する
 	List<PayoutManagementData> getBySidDatePeriod(String sid, String subOfHDID, int digestionAtr);

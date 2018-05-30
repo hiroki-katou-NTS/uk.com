@@ -108,7 +108,7 @@ module nts.uk.at.view.kdm001.j.viewmodel {
          */
         public update():void {
             var self = this;
-            
+            nts.uk.ui.errors.clearAll();
             service.update(new UpdateModel(self.employeeId(),self.leaveId(),self.itemsSelected(),self.numberDayParam())).done(function(data) {
                 if (data.length > 0) {
                         let messageId = data[0];
