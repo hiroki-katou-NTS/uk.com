@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -17,6 +18,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  *
  */
 @Getter
+@NoArgsConstructor
 public class WorkingConditionWithDataPeriod {
 	//期間、期間に対応した労働条件項目
 	Map<DateHistoryItem, WorkingConditionItem> mappingItems;
@@ -27,9 +29,17 @@ public class WorkingConditionWithDataPeriod {
 		this.mappingItems = mappingItems;
 	}
 	
+	
+	
 	public Optional<Entry<DateHistoryItem, WorkingConditionItem>> getItemAtDate(GeneralDate date){
 		return this.mappingItems.entrySet().stream().filter(c -> {
-				   return c.getKey().contains(GeneralDate.today());
+				   return c.getKey().contains(date);
+			   }).findFirst();
+	}
+	
+	public Optional<Entry<DateHistoryItem, WorkingConditionItem>> getItemAtDateAndEmpId(GeneralDate date,String EmpId){
+		return this.mappingItems.entrySet().stream().filter(c -> {
+				   return c.getKey().contains(date) && c.getValue().getEmployeeId().equals(EmpId);
 			   }).findFirst();
 	}
 	
