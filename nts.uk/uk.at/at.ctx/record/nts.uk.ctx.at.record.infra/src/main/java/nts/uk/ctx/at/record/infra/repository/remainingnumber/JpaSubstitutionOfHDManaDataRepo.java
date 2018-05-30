@@ -9,7 +9,6 @@ import javax.ejb.Stateless;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 import nts.uk.ctx.at.record.infra.entity.remainingnumber.paymana.KrcmtSubOfHDManaData;
@@ -17,7 +16,7 @@ import nts.uk.ctx.at.record.infra.entity.remainingnumber.paymana.KrcmtSubOfHDMan
 @Stateless
 public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements SubstitutionOfHDManaDataRepository {
 	
-	private String QUERY_BY_SID_CID_HOLIDAYDATE = "SELECT p FROM KrcmtSubOfHDManaData p WHERE p.cID = :cid AND p.sID =:employeeId AND p.holidayDate = holidayDate";
+	private String QUERY_BY_SID_CID_HOLIDAYDATE = "SELECT p FROM KrcmtSubOfHDManaData p WHERE p.cID = :cid AND p.sID =:employeeId AND p.dayOff = :holidayDate";
 	
 	private String QUERY_BYSID = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND s.cID = :cid";
 
@@ -138,8 +137,9 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 	}
 
 	@Override
-	public Optional<SubstitutionOfHDManagementData> find(String sID, String cID, CompensatoryDayoffDate holidayDate) {
-		return this.queryProxy().find(QUERY_BY_SID_CID_HOLIDAYDATE, KrcmtSubOfHDManaData.class).map(i -> toDomain(i));
+	public Optional<SubstitutionOfHDManagementData> find(String cID, String sID, GeneralDate holidayDate) {
+		return this.queryProxy().query(QUERY_BY_SID_CID_HOLIDAYDATE, KrcmtSubOfHDManaData.class).setParameter("cid", cID)
+				.setParameter("employeeId", sID).setParameter("holidayDate", holidayDate).getSingle().map(i -> toDomain(i));
 	}
 
 
