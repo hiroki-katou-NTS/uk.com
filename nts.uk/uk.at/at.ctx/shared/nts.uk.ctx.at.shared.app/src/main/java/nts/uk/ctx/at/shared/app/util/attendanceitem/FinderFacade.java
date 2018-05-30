@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.app.util.attendanceitem;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
@@ -16,6 +17,10 @@ public abstract class FinderFacade {
 	}
 	
 	public <T extends ConvertibleAttendanceItem> List<T> find(List<String> employeeId, DatePeriod baseDate){
+		return Collections.emptyList();
+	}
+	
+	public <T extends ConvertibleAttendanceItem> List<T> find(Map<String, GeneralDate> param){
 		return Collections.emptyList();
 	}
 }

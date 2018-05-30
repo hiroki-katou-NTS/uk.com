@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.daily.optionalitemtime;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -11,6 +12,8 @@ public interface AnyItemValueOfDailyRepo {
 	public Optional<AnyItemValueOfDaily> find(String employeeId, GeneralDate baseDate);
 
 	public List<AnyItemValueOfDaily> finds(List<String> employeeId, DatePeriod baseDate);
+
+	public List<AnyItemValueOfDaily> finds(Map<String, GeneralDate> param);
 
 	public List<AnyItemValueOfDaily> find(String employeeId, List<GeneralDate> baseDate);
 	

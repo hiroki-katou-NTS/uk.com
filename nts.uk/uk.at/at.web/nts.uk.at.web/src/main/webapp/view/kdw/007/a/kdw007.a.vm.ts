@@ -1228,10 +1228,10 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             }
         }
 
-        openAtdItemConditionDialog() {
+        openAtdItemConditionDialog(mode) {
             let self = this;
-            let param = ko.mapping.toJS(this);
-            nts.uk.ui.windows.setShared("KDW007BParams", param, true);
+            let data = ko.mapping.toJS(this);
+            nts.uk.ui.windows.setShared("KDW007BParams", {'mode': mode, 'data': data}, true);
             nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/b/index.xhtml", { title: "計算式の設定" }).onClosed(() => {
                 let output = getShared("KDW007BResult");
                 if (output) {
@@ -1253,7 +1253,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
 
         clear() {
             let self = this;
-            self.setData(0, null);
+            self.setData(self.targetNO(), null);
         }
 
         setData(NO, param) {

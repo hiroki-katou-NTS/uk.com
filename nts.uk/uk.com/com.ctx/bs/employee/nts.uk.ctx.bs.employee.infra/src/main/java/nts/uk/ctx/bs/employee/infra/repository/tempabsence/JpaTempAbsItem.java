@@ -1,6 +1,9 @@
 package nts.uk.ctx.bs.employee.infra.repository.tempabsence;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
@@ -25,6 +28,9 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 	private final String GET_BY_SID_DATE = "SELECT hi FROM BsymtTempAbsHisItem hi"
 			+ " INNER JOIN BsymtTempAbsHistory h ON h.histId = hi.histId"
 			+ " WHERE h.sid = :sid AND h.startDate <= :standardDate AND h.endDate >= :standardDate";
+	
+	private final String GET_BY_HISTORYID_LIST = "SELECT hi FROM BsymtTempAbsHisItem hi"
+			+ " WHERE hi.histId IN :histIds";
 	
 	@Override
 	public Optional<TempAbsenceHisItem> getItemByHitoryID(String historyId) {
@@ -197,6 +203,16 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 		default:
 		}
 
+	}
+
+	@Override
+	public List<TempAbsenceHisItem> getItemByHitoryIdList(List<String> historyIds) {
+		if (historyIds.isEmpty()) {
+			return new ArrayList<>();
+		}
+		List<BsymtTempAbsHisItem> entities = this.queryProxy().query(GET_BY_HISTORYID_LIST, BsymtTempAbsHisItem.class)
+				.setParameter("histIds", historyIds).getList();
+		return entities.stream().map(x -> toDomain(x)).collect(Collectors.toList());
 	}
 
 }

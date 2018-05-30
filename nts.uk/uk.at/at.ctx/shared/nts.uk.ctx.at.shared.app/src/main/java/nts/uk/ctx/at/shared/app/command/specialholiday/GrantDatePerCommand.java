@@ -23,6 +23,8 @@ public class GrantDatePerCommand {
 	/*特別休暇名称*/
 	private String personalGrantDateName;
 
+	private int provision;
+	
 	/*一律基準日*/
 	private GeneralDate grantDate;
  
@@ -43,6 +45,6 @@ public class GrantDatePerCommand {
 					x.getGrantDateYear());
 		}).collect(Collectors.toList());
 		
-		return  GrantDatePer.createSimpleFromJavaType(companyId, specialHolidayCode, personalGrantDateCode, personalGrantDateName, grantDate, grantDateAtr, grantDatePerSet);
+		return  GrantDatePer.createSimpleFromJavaType(companyId, specialHolidayCode, personalGrantDateCode, personalGrantDateName, provision, grantDate, grantDateAtr, grantDatePerSet);
 	}
 }

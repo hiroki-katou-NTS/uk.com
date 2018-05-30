@@ -2,6 +2,7 @@ package nts.uk.ctx.pereg.infra.repository.person.itemcls;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -17,7 +18,13 @@ import nts.uk.ctx.pereg.infra.entity.layout.cls.PpemtLayoutItemClsPk;
 public class JpaItemClassification extends JpaRepository implements ILayoutPersonInfoClsRepository {
 
 	private static final String REMOVE_ALL_BY_LAYOUT_ID = "DELETE FROM PpemtLayoutItemCls c WHERE c.ppemtLayoutItemClsPk.layoutId = :layoutId";
-	private static final String GET_ALL_ITEM_CLASSIFICATION = "SELECT c FROM PpemtLayoutItemCls c WHERE c.ppemtLayoutItemClsPk.layoutId = :layoutId ORDER BY c.ppemtLayoutItemClsPk.dispOrder ASC";
+	
+	private static final String GET_ALL_ITEM_CLASSIFICATION = "SELECT c FROM PpemtLayoutItemCls c "
+			+ "WHERE c.ppemtLayoutItemClsPk.layoutId = :layoutId ORDER BY c.ppemtLayoutItemClsPk.dispOrder ASC";
+	
+	private static final String GET_ALL_ITEM_CLASS_LAYOUTID_LIST = "SELECT c FROM PpemtLayoutItemCls c "
+			+ "WHERE c.ppemtLayoutItemClsPk.layoutId IN :layoutIdList ORDER BY c.ppemtLayoutItemClsPk.dispOrder ASC";
+	
 	private static final String GET_ALL_ITEM_CLASSIFICATION_WITH_CTG_CD_BY_LAYOUT_ID = "SELECT c,ca.categoryCd,cm.categoryType"
 			+ " FROM PpemtLayoutItemCls c" + " LEFT JOIN PpemtPerInfoCtg ca"
 			+ " ON c.categoryId= ca.ppemtPerInfoCtgPK.perInfoCtgId"
@@ -47,6 +54,16 @@ public class JpaItemClassification extends JpaRepository implements ILayoutPerso
 		}
 
 		return resultList.stream().map(item -> toDomain(item)).collect(Collectors.toList());
+	}
+	
+	@Override
+	public Map<String, List<LayoutPersonInfoClassification>> getAllByLayoutIdList(List<String> layoutIdList) {
+		List<LayoutPersonInfoClassification> resultList = this.queryProxy()
+				.query(GET_ALL_ITEM_CLASS_LAYOUTID_LIST, PpemtLayoutItemCls.class)
+				.setParameter("layoutIdList", layoutIdList).getList().stream().map(ent -> toDomain(ent))
+				.collect(Collectors.toList());
+
+		return resultList.stream().collect(Collectors.groupingBy(LayoutPersonInfoClassification::getLayoutID));
 	}
 
 	@Override

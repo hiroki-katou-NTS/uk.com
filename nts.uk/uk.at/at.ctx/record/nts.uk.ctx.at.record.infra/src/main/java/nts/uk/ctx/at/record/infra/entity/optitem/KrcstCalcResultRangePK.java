@@ -29,7 +29,7 @@ public class KrcstCalcResultRangePK implements Serializable {
 
 	/** The optional item no. */
 	@Column(name = "OPTIONAL_ITEM_NO")
-	private String optionalItemNo;
+	private Integer optionalItemNo;
 
 	/**
 	 * Instantiates a new krcst calc result range PK.
@@ -44,7 +44,7 @@ public class KrcstCalcResultRangePK implements Serializable {
 	 * @param cid the cid
 	 * @param optionalItemNo the optional item no
 	 */
-	public KrcstCalcResultRangePK(String cid, String optionalItemNo) {
+	public KrcstCalcResultRangePK(String cid, Integer optionalItemNo) {
 		this.cid = cid;
 		this.optionalItemNo = optionalItemNo;
 	}

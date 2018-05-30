@@ -32,6 +32,21 @@
 	cursor: pointer;
 }
 
+#ccg001-part-g {
+	width: 440px;
+	margin-right: 5px;
+	padding-right: 5px;
+	overflow: auto;
+}
+
+#ccg001-part-g .form-label{
+	width: 120px;
+}
+
+.ccg001-inp {
+	width: 216px;
+}
+
 .ccg001-btn {
 	background-color: #2ECC71;
 	color: white;
@@ -119,15 +134,23 @@
 .ccg001-control-group {
 	margin-left: 5px;
 }
+.ccg001-date-range {
+	margin-left: 5px;
+	margin-right: 5px;
+}
 .ccg001-label {
 	width: 85px;
 }
-.ccg-tabpanel #tab-1 {
+.ccg-tabpanel #tab-1{
 	width: 400px;
 }
 
-.ccg-tabpanel #tab-1, .ccg-tabpanel #tab-2 {
-	background-color: white;
+.ccg-tabpanel #tab-3{
+	width: 520px;
+}
+
+.ccg-tabpanel > div {
+	background-color: white !important;
 }
 
 #component-ccg001 {

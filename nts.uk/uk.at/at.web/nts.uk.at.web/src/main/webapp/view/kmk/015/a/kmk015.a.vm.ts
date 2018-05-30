@@ -67,6 +67,9 @@ module nts.uk.at.view.kmk015.a {
                         if (item.historyId == code) { self.timeHistory(item.time); self.numberDay(item.maxDay)}
                     });
                 });
+                
+                //set always subscribe
+                self.selectedCodeHistory.extend({ notify: 'always' });
             }
 
             /**

@@ -9,6 +9,7 @@ import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPer
 /**
  * 
  * @author nampt
+ * 日次表示項目シート一覧
  *
  */
 @Getter
@@ -18,12 +19,24 @@ public class AuthorityFomatDaily extends AggregateRoot {
 
 	private DailyPerformanceFormatCode dailyPerformanceFormatCode;
 
+	/**
+	 * 表示する項目
+	 */
 	private int attendanceItemId;
 
+	/**
+	 * シートNO
+	 */
 	private BigDecimal sheetNo;
 
+	/**
+	 * 並び順
+	 */
 	private int displayOrder;
 
+	/**
+	 * 表の列幅
+	 */
 	private BigDecimal columnWidth;
 
 	public AuthorityFomatDaily(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode,

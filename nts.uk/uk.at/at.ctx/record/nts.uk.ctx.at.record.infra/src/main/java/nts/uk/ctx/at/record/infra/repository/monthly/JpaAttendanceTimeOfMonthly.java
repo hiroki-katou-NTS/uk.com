@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.infra.repository.monthly;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -32,6 +33,7 @@ import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.vacationusetime.KrcdtMonVactUseTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.excessoutside.KrcdtMonExcessOutside;
 import nts.uk.ctx.at.record.infra.entity.monthly.excessoutside.KrcdtMonExcoutTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.totalcount.KrcdtMonTotalTimes;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.KrcdtMonVerticalTotal;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workclock.KrcdtMonWorkClock;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonAggrAbsnDays;
@@ -71,7 +73,13 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 			+ "AND a.PK.yearMonth = :yearMonth "
 			+ "AND a.PK.closureId = :closureId "
 			+ "AND a.PK.closureDay = :closureDay "
-			+ "AND a.PK.isLastDay = :isLastDay ";
+			+ "AND a.PK.isLastDay = :isLastDay "
+			+ "ORDER BY a.PK.employeeId ";
+
+	private static final String FIND_BY_SIDS_AND_YEARMONTHS = "SELECT a FROM KrcdtMonAttendanceTime a "
+			+ "WHERE a.PK.employeeId IN :employeeIds "
+			+ "AND a.PK.yearMonth IN :yearMonths "
+			+ "ORDER BY a.PK.employeeId, a.PK.yearMonth, a.startYmd ";
 	
 	private static final String FIND_BY_PERIOD = "SELECT a FROM KrcdtMonAttendanceTime a "
 			+ "WHERE a.PK.employeeId = :employeeId "
@@ -120,7 +128,7 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 				.getList(c -> c.toDomain());
 	}
 	
-	/** 検索　（社員リスト） */
+	/** 検索　（社員IDリスト） */
 	@Override
 	public List<AttendanceTimeOfMonthly> findByEmployees(List<String> employeeIds, YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate) {
@@ -138,6 +146,22 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 		return results;
 	}
 
+	/** 検索　（社員IDリストと年月リスト） */
+	@Override
+	public List<AttendanceTimeOfMonthly> findBySidsAndYearMonths(List<String> employeeIds, List<YearMonth> yearMonths) {
+		
+		val yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toList());
+		
+		List<AttendanceTimeOfMonthly> results = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_YEARMONTHS, KrcdtMonAttendanceTime.class)
+					.setParameter("employeeIds", splitData)
+					.setParameter("yearMonths", yearMonthValues)
+					.getList(c -> c.toDomain()));
+		});
+		return results;
+	}
+	
 	/** 検索　（基準日） */
 	@Override
 	public List<AttendanceTimeOfMonthly> findByDate(String employeeId, GeneralDate criteriaDate) {
@@ -478,6 +502,25 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 			entity.krcdtMonWorkClock.fromDomainForPersist(domainKey, workclock);
 		}
 		else entity.krcdtMonWorkClock.fromDomainForUpdate(workclock);
+		
+		// 回数集計
+		val totalCountMap = domain.getTotalCount().getTotalCountList();
+		if (entity.krcdtMonTotalTimes == null) entity.krcdtMonTotalTimes = new ArrayList<>();
+		val entityTotalTimesList = entity.krcdtMonTotalTimes;
+		entityTotalTimesList.removeIf(a -> {return !totalCountMap.containsKey(a.PK.totalTimesNo);} );
+		for (val totalCount : totalCountMap.values()){
+			KrcdtMonTotalTimes entityTotalTimes = new KrcdtMonTotalTimes();
+			val entityTotalTimesOpt = entityTotalTimesList.stream()
+					.filter(c -> c.PK.totalTimesNo == totalCount.getTotalCountNo()).findFirst();
+			if (entityTotalTimesOpt.isPresent()){
+				entityTotalTimes = entityTotalTimesOpt.get();
+				entityTotalTimes.fromDomainForUpdate(totalCount);
+			}
+			else {
+				entityTotalTimes.fromDomainForPersist(domainKey, totalCount);
+				entityTotalTimesList.add(entityTotalTimes);
+			}
+		}
 		
 		// 登録が必要な時、登録を実行
 		if (isNeedPersist) this.getEntityManager().persist(entity);

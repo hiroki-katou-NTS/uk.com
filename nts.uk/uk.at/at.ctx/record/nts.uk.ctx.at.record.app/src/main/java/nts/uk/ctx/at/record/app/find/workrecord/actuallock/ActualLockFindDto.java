@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.find.workrecord.actuallock;
 
+import lombok.Builder;
 import lombok.Data;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockSetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
  * Instantiates a new actual lock find dto.
  */
 @Data
+@Builder
 public class ActualLockFindDto implements ActualLockSetMemento {
 
 	/** The closure id. */
@@ -23,6 +25,27 @@ public class ActualLockFindDto implements ActualLockSetMemento {
 
 	/** The monthly lock state. */
 	private int monthlyLockState;
+	
+	/**
+	 * Instantiates a new actual lock find dto.
+	 */
+	public ActualLockFindDto() {
+		super();
+	}
+	
+	/**
+	 * Instantiates a new actual lock find dto.
+	 *
+	 * @param closureId the closure id
+	 * @param dailyLockState the daily lock state
+	 * @param monthlyLockState the monthly lock state
+	 */
+	public ActualLockFindDto(int closureId, int dailyLockState, int monthlyLockState) {
+		super();
+		this.closureId = closureId;
+		this.dailyLockState = dailyLockState;
+		this.monthlyLockState = monthlyLockState;
+	}
 
 	/*
 	 * (non-Javadoc)

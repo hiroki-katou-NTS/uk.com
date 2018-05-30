@@ -1515,10 +1515,10 @@ module cmm045.a.viewmodel {
             service.approvalListApp(lstApp).done(function() {
                 nts.uk.ui.dialog.info({ messageId: "Msg_220" });
                 self.filter();
-            }).fail(function(res) {
-                nts.uk.ui.dialog.alertError({ messageId: res.messageId });
-            }).always(() => {
                 block.clear();
+            }).fail(function(res) {
+                block.clear();
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId });
             });
         }
         /**

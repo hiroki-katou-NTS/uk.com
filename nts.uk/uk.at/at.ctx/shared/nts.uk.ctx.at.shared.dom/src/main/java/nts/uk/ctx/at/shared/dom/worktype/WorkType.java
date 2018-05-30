@@ -196,7 +196,8 @@ public class WorkType extends AggregateRoot {
 	
 	
 	public AttendanceHolidayAttr getAttendanceHolidayAttr() {
-		return this.dailyWork.getAttendanceHolidayAttr();
+//		return this.dailyWork.getAttendanceHolidayAttr();
+		return this.dailyWork.decisionNeedPredTime();
 	}
 	
 	/**

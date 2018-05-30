@@ -1,27 +1,45 @@
-#contents-left, #contents-right {
-	padding: 20px;
+table, th {
+    border-top: 0.5px solid grey;
+    border-bottom: 0.5px solid grey;
+    border-right: 0.5px solid grey;
+    border-left: 0.5px solid grey;
 }
-
-.control-group {
-	margin-top: 30px;
+th, td {
+    padding: 5px;
 }
-
-.labelfirst {
-	margin-left: 10px;
-	margin-top: 10px;
+td {
+    border-top: 0.5px solid grey;
+    border-left: 0.5px solid grey;
 }
-
-#dataAddress_virtualContainer {
-	margin-left: 4px;
+.div-table {
+    display: block;
+    
+    height: 350px;
+    margin: 20px;
 }
-
-#btn_chooseZipCode {
-	margin-top: -80px !important;
-	width: 120px;
-	margin-left: -50px !important;
+thead, tbody {
+	width: 775px;
+	display: block;
 }
-
-#btn_close {
-	margin-top: -35px !important;
-	margin-left: 50px;
+thead {
+	height: 100px;
+}
+thead label {
+	font-weight: bold;
+}
+tbody {
+	height: 410px;
+	overflow-y: scroll;
+    overflow-x: hidden;
+}
+.selected { background-color: #CEE6FF; }
+td.border-custom { 
+	border-top: none;
+ }
+.caret-bottom.outline {
+    margin-left: 120px;
+    font-size: 30px;
+}
+.nts-switch-button {
+	width: 100px;
 }

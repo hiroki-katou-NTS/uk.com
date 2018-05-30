@@ -33,7 +33,7 @@ public class UpdateApplicationDenyHandler extends CommandHandlerWithResult<Input
 		
 		//共通アルゴリズム「詳細画面否認前の処理」を実行する(thực hiện xử lý 「詳細画面否認前の処理)
 		// 4.1
-		beforeRegisterRepo.processBeforeDetailScreenRegistration(companyID, command.getApplicationID(),
+		beforeRegisterRepo.processBeforeDetailScreenRegistration(companyID, command.getApplicantSID(),
 				GeneralDate.today(), 1,command.getApplicationID(), EnumAdaptor.valueOf(command.getPrePostAtr(), PrePostAtr.class), command.getVersion());
 		
 		//9.2 
