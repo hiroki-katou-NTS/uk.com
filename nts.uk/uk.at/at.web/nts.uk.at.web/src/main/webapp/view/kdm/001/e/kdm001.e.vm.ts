@@ -4,6 +4,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
     import model     = kdm001.share.model;
     import dialog    = nts.uk.ui.dialog;
     import block     = nts.uk.ui.block;
+    import getText = nts.uk.resource.getText;
     export class ScreenModel {
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         columns: KnockoutObservableArray<any>;
@@ -15,8 +16,8 @@ module nts.uk.at.view.kdm001.e.viewmodel {
         employeeName: KnockoutObservable<string> = ko.observable('');
         dateHoliday: KnockoutObservable<any> = ko.observable('');
         numberDay: KnockoutObservable<any> = ko.observable('');
-        residualDay: KnockoutObservable<any> = ko.observable('');
-        residualDayDispay: KnockoutObservable<any> = ko.observable('');
+        residualDay: KnockoutObservable<any> = ko.observable(0);
+        residualDayDispay: KnockoutObservable<any> = ko.observable('0' + " " + getText('KDM001_27'));
         info: any = getShared("KDM001_EFGH_PARAMS");
         constructor() {
             let self = this;
@@ -27,7 +28,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
                 self.employeeCode(self.info.selectedEmployee.employeeCode);
                 self.employeeName(self.info.selectedEmployee.employeeName);
                 self.dateHoliday(self.info.rowValue.dayoffDateSub);
-                self.numberDay(self.info.rowValue.requiredDays+' 日');
+                self.numberDay(self.info.rowValue.requiredDays + " " + getText('KDM001_27'));
             }
             self.columns = ko.observableArray([
                 { headerText: 'コード', key: 'subOfHDID', width: 100, hidden: true },
@@ -54,17 +55,22 @@ module nts.uk.at.view.kdm001.e.viewmodel {
         }
         private caculRemainNumber(): void{
             let sumNum = 0, self = this;
-                _.each(self.currentList(), function (x) {
-                    if (self.dateHoliday() === x.dayoffDate) {
-                        $('#multi-list').ntsError('set', { messageId: "Msg_766" });
-                    }
-                    
+            _.each(self.currentList(), function (x) {
+                if (self.dateHoliday() === x.dayoffDate) {
+                    $('#multi-list').ntsError('set', { messageId: "Msg_766" });
+                } else {                
                     sumNum = sumNum + x.requiredDays;
-                    
-                });
-                let day = parseFloat(self.numberDay());
-                self.residualDay(day - sumNum);
-                self.residualDayDispay((day - sumNum) + ' 日');
+                    let day = parseFloat(self.numberDay());
+                    self.residualDay(day - sumNum);
+                    let residualValue = (day - sumNum) > 0 ? (day - sumNum).toFixed(1) : (day - sumNum);
+                    self.residualDayDispay(residualValue  + " " + getText('KDM001_27'));
+                    if (self.residualDay() < 0) {
+                        $("#E7_2").css("color", "red");
+                    } else {
+                        $("#E7_2").css("color", "black");
+                    }
+                }
+            });
         }
         
         public initScreen(): void {
@@ -82,6 +88,8 @@ module nts.uk.at.view.kdm001.e.viewmodel {
                           self.currentCodeList.push(item.subOfHDID);
                         });
                     }
+                } else {
+                    dialog.info({messageId: 'Msg_1068'})    
                 }
                 block.clear();
             }).fail((res)=>{

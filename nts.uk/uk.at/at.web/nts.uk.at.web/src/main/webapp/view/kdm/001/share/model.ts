@@ -38,9 +38,9 @@ module nts.uk.at.view.kdm001.share.model {
     
     export function formatterDay(value) {
             if (value) {
-                return value >= 0 ? "&nbsp;" + value + '日' : value + '日';
+                return value == "0" ? value + "&nbsp;" + getText('KDM001_27') :  parseFloat(value).toFixed(1)+ "&nbsp;" + getText('KDM001_27');
             } else {
-                return "&nbsp;0日";
+                return "&nbsp;0"+ "&nbsp;" + getText('KDM001_27');
             }
         
     }
