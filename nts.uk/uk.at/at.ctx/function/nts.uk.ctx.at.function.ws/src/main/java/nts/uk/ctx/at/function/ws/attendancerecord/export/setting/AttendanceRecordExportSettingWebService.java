@@ -30,11 +30,7 @@ public class AttendanceRecordExportSettingWebService {
 
 	/** The attendance ec exp set add command handler. */
 //	@Inject
-//	AttendanceRecordExportSettingAddCommandHandler attendanceEcExpSetAddCommandHandler;
-
-	/** The attendance ec exp set delete command handler. */
-	@Inject
-	AttendanceRecordExportSettingDeleteCommandHandler attendanceEcExpSetDeleteCommandHandler;
+//	AttendanceRecordExportSettingAddCommandHandler attendanceEcExpSetAddCommandHandler
 
 	@Inject
 	NewAttendanceRecordExportSettingCommandHandler addHandler;

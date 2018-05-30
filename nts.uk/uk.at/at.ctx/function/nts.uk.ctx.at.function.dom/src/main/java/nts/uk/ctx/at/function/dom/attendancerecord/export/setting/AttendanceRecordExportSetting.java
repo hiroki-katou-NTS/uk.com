@@ -85,10 +85,10 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 	public void saveToMemento(AttendanceRecordExportSettingSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setCode(this.code);
-		memento.setDailyExportItem(this.dailyExportItem);
-		memento.setMonthlyExportItem(this.monthlyExportItem);
+//		memento.setDailyExportItem(this.dailyExportItem);
+//		memento.setMonthlyExportItem(this.monthlyExportItem);
 		memento.setName(this.name);
-		memento.setSealStamp(this.companyId, this.code, this.sealStamp);
+//		memento.setSealStamp(this.sealStamp);
 		memento.setSealUseAtr(this.sealUseAtr);
 		if (this.nameUseAtr != null)
 			memento.setNameUseAtr(this.nameUseAtr.value);

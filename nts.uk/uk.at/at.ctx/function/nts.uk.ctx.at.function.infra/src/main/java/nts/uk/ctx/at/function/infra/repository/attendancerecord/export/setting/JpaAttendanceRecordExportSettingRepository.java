@@ -147,22 +147,32 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository
 	 */
 	@Override
 	public void addAttendanceRecExpSet(AttendanceRecordExportSetting attendanceRecordExpSet) {
-		KfnstAttndRecOutSetPK pk = new KfnstAttndRecOutSetPK(attendanceRecordExpSet.getCompanyId(), attendanceRecordExpSet.getCode().v());
-		Optional<KfnstAttndRecOutSet> entityFromDb = this.queryProxy().find(pk, KfnstAttndRecOutSet.class);
-		if(entityFromDb.isPresent()) {
-			this.commandProxy().update(toEntity(attendanceRecordExpSet));
-		}else {
-			// Insert Attendance
-			this.commandProxy().insert(toEntity(attendanceRecordExpSet));
-		}
-		
-		
-		// Insert Seal Stamp List
-		this.commandProxy().insertAll(attendanceRecordExpSet.getSealStamp().stream().map(
-				e -> toSealStampEntity(attendanceRecordExpSet.getCompanyId(), attendanceRecordExpSet.getCode().v(), e))
-				.collect(Collectors.toList()));
-		this.getEntityManager().flush();
+		addKfnstAttndRecOutSet(attendanceRecordExpSet);
+		addKfnstSealcolumns(attendanceRecordExpSet);
 	}
+
+    private void addKfnstSealcolumns(AttendanceRecordExportSetting attendanceRecordExpSet) {
+        String cid = attendanceRecordExpSet.getCompanyId();
+        ExportSettingCode settingCode = attendanceRecordExpSet.getCode();
+        //remove Seal stamps
+        deleteSealStamp(cid, settingCode);
+
+        // Insert Seal Stamp List
+        this.commandProxy().insertAll(attendanceRecordExpSet.getSealStamp().stream().map(e ->
+                toSealStampEntity(cid, settingCode.v(), e)).collect(Collectors.toList()));
+        this.getEntityManager().flush();
+    }
+
+    private void addKfnstAttndRecOutSet(AttendanceRecordExportSetting attendanceRecordExpSet){
+        KfnstAttndRecOutSetPK pk = new KfnstAttndRecOutSetPK(attendanceRecordExpSet.getCompanyId(), attendanceRecordExpSet.getCode().v());
+        Optional<KfnstAttndRecOutSet> entityFromDb = this.queryProxy().find(pk, KfnstAttndRecOutSet.class);
+        if(entityFromDb.isPresent()) {
+            this.commandProxy().update(toEntity(attendanceRecordExpSet));
+        }else {
+            // Insert Attendance
+            this.commandProxy().insert(toEntity(attendanceRecordExpSet));
+        }
+    }
 
 	/*
 	 * (non-Javadoc)
@@ -173,9 +183,9 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository
 	 * AttendanceRecordExportSetting)
 	 */
 	@Override
-	public void deleteAttendanceRecExpSet(AttendanceRecordExportSetting attendanceRecordExpSet) {
-		this.commandProxy().remove(toEntity(attendanceRecordExpSet));
-
+	public void deleteAttendanceRecExpSet(AttendanceRecordExportSetting domain) {
+		this.commandProxy().remove(toEntity(domain));
+		deleteSealStamp(domain.getCompanyId(),domain.getCode());
 	}
 
 	/*
@@ -199,6 +209,8 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository
 		List<Predicate> predicates = new ArrayList<>();
 		predicates.add(
 				criteriaBuilder.equal(root.get(KfnstSealColumn_.cid), companyId));
+		predicates.add(
+				criteriaBuilder.equal(root.get(KfnstSealColumn_.exportCd), code));
 
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));
@@ -208,7 +220,7 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository
 
 		// return
 		return sealStampEntity.isEmpty() ? new ArrayList<String>()
-				: sealStampEntity.stream().map(entity -> entity.getSealStampName()).collect(Collectors.toList());
+				: sealStampEntity.stream().map(KfnstSealColumn::getSealStampName).collect(Collectors.toList());
 	}
 
 	/**
@@ -242,9 +254,10 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository
 		KfnstAttndRecOutSet entity = this.queryProxy().find(PK, KfnstAttndRecOutSet.class)
 				.orElse(new KfnstAttndRecOutSet(PK,null,new BigDecimal(0),new BigDecimal(1)));
 
-		domain.saveToMemento(new JpaAttendanceRecordExportSettingSetMemento(entity, new ArrayList<>()));
+        JpaAttendanceRecordExportSettingSetMemento setMemento = new JpaAttendanceRecordExportSettingSetMemento(entity);
+		domain.saveToMemento(setMemento);
 
-		return entity;
+		return setMemento.getEntity();
 	}
 
 	/**
