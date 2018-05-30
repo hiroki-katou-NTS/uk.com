@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.sys.assist.dom.deletedata;
+package nts.uk.ctx.sys.assist.app.command.deletedata.manualsetting;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -27,6 +27,26 @@ import nts.arc.layer.infra.file.temp.ApplicationTemporaryFilesContainer;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.category.Category;
 import nts.uk.ctx.sys.assist.dom.category.CategoryRepository;
+import nts.uk.ctx.sys.assist.dom.deletedata.CategoryDeletion;
+import nts.uk.ctx.sys.assist.dom.deletedata.CategoryDeletionRepository;
+import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionCsvRepository;
+import nts.uk.ctx.sys.assist.dom.deletedata.DelType;
+import nts.uk.ctx.sys.assist.dom.deletedata.EmployeeDeletion;
+import nts.uk.ctx.sys.assist.dom.deletedata.EmployeesDeletionRepository;
+import nts.uk.ctx.sys.assist.dom.deletedata.FileName;
+import nts.uk.ctx.sys.assist.dom.deletedata.ManagementDeletion;
+import nts.uk.ctx.sys.assist.dom.deletedata.ManagementDeletionRepository;
+import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletion;
+import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletionRepository;
+import nts.uk.ctx.sys.assist.dom.deletedata.OperatingCondition;
+import nts.uk.ctx.sys.assist.dom.deletedata.Result;
+import nts.uk.ctx.sys.assist.dom.deletedata.ResultDeletion;
+import nts.uk.ctx.sys.assist.dom.deletedata.ResultDeletionRepository;
+import nts.uk.ctx.sys.assist.dom.deletedata.ResultLogDeletion;
+import nts.uk.ctx.sys.assist.dom.deletedata.ResultLogDeletionRepository;
+import nts.uk.ctx.sys.assist.dom.deletedata.ResultState;
+import nts.uk.ctx.sys.assist.dom.deletedata.SaveStatus;
+import nts.uk.ctx.sys.assist.dom.deletedata.TableDeletionDataCsv;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.csv.CSVFileData;
 import nts.uk.shr.infra.file.csv.CSVReportGenerator;
@@ -163,6 +183,8 @@ public class ManualSetDeletionService extends ExportService<Object>{
 			saveEndResultDel(domain, resultDel);
 			//ドメインモデル「データ削除動作管理」を更新する
 			saveEndManagementDel(delId, resultDelState);
+		} else {
+    		throw new RuntimeException("Don't get setting of deletion.");
 		}
 	}
 	

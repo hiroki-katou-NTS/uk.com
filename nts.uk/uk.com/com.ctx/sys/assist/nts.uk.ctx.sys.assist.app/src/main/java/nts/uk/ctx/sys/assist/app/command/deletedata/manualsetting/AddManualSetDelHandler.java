@@ -18,7 +18,6 @@ import nts.uk.ctx.sys.assist.dom.deletedata.EmployeeDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.EmployeesDeletionRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletionRepository;
-import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletionService;
 import nts.uk.ctx.sys.assist.dom.deletedata.SyEmployeeAdapter;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -79,10 +78,13 @@ public class AddManualSetDelHandler extends CommandHandlerWithResult<ManualSetDe
 		}
 		
 		repoCate.addAll(manualSetCmd.getCategories(delId));
-		
 		repo.addManualSetting(domain);
 		
-		manualSetDeletionService.start(delId);
+		try {
+			manualSetDeletionService.start(delId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		return delId;
 	}
