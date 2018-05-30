@@ -56,14 +56,14 @@ module nts.uk.at.view.kdm001.e.viewmodel {
             let sumNum = 0, self = this;
                 _.each(self.currentList(), function (x) {
                     if (self.dateHoliday() === x.dayoffDate) {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_729" });
+                        $('#multi-list').ntsError('set', { messageId: "Msg_766" });
                     }
                     
                     sumNum = sumNum + x.requiredDays;
                     
                 });
                 let day = parseFloat(self.numberDay());
-                self.residualDay((day - sumNum));
+                self.residualDay(day - sumNum);
                 self.residualDayDispay((day - sumNum) + ' 日');
         }
         
@@ -92,12 +92,13 @@ module nts.uk.at.view.kdm001.e.viewmodel {
         
         public create(): void {
             let self = this;
-           block.invisible();
+            
             let command = new PayoutSubofHDManagementCommand(self.info.selectedEmployee.employeeId, self.info.rowValue.id,self.residualDay(), self.currentList());
-                if (!self.validate()){
-                    block.clear();
-                    return;
-                }
+            if (!self.validate()){
+                return;
+            }
+            if (!nts.uk.ui.errors.hasError()) {
+                block.invisible();
                 service.insertSubOfHDMan(command).done(()=>{
                     dialog.info({ messageId: "Msg_15" }).then(() => {
                         setShared('KDM001_A_PARAMS', {isSuccess: true});
@@ -108,6 +109,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
                     $('#multi-list').ntsError('set', { messageId: res.messageId });
                     block.clear();
                 })
+            }
         }
         
         private validate(): boolean{

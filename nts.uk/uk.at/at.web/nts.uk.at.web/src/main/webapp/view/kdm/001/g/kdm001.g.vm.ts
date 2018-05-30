@@ -61,6 +61,7 @@ module nts.uk.at.view.kdm001.g.viewmodel {
                 self.expiredDate(info.rowValue.expiredDate);
                 self.unUsedDays(info.rowValue.unUsedDays);
                 self.unknownDate(info.rowValue.unknownDatePayout);
+//                self.checkBox();
             }
             block.clear();
         }
@@ -69,6 +70,7 @@ module nts.uk.at.view.kdm001.g.viewmodel {
         public updateData() {
             nts.uk.ui.errors.clearAll();
             if (!nts.uk.ui.errors.hasError()) {
+                 block.invisible();
                 let self = this;
                 let data = {
                     closureId: self.closureId(),
@@ -76,7 +78,6 @@ module nts.uk.at.view.kdm001.g.viewmodel {
                     employeeId: self.employeeId(),
                     unknownDate: self.unknownDate(),
                     dayoffDate: self.dayoffDate(),
-//                    expiredDate: moment.utc(self.expiredDate(), 'YYYY/MM/DD').toISOString(),
                     expiredDate: self.expiredDate(), 
                     lawAtr: parseInt(self.lawAtr()),
                     occurredDays: parseInt(self.occurredDays()),
@@ -144,8 +145,6 @@ module nts.uk.at.view.kdm001.g.viewmodel {
             }).then(() => {
                 block.clear();
             });
-
-
         }
 
 

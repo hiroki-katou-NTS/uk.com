@@ -80,7 +80,7 @@ public class PayoutManagementDataService {
 		return false;
 	}
 
-	public boolean checkInfoSubPayMana(SubstitutionOfHDManagementData subDomain) {
+	private boolean checkInfoSubPayMana(SubstitutionOfHDManagementData subDomain) {
 		Optional<SubstitutionOfHDManagementData> subPayout = substitutionOfHDManaDataRepository.find(subDomain.getCid(),
 				subDomain.getSID(), subDomain.getHolidayDate());
 		if (subPayout.isPresent()) {
@@ -95,34 +95,37 @@ public class PayoutManagementDataService {
 		YearMonth processYearMonth = GeneralDate.today().yearMonth();
 		Optional<GeneralDate> closureDate = this.getClosureDate(closureId, processYearMonth);
 		if (pickUp) {
-			if (this.checkDateClosing(payMana.getPayoutDate().getDayoffDate().get(), closureDate, closureId))
+			if (this.checkDateClosing(payMana.getPayoutDate().getDayoffDate().get(), closureDate, closureId)) {
 				errors.add("Msg_740");
+			}
 			if (this.checkInfoPayMana(payMana)) {
 				errors.add("Msg_737_PayMana");
 			}
-			if (pause) {
-				if (this.checkDateClosing(subMana.getHolidayDate().getDayoffDate().get(), closureDate, closureId))
-					errors.add("Msg_744");
-				if (payMana.getPayoutDate().getDayoffDate().equals(subMana.getHolidayDate())) {
-					errors.add("Msg_729_SubPay");
-				}
-				if (this.checkInfoSubPayMana(subMana)) {
-					errors.add("Msg_737_SubPay");
-				}
-			}
 		} else {
-			if (pause) {
-				if (this.checkDateClosing(subMana.getHolidayDate().getDayoffDate().get(), closureDate, closureId))
+			if (!pause) {
+				errors.add("Msg_725");
+				return errors;
+			}
+		}
+		if (pause) {
+				errors.addAll(this.checkDateClosing(subMana.getHolidayDate().getDayoffDate().get(), payMana.getPayoutDate().getDayoffDate().get(),
+						splitMana.getHolidayDate().getDayoffDate().get(), closureDate, closureId, checkedSplit));
+			if (payMana.getPayoutDate().equals(subMana.getHolidayDate())) {
+				errors.add("Msg_729_SubPay");
+			}
+			if (checkedSplit) {
+				if(subMana.getHolidayDate().equals(splitMana.getHolidayDate())) {
 					errors.add("Msg_744");
-				if (payMana.getPayoutDate().getDayoffDate().equals(subMana.getHolidayDate().getDayoffDate().get())) {
-					errors.add("Msg_729_SubPay");
 				}
-				if (this.checkInfoSubPayMana(subMana)) {
-					errors.add("Msg_737_SubPay");
+				if(this.checkDateClosing(splitMana.getHolidayDate().getDayoffDate().get(), closureDate, closureId)) {
+					errors.add("Msg_744");
+				}
+				if(payMana.getPayoutDate().equals(splitMana.getHolidayDate())) {
+					errors.add("Msg_729");
 				}
 			}
-			else {
-				errors.add("Msg_725_SubPay");
+			if (this.checkInfoSubPayMana(subMana)) {
+				errors.add("Msg_737_SubPay");
 			}
 		}
 		errors.addAll(checkHolidate(pickUp, pause, checkedSplit, subDays, requiredDays, occurredDays ));
@@ -160,7 +163,7 @@ public class PayoutManagementDataService {
 		return Optional.of(closurePeriod.start());
 	}
 	
-	public boolean checkDateClosing(GeneralDate date, Optional<GeneralDate> closureDate, int closureId) {
+	private boolean checkDateClosing(GeneralDate date, Optional<GeneralDate> closureDate, int closureId) {
 		YearMonth processYearMonth = GeneralDate.today().yearMonth();
 		if (!closureDate.isPresent()) {
 			
@@ -170,6 +173,28 @@ public class PayoutManagementDataService {
 			return true;
 		}
 		return false;
+	}
+	
+	private List<String> checkDateClosing(GeneralDate restDate,GeneralDate workDate,GeneralDate splitDate, Optional<GeneralDate> closureDate, int closureId,Boolean split) {
+		List<String> errors = new ArrayList<String>();
+		if(checkDateClosing(restDate,closureDate,closureId)) {
+			errors.add("Msg_744");
+		}
+		if(restDate.equals(workDate)) {
+			errors.add("Msg_729_SubMana");
+		}
+		if(split) {
+			if(restDate.equals(splitDate)) {
+				errors.add("Msg_744_Split");
+			}
+			if(checkDateClosing(splitDate,closureDate,closureId)){
+				errors.add("Msg_744_Split");
+			}
+			if(splitDate.equals(workDate)) {
+				errors.add("Msg_729_Split");
+			}
+		}
+		return errors;
 	}
 
 	/**

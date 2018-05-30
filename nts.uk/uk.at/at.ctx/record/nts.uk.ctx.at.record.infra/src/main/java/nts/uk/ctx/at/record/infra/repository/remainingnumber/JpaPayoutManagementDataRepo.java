@@ -137,7 +137,9 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 	}
 
 	public Optional<PayoutManagementData> find(String sID, String cID, CompensatoryDayoffDate dayoffDate) {
-		return this.queryProxy().find(QUERY_BY_SID_CID_DAYOFF, KrcmtPayoutManaData.class).map(i -> toDomain(i));
+		return this.queryProxy().
+				query(QUERY_BY_SID_CID_DAYOFF, KrcmtPayoutManaData.class).setParameter("sid", sID)
+				.setParameter("cid", cID).setParameter("dayoffdate", dayoffDate).getSingle().map(i -> toDomain(i));
 	}
 	
 	public List<PayoutManagementData> getBySidPeriodAndInSub(String sid, GeneralDate startDate, GeneralDate endDate) {

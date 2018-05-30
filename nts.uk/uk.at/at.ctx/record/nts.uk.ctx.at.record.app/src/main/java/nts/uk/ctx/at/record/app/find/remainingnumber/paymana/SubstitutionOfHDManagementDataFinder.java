@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -26,7 +27,7 @@ public class SubstitutionOfHDManagementDataFinder {
 	public List<SubstitutionOfHDManagementDataDto> getBySidDatePeriod(String sid, String payoutID){
 		List<String> listSubID = payoutSubofHDManaRepository.getByPayoutId(payoutID).stream().map(i -> i.getSubOfHDID())
 				.collect(Collectors.toList());
-		return substitutionOfHDManaDataRepository.getBySidDatePeriod(sid,payoutID, 0d).stream()
+		List<SubstitutionOfHDManagementDataDto> lstSubstitutionOfHDManagement =  substitutionOfHDManaDataRepository.getBySidDatePeriod(sid,payoutID, 0d).stream()
 				.map(item -> {
 					SubstitutionOfHDManagementDataDto subDto =SubstitutionOfHDManagementDataDto.createFromDomain(item);
 					if (listSubID.contains(item.getSubOfHDID())){
@@ -34,6 +35,10 @@ public class SubstitutionOfHDManagementDataFinder {
 					}
 					return subDto;
 				}).collect(Collectors.toList());
+		if(lstSubstitutionOfHDManagement.isEmpty()) {
+			throw new BusinessException("Msg_1071");
+		}
+		return lstSubstitutionOfHDManagement;
 	}
 	
 	public List<SubstitutionOfHDManagementDataDto> getBysiDRemCod(String empId) {

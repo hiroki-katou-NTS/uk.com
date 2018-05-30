@@ -46,3 +46,11 @@
 #parent {
     overflow: hidden;
 }
+
+.exsit-remand {
+	color: #ff0000;
+}
+
+.not-exsit-remand {
+	color: #404040;
+}

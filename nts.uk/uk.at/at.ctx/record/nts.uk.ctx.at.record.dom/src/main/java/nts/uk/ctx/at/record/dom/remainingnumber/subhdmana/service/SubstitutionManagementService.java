@@ -42,6 +42,6 @@ public class SubstitutionManagementService {
 			compenLeaveEmpSetting = compensLeaveEmSetRepository.find(cid, extraHolidayManagementOutput.getSEmpHistoryImport().getEmploymentCode());
 		}
 		compensatoryLeaveComSetting = compensLeaveComSetRepository.find(cid);
-		return new SubstituteManagementOutput(sWkpHistImport.isPresent() ? sWkpHistImport.get() : null, extraHolidayManagementOutput, compenLeaveEmpSetting, compensatoryLeaveComSetting);
+		return new SubstituteManagementOutput(sWkpHistImport.orElse(null), extraHolidayManagementOutput, compenLeaveEmpSetting, compensatoryLeaveComSetting);
 	}
 }
