@@ -19,7 +19,7 @@ import lombok.Setter;
 public class AttdItemLinkRequest {
 	
 	/** The any item nos. */
-	private List<String> anyItemNos; 
+	private List<Integer> anyItemNos; 
 	
 	/** The formula atr. */
 	private int formulaAtr;

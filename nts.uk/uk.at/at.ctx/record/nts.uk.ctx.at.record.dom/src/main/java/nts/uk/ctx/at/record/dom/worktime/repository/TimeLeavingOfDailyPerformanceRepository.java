@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.worktime.repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -16,6 +17,8 @@ public interface TimeLeavingOfDailyPerformanceRepository {
 	List<TimeLeavingOfDailyPerformance> findbyPeriodOrderByYmd(String employeeId, DatePeriod datePeriod);
 	
 	List<TimeLeavingOfDailyPerformance> finds(List<String> employeeIds, DatePeriod ymd);
+	
+	List<TimeLeavingOfDailyPerformance> finds(Map<String, GeneralDate> param);
 	
 	void add(TimeLeavingOfDailyPerformance timeLeaving);
 	

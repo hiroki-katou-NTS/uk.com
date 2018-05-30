@@ -56,8 +56,8 @@ public class CcgstMenuBar extends UkJpaEntity implements Serializable {
 	
 	@ManyToOne
 	@JoinColumns( {
-        @JoinColumn(name = "CID", referencedColumnName = "CCGST_WEB_MENU.CID", insertable = false, updatable = false),
-        @JoinColumn(name = "WEB_MENU_CD", referencedColumnName = "CCGST_WEB_MENU.WEB_MENU_CD", insertable = false, updatable = false)
+        @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+        @JoinColumn(name = "WEB_MENU_CD", referencedColumnName = "WEB_MENU_CD", insertable = false, updatable = false)
     })
 	public CcgstWebMenu webMenu;
 

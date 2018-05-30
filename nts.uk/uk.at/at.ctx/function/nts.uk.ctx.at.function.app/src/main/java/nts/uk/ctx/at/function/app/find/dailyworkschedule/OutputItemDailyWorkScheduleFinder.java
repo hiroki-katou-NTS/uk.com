@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkScheduleCopyCommand;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceType;
@@ -115,11 +116,20 @@ public class OutputItemDailyWorkScheduleFinder {
 		Map<String, Object> mapDtoReturn = new HashMap<>();
 		
 		// Start algorithm 画面で利用できる任意項目を含めた勤怠項目一覧を取得する
-		// Get domain 画面で利用できる勤怠項目一覧
+		// 対応するドメインモデル「画面で利用できる勤怠項目一覧」を取得する (get domain model đối ứng 「画面で利用できる勤怠項目一覧」 )
 		List<AttendanceType> lstAttendanceType = attendanceTypeRepository.getItemByScreenUseAtr(companyID, DAILY_WORK_SCHEDULE);
 		
 		// Get domain 任意項目
 		List<OptionalItem> lstOptionalItem = optionalItemRepository.findAll(companyID);
+		
+//		lstOptionalItem = lstOptionalItem.stream()
+//								.filter(domain -> (domain.getPerformanceAtr().value == PerformanceAtr.DAILY_PERFORMANCE.value
+//													&& (domain.getOptionalItemAtr().value == OptionalItemAtr.AMOUNT.value 
+//														|| domain.getOptionalItemAtr().value == OptionalItemAtr.NUMBER.value
+//														|| domain.getOptionalItemAtr().value == OptionalItemAtr.TIME.value))
+//										)
+//								.map(domain -> domain)
+//								.collect(Collectors.toList());
 		
 		// Use condition filter to get 画面で利用できる勤怠項目一覧
 		List<AttendanceType> lstAttendanceTypeFilter = lstOptionalItem.stream()
@@ -297,7 +307,7 @@ public class OutputItemDailyWorkScheduleFinder {
 		
 		// get domain "work error actual alarm" 勤務実績のエラーアラーム
 		List<ErrorAlarmWorkRecord> lstErrorAlarmWorkRecord = errorAlarmWorkRecordRepository.getListErrorAlarmWorkRecord(companyId);
-		errorAlarmWorkRecordRepository.getAllErAlCompanyAndUseAtr(companyId, USE);
+		errorAlarmWorkRecordRepository.getAllErAlCompanyAndUseAtr(companyId, true);
 		
 		return lstErrorAlarmWorkRecord.stream()
 								.map(domain -> {

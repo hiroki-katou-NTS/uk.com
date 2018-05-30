@@ -69,20 +69,9 @@ public class LayoutWebService extends WebService {
 	@Path("find/gettabdetail")
 	@POST
 	public EmpMaintLayoutDto getTabDetail(PeregQuery query){
-		return this.layoutProcessor.getCategoryChild(query);
+		return this.layoutProcessor.getCategoryDetail(query);
 	}
 	
-	/**
-	 * @author xuan vinh
-	 * @param query
-	 * @return
-	 */
-	
-	@Path("find/gettabsubdetail")
-	@POST
-	public EmpMaintLayoutDto getTabSubDetail(PeregQuery query){
-		return this.layoutProcessor.getSubDetailInCtgChild(query);
-	}
 	
 	@Path("calDayTime/{sid}/{specialCD}")
 	@POST

@@ -123,6 +123,8 @@ module nts.uk.com.view.ccg.share.ccg {
             isFirstTime = true;
             isHeightFixed = false;
             showApplyBtn: KnockoutComputed<boolean>;
+            tab2HasLoaded = false;
+            isTab2Lazy = false;
 
             // reserved list employee for KCP005
             reservedEmployees: KnockoutObservableArray<EmployeeSearchDto>;
@@ -232,6 +234,12 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
                 self.baseDate.subscribe(vl => {
                     self.applyDataSearch();
+                });
+
+                self.selectedTab.subscribe(vl => {
+                    if (vl == 'tab-2' && !self.tab2HasLoaded) {
+                        self.reloadAdvanceSearchTab();
+                    }
                 });
 
                 self.periodStart.subscribe(startDate => {
@@ -500,12 +508,21 @@ module nts.uk.com.view.ccg.share.ccg {
                     }
                 });
                 // when tab to last item of tab 2
-                $("[tabindex='34']").on('keydown', function(e) {
-                    if (e.which == TAB_KEY_CODE) {
-                        // switch to tab 3
-                        self.selectedTab('tab-3');
-                    }
-                });
+                if (self.showEmployeeSelection) {
+                    $("[tabindex='34']").on('keydown', function(e) {
+                        if (e.which == TAB_KEY_CODE) {
+                            // switch to tab 3
+                            self.selectedTab('tab-3');
+                        }
+                    });
+                } else {
+                    $("[tabindex='32']").on('keydown', function(e) {
+                        if (e.which == TAB_KEY_CODE) {
+                            // switch to tab 3
+                            self.selectedTab('tab-3');
+                        }
+                    });
+                }
                 // when tab to last item of tab 3
                 $("[tabindex='43']").on('keydown', function(e) {
                     if (e.which == TAB_KEY_CODE && self.showQuickSearchTab) {
@@ -559,16 +576,12 @@ module nts.uk.com.view.ccg.share.ccg {
                         // set component height
                         self.setComponentHeight();
 
-                        _.defer(() => self.applyDataSearch().always(() => {
-                            // Set acquired base date to status period end date
-                            self.inputStatusPeriodEnd(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toISOString());
-                            if (data.showOnStart) {
-                                self.showComponent();
-                            }
-
-                            self.initSubscribers();
+                        if (data.showOnStart) {
+                            self.showComponent().done(() => dfd.resolve());
+                        } else {
                             dfd.resolve();
-                        }));
+                        }
+
                     });
                 });
 
@@ -664,6 +677,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.showClosure = self.showPeriod; // specs update ver3.1
                 // if ShowPeriod = false then period accuracy must be false too. 
                 self.showPeriodYM = nts.uk.util.isNullOrUndefined(self.showPeriod) ? false : (self.showPeriod ? options.periodFormatYM : false);
+                self.isTab2Lazy = nts.uk.util.isNullOrUndefined(options.isTab2Lazy) ? true : options.isTab2Lazy;
 
                 /** Required parameter */
                 self.inputBaseDate(nts.uk.util.isNullOrUndefined(options.baseDate) ? moment().toISOString() : options.baseDate);
@@ -899,28 +913,34 @@ module nts.uk.com.view.ccg.share.ccg {
             /**
              * Show component
              */
-            public showComponent(): void {
+            public showComponent(): JQueryPromise<void> {
                 let self = this;
+                let dfd = $.Deferred<void>();
                 if (self.isFirstTime) {
-                    // toggle slide ccg001
-                    self.toggleSlide();
+                    // Apply data search & load Kcp components
+                    self.toggleSlide().done(() => $.when(self.applyDataSearch(), self.loadKcp005()).always(() => {
+                        // Set acquired base date to status period end date
+                        self.inputStatusPeriodEnd(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toISOString());
 
-                    // Load KCP005
-                    self.loadKcp005();
+                        // init subscribers
+                        self.initSubscribers();
 
-                    // update flag isFirstTime
-                    self.isFirstTime = false;
+                        // update flag isFirstTime
+                        self.isFirstTime = false;
+                    }));
                 } else {
                     // toggle slide ccg001
                     self.toggleSlide();
                 }
+                return dfd.promise();
             }
 
             /**
              * Toggle slide CCG001
              */
-            private toggleSlide(): void {
+            private toggleSlide(): JQueryPromise<void> {
                 let self = this;
+                let dfd = $.Deferred<void>();
                 if (self.isShow()) {
                     return;
                 }
@@ -929,8 +949,9 @@ module nts.uk.com.view.ccg.share.ccg {
                     componentElement.style.removeProperty('visibility');
                     componentElement.style.display = 'none';
                 }
-                $('#component-ccg001').toggle("slide");
+                $('#component-ccg001').toggle("slide", () => dfd.resolve());
                 self.isShow(true);
+                return dfd.promise();
             }
 
             /**
@@ -949,7 +970,7 @@ module nts.uk.com.view.ccg.share.ccg {
             }
 
             private calculateKcp005Rows(marginHeight: number): number {
-                const tabContentHeight = parseInt(document.querySelector('.ccg-tabpanel>#tab-2').style.height);
+                const tabContentHeight = parseInt(document.querySelector('.ccg-tabpanel>#tab-3').style.height);
                 const heightPerRow = 24;
                 return (tabContentHeight - marginHeight) / heightPerRow;
             }
@@ -1085,12 +1106,8 @@ module nts.uk.com.view.ccg.share.ccg {
                         if (permit || self.isNotFutureDate(self.acquiredBaseDate())) {
                             // has permission or acquiredDate is not future
                             self.queryParam.baseDate = self.acquiredBaseDate();
-                            if (self.showAdvancedSearchTab) {
-                                self.reloadAdvanceSearchTab().done(() => {
-                                    self.fixComponentWidth();
-                                    dfd.resolve();
-                                    nts.uk.ui.block.clear();// clear block UI
-                                });
+                            if ((!self.isTab2Lazy || !self.isFirstTime) && self.showAdvancedSearchTab) {
+                                self.reloadAdvanceSearchTab().done(() => dfd.resolve());
                             } else {
                                 dfd.resolve();
                                 nts.uk.ui.block.clear(); // clear block UI
@@ -1114,18 +1131,26 @@ module nts.uk.com.view.ccg.share.ccg {
             private reloadAdvanceSearchTab(): JQueryPromise<void> {
                 let dfd = $.Deferred<void>();
                 let self = this;
+                if (!self.tab2HasLoaded) {
+                    self.tab2HasLoaded = true;
+                }
                 // set advanced search param
                 self.queryParam.retireStart = self.statusPeriodStart().format(CcgDateFormat.DEFAULT_FORMAT);
                 self.queryParam.retireEnd = self.statusPeriodEnd().format(CcgDateFormat.DEFAULT_FORMAT);
 
                 // reload advanced search tab.
+                nts.uk.ui.block.invisible();
                 self.setComponentOptions();
                 $.when(self.loadEmploymentPart(),
                     self.loadClassificationPart(),
                     self.loadJobTitlePart(),
                     self.loadWorkplacePart(),
                     self.loadWorktypePart())
-                    .done(() => dfd.resolve());
+                    .done(() => {
+                        nts.uk.ui.block.clear();// clear block UI
+                        self.fixComponentWidth();
+                        dfd.resolve();
+                    });
                 return dfd.promise();
             }
 
@@ -1239,7 +1264,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 $('#workplaceList').fullView();
 
                 _.defer(() => {
-                    const KCP004Width = $('#multiple-tree-grid_scroll').outerWidth(true);
+                    const KCP004Width = $('#workplaceList').outerWidth(true);
                     const KCPMargin = 30;
                     const expandedWidth = KCP004Width + KCPMargin;
 
@@ -1913,6 +1938,6 @@ interface JQuery {
     $.fn.ntsGroupComponent = function(option: nts.uk.com.view.ccg.share.ccg.service.model.GroupOption): JQueryPromise<void> {
 
         // Return.
-        return new nts.uk.com.view.ccg.share.ccg.viewmodel.ListGroupScreenModel().init(this, option);
+        return new nts.uk.com.view.ccg.share.ccg.viewmodel.ListGroupScreenModel().init(this, option).done(() => nts.uk.ui.block.clear());
     }
 } (jQuery));

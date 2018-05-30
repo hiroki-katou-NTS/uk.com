@@ -16,6 +16,8 @@ public interface EmpInfoItemDataRepository {
 	List<EmpInfoItemData> getAllInfoItemByRecordId(String recordId);
 	
 	Optional<EmpInfoItemData> getInfoItemByItemDefIdAndRecordId(String itemDefId, String recordId);
+	
+	List<EmpInfoItemData> getItemsData(String itemDefId, List<String> recordIds);
 
 	void addItemData(EmpInfoItemData infoItemData);
 	

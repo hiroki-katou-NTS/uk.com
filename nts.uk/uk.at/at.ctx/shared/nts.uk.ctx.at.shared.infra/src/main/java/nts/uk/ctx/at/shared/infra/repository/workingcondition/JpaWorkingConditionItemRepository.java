@@ -6,7 +6,9 @@ package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -18,15 +20,18 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionWithDataPeriod;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondItem;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondItem_;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond_;
+import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -196,12 +201,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 	@Override
 	public List<WorkingConditionItem> getBySidAndPeriodOrderByStrD(String employeeId, DatePeriod datePeriod) {
 		
-		List<KshmtWorkingCondItem> entitys =
-				this.queryProxy().query(FIND_BY_SID_AND_PERIOD_ORDER_BY_STR_D, KshmtWorkingCondItem.class)
-				.setParameter("employeeId", employeeId)
-				.setParameter("startDate", datePeriod.start())
-				.setParameter("endDate", datePeriod.end())
-				.getList();
+		List<KshmtWorkingCondItem> entitys = useConstantFindBySidAndPeriodOrderByStrD(employeeId, datePeriod);
 		
 		if (entitys.isEmpty()) return Collections.emptyList();
 		
@@ -209,6 +209,47 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 				.map(e -> new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(e)))
 				.collect(Collectors.toList());
 	}
+	
+	/**
+	 * Gets the list with period by sid and date period  
+	 * @param employeeId the employee id
+	 * @param datePeriod the date period
+	 * @return the list
+	 */
+	@Override
+	public WorkingConditionWithDataPeriod getBySidAndPeriodOrderByStrDWithDatePeriod(String employeeId, DatePeriod datePeriod) {
+		
+		List<KshmtWorkingCondItem> entitys = useConstantFindBySidAndPeriodOrderByStrD(employeeId, datePeriod);
+
+		Map<DateHistoryItem, WorkingConditionItem> result = new LinkedHashMap<>();
+		if (entitys.isEmpty()) return new WorkingConditionWithDataPeriod(result);
+		
+		entitys.forEach(c -> {
+			val strDate = c.getKshmtWorkingCond().getStrD().compareTo(datePeriod.start())>0?c.getKshmtWorkingCond().getStrD():datePeriod.start();
+			val endDate = c.getKshmtWorkingCond().getEndD().compareTo(datePeriod.end())<0?datePeriod.end():c.getKshmtWorkingCond().getEndD();
+			result.put(new DateHistoryItem(c.getKshmtWorkingCond().getKshmtWorkingCondPK().getHistoryId(), 
+											new DatePeriod(strDate, endDate)), 
+						new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(c)));
+		});
+		return new WorkingConditionWithDataPeriod(result);
+	}
+	
+	/**
+	 * 
+	 * @param employeeId the employee id
+	 * @param datePeriod the date period
+	 * @return the list
+	 */
+	private List<KshmtWorkingCondItem> useConstantFindBySidAndPeriodOrderByStrD(String employeeId, DatePeriod datePeriod) {
+		return 	this.queryProxy().query(FIND_BY_SID_AND_PERIOD_ORDER_BY_STR_D, KshmtWorkingCondItem.class)
+					.setParameter("employeeId", employeeId)
+					.setParameter("startDate", datePeriod.start())
+					.setParameter("endDate", datePeriod.end())
+					.getList();
+	}
+	
+	
+	
 	
 	/*
 	 * (non-Javadoc)

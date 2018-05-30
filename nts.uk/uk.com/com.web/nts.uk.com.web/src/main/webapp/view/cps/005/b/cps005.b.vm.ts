@@ -91,16 +91,12 @@ module nts.uk.com.view.cps005.b {
                     }
                     new service.Service().updateItemDef(newItemDef).done(function(data: string) {
                         if (data) {
-                            info({ messageId: data }).then(() => {
-                                info({ messageId: "Msg_15" }).then(() => {
+                                info({ messageId: data}).then(() => {
                                     self.reloadData();
                                     self.currentItemData().perInfoItemSelectCode(newItemDef.perInfoItemDefId);
                                     self.currentItemData().perInfoItemSelectCode.valueHasMutated();
                                     block.clear();
-                                }
-
-                                );
-                            });
+                                });
                         } else {
                             info({ messageId: "Msg_15" }).then(() => {
                                 self.reloadData();

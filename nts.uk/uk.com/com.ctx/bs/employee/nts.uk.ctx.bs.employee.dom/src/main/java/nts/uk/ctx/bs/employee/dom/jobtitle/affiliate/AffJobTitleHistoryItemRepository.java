@@ -47,4 +47,12 @@ public interface AffJobTitleHistoryItemRepository {
 	List<AffJobTitleHistoryItem> getAllBySid(String sid);
 	
 	List<AffJobTitleHistoryItem> getAllByListSidDate(List<String> lstSid, GeneralDate referDate);
+	
+	/**
+	 * get by historyId list
+	 * @param historyIds
+	 * @return
+	 */
+	List<AffJobTitleHistoryItem> findByHitoryIds(List<String> historyIds);
+	
 }

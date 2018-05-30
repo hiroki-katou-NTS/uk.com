@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.editstate.repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -18,6 +19,8 @@ public interface EditStateOfDailyPerformanceRepository {
 	List<EditStateOfDailyPerformance> findByKey(String employeeId, GeneralDate ymd);
 	
 	List<EditStateOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd);
+	
+	List<EditStateOfDailyPerformance> finds(Map<String, GeneralDate> param);
 	
 	void updateByKey(List<EditStateOfDailyPerformance> editStates);
 	
