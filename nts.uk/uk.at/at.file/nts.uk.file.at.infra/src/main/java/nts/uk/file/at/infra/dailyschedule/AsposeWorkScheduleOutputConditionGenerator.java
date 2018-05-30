@@ -187,6 +187,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		Workbook workbook;
 		try {
 			workbook = new Workbook(Thread.currentThread().getContextClassLoader().getResourceAsStream(filename));
+			
 			workbook = reportContext.getWorkbook();
 			
 			WorkbookDesigner designer = new WorkbookDesigner();
@@ -283,7 +284,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			}
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		
 	}
@@ -1166,6 +1167,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_LIGHTBLUE_ROW + dataRowCount);
 						Range dateRange = cells.createRange(currentRow, 0, dataRowCount, 39);
 						dateRange.copy(dateRangeTemp);
+						dateRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 						
 						// A5_1
 						Cell erAlMark = cells.get(currentRow, 0);
@@ -1445,7 +1447,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			// Employee data
 			for (DailyPersonalPerformanceData employee : employeeReportData){
 				List<ActualValue> lstItem = employee.getActualValue();
-				if (lstItem == null) continue; 
+				if (lstItem == null) continue;  // Skip to next record if performance is null
 				
 				Range dateRangeTemp;
 				if (colorWhite) // White row
