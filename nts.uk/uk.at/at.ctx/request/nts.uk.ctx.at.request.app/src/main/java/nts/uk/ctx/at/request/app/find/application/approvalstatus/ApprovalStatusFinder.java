@@ -189,15 +189,12 @@ public class ApprovalStatusFinder {
 	 * @param closureDate
 	 * @return
 	 */
-	public ApprovalStatusPeriorDto getApprovalStatusPerior(int closureId, int closureDate) {
+	public ApprovalStatusPeriorDto getApprovalStatusPerior(int closureId) {
 		// Get companyID.
 		String companyId = AppContexts.user().companyId();
 		GeneralDate startDate = null;
 		GeneralDate endDate = null;
 		int processingYmNew = 0;
-		// 当月の期間を算出する
-		YearMonth processingYm = new YearMonth(closureDate);
-
 		List<ClosureEmployment> listEmployee = new ArrayList<>();
 		Optional<Closure> closure = repository.findById(companyId, closureId);
 		if (!closure.isPresent()) {
@@ -206,6 +203,8 @@ public class ApprovalStatusFinder {
 
 		val yearMonth = closure.get().getClosureMonth().getProcessingYm();
 		processingYmNew = yearMonth.v();
+		// 当月の期間を算出する
+		YearMonth processingYm = new YearMonth(processingYmNew);
 		// アルゴリズム「当月の期間を算出する」を実行する
 		DatePeriod closurePeriod = this.closureService.getClosurePeriod(closureId, processingYm);
 		startDate = closurePeriod.start();
