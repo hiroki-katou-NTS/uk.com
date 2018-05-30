@@ -524,7 +524,7 @@ module nts.uk.at.view.kwr001.a {
             
             private saveWorkScheduleOutputCondition(): JQueryPromise<void> {
                 let self = this,
-                    dfd = $.Deferred<void>();
+                    dfd = $.Deferred<void>(),
                     companyId: string = __viewContext.user.companyId,
                     userId: string = __viewContext.user.employeeId;
                 service.restoreCharacteristic(companyId, userId).done(function(data: any) {
