@@ -67,6 +67,7 @@ module nts.uk.com.view.kwr002.e {
                 self.attendanceItem(attendanceItem);
                 if(attendanceItem.attendanceId != null || attendanceItem.attendanceId != undefined) {
                     self.selectedGridItems(self.attendanceItem().attendanceId);
+                    self.findAttndRecByScreen(self.attendanceItem().attribute);
                     dfd.resolve();
                 } 
                 else {
