@@ -126,14 +126,18 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     { headerText: '', key: 'expiredDate', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'unknownDatePayout', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'unknownDateSub', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: '', key: 'occurredDaysText', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: '', key: 'requiredDaysText', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: '', key: 'unUsedDaysInGridText', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: '', key: 'expriedDaysInGridText', dataType: 'string', width: '0px', hidden: true },
                     { headerText: getText('KDM001_8'), template: '<div style="float:right"> ${dayoffDatePyout} </div>', key: 'dayoffDatePyout', dataType: 'string', width: '120px' },
-                    { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${occurredDays} </div>', key: 'occurredDays', dataType: 'Number', width: '85px' },
+                    { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${occurredDays}${occurredDaysText} </div>', key: 'occurredDays', dataType: 'Number', width: '85px' },
                     { headerText: getText('KDM001_124'), key: 'payoutTied', dataType: 'string', width: '85px' },
                     { headerText: getText('KDM001_10'), template: '<div style="float:right"> ${dayoffDateSub} </div>', key: 'dayoffDateSub', dataType: 'string', width: '120px' },
-                    { headerText: getText('KDM001_11'), template: '<div style="float:right"> ${requiredDays} </div>', key: 'requiredDays', dataType: 'Number', width: '85px' },
+                    { headerText: getText('KDM001_11'), template: '<div style="float:right"> ${requiredDays}${requiredDaysText} </div>', key: 'requiredDays', dataType: 'Number', width: '85px' },
                     { headerText: getText('KDM001_124'), key: 'subTied', dataType: 'string', width: '85px' },
-                    { headerText: getText('KDM001_12'), template: '<div style="float:right"> ${unUsedDaysInGrid} </div>', key: 'unUsedDaysInGrid', dataType: 'Number', width: '85px' },
-                    { headerText: getText('KDM001_13'), template: '<div style="float:right"> ${expriedDaysInGrid} </div>', key: 'expriedDaysInGrid', dataType: 'Number', width: '85px' },
+                    { headerText: getText('KDM001_12'), template: '<div style="float:right"> ${unUsedDaysInGrid}${unUsedDaysInGridText} </div>', key: 'unUsedDaysInGrid', dataType: 'Number', width: '85px' },
+                    { headerText: getText('KDM001_13'), template: '<div style="float:right"> ${expriedDaysInGrid}${expriedDaysInGridText} </div>', key: 'expriedDaysInGrid', dataType: 'Number', width: '85px' },
                     { headerText: getText('KDM001_14'), formatter: getLawAtr, key: 'lawAtr', dataType: 'string', width: '100px' },
                     { headerText: '', key: 'link', dataType: 'string', width: '85px', unbound: true, ntsControl: 'ButtonPegSetting' },
                     { headerText: '', key: 'edit', dataType: 'string', width: '55px', unbound: true, ntsControl: 'ButtonCorrection' }
@@ -503,6 +507,11 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         //add to check enable button
         isLinked: boolean;
         
+        occurredDaysText: string;
+        requiredDaysText: string;
+        unUsedDaysInGridText: string;
+        expriedDaysInGridText: string;
+        
         constructor(params) {
             this.payoutId = params.payoutId;
             this.cID = params.cid;
@@ -522,21 +531,37 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             this.remainDays = params.remainDays;
             this.subTied = params.subTied ? "有" : "";
             
+            if((params.occurredDays != null) && (params.occurredDays > 0)) {
+                this.occurredDaysText = "日";
+            }
+            
+            if((params.requiredDays != null) && (params.requiredDays > 0)) {
+                this.requiredDaysText = "日";
+            }
+            
             if ((params.payoutId != null) && (params.payoutId != "")) {
                 this.id = params.payoutId;
                 
                 if (moment.utc(params.expiredDate, 'YYYY/MM/DD').diff(moment.utc()) > 0) {
                     this.unUsedDaysInGrid = params.unUsedDays;
                     this.expriedDaysInGrid = "";
+                    if(params.unUsedDays > 0) {
+                        this.unUsedDaysInGridText = "日";
+                    }
                 } else {
                     this.unUsedDaysInGrid = "";
                     this.expriedDaysInGrid = params.unUsedDays;
+                    if(params.unUsedDays > 0) {
+                        this.expriedDaysInGridText = "日";
+                    }
                 }
             } else if ((params.subOfHDID != null) && (params.subOfHDID != "")) {
                 this.id = params.subOfHDID;
-                
                 this.unUsedDaysInGrid = params.remainDays * (-1);
                 this.expriedDaysInGrid = "";
+                if(params.remainDays > 0) {
+                    this.unUsedDaysInGridText = "日";
+                }
             }
             
             this.isLinked = (params.payoutTied || params.subTied) ? true : false;
