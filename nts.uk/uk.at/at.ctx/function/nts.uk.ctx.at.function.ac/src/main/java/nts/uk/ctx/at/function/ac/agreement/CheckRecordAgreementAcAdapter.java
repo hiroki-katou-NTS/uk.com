@@ -2,10 +2,13 @@ package nts.uk.ctx.at.function.ac.agreement;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.adapter.agreement.CheckRecordAgreementAdapter;
 import nts.uk.ctx.at.function.dom.adapter.agreement.CheckedAgreementImport;
@@ -14,14 +17,17 @@ import nts.uk.ctx.at.function.dom.adapter.employment.EmploymentAdapter;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeCondOt;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeConditionError;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.ErrorAlarm;
+import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeOfManagePeriodPub;
 import nts.uk.ctx.at.record.pub.monthlyprocess.agreement.AgreementTimeExport;
 import nts.uk.ctx.at.record.pub.monthlyprocess.agreement.GetAgreementTimePub;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 @Stateless
 public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapter {
 
@@ -33,6 +39,9 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 	
 	@Inject
 	private GetAgreementTimePub agreementTimePub;
+	
+	@Inject
+	private AgreementTimeOfManagePeriodPub agreementTimeOfManagePub;
 	
 	@Override
 	public List<CheckedAgreementImport> checkArgreement(List<String> employeeIds, List<DatePeriod> periods,
@@ -100,11 +109,39 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 	}
 
 	@Override
-	public List<CheckedOvertimeImport> checkNumberOvertime(List<String> employeeIds, List<DatePeriod> period,
+	public List<CheckedOvertimeImport> checkNumberOvertime(List<String> employeeIds, List<DatePeriod> periods,
 			List<AgreeCondOt> listCondOt) {
 		
 		List<CheckedOvertimeImport> result = new ArrayList<CheckedOvertimeImport>();
-		
+		for(DatePeriod  period : periods) {
+			
+			YearMonthPeriod  yearMonthPeriod = new YearMonthPeriod(period.start().yearMonth(), period.end().yearMonth());
+			Map<String, Map<YearMonth, AttendanceTimeMonth>> agreementMultipEmp=  agreementTimeOfManagePub.getTimeByPeriod(employeeIds, yearMonthPeriod);
+			
+			List<String> employeeIdsError = new ArrayList<>(agreementMultipEmp.keySet());
+			for(String employeeId : employeeIdsError) {
+
+				List<AttendanceTimeMonth> agreementOneEmp = new ArrayList<>(agreementMultipEmp.get(employeeId).values());
+				
+				for(AgreeCondOt agreeCond: listCondOt ) {
+					
+					int count = 0;
+					for(int i =0 ; i< agreementOneEmp.size(); i++) {
+						if(agreementOneEmp.get(i).valueAsMinutes() >= agreeCond.getOt36().valueAsMinutes())
+							count ++;						
+				    }
+					if(count >= agreeCond.getExcessNum().v()) {
+						result.add(CheckedOvertimeImport.builder().employeeId(employeeId).datePeriod(period)
+								.alarmCheckId(agreeCond.getId()).error(true).no(agreeCond.getNo())
+								.ot36(agreeCond.getOt36()).excessNum(agreeCond.getExcessNum())
+								.messageDisp(agreeCond.getMessageDisp()).build());
+					}
+				
+			    }
+			
+		    } 
+
+		}
 		return result;
 	}
 

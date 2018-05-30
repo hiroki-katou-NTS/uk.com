@@ -37,8 +37,6 @@ public class AggregationProcessService {
 	public List<AlarmExtraValueWkReDto> processAlarmListWorkRecord(GeneralDate baseDate, String companyID, List<EmployeeSearchDto> listEmployee, 
 			String checkPatternCode, List<PeriodByAlarmCategory> periodByCategory) {
 		List<AlarmExtraValueWkReDto> result = new ArrayList<>();
-
-//		String companyID = AppContexts.user().companyId();
 		
 		// パラメータ．パターンコードをもとにドメインモデル「アラームリストパターン設定」を取得する
 		Optional<AlarmPatternSetting> alarmPatternSetting = this.alPatternSettingRepo.findByAlarmPatternCode(companyID, checkPatternCode);		
@@ -47,16 +45,12 @@ public class AggregationProcessService {
 		
 		
 		List<ValueExtractAlarm> valueList = new ArrayList<>();
-		// 従業員ごと に行う(for list employee)
-//		for (EmployeeSearchDto employee : listEmployee) {
+
 		valueList.addAll(extractService.process(companyID, alarmPatternSetting.get().getCheckConList(), periodByCategory, listEmployee));
-//		}
-				
+
 		
 		// get list workplaceId and hierarchyCode 
 		List<String> listWorkplaceId = listEmployee.stream().map(e -> e.getWorkplaceId()).filter(wp -> wp != null).distinct().collect(Collectors.toList());
-//		listWorkplaceId.removeIf( e->e==null);
-//		List<WkpConfigAtTimeAdapterDto> hierarchyWPList = syWorkplaceAdapter.findByWkpIdsAtTime(companyID, GeneralDate.today(), listWorkplaceId);
 		Map<String, WkpConfigAtTimeAdapterDto> hierarchyWPMap = syWorkplaceAdapter.findByWkpIdsAtTime(companyID, baseDate, listWorkplaceId)
 																			.stream().collect(Collectors.toMap(WkpConfigAtTimeAdapterDto::getWorkplaceId, x->x));
 		

@@ -39,8 +39,11 @@ public class AgreementProcessService {
 	@Inject
 	private IAgreeNameErrorRepository agreeNameRepo;
 	
-	public List<ValueExtractAlarm> agreementProcess(List<String> checkConditionCodes, List<DatePeriod> periods, List<String> employeeIds, List<EmployeeSearchDto> employees){
+	public List<ValueExtractAlarm> agreementProcess(List<String> checkConditionCodes, List<DatePeriod> periods, List<EmployeeSearchDto> employees){
+		
 		List<ValueExtractAlarm> result = new ArrayList<ValueExtractAlarm>();
+		
+		List<String> employeeIds = employees.stream().map( e ->e.getId()).collect(Collectors.toList());
 		
 		// get List<カテゴリ別アラームチェック条件>
 		List<AlarmCheckConditionByCategory> listAlarmCheck= alarmCheckRepo.findByCategoryAndCode(AppContexts.user().companyId()	, AlarmCategory.AGREEMENT.value	, checkConditionCodes);
