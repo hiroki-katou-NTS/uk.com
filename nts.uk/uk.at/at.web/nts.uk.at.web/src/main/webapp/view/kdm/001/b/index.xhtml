@@ -36,7 +36,7 @@
 			<!-- 残数管理データ登録_振休管理 -->
 			<div id="tabpanel-1" role="tabpanel"></div>
 			<!-- 残数管理データ登録_代休管理 -->
-			<div id="tabpanel-2" role="tabpanel" data-bind="with: screenItem">
+			<div id="tabpanel-2" role="tabpanel" >
 				<!-- B1 -->
 				<div
 					class="sidebar-content-header flex valign-center ">
@@ -44,12 +44,12 @@
 					<span class="title">#{i18n.getText('KDM001_150')}</span>
 					<!-- B1_1 新規 -->
 					<div>
-						<button id ="B1_1" tabindex="6" data-bind="click: function(){ $parent.openNewSubstituteData()}">#{i18n.getText('KDM001_1')}</button>
+						<button id ="B1_1" tabindex="6" data-bind="click: function(){ openNewSubstituteData()}">#{i18n.getText('KDM001_1')}</button>
 					</div>
 					<!-- B1_2 「代休確認表」出力画面へ遷移する -->
 					<div style="margin-left: auto;">
 						<a id = "B1_2" tabindex="7" class="goout"
-							data-bind="ntsLinkButton: {}, click: function(){ $parent.openConfirmScreen()}">#{i18n.getText('KDM001_32')}</a>
+							data-bind="ntsLinkButton: {}, click: function(){ openConfirmScreen()}">#{i18n.getText('KDM001_32')}</a>
 					</div> 
 
 				</div>
@@ -93,7 +93,7 @@
 								<!-- B3_5  抽出 -->
 								<div class="div-table-row-2">
 									<button id ="B3_5" tabindex="5"
-										data-bind="click: function(){$parent.filterByPeriod()}">#{i18n.getText('KDM001_7')}</button>
+										data-bind="click: function(){filterByPeriod()}">#{i18n.getText('KDM001_7')}</button>
 								</div>
 							</div>
 						</div>
