@@ -75,8 +75,8 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             });
         }
         openConfirmScreen() {
-            let self = this;
-            let data = {
+            let self = this, data;
+            data = {
                 workplaceCode: self.screenItem().selectedEmployee.workplaceCode,
                 workplaceName: self.screenItem().selectedEmployee.workplaceName,
                 employeeCode: self.screenItem().selectedEmployee.employeeCode,
@@ -108,7 +108,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             let self = this;
             self.getSubstituteDataList(self.getSearchCondition());
             $('#substituteDataGrid').focus();
-        } 
+        }
         getSubstituteDataList(searchCondition: any) {
             let self = this;
             service.getExtraHolidayData(searchCondition).done(function(result) {
@@ -120,11 +120,11 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 dialog.alertError(result.errorMessage);
             });
         }
-        getSearchCondition(){
-            let self = this;
-            let startDate = moment.utc(self.screenItem().dateValue().startDate, 'YYYY/MM/DD').toISOString();
-            let endDate = moment.utc(self.screenItem().dateValue().endDate, 'YYYY/MM/DD').toISOString();
-            let searchCondition = null;
+        getSearchCondition() {
+            let self = this, startDate, endDate, searchCondition = null;
+            startDate = moment.utc(self.screenItem().dateValue().startDate, 'YYYY/MM/DD').toISOString();
+            endDate = moment.utc(self.screenItem().dateValue().endDate, 'YYYY/MM/DD').toISOString();
+            searchCondition = null;
             if (self.screenItem().selectedPeriodItem() == 1) {
                 searchCondition = { searchMode: 1, employeeId: self.screenItem().selectedEmployee.employeeId, startDate: startDate, endDate: endDate };
             } else {
@@ -134,18 +134,33 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         }
         convertToDisplayList() {
             let self = this;
-            let totalRemain = 0;
-            let listData = [];
+            let totalRemain = 0, dayOffDate, unUse, remain, expired, remainDays, listData = [];
             _.forEach(self.screenItem().listExtractData, data => {
-                let dayOffDate = data.dayOffDate;
-                totalRemain += data.remain;
+                dayOffDate = data.dayOffDate;
+                remain = data.remain;
+                expired = data.expired;
+                totalRemain += remain;
+                if (remain != 0) {
+                    remain = remain.toFixed(1) + getText('KDM001_27');
+                }
+                if (expired != 0) {
+                    expired = expired.toFixed(1) + getText('KDM001_27');
+                }
                 if (data.unknowDate == 1) {
                     dayOffDate += '※';
                 }
                 if (data.type == 0) {
-                    listData.push(new SubstitutedData(data.id, dayOffDate, data.unUsedDays + getText('KDM001_27'), data.linked == 1 ? '有' : "", null, null, null, data.remain + getText('KDM001_27'), data.expired + getText('KDM001_27'), data.linked));
+                    unUse = data.unUsedDays;
+                    if (unUse != 0) {
+                        unUse = unUse.toFixed(1) + getText('KDM001_27');
+                    }
+                    listData.push(new SubstitutedData(data.id, dayOffDate, unUse, data.linked == 1 ? '有' : "", null, null, null, remain, expired, data.linked));
                 } else {
-                    listData.push(new SubstitutedData(data.comDayOffID, null, null, null, dayOffDate, data.remainDays + getText('KDM001_27'), data.linked == 1 ? '有' : "", data.remain + getText('KDM001_27'), data.expired + getText('KDM001_27'), data.linked));
+                    remainDays = data.remainDays;
+                    if (remainDays != 0) {
+                        remainDays = remainDays.toFixed(1) + getText('KDM001_27');
+                    }
+                    listData.push(new SubstitutedData(data.comDayOffID, null, null, null, dayOffDate, remainDays + getText('KDM001_27'), data.linked == 1 ? '有' : "", remain, expired, data.linked));
                 }
             });
             if (self.screenItem().listExtractData.length == 0) {
@@ -214,9 +229,8 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             }
         }
         startPage(): JQueryPromise<any> {
-            let self = this;
-            let dfd = $.Deferred();
-            let searchCondition = { employeeId: null, stateDate: null, endDate: null };
+            let self = this, dfd = $.Deferred(), searchCondition;
+            searchCondition = { employeeId: null, stateDate: null, endDate: null };
             service.getInfoEmLogin().done(function(loginerInfo) {
                 service.getSubsitutionData(searchCondition).done(function(result) {
                     let wkHistory = result.wkHistory;
@@ -282,53 +296,66 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             })
         }
         pegSetting(value) {
-            let self = this;
+            let self = this, rowDataInfo;
             if (value.substituedWorkingDate.length > 0) {
-                let rowDataInfo = _.find(self.screenItem().listExtractData, x => {
+                rowDataInfo = _.find(self.screenItem().listExtractData, x => {
                     return x.id === value.id;
                 });
                 setShared('KDM001_J_PARAMS', { row: rowDataInfo, selectedEmployee: self.screenItem().selectedEmployee, closure: self.screenItem().closureEmploy });
                 modal("/view/kdm/001/j/index.xhtml").onClosed(function() {
-                    let isDataChanged = getShared("KDM001_J_PARAMS_RES").isChanged;
-                    if (isDataChanged) {
-                        self.getSubstituteDataList(self.getSearchCondition());
+                    let resParam = getShared("KDM001_J_PARAMS_RES");
+                    if (resParam) {
+                        let isDataChanged = resParam.isChanged; 
+                        if (isDataChanged) {
+                            self.getSubstituteDataList(self.getSearchCondition());
+                        }
                     }
+
                 });
             } else {
-                let rowDataInfo = _.find(self.screenItem().listExtractData, x => {
+                rowDataInfo = _.find(self.screenItem().listExtractData, x => {
                     return x.comDayOffID === value.id;
                 });
                 setShared('KDM001_K_PARAMS', { row: rowDataInfo, selectedEmployee: self.screenItem().selectedEmployee, closure: self.screenItem().closureEmploy });
                 modal("/view/kdm/001/k/index.xhtml").onClosed(function() {
-                    let isDataChanged = getShared("KDM001_K_PARAMS_RES").isChanged;
-                    if (isDataChanged) {
-                        self.getSubstituteDataList(self.getSearchCondition());
+                    let resParam = getShared("KDM001_K_PARAMS_RES");
+                    if (resParam) {
+                        let isDataChanged = resParam.isChanged; 
+                        if (isDataChanged) {
+                            self.getSubstituteDataList(self.getSearchCondition());
+                        }
                     }
                 });
             }
         }
         doCorrection(value) {
-            let self = this;
+            let self = this, rowDataInfo;
             if (value.substituedWorkingDate.length > 0) {
-                let rowDataInfo = _.find(self.screenItem().listExtractData, x => {
+                rowDataInfo = _.find(self.screenItem().listExtractData, x => {
                     return x.id === value.id;
                 });
                 setShared('KDM001_L_PARAMS', { row: rowDataInfo, selectedEmployee: self.screenItem().selectedEmployee, closure: self.screenItem().closureEmploy });
                 modal("/view/kdm/001/l/index.xhtml").onClosed(function() {
-                    let isDataChanged = getShared("KDM001_L_PARAMS_RES").isChanged;
-                    if (isDataChanged) {
-                        self.getSubstituteDataList(self.getSearchCondition());
+                    let resParam = getShared("KDM001_L_PARAMS_RES");
+                    if (resParam) {
+                        let isDataChanged = resParam.isChanged; 
+                        if (isDataChanged) {
+                            self.getSubstituteDataList(self.getSearchCondition());
+                        }
                     }
                 });
             } else {
-                let rowDataInfo = _.find(self.screenItem().listExtractData, x => {
+                rowDataInfo = _.find(self.screenItem().listExtractData, x => {
                     return x.comDayOffID === value.id;
                 });
                 setShared('KDM001_M_PARAMS', { row: rowDataInfo, selectedEmployee: self.screenItem().selectedEmployee, closure: self.screenItem().closureEmploy });
                 modal("/view/kdm/001/m/index.xhtml").onClosed(function() {
-                    let isDataChanged = getShared("KDM001_M_PARAMS_RES").isChanged;
-                    if (isDataChanged) {
-                        self.getSubstituteDataList(self.getSearchCondition());
+                    let resParam = getShared("KDM001_L_PARAMS_RES");
+                    if (resParam) {
+                        let isDataChanged = resParam.isChanged; 
+                        if (isDataChanged) {
+                            self.getSubstituteDataList(self.getSearchCondition());
+                        }
                     }
                 });
             }
