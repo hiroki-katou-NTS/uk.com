@@ -110,6 +110,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     }).always(function() {
                         self.updateMode(code);
                         block.clear();
+                        nts.uk.ui.errors.clearAll();
                     });
                 } else {
                     block.clear();
