@@ -124,6 +124,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     { headerText: 'ID', key: 'id', dataType: 'string', width: '0px', hidden: true },
                     { headerText: 'linked', key: 'isLinked', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'stateAtr', dataType: 'Number', width: '0px', hidden: true },
+                    { headerText: '', key: 'unUsedDays', dataType: 'Number', width: '0px', hidden: true },
                     { headerText: '', key: 'remainDays', dataType: 'Number', width: '0px', hidden: true },
                     { headerText: '', key: 'expiredDate', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'unknownDatePayout', dataType: 'string', width: '0px', hidden: true },
