@@ -17,7 +17,7 @@ public class JpaBrkOffSubChangeMngRepository extends JpaRepository implements Br
 	@Override
 	public void insert(BrkOffSupChangeMng brkOffSupChangeMng) {
 		KrqdtBrkOffSupChangeMng entity = new KrqdtBrkOffSupChangeMng();
-		entity.setPk(new KrqdtBrkOffSupChangeMngPK(brkOffSupChangeMng.getRecAppID(), brkOffSupChangeMng.getAbsenceLeaveAppID()));
+		entity.setPk(new KrqdtBrkOffSupChangeMngPK(brkOffSupChangeMng.getAbsenceLeaveAppID(),brkOffSupChangeMng.getRecAppID()));
 		this.commandProxy().insert(entity);
 	}
 
@@ -34,10 +34,10 @@ public class JpaBrkOffSubChangeMngRepository extends JpaRepository implements Br
 
 	@Override
 	public void remove(String leaveAppID, String absenceLeaveAppID) {
-		Optional<KrqdtBrkOffSupChangeMng> opt = this.queryProxy().find(new KrqdtBrkOffSupChangeMngPK(leaveAppID, absenceLeaveAppID), KrqdtBrkOffSupChangeMng.class);
+		Optional<KrqdtBrkOffSupChangeMng> opt = this.queryProxy().find(new KrqdtBrkOffSupChangeMngPK(absenceLeaveAppID,leaveAppID), KrqdtBrkOffSupChangeMng.class);
 		if(!opt.isPresent()){
 			throw new RuntimeException("Not find KrqdtBrkOffSupChangeMng");
 		}
-		this.commandProxy().remove(KrqdtBrkOffSupChangeMng.class, new KrqdtBrkOffSupChangeMngPK(leaveAppID, absenceLeaveAppID));
+		this.commandProxy().remove(KrqdtBrkOffSupChangeMng.class, new KrqdtBrkOffSupChangeMngPK(absenceLeaveAppID,leaveAppID));
 	}
 }
