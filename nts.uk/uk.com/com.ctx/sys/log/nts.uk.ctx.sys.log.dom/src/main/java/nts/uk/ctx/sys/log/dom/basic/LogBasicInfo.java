@@ -8,7 +8,7 @@ public class LogBasicInfo {
 
 	private final String operationId;
 	private final String companyId;
-	private final UserInfo userInfo;
+//	private final UserInfo userInfo;
 	
 	
 }
