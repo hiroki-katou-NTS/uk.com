@@ -556,10 +556,10 @@ module nts.uk.com.view.cmf003.b {
 
             private nextFromDToE(): void {
                 var self = this;
-                if((self.selectedTitleAtr() != 0  && self.selectedTitleAtr() != 1) {
+                if(self.selectedTitleAtr() != 0  && self.selectedTitleAtr() != 1) {
                     alertError({ messageId: 'Msg_463' });
                 }else
-                if (self.selectedEmployeeCode().length == 0) {
+                if (self.selectedTitleAtr() == 1 && self.selectedEmployeeCode().length == 0) {
                     alertError({ messageId: 'Msg_498' });
                 } else {
                     self.initE();
