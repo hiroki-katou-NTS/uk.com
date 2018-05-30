@@ -1322,35 +1322,45 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		 * A9 - A13
 		 */
 		// A9_1 - A13_1
-		//if (condition.getSettingDetailTotalOutput().isGrossTotal() && condition.getSettingDetailTotalOutput().getWorkplaceHierachyTotal().checkLevelEnabled(workplaceReportData.getLevel())) {
-			Range wkpHierTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
-			Range wkpHierTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
-			wkpHierTotalRange.copy(wkpHierTotalRangeTemp);
-			Cell workplaceTotalCellTag = cells.get(currentRow, 0);
+		TotalWorkplaceHierachy totalHierarchyOption = condition.getSettingDetailTotalOutput().getWorkplaceHierarchyTotal();
+		if (condition.getSettingDetailTotalOutput().isGrossTotal() || condition.getSettingDetailTotalOutput().isCumulativeWorkplace()) {
 			int level = workplaceReportData.getLevel();
-			if (level != 0)
-				workplaceTotalCellTag.setValue(WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + workplaceReportData.getLevel());
+			
+			String tagStr;
+			if (level != 0 && level >= totalHierarchyOption.getHighestLevelEnabled()) {
+				tagStr = WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + workplaceReportData.getLevel();
+			} else if (condition.getSettingDetailTotalOutput().isGrossTotal())
+				tagStr = WorkScheOutputConstants.GROSS_TOTAL;
 			else
-				workplaceTotalCellTag.setValue(WorkScheOutputConstants.GROSS_TOTAL);
+				tagStr = null;
 			
-			// A9_2 - A13_2
-			int numOfChunks = (int) Math.ceil( (double) workplaceReportData.getGrossTotal().size() / CHUNK_SIZE);
-			
-	        for(int i = 0; i < numOfChunks; i++) {
-	            int start = i * CHUNK_SIZE;
-	            int length = Math.min(workplaceReportData.getGrossTotal().size() - start, CHUNK_SIZE);
-	
-	            List<TotalValue> lstItemRow = workplaceReportData.getGrossTotal().subList(start, start + length);
-	            
-	            for (int j = 0; j < length; j++) {
-	            	String value = lstItemRow.get(j).getValue();
-	            	if (value != "0") {
-		            	Cell cell = cells.get(currentRow + i, DATA_COLUMN_INDEX[0] + j * 2); 
-		            	cell.setValue(value);
-	            	}
-	            }
-	        }
-		//}
+			if (tagStr != null) {
+				Range wkpHierTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
+				Range wkpHierTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
+				wkpHierTotalRange.copy(wkpHierTotalRangeTemp);
+				Cell workplaceTotalCellTag = cells.get(currentRow, 0);
+				
+				workplaceTotalCellTag.setValue(tagStr);
+				
+				// A9_2 - A13_2
+				int numOfChunks = (int) Math.ceil( (double) workplaceReportData.getGrossTotal().size() / CHUNK_SIZE);
+				
+		        for(int i = 0; i < numOfChunks; i++) {
+		            int start = i * CHUNK_SIZE;
+		            int length = Math.min(workplaceReportData.getGrossTotal().size() - start, CHUNK_SIZE);
+		
+		            List<TotalValue> lstItemRow = workplaceReportData.getGrossTotal().subList(start, start + length);
+		            
+		            for (int j = 0; j < length; j++) {
+		            	String value = lstItemRow.get(j).getValue();
+		            	if (value != "0") {
+			            	Cell cell = cells.get(currentRow + i, DATA_COLUMN_INDEX[0] + j * 2); 
+			            	cell.setValue(value);
+		            	}
+		            }
+		        }
+			}
+		}
 		
 		// Page break by workplace
 		if (condition.getPageBreakIndicator() == PageBreakIndicator.WORKPLACE)
@@ -1530,7 +1540,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		
 		// Workplace hierarchy total
 		int level = rootWorkplace.getLevel();
-		if (level != 0) {
+		if (level != 0 && level <= condition.getSettingDetailTotalOutput().getWorkplaceHierarchyTotal().getHighestLevelEnabled()) {
 			Range wkpHierTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
 			Range wkpHierTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
 			wkpHierTotalRange.copy(wkpHierTotalRangeTemp);
