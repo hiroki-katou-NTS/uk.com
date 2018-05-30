@@ -287,10 +287,10 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                 self.attendanceName(attendanceRecExpSetName);
             }
 
-            self.useSealValue(useSeal == 1 ? true : false);
+            
 
             if (attendanceRecExpDaily != null || attendanceRecExpMonthly != null || attendanceRecItemList != null) {
-
+                self.useSealValue(useSeal == 1 ? true : false);
                 attendanceRecExpDaily.forEach((item: any) => {
                     self.attendanceRecExpDaily().push(new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition, item.lowwerPosition));
                 });

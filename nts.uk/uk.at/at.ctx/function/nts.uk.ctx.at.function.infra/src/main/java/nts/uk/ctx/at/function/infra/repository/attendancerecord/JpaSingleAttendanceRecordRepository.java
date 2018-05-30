@@ -97,6 +97,7 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 		KfnstAttndRecItem kfnstAttndRecItem = (listKfnstAttndRecItem!=null && listKfnstAttndRecItem.size()!=0) ? listKfnstAttndRecItem.get(0) : null;
 		if (kfnstAttndRecItem!=null) {
 			this.commandProxy().remove(kfnstAttndRecItem);
+			this.getEntityManager().flush();
 			this.commandProxy().insert(this.toEntityAttndRecItem(exportSettingCode, columnIndex, position, exportArt,
 					singleAttendanceRecord));
 		} else {

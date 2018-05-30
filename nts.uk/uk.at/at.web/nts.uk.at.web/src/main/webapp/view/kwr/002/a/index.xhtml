@@ -25,8 +25,8 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- A1_1 -->
-				<button id="print" tabindex="1" class="proceed group-button-1"
-					data-bind="click: print">#{i18n.getText('KWR002_9')}</button>
+				<button style="margin-left: 90px" id="print" tabindex="1"
+					class="proceed group-button-1" data-bind="click: print">#{i18n.getText('KWR002_9')}</button>
 				<!-- A1_2 -->
 				<button id="exportExcel" tabindex="2" class="group-button-1"
 					data-bind="click: exportExcel">#{i18n.getText('KWR002_10')}</button>
@@ -35,7 +35,7 @@
 				<!--The component container-->
 				<div id="ccgcomponent" tabindex="3"></div>
 
-				<div class="drag-panel" style="margin-left: 85px">
+				<div class="drag-panel" style="margin-left: 85px; margin-top: 20px">
 					<div style="margin-bottom: 10px">
 						<label>#{i18n.getText('KWR002_11')}</label>
 					</div>
@@ -51,18 +51,22 @@
 					</table>
 
 				</div>
-				<div class="drag-panel" style="margin-left: 30px">
+				<div class="drag-panel" style="margin-left: 30px; margin-top: 20px">
 					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KWR002_17')}</div>
 					<div style="padding: 40px; margin-bottom: 40px"
 						id="daterangepicker" tabindex="5"
-						data-bind="ntsDateRangePicker: { required: true, enable: enable, showNextPrevious: true, value: dateValue, maxRange: 'oneMonth', type: 'yearmonth'}" />
+						data-bind="ntsDateRangePicker: { required: true, enable: enable, showNextPrevious: true, value: dateValue, maxRange: 'oneYear', type: 'yearmonth'}" />
 					<div style="margin-bottom: 10px">
 						<label>#{i18n.getText('KWR002_26')}</label>
 					</div>
-					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KWR002_18')}</div>
 
-					<div id="combo-box" tabindex="6"
-						data-bind="ntsComboBox: {
+
+					<div>
+						<div style="float: left"
+							data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KWR002_18')}</div>
+
+						<div style="float: left" id="combo-box" tabindex="6"
+							data-bind="ntsComboBox: {
 								options: attendanceRecordList,
 								optionsValue: 'code',
 								visibleItemsCount: 20,
@@ -74,9 +78,13 @@
 								columns: [
 									{ prop: 'code', length: 4 },
 									{ prop: 'name', length: 10 }]}">
+						</div>
+						<div style="float: left; margin-left: 20px">
+							<button id="openBDialog" tabindex="7" class="group-button-1"
+								data-bind="click: openBDialog, disable: false">#{i18n.getText('KWR002_20')}</button>
+						</div>
 					</div>
-					<button id="openBDialog" tabindex="7" class="group-button-1"
-						data-bind="click: openBDialog, disable: false">#{i18n.getText('KWR002_20')}</button>
+
 
 				</div>
 			</div>
