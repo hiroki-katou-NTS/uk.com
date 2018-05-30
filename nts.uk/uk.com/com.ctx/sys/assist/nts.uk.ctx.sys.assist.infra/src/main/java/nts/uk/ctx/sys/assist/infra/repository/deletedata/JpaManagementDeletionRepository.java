@@ -94,6 +94,7 @@ public class JpaManagementDeletionRepository extends JpaRepository implements Ma
 	
 	@Override
     public void remove(String delId){
-        this.commandProxy().remove(SspdtManagementDeletion.class, delId); 
+		SspdtManagementDeletionPK sspdtManagementDeletionPK = new  SspdtManagementDeletionPK(delId);
+        this.commandProxy().remove(SspdtManagementDeletion.class, sspdtManagementDeletionPK); 
     }
 }
