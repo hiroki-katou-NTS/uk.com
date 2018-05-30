@@ -524,7 +524,7 @@ module nts.uk.at.view.kwr001.a {
             
             private saveWorkScheduleOutputCondition(): JQueryPromise<void> {
                 let self = this,
-                    dfd = $.Deferred<any>(),
+                    dfd = $.Deferred<void>();
                     companyId: string = __viewContext.user.companyId,
                     userId: string = __viewContext.user.employeeId;
                 service.restoreCharacteristic(companyId, userId).done(function(data: any) {
@@ -567,7 +567,7 @@ module nts.uk.at.view.kwr001.a {
                     service.saveCharacteristic(companyId, userId, workScheduleOutputCondition); 
                     dfd.resolve();
                 })
-                dfd.promise();
+                return dfd.promise();
             }
             
             private toDate(strDate: string): Date {
