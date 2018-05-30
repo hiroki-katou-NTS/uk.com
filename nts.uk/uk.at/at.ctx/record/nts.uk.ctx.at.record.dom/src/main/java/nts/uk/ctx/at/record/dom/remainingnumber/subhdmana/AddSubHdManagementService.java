@@ -151,7 +151,7 @@ public class AddSubHdManagementService {
 				//チェックボタン「分割消化」をチェックする
 				if (subHdManagementData.getCheckedSubHoliday()) {
 					List<CompensatoryDayOffManaData> dayoff =  repoComDayOffManaData.getBySidWithHolidayDateCondition(companyId, employeeId, dateSubHoliday);
-					if (dayoff.isEmpty()) {
+					if (!dayoff.isEmpty()) {
 						errorList.add("Msg_737_sub_option_holiday");
 					}
 				}
