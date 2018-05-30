@@ -405,9 +405,9 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         goToD(rData) {
             var self = this;
             let listStatusEmp: Array<ApprovalStatusEmployee> = [];
-            _.each(self.listApprovalEmployee, function(item: ApprovalStatusEmployee) {
-                if (rData.empId == item.sId) {
-                    listStatusEmp.push(new ApprovalStatusEmployee(item.sId, item.startDate, item.endDate));
+            _.each(self.listApprovalEmployee, function(item) {
+                if (rData.empId == item.sid) {
+                    listStatusEmp.push(new ApprovalStatusEmployee(item.sid, item.startDate, item.endDate));
                 }
             });
             let params = {
@@ -435,11 +435,11 @@ module nts.uk.at.view.kaf018.c.viewmodel {
     }
 
     class ApprovalStatusEmployee {
-        sId: string;
+        sid: string;
         startDate: Date;
         endDate: Date;
-        constructor(sId: string, startDate: Date, endDate: Date) {
-            this.sId = sId;
+        constructor(sid: string, startDate: Date, endDate: Date) {
+            this.sid = sid;
             this.startDate = startDate;
             this.endDate = endDate;
         }

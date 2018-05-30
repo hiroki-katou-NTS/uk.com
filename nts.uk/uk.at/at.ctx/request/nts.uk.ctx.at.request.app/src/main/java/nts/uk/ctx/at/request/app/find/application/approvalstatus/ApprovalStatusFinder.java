@@ -278,7 +278,8 @@ public class ApprovalStatusFinder {
 		//List<ApplicationDto_New> listApp = new ArrayList<>();
 		for (ApprovalSttAppDetail app : listAppSttDetail) {
 			ApplicationDetailDto detail = new ApplicationDetailDto();
-
+			
+			int detailSet = app.getDetailSet();
 			ApplicationType appType = app.getAppDispName().getAppType();
 			ApplicationDto_New applicaton_N = ApplicationDto_New.fromDomain(app.getAppContent().getApplication());
 			//listApp.add(applicaton_N);
@@ -345,7 +346,7 @@ public class ApprovalStatusFinder {
 			switch (appType) {
 			// 残業申請
 			case OVER_TIME_APPLICATION:
-				appContent = getAppContentOverTime(companyID, appId);
+				appContent = getAppContentOverTime(companyID, appId, detailSet);
 				break;
 			// 休暇申請
 			case ABSENCE_APPLICATION:
@@ -489,19 +490,19 @@ public class ApprovalStatusFinder {
 		return appContent;
 	}
 
-	private String getAppContentOverTime(String companyID, String appId) {
+	private String getAppContentOverTime(String companyID, String appId, int detailSet) {
 		String appContent = "";
-
 		AppOverTimeInfoFull appOverTime = appDetailInfoRepo.getAppOverTimeInfo(companyID, appId);
-		appContent += I18NText.getText("KAF018_268");
-		appContent += appOverTime.getWorkClockFrom1();
-		appContent += I18NText.getText("KAF018_220");
-		appContent += appOverTime.getWorkClockTo1();
-		appContent += appOverTime.getWorkClockFrom2() != "" ? appOverTime.getWorkClockFrom2() : "";
-		appContent += appOverTime.getWorkClockTo2() != "" ? I18NText.getText("KAF018_220") : "";
-		appContent += appOverTime.getWorkClockTo2() != "" ? appOverTime.getWorkClockTo2() : "";
+		if(detailSet==1) {
+			appContent += I18NText.getText("KAF018_268");
+			appContent += appOverTime.getWorkClockFrom1();
+			appContent += I18NText.getText("KAF018_220");
+			appContent += appOverTime.getWorkClockTo1();
+			appContent += appOverTime.getWorkClockFrom2() != "" ? appOverTime.getWorkClockFrom2() : "";
+			appContent += appOverTime.getWorkClockTo2() != "" ? I18NText.getText("KAF018_220") : "";
+			appContent += appOverTime.getWorkClockTo2() != "" ? appOverTime.getWorkClockTo2() : "";
+		}
 		appContent += "残業合計  ";
-
 		List<OverTimeFrame> lstFrame = appOverTime.getLstFrame();
 		Comparator<OverTimeFrame> sortList = Comparator.comparing(OverTimeFrame::getAttendanceType)
 				.thenComparing(OverTimeFrame::getFrameNo);
