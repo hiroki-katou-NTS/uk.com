@@ -209,7 +209,7 @@ public class WorkplacePubImp implements SyWorkplacePub {
 	
 	
 	@Override
-	public List<AffWorkplaceExport> getByLstWkpIdAndPeriod(String lstWkpId, GeneralDate startDate,
+	public List<AffWorkplaceExport> getByLstWkpIdAndPeriod(List<String> lstWkpId, GeneralDate startDate,
 			GeneralDate endDate) {
 		if (lstWkpId.isEmpty() ||startDate == null  || endDate == null)
 			return new ArrayList<>();

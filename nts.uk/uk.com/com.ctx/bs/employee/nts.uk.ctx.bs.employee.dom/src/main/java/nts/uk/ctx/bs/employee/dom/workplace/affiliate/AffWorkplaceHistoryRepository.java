@@ -70,7 +70,7 @@ public interface AffWorkplaceHistoryRepository {
 	
 	List<String> getByWplIdAndPeriod(String workplaceId,GeneralDate startDate, GeneralDate endDate);
 	
-	List<String> getByLstWplIdAndPeriod(String lstWkpId,GeneralDate startDate, GeneralDate endDate);
+	List<String> getByLstWplIdAndPeriod(List<String> lstWkpId,GeneralDate startDate, GeneralDate endDate);
 
 	List<AffWorkplaceHistory> getByListSid(List<String> employeeIds);
 }
