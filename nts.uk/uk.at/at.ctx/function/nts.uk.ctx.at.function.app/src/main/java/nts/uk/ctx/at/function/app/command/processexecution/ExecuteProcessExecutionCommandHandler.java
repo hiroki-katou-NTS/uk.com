@@ -2620,8 +2620,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				}
 				return new DatePeriod(startDate, period.end());
 			}
+			return null;
 		}
-		return null;
+		return period;
 	}
 
 	// true is interrupt
