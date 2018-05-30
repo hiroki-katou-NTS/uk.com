@@ -58,7 +58,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	@Override
 	public List<IntegrationOfDaily> calculate(List<IntegrationOfDaily> integrationOfDaily) {
 		
-		if(integrationOfDaily.isEmpty()) return Collections.emptyList();
+		if(integrationOfDaily.isEmpty()) return integrationOfDaily;
 		//会社共通の設定を
 		val companyCommonSetting = new ManagePerCompanySet(holidayAddtionRepository.findByCompanyId(AppContexts.user().companyId()),
 														   holidayAddtionRepository.findByCId(AppContexts.user().companyId()),
@@ -71,7 +71,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		val endDate  = integrationOfDaily.get(integrationOfDaily.size() - 1).getAffiliationInfor().getYmd();
 		//先頭の要素を取得
 		val firstIntegration = integrationOfDaily.stream().findFirst();
-		if(!firstIntegration.isPresent()) return Collections.emptyList();
+		if(!firstIntegration.isPresent()) return integrationOfDaily;
 		//社員ID(不変)
 		String employeeId = firstIntegration.get().getAffiliationInfor().getEmployeeId();
 		
@@ -79,7 +79,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		val personalInfo = workingConditionItemRepository.getBySidAndPeriodOrderByStrDWithDatePeriod(employeeId, new DatePeriod(startDate, endDate));
 		/*特定日の労働条件取得(可変)*/
 		Optional<Entry<DateHistoryItem, WorkingConditionItem>>  test = personalInfo.getItemAtDate(firstIntegration.get().getAffiliationInfor().getYmd());
-		if(personalInfo.getMappingItems().isEmpty())return integrationOfDaily;
+		if(personalInfo.getMappingItems().isEmpty() || !test.isPresent() || test.get() == null || test.get().getValue() == null) return integrationOfDaily;
 		
 		//初期値作成(可変)
 		EmploymentCode nowEmpCode = firstIntegration.get().getAffiliationInfor().getEmploymentCode();
