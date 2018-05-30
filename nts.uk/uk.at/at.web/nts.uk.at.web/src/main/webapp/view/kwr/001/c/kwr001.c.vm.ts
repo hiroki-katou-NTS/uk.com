@@ -346,31 +346,33 @@ module nts.uk.at.view.kwr001.c {
             */
             private removeData(): void {
                 let self = this;
-                service.remove(self.currentCodeList()).done(function() {
-                    let indexCurrentCode = _.findIndex(self.outputItemList(), function(value, index) {
-                        return self.currentCodeList() == value.code;
-                    })
-                    
-                    // self.currentCodeList only have 1 element in list
-                    if (self.outputItemList().length == 1) {
-                        self.currentCodeList(null);
-                    } 
-                    // when current code was selected is last element in list self.currentCodeList
-                    else if (indexCurrentCode == (self.outputItemList().length - 1)) {
-                        self.currentCodeList(self.outputItemList()[indexCurrentCode-1].code);
-                    } 
-                    // when current code was selected in place middle in list self.currentCodeList
-                    else {
-                        self.currentCodeList(self.outputItemList()[indexCurrentCode+1].code);
-                    }
-                    self.getDataService().done(function(){
-                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
-                            if (_.isEmpty(self.currentCodeList())) {
-                                $('#C3_2').focus();
-                            } else {
-                                $('#C3_3').focus();
-                            }     
-                        });
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    service.remove(self.currentCodeList()).done(function() {
+                        let indexCurrentCode = _.findIndex(self.outputItemList(), function(value, index) {
+                            return self.currentCodeList() == value.code;
+                        })
+                        
+                        // self.currentCodeList only have 1 element in list
+                        if (self.outputItemList().length == 1) {
+                            self.currentCodeList(null);
+                        } 
+                        // when current code was selected is last element in list self.currentCodeList
+                        else if (indexCurrentCode == (self.outputItemList().length - 1)) {
+                            self.currentCodeList(self.outputItemList()[indexCurrentCode-1].code);
+                        } 
+                        // when current code was selected in place middle in list self.currentCodeList
+                        else {
+                            self.currentCodeList(self.outputItemList()[indexCurrentCode+1].code);
+                        }
+                        self.getDataService().done(function(){
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                                if (_.isEmpty(self.currentCodeList())) {
+                                    $('#C3_2').focus();
+                                } else {
+                                    $('#C3_3').focus();
+                                }     
+                            });
+                        })
                     })
                 })
             }
