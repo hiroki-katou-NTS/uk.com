@@ -83,8 +83,8 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	@Override
 	protected void handle(ExportServiceContext<Object> context) {
 		generalCsvAuto(context.getGeneratorContext());
-		String storeProcessingId = context.getQuery().toString();
-		serverManualSaveProcessing(storeProcessingId, context.getGeneratorContext());
+		//String storeProcessingId = context.getQuery().toString();
+		//serverManualSaveProcessing(storeProcessingId, context.getGeneratorContext());
 	}
 
 	public void serverManualSaveProcessing(String storeProcessingId, FileGeneratorContext generatorContext) {
@@ -447,7 +447,15 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					+ tableList.getTableJapaneseName() + FILE_EXTENSION, headerCsv, dataSourceCsv);
 
 			generator.generate(generatorContext, fileData);
+
 		}
+		
+		ApplicationTemporaryFilesContainer applicationTemporaryFilesContainer 
+			= applicationTemporaryFileFactory.createContainer();
+		Path path = applicationTemporaryFilesContainer.zipWithName(generatorContext, "abc.zip");
+		
+		applicationTemporaryFilesContainer.removeContainer();
+		path.toFile();
 	}
 
 	private Object getValueByPropertyName(Object object, String fieldName) {
