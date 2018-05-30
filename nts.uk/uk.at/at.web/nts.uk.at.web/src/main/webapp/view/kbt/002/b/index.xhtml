@@ -188,7 +188,7 @@
 														<div tabindex="18" data-bind="ntsCheckBox: { checked: recreateWorkType, enable: perScheduleCls() &amp;&amp; creationTarget() == 1 }">#{i18n.getText('KBT002_149')}</div>
 														</div>	
 														<!-- B7_23 -->
-														<div id="b23" tabindex="19" data-bind="ntsCheckBox: { checked: manualCorrection, enable: perScheduleCls() &amp;&amp; creationTarget() == 1 &amp;&amp; recreateTransfer() &amp;&amp; recreateWorkType() &amp;&amp; createEmployee() }">#{i18n.getText('KBT002_34')}</div>
+														<div id="b23" tabindex="19" data-bind="ntsCheckBox: { checked: manualCorrection, enable: perScheduleCls() &amp;&amp; creationTarget() == 1 &amp;&amp; (recreateTransfer() || recreateWorkType()) }">#{i18n.getText('KBT002_34')}</div>
 													</div>
 		                         				</div>
 		                         			</div>
