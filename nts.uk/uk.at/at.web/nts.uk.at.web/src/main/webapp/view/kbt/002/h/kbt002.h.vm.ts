@@ -143,7 +143,7 @@ module nts.uk.at.view.kbt002.h {
                     var dd = today.getDate();
                     var mm = today.getMonth() + 1;
                     var yyyy = today.getFullYear();
-                    var startDateSplit = self.dateValue().endDate.split("/");
+                    var startDateSplit = self.dateValue().startDate.split("/");
                     var endDateSplit = self.dateValue().endDate.split("/");
                     var yearEndDate = new Number(startDateSplit[0]);
                     var monthEndDate = new Number(startDateSplit[1]);

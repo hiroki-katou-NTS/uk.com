@@ -10,8 +10,8 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoHistorySelection;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoHistorySelectionRepository;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.history.PerInfoHistorySelection;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.history.PerInfoHistorySelectionRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 

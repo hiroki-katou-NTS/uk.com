@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.app.find.alarm;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,8 +48,14 @@ public class AlarmPatternSettingFinder {
 
 	public List<AlarmCheckConditonCodeDto> findAllAlarmCheckCondition() {
 		String companyId = AppContexts.user().companyId();
-		return alarmCategoryRepo.findAll(companyId).stream().map(domain -> this.convertToCheckConditionCode(domain))
+		List<AlarmCheckConditonCodeDto> result = new ArrayList<AlarmCheckConditonCodeDto>();
+		List<AlarmCheckConditionByCategory> listCheckCondition = alarmCategoryRepo.findAll(companyId);
+		listCheckCondition.sort((a , b) -> a.getCategory().value- b.getCategory().value);
+		
+		result = listCheckCondition.stream().map(domain -> this.convertToCheckConditionCode(domain))
 				.collect(Collectors.toList());
+		
+		return result;
 	}
 
 	public AlarmPatternSettingDto convertToAlarmPatternDto(AlarmPatternSetting domain) {
