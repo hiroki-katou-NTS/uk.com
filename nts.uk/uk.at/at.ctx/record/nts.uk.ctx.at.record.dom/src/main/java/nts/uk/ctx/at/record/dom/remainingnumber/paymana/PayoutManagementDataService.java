@@ -181,17 +181,17 @@ public class PayoutManagementDataService {
 			errors.add("Msg_744");
 		}
 		if(restDate.equals(workDate)) {
-			errors.add("Msg_729");
+			errors.add("Msg_729_SubMana");
 		}
 		if(split) {
 			if(restDate.equals(splitDate)) {
-				errors.add("Msg_744");
+				errors.add("Msg_744_Split");
 			}
 			if(checkDateClosing(splitDate,closureDate,closureId)){
-				errors.add("Msg_744");
+				errors.add("Msg_744_Split");
 			}
 			if(splitDate.equals(workDate)) {
-				errors.add("Msg_729");
+				errors.add("Msg_729_Split");
 			}
 		}
 		return errors;

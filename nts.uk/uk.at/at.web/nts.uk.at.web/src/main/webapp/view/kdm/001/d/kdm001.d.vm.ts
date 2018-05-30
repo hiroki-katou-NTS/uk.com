@@ -163,6 +163,9 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                         if (error === "Msg_744") {
                             $('#D8_1').ntsError('set', { messageId: "Msg_744" });
                         }
+                        if (error === "Msg_744_Split") {
+                            $('#D12_2').ntsError('set', { messageId: "Msg_744" });
+                        }
                         if (error === "Msg_1256_PayMana") {
                             $('#D6_1').ntsError('set', { messageId: "Msg_1256" });
                         }
@@ -183,6 +186,12 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                         }
                         if (error === "Msg_1257") {
                             $('#D6_1').ntsError('set', { messageId: "Msg_1257" });
+                        }
+                        if (error === "Msg_729_Split") {
+                            $('#D12_2').ntsError('set', { messageId: "Msg_729" });
+                        }
+                        if (error === "Msg_729") {
+                            $('#D11_1').ntsError('set', { messageId: "Msg_729" });
                         }
                     }
                     return;
