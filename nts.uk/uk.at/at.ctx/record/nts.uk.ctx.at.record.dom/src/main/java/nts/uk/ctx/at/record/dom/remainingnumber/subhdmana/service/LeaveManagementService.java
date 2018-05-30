@@ -71,6 +71,11 @@ public class LeaveManagementService {
 			List<LeaveManagementData> leaveManaUpdate = new ArrayList<>();
 			leaveManaUpdate = leaveManaDataRepository.getByComDayOffId(companyId, leaveManagementData.getEmployeeId(),
 					leaveManagementData.getComDayOffID());
+			for (int i = 0; i < leaveManaUpdate.size(); i++) {
+				if(leaveManaUpdate.get(i).getOccurredDays().v() != Double.parseDouble(leaveManagementData.getNumberDayParam())) {
+					leaveManaUpdate.remove(i);
+				}
+			}
 			List<String> currentLeaveMana = leaveManaUpdate.stream().map(item -> new String(item.getID()))
 					.collect(Collectors.toList());
 			// update Sub by current leave
