@@ -25,7 +25,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriod;
-import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriodEnum;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.HolidayWorkAndTransferAtr;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
@@ -152,13 +151,10 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 		}
 		if (isAggregateHolidayWork){
 			
-			// 自動的に除く休出枠を確認する
-			if (autoExceptHolidayWorkFrames.isEmpty()) {
-				// 0件なら、自動計算せず休出時間を集計する
-				this.aggregateWithoutAutoCalc(attendanceTimeOfDaily, roleHolidayWorkFrameMap);
-			}
-			else {
-				// 1件以上なら、自動計算して休出時間を集計する
+			// 「休出枠の役割」を確認する
+			if (roleHolidayWorkFrameMap.size() > 0) {
+				
+				// 自動計算して休出時間を集計する
 				this.aggregateByAutoCalc(attendanceTimeOfDaily, companyId, workplaceId, employmentCd, workingSystem,
 						workInfo, legalHolidayWorkTransferOrder, roleHolidayWorkFrameMap, repositories);
 			}
@@ -249,50 +245,6 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 	}
 	
 	/**
-	 * 自動計算せず集計する
-	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
-	 * @param roleHolidayWorkFrameMap 休出枠の役割
-	 */
-	private void aggregateWithoutAutoCalc(
-			AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
-			Map<Integer, RoleOfOpenPeriod> roleHolidayWorkFrameMap){
-		
-		// 「休出枠時間」を取得する
-		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
-		val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
-		val excessOfStatutoryTimeOfDaily = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
-		val holidayWorkTimeOfDaily = excessOfStatutoryTimeOfDaily.getWorkHolidayTime();
-		// 休出時間がない時、集計しない
-		if (!holidayWorkTimeOfDaily.isPresent()) return;
-		val holidayWorkFrameTimeSrcs = holidayWorkTimeOfDaily.get().getHolidayWorkFrameTime();
-			
-		// 取得した休出枠時間を「集計休出時間」に入れる
-		for (val holidayWorkFrameTimeSrc : holidayWorkFrameTimeSrcs){
-			val holidayWorkFrameNo = holidayWorkFrameTimeSrc.getHolidayFrameNo();
-			
-			// 対象の集計休出時間を確認する
-			val targetAggregateHolidayWorkTime = this.getTargetAggregateHolidayWorkTime(holidayWorkFrameNo);
-			val ymd = attendanceTimeOfDaily.getYmd();
-			
-			// 法定内・外の各役割に応じて法定内・法定外休出時間に入れる
-			if (!roleHolidayWorkFrameMap.containsKey(holidayWorkFrameNo.v())) continue;
-			val targetRole = roleHolidayWorkFrameMap.get(holidayWorkFrameNo.v());
-			switch (targetRole.getRoleOfOpenPeriodEnum()){
-			case STATUTORY_HOLIDAYS:
-				// 法定内の休出枠に該当する時、法定内休出時間に入れる
-				targetAggregateHolidayWorkTime.addLegalHolidayWorkTimeInTimeSeriesWork(ymd, holidayWorkFrameTimeSrc);
-				break;
-			case NON_STATUTORY_HOLIDAYS:
-				// 法定外の休出枠に該当する時、休出時間に入れる
-				targetAggregateHolidayWorkTime.addHolidayWorkTimeInTimeSeriesWork(ymd, holidayWorkFrameTimeSrc);
-				break;
-			case MIX_WITHIN_OUTSIDE_STATUTORY:
-				break;
-			}
-		}
-	}
-	
-	/**
 	 * 法定内休出に出来る時間を計算する
 	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
 	 * @param companyId 会社ID
@@ -347,15 +299,12 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 			val targetHolidayWorkTime = this.getTargetAggregateHolidayWorkTime(holidayWorkFrameNo);
 			val timeSeriesWork = targetHolidayWorkTime.getAndPutTimeSeriesWork(ymd);
 			
-			// 自動的に除く休出枠か確認する
-			boolean isAutoExcept = false;
-			if (roleHolidayWorkFrameMap.containsKey(holidayWorkFrameNo.v())){
-				if (roleHolidayWorkFrameMap.get(holidayWorkFrameNo.v()).getRoleOfOpenPeriodEnum() ==
-						RoleOfOpenPeriodEnum.MIX_WITHIN_OUTSIDE_STATUTORY){
-					isAutoExcept = true;
-				}
-			}
-			if (isAutoExcept){
+			// 対象の役割を確認する
+			if (!roleHolidayWorkFrameMap.containsKey(holidayWorkFrameNo.v())) continue;
+			val roleHolidayWorkFrame = roleHolidayWorkFrameMap.get(holidayWorkFrameNo.v());
+
+			switch (roleHolidayWorkFrame.getRoleOfOpenPeriodEnum()){
+			case MIX_WITHIN_OUTSIDE_STATUTORY:
 				
 				// 取得した休出枠時間を集計休出時間に入れる　（入れた時間分を法定内休出にできる時間から引く）
 				switch (holidayWorkAndTransferAtr){
@@ -400,8 +349,36 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 							transferTimeWork, new AttendanceTime(0)));
 					break;
 				}
-			}
-			else {
+				break;
+				
+			case STATUTORY_HOLIDAYS:
+				
+				// 取得した休出枠時間を集計休出時間に入れる　（入れた時間分を法定内休出にできる時間から引く）
+				switch (holidayWorkAndTransferAtr){
+				case HOLIDAY_WORK:
+					timeSeriesWork.addHolidayWorkTimeInLegalHolidayWorkTime(holidayWorkFrameTime.getHolidayWorkTime().get());
+					if (timeAfterCalc.lessThanOrEqualTo(holidayWorkFrameTime.getHolidayWorkTime().get().getTime())){
+						timeAfterCalc = new AttendanceTime(0);
+					}
+					else {
+						timeAfterCalc =
+								timeAfterCalc.minusMinutes(holidayWorkFrameTime.getHolidayWorkTime().get().getTime().v());
+					}
+					break;
+				case TRANSFER:
+					timeSeriesWork.addTransferTimeInLegalHolidayWorkTime(holidayWorkFrameTime.getTransferTime().get());
+					if (timeAfterCalc.lessThanOrEqualTo(holidayWorkFrameTime.getTransferTime().get().getTime())){
+						timeAfterCalc = new AttendanceTime(0);
+					}
+					else {
+						timeAfterCalc =
+								timeAfterCalc.minusMinutes(holidayWorkFrameTime.getTransferTime().get().getTime().v());
+					}
+					break;
+				}
+				break;
+				
+			case NON_STATUTORY_HOLIDAYS:
 				
 				// 取得した休出枠時間を集計休出時間に入れる
 				switch (holidayWorkAndTransferAtr){
@@ -412,6 +389,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 					timeSeriesWork.addTransferTimeInHolidayWorkTime(holidayWorkFrameTime.getTransferTime().get());
 					break;
 				}
+				break;
 			}
 		}
 		
@@ -504,6 +482,27 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 
 		for (val aggregateHolidayWorkTime : this.aggregateHolidayWorkTimeMap.values()){
 			aggregateHolidayWorkTime.aggregate(datePeriod);
+			this.totalHolidayWorkTime = this.totalHolidayWorkTime.addMinutes(
+					aggregateHolidayWorkTime.getHolidayWorkTime().getTime().v(),
+					aggregateHolidayWorkTime.getHolidayWorkTime().getCalcTime().v());
+			this.beforeHolidayWorkTime = this.beforeHolidayWorkTime.addMinutes(
+					aggregateHolidayWorkTime.getBeforeHolidayWorkTime().v());
+			this.totalTransferTime = this.totalTransferTime.addMinutes(
+					aggregateHolidayWorkTime.getTransferTime().getTime().v(),
+					aggregateHolidayWorkTime.getTransferTime().getCalcTime().v());
+		}
+	}
+	
+	/**
+	 * 休出合計時間を集計する　（再計算用）
+	 */
+	public void recalcTotal(){
+
+		this.totalHolidayWorkTime = TimeMonthWithCalculation.ofSameTime(0);
+		this.beforeHolidayWorkTime = new AttendanceTimeMonth(0);
+		this.totalTransferTime = TimeMonthWithCalculation.ofSameTime(0);
+
+		for (val aggregateHolidayWorkTime : this.aggregateHolidayWorkTimeMap.values()){
 			this.totalHolidayWorkTime = this.totalHolidayWorkTime.addMinutes(
 					aggregateHolidayWorkTime.getHolidayWorkTime().getTime().v(),
 					aggregateHolidayWorkTime.getHolidayWorkTime().getCalcTime().v());
