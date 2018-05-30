@@ -108,12 +108,12 @@ module nts.uk.at.view.kdm001.f.viewmodel {
             nts.uk.ui.errors.clearAll();
             let self = this;
             let command = new SubOfHDPayoutManaDataCommand(self.info.selectedEmployee.employeeId, self.info.rowValue.id, self.residualDay(), self.currentList());
-
+    
             if (!self.validate()) {
-
                 return;
             }
             if (!nts.uk.ui.errors.hasError()) {
+                block.invisible();
                 service.insertpayoutMan(command).done(() => {
                     dialog.info({ messageId: "Msg_15" }).then(() => {
                         setShared('KDM001_A_PARAMS', { isSuccess: true });
