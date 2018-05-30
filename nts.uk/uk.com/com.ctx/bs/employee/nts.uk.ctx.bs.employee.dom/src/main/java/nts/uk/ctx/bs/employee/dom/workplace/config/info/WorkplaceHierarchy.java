@@ -22,7 +22,7 @@ public class WorkplaceHierarchy extends DomainObject {
 	/** The hierarchy code. */
 	// 階層コード
 	@Setter
-	private HierarchyCode hierarchyCode;
+	private HierarchyCode hierarchyCode;	
 	
 	private WorkplaceHierarchy() {
 	}

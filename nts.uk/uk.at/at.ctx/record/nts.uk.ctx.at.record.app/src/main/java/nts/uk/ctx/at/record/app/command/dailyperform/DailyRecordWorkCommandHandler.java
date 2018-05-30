@@ -220,10 +220,8 @@ public class DailyRecordWorkCommandHandler {
 		//remove data error
 		employeeDailyPerErrorRepository.removeParam(command.getEmployeeId(), command.getWorkDate());
 		//check and insert error;
-		//determineErrorAlarmWorkRecordService.checkAndInsert(command.getEmployeeId(), command.getWorkDate());
-		
+//		determineErrorAlarmWorkRecordService.checkAndInsert(command.getEmployeeId(), command.getWorkDate());
 		determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(errors);
-		
 	}
 	
 	private List<EmployeeDailyPerError> calcIfNeed(Set<String> group, DailyRecordWorkCommand command){
@@ -237,7 +235,7 @@ public class DailyRecordWorkCommandHandler {
 							command.getPcLogInfo().getData(), Arrays.asList(command.getErrors().getData()), command.getOutingTime().getData(), command.getBreakTime().getData(), 
 							command.getAttendanceTime().getData(), command.getAttendanceTimeByWork().getData(), command.getTimeLeaving().getData(), 
 							command.getShortWorkTime().getData(), command.getSpecificDateAttr().getData(), command.getAttendanceLeavingGate().getData(), 
-							command.getOptionalItem().getData(), command.getEditState().getData(), command.getTemporaryTime().getData()));
+							command.getOptionalItem().getData(), command.getEditState().getData(), command.getTemporaryTime().getData()),null);
 //			command.getTimeLeaving().updateData(calced.getAttendanceLeave().orElse(null));
 			command.getAttendanceTime().updateData(calced.getAttendanceTimeOfDailyPerformance().orElse(null));
 //			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
@@ -256,7 +254,6 @@ public class DailyRecordWorkCommandHandler {
 //			command.getLogOnInfo
 //			group.add("I");
 			group.add("G");
-			
 			return calced.getEmployeeError();
 //		}
 	}

@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveGrantRemaining;
 
 /**
  * 実年休
@@ -80,7 +80,7 @@ public class RealAnnualLeave implements Cloneable {
 	 * @param afterGrantAtr 付与後フラグ
 	 */
 	public void createRemainingNumberFromGrantRemaining(
-			List<AnnualLeaveGrantRemainingData> remainingDataList, boolean afterGrantAtr){
+			List<AnnualLeaveGrantRemaining> remainingDataList, boolean afterGrantAtr){
 		
 		// 年休付与残数データから残数を作成
 		this.remainingNumber.createRemainingNumberFromGrantRemaining(remainingDataList);

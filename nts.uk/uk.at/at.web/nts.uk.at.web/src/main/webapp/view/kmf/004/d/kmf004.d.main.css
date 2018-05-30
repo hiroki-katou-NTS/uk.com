@@ -1,159 +1,93 @@
-@CHARSET "UTF-8";
-
-#monthdays {
-	left: -80px;
-	top: -25px !important;
+#left-content{
+    float: left;
+    margin-left: 20px !important;
+    margin-top: 12px;
+    width: 280px;
+    height: 400px;
+}
+#right-content{
+	float: left;
+    margin: 12px 0px 0 30px;
+    height: 200px;
+}
+#label{
+	
+	overflow: inline-block;
+	margin-left: 0px;
+}
+.nts-input{
+	width: 45px;
+}
+#inpPattern{
+	width: 170px !important;
+}
+#label_caret{
+	float: left;
+	margin-left: 20px;
+	margin-top: 10px;
+}
+#label_down{
+	margin-top: 10px;
+}
+#help{
+	margin-left: 410px; 
 }
 
-#button_radio {
-	padding: 5px !important;
-	width: 300px;
+table td.radio-text{
+    vertical-align: top;
 }
 
-thead {
+div#button_radio{
+	    width: 310px;
+    margin: 12px 0;
+}
+label.ntsRadioBox {
+    height: 27px;
+}	
+table.data-items thead {
 	background-color: #c7f391;
 }
 
-tr {
-	height: 10px;
+table.data-items thead td {
+	text-align: left;
 }
 
-.contents-area{
-	padding: 24px 30px;
+table.data-items tr {
+	height: 32px;
 }
 
-.cal-panel {
-	float: right;
-}
-
-.btn-cal {
-	width: 80px;
-	height: 36px;
-}
-
-.panel.panel-frame {
-	width: 300px;
-	float: right;
-}
-
-.cal-value {
-	width: 85px;
-}
-
-.contents-header td {
-	border: 1px solid #CCC;
-	height: 20px;
-	padding: 5px 3px;
-}
-
-.bound {
-	height: 20px;
-	z-index: -999999;
-	height: 140px;
-}
-
-span.nts-editor-wrapped.ntsControl.symbol.symbol-right {
-	width: auto !important;
-}
-
-table.contents-header td.numbers {
-	width: 36px;
-}
-
-table.contents-header td.pay-day-cal {
-	width: auto;
-}
-
-table.contents-header td.input-units {
-	width: 133px !important;
-}
-
-table.contents-header td.base-date {
-	width: 150px;
-}
-
-table.contents-header td.allow-pay {
-	width: 34px;
-}
-
-.input-units {
-	width: 122px !important;
-}
-
-.base-date-options {
-	width: 150px;
-	min-width: 0 !important;
-}
-
-.contents-header {
-	width: 26.7%;
-	margin-left: 30px!important;
-}
-
-.contents-data {
-	margin-left: 20px;
-	width: 17%;
-}
-
-.contents-data td {
-	border: 1px solid #CCC;
+table.data-items td {
+	border-bottom: 1px solid #CCC;
+	border-top: 1px solid #CCC;
+	border-left: 1px solid #CCC;
+	padding: 4px 12px;
     text-align: center;
-    height: 20px;
-    padding: 3px 10px;
-    width: 122px;
 }
 
-table.contents-data td.numbers {
-	width: 22px;
-}
-
-table.contents-data td.pay-day-cal {
-	width: 219px;
-}
-
-table.contents-data td.input-units {
-	width: 60px !important;
-}
-
-table.contents-data td.base-date {
-	width: 156px;
-}
-
-table.contents-data td.allow-pay {
-	width: 40px;
-}
-
-table.contents-data thead, table.contents-data tbody {
+table.data-items thead, table.data-items tbody {
 	display: block;
 }
 
-table.contents-data tbody {
-	height: 350px;
+table.data-items tbody {
+	height: 280px;
 	overflow-y: auto;
 	overflow-x: hidden;
 	border: 1px solid #CCC;
 }
 
-#label{
-	margin-left: 40px;
-	margin-bottom: 20px;
-}
-#help{
-	margin-left: 500px;
-	background: #c7f391;
-}
-.text{
-	    margin-left: 30px !important;
+td.hidden-right-border{
+	/*border-right-style: hidden;*/
 }
 
-.date-input-field{
-	width: 91px;
+.data-items{
+	    width: 296px;
+	    margin-top: 10px;
 }
-.help-btn{
-	margin-left: 650px !important;
+
+#text{
+	margin-left: 0px;
 }
-hr.spegator{
-	    width: 90%;
-    float: left;
-    margin-left: 30px;
+
+.caret-helpbutton {
+	left: 316px !important;
 }

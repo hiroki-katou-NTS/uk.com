@@ -152,7 +152,7 @@ public class WorkAppApprovalRootWebService extends WebService{
 	@Path("getEmployeeRegisterApprovalRoot")
 	public void lstEmps(EmployeeRegisterApprovalRootDto data){
 		String companyId = AppContexts.user().companyId();
-		registerApprovalRoot.lstEmps(companyId, data.getBaseDate(), data.getLstEmpIds(),data.getRootAtr(), data.getLstApps());
+		registerApprovalRoot.lstEmps(companyId, data.getBaseDate(), data.getLstEmpIds(), data.getLstApps());
 	}
 	@POST
 	@Path("getJobtitleName")

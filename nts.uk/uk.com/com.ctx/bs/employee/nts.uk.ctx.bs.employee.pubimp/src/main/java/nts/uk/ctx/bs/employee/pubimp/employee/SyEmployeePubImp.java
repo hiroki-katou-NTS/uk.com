@@ -36,6 +36,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRep
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.pub.employee.ConcurrentEmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmpOfLoginCompanyExport;
+import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeDataMngInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeExport;
@@ -523,6 +524,32 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 		});
 		return lstresult;
+	}
+
+	@Override
+	public EmployeeBasicExport getEmpBasicBySId(String sId) {
+
+		EmployeeBasicExport result = new EmployeeBasicExport();
+		// Employee Opt
+		Optional<EmployeeDataMngInfo> empOpt = this.empDataMngRepo.findByEmpId(sId);
+		if (!empOpt.isPresent()) {
+			return null;
+		}
+		// Get Employee
+		EmployeeDataMngInfo emp = empOpt.get();
+		// Person Opt
+		Optional<Person> personOpt = this.personRepository.getByPersonId(emp.getPersonId());
+		if (!personOpt.isPresent()) {
+			return null;
+		}
+		// Get Person
+		Person person = personOpt.get();
+
+		result.setEmployeeId(emp.getEmployeeId());
+		result.setBusinessName(person.getPersonNameGroup().getBusinessName().v());
+		result.setEmployeeCode(emp.getEmployeeCode().v());
+		
+		return result;
 	}
 
 }

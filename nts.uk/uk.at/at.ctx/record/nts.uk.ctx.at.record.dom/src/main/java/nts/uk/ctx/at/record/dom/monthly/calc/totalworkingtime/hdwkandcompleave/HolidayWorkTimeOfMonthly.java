@@ -37,7 +37,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author shuichi_ishida
  */
 @Getter
-public class HolidayWorkTimeOfMonthly {
+public class HolidayWorkTimeOfMonthly implements Cloneable {
 
 	/** 休出合計時間 */
 	private TimeMonthWithCalculation totalHolidayWorkTime;
@@ -83,6 +83,28 @@ public class HolidayWorkTimeOfMonthly {
 			domain.aggregateHolidayWorkTimeMap.putIfAbsent(holidayWorkFrameNo, aggregateHolidayWorkTime);
 		}
 		return domain;
+	}
+	
+	@Override
+	public HolidayWorkTimeOfMonthly clone() {
+		HolidayWorkTimeOfMonthly cloned = new HolidayWorkTimeOfMonthly();
+		try {
+			cloned.totalHolidayWorkTime = new TimeMonthWithCalculation(
+					new AttendanceTimeMonth(this.totalHolidayWorkTime.getTime().v()),
+					new AttendanceTimeMonth(this.totalHolidayWorkTime.getCalcTime().v()));
+			cloned.beforeHolidayWorkTime = new AttendanceTimeMonth(this.beforeHolidayWorkTime.v());
+			cloned.totalTransferTime = new TimeMonthWithCalculation(
+					new AttendanceTimeMonth(this.totalTransferTime.getTime().v()),
+					new AttendanceTimeMonth(this.totalTransferTime.getCalcTime().v()));
+			for (val aggrHolidayWorkTime : this.aggregateHolidayWorkTimeMap.entrySet()){
+				cloned.aggregateHolidayWorkTimeMap.putIfAbsent(
+						aggrHolidayWorkTime.getKey(), aggrHolidayWorkTime.getValue().clone());
+			}
+		}
+		catch (Exception e){
+			throw new RuntimeException("HolidayWorkTimeOfMonthly clone error.");
+		}
+		return cloned;
 	}
 	
 	/**

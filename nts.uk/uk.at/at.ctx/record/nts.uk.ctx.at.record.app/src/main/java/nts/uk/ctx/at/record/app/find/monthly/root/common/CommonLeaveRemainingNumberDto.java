@@ -1,0 +1,64 @@
+package nts.uk.ctx.at.record.app.find.monthly.root.common;
+
+import java.util.List;
+import java.util.Optional;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingNumber;
+import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveRemainingNumber;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
+import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+
+@Data
+/** 年休残数 */
+@NoArgsConstructor
+@AllArgsConstructor
+public class CommonLeaveRemainingNumberDto {
+
+	/** 合計残日数 */
+	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemLayout(jpPropertyName = "合計残日数", layout = "A")
+	private double totalRemainingDays;
+
+	/** 合計残時間 */
+	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemLayout(jpPropertyName = "合計残時間", layout = "B")
+	private Integer totalRemainingTime;
+
+	/** 明細 */
+	// @AttendanceItemLayout(jpPropertyName = "明細", layout = "C", listMaxLength = ??)
+	private List<CommonlLeaveRemainingDetailDto> details;
+
+	public static CommonLeaveRemainingNumberDto from(AnnualLeaveRemainingNumber domain) {
+		return domain == null ? null : new CommonLeaveRemainingNumberDto(
+				domain.getTotalRemainingDays().v(), 
+				domain.getTotalRemainingTime().isPresent() ? domain.getTotalRemainingTime().get().valueAsMinutes() : null, 
+				ConvertHelper.mapTo(domain.getDetails(), c -> CommonlLeaveRemainingDetailDto.from(c)));
+	}
+	
+	public AnnualLeaveRemainingNumber toDomain() {
+		return AnnualLeaveRemainingNumber.of(
+				new AnnualLeaveRemainingDayNumber(totalRemainingDays), 
+				Optional.ofNullable(totalRemainingTime == null ? null : new RemainingMinutes(totalRemainingTime)), 
+				ConvertHelper.mapTo(details, c -> c == null ? null : c.toDomain()));
+	}
+	public static CommonLeaveRemainingNumberDto from(ReserveLeaveRemainingNumber domain) {
+		return domain == null ? null : new CommonLeaveRemainingNumberDto(
+				domain.getTotalRemainingDays().v(), 
+				null, 
+				ConvertHelper.mapTo(domain.getDetails(), c -> CommonlLeaveRemainingDetailDto.from(c)));
+	}
+	
+	public ReserveLeaveRemainingNumber toReserveDomain() {
+		return ReserveLeaveRemainingNumber.of(
+				new ReserveLeaveRemainingDayNumber(totalRemainingDays), 
+				ConvertHelper.mapTo(details, c -> c == null ? null : c.toReserveDomain()));
+	}
+}

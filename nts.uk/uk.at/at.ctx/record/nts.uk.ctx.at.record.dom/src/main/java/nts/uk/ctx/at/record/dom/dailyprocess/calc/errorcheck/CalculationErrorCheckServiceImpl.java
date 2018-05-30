@@ -28,8 +28,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckService{
 
-	@Inject
-	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepository; 
+
 	@Inject
 	private DivTimeSysFixedCheckService divTimeSysFixedCheckService;
 	
@@ -40,15 +39,14 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 	private DailyRecordToAttendanceItemConverter dailyRecordToAttendanceItemConverter;
 	
 	@Override
-	public IntegrationOfDaily errorCheck(IntegrationOfDaily integrationOfDaily) {
+	public IntegrationOfDaily errorCheck(IntegrationOfDaily integrationOfDaily, List<ErrorAlarmWorkRecord> errorAlarm) {
 		
-		val errorItemList = errorAlarmWorkRecordRepository.getListErrorAlarmWorkRecord(AppContexts.user().companyId());
 		List<EmployeeDailyPerError> addItemList = new ArrayList<>();
 //		if(!integrationOfDaily.getEmployeeError().isEmpty() &&  integrationOfDaily.getEmployeeError() != null)
 //			addItemList = integrationOfDaily.getEmployeeError();
 		DailyRecordToAttendanceItemConverter attendanceItemConverter = this.dailyRecordToAttendanceItemConverter.setData(integrationOfDaily);
 		//勤務実績のエラーアラーム数分ループ
-		for(ErrorAlarmWorkRecord errorItem : errorItemList) {
+		for(ErrorAlarmWorkRecord errorItem : errorAlarm) {
 			//使用しない
 			if(!errorItem.getUseAtr()) continue;
 			
