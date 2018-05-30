@@ -1453,14 +1453,14 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		//・社員ID（異動者、勤務種別変更者のみ）（List）
 		List<String> noLeaderEmpIdList = empIds;
 		// check 異動者を再作成する
-		if(procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isRecreateTransfer()){
+		if(procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer()){
 			//異動者の絞り込み todo request list 189
 			List<WorkPlaceHistImport> wplByListSidAndPeriod = this.workplaceWorkRecordAdapter.getWplByListSidAndPeriod(empIds, p);
 			wplByListSidAndPeriod.forEach(x->{
 				wplEmpIdList.add(x.getEmployeeId());
 			});
 		}
-		if(procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isRecreateWorkType()){
+		if(procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()){
 		// 勤務種別の絞り込み
 			 newEmpIdList = this.refineWorkType(companyId, empIds, p.start());
 		}
@@ -2677,7 +2677,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			List<String> empIdList, String companyId, ProcessExecutionLog procExecLog,
 			ProcessExecution processExecution) throws CreateDailyException, DailyCalculateException {
 		// 承認結果の反映の実行ログを作成
-		this.createExecLogReflecAppResult(empCalAndSumExeLog.getCaseSpecExeContentID(), companyId, procExecLog);
+		//this.createExecLogReflecAppResult(empCalAndSumExeLog.getCaseSpecExeContentID(), companyId, procExecLog);
 		// 期間を計算
 		DatePeriod calculatePeriod = this.calculatePeriod(closureId, period, companyId);
 		/*
@@ -2805,7 +2805,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		// 日別実績処理の再実行
 		int size = newEmpIdList.size();
 		for (int i = 0; i < size; i++) {
-			String empId = newEmpIdList.get(0);
+			String empId = newEmpIdList.get(i);
 			isHasInterrupt = this.RedoDailyPerformanceProcessing(context, companyId, empId, calculatePeriod,
 					empCalAndSumExeLog.getEmpCalAndSumExecLogID());
 			if (isHasInterrupt) {
