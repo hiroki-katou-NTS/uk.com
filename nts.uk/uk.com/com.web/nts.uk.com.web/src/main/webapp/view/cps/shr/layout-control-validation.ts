@@ -1886,9 +1886,9 @@ module nts.layout {
     }
 
     enum EDIT_METHOD {
-        PreviousZero = 0,
-        AfterZero = 1,
-        PreviousSpace = 2,
-        AfterSpace = 3
+        PreviousZero = 1,
+        AfterZero = 2,
+        PreviousSpace = 3,
+        AfterSpace = 4
     }
 }
