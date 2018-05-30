@@ -350,7 +350,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 });
                 setShared('KDM001_M_PARAMS', { row: rowDataInfo, selectedEmployee: self.screenItem().selectedEmployee, closure: self.screenItem().closureEmploy });
                 modal("/view/kdm/001/m/index.xhtml").onClosed(function() {
-                    let resParam = getShared("KDM001_L_PARAMS_RES");
+                    let resParam = getShared("KDM001_M_PARAMS_RES");
                     if (resParam) {
                         let isDataChanged = resParam.isChanged; 
                         if (isDataChanged) {

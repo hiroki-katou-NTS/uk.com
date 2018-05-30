@@ -4,6 +4,7 @@ module nts.uk.at.view.kdm001.b {
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
             $('.tabB').trigger('click');
+            $('#emp-component').focus();
         });
     });
 }

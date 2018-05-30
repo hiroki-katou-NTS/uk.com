@@ -52,6 +52,7 @@ module nts.uk.at.view.kdm001.l.viewmodel {
             nts.uk.ui.errors.clearAll();
             $(".nts-input").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
+                block.invisible();
                 let self = this,
                 command = {
                     leaveId: self.leaveId(),

@@ -123,6 +123,9 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 columns: [
                     { headerText: 'ID', key: 'id', dataType: 'string', width: '0px', hidden: true },
                     { headerText: 'linked', key: 'isLinked', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: '', key: 'stateAtr', dataType: 'Number', width: '0px', hidden: true },
+                    { headerText: '', key: 'unUsedDays', dataType: 'Number', width: '0px', hidden: true },
+                    { headerText: '', key: 'remainDays', dataType: 'Number', width: '0px', hidden: true },
                     { headerText: '', key: 'expiredDate', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'unknownDatePayout', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'unknownDateSub', dataType: 'string', width: '0px', hidden: true },
@@ -507,6 +510,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         //add to check enable button
         isLinked: boolean;
         
+        //add to set '日' after day number
         occurredDaysText: string;
         requiredDaysText: string;
         unUsedDaysInGridText: string;

@@ -76,9 +76,6 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     value2: self.selectedCodeSubHoliday(),
                     value3: self.selectedCodeOptionSubHoliday()
                 }
-                if(v){
-                    remainDayObject.value2 = 0;
-                }
                 self.dayRemaining(self.getRemainDay(remainDayObject));
             });
             
@@ -198,6 +195,9 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                             else if (errorId === "Msg_737_sub_holiday") {
                                 $('#I11_1').ntsError('set', { messageId: "Msg_737" });
                             }
+                            else if (errorId === "Msg_737_sub_option_holiday") {
+                                $('#I11_1').ntsError('set', { messageId: "Msg_737" });
+                            }    
                             else if (errorId === "Msg_745_1") {
                                 $('#I6_1').ntsError('set', { messageId: "Msg_745" });
                             }
