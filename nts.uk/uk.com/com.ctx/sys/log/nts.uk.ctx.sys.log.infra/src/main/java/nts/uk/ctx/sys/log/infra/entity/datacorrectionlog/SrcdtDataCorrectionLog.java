@@ -1,24 +1,19 @@
 package nts.uk.ctx.sys.log.infra.entity.datacorrectionlog;
 
-import java.time.Year;
-
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.YearMonth;
-import nts.uk.shr.com.security.audittrail.UserInfo;
-import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
-import nts.uk.shr.com.security.audittrail.correction.content.DataValueAttribute;
-import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
-import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
-import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -28,14 +23,14 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 
 @Entity
-@Table(name = "SAMPLE_TABLE")
+@Table(name = "SRCDT_DATA_CORRECTION_LOG")
 @NoArgsConstructor
 @AllArgsConstructor
 public class SrcdtDataCorrectionLog extends UkJpaEntity {
 
 	@EmbeddedId
 	SrcdtDataCorrectionLogPk pk;
-
+	
 	@Column(name = "USER_NAME")
 	@Basic(optional = false)
 	String userName;
@@ -44,45 +39,74 @@ public class SrcdtDataCorrectionLog extends UkJpaEntity {
 	@Basic(optional = false)
 	String employeeId;
 
-	@Column(name = "TARGET_DATA_TYPE")
-	@Basic(optional = false)
-	int targetDataType;
-
 	@Column(name = "YMD_KEY")
-	@Basic(optional = true)
 	GeneralDate ymdKey;
 
 	@Column(name = "YM_KEY")
-	@Basic(optional = true)
 	Integer ymKey;
 
 	@Column(name = "Y_KEY")
-	@Basic(optional = true)
 	Integer yKey;
-
-	@Column(name = "STRING_KEY")
-	@Basic(optional = true)
-	String stringKey;
 
 	@Column(name = "CORRECTION_ATR")
 	@Basic(optional = false)
 	int correctionAttr;
 
-	@Column(name = "RAW_VALUE_BEFORE")
-	@Basic(optional = true)
-	String rawValueBefore;
+	@Column(name = "ITEM_NAME")
+	@Basic(optional = false)
+	String itemName;
+	
+//	@Column(name = "RAW_VALUE_BEFORE")
+//	@Basic(optional = true)
+//	String rawValueBefore;
 
 	@Column(name = "VIEW_VALUE_BEFORE")
 	@Basic(optional = true)
 	String viewValueBefore;
 
-	@Column(name = "RAW_VALUE_AFTER")
-	@Basic(optional = true)
-	String rawValueAfter;
+//	@Column(name = "RAW_VALUE_AFTER")
+//	@Basic(optional = true)
+//	String rawValueAfter;
 
 	@Column(name = "VIEW_VALUE_AFTER")
 	@Basic(optional = true)
 	String viewValueAfter;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumns({
+		@JoinColumn(name = "operationId", referencedColumnName = "operationId", insertable = false, updatable = false),
+		@JoinColumn(name = "userId", referencedColumnName = "userId", insertable = false, updatable = false),
+		@JoinColumn(name = "targetDataType", referencedColumnName = "targetDataType", insertable = false, updatable = false),
+		@JoinColumn(name = "stringKey", referencedColumnName = "stringKey", insertable = false, updatable = false)
+	})
+	SrcdtDecimalRawValue rawDecimalValueBefore;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumns({
+		@JoinColumn(name = "operationId", referencedColumnName = "operationId", insertable = false, updatable = false),
+		@JoinColumn(name = "userId", referencedColumnName = "userId", insertable = false, updatable = false),
+		@JoinColumn(name = "targetDataType", referencedColumnName = "targetDataType", insertable = false, updatable = false),
+		@JoinColumn(name = "stringKey", referencedColumnName = "stringKey", insertable = false, updatable = false)
+	})
+	SrcdtDecimalRawValue rawDecimalValueAfter;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumns({
+		@JoinColumn(name = "operationId", referencedColumnName = "operationId", insertable = false, updatable = false),
+		@JoinColumn(name = "userId", referencedColumnName = "userId", insertable = false, updatable = false),
+		@JoinColumn(name = "targetDataType", referencedColumnName = "targetDataType", insertable = false, updatable = false),
+		@JoinColumn(name = "stringKey", referencedColumnName = "stringKey", insertable = false, updatable = false)
+	})
+	SrcdtVarcharRawValue rawVarcharValueBefore;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumns({
+		@JoinColumn(name = "operationId", referencedColumnName = "operationId", insertable = false, updatable = false),
+		@JoinColumn(name = "userId", referencedColumnName = "userId", insertable = false, updatable = false),
+		@JoinColumn(name = "targetDataType", referencedColumnName = "targetDataType", insertable = false, updatable = false),
+		@JoinColumn(name = "stringKey", referencedColumnName = "stringKey", insertable = false, updatable = false)
+	})
+	SrcdtVarcharRawValue rawVarcharValueAfter;
 
 	@Column(name = "VALUE_DATA_TYPE")
 	@Basic(optional = true)
@@ -95,6 +119,8 @@ public class SrcdtDataCorrectionLog extends UkJpaEntity {
 	@Column(name = "NOTE")
 	@Basic(optional = true)
 	String note;
+	
+	
 
 	@Override
 	protected Object getKey() {
@@ -106,7 +132,7 @@ public class SrcdtDataCorrectionLog extends UkJpaEntity {
 //				TargetDataType.of(targetDataType),
 //				TargetDataKey.of(ymdKey, stringKey),
 //				CorrectionAttr.of(correctionAttr),
-//				ItemInfo.create(pk.itemName, DataValueAttribute.COUNT, rawValueBefore, rawValueAfter), showOrder,
+//				ItemInfo.create(pk.itemName, DataValueAttribute.of(valueType), rawValueBefore, rawValueAfter), showOrder,
 //				note);
 		return null;
 	}

@@ -1,5 +1,8 @@
 package nts.uk.ctx.sys.log.infra.entity.logbasicinfo;
 
+import java.util.Optional;
+
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -8,12 +11,16 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.shr.com.context.ScreenIdentifier;
+import nts.uk.shr.com.context.loginuser.role.DefaultLoginUserRoles;
+import nts.uk.shr.com.security.audittrail.UserInfo;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
+import nts.uk.shr.com.security.audittrail.basic.LoginInformation;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * 
- * @author HungTT
+ * @author HungTT - ログ基本情報
  *
  */
 
@@ -28,15 +35,19 @@ public class SrcdtLogBasicInfo extends UkJpaEntity {
 	String operationId;
 
 	@Column(name = "CID")
+	@Basic(optional = false)
 	String companyId;
 
 	@Column(name = "USER_ID")
+	@Basic(optional = false)
 	String userId;
 
 	@Column(name = "USER_NAME")
+	@Basic(optional = false)
 	String userName;
 
 	@Column(name = "SID")
+	@Basic(optional = false)
 	String employeeId;
 
 	@Column(name = "IP_ADDRESS")
@@ -49,15 +60,19 @@ public class SrcdtLogBasicInfo extends UkJpaEntity {
 	String account;
 
 	@Column(name = "MODIFIED_DT")
+	@Basic(optional = false)
 	GeneralDateTime modifiedDateTime;
 
 	@Column(name = "PGID")
+	@Basic(optional = false)
 	String programId;
 
 	@Column(name = "SCREEN_ID")
+	@Basic(optional = false)
 	String screenId;
 
 	@Column(name = "QUERY_STRING")
+	@Basic(optional = false)
 	String queryString;
 
 	@Column(name = "OFFICE_HELPER_ROLE")
@@ -99,11 +114,43 @@ public class SrcdtLogBasicInfo extends UkJpaEntity {
 	}
 
 	public LogBasicInformation toDomain() {
-		return null;
+		DefaultLoginUserRoles userRoles = new DefaultLoginUserRoles();
+		userRoles.setRoleIdForAttendance(attendanceRoleId);
+		userRoles.setRoleIdforCompanyAdmin(companyAdminRoleId);
+		userRoles.setRoleIdforGroupCompaniesAdmin(groupCompaniesAdminRoleId);
+		userRoles.setRoleIdforOfficeHelper(officeHelperRoleId);
+		userRoles.setRoleIdForPayroll(payrollRoleId);
+		userRoles.setRoleIdforPersonalInfo(personalInfoRoleId);
+		userRoles.setRoleIdForPersonnel(personnelRoleId);
+		userRoles.setRoleIdforSystemAdmin(systemAdminRoleId);
+		LogBasicInformation infor = new LogBasicInformation(operationId, companyId,
+				new UserInfo(userId, employeeId, userName), new LoginInformation(ipAddress, pcName, account),
+				modifiedDateTime, userRoles, new ScreenIdentifier(programId, screenId, queryString),
+				Optional.ofNullable(note));
+		return infor;
 	}
 
 	public static SrcdtLogBasicInfo fromDomain(LogBasicInformation domain) {
-		return null;
+		return new SrcdtLogBasicInfo(domain.getOperationId(), domain.getCompanyId(), 
+				domain.getUserInfo().getUserId(), domain.getUserInfo().getUserName(), domain.getUserInfo().getEmployeeId(),
+				domain.getLoginInformation().getIpAddress().get(), 
+				domain.getLoginInformation().getPcName().get(),
+				domain.getLoginInformation().getAccount().get(), 
+				domain.getModifiedDateTime(),
+				domain.getTargetProgram().getProgramId(), 
+				domain.getTargetProgram().getScreenId(),
+				domain.getTargetProgram().getQueryString(), 
+				domain.getAuthorityInformation().forOfficeHelper(),
+				domain.getAuthorityInformation().forGroupCompaniesAdmin(),
+				domain.getAuthorityInformation().forSystemAdmin(), 
+				null, // myNumberRoleId
+				domain.getAuthorityInformation().forPersonnel(), 
+				domain.getAuthorityInformation().forCompanyAdmin(),
+				null, // accountingRoleId
+				domain.getAuthorityInformation().forPersonalInfo(), 
+				domain.getAuthorityInformation().forAttendance(),
+				domain.getAuthorityInformation().forPayroll(),
+				domain.getNote().get());
 	}
 
 }

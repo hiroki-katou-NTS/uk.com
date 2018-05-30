@@ -8,18 +8,12 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-/**
- * 
- * @author HungTT
- *
- */
-
 @Embeddable
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class SrcdtDataCorrectionLogPk {
-
+public class SrcdtVarcharRawValuePk {
+	
 	@Column(name = "OPERATION_ID")
 	@Basic(optional = false)
 	String operationId;
@@ -31,9 +25,13 @@ public class SrcdtDataCorrectionLogPk {
 	@Column(name = "TARGET_DATA_TYPE")
 	@Basic(optional = false)
 	int targetDataType;
-	
+
 	@Column(name = "STRING_KEY")
 	@Basic(optional = false)
 	String stringKey;
-
+	
+	@Column(name = "VALUE")
+	@Basic(optional = false)
+	String value;
+	
 }

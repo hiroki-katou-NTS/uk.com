@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.log.infra.entity.datacorrectionlog;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -8,18 +10,12 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-/**
- * 
- * @author HungTT
- *
- */
-
 @Embeddable
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class SrcdtDataCorrectionLogPk {
-
+public class SrcdtDecimalRawValuePk {
+	
 	@Column(name = "OPERATION_ID")
 	@Basic(optional = false)
 	String operationId;
@@ -31,9 +27,13 @@ public class SrcdtDataCorrectionLogPk {
 	@Column(name = "TARGET_DATA_TYPE")
 	@Basic(optional = false)
 	int targetDataType;
-	
+
 	@Column(name = "STRING_KEY")
 	@Basic(optional = false)
 	String stringKey;
-
+	
+	@Column(name = "VALUE")
+	@Basic(optional = false)
+	BigDecimal value;
+	
 }
