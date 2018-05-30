@@ -417,14 +417,11 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 			tblAcq = tableDelData.getParentTblName();
 		}
 		
-		String lstEmployeeIds = "";
+		List<String> lstEmployeeIds = new ArrayList<>();
 		if (employeeDeletions != null && employeeDeletions.size() > 0) {
-			StringBuffer employeeIdsBuf = new StringBuffer();
 			for (EmployeeDeletion employeeDeletion : employeeDeletions) {
-				employeeIdsBuf.append(employeeDeletion.getEmployeeId() + ",");
+				lstEmployeeIds.add(employeeDeletion.getEmployeeId());
 			}
-			lstEmployeeIds = employeeIdsBuf.toString();
-			lstEmployeeIds = lstEmployeeIds.substring(0, lstEmployeeIds.length() - 1);
 		}
 		
 		
@@ -439,8 +436,17 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		//employee id
 		if (tableDelData.getFieldAcqEmployeeId() != null && !"null".equals(tableDelData.getFieldAcqEmployeeId())) {
 			if (lstEmployeeIds != null && !lstEmployeeIds.isEmpty()) {
-				buffer.append("AND " + tblAcq + "." + tableDelData.getFieldAcqEmployeeId() + " IN ( ?employeeIds ) ");
-				parrams.put("employeeIds", lstEmployeeIds);
+				buffer.append("AND " + tblAcq + "." + tableDelData.getFieldAcqEmployeeId() + " IN (");
+				
+				for (int i = 0; i < lstEmployeeIds.size(); i++) {
+					if (i <= lstEmployeeIds.size() - 2) {
+						buffer.append("?employeeId" + i + ",");
+					}
+					else {
+						buffer.append("?employeeId" + i + ")");
+					}
+					parrams.put("employeeId" + i, lstEmployeeIds.get(i));
+				}
 			}
 		}
 		
