@@ -34,13 +34,16 @@ public class UpdateLeaveManagementDataCommandHandler
 	/**
 	 * Ｌ．代休管理データの修正（休出設定）登録処理
 	 * 
-	 * @param command
-	 * @return
+	 * @param command LeaveManagementDataCommand
+	 * @return errorList
 	 */
 	private List<String> leaveManagementProcess(LeaveManagementDataCommand command) {
-		List<String> errorList = new ArrayList<>();
-		// アルゴリズム「休出（年月日）チェック処理」を実行する
-		errorList.addAll(this.addSubHdManaService.checkHoliday(command.getLeaveDate(), Optional.empty(), command.getClosureId()));
+        // アルゴリズム「休出（年月日）チェック処理」を実行する
+        List<String> errorList = this.addSubHdManaService.checkHoliday(command.getLeaveDate(), Optional.empty(), command.getClosureId());
+
+		if (!errorList.isEmpty()) {
+			return errorList;
+		}
 
 		// アルゴリズム「Ｌ．代休管理データの修正（休出設定）入力項目チェック処理」を実行する
 		errorList.addAll(this.inputItemCheck(command));
@@ -63,8 +66,8 @@ public class UpdateLeaveManagementDataCommandHandler
 	/**
 	 * Ｌ．代休管理データの修正（休出設定）入力項目チェック処理
 	 * 
-	 * @param command
-	 * @return
+	 * @param command LeaveManagementDataCommand
+	 * @return errorList
 	 */
 	private List<String> inputItemCheck(LeaveManagementDataCommand command) {
 		List<String> errorList = new ArrayList<>();
