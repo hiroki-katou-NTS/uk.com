@@ -14,7 +14,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         endDateFormat: string;
         startDate: Date;
         endDate: Date;
-        listWorkplace: KnockoutObservableArray<any> = ko.observableArray([]);;
+        listWorkplace: Array<shareModel.ItemModel> = [];;
         selectedWplIndex: number;
         selectedWplId: KnockoutObservable<string>;
         selectedWplName: KnockoutObservable<string>;
@@ -35,8 +35,8 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         dataPublicHoliday: KnockoutObservableArray<any> = ko.observableArray([]);
 
         dailySttOut: DailyStatusOut = new DailyStatusOut(null, null);
-        listApprovalEmployee: KnockoutObservableArray<ApprovalStatusEmployee> = ko.observableArray([]);
-        listDailyStatus: KnockoutObservableArray<DailyStatusOut> = ko.observableArray([]);
+        listApprovalEmployee: Array<ApprovalStatusEmployee> = [];
+        listDailyStatus: Array<DailyStatusOut> = [];
         constructor() {
             var self = this;
             this.legendOptions = {
@@ -78,7 +78,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             self.dtAft(new Date(self.endDateFormat));
             self.setArrDate();
             self.getWkpName();
-            _.forEach(self.listWorkplace, function(item) {
+            _.forEach(self.listWorkplace, function(item: shareModel.ItemModel) {
                 self.listWkpId.push(item.code);
             });
             self.initExTable().done(() => {
@@ -95,7 +95,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             self.enablePre(self.selectedWplIndex != 0)
             self.enableNext(self.selectedWplIndex != (self.listWorkplace.length - 1))
 
-            let wkp = self.listWorkplace[self.selectedWplIndex];
+            let wkp: shareModel.ItemModel = self.listWorkplace[self.selectedWplIndex];
             self.selectedWplId(wkp.code);
             self.selectedWplName(wkp.name);
         }
@@ -145,7 +145,6 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         initExTable(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            shareModel.clearStorageExTable();
             self.getStatusSymbol().done(function(data: any) {
                 self.listApprovalEmployee = data.listAppSttEmp;
                 self.listDailyStatus = data.listDailyStt;
@@ -156,13 +155,12 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                     let initExTable = self.setFormatData(detailHeaderDeco, self.listDailyStatus);
 
                     new nts.uk.ui.exTable.ExTable($("#extable"), {
-                        headerHeight: "30px", bodyRowHeight: "17px", bodyHeight: "340px",
+                        headerHeight: "30px", bodyRowHeight: "22px", bodyHeight: "330px",
                         horizontalSumBodyRowHeight: "0px",
-                        areaResize: true,
+                        remainSizes: false,
                         bodyHeightMode: "fixed",
                         windowXOccupation: 50,
-                        windowYOccupation: 20,
-                        primaryTable: $("#extable")
+                        windowYOccupation: 20
                     })
                         .LeftmostHeader(initExTable.leftmostHeader).LeftmostContent(initExTable.leftmostContent)
                         .DetailHeader(initExTable.detailHeader).DetailContent(initExTable.detailContent)
@@ -215,7 +213,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                 {
                     headerText: text("KAF018_29"),
                     key: "empName",
-                    width: "150px",
+                    width: "200px",
                     control: "link",
                     handler: function(rData, rowIdx, key) { self.goToD(rData); }
                 }
@@ -223,7 +221,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             leftmostHeader = {
                 columns: leftmostColumns,
                 rowHeight: "30px",
-                width: "150px"
+                width: "200px"
             };
             leftmostContent = {
                 columns: leftmostColumns,
@@ -234,8 +232,8 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             // create detail Columns and detail Content Columns
             let currentDay = new Date(self.dtPrev().toString());
             let listResize: Array<ResizeColumn> = self.getResizeColumn(listData);
-            _.each(listResize, function(item) {
-                let time = new shareModel.Time(item.date);
+            _.each(listResize, function(item: ResizeColumn) {
+                let time = new shareModel.Time(new Date(item.date));
                 detailHeaderColumns.push({
                     key: "_" + time.yearMonthDay, width: item.width, headerText: self.getDay(time)
                 });
@@ -274,11 +272,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         }
 
         getDay(time: shareModel.Time): string {
-            if (time.day == "1") {
-                return time.month + '/' + time.day;
-            } else {
-                return time.day;
-            }
+            return time.day;
         }
 
         /**
@@ -294,7 +288,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                     let ymd = date.yearMonthDay;
                     let dateFormat = moment(date.yearMonthDay).format('YYYY/MM/DD');
                     if (_.includes(self.dataWkpSpecificDate(), dateFormat) || _.includes(self.dataComSpecificDate(), dateFormat)) {
-                        detailHeaderDeco.push(new shareModel.CellColor("_" + ymd, undefined, "bg-schedule-specific-date "));
+                        detailHeaderDeco.push(new shareModel.CellColor("_" + ymd, undefined, "bg-schedule-specific-date"));
                     } else if (_.includes(self.dataPublicHoliday(), dateFormat)) {
                         detailHeaderDeco.push(new shareModel.CellColor("_" + ymd, undefined, "bg-schedule-sunday color-schedule-sunday"));
                     } else if (date.weekDay === '土') {
@@ -411,11 +405,10 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         goToD(rData) {
             var self = this;
             let listStatusEmp: Array<ApprovalStatusEmployee> = [];
-            _.each(self.listApprovalEmployee, function(item) {
-                if (rData.empId == item.sid) {
-                    listStatusEmp.push(new ApprovalStatusEmployee(item.sid, item.startDate, item.endDate));
+            _.each(self.listApprovalEmployee, function(item: ApprovalStatusEmployee) {
+                if (rData.empId == item.sId) {
+                    listStatusEmp.push(new ApprovalStatusEmployee(item.sId, item.startDate, item.endDate));
                 }
-
             });
             let params = {
                 empName: rData.empName,
@@ -477,7 +470,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                     this.width = "50px";
                     break;
                 case 4:
-                    this.width = "50px";
+                    this.width = "60px";
                     break;
             }
         }
