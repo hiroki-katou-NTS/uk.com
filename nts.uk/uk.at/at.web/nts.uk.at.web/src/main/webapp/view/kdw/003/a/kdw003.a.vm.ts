@@ -137,6 +137,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         listCareError: KnockoutObservableArray<any> = ko.observableArray([]);
         listCareInputError: KnockoutObservableArray<any> = ko.observableArray([]);
         listCheckHolidays: KnockoutObservableArray<any> = ko.observableArray([]);
+        listCheck28: KnockoutObservableArray<any> = ko.observableArray([]);
         employIdLogin: any;
         dialogShow: any;
         //contain data share
@@ -172,6 +173,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         textStyles: any = [];
         showTextStyle: boolean = true;
         clickFromExtract: boolean = true;
+        
+        sprRemoveApprovalAll: any;
+        
         constructor(dataShare: any) {
             var self = this;
             self.initLegendButton();
@@ -517,6 +521,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             let objectName = {};
                             objectName["approval"] = false;
                             $("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId31, objectName);
+                            self.sprRemoveApprovalAll = "_" + data.changeSPR.rowId31;
                         }
                         if ((data.changeSPR.change31 || data.changeSPR.change34) && self.shareObject().initClock.canEdit) {
                             self.sprStampSourceInfo(sprStamp);
@@ -622,6 +627,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.listCareError([]);
                 self.listCareInputError([]);
                 self.listCheckHolidays([]);
+                self.listCheck28([]);
                 let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
                 var dataSource = $("#dpGrid").igGrid("option", "dataSource");
                 let dataChangeProcess: any = [];
@@ -678,9 +684,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                     } else {
                         if (data.columnKey == "sign") {
-                            dataCheckSign.push({ rowId: data.rowId, itemId: "sign", value: data.value, employeeId: dataTemp.employeeId, date: dataTemp.dateDetail.utc().toISOString() });
+                            dataCheckSign.push({ rowId: data.rowId, itemId: "sign", value: data.value, employeeId: dataTemp.employeeId, date: dataTemp.dateDetail.utc().toISOString(), flagRemoveAll: false });
                         } else {
-                            dataCheckApproval.push({ rowId: data.rowId, itemId: "approval", value: data.value, employeeId: dataTemp.employeeId, date: dataTemp.dateDetail.utc().toISOString() });
+                            let flag = false;
+                            if(data.rowId == self.sprRemoveApprovalAll){
+                               flag = true; 
+                               self.sprRemoveApprovalAll = null;
+                            }
+                            dataCheckApproval.push({ rowId: data.rowId, itemId: "approval", value: data.value, employeeId: dataTemp.employeeId, date: dataTemp.dateDetail.utc().toISOString(), flagRemoveAll: flag});
                         }
                     }
                 });
@@ -736,6 +747,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             if (data[2] != undefined) {
                                 self.listCheckHolidays(data[2]);
                                 self.reloadScreen();
+                            }
+                            
+                            if(data[3] != undefined){
+                               self.listCheck28(data[3]); 
                             }
                             self.showErrorDialog();
                         }
@@ -1069,11 +1084,32 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 let object = { date: value.date, employeeCode: self.dpData[0].employeeCode, employeeName: self.dpData[0].employeeName, message: value.valueType, itemName: value.rowId, columnKey: value.itemId };
                 errorValidateScreeen.push(object);
             });
+            
+            // check item28 input listCheck28
+            _.each(self.listCheck28(), value => {
+                let dateCon = _.find(self.dpData, (item: any) => {
+                    return item.id == value.rowId.substring(1, value.rowId.length);
+                });
+                let object = { date: dateCon.date, employeeCode: dateCon.employeeCode, employeeName: dateCon.employeeName, message: nts.uk.resource.getMessage("Msg_1270"), itemName: "", columnKey: value.itemId };
+//                let item = _.find(self.optionalHeader, (data) => {
+//                    return String(data.key) === "A" + value.itemId;
+//                })
+                let item = _.find(self.optionalHeader, (data) => {
+                    if (data.group != undefined && data.group != null) {
+                        return String(data.group[0].key) === "Code" + value.itemId;
+                    } else {
+                        return String(data.key) === "A" + value.itemId;
+                    }
+                })
+                object.itemName = (item == undefined) ? "" : item.headerText;
+                errorValidateScreeen.push(object);
+            });
+            
             if (self.displayFormat() === 0) {
                 lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
                     return employee.id === self.selectedEmployee();
                 }));
-            } else {
+            } else { 
                 lstEmployee = self.lstEmployee();
             }
             let param = {
@@ -1510,23 +1546,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let pageSize = $("#dpGrid").igGridPaging("option", "pageSize");
             let startIndex: any = currentPageIndex * pageSize;
             let endIndex: any = startIndex + pageSize;
-            //let total = moment.duration("0");
             let total = 0;
-            ///let zA = 1;
             _.forEach(data, function(d, i) {
                 if (i < startIndex || i >= endIndex) return;
                 if (d != "") {
                     total = total + moment.duration(d).asMinutes();
                 }
             });
-            //            let time = total.asHours();
-            //            let hour = Math.floor(time);
-            //            let minute = (time - hour) * 60;
-            //            let roundMin = Math.round(minute);
-            //            let minuteStr = roundMin < 10 ? ("0" + roundMin) : String(roundMin);
-            let hours = (total - Math.abs(total % 60)) / 60;
-            let minus = Math.abs(total) % 60 < 10 ? "0" + Math.abs(total) % 60 : Math.abs(total) % 60;
-            return hours + ":" + minus;
+            let hours =  total > 0 ?   Math.floor(total/60) :  Math.ceil(total/60);
+            let minus = Math.abs(total%60);
+            minus = (minus < 10) ? '0'+minus : minus;
+            return ((total< 0 && hours == 0 ) ? "-"+hours : hours)  + ":" + minus;
         }
 
         totalMoney(data) {

@@ -16,20 +16,22 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
  *
  */
 // 勤怠項目に対する条件
-@Getter
 public class AttendanceItemCondition extends DomainObject {
 
 	// グループ間の演算子
+	@Getter
 	private LogicalOperator operatorBetweenGroups;
 
 	// グループ1
+	@Getter
 	private ErAlConditionsAttendanceItem group1;
 
 	// グループ2
+	@Getter
 	private ErAlConditionsAttendanceItem group2;
 
 	// グループ2を利用する
-	private Boolean group2UseAtr;
+	private boolean group2UseAtr;
 
 	private AttendanceItemCondition(LogicalOperator operatorBetweenGroups, Boolean group2UseAtr) {
 		super();
@@ -81,7 +83,7 @@ public class AttendanceItemCondition extends DomainObject {
 		}
 	}
 
-	private boolean isUseGroup2() {
-		return this.group2UseAtr != null && this.group2UseAtr;
+	public boolean isUseGroup2() {
+		return this.group2UseAtr;
 	}
 }

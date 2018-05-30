@@ -1,15 +1,20 @@
 package nts.uk.ctx.at.function.dom.processexecution.dailyperformance;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 //更新処理の日別処理対象者区分
 @AllArgsConstructor
-public enum TargetGroupClassification {
-	//全員を対象に通常実行
-	NORMAL_EXECUTION_FOR_ALL(0,"全員を対象に通常実行"),
-	//勤務種別変更者のみ再作成
-	RECREATE_ONLY_WHO_CHANGED_WORK_TYPE(1,"勤務種別変更者のみ再作成");
+@Getter
+@Setter
+public class TargetGroupClassification {
 	
-	public final int value;
+	/*勤務種別変更者を再作成*/  //B8_8
+	private boolean recreateTypeChangePerson;
 	
-	public final String name;
+	/* 途中入社は入社日からにする   ->  新入社員を再作成する */ //B8_5
+	private boolean midJoinEmployee;
+	
+	/* 異動者を再作成する*/  //B8_9 
+	private boolean recreateTransfer;  
 }

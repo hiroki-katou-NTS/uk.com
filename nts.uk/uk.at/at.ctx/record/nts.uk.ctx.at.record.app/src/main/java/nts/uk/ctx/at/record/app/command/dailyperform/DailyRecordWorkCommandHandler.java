@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.command.dailyperform;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -42,8 +43,9 @@ import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.AttendanceTimeBy
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.AttendanceTimeByWorkOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDailyPerformanceCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDailyPerformanceCommandUpdateHandler;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.divergencetime.service.DivCheckSharedData;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlCheckService;
@@ -190,7 +192,7 @@ public class DailyRecordWorkCommandHandler {
 	private RemarkOfDailyCommandUpdateHandler remarksUpdateHandler;
 	
 	@Inject
-	private CalculateDailyRecordService calcService;
+	private CalculateDailyRecordServiceCenter calcService;
 	
 	@Inject 
 	private ErAlCheckService determineErrorAlarmWorkRecordService;
@@ -205,12 +207,20 @@ public class DailyRecordWorkCommandHandler {
 	public void handleUpdate(DailyRecordWorkCommand command) {
 		handler(command, true);
 	}
+	
+	public void handleAdd(List<DailyRecordWorkCommand> command) {
+		handler(command, false);
+	}
+	
+	public void handleUpdate(List<DailyRecordWorkCommand> command) {
+		handler(command, true);
+	}
 
 	@SuppressWarnings({ "unchecked" })
 	private <T extends DailyWorkCommonCommand> void handler(DailyRecordWorkCommand command, boolean isUpdate) {
 		Set<String> mapped = command.itemValues().stream().map(c -> getGroup(c))
 				.distinct().collect(Collectors.toSet());
-		List<EmployeeDailyPerError> errors = calcIfNeed(mapped, command);
+		List<EmployeeDailyPerError> errors = calcIfNeed(mapped, Arrays.asList(command));
 		mapped.stream().forEach(c -> {
 			CommandFacade<T> handler = (CommandFacade<T>) getHandler(c, isUpdate);
 			if(handler != null){
@@ -222,40 +232,67 @@ public class DailyRecordWorkCommandHandler {
 		//check and insert error;
 //		determineErrorAlarmWorkRecordService.checkAndInsert(command.getEmployeeId(), command.getWorkDate());
 		determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(errors);
+		
+		DivCheckSharedData.clearAll();
 	}
 	
-	private List<EmployeeDailyPerError> calcIfNeed(Set<String> group, DailyRecordWorkCommand command){
-//		if(group.contains("I") || group.contains("G") 
-//				|| group.contains("E") || group.contains("F") || group.contains("H") || 
-//				group.contains("J") || group.contains("K") || group.contains("L") || 
-//				group.contains("M") || group.contains("O")
-//				){
-			IntegrationOfDaily calced = calcService.calculate(
-					new IntegrationOfDaily(command.getWorkInfo().getData(), command.getCalcAttr().getData(), command.getAffiliationInfo().getData(), 
-							command.getPcLogInfo().getData(), Arrays.asList(command.getErrors().getData()), command.getOutingTime().getData(), command.getBreakTime().getData(), 
-							command.getAttendanceTime().getData(), command.getAttendanceTimeByWork().getData(), command.getTimeLeaving().getData(), 
-							command.getShortWorkTime().getData(), command.getSpecificDateAttr().getData(), command.getAttendanceLeavingGate().getData(), 
-							command.getOptionalItem().getData(), command.getEditState().getData(), command.getTemporaryTime().getData()));
-//			command.getTimeLeaving().updateData(calced.getAttendanceLeave().orElse(null));
-			command.getAttendanceTime().updateData(calced.getAttendanceTimeOfDailyPerformance().orElse(null));
-//			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
-//			calced.getBreakTime().stream().forEach(c -> {
-//				command.getBreakTime().updateData(c);
-//			});
-//			command.getAttendanceTimeByWork().updateData(calced.getAttendancetimeByWork().orElse(null));
-//			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
-//			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
-//			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
-//			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
-//			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
-//			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
-//			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
-//			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
-//			command.getLogOnInfo
-//			group.add("I");
-			group.add("G");
-			return calced.getEmployeeError();
+	@SuppressWarnings({ "unchecked" })
+	private <T extends DailyWorkCommonCommand> void handler(List<DailyRecordWorkCommand> commands, boolean isUpdate) {
+		Set<String> mapped = new HashSet<>();
+				
+		List<EmployeeDailyPerError> errors = calcIfNeed(mapped, commands);
+		commands.stream().forEach(command -> {
+			mapped.addAll(command.itemValues().stream().map(c -> getGroup(c)).distinct().collect(Collectors.toSet()));
+			mapped.stream().forEach(c -> {
+				CommandFacade<T> handler = (CommandFacade<T>) getHandler(c, isUpdate);
+				if(handler != null){
+					handler.handle((T) command.getCommand(c));
+				}
+			});
+			//remove data error
+			employeeDailyPerErrorRepository.removeParam(command.getEmployeeId(), command.getWorkDate());
+		});
+		
+		//check and insert error;
+//		determineErrorAlarmWorkRecordService.checkAndInsert(command.getEmployeeId(), command.getWorkDate());
+		determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(errors);
+		
+		DivCheckSharedData.clearAll();
+	}
+	
+	private List<EmployeeDailyPerError> calcIfNeed(Set<String> group, List<DailyRecordWorkCommand> commands){
+		List<IntegrationOfDaily> mapped = commands.stream().map(c -> toDomain(c)).collect(Collectors.toList());
+		List<IntegrationOfDaily> calced = calcService.calculate(mapped);
+		commands.stream().forEach(c -> {
+			calced.stream().filter(d -> d.getAffiliationInfor().getEmployeeId().equals(c.getEmployeeId()) 
+					&& d.getAffiliationInfor().getYmd().equals(c.getWorkDate()))
+			.findFirst().ifPresent(d -> {
+				c.getAttendanceTime().updateData(d.getAttendanceTimeOfDailyPerformance().orElse(null));
+			});
+		});
+		group.add("G");
+		return calced.stream().map(d -> d.getEmployeeError()).flatMap(List::stream).collect(Collectors.toList());
 //		}
+	}
+
+	private IntegrationOfDaily toDomain(DailyRecordWorkCommand c) {
+		return new IntegrationOfDaily(c.getWorkInfo().toDomain(), 
+										c.getCalcAttr().toDomain(), 
+										c.getAffiliationInfo().toDomain(),
+										c.getBusinessType().toDomain(), 
+										c.getPcLogInfo().toDomain(), 
+										Arrays.asList(c.getErrors().toDomain()), 
+										c.getOutingTime().toDomain(), 
+										c.getBreakTime().toDomain(), 
+										c.getAttendanceTime().toDomain(), 
+										c.getAttendanceTimeByWork().toDomain(), 
+										c.getTimeLeaving().toDomain(), 
+										c.getShortWorkTime().toDomain(), 
+										c.getSpecificDateAttr().toDomain(), 
+										c.getAttendanceLeavingGate().toDomain(), 
+										c.getOptionalItem().toDomain(), 
+										c.getEditState().toDomain(), 
+										c.getTemporaryTime().toDomain());
 	}
 	
 	private CommandFacade<?> getHandler(String group, boolean isUpdate) {
