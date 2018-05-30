@@ -92,7 +92,7 @@ module nts.uk.com.view.kwr002.d {
                     self.columnIndex(self.attendanceRecordExport().columnIndex);
                     self.exportAtr(self.attendanceRecordExport().exportAtr);
                 }
-                self.directText(nts.uk.resource.getText('KWR002_131') + ">" + self.columnIndex() + nts.uk.resource.getText('KWR002_132') + ">" +
+                self.directText(nts.uk.resource.getText('KWR002_131')  + self.columnIndex() + nts.uk.resource.getText('KWR002_132') + 
                     self.position() + nts.uk.resource.getText('KWR002_133'));
                 service.getAllAttendanceDaily().done(function(allAttendanceDaily: Array<model.AttendanceRecordItem>) {
                     self.allAttendanceDaily(allAttendanceDaily);

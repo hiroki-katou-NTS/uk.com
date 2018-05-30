@@ -147,13 +147,21 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository
 	 */
 	@Override
 	public void addAttendanceRecExpSet(AttendanceRecordExportSetting attendanceRecordExpSet) {
-		// Insert Attendance
-		this.commandProxy().insert(toEntity(attendanceRecordExpSet));
+		KfnstAttndRecOutSetPK pk = new KfnstAttndRecOutSetPK(attendanceRecordExpSet.getCompanyId(), attendanceRecordExpSet.getCode().v());
+		Optional<KfnstAttndRecOutSet> entityFromDb = this.queryProxy().find(pk, KfnstAttndRecOutSet.class);
+		if(entityFromDb.isPresent()) {
+			this.commandProxy().update(toEntity(attendanceRecordExpSet));
+		}else {
+			// Insert Attendance
+			this.commandProxy().insert(toEntity(attendanceRecordExpSet));
+		}
+		
+		
 		// Insert Seal Stamp List
 		this.commandProxy().insertAll(attendanceRecordExpSet.getSealStamp().stream().map(
 				e -> toSealStampEntity(attendanceRecordExpSet.getCompanyId(), attendanceRecordExpSet.getCode().v(), e))
 				.collect(Collectors.toList()));
-
+		this.getEntityManager().flush();
 	}
 
 	/*
@@ -232,11 +240,9 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository
 		KfnstAttndRecOutSetPK PK = new KfnstAttndRecOutSetPK(domain.getCompanyId(), domain.getCode().v());
 
 		KfnstAttndRecOutSet entity = this.queryProxy().find(PK, KfnstAttndRecOutSet.class)
-				.orElse(new KfnstAttndRecOutSet());
+				.orElse(new KfnstAttndRecOutSet(PK,null,new BigDecimal(0),new BigDecimal(1)));
 
-		if(entity.getId()==null){
-			domain.saveToMemento(new JpaAttendanceRecordExportSettingSetMemento(entity, new ArrayList<>()));
-		}
+		domain.saveToMemento(new JpaAttendanceRecordExportSettingSetMemento(entity, new ArrayList<>()));
 
 		return entity;
 	}

@@ -56,9 +56,10 @@ public class CalculateAttendanceRecordFinder {
 			if (listSubtracted != null && !listSubtracted.isEmpty()) {
 				listAttendanceSubtracted = findAttendanceItemsById(listSubtracted);
 			}
+			int attribute = calculateAttendanceRecord.getAttribute()!= null ? calculateAttendanceRecord.getAttribute().value : 0;
 			CalculateAttendanceRecordDto calculateAttendanceRecordDto = new CalculateAttendanceRecordDto(
 					calculateAttendanceRecord.getName().toString(), listAttendanceAdded, listAttendanceSubtracted,
-					calculateAttendanceRecord.getAttribute().value);
+					attribute);
 
 			return calculateAttendanceRecordDto;
 		}
