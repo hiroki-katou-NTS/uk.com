@@ -74,7 +74,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 			String endYearMonth, List<Employee> employees) {
 		this.startYmFinal = YearMonth.parse(startYearMonth, DateTimeFormatter.ofPattern("uuuu/MM"));
 		this.endYmFinal = YearMonth.parse(endYearMonth, DateTimeFormatter.ofPattern("uuuu/MM"));
-		this.numMonth = (int) this.startYmFinal.until(this.endYmFinal, ChronoUnit.MONTHS);
+		this.numMonth = (int) this.startYmFinal.until(this.endYmFinal, ChronoUnit.MONTHS) + 1;
 		ExportData data = new ExportData();
 		LocalDate endYmd = LocalDate.of(this.endYmFinal.getYear(), this.endYmFinal.getMonthValue(), 1)
 				.plus(1, ChronoUnit.MONTHS)
