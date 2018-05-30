@@ -28,4 +28,7 @@ public class AttendanceRecordRequest {
 
 	/** The layout. */
 	private long layout;
+	
+	/** The file type. */
+	private String fileType;
 }
