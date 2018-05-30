@@ -83,7 +83,8 @@ module nts.uk.com.view.cmf005.f.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             // Management deletion monitoring process 
-            self.interval = setInterval(self.confirmProcess(), 1000);
+            
+            self.interval = setInterval(() => self.confirmProcess(), 1000);
             $("#F10_2").focus();
             dfd.resolve();
             return dfd.promise();
@@ -94,18 +95,19 @@ module nts.uk.com.view.cmf005.f.viewmodel {
         public confirmProcess(): void {
             let self = this;
             let delId = self.delId();
-           
+                
+            // F2_1_2 set time over 
+            self.timeNow = new Date();
+            let over = (self.timeNow.getSeconds() + self.timeNow.getMinutes() * 60 + self.timeNow.getHours() * 60) - (self.timeStart.getSeconds() + self.timeStart.getMinutes() * 60 + self.timeStart.getHours() * 60);
+            let time = new Date(null);
+            time.setSeconds(over); // setting value for SECONDS here
+            let result = time.toISOString().substr(11, 8);
+            self.timeOver(result);
+          
+            // get information managerment Deletion
             service.findManagementDel(delId).done(function(res: any) {
                 var managementDel = res;
-                    
-                // F2_1_2 set time over 
-                self.timeNow = new Date();
-                let over = (self.timeNow.getSeconds() + self.timeNow.getMinutes() * 60 + self.timeNow.getHours() * 60) - (self.timeStart.getSeconds() + self.timeStart.getMinutes() * 60 + self.timeStart.getHours() * 60);
-                let time = new Date(null);
-                time.setSeconds(over); // setting value for SECONDS here
-                let result = time.toISOString().substr(11, 8);
-                self.timeOver(result);
-
+                
                 // F2_2_2, F2_2_3,F2_2_4
                 self.status(getStatusEnum(managementDel.operatingCondition));
                 self.categoryPercentProcess(managementDel.categoryCount + "/" + managementDel.totalCategoryCount);
@@ -114,8 +116,9 @@ module nts.uk.com.view.cmf005.f.viewmodel {
                 // update mode when end: DONE, INTERRUPTION_END, ABNORMAL_TERMINATION
                 // 完了, 中断終了, 異常終了
                 if ((managementDel.operatingCondition == 4) || (managementDel.operatingCondition == 5) || (managementDel.operatingCondition == 6)) {
+                    
                     // stop auto request to server
-                    clearInterval(self.interval);
+                    window.clearInterval(self.interval);
 
                     // end: update dialog to Error/Interrupt mode
                     if ((managementDel.operatingCondition == 5) || (managementDel.operatingCondition == 6)) {
