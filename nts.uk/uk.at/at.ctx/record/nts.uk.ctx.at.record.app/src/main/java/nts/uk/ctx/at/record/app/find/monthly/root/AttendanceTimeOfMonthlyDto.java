@@ -1,27 +1,25 @@
 package nts.uk.ctx.at.record.app.find.monthly.root;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.common.DatePeriodDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
-import nts.uk.ctx.at.record.app.find.monthly.root.dto.AggregateTimesDto;
-import nts.uk.ctx.at.record.app.find.monthly.root.dto.ClosureDateDto;
-import nts.uk.ctx.at.record.app.find.monthly.root.dto.DatePeriodDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.ExcessOutsideWorkOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.MonthlyCalculationDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.dto.TotalCountByPeriodDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.VerticalTotalOfMonthlyDto;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.totalcount.TotalCountByPeriod;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -53,10 +51,6 @@ public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 	@AttendanceItemLayout(jpPropertyName = "期間", layout = "C")
 	private DatePeriodDto datePeriod;
 
-	/** 回数集計: 期間別の回数集計 */
-	@AttendanceItemLayout(jpPropertyName = "回数集計", layout = "D", listMaxLength = 30, indexField = "no")
-	private List<AggregateTimesDto> aggregateTimes;
-
 	/** 月の計算: 月別実績の月の計算 */
 	@AttendanceItemLayout(jpPropertyName = "月の計算", layout = "E")
 	private MonthlyCalculationDto monthlyCalculation;
@@ -73,6 +67,10 @@ public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 	/** 縦計: 期間別の縦計 */
 	@AttendanceItemLayout(jpPropertyName = "縦計", layout = "H")
 	private VerticalTotalOfMonthlyDto verticalTotal;
+
+	/** 回数集計: 期間別の回数集計 */
+	@AttendanceItemLayout(jpPropertyName = "回数集計", layout = "I")
+	private TotalCountByPeriodDto totalCount;
 
 	@Override
 	public String employeeId() {
@@ -93,6 +91,7 @@ public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 			dto.setExcessOutsideWork(ExcessOutsideWorkOfMonthlyDto.from(domain.getExcessOutsideWork()));
 			dto.setAggregateDays(domain.getAggregateDays() == null ? null : domain.getAggregateDays().v());
 			dto.setVerticalTotal(VerticalTotalOfMonthlyDto.from(domain.getVerticalTotal()));
+			dto.totalCount = TotalCountByPeriodDto.from(domain.getTotalCount());
 			dto.exsistData();
 		}
 		return dto;
@@ -104,19 +103,13 @@ public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 			return null;
 		}
 		return AttendanceTimeOfMonthly.of(employeeId, ym, ConvertHelper.getEnum(closureID, ClosureId.class), 
-										closureDate == null ? null : closureDate.toDomain(), 
-										new DatePeriod(datePeriod.getStart(), datePeriod.getEnd()), 
-										monthlyCalculation == null ? null : monthlyCalculation.toDomain(), 
-										excessOutsideWork == null ? null : excessOutsideWork.toDomain(), 
-										verticalTotal == null ? null : verticalTotal.toDomain(), 
-										aggregateDays == null ? null : new AttendanceDaysMonth(aggregateDays));
-
-//		// TODO Auto-generated method stub
-//		return AttendanceTimeOfMonthly.of(employeeId, ym, ConvertHelper.getEnum(closureID, ClosureId.class), 
-//				new ClosureDate(closureDate.getClosureDay(), closureDate.getLastDayOfMonth()), 
-//				new DatePeriod(datePeriod.getStart(), datePeriod.getEnd()), 
-//				monthlyCalculation, excessOutsideWork, verticalTotal, 
-//				aggregateDays == null ? null : new AttendanceDaysMonth(aggregateDays));
+				closureDate == null ? null : closureDate.toDomain(), 
+				new DatePeriod(datePeriod.getStart(), datePeriod.getEnd()), 
+				monthlyCalculation == null ? null : monthlyCalculation.toDomain(), 
+				excessOutsideWork == null ? null : excessOutsideWork.toDomain(), 
+				verticalTotal == null ? null : verticalTotal.toDomain(),
+				this.totalCount == null ? new TotalCountByPeriod() : this.totalCount.toDomain(),
+				aggregateDays == null ? null : new AttendanceDaysMonth(aggregateDays));
 	}
 
 	@Override

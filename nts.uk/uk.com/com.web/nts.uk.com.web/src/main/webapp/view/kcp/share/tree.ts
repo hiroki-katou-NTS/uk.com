@@ -98,6 +98,9 @@ module kcp.share.tree {
          * system type
          */
         systemType: SystemType;
+
+        // 参照範囲の絞
+        restrictionOfReferenceRange?: boolean;
     }
 
     /**
@@ -163,6 +166,7 @@ module kcp.share.tree {
         tabindex: number;
         
         treeStyle: TreeStyle;
+        restrictionOfReferenceRange: boolean;
 
         constructor() {
             let self = this;
@@ -213,7 +217,7 @@ module kcp.share.tree {
             self.isShowSelectButton = data.isShowSelectButton && data.isMultiSelect;
             self.isDialog = data.isDialog;
             self.baseDate = data.baseDate;
-            
+            self.restrictionOfReferenceRange = data.restrictionOfReferenceRange != undefined ? data.restrictionOfReferenceRange : true;            
             if (data.systemType) {
                 self.systemType =  data.systemType;
             } else {
@@ -252,7 +256,11 @@ module kcp.share.tree {
             });
 
             // Find data.
-            service.findWorkplaceTree(self.baseDate(), self.systemType).done(function(res: Array<UnitModel>) {
+            const param = <service.WorkplaceParam>{};
+            param.baseDate = self.baseDate();
+            param.systemType = self.systemType;
+            param.restrictionOfReferenceRange = self.restrictionOfReferenceRange;
+            service.findWorkplaceTree(param).done(function(res: Array<UnitModel>) {
                 if (res && res.length > 0) {
                     // Map already setting attr to data list.
                     self.addAlreadySettingAttr(res, self.alreadySettingList());
@@ -583,7 +591,11 @@ module kcp.share.tree {
             if (!self.baseDate() || self.$input.find('#work-place-base-date').ntsError('hasError')) {
                 return;
             }
-            service.findWorkplaceTree(self.baseDate(), self.systemType ).done(function(res: Array<UnitModel>) {
+            const param = <service.WorkplaceParam>{};
+            param.baseDate = self.baseDate();
+            param.systemType = self.systemType;
+            param.restrictionOfReferenceRange = self.restrictionOfReferenceRange;
+            service.findWorkplaceTree(param).done(function(res: Array<UnitModel>) {
                 if (!res || res.length <= 0) {
                     self.itemList([]);
                     self.backupItemList([]);
@@ -752,8 +764,14 @@ module kcp.share.tree {
         /**
          * Find workplace list.
          */
-        export function findWorkplaceTree(baseDate: Date, systemType: SystemType): JQueryPromise<Array<UnitModel>> {
-            return nts.uk.request.ajax('com', servicePath.findWorkplaceTree, { baseDate: baseDate, systemType: systemType });
+        export function findWorkplaceTree(param: WorkplaceParam): JQueryPromise<Array<UnitModel>> {
+            return nts.uk.request.ajax('com', servicePath.findWorkplaceTree, param);
+        }
+
+        export interface WorkplaceParam {
+            baseDate: Date;
+            systemType: SystemType;
+            restrictionOfReferenceRange: boolean;
         }
     }
 }

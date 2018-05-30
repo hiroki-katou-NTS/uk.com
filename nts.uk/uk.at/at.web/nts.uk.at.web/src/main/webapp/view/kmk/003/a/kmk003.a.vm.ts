@@ -445,6 +445,7 @@ module nts.uk.at.view.kmk003.a {
                 if ($('.nts-editor').ntsError('hasError') || $('.time-range-editor').ntsError('hasError')) {
                     return;
                 }
+                self.isClickSave(true);
                 //for dialog F mode simple
                 self.bindFDialogSimpleMode();
                 self.mainSettingModel.save()

@@ -1,13 +1,16 @@
 package nts.uk.shr.com.time.calendar.period;
 
-import static mockit.Deencapsulation.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 
 public class GeneralPeriodTest {
 
@@ -38,5 +41,27 @@ public class GeneralPeriodTest {
 			return GeneralDate.max();
 		}
 		
+		@Override
+		public List<YearMonth> yearMonthsBetween(){
+			List<YearMonth> result = new ArrayList<>();
+			YearMonth startYM = this.start().yearMonth();
+			YearMonth endYM = this.end().yearMonth();
+			while (startYM.lessThanOrEqualTo(endYM)) {
+				result.add(startYM);
+				startYM = startYM.addMonths(1);
+			}
+			return result;
+		}
+
+		@Override
+		public List<GeneralDate> datesBetween(){
+			List<GeneralDate> result = new ArrayList<>();
+			GeneralDate start = this.start();
+			while (start.beforeOrEquals(this.end())) {
+				result.add(start);
+				start = start.addDays(1);
+			}
+			return result;
+		}
 	}
 }

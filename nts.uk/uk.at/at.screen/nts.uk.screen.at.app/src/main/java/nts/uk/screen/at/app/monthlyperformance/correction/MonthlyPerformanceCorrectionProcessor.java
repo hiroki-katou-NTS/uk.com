@@ -20,7 +20,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.at.record.app.find.monthly.root.dto.ClosureDateDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.FormatPerformanceDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.IdentityProcessDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.IdentityProcessFinder;
@@ -44,9 +44,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DPCellDataDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTime;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPCellDataDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPCellStateDto;
@@ -191,6 +189,11 @@ public class MonthlyPerformanceCorrectionProcessor {
 
 			// アルゴリズム「月別実績を表示する」を実行する Hiển thị monthly result
 			displayMonthlyResult(screenDto, yearMonth, closureId);
+			
+			// set data of lstControlDisplayItem
+			List<Integer> attdanceIds = screenDto.getParam().getLstAtdItemUnique().keySet().stream().collect(Collectors.toList());
+			screenDto.getLstControlDisplayItem().setItemIds(attdanceIds);
+			screenDto.getLstControlDisplayItem().getLstAttendanceItem();
 
 			// 画面項目の非活制御をする
 			// アルゴリズム「実績の時系列をチェックする」を実行する (Check actual time)
@@ -360,6 +363,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 		 * Get Data
 		 */
 		// アルゴリズム「対象年月に対応する月別実績を取得する」を実行する Lấy monthly result ứng với năm tháng
+		if (param.getLstAtdItemUnique() == null || param.getLstAtdItemUnique().isEmpty()) {
+			throw new BusinessException("Msg_1261");
+		}
 		List<MonthlyModifyResult> results = new ArrayList<>();
 		List<String> listEmployeeIds = screenDto.getLstEmployee().stream().map(e -> e.getId())
 				.collect(Collectors.toList());
@@ -367,6 +373,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 				.collect(Collectors.toList());
 		results = new GetDataMonthly(listEmployeeIds, new YearMonth(yearMonth), ClosureId.valueOf(closureId),
 				screenDto.getClosureDate().toDomain(), attdanceIds, monthlyModifyQueryProcessor).call();
+		if(results.size() > 0){
+			screenDto.getItemValues().addAll(results.get(0).getItems());
+		}
 		Map<String, MonthlyModifyResult> employeeDataMap = results.stream()
 				.collect(Collectors.toMap(x -> x.getEmployeeId(), Function.identity(), (x, y) -> x));
 
@@ -395,10 +404,11 @@ public class MonthlyPerformanceCorrectionProcessor {
 						// TODO item.getValueType().value
 						String attendanceAtrAsString = String.valueOf(item.getValueType());
 						String attendanceKey = mergeString(ADD_CHARACTER, "" + item.getItemId());
+						PAttendanceItem pA = param.getLstAtdItemUnique().get(item.getItemId());
 						List<String> cellStatus = new ArrayList<>();
 						int attendanceAtr = item.getValueType().value;
 
-						if (attendanceAtr == ValueType.INTEGER.value) {
+						if (pA.getAttendanceAtr() == 1) {
 							int minute = 0;
 							if (item.getValue() != null) {
 								if (Integer.parseInt(item.getValue()) >= 0) {

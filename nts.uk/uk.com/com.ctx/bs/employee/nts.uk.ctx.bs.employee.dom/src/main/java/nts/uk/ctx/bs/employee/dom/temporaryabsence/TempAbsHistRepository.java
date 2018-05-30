@@ -47,7 +47,7 @@ public interface TempAbsHistRepository {
 	Optional<DateHistoryItem> getItemByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate);
 	
 	
-	List<TempAbsenceHistory> getByListSid(List<String> sIds , DatePeriod datePeriod);
+	List<TempAbsenceHistory> getByListSid(List<String> employeeIds , DatePeriod datePeriod);
 	// ------------------------------ COMMAND HISTORY---------------------------------
 	/**
 	 * ドメインモデル「休職休業」を新規登録する

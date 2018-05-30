@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.AggregateAffiliationInfoDto;
-import nts.uk.ctx.at.record.app.find.monthly.root.dto.ClosureDateDto;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -32,7 +32,7 @@ public class AffiliationInfoOfMonthlyDto extends MonthlyItemCommon {
 	private String employeeId;
 
 	/** 締めID: 締めID */
-	private int closureId = 1;
+	private int closureID = 1;
 
 	/** 締め日: 日付 */
 	private ClosureDateDto closureDate;
@@ -46,7 +46,7 @@ public class AffiliationInfoOfMonthlyDto extends MonthlyItemCommon {
 	public AffiliationInfoOfMonthly toDomain() {
 		if (this.isHaveData()) {
 			return AffiliationInfoOfMonthly.of(employeeId, yearMonth, 
-										ConvertHelper.getEnum(closureId, ClosureId.class), 
+										ConvertHelper.getEnum(closureID, ClosureId.class), 
 										closureDate == null ? null : closureDate.toDomain(), 
 										startMonthInfo == null ? null : startMonthInfo.toDomain(), 
 										endMonthInfo == null ? null : endMonthInfo.toDomain());
@@ -63,7 +63,7 @@ public class AffiliationInfoOfMonthlyDto extends MonthlyItemCommon {
 		AffiliationInfoOfMonthlyDto dto = new AffiliationInfoOfMonthlyDto();
 		if (domain != null) {
 			dto.setClosureDate(ClosureDateDto.from(domain.getClosureDate()));
-			dto.setClosureId(domain.getClosureId() == null ? 1 : domain.getClosureId().value);
+			dto.setClosureID(domain.getClosureId() == null ? 1 : domain.getClosureId().value);
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setEndMonthInfo(AggregateAffiliationInfoDto.from(domain.getLastInfo()));
 			dto.setStartMonthInfo(AggregateAffiliationInfoDto.from(domain.getFirstInfo()));

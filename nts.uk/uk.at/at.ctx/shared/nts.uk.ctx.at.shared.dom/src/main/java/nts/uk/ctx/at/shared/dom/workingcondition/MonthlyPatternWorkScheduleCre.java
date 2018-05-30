@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 
 
@@ -34,9 +35,9 @@ public class MonthlyPatternWorkScheduleCre extends DomainObject {
 		memento.setReferenceType(this.referenceType);
 	}
 
-	public MonthlyPatternWorkScheduleCre(TimeZoneScheduledMasterAtr referenceType) {
+	public MonthlyPatternWorkScheduleCre(int referenceType) {
 		super();
-		this.referenceType = referenceType;
+		this.referenceType = EnumAdaptor.valueOf(referenceType, TimeZoneScheduledMasterAtr.class);
 	}
 	
 	

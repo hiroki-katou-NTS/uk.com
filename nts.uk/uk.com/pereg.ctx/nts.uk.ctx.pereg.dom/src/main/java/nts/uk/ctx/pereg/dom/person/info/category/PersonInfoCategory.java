@@ -157,6 +157,15 @@ public class PersonInfoCategory extends AggregateRoot {
 		p.categoryCode = new CategoryCode(ctgCd);
 		return p;
 	}
+	
+	public static PersonInfoCategory createDomainWithAbolition(String ctgId, String ctgCd, String name, int isUsed){
+		PersonInfoCategory p = new PersonInfoCategory();
+		p.personInfoCategoryId = ctgId;
+		p.categoryName = new CategoryName(name);
+		p.categoryCode = new CategoryCode(ctgCd);
+		p.isAbolition = EnumAdaptor.valueOf(isUsed, IsAbolition.class);
+		return p;
+	}
 	public void setDomainNameAndAbolition(CategoryName name, int isAbolition){
 		this.isAbolition = EnumAdaptor.valueOf(isAbolition, IsAbolition.class);
 		this.categoryName = name;
@@ -195,4 +204,37 @@ public class PersonInfoCategory extends AggregateRoot {
 		this.initValMasterCls = InitValMasterObjCls.INIT;
 		this.addItemCls = AddItemObjCls.ENABLE;
 	}
+	
+	public boolean isFixed() {
+		return this.isFixed == IsFixed.FIXED;
+	}
+	
+	public boolean isSingleCategory() {
+		return categoryType == CategoryType.SINGLEINFO;
+	}
+	
+	public boolean isMultiCategory() {
+		return categoryType == CategoryType.MULTIINFO;
+	}
+	
+	public boolean isHistoryCategory() {
+		return categoryType == CategoryType.CONTINUOUSHISTORY 
+				|| categoryType == CategoryType.NODUPLICATEHISTORY
+				|| categoryType == CategoryType.DUPLICATEHISTORY
+				|| categoryType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE;
+	}
+	
+
+	public void setAbolish(IsAbolition isAbolition) {
+		this.isAbolition = isAbolition;
+	}
+		
+	public boolean isEmployeeType() {
+		return personEmployeeType == PersonEmployeeType.EMPLOYEE;
+	}
+	
+	public boolean isPersonType() {
+		return personEmployeeType == PersonEmployeeType.PERSON;
+	}
+	
 }

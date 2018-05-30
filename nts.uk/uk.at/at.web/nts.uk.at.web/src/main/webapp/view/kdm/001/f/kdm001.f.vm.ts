@@ -4,6 +4,7 @@ module nts.uk.at.view.kdm001.f.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
     import block = nts.uk.ui.block;
+    import getText = nts.uk.resource.getText;
     export class ScreenModel {
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         columns: KnockoutObservableArray<any>;
@@ -15,8 +16,8 @@ module nts.uk.at.view.kdm001.f.viewmodel {
         employeeName: KnockoutObservable<string> = ko.observable('');
         dateHoliday: KnockoutObservable<any> = ko.observable('');
         numberDay: KnockoutObservable<any> = ko.observable('');
-        residualDay: KnockoutObservable<any> = ko.observable('');
-        residualDayDispay: KnockoutObservable<any> = ko.observable('');
+        residualDay: KnockoutObservable<any> = ko.observable(0);
+        residualDayDispay: KnockoutObservable<any> = ko.observable('0' + " " + getText('KDM001_27'));
         info: any = getShared("KDM001_EFGH_PARAMS");
         constructor() {
             let self = this;
@@ -28,7 +29,7 @@ module nts.uk.at.view.kdm001.f.viewmodel {
                 self.employeeCode(self.info.selectedEmployee.employeeCode);
                 self.employeeName(self.info.selectedEmployee.employeeName);
                 self.dateHoliday(self.info.rowValue.dayoffDatePyout);
-                self.numberDay(self.info.rowValue.occurredDays + ' 日');
+                self.numberDay(self.info.rowValue.occurredDays + " "  + getText('KDM001_27'));
             }
 
             self.columns = ko.observableArray([
@@ -65,7 +66,8 @@ module nts.uk.at.view.kdm001.f.viewmodel {
                     sumNum = sumNum + x.occurredDays;
                     let day = parseFloat(self.numberDay());
                     self.residualDay(sumNum - day);
-                    self.residualDayDispay((sumNum - day) + ' 日');
+                    let residualValue = (sumNum - day) > 0 ? (sumNum - day).toFixed(1) : (sumNum - day);
+                    self.residualDayDispay(residualValue + " " + getText('KDM001_27'));
                     if (self.residualDay() < 0) {
                         $("#F7_2").css("color", "red");
                     } else {
@@ -126,7 +128,6 @@ module nts.uk.at.view.kdm001.f.viewmodel {
                 })
 
             }
-
         }
 
         private validate(): boolean {

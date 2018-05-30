@@ -46,12 +46,21 @@ public class EmpInfoContactDto extends PeregDomainDto{
 	public static EmpInfoContactDto fromDomain(EmployeeInfoContact domain) {
 		EmpInfoContactDto result = new EmpInfoContactDto();
 		result.setRecordId(domain.getSid());
-		if(domain.getCellPhoneNo() != null) result.setCellPhoneNo(domain.getCellPhoneNo().v());
-		if(domain.getMailAddress() != null) result.setMailAddress(domain.getMailAddress().v());
-		if(domain.getPhoneMailAddress() != null) result.setPhoneMailAddress(domain.getPhoneMailAddress().v());
-		if(domain.getSeatDialIn() != null) result.setSeatDialIn(domain.getSeatDialIn().v());
-		if(domain.getSeatExtensionNo() != null) result.setSeatExtensionNo(domain.getSeatExtensionNo().v());
-		
+		if (domain.getCellPhoneNo().isPresent()) {
+			result.setCellPhoneNo(domain.getCellPhoneNo().get().v());
+		}
+		if (domain.getMailAddress().isPresent()) {
+			result.setMailAddress(domain.getMailAddress().get().v());
+		}
+		if (domain.getPhoneMailAddress().isPresent()) {
+			result.setPhoneMailAddress(domain.getPhoneMailAddress().get().v());
+		}
+		if (domain.getSeatDialIn().isPresent()) {
+			result.setSeatDialIn(domain.getSeatDialIn().get().v());
+		}
+		if (domain.getSeatExtensionNo().isPresent()) {
+			result.setSeatExtensionNo(domain.getSeatExtensionNo().get().v());
+		}
 		return result;
 	}
 

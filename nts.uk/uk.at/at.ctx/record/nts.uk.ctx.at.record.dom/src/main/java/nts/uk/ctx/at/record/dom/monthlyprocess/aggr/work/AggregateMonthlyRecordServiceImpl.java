@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
 
@@ -17,23 +18,27 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AggregateAffiliationInfo;
-import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyAmountMonth;
+import nts.uk.ctx.at.record.dom.monthly.anyitem.AggregateAnyItem;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyTimeMonth;
-import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveAttdRateDays;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOutsideWorkMng;
+import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveMngMode;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
+import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
+import nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth;
+import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
+import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -53,6 +58,9 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 	/** 期間中の年休積休残数を取得 */
 	@Inject
 	private GetAnnAndRsvRemNumWithinPeriod getAnnAndRsvRemNumWithinPeriod;
+	/** 月別実績と勤怠項目の相互変換 */
+	@Inject
+	private MonthlyRecordToAttendanceItemConverter itemConverter;
 	
 	/** 集計結果 */
 	private AggregateMonthlyRecordValue aggregateResult;
@@ -76,6 +84,10 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 	private Map<String, DatePeriod> workingConditions;
 	/** 前回集計結果　（年休積立年休の集計結果） */
 	private AggrResultOfAnnAndRsvLeave prevAggrResult;
+	/** 週NO管理 */
+	private Map<YearMonth, Integer> weekNoMap;
+	/** 手修正あり */
+	private boolean isRetouch;
 	
 	/** 集計処理　（アルゴリズム） */
 	@Override
@@ -93,6 +105,8 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 		this.closureId = closureId;
 		this.closureDate = closureDate;
 		this.prevAggrResult = prevAggrResult;
+		this.weekNoMap = new HashMap<>();
+		this.isRetouch = false;
 		
 		// 社員を取得する
 		EmployeeImport employee = null;
@@ -142,11 +156,9 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 			}
 			
 			// 月別実績の勤怠時間を集計
-			val attendanceTime = this.aggregateAttendanceTime(aggrPeriod, workingConditionItem);
+			val aggregateResult = this.aggregateAttendanceTime(aggrPeriod, workingConditionItem);
+			val attendanceTime = aggregateResult.getAttendanceTime();
 			if (attendanceTime == null) continue;
-			
-			// 月別実績の任意項目を集計
-			this.aggregateAnyItem();
 			
 			// データを合算する
 			val itrAttendanceTime = this.aggregateResult.getAttendanceTimeList().iterator();
@@ -165,27 +177,39 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 			}
 			
 			// 計算結果を戻り値に蓄積
-			this.aggregateResult.getAttendanceTimeList().add(attendanceTime);
+			this.aggregateResult.getAttendanceTimeList().add(aggregateResult.getAttendanceTime());
+			this.aggregateResult.getAttendanceTimeWeeks().addAll(aggregateResult.getAttendanceTimeWeeks());
 		}
 		
-		if (this.workingConditionItems.size() > 0){
-			val workingConditionItem = this.workingConditionItems.get(this.workingConditionItems.size() - 1);
+		ListIterator<AttendanceTimeOfMonthly> itrAttencdanceTime =
+				this.aggregateResult.getAttendanceTimeList().listIterator();
+		while (itrAttencdanceTime.hasNext()){
+			AttendanceTimeOfMonthly attendanceTime = itrAttencdanceTime.next();
 			
-			// 36協定時間の集計
-			MonthlyCalculation monthlyCalculationForAgreement = new MonthlyCalculation();
-			val agreementTimeOpt = monthlyCalculationForAgreement.aggregateAgreementTime(
-					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate, monthPeriod,
-					workingConditionItem, Optional.empty(), this.repositories);
-			if (agreementTimeOpt.isPresent()){
-				val agreementTime = agreementTimeOpt.get();
-				val agreementTimeList = this.aggregateResult.getAgreementTimeList();
-				agreementTimeList.removeIf(c -> { return (c.getYearMonth() == agreementTime.getYearMonth());});
-				agreementTimeList.add(agreementTime);
-			}
+			// 手修正された項目を元に戻す
+			attendanceTime = this.undoRetouchValues(attendanceTime);
+				
+			// 手修正を戻してから計算必要な項目を再度計算
+			if (this.isRetouch) itrAttencdanceTime.set(this.recalcAttendanceTime(attendanceTime));
+		}
+		
+		// 36協定時間の集計
+		MonthlyCalculation monthlyCalculationForAgreement = new MonthlyCalculation();
+		val agreementTimeOpt = monthlyCalculationForAgreement.aggregateAgreementTime(
+				this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
+				monthPeriod, Optional.empty(), Optional.empty(), Optional.empty(), this.repositories);
+		if (agreementTimeOpt.isPresent()){
+			val agreementTime = agreementTimeOpt.get();
+			val agreementTimeList = this.aggregateResult.getAgreementTimeList();
+			agreementTimeList.removeIf(c -> { return (c.getYearMonth() == agreementTime.getYearMonth());});
+			agreementTimeList.add(agreementTime);
 		}
 		
 		// 残数処理
 		this.remainingProcess(monthPeriod);
+		
+		// 月別実績の任意項目を集計
+		this.aggregateAnyItem(monthPeriod);
 		
 		// 大塚カスタマイズ
 		this.customizeForOtsuka();
@@ -258,9 +282,15 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 	 * @param workingConditionItem 労働条件項目
 	 * @return 月別実績の勤怠時間
 	 */
-	private AttendanceTimeOfMonthly aggregateAttendanceTime(
+	private AggregateAttendanceTimeValue aggregateAttendanceTime(
 			DatePeriod datePeriod,
 			WorkingConditionItem workingConditionItem){
+		
+		AggregateAttendanceTimeValue result = new AggregateAttendanceTimeValue();
+		
+		// 週Noを確認する
+		this.weekNoMap.putIfAbsent(this.yearMonth, 0);
+		val startWeekNo = this.weekNoMap.get(this.yearMonth) + 1;
 		
 		// 労働制を確認する
 		val workingSystem = workingConditionItem.getLaborSystem();
@@ -268,13 +298,14 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 		// 月別実績の勤怠時間　初期設定
 		val attendanceTime = new AttendanceTimeOfMonthly(
 				this.employeeId, this.yearMonth, this.closureId, this.closureDate, datePeriod);
-		attendanceTime.prepareAggregation(companyId, datePeriod, workingConditionItem, this.repositories);
+		attendanceTime.prepareAggregation(this.companyId, datePeriod, workingConditionItem,
+				startWeekNo, this.repositories);
 		val monthlyCalculation = attendanceTime.getMonthlyCalculation();
 		if (monthlyCalculation.getErrorInfos().size() > 0) {
 			for (val errorInfo : monthlyCalculation.getErrorInfos()){
 				this.errorInfos.putIfAbsent(errorInfo.getResourceId(), errorInfo);
 			}
-			return null;
+			return result;
 		}
 		
 		// 月の計算
@@ -282,25 +313,295 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 				Optional.empty(), Optional.empty(), this.repositories);
 		
 		// 縦計
-		val verticalTotal = attendanceTime.getVerticalTotal();
-		verticalTotal.verticalTotal(this.companyId, this.employeeId, datePeriod, workingSystem, this.repositories);
+		{
+			// 週単位の期間を取得
+			for (val attendanceTimeWeek : attendanceTime.getMonthlyCalculation().getAttendanceTimeWeeks()){
+				DatePeriod weekPeriod = attendanceTimeWeek.getPeriod();
+				
+				// 週の縦計
+				val verticalTotalWeek = attendanceTimeWeek.getVerticalTotal();
+				verticalTotalWeek.verticalTotal(this.companyId, this.employeeId, weekPeriod, workingSystem, this.repositories);
+			}
+			
+			// 月の縦計
+			val verticalTotal = attendanceTime.getVerticalTotal();
+			verticalTotal.verticalTotal(this.companyId, this.employeeId, datePeriod, workingSystem, this.repositories);
+		}
 		
 		// 時間外超過
 		ExcessOutsideWorkMng excessOutsideWorkMng = new ExcessOutsideWorkMng(monthlyCalculation);
 		excessOutsideWorkMng.aggregate(this.repositories);
+		if (excessOutsideWorkMng.getErrorInfos().size() > 0) {
+			for (val errorInfo : excessOutsideWorkMng.getErrorInfos()){
+				this.errorInfos.putIfAbsent(errorInfo.getResourceId(), errorInfo);
+			}
+		}
 		attendanceTime.setExcessOutsideWork(excessOutsideWorkMng.getExcessOutsideWork());
 
 		// 回数集計
+		{
+			// 週単位の期間を取得
+			for (val attendanceTimeWeek : attendanceTime.getMonthlyCalculation().getAttendanceTimeWeeks()){
+				DatePeriod weekPeriod = attendanceTimeWeek.getPeriod();
+				
+				// 週の回数集計
+				val totalCountWeek = attendanceTimeWeek.getTotalCount();
+				totalCountWeek.totalize(this.companyId, this.employeeId, weekPeriod, this.repositories);
+			}
+			
+			// 月の回数集計
+			val totalCount = attendanceTime.getTotalCount();
+			totalCount.totalize(this.companyId, this.employeeId, datePeriod, this.repositories);
+		}
 		
-		// 月別実績の勤怠時間を返す
-		return attendanceTime;
+		// 集計結果を返す
+		result.setAttendanceTime(attendanceTime);
+		for (val attendanceTimeWeek : attendanceTime.getMonthlyCalculation().getAttendanceTimeWeeks()){
+			val nowWeekNo = this.weekNoMap.get(this.yearMonth);
+			if (nowWeekNo < attendanceTimeWeek.getWeekNo()){
+				this.weekNoMap.put(this.yearMonth, attendanceTimeWeek.getWeekNo());
+			}
+			result.getAttendanceTimeWeeks().add(attendanceTimeWeek);
+		}
+		return result;
+	}
+
+	/**
+	 * 月別実績の任意項目を集計
+	 * @param monthPeriod 月の期間
+	 */
+	private void aggregateAnyItem(DatePeriod monthPeriod){
+
+		// 週単位の期間を取得
+		ListIterator<AttendanceTimeOfWeekly> itrWeeks =
+				this.aggregateResult.getAttendanceTimeWeeks().listIterator();
+		while (itrWeeks.hasNext()){
+			AttendanceTimeOfWeekly attendanceTimeWeek = itrWeeks.next();
+			
+			// 週間集計
+			itrWeeks.set(this.aggregateAnyItemWeek(attendanceTimeWeek));
+		}
+		
+		// 月間集計
+		this.aggregateAnyItemMonth(monthPeriod);
 	}
 	
 	/**
-	 * 月別実績の任意項目を集計
+	 * 週間集計
+	 * @param period 期間
 	 */
-	private void aggregateAnyItem(){
+	private AttendanceTimeOfWeekly aggregateAnyItemWeek(AttendanceTimeOfWeekly attendanceTimeWeek){
 		
+		// 日別実績の任意項目の取得
+		DatePeriod period = attendanceTimeWeek.getPeriod();
+		List<String> employeeIds = new ArrayList<>();
+		employeeIds.add(this.employeeId);
+		val anyItemValueOfDailys = this.repositories.getAnyItemValueOfDaily().finds(employeeIds, period);
+		
+		// 任意項目ごとに集計する
+		Map<Integer, AggregateAnyItem> anyItemTotals = new HashMap<>();
+		for (val anyItemValueOfDaily : anyItemValueOfDailys){
+			if (anyItemValueOfDaily.getItems() == null) continue;
+			val ymd = anyItemValueOfDaily.getYmd();
+			for (val item : anyItemValueOfDaily.getItems()){
+				if (item.getItemNo() == null) continue;
+				Integer itemNo = item.getItemNo().v();
+				
+				if (period.contains(ymd)){
+					anyItemTotals.putIfAbsent(itemNo, new AggregateAnyItem(itemNo));
+					anyItemTotals.get(itemNo).addFromDaily(item);
+				}
+			}
+		}
+		
+		// 任意項目を取得
+		val optionalItems = this.repositories.getOptionalItem().findAll(this.companyId);
+		for (val optionalItem : optionalItems){
+			Integer optionalItemNo = optionalItem.getOptionalItemNo().v();
+			
+			// 利用条件の判定
+			//*****（未）　作成中　→　高須さん
+			{
+
+				// 属性に応じて初期化
+				AnyTimeMonth anyTime = null;
+				AnyTimesMonth anyTimes = null;
+				AnyAmountMonth anyAmount = null;
+				switch (optionalItem.getOptionalItemAtr()){
+				case TIME:
+					anyTime = new AnyTimeMonth(0);
+					break;
+				case NUMBER:
+					anyTimes = new AnyTimesMonth(0.0);
+					break;
+				case AMOUNT:
+					anyAmount = new AnyAmountMonth(0);
+					break;
+				}
+				
+				// 縦計処理
+				if (anyItemTotals.containsKey(optionalItemNo)){
+					val anyItemTotal = anyItemTotals.get(optionalItemNo);
+					if (anyItemTotal.getTime().isPresent()){
+						if (anyTime == null) anyTime = new AnyTimeMonth(0);
+						anyTime = anyTime.addMinutes(anyItemTotal.getTime().get().v());
+					}
+					if (anyItemTotal.getTimes().isPresent()){
+						if (anyTimes == null) anyTimes = new AnyTimesMonth(0.0);
+						anyTimes = anyTimes.addTimes(anyItemTotal.getTimes().get().v().doubleValue());
+					}
+					if (anyItemTotal.getAmount().isPresent()){
+						if (anyAmount == null) anyAmount = new AnyAmountMonth(0);
+						anyAmount = anyAmount.addAmount(anyItemTotal.getAmount().get().v());
+					}
+				}
+				
+				// 集計任意項目を返す
+				attendanceTimeWeek.getAnyItem().getAnyItemValues().put(optionalItemNo, AggregateAnyItem.of(
+						optionalItemNo, anyTime, anyTimes, anyAmount));
+			}
+		}
+		
+		return attendanceTimeWeek;
+	}
+	
+	/**
+	 * 月間集計
+	 * @param period 期間
+	 */
+	private void aggregateAnyItemMonth(DatePeriod period){
+		
+		// 日別実績の任意項目の取得
+		List<String> employeeIds = new ArrayList<>();
+		employeeIds.add(this.employeeId);
+		val anyItemValueOfDailys = this.repositories.getAnyItemValueOfDaily().finds(employeeIds, period);
+		
+		// 任意項目ごとに集計する
+		Map<Integer, AggregateAnyItem> anyItemTotals = new HashMap<>();
+		for (val anyItemValueOfDaily : anyItemValueOfDailys){
+			if (anyItemValueOfDaily.getItems() == null) continue;
+			val ymd = anyItemValueOfDaily.getYmd();
+			for (val item : anyItemValueOfDaily.getItems()){
+				if (item.getItemNo() == null) continue;
+				Integer itemNo = item.getItemNo().v();
+				
+				if (period.contains(ymd)){
+					anyItemTotals.putIfAbsent(itemNo, new AggregateAnyItem(itemNo));
+					anyItemTotals.get(itemNo).addFromDaily(item);
+				}
+			}
+		}
+		
+		// 任意項目を取得
+		val optionalItems = this.repositories.getOptionalItem().findAll(this.companyId);
+		for (val optionalItem : optionalItems){
+			Integer optionalItemNo = optionalItem.getOptionalItemNo().v();
+
+			// 利用条件の判定
+			//*****（未）　作成中　→　高須さん
+			{
+				
+				// 属性に応じて初期化
+				AnyTimeMonth anyTime = null;
+				AnyTimesMonth anyTimes = null;
+				AnyAmountMonth anyAmount = null;
+				switch (optionalItem.getOptionalItemAtr()){
+				case TIME:
+					anyTime = new AnyTimeMonth(0);
+					break;
+				case NUMBER:
+					anyTimes = new AnyTimesMonth(0.0);
+					break;
+				case AMOUNT:
+					anyAmount = new AnyAmountMonth(0);
+					break;
+				}
+				
+				// 「実績区分」を判断
+				if (optionalItem.getPerformanceAtr() == PerformanceAtr.DAILY_PERFORMANCE){
+
+					// 日別実績　縦計処理
+					if (anyItemTotals.containsKey(optionalItemNo)){
+						val anyItemTotal = anyItemTotals.get(optionalItemNo);
+						if (anyItemTotal.getTime().isPresent()){
+							if (anyTime == null) anyTime = new AnyTimeMonth(0);
+							anyTime = anyTime.addMinutes(anyItemTotal.getTime().get().v());
+						}
+						if (anyItemTotal.getTimes().isPresent()){
+							if (anyTimes == null) anyTimes = new AnyTimesMonth(0.0);
+							anyTimes = anyTimes.addTimes(anyItemTotal.getTimes().get().v().doubleValue());
+						}
+						if (anyItemTotal.getAmount().isPresent()){
+							if (anyAmount == null) anyAmount = new AnyAmountMonth(0);
+							anyAmount = anyAmount.addAmount(anyItemTotal.getAmount().get().v());
+						}
+					}
+				}
+				else {
+					
+					// 月別実績　計算処理
+					//*****（未）　作成中　→　高須さん
+				}
+				
+				// 月別実績の任意項目を返す
+				this.aggregateResult.putAnyItemOrUpdate(AnyItemOfMonthly.of(
+						this.employeeId, this.yearMonth, this.closureId, this.closureDate, optionalItemNo,
+						Optional.ofNullable(anyTime), Optional.ofNullable(anyTimes), Optional.ofNullable(anyAmount)));
+			}
+		}
+	}
+	
+	/**
+	 * 手修正された項目を元に戻す
+	 * @param attendanceTime 月別実績の勤怠時間
+	 * @return 月別実績の勤怠時間
+	 */
+	private AttendanceTimeOfMonthly undoRetouchValues(AttendanceTimeOfMonthly attendanceTime){
+
+		this.isRetouch = false;
+		
+		// 既存データを読み込む
+		val oldDataOpt = this.repositories.getAttendanceTimeOfMonthly().find(
+				this.employeeId, this.yearMonth, this.closureId, this.closureDate);
+		if (!oldDataOpt.isPresent()) return attendanceTime;
+		val oldItemConvert = this.itemConverter.withAttendanceTime(oldDataOpt.get());
+
+		// 計算後データを確認
+		val convert = this.itemConverter.withAttendanceTime(attendanceTime);
+		
+		// 月別実績の編集状態を取得
+		
+		{
+			
+			// 勤怠項目IDから項目を判断
+			
+			// 該当する勤怠項目IDの値を計算前に戻す
+			
+		}
+		
+		return attendanceTime;
+	}
+
+	/**
+	 * 手修正を戻してから計算必要な項目を再度計算
+	 * @param attendanceTime 月別実績の勤怠時間
+	 * @return 月別実績の勤怠時間
+	 */
+	private AttendanceTimeOfMonthly recalcAttendanceTime(AttendanceTimeOfMonthly attendanceTime){
+	
+		val monthlyCalculation = attendanceTime.getMonthlyCalculation();
+		
+		// 残業合計時間を集計する
+		monthlyCalculation.getAggregateTime().getOverTime().recalcTotal();
+		
+		// 休出合計時間を集計する
+		monthlyCalculation.getAggregateTime().getHolidayWorkTime().recalcTotal();
+
+		// 総労働時間と36協定時間の再計算
+		monthlyCalculation.recalcTotalAndAgreement(attendanceTime.getDatePeriod(),
+				MonthlyAggregateAtr.MONTHLY, this.repositories);
+		
+		return attendanceTime;
 	}
 	
 	/**
@@ -506,9 +807,9 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 		if (lastInfo.getBusinessTypeCd().v().compareTo("0000002030") == 0){
 			
 			// 任意項目50にセット
-			this.aggregateResult.addAnyItemOrUpdate(AnyItemOfMonthly.of(
+			this.aggregateResult.putAnyItemOrUpdate(AnyItemOfMonthly.of(
 					this.employeeId, this.yearMonth, this.closureId, this.closureDate,
-					50, new AnyTimeMonth(0), new AnyTimesMonth(20.67), new AnyAmountMonth(0)));
+					50, Optional.empty(), Optional.of(new AnyTimesMonth(20.67)), Optional.empty()));
 		}
 	}
 }

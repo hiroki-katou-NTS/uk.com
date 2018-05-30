@@ -9,6 +9,7 @@
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kaf018.b.main.css" />
+			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="kaf018.b.service.js" />
 			<com:scriptfile path="kaf018.b.vm.js" />
 			<com:scriptfile path="kaf018.b.start.js" />
@@ -30,7 +31,7 @@
 						<col width="500px" />
 					</colgroup>
 					<tr>
-						<td >
+						<td>
 							<!-- B2対象締め（ラベル） -->
 							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_10')}</div>
 						</td>
@@ -47,12 +48,12 @@
 						<td>
 						</td>
 						<td style="width: 60px;">
-							<button class="btn-question" data-bind="ntsHelpButton: {image: '未承認項目説明.jpg', position: 'bottom center', enable: true }">?</button>
+							<button tabindex="-1" class="btn-question" data-bind="ntsHelpButton: {image: '未承認項目説明.jpg', position: 'bottom center', enable: true }">?</button>
 						</td>
 					</tr>
 				</table>
 				<!-- B5職場一覧 -->
-				<table id="fixed-table" tabindex="4">
+				<table id="fixed-table" tabindex="2">
 					<colgroup>
 						<col width="350px" />
 						<col width="250px" />
@@ -73,13 +74,13 @@
 					</thead>
 					<tbody data-bind="foreach: tempData">
 						<tr>
-							<td><a class="hyperlink" href="#" data-bind="text: workSpaceName"></a></td>
-							<td data-bind="text: $parent.getRecord1(totalNotReflected,notReflected)"></td>
-							<td data-bind="text: $parent.getRecord(unapproved)"></td>
-							<td data-bind="text: $parent.getRecord(approved)"></td>
-							<td data-bind="text: $parent.getRecord(denail)"></td>
+							<td><a tabindex="-1" class="hyperlink" href="#" data-bind="text: workplaceName, click: function(){$parent.gotoC($index)}"></a></td>
+							<td data-bind="text: $parent.getRecord1(numOfApp, numOfUnreflected)"></td>
+							<td data-bind="text: $parent.getRecord(numOfUnapproval)"></td>
+							<td data-bind="text: $parent.getRecord(approvedNumOfCase)"></td>
+							<td data-bind="text: $parent.getRecord(numOfDenials)"></td>
 							
-							<td><div data-bind="ntsCheckBox: { checked: isSendMail, enable:  enable }" /></td>
+							<td><div tabindex="-1" data-bind="ntsCheckBox: { checked: isChecked, enable: isEnabled }" /></td>
 						</tr>
 					</tbody>
 				</table>

@@ -3,10 +3,10 @@ package nts.uk.ctx.at.record.app.command.monthly;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.app.find.monthly.root.dto.ClosureDateDto;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.SetterCommonCommand;
+import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.GetSetCommonCommand;
 
-public abstract class MonthlyWorkCommonCommand implements SetterCommonCommand {
+public abstract class MonthlyWorkCommonCommand implements GetSetCommonCommand {
 
 	/** 年月: 年月 */
 	@Getter

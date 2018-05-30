@@ -25,6 +25,7 @@ import nts.uk.ctx.at.schedule.dom.adapter.ScTimeParam;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScShortWorkTimeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortChildCareFrameDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
+import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
 import nts.uk.ctx.at.schedule.dom.schedule.algorithm.BusinessDayCal;
 import nts.uk.ctx.at.schedule.dom.schedule.algorithm.CreScheWithBusinessDayCalService;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
@@ -96,7 +97,7 @@ public class ScheCreExeBasicScheduleHandler {
 	 *            the work time code
 	 */
 	public void updateAllDataToCommandSave(ScheduleCreatorExecutionCommand command, String employeeId,
-			WorktypeDto worktypeDto, String workTimeCode) {
+			WorktypeDto worktypeDto, String workTimeCode, EmployeeGeneralInfoImported empGeneralInfo) {
 
 		// get short work time
 		Optional<ShortWorkTimeDto> optionalShortTime = this.getShortWorkTime(employeeId, command.getToDate());
@@ -122,7 +123,7 @@ public class ScheCreExeBasicScheduleHandler {
 		// 休憩予定時間帯を取得する
 		this.saveBreakTime(command.getCompanyId(), commandSave);
 		// 勤務予定マスタ情報を取得する
-		if (!this.saveScheduleMaster(commandSave, command.getExecutionId()))
+		if (!this.saveScheduleMaster(commandSave, command.getExecutionId(), empGeneralInfo))
 			return;
 
 		// check not exist error
@@ -406,10 +407,10 @@ public class ScheCreExeBasicScheduleHandler {
 	 * @param employeeId
 	 * @param toDate
 	 */
-	private boolean saveScheduleMaster(BasicScheduleSaveCommand commandSave, String executionId) {
+	private boolean saveScheduleMaster(BasicScheduleSaveCommand commandSave, String executionId, EmployeeGeneralInfoImported empGeneralInfo) {
 		// 勤務予定マスタ情報を取得する
 		Optional<ScheduleMasterInformationDto> scheduleMasterInforOpt = this.scheduleMasterInformationService
-				.getScheduleMasterInformationDto(commandSave.getEmployeeId(), commandSave.getYmd(), executionId);
+				.getScheduleMasterInformationDto(commandSave.getEmployeeId(), commandSave.getYmd(), executionId, empGeneralInfo);
 		if (!scheduleMasterInforOpt.isPresent())
 			return false;
 		ScheduleMasterInformationDto scheduleMasterInfor = scheduleMasterInforOpt.get();
