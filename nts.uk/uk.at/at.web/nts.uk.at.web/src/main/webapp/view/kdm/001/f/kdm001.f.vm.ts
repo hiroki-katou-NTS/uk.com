@@ -61,23 +61,27 @@ module nts.uk.at.view.kdm001.f.viewmodel {
             _.each(self.currentList(), function(x) {
                 if (self.dateHoliday() === x.dayoffDate) {
                     $('#multi-list').ntsError('set', { messageId: "Msg_766" });
+                } else {
+                    sumNum = sumNum + x.occurredDays;
+                    let day = parseFloat(self.numberDay());
+                    self.residualDay(sumNum - day);
+                    self.residualDayDispay((sumNum - day) + ' 日');
+                    if (self.residualDay() < 0) {
+                        $("#F7_2").css("color", "red");
+                    } else {
+                        $("#F7_2").css("color", "black");
+                    }
                 }
-
-                sumNum = sumNum + x.occurredDays;
-
             });
-            let day = parseFloat(self.numberDay());
-            self.residualDay(sumNum - day);
-            self.residualDayDispay((sumNum - day) + ' 日');
         }
-        
+
         public initScreen(): void {
             block.invisible();
             let self = this;
             self.caculRemainNumber();
             //            for (let i = 1; i < 100; i++) {
             //                self.items.push(new ItemModel('00' + i, "2010/1/10", "1.0       //            }
-            
+
             service.getBySidDatePeriod(self.info.selectedEmployee.employeeId, self.info.rowValue.id).done((data: Array<ItemModel>) => {
                 if (data && data.length > 0) {
                     self.items(data);
