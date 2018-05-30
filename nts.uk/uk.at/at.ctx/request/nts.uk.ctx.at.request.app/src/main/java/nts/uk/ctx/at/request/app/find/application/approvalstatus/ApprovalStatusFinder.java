@@ -493,8 +493,8 @@ public class ApprovalStatusFinder {
 	private String getAppContentOverTime(String companyID, String appId, int detailSet) {
 		String appContent = "";
 		AppOverTimeInfoFull appOverTime = appDetailInfoRepo.getAppOverTimeInfo(companyID, appId);
-		if(detailSet==1) {
-			appContent += I18NText.getText("KAF018_268");
+		appContent += I18NText.getText("KAF018_268");
+		if(detailSet == 1) {
 			appContent += appOverTime.getWorkClockFrom1();
 			appContent += I18NText.getText("KAF018_220");
 			appContent += appOverTime.getWorkClockTo1();

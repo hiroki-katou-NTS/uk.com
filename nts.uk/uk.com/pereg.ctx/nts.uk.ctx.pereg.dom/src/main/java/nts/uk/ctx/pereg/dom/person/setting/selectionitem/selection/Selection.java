@@ -3,20 +3,26 @@ package nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.primitive.ExternalCD;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.primitive.MemoSelection;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.primitive.SelectionCD;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.primitive.SelectionName;
 
 @Getter
 @Setter
 public class Selection extends AggregateRoot{
 	
-	private String selectionID;
-	
 	private String histId;
+	
+	private String selectionID;
 	
 	private SelectionCD selectionCD;
 	
 	private SelectionName selectionName;
 	
+	// optional fields
 	private ExternalCD externalCD;
+
 	
 	private MemoSelection memoSelection;
 	

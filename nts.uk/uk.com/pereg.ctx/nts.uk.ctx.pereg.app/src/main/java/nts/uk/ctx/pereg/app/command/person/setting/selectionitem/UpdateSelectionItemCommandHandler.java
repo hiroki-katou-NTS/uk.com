@@ -9,8 +9,8 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.IPerInfoSelectionItemRepository;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoSelectionItem;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.IPerInfoSelectionItemRepository;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.PerInfoSelectionItem;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
