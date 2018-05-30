@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.affiliationinformation.repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -16,6 +17,8 @@ public interface AffiliationInforOfDailyPerforRepository {
 	Optional<AffiliationInforOfDailyPerfor> findByKey(String employeeId, GeneralDate ymd);
 	
 	List<AffiliationInforOfDailyPerfor> finds(List<String> employeeId, DatePeriod ymd);
+	
+	List<AffiliationInforOfDailyPerfor> finds(Map<String, GeneralDate> param);
 	
 	void updateByKey(AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor);
 }

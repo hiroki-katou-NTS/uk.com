@@ -2602,7 +2602,7 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 		if ("日別作成".equals(typeExecution)) {
 			try {
 				// ⑤社員の日別実績を作成する 
-				processState = this.createDailyService.createDailyResultEmployee(asyContext, employeeId, period,
+				processState = this.createDailyService.createDailyResultEmployeeWithNoInfoImport(asyContext, employeeId, period,
 						empCalAndSumExeLog.getCompanyID(), empCalAndSumExeLog.getEmpCalAndSumExecLogID(),Optional.ofNullable(dailyCreateLog),
 						processExecution.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()? true
 								: false);
@@ -2840,7 +2840,7 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 				ProcessState processState1;
 		try {
 			// ⑤社員の日別実績を作成する
-			 processState1 = this.createDailyService.createDailyResultEmployee(asyncContext, empId, period,
+			 processState1 = this.createDailyService.createDailyResultEmployeeWithNoInfoImport(asyncContext, empId, period,
 					companyId, empCalAndSumExeLogId, null, true);
 		} catch (Exception e) {
 			throw new CreateDailyException();
