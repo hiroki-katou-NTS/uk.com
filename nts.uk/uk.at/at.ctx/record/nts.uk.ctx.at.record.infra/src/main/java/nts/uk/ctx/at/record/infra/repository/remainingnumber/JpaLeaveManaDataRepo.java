@@ -12,6 +12,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.DigestionAtr;
+import nts.uk.ctx.at.record.dom.remainingnumber.base.UsedDays;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.record.infra.entity.remainingnumber.subhdmana.KrcmtLeaveManaData;
@@ -30,6 +31,8 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	private String QUERY_BYSID_AND_NOT_UNUSED = String.join(" ", QUERY_BYSID, "AND l.subHDAtr !=:subHDAtr");
 
 	private String QUERY_BYID = "SELECT l FROM KrcmtLeaveManaData l WHERE l.leaveID IN :leaveIDs";
+	
+	private String QUERY_BY_ID = "SELECT l FROM KrcmtLeaveManaData l WHERE l.leaveID IN :leaveIds";
 	
 	@Override
 	public List<LeaveManagementData> getBySidWithsubHDAtr(String cid, String sid, int state) {
@@ -161,6 +164,19 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 				.setParameter("leaveIDs", leaveIds).getList();
 		for(KrcmtLeaveManaData busItem: listListMana){
 			busItem.subHDAtr =  DigestionAtr.UNUSED.value;
+			busItem.unUsedDays = 1.0;
+		}
+		this.commandProxy().updateAll(listListMana);
+	}
+	
+	
+	@Override
+	public void updateUnUseDayLeaveId(List<String> leaveIds) {
+		List<KrcmtLeaveManaData> listListMana = this.queryProxy()
+				.query(QUERY_BY_ID, KrcmtLeaveManaData.class)
+				.setParameter("leaveIds", leaveIds).getList();
+		for(KrcmtLeaveManaData busItem: listListMana){
+			busItem.unUsedDays = 0.5;
 		}
 		this.commandProxy().updateAll(listListMana);
 	}

@@ -43,7 +43,7 @@ public class LeaveManagementService {
 		} else if (leaveManagementData.getLeaveMana().size() == 2) {
 			
 			if(leaveManagementData.getNumberDayParam().equals(HALF_DAY)) {
-				response.add("Msg_743");
+				response.add("Msg_734");
 			}
 			
 			if (leaveManagementData.getLeaveMana().get(0).getRemainDays().equals(ONE_DAY)
@@ -71,11 +71,19 @@ public class LeaveManagementService {
 			List<LeaveManagementData> leaveManaUpdate = new ArrayList<>();
 			leaveManaUpdate = leaveManaDataRepository.getByComDayOffId(companyId, leaveManagementData.getEmployeeId(),
 					leaveManagementData.getComDayOffID());
+			
+			List<String> updateUnUsedDay = new ArrayList<>();
 			for (int i = 0; i < leaveManaUpdate.size(); i++) {
 				if(leaveManaUpdate.get(i).getOccurredDays().v() != Double.parseDouble(leaveManagementData.getNumberDayParam())) {
+					updateUnUsedDay.add(leaveManaUpdate.get(i).getID());
 					leaveManaUpdate.remove(i);
 				}
 			}
+			// update unUsedDay when not used 
+			if(!updateUnUsedDay.isEmpty()) {
+				leaveManaDataRepository.updateUnUseDayLeaveId(updateUnUsedDay);
+			}
+			
 			List<String> currentLeaveMana = leaveManaUpdate.stream().map(item -> new String(item.getID()))
 					.collect(Collectors.toList());
 			// update Sub by current leave
