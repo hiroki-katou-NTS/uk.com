@@ -5,7 +5,7 @@
 }
 
 #ex_accept_wizard {
-	width: 1400px;
+	width: 1300px;
 	height: 480px;
 }
 
@@ -15,7 +15,7 @@
 }
 
 #ex_accept_wizard>.content {
-	width: 1140px;
+	width: 1040px;
 	height: 590px;
 	background: none;
 	margin-left: 5px;
@@ -84,7 +84,6 @@
 .fixed-flex-layout-right-screenD{
 	float: right;
 	width: 55%;
-	margin-right: 20px;
 }
 
 .button-bottom-area {

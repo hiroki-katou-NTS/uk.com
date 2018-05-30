@@ -21,10 +21,7 @@ public class UpdateManagementDelCommandHandler extends CommandHandler<Management
     @Override
     protected void handle(CommandHandlerContext<ManagementDelCommand> context) {
     	ManagementDelCommand updateCommand = context.getCommand();
-    	boolean isInterruptedFlg = updateCommand.getIsInterruptedFlg() == 1;
-        repository.update(new ManagementDeletion(updateCommand.getDelId(), 
-        		isInterruptedFlg, updateCommand.getCategoryTotalCount(), 
-        		updateCommand.getCategoryCount(), updateCommand.getErrorCount(), 
-        		OperatingCondition.valueOf(updateCommand.getOperatingCondition())));
+        repository.setInterruptDeleting(updateCommand.getDelId(),updateCommand.getIsInterruptedFlg(),
+        		OperatingCondition.valueOf(updateCommand.getOperatingCondition()));
     }
 }

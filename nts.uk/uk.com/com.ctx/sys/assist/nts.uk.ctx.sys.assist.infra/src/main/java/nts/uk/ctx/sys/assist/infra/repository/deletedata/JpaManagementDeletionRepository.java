@@ -81,4 +81,14 @@ public class JpaManagementDeletionRepository extends JpaRepository implements Ma
 		entity.operatingCondition = operatingCondition.value;
 		this.commandProxy().update(entity);
 	}
+	
+	@Override
+	public void setInterruptDeleting(String delId,int interruptedFlg,OperatingCondition operatingCondition ) {
+
+		SspdtManagementDeletionPK sspdtManagementDeletionPK = new  SspdtManagementDeletionPK(delId);
+		SspdtManagementDeletion entity = this.queryProxy().find(sspdtManagementDeletionPK, SspdtManagementDeletion.class).get();
+		entity.operatingCondition = operatingCondition.value;
+		entity.isInterruptedFlg = interruptedFlg;
+		this.commandProxy().update(entity);
+	}
 }
