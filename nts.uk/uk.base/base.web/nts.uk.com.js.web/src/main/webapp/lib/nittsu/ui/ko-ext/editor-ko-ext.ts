@@ -356,7 +356,7 @@ module nts.uk.ui.koExtentions {
             if(data.constraint=="PostCode"){
                 return new validation.PostCodeValidator(name, constraintName, { required: required });
             }
-            if(data.constraint=="PunchCardNo"){
+            if(data.constraint=="StampNumber"){
                 return new validation.PunchCardNoValidator(name, constraintName, { required: required });
             }
 

@@ -5,12 +5,12 @@ module nts.uk.com.view.cas001.c.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
-
+    import block = nts.uk.ui.block;
     export class ScreenModel {
         roleList: KnockoutObservableArray<any> = ko.observableArray([]);
         roleCodeArray = [];
         roleCopy: KnockoutObservable<any> = ko.observable(getShared('currentRole'));
-        isCanceled : boolean ;
+        isCanceled: boolean;
 
         constructor() {
             var self = this;
@@ -18,7 +18,7 @@ module nts.uk.com.view.cas001.c.viewmodel {
             self.roleList.subscribe(data => {
                 if (data) {
                     $("#roles").igGrid("option", "dataSource", data);
-                }else{
+                } else {
                     $("#roles").igGrid("option", "dataSource", []);
                 }
             });
@@ -30,47 +30,55 @@ module nts.uk.com.view.cas001.c.viewmodel {
             let self = this;
             self.roleList.removeAll();
 
-                if (self.roleCopy().roleList.length > 0) {
-                    _.each(self.roleCopy().roleList, function(c) {
-                        if (c.roleId !== self.roleCopy().personRole.roleId){
-                            self.roleList.push(new PersonRole(c.roleId, c.roleCode, c.roleName));
-                        }
-                    });
-                }else{
-                   dialog.alert(text('CAS001_7')); 
-                }
+            if (self.roleCopy().roleList.length > 0) {
+                _.each(self.roleCopy().roleList, function(c) {
+                    if (c.roleId !== self.roleCopy().personRole.roleId) {
+                        self.roleList.push(new PersonRole(c.roleId, c.roleCode, c.roleName));
+                    }
+                });
+            } else {
+                dialog.alert(text('CAS001_7'));
+            }
         }
 
         createCategory() {
-            let data = (__viewContext["viewModel"].roleList());
-            let self = this;
+            let self = this,
+                data = (__viewContext["viewModel"].roleList()),
+                objSet: any = { isCancel: true, id: null };
             self.roleCodeArray = [];
-            _.find(data, function(role:PersonRole) {
+            _.find(data, function(role: PersonRole) {
                 if (role.selected === true) {
                     self.roleCodeArray.push(role.roleId);
                 }
             });
             if (self.roleCodeArray.length > 0) {
-               dialog.confirm({messageId: "Msg_64"}).ifYes(() => {
-                    let roleObj = { roleIdDestination: self.roleCopy().personRole.roleId , roleIds: self.roleCodeArray };
+                dialog.confirm({ messageId: "Msg_64" }).ifYes(() => {
+                    let roleObj = { roleIdDestination: self.roleCopy().personRole.roleId, roleIds: self.roleCodeArray };
+                    block.invisible();
                     service.update(roleObj).done(function(obj) {
                         dialog.info({ messageId: "Msg_926" }).then(function() {
+                            objSet.id = self.roleCodeArray[0];
+                            objSet.isCancel = false;
+                            setShared('isCanceled', objSet);
                             close();
                         });
                     }).fail(function(res: any) {
                         dialog.alert(res.message);
-                    })
+                    }).always(() => {
+                        block.clear();
+                    });
 
                 }).ifCancel(function() {
                 })
-            }else{
-                dialog.alert({messageId: "Msg_365"});
-            }
-            self.isCanceled = false;
-            setShared('isCanceled', self.isCanceled);
+            } else {
+                dialog.alert({ messageId: "Msg_365" });
 
+            }
+
+                objSet.isCancel = false;
+                setShared('isCanceled', objSet);
         }
-        
+
         closeDialog() {
             let self = this;
             self.isCanceled = true;

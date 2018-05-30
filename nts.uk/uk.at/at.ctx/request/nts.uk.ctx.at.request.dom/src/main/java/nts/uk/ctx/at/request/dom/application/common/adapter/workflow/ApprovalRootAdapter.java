@@ -3,10 +3,9 @@ package nts.uk.ctx.at.request.dom.application.common.adapter.workflow;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverInfoImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 
 
 /**

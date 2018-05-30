@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.daily.bonuspaytime;
 
+import lombok.Getter;
 import lombok.Value;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -9,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  * @author keisuke_hoshina
  *
  */
-@Value
+@Getter
 public class BonusPayTime {
 	//加給項目ＮＯ
 	private int BonusPayTimeItemNo;
@@ -19,4 +20,28 @@ public class BonusPayTime {
 	private TimeWithCalculation withinBonusPay;
 	//所定外加給
 	private TimeWithCalculation excessBonusPayTime;
+	
+	/**
+	 * Constructor 
+	 */
+	public BonusPayTime(int bonusPayTimeItemNo, AttendanceTime bonusPayTime, TimeWithCalculation withinBonusPay,
+			TimeWithCalculation excessBonusPayTime) {
+		super();
+		BonusPayTimeItemNo = bonusPayTimeItemNo;
+		this.bonusPayTime = bonusPayTime;
+		this.withinBonusPay = withinBonusPay;
+		this.excessBonusPayTime = excessBonusPayTime;
+	}
+	
+	public void controlUpperTime(AttendanceTime upperTime) {
+		this.bonusPayTime = this.bonusPayTime.greaterThan(upperTime)?upperTime:this.bonusPayTime;
+		this.withinBonusPay = TimeWithCalculation.createTimeWithCalculation(this.withinBonusPay.getTime().greaterThan(upperTime)?upperTime:this.withinBonusPay.getTime(),
+																			this.withinBonusPay.getCalcTime().greaterThan(upperTime)?upperTime:this.withinBonusPay.getCalcTime());
+		this.excessBonusPayTime = TimeWithCalculation.createTimeWithCalculation(this.excessBonusPayTime.getTime().greaterThan(upperTime)?upperTime:this.excessBonusPayTime.getTime(),
+																				this.excessBonusPayTime.getCalcTime().greaterThan(upperTime)?upperTime:this.excessBonusPayTime.getCalcTime());
+	}
+
+
+
+
 }

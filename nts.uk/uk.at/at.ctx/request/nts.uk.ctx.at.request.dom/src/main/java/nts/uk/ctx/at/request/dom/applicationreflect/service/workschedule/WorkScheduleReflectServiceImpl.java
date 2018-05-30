@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -32,7 +33,19 @@ public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectServic
 		if(application.getPrePostAtr() != PrePostAtr.PREDICT) {
 			return false;
 		}
-				
+		if(application.getStartDate().isPresent() && application.getEndDate().isPresent()) {
+			for(int i = 0; application.getStartDate().get().compareTo(application.getEndDate().get()) + i <= 0; i++){
+				GeneralDate loopDate = application.getStartDate().get().addDays(i);
+				if(!processScheReflect.isSche(application.getEmployeeID(), loopDate)) {
+					return false;
+				}
+			}
+		} else {
+			if(!processScheReflect.isSche(application.getEmployeeID(), application.getAppDate())) {
+				return false;
+			}
+		}
+		
 		//反映チェック処理(Xử lý check phản ánh)
 		//TODO: tam thoi chua goi den xu ly nay
 		/*if(!this.checkBeforeReflected(application)) {

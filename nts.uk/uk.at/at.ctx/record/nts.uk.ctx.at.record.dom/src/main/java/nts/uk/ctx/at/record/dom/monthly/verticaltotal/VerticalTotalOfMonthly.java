@@ -15,12 +15,12 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.WorkDaysOfMonthly
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.PayItemCountOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.VerticalTotalMethodOfMonthly;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.vtotalwork.AttendanceStatusMap;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.scherec.attdstatus.GetAttendanceStatus;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -29,7 +29,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
- * 月別実績の縦計
+ * 期間別の縦計
  * @author shuichu_ishida
  */
 @Getter
@@ -164,9 +164,8 @@ public class VerticalTotalOfMonthly {
 		// 休暇加算設定　取得
 		val vacationAddSet = repositories.getVacationAddSet().get(companyId);
 		
-		// 出勤状態クラスの作成
-		AttendanceStatusMap attendanceStatusMap = new AttendanceStatusMap(
-				attendanceTimeOfDailys, timeLeavingOfDailys);
+		// 出勤状態を取得する
+		GetAttendanceStatus attendanceStatus = repositories.getAttendanceStatus().setData(employeeId, datePeriod);
 		
 		// 乖離フラグの集計
 		val employeeDailyPerErrors =
@@ -220,8 +219,8 @@ public class VerticalTotalOfMonthly {
 			val specificDateAttrOfDaily = specificDateAttrOfDailyMap.get(procYmd);
 			
 			// 出勤状態・2回目打刻有無を確認する
-			val isAttendanceDay = attendanceStatusMap.isAttendanceDay(procYmd);
-			val isTwoTimesStampExists = attendanceStatusMap.isTwoTimesStampExists(procYmd);
+			val isAttendanceDay = attendanceStatus.isAttendanceDay(procYmd);
+			val isTwoTimesStampExists = attendanceStatus.isTwoTimesStampExists(procYmd);
 			
 			// PCログオン情報　取得
 			val pcLogonInfoOpt = repositories.getPCLogonInfoOfDaily().find(employeeId, procYmd);

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule;
 
+import nts.arc.time.GeneralDate;
+
 public interface ApplicationReflectProcessSche {
 	/**
 	 * 直行直帰申請
@@ -36,5 +38,7 @@ public interface ApplicationReflectProcessSche {
 	 * @return
 	 */
 	public boolean recruitmentReflect(ReflectScheDto relectSche);
+	
+	public boolean isSche(String employeeId, GeneralDate baseDate);
 
 }

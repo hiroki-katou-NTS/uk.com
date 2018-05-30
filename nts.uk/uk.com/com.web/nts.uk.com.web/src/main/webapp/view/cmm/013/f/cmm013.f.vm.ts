@@ -299,6 +299,17 @@ module nts.uk.com.view.cmm013.f {
                 nts.uk.ui.block.grayout();
                 service.saveSequenceMaster(command)
                     .done((data: any) => {   
+                    
+                        // Update list items
+                        let index = _.findIndex(_self.items(), (item) => { return item.sequenceCode == command.sequenceCode; }),
+                            newItem: SequenceMaster = new SequenceMaster(command.sequenceCode, command.sequenceName, command.order);
+                        if (index !== -1) {
+                            _self.items().splice(index, 1, newItem);
+                        } else {
+                            _self.items().push(newItem);
+                        }
+                        
+                        // Update order
                         _self.updateOrder().done(() => {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                             _self.loadSequenceList()

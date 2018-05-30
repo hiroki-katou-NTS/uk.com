@@ -15,8 +15,14 @@ public class AuthorityDailyPerformanceFormat extends AggregateRoot {
 
 	private String companyId;
 
+	/**
+	 * 日別実績フォーマットコード
+	 */
 	private DailyPerformanceFormatCode dailyPerformanceFormatCode;
 
+	/**
+	 * 日別実績フォーマット名称
+	 */
 	private DailyPerformanceFormatName dailyPerformanceFormatName;
 
 	public AuthorityDailyPerformanceFormat(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode,

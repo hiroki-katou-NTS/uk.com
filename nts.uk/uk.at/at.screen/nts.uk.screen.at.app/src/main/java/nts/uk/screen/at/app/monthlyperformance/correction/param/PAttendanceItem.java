@@ -1,10 +1,12 @@
 package nts.uk.screen.at.app.monthlyperformance.correction.param;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.DisplayAndInputMonthlyDto;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 
 @Data
+@NoArgsConstructor
 public class PAttendanceItem {
 	/** ID: 勤怠項目ID */
 	private Integer id;
@@ -13,14 +15,11 @@ public class PAttendanceItem {
 	/** 表示番号: 表示番号 */
 	private Integer displayNumber;	
 	/** 属性: 月次項目の属性*/
-	/*0:  コード */
-	/*1:  マスタを参照する */
+	/*1:  時間 */
 	/*2:  回数*/
 	/*3:  金額*/
-	/*4:  区分 */
-	/*5:  時間 */
-	/*6:  時刻*/
-	/*7:  文字 */
+	/*4:  日数 */
+	/*5:  マスタを参照する */
 	private Integer attendanceAtr;
 	/** ユーザが変更できる*/
 	private boolean userCanChange;

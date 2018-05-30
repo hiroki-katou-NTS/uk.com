@@ -1,7 +1,11 @@
 package nts.uk.ctx.sys.portal.infra.repository.standardmenu;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -9,6 +13,7 @@ import javax.persistence.EntityManager;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
+import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuKey;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
 import nts.uk.ctx.sys.portal.infra.entity.standardmenu.CcgstStandardMenu;
 import nts.uk.ctx.sys.portal.infra.entity.standardmenu.CcgstStandardMenuPK;
@@ -40,6 +45,7 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	private final String SELECT_STANDARD_MENU_BY_CODE = "SELECT c FROM CcgstStandardMenu c WHERE c.ccgmtStandardMenuPK.companyId = :companyId "
 			+ " AND c.ccgmtStandardMenuPK.code = :code" + " AND c.ccgmtStandardMenuPK.system = :system"
 			+ " AND c.ccgmtStandardMenuPK.classification = :classification";
+	
 	private final String GET_PG = "SELECT a FROM CcgstStandardMenu a WHERE a.ccgmtStandardMenuPK.companyId = :companyId"
 			+ " AND a.programId = :programId AND a.screenID = :screenId";
 
@@ -143,6 +149,25 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 				.setParameter("companyId", companyId).setParameter("code", code).setParameter("system", system)
 				.setParameter("classification", classification).getSingle(c -> toDomain(c));
 	}
+	
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository#find(java.util.List)
+	 */
+	@Override
+	public List<StandardMenu> find(List<StandardMenuKey> keys) {
+		if (keys == null || keys.isEmpty()) return Collections.emptyList();
+		
+		StringBuilder queryStr = new StringBuilder(SEL);
+		queryStr.append("WHERE");
+		keys.stream().map(k -> " (s.ccgmtStandardMenuPK.companyId = '" + k.getCompanyId() + "' AND "
+					+ "s.ccgmtStandardMenuPK.code = '" + k.getCode() + "' AND "
+					+ "s.ccgmtStandardMenuPK.system = " + k.getSystem() + " AND "
+					+ "s.ccgmtStandardMenuPK.classification = " + k.getClassification() + ") "
+		).reduce((a, b) -> a + "OR" + b).ifPresent(queryStr::append);
+		
+		return this.queryProxy().query(queryStr.toString(), CcgstStandardMenu.class).getList(m -> toDomain(m));
+	}
 
 	/**
 	 * yennth update list standard menu
@@ -201,10 +226,8 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	 * #getProgram(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Optional<StandardMenu> getProgram(String companyId, String programId, String screenId) {
-		List<CcgstStandardMenu> menus = this.queryProxy().query(GET_PG, CcgstStandardMenu.class).setParameter("companyId", companyId)
-				.setParameter("programId", programId).setParameter("screenId", screenId).getList();
-		if (menus.isEmpty() || menus.size() > 1) return Optional.empty();
-		return Optional.ofNullable(toDomain(menus.get(0)));
+	public List<StandardMenu> getProgram(String companyId, String programId, String screenId) {
+		return this.queryProxy().query(GET_PG, CcgstStandardMenu.class).setParameter("companyId", companyId)
+				.setParameter("programId", programId).setParameter("screenId", screenId).getList(m -> toDomain(m));
 	}
 }

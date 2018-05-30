@@ -34,7 +34,7 @@ public class UpdateApplicationApproveHandler extends CommandHandlerWithResult<In
 		ApplicationDto_New command = context.getCommand().getApplicationDto();
 		
 		// 4-1.詳細画面登録前の処理 lan nay deu bi hoan lai
-		beforeRegisterRepo.processBeforeDetailScreenRegistration(companyID, command.getApplicationID(),
+		beforeRegisterRepo.processBeforeDetailScreenRegistration(companyID, command.getApplicantSID(),
 				GeneralDate.today(), 1,command.getApplicationID(), EnumAdaptor.valueOf(command.getPrePostAtr(), PrePostAtr.class), command.getVersion());
 		
 		//8-2.詳細画面承認後の処理

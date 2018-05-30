@@ -9,8 +9,6 @@ module nts.uk.at.view.kdm002.a {
         export class ScreenModel {
                         
             ccgcomponent: GroupOption;
-            systemTypes: KnockoutObservableArray<any>;
-
             // Options
             isQuickSearchTab: KnockoutObservable<boolean>;
             isAdvancedSearchTab: KnockoutObservable<boolean>;
@@ -83,12 +81,12 @@ module nts.uk.at.view.kdm002.a {
             
             // date
             date: KnockoutObservable<string>;
-             maxDaysCumulationByEmp: KnockoutObservable<number>;
+            maxDaysCumulationByEmp: KnockoutObservable<number>;
             constructor() {
                 var self = this;
                 // dump
-                self.date = ko.observable('20181231');
-                self.systemTypes = ko.observableArray([
+                self.date = ko.observable(new Date().getFullYear() + "1231");
+                self.systemType = ko.observableArray([
                     { name: 'システム管理者', value: 1 }, // PERSONAL_INFORMATION
                     { name: '就業', value: 2 } // EMPLOYMENT
                 ]);
@@ -96,24 +94,25 @@ module nts.uk.at.view.kdm002.a {
 
                 // initial ccg options
                 self.setDefaultCcg001Option();
-                
+
                 // Init component.
                 self.reloadCcg001();
-                
+
                 self.periodFormatYM.subscribe(item => {
-                    if (item){
-                        self.showClosure(true);    
+                    if (item) {
+                        self.showClosure(true);
                     }
                 });
-                
-                self.startDateString = ko.observable("20180101");
-                self.endDateString = ko.observable("20181230");
+
+                self.startDateString = ko.observable(new Date().getFullYear() + "0101");
+                self.endDateString = ko.observable(new Date().getFullYear() + "1231");
                 self.selectedEmployeeCode = ko.observableArray([]);
                 self.alreadySettingPersonal = ko.observableArray([]);
-                self.maxDaysCumulationByEmp = ko.observable(0);
+                self.maxDaysCumulationByEmp = ko.observable();
                 self.periodDate = ko.observable({
-                    startDate: self.startDateString(), 
-                    endDate: self.endDateString()});
+                    startDate: self.startDateString(),
+                    endDate: self.endDateString()
+                });
                 self.checkReCreateAtrOnlyUnConfirm = ko.observable(false);
                 self.checkReCreateAtrAllCase = ko.observable(true);
                 self.checkProcessExecutionAtrRebuild = ko.observable(true);
@@ -127,20 +126,20 @@ module nts.uk.at.view.kdm002.a {
                 self.checkCreateMethodAtrPersonalInfo = ko.observable(true);
                 self.checkCreateMethodAtrPatternSchedule = ko.observable(false);
                 self.checkCreateMethodAtrCopyPastSchedule = ko.observable(false);
-                
+
                 self.workTypeInfo = ko.observable('');
                 self.workTypeCode = ko.observable('');
                 self.workTimeInfo = ko.observable('');
                 self.workTimeCode = ko.observable('');
-                 
-                self.startDateString.subscribe(function(value){
+
+                self.startDateString.subscribe(function(value) {
                     self.periodDate().startDate = value;
-                    self.periodDate.valueHasMutated();        
+                    self.periodDate.valueHasMutated();
                 });
-                
-                self.endDateString.subscribe(function(value){
-                    self.periodDate().endDate = value;   
-                    self.periodDate.valueHasMutated();      
+
+                self.endDateString.subscribe(function(value) {
+                    self.periodDate().endDate = value;
+                    self.periodDate.valueHasMutated();
                 });
             }
             
@@ -156,7 +155,7 @@ module nts.uk.at.view.kdm002.a {
                 self.isEmployeeOfWorkplace = ko.observable(true);
                 self.isEmployeeWorkplaceFollow = ko.observable(true);
                 self.isMutipleCheck = ko.observable(true);
-                self.isSelectAllEmployee = ko.observable(true);
+                self.isSelectAllEmployee = ko.observable(false);
                 self.baseDate = ko.observable(moment());
                 self.periodStartDate = ko.observable(moment());
                 self.periodEndDate = ko.observable(moment());
@@ -236,10 +235,9 @@ module nts.uk.at.view.kdm002.a {
                         self.applyKCP005ContentSearch(data.listEmployee);
                     }
                 }
-                //$('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
             }
             
-            /**
+           /**
            * start page data 
            */
             public startPage(): JQueryPromise<any> {
@@ -280,7 +278,7 @@ module nts.uk.at.view.kdm002.a {
                     maxWidth: 550,
                     maxRows: 15
                 };
-
+                
             }
             
             
@@ -290,20 +288,31 @@ module nts.uk.at.view.kdm002.a {
             private exportButton() {
                 var self = this;
                 // check selection employee 
-                if (self.selectedEmployeeCode && self.selectedEmployee() && self.selectedEmployeeCode().length > 0) {
-                   if(new Date(self.date()) >= new Date(self.periodDate().endDate)){
-                       nts.uk.ui.windows.setShared('KDM002Params', {
-                            empployeeList: self.selectedEmployee(),
-                            periodDate: self.periodDate(),
+                let lstSelectedEployee : Array<EmployeeSearchDto> = [];
+                var index = -1;
+                for (var i = 0; i < self.selectedEmployeeCode().length; i++) {
+                    index = _.findIndex(self.selectedEmployee(), function(x)
+                    { return x.employeeCode === self.selectedEmployeeCode()[i] });
+                    if (index > -1) {
+                        lstSelectedEployee.push(self.selectedEmployee()[index]);
+                    }
+                }
+                
+                if (lstSelectedEployee.length > 0) {
+                    if (new Date(self.date()) >= new Date(self.periodDate().endDate)) {
+                        nts.uk.ui.windows.setShared('KDM002Params', {
+                            empployeeList: lstSelectedEployee,
+                            startDate: self.periodDate().startDate,
+                            endDate: self.periodDate().endDate,
                             date: self.date(),
-                            maxday: self.maxDaysCumulationByEmp()    
-                       });
-                       
-                       nts.uk.ui.windows.sub.modal("/view/kdm/002/b/index.xhtml");
-                   }
-                    else{
-                       nts.uk.ui.dialog.alertError({ messageId: 'Msg_1064' });
-                   }
+                            maxday: self.maxDaysCumulationByEmp()
+                        });
+
+                        nts.uk.ui.windows.sub.modal("/view/kdm/002/b/index.xhtml");
+                    }
+                    else {
+                        nts.uk.ui.dialog.alertError({ messageId: 'Msg_1064' });
+                    }
                 }
                 else {
                     // show message by not choose employee of kcp005
@@ -317,7 +326,7 @@ module nts.uk.at.view.kdm002.a {
             private toDate(strDate: string): Date {
                 return moment(strDate, 'YYYY/MM/DD').toDate();
             }
-            
+
         }
         
         export class ListType {

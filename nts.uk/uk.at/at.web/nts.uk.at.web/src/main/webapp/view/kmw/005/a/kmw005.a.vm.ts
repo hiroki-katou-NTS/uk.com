@@ -45,6 +45,9 @@ module nts.uk.at.view.kmw005.a {
                     { code: '0', name: getText("KMW005_16") }
                 ]);
                 self.closureName = ko.observable("");
+                self.closureName.subscribe(val => {
+                    console.log(val);
+                })
                 self.selectedClosureText = ko.computed(function() {
                     return nts.uk.resource.getText("KMW005_7", [self.closureName()]);
                 });

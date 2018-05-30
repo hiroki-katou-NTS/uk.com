@@ -112,13 +112,7 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 					DateApprovalStatusDto dateApprovalStatusDto = new DateApprovalStatusDto();
 					dateApprovalStatusDto.setDate(lstApproval.get(a).getAppDate());
 					dateApprovalStatusDto.setStatus(3);
-					if (lstApproval.get(a).getApprovalStatus() == null
-							&& lstApproval.get(a).getApprovalAtr() == ApproverEmployeeState.PHASE_LESS) {
-						dateApprovalStatusDto.setStatus(2);
-					} else if (lstApproval.get(a).getApprovalStatus() == null
-							&& lstApproval.get(a).getApprovalAtr() == ApproverEmployeeState.COMPLETE) {
-						dateApprovalStatusDto.setStatus(0);
-					} else if (lstApproval.get(a).getApprovalStatus()
+					 if (lstApproval.get(a).getApprovalStatus()
 							.getApprovalActionByEmpl() == ApprovalActionByEmpl.APPROVALED
 							&& lstApproval.get(a).getApprovalAtr() == ApproverEmployeeState.PHASE_DURING) {
 						dateApprovalStatusDto.setStatus(0);
@@ -126,9 +120,24 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 							.getApprovalActionByEmpl() == ApprovalActionByEmpl.APPROVAL_REQUIRE
 							&& lstApproval.get(a).getApprovalAtr() == ApproverEmployeeState.PHASE_DURING) {
 						dateApprovalStatusDto.setStatus(1);
-					} else if (lstApproval.get(a).getApprovalStatus()
+					}else if (lstApproval.get(a).getApprovalStatus()
 							.getApprovalActionByEmpl() == ApprovalActionByEmpl.NOT_APPROVAL
 							&& lstApproval.get(a).getApprovalAtr() == ApproverEmployeeState.PHASE_PASS) {
+						dateApprovalStatusDto.setStatus(2);
+					}
+					else if (lstApproval.get(a).getApprovalStatus()
+							.getApprovalActionByEmpl() == ApprovalActionByEmpl.NOT_APPROVAL
+							&& lstApproval.get(a).getApprovalAtr() == ApproverEmployeeState.PHASE_DURING) {
+						dateApprovalStatusDto.setStatus(2);
+					}
+					else if (lstApproval.get(a).getApprovalStatus()
+							.getApprovalActionByEmpl() == ApprovalActionByEmpl.NOT_APPROVAL
+							&& lstApproval.get(a).getApprovalAtr() == ApproverEmployeeState.PHASE_PASS) {
+						dateApprovalStatusDto.setStatus(0);
+					}
+					else if (lstApproval.get(a).getApprovalStatus()
+							.getApprovalActionByEmpl() == ApprovalActionByEmpl.NOT_APPROVAL
+							&& lstApproval.get(a).getApprovalAtr() == ApproverEmployeeState.COMPLETE) {
 						dateApprovalStatusDto.setStatus(0);
 					}
 					lstDateApprovalStatusDto.add(dateApprovalStatusDto);

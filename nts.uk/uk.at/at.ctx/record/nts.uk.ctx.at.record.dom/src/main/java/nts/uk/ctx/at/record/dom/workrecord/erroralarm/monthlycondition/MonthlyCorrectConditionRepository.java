@@ -27,4 +27,6 @@ public interface MonthlyCorrectConditionRepository {
 	MonthlyCorrectExtractCondition createMonthlyCorrectExtractCondition(MonthlyCorrectExtractCondition domain);
 
 	void createTimeItemCheckMonthly(TimeItemCheckMonthly domain);
+	
+	void removeTimeItemCheckMonthly(String errorAlarmCheckID);
 }
