@@ -11,9 +11,9 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.Selection;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionItemOrder;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionItemOrderRepository;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionRepository;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionorder.SelectionItemOrder;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionorder.SelectionItemOrderRepository;
 
 /**
  * 

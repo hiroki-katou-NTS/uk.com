@@ -1,9 +1,16 @@
 package nts.uk.ctx.at.record.dom.weekly;
 
 import lombok.Getter;
+import lombok.val;
+import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
+import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitWeek;
+import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 週別の36協定時間
@@ -67,5 +74,34 @@ public class AgreementTimeOfWeekly implements Cloneable {
 			throw new RuntimeException("AgreementTimeByPeriod clone error.");
 		}
 		return cloned;
+	}
+	
+	/**
+	 * 36協定時間の集計
+	 * @param yearMonth 年月（度）
+	 * @param weekPeriod 週期間
+	 * @param aggregateAtr 集計区分
+	 * @param weeklyCalculation 週別の計算
+	 * @param repositories 月次集計が必要とするリポジトリ
+	 */
+	public void aggregate(
+			YearMonth yearMonth,
+			DatePeriod weekPeriod,
+			MonthlyAggregateAtr aggregateAtr,
+			WeeklyCalculation weeklyCalculation,
+			RepositoriesRequiredByMonthlyAggr repositories){
+
+		// 管理期間の36協定時間の作成
+		val agreementTimeOfManagePeriod = new AgreementTimeOfManagePeriod(
+				weeklyCalculation.getEmployeeId(), yearMonth);
+		agreementTimeOfManagePeriod.aggregateForWeek(new Year(yearMonth.year()),
+				weekPeriod.end(), aggregateAtr, weeklyCalculation, repositories);
+		
+		// 週別の36協定時間へ値を移送
+		val agreementTimeOfMonthly = agreementTimeOfManagePeriod.getAgreementTime();
+		this.agreementTime = new AttendanceTimeMonth(agreementTimeOfMonthly.getAgreementTime().v());
+		this.limitErrorTime = new LimitWeek(agreementTimeOfMonthly.getLimitErrorTime().v());
+		this.limitAlarmTime = new LimitWeek(agreementTimeOfMonthly.getLimitAlarmTime().v());
+		this.status.value = agreementTimeOfMonthly.getStatus().value;
 	}
 }

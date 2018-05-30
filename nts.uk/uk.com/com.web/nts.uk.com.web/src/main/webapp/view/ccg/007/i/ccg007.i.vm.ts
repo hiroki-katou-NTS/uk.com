@@ -38,7 +38,7 @@ module nts.uk.pr.view.ccg007.i {
                 service.getPasswordPolicy().done(function (data) {
                     //set text
                     self.lowestDigits(nts.uk.text.format(nts.uk.resource.getText("CCG007_33"), data.lowestDigits));
-                    self.numberOfDigits(nts.uk.text.format(nts.uk.resource.getText("CCG007_35"), '', data.numberOfDigits));
+                    self.numberOfDigits(nts.uk.text.format(nts.uk.resource.getText("CCG007_35"), data.numberOfDigits));
                     self.symbolCharacters(nts.uk.text.format(nts.uk.resource.getText("CCG007_36"), data.symbolCharacters));
                     self.alphabetDigit(nts.uk.text.format(nts.uk.resource.getText("CCG007_37"), data.alphabetDigit));
                     self.historyCount(nts.uk.text.format(nts.uk.resource.getText("CCG007_39"), data.historyCount));

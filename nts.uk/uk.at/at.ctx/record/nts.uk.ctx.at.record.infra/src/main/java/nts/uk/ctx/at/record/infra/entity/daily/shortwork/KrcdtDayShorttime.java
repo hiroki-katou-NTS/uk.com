@@ -21,6 +21,7 @@ import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
+import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -75,6 +76,11 @@ public class KrcdtDayShorttime extends UkJpaEntity implements Serializable{
 			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KrcdtDayAttendanceTime krcdtDayAttendanceTime;
+//	@ManyToOne
+//	@JoinColumns(value = {
+//			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+//			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
+//	public KrcdtDayTime krcdtDayTime;
 	
 	@Override
 	protected Object getKey() {

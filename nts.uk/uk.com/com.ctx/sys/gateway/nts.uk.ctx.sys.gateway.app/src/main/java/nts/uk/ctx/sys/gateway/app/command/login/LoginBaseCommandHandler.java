@@ -5,6 +5,7 @@
 package nts.uk.ctx.sys.gateway.app.command.login;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,8 +22,11 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.security.hash.password.PasswordHash;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckBeforeChangePassOutput;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.PassStatus;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 import nts.uk.ctx.sys.gateway.dom.login.Contract;
 import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.login.ContractRepository;
@@ -37,6 +41,8 @@ import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.SDelAtr;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicyRepository;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicy;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicyRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataDto;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataRepository;
@@ -109,6 +115,9 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 	/** The Constant FIST_COMPANY. */
 	private static final Integer FIST_COMPANY = 0;
+
+	@Inject
+	private PasswordPolicyRepository PasswordPolicyRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -262,11 +271,59 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		}
 		this.setRoleId(user.getUserId());
 	}
+
 	
-	protected void checkAfterLogin(UserImport user) {
-		
-//		user.
-		
+	/**
+	 * Check after login.
+	 *
+	 * @param user the user
+	 */
+	protected void checkAfterLogin(UserImportNew user) {
+
+		if (user.getPassStatus() == PassStatus.Official) {
+			//Get PasswordPolicy
+			Optional<PasswordPolicy> passwordPolicyOpt = this.PasswordPolicyRepo
+					.getPasswordPolicy(new ContractCode(user.getContractCode()));
+			
+			if(passwordPolicyOpt.isPresent()){
+				//Event Check
+				this.checkEvent(passwordPolicyOpt.get(), user);
+			}
+		}
+
+	}
+	
+	/**
+	 * Check event.
+	 *
+	 * @param passwordPolicy the password policy
+	 * @param user the user
+	 */
+	protected void checkEvent(PasswordPolicy passwordPolicy, UserImportNew user){
+		//Check passwordPolicy isUse
+		if (passwordPolicy.isUse()){
+			//Check Change Password at first login
+			if (passwordPolicy.isInitialPasswordChange()){
+				//Check state
+				if (user.getPassStatus() != PassStatus.InitPassword){
+					//Math PassPolicy
+					this.checkPassMathPolicy(passwordPolicy, user);
+				}
+			}
+		}
+	}
+	
+	protected void checkPassMathPolicy(PasswordPolicy passwordPolicy, UserImportNew user){
+		//List message 
+		List<String> messages = new ArrayList<String>();
+		//Check isUser
+		if (passwordPolicy.isUse()){
+			//Check degit pass
+			if (user.getPassword().length() < passwordPolicy.getLowestDigits().v().intValue()){
+				messages.add("#Msg_1186");
+				return new CheckBeforeChangePassOutput(true, messages);
+			}
+		}
 	}
 
 	/**
@@ -432,8 +489,10 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			// エラーメッセージ（#Msg_876）を表示する。
 			throw new BusinessException("Msg_876");
 		} else {
-			List<WindowsAccountInfo> windows =  opWindowAccount.get().getAccountInfos().stream().filter(item -> item.getHostName().v().equals(hostname)
-					&& item.getUserName().v().equals(username) && item.getUseAtr().equals(UseAtr.Use)).collect(Collectors.toList());
+			List<WindowsAccountInfo> windows = opWindowAccount.get().getAccountInfos()
+					.stream().filter(item -> item.getHostName().v().equals(hostname)
+							&& item.getUserName().v().equals(username) && item.getUseAtr().equals(UseAtr.Use))
+					.collect(Collectors.toList());
 			if (windows.isEmpty()) {
 				throw new BusinessException("Msg_876");
 			} else {

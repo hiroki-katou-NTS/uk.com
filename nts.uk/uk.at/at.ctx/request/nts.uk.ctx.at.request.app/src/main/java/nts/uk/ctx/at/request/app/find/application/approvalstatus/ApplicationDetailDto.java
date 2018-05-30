@@ -53,13 +53,6 @@ public class ApplicationDetailDto {
 	 * 申請ID
 	 */
 	private String applicationID;
-	
-	/**
-	 * 申請理由
-	 */
-	private String applicationReason;
-	
-	private boolean isDispReason;
 	/** 
 	 * 承認フェーズ１ 
 	 */
@@ -83,13 +76,12 @@ public class ApplicationDetailDto {
 	public ApplicationDetailDto() {
 	
 	}
-	public ApplicationDetailDto(String applicationID, String applicationDate, String applicationReason, int appType, String appName, int prePostAtr, String appStartDate,
-			String appEndDate, String appContent, int reflectState, List<Integer> approvalStatus, boolean isDispReason, String phase1,
+	public ApplicationDetailDto(String applicationID, String applicationDate, int appType, String appName, int prePostAtr, String appStartDate,
+			String appEndDate, String appContent, int reflectState, List<Integer> approvalStatus, String phase1,
 			String phase2, String phase3, String phase4, String phase5) {
 		super();
 		this.applicationID = applicationID;
 		this.applicationDate = applicationDate;
-		this.applicationReason = applicationReason;
 		this.appType = appType;
 		this.appName = appName;
 		this.prePostAtr = prePostAtr;
@@ -98,7 +90,6 @@ public class ApplicationDetailDto {
 		this.appContent = appContent;
 		this.reflectState = reflectState;
 		this.approvalStatus = approvalStatus;
-		this.isDispReason = isDispReason;
 		this.phase1 = Objects.isNull(phase1) ? "" : phase1;
 		this.phase2 = Objects.isNull(phase2) ? "" : phase2;
 		this.phase3 = Objects.isNull(phase3) ? "" : phase3;

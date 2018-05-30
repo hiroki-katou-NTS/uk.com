@@ -4,7 +4,6 @@
 package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -56,12 +55,12 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "CONDITION_ATR")
-	public BigDecimal conditionAtr;
+	public int conditionAtr;
 
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "USE_ATR")
-	public BigDecimal useAtr;
+	public int useAtr;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
 	@JoinColumns({
@@ -93,7 +92,7 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
 		return this.krcmtErAlAtdItemConPK;
 	}
 
-	public KrcmtErAlAtdItemCon(KrcmtErAlAtdItemConPK krcmtErAlAtdItemConPK, BigDecimal conditionAtr, BigDecimal useAtr,
+	public KrcmtErAlAtdItemCon(KrcmtErAlAtdItemConPK krcmtErAlAtdItemConPK, int conditionAtr, int useAtr,
 			List<KrcstErAlAtdTarget> lstAtdItemTarget, KrcstErAlCompareSingle erAlCompareSingle,
 			KrcstErAlCompareRange erAlCompareRange, KrcstErAlSingleFixed erAlSingleFixed,
 			List<KrcstErAlSingleAtd> erAlSingleAtd) {

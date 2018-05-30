@@ -18,7 +18,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.style.TextStyle;
 
 /**
  * @author hungnm
@@ -74,6 +74,8 @@ public class DailyPerformanceCorrectionDto {
 	private Integer showQuestionSPR;
 	
 	private ChangeSPR changeSPR;
+	
+	private List<TextStyle> textStyles;
 
 	public DailyPerformanceCorrectionDto() {
 		super();
@@ -84,6 +86,7 @@ public class DailyPerformanceCorrectionDto {
 		this.data = new HashMap<>();
 		this.dPErrorDto = new ArrayList<>();
 		this.changeSPR = new ChangeSPR(false, false);
+		this.textStyles = new ArrayList<>();
 	}
 
 	/** Check if employeeId is login user */

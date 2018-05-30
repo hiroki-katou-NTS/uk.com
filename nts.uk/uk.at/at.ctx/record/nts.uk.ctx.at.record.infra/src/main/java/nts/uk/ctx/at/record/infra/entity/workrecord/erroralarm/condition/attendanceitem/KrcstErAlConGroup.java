@@ -4,7 +4,6 @@
 package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,7 +53,7 @@ public class KrcstErAlConGroup extends UkJpaEntity implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "CONDITION_OPERATOR")
-    public BigDecimal conditionOperator;
+    public int conditionOperator;
     
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "CONDITION_GROUP_ID", nullable = true) })
@@ -74,7 +73,8 @@ public class KrcstErAlConGroup extends UkJpaEntity implements Serializable {
 		return this.conditionGroupId;
 	}
 
-	public KrcstErAlConGroup(String conditionGroupId, BigDecimal conditionOperator, List<KrcmtErAlAtdItemCon> lstAtdItemCon) {
+	public KrcstErAlConGroup(String conditionGroupId, int conditionOperator,
+			List<KrcmtErAlAtdItemCon> lstAtdItemCon) {
 		super();
 		this.conditionGroupId = conditionGroupId;
 		this.conditionOperator = conditionOperator;

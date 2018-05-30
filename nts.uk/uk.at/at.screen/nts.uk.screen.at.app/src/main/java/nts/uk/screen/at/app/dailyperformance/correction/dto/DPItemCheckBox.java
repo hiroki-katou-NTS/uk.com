@@ -20,4 +20,6 @@ private String rowId;
 	private String employeeId;
 	
 	private GeneralDate date;
+	
+	private boolean flagRemoveAll;
 }

@@ -160,7 +160,7 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 
 	@Override
 	public List<BusinessTypeFormatDaily> getBusinessTypeFormatByCompanyId(String companyId) {
-		return this.queryProxy().query(FIND, KrcmtBusinessTypeDaily.class).setParameter("companyId", companyId).getList(f -> toDomain(f));
+		return this.queryProxy().query(FIND_BY_COMPANYID, KrcmtBusinessTypeDaily.class).setParameter("companyId", companyId).getList(f -> toDomain(f));
 	}
 	
 }

@@ -5,15 +5,19 @@
 package nts.uk.ctx.at.schedule.app.command.executionlog.internal;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.dom.adapter.ScClassificationAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScWorkplaceAdapter;
-import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ClassificationDto;
-import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.WorkplaceDto;
+import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
+import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.classification.ExClassificationHistItemImported;
+import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.classification.ExClassificationHistoryImported;
+import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.workplace.ExWorkPlaceHistoryImported;
+import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.workplace.ExWorkplaceHistItemImported;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleMasterReferenceAtr;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassifiBasicWorkRepository;
@@ -42,10 +46,6 @@ public class ScheCreExeBasicWorkSettingHandler {
 	/** The sc workplace adapter. */
 	@Inject
 	private ScWorkplaceAdapter scWorkplaceAdapter;
-
-	/** The sc classification adapter. */
-	@Inject
-	private ScClassificationAdapter scClassificationAdapter;
 
 	/** The work place basic work repository. */
 	@Inject
@@ -168,58 +168,106 @@ public class ScheCreExeBasicWorkSettingHandler {
 
 	/**
 	 * Gets the basic work setting by workday division.
-	 *
+	 * 
 	 * @param command
-	 *            the command
+	 * @param mapClassificationHist
+	 * @param mapWorkplaceHist
 	 * @return the basic work setting by workday division
 	 */
 	// 「稼働日区分」に対応する「基本勤務設定」を取得する
-	private Optional<BasicWorkSetting> getBasicWorkSettingByWorkdayDivision(BasicWorkSettingGetterCommand command) {
+	private Optional<BasicWorkSetting> getBasicWorkSettingByWorkdayDivision(BasicWorkSettingGetterCommand command,
+			Map<String, List<ExClassificationHistItemImported>> mapClassificationHist,
+			Map<String, List<ExWorkplaceHistItemImported>> mapWorkplaceHist) {
 
 		// check 基本勤務の参照先 is 職場 (referenceBusinessDayCalendar is WORKPLACE)
 		if (command.getReferenceBasicWork() == WorkScheduleMasterReferenceAtr.WORKPLACE.value) {
 
-			// find work place by id
-			Optional<WorkplaceDto> optionalWorkplace = this.scWorkplaceAdapter
-					.findWorkplaceById(command.getEmployeeId(), command.getBaseGetter().getToDate());
+			// // find work place by id
+			// Optional<WorkplaceDto> optionalWorkplace =
+			// this.scWorkplaceAdapter
+			// .findWorkplaceById(command.getEmployeeId(),
+			// command.getBaseGetter().getToDate());
+			//
+			// // check exist data work place
+			// if (optionalWorkplace.isPresent()) {
+			// // find by level work place
+			// List<String> workplaceIds =
+			// this.findWpkIdsBySid(command.getBaseGetter(),
+			// command.getEmployeeId());
+			//
+			// BasicWorkSettingByWorkplaceGetterCommand commandGetter =
+			// command.toBasicWorkplace();
+			// commandGetter.setWorkplaceIds(workplaceIds);
+			// // return basic work setting
+			// return this.getBasicWorkSettingByWorkplace(commandGetter);
+			//
+			// } else {
+			// // add log error employee => 602
+			// this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(),
+			// command.getEmployeeId(), "Msg_602",
+			// "#Com_Workplace");
+			// }
 
-			// check exist data work place
-			if (optionalWorkplace.isPresent()) {
-				// find by level work place
-				List<String> workplaceIds = this.findWpkIdsBySid(command.getBaseGetter(), command.getEmployeeId());
+			List<ExWorkplaceHistItemImported> listWorkplaceHistItem = mapWorkplaceHist.get(command.getEmployeeId());
+			if (listWorkplaceHistItem != null) {
+				Optional<ExWorkplaceHistItemImported> optWorkplaceHistItem = listWorkplaceHistItem.stream()
+						.filter(workplaceHistItem -> workplaceHistItem.getPeriod()
+								.contains(command.getBaseGetter().getToDate()))
+						.findFirst();
+				if (optWorkplaceHistItem.isPresent()) {
+					// find by level work place
+					List<String> workplaceIds = this.findWpkIdsBySid(command.getBaseGetter(), command.getEmployeeId());
 
-				BasicWorkSettingByWorkplaceGetterCommand commandGetter = command.toBasicWorkplace();
-				commandGetter.setWorkplaceIds(workplaceIds);
-				// return basic work setting
-				return this.getBasicWorkSettingByWorkplace(commandGetter);
-
-			} else {
-				// add log error employee => 602
-				this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(), command.getEmployeeId(), "Msg_602",
-						"#Com_Workplace");
+					BasicWorkSettingByWorkplaceGetterCommand commandGetter = command.toBasicWorkplace();
+					commandGetter.setWorkplaceIds(workplaceIds);
+					// return basic work setting
+					return this.getBasicWorkSettingByWorkplace(commandGetter);
+				}
 			}
+			// add log error employee => 602
+			this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(), command.getEmployeeId(), "Msg_602",
+					"#Com_Workplace");
 
 		}
 		// 営業日カレンダーの参照先 is 分類 (referenceBusinessDayCalendar is CLASSIFICATION)
 		else {
-			// find classification by id
-			Optional<ClassificationDto> optionalClass = this.scClassificationAdapter.findByDate(command.getEmployeeId(),
-					command.getBaseGetter().getToDate());
-
-			// check exist data classification
-			if (optionalClass.isPresent()) {
-
-				// setup command getter by classification
-				BasicWorkSettingByClassificationGetterCommand commandGetter = command.toBasicClassification();
-				commandGetter.setClassificationCode(optionalClass.get().getClassificationCode());
-				// return basic work setting by classification
-				return this.getBasicWorkSettingByClassification(commandGetter);
-			} else {
-
-				// add message error log 602
-				this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(), command.getEmployeeId(), "Msg_602",
-						"#Com_Class");
+			// // find classification by id
+			// Optional<ClassificationDto> optionalClass =
+			// this.scClassificationAdapter.findByDate(command.getEmployeeId(),
+			// command.getBaseGetter().getToDate());
+			//
+			// // check exist data classification
+			// if (optionalClass.isPresent()) {
+			// // setup command getter by classification
+			// BasicWorkSettingByClassificationGetterCommand commandGetter =
+			// command.toBasicClassification();
+			// commandGetter.setClassificationCode(optionalClass.get().getClassificationCode());
+			// // return basic work setting by classification
+			// return this.getBasicWorkSettingByClassification(commandGetter);
+			// } else {
+			// // add message error log 602
+			// this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(),
+			// command.getEmployeeId(), "Msg_602",
+			// "#Com_Class");
+			// }
+			
+			List<ExClassificationHistItemImported> listClassHistItem = mapClassificationHist
+					.get(command.getEmployeeId());
+			if (listClassHistItem != null) {
+				Optional<ExClassificationHistItemImported> optClassHistItem = listClassHistItem.stream().filter(
+						classHistItem -> classHistItem.getPeriod().contains(command.getBaseGetter().getToDate()))
+						.findFirst();
+				if (optClassHistItem.isPresent()) {
+					// setup command getter by classification
+					BasicWorkSettingByClassificationGetterCommand commandGetter = command.toBasicClassification();
+					commandGetter.setClassificationCode(optClassHistItem.get().getClassificationCode());
+					// return basic work setting by classification
+					return this.getBasicWorkSettingByClassification(commandGetter);
+				}
 			}
+			// add log error employee => 602
+			this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(), command.getEmployeeId(), "Msg_602",
+					"#Com_Class");
 		}
 
 		// return default optional
@@ -248,10 +296,21 @@ public class ScheCreExeBasicWorkSettingHandler {
 	 * @return the basic work setting
 	 */
 	// 基本勤務設定を取得する
-	public Optional<BasicWorkSetting> getBasicWorkSetting(BasicWorkSettingGetterCommand command) {
+	public Optional<BasicWorkSetting> getBasicWorkSetting(BasicWorkSettingGetterCommand command,
+			EmployeeGeneralInfoImported empGeneralInfo) {
+
+		Map<String, List<ExClassificationHistItemImported>> mapClassificationHist = empGeneralInfo
+				.getClassificationDto().stream()
+				.collect(Collectors.toMap(ExClassificationHistoryImported::getEmployeeId,
+						ExClassificationHistoryImported::getClassificationItems));
+
+		Map<String, List<ExWorkplaceHistItemImported>> mapWorkplaceHist = empGeneralInfo.getWorkplaceDto().stream()
+				.collect(Collectors.toMap(ExWorkPlaceHistoryImported::getEmployeeId,
+						ExWorkPlaceHistoryImported::getWorkplaceItems));
 
 		// get work day atr by data business day calendar
-		Optional<Integer> optionalBusinessDayCalendar = this.getBusinessDayCalendar(command);
+		Optional<Integer> optionalBusinessDayCalendar = this.getBusinessDayCalendar(command, mapClassificationHist,
+				mapWorkplaceHist);
 
 		// check exist data
 		if (optionalBusinessDayCalendar.isPresent()) {
@@ -259,7 +318,7 @@ public class ScheCreExeBasicWorkSettingHandler {
 			// setup basic work setting getter command
 			command.setWorkdayDivision(optionalBusinessDayCalendar.get());
 			// get basic work setting by command getter
-			return this.getBasicWorkSettingByWorkdayDivision(command);
+			return this.getBasicWorkSettingByWorkdayDivision(command, mapClassificationHist, mapWorkplaceHist);
 		}
 		// return default optional
 		return Optional.empty();
@@ -309,57 +368,119 @@ public class ScheCreExeBasicWorkSettingHandler {
 	 * @return the business day calendar
 	 */
 	// 営業日カレンダーから「稼働日区分」を取得する
-	private Optional<Integer> getBusinessDayCalendar(BasicWorkSettingGetterCommand command) {
+	private Optional<Integer> getBusinessDayCalendar(BasicWorkSettingGetterCommand command,
+			Map<String, List<ExClassificationHistItemImported>> mapClassificationHist,
+			Map<String, List<ExWorkplaceHistItemImported>> mapWorkplaceHist) {
 
 		// check 営業日カレンダーの参照先 is 職場 (referenceBusinessDayCalendar is WORKPLACE)
 		if (command.getReferenceBusinessDayCalendar() == WorkScheduleMasterReferenceAtr.WORKPLACE.value) {
 
-			// find work place by id
-			Optional<WorkplaceDto> optionalWorkplace = this.scWorkplaceAdapter
-					.findWorkplaceById(command.getEmployeeId(), command.getBaseGetter().getToDate());
+			// // find work place by id
+			// // Imported「所属職場履歴」を取得する(lấy dữ liệu Imported「所属職場履歴」)
+			// Optional<WorkplaceDto> optionalWorkplace =
+			// this.scWorkplaceAdapter
+			// .findWorkplaceById(command.getEmployeeId(),
+			// command.getBaseGetter().getToDate());
+			// // check exist data work place
+			// if (optionalWorkplace.isPresent()) {
+			// // List<String> workplaceIds =
+			// // this.findLevelWorkplace(command.getBaseGetter(),
+			// // workplaceDto.getWorkplaceCode()); FIXBUG #87217
+			// List<String> workplaceIds =
+			// this.findWpkIdsBySid(command.getBaseGetter(),
+			// command.getEmployeeId());
+			//
+			// // setup command getter work place
+			//
+			// WorkdayAttrByWorkplaceGeterCommand commandGetter =
+			// command.toCommandWorkplace();
+			// commandGetter.setWorkplaceIds(workplaceIds);
+			// // return work day atr by work place id
+			// return this.getWorkdayDivisionByWkp(commandGetter);
+			// }else {
+			// // add log error employee => 602
+			// this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(),
+			// command.getEmployeeId(), "Msg_602",
+			// "#Com_Workplace");
+			// }
 
-			// check exist data work place
-			if (optionalWorkplace.isPresent()) {
-				// List<String> workplaceIds =
-				// this.findLevelWorkplace(command.getBaseGetter(),
-				// workplaceDto.getWorkplaceCode()); FIXBUG #87217
-				List<String> workplaceIds = this.findWpkIdsBySid(command.getBaseGetter(), command.getEmployeeId());
+			// 「社員の履歴情報」から該当社員、該当日の職場情報を取得する
+			List<ExWorkplaceHistItemImported> listWorkplaceHistItem = mapWorkplaceHist.get(command.getEmployeeId());
+			if (listWorkplaceHistItem != null) {
+				Optional<ExWorkplaceHistItemImported> optWorkplaceHistItem = listWorkplaceHistItem.stream()
+						.filter(workplaceHistItem -> workplaceHistItem.getPeriod()
+								.contains(command.getBaseGetter().getToDate()))
+						.findFirst();
+				if (optWorkplaceHistItem.isPresent()) {
+					// List<String> workplaceIds =
+					// this.findLevelWorkplace(command.getBaseGetter(),
+					// workplaceDto.getWorkplaceCode()); FIXBUG #87217
+					List<String> workplaceIds = this.findWpkIdsBySid(command.getBaseGetter(), command.getEmployeeId());
 
-				// setup command getter work place
+					// setup command getter work place
 
-				WorkdayAttrByWorkplaceGeterCommand commandGetter = command.toCommandWorkplace();
-				commandGetter.setWorkplaceIds(workplaceIds);
-				// return work day atr by work place id
-				return this.getWorkdayDivisionByWkp(commandGetter);
-			} else {
-				// add log error employee => 602
-				this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(), command.getEmployeeId(), "Msg_602",
-						"#Com_Workplace");
+					WorkdayAttrByWorkplaceGeterCommand commandGetter = command.toCommandWorkplace();
+					commandGetter.setWorkplaceIds(workplaceIds);
+					// return work day atr by work place id
+					return this.getWorkdayDivisionByWkp(commandGetter);
+				}
 			}
+			// add log error employee => 602
+			this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(), command.getEmployeeId(), "Msg_602",
+					"#Com_Workplace");
 
 		} else
 		// CLASSIFICATION
 		{
-			// find classification by id
-			Optional<ClassificationDto> optionalClassification = this.scClassificationAdapter
-					.findByDate(command.getEmployeeId(), command.getBaseGetter().getToDate());
+			// // find classification by id
+			// // Imported「所属分類履歴」から分類コードを取得する(lấy dữ liệu Imported「所属分類履歴」)
+			// Optional<ClassificationDto> optionalClassification =
+			// this.scClassificationAdapter
+			// .findByDate(command.getEmployeeId(),
+			// command.getBaseGetter().getToDate());
+			//
+			// // check exist data classification
+			// if (optionalClassification.isPresent()) {
+			// ClassificationDto classificationDto =
+			// optionalClassification.get();
+			// //
+			// // set command work day getter
+			// WorkdayAttrByClassGetterCommand commandGetter =
+			// command.toCommandClassification();
+			// commandGetter.setClassificationCode(classificationDto.getClassificationCode());
+			// //
+			// // return work day atr by classification
+			// return this.getWorkdayDivisionByClass(commandGetter);
+			// //
+			// } else {
+			// // add log error employee => 602
+			// this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(),
+			// command.getEmployeeId(), "Msg_602",
+			// "#Com_Class");
+			//
+			// }
 
-			// check exist data classification
-			if (optionalClassification.isPresent()) {
-				ClassificationDto classificationDto = optionalClassification.get();
+			// 「社員の履歴情報」から該当社員、該当日の分類情報を取得する
+			List<ExClassificationHistItemImported> listClassHistItem = mapClassificationHist
+					.get(command.getEmployeeId());
+			if (listClassHistItem != null) {
+				Optional<ExClassificationHistItemImported> optClassHistItem = listClassHistItem.stream().filter(
+						classHistItem -> classHistItem.getPeriod().contains(command.getBaseGetter().getToDate()))
+						.findFirst();
+				if (optClassHistItem.isPresent()) {
 
-				// set command work day getter
-				WorkdayAttrByClassGetterCommand commandGetter = command.toCommandClassification();
-				commandGetter.setClassificationCode(classificationDto.getClassificationCode());
+					// set command work day getter
+					WorkdayAttrByClassGetterCommand commandGetter = command.toCommandClassification();
+					commandGetter.setClassificationCode(optClassHistItem.get().getClassificationCode());
 
-				// return work day atr by classification
-				return this.getWorkdayDivisionByClass(commandGetter);
+					// return work day atr by classification
+					return this.getWorkdayDivisionByClass(commandGetter);
 
-			} else {
-				// add log error employee => 602
-				this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(), command.getEmployeeId(), "Msg_602",
-						"#Com_Class");
+				}
 			}
+			// add log error employee => 602
+			this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(), command.getEmployeeId(), "Msg_602",
+					"#Com_Class");
 		}
 		return Optional.empty();
 

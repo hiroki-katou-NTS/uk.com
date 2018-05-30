@@ -1,9 +1,17 @@
+/******************************************************************
+ * Copyright (c) 2018 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.auth.dom.password.changelog;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.auth.dom.user.HashPassword;
 
+/**
+ * The Class PasswordChangeLog.
+ */
 @Getter
 public class PasswordChangeLog extends AggregateRoot{
 	
@@ -45,6 +53,22 @@ public class PasswordChangeLog extends AggregateRoot{
 		this.userID = memento.getUserId();
 		this.modifiedDate = memento.getModifiedDateTime();
 		this.password = memento.getPassword();
+	}
+
+	/**
+	 * Instantiates a new password change log.
+	 *
+	 * @param loginID the login ID
+	 * @param userID the user ID
+	 * @param modifiedDate the modified date
+	 * @param password the password
+	 */
+	public PasswordChangeLog(LoginId loginID, String userID, GeneralDateTime modifiedDate, HashPassword password) {
+		super();
+		this.loginID = loginID;
+		this.userID = userID;
+		this.modifiedDate = modifiedDate;
+		this.password = password;
 	}
 
 }
