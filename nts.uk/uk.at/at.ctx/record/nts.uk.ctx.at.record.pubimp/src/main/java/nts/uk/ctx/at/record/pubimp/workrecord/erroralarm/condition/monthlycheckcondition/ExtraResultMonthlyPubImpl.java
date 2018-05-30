@@ -49,7 +49,7 @@ public class ExtraResultMonthlyPubImpl implements ExtraResultMonthlyPub  {
 				attendanceItemCon.getOperatorBetweenGroups().value,
 				convertToErAlConditionsAttd(attendanceItemCon.getGroup1()),
 				attendanceItemCon.getGroup2() == null?null:convertToErAlConditionsAttd(attendanceItemCon.getGroup2()),
-				attendanceItemCon.getGroup2UseAtr().booleanValue()
+				attendanceItemCon.isUseGroup2()
 				);
 	}
 	private ErAlConditionsAttendanceItemPubExport convertToErAlConditionsAttd(ErAlConditionsAttendanceItem erAlConditionsAttd) {

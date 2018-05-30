@@ -87,15 +87,18 @@ public class MonAlarmCheckConEventPubSubscriber implements DomainEventSubscriber
 					extraResultMonthly.getSpecHolidayCheckCon().setErrorAlarmCheckID(errorAlarmCheckID);
 					SpecHolidayCheckCon specHolidayCheckCon = convertToSpecHolidayCheckConDto(extraResultMonthly.getSpecHolidayCheckCon());
 					specHolidayCheckConRepo.addSpecHolidayCheckCon(specHolidayCheckCon);
+				}else if (extraResultMonthly.getTypeCheckItem() == 1 || extraResultMonthly.getTypeCheckItem() == 2) {
+					// add listAgreementCheckCon36
+					extraResultMonthly.getAgreementCheckCon36().setErrorAlarmCheckID(errorAlarmCheckID);
+					AgreementCheckCon36 agreementCheckCon36 = convertToAgreementCheckCon36AdapterPubDto(extraResultMonthly.getAgreementCheckCon36());
+					agreementCheckCon36Repo.addAgreementCheckCon36(agreementCheckCon36);
+				}else {
+					// add CheckRemainNumberMon
+					extraResultMonthly.getCheckRemainNumberMon().setErrorAlarmCheckID(errorAlarmCheckID);
+					CheckRemainNumberMon checkRemainNumberMon = convertToCheckRemainNumberMonAdapterPubDto(extraResultMonthly.getCheckRemainNumberMon());
+					checkRemainNumberMonRepo.addCheckRemainNumberMon(checkRemainNumberMon);
 				}
-				// add CheckRemainNumberMon
-				extraResultMonthly.getCheckRemainNumberMon().setErrorAlarmCheckID(errorAlarmCheckID);
-				CheckRemainNumberMon checkRemainNumberMon = convertToCheckRemainNumberMonAdapterPubDto(extraResultMonthly.getCheckRemainNumberMon());
-				checkRemainNumberMonRepo.addCheckRemainNumberMon(checkRemainNumberMon);
-				// add listAgreementCheckCon36
-				extraResultMonthly.getAgreementCheckCon36().setErrorAlarmCheckID(errorAlarmCheckID);
-				AgreementCheckCon36 agreementCheckCon36 = convertToAgreementCheckCon36AdapterPubDto(extraResultMonthly.getAgreementCheckCon36());
-				agreementCheckCon36Repo.addAgreementCheckCon36(agreementCheckCon36);
+				
 
 			}
 		} else if (domainEvent.isCheckUpdate()) {
@@ -120,7 +123,7 @@ public class MonAlarmCheckConEventPubSubscriber implements DomainEventSubscriber
 				} else {
 					checkRemainNumberMonRepo.addCheckRemainNumberMon(checkRemainNumberMon);
 				}
-				// update listAgreementCheckCon36
+				// update agreementCheckCon36
 				if (agreementCheckCon36Repo.getAgreementCheckCon36ById(errorAlarmCheckID).isPresent()) {
 					AgreementCheckCon36 agreementCheckCon36 = convertToAgreementCheckCon36AdapterPubDto(extraResultMonthly.getAgreementCheckCon36());
 					agreementCheckCon36Repo.updateAgreementCheckCon36(agreementCheckCon36);

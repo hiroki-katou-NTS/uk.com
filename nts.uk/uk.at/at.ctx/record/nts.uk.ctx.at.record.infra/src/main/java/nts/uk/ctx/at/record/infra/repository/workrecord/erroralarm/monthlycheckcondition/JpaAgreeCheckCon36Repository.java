@@ -13,7 +13,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycheckcondi
 public class JpaAgreeCheckCon36Repository extends JpaRepository implements AgreementCheckCon36Repository {
 
 	private final String SELECT_AGREE_BY_ID = " SELECT c FROM KrcmtAgreementCheckCon36 c"
-			+ " WHERE c.krcmtAgreementCheckCon36PK.errorAlarmCheckID = :errorAlarmCheckID ";
+			+ " WHERE c.errorAlarmCheckID = :errorAlarmCheckID ";
 	
 	
 	@Override
