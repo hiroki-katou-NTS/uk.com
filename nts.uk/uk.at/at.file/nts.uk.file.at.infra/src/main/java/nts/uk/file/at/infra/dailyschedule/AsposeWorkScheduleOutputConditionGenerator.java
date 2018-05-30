@@ -284,10 +284,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			
 			// Write detailed work schedule
 			if (condition.getOutputType() == FormOutputType.BY_EMPLOYEE)
-				writeDetailedWorkSchedule(currentRow, sheetCollection, sheet, reportData.getWorkplaceReportData(), nSize, condition);
+				currentRow = writeDetailedWorkSchedule(currentRow, sheetCollection, sheet, reportData.getWorkplaceReportData(), nSize, condition);
 			else {
 				DailyReportData dailyReportData = reportData.getDailyReportData();
-				writeDetailedDailySchedule(currentRow, sheetCollection, sheet, dailyReportData, nSize, condition);
+				currentRow = writeDetailedDailySchedule(currentRow, sheetCollection, sheet, dailyReportData, nSize, condition);
 			}
 			
 			// Rename sheet
@@ -1515,7 +1515,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param condition the condition
 	 * @throws Exception the exception
 	 */
-	public void writeDetailedDailySchedule(int currentRow, WorksheetCollection templateSheetCollection, Worksheet sheet, DailyReportData dailyReport, int dataRowCount, WorkScheduleOutputCondition condition) throws Exception {
+	public int writeDetailedDailySchedule(int currentRow, WorksheetCollection templateSheetCollection, Worksheet sheet, DailyReportData dailyReport, int dataRowCount, WorkScheduleOutputCondition condition) throws Exception {
 		Cells cells = sheet.getCells();
 		
 		List<WorkplaceDailyReportData> lstDailyReportData = dailyReport.getLstDailyReportData();
@@ -1553,7 +1553,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		Cell grossTotalCellTag = cells.get(currentRow, 0);
 		grossTotalCellTag.setValue(WorkScheOutputConstants.GROSS_TOTAL);
 		
-		writeGrossTotal(currentRow, dailyReport.getListTotalValue(), cells);
+		currentRow = writeGrossTotal(currentRow, dailyReport.getListTotalValue(), cells);
+		
+		return currentRow;
 	}
 	
 	/**
