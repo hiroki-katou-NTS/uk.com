@@ -54,28 +54,29 @@ module nts.uk.at.view.kdm001.e.viewmodel {
             });
         }
         private caculRemainNumber(): void{
-            let sumNum = 0, self = this;
+            let sumNum = 0, self = this, day = parseFloat(self.numberDay());
+            self.residualDayDispay(day.toFixed(1)  + " " + getText('KDM001_27'));
             _.each(self.currentList(), function (x) {
                 if (self.dateHoliday() === x.dayoffDate) {
                     $('#multi-list').ntsError('set', { messageId: "Msg_766" });
                 } else {                
                     sumNum = sumNum + x.requiredDays;
-                    let day = parseFloat(self.numberDay());
                     self.residualDay(day - sumNum);
                     let residualValue = (day - sumNum) > 0 ? (day - sumNum).toFixed(1) : (day - sumNum);
                     self.residualDayDispay(residualValue  + " " + getText('KDM001_27'));
-                    if (self.residualDay() < 0) {
-                        $("#E7_2").css("color", "red");
-                    } else {
-                        $("#E7_2").css("color", "black");
-                    }
+                    
                 }
             });
+           if (self.residualDay() < 0) {
+                $("#E7_2").css("color", "red");
+            } else {
+                $("#E7_2").css("color", "black");
+            }
         }
         
         public initScreen(): void {
             let self = this;
-             block.invisible();
+            block.invisible();
             self.caculRemainNumber();
             service.getBySidDatePeriod(self.info.selectedEmployee.employeeId, self.info.rowValue.id).done((data: Array<ItemModel> )=>{
                 if (data && data.length > 0) {
