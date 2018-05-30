@@ -52,15 +52,7 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
 		}
 		
 		
-		// ドメインモデル「更新処理自動実行ログ」を取得する
-		ProcessExecutionLog procExecLog = null;
-		Optional<ProcessExecutionLog> procExecLogOpt =
-							this.procExecLogRepo.getLog(companyId, execItemCd);
-		if (!procExecLogOpt.isPresent()) {
-			return;
-		}
-		procExecLog = procExecLogOpt.get();
-		String execId = procExecLog.getExecId();
+		
 		/*
 		 * ドメインモデル「更新処理自動実行管理」を更新する
 		 * 
@@ -79,6 +71,17 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
 			processExecLogMan.setOverallError(OverallErrorDetail.EXCEED_TIME);
 		}
 		this.processExecLogManRepo.update(processExecLogMan);
+		
+		// ドメインモデル「更新処理自動実行ログ」を取得する
+				ProcessExecutionLog procExecLog = null;
+				Optional<ProcessExecutionLog> procExecLogOpt =
+									this.procExecLogRepo.getLog(companyId, execItemCd);
+				if (!procExecLogOpt.isPresent()) {
+					return;
+				}
+				procExecLog = procExecLogOpt.get();
+				String execId = procExecLog.getExecId();
+		
 		
 		//スケジュールの作成の処理が完了しているか確認する
 		//TODO NO3  fixed da tao schedule
