@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem.calculation;
 
-import lombok.Getter;
-
 /**
  * The Enum CalculationClassification.
  */
