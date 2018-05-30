@@ -61,6 +61,9 @@ import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.workschedu
 @Stateless
 public class JpaBasicScheduleRepository extends JpaRepository implements BasicScheduleRepository {
 
+	public final String GET_LIST_DATE_BY_LIST_SID = "SELECT a.kscdpBSchedulePK.date " + "FROM KscdtBasicSchedule a "
+			+ "WHERE a.kscdpBSchedulePK.sId IN :sIds " + "ORDER BY a.kscdpBSchedulePK.date DESC";
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -84,7 +87,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		this.insertScheduleMaster(bSchedule.getWorkScheduleMaster());
 		this.insertScheduleBreakTime(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getWorkScheduleBreaks());
 		this.insertScheduleTime(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getWorkScheduleTime());
-//		this.insertScheduleState(bSchedule.getWorkScheduleStates());
+		// this.insertScheduleState(bSchedule.getWorkScheduleStates());
 	}
 
 	/*
@@ -783,17 +786,20 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		this.commandProxy().insert(entity);
 	}
 
-//	private void insertScheduleState(List<WorkScheduleState> workScheduleState) {
-//		if (workScheduleState.isEmpty()) {
-//			return;
-//		}
-//
-//		WorkScheduleState scheduleState = workScheduleState.get();
-//		KscdtWorkScheduleStatePK key = new KscdtWorkScheduleStatePK(scheduleState.getSId(),
-//				scheduleState.getScheduleItemId(), scheduleState.getYmd());
-//		KscdtWorkScheduleState entity = new KscdtWorkScheduleState(key, scheduleState.getScheduleEditState().value);
-//		this.commandProxy().insert(entity);
-//	}
+	// private void insertScheduleState(List<WorkScheduleState>
+	// workScheduleState) {
+	// if (workScheduleState.isEmpty()) {
+	// return;
+	// }
+	//
+	// WorkScheduleState scheduleState = workScheduleState.get();
+	// KscdtWorkScheduleStatePK key = new
+	// KscdtWorkScheduleStatePK(scheduleState.getSId(),
+	// scheduleState.getScheduleItemId(), scheduleState.getYmd());
+	// KscdtWorkScheduleState entity = new KscdtWorkScheduleState(key,
+	// scheduleState.getScheduleEditState().value);
+	// this.commandProxy().insert(entity);
+	// }
 
 	/**
 	 * update 勤務予定時間
@@ -828,5 +834,20 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		if (this.queryProxy().find(key, KscdtScheTime.class).isPresent()) {
 			this.commandProxy().remove(KscdtScheTime.class, new KscdtScheTimePK(employeeId, baseDate));
 		}
+	}
+
+	/**
+	 * 
+	 * @param sIds
+	 * @return
+	 */
+	@Override
+	public GeneralDate findMaxDateByListSid(List<String> sIds) {
+		List<GeneralDate> listDate = this.queryProxy().query(GET_LIST_DATE_BY_LIST_SID, GeneralDate.class)
+				.setParameter("sIds", sIds).getList();
+		if (listDate == null || listDate.isEmpty())
+			return null;
+
+		return listDate.get(0);
 	}
 }
