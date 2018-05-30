@@ -206,6 +206,51 @@ public class WorkplacePubImp implements SyWorkplacePub {
 
 		return result;
 	}
+	
+	
+	@Override
+	public List<AffWorkplaceExport> getByLstWkpIdAndPeriod(String lstWkpId, GeneralDate startDate,
+			GeneralDate endDate) {
+		if (lstWkpId.isEmpty() ||startDate == null  || endDate == null)
+			return new ArrayList<>();
+		
+		List<EmployeeDataMngInfo> listEmpDomain = empDataMngRepo.findByCompanyId(AppContexts.user().companyId());
+
+		Map<String, String> mapSidPid = listEmpDomain.stream()
+				.collect(Collectors.toMap(x -> x.getEmployeeId(), x -> x.getPersonId()));
+		
+		List<String> listSid = affWorkplaceHistoryRepository.getByLstWplIdAndPeriod(lstWkpId, startDate, endDate);
+
+		if (listSid.isEmpty())
+			return new ArrayList<>();
+
+		List<AffCompanyHist> listAffCompanyHist = affCompanyHistRepo.getAffCompanyHistoryOfEmployees(listSid);
+
+		Map<String, AffCompanyHist> mapPidAndAffCompanyHist = listAffCompanyHist.stream()
+				.collect(Collectors.toMap(x -> x.getPId(), x -> x));
+
+		List<AffWorkplaceExport> result = new ArrayList<>();
+
+		listSid.forEach(sid -> {
+
+			AffCompanyHist affCompanyHist = mapPidAndAffCompanyHist.get(mapSidPid.get(sid));
+
+			AffCompanyHistByEmployee affCompanyHistByEmp = affCompanyHist.getAffCompanyHistByEmployee(sid);
+
+			List<AffCompanyHistItem> listAffComHisItem = affCompanyHistByEmp.getLstAffCompanyHistoryItem();
+
+			if (!CollectionUtil.isEmpty(listAffComHisItem)) {
+				listAffComHisItem.forEach(m -> {
+					if (m.start().beforeOrEquals(startDate) && m.end().afterOrEquals(endDate)) {
+						AffWorkplaceExport aff = new AffWorkplaceExport(sid, m.start(), m.end());
+						result.add(aff);
+					}
+				});
+			}
+		});
+
+		return result;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -534,4 +579,5 @@ public class WorkplacePubImp implements SyWorkplacePub {
 				.wkpCode(wkpInfo.getWorkplaceCode().v()).wkpName(wkpInfo.getWorkplaceName().v()).build())
 				.collect(Collectors.toList());
 	}
+
 }

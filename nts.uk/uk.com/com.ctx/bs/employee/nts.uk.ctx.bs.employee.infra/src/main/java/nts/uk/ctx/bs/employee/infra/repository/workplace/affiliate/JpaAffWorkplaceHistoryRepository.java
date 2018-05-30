@@ -69,6 +69,10 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 	private static final String SELECT_BY_WKPID_PERIOD = "SELECT DISTINCT  a.sid FROM BsymtAffiWorkplaceHist a"
 			+ " INNER JOIN BsymtAffiWorkplaceHistItem b ON a.hisId = b.hisId"
 			+ " WHERE b.workPlaceId = :workPlaceId AND a.strDate <= :endDate AND  a.endDate >= :startDate";
+	
+	private static final String SELECT_BY_LIST_WKPID_PERIOD = "SELECT DISTINCT  a.sid FROM BsymtAffiWorkplaceHist a"
+			+ " INNER JOIN BsymtAffiWorkplaceHistItem b ON a.hisId = b.hisId"
+			+ " WHERE b.workPlaceId IN :lstWkpId AND a.strDate <= :endDate AND  a.endDate >= :startDate";
 
 	private static final String SELECT_BY_LISTSID = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
 			+ " INNER JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId"
@@ -350,6 +354,18 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 
 		List<String> listWkpHist = this.queryProxy().query(SELECT_BY_WKPID_PERIOD, String.class)
 				.setParameter("workPlaceId", workplaceId).setParameter("startDate", startDate)
+				.setParameter("endDate", endDate).getList();
+		if (!listWkpHist.isEmpty()) {
+			return listWkpHist;
+		} else {
+			return Collections.emptyList();
+		}
+	}
+	
+	@Override
+	public List<String> getByLstWplIdAndPeriod(String lstWkpId, GeneralDate startDate, GeneralDate endDate) {
+		List<String> listWkpHist = this.queryProxy().query(SELECT_BY_LIST_WKPID_PERIOD, String.class)
+				.setParameter("lstWkpId", lstWkpId).setParameter("startDate", startDate)
 				.setParameter("endDate", endDate).getList();
 		if (!listWkpHist.isEmpty()) {
 			return listWkpHist;
