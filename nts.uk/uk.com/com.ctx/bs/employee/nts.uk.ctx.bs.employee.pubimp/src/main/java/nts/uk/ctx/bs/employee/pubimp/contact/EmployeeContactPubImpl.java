@@ -71,7 +71,7 @@ public class EmployeeContactPubImpl implements EmployeeContactPub {
 		Optional<EmployeeInfoContact> existContact = empContactRepo.findByEmpId(employeeId);
 		
 		EmployeeInfoContact domain = EmployeeInfoContact.createFromJavaType(AppContexts.user().companyId(), employeeId,
-				phoneMailAddress, null, null, phoneMailAddress, cellPhoneNo);
+				mailAddress, null, null, phoneMailAddress, cellPhoneNo);
 		
 		if (existContact.isPresent()) {
 			empContactRepo.update(domain);

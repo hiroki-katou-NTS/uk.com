@@ -63,7 +63,7 @@ public class DetermineErrorAlarmWorkRecordService implements ErAlCheckService {
 	@Override
 	public void createEmployeeDailyPerError(List<EmployeeDailyPerError> errors) {
 		for(EmployeeDailyPerError error : errors) {
-			if(error.getAttendanceItemList().get(0) != null) {
+			if(error!= null && error.getAttendanceItemList().get(0) != null) {
 				//String prefix = error.getErrorAlarmWorkRecordCode().v().substring(0, 1);
 				//if(prefix.equals("D") || prefix.equals("S")) {
 					createEmployeeDailyPerError.createEmployeeDailyPerError(error);
