@@ -190,7 +190,7 @@ module nts.uk.com.view.cmf003.b {
                 self.itemTitleAtr = ko.observableArray([
                     { value: 0, titleAtrName: resource.getText('CMF003_88') },
                     { value: 1, titleAtrName: resource.getText('CMF003_89') }]);
-                self.selectedTitleAtr = ko.observable(0);
+                self.selectedTitleAtr = ko.observable(null);
                 this.currentCode = ko.observable();
                 this.currentCodeList = ko.observableArray([]);
 
@@ -556,6 +556,9 @@ module nts.uk.com.view.cmf003.b {
 
             private nextFromDToE(): void {
                 var self = this;
+                if((self.selectedTitleAtr() != 0  || self.selectedTitleAtr() != 1) {
+                    alertError({ messageId: 'Msg_463' });
+                }else
                 if ((self.selectedTitleAtr() == 1) && (self.selectedEmployeeCode().length == 0)) {
                     alertError({ messageId: 'Msg_498' });
                 } else {
