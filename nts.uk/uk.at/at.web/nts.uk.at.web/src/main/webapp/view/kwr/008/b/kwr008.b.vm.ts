@@ -196,7 +196,6 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     return !item.operation();
                 }).map((item) => { return item.attendanceItemId(); });
                 let param = {
-                    attr: ATTR.MONTHLY,
                     lstAllItems: lstItemCode,
                     lstAddItems: lstAddItems,
                     lstSubItems: lstSubItems
@@ -606,10 +605,5 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 self.listItemOutput([]);
             }
         }
-    }
-
-    enum ATTR {
-        DAILY = 0,
-        MONTHLY = 1
     }
 }
