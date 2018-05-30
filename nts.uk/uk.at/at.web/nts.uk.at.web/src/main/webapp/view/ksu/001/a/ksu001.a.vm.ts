@@ -1423,7 +1423,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let arrFilter = _.filter(arrTmp, { 'rowIndex': item.rowIndex, 'columnKey': item.columnKey });
                     if (arrFilter.length > 1) {
                         _.each(arrFilter, (data) => {
-                            if (data.value.startTime == "" || data.value.endTime == "") {
+                            if ((data.value.startTime == "" && data.value.endTime != "") || (data.value.startTime != "" && data.value.endTime == "")) {
                                 _.remove(arrCell, data);
                             }
                         });

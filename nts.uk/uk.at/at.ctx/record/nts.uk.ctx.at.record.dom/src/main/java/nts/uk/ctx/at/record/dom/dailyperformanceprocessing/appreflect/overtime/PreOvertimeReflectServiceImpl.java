@@ -12,7 +12,9 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.AttendanceTi
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.repo.AttendanceTimeByWorkOfDailyRepository;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
+import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
+import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
@@ -61,6 +63,8 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 	private EmployeeDailyPerErrorRepository employeeDailyPerError;
 	@Inject
 	private OutingTimeOfDailyPerformanceRepository outingTime;
+	@Inject
+	private WorkTypeOfDailyPerforRepository workTypeOfDailyPerforRepository;
 	@Inject
 	private BreakTimeOfDailyPerformanceRepository breakTimeOfDaily;
 	@Inject
@@ -117,7 +121,7 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 			
 			//日別実績の修正からの計算
 			//○日別実績を置き換える Replace daily performance		
-			IntegrationOfDaily calculateData = calculate.calculate(this.calculateForAppReflect(param.getEmployeeId(), param.getDateInfo()));
+			IntegrationOfDaily calculateData = calculate.calculate(this.calculateForAppReflect(param.getEmployeeId(), param.getDateInfo()),null);
 			attendanceTime.updateFlush(calculateData.getAttendanceTimeOfDailyPerformance().get());
 			return true;
 	
@@ -140,6 +144,8 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 		CalAttrOfDailyPerformance calAtrrOfDailyData = calAttrOfDaily.find(employeeId, dateData);
 		//日別実績の所属情報
 		Optional<AffiliationInforOfDailyPerfor> findByKey = affiliationInfor.findByKey(employeeId, dateData);
+		//日別実績の勤務種別
+		Optional<WorkTypeOfDailyPerformance> workType = workTypeOfDailyPerforRepository.findByKey(employeeId, dateData);
 		//日別実績のPCログオン情報
 		Optional<PCLogOnInfoOfDaily> pcLogOnDarta = pcLogOnInfo.find(employeeId, dateData);
 		//社員の日別実績エラー一覧
@@ -169,6 +175,7 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 		IntegrationOfDaily integration = new IntegrationOfDaily(workInfor, 
 				calAtrrOfDailyData, 
 				findByKey.get(),
+				workType,
 				pcLogOnDarta, 
 				findEror, 
 				findByEmployeeIdAndDate, 

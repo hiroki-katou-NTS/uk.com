@@ -98,8 +98,8 @@ public class KfnmtProcessExecution extends UkJpaEntity implements Serializable {
 				this.execSetting.perScheduleCls == 1 ? true : false, target);
 		DailyPerformanceCreation dailyPerfCreation = new DailyPerformanceCreation(
 				this.execSetting.dailyPerfCls == 1 ? true : false,
-				EnumAdaptor.valueOf(this.execSetting.dailyPerfItem, DailyPerformanceItem.class),
-				this.execSetting.midJoinEmployee == 1 ? true : false, EnumAdaptor.valueOf(this.execSetting.targetGroupClassification,TargetGroupClassification.class));
+				EnumAdaptor.valueOf(this.execSetting.dailyPerfItem, DailyPerformanceItem.class), new TargetGroupClassification(this.execSetting.recreateTypeChangePerson == 1 ? true : false,
+						this.execSetting.midJoinEmployee == 1 ? true : false, this.execSetting.recreateTransfers == 1 ? true : false));
 
 		ProcessExecutionSetting execSetting = new ProcessExecutionSetting(indvAlarm, wkpAlarm, perSchCreation,
 				dailyPerfCreation, this.execSetting.reflectResultCls == 1 ? true : false,
@@ -137,14 +137,14 @@ public class KfnmtProcessExecution extends UkJpaEntity implements Serializable {
 				domain.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isRecreateTransfer() ? 1 : 0,
 				domain.getExecSetting().getDailyPerf().isDailyPerfCls() ? 1 : 0,
 				domain.getExecSetting().getDailyPerf().getDailyPerfItem().value,
-				domain.getExecSetting().getDailyPerf().isMidJoinEmployee() ? 1 : 0,
+				domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isMidJoinEmployee() ? 1 : 0,
 				domain.getExecSetting().isReflectResultCls() ? 1 : 0, domain.getExecSetting().isMonthlyAggCls() ? 1 : 0,
 				domain.getExecSetting().getIndvAlarm().isIndvAlarmCls() ? 1 : 0,
 				domain.getExecSetting().getIndvAlarm().isIndvMailPrin() ? 1 : 0,
 				domain.getExecSetting().getIndvAlarm().isIndvMailMng() ? 1 : 0,
 				domain.getExecSetting().getWkpAlarm().isWkpAlarmCls() ? 1 : 0,
 				domain.getExecSetting().getWkpAlarm().isWkpMailMng() ? 1 : 0,
-				domain.getExecSetting().getDailyPerf().getTargetGroupClassification().value);
+				domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()?1:0,domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer()?1:0);
 		return new KfnmtProcessExecution(kfnmtProcExecPK, domain.getExecItemName().v(), execScope, execSetting);
 	}
 }
