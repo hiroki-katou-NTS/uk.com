@@ -62,92 +62,95 @@ module nts.uk.com.view.cmf001.share.model {
         SPACE_BEFORE = 2,
         SPACE_AFTER = 3
     }
-    
+
     export enum M_ACTIVATION {
         Duplicate_Standard = 0,
         Duplicate_User_Settings = 1,
         Duplicate_From_Standard_To_User_Setting = 2,
         Duplicate_From_User_Setting_To_Standard = 3
     }
-    
+
     export enum HOURLY_SEGMENT {
         //時分
         HOUR_MINUTE = 0,
         //分
         MINUTE = 1
     }
-    
+
     export enum DECIMAL_SELECTION {
         //60進数
         HEXA_DECIMAL = 0,
         //10進数
         DECIMAL = 1
     }
-    
+
     export function getSystemTypes(): Array<ItemModel> {
         return [
-            new ItemModel(0, getText('Enum_SystemType_PERSON_SYSTEM')),
-            new ItemModel(1, getText('Enum_SystemType_ATTENDANCE_SYSTEM')),
-            new ItemModel(2, getText('Enum_SystemType_PAYROLL_SYSTEM')),
-            new ItemModel(3, getText('Enum_SystemType_OFFICE_HELPER'))
+            new ItemModel(0, getText('CMF001_600')),
+            new ItemModel(1, getText('CMF001_601')),
+            new ItemModel(2, getText('CMF001_602')),
+            new ItemModel(3, getText('CMF001_603'))
         ];
     }
-    
+
     export function getDeleteExistDataMethod(): Array<ItemModel> {
         return [
-            new ItemModel(1, getText('Enum_DeleteExistDataMethod_DELETE_ALL')),
-            new ItemModel(2, getText('Enum_DeleteExistDataMethod_DELETE_TARGET'))
+            new ItemModel(1, getText('CMF001_604')),
+            new ItemModel(2, getText('CMF001_605'))
         ];
     }
-    
+
     export function getItemTypes(): Array<ItemModel> {
         return [
-            new ItemModel(0, getText('Enum_ItemType_NUMERIC')),
-            new ItemModel(1, getText('Enum_ItemType_CHARACTER')),
-            new ItemModel(2, getText('Enum_ItemType_DATE')),
-            new ItemModel(3, getText('Enum_ItemType_INS_TIME')),
-            new ItemModel(4, getText('Enum_ItemType_TME'))
+            new ItemModel(0, getText('CMF001_650')),
+            new ItemModel(1, getText('CMF001_651')),
+            new ItemModel(2, getText('CMF001_652')),
+            new ItemModel(3, getText('CMF001_653')),
+            new ItemModel(4, getText('CMF001_654'))
         ];
     }
-    
+
     export function getCompareTypes(): Array<ItemModel> {
         return [
-            new ItemModel(0, getText('Enum_SelectComparisonCondition_DO_NOT_COND')),
-            new ItemModel(1, getText('Enum_SelectComparisonCondition_COND1_LESS_VAL')),
-            new ItemModel(2, getText('Enum_SelectComparisonCondition_COND1_LESS_EQUAL_VAL')),
-            new ItemModel(3, getText('Enum_SelectComparisonCondition_VAL_LESS_COND1')),
-            new ItemModel(4, getText('Enum_SelectComparisonCondition_VAL_LESS_EQUAL_COND1')),
-            new ItemModel(5, getText('Enum_SelectComparisonCondition_COND1_LESS_VAL_AND_VAL_LESS_COND2')),
-            new ItemModel(6, getText('Enum_SelectComparisonCondition_COND1_LESS_EQUAL_VAL_AND_VAL_LESS_EQUAL_COND2')),
-            new ItemModel(7, getText('Enum_SelectComparisonCondition_VAL_LESS_COND1_OR_COND2_LESS_VAL')),
-            new ItemModel(8, getText('Enum_SelectComparisonCondition_VAL_LESS_EQUAL_COND1_OR_COND2_LESS_EQUAL_VAL')),
-            new ItemModel(9, getText('Enum_SelectComparisonCondition_COND1_EQUAL_VAL')),
-            new ItemModel(10, getText('Enum_SelectComparisonCondition_COND1_NOT_EQUAL_VAL'))
+            new ItemModel(0, getText('CMF001_626')),
+            new ItemModel(1, getText('CMF001_627')),
+            new ItemModel(2, getText('CMF001_628')),
+            new ItemModel(3, getText('CMF001_629')),
+            new ItemModel(4, getText('CMF001_630')),
+            new ItemModel(5, getText('CMF001_631')),
+            new ItemModel(6, getText('CMF001_632')),
+            new ItemModel(7, getText('CMF001_633')),
+            new ItemModel(8, getText('CMF001_634')),
+            new ItemModel(9, getText('CMF001_635')),
+            new ItemModel(10, getText('CMF001_636'))
         ];
     }
-    
+
     export function getDelimiterSetting(): Array<ItemModel> {
         return [
-            new model.ItemModel(0, getText('Enum_DelimiterSetting_NO_DELIMITER')),
-            new model.ItemModel(1, getText('Enum_DelimiterSetting_CUT_BYDECIMAL_POINT')),
-            new model.ItemModel(2, getText('Enum_DelimiterSetting_CUT_BY_COLON'))
+            new model.ItemModel(0, getText('CMF001_620')),
+            new model.ItemModel(1, getText('CMF001_621')),
+            new model.ItemModel(2, getText('CMF001_622'))
         ];
     }
-    
+
     export function getTimeRounding(): Array<ItemModel> {
         return [
-            new model.ItemModel(1, getText('Enum_TimeRounding_DOWN_LESS_1_MINUTE')),
-            new model.ItemModel(2, getText('Enum_TimeRounding_LESS_1_MINUTE')),
-            new model.ItemModel(3, getText('Enum_TimeRounding_OFF_TO_LESS_1_MINUTE'))
+            // １分未満切り捨て
+            new model.ItemModel(1, getText('CMF001_623')),
+            // １分未満切り上げ
+            new model.ItemModel(2, getText('CMF001_624')),
+            // １分未満四捨五入（小数点第１位迄）
+            new model.ItemModel(3, getText('CMF001_625'))
         ];
     }
-    
-   export function getEncodingList(): Array<EncodingModel> {
+
+    export function getEncodingList(): Array<EncodingModel> {
         return [
             new model.EncodingModel(3, 'Shift JIS')
         ];
     }
-    
+
     export class StandardAcceptanceConditionSetting {
         conditionSettingCode: KnockoutObservable<string>;
         dispConditionSettingCode: string;
@@ -171,7 +174,7 @@ module nts.uk.com.view.cmf001.share.model {
             this.conditionSettingName = ko.observable(name);
             this.dispConditionSettingName = name;
             this.deleteExistData = ko.observable(deleteExistData);
-            if (deleteExistDataMethod) 
+            if (deleteExistDataMethod)
                 this.deleteExistDataMethod(deleteExistDataMethod);
             if (!nts.uk.util.isNullOrUndefined(acceptMode))
                 this.acceptMode(acceptMode);
@@ -183,7 +186,7 @@ module nts.uk.com.view.cmf001.share.model {
                 this.csvDataStartLine(csvDataStartLine);
             if (characterCode)
                 this.characterCode(characterCode);
-            if (categoryId) this.categoryId(categoryId); 
+            if (categoryId) this.categoryId(categoryId);
         }
     }
 
@@ -196,7 +199,7 @@ module nts.uk.com.view.cmf001.share.model {
             this.name = name;
         }
     }
-    
+
     export class EncodingModel {
         code: number;
         name: string;
@@ -217,13 +220,13 @@ module nts.uk.com.view.cmf001.share.model {
         numberFormatSetting: KnockoutObservable<NumericDataFormatSetting> = ko.observable(null);
         charFormatSetting: KnockoutObservable<CharacterDataFormatSetting> = ko.observable(null);
         dateFormatSetting: KnockoutObservable<DateDataFormatSetting> = ko.observable(null);
-        instTimeFormatSetting: KnockoutObservable<InstantTimeDataFormatSetting> = ko.observable(null); 
+        instTimeFormatSetting: KnockoutObservable<InstantTimeDataFormatSetting> = ko.observable(null);
         timeFormatSetting: KnockoutObservable<TimeDataFormatSetting> = ko.observable(null);
         screenConditionSetting: KnockoutObservable<AcceptScreenConditionSetting> = ko.observable(null);
         categoryItemNo: KnockoutObservable<number>;
         systemType: KnockoutObservable<number>;
         sampleData: KnockoutObservable<string> = ko.observable(null);
-        
+
         constructor(csvItemName: string, csvItemNumber: number, itemType: number, acceptItemNumber: number, acceptItemName: string, systemType: number, conditionCode: string, categoryItemNo: number, formatSet?: any, screenSet?: AcceptScreenConditionSetting, sampleData?: string) {
             this.csvItemName = ko.observable(csvItemName);
             this.csvItemNumber = ko.observable(csvItemNumber);
@@ -234,27 +237,27 @@ module nts.uk.com.view.cmf001.share.model {
             this.systemType = ko.observable(systemType);
             this.categoryItemNo = ko.observable(categoryItemNo);
             if (formatSet) {
-                switch(itemType) {
-                    case model.ITEM_TYPE.NUMERIC: 
+                switch (itemType) {
+                    case model.ITEM_TYPE.NUMERIC:
                         this.numberFormatSetting(formatSet);
                         break;
-                    case model.ITEM_TYPE.CHARACTER: 
+                    case model.ITEM_TYPE.CHARACTER:
                         this.charFormatSetting(formatSet);
                         break;
-                    case model.ITEM_TYPE.DATE: 
+                    case model.ITEM_TYPE.DATE:
                         this.dateFormatSetting(formatSet);
                         break;
-                    case model.ITEM_TYPE.INS_TIME: 
+                    case model.ITEM_TYPE.INS_TIME:
                         this.instTimeFormatSetting(formatSet);
                         break;
-                    case model.ITEM_TYPE.TIME: 
+                    case model.ITEM_TYPE.TIME:
                         this.timeFormatSetting(formatSet);
                         break;
                 }
             }
             if (screenSet)
                 this.screenConditionSetting(screenSet);
-            if (sampleData)    
+            if (sampleData)
                 this.sampleData(sampleData);
         }
     }
@@ -309,20 +312,20 @@ module nts.uk.com.view.cmf001.share.model {
             this.systemCode = ko.observable(sysCode);
         }
     }
-    
+
     //screen E
     export class MappingListData {
         csvItemName: string;
         csvItemNumber: number;
         sampleData: string;
-        
+
         constructor(itemNumber: number, itemName: string, sampleData?: string) {
             this.csvItemName = itemName;
             this.csvItemNumber = itemNumber;
             if (sampleData) this.sampleData = sampleData;
         }
     }
-    
+
     //screen G
     export class NumericDataFormatSetting {
         fixedValue: KnockoutObservable<number>;
@@ -337,7 +340,7 @@ module nts.uk.com.view.cmf001.share.model {
         decimalFraction: KnockoutObservable<number>;
 
         constructor(effectDigitLength: number, startDigit: number, endDigit: number, decimalDivision: number, decimalDigitNumber: number,
-         decimalPointClassification: number, decimalFraction: number, codeConvertCode: string, fixedValue: number, valueOfFixedValue: string) {
+            decimalPointClassification: number, decimalFraction: number, codeConvertCode: string, fixedValue: number, valueOfFixedValue: string) {
             this.fixedValue = ko.observable(fixedValue);
             this.decimalDivision = ko.observable(decimalDivision);
             this.effectiveDigitLength = ko.observable(effectDigitLength);
@@ -364,7 +367,7 @@ module nts.uk.com.view.cmf001.share.model {
         endDigit: KnockoutObservable<number>;
 
         constructor(effectDigitLength: number, startDigit: number, endDigit: number, codeEditing: number, codeEditDigit: number,
-         codeEditingMethod: number, codeConvertCode: string, fixedValue: number, fixedVal: string) {
+            codeEditingMethod: number, codeConvertCode: string, fixedValue: number, fixedVal: string) {
             this.fixedValue = ko.observable(fixedValue);
             this.codeEditing = ko.observable(codeEditing);
             this.effectiveDigitLength = ko.observable(effectDigitLength);
@@ -386,7 +389,7 @@ module nts.uk.com.view.cmf001.share.model {
 
         constructor(formatSelection: number, fixedValue: number, valueOfFixedValue: string) {
             this.formatSelection = ko.observable(formatSelection);
-            this.fixedValue = ko.observable(fixedValue);            
+            this.fixedValue = ko.observable(fixedValue);
             this.valueOfFixedValue = ko.observable(valueOfFixedValue);
         }
     }
@@ -418,8 +421,8 @@ module nts.uk.com.view.cmf001.share.model {
             this.valueOfFixedValue = ko.observable(valueOfFixedValue);
         }
     }
-    
-     //screen J
+
+    //screen J
     export class TimeDataFormatSetting {
         effectiveDigitLength: KnockoutObservable<number>;
         startDigit: KnockoutObservable<number>;
@@ -463,9 +466,9 @@ module nts.uk.com.view.cmf001.share.model {
         numberConditionValue1: KnockoutObservable<number>;
         acceptItemNum: KnockoutObservable<number>;
         conditionSetCd: KnockoutObservable<string>;
-        
-        constructor(receiptItemName: string, selectComparisonCondition: number,timeConditionValue2: number, timeConditionValue1: number, timeMomentConditionValue2:number, timeMomentConditionValue1: number,
-        dateConditionValue2: string, dateConditionValue1: string, characterConditionValue2: string, characterConditionValue1: string, numberConditionValue2: number, numberConditionValue1: number, conditionSetCd?: string, acceptItemNum?: number) {
+
+        constructor(receiptItemName: string, selectComparisonCondition: number, timeConditionValue2: number, timeConditionValue1: number, timeMomentConditionValue2: number, timeMomentConditionValue1: number,
+            dateConditionValue2: string, dateConditionValue1: string, characterConditionValue2: string, characterConditionValue1: string, numberConditionValue2: number, numberConditionValue1: number, conditionSetCd?: string, acceptItemNum?: number) {
             this.receiptItemName = ko.observable(receiptItemName);
             this.selectComparisonCondition = ko.observable(selectComparisonCondition);
             this.timeConditionValue2 = ko.observable(timeConditionValue2);
@@ -478,7 +481,7 @@ module nts.uk.com.view.cmf001.share.model {
             this.characterConditionValue1 = ko.observable(characterConditionValue1);
             this.numberConditionValue2 = ko.observable(numberConditionValue2);
             this.numberConditionValue1 = ko.observable(numberConditionValue1);
-            
+
         }
     }
 
@@ -536,5 +539,5 @@ module nts.uk.com.view.cmf001.share.model {
 
     }
 
-    
+
 }

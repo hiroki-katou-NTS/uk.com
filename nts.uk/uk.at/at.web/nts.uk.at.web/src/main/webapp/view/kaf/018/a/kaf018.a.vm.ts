@@ -72,7 +72,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 
             self.selectTarget.subscribe((value) => {
                 block.invisible();
-                service.getApprovalStatusPerior(value, self.processYm).done((data: any) => {
+                service.getApprovalStatusPerior(value).done((data: any) => {
                     self.startDate(new Date(data.startDate));
                     self.endDate(new Date(data.endDate));
                     self.listEmployeeCode(data.employeesCode);

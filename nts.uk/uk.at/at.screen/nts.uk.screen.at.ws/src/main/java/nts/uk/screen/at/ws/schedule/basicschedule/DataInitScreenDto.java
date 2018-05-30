@@ -23,4 +23,5 @@ public class DataInitScreenDto {
 	List<StateWorkTypeCodeDto> checkStateWorkTypeCode;
 	List<StateWorkTypeCodeDto> checkNeededOfWorkTimeSetting;
 	List<WorkEmpCombineScreenDto> workEmpCombines;
+	String employeeIdLogin;
 }

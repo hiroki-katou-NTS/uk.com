@@ -41,9 +41,9 @@ public class AggregateAnyItem implements Cloneable {
 	/**
 	 * ファクトリー
 	 * @param anyItemNo　任意項目No
-	 * @param time 時間
-	 * @param times 回数
-	 * @param amount 金額
+	 * @param time 時間　（NULL可）
+	 * @param times 回数　（NULL可）
+	 * @param amount 金額　（NULL可）
 	 * @return 月の任意項目の計算結果
 	 */
 	public static AggregateAnyItem of(
@@ -89,12 +89,10 @@ public class AggregateAnyItem implements Cloneable {
 		}
 		if (target.getTimes().isPresent()){
 			if (this.times.isPresent()){
-				this.times = Optional.of(this.times.get().addTimes(0.0));
-				//this.times = this.times.addTimes(target.getTimes().get().v());
+				this.times = Optional.of(this.times.get().addTimes(target.getTimes().get().v().doubleValue()));
 			}
 			else {
-				this.times = Optional.of(new AnyTimesMonth(0.0));
-				//this.times = new AnyTimesMonth(target.getTimes().get().v());
+				this.times = Optional.of(new AnyTimesMonth(target.getTimes().get().v().doubleValue()));
 			}
 		}
 		if (target.getAmount().isPresent()){

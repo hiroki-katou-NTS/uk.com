@@ -24,7 +24,7 @@ public interface FormulaRepository {
 	 * @param comId the com id
 	 * @param optItemNo the opt item no
 	 */
-	void remove(String comId, String optItemNo);
+	void remove(String comId, Integer optItemNo);
 
 	/**
 	 * Find by companyId 
@@ -41,7 +41,7 @@ public interface FormulaRepository {
 	 * @param optItemNo the opt item no
 	 * @return the list
 	 */
-	List<Formula> findByOptItemNo(String companyId, String optItemNo);
+	List<Formula> findByOptItemNo(String companyId, Integer optItemNo);
 
 	/**
 	 * Find by id.
@@ -51,5 +51,5 @@ public interface FormulaRepository {
 	 * @param formulaId the formula id
 	 * @return the formula
 	 */
-	Formula findById(String companyId, String optItemNo, String formulaId);
+	Formula findById(String companyId, Integer optItemNo, String formulaId);
 }

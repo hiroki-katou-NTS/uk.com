@@ -393,7 +393,7 @@
 				                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayRightOperator"></span></td>
 			                            		<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayRightCompare"></span></td>
 			                            	</com:ko-if>
-			                            	<td><button data-bind="click: $data.openAtdItemConditionDialog, enable: $root.content.selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_100')}</button></td>
+			                            	<td><button data-bind="click: $data.openAtdItemConditionDialog.bind($data, $root.content.screenMode()), enable: $root.content.selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_100')}</button></td>
 			                            	<td><button data-bind="click: $data.clear">#{i18n.getText('KDW007_103')}</button></td>
 		                            	</tr>
 		                            </com:ko-foreach>
@@ -454,7 +454,7 @@
 				                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayRightOperator"></span></td>
 			                            		<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayRightCompare"></span></td>
 			                            	</com:ko-if>
-			                            	<td><button data-bind="click: $data.openAtdItemConditionDialog, enable: $root.content.selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_100')}</button></td>
+			                            	<td><button data-bind="click: $data.openAtdItemConditionDialog.bind($data, $root.content.screenMode()), enable: $root.content.selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_100')}</button></td>
 			                            	<td><button data-bind="click: $data.clear">#{i18n.getText('KDW007_103')}</button></td>
 		                            	</tr>
 		                            </com:ko-foreach>
