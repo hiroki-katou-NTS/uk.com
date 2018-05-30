@@ -16,9 +16,6 @@ module nts.custom.component {
         }
     };
 
-    // add support virtual element to let control
-    ko.virtualElements.allowedBindings.let = true;
-
     window["ko"].components.register('layout-tabs', {
         template: `<!-- ko let: {
                         text: nts.uk.resource.getText,
@@ -367,7 +364,7 @@ module nts.custom.component {
 
                     params.gridlist.row(10);
                     params.combobox.value(undefined);
-                    
+
                     fetch.get_layout(sid).done((data: Array<any>) => {
                         if (data.length) {
                             params.gridlist.options(data);
@@ -495,7 +492,14 @@ module nts.custom.component {
                                             }
                                         }
                                     } else {
-                                        params.event.add();
+                                        params.change.call(null, {
+                                            id: v,
+                                            iid: undefined,
+                                            tab: TABS.CATEGORY,
+                                            act: 'add',
+                                            ccode: ko.toJS(params.combobox.object.categoryCode),
+                                            ctype: ko.toJS(params.combobox.object.categoryType)
+                                        });
                                         params.gridlist.value(undefined);
                                     }
                                 });
@@ -532,7 +536,14 @@ module nts.custom.component {
                                             params.gridlist.value.valueHasMutated();
                                         }
                                     } else {
-                                        params.event.add();
+                                        params.change.call(null, {
+                                            id: v,
+                                            iid: undefined,
+                                            tab: TABS.CATEGORY,
+                                            act: 'add',
+                                            ccode: ko.toJS(params.combobox.object.categoryCode),
+                                            ctype: ko.toJS(params.combobox.object.categoryType)
+                                        });
                                         params.gridlist.value(undefined);
                                     }
                                 });
@@ -548,24 +559,7 @@ module nts.custom.component {
             });
 
             params.gridlist.value.subscribe(v => {
-                if (!v) {
-                    __viewContext.viewModel.unblock();
-                    return;
-                }
-
-                __viewContext.viewModel.block();
-
-                if (ko.toJS(params.tab) == TABS.LAYOUT) {
-                    params.change.call(null, {
-                        id: v,
-                        iid: undefined,
-                        tab: TABS.LAYOUT,
-                        act: undefined,
-                        ccode: undefined,
-                        ctype: undefined
-                    });
-                }
-                else if (ko.toJS(params.tab) == TABS.CATEGORY) {
+                if (ko.toJS(params.tab) == TABS.CATEGORY) {
                     let rid = ko.toJS(params.roleId),
                         cid = ko.toJS(params.combobox.value),
                         is_self = params.employeeId() == params.loginId(),
@@ -613,8 +607,33 @@ module nts.custom.component {
                             }
                         }
                     });
+                }
 
-                    params.change.call(null, { id: cid, iid: v, tab: TABS.CATEGORY, act: undefined, ctype: ko.toJS(params.combobox.object.categoryType) });
+                if (!v) {
+                    __viewContext.viewModel.unblock();
+                    return;
+                }
+
+                __viewContext.viewModel.block();
+
+                if (ko.toJS(params.tab) == TABS.LAYOUT) {
+                    params.change.call(null, {
+                        id: v,
+                        iid: undefined,
+                        tab: TABS.LAYOUT,
+                        act: undefined,
+                        ccode: undefined,
+                        ctype: undefined
+                    });
+                } else if (ko.toJS(params.tab) == TABS.CATEGORY) {
+                    params.change.call(null, {
+                        id: ko.toJS(params.combobox.value),
+                        iid: v,
+                        tab: TABS.CATEGORY,
+                        act: undefined,
+                        ctype: ko.toJS(params.combobox.object.categoryType),
+                        ccode: ko.toJS(params.combobox.object.categoryCode)
+                    });
                 }
             });
 

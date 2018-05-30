@@ -6,4 +6,5 @@ import lombok.Value;
 public class OrderItemChange {
 	String id;
 	String name;
+	int displayOder;
 }

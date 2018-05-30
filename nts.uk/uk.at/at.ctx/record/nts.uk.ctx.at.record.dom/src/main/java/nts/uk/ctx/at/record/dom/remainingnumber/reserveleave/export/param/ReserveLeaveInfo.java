@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
@@ -26,6 +27,8 @@ public class ReserveLeaveInfo {
 	private ReserveLeaveUsedDayNumber usedDays;
 	/** 付与後フラグ */
 	private boolean afterGrantAtr;
+	/** 付与情報 */
+	private Optional<ReserveLeaveGrantInfo> grantInfo;
 	
 	/**
 	 * コンストラクタ
@@ -39,6 +42,7 @@ public class ReserveLeaveInfo {
 		this.grantRemainingNumberList = new ArrayList<>();
 		this.usedDays = new ReserveLeaveUsedDayNumber(0.0);
 		this.afterGrantAtr = false;
+		this.grantInfo = Optional.empty();
 	}
 	
 	/**
@@ -48,6 +52,7 @@ public class ReserveLeaveInfo {
 	 * @param grantRemainingNumberList 付与残数データ
 	 * @param usedDays 使用数
 	 * @param afterGrantAtr 付与後フラグ
+	 * @param grantInfo 付与情報
 	 * @return 積立年休情報
 	 */
 	public static ReserveLeaveInfo of(
@@ -55,13 +60,15 @@ public class ReserveLeaveInfo {
 			ReserveLeaveRemainingNumber remainingNumber,
 			List<ReserveLeaveGrantRemainingData> grantRemainingNumberList,
 			ReserveLeaveUsedDayNumber usedDays,
-			boolean afterGrantAtr){
+			boolean afterGrantAtr,
+			Optional<ReserveLeaveGrantInfo> grantInfo){
 	
 		ReserveLeaveInfo domain = new ReserveLeaveInfo(ymd);
 		domain.remainingNumber = remainingNumber;
 		domain.grantRemainingNumberList = grantRemainingNumberList;
 		domain.usedDays = usedDays;
 		domain.afterGrantAtr = afterGrantAtr;
+		domain.grantInfo = grantInfo;
 		return domain;
 	}
 }

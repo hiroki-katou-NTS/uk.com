@@ -208,6 +208,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 /** Optional properties */
                 isInDialog?: boolean;
                 showOnStart?: boolean;
+                isTab2Lazy?: boolean;
 
                 /** Data returned */
                 returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
