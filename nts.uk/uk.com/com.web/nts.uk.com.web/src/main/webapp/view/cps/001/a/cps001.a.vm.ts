@@ -212,15 +212,15 @@ module cps001.a.vm {
                 }).fail((mes : any) => {
                     self.unblock();
                     if (mes.messageId == "Msg_346") {
-                        let lstInput = _.map($('[id = COM1000000000000000CS00069IS00779]'), e => e.value);
+                        let lstCardNumber = _.map($('[id = COM1000000000000000CS00069IS00779]'), e => e.value);
                         let listIndex = new Array();
-                        for (let i = 0; i < lstInput.length; i++) {
+                        for (let i = 0; i < lstCardNumber.length; i++) {
 
                             let duplicate = _.filter(listIndex, function(o) { return o == i; });
 
                             if (duplicate.length == 0) {
-                                for (let j = i + 1; j < lstInput.length - 1; j++) {
-                                    if (lstInput[i] == lstInput[j]) {
+                                for (let j = i + 1; j < lstCardNumber.length - 1; j++) {
+                                    if (lstCardNumber[i] == lstCardNumber[j]) {
                                         listIndex.push(j);
                                         $($('[id = COM1000000000000000CS00069IS00779]')[j]).ntsError('set', { messageId: "Msg_346" });
                                     }
