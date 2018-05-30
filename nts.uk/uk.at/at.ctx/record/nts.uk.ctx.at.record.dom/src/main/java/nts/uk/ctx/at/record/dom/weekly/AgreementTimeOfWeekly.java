@@ -68,7 +68,7 @@ public class AgreementTimeOfWeekly implements Cloneable {
 			cloned.agreementTime = new AttendanceTimeMonth(this.agreementTime.v());
 			cloned.limitErrorTime = new LimitWeek(this.limitErrorTime.v());
 			cloned.limitAlarmTime = new LimitWeek(this.limitAlarmTime.v());
-			cloned.status.value = this.status.value;
+			cloned.status = this.status;
 		}
 		catch (Exception e){
 			throw new RuntimeException("AgreementTimeByPeriod clone error.");
@@ -102,6 +102,6 @@ public class AgreementTimeOfWeekly implements Cloneable {
 		this.agreementTime = new AttendanceTimeMonth(agreementTimeOfMonthly.getAgreementTime().v());
 		this.limitErrorTime = new LimitWeek(agreementTimeOfMonthly.getLimitErrorTime().v());
 		this.limitAlarmTime = new LimitWeek(agreementTimeOfMonthly.getLimitAlarmTime().v());
-		this.status.value = agreementTimeOfMonthly.getStatus().value;
+		this.status = agreementTimeOfMonthly.getStatus();
 	}
 }
