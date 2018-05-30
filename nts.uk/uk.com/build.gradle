@@ -795,6 +795,8 @@ project (':com.ctx:sys:env:nts.uk.ctx.sys.env.ac') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':com.ctx:sys:env:nts.uk.ctx.sys.env.dom')
 		compile project(':com.ctx:sys:env:nts.uk.ctx.sys.env.app')
+		
+		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
 	}
 }
 

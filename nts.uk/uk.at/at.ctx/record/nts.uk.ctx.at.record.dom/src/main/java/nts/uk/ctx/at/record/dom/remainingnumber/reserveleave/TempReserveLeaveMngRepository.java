@@ -55,4 +55,10 @@ public interface TempReserveLeaveMngRepository {
 	 */
 	void removeBetweenPeriod(String employeeId, DatePeriod period);
 	
+	/**
+	 * @param employeeId
+	 * @return List<TempReserveLeaveManagement>
+	 */
+	List<TempReserveLeaveManagement> findByEmployeeId(String employeeId);
+	
 }

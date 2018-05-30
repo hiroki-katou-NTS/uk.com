@@ -6,6 +6,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
     import resource = nts.uk.resource;
     import sharemodel = nts.uk.at.view.kal003.share.model;
     import shareutils = nts.uk.at.view.kal003.share.kal003utils;
+    import modelShare = kal003.share.model;
 
     export class ScreenModel {
         workRecordExtractingCondition: KnockoutObservable<sharemodel.WorkRecordExtractingCondition>;
@@ -23,7 +24,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
         displayWorkTypeSelections_BA1_4         : KnockoutObservable<string> = ko.observable('');
         displayAttendanceItemSelections_BA2_3   : KnockoutObservable<string> = ko.observable('');
         displayWorkingTimeSelections_BA5_3  : KnockoutObservable<string> = ko.observable('');
-        required_BA1_4 : KnockoutObservable<boolean>;
+        required_BA1_4 : KnockoutObservable<boolean> = ko.observable(true);
                 
         private setting : sharemodel.WorkRecordExtractingCondition;
         swANDOR_B5_3 : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
@@ -33,39 +34,59 @@ module nts.uk.at.view.kal003.b.viewmodel{
         comparisonRange : KnockoutObservable<model.ComparisonValueRange>;
         checkItemTemp: KnockoutObservable<number> = ko.observable(null);
         
+        
+        //monthly
+        listEnumTypeMonCheckItem: KnockoutObservableArray<any>;
+        category : KnockoutObservable<number> ;
+        
         constructor() {
             let self = this;
             let option = windows.getShared('inputKal003b');
-            self.setting = $.extend({}, shareutils.getDefaultWorkRecordExtractingCondition(0), option);
+            self.setting = $.extend({}, shareutils.getDefaultWorkRecordExtractingCondition(0), option.data);
+            self.category = ko.observable(option.category);
             
-            let workRecordExtractingCond = shareutils.convertTransferDataToWorkRecordExtractingCondition(self.setting);
-            self.workRecordExtractingCondition = ko.observable(workRecordExtractingCond);
-            // setting comparison value range
-
-            self.comparisonRange = ko.observable(self.initComparisonValueRange());
-            
-            self.checkItemTemp = ko.observable(self.workRecordExtractingCondition().checkItem());
-            
-            // change select item check
-            self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
-                errors.clearAll();
-                if ((itemCheck && itemCheck != undefined) || itemCheck === 0) {
-                    self.initialScreen().then(function() {
-                        if ((self.checkItemTemp() || self.checkItemTemp() == 0) && self.checkItemTemp() != itemCheck) {
-                            setTimeout(function() {self.displayAttendanceItemSelections_BA2_3("");},200);   
-                        }
+            switch(self.category()){
+                case modelShare.CATEGORY.DAILY:
+                    service.getEnumTypeCheckWorkRecord().done((rs) => {
+                        self.listTypeCheckWorkRecords(self.getLocalizedNameForEnum(rs));
                     });
-                }
-                $(".nts-input").ntsError("clear");
-            });
-            self.comparisonRange().comparisonOperator.subscribe((operN) => {
-                self.settingEnableComparisonMaxValueField();
-            });
-            self.required_BA1_4 = ko.observable(self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual()>0);
-            self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual.subscribe((newV)=>{
-                self.required_BA1_4(newV>0);
-                $(".nts-input").ntsError("clear");
-            });                        
+                    let workRecordExtractingCond = shareutils.convertTransferDataToWorkRecordExtractingCondition(self.setting);
+                    self.workRecordExtractingCondition = ko.observable(workRecordExtractingCond);
+                    self.comparisonRange = ko.observable(self.initComparisonValueRange());
+                    self.checkItemTemp = ko.observable(self.workRecordExtractingCondition().checkItem());
+                    self.required_BA1_4(self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual()>0);
+                    
+                    // change select item check
+                    self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
+                        errors.clearAll();
+                        if ((itemCheck && itemCheck != undefined) || itemCheck === 0) {
+                            self.initialScreen().then(function() {
+                                if ((self.checkItemTemp() || self.checkItemTemp() == 0) && self.checkItemTemp() != itemCheck) {
+                                    setTimeout(function() {self.displayAttendanceItemSelections_BA2_3("");},200);   
+                                }
+                            });
+                        }
+                        $(".nts-input").ntsError("clear");
+                    });
+                    self.comparisonRange().comparisonOperator.subscribe((operN) => {
+                        self.settingEnableComparisonMaxValueField();
+                    });
+                    
+                    self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual.subscribe((newV)=>{
+                        self.required_BA1_4(newV>0);
+                        $(".nts-input").ntsError("clear");
+                    }); 
+                    break;
+                case modelShare.CATEGORY.MONTHLY:
+                    self.listTypeCheckWorkRecords(_.map(__viewContext.enums.TypeMonCheckItem, acc => {
+                        return new model.EnumModel({ value: acc.value, fieldName: null, localizedName: acc.name });
+                    }));
+                break;
+                default :break;
+                    
+            }
+            
+            // setting comparison value range                       
         }
 
         //initial screen
@@ -74,12 +95,20 @@ module nts.uk.at.view.kal003.b.viewmodel{
             let self = this,
                 dfd = $.Deferred();
             errors.clearAll();
-            $.when(self.getAllEnums(), self.initialScreen()).done(function() {
-                //initial screen - in case update
+            if(self.category()==modelShare.CATEGORY.DAILY){
+               $.when(self.getAllEnums(), self.initialScreen()).done(function() {
+                    //initial screen - in case update
+                    dfd.resolve();
+               }).fail(() => {
+                   dfd.reject();
+               }); 
+            }else if(self.category()==modelShare.CATEGORY.MONTHLY){
                 dfd.resolve();
-           }).fail(() => {
-               dfd.reject();
-           });
+            }else{
+                dfd.resolve();
+            }
+            
+            
             return dfd.promise();
         }
 
@@ -146,9 +175,9 @@ module nts.uk.at.view.kal003.b.viewmodel{
             let self = this,
             dfd = $.Deferred();
 
+            
             $.when(service.getEnumSingleValueCompareTypse(),
                     service.getEnumRangeCompareType(),
-                    service.getEnumTypeCheckWorkRecord(),
                     service.getEnumTargetSelectionRange(),
                     service.getEnumTargetServiceType(),
                     service.getEnumLogicalOperator()).done((
@@ -160,7 +189,6 @@ module nts.uk.at.view.kal003.b.viewmodel{
                             listLogicalOperator : Array<model.EnumModel>) => {
                     self.listSingleValueCompareTypes(self.getLocalizedNameForEnum(listSingleValueCompareTypse));
                     self.listRangeCompareTypes(self.getLocalizedNameForEnum(lstRangeCompareType));
-                    self.listTypeCheckWorkRecords(self.getLocalizedNameForEnum(listTypeCheckWorkRecord));
                     let listTargetRangeWithName = self.getLocalizedNameForEnum(listTargetSelectionRange);
                     self.itemListTargetSelectionRange_BA1_5(listTargetRangeWithName);
                     self.itemListTargetServiceType_BA1_2(self.getLocalizedNameForEnum(listTargetServiceType));

@@ -194,11 +194,16 @@ module nts.uk.at.view.kdm002.b {
                                     // resize windows
                                     var windowSize = nts.uk.ui.windows.getSelf();
                                     windowSize.$dialog.dialog('option', {
-                                        position: 'fixed',
+                                       position: {
+                                                my: "top+40",
+                                                at: "left+($(window).width() / 2)",
+                                                of:$("#content_dialog")
+                                               },
                                         width: 650,
                                         height: 550
                                     });
                                     windowSize.$dialog.resize();
+                                    
                                     self.isError(true);
                                     self.isComplete(true);
                                     self.status(getText("KDM002_30"));

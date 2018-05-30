@@ -271,7 +271,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 		// Split employeeId List if size of employeeId List is greater than 1000
 		CollectionUtil.split(employeeIds, MAX_ELEMENTS, (subList) -> {
 			List<BsymtAffCompanyHist> lstBsymtAffCompanyHist = this.queryProxy()
-			.query(SELECT_BY_EMPLOYEE_ID_LIST, BsymtAffCompanyHist.class).setParameter("sIdList", employeeIds).getList();
+			.query(SELECT_BY_EMPLOYEE_ID_LIST, BsymtAffCompanyHist.class).setParameter("sIdList", subList).getList();
 			resultList.addAll(lstBsymtAffCompanyHist);
 		});
 

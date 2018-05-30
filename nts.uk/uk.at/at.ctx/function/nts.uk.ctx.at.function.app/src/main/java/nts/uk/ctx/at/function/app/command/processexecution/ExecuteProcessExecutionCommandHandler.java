@@ -664,14 +664,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctx = new AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>(scheduleCommand);
 				ctx.setTaskId(context.asAsync().getTaskId());
 				this.scheduleExecution.handle(ctx);
-					// find execution log by id
-					Optional<ScheduleExecutionLog> domainOpt = this.scheduleExecutionLogRepository
-							.findById(loginContext.companyId(), execId);
-					if (domainOpt.isPresent()) {
-						if (domainOpt.get().getCompletionStatus().value == CompletionStatus.COMPLETION_ERROR.value) {
-							return false;
-						}
-					}
 					/*
 					// ドメインモデル「更新処理自動実行ログ」を更新する
 					this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.SUCCESS);
@@ -717,6 +709,15 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			// ドメインモデル「更新処理自動実行ログ」を更新する
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.ABNORMAL_END);
 		}
+		// find execution log by id
+		Optional<ScheduleExecutionLog> domainOpt = this.scheduleExecutionLogRepository
+				.findById(loginContext.companyId(), execId);
+		if (domainOpt.isPresent()) {
+			if (domainOpt.get().getCompletionStatus().value == CompletionStatus.COMPLETION_ERROR.value) {
+				return false;
+			}
+		}
+		
 		if(isException){
 			// ドメインモデル「更新処理自動実行ログ」を更新する
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.SUCCESS);

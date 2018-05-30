@@ -18,7 +18,7 @@ module nts.uk.at.view.kal003.share.model {
 //            new ItemModel(9, getText('Enum_AlarmCategory_MULTIPLE_MONTH')),
 //            new ItemModel(10, getText('Enum_AlarmCategory_ANY_PERIOD')),
 //            new ItemModel(11, getText('Enum_AlarmCategory_ATTENDANCE_RATE_FOR_HOLIDAY')),
-//            new ItemModel(12, getText('Enum_AlarmCategory_AGREEMENT')),
+            new ItemModel(12, getText('Enum_AlarmCategory_AGREEMENT')),
 //            new ItemModel(13, getText('Enum_AlarmCategory_MAN_HOUR_CHECK'))
         ];
     }
@@ -30,14 +30,14 @@ module nts.uk.at.view.kal003.share.model {
             new model.ItemModel(2, getText('Enum_ConExtractedDaily_UNCONFIRMER_DATA'))
         ];
     }
-    
+
     export function getSchedule4WeekAlarmCheckCondition(): Array<ItemModel> {
         return [
             new model.ItemModel(0, '実績のみで4週4休をチェックする'),
             new model.ItemModel(1, 'スケジュールと実績で4週4休をチェックする')
         ];
     }
-    
+
     export function getErrorClassification(): Array<ItemModel> {
         return [
             new model.ItemModel(0, getText('Enum_ErrorAlarmClassification_Error')),
@@ -59,7 +59,8 @@ module nts.uk.at.view.kal003.share.model {
         dailyAlarmCheckCondition: KnockoutObservable<DailyAlarmCheckCondition> = ko.observable(new DailyAlarmCheckCondition(DATA_CONDITION_TO_EXTRACT.ALL, false, [], [], []));
         schedule4WeekAlarmCheckCondition: KnockoutObservable<Schedule4WeekAlarmCheckCondition> = ko.observable(new Schedule4WeekAlarmCheckCondition(SCHEDULE_4_WEEK_CHECK_CONDITION.FOR_ACTUAL_RESULTS_ONLY));
         action: KnockoutObservable<number> = ko.observable(0);
-
+        condAgree36: KnockoutObservable<Agreement36> = ko.observable(new Agreement36([], []));
+        monAlarmCheckCon: KnockoutObservable<MonAlarmCheckCon> = ko.observable(new MonAlarmCheckCon([]));
         constructor(code: string, name: string, category: ItemModel, availableRoles: Array<string>, targetCondition: AlarmCheckTargetCondition) {
             this.code = ko.observable(code);
             this.name = ko.observable(name);
@@ -76,33 +77,33 @@ module nts.uk.at.view.kal003.share.model {
     }
 
     export class AlarmCheckTargetCondition {
-        filterByEmployment      : KnockoutObservable<boolean>;
-        filterByClassification  : KnockoutObservable<boolean>;
-        filterByJobTitle        : KnockoutObservable<boolean>;
-        filterByBusinessType    : KnockoutObservable<boolean>;
-        targetEmployment        : KnockoutObservableArray<string>;
-        targetClassification    : KnockoutObservableArray<string>;
-        targetJobTitle          : KnockoutObservableArray<string>;
-        targetBusinessType      : KnockoutObservableArray<string>;
-        displayTargetEmployment : KnockoutObservable<string>;
+        filterByEmployment: KnockoutObservable<boolean>;
+        filterByClassification: KnockoutObservable<boolean>;
+        filterByJobTitle: KnockoutObservable<boolean>;
+        filterByBusinessType: KnockoutObservable<boolean>;
+        targetEmployment: KnockoutObservableArray<string>;
+        targetClassification: KnockoutObservableArray<string>;
+        targetJobTitle: KnockoutObservableArray<string>;
+        targetBusinessType: KnockoutObservableArray<string>;
+        displayTargetEmployment: KnockoutObservable<string>;
         displayTargetClassification: KnockoutObservable<string>;
-        displayTargetJobTitle       : KnockoutObservable<string>;
-        displayTargetBusinessType   : KnockoutObservable<string>;
+        displayTargetJobTitle: KnockoutObservable<string>;
+        displayTargetBusinessType: KnockoutObservable<string>;
 
         constructor(fbe: boolean, fbc: boolean, fbjt: boolean, fbbt: boolean, targetEmp: Array<string>, targetCls: Array<string>, targetJob: Array<string>, targetBus: Array<string>) {
-            this.filterByEmployment     = ko.observable(fbe);
+            this.filterByEmployment = ko.observable(fbe);
             this.filterByClassification = ko.observable(fbc);
-            this.filterByJobTitle       = ko.observable(fbjt);
-            this.filterByBusinessType   = ko.observable(fbbt);
-            this.targetEmployment       = ko.observableArray(targetEmp);
-            this.targetClassification   = ko.observableArray(targetCls);
-            this.targetJobTitle         = ko.observableArray(targetJob);
-            this.targetBusinessType     = ko.observableArray(targetBus);
+            this.filterByJobTitle = ko.observable(fbjt);
+            this.filterByBusinessType = ko.observable(fbbt);
+            this.targetEmployment = ko.observableArray(targetEmp);
+            this.targetClassification = ko.observableArray(targetCls);
+            this.targetJobTitle = ko.observableArray(targetJob);
+            this.targetBusinessType = ko.observableArray(targetBus);
             this.displayTargetEmployment = ko.observable("");
             this.displayTargetClassification = ko.observable("");
             this.displayTargetJobTitle = ko.observable("");
             this.displayTargetBusinessType = ko.observable("");
-            
+
             this.targetEmployment.subscribe((data) => {
                 kal003.a.service.getEmpNameByCodes(data).done((result: Array<string>) => {
                     this.displayTargetEmployment(result.join(", "));
@@ -110,7 +111,7 @@ module nts.uk.at.view.kal003.share.model {
                     this.displayTargetEmployment(this.targetClassification().join(", "));
                 });
             });
-            
+
             this.targetClassification.subscribe((data) => {
                 kal003.a.service.getClsNameByCodes(data).done((result: Array<string>) => {
                     this.displayTargetClassification(result.join(", "));
@@ -118,7 +119,7 @@ module nts.uk.at.view.kal003.share.model {
                     this.displayTargetClassification(this.targetClassification().join(", "));
                 });
             });
-            
+
             this.targetJobTitle.subscribe((data) => {
                 kal003.a.service.getJobNamesByIds(data).done((result: Array<string>) => {
                     this.displayTargetJobTitle(result.join(", "));
@@ -126,7 +127,7 @@ module nts.uk.at.view.kal003.share.model {
                     this.displayTargetJobTitle(this.targetClassification().join(", "));
                 });
             });
-            
+
             this.targetBusinessType.subscribe((data) => {
                 kal003.a.service.getBusTypeNamesByCodes(data).done((result: Array<string>) => {
                     this.displayTargetBusinessType(result.join(", "));
@@ -216,31 +217,41 @@ module nts.uk.at.view.kal003.share.model {
             }
         }
     }
-    
+
     export class DailyAlarmCheckCondition {
         conditionToExtractDaily: KnockoutObservable<number>;//main screen
         addApplication: KnockoutObservable<boolean>;//tab daily
         listErrorAlarmCode: KnockoutObservableArray<string>;//tab daily
         listExtractConditionWorkRecork: KnockoutObservableArray<WorkRecordExtractingCondition>;//tab check condition
         listFixedExtractConditionWorkRecord: KnockoutObservableArray<FixedConditionWorkRecord>;//tab  fixed
-        
+
         constructor(conditionToExtractDaily: number, addApplication: boolean, listErrorAlarmCode: Array<string>, listWorkRecordExtractingConditions: Array<WorkRecordExtractingCondition>, listFixedConditionWorkRecord: Array<FixedConditionWorkRecord>) {
             this.conditionToExtractDaily = ko.observable(conditionToExtractDaily);
             this.addApplication = ko.observable(addApplication);
             this.listErrorAlarmCode = ko.observableArray(listErrorAlarmCode);
             this.listExtractConditionWorkRecork = ko.observableArray(listWorkRecordExtractingConditions);
             this.listFixedExtractConditionWorkRecord = ko.observableArray(listFixedConditionWorkRecord);
-        } 
+        }
     }
 
     export class Schedule4WeekAlarmCheckCondition {
         schedule4WeekCheckCondition: KnockoutObservable<number>;
-        
+
         constructor(schedule4WeekCheckCondition: number) {
             this.schedule4WeekCheckCondition = ko.observable(schedule4WeekCheckCondition);
-        } 
+        }
     }
-    
+
+    export class Agreement36 {
+        listCondOt: KnockoutObservableArray<AgreeCondOt>;//tab agreement hour
+        listCondError: KnockoutObservableArray<AgreeConditionErrorDto>;//tab agreement error
+
+        constructor(listCondOt: Array<AgreeCondOt>, listCondError: Array<AgreeConditionErrorDto>) {
+            this.listCondOt = ko.observableArray(listCondOt);
+            this.listCondError = ko.observableArray(listCondError);
+        }
+    }
+
     export enum CATEGORY {
         SCHEDULE_DAILY = 0,
         SCHEDULE_WEEKLY = 1,
@@ -263,7 +274,7 @@ module nts.uk.at.view.kal003.share.model {
         CONFIRMED = 1,
         UNCONFIRMED = 2
     }
-    
+
     export enum SCHEDULE_4_WEEK_CHECK_CONDITION {
         FOR_ACTUAL_RESULTS_ONLY = 0,
         WITH_SCHEDULE_AND_ACTUAL_RESULTS = 1
@@ -273,49 +284,89 @@ module nts.uk.at.view.kal003.share.model {
         NEW = 0,
         UPDATE = 1
     }
-    
+
     export enum ERROR_CLASSIFICATION {
-        ERROR = 0, 
+        ERROR = 0,
         ALARM = 1,
         OTHER = 2
     }
-    
-    export interface IWorkRecordExtractingCondition {
-        errorAlarmCheckID   : string;
-        checkItem           : number;
-        messageBold         : boolean;
-        messageColor        : string;
-        sortOrderBy         : number;
-        useAtr              : boolean;
-        nameWKRecord        : string;
-        errorAlarmCondition  : ErrorAlarmCondition;
-        rowId               : number;
+    // class and interface : ExtraResultMonthly
+    export interface IExtraResultMonthly{
+        errorAlarmCheckID : string;
+        sortBy : number;
+        nameAlarmExtraCon : string;
+        useAtr : boolean;
+        typeCheckItem : number;
+        messageBold : boolean;
+        messageColor : string;
+        displayMessage : string;
+        checkConMonthly : AttendanceItemCondition;
+        rowId: number;
     }
-
-    export class WorkRecordExtractingCondition {
-        errorAlarmCheckID   : string;
-        checkItem           : KnockoutObservable<number> = ko.observable(0);
-        messageBold         : KnockoutObservable<boolean> = ko.observable(false);
-        messageColor        : KnockoutObservable<string> = ko.observable('');
-        sortOrderBy         : number;
-        useAtr              : KnockoutObservable<boolean> = ko.observable(false);
-        nameWKRecord        : KnockoutObservable<string>  = ko.observable('');
-        errorAlarmCondition : KnockoutObservable<ErrorAlarmCondition>;
-        rowId               : KnockoutObservable<number> = ko.observable(0);
-        constructor(param : IWorkRecordExtractingCondition) {
+    
+    export class ExtraResultMonthly{
+        errorAlarmCheckID : string;
+        sortBy : number;
+        nameAlarmExtraCon : KnockoutObservable<string> = ko.observable('');
+        useAtr : KnockoutObservable<boolean> = ko.observable(false);
+        typeCheckItem : KnockoutObservable<number> = ko.observable(0);
+        messageBold : KnockoutObservable<boolean> = ko.observable(false);
+        messageColor : KnockoutObservable<string> = ko.observable('');
+        displayMessage : KnockoutObservable<string> = ko.observable('');
+        checkConMonthly : KnockoutObservable<AttendanceItemCondition>;
+        rowId: KnockoutObservable<number> = ko.observable(0);
+        constructor(param: IExtraResultMonthly) {
             let self = this;
-            self.errorAlarmCheckID  = param.errorAlarmCheckID || '';
-            self.checkItem          (param.checkItem || 0);
-            self.messageBold        (param.messageBold);
-            self.messageColor       (param.messageColor);
-            self.sortOrderBy        = param.sortOrderBy || 0;
-            self.useAtr             (param.useAtr || false);
-            self.nameWKRecord       (param.nameWKRecord || '');
-            self.errorAlarmCondition  = ko.observable(param.errorAlarmCondition);
-            self.rowId              (param.rowId || 0);
+            self.errorAlarmCheckID = param.errorAlarmCheckID || '';
+            self.sortBy = param.sortBy || 0;
+            self.nameAlarmExtraCon(param.nameAlarmExtraCon);
+            self.useAtr(param.useAtr || false);
+            self.typeCheckItem(param.typeCheckItem || 0);
+            self.messageBold(param.messageBold);
+            self.messageColor(param.messageColor);
+            self.displayMessage(param.displayMessage || '');
+            self.checkConMonthly = ko.observable(param && param.checkConMonthly ? param.checkConMonthly : null);
+            self.rowId(param.rowId || 0);
         }
     }
     
+
+    export interface IWorkRecordExtractingCondition {
+        errorAlarmCheckID: string;
+        checkItem: number;
+        messageBold: boolean;
+        messageColor: string;
+        sortOrderBy: number;
+        useAtr: boolean;
+        nameWKRecord: string;
+        errorAlarmCondition: ErrorAlarmCondition;
+        rowId: number;
+    }
+
+    export class WorkRecordExtractingCondition {
+        errorAlarmCheckID: string;
+        checkItem: KnockoutObservable<number> = ko.observable(0);
+        messageBold: KnockoutObservable<boolean> = ko.observable(false);
+        messageColor: KnockoutObservable<string> = ko.observable('');
+        sortOrderBy: number;
+        useAtr: KnockoutObservable<boolean> = ko.observable(false);
+        nameWKRecord: KnockoutObservable<string> = ko.observable('');
+        errorAlarmCondition: KnockoutObservable<ErrorAlarmCondition>;
+        rowId: KnockoutObservable<number> = ko.observable(0);
+        constructor(param: IWorkRecordExtractingCondition) {
+            let self = this;
+            self.errorAlarmCheckID = param.errorAlarmCheckID || '';
+            self.checkItem(param.checkItem || 0);
+            self.messageBold(param.messageBold);
+            self.messageColor(param.messageColor);
+            self.sortOrderBy = param.sortOrderBy || 0;
+            self.useAtr(param.useAtr || false);
+            self.nameWKRecord(param.nameWKRecord || '');
+            self.errorAlarmCondition = ko.observable(param.errorAlarmCondition);
+            self.rowId(param.rowId || 0);
+        }
+    }
+
     //---------------- KAL003 - B begin----------------//
     //Condition of group (C screen) ErAlAtdItemCondition
     // 勤怠項目のエラーアラーム条件
@@ -331,7 +382,7 @@ module nts.uk.at.view.kal003.share.model {
         singleAtdItem: number;
         compareStartValue: number;
         compareEndValue: number;
-        
+
         displayLeftCompare: string;
         displayLeftOperator: string;
         displayTarget: string;
@@ -359,7 +410,7 @@ module nts.uk.at.view.kal003.share.model {
         displayRightCompare: KnockoutObservable<any>;
         displayRightOperator: KnockoutObservable<any>;
 
-        constructor(NO, param : IErAlAtdItemCondition) {
+        constructor(NO, param: IErAlAtdItemCondition) {
             let self = this;
             self.targetNO = ko.observable(NO);
             self.conditionAtr = param ? ko.observable(param.conditionAtr) : ko.observable(0);
@@ -415,7 +466,7 @@ module nts.uk.at.view.kal003.share.model {
                 case 4:
                     self.displayLeftOperator("＜");
                     break;
-                case 5: 
+                case 5:
                     self.displayLeftOperator("≦");
                     break;
                 case 6:
@@ -477,7 +528,7 @@ module nts.uk.at.view.kal003.share.model {
             if (self.conditionAtr() === 2) {
                 if (self.uncountableAtdItem()) {
                     //nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes([self.uncountableAtdItem()]).done((lstItems) => {
-                     self.getAttendanceItemByCodes([self.uncountableAtdItem()]).done((lstItems) => {
+                    self.getAttendanceItemByCodes([self.uncountableAtdItem()]).done((lstItems) => {
                         if (lstItems && lstItems.length > 0) {
                             self.displayTarget(lstItems[0].attendanceItemName);
                         }
@@ -509,7 +560,7 @@ module nts.uk.at.view.kal003.share.model {
                     });
                 } else if (self.countableSubAtdItems().length > 0) {
                     //nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
-                        self.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
+                    self.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
                         if (lstItems && lstItems.length > 0) {
                             for (let i = 0; i < lstItems.length; i++) {
                                 let operator = (i === (lstItems.length - 1)) ? "" : " - ";
@@ -565,7 +616,7 @@ module nts.uk.at.view.kal003.share.model {
             self.setTextDisplay();
         }
         //the same kdw007
-        getAttendanceItemByCodes(codes) : JQueryPromise<any> {
+        getAttendanceItemByCodes(codes): JQueryPromise<any> {
             return nts.uk.request.ajax("at", "at/record/divergencetime/AttendanceDivergenceName", codes);
         }
     }
@@ -590,77 +641,77 @@ module nts.uk.at.view.kal003.share.model {
 
     // BA2_3 - group1 and group2UseAtr is false
     export interface IAttendanceItemCondition {
-        group1:         ErAlConditionsAttendanceItem;
-        group2UseAtr:   boolean; // B17-1
-        group2:         ErAlConditionsAttendanceItem;
+        group1: ErAlConditionsAttendanceItem;
+        group2UseAtr: boolean; // B17-1
+        group2: ErAlConditionsAttendanceItem;
         operatorBetweenGroups: number; // B18-2: 0: OR, 1: AND
     }
     export class AttendanceItemCondition {
-        group1:         KnockoutObservable<ErAlConditionsAttendanceItem>;
-        group2UseAtr:   KnockoutObservable<boolean>                         = ko.observable(false);
-        group2:         KnockoutObservable<ErAlConditionsAttendanceItem>;
-        operatorBetweenGroups: KnockoutObservable<number>                   = ko.observable(0);
-        constructor(param : IAttendanceItemCondition) {
+        group1: KnockoutObservable<ErAlConditionsAttendanceItem>;
+        group2UseAtr: KnockoutObservable<boolean> = ko.observable(false);
+        group2: KnockoutObservable<ErAlConditionsAttendanceItem>;
+        operatorBetweenGroups: KnockoutObservable<number> = ko.observable(0);
+        constructor(param: IAttendanceItemCondition) {
             let self = this;
-            self.group1    = ko.observable(param ? param.group1 : null);
-            self.group2UseAtr   (param ? param.group2UseAtr || false : false);
-            self.group2    = ko.observable(param ? param.group2 : null);
+            self.group1 = ko.observable(param ? param.group1 : null);
+            self.group2UseAtr(param ? param.group2UseAtr || false : false);
+            self.group2 = ko.observable(param ? param.group2 : null);
             self.operatorBetweenGroups(param ? param.operatorBetweenGroups || 0 : 0);
         }
     }
 
     // アラームチェック対象者の条件
     export interface IAlCheckTargetCondition {
-        filterByBusinessType    : boolean;
-        filterByJobTitle        : boolean;
-        filterByEmployment      : boolean;
-        filterByClassification  : boolean;
-        lstBusinessTypeCode     : Array<string>;
-        lstJobTitleId           : Array<string>;
-        lstEmploymentCode       : Array<string>;
-        lstClassificationCode   : Array<string>;
+        filterByBusinessType: boolean;
+        filterByJobTitle: boolean;
+        filterByEmployment: boolean;
+        filterByClassification: boolean;
+        lstBusinessTypeCode: Array<string>;
+        lstJobTitleId: Array<string>;
+        lstEmploymentCode: Array<string>;
+        lstClassificationCode: Array<string>;
     }
-    
+
     export class AlCheckTargetCondition {
-        filterByBusinessType    : boolean;
-        filterByJobTitle        : boolean;
-        filterByEmployment      : boolean;
-        filterByClassification  : boolean;
-        lstBusinessTypeCode     : Array<string>;
-        lstJobTitleId           : Array<string>;
-        lstEmploymentCode       : Array<string>;
-        lstClassificationCode   : Array<string>;
+        filterByBusinessType: boolean;
+        filterByJobTitle: boolean;
+        filterByEmployment: boolean;
+        filterByClassification: boolean;
+        lstBusinessTypeCode: Array<string>;
+        lstJobTitleId: Array<string>;
+        lstEmploymentCode: Array<string>;
+        lstClassificationCode: Array<string>;
         constructor(param) {
             let self = this;
-            self.filterByBusinessType   = param.filterByBusinessType || false;
-            self.filterByJobTitle       = param.filterByJobTitle || false;
-            self.filterByEmployment     = param.filterByEmployment || false;
+            self.filterByBusinessType = param.filterByBusinessType || false;
+            self.filterByJobTitle = param.filterByJobTitle || false;
+            self.filterByEmployment = param.filterByEmployment || false;
             self.filterByClassification = param.filterByClassification || false;
-            self.lstBusinessTypeCode    = param.lstBusinessTypeCode || [];
-            self.lstJobTitleId          = param.lstJobTitleId || [];
-            self.lstEmploymentCode      = param.lstEmploymentCode || [];
-            self.lstClassificationCode  = param.lstClassificationCode || [];
+            self.lstBusinessTypeCode = param.lstBusinessTypeCode || [];
+            self.lstJobTitleId = param.lstJobTitleId || [];
+            self.lstEmploymentCode = param.lstEmploymentCode || [];
+            self.lstClassificationCode = param.lstClassificationCode || [];
         }
     }
 
     //BA5_3
     export interface IWorkTimeCondition {
-        useAtr                  : boolean;
-        comparePlanAndActual    : number;
-        planFilterAtr           : boolean;
-        planLstWorkTime         : Array<string>;
-        actualFilterAtr         : boolean;
-        actualLstWorkTime       : Array<string>;
+        useAtr: boolean;
+        comparePlanAndActual: number;
+        planFilterAtr: boolean;
+        planLstWorkTime: Array<string>;
+        actualFilterAtr: boolean;
+        actualLstWorkTime: Array<string>;
     }
     export class WorkTimeCondition {
-        useAtr                  : boolean;
-        comparePlanAndActual    : KnockoutObservable<number>= ko.observable(0);
-        planFilterAtr           : boolean;
-        planLstWorkTime         : KnockoutObservableArray<string> = ko.observableArray([]);
-        actualFilterAtr         : boolean;
-        actualLstWorkTime       : Array<string>;
+        useAtr: boolean;
+        comparePlanAndActual: KnockoutObservable<number> = ko.observable(0);
+        planFilterAtr: boolean;
+        planLstWorkTime: KnockoutObservableArray<string> = ko.observableArray([]);
+        actualFilterAtr: boolean;
+        actualLstWorkTime: Array<string>;
 
-        constructor(param : IWorkTimeCondition) {
+        constructor(param: IWorkTimeCondition) {
             let self = this;
             self.useAtr = param && param.useAtr ? param.useAtr : false;
             self.comparePlanAndActual(param && param.comparePlanAndActual ? param.comparePlanAndActual : 0);
@@ -672,52 +723,52 @@ module nts.uk.at.view.kal003.share.model {
     }
     //BA1-4
     export interface IWorkTypeCondition {
-        useAtr : boolean;
+        useAtr: boolean;
         comparePlanAndActual: number;
-        planFilterAtr : boolean;
-        planLstWorkType : Array<string>;
+        planFilterAtr: boolean;
+        planLstWorkType: Array<string>;
         actualFilterAtr: boolean;
         actualLstWorkType: Array<string>;
     }
-    
+
     export class WorkTypeCondition {
-        useAtr : boolean;
-        comparePlanAndActual: KnockoutObservable<number>= ko.observable(0);
-        planFilterAtr : boolean;
-        planLstWorkType : KnockoutObservableArray<string> = ko.observableArray([]);
+        useAtr: boolean;
+        comparePlanAndActual: KnockoutObservable<number> = ko.observable(0);
+        planFilterAtr: boolean;
+        planLstWorkType: KnockoutObservableArray<string> = ko.observableArray([]);
         actualFilterAtr: boolean;
         actualLstWorkType: Array<string>;
-        constructor(param : IWorkTypeCondition) {
+        constructor(param: IWorkTypeCondition) {
             let self = this;
             self.useAtr = param && param.useAtr ? param.useAtr : false;
             self.comparePlanAndActual(param ? (param.comparePlanAndActual == 0 ? 0 : param.comparePlanAndActual || 1) : 1); //default is 1
             self.planFilterAtr = param && param.planFilterAtr ? param.planFilterAtr : false;
             self.planLstWorkType(param && param.planLstWorkType ? param.planLstWorkType : []);
             self.actualFilterAtr = param && param.actualFilterAtr ? param.actualFilterAtr : false;
-            self.actualLstWorkType = param && param.actualLstWorkType ? param.actualLstWorkType : [];  
+            self.actualLstWorkType = param && param.actualLstWorkType ? param.actualLstWorkType : [];
         }
     }
-    
+
     //勤務実績のエラーアラームチェック
     export interface IErrorAlarmCondition {
-        errorAlarmCheckID       : string;
-        displayMessage          : string;
-        alCheckTargetCondition  : AlCheckTargetCondition;
-        workTypeCondition       : WorkTypeCondition; // 勤務種類の条件
-        workTimeCondition       : WorkTimeCondition; // 勤怠項目のエラーアラーム条件
-        atdItemCondition        : AttendanceItemCondition;
-        continuousPeriod        : number; //連続期間
+        errorAlarmCheckID: string;
+        displayMessage: string;
+        alCheckTargetCondition: AlCheckTargetCondition;
+        workTypeCondition: WorkTypeCondition; // 勤務種類の条件
+        workTimeCondition: WorkTimeCondition; // 勤怠項目のエラーアラーム条件
+        atdItemCondition: AttendanceItemCondition;
+        continuousPeriod: number; //連続期間
     }
-    
+
     export class ErrorAlarmCondition {
-        errorAlarmCheckID       : KnockoutObservable<string> = ko.observable('');
-        displayMessage          : KnockoutObservable<string> = ko.observable('');
-        alCheckTargetCondition  : KnockoutObservable<AlCheckTargetCondition>;
-        workTypeCondition       : KnockoutObservable<WorkTypeCondition>;
-        workTimeCondition       : KnockoutObservable<WorkTimeCondition>;
-        atdItemCondition        : KnockoutObservable<AttendanceItemCondition>;
-        continuousPeriod        : KnockoutObservable<number> = ko.observable(null); //連続期間
-        constructor(param : IErrorAlarmCondition) {
+        errorAlarmCheckID: KnockoutObservable<string> = ko.observable('');
+        displayMessage: KnockoutObservable<string> = ko.observable('');
+        alCheckTargetCondition: KnockoutObservable<AlCheckTargetCondition>;
+        workTypeCondition: KnockoutObservable<WorkTypeCondition>;
+        workTimeCondition: KnockoutObservable<WorkTimeCondition>;
+        atdItemCondition: KnockoutObservable<AttendanceItemCondition>;
+        continuousPeriod: KnockoutObservable<number> = ko.observable(null); //連続期間
+        constructor(param: IErrorAlarmCondition) {
             let self = this;
             self.errorAlarmCheckID(param && param.errorAlarmCheckID ? param.errorAlarmCheckID : '')
             self.displayMessage(param && param.displayMessage ? param.displayMessage : '');
@@ -728,9 +779,9 @@ module nts.uk.at.view.kal003.share.model {
             self.continuousPeriod(param.continuousPeriod || 0); //連続期間
         }
     }
-    
+
     //---------------- KAL003 - B end------------------//
-   
+
     export class DailyErrorAlarmCheck {
         code: string;
         name: string;
@@ -746,7 +797,7 @@ module nts.uk.at.view.kal003.share.model {
             this.message = message;
         }
     }
-    
+
     //interface FixedConditionWorkRecord
     export interface IFixedConditionWorkRecord {
         dailyAlarmConID: string;
@@ -755,6 +806,9 @@ module nts.uk.at.view.kal003.share.model {
         message: string;
         useAtr: boolean;
     }
+
+
+
     //class FixedConditionWorkRecord
     export class FixedConditionWorkRecord {
         dailyAlarmConID: string;
@@ -770,4 +824,105 @@ module nts.uk.at.view.kal003.share.model {
             this.checkName = data.checkName;
         }
     }
+
+    export interface IAgreeCondOt {
+        category: number;
+        code: string;
+        id: string;
+        no: number;
+        ot36: number;
+        excessNum: number;
+        messageDisp: string;
+    }
+
+    export class AgreeCondOt {
+        category: number;
+        code: string;
+        id: string;
+        no: number;
+        ot36: KnockoutObservable<number>;
+        excessNum: KnockoutObservable<number>;
+        messageDisp: KnockoutObservable<string>;
+
+        constructor(param: IAgreeCondOt) {
+            this.category = param.category;
+            this.code = param.code;
+            this.id = param.id;
+            this.no = param.no;
+            this.ot36 = ko.observable(param.ot36);
+            this.excessNum = ko.observable(param.excessNum);
+            this.messageDisp = ko.observable(param.messageDisp);
+        }
+    }
+
+    export interface IAgreeConditionErrorDto {
+        category: number;
+        code: string;
+        id: string;
+        useAtr: number;
+        period: number;
+        errorAlarm: number;
+        messageDisp: string;
+        name: string;
+    }
+
+    export class AgreeConditionErrorDto {
+        category: number;
+        code: string;
+        id: string;
+        useAtr: KnockoutObservable<number>;
+        period: number;
+        errorAlarm: number;
+        messageDisp: KnockoutObservable<string>;
+        name: string;
+
+        constructor(param: IAgreeConditionErrorDto) {
+            this.category = param.category;
+            this.code = param.code;
+            this.id = param.id;
+            this.useAtr = ko.observable(param.useAtr);
+            this.period = param.period;
+            this.errorAlarm = param.errorAlarm;
+            this.messageDisp = ko.observable(param.messageDisp);
+            this.name = param.name;
+        }
+    }
+
+    //monthly
+    export class MonAlarmCheckCon {
+        listFixExtraMon: KnockoutObservableArray<FixedExtraMonFun>;
+        listExtraResultMonthly : KnockoutObservableArray<ExtraResultMonthly>;
+        constructor(listFixExtraMon: KnockoutObservableArray<FixedExtraMonFun>,listExtraResultMonthly : KnockoutObservableArray<ExtraResultMonthly>
+            ) {
+            this.listFixExtraMon = ko.observableArray(listFixExtraMon);
+            this.listExtraResultMonthly = ko.observableArray(listExtraResultMonthly);
+        }
+    }
+
+    //interface FixedExtraMonFun
+    export interface IFixedExtraMonFun {
+        monAlarmCheckID: string;
+        monAlarmCheckName: string;
+        fixedExtraItemMonNo: number;
+        message: string;
+        useAtr: boolean;
+    }
+
+    //class FixedExtraMonFun
+    export class FixedExtraMonFun {
+        monAlarmCheckID: string;
+        fixedExtraItemMonNo: KnockoutObservable<number>;
+        monAlarmCheckName: string;
+        message: KnockoutObservable<string>;
+        useAtr: KnockoutObservable<boolean>;
+        constructor(data: IFixedExtraMonFun) {
+            this.monAlarmCheckID = data.monAlarmCheckID;
+            this.fixedExtraItemMonNo = ko.observable(data.fixedExtraItemMonNo);
+            this.message = ko.observable(data.message);
+            this.useAtr = ko.observable(data.useAtr);
+            this.monAlarmCheckName = data.monAlarmCheckName;
+        }
+    }
+
+
 }

@@ -27,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 public class AttendanceItemServiceImpl implements AttendanceItemService {
@@ -90,6 +91,22 @@ public class AttendanceItemServiceImpl implements AttendanceItemService {
 
 	@Override
 	public List<MonthlyAttendanceResult> getMonthlyValueOf(String employeeId, DatePeriod range,
+			Collection<Integer> itemIds) {
+		return getMonthlyValueOf(Arrays.asList(employeeId), range, itemIds);
+	}
+	
+	@Override
+	public List<MonthlyAttendanceResult> getMonthlyValueOf(Collection<String> employeeId, YearMonthPeriod range,
+			Collection<Integer> itemIds) {
+		List<MonthlyRecordWorkDto> result = monthlyFinder.find(employeeId, range);
+		return result.stream().map(mrw -> {
+			return getAndConvert(mrw.employeeId(), mrw.yearMonth(), mrw.getClosureID(),
+					mrw.getClosureDate().getClosureDay(), mrw.getClosureDate().getLastDayOfMonth(), mrw, itemIds);
+		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<MonthlyAttendanceResult> getMonthlyValueOf(String employeeId, YearMonthPeriod range,
 			Collection<Integer> itemIds) {
 		return getMonthlyValueOf(Arrays.asList(employeeId), range, itemIds);
 	}

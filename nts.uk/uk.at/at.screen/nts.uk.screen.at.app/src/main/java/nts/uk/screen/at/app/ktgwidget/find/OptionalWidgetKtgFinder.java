@@ -14,6 +14,8 @@ import nts.uk.ctx.at.function.dom.adapter.application.importclass.ApplicationDea
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetAdapter;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.WidgetDisplayItemImport;
+import nts.uk.ctx.at.function.dom.employmentfunction.checksdailyerror.ChecksDailyPerformanceErrorRepository;
+import nts.uk.ctx.at.function.dom.employmentfunction.checksdailyerror.GetNumberOfRemainingHolidaysRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.holidayinstruction.HolidayInstructRepository;
@@ -62,6 +64,12 @@ public class OptionalWidgetKtgFinder {
 	
 	@Inject
 	private ApplicationAdapter applicationAdapter;
+	
+	@Inject
+	private ChecksDailyPerformanceErrorRepository checksDailyPerformanceErrorRepo;
+	
+	@Inject
+	private GetNumberOfRemainingHolidaysRepository GetNumberOfRemainingHolidaysRepo;
 
 	public DatePeriodDto getCurrentMonth() {
 		String companyId = AppContexts.user().companyId();
@@ -115,43 +123,43 @@ public class OptionalWidgetKtgFinder {
 	}
 	
 	public OptionalWidgetInfoDto getDataRecord(String code, GeneralDate startDate, GeneralDate endDate) {
-		String sId = AppContexts.user().employeeId();
+		String employeeId = AppContexts.user().employeeId();
 		ClosureEmployment employment = getClosureEmployment();
 		OptionalWidgetInfoDto dto = new OptionalWidgetInfoDto();
 		List<WidgetDisplayItemImport> widgetDisplayItem = findOptionalWidgetByCode(code).getWidgetDisplayItemExport();
 		for (WidgetDisplayItemImport item : widgetDisplayItem) {
 			if(item.getNotUseAtr()==1) {
 				if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.OVERTIME_WORK_NO.value) {
-					dto.setOverTime(overtimeInstructRepo.getAllOverTimeInstructBySId(sId, startDate, endDate).size());
+					dto.setOverTime(overtimeInstructRepo.getAllOverTimeInstructBySId(employeeId, startDate, endDate).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.INSTRUCTION_HD_NO.value) {
-					dto.setHolidayInstruction(holidayInstructRepo.getAllHolidayInstructBySId(sId, startDate, endDate).size());
+					dto.setHolidayInstruction(holidayInstructRepo.getAllHolidayInstructBySId(employeeId, startDate, endDate).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.APPROVED_NO.value) {
 					//・反映状態　　＝　「反映済み」または「反映待ち」(「反映済み」 OR 「反映待ち」)
 					List<Integer> reflected = new ArrayList<>();
 					reflected.add(ReflectedState_New.REFLECTED.value);
 					reflected.add(ReflectedState_New.WAITREFLECTION.value);
-					dto.setApproved(applicationRepo_New.getByListRefStatus(sId, startDate, endDate, reflected).size());
+					dto.setApproved(applicationRepo_New.getByListRefStatus(employeeId, startDate, endDate, reflected).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.UNAPPROVED_NO.value) {
 					//・反映状態　　＝　「未承認」または「差戻し」(「未承認」OR 「差戻し」)
 					List<Integer> reflected = new ArrayList<>();
 					reflected.add(ReflectedState_New.NOTREFLECTED.value);
 					reflected.add(ReflectedState_New.REMAND.value);
-					dto.setUnApproved(applicationRepo_New.getByListRefStatus(sId, startDate, endDate, reflected).size());
+					dto.setUnApproved(applicationRepo_New.getByListRefStatus(employeeId, startDate, endDate, reflected).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.DENIED_NO.value) {
 					//・反映状態　　＝　「否認」
 					List<Integer> reflected = new ArrayList<>();
 					reflected.add(ReflectedState_New.DENIAL.value);
-					dto.setDeniedNo(applicationRepo_New.getByListRefStatus(sId, startDate, endDate, reflected).size());
+					dto.setDeniedNo(applicationRepo_New.getByListRefStatus(employeeId, startDate, endDate, reflected).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REMAND_NO.value) {
 					//・反映状態　　＝　「差戻し」
 					List<Integer> reflected = new ArrayList<>();
 					reflected.add(ReflectedState_New.REMAND.value);
-					dto.setDeniedNo(applicationRepo_New.getByListRefStatus(sId, startDate, endDate, reflected).size());
+					dto.setDeniedNo(applicationRepo_New.getByListRefStatus(employeeId, startDate, endDate, reflected).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.APP_DEADLINE_MONTH.value) {
 					ApplicationDeadlineImport deadlineImport = applicationAdapter.getApplicationDeadline(employment.getCompanyId(), employment.getClosureId());
 					dto.setAppDeadlineMonth(new DeadlineOfRequest(deadlineImport.isUseApplicationDeadline(), deadlineImport.getDateDeadline()));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PRESENCE_DAILY_PER.value) {
-					
+					dto.setPresenceDailyPer(checksDailyPerformanceErrorRepo.checked(employeeId, startDate, endDate));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REFER_WORK_RECORD.value) {
 					
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.OVERTIME_HOURS.value) {
@@ -175,7 +183,8 @@ public class OptionalWidgetKtgFinder {
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PLANNED_YEAR_HOLIDAY.value) {
 					
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REMAIN_ALTERNATION_NO.value) {
-					
+					GeneralDate systemDate = GeneralDate.today(); 
+					//dto.setReservedYearsRemainNo(GetNumberOfRemainingHolidaysRepo.getNumberOfRemainingHolidays(employeeId, systemDate));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REMAINS_LEFT.value) {
 					
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PUBLIC_HD_NO.value) {

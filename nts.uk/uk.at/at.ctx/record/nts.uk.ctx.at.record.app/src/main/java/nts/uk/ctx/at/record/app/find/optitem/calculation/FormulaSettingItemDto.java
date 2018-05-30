@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.record.app.find.optitem.calculation;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -60,18 +61,23 @@ public class FormulaSettingItemDto implements FormulaSettingItemSetMemento {
 	 * @param value the new input value
 	 */
 	@Override
-	public void setInputValue(InputValue value) {
-		this.inputValue = value.v();
+	public void setInputValue(Optional<InputValue> value) {
+		if(value.isPresent()) {
+			this.inputValue = value.get().v();
+		}
 	}
 
 	/**
 	 * Sets the formula id.
 	 *
-	 * @param id the new formula id
+	 * @param id
+	 *            the new formula id
 	 */
 	@Override
-	public void setFormulaId(FormulaId id) {
-		this.formulaItemId = id.v();
+	public void setFormulaId(Optional<FormulaId> id) {
+		if(id.isPresent()) {
+			this.formulaItemId = id.get().v();
+		}
 	}
 
 }

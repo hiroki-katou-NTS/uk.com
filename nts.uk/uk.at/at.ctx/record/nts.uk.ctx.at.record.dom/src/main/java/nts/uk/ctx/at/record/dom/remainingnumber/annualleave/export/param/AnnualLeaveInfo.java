@@ -105,6 +105,7 @@ public class AnnualLeaveInfo implements Cloneable {
 	public AnnualLeaveInfo clone() {
 		AnnualLeaveInfo cloned = new AnnualLeaveInfo();
 		try {
+			cloned.ymd = this.ymd;
 			cloned.remainingNumber = this.remainingNumber.clone();
 			for (val grantRemainingNumber : this.grantRemainingNumberList){
 				val detail = grantRemainingNumber.getDetails();
