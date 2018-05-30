@@ -76,9 +76,6 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     value2: self.selectedCodeSubHoliday(),
                     value3: self.selectedCodeOptionSubHoliday()
                 }
-                if(v){
-                    remainDayObject.value2 = 0;
-                }
                 self.dayRemaining(self.getRemainDay(remainDayObject));
             });
             
