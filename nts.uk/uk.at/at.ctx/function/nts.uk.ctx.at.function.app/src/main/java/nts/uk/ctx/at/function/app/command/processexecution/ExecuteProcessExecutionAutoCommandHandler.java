@@ -284,13 +284,13 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 		// ・ドメインモデル「更新処理自動実行.実行設定.承認結果反映」
 		boolean monthlyAggCls = procExec.getExecSetting().isMonthlyAggCls();
 		EmpCalAndSumExeLog empCalAndSumExeLog = null;
-		if (dailyPerfCls || reflectResultCls || monthlyAggCls) {
+		//if (dailyPerfCls || reflectResultCls || monthlyAggCls) {
 			// ドメインモデル「就業計算と集計実行ログ」を追加する
 			empCalAndSumExeLog = new EmpCalAndSumExeLog(execId, command.getCompanyId(), new YearMonth(GeneralDate.today().year()*100+1),
 					ExecutedMenu.SELECT_AND_RUN, GeneralDate.today(), null, AppContexts.user().employeeId(), 1,
 					IdentifierUtil.randomUniqueId(), CalAndAggClassification.AUTOMATIC_EXECUTION);
 			this.empCalSumRepo.add(empCalAndSumExeLog);
-		}
+		//}
 
 		// アルゴリズム「実行前登録処理」を実行する
 		// 実行前登録処理
