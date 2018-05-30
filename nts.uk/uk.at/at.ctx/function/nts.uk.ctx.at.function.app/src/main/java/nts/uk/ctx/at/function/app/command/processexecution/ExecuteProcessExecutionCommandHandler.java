@@ -1071,7 +1071,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				new ExecutionTime(GeneralDateTime.now(), GeneralDateTime.now()), ExecutionStatus.INCOMPLETE,
 				new ObjectPeriod(period.end(), period.end()));
 		dailyCreateLog.setDailyCreationSetInfo(
-				new SettingInforForDailyCreation(ExecutionContent.DAILY_CREATION, ExecutionType.RERUN,
+				new SettingInforForDailyCreation(ExecutionContent.DAILY_CREATION, ExecutionType.NORMAL_EXECUTION,
 						IdentifierUtil.randomUniqueId(), DailyRecreateClassification.REBUILD, Optional.empty()));
 		ExecutionLog dailyCalLog = new ExecutionLog(execId, ExecutionContent.DAILY_CALCULATION, ErrorPresent.NO_ERROR,
 				new ExecutionTime(GeneralDateTime.now(), GeneralDateTime.now()), ExecutionStatus.INCOMPLETE,
@@ -2581,6 +2581,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			// アルゴリズム「開始日を入社日にする」を実行する
 			DatePeriod employeeDatePeriod = this.makeStartDateForHiringDate(processExecution,
 					lstEmpId.get(i), period);
+			if(employeeDatePeriod==null){
+				continue;
+			}
 			boolean executionDaily = this.executionDaily(companyId,context, processExecution,
 					lstEmpId.get(i), empCalAndSumExeLog, employeeDatePeriod,
 					typeExecution, dailyCreateLog);
@@ -2618,7 +2621,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				return new DatePeriod(startDate, period.end());
 			}
 		}
-		return period;
+		return null;
 	}
 
 	// true is interrupt
