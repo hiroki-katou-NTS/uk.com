@@ -20,7 +20,7 @@ public abstract class FinderFacade {
 		return Collections.emptyList();
 	}
 	
-	public <T extends ConvertibleAttendanceItem> List<T> find(Map<String, GeneralDate> param){
+	public <T extends ConvertibleAttendanceItem> List<T> find(Map<String, List<GeneralDate>> param){
 		return Collections.emptyList();
 	}
 }
