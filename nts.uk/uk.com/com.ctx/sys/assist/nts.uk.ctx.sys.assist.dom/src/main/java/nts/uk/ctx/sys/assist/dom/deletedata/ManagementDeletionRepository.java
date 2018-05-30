@@ -58,5 +58,10 @@ public interface ManagementDeletionRepository {
 	 * @param operatingCondition
 	 */
 	void setInterruptDeleting(String delId, int interruptedFlg , OperatingCondition operatingCondition);
+	
+	/**
+	 * @param delId
+	 */
+	void remove(String delId);
 
 }
