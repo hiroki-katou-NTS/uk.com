@@ -15,16 +15,16 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
  *
  */
 // 対象の就業時間帯
-@Getter
 public class TargetWorkTime extends DomainObject {
 
 	// しぼり込む
-	private Boolean filterAtr;
+	private boolean filterAtr;
 
 	// 対象の就業時間帯一覧
+	@Getter
 	private List<WorkTimeCode> lstWorkTime;
 
-	private TargetWorkTime(Boolean filterAtr, List<WorkTimeCode> lstWorkTime) {
+	private TargetWorkTime(boolean filterAtr, List<WorkTimeCode> lstWorkTime) {
 		super();
 		this.filterAtr = filterAtr;
 		this.lstWorkTime = lstWorkTime;
@@ -44,6 +44,6 @@ public class TargetWorkTime extends DomainObject {
 	}
 	
 	public boolean isUse() {
-		return this.filterAtr != null && this.filterAtr;
+		return this.filterAtr;
 	}
 }

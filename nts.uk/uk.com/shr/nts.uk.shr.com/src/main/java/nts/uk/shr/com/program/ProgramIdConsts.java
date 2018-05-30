@@ -780,6 +780,10 @@ public class ProgramIdConsts {
 	public static final String KMW006D = "KMW006D";
 	public static final String KMW006E = "KMW006E";
 	public static final String KMW006F = "KMW006F";
+	
+	// KWR008
+	public static final String KWR008A = "KWR008A";
+	public static final String KWR008B = "KWR008B";
 	/**
 	 * CMM048
 	 */

@@ -203,8 +203,10 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 				paramQuery.getSortOrderNo());
 
 		// sort
-		List<Order> orders = this.getOrders(paramQuery.getSystemType(), 1, sortConditions); // TODO: fixed name type
-		cq.orderBy(orders);
+		if (paramQuery.getSystemType() != SystemType.ADMINISTRATOR.value) {
+			List<Order> orders = this.getOrders(paramQuery.getSystemType(), 1, sortConditions); // TODO: fixed name type
+			cq.orderBy(orders);
+		}
 
 		// execute query & add to resultList
 		resultList.addAll(em.createQuery(cq).getResultList());

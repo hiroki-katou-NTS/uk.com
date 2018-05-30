@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.find.optitem.calculation;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
@@ -28,7 +30,7 @@ public class FormulaDto implements FormulaSetMemento {
 	private String formulaId;
 
 	/** The optional item no. */
-	private String optionalItemNo;
+	private int optionalItemNo;
 
 	/** The symbol value. */
 	private String symbolValue;
@@ -153,9 +155,9 @@ public class FormulaDto implements FormulaSetMemento {
 	 * setMonthlyRounding(nts.uk.ctx.at.record.dom.optitem.calculation.Rounding)
 	 */
 	@Override
-	public void setMonthlyRounding(Rounding rounding) {
+	public void setMonthlyRounding(Optional<Rounding> rounding) {
 		this.monthlyRounding = new RoundingDto();
-		rounding.saveToMemento(this.monthlyRounding);
+		rounding.ifPresent(item -> item.saveToMemento(this.monthlyRounding));
 	}
 
 	/*
@@ -165,9 +167,9 @@ public class FormulaDto implements FormulaSetMemento {
 	 * setDailyRounding(nts.uk.ctx.at.record.dom.optitem.calculation.Rounding)
 	 */
 	@Override
-	public void setDailyRounding(Rounding rounding) {
+	public void setDailyRounding(Optional<Rounding> rounding) {
 		this.dailyRounding = new RoundingDto();
-		rounding.saveToMemento(this.dailyRounding);
+		rounding.ifPresent(item -> item.saveToMemento(this.dailyRounding));
 	}
 
 	/*
