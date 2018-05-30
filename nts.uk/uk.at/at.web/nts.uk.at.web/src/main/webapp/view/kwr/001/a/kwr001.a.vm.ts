@@ -450,23 +450,24 @@ module nts.uk.at.view.kwr001.a {
             processExcel(): void {
                 let self = this;
                 if (self.validateMinimumOneChecked()) {
-                    self.saveWorkScheduleOutputCondition();
-                    let companyId: string = __viewContext.user.companyId;
-                    let userId: string = __viewContext.user.employeeId;
-                    service.restoreCharacteristic(companyId, userId).done(function(data: WorkScheduleOutputConditionDto) {
-                        var user: any = __viewContext.user;
-                        var dto: WorkScheduleOutputQueryDto = {
-                            lstEmployeeId: self.findEmployeeIdsByCodes(self.multiSelectedCode()),
-                            startDate: self.toDate(self.startDatepicker()),
-                            endDate: self.toDate(self.endDatepicker()),
-                            fileType: 0,
-                            condition: data
-                        };
-                        nts.uk.ui.block.grayout();
-                        service.exportExcel(dto).done(function(){
-                        }).always(function() {
-                           nts.uk.ui.block.clear(); 
-                        });
+                    self.saveWorkScheduleOutputCondition().done(function() {
+                       let companyId: string = __viewContext.user.companyId;
+                        let userId: string = __viewContext.user.employeeId;
+                        service.restoreCharacteristic(companyId, userId).done(function(data: WorkScheduleOutputConditionDto) {
+                            var user: any = __viewContext.user;
+                            var dto: WorkScheduleOutputQueryDto = {
+                                lstEmployeeId: self.findEmployeeIdsByCodes(self.multiSelectedCode()),
+                                startDate: self.toDate(self.startDatepicker()),
+                                endDate: self.toDate(self.endDatepicker()),
+                                fileType: 0,
+                                condition: data
+                            };
+                            nts.uk.ui.block.grayout();
+                            service.exportExcel(dto).done(function(){
+                            }).always(function() {
+                               nts.uk.ui.block.clear(); 
+                            });
+                        }); 
                     });
                 }
                 
@@ -475,23 +476,24 @@ module nts.uk.at.view.kwr001.a {
             private processPdf(): void {
                 let self = this;
                 if (self.validateMinimumOneChecked()) {
-                    self.saveWorkScheduleOutputCondition();
-                    let companyId: string = __viewContext.user.companyId;
-                    let userId: string = __viewContext.user.employeeId;
-                    service.restoreCharacteristic(companyId, userId).done(function(data: WorkScheduleOutputConditionDto) {
-                        var user: any = __viewContext.user;
-                        var dto: WorkScheduleOutputQueryDto = {
-                            lstEmployeeId: self.findEmployeeIdsByCodes(self.multiSelectedCode()),
-                            startDate: self.toDate(self.startDatepicker()),
-                            endDate: self.toDate(self.endDatepicker()),
-                            fileType: 1,
-                            condition: data
-                        };
-                        nts.uk.ui.block.grayout();
-                        service.exportExcel(dto).done(function(){
-                        }).always(function() {
-                           nts.uk.ui.block.clear(); 
-                        });
+                    self.saveWorkScheduleOutputCondition().done(function() {
+                       let companyId: string = __viewContext.user.companyId;
+                        let userId: string = __viewContext.user.employeeId;
+                        service.restoreCharacteristic(companyId, userId).done(function(data: WorkScheduleOutputConditionDto) {
+                            var user: any = __viewContext.user;
+                            var dto: WorkScheduleOutputQueryDto = {
+                                lstEmployeeId: self.findEmployeeIdsByCodes(self.multiSelectedCode()),
+                                startDate: self.toDate(self.startDatepicker()),
+                                endDate: self.toDate(self.endDatepicker()),
+                                fileType: 1,
+                                condition: data
+                            };
+                            nts.uk.ui.block.grayout();
+                            service.exportExcel(dto).done(function(){
+                            }).always(function() {
+                               nts.uk.ui.block.clear(); 
+                            });
+                        }); 
                     });
                 }
             }
@@ -520,11 +522,11 @@ module nts.uk.at.view.kwr001.a {
                 return true;
             }
             
-            private saveWorkScheduleOutputCondition(): void {
-                let self = this;
-                
-                let companyId: string = __viewContext.user.companyId;
-                let userId: string = __viewContext.user.employeeId;
+            private saveWorkScheduleOutputCondition(): JQueryPromise<void> {
+                let self = this,
+                    dfd = $.Deferred<any>(),
+                    companyId: string = __viewContext.user.companyId,
+                    userId: string = __viewContext.user.employeeId;
                 service.restoreCharacteristic(companyId, userId).done(function(data: any) {
                     // return data default
                     if (!self.checkedA10_7()) {
@@ -563,7 +565,9 @@ module nts.uk.at.view.kwr001.a {
                                                                                     codeChoose, self.selectedCodeA9_2(), 
                                                                                     workScheduleSettingTotalOutput, self.selectedCodeA13_1(), errorAlarmCode);
                     service.saveCharacteristic(companyId, userId, workScheduleOutputCondition); 
-                })    
+                    dfd.resolve();
+                })
+                dfd.promise();
             }
             
             private toDate(strDate: string): Date {
