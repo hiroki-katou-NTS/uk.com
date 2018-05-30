@@ -19,6 +19,7 @@
 			<!-- <com:scriptfile path="../share/model.js" /> -->
 			<com:scriptfile path="kwr002.b.vm.js" />
 			<com:scriptfile path="kwr002.b.start.js" />
+			
 		</ui:define>
 
 		<ui:define name="content">
@@ -54,7 +55,8 @@
 						<!-- B3_1 -->
 						<div>
 							<table id="multi-list" tabindex="6"
-								data-bind="ntsGridList: {								
+								data-bind="ntsGridList: {
+								name: '#[KWR002_34]',
 								rows: 15,
 								columns: [
 					                { headerText: '#{i18n.getText('KWR002_35')}', key: 'code', width: 60, formatter: _.escape },
@@ -80,8 +82,8 @@
 								<tr style="margin-top: 5px;">
 									<td colspan="1" class="th-col1">
 										<div
-											data-bind="ntsFormLabel:{required: true , constraint: 'ExportSettingCode'}">
-											<!-- A3_5 -->
+											data-bind="ntsFormLabel:{required: true , constraint: ['ExportSettingCode','ExportSettingName']}">
+											<!-- B6_1 -->
 											<label>#{i18n.getText('KWR002_40')}</label>
 										</div>
 									</td>
@@ -103,10 +105,11 @@
 											data-bind="ntsFormLabel: {  required: false }" id="B7_1">#{i18n.getText('KWR002_43')}
 										</div>
 									</td>
-
+									<!--B7_2-->
 									<td colspan="2" class="th-col2">
 										<div class="cf" tabindex="8"
 											data-bind="ntsSwitchButton: {
+											name: '#[KWR002_44]',
 											options: $parent.sealUseAtrSwitchs,
 											optionsValue: 'code',
 											optionsText: 'name',
@@ -117,6 +120,7 @@
 								</tr>
 								<tr style="margin-top: 20px;">
 									<td colspan="1" class="th-col1">
+										<!--B8_1-->
 										<div class="form-label"
 											data-bind="ntsFormLabel: {  required: false }" id="B8_1">
 											#{i18n.getText('KWR002_47')}</div>
