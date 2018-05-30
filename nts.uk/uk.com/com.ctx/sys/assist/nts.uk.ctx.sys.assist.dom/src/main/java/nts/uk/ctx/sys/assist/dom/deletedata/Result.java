@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.assist.dom.deletedata;
 
+import java.io.File;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,5 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Result {
 	private ResultState state;
-	private Object data;
+	private File file;
+	private String fileId;
 }

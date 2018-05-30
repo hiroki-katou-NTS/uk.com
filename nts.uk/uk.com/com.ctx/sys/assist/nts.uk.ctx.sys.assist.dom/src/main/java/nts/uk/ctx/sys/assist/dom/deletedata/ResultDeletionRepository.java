@@ -13,4 +13,9 @@ public interface ResultDeletionRepository
 
     Optional<ResultDeletion> getResultDeletionById(String delId);
     void add(ResultDeletion data);
+    /**
+	 * 
+	 * @param data
+	 */
+	void update(ResultDeletion data);
 }

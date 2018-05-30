@@ -9,7 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +24,6 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFileFactory;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFilesContainer;
 import nts.arc.time.GeneralDateTime;
-import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.ctx.sys.assist.dom.category.Category;
 import nts.uk.ctx.sys.assist.dom.category.CategoryRepository;
 import nts.uk.shr.com.i18n.TextResource;
@@ -37,11 +35,12 @@ import nts.uk.shr.infra.file.csv.CSVReportGenerator;
  *
  */
 @Stateless
-public class ManualSetDeletionService extends ExportService<Object> {
+public class ManualSetDeletionService extends ExportService<Object>{
 	private static final String MSG_START_DEL_LOG = "CMF005_213";
 	private static final String MSG_END_NORMAL_DEL_LOG = "CMF005_214";
 	private static final String MSG_END_ABNORMAL_DEL_LOG = "CMF005_215";
 	private static final String MSG_END_TERMINATE_DEL_LOG = "CMF005_216";
+	private static final String MSG_DEL_ERROR_LOG = "CMF005_223";
 
 	private static final List<String> LST_NAME_ID_HEADER_TABLE_FILE = Arrays.asList("CMF003_500", "CMF003_501",
 			"CMF003_502", "CMF003_503", "CMF003_504", "CMF003_505", "CMF003_506", "CMF003_507", "CMF003_508",
@@ -68,6 +67,7 @@ public class ManualSetDeletionService extends ExportService<Object> {
 	private static final String TABLE_NAME_FILE = "保存対象テーブル一覧";
 	private static final String EMPLOYEE_NAME_FILE = "対象社員";
 	private static final String FILE_EXTENSION = ".csv";
+	private static final String ZIP_FILE_EXTENSION = ".zip";
 
 	@Inject
 	private ManagementDeletionRepository repoManagementDel;
@@ -89,7 +89,7 @@ public class ManualSetDeletionService extends ExportService<Object> {
 	private ApplicationTemporaryFileFactory applicationTemporaryFileFactory;
 	@Inject
 	private CSVReportGenerator generator;
-
+	
 	@Override
 	protected void handle(ExportServiceContext<Object> context) {
 		String delId = context.getQuery().toString();
@@ -102,9 +102,6 @@ public class ManualSetDeletionService extends ExportService<Object> {
 	 * @param generatorContext
 	 */
 	public void serverManualDelProcessing(String delId, FileGeneratorContext generatorContext) {
-
-		System.out.println("delId: " + delId);
-
 		// ドメインモデル「データ削除の手動設定」を読み込む
 		Optional<ManualSetDeletion> manualSetDeletion = repoManualSetDel.getManualSetDeletionById(delId);
 
@@ -125,24 +122,50 @@ public class ManualSetDeletionService extends ExportService<Object> {
 			List<EmployeeDeletion> employeeDeletions = repoEmployeesDel.getEmployeesDeletionListById(delId);
 			List<TableDeletionDataCsv> tableDeletionDataCsvs = getTableDeletionData(delId);
 
-			Result result = null;
+			Result resultSave = null;
 			if (domain.isSaveBeforeDeleteFlg()) {
 				// アルゴリズム「サーバデータ削除保存」を実行する
-				result = saveDataDelAgth(generatorContext, delId, domain, tableDeletionDataCsvs, employeeDeletions,
+				resultSave = saveDataDelAgth(generatorContext, delId, domain, tableDeletionDataCsvs, employeeDeletions,
 						categories);
-				if (result.getState() != ResultState.NORMAL_END) {
-					saveEndLogResult(domain, result.getState());
+				ResultState state = resultSave.getState();
+				if (state != ResultState.NORMAL_END) {
+					//ドメインモデル「データ削除の結果ログ」へ追加する
+					saveEndLogResult(domain, state);
+					//ドメインモデル「データ削除の保存結果」を更新する
+					saveEndResultDel(domain, resultSave);
+					//ドメインモデル「データ削除動作管理」を更新する
+					saveEndManagementDel(delId, state);
+					
 					return;
 				}
 			}
 
 			// アルゴリズム「サーバデータ削除実行」を実行する
-			ResultState resultDel = deleteDataAgth(delId, domain, tableDeletionDataCsvs, employeeDeletions, categories);
-			if (resultDel != ResultState.NORMAL_END) {
-				return;
+			ResultState resultDelState = deleteDataAgth(delId, domain, tableDeletionDataCsvs, employeeDeletions, categories);
+			Result resultDel = new Result(resultDelState, null, null);
+			if (resultDelState != ResultState.NORMAL_END) {
+				//圧縮ファイルが作成されている場合、圧縮ファイルを削除する
+				if (resultSave != null && resultSave.getFile() != null) {
+					resultSave.getFile().delete();
+				}
 			}
+			else {
+				if (resultSave != null) {
+					resultDel.setFile(resultSave.getFile());
+					resultDel.setFileId(resultSave.getFileId());
+				}
+			}
+			
+			//ドメインモデル「データ削除の結果ログ」へ追加する
+			saveEndLogResult(domain, resultDel.getState());
+			//ドメインモデル「データ削除の保存結果」を更新する
+			saveEndResultDel(domain, resultDel);
+			//ドメインモデル「データ削除動作管理」を更新する
+			saveEndManagementDel(delId, resultDelState);
 		}
 	}
+	
+	
 
 	/**
 	 * ドメインモデル「データ削除の保存結果」へ追加する save the starting result of deletion
@@ -190,6 +213,25 @@ public class ManualSetDeletionService extends ExportService<Object> {
 		repoManagementDel.add(managementDomain);
 	}
 
+	
+	
+	/**
+	 * ドメインモデル「データ削除動作管理」を更新する
+	 * @param domain
+	 * @param state
+	 */
+	private void saveEndManagementDel(String delId, ResultState state) {
+		OperatingCondition operatingCondition = OperatingCondition.DONE;
+		
+		if (state == ResultState.ABNORMAL_END) {
+			operatingCondition = OperatingCondition.ABNORMAL_TERMINATION;
+		}
+		else if (state == ResultState.TERMINATE) {
+			operatingCondition = OperatingCondition.INTERRUPTION_END;
+		}
+		
+		repoManagementDel.updateOperationCond(delId, operatingCondition);
+	}
 	/**
 	 * ドメインモデル「データ削除の結果ログ」へ追加する
 	 */
@@ -204,6 +246,43 @@ public class ManualSetDeletionService extends ExportService<Object> {
 		ResultLogDeletion resultLogDomain = ResultLogDeletion.createFromJavatype(0, domain.getDelId(),
 				domain.getCompanyId(), logTime, TextResource.localize(msgId), null, null, null);
 		repoResultLogDel.add(resultLogDomain);
+	}
+	
+	/**
+	 * ドメインモデル「データ削除の保存結果」を更新する
+	 * Update domain model 「データ削除の保存結果」
+	 */
+	private void saveEndResultDel(ManualSetDeletion domain, Result result) {
+		Optional<ResultDeletion> optResultDel = repoResultDel.getResultDeletionById(domain.getDelId());
+		if (optResultDel.isPresent()) {
+			String fileName = null;
+			int fileSize = 0;
+			String fileId = null;
+			
+			ResultState state = result.getState();
+			SaveStatus status = SaveStatus.SUCCESS;
+			if (state == ResultState.ABNORMAL_END) {
+				status = SaveStatus.FAILURE;
+			}
+			else if (state == ResultState.TERMINATE) {
+				status = SaveStatus.INTERRUPTION;
+			}
+			GeneralDateTime endDateTimeDel = GeneralDateTime.now();
+			File file = result.getFile();
+			if (file != null) {
+				fileName = file.getName();
+				fileSize = (int)file.length();
+				fileId = result.getFileId();
+			}
+			
+			ResultDeletion resultDel = optResultDel.get();
+			resultDel.setStatus(status);
+			resultDel.setEndDateTimeDel(endDateTimeDel);
+			resultDel.setFileName(new FileName(fileName));
+			resultDel.setFileSize(fileSize);
+			resultDel.setFileId(fileId);
+			repoResultDel.update(resultDel);
+		}
 	}
 
 	/**
@@ -238,6 +317,7 @@ public class ManualSetDeletionService extends ExportService<Object> {
 	private Result saveDataDelAgth(FileGeneratorContext generatorContext, String delId, ManualSetDeletion domain,
 			List<TableDeletionDataCsv> tableDeletionDataCsvs, List<EmployeeDeletion> employeeDeletions,
 			List<Category> categories) {
+	
 		File file = null;
 		// アルゴリズム「サーバデータ削除保存ファイル」を実行する
 		ResultState resultSaving = saveDataDelToCsvAgth(generatorContext, tableDeletionDataCsvs, delId, domain,
@@ -246,12 +326,15 @@ public class ManualSetDeletionService extends ExportService<Object> {
 			// アルゴリズム「サーバデータ削除保存圧縮」を実行する
 			file = zipFolderDataAgth(generatorContext, domain);
 			if (file == null) {
-				return new Result(ResultState.ABNORMAL_END, null);
+				return new Result(ResultState.ABNORMAL_END, null, null);
+			}
+			else {
+				String fileId = generatorContext.getTaskId();
+				return new Result(ResultState.NORMAL_END, file, fileId);
 			}
 		} else {
-			return new Result(resultSaving, null);
+			return new Result(resultSaving, null, null);
 		}
-		return new Result(ResultState.NORMAL_END, file);
 	}
 
 	/**
@@ -317,7 +400,7 @@ public class ManualSetDeletionService extends ExportService<Object> {
 			for (List<String> record : dataRecords) {
 				Map<String, Object> rowCsv = new HashMap<>();
 				int i = 0;
-				for (String columnName : columNames) {
+				for (String columnName : header) {
 					rowCsv.put(columnName, record.get(i));
 					i++;
 				}
@@ -343,28 +426,30 @@ public class ManualSetDeletionService extends ExportService<Object> {
 
 		ApplicationTemporaryFilesContainer applicationTemporaryFilesContainer = applicationTemporaryFileFactory
 				.createContainer();
-
+		
 		// ファイル圧縮実行
 		boolean isExistCompressPassFlg = domain.isExistCompressPassFlg();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		String executeDate = sdf.format(new Date()); 
-		String nameFile = domain.getCompanyId()+"_" + domain.getDelName() + "_" + executeDate + FILE_EXTENSION;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
+		String executeDate = sdf.format(domain.getExecutionDateTime().toString()); 
+		String nameFile = domain.getCompanyId()+"_" + domain.getDelName() + "_" + executeDate + ZIP_FILE_EXTENSION;
+		
+		Path compressedFile = null;
 		if (!isExistCompressPassFlg) {
-			applicationTemporaryFilesContainer.zipWithName(generatorContext, nameFile);
+			compressedFile = applicationTemporaryFilesContainer.zipWithName(generatorContext, nameFile);
 		} else {
 			String password = domain.getPasswordCompressFileEncrypt().v();
-			applicationTemporaryFilesContainer.zipWithName(generatorContext, nameFile,
-					Base64.getDecoder().decode(password).toString());
+			compressedFile = applicationTemporaryFilesContainer.zipWithName(generatorContext, nameFile,
+					new String(Base64.getDecoder().decode(password)));
 		}
-
-		Path compressedFile = applicationTemporaryFilesContainer.getPath();
+		
 		applicationTemporaryFilesContainer.removeContainer();
+		
 		if (compressedFile != null) {
 			return compressedFile.toFile();
 		}
 		return null;
 	}
-
+	
 	/**
 	 * 
 	 * @param delId
@@ -654,8 +739,10 @@ public class ManualSetDeletionService extends ExportService<Object> {
 			}
 
 			// アルゴリズム「サーバデータ削除実行カテゴリ」を実行する
-			ResultState generalResult = deleteDataForCategory(tableDataDel, employeeDeletions);
-			if (generalResult == ResultState.ABNORMAL_END) {
+			String msgError = deleteDataForCategory(tableDataDel, employeeDeletions);
+			if (msgError != null) {
+				//ドメインモデル「データ削除の結果ログ」を追加する
+				saveErrorLogResult(domain, msgError);
 				return ResultState.ABNORMAL_END;
 			}
 		}
@@ -666,14 +753,27 @@ public class ManualSetDeletionService extends ExportService<Object> {
 	/**
 	 * アルゴリズム「サーバデータ削除実行カテゴリ」を実行する
 	 */
-	private ResultState deleteDataForCategory(TableDeletionDataCsv tableDataDel,
+	private String deleteDataForCategory(TableDeletionDataCsv tableDataDel,
 			List<EmployeeDeletion> employeeDeletions) {
 		try {
 			repoCsv.deleteData(tableDataDel, employeeDeletions);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResultState.ABNORMAL_END;
+			return e.getMessage();
 		}
-		return ResultState.NORMAL_END;
+		return null;
+	}
+	
+	
+	/**
+	 * ドメインモデル「データ削除の結果ログ」を追加する
+	 */
+	private void saveErrorLogResult(ManualSetDeletion domain, String msgError) {
+		String msgId = MSG_DEL_ERROR_LOG;
+		GeneralDateTime logTime = GeneralDateTime.now();
+		
+		ResultLogDeletion resultLogDomain = ResultLogDeletion.createFromJavatype(0, domain.getDelId(),
+				domain.getCompanyId(), logTime, TextResource.localize(msgId), msgError, null, null);
+		repoResultLogDel.add(resultLogDomain);
 	}
 }

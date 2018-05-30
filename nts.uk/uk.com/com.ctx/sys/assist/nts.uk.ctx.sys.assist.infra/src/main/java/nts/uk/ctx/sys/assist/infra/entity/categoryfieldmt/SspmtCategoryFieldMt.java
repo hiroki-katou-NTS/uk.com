@@ -501,7 +501,7 @@ public class SspmtCategoryFieldMt extends UkJpaEntity implements Serializable {
 	 * テーブル日本語名
 	 */
 	@Basic(optional = true)
-	@Column(name = "PARENT_TBL_JAPAN_NAME")
+	@Column(name = "PARENT_TBL_JP_NAME")
 	public String parentTblJapanName;
 
 	/**

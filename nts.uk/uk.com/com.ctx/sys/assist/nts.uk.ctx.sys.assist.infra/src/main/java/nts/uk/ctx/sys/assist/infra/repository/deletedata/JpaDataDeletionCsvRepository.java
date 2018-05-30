@@ -14,10 +14,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.persistence.Query;
 
-import org.apache.commons.lang3.StringUtils;
-
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionCsvRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.EmployeeDeletion;
@@ -289,10 +286,15 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		// acqCidField
 		if (acqCidField != null && !"null".equals(acqCidField)) {
 			buffer.append(tblAcq + "." + acqCidField + " AS H_CID, ");
+		} else {
+			buffer.append(" NULL AS H_CID, ");
 		}
+		
 		// acqEmployeeField
 		if (acqEmployeeField != null && !"null".equals(acqEmployeeField)) {
 			buffer.append(tblAcq + "." + acqEmployeeField + " AS H_SID, ");
+		} else {
+			buffer.append(" NULL AS H_SID, ");
 		}
 		// acqDateField
 		if (acqDateField != null && !"null".equals(acqDateField)) {
@@ -341,8 +343,8 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		
 		if (tableDelData.getFieldChild1() != null && !"null".equals(tableDelData.getFieldChild1()) 
 				&& tableDelData.getFieldParent1() != null && !"null".equals(tableDelData.getFieldParent1())) {
-			buffer.append(tblName+ tableDelData.getFieldChild1() 
-				+ " = " + parentTblName + tableDelData.getFieldParent1());
+			buffer.append(tblName + "." + tableDelData.getFieldChild1() 
+				+ " = " + parentTblName + "." + tableDelData.getFieldParent1());
 		}
 		
 		if (tableDelData.getFieldChild2()  != null && !"null".equals(tableDelData.getFieldChild2())
@@ -415,10 +417,16 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 			tblAcq = tableDelData.getParentTblName();
 		}
 		
-		List<String> employeeIds = new ArrayList<String>();
-		for (EmployeeDeletion employeeDeletion : employeeDeletions) {
-			employeeIds.add(employeeDeletion.getEmployeeId());
+		String lstEmployeeIds = "";
+		if (employeeDeletions != null && employeeDeletions.size() > 0) {
+			StringBuffer employeeIdsBuf = new StringBuffer();
+			for (EmployeeDeletion employeeDeletion : employeeDeletions) {
+				employeeIdsBuf.append(employeeDeletion.getEmployeeId() + ",");
+			}
+			lstEmployeeIds = employeeIdsBuf.toString();
+			lstEmployeeIds = lstEmployeeIds.substring(0, lstEmployeeIds.length() - 1);
 		}
+		
 		
 		buffer.append(" WHERE 1 = 1 ");
 		
@@ -430,8 +438,10 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		
 		//employee id
 		if (tableDelData.getFieldAcqEmployeeId() != null && !"null".equals(tableDelData.getFieldAcqEmployeeId())) {
-			buffer.append("AND " + tblAcq + "." + tableDelData.getFieldAcqEmployeeId() + " IN ( ?employeeIds ) ");
-			parrams.put("employeeIds", StringUtils.join(employeeIds, ","));
+			if (lstEmployeeIds != null && !lstEmployeeIds.isEmpty()) {
+				buffer.append("AND " + tblAcq + "." + tableDelData.getFieldAcqEmployeeId() + " IN ( ?employeeIds ) ");
+				parrams.put("employeeIds", lstEmployeeIds);
+			}
 		}
 		
 		//date
@@ -454,11 +464,11 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		if (acqStartDateField != null && !"null".equals(acqStartDateField)
 				&& acqEndDateField != null && !"null".equals(acqEndDateField)) {
 			if (!isDateFieldInOracle(acqStartDateField, tableDelData)) {
-				buffer.append("AND " + tblAcq + "." + acqStartDateField + " >= :startDate ");
-				buffer.append("AND " + tblAcq + "." + acqEndDateField + " <= :endDate ");
+				buffer.append("AND " + tblAcq + "." + acqStartDateField + " >= ?startDate ");
+				buffer.append("AND " + tblAcq + "." + acqEndDateField + " <= ?endDate ");
 			} else {
-				buffer.append("AND " + tblAcq + "." + acqStartDateField + " >= " + toDateOracle(timeStore, " :startDate "));
-				buffer.append("AND " + tblAcq + "." + acqEndDateField + " <= " + toDateOracle(timeStore, " :endDate "));
+				buffer.append("AND " + tblAcq + "." + acqStartDateField + " >= " + toDateOracle(timeStore, " ?startDate "));
+				buffer.append("AND " + tblAcq + "." + acqEndDateField + " <= " + toDateOracle(timeStore, " ?endDate "));
 			}
 			setDateParrams(tableDelData, parrams);
 		}

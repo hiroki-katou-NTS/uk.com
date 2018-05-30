@@ -15,7 +15,7 @@ public class JpaResultDeletionRepository extends JpaRepository implements Result
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspdtResultDeletion f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.delId =:delId ";
+			+ " WHERE  f.sspdtResultDeletionPK.delId = :delId ";
 
 	@Override
 	public List<ResultDeletion> getAllResultDeletion() {
@@ -33,5 +33,10 @@ public class JpaResultDeletionRepository extends JpaRepository implements Result
 	public void add(ResultDeletion data) {
 		this.commandProxy().insert(SspdtResultDeletion.toEntity(data));
 
+	}
+	
+	@Override
+	public void update(ResultDeletion data) {
+		 this.commandProxy().update(SspdtResultDeletion.toEntity(data));
 	}
 }

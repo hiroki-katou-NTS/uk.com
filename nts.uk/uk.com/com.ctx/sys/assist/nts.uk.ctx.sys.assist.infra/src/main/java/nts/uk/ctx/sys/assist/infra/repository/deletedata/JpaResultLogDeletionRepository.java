@@ -15,7 +15,7 @@ public class JpaResultLogDeletionRepository extends JpaRepository implements Res
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspdtResultLogDeletion f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.delId =:delId ";
+			+ " WHERE  f.sspdtResultLogDeletionPK.delId = :delId ";
 
 	@Override
 	public List<ResultLogDeletion> getAllResultLogDeletion() {
