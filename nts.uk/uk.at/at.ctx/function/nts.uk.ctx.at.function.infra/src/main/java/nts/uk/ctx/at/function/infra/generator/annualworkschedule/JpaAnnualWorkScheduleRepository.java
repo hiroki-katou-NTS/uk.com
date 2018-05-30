@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.infra.generator.annualworkschedule;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -19,6 +20,8 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationQueryDtoImport;
 import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.AttendanceItemValueImport;
@@ -53,6 +56,8 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	private EmployeeInformationAdapter employeeInformationAdapter;
 	@Inject
 	private CompanyAdapter companyAdapter;
+	@Inject
+	private RegulationInfoEmployeeAdapter employeeAdapter;
 	/**
 	 * 36協定時間
 	 */
@@ -70,17 +75,22 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		this.endYmFinal = YearMonth.parse(endYearMonth, DateTimeFormatter.ofPattern("uuuu/MM"));
 		this.numMonth = (int) this.startYmFinal.until(this.endYmFinal, ChronoUnit.MONTHS);
 		ExportData data = new ExportData();
+		LocalDate endYmd = LocalDate.of(this.endYmFinal.getYear(), this.endYmFinal.getMonthValue(), 1)
+				.plus(1, ChronoUnit.MONTHS)
+				.minus(1, ChronoUnit.DAYS);
 		//sort by employee code
-		data.setEmployeeIds(employees.stream()
-				.sorted(Comparator.comparing(Employee::getWorkplaceName).thenComparing(Employee::getEmployeeCode))
-				.map(m -> m.getEmployeeId()).collect(Collectors.toList()));
+		List<String> employeeIds = employees.stream()
+				.map(m -> m.getEmployeeId()).collect(Collectors.toList());
+		data.setEmployeeIds(employeeAdapter.sortEmployee(AppContexts.user().companyId(),
+								employeeIds,
+								1,
+								null,
+								null,
+								GeneralDateTime.localDateTime(LocalDateTime.from(endYmd))));
 
 		data.setEmployees(new HashMap<>());
 		Map<String, String> empNameMap = employees.stream()
 				.collect(Collectors.toMap(Employee::getEmployeeId, Employee::getName));
-		LocalDate endYmd = LocalDate.of(this.endYmFinal.getYear(), this.endYmFinal.getMonthValue(), 1)
-				.plus(1, ChronoUnit.MONTHS)
-				.minus(1, ChronoUnit.DAYS);
 		employeeInformationAdapter.getEmployeeInfo(
 				new EmployeeInformationQueryDtoImport(data.getEmployeeIds(),
 					GeneralDate.localDate(endYmd), true, false, true, true, false, false)).forEach(emp -> {
@@ -111,7 +121,9 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		header.setPeriod(TextResource.localize("KWR008_41") + " " + periodStr);
 		//TODO
 		List<ItemOutTblBook> listItemOut = setOutItemsWoSc.getListItemOutTblBook().stream()
-				.filter(item -> item.isUseClassification()).collect(Collectors.toList());
+				.filter(item -> item.isUseClassification())
+				.sorted((i1, i2) -> Integer.compare(i1.getSortBy(), i2.getSortBy()))
+				.collect(Collectors.toList());
 		data.setExportItems(listItemOut.stream().map(m -> new ExportItem(m.getCd().v(), m.getHeadingName().v())).collect(Collectors.toList()));
 		//出力項目数による個人情報の出力制限について
 		if (listItemOut.size() == 1) {

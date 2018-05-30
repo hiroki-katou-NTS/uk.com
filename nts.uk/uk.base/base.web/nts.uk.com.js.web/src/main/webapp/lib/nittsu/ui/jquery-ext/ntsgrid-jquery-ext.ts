@@ -1453,6 +1453,7 @@ module nts.uk.ui.jqueryExtentions {
             export let CHECK_ALL: string = "checkAll";
             export let UNCHECK_ALL: string = "uncheckAll";
             export let HEADER_TEXT: string = "headerText";
+            export let SELECTED_SHEET: string = "selectedSheet";
             export let DESTROY: string = "destroy";
             
             /**
@@ -1501,6 +1502,8 @@ module nts.uk.ui.jqueryExtentions {
                     case DESTROY:
                         destroy($grid);
                         break;
+                    case SELECTED_SHEET:
+                        return getSelectedSheet($grid);
                     case UPDATED_CELLS:
                         return $grid.data(internal.UPDATED_CELLS);
                     case ERRORS:
@@ -1792,6 +1795,17 @@ module nts.uk.ui.jqueryExtentions {
                     }
                 });
                 return updated;
+            }
+            
+            /**
+             * Get selected sheet.
+             */
+            function getSelectedSheet($grid: JQuery) {
+                let sheet = $grid.data(internal.SHEETS);
+                if (!sheet || !sheet.currentSheet) return;
+                return _.find(sheet.sheets, function(s) {
+                    return s.name === sheet.currentSheet;
+                });
             }
             
             /**
