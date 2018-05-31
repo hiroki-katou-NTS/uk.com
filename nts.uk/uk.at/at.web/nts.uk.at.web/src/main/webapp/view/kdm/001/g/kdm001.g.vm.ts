@@ -81,7 +81,7 @@ module nts.uk.at.view.kdm001.g.viewmodel {
                     dayoffDate:  moment.utc(self.dayoffDate(),'YYYY/MM/DD').toISOString(),
                     expiredDate: self.expiredDate(), 
                     lawAtr: parseInt(self.lawAtr()),
-                    occurredDays: parseInt(self.occurredDays()),
+                    occurredDays: parseFloat(self.occurredDays()),
                     unUsedDays: self.unUsedDays(),
                     checkBox: self.checkBox()
                 };
