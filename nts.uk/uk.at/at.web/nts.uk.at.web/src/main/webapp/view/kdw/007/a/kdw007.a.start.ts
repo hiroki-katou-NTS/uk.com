@@ -1,5 +1,4 @@
 module nts.uk.at.view.kdw007.a {
-    import ScreenMode = nts.uk.at.view.kdw007.a.viewmodel.ScreenMode;
     __viewContext.ready(function() {
         let isDaily = null;
         this.transferred.ifPresent(param => {
