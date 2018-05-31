@@ -51,7 +51,7 @@ module nts.uk.at.view.kdm001.k.viewmodel {
                         if (self.dateHoliday() === x.dayOff) {
                             self.currentCodeList.remove(x.leaveManaID);
                             //nts.uk.ui.dialog.info({ messageId: "Msg_730" });
-                            $('#multi-list').ntsError('set', { messageId: "Msg_730" });
+                            $('#multi-list_container').ntsError('set', { messageId: "Msg_730" });
                         } else {
                             let iNum = parseFloat(x.remainDays);
                             let day = parseFloat(self.numberDay());
@@ -124,7 +124,7 @@ module nts.uk.at.view.kdm001.k.viewmodel {
                         });
 
                     } else {
-                        $('#multi-list').ntsError('set', { messageId: messageId });
+                        $('#multi-list_container').ntsError('set', { messageId: messageId });
                     }
                     block.clear();
                 }
