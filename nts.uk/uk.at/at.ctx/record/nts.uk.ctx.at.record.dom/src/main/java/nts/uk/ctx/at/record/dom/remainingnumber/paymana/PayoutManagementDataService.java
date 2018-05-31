@@ -38,7 +38,7 @@ public class PayoutManagementDataService {
 	@Inject
 	private AddSubHdManagementService addSubHdManagementService;
 	
-	private static final int EMPTY = 0;
+	private static final int ZERO = 0;
 	
 	private List<String> checkHolidate(Boolean pickUp, Boolean pause,Boolean checkedSplit, Double requiredDays,Double subDays, Double occurredDays){
 		List<String> errors = new ArrayList<String>();
@@ -206,11 +206,11 @@ public class PayoutManagementDataService {
 		return errorList;
 	}
 
-	private List<String> checkBox(boolean checkBox, int lawAtr, GeneralDate dayoffDate, GeneralDate expiredDate,
+	private List<String> checkBox(boolean checkBox, int stateAtr, GeneralDate dayoffDate, GeneralDate expiredDate,
 			double unUsedDays) {
 		List<String> errorList = new ArrayList<>();
 		if (checkBox) {
-			if (lawAtr == HolidayAtr.PUBLICHOLIDAY.value) {
+			if (stateAtr == DigestionAtr.EXPIRED.value) {
 				errorList.add("Msg_1212");
 				return errorList;
 			} else if (dayoffDate.compareTo(expiredDate) > 0) {
@@ -218,7 +218,7 @@ public class PayoutManagementDataService {
 			}
 			return errorList;
 		} else {
-			if (unUsedDays == EMPTY) {
+			if (unUsedDays == ZERO) {
 				errorList.add("Msg_1213");
 			}
 			return errorList;
@@ -230,11 +230,16 @@ public class PayoutManagementDataService {
 		if (!errorListClosureDate.isEmpty()) {
 			return errorListClosureDate;
 		} else {
-			List<String> errorListCheckBox = checkBox(checkBox, data.getLawAtr().value,
+			List<String> errorListCheckBox = checkBox(checkBox, data.getStateAtr().value,
 					data.getPayoutDate().getDayoffDate().get(), data.getExpiredDate(), data.getUnUsedDays().v());
 			if (!errorListCheckBox.isEmpty()) {
 				return errorListCheckBox;
 			} else {
+				if(data.getUnUsedDays().v() == ZERO ){
+					data.setStateAtr(DigestionAtr.USED.value);
+				}else{
+					data.setStateAtr(DigestionAtr.UNUSED.value);
+				}
 				payoutManagementDataRepository.update(data);
 				return Collections.emptyList();
 			}
