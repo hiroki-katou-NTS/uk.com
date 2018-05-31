@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.diagnose.stopwatch.Stopwatches;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CheckExcessAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
@@ -42,7 +43,7 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 	
 	@Override
 	public IntegrationOfDaily errorCheck(IntegrationOfDaily integrationOfDaily, List<ErrorAlarmWorkRecord> errorAlarm) {
-		
+		Stopwatches.start("ERALALL");
 		String companyID = AppContexts.user().companyId();
 		List<EmployeeDailyPerError> addItemList = new ArrayList<>();
 //		if(!integrationOfDaily.getEmployeeError().isEmpty() &&  integrationOfDaily.getEmployeeError() != null)
@@ -94,6 +95,7 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 			}
 		}
 		integrationOfDaily.setEmployeeError(addItemList);
+		Stopwatches.stop("ERALALL");
 		return integrationOfDaily;
 	}
 

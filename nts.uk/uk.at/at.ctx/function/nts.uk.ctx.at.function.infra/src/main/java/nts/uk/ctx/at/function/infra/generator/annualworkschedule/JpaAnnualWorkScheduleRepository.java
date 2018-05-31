@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.infra.generator.annualworkschedule;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -73,7 +74,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 			String endYearMonth, List<Employee> employees) {
 		this.startYmFinal = YearMonth.parse(startYearMonth, DateTimeFormatter.ofPattern("uuuu/MM"));
 		this.endYmFinal = YearMonth.parse(endYearMonth, DateTimeFormatter.ofPattern("uuuu/MM"));
-		this.numMonth = (int) this.startYmFinal.until(this.endYmFinal, ChronoUnit.MONTHS);
+		this.numMonth = (int) this.startYmFinal.until(this.endYmFinal, ChronoUnit.MONTHS) + 1;
 		ExportData data = new ExportData();
 		LocalDate endYmd = LocalDate.of(this.endYmFinal.getYear(), this.endYmFinal.getMonthValue(), 1)
 				.plus(1, ChronoUnit.MONTHS)
@@ -86,7 +87,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 								1,
 								null,
 								null,
-								GeneralDateTime.localDateTime(LocalDateTime.from(endYmd))));
+								GeneralDateTime.localDateTime(LocalDateTime.of(endYmd, LocalTime.of(0, 0)))));
 
 		data.setEmployees(new HashMap<>());
 		Map<String, String> empNameMap = employees.stream()

@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 535, height: 630 };</script>
+			<script>var dialogSize = { width: 535, height: 700 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="kdm001.d.vm.js" />
@@ -186,7 +186,7 @@
 					<!-- D31_1 登録 -->
 					<button id="D31_1" tabindex="12" data-bind="click: createData" class="large">#{i18n.getText('KDM001_89')}</button>
 					<!-- D31_1 キャンセル -->
-					<button id="D31_2" tabindex="13" data-bind="click: closeDialog">#{i18n.getText('KDM001_90')}</button>
+					<button id="D31_2" tabindex="13" data-bind="click: closeDialog" class="large">#{i18n.getText('KDM001_90')}</button>
 				</div>
 			</div>			
 		</ui:define>

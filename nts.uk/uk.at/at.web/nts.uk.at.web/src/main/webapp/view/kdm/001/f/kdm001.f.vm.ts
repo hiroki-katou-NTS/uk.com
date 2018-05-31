@@ -19,17 +19,17 @@ module nts.uk.at.view.kdm001.f.viewmodel {
         residualDay: KnockoutObservable<any> = ko.observable(0);
         residualDayDispay: KnockoutObservable<any> = ko.observable('0' + " " + getText('KDM001_27'));
         info: any = getShared("KDM001_EFGH_PARAMS");
+        disables: Array<any> = [];
         constructor() {
             let self = this;
-
             // set init value from screen a
             if (self.info) {
                 self.workCode(self.info.selectedEmployee.workplaceCode);
                 self.workPlaceName(self.info.selectedEmployee.workplaceName);
                 self.employeeCode(self.info.selectedEmployee.employeeCode);
                 self.employeeName(self.info.selectedEmployee.employeeName);
-                self.dateHoliday(self.info.rowValue.dayoffDatePyout);
-                self.numberDay(self.info.rowValue.occurredDays + " "  + getText('KDM001_27'));
+                self.dateHoliday(self.info.rowValue.dayoffDateSub);
+                self.numberDay(self.info.rowValue.requiredDays + " "  + getText('KDM001_27'));
             }
 
             self.columns = ko.observableArray([
@@ -100,6 +100,12 @@ module nts.uk.at.view.kdm001.f.viewmodel {
                             self.currentCodeList.push(item.payoutId);
                         });
                     }
+                    _.forEach(self.items(), function(item: ItemModel) {
+                        if(item.occurredDays > parseFloat(self.info.rowValue.requiredDays)) {
+                            self.disables.push(item.payoutId);    
+                        }    
+                    })
+                    console.log(self.disables());
                 }
                 block.clear();
             }).fail((res) => {

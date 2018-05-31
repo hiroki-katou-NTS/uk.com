@@ -52,15 +52,13 @@
 					<!-- M6_1 年月日 -->
 					<div class="column-1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDM001_62')}</div>
 					<!-- M6_2 年月日 -->
-					<div id="M6_2"
-						data-bind="ntsDatePicker: {name: '#[KDM001_63]', value: dayOffDate, dateFormat: 'YYYY/MM/DD', required : true}"
-						tabindex="1"></div>
+					<label id="M6_2" data-bind="text: dayOffDate"/>
 				</div>
 				<div class="flex valign-center margin-bottom padding-left-15">
 					<!-- M8_1 代休時間 -->
 					<div class="column-1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDM001_115')}</div>
 					<!-- M8_2 時間数 -->
-					<div class="combobox-select-day"
+					<div id="M8_2" class="combobox-select-day"
 						data-bind="ntsComboBox: {
 										name: '#[KDM001_86]', 
 										options: requireDayItemList,
@@ -71,7 +69,7 @@
 										enable: true,
 										required: true,
 										selectFirstIfNull: true,
-										columns: [{ prop: 'name', length: 5}]}" tabindex="2"></div>
+										columns: [{ prop: 'name', length: 5}]}" tabindex="1"></div>
 					</div>
 				<div class="flex valign-center margin-bottom padding-left-15">
 					<!-- M10_1 残数 -->
@@ -88,14 +86,14 @@
 										enable: true,
 										required: true,
 										selectFirstIfNull: true,
-										columns: [{ prop: 'name', length: 5}]}" tabindex="4"></div>
+										columns: [{ prop: 'name', length: 5}]}" tabindex="2"></div>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
 				<!-- M31_1 登録 -->
-				<button class="proceed large" data-bind="click: updateComDayOffMana" tabindex="5">#{i18n.getText('KDM001_89')}</button>
+				<button class="proceed large" data-bind="click: updateComDayOffMana" tabindex="3">#{i18n.getText('KDM001_89')}</button>
 				<!-- M31_2 削除 -->
-				<button class="danger large" data-bind="click: deleteComDayOffMana" tabindex="6">#{i18n.getText('KDM001_100')}</button>
+				<button class="danger large" data-bind="click: deleteComDayOffMana" tabindex="4">#{i18n.getText('KDM001_100')}</button>
 				<!-- M31_3 キャンセル -->
 				<button data-bind="click: closeKDM001M" tabindex="7">#{i18n.getText('KDM001_90')}</button>
 			</div>
