@@ -214,7 +214,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 //		//任意項目の計算
 //		val aftercalcOptionalItemResult = this.calcOptionalItem(afterCalcResult);
 //		//エラーチェック
-		return calculationErrorCheckService.errorCheck(afterCalcResult,companyCommonSetting.errorAlarm);
+		return calculationErrorCheckService.errorCheck(afterCalcResult,companyCommonSetting);
 //		return calculationErrorCheckService.errorCheck(aftercalcOptionalItemResult);
 //		return afterCalcResult;
 	}
