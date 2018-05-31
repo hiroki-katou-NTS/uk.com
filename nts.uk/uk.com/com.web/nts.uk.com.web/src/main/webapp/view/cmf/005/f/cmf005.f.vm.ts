@@ -128,13 +128,16 @@ module nts.uk.com.view.cmf005.f.viewmodel {
                     // end: update dialog to complete mode
                     if (managementDel.operatingCondition == 4) {
                         self.dialogMode("done");
+                        $("#F10_2").focus();
                     }
 
+                    
+                    
                      // delete dataManagementDel of process when end
                      let dataManagementDel = new DataManagementDel(delId, 0, 0, 0, 0, 0);
                      service.deleteManagementDel(dataManagementDel).done(function(res: any) {
                      }).fail(function(res: any) {
-
+    
                     });
                 }
 

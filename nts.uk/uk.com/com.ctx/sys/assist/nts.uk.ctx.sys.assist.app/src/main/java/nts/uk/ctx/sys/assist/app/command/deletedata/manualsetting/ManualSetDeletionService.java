@@ -674,22 +674,22 @@ public class ManualSetDeletionService extends ExportService<Object>{
 		int timeStore = dataTarget.getTimeStore();
 		switch (timeStore) {
 		case 0:
+			// fulltime
+			break;
+		case 1:
+			// daily
+			rowCsv.put(headerCsv.get(79), dataTarget.getStartDateOfDaily());
+			rowCsv.put(headerCsv.get(80), dataTarget.getEndDateOfDaily());
+			break;
+		case 2:
 			// monthly
 			rowCsv.put(headerCsv.get(79), dataTarget.getStartMonthOfMonthly());
 			rowCsv.put(headerCsv.get(80), dataTarget.getEndMonthOfMonthly());
 			break;
-		case 1:
+		case 3:
 			// annual
 			rowCsv.put(headerCsv.get(79), dataTarget.getStartYearOfMonthly());
 			rowCsv.put(headerCsv.get(80), dataTarget.getEndYearOfMonthly());
-			break;
-		case 2:
-			// fulltime
-			break;
-		case 3:
-			// daily
-			rowCsv.put(headerCsv.get(79), dataTarget.getStartDateOfDaily());
-			rowCsv.put(headerCsv.get(80), dataTarget.getEndDateOfDaily());
 			break;
 		default:
 			break;
