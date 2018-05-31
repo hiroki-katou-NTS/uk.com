@@ -2,8 +2,10 @@ package nts.uk.ctx.sys.assist.dom.deletedata;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 
+@Setter
 @Getter
 @AllArgsConstructor
 /**

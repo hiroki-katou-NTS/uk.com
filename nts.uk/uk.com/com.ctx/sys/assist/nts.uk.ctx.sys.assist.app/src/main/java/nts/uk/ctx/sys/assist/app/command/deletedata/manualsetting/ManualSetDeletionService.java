@@ -13,7 +13,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -377,11 +376,10 @@ public class ManualSetDeletionService extends ExportService<Object>{
 			// 対象社員の内容をCSVファイルに暗号化して書き出す
 			generalEmployeesToCsv(generatorContext, delId);
 
-			
 			Map<String, List<TableDeletionDataCsv>> mapCatWithDatas = mapCatWithDataDel(tableDeletionDataCsvs);
-			if (mapCatWithDatas != null && mapCatWithDatas.size() > 0) {
+			if (mapCatWithDatas != null) {
 				int categoryCount = 0;
-				for (Entry<String, List<TableDeletionDataCsv>> entry : mapCatWithDatas.entrySet()) {
+				for (Category category : categories) {
 					categoryCount++;
 					
 					// ドメインモデル「データ削除動作管理」を更新する
@@ -397,16 +395,26 @@ public class ManualSetDeletionService extends ExportService<Object>{
 						return ResultState.ABNORMAL_END;
 					}
 					
-					List<TableDeletionDataCsv> catDatas = entry.getValue();
-					for (TableDeletionDataCsv tableDataDel : catDatas) {
-						// アルゴリズム「サーバデータ削除テーブルデータ書出」を実行する
-						ResultState generalResult = generalDataForCategoryToCsv(generatorContext, domain,
-								employeeDeletions, categories, tableDataDel);
-						if (generalResult == ResultState.ABNORMAL_END) {
-							return ResultState.ABNORMAL_END;
+					String categoryId = category.getCategoryId().v();
+					List<TableDeletionDataCsv> catDatas = mapCatWithDatas.get(categoryId);
+					if (catDatas != null) {
+						for (TableDeletionDataCsv tableDataDel : catDatas) {
+							// アルゴリズム「サーバデータ削除テーブルデータ書出」を実行する
+							ResultState generalResult = generalDataForCategoryToCsv(generatorContext, domain,
+									employeeDeletions, categories, tableDataDel);
+							if (generalResult == ResultState.ABNORMAL_END) {
+								ManagementDeletion managementDeletion = maOptional.get();
+								int errorCount = managementDeletion.getErrorCount();
+								managementDeletion.setErrorCount(errorCount + 1);
+								repoManagementDel.update(managementDeletion);
+//								return ResultState.ABNORMAL_END;
+							}
 						}
 					}
 				}
+			}
+			else {
+				return ResultState.ABNORMAL_END;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -783,9 +791,9 @@ public class ManualSetDeletionService extends ExportService<Object>{
 			repoManagementDel.updateCatCountAnCond(delId, 0, OperatingCondition.DELETING);
 
 			Map<String, List<TableDeletionDataCsv>> mapCatWithDatas = mapCatWithDataDel(tableDeletionDataCsvs);
-			if (mapCatWithDatas != null && mapCatWithDatas.size() > 0) {
+			if (mapCatWithDatas != null) {
 				int categoryCount = 0;
-				for (Entry<String, List<TableDeletionDataCsv>> entry : mapCatWithDatas.entrySet()) {
+				for (Category category : categories) {
 					categoryCount++;
 
 					// ドメインモデル「データ削除動作管理」を更新する
@@ -801,15 +809,22 @@ public class ManualSetDeletionService extends ExportService<Object>{
 						return ResultState.ABNORMAL_END;
 					}
 
-					List<TableDeletionDataCsv> catDatas = entry.getValue();
-					for (TableDeletionDataCsv tableDataDel : catDatas) {
-
-						// アルゴリズム「サーバデータ削除実行カテゴリ」を実行する
-						String msgError = deleteDataForCategory(tableDataDel, employeeDeletions);
-						if (msgError != null) {
-							// ドメインモデル「データ削除の結果ログ」を追加する
-							saveErrorLogResult(domain, msgError);
-							return ResultState.ABNORMAL_END;
+					String categoryId = category.getCategoryId().v();
+					List<TableDeletionDataCsv> catDatas = mapCatWithDatas.get(categoryId);
+					if (catDatas != null) {
+						for (TableDeletionDataCsv tableDataDel : catDatas) {
+	
+							// アルゴリズム「サーバデータ削除実行カテゴリ」を実行する
+							String msgError = deleteDataForCategory(tableDataDel, employeeDeletions);
+							if (msgError != null) {
+								ManagementDeletion managementDeletion = maOptional.get();
+								int errorCount = managementDeletion.getErrorCount();
+								managementDeletion.setErrorCount(errorCount + 1);
+								repoManagementDel.update(managementDeletion);
+								// ドメインモデル「データ削除の結果ログ」を追加する
+								saveErrorLogResult(domain, msgError);
+//								return ResultState.ABNORMAL_END;
+							}
 						}
 					}
 				}
