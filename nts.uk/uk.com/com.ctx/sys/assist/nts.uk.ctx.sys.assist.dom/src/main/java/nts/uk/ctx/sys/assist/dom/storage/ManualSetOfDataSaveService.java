@@ -83,8 +83,8 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	@Override
 	protected void handle(ExportServiceContext<Object> context) {
 		generalCsvAuto(context.getGeneratorContext());
-		//String storeProcessingId = context.getQuery().toString();
-		//serverManualSaveProcessing(storeProcessingId, context.getGeneratorContext());
+		String storeProcessingId = context.getQuery().toString();
+		serverManualSaveProcessing(storeProcessingId, context.getGeneratorContext());
 	}
 
 	public void serverManualSaveProcessing(String storeProcessingId, FileGeneratorContext generatorContext) {
@@ -146,7 +146,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 				String storageRangeSaved = "";
 				TimeStore retentionPeriodCls = null;
 				int anotherComCls = 0;
-				DatePeriod screenRetentionPeriod = null;
+				String screenRetentionPeriod = "";
 				GeneralDate saveDateFrom = null;
 				GeneralDate saveDateTo = null;
 				int surveyPreservation = optManualSetting.get().getIdentOfSurveyPre().value;
@@ -164,17 +164,17 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 				case DAILY:
 					saveDateFrom = optManualSetting.get().getDaySaveStartDate();
 					saveDateTo = optManualSetting.get().getDaySaveEndDate();
-					screenRetentionPeriod = new DatePeriod(saveDateFrom, saveDateTo);
+					screenRetentionPeriod = new DatePeriod(saveDateFrom, saveDateTo).toString();
 					break;
 				case MONTHLY:
 					saveDateFrom = optManualSetting.get().getMonthSaveStartDate();
 					saveDateTo = optManualSetting.get().getMonthSaveEndDate();
-					screenRetentionPeriod = new DatePeriod(saveDateFrom, saveDateTo);
+					screenRetentionPeriod = new DatePeriod(saveDateFrom, saveDateTo).toString();
 					break;
 				case ANNUAL:
 					saveDateFrom = GeneralDate.ymd(optManualSetting.get().getStartYear().v(), 1, 1);
 					saveDateTo = GeneralDate.ymd(optManualSetting.get().getEndYear().v(), 12, 31);
-					screenRetentionPeriod = new DatePeriod(saveDateFrom, saveDateTo);
+					screenRetentionPeriod = new DatePeriod(saveDateFrom, saveDateTo).toString();
 					break;
 				default:
 					break;
@@ -186,18 +186,17 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 				String internalFileName = storeProcessingId + categoryName + categoryFieldMt.getTableJapanName();
 
-				TableList listtable = new TableList(categoryFieldMt.getCategoryId(), categoryName, storeProcessingId,
+				TableList listtable = new TableList(
+						categoryFieldMt.getCategoryId(), categoryName, storeProcessingId,
 						"", categoryFieldMt.getTableNo(), categoryFieldMt.getTableJapanName(), "",
-						categoryFieldMt.getFieldAcqCid(), categoryFieldMt.getFieldAcqDateTime(),
-						categoryFieldMt.getFieldAcqEmployeeId(), categoryFieldMt.getFieldAcqEndDate(),
-						categoryFieldMt.getFieldAcqStartDate(), "", optManualSetting.get().getSaveSetName().toString(),
-						"", "0", saveDateFrom, saveDateTo, storageRangeSaved, retentionPeriodCls.value,
-						internalFileName, anotherComCls, "", "", compressedFileName, categoryFieldMt.getFieldChild1(),
-						categoryFieldMt.getFieldChild2(), categoryFieldMt.getFieldChild3(),
-						categoryFieldMt.getFieldChild4(), categoryFieldMt.getFieldChild5(),
-						categoryFieldMt.getFieldChild6(), categoryFieldMt.getFieldChild7(),
-						categoryFieldMt.getFieldChild8(), categoryFieldMt.getFieldChild9(),
-						categoryFieldMt.getFieldChild10(), categoryFieldMt.getHistoryCls().value, "", "",
+						categoryFieldMt.getFieldAcqCid(), categoryFieldMt.getFieldAcqDateTime(), categoryFieldMt.getFieldAcqEmployeeId(), categoryFieldMt.getFieldAcqEndDate(), categoryFieldMt.getFieldAcqStartDate(),
+						"", optManualSetting.get().getSaveSetName().toString(), "", "0", saveDateFrom, saveDateTo, 
+						storageRangeSaved, retentionPeriodCls.value,
+						internalFileName, anotherComCls, "", "", compressedFileName,
+						categoryFieldMt.getFieldChild1(), categoryFieldMt.getFieldChild2(), categoryFieldMt.getFieldChild3(), categoryFieldMt.getFieldChild4(), categoryFieldMt.getFieldChild5(),
+						categoryFieldMt.getFieldChild6(), categoryFieldMt.getFieldChild7(), categoryFieldMt.getFieldChild8(), categoryFieldMt.getFieldChild9(), categoryFieldMt.getFieldChild10(),
+						categoryFieldMt.getHistoryCls().value,
+						"", "",
 						categoryFieldMt.getClsKeyQuery1().toString(), categoryFieldMt.getClsKeyQuery2().toString(),
 						categoryFieldMt.getClsKeyQuery3().toString(), categoryFieldMt.getClsKeyQuery4().toString(),
 						categoryFieldMt.getClsKeyQuery5().toString(), categoryFieldMt.getClsKeyQuery6().toString(),
@@ -217,9 +216,8 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 						categoryFieldMt.getFieldDate12(), categoryFieldMt.getFieldDate13(),
 						categoryFieldMt.getFieldDate14(), categoryFieldMt.getFieldDate15(),
 						categoryFieldMt.getFieldDate16(), categoryFieldMt.getFieldDate17(),
-						categoryFieldMt.getFieldDate18(), categoryFieldMt.getFieldDate19(),
-						categoryFieldMt.getFieldDate20(), categoryFieldMt.getFiledKeyUpdate1(),
-						categoryFieldMt.getFiledKeyUpdate2(), categoryFieldMt.getFiledKeyUpdate3(),
+						categoryFieldMt.getFieldDate18(), categoryFieldMt.getFieldDate19(), categoryFieldMt.getFieldDate20(), 
+						categoryFieldMt.getFiledKeyUpdate1(), categoryFieldMt.getFiledKeyUpdate2(), categoryFieldMt.getFiledKeyUpdate3(),
 						categoryFieldMt.getFiledKeyUpdate4(), categoryFieldMt.getFiledKeyUpdate5(),
 						categoryFieldMt.getFiledKeyUpdate6(), categoryFieldMt.getFiledKeyUpdate7(),
 						categoryFieldMt.getFiledKeyUpdate8(), categoryFieldMt.getFiledKeyUpdate9(),
@@ -227,15 +225,15 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 						categoryFieldMt.getFiledKeyUpdate12(), categoryFieldMt.getFiledKeyUpdate13(),
 						categoryFieldMt.getFiledKeyUpdate14(), categoryFieldMt.getFiledKeyUpdate15(),
 						categoryFieldMt.getFiledKeyUpdate16(), categoryFieldMt.getFiledKeyUpdate17(),
-						categoryFieldMt.getFiledKeyUpdate18(), categoryFieldMt.getFiledKeyUpdate19(),
-						categoryFieldMt.getFiledKeyUpdate20(), "", optManualSetting.get().getSuppleExplanation(),
-						categoryFieldMt.getParentTblJpName(), categoryFieldMt.getHasParentTable().value,
-						categoryFieldMt.getParentTblName(), categoryFieldMt.getFieldParent1(),
-						categoryFieldMt.getFieldParent2(), categoryFieldMt.getFieldParent3(),
-						categoryFieldMt.getFieldParent4(), categoryFieldMt.getFieldParent5(),
-						categoryFieldMt.getFieldParent6(), categoryFieldMt.getFieldParent7(),
-						categoryFieldMt.getFieldParent8(), categoryFieldMt.getFieldParent9(),
-						categoryFieldMt.getFieldParent10(), surveyPreservation);
+						categoryFieldMt.getFiledKeyUpdate18(), categoryFieldMt.getFiledKeyUpdate19(), categoryFieldMt.getFiledKeyUpdate20(), 
+						screenRetentionPeriod, optManualSetting.get().getSuppleExplanation(),
+						categoryFieldMt.getParentTblJpName(), categoryFieldMt.getHasParentTable().value, categoryFieldMt.getParentTblName(),
+						categoryFieldMt.getFieldParent1(), categoryFieldMt.getFieldParent2(),
+						categoryFieldMt.getFieldParent3(), categoryFieldMt.getFieldParent4(),
+						categoryFieldMt.getFieldParent5(), categoryFieldMt.getFieldParent6(),
+						categoryFieldMt.getFieldParent7(), categoryFieldMt.getFieldParent8(),
+						categoryFieldMt.getFieldParent9(), categoryFieldMt.getFieldParent10(),
+						surveyPreservation);
 
 				repoTableList.add(listtable);
 			}
@@ -447,15 +445,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					+ tableList.getTableJapaneseName() + FILE_EXTENSION, headerCsv, dataSourceCsv);
 
 			generator.generate(generatorContext, fileData);
-
 		}
-		
-		ApplicationTemporaryFilesContainer applicationTemporaryFilesContainer 
-			= applicationTemporaryFileFactory.createContainer();
-		Path path = applicationTemporaryFilesContainer.zipWithName(generatorContext, "abc.zip");
-		
-		applicationTemporaryFilesContainer.removeContainer();
-		path.toFile();
 	}
 
 	private Object getValueByPropertyName(Object object, String fieldName) {
