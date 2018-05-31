@@ -519,6 +519,17 @@ module nts.uk.at.view.kwr001.a {
                     nts.uk.ui.dialog.error({ messageId: "Msg_1184" });
                     return false;
                 }
+                
+                if (_.isEmpty(self.selectedCodeA7_3())) {
+                    nts.uk.ui.dialog.error({ messageId: "Msg_1141" });
+                    return false;
+                }
+                
+                if (_.isEmpty(self.multiSelectedCode())) {
+                    nts.uk.ui.dialog.error({ messageId: "Msg_37" });
+                    return false;
+                }
+                
                 return true;
             }
             
