@@ -533,7 +533,7 @@ module nts.uk.at.view.kwr001.a {
                 }
                 
                 if (_.isEmpty(self.multiSelectedCode())) {
-                    nts.uk.ui.dialog.error({ messageId: "Msg_37" });
+                    nts.uk.ui.dialog.error({ messageId: "Msg_884" });
                     return false;
                 }
                 
