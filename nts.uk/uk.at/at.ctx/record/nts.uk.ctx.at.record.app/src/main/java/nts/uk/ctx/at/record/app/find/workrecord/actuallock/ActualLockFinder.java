@@ -138,7 +138,8 @@ public class ActualLockFinder {
 		// Find ActualLock By ClosureId
 		Optional<ActualLock> actualLockOpt = this.actualLockRepo.findById(companyId, closureId);
 		if (!actualLockOpt.isPresent()) {
-			return null;
+			return ActualLockFindDto.builder().closureId(closureId).dailyLockState(LockStatus.UNLOCK.value)
+					.monthlyLockState((LockStatus.UNLOCK.value)).build();
 		}
 		// Save To Memento
 		actualLockOpt.get().saveToMemento(dto);

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
+// 勤怠項目の種類
 public enum TypeOfItem {
 	
 	/* スケジュール */

@@ -654,15 +654,16 @@ module nts.uk.at.view.kmf022 {
                 self.selectedIdA5_14 = ko.observable(0);
                 self.enableA5_14 = ko.observable(true);
                 self.itemListA5_16 = ko.observableArray([
-                    new ItemModel(1, '0'),
-                    new ItemModel(2, '1'),
-                    new ItemModel(3, '2'),
-                    new ItemModel(4, '3'),
-                    new ItemModel(5, '4'),
-                    new ItemModel(6, '5'),
-                    new ItemModel(7, '6'),
+                    new ItemModel(0, '0'),
+                    new ItemModel(1, '1'),
+                    new ItemModel(2, '2'),
+                    new ItemModel(3, '3'),
+                    new ItemModel(4, '4'),
+                    new ItemModel(5, '5'),
+                    new ItemModel(6, '6'),
+                    new ItemModel(7, '7'),
                 ]);
-                self.selectedCodeA5_16 = ko.observable(1);
+                self.selectedCodeA5_16 = ko.observable(7);
                 self.selectedIdA5_18 = ko.observable(0);
                 self.selectedIdA5_19 = ko.observable(0);
                 self.selectedIdA5_20 = ko.observable(0);
@@ -867,9 +868,9 @@ module nts.uk.at.view.kmf022 {
                 self.enableA8_34_20 = ko.observable(false);
                 let listPrePostInitialAtr = __viewContext.enums.PrePostInitialAtr;
                 self.itemListA8_33 = ko.observableArray([]);
-                _.forEach(listPrePostInitialAtr,(obj)=>{
-                    self.itemListA8_33.push(new ItemModel(obj.value, obj.name));   
-                }); 
+                _.forEach(listPrePostInitialAtr, (obj) => {
+                    self.itemListA8_33.push(new ItemModel(obj.value, obj.name));
+                });
                 self.selectedCodeA8_33 = ko.observable(0);
                 self.selectedCodeA8_33_1 = ko.observable(0);
                 self.selectedCodeA8_33_2 = ko.observable(0);
@@ -1054,26 +1055,26 @@ module nts.uk.at.view.kmf022 {
                 self.selectedIdB35 = ko.observable(0);
                 self.selectedIdB36 = ko.observable(0);
 
-//                self.itemListB30 = ko.observableArray([
-//                    new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
-//                    new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
-//                ]);
-                 let listRest = __viewContext.enums.BreakReflect;
+                //                self.itemListB30 = ko.observableArray([
+                //                    new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
+                //                    new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
+                //                ]);
+                let listRest = __viewContext.enums.BreakReflect;
                 self.itemListB30 = ko.observableArray([]);
-                _.forEach(listRest,(a)=>{
-                    self.itemListB30.push(new ItemModel(a.value, a.name));   
-                }); 
+                _.forEach(listRest, (a) => {
+                    self.itemListB30.push(new ItemModel(a.value, a.name));
+                });
                 self.selectedCodeB30 = ko.observable(0);
-                
-//                self.itemListB33 = ko.observableArray([
-//                    new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
-//                    new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
-//                ]);
+
+                //                self.itemListB33 = ko.observableArray([
+                //                    new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
+                //                    new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
+                //                ]);
                 let listUnitAssignmentOvertime = __viewContext.enums.UnitAssignmentOvertime;
                 self.itemListB33 = ko.observableArray([]);
-                _.forEach(listUnitAssignmentOvertime,(b)=>{
-                    self.itemListB33.push(new ItemModel(b.value, b.name));   
-                }); 
+                _.forEach(listUnitAssignmentOvertime, (b) => {
+                    self.itemListB33.push(new ItemModel(b.value, b.name));
+                });
                 self.selectedCodeB33 = ko.observable(0);
 
                 //i
@@ -1266,13 +1267,13 @@ module nts.uk.at.view.kmf022 {
                 self.selectedIdD16 = ko.observable(0);
                 self.enableD15 = ko.observable(true);
 
-//                self.selectedValueD13.subscribe((value) => {
-//                    if (value == 1) {
-//                        self.enableD15(true);
-//                    } else {
-//                        self.enableD15(false);
-//                    }
-//                });
+                //                self.selectedValueD13.subscribe((value) => {
+                //                    if (value == 1) {
+                //                        self.enableD15(true);
+                //                    } else {
+                //                        self.enableD15(false);
+                //                    }
+                //                });
                 //e
                 self.itemListE9 = ko.observableArray([
                     new ItemModel(0, nts.uk.resource.getText('KAF022_195')),
@@ -1324,13 +1325,13 @@ module nts.uk.at.view.kmf022 {
                 self.valueE17 = ko.observable('');
                 self.enableE18 = ko.observable(false);
                 self.checkedE11_5 = ko.observable(false);
-//                self.selectedValueE11.subscribe((newValue) => {
-//                    if (newValue == 2) {
-//                        self.enableE11_5(true);
-//                    } else {
-//                        self.enableE11_5(false);
-//                    }
-//                })
+                //                self.selectedValueE11.subscribe((newValue) => {
+                //                    if (newValue == 2) {
+                //                        self.enableE11_5(true);
+                //                    } else {
+                //                        self.enableE11_5(false);
+                //                    }
+                //                })
                 //f
                 self.selectedIdF10 = ko.observable(0);
                 self.selectedIdF11 = ko.observable(0);
@@ -1373,13 +1374,13 @@ module nts.uk.at.view.kmf022 {
                     new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
                     new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
                 ]);
-//                self.selectedValueF13.subscribe((newValue) => {
-//                    if (newValue == 2) {
-//                        self.enableF13_1(true);
-//                    } else {
-//                        self.enableF13_1(false);
-//                    }
-//                })
+                //                self.selectedValueF13.subscribe((newValue) => {
+                //                    if (newValue == 2) {
+                //                        self.enableF13_1(true);
+                //                    } else {
+                //                        self.enableF13_1(false);
+                //                    }
+                //                })
                 //g
                 self.itemListG16 = ko.observableArray([
                     new ItemModel(0, nts.uk.resource.getText('KAF022_221')),
@@ -1653,7 +1654,7 @@ module nts.uk.at.view.kmf022 {
             loadData(): void {
                 let self = this;
                 nts.uk.ui.block.grayout();
-                service.findAllData().done((data: any)=> {
+                service.findAllData().done((data: any) => {
                     self.initDataA4(data);
                     self.initDataA5(data);
                     self.initDataA5_24(data);
@@ -1665,7 +1666,7 @@ module nts.uk.at.view.kmf022 {
                     self.initDataA16(data);
                     self.initDataA15();
                     self.initDataA17(data);
-    
+
                     self.initDataB(data);
                     self.initDataC(data);
                     self.initDataD(data);
@@ -1676,12 +1677,12 @@ module nts.uk.at.view.kmf022 {
                     self.initDataI(data);
                     self.initDataJ(data);
                     self.initDataK(data);
-                }).always(()=>{
+                }).always(() => {
                     nts.uk.ui.errors.clearAll();
                     nts.uk.ui.block.clear();
                     $("#a4_6").focus();
                 });
-                    
+
             }
             initDataA4(allData: any): void {
                 let self = this;
@@ -1693,7 +1694,7 @@ module nts.uk.at.view.kmf022 {
                     self.sizeArrayA4(data.length);
                     let ids = _.map(data, 'id');
                     let closureId = {
-                        closureId:ids   
+                        closureId: ids
                     };
                     service.findApp(closureId).done((arr: any) => {
                         _.forEach(arr, (obj: any, index: number) => {
@@ -1708,11 +1709,11 @@ module nts.uk.at.view.kmf022 {
                     });
                 }
             }
-            
-            initDataA5(allData:any): void {
+
+            initDataA5(allData: any): void {
                 let self = this;
                 let data = allData.appliSet;
-                if(data) {
+                if (data) {
                     self.companyId(data.companyId);
                     // reasonDisp
                     self.selectedIdA5_14(data.appReasonDispAtr);
@@ -1732,23 +1733,23 @@ module nts.uk.at.view.kmf022 {
                     self.selectedIdA5_23(data.actualExcessMessDispAtr);
                 }
             }
-            
-            initDataA5_24(allData: any): void{
+
+            initDataA5_24(allData: any): void {
                 let self = this;
                 let data = allData.appSet;
-                if(data){
+                if (data) {
                     // scheduleCon
                     self.selectedIdA5_24(data.scheduleCon);
                     self.selectedIdA5_25(data.achiveCon);
                 }
             }
-            
-            initDataA6(allData:any): void {
+
+            initDataA6(allData: any): void {
                 let self = this;
                 let listAppType = __viewContext.enums.ApplicationType;
                 self.listDataA6([]);
                 let data = allData.appName;
-                if(data) {
+                if (data) {
                     _.forEach(listAppType, (appType) => {
                         let obj: any = _.find(data, ['appType', appType.value]);
                         if (obj) {
@@ -1759,13 +1760,13 @@ module nts.uk.at.view.kmf022 {
                     });
                 }
             }
-            initDataA7AndA8(allData:any): void {
+            initDataA7AndA8(allData: any): void {
                 let self = this;
                 let listAppType = __viewContext.enums.ApplicationType;
                 self.listDataA7([]);
                 self.listDataA8([])
                 let data = allData.appBf;
-                if(data) {
+                if (data) {
                     _.forEach(listAppType, (appType: any) => {
                         let obj: any = _.find(data.beforeAfter, ['appType', appType.value]);
                         if (obj) {
@@ -1785,20 +1786,20 @@ module nts.uk.at.view.kmf022 {
                     });
                 }
             }
-            initDataA10(allData:any): void {
+            initDataA10(allData: any): void {
                 let self = this;
                 let data = allData.appCommon;
-                if(data) {
+                if (data) {
                     self.selectedIdA10_3(data.showWkpNameBelong);
                 }
             }
-            initDataA13(allData:any): void {
+            initDataA13(allData: any): void {
                 let self = this;
                 let listAppType = __viewContext.enums.ApplicationType;
                 self.listDataA13([]);
                 let data = allData.proxy;
                 let dataA13: Array<any> = [];
-                if(data) {
+                if (data) {
                     self.listDataA13(_.map(data, 'appType'));
                     _.forEach(listAppType, (appType) => {
                         let obj: any = _.find(data, ['appType', appType.value]);
@@ -1809,10 +1810,10 @@ module nts.uk.at.view.kmf022 {
                 }
                 self.textEditorA13_4(dataA13.join(" + "));
             }
-            initDataA14(allData:any): void {
+            initDataA14(allData: any): void {
                 let self = this;
                 let data = allData.jobAssign;
-                if(data) {
+                if (data) {
                     self.selectedIdA14_3(data.isConcurrently ? 1 : 0);
                 }
             }
@@ -1843,60 +1844,60 @@ module nts.uk.at.view.kmf022 {
                 });
             }
 
-            initDataA16(allData:any): void {
+            initDataA16(allData: any): void {
                 let self = this;
                 let dataMailHd = allData.mailHd;
-                if(dataMailHd) {
+                if (dataMailHd) {
                     self.texteditorA16_7.value(dataMailHd.subject);
                     self.texteditorA16_8.value(dataMailHd.content);
                 }
-                 let dataMailOt = allData.mailOt; 
-                if(dataMailOt) {
+                let dataMailOt = allData.mailOt;
+                if (dataMailOt) {
                     self.texteditorA16_9.value(dataMailOt.subject);
                     self.texteditorA16_10.value(dataMailOt.content);
                 }
                 let dataAppTemp = allData.appTemp;
-                if(dataAppTemp) {
+                if (dataAppTemp) {
                     self.texteditorA16_11.value(dataAppTemp.content);
                 }
             }
 
-            initDataA17(allData:any): void {
+            initDataA17(allData: any): void {
                 let self = this;
                 let dataAppro = allData.approvalSettingDto;
-                    if (dataAppro) {
-                        self.selectedIdA17_5(dataAppro.prinFlg);
-                    }
+                if (dataAppro) {
+                    self.selectedIdA17_5(dataAppro.prinFlg);
+                }
                 let dataAppSet = allData.appliSet;
-                    if (dataAppSet) {
-                        self.selectedIdA17_4(dataAppSet.appContentChangeFlg);
-                        self.selectedIdA9_5(dataAppSet.attendentTimeReflectFlg);
-                        self.selectedIdA11_8(dataAppSet.appActMonthConfirmFlg);
-                        self.selectedIdA11_9(dataAppSet.appOvertimeNightFlg);
-                        self.selectedIdA11_10(dataAppSet.appActLockFlg);
-                        self.selectedIdA11_11(dataAppSet.appEndWorkFlg);
-                        self.selectedIdA11_12(dataAppSet.requireAppReasonFlg);
-                        self.selectedIdA11_13(dataAppSet.appActConfirmFlg);
-                        self.selectedIdA12_5(dataAppSet.displayPrePostFlg);
-                        self.selectedIdA12_6(dataAppSet.displaySearchTimeFlg);
-                        self.selectedIdA12_7(dataAppSet.manualSendMailAtr);
-                        self.baseDateFlg(dataAppSet.baseDateFlg);
-                        self.advanceExcessMessDispAtr(dataAppSet.advanceExcessMessDispAtr);
-                        self.hwAdvanceDispAtr(dataAppSet.hwAdvanceDispAtr);
-                        self.hwActualDispAtr(dataAppSet.hwActualDispAtr);
-                        self.actualExcessMessDispAtr(dataAppSet.actualExcessMessDispAtr);
-                        self.otAdvanceDispAtr(dataAppSet.otAdvanceDispAtr);
-                        self.otActualDispAtr(dataAppSet.otActualDispAtr);
-                        self.warningDateDispAtr(dataAppSet.warningDateDispAtr);
-                        self.appReasonDispAtr(dataAppSet.appReasonDispAtr);
-                        self.selectedIdA9_8(dataAppSet.scheReflectFlg);
-                        self.selectedIdA9_9(dataAppSet.priorityTimeReflectFlg);
-                    }
+                if (dataAppSet) {
+                    self.selectedIdA17_4(dataAppSet.appContentChangeFlg);
+                    self.selectedIdA9_5(dataAppSet.attendentTimeReflectFlg);
+                    self.selectedIdA11_8(dataAppSet.appActMonthConfirmFlg);
+                    self.selectedIdA11_9(dataAppSet.appOvertimeNightFlg);
+                    self.selectedIdA11_10(dataAppSet.appActLockFlg);
+                    self.selectedIdA11_11(dataAppSet.appEndWorkFlg);
+                    self.selectedIdA11_12(dataAppSet.requireAppReasonFlg);
+                    self.selectedIdA11_13(dataAppSet.appActConfirmFlg);
+                    self.selectedIdA12_5(dataAppSet.displayPrePostFlg);
+                    self.selectedIdA12_6(dataAppSet.displaySearchTimeFlg);
+                    self.selectedIdA12_7(dataAppSet.manualSendMailAtr);
+                    self.baseDateFlg(dataAppSet.baseDateFlg);
+                    self.advanceExcessMessDispAtr(dataAppSet.advanceExcessMessDispAtr);
+                    self.hwAdvanceDispAtr(dataAppSet.hwAdvanceDispAtr);
+                    self.hwActualDispAtr(dataAppSet.hwActualDispAtr);
+                    self.actualExcessMessDispAtr(dataAppSet.actualExcessMessDispAtr);
+                    self.otAdvanceDispAtr(dataAppSet.otAdvanceDispAtr);
+                    self.otActualDispAtr(dataAppSet.otActualDispAtr);
+                    self.warningDateDispAtr(dataAppSet.warningDateDispAtr);
+                    self.appReasonDispAtr(dataAppSet.appReasonDispAtr);
+                    self.selectedIdA9_8(dataAppSet.scheReflectFlg);
+                    self.selectedIdA9_9(dataAppSet.priorityTimeReflectFlg);
+                }
             }
-            initDataB(allData:any): void {
+            initDataB(allData: any): void {
                 let self = this;
                 let data = allData.appOt;
-                if(data) {
+                if (data) {
                     self.selectedIdB18(data.flexExcessUseSetAtr);
                     self.selectedIdB19(data.priorityStampSetAtr);
                     self.selectedIdB21(data.preTypeSiftReflectFlg);
@@ -1913,10 +1914,10 @@ module nts.uk.at.view.kmf022 {
                     self.selectedIdB36(data.normalOvertimeUseAtr);
                 }
             }
-            initDataC(allData:any): void {
+            initDataC(allData: any): void {
                 let self = this;
                 let data = allData.hdSet;
-                if(data) {
+                if (data) {
                     self.selectedIdC27(data.wrkHours);
                     self.selectedIdC28(data.actualDisp);
                     self.selectedIdC29(data.appDateContra);
@@ -1943,10 +1944,10 @@ module nts.uk.at.view.kmf022 {
                     self.texteditorC51.value(data.furikyuName);
                 }
             }
-            initDataD(allData:any): void {
+            initDataD(allData: any): void {
                 let self = this;
                 let data = allData.appChange;
-                if(data) {
+                if (data) {
                     self.selectedIdD8(data.displayResultAtr);
                     self.valueD10(data.commentFontColor1);
                     self.enableD11(data.commentFontWeight1);
@@ -1960,10 +1961,10 @@ module nts.uk.at.view.kmf022 {
                 }
             }
 
-            initDataF(allData:any): void {
+            initDataF(allData: any): void {
                 let self = this;
                 let data = allData.goBack;
-                if(data) {
+                if (data) {
                     self.selectedIdF10(data.workType);
                     self.selectedIdF11(data.performanceDisplayAtr);
                     self.selectedIdF12(data.contraditionCheckAtr);
@@ -1978,10 +1979,10 @@ module nts.uk.at.view.kmf022 {
                     self.enableF16_1(data.commentFontWeight2 == 1 ? true : false);
                 }
             }
-            initDataE(allData:any): void {
+            initDataE(allData: any): void {
                 let self = this;
                 let data = allData.tripReq;
-                if(data) {
+                if (data) {
                     self.selectedIdE9(data.workType);
                     self.selectedIdE10(data.contractCheck);
                     self.selectedValueE11(data.workChange);
@@ -1995,10 +1996,10 @@ module nts.uk.at.view.kmf022 {
                     self.enableE18(data.weight2);
                 }
             }
-            initDataG(allData:any): void {
+            initDataG(allData: any): void {
                 let self = this;
                 let data = allData.wdApp;
-                if(data) {
+                if (data) {
                     self.selectedIdG16(data.typePaidLeave);
                     self.selectedIdG18(data.restTime);
                     self.selectedIdG20(data.workTime);
@@ -2012,10 +2013,10 @@ module nts.uk.at.view.kmf022 {
                     self.selectedIdG29(data.bounSeg);
                 }
             }
-            initDataJ(allData:any): void {
+            initDataJ(allData: any): void {
                 let self = this;
                 let data = allData.stampReq;
-                if(data) {
+                if (data) {
                     self.selectedCodeJ18(data.supFrameDispNO);
                     self.selectedIdJ19(data.resultDisp);
                     self.selectedIdJ20(data.stampAtr_Work_Disp);
@@ -2036,10 +2037,10 @@ module nts.uk.at.view.kmf022 {
 
                 }
             }
-            initDataH(allData:any): void {
+            initDataH(allData: any): void {
                 let self = this;
                 let data = allData.timeHd;
-                if(data) {
+                if (data) {
                     self.selectedIdH15(data.actualDisp);
                     self.selectedIdH16(data.checkOver);
                     self.selectedIdH17(data.checkDay);
@@ -2060,10 +2061,10 @@ module nts.uk.at.view.kmf022 {
                     self.texteditorH27_1.value(data.unionName);
                 }
             }
-            initDataK(allData:any): void {
+            initDataK(allData: any): void {
                 let self = this;
                 let data = allData.wdReq;
-                if(data) {
+                if (data) {
                     self.selectedIdK12(data.deferredWorkTimeSelect);
                     self.selectedIdK13(data.simulAppliReq);
                     self.selectedIdK14(data.lettleSuperLeave);
@@ -2079,10 +2080,10 @@ module nts.uk.at.view.kmf022 {
                     self.selectedIdK22(data.appliDateContrac);
                 }
             }
-            initDataI(allData:any): void {
+            initDataI(allData: any): void {
                 let self = this;
                 let data = allData.lateEarly;
-                if(data) {
+                if (data) {
                     self.selectedIdI4(data.showResult);
                 }
             }
@@ -2091,7 +2092,7 @@ module nts.uk.at.view.kmf022 {
                 self.saveDataAt();
             }
             saveDataAt(): void {
-                if (nts.uk.ui.errors.hasError()){return;}
+                if (nts.uk.ui.errors.hasError()) { return; }
                 nts.uk.ui.block.invisible();
                 let self = this;
                 let data: any = {};
@@ -2104,7 +2105,7 @@ module nts.uk.at.view.kmf022 {
                         deadline: self.dataA4Display()[i].a4_8()
                     });
                 }
-                data.appDead = dataA4;  
+                data.appDead = dataA4;
                 data.appSet = {
                     companyId: self.companyId(),
                     reasonDisp: self.selectedIdA5_14(),
@@ -2117,12 +2118,12 @@ module nts.uk.at.view.kmf022 {
                     msgExceeded: self.selectedIdA5_23(),
                     scheduleCon: self.selectedIdA5_24(),
                     achiveCon: self.selectedIdA5_25(),
-                     
+
                 };
                 data.appCommon = {
                     companyId: self.companyId(),
                     showWkpNameBelong: self.selectedIdA10_3(),
-                     
+
                 };
                 data.proxy = {
                     companyId: self.companyId(),
@@ -2133,18 +2134,18 @@ module nts.uk.at.view.kmf022 {
                     companyId: self.companyId(),
                     subject: self.texteditorA16_7.value(),
                     content: self.texteditorA16_8.value()
-                     
+
                 };
                 data.mailOt = {
                     companyId: self.companyId(),
                     subject: self.texteditorA16_9.value(),
                     content: self.texteditorA16_10.value()
-                         
+
                 };
                 data.appTemp = {
                     companyId: self.companyId(),
                     content: self.texteditorA16_11.value()
-                         
+
                 };
                 data.appliSet = {
                     companyId: self.companyId(),
@@ -2189,9 +2190,9 @@ module nts.uk.at.view.kmf022 {
                     topComment: self.texteditorJ29.value(),
                     bottomComment: self.texteditorJ32.value(),
                     topCommentFontColor: self.valueJ30(),
-                    topCommentFontWeight: self.enableJ31()? 1 : 0,
+                    topCommentFontWeight: self.enableJ31() ? 1 : 0,
                     bottomCommentFontColor: self.valueJ30_1(),
-                    bottomCommentFontWeight: self.enableJ31_1()? 1 : 0                 
+                    bottomCommentFontWeight: self.enableJ31_1() ? 1 : 0
                 };
                 data.goBack = {
                     companyId: self.companyId(),
@@ -2207,7 +2208,7 @@ module nts.uk.at.view.kmf022 {
                     commentContent2: self.texteditorF16.value(),
                     commentFontColor2: self.valueF16_1(),
                     commentFontWeight2: (self.enableF16_1() ? 1 : 0),
-                     
+
                 };
                 data.appOt = {
                     cid: self.companyId(),
@@ -2225,7 +2226,7 @@ module nts.uk.at.view.kmf022 {
                     useOt: self.selectedIdB34(),
                     earlyOverTimeUseAtr: self.selectedIdB35(),
                     normalOvertimeUseAtr: self.selectedIdB36(),
-                     
+
                 };
                 data.hdSet = {
                     companyId: self.companyId(),
@@ -2253,7 +2254,7 @@ module nts.uk.at.view.kmf022 {
                     changeWrkHour: self.selectedIdC48(),
                     pridigCheck: self.selectedIdC49(),
                     furikyuName: self.texteditorC51.value()
-                     
+
                 };
                 data.appChange = {
                     cid: self.companyId(),
@@ -2267,7 +2268,7 @@ module nts.uk.at.view.kmf022 {
                     workChangeTimeAtr: self.selectedValueD13(),
                     initDisplayWorktime: self.selectedIdD15(),
                     excludeHoliday: self.selectedIdD16()
-                     
+
                 };
                 data.tripReq = {
                     companyId: self.companyId(),
@@ -2278,10 +2279,10 @@ module nts.uk.at.view.kmf022 {
                     lateLeave: self.selectedIdE12(),
                     comment1: self.texteditorE13.value(),
                     comment2: self.texteditorE16.value(),
-                    color1:self.valueE14(),
-                    weight1:self.enableE15()? 1 : 0,
-                    color2:self.valueE17(),
-                    weight2:self.enableE18()? 1 : 0
+                    color1: self.valueE14(),
+                    weight1: self.enableE15() ? 1 : 0,
+                    color2: self.valueE17(),
+                    weight2: self.enableE18() ? 1 : 0
                 };
                 data.wdApp = {
                     companyId: self.companyId(),
@@ -2296,7 +2297,7 @@ module nts.uk.at.view.kmf022 {
                     prefixLeave: self.selectedIdG27(),
                     directDivi: self.selectedIdG28(),
                     bounSeg: self.selectedIdG29()
-                     
+
                 };
                 data.timeHd = {
                     companyId: self.companyId(),
@@ -2318,7 +2319,7 @@ module nts.uk.at.view.kmf022 {
                     privateName: self.texteditorH26_1.value(),
                     unionLeave: (self.enableH27() ? 1 : 0),
                     unionName: self.texteditorH27_1.value()
-                     
+
                 };
                 data.wdReq = {
                     companyId: self.companyId(),
@@ -2335,12 +2336,12 @@ module nts.uk.at.view.kmf022 {
                     pickUpBold: self.enableK19_1() ? 1 : 0,
                     permissionDivision: self.selectedIdK21(),
                     appliDateContrac: self.selectedIdK22(),
-                                         
+
                 };
                 data.lateEarly = {
                     companyId: self.companyId(),
                     showResult: self.selectedIdI4()
-                     
+
                 };
                 data.appBf = {
                     beforeAfter: _.map(ko.toJS(self.listDataA7()), (x: any) => {
@@ -2369,10 +2370,10 @@ module nts.uk.at.view.kmf022 {
                         //Load data setting
                         self.loadData();
                     });
-                }).always(()=>{
+                }).always(() => {
                     nts.uk.ui.block.clear();
                 });
-           
+
             }
 
         }
@@ -2427,7 +2428,7 @@ module nts.uk.at.view.kmf022 {
                 this.appTypeName = ko.observable(appTypeName);
                 this.appType = ko.observable(appType);
                 this.retrictPreMethodFlg = ko.observable(retrictPreMethodFlg);
-                this.retrictPreUseFlg = ko.observable(retrictPreUseFlg==1 ? true : false);
+                this.retrictPreUseFlg = ko.observable(retrictPreUseFlg == 1 ? true : false);
                 this.retrictPreDay = ko.observable(retrictPreDay);
                 this.retrictPreTimeDay = ko.observable(retrictPreTimeDay);
                 this.retrictPostAllowFutureFlg = ko.observable(retrictPostAllowFutureFlg == 1 ? true : false);

@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -17,7 +16,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeZoneOutput
 import nts.uk.ctx.at.record.dom.stamp.StampItem;
 import nts.uk.ctx.at.record.dom.stamp.StampRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.StampCardItem;
-import nts.uk.ctx.at.record.dom.stamp.card.StampCardRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.StampCardtemRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
@@ -28,12 +27,13 @@ import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
 public class StampServiceImpl implements StampDomainService {
+
 	@Inject
 	private ErrMessageInfoRepository errRepo;
 	@Inject
 	private StampRepository stampRepo;
 	@Inject
-	private StampCardRepository stampCardRepo;
+	private StampCardtemRepository stampCardRepo;
 
 	public List<StampItem> handleData(StampReflectRangeOutput s, ExecutionType reCreateAttr,
 			String empCalAndSumExecLogID, GeneralDate date, String employeeId, String companyId) {

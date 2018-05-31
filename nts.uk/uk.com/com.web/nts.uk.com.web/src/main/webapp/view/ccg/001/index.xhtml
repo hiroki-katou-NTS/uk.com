@@ -34,10 +34,11 @@
 				<div id="content" class="cf">
 					<div id="com-ccg001"></div>
 					<h1>CCG001 社員範囲選択 （共通部品） Employee range selection</h1>
-					<note style="width:500px;"> <b>Update
-							2018/04/16</b> <br />
-						- Add optional properties: isInDialog, showOnStart<br/>
-						- Most properties are optional now.
+					<note style="width:500px;">
+						<b>Update 2018/05/23</b> <br />
+						- Add lazyload for tab 2 <br /><br />
+						<b>Important note: </b>
+						$('#com-ccg001').ntsGroupComponent(ccg001ComponentOption) can't be executed before __viewContext.bind(screenModel)
 					</note>
 					<div class="table" style="margin-left: 100px; margin-bottom:  30px;">
 					<br/>
@@ -63,10 +64,10 @@
 						<div data-bind="ntsCheckBox:{checked: isQuickSearchTab}">Show QuickSearch (クイック検索)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: isAdvancedSearchTab}">Show AdvancedSearch (詳細検索タブ)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: showBaseDate}">Show BaseDate (基準日利用)</div><br/>
-						<div data-bind="ntsCheckBox:{checked: showClosure}">Show Closure (就業締め日利用)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: showAllClosure}">Show All Closure (全締め表示)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: showPeriod}">Show Period (対象期間利用)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: periodFormatYM}">Show period format: YM(対象期間精度)</div><br/>
+						<div data-bind="ntsCheckBox:{checked: lazyLoad}">Enable lazy load</div><br/>
 						</div>
 						<div class="cell" style="width: 500px">
 							<h2>Required param properties:</h2>
@@ -193,7 +194,6 @@ const ccg001ComponentOption: GroupOption = {
 	showQuickSearchTab: true,
 	showAdvancedSearchTab: true,
 	showBaseDate: true,
-	showClosure: true,
 	showAllClosure: true,
 	showPeriod: true,
 	periodFormatYM: false,
@@ -241,7 +241,6 @@ export interface GroupOption {
     showQuickSearchTab?: boolean; // クイック検索
     showAdvancedSearchTab?: boolean; // 詳細検索
     showBaseDate?: boolean; // 基準日利用
-    showClosure?: boolean; // 就業締め日利用
     showAllClosure?: boolean; // 全締め表示
     showPeriod?: boolean; // 対象期間利用
     periodFormatYM?: boolean; // 対象期間精度
@@ -269,6 +268,7 @@ export interface GroupOption {
     showJobTitle?: boolean; // 職位条件
     showWorktype?: boolean; // 勤種条件
     isMutipleCheck?: boolean; // 選択モード
+    isTab2Lazy?: boolean;
 
     /** Data returned */
     returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
@@ -321,10 +321,6 @@ export interface Ccg001ReturnedData {
 										<tr>
 											<td>showBaseDate<br/><i>(optional)</i></td>
 											<td><b>Type:</b> boolean<br /><b>Default:</b> = true<br/> Show reference date</td>
-										</tr>
-										<tr>
-											<td>showClosure<br/><i>(optional)</i></td>
-											<td><b>Type:</b> boolean<br /><b>Default:</b> = false<br/> Show closure selection</td>
 										</tr>
 										<tr>
 											<td>showAllClosure<br/><i>(optional)</i></td>
@@ -417,6 +413,10 @@ export interface Ccg001ReturnedData {
 										<tr>
 											<td>showOnStart<br/><i>(optional)</i></td>
 											<td><b>Type:</b> boolean<br /><b>Default:</b> = false<br/>Show component on start if value = true</td>
+										</tr>
+										<tr>
+											<td>isTab2Lazy<br/><i>(optional)</i></td>
+											<td><b>Type:</b> boolean<br /><b>Default:</b> = false<br/>Enable lazyload for tab2</td>
 										</tr>
 										<tr>
 											<td>returnDataFromCcg001</td>

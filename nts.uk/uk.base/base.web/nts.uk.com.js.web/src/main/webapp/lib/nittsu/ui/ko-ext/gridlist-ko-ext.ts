@@ -22,14 +22,17 @@ module nts.uk.ui.koExtentions {
             var optionsValue: string = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
             var options = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
             var deleteOptions = ko.unwrap(data.deleteOptions);
-            var observableColumns = ko.unwrap(data.columns);
+            var observableColumns = _.cloneDeep(ko.unwrap(data.columns));
+            let selectionDisables = ko.unwrap(data.selectionDisables);
             var showNumbering = ko.unwrap(data.showNumbering) === true ? true : false;
+            var columnResize: boolean = ko.unwrap(data.columnResize);
             var enable: boolean = ko.unwrap(data.enable);
             var value = ko.unwrap(data.value);
             var virtualization = true;
             
             let rows = ko.unwrap(data.rows);
             $grid.data("init", true);
+            $grid.data("selectionDisables", selectionDisables); 
             
             if (data.multiple){
                 ROW_HEIGHT = 24;
@@ -54,6 +57,11 @@ module nts.uk.ui.koExtentions {
                     enableRowNumbering: false, //this feature is not needed
                     rowSelectorColumnWidth: 25
                 });    
+            }
+            if(columnResize){
+                features.push({
+                    name: "Resizing"
+                });
             }
             let tabIndex = $grid.attr("tabindex");
             $grid.data("tabindex", nts.uk.util.isNullOrEmpty(tabIndex) ? "0" : tabIndex);
@@ -98,6 +106,24 @@ module nts.uk.ui.koExtentions {
                         
                         ROW_HEIGHT = 30;
                     }       
+                } else {
+                    c.formatter = function(val, row) {
+                        if (row) {
+                            setTimeout(() => {
+                                let id = row[optionsValue];
+                                let disables = $grid.data("selectionDisables");
+                                if (!disables) return;
+                                _.forEach(disables, d => {
+                                    if (id === d) {
+                                        let $row = $grid.igGrid("rowById", id, false);
+                                        if (!$row.hasClass("row-disable")) $row.addClass("row-disable");
+                                        return false;
+                                    }
+                                });
+                            }, 0);
+                        }
+                        return val;
+                    };
                 }
                 return c; 
             });
@@ -162,18 +188,47 @@ module nts.uk.ui.koExtentions {
             $grid.ntsGridList('setupSelecting');
             
             if (data.multiple){
-                $grid.bind('iggridrowselectorscheckboxstatechanging', (eventObject: JQueryEventObject) => {
-                    return (String($grid.data("enable")) === "false") ? false : true;
+                $grid.bind('iggridrowselectorscheckboxstatechanging', (eventObject: JQueryEventObject, data: any) => {
+                    if (String($grid.data("enable")) === "false") return false;
+                    let disables = $grid.data("selectionDisables");
+                    if (disables && !util.isNullOrUndefined(_.find(disables, d => data.rowKey === d))) {
+                        return false;
+                    }
+                    return true;
                 });
             }
-            $grid.bind('iggridselectionrowselectionchanging', (eventObject: JQueryEventObject) => {
-                return (String($grid.data("enable")) === "false") ? false : true;
+            $grid.bind('iggridselectionrowselectionchanging', (eventObject: JQueryEventObject, ui: any) => {
+                if (String($grid.data("enable")) === "false") return false;
+                let disables = $grid.data("selectionDisables");
+                if (disables && util.isNullOrUndefined(ui.row.startIndex)
+                    && !util.isNullOrUndefined(_.find(disables, d => ui.row.id === d))) {
+                    return false;
+                }
+                return true;
             });
 
             $grid.bind('selectionchanged', () => {
                 $grid.data("ui-changed", true);
                 if (data.multiple) {
                     let selected: Array<any> = $grid.ntsGridList('getSelected');
+                    
+                    let disables = $grid.data("selectionDisables");
+                    let disableIds = [];
+                    if (disables) {
+                        _.forEach(selected, (s, i) => {
+                            _.forEach(disables, (d) => {
+                                if (d === s.id) {
+                                    $grid.igGridSelection("deselectRowById", d);
+                                    disableIds.push(i);
+                                    return false;
+                                }
+                            });
+                        });
+                        
+                        disableIds.sort((i1, i2) => i2 - i1).forEach(d => {
+                            selected.splice(d, 1);
+                        });
+                    }
                     if (!nts.uk.util.isNullOrEmpty(selected)) {
                         data.value(_.map(selected, s => s.id));
                     } else {
@@ -223,6 +278,7 @@ module nts.uk.ui.koExtentions {
             var optionsValue: string = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
             var gridSource = $grid.igGrid('option', 'dataSource');
             var sources = (data.dataSource !== undefined ? data.dataSource() : data.options());
+            let disables = ko.unwrap(data.selectionDisables);
             
             if($grid.data("enable") !== enable){
                 if(!enable){
@@ -235,6 +291,15 @@ module nts.uk.ui.koExtentions {
             }
             
             $grid.data("enable", enable);
+            
+            if (disables) {
+                _.forEach(disables, (d) => {
+                    let $row = $grid.igGrid("rowById", d, false);
+                    if ($row && !$row.hasClass("row-disable")) {
+                        $row.addClass("row-disable");
+                    }
+                });
+            }
             
             if(String($grid.attr("filtered")) === "true"){
                 let filteredSource = [];

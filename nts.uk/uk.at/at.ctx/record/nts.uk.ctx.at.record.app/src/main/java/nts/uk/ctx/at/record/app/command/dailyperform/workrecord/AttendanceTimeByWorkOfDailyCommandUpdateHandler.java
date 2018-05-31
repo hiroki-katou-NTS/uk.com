@@ -18,7 +18,7 @@ public class AttendanceTimeByWorkOfDailyCommandUpdateHandler extends CommandFaca
 	protected void handle(CommandHandlerContext<AttendanceTimeByWorkOfDailyCommand> context) {
 		AttendanceTimeByWorkOfDailyCommand command = context.getCommand();
 		if(command.getData().isPresent()){
-			repo.update(command.getData().get());
+			repo.update(command.toDomain().get());
 		}
 	}
 }

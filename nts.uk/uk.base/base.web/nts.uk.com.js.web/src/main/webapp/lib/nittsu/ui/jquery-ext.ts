@@ -57,7 +57,7 @@ module nts.uk.ui.jqueryExtentions {
         
         let $container = $dialog.closest(".ui-dialog");
         
-        let offsetContentsArea = $("#header").height();
+        let offsetContentsArea = window.parent.$("#header").height();
         let offsetDialog = $container.offset();
         
         if (offsetDialog.top < offsetContentsArea) {
@@ -79,6 +79,7 @@ module nts.uk.ui.jqueryExtentions {
                 $container.offset(offsetDialog);
                 return false;
             }
+            $dialog.data("stopdrop", offsetDialog)
         }});
         
         return $dialog;

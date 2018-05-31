@@ -229,7 +229,7 @@
 }
 
 .step3-title-name {
-	width: 140px;
+	width: 180px;
 }
 
 .step3-title-value {
@@ -264,4 +264,8 @@
 
 #hor-scroll-button-hide {
 	position: absolute !important;
+}
+
+.nts-wizard > .content > .body {
+	min-width: 820px;
 }

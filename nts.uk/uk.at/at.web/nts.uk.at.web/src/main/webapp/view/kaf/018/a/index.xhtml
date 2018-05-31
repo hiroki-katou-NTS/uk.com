@@ -7,35 +7,39 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-		<script>var dialogSize = { width: 1500, height: 800 };</script>
+			<script>var dialogSize = { width: 1500, height: 800 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kaf018.a.main.css" />
- 		    <com:scriptfile path="kaf018.a.service.js" />
+			<com:scriptfile path="kaf018.a.service.js" />
 			<com:scriptfile path="kaf018.a.vm.js" />
 			<com:scriptfile path="kaf018.a.start.js" />
 			<!-- KCP004 -->
-			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
-			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- A1_1メール設定 -->
-				<button tabindex="1" data-bind="click: gotoH">#{i18n.getText('KAF018_9')}</button>
+				<div class="bts-sendMail">
+					<button tabindex="1" data-bind="click: gotoH">#{i18n.getText('KAF018_9')}</button>
+				</div>
 			</div>
 			<div id="contents-area">
 				<!-- A5パネル -->
-				<div class = "content-area-left" data-bind="ntsPanel:{width: '456px', height: '430px', direction: 'right', showIcon: true, visible: true}">
-					<div class ="content-top">
+				<div class="content-area-left"
+					data-bind="ntsPanel:{width: '456px', height: '430px', direction: 'right', showIcon: true, visible: true}">
+					<div class="content-top">
 						<table>
 							<tr>
 								<td>
 									<!-- A3対象締め（ラベル） -->
-									<div class="content-top-lable" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_10')}</div>
+									<div class="content-top-lable"
+										data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_10')}</div>
 								</td>
 								<td>
 									<!-- A3_1対象締め -->
-									<div id="combo-box" tabindex="2" class="fix-combobox"
+									<div id="combo-box" tabindex="1" class="fix-combobox"
 										data-bind="ntsComboBox: {
 										        optionsValue: 'closureId',
 										        visibleItemsCount: 5,
@@ -55,25 +59,33 @@
 						</table>
 					</div>
 					<!-- A2職場リスト -->
-					<div  class ="content-bottom" tabindex="3">
+					<div class="content-bottom" tabindex="1">
 						<div id="tree-grid"></div>
 					</div>
 				</div>
 				<!-- A4形式選択 -->
-				<div class="content-area-right" tabindex="4">
-				 	<!-- A4_1申請承認 -->
+				<div class="content-area-right" tabindex="1">
+					<!-- A4_1申請承認 -->
 					<!-- A4_2日別・月別確認  -->
-					<div class = "format-selected"
+					<div class="content-left-top">
+						<div class="format-selected" tabindex="-1"
 							data-bind="ntsRadioBoxGroup: {
 								options: items,
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: selectedValue,
 								enable: enable}">
+						</div>
+						<com:ko-if bind="isVisibleComfirm">
+							<div class="format-checkbox" tabindex="-1"
+								data-bind="ntsCheckBox: { checked: isDailyComfirm, enable: isEnableDailyComfirm, text: '#{i18n.getText('KAF018_14')}' }"></div>
+						</com:ko-if>
 					</div>
-					<div class ="format-checkbox" data-bind="ntsCheckBox: { checked: isDailyComfirm, enable: enable, text: '#{i18n.getText('KAF018_14')}' }"></div>
 					<!-- A10抽出 -->
-					<button class ="btn-excute large" tabindex="5" data-bind="click: choiceNextScreen">#{i18n.getText('KAF018_16')}</button>
+					<div class="content-left-bottom">
+					<button class="btn-excute large" tabindex="2"
+						data-bind="click: choiceNextScreen">#{i18n.getText('KAF018_16')}</button>
+					</div>
 				</div>
 				<div class="clear"></div>
 			</div>

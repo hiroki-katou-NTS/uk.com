@@ -3,10 +3,13 @@ package nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Embeddable;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
+import nts.arc.time.GeneralDateTime;
 
 /**
  * The primary key class for the SGWMT_LOCKOUT_DATA database table.
@@ -28,6 +31,11 @@ public class SgwmtLockoutDataPK implements Serializable {
 	/** The contract cd. */
 	@Column(name="CONTRACT_CD")
 	private String contractCd;
+	
+	/** The lockout date time. */
+	@Column(name="LOCKOUT_DATE_TIME")
+	@Convert(converter = GeneralDateTimeToDBConverter.class)
+	private GeneralDateTime lockoutDateTime;
 
 	/**
 	 * Instantiates a new sgwmt lockout data PK.

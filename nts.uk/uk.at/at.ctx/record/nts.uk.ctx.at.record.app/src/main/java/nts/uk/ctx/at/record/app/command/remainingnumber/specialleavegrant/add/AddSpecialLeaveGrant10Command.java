@@ -10,6 +10,7 @@ import nts.uk.shr.pereg.app.PeregItem;
 @Getter
 public class AddSpecialLeaveGrant10Command {
 
+	
 	private String specialid;
 	private String cid;
 	private int specialLeaCode;

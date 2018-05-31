@@ -223,6 +223,7 @@ public class WorkplacePubImp implements SyWorkplacePub {
 
 		if (listSid.isEmpty())
 			return new ArrayList<>();
+<<<<<<< HEAD
 		
 		List<AffCompanyHist> listAffCompanyHist = new ArrayList<>();
 
@@ -245,6 +246,11 @@ public class WorkplacePubImp implements SyWorkplacePub {
 			listAffCompanyHist = affCompanyHistRepo.getAffCompanyHistoryOfEmployees(listSid);
 		}
 		
+=======
+
+		List<AffCompanyHist> listAffCompanyHist = affCompanyHistRepo.getAffCompanyHistoryOfEmployees(listSid);
+
+>>>>>>> delivery/release_user
 		Map<String, AffCompanyHist> mapPidAndAffCompanyHist = listAffCompanyHist.stream()
 				.collect(Collectors.toMap(x -> x.getPId(), x -> x));
 
@@ -517,11 +523,11 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		List<AffAtWorkplaceExport> result = new ArrayList<AffAtWorkplaceExport>();
 
 		if (sids.isEmpty() || baseDate == null)
-			return null;
+			return Collections.emptyList();
 
 		List<AffWorkplaceHistory> lstAffWkpHist = affWorkplaceHistoryRepository.getByListSid(sids);
 		if (lstAffWkpHist.isEmpty())
-			return null;
+			return Collections.emptyList();
 
 		List<String> historyIds = new ArrayList<>();
 
@@ -540,7 +546,7 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		});
 
 		if (historyIds.isEmpty())
-			return null;
+			return Collections.emptyList();
 
 		List<AffWorkplaceHistoryItem> affWrkPlcItems = affWorkplaceHistoryItemRepository.findByHistIds(historyIds);
 
