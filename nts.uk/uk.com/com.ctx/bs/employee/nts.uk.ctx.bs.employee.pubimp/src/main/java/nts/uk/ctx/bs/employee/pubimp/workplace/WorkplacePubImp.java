@@ -223,7 +223,6 @@ public class WorkplacePubImp implements SyWorkplacePub {
 
 		if (listSid.isEmpty())
 			return new ArrayList<>();
-<<<<<<< HEAD
 		
 		List<AffCompanyHist> listAffCompanyHist = new ArrayList<>();
 
@@ -246,11 +245,6 @@ public class WorkplacePubImp implements SyWorkplacePub {
 			listAffCompanyHist = affCompanyHistRepo.getAffCompanyHistoryOfEmployees(listSid);
 		}
 		
-=======
-
-		List<AffCompanyHist> listAffCompanyHist = affCompanyHistRepo.getAffCompanyHistoryOfEmployees(listSid);
-
->>>>>>> delivery/release_user
 		Map<String, AffCompanyHist> mapPidAndAffCompanyHist = listAffCompanyHist.stream()
 				.collect(Collectors.toMap(x -> x.getPId(), x -> x));
 
