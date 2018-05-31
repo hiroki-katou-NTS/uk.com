@@ -19,6 +19,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
         residualDay: KnockoutObservable<any> = ko.observable(0);
         residualDayDispay: KnockoutObservable<any> = ko.observable('0' + " " + getText('KDM001_27'));
         info: any = getShared("KDM001_EFGH_PARAMS");
+        disables: Array<any> = [];
         constructor() {
             let self = this;
             
@@ -89,6 +90,11 @@ module nts.uk.at.view.kdm001.e.viewmodel {
                           self.currentCodeList.push(item.subOfHDID);
                         });
                     }
+                    _.forEach(self.items(), function(item: ItemModel) {
+                        if(item.requiredDays > parseFloat(self.info.rowValue.requiredDays)) {
+                            self.disables.push(item.subOfHDID);    
+                        }    
+                    })
                 } else {
                     dialog.info({messageId: 'Msg_1068'})    
                 }
