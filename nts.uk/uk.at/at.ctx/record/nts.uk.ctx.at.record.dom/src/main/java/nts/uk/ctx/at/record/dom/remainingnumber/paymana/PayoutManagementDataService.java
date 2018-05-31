@@ -13,7 +13,6 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.DigestionAtr;
-import nts.uk.ctx.at.record.dom.remainingnumber.base.HolidayAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.AddSubHdManagementService;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.ItemDays;
@@ -38,7 +37,7 @@ public class PayoutManagementDataService {
 	@Inject
 	private AddSubHdManagementService addSubHdManagementService;
 	
-	private static final int ZERO = 0;
+	private static final Double ZERO = 0d;
 	
 	private List<String> checkHolidate(Boolean pickUp, Boolean pause,Boolean checkedSplit, Double requiredDays,Double subDays, Double occurredDays){
 		List<String> errors = new ArrayList<String>();
@@ -218,7 +217,7 @@ public class PayoutManagementDataService {
 			}
 			return errorList;
 		} else {
-			if (unUsedDays == ZERO) {
+			if (ZERO.equals(unUsedDays)) {
 				errorList.add("Msg_1213");
 			}
 			return errorList;
@@ -235,7 +234,7 @@ public class PayoutManagementDataService {
 			if (!errorListCheckBox.isEmpty()) {
 				return errorListCheckBox;
 			} else {
-				if(data.getUnUsedDays().v() == ZERO ){
+				if(ZERO.equals(data.getUnUsedDays().v()) ){
 					data.setStateAtr(DigestionAtr.USED.value);
 				}else{
 					data.setStateAtr(DigestionAtr.UNUSED.value);
