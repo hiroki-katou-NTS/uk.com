@@ -122,6 +122,10 @@ public class LayoutFinder {
 		
 		List<String> layoutIdList = simpleLayouts.stream()
 				.map(simpleLayout -> simpleLayout.getMaintenanceLayoutID()).collect(Collectors.toList());
+		
+		if (layoutIdList.isEmpty()) {
+			return new ArrayList<>();
+		}
 
 		Map<String, List<LayoutPersonInfoClassification>> classItemMap = this.itemClsRepo.getAllByLayoutIdList(layoutIdList);
 		
