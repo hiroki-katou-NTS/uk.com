@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.ws.remaingnumber;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -41,8 +43,8 @@ public class PayoutManagementDataWebService extends WebService{
 
 	@POST
 	@Path("save")
-	public List<String> save(PayManaRemainCommand command) {
-		return addHandler.handle(command);
+	public Set<String> save(PayManaRemainCommand command) {
+		return new HashSet<>(addHandler.handle(command));
 	}
 	
 	@POST

@@ -29,7 +29,8 @@ public class AddPayManaCommandHandler extends CommandHandlerWithResult<PayManaRe
 		String newIDsplit = IdentifierUtil.randomUniqueId();
 		int stateAtr = DigestionAtr.UNUSED.value;
 		boolean unknowDate = false;
-		if (command.getRemainDays().equals(0)) {
+		Double temp = new Double(0);
+		if (temp.equals(command.getRemainDays())) {
 			stateAtr = DigestionAtr.USED.value;
 		}
 		PayoutManagementData payMana = new PayoutManagementData(newIDPayout,cId, command.getEmployeeId(), unknowDate, command.getDayOff(), command.getExpiredDate(), command.getLawAtr(),

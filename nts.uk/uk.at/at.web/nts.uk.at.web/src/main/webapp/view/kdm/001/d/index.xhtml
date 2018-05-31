@@ -18,7 +18,7 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<!--D1 文言-->
-				<div class="down-s">
+				<div class="down-s" id="D1">
 					<span class="label">#{i18n.getText('KDM001_55')}</span>
 				</div>
 				<!--D2 対象者-->
@@ -69,13 +69,13 @@
 					editable: false,
 					enable: true,
 					columns: [
-						{ prop: 'name', length: 8 },
+						{ prop: 'name', length: 6 },
 					]}">
 					</div>
 				</div>
 				<div class="down-s set-date flex valign-center">
 					<!-- D7 法定区分 -->
-					<div class="labelTitle" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_70')}</div>		
+					<div id = "D7" class="labelTitle" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_70')}</div>		
 					<!-- D7_1 法定区分 -->
 					<!-- Combobox -->
 					<div id="D7_1" tabindex="4"
@@ -89,13 +89,13 @@
 					editable: false,
 					enable: true,
 					columns: [
-						{ prop: 'name', length: 8 },
+						{ prop: 'name', length: 6 },
 					]}">
 					</div>
 				</div>
 				<div class="down-s set-due-date flex valign-center">
 					<!-- D8 期限 -->		
-					<div class="labelTitle" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_72')}</div>
+					<div id="D8" class="labelTitle" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_72')}</div>
 					<!-- D8_1 期限 -->
 					<!-- Datepicker -->
 					<div id="D8_1" tabindex="5"
@@ -133,7 +133,7 @@
 					editable: false,
 					enable: true,
 					columns: [
-						{ prop: 'name', length: 8 },
+						{ prop: 'name', length: 6 },
 					]}">
 					</div>
 				</div>
@@ -163,7 +163,7 @@
 							editable: false,
 							enable: isOptionSubHolidayEnable,
 							columns: [
-								{ prop: 'name', length: 8 },
+								{ prop: 'name', length: 6 },
 							]}">
 						</div>
 					</div>
@@ -174,7 +174,7 @@
 						<hr />
 					</div>
 					<!-- D15 残数 -->
-					<div class="labelTitle" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_85')}</div>
+					<div id = "D15" class="labelTitle" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_85')}</div>
 					<!-- D15_1 残数 -->
 					<span class="label" data-bind="text: remainDays" ></span>
 					<span class="label" data-bind="text: unit" ></span>
@@ -184,9 +184,9 @@
 				<div id="process" data-bind="visible: true"
 					style="text-align: center;">
 					<!-- D31_1 登録 -->
-					<button id="D31_1" tabindex="12" data-bind="click: createData" class="large">#{i18n.getText('KDM001_89')}</button>
+					<button id="D31_1" tabindex="12" data-bind="click: createData" class="proceed large">#{i18n.getText('KDM001_89')}</button>
 					<!-- D31_1 キャンセル -->
-					<button id="D31_2" tabindex="13" data-bind="click: closeDialog" class="large">#{i18n.getText('KDM001_90')}</button>
+					<button id="D31_2" tabindex="13" data-bind="click: closeDialog" >#{i18n.getText('KDM001_90')}</button>
 				</div>
 			</div>			
 		</ui:define>
