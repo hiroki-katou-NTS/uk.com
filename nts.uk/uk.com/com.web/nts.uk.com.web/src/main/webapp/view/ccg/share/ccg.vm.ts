@@ -241,6 +241,7 @@ module nts.uk.com.view.ccg.share.ccg {
                         self.reloadAdvanceSearchTab();
                     }
                 });
+                self.selectedTab.valueHasMutated();
 
                 self.periodStart.subscribe(startDate => {
                     if (startDate.isAfter(self.periodEnd())) {
@@ -927,10 +928,12 @@ module nts.uk.com.view.ccg.share.ccg {
 
                         // update flag isFirstTime
                         self.isFirstTime = false;
+                        dfd.resolve();
                     }));
                 } else {
                     // toggle slide ccg001
                     self.toggleSlide();
+                    dfd.resolve();
                 }
                 return dfd.promise();
             }
