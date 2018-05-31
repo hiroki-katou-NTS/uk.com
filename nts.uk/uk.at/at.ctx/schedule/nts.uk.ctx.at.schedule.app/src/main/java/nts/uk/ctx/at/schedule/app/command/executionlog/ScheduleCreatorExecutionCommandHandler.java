@@ -488,10 +488,11 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		List<ScheduleCreator> scheduleCreators = this.scheduleCreatorRepository.findAll(exeId);
 		List<String> employeeIds = scheduleCreators.stream().map(item -> item.getEmployeeId())
 				.collect(Collectors.toList());
-
+		
+		// Imported(就業)「社員の履歴情報」を取得する
 		EmployeeGeneralInfoImported empGeneralInfo = this.scEmpGeneralInfoAdapter.getPerEmpInfo(employeeIds,
 				scheduleExecutionLog.getPeriod());
-
+		// Imported(就業)「社員の在職状態」を取得する
 		List<EmploymentStatusImported> listEmploymentStatus = this.employmentStatusAdapter
 				.findListOfEmployee(employeeIds, dateAfterCorrection);
 		Map<String, List<EmploymentInfoImported>> mapEmploymentStatus = listEmploymentStatus.stream().collect(
