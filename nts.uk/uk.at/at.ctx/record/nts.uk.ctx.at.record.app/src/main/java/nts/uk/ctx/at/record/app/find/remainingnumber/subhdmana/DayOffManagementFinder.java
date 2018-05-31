@@ -30,8 +30,8 @@ public class DayOffManagementFinder {
 		daysFreeOffMana = comDayOffManaDataRepository.getByReDay(companyId, employeeId);
 		List<CompensatoryDayOffManaData> daysOffMana = new ArrayList<>();
 		daysOffMana = comDayOffManaDataRepository.getBySidComDayOffIdWithReDay(companyId, employeeId, leaveId);
-		resultDayFreeMana = daysFreeOffMana.stream().map(p -> new DayOffManagementDto(p.getDayOffDate().getDayoffDate().get(),p.getRequireDays().v().toString(),false,p.getComDayOffID())).collect(Collectors.toList());
-		resultDaysOffMana = daysOffMana.stream().map(p -> new DayOffManagementDto(p.getDayOffDate().getDayoffDate().get(),p.getRequireDays().v().toString(),true,p.getComDayOffID())).collect(Collectors.toList());
+		resultDayFreeMana = daysFreeOffMana.stream().map(p -> new DayOffManagementDto(p.getDayOffDate().getDayoffDate().orElse(null),p.getRequireDays().v().toString(),false,p.getComDayOffID())).collect(Collectors.toList());
+		resultDaysOffMana = daysOffMana.stream().map(p -> new DayOffManagementDto(p.getDayOffDate().getDayoffDate().orElse(null),p.getRequireDays().v().toString(),true,p.getComDayOffID())).collect(Collectors.toList());
 		dayOffAll.addAll(resultDaysOffMana);
 		dayOffAll.addAll(resultDayFreeMana);
 		dayOffResult.setListDayOff(dayOffAll);

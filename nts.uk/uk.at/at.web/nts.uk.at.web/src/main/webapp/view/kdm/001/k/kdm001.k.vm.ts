@@ -17,27 +17,29 @@ module nts.uk.at.view.kdm001.k.viewmodel {
         comDayOffId: KnockoutObservable<any> = ko.observable('');
         employeeId: KnockoutObservable<any> = ko.observable('');
         numberDayParam: KnockoutObservable<any> = ko.observable('');
+        disables: KnockoutObservableArray<any> = ko.observableArray([]);
         
         
         constructor() {
-            var self = this;
+            block.invisible();
+            let self = this;
             let info = getShared("KDM001_K_PARAMS");
             self.initScreen(info);
-            self.residualDay(parseFloat(self.numberDay()).toFixed(1)+' 日');
-            self.callService(self.comDayOffId(),self.employeeId());
-            
+            self.residualDay(parseFloat(self.numberDay()).toFixed(1) + ' 日');
+            self.callService(self.comDayOffId(), self.employeeId());
+
             self.columns = ko.observableArray([
                 { headerText: 'コード', dataType: 'string', key: 'leaveManaID', width: 100, hidden: true },
                 { headerText: nts.uk.resource.getText("KDM001_95"), key: 'dayOff', width: 100 },
                 { headerText: nts.uk.resource.getText("KDM001_96"), key: 'remainDaysString', width: 100 },
-                { headerText: nts.uk.resource.getText("KDM001_96"), key: 'remainDays', width: 100, hidden: true}
+                { headerText: nts.uk.resource.getText("KDM001_96"), key: 'remainDays', width: 100, hidden: true }
             ]);
-            
-            
+
+
             self.currentCodeList.subscribe(function(codesSelect) {
                 self.itemsSelected.removeAll();
                 let sumNum = 0;
-                if(codesSelect.length > 0) {
+                if (codesSelect.length > 0) {
                     _.each(codesSelect, x => {
                         let item = _.find(self.items(), x1 => { return x === x1.leaveManaID });
                         if (item) {
@@ -45,37 +47,38 @@ module nts.uk.at.view.kdm001.k.viewmodel {
                         }
                     });
                     _.each(self.itemsSelected(), x => {
-                        
-                        if(self.dateHoliday() === x.dayOff){
+
+                        if (self.dateHoliday() === x.dayOff) {
                             self.currentCodeList.remove(x.leaveManaID);
-                            nts.uk.ui.dialog.info({ messageId: "Msg_730" });
+                            //nts.uk.ui.dialog.info({ messageId: "Msg_730" });
+                            $('#multi-list').ntsError('set', { messageId: "Msg_730" });
                         } else {
                             let iNum = parseFloat(x.remainDays);
                             let day = parseFloat(self.numberDay());
                             sumNum = sumNum + iNum;
-                            self.residualDay(parseFloat((day-sumNum)).toFixed(1)+' 日');
-                            if(parseFloat(self.residualDay()) < 0) {
-                                $( "#K7_2" ).css( "color", "red" );
+                            self.residualDay(parseFloat((day - sumNum)).toFixed(1) + ' 日');
+                            if (parseFloat(self.residualDay()) < 0) {
+                                $("#K7_2").css("color", "red");
                             } else {
-                                $( "#K7_2" ).css( "color", "" );
+                                $("#K7_2").css("color", "");
                             }
                         }
                     });
                 } else {
-                   let day = parseFloat(self.numberDay());
-                   self.residualDay(parseFloat(self.numberDay()).toFixed(1)+' 日');
-                    if(parseFloat(self.residualDay()) < 0) {
-                            $( "#K7_2" ).css( "color", "red" );
+
+                    self.residualDay(parseFloat(self.numberDay()).toFixed(1) + ' 日');
+                    if (parseFloat(self.residualDay()) < 0) {
+                        $("#K7_2").css("color", "red");
                     } else {
-                            $( "#K7_2" ).css( "color", "" );    
+                        $("#K7_2").css("color", "");
                     }
                 }
             });
-            
+            block.clear();
         }
 
         public initScreen(info): void {
-            var self = this;
+            let self = this;
             if (info) {
                 self.workCode(info.selectedEmployee.workplaceCode);
                 self.workPlaceName(info.selectedEmployee.workplaceName);
@@ -102,51 +105,51 @@ module nts.uk.at.view.kdm001.k.viewmodel {
          * update
          */
         public update():void {
-            var self = this;
+            block.invisible();
+            let self = this;
             nts.uk.ui.errors.clearAll();
-            service.update(new UpdateModel(self.employeeId(),self.comDayOffId(),self.itemsSelected(),self.numberDayParam())).done(function(data) {
+            service.update(new UpdateModel(self.employeeId(), self.comDayOffId(), self.itemsSelected(), self.numberDayParam())).done(function(data) {
                 if (data.length > 0) {
-                        let messageId = data[0];
-                       if(messageId === 'Msg_15') {
-                           
-                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                    setShared('KDM001_K_PARAMS_RES', { isChanged: true });
-                                     nts.uk.ui.windows.close();
-                                });
-                              
-                        }else {
-                                $('#multi-list').ntsError('set', { messageId: messageId });
-                            }
-                        block.clear();
+                    let messageId = data[0];
+                    if (messageId === 'Msg_15') {
+
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            setShared('KDM001_K_PARAMS_RES', { isChanged: true });
+                            nts.uk.ui.windows.close();
+                        });
+
+                    } else {
+                        $('#multi-list').ntsError('set', { messageId: messageId });
                     }
+                    block.clear();
+                }
             }).fail(function(error) {
-               
-                
-            }).always(() => {
-                
+                alert(error);
             });
+            block.clear();
         }
         
          public callService(comDayOffId,employeeId):void {
-             var self = this;
-            service.getAll(comDayOffId,employeeId).done(function(data) {
-                for (let i = 0; i < data.listLeaveMana.length; i++) {
-                    self.items.push(new ItemModel(data.listLeaveMana[i].leaveManaID, data.listLeaveMana[i].dateHoliday,data.listLeaveMana[i].numberDay, data.listLeaveMana[i].numberDay+" 日"));
-                    if(data.listLeaveMana[i].usedDay == true) {
-                        self.currentCodeList.push(data.listLeaveMana[i].leaveManaID);
-                    }
-                    
-                }
-                
-                if(data.errorCode != null) {
+             let self = this;
+             service.getAll(comDayOffId, employeeId).done(function(data) {
+                 
+                 if (data.errorCode != null) {
                      nts.uk.ui.dialog.alertError({ messageId: data.errorCode });
-                }
-                
-            }).fail(function(error) {
-                
-            }).always(() => {
-                
-            });
+                 }
+                 
+                 for (let i = 0; i < data.listLeaveMana.length; i++) {
+                     self.items.push(new ItemModel(data.listLeaveMana[i].leaveManaID, data.listLeaveMana[i].dateHoliday, data.listLeaveMana[i].numberDay, data.listLeaveMana[i].numberDay + " 日"));
+                     if (data.listLeaveMana[i].usedDay == true) {
+                         self.currentCodeList.push(data.listLeaveMana[i].leaveManaID);
+                     }
+                    if(data.listLeaveMana[i].numberDay > self.numberDayParam()) {
+                        self.disables.push(data.listLeaveMana[i].leaveManaID);
+                    }
+                 }
+                 
+             }).fail(function(error) {
+                 alert(error);
+             });
         
         }
         

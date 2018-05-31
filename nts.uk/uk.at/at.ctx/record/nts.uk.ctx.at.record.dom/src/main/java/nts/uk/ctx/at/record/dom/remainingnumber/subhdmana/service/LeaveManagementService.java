@@ -41,8 +41,19 @@ public class LeaveManagementService {
 				&& !leaveManagementData.getLeaveMana().get(0).getRemainDays().equals(leaveManagementData.getNumberDayParam())) {
 			response.add("Msg_734");
 		} else if (leaveManagementData.getLeaveMana().size() == 2) {
+			if(leaveManagementData.getLeaveMana().get(0).getRemainDays().equals(HALF_DAY)) {
+				if(!leaveManagementData.getLeaveMana().get(1).getRemainDays().equals(HALF_DAY)) {
+					response.add("Msg_734");
+				} else {
+					if(leaveManagementData.getNumberDayParam().equals(ONE_DAY)) {
+						response.add("Msg_734");
+					}
+				}
+			} else if(leaveManagementData.getLeaveMana().get(0).getRemainDays().equals(ONE_DAY)) {
+				response.add("Msg_743");
+			}
 			
-			if(leaveManagementData.getNumberDayParam().equals(HALF_DAY)) {
+			/*if(leaveManagementData.getNumberDayParam().equals(HALF_DAY)) {
 				response.add("Msg_734");
 			}
 			
@@ -57,7 +68,7 @@ public class LeaveManagementService {
 						|| !leaveManagementData.getLeaveMana().get(1).getRemainDays().equals(HALF_DAY)) {
 					response.add("Msg_734");
 				}
-			}
+			}*/
 		} else if (leaveManagementData.getLeaveMana().size() >= 3) {
 			response.add("Msg_743");
 		}
@@ -68,8 +79,7 @@ public class LeaveManagementService {
 					.getBycomDayOffID(leaveManagementData.getComDayOffID());
 
 			
-			List<LeaveManagementData> leaveManaUpdate = new ArrayList<>();
-			leaveManaUpdate = leaveManaDataRepository.getByComDayOffId(companyId, leaveManagementData.getEmployeeId(),
+			List<LeaveManagementData> leaveManaUpdate = this.leaveManaDataRepository.getByComDayOffId(companyId, leaveManagementData.getEmployeeId(),
 					leaveManagementData.getComDayOffID());
 			
 			List<String> updateUnUsedDay = new ArrayList<>();
@@ -84,7 +94,7 @@ public class LeaveManagementService {
 				leaveManaDataRepository.updateUnUseDayLeaveId(updateUnUsedDay);
 			}
 			
-			List<String> currentLeaveMana = leaveManaUpdate.stream().map(item -> new String(item.getID()))
+			List<String> currentLeaveMana = leaveManaUpdate.stream().map(LeaveManagementData::getID)
 					.collect(Collectors.toList());
 			// update Sub by current leave
 			if (!currentLeaveMana.isEmpty()) {
@@ -107,7 +117,7 @@ public class LeaveManagementService {
 			leaveComDayOffManaRepository.insertAll(entitiesLeave);
 
 			// update Sub by new Leave
-			List<String> listId = leaveMana.stream().map(item -> new String(item.getLeaveManaID()))
+			List<String> listId = leaveMana.stream().map(LeavesManaData::getLeaveManaID)
 					.collect(Collectors.toList());
 			if (!listId.isEmpty()) {
 				leaveManaDataRepository.updateByLeaveIds(listId);
