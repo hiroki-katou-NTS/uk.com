@@ -45,7 +45,7 @@ public class DayOffManagementService {
 				if(!dayOffManagementData.getDaysOffMana().get(1).getRemainDays().equals(HALF_DAY)) {
 					response.add("Msg_733");
 				} else {
-					if(dayOffManagementData.getNumberDayParam().equals(ONE_DAY)) {
+					if(!dayOffManagementData.getNumberDayParam().equals(ONE_DAY)) {
 						response.add("Msg_733");
 					}
 				}

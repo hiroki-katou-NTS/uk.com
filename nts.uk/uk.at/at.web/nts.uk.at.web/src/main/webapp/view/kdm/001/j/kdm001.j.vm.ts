@@ -75,6 +75,10 @@ module nts.uk.at.view.kdm001.j.viewmodel {
                         $("#J7_2").css("color", "");
                     }
                 }
+                
+                if(self.residualDay() === '0.0 日') {
+                    self.residualDay( '0 日');
+                }
             });
 
             block.clear();

@@ -45,7 +45,7 @@ public class LeaveManagementService {
 				if(!leaveManagementData.getLeaveMana().get(1).getRemainDays().equals(HALF_DAY)) {
 					response.add("Msg_734");
 				} else {
-					if(leaveManagementData.getNumberDayParam().equals(ONE_DAY)) {
+					if(!leaveManagementData.getNumberDayParam().equals(ONE_DAY)) {
 						response.add("Msg_734");
 					}
 				}
