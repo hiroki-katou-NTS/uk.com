@@ -103,7 +103,7 @@ public class SubstitutionOfHDManaDataService {
 		}
 		return errorList;
 	}
-
+	
 	public List<String> updateSubOfHD(SubstitutionOfHDManagementData data, int closureId) {
 		List<String> errorListClosureDate = checkClosureDate(closureId, data.getHolidayDate().getDayoffDate().get(),
 				data.getSubOfHDID());
@@ -112,5 +112,19 @@ public class SubstitutionOfHDManaDataService {
 		}
 		return errorListClosureDate;
 	}
-
+	//setToFree when delete payoutId
+		public void setToFree(String payoutId) {
+			List<PayoutSubofHDManagement> listPayoutSub = payoutSubofHDManaRepository.getByPayoutId(payoutId);
+			if (!listPayoutSub.isEmpty()) {
+				payoutSubofHDManaRepository.delete(payoutId);
+			}
+			listPayoutSub.forEach(item -> {
+				Optional<SubstitutionOfHDManagementData> subMana = substitutionOfHDManaDataRepository
+						.findByID(item.getSubOfHDID());
+				if (subMana.isPresent()) {
+					subMana.get().setRemainsDay(Double.valueOf(item.getUsedDays().v().intValue()));
+					substitutionOfHDManaDataRepository.update(subMana.get());
+				}
+			});
+		}
 }

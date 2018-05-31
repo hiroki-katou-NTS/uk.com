@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.remainingnumber.paymana;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -240,6 +239,22 @@ public class PayoutManagementDataService {
 				return Collections.emptyList();
 			}
 		}
+	}
+	
+	 //setToFree when delete subOfHDId
+	public void setToFree(String subOfHDId) {
+		List<PayoutSubofHDManagement> listPayoutSub = payoutSubofHDManaRepository.getBySubId(subOfHDId);
+		if (!listPayoutSub.isEmpty()) {
+			payoutSubofHDManaRepository.deleteBySubID(subOfHDId);
+		}
+		listPayoutSub.forEach(item -> {
+			Optional<PayoutManagementData> payoutMan = payoutManagementDataRepository.findByID(item.getPayoutId());
+			if (payoutMan.isPresent()) {
+				payoutMan.get().setStateAtr(DigestionAtr.UNUSED.value);
+				payoutMan.get().setRemainNumber(Double.valueOf(item.getUsedDays().v().intValue()));
+				payoutManagementDataRepository.update(payoutMan.get());
+			}
+		});
 	}
 
 	/**
