@@ -401,8 +401,11 @@ module nts.uk.at.view.kwr001.a {
                 nts.uk.ui.windows.sub.modal('/view/kwr/001/c/index.xhtml').onClosed(function(): any {
                     $.when(self.getDataCharateristic()).done(function(dataCharacteristic: any) {
                     let isExist = !(_.isUndefined(dataCharacteristic) || _.isNull(dataCharacteristic));
-                    self.getDataStartPageService(isExist).done(function(dataService: any) { 
+                    self.getDataStartPageService(isExist).done(function(dataService: any) {                       
                             self.itemListCodeTemplate(dataService.lstOutputItemDailyWorkSchedule);
+                            if (_.isEmpty(dataService.lstOutputItemDailyWorkSchedule)) {
+                                self.selectedCodeA7_3('');
+                            }
                         }).fail(function(error) {
                            nts.uk.ui.dialog.alertError(error);     
                         });
