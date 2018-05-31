@@ -197,6 +197,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     return !item.operation();
                 }).map((item) => { return item.attendanceItemId(); });
                 let param = {
+                    attr: ATTR.MONTHLY,
                     lstAllItems: lstItemCode,
                     lstAddItems: lstAddItems,
                     lstSubItems: lstSubItems
@@ -221,7 +222,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             let dfd = $.Deferred<any>();
             let operationName = "";
             if (lstItems && lstItems.length > 0) {
-                service.getAttendanceItemByCodes(lstItems).done((items) => {
+                service.getMonthlyAttendanceItemByCodes(lstItems).done((items) => {
                     _.forEach(items, (item) => {
                         if (isAdd) {
                             outputItem.listOperationSetting.push(new OperationCondition(item.attendanceItemId, 1, item.attendanceItemName));
@@ -282,8 +283,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             let dfd = $.Deferred<any>();
             if (valOutFormat === 1) {
                 //With type 回数 - Times
-                service.getAttendanceItemByAtr(2).done((lstAtdItem) => {
-                    service.getOptItemByAtr(1).done((lstOptItem) => {
+                service.getMonthlyAttendanceItemByAtr(2).done((lstAtdItem) => {
+                    service.getOptItemByAtr(2).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             lstAtdItem.push(lstOptItem[i]);
                         }
@@ -292,8 +293,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 });
             } else if (valOutFormat === 0) {
                 //With type 時間 - Time
-                service.getAttendanceItemByAtr(5).done((lstAtdItem) => {
-                    service.getOptItemByAtr(0).done((lstOptItem) => {
+                service.getMonthlyAttendanceItemByAtr(1).done((lstAtdItem) => {
+                    service.getOptItemByAtr(1).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             lstAtdItem.push(lstOptItem[i]);
                         }
@@ -301,14 +302,14 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     });
                 });
             } else if (valOutFormat === 2) {
-                //With type 時刻 - TimeWithDay
-                service.getAttendanceItemByAtr(6).done((lstAtdItem) => {
+                //With type 日数
+                service.getMonthlyAttendanceItemByAtr(4).done((lstAtdItem) => {
                     dfd.resolve(lstAtdItem);
                 });
             } else if (valOutFormat === 3) {
                 //With type 金額 - AmountMoney
-                service.getAttendanceItemByAtr(3).done((lstAtdItem) => {
-                    service.getOptItemByAtr(2).done((lstOptItem) => {
+                service.getMonthlyAttendanceItemByAtr(3).done((lstAtdItem) => {
+                    service.getOptItemByAtr(3).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             lstAtdItem.push(lstOptItem[i]);
                         }
@@ -607,4 +608,10 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             }
         }
     }
+
+    enum ATTR {
+        DAILY = 0,
+        MONTHLY = 1
+    }
+
 }
