@@ -166,6 +166,17 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 }
 
             });
+            self.recWk().wkTimeCD.subscribe((newWkTimeCD) => {
+                if (newWkTimeCD) {
+                    $('#recTimeBtn').ntsError("clear");
+                }
+            });
+
+            self.absWk().wkTimeCD.subscribe((newWkTimeCD) => {
+                if (newWkTimeCD) {
+                    $('#absTimeBtn').ntsError("clear");
+                }
+            });
         }
 
         startPage(appID: string): JQueryPromise<any> {

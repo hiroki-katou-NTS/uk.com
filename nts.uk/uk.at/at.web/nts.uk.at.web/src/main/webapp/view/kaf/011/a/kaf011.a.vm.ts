@@ -74,6 +74,19 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 }
 
             });
+
+            self.recWk().wkTimeCD.subscribe((newWkTimeCD) => {
+                if (newWkTimeCD) {
+                    $('#recTimeBtn').ntsError("clear");
+                }
+            });
+
+            self.absWk().wkTimeCD.subscribe((newWkTimeCD) => {
+                if (newWkTimeCD) {
+                    $('#absTimeBtn').ntsError("clear");
+                }
+            });
+
         }
         enablePrepost() {
             let self = this;
@@ -206,7 +219,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
 
             let isControlError = self.validateControl();
             if (isControlError) { return; }
-            
+
             let isCheckReasonError = !self.checkReason();
             if (isCheckReasonError) { return; }
             block.invisible();
