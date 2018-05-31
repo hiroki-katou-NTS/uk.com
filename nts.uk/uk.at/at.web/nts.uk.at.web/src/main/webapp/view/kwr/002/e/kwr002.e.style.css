@@ -37,7 +37,3 @@ table .ui-iggrid-layout-helper {
 	overflow-y: scroll;
 	height: 410px;
 }
-
-tr#selected-list {
-	height: 50px;
-}
