@@ -65,7 +65,7 @@ module nts.uk.at.view.kdm001.h.viewmodel {
                     subOfHDID: self.subOfHDID(),
                     employeeId: self.employeeId(),
                     requiredDays: self.requiredDays(),
-                    dayoffDate: self.dayoffDate(),
+                    dayoffDate: moment.utc(self.dayoffDate(), 'YYYY/MM/DD').toISOString(),
                     unknownDate: self.unknownDate(),
                     remainDays: self.remainDays(),
                 };

@@ -78,7 +78,7 @@ module nts.uk.at.view.kdm001.g.viewmodel {
                     payoutId: self.payoutId(),
                     employeeId: self.employeeId(),
                     unknownDate: self.unknownDate(),
-                    dayoffDate: self.dayoffDate(),
+                    dayoffDate:  moment.utc(self.dayoffDate(),'YYYY/MM/DD').toISOString(),
                     expiredDate: self.expiredDate(), 
                     lawAtr: parseInt(self.lawAtr()),
                     occurredDays: parseInt(self.occurredDays()),
