@@ -155,7 +155,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                     let initExTable = self.setFormatData(detailHeaderDeco, self.listDailyStatus);
 
                     new nts.uk.ui.exTable.ExTable($("#extable"), {
-                        headerHeight: "30px", bodyRowHeight: "22px", bodyHeight: "330px",
+                        headerHeight: "42px", bodyRowHeight: "22px", bodyHeight: "330px",
                         horizontalSumBodyRowHeight: "0px",
                         remainSizes: false,
                         bodyHeightMode: "fixed",
@@ -220,7 +220,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             ];
             leftmostHeader = {
                 columns: leftmostColumns,
-                rowHeight: "30px",
+                rowHeight: "42px",
                 width: "200px"
             };
             leftmostContent = {
@@ -249,7 +249,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                 features: [
                     {
                         name: "HeaderRowHeight",
-                        rows: { 0: "30px" }
+                        rows: { 0: "42px" }
                     },
                     {
                         name: "HeaderCellStyle",
@@ -272,7 +272,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         }
 
         getDay(time: shareModel.Time): string {
-            return time.day;
+            return time.day + "<br/>" + time.weekDay;
         }
 
         /**
@@ -405,9 +405,9 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         goToD(rData) {
             var self = this;
             let listStatusEmp: Array<ApprovalStatusEmployee> = [];
-            _.each(self.listApprovalEmployee, function(item: ApprovalStatusEmployee) {
-                if (rData.empId == item.sId) {
-                    listStatusEmp.push(new ApprovalStatusEmployee(item.sId, item.startDate, item.endDate));
+            _.each(self.listApprovalEmployee, function(item) {
+                if (rData.empId == item.sid) {
+                    listStatusEmp.push(new ApprovalStatusEmployee(item.sid, item.startDate, item.endDate));
                 }
             });
             let params = {
@@ -435,11 +435,11 @@ module nts.uk.at.view.kaf018.c.viewmodel {
     }
 
     class ApprovalStatusEmployee {
-        sId: string;
+        sid: string;
         startDate: Date;
         endDate: Date;
-        constructor(sId: string, startDate: Date, endDate: Date) {
-            this.sId = sId;
+        constructor(sid: string, startDate: Date, endDate: Date) {
+            this.sid = sid;
             this.startDate = startDate;
             this.endDate = endDate;
         }

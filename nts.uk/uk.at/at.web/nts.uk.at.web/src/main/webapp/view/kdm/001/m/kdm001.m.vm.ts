@@ -14,17 +14,22 @@ module nts.uk.at.view.kdm001.m.viewmodel {
         dayOffDate: KnockoutObservable<string>         = ko.observable('');
         requireDayItemList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
         requireDays: KnockoutObservable<any>                         = ko.observable('');
-        remainDaysItemList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
+        remainDaysItemList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getRemainDaysItemList());
         remainDays: KnockoutObservable<string>                       = ko.observable('');
         comDayOffID: KnockoutObservable<string>                      = ko.observable('');
         closureId: KnockoutObservable<string>                        = ko.observable('');
 
         constructor() {
-            let self = this;
-            self.initScreen();
         }
 
-        initScreen(): void {
+        public startPage(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            self.initScreen();
+            dfd.resolve();
+            return dfd.promise();
+        }
+
+        private initScreen(): void {
             block.invisible();
             let self = this,
             info = getShared("KDM001_M_PARAMS");
@@ -46,7 +51,7 @@ module nts.uk.at.view.kdm001.m.viewmodel {
         /**
          * 登録
          */
-        updateComDayOffMana(): void {
+        public updateComDayOffMana(): void {
             nts.uk.ui.errors.clearAll();
             $(".nts-input").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
@@ -55,11 +60,10 @@ module nts.uk.at.view.kdm001.m.viewmodel {
                 command = {
                     employeeId: self.employeeId(),
                     comDayOffID: self.comDayOffID(),
-                    dayOffDate: self.dayOffDate(),
+                    dayOffDate: moment.utc(self.dayOffDate(), 'YYYY/MM/DD').toISOString(),
                     requireDays: self.requireDays(),
                     remainDays: self.remainDays(),
-                    closureId: self.closureId(),
-                    executeMode: model.ExecuteMode.UPDATE
+                    closureId: self.closureId()
                 };
                 service.updateComDayOffMana(command).done(result => {
                     if (result.length > 0) {
@@ -81,7 +85,7 @@ module nts.uk.at.view.kdm001.m.viewmodel {
         /**
          * 削除
          */
-        deleteComDayOffMana(): void {
+        public deleteComDayOffMana(): void {
             block.invisible();
              //確認メッセージ（Msg_18）を表示する
             dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
@@ -89,10 +93,8 @@ module nts.uk.at.view.kdm001.m.viewmodel {
                 command = {
                     employeeId: self.employeeId(),
                     comDayOffID: self.comDayOffID(),
-                    dayOffDate: self.dayOffDate(),
                     requireDays: self.requireDays(),
-                    remainDays: self.remainDays(),
-                    executeMode: model.ExecuteMode.DELETE
+                    remainDays: self.remainDays()
                 };
                 service.deleteComDayOffMana(command).done(() => {
                     //情報メッセージ　Msg-16を表示する
@@ -110,7 +112,7 @@ module nts.uk.at.view.kdm001.m.viewmodel {
             });
         }
 
-        closeKDM001M(): void {
+        public closeKDM001M(): void {
             nts.uk.ui.windows.close();
         }
     }

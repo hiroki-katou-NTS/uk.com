@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.breakorgoout;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -235,7 +234,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 	}
 
 	@Override
-	public List<BreakTimeOfDailyPerformance> finds(Map<String, GeneralDate> param) {
+	public List<BreakTimeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
 		List<BreakTimeOfDailyPerformance> result = new ArrayList<>();
 		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDaiBreakTime a ");
 		query.append("WHERE a.krcdtDaiBreakTimePK.employeeId IN :employeeId ");
@@ -243,9 +242,9 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		TypedQueryWrapper<KrcdtDaiBreakTime> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiBreakTime.class);
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
 			result.addAll(tQuery.setParameter("employeeId", p.keySet())
-					.setParameter("date", new HashSet<>(p.values()))
+					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
 					.getList().stream()
-					.filter(c -> c.krcdtDaiBreakTimePK.ymd.equals(p.get(c.krcdtDaiBreakTimePK.employeeId)))
+					.filter(c -> p.get(c.krcdtDaiBreakTimePK.employeeId).contains(c.krcdtDaiBreakTimePK.ymd))
 					.collect(Collectors.groupingBy(c -> c.krcdtDaiBreakTimePK.employeeId + c.krcdtDaiBreakTimePK.ymd.toString()))
 					.entrySet().stream().map(c -> group(c.getValue())).flatMap(List::stream).collect(Collectors.toList()));
 		});

@@ -20,8 +20,13 @@ module nts.uk.at.view.kdm001.l.viewmodel {
         closureId: KnockoutObservable<number>       = ko.observable(0);
 
         constructor() {
-            let self = this;
+        }
+
+        public startPage(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
             self.initScreen();
+            dfd.resolve();
+            return dfd.promise();
         }
 
         public initScreen(): void {
@@ -48,7 +53,7 @@ module nts.uk.at.view.kdm001.l.viewmodel {
         /**
          * 登録
          */
-        updateHolidaySetting(): void {
+        public updateHolidaySetting(): void {
             nts.uk.ui.errors.clearAll();
             $(".nts-input").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
@@ -57,7 +62,7 @@ module nts.uk.at.view.kdm001.l.viewmodel {
                 command = {
                     leaveId: self.leaveId(),
                     employeeId: self.employeeId(),
-                    leaveDate: self.leaveDate(),
+                    leaveDate: moment.utc(self.leaveDate(), 'YYYY/MM/DD').toISOString(),
                     expiredDate: self.expiredDate(),
                     occurredDays: self.occurredDays(),
                     unUsedDays: self.unUsedDays(),
@@ -69,7 +74,7 @@ module nts.uk.at.view.kdm001.l.viewmodel {
                         for (let messageId of result) {
                             switch (messageId) {
                                 case "Msg_745": {
-                                    $('#L6_2').ntsError('set', { messageId: messageId });
+                                    $('#    ').ntsError('set', { messageId: messageId });
                                     break;
                                 }
                                 case "Msg_825": {
@@ -103,7 +108,7 @@ module nts.uk.at.view.kdm001.l.viewmodel {
         /**
          * 削除
          */
-        deleteHolidaySetting(): void {
+        public deleteHolidaySetting(): void {
             block.invisible();
              //確認メッセージ（Msg_18）を表示する
             dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
@@ -111,7 +116,6 @@ module nts.uk.at.view.kdm001.l.viewmodel {
                 command = {
                     leaveId: self.leaveId(),
                     employeeId: self.employeeId(),
-                    leaveDate: self.leaveDate(),
                     expiredDate: self.expiredDate(),
                     occurredDays: self.occurredDays(),
                     isCheckedExpired: self.checkedExpired()
@@ -135,7 +139,7 @@ module nts.uk.at.view.kdm001.l.viewmodel {
         /**
         * closeDialog
         */
-        closeDialog(): void {
+        public closeDialog(): void {
             nts.uk.ui.windows.close();
         }
     }

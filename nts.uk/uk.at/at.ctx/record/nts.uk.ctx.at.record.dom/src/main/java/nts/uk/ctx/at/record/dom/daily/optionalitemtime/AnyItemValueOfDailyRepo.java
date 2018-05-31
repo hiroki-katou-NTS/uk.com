@@ -13,7 +13,7 @@ public interface AnyItemValueOfDailyRepo {
 
 	public List<AnyItemValueOfDaily> finds(List<String> employeeId, DatePeriod baseDate);
 
-	public List<AnyItemValueOfDaily> finds(Map<String, GeneralDate> param);
+	public List<AnyItemValueOfDaily> finds(Map<String, List<GeneralDate>> param);
 
 	public List<AnyItemValueOfDaily> find(String employeeId, List<GeneralDate> baseDate);
 	
