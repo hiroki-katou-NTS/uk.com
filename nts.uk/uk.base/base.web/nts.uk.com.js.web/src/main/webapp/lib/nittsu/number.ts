@@ -57,7 +57,7 @@
         var decimalSeperator = formatOption.decimalseperator ? formatOption.decimalseperator : ".";
         var decimalLength = formatOption.decimallength ? formatOption.decimallength : 0;
         var formattedValue = "";
-        var stringValue = text.replaceAll(value.toString(), groupSeperator, '');
+        var stringValue = text.replaceAll(value.toString().trim(), groupSeperator, '');
         var isMinus = stringValue.charAt(0) === '-';
         var values = isMinus ? stringValue.split('-')[1].split(decimalSeperator) : stringValue.split(decimalSeperator);
         if (groupLength > 0) {
@@ -70,7 +70,13 @@
         } else {
             formattedValue = values[0];
         }
-        formattedValue = text.removeFromStart(text.removeFromStart(formattedValue, '0'), groupSeperator);
+        if(formattedValue.indexOf("0") >= 0){
+            formattedValue = text.removeFromStart(text.removeFromStart(formattedValue, '0'), groupSeperator);
+            if(formattedValue === ""){
+                formattedValue = 0;
+            }
+        }
+        
         if (values[1] === undefined || decimalLength > values[1].length) {
             values[1] = text.padRight(values[1] ? values[1] : "", '0', values[1] ? decimalLength : decimalLength + 1);
         } else {
