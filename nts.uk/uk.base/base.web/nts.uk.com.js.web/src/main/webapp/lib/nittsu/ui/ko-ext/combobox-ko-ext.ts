@@ -129,11 +129,7 @@ module nts.uk.ui.koExtentions {
                     let data = $element.data(DATA),
                         value = data[VALUE];
 
-                    if (!data[CHANGED] || !data[ENABLE] || !data[REQUIRED]) {
-                        return;
-                    }
-
-                    if (_.isEmpty(String(value).trim()) || _.isNull(value) || _.isUndefined(value)) {
+                    if ((ui ? data[CHANGED] : true) && data[ENABLE] && data[REQUIRED] && (_.isEmpty(String(value).trim()) || _.isNil(value))) {
                         $element
                             .addClass('error')
                             .ntsError("set", resource.getMessage("FND_E_REQ_SELECT", [data[NAME]]), "FND_E_REQ_SELECT");
@@ -223,7 +219,7 @@ module nts.uk.ui.koExtentions {
 
                             // validate if required
                             $element
-                                .trigger(VALIDATE)
+                                .trigger(VALIDATE, [true])
                                 .trigger(SHOWVALUE)
                                 .focus();
                         }, 10);
@@ -408,9 +404,9 @@ module nts.uk.ui.koExtentions {
                     // set new value
                     .igCombo("value", value);
 
+                // validate if has dataOptions
                 $element
-                    // validate again
-                    .trigger('validate');
+                    .trigger(VALIDATE, [true]);
 
                 if (!value) {
                     $element
