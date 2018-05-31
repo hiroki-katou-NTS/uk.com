@@ -15,11 +15,7 @@ public interface CommonProcessCheckService {
 	 * @return false: 反映しない, true: 反映する
 	 */
 	public boolean commonProcessCheck(CommonCheckParameter para);	
-	/**
-	 * 予定勤務種類の項目ID
-	 * @return
-	 */
-	public List<Integer> lstScheWorkItem();
+
 	
 	/**
 	 * 予定勤種の反映

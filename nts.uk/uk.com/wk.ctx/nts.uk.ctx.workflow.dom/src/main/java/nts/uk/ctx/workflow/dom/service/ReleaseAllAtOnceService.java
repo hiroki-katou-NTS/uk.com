@@ -14,13 +14,13 @@ public interface ReleaseAllAtOnceService {
 	 * @param companyID 会社ID
 	 * @param rootStateID インスタンスID
 	 */
-	public void doReleaseAllAtOnce(String companyID, String rootStateID);
+	public void doReleaseAllAtOnce(String companyID, String rootStateID, Integer rootType);
 	
 	/**
 	 * 1.承認を行った承認者を取得する
 	 * @param rootStateID
 	 * @return
 	 */
-	public ApproverApprovedOutput getApproverApproved(String rootStateID); 
+	public ApproverApprovedOutput getApproverApproved(String rootStateID, Integer rootType); 
 	
 }

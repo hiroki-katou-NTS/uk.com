@@ -1,8 +1,8 @@
 package nts.uk.shr.pereg.app.command;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -13,7 +13,6 @@ import lombok.val;
 import nts.gul.reflection.AnnotationUtil;
 import nts.gul.reflection.ReflectionUtil;
 import nts.uk.shr.pereg.app.ItemValue;
-import nts.uk.shr.pereg.app.ItemValueType;
 import nts.uk.shr.pereg.app.PeregEmployeeId;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.PeregPersonId;
@@ -25,14 +24,26 @@ import nts.uk.shr.pereg.app.PeregRecordId;
 @Setter
 public class ItemsByCategory {
 
+
 	/** category code */
 	private String categoryCd;
 
 	/** Record Id, but this is null when new record */
 	private String recordId;
+	
+	/** if category will be deleted when register */
+	private boolean delete;
 
 	/** input items */
 	private List<ItemValue> items;
+	
+	public ItemsByCategory(String categoryCd, String recordId, List<ItemValue> items) {
+		super();
+		this.categoryCd = categoryCd;
+		this.recordId = recordId;
+		this.items = items;
+		this.delete = false;
+	}
 
 	public Object createCommandForSystemDomain(String personId, String employeeId, Class<?> commandClass) {
 
@@ -62,8 +73,6 @@ public class ItemsByCategory {
 			if (inputItem != null) {
 				if (inputItem.value() != null && field.getType() == String.class) {
 					ReflectionUtil.setFieldValue(field, command, inputItem.value().toString());
-				} else if (inputItem.itemValueType() == ItemValueType.SELECTION && inputItem.value() != null && field.getType() == BigDecimal.class) {
-					ReflectionUtil.setFieldValue(field, command, new BigDecimal(Integer.parseInt(inputItem.value())));
 				} else {
 					ReflectionUtil.setFieldValue(field, command, inputItem.value());
 				}
@@ -91,4 +100,19 @@ public class ItemsByCategory {
 	private static boolean isDefinedByUser(String itemCode) {
 		return itemCode.charAt(1) == 'O';
 	}
+	
+	public ItemValue getByItemCode(String itemCode) {
+
+		Optional<ItemValue> optItem = this.items.stream().filter(x -> x.itemCode().equals(itemCode))
+				.findFirst();
+		if (optItem.isPresent()) {
+			return optItem.get();
+		}
+		return null;
+	}
+	
+	public List<String> getItemIdList() {
+		return this.items.stream().map(x -> x.definitionId()).collect(Collectors.toList());
+	}
+
 }

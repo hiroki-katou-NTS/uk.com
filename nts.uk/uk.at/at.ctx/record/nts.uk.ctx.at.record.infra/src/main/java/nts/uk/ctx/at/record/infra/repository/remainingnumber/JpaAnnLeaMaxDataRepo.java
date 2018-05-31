@@ -20,7 +20,7 @@ public class JpaAnnLeaMaxDataRepo extends JpaRepository implements AnnLeaMaxData
 		if (entityOpt.isPresent()) {
 			KrcmtAnnLeaMax ent = entityOpt.get();
 			return Optional.of(AnnualLeaveMaxData.createFromJavaType(ent.sid, ent.maxTimes, ent.usedTimes,
-					ent.remainingTimes, ent.maxMinutes, ent.usedMinutes, ent.remainingMinutes));
+					ent.maxMinutes, ent.usedMinutes));
 		}
 		return Optional.empty();
 	}
@@ -29,6 +29,7 @@ public class JpaAnnLeaMaxDataRepo extends JpaRepository implements AnnLeaMaxData
 	public void add(AnnualLeaveMaxData maxData) {
 		KrcmtAnnLeaMax entity = new KrcmtAnnLeaMax();
 		entity.sid = maxData.getEmployeeId();
+		entity.cid = maxData.getCompanyId();
 		if ( maxData.getHalfdayAnnualLeaveMax().isPresent()) {
 			HalfdayAnnualLeaveMax halfday = maxData.getHalfdayAnnualLeaveMax().get();
 			entity.maxTimes = halfday.getMaxTimes().v();
@@ -70,6 +71,8 @@ public class JpaAnnLeaMaxDataRepo extends JpaRepository implements AnnLeaMaxData
 				entity.remainingMinutes = null;
 			}
 			this.commandProxy().update(entity);
+		} else {
+			add(maxData);
 		}
 	}
 

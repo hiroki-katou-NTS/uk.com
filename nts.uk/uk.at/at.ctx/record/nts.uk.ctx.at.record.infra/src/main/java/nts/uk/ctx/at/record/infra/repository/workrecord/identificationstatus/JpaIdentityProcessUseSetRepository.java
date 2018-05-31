@@ -9,8 +9,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.enums.SelfConfirmError;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentityProcessUseSetRepository;
-import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.KrcmtIdentityProceSet;
-import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.KrcmtIdentityProceSetPK;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtIdentityProcess;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtIdentityProcessPk;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 @Stateless
@@ -18,7 +18,7 @@ public class JpaIdentityProcessUseSetRepository extends JpaRepository implements
 
 	@Override
 	public Optional<IdentityProcessUseSet> findByKey(String companyId) {
-		return this.queryProxy().find(new KrcmtIdentityProceSetPK(companyId), KrcmtIdentityProceSet.class)
+		return this.queryProxy().find(new KrcmtIdentityProcessPk(companyId), KrcmtIdentityProcess.class)
 				.map(x -> toDomain(x));
 	}
 
@@ -32,15 +32,15 @@ public class JpaIdentityProcessUseSetRepository extends JpaRepository implements
 		this.commandProxy().update(toEntity(identity));
 	}
 
-	private IdentityProcessUseSet toDomain(KrcmtIdentityProceSet entity) {
-		return new IdentityProcessUseSet(new CompanyId(entity.krcmtIdentityProceSetPK.cid),
-				entity.yourSelfConfirmError == 1 ? true : false, entity.useIdentityOfMonth == 1 ? true : false,
-				entity.yourSelfConfirmError == null ? Optional.empty()
-						: Optional.of(EnumAdaptor.valueOf(entity.yourSelfConfirmError, SelfConfirmError.class)));
+	private IdentityProcessUseSet toDomain(KrcmtIdentityProcess entity) {
+		return new IdentityProcessUseSet(new CompanyId(entity.identityProcessPk.cid),
+				entity.useDailySelfCk == 1 ? true : false, entity.useMonthSelfCK == 1 ? true : false,
+				entity.yourselfConfirmError == null ? Optional.empty()
+						: Optional.of(EnumAdaptor.valueOf(entity.yourselfConfirmError, SelfConfirmError.class)));
 	}
 
-	private KrcmtIdentityProceSet toEntity(IdentityProcessUseSet domain) {
-		return new KrcmtIdentityProceSet(new KrcmtIdentityProceSetPK(domain.getCompanyId().v()),
+	private KrcmtIdentityProcess toEntity(IdentityProcessUseSet domain) {
+		return new KrcmtIdentityProcess(new KrcmtIdentityProcessPk(domain.getCompanyId().v()),
 				domain.isUseConfirmByYourself() ? 1 : 0, domain.isUseIdentityOfMonth() ? 1 : 0,
 				domain.getYourSelfConfirmError().isPresent() ? domain.getYourSelfConfirmError().get().value : null);
 	}

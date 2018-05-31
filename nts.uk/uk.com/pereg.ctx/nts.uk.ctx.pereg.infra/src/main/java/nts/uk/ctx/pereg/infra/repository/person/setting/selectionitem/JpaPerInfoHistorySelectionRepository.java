@@ -7,8 +7,8 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoHistorySelection;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoHistorySelectionRepository;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.history.PerInfoHistorySelection;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.history.PerInfoHistorySelectionRepository;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtHistorySelection;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtHistorySelectionPK;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -85,6 +85,14 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 		return this.queryProxy().query(SELECT_ALL_HISTORY_SELECTION, PpemtHistorySelection.class)
 				.setParameter("selectionItemId", selectionItemId).getList(c -> toDomain(c));
 	}
+	
+	@Override
+	public void removeInSelectionItemId(String selectionItemId) {
+		List<PpemtHistorySelection> historyList = this.queryProxy()
+				.query(SELECT_ALL_HISTORY_SELECTION, PpemtHistorySelection.class)
+				.setParameter("selectionItemId", selectionItemId).getList();
+		this.commandProxy().removeAll(historyList);
+	}
 
 	public Optional<PerInfoHistorySelection> getAllHistoryByHistId(String histId) {
 		PpemtHistorySelectionPK pkHistorySelection = new PpemtHistorySelectionPK(histId);
@@ -107,8 +115,7 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 	}
 
 	@Override
-	public List<PerInfoHistorySelection> getAllHistoryBySelectionItemIdAndCompanyId(String selectionItemId,
-			String companyId) {
+	public List<PerInfoHistorySelection> getAllBySelecItemIdAndCompanyId(String selectionItemId, String companyId) {
 
 		return this.queryProxy().query(SELECT_ALL_HISTORY_COMPANYID_SELECTION, PpemtHistorySelection.class)
 				.setParameter("selectionItemId", selectionItemId).setParameter("companyId", companyId)

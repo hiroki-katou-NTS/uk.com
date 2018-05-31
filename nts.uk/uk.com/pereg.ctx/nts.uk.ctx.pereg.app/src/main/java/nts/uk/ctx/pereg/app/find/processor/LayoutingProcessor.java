@@ -1,6 +1,5 @@
 package nts.uk.ctx.pereg.app.find.processor;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -17,6 +16,7 @@ import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregPerOptRepository;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
+import nts.uk.shr.pereg.app.find.dto.OptionalItemDataDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
 
@@ -27,11 +27,11 @@ public class LayoutingProcessor {
 	private PeregFinderProcessorCollector peregFinderCollector;
 
 	private Map<String, PeregFinder<?>> finders;
-	
+
 	@Inject
 	private PeregEmpOptRepository empOptRepo;
-	
-	@Inject 
+
+	@Inject
 	private PeregPerOptRepository perOptRepo;
 
 	/**
@@ -51,19 +51,19 @@ public class LayoutingProcessor {
 	public PeregDto findSingle(PeregQuery query) {
 		// get domain data
 		val finderClass = this.finders.get(query.getCategoryCode());
-		if(finderClass == null) return null;
+		if (finderClass == null)
+			return null;
 		PeregDomainDto domainDto = finderClass.findSingle(query);
-		
-		if ( domainDto == null ) {
+
+		if (domainDto == null) {
 			return null;
 		}
-		
-		PeregDto peregDto = new PeregDto(domainDto, finderClass.dtoClass(), finderClass.dataType());
+
 		// get optional data
-		setUserDefData(peregDto);
-		
-		return peregDto;
-		
+		List<OptionalItemDataDto> optionalItems = getUserDefData(finderClass.dataType(), domainDto.getRecordId());
+
+		return new PeregDto(domainDto, finderClass.dtoClass(), optionalItems);
+
 	}
 
 	/**
@@ -73,33 +73,35 @@ public class LayoutingProcessor {
 	 * @return
 	 */
 	public List<PeregDto> findList(PeregQuery query) {
-		
+
 		// get domain data
 		val finderClass = this.finders.get(query.getCategoryCode());
 		List<PeregDomainDto> lstDtos = finderClass.findList(query);
-		
-		List<PeregDto> peregDtos = new ArrayList<>();
-		// get optional data
-		lstDtos.stream().forEach(domainDto -> {
-			PeregDto peregDto = new PeregDto(domainDto, finderClass.dtoClass(), finderClass.dataType());
-			setUserDefData(peregDto);
-			peregDtos.add(peregDto);
-		});
-		
-		return peregDtos;
+
+		return lstDtos.stream().map(domainDto -> {
+
+			// get optional items data
+			List<OptionalItemDataDto> optionalItems = getUserDefData(finderClass.dataType(), domainDto.getRecordId());
+
+			return new PeregDto(domainDto, finderClass.dtoClass(), optionalItems);
+
+		}).collect(Collectors.toList());
+
 	}
-	
-	public List<ComboBoxObject> getListFirstItems(PeregQuery query){
+
+	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
 		val finderClass = this.finders.get(query.getCategoryCode());
 		return finderClass.getListFirstItems(query);
 	}
-	
-	private void setUserDefData(PeregDto peregDto){		
-		if( peregDto.getDataType() == DataClassification.PERSON)			
-			peregDto.setPerOptionalData(perOptRepo.getData(peregDto.getDomainDto().getRecordId()));
-		else 
-			peregDto.setEmpOptionalData(empOptRepo.getData(peregDto.getDomainDto().getRecordId()));
-		
+
+	private List<OptionalItemDataDto> getUserDefData(DataClassification personEmpType, String recordId) {
+		if (personEmpType == DataClassification.PERSON) {
+			return perOptRepo.getData(recordId);
+		}
+		else {
+			return empOptRepo.getData(recordId);
+		}
+
 	}
 
 }

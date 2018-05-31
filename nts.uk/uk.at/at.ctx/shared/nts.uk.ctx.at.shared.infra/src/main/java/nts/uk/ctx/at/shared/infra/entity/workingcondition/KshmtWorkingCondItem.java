@@ -42,7 +42,7 @@ public class KshmtWorkingCondItem extends UkJpaEntity implements Serializable {
 
 	/** The history id. */
 	@Id
-	@Column(name = "HISTORY_ID")
+	@Column(name = "HIST_ID")
 	private String historyId;
 
 	/** The sid. */
@@ -100,24 +100,24 @@ public class KshmtWorkingCondItem extends UkJpaEntity implements Serializable {
 	/** The kshmt working cond item. */
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@PrimaryKeyJoinColumns({
-			@PrimaryKeyJoinColumn(name = "HISTORY_ID", referencedColumnName = "HISTORY_ID") })
+			@PrimaryKeyJoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID") })
 	private KshmtWorkingCond kshmtWorkingCond;
 
 	/** The kshmt working cond items. */
 	@JoinColumns({
-			@JoinColumn(name = "HISTORY_ID", referencedColumnName = "HISTORY_ID", insertable = false, updatable = false) })
+			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false) })
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private KshmtScheduleMethod kshmtScheduleMethod;
 
 	/** The kshmt per work cats. */
 	@JoinColumns({
-			@JoinColumn(name = "HISTORY_ID", referencedColumnName = "HISTORY_ID", insertable = true, updatable = true) })
+			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = true, updatable = true) })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<KshmtPerWorkCat> kshmtPerWorkCats;
 
 	/** The kshmt personal day of weeks. */
 	@JoinColumns({
-			@JoinColumn(name = "HISTORY_ID", referencedColumnName = "HISTORY_ID", insertable = true, updatable = true) })
+			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = true, updatable = true) })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<KshmtPersonalDayOfWeek> kshmtPersonalDayOfWeeks;
 

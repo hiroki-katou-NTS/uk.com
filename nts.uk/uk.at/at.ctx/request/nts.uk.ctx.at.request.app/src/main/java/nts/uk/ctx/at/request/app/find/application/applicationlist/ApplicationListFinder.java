@@ -12,8 +12,10 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.setting.company.request.approvallistsetting.ApprovalListDisplaySetDto;
 import nts.uk.ctx.at.request.app.find.setting.company.vacationapplicationsetting.HdAppSetDto;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
+import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppListInitialRepository;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppListOutPut;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppMasterInfo;
@@ -22,6 +24,8 @@ import nts.uk.ctx.at.request.dom.application.applist.service.CheckColorTime;
 import nts.uk.ctx.at.request.dom.application.applist.service.PhaseStatus;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
+import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
@@ -42,8 +46,11 @@ public class ApplicationListFinder {
 	private RequestSettingRepository repoRequestSet;
 	@Inject
 	private HdAppSetRepository repoHdAppSet;
+	@Inject
+	private AppDispNameRepository repoAppDispName;
 	
-	public ApplicationListDto getAppList(AppListExtractConditionDto param){
+	public ApplicationListDto getAppList(AppListParamFilter param){
+		AppListExtractConditionDto condition = param.getCondition();
 		String companyId = AppContexts.user().companyId();
 		//ドメインモデル「承認一覧表示設定」を取得する-(Lấy domain Approval List display Setting)
 		Optional<RequestSetting> requestSet = repoRequestSet.findByCompany(companyId);
@@ -54,30 +61,21 @@ public class ApplicationListFinder {
 			displaySet = ApprovalListDisplaySetDto.fromDomain(appDisplaySet);
 		}
 		//URパラメータが存在する-(Check param)
-		if(StringUtil.isNullOrEmpty(param.getStartDate(), false) || StringUtil.isNullOrEmpty(param.getEndDate(), false)){
+		if(StringUtil.isNullOrEmpty(condition.getStartDate(), false) || StringUtil.isNullOrEmpty(condition.getEndDate(), false)){
 			//アルゴリズム「申請一覧初期日付期間」を実行する-(Thực hiện thuật toán lấy ngày　－12)
-			DatePeriod date = repoAppListInit.getInitialPeriod(companyId);
-			param.setStartDate(date.start().toString());
-			param.setEndDate(date.end().toString());
+			DatePeriod date = null;
+			if(condition.getAppListAtr().equals(ApplicationListAtr.APPROVER.value)){
+				date = repoAppListInit.getInitialPeriod(companyId);
+			}else{
+				date = repoAppListInit.getInitPeriodApp(companyId);
+			}
+			condition.setStartDate(date.start().toString());
+			condition.setEndDate(date.end().toString());
 			
 		}
-//		if(param.getAppListAtr() != null){//存在する場合
-//			//期間（開始日、終了日）が存する場合
-//			if(StringUtil.isNullOrEmpty(param.getStartDate(), false) || StringUtil.isNullOrEmpty(param.getEndDate(), false)){
-//				//アルゴリズム「申請一覧初期日付期間」を実行する-(Thực hiện thuật toán lấy ngày　－12)
-//				DatePeriod date = repoAppListInit.getInitialPeriod(companyId);
-//				param.setStartDate(date.start().toString());
-//				param.setEndDate(date.end().toString());
-//			}
-//			// TODO Auto-generated method stub
-//		}else{//存在しない場合
-//			//ドメインモデル「申請一覧抽出条件」を取得する
-//			// TODO Auto-generated method stub
-//			//申請一覧抽出条件.社員IDリストが空白
-//		}
 		//ドメインモデル「申請一覧共通設定フォーマット.表の列幅」を取得-(Lấy 表の列幅)//xu ly o ui
 		//アルゴリズム「申請一覧リスト取得」を実行する-(Thực hiện thuật toán Application List get): 1-申請一覧リスト取得
-		AppListExtractCondition appListExCon = param.convertDtotoDomain(param);
+		AppListExtractCondition appListExCon = condition.convertDtotoDomain(condition);
 		AppListOutPut lstApp = repoAppListInit.getApplicationList(appListExCon, appDisplaySet);
 		List<ApplicationDto_New> lstAppDto = new ArrayList<>();
 		for (Application_New app : lstApp.getLstApp()) {
@@ -85,7 +83,7 @@ public class ApplicationListFinder {
 		}
 		List<AppStatusApproval> lstStatusApproval = new ArrayList<>();
 		List<ApproveAgent> lstAgent = new ArrayList<>();
-		if(param.getAppListAtr() == 1){//mode approval
+		if(condition.getAppListAtr() == 1){//mode approval
 			List<ApplicationFullOutput> lstFil = lstApp.getLstAppFull().stream().filter(c -> c.getStatus() != null).collect(Collectors.toList());
 			for (ApplicationFullOutput app : lstFil) {
 				lstAgent.add(new ApproveAgent(app.getApplication().getAppID(), app.getAgentId()));
@@ -103,10 +101,10 @@ public class ApplicationListFinder {
 		//ドメインモデル「休暇申請設定」を取得する (Vacation application setting)- YenNTH
 		Optional<HdAppSet> lstHdAppSet = repoHdAppSet.getAll();
 		HdAppSetDto hdAppSetDto = HdAppSetDto.convertToDto(lstHdAppSet.get());
-		List<AppInfor> lstAppType = this.findListApp(lstApp.getLstMasterInfo());
-		return new ApplicationListDto(param.getStartDate(), param.getEndDate(), displaySet, lstApp.getLstMasterInfo(),this.sortById(lstAppDto),
+		List<AppInfor> lstAppType = this.findListApp(lstApp.getLstMasterInfo(), param.isSpr(), param.getExtractCondition());
+		return new ApplicationListDto(condition.getStartDate(), condition.getEndDate(), displaySet, lstApp.getLstMasterInfo(),this.sortById(lstAppDto),
 				lstApp.getLstAppOt(),lstApp.getLstAppGoBack(), lstApp.getAppStatusCount(), lstApp.getLstAppGroup(), lstAgent,
-				lstApp.getLstAppHdWork(), lstApp.getLstAppWorkChange(), lstApp.getLstAppAbsence(), lstAppType, hdAppSetDto);
+				lstApp.getLstAppHdWork(), lstApp.getLstAppWorkChange(), lstApp.getLstAppAbsence(), lstAppType, hdAppSetDto, lstApp.getLstAppCompltLeaveSync());
 	}
 	/**
 	 * find status approval
@@ -169,14 +167,28 @@ public class ApplicationListFinder {
 	 * @param lstApp
 	 * @return
 	 */
-	private List<AppInfor> findListApp(List<AppMasterInfo> lstApp){
+	private List<AppInfor> findListApp(List<AppMasterInfo> lstApp, boolean isSpr, int extractCondition){
 		List<AppInfor> lstAppType = new ArrayList<>();
 		for (AppMasterInfo app : lstApp) {
 			if(!lstAppType.contains(new AppInfor(app.getAppType(), app.getDispName()))){
 				lstAppType.add(new AppInfor(app.getAppType(), app.getDispName()));
 			}
 		}
+		if(isSpr && extractCondition == 1){
+			if(!this.findAppTypeOt(lstAppType)){
+				String name = repoAppDispName.getDisplay(ApplicationType.OVER_TIME_APPLICATION.value).get().getDispName().v();
+				lstAppType.add(new AppInfor(ApplicationType.OVER_TIME_APPLICATION.value, name));
+			}
+		}
 		return lstAppType.stream().sorted((x, y) -> x.getAppType()-y.getAppType()).collect(Collectors.toList());
+	}
+	private boolean findAppTypeOt(List<AppInfor> lstAppType){
+		for (AppInfor appInfor : lstAppType) {
+			if(appInfor.getAppType() == 0){
+				return true;
+			}
+		}
+		return false;
 	}
 	private List<ApplicationDto_New> sortById(List<ApplicationDto_New> lstApp){
 		return lstApp.stream().sorted((a,b) ->{

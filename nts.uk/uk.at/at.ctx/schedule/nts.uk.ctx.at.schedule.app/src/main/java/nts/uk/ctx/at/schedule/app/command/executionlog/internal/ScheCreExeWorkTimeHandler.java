@@ -15,6 +15,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScEmploymentStatusAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
+import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -127,10 +128,10 @@ public class ScheCreExeWorkTimeHandler {
 	 * @return the worktime
 	 */
 	// 就業時間帯を取得する
-	public Optional<String> getWorktime(WorkTimeGetterCommand command) {
+	public Optional<String> getWorktime(WorkTimeGetterCommand command, EmployeeGeneralInfoImported empGeneralInfo) {
 
 		Optional<BasicWorkSetting> optionalBasicWorkSetting = this.scheCreExeBasicWorkSettingHandler
-				.getBasicWorkSetting(command.toBasicWorkSetting());
+				.getBasicWorkSetting(command.toBasicWorkSetting(), empGeneralInfo);
 
 		if (optionalBasicWorkSetting.isPresent()) {
 			WorkTimeZoneGetterCommand commandGetter = command.toWorkTimeZone();
@@ -681,15 +682,15 @@ public class ScheCreExeWorkTimeHandler {
 	 */
 	// 勤務予定時間帯を取得する
 	public Optional<PrescribedTimezoneSetting> getScheduleWorkHour(WorkTimeSetGetterCommand command) {
+		if (StringUtil.isNullOrEmpty(command.getWorkingCode(), true)) {
+			return Optional.empty();
+		}
 		// call service check work day
 		WorkStyle workStyle = this.basicScheduleService.checkWorkDay(command.getWorktypeCode());
 		switch (workStyle) {
 			case ONE_DAY_REST :
 				return Optional.empty();
 			case ONE_DAY_WORK :
-				if (command.getWorkingCode() == null) {
-					return Optional.empty();
-				}
 				return Optional
 						.of(this.predTimeRepository.findByWorkTimeCode(command.getCompanyId(), command.getWorkingCode())
 								.get().getPrescribedTimezoneSetting());

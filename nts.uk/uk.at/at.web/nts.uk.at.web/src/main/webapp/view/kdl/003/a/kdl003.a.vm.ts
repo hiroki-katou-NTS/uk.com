@@ -162,7 +162,7 @@ module nts.uk.at.view.kdl003.a {
                                         if (!self.callerParameter.showNone && !nts.uk.util.isNullOrEmpty(self.listWorkTime())) {
                                             self.selectedWorkTimeCode(self.listWorkTime()[0].code);
                                         } else {
-                                            self.selectedWorkTimeCode('000');
+                                            self.selectedWorkTimeCode('');
                                         }
                                         break;
                                     default: // Do nothing.
@@ -304,7 +304,7 @@ module nts.uk.at.view.kdl003.a {
                 let dataEmpty = [];
 
                 //Set Data Empty
-                if (code === "000") {
+                if (nts.uk.util.isNullOrEmpty(code)) {
                     for (let i = 0; i < 5; i++) {
                         dataEmpty.push(emptyArray);
                     }
@@ -370,7 +370,7 @@ module nts.uk.at.view.kdl003.a {
                 let self = this;
                 //add item　なし
                 data.unshift({
-                    code: "000",
+                    code: "",
                     name: "なし",
                     workTime1: "",
                     workTime2: "",
@@ -523,39 +523,63 @@ module nts.uk.at.view.kdl003.a {
 
                 // Set work time = null if list work time is empty.
                 if (!workTimeCode || nts.uk.util.isNullOrEmpty(self.listWorkTime())) {
-                    workTimeCode = '000';
+                    workTimeCode = '';
                     time1.start = time1.end = time2.start = time2.end = null;
                 }
 
                 // Check pair work type & work time.
-                service.checkPairWorkTypeWorkTime(workTypeCode, workTimeCode).done(() => {
-
-                    if (workTimeCode === '000') {
+                if (!nts.uk.util.isNullOrEmpty(workTimeCode)){
+                    service.checkPairWorkTypeWorkTime(workTypeCode, workTimeCode).done(() => {
+    
+                        // Set shared data.
+                        let workTypeName = self.getWorkTypeName(workTypeCode);
+                        let workTimeName = self.getWorkTimeName(workTimeCode);
+                        let returnedData = {
+                            selectedWorkTypeCode: workTypeCode,
+                            selectedWorkTypeName: workTypeName,
+                            selectedWorkTimeCode: workTimeCode,
+                            selectedWorkTimeName: workTimeName,
+                            first: time1,
+                            second: time2
+                        };
+                        nts.uk.ui.windows.setShared("childData", returnedData, false);
+    
+                        // Close dialog.
+                        self.closeDialog();
+    
+                    }).fail(error => {
+                        nts.uk.ui.dialog.alertError(error);
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
+                    });
+                } else {
+                    service.checkPairWorkTypeWorkTime2(workTypeCode).done(() => {
+    
                         workTimeCode = '';
                         time1.start = time1.end = time2.start = time2.end = null;
-                    }
-
-                    // Set shared data.
-                    let workTypeName = self.getWorkTypeName(workTypeCode);
-                    let workTimeName = self.getWorkTimeName(workTimeCode);
-                    let returnedData = {
-                        selectedWorkTypeCode: workTypeCode,
-                        selectedWorkTypeName: workTypeName,
-                        selectedWorkTimeCode: workTimeCode,
-                        selectedWorkTimeName: workTimeName,
-                        first: time1,
-                        second: time2
-                    };
-                    nts.uk.ui.windows.setShared("childData", returnedData, false);
-
-                    // Close dialog.
-                    self.closeDialog();
-
-                }).fail(error => {
-                    nts.uk.ui.dialog.alertError(error);
-                }).always(() => {
-                    nts.uk.ui.block.clear();
-                });
+    
+                        // Set shared data.
+                        let workTypeName = self.getWorkTypeName(workTypeCode);
+                        let workTimeName = '';
+                        let returnedData = {
+                            selectedWorkTypeCode: workTypeCode,
+                            selectedWorkTypeName: workTypeName,
+                            selectedWorkTimeCode: workTimeCode,
+                            selectedWorkTimeName: workTimeName,
+                            first: time1,
+                            second: time2
+                        };
+                        nts.uk.ui.windows.setShared("childData", returnedData, false);
+    
+                        // Close dialog.
+                        self.closeDialog();
+    
+                    }).fail(error => {
+                        nts.uk.ui.dialog.alertError(error);
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
+                    });
+                }
                 return dfd.promise();
             }
 

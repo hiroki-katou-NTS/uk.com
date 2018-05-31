@@ -12,7 +12,9 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.AttendanceTi
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.repo.AttendanceTimeByWorkOfDailyRepository;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
+import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
+import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
@@ -25,9 +27,6 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavi
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ApplicationReflectOutput;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReasonNotReflectRecord;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReflectedStateRecord;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
@@ -65,6 +64,8 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 	@Inject
 	private OutingTimeOfDailyPerformanceRepository outingTime;
 	@Inject
+	private WorkTypeOfDailyPerforRepository workTypeOfDailyPerforRepository;
+	@Inject
 	private BreakTimeOfDailyPerformanceRepository breakTimeOfDaily;
 	@Inject
 	private AttendanceTimeRepository attendanceTime;
@@ -88,16 +89,14 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 	private CalculateDailyRecordService calculate;
 	
 	@Override
-	public ApplicationReflectOutput overtimeReflect(OvertimeParameter param) {
+	public boolean overtimeReflect(OvertimeParameter param) {
 		try {
-			ApplicationReflectOutput output = new ApplicationReflectOutput(param.getOvertimePara().getReflectedState(), param.getOvertimePara().getReasonNotReflect());
-			
 			
 			//予定勤種・就時反映後の予定勤種・就時を取得する
 			//勤種・就時反映後の予定勤種・就時を取得する
 			Optional<WorkInfoOfDailyPerformance> optDailyData = workRepository.find(param.getEmployeeId(), param.getDateInfo());
 			if(!optDailyData.isPresent()) {
-				return output;
+				return false;
 			}
 			//予定勤種・就時の反映
 			priorProcess.workTimeWorkTimeUpdate(param);
@@ -122,15 +121,12 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 			
 			//日別実績の修正からの計算
 			//○日別実績を置き換える Replace daily performance		
-			IntegrationOfDaily calculateData = calculate.calculate(this.calculateForAppReflect(param.getEmployeeId(), param.getDateInfo()));
+			IntegrationOfDaily calculateData = calculate.calculate(this.calculateForAppReflect(param.getEmployeeId(), param.getDateInfo()),null);
 			attendanceTime.updateFlush(calculateData.getAttendanceTimeOfDailyPerformance().get());
-			
-			output.setReflectedState(ReflectedStateRecord.REFLECTED);
-			output.setReasonNotReflect(ReasonNotReflectRecord.ACTUAL_CONFIRMED);
-			return output;
+			return true;
 	
 		} catch (Exception ex) {
-			return new ApplicationReflectOutput(param.getOvertimePara().getReflectedState(), param.getOvertimePara().getReasonNotReflect());
+			return false;
 		}
 	}
 
@@ -139,11 +135,17 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 	public IntegrationOfDaily calculateForAppReflect(String employeeId,
 			GeneralDate dateData) {
 		String companyId = AppContexts.user().companyId();
+		Optional<WorkInfoOfDailyPerformance> optWorkInfor = workRepository.find(employeeId, dateData);
+		if(!optWorkInfor.isPresent()) {
+			return null;
+		}
 		WorkInfoOfDailyPerformance workInfor = workRepository.find(employeeId, dateData).get();
 		//日別実績の計算区分
 		CalAttrOfDailyPerformance calAtrrOfDailyData = calAttrOfDaily.find(employeeId, dateData);
 		//日別実績の所属情報
 		Optional<AffiliationInforOfDailyPerfor> findByKey = affiliationInfor.findByKey(employeeId, dateData);
+		//日別実績の勤務種別
+		Optional<WorkTypeOfDailyPerformance> workType = workTypeOfDailyPerforRepository.findByKey(employeeId, dateData);
 		//日別実績のPCログオン情報
 		Optional<PCLogOnInfoOfDaily> pcLogOnDarta = pcLogOnInfo.find(employeeId, dateData);
 		//社員の日別実績エラー一覧
@@ -173,6 +175,7 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 		IntegrationOfDaily integration = new IntegrationOfDaily(workInfor, 
 				calAtrrOfDailyData, 
 				findByKey.get(),
+				workType,
 				pcLogOnDarta, 
 				findEror, 
 				findByEmployeeIdAndDate, 

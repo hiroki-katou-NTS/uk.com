@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.workchange;
 
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ApplicationReflectOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
 /**
  * 勤務実績に反映
@@ -14,7 +13,7 @@ public interface PreWorkchangeReflectService {
 	 * @param workchangePara
 	 * @return
 	 */
-	public ApplicationReflectOutput workchangeReflect(CommonReflectParameter workchangePara, boolean isPre); 
+	public boolean workchangeReflect(CommonReflectParameter workchangePara, boolean isPre); 
 	
 	
 

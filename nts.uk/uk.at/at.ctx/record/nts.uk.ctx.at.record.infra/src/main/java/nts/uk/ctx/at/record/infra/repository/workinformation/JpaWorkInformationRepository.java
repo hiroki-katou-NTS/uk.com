@@ -1,13 +1,19 @@
 package nts.uk.ctx.at.record.infra.repository.workinformation;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDaiPerWorkInfo;
@@ -103,9 +109,17 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	
 	@Override
 	public List<WorkInfoOfDailyPerformance> findByListEmployeeId(List<String> employeeIds, DatePeriod ymds) {
-		return this.queryProxy().query(FIND_BY_LIST_SID_AND_PERIOD, KrcdtDaiPerWorkInfo.class)
-				.setParameter("employeeIds", employeeIds).setParameter("startDate", ymds.start())
-				.setParameter("endDate", ymds.end()).getList(f -> f.toDomain());
+		List<WorkInfoOfDailyPerformance> result = new ArrayList<>();
+		StringBuilder query = new StringBuilder("SELECT af FROM KrcdtDaiPerWorkInfo af ");
+		query.append("WHERE af.krcdtDaiPerWorkInfoPK.employeeId IN :employeeId ");
+		query.append("AND af.krcdtDaiPerWorkInfoPK.ymd <= :end AND af.krcdtDaiPerWorkInfoPK.ymd >= :start");
+		TypedQueryWrapper<KrcdtDaiPerWorkInfo> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiPerWorkInfo.class);
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
+			result.addAll(tQuery.setParameter("employeeId", empIds)
+								.setParameter("start", ymds.start())
+								.setParameter("end", ymds.end()).getList(af -> af.toDomain()));
+		});
+		return result;
 	}
 
 	@Override
@@ -153,6 +167,23 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		this.updateByKey(workInfoOfDailyPerformance);
 		this.getEntityManager().flush();
 		
+	}
+
+	@Override
+	public List<WorkInfoOfDailyPerformance> finds(Map<String, GeneralDate> param) {
+		List<WorkInfoOfDailyPerformance> result = new ArrayList<>();
+		StringBuilder query = new StringBuilder("SELECT af FROM KrcdtDaiPerWorkInfo af ");
+		query.append("WHERE af.krcdtDaiPerWorkInfoPK.employeeId IN :employeeId ");
+		query.append("AND af.krcdtDaiPerWorkInfoPK.ymd IN :date");
+		TypedQueryWrapper<KrcdtDaiPerWorkInfo> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiPerWorkInfo.class);
+		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
+			result.addAll(tQuery.setParameter("employeeId", p.keySet())
+								.setParameter("date", new HashSet<>(p.values()))
+								.getList().stream()
+								.filter(c -> c.krcdtDaiPerWorkInfoPK.ymd.equals(p.get(c.krcdtDaiPerWorkInfoPK.employeeId)))
+								.map(af -> af.toDomain()).collect(Collectors.toList()));
+		});
+		return result;
 	}
 
 }

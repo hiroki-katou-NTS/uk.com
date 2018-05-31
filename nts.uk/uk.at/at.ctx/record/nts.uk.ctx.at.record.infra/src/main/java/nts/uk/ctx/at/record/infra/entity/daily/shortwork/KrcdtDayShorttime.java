@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.record.infra.entity.daily.shortwork;
 
 import java.io.Serializable;
-import java.util.Collections;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
@@ -14,13 +17,11 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
-import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
-import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
-import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayBreakTime;
-import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayBreakTimePK;
+import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
+import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -70,6 +71,16 @@ public class KrcdtDayShorttime extends UkJpaEntity implements Serializable{
 	@Column(name ="COUNT")
 	public Integer count;
 	
+	@ManyToOne
+	@JoinColumns(value = {
+			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
+	public KrcdtDayAttendanceTime krcdtDayAttendanceTime;
+//	@ManyToOne
+//	@JoinColumns(value = {
+//			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+//			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
+//	public KrcdtDayTime krcdtDayTime;
 	
 	@Override
 	protected Object getKey() {

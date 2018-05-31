@@ -2,7 +2,9 @@ package nts.uk.ctx.bs.employee.infra.repository.tempabsence;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -11,6 +13,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTempAbsHistory;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -24,7 +27,9 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	
 	private final String GET_BY_SID_DATE = "select h from BsymtTempAbsHistory h"
 			+ " where h.sid = :sid and h.startDate <= :standardDate and h.endDate >= :standardDate";
-
+	private final String SELECT_BY_LIST_SID_DATEPERIOD =  "SELECT th FROM BsymtTempAbsHistory th"
+			+ " WHERE th.sid IN :employeeIds AND th.startDate <= :endDate AND :startDate <= th.endDate"
+			+ " ORDER BY th.sid, th.startDate";
 	/**
 	 * Convert from domain to entity
 	 * 
@@ -132,6 +137,28 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 			return Optional.of(toDomainTemp(listHist));
 		}
 		return Optional.empty();
+	}
+
+	@Override
+	public List<TempAbsenceHistory> getByListSid(List<String> employeeIds, DatePeriod dateperiod) {
+		List<BsymtTempAbsHistory> tempAbsHistoryEntities = this.queryProxy()
+				.query(SELECT_BY_LIST_SID_DATEPERIOD, BsymtTempAbsHistory.class)
+				.setParameter("employeeIds", employeeIds).setParameter("startDate", dateperiod.start())
+				.setParameter("endDate", dateperiod.end()).getList();
+		Map<String, List<BsymtTempAbsHistory>> tempAbsEntityForEmp = tempAbsHistoryEntities.stream()
+				.collect(Collectors.groupingBy(x -> x.sid));
+		List<TempAbsenceHistory> resultList = new ArrayList<>();
+		String companyId = AppContexts.user().companyId();
+		tempAbsEntityForEmp.forEach((empId, listTempAbsHist) -> {
+			List<DateHistoryItem> dateHistoryItems = convertToDateHistoryItems(listTempAbsHist);
+			resultList.add(new TempAbsenceHistory(companyId, empId, dateHistoryItems));
+		});
+		return resultList;
+	}
+	
+	private List<DateHistoryItem> convertToDateHistoryItems(List<BsymtTempAbsHistory> entities) {
+		return entities.stream().map(ent -> new DateHistoryItem(ent.histId, new DatePeriod(ent.startDate, ent.endDate)))
+				.collect(Collectors.toList());
 	}
 
 }

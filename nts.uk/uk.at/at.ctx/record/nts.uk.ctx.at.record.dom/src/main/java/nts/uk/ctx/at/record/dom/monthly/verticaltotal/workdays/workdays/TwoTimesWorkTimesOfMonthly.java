@@ -50,4 +50,13 @@ public class TwoTimesWorkTimesOfMonthly {
 		// 2回目の打刻が存在する時、1回加算
 		if (isTwoTimesStampExists) this.times = this.times.addTimes(1);
 	}
+
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(TwoTimesWorkTimesOfMonthly target){
+		
+		this.times = this.times.addTimes(target.times.v());
+	}
 }

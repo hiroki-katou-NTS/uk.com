@@ -135,7 +135,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 				continue;
 			}
 			// 事前申請の申請時間＞事後申請の申請時間
-			if (beforeTime.getApplicationTime().v() < afterTime.getApplicationTime().v()) {
+			if (beforeTime.getApplicationTime() != null && afterTime.getApplicationTime() != null && beforeTime.getApplicationTime().v() < afterTime.getApplicationTime().v()) {
 				// 背景色を設定する
 				result.setErrorCode(1);
 				result.setFrameNo(frameNo);
@@ -196,7 +196,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		result.setErrorCode(0);
 		// ドメインモデル「申請」
 		List<Application_New> beforeApplication = appRepository.getBeforeApplication(companyId, appDate, inputDate,
-				appType, prePostAtr.value);
+				appType, PrePostAtr.PREDICT.value);
 		if (beforeApplication.isEmpty()) {
 			return result;
 		}

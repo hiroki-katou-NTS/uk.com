@@ -43,7 +43,7 @@ public class ScEmploymentStatusAdapterImpl implements ScEmploymentStatusAdapter 
 	private EmploymentStatusDto toDto(StatusOfEmploymentExport export) {
 		EmploymentStatusDto dto = new EmploymentStatusDto();
 		dto.setEmployeeId(export.getEmployeeId());
-		dto.setLeaveHolidayType(export.getLeaveHolidayType());
+		dto.setLeaveHolidayType(export.getTempAbsenceFrNo());
 		dto.setRefereneDate(export.getRefereneDate());
 		dto.setStatusOfEmployment(export.getStatusOfEmployment());
 		return dto;

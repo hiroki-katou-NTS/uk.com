@@ -1,7 +1,10 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
 
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -9,6 +12,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -16,12 +20,24 @@ import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.actuallock.ActualLockAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.actuallock.ActualLockImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.workfixed.WorkFixedAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.daycalendar.ObtainDeadlineDateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalStatusForEmployeeImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApproveRootStatusForEmpImPort;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
+import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.applimitset.AppLimitSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.ReceptionRestrictionSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadlineRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.DeadlineCriteria;
@@ -61,7 +77,16 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 	@Inject
 	private WorkplaceAdapter workplaceAdapter;
 	
-	public void processBeforeRegister(Application_New application){
+	@Inject
+	private ObtainDeadlineDateAdapter obtainDeadlineDateAdapter;
+	@Inject
+	private RequestSettingRepository requestSettingRepository;
+	@Inject
+	private ActualLockAdapter actualLockAdapter;
+	@Inject
+	private WorkFixedAdapter workFixedAdater;
+	
+	public void processBeforeRegister(Application_New application,int overTimeAtr){
 		// アルゴリズム「未入社前チェック」を実施する
 		retirementCheckBeforeJoinCompany(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
 		
@@ -76,12 +101,12 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 			
 			// 登録する期間のチェック
 			//((TimeSpan)(申請する終了日 - 申請する開始日)).Days > 31がtrue
-			if(ChronoUnit.DAYS.between(startDate.localDate(), endDate.localDate()) > 31){
+			if((ChronoUnit.DAYS.between(startDate.localDate(), endDate.localDate()) + 1)  > 31){
 				throw new BusinessException("Msg_277");
 			}
 			// 登録可能期間のチェック(１年以内)
 			if(periodCurrentMonth.getStartDate().addYears(1).beforeOrEquals(endDate)) {
-				throw new BusinessException("Msg_276", endDate.toString(DATE_FORMAT));
+				throw new BusinessException("Msg_276", periodCurrentMonth.getStartDate().addYears(1).toString(DATE_FORMAT));
 			}
 			
 			// 過去月のチェック
@@ -123,10 +148,14 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 				periodCurrentMonth.getStartDate(), periodCurrentMonth.getEndDate(), startDate, endDate);
 		
 		// アルゴリズム「申請の受付制限をチェック」を実施する
-		applicationAcceptanceRestrictionsCheck(application.getCompanyID(), application.getAppType(), application.getPrePostAtr(), startDate, endDate);
+		applicationAcceptanceRestrictionsCheck(application.getCompanyID(), application.getAppType(), application.getPrePostAtr(), startDate, endDate,overTimeAtr);
+		if(application.getAppDate().equals(GeneralDate.today()) && application.getPrePostAtr().equals(PrePostAtr.PREDICT) && application.isAppOverTime()){
+			confirmCheckOvertime(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
+		}else{
+			// アルゴリズム「確定チェック」を実施する
+			confirmationCheck(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
+		}
 		
-		// アルゴリズム「確定チェック」を実施する
-		confirmationCheck(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
 	}
 	
 	// moi nguoi chi co the o mot cty vao mot thoi diem
@@ -176,7 +205,13 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 			// ドメインモデル「申請締切設定」．締切基準をチェックする
 			if(appDeadline.getDeadlineCriteria().equals(DeadlineCriteria.WORKING_DAY)) {
 				// アルゴリズム「社員所属職場履歴を取得」を実行する
-				workplaceAdapter.findWkpBySid(employeeID, systemDate);
+				WkpHistImport wkpHistImport = workplaceAdapter.findWkpBySid(employeeID, systemDate);
+				// アルゴリズム「締切日を取得する」を実行する
+				deadline = obtainDeadlineDateAdapter.obtainDeadlineDate(
+						deadlineEndDate, 
+						appDeadline.getDeadline().v(), 
+						wkpHistImport.getWorkplaceId(), 
+						companyID);
 			} else {
 				deadline = deadlineEndDate.addDays(appDeadline.getDeadline().v());
 			}
@@ -187,7 +222,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		}	
 	}
 	
-	public void applicationAcceptanceRestrictionsCheck(String companyID, ApplicationType appType, PrePostAtr postAtr, GeneralDate startDate, GeneralDate endDate){
+	public void applicationAcceptanceRestrictionsCheck(String companyID, ApplicationType appType, PrePostAtr postAtr, GeneralDate startDate, GeneralDate endDate,int overTimeAtr){
 		/*ログイン者のパスワードレベルが０の場合、チェックしない
 		ロールが決まったら、要追加*/
 		// if(passwordLevel!=0) return;
@@ -198,6 +233,11 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID, appType.value);
 		if(!appTypeDiscreteSettingOp.isPresent()) {
 			throw new RuntimeException("Not found AppTypeDiscreteSetting in table KRQST_APP_TYPE_DISCRETE, appType =" +  appType);
+		}
+		Optional<RequestSetting> requestSetting = this.requestSettingRepository.findByCompany(companyID);
+		List<ReceptionRestrictionSetting> receptionRestrictionSetting = new ArrayList<>();
+		if(requestSetting.isPresent()){
+			receptionRestrictionSetting = requestSetting.get().getApplicationSetting().getListReceptionRestrictionSetting().stream().filter(x -> x.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)).collect(Collectors.toList());
 		}
 		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
 		
@@ -227,15 +267,24 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 						throw new BusinessException("Msg_327", loopDay.toString(DATE_FORMAT));
 					}
 				} else {
-					// ループする日とシステム日付を比較する
-					if(loopDay.before(systemDate)){
-						throw new BusinessException("Msg_327", loopDay.toString(DATE_FORMAT));
-					} else if(loopDay.equals(systemDate)){
-						Integer limitTime = appTypeDiscreteSetting.getRetrictPreTimeDay().v();
-						Integer systemTime = systemDateTime.hours() * 60 + systemDateTime.minutes();
-						// システム日時と受付制限日時と比較する
-						if(systemTime > limitTime) {
+					if(appType.equals(ApplicationType.OVER_TIME_APPLICATION)){
+						// ループする日とシステム日付を比較する
+						if(loopDay.before(systemDate)){
 							throw new BusinessException("Msg_327", loopDay.toString(DATE_FORMAT));
+						} else if(loopDay.equals(systemDate)){
+							Integer systemTime = systemDateTime.hours() * 60 + systemDateTime.minutes();
+							int resultCompare = 0;
+							if(overTimeAtr == 0 && receptionRestrictionSetting.get(0).getBeforehandRestriction().getPreOtTime() != null){
+								resultCompare = systemTime.compareTo(receptionRestrictionSetting.get(0).getBeforehandRestriction().getPreOtTime().v());
+							}else if(overTimeAtr == 1 && receptionRestrictionSetting.get(0).getBeforehandRestriction().getNormalOtTime() !=  null){
+								resultCompare = systemTime.compareTo(receptionRestrictionSetting.get(0).getBeforehandRestriction().getNormalOtTime().v());
+							}else if(overTimeAtr == 2 && receptionRestrictionSetting.get(0).getBeforehandRestriction().getTimeBeforehandRestriction() !=  null){
+								resultCompare = systemTime.compareTo(receptionRestrictionSetting.get(0).getBeforehandRestriction().getTimeBeforehandRestriction().v());
+							}
+							// システム日時と受付制限日時と比較する
+							if(resultCompare == 1) {
+								throw new BusinessException("Msg_327", loopDay.toString(DATE_FORMAT));
+							}
 						}
 					}
 				}
@@ -245,34 +294,128 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 	}
 	
 	public void confirmationCheck(String companyID, String employeeID, GeneralDate appDate){
+		// アルゴリズム「申請の締め切り期限をチェック」を実施する
+		SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID,
+				employeeID, appDate);
+		if (empHistImport == null || empHistImport.getEmploymentCode() == null) {
+			throw new BusinessException("Msg_426");
+		}
+		String employmentCD = empHistImport.getEmploymentCode();
+		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository
+				.findByEmploymentCD(companyID, employmentCD);
+		if (!closureEmployment.isPresent()) {
+			throw new RuntimeException(
+					"Not found ClosureEmployment in table KCLMT_CLOSURE_EMPLOYMENT, employment =" + employmentCD);
+		}
 		
-		/*
-		obj = "Imported(ApplicationApproval)[ActualResultConfirmedState]  // 「Imported(申請承認)「実績確定状態」 
-		if(obj.isPresent()){
-			applicationRestrictionSetting = from cache; // 申請制限設定
-			if(applicationRestrictionSetting.canNotApplyIfTheResultsByDayAreConfirmed == true){
-				obj1 = Imported(ApplicationApproval)[ActualResultConfirmedState].dailyPerformanceConfirmed; // 「Imported(申請承認)「実績確定状態」．日別実績が確認済
-				if(obj1 = true) throw new BusinessException(Msg_448);
+		Optional<ActualLockImport> actualLockImport = this.actualLockAdapter.findByID(companyID,
+				closureEmployment.get().getClosureId());
+		
+		Optional<RequestSetting> requestSetting = this.requestSettingRepository.findByCompany(companyID);
+		if (!requestSetting.isPresent()) {
+			return;
+		}
+		ApplicationSetting applicationSetting = requestSetting.get().getApplicationSetting();
+		AppLimitSetting appLimitSetting = applicationSetting.getAppLimitSetting();
+		// ドメインモデル「申請制限設定」．日別実績が確認済なら申請できないをチェックする(check domain 「申請制限設定」．日別実績が確認済なら申請できない)
+		if (appLimitSetting.getCanAppAchievementConfirm()) {
+			List<ApproveRootStatusForEmpImPort> approveRootStatus = this.approvalRootStateAdapter.getApprovalByEmplAndDate(appDate, appDate, employeeID, companyID, 1);
+			if(CollectionUtil.isEmpty(approveRootStatus)){
+				return;
 			}
-			if(applicationRestrictionSetting.canNotApplyIfTheResultsByMonthAreConfirmed == true){
-				obj2 = Imported(ApplicationApproval)[ActualResultConfirmedState].monthlyPerformanceConfirmed; // 「Imported(申請承認)「実績確定状態」．月別実績が確認済
-				if(obj2 = true) throw new BusinessException(Msg_449);
+			boolean isConfirm = false;
+			for(ApproveRootStatusForEmpImPort approve : approveRootStatus){
+				if(approve.getApprovalStatus().equals(ApprovalStatusForEmployeeImport.APPROVED)){
+					isConfirm = true;
+					break;
+				}
 			}
-			if(applicationRestrictionSetting.canNotApplyIfWorkHasBeenFixed == true){
-				obj3 = Imported(ApplicationApproval)[ActualResultConfirmedState].classificationOfEmploymentOfBelongingWorkplace; // 「Imported(申請承認)「実績確定状態」．所属職場の就業確定区分
-				if(obj3 = true) throw new BusinessException(Msg_450);
-			}
-			if(applicationRestrictionSetting.canNotApplyIfActualResultIsLockedState == true){
-				date = from cache;
-				アルゴリズム「社員の当月の期間を算出する」を実行する(thực hiện xử lý 「社員の当月の期間を算出する」)
-				obj4 = OtherCommonAlgorithm.employeePeriodCurrentMonthCalculate(companyID, employeeID, date); // obj4 <=> 締め期間(開始年月日,終了年月日)
-				if(obj4.startDate <= appDate <= obj4.endDate){ 
-					obj5 = Imported(ApplicationApproval)[ActualResultConfirmedState].lockOfDailyPerformance; // 「Imported(申請承認)「実績確定状態」．日別実績のロック
-					obj6 = Imported(ApplicationApproval)[ActualResultConfirmedState].lockOfMonthlyPerformance; // 「Imported(申請承認)「実績確定状態」．月別実績のロック
-					if((obj5==true)||(obj6==true)) throw new BusinessException(Msg_451);
-				} 
+			//「Imported(申請承認)「実績確定状態」．日別実績が確認済をチェックする(check 「Imported(申請承認)「実績確定状態」．日別実績が確認済)
+			if(isConfirm){
+				throw new BusinessException("Msg_448");
 			}
 		}
-		 */
+		confirmCheck(appLimitSetting,actualLockImport,appDate,companyID,employeeID,closureEmployment);
+	}
+	private void confirmCheckOvertime(String companyID, String employeeID, GeneralDate appDate){
+		// アルゴリズム「申請の締め切り期限をチェック」を実施する
+				SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID,
+						employeeID, appDate);
+				if (empHistImport == null || empHistImport.getEmploymentCode() == null) {
+					throw new BusinessException("Msg_426");
+				}
+				String employmentCD = empHistImport.getEmploymentCode();
+				Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository
+						.findByEmploymentCD(companyID, employmentCD);
+				if (!closureEmployment.isPresent()) {
+					throw new RuntimeException(
+							"Not found ClosureEmployment in table KCLMT_CLOSURE_EMPLOYMENT, employment =" + employmentCD);
+				}
+				Optional<ActualLockImport> actualLockImport = this.actualLockAdapter.findByID(companyID,
+						closureEmployment.get().getClosureId());
+				
+				
+				Optional<RequestSetting> requestSetting = this.requestSettingRepository.findByCompany(companyID);
+				if (!requestSetting.isPresent()) {
+					return;
+				}
+				ApplicationSetting applicationSetting = requestSetting.get().getApplicationSetting();
+				AppLimitSetting appLimitSetting = applicationSetting.getAppLimitSetting();
+				confirmCheck(appLimitSetting,actualLockImport,appDate,companyID,employeeID,closureEmployment);
+	}
+	private void confirmCheck(AppLimitSetting appLimitSetting, Optional<ActualLockImport> actualLockImport,
+			GeneralDate appDate, String companyID, String employeeID,Optional<ClosureEmployment> closureEmployment) {
+		// ドメインモデル「申請制限設定」．月別実績が確認済なら申請できないをチェックする(check domain
+		// 「申請制限設定」．月別実績が確認済なら申請できない)
+		if (appLimitSetting.getCanAppAchievementMonthConfirm()) {
+			// 「Imported(申請承認)「実績確定状態」．月別実績が確認済をチェックする(check
+			// 「Imported(申請承認)「実績確定状態」．月別実績が確認済)
+			List<ApproveRootStatusForEmpImPort> approveRootStatus = this.approvalRootStateAdapter.getApprovalByEmplAndDate(appDate, appDate, employeeID, companyID, 2);
+			if(CollectionUtil.isEmpty(approveRootStatus)){
+				return;
+			}
+			boolean isConfirm = false;
+			for(ApproveRootStatusForEmpImPort approve : approveRootStatus){
+				if(approve.getApprovalStatus().equals(ApprovalStatusForEmployeeImport.APPROVED)){
+					isConfirm = true;
+					break;
+				}
+			}
+			if (isConfirm) {
+				throw new BusinessException("Msg_449");
+			}
+		}
+		// ドメインモデル「申請制限設定」．就業確定済の場合申請できないをチェックする(check domain
+		// 「申請制限設定」．就業確定済の場合申請できない)
+		if (appLimitSetting.getCanAppFinishWork()) {
+			GeneralDate systemDate = GeneralDate.today();
+			WkpHistImport wkpHistImport = workplaceAdapter.findWkpBySid(employeeID, systemDate);
+			if(wkpHistImport == null){
+				throw new RuntimeException("Not found workplaceID");
+			}
+			// 「Imported(申請承認)「実績確定状態」．所属職場の就業確定区分をチェックする(check
+			// 「Imported(申請承認)「実績確定状態」．所属職場の就業確定区分)
+			if (this.workFixedAdater.getEmploymentFixedStatus(companyID, appDate, wkpHistImport.getWorkplaceId(),
+					closureEmployment.get().getClosureId())) {
+				throw new BusinessException("Msg_450");
+			}
+		}
+		if (!actualLockImport.isPresent()) {
+			return;
+		}
+		// ドメインモデル「申請制限設定」．実績修正がロック状態なら申請できないをチェックする(check domain
+		// 「申請制限設定」．実績修正がロック状態なら申請できない)
+		if (appLimitSetting.getCanAppAchievementLock()) {
+			// 4.社員の当月の期間を算出する
+			PeriodCurrentMonth periodCurrentMonth = this.otherCommonAlgorithmService
+					.employeePeriodCurrentMonthCalculate(companyID, employeeID, appDate);
+			if (appDate.afterOrEquals(periodCurrentMonth.getStartDate())
+					&& appDate.beforeOrEquals(periodCurrentMonth.getEndDate())) {
+				if (actualLockImport.get().getDailyLockState() == 1
+						|| actualLockImport.get().getMonthlyLockState() == 1) {
+					throw new BusinessException("Msg_451");
+				}
+			}
+		}
 	}
 }

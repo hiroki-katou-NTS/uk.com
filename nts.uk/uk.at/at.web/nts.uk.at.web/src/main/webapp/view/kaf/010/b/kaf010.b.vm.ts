@@ -156,10 +156,17 @@ module nts.uk.at.view.kaf010.b {
                     if(res.messageId == 'Msg_426'){
                        dialog.alertError({messageId : res.messageId}).then(function(){
                             nts.uk.ui.block.clear();
+                           nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
                     });
+                    }else if(res.messageId == 'Msg_423'){
+                        dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                            .then(function() {
+                                nts.uk.ui.block.clear();
+                                nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                            });
                     }else{ 
                         nts.uk.ui.dialog.alertError(res.message).then(function(){
-                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
+                            nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
                             nts.uk.ui.block.clear();
                         });
                     }
@@ -172,6 +179,7 @@ module nts.uk.at.view.kaf010.b {
                 var self = this;
                 self.version = data.application.version;
                 self.manualSendMailAtr(data.manualSendMailAtr);
+                self.displayPrePostFlg(data.displayPrePostFlg ? true : false);
                 self.prePostSelected(data.application.prePostAtr);
                 self.displayCaculationTime(data.displayCaculationTime);
                 self.typicalReasonDisplayFlg(data.typicalReasonDisplayFlg);
@@ -205,7 +213,7 @@ module nts.uk.at.view.kaf010.b {
                 self.backSelected1(data.backAtr1);
                 self.backSelected2(data.backAtr2);
                 self.goSelected1Value(data.goAtr1 == 0 ? nts.uk.resource.getText("KAF009_17") : nts.uk.resource.getText("KAF009_16"));
-                self.backSelected1Value(data.goAtr1 == 0 ? nts.uk.resource.getText("KAF009_19") : nts.uk.resource.getText("KAF009_18"));
+                self.backSelected1Value(data.backAtr1 == 0 ? nts.uk.resource.getText("KAF009_19") : nts.uk.resource.getText("KAF009_18"));
                 if(data.applicationReasonDtos != null && data.applicationReasonDtos.length > 0){
                     let reasonID = data.applicationReasonDtos[0].reasonID;
                     self.selectedReason(reasonID);
@@ -618,9 +626,30 @@ module nts.uk.at.view.kaf010.b {
                     let endTime = self.restTime()[i].endTime();
                     let attendanceId = self.restTime()[i].attendanceID();
                     let frameNo = self.restTime()[i].frameNo();
-                    if(!nts.uk.util.isNullOrEmpty(startTime) && startTime != ""){
-                        if(!self.validateTime(startTime, endTime, 'input#restTimeStart_'+attendanceId+'_'+frameNo)){
+                    if (i != 9) {
+                        let startTimeAdd = self.restTime()[i + 1].startTime();
+                        let endTimeAdd = self.restTime()[i + 1].endTime();
+                        let attendanceIdAdd = self.restTime()[i + 1].attendanceID();
+                        let frameNoAdd = self.restTime()[i + 1].frameNo();
+                    }
+                    if (nts.uk.util.isNullOrEmpty(startTime) && !nts.uk.util.isNullOrEmpty(endTime)) {
+                        dialog.alertError({ messageId: "Msg_307" })
+                        $('input#restTimeStart_' + attendanceId + '_' + frameNo).focus();
+                        return false;
+                    }
+                    if (!nts.uk.util.isNullOrEmpty(startTime) && startTime != "") {
+                        if (!self.validateTime(startTime, endTime, 'input#restTimeEnd_' + attendanceId + '_' + frameNo)) {
                             return false;
+                        };
+                    }
+                    if (!nts.uk.util.isNullOrEmpty(startTimeAdd)) {
+                        if (endTime == null) {
+                                dialog.alertError({ messageId: "Msg_307" })
+                                $('input#restTimeEnd_' + attendanceId + '_' + frameNo).focus();
+                                return false;
+                        }
+                        if (!self.validateTime(endTime, startTimeAdd, 'input#restTimeStart_' + attendanceIdAdd + '_' + frameNoAdd)) {
+                                return false;
                         };
                     }
                 }
@@ -912,17 +941,17 @@ module nts.uk.at.view.kaf010.b {
                         }
                     }
                 });
-                //休憩時間
-                for (let i = 0; i < self.breakTimes().length; i++) {
-                    self.breakTimes()[i].applicationTime.subscribe(value => {
-                        if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
-                            if (self.preWorkContent.breakTimes[i].applicationTime != value) {
-                                //→エラーＭＳＧ
-                                self.calculateFlag(1);
-                            }
-                        }
-                    });
-                }
+//                //休憩時間
+//                for (let i = 0; i < self.breakTimes().length; i++) {
+//                    self.breakTimes()[i].applicationTime.subscribe(value => {
+//                        if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
+//                            if (self.preWorkContent.breakTimes[i].applicationTime != value) {
+//                                //→エラーＭＳＧ
+//                                self.calculateFlag(1);
+//                            }
+//                        }
+//                    });
+//                }
             }
         }
     }

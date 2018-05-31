@@ -9,7 +9,9 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSettingRepository;
 import nts.uk.ctx.sys.portal.dom.toppagepart.optionalwidget.OptionalWidgetRepository;
+import nts.uk.ctx.sys.portal.dom.toppagepart.service.TopPagePartService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -18,6 +20,9 @@ public class DeleteWidgetCommandHandler extends CommandHandler<DeleteWidgetComma
 
 	@Inject
 	private OptionalWidgetRepository opWidgetRepository;
+	
+	@Inject
+	private MyPageSettingRepository myPageSettingRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<DeleteWidgetCommand> context) {
@@ -26,6 +31,8 @@ public class DeleteWidgetCommandHandler extends CommandHandler<DeleteWidgetComma
 		List<Integer> ls = command.getDisplayItemTypes().stream().map(WidgetDisplayItemCommand::getDisplayItemType)
 				.collect(Collectors.toList());
 		this.opWidgetRepository.remove(companyID, command.getTopPagePartID(), ls);
+		myPageSettingRepository.removeTopPagePartUseSettingById(companyID, command.getTopPagePartID());
+		
 	}
 
 }

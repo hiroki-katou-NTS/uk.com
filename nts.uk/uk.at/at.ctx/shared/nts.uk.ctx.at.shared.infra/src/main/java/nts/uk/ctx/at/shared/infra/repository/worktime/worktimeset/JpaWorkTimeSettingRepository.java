@@ -212,6 +212,7 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 		lstpredicateWhere.add(criteriaBuilder
 				.equal(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.cid), companyId));
 		lstpredicateWhere.add(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.worktimeCd).in(workTimeCodes));
+		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.abolitionAtr), AbolishAtr.NOT_ABOLISH.value));
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		List<KshmtWorkTimeSet> lstKwtstWorkTimeSet = em.createQuery(cq).getResultList();
@@ -232,5 +233,43 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 	private Optional<KshmtWorkTimeSet> findByPk(String companyId, String worktimeCode) {
 		KshmtWorkTimeSetPK pk = new KshmtWorkTimeSetPK(companyId, worktimeCode);
 		return this.queryProxy().find(pk, KshmtWorkTimeSet.class);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository#
+	 * findActiveItems(java.lang.String)
+	 */
+	@Override
+	public List<WorkTimeSetting> findActiveItems(String companyId) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<KshmtWorkTimeSet> cq = criteriaBuilder.createQuery(KshmtWorkTimeSet.class);
+		Root<KshmtWorkTimeSet> root = cq.from(KshmtWorkTimeSet.class);
+
+		// select root
+		cq.select(root);
+		List<KshmtWorkTimeSet> lstKwtstWorkTimeSet = new ArrayList<>();
+		
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
+			lstpredicateWhere.add(criteriaBuilder.equal(
+					root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.cid),
+					companyId));
+			lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.abolitionAtr),
+					AbolishAtr.NOT_ABOLISH.value));
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+			lstKwtstWorkTimeSet.addAll(em.createQuery(cq).getResultList());
+
+			return lstKwtstWorkTimeSet.stream().map(item -> {
+			WorkTimeSetting worktimeSetting = new WorkTimeSetting(
+					new JpaWorkTimeSettingGetMemento(item));
+			return worktimeSetting;
+		}).collect(Collectors.toList());
 	}
 }

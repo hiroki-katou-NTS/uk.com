@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 
@@ -22,30 +23,47 @@ public class SettingItemDtoMapping {
 	@Inject
 	private ComboBoxRetrieveFactory comboBoxFac;
 
-	public void setTextForItem(List<SettingItemDto> result, String employeeId, GeneralDate baseDate) {
-		setTextForSelectionItem(result, employeeId, baseDate);
+	/**
+	 * @param result
+	 * @param employeeId
+	 * @param baseDate
+	 * @param perInfoCategory
+	 * 
+	 * change value from value -> text
+	 */
+	public void setTextForItem(List<SettingItemDto> result, String employeeId, GeneralDate baseDate,
+			PersonInfoCategory perInfoCategory) {
+		setTextForSelectionItem(result, employeeId, baseDate, perInfoCategory);
 		setTextForSetItem(result);
 	}
 
-	public void setTextForSelectionItem(List<SettingItemDto> result, String employeeId, GeneralDate baseDate) {
+	public void setTextForSelectionItem(List<SettingItemDto> result, String employeeId, GeneralDate baseDate,
+			PersonInfoCategory perInfoCategory) {
 
-		List<SettingItemDto> SelectionItemLst = result.stream()
-				.filter(x -> x.getDataType().equals(DataTypeValue.SELECTION)).collect(Collectors.toList());
+		List<SettingItemDto> selectionItemList = result.stream()
+				.filter(x -> (x.getDataType() == DataTypeValue.SELECTION
+						|| x.getDataType() == DataTypeValue.SELECTION_BUTTON
+						|| x.getDataType() == DataTypeValue.SELECTION_RADIO))
+				.filter(x -> x.getSaveData().getValue() != null && !x.getSaveData().getValue().toString().isEmpty())
+				.collect(Collectors.toList());
 
-		if (!CollectionUtil.isEmpty(SelectionItemLst)) {
-			SelectionItemLst.forEach(item -> {
-
-				List<ComboBoxObject> comboxList = this.comboBoxFac.getComboBox(item.getSelectionItemRefType(),
-						item.getSelectionItemRefCd(), baseDate, employeeId, null, true, true);
-
-				comboxList.forEach(cbItem -> {
-					if (cbItem.getOptionValue().equals(item.getSaveData().getValue().toString())) {
-
-						item.getSaveData().setValue(cbItem.getOptionText());
-					}
-				});
-			});
+		if (CollectionUtil.isEmpty(selectionItemList)) {
+			return;
 		}
+
+		selectionItemList.forEach(item -> {
+
+			List<ComboBoxObject> comboxList = this.comboBoxFac.getComboBox(item.getSelectionItemRefType(),
+					item.getSelectionItemRefCd(), baseDate, employeeId, null, true,
+					perInfoCategory.getPersonEmployeeType(), true, perInfoCategory.getCategoryCode().v());
+
+			comboxList.forEach(cbItem -> {
+				if (cbItem.getOptionValue().equals(item.getSaveData().getValue().toString())) {
+
+					item.getSaveData().setValue(cbItem.getOptionText());
+				}
+			});
+		});
 
 	}
 

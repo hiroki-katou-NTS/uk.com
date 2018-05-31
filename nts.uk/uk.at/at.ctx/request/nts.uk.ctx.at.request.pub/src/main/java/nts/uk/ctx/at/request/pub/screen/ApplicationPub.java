@@ -15,4 +15,13 @@ public interface ApplicationPub {
 	 * @return list<ApplicationExport>
 	 */
 	public List<ApplicationExport> getApplicationBySID(List<String> employeeID, GeneralDate startDate, GeneralDate endDate);
+	
+	/**
+	 * requestList #239
+	 * 申請締切設定を取得する
+	 * @param companyID
+	 * @param closureID
+	 * @return
+	 */
+	public ApplicationDeadlineExport getApplicationDeadline(String companyID, Integer closureID);
 }

@@ -4,7 +4,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectParameter;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
 
@@ -15,7 +16,7 @@ public class AfterScheTimeReflectImpl implements AfterScheTimeReflect{
 	@Inject
 	private ScheTimeReflect scheTimeReflect;
 	@Inject
-	private ScheWorkUpdateService scheUpdateService;
+	private WorkUpdateService scheUpdateService;
 	@Override
 	public void reflectScheTime(GobackReflectParameter para, boolean timeTypeScheReflect) {
 		//予定時刻反映できるかチェックする
@@ -24,33 +25,28 @@ public class AfterScheTimeReflectImpl implements AfterScheTimeReflect{
 		}
 		//(開始時刻)反映する時刻を求める
 		TimeOfDayReflectOutput startTime = scheTimeReflect.getTimeOfDayReflect(timeTypeScheReflect, para.getGobackData().getStartTime1(), ApplyTimeAtr.START, para.getGobackData().getWorkTimeCode(), para.getScheTimeReflectAtr());
-		if(startTime.isReflectFlg()) {
-			//予定開始時刻の反映
-			TimeReflectParameter timeRef = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), startTime.getTimeOfDay(), 1, true);
-			scheUpdateService.updateStartTimeOfReflect(timeRef);
-		}
-		//(終了時刻)反映する時刻を求める
 		TimeOfDayReflectOutput endTime = scheTimeReflect.getTimeOfDayReflect(timeTypeScheReflect, para.getGobackData().getEndTime1(), ApplyTimeAtr.END, para.getGobackData().getWorkTimeCode(), para.getScheTimeReflectAtr());
-		if(endTime.isReflectFlg()) {
-			//予定終了時刻の反映
-			TimeReflectParameter timeRef = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), endTime.getTimeOfDay(), 1, false);
-			scheUpdateService.updateStartTimeOfReflect(timeRef);
-		}
+		TimeReflectPara timeData1 = new TimeReflectPara(para.getEmployeeId(), 
+				para.getDateData(), 
+				startTime.getTimeOfDay(), 
+				endTime.getTimeOfDay(), 
+				1,
+				startTime.isReflectFlg(), 
+				endTime.isReflectFlg());
+		scheUpdateService.updateScheStartEndTime(timeData1);		
 		//(開始時刻2)反映する時刻を求める,
-		TimeOfDayReflectOutput startTime2 = scheTimeReflect.getTimeOfDayReflect(timeTypeScheReflect, 
+		/*TimeOfDayReflectOutput startTime2 = scheTimeReflect.getTimeOfDayReflect(timeTypeScheReflect, 
 				para.getGobackData().getStartTime2(), ApplyTimeAtr.START2, para.getGobackData().getWorkTimeCode(), para.getScheTimeReflectAtr());
-		if(startTime2.isReflectFlg()) {
-			//予定開始時刻の反映
-			TimeReflectParameter timeRef = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), startTime2.getTimeOfDay(), 2, true);
-			scheUpdateService.updateStartTimeOfReflect(timeRef);
-		}
 		// (終了時刻2)反映する時刻を求める
 		TimeOfDayReflectOutput endTime2 = scheTimeReflect.getTimeOfDayReflect(timeTypeScheReflect, para.getGobackData().getEndTime2(), ApplyTimeAtr.END2, para.getGobackData().getWorkTimeCode(), para.getScheTimeReflectAtr());
-		if(endTime2.isReflectFlg()) {
-			//予定終了時刻の反映
-			TimeReflectParameter timeRef = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), endTime2.getTimeOfDay(), 2, false);
-			scheUpdateService.updateStartTimeOfReflect(timeRef);
-		}
+		TimeReflectPara timeData2 = new TimeReflectPara(para.getEmployeeId(), 
+				para.getDateData(), 
+				startTime2.getTimeOfDay(), 
+				endTime2.getTimeOfDay(), 
+				2, 
+				startTime2.isReflectFlg(), 
+				endTime2.isReflectFlg());
+		scheUpdateService.updateScheStartEndTime(timeData2);		*/
 	}
 
 	@Override

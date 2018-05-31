@@ -12,7 +12,12 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.divergencetime.AggregateDivergenceTime;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.divergencetime.DivergenceAtrOfMonthly;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -64,5 +69,48 @@ public class KrcdtMonAggrDivgTime extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {		
 		return this.PK;
+	}
+	
+	/**
+	 * ドメインに変換
+	 * @return 集計乖離時間
+	 */
+	public AggregateDivergenceTime toDomain(){
+		
+		return AggregateDivergenceTime.of(
+				this.PK.divergenceTimeNo,
+				new AttendanceTimeMonth(this.divergenceTime),
+				new AttendanceTimeMonth(this.deductionTime),
+				new AttendanceTimeMonth(this.divergenceTimeAfterDeduction),
+				EnumAdaptor.valueOf(this.divergenceAtr, DivergenceAtrOfMonthly.class));
+	}
+	
+	/**
+	 * ドメインから変換　（for Insert）
+	 * @param key キー値：月別実績の勤怠時間
+	 * @param domain 集計乖離時間
+	 */
+	public void fromDomainForPersist(AttendanceTimeOfMonthlyKey key, AggregateDivergenceTime domain){
+		
+		this.PK = new KrcdtMonAggrDivgTimePK(
+				key.getEmployeeId(),
+				key.getYearMonth().v(),
+				key.getClosureId().value,
+				key.getClosureDate().getClosureDay().v(),
+				(key.getClosureDate().getLastDayOfMonth() ? 1 : 0),
+				domain.getDivergenceTimeNo());
+		this.fromDomainForUpdate(domain);
+	}
+	
+	/**
+	 * ドメインから変換　(for Update)
+	 * @param domain 集計乖離時間
+	 */
+	public void fromDomainForUpdate(AggregateDivergenceTime domain){
+		
+		this.divergenceAtr = domain.getDivergenceAtr().value;
+		this.divergenceTime = domain.getDivergenceTime().v();
+		this.deductionTime = domain.getDeductionTime().v();
+		this.divergenceTimeAfterDeduction = domain.getDivergenceTimeAfterDeduction().v();
 	}
 }

@@ -237,6 +237,7 @@ module nts.uk.com.view.cmf001.q {
                                     self.executionState(getListProcessing()[1].value);
                                 }else {
                                     self.executionState(getListProcessing()[3].value);
+                                    $('#BTN_ERROR').focus();
                                 }
 
                                 if (res.succeeded) {
@@ -255,7 +256,7 @@ module nts.uk.com.view.cmf001.q {
                 let self = this;
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_911" })
                 .ifYes(() => {
-                    self.isStop(true);
+                    
                     if (nts.uk.text.isNullOrEmpty(self.taskId())) {
                         return;
                     }

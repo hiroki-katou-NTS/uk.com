@@ -27,7 +27,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
  * The Class FlexWorkSettingDto.
  */
 @Getter
-public class FlexWorkSettingDto implements FlexWorkSettingSetMemento{
+public class FlexWorkSettingDto implements FlexWorkSettingSetMemento {
 
 	/** The work time code. */
 	private String workTimeCode;

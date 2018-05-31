@@ -9,13 +9,15 @@ import javax.inject.Inject;
 
 import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetPolicy;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowHalfDayWtzPolicy;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOffdayWtzPolicy;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowStampReflectTimezonePolicy;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingPolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.policy.FlowHalfDayWtzPolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.policy.FlowOffdayWtzPolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.policy.FlowStampReflectTimezonePolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.policy.FlowTimeSettingPolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.policy.FlowWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
+import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayMode;
 
 /**
  * The Class FlowWorkSettingPolicyImpl.
@@ -53,11 +55,14 @@ public class FlowWorkSettingPolicyImpl implements FlowWorkSettingPolicy {
 	 */
 	@Override
 	public void validate(BundledBusinessException bundledBusinessExceptions,
-			PredetemineTimeSetting predetemineTimeSetting, FlowWorkSetting flowWorkSetting) {
+			PredetemineTimeSetting predetemineTimeSetting, WorkTimeDisplayMode displayMode,
+			FlowWorkSetting flowWorkSetting) {
 
 		// Msg_516
-		this.flowStampReflectTimezonePolicy.validate(bundledBusinessExceptions, predetemineTimeSetting,
-				flowWorkSetting.getStampReflectTimezone());
+		if (DisplayMode.DETAIL.equals(displayMode.getDisplayMode())) {
+			this.flowStampReflectTimezonePolicy.validate(bundledBusinessExceptions, predetemineTimeSetting,
+					flowWorkSetting.getStampReflectTimezone());
+		}
 
 		// Msg_781
 		flowWorkSetting.getHalfDayWorkTimezone().getWorkTimeZone().getLstOTTimezone().forEach(flowOTTimezone -> {

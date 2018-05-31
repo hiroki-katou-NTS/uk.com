@@ -11,6 +11,7 @@ import lombok.Getter;
  */
 
 @Getter
+//社員ログイン設定
 public class EmployeeLoginSetting {
 
 	//契約コード

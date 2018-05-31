@@ -245,7 +245,8 @@ __viewContext.ready(function () {
         }];
     
     let leftmostColumns = [{ key: "empName", headerText: "社員名", width: "160px", icon: { for: "body", class: "ui-icon ui-icon-contact", width: "35px" }, 
-        css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { alert(rowIdx); } }];
+        css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { alert(rowIdx); }, 
+        headerControl: "link", headerHandler: function() { alert("Link!"); } }];
     let leftmostHeader = {
         columns: leftmostColumns,
         rowHeight: "75px",
@@ -263,7 +264,8 @@ __viewContext.ready(function () {
         }
     };
     let middleColumns = [
-        { headerText: "有資<br/>格者", key: "cert", width: "50px", handlerType: "tooltip", supplier: tts },
+        { headerText: "有資<br/>格者", key: "cert", width: "50px", handlerType: "tooltip", supplier: tts, 
+            headerControl: "link", headerHandler: function() { alert("有資格者"); } },
         { 
             headerText: "回数集計１",
             group: [
@@ -331,6 +333,7 @@ __viewContext.ready(function () {
         columns: detailColumns,
         dataSource: detailContentDs,
         primaryKey: "empId",
+//        highlight: false,
         features: [{
             name: "BodyCellStyle",
             decorator: detailContentDeco
@@ -421,10 +424,12 @@ __viewContext.ready(function () {
             bodyHeightMode: "dynamic",
             windowXOccupation: 170,
             windowYOccupation: 300,
-            updateMode: "edit",
+            manipulatorId: "6",
+            manipulatorKey: "empId",
+            updateMode: "stick",
             pasteOverWrite: true,
             stickOverWrite: true,
-            viewMode: "time",
+            viewMode: "shortName",
             secondaryTable: $("#subtable"),
             determination: {
                 rows: [0],
@@ -490,6 +495,7 @@ __viewContext.ready(function () {
     let horizontalSumContent2 = {
         columns: detailColumns2,
         dataSource: horzSumContentDs,
+        highlight: false,
         primaryKey: "itemId"
     };
     new nts.uk.ui.exTable.ExTable($("#subtable"), { 

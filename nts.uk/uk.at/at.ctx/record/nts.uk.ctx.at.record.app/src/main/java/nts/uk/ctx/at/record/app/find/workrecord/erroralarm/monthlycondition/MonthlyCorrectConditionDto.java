@@ -50,7 +50,7 @@ public class MonthlyCorrectConditionDto {
 		ErAlAtdItemConditionDto erAlAtdItemConditionDto = new ErAlAtdItemConditionDto();
 		erAlAtdItemConditionDto.setTargetNO(itemDomain.getTargetNO());
 		erAlAtdItemConditionDto.setConditionAtr(itemDomain.getConditionAtr().value);
-		erAlAtdItemConditionDto.setUseAtr(itemDomain.getUseAtr());
+		erAlAtdItemConditionDto.setUseAtr(itemDomain.isUse());
 		// Check Target
 		// チェック対象
 		if (itemDomain.getConditionAtr() == ConditionAtr.TIME_WITH_DAY) {
@@ -140,7 +140,7 @@ public class MonthlyCorrectConditionDto {
 			dto.operatorBetweenGroups = timeItemCheckMonthly.getAtdItemCondition().getOperatorBetweenGroups().value;
 			dto.operatorGroup1 = timeItemCheckMonthly.getAtdItemCondition().getGroup1().getConditionOperator().value;
 			dto.operatorGroup2 = timeItemCheckMonthly.getAtdItemCondition().getGroup2().getConditionOperator().value;
-			dto.group2UseAtr = timeItemCheckMonthly.getAtdItemCondition().getGroup2UseAtr();
+			dto.group2UseAtr = timeItemCheckMonthly.getAtdItemCondition().isUseGroup2();
 			// Set ErAlAtdItemConditionDto
 			List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup1 = new ArrayList<>();
 			List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup2 = new ArrayList<>();

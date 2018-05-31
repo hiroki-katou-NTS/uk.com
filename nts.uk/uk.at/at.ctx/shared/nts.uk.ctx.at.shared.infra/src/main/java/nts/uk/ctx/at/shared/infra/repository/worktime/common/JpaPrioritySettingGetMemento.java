@@ -47,7 +47,7 @@ public class JpaPrioritySettingGetMemento implements PrioritySettingGetMemento {
 	 */
 	@Override
 	public StampPiorityAtr getStampAtr() {
-		return StampPiorityAtr.valueOf(this.entity.getStampAtr());
+		return StampPiorityAtr.valueOf(this.entity.getKshmtPioritySetPK().getStampAtr());
 	}
 
 }

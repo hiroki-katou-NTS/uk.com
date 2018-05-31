@@ -97,18 +97,18 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 
 	public TimeLeavingWork toDomain() {
 		TimeLeavingWork domain = new TimeLeavingWork(new WorkNo(this.krcdtTimeLeavingWorkPK.workNo),
-				Optional.of(new TimeActualStamp(
+				new TimeActualStamp(
 						getWorkStamp(this.attendanceActualRoudingTime, this.attendanceActualTime, 
 								this.attendanceActualPlaceCode, this.attendanceActualSourceInfo),
 						getWorkStamp(this.attendanceStampRoudingTime, this.attendanceStampTime,
 								this.attendanceStampPlaceCode, this.attendanceStampSourceInfo),
-						this.attendanceNumberStamp)),
-				Optional.of(new TimeActualStamp(
+						this.attendanceNumberStamp),
+				new TimeActualStamp(
 						getWorkStamp(this.leaveWorkActualRoundingTime, this.leaveWorkActualTime,
 								this.leaveWorkActualPlaceCode, this.leaveActualSourceInfo),
 						getWorkStamp(this.leaveWorkStampRoundingTime, this.leaveWorkStampTime,
 								this.leaveWorkStampPlaceCode, this.leaveWorkStampSourceInfo),
-						this.leaveWorkNumberStamp)));
+						this.leaveWorkNumberStamp));
 		return domain;
 	}
 

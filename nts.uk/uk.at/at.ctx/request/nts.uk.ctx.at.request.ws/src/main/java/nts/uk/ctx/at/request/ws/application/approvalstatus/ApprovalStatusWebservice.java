@@ -8,23 +8,30 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprovalStatusMailTempCommand;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.RegisterApprovalStatusMailTempCommandHandler;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApplicationDetailDto;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApplicationListDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusActivityData;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusByIdDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusFinder;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusMailTempDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusPeriorDto;
-import nts.uk.ctx.at.request.app.find.application.approvalstatus.EmployeeEmailDto;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalSttRequestContentDis;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.UnAppMailTransmisDto;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalSendMail;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
 
 @Path("at/request/application/approvalstatus")
 @Produces("application/json")
 public class ApprovalStatusWebservice extends WebService {
 	@Inject
-	private ApprovalStatusFinder approvalMailTempFinder;
+	private ApprovalStatusFinder approvalMailFinder;
 
 	@Inject
 	private RegisterApprovalStatusMailTempCommandHandler registerApprovalStatusMailTempCommandHandler;
@@ -32,17 +39,11 @@ public class ApprovalStatusWebservice extends WebService {
 	/** The finder. */
 	@Inject
 	private ApprovalStatusFinder finder;
-	
-	@POST
-	@Path("getMail/{mailType}")
-	public ApprovalStatusMailTempDto getMail(@PathParam("mailType") int mailType) {
-		return approvalMailTempFinder.findByType(mailType);
-	}
 
 	@POST
-	@Path("getMailBySetting")
-	public List<ApprovalStatusMailTempDto> findBySetting() {
-		return approvalMailTempFinder.findBySetting();
+	@Path("getMailTemp")
+	public List<ApprovalStatusMailTempDto> getMailTemp() {
+		return approvalMailFinder.getMailTemp();
 	}
 
 	@POST
@@ -52,15 +53,15 @@ public class ApprovalStatusWebservice extends WebService {
 	}
 
 	@POST
-	@Path("getEmpMail")
-	public EmployeeEmailDto getEmpMail() {
-		return null;
+	@Path("confirmSenderMail")
+	public JavaTypeResult<String> confirmSenderMail() {
+		return new JavaTypeResult<String>(approvalMailFinder.confirmSenderMail());
 	}
 	
 	@POST
 	@Path("sendTestMail/{mailType}")
 	public SendMailResultOutput sendTestMail(@PathParam("mailType") int mailType) {
-		return approvalMailTempFinder.sendTestMail(mailType);
+		return approvalMailFinder.sendTestMail(mailType);
 	}
 	
 	/**
@@ -81,8 +82,8 @@ public class ApprovalStatusWebservice extends WebService {
 	 */
 	@POST
 	@Path("getApprovalStatusPerior/{closureId}/{closureDate}")
-	public ApprovalStatusPeriorDto getApprovalStatusPerior(@PathParam("closureId") int closureId, @PathParam("closureDate") int closureDate) {
-		return this.finder.getApprovalStatusPerior(closureId, closureDate);
+	public ApprovalStatusPeriorDto getApprovalStatusPerior(@PathParam("closureId") int closureId) {
+		return this.finder.getApprovalStatusPerior(closureId);
 	}
 	
 	/**
@@ -94,10 +95,28 @@ public class ApprovalStatusWebservice extends WebService {
 		return finder.getAppSttByWorkpace(param);
 	}
 	
-/*	@POST
-	@Path("getCheckSendMail/")
-	public List<String> getAppSttSendingUnapprovedMail(int empId) {
+	@POST
+	@Path("getCheckSendMail")
+	public List<String> getAppSttSendingUnapprovedMail(List<UnApprovalSendMail> listAppSttApp) {
 		return this.finder.getAppSttSendingUnapprovedMail(listAppSttApp);
-	}*/
+	}
 	
+	@POST
+	@Path("exeSendUnconfirmedMail")
+	public SendMailResultOutput exeSendUnconfirmedMail(UnAppMailTransmisDto unAppMailTransmis) {
+		return this.finder.exeSendUnconfirmedMail(unAppMailTransmis);
+	}
+	
+	@POST
+	@Path("initApprovalSttByEmployee")
+	public ApprovalSttByEmpListOutput initApprovalSttByEmployee(ApprovalStatusByIdDto appSttById){
+		return this.finder.initApprovalSttByEmployee(appSttById);
+		
+	}
+	
+	@POST
+	@Path("initApprovalSttRequestContentDis")
+	public ApplicationListDto initApprovalSttRequestContentDis(ApprovalSttRequestContentDis appSttContent) {
+		return this.finder.initApprovalSttRequestContentDis(appSttContent);
+	}
 }

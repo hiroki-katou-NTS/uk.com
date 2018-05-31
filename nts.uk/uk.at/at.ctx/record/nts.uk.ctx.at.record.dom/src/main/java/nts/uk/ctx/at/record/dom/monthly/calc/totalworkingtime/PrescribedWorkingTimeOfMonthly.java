@@ -17,7 +17,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author shuichi_ishida
  */
 @Getter
-public class PrescribedWorkingTimeOfMonthly {
+public class PrescribedWorkingTimeOfMonthly implements Cloneable {
 
 	/** 計画所定労働時間 */
 	private AttendanceTimeMonth schedulePrescribedWorkingTime;
@@ -51,6 +51,21 @@ public class PrescribedWorkingTimeOfMonthly {
 		domain.schedulePrescribedWorkingTime = schedulePrescribedWorkingTime;
 		domain.recordPrescribedWorkingTime = recordPrescribedWorkingTime;
 		return domain;
+	}
+	
+	@Override
+	public PrescribedWorkingTimeOfMonthly clone() {
+		PrescribedWorkingTimeOfMonthly cloned = new PrescribedWorkingTimeOfMonthly();
+		try {
+			cloned.schedulePrescribedWorkingTime = new AttendanceTimeMonth(this.schedulePrescribedWorkingTime.v());
+			cloned.recordPrescribedWorkingTime = new AttendanceTimeMonth(this.recordPrescribedWorkingTime.v());
+			// ※　Shallow Copy.
+			cloned.timeSeriesWorks = timeSeriesWorks;
+		}
+		catch (Exception e){
+			throw new RuntimeException("PrescribedWorkingTimeOfMonthly clone error.");
+		}
+		return cloned;
 	}
 	
 	/**
@@ -94,6 +109,22 @@ public class PrescribedWorkingTimeOfMonthly {
 	}
 
 	/**
+	 * 計画所定労働合計時間を取得する
+	 * @param datePeriod 期間
+	 * @return 計画所定労働合計時間
+	 */
+	public AttendanceTimeMonth getTotalSchedulePrescribedWorkingTime(DatePeriod datePeriod){
+		
+		AttendanceTimeMonth returnTime = new AttendanceTimeMonth(0);
+		for (val timeSeriesWork : this.timeSeriesWorks){
+			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
+			val prescribedWorkingTime = timeSeriesWork.getPrescribedWorkingTime();
+			returnTime = returnTime.addMinutes(prescribedWorkingTime.getSchedulePrescribedLaborTime().v());
+		}
+		return returnTime;
+	}
+
+	/**
 	 * 実績所定労働合計時間を取得する
 	 * @param datePeriod 期間
 	 * @return 実績所定労働合計時間
@@ -107,5 +138,17 @@ public class PrescribedWorkingTimeOfMonthly {
 			returnTime = returnTime.addMinutes(prescribedWorkingTime.getRecordPrescribedLaborTime().v());
 		}
 		return returnTime;
+	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(PrescribedWorkingTimeOfMonthly target){
+		
+		this.schedulePrescribedWorkingTime = this.schedulePrescribedWorkingTime.addMinutes(
+				target.schedulePrescribedWorkingTime.v());
+		this.recordPrescribedWorkingTime = this.recordPrescribedWorkingTime.addMinutes(
+				target.recordPrescribedWorkingTime.v());
 	}
 }

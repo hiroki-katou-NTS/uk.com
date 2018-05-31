@@ -130,7 +130,7 @@ module nts.uk.com.view.ccg027.a.viewmodel {
                     for (let entry of self.senderAddress().replace(/\s/g, '').split(";")) {
                         re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/igm;
                         if (!re.test(entry) || entry.length > 256 || entry =="") {
-                            $('#mailRely').ntsError('set', { messageId: "Msg_1112" });
+                            $('#senderAddress').ntsError('set', { messageId: "Msg_1112" });
                             //nts.uk.ui.dialog.alertError({ messageId: "Msg_1097" });
                             kt = false;
                             break;

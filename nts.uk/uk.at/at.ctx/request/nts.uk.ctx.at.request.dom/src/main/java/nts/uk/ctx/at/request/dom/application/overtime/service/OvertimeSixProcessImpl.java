@@ -59,7 +59,7 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 		for(CaculationTime overtimeInput : overTimeInputs ){
 			for(OvertimeInputCaculation overtimeInputCaculation : overtimeInputCaculations){
 					if(overtimeInput.getFrameNo() == overtimeInputCaculation.getFrameNo()){
-						if(overtimeInput.getApplicationTime() != null && overtimeInput.getApplicationTime() != overtimeInputCaculation.getResultCaculation()){
+						if(overtimeInput.getApplicationTime() != null && !overtimeInput.getApplicationTime().equals(overtimeInputCaculation.getResultCaculation())){
 							overtimeInput.setErrorCode(3); // 色定義名：計算値
 						}
 						if(overtimeInputCaculation.getResultCaculation()!= null && overtimeInputCaculation.getResultCaculation() == 0){

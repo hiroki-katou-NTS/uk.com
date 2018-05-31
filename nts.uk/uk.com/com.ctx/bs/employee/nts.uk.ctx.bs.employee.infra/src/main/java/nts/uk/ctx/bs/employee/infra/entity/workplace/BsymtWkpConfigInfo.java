@@ -43,7 +43,7 @@ public class BsymtWkpConfigInfo extends UkJpaEntity implements Serializable {
 	/** The bsymt wkp config info. */
 	@ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.LAZY)
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
-			@PrimaryKeyJoinColumn(name = "HISTORY_ID", referencedColumnName = "HISTORY_ID") })
+			@PrimaryKeyJoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID") })
 	public BsymtWkpConfig bsymtWkpConfig;
 
 	/**

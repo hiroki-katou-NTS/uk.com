@@ -10,12 +10,21 @@ import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ErrorPresent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionStatus;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
+import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -36,6 +45,24 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 	@Inject
 	private DailyCalculationEmployeeService dailyCalculationEmployeeService;
 
+	
+	//休暇加算設定
+	@Inject
+	private HolidayAddtionRepository holidayAddtionRepository;
+	//総拘束時間
+	@Inject
+	private SpecificWorkRuleRepository specificWorkRuleRepository;
+	//会社ごとの代休設定
+	@Inject
+	private CompensLeaveComSetRepository compensLeaveComSetRepository;
+	//乖離
+	@Inject 
+	private DivergenceTimeRepository divergenceTimeRepository;
+	
+	//エラーアラーム設定
+	@Inject
+	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepository;
+	
 	/**
 	 * Managerクラス
 	 * @param asyncContext 同期コマンドコンテキスト
@@ -58,7 +85,7 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 		val dataSetter = asyncContext.getDataSetter();
 		dataSetter.setData("dailyCalculateCount", 0);
 		dataSetter.setData("dailyCalculateStatus", ExecutionStatus.PROCESSING.nameId);
-		dataSetter.setData("dailyCalculateHasError", ErrorPresent.NO_ERROR );
+		dataSetter.setData("dailyCalculateHasError", ErrorPresent.NO_ERROR.nameId );
 
 		// 設定情報を取得　（日別計算を実行するかチェックする）
 		//　※　実行しない時、終了状態＝正常終了
@@ -74,13 +101,23 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 		this.empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID, executionContent.value,
 				ExecutionStatus.PROCESSING.value);
 		
+		//会社共通の設定を
+		val companyCommonSetting = new ManagePerCompanySet(holidayAddtionRepository.findByCompanyId(AppContexts.user().companyId()),
+														   holidayAddtionRepository.findByCId(AppContexts.user().companyId()),
+														   specificWorkRuleRepository.findCalcMethodByCid(AppContexts.user().companyId()),
+														   compensLeaveComSetRepository.find(AppContexts.user().companyId()),
+														   divergenceTimeRepository.getAllDivTime(AppContexts.user().companyId()),
+														   errorAlarmWorkRecordRepository.getListErrorAlarmWorkRecord(AppContexts.user().companyId())
+														   );
+		
+		
 		// 社員分ループ
 		int calculatedCount = 0;
 		for (val employeeId : employeeIds) {
 		
 			// 社員の日別実績を計算
 			status = this.dailyCalculationEmployeeService.calculate(asyncContext,
-					employeeId, datePeriod, empCalAndSumExecLogID, reCalcAtr);
+					employeeId, datePeriod, empCalAndSumExecLogID, reCalcAtr,companyCommonSetting);
 
 			// 状態確認
 			if (status == ProcessState.SUCCESS){

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface AffWorkplaceHistoryItemRepository {
 	/**
@@ -34,4 +35,6 @@ public interface AffWorkplaceHistoryItemRepository {
 	List<AffWorkplaceHistoryItem> findByHistIds(List<String> hisIds);
 	
 	List<AffWorkplaceHistoryItem> findeByWplIDs(List<String> wplIDs);
+	
+	List<AffWorkplaceHistoryItem> getAffWkpHistItemByListWkpIdAndDatePeriod(DatePeriod basedate, List<String> workplaceId);
 }

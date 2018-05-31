@@ -7,6 +7,13 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+               nts.uk.ctx.at.record.dom.optitem.OptionalItemName
+               nts.uk.ctx.at.record.dom.optitem.NumberRangeValue
+               nts.uk.ctx.at.record.dom.optitem.TimeRangeValue
+               nts.uk.ctx.at.record.dom.optitem.AmountRangeValue
+               nts.uk.ctx.at.record.dom.optitem.calculation.FormulaName
+            </com:ValidatorScript>
 			<script>
 				var dialogSize = {
 					width : 520,
@@ -14,6 +21,7 @@
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmk015.b.style.css" />
 			<com:scriptfile path="kmk015.b.vm.js" />
 			<com:scriptfile path="kmk015.b.service.js" />
 			<com:scriptfile path="kmk015.b.start.js" />
@@ -24,18 +32,18 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div tabindex="-1" style="margin-bottom: 10px; margin-left: 10px; margin-top: 10px;">#{i18n.getText('KMK015_16')}</div>
+				<div style="margin-bottom: 10px; margin-left: 10px; margin-top: 10px;">#{i18n.getText('KMK015_16')}</div>
 				<div style="margin-left: 10px; margin-top: 30px;">
-					<div tabindex="-1" data-bind="ntsFormLabel: {required: true}" style="padding-right: 40px;">#{i18n.getText('KMK015_17')}</div>
-					<div tabindex="1" id="inp-period-startYMD"
+					<div data-bind="ntsFormLabel: {required: true}" style="padding-right: 40px;">#{i18n.getText('KMK015_17')}</div>
+					<div id="inp-period-startYMD" tabindex="3"
 						data-bind="ntsDatePicker: {
-							name: '#[KMK015_18]',
+							name: '#[KMK015_19]',
 							dateFormat: 'YYYY/MM/DD',
 							value: periodStart,
 							required: true }">
 					</div>
 					<label>～</label>
-					<div tabindex="2" id="inp-period-endYMD"
+					<div id="inp-period-endYMD" tabindex="3"
 						data-bind="ntsDatePicker: {
 							name: '#[KMK015_20]',
 							dateFormat: 'YYYY/MM/DD',
@@ -47,9 +55,9 @@
 				
 			</div>
 			<div id="functions-area-bottom">
-				<button class="x-large proceed" tabindex="3"
+				<button class="x-large proceed" tabindex="11"
 					data-bind="click: submit">#{i18n.getText('KMK015_21')}</button>
-				<button tabindex="4" data-bind="click: closeDialog">#{i18n.getText('KMK015_22')}</button>
+				<button tabindex="12" data-bind="click: closeDialog">#{i18n.getText('KMK015_22')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

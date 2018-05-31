@@ -13,6 +13,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.enums.UseDivision;
+import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
 import nts.uk.ctx.sys.portal.dom.layout.PGType;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSetting;
@@ -21,6 +22,10 @@ import nts.uk.ctx.sys.portal.dom.mypage.setting.TopPagePartUseSetting;
 import nts.uk.ctx.sys.portal.dom.placement.service.PlacementService;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartRepository;
+import nts.uk.ctx.sys.portal.dom.toppagepart.optionalwidget.OptionalWidget;
+import nts.uk.ctx.sys.portal.dom.toppagepart.optionalwidget.OptionalWidgetRepository;
+import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
+import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidgetRepository;
 
 /**
  * @author HieuLT
@@ -33,6 +38,12 @@ public class TopPagePartServiceImpl implements TopPagePartService{
 	
 	@Inject
 	private FlowMenuRepository flowMenuRepository;
+
+	@Inject
+	private StandardWidgetRepository standardWidgetRepository;
+	
+	@Inject
+	private OptionalWidgetRepository optionalWidgetRepository;
 	
 	@Inject
 	private PlacementService placementService;
@@ -95,14 +106,32 @@ public class TopPagePartServiceImpl implements TopPagePartService{
 		// Get list FlowMenu
 		val listFlowMenu = listTopPagePart.stream().filter(c -> c.isFlowMenu()).collect(Collectors.toList());
 		List<String> listFlowMenuID = listFlowMenu.stream().map(c -> c.getToppagePartID()).collect(Collectors.toList());
-		if (listFlowMenuID.isEmpty())
-			return new ArrayList<TopPagePart>();
+		List<FlowMenu> FlowMenu = new ArrayList<>();
+		if (!listFlowMenuID.isEmpty())
+			FlowMenu = flowMenuRepository.findByCodes(companyID, listFlowMenuID);
 		
-		// TODO: Get list Widget
+		// TODO: Get list StandardWidget
+		val listStandardWidget = listTopPagePart.stream().filter(c -> c.isStandardWidget()).collect(Collectors.toList());
+		List<String> listStandardWidgetID = listStandardWidget.stream().map(c -> c.getToppagePartID()).collect(Collectors.toList());
+		List<StandardWidget> StandardWidget = new ArrayList<>();
+		if (!listStandardWidgetID.isEmpty()){
+			StandardWidget = standardWidgetRepository.getAll();
+		}
+		
+		// TODO: Get list OptionalWidget
+		val listOptionalWidget = listTopPagePart.stream().filter(c -> c.isOptionalWidget()).collect(Collectors.toList());
+		List<String> listOptionalWidgetID = listOptionalWidget.stream().map(c -> c.getToppagePartID()).collect(Collectors.toList());
+		List<OptionalWidget> OptionalWidget = new ArrayList<>();
+		if (!listOptionalWidgetID.isEmpty()){
+			OptionalWidget = optionalWidgetRepository.findByCode(companyID, listOptionalWidgetID);
+		}
 		
 		// TODO: Get list Dashboard
 		
-		result.addAll(flowMenuRepository.findByCodes(companyID, listFlowMenuID));
+
+		result.addAll(StandardWidget);
+		result.addAll(OptionalWidget);
+		result.addAll(FlowMenu);
 		return result;
 	}
 	

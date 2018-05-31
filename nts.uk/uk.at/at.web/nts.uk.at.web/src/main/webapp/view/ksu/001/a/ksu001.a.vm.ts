@@ -14,6 +14,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
      * reference file a.start.ts
      */
     export class ScreenModel {
+        employeeIdLogin: string = null;
         //tree-grid
         itemsTree: KnockoutObservableArray<Node>;
         selectedCodeTree: KnockoutObservableArray<Node>;
@@ -86,8 +87,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         modeDisplay: KnockoutObservableArray<any> = ko.observableArray([
             { code: 1, name: '略名' },
-            { code: 2, name: '時刻' },
-            { code: 3, name: '記号' }
+            { code: 2, name: '時刻' }
+            //            { code: 3, name: '記号' }
         ]);
         selectedModeDisplay: KnockoutObservable<number> = ko.observable(1);
 
@@ -275,6 +276,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $.when(__viewContext.viewModel.viewO.getWorkTypeTimeAndStartEndDate(), self.getDataScheduleDisplayControl(), self.getDataComPattern()).done(() => {
                 self.dtPrev(new Date(__viewContext.viewModel.viewO.startDateScreenA));
                 self.dtAft(new Date(__viewContext.viewModel.viewO.endDateScreenA));
+                self.employeeIdLogin = __viewContext.viewModel.viewO.employeeIdLogin;
                 // get state of list workTypeCode
                 // get data for screen A
                 let lstWorkTypeCode = [];
@@ -437,7 +439,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let time = new Time(currentDay);
                 objDetailHeaderDs['_' + time.yearMonthDay] = '';
                 detailColumns.push({
-                    key: "_" + time.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", primitiveValue: "HolidayAppPrimitiveTime", visible: true
+                    key: "_" + time.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", primitiveValue: "TimeWithDayAttr", visible: true
                 });
 
                 currentDay.setDate(currentDay.getDate() + 1);
@@ -596,13 +598,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                     { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
                                 ]
                             },
-                            popup: {
-                                rows: [1],
-                                provider: function(columnKey) {
-                                    self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
-                                    return $("#popup-area8");
-                                }
-                            }
+                            //                            popup: {
+                            //                                rows: [1],
+                            //                                provider: function(columnKey) {
+                            //                                    self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
+                            //                                    return $("#popup-area8");
+                            //                                }
+                            //                            }
 
                         }]
                 };
@@ -627,8 +629,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     horizontalSumBodyRowHeight: "20px",
                     areaResize: true,
                     bodyHeightMode: "dynamic",
-                    windowXOccupation: 25,
+                    windowXOccupation: 134,
                     windowYOccupation: 210,
+                    manipulatorId: self.employeeIdLogin,
+                    manipulatorKey: "empId",
                     updateMode: "stick",
                     pasteOverWrite: true,
                     stickOverWrite: true,
@@ -639,11 +643,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     },
                 })
                     .LeftmostHeader(leftmostHeader).LeftmostContent(leftmostContent)
-                    .MiddleHeader(middleHeader).MiddleContent(middleContent)
+                    //                    .MiddleHeader(middleHeader).MiddleContent(middleContent)
                     .DetailHeader(detailHeader).DetailContent(detailContent)
-                    .VerticalSumHeader(vertSumHeader).VerticalSumContent(vertSumContent)
-                    .LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent)
-                    .HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent)
+                    //                    .VerticalSumHeader(vertSumHeader).VerticalSumContent(vertSumContent)
+                    //                    .LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent)
+                    //                    .HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent)    
                     .create();
 
                 // set stick single
@@ -667,6 +671,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         updateExTable(): void {
             let self = this;
+            // save scroll's position
             $("#extable").exTable("saveScroll");
             self.stopRequest(false);
 
@@ -713,7 +718,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             //define the new detailColumns
             _.each(self.arrDay, (x: Time) => {
                 newDetailColumns.push({
-                    key: "_" + x.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", primitiveValue: "HolidayAppPrimitiveTime", visible: true
+                    key: "_" + x.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", primitiveValue: "TimeWithDayAttr", visible: true
                 });
             });
 
@@ -755,13 +760,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                     { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
                                 ]
                             },
-                            popup: {
-                                rows: [1],
-                                provider: function(columnKey) {
-                                    self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
-                                    return $("#popup-area8");
-                                }
-                            }
+                            //                            popup: {
+                            //                                rows: [1],
+                            //                                provider: function(columnKey) {
+                            //                                    self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
+                            //                                    return $("#popup-area8");
+                            //                                }
+                            //                            }
                         }]
                 };
 
@@ -797,11 +802,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 };
 
                 $("#extable").exTable("updateTable", "leftmost", {}, updateLeftmostContent);
-                $("#extable").exTable("updateTable", "middle", {}, updateMiddleContent);
-                $("#extable").exTable("updateTable", "verticalSummaries", {}, updateVertSumContent);
-                $("#extable").exTable("updateTable", "leftHorizontalSummaries", {}, updateLeftHorzSumContent);
+                //                $("#extable").exTable("updateTable", "middle", {}, updateMiddleContent);
+                //                $("#extable").exTable("updateTable", "verticalSummaries", {}, updateVertSumContent);
+                //                $("#extable").exTable("updateTable", "leftHorizontalSummaries", {}, updateLeftHorzSumContent);
                 $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
-                $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
+                //                $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
 
                 $("#extable").on("extablecellupdated", function() { });
                 $("#extable").on("extablerowupdated", function() { });
@@ -815,8 +820,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 _.forEach(self.dataSource(), (x) => {
                     if (x.confirmedAtr == 1) {
                         $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
-                    } else {
-                        $("#extable").exTable("unlockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
                     }
                 });
 
@@ -842,19 +845,28 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         return true;
                     }
 
-                    let stateWorkTypeCd: any = _.find(self.listCheckNeededOfWorkTime(), ['workTypeCode', data.workTypeCode]);
+                    let workTypeCd: any = _.find(self.listCheckNeededOfWorkTime(), ['workTypeCode', data.workTypeCode]);
                     // if workTypeCode is not required( state = 2) worktime is needless
-                    if (stateWorkTypeCd && stateWorkTypeCd.state == 2 && data.workTimeCode !== null && data.workTimeCode !== '000') {
+                    if (workTypeCd && workTypeCd.state == 2 && data.workTimeCode !== null && data.workTimeCode !== '000') {
                         return function() {
                             alertError({ messageId: 'Msg_434' });
                         };
                     }
                     // if workTypeCode is required( state = 0) worktime is need
-                    if (stateWorkTypeCd && stateWorkTypeCd.state == 0 && (data.workTimeCode === null || data.workTimeCode === '000')) {
+                    if (workTypeCd && workTypeCd.state == 0 && (data.workTimeCode === null || data.workTimeCode === '000')) {
                         return function() {
                             alertError({ messageId: 'Msg_435' });
                         };
                     }
+
+                    let stateWorkTypeCode = _.find(self.listStateWorkTypeCode(), { 'workTypeCode': data.workTypeCode }).state;
+                    // set color for cell
+                    $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data) {
+                        if (stateWorkTypeCode == 3) return { textColor: "#0000ff" }; // color-attendance
+                        else if (stateWorkTypeCode == 0) return { textColor: "#ff0000" };// color-schedule-sunday
+                        else return { textColor: "#FF7F27" };// color-half-day-work
+                    });
+
                     return true;
                 });
             }).always(() => {
@@ -867,6 +879,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         updateDetailAndHorzSum(): void {
             let self = this;
+            // save scroll's position
             $("#extable").exTable("saveScroll");
             //Get dates in time period
             let currentDay = new Date(self.dtPrev().toString());
@@ -877,7 +890,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let time = new Time(currentDay);
                 //define the new detailColumns
                 newDetailColumns.push({
-                    key: "_" + time.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", primitiveValue: "HolidayAppPrimitiveTime", visible: true
+                    key: "_" + time.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", primitiveValue: "TimeWithDayAttr", visible: true
                 });
                 //create new detailHeaderDs
                 newObjDetailHeaderDs['_' + time.yearMonthDay] = '';
@@ -924,13 +937,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                         { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
                                     ]
                                 },
-                                popup: {
-                                    rows: [1],
-                                    provider: function(columnKey) {
-                                        self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
-                                        return $("#popup-area8");
-                                    }
-                                }
+                                //                                popup: {
+                                //                                    rows: [1],
+                                //                                    provider: function(columnKey) {
+                                //                                        self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
+                                //                                        return $("#popup-area8");
+                                //                                    }
+                                //                                }
 
                             }]
                     };
@@ -945,9 +958,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     };
 
                     $("#extable").exTable("updateTable", "detail", updateDetailHeader, {});
-                    $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, {});
+                    //                    $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, {});
 
                     setTimeout(function() { $("#extable").exTable("scrollBack", 2); }, 1000);
+                    
+                    //set lock cell
+                        _.forEach(self.dataSource(), (x) => {
+                            if (x.confirmedAtr == 1) {
+                                $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
+                            }
+                        });
 
                     self.stopRequest(true);
                 });
@@ -972,13 +992,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                             { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
                                         ]
                                     },
-                                    popup: {
-                                        rows: [1],
-                                        provider: function(columnKey) {
-                                            self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
-                                            return $("#popup-area8");
-                                        }
-                                    }
+                                    //                                    popup: {
+                                    //                                        rows: [1],
+                                    //                                        provider: function(columnKey) {
+                                    //                                            self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
+                                    //                                            return $("#popup-area8");
+                                    //                                        }
+                                    //                                    }
 
                                 }]
                         };
@@ -1015,9 +1035,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         };
 
                         $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
-                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
+                        //                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
 
                         setTimeout(function() { $("#extable").exTable("scrollBack", 2); }, 1000);
+                        
+                        //set lock cell
+                        _.forEach(self.dataSource(), (x) => {
+                            if (x.confirmedAtr == 1) {
+                                $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
+                            }
+                        });
                     });
                 }).always(() => {
                     self.stopRequest(true);
@@ -1044,13 +1071,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                             { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
                                         ]
                                     },
-                                    popup: {
-                                        rows: [1],
-                                        provider: function(columnKey) {
-                                            self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
-                                            return $("#popup-area8");
-                                        }
-                                    }
+                                    //                                    popup: {
+                                    //                                        rows: [1],
+                                    //                                        provider: function(columnKey) {
+                                    //                                            self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
+                                    //                                            return $("#popup-area8");
+                                    //                                        }
+                                    //                                    }
                                 }]
                         };
 
@@ -1085,9 +1112,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         };
 
                         $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
-                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
+                        //                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
 
                         setTimeout(function() { $("#extable").exTable("scrollBack", 2); }, 1000);
+                        
+                        //set lock cell
+                        _.forEach(self.dataSource(), (x) => {
+                            if (x.confirmedAtr == 1) {
+                                $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
+                            }
+                        });
                     });
                 }).always(() => {
                     self.stopRequest(true);
@@ -1111,7 +1145,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
 
         /**
-         * Get data of Basic Schedule = listDataShortName + listDataTimeZone
+         * Get data of Basic Schedule = listDataShortName + listDataTimeZone + dataWScheState
          */
         getDataBasicSchedule(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred(),
@@ -1154,6 +1188,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         itemDataSource.scheduleEndClock = null;
                     }
                 });
+
+                // set data for from table Sche_State
+                self.dataWScheduleState(data.listDataScheState);
 
                 dfd.resolve();
             }).fail(function() {
@@ -1270,22 +1307,22 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         /**
          * Get data WorkScheduleState
          */
-        getDataWorkScheduleState(): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred(),
-                obj = {
-                    sId: self.listSid(),
-                    startDate: self.dtPrev(),
-                    endDate: self.dtAft(),
-                };
-            service.getDataWorkScheduleState(obj).done(function(data) {
-                self.dataWScheduleState(data);
-                dfd.resolve();
-            }).fail(function() {
-                dfd.reject();
-            });
-            return dfd.promise();
-        }
+        //        getDataWorkScheduleState(): JQueryPromise<any> {
+        //            let self = this,
+        //                dfd = $.Deferred(),
+        //                obj = {
+        //                    sId: self.listSid(),
+        //                    startDate: self.dtPrev(),
+        //                    endDate: self.dtAft(),
+        //                };
+        //            service.getDataWorkScheduleState(obj).done(function(data) {
+        //                self.dataWScheduleState(data);
+        //                dfd.resolve();
+        //            }).fail(function() {
+        //                dfd.reject();
+        //            });
+        //            return dfd.promise();
+        //        }
 
         /**
          * Get data WkpSpecificDate, ComSpecificDate, PublicHoliday
@@ -1419,7 +1456,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let arrFilter = _.filter(arrTmp, { 'rowIndex': item.rowIndex, 'columnKey': item.columnKey });
                     if (arrFilter.length > 1) {
                         _.each(arrFilter, (data) => {
-                            if (data.value.startTime == "" || data.value.endTime == "") {
+                            if ((data.value.startTime == "" && data.value.endTime != "") || (data.value.startTime != "" && data.value.endTime == "")) {
                                 _.remove(arrCell, data);
                             }
                         });
@@ -1438,6 +1475,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     bounceAtr: 1
                 }] : null;
 
+                //TO-DO
+                // let workScheduleStateCommands: any = null;
+
                 arrObj.push({
                     // slice string '_YYYYMMDD' to 'YYYYMMDD'
                     date: moment.utc(arrCell[i].columnKey.slice(1, arrCell[i].columnKey.length), 'YYYYMMDD').toISOString(),
@@ -1448,6 +1488,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     //set static confirmedAtr= 0
                     confirmedAtr: 0,
                     workScheduleTimeZoneSaveCommands: workScheduleTimeZone
+                    //workScheduleStateCommands: workScheduleStateCommands
                 });
             }
 
@@ -1635,7 +1676,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let ymd = date.yearMonthDay;
                     let dateFormat = moment(date.yearMonthDay).format('YYYY/MM/DD');
                     if (_.includes(self.dataWkpSpecificDate(), dateFormat) || _.includes(self.dataComSpecificDate(), dateFormat)) {
-                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 0, "bg-schedule-specific-date "));
+                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 0, "bg-schedule-specific-date"));
                         detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 1, "bg-schedule-specific-date"));
                     } else if (_.includes(self.dataPublicHoliday(), dateFormat)) {
                         detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 0, "bg-schedule-sunday color-schedule-sunday"));
@@ -1686,7 +1727,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         setColor(detailHeaderDeco: any, detailContentDeco: any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             $.when(self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco), self.setColorForText(detailContentDeco),
-                self.setColorForCell(detailContentDeco), self.setColorForLeftmostContent()).done(() => {                    dfd.resolve();                });
+                self.setColorForCell(detailContentDeco), self.setColorForLeftmostContent()).done(() => {
+                    dfd.resolve();
+                });
             return dfd.promise();
         }
 

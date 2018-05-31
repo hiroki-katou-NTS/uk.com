@@ -80,7 +80,7 @@ module nts.uk.ui.koExtentions {
                     selected = _.filter(multiSelectedRaw, function(item) {
                         return item["index"] >= 0;
                     });
-                } else if (singleSelectedRaw !== null) {
+                } else if (singleSelectedRaw !== null && singleSelectedRaw.index > -1) {
                     selected.push(singleSelectedRaw);
                 } else {
                     return;
@@ -170,6 +170,15 @@ module nts.uk.ui.koExtentions {
                     //                    $targetElement.igTreeGrid("option", "dataSource", source);
                     //                    $targetElement.igTreeGrid("dataBind");
                     //                    data.targetSource(source);
+                    let virtualization = $targetElement.igTreeGrid("option", "virtualization");
+                    if (virtualization) {
+                        let selectedRow = $targetElement.igTreeGrid("selectedRows")[0];
+                        setTimeout(() => {
+                            $targetElement.ntsTreeView("virtualScrollTo", selectedRow.id);
+                        }, 0);
+                        return;
+                    }
+                    
                     var index = $targetElement.igTreeGrid("selectedRows")[0].index;
                     if (index !== selected["index"]) {
                         var scrollTo = _.sumBy(_.filter($target.igTreeGrid("allRows"), function(row) {

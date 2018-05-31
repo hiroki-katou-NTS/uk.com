@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.adapter.request.application.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * @author dat.lh
@@ -19,17 +18,17 @@ public class ApprovalStatusMailTempImport {
 	/**
 	 * URL承認埋込
 	 */
-	private NotUseAtr urlApprovalEmbed;
+	private Integer urlApprovalEmbed;
 
 	/**
 	 * URL日別埋込
 	 */
-	private NotUseAtr urlDayEmbed;
+	private Integer urlDayEmbed;
 
 	/**
 	 * URL月別埋込
 	 */
-	private NotUseAtr urlMonthEmbed;
+	private Integer urlMonthEmbed;
 
 	/**
 	 * メール件名

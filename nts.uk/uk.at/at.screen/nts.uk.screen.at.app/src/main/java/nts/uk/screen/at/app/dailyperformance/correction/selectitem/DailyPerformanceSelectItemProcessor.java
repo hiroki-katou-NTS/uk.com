@@ -21,7 +21,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnit;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
@@ -117,8 +117,9 @@ public class DailyPerformanceSelectItemProcessor {
 			List<Integer> lstAtdItem = new ArrayList<>();
 			List<Integer> lstAtdItemUnique = new ArrayList<>();
 			List<DPAttendanceItem> lstAttendanceItem = new ArrayList<>();
+			List<DPBusinessTypeControl> lstDPBusinessTypeControl = new ArrayList<>();
 			Map<Integer, DPAttendanceItem> mapDP = new HashMap<>();
-			if (dailyPerformanceDto != null && dailyPerformanceDto.getSettingUnit() == SettingUnit.AUTHORITY) {
+			if (dailyPerformanceDto != null && dailyPerformanceDto.getSettingUnit() == SettingUnitType.AUTHORITY) {
 				List<AuthorityFomatDailyDto> authorityFomatDailys = new ArrayList<>();
 				List<AuthorityFormatSheetDto> authorityFormatSheets = new ArrayList<>();
 				// アルゴリズム「社員の権限に対応する表示項目を取得する」を実行する
@@ -222,16 +223,6 @@ public class DailyPerformanceSelectItemProcessor {
 					result.setLstHeader(lstHeader);
 				}
 
-				List<DPBusinessTypeControl> lstDPBusinessTypeControl = new ArrayList<>();
-				if (lstFormat.size() > 0) {
-					lstDPBusinessTypeControl = this.repo.getListBusinessTypeControl(lstBusinessTypeCode,
-							lstAtdItemUnique);
-				}
-				if (lstDPBusinessTypeControl.size() > 0) {
-					// set header access modifier
-					// only user are login can edit or others can edit
-					result.setColumnsAccessModifier(lstDPBusinessTypeControl);
-				}
 			}
 			// set text to header
 			for (DPHeaderDto key : result.getLstHeader()) {
@@ -246,6 +237,16 @@ public class DailyPerformanceSelectItemProcessor {
 				result.getColumnSettings().add(columnSetting);
 
 			};
+			String authorityDailyID =  AppContexts.user().roles().forAttendance(); 
+			if (lstFormat.size() > 0) {
+				lstDPBusinessTypeControl = this.repo.getListBusinessTypeControl(companyId, authorityDailyID,
+						lstAtdItemUnique, true);
+			}
+			if (lstDPBusinessTypeControl.size() > 0) {
+				// set header access modifier
+				// only user are login can edit or others can edit
+				result.setColumnsAccessModifier(lstDPBusinessTypeControl);
+			}
 			if (!lstAttendanceItem.isEmpty()) {
 				result.setHeaderText(lstAttendanceItem);
 				// set color to header
@@ -550,7 +551,7 @@ public class DailyPerformanceSelectItemProcessor {
 		screenDto.getItemValues().clear();
 		screenDto.getItemValues().addAll(set);
 		// screenDto.setLstData(lstData);
-		screenDto.markLoginUser();
+		screenDto.markLoginUser(sId);
 		screenDto.createAccessModifierCellState(mapDP);
 		return screenDto;
 	}

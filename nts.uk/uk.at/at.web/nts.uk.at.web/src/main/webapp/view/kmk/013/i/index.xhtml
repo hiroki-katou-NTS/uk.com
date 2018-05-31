@@ -23,13 +23,13 @@
 				<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_306')}</div>
 				<div class="row-1">
 					<div class="name-switch">#{i18n.getText('KMK013_307')}</div>
-					<div class="cf"
+					<div id="switch" class="cf"
 						data-bind="ntsSwitchButton: {
 						options: roundingRules,
 						optionsValue: 'code',
 						name: '#{i18n.getText('KMK013_308')}',
 						optionsText:'name',
-						value: selectedRuleCode }" tabindex="3"></div>
+						value: selectedRuleCode }, hasFocus: true" tabindex="3"></div>
 				</div>
 			</div>
 		</ui:define>

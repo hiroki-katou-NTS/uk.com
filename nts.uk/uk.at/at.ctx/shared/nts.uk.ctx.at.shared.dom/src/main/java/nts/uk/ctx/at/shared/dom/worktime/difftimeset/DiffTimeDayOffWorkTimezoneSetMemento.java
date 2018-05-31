@@ -6,6 +6,8 @@ package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 
 import java.util.List;
 
+import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
+
 /**
  * The Interface DiffTimeDayOffWorkTimezoneSetMemento.
  */
@@ -23,5 +25,5 @@ public interface DiffTimeDayOffWorkTimezoneSetMemento {
 	 *
 	 * @param workTimezone the new work timezones
 	 */
-	public void setWorkTimezones(List<DayOffTimezoneSetting> workTimezone);
+	public void setWorkTimezones(List<HDWorkTimeSheetSetting> workTimezone);
 }

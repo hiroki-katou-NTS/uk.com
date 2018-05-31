@@ -54,8 +54,8 @@ public class ReflectShortWorkingTimeDomainServiceimpl implements ReflectShortWor
 	private SWorkTimeHistItemRepository SWorkTimeHistItemRepo;
 
 	@Override
-	public ShortTimeOfDailyPerformance reflect(String companyId, GeneralDate date, String employeeId, WorkInfoOfDailyPerformance WorkInfo) {
-		boolean confirmReflectWorkingTime = confirmReflectWorkingTime(companyId, date, employeeId, WorkInfo);
+	public ShortTimeOfDailyPerformance reflect(String companyId, GeneralDate date, String employeeId, WorkInfoOfDailyPerformance WorkInfo, TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
+		boolean confirmReflectWorkingTime = confirmReflectWorkingTime(companyId, date, employeeId, WorkInfo, timeLeavingOfDailyPerformance);
 		if (confirmReflectWorkingTime) {
 			Optional<ShortWorkTimeHistory> findByBaseDate = this.SWorkTimeHistoryRepo.findByBaseDate(employeeId, date);
 			if (findByBaseDate.isPresent()) {
@@ -79,7 +79,8 @@ public class ReflectShortWorkingTimeDomainServiceimpl implements ReflectShortWor
 	}
 
 	// 短時間勤務時間帯を反映するか確認する
-	public boolean confirmReflectWorkingTime(String companyId, GeneralDate date, String employeeId, WorkInfoOfDailyPerformance WorkInfo) {
+	public boolean confirmReflectWorkingTime(String companyId, GeneralDate date, String employeeId,
+			WorkInfoOfDailyPerformance WorkInfo, TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
 		Optional<ShortTimeOfDailyPerformance> shortTimeOfDailyPerformanceOptional = this.shortTimeOfDailyPerformanceRepo
 				.find(employeeId, date);
 		if (shortTimeOfDailyPerformanceOptional.isPresent()
@@ -87,27 +88,35 @@ public class ReflectShortWorkingTimeDomainServiceimpl implements ReflectShortWor
 				&& !shortTimeOfDailyPerformanceOptional.get().getShortWorkingTimeSheets().isEmpty()) {
 			return false;
 		}
-		Optional<TimeLeavingOfDailyPerformance> TimeLeavingOfDailyPerformanceOptional = this.timeRepo
-				.findByKey(employeeId, date);
-		if (!TimeLeavingOfDailyPerformanceOptional.isPresent()) {
-			return false;
+		List<TimeLeavingWork> timeLeavingWorks = null;
+		if (timeLeavingOfDailyPerformance != null && timeLeavingOfDailyPerformance.getTimeLeavingWorks() != null
+				&& !timeLeavingOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
+			timeLeavingWorks = timeLeavingOfDailyPerformance.getTimeLeavingWorks();
+		}else{
+			Optional<TimeLeavingOfDailyPerformance> timeLeavingOfDailyPerformanceOptional = this.timeRepo
+					.findByKey(employeeId, date);
+			if (!timeLeavingOfDailyPerformanceOptional.isPresent()) {
+				return false;
+			}
+			timeLeavingWorks = timeLeavingOfDailyPerformanceOptional.get().getTimeLeavingWorks();
 		}
-		TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = TimeLeavingOfDailyPerformanceOptional.get();
-		List<TimeLeavingWork> timeLeavingWorks = timeLeavingOfDailyPerformance.getTimeLeavingWorks();
+		 
 		int size = timeLeavingWorks.size();
 		Boolean checkReflectWorkInfoOfDailyPerformance = null;
 		for (int i = 0; i < size; i++) {
 			TimeLeavingWork timeLeavingWork = timeLeavingWorks.get(i);
 			if (timeLeavingWork.getAttendanceStamp() != null && timeLeavingWork.getAttendanceStamp().isPresent()
 					&& timeLeavingWork.getAttendanceStamp().get().getActualStamp() != null
-					&& timeLeavingWork.getAttendanceStamp().get().getActualStamp().isPresent()) {
+					&& timeLeavingWork.getAttendanceStamp().get().getActualStamp().isPresent()
+					&& timeLeavingWork.getAttendanceStamp().get().getActualStamp().get().getTimeWithDay() != null) {
 				checkReflectWorkInfoOfDailyPerformance = this.reflectWorkInfoOfDailyPerformance(companyId, date,
 						employeeId, WorkInfo);
 				break;
 			}
 			if (timeLeavingWork.getLeaveStamp() != null && timeLeavingWork.getLeaveStamp().isPresent()
 					&& timeLeavingWork.getLeaveStamp().get().getActualStamp() != null
-					&& timeLeavingWork.getLeaveStamp().get().getActualStamp().isPresent()) {
+					&& timeLeavingWork.getLeaveStamp().get().getActualStamp().isPresent()
+					&& timeLeavingWork.getLeaveStamp().get().getActualStamp().get().getTimeWithDay() != null) {
 				checkReflectWorkInfoOfDailyPerformance = this.reflectWorkInfoOfDailyPerformance(companyId, date,
 						employeeId, WorkInfo);
 				break;

@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.request.ac.bs;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -13,16 +14,19 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.AffWorkplaceImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.ConcurrentEmployeeRequest;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
+import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employment.SEmpHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
+import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 
@@ -155,22 +159,31 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 
 	@Override
 	public List<EmployeeEmailImport> getApprovalStatusEmpMailAddr(List<String> sIds) {
-		List<EmployeeEmailImport> data = this.syEmployeePub.findBySIds(sIds)
+		List<EmployeeBasicInfoExport> list = this.syEmployeePub.findBySIds(sIds);
+		if(list == null) return  Collections.emptyList();
+		List<EmployeeEmailImport> data = list
 			.stream()
 			.map(x-> new EmployeeEmailImport(
 						x.getEmployeeId(),
 						x.getPName(),
 						x.getEntryDate(),
 						x.getRetiredDate(),
-						x.getCompanyMailAddr() != null ? x.getCompanyMailAddr().v() : null
+						x.getCompanyMailAddr() != null ? x.getCompanyMailAddr().v() : "ledat010994@gmail.com"
 					)).collect(Collectors.toList());
 		return data;
 	}
 
 	@Override
-	public List<String> getListSIdByWkpIdAndPeriod(String workplaceId, GeneralDate startDate,
+	public List<AffWorkplaceImport> getListSIdByWkpIdAndPeriod(String workplaceId, GeneralDate startDate,
 			GeneralDate endDate) {
-		List<String> data = this.workplacePub.findListSIdByCidAndWkpIdAndPeriod(workplaceId, startDate, endDate);
+		List<AffWorkplaceImport> data = this.workplacePub
+				.findListSIdByCidAndWkpIdAndPeriod(workplaceId, startDate, endDate)
+				.stream()
+				.map(x -> new AffWorkplaceImport(
+						x.getEmployeeId(), 
+						x.getJobEntryDate(), 
+						x.getRetirementDate()))
+				.collect(Collectors.toList());
 		return data;
 	}
 }

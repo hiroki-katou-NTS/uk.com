@@ -53,4 +53,5 @@ public class ShainTransLaborTime extends AggregateRoot implements StatutoryWorkT
 		memento.setEmployeeId(this.employeeId);
 		memento.setWorkingTimeSet(this.workingTimeSet);
 	}
+
 }

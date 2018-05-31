@@ -12,7 +12,9 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  */
 @Value
 public class DeductionTime {
+	//休日
 	private AttendanceTime forHolidayTime;
+	//代休
 	private AttendanceTime forCompensatoryHolidayTime;
 	
 	/**

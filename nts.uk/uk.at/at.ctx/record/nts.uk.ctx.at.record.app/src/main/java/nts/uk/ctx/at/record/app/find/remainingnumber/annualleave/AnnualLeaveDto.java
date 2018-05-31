@@ -71,13 +71,13 @@ public class AnnualLeaveDto extends PeregDomainDto{
 	 * 年間所定労働日数
 	 */
 	@PeregItem("IS00284")	
-	private int workingDaysPerYear;
+	private Integer workingDaysPerYear;
 	
 	/**
 	 * 導入前労働日数
 	 */
 	@PeregItem("IS00285")	
-	private int workingDayBeforeIntro;
+	private Integer workingDayBeforeIntro;
 	
 	/**
 	 * 時間年休上限
@@ -89,19 +89,19 @@ public class AnnualLeaveDto extends PeregDomainDto{
 	 * 時間年休上限時間
 	 */
 	@PeregItem("IS00287")	
-	private int maxMinutes;
+	private Integer maxMinutes;
 	
 	/**
 	 * 時間年休使用時間
 	 */
 	@PeregItem("IS00288")	
-	private int usedMinutes;
+	private Integer usedMinutes;
 	
 	/**
 	 * 時間年休残時間
 	 */
 	@PeregItem("IS00289")	
-	private int remainingMinutes;
+	private Integer remainingMinutes;
 	
 	/**
 	 * 半休上限
@@ -113,19 +113,19 @@ public class AnnualLeaveDto extends PeregDomainDto{
 	 * 半休上限回数
 	 */
 	@PeregItem("IS00291")	
-	private int maxTimes;
+	private Integer maxTimes;
 	
 	/**
 	 * 半休使用回数
 	 */
 	@PeregItem("IS00292")	
-	private int usedTimes;
+	private Integer usedTimes;
 	
 	/**
 	 * 半休残回数
 	 */
 	@PeregItem("IS00293")	
-	private int remainingTimes;
+	private Integer remainingTimes;
 	
 	/**
 	 * 積立年休残数
@@ -137,34 +137,37 @@ public class AnnualLeaveDto extends PeregDomainDto{
 		super(employeeId);
 	}
 	
-	public static AnnualLeaveDto createFromDomains(AnnualLeaveEmpBasicInfo basicInfo, AnnualLeaveMaxData maxData) {
-		
-		AnnualLeaveDto dto = new AnnualLeaveDto(basicInfo.getEmployeeId());
-		
-		dto.standardDate = basicInfo.getGrantRule().getGrantStandardDate();
-		dto.grantTable = basicInfo.getGrantRule().getGrantTableCode().v();
-		dto.workingDaysPerYear = basicInfo.getWorkingDaysPerYear().v();
-		dto.workingDayBeforeIntro = basicInfo.getWorkingDayBeforeIntroduction().v();
-		
+	public void pullDataFromBasicInfo(AnnualLeaveEmpBasicInfo basicInfo) {
+		// 付与ルール
 		AnnualLeaveGrantRule grantRule = basicInfo.getGrantRule();
+		this.standardDate = basicInfo.getGrantRule().getGrantStandardDate();
+		this.grantTable = basicInfo.getGrantRule().getGrantTableCode().v();
 		
-		dto.setNextTimeGrantDate(grantRule.nextTimeGrantDate());
-		dto.setNextTimeGrantDays(grantRule.nextTimeGrantDays());
-		dto.setNextTimeMaxTime(grantRule.nextTimeMaxTime());
+		this.nextTimeGrantDate = grantRule.nextTimeGrantDate();
+		this.nextTimeGrantDays = grantRule.nextTimeGrantDays();
+		this.nextTimeMaxTime = grantRule.nextTimeMaxTime();
 		
-		if ( maxData.getTimeAnnualLeaveMax().isPresent()) {
-			TimeAnnualLeaveMax maxTime = maxData.getTimeAnnualLeaveMax().get();
-			dto.maxMinutes = maxTime.getMaxMinutes().v();
-			dto.usedMinutes = maxTime.getUsedMinutes().v();
-			dto.remainingMinutes = maxTime.getRemainingMinutes().v();
-		}
-		if (maxData.getHalfdayAnnualLeaveMax().isPresent()) {
-			HalfdayAnnualLeaveMax maxHalfDay = maxData.getHalfdayAnnualLeaveMax().get();
-			dto.maxTimes = maxHalfDay.getMaxTimes().v();
-			dto.usedTimes = maxHalfDay.getUsedTimes().v();
-			dto.remainingTimes = maxHalfDay.getRemainingTimes().v();
-		}
-		return dto;
+		// 年間所定労働日数
+		this.workingDaysPerYear = basicInfo.getWorkingDaysPerYear().isPresent()
+				? basicInfo.getWorkingDaysPerYear().get().v() : null;
+		this.workingDayBeforeIntro = basicInfo.getWorkingDayBeforeIntroduction().isPresent()
+				? basicInfo.getWorkingDayBeforeIntroduction().get().v() : null;
 	} 
 	
+	
+	public void pullDataFromMaxData(AnnualLeaveMaxData maxData) {
+		if ( maxData.getTimeAnnualLeaveMax().isPresent()) {
+			TimeAnnualLeaveMax maxTime = maxData.getTimeAnnualLeaveMax().get();
+			this.maxMinutes = maxTime.getMaxMinutes().v();
+			this.usedMinutes = maxTime.getUsedMinutes().v();
+			this.remainingMinutes = maxTime.getRemainingMinutes().v();
+		}
+		
+		if (maxData.getHalfdayAnnualLeaveMax().isPresent()) {
+			HalfdayAnnualLeaveMax maxHalfDay = maxData.getHalfdayAnnualLeaveMax().get();
+			this.maxTimes = maxHalfDay.getMaxTimes().v();
+			this.usedTimes = maxHalfDay.getUsedTimes().v();
+			this.remainingTimes = maxHalfDay.getRemainingTimes().v();
+		}
+	} 
 }

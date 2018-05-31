@@ -1,5 +1,6 @@
 .contents-area{
-	margin:10px;
+	margin-left: 10px;
+	width: 615px;
 }
 .kdm002_2{
 	margin-left: 15px;
@@ -8,7 +9,7 @@
 	background-color: #BFEA60;
 }
 .result{
-	margin-bottom: 15px;
+	margin-bottom: 10px;
 }
 
 .table_result {
@@ -33,4 +34,5 @@ td {
 .ichi-ran{
 	margin-left: 10px;
 	font-weight: normal;
+	width: 600px;
 }

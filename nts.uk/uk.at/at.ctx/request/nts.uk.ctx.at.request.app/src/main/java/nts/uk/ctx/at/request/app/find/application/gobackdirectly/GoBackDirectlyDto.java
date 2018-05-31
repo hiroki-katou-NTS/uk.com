@@ -34,11 +34,11 @@ public class GoBackDirectlyDto {
 	/**
 	 * 勤務直行1
 	 */
-	int goWorkAtr1;
+	Integer goWorkAtr1;
 	/**
 	 * 勤務直帰1
 	 */
-	int backHomeAtr1;
+	Integer backHomeAtr1;
 	/**
 	 * 勤務時間開始1
 	 */
@@ -54,11 +54,11 @@ public class GoBackDirectlyDto {
 	/**
 	 * 勤務直行2
 	 */
-	int goWorkAtr2;
+	Integer goWorkAtr2;
 	/**
 	 * 勤務直帰2
 	 */
-	int backHomeAtr2;
+	Integer backHomeAtr2;
 	/**
 	 * 勤務時間開始2
 	 */
@@ -81,18 +81,18 @@ public class GoBackDirectlyDto {
 				domain.getVersion(),
 				domain.getCompanyID(), 
 				domain.getAppID(), 
-				domain.getWorkTypeCD().v(),
-				domain.getSiftCD().v(), 
-				domain.getWorkChangeAtr().value, 
+				domain.getWorkTypeCD().map(x -> x.v()).orElse(null),
+				domain.getSiftCD().map(x -> x.v()).orElse(null), 
+				domain.getWorkChangeAtr().map(x -> x.value).orElse(null),
 				domain.getGoWorkAtr1().value,
 				domain.getBackHomeAtr1().value, 
-				domain.getWorkTimeStart1() == null ? null : domain.getWorkTimeStart1().v(), 
-				domain.getWorkTimeEnd1() == null ? null : domain.getWorkTimeEnd1().v(),
-				domain.getWorkLocationCD1(), 
-				domain.getGoWorkAtr2().value, 
-				domain.getBackHomeAtr2().value,
-				domain.getWorkTimeStart2() == null ? null : domain.getWorkTimeStart2().v(), 
-				domain.getWorkTimeEnd2() == null ? null : domain.getWorkTimeEnd2().v(),
-				domain.getWorkLocationCD2());
+				domain.getWorkTimeStart1().map(x -> x.v()).orElse(null),
+				domain.getWorkTimeEnd1().map(x -> x.v()).orElse(null),
+				domain.getWorkLocationCD1().map(x -> x).orElse(null),
+				domain.getGoWorkAtr2().map(x -> x.value).orElse(null),
+				domain.getBackHomeAtr2().map(x -> x.value).orElse(null),
+				domain.getWorkTimeStart2().map(x -> x.v()).orElse(null),
+				domain.getWorkTimeEnd2().map(x -> x.v()).orElse(null),
+				domain.getWorkLocationCD2().map(x -> x).orElse(null));
 	}
 }

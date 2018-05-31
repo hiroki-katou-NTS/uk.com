@@ -79,6 +79,8 @@ public class PersonInfoCategory extends AggregateRoot {
 		this.isAbolition = IsAbolition.NOT_ABOLITION;
 		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
 		this.isFixed = IsFixed.NOT_FIXED;
+		this.initValMasterCls = InitValMasterObjCls.INIT;
+		this.addItemCls = AddItemObjCls.ENABLE;
 	}
 
 	private PersonInfoCategory(String personInfoCategoryId, String companyId, String categoryCode,
@@ -94,6 +96,23 @@ public class PersonInfoCategory extends AggregateRoot {
 		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
 		this.isFixed = EnumAdaptor.valueOf(isFixed, IsFixed.class);
 	}
+	
+	// đối ứng cho việc thêm 2 trường mới initObj, addObj
+	private PersonInfoCategory(String personInfoCategoryId, String companyId, String categoryCode,
+			String categoryParentCode, String categoryName, int personEmployeeType, int isAbolition, int categoryType,
+			int isFixed, int addObj, int initObj) {
+		super();
+		this.personInfoCategoryId = personInfoCategoryId;
+		this.categoryCode = new CategoryCode(categoryCode);
+		this.categoryParentCode = new CategoryCode(categoryParentCode);
+		this.categoryName = new CategoryName(categoryName);
+		this.personEmployeeType = EnumAdaptor.valueOf(personEmployeeType, PersonEmployeeType.class);
+		this.isAbolition = EnumAdaptor.valueOf(isAbolition, IsAbolition.class);
+		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
+		this.isFixed = EnumAdaptor.valueOf(isFixed, IsFixed.class);
+		this.addItemCls = EnumAdaptor.valueOf(addObj, AddItemObjCls.class);
+		this.initValMasterCls = EnumAdaptor.valueOf(initObj, InitValMasterObjCls.class);
+	}
 
 	private PersonInfoCategory(String personInfoCategoryId, String companyId, int categoryType) {
 		super();
@@ -101,12 +120,24 @@ public class PersonInfoCategory extends AggregateRoot {
 		this.companyId = companyId;
 		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
 	}
+	
+	private PersonInfoCategory(){
+		super();
+	}
 
 	public static PersonInfoCategory createFromJavaType(String companyId, String categoryCode, String categoryName,
 			int categoryType) {
 		return new PersonInfoCategory(companyId, categoryCode, categoryName, categoryType);
 	}
 
+	public static PersonInfoCategory createFromEntity(String personInfoCategoryId, String companyId,
+			String categoryCode, String categoryParentCode, String categoryName, int personEmployeeType,
+			int isAbolition, int categoryType, int isFixed,
+			int addObj, int initObj) {
+		return new PersonInfoCategory(personInfoCategoryId, companyId, categoryCode, categoryParentCode, categoryName,
+				personEmployeeType, isAbolition, categoryType, isFixed, addObj, initObj);
+	}
+	
 	public static PersonInfoCategory createFromEntity(String personInfoCategoryId, String companyId,
 			String categoryCode, String categoryParentCode, String categoryName, int personEmployeeType,
 			int isAbolition, int categoryType, int isFixed) {
@@ -117,6 +148,27 @@ public class PersonInfoCategory extends AggregateRoot {
 	public static PersonInfoCategory createFromJavaTypeUpdate(String personInfoCategoryId, String companyId,
 			int categoryType) {
 		return new PersonInfoCategory(personInfoCategoryId, companyId, categoryType);
+	}
+	
+	public static PersonInfoCategory createDomainWithAbolition(String ctgId, String ctgCd, String name){
+		PersonInfoCategory p = new PersonInfoCategory();
+		p.personInfoCategoryId = ctgId;
+		p.categoryName = new CategoryName(name);
+		p.categoryCode = new CategoryCode(ctgCd);
+		return p;
+	}
+	
+	public static PersonInfoCategory createDomainWithAbolition(String ctgId, String ctgCd, String name, int isUsed){
+		PersonInfoCategory p = new PersonInfoCategory();
+		p.personInfoCategoryId = ctgId;
+		p.categoryName = new CategoryName(name);
+		p.categoryCode = new CategoryCode(ctgCd);
+		p.isAbolition = EnumAdaptor.valueOf(isUsed, IsAbolition.class);
+		return p;
+	}
+	public void setDomainNameAndAbolition(CategoryName name, int isAbolition){
+		this.isAbolition = EnumAdaptor.valueOf(isAbolition, IsAbolition.class);
+		this.categoryName = name;
 	}
 	
 	public static List<PersonInfoCategory> getAllPerInfoCategoryWithCondition(List<PersonInfoCategory> lstObj){
@@ -152,4 +204,37 @@ public class PersonInfoCategory extends AggregateRoot {
 		this.initValMasterCls = InitValMasterObjCls.INIT;
 		this.addItemCls = AddItemObjCls.ENABLE;
 	}
+	
+	public boolean isFixed() {
+		return this.isFixed == IsFixed.FIXED;
+	}
+	
+	public boolean isSingleCategory() {
+		return categoryType == CategoryType.SINGLEINFO;
+	}
+	
+	public boolean isMultiCategory() {
+		return categoryType == CategoryType.MULTIINFO;
+	}
+	
+	public boolean isHistoryCategory() {
+		return categoryType == CategoryType.CONTINUOUSHISTORY 
+				|| categoryType == CategoryType.NODUPLICATEHISTORY
+				|| categoryType == CategoryType.DUPLICATEHISTORY
+				|| categoryType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE;
+	}
+	
+
+	public void setAbolish(IsAbolition isAbolition) {
+		this.isAbolition = isAbolition;
+	}
+		
+	public boolean isEmployeeType() {
+		return personEmployeeType == PersonEmployeeType.EMPLOYEE;
+	}
+	
+	public boolean isPersonType() {
+		return personEmployeeType == PersonEmployeeType.PERSON;
+	}
+	
 }

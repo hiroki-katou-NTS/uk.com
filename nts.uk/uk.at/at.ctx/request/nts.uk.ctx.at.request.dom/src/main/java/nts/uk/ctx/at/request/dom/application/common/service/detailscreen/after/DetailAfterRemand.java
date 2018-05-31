@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 
 import java.util.List;
 
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
 
 /**
@@ -27,6 +28,6 @@ public interface DetailAfterRemand {
 	 * @param employeeList
 	 * @return
 	 */
-	public MailSenderResult getMailSenderResult(List<String> employeeList);
+	public MailSenderResult getMailSenderResult(Application_New application, List<String> employeeList);
 	
 }

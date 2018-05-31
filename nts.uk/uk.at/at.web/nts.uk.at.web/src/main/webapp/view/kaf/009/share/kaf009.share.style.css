@@ -133,3 +133,6 @@ div.form-label.broken {
 .inputTime-kaf009 {
 	width: 85px !important;	
 }
+#inpReasonTextarea{
+	min-height: 100px;
+}

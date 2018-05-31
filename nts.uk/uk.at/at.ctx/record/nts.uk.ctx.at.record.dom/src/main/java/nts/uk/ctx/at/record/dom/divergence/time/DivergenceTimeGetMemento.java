@@ -54,6 +54,6 @@ public interface DivergenceTimeGetMemento {
 	 *
 	 * @return the target items
 	 */
-	List<Double> getTargetItems();
+	List<Integer> getTargetItems();
 
 }

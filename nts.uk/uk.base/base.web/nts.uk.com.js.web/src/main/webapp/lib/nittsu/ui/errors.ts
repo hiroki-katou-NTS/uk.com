@@ -276,6 +276,8 @@ module nts.uk.ui.errors {
 
     export function add(error: ErrorListItem): void {
         errorsViewModel().addError(error);
+        error.$control.data(nts.uk.ui.DATA_HAS_ERROR, true);
+        (error.$control.data(nts.uk.ui.DATA_SET_ERROR_STYLE) || function () { error.$control.parent().addClass('error'); })();
     }
 
     export function hasError(): boolean {
@@ -289,14 +291,27 @@ module nts.uk.ui.errors {
 
     export function removeByElement($control: JQuery): void {
         errorsViewModel().removeErrorByElement($control);
+        
+        $control.data(nts.uk.ui.DATA_HAS_ERROR, false);
+        ($control.data(nts.uk.ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
     }
     
     export function removeByCode($control: JQuery, errorCode: string): void {
         errorsViewModel().removeErrorByCode($control, errorCode);
+        let remainErrors = getErrorByElement($control);
+        if(nts.uk.util.isNullOrEmpty(remainErrors)) {
+            $control.data(nts.uk.ui.DATA_HAS_ERROR, false);
+            ($control.data(nts.uk.ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
+        }
     }
     
     export function removeCommonError($control: JQuery): void {
         errorsViewModel().removeKibanError($control);
+        let remainErrors = getErrorByElement($control);
+        if(nts.uk.util.isNullOrEmpty(remainErrors)) {
+            $control.data(nts.uk.ui.DATA_HAS_ERROR, false);
+            ($control.data(nts.uk.ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
+        }
     }
     
     export function getErrorByElement($element: JQuery): ErrorListItem[] {

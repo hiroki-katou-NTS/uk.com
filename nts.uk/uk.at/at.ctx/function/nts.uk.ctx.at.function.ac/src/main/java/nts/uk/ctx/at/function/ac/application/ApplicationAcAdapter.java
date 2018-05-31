@@ -9,6 +9,8 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.application.ApplicationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.application.ApplicationImport;
+import nts.uk.ctx.at.function.dom.adapter.application.importclass.ApplicationDeadlineImport;
+import nts.uk.ctx.at.request.pub.screen.ApplicationDeadlineExport;
 import nts.uk.ctx.at.request.pub.screen.ApplicationExport;
 import nts.uk.ctx.at.request.pub.screen.ApplicationPub;
 
@@ -27,6 +29,12 @@ public class ApplicationAcAdapter implements ApplicationAdapter {
 		return applicationExportList.stream()
 				.map(e -> new ApplicationImport(e.getAppDate(), e.getAppType(), e.getEmployeeID(), e.getAppTypeName()))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public ApplicationDeadlineImport getApplicationDeadline(String companyID, Integer closureID) {
+		ApplicationDeadlineExport export = applicationPub.getApplicationDeadline(companyID, closureID);
+		return new ApplicationDeadlineImport(export.isUseApplicationDeadline(),export.getDateDeadline());
 	}
 
 }

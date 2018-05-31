@@ -7,7 +7,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         Monthly = 1
     }
     export class ScreenModel {
-        screenMode: KnockoutObservable<number> = ko.observable(ScreenMode.Daily);
+        screenMode: KnockoutObservable<number> = ko.observable(ScreenMode.Monthly);
         isNewMode: KnockoutObservable<boolean> = ko.observable(false);
         enumShowTypeAtr: KnockoutObservableArray<any> = ko.observableArray([
             { code: 0, name: "全てを表示する" },
@@ -72,9 +72,12 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             { headerText: 'コード', key: 'code', width: 100, hidden: true },
             { headerText: nts.uk.resource.getText("KDW007_82"), key: 'name', width: 300 },
         ]);
-
+        
+        sideBar: KnockoutObservable<number>;
         constructor() {
             let self = this;
+            self.sideBar = ko.observable(2);
+            
             self.selectedErrorAlarmCode.subscribe((code) => {
                 if (code) {
                     let foundItem = _.find(self.lstErrorAlarm(), (item) => {
@@ -142,11 +145,16 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             $("#errorAlarmWorkRecordName").focus();
         }
 
-        startPage(code): JQueryPromise<any> {
+        startPage(isDaily, code): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             nts.uk.ui.block.grayout();
+            if (isDaily != null){
+                
+                self.screenMode(isDaily);
+                }
             if (self.screenMode() == ScreenMode.Daily) {
+                self.sideBar(1);
                 service.getAll().done((lstData) => {
                     if (lstData && lstData.length > 0) {
                         let sortedData = _.orderBy(lstData, ['code'], ['asc']);
@@ -167,6 +175,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     dfd.resolve();
                 });
             } else if (self.screenMode() == ScreenMode.Monthly) {
+                self.sideBar(2);
                 service.getAllMonthlyCondition().done((lstData) => {
                     if (lstData && lstData.length > 0) {
                         let sortedData = _.orderBy(lstData, ['code'], ['asc']);
@@ -189,6 +198,11 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         }
 
         /* Function Area */
+
+        jumpTo(sidebar) {
+                let self = this;
+                nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject: sidebar() });
+            }
 
         setNewMode() {
             let self = this;
@@ -319,7 +333,9 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     if (self.screenMode() == ScreenMode.Daily) {
                         service.update(data).done(() => {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                self.startPage(self.isNewMode() ? "U" + data.code : data.code);
+                                self.startPage(0, self.isNewMode() ? "U" + data.code : data.code).then(() => {
+                                    self.showTypeAtr(0);
+                                });
                                 if (self.lstErrorAlarm().length > 0) {
                                     $("#errorAlarmWorkRecordName").focus();
                                 } else {
@@ -330,7 +346,9 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     } else if (self.screenMode() == ScreenMode.Monthly) {
                         service.updateMonthlyCondition(data).done(() => {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                self.startPage(self.isNewMode() ? "U" + data.code : data.code);
+                                self.startPage(1, self.isNewMode() ? "U" + data.code : data.code).then(() => {
+                                    self.showTypeAtr(0);
+                                });
                                 if (self.lstErrorAlarm().length > 0) {
                                     $("#errorAlarmWorkRecordName").focus();
                                 } else {
@@ -351,7 +369,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_618" }).ifYes(() => {
                     service.remove(data).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-                            self.startPage(null);
+                            self.startPage(0, null);
                             if (self.lstErrorAlarm().length > 0) {
                                 $("#errorAlarmWorkRecordName").focus();
                             } else {
@@ -364,7 +382,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_618" }).ifYes(() => {
                     service.removeMonthlyCondition(data).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-                            self.startPage(null);
+                            self.startPage(1, null);
                             if (self.lstErrorAlarm().length > 0) {
                                 $("#errorAlarmWorkRecordName").focus();
                             } else {
@@ -1210,10 +1228,10 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             }
         }
 
-        openAtdItemConditionDialog() {
+        openAtdItemConditionDialog(mode) {
             let self = this;
-            let param = ko.mapping.toJS(this);
-            nts.uk.ui.windows.setShared("KDW007BParams", param, true);
+            let data = ko.mapping.toJS(this);
+            nts.uk.ui.windows.setShared("KDW007BParams", {'mode': mode, 'data': data}, true);
             nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/b/index.xhtml", { title: "計算式の設定" }).onClosed(() => {
                 let output = getShared("KDW007BResult");
                 if (output) {
@@ -1231,6 +1249,11 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 }
                 self.setTextDisplay();
             });
+        }
+
+        clear() {
+            let self = this;
+            self.setData(self.targetNO(), null);
         }
 
         setData(NO, param) {

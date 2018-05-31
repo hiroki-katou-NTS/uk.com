@@ -11,11 +11,13 @@ import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SingleItemDto;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 
 @Data
 @RequiredArgsConstructor
 public class LayoutPersonInfoValueDto {
+
 
 	private String recordId;
 
@@ -26,6 +28,8 @@ public class LayoutPersonInfoValueDto {
 	// categoryCode
 	@NonNull
 	private String categoryCode;
+	
+	private int ctgType;
 
 	// itemDefID
 	@NonNull
@@ -41,6 +45,9 @@ public class LayoutPersonInfoValueDto {
 
 	// for new set item structor
 	private String itemParentCode;
+	
+	// is not ItemDefinition of attribute
+	private int dispOrder;
 
 	@NonNull
 	// index of item in list (multiple, history)
@@ -75,7 +82,9 @@ public class LayoutPersonInfoValueDto {
 	private boolean showColor;
 
 	private int type;
-	private int ctgType;
+	
+	// help button Id
+	private String resourceId;
 
 	public LayoutPersonInfoValueDto(String categoryId, String categoryCode, String itemDefId, String itemName,
 			String itemCode, String itemParentCode, Integer row, Object value) {
@@ -108,6 +117,9 @@ public class LayoutPersonInfoValueDto {
 		dataObject.setRow(0);
 		dataObject.setRequired(itemDef.getIsRequired() == 1);
 		dataObject.setShowColor(true);
+		
+		//2018/02/11
+		dataObject.setDispOrder(itemDef.getDispOrder());
 
 		dataObject.setType(itemDef.getItemTypeState().getItemType());
 		dataObject.setCtgType(perInfoCategory.getCategoryType().value);
@@ -115,10 +127,11 @@ public class LayoutPersonInfoValueDto {
 			SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
 			dataObject.setItem(sigleItem.getDataTypeState());
 		}
+		dataObject.setResourceId(itemDef.getResourceId());
 		return dataObject;
 	}
 
-	public static LayoutPersonInfoValueDto initData(PerInfoItemDefForLayoutDto itemDef, Object value) {
+	public static LayoutPersonInfoValueDto initData(PerInfoItemDefForLayoutDto itemDef) {
 		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
 		dataObject.setRecordId(itemDef.getRecordId());
 		dataObject.setLstComboBoxValue(itemDef.getLstComboxBoxValue());
@@ -129,17 +142,67 @@ public class LayoutPersonInfoValueDto {
 		dataObject.setItemCode(itemDef.getItemCode());
 		dataObject.setItemParentCode(itemDef.getItemParentCode());
 		dataObject.setRow(itemDef.getRow());
-		dataObject.setValue(value);
 		dataObject.setCtgType(itemDef.getCtgType());
 		dataObject.setRequired(itemDef.getIsRequired() == 1);
+		dataObject.setResourceId(itemDef.getResourceId());
 
 		dataObject.setType(itemDef.getItemTypeState().getItemType());
 
-		if (itemDef.getItemDefType() == 2) {
+		if (itemDef.getItemTypeState().getItemType() == 2) {
 			SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
 			dataObject.setItem(sigleItem.getDataTypeState());
 		}
 		dataObject.setActionRole(itemDef.getActionRole());
 		return dataObject;
+	}
+	
+	public static LayoutPersonInfoValueDto createFromDefItem(PersonInfoCategory perInfoCategory, PerInfoItemDefDto itemDef) {
+		LayoutPersonInfoValueDto item = new LayoutPersonInfoValueDto();
+		
+		item.setCategoryId(itemDef.getPerInfoCtgId());
+		item.setCtgType(perInfoCategory.getCategoryType().value);
+		item.setCategoryCode(perInfoCategory.getCategoryCode().v());
+		
+		item.setItemDefId(itemDef.getId());
+		item.setItemName(itemDef.getItemName());
+		item.setItemCode(itemDef.getItemCode());
+		item.setItemParentCode(itemDef.getItemParentCode());
+		
+		item.setRow(0);
+		item.setRequired(itemDef.getIsRequired() == 1);
+		item.setType(itemDef.getItemTypeState().getItemType());
+		
+		item.setActionRole(ActionRole.EDIT);
+		item.setResourceId(itemDef.getResourceId());
+		return item;
+	}
+	
+	public void toStringValue() {
+		this.value = this.value.toString();
+	}
+	
+	public boolean isComboBoxItem() {
+
+		if (item != null) {
+			int itemType = item.getDataTypeValue();
+			if (itemType == DataTypeValue.SELECTION.value || itemType == DataTypeValue.SELECTION_BUTTON.value
+					|| itemType == DataTypeValue.SELECTION_RADIO.value) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+	
+	public boolean isSelectionItem() {
+
+		if (item != null) {
+			int itemType = item.getDataTypeValue();
+			if (itemType == DataTypeValue.SELECTION.value) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

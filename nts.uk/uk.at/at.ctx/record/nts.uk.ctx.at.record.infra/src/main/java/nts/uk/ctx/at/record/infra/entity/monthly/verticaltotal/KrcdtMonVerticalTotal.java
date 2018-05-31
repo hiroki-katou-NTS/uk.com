@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -12,8 +15,53 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.val;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
+import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.WorkClockOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.leave.LeaveOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.paydays.PayDaysOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.specificdays.SpecificDaysOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AbsenceDaysOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AttendanceDaysOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.HolidayDaysOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.HolidayWorkDaysOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.PredeterminedDaysOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.TemporaryWorkTimesOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.TwoTimesWorkTimesOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.WorkDaysDetailOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.WorkTimesOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.attdleavegatetime.AttendanceLeaveGateTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.bonuspaytime.BonusPayTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.breaktime.BreakTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.divergencetime.DivergenceTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.goout.GoOutForChildCare;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.goout.GoOutOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.holidaytime.HolidayTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.lateleaveearly.Late;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.lateleaveearly.LateLeaveEarlyOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.lateleaveearly.LeaveEarly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.midnighttime.IllegalMidnightTime;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.midnighttime.MidnightTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.premiumtime.PremiumTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.timevarience.BudgetTimeVarienceOfMonthly;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTimePK;
+import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workclock.KrcdtMonWorkClock;
+import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonAggrAbsnDays;
+import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonAggrSpecDays;
+import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonLeave;
+import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonAggrBnspyTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonAggrDivgTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonAggrGoout;
+import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonAggrPremTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonMedicalTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -52,14 +100,6 @@ public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
 	@Column(name = "PREDET_DAYS")
 	public double predetermineDays;
 	
-	/** 所定日数付与前 */
-	@Column(name = "PREDET_DAYS_BFR_GRNT")
-	public double predetermineDaysBeforeGrant;
-	
-	/** 所定日数付与後 */
-	@Column(name = "PREDET_DAYS_AFT_GRNT")
-	public double predetermineDaysAfterGrant;
-	
 	/** 休日日数 */
 	@Column(name = "HOLIDAY_DAYS")
 	public double holidayDays;
@@ -75,6 +115,10 @@ public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
 	/** 欠勤合計日数 */
 	@Column(name = "TOTAL_ABSENCE_DAYS")
 	public double totalAbsenceDays;
+	
+	/** 欠勤合計時間 */
+	@Column(name = "TOTAL_ABSENCE_TIME")
+	public int totalAbsenceTime;
 	
 	/** 給与出勤日数 */
 	@Column(name = "PAY_ATTENDANCE_DAYS")
@@ -249,5 +293,235 @@ public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {		
 		return this.PK;
+	}
+	
+	/**
+	 * ドメインに変換
+	 * @param krcdtMonLeave 月別実績の休業
+	 * @param krcdtMonAggrAbsnDays 集計欠勤日数
+	 * @param krcdtMonAggrSpecDays 集計特定日数
+	 * @param krcdtMonAggrBnspyTime 集計加給時間
+	 * @param krcdtMonAggrGoout 集計外出
+	 * @param krcdtMonAggrPremTime 集計割増時間
+	 * @param krcdtMonAggrDivgTime 集計乖離時間
+	 * @param krcdtMonMedicalTime 月別実績の医療時間
+	 * @param krcdtMonWorkClock 月別実績の勤務時刻
+	 * @return 月別実績の縦計
+	 */
+	public VerticalTotalOfMonthly toDomain(
+			KrcdtMonLeave krcdtMonLeave,
+			List<KrcdtMonAggrAbsnDays> krcdtMonAggrAbsnDays,
+			List<KrcdtMonAggrSpecDays> krcdtMonAggrSpecDays,
+			List<KrcdtMonAggrBnspyTime> krcdtMonAggrBnspyTime,
+			List<KrcdtMonAggrGoout> krcdtMonAggrGoout,
+			List<KrcdtMonAggrPremTime> krcdtMonAggrPremTime,
+			List<KrcdtMonAggrDivgTime> krcdtMonAggrDivgTime,
+			List<KrcdtMonMedicalTime> krcdtMonMedicalTime,
+			KrcdtMonWorkClock krcdtMonWorkClock){
+		
+		if (krcdtMonAggrAbsnDays == null) krcdtMonAggrAbsnDays = new ArrayList<>();
+		if (krcdtMonAggrSpecDays == null) krcdtMonAggrSpecDays = new ArrayList<>();
+		if (krcdtMonAggrBnspyTime == null) krcdtMonAggrBnspyTime = new ArrayList<>();
+		if (krcdtMonAggrGoout == null) krcdtMonAggrAbsnDays = new ArrayList<>();
+		if (krcdtMonAggrPremTime == null) krcdtMonAggrPremTime = new ArrayList<>();
+		if (krcdtMonAggrDivgTime == null) krcdtMonAggrDivgTime = new ArrayList<>();
+		if (krcdtMonMedicalTime == null) krcdtMonMedicalTime = new ArrayList<>();
+		
+		// 育児外出
+		List<GoOutForChildCare> goOutForChildCares = new ArrayList<>();
+		if (this.childcareGoOutTimes != 0 || this.childcareGoOutTime != 0){
+			goOutForChildCares.add(GoOutForChildCare.of(
+					ChildCareAtr.CHILD_CARE,
+					new AttendanceTimesMonth(this.childcareGoOutTimes),
+					new AttendanceTimeMonth(this.childcareGoOutTime)));
+		}
+		if (this.careGoOutTimes != 0 || this.careGoOutTime != 0){
+			goOutForChildCares.add(GoOutForChildCare.of(
+					ChildCareAtr.CARE,
+					new AttendanceTimesMonth(this.careGoOutTimes),
+					new AttendanceTimeMonth(this.careGoOutTime)));
+		}
+		
+		// 月別実績の休業
+		LeaveOfMonthly leave = new LeaveOfMonthly();
+		if (krcdtMonLeave != null) leave = krcdtMonLeave.toDomain();
+		
+		// 月別実績の勤務日数
+		val workDays = WorkDaysOfMonthly.of(
+				AttendanceDaysOfMonthly.of(new AttendanceDaysMonth(this.attendanceDays)),
+				AbsenceDaysOfMonthly.of(
+						new AttendanceDaysMonth(this.totalAbsenceDays),
+						new AttendanceTimeMonth(this.totalAbsenceTime),
+						krcdtMonAggrAbsnDays.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
+				PredeterminedDaysOfMonthly.of(
+						new AttendanceDaysMonth(this.predetermineDays)),
+				WorkDaysDetailOfMonthly.of(new AttendanceDaysMonth(this.workDays)),
+				HolidayDaysOfMonthly.of(new AttendanceDaysMonth(this.holidayDays)),
+				SpecificDaysOfMonthly.of(
+						krcdtMonAggrSpecDays.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
+				HolidayWorkDaysOfMonthly.of(new AttendanceDaysMonth(this.holidayWorkDays)),
+				PayDaysOfMonthly.of(
+						new AttendanceDaysMonth(this.payAttendanceDays),
+						new AttendanceDaysMonth(this.payAbsenceDays)),
+				WorkTimesOfMonthly.of(new AttendanceTimesMonth(this.workTimes)),
+				TwoTimesWorkTimesOfMonthly.of(new AttendanceTimesMonth(this.twoTimesWorkTimes)),
+				TemporaryWorkTimesOfMonthly.of(new AttendanceTimesMonth(this.temporaryWorkTimes)),
+				leave);
+		
+		// 月別実績の勤務時間
+		val workTime = nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthly.of(
+				BonusPayTimeOfMonthly.of(
+						krcdtMonAggrBnspyTime.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
+				GoOutOfMonthly.of(
+						krcdtMonAggrGoout.stream().map(c -> c.toDomain()).collect(Collectors.toList()),
+						goOutForChildCares),
+				PremiumTimeOfMonthly.of(
+						krcdtMonAggrPremTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()),
+						new AttendanceTimeMonth(this.premiumMidnightTime),
+						new AttendanceTimeMonth(this.premiumLegalOutsideWorkTime),
+						new AttendanceTimeMonth(this.premiumLegalHolidayWorkTime),
+						new AttendanceTimeMonth(this.premiumIllegalOutsideWorkTime),
+						new AttendanceTimeMonth(this.premiumIllegalHolidayWorkTime)),
+				BreakTimeOfMonthly.of(new AttendanceTimeMonth(this.breakTime)),
+				HolidayTimeOfMonthly.of(
+						new AttendanceTimeMonth(this.legalHolidayTime),
+						new AttendanceTimeMonth(this.illegalHolidayTime),
+						new AttendanceTimeMonth(this.illegalSpecialHolidayTime)),
+				MidnightTimeOfMonthly.of(
+						new TimeMonthWithCalculation(
+								new AttendanceTimeMonth(this.overWorkMidnightTime),
+								new AttendanceTimeMonth(this.calcOverWorkMidnightTime)),
+						new TimeMonthWithCalculation(
+								new AttendanceTimeMonth(this.legalMidnightTime),
+								new AttendanceTimeMonth(this.calcLegalMidnightTime)),
+						IllegalMidnightTime.of(
+								new TimeMonthWithCalculation(
+										new AttendanceTimeMonth(this.illegalMidnightTime),
+										new AttendanceTimeMonth(this.calcIllegalMidnightTime)),
+								new AttendanceTimeMonth(this.illegalBeforeMidnightTime)),
+						new TimeMonthWithCalculation(
+								new AttendanceTimeMonth(this.legalHolidayWorkMidnightTime),
+								new AttendanceTimeMonth(this.calcLegalHolidayWorkMidnightTime)),
+						new TimeMonthWithCalculation(
+								new AttendanceTimeMonth(this.illegalHolidayWorkMidnightTime),
+								new AttendanceTimeMonth(this.calcIllegalHolidayWorkMidnightTime)),
+						new TimeMonthWithCalculation(
+								new AttendanceTimeMonth(this.specialHolidayWorkMidnightTime),
+								new AttendanceTimeMonth(this.calcSpecialHolidayWorkMidnightTime))),
+				LateLeaveEarlyOfMonthly.of(
+						LeaveEarly.of(
+								new AttendanceTimesMonth(this.leaveEarlyTimes),
+								new TimeMonthWithCalculation(
+										new AttendanceTimeMonth(this.leaveEarlyTime),
+										new AttendanceTimeMonth(this.calcLeaveEarlyTime))),
+						Late.of(
+								new AttendanceTimesMonth(this.lateTimes),
+								new TimeMonthWithCalculation(
+										new AttendanceTimeMonth(this.lateTime),
+										new AttendanceTimeMonth(this.calcLateTime)))),
+				AttendanceLeaveGateTimeOfMonthly.of(
+						new AttendanceTimeMonth(this.attendanceLeaveGateBeforeAttendanceTime),
+						new AttendanceTimeMonth(this.attendanceLeaveGateAfterLeaveWorkTime),
+						new AttendanceTimeMonth(this.attendanceLeaveGateStayingTime),
+						new AttendanceTimeMonth(this.attendanceLeaveGateUnemployedTime)),
+				BudgetTimeVarienceOfMonthly.of(new AttendanceTimeMonth(this.budgetVarienceTime)),
+				DivergenceTimeOfMonthly.of(
+						krcdtMonAggrDivgTime.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
+				krcdtMonMedicalTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+		
+		// 月別実績の勤務時刻
+		WorkClockOfMonthly workClock = new WorkClockOfMonthly();
+		if (krcdtMonWorkClock != null) workClock = krcdtMonWorkClock.toDomain();
+		
+		return VerticalTotalOfMonthly.of(workDays, workTime, workClock);
+	}
+	
+	/**
+	 * ドメインから変換　（for Insert）
+	 * @param key キー値：月別実績の勤怠時間
+	 * @param domain 月別実績の縦計
+	 */
+	public void fromDomainForPersist(AttendanceTimeOfMonthlyKey key, VerticalTotalOfMonthly domain){
+		
+		this.PK = new KrcdtMonAttendanceTimePK(
+				key.getEmployeeId(),
+				key.getYearMonth().v(),
+				key.getClosureId().value,
+				key.getClosureDate().getClosureDay().v(),
+				(key.getClosureDate().getLastDayOfMonth() ? 1 : 0));
+		this.fromDomainForUpdate(domain);
+	}
+	
+	/**
+	 * ドメインから変換　(for Update)
+	 * @param domain 月別実績の縦計
+	 */
+	public void fromDomainForUpdate(VerticalTotalOfMonthly domain){
+		
+		val vtWorkDays = domain.getWorkDays();
+		val vtWorkTime = domain.getWorkTime();
+		
+		this.workDays = vtWorkDays.getWorkDays().getDays().v();
+		this.workTimes = vtWorkDays.getWorkTimes().getTimes().v();
+		this.twoTimesWorkTimes = vtWorkDays.getTwoTimesWorkTimes().getTimes().v();
+		this.temporaryWorkTimes = vtWorkDays.getTemporaryWorkTimes().getTimes().v();
+		this.predetermineDays = vtWorkDays.getPredetermineDays().getPredeterminedDays().v();
+		this.holidayDays = vtWorkDays.getHolidayDays().getDays().v();
+		this.attendanceDays = vtWorkDays.getAttendanceDays().getDays().v();
+		this.holidayWorkDays = vtWorkDays.getHolidayWorkDays().getDays().v();
+		this.totalAbsenceDays = vtWorkDays.getAbsenceDays().getTotalAbsenceDays().v();
+		this.totalAbsenceTime = vtWorkDays.getAbsenceDays().getTotalAbsenceTime().v();
+		this.payAttendanceDays = vtWorkDays.getPayDays().getPayAttendanceDays().v();
+		this.payAbsenceDays = vtWorkDays.getPayDays().getPayAbsenceDays().v();
+		
+		this.childcareGoOutTimes = 0;
+		this.childcareGoOutTime = 0;
+		this.careGoOutTimes = 0;
+		this.careGoOutTime = 0;
+		val goOutForChildCares = vtWorkTime.getGoOut().getGoOutForChildCares();
+		if (goOutForChildCares.containsKey(ChildCareAtr.CHILD_CARE)){
+			val goOutForChildCare = goOutForChildCares.get(ChildCareAtr.CHILD_CARE);
+			this.childcareGoOutTimes = goOutForChildCare.getTimes().v();
+			this.childcareGoOutTime = goOutForChildCare.getTime().v();
+		}
+		if (goOutForChildCares.containsKey(ChildCareAtr.CARE)){
+			val goOutForCare = goOutForChildCares.get(ChildCareAtr.CARE);
+			this.careGoOutTimes = goOutForCare.getTimes().v();
+			this.careGoOutTime = goOutForCare.getTime().v();
+		}
+		
+		this.premiumMidnightTime = vtWorkTime.getPremiumTime().getMidnightTime().v();
+		this.premiumLegalOutsideWorkTime = vtWorkTime.getPremiumTime().getLegalOutsideWorkTime().v();
+		this.premiumIllegalOutsideWorkTime = vtWorkTime.getPremiumTime().getIllegalOutsideWorkTime().v();
+		this.premiumLegalHolidayWorkTime = vtWorkTime.getPremiumTime().getLegalHolidayWorkTime().v();
+		this.premiumIllegalHolidayWorkTime = vtWorkTime.getPremiumTime().getIllegalHolidayWorkTime().v();
+		this.breakTime = vtWorkTime.getBreakTime().getBreakTime().v();
+		this.legalHolidayTime = vtWorkTime.getHolidayTime().getLegalHolidayTime().v();
+		this.illegalHolidayTime = vtWorkTime.getHolidayTime().getIllegalHolidayTime().v();
+		this.illegalSpecialHolidayTime = vtWorkTime.getHolidayTime().getIllegalSpecialHolidayTime().v();
+		this.overWorkMidnightTime = vtWorkTime.getMidnightTime().getOverWorkMidnightTime().getTime().v();
+		this.calcOverWorkMidnightTime = vtWorkTime.getMidnightTime().getOverWorkMidnightTime().getCalcTime().v();
+		this.legalMidnightTime = vtWorkTime.getMidnightTime().getLegalMidnightTime().getTime().v();
+		this.calcLegalMidnightTime = vtWorkTime.getMidnightTime().getLegalMidnightTime().getCalcTime().v();
+		this.illegalMidnightTime = vtWorkTime.getMidnightTime().getIllegalMidnightTime().getTime().getTime().v();
+		this.calcIllegalMidnightTime = vtWorkTime.getMidnightTime().getIllegalMidnightTime().getTime().getCalcTime().v();
+		this.illegalBeforeMidnightTime = vtWorkTime.getMidnightTime().getIllegalMidnightTime().getBeforeTime().v();
+		this.legalHolidayWorkMidnightTime = vtWorkTime.getMidnightTime().getLegalHolidayWorkMidnightTime().getTime().v();
+		this.calcLegalHolidayWorkMidnightTime = vtWorkTime.getMidnightTime().getLegalHolidayWorkMidnightTime().getCalcTime().v();
+		this.illegalHolidayWorkMidnightTime = vtWorkTime.getMidnightTime().getIllegalHolidayWorkMidnightTime().getTime().v();
+		this.calcIllegalHolidayWorkMidnightTime = vtWorkTime.getMidnightTime().getIllegalHolidayWorkMidnightTime().getCalcTime().v();
+		this.specialHolidayWorkMidnightTime = vtWorkTime.getMidnightTime().getSpecialHolidayWorkMidnightTime().getTime().v();
+		this.calcSpecialHolidayWorkMidnightTime = vtWorkTime.getMidnightTime().getSpecialHolidayWorkMidnightTime().getCalcTime().v();
+		this.lateTimes = vtWorkTime.getLateLeaveEarly().getLate().getTimes().v();
+		this.lateTime = vtWorkTime.getLateLeaveEarly().getLate().getTime().getTime().v();
+		this.calcLateTime = vtWorkTime.getLateLeaveEarly().getLate().getTime().getCalcTime().v();
+		this.leaveEarlyTimes = vtWorkTime.getLateLeaveEarly().getLeaveEarly().getTimes().v();
+		this.leaveEarlyTime = vtWorkTime.getLateLeaveEarly().getLeaveEarly().getTime().getTime().v();
+		this.calcLeaveEarlyTime = vtWorkTime.getLateLeaveEarly().getLeaveEarly().getTime().getCalcTime().v();
+		this.attendanceLeaveGateBeforeAttendanceTime = vtWorkTime.getAttendanceLeaveGateTime().getTimeBeforeAttendance().v();
+		this.attendanceLeaveGateAfterLeaveWorkTime = vtWorkTime.getAttendanceLeaveGateTime().getTimeAfterLeaveWork().v();
+		this.attendanceLeaveGateStayingTime = vtWorkTime.getAttendanceLeaveGateTime().getStayingTime().v();
+		this.attendanceLeaveGateUnemployedTime = vtWorkTime.getAttendanceLeaveGateTime().getUnemployedTime().v();
+		this.budgetVarienceTime = vtWorkTime.getBudgetTimeVarience().getTime().v();
 	}
 }

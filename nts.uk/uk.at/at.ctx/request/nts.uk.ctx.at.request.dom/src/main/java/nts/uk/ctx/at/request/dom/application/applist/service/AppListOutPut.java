@@ -19,6 +19,7 @@ public class AppListOutPut {
 	private List<AppHolidayWorkFull> lstAppHdWork;
 	private List<AppWorkChangeFull> lstAppWorkChange;
 	private List<AppAbsenceFull> lstAppAbsence;
+	private List<AppCompltLeaveSync> lstAppCompltLeaveSync;
 	//TH: approval (count)
 	private ApplicationStatus appStatusCount;
 	private List<ApplicationFullOutput> lstAppFull;

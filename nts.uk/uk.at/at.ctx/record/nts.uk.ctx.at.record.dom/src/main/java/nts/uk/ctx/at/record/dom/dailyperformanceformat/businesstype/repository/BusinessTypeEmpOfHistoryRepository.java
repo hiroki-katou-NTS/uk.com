@@ -6,13 +6,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployeeHistory;
 
 public interface BusinessTypeEmpOfHistoryRepository {
-	/**
-	 * find all
-	 * @param cId companyId
-	 * @param sId employeeId
-	 * @return BusinessTypeOfEmployeeHistory
-	 */
-	BusinessTypeOfEmployeeHistory findAll(String cId, String sId);
 
 	/**
 	 * insert BusinessTypeOfEmployeeHistory

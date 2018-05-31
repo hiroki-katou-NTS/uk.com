@@ -5,9 +5,10 @@
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.CalcMethodNoBreak;
+import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class OverTimeCalcNoBreak.
@@ -22,11 +23,11 @@ public class OverTimeCalcNoBreak extends WorkTimeDomainObject {
 
 	/** The in law OT. */
 	// 法内残業
-	private OverTimeFrameNo inLawOT;
+	private OTFrameNo inLawOT;
 
 	/** The not in law OT. */
 	// 法外残業
-	private OverTimeFrameNo notInLawOT;
+	private OTFrameNo notInLawOT;
 
 	/**
 	 * Instantiates a new over time calc no break.
@@ -40,6 +41,13 @@ public class OverTimeCalcNoBreak extends WorkTimeDomainObject {
 		this.notInLawOT = memento.getNotInLawOT();
 	}
 
+	public OverTimeCalcNoBreak(CalcMethodNoBreak calcMethod, OTFrameNo inLawOT, OTFrameNo notInLawOT) {
+		super();
+		this.calcMethod = calcMethod;
+		this.inLawOT = inLawOT;
+		this.notInLawOT = notInLawOT;
+	}
+	
 	/**
 	 * Save to memento.
 	 *
@@ -62,12 +70,40 @@ public class OverTimeCalcNoBreak extends WorkTimeDomainObject {
 	public void validate() {
 
 		// Msg_889
-		if (this.calcMethod == CalcMethodNoBreak.CALC_AS_OVERTIME) {
+		if (CalcMethodNoBreak.CALC_AS_WORKING.equals(this.calcMethod)) {
 			if (this.inLawOT == null || this.notInLawOT == null) {
 				this.bundledBusinessExceptions.addMessage("Msg_889");
 			}
 		}
 
 		super.validate();
+	}
+
+	/**
+	 * Correct data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 * @param oldDomain
+	 *            the old domain
+	 */
+	public void correctData(ScreenMode screenMode, OverTimeCalcNoBreak oldDomain) {
+		if (CalcMethodNoBreak.CALC_AS_WORKING.equals(this.calcMethod)) {
+			this.inLawOT = oldDomain.getInLawOT();
+			this.notInLawOT = oldDomain.getNotInLawOT();
+		}
+	}
+
+	/**
+	 * Correct default data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 */
+	public void correctDefaultData(ScreenMode screenMode) {
+		if (CalcMethodNoBreak.CALC_AS_WORKING.equals(this.calcMethod)) {
+			this.inLawOT = new OTFrameNo(1);
+			this.notInLawOT = new OTFrameNo(1);
+		}
 	}
 }

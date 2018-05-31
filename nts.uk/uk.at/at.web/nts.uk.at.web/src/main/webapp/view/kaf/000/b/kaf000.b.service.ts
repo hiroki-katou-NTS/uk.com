@@ -11,6 +11,7 @@ module nts.uk.at.view.kaf000.b.service {
         deleteApp: "at/request/application/deleteapp",
         getAppDataDate: "at/request/application/getAppDataByDate",
         getAppByID: "at/request/application/getAppInfoByAppID",
+        getAppByListID: "at/request/application/getAppInfoByListAppID",
         holidayShipmentRemove: "at/request/application/holidayshipment/remove",
         holidayShipmentCancel: "at/request/application/holidayshipment/cancel",
         holidayShipmentApprove: "at/request/application/holidayshipment/approve",
@@ -93,5 +94,9 @@ module nts.uk.at.view.kaf000.b.service {
 
     export function getAppByID(appID: string): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getAppByID, appID);
+    }
+    
+    export function getAppByListID(listAppID: Array<string>): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getAppByListID, listAppID);
     }
 }

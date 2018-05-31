@@ -45,7 +45,7 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements IAppWor
     	if (null == updateWorkChange) {
 			return;
 		}
-    	updateWorkChange.version = newAppWC.version;
+    	//updateWorkChange.version = newAppWC.version;
 		updateWorkChange.workTypeCd = newAppWC.workTypeCd;
 		updateWorkChange.workTimeCd = newAppWC.workTimeCd;
 		updateWorkChange.excludeHolidayAtr = newAppWC.excludeHolidayAtr;
@@ -75,7 +75,7 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements IAppWor
 				entity.workChangeAtr, entity.goWorkAtr1, entity.backHomeAtr1, entity.breakTimeStart1,
 				entity.breakTimeEnd1, entity.workTimeStart1, entity.workTimeEnd1, entity.workTimeStart2,
 				entity.workTimeEnd2, entity.goWorkAtr2, entity.backHomeAtr2);
-		appWorkChange.setVersion(entity.version);
+		//appWorkChange.setVersion(entity.version);
 
 		return appWorkChange;
 	}

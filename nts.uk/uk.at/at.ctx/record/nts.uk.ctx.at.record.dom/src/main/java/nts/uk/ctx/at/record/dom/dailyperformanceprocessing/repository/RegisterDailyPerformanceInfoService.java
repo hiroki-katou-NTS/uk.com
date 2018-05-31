@@ -1,10 +1,9 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
-import java.util.List;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.extern.slf4j.Slf4j;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
@@ -18,23 +17,17 @@ import nts.uk.ctx.at.record.dom.calculationattribute.repo.CalAttrOfDailyPerforma
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavingGateOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ReflectStampOutput;
-import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.stamp.StampRepository;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.updateworkinfo.InsertWorkInfoOfDailyPerforService;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 
 @Stateless
 public class RegisterDailyPerformanceInfoService {
-
-	@Inject
-	private WorkInformationRepository workInformationRepository;
 
 	@Inject
 	private AffiliationInforOfDailyPerforRepository affiliationInforOfDailyPerforRepository;
@@ -44,9 +37,6 @@ public class RegisterDailyPerformanceInfoService {
 
 	@Inject
 	private TemporaryTimeOfDailyPerformanceRepository temporaryTimeOfDailyPerformanceRepository;
-
-	@Inject
-	private EditStateOfDailyPerformanceRepository editStateOfDailyPerformanceRepository;
 
 	@Inject
 	private BreakTimeOfDailyPerformanceRepository breakTimeOfDailyPerformanceRepository;
@@ -78,8 +68,8 @@ public class RegisterDailyPerformanceInfoService {
 	@Inject
 	private ShortTimeOfDailyPerformanceRepository shortTimeOfDailyPerformanceRepository;
 
-	public void registerDailyPerformanceInfo(String companyId, String employeeID, GeneralDate day, ReflectStampOutput stampOutput,
-			AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor,
+	public void registerDailyPerformanceInfo(String companyId, String employeeID, GeneralDate day,
+			ReflectStampOutput stampOutput, AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor,
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformanceUpdate,
 			SpecificDateAttrOfDailyPerfor specificDateAttrOfDailyPerfor,
 			CalAttrOfDailyPerformance calAttrOfDailyPerformance, WorkTypeOfDailyPerformance workTypeOfDailyPerformance,
@@ -89,13 +79,8 @@ public class RegisterDailyPerformanceInfoService {
 		// ドメインモデル「日別実績の勤務情報」を更新する - update
 		// WorkInfoOfDailyPerformance
 		if (workInfoOfDailyPerformanceUpdate != null) {
-			if (this.workInformationRepository.find(employeeID, day).isPresent()) {
-				// this.insertWorkInfoOfDailyPerforService.updateWorkInfoOfDailyPerforService(companyId,
-				// employeeID, day, workInfoOfDailyPerformanceUpdate);
-				this.workInformationRepository.updateByKey(workInfoOfDailyPerformanceUpdate);
-			} else {
-				this.workInformationRepository.insert(workInfoOfDailyPerformanceUpdate);
-			}
+			this.insertWorkInfoOfDailyPerforService.updateWorkInfoOfDailyPerforService(companyId, employeeID, day,
+					workInfoOfDailyPerformanceUpdate);
 		}
 
 		// ドメインモデル「日別実績の勤務種別」を更新する (Update domain 「日別実績の勤務種別」)
@@ -120,7 +105,7 @@ public class RegisterDailyPerformanceInfoService {
 
 		// ドメインモデル「日別実績の休憩時間帯」を更新する
 		// BreakTimeOfDailyPerformance
-		if (breakTimeOfDailyPerformance != null) {
+		if (breakTimeOfDailyPerformance != null && !breakTimeOfDailyPerformance.getBreakTimeSheets().isEmpty()) {
 			if (this.breakTimeOfDailyPerformanceRepository.find(employeeID, day, 1).isPresent()) {
 				this.breakTimeOfDailyPerformanceRepository.update(breakTimeOfDailyPerformance);
 			} else {
@@ -149,16 +134,17 @@ public class RegisterDailyPerformanceInfoService {
 		}
 
 		if (stampOutput != null) {
-			
+
 			// breakTimeOfDailyPerformance
-			if (stampOutput.getBreakTimeOfDailyPerformance() != null) {
+			if (stampOutput.getBreakTimeOfDailyPerformance() != null
+					&& !stampOutput.getBreakTimeOfDailyPerformance().getBreakTimeSheets().isEmpty()) {
 				if (this.breakTimeOfDailyPerformanceRepository.find(employeeID, day, 0).isPresent()) {
 					this.breakTimeOfDailyPerformanceRepository.update(stampOutput.getBreakTimeOfDailyPerformance());
 				} else {
 					this.breakTimeOfDailyPerformanceRepository.insert(stampOutput.getBreakTimeOfDailyPerformance());
 				}
 			}
-			
+
 			// ドメインモデル「日別実績の外出時間帯」を更新する (Update 「日別実績の外出時間帯」)
 			if (stampOutput.getOutingTimeOfDailyPerformance() != null) {
 				if (this.outingTimeOfDailyPerformanceRepository.findByEmployeeIdAndDate(employeeID, day).isPresent()) {

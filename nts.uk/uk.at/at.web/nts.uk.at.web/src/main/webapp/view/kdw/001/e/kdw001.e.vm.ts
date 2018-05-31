@@ -4,6 +4,9 @@ module nts.uk.at.view.kdw001.e.viewmodel {
     import kibanTimer = nts.uk.ui.sharedvm.KibanTimer;
 
     export class ScreenModel {
+        
+        numberEmployee: KnockoutObservable<number> = ko.observable(0);
+        
         // Time data
         isComplete: KnockoutObservable<boolean> = ko.observable(false);
         taskId: KnockoutObservable<string> = ko.observable("");
@@ -54,6 +57,8 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         constructor() {
             var self = this;
             self.elapseTime.start();
+            
+            self.numberEmployee(0);
 
             self.columns = ko.observableArray([
                 { headerText: getText('KDW001_33'), key: 'personCode', width: 110 },
@@ -74,6 +79,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             var params: shareModel.executionProcessingCommand = nts.uk.ui.windows.getShared("KDWL001E");
             self.startPeriod(params.periodStartDate);
             self.endPeriod(params.periodEndDate);
+            self.numberEmployee(params.lstEmployeeID.length);
 
             service.insertData(params).done((res: shareModel.AddEmpCalSumAndTargetCommandResult) => {
                 self.empCalAndSumExecLogID(res.empCalAndSumExecLogID);
@@ -165,10 +171,10 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                             self.elapseTime.end();
                             
                             // Get EndTime from server, fallback to client
-                            let endTime = self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString;
-                            if (nts.uk.text.isNullOrEmpty(endTime))
-                                endTime = moment.utc().add(9,"h").format("YYYY/MM/DD HH:mm:ss")
-                            self.endTime(endTime);
+                            self.endTime(self.getAsyncData(info.taskDatas, "endTime").valueAsString);
+//                            if (nts.uk.text.isNullOrEmpty(endTime))
+//                                endTime = moment.utc().add(9,"h").format("YYYY/MM/DD HH:mm:ss")
+//                            self.endTime(endTime);
 
                             // DailyCreate
                             self.dailyCreateStatus(self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString);

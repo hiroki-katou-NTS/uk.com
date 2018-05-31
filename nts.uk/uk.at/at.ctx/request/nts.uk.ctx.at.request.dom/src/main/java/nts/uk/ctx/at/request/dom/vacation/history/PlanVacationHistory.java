@@ -5,20 +5,19 @@
 package nts.uk.ctx.at.request.dom.vacation.history;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.arc.validate.Validatable;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.shr.com.history.GeneralHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
- * The Class PlanVacationHistory.
+ * Gets the max day.
+ *
+ * @return the max day
  */
-
 @Getter
 //計画休暇のルールの履歴
-public class PlanVacationHistory extends GeneralHistoryItem<PlanVacationHistory, DatePeriod, GeneralDate> implements Validatable {
+public class PlanVacationHistory extends GeneralHistoryItem<PlanVacationHistory, DatePeriod, GeneralDate> {
 	
 	/** The company id. */
 	private String companyId;
@@ -89,38 +88,4 @@ public class PlanVacationHistory extends GeneralHistoryItem<PlanVacationHistory,
 		this.maxDay = maxDay;
 		this.workTypeCode = workTypeCode;
 	}
-	
-	/**
-	 * Instantiates a new plan vacation history.
-	 *
-	 * @param companyId the company id
-	 * @param workTypeCode the work type code
-	 * @param maxDay the max day
-	 * @param historyId the history id
-	 * @param startDate the start date
-	 * @param endDate the end date
-	 */
-	public PlanVacationHistory(String companyId, String workTypeCode, OptionalMaxDay maxDay, String historyId,
-			GeneralDate startDate, GeneralDate endDate){
-		super(historyId, new DatePeriod(startDate, endDate));
-		this.companyId = companyId;
-		this.maxDay = maxDay;
-		this.workTypeCode = workTypeCode;
-	}
-	
-	/* (non-Javadoc)
-	 * @see nts.arc.validate.Validatable#validate()
-	 */
-	@Override
-    public void validate() {
-		// check conditional
-		if (this.start().after(this.end())) {
-			throw new BusinessException("Msg_917");
-		}
-
-		if (this.start().year() != this.end().year()) {
-			throw new BusinessException("Msg_967");
-		}
-    }
 }
-	

@@ -21,7 +21,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaErrorAlarmConditionRepository extends JpaRepository implements ErrorAlarmConditionRepository {
 
 	private final String FIND_BY_ERROR_ALARM_CHECK_ID = "SELECT a FROM KrcmtErAlCondition a WHERE a.eralCheckId = :eralCheckId ";
-	private final String DELETE_BY_ERROR_ALARM_CHECK_IDS = "DELETE FROM KrcmtErAlCondition a WHERE a.eralCheckId IN :erAlCheckIds ";
+	//private final String DELETE_BY_ERROR_ALARM_CHECK_IDS = "DELETE FROM KrcmtErAlCondition a WHERE a.eralCheckId IN :erAlCheckIds ";
 	private final String FIND_BY_ERROR_ALARM_CHECK_IDS = "SELECT a  FROM KrcmtErAlCondition a WHERE a.eralCheckId IN :erAlCheckIds ";
 	
 	@Override
@@ -75,12 +75,20 @@ public class JpaErrorAlarmConditionRepository extends JpaRepository implements E
 		targetEntity.continuousPeriod = domainAfterConvert.continuousPeriod;
 		this.commandProxy().update(targetEntity);
 	}
-
+	
+	private final String DELETE_BY_ERROR_ALARM_CHECK_IDS = "DELETE FROM KrcmtErAlCondition a "
+			+ " WHERE a.eralCheckId IN :erAlCheckIds ";
 	@Override
 	public void removeErrorAlarmCondition(List<String> listErAlCheckID) {
-		this.getEntityManager().createQuery(DELETE_BY_ERROR_ALARM_CHECK_IDS)
-		.setParameter("erAlCheckIds", listErAlCheckID)
-		.executeUpdate();
+		List<KrcmtErAlCondition> listEralCon = this.queryProxy().query(FIND_BY_ERROR_ALARM_CHECK_IDS, KrcmtErAlCondition.class)
+                .setParameter("erAlCheckIds", listErAlCheckID).getList();
+		if(!listEralCon.isEmpty()) {
+			this.commandProxy().removeAll(listEralCon);
+		}
+		
+//		this.getEntityManager().createQuery(DELETE_BY_ERROR_ALARM_CHECK_IDS)
+//		.setParameter("erAlCheckIds", listErAlCheckID)
+//		.executeUpdate();
 	}
 
 	@Override

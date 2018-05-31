@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
+import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternWorkScheduleCre;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
@@ -20,7 +21,6 @@ import nts.uk.ctx.at.shared.dom.workingcondition.ScheduleMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZoneScheduledMasterAtr;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBusCal;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleMasterReferenceAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -164,7 +164,7 @@ public class UpdateWorkingConditionCommandAssembler {
 		
 		// ScheduleMethod
 		// WorkScheduleBusCal - 営業日カレンダーによる勤務予定作成
-		WorkScheduleBusCal busCal = new WorkScheduleBusCal(
+		WorkScheduleBusCal businessCal = new WorkScheduleBusCal(
 				command.getReferenceBusinessDayCalendar() != null
 						? EnumAdaptor.valueOf(command.getReferenceBusinessDayCalendar().intValue() ,
 						WorkScheduleMasterReferenceAtr.class) : null,
@@ -173,15 +173,15 @@ public class UpdateWorkingConditionCommandAssembler {
 						// 予定作成方法.営業日カレンダーによる勤務予定作成.就業時間帯の参照先（基本作成方法＝営業部カレンダーの場合）
 						command.getReferenceType() != null ? EnumAdaptor.valueOf(command.getReferenceType().intValue(),
 						TimeZoneScheduledMasterAtr.class) : null);
-		// MonthlyPatternWorkScheduleCre
-		// Set default to FOLLOW_MASTER_REFERENCE
-		MonthlyPatternWorkScheduleCre monthlySchedule = new MonthlyPatternWorkScheduleCre(TimeZoneScheduledMasterAtr.FOLLOW_MASTER_REFERENCE);
-		ScheduleMethod scheduleMethod = new ScheduleMethod(
-				command.getBasicCreateMethod()!=null? EnumAdaptor.valueOf(command.getBasicCreateMethod().intValue(), WorkScheduleBasicCreMethod.class) :null,
-				busCal, monthlySchedule);
+		// MonthlyPatternWorkScheduleCre 月間パターンの場合
+		MonthlyPatternWorkScheduleCre monthlySchedule = new MonthlyPatternWorkScheduleCre(
+				command.getReferenceType().intValue());
+		ScheduleMethod scheduleMethod = new ScheduleMethod(command.getBasicCreateMethod().intValue(), businessCal,
+				monthlySchedule);
+		
 		WorkingConditionItem workingCond = new WorkingConditionItem(command.getHistId(),
 				command.getScheduleManagementAtr() != null ? EnumAdaptor.valueOf( command.getScheduleManagementAtr().intValue(),
-						NotUseAtr.class) : null,
+						ManageAtr.class) : null,
 				workDayOfWeek, workCategory,
 				command.getAutoStampSetAtr() != null ? EnumAdaptor.valueOf(command.getAutoStampSetAtr().intValue(), NotUseAtr.class) : null,
 				command.getAutoIntervalSetAtr() != null ? EnumAdaptor.valueOf(command.getAutoIntervalSetAtr().intValue(),NotUseAtr.class) : null,

@@ -26,15 +26,15 @@ module nts.uk.at.view.ktg001.a.viewmodel {
                     self.text = ko.observable(getText('KTG001_5'));
                     self.visible = ko.observable(false);
                 }
+                dfd.resolve();
+            }).always(function () {
+                nts.uk.ui.block.clear();
             });
-            dfd.resolve();
             return dfd.promise();
         }
 
         dailyPerformanceConfirm() {
-            block.invisible();
-            nts.uk.request.jump("/view/cmm/045/a/index.xhtml?a=1", {});
-            block.clear();
+           window.top.location = window.location.origin + '/nts.uk.at.web/view/kdw/004/a/index.xhtml';
         }
     }
 }

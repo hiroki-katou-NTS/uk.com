@@ -3,27 +3,21 @@ package nts.uk.ctx.at.function.dom.alarm.alarmlist;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.AggregationProcessService;
-import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatus;
-import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatusRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class ExtractAlarmListService {
 
-	@Inject
-	private AlarmListExtraProcessStatusRepository alListExtraProcessStatusRepo;
+//	@Inject
+//	private AlarmListExtraProcessStatusRepository alListExtraProcessStatusRepo;
 	
 	@Inject
 	private AggregationProcessService aggregationProcessService;
@@ -31,16 +25,14 @@ public class ExtractAlarmListService {
 	public ExtractedAlarmDto extractAlarm(List<EmployeeSearchDto> listEmployee, String checkPatternCode,
 			List<PeriodByAlarmCategory> periodByCategory) {		
 		String companyID = AppContexts.user().companyId();
-		String employeeId = AppContexts.user().employeeId();
+//		String employeeId = AppContexts.user().employeeId();
 		
 		// ドメインモデル「アラームリスト抽出処理状況」をチェックする
-		Optional<AlarmListExtraProcessStatus> alarmListExtraProcessStatus = alListExtraProcessStatusRepo
-				.getAlListExtaProcessByEndDate(companyID, employeeId);
 		// チェック条件に当てはまる場合 (When the check conditions apply)
-		if (alarmListExtraProcessStatus.isPresent()) {
-			// 情報メッセージ(#Msg_993)を表示する
-			return new ExtractedAlarmDto(new ArrayList<>(), true, false);
-		}
+//		if (this.alListExtraProcessStatusRepo.isAlListExtaProcessing(companyID, employeeId)) {
+//			// 情報メッセージ(#Msg_993)を表示する
+//			return new ExtractedAlarmDto(new ArrayList<>(), true, false);
+//		}
 		
 		// チェック条件に当てはまらない場合(When it does not fit the check condition)
 		// 条件を満たしていない
@@ -50,27 +42,31 @@ public class ExtractAlarmListService {
 		}
 		
 		// ドメインモデル「アラームリスト抽出処理状況」を作成する
-		AlarmListExtraProcessStatus alarmExtraProcessStatus = new AlarmListExtraProcessStatus(
-				IdentifierUtil.randomUniqueId(),
-				companyID, GeneralDate.today(), 
-				GeneralDateTime.now().hours()*60 +GeneralDateTime.now().minutes(),
-				employeeId, null, null);
-		this.alListExtraProcessStatusRepo.addAlListExtaProcess(alarmExtraProcessStatus);
+//		GeneralDateTime now1 = GeneralDateTime.now();
+		GeneralDate today = GeneralDate.today();
+//		AlarmListExtraProcessStatus alarmExtraProcessStatus = new AlarmListExtraProcessStatus(
+//				IdentifierUtil.randomUniqueId(),
+//				companyID, GeneralDate.today(), 
+//				now1.hours()*60 +now1.minutes(),
+//				employeeId, null, null);
+//		AlarmListExtraProcessStatusEvent.builder().isUpdate(false).status(alarmExtraProcessStatus).build().toBePublished();
+//		this.alListExtraProcessStatusRepo.addAlListExtaProcess(alarmExtraProcessStatus);
 		
 		// 勤務実績のアラームリストの集計処理を行う
-		List<AlarmExtraValueWkReDto> listAlarmExtraValueWR = aggregationProcessService.processAlarmListWorkRecord(listEmployee,
+		List<AlarmExtraValueWkReDto> listAlarmExtraValueWR = aggregationProcessService.processAlarmListWorkRecord(today, companyID, listEmployee,
 				checkPatternCode, periodByCategory);
 		// ドメインモデル「アラームリスト抽出処理状況」を更新する
-		alarmExtraProcessStatus.setEndDateAndEndTime(GeneralDate.today(), GeneralDateTime.now().minutes());
-		this.alListExtraProcessStatusRepo.updateAlListExtaProcess(alarmExtraProcessStatus);
+//		GeneralDateTime now2 = GeneralDateTime.now();
+//		alarmExtraProcessStatus.setEndDateAndEndTime(GeneralDate.today(), now2.hours()*60 + now2.minutes());
+//		this.alListExtraProcessStatusRepo.updateAlListExtaProcess(alarmExtraProcessStatus);
+//		AlarmListExtraProcessStatusEvent.builder().isUpdate(true).status(alarmExtraProcessStatus).build().toBePublished();
 
 		// 集計結果を確認する sort list
-		Comparator<AlarmExtraValueWkReDto> comparator = Comparator.comparing(AlarmExtraValueWkReDto::getHierarchyCd);
-		comparator = comparator.thenComparing(Comparator.comparing(AlarmExtraValueWkReDto::getEmployeeCode));
-		comparator = comparator.thenComparing(Comparator.comparing(AlarmExtraValueWkReDto::getAlarmValueDate));
-		comparator = comparator.thenComparing(Comparator.comparing(AlarmExtraValueWkReDto::getCategory));
-		Stream<AlarmExtraValueWkReDto> alarmExtraValueStream = listAlarmExtraValueWR.stream().sorted(comparator);
-		List<AlarmExtraValueWkReDto> sortedAlarmExtraValue = alarmExtraValueStream.collect(Collectors.toList());
+		Comparator<AlarmExtraValueWkReDto> comparator = Comparator.comparing(AlarmExtraValueWkReDto::getHierarchyCd)
+																	.thenComparing(Comparator.comparing(AlarmExtraValueWkReDto::getEmployeeCode))
+																	.thenComparing(Comparator.comparing(AlarmExtraValueWkReDto::getAlarmValueDate))
+																	.thenComparing(Comparator.comparing(AlarmExtraValueWkReDto::getCategory));
+		List<AlarmExtraValueWkReDto> sortedAlarmExtraValue = listAlarmExtraValueWR.stream().sorted(comparator).collect(Collectors.toList());
 		// 集計データが無い場合
 		if (listAlarmExtraValueWR.isEmpty()) {
 			// 情報メッセージ(#Msg_835) を表示する

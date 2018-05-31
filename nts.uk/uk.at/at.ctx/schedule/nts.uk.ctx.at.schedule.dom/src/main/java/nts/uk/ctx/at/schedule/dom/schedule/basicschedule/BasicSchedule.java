@@ -18,6 +18,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkS
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkScheduleTime;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
 import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
 
 /**
  * The Class BasicSchedule. 勤務予定基本情報
@@ -42,7 +43,7 @@ public class BasicSchedule extends AggregateRoot {
 	private String workTimeCode;
 
 	/** The confirmed atr. */
-	// 確定区分
+	// 予定確定区分
 	private ConfirmedAtr confirmedAtr;
 
 	/** The work schedule time zones. */
@@ -67,6 +68,8 @@ public class BasicSchedule extends AggregateRoot {
 	
 	/** 勤務予定マスタ情報 **/
 	private ScheMasterInfo workScheduleMaster;
+	
+	private List<WorkScheduleState> workScheduleStates;
 
 	/**
 	 * Instantiates a new basic schedule.

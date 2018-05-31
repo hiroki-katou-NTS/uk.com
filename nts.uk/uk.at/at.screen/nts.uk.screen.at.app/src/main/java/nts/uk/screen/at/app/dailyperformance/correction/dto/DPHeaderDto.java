@@ -184,25 +184,29 @@ public class DPHeaderDto {
 	}
 
 	private static String getPrimitiveName(DPAttendanceItem item){
-		switch (item.getTypeGroup()) {
-		case 1:
+		if (item.getTypeGroup() != null) {
+			switch (item.getTypeGroup()) {
+			case 1:
+				return "WorkTypeCode";
+			case 2:
+				return "WorkTimeCode";
+			case 3:
+				return "WorkLocationCD";
+			case 4:
+				return "DiverdenceReasonCode";
+			case 5:
+				return "WorkplaceCode";
+			case 6:
+				return "ClassificationCode";
+			case 7:
+				return "JobTitleCode";
+			case 8:
+				return "EmploymentCode";
+			default:
+				return "";
+			}
+		} else {
 			return "WorkTypeCode";
-		case 2:
-			return "WorkTimeCode";
-		case 3:
-			return "WorkLocationCD";
-		case 4:
-			return "DiverdenceReasonCode";
-		case 5:
-			return "WorkplaceCode";
-		case 6:
-			return "ClassificationCode";
-		case 7:
-			return "JobTitleCode";
-		case 8:
-			return "EmploymentCode";
-		default:
-			return "";
 		}
 	}
 

@@ -18,7 +18,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 export interface DiffTimeDeductTimezoneDto extends DeductionTimeDto {
-                    isUpdateStartTime: boolean;
+                    updateStartTime: boolean;
                 }
 
                 export interface DiffTimeRestTimezoneDto {
@@ -31,7 +31,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 export interface DiffTimeOTTimezoneSetDto extends OverTimeOfTimeZoneSetDto {
-                    isUpdateStartTime: boolean;
+                    updateStartTime: boolean;
                 }
 
                 export interface DiffTimezoneSettingDto {
@@ -67,6 +67,7 @@ module nts.uk.at.view.kmk003.a {
                     halfDayWorkTimezones: DiffTimeHalfDayWorkTimezoneDto[];
                     stampReflectTimezone: DiffTimeWorkStampReflectTimezoneDto;
                     overtimeSetting: number;
+                    calculationSetting: common.FixedWorkCalcSettingDto;
                 }
 
             }

@@ -9,34 +9,36 @@ import nts.uk.ctx.at.schedule.dom.executionlog.CreateMethodAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ProcessExecutionAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr;
+import nts.uk.ctx.at.schedule.dom.executionlog.RebuildTargetAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentSetMemento;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeContent;
 
 /**
  * The Class JpaExecutionContentSetMemento.
  */
-public class JpaScheduleCreateContentSetMemento implements ScheduleCreateContentSetMemento{
-	
-	//YYYYMMDD
+public class JpaScheduleCreateContentSetMemento implements ScheduleCreateContentSetMemento {
+
+	// YYYYMMDD
 	/** The Constant MUL_YEAR. */
 	public static final int MUL_YEAR = 10000;
-	
+
 	/** The Constant MUL_MONTH. */
 	public static final int MUL_MONTH = 100;
-	
+
 	/** The Constant TRUE_VALUE. */
 	public static final int TRUE_VALUE = 1;
-	
+
 	/** The Constant FALSE_VALUE. */
 	public static final int FALSE_VALUE = 0;
-	
+
 	/** The entity. */
-	private KscdtScheExeContent entity; 
+	private KscdtScheExeContent entity;
 
 	/**
 	 * Instantiates a new jpa execution content set memento.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 */
 	public JpaScheduleCreateContentSetMemento(KscdtScheExeContent entity) {
 		this.entity = entity;
@@ -126,17 +128,6 @@ public class JpaScheduleCreateContentSetMemento implements ScheduleCreateContent
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContentSetMemento#
-	 * setResetAbsentHolidayBusines(java.lang.Boolean)
-	 */
-	@Override
-	public void setResetAbsentHolidayBusines(Boolean resetAbsentHolidayBusines) {
-		this.entity.setReAbstHdBusines(resetAbsentHolidayBusines ? TRUE_VALUE : FALSE_VALUE);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContentSetMemento#
 	 * setResetWorkingHours(java.lang.Boolean)
 	 */
 	@Override
@@ -158,35 +149,53 @@ public class JpaScheduleCreateContentSetMemento implements ScheduleCreateContent
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContentSetMemento#
-	 * setResetDirectLineBounce(java.lang.Boolean)
-	 */
-	@Override
-	public void setResetDirectLineBounce(Boolean resetDirectLineBounce) {
-		this.entity.setReDirLineBounce(resetDirectLineBounce ? TRUE_VALUE : FALSE_VALUE);
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContentSetMemento#
-	 * setResetTimeChildCare(java.lang.Boolean)
-	 */
-	@Override
-	public void setResetTimeChildCare(Boolean resetTimeChildCare) {
-		this.entity.setReTimeChildCare(resetTimeChildCare ? TRUE_VALUE : FALSE_VALUE);
-
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentSetMemento#setExecutionId(java.lang.String)
+	 * @see
+	 * nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentSetMemento#
+	 * setExecutionId(java.lang.String)
 	 */
 	@Override
 	public void setExecutionId(String executionId) {
 		this.entity.setExeId(executionId);
 	}
 
-	
+	@Override
+	public void setResetStartEndTime(Boolean resetStartEndTime) {
+		this.entity.setReStartEndTime(resetStartEndTime ? TRUE_VALUE : FALSE_VALUE);
+	}
+
+	@Override
+	public void setRebuildTargetAtr(RebuildTargetAtr rebuildTargetAtr) {
+		this.entity.setReTargetAtr(rebuildTargetAtr.value);
+	}
+
+	@Override
+	public void setRecreateConverter(Boolean recreateConverter) {
+		this.entity.setReConverter(recreateConverter ? TRUE_VALUE : FALSE_VALUE);
+	}
+
+	@Override
+	public void setRecreateEmployeeOffWork(Boolean recreateEmployeeOffWork) {
+		this.entity.setReEmpOffWork(recreateEmployeeOffWork ? TRUE_VALUE : FALSE_VALUE);
+	}
+
+	@Override
+	public void setRecreateDirectBouncer(Boolean recreateDirectBouncer) {
+		this.entity.setReDirectBouncer(recreateDirectBouncer ? TRUE_VALUE : FALSE_VALUE);
+	}
+
+	@Override
+	public void setRecreateShortTermEmployee(Boolean recreateShortTermEmployee) {
+		this.entity.setReShortTermEmp(recreateShortTermEmployee ? TRUE_VALUE : FALSE_VALUE);
+	}
+
+	@Override
+	public void setRecreateWorkTypeChange(Boolean recreateWorkTypeChange) {
+		this.entity.setReWorkTypeChange(recreateWorkTypeChange ? TRUE_VALUE : FALSE_VALUE);
+	}
+
+	@Override
+	public void setProtectHandCorrection(Boolean protectHandCorrection) {
+		this.entity.setReProtectHandCorrect(protectHandCorrection ? TRUE_VALUE : FALSE_VALUE);
+	}
 
 }

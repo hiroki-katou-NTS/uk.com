@@ -4,9 +4,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.AppReflectManager;
 
 /**
  * 2-2.新規画面登録時承認反映情報の整理
@@ -22,7 +25,8 @@ public class RegisterAtApproveReflectionInfoDefault_New implements RegisterAtApp
 	
 	@Inject
 	private ApplicationRepository_New applicationRepository;
-	
+	@Inject
+	private AppReflectManager appReflectManager;
 	@Override
 	public void newScreenRegisterAtApproveInfoReflect(String SID, Application_New application) {
 		// アルゴリズム「承認情報の整理」を実行する
@@ -48,6 +52,15 @@ public class RegisterAtApproveReflectionInfoDefault_New implements RegisterAtApp
 			// 「反映情報」．実績反映状態を「反映待ち」にする
 			application_New.getReflectionInformation().setStateReflectionReal(ReflectedState_New.WAITREFLECTION);
 			applicationRepository.update(application_New);
+			if((application.getPrePostAtr().equals(PrePostAtr.PREDICT)&&
+					(application.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)
+					|| application.getAppType().equals(ApplicationType.BREAK_TIME_APPLICATION)))
+				|| application.getAppType().equals(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION)
+				|| application.getAppType().equals(ApplicationType.WORK_CHANGE_APPLICATION)
+				|| application.getAppType().equals(ApplicationType.ABSENCE_APPLICATION)
+				|| application.getAppType().equals(ApplicationType.COMPLEMENT_LEAVE_APPLICATION)){
+				appReflectManager.reflectEmployeeOfApp(application);
+			}
 		}
 	}
 }

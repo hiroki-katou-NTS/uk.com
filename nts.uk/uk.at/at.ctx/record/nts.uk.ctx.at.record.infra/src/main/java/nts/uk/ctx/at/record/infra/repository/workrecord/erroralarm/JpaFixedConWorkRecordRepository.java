@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

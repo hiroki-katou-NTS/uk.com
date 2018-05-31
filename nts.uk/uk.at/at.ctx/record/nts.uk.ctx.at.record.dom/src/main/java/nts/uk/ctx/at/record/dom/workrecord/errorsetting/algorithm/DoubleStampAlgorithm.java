@@ -63,8 +63,10 @@ public class DoubleStampAlgorithm {
 		}
 
 		if (timeActualStamp != null && timeActualStamp.isPresent() && timeActualStamp.get().getNumberOfReflectionStamp() >= 2) {
-			createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate,
-					new ErrorAlarmWorkRecordCode("S006"), attendanceItemIDs);
+			if (!attendanceItemIDs.isEmpty()) {
+				createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate,
+						new ErrorAlarmWorkRecordCode("S006"), attendanceItemIDs);
+			}			
 		}
 	}
 

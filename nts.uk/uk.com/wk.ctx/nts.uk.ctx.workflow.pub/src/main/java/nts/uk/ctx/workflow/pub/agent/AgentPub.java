@@ -17,4 +17,19 @@ public interface AgentPub {
 	List<AgentDataPubExport> getBySidDate(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate);
 
 	List<AgentExport> getApprovalAgencyInfoByPeriod(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate);
+	
+	/**
+	 * RequestList310
+	 * RequestList #310
+	 * @param companyID
+	 * @param listApprover
+	 * @param startDate
+	 * @param endDate
+	 * @param agentType
+	 * @return
+	 */
+	List<AgentInfoExport> findAgentByPeriod(String companyID, List<String> listApprover, 
+			GeneralDate startDate, GeneralDate endDate, Integer agentType);
+	
+	List<AgentDataPubExport> getAgentBySidDate(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate);
 }

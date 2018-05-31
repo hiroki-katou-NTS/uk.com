@@ -13,10 +13,10 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.dom.company.ICompanyRepo;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.IPerInfoSelectionItemRepository;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoHistorySelection;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoHistorySelectionRepository;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoSelectionItem;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.history.PerInfoHistorySelection;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.history.PerInfoHistorySelectionRepository;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.IPerInfoSelectionItemRepository;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.PerInfoSelectionItem;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -28,7 +28,7 @@ public class AddSelectionItemCommandHandler extends CommandHandlerWithResult<Add
 
 	@Inject
 	private PerInfoHistorySelectionRepository historySelectionRepository;
-	
+
 	@Inject
 	private ICompanyRepo companyRepo;
 
@@ -36,67 +36,48 @@ public class AddSelectionItemCommandHandler extends CommandHandlerWithResult<Add
 	protected String handle(CommandHandlerContext<AddSelectionItemCommand> context) {
 		AddSelectionItemCommand command = context.getCommand();
 		String newId = IdentifierUtil.randomUniqueId();
+		String contractCode = AppContexts.user().contractCode();
 		
-		//
-		String rootCID = AppContexts.user().zeroCompanyIdInContract();
-		String newHistId = IdentifierUtil.randomUniqueId();
-
-		// ドメインモデル「個人情報の選択項目」のエラーチェック
-		Optional<PerInfoSelectionItem> optCheckExistByName = this.perInfoSelectionItemRepo
-				.getSelectionItemByName(command.getSelectionItemName());
-
-		// 「選択項目名称」は重複してはならない
-		if (optCheckExistByName.isPresent()) {
-			throw new BusinessException(new RawErrorMessage("Msg_513"));
-		}
-
-		//Checked -> person -> 0
-		//Uncheck -> employee -> 1
-		int isSelect = command.isSelectionItemClassification() == true ? 0 : 1;
+		validateSelectionItemName(command.getSelectionItemName(), null);
 		
 		// ドメインモデル「個人情報の選択項目」を追加登録する
-		PerInfoSelectionItem domain = PerInfoSelectionItem.createFromJavaType(newId, command.getSelectionItemName(),
-				command.getMemo(), isSelect, AppContexts.user().contractCode(), command.getIntegrationCode(),
-				command.getFormatSelection().getSelectionCode(),
-				command.getFormatSelection().isSelectionCodeCharacter() == true ? 1 : 0,
-				command.getFormatSelection().getSelectionName(),
-				command.getFormatSelection().getSelectionExternalCode());
+		PerInfoSelectionItem domain = PerInfoSelectionItem.createFromJavaType(contractCode, newId,
+				command.isShareChecked(), command.getSelectionItemName(), command.isCharacterType(),
+				command.getCodeLength(), command.getNameLength(), command.getExtraCodeLength(),
+				command.getIntegrationCode(), command.getMemo());
 
 		// 「個人情報の選択項目」を追加登録する
 		this.perInfoSelectionItemRepo.add(domain);
 
+		String newHistId = IdentifierUtil.randomUniqueId();
+
 		// ドメインモデル「選択肢履歴」を登録する
-		boolean itemClassification = command.isSelectionItemClassification();
-		GeneralDate startDate = GeneralDate.ymd(1900, 1, 1);
-		GeneralDate endDate = GeneralDate.ymd(9999, 12, 31);
-		DatePeriod period = new DatePeriod(startDate, endDate);
+		DatePeriod period = new DatePeriod(GeneralDate.min(), GeneralDate.max());
+		
+		PerInfoHistorySelection domainHist = PerInfoHistorySelection.createHistorySelection(newHistId, newId,
+				AppContexts.user().zeroCompanyIdInContract(), period);
 
-		// 画面項目「グループ会社で共有する：選択項目区分をチェックする」
-		if (itemClassification == true) {// TRUE → 0会社の場合
-			PerInfoHistorySelection domainHist = PerInfoHistorySelection.createHistorySelection(newHistId, newId,
-					rootCID, period);
-
-			// 0会社の場合:「選択肢履歴」を登録する
-			this.historySelectionRepository.add(domainHist);
-		} else {// FALSE → 全会社 の場合
+		this.historySelectionRepository.add(domainHist);
+		
+		if (!command.isShareChecked()) {
 			List<String> companyIdList = companyRepo.acquireAllCompany();
 			for (String cid : companyIdList) {
 				newHistId = IdentifierUtil.randomUniqueId();
-				PerInfoHistorySelection domainHist = PerInfoHistorySelection.createHistorySelection(newHistId, newId,
+				domainHist = PerInfoHistorySelection.createHistorySelection(newHistId, newId,
 						cid, period);
 
-				// 全会社 の場合:「選択肢履歴」を登録する
 				this.historySelectionRepository.add(domainHist);
 			}
-
-			newHistId = IdentifierUtil.randomUniqueId();
-			PerInfoHistorySelection domainHist = PerInfoHistorySelection.createHistorySelection(newHistId, newId,
-					rootCID, period);
-
-			// 0会社の場合: 「選択肢履歴」を登録する
-			this.historySelectionRepository.add(domainHist);
 		}
-
 		return newId;
+	}
+	
+	private void validateSelectionItemName(String name, String id) {
+		Optional<PerInfoSelectionItem> optCheckExistByName = this.perInfoSelectionItemRepo
+				.getSelectionItemByName(AppContexts.user().contractCode(), name, id);
+
+		if (optCheckExistByName.isPresent()) {
+			throw new BusinessException(new RawErrorMessage("Msg_513"));
+		}
 	}
 }

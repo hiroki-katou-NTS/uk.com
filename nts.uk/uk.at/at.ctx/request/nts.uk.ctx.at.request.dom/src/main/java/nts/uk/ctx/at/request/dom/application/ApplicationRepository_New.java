@@ -10,6 +10,8 @@ public interface ApplicationRepository_New {
 	
 	public Optional<Application_New> findByID(String companyID, String appID);
 	
+	public List<Application_New> findByListID(String companyID, List<String> listAppID);
+	
 	public List<Application_New> getApplicationIdByDate(String companyId, GeneralDate startDate, GeneralDate endDate);
 	
 	/**
@@ -77,7 +79,5 @@ public interface ApplicationRepository_New {
 	 */
 	public List<Application_New> getListApp(String sID, GeneralDate startDate, GeneralDate endDate);
 	
-	//ドメインモデル「申請」を取得する
-	//TODO
-	public List<Application_New> getListAppById(String sID, String empId, GeneralDate startDate, GeneralDate endDate);
+	public List<Application_New> getByListRefStatus(String employeeID ,GeneralDate startDate, GeneralDate endDate , List<Integer> listReflecInfor  );
 }

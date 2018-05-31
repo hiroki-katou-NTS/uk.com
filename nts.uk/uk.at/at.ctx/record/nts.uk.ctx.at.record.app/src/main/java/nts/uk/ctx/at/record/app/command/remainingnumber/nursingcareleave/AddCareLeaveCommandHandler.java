@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.command.remainingnumber.nursingcareleave;
 
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -12,6 +11,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.nursingcareleavemanagement.data.
 import nts.uk.ctx.at.record.dom.remainingnumber.nursingcareleavemanagement.data.NursingCareLeaveRemainingData;
 import nts.uk.ctx.at.record.dom.remainingnumber.nursingcareleavemanagement.info.NursCareLevRemainInfoRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.nursingcareleavemanagement.info.NursingCareLeaveRemainingInfo;
+import nts.uk.ctx.at.record.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
@@ -19,11 +19,11 @@ import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 @Stateless
 @Transactional
 public class AddCareLeaveCommandHandler extends CommandHandlerWithResult<AddCareLeaveCommand, PeregAddCommandResult>
-		implements PeregAddCommandHandler<AddCareLeaveCommand>{
-	
+		implements PeregAddCommandHandler<AddCareLeaveCommand> {
+
 	@Inject
 	private NursCareLevRemainDataRepository dataRepo;
-	
+
 	@Inject
 	private NursCareLevRemainInfoRepository infoRepo;
 
@@ -41,19 +41,33 @@ public class AddCareLeaveCommandHandler extends CommandHandlerWithResult<AddCare
 	protected PeregAddCommandResult handle(CommandHandlerContext<AddCareLeaveCommand> context) {
 		String cId = AppContexts.user().companyId();
 		AddCareLeaveCommand data = context.getCommand();
-		NursingCareLeaveRemainingData childCareData = NursingCareLeaveRemainingData.getChildCareHDRemaining(data.getSId(), data.getChildCareUsedDays());
-		NursingCareLeaveRemainingData careData = NursingCareLeaveRemainingData.getCareHDRemaining(data.getSId(), data.getCareUsedDays());
-		dataRepo.add(childCareData, cId);
-		dataRepo.add(careData, cId);
+
+		if (data.getChildCareUsedDays() != null) {
+			NursingCareLeaveRemainingData childCareData = NursingCareLeaveRemainingData.getChildCareHDRemaining(
+					data.getSId(), data.getChildCareUsedDays().doubleValue());
+			dataRepo.add(childCareData, cId);
+		}
+
+		if (data.getCareUsedDays() != null) {
+			NursingCareLeaveRemainingData careData = NursingCareLeaveRemainingData.getCareHDRemaining(
+					data.getSId(),data.getCareUsedDays().doubleValue());
+			dataRepo.add(careData, cId);
+		}
 		
-		NursingCareLeaveRemainingInfo childCareInfo = NursingCareLeaveRemainingInfo.createChildCareLeaveInfo(data.getSId(), data.isChildCareUseArt()? 1: 0, 
-				data.getChildCareUpLimSet(), 
-				data.getChildCareThisFiscal() == null ? Optional.empty() : Optional.of(data.getChildCareThisFiscal()), 
-				data.getChildCareNextFiscal() == null ? Optional.empty() : Optional.of(data.getChildCareNextFiscal()));
-		NursingCareLeaveRemainingInfo careInfo= NursingCareLeaveRemainingInfo.createCareLeaveInfo(data.getSId(), data.isCareUseArt()? 1: 0, 
-				data.getCareUpLimSet(), 
-				data.getCareThisFiscal() == null ? Optional.empty() : Optional.of(data.getCareThisFiscal()), 
-				data.getCareNextFiscal() == null ? Optional.empty() : Optional.of(data.getCareNextFiscal()));
+
+		NursingCareLeaveRemainingInfo childCareInfo = NursingCareLeaveRemainingInfo.createChildCareLeaveInfo(
+				data.getSId(), data.getChildCareUseArt() == null ? 0 : data.getChildCareUseArt().intValue(),
+				data.getChildCareUpLimSet() == null ? UpperLimitSetting.FAMILY_INFO.value
+						: data.getChildCareUpLimSet().intValue(),
+				data.getChildCareThisFiscal() == null ? null : data.getChildCareThisFiscal().doubleValue(),
+				data.getChildCareNextFiscal() == null ? null : data.getChildCareNextFiscal().doubleValue());
+
+		NursingCareLeaveRemainingInfo careInfo = NursingCareLeaveRemainingInfo.createCareLeaveInfo(data.getSId(),
+				data.getCareUseArt() == null ? 0 : data.getCareUseArt().intValue(),
+				data.getCareUpLimSet() == null ? UpperLimitSetting.FAMILY_INFO.value
+						: data.getCareUpLimSet().intValue(),
+				data.getCareThisFiscal() == null ? null : data.getCareThisFiscal().doubleValue(),
+				data.getCareNextFiscal() == null ? null : data.getCareNextFiscal().doubleValue());
 		infoRepo.add(childCareInfo, cId);
 		infoRepo.add(careInfo, cId);
 		return new PeregAddCommandResult(data.getSId());

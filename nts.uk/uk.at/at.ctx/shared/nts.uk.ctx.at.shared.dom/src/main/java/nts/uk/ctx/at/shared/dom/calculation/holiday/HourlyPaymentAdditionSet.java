@@ -4,101 +4,92 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.calculation.holiday;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.DeductLeaveEarly;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.EmploymentCalcDetailedSetIncludeVacationAmount;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.IncludeHolidaysPremiumCalcDetailSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.PremiumCalcMethodDetailOfHoliday;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.PremiumHolidayCalcMethod;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.WorkTimeCalcMethodDetailOfHoliday;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.WorkTimeHolidayCalcMethod;
 
 
 /**
  * The Class HourlyPaymentAdditionSet.
  */
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 /*時給者の加算設定*/
 public class HourlyPaymentAdditionSet extends AggregateRoot{
 	
 	/**  会社ID. */
 	private String companyId;
-	
-	/*B8_4*/
-	/**  実働のみで計算する. */
-	private CalcActualOperationAtr calcPremiumVacation;
-	
-	/*B8_7*/
-	/**  加算する. */
-	private NotUseAtr addition1;
-	
-	/*B8_9*/
-	/**  通常、変形の所定超過時. */
-	private DeformatExcValueAtr deformatExcValue;
-	
-	/*B8_12*/
-	/**  育児・介護時間を含めて計算する. */
-	private NotUseAtr incChildNursingCare;
-	
-	/*B8_13*/
-	/** The deduct. */
-	/*控除する*/
-	private boolean deduct;
-	
-	/*B8_14*/
-	/** The calculate include interval exemption time. */
-	/*インターバル免除時間を含めて計算する*/
-	private NotUseAtr calculateIncludeIntervalExemptionTime1;
-	
-	/*B8_15*/
-	/** The calculate actual operation. */
-	/*実働のみで計算する*/
-	private CalcActualOperationAtr calcWorkHourVacation;
-	
-	/*B8_18*/
-	/** The addition 2. */
-	/*加算する */
-	private NotUseAtr addition2;
-	
-	/*B8_19*/
-	/** The calculate includ care time. */
-	/*育児・介護時間を含めて計算する*/
-	private NotUseAtr calculateIncludCareTime;
-	
-	/*B8_20*/
-	/** The not deduct late leave early. */
-	/*遅刻・早退を控除する*/
-	private NotUseAtr notDeductLateLeaveEarly;
-	
-	/*B8_21*/
-	/** The calculate includ interval exemption time. */
-	/*インターバル免除時間を含めて計算する*/
-	private NotUseAtr calculateIncludeIntervalExemptionTime2;
-	
-	/*B8_22*/
-	/** The enable set per work hour 1. */
-	/*就業時間帯毎の設定を可能とする*/
-	private boolean enableSetPerWorkHour1;
-	
-	/*B8_23*/
-	/** The enable set per work hour 2. */
-	/*就業時間帯毎の設定を可能とする*/
-	private boolean enableSetPerWorkHour2;
+
+	// 休暇の計算方法の設定
+	private HolidayCalcMethodSet vacationCalcMethodSet;
 	
 	public static HourlyPaymentAdditionSet createFromJavaType(String companyId, int calcPremiumVacation,
 			int addition1, int deformatExcValue, int incChildNursingCare, int deduct, int calculateIncludeIntervalExemptionTime1,
 			int calcWorkHourVacation, int addition2, int calculateIncludCareTime, int notDeductLateLeaveEarly,
-			int calculateIncludeIntervalExemptionTime2, int enableSetPerWorkHour1, int enableSetPerWorkHour2) {
-		return new HourlyPaymentAdditionSet(companyId, EnumAdaptor.valueOf(calcPremiumVacation, CalcActualOperationAtr.class),
-				EnumAdaptor.valueOf(addition1, NotUseAtr.class), EnumAdaptor.valueOf(deformatExcValue, DeformatExcValueAtr.class),
-				EnumAdaptor.valueOf(incChildNursingCare, NotUseAtr.class), deduct == 1 ? true : false, 
-				EnumAdaptor.valueOf(calculateIncludeIntervalExemptionTime1, NotUseAtr.class), 
-				EnumAdaptor.valueOf(calcWorkHourVacation, CalcActualOperationAtr.class),
-				EnumAdaptor.valueOf(addition2, NotUseAtr.class),
-				EnumAdaptor.valueOf(calculateIncludCareTime, NotUseAtr.class),
-				EnumAdaptor.valueOf(notDeductLateLeaveEarly, NotUseAtr.class),
-				EnumAdaptor.valueOf(calculateIncludeIntervalExemptionTime2, NotUseAtr.class),
-				enableSetPerWorkHour1 == 1 ? true : false, enableSetPerWorkHour2 == 1 ? true : false
-				);
+			int calculateIncludeIntervalExemptionTime2, int enableSetPerWorkHour1) {
+		return new HourlyPaymentAdditionSet(companyId, calcPremiumVacation,
+				addition1, deformatExcValue,
+				incChildNursingCare, deduct, 
+				calculateIncludeIntervalExemptionTime1, 
+				calcWorkHourVacation,
+				addition2,
+				calculateIncludCareTime,
+				notDeductLateLeaveEarly,
+				calculateIncludeIntervalExemptionTime2,
+				enableSetPerWorkHour1);
+	}
+
+	/**
+	 * Instantiates a new hourly payment addition set.
+	 *
+	 * @param companyId the company id
+	 * @param calcPremiumVacation the calc premium vacation
+	 * @param addition1 the addition 1
+	 * @param deformatExcValue the deformat exc value
+	 * @param incChildNursingCare the inc child nursing care
+	 * @param deduct the deduct
+	 * @param calculateIncludeIntervalExemptionTime1 the calculate include interval exemption time 1
+	 * @param calcWorkHourVacation the calc work hour vacation
+	 * @param addition2 the addition 2
+	 * @param calculateIncludCareTime the calculate includ care time
+	 * @param notDeductLateLeaveEarly the not deduct late leave early
+	 * @param calculateIncludeIntervalExemptionTime2 the calculate include interval exemption time 2
+	 * @param enableSetPerWorkHour1 the enable set per work hour 1
+	 * @param enableSetPerWorkHour2 the enable set per work hour 2
+	 */
+	public HourlyPaymentAdditionSet(String companyId, int calcPremiumVacation, 
+			int addition1, int deformatExcValue, 
+			int incChildNursingCare, int deduct,  
+			int calculateIncludeIntervalExemptionTime1, int calcWorkHourVacation,
+			int addition2, int calculateIncludCareTime, int notDeductLateLeaveEarly,
+			int calculateIncludeIntervalExemptionTime2, int enableSetPerWorkHour1) {
+		super();
+		this.companyId = companyId;
+		IncludeHolidaysPremiumCalcDetailSet includeHolidaysPremiumCalcDetailSet = new IncludeHolidaysPremiumCalcDetailSet(addition1, deformatExcValue, null);
+		DeductLeaveEarly deductLeaveEarly = new DeductLeaveEarly(deduct, enableSetPerWorkHour1);
+		PremiumCalcMethodDetailOfHoliday advanceSetPre = new PremiumCalcMethodDetailOfHoliday(includeHolidaysPremiumCalcDetailSet, incChildNursingCare, 
+																							deductLeaveEarly, calculateIncludeIntervalExemptionTime1);
+		PremiumHolidayCalcMethod premiumHolidayCalcMethod = new PremiumHolidayCalcMethod(calcPremiumVacation, advanceSetPre);
+		
+		EmploymentCalcDetailedSetIncludeVacationAmount includeVacationSet 
+																	= new EmploymentCalcDetailedSetIncludeVacationAmount(addition2, null, 
+																														null, 
+																														null);
+		WorkTimeCalcMethodDetailOfHoliday advanceSetWork = new WorkTimeCalcMethodDetailOfHoliday(includeVacationSet, calculateIncludCareTime, 
+																									notDeductLateLeaveEarly, 
+																									calculateIncludeIntervalExemptionTime2, null);
+		WorkTimeHolidayCalcMethod workTimeHolidayCalcMethod = new WorkTimeHolidayCalcMethod(calcWorkHourVacation, advanceSetWork);
+		
+		HolidayCalcMethodSet calcMethodSet = new HolidayCalcMethodSet(premiumHolidayCalcMethod, workTimeHolidayCalcMethod);
+		
+		this.vacationCalcMethodSet = calcMethodSet;
 	}
 }

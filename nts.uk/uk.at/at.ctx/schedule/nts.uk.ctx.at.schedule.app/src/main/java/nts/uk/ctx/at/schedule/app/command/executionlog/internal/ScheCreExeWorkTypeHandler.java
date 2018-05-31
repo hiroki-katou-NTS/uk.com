@@ -13,15 +13,14 @@ import javax.inject.Inject;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
+import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 
@@ -67,7 +66,7 @@ public class ScheCreExeWorkTypeHandler {
 	 */
 	// 営業日カレンダーで勤務予定を作成する
 	public void createWorkSchedule(ScheduleCreatorExecutionCommand command,
-			WorkingConditionItem workingConditionItem) {
+			WorkingConditionItem workingConditionItem, EmployeeGeneralInfoImported empGeneralInfo) {
 
 		// 登録前削除区分をTrue（削除する）とする
 		//command.setIsDeleteBeforInsert(true); FIX BUG #87113
@@ -90,19 +89,20 @@ public class ScheCreExeWorkTypeHandler {
 					workingConditionItem.getScheduleMethod().get().getWorkScheduleBusCal().get().getReferenceWorkingHours().value);
 		}
 		
-		
-		Optional<WorktypeDto> optWorktype = this.getWorktype(commandWorktypeGetter);
+		//勤務種類を取得する(lấy dữ liệu worktype)
+		Optional<WorktypeDto> optWorktype = this.getWorktype(commandWorktypeGetter, empGeneralInfo);
 
 		if (optWorktype.isPresent()) {
 			WorkTimeGetterCommand commandWorkTimeGetter = commandWorktypeGetter.toWorkTime();
 			commandWorkTimeGetter.setWorkTypeCode(optWorktype.get().getWorktypeCode());	
-			Optional<String> optionalWorkTime = this.scheCreExeWorkTimeHandler.getWorktime(commandWorkTimeGetter);
+			//就業時間帯を取得する(lấy dữ liệu worktime)
+			Optional<String> optionalWorkTime = this.scheCreExeWorkTimeHandler.getWorktime(commandWorkTimeGetter, empGeneralInfo);
 
 			if (optionalWorkTime == null || optionalWorkTime.isPresent()) {
 				// update all basic schedule
 				this.scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command,
 						workingConditionItem.getEmployeeId(), optWorktype.get(),
-						optionalWorkTime == null ? null : optionalWorkTime.get());
+						optionalWorkTime == null ? null : optionalWorkTime.get(), empGeneralInfo);
 			}
 
 		}
@@ -284,20 +284,20 @@ public class ScheCreExeWorkTypeHandler {
 	}
 	
 	/**
+	 * 勤務種類を取得する
 	 * Gets the worktype.
 	 *
 	 * @param command the command
 	 * @return the worktype
 	 */
-	// 勤務種類を取得する
-	public Optional<WorktypeDto> getWorktype(WorkTypeGetterCommand command) {
+	public Optional<WorktypeDto> getWorktype(WorkTypeGetterCommand command, EmployeeGeneralInfoImported empGeneralInfo) {
 
 		// setup command getter
 		BasicWorkSettingGetterCommand commandBasicGetter = command.toBasicWorkSetting();
 		
 		// get basic work setting.
 		Optional<BasicWorkSetting> optionalBasicWorkSetting = this.scheCreExeBasicWorkSettingHandler
-				.getBasicWorkSetting(commandBasicGetter);
+				.getBasicWorkSetting(commandBasicGetter, empGeneralInfo);
 
 		if (optionalBasicWorkSetting.isPresent()) {
 			// setup command employment status getter

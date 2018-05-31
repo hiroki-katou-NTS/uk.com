@@ -1,11 +1,12 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
@@ -25,6 +27,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedStampReflec
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedStampReflectPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
+import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkCalcSettingSetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkRestSetSetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneCommonSetSetMemento;
 
@@ -35,11 +38,12 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 
 	/** The entity. */
 	private KshmtFixedWorkSet entity;
-	
+
 	/**
 	 * Instantiates a new jpa fixed work setting set memento.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 */
 	public JpaFixedWorkSettingSetMemento(KshmtFixedWorkSet entity) {
 		super();
@@ -99,17 +103,17 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 		KshmtWorktimeCommonSet commonEntity = this.entity.getKshmtWorktimeCommonSet();
 		if (commonEntity == null) {
 			commonEntity = new KshmtWorktimeCommonSet();
-			
+
 			// new pk
 			KshmtWorktimeCommonSetPK pk = new KshmtWorktimeCommonSetPK();
 			pk.setCid(this.entity.getKshmtFixedWorkSetPK().getCid());
 			pk.setWorktimeCd(this.entity.getKshmtFixedWorkSetPK().getWorktimeCd());
 			pk.setWorkFormAtr(WorkTimeDailyAtr.REGULAR_WORK.value);
 			pk.setWorktimeSetMethod(WorkTimeMethodSet.FIXED_WORK.value);
-			
+
 			// set pk
 			commonEntity.setKshmtWorktimeCommonSetPK(pk);
-			
+
 			// add entity when empty list common.
 			this.entity.getLstKshmtWorktimeCommonSet().add(commonEntity);
 		}
@@ -152,7 +156,7 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	public void setLstHalfDayWorkTimezone(List<FixHalfDayWorkTimezone> lstHalfDayWorkTimezone) {
 		if (CollectionUtil.isEmpty(lstHalfDayWorkTimezone)) {
 			lstHalfDayWorkTimezone = new ArrayList<>();
-		}		
+		}
 		lstHalfDayWorkTimezone.forEach(domain -> domain
 				.saveToMemento(new JpaFixHalfDayWorkTimezoneSetMemento(this.entity, domain.getDayAtr())));
 	}
@@ -169,30 +173,28 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 		if (CollectionUtil.isEmpty(lstStampReflectTimezone)) {
 			lstStampReflectTimezone = new ArrayList<>();
 		}
-		
+
 		String companyId = this.entity.getKshmtFixedWorkSetPK().getCid();
 		String workTimeCd = this.entity.getKshmtFixedWorkSetPK().getWorktimeCd();
-		
+
 		// get list entity
 		if (CollectionUtil.isEmpty(this.entity.getLstKshmtFixedStampReflect())) {
 			this.entity.setLstKshmtFixedStampReflect(new ArrayList<>());
 		}
 		List<KshmtFixedStampReflect> lstStampReflect = this.entity.getLstKshmtFixedStampReflect();
-		
+
 		List<KshmtFixedStampReflect> newListStampReflect = new ArrayList<>();
-		
+
 		for (StampReflectTimezone stampRelect : lstStampReflectTimezone) {
-			
+
 			// get entity existed
 			KshmtFixedStampReflect entity = lstStampReflect.stream().filter(item -> {
-						KshmtFixedStampReflectPK pk = item.getKshmtFixedStampReflectPK();
-						return pk.getCid().compareTo(companyId) == 0 && pk.getWorktimeCd().compareTo(workTimeCd) == 0
-								&& pk.getWorkNo() == stampRelect.getWorkNo().v().intValue();
-					})
-					.findFirst()
-					.orElse(new KshmtFixedStampReflect());
-			
-			stampRelect.saveToMemento(new JpaFixedStampReflectTimezoneSetMemento(companyId, workTimeCd, entity));
+				KshmtFixedStampReflectPK pk = item.getKshmtFixedStampReflectPK();
+				return pk.getCid().compareTo(companyId) == 0 && pk.getWorktimeCd().compareTo(workTimeCd) == 0
+						&& pk.getWorkNo() == stampRelect.getWorkNo().v().intValue() && pk.getAtr() == stampRelect.getClassification().value;
+			}).findFirst().orElse(new KshmtFixedStampReflect());
+
+			stampRelect.saveToMemento(new JpaFixedStampReflectTimezoneSetMemento(companyId, workTimeCd, stampRelect.getWorkNo(), stampRelect.getClassification(), entity));
 			newListStampReflect.add(entity);
 		}
 		this.entity.setLstKshmtFixedStampReflect(newListStampReflect);
@@ -209,5 +211,20 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	@Override
 	public void setLegalOTSetting(LegalOTSetting legalOTSetting) {
 		this.entity.setLegalOtSet(legalOTSetting.value);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingSetMemento#
+	 * setFixedWorkCalcSetting(nts.uk.ctx.at.shared.dom.worktime.fixedset.
+	 * FixedWorkCalcSetting)
+	 */
+	@Override
+	public void setCalculationSetting(Optional<FixedWorkCalcSetting> fixedWorkCalcSetting) {
+		if (fixedWorkCalcSetting.isPresent()) {
+			fixedWorkCalcSetting.get().saveToMemento(new JpaFixedWorkCalcSettingSetMemento<KshmtFixedWorkSet>(this.entity));
+		}		
 	}
 }

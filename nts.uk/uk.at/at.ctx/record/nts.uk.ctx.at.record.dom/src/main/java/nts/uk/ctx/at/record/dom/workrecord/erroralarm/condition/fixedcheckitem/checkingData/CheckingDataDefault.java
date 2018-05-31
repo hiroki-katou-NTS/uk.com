@@ -33,7 +33,7 @@ public class CheckingDataDefault implements CheckingDataService {
 	  while(date.before(endDate)) {
 	   Optional<AttendanceTimeOfDailyPerformance> data = attendanceTimeRepository.find(employeeID, date);
 	   //取得出来なかった
-	   if(data.isPresent()) {
+	   if(!data.isPresent()) {
 	    listValueExtractAlarmWR.add(
 	      new ValueExtractAlarmWR(
 	        workplaceID,

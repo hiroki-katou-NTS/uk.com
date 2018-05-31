@@ -4,9 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface WorkingConditionRepository.
@@ -57,6 +60,9 @@ public interface WorkingConditionRepository {
 	 */
 	Optional<WorkingCondition> getBySidAndStandardDate(String companyId, String employeeId, GeneralDate baseDate);
 
+	
+
+	
 	/**
 	 * Save.
 	 *

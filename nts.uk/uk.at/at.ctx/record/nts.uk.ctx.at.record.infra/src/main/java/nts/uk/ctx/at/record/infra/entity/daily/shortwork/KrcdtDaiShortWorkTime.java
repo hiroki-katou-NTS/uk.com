@@ -11,6 +11,9 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -19,6 +22,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
+import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -71,6 +76,17 @@ public class KrcdtDaiShortWorkTime extends UkJpaEntity implements Serializable {
     @NotNull
     @Column(name = "DEDUCTION_TIME")
     public int deductionTime;
+    
+    @ManyToOne
+	@JoinColumns(value = {
+			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
+	public KrcdtDayAttendanceTime krcdtDayAttendanceTime;
+//	@ManyToOne
+//	@JoinColumns(value = {
+//			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+//			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
+//	public KrcdtDayTime krcdtDayTime;
     
 
     public KrcdtDaiShortWorkTime() {

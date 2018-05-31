@@ -6,20 +6,34 @@ module nts.uk.at.view.kal001.c {
             columns: KnockoutObservableArray<any>;//nts.uk.ui.NtsGridListColumn
             currentSelectedRow: KnockoutObservable<any>;
             //data
-            listEmployee: KnockoutObservableArray<model.EmployeeSendEmail> = ko.observableArray([]);;
-            shareEmployees : KnockoutObservableArray<model.ShareEmployee> 
+            listEmployee: KnockoutObservableArray<modeldto.EmployeeSendEmail> = ko.observableArray([]);;
+            shareEmployees : KnockoutObservableArray<modeldto.ShareEmployee> 
             isSendToMe: KnockoutObservable<boolean>;
             isSendToManager: KnockoutObservable<boolean>;
-            constructor( shareEmployees: Array<model.ShareEmployee>) {
+            constructor( shareEmployees: Array<modeldto.ShareEmployee>) {
                 let self = this;
                 self.currentSelectedRow = ko.observable(null);
                 self.shareEmployees  = ko.observableArray(shareEmployees);
                 self.isSendToMe = ko.observable(true);
-                self.isSendToManager = ko.observable(true);
-                                
-                self.listEmployee(_.map(self.shareEmployees(), (e) =>{
-                    return new model.EmployeeSendEmail(e);
-                }));                
+                self.isSendToManager = ko.observable(true);                                              
+            }
+
+            /**
+             * functiton start pagea
+             */
+            startPage(): JQueryPromise<any>  {
+                let self = this;
+                let dfd = $.Deferred(); 
+                service.getEmployeeSendEmail(self.shareEmployees()).done((listEmployeeDto: Array<modeldto.EmployeeDto>)=>{
+                    self.listEmployee(_.map(listEmployeeDto, (e) =>{
+                        return new modeldto.EmployeeSendEmail(e);                        
+                    }));
+                    dfd.resolve();                     
+                }).fail((error) =>{
+                    nts.uk.ui.dialog.alertError(error);
+                });                 
+
+                               
                 self.columns = ko.observableArray([
                     { headerText: '', key: 'GUID', width: 1, hidden: true },
                     { headerText: getText('KAL001_23'),  dataType: 'boolean', key: 'isSendToMe', showHeaderCheckbox: true, width: 100, ntsControl: 'isSendToMe' },
@@ -50,19 +64,8 @@ module nts.uk.at.view.kal001.c {
                         { name: 'isSendToMe', options: { value: 1, text: '' },  optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                         { name: 'isSendToManager', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                     ]
-                });                
-
-
-            }
-
-            /**
-             * functiton start pagea
-             */
-            startPage(): JQueryPromise<any>  {
-                let self = this;
-                let dfd = $.Deferred();                  
+                });                 
                 
-                dfd.resolve();
                 return dfd.promise();                
             }//end start page 
 
@@ -80,7 +83,7 @@ module nts.uk.at.view.kal001.c {
     }//end viewmodel  
 
     //module model
-    export module model {
+    export module modeldto {
 
         export class EmployeeSendEmail {
             GUID: string;
@@ -91,7 +94,7 @@ module nts.uk.at.view.kal001.c {
             employeeId: string;
             employeeCode: string;
             employeeName: string;
-            constructor(e: ShareEmployee ) {
+            constructor(e: EmployeeDto ) {
                 this.GUID = nts.uk.util.randomId();
                 this.isSendToMe = ko.observable(false);
                 this.isSendToManager = ko.observable(false);
@@ -104,21 +107,19 @@ module nts.uk.at.view.kal001.c {
 
         }
         
-        export class ShareEmployee{
+        export interface EmployeeDto{
             employeeId: string;
             employeeCode: string;
             employeeName: string;
             workplaceId: string;
-            workplaceName: string;
-            constructor(employeeId: string, employeeCode: string, employeeName: string,  workplaceId, workplaceName: string){
-                this.employeeId = employeeId;
-                this.employeeCode = employeeCode;
-                this.employeeName = employeeName;
-                this.workplaceId = workplaceId;
-                this.workplaceName= workplaceName;
-            }    
+            workplaceName: string;   
         }
 
+        export class ShareEmployee{
+            employeeID: string;
+            workplaceID: string;
+        }
+                
     }//end module model
 
 }//end module

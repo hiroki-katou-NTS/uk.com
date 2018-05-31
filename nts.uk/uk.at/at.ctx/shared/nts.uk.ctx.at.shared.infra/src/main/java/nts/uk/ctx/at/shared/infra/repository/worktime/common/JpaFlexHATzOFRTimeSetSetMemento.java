@@ -13,9 +13,9 @@ import java.util.stream.Collectors;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSetSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexHaFixRest;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexHaFixRestPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexHaRtSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaFixRest;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaFixRestPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaRtSet;
 
 /**
  * The Class JpaFlexOffdayTzOFRTimeSetGetMemento.

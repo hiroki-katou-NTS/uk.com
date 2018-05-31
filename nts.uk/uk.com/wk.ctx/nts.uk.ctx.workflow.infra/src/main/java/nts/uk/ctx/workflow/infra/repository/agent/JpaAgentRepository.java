@@ -1,5 +1,6 @@
 package nts.uk.ctx.workflow.infra.repository.agent;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +10,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.agent.Agent;
 import nts.uk.ctx.workflow.dom.agent.AgentRepository;
+import nts.uk.ctx.workflow.dom.agent.output.AgentInfoOutput;
 import nts.uk.ctx.workflow.infra.entity.agent.CmmmtAgent;
 import nts.uk.ctx.workflow.infra.entity.agent.CmmmtAgentPK;
 
@@ -27,6 +29,10 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 	private static final String SELECT_AGENT_ALL_DATE;
 	
 	private static final String SELECT_AGENT_BY_APPROVER_DATE;
+	
+	private static final String SELECT_AGENT_BY_TYPE;
+	
+	private static final String SELECT_AGENT_BY_SID_DATE;
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
@@ -88,6 +94,23 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		builderString.append(" OR e.endDate >= :startDate");
 		SELECT_AGENT_BY_APPROVER_DATE = builderString.toString(); 
 		
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM CmmmtAgent e");
+		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId");
+		builderString.append(" AND e.agentSid:agentType = :employeeId");
+		builderString.append(" AND e.startDate <= :endDate");
+		builderString.append(" AND e.endDate >= :startDate");
+		SELECT_AGENT_BY_TYPE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM CmmmtAgent e");
+		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId"); 
+		builderString.append(" AND e.cmmmtAgentPK.employeeId = :employeeId");
+		builderString.append(" AND e.startDate <= :startDate");
+		builderString.append(" AND e.endDate >= :endDate");
+		SELECT_AGENT_BY_SID_DATE = builderString.toString();
 		}
 	
 		
@@ -258,6 +281,44 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		return this.queryProxy().query(SELECT_AGENT_BY_APPROVER_DATE, CmmmtAgent.class)
 				.setParameter("companyId", companyId)
 				.setParameter("employeeId", approverID)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.getList(c -> convertToDomain(c));
+	}
+
+	@Override
+	public List<AgentInfoOutput> findAgentByPeriod(String companyID, List<String> listApprover, GeneralDate startDate,
+			GeneralDate endDate, Integer agentType) {
+		List<AgentInfoOutput> resultList = new ArrayList<>();
+		listApprover.forEach(x -> {
+			List<AgentInfoOutput> findList = this.queryProxy().query(SELECT_AGENT_BY_TYPE, CmmmtAgent.class)
+			.setParameter("companyId", companyID)
+			.setParameter("employeeId", x)
+			.setParameter("agentType", agentType)
+			.setParameter("startDate", startDate)
+			.setParameter("endDate", endDate)
+			.getList(c -> {
+				switch (agentType) {
+				case 1:
+					return new AgentInfoOutput(x, c.agentSid1, c.startDate, c.endDate);
+				case 2:
+					return new AgentInfoOutput(x, c.agentSid2, c.startDate, c.endDate);
+				case 3:
+					return new AgentInfoOutput(x, c.agentSid3, c.startDate, c.endDate);
+				default:
+					return new AgentInfoOutput(x, c.agentSid4, c.startDate, c.endDate);
+				}
+			});
+			resultList.addAll(findList);
+		});
+		return resultList;
+	}
+
+	@Override
+	public List<Agent> getAgentBySidDate(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate) {
+		return this.queryProxy().query(SELECT_AGENT_BY_SID_DATE, CmmmtAgent.class)
+				.setParameter("companyId", companyId)
+				.setParameter("employeeId", employeeId)
 				.setParameter("startDate", startDate)
 				.setParameter("endDate", endDate)
 				.getList(c -> convertToDomain(c));

@@ -11,7 +11,7 @@ module cps008.b.vm {
             let self = this,
                 layout = self.layout();
 
-            self.start();
+            //self.start();
 
             var currentDialog = nts.uk.ui.windows.getSelf();
             if (currentDialog) {
@@ -57,8 +57,7 @@ module cps008.b.vm {
             let cls: Array<any> = dto.classifications;
 
             if (cls && cls.length) {
-                layout.itemsClassification.removeAll();
-                _.each(cls, x => layout.itemsClassification.push(_.omit(x, ["items"])));
+                layout.itemsClassification(_.map(cls, x => _.omit(x, ["items", "renders"])));
             } else {
                 layout.itemsClassification([]);
             }
@@ -88,7 +87,7 @@ module cps008.b.vm {
                 return;
             }
 
-            setShared("CPS008B_VALUE", layout.itemsClassification);
+            setShared("CPS008B_VALUE", _.map(layout.itemsClassification, m => _.omit(m, ["items", "renders"])));
 
             close();
 

@@ -43,6 +43,17 @@ public class OvertimeWorkFrameWs extends WebService {
 	public List<OvertimeWorkFrameFindDto> findAll() {
 		return this.finder.findAll();
 	}
+
+	/**
+	 * Find all used.
+	 *
+	 * @return the list
+	 */
+	@Path("findall/used")
+	@POST
+	public List<OvertimeWorkFrameFindDto> findAllUsed() {
+		return this.finder.findAllUsed();
+	}
 	
 	/**
 	 * Save.

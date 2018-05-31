@@ -6,19 +6,29 @@ package nts.uk.ctx.at.shared.app.command.calculation.holiday;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.AddSetManageWorkHour;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HourlyPaymentAdditionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.LeaveSetAdded;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.ReferEmployeeInformation;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.ReferWorkRecord;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.ReferenceDestinationAbsenceWorkingHours;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.TimeHolidayAddingMethod;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.TimeHolidayAdditionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.VacationSpecifiedTimeRefer;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkClassOfTimeHolidaySet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -115,19 +125,54 @@ public class AddHolidayAddtimeCommand {
 	/*勤務区分*/
 	private int workClass2;	
 
+	
 	/**
 	 * To domain.
 	 *
 	 * @param companyId the company id
-	 * @return the holiday addtion set
+	 * @return the map
 	 */
-	public HolidayAddtionSet toDomain(String companyId) {
-		return HolidayAddtionSet.createFromJavaType(companyId, this.referComHolidayTime, this.oneDay, this.morning,
-				this.afternoon, this.referActualWorkHours, this.notReferringAch, this.annualHoliday,
-				this.specialHoliday, this.yearlyReserved, this.toDomainRegularWork(companyId),
-				this.toDomainFlexWork(companyId), this.toDomainIrregularWork(companyId), this.toDomainAddSetManageWorkHour(companyId), 
-				this.todomainHourlyPaymentAdd(companyId), 
+	public Map<String, AggregateRoot> toDomain(String companyId) {
+		BreakdownTimeDay breakdownTimeDay = new BreakdownTimeDay(new AttendanceTime(this.oneDay.intValue()),
+				new AttendanceTime(this.morning.intValue()),
+				new AttendanceTime(this.afternoon.intValue()));
+		
+		ReferenceDestinationAbsenceWorkingHours workingHours = ReferenceDestinationAbsenceWorkingHours.valueOf(this.referComHolidayTime); 
+		
+		ReferWorkRecord referWorkRecord = new ReferWorkRecord(workingHours, breakdownTimeDay);
+		
+		VacationSpecifiedTimeRefer vacationSpecifiedTimeRefer = VacationSpecifiedTimeRefer.valueOf(this.notReferringAch);
+		ReferEmployeeInformation referEmployeeInformation = new ReferEmployeeInformation(vacationSpecifiedTimeRefer);
+		
+		LeaveSetAdded additionVacationSet = new LeaveSetAdded(NotUseAtr.valueOf(this.annualHoliday), 
+																NotUseAtr.valueOf(this.yearlyReserved), 
+																NotUseAtr.valueOf(this.specialHoliday));
+		
+		// convert command to domain
+		WorkRegularAdditionSet workRegularAdditionSet = this.toDomainRegularWork(companyId);
+		WorkFlexAdditionSet flexAdditionSet = this.toDomainFlexWork(companyId);
+		WorkDeformedLaborAdditionSet deformedLaborAdditionSet = this.toDomainIrregularWork(companyId);
+		AddSetManageWorkHour addSetManageWorkHour = this.toDomainAddSetManageWorkHour(companyId);
+		HourlyPaymentAdditionSet hourlyPaymentAdditionSet = this.todomainHourlyPaymentAdd(companyId);
+		
+		// convert to domain
+		HolidayAddtionSet holidayAddtionSet = HolidayAddtionSet.createFromJavaType(companyId, 
+				referWorkRecord,
+				NotUseAtr.valueOf(this.referActualWorkHours), 
+				referEmployeeInformation,
+				additionVacationSet,
 				createLstTimeHolidayAdditionSet());
+		
+		Map<String, AggregateRoot> mapAggre = new HashMap<>();
+		
+		mapAggre.put("holidayAddtionSet", holidayAddtionSet);
+		mapAggre.put("regularWork", workRegularAdditionSet);
+		mapAggre.put("flexWork", flexAdditionSet);
+		mapAggre.put("irregularWork", deformedLaborAdditionSet);
+		mapAggre.put("hourlyPaymentAdditionSet", hourlyPaymentAdditionSet);
+		mapAggre.put("addSetManageWorkHour", addSetManageWorkHour);
+		
+		return mapAggre;
 	}
 
 	/**
@@ -171,7 +216,7 @@ public class AddHolidayAddtimeCommand {
 				this.regularWork.getDeformatExcValuePre(), this.regularWork.getExemptTaxTimeWork(),
 				this.regularWork.getCalcActualOperationWork(), this.regularWork.getIncChildNursingCareWork(),
 				this.regularWork.getNotDeductLateleaveWork(), this.regularWork.getAdditionTimeWork(),
-				this.regularWork.getEnableSetPerWorkHour1(), this.regularWork.getEnableSetPerWorkHour2());
+				this.regularWork.getEnableSetPerWorkHour1());
 	}
 
 	/**
@@ -191,7 +236,7 @@ public class AddHolidayAddtimeCommand {
 				this.flexWork.getMinusAbsenceTimeWork(), this.flexWork.getCalcActualOperationWork(),
 				this.flexWork.getIncChildNursingCareWork(), this.flexWork.getNotDeductLateleaveWork(),
 				this.flexWork.getPredeterminDeficiencyWork(), this.flexWork.getAdditionTimeWork(),
-				this.flexWork.getEnableSetPerWorkHour1(), this.flexWork.getEnableSetPerWorkHour2(),
+				this.flexWork.getEnableSetPerWorkHour1(),
 				this.flexWork.getAdditionWithinMonthlyStatutory());
 	}
 
@@ -210,7 +255,7 @@ public class AddHolidayAddtimeCommand {
 				this.irregularWork.getNotDeductLateleavePre(),this.irregularWork.getDeformatExcValue(), this.irregularWork.getExemptTaxTimeWork(),
 				this.irregularWork.getMinusAbsenceTimeWork(), this.irregularWork.getCalcActualOperationWork(),
 				this.irregularWork.getIncChildNursingCareWork(), this.irregularWork.getNotDeductLateleaveWork(),this.irregularWork.getAdditionTimeWork(),
-				this.irregularWork.getEnableSetPerWorkHour1(), this.irregularWork.getEnableSetPerWorkHour2());
+				this.irregularWork.getEnableSetPerWorkHour1());
 	}
 	
 	/**
@@ -228,6 +273,6 @@ public class AddHolidayAddtimeCommand {
 				this.hourlyPaymentAddCommand.getCalculateIncludeIntervalExemptionTime1(), 
 				this.hourlyPaymentAddCommand.getCalcWorkHourVacation() , this.hourlyPaymentAddCommand.getAddition2(), this.hourlyPaymentAddCommand.getCalculateIncludCareTime(), 
 				this.hourlyPaymentAddCommand.getNotDeductLateLeaveEarly(), 
-				this.hourlyPaymentAddCommand.getCalculateIncludeIntervalExemptionTime2(), this.hourlyPaymentAddCommand.getEnableSetPerWorkHour1(), this.hourlyPaymentAddCommand.getEnableSetPerWorkHour2());
+				this.hourlyPaymentAddCommand.getCalculateIncludeIntervalExemptionTime2(), this.hourlyPaymentAddCommand.getEnableSetPerWorkHour1());
 	}
 }

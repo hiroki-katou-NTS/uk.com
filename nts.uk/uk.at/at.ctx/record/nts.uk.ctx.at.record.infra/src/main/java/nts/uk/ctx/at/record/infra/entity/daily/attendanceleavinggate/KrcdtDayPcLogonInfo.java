@@ -1,15 +1,15 @@
 package nts.uk.ctx.at.record.infra.entity.daily.attendanceleavinggate;
 
 import java.io.Serializable;
-import java.util.Optional;
+import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnNo;
@@ -30,17 +30,11 @@ public class KrcdtDayPcLogonInfo extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KrcdtDayPcLogonInfoPK id;
 
-	@Column(name = "LOGOFF_TIME1")
-	public Integer logoffTime1;
+	@Column(name = "LOGOFF_TIME")
+	public Integer logoffTime;
 
-	@Column(name = "LOGOFF_TIME2")
-	public Integer logoffTime2;
-
-	@Column(name = "LOGON_TIME1")
-	public Integer logonTime1;
-
-	@Column(name = "LOGON_TIME2")
-	public Integer logonTime2;
+	@Column(name = "LOGON_TIME")
+	public Integer logonTime;
 
 	public KrcdtDayPcLogonInfo() {
 	}
@@ -55,48 +49,29 @@ public class KrcdtDayPcLogonInfo extends UkJpaEntity implements Serializable {
 		return this.id;
 	}
 
-	public static KrcdtDayPcLogonInfo from(PCLogOnInfoOfDaily domain) {
-		KrcdtDayPcLogonInfo entity = new KrcdtDayPcLogonInfo(
-				new KrcdtDayPcLogonInfoPK(domain.getEmployeeId(), domain.getYmd()));
-		entity.mergeData(domain);
+	public static List<KrcdtDayPcLogonInfo> from(PCLogOnInfoOfDaily domain) {
+		return domain.getLogOnInfo().stream().map(c -> 
+	 							from(domain.getEmployeeId(), domain.getYmd(), c)
+		).collect(Collectors.toList());
+	}
+	
+	public static KrcdtDayPcLogonInfo from(String eId, GeneralDate ymd, LogOnInfo domain) {
+		KrcdtDayPcLogonInfo entity = new KrcdtDayPcLogonInfo(new KrcdtDayPcLogonInfoPK(eId, ymd, domain.getWorkNo().v()));
+		entity.setData(domain);
 		return entity;
 	}
-
-	public void mergeData(PCLogOnInfoOfDaily domain) {
-		getPCLogNo(1, domain).ifPresent(pcl -> {
-			pcl.getLogOn().ifPresent(lo -> {
-				this.logonTime1 = lo.valueAsMinutes();
-			});
-			pcl.getLogOff().ifPresent(lo -> {
-				this.logoffTime1 = lo.valueAsMinutes();
-			});
-
+	
+	public LogOnInfo toDomain() {
+		return new LogOnInfo(new PCLogOnNo(id.pcLogNo), toTimeWithDay(logoffTime), toTimeWithDay(logonTime));
+	}
+	
+	public void setData(LogOnInfo c) {
+		c.getLogOn().ifPresent(lo -> {
+			this.logonTime = lo.valueAsMinutes();
 		});
-		getPCLogNo(2, domain).ifPresent(pcl -> {
-			pcl.getLogOn().ifPresent(lo -> {
-				this.logonTime2 = lo.valueAsMinutes();
-			});
-			pcl.getLogOff().ifPresent(lo -> {
-				this.logoffTime2 = lo.valueAsMinutes();
-			});
+		c.getLogOff().ifPresent(lo -> {
+			this.logoffTime = lo.valueAsMinutes();
 		});
-	}
-
-	private static Optional<LogOnInfo> getPCLogNo(int no, PCLogOnInfoOfDaily domain) {
-		return domain.getLogOnInfo().stream().filter(c -> c.getWorkNo().v() == no).findFirst();
-	}
-
-	public PCLogOnInfoOfDaily toDomain() {
-		return new PCLogOnInfoOfDaily(this.id.sid, this.id.ymd,
-				Stream.of(getNo1(), getNo2()).collect(Collectors.toList()));
-	}
-
-	private LogOnInfo getNo1() {
-		return new LogOnInfo(new PCLogOnNo(1), toTimeWithDay(logonTime1), toTimeWithDay(logoffTime1));
-	}
-
-	private LogOnInfo getNo2() {
-		return new LogOnInfo(new PCLogOnNo(2), toTimeWithDay(logonTime2), toTimeWithDay(logoffTime2));
 	}
 
 	private TimeWithDayAttr toTimeWithDay(Integer time) {

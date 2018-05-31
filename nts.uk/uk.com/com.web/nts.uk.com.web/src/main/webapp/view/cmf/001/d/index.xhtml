@@ -23,7 +23,7 @@
 			<div id="functions-area">
 				<button tabindex="1" class="proceed" data-bind="click: registerData, enable: $root.errors.isEmpty">#{i18n.getText('CMF001_130')}</button>
 				<button tabindex="2" data-bind="click: openCMF001f">#{i18n.getText('CMF001_131')}</button>
-				<button tabindex="3" data-bind="click: openCMF001b, enable: $root.errors.isEmpty">#{i18n.getText('CMF001_132')}</button>
+				<button tabindex="3" class="proceed" data-bind="click: openCMF001b, enable: $root.errors.isEmpty">#{i18n.getText('CMF001_132')}</button>
 			</div>
 			<div id="contents-area">
 				<div class="container">
@@ -42,7 +42,7 @@
 							</div>
 							<div class="valign-center control-group">
 								<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_136')}</div>
-								<div tabindex="4" id="file-upload" style="display: inline-block; width: 340px" data-bind="ntsFileUpload:{
+								<div tabindex="4" id="file-upload" style="display: inline-block; width: 280px" data-bind="ntsFileUpload:{
 									name: '#[CMF001_137]',
 									filename: filename,
 									accept: ['.csv'],
@@ -54,9 +54,6 @@
 									stereoType: 'csvfile',
 									uploadFinished: finished
 								}"></div>
-							</div>
-							<div class="valign-center control-group" style="margin-left: 100px">
-								<span class="label">#{i18n.getText('CMF001_146')}</span>
 								<div data-bind="ntsComboBox: {
 										options: encodingList,
 										optionsValue: 'value',
@@ -65,19 +62,20 @@
 										editable: false,
 										enable: true,
 										columns: [
-											{ prop: 'name', length: 5}]}" style="margin-left: 30px;">
+											{ prop: 'name', length: 5}]}" style="width: 135px;">
 								</div>
 							</div>
+							
 						</div>
 						<div class="line-number" style="display: inline-block;">
 							<div class="valign-center control-group" data-bind="with: stdCondSet">
 								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_139')}</div>
-								<input id="D3_2" tabindex="5" data-bind="ntsNumberEditor: {name: '#[CMF001_140]', value: csvDataItemLineNumber, required: true, constraint: 'AcceptanceLineNumber', option: {width: '80px'}}" />
+								<input id="D3_2" tabindex="5" data-bind="ntsNumberEditor: {name: '#[CMF001_140]', value: csvDataItemLineNumber, required: true, constraint: 'AcceptanceLineNumber', option: {width: '20px'}}, grouplength: 2, decimallength:2" />
 								<span class="label">#{i18n.getText('CMF001_141')}</span>
 							</div>
 							<div class="valign-center control-group" data-bind="with: stdCondSet">
 								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_142')}</div>
-								<input id="D3_5" tabindex="6" data-bind="ntsNumberEditor: {name: '#[CMF001_143]', value: csvDataStartLine, required: true, constraint: 'AcceptanceLineNumber', option: {width: '80px'}}" />
+								<input id="D3_5" tabindex="6" data-bind="ntsNumberEditor: {name: '#[CMF001_143]', value: csvDataStartLine, required: true, constraint: 'AcceptanceLineNumber', option: {width: '20px'}}" />
 								<span class="label">#{i18n.getText('CMF001_144')}</span>
 							</div>
 						</div>
@@ -105,9 +103,9 @@
 								</div>
 							</div>
 							<div style="padding-top: 5px" data-bind="ntsPanel:{width: '300px', height: '400px', direction: 'none', showIcon: true, visible: true}">
-								<div class="valign-center control-group cf">
+								<div class="valign-center control-group cf" style="margin-bottom: 0px;">
 									<div class="pull-left" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_151')}</div>
-									<div class="pull-left" tabindex="9" style="width: 300px" data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'itemNo', comId: 'D5_4', 
+									<div class="pull-left" tabindex="9" style="width: 300px; margin-bottom: 10px;" data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'itemNo', comId: 'D5_4', 
 										items: listCategoryItem, selected: selectedCategoryItem, selectedKey: 'itemNo', fields: ['itemNo', 'itemName'], mode: 'igGrid'}" />		
 								</div>
 								<table id="D5_4" data-bind="ntsGridList: {

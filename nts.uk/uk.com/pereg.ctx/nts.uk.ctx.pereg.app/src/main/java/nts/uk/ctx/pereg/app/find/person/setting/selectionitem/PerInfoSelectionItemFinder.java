@@ -7,13 +7,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-
-import nts.arc.error.BusinessException;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.IPerInfoSelectionItemRepository;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoSelectionItem;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.IPerInfoSelectionItemRepository;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.PerInfoSelectionItem;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.LoginUserContext;
 
 @Stateless
 public class PerInfoSelectionItemFinder {
@@ -21,31 +17,24 @@ public class PerInfoSelectionItemFinder {
 	@Inject
 	private IPerInfoSelectionItemRepository perInfoSelectionItemRepo;
 
-	public List<PerInfoSelectionItemDto> getAllPerInfoSelectionItem(boolean hasCompanyId) {
+	public List<PerInfoSelectionItemDto> getAllPerInfoSelectionItem(boolean isCps017) {
 		String contractCode = AppContexts.user().contractCode();
 		
-		LoginUserContext loginUserContext = AppContexts.user();
-		String roleID = loginUserContext.roles().forGroupCompaniesAdmin();
+		List<PerInfoSelectionItemDto> dtoList = this.perInfoSelectionItemRepo
+				.getAllSelectionItemByContractCd(contractCode).stream()
+				.map(selectionItem -> PerInfoSelectionItemDto.fromDomain(selectionItem)).collect(Collectors.toList());
 		
-		// 個人情報共通アルゴリズム「ログイン者がグループ会社管理者かどうか判定する」を実行する
-		hasCompanyId = StringUtils.isEmpty(roleID) ? false : true;
-		if (hasCompanyId) {
-			// グループ会社管理者でない場合トップページへ戻す処理を追加
-			// エラーメッセージ（#Msg_1103）を表示するHiển thị error message （#Msg_1103）
-			throw new BusinessException("Msg_1103");
-			// return null;
-
-			// String companyId = AppContexts.user().companyId();
-			// return
-			// this.perInfoSelectionItemRepo.getAllSelectionItemByContractCdAndCID(contractCode,
-			// companyId).stream()
-			// .map(i ->
-			// PerInfoSelectionItemDto.fromDomain(i)).collect(Collectors.toList());
-		} else {
-			// ログイン者がグループ会社管理者かどうかの判定を追加
-			return this.perInfoSelectionItemRepo.getAllSelectionItemByContractCd(contractCode).stream()
-					.map(i -> PerInfoSelectionItemDto.fromDomain(i)).collect(Collectors.toList());
+		if (!isCps017) {
+			return dtoList;
 		}
+		
+		String groupComMngRoleId = AppContexts.user().roles().forGroupCompaniesAdmin();
+		
+		if ( groupComMngRoleId != null ) {
+			return dtoList;
+		}
+		
+		return dtoList.stream().filter(dto -> dto.isEmployeeClassification()).collect(Collectors.toList());
 	}
 
 	public PerInfoSelectionItemDto getPerInfoSelectionItem(String selectionItemId) {
@@ -60,7 +49,7 @@ public class PerInfoSelectionItemFinder {
 	// getAllSelection
 
 	public List<PerInfoSelectionItemDto> getAllSelectionItem(int selectionItemClsAtr) {
-		return this.perInfoSelectionItemRepo.getAllSelection(selectionItemClsAtr).stream()
-				.map(c -> PerInfoSelectionItemDto.fromDomain(c)).collect(Collectors.toList());
+		return this.perInfoSelectionItemRepo.getAllSelection(selectionItemClsAtr, AppContexts.user().contractCode())
+				.stream().map(c -> PerInfoSelectionItemDto.fromDomain(c)).collect(Collectors.toList());
 	}
 }

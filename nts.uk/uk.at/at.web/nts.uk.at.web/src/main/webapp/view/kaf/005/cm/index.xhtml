@@ -101,7 +101,7 @@
 					<div class="valign-center control-group"
 						data-bind="ntsFormLabel:{required: true}">#{i18n.getText('KAF005_35')}</div>
 				</div>
-					<div class="cell valign-center" >
+					<div class="cell valign-center" data-bind = "if: workTypeChangeFlg" style ="width: 25px;">
 						<!--A4_7 選択ボタン-->
 						<button tabindex="7" class="workSelect"
 							data-bind="enable: true,click : openDialogKdl003">#{i18n.getText('KAF005_36')}</button>

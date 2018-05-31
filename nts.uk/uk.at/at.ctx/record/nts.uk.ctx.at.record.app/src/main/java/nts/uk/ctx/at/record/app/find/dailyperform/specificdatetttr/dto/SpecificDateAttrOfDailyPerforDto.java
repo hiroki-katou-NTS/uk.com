@@ -55,6 +55,12 @@ public class SpecificDateAttrOfDailyPerforDto extends AttendanceItemCommon {
 		if(!this.isHaveData()) {
 			return null;
 		}
+		if (employeeId == null) {
+			employeeId = this.employeeId();
+		}
+		if (date == null) {
+			date = this.workingDate();
+		}
 		return new SpecificDateAttrOfDailyPerfor(emp,
 				ConvertHelper.mapTo(sepecificDateAttrs,
 						(c) -> new SpecificDateAttrSheet(new SpecificDateItemNo(c.getItemNo()),

@@ -27,7 +27,7 @@ public class WorkingConditionItem extends AggregateRoot {
 
 	/** The schedule management atr. */
 	// 予定管理区分
-	private NotUseAtr scheduleManagementAtr;
+	private ManageAtr scheduleManagementAtr;
 
 	/** The work day of week. */
 	// 曜日別勤務
@@ -194,7 +194,7 @@ public class WorkingConditionItem extends AggregateRoot {
 	 * @param monthlyPattern
 	 * 			  the monthlyPattern
 	 */
-	public WorkingConditionItem(String historyId, NotUseAtr scheduleManagementAtr, PersonalDayOfWeek workDayOfWeek,
+	public WorkingConditionItem(String historyId, ManageAtr scheduleManagementAtr, PersonalDayOfWeek workDayOfWeek,
 			PersonalWorkCategory workCategory, NotUseAtr autoStampSetAtr, NotUseAtr autoIntervalSetAtr,
 			String employeeId, NotUseAtr vacationAddedTimeAtr, LaborContractTime contractTime, WorkingSystem laborSystem,
 			BreakdownTimeDay holidayAddTimeSet, ScheduleMethod scheduleMethod, Integer hourlyPaymentAtr,

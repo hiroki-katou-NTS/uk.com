@@ -6,7 +6,6 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -27,16 +26,10 @@ public class UpdateMonthCommandHandler extends CommandHandler<UpdateMonthCommand
 		// Get domain closure
 		Optional<Closure> closure = this.closureRepository.findById(companyId, command.getClosureId().value);
 		
-		GeneralDate date = GeneralDate.today();
-		
 		if (closure.isPresent()){
 			closure.get().getClosureHistories().forEach(item -> {
-				if (date.yearMonth().equals(item.getStartYearMonth())){
-//					if (){
-//						
-//					} else {
-//						
-//					}
+				if (closure.get().getClosureMonth().getProcessingYm().equals(item.getStartYearMonth())){
+//					if ()
 				}
 			});
 			

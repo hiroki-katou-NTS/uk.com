@@ -1,10 +1,19 @@
+/* #master-wrapper { */
+/* 	width: 1405px; */
+/* } */
+
+body {
+	overflow: hidden;
+/* 	width: 1405px; */
+}
+
 #functions-area button.danger {
 	margin-left: 45px;
 	margin-right: 30px;
 }
 
 #contents-area {
-	width: 1380px;
+	width: 1260px;
 	height: 800px;
 }
 
@@ -16,7 +25,7 @@
 #content-left {
 	margin-top: 10px;
 	margin-left: 10px !important;
-	width: 370px;
+	width: 350px;
 	height: 580px;
 }
 
@@ -46,7 +55,7 @@
 /* ---------------------------------------- content-center -----------------------------------------------------------*/
 #content-center {
 	margin-top: 10px;
-	width: 440px !important;
+	width: 435px !important;
 	height: 580px;
 }
 
@@ -94,7 +103,7 @@
 }
 
 #name {
-	width: 357px !important;
+	width: 300px !important;
 	margin-top: 5px;
 }
 
@@ -103,7 +112,7 @@
 }
 
 #memoSelection {
-	width: 357px;
-	height: 100px;
+	width: 300px;
+	height: 75px;
 	margin-top: 5px;
 }

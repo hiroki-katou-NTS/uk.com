@@ -5,6 +5,7 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
@@ -46,21 +47,24 @@ public interface AppListInitialRepository {
 	 * @param lstApp
 	 * @return
 	 */
-	public AppInfoStatus countAppListApproval(List<ApplicationFullOutput> lstApp, String sID);
+	public AppInfoStatus countAppListApproval(List<ApplicationFullOutput> lstApp, String sID, List<AppCompltLeaveSync> lstSync);
 	/**
 	 * 5 - 申請一覧リスト取得実績
 	 * @param lstApp
 	 * @param displaySet
+	 * @param lstSync //loai don complt truong hop sync se x2
 	 * @return
 	 */
-	public AppListAtrOutput getAppListAchievement(List<ApplicationFullOutput> lstApp, ApprovalListDisplaySetting displaySet, String companyId, String sID);
+	public AppListAtrOutput getAppListAchievement(List<ApplicationFullOutput> lstApp, ApprovalListDisplaySetting displaySet,
+			String companyId, String sID, List<AppCompltLeaveSync> lstSync);
 	/**
 	 * 5.1 - 申請一覧リスト取得実績休出申請
 	 * @param sID
 	 * @param date
+	 * @param time
 	 * @return
 	 */
-	public Boolean getAppListAchievementBreak(String sID, GeneralDate date);
+	public TimeResultOutput getAppListAchievementBreak(String sID, GeneralDate date, List<OverTimeFrame> time);
 	/**
 	 * 5.2 - 申請一覧リスト取得実績残業申請
 	 * @param sID
@@ -74,7 +78,7 @@ public interface AppListInitialRepository {
 	 * @param application
 	 * @return
 	 */
-	public List<Application_New> getListAppComplementLeave(Application_New application, String companyId);
+	public AppCompltLeaveSyncOutput getListAppComplementLeave(Application_New application, String companyId);
 	/**
 	 * 7 - 申請一覧リスト取得打刻取消
 	 * @param application

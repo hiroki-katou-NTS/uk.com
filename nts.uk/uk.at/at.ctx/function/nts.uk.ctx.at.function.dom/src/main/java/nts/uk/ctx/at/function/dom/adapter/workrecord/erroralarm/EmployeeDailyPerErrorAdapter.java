@@ -6,4 +6,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface EmployeeDailyPerErrorAdapter {
 	List<EmployeeDailyPerErrorImport> getByErrorAlarm(String employeeId, DatePeriod datePeriod, List<String> errorCodes);
+	
+	List<EmployeeDailyPerErrorImport> getByErrorAlarm(List<String> employeeId, DatePeriod datePeriod, List<String> errorCodes);
 }

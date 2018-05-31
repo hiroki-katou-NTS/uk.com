@@ -29,7 +29,7 @@ public interface OtherCommonAlgorithm {
 	 * @param appDate
 	 * @return enum PrePostAtr
 	 */
-	public PrePostAtr preliminaryJudgmentProcessing(ApplicationType appType,GeneralDate appDate);
+	public PrePostAtr preliminaryJudgmentProcessing(ApplicationType appType,GeneralDate appDate,int overTimeAtr);
 	/**
 	 * 4.社員の当月の期間を算出する
 	 * @param companyId 会社ID

@@ -1,8 +1,11 @@
 module nts.uk.at.view.ktg002.a {
     __viewContext.ready(function() {
         let screenModel = new viewmodel.ScreenModel();
+        var resultArea = $(".ktg002");
         screenModel.startPage().done(function() {
-            __viewContext.bind(screenModel);
+            setTimeout(function() {
+            ko.applyBindings(screenModel, resultArea.children().get(0));
+            }, 0);
         });
     });
 }

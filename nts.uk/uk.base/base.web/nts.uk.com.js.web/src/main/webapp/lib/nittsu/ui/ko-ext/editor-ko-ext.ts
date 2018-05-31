@@ -113,8 +113,8 @@ module nts.uk.ui.koExtentions {
                         $input.ntsError('set', result.errorMessage, result.errorCode, false);
                     }
                     
-                    valueChanging.markUserChange($input);
-                    value(newText);
+                    // valueChanging.markUserChange($input);
+                    // value(newText);
                 }
             });
 
@@ -136,8 +136,8 @@ module nts.uk.ui.koExtentions {
                             $input.ntsError('set', result.errorMessage, result.errorCode, false);
                         }
                         
-                        valueChanging.markUserChange($input);
-                        value(newText);
+                        // valueChanging.markUserChange($input);
+                        // value(newText);
                     }
                 }
             });
@@ -266,18 +266,14 @@ module nts.uk.ui.koExtentions {
                     
                     if (!result.isValid) {
                         let oldError: nts.uk.ui.errors.ErrorListItem[] = $input.ntsError('getError');
-                        if(nts.uk.util.isNullOrUndefined(oldError)){
+                        if(nts.uk.util.isNullOrEmpty(oldError)){
                            $input.ntsError('set', result.errorMessage, result.errorCode, false);
-                        } 
-                        //else {
-                        //    let inListError = _.find(oldError, function (o){ return o.errorCode !== result.errorCode; });
-                        //    if(nts.uk.util.isNullOrUndefined(inListError)){
-                        //        $input.ntsError('clearKibanError');
-                        //        setTimeout(function() {
-                        //            $input.ntsError('set', result.errorMessage, result.errorCode, false);
-                        //        }, 10);
-                        //    }
-                        //}
+                        } else {
+                            let inListError = _.find(oldError, function (o){ return o.errorCode === result.errorCode; });
+                            if(nts.uk.util.isNullOrUndefined(inListError)){
+                                $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                            }
+                        }
                     } else {
                         $input.ntsError('clearKibanError');
                     }
@@ -299,8 +295,8 @@ module nts.uk.ui.koExtentions {
                         }
                     } else {
                         $input.ntsError('set', result.errorMessage, result.errorCode, false);
-                        valueChanging.markUserChange($input);
-                        value(newText);
+                        // valueChanging.markUserChange($input);
+                        // value(newText);
                     } 
                 }
             });
@@ -319,6 +315,8 @@ module nts.uk.ui.koExtentions {
             
             let tabIndex = $input.attr("tabindex");
             $input.data("tabindex", tabIndex);
+            
+            $input.tooltipWhenReadonly();
         }
 
         update($input: JQuery, data: any) {
@@ -358,7 +356,7 @@ module nts.uk.ui.koExtentions {
             if(data.constraint=="PostCode"){
                 return new validation.PostCodeValidator(name, constraintName, { required: required });
             }
-            if(data.constraint=="PunchCardNo"){
+            if(data.constraint=="StampNumber"){
                 return new validation.PunchCardNoValidator(name, constraintName, { required: required });
             }
 

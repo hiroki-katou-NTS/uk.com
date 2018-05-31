@@ -38,4 +38,19 @@ public interface HolidaySixProcess {
 	 * @return
 	 */
 	public List<CaculationTime> getCaculationHolidayWork(String companyID,String employeeId, String appDate,int appType,List<CaculationTime> holidayWorks,Map<Integer,TimeWithCalculationImport> holidayWorkCal,int prePostAtr);
+	/**
+	 * 06-01-a_色表示チェック（承認者）
+	 * @param breakTimeInputs
+	 * @param holidayWorkCal
+	 * @param prePostAtr
+	 * @param inputDate
+	 * @param appDate
+	 * @param appType
+	 * @param employeeID
+	 * @param companyID
+	 * @param siftCD
+	 * @return
+	 */
+	public List<CaculationTime> checkDisplayColorForApprover(List<CaculationTime> breakTimeInputs,
+			Map<Integer,TimeWithCalculationImport> holidayWorkCal,int prePostAtr,GeneralDateTime inputDate,GeneralDate appDate,int appType,String employeeID,String companyID ,String siftCD);
 }

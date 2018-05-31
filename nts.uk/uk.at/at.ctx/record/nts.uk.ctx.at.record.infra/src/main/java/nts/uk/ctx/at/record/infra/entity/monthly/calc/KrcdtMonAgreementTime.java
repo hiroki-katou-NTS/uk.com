@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.entity.monthly.calc;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -12,8 +13,14 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTimePK;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -73,5 +80,54 @@ public class KrcdtMonAgreementTime extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {		
 		return this.PK;
+	}
+	
+	/**
+	 * ドメインに変換
+	 * @return 月別実績の36協定時間
+	 */
+	public AgreementTimeOfMonthly toDomain(){
+		
+		return AgreementTimeOfMonthly.of(
+				new AttendanceTimeMonth(this.agreementTime),
+				new LimitOneMonth(this.limitErrorTime),
+				new LimitOneMonth(this.limitAlarmTime),
+				(this.exceptionLimitErrorTime == null ?
+						Optional.empty() : Optional.of(new LimitOneMonth(this.exceptionLimitErrorTime))),
+				(this.exceptionLimitAlarmTime == null ?
+						Optional.empty() : Optional.of(new LimitOneMonth(this.exceptionLimitAlarmTime))),
+				EnumAdaptor.valueOf(this.status, AgreementTimeStatusOfMonthly.class));
+	}
+	
+	/**
+	 * ドメインから変換　（for Insert）
+	 * @param key キー値：月別実績の勤怠時間
+	 * @param domain 月別実績の36協定時間
+	 */
+	public void fromDomainForPersist(AttendanceTimeOfMonthlyKey key, AgreementTimeOfMonthly domain){
+		
+		this.PK = new KrcdtMonAttendanceTimePK(
+				key.getEmployeeId(),
+				key.getYearMonth().v(),
+				key.getClosureId().value,
+				key.getClosureDate().getClosureDay().v(),
+				(key.getClosureDate().getLastDayOfMonth() ? 1 : 0));
+		this.fromDomainForUpdate(domain);
+	}
+	
+	/**
+	 * ドメインから変換　(for Update)
+	 * @param domain 月別実績の36協定時間
+	 */
+	public void fromDomainForUpdate(AgreementTimeOfMonthly domain){
+		
+		this.agreementTime = domain.getAgreementTime().v();
+		this.limitErrorTime = domain.getLimitErrorTime().v();
+		this.limitAlarmTime = domain.getLimitAlarmTime().v();
+		this.exceptionLimitErrorTime = (domain.getExceptionLimitErrorTime().isPresent() ?
+				domain.getExceptionLimitErrorTime().get().v() : null); 
+		this.exceptionLimitAlarmTime = (domain.getExceptionLimitAlarmTime().isPresent() ?
+				domain.getExceptionLimitAlarmTime().get().v() : null);
+		this.status = domain.getStatus().value;
 	}
 }

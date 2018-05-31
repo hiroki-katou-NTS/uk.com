@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.dom.service;
 
 import java.util.List;
 
+import nts.uk.ctx.workflow.dom.agent.Agent;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
@@ -24,7 +25,7 @@ public interface JudgmentApprovalStatusService {
 	 			true：承認者である
 	 			false：承認者でない
 	 */
-	public Boolean judgmentTargetPersonIsApprover(String companyID, String rootStateID, String employeeID);
+	public Boolean judgmentTargetPersonIsApprover(String companyID, String rootStateID, String employeeID, Integer rootType);
 	
 	/**
 	 * 2.承認ステータスの判断
@@ -32,7 +33,7 @@ public interface JudgmentApprovalStatusService {
 	 * @param rootStateID インスタンスID
 	 * @return ステータス：（否認、承認済、未承認、差し戻し）
 	 */
-	public ApprovalBehaviorAtr determineApprovalStatus(String companyID, String rootStateID);
+	public ApprovalBehaviorAtr determineApprovalStatus(String companyID, String rootStateID, Integer rootType);
 	
 	/**
 	 * 3.指定した社員が承認できるかの判断
@@ -41,7 +42,7 @@ public interface JudgmentApprovalStatusService {
 	 * @param employeeID 社員ID
 	 * @return
 	 */
-	public ApproverPersonOutput judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID);
+	public ApproverPersonOutput judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID, Integer rootType);
 	
 	/**
 	 * 1.承認フェーズ毎の承認者を取得する
@@ -57,6 +58,13 @@ public interface JudgmentApprovalStatusService {
 	 * @param employeeID
 	 */
 	public ApprovalStatusOutput judmentApprovalStatus(String companyID, ApprovalPhaseState approvalPhaseState, String employeeID);
+	
+	/**
+	 * 1.承認状況の判断(NodataDatabaseAcess)
+	 * @param approvalPhaseState
+	 * @param employeeID
+	 */
+	public ApprovalStatusOutput judmentApprovalStatusNodataDatabaseAcess(String companyID, ApprovalPhaseState approvalPhaseState, String employeeID,List<Agent> agents);
 	
 	/**
 	 * 2.指定した社員が指定した承認者リストの代行承認者かの判断

@@ -13,7 +13,7 @@ import nts.uk.shr.pereg.app.find.dto.DataClassification;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 @Stateless
-public class Specialleave19InformationFinder implements PeregFinder<SpecialleaveInformationDto>{
+public class Specialleave19InformationFinder implements PeregFinder<Specialleave19informationDto>{
 
 	@Inject 
 	private SpecialleaveInformationFinder specialleaveInformationFinder;
@@ -24,8 +24,8 @@ public class Specialleave19InformationFinder implements PeregFinder<Specialleave
 	}
 
 	@Override
-	public Class<SpecialleaveInformationDto> dtoClass() {
-		return SpecialleaveInformationDto.class;
+	public Class<Specialleave19informationDto> dtoClass() {
+		return Specialleave19informationDto.class;
 	}
 
 	@Override

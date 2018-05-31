@@ -111,4 +111,12 @@ public interface WorkingConditionItemRepository {
 	 * @return the by sid and hist id
 	 */
 	Optional<WorkingConditionItem> getBySidAndHistId(String employeeId, String histId);
+	
+	/**
+	 * Gets the list with period by sid and date period 
+	 * @param employeeId
+	 * @param datePeriod
+	 * @return the by sid ,hist id and data Period 
+	 */
+	WorkingConditionWithDataPeriod getBySidAndPeriodOrderByStrDWithDatePeriod(String employeeId, DatePeriod datePeriod);
 }

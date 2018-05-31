@@ -19,8 +19,10 @@
 	padding-top: 30px;
 }
 .padding-text-code{
+	padding-right: 30px;
+    padding-top: 10px;
     padding-left: 30px;
 }
-.td-style{
-	width: 100px;
+.padding-text-name{
+    padding-top: 10px;
 }

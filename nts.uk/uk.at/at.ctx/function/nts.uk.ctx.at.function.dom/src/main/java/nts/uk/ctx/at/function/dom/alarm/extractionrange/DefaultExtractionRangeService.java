@@ -75,7 +75,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 		Date startDate = null;
 		Date endDate = null;
-		ExtractionPeriodDaily extraction = (ExtractionPeriodDaily) c.getExtractPeriod();
+		ExtractionPeriodDaily extraction = (ExtractionPeriodDaily) c.getExtractPeriodList().get(0);
 
 		// Calculate start date
 		if (extraction.getStartDate().getStartSpecify() == StartSpecify.DAYS) {
@@ -114,7 +114,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		LocalDate sDate = null;
 		LocalDate eDate = null;
 
-		ExtractionPeriodUnit periodUnit = (ExtractionPeriodUnit) c.getExtractPeriod();
+		ExtractionPeriodUnit periodUnit = (ExtractionPeriodUnit) c.getExtractPeriodList().get(0);
 		
 		LocalDate countingDate;
 		boolean isYMD;
@@ -122,7 +122,8 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		// Get from PublicHolidaySetting domain
 		Optional<PublicHolidaySetting> publicHolidaySettingOpt = publicHolidaySettingRepo.findByCID(companyId);
 		if (!publicHolidaySettingOpt.isPresent())
-			throw new RuntimeException("「公休設定」ドメインが見つかりません！");
+			return new CheckConditionTimeDto(c.getAlarmCategory().value,
+					EnumAdaptor.convertToValueName(c.getAlarmCategory()).getLocalizedName(), null, null, null, null);
 		
 		if(publicHolidaySettingOpt.get().getPublicHdManagementClassification()==PublicHolidayManagementClassification._1_MONTH) {
 			PublicHolidayGrantDate publicHolidayGrantDate = (PublicHolidayGrantDate)publicHolidaySettingOpt.get().getPublicHdManagementStartDate();
@@ -131,7 +132,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				String processingMonth = yearMonth.toString();				
 				sDate = LocalDate.of(Integer.valueOf(processingMonth.substring(0, 4)).intValue(), Integer.valueOf(processingMonth.substring(4, 6)).intValue(), 1);
 				eDate = sDate.plusMonths(1);
-				eDate.minusDays(1);
+				eDate = eDate.minusDays(1);
 				
 			}else {
 				DatePeriod datePeriod = closureService.getClosurePeriod(closureId, yearMonth);

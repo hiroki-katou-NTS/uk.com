@@ -97,6 +97,12 @@ public class ScheduleErrorLog extends AggregateRoot {
 			return false;
 		return true;
 	}
-	
-	
+
+	public ScheduleErrorLog(String errorContent, String executionId, GeneralDate date, String employeeId) {
+		super();
+		this.errorContent = errorContent;
+		this.executionId = executionId;
+		this.date = date;
+		this.employeeId = employeeId;
+	}
 }

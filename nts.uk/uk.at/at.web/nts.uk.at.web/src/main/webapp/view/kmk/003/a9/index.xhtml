@@ -4,23 +4,87 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 	
-	<div class="tab-rows" style="margin-top: 0px;">
-		<table style="width: 100%;">
-			<tr>
-				<td>
-					<div style="width: 180px;" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_94')}</div>		
-				</td>
-				<td style="width: 30%; text-align: right;">	
-					<button tabindex="131">#{i18n.getText('KMK003_192')}</button>
-				</td>
-			</tr>
-		</table>		
+	<!-- START button - advance setting -->
+	<div>
+		<button tabindex="131" class="pull-right" data-bind="click: openAdvanceSettingDialog, visible: isDetailMode">#{i18n.getText('KMK003_192')}</button>
 	</div>
+	<!-- END button - advance setting -->
 	
-	<div>		
-		<hr/>
-	</div>
+	<!-- ====================================================================================== -->
 	
+	<!-- START form label - late leave early record time -->
+	<div class="tab-rows">
+		<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_226')}</div>			
+	</div>	
+	<div><hr/></div>
+	<!-- END form label - late leave early record time -->
+	
+	<!-- START setting items - late leave early record time -->
+	<div class="tab-block">
+		<div class="tab-rows">
+			<div class="tab-inline-item">
+				<label>#{i18n.getText('KMK003_95')}</label>
+			</div>
+			<div class="tab-inline-item" style="width: 100px;">
+				<div tabindex="-1" id="combo-box-late-rounding-time" style="width: 100px;" data-bind="ntsComboBox: {
+						name: '#[KMK003_169]',
+						options: listRoundingTimeValue,
+						optionsValue: 'value',
+						optionsText: 'localizedName',
+						visibleItemsCount: 8,
+						value: recordLateSettingRoundingTime,
+						dropDownAttachedToBody: true,
+						editable: false,
+						enable: true }"></div>
+			</div>				
+			<div class="tab-inline-item">
+				<div tabindex="-1" id="switch-button-late-rounding" class="cf" data-bind="ntsSwitchButton: {
+						name: '#[KMK003_171]',
+						options: listRoundingValue,
+						optionsValue: 'value',
+						optionsText: 'localizedName',
+						value: recordLateSettingRounding }"></div>
+			</div>
+		</div>
+		
+		<div class="tab-rows">
+			<div class="tab-inline-item">
+				<label>#{i18n.getText('KMK003_96')}</label>
+			</div>
+			<div class="tab-inline-item" style="width: 100px;">
+				<div tabindex="-1" id="combo-box-leave-early-rounding-time" style="width: 100px;" data-bind="ntsComboBox: {
+						name: '#[KMK003_169]',
+						options: listRoundingTimeValue,
+						optionsValue: 'value',
+						optionsText: 'localizedName',
+						visibleItemsCount: 8,
+						value: recordLeaveEarlySettingRoundingTime,
+						dropDownAttachedToBody: true,
+						editable: false,
+						enable: true }"></div>
+			</div>				
+			<div class="tab-inline-item">
+				<div tabindex="-1" id="switch-button-leave-early-rounding" class="cf" data-bind="ntsSwitchButton: {
+						name: '#[KMK003_171]',
+						options: listRoundingValue,
+						optionsValue: 'value',
+						optionsText: 'localizedName',
+						value: recordLeaveEarlySettingRounding }"></div>
+			</div>
+		</div>
+	</div>	
+	<!-- END setting items - late leave early record time -->
+	
+	<!-- ====================================================================================== -->
+	
+	<!-- START form label - late leave early deduction time -->
+	<div class="tab-rows" style="margin-top: 40px;">
+		<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_94')}</div>			
+	</div>	
+	<div><hr/></div>
+	<!-- END form label - late leave early deduction time -->
+	
+	<!-- START setting items - late leave early deduction time -->
 	<div class="tab-block">
 		<div class="tab-rows">
 			<div class="tab-inline-item">
@@ -33,7 +97,7 @@
 						optionsValue: 'value',
 						optionsText: 'localizedName',
 						visibleItemsCount: 8,
-						value: lateSettingRoundingTime,
+						value: deductionLateSettingRoundingTime,
 						dropDownAttachedToBody: true,
 						editable: false,
 						enable: true }"></div>
@@ -44,7 +108,7 @@
 						options: listRoundingValue,
 						optionsValue: 'value',
 						optionsText: 'localizedName',
-						value: lateSettingRounding }"></div>
+						value: deductionLateSettingRounding }"></div>
 			</div>
 		</div>
 		
@@ -59,7 +123,7 @@
 						optionsValue: 'value',
 						optionsText: 'localizedName',
 						visibleItemsCount: 8,
-						value: leaveEarlySettingRoundingTime,
+						value: deductionLeaveEarlySettingRoundingTime,
 						dropDownAttachedToBody: true,
 						editable: false,
 						enable: true }"></div>
@@ -70,9 +134,10 @@
 						options: listRoundingValue,
 						optionsValue: 'value',
 						optionsText: 'localizedName',
-						value: leaveEarlySettingRounding }"></div>
+						value: deductionLeaveEarlySettingRounding }"></div>
 			</div>
 		</div>
 	</div>
+	<!-- END setting items - late leave early deduction time -->	
 		
 </ui:composition>

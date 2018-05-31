@@ -12,7 +12,12 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.medicaltime.MedicalTimeOfMonthly;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -60,5 +65,46 @@ public class KrcdtMonMedicalTime extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {		
 		return this.PK;
+	}
+	
+	/**
+	 * ドメインに変換
+	 * @return 月別実績の医療時間
+	 */
+	public MedicalTimeOfMonthly toDomain(){
+		
+		return MedicalTimeOfMonthly.of(
+				EnumAdaptor.valueOf(this.PK.dayNightAtr, WorkTimeNightShift.class),
+				new AttendanceTimeMonth(this.workTime),
+				new AttendanceTimeMonth(this.deductionTime),
+				new AttendanceTimeMonth(this.takeOverTime));
+	}
+	
+	/**
+	 * ドメインから変換　（for Insert）
+	 * @param key キー値：月別実績の勤怠時間
+	 * @param domain 月別実績の医療時間
+	 */
+	public void fromDomainForPersist(AttendanceTimeOfMonthlyKey key, MedicalTimeOfMonthly domain){
+		
+		this.PK = new KrcdtMonMedicalTimePK(
+				key.getEmployeeId(),
+				key.getYearMonth().v(),
+				key.getClosureId().value,
+				key.getClosureDate().getClosureDay().v(),
+				(key.getClosureDate().getLastDayOfMonth() ? 1 : 0),
+				domain.getDayNightAtr().value);
+		this.fromDomainForUpdate(domain);
+	}
+	
+	/**
+	 * ドメインから変換　(for Update)
+	 * @param domain 月別実績の医療時間
+	 */
+	public void fromDomainForUpdate(MedicalTimeOfMonthly domain){
+		
+		this.workTime = domain.getWorkTime().v();
+		this.deductionTime = domain.getDeducationTime().v();
+		this.takeOverTime = domain.getTakeOverTime().v();
 	}
 }

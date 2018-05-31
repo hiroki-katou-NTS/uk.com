@@ -51,7 +51,7 @@ public class DenyHolidayShipmentCommandHandler extends CommandHandler<HolidayShi
 		// アルゴリズム「詳細画面否認前の処理」を実行する
 		beforeDenialProc.detailedScreenProcessBeforeDenial(companyID, appID, version);
 		// アルゴリズム「詳細画面否認後の処理」を実行する
-		detailAfterDeny.doDeny(companyID, appID, companyID, memo);
+		detailAfterDeny.doDeny(companyID, appID, employeeID, memo);
 	}
 
 }

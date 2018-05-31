@@ -12,7 +12,10 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.bonuspaytime.AggregateBonusPayTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -64,5 +67,48 @@ public class KrcdtMonAggrBnspyTime extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {		
 		return this.PK;
+	}
+	
+	/**
+	 * ドメインに変換
+	 * @return 集計加給時間
+	 */
+	public AggregateBonusPayTime toDomain(){
+		
+		return AggregateBonusPayTime.of(
+				this.PK.bonusPayFrameNo,
+				new AttendanceTimeMonth(this.bonusPayTime),
+				new AttendanceTimeMonth(this.specificBonusPayTime),
+				new AttendanceTimeMonth(this.holidayWorkBonusPayTime),
+				new AttendanceTimeMonth(this.holidayWorkSpecificBonusPayTime));
+	}
+	
+	/**
+	 * ドメインから変換　（for Insert）
+	 * @param key キー値：月別実績の勤怠時間
+	 * @param domain 集計加給時間
+	 */
+	public void fromDomainForPersist(AttendanceTimeOfMonthlyKey key, AggregateBonusPayTime domain){
+		
+		this.PK = new KrcdtMonAggrBnspyTimePK(
+				key.getEmployeeId(),
+				key.getYearMonth().v(),
+				key.getClosureId().value,
+				key.getClosureDate().getClosureDay().v(),
+				(key.getClosureDate().getLastDayOfMonth() ? 1 : 0),
+				domain.getBonusPayFrameNo());
+		this.fromDomainForUpdate(domain);
+	}
+	
+	/**
+	 * ドメインから変換　(for Update)
+	 * @param domain 集計加給時間
+	 */
+	public void fromDomainForUpdate(AggregateBonusPayTime domain){
+		
+		this.bonusPayTime = domain.getBonusPayTime().v();
+		this.specificBonusPayTime = domain.getSpecificBonusPayTime().v();
+		this.holidayWorkBonusPayTime = domain.getHolidayWorkBonusPayTime().v();
+		this.holidayWorkSpecificBonusPayTime = domain.getHolidayWorkSpecificBonusPayTime().v();
 	}
 }

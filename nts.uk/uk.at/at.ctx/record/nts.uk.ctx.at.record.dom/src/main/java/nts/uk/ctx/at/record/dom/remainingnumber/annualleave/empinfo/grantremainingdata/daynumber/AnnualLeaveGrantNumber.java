@@ -3,8 +3,10 @@ package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremain
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class AnnualLeaveGrantNumber {
 
 	/**

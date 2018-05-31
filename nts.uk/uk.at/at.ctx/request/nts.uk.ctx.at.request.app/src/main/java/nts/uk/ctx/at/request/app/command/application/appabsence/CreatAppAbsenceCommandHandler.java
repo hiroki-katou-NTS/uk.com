@@ -51,7 +51,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		GeneralDate endDate = command.getEndDate() == null ? null : GeneralDate.fromString(command.getEndDate(), DATE_FORMAT);
 		Application_New appRoot = iFactoryApplication.buildApplication(appID, startDate,
 				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason().replaceFirst(":", System.lineSeparator()),
-				ApplicationType.ABSENCE_APPLICATION, startDate, command.isDisplayEndDateFlg() ? endDate : null,command.getEmployeeID());
+				ApplicationType.ABSENCE_APPLICATION, startDate, endDate, command.getEmployeeID());
 		AppAbsence appAbsence = new AppAbsence(companyID,
 				appID,
 				command.getHolidayAppType(),
@@ -62,10 +62,10 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 				command.getAllDayHalfDayLeaveAtr(), 
 				command.getStartTime1(),
 				command.getEndTime1(),
-				command.getStartTime1(),
+				command.getStartTime2(),
 				command.getEndTime2());
 		// 2-1.新規画面登録前の処理を実行する
-		newBeforeRegister.processBeforeRegister(appRoot);
+		newBeforeRegister.processBeforeRegister(appRoot,0);
 		// 7.登録時のエラーチェック
 		checkBeforeRegister(command,startDate,endDate,true);
 		// insert

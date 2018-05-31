@@ -48,7 +48,7 @@ public class FileStorageWebService {
 		
 		val fileInfoOpt = FileStereoTypeDescriptionExtend.of(fileInfo.getFileType());
 		if (fileInfoOpt.isPresent()) {
-			if (fileInfoOpt.get().isFileOrKeepedPack()) {
+			if (!fileInfoOpt.get().isFileOrKeepedPack()) {
 				return Response.status(404).build();
 			}
 		}

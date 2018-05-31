@@ -34,7 +34,7 @@ public class BsymtAffiWorkplaceHist extends UkJpaEntity implements Serializable 
 
 	/** The historyid -  PK. */
 	@Id
-	@Column(name = "HISTORY_ID")
+	@Column(name = "HIST_ID")
 	private String hisId;
 
 	/** The employeeId. */
@@ -48,7 +48,7 @@ public class BsymtAffiWorkplaceHist extends UkJpaEntity implements Serializable 
 	private String cid;
 	
 	@Basic(optional = true)
-	@Column(name = "STR_DATE")
+	@Column(name = "START_DATE")
 	private GeneralDate strDate;
 	
 	@Basic(optional = true)
@@ -73,7 +73,9 @@ public class BsymtAffiWorkplaceHist extends UkJpaEntity implements Serializable 
 		return this.hisId;
 	}
 
-	
+	public String getEmployeeId() {
+		return sid;
+	}
 
 
 }

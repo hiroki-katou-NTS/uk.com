@@ -14,13 +14,17 @@ import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
+import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ActualWorkTimeSheetAtr;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ConditionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ControlHolidayWorkTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.HolidayWorkFrameTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.HolidayWorkTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheet;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
@@ -32,6 +36,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAt
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 日別実績の休出時間
@@ -59,6 +64,7 @@ public class HolidayWorkTimeOfDaily {
 
 	/**
 	 * メンバー変数の時間計算を指示するクラス
+	 * @param integrationOfDaily 
 	 * @param holidayTimeSheet
 	 * @return
 	 */
@@ -66,14 +72,15 @@ public class HolidayWorkTimeOfDaily {
 														 AutoCalSetting holidayAutoCalcSetting,
 														 WorkType workType,
 														 Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-														 Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
+														 Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily) {
 		//時間帯
 		val holidayWorkFrameTimeSheet = holidayWorkTimeSheet.changeHolidayWorkTimeFrameTimeSheet();
 		//枠時間
 		val holidayWorkFrameTime = holidayWorkTimeSheet.collectHolidayWorkTime(holidayAutoCalcSetting,
 				 															   workType,
 				 															   eachWorkTimeSet,
-				 															   eachCompanyTimeSet);
+				 															   eachCompanyTimeSet,
+				 															   integrationOfDaily);
 		//深夜
 		//holMidNightTime.add(new HolidayWorkMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0)), StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork));
 		val holidayMidnightWork = Finally.of(calcMidNightTimeIncludeHolidayWorkTime(holidayWorkTimeSheet));
@@ -213,25 +220,74 @@ public class HolidayWorkTimeOfDaily {
 		}
 	}
 	
+	/**
+	 * 休出時間 実績超過チェック
+	 * @return　社員のエラー一覧
+	 */
 	public List<EmployeeDailyPerError> checkHolidayWorkExcess(String employeeId,
 															  GeneralDate targetDate,
+															  String searchWord,
+															  AttendanceItemDictionaryForCalc attendanceItemDictionary,
 															  ErrorAlarmWorkRecordCode errorCode) {
-			List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
-//			returnErrorList.addAll(this.getHolidayWorkFrameTime().stream()
-//																 .filter(tc -> tc.isOverLimitDivergenceTime())
-//																 .map(tc -> tc)/*社員の日別実績エラー一覧作成*/
-//																 .collect(Collectors.toList()));
-			return returnErrorList;
+		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
+		for(HolidayWorkFrameTime frameTime:this.getHolidayWorkFrameTime()) {
+			if(frameTime.isOverLimitDivergenceTime()) {
+				val itemId = attendanceItemDictionary.findId(searchWord+frameTime.getHolidayFrameNo().v());
+				if(itemId.isPresent())
+					returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));
+			}
+		}
+		return returnErrorList;
 	}
 	
+	/**
+	 * 休出事前申請のチェック
+	 * @return　社員のエラー一覧
+	 */
 	public List<EmployeeDailyPerError> checkPreHolidayWorkExcess(String employeeId,
 			  												  GeneralDate targetDate,
+															  String searchWord,
+															  AttendanceItemDictionaryForCalc attendanceItemDictionary,
 			  												  ErrorAlarmWorkRecordCode errorCode) {
-			List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
-//			returnErrorList.addAll(this.getHolidayWorkFrameTime().stream()
-//																 .filter(tc -> tc.isPreOverLimitDivergenceTime())
-//																 .map(tc -> tc)/*社員の日別実績エラー一覧作成*/
-//																 .collect(Collectors.toList()));
-			return returnErrorList;
+		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
+		for(HolidayWorkFrameTime frameTime:this.getHolidayWorkFrameTime()) {
+			if(frameTime.isOverLimitDivergenceTime()) {
+				val itemId = attendanceItemDictionary.findId(searchWord+frameTime.getHolidayFrameNo().v());
+				if(itemId.isPresent())
+					returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));
+			}
+		}
+		return returnErrorList;
 	}
+	
+	/**
+	 *　深夜時間のチェック＆エラーゲット 
+	 * @return
+	 */
+	public List<EmployeeDailyPerError> checkNightTimeExcess(String employeeId,
+														   GeneralDate targetDate,
+														   AttendanceItemDictionaryForCalc attendanceItemDictionary,
+														   ErrorAlarmWorkRecordCode errorCode) {
+		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
+		if(this.getHolidayMidNightWork().isPresent()) {
+			returnErrorList.addAll(this.getHolidayMidNightWork().get().getErrorList(employeeId, targetDate, attendanceItemDictionary, errorCode));
+		}
+		return returnErrorList;
+	}
+	
+	
+	/**
+	 * 自身の休出枠時間の乖離時間を計算
+	 * @return
+	 */
+	public HolidayWorkTimeOfDaily calcDiverGenceTime() {
+		List<HolidayWorkFrameTime> list = new ArrayList<>();
+		for(HolidayWorkFrameTime holidayworkFrameTime:this.holidayWorkFrameTime) {
+			holidayworkFrameTime.calcDiverGenceTime();
+			list.add(holidayworkFrameTime);
+		}
+		Finally<HolidayMidnightWork> holidayMidnight = this.holidayMidNightWork.isPresent()?Finally.of(this.holidayMidNightWork.get().calcDiverGenceTime()):this.holidayMidNightWork;
+		return new HolidayWorkTimeOfDaily(this.holidayWorkFrameTimeSheet,list,holidayMidnight,this.holidayTimeSpentAtWork);
+	}
+	
 }

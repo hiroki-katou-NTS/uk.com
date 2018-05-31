@@ -1,15 +1,20 @@
 package nts.uk.ctx.at.record.infra.repository.breakorgoout;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
@@ -219,7 +224,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 					: stamp.getLocationCode().get().v();
 			krcdtDaiOutingTime.backActualRoundingTimeDay = stamp.getAfterRoundingTime() == null ? null
 					: stamp.getAfterRoundingTime().valueAsMinutes();
-			krcdtDaiOutingTime.backActualSourceInfo = stamp.getStampSourceInfo().value;
+			krcdtDaiOutingTime.backActualSourceInfo = stamp.getStampSourceInfo() == null ? null : stamp.getStampSourceInfo().value;
 			krcdtDaiOutingTime.backActualTime = stamp.getTimeWithDay() == null ? null
 					: stamp.getTimeWithDay().valueAsMinutes();
 		} else {
@@ -233,7 +238,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 					: stamp.getLocationCode().get().v();
 			krcdtDaiOutingTime.backStampRoundingTimeDay = stamp.getAfterRoundingTime() == null ? null
 					: stamp.getAfterRoundingTime().valueAsMinutes();
-			krcdtDaiOutingTime.backStampSourceInfo = stamp.getStampSourceInfo().value;
+			krcdtDaiOutingTime.backStampSourceInfo = stamp.getStampSourceInfo() ==null ? null : stamp.getStampSourceInfo().value;
 			krcdtDaiOutingTime.backStampTime = stamp.getTimeWithDay() == null ? null
 					: stamp.getTimeWithDay().valueAsMinutes();
 		} else {
@@ -275,7 +280,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 					: stamp.getLocationCode().get().v();
 			krcdtDaiOutingTime.outActualRoundingTimeDay = stamp.getAfterRoundingTime() == null ? null
 					: stamp.getAfterRoundingTime().valueAsMinutes();
-			krcdtDaiOutingTime.outActualSourceInfo = stamp.getStampSourceInfo().value;
+			krcdtDaiOutingTime.outActualSourceInfo = stamp.getStampSourceInfo() == null ? null : stamp.getStampSourceInfo().value;
 			krcdtDaiOutingTime.outActualTime = stamp.getTimeWithDay() == null ? null
 					: stamp.getTimeWithDay().valueAsMinutes();
 		} else {
@@ -295,7 +300,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 			krcdtDaiOutingTime.outStampPlaceCode = !stamp.getLocationCode().isPresent() ? null : stamp.getLocationCode().get().v();
 			krcdtDaiOutingTime.outStampRoundingTimeDay = stamp.getAfterRoundingTime() == null ? null
 					: stamp.getAfterRoundingTime().valueAsMinutes();
-			krcdtDaiOutingTime.outStampSourceInfo = stamp.getStampSourceInfo().value;
+			krcdtDaiOutingTime.outStampSourceInfo = stamp.getStampSourceInfo() == null ? null : stamp.getStampSourceInfo().value;
 			krcdtDaiOutingTime.outStampTime = stamp.getTimeWithDay() == null ? null
 					: stamp.getTimeWithDay().valueAsMinutes();
 		} else {
@@ -312,18 +317,24 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 
 	@Override
 	public List<OutingTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd) {
+		List<OutingTimeOfDailyPerformance> result = new ArrayList<>();
 		StringBuilder query = new StringBuilder();
 		query.append("SELECT a FROM KrcdtDaiOutingTime a ");
 		query.append("WHERE a.krcdtDaiOutingTimePK.employeeId IN :employeeId ");
 		query.append("AND a.krcdtDaiOutingTimePK.ymd <= :end AND a.krcdtDaiOutingTimePK.ymd >= :start");
-		return queryProxy().query(query.toString(), KrcdtDaiOutingTime.class).setParameter("employeeId", employeeId)
-				.setParameter("start", ymd.start()).setParameter("end", ymd.end()).getList().stream()
-				.collect(Collectors.groupingBy(c -> c.krcdtDaiOutingTimePK.employeeId + c.krcdtDaiOutingTimePK.ymd.toString()))
-				.entrySet().stream().map(c -> new OutingTimeOfDailyPerformance(
-												c.getValue().get(0).krcdtDaiOutingTimePK.employeeId,
-												c.getValue().get(0).krcdtDaiOutingTimePK.ymd,
-												c.getValue().stream().map(x -> toDtomain(x)).collect(Collectors.toList())))
-				.collect(Collectors.toList());
+		TypedQueryWrapper<KrcdtDaiOutingTime> tQuery=  queryProxy().query(query.toString(), KrcdtDaiOutingTime.class);
+		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
+			result.addAll(tQuery.setParameter("employeeId", empIds)
+								.setParameter("start", ymd.start()).setParameter("end", ymd.end())
+								.getList().stream().collect(Collectors.groupingBy(
+										c -> c.krcdtDaiOutingTimePK.employeeId + c.krcdtDaiOutingTimePK.ymd.toString()))
+								.entrySet().stream().map(c -> new OutingTimeOfDailyPerformance(
+																c.getValue().get(0).krcdtDaiOutingTimePK.employeeId,
+																c.getValue().get(0).krcdtDaiOutingTimePK.ymd,
+																c.getValue().stream().map(x -> toDtomain(x)).collect(Collectors.toList())))
+								.collect(Collectors.toList()));
+		});
+		return result;
 	}
 
 	private OutingTimeSheet toDtomain(KrcdtDaiOutingTime x) {
@@ -358,5 +369,29 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		OutingTimeSheet outingTimeSheet = new OutingTimeSheet(new OutingFrameNo(x.krcdtDaiOutingTimePK.outingFrameNo),
 				Optional.of(goOut), outingTimeCalculation, outingTime, reasonForGoOut, Optional.of(comeBack));
 		return outingTimeSheet;
+	}
+
+	@Override
+	public List<OutingTimeOfDailyPerformance> finds(Map<String, GeneralDate> param) {
+		List<OutingTimeOfDailyPerformance> result = new ArrayList<>();
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT a FROM KrcdtDaiOutingTime a ");
+		query.append("WHERE a.krcdtDaiOutingTimePK.employeeId IN :employeeId ");
+		query.append("AND a.krcdtDaiOutingTimePK.ymd IN :date");
+		TypedQueryWrapper<KrcdtDaiOutingTime> tQuery=  queryProxy().query(query.toString(), KrcdtDaiOutingTime.class);
+		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
+			result.addAll(tQuery.setParameter("employeeId", p.keySet())
+								.setParameter("date", new HashSet<>(p.values()))
+								.getList().stream()
+								.filter(c -> c.krcdtDaiOutingTimePK.ymd.equals(p.get(c.krcdtDaiOutingTimePK.employeeId)))
+								.collect(Collectors.groupingBy(
+										c -> c.krcdtDaiOutingTimePK.employeeId + c.krcdtDaiOutingTimePK.ymd.toString()))
+								.entrySet().stream().map(c -> new OutingTimeOfDailyPerformance(
+																c.getValue().get(0).krcdtDaiOutingTimePK.employeeId,
+																c.getValue().get(0).krcdtDaiOutingTimePK.ymd,
+																c.getValue().stream().map(x -> toDtomain(x)).collect(Collectors.toList())))
+								.collect(Collectors.toList()));
+		});
+		return result;
 	}
 }

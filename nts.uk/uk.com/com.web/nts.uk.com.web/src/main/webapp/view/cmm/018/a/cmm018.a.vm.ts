@@ -1354,7 +1354,7 @@ module nts.uk.com.view.cmm018.a {
              */
             register(rootType: number){
                 let self = this;
-//                block.invisible();
+                block.invisible();
                 let checkAddHist = false;
                 let root: Array<vmbase.CompanyAppRootADto> = [];
                 if(self.dataI() != null){
@@ -1864,7 +1864,7 @@ module nts.uk.com.view.cmm018.a {
                     self.dataIB(null);
                     block.clear();
                     dfd.resolve();
-                }).always(()=>{
+                }).fail(()=>{
                     block.clear();    
                 });
                 return dfd.promise();

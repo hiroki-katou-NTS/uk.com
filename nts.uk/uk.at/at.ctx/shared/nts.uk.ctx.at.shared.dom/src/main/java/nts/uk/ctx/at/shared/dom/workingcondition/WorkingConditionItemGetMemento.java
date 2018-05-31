@@ -19,7 +19,7 @@ public interface WorkingConditionItemGetMemento {
 	 *
 	 * @return the schedule management atr
 	 */
-	NotUseAtr getScheduleManagementAtr();
+	ManageAtr getScheduleManagementAtr();
 		
 	/**
 	 * Gets the vacation added time atr.

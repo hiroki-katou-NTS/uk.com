@@ -14,4 +14,9 @@ public interface ApprovalStatusPub {
 	ApprovalStatusMailTempExport getApprovalStatusMailTemp(int transmissionAttr);
 
 	List<EmployeeEmailExport> getListEmployeeEmail(List<String> listSId);
+	
+	String confirmApprovalStatusMailSender();
+	
+	SendMailResultExport exeApprovalStatusMailTransmission(List<MailTransmissionContentExport> listMailContent,
+			ApprovalStatusMailTempExport domain, int mailType);
 }

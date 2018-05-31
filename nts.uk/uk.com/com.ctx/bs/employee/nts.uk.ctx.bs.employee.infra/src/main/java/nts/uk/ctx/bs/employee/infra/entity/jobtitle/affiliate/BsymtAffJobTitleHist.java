@@ -35,28 +35,28 @@ public class BsymtAffJobTitleHist extends UkJpaEntity implements Serializable {
 
 	/** The historyid - PK. */
 	@Id
-	@Column(name = "HISTORY_ID")
-	private String hisId;
+	@Column(name = "HIST_ID")
+	public String hisId;
 
 	/** The employeeId. */
 	@Column(name = "SID")
-	private String sid;
+	public String sid;
 
 	/** The company id */
 	@Column(name = "CID")
-	private String cid;
+	public String cid;
 
-	@Column(name = "STR_DATE")
+	@Column(name = "START_DATE")
 	@Convert(converter = GeneralDateToDBConverter.class)
-	private GeneralDate strDate;
+	public GeneralDate strDate;
 
 	@Column(name = "END_DATE")
 	@Convert(converter = GeneralDateToDBConverter.class)
-	private GeneralDate endDate;
+	public GeneralDate endDate;
 	
 	/** The bsymt aff job title hist item. */
 	@OneToOne
-	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "HISTORY_ID", referencedColumnName = "HISTORY_ID") })
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID") })
 	public BsymtAffJobTitleHistItem bsymtAffJobTitleHistItem;
 
 	/**

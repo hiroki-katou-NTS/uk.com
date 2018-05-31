@@ -36,8 +36,8 @@
 										editable: false,
 										enable: true,
 										columns: [
-											{ prop: 'companyCode', length: 4 },
-											{ prop: 'companyName', length: 10 },
+											{ prop: 'companyCode', length: 2 },
+											{ prop: 'companyName', length: 12, lengthDropDown: 20},
 										]}"></div>
 							</td>
 						</tr>
@@ -85,8 +85,8 @@
 						<tr>
 							<td></td>
 							<td class="pad_5 align_center"><a tabindex="6"
-								data-bind="text: '#{i18n.getText('CCG007_6')}'"
-								class="hyperlink" href="#"></a></td>
+								data-bind="text: '#{i18n.getText('CCG007_6')}', click: OpenDialogG"
+								class="hyperlink"></a></td>
 						</tr>
 					</table>
 				</div>

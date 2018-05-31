@@ -10,12 +10,20 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.schedule.dom.adapter.employment.EmploymentHistoryImported;
+import nts.uk.ctx.at.schedule.dom.adapter.employment.ScEmploymentAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.jobtitle.EmployeeJobHistImported;
+import nts.uk.ctx.at.schedule.dom.adapter.jobtitle.SyJobTitleAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.workplace.SWkpHistImported;
+import nts.uk.ctx.at.schedule.dom.adapter.workplace.SyWorkplaceAdapter;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.BounceAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
+import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -49,6 +57,15 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 	// TODO: need check again this service, can move to package
 	@Inject
 	private BasicScheduleService basicScheduleService;
+
+	@Inject
+	private ScEmploymentAdapter scEmploymentAdapter;
+
+	@Inject
+	private SyJobTitleAdapter syJobTitleAdapter;
+
+	@Inject
+	private SyWorkplaceAdapter syWorkplaceAdapter;
 
 	@Override
 	public List<String> register(String companyId, List<BasicSchedule> basicScheduleList) {
@@ -101,9 +118,8 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 					basicScheduleService.checkPairWorkTypeWorkTime(workType.getWorkTypeCode().v(),
 							workTimeSetting.getWorktimeCode().v());
 				}
-			} catch (RuntimeException ex) {
-				BusinessException businessException = (BusinessException) ex.getCause();
-				addMessage(errList, businessException.getMessageId());
+			} catch (BusinessException ex) {
+				addMessage(errList, ex.getMessageId());
 				continue;
 			}
 
@@ -113,6 +129,9 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 
 			// process data schedule time zone
 			this.addScheTimeZone(companyId, bSchedule, workType);
+
+			// add ScheMaster for object basicSchedule
+			this.addScheMaster(companyId, bSchedule);
 
 			// Check exist of basicSchedule
 			Optional<BasicSchedule> basicSchedule = basicScheduleRepo.find(bSchedule.getEmployeeId(),
@@ -161,15 +180,17 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 	private boolean checkTimeZone(List<String> errList, List<WorkScheduleTimeZone> workScheduleTimeZonesCommand) {
 		WorkScheduleTimeZone timeZone = workScheduleTimeZonesCommand.get(0);
 		timeZone.validate();
-		try {
-			timeZone.validateTime();
-			if (basicScheduleService.isReverseStartAndEndTime(timeZone.getScheduleStartClock(),
-					timeZone.getScheduleEndClock())) {
-				addMessage(errList, "Msg_441,KSU001_73,KSU001_74");
-				return false;
+		Map<String, String> msgErrMap = timeZone.validateTime();
+		if (!msgErrMap.isEmpty()) {
+			for (Map.Entry<String, String> m : msgErrMap.entrySet()) {
+				addMessage(errList, m.getValue() + "," + m.getKey());
 			}
-		} catch (BusinessException ex) {
-			addMessage(errList, ex.getMessageId());
+			return false;
+		}
+
+		if (basicScheduleService.isReverseStartAndEndTime(timeZone.getScheduleStartClock(),
+				timeZone.getScheduleEndClock())) {
+			addMessage(errList, "Msg_441,KSU001_73,KSU001_74");
 			return false;
 		}
 
@@ -327,6 +348,42 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 		}
 
 		return BounceAtr.NO_DIRECT_BOUNCE;
+	}
+
+	/**
+	 * 
+	 * @param companyId
+	 * @param basicSchedule
+	 */
+	private void addScheMaster(String companyId, BasicSchedule basicSchedule) {
+		String workplaceId = null;
+		String employmentCd = null;
+		String jobId = null;
+		String employeeId = basicSchedule.getEmployeeId();
+		GeneralDate baseDate = basicSchedule.getDate();
+
+		Optional<EmploymentHistoryImported> employmentHistoryImported = this.scEmploymentAdapter
+				.getEmpHistBySid(companyId, employeeId, baseDate);
+		if (employmentHistoryImported.isPresent()) {
+			employmentCd = employmentHistoryImported.get().getEmploymentCode();
+		}
+
+		Optional<EmployeeJobHistImported> employeeJobHistImported = this.syJobTitleAdapter.findBySid(employeeId,
+				baseDate);
+		if (employeeJobHistImported.isPresent()) {
+			jobId = employeeJobHistImported.get().getJobTitleID();
+		}
+
+		Optional<SWkpHistImported> sWkpHistImported = this.syWorkplaceAdapter.findBySid(employeeId, baseDate);
+		if (sWkpHistImported.isPresent()) {
+			workplaceId = sWkpHistImported.get().getWorkplaceId();
+		}
+
+		// now, set classificationCd and businessTypeCd = null
+		ScheMasterInfo scheMasterInfo = new ScheMasterInfo(employeeId, baseDate, employmentCd, null, null, jobId,
+				workplaceId);
+
+		basicSchedule.setWorkScheduleMaster(scheMasterInfo);
 	}
 
 	/**

@@ -49,4 +49,18 @@
 .sundayCell{
 	color: #ff0000;
 }	
-
+.rec{
+	height: auto;
+}
+.abs{
+	height: auto;
+}
+.ui-iggrid-header.ui-widget-header{
+	text-align: center;
+}
+.ui-iggrid-header.ui-widget-header{
+	text-align: center;
+}
+.dateRange{
+	float: left;
+}

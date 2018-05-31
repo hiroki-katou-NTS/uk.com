@@ -24,7 +24,7 @@ public class KshmtPerWorkCatPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/** The history id. */
-	@Column(name = "HISTORY_ID")
+	@Column(name = "HIST_ID")
 	private String historyId;
 
 	/** The per work cat atr. */

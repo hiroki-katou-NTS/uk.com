@@ -65,6 +65,7 @@ module nts.uk.at.view.kaf009.b {
             selectedReason: KnockoutObservable<string> = ko.observable('');
             displayTypicalReason: KnockoutObservable<boolean> = ko.observable(false);
             enableTypicalReason: KnockoutObservable<boolean> = ko.observable(false); 
+            requireTypicalReason: KnockoutObservable<boolean> = ko.observable(false);
             //MultilineEditor
             requiredReason : KnockoutObservable<boolean> = ko.observable(false);
             multilContent: KnockoutObservable<string> = ko.observable('');
@@ -91,7 +92,7 @@ module nts.uk.at.view.kaf009.b {
             checkboxDisplay: KnockoutObservable<boolean> = ko.observable(false);
             checkboxEnable: KnockoutObservable<boolean> = ko.observable(false);
             workChangeBtnDisplay: KnockoutObservable<boolean> = ko.observable(false);
-            
+            workLabelRequired: KnockoutObservable<boolean> = ko.observable(false);
             constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
                 super(listAppMetadata, currentApp);
                 let self = this;
@@ -123,6 +124,15 @@ module nts.uk.at.view.kaf009.b {
                     self.displayReason(self.displayTypicalReason()||
                         (settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1 ? true : false));
                     self.enableReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1 ? true : false);
+                    self.requireTypicalReason(
+                        (settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1)&&
+                        (settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1)
+                    );
+                    //申請制限設定.申請理由が必須
+                    self.requiredReason(
+                        (settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1)&&
+                        (settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1)
+                    );
                     self.employeeID = settingData.sid;
                     //get Reason
                     self.setReasonControl(settingData.listReasonDto);
@@ -163,15 +173,16 @@ module nts.uk.at.view.kaf009.b {
                             self.isWorkChange(false);
                             self.workChangeAtr(false);
                             self.checkboxDisplay(false);
-                            self.workChangeBtnDisplay(true);
+                            self.workChangeBtnDisplay(false);
                             self.checkboxEnable(false&&self.isNewScreen());
                         }else{//条件：直行直帰申請共通設定.勤務の変更　＝　変更する
                             self.workChangeAtr(true);
                             self.isWorkChange(true);
                             self.workState(false);
                             self.checkboxDisplay(false);
-                            self.workChangeBtnDisplay(false);
+                            self.workChangeBtnDisplay(true);
                             self.checkboxEnable(false&&self.isNewScreen());
+                            self.workLabelRequired(self.workChangeAtr());
                         }
                         
                     }
@@ -228,12 +239,20 @@ module nts.uk.at.view.kaf009.b {
              * 
              */
             update() {
+                let self = this;
                 $("#inpStartTime1").ntsError("clear"); 
                 $("#inpEndTime1").ntsError("clear"); 
                 $("#inpStartTime2").ntsError("clear");
                 $("#inpEndTime2").ntsError("clear");
+//                if(self.requireTypicalReason()){
+//                    if(nts.uk.util.isNullOrEmpty($("#combo-box").val())){
+//                        $("#combo-box").ntsError('set', '定型理由を入力してください');    
+//                    }    
+//                }
+//                if(self.requiredReason()){
+//                    $('#inpReasonTextarea').trigger('validate');    
+//                }
                 nts.uk.ui.block.invisible();
-                let self = this;
                 if(!appcommon.CommonProcess.checklenghtReason(!nts.uk.text.isNullOrEmpty(self.getCommand().appCommand.appReasonID) ? self.getCommand().appCommand.appReasonID + "\n" + self.multilContent() : self.multilContent(),"#inpReasonTextarea")){
                         return;
                 }
@@ -395,12 +414,12 @@ module nts.uk.at.view.kaf009.b {
                 goBackCommand.workChangeAtr = self.workChangeAtr() == true ? 1 : 0;
                 goBackCommand.goWorkAtr1 = self.selectedGo();
                 goBackCommand.backHomeAtr1 = self.selectedBack();
-                goBackCommand.workTimeStart1 = nts.uk.util.isNullOrEmpty(self.timeStart1()) ? -1 : self.timeStart1();
-                goBackCommand.workTimeEnd1 = nts.uk.util.isNullOrEmpty(self.timeEnd1()) ? -1 : self.timeEnd1();
+                goBackCommand.workTimeStart1 = self.timeStart1();
+                goBackCommand.workTimeEnd1 = self.timeEnd1();
                 goBackCommand.goWorkAtr2 = self.selectedGo2();
                 goBackCommand.backHomeAtr2 = self.selectedBack2();
-                goBackCommand.workTimeStart2 = nts.uk.util.isNullOrEmpty(self.timeStart2()) ? -1 : self.timeStart2();
-                goBackCommand.workTimeEnd2 = nts.uk.util.isNullOrEmpty(self.timeEnd2()) ? -1 : self.timeEnd2();
+                goBackCommand.workTimeStart2 = self.timeStart2();
+                goBackCommand.workTimeEnd2 = self.timeEnd2();
                 goBackCommand.workLocationCD1 = self.workLocationCD();
                 goBackCommand.workLocationCD2 = self.workLocationCD2();
                 
@@ -475,14 +494,14 @@ module nts.uk.at.view.kaf009.b {
                 let self = this;
                 if (!nts.uk.util.isNullOrEmpty(data)) {
                     //Line 1
-                    self.timeStart1(data.workTimeStart1 == -1 ? null : data.workTimeStart1);
-                    self.timeEnd1(data.workTimeEnd1 == -1 ? null : data.workTimeEnd1);
+                    self.timeStart1(data.workTimeStart1);
+                    self.timeEnd1(data.workTimeEnd1);
                     self.selectedGo(data.goWorkAtr1);
                     self.selectedBack(data.backHomeAtr1);
                     self.workLocationCD(data.workLocationCD1 == null ? '' : data.workLocationCD1);
                     //Line 2
-                    self.timeStart2(data.workTimeStart2 == -1 ? null : data.workTimeStart2);
-                    self.timeEnd2(data.workTimeEnd2 == -1 ? null : data.workTimeEnd2);
+                    self.timeStart2(data.workTimeStart2);
+                    self.timeEnd2(data.workTimeEnd2);
                     self.selectedGo2(data.goWorkAtr2);
                     self.selectedBack2(data.backHomeAtr2);
                     self.workLocationCD2(data.workLocationCD2 == null ? '' : data.workLocationCD2);

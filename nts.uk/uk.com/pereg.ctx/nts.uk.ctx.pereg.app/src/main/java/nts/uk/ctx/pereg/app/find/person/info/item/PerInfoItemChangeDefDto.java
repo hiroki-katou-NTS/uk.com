@@ -6,7 +6,6 @@ import java.util.List;
 import lombok.Value;
 import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.pereg.app.find.person.setting.init.item.SelectionInitDto;
-import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.PerInfoSelectionItemDto;
 
 @Value
 public class PerInfoItemChangeDefDto {

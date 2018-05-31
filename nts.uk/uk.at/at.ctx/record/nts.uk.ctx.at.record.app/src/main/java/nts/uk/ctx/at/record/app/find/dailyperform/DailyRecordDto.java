@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.AffiliationInforOfDailyPerforDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.BusinessTypeOfDailyPerforDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.dto.AttendanceLeavingGateOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.dto.CalcAttrOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.dto.AttendanceTimeDailyPerformDto;
@@ -50,6 +51,10 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	/** 所属情報： 日別実績の所属情報 */
 	@AttendanceItemLayout(layout = "C", jpPropertyName = "日別実績の所属情報")
 	private AffiliationInforOfDailyPerforDto affiliationInfo;
+
+	/** 日別実績の勤務種別 */
+	@AttendanceItemLayout(layout = "D", jpPropertyName = "日別実績の勤務種別", isOptional = true)
+	private Optional<BusinessTypeOfDailyPerforDto> businessType = Optional.empty();
 
 	/** エラー一覧： 社員の日別実績エラー一覧 */
 	// TODO: list?
@@ -100,7 +105,6 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	/** 臨時出退勤: 日別実績の臨時出退勤 */
 	@AttendanceItemLayout(layout = "O", jpPropertyName = "日別実績の臨時出退勤", isOptional = true)
 	private Optional<TemporaryTimeOfDailyPerformanceDto> temporaryTime = Optional.empty();
-	
 	/** PCログオン情報: 日別実績のPCログオン情報 */
 	@AttendanceItemLayout(layout = "P", jpPropertyName = "日別実績のPCログオン情報", isOptional = true)
 	private Optional<PCLogOnInforOfDailyPerformDto> pcLogInfo = Optional.empty();
@@ -109,6 +113,33 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	@AttendanceItemLayout(layout = "Q", jpPropertyName = "日別実績の備考", listMaxLength = 5, indexField = "remarkNo")
 	private List<RemarksOfDailyDto> remarks = new ArrayList<>();
 
+	public static DailyRecordDto from(IntegrationOfDaily domain){
+		DailyRecordDto dto = new DailyRecordDto();
+		if(domain != null){
+			dto.setWorkInfo(WorkInformationOfDailyDto.getDto(domain.getWorkInformation()));
+			dto.setCalcAttr(CalcAttrOfDailyPerformanceDto.getDto(domain.getCalAttr()));
+			dto.setAffiliationInfo(AffiliationInforOfDailyPerforDto.getDto(domain.getAffiliationInfor()));
+			dto.setBusinessType(domain.getBusinessType().map(b -> BusinessTypeOfDailyPerforDto.getDto(b)));
+			if(domain.getEmployeeError() != null && !domain.getEmployeeError().isEmpty()) {
+				dto.setErrors(EmployeeDailyPerErrorDto.getDto(domain.getEmployeeError().get(0)));
+			}
+			dto.setOutingTime(domain.getOutingTime().map(o -> OutingTimeOfDailyPerformanceDto.getDto(o)));
+			dto.setBreakTime(domain.getBreakTime().stream().map(b -> BreakTimeDailyDto.getDto(b)).collect(Collectors.toList()));
+			dto.setAttendanceTime(domain.getAttendanceTimeOfDailyPerformance().map(a -> AttendanceTimeDailyPerformDto.getDto(a)));
+			dto.setAttendanceTimeByWork(domain.getAttendancetimeByWork().map(a -> AttendanceTimeByWorkOfDailyDto.getDto(a)));
+			dto.setTimeLeaving(domain.getAttendanceLeave().map(a -> TimeLeavingOfDailyPerformanceDto.getDto(a)));
+			dto.setShortWorkTime(domain.getShortTime().map(s -> ShortTimeOfDailyDto.getDto(s)));
+			dto.setSpecificDateAttr(domain.getSpecDateAttr().map(s -> SpecificDateAttrOfDailyPerforDto.getDto(s)));
+			dto.setAttendanceLeavingGate(domain.getAttendanceLeavingGate().map(a -> AttendanceLeavingGateOfDailyDto.getDto(a)));
+			dto.setOptionalItem(domain.getAnyItemValue().map(a -> OptionalItemOfDailyPerformDto.getDto(a)));
+			dto.setEditStates(domain.getEditState().stream().map(c -> EditStateOfDailyPerformanceDto.getDto(c)).collect(Collectors.toList()));
+			dto.setTemporaryTime(domain.getTempTime().map(t -> TemporaryTimeOfDailyPerformanceDto.getDto(t)));
+//			this.setRemarks(domain.get)
+			dto.exsistData();
+		}
+		return dto;
+	}
+	
 	public static DailyRecordDto builder() {
 		return new DailyRecordDto();
 	}
@@ -120,6 +151,11 @@ public class DailyRecordDto extends AttendanceItemCommon {
 
 	public DailyRecordDto withCalcAttr(CalcAttrOfDailyPerformanceDto calcAttr) {
 		this.calcAttr = calcAttr;
+		return this;
+	}
+
+	public DailyRecordDto withBusinessType(BusinessTypeOfDailyPerforDto businessType) {
+		this.businessType = Optional.ofNullable(businessType);
 		return this;
 	}
 
@@ -200,7 +236,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	}
 
 	public DailyRecordDto addEditStates(List<EditStateOfDailyPerformanceDto> editStates) {
-		if (editStates == null || editStates.isEmpty()) {
+		if (editStates == null) {
 			return this;
 		}
 		List<Integer> current = this.editStates.stream().map(c -> c.getAttendanceItemId()).collect(Collectors.toList());
@@ -217,7 +253,6 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		this.temporaryTime = Optional.ofNullable(temporaryTime);
 		return this;
 	}
-	
 	public DailyRecordDto pcLogInfo(PCLogOnInforOfDailyPerformDto pcLogInfo) {
 		this.pcLogInfo = Optional.ofNullable(pcLogInfo);
 		return this;
@@ -271,8 +306,9 @@ public class DailyRecordDto extends AttendanceItemCommon {
 				this.workInfo == null ? null : this.workInfo.toDomain(employeeId, date), 
 				this.calcAttr == null ? null : this.calcAttr.toDomain(employeeId, date), 
 				this.affiliationInfo == null ? null : this.affiliationInfo.toDomain(employeeId, date),
+				this.businessType.map(b -> b.toDomain(employeeId, date)),
 				this.pcLogInfo.map(pc -> pc.toDomain(employeeId, date)),
-				this.errors == null ? null : Arrays.asList(this.errors.toDomain(employeeId, date)),
+				this.errors == null ? new ArrayList<>() : Arrays.asList(this.errors.toDomain(employeeId, date)),
 				this.outingTime.map(ot -> ot.toDomain(employeeId, date)),
 				this.breakTime.stream().map(bt -> bt.toDomain(employeeId, date)).collect(Collectors.toList()),
 				this.attendanceTime.map(at -> at.toDomain(employeeId, date)),
@@ -283,7 +319,8 @@ public class DailyRecordDto extends AttendanceItemCommon {
 				this.attendanceLeavingGate.map(alg -> alg.toDomain(employeeId, date)),
 				this.optionalItem.map(oi -> oi.toDomain(employeeId, date)),
 				this.editStates.stream().map(editS -> editS.toDomain(employeeId, date)).collect(Collectors.toList()),
-				this.temporaryTime.map(tt -> tt.toDomain(employeeId, date)));
+				this.temporaryTime.map(tt -> tt.toDomain(employeeId, date))
+				);
 	}
 }
 

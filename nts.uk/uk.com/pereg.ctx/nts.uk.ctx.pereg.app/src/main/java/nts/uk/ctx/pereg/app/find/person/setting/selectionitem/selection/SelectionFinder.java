@@ -2,7 +2,7 @@ package nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -13,12 +13,12 @@ import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
 import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.item.SelectionInitDto;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.IPerInfoSelectionItemRepository;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoSelectionItem;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.Selection;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionItemOrder;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionItemOrderRepository;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionRepository;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.IPerInfoSelectionItemRepository;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.PerInfoSelectionItem;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionorder.SelectionItemOrder;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionorder.SelectionItemOrderRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 
@@ -50,32 +50,24 @@ public class SelectionFinder {
 				.map(i -> SelectionDto.fromDomainSelection(i)).collect(Collectors.toList());
 	}
 
-	// check history ID:
 	public List<SelectionItemOrderDto> getHistIdSelection(String histId) {
-		List<SelectionItemOrderDto> orderList = new ArrayList<SelectionItemOrderDto>();
-
+		
 		// lay selection
-		List<Selection> selectionList = this.selectionRepo.getAllSelectByHistId(histId);
-		Optional<PerInfoSelectionItem> sltItemOpt = selectionItemRpo.getSelectionItemByHistId(histId);
-		// kiem tra so luong item lay duoc
-		if (selectionList.isEmpty() || !sltItemOpt.isPresent()) {
-			return orderList;
-		} else {
-			String getByHisId = selectionList.get(0).getHistId();
-			List<SelectionItemOrder> orderDomainlst = this.selectionOrderRpo.getAllOrderSelectionByHistId(getByHisId);
-			PerInfoSelectionItem sltItem = sltItemOpt.get();
-			if (!orderDomainlst.isEmpty()) {
-				orderList = orderDomainlst.stream().map(i -> {
-					Selection selection = selectionList.stream()
-							.filter(s -> s.getSelectionID().equals(i.getSelectionID())).findFirst().orElse(null);
-					return SelectionItemOrderDto.fromSelectionOrder(i, selection,
-							sltItem.getFormatSelection().getSelectionCodeCharacter().value);
-				}).collect(Collectors.toList());
-			}
-
-			return orderList;
-		}
-
+		Map<String, Selection> selectionMap = this.selectionRepo.getAllSelectByHistId(histId).stream()
+				.collect(Collectors.toMap(selection -> selection.getSelectionID(), selection -> selection));
+		
+		if (selectionMap.isEmpty()) {
+			return new ArrayList<>();
+		} 
+		
+		List<SelectionItemOrder> selectionOrderList = this.selectionOrderRpo.getAllOrderSelectionByHistId(histId);
+		PerInfoSelectionItem selectionItem = selectionItemRpo.getSelectionItemByHistId(histId).get();
+		
+		return selectionOrderList.stream().map(selectionOrder -> {
+			Selection selection = selectionMap.get(selectionOrder.getSelectionID());
+			return SelectionItemOrderDto.fromSelectionOrder(selectionOrder, selection,
+					selectionItem.getFormatSelection().getCharacterType().value);
+		}).collect(Collectors.toList());
 	}
 
 	// Lanlt
@@ -96,9 +88,9 @@ public class SelectionFinder {
 		String selectionItemId = query.getSelectionItemId();
 		List<Selection> selectionList = new ArrayList<>();
 		if (query.isCps006() && query.getSelectionItemClsAtr() == PersonEmployeeType.EMPLOYEE.value) {
-			selectionList = this.selectionRepo.getAllSelectionByHistoryId(companyId, selectionItemId, today, 1);
+			selectionList = this.selectionRepo.getAllSelectionByCompanyId(companyId, selectionItemId, today);
 		} else {
-			selectionList = this.selectionRepo.getAllSelectionByHistoryId(zeroCompanyId, selectionItemId, today, 0);
+			selectionList = this.selectionRepo.getAllSelectionByCompanyId(zeroCompanyId, selectionItemId, today);
 		}
 		return selectionList.stream().map(c -> SelectionInitDto.fromDomainSelection(c)).collect(Collectors.toList());
 	}
@@ -111,8 +103,14 @@ public class SelectionFinder {
 	 * @param baseDate
 	 * @return
 	 */
-	public List<SelectionInitDto> getAllSelectionByCompanyId(String selectionItemId, GeneralDate date) {
+	public List<SelectionInitDto> getAllSelectionByCompanyId(String selectionItemId, GeneralDate date, PersonEmployeeType perEmplType) {
+		
 		String companyId = AppContexts.user().companyId();
+		
+		if (perEmplType == PersonEmployeeType.PERSON){
+			companyId = AppContexts.user().zeroCompanyIdInContract();
+		}
+		// Zero company
 		List<SelectionInitDto> selectionLst = new ArrayList<>();
 		List<Selection> domainLst = this.selectionRepo.getAllSelectionByCompanyId(companyId, selectionItemId, date);
 		if (domainLst != null) {
@@ -125,19 +123,19 @@ public class SelectionFinder {
 
 	}
 
-	public List<ComboBoxObject> getAllComboxByHistoryId(SelectionQuery dto) {
-		GeneralDate baseDateConvert = GeneralDate.fromString(dto.getBaseDate(), "yyyy-MM-dd");
+	public List<ComboBoxObject> getAllComboxByHistoryId(SelectionQuery query) {
+		GeneralDate baseDateConvert = GeneralDate.fromString(query.getBaseDate(), "yyyy-MM-dd");
 		SelectionItemDto selectionItemDto = null;
 		String companyId = AppContexts.user().companyId();
-		if (dto.getSelectionItemRefType() == 2) {
-			return this.selectionRepo.getAllSelectionByCompanyId(companyId, dto.getSelectionItemId(), baseDateConvert)
+		if (query.getSelectionItemRefType() == 2) {
+			return this.selectionRepo.getAllSelectionByCompanyId(companyId, query.getSelectionItemId(), baseDateConvert)
 					.stream().map(c -> new ComboBoxObject(c.getSelectionID(), c.getSelectionName().toString()))
 					.collect(Collectors.toList());
-		} else if (dto.getSelectionItemRefType() == 1) {
-			selectionItemDto = SelectionItemDto.createMasterRefDto(dto.getSelectionItemId(),
-					dto.getSelectionItemRefType());
+		} else if (query.getSelectionItemRefType() == 1) {
+			selectionItemDto = SelectionItemDto.createMasterRefDto(query.getSelectionItemId(),
+					query.getSelectionItemRefType());
 			return this.comboBoxFactory.getComboBox(selectionItemDto, AppContexts.user().employeeId(), baseDateConvert,
-					true);
+					true, PersonEmployeeType.EMPLOYEE, true, query.getCategoryCode());
 
 		}
 		return new ArrayList<>();

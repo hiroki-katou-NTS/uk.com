@@ -32,6 +32,9 @@ module nts.uk.com.view.cmm053.b.viewmodel {
                     }
                 }
             });
+            self.selectedPastHistory.subscribe(value => {
+                $('#B1_1').focus();
+            });
         }
 
         start(): JQueryPromise<any> {

@@ -45,8 +45,8 @@ input.col2.nts-editor.nts-input.reset-element {
 .row-width{
 	width: 230px;
 }
-.link-label {
-	margin-left: 12px;
+.link-label-kaf007 {
+	    margin-right: 12px;
 }
 .check-work-time{
 	margin-left:-5px;
@@ -106,7 +106,7 @@ div.form-label.broken {
 
 .panel.panel-gray-bg.panel-kaf007 {
 	float: right;
-	height: 580px;
+	height: 350px;
 	min-width: 230px;
 }
 
@@ -161,4 +161,10 @@ div.form-label.broken {
 .overlay-reason-kaf007 {
 	position: relative;
 	z-index: 1;
+}
+.inputTime-kaf007{
+	width: 85px !important;
+}
+.row-width-inputTime{
+	width: 203px !important;
 }

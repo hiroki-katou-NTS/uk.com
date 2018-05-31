@@ -2,7 +2,7 @@ package nts.uk.shr.pereg.app.find;
 
 import java.util.List;
 
-import nts.uk.shr.pereg.app.find.dto.EmpOptionalDto;
+import nts.uk.shr.pereg.app.find.dto.OptionalItemDataDto;;
 
 public interface PeregEmpOptRepository {
 	/**
@@ -11,6 +11,6 @@ public interface PeregEmpOptRepository {
 	 * @param recordId
 	 * @return
 	 */
-	List<EmpOptionalDto> getData(String recordId);
+	List<OptionalItemDataDto> getData(String recordId);
 	
 }

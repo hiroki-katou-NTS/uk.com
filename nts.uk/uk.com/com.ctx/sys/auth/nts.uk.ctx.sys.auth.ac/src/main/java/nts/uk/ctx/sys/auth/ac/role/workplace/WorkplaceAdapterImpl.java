@@ -6,14 +6,17 @@ package nts.uk.ctx.sys.auth.ac.role.workplace;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.pub.workplace.AffAtWorkplaceExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.sys.auth.dom.adapter.workplace.AffWorkplaceHistImport;
+import nts.uk.ctx.sys.auth.dom.adapter.workplace.AffWorkplaceImport;
 import nts.uk.ctx.sys.auth.dom.adapter.workplace.AffiliationWorkplace;
 import nts.uk.ctx.sys.auth.dom.adapter.workplace.WorkplaceAdapter;
 
@@ -60,15 +63,21 @@ public class WorkplaceAdapterImpl implements WorkplaceAdapter {
 	}
 
 	@Override
-	public List<String> findListSIdByCidAndWkpIdAndPeriod(String workplaceId, GeneralDate startDate,
+	public List<AffWorkplaceImport> findListSIdByCidAndWkpIdAndPeriod(String workplaceId, GeneralDate startDate,
 			GeneralDate endDate) {
-		return syWorkplacePub.findListSIdByCidAndWkpIdAndPeriod(workplaceId, startDate, endDate);
+		return syWorkplacePub.findListSIdByCidAndWkpIdAndPeriod(workplaceId, startDate, endDate).stream().map(
+				item -> new AffWorkplaceImport(item.getEmployeeId(), item.getJobEntryDate(), item.getRetirementDate()))
+				.collect(Collectors.toList());
 	}
 
+	private AffiliationWorkplace toImport (AffAtWorkplaceExport ex){
+		return new AffiliationWorkplace(ex.getHistoryID(), ex.getEmployeeId(), ex.getWorkplaceId(), ex.getNormalWorkplaceID());
+	}
+	
 	@Override
 	public List<AffiliationWorkplace> findByListEmpIDAndDate(List<String> listEmployeeID, GeneralDate baseDate) {
 		// TODO Auto-generated method stub
-		return null;
+		return syWorkplacePub.findBySIdAndBaseDate(listEmployeeID, baseDate).stream().map(c -> toImport(c)).collect(Collectors.toList());
 	}
 
 	

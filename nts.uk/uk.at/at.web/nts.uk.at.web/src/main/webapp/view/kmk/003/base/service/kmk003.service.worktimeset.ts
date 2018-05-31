@@ -31,6 +31,11 @@ module nts.uk.at.view.kmk003.a {
                     note: string;
                 }
 
+                export interface WorkTimeDisplayModeDto {
+                    worktimeCode: string;
+                    displayMode: number;
+                }
+                
                 export interface SimpleWorkTimeSettingDto {
                     worktimeCode: string;
                     workTimeName: string;
@@ -41,6 +46,10 @@ module nts.uk.at.view.kmk003.a {
                     value: number;
                     fieldName: string;
                     localizedName: string;
+                }
+                
+                export interface ManageEntryExitDto {
+                    useClassification: number;
                 }
 
                 export interface WorkTimeSettingEnumDto {
@@ -56,6 +65,10 @@ module nts.uk.at.view.kmk003.a {
                     applyAtr: EnumConstantDto[];
                     lstFixedChangeAtr: EnumConstantDto[];
                     lstAmPmAtr: EnumConstantDto[];
+                    notUseAtr: EnumConstantDto[];
+                    calcMethodNoBreak: EnumConstantDto[];
+                    calcMethodExceededPredAddVacation: EnumConstantDto[];
+                    roundingTimeUnit: EnumConstantDto[];
                 }
 
 

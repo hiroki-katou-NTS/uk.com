@@ -9,13 +9,14 @@ import javax.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
+import nts.uk.ctx.at.record.dom.adapter.generalinfo.EmployeeGeneralInfoAdapter;
+import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.TargetPersonRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionStatus;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -29,6 +30,9 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 
 	@Inject
 	private TargetPersonRepository targetPersonRepository;
+	
+	@Inject
+	private EmployeeGeneralInfoService employeeGeneralInfoService;
 
 	@Override
 	public ProcessState createDailyResult(AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds,
@@ -50,6 +54,8 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 
 				// ④ログ情報（実行ログ）を更新する
 				empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID, 0, ExecutionStatus.PROCESSING.value);
+				
+				EmployeeGeneralInfoImport employeeGeneralInfoImport = this.employeeGeneralInfoService.getEmployeeGeneralInfo(emloyeeIds, periodTime);
 
 				int dailyCreateCount = 0;
 				// 社員1人分の処理
@@ -58,7 +64,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 					// 状態を確認する
 					// status from activity ⑤社員の日別実績を作成する
 					status = createDailyResultEmployeeDomainService.createDailyResultEmployee(asyncContext, employee,
-							periodTime, companyId, empCalAndSumExecLogID, executionLog, false);
+							periodTime, companyId, empCalAndSumExecLogID, executionLog, false, employeeGeneralInfoImport);
 					if (status == ProcessState.SUCCESS) {
 						dailyCreateCount++;
 						// ログ情報（実行内容の完了状態）を更新する

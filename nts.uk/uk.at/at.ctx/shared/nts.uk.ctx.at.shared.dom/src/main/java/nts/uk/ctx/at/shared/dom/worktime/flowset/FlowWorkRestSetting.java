@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class FlowWorkRestSetting.
@@ -41,5 +42,13 @@ public class FlowWorkRestSetting extends WorkTimeDomainObject {
 	public void saveToMemento(FlowWorkRestSettingSetMemento memento) {
 		memento.setCommonRestSetting(this.commonRestSetting);
 		memento.setFlowRestSetting(this.flowRestSetting);
+	}
+
+	public void correctData(ScreenMode screenMode, FlowWorkRestSetting restSetting,boolean fixRestTime) {
+		this.flowRestSetting.correctData(screenMode,restSetting.getFlowRestSetting(),fixRestTime);
+	}
+
+	public void correctDefaultData(ScreenMode screenMode,boolean fixRestTime) {
+		this.flowRestSetting.correctDefaultData(screenMode,fixRestTime);
 	}
 }

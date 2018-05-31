@@ -3,7 +3,6 @@ package nts.uk.ctx.at.request.pub.application.approvalstatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 承認状況メールテンプレート
@@ -22,17 +21,17 @@ public class ApprovalStatusMailTempExport extends AggregateRoot {
 	/**
 	 * URL承認埋込
 	 */
-	private NotUseAtr urlApprovalEmbed;
+	private Integer urlApprovalEmbed;
 
 	/**
 	 * URL日別埋込
 	 */
-	private NotUseAtr urlDayEmbed;
+	private Integer urlDayEmbed;
 
 	/**
 	 * URL月別埋込
 	 */
-	private NotUseAtr urlMonthEmbed;
+	private Integer urlMonthEmbed;
 
 	/**
 	 * メール件名

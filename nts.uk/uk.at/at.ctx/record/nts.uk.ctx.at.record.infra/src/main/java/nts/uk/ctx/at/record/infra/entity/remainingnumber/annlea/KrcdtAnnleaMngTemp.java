@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.TempAnnualLeaveManagement;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveManagement;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.ManagementDays;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.ScheduleRecordAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.TimeHoliday;

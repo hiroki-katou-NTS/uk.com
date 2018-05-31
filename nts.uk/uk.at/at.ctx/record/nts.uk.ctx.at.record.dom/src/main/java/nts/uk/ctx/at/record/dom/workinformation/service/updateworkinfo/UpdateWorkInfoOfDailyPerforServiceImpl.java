@@ -34,19 +34,16 @@ public class UpdateWorkInfoOfDailyPerforServiceImpl implements UpdateWorkInfoOfD
 			if (oneDay == WorkTypeClassification.Holiday || oneDay == WorkTypeClassification.Pause
 					|| oneDay == WorkTypeClassification.ContinuousWork
 					|| oneDay == WorkTypeClassification.LeaveOfAbsence || oneDay == WorkTypeClassification.Closure) {
-				WorkInformation recordWorkInformation = new WorkInformation(
-						workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode().v(), null);
+				WorkInformation recordWorkInformation = new WorkInformation(null,
+						workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode().v());
 				workInfoOfDailyPerformance.setRecordInfo(recordWorkInformation);
-				
-				// ドメインモデル「日別実績の勤務情報」を更新する(Update domain 「日別実績の勤務情報」)
-				this.workInformationRepository.updateByKeyFlush(workInfoOfDailyPerformance);
-				
-				// domain event
-				WorkInfoChangeEvent dfChangeEvent = WorkInfoChangeEvent.builder().employeeId(employeeID)
-						.newWorkTimeCode(recordWorkInformation.getWorkTimeCode())
-						.newWorkTypeCode(recordWorkInformation.getWorkTypeCode()).build();
-				dfChangeEvent.toBePublished();
 			}
+			
+			// ドメインモデル「日別実績の勤務情報」を更新する(Update domain 「日別実績の勤務情報」)
+			this.workInformationRepository.updateByKeyFlush(workInfoOfDailyPerformance);
+			
+			// domain event 
+			workInfoOfDailyPerformance.workInfoChanged();
 		}
 	}
 

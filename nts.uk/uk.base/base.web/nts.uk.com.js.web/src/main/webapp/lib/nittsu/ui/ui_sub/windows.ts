@@ -24,6 +24,7 @@ module nts.uk.ui {
             $dialog: JQuery = null;
             $iframe: JQuery = null;
             onClosedHandler: () => void = $.noop;
+            onOpenedHandler: () => void = $.noop;
 
             constructor(id: string, isRoot: boolean, parent: ScreenWindow) {
                 this.id = id;
@@ -77,6 +78,7 @@ module nts.uk.ui {
             }
             setupAsDialog(path: string, options: any) {
 
+                var self = this;
                 options.close = () => {
                     this.dispose();
                 };
@@ -144,6 +146,10 @@ module nts.uk.ui {
                                     }
                                 }
                             });
+                            
+                            setTimeout(function(){
+                                self.onOpenedHandler();
+                            }, 100);
                         },
                         beforeClose: function() {
                             //return dialogWindow.__viewContext.dialog.beforeClose();
@@ -178,12 +184,18 @@ module nts.uk.ui {
             }
 
             onClosed(callback: () => void) {
-                this.onClosedHandler = function() {
-                    var dataModel = ko.dataFor(this.$dialog[0]);
-                    dataModel.kiban.errorDialogViewModel.errors([]);
+                this.onClosedHandler = () => {
+                    //var dataModel = ko.dataFor(this.$dialog[0]);
+                    //dataModel.kiban.errorDialogViewModel.errors([]);
                     //dataModel.kiban.errorDialogViewModel.errors.valueHasMutated();
                     callback();
                     container.localShared = {};
+                };
+            }
+            
+            onOpened(callback: () => void) {
+                this.onOpenedHandler = function() {
+                    callback();
                 };
             }
 
@@ -197,7 +209,7 @@ module nts.uk.ui {
 
             dispose() {
                 _.defer(() => this.onClosedHandler());
-
+                window.parent.$("body").trigger("dialogclosed", {dialogId: this.id});
                 // delay 2 seconds to avoid IE error when any JS is running in destroyed iframe
                 setTimeout(() => {
                     this.$iframe.remove();
@@ -206,7 +218,8 @@ module nts.uk.ui {
                     this.$iframe = null;
                     this.globalContext = null;
                     this.parent = null;
-                    this.onClosedHandler = null
+                    this.onClosedHandler = null;
+//                    this.id = null;
                 }, 2000);
             }
         }

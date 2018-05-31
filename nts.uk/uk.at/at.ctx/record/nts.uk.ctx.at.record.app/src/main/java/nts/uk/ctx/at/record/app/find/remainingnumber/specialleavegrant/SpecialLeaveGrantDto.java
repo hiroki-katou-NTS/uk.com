@@ -5,12 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
-import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SpecialLeaveGrantDto extends PeregDomainDto{
+public class SpecialLeaveGrantDto{
 	
 
 	private String specialid;
@@ -21,12 +20,12 @@ public class SpecialLeaveGrantDto extends PeregDomainDto{
 	private GeneralDate deadlineDate;
 	private int expStatus;
 	private int registerType;
-	private int numberDayGrant;
+	private double numberDayGrant;
 	private int timeGrant;
 	private double numberDayUse;
 	private int timeUse;
 	private double useSavingDays;
-	private int numberDaysOver;
+	private double numberDaysOver;
 	private int timeOver;
 	private double numberDayRemain;
 	private int timeRemain;

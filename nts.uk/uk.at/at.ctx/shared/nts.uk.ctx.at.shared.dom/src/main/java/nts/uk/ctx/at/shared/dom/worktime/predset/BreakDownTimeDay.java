@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.predset;
@@ -13,9 +13,9 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 /**
  * The Class BreakDownTimeDay.
  */
-@Builder
 @Getter
-//１日の時間内訳
+@Builder
+// １日の時間内訳
 public class BreakDownTimeDay extends WorkTimeDomainObject {
 
 	/** The one day. */
@@ -29,14 +29,15 @@ public class BreakDownTimeDay extends WorkTimeDomainObject {
 	/** The afternoon. */
 	// 午後
 	private AttendanceTime afternoon;
-	
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.arc.layer.dom.DomainObject#validate()
 	 */
 	@Override
 	public void validate() {
-		// if 1日<午前 => Msg_518 
+		// if 1日<午前 => Msg_518
 		if (this.oneDay.lessThan(this.morning)) {
 			this.bundledBusinessExceptions.addMessage("Msg_518", "KMK003_217");
 		}
@@ -45,17 +46,19 @@ public class BreakDownTimeDay extends WorkTimeDomainObject {
 		if (this.oneDay.lessThan(this.afternoon)) {
 			this.bundledBusinessExceptions.addMessage("Msg_518", "KMK003_218");
 		}
-		
+
 		super.validate();
 	}
-	
 
 	/**
 	 * Instantiates a new break down time day.
 	 *
-	 * @param oneDay the one day
-	 * @param morning the morning
-	 * @param afternoon the afternoon
+	 * @param oneDay
+	 *            the one day
+	 * @param morning
+	 *            the morning
+	 * @param afternoon
+	 *            the afternoon
 	 */
 	public BreakDownTimeDay(Integer oneDay, Integer morning, Integer afternoon) {
 		super();
@@ -70,13 +73,15 @@ public class BreakDownTimeDay extends WorkTimeDomainObject {
 		this.afternoon = new AttendanceTime(afternoon);
 	}
 
-
 	/**
 	 * Instantiates a new break down time day.
 	 *
-	 * @param oneDay the one day
-	 * @param morning the morning
-	 * @param afternoon the afternoon
+	 * @param oneDay
+	 *            the one day
+	 * @param morning
+	 *            the morning
+	 * @param afternoon
+	 *            the afternoon
 	 */
 	public BreakDownTimeDay(AttendanceTime oneDay, AttendanceTime morning, AttendanceTime afternoon) {
 		super();
@@ -84,13 +89,23 @@ public class BreakDownTimeDay extends WorkTimeDomainObject {
 		this.morning = morning;
 		this.afternoon = afternoon;
 	}
-	
+
 	/**
-	 * 所定労働時間の取得
-	 * @return　所定労働時間
+	 * New instance.
+	 *
+	 * @return the break down time day
 	 */
-	public int getPredetermineWorkTime(){
+	static public BreakDownTimeDay newInstance() {
+		return new BreakDownTimeDay(0, 0, 0);
+	}
+
+	/**
+	 * Gets the predetermine work time.
+	 *
+	 * @return the predetermine work time
+	 */
+	public int getPredetermineWorkTime() {
 		return this.morning.valueAsMinutes() + this.afternoon.valueAsMinutes();
 	}
-	
+
 }

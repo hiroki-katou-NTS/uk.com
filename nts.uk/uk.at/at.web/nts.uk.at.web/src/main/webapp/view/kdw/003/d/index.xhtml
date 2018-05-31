@@ -9,7 +9,7 @@
 			<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 860,
+					width : 387,
 					height : 630
 				};
 			</script>
@@ -29,12 +29,12 @@
 						primaryKey: 'code',
 						columns: gridListColumns,
 						multiple: true,
-						value: lstErrorAlarm}">
+						value: lstSelectedErrorAlarm}">
 					</table>
 				</div>
 				<div id="functions-area-bottom">
 					<button class="proceed" data-bind="click: extract">#{i18n.getText('KDW003_60')}</button>
-					<button data-bind="click: closeDialog">#{i18n.getText('KDW003_63')}</button>
+					<button data-bind="click: closeDialog">#{i18n.getText('KDW003_61')}</button>
 				</div>
 			</ui:define>
 		</ui:composition>

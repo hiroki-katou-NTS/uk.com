@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.at.shared.pub.workrule.closure.ClosureDateExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -79,6 +80,7 @@ public class ShClosurePubImpl implements ShClosurePub {
 		if(cPeriod.isPresent()){
 			return Optional.of(PresentClosingPeriodExport.builder().processingYm(cPeriod.get().getYearMonth())
 				.closureStartDate(cPeriod.get().getPeriod().start()).closureEndDate(cPeriod.get().getPeriod().end())
+				.closureDate(new ClosureDateExport(cPeriod.get().getClosureDate().getClosureDay().v(), cPeriod.get().getClosureDate().getLastDayOfMonth()))
 				.build());
 		}else{
 			return Optional.empty();

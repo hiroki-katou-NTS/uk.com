@@ -35,12 +35,14 @@ import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
+import nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTimeOfDaily;
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaiseSalaryTimeOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayBreakTime;
 import nts.uk.ctx.at.record.infra.entity.daily.attendanceschedule.KrcdtDayWorkScheTime;
+import nts.uk.ctx.at.record.infra.entity.daily.divergencetime.KrcdtDayDivergenceTime;
 import nts.uk.ctx.at.record.infra.entity.daily.holidayworktime.KrcdtDayHolidyWork;
 import nts.uk.ctx.at.record.infra.entity.daily.holidayworktime.KrcdtDayHolidyWorkTs;
 import nts.uk.ctx.at.record.infra.entity.daily.latetime.KrcdtDayLateTime;
@@ -48,6 +50,9 @@ import nts.uk.ctx.at.record.infra.entity.daily.leaveearlytime.KrcdtDayLeaveEarly
 import nts.uk.ctx.at.record.infra.entity.daily.legalworktime.KrcdtDayPrsIncldTime;
 import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimework;
 import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimeworkTs;
+import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDaiShortWorkTime;
+import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttime;
+import nts.uk.ctx.at.record.infra.entity.daily.vacation.KrcdtDayVacation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -117,53 +122,71 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 	@Column(name = "DIV_OUT_PRS_MIDN_TIME")
 	public int divOutPrsMidnTime;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.REMOVE)
 	@JoinColumns(value = { 
 			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KrcdtDayOvertimework krcdtDayOvertimework;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.REMOVE)
 	@JoinColumns(value = {
 			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KrcdtDayOvertimeworkTs krcdtDayOvertimeworkTs;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.REMOVE)
 	@JoinColumns(value = { 
 			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KrcdtDayPrsIncldTime krcdtDayPrsIncldTime;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime", orphanRemoval = true)
 	public List<KrcdtDayLeaveEarlyTime> krcdtDayLeaveEarlyTime;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime", orphanRemoval = true)
 	public List<KrcdtDayLateTime> krcdtDayLateTime;
 
-	@OneToOne
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime", orphanRemoval = true)
+	public List<KrcdtDaiShortWorkTime> krcdtDaiShortWorkTime;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime", orphanRemoval = true)
+	public List<KrcdtDayShorttime> KrcdtDayShorttime;
+	
+	@OneToOne(cascade = CascadeType.REMOVE)
 	@JoinColumns(value = { 
 			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KrcdtDayHolidyWork krcdtDayHolidyWork;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.REMOVE)
 	@JoinColumns(value = { 
 			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KrcdtDayHolidyWorkTs krcdtDayHolidyWorkTs;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.REMOVE)
 	@JoinColumns(value = { 
 			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KrcdtDayWorkScheTime krcdtDayWorkScheTime;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.REMOVE)
 	@JoinColumns(value = { 
 			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KrcdtDayBreakTime krcdtDayBreakTime;
+	
+	@OneToOne(cascade = CascadeType.REMOVE)
+	@JoinColumns(value = { 
+			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
+	public KrcdtDayDivergenceTime krcdtDayDivergenceTime;
+	
+	@OneToOne(cascade = CascadeType.REMOVE)
+	@JoinColumns(value = { 
+			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
+	public KrcdtDayVacation krcdtDayVacation;
 	
 	
 	@Override
@@ -295,13 +318,13 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 						 DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
 					 			   			   TimeWithCalculation.sameTime(new AttendanceTime(0)),
 					 			   			   TimeWithCalculation.sameTime(new AttendanceTime(0))),
-						 ChildCareAttribute.CARE
-						)
+						 ChildCareAttribute.CARE),
+				this.krcdtDayVacation == null ? null : this.krcdtDayVacation.toDomain()
 				);
 
 		// 日別実績の勤務実績時間
 		ActualWorkingTimeOfDaily actual = ActualWorkingTimeOfDaily.of(totalTime, this.midnBindTime, this.totalBindTime,
-				this.bindDiffTime, this.diffTimeWorkTime);
+				this.bindDiffTime, this.diffTimeWorkTime, krcdtDayDivergenceTime == null ? new DivergenceTimeOfDaily() : krcdtDayDivergenceTime.toDomain());
 		// 日別実績の勤怠時間
 		return new AttendanceTimeOfDailyPerformance(this.krcdtDayAttendanceTimePK == null ? null : this.krcdtDayAttendanceTimePK.employeeID, this.krcdtDayAttendanceTimePK.generalDate,
 				this.krcdtDayWorkScheTime == null ? null : this.krcdtDayWorkScheTime.toDomain(), actual,

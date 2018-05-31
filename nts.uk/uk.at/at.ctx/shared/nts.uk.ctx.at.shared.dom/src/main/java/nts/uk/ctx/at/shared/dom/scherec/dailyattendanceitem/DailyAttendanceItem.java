@@ -26,13 +26,13 @@ public class DailyAttendanceItem extends AggregateRoot {
 	/* 表示番号 */
 	private int displayNumber;
 
-	/* 使用区分 */
+	/* ユーザーが値を変更できる */
 	private UseSetting userCanUpdateAtr;
 
 	/* 勤怠項目属性 */
 	private DailyAttendanceAtr dailyAttendanceAtr;
 
-	/* ユーザーが値を変更できる */
+	/* 名称の改行位置 */
 	private int nameLineFeedPosition;
 
 	public DailyAttendanceItem(String companyId, int attendanceItemId, AttendanceName attendanceName, int displayNumber,

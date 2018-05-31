@@ -23,14 +23,17 @@ import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.StartupErrorCheckService;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.output.ApprovalRootPattern;
+import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -48,9 +51,6 @@ public class AppDataDateFinder {
 	private CollectApprovalRootPatternService approvalRootPatternService;
 	
 	@Inject
-	private RecordWorkInfoAdapter recordWorkInfoAdapter;
-	
-	@Inject
 	private StartupErrorCheckService startupErrorCheckService;
 	
 	@Inject
@@ -62,15 +62,25 @@ public class AppDataDateFinder {
 	@Inject
 	private EmployeeRequestAdapter employeeAdaptor;
 	
+	@Inject
+	private CollectAchievement collectAchievement;
+	
+	@Inject
+	private ApprovalRootStateAdapter approvalRootStateAdapter;
+	
+	@Inject
+	private ApplicationSettingRepository applicationSettingRepository;
+	
 	private final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	public AppDateDataDto getAppDataByDate(Integer appTypeValue, String appDate, Boolean isStartUp, String appID){
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		GeneralDate appGeneralDate = GeneralDate.fromString(appDate, DATE_FORMAT);
-		ApprovalRootPattern approvalRootPattern = null;
+		AchievementOutput achievementOutput = new AchievementOutput(appGeneralDate, null, null, null, null, null, null);
+		ApprovalRootContentImport_New approvalRootContentImport = null;
 		ApplicationDto_New applicationDto = null;
-		PrePostAtr defaultPrePostAtr = otherCommonAlgorithm.preliminaryJudgmentProcessing(EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), appGeneralDate);
+		PrePostAtr defaultPrePostAtr = otherCommonAlgorithm.preliminaryJudgmentProcessing(EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), appGeneralDate,0);
 		if(Strings.isNotBlank(appID)){
 			Application_New application = applicationRepository_New.findByID(companyID, appID).get();
 			SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(
@@ -80,14 +90,14 @@ public class AppDataDateFinder {
 			if(empHistImport==null || empHistImport.getEmploymentCode()==null){
 				throw new BusinessException("Msg_426");
 			}
-			approvalRootPattern = approvalRootPatternService.getApprovalRootPatternService(
+			approvalRootContentImport = approvalRootPatternService.getApprovalRootPatternService(
 					companyID, 
 					employeeID, 
 					EmploymentRootAtr.APPLICATION, 
 					EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), 
 					appGeneralDate,
 					appID,
-					false);
+					false).getApprovalRootContentImport();
 			applicationDto = ApplicationDto_New.builder()
 					.version(application.getVersion())
 					.companyID(application.getCompanyID())
@@ -110,33 +120,41 @@ public class AppDataDateFinder {
 					.reflectPerTime(application.getReflectionInformation().getDateTimeReflectionReal().map(x -> x.toString(DATE_FORMAT)).orElse(null))
 					.build();
 		} else {
-			approvalRootPattern = approvalRootPatternService.getApprovalRootPatternService(
-					companyID, 
-					employeeID, 
-					EmploymentRootAtr.APPLICATION, 
-					EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), 
-					appGeneralDate,
-					appID,
-					true);
+			achievementOutput = collectAchievement.getAchievement(companyID, employeeID, appGeneralDate);
+			if(isStartUp.equals(Boolean.TRUE)){
+				approvalRootContentImport = approvalRootPatternService.getApprovalRootPatternService(
+						companyID, 
+						employeeID, 
+						EmploymentRootAtr.APPLICATION, 
+						EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), 
+						appGeneralDate,
+						appID,
+						true).getApprovalRootContentImport();
+				startupErrorCheckService.startupErrorCheck(appGeneralDate, appTypeValue, approvalRootContentImport);
+			} else {
+				BaseDateFlg baseDateFlg = applicationSettingRepository.getApplicationSettingByComID(companyID)
+								.map(x -> x.getBaseDateFlg()).orElse(BaseDateFlg.SYSTEM_DATE);
+				if(baseDateFlg.equals(BaseDateFlg.APP_DATE)){
+					approvalRootContentImport = approvalRootStateAdapter.getApprovalRootContent(companyID, employeeID, appTypeValue, appGeneralDate, appID, true);
+				} 
+			}
 		}
-		if(isStartUp.equals(Boolean.TRUE)){
-			startupErrorCheckService.startupErrorCheck(appGeneralDate, appTypeValue, approvalRootPattern.getApprovalRootContentImport());
-		}
-		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appGeneralDate);
 		OutputMessageDeadline outputMessageDeadline = getDataAppCfDetailFinder.getDataConfigDetail(new ApplicationMetaDto("", appTypeValue, appGeneralDate));
 		return new AppDateDataDto(
 				outputMessageDeadline, 
-				approvalRootPattern.getApprovalRootContentImport().getApprovalRootState().getListApprovalPhaseState()
+				approvalRootContentImport == null ? null : 
+					approvalRootContentImport.getApprovalRootState().getListApprovalPhaseState()
 					.stream().map(x -> ApprovalPhaseStateDto.fromApprovalPhaseStateImport(x)).collect(Collectors.toList()), 
-				new RecordWorkDto_New(
-						recordWorkInfoImport.getWorkTypeCode(),
-						recordWorkInfoImport.getWorkTimeCode(), 
-						recordWorkInfoImport.getAttendanceStampTimeFirst(), 
-						recordWorkInfoImport.getLeaveStampTimeFirst(), 
-						recordWorkInfoImport.getAttendanceStampTimeSecond(), 
-						recordWorkInfoImport.getLeaveStampTimeSecond()),
+				new AchievementOutput(
+						achievementOutput.getDate(), 
+						achievementOutput.getWorkType(), 
+						achievementOutput.getWorkTime(), 
+						achievementOutput.getStartTime1(), 
+						achievementOutput.getEndTime1(), 
+						achievementOutput.getStartTime2(), 
+						achievementOutput.getEndTime2()),
 				applicationDto,
-				approvalRootPattern.getApprovalRootContentImport().getErrorFlag().value,
+				approvalRootContentImport == null ? null : approvalRootContentImport.getErrorFlag().value,
 				defaultPrePostAtr.value);
 	}
 	

@@ -5,8 +5,6 @@ import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReasonNotReflectRecord;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReflectedStateRecord;
 
 /**
  * 休日出勤申請parameter
@@ -34,12 +32,10 @@ public class HolidayWorktimeAppPara {
 	 */
 	private Integer nightTime;
 	/**
-	 * 反映状態
+	 * 
 	 */
-	private ReflectedStateRecord reflectedState;
-	/**
-	 * 反映不可理由
-	 */
-	private ReasonNotReflectRecord reasonNotReflect;
+	private Integer startTime;
+	
+	private Integer endTime;
 
 }

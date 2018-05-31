@@ -30,8 +30,13 @@ public class EmpMaintLayoutDto {
 	private GeneralDate standardDate;
 
 	private List<LayoutPersonInfoClsDto> classificationItems;
+	
 	public EmpMaintLayoutDto(){
 		this.classificationItems = new ArrayList<>();
+	}
+	
+	public EmpMaintLayoutDto(List<LayoutPersonInfoClsDto> classificationItems) {
+		this.classificationItems = classificationItems;
 	}
 
 	public static EmpMaintLayoutDto createFromDomain(MaintenanceLayout domain) {
@@ -42,5 +47,7 @@ public class EmpMaintLayoutDto {
 		dto.setMaintenanceLayoutID(domain.getMaintenanceLayoutID());
 		return dto;
 	}
+	
+	
 
 }

@@ -485,11 +485,33 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 let endTime = self.restTime()[i].endTime();
                 let attendanceId = self.restTime()[i].attendanceID();
                 let frameNo = self.restTime()[i].frameNo();
+                if( i != 9){
+                    let startTimeAdd = self.restTime()[i+1].startTime();
+                    let endTimeAdd = self.restTime()[i+1].endTime();
+                    let attendanceIdAdd = self.restTime()[i+1].attendanceID();
+                    let frameNoAdd = self.restTime()[i+1].frameNo();
+                }
+                if(nts.uk.util.isNullOrEmpty(startTime) && !nts.uk.util.isNullOrEmpty(endTime)){
+                    dialog.alertError({messageId:"Msg_307"})
+                    $('input#restTimeStart_'+attendanceId+'_'+frameNo).focus();
+                    return false;
+                }
                 if(!nts.uk.util.isNullOrEmpty(startTime) && startTime != ""){
-                    if(!self.validateTime(startTime, endTime, 'input#restTimeStart_'+attendanceId+'_'+frameNo)){
+                    if(!self.validateTime(startTime, endTime, 'input#restTimeEnd_'+attendanceId+'_'+frameNo)){
                         return false;
                     };
                 }
+                if(!nts.uk.util.isNullOrEmpty(startTimeAdd)){
+                    if (nts.uk.util.isNullOrEmpty(endTime)) {
+                                dialog.alertError({ messageId: "Msg_307" })
+                                $('input#restTimeEnd_' + attendanceId + '_' + frameNo).focus();
+                                return false;
+                    }
+                    if(!self.validateTime(endTime, startTimeAdd, 'input#restTimeStart_'+attendanceIdAdd+'_'+frameNoAdd)){
+                        return false;
+                    };
+                }
+                
             }
             return true;            
         }
@@ -895,16 +917,16 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 }
             });
             //休憩時間
-            for (let i = 0; i < self.breakTimes().length; i++) {
-                self.breakTimes()[i].applicationTime.subscribe(value => {
-                    if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
-                        if (self.preWorkContent.breakTimes[i].applicationTime != value) {
-                            //→エラーＭＳＧ
-                            self.calculateFlag(1);
-                        }
-                    }
-                });
-            }
+//            for (let i = 0; i < self.breakTimes().length; i++) {
+//                self.breakTimes()[i].applicationTime.subscribe(value => {
+//                    if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
+//                        if (self.preWorkContent.breakTimes[i].applicationTime != value) {
+//                            //→エラーＭＳＧ
+//                            self.calculateFlag(1);
+//                        }
+//                    }
+//                });
+//            }
         }
     }
 

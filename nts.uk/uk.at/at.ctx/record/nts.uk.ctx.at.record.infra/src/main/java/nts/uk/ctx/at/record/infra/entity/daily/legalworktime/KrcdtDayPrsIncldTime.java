@@ -68,7 +68,8 @@ public class KrcdtDayPrsIncldTime extends UkJpaEntity implements Serializable{
 			/*就業時間*/
 			this.workTime = domain.getWorkTime() == null ? 0 : domain.getWorkTime().valueAsMinutes();
 			/*実働就業時間*/
-			this.actWorkTime = domain.getWorkTimeIncludeVacationTime() == null ? 0 : domain.getWorkTimeIncludeVacationTime().valueAsMinutes();
+//			this.actWorkTime = domain.getWorkTimeIncludeVacationTime() == null ? 0 : domain.getWorkTimeIncludeVacationTime().valueAsMinutes();
+			this.actWorkTime = domain.getActualWorkTime() == null ? 0 : domain.getActualWorkTime().valueAsMinutes();
 			/*所定内割増時間*/
 			this.prsIncldPrmimTime = domain.getWithinPrescribedPremiumTime() == null ? 0 : domain.getWithinPrescribedPremiumTime().valueAsMinutes();
 			if(domain.getWithinStatutoryMidNightTime() != null){

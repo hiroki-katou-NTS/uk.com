@@ -9,7 +9,7 @@
 			<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 450,
+					width : 362,
 					height : 630
 				};
 			</script>
@@ -24,11 +24,11 @@
 				<div id="contents-area">
 					<table id="dailyPerfFmtList" data-bind="ntsGridList: {
 						height: 370,
-						dataSource: dailyPerfFmtList,
+						dataSource: lstFormatCodes,
 						primaryKey: 'dailyPerformanceFormatCode',
 						columns: gridListColumns,
 						multiple: false,
-						value: selectedPerfFmtCode}">
+						value: selectedFormatCode}">
 					</table>
 				</div>
 				<div id="functions-area-bottom">

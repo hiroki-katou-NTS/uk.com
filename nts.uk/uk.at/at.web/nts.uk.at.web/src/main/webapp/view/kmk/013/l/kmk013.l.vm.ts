@@ -37,7 +37,7 @@ module nts.uk.at.view.kmk013.l {
                 var dfd = $.Deferred();
                 
                 $.when(self.loadData()).done(function() {
-                    $( "#l2_7" ).focus();
+                    //$( "#l2_7" ).focus();
                     dfd.resolve();
                 });
                     

@@ -58,7 +58,7 @@
 				<div class="cell valign-center">
 					<div style="display: inline-block; width: 250px;">
 						<input class="row-cell-margin inputTime-kaf009" id="inpStartTime1"
-							data-bind="ntsTimeWithDayEditor: { name: '勤務時間直行',
+							data-bind="ntsTimeWithDayEditor: { name: '#[KAF009_39]',
 															constraint:'TimeWithDayAttr',
 															value: timeStart1, 
 															enable: isNewScreen, 
@@ -68,7 +68,7 @@
 					<div class="row-cell-margin"
 						style="display: inline-block; width: 250px;">
 						<input class="row-cell-margin inputTime-kaf009" id="inpEndTime1"
-							data-bind="ntsTimeWithDayEditor: {name: '勤務時間直帰', 
+							data-bind="ntsTimeWithDayEditor: {name: '#[KAF009_40]', 
 															constraint:'TimeWithDayAttr',
 															value: timeEnd1, 
 															enable: isNewScreen, 
@@ -146,7 +146,7 @@
 				<div class="cell valign-center">
 					<div style="display: inline-block; width: 250px;">
 						<input class="row-cell-margin inputTime-kaf009" id="inpStartTime2"
-							data-bind="ntsTimeWithDayEditor: {name: '勤務時間２直行',
+							data-bind="ntsTimeWithDayEditor: {name: '#[KAF009_41]',
 															constraint:'TimeWithDayAttr',
 															value: timeStart2,
 															enable: isNewScreen }" />
@@ -155,7 +155,7 @@
 					<div class="row-cell-margin"
 						style="display: inline-block; width: 250px;">
 						<input class="row-cell-margin inputTime-kaf009" id="inpEndTime2"
-							data-bind="ntsTimeWithDayEditor: {name: '勤務時間２直帰', 
+							data-bind="ntsTimeWithDayEditor: {name: '#[KAF009_42]', 
 															constraint:'TimeWithDayAttr',
 															value: timeEnd2,
 															enable: isNewScreen }" />
@@ -231,10 +231,10 @@
 			<div class="table clsWorkType" data-bind="if: workChangeBtnDisplay">
 				<div class="cell valign-center ">
 					<div class="valign-center control-group"
-						data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_22')}</div>
+						data-bind="ntsFormLabel:{ required: true }">#{i18n.getText('KAF009_22')}</div>
 					<BR />
 					<div class="valign-center control-group"
-						data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_23')}</div>
+						data-bind="ntsFormLabel:{ required: true }">#{i18n.getText('KAF009_23')}</div>
 				</div>
 				<div class="cell valign-center">
 					<button id="workSelect"
@@ -267,12 +267,11 @@
 		<!-- 申請理由（ラベル) -->
 		<div class="valign-top control-group"
 			data-bind="if: displayReason()">
-			<div class="lblTitleKAF009" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF009_27')}</div>
+			<div class="lblTitleKAF009" data-bind="ntsFormLabel: {constraint: 'AppReason'}">#{i18n.getText('KAF009_27')}</div>
 			<div id="inpReason">
 				<textarea id="inpReasonTextarea"
 					data-bind="ntsMultilineEditor: { value: multilContent,
 													option: multiOption, 
-													required : requiredReason, 
 													name: '#[KAF009_29]',
 													enable: enableReason,
 													}" />

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work;
 
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -19,8 +20,10 @@ public interface AggregateMonthlyRecordService {
 	 * @param closureId 締めID
 	 * @param closureDate 締め日付
 	 * @param datePeriod 期間
+	 * @param prevAggrResult 前回集計結果　（年休積立年休の集計結果）
 	 * @return 集計結果
 	 */
 	AggregateMonthlyRecordValue aggregate(String companyId, String employeeId,
-			YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate, DatePeriod datePeriod);
+			YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate, DatePeriod datePeriod,
+			AggrResultOfAnnAndRsvLeave prevAggrResult);
 }

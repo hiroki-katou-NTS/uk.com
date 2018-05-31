@@ -9,6 +9,7 @@
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kaf018.e.main.css" />
+			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="kaf018.e.service.js" />
 			<com:scriptfile path="kaf018.e.vm.js" />
 			<com:scriptfile path="kaf018.e.start.js" />
@@ -18,16 +19,22 @@
 			<div id="functions-area">
 				<!-- E1_1 -->
 				<a class="goback"
-					data-bind="ntsLinkButton: { jump: '/view/kaf/018/a/index.xhtml' }">振込元銀行の登録へ</a>
+					data-bind="ntsLinkButton: { jump: '/view/kaf/018/a/index.xhtml' }">#{i18n.getText('KAF018_17')}</a>
 				<!-- E1_2 -->
-				<button tabindex="1" class="proceed"
-					data-bind="click: function(){sendMail(person)}">#{i18n.getText('KAF018_49')}</button>
+				<com:ko-if bind="useSetting.usePersonConfirm">
+					<button tabindex="1" class="proceed"
+						data-bind="click: function(){sendMail(person)}">#{i18n.getText('KAF018_49')}</button>
+				</com:ko-if>
 				<!-- E1_3 -->
-				<button tabindex="2" class="proceed"
-					data-bind="click: function(){sendMail(daily)}">#{i18n.getText('KAF018_50')}</button>
+				<com:ko-if bind="useSetting.useBossConfirm">
+					<button tabindex="2" class="proceed"
+						data-bind="click: function(){sendMail(daily)}">#{i18n.getText('KAF018_50')}</button>
+				</com:ko-if>
 				<!-- E1_4 -->
-				<button tabindex="3" class="proceed"
-					data-bind="click: function(){sendMail(monthly)}">#{i18n.getText('KAF018_51')}</button>
+				<com:ko-if bind="useSetting.monthlyConfirm">
+					<button tabindex="3" class="proceed"
+						data-bind="click: function(){sendMail(monthly)}">#{i18n.getText('KAF018_51')}</button>
+				</com:ko-if>
 			</div>
 			<div id="contents-area">
 				<table id="tbl-control">
@@ -50,8 +57,8 @@
 							<!-- E3 --> <!-- E3_1 -->
 							<div class="limited-label label" style="width: 490px;">
 								<span data-bind="text: processingYm"></span>(<span
-									data-bind="text: startDate"></span> ~ <span
-									data-bind="text: endDate"></span>)
+									data-bind="text: startDateFormat"></span> ~ <span
+									data-bind="text: endDateFormat"></span>)
 							</div>
 						</td>
 					</tr>
@@ -60,37 +67,70 @@
 				<table id="fixed-table" tabindex="4">
 					<colgroup>
 						<col width="350px" />
-						<col width="100px" />
-						<col width="100px" />
-						<col width="100px" />
-						<col width="100px" />
-						<col width="100px" />
+						<com:ko-if bind="useSetting.monthlyConfirm">
+							<col width="100px" />
+						</com:ko-if>
+						<com:ko-if bind="useSetting.useBossConfirm">
+							<col width="100px" />
+							<col width="100px" />
+						</com:ko-if>
+						<com:ko-if bind="useSetting.usePersonConfirm">
+							<col width="100px" />
+							<col width="100px" />
+						</com:ko-if>
 						<col width="150px" />
 					</colgroup>
 					<thead>
 						<tr>
+							<!-- E5_H1_1 -->
 							<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF018_52')}</th>
-							<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF018_53')}</th>
-							<th class="ui-widget-header" colspan="2">#{i18n.getText('KAF018_54')}</th>
-							<th class="ui-widget-header" colspan="2">#{i18n.getText('KAF018_55')}</th>
+							<com:ko-if bind="useSetting.monthlyConfirm">
+								<!-- E5_H2_1 -->
+								<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF018_53')}</th>
+							</com:ko-if>
+							<com:ko-if bind="useSetting.useBossConfirm">
+								<!-- E5_H3_1 -->
+								<th class="ui-widget-header" colspan="2">#{i18n.getText('KAF018_54')}</th>
+							</com:ko-if>
+							<com:ko-if bind="useSetting.usePersonConfirm">
+								<!-- E5_H4_1 -->
+								<th class="ui-widget-header" colspan="2">#{i18n.getText('KAF018_55')}</th>
+							</com:ko-if>
+							<!-- E5_H5_1 -->
 							<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF018_58')}</th>
 						</tr>
 						<tr>
-							<th class="ui-widget-header">#{i18n.getText('KAF018_56')}</th>
-							<th class="ui-widget-header">#{i18n.getText('KAF018_57')}</th>
-							<th class="ui-widget-header">#{i18n.getText('KAF018_56')}</th>
-							<th class="ui-widget-header">#{i18n.getText('KAF018_57')}</th>
+							<com:ko-if bind="useSetting.useBossConfirm">
+								<!-- E5_H3_2 -->
+								<th class="ui-widget-header">#{i18n.getText('KAF018_56')}</th>
+								<!-- E5_H3_3 -->
+								<th class="ui-widget-header">#{i18n.getText('KAF018_57')}</th>
+							</com:ko-if>
+							<com:ko-if bind="useSetting.usePersonConfirm">
+								<!-- E5_H4_2 -->
+								<th class="ui-widget-header">#{i18n.getText('KAF018_56')}</th>
+								<!-- E5_H4_3 -->
+								<th class="ui-widget-header">#{i18n.getText('KAF018_57')}</th>
+							</com:ko-if>
 						</tr>
 					</thead>
 					<tbody data-bind="foreach: listWkpStatusConfirm">
 						<tr>
-							<td><a class="hyperlink" href="#" data-bind="text: name">アイコン無し、ただのリンク</a></td>
-							<td data-bind="text: $parent.getRecord(monthConfirm)"></td>
-							<td data-bind="text: $parent.getRecord(dayBossUnconfirm)"></td>
-							<td data-bind="text: $parent.getRecord(dayBossConfirm)"></td>
-							<td data-bind="text: $parent.getRecord(dayPrincipalUnconfirm)"></td>
-							<td data-bind="text: $parent.getRecord(dayPrincipalConfirm)"></td>
-							<td><div data-bind="ntsCheckBox: { checked: check, enable: enable }" /></td>
+							<td><a tabindex="-1" class="hyperlink" href="#"
+								data-bind="text: name, click: function(){$parent.gotoF($index)}">アイコン無し、ただのリンク</a></td>
+							<com:ko-if bind="$parent.useSetting.monthlyConfirm">
+								<td data-bind="text: $parent.getRecord(monthConfirm)"></td>
+							</com:ko-if>
+							<com:ko-if bind="$parent.useSetting.useBossConfirm">
+								<td data-bind="text: $parent.getRecord(dayBossUnconfirm)"></td>
+								<td data-bind="text: $parent.getRecord(dayBossConfirm)"></td>
+							</com:ko-if>
+							<com:ko-if bind="$parent.useSetting.usePersonConfirm">
+								<td data-bind="text: $parent.getRecord(dayPrincipalUnconfirm)"></td>
+								<td data-bind="text: $parent.getRecord(dayPrincipalConfirm)"></td>
+							</com:ko-if>
+							<td><div tabindex="-1"
+									data-bind="ntsCheckBox: { checked: check, enable: enable }, visible: enable" /></td>
 						</tr>
 					</tbody>
 				</table>

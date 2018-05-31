@@ -19,10 +19,8 @@ public class KclmtClosure_ {
 	/** The use class. */
 	public static volatile SingularAttribute<KclmtClosure, Integer> useClass;
 
-	/** The closure month. */
+	/** The month. */
 	public static volatile SingularAttribute<KclmtClosure, Integer> closureMonth;
-	
-	/** The closure classification. */
-	public static volatile SingularAttribute<KclmtClosure, Integer> closureClassification;
+
 
 }

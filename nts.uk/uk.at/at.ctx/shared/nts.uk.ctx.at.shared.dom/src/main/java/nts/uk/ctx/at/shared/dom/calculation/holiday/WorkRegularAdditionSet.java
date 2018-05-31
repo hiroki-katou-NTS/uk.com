@@ -4,92 +4,109 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.calculation.holiday;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.DeductLeaveEarly;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.EmploymentCalcDetailedSetIncludeVacationAmount;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.IncludeHolidaysPremiumCalcDetailSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.PremiumCalcMethodDetailOfHoliday;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.PremiumHolidayCalcMethod;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.WorkTimeCalcMethodDetailOfHoliday;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.WorkTimeHolidayCalcMethod;
 
 /**
- * The Class RegularWorkSet.
+ * The Class WorkRegularAdditionSet.
  */
-@AllArgsConstructor
+
 @Getter
 @NoArgsConstructor
 // 通常勤務の加算設定
 public class WorkRegularAdditionSet extends AggregateRoot{
+	
+	/** The company id. */
 	/** 会社ID */
 	private String companyId;
-
-	/** 実働のみで計算する */
-	private CalcActualOperationAtr calcActualOperation1;
-
-	/** インターバル免除時間を含めて計算する */
-	private int exemptTaxTime1;
-
-	/** 育児・介護時間を含めて計算する */
-	private int incChildNursingCare1;
-
-	/** 加算する */
-	private int additionTime1;
-
-	/** 遅刻・早退を控除しない */
-	private int notDeductLateleave1;
-
-	/** 通常、変形の所定超過時 */
-	private DeformatExcValueAtr deformatExcValue1;
-
-	/** インターバル免除時間を含めて計算する */
-	private int exemptTaxTime2;
-
-	/** 実働のみで計算する */
-	private CalcActualOperationAtr calcActualOperation2;
-
-	/** 育児・介護時間を含めて計算する */
-	private int incChildNursingCare2;
-
-	/** 遅刻・早退を控除しない */
-	private int notDeductLateleave2;
-
-	/** 加算する */
-	private int additionTime2;
 	
-	/*B5_22*/
-	/*就業時間帯毎の設定を可能とする*/
-	private boolean enableSetPerWorkHour1;
-	
-	/*B5_23*/
-	/*就業時間帯毎の設定を可能とする*/
-	private boolean enableSetPerWorkHour2;
+	/** The vacation calc method set. */
+	// 休暇の計算方法の設定
+	private HolidayCalcMethodSet vacationCalcMethodSet;
 
 	/**
-	 * create From Java Type Regular Work
-	 * 
-	 * @param companyId
-	 * @param calcActualOperation1
-	 * @param exemptTaxTime1
-	 * @param incChildNursingCare1
-	 * @param additionTime1
-	 * @param notDeductLateleave1
-	 * @param deformatExcValue1
-	 * @param exemptTaxTime2
-	 * @param calcActualOperation2
-	 * @param incChildNursingCare2
-	 * @param notDeductLateleave2
-	 * @param additionTime2
-	 * @param enableSetPerWorkHour1
-	 * @param enableSetPerWorkHour2
-	 * @return
+	 * Creates the from java type.
+	 *
+	 * @param companyId the company id
+	 * @param calcActualOperation1 the calc actual operation 1
+	 * @param exemptTaxTime1 the exempt tax time 1
+	 * @param incChildNursingCare1 the inc child nursing care 1
+	 * @param additionTime1 the addition time 1
+	 * @param notDeductLateleave1 the not deduct lateleave 1
+	 * @param deformatExcValue1 the deformat exc value 1
+	 * @param exemptTaxTime2 the exempt tax time 2
+	 * @param calcActualOperation2 the calc actual operation 2
+	 * @param incChildNursingCare2 the inc child nursing care 2
+	 * @param notDeductLateleave2 the not deduct lateleave 2
+	 * @param additionTime2 the addition time 2
+	 * @param enableSetPerWorkHour1 the enable set per work hour 1
+	 * @param enableSetPerWorkHour2 the enable set per work hour 2
+	 * @return the work regular addition set
 	 */
 	public static WorkRegularAdditionSet createFromJavaType(String companyId, int calcActualOperation1, int exemptTaxTime1,
-			int incChildNursingCare1, int additionTime1, int notDeductLateleave1, int deformatExcValue1,
-			int exemptTaxTime2, int calcActualOperation2, int incChildNursingCare2, int notDeductLateleave2,
-			int additionTime2, int enableSetPerWorkHour1, int enableSetPerWorkHour2) {
-		return new WorkRegularAdditionSet(companyId, EnumAdaptor.valueOf(calcActualOperation1, CalcActualOperationAtr.class),
+																int incChildNursingCare1, int additionTime1, int notDeductLateleave1, 
+																int deformatExcValue1, int exemptTaxTime2, int calcActualOperation2, 
+																int incChildNursingCare2, int notDeductLateleave2,
+																int additionTime2, int enableSetPerWorkHour1) {
+		return new WorkRegularAdditionSet(companyId, calcActualOperation1,
 				exemptTaxTime1, incChildNursingCare1, additionTime1, notDeductLateleave1,
-				EnumAdaptor.valueOf(deformatExcValue1, DeformatExcValueAtr.class), exemptTaxTime2,
-				EnumAdaptor.valueOf(calcActualOperation2, CalcActualOperationAtr.class), incChildNursingCare2,
-				notDeductLateleave2, additionTime2, enableSetPerWorkHour1 == 1 ? true : false, enableSetPerWorkHour2 == 1 ? true : false);
+				deformatExcValue1, exemptTaxTime2,
+				calcActualOperation2, incChildNursingCare2,
+				notDeductLateleave2, additionTime2, enableSetPerWorkHour1);
+	}
+
+	/**
+	 * Instantiates a new work regular addition set.
+	 *
+	 * @param companyId the company id
+	 * @param calcActualOperation1 the calc actual operation 1
+	 * @param exemptTaxTime1 the exempt tax time 1
+	 * @param incChildNursingCare1 the inc child nursing care 1
+	 * @param additionTime1 the addition time 1
+	 * @param notDeductLateleave1 the not deduct lateleave 1
+	 * @param deformatExcValue1 the deformat exc value 1
+	 * @param exemptTaxTime2 the exempt tax time 2
+	 * @param calcActualOperation2 the calc actual operation 2
+	 * @param incChildNursingCare2 the inc child nursing care 2
+	 * @param notDeductLateleave2 the not deduct lateleave 2
+	 * @param additionTime2 the addition time 2
+	 * @param enableSetPerWorkHour1 the enable set per work hour 1
+	 * @param enableSetPerWorkHour2 the enable set per work hour 2
+	 */
+	public WorkRegularAdditionSet(String companyId, int calcActualOperation1, int exemptTaxTime1,
+										int incChildNursingCare1, int additionTime1, int notDeductLateleave1, 
+										int deformatExcValue1, int exemptTaxTime2, int calcActualOperation2, 
+										int incChildNursingCare2, int notDeductLateleave2, int additionTime2, 
+										int enableSetPerWorkHour1) {
+		super();
+		this.companyId = companyId;
+		IncludeHolidaysPremiumCalcDetailSet includeHolidaysPremiumCalcDetailSet = new IncludeHolidaysPremiumCalcDetailSet(additionTime1, deformatExcValue1, null);
+		DeductLeaveEarly deductLeaveEarly = new DeductLeaveEarly(notDeductLateleave1, enableSetPerWorkHour1);
+		PremiumCalcMethodDetailOfHoliday advanceSetPre = new PremiumCalcMethodDetailOfHoliday(includeHolidaysPremiumCalcDetailSet, incChildNursingCare1, 
+																							deductLeaveEarly, exemptTaxTime1);
+		PremiumHolidayCalcMethod premiumHolidayCalcMethod = new PremiumHolidayCalcMethod(calcActualOperation1, advanceSetPre);
+		
+		
+		EmploymentCalcDetailedSetIncludeVacationAmount includeVacationSet 
+																	= new EmploymentCalcDetailedSetIncludeVacationAmount(additionTime2, null, 
+																														null, 
+																														null);
+		WorkTimeCalcMethodDetailOfHoliday advanceSetWork = new WorkTimeCalcMethodDetailOfHoliday(includeVacationSet, incChildNursingCare2, 
+																									notDeductLateleave2, 
+																									exemptTaxTime2, null);
+		WorkTimeHolidayCalcMethod workTimeHolidayCalcMethod = new WorkTimeHolidayCalcMethod(calcActualOperation2, advanceSetWork);
+		
+		HolidayCalcMethodSet calcMethodSet = new HolidayCalcMethodSet(premiumHolidayCalcMethod, workTimeHolidayCalcMethod);
+		
+		this.vacationCalcMethodSet = calcMethodSet;
 	}
 }

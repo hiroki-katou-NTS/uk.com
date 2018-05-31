@@ -1,14 +1,19 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.worktime;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
@@ -118,6 +123,11 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 							? null : attendanceActualS.getLocationCode().get().v();
 					krcdtTimeLeavingWork.attendanceActualSourceInfo = attendanceActualS.getStampSourceInfo() == null 
 							? 0 : attendanceActualS.getStampSourceInfo().value;
+				} else {
+					krcdtTimeLeavingWork.attendanceActualRoudingTime = null;
+					krcdtTimeLeavingWork.attendanceActualTime = null;
+					krcdtTimeLeavingWork.attendanceActualPlaceCode = null;
+					krcdtTimeLeavingWork.attendanceActualSourceInfo = null;
 				}
 				if (attendanceS != null) {
 					krcdtTimeLeavingWork.attendanceStampRoudingTime = attendanceS.getAfterRoundingTime() == null ? null
@@ -128,6 +138,11 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 							? null : attendanceS.getLocationCode().get().v();
 					krcdtTimeLeavingWork.attendanceStampSourceInfo = attendanceS.getStampSourceInfo() == null 
 							? 0 : attendanceS.getStampSourceInfo().value;
+				}else {
+					krcdtTimeLeavingWork.attendanceStampRoudingTime = null;
+					krcdtTimeLeavingWork.attendanceStampTime = null;
+					krcdtTimeLeavingWork.attendanceStampPlaceCode = null;
+					krcdtTimeLeavingWork.attendanceStampSourceInfo = null;
 				}
 				krcdtTimeLeavingWork.attendanceNumberStamp = attendanceStamp.getNumberOfReflectionStamp();
 			}
@@ -145,6 +160,11 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 							.getLocationCode().isPresent() ? null : as.getLocationCode().get().v();
 					krcdtTimeLeavingWork.leaveActualSourceInfo = as
 							.getStampSourceInfo() == null ? 0 : as.getStampSourceInfo().value;
+				}else {
+					krcdtTimeLeavingWork.leaveWorkActualRoundingTime = null;
+					krcdtTimeLeavingWork.leaveWorkActualTime = null;
+					krcdtTimeLeavingWork.leaveWorkActualPlaceCode = null;
+					krcdtTimeLeavingWork.leaveActualSourceInfo = null;
 				}
 				if (s != null) {
 					krcdtTimeLeavingWork.leaveWorkStampRoundingTime = s
@@ -156,6 +176,11 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 							.getLocationCode().isPresent() ? null : s.getLocationCode().get().v();
 					krcdtTimeLeavingWork.leaveWorkStampSourceInfo = s
 							.getStampSourceInfo() == null ? 0 : s.getStampSourceInfo().value;
+				}else {
+					krcdtTimeLeavingWork.leaveWorkStampRoundingTime = null;
+					krcdtTimeLeavingWork.leaveWorkStampTime = null;
+					krcdtTimeLeavingWork.leaveWorkStampPlaceCode = null;
+					krcdtTimeLeavingWork.leaveWorkStampSourceInfo = null;
 				}
 				krcdtTimeLeavingWork.leaveWorkNumberStamp = ls.getNumberOfReflectionStamp();
 				
@@ -211,19 +236,41 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 
 	@Override
 	public List<TimeLeavingOfDailyPerformance> finds(List<String> employeeIds, DatePeriod ymd) {
-		StringBuilder query = new StringBuilder();
-		query.append("SELECT a FROM KrcdtDaiLeavingWork a ");
+		List<TimeLeavingOfDailyPerformance> result = new ArrayList<>();
+		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDaiLeavingWork a ");
 		query.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId IN :employeeId ");
 		query.append("AND a.krcdtDaiLeavingWorkPK.ymd <= :end AND a.krcdtDaiLeavingWorkPK.ymd >= :start");
-		return queryProxy().query(query.toString(), KrcdtDaiLeavingWork.class).setParameter("employeeId", employeeIds)
-				.setParameter("start", ymd.start()).setParameter("end", ymd.end()).getList().stream()
-				.map(f -> f.toDomain()).collect(Collectors.toList());
+		TypedQueryWrapper<KrcdtDaiLeavingWork> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiLeavingWork.class);
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
+			result.addAll(tQuery.setParameter("employeeId", empIds)
+							.setParameter("start", ymd.start())
+							.setParameter("end", ymd.end())
+							.getList().stream().map(f -> f.toDomain()).collect(Collectors.toList()));
+		});
+		return result;
 	}
 
 	@Override
 	public void updateFlush(TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
 		this.update(timeLeavingOfDailyPerformance);
 		this.getEntityManager().flush();		
+	}
+
+	@Override
+	public List<TimeLeavingOfDailyPerformance> finds(Map<String, GeneralDate> param) {
+		List<TimeLeavingOfDailyPerformance> result = new ArrayList<>();
+		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDaiLeavingWork a ");
+		query.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId IN :employeeId ");
+		query.append("AND a.krcdtDaiLeavingWorkPK.ymd IN :date");
+		TypedQueryWrapper<KrcdtDaiLeavingWork> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiLeavingWork.class);
+		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
+			result.addAll(tQuery.setParameter("employeeId", p.keySet())
+							.setParameter("date", new HashSet<>(p.values()))
+							.getList().stream()
+							.filter(c -> c.krcdtDaiLeavingWorkPK.ymd.equals(p.get(c.krcdtDaiLeavingWorkPK.employeeId)))
+							.map(f -> f.toDomain()).collect(Collectors.toList()));
+		});
+		return result;
 	}
 
 }

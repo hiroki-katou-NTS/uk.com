@@ -1,15 +1,10 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
-
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
@@ -17,14 +12,10 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewA
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.SettingFlg;
 import nts.uk.shr.com.context.AppContexts;
@@ -77,7 +68,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		String companyID = AppContexts.user().companyId();
 		GoBackDirectlyCommonSetting goBackCommonSet = goBackDirectCommonSetRepo.findByCompanyID(companyID).get();
 		//アルゴリズム「2-1.新規画面登録前の処理」を実行する
-		processBeforeRegister.processBeforeRegister(application);
+		processBeforeRegister.processBeforeRegister(application,0);
 		// アルゴリズム「直行直帰するチェック」を実行する - client da duoc check
 		// アルゴリズム「直行直帰遅刻早退のチェック」を実行する
 		GoBackDirectLateEarlyOuput goBackLateEarly = this.goBackDirectLateEarlyCheck(goBackDirectly);
@@ -99,8 +90,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	@Override
 	public GoBackDirectAtr goBackDirectCheck(GoBackDirectly goBackDirectly) {
 		if (goBackDirectly.getGoWorkAtr1() == UseAtr.NOTUSE && goBackDirectly.getBackHomeAtr1() == UseAtr.NOTUSE
-				&& goBackDirectly.getGoWorkAtr2() == UseAtr.NOTUSE
-				&& goBackDirectly.getBackHomeAtr2() == UseAtr.NOTUSE) {
+				&& goBackDirectly.getGoWorkAtr2().get() == UseAtr.NOTUSE
+				&& goBackDirectly.getBackHomeAtr2().get() == UseAtr.NOTUSE) {
 			return GoBackDirectAtr.NOT;
 		} else {
 			return GoBackDirectAtr.IS;
@@ -165,10 +156,10 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		// 変更する
 		// if (goBackCommonSet.getWorkChangeFlg() == WorkChangeFlg.CHANGE
 		// || goBackCommonSet.getWorkChangeFlg() == WorkChangeFlg.DECIDECHANGE) {
-		if (goBackDirectly.getWorkChangeAtr() == UseAtr.USE) {
+		if (goBackDirectly.getWorkChangeAtr().get() == UseAtr.USE) {
 			// 勤務種類及び銃所時間帯はチェック対象
-			result.setSiftCd(goBackDirectly.getSiftCD());
-			result.setWorkTypeCD(goBackDirectly.getWorkTypeCD());
+			result.setSiftCd(goBackDirectly.getSiftCD().get());
+			result.setWorkTypeCD(goBackDirectly.getWorkTypeCD().get());
 			// } else if (goBackCommonSet.getWorkChangeFlg() == WorkChangeFlg.NOTCHANGE
 			// || goBackCommonSet.getWorkChangeFlg() == WorkChangeFlg.DECIDENOTCHANGE) {
 		} else {
@@ -196,14 +187,14 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		} else {
 			// MERGE NODE 1
 			// 勤務直行の確認
-			if (goBackDirectly.getGoWorkAtr2() == UseAtr.USE && goBackDirectly.getWorkTimeStart2() != null) {
+			if (goBackDirectly.getGoWorkAtr2().get() == UseAtr.USE && goBackDirectly.getWorkTimeStart2() != null) {
 				// 入力する
 				result.setCheckValid(true);
 			} else {
 				result.setWorkTimeStart(null);
 			}
 			// 勤務直帰の確認
-			if (goBackDirectly.getBackHomeAtr2() == UseAtr.USE && goBackDirectly.getWorkTimeEnd2() != null) {
+			if (goBackDirectly.getBackHomeAtr2().get() == UseAtr.USE && goBackDirectly.getWorkTimeEnd2() != null) {
 				result.setCheckValid(true);
 			} else {
 				result.setWorkTimeEnd(null);

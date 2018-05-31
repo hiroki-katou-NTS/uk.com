@@ -66,7 +66,11 @@ public class JpaRequestSettingRepository extends JpaRepository implements Reques
 											x.retrictPreMethodFlg, 
 											x.retrictPreUseFlg, 
 											x.retrictPreDay, 
-											x.retrictPreTimeDay), 
+											x.retrictPreTimeDay,
+											x.preOtTime,
+											x.normalOtTime,
+											x.otRestrictPreDay,
+											x.otToUse), 
 									AfterhandRestriction.toDomain(x.retrictPostAllowFutureFlg)))
 							.collect(Collectors.toList()), 
 						entity.krqstAppTypeDiscretes.stream()
@@ -254,17 +258,34 @@ public class JpaRequestSettingRepository extends JpaRepository implements Reques
 			}
 			// if exist => update
 			else{
+				KrqstAppTypeDiscrete temp = oldEntity1.get();
 				//チェック方法 - retrictPreMethodFlg - RETRICT_PRE_METHOD_CHECK_FLG
-				oldEntity1.get().retrictPreMethodFlg = item.getBeforehandRestriction().getMethodCheck().value;
+				temp.retrictPreMethodFlg = item.getBeforehandRestriction().getMethodCheck().value;
+				
 				// 利用する - retrictPreUseFlg - RETRICT_PRE_USE_FLG
-				oldEntity1.get().retrictPreUseFlg = item.getBeforehandRestriction().getToUse() == true ? 1 : 0;
+				temp.retrictPreUseFlg = 0;
+				
 				// 日数 - retrictPreDay - RETRICT_PRE_DAY
-				oldEntity1.get().retrictPreDay = item.getBeforehandRestriction().getDateBeforehandRestriction().value;
+				temp.retrictPreDay = 0;
+				
 				// 時刻 - retrictPreTimeDay - RETRICT_PRE_TIMEDAY
-				oldEntity1.get().retrictPreTimeDay = item.getBeforehandRestriction().getTimeBeforehandRestriction().v();
+				temp.retrictPreTimeDay = item.getBeforehandRestriction().getTimeBeforehandRestriction() == null ? null : item.getBeforehandRestriction().getTimeBeforehandRestriction().v();
+				
+				// 時刻（早出残業）
+				temp.preOtTime = null;
+				
+				// 時刻（通常残業）
+				temp.normalOtTime = null;
+				
+				// 日数 - 残業申請事前の受付制限
+				temp.otRestrictPreDay = item.getBeforehandRestriction().getDateBeforehandRestriction().value;
+				
+				// 利用する - 残業申請事前の受付制限
+				temp.otToUse = item.getBeforehandRestriction().getOtToUse() ? 1 : 0;
+				
 				// 未来日許可しない - retrictPostAllowFutureFlg - RETRICT_POST_ALLOW_FUTURE_FLG
-				oldEntity1.get().retrictPostAllowFutureFlg = item.getAfterhandRestriction().getAllowFutureDay() == true ? 1: 0;
-				this.commandProxy().update(oldEntity1.get());
+				temp.retrictPostAllowFutureFlg = item.getAfterhandRestriction().getAllowFutureDay() ? 1: 0;
+				this.commandProxy().update(temp);
 			}
 		}
 		// filter list app type setting need update (if list insert don't need update)

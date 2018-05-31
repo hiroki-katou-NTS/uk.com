@@ -4,7 +4,7 @@ module nts.uk.com.view.cps009.b {
         __viewContext["viewModel"].start().done(function(data) {
             $("#grid0").ntsGrid({
                 width: '300px',
-                height: '370px',
+                height: '465px',
                 dataSource: __viewContext["viewModel"].itemInitLst || [],
                 primaryKey: 'perInfoItemDefId',
                 virtualization: true,
@@ -12,7 +12,7 @@ module nts.uk.com.view.cps009.b {
                 columns: [
                     { headerText: '', key: 'perInfoItemDefId', dataType: 'string', width: '50px', hidden: true },
                     { headerText: '', key: 'isRequired', dataType: 'number', width: '50px', hidden: true },
-                    { headerText: '', key: 'disabled', dataType: 'boolean', width: '50px', showHeaderCheckbox: true, ntsControl: 'Checkbox'},
+                    { headerText: '', key: 'disabled', dataType: 'boolean', width: '50px', showHeaderCheckbox: true, ntsControl: 'Checkbox' },
                     { headerText: nts.uk.resource.getText('CPS009_33'), key: 'itemName', dataType: 'string', width: '250px' }
                 ],
                 ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true }],
@@ -32,8 +32,10 @@ module nts.uk.com.view.cps009.b {
                 }]
             });
             __viewContext.bind(__viewContext["viewModel"]);
-            
-            $( document ).ready(function() {
+
+            $(document).ready(function() {
+                $('#grid0_container').attr("tabindex","-1");
+                $('#grid0_virtualContainer').attr("tabindex", "1");
                 $('span.box').attr("tabindex", "2");
                 let beforeIndex = -1;
                 $(window).keyup((e) => {
@@ -50,9 +52,3 @@ module nts.uk.com.view.cps009.b {
     });
 }
 
-$(document).on("click", "#grid0_disabled > span > div > label > input[type='checkbox']", function(evt, ui) {
-    let itemDisable = _.filter(__viewContext["viewModel"].itemInitLst, { itemName: "終了日" });
-    _.each(itemDisable, function(x) {        $("#grid0").ntsGrid("updateRow", x.perInfoItemDefId, { disabled: false });
-    }); 
- });
-    

@@ -16,198 +16,41 @@
 	}
 }
 
-#contents-area>.left-area, #contents-area .right-area {
+#contents-area>.left-area, 
+#contents-area>.right-area,
+#contents-area>*>.left-area, 
+#contents-area>*>.right-area {
 	float: left;
 }
 
-#contents-area>.left-area {
+#contents-area>.left-area,
+#contents-area>*>.left-area {
 	width: 280px;
 	margin-left: 85px;
 }
 
-#contents-area>.left-area .bg-green {
+#contents-area>.left-area .bg-green,
+#contents-area>*>.left-area .bg-green {
 	padding: 12px;
-	max-height: 250px;
 }
 
-#contents-area>.right-area {
+#contents-area>.right-area,
+#contents-area>*>.right-area {
 	padding-left: 15px;
 	width: 860px;
 }
 
-#contents-area>.left-area #lefttabs {
+#contents-area>.right-area {
+	margin-top: -120px;
+}
+
+#contents-area>.left-area #lefttabs,
+#contents-area>*>.left-area #lefttabs {
 	margin-top: 5px;
 }
 
 #lefttabs .ntsSearchBox.ntsSearchBox_Component {
-	min-width: 100px;
-}
-
-.avatar-group, .person-group, .action-group {
-	float: left;
-	padding: 0 1px;
-}
-
-.avatar-group {
-	width: 110px;
-	height: 147px;
-	cursor: pointer;
-}
-
-.person-group {
-	width: 510px;
-	height: 147px;
-}
-
-.action-group {
-	width: 234px;
-	height: 147px;
-}
-
-.action-group .active-panel:first-child {
-	height: 85px;
-}
-
-.action-group .active-panel:last-child {
-	height: 60px;
-}
-
-.action-group .column {
-	width: 112px;
-	margin-left: 1px;
-	padding: 3px 0 3px 5px;
-	box-sizing: border-box;
-	float: left;
-}
-
-.action-group button.btn {
-	width: 100%;
-	margin-bottom: 5px;
-	padding-left: 30px;
-	text-align: left;
-}
-
-.action-group .btn-print {
-	height: 65px;
-	background-repeat: no-repeat;
-	background-position-x: 2px;
-	background-position-y: center;
-	background-image: url("images/print.png");
-}
-
-.action-group .btn-location {
-	background-repeat: no-repeat;
-	background-position-x: 2px;
-	background-position-y: center;
-	background-image: url("images/location.png");
-	background-position-y: center;
-}
-
-.action-group .btn-details {
-	background-repeat: no-repeat;
-	background-position-x: 5px;
-	background-position-y: center;
-	background-image: url("images/details.png");
-}
-
-.action-group .btn-goout {
-	cursor: pointer;
-	display: block;
-	min-height: 51px;
-	line-height: 50px;
-	padding-left: 60px;
-	background-repeat: no-repeat;
-	background-position-x: 5px;
-	background-position-y: center;
-	background-image: url("images/goout.png");
-	display: block;
-}
-
-.active-panel {
-	width: 100%;
-	min-height: 52px;
-	height: 100%;
-	box-sizing: border-box;
-	border: 1px solid #999999;
-	margin-bottom: 2px;
-}
-
-.active-panel:before {
-	content: '';
-	display: block;
-	background-color: #00B050;
-	display: block;
-	background-color: #00B050;
-	height: 7px;
-}
-
-.avatar-group img.avatar {
-	padding: 5px 2px 2px 5px;
-	width: 100px;
-	height: 130px;
-}
-
-.person-info {
-	margin: 5px;
-	width: calc(100% - 10px);
-	box-sizing: border-box;
-}
-
-.person-info td {
-	line-height: 30px;
-	border: 1px solid #999;
-}
-
-.person-info td:not (:first-child ) {
-	position: relative;
-}
-
-.person-info td:first-child {
-	width: 120px;
-	padding-left: 15px;
-}
-
-.person-info td:nth-child(3) {
-	width: 100px;
-	padding-left: 15px;
-	box-sizing: border-box;
-}
-
-.person-info td>div.info {
-	float: left;
-	display: block;
-	padding-left: 5px;
-	padding-right: 5px;
-	min-height: 30px;
-	max-height: 30px;
-	overflow: hidden;
-}
-
-.person-info td>div.info>* {
-	display: inline-block;
-	max-width: 215px;
-	text-overflow: ellipsis;
-	height: 30px;
-	overflow: hidden;
-	white-space: nowrap;
-}
-
-.person-info td>div.info>*:first-child {
-	min-width: 110px;
-	max-width: 110px;
-}
-
-.person-info td>div.info.first {
-	min-width: 95px;
-	max-width: 95px;
-}
-
-.person-info td>div.bg-calendar-ym-set {
-	display: inline-block;
-	padding-left: 10px;
-	padding-right: 10px;
-	border-left: 1px solid #999;
-	border-right: 1px solid #999;
+	width: 173px;
 }
 
 .bottom-right-area {
@@ -222,7 +65,7 @@
 #contents-area .layout-control .drag-panel {
 	min-width: 860px;
 	min-height: 445px;
-	height: calc(100vh - 365px) !important;
+	height: calc(100vh - 390px) !important;
 }
 
 #contents-area .category-input .cat-has-childs .layout-control .drag-panel
@@ -269,7 +112,7 @@
 }
 
 .ui-igcombo-wrapper {
-	width: 195px;
+	width: 100%;
 }
 
 .caret-background.caret-right:after {
@@ -277,9 +120,13 @@
 	border-width: 35px 10px
 }
 
-.category-input>.title {
+#contents-area>.right-area>.title {
 	display: block;
 	line-height: 37px;
 	text-align: center;
 	background-color: #cee6ff;
+}
+
+#contents-area>.right-area>.ntsControl.layout-control {
+	margin-top: 10px;
 }

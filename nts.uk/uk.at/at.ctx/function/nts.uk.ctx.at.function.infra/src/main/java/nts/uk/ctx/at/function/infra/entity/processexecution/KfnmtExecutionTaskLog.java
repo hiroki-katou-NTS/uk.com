@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.infra.entity.processexecution;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -27,7 +28,7 @@ public class KfnmtExecutionTaskLog extends UkJpaEntity implements Serializable{
 	
 	/* 終了状態 */
 	@Column(name = "STATUS")
-	public int status;
+	public Integer status;
 	
 	@ManyToOne(optional = false)
 	@JoinColumns({
@@ -48,21 +49,32 @@ public class KfnmtExecutionTaskLog extends UkJpaEntity implements Serializable{
 		return this.kfnmtExecTaskLogPK;
 	}
 	
-	public KfnmtExecutionTaskLog(KfnmtExecutionTaskLogPK kfnmtExecTaskLogPK, int status) {
+	public KfnmtExecutionTaskLog(KfnmtExecutionTaskLogPK kfnmtExecTaskLogPK, Integer status) {
 		super();
 		this.kfnmtExecTaskLogPK = kfnmtExecTaskLogPK;
 		this.status = status;
 	}
 	
+	public static KfnmtExecutionTaskLog toEntity(String companyId, String execItemCd, String execId, ExecutionTaskLog domain) {
+		
+		Integer status = null;
+		if(domain.getStatus()!=null){
+			if(domain.getStatus().isPresent()){
+				status =domain.getStatus().get().value;
+			}
+		}
+		
+		return new KfnmtExecutionTaskLog(
+				new KfnmtExecutionTaskLogPK(companyId, execItemCd, execId, domain.getProcExecTask().value),
+				status);
+	}
+	
 	public ExecutionTaskLog toDomain() {
+		
 		return new ExecutionTaskLog(EnumAdaptor.valueOf(this.kfnmtExecTaskLogPK.taskId, ProcessExecutionTask.class),
-				EnumAdaptor.valueOf(this.status, EndStatus.class));
+				(this.status!=null)?Optional.ofNullable(EnumAdaptor.valueOf(this.status.intValue(), EndStatus.class)):Optional.empty());
 		
 	}
 	
-	public static KfnmtExecutionTaskLog toEntity(String companyId, String execItemCd, String execId, ExecutionTaskLog domain) {
-		return new KfnmtExecutionTaskLog(
-				new KfnmtExecutionTaskLogPK(companyId, execItemCd, execId, domain.getProcExecTask().value),
-				domain.getStatus() == null ? null : domain.getStatus().value);
-	}
+	
 }

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.entity.monthly;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,7 +13,20 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.AggregateTotalTimeSpentAtWork;
+import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
+import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
+import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.totalcount.TotalCountByPeriod;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.KrcdtMonAggrTotalSpt;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.KrcdtMonAgreementTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.actualworkingtime.KrcdtMonRegIrregTime;
@@ -25,7 +39,9 @@ import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.vacationusetime.KrcdtMonVactUseTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.excessoutside.KrcdtMonExcessOutside;
 import nts.uk.ctx.at.record.infra.entity.monthly.excessoutside.KrcdtMonExcoutTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.totalcount.KrcdtMonTotalTimes;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.KrcdtMonVerticalTotal;
+import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workclock.KrcdtMonWorkClock;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonAggrAbsnDays;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonAggrSpecDays;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonLeave;
@@ -34,6 +50,10 @@ import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMon
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonAggrGoout;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonAggrPremTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonMedicalTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -156,11 +176,141 @@ public class KrcdtMonAttendanceTime extends UkJpaEntity implements Serializable 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
 	public List<KrcdtMonMedicalTime> krcdtMonMedicalTime;
 	
+	/** 縦計：勤務時刻 */
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
+	public KrcdtMonWorkClock krcdtMonWorkClock;
+	
+	/** 回数集計 */
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
+	public List<KrcdtMonTotalTimes> krcdtMonTotalTimes;
+	
 	/**
 	 * キー取得
 	 */
 	@Override
 	protected Object getKey() {
 		return this.PK;
+	}
+	
+	/**
+	 * ドメインに変換
+	 * @return 月別実績の勤怠時間
+	 */
+	public AttendanceTimeOfMonthly toDomain(){
+
+		// 月別実績の通常変形時間
+		RegularAndIrregularTimeOfMonthly regAndIrgTime = new RegularAndIrregularTimeOfMonthly();
+		if (this.krcdtMonRegIrregTime != null){
+			regAndIrgTime = this.krcdtMonRegIrregTime.toDomain();
+		}
+		
+		// 月別実績のフレックス時間
+		FlexTimeOfMonthly flexTime = new FlexTimeOfMonthly();
+		if (this.krcdtMonFlexTime != null){
+			flexTime = this.krcdtMonFlexTime.toDomain();
+		}
+		
+		// 集計総労働時間
+		AggregateTotalWorkingTime aggregateTotalWorkingTime = new AggregateTotalWorkingTime();
+		if (this.krcdtMonAggrTotalWrk != null){
+			aggregateTotalWorkingTime = this.krcdtMonAggrTotalWrk.toDomain(
+					this.krcdtMonOverTime,
+					this.krcdtMonAggrOverTimes,
+					this.krcdtMonHdwkTime,
+					this.krcdtMonAggrHdwkTimes,
+					this.krcdtMonVactUseTime);
+		}
+		
+		// 集計総拘束時間
+		AggregateTotalTimeSpentAtWork aggregateTotalTimeSpent = new AggregateTotalTimeSpentAtWork();
+		if (this.krcdtMonAggrTotalSpt != null){
+			aggregateTotalTimeSpent = this.krcdtMonAggrTotalSpt.toDomain();
+		}
+		
+		// 月別実績の36協定時間
+		AgreementTimeOfMonthly agreementTime = new AgreementTimeOfMonthly();
+		if (this.krcdtMonAgreementTime != null){
+			agreementTime = this.krcdtMonAgreementTime.toDomain();
+		}
+		
+		// 月別実績の月の計算
+		val monthlyCalculation = MonthlyCalculation.of(
+				regAndIrgTime,
+				flexTime,
+				new AttendanceTimeMonth(this.statutoryWorkingTime),
+				aggregateTotalWorkingTime,
+				new AttendanceTimeMonth(this.totalWorkingTime),
+				aggregateTotalTimeSpent,
+				agreementTime);
+		
+		// 月別実績の時間外超過
+		ExcessOutsideWorkOfMonthly excessOutsideWork = new ExcessOutsideWorkOfMonthly();
+		if (this.krcdtMonExcessOutside != null){
+			excessOutsideWork = this.krcdtMonExcessOutside.toDomain(this.krcdtMonExcoutTime);
+		}
+		
+		// 月別実績の縦計
+		VerticalTotalOfMonthly verticalTotal = new VerticalTotalOfMonthly();
+		if (this.krcdtMonVerticalTotal != null){
+			verticalTotal = this.krcdtMonVerticalTotal.toDomain(
+					this.krcdtMonLeave,
+					this.krcdtMonAggrAbsnDays,
+					this.krcdtMonAggrSpecDays,
+					this.krcdtMonAggrBnspyTime,
+					this.krcdtMonAggrGoout,
+					this.krcdtMonAggrPremTime,
+					this.krcdtMonAggrDivgTime,
+					this.krcdtMonMedicalTime,
+					this.krcdtMonWorkClock);
+		}
+		
+		// 期間別の回数集計
+		TotalCountByPeriod totalCount = new TotalCountByPeriod();
+		if (this.krcdtMonTotalTimes != null){
+			totalCount = TotalCountByPeriod.of(
+					this.krcdtMonTotalTimes.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+		}
+		
+		return AttendanceTimeOfMonthly.of(
+				this.PK.employeeId,
+				new YearMonth(this.PK.yearMonth),
+				ClosureId.valueOf(this.PK.closureId),
+				new ClosureDate(this.PK.closureDay, (this.PK.isLastDay != 0)),
+				new DatePeriod(this.startYmd, this.endYmd),
+				monthlyCalculation,
+				excessOutsideWork,
+				verticalTotal,
+				totalCount,
+				new AttendanceDaysMonth(this.aggregateDays));
+	}
+	
+	/**
+	 * ドメインから変換　（for Insert）
+	 * @param domain 月別実績の勤怠時間
+	 */
+	public void fromDomainForPersist(AttendanceTimeOfMonthly domain){
+		
+		this.PK = new KrcdtMonAttendanceTimePK(
+				domain.getEmployeeId(),
+				domain.getYearMonth().v(),
+				domain.getClosureId().value,
+				domain.getClosureDate().getClosureDay().v(),
+				(domain.getClosureDate().getLastDayOfMonth() ? 1 : 0));
+		this.fromDomainForUpdate(domain);
+	}
+	
+	/**
+	 * ドメインから変換　(for Update)
+	 * @param domain 月別実績の勤怠時間
+	 */
+	public void fromDomainForUpdate(AttendanceTimeOfMonthly domain){
+
+		val monthlyCalculation = domain.getMonthlyCalculation();
+		
+		this.startYmd = domain.getDatePeriod().start();
+		this.endYmd = domain.getDatePeriod().end();
+		this.aggregateDays = domain.getAggregateDays().v();
+		this.statutoryWorkingTime = monthlyCalculation.getStatutoryWorkingTime().v();
+		this.totalWorkingTime = monthlyCalculation.getTotalWorkingTime().v();
 	}
 }

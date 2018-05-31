@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
+import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternWorkScheduleCre;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
@@ -21,7 +22,6 @@ import nts.uk.ctx.at.shared.dom.workingcondition.ScheduleMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZoneScheduledMasterAtr;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBusCal;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleMasterReferenceAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -174,16 +174,15 @@ public class AddWorkingConditionCommandAssembler {
 						WorkScheduleMasterReferenceAtr.class) : null,command.getReferenceType() != null ? EnumAdaptor.valueOf(command.getReferenceType().intValue(),
 						TimeZoneScheduledMasterAtr.class) : null);
 		// MonthlyPatternWorkScheduleCre
-		// Set default to FOLLOW_MASTER_REFERENCE
-		MonthlyPatternWorkScheduleCre monthlySchedule = new MonthlyPatternWorkScheduleCre( TimeZoneScheduledMasterAtr.FOLLOW_MASTER_REFERENCE);
-		ScheduleMethod scheduleMethod = new ScheduleMethod(
-				command.getBasicCreateMethod()!=null? EnumAdaptor.valueOf(command.getBasicCreateMethod().intValue(), WorkScheduleBasicCreMethod.class) :null,
-				busCal, monthlySchedule);
+		MonthlyPatternWorkScheduleCre monthlySchedule = new MonthlyPatternWorkScheduleCre(
+				command.getReferenceType().intValue());
+		ScheduleMethod scheduleMethod = new ScheduleMethod(command.getBasicCreateMethod().intValue(), busCal,
+				monthlySchedule);
 		WorkingConditionItem workingCond = new WorkingConditionItem(histId,
 				// Default value is Use する
 				EnumAdaptor.valueOf(
-						command.getScheduleManagementAtr() != null ? command.getScheduleManagementAtr().intValue() : NotUseAtr.USE.value,
-						NotUseAtr.class),
+						command.getScheduleManagementAtr() != null ? command.getScheduleManagementAtr().intValue() : ManageAtr.USE.value,
+								ManageAtr.class),
 				workDayOfWeek, workCategory,
 				// Default value is Notuse しない
 				EnumAdaptor.valueOf(command.getAutoStampSetAtr() != null ? command.getAutoStampSetAtr().intValue() : NotUseAtr.NOTUSE.value,
@@ -198,9 +197,11 @@ public class AddWorkingConditionCommandAssembler {
 						command.getVacationAddedTimeAtr() != null ? command.getVacationAddedTimeAtr().intValue() : NotUseAtr.NOTUSE.value,
 						NotUseAtr.class),
 				// Default vaule is 0
-				command.getContractTime() != null ? new LaborContractTime(command.getContractTime().intValue()) : new LaborContractTime(0),
-						command.getLaborSystem() != null ? EnumAdaptor.valueOf(command.getLaborSystem().intValue(),
-						WorkingSystem.class) : null,
+				command.getContractTime() != null ? new LaborContractTime(command.getContractTime().intValue())
+						: new LaborContractTime(0),
+				command.getLaborSystem() != null
+						? EnumAdaptor.valueOf(command.getLaborSystem().intValue(), WorkingSystem.class)
+						: WorkingSystem.REGULAR_WORK,
 				// HourlyPaymentAtr default value is 時給者以外
 				holidayAddTimeSet, scheduleMethod, command.getHourlyPaymentAtr() != null? command.getHourlyPaymentAtr().intValue() : HourlyPaymentAtr.OOUTSIDE_TIME_PAY.value,
 				command.getTimeApply() != null ? new BonusPaySettingCode(command.getTimeApply()) : null,

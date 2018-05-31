@@ -51,7 +51,7 @@ public class KshmtPerWorkCat extends UkJpaEntity implements Serializable {
 
 	/** The kshmt per work cats. */
 	@JoinColumns({
-			@JoinColumn(name = "HISTORY_ID", referencedColumnName = "HISTORY_ID", insertable = true, updatable = true) ,
+			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = true, updatable = true) ,
 			@JoinColumn(name = "PER_WORK_CAT_ATR", referencedColumnName = "PER_WORK_CAT_ATR", insertable = true, updatable = true) })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<KshmtWorkCatTimeZone> kshmtWorkCatTimeZones;

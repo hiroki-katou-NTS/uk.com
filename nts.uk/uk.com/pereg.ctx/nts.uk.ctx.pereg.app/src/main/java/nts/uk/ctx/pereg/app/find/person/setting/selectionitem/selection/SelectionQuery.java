@@ -9,5 +9,7 @@ public class SelectionQuery {
 	private int selectionItemRefType;
 
 	private String baseDate;
+	
+	private String categoryCode;
 
 }

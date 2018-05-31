@@ -5,9 +5,9 @@ module a4 {
     import TabMode = nts.uk.at.view.kmk003.a.viewmodel.TabMode;
     import WorkTimeSettingEnumDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeSettingEnumDto;
     import PrioritySettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.PrioritySettingModel;
+    import StampPiorityAtr = nts.uk.at.view.kmk003.a.service.model.common.StampPiorityAtr;
+    
     class ScreenModel {
-
-        selectedTab: KnockoutObservable<string>;
         
         // Screen mode
         isDetailMode: KnockoutObservable<boolean>;
@@ -34,12 +34,12 @@ module a4 {
         afternoon: KnockoutObservable<number>;
         
         mainSettingModel: MainSettingModel;
+        enumSetting: WorkTimeSettingEnumDto;
         /**
         * Constructor.
         */
-        constructor(selectedTab: KnockoutObservable<string>, tabMode: any,enumSetting: WorkTimeSettingEnumDto,mainSettingModel: MainSettingModel) {
+        constructor(tabMode: any,enumSetting: WorkTimeSettingEnumDto,mainSettingModel: MainSettingModel) {
             let self = this;
-            self.selectedTab = selectedTab;
             
             // Subscribe Detail/Simple mode 
             self.isDetailMode = ko.observable(null);
@@ -50,6 +50,7 @@ module a4 {
             
             //main model
             self.mainSettingModel = mainSettingModel;
+            self.enumSetting = enumSetting;
             
             self.priorityOptions = ko.observableArray([
                 new Item(0, nts.uk.resource.getText("KMK003_69")),
@@ -92,17 +93,202 @@ module a4 {
             let workForm = self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr();
 
             let stamp = self.mainSettingModel.commonSetting.stampSet;
-            self.priorityGoWork = stamp.prioritySets[0].priorityAtr() == EnumStampPiorityAtr.GOING_WORK ? stamp.prioritySets[0].stampAtr : stamp.prioritySets[1].stampAtr;
-            self.priorityLeaveWork = stamp.prioritySets[0].priorityAtr() == EnumStampPiorityAtr.LEAVE_WORK ? stamp.prioritySets[0].stampAtr : stamp.prioritySets[1].stampAtr;
+            self.priorityGoWork = stamp.getPrioritySetsGoWork().priorityAtr;
+            self.priorityLeaveWork = stamp.getPrioritySetsLeaveWork().priorityAtr;
             //                
-            self.stampRoundingGoWork = stamp.roundingSets[0].section() == EnumStampPiorityAtr.GOING_WORK ? stamp.roundingSets[0].roundingSet.roundingTimeUnit : stamp.roundingSets[1].roundingSet.roundingTimeUnit;
-            self.stampRoundingLeaveWork = stamp.roundingSets[0].section() == EnumStampPiorityAtr.LEAVE_WORK ? stamp.roundingSets[0].roundingSet.roundingTimeUnit : stamp.roundingSets[1].roundingSet.roundingTimeUnit;
+            self.stampRoundingGoWork = stamp.getRoundingSetsAttendance().roundingSet.roundingTimeUnit;
+            self.stampRoundingLeaveWork = stamp.getRoundingSetsOfficeWork().roundingSet.roundingTimeUnit;
             
-            self.stampGoWork = stamp.roundingSets[0].section() == EnumStampPiorityAtr.GOING_WORK ? stamp.roundingSets[0].roundingSet.fontRearSection : stamp.roundingSets[1].roundingSet.fontRearSection;
-            self.stampLeaveWork = stamp.roundingSets[0].section() == EnumStampPiorityAtr.LEAVE_WORK ? stamp.roundingSets[0].roundingSet.fontRearSection : stamp.roundingSets[1].roundingSet.fontRearSection;
+            self.stampGoWork = stamp.getRoundingSetsAttendance().roundingSet.fontRearSection;
+            self.stampLeaveWork = stamp.getRoundingSetsOfficeWork().roundingSet.fontRearSection;
             //check mode screen
         }
+        
+        /**
+         * Open Dialog Advance Setting
+         */
+        public openAdvanceSettingDialog(): void {
+            let _self = this;
 
+            nts.uk.ui.block.grayout();
+            let isLinked: boolean = false;
+            
+            let isFlow: boolean = _self.mainSettingModel.workTimeSetting.isFlow(); 
+            let isUseTime2: boolean = _self.mainSettingModel.workTimeSetting.isFlow() && _self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.useAtr(); 
+            let isFixedAndUseTime2: boolean = _self.mainSettingModel.workTimeSetting.isFixed() && _self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.useAtr();          
+            // Add common param
+            let dataObject: any = {
+                isManageEntryExit: _self.mainSettingModel.manageEntryExit.useClassification(),
+                isFlow: isFlow,
+                isUseTime2: isUseTime2,
+                isFixedAndUseTime2: isFixedAndUseTime2,
+                listRoundingTimeUnit: _self.enumSetting.roundingTimeUnit,
+                
+                prioritySettingEntering: _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsEnter().priorityAtr(),
+                prioritySettingExit: _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsExit().priorityAtr(),
+                prioritySettingPcLogin: _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsPcLogin().priorityAtr(),
+                prioritySettingPcLogout: _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsPcLogout().priorityAtr(),
+                goOutRoundingUnit: _self.mainSettingModel.commonSetting.stampSet.getRoundingSetsGoOut().roundingSet.roundingTimeUnit(),
+                goOutFontRearSection: _self.mainSettingModel.commonSetting.stampSet.getRoundingSetsGoOut().roundingSet.fontRearSection(),
+                turnBackRoundingUnit: _self.mainSettingModel.commonSetting.stampSet.getRoundingSetsTurnBack().roundingSet.roundingTimeUnit(),
+                turnBackFontRearSection: _self.mainSettingModel.commonSetting.stampSet.getRoundingSetsTurnBack().roundingSet.fontRearSection()
+            };
+            // Add worktime mode param 
+            if (_self.mainSettingModel.workTimeSetting.isFlow()) {
+                dataObject.stampTwoTimeReflect = _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.twoTimesWorkReflectBasicTime();
+                if (_self.mainSettingModel.isInterlockDialogJ()) {
+                    let oneDayEndTime: number = _self.mainSettingModel.predetemineTimeSetting.startDateClock() + (_self.mainSettingModel.predetemineTimeSetting.rangeTimeDay());
+                    dataObject.stampGoWorkFlowStart = _self.mainSettingModel.predetemineTimeSetting.startDateClock();
+                    dataObject.stampGoWorkFlowEnd = oneDayEndTime;                    
+                    dataObject.stampLeavingWorkFlowStart = _self.mainSettingModel.predetemineTimeSetting.startDateClock();
+                    dataObject.stampLeavingWorkFlowEnd = oneDayEndTime;
+                } else {                   
+                    dataObject.stampGoWorkFlowStart = _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.getGoWorkFlowStamp().startTime();
+                    dataObject.stampGoWorkFlowEnd = _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.getGoWorkFlowStamp().endTime();                    
+                    dataObject.stampLeavingWorkFlowStart = _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.getLeaveWorkFlowStamp().startTime();
+                    dataObject.stampLeavingWorkFlowEnd = _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.getLeaveWorkFlowStamp().endTime();
+                }
+            } 
+            if (_self.mainSettingModel.workTimeSetting.isFixed()) {
+                if (_self.mainSettingModel.isInterlockDialogJ()) {
+                    let workStart: number = _self.mainSettingModel.predetemineTimeSetting.startDateClock();
+                    let workEnd: number = _self.mainSettingModel.predetemineTimeSetting.startDateClock() + _self.mainSettingModel.predetemineTimeSetting.rangeTimeDay();
+                    let endWork1: number = _self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftOne.end();
+                    let startWork2: number = _self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.start();
+                    if (_self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.useAtr()) {                       
+                        dataObject.stampGoWork1Start = workStart;
+                        dataObject.stampGoWork1End = endWork1;
+                        dataObject.stampLeavingWork1Start = workStart;
+                        dataObject.stampLeavingWork1End = startWork2;
+                        dataObject.stampGoWork2Start = endWork1 + 1;
+                        dataObject.stampGoWork2End = workEnd;
+                        dataObject.stampLeavingWork2Start = startWork2 + 1;
+                        dataObject.stampLeavingWork2End = workEnd;
+                    } else {
+                        dataObject.stampGoWork1Start = workStart;
+                        dataObject.stampGoWork1End = workEnd;
+                        dataObject.stampLeavingWork1Start = workStart;
+                        dataObject.stampLeavingWork1End = workEnd;
+                        dataObject.stampGoWork2Start = 0;
+                        dataObject.stampGoWork2End = 1440;
+                        dataObject.stampLeavingWork2Start = 0;
+                        dataObject.stampLeavingWork2End = 1440;
+                    }                    
+                } else {
+                    dataObject.stampGoWork1Start = _self.mainSettingModel.fixedWorkSetting.getGoWork1Stamp().startTime();
+                    dataObject.stampGoWork1End = _self.mainSettingModel.fixedWorkSetting.getGoWork1Stamp().endTime();
+                    dataObject.stampLeavingWork1Start = _self.mainSettingModel.fixedWorkSetting.getLeaveWork1Stamp().startTime();
+                    dataObject.stampLeavingWork1End = _self.mainSettingModel.fixedWorkSetting.getLeaveWork1Stamp().endTime();
+                    dataObject.stampGoWork2Start = _self.mainSettingModel.fixedWorkSetting.getGoWork2Stamp().startTime();
+                    dataObject.stampGoWork2End = _self.mainSettingModel.fixedWorkSetting.getGoWork2Stamp().endTime();
+                    dataObject.stampLeavingWork2Start = _self.mainSettingModel.fixedWorkSetting.getLeaveWork2Stamp().startTime();
+                    dataObject.stampLeavingWork2End = _self.mainSettingModel.fixedWorkSetting.getLeaveWork2Stamp().endTime();
+                }                              
+            }
+            if (_self.mainSettingModel.workTimeSetting.isDiffTime()) {
+                if (_self.mainSettingModel.isInterlockDialogJ()) {
+                    let oneDayEndTime: number = _self.mainSettingModel.predetemineTimeSetting.startDateClock() + (_self.mainSettingModel.predetemineTimeSetting.rangeTimeDay());
+                    dataObject.stampGoWork1Start = _self.mainSettingModel.predetemineTimeSetting.startDateClock();
+                    dataObject.stampGoWork1End = oneDayEndTime;
+                    dataObject.stampLeavingWork1Start = _self.mainSettingModel.predetemineTimeSetting.startDateClock();
+                    dataObject.stampLeavingWork1End = oneDayEndTime;
+                    dataObject.stampGoWork2Start = 0;
+                    dataObject.stampGoWork2End = 1440;
+                    dataObject.stampLeavingWork2Start = 0;
+                    dataObject.stampLeavingWork2End = 1440;
+                } else {
+                    dataObject.stampGoWork1Start = _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getGoWork1Stamp().startTime();
+                    dataObject.stampGoWork1End = _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getGoWork1Stamp().endTime();
+                    dataObject.stampLeavingWork1Start = _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getLeaveWork1Stamp().startTime();
+                    dataObject.stampLeavingWork1End = _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getLeaveWork1Stamp().endTime();
+                    dataObject.stampGoWork2Start = _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getGoWork2Stamp().startTime();
+                    dataObject.stampGoWork2End = _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getGoWork2Stamp().endTime();
+                    dataObject.stampLeavingWork2Start = _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getLeaveWork2Stamp().startTime();
+                    dataObject.stampLeavingWork2End = _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getLeaveWork2Stamp().endTime();
+                }                
+            } 
+            if (_self.mainSettingModel.workTimeSetting.isFlex()) {
+                if (_self.mainSettingModel.isInterlockDialogJ()) {
+                    let oneDayEndTime: number = _self.mainSettingModel.predetemineTimeSetting.startDateClock() + (_self.mainSettingModel.predetemineTimeSetting.rangeTimeDay());
+                    dataObject.stampGoWork1Start = _self.mainSettingModel.predetemineTimeSetting.startDateClock();
+                    dataObject.stampGoWork1End = oneDayEndTime;
+                    dataObject.stampLeavingWork1Start = _self.mainSettingModel.predetemineTimeSetting.startDateClock();
+                    dataObject.stampLeavingWork1End = oneDayEndTime;
+                    dataObject.stampGoWork2Start = 0;
+                    dataObject.stampGoWork2End = 1440;
+                    dataObject.stampLeavingWork2Start = 0;
+                    dataObject.stampLeavingWork2End = 1440;
+                } else {
+                    dataObject.stampGoWork1Start = _self.mainSettingModel.flexWorkSetting.getGoWork1Stamp().startTime();
+                    dataObject.stampGoWork1End = _self.mainSettingModel.flexWorkSetting.getGoWork1Stamp().endTime();
+                    dataObject.stampLeavingWork1Start = _self.mainSettingModel.flexWorkSetting.getLeaveWork1Stamp().startTime();
+                    dataObject.stampLeavingWork1End = _self.mainSettingModel.flexWorkSetting.getLeaveWork1Stamp().endTime();
+                    dataObject.stampGoWork2Start = _self.mainSettingModel.flexWorkSetting.getGoWork2Stamp().startTime();
+                    dataObject.stampGoWork2End = _self.mainSettingModel.flexWorkSetting.getGoWork2Stamp().endTime();
+                    dataObject.stampLeavingWork2Start = _self.mainSettingModel.flexWorkSetting.getLeaveWork2Stamp().startTime();
+                    dataObject.stampLeavingWork2End = _self.mainSettingModel.flexWorkSetting.getLeaveWork2Stamp().endTime();
+                }
+            } 
+            // Set object
+            nts.uk.ui.windows.setShared("KMK003_DIALOG_J_INPUT_DATA", dataObject);
+            nts.uk.ui.windows.sub.modal("/view/kmk/003/j/index.xhtml").onClosed(() => {
+                let outputDataObject: any = nts.uk.ui.windows.getShared("KMK003_DIALOG_J_OUTPUT_DATA");               
+                if (nts.uk.util.isNullOrUndefined(outputDataObject)) {
+                    return;    
+                }
+                // Update common data
+                _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsEnter().priorityAtr(outputDataObject.prioritySettingEntering);
+                _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsExit().priorityAtr(outputDataObject.prioritySettingExit);
+                _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsPcLogin().priorityAtr(outputDataObject.prioritySettingPcLogin);
+                _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsPcLogout().priorityAtr(outputDataObject.prioritySettingPcLogout);
+                _self.mainSettingModel.commonSetting.stampSet.getRoundingSetsGoOut().roundingSet.roundingTimeUnit(outputDataObject.goOutRoundingUnit);
+                _self.mainSettingModel.commonSetting.stampSet.getRoundingSetsGoOut().roundingSet.fontRearSection(outputDataObject.goOutFontRearSection);
+                _self.mainSettingModel.commonSetting.stampSet.getRoundingSetsTurnBack().roundingSet.roundingTimeUnit(outputDataObject.turnBackRoundingUnit);
+                _self.mainSettingModel.commonSetting.stampSet.getRoundingSetsTurnBack().roundingSet.fontRearSection(outputDataObject.turnBackFontRearSection);
+                // Update worktime mode data 
+                if (_self.mainSettingModel.workTimeSetting.isFlow()) {
+                    _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.getGoWorkFlowStamp().startTime(outputDataObject.stampGoWorkFlowStart);
+                    _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.getGoWorkFlowStamp().endTime(outputDataObject.stampGoWorkFlowEnd);
+                    _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.twoTimesWorkReflectBasicTime(outputDataObject.stampTwoTimeReflect);
+                    _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.getLeaveWorkFlowStamp().startTime(outputDataObject.stampLeavingWorkFlowStart);
+                    _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.getLeaveWorkFlowStamp().endTime(outputDataObject.stampLeavingWorkFlowEnd);
+                } 
+                if (_self.mainSettingModel.workTimeSetting.isFixed()) {
+                    _self.mainSettingModel.fixedWorkSetting.getGoWork1Stamp().startTime(outputDataObject.stampGoWork1Start);
+                    _self.mainSettingModel.fixedWorkSetting.getGoWork1Stamp().endTime(outputDataObject.stampGoWork1End);
+                    _self.mainSettingModel.fixedWorkSetting.getLeaveWork1Stamp().startTime(outputDataObject.stampLeavingWork1Start);
+                    _self.mainSettingModel.fixedWorkSetting.getLeaveWork1Stamp().endTime(outputDataObject.stampLeavingWork1End);
+                    _self.mainSettingModel.fixedWorkSetting.getGoWork2Stamp().startTime(outputDataObject.stampGoWork2Start);
+                    _self.mainSettingModel.fixedWorkSetting.getGoWork2Stamp().endTime(outputDataObject.stampGoWork2End);
+                    _self.mainSettingModel.fixedWorkSetting.getLeaveWork2Stamp().startTime(outputDataObject.stampLeavingWork2Start);
+                    _self.mainSettingModel.fixedWorkSetting.getLeaveWork2Stamp().endTime(outputDataObject.stampLeavingWork2End);
+                }
+                if (_self.mainSettingModel.workTimeSetting.isDiffTime()) {
+                    _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getGoWork1Stamp().startTime(outputDataObject.stampGoWork1Start);
+                    _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getGoWork1Stamp().endTime(outputDataObject.stampGoWork1End);
+                    _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getLeaveWork1Stamp().startTime(outputDataObject.stampLeavingWork1Start);
+                    _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getLeaveWork1Stamp().endTime(outputDataObject.stampLeavingWork1End);
+                    _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getGoWork2Stamp().startTime(outputDataObject.stampGoWork2Start);
+                    _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getGoWork2Stamp().endTime(outputDataObject.stampGoWork2End);
+                    _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getLeaveWork2Stamp().startTime(outputDataObject.stampLeavingWork2Start);
+                    _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getLeaveWork2Stamp().endTime(outputDataObject.stampLeavingWork2End);
+                } 
+                if (_self.mainSettingModel.workTimeSetting.isFlex()) {
+                    _self.mainSettingModel.flexWorkSetting.getGoWork1Stamp().startTime(outputDataObject.stampGoWork1Start);
+                    _self.mainSettingModel.flexWorkSetting.getGoWork1Stamp().endTime(outputDataObject.stampGoWork1End);
+                    _self.mainSettingModel.flexWorkSetting.getLeaveWork1Stamp().startTime(outputDataObject.stampLeavingWork1Start);
+                    _self.mainSettingModel.flexWorkSetting.getLeaveWork1Stamp().endTime(outputDataObject.stampLeavingWork1End);
+                    _self.mainSettingModel.flexWorkSetting.getGoWork2Stamp().startTime(outputDataObject.stampGoWork2Start);
+                    _self.mainSettingModel.flexWorkSetting.getGoWork2Stamp().endTime(outputDataObject.stampGoWork2End);
+                    _self.mainSettingModel.flexWorkSetting.getLeaveWork2Stamp().startTime(outputDataObject.stampLeavingWork2Start);
+                    _self.mainSettingModel.flexWorkSetting.getLeaveWork2Stamp().endTime(outputDataObject.stampLeavingWork2End);
+                } 
+                
+                // Update interlock 
+                _self.mainSettingModel.updateInterlockDialogJ();
+                nts.uk.ui.block.clear();
+            });
+        }
     }
     export class Item {
         code: number;
@@ -112,11 +298,6 @@ module a4 {
             this.code = code;
             this.name = name;
         }
-    }
-
-    export enum EnumStampPiorityAtr {
-        GOING_WORK,
-        LEAVE_WORK
     }
     
     class KMK003A4BindingHandler implements KnockoutBindingHandler {
@@ -140,7 +321,7 @@ module a4 {
             let enumSetting = input.enum;
             let mainSettingModel = input.mainSettingModel;
 
-            var screenModel = new ScreenModel(input.selectedTab, tabMode, enumSetting, mainSettingModel);
+            var screenModel = new ScreenModel(tabMode, enumSetting, mainSettingModel);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);

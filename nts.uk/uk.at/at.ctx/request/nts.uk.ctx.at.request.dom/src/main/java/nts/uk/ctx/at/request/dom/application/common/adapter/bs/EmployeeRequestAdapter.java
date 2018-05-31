@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.adapter.bs;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.AffWorkplaceImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.ConcurrentEmployeeRequest;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
@@ -42,8 +43,7 @@ public interface EmployeeRequestAdapter {
 	SWkpHistImport getSWkpHistByEmployeeID(String employeeId, GeneralDate baseDate);
 	
 	/**
-	 * アルゴリズム「承認状況社員メールアドレス取得」を実行する
-	 * RequestList #126
+	 * 承認状況社員メールアドレス取得
 	 * @param sIds 社員ID
 	 * @return 取得社員ID＜社員ID、社員名、メールアドレス＞
 	 */
@@ -56,5 +56,5 @@ public interface EmployeeRequestAdapter {
 	 * @param endDate
 	 * @return
 	 */
-	List<String> getListSIdByWkpIdAndPeriod(String workplaceId, GeneralDate startDate, GeneralDate endDate);
+	List<AffWorkplaceImport> getListSIdByWkpIdAndPeriod(String workplaceId, GeneralDate startDate, GeneralDate endDate);
 }

@@ -4,8 +4,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 
 @Stateless
 public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
@@ -18,9 +20,19 @@ public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
 	
 	@Inject
 	private IAppWorkChangeRepository workChangeRepository;
+	@Inject
+	private DetailBeforeUpdate detailBeforeUpdate;
 	
 	@Override
 	public void UpdateWorkChange(Application_New app, AppWorkChange workChange) {
+		
+		detailBeforeUpdate.processBeforeDetailScreenRegistration(
+				app.getCompanyID(), 
+				app.getEmployeeID(), 
+				app.getAppDate(), 
+				ApplicationType.WORK_CHANGE_APPLICATION.value, 
+				app.getAppID(), 
+				app.getPrePostAtr(), app.getVersion());
 		
 		//ドメインモデル「勤務変更申請」の更新をする
 		appRepository.updateWithVersion(app);

@@ -342,6 +342,11 @@ module nts.uk.at.view.kmk004.b {
             private loadEmployeeSetting(): void {
                 let self = this;
                 
+                let year = self.worktimeVM.worktimeSetting.normalSetting().year();
+                if(nts.uk.util.isNullOrEmpty(year)) {
+                    return;
+                }
+                
                 let empId = self.selectedEmployeeId();
                 if (nts.uk.text.isNullOrEmpty(empId)) {
                     self.resetFieldsToNewMode();

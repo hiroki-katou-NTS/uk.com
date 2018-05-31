@@ -32,17 +32,15 @@
 			<div id="functions-area">
 				<!-- A.A1_1 -->
 				<button class="proceed"
-					data-bind="enable: $root.errors.isEmpty, click: register"
-					tabindex="1">#{i18n.getText('KAF011_3')}</button>
+					data-bind="enable: $root.errors.isEmpty, click: register">#{i18n.getText('KAF011_3')}</button>
 				<!-- A.A1_3 -->
-				<button data-bind=" click: openKDL009" tabindex="1">#{i18n.getText('KAF011_7')}</button>
+				<button data-bind=" click: openKDL009">#{i18n.getText('KAF011_7')}</button>
 				<!-- A.A2_1 -->
-				<button tabindex="1" data-bind=" click: openCMM018">#{i18n.getText('KAF011_9')}</button>
+				<button data-bind=" click: openCMM018">#{i18n.getText('KAF011_9')}</button>
 				<!-- A.A3_1 -->
 				<div id="ckbSendMail"
-					data-bind="if:appTypeSet().sendMailWhenRegister()!=0">
-					<div tabindex="1"
-						data-bind="ntsCheckBox: { checked: manualSendMailAtr }">#{i18n.getText('KAF011_10')}</div>
+					data-bind="if:appTypeSet().sendMailWhenRegister()==0">
+					<div data-bind="ntsCheckBox: { checked: manualSendMailAtr }">#{i18n.getText('KAF011_10')}</div>
 				</div>
 			</div>
 

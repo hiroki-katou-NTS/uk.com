@@ -244,7 +244,7 @@ module nts.uk.ui.koExtentions {
                 let target = self.helper.getUrl(query);
                 var xhr = self.getXRequest();
                 if(xhr === null){
-                    self.destroyImg();
+                    self.destroyImg(query);
                     return;
                 }
                 xhr.open('GET', target);
@@ -266,29 +266,31 @@ module nts.uk.ui.koExtentions {
                                 });
                             };    
                         } else {
-                            self.destroyImg();  
+                            self.destroyImg(query);  
                         }
                     } else {
-                        self.destroyImg();
+                        self.destroyImg(query);
                     }
                 }; 
                 xhr.send();
             });
         }
         
-        destroyImg(){
+        destroyImg(query?: SrcChangeQuery){
             let self = this;
-            nts.uk.ui.dialog.alert("画像データが正しくないです。。");
-            self.$root.data("img-status", self.buildImgStatus("load fail", 3));
-            self.backupData(null, "", "", 0);
-            self.$imagePreview.attr("src", "");
-            self.$imagePreview.closest(".image-holder").addClass(".image-upload-icon");
-            self.$imagePreview.closest(".image-container").addClass(".container-no-upload-background");
-            self.$imageSizeLbl.text("");
-            if(!nts.uk.util.isNullOrUndefined(self.cropper)){
-                self.cropper.destroy();     
-            }   
-            self.$root.data("cropper", self.cropper);
+            nts.uk.ui.dialog.alert("画像データが正しくないです。。").then(function(){
+                self.$root.data("img-status", self.buildImgStatus("load fail", 3));
+                self.backupData(null, "", "", 0);
+                self.$imagePreview.attr("src", "");
+                self.$imagePreview.closest(".image-holder").addClass(".image-upload-icon");
+                self.$imagePreview.closest(".image-container").addClass(".container-no-upload-background");
+                self.$imageSizeLbl.text("");
+                if(!nts.uk.util.isNullOrUndefined(self.cropper)){
+                    self.cropper.destroy();     
+                }   
+                self.$root.data("cropper", self.cropper);
+                query.actionOnClose();    
+            });
         }
         
         getXRequest(){
@@ -327,7 +329,7 @@ module nts.uk.ui.koExtentions {
                     self.backupData(file, file.name, file.type.split("/")[1], file.size);
                 }
                 fr.onerror = function(){
-                    self.destroyImg();
+                    self.destroyImg({actionOnClose: $.noop});
                 }
                 fr.readAsDataURL(file);
             }
@@ -428,7 +430,8 @@ module nts.uk.ui.koExtentions {
 
     interface SrcChangeQuery {
         url: string,
-        isOutSiteUrl: boolean
+        isOutSiteUrl: boolean,
+        actionOnClose: Function
     }
 
     ko.bindingHandlers['ntsImageEditor'] = new NtsImageEditorBindingHandler();

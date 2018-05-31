@@ -1,9 +1,12 @@
 package nts.uk.ctx.at.record.dom.divergence.time;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeName;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -40,7 +43,7 @@ public class DivergenceTime extends AggregateRoot {
 
 	/** The target item list. */
 	// 対象項目一覧
-	private List<Double> targetItems;
+	private List<Integer> targetItems;
 
 	/**
 	 * Instantiates a new divergence time.
@@ -120,4 +123,25 @@ public class DivergenceTime extends AggregateRoot {
 		return true;
 	}
 
+	/**
+	 * 勤怠項目IDに紐づく項目(値)を合計
+	 * @param idConverter
+	 * @return
+	 */
+	public int totalDivergenceTimeWithAttendanceItemId(DailyRecordToAttendanceItemConverter idConverter) {
+		if(this.targetItems == null) {
+			return 0;
+		}
+		val getValueList = idConverter.convert(this.targetItems.stream().map(c -> c.intValue()).collect(Collectors.toList()));
+				
+		return  getValueList.stream()
+									 .filter(tc ->  tc !=null
+									  			 && tc.getValue() != null
+									  			 && tc.getValueType().isInteger())
+									 .map(tc -> Integer.valueOf(tc.getValue()))
+									 .collect(Collectors.summingInt(tc -> tc));
+									 
+		
+	}
+	
 }

@@ -57,4 +57,12 @@ public enum DivergenceTimeUseSet {
 		// Not found.
 		return null;
 	}
+	
+	/**
+	 * 使用するであるか判定する
+	 * @return　使用する
+	 */
+	public boolean isUse() {
+		return USE.equals(this);
+	}
 }

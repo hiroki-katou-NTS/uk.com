@@ -78,4 +78,13 @@ public interface YearServicePerRepository {
 	 * author HoangYen
 	 */
 	Optional<YearServicePer> findPer(String companyId, int specialHolidayCode, String yearServiceCode);
+	
+	/**
+	 * 個人用勤続年数テーブルを取得する
+	 * @param companyId
+	 * @return
+	 */
+	List<YearServicePer> getAllPer(String companyId);
+	
+	void changeAllProvision(int specialHolidayCode);
 }

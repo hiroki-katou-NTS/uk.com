@@ -28,10 +28,11 @@ module cps001.h.service {
         return ajax("at", parentPath + paths.remove, command);
     }
     
-    export function update(id: string, grantDate: Date, deadline: Date, expirationStatus: number,
+    export function update(id: string,employeeId: string, grantDate: Date, deadline: Date, expirationStatus: number,
         grantDays: string, useDays: string, overLimitDays: string, remainingDays: string){
         let command = {
             "rvsLeaId": id,
+            "employeeId": employeeId,
             "grantDate": grantDate,
             "deadline": deadline,
             "expirationStatus": expirationStatus,
@@ -40,12 +41,13 @@ module cps001.h.service {
             "overLimitDays": overLimitDays,
             "remainingDays": remainingDays
         };
-        return ajax("at", parentPath + paths.update, command);
+        return ajax('at', parentPath + paths.update, command);
     }
     
-    export function create(grantDate: string, deadline: string, expirationStatus: number,
+    export function create(employeeId: string, grantDate: string, deadline: string, expirationStatus: number,
         grantDays: string, useDays: string, overLimitDays: string, remainingDays: string){
         let command = {
+            "employeeId": employeeId,
             "grantDate": grantDate,
             "deadline": deadline,
             "expirationStatus": expirationStatus,
@@ -54,7 +56,7 @@ module cps001.h.service {
             "overLimitDays": overLimitDays,
             "remainingDays": remainingDays
         };
-        return ajax("at", parentPath + paths.add, command);
+        return ajax('at', parentPath + paths.add, command);
     }
     
     export function getItemDef(){
