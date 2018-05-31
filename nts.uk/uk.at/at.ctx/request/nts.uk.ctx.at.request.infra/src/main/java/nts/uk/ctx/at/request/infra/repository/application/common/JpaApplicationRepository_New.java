@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.request.infra.repository.application.common;
 
+<<<<<<< HEAD
+=======
+import java.util.Collection;
+>>>>>>> pj/at/dev/Team_D/KDL030
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -229,5 +233,18 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			.setParameter("listReflecInfor", listReflecInfor)
 			.getList(x -> x.toDomain());
 	}
+<<<<<<< HEAD
 	
+=======
+	@Override
+	public List<Application_New> findByListID(String companyID, List<String> listAppID) {
+		if(CollectionUtil.isEmpty(listAppID)){
+			return Collections.emptyList();
+		}
+		return this.queryProxy().query(SELECT_APP_BY_LIST_ID, KrqdtApplication_New.class)
+				.setParameter("listAppID", listAppID)
+				.setParameter("companyID", companyID)
+				.getList(x -> x.toDomain());
+	}
+>>>>>>> pj/at/dev/Team_D/KDL030
 }
