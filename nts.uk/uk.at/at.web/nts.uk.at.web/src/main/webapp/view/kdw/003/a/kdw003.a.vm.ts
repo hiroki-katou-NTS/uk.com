@@ -210,7 +210,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             });
             // show/hide profile icon
             self.showProfileIcon.subscribe((val) => {
-                self.reloadGrid();
+                if (self.displayFormat() == 1 || self.displayFormat() ==2) {
+                    self.reloadGrid();
+                }
             });
 
             self.displayWhenZero.subscribe(val => {
@@ -962,6 +964,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     localStorage.removeItem(window.location.href + '/dpGrid');
                 }
                 localStorage.setItem('kdw003_type', data.typeBussiness);
+                self.dataAll(data);
                 self.formatCodes(data.lstControlDisplayItem.formatCode);
                 //let idC = self.createKeyLoad();
                 //TO Thanh: set data for list attendance item after load by extract click
@@ -1156,6 +1159,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         nts.uk.ui.block.invisible();
                         nts.uk.ui.block.grayout();
                         service.selectErrorCode(param).done((data) => {
+                            self.dataAll(data);
                             self.createSumColumn(data);
                             self.columnSettings(data.lstControlDisplayItem.columnSettings);
                             self.receiveData(data);
@@ -1232,6 +1236,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         nts.uk.ui.block.invisible();
                         nts.uk.ui.block.grayout();
                         service.selectFormatCode(param).done((data) => {
+                            self.dataAll(data);
                             self.createSumColumn(data);
                             self.columnSettings(data.lstControlDisplayItem.columnSettings);
                             self.receiveData(data);
@@ -1442,9 +1447,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         }
         destroyGrid() {
             $("#dpGrid").ntsGrid("destroy");
-            $("#dpGrid").remove();
-            $(".nts-grid-sheet-buttons").remove();
-            $('<table id="dpGrid"></table>').appendTo('#gid');
+//            $("#dpGrid").remove();
+//            $(".nts-grid-sheet-buttons").remove();
+//            $('<table id="dpGrid"></table>').appendTo('#gid');
+            $("#dpGrid").off();
         }
         setColorWeekend() {
             var self = this;
@@ -1827,6 +1833,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         },
                         controlType: 'FlexImage'
                     },
+                    { name: 'Image', source: 'image-icon', controlType: 'Image' },
                     {
                         name: 'Button', controlType: 'Button', text: nts.uk.resource.getText("KDW003_63"), enable: true, click: function(data) {
                             let source: any = $("#dpGrid").igGrid("option", "dataSource");
@@ -1900,11 +1907,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             var self = this;
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
-            self.createSumColumn(self.dataAll());
-            self.columnSettings(self.dataAll().lstControlDisplayItem.columnSettings);
-            self.receiveData(self.dataAll());
-            self.extractionData();
-            self.loadGrid();
+//            self.destroyGrid();
+//            self.createSumColumn(self.dataAll());
+//            self.columnSettings(self.dataAll().lstControlDisplayItem.columnSettings);
+//            self.receiveData(self.dataAll());
+//            self.extractionData();
+//            self.loadGrid();
+            self.extraction();
             nts.uk.ui.block.clear();
         }
 
@@ -1955,7 +1964,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     tempList.push(header);
                 });
             } else if (mode == 1) {
-                self.displayProfileIcon();
+                self.displayProfileIcon(mode);
                 _.forEach(self.dateModeHeader, (header) => {
                     if (header.constraint == null) {
                         delete header.constraint;
@@ -1964,6 +1973,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     tempList.push(header);
                 });
             } else if (mode == 2) {
+                 self.displayProfileIcon(mode); 
                 _.forEach(self.errorModeHeader, (header) => {
                     if (header.constraint == null) {
                         delete header.constraint;
@@ -2069,7 +2079,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
         }
 
-        displayProfileIcon() {
+        displayProfileIcon(mode) {
             var self = this;
             if (self.showProfileIcon()) {
                 _.remove(self.dateModeHeader, function(header) {
@@ -2078,8 +2088,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 _.remove(self.dateModeFixCol, function(header) {
                     return header.columnKey === "picture-person";
                 });
-                self.dateModeHeader.splice(5, 0, LIST_FIX_HEADER[7]);
-                self.dateModeFixCol.push({ columnKey: 'picture-person', isFixed: true });
+                 if(mode == 1) {
+                      self.dateModeHeader.splice(5, 0, LIST_FIX_HEADER[7]);
+                      self.dateModeFixCol.splice(5, 0, { columnKey: 'picture-person', isFixed: true });
+                }else {
+                    self.errorModeHeader.splice(6, 0, LIST_FIX_HEADER[7]);
+                    self.errorModeHeader.splice(6, 0, { columnKey: 'picture-person', isFixed: true });
+                }
             } else {
                 _.remove(self.dateModeHeader, function(header) {
                     return header.key === "picture-person";
