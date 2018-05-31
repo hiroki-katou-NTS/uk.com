@@ -26,6 +26,11 @@ public class DeleteAttendanceRecordExportSettingCommandHandler extends CommandHa
     AttendanceRecordItemDeleteCommandHandler delARIHandler;
 
 
+    /**
+     * hadle delete AttendanceRecordExportSetting
+     *
+     * @param context
+     */
     @Override
     protected void handle(CommandHandlerContext<DeleteAttendanceRecordExportSettingCommand> context) {
         DeleteAttendanceRecordExportSettingCommand command = context.getCommand();

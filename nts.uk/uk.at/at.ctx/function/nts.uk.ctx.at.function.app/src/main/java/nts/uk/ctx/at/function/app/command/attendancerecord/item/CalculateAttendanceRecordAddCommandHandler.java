@@ -14,6 +14,9 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * @author locph
+ */
 @Stateless
 public class CalculateAttendanceRecordAddCommandHandler extends CommandHandler<CalculateAttendanceRecordAddCommand> {
 
@@ -21,6 +24,10 @@ public class CalculateAttendanceRecordAddCommandHandler extends CommandHandler<C
 	@Inject
 	CalculateAttendanceRecordRepositoty calculateAttendanceRecordRepository;
 
+	/**
+	 * Handle add CalculateAttendanceRecord Item
+	 * @param context
+	 */
 	@Override
 	protected void handle(CommandHandlerContext<CalculateAttendanceRecordAddCommand> context) {
 		CalculateAttendanceRecordAddCommand command = context.getCommand();

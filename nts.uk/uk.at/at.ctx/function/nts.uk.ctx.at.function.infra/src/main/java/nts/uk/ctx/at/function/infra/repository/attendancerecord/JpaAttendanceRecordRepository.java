@@ -51,6 +51,13 @@ public abstract class JpaAttendanceRecordRepository extends JpaRepository {
 		return kfnstAttndRecItems;
 	}
 
+	/**
+	 * find all AttendanceRecordItem
+	 *
+	 * @param companyId
+	 * @param exportSettingCode
+	 * @return
+	 */
 	List<KfnstAttndRecItem> findAllAttendanceRecordItem(String companyId, ExportSettingCode exportSettingCode) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();

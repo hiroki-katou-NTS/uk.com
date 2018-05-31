@@ -9,6 +9,9 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+/**
+ * @author locph
+ */
 @Stateless
 public class AttendanceRecordItemDeleteCommandHandler
         extends CommandHandler<AttendanceRecordItemDeleteCommand> {
@@ -19,6 +22,12 @@ public class AttendanceRecordItemDeleteCommandHandler
     @Inject
     AttendanceRecordRepositoty attendanceRecordRepositoty;
 
+
+    /**
+     * Handle delete AttendanceRecordItem
+     *
+     * @param context
+     */
     @Override
     protected void handle(CommandHandlerContext<AttendanceRecordItemDeleteCommand> context) {
         AttendanceRecordItemDeleteCommand command = context.getCommand();

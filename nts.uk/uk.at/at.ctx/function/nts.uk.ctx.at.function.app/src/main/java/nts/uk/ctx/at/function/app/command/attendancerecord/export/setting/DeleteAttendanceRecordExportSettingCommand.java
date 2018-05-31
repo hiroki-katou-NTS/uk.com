@@ -7,7 +7,9 @@ import nts.uk.ctx.at.function.app.command.attendancerecord.export.AttendanceReco
 import nts.uk.ctx.at.function.app.command.attendancerecord.item.AttendanceRecordItemDeleteCommand;
 
 /**
- * The Class AttendanceRecordExportSettingDeleteCommand.
+ * The Class DeleteAttendanceRecordExportSettingCommand.
+ *
+ * @author locph
  */
 @Getter
 @Setter

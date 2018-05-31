@@ -21,6 +21,10 @@ public class NewAttendanceRecordExportSettingCommandHandler extends CommandHandl
     @Inject
     AttendanceRecordAddCommandHandler itemCmdHandler;
 
+    /**
+     * Hadle add/update AttendanceRecordExportSetting
+     * @param context
+     */
     @Override
     protected void handle(CommandHandlerContext<NewAttendanceRecordExportSettingCommand> context) {
         NewAttendanceRecordExportSettingCommand command = context.getCommand();

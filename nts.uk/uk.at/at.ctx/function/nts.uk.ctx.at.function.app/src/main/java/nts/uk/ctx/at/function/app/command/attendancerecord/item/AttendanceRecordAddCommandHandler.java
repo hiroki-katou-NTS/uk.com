@@ -19,7 +19,9 @@ public class AttendanceRecordAddCommandHandler extends CommandHandler<Attendance
 	CalculateAttendanceRecordAddCommandHandler calculateHandler;
 
 	/* (non-Javadoc)
+	 * Handle add list AttendanceRecord
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	 *
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<AttendanceRecordAddCommand> context) {

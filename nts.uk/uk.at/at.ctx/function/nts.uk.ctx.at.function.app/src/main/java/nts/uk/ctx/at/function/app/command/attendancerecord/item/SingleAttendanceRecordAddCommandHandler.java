@@ -12,6 +12,10 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+
+/**
+ * @author locph
+ */
 @Stateless
 public class SingleAttendanceRecordAddCommandHandler extends CommandHandler<SingleAttendanceRecordAddCommand>{
 	
@@ -20,6 +24,7 @@ public class SingleAttendanceRecordAddCommandHandler extends CommandHandler<Sing
 	SingleAttendanceRecordRepository singleAttendanceRecordRepository;
 	
 	/* (non-Javadoc)
+	 * Handle add SingleAttendanceRecord Item
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
 	@Override

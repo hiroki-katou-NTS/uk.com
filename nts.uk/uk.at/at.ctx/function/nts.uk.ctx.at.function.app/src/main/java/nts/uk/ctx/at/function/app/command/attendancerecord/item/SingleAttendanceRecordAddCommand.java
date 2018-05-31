@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * @author locph
+ */
 @AllArgsConstructor
 @Getter
 @Setter

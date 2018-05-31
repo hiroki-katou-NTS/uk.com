@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
+ * @author locph
  * The Class AttendanceRecordExportSaveCommand.
  */
 @Getter
