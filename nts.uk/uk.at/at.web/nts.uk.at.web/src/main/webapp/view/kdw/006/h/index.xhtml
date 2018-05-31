@@ -10,10 +10,13 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 315,
-					height : 315
+					width : 390,
+					height : 715
 				};
 			</script>
+			<com:EnumScript>
+			nts.uk.ctx.at.function.dom.dailyfix.ApplicationType
+			</com:EnumScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdw006.h.main.css" />
 			<com:scriptfile path="kdw006.h.start.js" />
@@ -23,13 +26,30 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-			    
+				<div id="screen-h">
+					<div id="label1" class="label">#{i18n.getText('KDW006_79')}</div>
+					<div id = "listmulti">
+						<table id="multi-list"
+							data-bind="ntsGridList: {
+							height: 470,
+							options: items,
+							optionsValue: 'code',
+							columns: columns,
+							multiple: true,
+							value: currentCodeList,
+							multiple: multicheck,
+							enable: true,
+						}"></table>
+					</div>
+					
+				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed" data-bind="click: returnData, enable: $root.errors.isEmpty">#{i18n.getText('KDW007_97')}</button>
-				<button data-bind="click: closeDialog">#{i18n.getText('KDW007_98')}</button>
+				<button class="proceed"
+					data-bind="click: returnData, enable: $root.errors.isEmpty">#{i18n.getText('KDW006_81')}</button>
+				<button data-bind="click: closeDialog">#{i18n.getText('KDW006_82')}</button>
 			</div>
-			
+
 		</ui:define>
 
 	</ui:composition>
