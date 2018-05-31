@@ -60,6 +60,12 @@ public class AttendanceLeavingGateOfDailyDto extends AttendanceItemCommon {
 		if(!this.isHaveData()) {
 			return null;
 		}
+		if (employeeId == null) {
+			employeeId = this.employeeId();
+		}
+		if (ymd == null) {
+			ymd = this.workingDate();
+		}
 		return new AttendanceLeavingGateOfDaily(employeeId, ymd, ConvertHelper.mapTo(attendanceLeavingGateTime,
 						(c) -> new AttendanceLeavingGate(new WorkNo(c.getTimeSheetNo()),
 															createWorkStamp(c.getStart()),

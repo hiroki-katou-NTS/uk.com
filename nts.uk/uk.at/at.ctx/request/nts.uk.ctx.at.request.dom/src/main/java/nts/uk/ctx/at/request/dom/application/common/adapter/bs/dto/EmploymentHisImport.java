@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto;
 
 import lombok.Value;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Value
 public class EmploymentHisImport {
@@ -9,14 +10,10 @@ public class EmploymentHisImport {
 
 	// 履歴ID
 	private String historyID;
-
+	
+	// 期間
+	private  DatePeriod datePeriod;
+	
 	// 雇用コード
 	private String employmentCode;
-
-	// 給与区分
-	// 1: 日給 - DailySalary(1),
-	// 2: 日給月給 - DailyMonthlySalary(2),
-	// 3: 時間給 - HourlySalary(3),
-	// 4: 月給 - MonthlySalary(4);
-	private int salarySegment;
 }

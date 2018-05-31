@@ -1,6 +1,5 @@
 package nts.uk.ctx.pereg.app.command.person.info.item;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -102,17 +101,9 @@ public class AddItemCommandHandler extends CommandHandlerWithResult<AddItemComma
 		}
 
 		if (addItemCommand.getSingleItem().getDataType() == 6) {
-			List<Selection> selection = new ArrayList<>();
-			String zeroCompanyId = AppContexts.user().zeroCompanyIdInContract();
-			String itemId = addItemCommand.getSingleItem().getSelectionItemId();
-			GeneralDate today = GeneralDate.today();
-			
-			if (addItemCommand.getPersonEmployeeType() == 1) {
-				selection = this.selectionRepo.getAllSelectionByHistoryId(zeroCompanyId, itemId, today, 0);
-			} else if (addItemCommand.getPersonEmployeeType() == 2) {
-				selection = this.selectionRepo.getAllSelectionByHistoryId(zeroCompanyId, itemId, today, 1);
-			}
-			
+			List<Selection> selection = this.selectionRepo.getAllSelectionByCompanyId(
+					AppContexts.user().zeroCompanyIdInContract(), addItemCommand.getSingleItem().getSelectionItemId(),
+					GeneralDate.today());
 			if (selection == null || selection.size() == 0) {
 
 				throw new BusinessException("Msg_587");

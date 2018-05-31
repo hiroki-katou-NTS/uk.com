@@ -15,11 +15,11 @@ public class ReserveLeaveUsedNumber {
 	/**
 	 * 上限超過消滅日数
 	 */
-	private Optional<ReserveLeaveUsedDayNumber> overLimitDays;
+	private Optional<ReserveLeaveOverLimitDayNumber> overLimitDays;
 
 	public ReserveLeaveUsedNumber(double days, Double overLimitDays) {
 		this.days = new ReserveLeaveUsedDayNumber(days);
-		this.overLimitDays = overLimitDays != null ? Optional.of(new ReserveLeaveUsedDayNumber(overLimitDays))
+		this.overLimitDays = overLimitDays != null ? Optional.of(new ReserveLeaveOverLimitDayNumber(overLimitDays))
 				: Optional.empty();
 	}
 

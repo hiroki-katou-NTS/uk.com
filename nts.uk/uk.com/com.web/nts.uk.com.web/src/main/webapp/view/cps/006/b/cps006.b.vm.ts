@@ -1,4 +1,5 @@
 module nts.uk.com.view.cps006.b.viewmodel {
+
     import alert = nts.uk.ui.dialog.alert;
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
@@ -277,6 +278,12 @@ module nts.uk.com.view.cps006.b.viewmodel {
                     return getText('Enum_DataTypeValue_SELECTION_BUTTON');
                 case 9:
                     return getText('Enum_DataTypeValue_READONLY');
+                case 10:
+                    return getText('Enum_DataTypeValue_RELATE_CATEGORY');
+                case 11:
+                    return getText('Enum_DataTypeValue_NUMBERIC_BUTTON');
+                case 12:
+                    return getText('Enum_DataTypeValue_READONLY_BUTTON');                     
             }
 
 
@@ -306,15 +313,17 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
             switch (self.currentItem().itemTypeState.dataTypeState.stringItemType) {
                 case 1:
-                    return getText('Enum_StringItemType_ANY');
+                    return getText('CPS006_66');
                 case 2:
-                    return getText('Enum_StringItemType_ANYHALFWIDTH');
+                    return getText('CPS006_67');
                 case 3:
-                    return getText('Enum_StringItemType_ALPHANUMERIC');
+                    return getText('CPS006_68');
                 case 4:
-                    return getText('Enum_StringItemType_NUMERIC');
+                    return getText('CPS006_69');
                 case 5:
-                    return getText('Enum_StringItemType_KANA');
+                    return getText('CPS006_70');
+                 case 6:
+                    return getText('CPS006_68');
             }
         }
 
@@ -356,12 +365,11 @@ module nts.uk.com.view.cps006.b.viewmodel {
         dataType() {
             let self = this;
 
-            if (self.itemType() === 1) {
-
-                return;
+            if (self.itemType() === 2) {
+                return self.currentItem().itemTypeState.dataTypeState.dataTypeValue;
             }
 
-            return self.currentItem().itemTypeState.dataTypeState.dataTypeValue;
+            return null;
 
         }
 
@@ -376,6 +384,21 @@ module nts.uk.com.view.cps006.b.viewmodel {
             return self.currentItem().itemTypeState.itemType;
 
         }
+        
+        
+    selectionType() {
+        let self = this;
+        if (self.itemType() === 2 && self.dataType() === 6) {
+            if(self.currentItem().itemTypeState.dataTypeState.referenceType === "CODE_NAME"){
+                return 2;
+            }
+        }else{
+            
+             return 1;
+        }
+        
+    }
+
         
         displayB2_48() {
             let self = this;
@@ -559,6 +582,8 @@ module nts.uk.com.view.cps006.b.viewmodel {
         }
 
     }
+    
+
 
 
 

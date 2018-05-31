@@ -41,7 +41,7 @@ public class CheckBeforeRegisterOvertime {
 
 		// Create Application
 		Application_New appRoot = factoryOvertime.buildApplication(appID, command.getApplicationDate(),
-				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason());
+				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason(),command.getApplicantSID());
 
 		Integer workClockFrom1 = command.getWorkClockFrom1() == null ? null : command.getWorkClockFrom1().intValue();
 		Integer workClockTo1 = command.getWorkClockTo1() == null ? null : command.getWorkClockTo1().intValue();
@@ -63,7 +63,7 @@ public class CheckBeforeRegisterOvertime {
 		OvertimeCheckResultDto result = new OvertimeCheckResultDto(0, 0, 0, false);
 		OvertimeCheckResult res = new OvertimeCheckResult();
 		// 2-1.新規画面登録前の処理を実行する
-		newBeforeRegister.processBeforeRegister(app);
+		newBeforeRegister.processBeforeRegister(app,overtime.getOverTimeAtr().value);
 		// 登録前エラーチェック
 		// 計算ボタン未クリックチェック
 		beforeCheck.calculateButtonCheck(calculateFlg, app.getCompanyID(), employeeId, 1,
@@ -109,7 +109,7 @@ public class CheckBeforeRegisterOvertime {
 
 		// Create Application
 		Application_New appRoot = factoryOvertime.buildApplication(appID, command.getApplicationDate(),
-				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason());
+				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason(),command.getApplicantSID());
 
 		Integer workClockFrom1 = command.getWorkClockFrom1() == null ? null : command.getWorkClockFrom1().intValue();
 		Integer workClockTo1 = command.getWorkClockTo1() == null ? null : command.getWorkClockTo1().intValue();
@@ -198,12 +198,12 @@ public class CheckBeforeRegisterOvertime {
 		return inputCommand.stream().filter(item -> {
 			Integer startTime = item.getStartTime() == null ? null : item.getStartTime().intValue();
 			Integer endTime = item.getEndTime() == null ? null : item.getEndTime().intValue();
-			int appTime = item.getApplicationTime() == null ? -1 : item.getApplicationTime().intValue();
-			return startTime != null || endTime != null || appTime != -1;
+			Integer appTime = item.getApplicationTime() == null ? null : item.getApplicationTime().intValue();
+			return startTime != null || endTime != null || appTime != null;
 		}).map(item -> {
 			Integer startTime = item.getStartTime() == null ? null : item.getStartTime().intValue();
 			Integer endTime = item.getEndTime() == null ? null : item.getEndTime().intValue();
-			int appTime = item.getApplicationTime() == null ? -1 : item.getApplicationTime().intValue();
+			Integer appTime = item.getApplicationTime() == null ? null : item.getApplicationTime().intValue();
 			return OverTimeInput.createSimpleFromJavaType(Cid, appId, attendanceId, item.getFrameNo(), startTime,
 					endTime, appTime, item.getTimeItemTypeAtr());
 		}).collect(Collectors.toList());

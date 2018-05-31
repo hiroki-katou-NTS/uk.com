@@ -1,24 +1,109 @@
-#contents-area{width: 1280px}
-#showtypeCbb {margin-bottom: 10px;}
-#register-button {margin-left: 128px !important;}
-#right-content {margin-left: 30px; display: inline-block; vertical-align: top;}
-#lstErrorAlarm_container {display: inline-block;}
-#errorAlarmWorkRecordCode, #errorAlarmWorkRecordName {vertical-align: text-bottom;}
-#labelName {margin-left: 80px;}
-#labelUseAtr, #tab-panel, #color-label, #message-label, #color-display-target-item-label {margin-top: 10px;}
-#useAtr {margin-left: 10px;}
-#typeAtr {margin-left: 85px;}
-#noticed-label {margin-left: 139px;}
-#colorpicker {margin-left: 47px;}
-#messageDisplay {margin-left: 10px;}
-.settingTab {width: 515px;}
-#color-display-target-item-button{margin-left: 14px;}
-#messageDisplay{vertical-align: text-top;height: 120px;width: 400px;margin-top: -15px;}
-#boldAtr{margin-left: 136px;}
-.table-template td{padding: 3px;}
-.display-list-label{width: 500px;}
-.settingTab, .checkScopeTab, .conditionSettingTab1, .conditionSettingTab2, .applicationTab {width: 700px;}
-#application-type-grid-list_container {margin: 12px 0 0 20px !IMPORTANT;}
-.formula-list {margin: 10px 0 10px 0;}
-.formula-list th {background-color: #CFF1A5; text-align: center; padding: 3px;}
-.formula-list tr {border: 1px solid lightslategray;}
+#contents-area {
+	width: 1280px
+}
+
+#showtypeCbb {
+	margin-bottom: 10px;
+}
+
+#delete-button {
+	margin-left: 90px !important;
+}
+
+#right-content {
+	margin-left: 30px;
+	display: inline-block;
+	vertical-align: top;
+}
+
+#lstErrorAlarm_container {
+	display: inline-block;
+}
+
+#errorAlarmWorkRecordCode, #errorAlarmWorkRecordName {
+	vertical-align: text-bottom;
+}
+
+#labelName {
+	margin-left: 80px;
+}
+
+#labelUseAtr, #tab-panel, #color-label, #message-label,
+	#color-display-target-item-label {
+	margin-top: 10px;
+}
+
+#useAtr {
+	margin-left: 10px;
+}
+
+#typeAtr {
+	margin-left: 85px;
+}
+
+#noticed-label {
+	margin-left: 139px;
+}
+
+#colorpicker {
+	margin-left: 47px;
+}
+
+#messageDisplay {
+	margin-left: 10px;
+}
+
+.settingTab {
+	width: 515px;
+}
+
+#color-display-target-item-button {
+	margin-left: 14px;
+}
+
+#messageDisplay {
+	vertical-align: text-top;
+	height: 120px;
+	width: 400px;
+	margin-top: -15px;
+}
+
+#boldAtr {
+	margin-left: 136px;
+}
+
+.table-template td {
+	padding: 3px;
+}
+
+.display-list-label {
+	width: 500px;
+}
+
+.settingTab, .checkScopeTab, .conditionSettingTab1,
+	.conditionSettingTab2, .applicationTab {
+	width: 700px;
+}
+
+#application-type-grid-list_container {
+	margin: 12px 0 0 20px !IMPORTANT;
+}
+
+.formula-list {
+	margin: 10px 0 10px 0;
+}
+
+.formula-list th {
+	background-color: #CFF1A5;
+	text-align: center;
+	padding: 3px;
+}
+
+.formula-list tr {
+	border: 1px solid lightslategray;
+}
+
+#tab-4{
+	width: 725px;
+}
+

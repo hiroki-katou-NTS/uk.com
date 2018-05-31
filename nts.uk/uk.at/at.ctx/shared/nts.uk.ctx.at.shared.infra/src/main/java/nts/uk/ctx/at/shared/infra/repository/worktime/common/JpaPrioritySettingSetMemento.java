@@ -37,7 +37,7 @@ public class JpaPrioritySettingSetMemento implements PrioritySettingSetMemento {
 	 */
 	@Override
 	public void setPriorityAtr(MultiStampTimePiorityAtr atr) {
-		this.entity.getKshmtPioritySetPK().setPiorityAtr(atr.value);
+		//Do nothing
 	}
 
 	/*
@@ -48,7 +48,7 @@ public class JpaPrioritySettingSetMemento implements PrioritySettingSetMemento {
 	 */
 	@Override
 	public void setStampAtr(StampPiorityAtr atr) {
-		this.entity.setStampAtr(atr.value);
+		//Do nothing
 	}
 
 }

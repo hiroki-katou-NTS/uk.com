@@ -29,7 +29,7 @@ public class KrcmtCareHDData extends UkJpaEntity{
 	
 	//使用日数
 	@Column(name="USED_DAYS")
-	private int userDay;
+	private double userDay;
 
 	@Override
 	protected Object getKey() {		

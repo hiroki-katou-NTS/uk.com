@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
@@ -26,8 +26,10 @@ public class DeductGoOutRoundingSet extends WorkTimeDomainObject {
 	/**
 	 * Instantiates a new deduct go out rounding set.
 	 *
-	 * @param deductTimeRoundingSetting the deduct time rounding setting
-	 * @param approTimeRoundingSetting the appro time rounding setting
+	 * @param deductTimeRoundingSetting
+	 *            the deduct time rounding setting
+	 * @param approTimeRoundingSetting
+	 *            the appro time rounding setting
 	 */
 	public DeductGoOutRoundingSet(GoOutTimeRoundingSetting deductTimeRoundingSetting,
 			GoOutTimeRoundingSetting approTimeRoundingSetting) {
@@ -39,7 +41,8 @@ public class DeductGoOutRoundingSet extends WorkTimeDomainObject {
 	/**
 	 * Instantiates a new deduct go out rounding set.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public DeductGoOutRoundingSet(DeductGoOutRoundingSetGetMemento memento) {
 		this.deductTimeRoundingSetting = memento.getDeductTimeRoundingSetting();
@@ -49,7 +52,8 @@ public class DeductGoOutRoundingSet extends WorkTimeDomainObject {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(DeductGoOutRoundingSetSetMemento memento) {
 		memento.setDeductTimeRoundingSetting(this.deductTimeRoundingSetting);
@@ -57,25 +61,26 @@ public class DeductGoOutRoundingSet extends WorkTimeDomainObject {
 	}
 
 	/**
-	 * Restore data.
+	 * Correct data.
 	 *
-	 * @param screenMode the screen mode
-	 * @param oldDomain the old domain
+	 * @param screenMode
+	 *            the screen mode
+	 * @param oldDomain
+	 *            the old domain
 	 */
-	public void restoreData(ScreenMode screenMode, DeductGoOutRoundingSet oldDomain) {
-		this.deductTimeRoundingSetting.restoreData(screenMode,
-				oldDomain.getDeductTimeRoundingSetting());
-		this.approTimeRoundingSetting.restoreData(screenMode,
-				oldDomain.getApproTimeRoundingSetting());
+	public void correctData(ScreenMode screenMode, DeductGoOutRoundingSet oldDomain) {
+		this.deductTimeRoundingSetting.correctData(screenMode, oldDomain.getDeductTimeRoundingSetting());
+		this.approTimeRoundingSetting.correctData(screenMode, oldDomain.getApproTimeRoundingSetting());
 	}
-	
+
 	/**
-	 * Restore default data.
+	 * Correct default data.
 	 *
-	 * @param screenMode the screen mode
+	 * @param screenMode
+	 *            the screen mode
 	 */
-	public void restoreDefaultData(ScreenMode screenMode) {
-		this.deductTimeRoundingSetting.restoreDefaultData(screenMode);
-		this.approTimeRoundingSetting.restoreDefaultData(screenMode);
+	public void correctDefaultData(ScreenMode screenMode) {
+		this.deductTimeRoundingSetting.correctDefaultData(screenMode);
+		this.approTimeRoundingSetting.correctDefaultData(screenMode);
 	}
 }

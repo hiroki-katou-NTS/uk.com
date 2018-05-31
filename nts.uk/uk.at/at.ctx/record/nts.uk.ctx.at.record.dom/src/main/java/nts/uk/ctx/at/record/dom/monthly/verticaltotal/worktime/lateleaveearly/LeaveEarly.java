@@ -65,4 +65,21 @@ public class LeaveEarly {
 					leaveEarlyTime.getCalcTime().v());
 		}
 	}
+
+	/**
+	 * 回数に加算する
+	 * @param times 回数
+	 */
+	public void addTimes(int times){
+		this.times = this.times.addTimes(times);
+	}
+
+	/**
+	 * 分を時間に加算する
+	 * @param mitutes 分
+	 * @param calcMinutes 計算分
+	 */
+	public void addMinutesToTime(int mitutes, int calcMinutes){
+		this.time.addMinutes(mitutes, calcMinutes);
+	}
 }

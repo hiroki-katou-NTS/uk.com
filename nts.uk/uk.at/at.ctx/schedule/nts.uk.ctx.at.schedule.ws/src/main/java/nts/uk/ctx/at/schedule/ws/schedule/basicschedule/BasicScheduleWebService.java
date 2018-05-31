@@ -78,6 +78,12 @@ public class BasicScheduleWebService extends WebService {
 			@PathParam("workTimeCode") String workTimeCode) {
 		this.basicScheduleService.checkPairWorkTypeWorkTime(workTypeCode, workTimeCode);
 	}
+	
+	@POST
+	@Path("checkPairWorkTypeWorkTime2/{workTypeCode}")
+	public void checkPairWorkTypeWorkTime2(@PathParam("workTypeCode") String workTypeCode) {
+		this.basicScheduleService.checkPairWorkTypeWorkTime(workTypeCode, null);
+	}
 
 	@POST
 	@Path("update")

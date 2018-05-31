@@ -91,6 +91,7 @@ public class JpaFlowStampReflectTimezoneSetMemento implements FlowStampReflectTz
 			pk.setCid(companyId);
 			pk.setWorktimeCd(workTimeCd);
 			pk.setWorkNo(domain.getWorkNo().v());
+			pk.setAttendAtr(domain.getClassification().value);
 
 			// find entity if existed, else new entity
 			KshmtFlowStampReflect entity = mapEntity.get(pk);

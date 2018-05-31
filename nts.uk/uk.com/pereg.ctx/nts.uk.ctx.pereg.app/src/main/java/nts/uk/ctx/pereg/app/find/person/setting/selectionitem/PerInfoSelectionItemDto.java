@@ -1,26 +1,85 @@
 package nts.uk.ctx.pereg.app.find.person.setting.selectionitem;
 
-import lombok.Value;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoSelectionItem;
-import nts.uk.shr.com.context.AppContexts;
+import lombok.Data;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.PerInfoSelectionItem;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.primitive.SelectionItemClassification;
 
-@Value
+@Data
 public class PerInfoSelectionItemDto {
-	private String selectionItemId;
-	private String selectionItemName;
-	private String memo;
-	private int selectionItemClassification;
-	private String contractCode;
-	private String integrationCode;
-	private FormatSelectionDto formatSelection;
-	private int ReflectedToAllCompanies;
-	public static PerInfoSelectionItemDto fromDomain(PerInfoSelectionItem domain) {
-		// システム管理者　かつ　選択している選択項目の「選択項目区分」＝社員のとき
-		boolean isSystemAdmin = AppContexts.user().roles().have().systemAdmin();
-		return new PerInfoSelectionItemDto(domain.getSelectionItemId(), domain.getSelectionItemName().v(),
-				domain.getMemo().v(), domain.getSelectionItemClassification().value, domain.getContractCode(),
-				domain.getIntegrationCode().v(), FormatSelectionDto.fromDomain(domain.getFormatSelection()),
-				(isSystemAdmin && domain.getSelectionItemClassification().value == 1) ? 1: 0);
 
+	/**
+	 * ID
+	 */
+	private String selectionItemId;
+
+	/**
+	 * 名称
+	 */
+	private String selectionItemName;
+
+	/**
+	 * コード型
+	 */
+	private boolean characterType;
+
+	/**
+	 * コード桁数
+	 */
+	private int codeLength;
+
+	/**
+	 * 名称桁数
+	 */
+	private int nameLength;
+
+	/**
+	 * 外部コード桁数
+	 */
+	private int extraCodeLength;
+
+	/**
+	 * 共有
+	 */
+	private boolean shareChecked;
+
+	/**
+	 * 統合コード
+	 */
+	private String integrationCode;
+
+	/**
+	 * メモ
+	 */
+	private String memo;
+
+	public static PerInfoSelectionItemDto fromDomain(PerInfoSelectionItem domain) {
+		return new PerInfoSelectionItemDto(domain.getSelectionItemId(), domain.getSelectionItemName().v(),
+				domain.getFormatSelection().getCharacterType().value,
+				domain.getFormatSelection().getCodeLength().v().intValue(),
+				domain.getFormatSelection().getNameLength().v().intValue(),
+				domain.getFormatSelection().getExternalCodeLength().v().intValue(),
+				domain.getClassification() == SelectionItemClassification.EmployeeInformation ? false : true,
+				domain.getIntegrationCode().isPresent() ? domain.getIntegrationCode().get().v() : null,
+				domain.getMemo().isPresent() ? domain.getMemo().get().v() : null);
+
+	}
+
+	public PerInfoSelectionItemDto(String selectionItemId, String selectionItemName, int characterType, int codeLength,
+			int nameLength, int extraCodeLength, boolean shareChecked, String integrationCode,
+			String memo) {
+		super();
+		this.selectionItemId = selectionItemId;
+		this.selectionItemName = selectionItemName;
+		this.characterType = characterType == 1 ? true : false;
+		this.codeLength = codeLength;
+		this.nameLength = nameLength;
+		this.extraCodeLength = extraCodeLength;
+		this.shareChecked = shareChecked;
+		this.integrationCode = integrationCode;
+		this.memo = memo;
+	}
+	
+	public boolean isEmployeeClassification() {
+		return !shareChecked;
 	}
 }

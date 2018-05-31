@@ -12,87 +12,100 @@ import nts.uk.ctx.at.record.infra.entity.remainingnumber.spLea.basicInfo.KrcmtSp
 import nts.uk.ctx.at.record.infra.entity.remainingnumber.spLea.basicInfo.KrcmtSpecialLeaveInfoPK;
 
 @Stateless
-public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements SpecialLeaveBasicInfoRepository{
+public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements SpecialLeaveBasicInfoRepository {
 
 	private String FIND_QUERY = "SELECT s FROM KrcmtSpecialLeaveInfo s WHERE s.key.employeeId = :employeeId ";
-	
+
 	private String FIND_QUERY_BYSIDCD = String.join(" ", FIND_QUERY, "AND s.key.spLeaveCD = :spLeaveCD");
-	
+
 	@Override
 	public List<SpecialLeaveBasicInfo> listSPLeav(String sid) {
-		List<SpecialLeaveBasicInfo> result = this.queryProxy().query(FIND_QUERY,KrcmtSpecialLeaveInfo.class)
-		.setParameter("employeeId", sid).getList(item ->{
-			return toDomain(item);
-		});
+		List<SpecialLeaveBasicInfo> result = this.queryProxy().query(FIND_QUERY, KrcmtSpecialLeaveInfo.class)
+				.setParameter("employeeId", sid).getList(item -> {
+					return toDomain(item);
+				});
 		return result;
 	}
 
 	@Override
 	public void add(SpecialLeaveBasicInfo domain) {
 		this.commandProxy().insert(toEntity(domain));
-		
+
 	}
 
 	@Override
 	public void update(SpecialLeaveBasicInfo domain) {
-		KrcmtSpecialLeaveInfoPK key  = new KrcmtSpecialLeaveInfoPK(domain.getSID(), domain.getSpecialLeaveCode().v());
+		KrcmtSpecialLeaveInfoPK key = new KrcmtSpecialLeaveInfoPK(domain.getSID(), domain.getSpecialLeaveCode().v());
 		Optional<KrcmtSpecialLeaveInfo> entity = this.queryProxy().find(key, KrcmtSpecialLeaveInfo.class);
-		if (!entity.isPresent()){
+		if (!entity.isPresent()) {
 			return;
 		}
-		
+
 		updateEntity(domain, entity.get());
-		
+
 		this.commandProxy().update(entity.get());
-		
+
 	}
 
 	@Override
 	public void delete(String sID, int spLeavCD) {
-		KrcmtSpecialLeaveInfoPK key = new KrcmtSpecialLeaveInfoPK(sID,spLeavCD);
+		KrcmtSpecialLeaveInfoPK key = new KrcmtSpecialLeaveInfoPK(sID, spLeavCD);
 		this.commandProxy().remove(KrcmtSpecialLeaveInfo.class, key);
 	}
-	
+
 	/**
 	 * Update to entity
+	 * 
 	 * @param domain
 	 * @return
 	 */
-	private void updateEntity(SpecialLeaveBasicInfo domain, KrcmtSpecialLeaveInfo entity){
+	private void updateEntity(SpecialLeaveBasicInfo domain, KrcmtSpecialLeaveInfo entity) {
+		entity.useCls = domain.getUsed().value;
 		entity.appSetting = domain.getApplicationSet().value;
 		entity.grantDate = domain.getGrantSetting().getGrantDate();
-		if (domain.getGrantSetting().getGrantDays().isPresent()){
+		if (domain.getGrantSetting().getGrantDays().isPresent()) {
 			entity.grantNumber = domain.getGrantSetting().getGrantDays().get().v();
 		}
-		if (domain.getGrantSetting().getGrantTable().isPresent()){
-			entity.grantTable = domain.getGrantSetting().getGrantTable().get().v();
+		if (domain.getGrantSetting().getGrantTable().isPresent()) {
+			if (domain.getGrantSetting().getGrantTable().get().equals(""))
+				entity.grantTable = null;
+			else
+				entity.grantTable = domain.getGrantSetting().getGrantTable().get().v();
+		} else {
+			entity.grantTable = null;
 		}
 	}
-	
+
 	/**
 	 * Convert to entity
+	 * 
 	 * @param domain
 	 * @return
 	 */
-	private KrcmtSpecialLeaveInfo toEntity(SpecialLeaveBasicInfo domain){
+	private KrcmtSpecialLeaveInfo toEntity(SpecialLeaveBasicInfo domain) {
 		KrcmtSpecialLeaveInfo entity = new KrcmtSpecialLeaveInfo();
-		entity.cID= domain.getCID();
-		KrcmtSpecialLeaveInfoPK key  = new KrcmtSpecialLeaveInfoPK(domain.getSID(), domain.getSpecialLeaveCode().v());
+		entity.cID = domain.getCID();
+		KrcmtSpecialLeaveInfoPK key = new KrcmtSpecialLeaveInfoPK(domain.getSID(), domain.getSpecialLeaveCode().v());
 		entity.key = key;
+		entity.useCls = domain.getUsed().value;
 		entity.appSetting = domain.getApplicationSet().value;
 		entity.grantDate = domain.getGrantSetting().getGrantDate();
-		if (domain.getGrantSetting().getGrantDays().isPresent()){
+		if (domain.getGrantSetting().getGrantDays().isPresent()) {
 			entity.grantNumber = domain.getGrantSetting().getGrantDays().get().v();
 		}
-		if (domain.getGrantSetting().getGrantTable().isPresent()){
-			entity.grantTable = domain.getGrantSetting().getGrantTable().get().v();
+		if (domain.getGrantSetting().getGrantTable().isPresent()) {
+			if (domain.getGrantSetting().getGrantTable().get().equals(""))
+				entity.grantTable = null;
+			else
+				entity.grantTable = domain.getGrantSetting().getGrantTable().get().v();
 		}
-		
+
 		return entity;
 	}
-	
+
 	/**
 	 * Convert to domain
+	 * 
 	 * @param entity
 	 * @return
 	 */
@@ -103,9 +116,9 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 
 	@Override
 	public Optional<SpecialLeaveBasicInfo> getBySidLeaveCd(String sid, int spLeaveCD) {
-		Optional<SpecialLeaveBasicInfo> result = this.queryProxy().query(FIND_QUERY_BYSIDCD,KrcmtSpecialLeaveInfo.class)
-				.setParameter("employeeId", sid)
-				.setParameter("spLeaveCD", spLeaveCD).getSingle(item->toDomain(item));
+		Optional<SpecialLeaveBasicInfo> result = this.queryProxy()
+				.query(FIND_QUERY_BYSIDCD, KrcmtSpecialLeaveInfo.class).setParameter("employeeId", sid)
+				.setParameter("spLeaveCD", spLeaveCD).getSingle(item -> toDomain(item));
 		return result;
 	}
 

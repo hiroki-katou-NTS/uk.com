@@ -9,7 +9,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
@@ -38,8 +37,8 @@ public class RemandImpl implements RemandService {
 	private CollectApprovalAgentInforService collectApprovalAgentInforService;
 
 	@Override
-	public List<String> doRemandForApprover(String companyID, String rootStateID, Integer order) {
-		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findEmploymentApp(rootStateID);
+	public List<String> doRemandForApprover(String companyID, String rootStateID, Integer order, Integer rootType) {
+		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, rootType);
 		if(!opApprovalRootState.isPresent()){
 			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
 		}
@@ -63,7 +62,7 @@ public class RemandImpl implements RemandService {
 			});
 			approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 		});
-		approvalRootStateRepository.update(approvalRootState);
+		approvalRootStateRepository.update(approvalRootState, rootType);
 		// 送信者ID＝送信先リスト
 		ApprovalPhaseState approvalPhaseState = approvalRootState.getListApprovalPhaseState().get(listApprovalPhase.size()-order);
 		List<String> approvers = judgmentApprovalStatusService.getApproverFromPhase(approvalPhaseState);
@@ -73,8 +72,8 @@ public class RemandImpl implements RemandService {
 	}
 
 	@Override
-	public void doRemandForApplicant(String companyID, String rootStateID) {
-		releaseAllAtOnceService.doReleaseAllAtOnce(companyID, rootStateID);
+	public void doRemandForApplicant(String companyID, String rootStateID, Integer rootType) {
+		releaseAllAtOnceService.doReleaseAllAtOnce(companyID, rootStateID, rootType);
 	}
 
 }

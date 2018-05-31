@@ -185,6 +185,8 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                                 
                 if (self.items().length > 0) {
                     self.singleSelectedCode(self.items()[0].code);
+                } else {
+                    self.cleanForm();
                 }
                 
                 dfd.resolve();
@@ -507,9 +509,13 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                         var value = check[index + 1] != null ? check[index + 1].conditionValue : 0;
                         
                         if(flag && item.conditionValue <= value) {
-                            nts.uk.ui.dialog.alertError({ messageId: "Msg_264" });
-                            flag = false;
-                            return;
+                            if(flag && value == 0 && item.conditionValue == value) {
+                                flag = true;
+                            } else {
+                                nts.uk.ui.dialog.alertError({ messageId: "Msg_264" });
+                                flag = false;
+                                return;
+                            }
                         }
                     });
                     

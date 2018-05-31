@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
@@ -144,17 +145,40 @@ public class PredetermineTimeSetForCalc {
 	 * @return
 	 */
 	public AttendanceTime getpredetermineTime(DailyWork dailyWork) {
-		switch(dailyWork.getAttendanceHolidayAttr()) {
+		switch(dailyWork.decisionWorkTypeRange()) {
+		case ONEDAY:
+			return additionSet.getPredTime().getOneDay();
+		case MORNING:
+			return additionSet.getPredTime().getMorning();
+		case AFTERNOON:
+			return additionSet.getPredTime().getAfternoon();
+		case NOTHING:
+			return new AttendanceTime(0);
+		default:
+			throw new RuntimeException("unknown workTypeRange");
+		}
+	}
+	
+	/**
+	 * 出勤系などの～～～刑による所定時間の取得
+	 * @param attendanceAtr
+	 * @return
+	 */
+	public AttendanceTime getPredetermineTimeByAttendanceAtr(AttendanceHolidayAttr attendanceAtr) {
+		switch(attendanceAtr) {
 		case FULL_TIME:
 			return additionSet.getPredTime().getOneDay();
 		case MORNING:
 			return additionSet.getPredTime().getMorning();
 		case AFTERNOON:
 			return additionSet.getPredTime().getAfternoon();
-		default:
+		case HOLIDAY:
 			return new AttendanceTime(0);
+		default:
+				throw new RuntimeException("unknown workTypeRange");
 		}
 	}
+	
 	
 	/**
 	 * 所定時間設定を所定時間設定(計算用)に変換する
@@ -169,13 +193,42 @@ public class PredetermineTimeSetForCalc {
 											  master.getStartDateClock());
 	}
 	
+//	/**
+//	 * workNoに一致する所定時間を取得する
+//	 * @param workNo
+//	 * @return
+//	 */
+//	public Optional<TimezoneUse> getTimeSheets(int workNo) {
+//		return this.timeSheets.stream().filter(t -> t.getWorkNo()==workNo).findFirst();
+//	}
+	
 	/**
 	 * workNoに一致する所定時間を取得する
 	 * @param workNo
 	 * @return
 	 */
-	public TimezoneUse getTimeSheets(int workNo) {
-		return this.timeSheets.stream().filter(t -> t.getWorkNo()==workNo).collect(Collectors.toList()).get(0);
+	public Optional<TimezoneUse> getTimeSheets(AttendanceHolidayAttr attr,int workNo) {
+		
+		Optional<TimezoneUse> timeSheet = this.timeSheets.stream().filter(t -> t.getWorkNo()==workNo).findFirst();
+		
+		switch (attr) {
+		case MORNING:
+			if(timeSheet.isPresent()) {
+				return Optional.of(new TimezoneUse(timeSheet.get().getStart(),this.AMEndTime,timeSheet.get().getUseAtr(),timeSheet.get().getWorkNo()));
+			}
+			return Optional.empty();
+		case AFTERNOON:
+			if(timeSheet.isPresent()) {
+				return Optional.of(new TimezoneUse(this.PMStartTime,timeSheet.get().getEnd(),timeSheet.get().getUseAtr(),timeSheet.get().getWorkNo()));
+			}
+			return Optional.empty();
+		case FULL_TIME:
+		case HOLIDAY:
+			return timeSheet;
+		default:
+			throw new RuntimeException("unknown attr:" + attr);
+		}
+		
 	}
 	
 }

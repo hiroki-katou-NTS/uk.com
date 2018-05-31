@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.AbsenceOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.HolidayOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.YearlyReservedOfDaily;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 /** 日別実績の休暇 */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class HolidayDailyPerformDto {
 
 	/** 年休: 日別実績の年休 */

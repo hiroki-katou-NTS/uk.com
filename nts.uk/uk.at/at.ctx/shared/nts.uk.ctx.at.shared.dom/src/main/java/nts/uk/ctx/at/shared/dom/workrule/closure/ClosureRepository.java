@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.workrule.closure;
@@ -138,7 +138,7 @@ public interface ClosureRepository {
 	 * @param closureMonth the closure month
 	 * @return the optional
 	 */
-	Optional<ClosureHistory> findByClosureIdAndCurrentMonth(Integer closureId, Integer closureMonth);
+	Optional<ClosureHistory> findByClosureIdAndCurrentMonth(String companyId, Integer closureId, Integer closureMonth);
 	
 	/**
 	 * Find by current month.
@@ -182,5 +182,51 @@ public interface ClosureRepository {
 	 * @return the closure list
 	 */
 	List<Closure> getClosureList(String companyId);
+	
+	/**
+	 * Find by id and use atr.
+	 *
+	 * @param companyId the company id
+	 * @param closureId the closure id
+	 * @param useAtr the use atr
+	 * @return the optional
+	 */
+	default Optional<Closure> findByIdAndUseAtr(String companyId, int closureId, UseClassification useAtr) {
+		Optional<Closure> foundedClosure = this.findById(companyId, closureId);
+		
+		// Check closure exits.
+		if (!foundedClosure.isPresent()) {
+			return Optional.empty();
+		}
+		
+		// Check use Atr;
+		if (foundedClosure.get().getUseClassification() == useAtr) {
+			return foundedClosure;
+		}
+		
+		return Optional.empty();
+	}
+	
+	/**
+	 * Find.
+	 *
+	 * @param companyId the company id
+	 * @param closureId the closure id
+	 * @param useAtr the use atr
+	 * @param processingYm the processing ym
+	 * @return the optional
+	 */
+	default Optional<Closure> find(String companyId, int closureId, UseClassification useAtr, YearMonth processingYm) {
+		Optional<Closure> foundedClosure = this.findByIdAndUseAtr(companyId, closureId, useAtr);
+		// Check closure exits.
+		if (!foundedClosure.isPresent()) {
+			return Optional.empty();
+		}
+		// Check processingYM.
+		if (!foundedClosure.get().getClosureMonth().getProcessingYm().equals(processingYm)) {
+			return foundedClosure;
+		}
+		return Optional.empty();
+	}
 
 }

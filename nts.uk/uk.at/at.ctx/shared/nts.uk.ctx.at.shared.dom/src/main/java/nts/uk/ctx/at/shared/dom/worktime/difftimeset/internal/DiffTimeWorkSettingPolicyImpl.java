@@ -1,9 +1,10 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.difftimeset.internal;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,16 +13,21 @@ import javax.inject.Inject;
 
 import nts.arc.error.BundledBusinessException;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonWorkTimePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDeductTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayWorkTimezonePolicy;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeOTTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingPolicy;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.policy.DiffTimeHalfDayWorkTimezonePolicy;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.policy.DiffTimeStampReflectTimezonePolicy;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.policy.DiffTimeWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.service.PredeteminePolicyService;
+import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
+import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayMode;
 
 /**
  * The Class DiffTimeWorkSettingPolicyImpl.
@@ -45,6 +51,22 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 	@Inject
 	private WorkTimezoneCommonSetPolicy wtzCommonSetPolicy;
 
+	/** The diff time stamp reflect timezone policy. */
+	@Inject
+	private DiffTimeStampReflectTimezonePolicy diffTimeStampReflectTimezonePolicy;
+
+	/**
+	 * Validate.
+	 *
+	 * @param be
+	 *            the be
+	 * @param pred
+	 *            the pred
+	 * @param displayMode
+	 *            the display mode
+	 * @param diffTimeWorkSetting
+	 *            the diff time work setting
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -54,16 +76,17 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 	 * DiffTimezoneSetting)
 	 */
 	@Override
-	public void validate(BundledBusinessException be, PredetemineTimeSetting pred,
+	public void validate(BundledBusinessException be, PredetemineTimeSetting pred, WorkTimeDisplayMode displayMode,
 			DiffTimeWorkSetting diffTimeWorkSetting) {
+
+		// Validate list work halfday
+		this.validateHalfDayWork(be, pred, displayMode, diffTimeWorkSetting);
+
 		// validate StampReflectTimezone 516
 		// this.validateStampReflectTimezone(pred, diffTimeWorkSetting);
 
 		// validate HDWorkTimeSheetSetting 516
 		this.validateHDWorkTimeSheetSetting(be, pred, diffTimeWorkSetting);
-
-		diffTimeWorkSetting.getHalfDayWorkTimezones()
-				.forEach(halfDay -> this.diffTimeHalfPolicy.validate(be, halfDay, pred));
 
 		// validate EmTimezoneChangeExtent
 		this.validateEmTimezoneChangeExtent(be, pred, diffTimeWorkSetting);
@@ -74,15 +97,38 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 		// validate WorkTimezoneCommonSet
 		this.wtzCommonSetPolicy.validate(be, pred, diffTimeWorkSetting.getCommonSet());
 
+		// validate list stamp timezone
+		if (DisplayMode.DETAIL.equals(displayMode.getDisplayMode())) {
+			this.diffTimeStampReflectTimezonePolicy.validate(be, pred, diffTimeWorkSetting);
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.difftimeset.policy.
+	 * DiffTimeWorkSettingPolicy#filterTimezone(nts.uk.ctx.at.shared.dom.
+	 * worktime.predset.PredetemineTimeSetting,
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayMode,
+	 * nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting)
+	 */
+	@Override
+	public void filterTimezone(PredetemineTimeSetting pred, WorkTimeDisplayMode displayMode,
+			DiffTimeWorkSetting diffTimeWorkSetting) {
+		// Filter AM PM
+		diffTimeWorkSetting.getHalfDayWorkTimezones().forEach(diffTime -> {
+			this.diffTimeHalfPolicy.filterTimezone(pred, diffTime, displayMode.getDisplayMode(),
+					diffTimeWorkSetting.isUseHalfDayShift());
+		});
 	}
 
 	/**
-	 * Validate stamp reflect timezone.
+	 * Validate HD work time sheet setting.
 	 *
-	 * @param companyId
-	 *            the company id
-	 * @param worktimeCode
-	 *            the worktime code
+	 * @param be
+	 *            the be
+	 * @param pred
+	 *            the pred
 	 * @param diffTimeWorkSetting
 	 *            the diff time work setting
 	 */
@@ -144,10 +190,12 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 	/**
 	 * Validate em timezone change extent.
 	 *
+	 * @param be
+	 *            the be
 	 * @param pred
 	 *            the pred
-	 * @param emTimezoneChangeExtent
-	 *            the em timezone change extent
+	 * @param diffTimeWorkSetting
+	 *            the diff time work setting
 	 */
 	private void validateEmTimezoneChangeExtent(BundledBusinessException be, PredetemineTimeSetting pred,
 			DiffTimeWorkSetting diffTimeWorkSetting) {
@@ -174,6 +222,7 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 		diffTimeWorkSetting.getHalfDayWorkTimezones().stream().forEach(item -> {
 
 			List<DiffTimeDeductTimezone> lstRestTime = item.getRestTimezone().getRestTimezones().stream()
+					.filter(halftime -> !halftime.isUpdateStartTime())
 					.sorted((obj1, obj2) -> obj1.getStart().compareTo(obj2.getStart())).collect(Collectors.toList());
 			List<EmTimeZoneSet> lstWorkTime = item.getWorkTimezone().getEmploymentTimezones().stream()
 					.sorted((obj1, obj2) -> obj1.getTimezone().getStart().compareTo(obj2.getTimezone().getStart()))
@@ -207,6 +256,18 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 		});
 	}
 
+	/**
+	 * Validate left of work.
+	 *
+	 * @param work
+	 *            the work
+	 * @param lstOT
+	 *            the lst OT
+	 * @param aheadChange
+	 *            the ahead change
+	 * @param be
+	 *            the be
+	 */
 	// get left Ot of work
 	private void validateLeftOfWork(EmTimeZoneSet work, List<DiffTimeOTTimezoneSet> lstOT, int aheadChange,
 			BundledBusinessException be) {
@@ -224,6 +285,18 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 		}
 	}
 
+	/**
+	 * Validate right of work.
+	 *
+	 * @param work
+	 *            the work
+	 * @param lstOT
+	 *            the lst OT
+	 * @param behindChange
+	 *            the behind change
+	 * @param be
+	 *            the be
+	 */
 	// get right Ot of work
 	private void validateRightOfWork(EmTimeZoneSet work, List<DiffTimeOTTimezoneSet> lstOT, int behindChange,
 			BundledBusinessException be) {
@@ -241,6 +314,15 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 		}
 	}
 
+	/**
+	 * Rest is in work time.
+	 *
+	 * @param restTime
+	 *            the rest time
+	 * @param lstWorkTime
+	 *            the lst work time
+	 * @return true, if successful
+	 */
 	// check if rest time in work time
 	private boolean restIsInWorkTime(DiffTimeDeductTimezone restTime, List<EmTimeZoneSet> lstWorkTime) {
 		List<EmTimeZoneSet> lst = lstWorkTime.stream()
@@ -250,4 +332,35 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 		// if have rest time valid
 		return lst.size() > 0;
 	}
+
+	/**
+	 * Validate half day work.
+	 *
+	 * @param be
+	 *            the be
+	 * @param predTime
+	 *            the pred time
+	 * @param displayMode
+	 *            the display mode
+	 * @param diffTimeWorkSetting
+	 *            the diff time work setting
+	 */
+	private void validateHalfDayWork(BundledBusinessException be, PredetemineTimeSetting predTime,
+			WorkTimeDisplayMode displayMode, DiffTimeWorkSetting diffTimeWorkSetting) {
+		List<AmPmAtr> lstAmPm = new ArrayList<AmPmAtr>();
+		lstAmPm.add(AmPmAtr.ONE_DAY);
+		if (diffTimeWorkSetting.isUseHalfDayShift()) {
+			lstAmPm.add(AmPmAtr.AM);
+			lstAmPm.add(AmPmAtr.PM);
+		}
+
+		List<DiffTimeHalfDayWorkTimezone> lstDiffHalfWork = diffTimeWorkSetting.getHalfDayWorkTimezones().stream()
+				.filter(diffHalfWork -> lstAmPm.contains(diffHalfWork.getAmPmAtr())).collect(Collectors.toList());
+
+		lstDiffHalfWork.forEach(diffHalfWork -> {
+			this.diffTimeHalfPolicy.validate(be, predTime, displayMode, diffHalfWork,
+					diffTimeWorkSetting.isUseHalfDayShift());
+		});
+	}
+
 }

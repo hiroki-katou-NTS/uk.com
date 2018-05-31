@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.app.command.workrule.workuse.AddTemporaryWorkUseMntC
 import nts.uk.ctx.at.shared.app.command.workrule.workuse.AddTemporaryWorkUseMntCommandHandler;
 import nts.uk.ctx.at.shared.app.find.workrule.func.SelectFunctionDto;
 import nts.uk.ctx.at.shared.app.find.workrule.func.SelectFunctionFinder;
+import nts.uk.ctx.at.shared.app.find.workrule.func.SettingFlexWorkDto;
 
 /**
  * 機能の選択
@@ -43,6 +44,12 @@ public class SelectFunctionWebService {
 	@POST
 	public SelectFunctionDto loadAllSetting() {
 		return finder.findAllSetting();
+	}
+
+	@Path("settingflexwork/get")
+	@POST
+	public SettingFlexWorkDto findSettingFlexWork() {
+		return finder.findSettingFlexWork();
 	}
 	
 	@Path("regAgg")

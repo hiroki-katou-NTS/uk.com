@@ -2,7 +2,6 @@ package nts.uk.ctx.bs.employee.pubimp.employee;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,7 +24,6 @@ import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoDtoExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class EmployeeInfoPubImp implements EmployeeInfoPub {
@@ -53,7 +51,7 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 		} else {
 			EmployeeDataMngInfo emp = empInfo.get();
 			
-			Optional<Person> person = personRepo.getByPId(emp.getPersonId());
+			Optional<Person> person = personRepo.getByPersonId(emp.getPersonId());
 			
 			EmployeeInfoDtoExport result = new EmployeeInfoDtoExport(emp.getCompanyId(),
 					emp.getEmployeeCode() == null ? null : emp.getEmployeeCode().v(), emp.getEmployeeId(),
@@ -94,6 +92,8 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 	public List<EmployeeInfoDtoExport> getEmployeesAtWorkByBaseDate(String companyId, GeneralDate standardDate) {
 
 		List<EmployeeDataMngInfo> listEmpDomain = empDataMngRepo.findByCompanyId(companyId);
+		
+		Map<String, String> mapSidPid = listEmpDomain.stream().collect(Collectors.toMap(x -> x.getEmployeeId(), x -> x.getPersonId()));
 
 		List<EmployeeInfoDtoExport> result = new ArrayList<EmployeeInfoDtoExport>();
 
@@ -107,7 +107,7 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 		List<AffCompanyHist> affCompanyHistList = affComHistRepo.getAffCompanyHistoryOfEmployees(employeeIds);
 		
 		Map<String, AffCompanyHist> map = affCompanyHistList.stream()
-				.collect(Collectors.toMap(x -> x.getLstAffCompanyHistByEmployee().get(0).getSId(), x -> x));
+				.collect(Collectors.toMap(x -> x.getPId(), x -> x));
 		
 		List<String> personIds = affCompanyHistList.stream().map(x -> x.getPId()).collect(Collectors.toList());
 		
@@ -115,7 +115,7 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 		
 		
 		result =  listEmpDomain.stream().map(x -> {
-			AffCompanyHist affComHist = map.get(x.getEmployeeId());
+			AffCompanyHist affComHist = map.get(mapSidPid.get(x.getEmployeeId()));
 
 			if (affComHist == null)
 				return null;

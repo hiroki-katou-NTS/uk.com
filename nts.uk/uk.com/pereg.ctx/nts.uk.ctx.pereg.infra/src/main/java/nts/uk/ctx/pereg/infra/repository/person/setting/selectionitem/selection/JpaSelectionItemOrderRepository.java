@@ -6,8 +6,8 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionItemOrder;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionItemOrderRepository;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionorder.SelectionItemOrder;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionorder.SelectionItemOrderRepository;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelItemOrder;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelItemOrderPK;
 
@@ -21,8 +21,14 @@ import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.Ppem
 public class JpaSelectionItemOrderRepository extends JpaRepository implements SelectionItemOrderRepository {
 
 	private static final String SELECT_ALL = "SELECT si FROM PpemtSelItemOrder si";
+	
 	private static final String SELECT_ALL_HISTORY_ID = SELECT_ALL + " WHERE si.histId = :histId"
 			+ " ORDER BY si.dispOrder ASC";
+	
+	private static final String SELECT_ALL_IN_SELECTION_ITEM_ID = SELECT_ALL
+			+ " INNER JOIN PpemtHistorySelection his ON si.histId = his.histidPK.histId"
+			+ " WHERE his.selectionItemId = :selectionItemId";
+	
 	private static final String SELECT_ALL_SELECTION_ID = SELECT_ALL
 			+ " WHERE si.selectionIdPK.selectionId = :selectionId";
 
@@ -37,6 +43,14 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 		PpemtSelItemOrderPK pk = new PpemtSelItemOrderPK(selectionId);
 		this.commandProxy().remove(PpemtSelItemOrder.class, pk);
 
+	}
+	
+	@Override
+	public void removeInSelectionItemId(String selectionItemId) {
+		List<PpemtSelItemOrder> orderList = this.queryProxy()
+				.query(SELECT_ALL_IN_SELECTION_ITEM_ID, PpemtSelItemOrder.class)
+				.setParameter("selectionItemId", selectionItemId).getList();
+		this.commandProxy().removeAll(orderList);
 	}
 
 	// Domain:

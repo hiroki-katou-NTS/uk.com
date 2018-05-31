@@ -66,11 +66,11 @@ public class PortalTopPagePartFinder {
 				throw new RuntimeException("Can't find FlowMenu with id: " + topPagePartID);
 			return PlacementPartDto.createFromTopPagePart(optFlowMenu.get());
 		} else if (topPagePart.isDashBoard()) {
-			throw new RuntimeException("Not implement yet");
+			throw new RuntimeException("Not implement yet DashBoard");
 		} else if (topPagePart.isOptionalWidget()) {
-			throw new RuntimeException("Not implement yet");
+			return PlacementPartDto.createFromTopPagePart(topPagePart);
 		} else if (topPagePart.isStandardWidget()) {
-			throw new RuntimeException("Not implement yet");
+			return PlacementPartDto.createFromTopPagePart(topPagePart);
 		} else {
 			throw new RuntimeException("Invalid TopPagePart type: " + topPagePart.getType() );
 		}

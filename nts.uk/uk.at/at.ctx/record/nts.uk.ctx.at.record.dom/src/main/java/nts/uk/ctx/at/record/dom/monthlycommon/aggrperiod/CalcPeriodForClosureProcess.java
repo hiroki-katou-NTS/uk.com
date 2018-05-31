@@ -10,6 +10,8 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
+import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagementRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -30,6 +32,9 @@ public class CalcPeriodForClosureProcess {
 	/** 集計すべき期間を計算 */
 	@Inject
 	private CalcPeriodForAggregate calcPeriodForAggregate;
+	
+	@Inject
+	private ClosureStatusManagementRepository closureSttMngRepo;
 
 	/** 集計すべき期間 */
 	private List<ClosurePeriod> periodForAggregateList;
@@ -60,21 +65,28 @@ public class CalcPeriodForClosureProcess {
 		if (!currentDateOpt.isPresent()) return returnValue;
 		val currentDate = currentDateOpt.get();
 		
-		// 「締め状態管理」を取得
-		// not implements "get ClosureStatusManagement".
-		// parameter is (employeeId, currentYm, closureId, currentDate).
-		GeneralDate closureProcessedDate = GeneralDate.today();		// provisional 締め処理済み年月日
-		
 		// 集計すべき期間を計算
 		this.periodForAggregateList = this.calcPeriodForAggregate.algorithm(companyId, employeeId, currentPeriod.end());
-		
+				
 		// 締め処理すべき締め期間に絞り込む
 		val closurePeriodOpt = this.refineClosurePeriod(closureId, currentDate, currentYm);
-		if (!closurePeriodOpt.isPresent()){
-			
+		if (!closurePeriodOpt.isPresent()){			
 			// 対象締め処理期間なし
 			return returnValue;
 		}
+				
+		// 「締め状態管理」を取得
+		Optional<ClosureStatusManagement> sttMng = closureSttMngRepo.getLatestByEmpId(employeeId);
+		if (!sttMng.isPresent()) {
+			// 「締め処理期間」を返す
+			returnValue.setState(CalcPeriodForClosureProcState.EXIST);
+			returnValue.setClosurePeriod(closurePeriodOpt);
+			return returnValue;
+		}
+		
+		// provisional 締め処理済み年月日
+		GeneralDate closureProcessedDate = sttMng.get().getPeriod().end();		
+		
 		val closurePeriod = closurePeriodOpt.get();
 		
 		// 指定した年月日までの期間を除外する

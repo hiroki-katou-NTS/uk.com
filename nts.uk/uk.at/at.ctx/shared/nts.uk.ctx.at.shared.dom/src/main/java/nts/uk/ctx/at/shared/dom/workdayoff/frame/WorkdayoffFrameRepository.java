@@ -39,6 +39,15 @@ public interface WorkdayoffFrameRepository {
 	List<WorkdayoffFrame> getAllWorkdayoffFrame(String companyId);
 
 	/**
+	 * Find by use atr.
+	 *
+	 * @param companyId the company id
+	 * @param useAtr the use atr
+	 * @return the list
+	 */
+	List<WorkdayoffFrame> findByUseAtr(String companyId, int useAtr);
+
+	/**
 	 * Gets the workdayoff frame by.
 	 *
 	 * @param companyId the company id

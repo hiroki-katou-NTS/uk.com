@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.command.remainingnumber.annualeave;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -24,13 +26,24 @@ public class UpdateAnnuaLeaveCommandHandler extends CommandHandler<UpdateAnnuaLe
 	@Override
 	protected void handle(CommandHandlerContext<UpdateAnnuaLeaveCommand> context) {
 		UpdateAnnuaLeaveCommand c = context.getCommand();
+		
 		AnnualLeaveEmpBasicInfo basicInfo = AnnualLeaveEmpBasicInfo.createFromJavaType(c.getEmployeeId(),
 				c.getWorkingDaysPerYear(), c.getWorkingDayBeforeIntro(), c.getGrantTable(), c.getStandardDate());
 		annLeaBasicInfoRepo.update(basicInfo);
-
-		AnnualLeaveMaxData maxData = AnnualLeaveMaxData.createFromJavaType(c.getEmployeeId(), c.getMaxTimes(),
-				c.getUsedTimes(), c.getMaxMinutes(), c.getUsedMinutes());
-		maxDataRepo.update(maxData);
+		
+		// max data
+		Optional<AnnualLeaveMaxData> maxDataOpt = maxDataRepo.get(c.getEmployeeId());
+		if (maxDataOpt.isPresent()) {
+			AnnualLeaveMaxData maxData = maxDataOpt.get();
+			maxData.updateData(c.getMaxTimes(), c.getUsedTimes(), c.getMaxMinutes(), c.getUsedMinutes());
+			maxDataRepo.update(maxData);
+		}else {
+			AnnualLeaveMaxData maxData = AnnualLeaveMaxData.createFromJavaType(c.getEmployeeId(), c.getMaxTimes(),
+					c.getUsedTimes(), c.getMaxMinutes(), c.getUsedMinutes());
+			maxDataRepo.add(maxData);
+			
+		}
+		
 	}
 
 	@Override

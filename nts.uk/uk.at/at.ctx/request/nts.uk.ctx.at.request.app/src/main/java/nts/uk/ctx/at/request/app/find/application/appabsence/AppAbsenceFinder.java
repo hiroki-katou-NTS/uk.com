@@ -13,6 +13,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDto;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.HolidayAppTypeName;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
@@ -45,6 +46,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vaca
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -133,31 +135,14 @@ public class AppAbsenceFinder {
 			result.setMailFlg(!appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenRegisterFlg()
 					.equals(AppCanAtr.CAN));
 		}
+		// ドメインモデル「休暇申請設定」を取得する(lấy dữ liệu domain 「休暇申請設定」)
+		Optional<HdAppSet> hdAppSet = this.hdAppSetRepository.getAll();
 		// 1-1.起動時のエラーチェック
-		List<Integer> holidayAppTypes = new ArrayList<>();
-
-		if (!CollectionUtil.isEmpty(appCommonSettingOutput.appEmploymentWorkType)) {
-			for (AppEmploymentSetting appEmploymentSetting : appCommonSettingOutput.appEmploymentWorkType) {
-				if (!appEmploymentSetting.getHolidayTypeUseFlg() && appEmploymentSetting.getHolidayOrPauseType() != 6
-						&& appEmploymentSetting.getHolidayOrPauseType() != 5) {
-					holidayAppTypes.add(appEmploymentSetting.getHolidayOrPauseType());
-				}
-			}
-			if (CollectionUtil.isEmpty(holidayAppTypes)) {
-				throw new BusinessException("Msg_473");
-			}
-		}else{
-			holidayAppTypes.add(0);
-			holidayAppTypes.add(1);
-			holidayAppTypes.add(2);
-			holidayAppTypes.add(3);
-			holidayAppTypes.add(4);
-			holidayAppTypes.add(7);
-			
-		}
+		List<HolidayAppTypeName> holidayAppTypes = new ArrayList<>();
 		
-		holidayAppTypes.sort((a, b) -> a.compareTo(b));
-		result.setHolidayAppTypes(holidayAppTypes);
+		holidayAppTypes = getHolidayAppTypeName(hdAppSet,holidayAppTypes,appCommonSettingOutput);
+		holidayAppTypes.sort((a, b) -> a.getHolidayAppTypeCode().compareTo(b.getHolidayAppTypeCode()));
+		result.setHolidayAppTypeName(holidayAppTypes);
 		if (appDate != null) {
 			// 13.実績の取得
 			AchievementOutput achievementOutput = collectAchievement.getAchievement(companyID, employeeID,
@@ -171,6 +156,9 @@ public class AppAbsenceFinder {
 		employeeName = employeeAdapter.getEmployeeName(employeeID);
 		result.setEmployeeID(employeeID);
 		result.setEmployeeName(employeeName);
+		if(appCommonSettingOutput.applicationSetting != null){
+			result.setAppReasonRequire(appCommonSettingOutput.applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED));
+		}
 		return result;
 	}
 
@@ -254,34 +242,19 @@ public class AppAbsenceFinder {
 			}
 		}
 		// 1-1.起動時のエラーチェック
-		List<Integer> holidayAppTypes = new ArrayList<>();
+		List<HolidayAppTypeName> holidayAppTypes = new ArrayList<>();
 
-		if (!CollectionUtil.isEmpty(appCommonSettingOutput.appEmploymentWorkType)) {
-			for (AppEmploymentSetting appEmploymentSetting : appCommonSettingOutput.appEmploymentWorkType) {
-				if (!appEmploymentSetting.getHolidayTypeUseFlg() && appEmploymentSetting.getHolidayOrPauseType() != 6
-						&& appEmploymentSetting.getHolidayOrPauseType() != 5) {
-					holidayAppTypes.add(appEmploymentSetting.getHolidayOrPauseType());
-				}
-			}
-			if (CollectionUtil.isEmpty(holidayAppTypes)) {
-				throw new BusinessException("Msg_473");
-			}
-		}else{
-			holidayAppTypes.add(0);
-			holidayAppTypes.add(1);
-			holidayAppTypes.add(2);
-			holidayAppTypes.add(3);
-			holidayAppTypes.add(4);
-			holidayAppTypes.add(7);
-			
-		}
-		holidayAppTypes.sort((a, b) -> a.compareTo(b));
-		result.setHolidayAppTypes(holidayAppTypes);
+		holidayAppTypes = getHolidayAppTypeName(hdAppSet, holidayAppTypes, appCommonSettingOutput);
+		holidayAppTypes.sort((a, b) -> a.getHolidayAppTypeCode().compareTo(b.getHolidayAppTypeCode()));
+		result.setHolidayAppTypeName(holidayAppTypes);
 		getAppReason(result, companyID);
 		// get employeeName, employeeID
 		String employeeName = "";
 		employeeName = employeeAdapter.getEmployeeName(appAbsence.getApplication().getEmployeeID());
 		result.setEmployeeName(employeeName);
+		if(appCommonSettingOutput.applicationSetting != null){
+			result.setAppReasonRequire(appCommonSettingOutput.applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED));
+		}
 		// 8.休暇系の設定を取得する :TODO
 		return result;
 	}
@@ -366,7 +339,7 @@ public class AppAbsenceFinder {
 			// 3.事前事後の判断処理(事前事後非表示する場合)
 			PrePostAtr prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(
 					EnumAdaptor.valueOf(ApplicationType.BREAK_TIME_APPLICATION.value, ApplicationType.class),
-					appCommonSettingOutput.generalDate);
+					appCommonSettingOutput.generalDate,0);
 			if (prePostAtrJudgment != null) {
 				prePostAtr = prePostAtrJudgment.value;
 			}
@@ -377,24 +350,26 @@ public class AppAbsenceFinder {
 		// ドメインモデル「申請設定」．承認ルートの基準日をチェックする ( Domain model "application setting".
 		// Check base date of approval route )
 		if (appCommonSettingOutput.applicationSetting.getBaseDateFlg().value == BaseDateFlg.APP_DATE.value) {
-			String workTypeCDForChange = "";
-			Optional<HdAppSet> hdAppSet = this.hdAppSetRepository.getAll();
-			// 1.勤務種類を取得する（新規） :TODO
-			List<AbsenceWorkType> workTypes = this.appAbsenceThreeProcess.getWorkTypeCodes(
-					appCommonSettingOutput.appEmploymentWorkType, companyID, employeeID, holidayType, alldayHalfDay,
-					displayHalfDayValue, hdAppSet);
-			if (!CollectionUtil.isEmpty(workTypes)) {
-				List<AbsenceWorkType> workTypeForFilter = workTypes.stream()
-						.filter(x -> x.getWorkTypeCode().equals(workTypeCode == null ? "" : workTypeCode))
-						.collect(Collectors.toList());
-				if (CollectionUtil.isEmpty(workTypeForFilter)) {
-					workTypeCDForChange = workTypes.get(0).getWorkTypeCode();
-				} else {
-					workTypeCDForChange = workTypeCode;
+			if(holidayType != null){
+				String workTypeCDForChange = "";
+				Optional<HdAppSet> hdAppSet = this.hdAppSetRepository.getAll();
+				// 1.勤務種類を取得する（新規） :TODO
+				List<AbsenceWorkType> workTypes = this.appAbsenceThreeProcess.getWorkTypeCodes(
+						appCommonSettingOutput.appEmploymentWorkType, companyID, employeeID, holidayType, alldayHalfDay,
+						displayHalfDayValue, hdAppSet);
+				if (!CollectionUtil.isEmpty(workTypes)) {
+					List<AbsenceWorkType> workTypeForFilter = workTypes.stream()
+							.filter(x -> x.getWorkTypeCode().equals(workTypeCode == null ? "" : workTypeCode))
+							.collect(Collectors.toList());
+					if (CollectionUtil.isEmpty(workTypeForFilter)) {
+						workTypeCDForChange = workTypes.get(0).getWorkTypeCode();
+					} else {
+						workTypeCDForChange = workTypeCode;
+					}
 				}
+				result.setWorkTypes(workTypes);
+				result.setWorkTypeCode(workTypeCDForChange);
 			}
-			result.setWorkTypes(workTypes);
-			result.setWorkTypeCode(workTypeCDForChange);
 		}
 		result.setApplication(application);
 		return result;
@@ -675,8 +650,6 @@ public class AppAbsenceFinder {
 		InitValueAtr initValueAtr = this.otherCommonAlgorithm.judgmentPrePostAtr(ApplicationType.ABSENCE_APPLICATION,
 				appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT), checkCaller);
 		applicationDto.setPrePostAtr(initValueAtr.value);
-		// ドメインモデル「休暇申請設定」を取得する(lấy dữ liệu domain 「休暇申請設定」)
-		Optional<HdAppSet> hdAppSet = this.hdAppSetRepository.getAll();
 		// ドメインモデル「申請定型理由」を取得する(lấy dữ liệu domain 「申請定型理由」) (hien thị A7_2)
 		result.setApplication(applicationDto);
 		getAppReason(result, companyID);
@@ -732,6 +705,60 @@ public class AppAbsenceFinder {
 			}
 		}
 		return null;
+	}
+	private List<HolidayAppTypeName> getHolidayAppTypeName(Optional<HdAppSet> hdAppSet,
+			List<HolidayAppTypeName> holidayAppTypes,AppCommonSettingOutput appCommonSettingOutput){
+		List<Integer> holidayAppTypeCodes = new ArrayList<>();
+		if (CollectionUtil.isEmpty(appCommonSettingOutput.appEmploymentWorkType)) {
+			holidayAppTypeCodes.add(0);
+			holidayAppTypeCodes.add(1);
+			holidayAppTypeCodes.add(2);
+			holidayAppTypeCodes.add(3);
+			holidayAppTypeCodes.add(4);
+			holidayAppTypeCodes.add(7);
+		}else{
+			for (AppEmploymentSetting appEmploymentSetting : appCommonSettingOutput.appEmploymentWorkType) {
+				if (!appEmploymentSetting.getHolidayTypeUseFlg() && appEmploymentSetting.getHolidayOrPauseType() != 6
+						&& appEmploymentSetting.getHolidayOrPauseType() != 5) {
+					holidayAppTypeCodes.add(appEmploymentSetting.getHolidayOrPauseType());
+				}
+			}
+			if (CollectionUtil.isEmpty(holidayAppTypeCodes)) {
+				throw new BusinessException("Msg_473");
+			}
+		}
+		for (Integer holidayCode : holidayAppTypeCodes) {
+				switch (holidayCode) {
+				case 0:
+					holidayAppTypes.add(new HolidayAppTypeName(holidayCode,
+							hdAppSet.get().getYearHdName() == null ? "" : hdAppSet.get().getYearHdName().toString()));
+					break;
+				case 1:
+					holidayAppTypes.add(new HolidayAppTypeName(holidayCode,
+							hdAppSet.get().getObstacleName() == null ? "" : hdAppSet.get().getObstacleName().toString()));
+					break;
+				case 2:
+					holidayAppTypes.add(new HolidayAppTypeName(holidayCode,
+							hdAppSet.get().getAbsenteeism()== null ? "" : hdAppSet.get().getAbsenteeism().toString()));
+					break;
+				case 3:
+					holidayAppTypes.add(new HolidayAppTypeName(holidayCode,
+							hdAppSet.get().getSpecialVaca() == null ? "" : hdAppSet.get().getSpecialVaca().toString()));
+					break;
+				case 4:
+					holidayAppTypes.add(new HolidayAppTypeName(holidayCode,
+							hdAppSet.get().getYearResig() == null ? "" : hdAppSet.get().getYearResig().toString()));
+					break;
+				case 7:
+					holidayAppTypes.add(new HolidayAppTypeName(holidayCode,
+							hdAppSet.get().getFurikyuName() == null ? "" :  hdAppSet.get().getFurikyuName().toString()));
+					break;
+				default:
+					break;
+				}
+		}
+		return holidayAppTypes;
+
 	}
 
 }

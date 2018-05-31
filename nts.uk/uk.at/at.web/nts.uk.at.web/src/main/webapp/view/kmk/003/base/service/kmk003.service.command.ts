@@ -16,26 +16,23 @@ module nts.uk.at.view.kmk003.a {
                     addMode: boolean;
                     predseting: predset.PredetemineTimeSettingDto;
                     worktimeSetting: worktimeset.WorkTimeSettingDto;
+                    screenMode: TabMode;
                 }
                 
                 export interface FixedWorkSettingSaveCommand extends WorkTimeCommonSaveCommand {
                     fixedWorkSetting: fixedset.FixedWorkSettingDto;
-                    screenMode: TabMode;
                 }
                 
                 export interface DiffTimeWorkSettingSaveCommand extends WorkTimeCommonSaveCommand {
                     diffTimeWorkSetting: difftimeset.DiffTimeWorkSettingDto;
-                    screenMode: TabMode;
                 }
                 
                 export interface FlowWorkSettingSaveCommand extends WorkTimeCommonSaveCommand {
                     flowWorkSetting: flowset.FlWorkSettingDto;
-                    screenMode: TabMode;
                 }
                 
                 export interface FlexWorkSettingSaveCommand extends WorkTimeCommonSaveCommand {
                     flexWorkSetting: flexset.FlexWorkSettingDto;
-                    screenMode: TabMode;
                 }
             }
         }

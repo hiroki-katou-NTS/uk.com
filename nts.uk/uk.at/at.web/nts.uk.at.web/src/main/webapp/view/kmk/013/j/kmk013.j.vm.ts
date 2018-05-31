@@ -31,24 +31,36 @@ module nts.uk.at.view.kmk013.j {
                 self.currentItemAttendance = ko.observable(new WorktypeDisplayDto({}));
                 self.workTypeNames = ko.observable("");
                 self.workTypeNamesAttendance = ko.observable("");
+                self.workTypeNames.subscribe(function(data){
+                    // Set tooltip
+                    $('#itemname_absenceDay').text(data);
+                });
+                self.workTypeNamesAttendance.subscribe(function(data) {
+                    // Set tooltip
+                    $('#itemname_attendanceDay').text(data);
+                });
+                
             }
             
             // Start Page
             public startPage(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 var self = this;
-                $.when(self.getWorkTypeList()).done(function() {
+                self.getWorkTypeList().done(function() {
                     self.findAll();
-                });
-                service.loadAllSetting().done(function(data) {
-                    if (data) {
-                        self.selectedItem(data.attendanceItemCountingMethod);
-                    }
+                    service.loadAllSetting().done(function(data) {
+                        if (data) {
+                            self.selectedItem(data.attendanceItemCountingMethod);
+                        }
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alert(res.message);
+                    });
+                    
                     dfd.resolve();
-                })
-                .fail(function(res) {
+                }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
                 });
+                
                 return dfd.promise();
             }
             
@@ -69,7 +81,7 @@ module nts.uk.at.view.kmk013.j {
                     self.workTypeNames(name.join(" + "));
     
                     var workTypeCodes = _.map(data, function(item: any) { return item.code; });
-                    self.currentItem().workTypeList(workTypeCodes);       
+                    self.currentItem().workTypeList(workTypeCodes);
                 });
             }
             
@@ -90,7 +102,7 @@ module nts.uk.at.view.kmk013.j {
                     self.workTypeNamesAttendance(name.join(" + "));
     
                     var workTypeCodes = _.map(data, function(item: any) { return item.code; });
-                    self.currentItemAttendance().workTypeList(workTypeCodes);       
+                    self.currentItemAttendance().workTypeList(workTypeCodes);     
                 });
             }
             
@@ -169,7 +181,9 @@ module nts.uk.at.view.kmk013.j {
                         };
     
                         service.registerPayItem(workTypeData).done(function() {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                $('#trans-attend').focus();
+                            });
                         }).fail(function(res) {
                             nts.uk.ui.dialog.alertError(res.message);
                         }).always(() => {

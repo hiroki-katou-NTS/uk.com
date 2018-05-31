@@ -16,9 +16,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtStampReflec
 public class JpaDiffTimeStampReflectSetMemento implements DiffTimeStampReflectSetMemento {
 
 	private KshmtDiffTimeWorkSet entity;
-
-	private int periodNo;
-
+	
 	public JpaDiffTimeStampReflectSetMemento(KshmtDiffTimeWorkSet entity) {
 		this.entity = entity;
 	}
@@ -36,11 +34,9 @@ public class JpaDiffTimeStampReflectSetMemento implements DiffTimeStampReflectSe
 
 		List<KshmtDtStampReflect> newListEntity = new ArrayList<>();
 
-		periodNo = 0;
 		stampReflectTimezone.forEach(domain -> {
-			periodNo++;
 			KshmtDtStampReflectPK pk = new KshmtDtStampReflectPK(this.entity.getKshmtDiffTimeWorkSetPK().getCid(),
-					this.entity.getKshmtDiffTimeWorkSetPK().getWorktimeCd(), periodNo);
+					this.entity.getKshmtDiffTimeWorkSetPK().getWorktimeCd(), domain.getWorkNo().v(), domain.getClassification().value);
 			KshmtDtStampReflect entity = lstOldEntity.get(pk);
 			if (entity == null) {
 				entity = new KshmtDtStampReflect();

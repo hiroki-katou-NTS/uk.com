@@ -105,6 +105,7 @@ module nts.uk.ui.jqueryExtentions {
             let flatCols = validation.scanValidators($self, options.columns); 
             // Cell color
             let cellFormatter = new color.CellFormatter($self, options.features, options.ntsFeatures, flatCols);
+            $self.data(internal.CELL_FORMATTER, cellFormatter);
             
             $self.addClass('compact-grid nts-grid');
             if ($self.closest(".nts-grid-wrapper").length === 0) {
@@ -338,6 +339,7 @@ module nts.uk.ui.jqueryExtentions {
             export let CELL_STATE = "CellState";
             export let ROW_STATE = "RowState";
             export let TEXT_COLOR = "TextColor";
+            export let TEXT_STYLE = "TextStyle";
             export let HEADER_STYLES = "HeaderStyles";
             export let HIDING = "Hiding";
             export let SHEET = "Sheet";
@@ -1441,6 +1443,7 @@ module nts.uk.ui.jqueryExtentions {
         module functions {
             export let ERRORS: string = "errors";
             export let UPDATE_ROW: string = "updateRow";
+            export let SET_STATE: string = "setState";
             export let UPDATED_CELLS: string = "updatedCells";
             export let ENABLE_CONTROL: string = "enableNtsControlAt";
             export let ENABLE_ALL_CONTROLS: string = "enableNtsControls";
@@ -1450,6 +1453,7 @@ module nts.uk.ui.jqueryExtentions {
             export let CHECK_ALL: string = "checkAll";
             export let UNCHECK_ALL: string = "uncheckAll";
             export let HEADER_TEXT: string = "headerText";
+            export let SELECTED_SHEET: string = "selectedSheet";
             export let DESTROY: string = "destroy";
             
             /**
@@ -1460,6 +1464,9 @@ module nts.uk.ui.jqueryExtentions {
                     case UPDATE_ROW:
                         var autoCommit = $grid.data("igGrid") !== null && $grid.igGrid("option", "autoCommit") ? true : false;
                         updateRow($grid, params[0], params[1], autoCommit);
+                        break;
+                    case SET_STATE:
+                        setState($grid, params[0], params[1], params[2]);
                         break;
                     case ENABLE_CONTROL:
                         enableNtsControlAt($grid, params[0], params[1], params[2]);
@@ -1495,6 +1502,8 @@ module nts.uk.ui.jqueryExtentions {
                     case DESTROY:
                         destroy($grid);
                         break;
+                    case SELECTED_SHEET:
+                        return getSelectedSheet($grid);
                     case UPDATED_CELLS:
                         return $grid.data(internal.UPDATED_CELLS);
                     case ERRORS:
@@ -1520,6 +1529,48 @@ module nts.uk.ui.jqueryExtentions {
                     $grid.igGrid("commit");
                     if (updatedRow !== undefined) $grid.igGrid("virtualScrollTo", $(updatedRow).data("row-idx"));
                 }
+            }
+            
+            /**
+             * Set state.
+             */
+            function setState($grid: JQuery, rowId: any, key: any, states: any) {
+                let cellFormatter = $grid.data(internal.CELL_FORMATTER);
+                let cellStateFeatureDef = cellFormatter.cellStateFeatureDef; 
+                if (cellFormatter.rowStates) {
+                    let row = cellFormatter.rowStates[rowId];
+                    if (row) {
+                        let sts = row[key];
+                        if (sts) {
+                            if (sts[0][cellStateFeatureDef]) {
+                                sts[0][cellStateFeatureDef] = states;
+                            }
+                        } else {
+                            let cellState = {};
+                            cellState[cellStateFeatureDef.rowId] = rowId;
+                            cellState[cellStateFeatureDef.columnKey] = key;
+                            cellState[cellStateFeatureDef.state] = states;
+                            row[key] = [ cellState ];
+                        }
+                    } else {
+                        cellFormatter.rowStates[rowId] = {};
+                        let cellState = {};
+                        cellState[cellStateFeatureDef.rowId] = rowId;
+                        cellState[cellStateFeatureDef.columnKey] = key;
+                        cellState[cellStateFeatureDef.state] = states;
+                        cellFormatter.rowStates[rowId][key] = [ cellState ];
+                    }
+                } else {
+                    cellFormatter.rowStates = {};
+                    let cellState = {};
+                    cellState[cellStateFeatureDef.rowId] = rowId;
+                    cellState[cellStateFeatureDef.columnKey] = key;
+                    cellState[cellStateFeatureDef.state] = states;
+                    let colState = {};
+                    colState[key] = [ cellState ];
+                    cellFormatter.rowStates[rowId] = colState;
+                }
+                updating.renderCell($grid, rowId, key);
             }
 
             /**
@@ -1747,6 +1798,17 @@ module nts.uk.ui.jqueryExtentions {
             }
             
             /**
+             * Get selected sheet.
+             */
+            function getSelectedSheet($grid: JQuery) {
+                let sheet = $grid.data(internal.SHEETS);
+                if (!sheet || !sheet.currentSheet) return;
+                return _.find(sheet.sheets, function(s) {
+                    return s.name === sheet.currentSheet;
+                });
+            }
+            
+            /**
              * Destroy
              */
             function destroy($grid: JQuery) {
@@ -1831,6 +1893,7 @@ module nts.uk.ui.jqueryExtentions {
                             };
                             cellFormatter.style($grid, cellElement);
                             cellFormatter.setTextColor($grid, cellElement);
+                            cellFormatter.setTextStyle($grid, cellElement);
                         }
                     }, 0);
 
@@ -3673,6 +3736,8 @@ module nts.uk.ui.jqueryExtentions {
                 // Text color
                 textColorFeatureDef: any;
                 textColorsTable: any;
+                textStyleFeatureDef: any;
+                textStylesTable: any;
                 
                 constructor($grid, features, ntsFeatures, flatCols) {
                     this.$grid = $grid;
@@ -3689,6 +3754,10 @@ module nts.uk.ui.jqueryExtentions {
                     // Text color
                     this.textColorFeatureDef = feature.find(ntsFeatures, feature.TEXT_COLOR);
                     this.setTextColorsTableMap(ntsFeatures);
+                    
+                    // Text style
+                    this.textStyleFeatureDef = feature.find(ntsFeatures, feature.TEXT_STYLE);
+                    this.setTextStylesTableMap();
                 }
                 
                 /**
@@ -3784,6 +3853,21 @@ module nts.uk.ui.jqueryExtentions {
                 }
                 
                 /**
+                 * Set text styles.
+                 */
+                private setTextStylesTableMap() {
+                    if (util.isNullOrUndefined(this.textStyleFeatureDef)) return;
+                    let rowIdName = this.textStyleFeatureDef.rowId;
+                    let columnKeyName = this.textStyleFeatureDef.columnKey;
+                    let styleName = this.textStyleFeatureDef.style;
+                    let stylesTable = this.textStyleFeatureDef.styles;
+                    this.textStylesTable = _.groupBy(stylesTable, rowIdName);
+                    _.forEach(this.textStylesTable, (value, key) => {
+                        this.textStylesTable[key] = _.groupBy(this.textStylesTable[key], columnKeyName);
+                    });
+                }
+                
+                /**
                  * Format textbox.
                  */
                 format(column: any, notTb?: boolean) {
@@ -3868,7 +3952,7 @@ module nts.uk.ui.jqueryExtentions {
                                 }
                             }
                             // Set cell states
-                            if (!util.isNullOrUndefined(statesTable) && !util.isNullOrUndefined(rowIdName) 
+                            if (!util.isNullOrUndefined(self.rowStates) && !util.isNullOrUndefined(rowIdName) 
                                 && !util.isNullOrUndefined(columnKeyName) && !util.isNullOrUndefined(stateName)
                                 && !util.isNullOrUndefined(self.rowStates[cell.id])) {
                                 let cellState = self.rowStates[cell.id][column.key];
@@ -3932,10 +4016,10 @@ module nts.uk.ui.jqueryExtentions {
                         }
                     }
                     // Set cell states
-                    if (!util.isNullOrUndefined(statesTable) && !util.isNullOrUndefined(rowIdName) 
+                    if (!util.isNullOrUndefined(self.rowStates) && !util.isNullOrUndefined(rowIdName) 
                         && !util.isNullOrUndefined(columnKeyName) && !util.isNullOrUndefined(stateName)
-                        && !util.isNullOrUndefined(this.rowStates[cell.id])) {
-                        let cellState = this.rowStates[cell.id][cell.columnKey];
+                        && !util.isNullOrUndefined(self.rowStates[cell.id])) {
+                        let cellState = self.rowStates[cell.id][cell.columnKey];
                         if (util.isNullOrUndefined(cellState) || cellState.length === 0) return;
                         _.forEach(cellState[0][stateName], function(stt: any) {
                             if (stt === Disable && !cell.$element.hasClass(Disable)) {
@@ -3968,6 +4052,26 @@ module nts.uk.ui.jqueryExtentions {
                             return;
                         }
                         cell.$element.addClass(txtColor);
+                    }
+                }
+                
+                /**
+                 * Set text style.
+                 */
+                setTextStyle($grid: JQuery, cell: any) {
+                    if (util.isNullOrUndefined(this.textStyleFeatureDef)) return;
+                    let rowIdName: string = this.textStyleFeatureDef.rowId;
+                    let columnKeyName: string = this.textStyleFeatureDef.columnKey;
+                    let styleName: string = this.textStyleFeatureDef.style;
+                    let stylesTable: any = this.textStyleFeatureDef.styles;
+                    
+                    if (!util.isNullOrUndefined(stylesTable) && !util.isNullOrUndefined(rowIdName)
+                        && !util.isNullOrUndefined(columnKeyName) && !util.isNullOrUndefined(styleName)
+                        && !util.isNullOrUndefined(this.textStylesTable[cell.id])) {
+                        let textStyle = this.textStylesTable[cell.id][cell.columnKey];
+                        if (util.isNullOrUndefined(textStyle) || textStyle.length === 0) return;
+                        let txtStyle = textStyle[0][styleName];
+                        cell.$element.addClass(txtStyle);
                     }
                 }
             }
@@ -4776,6 +4880,7 @@ module nts.uk.ui.jqueryExtentions {
             export let UPDATED_CELLS = "ntsUpdatedCells";
             export let TARGET_EDITS = "ntsTargetEdits";
             export let OTHER_EDITS = "ntsOtherEdits"; 
+            export let CELL_FORMATTER = "ntsCellFormatter";
             // Full columns options
             export let GRID_OPTIONS = "ntsGridOptions";
             export let SELECTED_CELL = "ntsSelectedCell";

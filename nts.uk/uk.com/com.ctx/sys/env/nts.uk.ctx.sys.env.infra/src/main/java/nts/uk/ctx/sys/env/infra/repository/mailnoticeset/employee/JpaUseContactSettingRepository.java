@@ -126,6 +126,7 @@ public class JpaUseContactSettingRepository extends JpaRepository implements Use
 				.map(entity -> new UseContactSetting(new JpaUseContactSettingGetMemento(entity)));
 	}
 
+<<<<<<< HEAD
 	// sonnlb Code
 
 	/*
@@ -166,4 +167,6 @@ public class JpaUseContactSettingRepository extends JpaRepository implements Use
 		return lstReturn;
 	}
 
+=======
+>>>>>>> delivery/release_user
 }

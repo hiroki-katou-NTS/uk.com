@@ -46,7 +46,7 @@ public class OtherHolidayInfoDto extends PeregDomainDto{
 		
 	// 60H超休残数
 	@PeregItem("IS00374")
-	private int extraHours;
+	private String extraHours;
 	
 	public static OtherHolidayInfoDto createFromDomain(Optional<PublicHolidayRemain> pubHDRemain, Optional<ExcessLeaveInfo> exLeavInfo){
 		OtherHolidayInfoDto dto = new OtherHolidayInfoDto();
@@ -63,6 +63,19 @@ public class OtherHolidayInfoDto extends PeregDomainDto{
 			}
 		}
 		return dto;
+	}
+	
+	public static String convertTime(int remainingMinutes) {
+		int remainingHours = remainingMinutes / 60;
+		remainingMinutes -= remainingHours * 60;
+		return remainingHours + ":"+ convertWithMinutes(remainingMinutes);
+	}
+	
+	public  static String convertWithMinutes(int minutes) {
+		if ( Math.abs(minutes) < 10) {
+			return "0" + Math.abs(minutes);
+		}
+		return "" +  Math.abs(minutes);
 	}
 
 }

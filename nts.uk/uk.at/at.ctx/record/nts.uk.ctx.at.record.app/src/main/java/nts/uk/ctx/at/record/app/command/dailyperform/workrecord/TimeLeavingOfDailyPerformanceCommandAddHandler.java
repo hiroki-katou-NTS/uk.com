@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
 
@@ -17,7 +18,9 @@ public class TimeLeavingOfDailyPerformanceCommandAddHandler extends CommandFacad
 	protected void handle(CommandHandlerContext<TimeLeavingOfDailyPerformanceCommand> context) {
 		TimeLeavingOfDailyPerformanceCommand command = context.getCommand();
 		if(command.getData().isPresent()){
-			repo.add(command.getData().get());
+			TimeLeavingOfDailyPerformance domain = command.toDomain().get();
+			repo.add(domain);
+			domain.timeLeavesChanged();
 		}
 	}
 }

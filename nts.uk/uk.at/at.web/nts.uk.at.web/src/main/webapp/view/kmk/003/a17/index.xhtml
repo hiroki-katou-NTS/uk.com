@@ -1,0 +1,184 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+
+	<div class="tab-rows">
+		<div style="width: 400px;" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_220')}</div>
+		<div class="tab-inline-item">
+			<div tabindex="168" class="cf" data-bind="ntsSwitchButton: {
+				name: '#[KMK003_220]',
+				options: listNotUseAtr,
+				optionsValue: 'value',
+				optionsText: 'localizedName',
+				value: notUseAtr }"></div>
+		</div>
+	</div>
+	
+	<!-- START FIXED -->
+	<com:ko tag="if" bind="isFixed()">
+		<div class="tab-rows">
+			<div style="width: 400px;" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_221')}</div>
+			<div class="tab-inline-item">
+				<div tabindex="169" class="cf" data-bind="ntsSwitchButton: {
+					name: '#[KMK003_221]',
+					options: listCalcMethodExceededPredAddVacation,
+					optionsValue: 'value',
+					optionsText: 'localizedName',
+					value: fixedCalcMethodExceededPredAddVacation }"></div>
+			</div>		
+		</div>
+		
+		<div class="tab-block">
+			<div class="tab-inline-rows">
+				<div style="width: 380px;"></div>
+				<span class="label tab-inline-item" style="width: 120px; text-align: right;">#{i18n.getText('KMK003_58')}</span>
+				<div class="tab-inline-item" style="width: 100px;">
+					<div tabindex="170" id="combo-box-ot-frame-no" style="width: 100px;" data-bind="ntsComboBox: {
+							name: '#[KMK003_58]',
+							options: listOtFrameNo,
+							optionsValue: 'overtimeWorkFrNo',
+							optionsText: 'overtimeWorkFrName',
+							visibleItemsCount: 10,
+							dropDownAttachedToBody: true,
+							value: fixedOtFrameNo,
+							editable: false,
+							enable: fixedIsCalcExceededPredAddVacation }"></div>
+				</div>		
+			</div>
+		</div>
+		
+		<div class="tab-rows">
+			<div style="width: 400px;" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_223')}</div>
+			<div class="tab-inline-item">
+				<div tabindex="172" class="cf" data-bind="ntsSwitchButton: {
+					name: '#[KMK003_223]',
+					options: listCalcMethodNoBreak,
+					optionsValue: 'value',
+					optionsText: 'localizedName',
+					value: fixedCalcMethodNoBreak }"></div>
+			</div>		
+		</div>
+	
+		<div class="tab-block">
+			<div class="tab-inline-rows">
+				<div style="width: 380px;"></div>
+				<span class="label tab-inline-item" style="width: 120px; text-align: right;">#{i18n.getText('KMK003_59')}</span>
+				<div class="tab-inline-item" style="width: 100px;">
+					<div tabindex="173" id="combo-box-in-law-ot" style="width: 100px;" data-bind="ntsComboBox: {
+							name: '#[KMK003_59]',
+							options: listOtFrameNo,
+							optionsValue: 'overtimeWorkFrNo',
+							optionsText: 'overtimeWorkFrName',
+							visibleItemsCount: 10,
+							dropDownAttachedToBody: true,
+							value: fixedInLawOT,
+							editable: false,
+							enable: fixedIsCalcNoBreak }"></div>
+				</div>	
+			</div>
+			<div class="tab-inline-rows">
+				<div style="width: 380px;"></div>
+				<span class="label tab-inline-item" style="width: 120px; text-align: right;">#{i18n.getText('KMK003_224')}</span>
+				<div class="tab-inline-item" style="width: 100px;">
+					<div tabindex="174" id="combo-box-not-in-law-ot" style="width: 100px;" data-bind="ntsComboBox: {
+							name: '#[KMK003_224]',
+							options: listOtFrameNo,
+							optionsValue: 'overtimeWorkFrNo',
+							optionsText: 'overtimeWorkFrName',
+							visibleItemsCount: 10,
+							dropDownAttachedToBody: true,
+							value: fixedNotInLawOT,
+							editable: false,
+							enable: fixedIsCalcNoBreak }"></div>
+				</div>	
+			</div>
+		</div>
+	</com:ko>
+	<!-- END FIXED -->
+	
+	<!-- START DIFF -->
+	<com:ko tag="if" bind="isDiff()">
+		<div class="tab-rows">
+			<div style="width: 400px;" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_221')}</div>
+			<div class="tab-inline-item">
+				<div tabindex="169" class="cf" data-bind="ntsSwitchButton: {
+					name: '#[KMK003_221]',
+					options: listCalcMethodExceededPredAddVacation,
+					optionsValue: 'value',
+					optionsText: 'localizedName',
+					value: diffCalcMethodExceededPredAddVacation }"></div>
+			</div>		
+		</div>
+		
+		<div class="tab-block">
+			<div class="tab-inline-rows">
+				<div style="width: 380px;"></div>
+				<span class="label tab-inline-item" style="width: 120px; text-align: right;">#{i18n.getText('KMK003_58')}</span>
+				<div class="tab-inline-item" style="width: 100px;">
+					<div tabindex="170" id="combo-box-ot-frame-no" style="width: 100px;" data-bind="ntsComboBox: {
+							name: '#[KMK003_58]',
+							options: listOtFrameNo,
+							optionsValue: 'overtimeWorkFrNo',
+							optionsText: 'overtimeWorkFrName',
+							visibleItemsCount: 10,
+							dropDownAttachedToBody: true,
+							value: diffOtFrameNo,
+							editable: false,
+							enable: diffIsCalcExceededPredAddVacation }"></div>
+				</div>		
+			</div>
+		</div>
+		
+		<div class="tab-rows">
+			<div style="width: 400px;" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_223')}</div>
+			<div class="tab-inline-item">
+				<div tabindex="172" class="cf" data-bind="ntsSwitchButton: {
+					name: '#[KMK003_223]',
+					options: listCalcMethodNoBreak,
+					optionsValue: 'value',
+					optionsText: 'localizedName',
+					value: diffCalcMethodNoBreak }"></div>
+			</div>		
+		</div>
+	
+		<div class="tab-block">
+			<div class="tab-inline-rows">
+				<div style="width: 380px;"></div>
+				<span class="label tab-inline-item" style="width: 120px; text-align: right;">#{i18n.getText('KMK003_59')}</span>
+				<div class="tab-inline-item" style="width: 100px;">
+					<div tabindex="173" id="combo-box-in-law-ot" style="width: 100px;" data-bind="ntsComboBox: {
+							name: '#[KMK003_59]',
+							options: listOtFrameNo,
+							optionsValue: 'overtimeWorkFrNo',
+							optionsText: 'overtimeWorkFrName',
+							visibleItemsCount: 10,
+							dropDownAttachedToBody: true,
+							value: diffInLawOT,
+							editable: false,
+							enable: diffIsCalcNoBreak }"></div>
+				</div>	
+			</div>
+			<div class="tab-inline-rows">
+				<div style="width: 380px;"></div>
+				<span class="label tab-inline-item" style="width: 120px; text-align: right;">#{i18n.getText('KMK003_224')}</span>
+				<div class="tab-inline-item" style="width: 100px;">
+					<div tabindex="174" id="combo-box-not-in-law-ot" style="width: 100px;" data-bind="ntsComboBox: {
+							name: '#[KMK003_224]',
+							options: listOtFrameNo,
+							optionsValue: 'overtimeWorkFrNo',
+							optionsText: 'overtimeWorkFrName',
+							visibleItemsCount: 10,
+							dropDownAttachedToBody: true,
+							value: diffNotInLawOT,
+							editable: false,
+							enable: diffIsCalcNoBreak }"></div>
+				</div>	
+			</div>
+		</div>
+	</com:ko>
+	<!-- END DIFF -->
+	
+</ui:composition>

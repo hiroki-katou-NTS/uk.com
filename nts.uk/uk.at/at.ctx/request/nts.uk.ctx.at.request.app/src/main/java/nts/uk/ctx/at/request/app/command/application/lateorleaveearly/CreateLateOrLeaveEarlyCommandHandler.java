@@ -68,7 +68,7 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateL
 		
 		
 		// 共通アルゴリズム「2-1.新規画面登録前の処理」を実行する
-		newBeforeRegister.processBeforeRegister(domainLateOrLeaveEarly.getApplication());
+		newBeforeRegister.processBeforeRegister(domainLateOrLeaveEarly.getApplication(),0);
 		// 事前制約をチェックする
 		// ドメインモデル「遅刻早退取消申請」の新規登録する
 		lateOrLeaveEarlyService.createLateOrLeaveEarly(domainLateOrLeaveEarly);

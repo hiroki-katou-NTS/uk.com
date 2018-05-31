@@ -19,10 +19,10 @@ public class JpaNursCareLevRemainDataRepo extends JpaRepository implements NursC
 	@Override
 	public void add(NursingCareLeaveRemainingData obj, String cId) {
 		if(obj.getLeaveType() == LeaveType.CHILD_CARE_LEAVE){
-			KrcmtChildCareHDData childCare = new KrcmtChildCareHDData(obj.getSId(), cId, obj.getNumOfUsedDay());
+			KrcmtChildCareHDData childCare = new KrcmtChildCareHDData(obj.getSId(), cId, obj.getNumOfUsedDay().v());
 			this.commandProxy().insert(childCare);
 		}else{
-			KrcmtCareHDData childCare = new KrcmtCareHDData(obj.getSId(), cId, obj.getNumOfUsedDay());
+			KrcmtCareHDData childCare = new KrcmtCareHDData(obj.getSId(), cId, obj.getNumOfUsedDay().v());
 			this.commandProxy().insert(childCare);
 		}	
 	}
@@ -34,7 +34,7 @@ public class JpaNursCareLevRemainDataRepo extends JpaRepository implements NursC
 			if(entityOpt.isPresent()){
 				KrcmtChildCareHDData entity = entityOpt.get();
 				entity.setCId(cId);
-				entity.setUserDay(obj.getNumOfUsedDay());
+				entity.setUserDay(obj.getNumOfUsedDay().v());
 				this.commandProxy().update(entity);
 			}
 		}else{
@@ -42,7 +42,7 @@ public class JpaNursCareLevRemainDataRepo extends JpaRepository implements NursC
 			if(entityOpt.isPresent()){
 				KrcmtCareHDData entity = entityOpt.get();
 				entity.setCId(cId);
-				entity.setUserDay(obj.getNumOfUsedDay());
+				entity.setUserDay(obj.getNumOfUsedDay().v());
 				this.commandProxy().update(entity);
 			}
 		}	

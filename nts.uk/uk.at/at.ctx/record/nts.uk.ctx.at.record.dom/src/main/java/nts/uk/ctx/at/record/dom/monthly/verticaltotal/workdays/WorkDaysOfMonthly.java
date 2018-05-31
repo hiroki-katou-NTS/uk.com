@@ -152,7 +152,6 @@ public class WorkDaysOfMonthly {
 		this.absenceDays.aggregate(workingSystem, workType, workTypeDaysCountTable, isAttendanceDay);
 		
 		// 所定日数の集計
-		//*****（未）　付与前・付与後の振り分けは、年休残数管理が実装されるまで、保留。
 		this.predetermineDays.aggregate(workTypeDaysCountTable);
 		
 		// 勤務日数の集計
@@ -183,5 +182,25 @@ public class WorkDaysOfMonthly {
 		
 		// 休業日数の集計
 		this.leave.aggregate(workTypeDaysCountTable);
+	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(WorkDaysOfMonthly target){
+		
+		this.attendanceDays.sum(target.attendanceDays);
+		this.absenceDays.sum(target.absenceDays);
+		this.predetermineDays.sum(target.predetermineDays);
+		this.workDays.sum(target.workDays);
+		this.holidayDays.sum(target.holidayDays);
+		this.specificDays.sum(target.specificDays);
+		this.holidayDays.sum(target.holidayDays);
+		this.payDays.sum(target.payDays);
+		this.workTimes.sum(target.workTimes);
+		this.twoTimesWorkTimes.sum(target.twoTimesWorkTimes);
+		this.temporaryWorkTimes.sum(target.temporaryWorkTimes);
+		this.leave.sum(target.leave);
 	}
 }

@@ -14,20 +14,19 @@
 				};
 			</script>
 			<com:ValidatorScript>
-					nts.uk.ctx.pereg.dom.person.setting.selectionitem.SelectionItemName
-					nts.uk.ctx.pereg.dom.person.setting.selectionitem.SelectionCodeLength
-					nts.uk.ctx.pereg.dom.person.setting.selectionitem.IntegrationCode
-					nts.uk.ctx.pereg.dom.person.setting.selectionitem.SelectionNameLength
-					nts.uk.ctx.pereg.dom.person.setting.selectionitem.SelectionExternalCDLength
-					nts.uk.ctx.pereg.dom.person.setting.selectionitem.Memo
-					nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionCD 
-					nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionName
-					nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.MemoSelection
-					nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.ExternalCdNumeric
-					nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.ExternalCdAlphalNumeric
-					
-					nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionCdNumeric
-					nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionCdAlphaNumeric
+					nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.primitive.format.SelectionCodeLength
+					nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.primitive.format.SelectionNameLength
+					nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.primitive.format.SelectionExternalCDLength
+					nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.primitive.SelectionItemName
+					nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.primitive.IntegrationCode
+					nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.primitive.Memo
+					nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.primitive.SelectionCD 
+					nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.primitive.SelectionName
+					nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.primitive.MemoSelection
+					nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.primitive.ExternalCdNumeric
+					nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.primitive.ExternalCdAlphalNumeric
+					nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.primitive.SelectionCdNumeric
+					nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.primitive.SelectionCdAlphaNumeric
 					
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
@@ -42,17 +41,17 @@
 			<div id="functions-area">
 
 				<button id="A1_001" tabindex="1"
-					data-bind="click : registerData, enable: revDisSel04">#{i18n.getText('CPS017_1')}</button>
+					data-bind="click : createNewData, enable: enableCreateNew">#{i18n.getText('CPS017_1')}</button>
 				<button id="A1_002" class="proceed" tabindex="2"
-					data-bind="click : addData, enable: revDisSel01">#{i18n.getText('CPS017_2')}</button>
+					data-bind="click : register, enable: enableRegister">#{i18n.getText('CPS017_2')}</button>
 				<button id="A1_005" class="danger" tabindex="3"
-					data-bind="click : remove, enable: revDisSel02 ">#{i18n.getText('CPS017_4')}</button>
+					data-bind="click : remove, enable: enableRemove ">#{i18n.getText('CPS017_4')}</button>
 
 				<button id="A1_003"
-					data-bind="click: openDialogB, enable: revDisSel03" tabindex="5">#{i18n.getText('CPS017_3')}</button>
+					data-bind="click: openDialogB, enable: enableOpenDialogB" tabindex="5">#{i18n.getText('CPS017_3')}</button>
 
 				<button id="A1_007" class="danger" tabindex="6"
-					data-bind="click: ReflUnrComp, visible : refecToAll">#{i18n.getText('CPS017_49')}</button>
+					data-bind="click: ReflUnrComp, visible : showRefecToAll">#{i18n.getText('CPS017_49')}</button>
 
 				<com:ko-if bind="(isDialog() === true)">
 					<button id="A1_008" tabindex="5" style="display: none"
@@ -60,8 +59,7 @@
 				</com:ko-if>
 
 			</div>
-			<div id="contents-area" class="cf"
-				data-bind="let: { infoSelection: perInfoSelectionItem }">
+			<div id="contents-area" class="cf">
 
 				<!-- phần trái của màn hình -->
 				<div id="content-left" class="pull-left">
@@ -111,10 +109,10 @@
 						<div id="history" class="cf">
 							<button tabindex="9" id="add-history"
 								class="history-control-button"
-								data-bind="click: openDialogC, enable: disbleAdUpHist">#{i18n.getText('CPS017_8')}</button>
+								data-bind="click: openDialogC, enable: enableAddUpdateHist">#{i18n.getText('CPS017_8')}</button>
 							<button tabindex="10" id="edit-history"
 								class="history-control-button"
-								data-bind="click: openDialogD, enable: disbleAdUpHist">#{i18n.getText('CPS017_9')}</button>
+								data-bind="click: openDialogD, enable: enableAddUpdateHist">#{i18n.getText('CPS017_9')}</button>
 							<button tabindex="11" id="remove-history"
 								class="danger history-control-button"
 								data-bind="click : removeHistory, enable: enableDelHist ">#{i18n.getText('CPS017_10')}</button>
@@ -178,7 +176,7 @@
 				<div id="content-right" class="pull-left"
 					data-bind="with: selection">
 
-					<com:ko-if bind="codeType() === 0">
+					<com:ko-if bind="$parent.perInfoSelectionItem().characterType() === 0">
 						<div class="form-input">
 							<div class="form-lable"
 								data-bind="ntsFormLabel: {constraint: ['SelectionCdNumeric', 'SelectionName'] , required: true }">
@@ -186,27 +184,13 @@
 							</div>
 							<div class="input">
 								<div>
-									<span
-										data-bind="if: infoSelection().selectionCodeCharacter() == 1">
-										<input id="code"
-										data-bind="ntsTextEditor: {
-											name: '#[CPS017_21]', 
-											value: selectionCD,
-											constraint: 'SelectionCdNumeric', 
-											option: '',
-											required: true, 
-											enable: $parent.selectionCd, 
-			 								immediate: false									
-											}" />
-									</span> <span
-										data-bind="if: infoSelection().selectionCodeCharacter() == 0">
-										<input id="code"
+								 	<span><input id="code"
 										data-bind="ntsTextEditor: {
 											name: '#[CPS017_21]', 
 											value: selectionCD,
 											constraint: 'SelectionCdNumeric', 
 											required: true, 
-											enable: $parent.selectionCd, 
+											enable: $parent.enableSelectionCd, 
 			 								immediate: false}" />
 									</span>
 								</div>
@@ -217,17 +201,32 @@
 									value: selectionName, 
 									constraint: 'SelectionName', 
 									required: true, 
-	 								enable: $parent.enableSelName, 
+	 								enable: $parent.enableSelectionName, 
 									immediate: false}" />
 								</div>
 							</div>
-
+							<div class="form-input">
+								<div class="form-lable"
+									data-bind="ntsFormLabel: {constraint: 'ExternalCdNumeric' , required: false }">
+									<label>#{i18n.getText('CPS017_23')}</label>
+								</div>
+								<div class="input">
+									<input id="exCode"
+										data-bind="ntsTextEditor: {
+										name: '#[CPS017_24]',
+										value: externalCD,
+										constraint: 'ExternalCdNumeric' ,
+										option: '',
+										required: false,
+										enable: $parent.enableSelectionName,
+										readonly: false}" />
+								</div>
+							</div>
 
 						</div>
 					</com:ko-if>
 
-					<!-- fdgfdgfffgf -->
-					<com:ko-if bind="codeType() === 1">
+					<com:ko-if bind="$parent.perInfoSelectionItem().characterType() === 1">
 						<div class="form-input">
 							<div class="form-lable"
 								data-bind="ntsFormLabel: {constraint: ['SelectionCdAlphaNumeric', 'SelectionName'], required: true }">
@@ -235,8 +234,7 @@
 							</div>
 							<div class="input">
 								<div>
-									<span
-										data-bind="if: infoSelection().selectionCodeCharacter() == 1">
+									<span>
 										<input id="code"
 										data-bind="ntsTextEditor: {
 											name: '#[CPS017_21]', 
@@ -244,19 +242,9 @@
 											constraint: 'SelectionCdAlphaNumeric', 
 											option: '',
 											required: true, 
-											enable: $parent.selectionCd, 
+											enable: $parent.enableSelectionCd, 
 			 								immediate: false									
 											}" />
-									</span> <span
-										data-bind="if: infoSelection().selectionCodeCharacter() == 0">
-										<input id="code"
-										data-bind="ntsTextEditor: {
-											name: '#[CPS017_21]', 
-											value: selectionCD,
-											constraint: 'SelectionCdAlphaNumeric', 
-											required: true, 
-											enable: $parent.selectionCd, 
-			 								immediate: false}" />
 									</span>
 								</div>
 								<div>
@@ -266,37 +254,17 @@
 									value: selectionName, 
 									constraint: 'SelectionName', 
 									required: true, 
-	 								enable: $parent.enableSelName, 
+	 								enable: $parent.enableSelectionName, 
 									immediate: false}" />
 								</div>
 							</div>
-						</div>
-					</com:ko-if>
-					<com:ko-if bind="codeType() === 0">
-						<div class="form-input">
-							<div class="form-lable"
-								data-bind="ntsFormLabel: {constraint: 'ExternalCdNumeric' , required: false }">
-								<label>#{i18n.getText('CPS017_23')}</label>
-							</div>
-							<div class="input">
-								<input id="exCode"
-									data-bind="ntsTextEditor: {
-									name: '#[CPS017_24]',
-									value: externalCD,
-									constraint: 'ExternalCdNumeric' ,
-									option: '',
-									required: false,
-									enable: $parent.enableSelName,
-									readonly: false}" />
-							</div>
-						</div>
-					</com:ko-if>
-					<com:ko-if bind="codeType() === 1">
-						<div class="form-input">
+							
+							<div class="form-input">
 							<div class="form-lable"
 								data-bind="ntsFormLabel: {constraint: 'ExternalCdAlphalNumeric' , required: false }">
 								<label>#{i18n.getText('CPS017_23')}</label>
 							</div>
+							
 							<div class="input">
 								<input id="exCode"
 									data-bind="ntsTextEditor: {
@@ -305,11 +273,14 @@
 									constraint: 'ExternalCdAlphalNumeric' ,
 									option: '',
 									required: false,
-									enable: $parent.enableSelName,
+									enable: $parent.enableSelectionName,
 									readonly: false}" />
 							</div>
 						</div>
+						</div>
+						
 					</com:ko-if>
+					
 					<div class="form-input">
 						<div class="form-lable"
 							data-bind="ntsFormLabel: {constraint: 'MemoSelection', required: false }">
@@ -324,7 +295,7 @@
 										value: memoSelection , 
 										constraint: 'MemoSelection',
 										required: false, 
-										enable: $parent.enableSelName}" />
+										enable: $parent.enableSelectionName}" />
 						</div>
 					</div>
 				</div>

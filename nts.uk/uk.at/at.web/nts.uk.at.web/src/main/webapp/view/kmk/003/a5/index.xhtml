@@ -1,8 +1,17 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<div class="pull-right">
+		<button tabindex="69"  data-bind="click: openDialogG, visible: isDetailMode">#{i18n.getText('KMK003_192')}</button>
+		<com:ko tag="if" bind="isFlowTimezone() || isFlexTimezone()">
+			<button tabindex="69" data-bind="click: openFixedBreakSetting, visible: isDetailMode">#{i18n.getText('KMK003_225')}</button>
+		</com:ko>
+		<com:ko tag="if" bind="isFlowRestTime() || isFlexRestTime()">
+			<button tabindex="69" data-bind="click: openFlowBreakSetting, visible: isDetailMode">#{i18n.getText('KMK003_227')}</button>
+		</com:ko>
+	</div>
 	<!-- Begin Fixed rest time switch button -->
 	<com:ko tag="if" bind="isFlex">
-		<div class="tab-rows">
+		<div class="pull-left">
 			<div style="width: 150px;" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_141')}</div>	
 			<div tabindex ="69" class="cf" data-bind="ntsSwitchButton: {
 					name: '#[KMK003_141]',
@@ -14,7 +23,7 @@
 		</div>	
 	</com:ko>
 	<com:ko tag="if" bind="isFlow">
-		<div class="tab-rows">
+		<div class="pull-left">
 			<div style="width: 150px;" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_141')}</div>	
 			<div tabindex ="69" class="cf" data-bind="ntsSwitchButton: {
 					name: '#[KMK003_141]',
@@ -25,14 +34,15 @@
 					enable: true }"></div>
 		</div>	
 	</com:ko>
+	<div class="cf"></div>
 	<!-- End of Fixed rest time switch button -->
 	
 	<div class="tab-seperator">	
 	
 		<!-- Begin Fixed timezones -->
-		<com:ko tag="if" bind="isFixed()">
+		<com:ko tag="if" bind="isFixed">
 			<!-- Begin Simple mode -->
-			<com:ko tag="if" bind="!isDetailMode()">
+			<com:ko tag="ifnot" bind="isDetailMode">
 				<div id="fixedOneDay" data-bind="ntsFixTableCustom: {option: oneDayFixedTimezoneOption}"></div>
 			</com:ko>
 			<!-- End of Simple mode -->
@@ -78,7 +88,7 @@
 		<!-- Begin Flex timezones -->
 		<com:ko tag="if" bind="isFlexTimezone">
 			<!-- Simple mode -->
-			<com:ko tag="if" bind="!isDetailMode()">
+			<com:ko tag="ifnot" bind="isDetailMode">
 				<div id="flexOneDay" data-bind="ntsFixTableCustom: {option: oneDayFlexTimezoneOption}"></div>
 			</com:ko>
 			<!-- Simple mode -->
@@ -365,9 +375,9 @@
 		<!-- End of flow rest set -->
 		
 		<!-- Begin Diff timezones -->
-		<com:ko tag="if" bind="isDiffTime()">
+		<com:ko tag="if" bind="isDiffTime">
 			<!-- Begin Simple mode -->
-			<com:ko tag="if" bind="!isDetailMode()">
+			<com:ko tag="ifnot" bind="isDetailMode">
 				<div id="diffOneDay" data-bind="ntsFixTableCustom: {option: oneDayDiffTimezoneOption}"></div>
 			</com:ko>
 			<!-- End of Simple mode -->

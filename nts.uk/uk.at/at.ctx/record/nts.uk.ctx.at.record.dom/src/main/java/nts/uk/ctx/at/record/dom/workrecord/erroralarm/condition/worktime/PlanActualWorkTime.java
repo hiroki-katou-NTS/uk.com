@@ -34,7 +34,7 @@ public class PlanActualWorkTime extends WorkTimeCondition {
 	 * @param useAtr
 	 * @param comparePlanAndActual
 	 */
-	private PlanActualWorkTime(Boolean useAtr, FilterByCompare comparePlanAndActual) {
+	private PlanActualWorkTime(boolean useAtr, FilterByCompare comparePlanAndActual) {
 		super(useAtr, comparePlanAndActual);
 	}
 

@@ -4,22 +4,23 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 
 @Stateless
-public class AddAnnLeaCommandHandler extends CommandHandler<AnnLeaGrantRemnNumCommand>{
+public class AddAnnLeaCommandHandler extends CommandHandlerWithResult<AnnLeaGrantRemnNumCommand,PeregAddCommandResult>{
 	
 	@Inject
 	private AnnLeaGrantRemDataRepository annLeaRepo;
 
 	@Override
-	protected void handle(CommandHandlerContext<AnnLeaGrantRemnNumCommand> context) {
+	protected PeregAddCommandResult handle(CommandHandlerContext<AnnLeaGrantRemnNumCommand> context) {
 		AnnLeaGrantRemnNumCommand command = context.getCommand();
 		
 		String cid = AppContexts.user().companyId();
@@ -34,7 +35,7 @@ public class AddAnnLeaCommandHandler extends CommandHandler<AnnLeaGrantRemnNumCo
 				command.getGrantDays(), command.getGrantMinutes(), command.getUsedDays(), command.getUsedMinutes(), 
 				null, command.getRemainingDays(), command.getRemainingMinutes(), 0d, null, null, null);
 		annLeaRepo.add(data);
-		
+		return new PeregAddCommandResult(annLeavId);
 	}
 
 }

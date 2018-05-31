@@ -14,7 +14,7 @@
 								data-bind="ntsDatePicker: {
 								name: '#[CCG001_27]',
 								dateFormat: 'YYYY/MM/DD',
-								value: baseDate,
+								value: inputBaseDate,
 								required: true }"></div>
 						</div>
 					</com:ko>
@@ -44,14 +44,14 @@
 									data-bind="ntsDatePicker: {
 										name: '#[CCG001_30]',
 										dateFormat: 'YYYY/MM/DD',
-										value: periodStart,
+										value: inputPeriodStart,
 										required: true }"></div>
 								<label>～</label>
 								<div id="inp-period-endYMD" tabindex="3"
 									data-bind="ntsDatePicker: {
 										name: '#[CCG001_31]',
 										dateFormat: 'YYYY/MM/DD',
-										value: periodEnd,
+										value: inputPeriodEnd,
 										required: true }"></div>
 							</com:ko>
 							<com:ko tag="if" bind="showPeriodYM">
@@ -59,14 +59,14 @@
 									data-bind="ntsDatePicker: {
 										name: '#[CCG001_30]',
 										dateFormat: 'YYYY/MM',
-										value: periodStart,
+										value: inputPeriodStart,
 										required: true }"></div>
 								<label>～</label>
 								<div id="inp-period-endYM" tabindex="3"
 									data-bind="ntsDatePicker: {
 										name: '#[CCG001_31]',
 										dateFormat: 'YYYY/MM',
-										value: periodEnd,
+										value: inputPeriodEnd,
 										required: true }"></div>
 							</com:ko>
 						</div>
@@ -82,41 +82,43 @@
 			<com:ko tag="if" bind="showQuickSearchTab">
 				<div tabindex="-1" class="tab-content-1">
 					<com:ko tag="if" bind="showAllReferableEmployee">
-						<div tabindex="7" id="ccg001-btn-search-all" class="btn-quick-search" data-bind="click: searchAllListEmployee">
-							<div class="flex valign-center btn_big">
-								<i class="icon icon-28-allemployee"></i>
+						<div tabindex="7" id="ccg001-btn-search-all" class="btn-quick-search">
+							<div class="flex valign-center btn_big ccg-btn-quick-search ccg001-btn"
+								data-bind="click: searchAllListEmployee">
+								<i class="icon ccg001-icon-btn-big icon-28-allemployee"></i>
 								<label class="labelBigButton">#{i18n.getText('CCG001_34')}</label> 
 							</div>
-							<span class="controlSettingBg caret-right"></span>
+							<span class="ccg001-caret ccg001-caret-quick-big caret-right"></span>
 						</div>
 					</com:ko>
 					<com:ko tag="if" bind="showOnlyMe">
-						<div tabindex="8" id="ccg001-btn-only-me" class="btn-quick-search" data-bind="click: getEmployeeLogin">
-							<div class="flex valign-center btn_big">
-								<i class="icon icon-26-onlyemployee"></i>
+						<div tabindex="8" id="ccg001-btn-only-me" class="btn-quick-search">
+							<div class="flex valign-center btn_big ccg-btn-quick-search ccg001-btn"
+								data-bind="click: getEmployeeLogin">
+								<i class="icon ccg001-icon-btn-big icon-26-onlyemployee"></i>
 								<label class="labelBigButton">#{i18n.getText('CCG001_35')}</label> 
 							</div>
-							<span class="controlSettingBg caret-right"></span>
+							<span class="ccg001-caret ccg001-caret-quick-big caret-right"></span>
 						</div>
 					</com:ko>
 					<com:ko tag="if" bind="showSameWorkplace">
-						<div tabindex="9" id="ccg001-btn-same-workplace" class="btn-quick-search"
-							data-bind="click: searchEmployeeOfDepOnly">
-							<div class="flex valign-center btn_small">
-								<i class="icon icon-48-ofworkplace"></i>
+						<div tabindex="9" id="ccg001-btn-same-workplace" class="btn-quick-search">
+							<div class="flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
+								data-bind="click: searchEmployeeOfDepOnly">
+								<i class="icon ccg001-icon-btn-small icon-48-ofworkplace"></i>
 								<label class="labelSmallButton">#{i18n.getText('CCG001_38')}</label> 
 							</div>
-							<span class="controlSetting caret-right"></span>
+							<span class="ccg001-caret ccg001-caret-quick-small caret-right"></span>
 						</div>
 					</com:ko>
 					<com:ko tag="if" bind="showSameWorkplaceAndChild">
-						<div tabindex="10" id="ccg001-btn-same-workplace-and-child" class="btn-quick-search"
-							data-bind="click: searchEmployeeOfDepAndChild">
-							<div class="flex valign-center btn_small">
-								<i class="icon icon-49-workplacechild"></i>
+						<div tabindex="10" id="ccg001-btn-same-workplace-and-child" class="btn-quick-search">
+							<div class="flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
+								data-bind="click: searchEmployeeOfDepAndChild">
+								<i class="icon ccg001-icon-btn-small icon-49-workplacechild"></i>
 								<label class="labelSmallButton">#{i18n.getText('CCG001_39')}</label> 
 							</div>
-							<span class="controlSetting caret-right"></span>
+							<span class="ccg001-caret ccg001-caret-quick-small caret-right"></span>
 						</div>
 					</com:ko>
 				</div>
@@ -147,7 +149,7 @@
 										</div>
 										<div style="padding-bottom: 20px;">
 											<label>#{i18n.getText('CCG001_47')}</label>
-											<div tabindex="14" class="pull-right" id="switch-buttons" data-bind="ntsSwitchButton: {
+											<div tabindex="13" class="pull-right" id="switch-buttons" data-bind="ntsSwitchButton: {
 												name: '#[CCG001_48]',
 												options: closedDatasource,
 												optionsValue: 'code',
@@ -158,7 +160,7 @@
 										</div>
 										<div style="padding-bottom: 20px;">
 											<label>#{i18n.getText('CCG001_45')}</label>
-											<div tabindex="13" class="pull-right" id="switch-buttons" data-bind="ntsSwitchButton: {
+											<div tabindex="14" class="pull-right" id="switch-buttons" data-bind="ntsSwitchButton: {
 												name: '#[CCG001_46]',
 												options: leaveOfAbsenceDatasource,
 												optionsValue: 'code',
@@ -182,14 +184,14 @@
 											<div id="ccg001-partg-start" tabindex="16" data-bind="ntsDatePicker: {
 												name: '#[CCG001_93]',
 												dateFormat: 'YYYY/MM/DD',
-												value: statusPeriodStart,
+												value: inputStatusPeriodStart,
 												required: true }">
 											</div> 
 											<span> ~ </span>
 											<div id="ccg001-partg-end" tabindex="17" data-bind="ntsDatePicker: {
 												name: '#[CCG001_94]',
 												dateFormat: 'YYYY/MM/DD',
-												value: statusPeriodEnd,
+												value: inputStatusPeriodEnd,
 												required: true }">
 											</div> 
 										</div>
@@ -272,7 +274,7 @@
 							</div>
 							<div class="pull-left height-maximum margin-left-10 ccg001-table">
 								<div class="ccg001-cell mid">
-									<div tabindex="32" id="ccg001-btn-advanced-search" class="ccg-btn-vertical height-maximum"
+									<div tabindex="32" id="ccg001-btn-advanced-search" class="ccg001-btn ccg-btn-vertical height-maximum"
 										data-bind="click: advancedSearchEmployee">
 										<div class="ccg001-cell mid">
 											<div class="ccg-lbl-vertical ccg-lbl-extract-emp">#{i18n.getText('CCG001_25')}</div>
@@ -280,7 +282,7 @@
 									</div>
 								</div>
 								<div class="ccg001-cell mid">
-									<span class="ccg-caret caret-right"></span>
+									<span class="ccg001-caret ccg001-caret-vertical caret-right"></span>
 								</div>
 							</div>
 							
@@ -290,7 +292,7 @@
 								</div>
 								<div class="pull-left height-maximum margin-left-10 ccg001-table">
 									<div class="ccg001-cell mid">
-										<div tabindex="34" id="ccg001-btn-KCP005-apply" class="ccg-btn-vertical height-maximum"
+										<div tabindex="34" id="ccg001-btn-KCP005-apply" class="ccg001-btn ccg-btn-vertical height-maximum"
 											data-bind="click: extractSelectedEmployees">
 											<div class="ccg001-cell mid">
 												<i class="icon icon-47-white-check-mark"></i>
@@ -299,7 +301,7 @@
 										</div>
 									</div>
 									<div class="ccg001-cell mid">
-										<span class="ccg-caret caret-right"></span>
+										<span class="ccg001-caret ccg001-caret-vertical caret-right"></span>
 									</div>
 								</div>
 							</com:ko>
@@ -308,12 +310,77 @@
 						<div class="cf"></div>
 					</div>
 			</com:ko>
+			<div id="ccg001-tab-content-3" class="height-maximum">
+				<div id="ccg001-part-g" class="pull-left height-maximum">
+					<div class="control-group ccg001-control-group">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_104')}</div>
+						<input class="ccg001-inp" tabindex="35" id="ccg001-input-code"
+									data-bind="ntsTextEditor: {
+									name: '#[CCG001_106]',
+									value: inputCodeTab3,
+									required: false
+									}" />
+						<button tabindex="36" class="proceed caret-bottom pull-right"
+							data-bind="click: searchByCode">#{i18n.getText('CCG001_108')}</button>
+					</div>
+					<div class="control-group ccg001-control-group">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_105')}</div>
+						<input class="ccg001-inp" tabindex="37" id="ccg001-inp-name"
+									data-bind="ntsTextEditor: {
+									name: '#[CCG001_107]',
+									value: inputNameTab3,
+									required: false
+									}" />
+						<button tabindex="38" class="proceed caret-bottom pull-right"
+							data-bind="click: searchByName">#{i18n.getText('CCG001_108')}</button>
+					</div>
+					<div class="cf control-group ccg001-control-group">
+						<div class="pull-left" data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_98')}</div>
+						<div tabindex="39" id="ccg001-date-entry" class="ccg001-date-range pull-left"
+							data-bind="ntsDateRangePicker: {
+								name: '#[CCG001_100]',
+								required: false,
+								enable: true,
+								showNextPrevious: false,
+								value: entryDateTab3 }"/>
+						<button tabindex="40" class="proceed caret-bottom pull-right"
+							data-bind="click: searchByEntryDate">#{i18n.getText('CCG001_108')}</button>
+					</div>
+					<div class="cf control-group ccg001-control-group">
+						<div class="pull-left" data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_99')}</div>
+						<div tabindex="41" id="ccg001-date-retirement" class="ccg001-date-range pull-left"
+							data-bind="ntsDateRangePicker: {
+								name: '#[CCG001_100]',
+								required: false,
+								enable: true,
+								showNextPrevious: false,
+								value: retirementDateTab3 }"/>
+						<button tabindex="42" class="proceed caret-bottom pull-right"
+							data-bind="click: searchByRetirementDate">#{i18n.getText('CCG001_108')}</button>
+					</div>
+					<div tabindex="43" id="tab3kcp005"></div>
+				</div>
+				<div class="pull-right height-maximum ccg001-table">
+					<div class="ccg001-cell mid">
+						<div tabindex="44" id="ccg001-btn-KCP005-apply" class="ccg001-btn ccg-btn-vertical height-maximum"
+							data-bind="click: extractSelectedEmployeesInTab3">
+							<div class="ccg001-cell mid">
+								<i class="icon icon-47-white-check-mark"></i>
+								<div class="ccg-lbl-vertical ccg-lbl-extract-emp">#{i18n.getText('CCG001_26')}</div>
+							</div>
+						</div>
+					</div>
+					<div class="ccg001-cell mid">
+						<span class="ccg001-caret ccg001-caret-vertical caret-right"></span>
+					</div>
+				</div>
+			</div>
 		</div>
 		</div>
 	</div>
 	<div id="hor-scroll-button-hide" class="height-maximum">
 		<div class="ccg001-cell mid">
-			<div id="ccg001-btn-search-drawer" class="ccg-btn-vertical height-maximum" data-bind="click: showComponent">
+			<div id="ccg001-btn-search-drawer" class="ccg001-btn ccg-btn-vertical height-maximum" data-bind="click: showComponent">
 				<div class="ccg001-cell mid">
 				<i class="icon icon-01-searchmode"></i>
 				<div class="ccg-lbl-vertical ccg-lbl-search-drawer">#{i18n.getText('CCG001_21')}</div>
@@ -321,7 +388,7 @@
 			</div>
 		</div>
 		<div class="ccg001-cell mid">
-			<span class="ccg-caret caret-right"></span>
+			<span class="ccg001-caret ccg001-caret-vertical caret-right"></span>
 		</div>
 	</div>
 </ui:composition>

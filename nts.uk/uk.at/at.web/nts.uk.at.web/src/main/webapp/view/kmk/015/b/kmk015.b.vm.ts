@@ -33,8 +33,8 @@ module nts.uk.at.view.kmk015.b {
                 let self = this;
                 let dfd = $.Deferred<void>();
 
-                if (self.periodStart().isBefore(self.periodEnd())) {
-                    nts.uk.ui.dialog.alertError({ messageId: "917" });
+                if (self.periodStart().isAfter(self.periodEnd())) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_917" });
                     return;
                 }
 
@@ -44,7 +44,9 @@ module nts.uk.at.view.kmk015.b {
                 // Set shared data.
                 let time = self.periodStart().format("YYYY/MM/DD") + ' ~ ' + self.periodEnd().format("YYYY/MM/DD");
                 let returnedData = {
-                    timeHistory: time
+                    timeHistory: time,
+                    start: self.periodStart(),
+                    end: self.periodEnd()
                 };
                 nts.uk.ui.windows.setShared("childData", returnedData, false);
 

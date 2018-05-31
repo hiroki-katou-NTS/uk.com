@@ -4,11 +4,25 @@ import lombok.Value;
 
 @Value
 public class UpdateSelectionItemCommand {
+	
+	/**
+	 * ID
+	 */
 	private String selectionItemId;
+	
+	/**
+	 * 名称
+	 */
 	private String selectionItemName;
-	private String memo;
-	private boolean selectionItemClassification;
-	private String contractCode;
+	
+	/**
+	 * 統合コード
+	 */
 	private String integrationCode;
-	private FormatSelectionCommand formatSelection;
+	
+	/**
+	 * メモ
+	 */
+	private String memo;
+	
 }

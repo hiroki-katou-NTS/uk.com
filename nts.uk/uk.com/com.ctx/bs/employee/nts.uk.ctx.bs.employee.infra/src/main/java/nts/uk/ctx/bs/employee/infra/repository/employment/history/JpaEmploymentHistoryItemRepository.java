@@ -17,15 +17,18 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryOfEmployee;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem_;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist_;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHistItem;
 import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaEmploymentHistoryItemRepository extends JpaRepository implements EmploymentHistoryItemRepository {
@@ -52,6 +55,10 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	/** The Constant SELECT_BY_HISTIDS. */
 	private static final String SELECT_BY_HISTIDS = "SELECT aw FROM BsymtEmploymentHistItem aw"
 			+ " WHERE aw.hisId IN :historyId";
+	
+	private static final String SELECT_BY_LIST_EMPTCODE_DATEPERIOD = "SELECT ehi FROM BsymtEmploymentHistItem ehi" 
+			+ " INNER JOIN  BsymtEmploymentHist eh on eh.hisId = ehi.hisId" 
+			+ " WHERE ehi.empCode IN :employmentCodes AND eh.strDate <= :endDate AND :startDate <= eh.endDate";
 	
 	@Override
 	public Optional<EmploymentInfo> getDetailEmploymentHistoryItem(String companyId, String sid, GeneralDate date) {
@@ -409,6 +416,26 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 		return listHistItem.stream().map(item -> toDomain(item))
 				.collect(Collectors.toList());
 	
+	}
+
+	@Override
+	public List<EmploymentHistoryItem> getListEmptByListCodeAndDatePeriod(DatePeriod dateperiod,
+			List<String> employmentCodes) {
+		List<BsymtEmploymentHistItem> listHistItem = new ArrayList<>();
+		CollectionUtil.split(employmentCodes, 1000, subList -> {
+			listHistItem.addAll(this.queryProxy().query(SELECT_BY_LIST_EMPTCODE_DATEPERIOD, BsymtEmploymentHistItem.class)
+					.setParameter("employmentCodes", subList)
+					.setParameter("startDate", dateperiod.start())
+					.setParameter("endDate", dateperiod.end())
+					.getList());
+		});
+		if(listHistItem.isEmpty()){
+			return Collections.emptyList();
+		}
+		return listHistItem.stream().map(e -> {
+			EmploymentHistoryItem domain = this.toDomain(e);
+			return domain;
+		}).collect(Collectors.toList());
 	}
 
 }

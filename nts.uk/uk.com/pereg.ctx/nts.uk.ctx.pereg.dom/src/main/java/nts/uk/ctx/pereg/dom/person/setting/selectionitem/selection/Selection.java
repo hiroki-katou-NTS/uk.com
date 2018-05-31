@@ -1,19 +1,29 @@
 package nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.primitive.ExternalCD;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.primitive.MemoSelection;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.primitive.SelectionCD;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.primitive.SelectionName;
 
-@AllArgsConstructor
 @Getter
 @Setter
 public class Selection extends AggregateRoot{
-	private String selectionID;
+	
 	private String histId;
+	
+	private String selectionID;
+	
 	private SelectionCD selectionCD;
+	
 	private SelectionName selectionName;
+	
+	// optional fields
 	private ExternalCD externalCD;
+
+	
 	private MemoSelection memoSelection;
 	
 	//add selectionItemName
@@ -29,7 +39,6 @@ public class Selection extends AggregateRoot{
 
 	}
 	
-	
 	// Lanlt
 	public static Selection createFromSelection(String selectionID, String histId, String selectionCD,
 			String selectionName, String externalCD, String memoSelection, String selectionItemName) {
@@ -40,6 +49,7 @@ public class Selection extends AggregateRoot{
 				selectionItemName);
 
 	}
+	
 	public Selection(String selectionID, String histId, SelectionCD selectionCD, SelectionName selectionName,
 			ExternalCD externalCD, MemoSelection memoSelection) {
 		super();
@@ -49,6 +59,19 @@ public class Selection extends AggregateRoot{
 		this.selectionName = selectionName;
 		this.externalCD = externalCD;
 		this.memoSelection = memoSelection;
+	}
+
+
+	public Selection(String selectionID, String histId, SelectionCD selectionCD, SelectionName selectionName,
+			ExternalCD externalCD, MemoSelection memoSelection, String selectionItemName) {
+		super();
+		this.selectionID = selectionID;
+		this.histId = histId;
+		this.selectionCD = selectionCD;
+		this.selectionName = selectionName;
+		this.externalCD = externalCD;
+		this.memoSelection = memoSelection;
+		this.selectionItemName = selectionItemName;
 	}
 	
 

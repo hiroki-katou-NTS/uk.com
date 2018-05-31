@@ -26,29 +26,29 @@ import nts.uk.shr.pereg.app.find.dto.DataClassification;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 @Stateless
-public class OtherHolidayInfoFinder implements PeregFinder<OtherHolidayInfoDto>{
+public class OtherHolidayInfoFinder implements PeregFinder<OtherHolidayInfoDto> {
 
 	@Inject
 	private PublicHolidayRemainRepository publicHolidayRemainRepository;
-	
-	@Inject 
+
+	@Inject
 	private ExcessLeaveInfoRepository excessLeaveInfoRepository;
-	
+
 	@Inject
 	private LeaveManaDataRepository leaveManaDataRepository;
-	
-	@Inject 
+
+	@Inject
 	private ComDayOffManaDataRepository comDayOffManaDataRepository;
-	
+
 	@Inject
 	private PayoutManagementDataRepository payoutManagementDataRepository;
-	
-	@Inject 
+
+	@Inject
 	private SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepository;
-	
-	@Inject 
+
+	@Inject
 	private ExcessHolidayManaDataRepository excessHolidayManaDataRepository;
-	
+
 	@Override
 	public String targetCategoryCode() {
 		return "CS00035";
@@ -65,40 +65,47 @@ public class OtherHolidayInfoFinder implements PeregFinder<OtherHolidayInfoDto>{
 	}
 
 	@Override
-	public PeregDomainDto getSingleData(PeregQuery query) 
-	{
+	public PeregDomainDto getSingleData(PeregQuery query) {
 		String cid = AppContexts.user().companyId();
-		
+
 		Optional<PublicHolidayRemain> holidayRemain = publicHolidayRemainRepository.get(query.getEmployeeId());
 		Optional<ExcessLeaveInfo> excessLeave = excessLeaveInfoRepository.get(query.getEmployeeId());
-		
+
 		OtherHolidayInfoDto dto = OtherHolidayInfoDto.createFromDomain(holidayRemain, excessLeave);
-		
+
 		// Item IS00366 --------------
 		// 取得した「休出管理データ」の未使用日数を合計
-		Double sumUnUsedDay = leaveManaDataRepository.getBySidWithsubHDAtr(cid, query.getEmployeeId(),DigestionAtr.UNUSED.value).stream().mapToDouble(i->i.getUnUsedDays().v()).sum();
+		Double sumUnUsedDay = leaveManaDataRepository
+				.getBySidWithsubHDAtr(cid, query.getEmployeeId(), DigestionAtr.UNUSED.value).stream()
+				.mapToDouble(i -> i.getUnUsedDays().v()).sum();
 		// 取得した「代休管理データ」の未相殺日数を合計
-		Double sumRemain = comDayOffManaDataRepository.getBySidWithReDay(cid,query.getEmployeeId()).stream().mapToDouble(i->i.getRemainDays().v()).sum();
+		Double sumRemain = comDayOffManaDataRepository.getBySidWithReDay(cid, query.getEmployeeId()).stream()
+				.mapToDouble(i -> i.getRemainDays().v()).sum();
 		dto.setRemainNumber(new BigDecimal(sumUnUsedDay - sumRemain));
 		// ----------------------------
-		
+
 		// Item IS00368 ---------------
-		// 取得した「振出管理データ」の未使用日数を合計 
-		sumUnUsedDay = payoutManagementDataRepository.getSidWithCod(cid, query.getEmployeeId(),DigestionAtr.UNUSED.value).stream().mapToDouble(i->i.getUnUsedDays().v()).sum();
+		// 取得した「振出管理データ」の未使用日数を合計
+		sumUnUsedDay = payoutManagementDataRepository
+				.getSidWithCod(cid, query.getEmployeeId(), DigestionAtr.UNUSED.value).stream()
+				.mapToDouble(i -> i.getUnUsedDays().v()).sum();
 		// 取得した「振休管理データ」の未相殺日数を合計
-		sumRemain = substitutionOfHDManaDataRepository.getBysiDRemCod(cid,query.getEmployeeId()).stream().mapToDouble(i->i.getRemainDays().v()).sum();
-		dto.setRemainsLeft(new BigDecimal(sumUnUsedDay-sumRemain));
+		sumRemain = substitutionOfHDManaDataRepository.getBysiDRemCod(cid, query.getEmployeeId()).stream()
+				.mapToDouble(i -> i.getRemainDays().v()).sum();
+		dto.setRemainsLeft(new BigDecimal(sumUnUsedDay - sumRemain));
 		// ----------------------------
-		
+
 		// Item IS00374 ---------------
 		// 月初の超過有休残数を取得
-		sumRemain = excessHolidayManaDataRepository.getBySidWithExpCond(cid, query.getEmployeeId(),LeaveExpirationStatus.AVAILABLE.value).stream().mapToDouble(i->i.getInfo().getRemainNumer().minute()).sum();
-		dto.setExtraHours(sumRemain.intValue());
-		// ----------------------------	
-		
+		sumRemain = excessHolidayManaDataRepository
+				.getBySidWithExpCond(cid, query.getEmployeeId(), LeaveExpirationStatus.AVAILABLE.value).stream()
+				.mapToDouble(i -> i.getInfo().getRemainNumer().minute()).sum();
+		dto.setExtraHours(OtherHolidayInfoDto.convertTime(sumRemain.intValue()));
+		// ----------------------------
+
 		return dto;
 	}
-	
+
 	@Override
 	public List<PeregDomainDto> getListData(PeregQuery query) {
 		// TODO Auto-generated method stub

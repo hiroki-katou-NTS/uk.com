@@ -14,6 +14,7 @@ public class YearServicePerDto {
 	private int specialHolidayCode;
 	private String yearServiceCode;
 	private String yearServiceName;
+	private int provision;
 	private int yearServiceCls;
 	private List<YearServicePerSetDto> yearServicePerSets;
 }

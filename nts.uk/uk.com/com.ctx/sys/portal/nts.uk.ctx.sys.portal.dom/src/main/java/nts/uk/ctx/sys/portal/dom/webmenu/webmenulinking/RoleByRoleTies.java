@@ -15,12 +15,12 @@ public class RoleByRoleTies extends AggregateRoot  {
 	/** メニューコードリスト */
     private WebMenuCode webMenuCd;
     
+    private String companyId;
 
-
-	public RoleByRoleTies(String roleId,WebMenuCode webMenuCd ) {
+	public RoleByRoleTies(String roleId,WebMenuCode webMenuCd, String companyId) {
 		super();
 		this.roleId = roleId;
 		this.webMenuCd = webMenuCd;
-		
+		this.companyId = companyId;
 	}
 }

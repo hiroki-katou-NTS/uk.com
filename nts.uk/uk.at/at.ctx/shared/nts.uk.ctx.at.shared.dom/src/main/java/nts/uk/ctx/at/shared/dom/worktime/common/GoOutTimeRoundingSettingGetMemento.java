@@ -16,7 +16,7 @@ public interface GoOutTimeRoundingSettingGetMemento {
 	 *
 	 * @return the rounding method
 	 */
-	GoOutTimeRoundingMethod getRoundingMethod();
+	RoundingGoOutTimeSheet getRoundingMethod();
 	
 	
 	/**

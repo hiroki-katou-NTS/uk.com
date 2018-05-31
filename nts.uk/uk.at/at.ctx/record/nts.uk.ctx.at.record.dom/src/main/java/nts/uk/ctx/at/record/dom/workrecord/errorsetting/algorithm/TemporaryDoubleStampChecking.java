@@ -59,7 +59,9 @@ public class TemporaryDoubleStampChecking {
 					}
 				}				
 			}
-			this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate, new ErrorAlarmWorkRecordCode("S006"), attendanceItemIDList);
+			if (!attendanceItemIDList.isEmpty()) {
+				this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate, new ErrorAlarmWorkRecordCode("S006"), attendanceItemIDList);
+			}
 		}
 	}
 }

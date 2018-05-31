@@ -19,7 +19,7 @@
 				<a class="goback"
 					data-bind="ntsLinkButton: { jump: '/view/kmk/013/a/index.xhtml' }"
 					tabindex="1"> #{i18n.getText('KMK013_204')} </a>
-				<button class="proceed save" data-bind="click:saveData">#{i18n.getText('KMK013_205')}</button>
+				<button class="proceed save" tabindex="2" data-bind="click:saveData">#{i18n.getText('KMK013_205')}</button>
 			</div>
 			<div id="contents-area">
 				<table>
@@ -34,11 +34,11 @@
 								<div class="child-lb">#{i18n.getText('KMK013_207')}</div>
 							</td>
 							<td class="td-content">
-    								<div data-bind="ntsSwitchButton: {
+    								<div id="flex-radio" tabindex="3" data-bind="ntsSwitchButton: {
     												options: flexSettingOpt,     
     												optionsValue: 'id',     
     												optionsText: 'name',     
-    												value: flexSetting}"></div>     
+    												value: flexSetting}, hasFocus: true"></div>     
 							</td>
 						</tr>
 						<tr>
@@ -46,7 +46,7 @@
 								<div class="child-lb">#{i18n.getText('KMK013_211')}</div>
 							</td>
 							<td class="td-content">
-    								<span data-bind="ntsSwitchButton: {
+    								<span tabindex="4" data-bind="ntsSwitchButton: {
     												options: aggWorkSetOpt,     
     												optionsValue: 'id',     
     												optionsText: 'name',     
@@ -64,7 +64,7 @@
 								<div class="child-lb">#{i18n.getText('KMK013_216')}</div>
 							</td>
 							<td class="td-content">
-								<div data-bind="ntsSwitchButton: {
+								<div tabindex="5" data-bind="ntsSwitchButton: {
 	    												options: multipleWorkOpt,     
 	    												optionsValue: 'id',     
 	    												optionsText: 'name',     
@@ -77,7 +77,7 @@
 								<div class="child-lb">#{i18n.getText('KMK013_220')}</div>
 							</td>
 							<td class="td-content">
-   								<div data-bind="ntsSwitchButton: {
+   								<div tabindex="6" data-bind="ntsSwitchButton: {
   												options: tempWorkOpt,     
   												optionsValue: 'id',     
   												optionsText: 'name',     

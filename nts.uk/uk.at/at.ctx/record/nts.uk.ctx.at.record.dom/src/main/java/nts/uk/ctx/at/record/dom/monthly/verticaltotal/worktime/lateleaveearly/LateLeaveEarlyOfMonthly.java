@@ -51,4 +51,18 @@ public class LateLeaveEarlyOfMonthly {
 		// 遅刻を集計
 		this.late.aggregate(attendanceTimeOfDaily);
 	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(LateLeaveEarlyOfMonthly target){
+		
+		this.leaveEarly.addTimes(target.leaveEarly.getTimes().v());
+		this.leaveEarly.addMinutesToTime(
+				target.leaveEarly.getTime().getTime().v(), target.leaveEarly.getTime().getCalcTime().v());
+		this.late.addTimes(target.late.getTimes().v());
+		this.late.addMinutesToTime(
+				target.late.getTime().getTime().v(), target.late.getTime().getCalcTime().v());
+	}
 }

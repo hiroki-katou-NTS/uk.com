@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/freelayout.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 300, height: 200 };</script>
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+				</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ktg027.a.style.css" />
+			<com:scriptfile path="ktg027.a.service.js" />
+			<com:scriptfile path="ktg027.a.vm.js" />
+			<com:scriptfile path="ktg027.a.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div class="valign-center control-group">
+					<label>#{i18n.getText('KTG027_3')}</label>
+					<div
+						data-bind="ntsDatePicker: { value: yearMonth, dateFormat: 'yearmonth', valueFormat: 'YYYYMM',showJumpButtons: true}"></div>
+				</div>
+				<div class="valign-center control-group">
+					<label>#{i18n.getText('KTG027_4')}</label>
+					<div id="combo-box"
+						data-bind="ntsComboBox: {
+							name: 'Sample List',
+							options: itemList,
+							optionsValue: 'code',
+							visibleItemsCount: 5,
+							value: selectedCBB,
+							optionsText: 'name',
+							columns: [
+								{ prop: 'name', length: 10 },
+							]}"></div>
+					<button>#{i18n.getText('KTG027_5')}</button>
+					<button	style ="margin-left: 50px;" data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top'}">?</button>
+				</div>
+				<table id="fixed-table">
+					<colgroup>
+						<col width="200px" />
+						<col width="70px" />
+						<col width="70px" />
+						<col width="70px" />
+						<col width="70px" />
+
+					</colgroup>
+					<thead>
+						<tr>
+							<th class="ui-widget-header" rowspan="2">#{i18n.getText('Com_Person')}</th>
+							<th class="ui-widget-header" rowspan="2">#{i18n.getText('KTG027_7')}</th>
+							<th class="ui-widget-header" colspan="3">#{i18n.getText('KTG027_1')}</th>
+
+						</tr>
+						<tr>
+							<th class="ui-widget-header">#{i18n.getText('KTG027_8')}</th>
+							<th class="ui-widget-header">#{i18n.getText('KTG027_9')}</th>
+							<th class="ui-widget-header">#{i18n.getText('KTG027_10')}</th>
+						</tr>
+					</thead>
+					<tbody data-bind  = "foreach : inforOvertime">
+						<tr>
+							<td data-bind = "text : employee"></td>
+							<td data-bind = "text : timeLimit"></td>
+							<td data-bind = "text : actualTime"></td>
+							<td data-bind = "text : applicationTime"></td>
+							<td data-bind = "text : totalTime"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

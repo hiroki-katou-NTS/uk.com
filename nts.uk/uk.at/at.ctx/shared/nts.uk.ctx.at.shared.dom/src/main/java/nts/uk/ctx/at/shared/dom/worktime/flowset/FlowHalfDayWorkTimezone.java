@@ -53,8 +53,8 @@ public class FlowHalfDayWorkTimezone extends WorkTimeDomainObject {
 	 * @param oldDomain
 	 *            the old domain
 	 */
-	public void restoreData(ScreenMode screenMode, FlowHalfDayWorkTimezone oldDomain) {
-		this.restTimezone.restoreData(screenMode, oldDomain.getRestTimezone());
+	public void correctData(ScreenMode screenMode, FlowHalfDayWorkTimezone oldDomain) {
+		this.restTimezone.correctData(screenMode, oldDomain.getRestTimezone());
 	}
 
 	/**
@@ -63,7 +63,14 @@ public class FlowHalfDayWorkTimezone extends WorkTimeDomainObject {
 	 * @param screenMode
 	 *            the screen mode
 	 */
-	public void restoreDefaultData(ScreenMode screenMode) {
-		this.restTimezone.restoreDefaultData(screenMode);
+	public void correctDefaultData(ScreenMode screenMode) {
+		this.restTimezone.correctDefaultData(screenMode);
+	}
+
+	/**
+	 * Correct default data.
+	 */
+	public void correctDefaultData() {
+		this.workTimeZone.correctDefaultData();
 	}
 }

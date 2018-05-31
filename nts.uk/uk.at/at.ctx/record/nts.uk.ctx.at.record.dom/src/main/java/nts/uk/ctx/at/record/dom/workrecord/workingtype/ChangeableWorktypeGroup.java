@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 
 /**
@@ -14,6 +15,7 @@ import nts.arc.layer.dom.DomainObject;
  *
  */
 @Getter
+@Setter
 public class ChangeableWorktypeGroup extends DomainObject{
 
 	private int no;

@@ -86,4 +86,11 @@ public class FlowWorkTimezoneSetting extends WorkTimeDomainObject {
 		}
 		return Optional.of(timeSheet.get(0));
 	}
+
+	/**
+	 * Correct default data.
+	 */
+	public void correctDefaultData() { 
+		this.lstOTTimezone.forEach(item -> item.correctDefaultData());
+	}
 }

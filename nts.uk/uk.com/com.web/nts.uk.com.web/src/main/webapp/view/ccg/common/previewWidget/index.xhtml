@@ -44,6 +44,24 @@
 												<ui:include src="/view/ccg/common/flowmenu.xhtml" />
 											</com:ko>
 										</com:ko-if>
+										<!-- Standard Widget-->
+										<com:ko-if bind="isStandardWidget()">
+											<div class="panel-header">
+												<span class="title" data-bind="text: name"></span>
+											</div>
+											<div class="panel-content">
+												<iframe data-bind="attr:{src: url}" />
+											</div>
+										</com:ko-if>
+										<!-- Optional Widget-->
+										<com:ko-if bind="isOptionalWidget()">
+											<div class="panel-header">
+												<span class="title" data-bind="text: name"></span>
+											</div>
+											<div class="panel-content">
+												<iframe data-bind="attr:{src: url}" />
+											</div>
+										</com:ko-if>
 									</div>
 								</com:ko-foreach>
 							</com:ko>

@@ -1,0 +1,112 @@
+package nts.uk.ctx.at.record.dom.dailyprocess.calc;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+/**
+ * 勤怠項目名とIDの紐づけ
+ * @author keisuke_hoshina
+ *
+ */
+public class AttendanceItemDictionaryForCalc {
+
+	private Map<String,Integer> dictionary = new HashMap<>();
+
+	/**
+	 * Constructor 
+	 */
+	private AttendanceItemDictionaryForCalc() {
+		super();
+		createDictionary();
+	}
+	
+	private void createDictionary() {
+		//残業系の追加
+		putOverTime();
+		//休出系の追加
+		putHolidayTime();
+		//深夜系の追加
+		putMidNightTime();
+		//遅刻・早退系の追加
+		putLateEarly();
+	}
+	
+	//遅刻・早退系の追加
+	private void putLateEarly() {
+		//遅刻時間
+		this.dictionary.put("遅刻時間1", 561);
+		this.dictionary.put("遅刻時間2", 561);
+		//早退時間
+		this.dictionary.put("早退時間1", 561);
+		this.dictionary.put("早退時間2", 561);
+	}
+
+	//深夜系の追加
+	private void putMidNightTime() {
+		//所定内深夜
+		this.dictionary.put("内深夜時間", 561);
+		
+		//外深夜
+		this.dictionary.put("外深夜時間", 563);
+		
+		//休出法内深夜
+		this.dictionary.put("法内休出外深夜", 568);
+		//休出法外深夜
+		this.dictionary.put("法外休出外深夜", 570);
+		//休出祝日深夜
+		this.dictionary.put("就外法外祝日深夜", 573);
+	}
+
+	//残業系を辞書へ追加
+	private void putOverTime() {
+		//残業時間
+		this.dictionary.put("残業時間1", 216);
+		this.dictionary.put("残業時間2", 221);
+		this.dictionary.put("残業時間3", 226);
+		this.dictionary.put("残業時間4", 226);
+		this.dictionary.put("残業時間5", 231);
+		this.dictionary.put("残業時間6", 236);
+		this.dictionary.put("残業時間7", 241);
+		this.dictionary.put("残業時間8", 246);
+		this.dictionary.put("残業時間9", 251);
+		this.dictionary.put("残業時間10", 256);
+		
+		//フレックス時間
+		this.dictionary.put("フレックス時間", 556);
+	}
+
+	//休出系の追加
+	private void putHolidayTime() {
+		//休出時間
+		this.dictionary.put("休出時間1", 266);
+		this.dictionary.put("休出時間2", 271);
+		this.dictionary.put("休出時間3", 276);
+		this.dictionary.put("休出時間4", 281);
+		this.dictionary.put("休出時間5", 286);
+		this.dictionary.put("休出時間6", 291);
+		this.dictionary.put("休出時間7", 296);
+		this.dictionary.put("休出時間8", 301);
+		this.dictionary.put("休出時間9", 306);
+		this.dictionary.put("休出時間10", 311);
+		
+	}
+	
+	/**
+	 * 辞書の作成
+	 * @return
+	 */
+	public static AttendanceItemDictionaryForCalc setDictionaryValue() {
+		return new AttendanceItemDictionaryForCalc();
+	}
+	
+	/**
+	 * 勤怠項目IDの検索
+	 * @param itemName　勤怠項目名
+	 * @return 勤怠項目ID
+	 */
+	public Optional<Integer> findId(String itemName) {
+		return dictionary.containsKey(itemName)?Optional.of(dictionary.get(itemName)):Optional.empty();
+	}
+	
+}

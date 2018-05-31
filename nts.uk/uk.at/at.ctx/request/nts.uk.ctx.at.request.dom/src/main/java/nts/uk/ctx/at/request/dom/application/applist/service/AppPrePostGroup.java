@@ -19,6 +19,19 @@ public class AppPrePostGroup {
 	@Setter
 	private List<OverTimeFrame> time;
 	
+	/**出勤時刻  - 開始時刻1*/
+	@Setter
+	private String strTime1;
+	/**退勤時刻  - 終了時刻1*/
+	@Setter
+	private String endTime1;
+	/**出勤時刻2  - 開始時刻2*/
+	@Setter
+	private String strTime2;
+	/**退勤時刻2  - 終了時刻2*/
+	@Setter
+	private String endTime2;
+	
 	private AppOverTimeInfoFull appPre;
 	private String reasonAppPre;
 	private AppHolidayWorkFull appPreHd;

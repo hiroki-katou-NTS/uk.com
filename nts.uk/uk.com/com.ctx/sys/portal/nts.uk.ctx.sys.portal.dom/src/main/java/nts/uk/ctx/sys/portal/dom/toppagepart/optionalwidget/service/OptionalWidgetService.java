@@ -1,6 +1,6 @@
 package nts.uk.ctx.sys.portal.dom.toppagepart.optionalwidget.service;
 
-import java.util.List;
+import java.util.Optional;
 
 import nts.uk.ctx.sys.portal.dom.toppagepart.optionalwidget.OptionalWidget;
 
@@ -15,8 +15,7 @@ public interface OptionalWidgetService {
 	 * 選択ウィジェットを取得する
 	 * @param companyId
 	 * @param topPagePartCode
-	 * @param TopPagePartType
 	 * @return
 	 */
-	List<OptionalWidget> getSelectedWidget(String companyId, String topPagePartCode, int topPagePartType);
+	Optional<OptionalWidget> getSelectedWidget(String companyId, String topPagePartCode);
 }

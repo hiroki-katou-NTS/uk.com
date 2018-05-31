@@ -12,6 +12,16 @@ public class SelectionRadio extends DataTypeState {
 		this.dataTypeValue = DataTypeValue.SELECTION_RADIO;
 		this.referenceTypeState = referenceTypeState;
 	}
+	
+	@Override
+	public ReferenceTypes getReferenceTypes() {
+		return referenceTypeState.getReferenceType();
+	}
+	
+	@Override
+	public String getReferenceCode() {
+		return this.referenceTypeState.getReferenceCode();
+	}
 
 	public static SelectionRadio createFromJavaType(ReferenceTypeState refType) {
 		return new SelectionRadio(refType);

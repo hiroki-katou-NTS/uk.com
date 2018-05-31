@@ -4,11 +4,17 @@ module cps008.c.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import close = nts.uk.ui.windows.close;
+    import showDialog = nts.uk.ui.dialog;
+
+    let __viewContext: any = window['__viewContext'] || {},
+        block = window["nts"]["uk"]["ui"]["block"]["grayout"],
+        unblock = window["nts"]["uk"]["ui"]["block"]["clear"],
+        invisible = window["nts"]["uk"]["ui"]["block"]["invisible"];
 
     export class ViewModel {
         layout: KnockoutObservable<Layout> = ko.observable(new Layout({ id: '', code: '', name: '' }));
         overrideMode: KnockoutObservable<boolean> = ko.observable(false);
-        
+
         constructor() {
             let self = this,
                 layout: Layout = self.layout(),
@@ -29,33 +35,48 @@ module cps008.c.viewmodel {
 
         coppyBtn() {
             let self = this,
-                layout: ILayout = ko.toJS(self.layout);
-            let s = 'd';
+                layout: ILayout = ko.toJS(self.layout),
+                _data = getShared('CPS008_PARAM');
 
+            $("#C_INP_CODE").trigger("validate");
+            $("#C_INP_NAME").trigger("validate");
 
-            if (layout.newCode == '' || layout.newName == '') {
-                if (layout.newCode == '') {
-                    $("#C_INP_CODE").focus();
-                } else {
-                    $("#C_INP_NAME").focus();
-                }
+            if (nts.uk.ui.errors.hasError()) {
                 return;
-            } else if (layout.newCode == layout.code) {
+            }
+
+            if (layout.newCode == layout.code) {
                 nts.uk.ui.dialog.alert({ messageId: "Msg_355" });
                 return;
             } else if (layout.newCode && layout.newName) {
-                setShared('CPS008C_RESPONE', {
+                let command = {
                     id: layout.id,
                     code: layout.newCode,
                     name: layout.newName,
-                    action: self.overrideMode()
+                    classifications: _data.outData,
+                    action: self.overrideMode() ? LAYOUT_ACTION.OVERRIDE : LAYOUT_ACTION.COPY
+                };
+                // call saveData service
+                invisible();
+                service.saveData(command).done((data: any) => {
+                    showDialog.info({ messageId: "Msg_20" }).then(function() {
+                        unblock();
+                        setShared('CPS008C_RESPONE', command.code);
+                        self.close();
+                    });
+                }).fail((error: any) => {
+                    if (error.message == 'Msg_3') {
+                        showDialog.alert({ messageId: "Msg_3" }).then(function() {
+                            unblock();
+                            $("#C_INP_CODE").focus();
+                            setShared('CPS008C_RESPONE', null);
+                        });
+                    }
                 });
-                close();
             }
         }
 
         close() {
-            setShared('CPS008C_RESPONE', null);
             close();
         }
     }
@@ -67,6 +88,14 @@ module cps008.c.viewmodel {
         newCode?: string;
         newName?: string;
         overrideMode?: boolean;
+    }
+
+    enum LAYOUT_ACTION {
+        INSERT = 0,
+        UPDATE = 1,
+        COPY = 2,
+        OVERRIDE = 3,
+        REMOVE = 4
     }
 
     class Layout {

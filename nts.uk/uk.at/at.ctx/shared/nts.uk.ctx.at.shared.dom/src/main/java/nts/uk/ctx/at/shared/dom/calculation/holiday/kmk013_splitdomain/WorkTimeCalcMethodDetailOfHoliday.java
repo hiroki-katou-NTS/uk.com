@@ -9,6 +9,8 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -60,5 +62,44 @@ public class WorkTimeCalcMethodDetailOfHoliday extends DomainObject{
 															? null 
 															: NotUseAtr.valueOf(minusAbsenceTime));
 	}
+	
+	
+	
+	/**
+	 * 就業時間内時間帯から控除するか判断
+	 * @param deductTime
+	 * @param graceTimeSetting
+	 * @return
+	 */
+	public boolean decisionLateDeductSetting(AttendanceTime deductTime, GraceTimeSetting graceTimeSetting) {
+//		if(this.notDeductLateLeaveEarly==NotUseAtr.USE) {//
+		if(isDeductLateLeaveEarly()) {//遅刻早退をマイナスする場合に処理に入る
+			if(deductTime.greaterThan(0) || !graceTimeSetting.isIncludeWorkingHour()) {//猶予時間の加算設定をチェック&&パラメータ「遅刻控除時間」の確認
+				return true;
+			}
+		}
+		return false;	
+	}
+	
+	/**
+	 * 遅刻・早退を控除するか判断する
+	 * 2018/05/09　高須
+	 * caseがUSEの場合にわざとfalseにしています
+	 * 画面上で「遅刻早退をマイナスしない」のチェックボックスでチェックがある場合にここにUSEが来る為です
+	 * @return 控除する場合はtrueが返る
+	 */
+	public boolean isDeductLateLeaveEarly() {
+		switch(this.notDeductLateLeaveEarly) {
+			case USE:
+				return false;
+			case NOT_USE:
+				return true;
+			default:
+				throw new RuntimeException("unknown notDeductLateLeaveEarly");
+		}	
+	}
+	
+	
+	
 }
 

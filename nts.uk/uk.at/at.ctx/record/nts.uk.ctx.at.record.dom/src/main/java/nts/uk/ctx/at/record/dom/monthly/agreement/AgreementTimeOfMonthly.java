@@ -10,6 +10,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 /**
@@ -75,7 +76,7 @@ public class AgreementTimeOfMonthly {
 	}
 	
 	/**
-	 * エラーチェック
+	 * エラーアラーム値の取得
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param criteriaDate 基準日
@@ -83,7 +84,7 @@ public class AgreementTimeOfMonthly {
 	 * @param workingSystem 労働制
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void errorCheck(
+	public void getErrorAlarmValue(
 			String companyId,
 			String employeeId,
 			GeneralDate criteriaDate,
@@ -91,8 +92,60 @@ public class AgreementTimeOfMonthly {
 			WorkingSystem workingSystem,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
-		// エラーアラーム値の取得
-		this.getErrorAlarmValue(companyId, employeeId, criteriaDate, yearMonth, workingSystem, repositories);
+		// 初期設定
+		this.limitErrorTime = new LimitOneMonth(0);
+		this.limitAlarmTime = new LimitOneMonth(0);
+		this.exceptionLimitErrorTime = Optional.empty();
+		this.exceptionLimitAlarmTime = Optional.empty();
+		
+		// 「36協定基本設定」を取得する
+		val basicAgreementSet = repositories.getAgreementDomainService().getBasicSet(
+				companyId, employeeId, criteriaDate, workingSystem);
+		this.limitErrorTime = new LimitOneMonth(basicAgreementSet.getErrorOneMonth().v());
+		this.limitAlarmTime = new LimitOneMonth(basicAgreementSet.getAlarmOneMonth().v());
+		
+		// 「36協定年月設定」を取得
+		val agreementMonthSetOpt = repositories.getAgreementMonthSet().findByKey(employeeId, yearMonth);
+		if (agreementMonthSetOpt.isPresent()){
+			val agreementMonthSet = agreementMonthSetOpt.get();
+			this.exceptionLimitErrorTime = Optional.of(new LimitOneMonth(agreementMonthSet.getErrorOneMonth().v()));
+			this.exceptionLimitAlarmTime = Optional.of(new LimitOneMonth(agreementMonthSet.getAlarmOneMonth().v()));
+		}
+	}
+	
+	
+	/**
+	 * エラーアラーム値の取得　（週用）
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @param criteriaDate 基準日
+	 * @param workingSystem 労働制
+	 * @param repositories 月次集計が必要とするリポジトリ
+	 */
+	public void getErrorAlarmValueForWeek(
+			String companyId,
+			String employeeId,
+			GeneralDate criteriaDate,
+			WorkingSystem workingSystem,
+			RepositoriesRequiredByMonthlyAggr repositories){
+		
+		// 初期設定
+		this.limitErrorTime = new LimitOneMonth(0);
+		this.limitAlarmTime = new LimitOneMonth(0);
+		this.exceptionLimitErrorTime = Optional.empty();
+		this.exceptionLimitAlarmTime = Optional.empty();
+		
+		// 「36協定基本設定」を取得する
+		val basicAgreementSet = repositories.getAgreementDomainService().getBasicSet(
+				companyId, employeeId, criteriaDate, workingSystem);
+		this.limitErrorTime = new LimitOneMonth(basicAgreementSet.getErrorWeek().v());
+		this.limitAlarmTime = new LimitOneMonth(basicAgreementSet.getAlarmWeek().v());
+	}
+	
+	/**
+	 * エラーチェック
+	 */
+	public void errorCheck(){
 		
 		// 限度アラーム時間以下
 		if (this.agreementTime.lessThanOrEqualTo(this.limitAlarmTime.v())){
@@ -135,40 +188,14 @@ public class AgreementTimeOfMonthly {
 	}
 	
 	/**
-	 * エラーアラーム値の取得
-	 * @param companyId 会社ID
-	 * @param employeeId 社員ID
-	 * @param criteriaDate 基準日
-	 * @param yearMonth 年月
-	 * @param workingSystem 労働制
-	 * @param repositories 月次集計が必要とするリポジトリ
+	 * 合算する
+	 * @param target 加算対象
 	 */
-	private void getErrorAlarmValue(
-			String companyId,
-			String employeeId,
-			GeneralDate criteriaDate,
-			YearMonth yearMonth,
-			WorkingSystem workingSystem,
-			RepositoriesRequiredByMonthlyAggr repositories){
+	public void sum(AgreementTimeOfMonthly target){
 		
-		// 初期設定
-		this.limitErrorTime = new LimitOneMonth(0);
-		this.limitAlarmTime = new LimitOneMonth(0);
-		this.exceptionLimitErrorTime = Optional.empty();
-		this.exceptionLimitAlarmTime = Optional.empty();
+		this.agreementTime = this.agreementTime.addMinutes(target.agreementTime.v());
 		
-		// 「36協定基本設定」を取得する
-		val basicAgreementSet = repositories.getAgreementDomainService().getBasicSet(
-				companyId, employeeId, criteriaDate, workingSystem);
-		this.limitErrorTime = new LimitOneMonth(basicAgreementSet.getErrorOneMonth().v());
-		this.limitAlarmTime = new LimitOneMonth(basicAgreementSet.getAlarmOneMonth().v());
-		
-		// 「36協定年月設定」を取得
-		val agreementMonthSetOpt = repositories.getAgreementMonthSet().findByKey(employeeId, yearMonth);
-		if (agreementMonthSetOpt.isPresent()){
-			val agreementMonthSet = agreementMonthSetOpt.get();
-			this.exceptionLimitErrorTime = Optional.of(new LimitOneMonth(agreementMonthSet.getErrorOneMonth().v()));
-			this.exceptionLimitAlarmTime = Optional.of(new LimitOneMonth(agreementMonthSet.getAlarmOneMonth().v()));
-		}
+		// 再エラーチェックする
+		this.errorCheck();
 	}
 }

@@ -9,11 +9,46 @@ import lombok.Value;
  */
 @Value
 public class AddSelectionItemCommand {
-	private String selectionItemId;
+	
+	/**
+	 * 名称
+	 */
 	private String selectionItemName;
-	private String memo;
-	private boolean selectionItemClassification;
-	private String contractCode;
+	
+	/**
+	 * コード型
+	 */
+	private boolean characterType;
+	
+	
+	/**
+	 * コード桁数
+	 */
+	private int codeLength;
+	
+	/**
+	 * 名称桁数
+	 */
+	private int nameLength;
+	
+	/**
+	 * 外部コード桁数
+	 */
+	private int extraCodeLength;
+	
+	/**
+	 *共有 
+	 */
+	private boolean shareChecked;
+	
+	/**
+	 * 統合コード
+	 */
 	private String integrationCode;
-	private FormatSelectionCommand formatSelection;
+	
+	/**
+	 * メモ
+	 */
+	private String memo;
+	
 }

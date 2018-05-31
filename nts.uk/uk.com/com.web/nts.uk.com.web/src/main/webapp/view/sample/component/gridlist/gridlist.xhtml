@@ -56,6 +56,7 @@
 								enable: enable,
 								multiple: true,
 								value: currentCodeList,
+								selectionDisables: disables, 
 								rows: 10
 							}"></table>
 						currentCodeList: <span data-bind="text: currentCodeList"></span><br/>
@@ -132,10 +133,17 @@ currentCodeList: <span data-bind="text: currentCodeList"></span>]]></pre>
 												</td>
 											</tr>
 											<tr>
-												<td>showNumbering</td>
+												<td>showNumbering (disabled)</td>
 												<td>
 													<b>Type:</b> boolean<br/>
 													<i>number:</i> Show index number for each row.
+												</td>
+											</tr>
+											<tr>
+												<td>columnResize</td>
+												<td>
+													<b>Type:</b> boolean<br/>
+													<i>Add feature column resizing for grid</i>
 												</td>
 											</tr>
 											<tr>

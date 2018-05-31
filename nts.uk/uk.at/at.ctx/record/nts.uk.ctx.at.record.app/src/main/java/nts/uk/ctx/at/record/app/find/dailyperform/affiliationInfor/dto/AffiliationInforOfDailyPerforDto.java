@@ -70,6 +70,12 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 		if(!this.isHaveData()) {
 			return null;
 		}
+		if (employeeId == null) {
+			employeeId = this.employeeId();
+		}
+		if (date == null) {
+			date = this.workingDate();
+		}
 		return new AffiliationInforOfDailyPerfor(
 					this.employmentCode == null ? null : new EmploymentCode(this.employmentCode), 
 					employeeId, this.jobId, this.workplaceID, date,

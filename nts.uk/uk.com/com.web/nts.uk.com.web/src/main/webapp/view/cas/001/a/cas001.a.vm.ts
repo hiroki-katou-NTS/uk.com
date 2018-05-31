@@ -224,11 +224,12 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
             nts.uk.ui.windows.sub.modal('/view/cas/001/c/index.xhtml', { title: '' }).onClosed(function(): any {
 
-                if (!getShared('isCanceled')) {
+                let objSetofScreenC = getShared('isCanceled');
+                if (!objSetofScreenC.isCancel) {
                     self.reload().always(() => {
-
-
-
+                        if(objSetofScreenC.id !== null && objSetofScreenC.id != undefined){
+                            self.component.currentCode(objSetofScreenC.id);
+                        }
                     });
                 }
             });
@@ -247,6 +248,12 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                     self.currentRole().currentCategory().loadRoleItems(self.currentRoleId(), selectedId).done(function() {
                         self.checkboxSelectedAll(false);
+                        let allowPerson = self.allowPersonRef(),
+                            allowOther = self.allowOtherRef();
+                        self.allowPersonRef(!allowPerson);
+                        self.allowPersonRef(allowPerson);
+                        self.allowOtherRef(!allowOther);
+                        self.allowOtherRef(allowOther);
                     });
 
                 }
@@ -407,6 +414,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
         otherAuth: number;
         selfAuth: number;
         dataType: number;
+        isConvert: boolean;
     }
 
     export class PersonRole {
@@ -627,7 +635,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     height: '315px',
                     dataSource: self.roleItemList(),
                     primaryKey: 'personItemDefId',
-//                    hidePrimaryKey: true,
+                    //                    hidePrimaryKey: true,
                     rowVirtualization: true,
                     virtualization: true,
                     virtualizationMode: 'continuous',
@@ -677,9 +685,17 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     }],
                 });
 
-                // đoạn bind lại header
+                let allowOther = __viewContext['screenModel'].allowOtherRef(),
+                    allowPerson = __viewContext['screenModel'].allowPersonRef();
+                __viewContext['screenModel'].allowOtherRef(!allowOther);
+                __viewContext['screenModel'].allowOtherRef(allowOther);
+                __viewContext['screenModel'].allowPersonRef(!allowPerson);
+                __viewContext['screenModel'].allowPersonRef(allowPerson);
+
+                // Ä‘oáº¡n bind láº¡i header
                 ko.applyBindings(__viewContext['screenModel'], nts.uk.ui.ig.grid.header.getCell('item_role_table_body', 'otherAuth')[0]);
                 ko.applyBindings(__viewContext['screenModel'], nts.uk.ui.ig.grid.header.getCell('item_role_table_body', 'selfAuth')[0]);
+
 
                 dfd.resolve();
 
@@ -717,10 +733,11 @@ module nts.uk.com.view.cas001.a.viewmodel {
         selfAuth: string;
         itemCd: string;
         dataType: number;
+        isConvert: boolean = false;
 
         constructor(param: IPersonRoleItem) {
             let self = this;
-            self.personItemDefId = param ? _.replace(param.personItemDefId, new RegExp("-", "g"), "_") : '';
+            self.personItemDefId = param ? param.personItemDefId : "";//_.replace(param.personItemDefId, new RegExp("-", "g"), "_") : '';
             self.setting = param ? param.setting : false;
             self.requiredAtr = param ? param.requiredAtr : 'false';
             self.itemName = param ? param.itemName : '';
@@ -729,6 +746,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
             self.otherAuth = this.setting === true ? param ? param.otherAuth : 1 : 1;
             self.selfAuth = this.setting === true ? param ? param.selfAuth : 1 : 1;
             self.dataType = param ? param.dataType : '';
+            self.isConvert = param ? (param.personItemDefId.search("CS") > -1 ? false : true) : false;
         }
     }
 
@@ -807,10 +825,9 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
 
             itemLst = _.map(dataSource, function(c: any) {
-                c.personItemDefId = c.personItemDefId.search("COM") > -1 ? c.personItemDefId : _.replace(c.personItemDefId, new RegExp("_", "g"), "-");
                 _.each(itemGroup, function(i) {
                     if (i.length > 0) {
-                        let personItemDefId: string = i[0].rowId.search("COM") > -1 ? i[0].rowId : _.replace(i[0].rowId, new RegExp("_", "g"), "-");
+                        let personItemDefId: string = i[0].rowId;
                     }
                     if (c.personItemDefId === personItemDefId) {
                         _.each(i, function(x) {
@@ -856,7 +873,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                     items.push(new PersonRoleItemCommand(childItem));
                 });
-                
+
 
             });
 
@@ -885,7 +902,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
 function makeIcon(value, row) {
     if (value == "true")
-        return "●";
+         return "●";
     return '';
 }
 

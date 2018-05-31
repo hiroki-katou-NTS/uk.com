@@ -6,6 +6,11 @@ import lombok.Getter;
 public class MasterReferenceCondition extends ReferenceTypeState {
 
 	private MasterType masterType;
+	
+	@Override
+	public String getReferenceCode() {
+		return this.masterType.v();
+	}
 
 	private MasterReferenceCondition(String masterType) {
 		super();

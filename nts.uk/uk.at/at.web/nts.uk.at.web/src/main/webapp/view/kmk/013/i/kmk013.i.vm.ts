@@ -44,13 +44,17 @@ module nts.uk.at.view.kmk013.i {
                 if (self.isCreated()){
                     service.update(data).done(
                         () => {
-                            nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
+                            nts.uk.ui.dialog.info({ messageId: 'Msg_15' }).then(() => {
+                                $("#switch").focus();
+                            });
                         }
                     );
                 } else {
                     service.save(data).done(
                         () => {
-                            nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
+                            nts.uk.ui.dialog.info({ messageId: 'Msg_15' }).then(() => {
+                                $("#switch").focus();
+                            });
                         }
                     );
                 }

@@ -66,6 +66,7 @@ public class ProgramIdDetector implements Filter {
 		Iterator<Entry<WebAppId, String>> iterator = webApps.entrySet().iterator();
 		Entry<WebAppId, String> entry = null;
 		int startIndex = -1;
+		int endIndex = requestPagePath.lastIndexOf("?");
 		String partialPath = null;
 		WebAppId appId = null;
 		
@@ -73,7 +74,9 @@ public class ProgramIdDetector implements Filter {
 			entry = iterator.next();
 			startIndex = requestPagePath.indexOf(entry.getValue());
 			if (startIndex != -1) {
-				 partialPath = requestPagePath.substring(startIndex + entry.getValue().length());
+				 startIndex += entry.getValue().length();
+				 partialPath = endIndex == -1 ? requestPagePath.substring(startIndex)
+					 						: requestPagePath.substring(startIndex, endIndex);
 				 appId = entry.getKey();
 				 break;
 			}

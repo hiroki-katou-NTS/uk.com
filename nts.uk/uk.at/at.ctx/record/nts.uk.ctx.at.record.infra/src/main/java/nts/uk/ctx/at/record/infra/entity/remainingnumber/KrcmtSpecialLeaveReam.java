@@ -43,7 +43,7 @@ public class KrcmtSpecialLeaveReam extends UkJpaEntity  {
     public int registerType;
 	
 	@Column(name = "NUMBER_DAYS_GRANT")
-    public int numberDayGrant;
+    public double numberDayGrant;
 	
 	@Column(name = "TIME_GRANT")
     public int timeGrant;
@@ -61,10 +61,10 @@ public class KrcmtSpecialLeaveReam extends UkJpaEntity  {
     public int timeUse;
 	
 	@Column(name = "USED_SAVING_DAYS")
-    public double useSavingDays;
+    public Double useSavingDays;
 	
 	@Column(name = "NUMBER_OVER_DAYS")
-    public int numberOverDays;
+    public double numberOverDays;
 
 	@Column(name = "TIME_OVER")
     public int timeOver;

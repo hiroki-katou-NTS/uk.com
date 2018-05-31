@@ -12,6 +12,10 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.specificdays.AggregateSpecificDays;
+import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -56,5 +60,44 @@ public class KrcdtMonAggrSpecDays extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {		
 		return this.PK;
+	}
+	
+	/**
+	 * ドメインに変換
+	 * @return 集計特定日数
+	 */
+	public AggregateSpecificDays toDomain(){
+		
+		return AggregateSpecificDays.of(
+				new SpecificDateItemNo(this.PK.specificDayItemNo),
+				new AttendanceDaysMonth(this.specificDays),
+				new AttendanceDaysMonth(this.holidayWorkSpecificDays));
+	}
+	
+	/**
+	 * ドメインから変換　（for Insert）
+	 * @param key キー値：月別実績の勤怠時間
+	 * @param domain 集計特定日数
+	 */
+	public void fromDomainForPersist(AttendanceTimeOfMonthlyKey key, AggregateSpecificDays domain){
+		
+		this.PK = new KrcdtMonAggrSpecDaysPK(
+				key.getEmployeeId(),
+				key.getYearMonth().v(),
+				key.getClosureId().value,
+				key.getClosureDate().getClosureDay().v(),
+				(key.getClosureDate().getLastDayOfMonth() ? 1 : 0),
+				domain.getSpecificDayItemNo().v());
+		this.fromDomainForUpdate(domain);
+	}
+	
+	/**
+	 * ドメインから変換　(for Update)
+	 * @param domain 集計特定日数
+	 */
+	public void fromDomainForUpdate(AggregateSpecificDays domain){
+		
+		this.specificDays = domain.getSpecificDays().v();
+		this.holidayWorkSpecificDays = domain.getHolidayWorkSpecificDays().v();
 	}
 }

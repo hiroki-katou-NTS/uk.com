@@ -72,9 +72,10 @@ public class PClogOnOffLackOfStamp {
 							attendanceItemIDList.add(797);
 						}
 					}
-					
-					createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId, processingDate,
-							new ErrorAlarmWorkRecordCode("S002"), attendanceItemIDList);
+					if (!attendanceItemIDList.isEmpty()) {
+						createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId, processingDate,
+								new ErrorAlarmWorkRecordCode("S002"), attendanceItemIDList);
+					}
 				}
 			}
 		}

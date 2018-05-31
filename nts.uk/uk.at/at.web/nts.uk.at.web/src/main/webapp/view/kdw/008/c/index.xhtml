@@ -10,8 +10,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 390,
-					height : 630
+					width : 400,
+					height : 530
 				};
 			</script>
 
@@ -23,8 +23,6 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area"></div>
-
 			<div id="contents-area">
 				<div id="label1" class="label" style="margin-bottom: 15px;">#{i18n.getText('KDW002_40')}</div>
 
@@ -32,7 +30,7 @@
 					<div style="display: inline-block;">
 						<table id="grid-test-single"
 							data-bind="ntsGridList: {
-									height: 300,
+									height: 320,
 									dataSource: businessTypeSortedList,
 									primaryKey: 'attendanceItemId',
 									columns: columns,
@@ -50,13 +48,13 @@
 							}"
 						class=""></div>
 				</div>
-
-				<div id="buttonArea">
-					<button id="button1" class="proceed" data-bind="click: update">#{i18n.getText('KDW002_22')}</button>
-					<button id="button2" data-bind="click: closeDialog">#{i18n.getText('KDW002_42')}</button>
-				</div>
 			</div>
+				<div id="functions-area-bottom">
+					<button  class="proceed" data-bind="click: update">#{i18n.getText('KDW002_22')}</button>
+					<button  data-bind="click: closeDialog">#{i18n.getText('KDW002_42')}</button>
+				</div>
 		</ui:define>
+		
 
 	</ui:composition>
 </body>

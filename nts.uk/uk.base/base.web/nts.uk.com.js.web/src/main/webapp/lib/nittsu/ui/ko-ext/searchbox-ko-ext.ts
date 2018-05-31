@@ -175,7 +175,7 @@ module nts.uk.ui.koExtentions {
             var $input = $container.find("input.ntsSearchBox");
             minusWidth += $button.outerWidth(true);
             if(searchMode === "filter"){
-                $container.append("<button class='clear-btn ntsSearchBox_Component'>解除</button>"); 
+                $container.append("<button class='clear-btn ntsSearchBox_Component'>"+ nts.uk.ui.toBeResource.clear +"</button>"); 
                 let $clearButton = $container.find("button.clear-btn");  
                 minusWidth +=  $clearButton.outerWidth(true);
                 $clearButton.click(function(evt: Event, ui: any) {
@@ -197,7 +197,7 @@ module nts.uk.ui.koExtentions {
             }
             
             $input.attr("placeholder", placeHolder);
-            $input.attr("data-name", "検索テキストボックス");
+            $input.attr("data-name", nts.uk.ui.toBeResource.searchBox);
             $input.outerWidth($container.outerWidth(true) - minusWidth);　
             
             let primaryKey = ko.unwrap(data.targetKey);
@@ -224,8 +224,14 @@ module nts.uk.ui.koExtentions {
                     
                     let srh: SearchPub= $container.data("searchObject");
                     let result = srh.search(searchKey, selectedItems);
-                    if(nts.uk.util.isNullOrEmpty(result.options) && searchMode === "highlight"){
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT")).then(() => { 
+                    if(nts.uk.util.isNullOrEmpty(result.options)){
+                        let mes = '';
+                        if(searchMode === "highlight"){
+                            mes = nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT");
+                        } else {
+                            mes = nts.uk.ui.toBeResource.targetNotFound;    
+                        }
+                        nts.uk.ui.dialog.alert(mes).then(() => { 
                             $input.focus(); 
                             $input.select();
                         });

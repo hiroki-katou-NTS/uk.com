@@ -97,7 +97,7 @@ public class SettingItemDto {
 		return new SaveDataDto(SaveDataType.STRING, null);
 
 	}
-
+	
 	public static SettingItemDto createFromJavaType(String categoryCode, String itemDefId, String itemCode,
 			String itemName, int isRequired, int saveDataValue, GeneralDate dateValue, BigDecimal intValue,
 			String stringValue, int dataType, int selectionItemRefType, String itemParentCd, int dateType,
@@ -110,16 +110,14 @@ public class SettingItemDto {
 		return itemDto;
 	}
 	
-	public static SettingItemDto createFromJavaType(String categoryCode, String itemDefId, String itemCode,
-			String itemName, int isRequired, Object value, int dataType, int selectionItemRefType, String itemParentCd,
-			int dateType, String SelectionItemRefCd) {
+	public static SettingItemDto createFromJavaType1(String categoryCode, String itemDefId, String itemCode,
+			String itemName, int isRequired, Object value, DataTypeValue dataType, ReferenceTypes selectionItemRefType,
+			String itemParentCd, DateType dateType, String SelectionItemRefCd) {
 		SettingItemDto itemDto = new SettingItemDto(categoryCode, itemDefId, itemCode, itemName, isRequired,
-				createSaveDataDto(value), EnumAdaptor.valueOf(dataType, DataTypeValue.class),
-				EnumAdaptor.valueOf(selectionItemRefType, ReferenceTypes.class), itemParentCd,
-				EnumAdaptor.valueOf(dateType, DateType.class), SelectionItemRefCd);
+				createSaveDataDto(value), dataType, selectionItemRefType, itemParentCd, dateType, SelectionItemRefCd);
 		return itemDto;
 	}
-
+	
 	public static SettingItemDto fromInfoDataItem(EmpInfoItemData domain) {
 
 		return SettingItemDto.createFromJavaType(domain.getPerInfoCtgCd(), domain.getPerInfoDefId(),
@@ -139,7 +137,8 @@ public class SettingItemDto {
 	public void setData(Object value) {
 		
 		if (value == null ) {
-			this.setSaveData(new SaveDataDto(SaveDataType.STRING, null));
+			this.setSaveData(new SaveDataDto(SaveDataType.STRING, ""));
+			return;
 		}
 		
 		if (value.getClass().equals(Integer.class)) {

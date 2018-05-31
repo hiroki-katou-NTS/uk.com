@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
@@ -26,16 +26,23 @@ public class JpaFixedStampReflectTimezoneSetMemento implements StampReflectTimez
 	 *            the company id
 	 * @param workTimeCd
 	 *            the work time cd
+	 * @param workNo
+	 *            the work no
+	 * @param classification
+	 *            the classification
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFixedStampReflectTimezoneSetMemento(String companyId, String workTimeCd, KshmtFixedStampReflect entity) {		
+	public JpaFixedStampReflectTimezoneSetMemento(String companyId, String workTimeCd, WorkNo workNo,
+			GoLeavingWorkAtr classification, KshmtFixedStampReflect entity) {
 		this.entity = entity;
 		if (this.entity.getKshmtFixedStampReflectPK() == null) {
 			this.entity.setKshmtFixedStampReflectPK(new KshmtFixedStampReflectPK());
 		}
 		this.entity.getKshmtFixedStampReflectPK().setCid(companyId);
 		this.entity.getKshmtFixedStampReflectPK().setWorktimeCd(workTimeCd);
+		this.entity.getKshmtFixedStampReflectPK().setWorkNo(workNo.v());
+		this.entity.getKshmtFixedStampReflectPK().setAtr(classification.value);
 	}
 
 	/*
@@ -47,7 +54,7 @@ public class JpaFixedStampReflectTimezoneSetMemento implements StampReflectTimez
 	 */
 	@Override
 	public void setWorkNo(WorkNo workNo) {
-		this.entity.getKshmtFixedStampReflectPK().setWorkNo(workNo.v().intValue());
+		// Do nothing
 	}
 
 	/*
@@ -60,7 +67,7 @@ public class JpaFixedStampReflectTimezoneSetMemento implements StampReflectTimez
 	 */
 	@Override
 	public void setClassification(GoLeavingWorkAtr classification) {
-		this.entity.setAtr(classification.value);
+		// Do nothing
 	}
 
 	/*

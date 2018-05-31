@@ -121,4 +121,22 @@ public class EmployeeDataView_ {
 	/** The com end date. */
 	public static volatile SingularAttribute<EmployeeDataView, GeneralDateTime> comEndDate;
 
+	/** The closure id. */
+	public static volatile SingularAttribute<EmployeeDataView, Integer> closureId;
+
+	/** The wpl hierarchy code. */
+	public static volatile SingularAttribute<EmployeeDataView, String> wplHierarchyCode;
+
+	/** The wkp conf end date. */
+	public static volatile SingularAttribute<EmployeeDataView, GeneralDateTime> wkpConfEndDate;
+
+	/** The wkp conf str date. */
+	public static volatile SingularAttribute<EmployeeDataView, GeneralDateTime> wkpConfStrDate;
+
+	/** The job seq disp. */
+	public static volatile SingularAttribute<EmployeeDataView, Integer> jobSeqDisp;
+	
+	/** The business name kana. */
+	public static volatile SingularAttribute<EmployeeDataView, String> businessNameKana;
+
 }

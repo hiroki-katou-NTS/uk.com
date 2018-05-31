@@ -52,7 +52,7 @@ public class CurrentClosureFinder {
 		List<CurrentClosureDto> listCurrentClosureDto = new ArrayList<CurrentClosureDto>();
 
 		for (Closure closure : listClosure) {
-			Optional<ClosureHistory> opClosureHistory = this.closureRepository.findByClosureIdAndCurrentMonth(
+			Optional<ClosureHistory> opClosureHistory = this.closureRepository.findByClosureIdAndCurrentMonth(companyId,
 					closure.getClosureId().value, closure.getClosureMonth().getProcessingYm().v());
 
 			DatePeriod currentPeriod = this.closureService.getClosurePeriod(closure.getClosureId().value,

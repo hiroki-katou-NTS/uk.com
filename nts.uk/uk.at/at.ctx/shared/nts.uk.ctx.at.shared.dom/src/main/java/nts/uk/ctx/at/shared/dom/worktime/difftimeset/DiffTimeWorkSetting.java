@@ -1,28 +1,24 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 
 /**
- * The Class TimeDiffWorkSetting.
+ * The Class DiffTimeWorkSetting.
  */
 @Getter
 // 時差勤務設定
@@ -32,7 +28,7 @@ public class DiffTimeWorkSetting extends WorkTimeAggregateRoot {
 	// 会社ID
 	private String companyId;
 
-	/** The employment timezone code. */
+	/** The work time code. */
 	// 就業時間帯コード
 	private WorkTimeCode workTimeCode;
 
@@ -56,7 +52,7 @@ public class DiffTimeWorkSetting extends WorkTimeAggregateRoot {
 	// 変動可能範囲
 	private EmTimezoneChangeExtent changeExtent;
 
-	/** The half day work timezone. */
+	/** The half day work timezones. */
 	// 平日勤務時間帯
 	private List<DiffTimeHalfDayWorkTimezone> halfDayWorkTimezones;
 
@@ -68,10 +64,15 @@ public class DiffTimeWorkSetting extends WorkTimeAggregateRoot {
 	// 残業設定
 	private LegalOTSetting overtimeSetting;
 
+	/** The calculation setting. */
+	// 計算設定
+	private Optional<FixedWorkCalcSetting> calculationSetting;
+
 	/**
 	 * Instantiates a new diff time work setting.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public DiffTimeWorkSetting(DiffTimeWorkSettingGetMemento memento) {
 		this.companyId = memento.getCompanyId();
@@ -84,12 +85,14 @@ public class DiffTimeWorkSetting extends WorkTimeAggregateRoot {
 		this.halfDayWorkTimezones = memento.getHalfDayWorkTimezones();
 		this.stampReflectTimezone = memento.getStampReflectTimezone();
 		this.overtimeSetting = memento.getOvertimeSetting();
+		this.calculationSetting = memento.getCalculationSetting();
 	}
-	
+
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(DiffTimeWorkSettingSetMemento memento) {
 		memento.setCompanyId(this.companyId);
@@ -102,33 +105,12 @@ public class DiffTimeWorkSetting extends WorkTimeAggregateRoot {
 		memento.setHalfDayWorkTimezones(this.halfDayWorkTimezones);
 		memento.setStampReflectTimezone(this.stampReflectTimezone);
 		memento.setOvertimeSetting(this.overtimeSetting);
-	}
-	
-	/**
-	 * Restore data.
-	 *
-	 * @param screenMode the screen mode
-	 * @param workTimeType the work time type
-	 * @param other the other
-	 */
-	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, DiffTimeWorkSetting oldDomain) {
-		// restore 平日勤務時間帯
-		if (workTimeType.getWorkTimeDailyAtr() == WorkTimeDailyAtr.REGULAR_WORK
-				&& workTimeType.getWorkTimeMethodSet() == WorkTimeMethodSet.DIFFTIME_WORK) {
-
-			// convert map
-			Map<AmPmAtr, DiffTimeHalfDayWorkTimezone> mapFixHalfWork = oldDomain.getHalfDayWorkTimezones().stream()
-					.collect(Collectors.toMap(item -> ((DiffTimeHalfDayWorkTimezone) item).getAmPmAtr(),
-							Function.identity()));
-
-			this.halfDayWorkTimezones
-					.forEach(item -> item.restoreData(screenMode, this, mapFixHalfWork.get(item.getAmPmAtr())));
-		} else {
-			this.halfDayWorkTimezones = oldDomain.getHalfDayWorkTimezones();
-		}
+		memento.setCalculationSetting(this.calculationSetting);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -140,7 +122,9 @@ public class DiffTimeWorkSetting extends WorkTimeAggregateRoot {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -165,9 +149,60 @@ public class DiffTimeWorkSetting extends WorkTimeAggregateRoot {
 		return true;
 	}
 
-	public void restoreDefaultData(ScreenMode valueOf) {
-		// TODO Auto-generated method stub
+	/**
+	 * Correct data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 * @param workTimeType
+	 *            the work time type
+	 * @param oldDomain
+	 *            the old domain
+	 */
+	public void correctData(ScreenMode screenMode, WorkTimeDivision workTimeType, DiffTimeWorkSetting oldDomain) {
+		// Dialog J: list stamp timezone
+		this.stampReflectTimezone.correctData(screenMode, oldDomain.getStampReflectTimezone());
 		
+		// Tab 8 -> 16
+		this.commonSet.correctData(screenMode, oldDomain.getCommonSet());
+		
+		// Tab 17
+		if (this.calculationSetting.isPresent()) {
+			this.calculationSetting.get().correctData(screenMode, oldDomain.getCalculationSetting());
+		}
 	}
-	
+
+	/**
+	 * Correct default data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 */
+	public void correctDefaultData(ScreenMode screenMode) {
+		// Tab 2 + 3 + 5: restore 平日勤務時間帯
+		this.halfDayWorkTimezones.forEach(item -> item.correctDefaultData(screenMode));
+		
+		// Dialog J: list stamp timezone
+		this.stampReflectTimezone.correctDefaultData(screenMode);
+
+		// Tab 8 -> 16
+		this.commonSet.correctDefaultData(screenMode);
+		
+		// Tab 17
+		if (this.calculationSetting.isPresent()) {
+			this.calculationSetting.get().correctDefaultData(screenMode);
+		}	
+	}
+
+	/**
+	 * Correct default data.
+	 *
+	 * @param screenMode the screen mode
+	 * @param overtimeSetting the overtime setting
+	 */
+	public void setDefaultData(ScreenMode screenMode) {
+		if (screenMode == ScreenMode.SIMPLE || this.overtimeSetting == LegalOTSetting.OUTSIDE_LEGAL_TIME) {
+			this.halfDayWorkTimezones.forEach(item -> item.correctDefaultData());
+		}
+	}
 }

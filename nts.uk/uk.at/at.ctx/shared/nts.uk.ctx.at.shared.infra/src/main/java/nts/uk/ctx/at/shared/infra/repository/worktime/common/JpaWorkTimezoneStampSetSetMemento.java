@@ -104,6 +104,7 @@ public class JpaWorkTimezoneStampSetSetMemento implements WorkTimezoneStampSetSe
 			newPK.setWorkFormAtr(parentEntity.getKshmtWorktimeCommonSetPK().getWorkFormAtr());
 			newPK.setWorkTimeSetMethod(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod());
 			newPK.setPiorityAtr(pioritySet.getPriorityAtr().value);
+			newPK.setStampAtr(pioritySet.getStampAtr().value);
 			
 			// get entity existed
 			KshmtPioritySet entity = mapEntity.get(newPK) == null ? new KshmtPioritySet(newPK) : mapEntity.get(newPK);

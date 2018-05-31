@@ -18,7 +18,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author shuichi_ishida
  */
 @Getter
-public class AggregateHolidayWorkTime {
+public class AggregateHolidayWorkTime implements Cloneable {
 
 	/** 休出枠NO */
 	private final HolidayWorkFrameNo holidayWorkFrameNo;
@@ -79,6 +79,26 @@ public class AggregateHolidayWorkTime {
 		domain.legalHolidayWorkTime = legalHolidayWorkTime;
 		domain.legalTransferHolidayWorkTime = legalTransferHolidayWorkTime;
 		return domain;
+	}
+	
+	@Override
+	public AggregateHolidayWorkTime clone() {
+		AggregateHolidayWorkTime cloned = new AggregateHolidayWorkTime(this.holidayWorkFrameNo);
+		try {
+			cloned.holidayWorkTime = new TimeMonthWithCalculation(
+					new AttendanceTimeMonth(this.holidayWorkTime.getTime().v()),
+					new AttendanceTimeMonth(this.holidayWorkTime.getCalcTime().v()));
+			cloned.beforeHolidayWorkTime = new AttendanceTimeMonth(this.beforeHolidayWorkTime.v());
+			cloned.transferTime = new TimeMonthWithCalculation(
+					new AttendanceTimeMonth(this.transferTime.getTime().v()),
+					new AttendanceTimeMonth(this.transferTime.getCalcTime().v()));
+			cloned.legalHolidayWorkTime = new AttendanceTimeMonth(this.legalHolidayWorkTime.v());
+			cloned.legalTransferHolidayWorkTime = new AttendanceTimeMonth(this.legalTransferHolidayWorkTime.v());
+		}
+		catch (Exception e){
+			throw new RuntimeException("AggregateHolidayWorkTime clone error.");
+		}
+		return cloned;
 	}
 	
 	/**
@@ -145,5 +165,20 @@ public class AggregateHolidayWorkTime {
 			this.legalTransferHolidayWorkTime = this.legalTransferHolidayWorkTime.addMinutes(
 					timeSeriesWork.getLegalHolidayWorkTime().getTransferTime().get().getTime().v());
 		}
+	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(AggregateHolidayWorkTime target){
+		
+		this.holidayWorkTime = this.holidayWorkTime.addMinutes(
+				target.holidayWorkTime.getTime().v(), target.holidayWorkTime.getCalcTime().v());
+		this.beforeHolidayWorkTime = this.beforeHolidayWorkTime.addMinutes(target.beforeHolidayWorkTime.v());
+		this.transferTime = this.transferTime.addMinutes(
+				target.transferTime.getTime().v(), target.transferTime.getCalcTime().v());
+		this.legalHolidayWorkTime = this.legalHolidayWorkTime.addMinutes(target.legalHolidayWorkTime.v());
+		this.legalTransferHolidayWorkTime = this.legalTransferHolidayWorkTime.addMinutes(target.legalTransferHolidayWorkTime.v());
 	}
 }

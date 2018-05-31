@@ -11,8 +11,8 @@
 
 			<script>
 				var dialogSize = {
-					width : 790,
-					height : 900
+					width : 845,
+					height : 760
 				};
 			</script>
 			<com:ValidatorScript>
@@ -74,7 +74,7 @@
 					<table id="tbl-detail" data-bind="with: currentItem">
 						<tr>
 							<td data-itemCode="IS00385"><div
-									data-bind="ntsFormLabel: {required: true }">abc</div></td>
+									data-bind="ntsFormLabel: {required: true }"></div></td>
 
 							<td>
 								<div tabindex="7" id="idGrantDate"
@@ -83,15 +83,15 @@
 						</tr>
 						<tr>
 							<td data-itemCode="IS00386"><div
-									data-bind="ntsFormLabel: {required: false }">abc</div></td>
+									data-bind="ntsFormLabel: {required: true }"></div></td>
 							<td>
 								<div tabindex="8" id="deadline"
-									data-bind="ntsDatePicker: {name: dl, value: deadline, dateFormat: 'YYYY/MM/DD'}"></div>
+									data-bind="ntsDatePicker: {name: dl, value: deadline, required: true, dateFormat: 'YYYY/MM/DD'}"></div>
 							</td>
 						</tr>
 						<tr>
 							<td data-itemCode="IS00387"><div
-									data-bind="ntsFormLabel: {required: true }">abc</div></td>
+									data-bind="ntsFormLabel: {required: true }"></div></td>
 							<td>
 								<div class="cf" tabindex="9" id="expirationStatus"
 									data-bind="ntsSwitchButton: {
@@ -106,14 +106,14 @@
 						<tr>
 							<!-- 					<div class="div_line"> -->
 							<td class="verTop" data-itemCode="IS00388">
-								<div data-bind="ntsFormLabel: {  required: true}" >abc</div>
+								<div data-bind="ntsFormLabel: {  required: true}" ></div>
 							</td>
 							<td colspan="3">
 								<div class="formularStyle">#{i18n.getText('CPS001_114')}</div>
 								<table id="subContent">
 									<tr>
 										<td><div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS001_115')}</div></td>
-										<td data-itemCode="IS00390" class="tdTxt"><div>abc</div></td>
+										<td data-itemCode="IS00390" class="tdTxt"><div></div></td>
 										<td><input class="resize_Edittor" tabindex="10"
 											id="grantDays"
 											data-bind="ntsNumberEditor: {
@@ -129,7 +129,7 @@
 										</td>
 										<td><table>
 												<tr>
-													<td data-itemCode="IS00391 grantMinutes" class="tdTxt"><div>abc</div></td>
+													<td data-itemCode="IS00391 grantMinutes" class="tdTxt"><div></div></td>
 													<td><input class="resize_Edittor" tabindex="11"
 														id="grantMinutes"
 														data-bind="ntsTimeEditor: {
@@ -150,7 +150,7 @@
 										<td>
 											<div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS001_116')}</div>
 										</td>
-										<td data-itemCode="IS00393" class="tdTxt"><div>abc</div></td>
+										<td data-itemCode="IS00393" class="tdTxt"><div></div></td>
 										<td><input tabindex="12" class="resize_Edittor"
 											id="usedDays"
 											data-bind="ntsNumberEditor: {
@@ -166,7 +166,7 @@
 										</td>
 										<td><table>
 												<tr>
-													<td data-itemCode="IS00394 usedMinutes" class="tdTxt"><div>abc</div></td>
+													<td data-itemCode="IS00394 usedMinutes" class="tdTxt"><div></div></td>
 													<td><input class="resize_Edittor" tabindex="13"
 														id="usedMinutes"
 														data-bind="ntsTimeEditor: {
@@ -187,7 +187,7 @@
 										<td>
 											<div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS001_117')}</div>
 										</td>
-										<td data-itemCode="IS00396" class="tdTxt"><div>abc</div></td>
+										<td data-itemCode="IS00396" class="tdTxt"><div></div></td>
 										<td><input class="resize_Edittor" tabindex="14"
 											id="remainingDays"
 											data-bind="ntsNumberEditor: {
@@ -203,7 +203,7 @@
 										</td>
 										<td><table>
 												<tr>
-													<td data-itemCode="IS00397 remainingMinutes" class="tdTxt"><div>abc</div></td>
+													<td data-itemCode="IS00397 remainingMinutes" class="tdTxt"><div></div></td>
 													<td><input class="resize_Edittor" tabindex="15"
 														id="remainingMinutes"
 														data-bind="ntsTimeEditor: {

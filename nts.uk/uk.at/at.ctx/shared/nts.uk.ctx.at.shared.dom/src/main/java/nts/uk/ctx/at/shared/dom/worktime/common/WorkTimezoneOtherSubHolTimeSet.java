@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
@@ -26,12 +26,12 @@ public class WorkTimezoneOtherSubHolTimeSet extends WorkTimeDomainObject {
 	/** The origin atr. */
 	// 発生元区分
 	private CompensatoryOccurrenceDivision originAtr;
-	
 
 	/**
 	 * Instantiates a new work timezone other sub hol time set.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public WorkTimezoneOtherSubHolTimeSet(WorkTimezoneOtherSubHolTimeSetGetMemento memento) {
 		this.subHolTimeSet = memento.getSubHolTimeSet();
@@ -42,31 +42,35 @@ public class WorkTimezoneOtherSubHolTimeSet extends WorkTimeDomainObject {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(WorkTimezoneOtherSubHolTimeSetSetMemento memento) {
 		memento.setSubHolTimeSet(this.subHolTimeSet);
 		memento.setWorkTimeCode(this.workTimeCode);
 		memento.setOriginAtr(this.originAtr);
 	}
-	
+
 	/**
-	 * Restore data.
+	 * Correct data.
 	 *
-	 * @param screenMode the screen mode
-	 * @param oldDomain the old domain
+	 * @param screenMode
+	 *            the screen mode
+	 * @param oldDomain
+	 *            the old domain
 	 */
-	public void restoreData(ScreenMode screenMode, WorkTimezoneOtherSubHolTimeSet oldDomain) {
-		this.subHolTimeSet.restoreData(screenMode, oldDomain.getSubHolTimeSet());
+	public void correctData(ScreenMode screenMode, WorkTimezoneOtherSubHolTimeSet oldDomain) {
+		this.subHolTimeSet.correctData(screenMode, oldDomain.getSubHolTimeSet(),this.originAtr);
 	}
-	
+
 	/**
-	 * Restore default data.
+	 * Correct default data.
 	 *
-	 * @param screenMode the screen mode
+	 * @param screenMode
+	 *            the screen mode
 	 */
-	public void restoreDefaultData(ScreenMode screenMode) {
-		this.subHolTimeSet.restoreDefaultData(screenMode);
+	public void correctDefaultData(ScreenMode screenMode) {
+		this.subHolTimeSet.correctDefaultData(screenMode,this.originAtr);
 	}
-	
+
 }

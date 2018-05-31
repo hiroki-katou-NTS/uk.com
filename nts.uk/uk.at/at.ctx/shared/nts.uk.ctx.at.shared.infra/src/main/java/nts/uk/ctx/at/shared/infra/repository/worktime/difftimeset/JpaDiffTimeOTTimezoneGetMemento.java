@@ -47,7 +47,7 @@ public class JpaDiffTimeOTTimezoneGetMemento implements DiffTimeOTTimezoneGetMem
 
 	@Override
 	public OTFrameNo getOTFrameNo() {
-		return new OTFrameNo(this.entity.getLegalOtFrameNo());
+		return new OTFrameNo(this.entity.getOtFrameNo());
 	}
 
 	@Override

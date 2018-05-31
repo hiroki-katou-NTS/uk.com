@@ -49,10 +49,10 @@ public class FlowWorkDedicateSetting extends WorkTimeDomainObject {
 	 * @param screenMode the screen mode
 	 * @param other the other
 	 */
-	public void restoreData(ScreenMode screenMode, FlowWorkDedicateSetting other) {
+	public void correctData(ScreenMode screenMode, FlowWorkDedicateSetting other) {
 		switch (screenMode) {
 		case SIMPLE:
-			this.overtimeSetting.restoreData(other.getOvertimeSetting());
+			this.overtimeSetting.correctData(other.getOvertimeSetting());
 			break;
 		case DETAIL:
 			break;

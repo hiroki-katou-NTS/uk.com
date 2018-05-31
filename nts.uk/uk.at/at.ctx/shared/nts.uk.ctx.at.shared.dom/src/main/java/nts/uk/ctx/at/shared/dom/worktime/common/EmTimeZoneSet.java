@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDeductTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -14,6 +15,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 // 就業時間の時間帯設定
 @Getter
+@Setter
 public class EmTimeZoneSet extends WorkTimeDomainObject {
 
 	/** The Employment time frame no. */

@@ -25,9 +25,13 @@
 			<com:scriptfile path="../../000/a/kaf000.a.vm.js" />
 			<!-- kaf011 shr-->
 			<com:scriptfile path="../shr/kaf011.shr.service.js" />
+			<com:scriptfile path="../shr/kaf011.shr.vm.js" />
 			<!-- kaf011 c-->
 			<com:scriptfile path="kaf011.c.vm.js" />
 			<com:scriptfile path="kaf011.c.start.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.at.request.dom.application.AppReason
+			</com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
@@ -41,13 +45,13 @@
 						<div data-bind="ntsFormLabel: {  }">#{i18n.getText('KAF011_13')}</div>
 					</div>
 					<div class="div_line_col_2">
-						<div id="swb_pre_post_type" class="cf" tabindex="2"
+						<div id="swb_pre_post_type" class="cf"
 							data-bind="ntsSwitchButton: {
 							options: prePostTypes ,
 							optionsValue: 'code',
 							optionsText: 'text',
 							value: prePostSelectedCode ,
-							enable: screenModeNew }"></div>
+							enable: enablePrepost() }"></div>
 
 					</div>
 
@@ -58,19 +62,19 @@
 						<div data-bind="ntsFormLabel: {  required:true}">#{i18n.getText('KAF011_22')}</div>
 					</div>
 					<div class="div_line_col_2">
-						<div
-							data-bind="ntsDatePicker: {value: appDate , dateFormat: 'YYYY/MM/DD' ,required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
+						<div id="absDatePickerC"
+							data-bind="ntsDatePicker: {value: absWk().appDate ,valueFormat:'YYYY/MM/DD' ,required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
 					</div>
 				</div>
 				<div class="div_line"
-					data-bind="if:appTypeSet().displayFixedReason !=0">
+					data-bind="if:appTypeSet().displayFixedReason() !=0">
 					<div class="div_line_col_1">
 						<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_16')}</div>
 					</div>
 					<div class="div_line_col_2">
-						<div tabindex="6" class="combo-box"
+						<div class="combo-box" id="reasonCombo"
 							data-bind="ntsComboBox: {
-										name: '#{i18n.getText('KAF011_28')}',
+										name: '#{i18n.getText('KAF011_16')}',
 										options: appReasons ,
 										optionsValue: 'reasonID' ,
 										visibleItemsCount: 5 ,
@@ -79,22 +83,24 @@
 										editable: false,
 										enable: true,
 										columns: [
-											{ prop: 'reasonTemp', length: 10 },
-										]}">
+											{ prop: 'reasonTemp', length: 10 },]
+											}">
 						</div>
 					</div>
 				</div>
-				<div class="div_line"
-					data-bind="if:appTypeSet().displayAppReason() !=0">
+				<div class="div_line" style="margin-bottom: 20px;"
+					data-bind="if:showAppReason()">
 					<!-- constraint: -->
 					<div class="div_line_col_1">
 						<div data-bind="ntsFormLabel: { constraint: 'AppReason' }">#{i18n.getText('KAF011_17')}</div>
 					</div>
 					<div class="div_line_col_2">
-						<textarea style="height: 100px" tabindex="6"
+						<textarea style="height: 100px"
 							data-bind="ntsMultilineEditor: {
-					constraint: 'AppReason',
-					value: reason ,name: '#{i18n.getText('KAF011_17')}',
+									constraint: 'AppReason',
+									value: reason ,
+									enable:appTypeSet().displayAppReason() != 0,
+									name: '#{i18n.getText('KAF011_17')}',
 									option: {
 									resizeable: false ,
 			                    	width: '500'
@@ -107,11 +113,13 @@
 					<ui:include src="../../000/a/index2_new.xhtml" />
 					<BR />
 				</div>
+
 			</div>
 
 			<div id="functions-area-bottom">
-				<button class="x-large proceed" tabindex="11">#{i18n.getText('KDL003_22')}</button>
-				<button tabindex="12" data-bind="click: closeDialog">#{i18n.getText('KDL003_23')}</button>
+				<button class="x-large proceed"
+					data-bind="enable: $root.errors.isEmpty,click:saveAbs">#{i18n.getText('KAF011_3')}</button>
+				<button data-bind="click: closeDialog">#{i18n.getText('KAF011_4')}</button>
 
 			</div>
 		</ui:define>

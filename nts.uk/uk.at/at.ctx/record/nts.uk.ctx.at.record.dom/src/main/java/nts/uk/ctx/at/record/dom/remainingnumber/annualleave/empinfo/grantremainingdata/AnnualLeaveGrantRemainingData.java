@@ -2,14 +2,22 @@ package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremain
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingNumber;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedNumber;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.LeaveExpirationStatus;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 // domain name: 年休付与残数データ
 public class AnnualLeaveGrantRemainingData extends AggregateRoot {
 
@@ -34,6 +42,7 @@ public class AnnualLeaveGrantRemainingData extends AggregateRoot {
 	/**
 	 * 期限切れ状態
 	 */
+	@Setter
 	private LeaveExpirationStatus expirationStatus;
 
 	/**
@@ -75,5 +84,75 @@ public class AnnualLeaveGrantRemainingData extends AggregateRoot {
 		}
 		return domain;
 	}
+	
+	public void updateData(GeneralDate grantDate, GeneralDate deadline, int expirationStatus, int registerType,
+			double grantDays, Integer grantMinutes, double usedDays, Integer usedMinutes, Double stowageDays,
+			double remainDays, Integer remainMinutes, double usedPercent) {
+		this.grantDate = grantDate;
+		this.deadline = deadline;
+		this.expirationStatus = EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class);
+		this.registerType = EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class);
+		
+		this.details = new AnnualLeaveNumberInfo(grantDays, grantMinutes, usedDays, usedMinutes, stowageDays,
+				remainDays, remainMinutes, usedPercent);
+		
+	}
 
+	/**
+	 * 年休を指定日数消化する
+	 * @param usedDays 年休使用日数
+	 * @param isForcibly 強制的に消化するか
+	 * @return 年休使用残
+	 */
+	// 2018.4.23 add shuichi_ishida
+	public double digest(double usedDays, boolean isForcibly){
+		
+		// 「年休使用日数」を所得
+		if (usedDays <= 0.0) return 0.0;
+		double remainingDays = usedDays;
+		
+		// 年休残数が足りているかチェック
+		boolean isSubtractRemain = false;
+		val remainingNumber = this.details.getRemainingNumber();
+		if (remainingNumber.getDays().v().doubleValue() >= remainingDays) isSubtractRemain = true;
+		// 「強制的に消化する」をチェック
+		else if (isForcibly) isSubtractRemain = true;
+		
+		if (isSubtractRemain){
+			
+			// 年休残数から減算
+			double newRemain = remainingNumber.getDays().v() - remainingDays;
+			this.details.setRemainingNumber(AnnualLeaveRemainingNumber.createFromJavaType(newRemain, null));
+			
+			// 年休使用数に加算
+			double newUsed = this.details.getUsedNumber().getDays().v() + remainingDays;
+			Double stowageDays = null;
+			if (this.details.getUsedNumber().getStowageDays().isPresent()){
+				stowageDays = this.details.getUsedNumber().getStowageDays().get().v();
+			}
+			this.details.setUsedNumber(AnnualLeaveUsedNumber.createFromJavaType(newUsed, null, stowageDays));
+			
+			// 年休使用残を0にする
+			remainingDays = 0.0;
+		}
+		else {
+			
+			// 年休使用残から減算
+			remainingDays -= remainingNumber.getDays().v();
+			
+			// 年休使用数に加算
+			double newUsed = this.details.getUsedNumber().getDays().v() + remainingNumber.getDays().v();
+			Double stowageDays = null;
+			if (this.details.getUsedNumber().getStowageDays().isPresent()){
+				stowageDays = this.details.getUsedNumber().getStowageDays().get().v();
+			}
+			this.details.setUsedNumber(AnnualLeaveUsedNumber.createFromJavaType(newUsed, null, stowageDays));
+			
+			// 年休残数を0にする
+			this.details.setRemainingNumber(AnnualLeaveRemainingNumber.createFromJavaType(0.0, null));
+		}
+		
+		// 年休使用残を返す
+		return remainingDays;
+	}
 }

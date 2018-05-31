@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
@@ -76,19 +76,23 @@ public class SubHolTransferSet extends WorkTimeDomainObject {
 	}
 
 	/**
-	 * Restore data.
+	 * Correct data.
 	 *
 	 * @param screenMode
 	 *            the screen mode
 	 * @param oldDomain
 	 *            the old domain
 	 */
-	public void restoreData(ScreenMode screenMode, SubHolTransferSet oldDomain) {
+	public void correctData(ScreenMode screenMode, SubHolTransferSet oldDomain,CompensatoryOccurrenceDivision originAtr) {
 		// Simple mode
 		if (screenMode == ScreenMode.SIMPLE) {
 			// Only designatedTime not get restore
 			this.certainTime = oldDomain.getCertainTime();
-			this.useDivision = true;
+			if (originAtr.equals(CompensatoryOccurrenceDivision.FromOverTime)) {
+				this.useDivision = false;
+			} else {
+				this.useDivision = true;
+			}
 			this.subHolTransferSetAtr = SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL;
 			return;
 		}
@@ -118,17 +122,21 @@ public class SubHolTransferSet extends WorkTimeDomainObject {
 	}
 
 	/**
-	 * Restore default data.
+	 * Correct default data.
 	 *
 	 * @param screenMode
 	 *            the screen mode
 	 */
-	public void restoreDefaultData(ScreenMode screenMode) {
+	public void correctDefaultData(ScreenMode screenMode,CompensatoryOccurrenceDivision originAtr) {
 		// Simple mode
 		if (screenMode == ScreenMode.SIMPLE) {
 			// Only designatedTime not get restore
 			this.certainTime = new OneDayTime(0);
-			this.useDivision = true;
+			if (originAtr.equals(CompensatoryOccurrenceDivision.FromOverTime)) {
+				this.useDivision = false;
+			} else {
+				this.useDivision = true;
+			}
 			this.subHolTransferSetAtr = SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL;
 			return;
 		}

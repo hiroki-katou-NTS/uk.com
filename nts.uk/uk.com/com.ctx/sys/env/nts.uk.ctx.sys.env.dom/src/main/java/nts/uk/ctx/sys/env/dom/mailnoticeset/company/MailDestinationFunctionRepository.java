@@ -5,7 +5,10 @@
 package nts.uk.ctx.sys.env.dom.mailnoticeset.company;
 
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
+<<<<<<< HEAD
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+=======
+>>>>>>> delivery/release_user
 
 /**
  * The Interface MailDestinationFunctionRepository.
@@ -35,6 +38,7 @@ public interface MailDestinationFunctionRepository {
 	 * @param userInfoItem the user info item
 	 */
 	void remove(String companyId, UserInfoItem userInfoItem);
+<<<<<<< HEAD
 	
 	
 
@@ -46,5 +50,7 @@ public interface MailDestinationFunctionRepository {
 	 * @return メール送信先機能
 	 */
 	public MailDestinationFunction findByCidSettingItemAndUse(String cID, Integer functionID, NotUseAtr use);
+=======
+>>>>>>> delivery/release_user
 
 }

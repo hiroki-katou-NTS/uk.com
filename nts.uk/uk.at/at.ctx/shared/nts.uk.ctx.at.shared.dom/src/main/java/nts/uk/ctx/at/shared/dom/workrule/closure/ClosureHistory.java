@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.workrule.closure;
 
+import java.util.Calendar;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
@@ -85,8 +87,53 @@ public class ClosureHistory extends DomainObject {
 		return this.getClosureDate().getClosureDay().v();
 	}
 
+	/**
+	 * Gets the closure YMD.
+	 *
+	 * @return the closure YMD
+	 */
 	public GeneralDate getClosureYMD() {
+		// Case min ym
+		if (GeneralDate.ymd(this.startYearMonth.year(), this.startYearMonth.month(), ONE_DAY).equals(GeneralDate.min())
+				&& this.closureDate.getLastDayOfMonth()) {
+			return GeneralDate.min();
+		}
+		
+		// Case date is not exist
+		if(!this.isDateOfMonth(this.startYearMonth.year(), this.startYearMonth.month(),
+				this.closureDate.getClosureDay().v() + ONE_DAY)) {
+			return GeneralDate.ymd(this.startYearMonth.year(), this.startYearMonth.month(), ONE_DAY);
+		}
+		
 		return GeneralDate.ymd(this.startYearMonth.year(), this.startYearMonth.month(),
 				this.closureDate.getClosureDay().v() + ONE_DAY);
+	}
+	
+	/**
+	 * Gets the last date of month.
+	 *
+	 * @param year the year
+	 * @param month the month
+	 * @return the last date of month
+	 */
+	private GeneralDate getLastDateOfMonth(int year, int month) {
+		GeneralDate baseDate = GeneralDate.ymd(year, month, 1);
+		Calendar c = Calendar.getInstance();
+		c.setTime(baseDate.date());
+		c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+		return GeneralDate.legacyDate(c.getTime());
+	}
+
+	/**
+	 * Checks if is date of month.
+	 *
+	 * @param year the year
+	 * @param month the month
+	 * @param dayOfMonth the day of month
+	 * @return true, if is date of month
+	 */
+	private boolean isDateOfMonth(int year, int month, int dayOfMonth) {
+		GeneralDate baseDate = this.getLastDateOfMonth(year, month);
+		return 0 < dayOfMonth && dayOfMonth <= baseDate.day();
 	}
 }

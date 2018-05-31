@@ -27,3 +27,12 @@
     padding: 5px 0;
     height: 125px;
 }
+
+#oneDayRadio{
+    float: left;
+    margin-top: 6px;
+}
+#oneDayTime{
+    margin-left: 6px;
+    float: left;
+}

@@ -8,6 +8,8 @@ import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
 public interface PerInfoCategoryRepositoty {
 
 	List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd);
+	
+	List<PersonInfoCategory> getAllCategoryForCPS007(String companyId, String contractCd);
 
 	Optional<PersonInfoCategory> getPerInfoCategory(String perInfoCategoryId, String contractCd);
 
@@ -51,10 +53,12 @@ public interface PerInfoCategoryRepositoty {
 	List<PersonInfoCategory> getPerCtgByListCtgCd(List<String> ctgCd, String companyId);
 	
 	void updateAbolition(List<PersonInfoCategory> ctg, String companyId);
+	
+	void updateAbolition(List<PersonInfoCategory> ctg);
 	// vinhpx: end
 	
 	//laitv
-	DateRangeItem getDateRangeItemByCategoryId(String perInfoCtgId);
+	Optional<DateRangeItem> getDateRangeItemByCategoryId(String perInfoCtgId);
 	
 	/**
 	 * Get category by category code
@@ -70,4 +74,6 @@ public interface PerInfoCategoryRepositoty {
 	int getDispOrder(String perInfoCtgId);
 	
 	String getCatId(String cId, String categoryCode);
+	
+	List<String> getAllCtgId(List<String> ctgCd, String companyId);
 }

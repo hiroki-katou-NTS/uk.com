@@ -17,13 +17,12 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeOTTimezoneSet;
 /**
  * The Class DiffTimeOTTimezoneSetDto.
  */
-
 @Getter
 @Setter
 public class DiffTimeOTTimezoneSetDto extends OverTimeOfTimeZoneSetDto {
 
 	/** The is update start time. */
-	private boolean isUpdateStartTime;
+	private boolean updateStartTime;
 
 	/**
 	 * To domain.
@@ -88,7 +87,7 @@ public class DiffTimeOTTimezoneSetDto extends OverTimeOfTimeZoneSetDto {
 
 		@Override
 		public boolean isIsUpdateStartTime() {
-			return this.dto.isUpdateStartTime;
+			return this.dto.isUpdateStartTime();
 		}
 
 	}

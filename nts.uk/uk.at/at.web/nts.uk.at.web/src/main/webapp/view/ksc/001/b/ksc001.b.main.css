@@ -27,11 +27,9 @@
 }
 
 .contentC {
-	margin-top: 10px;
 	margin-left: 45px;
 	height: 700px;
 	margin-left: 45px;
-	width: 580px;
 }
 
 .contentD {
@@ -68,13 +66,12 @@
 }
 
 .buttonNext {
-	float: right;
 	margin-top: 18px;
-	margin-right: 45px;
+	margin-left: 485px;
 }
 
 .selectionCase {
-	margin-top: 15px;
+	margin-top: 10px;
 	margin-left: 60px;
 	padding: 10px;
 	background-color: #eaeaea;
@@ -106,7 +103,7 @@ button.nts-switch-button {
 }
 
 .radioboxCase {
-	margin-top: 15px;
+	margin-top: 10px;
 }
 
 .radioboxCaseAll {
@@ -133,13 +130,23 @@ button.nts-switch-button {
 }
 
 .radioboxProcessExecutionAtr {
-	margin-top: 15px;
+	margin-top: 10px;
+	margin-left: 20px;
+}
+
+.radioboxRebuildAtr {
+	margin-top: 10px;
 	margin-left: 45px;
 }
 
 .checkboxSetting {
-	margin-top: 15px;
+	margin-top: 10px;
 	margin-left: 65px;
+}
+
+.checkboxSetting-1 {
+	margin-top: 10px;
+	margin-left: 40px;
 }
 
 .checkboxSettingEnd {
@@ -149,6 +156,10 @@ button.nts-switch-button {
 
 .checkboxOne {
 	width: 180px;
+}
+
+.checkboxOne-1 {
+	width: 205px;
 }
 
 .labelSettingEnd {
@@ -171,12 +182,12 @@ button.nts-switch-button {
 
 .buttonBeginNext {
 	float: right;
-	margin-top: 40px;
+	margin-top: 20px;
 }
 
 .buttonBeginPrevious {
 	float: left;
-	margin-top: 40px;
+	margin-top: 30px;
 }
 
 .labelSelection {
@@ -195,7 +206,7 @@ button.nts-switch-button {
 
 .labelCenter {
 	margin-top: 8px;
-	white-space:pre;
+	white-space: pre;
 }
 
 .rangeLabel {
@@ -205,12 +216,15 @@ button.nts-switch-button {
 .rangeDatePicker {
 	padding-top: 4px;
 }
+
 #employeeSearch {
 	height: 460px;
 }
+
 .ccg_tab_content_1 {
-    height: 460px !important;
+	height: 460px !important;
 }
+
 .ccg_tab_content_2 {
-    height: 460px !important;
+	height: 460px !important;
 }

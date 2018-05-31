@@ -1,6 +1,8 @@
 module nts.uk.com.view.cdl023.a.viewmodel {
 
     export class ScreenModel {
+        
+        isFirtTime : KnockoutObservable<boolean>;
 
         code: KnockoutObservable<string>;
         name: KnockoutObservable<string>;
@@ -13,8 +15,12 @@ module nts.uk.com.view.cdl023.a.viewmodel {
         itemListSetting: Array<string>;
         baseDate: Date;
         
+        roleType: number;
+        
         constructor() {
             let self = this;
+            
+            self.isFirtTime = ko.observable(true);
             
             self.code = ko.observable(null);
             self.name = ko.observable(null);
@@ -44,6 +50,7 @@ module nts.uk.com.view.cdl023.a.viewmodel {
             self.targetType = object.targetType;
             self.itemListSetting = object.itemListSetting;
             self.baseDate = object.baseDate;
+            self.roleType = object.roleType;
             
             dfd.resolve();
             return dfd.promise();
@@ -91,8 +98,8 @@ module nts.uk.com.view.cdl023.a.viewmodel {
             }
             
             // if not override, remove items is saved setting.
-            _.remove(self.lstSelected(), function(obj) {
-               return _.includes(self.itemListSetting, obj);
+            _.remove(self.lstSelected(), function(obj) {               
+                return _.find(self.itemListSetting, (item) => { return item.id == obj; } ) != undefined;
             });
             return self.lstSelected();
         }
@@ -102,6 +109,9 @@ module nts.uk.com.view.cdl023.a.viewmodel {
          */
         public openDialog() {
             let self = this;
+            
+            let listToDialog = self.isFirtTime() ? self.itemListSetting : self.lstSelected();
+            
             let screenUrl: string = null;
             
             // set parameters
@@ -182,6 +192,27 @@ module nts.uk.com.view.cdl023.a.viewmodel {
                     shareData.baseDate = self.baseDate;
                     shareData.selectedIds = self.lstSelected();
                     break;
+                case TargetType.ROLE:
+                    screenUrl = '/view/cdl/025/index.xhtml';
+                    keyInput = 'paramCdl025';
+                    keyOutput = 'dataCdl025';
+                    keyCancel = 'CDL009Cancel';
+                    
+                    // set data share
+                    shareData.roleType = self.roleType;
+                    shareData.multiple = true;
+                    shareData.currentCode = listToDialog;
+                    break;
+                    
+                case TargetType.WORK_TYPE:
+                    screenUrl = '/view/cdl/024/index.xhtml';
+                    keyInput = 'CDL024';
+                    keyOutput = 'currentCodeList';
+                    keyCancel = 'CDL009Cancel';
+                    
+                    // set data share
+                    shareData.codeList = listToDialog;
+                    break;
                 default:
                     nts.uk.ui.dialog.alert("Target type not found.");
                     return;
@@ -211,6 +242,9 @@ module nts.uk.com.view.cdl023.a.viewmodel {
                 } else {
                     self.lstSelected([selectedCode]);
                 }
+                
+                // update flag
+                self.isFirtTime(false);
             });
         }
     }
@@ -240,6 +274,13 @@ module nts.uk.com.view.cdl023.a.viewmodel {
         
         // 部門個人
         static DEPARTMENT_PERSONAL = 7;
+        
+        // ロール
+        static ROLE = 8;
+        
+        // 勤務種別
+        static WORK_TYPE = 9;
+        
     }
     
     /**

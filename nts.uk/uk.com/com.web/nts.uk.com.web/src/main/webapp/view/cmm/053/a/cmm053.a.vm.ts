@@ -32,7 +32,7 @@ module nts.uk.com.view.cmm053.a.viewmodel {
         targetBtnText: string = getText("KCP009_3");
         listComponentOption: ComponentOption;
         selectedItem: KnockoutObservable<string> = ko.observable(null);
-        tabindex: number = 1;
+        tabindex: number = -1;
         isInitDepartment: boolean = true;
         isInitdailyApproval: boolean = true;
 
@@ -44,7 +44,7 @@ module nts.uk.com.view.cmm053.a.viewmodel {
             self.showinfoSelectedEmployee = ko.observable(false);
             self.ccgcomponent = {
                 /** Common properties */
-                systemType: 1,
+                systemType: 2,
                 showEmployeeSelection: true,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
@@ -178,8 +178,7 @@ module nts.uk.com.view.cmm053.a.viewmodel {
         //「登録」ボタンをクリックする
         regSettingManager_click(data) {
             let self = this;
-            $("#A2_3").trigger("validate");
-            $("#A2_7").trigger("validate");
+            $('.nts-input').trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
                 block.invisible();
                 let startDate = new Date(self.settingManager().startDate());
@@ -191,26 +190,41 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                     dialog.alertError({ messageId: "Msg_1072", messageParams: [closingStartDate] });
                     block.clear();
                 } else {
-                    let command = ko.toJS(self.settingManager());
-                    command.startDate = moment.utc(self.settingManager().startDate(), "YYYY/MM/DD").toISOString();
-                    command.endDate   = moment.utc(self.settingManager().endDate(), "YYYY/MM/DD").toISOString();
-
-                    if(self.screenMode() == EXECUTE_MODE.NEW_MODE){
-                        self.callInsertHistoryService(command);
-                        return;
+                    //入力承認者の承認権限をチェックする
+                    if (!self.settingManager().hasAuthority()) {
+                        self.getEmployeeByCode(self.settingManager().departmentCode(), APPROVER_TYPE.DEPARTMENT_APPROVER);
                     }
 
-                    if (self.screenMode() == EXECUTE_MODE.UPDATE_MODE && self.settingManager().hasHistory()) {
-                        self.callUpdateHistoryService(command);
-                        return;
-                    }
+                    if (!nts.uk.ui.errors.hasError()) {
+                        let command = ko.toJS(self.settingManager());
+                        command.startDate = moment.utc(self.settingManager().startDate(), "YYYY/MM/DD").toISOString();
+                        command.endDate = moment.utc(self.settingManager().endDate(), "YYYY/MM/DD").toISOString();
 
-                    if (self.screenMode() == EXECUTE_MODE.UPDATE_MODE && !self.settingManager().hasHistory()) {
-                        self.callInsertHistoryService(command);
-                        return;
+                        if (self.screenMode() == EXECUTE_MODE.NEW_MODE) {
+                            self.callInsertHistoryService(command);
+                            return;
+                        }
+
+                        if (self.screenMode() == EXECUTE_MODE.UPDATE_MODE && self.settingManager().hasHistory()) {
+                            self.callUpdateHistoryService(command);
+                            return;
+                        }
+
+                        if (self.screenMode() == EXECUTE_MODE.UPDATE_MODE && !self.settingManager().hasHistory()) {
+                            self.callInsertHistoryService(command);
+                            return;
+                        }
                     }
                 }
             }
+        }
+
+        /**
+         * 入力承認者の承認権限をチェックする
+         */
+        checkInputApproverAuthority(employeeCode: any){
+            let self = this;
+            self.getEmployeeByCode(employeeCode, APPROVER_TYPE.DEPARTMENT_APPROVER);
         }
 
         //削除する
@@ -276,9 +290,13 @@ module nts.uk.com.view.cmm053.a.viewmodel {
         //社員コードを入力する
         getEmployeeByCode(employeeCode: any, approverType:number) {
             let self = this;
-            let hasAuthority = self.settingManager().hasAuthority();
             block.invisible();
-            service.getEmployeeByCode(employeeCode, hasAuthority).done(result => {
+            let paramFind = {
+                employeeCode: employeeCode,
+                hasAuthority: self.settingManager().hasAuthority(),
+                baseDate    : moment.utc(self.settingManager().startDate(), "YYYY/MM/DD").toISOString()
+            }
+            service.getEmployeeByCode(paramFind).done(result => {
                 if (result) {
                     if (approverType == APPROVER_TYPE.DEPARTMENT_APPROVER) {
                         self.settingManager().departmentName(result.businessName);
@@ -293,10 +311,11 @@ module nts.uk.com.view.cmm053.a.viewmodel {
             }).fail(error => {
                 if (approverType == APPROVER_TYPE.DEPARTMENT_APPROVER) {
                     self.settingManager().departmentName('');
+                    $('#A2_7').ntsError('set', { messageId: error.messageId});
                 } else {
                     self.settingManager().dailyApprovalName('');
+                    $('#A2_10').ntsError('set', { messageId: error.messageId});
                 }
-                dialog.alertError({ messageId: error.messageId });
             }).always(() => {
                 block.clear();
             });

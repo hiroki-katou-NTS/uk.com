@@ -1,17 +1,13 @@
 @CHARSET "UTF-8";
 
-.controlSetting.caret-right:after {
-	cursor: pointer;
-	color: #2ECC71;
+.ccg001-caret-quick-small:after {
 	border-width: 19px 10px;
 	margin-top: -10px;
 }
 
-.controlSettingBg.caret-right:after {
-	cursor: pointer;
-	color: #2ECC71;
-	border-width: 30px 14px;
-	margin-top: -10px;
+.ccg001-caret-quick-big:after {
+	border-width: 25px 12px;
+	margin-top: -18px;
 }
 
 .contentkcp {
@@ -36,41 +32,44 @@
 	cursor: pointer;
 }
 
-.btn-quick-search {
+#ccg001-part-g {
+	width: 440px;
+	margin-right: 5px;
+	padding-right: 5px;
+	overflow: auto;
+}
+
+#ccg001-part-g .form-label{
+	width: 120px;
+}
+
+.ccg001-inp {
+	width: 216px;
+}
+
+.ccg001-btn {
+	background-color: #2ECC71;
+	color: white;
 	cursor: pointer;
+}
+.ccg001-btn:hover {
+	background-color: #2BBF6A;
+}
+.ccg-btn-quick-search {
+	width: 370px;
+	padding-left: 8px;
+	border-radius: 5px;
+	display: inline-block;
+	margin-bottom: 8px;
 }
 
 .btn_big {
-	width: 370px;
-	background-color: #2ECC71;
-	padding-top: 9px;
-	padding-bottom: 19px;
-	margin-top: 5px;
-	padding-left: 8px;
-	margin-bottom: 10px;
-	color: white;
-	border-radius: 5px;
-	display: inline-block;
-}
-
-.btn_big:hover {
-	background-color: #2BBF6A;
+	padding-top: 5px;
+	padding-bottom: 10px;
 }
 
 .btn_small {
-	width: 370px;
-	background-color: #2ECC71;
-	padding-bottom: 10px;
-	margin-top: 5px;
-	padding-left: 8px;
-	margin-bottom: 10px;
-	color: white;
-	border-radius: 5px;
-	display: inline-block;
-}
-
-.btn_small:hover {
-	background-color: #2BBF6A;
+	padding-bottom: 6px;
 }
 
 .caret-background.caret-bottom:after {
@@ -96,32 +95,18 @@
 
 .icon-28-allemployee {
 	background: url('icon/28_AllEmployee.png');
-	width: 44px;
-	height: 35px;
-	background-size: 45px 42px;
 }
 
 .icon-26-onlyemployee {
 	background: url('icon/26_OnlyMe.png');
-	width: 44px;
-	height: 35px;
-	background-size: 45px 42px;
 }
 
 .icon-48-ofworkplace {
 	background: url(icon/48_OfWorkplace.png);
-	width: 25px;
-	height: 25px;
-	background-size: 25px 25px;
-	margin-top: 5px;
 }
 
 .icon-49-workplacechild {
 	background: url(icon/49_WorkplaceChild.png);
-	width: 25px;
-	height: 25px;
-	background-size: 25px 25px;
-	margin-top: 5px;
 }
 
 .labelBigButton {
@@ -134,7 +119,7 @@
 	cursor: pointer;
 	font-size: 10pt;
 	vertical-align: super;
-	margin-left: 20px;
+	margin-left: 10px;
 }
 
 .ccg001-content {
@@ -149,15 +134,23 @@
 .ccg001-control-group {
 	margin-left: 5px;
 }
+.ccg001-date-range {
+	margin-left: 5px;
+	margin-right: 5px;
+}
 .ccg001-label {
 	width: 85px;
 }
-.ccg-tabpanel #tab-1 {
+.ccg-tabpanel #tab-1{
 	width: 400px;
 }
 
-.ccg-tabpanel #tab-1, .ccg-tabpanel #tab-2 {
-	background-color: white;
+.ccg-tabpanel #tab-3{
+	width: 520px;
+}
+
+.ccg-tabpanel > div {
+	background-color: white !important;
 }
 
 #component-ccg001 {
@@ -172,12 +165,24 @@
 	display: table;
 }
 
+.ccg001-icon-btn-big {
+	width: 40px;
+	height: 35px;
+	background-size: 40px 40px;
+}
+.ccg001-icon-btn-small {
+	width: 25px;
+	height: 25px;
+	background-size: 25px 25px;
+	margin-top: 6px;
+	margin-left: 6px;
+}
+
 .icon-01-searchmode {
 	background: url(icon/01_ShowHideSearch.png);
 	width: 25px;
 	height: 25px;
 	background-size: 25px 25px;
-	cursor: pointer;
 }
 .icon-28-expand {
 	background: url(icon/28.png);
@@ -214,24 +219,16 @@
 	height: 50px;
 }
 
-.controlSettingShowHide.caret-right:after {
-	cursor: pointer;
-	color: #AEEE60;
-	border-width: 50px 15px;
-	margin-bottom: 90px;
-}
-
 .ccg-btn-vertical {
-	background-color: #2ECC71;
 	padding-left: 8px;
-	color: white;
 	border-top-right-radius: 5px;
 	border-bottom-right-radius: 5px;
 	display: table;
-	cursor: pointer;
 }
-.ccg-caret.caret-right:after {
+.ccg001-caret:after {
 	color: #2ECC71;
+}
+.ccg001-caret-vertical:after {
 	border-width: 32px 16px;
 	margin-left: 5px;
 }
