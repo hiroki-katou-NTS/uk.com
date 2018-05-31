@@ -43,8 +43,8 @@ public class SubstitutionOfHDManagementDataWebService extends WebService {
 
 	@POST
 	@Path("update")
-	public void update(UpdateSubstitutionOfHDManaDataCommand command){
-		updateSub.handle(command);
+	public List<String> update(UpdateSubstitutionOfHDManaDataCommand command){
+		return updateSub.handle(command);
 	}
 	
 	@POST

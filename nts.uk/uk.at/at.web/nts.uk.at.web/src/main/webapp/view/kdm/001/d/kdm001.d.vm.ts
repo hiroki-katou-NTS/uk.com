@@ -20,17 +20,17 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         expiredDate: KnockoutObservable<string>     = ko.observable('');
         subDayoffDate: KnockoutObservable<string>     = ko.observable('');
         holidayDate: KnockoutObservable<string>    = ko.observable('');
-        requiredDays: KnockoutObservable<number> = ko.observable();
+        requiredDays: KnockoutObservable<number> = ko.observable(1);
         typeHoliday: KnockoutObservableArray<model.ItemModel>     = ko.observableArray(model.getTypeHoliday());
         itemListHoliday: KnockoutObservableArray<model.ItemModel>    = ko.observableArray(model.getNumberOfDays());
-        occurredDays: KnockoutObservable<number>              = ko.observable();
+        occurredDays: KnockoutObservable<number>              = ko.observable(1);
         itemListSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
-        subDay: KnockoutObservable<number>           = ko.observable();
+        subDays: KnockoutObservable<number>           = ko.observable(1);
         itemListOptionSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
         isOptionSubHolidayEnable: KnockoutObservable<boolean>              = ko.observable(false);
         closureId: KnockoutObservable<number> = ko.observable(0);
         totalDay: KnockoutObservable<number> = ko.observable(0);
-        enableSplit: KnockoutObservable<boolean>              = ko.observable(false);
+        enableSplit: KnockoutObservable<boolean>              = ko.observable(true);
         constructor() {
             let self = this;
             self.initScreen();
@@ -42,10 +42,9 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 }
              });
             self.occurredDays.subscribe((x) => {
-                self.setSplit();
                 self.calRemainDays();
             });
-            self.subDay.subscribe((x) => {
+            self.subDays.subscribe((x) => {
                 self.calRemainDays();
             });
             self.requiredDays.subscribe((x) => {
@@ -55,6 +54,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 self.calRemainDays();
             });
             self.pause.subscribe((v) => {
+                self.setSplit();
                 self.calRemainDays();
             });
             self.checkedSplit.subscribe((v) => {
@@ -67,9 +67,9 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             if (self.pickUp()) {
                 if (self.pause()) {
                     if (self.checkedSplit()) {
-                        self.remainDays(self.occurredDays() - self.subDay() - self.requiredDays());
+                        self.remainDays(self.occurredDays() - self.subDays() - self.requiredDays());
                     } else {
-                        self.remainDays(self.occurredDays() - self.subDay());
+                        self.remainDays(self.occurredDays() - self.subDays());
                     }
                 } else {
                     self.remainDays(self.occurredDays());
@@ -77,9 +77,9 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             } else {
                 if (self.pause()) {
                     if (self.checkedSplit()) {
-                        self.remainDays(self.totalDay() - self.subDay() - self.requiredDays());
+                        self.remainDays(self.totalDay() - self.subDays() - self.requiredDays());
                     } else {
-                        self.remainDays(self.totalDay() - self.subDay());
+                        self.remainDays(self.totalDay() - self.subDays());
                     }
                 } else {
                     if (self.checkedSplit()) {
@@ -93,13 +93,11 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         
         public setSplit(){
             let self = this;
-            if (self.occurredDays() == 1) {
-                if (self.pickUp()) {
+            if (self.pause()) {
                     self.checkedSplit(false);
-                    self.enableSplit(false);
-                } 
+                    self.enableSplit(true); 
             } else {
-                self.enableSplit(true);
+                self.enableSplit(false);
                
              }
         }
@@ -140,37 +138,32 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 subDayoffDate: moment.utc(self.subDayoffDate(), 'YYYY/MM/DD').toISOString(),
                 lawAtr: self.lawAtr(),
                 requiredDays: self.requiredDays(),
-                remainDays: self.remainDays(),
+                remainDays: Math.abs(self.remainDays()),
                 checkedSplit: self.checkedSplit(),
                 closureId: self.closureId(),
-                holidayDate: moment.utc(self.holidayDate(), 'YYYY/MM/DD').toISOString()
+                holidayDate: moment.utc(self.holidayDate(), 'YYYY/MM/DD').toISOString(),
+                subDays: self.subDays()
             };
             
             console.log(data);
             service.save(data).done(result => {
-                console.log(result);
                 if (result && result.length > 0) {
                     for (let error of result) { 
                         if (error === "Msg_737_PayMana") {
+                        
                             $('#D6_1').ntsError('set', { messageId: "Msg_737" });
                         }
                         if (error === "Msg_737_SubPay") {
                             $('#D11_1').ntsError('set', { messageId: "Msg_737" });
                         }
                         if (error === "Msg_740") {
-                            $('#D6_3').ntsError('set', { messageId: "Msg_740" });
+                            $('#D6_1').ntsError('set', { messageId: "Msg_740" });
                         }
                         if (error === "Msg_744") {
-                            $('#D8_1').ntsError('set', { messageId: "Msg_744" });
+                            $('#D11_1').ntsError('set', { messageId: "Msg_744" });
                         }
                         if (error === "Msg_744_Split") {
                             $('#D12_2').ntsError('set', { messageId: "Msg_744" });
-                        }
-                        if (error === "Msg_1256_PayMana") {
-                            $('#D6_1').ntsError('set', { messageId: "Msg_1256" });
-                        }
-                        if (error === "Msg_1256_PayMana") {
-                            $('#D8_1').ntsError('set', { messageId: "Msg_1256" });
                         }
                         if (error === "Msg_1256_OccurredDays") {
                             $('#D6_3').ntsError('set', { messageId: "Msg_1256" });
@@ -184,13 +177,13 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                         if (error === "Msg_1256_RequiredDays") {
                             $('#D12_2').ntsError('set', { messageId: "Msg_1256" });
                         }
-                        if (error === "Msg_1257") {
-                            $('#D6_1').ntsError('set', { messageId: "Msg_1257" });
-                        }
                         if (error === "Msg_729_Split") {
                             $('#D12_2').ntsError('set', { messageId: "Msg_729" });
                         }
                         if (error === "Msg_729") {
+                            $('#D12_2').ntsError('set', { messageId: "Msg_729" });
+                        }
+                        if (error === "Msg_729_SubMana") {
                             $('#D11_1').ntsError('set', { messageId: "Msg_729" });
                         }
                     }
@@ -216,12 +209,18 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         }
         
         public createData(){
-            if (this.checked()) {
+            nts.uk.ui.errors.clearAll();
+            $("#D6_1").trigger("validate");
+            $("#D8_1").trigger("validate");
+            $("#D11_1").trigger("validate");
+            $("#D12_2").trigger("validate");
+            if (!nts.uk.ui.errors.hasError()) {
+                if (this.checked()) {
                     dialog.info({ messageId: "Msg_725" }).then(() => {
-
-                });
-            } else {
-                this.submitForm();
+                 });
+                } else {
+                    this.submitForm();
+                }
             }
         }
     }

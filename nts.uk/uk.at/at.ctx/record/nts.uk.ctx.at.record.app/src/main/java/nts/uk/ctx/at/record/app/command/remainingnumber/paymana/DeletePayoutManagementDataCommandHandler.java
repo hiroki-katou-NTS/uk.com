@@ -13,11 +13,11 @@ public class DeletePayoutManagementDataCommandHandler extends CommandHandler<Del
 	@Inject
 	private PayoutManagementDataRepository payoutManagementDataRepository;
 
+
 	@Override
 	protected void handle(CommandHandlerContext<DeletePayoutManagementDataCommand> context) {
 		DeletePayoutManagementDataCommand command = context.getCommand();
 		payoutManagementDataRepository.delete(command.getPayoutId());
-		payoutManagementDataRepository.deletePayoutSubOfHDMana(command.getPayoutId());
 	}
 
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.dom.workplace.affiliate;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,6 +37,10 @@ public class AffWorkplaceHistory extends AggregateRoot implements PersistentResi
 	@Override
 	public List<DateHistoryItem> items() {
 		return historyItems;
+	}
+	
+	public List<String> getHistoryIds() {
+		return historyItems.stream().map(dateItem -> dateItem.identifier()).collect(Collectors.toList());
 	}
 
 }

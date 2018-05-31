@@ -4,6 +4,7 @@ module nts.uk.at.view.kdm001.f.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
     import block = nts.uk.ui.block;
+    import getText = nts.uk.resource.getText;
     export class ScreenModel {
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         columns: KnockoutObservableArray<any>;
@@ -15,8 +16,8 @@ module nts.uk.at.view.kdm001.f.viewmodel {
         employeeName: KnockoutObservable<string> = ko.observable('');
         dateHoliday: KnockoutObservable<any> = ko.observable('');
         numberDay: KnockoutObservable<any> = ko.observable('');
-        residualDay: KnockoutObservable<any> = ko.observable('');
-        residualDayDispay: KnockoutObservable<any> = ko.observable('');
+        residualDay: KnockoutObservable<any> = ko.observable(0);
+        residualDayDispay: KnockoutObservable<any> = ko.observable('0' + " " + getText('KDM001_27'));
         info: any = getShared("KDM001_EFGH_PARAMS");
         constructor() {
             let self = this;
@@ -27,8 +28,8 @@ module nts.uk.at.view.kdm001.f.viewmodel {
                 self.workPlaceName(self.info.selectedEmployee.workplaceName);
                 self.employeeCode(self.info.selectedEmployee.employeeCode);
                 self.employeeName(self.info.selectedEmployee.employeeName);
-                self.dateHoliday(self.info.rowValue.dayoffDatePyout);
-                self.numberDay(self.info.rowValue.occurredDays + ' 日');
+                self.dateHoliday(self.info.rowValue.dayoffDateSub);
+                self.numberDay(self.info.rowValue.requiredDays + " "  + getText('KDM001_27'));
             }
 
             self.columns = ko.observableArray([
@@ -57,7 +58,10 @@ module nts.uk.at.view.kdm001.f.viewmodel {
         }
 
         private caculRemainNumber(): void {
-            let sumNum = 0, self = this;
+            let sumNum = 0, self = this, day = parseFloat(self.numberDay());
+            let residualValue = 0 - day;
+            self.residualDay(residualValue);
+            self.residualDayDispay(residualValue.toFixed(1)  + " " + getText('KDM001_27'));
             _.each(self.currentList(), function(x) {
                 if (self.dateHoliday() === x.dayoffDate) {
                     $('#multi-list').ntsError('set', { messageId: "Msg_766" });
@@ -65,14 +69,16 @@ module nts.uk.at.view.kdm001.f.viewmodel {
                     sumNum = sumNum + x.occurredDays;
                     let day = parseFloat(self.numberDay());
                     self.residualDay(sumNum - day);
-                    self.residualDayDispay((sumNum - day) + ' 日');
-                    if (self.residualDay() < 0) {
-                        $("#F7_2").css("color", "red");
-                    } else {
-                        $("#F7_2").css("color", "black");
-                    }
+                    residualValue = (sumNum - day) > 0 ? (sumNum - day).toFixed(1) : (sumNum - day);
+                    self.residualDayDispay(residualValue + " " + getText('KDM001_27'));
+                   
                 }
             });
+            if (self.residualDay() < 0) {
+                $("#F7_2").css("color", "red");
+            } else {
+                $("#F7_2").css("color", "black");
+            }
         }
 
         public initScreen(): void {
@@ -126,7 +132,6 @@ module nts.uk.at.view.kdm001.f.viewmodel {
                 })
 
             }
-
         }
 
         private validate(): boolean {

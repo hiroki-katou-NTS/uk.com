@@ -17,7 +17,7 @@ public class OutingTimeOfDailyPerformanceCommandUpdateHandler extends CommandFac
 	protected void handle(CommandHandlerContext<OutingTimeOfDailyPerformanceCommand> context) {
 		OutingTimeOfDailyPerformanceCommand command = context.getCommand();
 		if(command.getData().isPresent()){
-			repo.update(command.getData().get());
+			repo.update(command.toDomain().get());
 		}
 	}
 }

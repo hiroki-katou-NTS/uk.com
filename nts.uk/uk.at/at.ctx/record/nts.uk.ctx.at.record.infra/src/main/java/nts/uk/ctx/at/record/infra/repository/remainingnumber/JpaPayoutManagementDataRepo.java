@@ -19,7 +19,7 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 
 	private String QUERY_BYSID = "SELECT p FROM KrcmtPayoutManaData p WHERE p.cID = :cid AND p.sID =:employeeId";
 	
-	private String QUERY_BY_SID_CID_DAYOFF = "SELECT p FROM KrcmtPayoutManaData p WHERE p.cID = :cid AND p.sID =:employeeId AND p.dayoff = :dayoffDate";
+	private String QUERY_BY_SID_CID_DAYOFF = "SELECT p FROM KrcmtPayoutManaData p WHERE p.cID = :cid AND p.sID =:employeeId AND p.dayOff = :dayoffDate";
 
 	private String QUERY_BYSID_WITH_COND = String.join(" ", QUERY_BYSID, "AND p.stateAtr = :state");
 
@@ -32,7 +32,7 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 	private final String  QUERY_BY_SID_PERIOD_AND_IN_SUB = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID = :sid AND ((p.dayOff >= :startDate AND p.dayOff <= :endDate) OR p.payoutId in "
 			+ "(SELECT ps.krcmtPayoutSubOfHDManaPK.payoutId FROM KrcmtPayoutSubOfHDMana ps inner join KrcmtSubOfHDManaData s on s.subOfHDID = ps.krcmtPayoutSubOfHDManaPK.subOfHDID where s.sID =:sid AND s.dayOff >= :startDate AND s.dayOff <= :endDate))";
 	
-	private String DELETE_QUERY = "DELETE FROM KrcmtPayoutManaData a WHERE apayoutId= :payoutId";
+	private String DELETE_QUERY = "DELETE FROM KrcmtPayoutManaData a WHERE a.payoutId= :payoutId";
 
 	private String QUERY_BY_SUBID = "SELECT p FROM KrcmtPayoutManaData p where p.payoutId IN (SELECT ps.krcmtPayoutSubOfHDManaPK.payoutId FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.subOfHDID =:subOfHDID)";
 	
@@ -138,7 +138,7 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 	public Optional<PayoutManagementData> find(String cID, String sID, GeneralDate dayoffDate) {
 		return this.queryProxy().
 				query(QUERY_BY_SID_CID_DAYOFF, KrcmtPayoutManaData.class).setParameter("employeeId", sID)
-				.setParameter("cid", cID).setParameter("dayoffdate", dayoffDate).getSingle().map(i -> toDomain(i));
+				.setParameter("cid", cID).setParameter("dayoffDate", dayoffDate).getSingle().map(i -> toDomain(i));
 	}
 	
 	public List<PayoutManagementData> getBySidPeriodAndInSub(String sid, GeneralDate startDate, GeneralDate endDate) {

@@ -36,6 +36,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRep
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.pub.employee.ConcurrentEmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmpOfLoginCompanyExport;
+import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeDataMngInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeExport;
@@ -227,20 +228,24 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 		AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(emp.getEmployeeId());
 
-		AffCompanyHistItem affComHistItem = new AffCompanyHistItem();
+		Optional.ofNullable(affComHistByEmp).ifPresent(f -> {
+			if (f.items() != null) {
 
-		if (affComHistByEmp.items() != null) {
+				List<AffCompanyHistItem> filter = f.getLstAffCompanyHistoryItem().stream().filter(m -> {
+					return m.end().afterOrEquals(systemDate) && m.start().beforeOrEquals(systemDate);
+				}).collect(Collectors.toList());
 
-			List<AffCompanyHistItem> filter = affComHistByEmp.getLstAffCompanyHistoryItem().stream().filter(m -> {
-				return m.end().afterOrEquals(systemDate) && m.start().beforeOrEquals(systemDate);
-			}).collect(Collectors.toList());
+				// get min date of start and set to entryDate
+				filter.stream().map(m -> m.getDatePeriod().start()).min(GeneralDate::compareTo).ifPresent(_sd -> {
+					result.setEntryDate(_sd);
+				});
 
-			if (!filter.isEmpty()) {
-				affComHistItem = filter.get(0);
-				result.setRetiredDate(affComHistItem.end());
-				result.setEntryDate(affComHistItem.start());
+				// get max date of end and set to retireDate
+				filter.stream().map(m -> m.getDatePeriod().end()).max(GeneralDate::compareTo).ifPresent(_ed -> {
+					result.setRetiredDate(_ed);
+				});
 			}
-		}
+		});
 
 		return result;
 	}
@@ -523,6 +528,32 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 		});
 		return lstresult;
+	}
+
+	@Override
+	public EmployeeBasicExport getEmpBasicBySId(String sId) {
+
+		EmployeeBasicExport result = new EmployeeBasicExport();
+		// Employee Opt
+		Optional<EmployeeDataMngInfo> empOpt = this.empDataMngRepo.findByEmpId(sId);
+		if (!empOpt.isPresent()) {
+			return null;
+		}
+		// Get Employee
+		EmployeeDataMngInfo emp = empOpt.get();
+		// Person Opt
+		Optional<Person> personOpt = this.personRepository.getByPersonId(emp.getPersonId());
+		if (!personOpt.isPresent()) {
+			return null;
+		}
+		// Get Person
+		Person person = personOpt.get();
+
+		result.setEmployeeId(emp.getEmployeeId());
+		result.setBusinessName(person.getPersonNameGroup().getBusinessName().v());
+		result.setEmployeeCode(emp.getEmployeeCode().v());
+
+		return result;
 	}
 
 }

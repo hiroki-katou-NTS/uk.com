@@ -14,11 +14,12 @@ public class DeleteSubstitutionOfHDManaDataCommandHandler
 	@Inject
 	private SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepository;
 
+
 	@Override
 	protected void handle(CommandHandlerContext<DeleteSubstitutionOfHDManaDataCommand> context) {
 		DeleteSubstitutionOfHDManaDataCommand command = context.getCommand();
 		substitutionOfHDManaDataRepository.delete(command.getSubOfHDID());
-		substitutionOfHDManaDataRepository.deletePayoutSubOfHDMana(command.getSubOfHDID());
+
 	}
 
 }

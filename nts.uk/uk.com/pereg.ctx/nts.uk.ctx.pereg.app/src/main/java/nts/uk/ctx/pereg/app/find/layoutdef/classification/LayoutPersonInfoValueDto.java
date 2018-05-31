@@ -11,11 +11,13 @@ import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SingleItemDto;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 
 @Data
 @RequiredArgsConstructor
 public class LayoutPersonInfoValueDto {
+
 
 	private String recordId;
 
@@ -43,6 +45,9 @@ public class LayoutPersonInfoValueDto {
 
 	// for new set item structor
 	private String itemParentCode;
+	
+	// is not ItemDefinition of attribute
+	private int dispOrder;
 
 	@NonNull
 	// index of item in list (multiple, history)
@@ -112,6 +117,9 @@ public class LayoutPersonInfoValueDto {
 		dataObject.setRow(0);
 		dataObject.setRequired(itemDef.getIsRequired() == 1);
 		dataObject.setShowColor(true);
+		
+		//2018/02/11
+		dataObject.setDispOrder(itemDef.getDispOrder());
 
 		dataObject.setType(itemDef.getItemTypeState().getItemType());
 		dataObject.setCtgType(perInfoCategory.getCategoryType().value);
@@ -171,5 +179,30 @@ public class LayoutPersonInfoValueDto {
 	
 	public void toStringValue() {
 		this.value = this.value.toString();
+	}
+	
+	public boolean isComboBoxItem() {
+
+		if (item != null) {
+			int itemType = item.getDataTypeValue();
+			if (itemType == DataTypeValue.SELECTION.value || itemType == DataTypeValue.SELECTION_BUTTON.value
+					|| itemType == DataTypeValue.SELECTION_RADIO.value) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+	
+	public boolean isSelectionItem() {
+
+		if (item != null) {
+			int itemType = item.getDataTypeValue();
+			if (itemType == DataTypeValue.SELECTION.value) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

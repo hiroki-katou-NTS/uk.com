@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 535, height: 630 };</script>
+			<script>var dialogSize = { width: 535, height: 700 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="kdm001.d.vm.js" />
@@ -53,7 +53,7 @@
 					<!-- D6_1 年月日 -->
 					<!-- Datepicker -->
 					<div id="D6_1" tabindex="2"
-						data-bind="ntsDatePicker: {value: dayOff, dateFormat: 'YYYY/MM/DD'}"></div>
+						data-bind="ntsDatePicker: {value: dayOff,required: pickUp, dateFormat: 'YYYY/MM/DD'}"></div>
 					<!-- D6_2 休出日数 -->
 					<span class="label" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_64')}</span>
 					<!-- D6_3 休出日数 -->
@@ -99,7 +99,7 @@
 					<!-- D8_1 期限 -->
 					<!-- Datepicker -->
 					<div id="D8_1" tabindex="5"
-						data-bind="ntsDatePicker: {value: expiredDate, dateFormat: 'YYYY/MM/DD', name: '#[KDM001_73]'}"></div>
+						data-bind="ntsDatePicker: {value: expiredDate,required: pickUp, dateFormat: 'YYYY/MM/DD', name: '#[KDM001_73]'}"></div>
 				</div>
 
 				<div class="down-s">
@@ -116,8 +116,8 @@
 					<div id="D11" class="labelTitle" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_75')}</div>
 					<!-- D11_1 年月日 -->
 					<!-- Datepicker -->
-					<div id="D11_1" tabindex="7"
-						data-bind="ntsDatePicker: {value: subDayoffDate, dateFormat: 'YYYY/MM/DD', name: '#[KDM001_76]'}"></div>
+					<div id="D11_1" class="valid" tabindex="7"
+						data-bind="ntsDatePicker: {value: subDayoffDate, required: pause, dateFormat: 'YYYY/MM/DD', name: '#[KDM001_76]'}"></div>
 					<!-- D11_2 代休日数 -->
 					<span class="label" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_77')}</span>
 					<!-- D11_3 代休日数 -->
@@ -128,7 +128,7 @@
 					options: itemListSubHoliday,
 					optionsValue: 'code',
 					visibleItemsCount: 5,
-					value: subDay,
+					value: subDays,
 					optionsText: 'name',
 					editable: false,
 					enable: true,
@@ -146,13 +146,13 @@
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDM001_80')}</div>
 						<!-- D12_2 年月日 -->
 						<!-- Datepicker -->
-						<div id="D12_2" tabindex="8"
-							data-bind="ntsDatePicker: {value: holidayDate, dateFormat: 'YYYY/MM/DD', enable: isOptionSubHolidayEnable, name: '#[KDM001_81]'  }"></div>
+						<div id="D12_2" tabindex="10"
+							data-bind="ntsDatePicker: {value: holidayDate,required: checkedSplit,dateFormat: 'YYYY/MM/DD', enable: isOptionSubHolidayEnable, name: '#[KDM001_81]'  }"></div>
 						<!-- D12_3 代休日数 -->
 						<span class="label" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_82')}</span>
 						<!-- D12_4 代休日数 -->
 						<!-- Combobox -->
-						<div id="D11_3" tabindex="8"
+						<div id="D12_4" tabindex="11"
 							data-bind="ntsComboBox: {
 							name: '#[KDM001_116]',
 							options: itemListOptionSubHoliday,
@@ -184,9 +184,9 @@
 				<div id="process" data-bind="visible: true"
 					style="text-align: center;">
 					<!-- D31_1 登録 -->
-					<button id="D31_1" tabindex="12" data-bind="click: createData" class="proceed">#{i18n.getText('KDM001_89')}</button>
+					<button id="D31_1" tabindex="12" data-bind="click: createData" class="large">#{i18n.getText('KDM001_89')}</button>
 					<!-- D31_1 キャンセル -->
-					<button id="D31_2" tabindex="13" data-bind="click: closeDialog">#{i18n.getText('KDM001_90')}</button>
+					<button id="D31_2" tabindex="13" data-bind="click: closeDialog" class="large">#{i18n.getText('KDM001_90')}</button>
 				</div>
 			</div>			
 		</ui:define>

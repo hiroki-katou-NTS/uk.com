@@ -52,7 +52,7 @@ public class YearServicePerSet {
 			bugLst.add("Msg_145");
 		}
 		for(YearServicePerSet item : yearServicePerSetlst){
-			if(item.getYear() != null && yearLst.contains(item.getYear())){
+			if((item.getYear() != null && yearLst.contains(item.getYear())) || (item.getYear() == null && yearLst.contains(item.getYear()))){
 				new BusinessException("Msg_99");
 				bugLst.add("Msg_99");
 			}else{

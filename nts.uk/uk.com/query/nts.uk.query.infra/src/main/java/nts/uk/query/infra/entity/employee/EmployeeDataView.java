@@ -38,6 +38,10 @@ public class EmployeeDataView implements Serializable {
 	@Column(name="ID")
 	private String id;
 
+	/** The job seq disp. */
+	@Column(name="JOB_SEQ_DISP")
+	private String jobSeqDisp;
+
 	/** The abs end date. */
 	@Column(name="ABS_END_DATE")
 	@Convert(converter = GeneralDateTimeToDBConverter.class)
@@ -47,6 +51,10 @@ public class EmployeeDataView implements Serializable {
 	@Column(name="ABS_STR_DATE")
 	@Convert(converter = GeneralDateTimeToDBConverter.class)
 	private GeneralDateTime absStrDate;
+
+	/** The business english name. */
+	@Column(name="BUSINESS_NAME_KANA")
+	private String businessNameKana;
 
 	/** The business english name. */
 	@Column(name="BUSINESS_ENGLISH_NAME")
@@ -186,6 +194,20 @@ public class EmployeeDataView implements Serializable {
 	@Column(name="WPL_INFO_STR_DATE")
 	@Convert(converter = GeneralDateTimeToDBConverter.class)
 	private GeneralDateTime wplInfoStrDate;
+
+	/** The wkp conf end date. */
+	@Column(name="WKP_CONF_END_DT")
+	@Convert(converter = GeneralDateTimeToDBConverter.class)
+	private GeneralDateTime wkpConfEndDate;
+	
+	/** The wkp conf str date. */
+	@Column(name="WKP_CONF_STR_DT")
+	@Convert(converter = GeneralDateTimeToDBConverter.class)
+	private GeneralDateTime wkpConfStrDate;
+
+	/** The wpl hierarchy code. */
+	@Column(name="WKP_HIERARCHY_CD")
+	private String wplHierarchyCode;
 
 	/** The wpl name. */
 	@Column(name="WPL_NAME")

@@ -10,7 +10,9 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.AffiliationInforOfDailyPerforFinder;
+import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.BusinessTypeOfDailyPerforFinder;
 import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.AffiliationInforOfDailyPerforDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.BusinessTypeOfDailyPerforDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.AttendanceLeavingGateOfDailyFinder;
 import nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.dto.AttendanceLeavingGateOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.CalcAttrOfDailyPerformanceFinder;
@@ -52,6 +54,8 @@ public class DailyRecordWorkFinder extends FinderFacade {
 	@Inject
 	private AffiliationInforOfDailyPerforFinder affiliInfoFinder;
 	@Inject
+	private BusinessTypeOfDailyPerforFinder businessTypeFinder;
+	@Inject
 	private AttendanceLeavingGateOfDailyFinder attendanceLeavingGateFinder;
 	@Inject
 	private OutingTimeOfDailyPerformanceFinder outingTimeFinder;
@@ -90,6 +94,7 @@ public class DailyRecordWorkFinder extends FinderFacade {
 				.withWorkInfo(workInfoFinder.find(employeeId, baseDate))
 				.withCalcAttr(calcAttrFinder.find(employeeId, baseDate))
 				.withAffiliationInfo(affiliInfoFinder.find(employeeId, baseDate))
+				.withBusinessType(businessTypeFinder.find(employeeId, baseDate))
 				// .withErrors(errorFinder.find(employeeId, baseDate))
 				.outingTime(outingTimeFinder.find(employeeId, baseDate))
 				.addBreakTime(breakItemFinder.finds(employeeId, baseDate))
@@ -116,6 +121,8 @@ public class DailyRecordWorkFinder extends FinderFacade {
 				calcAttrFinder.find(employeeId, baseDate));
 		Map<String, Map<GeneralDate, AffiliationInforOfDailyPerforDto>> affiliInfo = toMap(
 				affiliInfoFinder.find(employeeId, baseDate));
+		Map<String, Map<GeneralDate, BusinessTypeOfDailyPerforDto>> businessType = toMap(
+				businessTypeFinder.find(employeeId, baseDate));
 		// Map<String, Map<GeneralDate, EmployeeDailyPerErrorDto>> errors =
 		// toMap(errorFinder.find(employeeId, baseDate));
 		Map<String, Map<GeneralDate, OutingTimeOfDailyPerformanceDto>> outings = toMap(
@@ -151,9 +158,10 @@ public class DailyRecordWorkFinder extends FinderFacade {
 				WorkInformationOfDailyDto workInfo = getValue(workInfos.get(em), start);
 				if(workInfo != null && workInfo.isHaveData()){
 					DailyRecordDto current = DailyRecordDto.builder().employeeId(em).workingDate(start)
-							.withWorkInfo(getValue(workInfos.get(em), start))
+							.withWorkInfo(workInfo)
 							.withCalcAttr(getValue(calcAttrs.get(em), start))
 							.withAffiliationInfo(getValue(affiliInfo.get(em), start))
+							.withBusinessType(getValue(businessType.get(em), start))
 							// .withErrors(getValue(errors.get(em), start))
 							.outingTime(getValue(outings.get(em), start))
 							.addBreakTime(getListValue(breaks.get(em), start))
@@ -175,6 +183,71 @@ public class DailyRecordWorkFinder extends FinderFacade {
 			}
 			return dtoByDates;
 		}).flatMap(List::stream).collect(Collectors.toList());
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends ConvertibleAttendanceItem> List<T> find(Map<String, GeneralDate> param) {
+		Map<String, Map<GeneralDate, WorkInformationOfDailyDto>> workInfos = toMap(
+				workInfoFinder.find(param));
+		Map<String, Map<GeneralDate, CalcAttrOfDailyPerformanceDto>> calcAttrs = toMap(
+				calcAttrFinder.find(param));
+		Map<String, Map<GeneralDate, AffiliationInforOfDailyPerforDto>> affiliInfo = toMap(
+				affiliInfoFinder.find(param));
+		Map<String, Map<GeneralDate, BusinessTypeOfDailyPerforDto>> businessType = toMap(
+				businessTypeFinder.find(param));
+		// Map<String, Map<GeneralDate, EmployeeDailyPerErrorDto>> errors =
+		// toMap(errorFinder.find(employeeId, baseDate));
+		Map<String, Map<GeneralDate, OutingTimeOfDailyPerformanceDto>> outings = toMap(
+				outingTimeFinder.find(param));
+		Map<String, Map<GeneralDate, List<BreakTimeDailyDto>>> breaks = toMapList(
+				breakItemFinder.find(param));
+		Map<String, Map<GeneralDate, AttendanceTimeDailyPerformDto>> attendTime = toMap(
+				attendanceTimeFinder.find(param));
+		Map<String, Map<GeneralDate, AttendanceTimeByWorkOfDailyDto>> attendTimeByWork = toMap(
+				attendanceTimeByWorkFinder.find(param));
+		Map<String, Map<GeneralDate, TimeLeavingOfDailyPerformanceDto>> leaving = toMap(
+				timeLeavingFinder.find(param));
+		Map<String, Map<GeneralDate, ShortTimeOfDailyDto>> shortWork = toMap(
+				shortWorkFinder.find(param));
+		Map<String, Map<GeneralDate, SpecificDateAttrOfDailyPerforDto>> specificDateAttr = toMap(
+				specificDateAttrFinder.find(param));
+		Map<String, Map<GeneralDate, AttendanceLeavingGateOfDailyDto>> attendLeavingGate = toMap(
+				attendanceLeavingGateFinder.find(param));
+		Map<String, Map<GeneralDate, OptionalItemOfDailyPerformDto>> optionalItems = toMap(
+				optionalItemFinder.find(param));
+		Map<String, Map<GeneralDate, List<EditStateOfDailyPerformanceDto>>> editStates = toMapList(
+				editStateFinder.find(param));
+		Map<String, Map<GeneralDate, TemporaryTimeOfDailyPerformanceDto>> temporaryTime = toMap(
+				temporaryTimeFinder.find(param));
+		Map<String, Map<GeneralDate, PCLogOnInforOfDailyPerformDto>> pcLogInfo = toMap(
+				pcLogOnInfoFinder.find(param));
+		Map<String, Map<GeneralDate, List<RemarksOfDailyDto>>> remarks = toMapList(remarkFinder.find(param));
+
+		return (List<T>) param.entrySet().stream().map(p -> {
+			return DailyRecordDto.builder()
+					.employeeId(p.getKey())
+					.workingDate(p.getValue())
+					.withWorkInfo(getValue(workInfos.get(p.getKey()), p.getValue()))
+					.withCalcAttr(getValue(calcAttrs.get(p.getKey()), p.getValue()))
+					.withAffiliationInfo(getValue(affiliInfo.get(p.getKey()), p.getValue()))
+					.withBusinessType(getValue(businessType.get(p.getKey()), p.getValue()))
+					// .withErrors(getValue(errors.get(em), start))
+					.outingTime(getValue(outings.get(p.getKey()), p.getValue()))
+					.addBreakTime(getListValue(breaks.get(p.getKey()), p.getValue()))
+					.attendanceTime(getValue(attendTime.get(p.getKey()), p.getValue()))
+					.attendanceTimeByWork(getValue(attendTimeByWork.get(p.getKey()), p.getValue()))
+					.timeLeaving(getValue(leaving.get(p.getKey()), p.getValue()))
+					.shortWorkTime(getValue(shortWork.get(p.getKey()), p.getValue()))
+					.specificDateAttr(getValue(specificDateAttr.get(p.getKey()), p.getValue()))
+					.attendanceLeavingGate(getValue(attendLeavingGate.get(p.getKey()), p.getValue()))
+					.optionalItems(getValue(optionalItems.get(p.getKey()), p.getValue()))
+					.addEditStates(getListValue(editStates.get(p.getKey()), p.getValue()))
+					.temporaryTime(getValue(temporaryTime.get(p.getKey()), p.getValue()))
+					.pcLogInfo(getValue(pcLogInfo.get(p.getKey()), p.getValue()))
+					.remarks(getListValue(remarks.get(p.getKey()), p.getValue()))
+					.complete();
+		}).collect(Collectors.toList());
 	}
 
 	private <T extends ConvertibleAttendanceItem> T getValue(Map<GeneralDate, T> data, GeneralDate date) {

@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.workingcondition;
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 
 /**
@@ -59,10 +60,10 @@ public class ScheduleMethod extends DomainObject {
 	 * @param workScheduleBusCal the work schedule bus cal
 	 * @param monthlyPatternWorkScheduleCre the monthly pattern work schedule cre
 	 */
-	public ScheduleMethod(WorkScheduleBasicCreMethod basicCreateMethod, WorkScheduleBusCal workScheduleBusCal,
+	public ScheduleMethod(int basicCreateMethod, WorkScheduleBusCal workScheduleBusCal,
 			MonthlyPatternWorkScheduleCre monthlyPatternWorkScheduleCre) {
 		super();
-		this.basicCreateMethod = basicCreateMethod;
+		this.basicCreateMethod = EnumAdaptor.valueOf(basicCreateMethod, WorkScheduleBasicCreMethod.class);
 		this.workScheduleBusCal = Optional.ofNullable(workScheduleBusCal);
 		this.monthlyPatternWorkScheduleCre = Optional.ofNullable(monthlyPatternWorkScheduleCre);
 	}

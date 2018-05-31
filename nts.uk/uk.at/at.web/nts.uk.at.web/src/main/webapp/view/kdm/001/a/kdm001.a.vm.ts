@@ -30,7 +30,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         compositePayOutSubMngData: KnockoutObservableArray<CompositePayOutSubMngData>;
         
         constructor() {
-            var self = this;
+            let self = this;
             
             self.compositePayOutSubMngData = ko.observableArray([]);
             self.periodOptionItem = ko.observableArray([
@@ -101,8 +101,6 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 }
             }
             
-            $('#ccgcomponentA').ntsGroupComponent(self.ccgcomponent);
-            
             self.selectedItem.subscribe(x =>{
                 if(self.selectedEmployee().length > 0) {
                     self.selectedEmployeeObject = _.find(self.selectedEmployee(), item => { return item.employeeId === x; });
@@ -134,13 +132,13 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     { headerText: '', key: 'unUsedDaysInGridText', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'expriedDaysInGridText', dataType: 'string', width: '0px', hidden: true },
                     { headerText: getText('KDM001_8'), template: '<div style="float:right"> ${dayoffDatePyout} </div>', key: 'dayoffDatePyout', dataType: 'string', width: '120px' },
-                    { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${occurredDays}${occurredDaysText} </div>', key: 'occurredDays', dataType: 'Number', width: '85px' },
+                    { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${occurredDays}${occurredDaysText} </div>', key: 'occurredDays', dataType: 'string', width: '85px' },
                     { headerText: getText('KDM001_124'), key: 'payoutTied', dataType: 'string', width: '85px' },
                     { headerText: getText('KDM001_10'), template: '<div style="float:right"> ${dayoffDateSub} </div>', key: 'dayoffDateSub', dataType: 'string', width: '120px' },
-                    { headerText: getText('KDM001_11'), template: '<div style="float:right"> ${requiredDays}${requiredDaysText} </div>', key: 'requiredDays', dataType: 'Number', width: '85px' },
+                    { headerText: getText('KDM001_11'), template: '<div style="float:right"> ${requiredDays}${requiredDaysText} </div>', key: 'requiredDays', dataType: 'string', width: '85px' },
                     { headerText: getText('KDM001_124'), key: 'subTied', dataType: 'string', width: '85px' },
-                    { headerText: getText('KDM001_12'), template: '<div style="float:right"> ${unUsedDaysInGrid}${unUsedDaysInGridText} </div>', key: 'unUsedDaysInGrid', dataType: 'Number', width: '85px' },
-                    { headerText: getText('KDM001_13'), template: '<div style="float:right"> ${expriedDaysInGrid}${expriedDaysInGridText} </div>', key: 'expriedDaysInGrid', dataType: 'Number', width: '85px' },
+                    { headerText: getText('KDM001_12'), template: '<div style="float:right"> ${unUsedDaysInGrid}${unUsedDaysInGridText} </div>', key: 'unUsedDaysInGrid', dataType: 'string', width: '85px' },
+                    { headerText: getText('KDM001_13'), template: '<div style="float:right"> ${expriedDaysInGrid}${expriedDaysInGridText} </div>', key: 'expriedDaysInGrid', dataType: 'string', width: '85px' },
                     { headerText: getText('KDM001_14'), formatter: getLawAtr, key: 'lawAtr', dataType: 'string', width: '100px' },
                     { headerText: '', key: 'link', dataType: 'string', width: '85px', unbound: true, ntsControl: 'ButtonPegSetting' },
                     { headerText: '', key: 'edit', dataType: 'string', width: '55px', unbound: true, ntsControl: 'ButtonCorrection' }
@@ -187,12 +185,8 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         
         clickGetDataList() {
             let self = this;
-            
-            $(".ntsDatepicker").trigger("validate");
-            if (!nts.uk.ui.errors.hasError()) {
-                self.updateDataList();
-                $('#compositePayOutSubMngDataGrid').focus();
-            }
+
+            self.updateDataList();
         }
         
         updateDataList() {
@@ -202,41 +196,49 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             let startDate = isPeriod ? moment.utc(self.dateValue().startDate, 'YYYY/MM/DD').format('YYYY-MM-DD') : null;
             let endDate = isPeriod ? moment.utc(self.dateValue().endDate, 'YYYY/MM/DD').format('YYYY-MM-DD') : null;
             
-            service.getFurikyuMngDataExtraction(empId, startDate, endDate, isPeriod).done(function(res: any) {
-                let arrayResponse = res.compositePayOutSubMngData;
-                let compositePayOutSubMngDataArray: Array<CompositePayOutSubMngData> = [];
-                for (var i = 0 ; i < arrayResponse.length; i++){
-                    compositePayOutSubMngDataArray.push(new CompositePayOutSubMngData(arrayResponse[i]));
-                }
-                
-                // update data to view
-                self.compositePayOutSubMngData = ko.observableArray(compositePayOutSubMngDataArray);
-                self.dispTotalRemain(res.numberOfDayLeft);
-                self.expirationDate(self.getExpirationTime(res.expirationDate));
-                self.closureID = res.closureID;
-                
-                if(arrayResponse.length == 0) {
-                    dialog.alertError({ messageId: "Msg_725" });
-                }
-                
-                // update grid
-                $("#compositePayOutSubMngDataGrid").igGrid("dataSourceObject", self.compositePayOutSubMngData()).igGrid("dataBind");
-                
-                // disable edit button
-                _.forEach(self.compositePayOutSubMngData(), function(value) {
-                    if (value.isLinked){
-                        let rowId = value.id;
-                        $("#compositePayOutSubMngDataGrid").ntsGrid("disableNtsControlAt", rowId, 'edit', 'Button');
+            $("#daterangepickerA .ntsDatepicker").trigger("validate");
+            if (!nts.uk.ui.errors.hasError()) {
+                service.getFurikyuMngDataExtraction(empId, startDate, endDate, isPeriod).done(function(res: any) {
+                    let arrayResponse = res.compositePayOutSubMngData;
+                    let compositePayOutSubMngDataArray: Array<CompositePayOutSubMngData> = [];
+                    for (let i = 0 ; i < arrayResponse.length; i++){
+                        compositePayOutSubMngDataArray.push(new CompositePayOutSubMngData(arrayResponse[i]));
                     }
+                    
+                    // update data to view
+                    self.compositePayOutSubMngData = ko.observableArray(compositePayOutSubMngDataArray);
+                    self.dispTotalRemain(res.numberOfDayLeft);
+                    self.expirationDate(self.getExpirationTime(res.expirationDate));
+                    self.closureID = res.closureID;
+                    
+                    if(arrayResponse.length == 0) {
+                        dialog.alertError({ messageId: "Msg_725" });
+                    }
+                    
+                    // update grid
+                    $("#compositePayOutSubMngDataGrid").igGrid("dataSourceObject", self.compositePayOutSubMngData()).igGrid("dataBind");
+                    
+                    // disable edit button
+                    _.forEach(self.compositePayOutSubMngData(), function(value) {
+                        let rowId = value.id;
+                        
+                        if (value.isLinked){
+                            $("#compositePayOutSubMngDataGrid").ntsGrid("disableNtsControlAt", rowId, 'edit', 'Button');
+                        } else {
+                            $("#compositePayOutSubMngDataGrid").ntsGrid("enableNtsControlAt", rowId, "edit", 'Button');
+                        }
+                    });
+                }).fail(function(res: any) {
+                    console.log(res);
                 });
-            }).fail(function(res: any) {
-                console.log(res);
-            });
+                
+                $('#compositePayOutSubMngDataGrid').focus();
+            }
         }
         
         startPage(): JQueryPromise<any> {
             let self = this;
-            var dfd = $.Deferred();
+            let dfd = $.Deferred();
             
             service.getInfoEmLogin().done(function(emp) {
                 service.getWpName().done(function(wp) {
@@ -295,7 +297,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             setShared('KDM001_EFGH_PARAMS', {rowValue: value, selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID});
             
             if (value.dayoffDatePyout.length == 0) {
-                modal("/view/kdm/001/e/index.xhtml").onClosed(function() {
+                modal("/view/kdm/001/f/index.xhtml").onClosed(function() {
                     let params = getShared('KDM001_A_PARAMS');
                 
                     if (params.isSuccess) {
@@ -303,7 +305,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     }
                 });
             } else {
-                modal("/view/kdm/001/f/index.xhtml").onClosed(function() {
+                modal("/view/kdm/001/e/index.xhtml").onClosed(function() {
                     let params = getShared('KDM001_A_PARAMS');
                 
                     if (params.isSuccess) {
@@ -339,43 +341,43 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         
         getExpirationTime(value) {
             if(value == 0) {
-                return "当月";
+                return getText("Enum_ExpirationTime_THIS_MONTH");
             } else if(value == 1) {
-                return "法定外休日";
+                return getText("Enum_ExpirationTime_UNLIMITED");
             } else if(value == 2) {
-                return "年度末クリア";
+                return getText("Enum_ExpirationTime_END_OF_YEAR");
             } else if(value == 3) {
-                return "1ヶ月";
+                return getText("Enum_ExpirationTime_ONE_MONTH");
             } else if(value == 4) {
-                return "2ヶ月";
+                return getText("Enum_ExpirationTime_TWO_MONTH");
             } else if(value == 5) {
-                return "3ヶ月";
+                return getText("Enum_ExpirationTime_THREE_MONTH");
             } else if(value == 6) {
-                return "4ヶ月";
+                return getText("Enum_ExpirationTime_FOUR_MONTH");
             } else if(value == 7) {
-                return "5ヶ月";
+                return getText("Enum_ExpirationTime_FIVE_MONTH");
             } else if(value == 8) {
-                return "6ヶ月";
+                return getText("Enum_ExpirationTime_SIX_MONTH");
             } else if(value == 9) {
-                return "7ヶ月";
+                return getText("Enum_ExpirationTime_SEVEN_MONTH");
             } else if(value == 10) {
-                return "8ヶ月";
+                return getText("Enum_ExpirationTime_EIGHT_MONTH");
             } else if(value == 11) {
-                return "9ヶ月";
+                return getText("Enum_ExpirationTime_NINE_MONTH");
             } else if(value == 12) {
-                return "10ヶ月";
+                return getText("Enum_ExpirationTime_TEN_MONTH");
             } else if(value == 13) {
-                return "11ヶ月";
+                return getText("Enum_ExpirationTime_ELEVEN_MONTH");
             } else if(value == 14) {
-                return "1年";
+                return getText("Enum_ExpirationTime_ONE_YEAR");
             } else if(value == 15) {
-                return "2年";
+                return getText("Enum_ExpirationTime_TWO_YEAR");
             } else if(value == 16) {
-                return "3年";
+                return getText("Enum_ExpirationTime_THREE_YEAR");
             } else if(value == 17) {
-                return "4年";
+                return getText("Enum_ExpirationTime_FOUR_YEAR");
             } else if(value == 18) {
-                return "5年";
+                return getText("Enum_ExpirationTime_FIVE_YEAR");
             } else {
                 return "";
             }
@@ -490,22 +492,22 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         dayoffDatePyout: string;
         expiredDate: string;
         lawAtr: number;
-        occurredDays: number;
+        occurredDays: string;
         unUsedDays: number;
         stateAtr: number;
-        payoutTied: boolean;
+        payoutTied: string;
         subOfHDID: string;
         unknownDateSub: boolean;
         dayoffDateSub: string;
-        requiredDays: number;
+        requiredDays: string;
         remainDays: number;
-        subTied: boolean;
+        subTied: string;
         
         //add to fill grid A4_2_5
-        unUsedDaysInGrid: number;
+        unUsedDaysInGrid: string;
         
         //add to fill grid A4_2_6
-        expriedDaysInGrid: number;
+        expriedDaysInGrid: string;
         
         //add to check enable button
         isLinked: boolean;
@@ -524,47 +526,58 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             this.dayoffDatePyout = params.unknownDatePayout ? params.dayoffDatePyout + "※" : params.dayoffDatePyout;
             this.expiredDate = params.expiredDate;
             this.lawAtr = params.lawAtr;
-            this.occurredDays = params.occurredDays;
             this.unUsedDays = params.unUsedDays;
             this.stateAtr = params.stateAtr;
-            this.payoutTied = params.payoutTied ? "有" : "";
+            this.payoutTied = params.payoutTied ? getText("KDM001_124") : "";
             this.subOfHDID = params.subOfHDID;
             this.unknownDateSub = params.unknownDateSub;
             this.dayoffDateSub = params.unknownDateSub ? params.dayoffDateSub + "※" : params.dayoffDateSub;
-            this.requiredDays = params.requiredDays;
             this.remainDays = params.remainDays;
-            this.subTied = params.subTied ? "有" : "";
+            this.subTied = params.subTied ? getText("KDM001_124") : "";
             
-            if((params.occurredDays != null) && (params.occurredDays > 0)) {
-                this.occurredDaysText = "日";
+            if(params.occurredDays != null) {
+                if(params.occurredDays > 0) {
+                    this.occurredDaysText = getText("KDM001_27");
+                    this.occurredDays = params.occurredDays.toFixed(1);
+                } else {
+                    this.occurredDays = "" + params.occurredDays;
+                }
             }
             
-            if((params.requiredDays != null) && (params.requiredDays > 0)) {
-                this.requiredDaysText = "日";
+            if(params.requiredDays != null) {
+                if(params.requiredDays > 0) {
+                    this.requiredDaysText = getText("KDM001_27");
+                    this.requiredDays = params.requiredDays.toFixed(1);
+                } else {
+                    this.requiredDays = "" + params.requiredDays;
+                }
             }
             
             if ((params.payoutId != null) && (params.payoutId != "")) {
                 this.id = params.payoutId;
                 
                 if (moment.utc(params.expiredDate, 'YYYY/MM/DD').diff(moment.utc()) > 0) {
-                    this.unUsedDaysInGrid = params.unUsedDays;
-                    this.expriedDaysInGrid = "";
+                    this.unUsedDaysInGrid = "" + params.unUsedDays;
+                    this.expriedDaysInGrid = null;
                     if(params.unUsedDays > 0) {
-                        this.unUsedDaysInGridText = "日";
+                        this.unUsedDaysInGridText = getText("KDM001_27");
+                        this.unUsedDaysInGrid = params.unUsedDays.toFixed(1);
                     }
                 } else {
-                    this.unUsedDaysInGrid = "";
-                    this.expriedDaysInGrid = params.unUsedDays;
+                    this.unUsedDaysInGrid = null;
+                    this.expriedDaysInGrid = "" + params.unUsedDays;
                     if(params.unUsedDays > 0) {
-                        this.expriedDaysInGridText = "日";
+                        this.expriedDaysInGridText = getText("KDM001_27");
+                        this.expriedDaysInGrid = params.unUsedDays.toFixed(1);
                     }
                 }
             } else if ((params.subOfHDID != null) && (params.subOfHDID != "")) {
                 this.id = params.subOfHDID;
-                this.unUsedDaysInGrid = params.remainDays * (-1);
-                this.expriedDaysInGrid = "";
+                this.unUsedDaysInGrid = "" + (params.remainDays * (-1));
+                this.expriedDaysInGrid = null;
                 if(params.remainDays > 0) {
-                    this.unUsedDaysInGridText = "日";
+                    this.unUsedDaysInGridText = getText("KDM001_27");
+                    this.unUsedDaysInGrid = (params.remainDays * (-1)).toFixed(1);
                 }
             }
             
@@ -574,11 +587,11 @@ module nts.uk.at.view.kdm001.a.viewmodel {
     
     function getLawAtr(value, row) {
         if (value && value === '0') {
-            return '法定内休日';
+            return getText("Enum_HolidayAtr_STATUTORY_HOLIDAYS");
         } else if (value && value === '1') {
-            return '法定外休日';
+            return getText("Enum_HolidayAtr_NON_STATUTORY_HOLIDAYS");
         } else if (value && value === '2') {
-            return '祝日';
+            return getText("Enum_HolidayAtr_PUBLIC_HOLIDAY");
         } else {
             return '';
         }

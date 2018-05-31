@@ -22,6 +22,8 @@ public class GrantDatePerDto {
 
 	/*特別休暇名称*/
 	private String personalGrantDateName;
+	
+	private int provision;
 
 	/*一律基準日*/
 	private GeneralDate grantDate;
@@ -41,6 +43,7 @@ public class GrantDatePerDto {
 				grantDatePer.getSpecialHolidayCode(),
 				grantDatePer.getPersonalGrantDateCode().v(),
 				grantDatePer.getPersonalGrantDateName().v(),
+				grantDatePer.getProvision(),
 				grantDatePer.getGrantDate(),
 				grantDatePer.getGrantDateAtr().value,
 				setDto

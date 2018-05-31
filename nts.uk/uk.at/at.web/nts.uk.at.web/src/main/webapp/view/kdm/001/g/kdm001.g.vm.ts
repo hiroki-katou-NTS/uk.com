@@ -28,10 +28,10 @@ module nts.uk.at.view.kdm001.g.viewmodel {
         unknownDate: KnockoutObservable<string> = ko.observable('');
         dayoffDate: KnockoutObservable<string> = ko.observable('');
         expiredDate: KnockoutObservable<string> = ko.observable('');
-        lawAtr: KnockoutObservable<number> = ko.observable('');
-        occurredDays: KnockoutObservable<number> = ko.observable('');
-        unUsedDays: KnockoutObservable<number> = ko.observable('');
-        stateAtr: KnockoutObservable<number> = ko.observable('');
+        lawAtr: KnockoutObservable<number> = ko.observable(0);
+        occurredDays: KnockoutObservable<number> = ko.observable(0);
+        unUsedDays: KnockoutObservable<number> = ko.observable(0);
+        stateAtr: KnockoutObservable<number> = ko.observable(0);
         disapearDate: KnockoutObservable<string> = ko.observable('');
         checkBox: KnockoutObservable<boolean> = ko.observable(false);
         closureId: KnockoutObservable<string> = ko.observable('');
@@ -61,7 +61,8 @@ module nts.uk.at.view.kdm001.g.viewmodel {
                 self.expiredDate(info.rowValue.expiredDate);
                 self.unUsedDays(info.rowValue.unUsedDays);
                 self.unknownDate(info.rowValue.unknownDatePayout);
-//                self.checkBox();
+                self.checkBox(info.rowValue.stateAtr == 1 || info.rowValue.stateAtr == 2);
+                
             }
             block.clear();
         }
@@ -77,14 +78,14 @@ module nts.uk.at.view.kdm001.g.viewmodel {
                     payoutId: self.payoutId(),
                     employeeId: self.employeeId(),
                     unknownDate: self.unknownDate(),
-                    dayoffDate: self.dayoffDate(),
+                    dayoffDate:  moment.utc(self.dayoffDate(),'YYYY/MM/DD').toISOString(),
                     expiredDate: self.expiredDate(), 
                     lawAtr: parseInt(self.lawAtr()),
                     occurredDays: parseInt(self.occurredDays()),
                     unUsedDays: self.unUsedDays(),
                     checkBox: self.checkBox()
                 };
-                service.updatePayout(data).done(result => {
+                service.updatePayout(data).done((result) => {
                     if (result && result.length > 0) {
                         for (let messageId of result) {
                             switch (messageId) {
@@ -93,15 +94,15 @@ module nts.uk.at.view.kdm001.g.viewmodel {
                                     break;
                                 }
                                 case "Msg_825": {
-                                    $('#G6_2').ntsError('set', { messageId: messageId });
+                                    $('#G8_2').ntsError('set', { messageId: messageId });
                                     break;
                                 }
                                 case "Msg_1212": {
-                                    $('#G6_2').ntsError('set', { messageId: messageId });
+                                    $('#G7_2').ntsError('set', { messageId: messageId });
                                     break;
                                 }
                                 case "Msg_1213": {
-                                    $('#G6_2').ntsError('set', { messageId: messageId });
+                                    $('#G9_2').ntsError('set', { messageId: messageId });
                                     break;
                                 }
                             }

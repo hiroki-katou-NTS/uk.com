@@ -27,6 +27,8 @@ public interface LeaveManaDataRepository {
 	
 	void updateByLeaveIds(List<String> leaveIds);
 	
+	public void updateUnUseDayLeaveId(List<String> leaveIds);
+	
 	void updateSubByLeaveId(List<String> leaveIds);
 	/**
 	 * Get domain 休出管理データ by ID
