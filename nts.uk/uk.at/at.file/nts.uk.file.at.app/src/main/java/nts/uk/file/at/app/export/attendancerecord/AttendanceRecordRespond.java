@@ -17,7 +17,7 @@ import nts.arc.time.GeneralDate;
 public class AttendanceRecordRespond {
 
 	/** The employee id. */
-	int employeeId;
+	String employeeId;
 	
 	/** The employee name. */
 	String employeeName;

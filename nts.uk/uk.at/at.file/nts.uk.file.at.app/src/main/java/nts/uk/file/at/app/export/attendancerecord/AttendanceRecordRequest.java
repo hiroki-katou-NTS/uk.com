@@ -18,7 +18,7 @@ import nts.arc.time.GeneralDate;
 public class AttendanceRecordRequest {
 
 	/** The employee code list. */
-	private List<String> employeeCodeList;
+	private List<Employee> employeeList;
 
 	/** The start date. */
 	private GeneralDate startDate;
