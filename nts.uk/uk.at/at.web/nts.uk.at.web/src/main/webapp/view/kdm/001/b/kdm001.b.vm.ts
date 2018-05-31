@@ -157,7 +157,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         }
         convertToDisplayList() {
             let self = this;
-            let totalRemain = 0, dayOffDate, unUse, remain, expired, remainDays, listData = [];
+            let totalRemain = 0, dayOffDate, occurredDays, remain, expired, requireDays, listData = [];
             _.forEach(self.listExtractData, data => {
                 dayOffDate = data.dayOffDate;
                 remain = data.remain;
@@ -173,17 +173,17 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     dayOffDate += '※';
                 }
                 if (data.type == 0) {
-                    unUse = data.unUsedDays;
-                    if (unUse != 0) {
-                        unUse = unUse.toFixed(1) + getText('KDM001_27');
+                    occurredDays = data.occurredDays;
+                    if (occurredDays != 0) {
+                        occurredDays = occurredDays.toFixed(1) + getText('KDM001_27');
                     }
-                    listData.push(new SubstitutedData(data.id, dayOffDate, unUse, data.linked == 1 ? '有' : "", null, null, null, remain, expired, data.linked));
+                    listData.push(new SubstitutedData(data.id, dayOffDate, occurredDays, data.linked == 1 ? '有' : "", null, null, null, remain, expired, data.linked));
                 } else {
-                    remainDays = data.remainDays;
-                    if (remainDays != 0) {
-                        remainDays = remainDays.toFixed(1) + getText('KDM001_27');
+                    requireDays = data.requireDays;
+                    if (requireDays != 0) {
+                        requireDays = requireDays.toFixed(1) + getText('KDM001_27');
                     }
-                    listData.push(new SubstitutedData(data.comDayOffID, null, null, null, dayOffDate, remainDays, data.linked == 1 ? '有' : "", remain, expired, data.linked));
+                    listData.push(new SubstitutedData(data.comDayOffID, null, null, null, dayOffDate, requireDays, data.linked == 1 ? '有' : "", remain, expired, data.linked));
                 }
             });
             if (self.listExtractData.length == 0) {
