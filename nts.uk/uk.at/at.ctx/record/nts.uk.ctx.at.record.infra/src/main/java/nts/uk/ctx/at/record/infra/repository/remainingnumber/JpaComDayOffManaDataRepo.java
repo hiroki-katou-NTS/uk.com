@@ -111,10 +111,10 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 		List<KrcmtComDayoffMaData> list = new ArrayList<>();
 		if (!Objects.isNull(startDate) && !Objects.isNull(endDate)) {
 			query = "SELECT a FROM KrcmtComDayoffMaData a WHERE a.cID = :cid AND"
-					+ " a.sID =:employeeId AND a.dayOff BETWEEN :startDate AND :endDate OR "
+					+ " a.sID =:employeeId AND a.dayOff >= :startDate AND a.dayOff <= :endDate OR "
 					+ " a.comDayOffID IN  (SELECT c.krcmtLeaveDayOffManaPK.comDayOffID FROM KrcmtLeaveDayOffMana c "
 					+ "INNER JOIN KrcmtLeaveManaData b ON b.leaveID = c.krcmtLeaveDayOffManaPK.leaveID WHERE b.cID = :cid AND"
-					+ " b.sID =:employeeId AND b.dayOff BETWEEN :startDate AND :endDate)";
+					+ " b.sID =:employeeId AND b.dayOff >= :startDate AND b.dayOff <= :endDate)";
 			list = this.queryProxy().query(query, KrcmtComDayoffMaData.class).setParameter("employeeId", sid)
 					.setParameter("cid", cid).setParameter("startDate", startDate).setParameter("endDate", endDate)
 					.getList();
