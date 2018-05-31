@@ -107,7 +107,7 @@ public class SubstitutionOfHDManaDataService {
 	public List<String> updateSubOfHD(SubstitutionOfHDManagementData data, int closureId) {
 		List<String> errorListClosureDate = checkClosureDate(closureId, data.getHolidayDate().getDayoffDate().get(),
 				data.getSubOfHDID());
-		if (!errorListClosureDate.isEmpty()) {
+		if (errorListClosureDate.isEmpty()) {
 			substitutionOfHDManaDataRepository.update(data);
 		}
 		return errorListClosureDate;

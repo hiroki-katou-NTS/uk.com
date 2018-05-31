@@ -64,6 +64,7 @@ module nts.uk.at.view.kdm001.h.viewmodel {
                     closureId: self.closureId(),
                     subOfHDID: self.subOfHDID(),
                     employeeId: self.employeeId(),
+//                    requiredDays: parseFloat(self.requiredDays()),
                     requiredDays: self.requiredDays(),
                     dayoffDate: moment.utc(self.dayoffDate(), 'YYYY/MM/DD').toISOString(),
                     unknownDate: self.unknownDate(),
@@ -107,7 +108,7 @@ module nts.uk.at.view.kdm001.h.viewmodel {
                     employeeId: self.employeeId(),
                     dayoffDate: moment.utc(self.dayoffDate(), 'YYYY/MM/DD').toISOString()
                 };
-                console.log(data);
+
                 service.removeSubOfHD(data).done(result => {
                     dialog.info({ messageId: "Msg_16" }).then(() => {
                         setShared('KDM001_A_PARAMS', { isSuccess: true });
