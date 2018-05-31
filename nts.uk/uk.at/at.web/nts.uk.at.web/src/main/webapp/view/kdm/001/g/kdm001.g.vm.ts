@@ -131,7 +131,7 @@ module nts.uk.at.view.kdm001.g.viewmodel {
                     employeeId: self.employeeId(),
                     dayoffDate: moment.utc(self.dayoffDate(), 'YYYY/MM/DD').toISOString()
                 };
-                console.log(data);
+               
                 service.removePayout(data).done(() => {
                     dialog.info({ messageId: "Msg_16" }).then(() => {
                         setShared('KDM001_A_PARAMS', { isSuccess: true });
