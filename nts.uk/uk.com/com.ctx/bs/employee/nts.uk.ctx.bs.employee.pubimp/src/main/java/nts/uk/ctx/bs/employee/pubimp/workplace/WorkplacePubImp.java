@@ -223,9 +223,28 @@ public class WorkplacePubImp implements SyWorkplacePub {
 
 		if (listSid.isEmpty())
 			return new ArrayList<>();
+		
+		List<AffCompanyHist> listAffCompanyHist = new ArrayList<>();
 
-		List<AffCompanyHist> listAffCompanyHist = affCompanyHistRepo.getAffCompanyHistoryOfEmployees(listSid);
+		// vidu listSid = 25100
+		if (listSid.size() > 1000) {
+			int max = listSid.size() / 1000;
+			for (int i = 0; i <= max; i++) {
+				if (i != max) {
+					ArrayList<String> subListSid = new ArrayList<String>(listSid.subList(i * 1000, i * 1000 + 999));
+					List<AffCompanyHist> lstAffCompanyHist = affCompanyHistRepo.getAffCompanyHistoryOfEmployees(subListSid);
+					listAffCompanyHist.addAll(lstAffCompanyHist);
+				} else {
+					ArrayList<String> subListSid = new ArrayList<String>(listSid.subList(max * 1000, listSid.size()));
+					List<AffCompanyHist> lstAffCompanyHist = affCompanyHistRepo.getAffCompanyHistoryOfEmployees(subListSid);
+					listAffCompanyHist.addAll(lstAffCompanyHist);
+				}
+			}
 
+		} else {
+			listAffCompanyHist = affCompanyHistRepo.getAffCompanyHistoryOfEmployees(listSid);
+		}
+		
 		Map<String, AffCompanyHist> mapPidAndAffCompanyHist = listAffCompanyHist.stream()
 				.collect(Collectors.toMap(x -> x.getPId(), x -> x));
 
