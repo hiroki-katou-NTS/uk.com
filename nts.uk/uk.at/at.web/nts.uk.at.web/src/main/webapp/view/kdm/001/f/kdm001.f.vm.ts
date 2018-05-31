@@ -105,7 +105,6 @@ module nts.uk.at.view.kdm001.f.viewmodel {
                             self.disables.push(item.payoutId);    
                         }    
                     })
-                    console.log(self.disables());
                 }
                 block.clear();
             }).fail((res) => {
