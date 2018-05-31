@@ -361,7 +361,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		int lowestEmployeeLevel = checkLowestWorkplaceLevel(lstWorkplace);
 		TotalWorkplaceHierachy outputSetting = condition.getSettingDetailTotalOutput().getWorkplaceHierarchyTotal();
 		int highestOutputLevel = outputSetting.getHighestLevelEnabled();
-		if (lowestEmployeeLevel > highestOutputLevel && lstAttendanceResultImport.size() == 0) {
+		if (lowestEmployeeLevel < highestOutputLevel && lstAttendanceResultImport.size() == 0) {
 			throw new BusinessException(new RawErrorMessage("Msg_37"));
 		}
 		
