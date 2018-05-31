@@ -14,16 +14,13 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSendDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalFrameForRemandDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
-<<<<<<< HEAD
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationForRemandService;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationForSendService;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForRemandOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForSendOutput;
-=======
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
->>>>>>> delivery/release_user
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -78,11 +75,6 @@ public class ApplicationFinder {
 		String companyID = AppContexts.user().companyId();
 		return ApplicationMetaDto.fromDomain(detailAppCommonSetService.getDetailAppCommonSet(companyID, appID));
 	}
-<<<<<<< HEAD
-
-=======
-	
->>>>>>> delivery/release_user
 	public List<ApplicationMetaDto> getListAppInfo(List<String> listAppID){
 		String companyID = AppContexts.user().companyId();
 		return detailAppCommonSetService.getListDetailAppCommonSet(companyID, listAppID)
