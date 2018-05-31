@@ -143,17 +143,17 @@ module nts.uk.at.view.kdm001.f.viewmodel {
             let self = this;
             self.caculRemainNumber();
             if (self.currentCodeList().length == 0) {
-                $('#multi-list').ntsError('set', { messageId: "Msg_738" });
+                $('#multi-list').ntsError('set', { messageId: "Msg_742" });
                 return false;
             } else if (self.currentCodeList().length >= 3) {
-                $('#multi-list').ntsError('set', { messageId: "Msg_739" });
+                $('#multi-list').ntsError('set', { messageId: "Msg_743" });
                 return false;
             } else if (self.currentCodeList().length == 1 && self.currentList()[0].occurredDays !== parseFloat(self.numberDay())) {
-                $('#multi-list').ntsError('set', { messageId: "Msg_731" });
+                $('#multi-list').ntsError('set', { messageId: "Msg_732" });
                 return false;
             } else if (self.currentCodeList().length == 2) {
                 if (self.currentList()[0].occurredDays === 1) {
-                    $('#multi-list').ntsError('set', { messageId: "Msg_739" });
+                    $('#multi-list').ntsError('set', { messageId: "Msg_732" });
                     return false;
                 }
                 if (parseFloat(self.numberDay()) !== (self.currentList()[0].occurredDays + self.currentList()[1].occurredDays)) {
