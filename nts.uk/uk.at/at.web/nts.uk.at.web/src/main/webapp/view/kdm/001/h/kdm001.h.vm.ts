@@ -105,7 +105,7 @@ module nts.uk.at.view.kdm001.h.viewmodel {
                 let data = {
                     subOfHDID: self.subOfHDID(),
                     employeeId: self.employeeId(),
-                    dayoffDate: self.dayoffDate()
+                    dayoffDate: moment.utc(self.dayoffDate(), 'YYYY/MM/DD').toISOString()
                 };
                 console.log(data);
                 service.removeSubOfHD(data).done(result => {

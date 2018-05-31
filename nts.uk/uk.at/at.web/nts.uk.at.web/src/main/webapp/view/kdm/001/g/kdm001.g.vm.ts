@@ -129,7 +129,7 @@ module nts.uk.at.view.kdm001.g.viewmodel {
                 let data = {
                     payoutId: self.payoutId(),
                     employeeId: self.employeeId(),
-                    dayoffDate: self.dayoffDate()
+                    dayoffDate: moment.utc(self.dayoffDate(), 'YYYY/MM/DD').toISOString()
                 };
                 console.log(data);
                 service.removePayout(data).done(() => {
