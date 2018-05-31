@@ -144,9 +144,4 @@ module nts.uk.at.view.kaf018.share.model {
         }
     }
 
-    export function clearStorageExTable() {
-        let url = window.location.origin + window.location.pathname;
-        localStorage.removeItem(url + "/extable/areawidths");
-        localStorage.removeItem(url + "/extable/tableheight");
-    }
 }
