@@ -66,9 +66,15 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 	@Inject
 	private UrlEmbeddedRepository urlEmbeddedRepo;
 
+<<<<<<< HEAD
 	@Inject
 	private IApplicationContentService appContentService;
 
+=======
+	@Inject 
+	private IApplicationContentService appContentService;
+	
+>>>>>>> pj/at/dev/Team_D/KDL030
 	@Override
 	public MailSenderResult doRemand(String companyID, String appID, Long version, Integer order, String returnReason) {
 		Application_New application = applicationRepository.findByID(companyID, appID).get();
@@ -77,6 +83,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 				.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value).get();
 		MailSenderResult mailSenderResult = null;
 		if (order != null) {
+			// 差し戻し先が承認者の場合
 			List<String> employeeList = approvalRootStateAdapter.doRemandForApprover(companyID, appID, order);
 			if (appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN)) {
 				mailSenderResult = this.getMailSenderResult(application, employeeList);
@@ -84,6 +91,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 				mailSenderResult = new MailSenderResult(null, null);
 			}
 		} else {
+			// 差し戻し先が申請本人の場合
 			approvalRootStateAdapter.doRemandForApplicant(companyID, appID);
 			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.REMAND);
 			application.getReflectionInformation().setStateReflection(ReflectedState_New.REMAND);
@@ -102,6 +110,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 		String mailTitle = "";
 		String mailBody = "";
 		String cid = AppContexts.user().companyId();
+<<<<<<< HEAD
 		Optional<UrlEmbedded> urlEmbedded = urlEmbeddedRepo.getUrlEmbeddedById(AppContexts.user().companyId());
 		String urlInfo = "";
 		if (urlEmbedded.isPresent()){
@@ -110,6 +119,9 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 			if (checkUrl == NotUseAtr.USE) {
 				urlInfo = registerEmbededURL.obtainApplicationEmbeddedUrl(application.getAppID(), application.getAppType().value,
 						application.getPrePostAtr().value, application.getEmployeeID());
+=======
+		String appContent = appContentService.getApplicationContent(application);	
+>>>>>>> pj/at/dev/Team_D/KDL030
 		ContentOfRemandMail remandTemp = remandRepo.getRemandMailById(cid).orElse(null);
 		if (!Objects.isNull(remandTemp)) {
 			mailTitle = remandTemp.getMailTitle().v();
@@ -119,6 +131,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 		if (Strings.isEmpty(emp)){
 			emp = employeeAdapter.getEmployeeName(AppContexts.user().employeeId());
 		}
+<<<<<<< HEAD
 		String appContent = appContentService.getApplicationContent(application);
 		if (!Strings.isBlank(urlInfo)) {
 			appContent += "\n" + "#KDL030_30" + " " + application.getAppID() + "\n" + urlInfo;
@@ -128,18 +141,45 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 				GeneralDate.today().toString(), application.getAppType().nameId,
 				employeeAdapter.getEmployeeName(application.getEmployeeID()), application.getAppDate().toLocalDate().toString(),
 				appContent, employeeAdapter.getEmployeeName(AppContexts.user().employeeId()), emp);
+=======
+		Optional<UrlEmbedded> urlEmbedded = urlEmbeddedRepo.getUrlEmbeddedById(AppContexts.user().companyId());
+>>>>>>> pj/at/dev/Team_D/KDL030
 		List<String> successList = new ArrayList<>();
 		List<String> errorList = new ArrayList<>();
 		for (String employee : employeeList) {
 			String employeeName = employeeAdapter.getEmployeeName(employee);
+			// Using RQL 419 instead (1 not have mail)
 			String employeeMail = employeeAdapter.empEmail(employee);
 			employeeMail = "hiep.ld@3si.vn";
+			// TODO
+			String urlInfo = "";
+			if (urlEmbedded.isPresent()) {
+				int urlEmbeddedCls = urlEmbedded.get().getUrlEmbedded().value;
+				NotUseAtr checkUrl = NotUseAtr.valueOf(urlEmbeddedCls);
+				if (checkUrl == NotUseAtr.USE) {
+					urlInfo = registerEmbededURL.obtainApplicationEmbeddedUrl(application.getAppID(),
+							application.getAppType().value, application.getPrePostAtr().value, employee);
+				}
+			}
+			if (!Strings.isBlank(urlInfo)) {
+				appContent += "\n" + I18NText.getText("KDL030_30") + " " + application.getAppID() + "\n" + urlInfo;
+			}
+			String mailContentToSend = I18NText.getText("Msg_1060",
+					employeeAdapter.getEmployeeName(AppContexts.user().employeeId()), mailBody,
+					GeneralDate.today().toString(), application.getAppType().nameId,
+					employeeAdapter.getEmployeeName(application.getEmployeeID()),
+					application.getAppDate().toLocalDate().toString(), appContent,
+					employeeAdapter.getEmployeeName(AppContexts.user().employeeId()), emp);
 			if (Strings.isBlank(employeeMail)) {
 				errorList.add(I18NText.getText("Msg_768", employeeName));
 				continue;
 			} else {
 				// TODO
+<<<<<<< HEAD
 				mailsender.send("tarou@nittsusystem.co.jp", employeeMail,
+=======
+				mailsender.send("mailadmin@uk.com", employeeMail,
+>>>>>>> pj/at/dev/Team_D/KDL030
 						new MailContents(mailTitle, mailContentToSend));
 				successList.add(employeeName);
 			}

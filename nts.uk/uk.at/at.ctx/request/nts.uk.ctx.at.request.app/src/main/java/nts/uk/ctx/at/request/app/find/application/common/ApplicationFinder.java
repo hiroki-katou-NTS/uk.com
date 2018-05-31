@@ -75,6 +75,14 @@ public class ApplicationFinder {
 		String companyID = AppContexts.user().companyId();
 		return ApplicationMetaDto.fromDomain(detailAppCommonSetService.getDetailAppCommonSet(companyID, appID));
 	}
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+
+=======
+	
+>>>>>>> delivery/release_user
+>>>>>>> pj/at/dev/Team_D/KDL030
 	public List<ApplicationMetaDto> getListAppInfo(List<String> listAppID){
 		String companyID = AppContexts.user().companyId();
 		return detailAppCommonSetService.getListDetailAppCommonSet(companyID, listAppID)

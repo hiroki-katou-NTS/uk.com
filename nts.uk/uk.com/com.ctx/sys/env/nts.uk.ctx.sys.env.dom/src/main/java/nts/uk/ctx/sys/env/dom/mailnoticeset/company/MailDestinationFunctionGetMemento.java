@@ -7,6 +7,13 @@ package nts.uk.ctx.sys.env.dom.mailnoticeset.company;
 import java.util.List;
 
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+import nts.uk.shr.com.enumcommon.NotUseAtr;
+=======
+>>>>>>> delivery/release_user
+>>>>>>> pj/at/dev/Team_D/KDL030
 
 /**
  * The Interface MailDestinationFunctionGetMemento.
@@ -26,4 +33,12 @@ public interface MailDestinationFunctionGetMemento {
 	 * @return the send by function setting
 	 */
 	public List<SendMailByFunctionSetting> getSendByFunctionSetting();
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+
+	public List<SendMailByFunctionSetting> getSendByFunctionSetting(NotUseAtr use);
+=======
+>>>>>>> delivery/release_user
+>>>>>>> pj/at/dev/Team_D/KDL030
 }

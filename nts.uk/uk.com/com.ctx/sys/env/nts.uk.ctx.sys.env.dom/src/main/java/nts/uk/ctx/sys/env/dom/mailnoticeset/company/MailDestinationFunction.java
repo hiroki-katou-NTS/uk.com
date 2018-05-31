@@ -10,6 +10,13 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+import nts.uk.shr.com.enumcommon.NotUseAtr;
+=======
+>>>>>>> delivery/release_user
+>>>>>>> pj/at/dev/Team_D/KDL030
 
 /**
  * The Class MailDestinationFunction.
@@ -50,4 +57,19 @@ public class MailDestinationFunction extends AggregateRoot{
 		this.settingItem = memento.getSettingItem();
 		this.sendByFunctionSetting = memento.getSendByFunctionSetting();
 	}
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+	
+
+	public MailDestinationFunction(MailDestinationFunctionGetMemento memento,
+			NotUseAtr use) {
+		this.settingItem = memento.getSettingItem();
+		this.sendByFunctionSetting = memento.getSendByFunctionSetting(use);
+	}
+	
+	
+=======
+>>>>>>> delivery/release_user
+>>>>>>> pj/at/dev/Team_D/KDL030
 }
