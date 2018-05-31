@@ -38,7 +38,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button id="button-save" tabindex="1" class="proceed"
-					data-bind="click: save">#{i18n.getText('CMM048_3')}</button>
+					data-bind="click: save, enable: $root.errors.isEmpty">#{i18n.getText('CMM048_3')}</button>
 			</div>
 			<div id="contents-area">
 				<div id="tab-panel" tabindex="3"
