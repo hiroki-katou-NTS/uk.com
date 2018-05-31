@@ -1,13 +1,15 @@
 package nts.uk.file.at.app.export.attendancerecord.data;
 
 import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The Class AttendanceRecordReportColumnData.
  */
 
-@Value
+@Getter
+@Setter
 @AllArgsConstructor
 public class AttendanceRecordReportColumnData {
 	
