@@ -91,11 +91,6 @@ public interface SyEmployeePub {
 	// RequestList228
 	List<EmployeeInfoExport> getByListSid(List<String> sIds);
 	
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> pj/at/dev/Team_D/KDL030
 	
 	/**
 	 * Get List EmployeeId By WorkPlace and Employment and TemporaryLeaveAbsenceHistory
@@ -122,9 +117,4 @@ public interface SyEmployeePub {
 	// RequestList377
 	EmployeeBasicExport getEmpBasicBySId(String sId);
 	
-	
-<<<<<<< HEAD
-=======
->>>>>>> delivery/release_user
->>>>>>> pj/at/dev/Team_D/KDL030
 }

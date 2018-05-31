@@ -18,9 +18,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.application.IApplica
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationForSendService;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForRemandOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForSendOutput;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -66,7 +63,7 @@ public class ApplicationFinder {
 	public ApplicationSendDto getAppByIdForSend(String appID){
 		ApplicationForSendOutput appOutput = appForSendService.getApplicationForSend(appID);
 		if (!Objects.isNull(appOutput)){
-			return ApplicationSendDto.fromDomain(ApplicationDto_New.fromDomain(appOutput.getApplication()), appOutput.getMailTemplate(), appOutput.getApprovalRoot(), appOutput.getListApprover(), employeeRequestAdapter.getEmployeeInfor(appOutput.getApplication().getEmployeeID()));
+			return ApplicationSendDto.fromDomain(ApplicationDto_New.fromDomain(appOutput.getApplication()), appOutput.getMailTemplate(), appOutput.getApprovalRoot(), appOutput.getApplicantMail());
 		}
 		return null;
 	}
@@ -75,14 +72,6 @@ public class ApplicationFinder {
 		String companyID = AppContexts.user().companyId();
 		return ApplicationMetaDto.fromDomain(detailAppCommonSetService.getDetailAppCommonSet(companyID, appID));
 	}
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-
-=======
-	
->>>>>>> delivery/release_user
->>>>>>> pj/at/dev/Team_D/KDL030
 	public List<ApplicationMetaDto> getListAppInfo(List<String> listAppID){
 		String companyID = AppContexts.user().companyId();
 		return detailAppCommonSetService.getListDetailAppCommonSet(companyID, listAppID)

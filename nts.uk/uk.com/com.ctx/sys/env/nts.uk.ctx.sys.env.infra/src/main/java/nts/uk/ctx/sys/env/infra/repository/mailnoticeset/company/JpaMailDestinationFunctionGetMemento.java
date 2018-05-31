@@ -11,13 +11,7 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.company.MailDestinationFunctionGetMe
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.SendMailByFunctionSetting;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstMailDestinFunc;
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-=======
->>>>>>> delivery/release_user
->>>>>>> pj/at/dev/Team_D/KDL030
 
 /**
  * The Class JpaMailDestinationFunctionGetMemento.
@@ -44,8 +38,6 @@ public class JpaMailDestinationFunctionGetMemento implements MailDestinationFunc
 	public JpaMailDestinationFunctionGetMemento(List<SevstMailDestinFunc> lstEntity) {
 		this.lstEntity = lstEntity;
 	}
-
-<<<<<<< HEAD
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.company.MailDestinationFunctionGetMemento#getSettingItem()
 =======
@@ -65,8 +57,6 @@ public class JpaMailDestinationFunctionGetMemento implements MailDestinationFunc
 	public UserInfoItem getSettingItem() {
 		return UserInfoItem.valueOf(this.lstEntity.get(0).getSevstMailDestinFuncPK().getSettingItem());
 	}
-
-<<<<<<< HEAD
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.company.MailDestinationFunctionGetMemento#getSendByFunctionSetting()
 =======
@@ -88,10 +78,6 @@ public class JpaMailDestinationFunctionGetMemento implements MailDestinationFunc
 			return new SendMailByFunctionSetting(new JpaSendMailByFunctionSettingGetMemento(item));
 		}).collect(Collectors.toList());
 	}
-
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
 	@Override
 	public List<SendMailByFunctionSetting> getSendByFunctionSetting(NotUseAtr use) {
 		return this.lstEntity.stream().map(item -> {
@@ -99,8 +85,4 @@ public class JpaMailDestinationFunctionGetMemento implements MailDestinationFunc
 		}).collect(Collectors.toList()).stream().filter(item -> item.getSendSetting().equals(use))
 				.collect(Collectors.toList());
 	}
-
-=======
->>>>>>> delivery/release_user
->>>>>>> pj/at/dev/Team_D/KDL030
 }
