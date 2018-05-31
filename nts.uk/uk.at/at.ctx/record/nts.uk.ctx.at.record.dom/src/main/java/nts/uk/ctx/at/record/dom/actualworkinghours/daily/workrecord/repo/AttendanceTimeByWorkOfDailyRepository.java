@@ -18,7 +18,7 @@ void add(AttendanceTimeByWorkOfDaily attendanceTime);
 	
 	List<AttendanceTimeByWorkOfDaily> finds(List<String> employeeId, DatePeriod ymd);
 	
-	List<AttendanceTimeByWorkOfDaily> finds(Map<String, GeneralDate> param);
+	List<AttendanceTimeByWorkOfDaily> finds(Map<String, List<GeneralDate>> param);
 	
 	List<AttendanceTimeByWorkOfDaily> findAllOf(String employeeId, List<GeneralDate> ymd);
 }

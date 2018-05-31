@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -116,7 +117,9 @@ public interface WorkingConditionItemRepository {
 	 * Gets the list with period by sid and date period 
 	 * @param employeeId
 	 * @param datePeriod
+	 * @param max maxdatePeriod
+	 * @param min mindatePeriod
 	 * @return the by sid ,hist id and data Period 
 	 */
-	WorkingConditionWithDataPeriod getBySidAndPeriodOrderByStrDWithDatePeriod(String employeeId, DatePeriod datePeriod);
+	WorkingConditionWithDataPeriod getBySidAndPeriodOrderByStrDWithDatePeriod(Map<String,DatePeriod> param,GeneralDate max,GeneralDate min);
 }

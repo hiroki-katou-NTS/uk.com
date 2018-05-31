@@ -21,4 +21,12 @@ public interface EmployeeContactPub {
 	 */
 	void register(String employeeId, String mailAddress, String phoneMailAddress, String cellPhoneNo );
 	
+	/**
+	 * 社員ID（List）から個人連絡先を取得
+	 * RequestList420
+	 * @param employeeIds
+	 * @return
+	 */
+	List<PersonContactObjectOfEmployee> getListOfEmployees(List<String> employeeIds);
+	
 }
