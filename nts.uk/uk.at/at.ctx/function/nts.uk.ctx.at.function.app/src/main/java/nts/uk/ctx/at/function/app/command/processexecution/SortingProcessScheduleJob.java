@@ -21,8 +21,9 @@ public class SortingProcessScheduleJob extends UkScheduledJob{
 		s.setCompanyId(companyId);
 		s.setExecItemCd(execItemCd);
 		s.setScheduleId(scheduleId);
+		/*
 		this.sortingProcessCommandHandler.handle(s);
-		
+		*/
 	}
 
 }
