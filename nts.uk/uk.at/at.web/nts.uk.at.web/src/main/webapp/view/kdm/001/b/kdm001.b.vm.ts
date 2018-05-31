@@ -183,7 +183,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     if (remainDays != 0) {
                         remainDays = remainDays.toFixed(1) + getText('KDM001_27');
                     }
-                    listData.push(new SubstitutedData(data.comDayOffID, null, null, null, dayOffDate, remainDays + getText('KDM001_27'), data.linked == 1 ? '有' : "", remain, expired, data.linked));
+                    listData.push(new SubstitutedData(data.comDayOffID, null, null, null, dayOffDate, remainDays, data.linked == 1 ? '有' : "", remain, expired, data.linked));
                 }
             });
             if (self.listExtractData.length == 0) {
