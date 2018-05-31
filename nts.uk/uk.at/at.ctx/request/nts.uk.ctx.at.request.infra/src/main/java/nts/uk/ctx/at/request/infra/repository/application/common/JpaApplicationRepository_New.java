@@ -1,9 +1,6 @@
 package nts.uk.ctx.at.request.infra.repository.application.common;
 
-<<<<<<< HEAD
 import java.util.Collection;
-=======
->>>>>>> delivery/release_user
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -197,16 +194,6 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 		
 		return data;
 	}
-	@Override
-	public List<Application_New> findByListID(String companyID, List<String> listAppID) {
-		if(CollectionUtil.isEmpty(listAppID)){
-			return Collections.emptyList();
-		}
-		return this.queryProxy().query(SELECT_APP_BY_LIST_ID, KrqdtApplication_New.class)
-				.setParameter("listAppID", listAppID)
-				.setParameter("companyID", companyID)
-				.getList(x -> x.toDomain());
-	}
 	/**
 	 * RequestList 232 param 反映状態   ＝  「反映済み」または「反映待ち」 
 	 * RequestList 233 param 反映状態   ＝  「未承認」または「差戻し」
@@ -233,7 +220,6 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			.setParameter("listReflecInfor", listReflecInfor)
 			.getList(x -> x.toDomain());
 	}
-<<<<<<< HEAD
 	@Override
 	public List<Application_New> findByListID(String companyID, List<String> listAppID) {
 		if(CollectionUtil.isEmpty(listAppID)){
@@ -244,7 +230,4 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 				.setParameter("companyID", companyID)
 				.getList(x -> x.toDomain());
 	}
-=======
-	
->>>>>>> delivery/release_user
 }
