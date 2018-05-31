@@ -42,7 +42,7 @@ module nts.uk.at.view.kdm001.m.viewmodel {
                 self.comDayOffID(info.row.comDayOffID);
                 self.dayOffDate(info.row.dayOffDate);
                 self.requireDays(info.row.requireDays);
-                self.remainDays(info.row.remainDays);
+                self.remainDays(info.row.remainDays + '');
                 self.closureId(info.closure.closureId);
             }
             block.clear();

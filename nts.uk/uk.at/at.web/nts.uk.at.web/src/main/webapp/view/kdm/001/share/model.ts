@@ -16,9 +16,9 @@ module nts.uk.at.view.kdm001.share.model {
 
     export function getRemainDaysItemList(): Array<ItemModel> {
         return [
-            new model.ItemModel(1.0, getText('KDM001_127')),
-            new model.ItemModel(0.5, getText('KDM001_128')),
-            new model.ItemModel(0, getText('KDM001_129'))
+            new model.ItemModel('1.0', getText('KDM001_127')),
+            new model.ItemModel('0.5', getText('KDM001_128')),
+            new model.ItemModel('0', getText('KDM001_129'))
         ];
     }
 
