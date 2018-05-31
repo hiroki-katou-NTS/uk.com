@@ -85,8 +85,9 @@ public class JpaManagementDeletionRepository extends JpaRepository implements Ma
 	@Override
 	public void setInterruptDeleting(String delId,int interruptedFlg,OperatingCondition operatingCondition ) {
 		SspdtManagementDeletionPK sspdtManagementDeletionPK = new  SspdtManagementDeletionPK(delId);
-		SspdtManagementDeletion entity = this.queryProxy().find(sspdtManagementDeletionPK, SspdtManagementDeletion.class).get();
-		if (entity != null) {
+		Optional<SspdtManagementDeletion> optEntity = this.queryProxy().find(sspdtManagementDeletionPK, SspdtManagementDeletion.class);
+		if (optEntity.isPresent()) {
+			SspdtManagementDeletion entity = optEntity.get();
 			entity.operatingCondition = operatingCondition.value;
 			entity.isInterruptedFlg = interruptedFlg;
 			this.commandProxy().update(entity);
