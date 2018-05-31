@@ -6,7 +6,6 @@ module nts.uk.com.view.kwr002.a {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import TabPanel = nts.uk.ui.tabpanel;
 
     export module viewModel {
         export class ScreenModel {
@@ -178,7 +177,7 @@ module nts.uk.com.view.kwr002.a {
             /**
              * apply ccg001 search data to kcp005
              */
-            public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
+            public applyKCP005ContentSearch(dataList: Employee[]): void {
                 let self = this;
                 self.employeeList([]);
                 let employeeSearchs: UnitModel[] = [];
@@ -353,10 +352,10 @@ module nts.uk.com.view.kwr002.a {
             closureId?: number; // 締めID
             periodStart: string; // 対象期間（開始)
             periodEnd: string; // 対象期間（終了）
-            listEmployee: Array<EmployeeSearchDto>; // 検索結果
+            listEmployee: Array<Employee>; // 検索結果
         }
 
-        export class EmployeeSearchDto {
+        export class Employee {
             employeeId: string;
             employeeCode: string;
             employeeName: string;
@@ -370,13 +369,13 @@ module nts.uk.com.view.kwr002.a {
         }
 
         export class exportDto {
-            employeeList: Array<EmployeeSearchDto>;
+            employeeList: Array<Employee>;
             startDate: string;
             endDate: string;
             layout: string;
             mode: number;
 
-            constructor(employeeList: Array<EmployeeSearchDto>, startDate: string, endDate: string, layout: string, mode: number) {
+            constructor(employeeList: Array<Employee>, startDate: string, endDate: string, layout: string, mode: number) {
                 this.employeeList = employeeList;
                 this.startDate = startDate;
                 this.endDate = endDate;
