@@ -14,7 +14,6 @@ module nts.uk.ui.koExtentions {
         OPENED = 'dropDownOpened',
         IGCOMB = 'igCombo',
         OPTION = 'option',
-        ENABLE = 'enable',
         EDITABLE = 'editable',
         DROPDOWN = 'dropdown',
         COMBOROW = 'nts-combo-item',
@@ -127,7 +126,7 @@ module nts.uk.ui.koExtentions {
                     let data = $element.data(DATA),
                         value = data[VALUE];
 
-                    if (data[ENABLE] && data[REQUIRED] && (_.isEmpty(String(value).trim()) || _.isNull(value) || _.isUndefined(value))) {
+                    if (data[REQUIRED] && (_.isEmpty(String(value).trim()) || _.isNull(value) || _.isUndefined(value))) {
                         $element
                             .addClass('error')
                             .ntsError("set", resource.getMessage("FND_E_REQ_SELECT", [data[NAME]]), "FND_E_REQ_SELECT");
@@ -358,7 +357,6 @@ module nts.uk.ui.koExtentions {
                 .trigger(CHANGED, [CWIDTH, cws])
                 .trigger(CHANGED, [NAME, name])
                 .trigger(CHANGED, [VALUE, value])
-                .trigger(CHANGED, [ENABLE, enable])
                 .trigger(CHANGED, [EDITABLE, editable])
                 .trigger(CHANGED, [REQUIRED, required]);
 
