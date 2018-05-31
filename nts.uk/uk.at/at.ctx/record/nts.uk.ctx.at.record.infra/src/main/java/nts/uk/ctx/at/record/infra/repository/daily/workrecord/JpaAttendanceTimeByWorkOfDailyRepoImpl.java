@@ -47,7 +47,7 @@ public class JpaAttendanceTimeByWorkOfDailyRepoImpl extends JpaRepository implem
 	}
 
 	@Override
-	public List<AttendanceTimeByWorkOfDaily> finds(Map<String, GeneralDate> param) {
+	public List<AttendanceTimeByWorkOfDaily> finds(Map<String, List<GeneralDate>> param) {
 		// TODO Auto-generated method stub
 		return Collections.emptyList();
 	}

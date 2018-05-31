@@ -209,8 +209,8 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 																		 coreTimeSetting,breakTimeList,workType,predetermineTimeForSet));
 		}
 		/*所定内割増時間の時間帯作成*/
-		return predetermineWithinPremiumTime(dailyUnit.getDailyTime(),predetermineTimeForSet.getAdditionSet().getPredTime().getPredetermineWorkTime(),timeFrames);
-		//return timeFrames;
+		//return predetermineWithinPremiumTime(dailyUnit.getDailyTime(),predetermineTimeForSet.getAdditionSet().getPredTime().getPredetermineWorkTime(),timeFrames);
+		return timeFrames;
 	}
 	
 	/**

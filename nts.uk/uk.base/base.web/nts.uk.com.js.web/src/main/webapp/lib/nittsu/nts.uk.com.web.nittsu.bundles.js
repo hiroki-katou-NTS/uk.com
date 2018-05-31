@@ -16766,7 +16766,8 @@ var nts;
                         var optionsValue = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
                         var options = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
                         var deleteOptions = ko.unwrap(data.deleteOptions);
-                        var observableColumns = ko.unwrap(data.columns);
+                        var observableColumns = _.cloneDeep(ko.unwrap(data.columns));
+                        var selectionDisables = ko.unwrap(data.selectionDisables);
                         var showNumbering = ko.unwrap(data.showNumbering) === true ? true : false;
                         var columnResize = ko.unwrap(data.columnResize);
                         var enable = ko.unwrap(data.enable);
@@ -16774,6 +16775,7 @@ var nts;
                         var virtualization = true;
                         var rows = ko.unwrap(data.rows);
                         $grid.data("init", true);
+                        $grid.data("selectionDisables", selectionDisables);
                         if (data.multiple) {
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
@@ -16844,6 +16846,27 @@ var nts;
                                     ROW_HEIGHT = 30;
                                 }
                             }
+                            else {
+                                c.formatter = function (val, row) {
+                                    if (row) {
+                                        setTimeout(function () {
+                                            var id = row[optionsValue];
+                                            var disables = $grid.data("selectionDisables");
+                                            if (!disables)
+                                                return;
+                                            _.forEach(disables, function (d) {
+                                                if (id === d) {
+                                                    var $row = $grid.igGrid("rowById", id, false);
+                                                    if (!$row.hasClass("row-disable"))
+                                                        $row.addClass("row-disable");
+                                                    return false;
+                                                }
+                                            });
+                                        }, 0);
+                                    }
+                                    return val;
+                                };
+                            }
                             return c;
                         });
                         var isDeleteButton = !uk.util.isNullOrUndefined(deleteOptions) && !uk.util.isNullOrUndefined(deleteOptions.deleteField)
@@ -16898,19 +16921,48 @@ var nts;
                         }
                         $grid.ntsGridList('setupSelecting');
                         if (data.multiple) {
-                            $grid.bind('iggridrowselectorscheckboxstatechanging', function (eventObject) {
-                                return (String($grid.data("enable")) === "false") ? false : true;
+                            $grid.bind('iggridrowselectorscheckboxstatechanging', function (eventObject, data) {
+                                if (String($grid.data("enable")) === "false")
+                                    return false;
+                                var disables = $grid.data("selectionDisables");
+                                if (disables && !uk.util.isNullOrUndefined(_.find(disables, function (d) { return data.rowKey === d; }))) {
+                                    return false;
+                                }
+                                return true;
                             });
                         }
-                        $grid.bind('iggridselectionrowselectionchanging', function (eventObject) {
-                            return (String($grid.data("enable")) === "false") ? false : true;
+                        $grid.bind('iggridselectionrowselectionchanging', function (eventObject, ui) {
+                            if (String($grid.data("enable")) === "false")
+                                return false;
+                            var disables = $grid.data("selectionDisables");
+                            if (disables && uk.util.isNullOrUndefined(ui.row.startIndex)
+                                && !uk.util.isNullOrUndefined(_.find(disables, function (d) { return ui.row.id === d; }))) {
+                                return false;
+                            }
+                            return true;
                         });
                         $grid.bind('selectionchanged', function () {
                             $grid.data("ui-changed", true);
                             if (data.multiple) {
-                                var selected = $grid.ntsGridList('getSelected');
-                                if (!nts.uk.util.isNullOrEmpty(selected)) {
-                                    data.value(_.map(selected, function (s) { return s.id; }));
+                                var selected_1 = $grid.ntsGridList('getSelected');
+                                var disables_1 = $grid.data("selectionDisables");
+                                var disableIds_1 = [];
+                                if (disables_1) {
+                                    _.forEach(selected_1, function (s, i) {
+                                        _.forEach(disables_1, function (d) {
+                                            if (d === s.id) {
+                                                $grid.igGridSelection("deselectRowById", d);
+                                                disableIds_1.push(i);
+                                                return false;
+                                            }
+                                        });
+                                    });
+                                    disableIds_1.sort(function (i1, i2) { return i2 - i1; }).forEach(function (d) {
+                                        selected_1.splice(d, 1);
+                                    });
+                                }
+                                if (!nts.uk.util.isNullOrEmpty(selected_1)) {
+                                    data.value(_.map(selected_1, function (s) { return s.id; }));
                                 }
                                 else {
                                     data.value([]);
@@ -16957,6 +17009,7 @@ var nts;
                         var optionsValue = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
                         var gridSource = $grid.igGrid('option', 'dataSource');
                         var sources = (data.dataSource !== undefined ? data.dataSource() : data.options());
+                        var disables = ko.unwrap(data.selectionDisables);
                         if ($grid.data("enable") !== enable) {
                             if (!enable) {
                                 $grid.ntsGridList('unsetupSelecting');
@@ -16968,6 +17021,14 @@ var nts;
                             }
                         }
                         $grid.data("enable", enable);
+                        if (disables) {
+                            _.forEach(disables, function (d) {
+                                var $row = $grid.igGrid("rowById", d, false);
+                                if ($row && !$row.hasClass("row-disable")) {
+                                    $row.addClass("row-disable");
+                                }
+                            });
+                        }
                         if (String($grid.attr("filtered")) === "true") {
                             var filteredSource_1 = [];
                             _.forEach(gridSource, function (item) {
@@ -23534,6 +23595,7 @@ var nts;
                         functions.CHECK_ALL = "checkAll";
                         functions.UNCHECK_ALL = "uncheckAll";
                         functions.HEADER_TEXT = "headerText";
+                        functions.SELECTED_SHEET = "selectedSheet";
                         functions.DESTROY = "destroy";
                         /**
                          * Actions
@@ -23581,6 +23643,8 @@ var nts;
                                 case functions.DESTROY:
                                     destroy($grid);
                                     break;
+                                case functions.SELECTED_SHEET:
+                                    return getSelectedSheet($grid);
                                 case functions.UPDATED_CELLS:
                                     return $grid.data(internal.UPDATED_CELLS);
                                 case functions.ERRORS:
@@ -23870,6 +23934,17 @@ var nts;
                                 }
                             });
                             return updated;
+                        }
+                        /**
+                         * Get selected sheet.
+                         */
+                        function getSelectedSheet($grid) {
+                            var sheet = $grid.data(internal.SHEETS);
+                            if (!sheet || !sheet.currentSheet)
+                                return;
+                            return _.find(sheet.sheets, function (s) {
+                                return s.name === sheet.currentSheet;
+                            });
                         }
                         /**
                          * Destroy
