@@ -54,8 +54,10 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             }
             //event select change
             self.selectedCode.subscribe((code) => {
-                block.invisible();
+                _.defer(() => {nts.uk.ui.errors.clearAll()});
                 nts.uk.ui.errors.clearAll();
+                
+                block.invisible();
                 if (code) {
                     service.getListItemOutput(code).done(r => {
                         let dataSorted = [];
@@ -109,8 +111,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                         }
                     }).always(function() {
                         self.updateMode(code);
-                        block.clear();
                         nts.uk.ui.errors.clearAll();
+                        block.clear();
                     });
                 } else {
                     block.clear();
