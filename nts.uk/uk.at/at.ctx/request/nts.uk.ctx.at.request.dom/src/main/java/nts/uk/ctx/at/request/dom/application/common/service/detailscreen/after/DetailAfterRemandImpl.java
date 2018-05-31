@@ -13,6 +13,7 @@ import nts.arc.i18n.I18NText;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+<<<<<<< HEAD
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AllDayHalfDayLeaveAtr;
@@ -48,6 +49,21 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+=======
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationContentService;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
+import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbedded;
+import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbeddedRepository;
+import nts.uk.ctx.at.request.dom.setting.company.mailsetting.remandsetting.ContentOfRemandMail;
+import nts.uk.ctx.at.request.dom.setting.company.mailsetting.remandsetting.ContentOfRemandMailRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
+import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
+>>>>>>> pj/at/dev/Team_D/KDL034
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -87,6 +103,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 
 	@Inject
+<<<<<<< HEAD
 	private WorkTypeRepository repoWorkType;
 
 	@Inject
@@ -475,6 +492,28 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 					}
 				}
 
+=======
+	private ContentOfRemandMailRepository remandRepo;
+
+	@Inject
+	private UrlEmbeddedRepository urlEmbeddedRepo;
+
+	@Inject 
+	private IApplicationContentService appContentService;
+	
+	@Override
+	public MailSenderResult doRemand(String companyID, String appID, Long version, Integer order, String returnReason) {
+		Application_New application = applicationRepository.findByID(companyID, appID).get();
+		application.setReversionReason(new AppReason(returnReason));
+		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository
+				.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value).get();
+		MailSenderResult mailSenderResult = null;
+		if (order != null) {
+			// 差し戻し先が承認者の場合
+			List<String> employeeList = approvalRootStateAdapter.doRemandForApprover(companyID, appID, order);
+			if (appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN)) {
+				mailSenderResult = this.getMailSenderResult(application, employeeList);
+>>>>>>> pj/at/dev/Team_D/KDL034
 			} else {
 				content += I18NText.getText("CMM045_249")
 						+ I18NText.getText("CMM045_230", appAbsen.getWorkTimeCode().v())
@@ -485,6 +524,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 								? appAbsen.getStartTime2().v() + I18NText.getText("CMM045_100") : "")
 						+ (!Objects.isNull(appAbsen.getEndTime2()) ? appAbsen.getEndTime2().v() : "");
 			}
+<<<<<<< HEAD
 		}
 		return content + "\n" + appReason;
 	}
@@ -525,12 +565,24 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 						+ (!Objects.isNull(appWork.getBreakTimeStart1()) ? clockShorHm(appWork.getBreakTimeStart1()) + I18NText.getText("CMM045_100")
 								: "" + (!Objects.isNull(appWork.getBreakTimeEnd1())
 										? clockShorHm(appWork.getBreakTimeEnd1()) : ""));
+=======
+		} else {
+			// 差し戻し先が申請本人の場合
+			approvalRootStateAdapter.doRemandForApplicant(companyID, appID);
+			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.REMAND);
+			application.getReflectionInformation().setStateReflection(ReflectedState_New.REMAND);
+			if (appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN)) {
+				mailSenderResult = this.getMailSenderResult(application, Arrays.asList(application.getEmployeeID()));
+			} else {
+				mailSenderResult = new MailSenderResult(null, null);
+>>>>>>> pj/at/dev/Team_D/KDL034
 			}
 		}
 
 		return content + "\n" + appReason;
 	}
 
+<<<<<<< HEAD
 	private String getBusinessTripContent(Application_New app, String companyID, String appID, String appReason) {
 		// TODO
 		String content = I18NText.getText("CMM045_254") + I18NText.getText("CMM045_255");
@@ -987,6 +1039,58 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 							+ (leaveApp.getLate2().value == 0 ? ""
 									: "×" + I18NText.getText("CMM045_247") + leaveApp.getEarlyTime2().toString());
 				}
+=======
+	@Override
+	public MailSenderResult getMailSenderResult(Application_New application, List<String> employeeList) {
+		String mailTitle = "";
+		String mailBody = "";
+		String cid = AppContexts.user().companyId();
+		String appContent = appContentService.getApplicationContent(application);	
+		ContentOfRemandMail remandTemp = remandRepo.getRemandMailById(cid).orElse(null);
+		if (!Objects.isNull(remandTemp)) {
+			mailTitle = remandTemp.getMailTitle().v();
+			mailBody = remandTemp.getMailBody().v();
+		}
+		String emp = employeeAdapter.empEmail(AppContexts.user().employeeId());
+		if (Strings.isEmpty(emp)) {
+			emp = employeeAdapter.getEmployeeName(AppContexts.user().employeeId());
+		}
+		Optional<UrlEmbedded> urlEmbedded = urlEmbeddedRepo.getUrlEmbeddedById(AppContexts.user().companyId());
+		List<String> successList = new ArrayList<>();
+		List<String> errorList = new ArrayList<>();
+		for (String employee : employeeList) {
+			String employeeName = employeeAdapter.getEmployeeName(employee);
+			// Using RQL 419 instead (1 not have mail)
+			String employeeMail = employeeAdapter.empEmail(employee);
+			employeeMail = "hiep.ld@3si.vn";
+			// TODO
+			String urlInfo = "";
+			if (urlEmbedded.isPresent()) {
+				int urlEmbeddedCls = urlEmbedded.get().getUrlEmbedded().value;
+				NotUseAtr checkUrl = NotUseAtr.valueOf(urlEmbeddedCls);
+				if (checkUrl == NotUseAtr.USE) {
+					urlInfo = registerEmbededURL.obtainApplicationEmbeddedUrl(application.getAppID(),
+							application.getAppType().value, application.getPrePostAtr().value, employee);
+				}
+			}
+			if (!Strings.isBlank(urlInfo)) {
+				appContent += "\n" + I18NText.getText("KDL030_30") + " " + application.getAppID() + "\n" + urlInfo;
+			}
+			String mailContentToSend = I18NText.getText("Msg_1060",
+					employeeAdapter.getEmployeeName(AppContexts.user().employeeId()), mailBody,
+					GeneralDate.today().toString(), application.getAppType().nameId,
+					employeeAdapter.getEmployeeName(application.getEmployeeID()),
+					application.getAppDate().toLocalDate().toString(), appContent,
+					employeeAdapter.getEmployeeName(AppContexts.user().employeeId()), emp);
+			if (Strings.isBlank(employeeMail)) {
+				errorList.add(I18NText.getText("Msg_768", employeeName));
+				continue;
+			} else {
+				// TODO
+				mailsender.send("mailadmin@uk.com", employeeMail,
+						new MailContents(mailTitle, mailContentToSend));
+				successList.add(employeeName);
+>>>>>>> pj/at/dev/Team_D/KDL034
 			}
 		}
 		return content + "\n" + appReason;

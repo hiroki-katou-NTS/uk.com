@@ -34,6 +34,15 @@ __viewContext.ready(function() {
     var screenModel: any = {};
     nts.uk.at.view.kaf000.b.service.getAppByListID(listValue)
         .done((data) => {
+<<<<<<< HEAD
+            listAppMeta = data;
+            currentApp = _.find(listAppMeta, x => {return x.appID == currentValue; });
+            initScreen(screenModel, listAppMeta, currentApp);
+        }).fail((res) =>{
+            nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                          nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+            });
+=======
             _.forEach(listValue, (value) => {
                 listAppMeta.push(_.find(data, (o) => { return o.appID == value; }));
             });
@@ -44,6 +53,7 @@ __viewContext.ready(function() {
             nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
                           nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
             });
+>>>>>>> delivery/release_user
         });
     }
 
