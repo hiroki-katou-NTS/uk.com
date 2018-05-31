@@ -6,7 +6,9 @@ package nts.uk.ctx.at.shared.dom.workrule.closure.service;
 
 import java.util.List;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -43,4 +45,11 @@ public interface ClosureService {
 	 */
 	// 2018.4.4 add shuichi_ishida
 	public List<ClosureInfo> getAllClosureInfo();
+	/**
+	 * 社員に対応する処理締めを取得する
+	 * @param employeeId
+	 * @param baseDate
+	 * @return
+	 */
+	public Closure getClosureDataByEmployee(String employeeId, GeneralDate baseDate);
 }

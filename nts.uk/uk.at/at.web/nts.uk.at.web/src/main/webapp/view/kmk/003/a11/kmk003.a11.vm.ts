@@ -19,6 +19,8 @@ module a11 {
      */
     class ScreenModel {
         
+        isNewMode: KnockoutObservable<boolean>;
+        
         // Screen mode
         isDetailMode: KnockoutObservable<boolean>;
         isSimpleMode: KnockoutObservable<boolean>;
@@ -53,8 +55,15 @@ module a11 {
         /**
         * Constructor.
         */
-        constructor(screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto) {
+        constructor(isNewMode: KnockoutObservable<boolean>, screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto) {
             let _self = this;           
+            _self.isNewMode = isNewMode;
+            _self.isNewMode.subscribe((v) => {
+                // Set default value for switch button
+                if (v) {
+                    if (!nts.uk.util.isNullOrUndefined(_self.workdayOffTimeUseDivision)) _self.workdayOffTimeUseDivision(true);
+                }    
+            });
             
             // Check exist
             if (nts.uk.util.isNullOrUndefined(model) || nts.uk.util.isNullOrUndefined(settingEnum)) {
@@ -228,7 +237,7 @@ module a11 {
             let model = input.model;
             let settingEnum = input.enum;
     
-            let screenModel = new ScreenModel(screenMode, model, settingEnum);
+            let screenModel = new ScreenModel(input.isNewMode, screenMode, model, settingEnum);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);

@@ -23,6 +23,12 @@ public class KrcmtDaiPerformanceFun extends UkJpaEntity{
 	@Column(name = "DISPLAY_NAME_OF_FUNCTION")
 	public String displayNameOfFunction;
 	
+	@Column(name = "DISPLAY_ORDER")
+	public int displayOrder;
+	
+	@Column(name = "INITAL_VALUE")
+	public int initValue;
+	
 	@Override
 	protected Object getKey() {
 		return this.functionNo;

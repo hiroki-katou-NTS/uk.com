@@ -270,8 +270,9 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             settingList.push(new ApprovalFunctionSetting(null, 3));
             settingList.push(new ApprovalFunctionSetting(null, 4));
             settingList.push(new ApprovalFunctionSetting(null, 6));
-            settingList.push(new ApprovalFunctionSetting(null, 7));
             settingList.push(new ApprovalFunctionSetting(null, 8));
+            settingList.push(new ApprovalFunctionSetting(null, 9));
+            settingList.push(new ApprovalFunctionSetting(null, 7));
             settingList.push(new ApprovalFunctionSetting(null, 10));
             settingList.push(new ApprovalFunctionSetting(null, 14));
             return settingList;

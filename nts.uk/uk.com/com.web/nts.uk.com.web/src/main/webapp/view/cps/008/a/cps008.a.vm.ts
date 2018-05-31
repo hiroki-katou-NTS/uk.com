@@ -145,13 +145,13 @@ module cps008.a.viewmodel {
                 data: ILayout = ko.toJS(self.layout),
                 layouts: Array<ILayout> = ko.toJS(self.layouts);
 
+            data.classifications = _.map(data.classifications, m => _.omit(m, ["items", "renders"]));
+
             setShared('CPS008_PARAM', data);
             modal('../c/index.xhtml').onClosed(() => {
                 let _data = getShared('CPS008C_RESPONE');
-                if (_data) {
+                if (_data != undefined) {
                     self.start(_data);
-                } else {
-                    self.start(data.code);
                 }
             });
         }
@@ -160,6 +160,8 @@ module cps008.a.viewmodel {
             let self = this,
                 data: ILayout = ko.toJS(self.layout),
                 layouts: Array<ILayout> = ko.toJS(self.layouts);
+
+            data.classifications = _.map(data.classifications, m => _.omit(m, ["items", "renders"]));
 
             data.action = LAYOUT_ACTION.REMOVE;
             let indexItemDelete = _.findIndex(ko.toJS(self.layouts), function(item: any) { return item.id == data.id; });
@@ -207,12 +209,15 @@ module cps008.a.viewmodel {
             let self = this,
                 layout: Layout = self.layout(),
                 data: ILayout = ko.toJS(self.layout);
+
+            data.classifications = _.map(data.classifications, m => _.omit(m, ["items", "renders"]));
+
             setShared('CPS008B_PARAM', data);
             modal('../b/index.xhtml').onClosed(() => {
                 let dto: Array<any> = getShared('CPS008B_VALUE');
 
                 if (dto && dto.length) {
-                    layout.classifications(_.map(dto, x => _.omit(x, ["items"])));
+                    layout.classifications(_.map(dto, x => _.omit(x, ["items", "renders"])));
                     layout.action(LAYOUT_ACTION.UPDATE);
                 }
             });

@@ -29,7 +29,7 @@ public class RegulationInfoEmployeeAcFinder implements RegulationInfoEmployeeAda
 	
 	
 	private EmployeeSearchQueryDto convertEmployeeSearchQueryDto(RegulationInfoEmployeeAdapterImport r){
-		 EmployeeSearchQueryDtoBuilder eBuilder = EmployeeSearchQueryDto.builder().baseDate(r.getBaseDate()).referenceRange(r.getReferenceRange()).filterByEmployment(r.getFilterByEmployment()).employmentCodes(r.getEmploymentCodes()).filterByDepartment(r.getFilterByDepartment()).departmentCodes(r.getDepartmentCodes()).filterByWorkplace(r.getFilterByWorkplace()).workplaceCodes(r.getWorkplaceCodes()).filterByClassification(r.getFilterByClassification()).classificationCodes(r.getClassificationCodes()).filterByJobTitle(r.getFilterByJobTitle()).jobTitleCodes(r.getJobTitleCodes()).filterByWorktype(r.getFilterByWorktype()).periodStart(GeneralDateTime.legacyDateTime(r.getPeriodStart().date())).periodEnd(GeneralDateTime.legacyDateTime(r.getPeriodEnd().date())).includeIncumbents(r.getIncludeIncumbents()).includeWorkersOnLeave(r.getIncludeWorkersOnLeave()).includeOccupancy(r.getIncludeOccupancy()).includeRetirees(r.getIncludeRetirees()).includeAreOnLoan(r.getIncludeAreOnLoan()).includeGoingOnLoan(r.getIncludeGoingOnLoan()).retireStart(GeneralDateTime.legacyDateTime(r.getRetireStart().date())).retireEnd(GeneralDateTime.legacyDateTime(r.getRetireEnd().date())).sortOrderNo(r.getSortOrderNo()).nameType(r.getNameType()).systemType(r.getSystemType());
+		 EmployeeSearchQueryDtoBuilder eBuilder = EmployeeSearchQueryDto.builder().baseDate(r.getBaseDate()).referenceRange(r.getReferenceRange()).filterByEmployment(r.getFilterByEmployment()).employmentCodes(r.getEmploymentCodes()).filterByDepartment(r.getFilterByDepartment()).departmentCodes(r.getDepartmentCodes()).filterByWorkplace(r.getFilterByWorkplace()).workplaceCodes(r.getWorkplaceCodes()).filterByClassification(r.getFilterByClassification()).classificationCodes(r.getClassificationCodes()).filterByJobTitle(r.getFilterByJobTitle()).jobTitleCodes(r.getJobTitleCodes()).filterByWorktype(r.getFilterByWorktype()).periodStart(GeneralDateTime.legacyDateTime(r.getPeriodStart().date())).periodEnd(GeneralDateTime.legacyDateTime(r.getPeriodEnd().date())).includeIncumbents(r.getIncludeIncumbents()).includeWorkersOnLeave(r.getIncludeWorkersOnLeave()).includeOccupancy(r.getIncludeOccupancy()).includeRetirees(r.getIncludeRetirees()).includeAreOnLoan(r.getIncludeAreOnLoan()).includeGoingOnLoan(r.getIncludeGoingOnLoan()).retireStart(GeneralDateTime.legacyDateTime(r.getRetireStart().date())).retireEnd(GeneralDateTime.legacyDateTime(r.getRetireEnd().date())).sortOrderNo(r.getSortOrderNo()).nameType(r.getNameType()).systemType(r.getSystemType()).filterByClosure(r.isFilterByClosure());
 		 return eBuilder.build();
 	}
 	private RegulationInfoEmployeeAdapterDto convertDto(RegulationInfoEmployeeExport r){
@@ -42,5 +42,9 @@ public class RegulationInfoEmployeeAcFinder implements RegulationInfoEmployeeAda
 		 regulationInfoEmployeeAdapterDto.setWorkplaceName(r.getWorkplaceName());
 		 return regulationInfoEmployeeAdapterDto;
 	}
-	
+
+	public List<String> sortEmployee(String comId, List<String> sIds, Integer systemType, Integer orderNo,
+			Integer nameType, GeneralDateTime referenceDate) {
+		return egulationInfoEmployeePub.sortEmployee(comId, sIds, systemType, orderNo, nameType, referenceDate);
+	}
 }

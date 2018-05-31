@@ -11,8 +11,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceAuthority;
 import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformAuthorRepo;
+import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceAuthority;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPerformanceAut;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPerformanceAutPk;
 
@@ -38,14 +38,14 @@ public class JpaDailyPerformanceAuthorityRepository extends JpaRepository
 			if (avaiBigDecimal.intValue() == 1) {
 				availability = true;
 			}
-			results.add(new DailyPerformanceAuthority(roleId, ent.pk.functionNo, availability));
+			results.add(new DailyPerformanceAuthority(ent.pk.companyId, roleId, ent.pk.functionNo, availability));
 		});
 		return results;
 	}
 
 	@Override
 	public void save(DailyPerformanceAuthority daiPerAuthority) {
-		KrcmtDaiPerformanceAutPk primaryKey = new KrcmtDaiPerformanceAutPk(daiPerAuthority.getRoleID(),
+		KrcmtDaiPerformanceAutPk primaryKey = new KrcmtDaiPerformanceAutPk(daiPerAuthority.getCompanyId(), daiPerAuthority.getRoleID(),
 				daiPerAuthority.getFunctionNo().v());
 		Optional<KrcmtDaiPerformanceAut> daiPerAthrOptional = this.queryProxy().find(primaryKey,
 				KrcmtDaiPerformanceAut.class);

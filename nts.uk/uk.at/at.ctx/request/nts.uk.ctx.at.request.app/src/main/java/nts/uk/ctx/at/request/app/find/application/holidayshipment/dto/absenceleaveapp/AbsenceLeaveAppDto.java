@@ -48,7 +48,7 @@ public class AbsenceLeaveAppDto extends HolidayShipmentAppDto {
 		List<SubDigestionDto> subDigestions = domain.getSubDigestions().stream()
 				.map(x -> SubDigestionDto.createFromDomain(x)).collect(Collectors.toList());
 
-		AbsenceLeaveAppDto result = new AbsenceLeaveAppDto(domain.getAppID(), domain.getWorkTypeCD(),
+		AbsenceLeaveAppDto result = new AbsenceLeaveAppDto(domain.getAppID(), domain.getWorkTypeCD().v(),
 				domain.getChangeWorkHoursType().value, domain.getWorkTimeCD(), WorkTime1, WorkTime2,
 				domain.getSubTargetDigestions(), subDigestions, appDate);
 

@@ -67,4 +67,29 @@ public class ScheduleCreateContent extends DomainObject{
 		memento.setCreateMethodAtr(this.createMethodAtr);
 		reCreateContent.saveToMemento(memento);
 	}
+
+	public void setImplementAtr(ImplementAtr implementAtr) {
+		this.implementAtr = implementAtr;
+	}
+	
+	public ScheduleCreateContent() {
+	}
+
+	public void setReCreateContent(ReCreateContent reCreateContent) {
+		this.reCreateContent = reCreateContent;
+	}
+
+	public void setConfirm(Boolean confirm) {
+		this.confirm = confirm;
+	}
+
+	public void setCreateMethodAtr(CreateMethodAtr createMethodAtr) {
+		this.createMethodAtr = createMethodAtr;
+	}
+
+	public void setExecutionId(String executionId) {
+		this.executionId = executionId;
+	}
+	
+	
 }

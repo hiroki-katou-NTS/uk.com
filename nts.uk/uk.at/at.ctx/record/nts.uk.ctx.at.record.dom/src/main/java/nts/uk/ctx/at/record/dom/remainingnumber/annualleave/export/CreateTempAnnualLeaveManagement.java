@@ -13,6 +13,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleAdapter;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleSidDto;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.GetVacationAddSet;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VacationAddSet;
@@ -65,6 +66,9 @@ public class CreateTempAnnualLeaveManagement {
 	/** 休暇加算設定の取得 */
 	@Inject
 	private GetVacationAddSet getVacationAddSet;
+	/** 月別実績の勤怠時間 */
+	@Inject
+	private AttendanceTimeOfMonthlyRepository attendanceTimeOfMonthlyRepo;
 	
 	/**
 	 * 暫定年休管理データを作成する
@@ -117,6 +121,10 @@ public class CreateTempAnnualLeaveManagement {
 			//*****（未）　設計待ち。
 		}
 		
+		// 年休フレックス補填分を暫定年休管理データに反映する
+		this.reflecttempManagementDataFromCompFlex();
+		
+		// 作成した暫定年休管理データを返す
 		return this.tempAnnualLeaveMngs;
 	}
 	
@@ -243,6 +251,30 @@ public class CreateTempAnnualLeaveManagement {
 			tempAnnualLeaveMng.setScheduleRecordAtr(ScheduleRecordAtr.SCHEDULE);
 
 			// 「暫定年休管理データ」を返す
+			this.tempAnnualLeaveMngs.add(tempAnnualLeaveMng);
+		}
+	}
+	
+	/**
+	 * 年休フレックス補填分を暫定年休管理データに反映する
+	 */
+	private void reflecttempManagementDataFromCompFlex(){
+
+		// 「月別実績の勤怠時間」を取得
+		val attendanceTimeOfMonthlys =
+				this.attendanceTimeOfMonthlyRepo.findByDate(this.employeeId, this.period.end());
+		for (val attendanceTimeOfMonthly : attendanceTimeOfMonthlys){
+			val monthlyCalc = attendanceTimeOfMonthly.getMonthlyCalculation();
+			
+			// 「暫定年休管理データ」を作成
+			TempAnnualLeaveManagement tempAnnualLeaveMng = new TempAnnualLeaveManagement(
+					this.employeeId, attendanceTimeOfMonthly.getDatePeriod().end());
+			tempAnnualLeaveMng.setAnnualLeaveUse(new ManagementDays(
+					monthlyCalc.getFlexTime().getFlexShortDeductTime().getAnnualLeaveDeductDays().v()));
+			tempAnnualLeaveMng.setWorkType(new WorkTypeCode("DMY"));
+			tempAnnualLeaveMng.setScheduleRecordAtr(ScheduleRecordAtr.RECORD);
+			
+			// 「暫定年休管理データ」に追加
 			this.tempAnnualLeaveMngs.add(tempAnnualLeaveMng);
 		}
 	}

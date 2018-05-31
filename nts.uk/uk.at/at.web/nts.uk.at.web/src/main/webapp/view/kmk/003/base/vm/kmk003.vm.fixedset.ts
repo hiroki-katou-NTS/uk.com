@@ -277,7 +277,7 @@ module nts.uk.at.view.kmk003.a {
                     return dataDTO;
                 }
                 
-                resetData(){
+                resetData(isNewMode?:boolean){
                     this.offdayWorkTimezone.resetData();
                     this.commonSetting.resetData();
                     this.useHalfDayShift(false);
@@ -291,7 +291,9 @@ module nts.uk.at.view.kmk003.a {
                     //update ver7.2 
                     this.legalOTSetting(0);
                     // Update phase 2
-                    this.calculationSetting.resetData();
+                    if (!isNewMode) {
+                        this.calculationSetting.resetData();
+                    }
                 }
                 
                 getGoWork1Stamp(): StampReflectTimezoneModel { let self = this; return _.find(self.lstStampReflectTimezone, p => p.workNo() == 1 && p.classification() == 0) }

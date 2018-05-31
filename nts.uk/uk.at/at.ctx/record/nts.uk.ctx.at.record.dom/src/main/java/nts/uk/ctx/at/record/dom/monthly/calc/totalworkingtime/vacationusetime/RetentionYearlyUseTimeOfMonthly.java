@@ -16,7 +16,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author shuichi_ishida
  */
 @Getter
-public class RetentionYearlyUseTimeOfMonthly {
+public class RetentionYearlyUseTimeOfMonthly implements Cloneable {
 	
 	/** 使用時間 */
 	private AttendanceTimeMonth useTime;
@@ -44,6 +44,20 @@ public class RetentionYearlyUseTimeOfMonthly {
 		domain.useTime = useTime;
 		return domain;
 	}
+
+	@Override
+	public RetentionYearlyUseTimeOfMonthly clone() {
+		RetentionYearlyUseTimeOfMonthly cloned = new RetentionYearlyUseTimeOfMonthly();
+		try {
+			cloned.useTime = new AttendanceTimeMonth(this.useTime.v());
+			// ※　Shallow Copy.
+			cloned.timeSeriesWorks = this.timeSeriesWorks;
+		}
+		catch (Exception e){
+			throw new RuntimeException("RetentionYearlyUseTimeOfMonthly clone error.");
+		}
+		return cloned;
+	}
 	
 	/**
 	 * 積立年休使用時間を確認する
@@ -62,7 +76,9 @@ public class RetentionYearlyUseTimeOfMonthly {
 			// 「日別実績の積立年休」を取得する
 			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
 			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
+			if (totalWorkingTime.getHolidayOfDaily() == null) return;
 			val holidayOfDaily = totalWorkingTime.getHolidayOfDaily();
+			if (holidayOfDaily.getYearlyReserved() == null) return;
 			val yearlyReserved = holidayOfDaily.getYearlyReserved();
 			
 			// 取得した使用時間を「月別実績の積立年休使用時間」に入れる
@@ -81,8 +97,24 @@ public class RetentionYearlyUseTimeOfMonthly {
 		
 		for (val timeSeriesWork : this.timeSeriesWorks.values()){
 			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
-			this.useTime.addMinutes(timeSeriesWork.getRetentionYearlyUseTime().getUseTime().v());
+			this.addMinuteToUseTime(timeSeriesWork.getRetentionYearlyUseTime().getUseTime().v());
 		}
+	}
+	
+	/**
+	 * 積立年休使用時間を求める
+	 * @param datePeriod 期間
+	 * @return 積立年休使用時間
+	 */
+	public AttendanceTimeMonth getTotalUseTime(DatePeriod datePeriod){
+		
+		AttendanceTimeMonth returnTime = new AttendanceTimeMonth(0);
+		
+		for (val timeSeriesWork : this.timeSeriesWorks.values()){
+			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
+			returnTime = returnTime.addMinutes(timeSeriesWork.getRetentionYearlyUseTime().getUseTime().v());
+		}
+		return returnTime;
 	}
 	
 	/**

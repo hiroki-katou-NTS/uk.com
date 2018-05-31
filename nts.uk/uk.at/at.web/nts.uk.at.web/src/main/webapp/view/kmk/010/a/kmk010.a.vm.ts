@@ -220,6 +220,7 @@ module nts.uk.at.view.kmk010.a {
                     });
                     
                     if (!stopLoop) {
+                        nts.uk.ui.block.clear();
                         return;    
                     }
                     
@@ -452,6 +453,7 @@ module nts.uk.at.view.kmk010.a {
                         nts.uk.ui.windows.setShared('AllAttendanceObj', dataCanSelecte);
                         nts.uk.ui.windows.setShared('SelectedAttendanceId', self.attendanceItemIds());
                         nts.uk.ui.windows.setShared('Multiple', true);
+                        nts.uk.ui.windows.setShared('MonthlyMode', true);
                         nts.uk.ui.windows.sub.modal('/view/kdl/021/a/index.xhtml').onClosed(function(): any {
                             var resId: string[] = nts.uk.ui.windows.getShared('selectedChildAttendace');
                             if (resId && resId.length > 0) {

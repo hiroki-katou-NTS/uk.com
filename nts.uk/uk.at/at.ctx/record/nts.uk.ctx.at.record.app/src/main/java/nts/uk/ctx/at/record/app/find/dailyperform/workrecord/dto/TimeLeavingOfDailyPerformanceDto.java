@@ -63,6 +63,12 @@ public class TimeLeavingOfDailyPerformanceDto extends AttendanceItemCommon {
 		if(!this.isHaveData()) {
 			return null;
 		}
+		if (emp == null) {
+			emp = this.employeeId();
+		}
+		if (date == null) {
+			date = this.workingDate();
+		}
 		return new TimeLeavingOfDailyPerformance(emp, new WorkTimes(toWorkTime()),
 				ConvertHelper.mapTo(workAndLeave, c -> toTimeLeaveWork(c)), date);
 	}

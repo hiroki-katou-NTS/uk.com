@@ -39,7 +39,8 @@
 				<button id="register" tabindex="2" class="proceed group-button-1"
 					data-bind="click: register, enable:  $root.errors.isEmpty">#{i18n.getText('CMM001_2')}</button>
 				<!-- A1_3 -->
-				<button id="setting" tabindex="3" class="group-button-1">#{i18n.getText('CMM001_3')}</button>
+				<button id="setting" tabindex="3" class="group-button-1"
+					data-bind="click: openEDialog, enable: true">#{i18n.getText('CMM001_3')}</button>
 				<!-- A1_4 -->
 				<button id="masterLog" tabindex="4" class="group-button-1">#{i18n.getText('CMM001_4')}</button>
 			</div>

@@ -229,8 +229,8 @@ public class DataDialogWithTypeProcessor {
 	}
 	
 	// get application NO19
-	public List<EnumConstant> getNameAppliction(List<String> errorCodes){
+	public List<EnumConstant> getNameAppliction(){
 		String companyId = AppContexts.user().companyId();
-		return repo.findErAlApplication(companyId, errorCodes);
+		return repo.findApplicationCall(companyId);
 	}
 }

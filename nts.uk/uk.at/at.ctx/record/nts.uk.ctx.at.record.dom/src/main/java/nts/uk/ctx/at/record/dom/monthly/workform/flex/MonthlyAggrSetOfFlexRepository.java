@@ -17,7 +17,7 @@ public interface MonthlyAggrSetOfFlexRepository {
 
 	/**
 	 * 登録および更新
-	 * @param roundingSetOfMonthly フレックス勤務の月別集計設定
+	 * @param monthlyAggrSetOfFlex フレックス勤務の月別集計設定
 	 */
 	void persistAndUpdate(MonthlyAggrSetOfFlex monthlyAggrSetOfFlex);
 	

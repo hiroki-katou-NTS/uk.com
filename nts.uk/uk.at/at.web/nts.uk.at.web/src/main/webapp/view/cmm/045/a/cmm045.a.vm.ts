@@ -4,6 +4,7 @@ module cmm045.a.viewmodel {
     import block = nts.uk.ui.block;
     import character = nts.uk.characteristics;
     import request = nts.uk.request;
+    import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel {
         roundingRules: KnockoutObservableArray<vmbase.ApplicationDisplayAtr> = ko.observableArray([]);
         selectedRuleCode: KnockoutObservable<any> = ko.observable(0);// switch button
@@ -26,13 +27,17 @@ module cmm045.a.viewmodel {
         approvalMode: KnockoutObservable<boolean> = ko.observable(false);
         approvalCount: KnockoutObservable<vmbase.ApplicationStatus> = ko.observable(new vmbase.ApplicationStatus(0, 0, 0, 0, 0, 0));
         itemList: KnockoutObservableArray<any>;
-        selectedIds: KnockoutObservableArray<any> = ko.observableArray([1, 2, 3, 4, 5, 6]);// check box
+        selectedIds: KnockoutObservableArray<any> = ko.observableArray([1,2,3,4,5,6]);// check box
         dateValue: KnockoutObservable<vmbase.Date> = ko.observable({ startDate: '', endDate: '' });
         itemApplication: KnockoutObservableArray<vmbase.ChoseApplicationList> = ko.observableArray([]);
         selectedCode: KnockoutObservable<number> = ko.observable(-1);// combo box
         mode: KnockoutObservable<number> = ko.observable(1);
         startDateString: KnockoutObservable<string> = ko.observable("");
         endDateString: KnockoutObservable<string> = ko.observable("");
+        
+        //spr
+        isSpr: KnockoutObservable<boolean> = ko.observable(false);
+        extractCondition: KnockoutObservable<number> = ko.observable(0);
         constructor() {
             let self = this;
             self.itemList = ko.observableArray([
@@ -61,10 +66,33 @@ module cmm045.a.viewmodel {
             if (urlParam !== undefined) {
                 character.save('AppListExtractCondition', null);
             }
+            //get param spr
+            let paramSprCmm045: vmbase.IntefaceSPR = __viewContext.transferred.value == null ? 
+                    null : __viewContext.transferred.value.PARAM_SPR_CMM045;
+//            let paramSprCmm045: vmbase.IntefaceSPR = {
+//                mode: 1,//1=承認一覧
+//                startDate: '2018/05/02',//yyyy-mm-dd //期間（開始日）
+//                endDate: '2018/05/02',//yyyy-mm-dd //期間（終了日）
+//                extractCondition: 1,//０＝全て、１＝早出・普通残業のみ
+//                agreementTime36: 0//０＝表示しない、1＝表示する
+//            }
+            //spr call
+            if(paramSprCmm045 !== undefined && paramSprCmm045 !== null){
+                character.save('AppListExtractCondition', null);
+                let date: vmbase.Date = { startDate: paramSprCmm045.startDate, endDate: paramSprCmm045.endDate }
+                self.dateValue(date);
+                self.mode(paramSprCmm045.mode);
+                self.isSpr(true);
+                self.extractCondition(paramSprCmm045.extractCondition);
+//                let selectedType = paramSprCmm045.extractCondition == 0 ? -1 : 0;
+//                self.selectedCode(selectedType);
+//                self.selectedIds([1,2,3,4,5,6]);
+                
+            }
             character.restore("AppListExtractCondition").done((obj) => {
 //                console.log(obj);
                 characterData = obj;
-                if (obj !== undefined && obj !== null) {
+                if (obj !== undefined && obj !== null && !self.isSpr()) {
                     let date: vmbase.Date = { startDate: obj.startDate, endDate: obj.endDate }
                     self.dateValue(date);
                     self.selectedIds([]);
@@ -90,16 +118,17 @@ module cmm045.a.viewmodel {
                     //combo box
                     appCHeck = obj.appType;
                 }
-                if (urlParam === undefined) {
+                if (urlParam === undefined && !self.isSpr()) {
                     self.mode(characterData.appListAtr);
-                } else {
+                } 
+                if(urlParam !== undefined && !self.isSpr()){
                     self.mode(urlParam);
                 }
 
-                let param: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
+                let condition: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
                     self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
                     self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), self.selectedRuleCode(), [], '');
-
+                let param = new vmbase.AppListParamFilter(condition, self.isSpr(), self.extractCondition());
                 service.getApplicationDisplayAtr().done(function(data1) {
                     _.each(data1, function(obj) {
                         self.roundingRules.push(new vmbase.ApplicationDisplayAtr(obj.value, obj.localizedName));
@@ -134,7 +163,7 @@ module cmm045.a.viewmodel {
                         });
                         _.each(data.lstMasterInfo, function(master) {
                             self.lstAppMaster.push(new vmbase.AppMasterInfo(master.appID, master.appType, master.dispName, master.empName,master.inpEmpName,
-                                master.workplaceName, master.statusFrameAtr, master.phaseStatus, master.checkAddNote, master.checkTimecolor));
+                                master.workplaceName, master.statusFrameAtr, master.phaseStatus, master.checkAddNote, master.checkTimecolor, master.detailSet));
                         });
                         _.each(data.lstAppGoBack, function(goback) {
                             lstGoBack.push(new vmbase.AppGoBackInfoFull(goback.appID, goback.goWorkAtr1, goback.workTimeStart1,
@@ -150,13 +179,20 @@ module cmm045.a.viewmodel {
                                 overTime.workClockTo2, overTime.total, lstFrame, overTime.overTimeShiftNight, overTime.flexExessTime));
                         });
                         _.each(data.lstAppGroup, function(group) {
-                            lstAppGroup.push(new vmbase.AppPrePostGroup(group.preAppID, group.postAppID, group.time, group.appPre, group.reasonAppPre, group.appPreHd));
+                            lstAppGroup.push(new vmbase.AppPrePostGroup(group.preAppID, group.postAppID, group.time,group.strTime1,group.endTime1,group.strTime2,group.endTime2, group.appPre, group.reasonAppPre, group.appPreHd));
                         });
                         self.itemApplication([]);
                         self.itemApplication.push(new vmbase.ChoseApplicationList(-1, '全件表示'));
                         _.each(data.lstAppInfor, function(appInfo){
                             self.itemApplication.push(new vmbase.ChoseApplicationList(appInfo.appType, appInfo.appName));                          
                         });
+                        //spr
+//                        if(self.isSpr()==1 && self.selectedCode() == 0){
+//                            let over = self.findAppOverTime(self.itemApplication());
+//                            if(over == undefined){
+////                                self.itemApplication.push(new vmbase.ChoseApplicationList(appInfo.appType, appInfo.appName)); 
+//                            }    
+//                        }
                         self.lstListAgent([]);
                         _.each(data.lstAgent, function(agent){
                             self.lstListAgent.push(new vmbase.ApproveAgent(agent.appID, agent.agentId));
@@ -212,6 +248,10 @@ module cmm045.a.viewmodel {
                         if(appCHeck != null){
                             self.selectedCode(appCHeck);
                         }
+                        if(self.isSpr()){
+                            let selectedType = paramSprCmm045.extractCondition == 0 ? -1 : 0;
+                            self.selectedCode(selectedType);    
+                        }
                         block.clear();
                         dfd.resolve();
                     });
@@ -241,7 +281,8 @@ module cmm045.a.viewmodel {
                     { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '110px' },
                     { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '80px' },
                     { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '160px'},
-                    { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '280px' },
+                    { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '280px', 
+                        formatter: (v) => (v.replace(/(<|<)script>/gi, '&lt;script&gt;').replace(/(<\/)script>/gi, '&lt;/script&gt;'))},
                     { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '180px'},
                     { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '100px'}
                 ],
@@ -312,7 +353,7 @@ module cmm045.a.viewmodel {
                 if (item.appStatusNo == 2) {//2 反映済　＝　反映済み
                     result.push(new vmbase.CellState(rowId,'appStatus',['reflectCell']));
                 }
-                if (item.appStatusNo == 3 || item.appStatusNo == 34) {//3,4 取消待ち/取消済　＝　取消
+                if (item.appStatusNo == 3 || item.appStatusNo == 4) {//3,4 取消待ち/取消済　＝　取消
                     result.push(new vmbase.CellState(rowId,'appStatus',['cancelCell']));
                 }
                 if (item.appStatusNo == 5) {//5 差し戻し　＝　差戻
@@ -409,7 +450,8 @@ module cmm045.a.viewmodel {
                     { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '90px'},
                     { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '70px' },
                     { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '160px'},
-                    { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '220px'},
+                    { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '220px',
+                        formatter: (v) => (v.replace(/(<|<)script>/gi, '&lt;script&gt;').replace(/(<\/)script>/gi, '&lt;/script&gt;'))},
                     { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '165px'},
                     { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '83px'},
                     { headerText: getText('CMM045_58'), key: 'displayAppStatus', dataType: 'string', width: '105px' },
@@ -460,12 +502,12 @@ module cmm045.a.viewmodel {
          */
         formatHdWorkBf(app: vmbase.ApplicationDto_New, hdWork: vmbase.AppHolidayWorkFull, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
             let self = this;
-            let reason = self.displaySet().appReasonDisAtr == 1 ? ' ' + app.applicationReason : '';
+            let reason = self.displaySet().appReasonDisAtr == 0 || app.applicationReason == '' ? '' : '<br/>' + app.applicationReason;
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
             let applicant: string = masterInfo.workplaceName + '<br/>' + empNameFull;
             let ca1 = hdWork.startTime1 == '' ? '' : hdWork.startTime1 + getText('CMM045_100') + hdWork.endTime1;
             let ca2 = hdWork.startTime2 == '' ? '' : hdWork.startTime2 + getText('CMM045_100') + hdWork.endTime2;
-            let appContent010: string = getText('CMM045_275') + ' ' + hdWork.workTypeName + hdWork.workTimeName + ca1 + ca2 + getText('CMM045_276') + self.convertFrameTimeHd(hdWork.lstFrame) + reason;
+            let appContent010: string = getText('CMM045_275') + hdWork.workTypeName + hdWork.workTimeName + ca1 + ca2 + getText('CMM045_276') + self.convertFrameTimeHd(hdWork.lstFrame) + reason;
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
@@ -482,17 +524,19 @@ module cmm045.a.viewmodel {
          */
         formatOverTimeBf(app: vmbase.ApplicationDto_New, overTime: vmbase.AppOverTimeInfoFull, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
             let self = this;
-            let reason = self.displaySet().appReasonDisAtr == 1 ? ' ' + app.applicationReason : '';
+            let reason = self.displaySet().appReasonDisAtr == 0 || app.applicationReason == '' ? '' : '<br/>' + app.applicationReason;
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
 //            let applicant: string = masterInfo.workplaceName + '<br/>' + empNameFull;
             let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
             let time1 = overTime.workClockFrom1  == '' ? '' : overTime.workClockFrom1 + getText('CMM045_100') + overTime.workClockTo1;
             let time2 = overTime.workClockFrom2  == '' ? '' : overTime.workClockFrom2 + getText('CMM045_100') + overTime.workClockTo2;
-            let appContent1111: string = getText('CMM045_268') + ' ' + time1 + time2 + ' 残業合計' + self.convertFrameTime(overTime.lstFrame) + reason;
+            let contentv4 = time1 + time2;
+            let contentv42 = getText('CMM045_269') + self.convertFrameTime(overTime.lstFrame) + reason;
+            let appContent005Bf: string = masterInfo.detailSet == 1 ? contentv4 + contentv42 : contentv42;
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
-                masterInfo.dispName, prePostApp, self.appDateColor(self.convertDateMDW(app.startDate), '',''), appContent1111, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
+                masterInfo.dispName, prePostApp, self.appDateColor(self.convertDateMDW(app.startDate), '',''), getText('CMM045_268') + '　' + appContent005Bf, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
                 self.mode() == 0 ? self.convertStatus(app.reflectPerState) : self.convertStatusAppv(app.reflectPerState), masterInfo.phaseStatus,
                 masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor,null, app.reflectPerState);
             return a;
@@ -507,21 +551,6 @@ module cmm045.a.viewmodel {
             let framName12 = '';
             let time = 0;
             let count = 0;
-//            let lstSort = _.sortBy(lstFrame, ["frameNo"], ["asc"]);
-//            //時間外深夜時間
-//            let frame11 = self.findFrameByNo(lstFrame, 11);
-//            if (frame11 !== undefined && frame11.applicationTime != 0) {
-//                framName11 = frame11.name + self.convertTime_Short_HM(frame11.applicationTime);
-//                time += frame11.applicationTime;
-//                count += 1;
-//            }
-//            //ﾌﾚｯｸｽ超過
-//            let frame12 = self.findFrameByNo(lstFrame, 12);
-//            if (frame12 !== undefined && frame12.applicationTime != 0) {
-//                framName12 = frame12.name + self.convertTime_Short_HM(frame12.applicationTime);
-//                time += frame12.applicationTime;
-//                count += 1;
-//            }
             let lstSort = self.sortFrameTime(lstFrame, 0);
             _.each(lstSort, function(item) {
                 if (item.applicationTime != 0) {//時間外深夜時間
@@ -646,21 +675,21 @@ module cmm045.a.viewmodel {
             //find don xin truoc, thuc te
             let check: vmbase.AppPrePostGroup = self.findAppPre(lstAppGroup, app.applicationID);
             if (check !== undefined) {
-                if (check.preAppID != '') {
-                    let prRes = self.findContentPreHd(check.preAppID, check.lstFrameRes, check.appPreHd, check.reasonAppPre);
-                    contentPre = prRes.appPre == '' ? '' : '<br/>' + prRes.appPre;
-                    contentResult = prRes.appRes == '' ? '' :'<br/>' + prRes.appRes;
-                }
+//                if (check.preAppID != '') {
+                let prRes = self.findContentPreHd(check);
+                contentPre = prRes.appPre == '' ? '' : '<br/>' + prRes.appPre;
+                contentResult = prRes.appRes == '' ? '' :'<br/>' + prRes.appRes;
+//                }
             }
             //reason application
-            let reason = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + app.applicationReason : '';
+            let reason = self.displaySet().appReasonDisAtr == 0 || app.applicationReason == '' ? '' : '<br/>' + app.applicationReason;
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
             let applicant: string = masterInfo.workplaceName + '<br/>' + empNameFull;
             let ca1 = hdWork.startTime1 == '' ? '' : hdWork.startTime1 + getText('CMM045_100') + hdWork.endTime1;
             let ca2 = hdWork.startTime2 == '' ? '' : hdWork.startTime2 + getText('CMM045_100') + hdWork.endTime2;
-            let appContentPost: string = getText('CMM045_272') + getText('CMM045_275') + ' ' + hdWork.workTypeName + hdWork.workTimeName + ca1 + ca2 + getText('CMM045_276') + self.convertFrameTimeHd(hdWork.lstFrame) + reason;
+            let appContentPost: string = getText('CMM045_272') + getText('CMM045_275') + hdWork.workTypeName + hdWork.workTimeName + ca1 + ca2 + getText('CMM045_276') + self.convertFrameTimeHd(hdWork.lstFrame);
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
-            let contentFull = '<div class = "appContent-' + app.applicationID + '">'+ appContentPost + contentPre + contentResult + '</div>';
+            let contentFull = '<div class = "appContent-' + app.applicationID + '">'+ appContentPost + contentPre + contentResult + reason + '</div>';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
                 masterInfo.dispName, prePostApp, self.appDateColor(self.convertDateMDW(app.startDate), '',''), contentFull, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
@@ -680,20 +709,25 @@ module cmm045.a.viewmodel {
             //find don xin truoc, thuc te
             let check: vmbase.AppPrePostGroup = self.findAppPre(lstAppGroup, app.applicationID);
             if (check !== undefined) {
-                if (check.preAppID != '') {
-                    let prRes = self.findContentPreOt(check.preAppID, check.lstFrameRes, check.appPre, check.reasonAppPre);
+//                if (check.preAppID != '') {
+                    let prRes = self.findContentPreOt(check, masterInfo.detailSet);
                     contentPre = prRes.appPre == '' ? '' : '<br/>' + prRes.appPre;
                     contentResult = prRes.appRes == '' ? '' :'<br/>' + prRes.appRes;
-                }
+//                }
             }
-            let reason = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + app.applicationReason : '';
+            let reason = self.displaySet().appReasonDisAtr == 0 || app.applicationReason == '' ? '' : '<br/>' + app.applicationReason;
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
             let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
             let time1 = overTime.workClockFrom1  == '' ? '' : overTime.workClockFrom1 + getText('CMM045_100') + overTime.workClockTo1;
             let time2 = overTime.workClockFrom2  == '' ? '' : overTime.workClockFrom2 + getText('CMM045_100') + overTime.workClockTo2;
-            let appContentPost: string = getText('CMM045_272') + getText('CMM045_268') + '' + time1 + time2 + ' 残業合計' + self.convertFrameTime(overTime.lstFrame) + reason;
+            
+            //ver14
+            let contentv4 = time1 + time2;
+            let contentv42 = getText('CMM045_269') + self.convertFrameTime(overTime.lstFrame);
+            let appContentPost: string = masterInfo.detailSet == 1 ? contentv4 + contentv42 : contentv42;
+            
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
-            let contentFull = '<div class = "appContent-' + app.applicationID + '">'+ appContentPost + contentPre + contentResult + '</div>';
+            let contentFull = '<div class = "appContent-' + app.applicationID + '">'+ getText('CMM045_272') + getText('CMM045_268') + '　' + appContentPost + contentPre + contentResult + reason + '</div>';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
                 masterInfo.dispName, prePostApp, self.appDateColor(self.convertDateMDW(app.startDate), '',''), contentFull, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
@@ -710,23 +744,30 @@ module cmm045.a.viewmodel {
          * find content pre and result
          * 残業申請 - over time
          */
-        findContentPreOt(appId: string, lstFrameRes: Array<vmbase.OverTimeFrame>, appPreDB: any, reasonAppPre: string): any {
+        findContentPreOt(groups: vmbase.AppPrePostGroup, detailSet: number): any {
             let self = this;
-            let appPre = '';
-            if(appPreDB != null){
-                let time1 = appPreDB.workClockFrom1  == '' ? '' : appPreDB.workClockFrom1 + getText('CMM045_100') + appPreDB.workClockTo1;
-                let time2 = appPreDB.workClockFrom2  == '' ? '' : appPreDB.workClockFrom2 + getText('CMM045_100') + appPreDB.workClockTo2;
-                appPre = getText('CMM045_268') + ' ' + time1 + time2 + ' 残業合計' + self.convertFrameTime(appPreDB.lstFrame) + '<br/>' + reasonAppPre;
+            let appPre = null;
+            if(groups.appPre != null){
+                let time1 = groups.appPre.workClockFrom1  == '' ? '' : groups.appPre.workClockFrom1 + getText('CMM045_100') + groups.appPre.workClockTo1;
+                let time2 = groups.appPre.workClockFrom2  == '' ? '' : groups.appPre.workClockFrom2 + getText('CMM045_100') + groups.appPre.workClockTo2;
+                //ver14
+//                let reasonOtPre = self.displaySet().appReasonDisAtr == 0 || groups.reasonAppPre == '' ? '' : '<br/>' + groups.reasonAppPre;
+                let content1 = time1 + time2;
+                let content2 = getText('CMM045_269') + self.convertFrameTime(groups.appPre.lstFrame);
+                appPre = detailSet == 1 ? content1 + content2 : content2;
             }
             let appResContent = '';
             //thuc te
-            let appRes = self.convertFrameTime(lstFrameRes);
-            appResContent = getText('CMM045_274') + appRes;
-
-
+            let timeRes1 = groups.strTime1  == '' ? '' : groups.strTime1 + getText('CMM045_100') + groups.endTime1;
+            let timeRes2 = groups.strTime2  == '' ? '' : groups.strTime2 + getText('CMM045_100') + groups.endTime2;
+            //ver14
+            let contentRes1 =  timeRes1 + timeRes2;
+            let contentRes2 = getText('CMM045_269') + self.convertFrameTime(groups.lstFrameRes);
+            let appRes = detailSet == 1 ? contentRes1 + contentRes2 : contentRes2;
+            appResContent = getText('CMM045_274') + getText('CMM045_268') + '　' + appRes;
             let appInfor = {
-                appPre: appPre == null ? '' : getText('CMM045_273') + appPre,
-                appRes: lstFrameRes == null || lstFrameRes.length == 0 ? '' : appResContent
+                appPre: appPre == null ? '' : getText('CMM045_273') + getText('CMM045_268') + '　' + appPre,
+                appRes: groups.lstFrameRes == null || groups.lstFrameRes.length == 0 ? '' : appResContent
             }
             return appInfor;
         }
@@ -736,23 +777,23 @@ module cmm045.a.viewmodel {
          * 休日出勤時間申請 - holiday work
          * TO DO
          */
-        findContentPreHd(appId: string, lstFrameRes: Array<vmbase.OverTimeFrame>, appPreDB: any, reasonAppPre: string): any {
+        findContentPreHd(groups: vmbase.AppPrePostGroup): any {
             let self = this;
-            let appPre = '';
-            if(appPreDB != null){
-                let ca1 = appPreDB.startTime1 == '' ? '' : appPreDB.startTime1 + getText('CMM045_100') + appPreDB.endTime1;
-                let ca2 = appPreDB.startTime2 == '' ? '' : appPreDB.startTime2 + getText('CMM045_100') + appPreDB.endTime2;
-                appPre = getText('CMM045_275') + ' ' + appPreDB.workTypeName + appPreDB.workTimeName + ca1 + ca2 + getText('CMM045_276') + self.convertFrameTimeHd(appPreDB.lstFrame) + '<br/>' + reasonAppPre;
+            let appPre = null;
+            if(groups.appPreHd != null){
+                let ca1 = groups.appPreHd.startTime1 == '' ? '' : groups.appPreHd.startTime1 + getText('CMM045_100') + groups.appPreHd.endTime1;
+                let ca2 = groups.appPreHd.startTime2 == '' ? '' : groups.appPreHd.startTime2 + getText('CMM045_100') + groups.appPreHd.endTime2;
+                appPre = getText('CMM045_275') + groups.appPreHd.workTypeName + groups.appPreHd.workTimeName + ca1 + ca2 + getText('CMM045_276') + self.convertFrameTimeHd(groups.appPreHd.lstFrame);
             }
             let appResContent = '';
             //thuc te
-            let appRes = self.convertFrameTimeHd(lstFrameRes);
+            let appRes = self.convertFrameTimeHd(groups.lstFrameRes);
             appResContent = getText('CMM045_274') + appRes;
 
 
             let appInfor = {
                 appPre: appPre == null ? '' : getText('CMM045_273') + appPre,
-                appRes: lstFrameRes == null || lstFrameRes.length == 0 ? '' : appResContent
+                appRes: groups.lstFrameRes == null || groups.lstFrameRes.length == 0 ? '' : appResContent
             }
             return appInfor;
         }
@@ -769,11 +810,11 @@ module cmm045.a.viewmodel {
             let self = this;
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
             let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
-            let go1 = goBack.goWorkAtr1 == 0 ? '' : ' ' + getText('CMM045_259') + goBack.workTimeStart1;
-            let back1 = goBack.backHomeAtr1 == 0 ? '' : ' ' + getText('CMM045_260') + goBack.workTimeEnd1;
-            let go2 = goBack.goWorkAtr2 == 0 ? '' : ' ' + getText('CMM045_259') + goBack.workTimeStart2;
-            let back2 = goBack.backHomeAtr2 == 0 ? '' : ' ' + getText('CMM045_260') + goBack.workTimeEnd2;
-            let reason = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + app.applicationReason : '';
+            let go1 = goBack.goWorkAtr1 == 1 ?  getText('CMM045_259') + goBack.workTimeStart1 : '';
+            let back1 = goBack.backHomeAtr1 == 1 ? getText('CMM045_260') + goBack.workTimeEnd1 : '';
+            let go2 = goBack.goWorkAtr2 == 1 ? getText('CMM045_259') + goBack.workTimeStart2 : '';
+            let back2 = goBack.backHomeAtr2 == 1 ? getText('CMM045_260') + goBack.workTimeEnd2 : '';
+            let reason = self.displaySet().appReasonDisAtr == 0 || app.applicationReason == '' ? '' : '<br/>' + app.applicationReason;
             let appContent2222 = getText('CMM045_258') + go1 + back1 + go2 + back2 + reason;
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
@@ -856,7 +897,7 @@ module cmm045.a.viewmodel {
         convertAbsenceHalfDay(absence: vmbase.AppAbsenceFull): string{
             let self = this;
             let time1 = absence.startTime1 == '' ? '' : absence.startTime1 + getText('CMM045_100') +  absence.endTime1;
-            let time2 =  absence.startTime2 == '' ? '' : ' ' + absence.startTime2 + getText('CMM045_100') + absence.endTime2;
+            let time2 =  absence.startTime2 == '' ? '' : absence.startTime2 + getText('CMM045_100') + absence.endTime2;
             let result = getText('CMM045_279') + getText('CMM045_249') + getText('CMM045_230', [absence.workTimeName])  + time1 + time2;
             return result;
         }
@@ -1009,7 +1050,7 @@ module cmm045.a.viewmodel {
             let self = this;
             let time = compltLeave.startTime + getText('CMM045_100') + compltLeave.endTime;
             let reasonApp = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + reason : '';
-            return getText('CMM045_262') + date + getText('CMM045_230', [compltLeave.workTypeName]) + time + reasonApp;
+            return getText('CMM045_262') + self.convertDateShort_MD(date) + getText('CMM045_230', [compltLeave.workTypeName]) + time + reasonApp;
         }
         //※振休申請のみ同期なし・紐付けなし
         //申請/承認モード
@@ -1019,7 +1060,7 @@ module cmm045.a.viewmodel {
             let eTime = compltLeave.endTime == '' ? '' : getText('CMM045_100') + compltLeave.endTime;
             let time = compltLeave.startTime + eTime;
             let reasonApp = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + reason : '';
-            return getText('CMM045_263') + date + getText('CMM045_230', [compltLeave.workTypeName]) + time + reasonApp;
+            return getText('CMM045_263') + self.convertDateShort_MD(date) + getText('CMM045_230', [compltLeave.workTypeName]) + time + reasonApp;
         }
         //※振休振出申請　同期（あり/なし）・紐付けあり
         //申請モード/承認モード merge convert C + D
@@ -1256,6 +1297,13 @@ module cmm045.a.viewmodel {
                     return dateMDW + '(日)';
             }
         }
+        //Short_MD
+        convertDateShort_MD(date: string) {
+            let a: number = moment(date, 'YYYY/MM/DD').isoWeekday();
+            let toDate = moment(date, 'YYYY/MM/DD').toDate();
+            let dateMDW = (toDate.getMonth()+1) + '/'+ toDate.getDate();
+            return dateMDW;
+        }
         //yyyy/MM/dd hh:mm
         convertDateTime(dateTime: string) {
             let a: number = moment(dateTime, 'YYYY/MM/DD hh:mm').isoWeekday();
@@ -1291,9 +1339,10 @@ module cmm045.a.viewmodel {
                 block.clear();
                 return;
             }
-            let param: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
+            let condition: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
                 self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
                 self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), self.selectedRuleCode(), [], '');
+            let param = new vmbase.AppListParamFilter(condition, false, 0);
             service.getApplicationList(param).done(function(data) {
                 console.log(data);
                 //reset data
@@ -1308,7 +1357,7 @@ module cmm045.a.viewmodel {
                 self.lstAppAbsence([]);
                 self.lstAppCompltSync([]);
                 //luu
-                character.save('AppListExtractCondition', param);
+                character.save('AppListExtractCondition', condition);
                 let lstGoBack: Array<vmbase.AppGoBackInfoFull> = [];
                 let lstAppGroup: Array<vmbase.AppPrePostGroup> = [];
                 self.displaySet(new vmbase.ApprovalListDisplaySetDto(data.displaySet.advanceExcessMessDisAtr,
@@ -1324,7 +1373,7 @@ module cmm045.a.viewmodel {
                 });
                 _.each(data.lstMasterInfo, function(master) {
                     self.lstAppMaster.push(new vmbase.AppMasterInfo(master.appID, master.appType, master.dispName, master.empName, master.inpEmpName, master.workplaceName,
-                        master.statusFrameAtr, master.phaseStatus, master.checkAddNote, master.checkTimecolor));
+                        master.statusFrameAtr, master.phaseStatus, master.checkAddNote, master.checkTimecolor, master.detailSet));
                 });
                 _.each(data.lstAppGoBack, function(goback) {
                     lstGoBack.push(new vmbase.AppGoBackInfoFull(goback.appID, goback.goWorkAtr1, goback.workTimeStart1,
@@ -1340,7 +1389,7 @@ module cmm045.a.viewmodel {
                         overTime.workClockTo2, overTime.total, lstFrame, overTime.overTimeShiftNight, overTime.flexExessTime));
                 });
                 _.each(data.lstAppGroup, function(group) {
-                    lstAppGroup.push(new vmbase.AppPrePostGroup(group.preAppID, group.postAppID, group.time, group.appPre, group.reasonAppPre, group.appPreHd));
+                    lstAppGroup.push(new vmbase.AppPrePostGroup(group.preAppID, group.postAppID, group.time,group.strTime1,group.endTime1,group.strTime2,group.endTime2, group.appPre, group.reasonAppPre, group.appPreHd));
                 });
                 self.itemApplication([]);
                 self.itemApplication.push(new vmbase.ChoseApplicationList(-1, '全件表示'));
@@ -1466,10 +1515,10 @@ module cmm045.a.viewmodel {
             service.approvalListApp(lstApp).done(function() {
                 nts.uk.ui.dialog.info({ messageId: "Msg_220" });
                 self.filter();
-            }).fail(function(res) {
-                nts.uk.ui.dialog.alertError({ messageId: res.messageId });
-            }).always(() => {
                 block.clear();
+            }).fail(function(res) {
+                block.clear();
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId });
             });
         }
         /**
@@ -1572,6 +1621,11 @@ module cmm045.a.viewmodel {
                 min = '0' + min1;
             }
             return hh + ':' + min;
+        }
+        findAppOverTime(lstItem: Array<any>){
+            return _.find(lstItem, function(item){
+                return item.appId == 0;
+            });
         }
     }
 

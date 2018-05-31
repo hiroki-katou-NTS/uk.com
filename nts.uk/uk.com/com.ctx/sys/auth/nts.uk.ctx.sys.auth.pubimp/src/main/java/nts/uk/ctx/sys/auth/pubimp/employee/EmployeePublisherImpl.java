@@ -64,23 +64,22 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 	private CanApprovalOnBaseDateService canApprovalOnBaseDateService;
 
 	@Inject
+	private AcquireListWorkplaceByEmpIDService acquireListWorkplace;
+	
+	@Inject
 	private AcquireUserIDFromEmpIDService acquireUserIDFromEmpIDService;
-
+	
 	@Inject
 	private RoleIndividualService roleIndividualService;
 
 	@Inject
 	private RoleExportRepo roleExportRepo;
-
-	@Inject
-	private AcquireListWorkplaceByEmpIDService acquireListWorkplace;
-
+	
 	@Override
 	public Optional<NarrowEmpByReferenceRange> findByEmpId(List<String> sID, int roleType) {
 		// imported（権限管理）「社員」を取得する Request No1
 		// employeeID = employeeID login
 		String employeeIDLogin = AppContexts.user().employeeId();
-		sID.add(employeeIDLogin);
 		List<String> result = new ArrayList<>();
 		Optional<EmployeeBasicInforAuthImport> employeeImport = personAdapter.getPersonInfor(employeeIDLogin);
 		// List<String> listEmployeeID = listEmployeeImport.stream().map(c ->
@@ -95,9 +94,9 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 				return Optional.empty();
 			} else {
 				Optional<Role> role = empReferenceRangeService.getByUserIDAndReferenceDate(useExport.get().getUserID(), roleType, GeneralDate.today());
-				if (role.get().getEmployeeReferenceRange() == EmployeeReferenceRange.ALL_EMPLOYEE) {
+				if (role.isPresent() && role.get().getEmployeeReferenceRange() == EmployeeReferenceRange.ALL_EMPLOYEE) {
 					return Optional.of(new NarrowEmpByReferenceRange(sID));
-				} else if (role.get().getEmployeeReferenceRange() == EmployeeReferenceRange.ONLY_MYSELF) {
+				} else if (role.isPresent() && role.get().getEmployeeReferenceRange() == EmployeeReferenceRange.ONLY_MYSELF) {
 					sID.remove(employeeIDLogin);
 					return Optional.of(new NarrowEmpByReferenceRange(sID));
 				} else {
@@ -110,7 +109,7 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 					Optional<AffWorkplaceHistImport> workPlace = workplaceAdapter.findWkpByBaseDateAndEmployeeId(GeneralDate.today(), employeeIDLogin);
 					String workPlaceID1 = workPlace.get().getWorkplaceId();
 					List<String> listWorkPlaceID3 = new ArrayList<>();
-					if (role.get().getEmployeeReferenceRange() == EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
+					if (role.isPresent() && role.get().getEmployeeReferenceRange() == EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
 						// 配下の職場をすべて取得する
 						// Lay RequestList No.154
 						listWorkPlaceID3 = workplaceAdapter.findListWorkplaceIdByCidAndWkpIdAndBaseDate(AppContexts.user().companyId(), workPlaceID1, GeneralDate.today());
@@ -124,7 +123,7 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 					listtWorkID.addAll(listWorkPlaceID3);
 					// 取得した所属職場履歴項目（List）を参照可能職場ID（List）で絞り込む
 					result = lisAfiliationWorkplace.stream().filter(c -> listtWorkID.contains(c.getWorkplaceId())).map(x -> x.getEmployeeId()).collect(Collectors.toList());
-
+					
 				}
 			}
 
@@ -165,7 +164,7 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 	@Override
 	public List<String> getListWorkPlaceID(String employeeID, GeneralDate referenceDate) {
 		// 社員IDからユーザIDを取得する
-		/** (Lấy userID từ employeeID) */
+		// (Lấy userID từ employeeID)
 		Optional<String> userID = acquireUserIDFromEmpIDService.getUserIDByEmpID(employeeID);
 		if (!userID.isPresent()) {
 			return new ArrayList<>();
@@ -182,10 +181,9 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 			if (listWorkPlaceID.isEmpty()) {
 				return new ArrayList<>();
 			} else {
-				//return
 				return listWorkPlaceID;
 			}
 		}
 	}
-
+	
 }

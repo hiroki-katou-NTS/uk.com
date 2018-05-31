@@ -34,9 +34,9 @@ public class EmployeeWithRangeImpl implements EmployeeWithRangeAdapter {
 	}
 
 	@Override
-	public Optional<EmployeeWithRangeLoginImport> findByEmployeeByLoginRange(String companyID, String employeeCD) {
+	public Optional<EmployeeWithRangeLoginImport> findByEmployeeByLoginRange(String companyID, String employeeCD, GeneralDate baseDate) {
 		Optional<EmployeeWithRangeLoginImport> employeeWithRangeLoginImport = this.employeePublisher
-				.getByComIDAndEmpCD(companyID, employeeCD ,GeneralDate.today()).map(x -> {
+				.getByComIDAndEmpCD(companyID, employeeCD, baseDate).map(x -> {
 					return new EmployeeWithRangeLoginImport(x.getBusinessName(), x.getEmployeeCD(),
 							x.getEmployeeID());
 				});

@@ -16,7 +16,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author shuichi_ishida
  */
 @Getter
-public class CompensatoryLeaveUseTimeOfMonthly {
+public class CompensatoryLeaveUseTimeOfMonthly implements Cloneable {
 	
 	/** 使用時間 */
 	private AttendanceTimeMonth useTime;
@@ -45,6 +45,20 @@ public class CompensatoryLeaveUseTimeOfMonthly {
 		return domain;
 	}
 	
+	@Override
+	public CompensatoryLeaveUseTimeOfMonthly clone() {
+		CompensatoryLeaveUseTimeOfMonthly cloned = new CompensatoryLeaveUseTimeOfMonthly();
+		try {
+			cloned.useTime = new AttendanceTimeMonth(this.useTime.v());
+			// ※　Shallow Copy.
+			cloned.timeSeriesWorks = this.timeSeriesWorks;
+		}
+		catch (Exception e){
+			throw new RuntimeException("CompensatoryLeaveUseTimeOfMonthly clone error.");
+		}
+		return cloned;
+	}
+	
 	/**
 	 * 代休使用時間を確認する
 	 * @param datePeriod 期間
@@ -62,7 +76,9 @@ public class CompensatoryLeaveUseTimeOfMonthly {
 			// 「日別実績の代休」を取得する
 			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
 			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
+			if (totalWorkingTime.getHolidayOfDaily() == null) return;
 			val holidayOfDaily = totalWorkingTime.getHolidayOfDaily();
+			if (holidayOfDaily.getSubstitute() == null) return;
 			val substitute = holidayOfDaily.getSubstitute();
 			
 			// 取得した使用時間を「月別実績の代休使用時間」に入れる
@@ -81,8 +97,24 @@ public class CompensatoryLeaveUseTimeOfMonthly {
 		
 		for (val timeSeriesWork : this.timeSeriesWorks.values()){
 			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
-			this.useTime.addMinutes(timeSeriesWork.getSubstituteHolidayUseTime().getUseTime().v());
+			this.addMinuteToUseTime(timeSeriesWork.getSubstituteHolidayUseTime().getUseTime().v());
 		}
+	}
+	
+	/**
+	 * 代休使用時間を求める
+	 * @param datePeriod 期間
+	 * @return 代休使用時間
+	 */
+	public AttendanceTimeMonth getTotalUseTime(DatePeriod datePeriod){
+		
+		AttendanceTimeMonth returnTime = new AttendanceTimeMonth(0);
+		
+		for (val timeSeriesWork : this.timeSeriesWorks.values()){
+			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
+			returnTime = returnTime.addMinutes(timeSeriesWork.getSubstituteHolidayUseTime().getUseTime().v());
+		}
+		return returnTime;
 	}
 	
 	/**

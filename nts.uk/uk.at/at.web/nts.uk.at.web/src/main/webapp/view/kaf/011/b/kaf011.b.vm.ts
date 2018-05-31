@@ -8,6 +8,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
     import block = nts.uk.ui.block;
     import jump = nts.uk.request.jump;
     import confirm = nts.uk.ui.dialog.confirm;
+    import alError = nts.uk.ui.dialog.alertError;
 
     export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
 
@@ -51,38 +52,103 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 
         appTypeSet: KnockoutObservable<common.AppTypeSet> = ko.observable(new common.AppTypeSet(null));
 
+        genSaveCmd(): common.ISaveHolidayShipmentCommand {
+            let self = this, returnCmd: common.ISaveHolidayShipmentCommand = {
+                recCmd: ko.mapping.toJS(self.recWk()),
+                absCmd: ko.mapping.toJS(self.absWk()),
+                comType: self.appComSelectedCode(),
+                usedDays: 1,
+                appCmd: {
+                    appReasonText: self.appReasonSelectedID(),
+                    applicationReason: self.reason(),
+                    prePostAtr: self.prePostSelectedCode(),
+                    enteredPersonSID: self.employeeID(),
+                    appVersion: self.version(),
+                }
+            }, selectedReason = self.appReasonSelectedID() ? _.find(self.appReasons(), { 'reasonID': self.appReasonSelectedID() }) : null;
+            returnCmd.absCmd.changeWorkHoursType = returnCmd.absCmd.changeWorkHoursType ? 1 : 0;
+            if (selectedReason) {
+                returnCmd.appCmd.appReasonText = selectedReason.reasonTemp;
+            }
+            return returnCmd;
 
+        }
+
+        enablePrepost() {
+            let self = this;
+            return self.screenModeNew() && self.appTypeSet().canClassificationChange() != 0;
+        }
+        showAppReason(): boolean {
+            let self = this;
+            if (self.screenModeNew()) {
+                return self.appTypeSet().displayAppReason() != 0;
+            } else {
+
+                return self.appTypeSet().displayAppReason() != 0 || self.appTypeSet().displayFixedReason() != 0;
+            }
+
+        }
         update() {
-            block.invisible();
             let self = this,
-                saveCmd: common.ISaveHolidayShipmentCommand = {
-                    recCmd: ko.mapping.toJS(self.recWk()),
-                    absCmd: ko.mapping.toJS(self.absWk()),
-                    comType: self.appComSelectedCode(),
-                    usedDays: 1,
-                    appCmd: {
-                        appReasonText: self.appReasonSelectedID(),
-                        applicationReason: self.reason(),
-                        prePostAtr: self.prePostSelectedCode(),
-                        enteredPersonSID: self.employeeID(),
-                        appVersion: self.version(),
-                    }
-                };
+                saveCmd = self.genSaveCmd();
+            self.validateControl();
+            if (nts.uk.ui.errors.hasError()) { return; }
 
-            saveCmd.absCmd.changeWorkHoursType = saveCmd.absCmd.changeWorkHoursType ? 1 : 0;
+            let isCheckReasonError = !self.checkReason();
+            if (isCheckReasonError) {
+                return;
+            }
 
+            block.invisible();
             service.update(saveCmd).done(() => {
                 dialog({ messageId: 'Msg_15' }).then(function() {
                     location.reload();
                 });
 
-
             }).fail((error) => {
-                dialog({ messageId: error.messageId });
+                alError({ messageId: error.messageId, messageParams: error.parameterIds });
 
             }).always(() => {
                 block.clear();
             });
+        }
+
+        checkReason(): boolean {
+            let self = this,
+                appReason = self.getReason();
+            let appReasonError = !nts.uk.at.view.kaf000.shr.model.CommonProcess.checkAppReason(true, self.appTypeSet().displayFixedReason() != 0, self.appTypeSet().displayAppReason() != 0, appReason);
+            if (appReasonError) {
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' });
+                return false;
+            }
+            let isCheckLengthError: boolean = !nts.uk.at.view.kaf000.shr.model.CommonProcess.checklenghtReason(appReason, "#appReason");
+            if (isCheckLengthError) {
+                return false;
+            }
+            return true;
+
+        }
+        validateControl() {
+            $(".kaf-011-combo-box ,.nts-input").trigger("validate");
+        }
+        getReason(): string {
+            let appReason = '',
+                self = this,
+                inputReasonID = self.appReasonSelectedID(),
+                inputReasonList = self.appReasons(),
+                detailReason = self.reason();
+            let inputReason: string = '';
+            if (!nts.uk.util.isNullOrEmpty(inputReasonID)) {
+                inputReason = _.find(inputReasonList, { 'reasonID': inputReasonID }).reasonTemp;
+            }
+            if (!nts.uk.util.isNullOrEmpty(inputReason) && !nts.uk.util.isNullOrEmpty(detailReason)) {
+                appReason = inputReason + ":" + detailReason;
+            } else if (!nts.uk.util.isNullOrEmpty(inputReason) && nts.uk.util.isNullOrEmpty(detailReason)) {
+                appReason = inputReason;
+            } else if (nts.uk.util.isNullOrEmpty(inputReason) && !nts.uk.util.isNullOrEmpty(detailReason)) {
+                appReason = detailReason;
+            }
+            return appReason;
         }
 
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
@@ -90,6 +156,16 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             let self = this;
 
             self.startPage(self.appID());
+
+            self.appReasons.subscribe((appReasons) => {
+                if (appReasons) {
+                    let defaultReason = _.find(appReasons, { 'defaultFlg': 1 });
+                    if (defaultReason) {
+                        self.appReasonSelectedID(defaultReason.reasonID);
+                    }
+                }
+
+            });
         }
 
         startPage(appID: string): JQueryPromise<any> {
@@ -101,14 +177,12 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 self.setDataFromStart(data);
 
             }).fail((error) => {
-                dialog({ messageId: error.messageId });
+                alError({ messageId: error.messageId, messageParams: error.parameterIds });
             }).always(() => {
                 block.clear();
                 dfd.resolve();
 
             });
-
-
 
             return dfd.promise();
 
@@ -151,9 +225,9 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             self.appReasons(data.appReasonComboItems || []);
             self.prePostSelectedCode(app.prePostAtr);
             self.showReason(data.applicationSetting.appReasonDispAtr);
-            self.reason(data.application.applicationReason);
-            self.appReasonSelectedID(data.application.applicationReason.split("\r\n")[0]);
-
+            if (self.appTypeSet().displayAppReason() != 0) {
+                self.reason(data.application.applicationReason);
+            }
         }
 
         setDataBothApp(data) {
@@ -171,7 +245,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 service.removeAbs(removeCmd).done(function(data) {
                     location.reload();
                 }).fail(function(res: any) {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                    alError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
                     });
                 }).always(() => {
                     block.clear();
@@ -187,7 +261,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 service.cancelAbs(cancelCmd).done(function(data) {
                     location.reload();
                 }).fail(function(res: any) {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                    alError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
                     });
                 }).always(() => {
                     block.clear();

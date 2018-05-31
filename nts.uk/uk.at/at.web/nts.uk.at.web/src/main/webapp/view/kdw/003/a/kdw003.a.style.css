@@ -46,7 +46,7 @@
 .grid-container {
 	margin: 15px 0 0 0px;
     margin-top: -36px;
-    float: left;
+   /*  float: left; */
 }
 
 .setting-container {
@@ -232,6 +232,11 @@
 	position: relative;
 	top: -58px;
 	width: 131px;}
+	
+.italic-text{
+	 font-style: italic;
+	 font-weight: bold;
+}
 /* .nts-grid  tr.ui-ig-altrecord td.ui-state-active{
 	background-color: #007fff !IMPORTANT;
 } */

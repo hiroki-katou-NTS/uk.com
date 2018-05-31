@@ -478,7 +478,7 @@ module kcp.share.list {
             }
 
             // Map already setting attr to data list.
-            if (data.isShowAlreadySet) {
+            if (!nts.uk.util.isNullOrEmpty(data.alreadySettingList)) {
                 self.alreadySettingList = data.alreadySettingList;
                 self.addAreadySettingAttr(dataList, self.alreadySettingList());
 
@@ -718,11 +718,20 @@ module kcp.share.list {
             var minTotalSize = this.isHasButtonSelectAll ? 415 : 350;
             var totalRowsHeight = heightOfRow * this.maxRows + 24;
             var totalHeight: number = this.hasBaseDate || this.isDisplayClosureSelection ? 101 : 55;
-            codeColumnSize = data.maxWidth ? '15%': codeColumnSize;
-            var nameColumnSize = data.maxWidth ? '30%' : 170;
-            var workplaceColumnSize = data.maxWidth ? '20%' : 150;
-            var alreadySetColumnSize = data.maxWidth ? '15%' : 70;
-            var optionalColumnSize = data.maxWidth ? '20%' : 150;
+            var optionalColumnSize = 0;
+
+            if (this.showOptionalColumn) {
+                codeColumnSize = data.maxWidth ? '15%': codeColumnSize;
+                var nameColumnSize = data.maxWidth ? '30%' : 170;
+                var workplaceColumnSize = data.maxWidth ? '20%' : 150;
+                var alreadySetColumnSize = data.maxWidth ? '15%' : 70;
+                optionalColumnSize = data.maxWidth ? '20%' : 150;
+            } else {
+                codeColumnSize = data.maxWidth ? '25%' : codeColumnSize;
+                var nameColumnSize = data.maxWidth ? '30%' : 170;
+                var workplaceColumnSize = data.maxWidth ? '30%' : 150;
+                var alreadySetColumnSize = data.maxWidth ? '15%' : 70;
+            }
             this.gridStyle = {
                 codeColumnSize: codeColumnSize,
                 totalColumnSize: Math.max(minTotalSize, totalColumnSize),

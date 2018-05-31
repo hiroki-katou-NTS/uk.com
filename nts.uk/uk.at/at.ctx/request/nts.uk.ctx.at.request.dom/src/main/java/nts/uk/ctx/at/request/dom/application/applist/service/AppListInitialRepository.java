@@ -61,9 +61,10 @@ public interface AppListInitialRepository {
 	 * 5.1 - 申請一覧リスト取得実績休出申請
 	 * @param sID
 	 * @param date
+	 * @param time
 	 * @return
 	 */
-	public Boolean getAppListAchievementBreak(String sID, GeneralDate date);
+	public TimeResultOutput getAppListAchievementBreak(String sID, GeneralDate date, List<OverTimeFrame> time);
 	/**
 	 * 5.2 - 申請一覧リスト取得実績残業申請
 	 * @param sID

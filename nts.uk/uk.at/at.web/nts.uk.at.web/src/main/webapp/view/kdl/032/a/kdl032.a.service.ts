@@ -1,11 +1,12 @@
 module nts.uk.at.view.kdl032.a {
+    import ajax = nts.uk.request.ajax;
     export module service {
         var paths: any = {
-        getData: "at/record/divergencetime/getalldivreason/{0}",
+        getData: "at/record/divergencetime/reason/getalldivreason/{0}",
         }
-         export function getData(divTimeId : string ): JQueryPromise<Array<DeviationTime>> {
+         export function getData(divTimeId) : JQueryPromise<any> {
              
-            return nts.uk.request.ajax("at", nts.uk.text.format(paths.getData, divTimeId));
+            return ajax("at", nts.uk.text.format(paths.getData, divTimeId));
         }
       
         

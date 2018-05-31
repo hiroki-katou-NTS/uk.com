@@ -79,6 +79,12 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 		if(!this.isHaveData()) {
 			return null;
 		}
+		if (employeeId == null) {
+			employeeId = this.employeeId();
+		}
+		if (date == null) {
+			date = this.workingDate();
+		}
 		return new BreakTimeOfDailyPerformance(emp,
 					EnumAdaptor.valueOf(restTimeType, BreakType.class),
 					ConvertHelper.mapTo(timeZone,

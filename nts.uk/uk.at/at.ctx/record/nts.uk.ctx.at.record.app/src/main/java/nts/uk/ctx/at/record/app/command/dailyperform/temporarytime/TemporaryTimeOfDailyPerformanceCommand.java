@@ -6,20 +6,26 @@ import lombok.Getter;
 import nts.uk.ctx.at.record.app.find.dailyperform.temporarytime.dto.TemporaryTimeOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 
 public class TemporaryTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 
 	@Getter
-	private Optional<TemporaryTimeOfDailyPerformance> data;
+	private Optional<TemporaryTimeOfDailyPerformanceDto> data;
 
 	@Override
-	public void setRecords(AttendanceItemCommon item) {
-		this.data = item == null || !item.isHaveData() ? Optional.empty() : Optional.of(((TemporaryTimeOfDailyPerformanceDto) item).toDomain(getEmployeeId(), getWorkDate()));
+	public void setRecords(ConvertibleAttendanceItem item) {
+		this.data = item == null || !item.isHaveData() ? Optional.empty() : Optional.of((TemporaryTimeOfDailyPerformanceDto) item);
 	}
 
 	@Override
 	public void updateData(Object data) {
-		this.data = data == null ? Optional.empty() : Optional.of((TemporaryTimeOfDailyPerformance) data);
+		if(data == null){ return; }
+		setRecords(TemporaryTimeOfDailyPerformanceDto.getDto((TemporaryTimeOfDailyPerformance) data));
+	}
+	
+	@Override
+	public Optional<TemporaryTimeOfDailyPerformance> toDomain() {
+		return data == null ? null : data.map(c -> c.toDomain(getEmployeeId(), getWorkDate()));
 	}
 }

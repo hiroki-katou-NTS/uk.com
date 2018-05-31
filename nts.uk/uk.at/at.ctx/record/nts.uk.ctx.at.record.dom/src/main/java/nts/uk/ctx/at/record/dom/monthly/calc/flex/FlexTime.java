@@ -9,6 +9,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculationMinusExist;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculationAndMinus;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.FlexTimeOfTimeSeries;
@@ -124,9 +125,27 @@ public class FlexTime {
 	 */
 	public void addOverTimeFrameTime(GeneralDate ymd, OverTimeFrameTime overTimeFrameTime){
 		
-		this.addFlexTimeInTimeSeriesWork(ymd, overTimeFrameTime.getOverTimeWork().getTime().v(),
-				overTimeFrameTime.getOverTimeWork().getCalcTime().v(),
+		this.addFlexTimeInTimeSeriesWork(ymd,
+				overTimeFrameTime.getOverTimeWork().getTime().v() +
+				overTimeFrameTime.getTransferTime().getTime().v(),
+				overTimeFrameTime.getOverTimeWork().getCalcTime().v() +
+				overTimeFrameTime.getTransferTime().getCalcTime().v(),
 				overTimeFrameTime.getBeforeApplicationTime().v());
+	}
+	
+	/**
+	 * 休出枠時間をフレックス時間に入れる
+	 * @param ymd 年月日
+	 * @param holidayWorkFrameTime 休出枠時間
+	 */
+	public void addHolidayWorkTimeFrameTime(GeneralDate ymd, HolidayWorkFrameTime holidayWorkFrameTime){
+		
+		this.addFlexTimeInTimeSeriesWork(ymd,
+				holidayWorkFrameTime.getHolidayWorkTime().get().getTime().v() +
+				holidayWorkFrameTime.getTransferTime().get().getTime().v(),
+				holidayWorkFrameTime.getHolidayWorkTime().get().getCalcTime().v() +
+				holidayWorkFrameTime.getTransferTime().get().getCalcTime().v(),
+				holidayWorkFrameTime.getBeforeApplicationTime().get().v());
 	}
 	
 	/**

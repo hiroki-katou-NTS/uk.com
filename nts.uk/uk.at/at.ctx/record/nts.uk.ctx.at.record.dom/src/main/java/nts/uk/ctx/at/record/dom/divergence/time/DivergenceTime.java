@@ -43,7 +43,7 @@ public class DivergenceTime extends AggregateRoot {
 
 	/** The target item list. */
 	// 対象項目一覧
-	private List<Double> targetItems;
+	private List<Integer> targetItems;
 
 	/**
 	 * Instantiates a new divergence time.
@@ -129,12 +129,15 @@ public class DivergenceTime extends AggregateRoot {
 	 * @return
 	 */
 	public int totalDivergenceTimeWithAttendanceItemId(DailyRecordToAttendanceItemConverter idConverter) {
-		val getValueList = this.targetItems.stream()
-							   .filter(tc -> idConverter.convert(tc.intValue()).isPresent())
-							   .map(tc -> idConverter.convert(tc.intValue()).get())
-							   .collect(Collectors.toList());
+		if(this.targetItems == null) {
+			return 0;
+		}
+		val getValueList = idConverter.convert(this.targetItems.stream().map(c -> c.intValue()).collect(Collectors.toList()));
+				
 		return  getValueList.stream()
-									 .filter(tc -> tc.getValueType().isInteger())
+									 .filter(tc ->  tc !=null
+									  			 && tc.getValue() != null
+									  			 && tc.getValueType().isInteger())
 									 .map(tc -> Integer.valueOf(tc.getValue()))
 									 .collect(Collectors.summingInt(tc -> tc));
 									 

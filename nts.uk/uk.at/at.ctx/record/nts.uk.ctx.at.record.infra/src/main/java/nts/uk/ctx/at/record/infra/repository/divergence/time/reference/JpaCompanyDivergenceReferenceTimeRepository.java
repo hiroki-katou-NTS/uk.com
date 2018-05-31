@@ -13,6 +13,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeRepository;
@@ -45,9 +46,15 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 		pk.setHistId(histId);
 		pk.setDvgcTimeNo(divergenceTimeNo);
 
-		KrcstDrt drt = this.queryProxy().find(pk, KrcstDrt.class).orElse(null);
+		Optional<KrcstDrt> drt = this.queryProxy().find(pk, KrcstDrt.class);//.orElse(null);
+		if(drt == null) return Optional.empty();
+		if(!drt.isPresent()) return Optional.empty();
+		if(drt.get() == null) return Optional.empty();
 
-		return Optional.of(this.toDomain(drt));
+		
+		val domain = this.toDomain(drt.get());
+		
+		return Optional.of(domain);
 	}
 
 	/*
@@ -162,10 +169,6 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 	 * @return the company divergence reference time
 	 */
 	private CompanyDivergenceReferenceTime toDomain(KrcstDrt entity) {
-		if (entity == null) {
-			return null;
-		}
-
 		JpaCompanyDivergenceReferenceTimeGetMemento memento = new JpaCompanyDivergenceReferenceTimeGetMemento(entity);
 		return new CompanyDivergenceReferenceTime(memento);
 	}

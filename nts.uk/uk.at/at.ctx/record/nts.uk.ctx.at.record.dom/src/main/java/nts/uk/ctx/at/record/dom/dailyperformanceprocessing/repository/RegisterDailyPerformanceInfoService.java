@@ -105,8 +105,8 @@ public class RegisterDailyPerformanceInfoService {
 
 		// ドメインモデル「日別実績の休憩時間帯」を更新する
 		// BreakTimeOfDailyPerformance
-		if (breakTimeOfDailyPerformance != null) {
-			if (this.breakTimeOfDailyPerformanceRepository.find(employeeID, day, 0).isPresent()) {
+		if (breakTimeOfDailyPerformance != null && !breakTimeOfDailyPerformance.getBreakTimeSheets().isEmpty()) {
+			if (this.breakTimeOfDailyPerformanceRepository.find(employeeID, day, 1).isPresent()) {
 				this.breakTimeOfDailyPerformanceRepository.update(breakTimeOfDailyPerformance);
 			} else {
 				this.breakTimeOfDailyPerformanceRepository.insert(breakTimeOfDailyPerformance);
@@ -136,8 +136,9 @@ public class RegisterDailyPerformanceInfoService {
 		if (stampOutput != null) {
 
 			// breakTimeOfDailyPerformance
-			if (stampOutput.getBreakTimeOfDailyPerformance() != null) {
-				if (this.breakTimeOfDailyPerformanceRepository.find(employeeID, day, 1).isPresent()) {
+			if (stampOutput.getBreakTimeOfDailyPerformance() != null
+					&& !stampOutput.getBreakTimeOfDailyPerformance().getBreakTimeSheets().isEmpty()) {
+				if (this.breakTimeOfDailyPerformanceRepository.find(employeeID, day, 0).isPresent()) {
 					this.breakTimeOfDailyPerformanceRepository.update(stampOutput.getBreakTimeOfDailyPerformance());
 				} else {
 					this.breakTimeOfDailyPerformanceRepository.insert(stampOutput.getBreakTimeOfDailyPerformance());

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.approvalmanagement;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -9,6 +10,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalStatusOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalStatusOfDailyPerforRepository;
 import nts.uk.ctx.at.record.infra.entity.approvalmanagement.KrcdtDaiApprovalStatus;
+import nts.uk.ctx.at.record.infra.entity.approvalmanagement.KrcdtDaiApprovalStatusPK;
 
 @Stateless
 public class JpaApprovalStatusOfDailyPerforRepository extends JpaRepository
@@ -51,6 +53,11 @@ public class JpaApprovalStatusOfDailyPerforRepository extends JpaRepository
 	public void insert(ApprovalStatusOfDailyPerfor approvalStatusOfDailyPerfor) {
 		this.commandProxy().insert(KrcdtDaiApprovalStatus.toEntity(approvalStatusOfDailyPerfor));
 		this.getEntityManager().flush();
+	}
+
+	@Override
+	public Optional<ApprovalStatusOfDailyPerfor> find(String employeeId, GeneralDate ymd) {
+		return this.queryProxy().find(new KrcdtDaiApprovalStatusPK(employeeId, ymd), KrcdtDaiApprovalStatus.class).map(c -> c.toDomain());
 	}
 
 }

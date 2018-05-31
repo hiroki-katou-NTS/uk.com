@@ -14,10 +14,7 @@
 				};
 			</script>
 				<com:ValidatorScript>
-               		nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail.DailyDaySetting
-               		nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail.WeeklyWeekSetting
                		nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.EndTime
-			   		nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.OneDayRepeatIntervalDetail
 					nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.StartTime
 	            </com:ValidatorScript>
 				<com:scriptfile set="IGNITE" />
@@ -104,6 +101,7 @@
 												<span tabindex="7" class="box"></span><span class="label">#{i18n.getText('KBT002_68')}</span>
 											</label>
 										</div>
+										<!-- 
 										<input tabindex="8" style="width: 60px;"  id="oneDayTime"
 											data-bind="ntsTimeEditor: {value: oneDayRepInterval,
 											inputFormat: 'time',
@@ -111,7 +109,24 @@
 											required: true,
 											mode: 'time',
 											constraint: 'OneDayRepeatIntervalDetail'}" />
+										 -->
+											
+											<!-- ,
+											selectFirstIfNull: selectFirstIfNull,
+											columns: [
+												{ prop: 'code', length: 4 },
+												{ prop: 'name', length: 10 },
+											] -->
 									</div>
+									<div tabindex="8" style="width: 81px;" id="oneDayTime"  data-bind="ntsComboBox: {
+											name: '#KBT002_69',
+											options: $parent.lstOneDayRepInterval,
+											optionsValue: 'code',
+											value: oneDayRepInterval,
+											optionsText: 'name',
+											enable: oneDayRepCls() == 1
+											
+											}"></div>
 	                        	</td>
 	                        </tr>
 	                        <tr class="row">
@@ -196,8 +211,8 @@
 	                            <col width="*" />
 	                        </colgroup>
 	                        <tr class="row">
-	                        	<td class="input-label">#{i18n.getText('KBT002_88')}</td>
-	                        	<td><input tabindex="-1" class="nts-input pad_left_5px" id="repIntervalDay"
+	                        	<td class="input-label"><!-- #{i18n.getText('KBT002_88')} --></td>
+	                        	<td><!-- <div style="float:left"><input tabindex="-1" class="nts-input pad_left_5px" id="repIntervalDay"
 												data-bind="ntsNumberEditor:{
 												name: '#[KBT002_89]',
 												value: repIntervalDay,
@@ -206,7 +221,9 @@
 													width: '30'
 												}),
 												constraint: 'DailyDaySetting',
-												enable: repeatCls() == 1 &amp;&amp; repeatContent() == 0}" />#{i18n.getText('KBT002_90')}</td>
+												enable: repeatCls() == 1 &amp;&amp; repeatContent() == 0}" />
+												</div>
+												<div style="float:left">#{i18n.getText('KBT002_90')}</div> --></td>
 	                        </tr>
                         </table>
 					</div>
@@ -218,8 +235,8 @@
 	                            <col width="*" />
 	                        </colgroup>
 	                        <tr class="row">
-	                        	<td class="input-label">#{i18n.getText('KBT002_76')}</td>
-	                        	<td><input tabindex="-1" class="nts-input pad_left_5px" id="repIntervalWeek"
+	                        	<td class="input-label"><!-- #{i18n.getText('KBT002_76')} --></td>
+	                        	<td><!--<input tabindex="-1" class="nts-input pad_left_5px" id="repIntervalWeek"
 												data-bind="ntsNumberEditor:{
 												name: '#[KBT002_77]',
 												value: repIntervalWeek,
@@ -228,7 +245,7 @@
 													width: '20'
 												}),
 												constraint: 'WeeklyWeekSetting',
-												enable: repeatCls() == 1 &amp;&amp; repeatContent() == 1}" />#{i18n.getText('KBT002_78')}</td>
+												enable: repeatCls() == 1 &amp;&amp; repeatContent() == 1}" />#{i18n.getText('KBT002_78')}--></td>
 	                        </tr>
 	                        <tr class="row">
 	                        	<td class="input-label">#{i18n.getText('KBT002_79')}</td>
@@ -282,7 +299,7 @@
 					</div>
 				</div>
 				<div id="functions-area-bottom">
-					<button tabindex="12" class="proceed large" data-bind="click: decide">#{i18n.getText('KBT002_74')}</button>
+					<button tabindex="12" class="proceed large" data-bind="click: decide">#{i18n.getText('KBT002_3')}</button>
 					<button tabindex="13" data-bind="click: closeDialog">#{i18n.getText('KBT002_75')}</button>
 				</div>
 			</ui:define>

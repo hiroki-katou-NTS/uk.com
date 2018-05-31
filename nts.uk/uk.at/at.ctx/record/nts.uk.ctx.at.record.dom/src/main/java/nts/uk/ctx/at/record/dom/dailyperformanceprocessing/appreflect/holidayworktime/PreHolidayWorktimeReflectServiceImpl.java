@@ -7,12 +7,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ApplicationReflectOutput;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReasonNotReflectRecord;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReflectedStateRecord;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
@@ -21,9 +17,8 @@ import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformance
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectParameter;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
@@ -40,7 +35,7 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 	@Inject
 	private HolidayWorkReflectProcess holidayWorkProcess;
 	@Inject
-	private ScheWorkUpdateService workUpdate;
+	private WorkUpdateService workUpdate;
 	@Inject
 	private PreOvertimeReflectService overTimeService;
 	@Inject
@@ -50,51 +45,27 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 	@Inject
 	private WorkInformationRepository workRepository;
 	@Inject
-	private ScheWorkUpdateService scheWork;
+	private WorkUpdateService scheWork;
 	@Inject
 	private EditStateOfDailyPerformanceRepository dailyReposiroty;
 	@Override
-	public boolean preHolidayWorktimeReflect(HolidayWorktimePara holidayWorkPara) {		
+	public boolean preHolidayWorktimeReflect(HolidayWorktimePara holidayWorkPara, boolean isPre) {		
 		try {
 			Optional<WorkInfoOfDailyPerformance> optDailyData = workRepository.find(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate());
 			if(!optDailyData.isPresent()) {
 				return false;
 			}
-			IntegrationOfDaily daily =overTimeService.calculateForAppReflect(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate());
-			WorkInfoOfDailyPerformance workInformation = daily.getWorkInformation();
-			workInformation.setRecordInfo(new WorkInformation(holidayWorkPara.getHolidayWorkPara().getWorkTimeCode(), holidayWorkPara.getHolidayWorkPara().getWorkTypeCode()));
-			Optional<TimeLeavingOfDailyPerformance> optAttendanceLeave= daily.getAttendanceLeave();
-			
-			//TimeLeavingOfDailyPerformance attendanceLeavingOfDaily = timeLeavingOfDailyPerformanceRepository.
-
-			WorkStamp attendance = new WorkStamp(new TimeWithDayAttr(holidayWorkPara.getHolidayWorkPara().getStartTime()),
-					new TimeWithDayAttr(holidayWorkPara.getHolidayWorkPara().getStartTime()),
-					new WorkLocationCD("01"), 
-					StampSourceInfo.CORRECTION_RECORD_SET );
-
-			WorkStamp leaving    = new WorkStamp(new TimeWithDayAttr(holidayWorkPara.getHolidayWorkPara().getEndTime()),
-					new TimeWithDayAttr(holidayWorkPara.getHolidayWorkPara().getEndTime()),
-					new WorkLocationCD("01"),
-					StampSourceInfo.CORRECTION_RECORD_SET );
-
-			TimeActualStamp atStamp = new TimeActualStamp(attendance,leaving,1);
-
-			TimeActualStamp leStamp = new TimeActualStamp(attendance,leaving,1);
-
-			TimeLeavingWork timeLeavingWork = new TimeLeavingWork(new WorkNo(1),atStamp,leStamp);
-			List<TimeLeavingWork> lstTimeLeavingWork = new ArrayList<>();
-			lstTimeLeavingWork.add(timeLeavingWork);
-			TimeLeavingOfDailyPerformance a = new TimeLeavingOfDailyPerformance(holidayWorkPara.getEmployeeId(), new WorkTimes(1), lstTimeLeavingWork, holidayWorkPara.getBaseDate());
-			daily.setAttendanceLeave(Optional.of(a));
-			daily.setWorkInformation(workInformation);
-			IntegrationOfDaily calculateData = calculate.calculate(daily);
-			attendanceTime.updateFlush(calculateData.getAttendanceTimeOfDailyPerformance().get());
+			IntegrationOfDaily daily = this.createIntegrationOfDailyStart(holidayWorkPara.getEmployeeId(), 
+					holidayWorkPara.getBaseDate(), holidayWorkPara.getHolidayWorkPara().getWorkTimeCode(), 
+					holidayWorkPara.getHolidayWorkPara().getWorkTypeCode(), holidayWorkPara.getHolidayWorkPara().getStartTime(), 
+					holidayWorkPara.getHolidayWorkPara().getEndTime());
+			//IntegrationOfDaily calculateData = calculate.calculate(daily,null);
 			// 予定勤種・就時の反映
 			daily = holidayWorkProcess.updateScheWorkTimeType(holidayWorkPara.getEmployeeId(),
 					holidayWorkPara.getBaseDate(), 
 					holidayWorkPara.getHolidayWorkPara().getWorkTypeCode(), 
 					holidayWorkPara.getHolidayWorkPara().getWorkTimeCode(), 
-					holidayWorkPara.isScheReflectFlg(), 
+					holidayWorkPara.isScheReflectFlg(), isPre,
 					holidayWorkPara.getScheAndRecordSameChangeFlg(),
 					daily);
 			//勤種・就時の反映
@@ -127,13 +98,48 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 					true, daily);
 			List<EditStateOfDailyPerformance> lstEditState = dailyReposiroty.findByKey(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate());
 			daily.setEditState(lstEditState);
-			calculateData = calculate.calculate(daily);
+			IntegrationOfDaily calculateData = calculate.calculate(daily,null);
 			attendanceTime.updateFlush(calculateData.getAttendanceTimeOfDailyPerformance().get());
 			return true;
 		} catch (Exception e) {
 			return false;
 		}
 		
+	}
+	@Override
+	public IntegrationOfDaily createIntegrationOfDailyStart(String employeeId, GeneralDate baseDate
+			, String workTimeCode, String workTypeCode, Integer startTime, Integer endTime) {
+		IntegrationOfDaily daily =overTimeService.calculateForAppReflect(employeeId, baseDate);
+		if(daily == null) {
+			return null;
+		}
+		WorkInfoOfDailyPerformance workInformation = daily.getWorkInformation();
+		workInformation.setRecordInfo(new WorkInformation(workTimeCode, workTypeCode));
+		Optional<TimeLeavingOfDailyPerformance> optAttendanceLeave= daily.getAttendanceLeave();
+		WorkStamp attendance = new WorkStamp(new TimeWithDayAttr(startTime),
+				new TimeWithDayAttr(startTime),
+				new WorkLocationCD("01"), 
+				StampSourceInfo.CORRECTION_RECORD_SET );
+
+		WorkStamp leaving = new WorkStamp(new TimeWithDayAttr(endTime),
+				new TimeWithDayAttr(endTime),
+				new WorkLocationCD("01"),
+				StampSourceInfo.CORRECTION_RECORD_SET );
+
+		TimeActualStamp atStamp = new TimeActualStamp(attendance,attendance,1);
+
+		TimeActualStamp leStamp = new TimeActualStamp(leaving,leaving,1);
+
+		TimeLeavingWork timeLeavingWork = new TimeLeavingWork(new WorkNo(1),atStamp,leStamp);
+		List<TimeLeavingWork> lstTimeLeavingWork = new ArrayList<>();
+		lstTimeLeavingWork.add(timeLeavingWork);
+		TimeLeavingOfDailyPerformance a = new TimeLeavingOfDailyPerformance(employeeId, new WorkTimes(1), lstTimeLeavingWork, baseDate);
+		daily.setAttendanceLeave(Optional.of(a));
+		daily.setWorkInformation(workInformation);
+		IntegrationOfDaily calculateData = calculate.calculate(daily,null);
+		attendanceTime.updateFlush(calculateData.getAttendanceTimeOfDailyPerformance().get());
+			
+		return daily;
 	}
 
 }

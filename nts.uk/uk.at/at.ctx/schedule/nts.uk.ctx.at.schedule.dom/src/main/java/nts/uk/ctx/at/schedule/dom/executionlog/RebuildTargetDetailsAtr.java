@@ -53,4 +53,35 @@ public class RebuildTargetDetailsAtr {
 		memento.setRecreateWorkTypeChange(this.recreateWorkTypeChange);
 		memento.setProtectHandCorrection(this.protectHandCorrection);
 	}
+
+	public RebuildTargetDetailsAtr() {
+	}
+
+	public void setRecreateConverter(Boolean recreateConverter) {
+		this.recreateConverter = recreateConverter;
+	}
+
+	public void setRecreateEmployeeOffWork(Boolean recreateEmployeeOffWork) {
+		this.recreateEmployeeOffWork = recreateEmployeeOffWork;
+	}
+
+	public void setRecreateDirectBouncer(Boolean recreateDirectBouncer) {
+		this.recreateDirectBouncer = recreateDirectBouncer;
+	}
+
+	public void setRecreateShortTermEmployee(Boolean recreateShortTermEmployee) {
+		this.recreateShortTermEmployee = recreateShortTermEmployee;
+	}
+
+	public void setRecreateWorkTypeChange(Boolean recreateWorkTypeChange) {
+		this.recreateWorkTypeChange = recreateWorkTypeChange;
+	}
+
+	public void setProtectHandCorrection(Boolean protectHandCorrection) {
+		this.protectHandCorrection = protectHandCorrection;
+	}
+	
+	
+	
+	
 }

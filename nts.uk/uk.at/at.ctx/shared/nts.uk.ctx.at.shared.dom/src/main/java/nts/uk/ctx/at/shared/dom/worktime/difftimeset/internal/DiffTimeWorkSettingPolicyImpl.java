@@ -103,6 +103,25 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.difftimeset.policy.
+	 * DiffTimeWorkSettingPolicy#filterTimezone(nts.uk.ctx.at.shared.dom.
+	 * worktime.predset.PredetemineTimeSetting,
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayMode,
+	 * nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting)
+	 */
+	@Override
+	public void filterTimezone(PredetemineTimeSetting pred, WorkTimeDisplayMode displayMode,
+			DiffTimeWorkSetting diffTimeWorkSetting) {
+		// Filter AM PM
+		diffTimeWorkSetting.getHalfDayWorkTimezones().forEach(diffTime -> {
+			this.diffTimeHalfPolicy.filterTimezone(pred, diffTime, displayMode.getDisplayMode(),
+					diffTimeWorkSetting.isUseHalfDayShift());
+		});
+	}
+
 	/**
 	 * Validate HD work time sheet setting.
 	 *
@@ -203,7 +222,7 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 		diffTimeWorkSetting.getHalfDayWorkTimezones().stream().forEach(item -> {
 
 			List<DiffTimeDeductTimezone> lstRestTime = item.getRestTimezone().getRestTimezones().stream()
-					.filter(halftime->!halftime.isUpdateStartTime())
+					.filter(halftime -> !halftime.isUpdateStartTime())
 					.sorted((obj1, obj2) -> obj1.getStart().compareTo(obj2.getStart())).collect(Collectors.toList());
 			List<EmTimeZoneSet> lstWorkTime = item.getWorkTimezone().getEmploymentTimezones().stream()
 					.sorted((obj1, obj2) -> obj1.getTimezone().getStart().compareTo(obj2.getTimezone().getStart()))
@@ -343,4 +362,5 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 					diffTimeWorkSetting.isUseHalfDayShift());
 		});
 	}
+
 }

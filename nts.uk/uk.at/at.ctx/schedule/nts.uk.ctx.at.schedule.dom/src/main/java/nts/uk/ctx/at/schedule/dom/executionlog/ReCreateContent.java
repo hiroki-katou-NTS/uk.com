@@ -60,4 +60,29 @@ public class ReCreateContent extends DomainObject {
 		memento.setRebuildTargetAtr(this.rebuildTargetAtr);
 		this.rebuildTargetDetailsAtr.saveToMemento(memento);
 	}
+
+	public void setReCreateAtr(ReCreateAtr reCreateAtr) {
+		this.reCreateAtr = reCreateAtr;
+	}
+
+	public void setProcessExecutionAtr(ProcessExecutionAtr processExecutionAtr) {
+		this.processExecutionAtr = processExecutionAtr;
+	}
+
+	public void setResetAtr(ResetAtr resetAtr) {
+		this.resetAtr = resetAtr;
+	}
+
+	public void setRebuildTargetAtr(RebuildTargetAtr rebuildTargetAtr) {
+		this.rebuildTargetAtr = rebuildTargetAtr;
+	}
+
+	public void setRebuildTargetDetailsAtr(RebuildTargetDetailsAtr rebuildTargetDetailsAtr) {
+		this.rebuildTargetDetailsAtr = rebuildTargetDetailsAtr;
+	}
+
+	public ReCreateContent() {
+	}
+	
+	
 }

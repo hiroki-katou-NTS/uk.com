@@ -14,11 +14,11 @@ import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
 @Stateless
 public class UpdateSpLea12InfoCommandHandler extends CommandHandler<UpdateSpecialleave12informationCommand>
-implements PeregUpdateCommandHandler<UpdateSpecialleave12informationCommand>{
+		implements PeregUpdateCommandHandler<UpdateSpecialleave12informationCommand> {
 
-	@Inject 
+	@Inject
 	private SpLeaInfoCommandHandler updateSpLeaInfoCommandHandler;
-	
+
 	@Override
 	public String targetCategoryCd() {
 		return "CS00050";
@@ -31,12 +31,13 @@ implements PeregUpdateCommandHandler<UpdateSpecialleave12informationCommand>{
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateSpecialleave12informationCommand> context) {
-		
+
 		val command = context.getCommand();
-		
+
 		String cid = AppContexts.user().companyId();
-		SpecialLeaveBasicInfo domain = new SpecialLeaveBasicInfo(cid,command.getSID(),SpecialLeaveCode.CS00050.value, command.getUseAtr().intValue(), command.getAppSet().intValue(), command.getGrantDate(),
-				command.getGrantDays()!=null? command.getGrantDays().intValue() : null, command.getGrantTable());
+		SpecialLeaveBasicInfo domain = new SpecialLeaveBasicInfo(cid, command.getSID(), SpecialLeaveCode.CS00050.value,
+				command.getUseAtr(), command.getAppSet(), command.getGrantDate(),
+				command.getGrantDays() != null ? command.getGrantDays().intValue() : null, command.getGrantTable());
 		updateSpLeaInfoCommandHandler.updateHandler(domain);
 	}
 

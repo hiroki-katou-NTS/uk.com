@@ -10,7 +10,8 @@
 			<!-- YEAR -->
 			<div class="control-group ">
 				<div tabindex="#{baseTabIndex + 3}" id="worktimeYearPicker" 
-					data-bind="ntsDatePicker: {name:'#[KMK004_31]', 
+					data-bind="ntsDatePicker: {name:'#[KMK004_31]',
+											required: true,
 											value: normalSetting().year, 
 											dateFormat: 'YYYY', 
 											valueFormat: 'YYYY', 
@@ -21,7 +22,7 @@
 			<!-- YEAR -->
 			<ui:insert name="worktime-setting-extra-info" />
 			<!-- Start of TAB PANEL -->
-			<div tabindex="#{baseTabIndex + 4}" id="tab-panel" class="pull-left"
+			<div tabindex="#{baseTabIndex + 4}" id="tab-panel" class="pull-left worktime-tabs"
 				data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: selectedTab}">
 
 				<!-- NORMAL WORK TIME SETTING START -->
@@ -39,7 +40,7 @@
 										<div data-bind="text: month()+'月度'"></div>
 									</td>
 									<td><input
-										data-bind="attr: {'tabindex': #{baseTabIndex} + 5 + $index()}, ntsTimeEditor: {value: time, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
+										data-bind="attr: {'tabindex': #{baseTabIndex} + 5 + $index()}, ntsTimeEditor: {value: time, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true, name: monthMsgNormal }" />
 									</td>
 								</tr>
 							</com:ko>
@@ -52,7 +53,32 @@
 				<div class="tab-content-2" id="worktime-tab-2">
 					<div class="control-group">
 						<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_45')}</div>
-						<table class="border-all tbl-monthly">
+												
+						<!-- for Com Flex setting -->
+						<div data-bind="if: #{showSetFlexPred}">
+							<table style="width: 100%; margin-top: 15px;">
+								<tr>
+									<!-- A5_20 -->
+									<td style="text-align: right;"><div class="label">#{i18n.getText('KMK004_17')}</div></td>
+									<td style="text-align: right; padding : 5px; width: 58%;">
+										<!-- A5_21 ~ A5_23 -->
+										<div data-bind="ntsSwitchButton: {
+												name: '#[KMK004_146]',
+												options: optReferenceFlexPred,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: referenceFlexPred,
+												required: true,
+												enable: true }">
+										</div></td>
+								</tr>
+							</table>
+							<!-- A5_24 -->
+							<div style=" width: 60%; margin-left: 25%;">#{i18n.getText('KMK004_149')}</div>
+						</div>
+						<!-- for Com Flex setting -->
+						
+						<table class="border-all tbl-monthly" style="margin-top: 20px;">
 							<tr class="bg-dark-green">
 								<td>#{i18n.getText('KMK004_13')}</td>
 								<td>#{i18n.getText('KMK004_17')}</td>
@@ -64,10 +90,18 @@
 										<div data-bind="text: month()+'月度'"></div>
 									</td>
 									<td><input
-										data-bind="attr: {'tabindex': #{baseTabIndex} + 17 + $index()}, ntsTimeEditor: {value: specifiedTime, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
+										data-bind="attr: {'tabindex': #{baseTabIndex} + 17 + $index()}, 
+										ntsTimeEditor: {value: specifiedTime, 
+														constraint:'MonthlyTime', 
+														inputFormat: 'time', 
+														mode: 'time', required: true, 
+														enable: $parent.referenceFlexPred() == 0, 
+														name: monthMsgSpecified
+														}" />
 									</td>
 									<td><input
-										data-bind="attr: {'tabindex': #{baseTabIndex} + 29 + $index()}, ntsTimeEditor: {value: statutoryTime, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
+										data-bind="attr: {'tabindex': #{baseTabIndex} + 29 + $index()}, 
+										ntsTimeEditor: {value: statutoryTime, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true, name: monthMsgStatutory }" />
 									</td>
 								</tr>
 							</com:ko>
@@ -92,7 +126,8 @@
 										<div data-bind="text: month()+'月度'"></div>
 									</td>
 									<td><input
-										data-bind="attr: {'tabindex': #{baseTabIndex} + 41 + $index()}, ntsTimeEditor: {value: time, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
+										data-bind="attr: {'tabindex': #{baseTabIndex} + 41 + $index()}, 
+										ntsTimeEditor: {value: time, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true, name: monthMsgDefor }" />
 									</td>
 								</tr>
 							</com:ko>

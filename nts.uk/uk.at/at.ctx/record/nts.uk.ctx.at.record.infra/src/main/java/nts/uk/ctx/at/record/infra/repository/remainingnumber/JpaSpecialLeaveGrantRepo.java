@@ -99,9 +99,11 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 				? data.getDetails().getUsedNumber().getTimeOfUse().get().v()
 				: 0;
 		// use Saving data(tai lieu đang bảo truyền null vào)
-		entity.useSavingDays = data.getDetails().getUsedNumber().getUseSavingDays().isPresent()
-				? data.getDetails().getUsedNumber().getUseSavingDays().get().v()
-				: 0;
+		// entity.useSavingDays =
+		// data.getDetails().getUsedNumber().getUseSavingDays().isPresent()
+		// ? data.getDetails().getUsedNumber().getUseSavingDays().get().v()
+		// : 0;
+		
 		// Over
 		if (data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().isPresent()) {
 			entity.numberOverDays = data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get()
@@ -123,7 +125,6 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 	 */
 	private KrcmtSpecialLeaveReam toEntity(SpecialLeaveGrantRemainingData data) {
 		KrcmtSpecialLeaveReam entity = new KrcmtSpecialLeaveReam();
-		System.out.println(data);
 		entity.cId = data.getCId();
 		entity.specialLeaID = data.getSpecialId();
 		entity.employeeId = data.getEmployeeId();
@@ -151,9 +152,11 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 				? data.getDetails().getUsedNumber().getTimeOfUse().get().v()
 				: 0;
 		// use Saving data(tai lieu đang bảo truyền null vào)
-		entity.useSavingDays = data.getDetails().getUsedNumber().getUseSavingDays().isPresent()
-				? data.getDetails().getUsedNumber().getUseSavingDays().get().v()
-				: 0;
+		// entity.useSavingDays =
+		// data.getDetails().getUsedNumber().getUseSavingDays().isPresent()
+		// ? data.getDetails().getUsedNumber().getUseSavingDays().get().v()
+		// : 0;
+		entity.useSavingDays = 0d;
 		// Over
 		if (data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().isPresent()) {
 			entity.numberOverDays = data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get()
@@ -181,7 +184,7 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 		List<KrcmtSpecialLeaveReam> entities = this.queryProxy()
 				.query(GET_ALL_BY_SID_SPECIALCODE_STATUS, KrcmtSpecialLeaveReam.class)
 				.setParameter("employeeId", employeeId).setParameter("specialLeaCode", specialCode)
-				.setParameter("expStatus",expirationStatus).getList();
+				.setParameter("expStatus", expirationStatus).getList();
 
 		return entities.stream()
 				.map(x -> SpecialLeaveGrantRemainingData.createFromJavaType(x.specialLeaID, x.cId, x.employeeId,

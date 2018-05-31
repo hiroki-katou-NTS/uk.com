@@ -50,47 +50,13 @@ public class DeductFromFlexShortageImpl implements DeductFromFlexShortage {
 		
 		// 履歴ごとに月別実績を集計する
 		monthlyCalculation.prepareAggregation(companyId, employeeId, yearMonth, closureId, closureDate,
-				period, workConditionItem, Optional.empty(), this.repositories);
+				period, workConditionItem, Optional.empty(), 1, this.repositories);
+		for (val errorInfo : monthlyCalculation.getErrorInfos()){
+			if (errorInfo.getResourceId().compareTo("002") == 0) return returnValue;
+		}
 		monthlyCalculation.aggregate(period, MonthlyAggregateAtr.MONTHLY,
 				Optional.of(annualLeaveDeductDays), Optional.of(absenceDeductTime), this.repositories);
-		
-		// 年休控除日数を時間換算する　→　控除前の年休控除時間
-		val flexTime = monthlyCalculation.getFlexTime();
-		DeductDaysAndTime beforeDeduct = new DeductDaysAndTime(
-				flexTime.getFlexShortDeductTime().getAnnualLeaveDeductDays(), new AttendanceTimeMonth(0));
-		beforeDeduct.timeConversionOfDeductAnnualLeaveDays(companyId, employeeId, period,
-				workConditionItem, this.repositories);
-		if (beforeDeduct.getErrorInfos().size() > 0){
-			// エラー発生時
-			returnValue.getErrorInfos().addAll(beforeDeduct.getErrorInfos());
-			return returnValue;
-		}
-		if (!beforeDeduct.getPredetermineTimeSetOfWeekDay().isPresent()) return returnValue;
-		val predetermineTimeSet = beforeDeduct.getPredetermineTimeSetOfWeekDay().get();
-		
-		// 控除した時間を求める
-		AttendanceTimeMonth deductedTime = beforeDeduct.getAnnualLeaveDeductTime();
-		val afterDeduct = flexTime.getDeductDaysAndTime();
-		deductedTime = deductedTime.minusMinutes(afterDeduct.getAnnualLeaveDeductTime().v());
-
-		// 控除した時間を年休使用時間に加算する
-		val annualLeave = monthlyCalculation.getAggregateTime().getVacationUseTime().getAnnualLeave();
-		annualLeave.addMinuteToUseTime(deductedTime.v());
-
-		// 控除時間が余分に入力されていないか確認する
-		val predAddTimeAM = predetermineTimeSet.getPredTime().getAddTime().getMorning();
-		boolean isExtraTime = false;
-		if (afterDeduct.getAnnualLeaveDeductTime().greaterThanOrEqualTo(predAddTimeAM.v())){
-			isExtraTime = true;
-		}
-		else if (afterDeduct.getAbsenceDeductTime().greaterThan(0)){
-			isExtraTime = true;
-		}
-		if (isExtraTime){
-			
-			// 「余分な控除時間のエラーフラグ」をtrueにする
-			flexTime.getFlexShortDeductTime().setErrorAtrOfExtraDeductTime(true);
-		}
+		returnValue.getErrorInfos().addAll(monthlyCalculation.getErrorInfos());
 		
 		// 「月別実績の月の計算」を返す
 		returnValue.setMonthlyCalculation(monthlyCalculation);

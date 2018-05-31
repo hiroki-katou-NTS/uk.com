@@ -62,14 +62,11 @@ public class OptionalUtil {
 	 * @param item
 	 * @return
 	 */
-	public static DataState createDataState(ItemValue item){
-		switch(item.itemValueType()){
+	public static DataState createDataState(ItemValue item) {
+		switch (item.saveDataType()) {
 		case STRING:
-		case SELECTION:
 			return DataState.createFromStringValue(convertToString(item.value()));
 		case NUMERIC:
-		case TIME:
-		case TIMEPOINT:
 			return DataState.createFromNumberValue(convertToDecimal(item.value()));
 		case DATE:
 			return DataState.createFromDateValue(convertToDate(item.value()));

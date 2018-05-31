@@ -9,13 +9,11 @@ public interface EmployeeDailyPerErrorRepository {
 	
 	void insert(EmployeeDailyPerError employeeDailyPerformanceError);
 	
-	void update(EmployeeDailyPerError employeeDailyPerformanceError);
-	
 	boolean checkExistErrorCode(String employeeID, GeneralDate processingDate, String errorCode);
 	
 	boolean checkExistErrorCodeByPeriod(String employeeID, DatePeriod datePeriod, String errorCode);
 	
-	EmployeeDailyPerError find(String employeeID, GeneralDate processingDate);
+	List<EmployeeDailyPerError> find(String employeeID, GeneralDate processingDate);
 	
 	List<EmployeeDailyPerError> findList(String companyID,String employeeID);
 	
@@ -23,10 +21,10 @@ public interface EmployeeDailyPerErrorRepository {
 	
 	List<EmployeeDailyPerError> finds(List<String> employeeID, DatePeriod processingDate);
 	
-	List<EmployeeDailyPerError> findAll(String employeeID, GeneralDate processingDate);
-	
 	void removeParam(String sid, GeneralDate date);
 	
-	boolean checkExistErrorByDate(String companyID, String employeeID, GeneralDate date);
+	boolean checkExistRecordErrorListDate(String companyID, String employeeID, List<GeneralDate> lstDate);
+	
+	boolean checkEmployeeHasErrorOnProcessingDate(String employeeID, GeneralDate processingDate);
 	
 }

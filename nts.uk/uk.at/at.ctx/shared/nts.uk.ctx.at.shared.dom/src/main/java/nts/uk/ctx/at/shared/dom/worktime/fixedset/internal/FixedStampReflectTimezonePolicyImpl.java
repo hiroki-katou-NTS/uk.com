@@ -89,11 +89,15 @@ public class FixedStampReflectTimezonePolicyImpl implements FixedStampReflectTim
 				if (stampReflectTz.isGoWork1()) {
 					be.addMessage("Msg_516", "#KMK003_271");
 				} else if (stampReflectTz.isGoWork2()) {
-					be.addMessage("Msg_516", "#KMK003_272");
+					if (predetemineTimeSetting.getPrescribedTimezoneSetting().isUseShiftTwo()) {
+						be.addMessage("Msg_516", "#KMK003_272");
+					}					
 				} else if (stampReflectTz.isLeaveWork1()) {
 					be.addMessage("Msg_516", "#KMK003_274");
 				} else if (stampReflectTz.isLeaveWork2()) {
-					be.addMessage("Msg_516", "#KMK003_275");
+					if (predetemineTimeSetting.getPrescribedTimezoneSetting().isUseShiftTwo()) {
+						be.addMessage("Msg_516", "#KMK003_275");
+					}	
 				}
 			}
 		});

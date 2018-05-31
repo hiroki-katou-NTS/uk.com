@@ -144,7 +144,7 @@ public abstract class CalculationTimeSheet {
 	 * @return　控除時間帯リスト
 	 */
 	public List<TimeSheetOfDeductionItem> duplicateNewTimeSpan(TimeSpanForCalc newTimeSpan){
-		return deductionTimeSheet.stream().filter(tc -> newTimeSpan.contains(tc.calcrange)).collect(Collectors.toList());
+		return deductionTimeSheet.stream().filter(tc -> newTimeSpan.contains(tc.timeSheet.getTimeSpan())).collect(Collectors.toList());
 	}
 	
 	
@@ -156,6 +156,18 @@ public abstract class CalculationTimeSheet {
 	 */
 	public AttendanceTime calcDedTimeByAtr(DeductionAtr dedAtr,ConditionAtr conditionAtr) {
 		val forCalcList = getDedTimeSheetByAtr(dedAtr,conditionAtr);
+		return new AttendanceTime(forCalcList.stream().map(tc -> tc.calcTotalTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
+	}
+	
+	
+	/**
+	 * 控除時間の合計を算出する（指定なし)
+	 * @param dedAtr
+	 * @param conditionAtr
+	 * @return
+	 */
+	public AttendanceTime calcDedTimeByAtr(DeductionAtr dedAtr) {
+		val forCalcList = (dedAtr.isDeduction())?this.deductionTimeSheet:this.recordedTimeSheet;
 		return new AttendanceTime(forCalcList.stream().map(tc -> tc.calcTotalTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
 	}
 	
@@ -212,7 +224,7 @@ public abstract class CalculationTimeSheet {
 	 * @return 時間
 	 */
 	public AttendanceTime deductionLengthMinutes() {
-		if(deductionTimeSheet.isEmpty()) return new AttendanceTime(this.calcrange.lengthAsMinutes()) ;
+		if(deductionTimeSheet.isEmpty()) return new AttendanceTime(this.timeSheet.getTimeSpan().lengthAsMinutes()) ;
 		return recursiveTotalTime() ;
 	}
 	
@@ -221,13 +233,15 @@ public abstract class CalculationTimeSheet {
 	 * @return　控除の合計時間
 	 */
 	public AttendanceTime recursiveTotalTime() {
-		if(deductionTimeSheet.isEmpty()) return new AttendanceTime(0) ;
+//		if(deductionTimeSheet.isEmpty()) return new AttendanceTime(0) ;
+		if(deductionTimeSheet.isEmpty()) return new AttendanceTime(timeSheet.getTimeSpan().lengthAsMinutes());
 		AttendanceTime totalDedTime = new AttendanceTime(0);
 		for(TimeSheetOfDeductionItem dedTimeSheet : deductionTimeSheet) {
-			totalDedTime.addMinutes(dedTimeSheet.recursiveTotalTime().valueAsMinutes());
+			totalDedTime = new AttendanceTime(totalDedTime.valueAsMinutes()+dedTimeSheet.recursiveTotalTime().valueAsMinutes());
+//			totalDedTime.addMinutes(dedTimeSheet.recursiveTotalTime().valueAsMinutes());
 		}
 		//return 丸め処理(calcrange.lengthAsMinutes() - totalDedTime); ←丸め処理実装後こちらに変える
-		return new AttendanceTime(calcrange.lengthAsMinutes() - totalDedTime.valueAsMinutes());
+		return new AttendanceTime(timeSheet.getTimeSpan().lengthAsMinutes() - totalDedTime.valueAsMinutes());
 	}
 
 	
@@ -286,7 +300,7 @@ public abstract class CalculationTimeSheet {
 	 * @param　控除項目の時間帯(List)
 	 */
 	private List<TimeSheetOfDeductionItem> getNewSpanIncludeCalcrange(List<TimeSheetOfDeductionItem> copyList , TimeSpanForCalc newSpan){
-		return copyList.stream().filter(tc -> newSpan.contains(tc.calcrange)).collect(Collectors.toList());
+		return copyList.stream().filter(tc -> newSpan.contains(tc.timeSheet.getTimeSpan())).collect(Collectors.toList());
 	}
 	
 	/**
@@ -295,7 +309,7 @@ public abstract class CalculationTimeSheet {
 	 * @return 
 	 */
 	public int calcIncludeTimeSheet(int basePoint, List<TimeSheetOfDeductionItem> deductionItemList){
-		return deductionItemList.stream().map(ts -> ts.calcrange.lengthAsMinutes()).collect(Collectors.summingInt(tc -> tc));
+		return deductionItemList.stream().map(ts -> ts.timeSheet.getTimeSpan().lengthAsMinutes()).collect(Collectors.summingInt(tc -> tc));
 	}
 	
 	/**
@@ -393,10 +407,10 @@ public abstract class CalculationTimeSheet {
 				returnList.add(deductionItem.reCreateOwn(baseTime,isDateBefore));
 				returnList.add(deductionItem);
 			}
-			else if(deductionItem.calcrange.getEnd().lessThan(baseTime) && isDateBefore) {
+			else if(deductionItem.timeSheet.getTimeSpan().getEnd().lessThan(baseTime) && isDateBefore) {
 				returnList.add(deductionItem);
 			}
-			else if(deductionItem.calcrange.getStart().greaterThan(baseTime) && !isDateBefore) {
+			else if(deductionItem.timeSheet.getTimeSpan().getStart().greaterThan(baseTime) && !isDateBefore) {
 				returnList.add(deductionItem);
 			}
 		}
@@ -412,14 +426,14 @@ public abstract class CalculationTimeSheet {
 	 */
 	public Optional<MidNightTimeSheetForCalc> recreateMidNightTimeSheetBeforeBase(TimeWithDayAttr baseTime,boolean isDateBefore){
 		if(this.midNightTimeSheet.isPresent()) {
-			if(midNightTimeSheet.get().calcrange.contains(baseTime)) {
+			if(midNightTimeSheet.get().timeSheet.getTimeSpan().contains(baseTime)) {
 				//return midNightTimeSheet.get().midNightTimeSheet.get().reCreateOwn(baseTime,isDateBefore);
 				return midNightTimeSheet;
 			}
-			else if(midNightTimeSheet.get().calcrange.getEnd().lessThan(baseTime) && isDateBefore) {
+			else if(midNightTimeSheet.get().timeSheet.getTimeSpan().getEnd().lessThan(baseTime) && isDateBefore) {
 				return midNightTimeSheet;
 			}
-			else if(midNightTimeSheet.get().calcrange.getStart().greaterThan(baseTime) && !isDateBefore) {
+			else if(midNightTimeSheet.get().timeSheet.getTimeSpan().getStart().greaterThan(baseTime) && !isDateBefore) {
 				return midNightTimeSheet;
 			}
 		}
@@ -455,7 +469,7 @@ public abstract class CalculationTimeSheet {
 		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
 		for(TimeSheetOfDeductionItem deductionTimeSheet : deductionTimeSheet) {
 			if(midNightTimeSheet.isPresent()) {
-				Optional<TimeSpanForCalc> duplicateSpan = midNightTimeSheet.get().calcrange.getDuplicatedWith(deductionTimeSheet.calcrange);
+				Optional<TimeSpanForCalc> duplicateSpan = midNightTimeSheet.get().timeSheet.getTimeSpan().getDuplicatedWith(deductionTimeSheet.timeSheet.getTimeSpan());
 				if(duplicateSpan.isPresent()) {
 					returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(
 																								deductionTimeSheet.timeSheet
@@ -530,7 +544,7 @@ public abstract class CalculationTimeSheet {
 		if(specifiedDayList.size() == 0) return Collections.emptyList();
 		for(SpecBonusPayTimeSheetForCalc specifiedBonusPayTimeSheet : specifiedBonusPayTimeSheetList) {
 			if(specifiedDayList.contains(specifiedBonusPayTimeSheet.getSpecBonusPayNumber().v().intValue())) {
-				Optional<TimeSpanForCalc> newSpan = this.calcrange.getDuplicatedWith(
+				Optional<TimeSpanForCalc> newSpan = this.timeSheet.getTimeSpan().getDuplicatedWith(
 														new TimeSpanForCalc(new TimeWithDayAttr(specifiedBonusPayTimeSheet.getCalcrange().getStart().valueAsMinutes())
 																		   ,new TimeWithDayAttr(specifiedBonusPayTimeSheet.getCalcrange().getEnd().valueAsMinutes())));
 				if(newSpan.isPresent()) {
@@ -613,7 +627,7 @@ public abstract class CalculationTimeSheet {
 	public static Optional<MidNightTimeSheetForCalc> getDuplicateMidNight(MidNightTimeSheet midNightTimeSheet, TimeSpanForCalc timeSpan){ 
 		val duplicateMidNightSpan = timeSpan.getDuplicatedWith(midNightTimeSheet.getTimeSpan());
 		if(duplicateMidNightSpan.isPresent()) {
-			return Optional.of(MidNightTimeSheetForCalc.convertForCalc(midNightTimeSheet).getDuplicateRangeTimeSheet(duplicateMidNightSpan.get()));
+			return MidNightTimeSheetForCalc.convertForCalc(midNightTimeSheet).getDuplicateRangeTimeSheet(duplicateMidNightSpan.get());
 		}
 		return Optional.empty();
 	}
@@ -625,7 +639,7 @@ public abstract class CalculationTimeSheet {
 	 */
 	private List<TimeSheetOfDeductionItem> getDuplicatedDeductionTimeSheet(List<TimeSheetOfDeductionItem> deductionTimeSheet) {
 		return deductionTimeSheet.stream()
-						  		 .filter(tc -> tc.calcrange.checkDuplication(this.calcrange).isDuplicated())
+						  		 .filter(tc -> tc.timeSheet.getTimeSpan().checkDuplication(this.timeSheet.getTimeSpan()).isDuplicated())
 						  		 .map(tc -> tc.createDuplicateRange(tc.calcrange).get())
 						  		 .collect(Collectors.toList());
 	}
@@ -636,10 +650,30 @@ public abstract class CalculationTimeSheet {
 	 */
 	public void addDuplicatedDeductionTimeSheet(List<TimeSheetOfDeductionItem> deductionTimeSheet,DeductionAtr dedAtr) {
 		if(dedAtr.isAppropriate()) {
-			this.recordedTimeSheet.addAll(getDuplicatedDeductionTimeSheet(deductionTimeSheet));
+			if(this.recordedTimeSheet != null && !this.recordedTimeSheet.isEmpty()) {
+				val test = getDuplicatedDeductionTimeSheet(deductionTimeSheet);
+				if(test != null)
+					this.recordedTimeSheet.addAll(test);
+			}
+			else {
+				val test = getDuplicatedDeductionTimeSheet(deductionTimeSheet);
+				if(test != null)
+					this.recordedTimeSheet = test;
+			}
+				
 		}
 		else {
-			this.deductionTimeSheet.addAll(getDuplicatedDeductionTimeSheet(deductionTimeSheet));
+			if(this.deductionTimeSheet != null && !this.recordedTimeSheet.isEmpty()) {
+				val test = getDuplicatedDeductionTimeSheet(deductionTimeSheet);
+				if(test != null)
+					this.deductionTimeSheet.addAll(test);
+			}
+			else {
+				val test = getDuplicatedDeductionTimeSheet(deductionTimeSheet);
+				if(test != null)
+					this.deductionTimeSheet = test;
+
+			}
 		}
 	}
 	

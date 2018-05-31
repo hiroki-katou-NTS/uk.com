@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.record.dom.optitem.calculation;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.error.BusinessException;
@@ -59,11 +60,11 @@ public class Formula extends AggregateRoot {
 	// ===================== Optional ======================= //
 	/** The monthly rounding. */
 	// 月別端数処理
-	private Rounding monthlyRounding;
+	private Optional<Rounding> monthlyRounding = Optional.empty();
 
 	/** The daily rounding. */
 	// 日別端数処理
-	private Rounding dailyRounding;
+	private Optional<Rounding> dailyRounding = Optional.empty();
 
 	/**
 	 * Instantiates a new optional item formula.

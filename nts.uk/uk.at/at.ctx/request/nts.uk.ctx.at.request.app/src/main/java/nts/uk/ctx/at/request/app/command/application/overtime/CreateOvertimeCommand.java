@@ -106,12 +106,12 @@ public class CreateOvertimeCommand {
 	/**
 	 * 残業申請.就業時間外深夜時間
 	 */
-	private int overTimeShiftNight;
+	private Integer overTimeShiftNight;
 
 	/**
 	 * 残業申請.ﾌﾚｯｸｽ超過時間
 	 */
-	private int flexExessTime;
+	private Integer flexExessTime;
 
 	/**
 	 * 残業申請.乖離理由 = 残業申請.乖離定型理由 + \n + 残業申請.乖離理由

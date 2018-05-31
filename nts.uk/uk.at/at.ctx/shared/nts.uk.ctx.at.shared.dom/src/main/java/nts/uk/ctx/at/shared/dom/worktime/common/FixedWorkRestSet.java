@@ -47,4 +47,11 @@ public class FixedWorkRestSet extends WorkTimeDomainObject {
 		memento.setIsPlanActualNotMatchMasterRefer(this.isPlanActualNotMatchMasterRefer);
 		memento.setCalculateMethod(this.calculateMethod);
 	}
+	
+	/**
+	 * 計算方法を予定時間参照へ切り替える
+	 */
+	public void changeCalcMethodToSche() {
+		this.calculateMethod = FixedRestCalculateMethod.PLAN_REF;
+	}
 }

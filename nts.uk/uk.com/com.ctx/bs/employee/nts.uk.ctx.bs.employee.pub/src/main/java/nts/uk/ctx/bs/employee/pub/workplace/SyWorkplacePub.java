@@ -108,11 +108,11 @@ public interface SyWorkplacePub {
 	 * @return the list
 	 */
 	// RequestList120
-	List<String> findListSIdByCidAndWkpIdAndPeriod(String workplaceId, GeneralDate startDate,GeneralDate endDate);
+	List<AffWorkplaceExport> findListSIdByCidAndWkpIdAndPeriod(String workplaceId, GeneralDate startDate,GeneralDate endDate);
 	
 	/**
 	 * Gets the wpl by list sid and period.
-	 *
+	 * RequestList189
 	 * @param sid the sid
 	 * @param datePeriod the date period
 	 * @return the list
@@ -150,4 +150,18 @@ public interface SyWorkplacePub {
 	 */
 	// RequestList324
 	List<WorkPlaceInfoExport> findWkpByWkpId(String companyId, GeneralDate baseDate, List<String> wkpIds);
+	
+	/**
+	 * Gets the wkp cd name.
+	 *
+	 * @param companyId the company id
+	 * @param baseDate the base date
+	 * @param wkpIds the wkp ids
+	 * @return the wkp cd name
+	 */
+	// RequestList164
+	List<WkpCdNameExport> getWkpCdName(String companyId, GeneralDate baseDate, List<String> wkpIds);
+	
+	// RequestList120 version2
+	List<AffWorkplaceExport> getByLstWkpIdAndPeriod(List<String> lstWkpId, GeneralDate startDate,GeneralDate endDate);
 }

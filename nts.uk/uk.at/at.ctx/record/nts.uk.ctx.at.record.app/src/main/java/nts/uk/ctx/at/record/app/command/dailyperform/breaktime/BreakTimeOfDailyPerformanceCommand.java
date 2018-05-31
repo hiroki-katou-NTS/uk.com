@@ -2,31 +2,38 @@ package nts.uk.ctx.at.record.app.command.dailyperform.breaktime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto.BreakTimeDailyDto;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 
 public class BreakTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 
 	@Getter
-	private List<BreakTimeOfDailyPerformance> data = new ArrayList<>();
+	private List<BreakTimeDailyDto> data = new ArrayList<>();
 
 	@Override
-	public void setRecords(AttendanceItemCommon item) {
+	public void setRecords(ConvertibleAttendanceItem item) {
 		if(item != null && item.isHaveData()){
-			this.data.add(((BreakTimeDailyDto) item).toDomain(getEmployeeId(), getWorkDate()));
+			BreakTimeDailyDto d = (BreakTimeDailyDto) item;
+			this.data.removeIf(br -> br.getRestTimeType() == d.getRestTimeType());
+			this.data.add(d);
 		}
 	}
 	
 	@Override
 	public void updateData(Object data) {
 		if(data != null){
-			BreakTimeOfDailyPerformance d = (BreakTimeOfDailyPerformance) data;
-			this.data.removeIf(br -> br.getBreakType().value == d.getBreakType().value);
-			this.data.add(d);
+			setRecords(BreakTimeDailyDto.getDto((BreakTimeOfDailyPerformance) data));
 		}
+	}
+
+	@Override
+	public List<BreakTimeOfDailyPerformance> toDomain() {
+		return data == null ? null : data.stream().map(c -> c.toDomain(getEmployeeId(), getWorkDate()))
+				.collect(Collectors.toList());
 	}
 }

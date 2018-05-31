@@ -21,14 +21,24 @@ public class AppReflectRecordPara {
 	 */
 	private OvertimeReflectPara overtimeInfor;
 	/**
-	 * 休暇申請, 勤務変更
+	 * 勤務変更
 	 */
-	private CommonReflectPara commonInfor;
+	private CommonReflectPara workchangeInfor;
 	/**
 	 * 休日出勤申請
 	 */
 	private HolidayWorkReflectPara holidayworkInfor;
-	
-	
+	/**
+	 * 休暇申請
+	 */
+	private CommonReflectPara absenceInfor;
+	/**
+	 * 振休申請
+	 */
+	private CommonReflectPara absenceLeaveAppInfor;
+	/**
+	 * 振出申請
+	 */
+	private CommonReflectPara recruitmentInfor;
 
 }

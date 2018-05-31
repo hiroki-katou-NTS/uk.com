@@ -216,9 +216,16 @@ module nts.uk.at.view.kmk013.b {
                 self.selectedValueB8_6 = ko.observable(false);
                 
                 self.checkedB7_23.subscribe((v) => {
-                    if (self.selectedValueB74() == 1 && self.selectedValueB715() == 1) {
-                        self.checkedB7_24(true);
+                    if (v == true) {
+                        if (self.selectedValueB74() == 1 && self.selectedValueB715() == 1) {
+                            self.checkedB7_24(true);
+                        }    
+                    } else {
+                        if (self.selectedValueB74() == 1 && self.selectedValueB715() == 1) {
+                            self.checkedB7_24(false);
+                        }
                     }
+                    
                 });
                 
                 self.checkedB8_7.subscribe((v) => {
@@ -261,6 +268,10 @@ module nts.uk.at.view.kmk013.b {
                         if (self.selectedValueB8_5() == true && self.selectedValueB8_16() == true) {
                             self.checkedB8_23(true);    
                         } 
+                    } else {
+                        if (self.selectedValueB8_5() == true && self.selectedValueB8_16() == true) {
+                            self.checkedB8_23(false);    
+                        }
                     }
                 });
                 
@@ -324,6 +335,11 @@ module nts.uk.at.view.kmk013.b {
                             // temparory don't action B5_23
                             self.checkedB5_23(true);
                         }
+                    } else {
+                        if (self.selectedValueB54() == 1 && self.selectedValueB515() == 1) {
+                            // temparory don't action B5_23
+                            self.checkedB5_23(false);
+                        }
                     }
                 });
                 
@@ -362,6 +378,10 @@ module nts.uk.at.view.kmk013.b {
                         if (self.selectedValueB64() == 1 && self.selectedValueB612() == 1) {
                             self.checkedB6_22(true);
                         }
+                    } else {
+                        if (self.selectedValueB64() == 1 && self.selectedValueB612() == 1) {
+                            self.checkedB6_22(false);
+                        }    
                     }
                 });
                 

@@ -66,6 +66,7 @@ subprojects {
         from "build/libs"
         into "${project(':com.web').projectDir}/../../uk.repo"
         include "nts*.jar"
+        exclude "nts*web.jar"
 	}
 
 	task initd (dependsOn: [
@@ -84,7 +85,8 @@ subprojects {
 		':com.ctx:bs:person:nts.uk.ctx.bs.person.dom:upver',
 		':com.ctx:bs:person:nts.uk.ctx.bs.person.infra:upver',
 		':com.ctx:bs:person:nts.uk.ctx.bs.person.pub:upver',
-		':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub:upver'
+		':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub:upver',
+		':com.ctx:sys:portal:nts.uk.ctx.sys.portal.pub:upver'
 	]) { }
 	
 	dependencies {
@@ -169,6 +171,16 @@ subprojects {
 		// https://mvnrepository.com/artifact/org.quartz-scheduler/quartz
 		compile group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.0'
 		
+		// For Login feature.
+		// https://mvnrepository.com/artifact/com.github.dblock.waffle/waffle-jna
+		compile group: 'com.github.dblock.waffle', name: 'waffle-jna', version: '1.8.1'
+		// https://mvnrepository.com/artifact/com.google.guava/guava
+		compile group: 'com.google.guava', name: 'guava', version: '23.0'
+		// https://mvnrepository.com/artifact/net.java.dev.jna/jna
+		compile group: 'net.java.dev.jna', name: 'jna', version: '4.4.0'
+		// https://mvnrepository.com/artifact/net.java.dev.jna/jna-platform
+		compile group: 'net.java.dev.jna', name: 'jna-platform', version: '4.4.0'
+		
         compile group: 'nts.gul', name: 'nts.gul', version: version
         compile group: 'nts.arc', name: 'nts.arc', version: version
 	}
@@ -222,6 +234,10 @@ project (':shr:nts.uk.shr.com') {
 		compileOnly group: 'org.jboss.resteasy', name: 'resteasy-multipart-provider', version: '3.1.2.Final'
 		// https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-jaxrs
 		compileOnly group: 'org.jboss.resteasy', name: 'resteasy-jaxrs', version: '3.1.2.Final'
+		
+		// for JMS
+		compileOnly group: 'javax.jms', name: 'javax.jms-api', version: '2.0.1'
+		compile group: 'javax.ejb', name: 'javax.ejb-api', version: '3.2.2'
 		
 		// https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
 		testCompile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.4.0'
@@ -368,6 +384,8 @@ project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.ac') {
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.app')
+		
+		compile project(':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.pub')
 	}
 }
 
@@ -384,6 +402,7 @@ project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pubimp') {
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.app')
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.infra')
+		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
 	}
 }
 //========================sys:auth �====================================
@@ -781,6 +800,11 @@ project (':com.ctx:sys:env:nts.uk.ctx.sys.env.ac') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':com.ctx:sys:env:nts.uk.ctx.sys.env.dom')
 		compile project(':com.ctx:sys:env:nts.uk.ctx.sys.env.app')
+		
+		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
+		compile project(':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.pub')
+		compile project(':com.ctx:bs:person:nts.uk.ctx.bs.person.pub')
+		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
 	}
 }
 
@@ -836,6 +860,8 @@ project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.ac') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.dom')
 		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.app')
+		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
+		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
 	}
 }
 
@@ -1010,7 +1036,6 @@ project (':com.web:nts.uk.com.web') {
 		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.infra', version: version
 		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.pub', version: version
 		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.pubimp', version: version
-		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.ws', version: version
 		
 		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.ac', version: version
 		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.app', version: version

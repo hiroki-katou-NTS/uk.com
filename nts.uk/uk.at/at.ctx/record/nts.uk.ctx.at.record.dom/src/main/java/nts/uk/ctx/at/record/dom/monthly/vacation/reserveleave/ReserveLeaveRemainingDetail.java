@@ -13,33 +13,35 @@ import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremain
 @Setter
 public class ReserveLeaveRemainingDetail {
 
-	/** 日数 */
-	private ReserveLeaveRemainingDayNumber days;
 	/** 付与日 */
 	private GeneralDate grantDate;
 	
+	/** 日数 */
+	private ReserveLeaveRemainingDayNumber days;
+	
 	/**
 	 * コンストラクタ
+	 * @param grantDate 付与日
 	 */
-	public ReserveLeaveRemainingDetail(){
+	public ReserveLeaveRemainingDetail(GeneralDate grantDate){
+		
+		this.grantDate = grantDate;
 		
 		this.days = new ReserveLeaveRemainingDayNumber(0.0);
-		this.grantDate = GeneralDate.max();
 	}
 	
 	/**
 	 * ファクトリー
-	 * @param days 日数
 	 * @param grantDate 付与日
+	 * @param days 日数
 	 * @return 積立年休残明細
 	 */
 	public static ReserveLeaveRemainingDetail of(
-			ReserveLeaveRemainingDayNumber days,
-			GeneralDate grantDate){
+			GeneralDate grantDate,
+			ReserveLeaveRemainingDayNumber days){
 		
-		ReserveLeaveRemainingDetail domain = new ReserveLeaveRemainingDetail();
+		ReserveLeaveRemainingDetail domain = new ReserveLeaveRemainingDetail(grantDate);
 		domain.days = days;
-		domain.grantDate = grantDate;
 		return domain;
 	}
 }

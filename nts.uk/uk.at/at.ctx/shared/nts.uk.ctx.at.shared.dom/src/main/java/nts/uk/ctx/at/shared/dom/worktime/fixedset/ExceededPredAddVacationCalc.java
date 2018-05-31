@@ -35,6 +35,12 @@ public class ExceededPredAddVacationCalc extends WorkTimeDomainObject {
 		this.calcMethod = memento.getCalcMethod();
 		this.otFrameNo = memento.getOtFrameNo();
 	}
+	
+	public ExceededPredAddVacationCalc(CalcMethodExceededPredAddVacation calcMethod, OTFrameNo otFrameNo) {
+		super();
+		this.calcMethod = calcMethod;
+		this.otFrameNo = otFrameNo;
+	}
 
 	/**
 	 * Save to memento.
@@ -57,7 +63,7 @@ public class ExceededPredAddVacationCalc extends WorkTimeDomainObject {
 	public void validate() {
 
 		// Msg_890
-		if (CalcMethodExceededPredAddVacation.CALC_AS_OVERTIME.equals(this.calcMethod)) {
+		if (CalcMethodExceededPredAddVacation.CALC_AS_WORKING.equals(this.calcMethod)) {
 			if (this.otFrameNo == null) {
 				this.bundledBusinessExceptions.addMessage("Msg_890");
 			}
@@ -75,7 +81,7 @@ public class ExceededPredAddVacationCalc extends WorkTimeDomainObject {
 	 *            the old domain
 	 */
 	public void correctData(ScreenMode screenMode, ExceededPredAddVacationCalc oldDomain) {
-		if (CalcMethodExceededPredAddVacation.CALC_AS_OVERTIME.equals(this.calcMethod)) {
+		if (CalcMethodExceededPredAddVacation.CALC_AS_WORKING.equals(this.calcMethod)) {
 			this.otFrameNo = oldDomain.getOtFrameNo();
 		}
 	}
@@ -87,7 +93,7 @@ public class ExceededPredAddVacationCalc extends WorkTimeDomainObject {
 	 *            the screen mode
 	 */
 	public void correctDefaultData(ScreenMode screenMode) {
-		if (CalcMethodExceededPredAddVacation.CALC_AS_OVERTIME.equals(this.calcMethod)) {
+		if (CalcMethodExceededPredAddVacation.CALC_AS_WORKING.equals(this.calcMethod)) {
 			this.otFrameNo = new OTFrameNo(1);
 		}
 	}

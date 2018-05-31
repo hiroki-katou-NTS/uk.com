@@ -80,6 +80,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	@Inject
 	private BPTimeItemRepository bPTimeItemRepo;
 	/**
+	 * 残業申請
 	 * get Application Over Time Info
 	 * appType = 0;
 	 * @param companyID
@@ -98,15 +99,17 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				lstFrameNo.add(overTime.getFrameNo());
 				if(overTime.getTimeItemTypeAtr().equals(TimeItemTypeAtr.NORMAL_TYPE)){
 					List<BonusPayTimeItem> lstFramBonus = repoBonusTime.getListBonusPayTimeItemName(companyId, lstFrameNo);
-					lstFrame.add(new OverTimeFrame(3, lstFramBonus.get(0).getId(),lstFramBonus.get(0).getTimeItemName().v(), 
-							lstFramBonus.get(0).getTimeItemTypeAtr().value, overTime.getApplicationTime().v(), 
+					lstFrame.add(new OverTimeFrame(3, lstFramBonus.get(0).getId(),lstFramBonus.get(0).getTimeItemName().v(),
+							lstFramBonus.get(0).getTimeItemTypeAtr().value,
+							overTime.getApplicationTime() == null ? null : overTime.getApplicationTime().v(),
 							overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
 							overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
 				}else{
 					List<BonusPayTimeItem> specs = bPTimeItemRepo
 							.getListSpecialBonusPayTimeItemName(companyId, lstFrameNo);
-					lstFrame.add(new OverTimeFrame(4, specs.get(0).getId(),specs.get(0).getTimeItemName().v(), 
-							specs.get(0).getTimeItemTypeAtr().value, overTime.getApplicationTime().v(), 
+					lstFrame.add(new OverTimeFrame(4, specs.get(0).getId(),specs.get(0).getTimeItemName().v(),
+							specs.get(0).getTimeItemTypeAtr().value,
+							overTime.getApplicationTime() == null ? null : overTime.getApplicationTime().v(),
 							overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
 							overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
 				}
@@ -114,8 +117,9 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 			if(overTime.getAttendanceType().equals(AttendanceType.BREAKTIME)){
 				lstFrameNo.add(overTime.getFrameNo());
 				List<WorkdayoffFrame> lstFramWork = repoWork.getWorkdayoffFrameBy(companyId,lstFrameNo);
-				lstFrame.add(new OverTimeFrame(2, lstFramWork.get(0).getWorkdayoffFrNo().v().intValue(), 
-						lstFramWork.get(0).getWorkdayoffFrName().v(), null, overTime.getApplicationTime().v(),
+				lstFrame.add(new OverTimeFrame(2, lstFramWork.get(0).getWorkdayoffFrNo().v().intValue(),
+						lstFramWork.get(0).getWorkdayoffFrName().v(), null,
+						overTime.getApplicationTime() == null ? null : overTime.getApplicationTime().v(),
 						overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
 						overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
 			}
@@ -130,22 +134,24 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(companyId, lstFrameNo);
 				name = lstFramOt.get(0).getOvertimeWorkFrName().v();
 				}
-				lstFrame.add(new OverTimeFrame(1, overTime.getFrameNo(), 
-						name, null, overTime.getApplicationTime().v(),
+				lstFrame.add(new OverTimeFrame(1, overTime.getFrameNo(),
+						name, null,
+						overTime.getApplicationTime() == null ? null : overTime.getApplicationTime().v(),
 						overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
 						overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
 			}
 		}
-		return new AppOverTimeInfoFull(appId, 
+		return new AppOverTimeInfoFull(appId,
 				this.convertTime(appOt.getWorkClockFrom1()),
 				this.convertTime(appOt.getWorkClockTo1()),
 				this.convertTime(appOt.getWorkClockFrom2()),
 				this.convertTime(appOt.getWorkClockTo2()),
-				0, lstFrame, appOt.getOverTimeShiftNight(),
-				appOt.getFlexExessTime());
+				lstFrame, this.convertTime(appOt.getOverTimeShiftNight()),
+				this.convertTime(appOt.getFlexExessTime()));
 	}
 
 	/**
+	 * 直行直帰申請
 	 * get Application Go Back Info
 	 * appType = 4;
 	 * @param companyID
@@ -158,7 +164,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 		GoBackDirectly appGoBack = appGoBackOp.get();
 		return new AppGoBackInfoFull(appId, appGoBack.getGoWorkAtr1().value,
 				this.convertTime(appGoBack.getWorkTimeStart1().map(x -> x.v()).orElse(null)),
-				appGoBack.getBackHomeAtr1().value, 
+				appGoBack.getBackHomeAtr1().value,
 				this.convertTime(appGoBack.getWorkTimeEnd1().map(x -> x.v()).orElse(null)),
 				appGoBack.getGoWorkAtr2().map(x -> x.value).orElse(null),
 				this.convertTime(appGoBack.getWorkTimeStart2().map(x -> x.v()).orElse(null)),
@@ -166,6 +172,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				this.convertTime(appGoBack.getWorkTimeEnd2().map(x -> x.v()).orElse(null)));
 	}
 	/**
+	 * 勤務変更申請
 	 * get Application Holiday Work Info
 	 * appType = 6;
 	 * @param companyID
@@ -183,7 +190,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 			if(overTime.getAttendanceType().equals(AttendanceType.BONUSPAYTIME)){
 				lstFrameNo.add(overTime.getFrameNo());
 				List<BonusPayTimeItem> lstFramBonus = repoBonusTime.getListBonusPayTimeItemName(companyId, lstFrameNo);
-				lstFrame.add(new OverTimeFrame(3, lstFramBonus.get(0).getId(),lstFramBonus.get(0).getTimeItemName().v(), 
+				lstFrame.add(new OverTimeFrame(3, lstFramBonus.get(0).getId(),lstFramBonus.get(0).getTimeItemName().v(),
 						lstFramBonus.get(0).getTimeItemTypeAtr().value, overTime.getApplicationTime().v(),
 						overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
 						overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
@@ -191,7 +198,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 			if(overTime.getAttendanceType().equals(AttendanceType.BREAKTIME)){
 				lstFrameNo.add(overTime.getFrameNo());
 				List<WorkdayoffFrame> lstFramWork = repoWork.getWorkdayoffFrameBy(companyId,lstFrameNo);
-				lstFrame.add(new OverTimeFrame(2, lstFramWork.get(0).getWorkdayoffFrNo().v().intValue(), 
+				lstFrame.add(new OverTimeFrame(2, lstFramWork.get(0).getWorkdayoffFrNo().v().intValue(),
 						lstFramWork.get(0).getWorkdayoffFrName().v(), null, overTime.getApplicationTime().v(),
 						overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
 						overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
@@ -204,14 +211,14 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				lstFrameNo.add(overTime.getFrameNo());
 				List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(companyId, lstFrameNo);
 				name = lstFramOt.get(0).getOvertimeWorkFrName().v();
-				lstFrame.add(new OverTimeFrame(1, overTime.getFrameNo(), 
+				lstFrame.add(new OverTimeFrame(1, overTime.getFrameNo(),
 						name, null, overTime.getApplicationTime().v(),
 						overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
 						overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
 			}
-			
+
 		}
-		String workTypeName = hdWork.getWorkTypeCode() == null ||  Strings.isBlank(hdWork.getWorkTypeCode().v()) ? "" : 
+		String workTypeName = hdWork.getWorkTypeCode() == null ||  Strings.isBlank(hdWork.getWorkTypeCode().v()) ? "" :
 						repoWorkType.findByPK(companyId, hdWork.getWorkTypeCode().v()).get().getName().v();
 		String workTimeName = "";
 		if(hdWork.getWorkTimeCode() != null && !hdWork.getWorkTimeCode().v().equals("000")){
@@ -228,8 +235,9 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				lstFrame);
 	}
 	/**
+	 * 勤務変更申請
 	 * get Application Work Change Info
-	 * appType = 6;
+	 * appType = 2;
 	 * @param companyID
 	 * @param appId
 	 * @return
@@ -238,7 +246,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	public AppWorkChangeFull getAppWorkChangeInfo(String companyID, String appId) {
 		Optional<AppWorkChange> workChange = repoworkChange.getAppworkChangeById(companyID, appId);
 		AppWorkChange appWkChange = workChange.get();
-		String workTypeName = appWkChange.getWorkTypeCd() == null ||  Strings.isBlank(appWkChange.getWorkTypeCd()) ? "" : 
+		String workTypeName = appWkChange.getWorkTypeCd() == null ||  Strings.isBlank(appWkChange.getWorkTypeCd()) ? "" :
 					repoWorkType.findByPK(companyID, appWkChange.getWorkTypeCd()).get().getName().v();
 		String workTimeName = "";
 		if(appWkChange.getWorkTimeCd() != null && !appWkChange.getWorkTimeCd().equals("000")){
@@ -261,7 +269,9 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				this.convertTime(appWkChange.getBreakTimeEnd1()));
 	}
 	/**
+	 * 休暇申請
 	 * get Application Absence Info
+	 * appType = 1;
 	 * @param companyID
 	 * @param appId
 	 * @param day
@@ -286,13 +296,13 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 		}
 //		String workTimeName = appAbsence.getWorkTimeCode() == null ? "" :
 //			repoworkTime.findByCode(companyId,appAbsence.getWorkTimeCode().v()).get().getWorkTimeDisplayName().getWorkTimeName().v();
-		String startTime1 = appAbsence.getStartTime1() == null ? "" : appAbsence.getStartTime1().getDayDivision().description 
+		String startTime1 = appAbsence.getStartTime1() == null ? "" : appAbsence.getStartTime1().getDayDivision().description
 				+ appAbsence.getStartTime1().getInDayTimeWithFormat();
-		String endTime1 = appAbsence.getEndTime1() == null ? "" : appAbsence.getEndTime1().getDayDivision().description 
+		String endTime1 = appAbsence.getEndTime1() == null ? "" : appAbsence.getEndTime1().getDayDivision().description
 				+ appAbsence.getEndTime1().getInDayTimeWithFormat();
-		String startTime2 = appAbsence.getStartTime2() == null ? "" : appAbsence.getStartTime2().getDayDivision().description 
+		String startTime2 = appAbsence.getStartTime2() == null ? "" : appAbsence.getStartTime2().getDayDivision().description
 				+ appAbsence.getStartTime2().getInDayTimeWithFormat();
-		String endTime2 = appAbsence.getEndTime2() == null ? "" : appAbsence.getEndTime2().getDayDivision().description 
+		String endTime2 = appAbsence.getEndTime2() == null ? "" : appAbsence.getEndTime2().getDayDivision().description
 				+ appAbsence.getEndTime2().getInDayTimeWithFormat();
 		AppForSpecLeave appForSpec = appAbsence.getAppForSpecLeave();
 		String relaCode = appForSpec == null ? "" : appForSpec.getRelationshipCD() == null ? "" : appForSpec.getRelationshipCD().v();
@@ -302,7 +312,9 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				relaCode, relaName, appForSpec == null ? false : appForSpec.isMournerFlag());
 	}
 	/**
+	 * 振休振出申請
 	 * get Application Complt Leave Info
+	 * appType = 10;
 	 * @param companyID
 	 * @param appId
 	 * @param type
@@ -312,15 +324,15 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	public AppCompltLeaveFull getAppCompltLeaveInfo(String companyID, String appId, int type) {
 		if(type == 0){//xin nghi
 			AbsenceLeaveApp abs = absRepo.findByAppId(appId).get();
-			return new AppCompltLeaveFull(abs.getAppID(), type, 
-					repoWorkType.findByPK(companyID, abs.getWorkTypeCD()).get().getName().v(),
+			return new AppCompltLeaveFull(abs.getAppID(), type,
+					repoWorkType.findByPK(companyID, abs.getWorkTypeCD().v()).get().getName().v(),
 					abs.getWorkTime1() == null ? null : this.convertTime(abs.getWorkTime1().getStartTime().v()),
 					abs.getWorkTime1() == null ? null : this.convertTime(abs.getWorkTime1().getEndTime().v()));
 		}
 		//di lam
 		RecruitmentApp rec = recRepo.findByAppId(appId).get();
-		return new AppCompltLeaveFull(rec.getAppID(), type, 
-				repoWorkType.findByPK(companyID, rec.getWorkTypeCD()).get().getName().v(),
+		return new AppCompltLeaveFull(rec.getAppID(), type,
+				repoWorkType.findByPK(companyID, rec.getWorkTypeCD().v()).get().getName().v(),
 				this.convertTime(rec.getWorkTime1().getStartTime().v()),
 				this.convertTime(rec.getWorkTime1().getEndTime().v()));
 	}
@@ -329,14 +341,15 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	 * @param time
 	 * @return
 	 */
-	private String convertTime(Integer time){
+	@Override
+	public String convertTime(Integer time){
 		if(time == null){
 			return "";
 		}
 		TimeWithDayAttr timeConvert = new TimeWithDayAttr(time);
 		return timeConvert.getDayDivision().description + timeConvert.getInDayTimeWithFormat();
 	}
-	
+
 
 
 }

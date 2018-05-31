@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.record.dom.daily;
 
+import lombok.Getter;
 import lombok.Value;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
@@ -10,10 +12,16 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  * @author keisuke_hoshina
  *
  */
-@Value
+@Getter
 public class ExcessOfStatutoryMidNightTime {
 	private TimeDivergenceWithCalculation time;
 	private AttendanceTime beforeApplicationTime;
+	
+	public ExcessOfStatutoryMidNightTime(TimeDivergenceWithCalculation time, AttendanceTime beforeApplicationTime) {
+		super();
+		this.time = time;
+		this.beforeApplicationTime = beforeApplicationTime;
+	}
 	
 	/**
 	 * 所定外深夜時間の計算 
@@ -65,5 +73,24 @@ public class ExcessOfStatutoryMidNightTime {
 	public boolean isPreOverLimitDivergenceTime() {
 		return this.calcPreOverLimitDivergenceTime() > 0 ? true:false;
 	}
+	
+	/**
+	 * 乖離時間のみ再計算
+	 * @return
+	 */
+	public ExcessOfStatutoryMidNightTime calcDiverGenceTime() {
+		return new ExcessOfStatutoryMidNightTime(this.time==null?TimeDivergenceWithCalculation.emptyTime():this.time.calcDiverGenceTime(),this.beforeApplicationTime);
+	}
+	
+	/**
+	 * 深夜時間の上限時間調整処理
+	 * @param upperTime 上限時間
+	 */
+	public void controlUpperTime(AttendanceTime upperTime) {
+		this.time = TimeDivergenceWithCalculation.createTimeWithCalculation(this.time.getTime().greaterThan(upperTime)?upperTime:this.time.getTime(), 
+																			this.time.getCalcTime().greaterThan(upperTime)?upperTime:this.time.getCalcTime()); 
+	}
+
+
 
 }

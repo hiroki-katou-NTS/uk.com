@@ -58,8 +58,6 @@ public class FlexShortDeductTime {
 	 */
 	public void sum(FlexShortDeductTime target){
 		
-		this.annualLeaveDeductDays = this.annualLeaveDeductDays.addDays(target.annualLeaveDeductDays.v());
-		this.absenceDeductTime = this.absenceDeductTime.addMinutes(target.absenceDeductTime.v());
 		this.flexShortTimeBeforeDeduct = this.flexShortTimeBeforeDeduct.addMinutes(target.flexShortTimeBeforeDeduct.v());
 	}
 }

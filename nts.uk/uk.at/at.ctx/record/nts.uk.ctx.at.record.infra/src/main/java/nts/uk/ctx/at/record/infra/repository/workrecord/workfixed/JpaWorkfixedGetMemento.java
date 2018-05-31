@@ -7,6 +7,7 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.workfixed;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.workfixed.ConfirmClsStatus;
 import nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkFixedGetMemento;
 import nts.uk.ctx.at.record.infra.entity.workrecord.workfixed.KrcstWorkFixed;
@@ -63,8 +64,8 @@ public class JpaWorkfixedGetMemento implements WorkFixedGetMemento {
 	 * @see nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkFixedGetMemento#getProcessDate()
 	 */
 	@Override
-	public Integer getProcessDate() {
-		return this.typeValue.getProcessYm();
+	public YearMonth getProcessYm() {
+		return new YearMonth(this.typeValue.getProcessYm());
 	}
 
 	/* (non-Javadoc)

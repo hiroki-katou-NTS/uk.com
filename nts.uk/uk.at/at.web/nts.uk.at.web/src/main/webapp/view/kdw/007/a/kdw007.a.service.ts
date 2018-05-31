@@ -13,6 +13,7 @@ module nts.uk.at.view.kdw007.a.service {
         getAllWorkTime: "at/shared/worktimeset/findAll",
         getWorkTimeByListCode: "at/shared/worktime/findByCodes",
         getAttendanceItemByCodes: "at/record/divergencetime/AttendanceDivergenceName",
+        getMonthlyAttendanceItemByCodes: "at/record/divergencetime/getMonthlyAttendanceDivergenceName",
         getAllAttendanceItem: "at/record/businesstype/attendanceItem/getAttendanceItems",
         getAllMonthlyCondition: "ctx/at/record/workrecord/erroralarm/monthly/getall",
         updateMonthlyCondition: "ctx/at/record/workrecord/erroralarm/monthly/update",
@@ -64,8 +65,11 @@ module nts.uk.at.view.kdw007.a.service {
         return nts.uk.request.ajax("at", paths.getWorkTimeByListCode, lstCode);
     }
     
-    export function getAttendanceItemByCodes(codes) {
-        return nts.uk.request.ajax("at", paths.getAttendanceItemByCodes, codes);
+    export function getAttendanceItemByCodes(codes, mode) {
+        if (mode == 1) // monthly
+            return nts.uk.request.ajax("at", paths.getMonthlyAttendanceItemByCodes, codes);
+        else // daily
+            return nts.uk.request.ajax("at", paths.getAttendanceItemByCodes, codes);
     }
     
     export function getAllAttendanceItem() {

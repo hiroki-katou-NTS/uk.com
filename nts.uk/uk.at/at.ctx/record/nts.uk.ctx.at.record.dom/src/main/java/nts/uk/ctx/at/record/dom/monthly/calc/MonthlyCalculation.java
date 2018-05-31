@@ -9,7 +9,6 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
@@ -22,28 +21,28 @@ import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregul
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.workform.flex.MonthlyAggrSetOfFlex;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.AggrSettingMonthly;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggrSettingMonthlyOfFlx;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthly;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.LegalAggrSetOfIrg;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.LegalAggrSetOfReg;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByDefo;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByFlex;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByReg;
+import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkEnum;
+import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriodEnum;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
-import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.flex.GetFlexPredWorkTime;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -94,37 +93,36 @@ public class MonthlyCalculation {
 	private boolean isRetireMonth;
 	/** 締め */
 	private Optional<Closure> closureOpt;
-	/** 月別実績集計設定 */
-	private AggrSettingMonthly aggrSettingMonthly;
-	/** 月次集計の法定内振替順設定 */
-	private LegalTransferOrderSetOfAggrMonthly legalTransferOrderSet;
-	/** 休暇加算時間設定 */
-	private Map<String, AggregateRoot> holidayAdditionMap;
-	/** フレックス勤務の月別集計設定 */
-	private Optional<MonthlyAggrSetOfFlex> monthlyAggrSetOfFlexOpt;
-	/** フレックス勤務所定労働時間取得 */
-	private Optional<GetFlexPredWorkTime> getFlexPredWorkTimeOpt; 
+
+	/** 通常勤務が必要とする設定 */
+	private SettingRequiredByReg settingsByReg;
+	/** 変形労働勤務が必要とする設定 */
+	private SettingRequiredByDefo settingsByDefo;
+	/** フレックス勤務が必要とする設定 */
+	private SettingRequiredByFlex settingsByFlex;
+	
 	/** 日別実績の勤怠時間リスト */
 	private Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap;
 	/** 日別実績の勤務情報リスト */
 	private Map<GeneralDate, WorkInformation> workInformationOfDailyMap;
-	/** 週間法定労働時間 */
-	private AttendanceTimeMonth statutoryWorkingTimeWeek;
-	/** 月間法定労働時間 */
-	private AttendanceTimeMonth statutoryWorkingTimeMonth;
-	/** 週間所定労働時間 */
-	private AttendanceTimeMonth prescribedWorkingTimeWeek;
-	/** 月間所定労働時間 */
-	private AttendanceTimeMonth prescribedWorkingTimeMonth;
 	/** 月別実績の勤怠時間　（集計前） */
 	private Optional<AttendanceTimeOfMonthly> originalData;
-	
+	/** 週別実績の勤怠時間 */
+	private List<AttendanceTimeOfWeekly> attendanceTimeWeeks;
+
+	/** 処理週NO */
+	private int procWeekNo;
 	/** 年度 */
 	private Year year;
 	/** 管理期間の36協定時間 */
 	private AgreementTimeOfManagePeriod agreementTimeOfManagePeriod;
 	/** エラー情報 */
 	private List<MonthlyAggregationErrorInfo> errorInfos;
+	
+	/** 労働条件項目 */
+	private List<WorkingConditionItem> workingConditionItems;
+	/** 労働条件 */
+	private Map<String, DatePeriod> workingConditions;
 	
 	/**
 	 * コンストラクタ
@@ -151,20 +149,16 @@ public class MonthlyCalculation {
 		this.employmentCd = "empty";
 		this.isRetireMonth = false;
 		this.closureOpt = Optional.empty();
-		this.aggrSettingMonthly = AggrSettingMonthly.of(
-				new LegalAggrSetOfReg(), new LegalAggrSetOfIrg(), new AggrSettingMonthlyOfFlx());
-		this.legalTransferOrderSet = new LegalTransferOrderSetOfAggrMonthly("empty");
-		this.holidayAdditionMap = new HashMap<>();
-		this.monthlyAggrSetOfFlexOpt = Optional.empty();
-		this.getFlexPredWorkTimeOpt = Optional.empty();
+		this.settingsByReg = new SettingRequiredByReg(this.companyId);
+		this.settingsByDefo = new SettingRequiredByDefo(this.companyId);
+		this.settingsByFlex = new SettingRequiredByFlex();
+		
 		this.attendanceTimeOfDailyMap = new HashMap<>();
 		this.workInformationOfDailyMap = new HashMap<>();
-		this.statutoryWorkingTimeWeek = new AttendanceTimeMonth(0);
-		this.statutoryWorkingTimeMonth = new AttendanceTimeMonth(0);
-		this.prescribedWorkingTimeWeek = new AttendanceTimeMonth(0);
-		this.prescribedWorkingTimeMonth = new AttendanceTimeMonth(0);
 		this.originalData = null;
+		this.attendanceTimeWeeks = new ArrayList<>();
 
+		this.procWeekNo = 0;
 		this.year = new Year(0);
 		this.agreementTimeOfManagePeriod = new AgreementTimeOfManagePeriod(this.employeeId, this.yearMonth);
 		this.errorInfos = new ArrayList<>();
@@ -211,6 +205,7 @@ public class MonthlyCalculation {
 	 * @param procPeriod 期間
 	 * @param workingConditionItem 労働条件項目
 	 * @param attendanceTimeOfDailysOpt 日別実績の勤怠時間リスト
+	 * @param startWeekNo 開始週NO
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void prepareAggregation(
@@ -218,6 +213,7 @@ public class MonthlyCalculation {
 			ClosureId closureId, ClosureDate closureDate,
 			DatePeriod procPeriod, WorkingConditionItem workingConditionItem,
 			Optional<List<AttendanceTimeOfDailyPerformance>> attendanceTimeOfDailysOpt,
+			int startWeekNo,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		this.companyId = companyId;
@@ -228,6 +224,10 @@ public class MonthlyCalculation {
 		this.procPeriod = procPeriod;
 		this.workingConditionItem = workingConditionItem;
 		this.workingSystem = workingConditionItem.getLaborSystem();
+		
+		this.settingsByReg = new SettingRequiredByReg(companyId);
+		this.settingsByDefo = new SettingRequiredByDefo(companyId);
+		this.settingsByFlex = new SettingRequiredByFlex();
 		
 		// 社員を取得する
 		EmployeeImport employee = repositories.getEmpEmployee().findByEmpId(employeeId);
@@ -261,28 +261,97 @@ public class MonthlyCalculation {
 			if (closure.getUseClassification() != UseClassification.UseClass_Use) this.closureOpt = Optional.empty();
 		}
 		
-		// 月別実績集計設定　取得　（基準：期間終了日）　（設定確認不可時は、空設定を適用）
-		val aggrSettingMonthlyOpt = repositories.getAggrSettingMonthly().get(
-				companyId, this.workplaceId, this.employmentCd, employeeId);
-		if (aggrSettingMonthlyOpt.isPresent()){
-			this.aggrSettingMonthly = aggrSettingMonthlyOpt.get();
+		// 通常勤務月別実績集計設定　取得　（基準：期間終了日）
+		val regularAggrSetOpt = repositories.getRegularAggrSet().get(
+				companyId, this.employmentCd, employeeId, procPeriod.end());
+		if (!regularAggrSetOpt.isPresent()){
+			this.errorInfos.add(new MonthlyAggregationErrorInfo(
+					"002", new ErrMessageContent("通常勤務月別実績集計設定が取得できません。")));
+			return;
 		}
+		this.settingsByReg.setRegularAggrSet(regularAggrSetOpt.get());
+
+		// 変形労働月別実績集計設定　取得　（基準：期間終了日）
+		val deforAggrSetOpt = repositories.getDeforAggrSet().get(
+				companyId, this.employmentCd, employeeId, procPeriod.end());
+		if (!deforAggrSetOpt.isPresent()){
+			this.errorInfos.add(new MonthlyAggregationErrorInfo(
+					"002", new ErrMessageContent("変形労働月別実績集計設定が取得できません。")));
+			return;
+		}
+		this.settingsByDefo.setDeforAggrSet(deforAggrSetOpt.get());
+
+		// フレックス月別実績集計設定　取得　（基準：期間終了日）
+		val flexAggrSetOpt = repositories.getFlexAggrSet().get(
+				companyId, this.employmentCd, employeeId, procPeriod.end());
+		if (!flexAggrSetOpt.isPresent()){
+			this.errorInfos.add(new MonthlyAggregationErrorInfo(
+					"002", new ErrMessageContent("フレックス月別実績集計設定が取得できません。")));
+			return;
+		}
+		this.settingsByFlex.setFlexAggrSet(flexAggrSetOpt.get());
 		
 		// 法定内振替順設定　取得
 		val legalTransferOrderSetOpt = repositories.getLegalTransferOrderSetOfAggrMonthly().find(companyId);
-		this.legalTransferOrderSet = new LegalTransferOrderSetOfAggrMonthly(companyId);
 		if (legalTransferOrderSetOpt.isPresent()){
-			legalTransferOrderSet = legalTransferOrderSetOpt.get();
+			this.settingsByReg.setLegalTransferOrderSet(legalTransferOrderSetOpt.get());
+			this.settingsByDefo.setLegalTransferOrderSet(legalTransferOrderSetOpt.get());
+		}
+		else {
+			this.errorInfos.add(new MonthlyAggregationErrorInfo(
+					"002", new ErrMessageContent(TextResource.localize("Msg_1232"))));
+			return;
 		}
 
+		// 残業枠の役割　取得
+		val roleOverTimeFrameList = repositories.getRoleOverTimeFrame().findByCID(companyId);
+		for (val roleOverTimeFrame : roleOverTimeFrameList){
+			this.settingsByReg.getRoleOverTimeFrameMap().putIfAbsent(
+					roleOverTimeFrame.getOvertimeFrNo().v(), roleOverTimeFrame);
+			this.settingsByDefo.getRoleOverTimeFrameMap().putIfAbsent(
+					roleOverTimeFrame.getOvertimeFrNo().v(), roleOverTimeFrame);
+			
+			// 自動的に除く残業枠　取得
+			if (roleOverTimeFrame.getRoleOTWorkEnum() != RoleOvertimeWorkEnum.MIX_IN_OUT_STATUTORY) continue;
+			this.settingsByReg.getAutoExceptOverTimeFrames().add(roleOverTimeFrame);
+			this.settingsByDefo.getAutoExceptOverTimeFrames().add(roleOverTimeFrame);
+		}
+		
+		// 休出枠の役割　取得
+		val roleHolidayWorkFrameList = repositories.getRoleHolidayWorkFrame().findByCID(companyId);
+		for (val roleHolidayWorkFrame : roleHolidayWorkFrameList){
+			this.settingsByReg.getRoleHolidayWorkFrameMap().putIfAbsent(
+					roleHolidayWorkFrame.getBreakoutFrNo().v(), roleHolidayWorkFrame);
+			this.settingsByDefo.getRoleHolidayWorkFrameMap().putIfAbsent(
+					roleHolidayWorkFrame.getBreakoutFrNo().v(), roleHolidayWorkFrame);
+			
+			// 自動的に除く休出枠　取得
+			if (roleHolidayWorkFrame.getRoleOfOpenPeriodEnum() != RoleOfOpenPeriodEnum.MIX_WITHIN_OUTSIDE_STATUTORY) continue;
+			this.settingsByReg.getAutoExceptHolidayWorkFrames().add(roleHolidayWorkFrame);
+			this.settingsByDefo.getAutoExceptHolidayWorkFrames().add(roleHolidayWorkFrame);
+		}
+		
 		// 休暇加算時間設定　取得
-		this.holidayAdditionMap = repositories.getHolidayAddition().findByCompanyId(companyId);
+		val holidayAdditionMap = repositories.getHolidayAddition().findByCompanyId(companyId);
+		this.settingsByReg.getHolidayAdditionMap().putAll(holidayAdditionMap);
+		this.settingsByDefo.getHolidayAdditionMap().putAll(holidayAdditionMap);
+		this.settingsByFlex.getHolidayAdditionMap().putAll(holidayAdditionMap);
 		
 		// フレックス勤務の月別集計設定
-		this.monthlyAggrSetOfFlexOpt = repositories.getMonthlyAggrSetOfFlex().find(companyId);
+		this.settingsByFlex.setMonthlyAggrSetOfFlexOpt(repositories.getMonthlyAggrSetOfFlex().find(companyId));
+		if (!this.settingsByFlex.getMonthlyAggrSetOfFlexOpt().isPresent()){
+			this.errorInfos.add(new MonthlyAggregationErrorInfo(
+					"002", new ErrMessageContent(TextResource.localize("Msg_1238"))));
+			return;
+		}
 		
 		// フレックス勤務所定労働時間取得
-		this.getFlexPredWorkTimeOpt = repositories.getFlexPredWorktime().find(companyId);
+		this.settingsByFlex.setGetFlexPredWorkTimeOpt(repositories.getFlexPredWorktime().find(companyId));
+		if (!this.settingsByFlex.getGetFlexPredWorkTimeOpt().isPresent()){
+			this.errorInfos.add(new MonthlyAggregationErrorInfo(
+					"002", new ErrMessageContent(TextResource.localize("Msg_1243"))));
+			return;
+		}
 		
 		// 通常の取得期間を　開始日-6日～終了日　とする　（開始週の集計のため）
 		DatePeriod findPeriod = new DatePeriod(procPeriod.start().addDays(-6), procPeriod.end());
@@ -319,30 +388,38 @@ public class MonthlyCalculation {
 					companyId, this.employmentCd, employeeId, procPeriod.end(), yearMonth, this.workingSystem);
 			if (!monAndWeekStatTimeOpt.isPresent()){
 				this.errorInfos.add(new MonthlyAggregationErrorInfo(
-						"XXX", new ErrMessageContent("法定労働時間が取得できません。")));
+						"002", new ErrMessageContent("法定労働時間が取得できません。")));
 				break;
 			}
 			val monAndWeekStatTime = monAndWeekStatTimeOpt.get();
-			this.statutoryWorkingTimeWeek = new AttendanceTimeMonth(monAndWeekStatTime.getWeeklyEstimateTime().v());
-			this.statutoryWorkingTimeMonth = new AttendanceTimeMonth(monAndWeekStatTime.getMonthlyEstimateTime().v());
+			int weekMinutes = monAndWeekStatTime.getWeeklyEstimateTime().v();
+			int monthMinutes = monAndWeekStatTime.getMonthlyEstimateTime().v();
+			this.statutoryWorkingTime = new AttendanceTimeMonth(monthMinutes);
+			this.settingsByReg.setStatutoryWorkingTimeWeek(new AttendanceTimeMonth(weekMinutes));
+			this.settingsByReg.setStatutoryWorkingTimeMonth(new AttendanceTimeMonth(monthMinutes));
+			this.settingsByDefo.setStatutoryWorkingTimeWeek(new AttendanceTimeMonth(weekMinutes));
+			this.settingsByDefo.setStatutoryWorkingTimeMonth(new AttendanceTimeMonth(monthMinutes));
 			break;
 		case FLEX_TIME_WORK:
 			val flexMonAndWeekStatTime = repositories.getMonthlyStatutoryWorkingHours().getFlexMonAndWeekStatutoryTime(
 					companyId, this.employmentCd, employeeId, procPeriod.end(), yearMonth);
-			this.statutoryWorkingTimeMonth = new AttendanceTimeMonth(flexMonAndWeekStatTime.getStatutorySetting().v());
-			this.prescribedWorkingTimeMonth = new AttendanceTimeMonth(flexMonAndWeekStatTime.getSpecifiedSetting().v());
+			int statMinutes = flexMonAndWeekStatTime.getStatutorySetting().v();
+			int predMinutes = flexMonAndWeekStatTime.getSpecifiedSetting().v();
+			this.statutoryWorkingTime = new AttendanceTimeMonth(statMinutes);
+			this.settingsByFlex.setStatutoryWorkingTimeMonth(new AttendanceTimeMonth(statMinutes));
+			this.settingsByFlex.setPrescribedWorkingTimeMonth(new AttendanceTimeMonth(predMinutes));
 			break;
 		default:
-			this.statutoryWorkingTimeWeek = new AttendanceTimeMonth(40 * 60);
-			this.statutoryWorkingTimeMonth = new AttendanceTimeMonth(160 * 60);
-			this.prescribedWorkingTimeWeek = new AttendanceTimeMonth(40 * 60);
-			this.prescribedWorkingTimeMonth = new AttendanceTimeMonth(160 * 60);
+			this.statutoryWorkingTime = new AttendanceTimeMonth(0);
 			break;
 		}
 		
 		// 月別実績の勤怠時間　既存データ　取得
 		this.originalData = repositories.getAttendanceTimeOfMonthly().find(
 				employeeId, yearMonth, closureId, closureDate);
+		
+		// 週NO　確認
+		this.procWeekNo = startWeekNo;
 		
 		// 年度　設定
 		this.year = new Year(this.yearMonth.year());
@@ -364,7 +441,6 @@ public class MonthlyCalculation {
 		// 集計結果　初期化
 		this.actualWorkingTime = new RegularAndIrregularTimeOfMonthly();
 		this.flexTime = new FlexTimeOfMonthly();
-		this.statutoryWorkingTime = this.statutoryWorkingTimeMonth;
 		this.aggregateTime = new AggregateTotalWorkingTime();
 		this.totalTimeSpentAtWork = new AggregateTotalTimeSpentAtWork();
 
@@ -382,41 +458,41 @@ public class MonthlyCalculation {
 				this.workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
 			
 			// 通常・変形労働勤務の月別実績を集計する
-			val aggrValue = this.actualWorkingTime.aggregateMonthly(this.companyId, this.employeeId,
-					this.yearMonth, aggrPeriod, this.workingSystem, this.closureOpt, aggrAtr,
-					this.aggrSettingMonthly, this.legalTransferOrderSet, this.holidayAdditionMap,
+			val aggrValue = this.actualWorkingTime.aggregateMonthly(
+					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
+					aggrPeriod, this.workingSystem, this.closureOpt, aggrAtr,
+					this.employmentCd, this.settingsByReg, this.settingsByDefo,
 					this.attendanceTimeOfDailyMap, this.workInformationOfDailyMap,
-					this.statutoryWorkingTimeWeek, this.aggregateTime, null, repositories);
+					this.aggregateTime, null, this.procWeekNo, repositories);
 			this.aggregateTime = aggrValue.getAggregateTotalWorkingTime();
+			this.attendanceTimeWeeks.addAll(aggrValue.getAttendanceTimeWeeks());
 			
 			// 通常・変形労働勤務の月単位の時間を集計する
 			this.actualWorkingTime.aggregateMonthlyHours(this.companyId, this.employeeId,
 					this.yearMonth, this.closureId, this.closureDate, aggrPeriod, this.workingSystem,
 					aggrAtr, this.isRetireMonth, this.workplaceId, this.employmentCd,
-					this.aggrSettingMonthly, this.holidayAdditionMap, this.aggregateTime,
-					this.statutoryWorkingTimeMonth, repositories);
+					this.settingsByReg, this.settingsByDefo, this.aggregateTime, repositories);
 		}
 		// フレックス時間勤務　の時
 		else if (this.workingSystem == WorkingSystem.FLEX_TIME_WORK){
 			
 			// フレックス集計方法を取得する
-			val aggrSetOfFlex = this.aggrSettingMonthly.getFlexWork();
-			val flexAggrMethod = aggrSetOfFlex.getAggregateMethod();
+			val flexAggrMethod = this.settingsByFlex.getFlexAggrSet().getAggrMethod();
 
 			// フレックス勤務の月別実績を集計する
 			val aggrValue = this.flexTime.aggregateMonthly(this.companyId, this.employeeId,
-					this.yearMonth, aggrPeriod, this.workingSystem, aggrAtr, flexAggrMethod,
-					aggrSetOfFlex, this.monthlyAggrSetOfFlexOpt, this.getFlexPredWorkTimeOpt,
+					this.yearMonth, this.closureId, this.closureDate, aggrPeriod, this.workingSystem,
+					aggrAtr, this.closureOpt, flexAggrMethod, this.settingsByFlex,
 					this.attendanceTimeOfDailyMap, this.aggregateTime, null,
-					this.prescribedWorkingTimeMonth, this.statutoryWorkingTimeMonth, repositories);
+					this.procWeekNo, repositories);
 			this.aggregateTime = aggrValue.getAggregateTotalWorkingTime();
+			this.attendanceTimeWeeks.addAll(aggrValue.getAttendanceTimeWeeks());
 			
 			// フレックス勤務の月単位の時間を集計する
 			this.flexTime.aggregateMonthlyHours(this.companyId, this.employeeId,
 					this.yearMonth, aggrPeriod, flexAggrMethod, this.workingConditionItem,
 					this.workplaceId, this.employmentCd,
-					aggrSetOfFlex, this.holidayAdditionMap, this.monthlyAggrSetOfFlexOpt,
-					this.aggregateTime, this.prescribedWorkingTimeMonth, this.statutoryWorkingTimeMonth,
+					this.settingsByFlex, this.aggregateTime,
 					repositories);
 		}
 
@@ -424,13 +500,44 @@ public class MonthlyCalculation {
 		this.aggregateTime.aggregateActualWorkingTime(aggrPeriod, this.workingSystem,
 				this.actualWorkingTime, this.flexTime);
 		
+		// フレックス時間勤務の時
+		if (this.workingSystem == WorkingSystem.FLEX_TIME_WORK){
+			
+			// 年休使用時間に加算する
+			this.addAnnualLeaveUseTime();
+			
+			// 控除時間が余分に入れられていないか確認する
+			this.checkDeductTime();
+		}
+		
 		// 総労働時間を計算
 		this.calcTotalWorkingTime();
 		
 		// 管理期間の36協定時間の作成
 		this.agreementTimeOfManagePeriod = new AgreementTimeOfManagePeriod(this.employeeId, this.yearMonth);
-		this.agreementTimeOfManagePeriod.aggregate(this.companyId, this.year, aggrPeriod.end(),
-				aggrAtr, this, repositories);
+		this.agreementTimeOfManagePeriod.aggregate(aggrPeriod.end(), aggrAtr, this, repositories);
+		
+		// 月別実績の36協定へ値を移送
+		this.agreementTime = this.agreementTimeOfManagePeriod.getAgreementTime();
+	}
+	
+	/**
+	 * 総労働時間と36協定時間の再計算
+	 * @param aggrPeriod 集計期間
+	 * @param aggrAtr 集計区分
+	 * @param repositories 月次集計が必要とするリポジトリ
+	 */
+	public void recalcTotalAndAgreement(
+			DatePeriod aggrPeriod,
+			MonthlyAggregateAtr aggrAtr,
+			RepositoriesRequiredByMonthlyAggr repositories){
+		
+		// 総労働時間を計算
+		this.calcTotalWorkingTime();
+		
+		// 管理期間の36協定時間の作成
+		this.agreementTimeOfManagePeriod = new AgreementTimeOfManagePeriod(this.employeeId, this.yearMonth);
+		this.agreementTimeOfManagePeriod.aggregate(aggrPeriod.end(), aggrAtr, this, repositories);
 		
 		// 月別実績の36協定へ値を移送
 		this.agreementTime = this.agreementTimeOfManagePeriod.getAgreementTime();
@@ -463,10 +570,55 @@ public class MonthlyCalculation {
 	}
 	
 	/**
+	 * 年休使用時間に加算する
+	 */
+	private void addAnnualLeaveUseTime(){
+		
+		// 控除後の結果にエラーがある時、加算しない
+		val afterDeduct = this.flexTime.getDeductDaysAndTime();
+		if (afterDeduct.getErrorInfos().size() > 0) return;
+		if (!afterDeduct.getPredetermineTimeSetOfWeekDay().isPresent()) return;
+
+		// 控除前の年休控除時間を取得する
+		val beforeDeductTime = this.flexTime.getAnnualLeaveTimeBeforeDeduct();
+		
+		// 控除前の年休控除時間を年休使用時間に加算する
+		val annualLeave = this.aggregateTime.getVacationUseTime().getAnnualLeave();
+		annualLeave.addMinuteToUseTime(beforeDeductTime.v());
+	}
+	
+	/**
+	 * 控除時間が余分に入れられていないか確認する
+	 */
+	public void checkDeductTime(){
+		
+		// 控除後の結果にエラーがある時、確認しない
+		val afterDeduct = this.flexTime.getDeductDaysAndTime();
+		if (afterDeduct.getErrorInfos().size() > 0) return;
+		if (!afterDeduct.getPredetermineTimeSetOfWeekDay().isPresent()) return;
+		
+		// 控除時間が余分に入力されていないか確認する
+		val predetermineTimeSet = afterDeduct.getPredetermineTimeSetOfWeekDay().get();
+		val predAddTimeAM = predetermineTimeSet.getPredTime().getAddTime().getMorning();
+		boolean isExtraTime = false;
+		if (afterDeduct.getAnnualLeaveDeductTime().greaterThanOrEqualTo(predAddTimeAM.v())){
+			isExtraTime = true;
+		}
+		else if (afterDeduct.getAbsenceDeductTime().greaterThan(0)){
+			isExtraTime = true;
+		}
+		if (isExtraTime){
+			
+			// 「余分な控除時間のエラーフラグ」をtrueにする
+			this.flexTime.getFlexShortDeductTime().setErrorAtrOfExtraDeductTime(true);
+		}
+	}
+	
+	/**
 	 * 総労働時間の計算
 	 * @param datePeriod 期間
 	 */
-	private void calcTotalWorkingTime(){
+	public void calcTotalWorkingTime(){
 
 		this.totalWorkingTime = new AttendanceTimeMonth(this.aggregateTime.getTotalWorkingTargetTime().v() +
 				this.actualWorkingTime.getTotalWorkingTargetTime().v() +
@@ -481,35 +633,191 @@ public class MonthlyCalculation {
 	 * @param closureId 締めID
 	 * @param closureDate 締め日付
 	 * @param procPeriod 期間
-	 * @param workingConditionItem 労働条件項目
 	 * @param isRetireMonth 退職月度かどうか
 	 * @param attendanceTimeOfDailysOpt 日別実績の勤怠時間リスト
+	 * @param annualLeaveDeductDays 年休控除日数
+	 * @param absenceDeductTime 欠勤控除時間
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public Optional<AgreementTimeOfManagePeriod> aggregateAgreementTime(
 			String companyId, String employeeId,YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate,
-			DatePeriod procPeriod, WorkingConditionItem workingConditionItem,
+			DatePeriod procPeriod,
 			Optional<List<AttendanceTimeOfDailyPerformance>> attendanceTimeOfDailysOpt,
+			Optional<AttendanceDaysMonth> annualLeaveDeductDays,
+			Optional<AttendanceTimeMonth> absenceDeductTime,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 36協定運用設定を取得
 		val agreementOperationSetOpt = repositories.getAgreementOperationSet().find(companyId);
-		if (!agreementOperationSetOpt.isPresent()) return Optional.empty();
+		if (!agreementOperationSetOpt.isPresent()) {
+			this.errorInfos.add(new MonthlyAggregationErrorInfo(
+					"017", new ErrMessageContent(TextResource.localize("Msg_1246"))));
+			return Optional.empty();
+		}
 		val agreementOperationSet = agreementOperationSetOpt.get();
 		
 		// 集計期間を取得
 		val aggrPeriod = agreementOperationSet.getAggregatePeriod(procPeriod);
 		
-		// 履歴ごとに月別実績を集計する
-		this.prepareAggregation(companyId, employeeId, aggrPeriod.getYearMonth(), closureId, closureDate,
-				aggrPeriod.getPeriod(), workingConditionItem, attendanceTimeOfDailysOpt, repositories);
-		this.year = aggrPeriod.getYear();
-		this.aggregate(aggrPeriod.getPeriod(), MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
-				Optional.empty(), Optional.empty(), repositories);
+		// 「労働条件項目」を取得
+		List<WorkingConditionItem> workingConditionItems = repositories.getWorkingConditionItem()
+				.getBySidAndPeriodOrderByStrD(employeeId, aggrPeriod.getPeriod());
+		if (workingConditionItems.isEmpty()){
+			this.errorInfos.add(new MonthlyAggregationErrorInfo(
+					"006", new ErrMessageContent(TextResource.localize("Msg_430"))));
+			return Optional.empty();
+		}
+		
+		// 同じ労働制の履歴を統合
+		this.IntegrateHistoryOfSameWorkSys(workingConditionItems, repositories);
+
+		// 項目の数だけループ
+		MonthlyCalculation agreementCalc = null;
+		int weekNo = 1;
+		for (val workingConditionItem : this.workingConditionItems){
+
+			// 「労働条件」の該当履歴から期間を取得
+			val historyId = workingConditionItem.getHistoryId();
+			if (!this.workingConditions.containsKey(historyId)) continue;
+
+			// 処理期間を計算　（一か月の集計期間と労働条件履歴期間の重複を確認する）
+			val term = this.workingConditions.get(historyId);
+			DatePeriod period = this.confirmProcPeriod(aggrPeriod.getPeriod(), term);
+			if (period == null) {
+				// 履歴の期間と重複がない時
+				continue;
+			}
+			
+			// 集計準備
+			MonthlyCalculation calcWork = new MonthlyCalculation();
+			calcWork.prepareAggregation(companyId, employeeId, aggrPeriod.getYearMonth(), closureId, closureDate,
+					period, workingConditionItem, attendanceTimeOfDailysOpt, weekNo, repositories);
+			for (val errorInfo : calcWork.errorInfos){
+				if (errorInfo.getResourceId().compareTo("002") == 0) return Optional.empty();
+			}
+			calcWork.year = aggrPeriod.getYear();
+			
+			// 集計中の労働制を確認する
+			if (calcWork.workingSystem == WorkingSystem.FLEX_TIME_WORK){
+				
+				// 年休控除日数と欠勤控除時間があるか確認する
+				if (annualLeaveDeductDays.isPresent() || absenceDeductTime.isPresent()){
+					if (!annualLeaveDeductDays.isPresent()){
+						annualLeaveDeductDays = Optional.of(new AttendanceDaysMonth(0.0));
+					}
+					if (!absenceDeductTime.isPresent()){
+						absenceDeductTime = Optional.of(new AttendanceTimeMonth(0));
+					}
+				}
+			}
+			
+			// 履歴ごとに月別実績を集計する
+			calcWork.aggregate(aggrPeriod.getPeriod(), MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
+					annualLeaveDeductDays, absenceDeductTime, repositories);
+			
+			// データを合算する
+			if (agreementCalc == null){
+				agreementCalc = calcWork;
+			}
+			else {
+				calcWork.sum(agreementCalc);
+				agreementCalc = calcWork;
+			}
+		}
 
 		// 管理時間の36協定時間を返す
-		return Optional.of(this.agreementTimeOfManagePeriod);
+		if (agreementCalc == null) return Optional.empty();
+		return Optional.of(agreementCalc.agreementTimeOfManagePeriod);
+	}
+	
+	/**
+	 * 同じ労働制の履歴を統合
+	 * @param target 労働条件項目リスト　（統合前）
+	 * @param attendanceTimeOfDailysOpt 日別実績の勤怠時間リスト
+	 * @return 労働条件項目リスト　（統合後）
+	 */
+	private void IntegrateHistoryOfSameWorkSys(
+			List<WorkingConditionItem> target,
+			RepositoriesRequiredByMonthlyAggr repositories){
+
+		this.workingConditionItems = new ArrayList<>();
+		this.workingConditions = new HashMap<>();
+		
+		val itrTarget = target.listIterator();
+		while (itrTarget.hasNext()){
+			
+			// 要素[n]を取得
+			WorkingConditionItem startItem = itrTarget.next();
+			val startHistoryId = startItem.getHistoryId();
+			val startConditionOpt = repositories.getWorkingCondition().getByHistoryId(startHistoryId);
+			if (!startConditionOpt.isPresent()) continue;
+			val startCondition = startConditionOpt.get();
+			if (startCondition.getDateHistoryItem().isEmpty()) continue;
+			DatePeriod startPeriod = startCondition.getDateHistoryItem().get(0).span();
+			
+			// 要素[n]と要素[n+1]以降を順次比較
+			WorkingConditionItem endItem = null;
+			while (itrTarget.hasNext()){
+				WorkingConditionItem nextItem = target.get(itrTarget.nextIndex());
+				if (startItem.getLaborSystem() != nextItem.getLaborSystem() ||
+					startItem.getHourlyPaymentAtr() != nextItem.getHourlyPaymentAtr()){
+					
+					// 労働制または時給者区分が異なる履歴が見つかった時点で、労働条件の統合をやめる
+					break;
+				}
+			
+				// 労働制と時給者区分が同じ履歴の要素を順次取得
+				endItem = itrTarget.next();
+			}
+			
+			// 次の要素がなくなった、または、異なる履歴が見つかれば、集計要素を確定する
+			if (endItem == null){
+				this.workingConditionItems.add(startItem);
+				this.workingConditions.putIfAbsent(startHistoryId, startPeriod);
+				continue;
+			}
+			val endHistoryId = endItem.getHistoryId();
+			val endConditionOpt = repositories.getWorkingCondition().getByHistoryId(endHistoryId);
+			if (!endConditionOpt.isPresent()) continue;;
+			val endCondition = endConditionOpt.get();
+			if (endCondition.getDateHistoryItem().isEmpty()) continue;
+			this.workingConditionItems.add(endItem);
+			this.workingConditions.putIfAbsent(endHistoryId,
+					new DatePeriod(startPeriod.start(), endCondition.getDateHistoryItem().get(0).end()));
+		}
+	}
+	
+	/**
+	 * 処理期間との重複を確認する　（重複期間を取り出す）
+	 * @param target 処理期間
+	 * @param comparison 比較対象期間
+	 * @return 重複期間　（null = 重複なし）
+	 */
+	private DatePeriod confirmProcPeriod(DatePeriod target, DatePeriod comparison){
+
+		DatePeriod overlap = null;		// 重複期間
+		
+		// 開始前
+		if (target.isBefore(comparison)) return overlap;
+		
+		// 終了後
+		if (target.isAfter(comparison)) return overlap;
+		
+		// 重複あり
+		overlap = target;
+		
+		// 開始日より前を除外
+		if (overlap.contains(comparison.start())){
+			overlap = overlap.cutOffWithNewStart(comparison.start());
+		}
+		
+		// 終了日より後を除外
+		if (overlap.contains(comparison.end())){
+			overlap = overlap.cutOffWithNewEnd(comparison.end());
+		}
+
+		return overlap;
 	}
 	
 	/**
@@ -637,6 +945,68 @@ public class MonthlyCalculation {
 		
 		return notExistTime;
 	}
+	
+	/**
+	 * 週の集計をする日か確認する
+	 * @param procYmd 処理日
+	 * @param weekStart 週開始
+	 * @param datePeriod 期間（月別集計用）
+	 * @param closureOpt 締め
+	 * @return true：集計する、false：集計しない
+	 */
+	public static boolean isAggregateWeek(GeneralDate procYmd, WeekStart weekStart, DatePeriod datePeriod,
+			Optional<Closure> closureOpt){
+		
+		// 週開始から集計する曜日を求める　（週開始の曜日の前日の曜日が「集計する曜日」）
+		int aggregateWeek = 0;
+		switch (weekStart){
+		case Monday:
+			aggregateWeek = 7;
+			break;
+		case Tuesday:
+			aggregateWeek = 1;
+			break;
+		case Wednesday:
+			aggregateWeek = 2;
+			break;
+		case Thursday:
+			aggregateWeek = 3;
+			break;
+		case Friday:
+			aggregateWeek = 4;
+			break;
+		case Saturday:
+			aggregateWeek = 5;
+			break;
+		case Sunday:
+			aggregateWeek = 6;
+			break;
+		case TighteningStartDate:
+			
+			// 締め開始日を取得する
+			GeneralDate closureDate = datePeriod.start();
+			if (closureOpt.isPresent()){
+				val closure = closureOpt.get();
+				val closurePeriodOpt = closure.getClosurePeriodByYmd(datePeriod.start());
+				if (closurePeriodOpt.isPresent()){
+					closureDate = closurePeriodOpt.get().getPeriod().start();
+				}
+			}
+			
+			// 締め開始日の曜日から集計する曜日を求める
+			aggregateWeek = closureDate.dayOfWeek() - 1;
+			if (aggregateWeek == 0) aggregateWeek = 7;
+			break;
+		}
+		
+		// 集計する曜日を処理日の曜日と比較する
+		val procWeek = procYmd.dayOfWeek();
+		if (procWeek != aggregateWeek){
+			if (!procYmd.equals(datePeriod.end())) return false;
+		}
+		return true;
+	}
+	
 	
 	/**
 	 * エラー情報の取得

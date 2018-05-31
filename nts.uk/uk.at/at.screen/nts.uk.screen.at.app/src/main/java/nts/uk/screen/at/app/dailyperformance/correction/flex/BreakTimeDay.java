@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class BreakTimeDay {
-	private Double day;
-	private Double am;
-	private Double pm;
+	private Integer day;
+	private Integer am;
+	private Integer pm;
 }

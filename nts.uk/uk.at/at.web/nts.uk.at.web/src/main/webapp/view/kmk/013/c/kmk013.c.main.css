@@ -16,7 +16,7 @@
 .left-contents .ntsRadioBox {
 	margin-top: 5px;
 	margin-bottom: 6px;
-	margin-left: -18px;
+	/* margin-left: -18px; */
 }
 
 .input-time {
@@ -45,7 +45,7 @@
 
 .ntsRadioBox {
 	display: block;
-	margin-left: 8px;
+	/* margin-left: 8px; */
 }
 
 #table-b {
@@ -68,4 +68,16 @@
 }
 #combo-box {
 	width: 175px;
+}
+
+.radio-btn-left-content > label.ntsRadioBox ~ :not(label) {
+	margin-left: 18px;
+}
+
+.radio-btn-left-content > label.ntsRadioBox ~ * *  {
+	margin-left: 5px;
+}
+
+.radio-btn-left-content {
+	margin-left: -18px;
 }

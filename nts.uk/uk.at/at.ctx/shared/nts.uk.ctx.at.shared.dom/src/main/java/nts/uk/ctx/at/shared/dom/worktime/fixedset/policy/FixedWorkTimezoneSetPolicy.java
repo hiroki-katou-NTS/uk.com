@@ -38,4 +38,15 @@ public interface FixedWorkTimezoneSetPolicy {
 	 * @param useHalfDayShift the use half day shift
 	 */
 	void validateFlex(BundledBusinessException be, PredetemineTimeSetting predTime, FixedWorkTimezoneSet worktimeSet, DisplayMode displayMode, AmPmAtr dayAtr, boolean useHalfDayShift);
+
+	/**
+	 * Filter timezone.
+	 *
+	 * @param predTime the pred time
+	 * @param origin the origin
+	 * @param displayMode the display mode
+	 * @param dayAtr the day atr
+	 * @param useHalfDayShift the use half day shift
+	 */
+	void filterTimezone(PredetemineTimeSetting predTime, FixedWorkTimezoneSet origin, DisplayMode displayMode, AmPmAtr dayAtr, boolean useHalfDayShift);
 }

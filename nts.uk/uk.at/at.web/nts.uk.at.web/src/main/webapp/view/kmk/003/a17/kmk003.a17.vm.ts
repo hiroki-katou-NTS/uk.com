@@ -8,6 +8,7 @@ module a17 {
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
     import TabMode = nts.uk.at.view.kmk003.a.viewmodel.TabMode;
     import OvertimeWorkFrameFindDto = nts.uk.at.view.kmk003.a.service.model.OvertimeWorkFrameFindDto;
+    import SettingMethod = nts.uk.at.view.kmk003.a.viewmodel.SettingMethod;
     
     /**
      * Screen Model - Tab 17
@@ -86,26 +87,6 @@ module a17 {
             _self.isFlex = _self.model.workTimeSetting.isFlex; 
             _self.bindingData();
             
-            // Save value when switch between mode
-            _self.isFixed.subscribe((v) => {
-                if (_self.isNewMode()) {
-                    if (!nts.uk.util.isNullOrUndefined(_self.tempCalcMethodNoBreak)) _self.fixedCalcMethodNoBreak(_self.tempCalcMethodNoBreak());
-                    if (!nts.uk.util.isNullOrUndefined(_self.tempCalcMethodExceededPredAddVacation)) _self.fixedCalcMethodExceededPredAddVacation(_self.tempCalcMethodExceededPredAddVacation());
-                    if (!nts.uk.util.isNullOrUndefined(_self.tempOtFrameNo)) _self.fixedOtFrameNo(_self.tempOtFrameNo());
-                    if (!nts.uk.util.isNullOrUndefined(_self.tempInLawOT)) _self.fixedInLawOT(_self.tempInLawOT());
-                    if (!nts.uk.util.isNullOrUndefined(_self.tempNotInLawOT)) _self.fixedNotInLawOT(_self.tempNotInLawOT());    
-                }
-            });
-            _self.isDiff.subscribe((v) => {
-                if (_self.isNewMode()) {
-                    if (!nts.uk.util.isNullOrUndefined(_self.tempCalcMethodNoBreak)) _self.diffCalcMethodNoBreak(_self.tempCalcMethodNoBreak());
-                    if (!nts.uk.util.isNullOrUndefined(_self.tempCalcMethodExceededPredAddVacation)) _self.diffCalcMethodExceededPredAddVacation(_self.tempCalcMethodExceededPredAddVacation());
-                    if (!nts.uk.util.isNullOrUndefined(_self.tempOtFrameNo)) _self.diffOtFrameNo(_self.tempOtFrameNo());
-                    if (!nts.uk.util.isNullOrUndefined(_self.tempInLawOT)) _self.diffInLawOT(_self.tempInLawOT());
-                    if (!nts.uk.util.isNullOrUndefined(_self.tempNotInLawOT)) _self.diffNotInLawOT(_self.tempNotInLawOT());
-                }
-            });
-            
             // Init all data                 
             _self.listNotUseAtr = ko.observableArray([
                 { value: 1, localizedName: nts.uk.resource.getText("KMK003_142") },
@@ -144,6 +125,22 @@ module a17 {
             // Subscribe Detail/Simple mode 
             screenMode.subscribe((value: any) => {
                 value == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
+            });
+            _self.model.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe((v)=>{
+                if (v == SettingMethod.FIXED) {
+                    _self.fixedCalcMethodNoBreak(_self.diffCalcMethodNoBreak());
+                    _self.fixedCalcMethodExceededPredAddVacation(_self.diffCalcMethodExceededPredAddVacation());
+                    _self.fixedOtFrameNo(_self.diffOtFrameNo());
+                    _self.fixedInLawOT(_self.diffInLawOT());
+                    _self.fixedNotInLawOT(_self.diffNotInLawOT());  
+                }
+                if (v == SettingMethod.DIFFTIME) {
+                    _self.diffCalcMethodNoBreak(_self.fixedCalcMethodNoBreak());
+                    _self.diffCalcMethodExceededPredAddVacation(_self.fixedCalcMethodExceededPredAddVacation());
+                    _self.diffOtFrameNo(_self.fixedOtFrameNo());
+                    _self.diffInLawOT(_self.fixedInLawOT());
+                    _self.diffNotInLawOT(_self.fixedNotInLawOT());
+                }
             });
         }
                
@@ -214,37 +211,7 @@ module a17 {
             // Subscribe
             _self.notUseAtr.subscribe(v => {
                 if (nts.uk.util.isNullOrUndefined(v)) { _self.notUseAtr(0); }
-            }); 
-            _self.fixedCalcMethodNoBreak.subscribe(v => {                
-                if (nts.uk.util.isNullOrUndefined(v)) { _self.tempCalcMethodNoBreak(v); _self.fixedCalcMethodNoBreak(0); }
-            }); 
-            _self.fixedInLawOT.subscribe(v => {
-                if (nts.uk.util.isNullOrUndefined(v)) { _self.tempInLawOT(v); _self.fixedInLawOT(1); }
-            }); 
-            _self.fixedNotInLawOT.subscribe(v => {
-                if (nts.uk.util.isNullOrUndefined(v)) { _self.tempNotInLawOT(v); _self.fixedNotInLawOT(1); }
-            }); 
-            _self.fixedCalcMethodExceededPredAddVacation.subscribe(v => {
-                if (nts.uk.util.isNullOrUndefined(v)) { _self.tempCalcMethodExceededPredAddVacation(v); _self.fixedCalcMethodExceededPredAddVacation(0); }
-            }); 
-            _self.fixedOtFrameNo.subscribe(v => {
-                if (nts.uk.util.isNullOrUndefined(v)) { _self.tempOtFrameNo(v); _self.fixedOtFrameNo(1); }
-            }); 
-            _self.diffCalcMethodNoBreak.subscribe(v => {
-                if (nts.uk.util.isNullOrUndefined(v)) { _self.tempCalcMethodNoBreak(v); _self.diffCalcMethodNoBreak(0); }
-            }); 
-            _self.diffInLawOT.subscribe(v => {
-                if (nts.uk.util.isNullOrUndefined(v)) { _self.tempInLawOT(v); _self.diffInLawOT(1); }
-            }); 
-            _self.diffNotInLawOT.subscribe(v => {
-                if (nts.uk.util.isNullOrUndefined(v)) { _self.tempNotInLawOT(v); _self.diffNotInLawOT(1); }
-            }); 
-            _self.diffCalcMethodExceededPredAddVacation.subscribe(v => {
-                if (nts.uk.util.isNullOrUndefined(v)) { _self.tempCalcMethodExceededPredAddVacation(v); _self.diffCalcMethodExceededPredAddVacation(0); }
-            }); 
-            _self.diffOtFrameNo.subscribe(v => {
-                if (nts.uk.util.isNullOrUndefined(v)) { _self.tempOtFrameNo(v); _self.diffOtFrameNo(1); }
-            }); 
+            });
         }
         
     }

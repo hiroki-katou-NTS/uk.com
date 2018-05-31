@@ -5,14 +5,15 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class OverTimeOfTimeZoneSet.
  */
 // 残業時間の時間帯設定
 @Getter
+@Setter
 public class OverTimeOfTimeZoneSet extends WorkTimeDomainObject {
 
 	/** The work timezone no. */
@@ -55,8 +56,16 @@ public class OverTimeOfTimeZoneSet extends WorkTimeDomainObject {
 		this.earlyOTUse = memento.getEarlyOTUse();
 		this.timezone = memento.getTimezone();
 		this.otFrameNo = memento.getOTFrameNo();
-		this.legalOTframeNo = memento.getLegalOTframeNo();
-		this.settlementOrder = memento.getSettlementOrder();
+		if (memento.getLegalOTframeNo() == null || memento.getLegalOTframeNo().v() == null) {
+			this.legalOTframeNo = OTFrameNo.getDefaultData();
+		} else {
+			this.legalOTframeNo = memento.getLegalOTframeNo();
+		}
+		if (memento.getSettlementOrder() == null || memento.getSettlementOrder().v() == null) {
+			this.settlementOrder = SettlementOrder.getDefaultData();
+		} else {
+			this.settlementOrder = memento.getSettlementOrder();
+		}
 	}
 	
 	/**

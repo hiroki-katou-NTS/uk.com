@@ -22,9 +22,9 @@ module nts.uk.at.view.kmk013.m {
                 self.upperLimitChoice = ko.observable(0);
                 
                 self.calcMethodOption = ko.observableArray<ItemModel> ([
-                    new ItemModel(0, nts.uk.resource.getText("KMK013_358")),
-                    new ItemModel(1, nts.uk.resource.getText("KMK013_359")),
-                    new ItemModel(2, nts.uk.resource.getText("KMK013_360"))
+                    new ItemModel(1, nts.uk.resource.getText("KMK013_358")),
+                    new ItemModel(2, nts.uk.resource.getText("KMK013_359")),
+                    new ItemModel(0, nts.uk.resource.getText("KMK013_360"))
                 ]);
                 self.calcMethodChoice = ko.observable(0);
                 

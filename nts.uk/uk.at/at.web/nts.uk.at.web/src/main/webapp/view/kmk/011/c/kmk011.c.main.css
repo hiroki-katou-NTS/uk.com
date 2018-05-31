@@ -43,3 +43,6 @@ p span {
 button#btn_005{
 	    margin-right: 0px !important;
 }
+.hidden{
+	visibility:hidden;
+}

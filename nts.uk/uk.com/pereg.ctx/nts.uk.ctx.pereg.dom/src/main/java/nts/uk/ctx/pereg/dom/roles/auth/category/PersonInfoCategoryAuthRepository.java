@@ -19,6 +19,8 @@ public interface PersonInfoCategoryAuthRepository {
 	Optional<PersonInfoCategoryAuth> getDetailPersonCategoryAuthByPId(String roleId, String personCategoryAuthId);
 	
 	Map<String, PersonInfoCategoryAuth> getByRoleIdAndCategories(String roleId, List<String> categoryIdList);
+	
+	Map<String, PersonInfoCategoryAuth> getByRoleId(String roleId);
 
 	List<PersonInfoCategoryAuth> getAllCategoryAuthByRoleId(String roleId);
 

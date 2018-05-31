@@ -39,12 +39,12 @@ module cps001.f.vm {
             self.fileId = ko.observable("");
             self.filename = ko.observable("");
             self.fileInfo = ko.observable(null);
-            self.accept = ko.observableArray([""]);
+            self.accept = ko.observableArray([]);
             self.textId = ko.observable("CPS001_71");
             self.asLink = ko.observable(true);
             self.enable = ko.observable(true);
             self.fileSize = ko.observable("");
-            self.stereoType = ko.observable("avatarfile");
+            self.stereoType = ko.observable("documentfile");
             self.uploadFinished = (fileInfo) => {
                 console.log("change");
                 console.log(fileInfo);
@@ -139,8 +139,10 @@ module cps001.f.vm {
         }
 
         restart() {
+            let self = this;
             __viewContext['viewModel'].start().done(() => {
                 init();
+                self.filename("");
                 $('.browser-button').focus();
             });
         }

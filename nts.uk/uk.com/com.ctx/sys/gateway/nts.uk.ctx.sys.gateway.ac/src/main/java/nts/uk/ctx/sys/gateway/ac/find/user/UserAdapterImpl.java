@@ -96,4 +96,13 @@ public class UserAdapterImpl implements UserAdapter {
 		.build()).collect(Collectors.toList());
 	}
 
+	@Override
+	public Optional<UserImport> findByUserId(String userId) {
+		Optional<UserExport> optUserExport = this.userPublisher.getByUserId(userId);
+		if (optUserExport.isPresent()) {
+			return this.covertToImportDomain(optUserExport);
+		}
+		return Optional.empty();
+	}
+
 }

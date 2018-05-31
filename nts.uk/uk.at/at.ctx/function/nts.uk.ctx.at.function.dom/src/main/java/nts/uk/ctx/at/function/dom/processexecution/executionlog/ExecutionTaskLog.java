@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.dom.processexecution.executionlog;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,5 +17,5 @@ public class ExecutionTaskLog {
 	private ProcessExecutionTask procExecTask;
 	
 	/* 終了状態 */
-	private EndStatus status;
+	private Optional<EndStatus> status;
 }

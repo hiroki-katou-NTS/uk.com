@@ -160,6 +160,12 @@ module nts.uk.at.view.kmk004.d {
              */
             public loadWorkplaceSetting(): void {
                 let self = this;
+                                
+                let year = self.worktimeVM.worktimeSetting.normalSetting().year();
+                if(nts.uk.util.isNullOrEmpty(year)) {
+                    return;
+                }
+                
                 let wpkId = self.selectedWorkplaceId();
                 if (nts.uk.text.isNullOrEmpty(wpkId)) {
                     self.resetFieldsToNewMode();

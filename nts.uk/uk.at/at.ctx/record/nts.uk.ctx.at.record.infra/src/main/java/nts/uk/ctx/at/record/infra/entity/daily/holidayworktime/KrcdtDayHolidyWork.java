@@ -272,7 +272,7 @@ public class KrcdtDayHolidyWork extends UkJpaEntity implements Serializable{
 	/*法定外休日出勤深夜乖離時間*/
 	@Column(name = "DIV_ILLEG_HOLI_WORK_MIDN")
 	public int divIllegHoliWorkMidn;
-	/*振替乖離時間１0*/
+	/*祝日出勤深夜乖離時間*/
 	@Column(name = "DIV_PB_HOLI_WORK_MIDN")
 	public int divPbHoliWorkMidn;
 	
@@ -355,81 +355,70 @@ public class KrcdtDayHolidyWork extends UkJpaEntity implements Serializable{
 		this.calcTransTime9 = !frame9.getTransferTime().isPresent() || frame9.getTransferTime().get().getCalcTime() == null ? 0 : frame9.getTransferTime().get().getCalcTime().valueAsMinutes();
 		this.calcTransTime10 = !frame10.getTransferTime().isPresent() || frame10.getTransferTime().get().getCalcTime() == null ? 0 : frame10.getTransferTime().get().getCalcTime().valueAsMinutes();
 		/*事前申請時間*/
-		this.preAppTime1 = frame1.getBeforeApplicationTime().get() == null ? 0 : frame1.getBeforeApplicationTime().get().valueAsMinutes();
-		this.preAppTime2 = frame2.getBeforeApplicationTime().get() == null ? 0 : frame2.getBeforeApplicationTime().get().valueAsMinutes();
-		this.preAppTime3 = frame3.getBeforeApplicationTime().get() == null ? 0 : frame3.getBeforeApplicationTime().get().valueAsMinutes();
-		this.preAppTime4 = frame4.getBeforeApplicationTime().get() == null ? 0 : frame4.getBeforeApplicationTime().get().valueAsMinutes();
-		this.preAppTime5 = frame5.getBeforeApplicationTime().get() == null ? 0 : frame5.getBeforeApplicationTime().get().valueAsMinutes();
-		this.preAppTime6 = frame6.getBeforeApplicationTime().get() == null ? 0 : frame6.getBeforeApplicationTime().get().valueAsMinutes();
-		this.preAppTime7 = frame7.getBeforeApplicationTime().get() == null ? 0 : frame7.getBeforeApplicationTime().get().valueAsMinutes();
-		this.preAppTime8 = frame8.getBeforeApplicationTime().get() == null ? 0 : frame8.getBeforeApplicationTime().get().valueAsMinutes();
-		this.preAppTime9 = frame9.getBeforeApplicationTime().get() == null ? 0 : frame9.getBeforeApplicationTime().get().valueAsMinutes();
-		this.preAppTime10 = frame10.getBeforeApplicationTime().get() == null ? 0 : frame10.getBeforeApplicationTime().get().valueAsMinutes();	
+		this.preAppTime1 = !frame1.getBeforeApplicationTime().isPresent() || frame1.getBeforeApplicationTime().get() == null ? 0 : frame1.getBeforeApplicationTime().get().valueAsMinutes();
+		this.preAppTime2 = !frame2.getBeforeApplicationTime().isPresent() || frame2.getBeforeApplicationTime().get() == null ? 0 : frame2.getBeforeApplicationTime().get().valueAsMinutes();
+		this.preAppTime3 = !frame3.getBeforeApplicationTime().isPresent() || frame3.getBeforeApplicationTime().get() == null ? 0 : frame3.getBeforeApplicationTime().get().valueAsMinutes();
+		this.preAppTime4 = !frame4.getBeforeApplicationTime().isPresent() || frame4.getBeforeApplicationTime().get() == null ? 0 : frame4.getBeforeApplicationTime().get().valueAsMinutes();
+		this.preAppTime5 = !frame5.getBeforeApplicationTime().isPresent() || frame5.getBeforeApplicationTime().get() == null ? 0 : frame5.getBeforeApplicationTime().get().valueAsMinutes();
+		this.preAppTime6 = !frame6.getBeforeApplicationTime().isPresent() || frame6.getBeforeApplicationTime().get() == null ? 0 : frame6.getBeforeApplicationTime().get().valueAsMinutes();
+		this.preAppTime7 = !frame7.getBeforeApplicationTime().isPresent() || frame7.getBeforeApplicationTime().get() == null ? 0 : frame7.getBeforeApplicationTime().get().valueAsMinutes();
+		this.preAppTime8 = !frame8.getBeforeApplicationTime().isPresent() || frame8.getBeforeApplicationTime().get() == null ? 0 : frame8.getBeforeApplicationTime().get().valueAsMinutes();
+		this.preAppTime9 = !frame9.getBeforeApplicationTime().isPresent() || frame9.getBeforeApplicationTime().get() == null ? 0 : frame9.getBeforeApplicationTime().get().valueAsMinutes();
+		this.preAppTime10 = !frame10.getBeforeApplicationTime().isPresent() || frame10.getBeforeApplicationTime().get() == null ? 0 : frame10.getBeforeApplicationTime().get().valueAsMinutes();	
 		/*休日出勤乖離時間*/
-		this.divergenceTime1 = !frame1.getHolidayWorkTime().isPresent() && frame1.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame1.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
-		this.divergenceTime2 = !frame2.getHolidayWorkTime().isPresent() && frame2.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame2.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
-		this.divergenceTime3 = !frame3.getHolidayWorkTime().isPresent() && frame3.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame3.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
-		this.divergenceTime4 = !frame4.getHolidayWorkTime().isPresent() && frame4.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame4.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
-		this.divergenceTime5 = !frame5.getHolidayWorkTime().isPresent() && frame5.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame5.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
-		this.divergenceTime6 = !frame6.getHolidayWorkTime().isPresent() && frame6.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame6.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
-		this.divergenceTime7 = !frame7.getHolidayWorkTime().isPresent() && frame7.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame7.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
-		this.divergenceTime8 = !frame8.getHolidayWorkTime().isPresent() && frame8.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame8.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
-		this.divergenceTime9 = !frame9.getHolidayWorkTime().isPresent() && frame9.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame9.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
-		this.divergenceTime10 = !frame10.getHolidayWorkTime().isPresent() && frame10.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame10.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+		this.divergenceTime1 = !frame1.getHolidayWorkTime().isPresent() || frame1.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame1.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+		this.divergenceTime2 = !frame2.getHolidayWorkTime().isPresent() || frame2.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame2.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+		this.divergenceTime3 = !frame3.getHolidayWorkTime().isPresent() || frame3.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame3.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+		this.divergenceTime4 = !frame4.getHolidayWorkTime().isPresent() || frame4.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame4.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+		this.divergenceTime5 = !frame5.getHolidayWorkTime().isPresent() || frame5.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame5.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+		this.divergenceTime6 = !frame6.getHolidayWorkTime().isPresent() || frame6.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame6.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+		this.divergenceTime7 = !frame7.getHolidayWorkTime().isPresent() || frame7.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame7.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+		this.divergenceTime8 = !frame8.getHolidayWorkTime().isPresent() || frame8.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame8.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+		this.divergenceTime9 = !frame9.getHolidayWorkTime().isPresent() || frame9.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame9.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+		this.divergenceTime10 = !frame10.getHolidayWorkTime().isPresent() || frame10.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame10.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
 		/*振替乖離時間*/
-		this.divergenceTransTime1 = !frame1.getTransferTime().isPresent() && frame1.getTransferTime().get().getDivergenceTime() == null ? 0 : frame1.getTransferTime().get().getDivergenceTime().valueAsMinutes();
-		this.divergenceTransTime2 = !frame2.getTransferTime().isPresent() && frame2.getTransferTime().get().getDivergenceTime() == null ? 0 : frame2.getTransferTime().get().getDivergenceTime().valueAsMinutes();
-		this.divergenceTransTime3 = !frame3.getTransferTime().isPresent() && frame3.getTransferTime().get().getDivergenceTime() == null ? 0 : frame3.getTransferTime().get().getDivergenceTime().valueAsMinutes();
-		this.divergenceTransTime4 = !frame4.getTransferTime().isPresent() && frame4.getTransferTime().get().getDivergenceTime() == null ? 0 : frame4.getTransferTime().get().getDivergenceTime().valueAsMinutes();
-		this.divergenceTransTime5 = !frame5.getTransferTime().isPresent() && frame5.getTransferTime().get().getDivergenceTime() == null ? 0 : frame5.getTransferTime().get().getDivergenceTime().valueAsMinutes();
-		this.divergenceTransTime6 = !frame6.getTransferTime().isPresent() && frame6.getTransferTime().get().getDivergenceTime() == null ? 0 : frame6.getTransferTime().get().getDivergenceTime().valueAsMinutes();
-		this.divergenceTransTime7 = !frame7.getTransferTime().isPresent() && frame7.getTransferTime().get().getDivergenceTime() == null ? 0 : frame7.getTransferTime().get().getDivergenceTime().valueAsMinutes();
-		this.divergenceTransTime8 = !frame8.getTransferTime().isPresent() && frame8.getTransferTime().get().getDivergenceTime() == null ? 0 : frame8.getTransferTime().get().getDivergenceTime().valueAsMinutes();
-		this.divergenceTransTime9 = !frame9.getTransferTime().isPresent() && frame9.getTransferTime().get().getDivergenceTime() == null ? 0 : frame9.getTransferTime().get().getDivergenceTime().valueAsMinutes();
-		this.divergenceTransTime10 = !frame10.getTransferTime().isPresent() && frame10.getTransferTime().get().getDivergenceTime() == null ? 0 : frame10.getTransferTime().get().getDivergenceTime().valueAsMinutes();
-
-		this.legHoliWorkMidn  = 0;
-		this.calcLegHoliWorkMidn = 0;
-		this.illegHoliWorkMidn = 0;
-		this.calcIllegHoliWorkMidn = 0;
-		this.pbHoliWorkMidn = 0;
-		this.calcPbHoliWorkMidn = 0;
+		this.divergenceTransTime1 = !frame1.getTransferTime().isPresent() || frame1.getTransferTime().get().getDivergenceTime() == null ? 0 : frame1.getTransferTime().get().getDivergenceTime().valueAsMinutes();
+		this.divergenceTransTime2 = !frame2.getTransferTime().isPresent() || frame2.getTransferTime().get().getDivergenceTime() == null ? 0 : frame2.getTransferTime().get().getDivergenceTime().valueAsMinutes();
+		this.divergenceTransTime3 = !frame3.getTransferTime().isPresent() || frame3.getTransferTime().get().getDivergenceTime() == null ? 0 : frame3.getTransferTime().get().getDivergenceTime().valueAsMinutes();
+		this.divergenceTransTime4 = !frame4.getTransferTime().isPresent() || frame4.getTransferTime().get().getDivergenceTime() == null ? 0 : frame4.getTransferTime().get().getDivergenceTime().valueAsMinutes();
+		this.divergenceTransTime5 = !frame5.getTransferTime().isPresent() || frame5.getTransferTime().get().getDivergenceTime() == null ? 0 : frame5.getTransferTime().get().getDivergenceTime().valueAsMinutes();
+		this.divergenceTransTime6 = !frame6.getTransferTime().isPresent() || frame6.getTransferTime().get().getDivergenceTime() == null ? 0 : frame6.getTransferTime().get().getDivergenceTime().valueAsMinutes();
+		this.divergenceTransTime7 = !frame7.getTransferTime().isPresent() || frame7.getTransferTime().get().getDivergenceTime() == null ? 0 : frame7.getTransferTime().get().getDivergenceTime().valueAsMinutes();
+		this.divergenceTransTime8 = !frame8.getTransferTime().isPresent() || frame8.getTransferTime().get().getDivergenceTime() == null ? 0 : frame8.getTransferTime().get().getDivergenceTime().valueAsMinutes();
+		this.divergenceTransTime9 = !frame9.getTransferTime().isPresent() || frame9.getTransferTime().get().getDivergenceTime() == null ? 0 : frame9.getTransferTime().get().getDivergenceTime().valueAsMinutes();
+		this.divergenceTransTime10 = !frame10.getTransferTime().isPresent() || frame10.getTransferTime().get().getDivergenceTime() == null ? 0 : frame10.getTransferTime().get().getDivergenceTime().valueAsMinutes();
 		
 		if(domain.getHolidayMidNightWork().isPresent()) {
-			Optional<HolidayWorkMidNightTime> within = getHolidayMidNightWork(domain.getHolidayMidNightWork().get(), StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork);
-			Optional<HolidayWorkMidNightTime> excess = getHolidayMidNightWork(domain.getHolidayMidNightWork().get(), StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork);
-			Optional<HolidayWorkMidNightTime> publicWork = getHolidayMidNightWork(domain.getHolidayMidNightWork().get(), StaturoryAtrOfHolidayWork.PublicHolidayWork);
-			if(within.isPresent()) {
-				if(within.get().getTime() != null){
+			getHolidayMidNightWork(domain.getHolidayMidNightWork().get(), StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork).ifPresent(within -> {
+				if(within.getTime() != null){
 					/*法定内休日出勤深夜*/
-					this.legHoliWorkMidn = within.get().getTime().getTime() == null ? null : within.get().getTime().getTime().valueAsMinutes();
+					this.legHoliWorkMidn = within.getTime().getTime() == null ? 0 : within.getTime().getTime().valueAsMinutes();
 					/*計算法定内休日出勤深夜*/
-					this.calcLegHoliWorkMidn = within.get().getTime().getCalcTime() == null ? 0 : within.get().getTime().getCalcTime().valueAsMinutes();
+					this.calcLegHoliWorkMidn = within.getTime().getCalcTime() == null ? 0 : within.getTime().getCalcTime().valueAsMinutes();
 					/*法定内休日出勤深夜乖離時間*/
-					this.divLegHoliWorkMidn = within.get().getTime().getDivergenceTime() == null ? 0 : within.get().getTime().getDivergenceTime().valueAsMinutes();
+					this.divLegHoliWorkMidn = within.getTime().getDivergenceTime() == null ? 0 : within.getTime().getDivergenceTime().valueAsMinutes();
 				}
-			}
-			if(excess.isPresent()) {
-				if(excess != null){
+			});
+			getHolidayMidNightWork(domain.getHolidayMidNightWork().get(), StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork).ifPresent(excess -> {
+				if(excess.getTime() != null){
 					/*法定外休日出勤深夜*/
-					this.illegHoliWorkMidn = excess.get().getTime().getTime() == null ? 0 : excess.get().getTime().getTime().valueAsMinutes();
+					this.illegHoliWorkMidn = excess.getTime().getTime() == null ? 0 : excess.getTime().getTime().valueAsMinutes();
 					/*計算法定外休日出勤深夜*/
-					this.calcIllegHoliWorkMidn = excess.get().getTime().getCalcTime() == null ? 0 : excess.get().getTime().getCalcTime().valueAsMinutes();
+					this.calcIllegHoliWorkMidn = excess.getTime().getCalcTime() == null ? 0 : excess.getTime().getCalcTime().valueAsMinutes();
 					/*法定外休日出勤深夜乖離時間*/
-					this.divIllegHoliWorkMidn = excess.get().getTime().getDivergenceTime() == null ? 0 : excess.get().getTime().getDivergenceTime().valueAsMinutes();
+					this.divIllegHoliWorkMidn = excess.getTime().getDivergenceTime() == null ? 0 : excess.getTime().getDivergenceTime().valueAsMinutes();
 				}
-			}
-			if(publicWork.isPresent())
-			{
-				if(publicWork != null){
+			});
+			getHolidayMidNightWork(domain.getHolidayMidNightWork().get(), StaturoryAtrOfHolidayWork.PublicHolidayWork).ifPresent(publicWork -> {
+				if(publicWork.getTime() != null){
 					/*祝日日出勤深夜*/
-					this.pbHoliWorkMidn = publicWork.get().getTime().getTime() == null ? 0 : publicWork.get().getTime().getTime().valueAsMinutes();
+					this.pbHoliWorkMidn = publicWork.getTime().getTime() == null ? 0 : publicWork.getTime().getTime().valueAsMinutes();
 					/*計算祝日日出勤深夜*/
-					this.calcPbHoliWorkMidn = publicWork.get().getTime().getCalcTime() == null ? 0 : publicWork.get().getTime().getCalcTime().valueAsMinutes();
+					this.calcPbHoliWorkMidn = publicWork.getTime().getCalcTime() == null ? 0 : publicWork.getTime().getCalcTime().valueAsMinutes();
 					/*祝日出勤深夜乖離時間*/
-					this.divPbHoliWorkMidn = publicWork.get().getTime().getDivergenceTime() == null ? 0 : publicWork.get().getTime().getDivergenceTime().valueAsMinutes();
+					this.divPbHoliWorkMidn = publicWork.getTime().getDivergenceTime() == null ? 0 : publicWork.getTime().getDivergenceTime().valueAsMinutes();
 				}
-			}
+			});
 		}
 		
 		/*休日出勤拘束時間*/

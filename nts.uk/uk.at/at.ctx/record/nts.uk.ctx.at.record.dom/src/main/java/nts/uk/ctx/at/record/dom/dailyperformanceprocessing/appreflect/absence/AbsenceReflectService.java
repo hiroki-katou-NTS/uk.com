@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.absence;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ApplicationReflectOutput;
 
 /**
  * 勤務実績に反映: 休暇申請処理
@@ -16,7 +15,7 @@ public interface AbsenceReflectService {
 	 * @param isPre: True - 事前申請の処理, False - 事後申請の処理
 	 * @return
 	 */
-	public ApplicationReflectOutput absenceReflect(CommonReflectParameter absencePara, boolean isPre);
+	public boolean absenceReflect(CommonReflectParameter absencePara, boolean isPre);
 	/**
 	 * 	
 	 * @param employeeId
@@ -33,6 +32,19 @@ public interface AbsenceReflectService {
 	 * @param workTypeCode
 	 * @param isReflect
 	 */
-	public void reflectRecordTime(String employeeId, GeneralDate baseDate, String workTypeCode, boolean isReflect);
+	public void reflectScheStartEndTime(String employeeId, GeneralDate baseDate, String workTypeCode, boolean isReflect);
+	/**
+	 * 開始終了時刻の反映
+	 * @param employeeId
+	 * @param baseDate
+	 * @param workTypeCode
+	 */
+	public void reflectRecordStartEndTime(String employeeId, GeneralDate baseDate, String workTypeCode);
+	/**
+	 * 開始終了時刻をクリアするかチェックする
+	 * @param workTypeCode
+	 * @return
+	 */
+	public boolean checkTimeClean(String employeeId, GeneralDate baseDate, String workTypeCode);
 	
 }

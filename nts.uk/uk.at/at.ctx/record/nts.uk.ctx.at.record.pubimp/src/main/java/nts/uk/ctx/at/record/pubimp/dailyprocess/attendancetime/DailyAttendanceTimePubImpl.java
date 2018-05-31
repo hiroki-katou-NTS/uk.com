@@ -82,13 +82,15 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 		val bonusPays = new HashMap<Integer,AttendanceTime>();
 		val specBonusPays = new HashMap<Integer,AttendanceTime>();
 		TimeWithCalculation flexTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
-		
+		TimeWithCalculation excessTimeMidNightTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
 		
 		
 		if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
 			if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily() != null){
 				if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()!= null) {
 					if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily() != null) {
+						if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime() != null)
+							 excessTimeMidNightTime = TimeWithCalculation.convertFromTimeDivergence(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime().getTime());
 						if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()) {
 							flexTime = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getNotMinusFlexTime();
 						}
@@ -145,7 +147,7 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 				bonusPays,
 				specBonusPays,
 				flexTime,
-				TimeWithCalculation.convertFromTimeDivergence(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime().getTime())
+				excessTimeMidNightTime
 			);
 	}
 

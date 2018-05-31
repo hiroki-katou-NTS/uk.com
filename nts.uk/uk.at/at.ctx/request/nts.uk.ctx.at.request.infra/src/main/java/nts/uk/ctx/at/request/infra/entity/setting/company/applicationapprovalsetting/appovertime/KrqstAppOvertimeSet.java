@@ -76,6 +76,10 @@ public class KrqstAppOvertimeSet extends UkJpaEntity implements Serializable {
     @Column(name = "REST_ATR")
     private int restAtr;
     
+    // 勤種変更可否フラグ
+    @Column(name = "WORKTYPE_PERMISSION_FLAG")
+    private int workTypeChangeFlag;
+    
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub

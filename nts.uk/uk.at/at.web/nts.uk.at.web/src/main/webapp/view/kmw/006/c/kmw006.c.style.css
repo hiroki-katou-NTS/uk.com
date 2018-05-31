@@ -1,0 +1,21 @@
+/* style */
+#list_headers th {
+	text-align: center;
+}
+
+#list td {
+	text-align: center;
+}
+
+.linkLabel {
+	text-decoration: none;
+	color: #0D86D1 !important;
+	background-color: inherit !important;
+	font-size: 14px;
+    font-family: "DroidSansMono", "Meiryo";
+}
+
+.linkLabel:hover {
+	text-decoration: underline !important;
+	color: #0D86D1 !important;
+}

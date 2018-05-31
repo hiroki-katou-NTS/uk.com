@@ -251,6 +251,12 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 				map.add(compareTimeSheet.replaceTimeSpan(compareTimeSheet.calcrange.getNotDuplicationWith(this.calcrange).get()));
 				return map;
 			}
+			/*休憩と休憩　→　育児と育児の重複と同じにする(後ろにある時間の開始を前の終了に合わせる)*/
+			else if(this.getBreakAtr().get().isBreak() && compareTimeSheet.getBreakAtr().get().isBreak()) {
+				map.add(this);
+				//map.add(compareTimeSheet.replaceTimeSpan(compareTimeSheet.calcrange.getNotDuplicationWith(this.calcrange).get()));
+				return map;
+			}
 		}
 		map.add(this);
 		map.add(compareTimeSheet);

@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.val;
 import nts.uk.ctx.at.record.dom.daily.midnight.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationTimeSheet;
@@ -112,15 +113,21 @@ public class MidNightTimeSheetForCalc extends CalculationTimeSheet{
 	 * @param timeSpan　重複を調べたい時間帯
 	 * @return　重複範囲の時間帯深夜時間帯
 	 */
-	public MidNightTimeSheetForCalc getDuplicateRangeTimeSheet(TimeSpanForCalc timeSpan) {
+	public Optional<MidNightTimeSheetForCalc> getDuplicateRangeTimeSheet(TimeSpanForCalc timeSpan) {
 		
-		return new MidNightTimeSheetForCalc(new TimeZoneRounding(timeSpan.getStart(), timeSpan.getEnd(), null), 
-											timeSpan, 
+		val dupTimeSpan = timeSpan.getDuplicatedWith(this.calcrange);
+		if(dupTimeSpan.isPresent()) {
+			return Optional.of(new MidNightTimeSheetForCalc(new TimeZoneRounding(dupTimeSpan.get().getStart(), dupTimeSpan.get().getEnd(), this.timeSheet.getRounding()), 
+											dupTimeSpan.get(), 
 											this.recordedTimeSheet, 
 											this.deductionTimeSheet, 
 											this.bonusPayTimeSheet, 
 											this.specBonusPayTimesheet, 
-											this.midNightTimeSheet);
+											this.midNightTimeSheet));
+		}
+		else {
+			return Optional.empty();
+		}
 	}
 	
 	

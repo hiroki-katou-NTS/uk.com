@@ -1,6 +1,8 @@
 module nts.uk.at.view.kmk003.a {
 
     import EmTimeZoneSetDto = nts.uk.at.view.kmk003.a.service.model.common.EmTimeZoneSetDto;
+    import TimeZoneRoundingDto = nts.uk.at.view.kmk003.a.service.model.common.TimeZoneRoundingDto;
+    import TimeRoundingSettingDto = nts.uk.at.view.kmk003.a.service.model.common.TimeRoundingSettingDto;
 
     import DayOffTimezoneSettingDto = nts.uk.at.view.kmk003.a.service.model.difftimeset.DayOffTimezoneSettingDto;
     import DiffTimeDeductTimezoneDto = nts.uk.at.view.kmk003.a.service.model.difftimeset.DiffTimeDeductTimezoneDto;
@@ -398,13 +400,18 @@ module nts.uk.at.view.kmk003.a {
                     let employmentTimezones = self.employmentTimezones().map(item => item.toDto());
                     let lstOtTimezone = self.lstOtTimezone().map(item => item.toDto());
 
+                    // get data from simple mode (tab2)
                     if (self.displayMode() == 1) {
                         const simple = this.lstWorkingTimezoneSimpleMode()[0];
-                        const detail = employmentTimezones[0].timezone;
-                        detail.rounding.roundingTime = simple.roundingTime();
-                        detail.rounding.rounding = simple.rounding();
-                        detail.start = simple.timeRange().startTime;
-                        detail.end = simple.timeRange().endTime;
+                        const detail = <EmTimeZoneSetDto>{};
+                        detail.timezone = <TimeZoneRoundingDto>{};
+                        detail.timezone.rounding = <TimeRoundingSettingDto>{};
+                        detail.employmentTimeFrameNo = 1;
+                        detail.timezone.rounding.roundingTime = simple.roundingTime();
+                        detail.timezone.rounding.rounding = simple.rounding();
+                        detail.timezone.start = simple.timeRange().startTime;
+                        detail.timezone.end = simple.timeRange().endTime;
+                        employmentTimezones = [detail];
                     }
 
                     var dataDTO: DiffTimezoneSettingDto = {
@@ -639,7 +646,7 @@ module nts.uk.at.view.kmk003.a {
                     self.getHDWtzAfternoon().workTimezone.initSubscribeForTab2(timezone);
                 }
 
-                public resetData(): void {
+                public resetData(isNewMode?:boolean): void {
                     let self = this;
                     self.restSet.resetData();
                     self.dayoffWorkTimezone.resetData();
@@ -652,7 +659,9 @@ module nts.uk.at.view.kmk003.a {
                     self.stampReflectTimezone.resetData();
                     self.overtimeSetting(0);
                     // Update phase 2
-                    self.calculationSetting.resetData();
+                    if (!isNewMode) {
+                        self.calculationSetting.resetData();
+                    }
                 }
 
                 updateData(data: DiffTimeWorkSettingDto) {

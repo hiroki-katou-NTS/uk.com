@@ -60,8 +60,6 @@ public class JpaExecutionTaskSettingRepository extends JpaRepository
 		oldData.endDate = updateData.endDate;
 		oldData.enabledSetting = updateData.enabledSetting;
 		oldData.nextExecDateTime = updateData.nextExecDateTime;
-		oldData.repIntervalDay = updateData.repIntervalDay;
-		oldData.repIntervalWeek = updateData.repIntervalWeek;
 		oldData.monday = updateData.monday;
 		oldData.tuesday = updateData.tuesday;
 		oldData.wednesday = updateData.wednesday;
@@ -81,6 +79,8 @@ public class JpaExecutionTaskSettingRepository extends JpaRepository
 		oldData.october = updateData.october;
 		oldData.november = updateData.november;
 		oldData.december = updateData.december;
+		oldData.scheduleId = updateData.scheduleId;
+		oldData.endScheduleId = updateData.endScheduleId;
 		this.commandProxy().update(oldData);
 	}
 

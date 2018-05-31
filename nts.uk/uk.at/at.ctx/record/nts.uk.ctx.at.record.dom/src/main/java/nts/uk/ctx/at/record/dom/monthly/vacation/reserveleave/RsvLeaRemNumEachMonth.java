@@ -37,6 +37,8 @@ public class RsvLeaRemNumEachMonth extends AggregateRoot {
 	private RealReserveLeave realReserveLeave;
 	/** 積立年休付与情報 */
 	private Optional<ReserveLeaveGrant> reserveLeaveGrant;
+	/** 付与区分 */
+	private boolean grantAtr;
 	
 	/**
 	 * コンストラクタ
@@ -62,6 +64,7 @@ public class RsvLeaRemNumEachMonth extends AggregateRoot {
 		this.reserveLeave = new ReserveLeave();
 		this.realReserveLeave = new RealReserveLeave();
 		this.reserveLeaveGrant = Optional.empty();
+		this.grantAtr = false;
 	}
 	
 	/**
@@ -75,6 +78,7 @@ public class RsvLeaRemNumEachMonth extends AggregateRoot {
 	 * @param reserveLeave 積立年休
 	 * @param realReserveLeave 実積立年休
 	 * @param reserveLeaveGrant 積立年休付与情報
+	 * @param grantAtr 付与区分
 	 * @return 積立年休月別残数データ
 	 */
 	public static RsvLeaRemNumEachMonth of(
@@ -86,7 +90,8 @@ public class RsvLeaRemNumEachMonth extends AggregateRoot {
 			ClosureStatus closureStatus,
 			ReserveLeave reserveLeave,
 			RealReserveLeave realReserveLeave,
-			Optional<ReserveLeaveGrant> reserveLeaveGrant){
+			Optional<ReserveLeaveGrant> reserveLeaveGrant,
+			boolean grantAtr){
 		
 		RsvLeaRemNumEachMonth domain = new RsvLeaRemNumEachMonth(
 				employeeId, yearMonth, closureId, closureDate);
@@ -95,6 +100,7 @@ public class RsvLeaRemNumEachMonth extends AggregateRoot {
 		domain.reserveLeave = reserveLeave;
 		domain.realReserveLeave = realReserveLeave;
 		domain.reserveLeaveGrant = reserveLeaveGrant;
+		domain.grantAtr = grantAtr;
 		return domain;
 	}
 }

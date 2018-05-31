@@ -112,20 +112,17 @@
 						</table>
 						<div>
 							<button class="x-large"
-								data-bind="click: $parent.showDialogB.bind($parent) , enable: $parent.layout().id() != undefined">#{i18n.getText('CPS008_42')}</button>
+								data-bind="click: $parent.showDialogB.bind($parent), enable: !!id()">#{i18n.getText('CPS008_42')}</button>
 						</div>
-						<div data-bind="if: action() != LAYOUT_ACTION.INSERT">
-							<div style="padding-top: 10px"
-								data-bind="ntsLayoutControl: { 
+						<com:ko tag="if" bind="action() == LAYOUT_ACTION.INSERT">
+							<div class="nosetarea">#{i18n.getText('CPS008_44')}</div>
+						</com:ko>
+						<div style="padding-top: 10px"
+							data-bind="ntsLayoutControl: { 
 								data: classifications,
 								editAble: false,
-								outData: outData }"></div>
-						</div>
-						<div style="padding-top: 10px"
-							data-bind="if: action() == LAYOUT_ACTION.INSERT">
-							<div class="nosetarea"
-								style="display: flex; align-items: center; justify-content: center;">#{i18n.getText('CPS008_44')}</div>
-						</div>
+								outData: outData
+							}"></div>
 					</div>
 				</div>
 			</div>

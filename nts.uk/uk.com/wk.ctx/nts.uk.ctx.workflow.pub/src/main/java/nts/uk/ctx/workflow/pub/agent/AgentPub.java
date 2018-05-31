@@ -30,4 +30,6 @@ public interface AgentPub {
 	 */
 	List<AgentInfoExport> findAgentByPeriod(String companyID, List<String> listApprover, 
 			GeneralDate startDate, GeneralDate endDate, Integer agentType);
+	
+	List<AgentDataPubExport> getAgentBySidDate(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate);
 }

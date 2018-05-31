@@ -1,8 +1,12 @@
 package nts.uk.ctx.bs.employee.app.find.workplacedifferinfor;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Value
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ParamFinder {
 	private String companyId;
 }

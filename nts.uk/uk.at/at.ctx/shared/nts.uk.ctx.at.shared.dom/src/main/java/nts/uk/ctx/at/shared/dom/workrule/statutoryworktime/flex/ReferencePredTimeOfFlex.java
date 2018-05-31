@@ -14,4 +14,20 @@ public enum ReferencePredTimeOfFlex {
 	FROM_RECORD(1);
 	
 	public int value;
+	
+	public static ReferencePredTimeOfFlex valueOf(Integer value) {
+		// Invalid object.
+		if (value == null) {
+			return null;
+		}
+
+		// Find value.
+		for (ReferencePredTimeOfFlex val : ReferencePredTimeOfFlex.values()) {
+			if (val.value == value) {
+				return val;
+			}
+		}
+		// Not found.
+		return null;
+	}
 }

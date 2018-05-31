@@ -91,6 +91,12 @@ public class FlexWorkSettingPolicyImpl implements FlexWorkSettingPolicy {
 		if (DisplayMode.DETAIL.equals(displayMode.getDisplayMode())) {
 			this.flexStampReflectTimezonePolicy.validate(be, predTime, flexWork);
 		}
+		
+		// Filter AM PM
+		flexWork.getLstHalfDayWorkTimezone().forEach(flexTime -> {
+			this.flexHalfDayPolicy.filterTimezone(predTime, flexTime, displayMode.getDisplayMode(),
+					flexWork.isUseHalfDayShift());
+		});
 	}
 
 	/**

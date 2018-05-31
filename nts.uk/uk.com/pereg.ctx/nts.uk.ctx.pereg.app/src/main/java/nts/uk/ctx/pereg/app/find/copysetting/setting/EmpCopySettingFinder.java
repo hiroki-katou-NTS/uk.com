@@ -2,6 +2,7 @@ package nts.uk.ctx.pereg.app.find.copysetting.setting;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -11,8 +12,8 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgMapDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.category.SettingCtgDto;
-import nts.uk.ctx.pereg.dom.copysetting.setting.EmpCopySetting;
 import nts.uk.ctx.pereg.dom.copysetting.setting.EmpCopySettingRepository;
+import nts.uk.ctx.pereg.dom.copysetting.setting.EmployeeCopySetting;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
@@ -37,10 +38,10 @@ public class EmpCopySettingFinder {
 	public List<SettingCtgDto> getEmpCopySetting() {
 
 		String companyId = AppContexts.user().companyId();
-		List<EmpCopySetting> copyList = this.empCopyRepo.find(companyId);
+		Optional<EmployeeCopySetting> employeeCopySettingOpt = this.empCopyRepo.findSetting(companyId);
 
-		if (copyList.isEmpty()) {
-			// check permision
+		if (!employeeCopySettingOpt.isPresent()) {
+			// check permission
 			boolean isPerRep = true;
 			if (isPerRep) {
 				throw new BusinessException(new RawErrorMessage("Msg_347"));
@@ -49,13 +50,10 @@ public class EmpCopySettingFinder {
 			}
 		}
 
-		List<String> categoryList = new ArrayList<String>();
-
-		copyList.stream().forEach(i -> categoryList.add(i.getCategoryId()));
-
-		return this.PerInfoCtgRepo.getAllCategoryByCtgIdList(companyId, categoryList).stream().map(p -> {
-			return new SettingCtgDto(p.getCategoryCode(), p.getCategoryName());
-		}).collect(Collectors.toList());
+		return this.PerInfoCtgRepo
+				.getAllCategoryByCtgIdList(companyId, employeeCopySettingOpt.get().getCopySettingCategoryIdList())
+				.stream().map(p -> new SettingCtgDto(p.getCategoryCode(), p.getCategoryName()))
+				.collect(Collectors.toList());
 
 	}
 

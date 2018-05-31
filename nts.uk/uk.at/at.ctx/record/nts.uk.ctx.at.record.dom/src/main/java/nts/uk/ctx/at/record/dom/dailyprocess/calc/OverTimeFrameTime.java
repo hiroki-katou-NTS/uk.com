@@ -85,12 +85,29 @@ public class OverTimeFrameTime {
 	}
 	
 	/**
+	 * 事前申請を足す(4末納品きんきゅうたいおうby 保科)
+	 * @param addTime
+	 */
+	public void addBeforeTime(AttendanceTime addTime) {
+		this.BeforeApplicationTime = this.getBeforeApplicationTime().addMinutes(addTime.valueAsMinutes());
+	}
+	
+	/**
 	 * 実績超過乖離時間の計算
 	 * @return
 	 */
 	public int calcOverLimitDivergenceTime() {
-		return this.getOverTimeWork().getDivergenceTime().valueAsMinutes() 
-				 + this.getTransferTime().getDivergenceTime().valueAsMinutes();
+		AttendanceTime overTime = new AttendanceTime(0);
+		if(this.getOverTimeWork() != null
+			&& this.getOverTimeWork().getDivergenceTime() != null)
+			overTime = this.getOverTimeWork().getDivergenceTime();
+		
+		AttendanceTime transTime = new AttendanceTime(0);
+		if(this.getTransferTime() != null
+		   && this.getTransferTime().getDivergenceTime() != null)
+			transTime = this.getTransferTime().getDivergenceTime();
+		return overTime.addMinutes(transTime.valueAsMinutes()).valueAsMinutes();  
+				 
 	}
 
 	/**
@@ -116,4 +133,17 @@ public class OverTimeFrameTime {
 	public boolean isPreOverLimitDivergenceTime() {
 		return this.calcPreOverLimitDivergenceTime() > 0 ? true:false;
 	}
+	
+	/**
+	 * 乖離時間のみ再計算
+	 * @return
+	 */
+	public OverTimeFrameTime calcDiverGenceTime() {
+		
+		TimeDivergenceWithCalculation overTimeWork = this.OverTimeWork==null?TimeDivergenceWithCalculation.emptyTime():this.OverTimeWork.calcDiverGenceTime();
+		TimeDivergenceWithCalculation transferTime = this.TransferTime==null?TimeDivergenceWithCalculation.emptyTime():this.TransferTime.calcDiverGenceTime();
+		
+		return new OverTimeFrameTime(this.getOverWorkFrameNo(),overTimeWork,transferTime,this.BeforeApplicationTime,this.orderTime);
+	}
+	
 }

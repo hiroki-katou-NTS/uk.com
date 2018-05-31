@@ -1,23 +1,30 @@
+/**
+ * 
+ */
 package nts.uk.ctx.bs.employee.pub.employee;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+/**
+ * dto by RequestList 228
+ *
+ */
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class EmployeeInfoExport {
+	
+	/** 社員ID */
+	private String sid;
 
-	public void setBussinessName(Object object) {
-		// TODO Auto-generated method stub
-		
-	}
+	/** 社員コード.Employee code */
+	private String scd;
 
-	public void setSid(String employeeId) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void setScd(Object object) {
-		// TODO Auto-generated method stub
-		
-	}
+	/** ビジネスネーム.Business name */
+	private String bussinessName;
 
 }

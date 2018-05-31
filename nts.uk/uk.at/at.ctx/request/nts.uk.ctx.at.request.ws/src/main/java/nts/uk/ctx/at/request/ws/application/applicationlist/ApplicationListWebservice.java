@@ -14,7 +14,7 @@ import nts.uk.ctx.at.request.app.command.application.applicationlist.AppTypeBfCo
 import nts.uk.ctx.at.request.app.command.application.applicationlist.ApprovalListAppCommand;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.ApprovalListAppCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.UpdateAppTypeBfCommandHandler;
-import nts.uk.ctx.at.request.app.find.application.applicationlist.AppListExtractConditionDto;
+import nts.uk.ctx.at.request.app.find.application.applicationlist.AppListParamFilter;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfFinder;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListDto;
@@ -49,7 +49,7 @@ public class ApplicationListWebservice extends WebService{
 	 * @return
 	 */
 	@Path("getapplist")
-	public ApplicationListDto getApplicationList(AppListExtractConditionDto param) {
+	public ApplicationListDto getApplicationList(AppListParamFilter param) {
 		return this.appListFinder.getAppList(param);
 	}
 	

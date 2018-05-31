@@ -1,5 +1,7 @@
 package nts.uk.pub.spr.login.output;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -33,8 +35,8 @@ public class LoginUserContextSpr {
 	/** 社員コード */
 	private String employeeCD;
 	
-	/** 個人情報のロールID */
-	private String roleID;
+	/** 個人情報のロール */
+	private List<RoleInfoSpr> roleList;
 	
 	/** 社員ID */
 	private String employeeID;

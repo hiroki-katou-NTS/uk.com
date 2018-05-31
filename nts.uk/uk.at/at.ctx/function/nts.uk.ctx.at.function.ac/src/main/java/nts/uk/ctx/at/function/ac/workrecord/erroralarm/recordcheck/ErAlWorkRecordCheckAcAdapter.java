@@ -6,15 +6,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckAdapter;
+import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.recordcheck.ErrorRecordImport;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.recordcheck.RegulationInfoEmployeeResult;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.recordcheck.ErAlSubjectFilterConditionDto;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckServicePub;
+import nts.uk.ctx.at.record.pub.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckServicePub.ErrorRecordExport;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.recordcheck.RegulationInfoEmployeeQueryResult;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class ErAlWorkRecordCheckAcAdapter implements ErAlWorkRecordCheckAdapter {
@@ -54,5 +59,25 @@ public class ErAlWorkRecordCheckAcAdapter implements ErAlWorkRecordCheckAdapter 
 				.lstJobTitleId(condition.getLstJobTitleId()).build();
 		return erAlWorkRecordCheckServicePub.filterEmployees(workingDate, employeeIds, filterCondition).stream().map(c -> buildImport(c)).collect(Collectors.toList());
 	}
+
+	@Override
+	public List<ErrorRecordImport> check(List<String> EACheckIDs, DatePeriod workingDate,
+			Collection<String> employeeIds) {
+
+		List<ErrorRecordImport> result = new ArrayList<ErrorRecordImport>();
+
+		List<ErrorRecordExport> listErrorExport = erAlWorkRecordCheckServicePub.check(EACheckIDs, workingDate,
+				employeeIds);
+		if (listErrorExport == null)
+			return result;
+		else {
+			result = listErrorExport.stream()
+					.map(e -> new ErrorRecordImport(e.getDate(), e.getEmployeeId(), e.getErAlId(), e.isError()))
+					.collect(Collectors.toList());
+			return result;
+		}
+	}
+	
+	
 
 }

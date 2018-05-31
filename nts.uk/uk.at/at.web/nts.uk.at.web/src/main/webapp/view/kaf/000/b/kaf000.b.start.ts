@@ -27,14 +27,17 @@ function initScreen(screenModel: any, listAppMeta: Array<model.ApplicationMetada
 }
 
 __viewContext.ready(function() {
-    var listAppMeta: Array<model.ApplicationMetadata>;
+    var listAppMeta: Array<model.ApplicationMetadata> = [];
     var currentApp: model.ApplicationMetadata;
     var listValue: Array<string> = __viewContext.transferred.value.listAppMeta;
     var currentValue: string = __viewContext.transferred.value.currentApp;
     var screenModel: any = {};
     nts.uk.at.view.kaf000.b.service.getAppByListID(listValue)
         .done((data) => {
-            listAppMeta = data;
+            _.forEach(listValue, (value) => {
+                listAppMeta.push(_.find(data, (o) => { return o.appID == value; }));
+            });
+            
             currentApp = _.find(listAppMeta, x => {return x.appID == currentValue; });
             initScreen(screenModel, listAppMeta, currentApp);
         }).fail((res) =>{

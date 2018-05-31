@@ -20,5 +20,5 @@ public interface ApprovalStatusRequestAdapter {
 	String confirmApprovalStatusMailSender();
 	
 	SendMailResultImport exeApprovalStatusMailTransmission(List<MailTransmissionContentOutput> listMailContent,
-			ApprovalStatusMailTempImport domain);
+			ApprovalStatusMailTempImport domain, int mailType);
 }

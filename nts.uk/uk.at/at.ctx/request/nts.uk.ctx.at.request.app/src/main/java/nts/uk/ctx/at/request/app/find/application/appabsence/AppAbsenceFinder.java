@@ -339,7 +339,7 @@ public class AppAbsenceFinder {
 			// 3.事前事後の判断処理(事前事後非表示する場合)
 			PrePostAtr prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(
 					EnumAdaptor.valueOf(ApplicationType.BREAK_TIME_APPLICATION.value, ApplicationType.class),
-					appCommonSettingOutput.generalDate);
+					appCommonSettingOutput.generalDate,0);
 			if (prePostAtrJudgment != null) {
 				prePostAtr = prePostAtrJudgment.value;
 			}

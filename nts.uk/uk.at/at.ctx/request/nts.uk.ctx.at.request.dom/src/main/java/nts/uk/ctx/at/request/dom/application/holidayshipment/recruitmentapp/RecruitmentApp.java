@@ -9,6 +9,7 @@ import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.SubTargetDigestion;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * 振出申請
@@ -27,7 +28,7 @@ public class RecruitmentApp extends AggregateRoot {
 	/**
 	 * 勤務種類
 	 */
-	private String workTypeCD;
+	private WorkTypeCode workTypeCD;
 	/**
 	 * 就業時間帯
 	 */

@@ -17,11 +17,18 @@ public class BusinessFormatSheet {
 
 	/**
 	 * padding left "0"
+	 * 勤務種別コード
 	 */
 	private BusinessTypeCode businessTypeCode;
 
+	/**
+	 * 並び順
+	 */
 	private BigDecimal sheetNo;
 
+	/**
+	 * 日別実績のフォーマットのシート名
+	 */
 	private String sheetName;
 
 	public BusinessFormatSheet(String companyId, BusinessTypeCode businessTypeCode, BigDecimal sheetNo,

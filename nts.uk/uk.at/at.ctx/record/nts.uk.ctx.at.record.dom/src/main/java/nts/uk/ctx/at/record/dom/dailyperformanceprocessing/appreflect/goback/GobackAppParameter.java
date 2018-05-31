@@ -3,8 +3,6 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReasonNotReflectRecord;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReflectedStateRecord;
 
 /**
  * 直行直帰申請の情報
@@ -43,13 +41,5 @@ public class GobackAppParameter {
 	 * 直行直帰申請．勤務時間終了2
 	 */
 	private Integer endTime2;
-	/**
-	 * 反映状態
-	 */
-	private ReflectedStateRecord reflectState;
-	/**
-	 * 予定反映不可理由
-	 */
-	private ReasonNotReflectRecord reasoNotReflect;
 
 }

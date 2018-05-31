@@ -14,12 +14,13 @@ import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 
 @Stateless
-public class AddSpLea10InfoCommandHandler extends CommandHandlerWithResult<AddSpecialleave10informationCommand, PeregAddCommandResult>
-implements PeregAddCommandHandler<AddSpecialleave10informationCommand>{
+public class AddSpLea10InfoCommandHandler
+		extends CommandHandlerWithResult<AddSpecialleave10informationCommand, PeregAddCommandResult>
+		implements PeregAddCommandHandler<AddSpecialleave10informationCommand> {
 
-	@Inject 
+	@Inject
 	private SpLeaInfoCommandHandler addSpLeaInfoCommandHandler;
-	
+
 	@Override
 	public String targetCategoryCd() {
 		return "CS00034";
@@ -32,12 +33,13 @@ implements PeregAddCommandHandler<AddSpecialleave10informationCommand>{
 
 	@Override
 	protected PeregAddCommandResult handle(CommandHandlerContext<AddSpecialleave10informationCommand> context) {
-		
+
 		val command = context.getCommand();
-		
+
 		String cid = AppContexts.user().companyId();
-		
-		SpecialLeaveBasicInfo domain = new SpecialLeaveBasicInfo(cid, command.getSID(), SpecialLeaveCode.CS00034.value, command.getUseAtr().intValue(), command.getAppSet().intValue(), command.getGrantDate(),
+
+		SpecialLeaveBasicInfo domain = new SpecialLeaveBasicInfo(cid, command.getSID(), SpecialLeaveCode.CS00034.value,
+				command.getUseAtr(), command.getAppSet(), command.getGrantDate(),
 				command.getGrantDays() != null ? command.getGrantDays().intValue() : null, command.getGrantTable());
 		return new PeregAddCommandResult(addSpLeaInfoCommandHandler.addHandler(domain));
 	}

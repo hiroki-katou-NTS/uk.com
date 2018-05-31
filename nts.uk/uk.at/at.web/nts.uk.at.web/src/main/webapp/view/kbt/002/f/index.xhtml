@@ -19,7 +19,8 @@
 				<a tabindex="1" class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KBT002_1')}</a>
 			</div>
 			<div id="contents-area">
-				<table tabindex="-1" id="single-list"
+			<button style="margin-left: 20px;margin-bottom: 10px;" data-bind="click: updateInfo">最新の情報に更新</button>
+				<table tabindex="-1" id="igrid"
 						data-bind="ntsGridList: {	
 							width: 1030,
 							height: 620,

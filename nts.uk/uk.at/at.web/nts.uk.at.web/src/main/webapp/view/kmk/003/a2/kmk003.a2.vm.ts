@@ -125,7 +125,7 @@ module a2 {
             self.dataSourceAfternoonFlex = flex.getHDWtzAfternoon().workTimezone.convertedList2;
 
             self.dataSourceOneDaySimpleModeFixed = fixed.getHDWtzOneday().workTimezone.lstWorkingTimezoneSimpleMode;
-            self.dataSourceOneDaySimpleModeFlex = flex.getHDWtzOneday().workTimezone.lstWorkingTimezoneSimpleMode;
+            self.dataSourceOneDaySimpleModeFlex = flex.getHDWtzOneday().workTimezone.convertedList2;
             self.dataSourceOneDaySimpleModeDifftime = difftime.getHDWtzOneday().workTimezone.lstWorkingTimezoneSimpleMode;
 
         }
@@ -139,7 +139,7 @@ module a2 {
             // simple mode
             self.fixTableOptionOneDaySimpleModeFixed = self.getSimpleFixedTableOption();
             self.fixTableOptionOneDaySimpleModeFixed.dataSource = self.dataSourceOneDaySimpleModeFixed;
-            self.fixTableOptionOneDaySimpleModeFlex = self.getSimpleFixedTableOption();
+            self.fixTableOptionOneDaySimpleModeFlex = self.getDefaultFixedTableOption();
             self.fixTableOptionOneDaySimpleModeFlex.dataSource = self.dataSourceOneDaySimpleModeFlex;
             self.fixTableOptionOneDaySimpleModeDifftime = self.getSimpleFixedTableOption();
             self.fixTableOptionOneDaySimpleModeDifftime.dataSource = self.dataSourceOneDaySimpleModeDifftime;

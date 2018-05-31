@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -32,6 +34,16 @@ public class FixRestTimezoneSet extends WorkTimeDomainObject {
 	// 時間帯
 	private List<DeductionTime> lstTimezone;
 
+	
+	/**
+ 	* Constructors 
+ 	*@param lstTimezone
+ 	*/
+	public FixRestTimezoneSet(List<DeductionTime> lstTimezone) {
+		super();
+		this.lstTimezone = lstTimezone;
+	}
+	
 	/**
 	 * Instantiates a new fix rest timezone set.
 	 *
@@ -95,5 +107,28 @@ public class FixRestTimezoneSet extends WorkTimeDomainObject {
 	 */
 	public void restoreDefaultData() {
 		this.lstTimezone = new ArrayList<>();
+	}
+	
+	/**
+	 * 休憩時間の合計時間を計算
+	 * @return　休憩合計時間
+	 */
+	public AttendanceTime calcTotalTime() {
+		return new AttendanceTime(this.getLstTimezone().stream()
+							 					.map(tc -> tc.timeSpan().lengthAsMinutes())
+							 					.collect(Collectors.summingInt(tc -> tc)));
+	}
+
+	public AttendanceTime calcTotalTimeDuplicatedAttLeave(List<TimeSpanForCalc> timeLeavingWorks) {
+		int returnValue = 0;
+		for(TimeSpanForCalc timeSpan : timeLeavingWorks) {
+			if(timeSpan.getStart() != null && timeSpan.getEnd() != null) {
+				returnValue += this.lstTimezone.stream()
+								.filter(tc -> tc.getDuplicatedWith(timeSpan.getSpan()).isPresent())
+								.map(tc -> tc.getDuplicatedWith(timeSpan.getSpan()).get().lengthAsMinutes())
+								.collect(Collectors.summingInt(tc -> tc));
+			}
+		}
+		return new AttendanceTime(returnValue);
 	}
 }

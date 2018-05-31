@@ -119,9 +119,6 @@ public class DiffTimeHalfDayWorkTimezone extends WorkTimeDomainObject {
 	@Override
 	public void validate() {
 		
-		//validate rest time in work time msg_755
-		this.restInWork();
-		
 		//validate Msg_770 for list work
 		this.workTimezone.getEmploymentTimezones().stream().forEach(item->{
 			item.getTimezone().validateRange("KMK003_86");
@@ -142,15 +139,16 @@ public class DiffTimeHalfDayWorkTimezone extends WorkTimeDomainObject {
 		super.validate();
 	}
 
-	private void restInWork() {
-		this.getRestTimezone().getRestTimezones().stream().forEach(item -> {
+	public boolean restInWork() {
+		for (DiffTimeDeductTimezone item : this.getRestTimezone().getRestTimezones()) {
 			List<EmTimeZoneSet> lstWork = this.getWorkTimezone().getEmploymentTimezones().stream()
 					.filter(work -> work.checkRestTime(item)).collect(Collectors.toList());
 			List<DiffTimeOTTimezoneSet> lstOt = this.getWorkTimezone().getOTTimezones().stream()
 					.filter(ot -> ot.checkRestTime(item)).collect(Collectors.toList());
 			if (CollectionUtil.isEmpty(lstWork) && CollectionUtil.isEmpty(lstOt)) {
-				this.bundledBusinessExceptions.addMessage("Msg_755");
+				return true;
 			}
-		});
+		}
+		return false;
 	}
 }

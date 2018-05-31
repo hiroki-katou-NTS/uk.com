@@ -3,9 +3,9 @@ package nts.uk.ctx.workflow.app.find.approvermanagement.workroot;
 import java.io.Serializable;
 import java.util.List;
 
-import lombok.Value;
+import lombok.Data;
 import nts.arc.time.GeneralDate;
-@Value
+@Data
 public class EmployeeSearch  implements Serializable {
 	/**
 	 * 

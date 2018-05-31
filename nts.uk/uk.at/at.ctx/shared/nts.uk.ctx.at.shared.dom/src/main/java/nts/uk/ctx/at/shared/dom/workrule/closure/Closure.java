@@ -326,44 +326,46 @@ public class Closure extends AggregateRoot {
 	 * Update the current month to the next month
 	 */
 	public void updateCurrentMonth() {
-		// check ClosureHistory contain CurrentMonth
-		boolean containCurrentMonth = this.closureHistories.stream().anyMatch(history -> {
-			return this.isIntoClosureMonth(history, this.closureMonth.getProcessingYm());
-		});
-		// not contain
-		if (!containCurrentMonth) {
-			return;
-		}
-
-		// get closureMonth in ClosureHistory
-		ClosureHistory currentClosureMonth = this.closureHistories.stream()
-				.filter(history -> this.isIntoClosureMonth(history, this.closureMonth.getProcessingYm())).findFirst()
-				.get();
-
-		// get previous closureMonth in ClosureHistory
-		YearMonth previousYearMonth = YearMonth.of(this.closureMonth.getProcessingYm().v() - 1);
-		ClosureHistory previousClosureMonth = this.closureHistories.stream()
-				.filter(history -> this.isIntoClosureMonth(history, previousYearMonth)).findFirst().get();
-
-		// if closureDate current <= previous closureDate
-		if (currentClosureMonth.getClosureDate().getClosureDay().v() <= previousClosureMonth.getClosureDate()
-				.getClosureDay().v()) {
-			return;
-		}
-
-		// check closureClassification
-		if (!this.getClosureMonth().getClosureClassification().isPresent()) {
-			return;
-		}
-
-		switch (this.getClosureMonth().getClosureClassification().get()) {
-		case ClassificationClosingBefore:
-			this.getClosureMonth().setClosureClassification(Optional.of(ClosureClassification.ClassificationClosingAfter));
-			break;
-		case ClassificationClosingAfter:
-			this.getClosureMonth().setClosureClassification(Optional.of(ClosureClassification.ClassificationClosingBefore));
-			break;
-		}
+//		// check ClosureHistory contain CurrentMonth
+//		boolean containCurrentMonth = this.closureHistories.stream().anyMatch(history -> {
+//			return this.isIntoClosureMonth(history, this.closureMonth.getProcessingYm());
+//		});
+//		// not contain
+//		if (!containCurrentMonth) {
+//			return;
+//		}
+//
+//		// get closureMonth in ClosureHistory
+//		ClosureHistory currentClosureMonth = this.closureHistories.stream()
+//				.filter(history -> this.isIntoClosureMonth(history, this.closureMonth.getProcessingYm())).findFirst()
+//				.get();
+//
+//		// get previous closureMonth in ClosureHistory
+//		YearMonth previousYearMonth = YearMonth.of(this.closureMonth.getProcessingYm().v() - 1);
+//		ClosureHistory previousClosureMonth = this.closureHistories.stream()
+//				.filter(history -> this.isIntoClosureMonth(history, previousYearMonth)).findFirst().get();
+//
+//		// if closureDate current <= previous closureDate
+//		if (currentClosureMonth.getClosureDate().getClosureDay().v() <= previousClosureMonth.getClosureDate()
+//				.getClosureDay().v()) {
+//			return;
+//		}
+//
+//		// check closureClassification
+//		if (!this.getClosureMonth().getClosureClassification().isPresent()) {
+//			return;
+//		}
+//
+//		switch (this.getClosureMonth().getClosureClassification().get()) {
+//		case ClassificationClosingBefore:
+//			this.getClosureMonth().setClosureClassification(Optional.of(ClosureClassification.ClassificationClosingAfter));
+//			break;
+//		case ClassificationClosingAfter:
+//			this.getClosureMonth().setClosureClassification(Optional.of(ClosureClassification.ClassificationClosingBefore));
+//			break;
+//		}
+		
+		this.closureMonth.nextMonth();
 	}
 	
 	/**

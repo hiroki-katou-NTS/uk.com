@@ -62,7 +62,7 @@ public class KrcdtDayPcLogonInfo extends UkJpaEntity implements Serializable {
 	}
 	
 	public LogOnInfo toDomain() {
-		return new LogOnInfo(new PCLogOnNo(id.pcLogNo), toTimeWithDay(logonTime), toTimeWithDay(logoffTime));
+		return new LogOnInfo(new PCLogOnNo(id.pcLogNo), toTimeWithDay(logoffTime), toTimeWithDay(logonTime));
 	}
 	
 	public void setData(LogOnInfo c) {

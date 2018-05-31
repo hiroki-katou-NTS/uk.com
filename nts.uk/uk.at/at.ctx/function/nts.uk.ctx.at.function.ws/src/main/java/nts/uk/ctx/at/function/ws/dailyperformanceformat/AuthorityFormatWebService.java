@@ -12,6 +12,8 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.command.dailyperformanceformat.AddAutDaiFormatCommandHandler;
 import nts.uk.ctx.at.function.app.command.dailyperformanceformat.AddAuthorityDailyFormatCommand;
+import nts.uk.ctx.at.function.app.command.dailyperformanceformat.DeleteAuthFormatBySheetcmd;
+import nts.uk.ctx.at.function.app.command.dailyperformanceformat.DeleteAuthFormatBySheetcmdHandler;
 import nts.uk.ctx.at.function.app.command.dailyperformanceformat.RemoveAuthorityCommand;
 import nts.uk.ctx.at.function.app.command.dailyperformanceformat.RemoveAuthorityCommandHandler;
 import nts.uk.ctx.at.function.app.command.dailyperformanceformat.UpdateAutDaiFormatCommandHandler;
@@ -39,6 +41,10 @@ public class AuthorityFormatWebService extends WebService {
 	
 	@Inject
 	private DailyPerformanceCodeFinder dailyPerformanceCodeFinder;
+	
+	//tu add
+	@Inject
+	private DeleteAuthFormatBySheetcmdHandler deleteBySheetNo;
 	
 	@POST
 	@Path("removeAuthorityFormat")
@@ -80,5 +86,11 @@ public class AuthorityFormatWebService extends WebService {
 	@Path("getAuthorityDailyFormatCode")
 	public List<DailyPerformanceCodeDto> getListCode() {
 		return this.dailyPerformanceCodeFinder.findAll();
+	}
+	
+	@POST
+	@Path("deletebysheet")
+	public void deleteAuthBySheet(DeleteAuthFormatBySheetcmd command) {
+		this.deleteBySheetNo.handle(command);
 	}
 }

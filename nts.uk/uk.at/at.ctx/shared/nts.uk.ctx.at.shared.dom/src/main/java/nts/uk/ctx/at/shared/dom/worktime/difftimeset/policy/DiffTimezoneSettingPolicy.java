@@ -26,4 +26,16 @@ public interface DiffTimezoneSettingPolicy {
 	 * @param useHalfDayShift the use half day shift
 	 */
 	void validate(BundledBusinessException be, PredetemineTimeSetting predTime, DiffTimezoneSetting diffTzSet, DisplayMode displayMode, AmPmAtr dayAtr, boolean useHalfDayShift);
+
+	/**
+	 * Filter timezone.
+	 *
+	 * @param predTime the pred time
+	 * @param origin the origin
+	 * @param displayMode the display mode
+	 * @param dayAtr the day atr
+	 * @param useHalfDayShift the use half day shift
+	 */
+	void filterTimezone(PredetemineTimeSetting predTime, DiffTimezoneSetting origin, DisplayMode displayMode,
+			AmPmAtr dayAtr, boolean useHalfDayShift);
 }

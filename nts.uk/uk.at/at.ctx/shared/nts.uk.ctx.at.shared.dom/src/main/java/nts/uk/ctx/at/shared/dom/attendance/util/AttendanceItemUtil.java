@@ -28,26 +28,54 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 public class AttendanceItemUtil {
 
 	public static <T extends ConvertibleAttendanceItem> List<ItemValue> toItemValues(T attendanceItems) {
-		return toItemValues(attendanceItems, Collections.emptyList());
+		return toItemValues(attendanceItems, AttendanceItemType.DAILY_ITEM);
 	}
 
 	public static <T extends ConvertibleAttendanceItem> T fromItemValues(Class<T> classType,
 			Collection<ItemValue> attendanceItems) {
+		return fromItemValues(classType, attendanceItems, AttendanceItemType.DAILY_ITEM);
+	}
+	
+	public static <T extends ConvertibleAttendanceItem> List<ItemValue> toItemValues(T attendanceItems, AttendanceItemType type) {
+		return toItemValues(attendanceItems, Collections.emptyList());
+	}
+
+	public static <T extends ConvertibleAttendanceItem> T fromItemValues(Class<T> classType,
+			Collection<ItemValue> attendanceItems, AttendanceItemType type) {
 		T newObject = ReflectionUtil.newInstance(classType);
 		return fromItemValues(newObject, attendanceItems);
 	}
 
 	public static <T extends ConvertibleAttendanceItem> List<ItemValue> toItemValues(T attendanceItems,
 			Collection<Integer> itemIds) {
-		// return toItemValues(attendanceItems, "", itemIds, 0);
-		return getItemValues(attendanceItems, 0, "", "", "", 0, getItemMap(itemIds, null));
+		return toItemValues(attendanceItems, itemIds, AttendanceItemType.DAILY_ITEM);
 	}
 
 	public static <T> T fromItemValues(T attendanceItems, Collection<ItemValue> itemValues) {
+		return fromItemValues(attendanceItems, itemValues, AttendanceItemType.DAILY_ITEM);
+	}
+	
+	public static <T extends ConvertibleAttendanceItem> List<ItemValue> toItemValues(T attendanceItems,
+			Collection<Integer> itemIds, AttendanceItemType type) {
 		// return toItemValues(attendanceItems, "", itemIds, 0);
+		AttendanceItemRoot root = attendanceItems.getClass().getAnnotation(AttendanceItemRoot.class);
+		if(root == null){
+			return new ArrayList<>();
+		}
+		int layout = root.isContainer() ? 0 : 1;
+		return getItemValues(attendanceItems, layout, "", root.isContainer() ? "" : root.rootName(), "", 0, getItemMap(type, itemIds, null, layout));
+	}
+
+	public static <T> T fromItemValues(T attendanceItems, Collection<ItemValue> itemValues, AttendanceItemType type) {
+		// return toItemValues(attendanceItems, "", itemIds, 0);
+		AttendanceItemRoot root = attendanceItems.getClass().getAnnotation(AttendanceItemRoot.class);
+		if(root == null){
+			return attendanceItems;
+		}
+		int layout = root.isContainer() ? 0 : 1;
 		Map<Integer, ItemValue> itemMap = itemValues.stream().collect(Collectors.toMap(c -> c.itemId(), c -> c));
-		return fromItemValues(attendanceItems, 0, "", "", 0, false,
-				getItemMap(itemMap.keySet(), c -> itemMap.get(c.itemId()).withPath(c.path())));
+		return fromItemValues(attendanceItems, layout, "", root.isContainer() ? "" : root.rootName(), 0, false,
+				getItemMap(type, itemMap.keySet(), c -> itemMap.get(c.itemId()).withPath(c.path()), layout));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -248,13 +276,13 @@ public class AttendanceItemUtil {
 		return ids.stream().collect(Collectors.groupingBy(grouping));
 	}
 
-	private static Map<String, List<ItemValue>> getItemMap(Collection<Integer> itemIds,
-			Function<ItemValue, ItemValue> mapper) {
-		Stream<ItemValue> stream = AttendanceItemIdContainer.getIdMapStream(itemIds);
+	private static Map<String, List<ItemValue>> getItemMap(AttendanceItemType type, Collection<Integer> itemIds,
+			Function<ItemValue, ItemValue> mapper, int layout) {
+		Stream<ItemValue> stream = AttendanceItemIdContainer.getIdMapStream(itemIds, type);
 		if (mapper != null) {
 			stream = stream.map(mapper);
 		}
-		return stream.collect(Collectors.groupingBy(c -> getCurrentPath(0, c.path(), false)));
+		return stream.collect(Collectors.groupingBy(c -> getCurrentPath(layout, c.path(), false)));
 	}
 
 	public static <T> Map<String, Field> getFieldMap(T attendanceItems, Map<String, List<ItemValue>> groups) {
@@ -447,5 +475,18 @@ public class AttendanceItemUtil {
 		}
 
 		return "";
+	}
+	
+	public enum AttendanceItemType{
+		DAILY_ITEM(0, "日次項目"),
+		MONTHLY_ITEM(1, "月次項目");
+		
+		public final int value;
+		public final String descript;
+		
+		private AttendanceItemType(int value, String descript) {
+			this.value = value;
+			this.descript = descript;
+		}
 	}
 }

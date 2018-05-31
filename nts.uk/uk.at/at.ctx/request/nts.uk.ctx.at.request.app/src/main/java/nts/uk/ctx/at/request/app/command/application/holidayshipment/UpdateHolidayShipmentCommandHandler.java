@@ -25,6 +25,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Wor
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentWorkingHour;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTimeCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -77,20 +78,20 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 		Optional<Application_New> appLicationOpt = this.appRepo.findByID(companyID, appCmd.getAppID());
 		if (appLicationOpt.isPresent()) {
 			Application_New application = appLicationOpt.get();
-			application.setAppReason(new AppReason(command.getAppCmd().getApplicationReason()));
+			application.setAppReason(new AppReason(appReason));
 			application.setVersion(command.getAppCmd().getAppVersion());
 			this.appRepo.updateWithVersion(application);
 			Optional<AbsenceLeaveApp> absAppOpt = this.absRepo.findByID(appCmd.getAppID());
 			if (absAppOpt.isPresent()) {
 				AbsenceLeaveApp absApp = absAppOpt.get();
-				absApp.setWorkTimeCD(new WorkTimeCode(appCmd.getWkTimeCD()));
+				absApp.setWorkTimeCD(appCmd.getWkTimeCD());
 				WkTimeCommand wkTime1 = appCmd.getWkTime1();
 				absApp.setWorkTime1(new AbsenceLeaveWorkingHour(new WorkTime(wkTime1.getStartTime()),
 						new WorkTime(wkTime1.getEndTime())));
 				WkTimeCommand wkTime2 = appCmd.getWkTime2();
 				absApp.setWorkTime2(new AbsenceLeaveWorkingHour(new WorkTime(wkTime2.getStartTime()),
 						new WorkTime(wkTime2.getEndTime())));
-				absApp.setWorkTypeCD(appCmd.getWkTypeCD());
+				absApp.setWorkTypeCD(new WorkTypeCode(appCmd.getWkTypeCD()));
 				absApp.setChangeWorkHoursType(EnumAdaptor.valueOf(appCmd.getChangeWorkHoursType(), NotUseAtr.class));
 				this.absRepo.update(absApp);
 
@@ -113,7 +114,7 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 		Optional<Application_New> absAppLicationOpt = this.appRepo.findByID(companyID, appCmd.getAppID());
 		if (absAppLicationOpt.isPresent()) {
 			Application_New application = absAppLicationOpt.get();
-			application.setAppReason(new AppReason(command.getAppCmd().getApplicationReason()));
+			application.setAppReason(new AppReason(appReason));
 			application.setVersion(command.getAppCmd().getAppVersion());
 			this.appRepo.updateWithVersion(application);
 			Optional<RecruitmentApp> recAppOpt = this.recRepo.findByID(appCmd.getAppID());
@@ -130,7 +131,7 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 						EnumAdaptor.valueOf(wkTime2.getStartType(), NotUseAtr.class),
 						new WorkTime(wkTime2.getEndTime()),
 						EnumAdaptor.valueOf(wkTime2.getEndType(), NotUseAtr.class)));
-				recApp.setWorkTypeCD(appCmd.getWkTypeCD());
+				recApp.setWorkTypeCD(new WorkTypeCode(appCmd.getWkTypeCD()));
 				this.recRepo.update(recApp);
 
 				return application;
@@ -205,7 +206,7 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 
 	private void errorCheckBeforeRegister(SaveHolidayShipmentCommand command) {
 		// アルゴリズム「事前条件チェック」を実行する
-		appReason = saveHanler.preconditionCheck(command, companyID, appType);
+		appReason = saveHanler.preconditionCheck(command, companyID, appType, comType);
 
 	}
 

@@ -57,7 +57,7 @@ public class OverTimeInput{
 				frameNo,
 				startTime == null? null : new OvertimeAppPrimitiveTime(startTime),
 				endTime == null ? null : new OvertimeAppPrimitiveTime(endTime),
-				new OvertimeAppPrimitiveTime(applicationTime),
+				applicationTime == null ? null : new OvertimeAppPrimitiveTime(applicationTime),
 				EnumAdaptor.valueOf(timeItemTypeAtr, TimeItemTypeAtr.class));
 	}
 

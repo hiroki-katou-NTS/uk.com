@@ -23,4 +23,7 @@ public class AppMasterInfo {
 	private boolean checkAddNote;
 	@Setter
 	private int checkTimecolor;
+	//ver14 + EA1360
+	//申請詳細設定.時刻計算利用区分
+	private Integer detailSet;
 }

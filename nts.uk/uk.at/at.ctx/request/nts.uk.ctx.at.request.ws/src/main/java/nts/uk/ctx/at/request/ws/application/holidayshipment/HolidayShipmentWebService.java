@@ -3,28 +3,31 @@ package nts.uk.ctx.at.request.ws.application.holidayshipment;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.Value;
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.ApproveHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.CancelHolidayShipmentCommandHandler;
-import nts.uk.ctx.at.request.app.command.application.holidayshipment.ChangeAbsDateCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.ChangeAbsDateToHolidayCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.DeleteHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.DenyHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.HolidayShipmentCommand;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.ReleaseHolidayShipmentCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveChangeAbsDateCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommand;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.UpdateHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenBFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenCFinder;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTimeInfoDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTimeInfoDto;
 
 @Path("at/request/application/holidayshipment")
 @Produces("application/json")
@@ -45,7 +48,7 @@ public class HolidayShipmentWebService extends WebService {
 	@Inject
 	private CancelHolidayShipmentCommandHandler cancelHanler;
 	@Inject
-	private ChangeAbsDateCommandHandler changeAbsHanler;
+	private ChangeAbsDateToHolidayCommandHandler changeDateAbsToHolidayHanler;
 	@Inject
 	private ApproveHolidayShipmentCommandHandler approveHandler;
 	@Inject
@@ -53,7 +56,7 @@ public class HolidayShipmentWebService extends WebService {
 	@Inject
 	private ReleaseHolidayShipmentCommandHandler releaseHandler;
 	@Inject
-	private ChangeAbsDateCommandHandler changeAbsDateHander;
+	private SaveChangeAbsDateCommandHandler changeAbsDateHander;
 
 	@POST
 	@Path("start")
@@ -78,6 +81,12 @@ public class HolidayShipmentWebService extends WebService {
 	public HolidayShipmentDto changeDay(ChangeDateParam param) {
 		return this.screenAFinder.changeAppDate(param.getTakingOutDate(), param.getHolidayDate(), param.getComType(),
 				param.getUiType());
+	}
+
+	@POST
+	@Path("get_selected_working_hours")
+	public WorkTimeInfoDto getSelectedWorkingHours(ChangeWorkTypeParam param) {
+		return this.screenAFinder.getSelectedWorkingHours(param.getWkTypeCD(), param.getWkTimeCD());
 	}
 
 	@POST
@@ -129,15 +138,15 @@ public class HolidayShipmentWebService extends WebService {
 	}
 
 	@POST
-	@Path("change_date_c")
-	public void changeDateC(SaveHolidayShipmentCommand command) {
-		this.changeAbsDateHander.handle(command);
+	@Path("change_abs_date")
+	public JavaTypeResult<String> changeDateC(SaveHolidayShipmentCommand command) {
+		return new JavaTypeResult<String>(this.changeAbsDateHander.handle(command));
 	}
 
 	@POST
-	@Path("change_abs_date")
-	public void changeAbsDate(SaveHolidayShipmentCommand command) {
-		this.changeAbsHanler.handle(command);
+	@Path("change_abs_date_to_holiday")
+	public JavaTypeResult<Integer> changeAbsDate(SaveHolidayShipmentCommand command) {
+		return new JavaTypeResult<Integer>(this.changeDateAbsToHolidayHanler.handle(command));
 	}
 
 }

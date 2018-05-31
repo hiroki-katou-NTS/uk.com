@@ -247,9 +247,9 @@ module nts.uk.at.view.kdw001.c {
 
                     /** Required parameter */
                     baseDate: moment().toISOString(), // 基準日
-                    inService: false, // 在職区分
-                    leaveOfAbsence: false, // 休職区分
-                    closed: false, // 休業区分
+                    inService: true, // 在職区分
+                    leaveOfAbsence: true, // 休職区分
+                    closed: true, // 休業区分
                     retirement: false, // 退職区分
 
                     /** Quick search tab options */

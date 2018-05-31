@@ -259,6 +259,7 @@ module nts.uk.at.view.ksc001.b {
                 var self = this;
                 self.employeeList([]);
                 var employeeSearchs: UnitModel[] = [];
+                self.selectedEmployeeCode([]);
                 for (var employeeSearch of dataList) {
                     var employee: UnitModel = {
                         code: employeeSearch.employeeCode,
@@ -266,6 +267,7 @@ module nts.uk.at.view.ksc001.b {
                         workplaceName: employeeSearch.workplaceName
                     };
                     employeeSearchs.push(employee);
+                    self.selectedEmployeeCode.push(employee.code);
                 }
 
                 // update employee list by ccg001 search 
@@ -334,22 +336,6 @@ module nts.uk.at.view.ksc001.b {
                 var self = this;
                 var user: any = __viewContext.user;
                 var data: PersonalSchedule = new PersonalSchedule();
-                //                data.resetMasterInfo = self.resetMasterInfo();
-                //                data.createMethodAtr = self.checkCreateMethodAtrPersonalInfo();
-                //                data.confirm = self.confirm();
-                //                data.reCreateAtr = self.checkReCreateAtrAllCase(); //ReCreateAtr.ALLCASE;
-                //                data.processExecutionAtr = self.checkProcessExecutionAtrRebuild();
-                //                data.implementAtr = self.selectedImplementAtrCode();
-                //                data.resetWorkingHours = self.resetWorkingHours();
-                //                data.resetTimeAssignment = self.resetTimeAssignment();
-                //                data.employeeId = user.employeeId;
-                //                data.resetStartEndTime = self.resetStartEndTime();
-                //                data.recreateConverter = self.recreateConverter();
-                //                data.recreateEmployeeOffWork = self.recreateEmployeeOffWork();
-                //                data.recreateDirectBcreateDirectBouncer();
-                //                data.recreateShortTermEmployee = self.recreateShortTermEmployee();
-                //                data.recreateWorkTypeChange = self.recreateWorkTypeChange();
-
 
                 data.employeeId = user.employeeId;
                 data.implementAtr = self.selectedImplementAtrCode();

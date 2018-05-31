@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.infra.repository.dailyperformanceformat;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 
 import lombok.val;
@@ -90,6 +92,19 @@ public class JpaAuthorityFormatInitialDisplayRepository extends JpaRepository
 				.getDailyPerformanceFormatCode().v();
 
 		return entity;
+	}
+
+	private static final String GET_ALL_BY_CID = "SELECT c FROM KfnmtDailyPerformanceDisplay c"
+			+ " WHERE c.kfnmtDailyPerformanceDisplayPK.companyId = :companyId ";
+	
+	@Override
+	public void removeByCid(String companyId) {
+		List<KfnmtDailyPerformanceDisplay> data = this.queryProxy().query(GET_ALL_BY_CID,KfnmtDailyPerformanceDisplay.class)
+				.setParameter("companyId", companyId)
+				.getList();
+		this.commandProxy().removeAll(data);
+		this.getEntityManager().flush();
+		
 	}
 
 }
