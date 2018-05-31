@@ -18,28 +18,28 @@ module nts.uk.at.view.kdm001.j.viewmodel {
         leaveId: KnockoutObservable<any> = ko.observable('');
         employeeId: KnockoutObservable<any> = ko.observable('');
         numberDayParam: KnockoutObservable<any> = ko.observable('');
+        disables: KnockoutObservableArray<any> = ko.observableArray([]);
         
         constructor() {
-            var self = this,
-            info = getShared("KDM001_J_PARAMS");
+            block.invisible();
+            let self = this,
+                info = getShared("KDM001_J_PARAMS");
             self.initScreen(info);
-            self.residualDay(parseFloat(self.numberDay()).toFixed(1)+' 日');
-            
-            self.callService(self.leaveId(),self.employeeId());
+            self.residualDay(parseFloat(self.numberDay()).toFixed(1) + ' 日');
+
+            self.callService(self.leaveId(), self.employeeId());
             self.columns = ko.observableArray([
                 { headerText: 'コード', dataType: 'string', key: 'comDayOffID', width: 100, hidden: true },
                 { headerText: nts.uk.resource.getText("KDM001_95"), key: 'dayOff', width: 110 },
                 { headerText: nts.uk.resource.getText("KDM001_96"), key: 'remainDaysString', width: 100 },
                 { headerText: nts.uk.resource.getText("KDM001_96"), key: 'remainDays', width: 100, hidden: true }
             ]);
-            
-            
-            
-            
+
             self.currentCodeList.subscribe(function(codesSelect) {
+                nts.uk.ui.errors.clearAll();
                 self.itemsSelected.removeAll();
                 let sumNum = 0;
-                if(codesSelect.length > 0) {
+                if (codesSelect.length > 0) {
                     _.each(codesSelect, x => {
                         let item = _.find(self.items(), x1 => { return x === x1.comDayOffID });
                         if (item) {
@@ -47,41 +47,42 @@ module nts.uk.at.view.kdm001.j.viewmodel {
                         }
                     });
                     _.each(self.itemsSelected(), x => {
-                        
-                        if(self.dateHoliday() === x.dayOff){
+
+                        if (self.dateHoliday() === x.dayOff) {
                             self.currentCodeList.remove(x.comDayOffID);
-                            nts.uk.ui.dialog.info({ messageId: "Msg_730" });
+                            //nts.uk.ui.dialog.info({ messageId: "Msg_730" });
+                            $('#multi-list').ntsError('set', { messageId: "Msg_730" });
                         } else {
                             let iNum = parseFloat(x.remainDays);
                             let day = parseFloat(self.numberDay());
                             sumNum = sumNum + iNum;
-                            self.residualDay(parseFloat((day-sumNum)).toFixed(1)+' 日');
-                            
-                            if(parseFloat(self.residualDay()) < 0) {
-                                $( "#J7_2" ).css( "color", "red" );
+                            self.residualDay(parseFloat((day - sumNum)).toFixed(1) + ' 日');
+
+                            if (parseFloat(self.residualDay()) < 0) {
+                                $("#J7_2").css("color", "red");
                             } else {
-                                $( "#J7_2" ).css( "color", "" );
+                                $("#J7_2").css("color", "");
                             }
-                        }  
-                        
+                        }
+
                     });
                 } else {
-                   let day = parseFloat(self.numberDay());
-                   self.residualDay(parseFloat(self.numberDay()).toFixed(1)+' 日');
-                   if(parseFloat(self.residualDay()) < 0) {
-                            $( "#J7_2" ).css( "color", "red" );
+                    let day = parseFloat(self.numberDay());
+                    self.residualDay(parseFloat(self.numberDay()).toFixed(1) + ' 日');
+                    if (parseFloat(self.residualDay()) < 0) {
+                        $("#J7_2").css("color", "red");
                     } else {
-                            $( "#J7_2" ).css( "color", "" );
-                   }
+                        $("#J7_2").css("color", "");
+                    }
                 }
             });
-            
-            
+
+            block.clear();
         }
         
         
         public initScreen(info): void {
-            var self = this;
+            let self = this;
             if (info) {
                 self.workCode(info.selectedEmployee.workplaceCode);
                 self.workPlaceName(info.selectedEmployee.workplaceName);
@@ -107,61 +108,56 @@ module nts.uk.at.view.kdm001.j.viewmodel {
          * update
          */
         public update():void {
-            var self = this;
+            block.invisible();
+            let self = this;
             nts.uk.ui.errors.clearAll();
-            service.update(new UpdateModel(self.employeeId(),self.leaveId(),self.itemsSelected(),self.numberDayParam())).done(function(data) {
+            service.update(new UpdateModel(self.employeeId(), self.leaveId(), self.itemsSelected(), self.numberDayParam())).done(function(data) {
                 if (data.length > 0) {
-                        let messageId = data[0];
-                        if(messageId === 'Msg_15') {
-                            
-                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                    setShared('KDM001_J_PARAMS_RES', { isChanged: true });
-                                    nts.uk.ui.windows.close();
-                             });
-                        }else {
-                                $('#multi-list').ntsError('set', { messageId: messageId });
-                            }
-                        block.clear();
+                    let messageId = data[0];
+                    if (messageId === 'Msg_15') {
+
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            setShared('KDM001_J_PARAMS_RES', { isChanged: true });
+                            nts.uk.ui.windows.close();
+                        });
+                    } else {
+                        $('#multi-list').ntsError('set', { messageId: messageId });
                     }
+                    block.clear();
+                }
             }).fail(function(error) {
-               
-                
-            }).always(() => {
-                
+                alert(error);
             });
+            block.clear();
         }
         
         
         public callService(leaveId,employeeId):void {
-            
-             var self = this;
-            service.getAll(leaveId,employeeId).done(function(data) {
 
+            let self = this;
+            service.getAll(leaveId, employeeId).done(function(data) {
+
+                if (!data.errorCode) {
+                    nts.uk.ui.dialog.alertError({ messageId: data.errorCode });
+                }
                 for (let i = 0; i < data.listDayOff.length; i++) {
-                    self.items.push(new ItemModel(data.listDayOff[i].comDayOffId, data.listDayOff[i].dateHoliday,data.listDayOff[i].numberDay, data.listDayOff[i].numberDay+" 日"));
-                    if(data.listDayOff[i].usedDay == true) {
+                    self.items.push(new ItemModel(data.listDayOff[i].comDayOffId, data.listDayOff[i].dateHoliday, data.listDayOff[i].numberDay, data.listDayOff[i].numberDay + " 日"));
+                    if (data.listDayOff[i].usedDay == true) {
                         self.currentCodeList.push(data.listDayOff[i].comDayOffId);
                     }
                     
-                    if(data.listDayOff[i].numberDay > self.numberDayParam() ) {
-                        $("#multi-list").ntsGrid("disableNtsControlAt", data.listDayOff[i].comDayOffId);
+                    if(data.listDayOff[i].numberDay > self.numberDayParam()) {
+                        self.disables.push(data.listDayOff[i].comDayOffId);
                     }
                     
                 }
-                
-                if(data.errorCode != null) {
-                    nts.uk.ui.dialog.alertError({ messageId: data.errorCode });
-                }
-                
             }).fail(function(error) {
-                
-            }).always(() => {
-                
+                alert(error);
             });
-        
+
         }
-        
-        
+
+
     }
 
     class ItemModel {

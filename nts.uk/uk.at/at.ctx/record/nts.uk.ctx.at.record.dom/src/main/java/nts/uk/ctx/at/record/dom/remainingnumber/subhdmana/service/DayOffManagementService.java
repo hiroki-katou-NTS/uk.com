@@ -41,7 +41,19 @@ public class DayOffManagementService {
 			response.add("Msg_733");
 		} else if (dayOffManagementData.getDaysOffMana().size() == 2) {
 			
-			if(dayOffManagementData.getNumberDayParam().equals(HALF_DAY)) {
+			if(dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(HALF_DAY)) {
+				if(!dayOffManagementData.getDaysOffMana().get(1).getRemainDays().equals(HALF_DAY)) {
+					response.add("Msg_733");
+				} else {
+					if(dayOffManagementData.getNumberDayParam().equals(ONE_DAY)) {
+						response.add("Msg_733");
+					}
+				}
+			} else if(dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(ONE_DAY)) {
+				response.add("Msg_739");
+			}
+			
+			/*if(dayOffManagementData.getNumberDayParam().equals(HALF_DAY)) {
 				response.add("Msg_733");
 			}
 			
@@ -56,7 +68,7 @@ public class DayOffManagementService {
 						|| !dayOffManagementData.getDaysOffMana().get(0).getRemainDays().equals(HALF_DAY)) {
 					response.add("Msg_733");
 				}
-			}
+			}*/
 		} else if (dayOffManagementData.getDaysOffMana().size() >= 3) {
 			response.add("Msg_739");
 		}
@@ -67,10 +79,9 @@ public class DayOffManagementService {
 					.getByLeaveID(dayOffManagementData.getLeaveId());
 
 			
-			List<CompensatoryDayOffManaData> daysOffMana = new ArrayList<>();
-			daysOffMana = comDayOffManaDataRepository.getBySidComDayOffIdWithReDay(companyId,
+			List<CompensatoryDayOffManaData> daysOffMana = this.comDayOffManaDataRepository.getBySidComDayOffIdWithReDay(companyId,
 					dayOffManagementData.getEmployeeId(), dayOffManagementData.getLeaveId());
-			List<String> currentComDaySelect = daysOffMana.stream().map(item -> new String(item.getComDayOffID()))
+			List<String> currentComDaySelect = daysOffMana.stream().map(CompensatoryDayOffManaData::getComDayOffID)
 					.collect(Collectors.toList());
 			
 			// update remainDays by current selected
@@ -91,7 +102,7 @@ public class DayOffManagementService {
 					.collect(Collectors.toList());
 			leaveComDayOffManaRepository.insertAll(entitiesLeave);
 
-			List<String> comDayIds = daysOff.stream().map(item -> new String(item.getComDayOffID()))
+			List<String> comDayIds = daysOff.stream().map(DaysOffMana::getComDayOffID)
 					.collect(Collectors.toList());
 			// update remainDays by new ComDayOff
 			if (!comDayIds.isEmpty()) {

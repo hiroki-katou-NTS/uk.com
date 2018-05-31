@@ -28,8 +28,7 @@ public class ComDayOffManaDataService extends WebService {
 	@POST
 	@Path("getAll/{leaveId}/{employeeId}")
 	public DayOffResult getByRemainOrDayOffManagement(@PathParam("leaveId") String leaveId,@PathParam("employeeId") String employeeId) {
-		DayOffResult daysOffMana = new DayOffResult();
-		daysOffMana = dayOffManagementFinder.getBySidWithReDay(leaveId,employeeId);
+		DayOffResult daysOffMana = dayOffManagementFinder.getBySidWithReDay(leaveId,employeeId);
 		return daysOffMana;
 	}
 	
