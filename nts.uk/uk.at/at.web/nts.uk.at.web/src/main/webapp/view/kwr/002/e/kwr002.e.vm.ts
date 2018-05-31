@@ -30,8 +30,8 @@ module nts.uk.com.view.kwr002.e {
                 self.attendanceRecordName = ko.observable('');
                 self.currentCodeList = ko.observableArray([]);
                 self.columns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText('KWR002_176'), key: 'code' },
-                    { headerText: nts.uk.resource.getText('KWR002_177'), key: 'name' }
+                    { headerText: nts.uk.resource.getText('KWR002_176'), key: 'code', width: 70 },
+                    { headerText: nts.uk.resource.getText('KWR002_177'), key: 'name', width: 250 }
                 ]);
                 self.gridItems = ko.observableArray([]);
                 self.selectionTypeList = ko.observableArray([
@@ -63,19 +63,19 @@ module nts.uk.com.view.kwr002.e {
                 var self = this;
                 var dfd = $.Deferred();
                 
-                var attendanceItem = nts.uk.ui.windows.getShared('attendanceItem');
-                self.attendanceItem(attendanceItem);
+                self.attendanceItem(nts.uk.ui.windows.getShared('attendanceItem'));
+                var attendanceItem = self.attendanceItem();
                 if(attendanceItem.attendanceId != null || attendanceItem.attendanceId != undefined) {
-                    self.selectedGridItems(self.attendanceItem().attendanceId);
+                    self.selectedGridItems(attendanceItem.attendanceId);
                     self.findAttndRecByScreen(self.attendanceItem().attribute);
                     dfd.resolve();
                 } 
                 else {
                     var attendanceRecordKey: model.AttendanceRecordKeyDto = {
-                        code: self.attendanceItem().layoutCode,
-                        columnIndex: self.attendanceItem().columnIndex,
-                        position: self.attendanceItem().position,
-                        exportAtr: self.attendanceItem().exportAtr
+                        code: attendanceItem.layoutCode,
+                        columnIndex: attendanceItem.columnIndex,
+                        position: attendanceItem.position,
+                        exportAtr: attendanceItem.exportAtr
                     };
                     service.getCalculateAttndRecInfo(attendanceRecordKey).done(function(calculateAttendanceRecordDto: model.CalculateAttendanceRecordDto) {
                         if(calculateAttendanceRecordDto != null) {
@@ -100,24 +100,24 @@ module nts.uk.com.view.kwr002.e {
                         dfd.resolve();
                     });
                 }
-                self.layoutCode(self.attendanceItem().layoutCode);
-                self.layoutName(self.attendanceItem().layoutName);
+                self.layoutCode(attendanceItem.layoutCode);
+                self.layoutName(attendanceItem.layoutName);
                 // process display
-                if (self.attendanceItem().exportAtr == 1) {
+                if (attendanceItem.exportAtr == 1) {
                     self.dailyMonthly('日次');
                 }
                 else {
                     self.dailyMonthly('月次');
                 }
-                self.columnIndex(self.attendanceItem().columnIndex);
+                self.columnIndex(attendanceItem.columnIndex);
                 // process display
-                if (self.attendanceItem().position == 1) {
+                if (attendanceItem.position == 1) {
                     self.position('上');
                 }
                 else {
                     self.position('下');
                 }
-                self.attendanceRecordName(self.attendanceItem().attendanceItemName);
+                self.attendanceRecordName(attendanceItem.attendanceItemName);
 
                 return dfd.promise();
             }
@@ -182,11 +182,8 @@ module nts.uk.com.view.kwr002.e {
                 for (var i = 0; i<seletedItems.length; i++) {
                     item = seletedItems[i];
                     if (item == data) {
-                        var index = seletedItems.indexOf(item);
-                        if (index > -1) {
-                            seletedItems.splice(index, 1);
-                            break;
-                        }
+                        seletedItems.splice(i, 1);
+                        break;
                     }
                 }
                 self.selectedGridItems(seletedItems);
@@ -205,13 +202,14 @@ module nts.uk.com.view.kwr002.e {
                             return;
                         }
                         else {
+                            var attendanceItem = self.attendanceItem();
                             nts.uk.ui.windows.setShared('attendanceRecordExport', {
-                                attendanceItemName: self.attendanceRecordName(),
-                                layoutCode: self.attendanceItem().layoutCode,
-                                layoutName: self.attendanceItem().layoutName,
-                                columnIndex: self.attendanceItem().columnIndex,
-                                position: self.attendanceItem().position,
-                                exportAtr: self.attendanceItem().exportAtr,
+                                attendanceItemName: self.attendanceRecordName().trim(),
+                                layoutCode: attendanceItem.layoutCode,
+                                layoutName: attendanceItem.layoutName,
+                                columnIndex: attendanceItem.columnIndex,
+                                position: attendanceItem.position,
+                                exportAtr: attendanceItem.exportAtr,
                                 attendanceId: outputItems,
                                 attribute: self.selectionTypeValue()
                             }, true);
