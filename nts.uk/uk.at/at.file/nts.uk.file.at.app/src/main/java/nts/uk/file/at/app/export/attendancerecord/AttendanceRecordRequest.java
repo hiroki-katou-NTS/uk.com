@@ -30,5 +30,5 @@ public class AttendanceRecordRequest {
 	private long layout;
 	
 	/** The file type. */
-	private String fileType;
+	private String mode;
 }
