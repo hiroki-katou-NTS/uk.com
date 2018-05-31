@@ -83,6 +83,7 @@ var nts;
                 else {
                     formattedValue = values[0];
                 }
+                formattedValue = uk.text.removeFromStart(uk.text.removeFromStart(formattedValue, '0'), groupSeperator);
                 if (values[1] === undefined || decimalLength > values[1].length) {
                     values[1] = uk.text.padRight(values[1] ? values[1] : "", '0', values[1] ? decimalLength : decimalLength + 1);
                 }
@@ -4277,7 +4278,7 @@ var nts;
                             }
                             if (!util.isNullOrUndefined(option) && option.isCheckExpression === true) {
                                 if (!uk.text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
-                                    result.fail('This field is not valid with pattern!', '');
+                                    result.fail(nts.uk.resource.getMessage('Msg_1285'), 'Msg_1285');
                                     return result;
                                 }
                             }
@@ -6348,6 +6349,7 @@ var nts;
                         this.horzSumBodyHeight = options.horizontalSumBodyHeight;
                         this.horzSumBodyRowHeight = options.horizontalSumBodyRowHeight;
                         this.areaResize = options.areaResize;
+                        this.remainSizes = !uk.util.isNullOrUndefined(options.remainSizes) ? options.remainSizes : true;
                         this.heightSetter = options.heightSetter;
                         this.bodyHeightSetMode = options.bodyHeightMode;
                         this.windowXOccupation = options.windowXOccupation;
@@ -6687,7 +6689,7 @@ var nts;
                      */
                     ExTable.prototype.generalSettings = function (headerWrappers, bodyWrappers) {
                         var self = this;
-                        self.$container.addXEventListener(events.BODY_HEIGHT_CHANGED, resize.onBodyHeightChanged);
+                        self.$container.addXEventListener(events.BODY_HEIGHT_CHANGED, resize.onBodyHeightChanged.bind(self));
                         //            if (self.heightSetter && self.heightSetter.showBodyHeightButton) {
                         //                
                         //                let $lastHeader = headerWrappers[headerWrappers.length - 1];
@@ -6756,8 +6758,10 @@ var nts;
                             new resize.AreaAdjuster(self.$container, headerWrappers, bodyWrappers, self.$follower).handle();
                             self.$container.addXEventListener(events.AREA_RESIZE_END, resize.onAreaComplete.bind(self));
                         }
-                        storage.area.init(self.$container, headerWrappers);
-                        storage.tableHeight.init(self.$container);
+                        if (self.remainSizes) {
+                            storage.area.init(self.$container, headerWrappers);
+                            storage.tableHeight.init(self.$container);
+                        }
                         // Edit done
                         update.editDone(self.$container);
                         document.addXEventListener(events.CLICK_EVT, function (evt) {
@@ -6820,7 +6824,7 @@ var nts;
                     function process($container, options, isUpdate) {
                         var levelStruct = synthesizeHeaders(options);
                         options.levelStruct = levelStruct;
-                        if (isUpdate && !uk.util.isNullOrUndefined($container.style.maxWidth)) {
+                        if (isUpdate && !uk.util.isNullOrUndefined($container.style.maxWidth) && !_.isEmpty($container.style.maxWidth)) {
                             var maxWidth = calcWidth(options.columns);
                             if (!options.isHeader && options.overflow === "scroll") {
                                 $container.style.maxWidth = (maxWidth + helper.getScrollWidth()) + "px";
@@ -7485,6 +7489,7 @@ var nts;
                         });
                         return width;
                     }
+                    render.calcWidth = calcWidth;
                     /**
                      * Grid cell.
                      */
@@ -7508,7 +7513,10 @@ var nts;
                         if (styleMaker && _.isFunction(styleMaker)) {
                             var style_1 = styleMaker(rowIdx, columnKey, innerIdx, valueObj);
                             if (style_1) {
-                                $cell.style.color = style_1.textColor;
+                                if (style_1.class)
+                                    helper.addClass($cell, style_1.class);
+                                else
+                                    $cell.style.color = style_1.textColor;
                                 makeUp($grid, rowIdx, columnKey, style_1);
                             }
                         }
@@ -7576,7 +7584,10 @@ var nts;
                                     if (styleMaker && _.isFunction(styleMaker)) {
                                         var style_2 = styleMaker(rowIdx, key, -1, cData);
                                         if (style_2) {
-                                            $target.style.color = style_2.textColor;
+                                            if (style_2.class)
+                                                helper.addClass($target, style_2.class);
+                                            else
+                                                $target.style.color = style_2.textColor;
                                             makeUp($grid, rowIdx, key, style_2);
                                         }
                                     }
@@ -10818,6 +10829,9 @@ var nts;
                             $container.style.width = (parseFloat($container.style.width) + (width - parseFloat($detailBody.style.width))) + "px";
                             $detailHeader.style.width = width + "px";
                             $detailBody.style.width = width + "px";
+                            if (storage.area.getPartWidths($container).isPresent()) {
+                                storage.area.save($container, $.data($detailHeader, internal.EX_PART), width);
+                            }
                             var $horzSumHeader_1 = $container.querySelector("." + HEADER_PRF + HORIZONTAL_SUM);
                             if ($horzSumHeader_1) {
                                 $horzSumHeader_1.style.width = width + "px";
@@ -10848,6 +10862,9 @@ var nts;
                         $container.style.width = (parseFloat($container.style.width)
                             + (width - parseFloat($detailBody.style.width))) + "px";
                         $detailBody.style.width = width + "px";
+                        if (storage.area.getPartWidths($container).isPresent()) {
+                            storage.area.save($container, $.data($detailHeader, internal.EX_PART), width);
+                        }
                         if ($horzSumHeader && $horzSumHeader.style.display !== "none") {
                             $horzSumHeader.style.width = (width - scrollWidth) + "px";
                             $horzSumContent.style.width = width + "px";
@@ -10938,9 +10955,12 @@ var nts;
                     /**
                      * On area complete.
                      */
-                    function onAreaComplete(event, $leftArea, $rightArea, leftWidth, rightWidth) {
+                    function onAreaComplete(args) {
                         var self = this;
-                        saveSizes(self.$container, $leftArea, $rightArea, leftWidth, rightWidth);
+                        var detail = args.detail;
+                        if (self.remainSizes) {
+                            saveSizes(self.$container, detail[0], detail[1], detail[2], detail[3]);
+                        }
                     }
                     resize.onAreaComplete = onAreaComplete;
                     /**
@@ -10959,9 +10979,12 @@ var nts;
                      * On body height changed.
                      */
                     function onBodyHeightChanged(event) {
+                        var self = this;
                         var $container = event.target;
-                        var height = event.detail;
-                        storage.tableHeight.save($container, height);
+                        if (self.remainSizes) {
+                            var height = event.detail;
+                            storage.tableHeight.save($container, height);
+                        }
                         repositionHorzSum($container);
                     }
                     resize.onBodyHeightChanged = onBodyHeightChanged;
@@ -11111,7 +11134,7 @@ var nts;
                             var $bodies = $container.querySelectorAll("div[class*='" + BODY_PRF + "']");
                             if ($bodies.length === 0)
                                 return;
-                            save($container, $bodies[0].style.height);
+                            save($container, parseFloat($bodies[0].style.height));
                         }
                         tableHeight.init = init;
                         /**
@@ -12043,9 +12066,30 @@ var nts;
                      */
                     function updateLeftmost($container, header, body) {
                         var exTable = $container.data(NAMESPACE);
+                        var sizeAdjust, left, width, offsetWidth = 0;
+                        if (!exTable.middleHeader && !exTable.leftHorzSumHeader
+                            && !exTable.horizontalSumHeader && !exTable.verticalSumHeader
+                            && !exTable.areaResize) {
+                            sizeAdjust = true;
+                        }
                         if (header) {
                             _.assignIn(exTable.leftmostHeader, header);
                             var $header = $container.find("." + HEADER_PRF + LEFTMOST);
+                            if (sizeAdjust && header.columns) {
+                                width = render.calcWidth(header.columns);
+                                exTable.leftmostHeader.width = width + "px";
+                                offsetWidth = Math.abs($header.width() - width);
+                                if (offsetWidth > 0) {
+                                    var $detailH = $container.find("." + HEADER_PRF + DETAIL);
+                                    var $detailB = $container.find("." + BODY_PRF + DETAIL);
+                                    var op = $header.width() > width ? -1 : 1;
+                                    $header.width(width);
+                                    left = parseFloat($detailH.css("left"));
+                                    left = left + op * offsetWidth;
+                                    $detailH.css("left", left);
+                                    $detailB.css("left", left);
+                                }
+                            }
                             var pu = $header.find("table").data(internal.POPUP);
                             $header.empty();
                             render.process($header[0], exTable.leftmostHeader, true);
@@ -12055,6 +12099,9 @@ var nts;
                         if (body) {
                             _.assignIn(exTable.leftmostContent, body);
                             var $body = $container.find("." + BODY_PRF + LEFTMOST);
+                            if (offsetWidth > 0 && width) {
+                                $body.width(width);
+                            }
                             $body.empty();
                             render.process($body[0], exTable.leftmostContent, true);
                         }
@@ -12550,6 +12597,8 @@ var nts;
                     function getLockCells($container) {
                         var tbl = helper.getMainTable($container[0]);
                         var det = $.data(tbl, internal.DET);
+                        if (!det)
+                            return [];
                         var cells = [];
                         Object.keys(det).forEach(function (k) {
                             if (!uk.util.isNullOrUndefined(det[k])) {
@@ -16267,7 +16316,7 @@ var nts;
                         if (data.constraint == "PostCode") {
                             return new validation.PostCodeValidator(name, constraintName, { required: required });
                         }
-                        if (data.constraint == "PunchCardNo") {
+                        if (data.constraint == "StampNumber") {
                             return new validation.PunchCardNoValidator(name, constraintName, { required: required });
                         }
                         return new validation.StringValidator(name, constraintName, { required: required });
@@ -16717,7 +16766,8 @@ var nts;
                         var optionsValue = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
                         var options = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
                         var deleteOptions = ko.unwrap(data.deleteOptions);
-                        var observableColumns = ko.unwrap(data.columns);
+                        var observableColumns = _.cloneDeep(ko.unwrap(data.columns));
+                        var selectionDisables = ko.unwrap(data.selectionDisables);
                         var showNumbering = ko.unwrap(data.showNumbering) === true ? true : false;
                         var columnResize = ko.unwrap(data.columnResize);
                         var enable = ko.unwrap(data.enable);
@@ -16725,6 +16775,7 @@ var nts;
                         var virtualization = true;
                         var rows = ko.unwrap(data.rows);
                         $grid.data("init", true);
+                        $grid.data("selectionDisables", selectionDisables);
                         if (data.multiple) {
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
@@ -16795,6 +16846,27 @@ var nts;
                                     ROW_HEIGHT = 30;
                                 }
                             }
+                            else {
+                                c.formatter = function (val, row) {
+                                    if (row) {
+                                        setTimeout(function () {
+                                            var id = row[optionsValue];
+                                            var disables = $grid.data("selectionDisables");
+                                            if (!disables)
+                                                return;
+                                            _.forEach(disables, function (d) {
+                                                if (id === d) {
+                                                    var $row = $grid.igGrid("rowById", id, false);
+                                                    if (!$row.hasClass("row-disable"))
+                                                        $row.addClass("row-disable");
+                                                    return false;
+                                                }
+                                            });
+                                        }, 0);
+                                    }
+                                    return val;
+                                };
+                            }
                             return c;
                         });
                         var isDeleteButton = !uk.util.isNullOrUndefined(deleteOptions) && !uk.util.isNullOrUndefined(deleteOptions.deleteField)
@@ -16849,19 +16921,48 @@ var nts;
                         }
                         $grid.ntsGridList('setupSelecting');
                         if (data.multiple) {
-                            $grid.bind('iggridrowselectorscheckboxstatechanging', function (eventObject) {
-                                return (String($grid.data("enable")) === "false") ? false : true;
+                            $grid.bind('iggridrowselectorscheckboxstatechanging', function (eventObject, data) {
+                                if (String($grid.data("enable")) === "false")
+                                    return false;
+                                var disables = $grid.data("selectionDisables");
+                                if (disables && !uk.util.isNullOrUndefined(_.find(disables, function (d) { return data.rowKey === d; }))) {
+                                    return false;
+                                }
+                                return true;
                             });
                         }
-                        $grid.bind('iggridselectionrowselectionchanging', function (eventObject) {
-                            return (String($grid.data("enable")) === "false") ? false : true;
+                        $grid.bind('iggridselectionrowselectionchanging', function (eventObject, ui) {
+                            if (String($grid.data("enable")) === "false")
+                                return false;
+                            var disables = $grid.data("selectionDisables");
+                            if (disables && uk.util.isNullOrUndefined(ui.row.startIndex)
+                                && !uk.util.isNullOrUndefined(_.find(disables, function (d) { return ui.row.id === d; }))) {
+                                return false;
+                            }
+                            return true;
                         });
                         $grid.bind('selectionchanged', function () {
                             $grid.data("ui-changed", true);
                             if (data.multiple) {
-                                var selected = $grid.ntsGridList('getSelected');
-                                if (!nts.uk.util.isNullOrEmpty(selected)) {
-                                    data.value(_.map(selected, function (s) { return s.id; }));
+                                var selected_1 = $grid.ntsGridList('getSelected');
+                                var disables_1 = $grid.data("selectionDisables");
+                                var disableIds_1 = [];
+                                if (disables_1) {
+                                    _.forEach(selected_1, function (s, i) {
+                                        _.forEach(disables_1, function (d) {
+                                            if (d === s.id) {
+                                                $grid.igGridSelection("deselectRowById", d);
+                                                disableIds_1.push(i);
+                                                return false;
+                                            }
+                                        });
+                                    });
+                                    disableIds_1.sort(function (i1, i2) { return i2 - i1; }).forEach(function (d) {
+                                        selected_1.splice(d, 1);
+                                    });
+                                }
+                                if (!nts.uk.util.isNullOrEmpty(selected_1)) {
+                                    data.value(_.map(selected_1, function (s) { return s.id; }));
                                 }
                                 else {
                                     data.value([]);
@@ -16908,6 +17009,7 @@ var nts;
                         var optionsValue = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
                         var gridSource = $grid.igGrid('option', 'dataSource');
                         var sources = (data.dataSource !== undefined ? data.dataSource() : data.options());
+                        var disables = ko.unwrap(data.selectionDisables);
                         if ($grid.data("enable") !== enable) {
                             if (!enable) {
                                 $grid.ntsGridList('unsetupSelecting');
@@ -16919,6 +17021,14 @@ var nts;
                             }
                         }
                         $grid.data("enable", enable);
+                        if (disables) {
+                            _.forEach(disables, function (d) {
+                                var $row = $grid.igGrid("rowById", d, false);
+                                if ($row && !$row.hasClass("row-disable")) {
+                                    $row.addClass("row-disable");
+                                }
+                            });
+                        }
                         if (String($grid.attr("filtered")) === "true") {
                             var filteredSource_1 = [];
                             _.forEach(gridSource, function (item) {
@@ -19164,6 +19274,9 @@ var nts;
                         var direction = ko.unwrap(data.direction || "horizontal");
                         // Container.
                         var container = $(element);
+                        if (nts.uk.util.isNullOrUndefined(container.attr("tabindex")))
+                            container.attr("tabindex", "0");
+                        container.data("tabindex", container.attr("tabindex"));
                         // Create title.
                         container.prepend('<ul></ul>');
                         var titleContainer = container.children('ul');
@@ -19250,7 +19363,8 @@ var nts;
                                 container.children('ul').children('li[aria-controls="' + tab.id + '"]').show();
                             }
                         });
-                        _.defer(function () { container.children('ul').children('li').attr("tabindex", "-1"); });
+                        container.attr('tabindex', container.data("tabindex"));
+                        _.defer(function () { container.children('ul').children('li').attr("tabindex", container.data("tabindex")); });
                     };
                     return TabPanelBindingHandler;
                 }());
@@ -23481,6 +23595,7 @@ var nts;
                         functions.CHECK_ALL = "checkAll";
                         functions.UNCHECK_ALL = "uncheckAll";
                         functions.HEADER_TEXT = "headerText";
+                        functions.SELECTED_SHEET = "selectedSheet";
                         functions.DESTROY = "destroy";
                         /**
                          * Actions
@@ -23528,6 +23643,8 @@ var nts;
                                 case functions.DESTROY:
                                     destroy($grid);
                                     break;
+                                case functions.SELECTED_SHEET:
+                                    return getSelectedSheet($grid);
                                 case functions.UPDATED_CELLS:
                                     return $grid.data(internal.UPDATED_CELLS);
                                 case functions.ERRORS:
@@ -23817,6 +23934,17 @@ var nts;
                                 }
                             });
                             return updated;
+                        }
+                        /**
+                         * Get selected sheet.
+                         */
+                        function getSelectedSheet($grid) {
+                            var sheet = $grid.data(internal.SHEETS);
+                            if (!sheet || !sheet.currentSheet)
+                                return;
+                            return _.find(sheet.sheets, function (s) {
+                                return s.name === sheet.currentSheet;
+                            });
                         }
                         /**
                          * Destroy

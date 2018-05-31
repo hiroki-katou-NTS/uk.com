@@ -33,7 +33,7 @@ module nts.uk.at.view.kbt002.f {
                     { headerText: getText("KBT002_143"), key: 'overallStatus', width: 100, formatter: _.escape },
                     {
                         headerText: "", key: 'execItemCd', width: 55, unbound: true, dataType: "string",
-                        template: '<button tabindex="-1" class="setting small" data-bind="click: function(data, event) { openDialogG(data, event)}, enable: {{if ((${overallStatusCd} != "") && (${overallStatusCd} == 3)) || (${currentStatus} !=0)  }}true{{else}} false {{/if}}" data-code="${execItemCd}" style="margin-left: 7px;">' + getText("KBT002_144") + '</button>',
+                        template: '<button tabindex="-1" class="setting small" data-bind="click: function(data, event) { openDialogG(data, event)}, enable: {{if ((${overallStatusCd} != "") && (${overallStatusCd} == 3)) && (${currentStatus} !=0)  }}true{{else}} false {{/if}}" data-code="${execItemCd}" style="margin-left: 7px;">' + getText("KBT002_144") + '</button>',
                     },
                     { headerText: getText("KBT002_131"), key: 'nextExecDateTime', width: 180, formatter: _.escape },
                     {

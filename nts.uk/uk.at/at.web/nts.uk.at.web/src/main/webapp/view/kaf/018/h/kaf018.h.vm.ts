@@ -130,9 +130,9 @@ module nts.uk.at.view.kaf018.h.viewmodel {
             var self = this;
 
             //validate
-            /*if (ntsError.hasError()) {
+            if (self.hasError()) {
                 return;
-            }*/
+            }
 
             block.invisible();
             let listMail = [
@@ -164,9 +164,24 @@ module nts.uk.at.view.kaf018.h.viewmodel {
                 if (self.checkH1()) {
                     self.monthlyUnconfirmByConfirmer.editMode(true);
                 }
-
+                info({ messageId: "Msg_15" });
                 block.clear();
             });
+        }
+
+        private hasError(): boolean {
+            $('#H3_1_1').ntsError('check');
+            $('#H3_2_1').ntsError('check');
+            $('#H4_1_1').ntsError('check');
+            $('#H4_2_1').ntsError('check');
+            $('#H5_1_1').ntsError('check');
+            $('#H5_2_1').ntsError('check');
+            $('#H6_1_1').ntsError('check');
+            $('#H6_2_1').ntsError('check');
+            $('#H7_1_1').ntsError('check');
+            $('#H7_2_1').ntsError('check');
+
+            return ntsError.hasError();
         }
 
         private getMailTempJS(mail: shareModel.MailTemp) {

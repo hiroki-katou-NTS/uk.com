@@ -25,7 +25,7 @@ public interface OptionalItemRepository {
 	 * @param optionalItemNo the optional item no
 	 * @return the optional item
 	 */
-	OptionalItem find(String companyId, String optionalItemNo);
+	OptionalItem find(String companyId, Integer optionalItemNo);
 
 	/**
 	 * Find all.
@@ -42,7 +42,7 @@ public interface OptionalItemRepository {
 	 * @param optionalitemNos the optionalitem nos
 	 * @return the list
 	 */
-	List<OptionalItem> findByListNos(String companyId, List<String> optionalitemNos);
+	List<OptionalItem> findByListNos(String companyId, List<Integer> optionalitemNos);
 
 	/**
 	 * Find by atr.

@@ -9,12 +9,6 @@ public class ChangeSPR {
 	private boolean change31;
 	private boolean change34;
 
-	public ChangeSPR(boolean change31, boolean change34) {
-		super();
-		this.change31 = change31;
-		this.change34 = change34;
-	}
-
 	private String rowId31;
 
 	private String rowId34;
@@ -22,6 +16,12 @@ public class ChangeSPR {
 	private boolean showPrincipal;
 
 	private boolean showSupervisor;
+	
+	public ChangeSPR(boolean change31, boolean change34) {
+		super();
+		this.change31 = change31;
+		this.change34 = change34;
+	}
 
 	public ChangeSPR setRow31(String rowId31) {
 		this.rowId31 = rowId31;

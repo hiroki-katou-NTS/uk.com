@@ -72,8 +72,7 @@ public class EmpInfoItemData extends AggregateRoot {
 			String perInfoCtgId, String perInfoCtgCd, String itemName, int isRequired, int dataStateType,
 			String stringValue, BigDecimal intValue, GeneralDate dateValue, int dataType) {
 		// initial dataTypeState
-		DataStateType dataTypeStateType = EnumAdaptor.valueOf(dataStateType, DataStateType.class);
-		DataState dataState = createDataState(dataTypeStateType, stringValue, intValue, dateValue);
+		DataState dataState = createDataState(dataStateType, stringValue, intValue, dateValue);
 		IsRequired required = EnumAdaptor.valueOf(isRequired, IsRequired.class);
 
 		return new EmpInfoItemData(new ItemCode(itemCode), perInfoDefId, recordId, perInfoCtgId, perInfoCtgCd, itemName,
@@ -86,31 +85,49 @@ public class EmpInfoItemData extends AggregateRoot {
 
 		return new EmpInfoItemData(new ItemCode(""), perInfoDefId, recordId, "", "", "",
 				EnumAdaptor.valueOf(0, IsRequired.class),
-				createDataState(EnumAdaptor.valueOf(dataStateType, DataStateType.class), stringValue, intValue,
+				createDataState(dataStateType , stringValue, intValue,
 						dateValue),
 				dataType);
 
 	}
+	
+	/**
+	 * ORIGINAL version
+	 * @return
+	 */
+	public static EmpInfoItemData createFromJavaType(String perInfoDefId, String recordId, int dataStateType,
+			String stringValue, BigDecimal intValue, GeneralDate dateValue) {
+		return new EmpInfoItemData(perInfoDefId, recordId, createDataState(dataStateType, stringValue, intValue, dateValue));
 
-	private static DataState createDataState(DataStateType dataStateType, String stringValue, BigDecimal intValue,
+	}
+
+	private static DataState createDataState(int dataStateType, String stringValue, BigDecimal intValue,
 			GeneralDate dateValue) {
-		DataState resultState = new DataState();
-
-		switch (dataStateType) {
+		DataStateType dataStateTypeEnum = EnumAdaptor.valueOf(dataStateType, DataStateType.class);
+		switch (dataStateTypeEnum) {
 		case String:
-			resultState = DataState.createFromStringValue(stringValue);
-			break;
+			return DataState.createFromStringValue(stringValue);
 
 		case Numeric:
-			resultState = DataState.createFromNumberValue(intValue);
-			break;
+			return DataState.createFromNumberValue(intValue);
 
 		case Date:
-			resultState = DataState.createFromDateValue(dateValue);
-			break;
-
+			return DataState.createFromDateValue(dateValue);
+			
 		}
-		return resultState;
+		return null;
+	}
+	
+	public Object getValue() {
+		switch (this.dataState.getDataStateType()) {
+		case String:
+			return this.dataState.getStringValue();
+		case Numeric:
+			return this.dataState.getNumberValue();
+		case Date:
+			return this.dataState.getDateValue();
+		}
+		return null;
 	}
 
 	public OptionalItemDataDto genToPeregDto() {

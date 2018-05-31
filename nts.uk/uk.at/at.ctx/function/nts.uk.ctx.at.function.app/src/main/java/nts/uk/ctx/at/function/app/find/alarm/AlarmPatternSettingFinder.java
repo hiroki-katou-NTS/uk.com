@@ -1,13 +1,18 @@
 package nts.uk.ctx.at.function.app.find.alarm;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionPeriodDailyDto;
+import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionPeriodMonthlyDto;
 import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionPeriodUnitDto;
+import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionRangeYearDto;
 import nts.uk.ctx.at.function.app.find.alarm.extractionrange.SpecifiedMonthDto;
 import nts.uk.ctx.at.function.dom.adapter.role.RoleIdFromUserAdapter;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
@@ -15,10 +20,12 @@ import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRange;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ExtractionPeriodDaily;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.SpecifiedMonth;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.ExtractionPeriodMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.periodunit.ExtractionPeriodUnit;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.year.AYear;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -41,8 +48,14 @@ public class AlarmPatternSettingFinder {
 
 	public List<AlarmCheckConditonCodeDto> findAllAlarmCheckCondition() {
 		String companyId = AppContexts.user().companyId();
-		return alarmCategoryRepo.findAll(companyId).stream().map(domain -> this.convertToCheckConditionCode(domain))
+		List<AlarmCheckConditonCodeDto> result = new ArrayList<AlarmCheckConditonCodeDto>();
+		List<AlarmCheckConditionByCategory> listCheckCondition = alarmCategoryRepo.findAll(companyId);
+		listCheckCondition.sort((a , b) -> a.getCategory().value- b.getCategory().value);
+		
+		result = listCheckCondition.stream().map(domain -> this.convertToCheckConditionCode(domain))
 				.collect(Collectors.toList());
+		
+		return result;
 	}
 
 	public AlarmPatternSettingDto convertToAlarmPatternDto(AlarmPatternSetting domain) {
@@ -72,18 +85,46 @@ public class AlarmPatternSettingFinder {
 	public CheckConditionDto convertToCheckConditionDto(CheckCondition domain) {
 		ExtractionPeriodDailyDto extractionPeriodDailyDto = null;
 		ExtractionPeriodUnitDto extractionUnit = null;
-
-		if (domain.getExtractPeriod().getExtractionRange() == ExtractionRange.PERIOD) {
-			extractionPeriodDailyDto = ExtractionPeriodDailyDto
-					.fromDomain((ExtractionPeriodDaily) domain.getExtractPeriod());
-		} else if (domain.getExtractPeriod().getExtractionRange() == ExtractionRange.WEEK) {
-			extractionUnit = ExtractionPeriodUnitDto.fromDomain((ExtractionPeriodUnit) domain.getExtractPeriod());
-		} else {
-			// Monthly
-		}
+		List<ExtractionPeriodMonthlyDto> listExtractionMonthly = new ArrayList<ExtractionPeriodMonthlyDto>();
+		ExtractionRangeYearDto extractionYear =null;
+		
+		if (domain.isDaily() || domain.isManHourCheck()) {
+			ExtractionRangeBase extractBase = domain.getExtractPeriodList().get(0);
+			ExtractionPeriodDaily extractionPeriodDaily = (ExtractionPeriodDaily) extractBase;
+			extractionPeriodDailyDto = ExtractionPeriodDailyDto.fromDomain(extractionPeriodDaily);
+			
+		} else if (domain.isMonthly()) {
+			ExtractionRangeBase extractBase = domain.getExtractPeriodList().get(0);
+			ExtractionPeriodMonth extractionPeriodMonth = (ExtractionPeriodMonth) extractBase;
+			ExtractionPeriodMonthlyDto extractionPeriodMonthlyDto = ExtractionPeriodMonthlyDto
+					.fromDomain(extractionPeriodMonth);
+			listExtractionMonthly.add(extractionPeriodMonthlyDto);
+			
+		} else if (domain.is4W4D()) {
+			ExtractionRangeBase extractBase = domain.getExtractPeriodList().get(0);
+			extractionUnit = ExtractionPeriodUnitDto.fromDomain((ExtractionPeriodUnit) extractBase);
+			
+		}	else if(domain.isAgrrement()) {
+			
+			for(ExtractionRangeBase extractBase : domain.getExtractPeriodList()) {
+				
+				if(extractBase instanceof ExtractionPeriodDaily) {
+					ExtractionPeriodDaily extractionPeriodDaily = (ExtractionPeriodDaily) extractBase;
+					extractionPeriodDailyDto = ExtractionPeriodDailyDto.fromDomain(extractionPeriodDaily);
+					
+				}else if(extractBase  instanceof ExtractionPeriodMonth) {
+					ExtractionPeriodMonth extractionPeriodMonth = (ExtractionPeriodMonth) extractBase;
+					listExtractionMonthly.add(ExtractionPeriodMonthlyDto.fromDomain(extractionPeriodMonth));
+					
+				}else {
+					extractionYear  = ExtractionRangeYearDto.fromDomain((AYear) extractBase);
+				}
+			}
+			
+		}			
 
 		return new CheckConditionDto(domain.getAlarmCategory().value, domain.getCheckConditionList(),
-				extractionPeriodDailyDto, extractionUnit);
+				extractionPeriodDailyDto, extractionUnit, listExtractionMonthly, extractionYear);
 
 	}
 
