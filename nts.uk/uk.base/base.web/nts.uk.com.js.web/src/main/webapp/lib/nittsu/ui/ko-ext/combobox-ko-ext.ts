@@ -379,6 +379,11 @@ module nts.uk.ui.koExtentions {
                 }
             }
 
+            // check flag changed for validate
+            if (_.has($element.data(DATA), VALUE)) {
+                $element.trigger(CHANGED, [CHANGED, true]);
+            }
+
             // save change value
             $element
                 .trigger(CHANGED, [CWIDTH, cws])
