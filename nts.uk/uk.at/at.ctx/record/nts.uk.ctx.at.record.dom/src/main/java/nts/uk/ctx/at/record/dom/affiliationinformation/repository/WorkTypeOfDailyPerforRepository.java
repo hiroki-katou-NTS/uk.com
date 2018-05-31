@@ -20,6 +20,6 @@ public interface WorkTypeOfDailyPerforRepository {
 	
 	List<WorkTypeOfDailyPerformance> finds(List<String> employeeId, DatePeriod baseDate);
 	
-	List<WorkTypeOfDailyPerformance> finds(Map<String, GeneralDate> param);
+	List<WorkTypeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param);
 
 }

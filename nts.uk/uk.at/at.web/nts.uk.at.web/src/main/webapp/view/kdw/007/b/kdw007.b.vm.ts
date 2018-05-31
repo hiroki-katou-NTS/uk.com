@@ -6,6 +6,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             { code: 1, name: "時間" },
             { code: 2, name: "時刻" },
             { code: 3, name: "金額" },
+            { code: 4, name: "日数" }
         ]);
 
         enumConditionType: KnockoutObservableArray<any> = ko.observableArray([
@@ -36,6 +37,11 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 caic = self.currentAtdItemCondition,
                 param = nts.uk.ui.windows.getShared("KDW007BParams");
             self.mode = param.mode;
+            if (self.mode == 1) { // monthly
+                self.enumConditionAtr.remove( (item) => { return item.code == 2; } );
+            } else { //daily
+                self.enumConditionAtr.remove( (item) => { return item.code == 4; } );
+            }
 
             /*param.countableAddAtdItems = _.values(param.countableAddAtdItems || []);
             param.countableSubAtdItems = _.values(param.countableSubAtdItems || []);*/
@@ -172,7 +178,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             self.displayTargetAtdItems("");
             if (self.currentAtdItemCondition.conditionAtr() === 2) {
                 if (self.currentAtdItemCondition.uncountableAtdItem()) {
-                    service.getAttendanceItemByCodes([self.currentAtdItemCondition.uncountableAtdItem()]).done((lstItems) => {
+                    service.getAttendanceItemByCodes([self.currentAtdItemCondition.uncountableAtdItem()], self.mode).done((lstItems) => {
                         if (lstItems && lstItems.length > 0) {
                             self.displayTargetAtdItems(lstItems[0].attendanceItemName);
                             $("#display-target-item").trigger("validate");
@@ -181,7 +187,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 }
             } else {
                 if (self.currentAtdItemCondition.countableAddAtdItems().length > 0) {
-                    service.getAttendanceItemByCodes(self.currentAtdItemCondition.countableAddAtdItems()).done((lstItems) => {
+                    service.getAttendanceItemByCodes(self.currentAtdItemCondition.countableAddAtdItems(), self.mode).done((lstItems) => {
                         if (lstItems && lstItems.length > 0) {
                             for (let i = 0; i < lstItems.length; i++) {
                                 let operator = (i === (lstItems.length - 1)) ? "" : " + ";
@@ -191,7 +197,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                         }
                     }).then(() => {
                         if (self.currentAtdItemCondition.countableSubAtdItems().length > 0) {
-                            service.getAttendanceItemByCodes(self.currentAtdItemCondition.countableSubAtdItems()).done((lstItems) => {
+                            service.getAttendanceItemByCodes(self.currentAtdItemCondition.countableSubAtdItems(), self.mode).done((lstItems) => {
                                 if (lstItems && lstItems.length > 0) {
                                     for (let i = 0; i < lstItems.length; i++) {
                                         let operator = (i === (lstItems.length - 1)) ? "" : " - ";
@@ -204,7 +210,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                         }
                     });
                 } else if (self.currentAtdItemCondition.countableSubAtdItems().length > 0) {
-                    service.getAttendanceItemByCodes(self.currentAtdItemCondition.countableSubAtdItems()).done((lstItems) => {
+                    service.getAttendanceItemByCodes(self.currentAtdItemCondition.countableSubAtdItems(), self.mode).done((lstItems) => {
                         if (lstItems && lstItems.length > 0) {
                             for (let i = 0; i < lstItems.length; i++) {
                                 let operator = (i === (lstItems.length - 1)) ? "" : " - ";
@@ -223,7 +229,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             let self = this;
             self.displayCompareAtdItems("");
             if (self.currentAtdItemCondition.singleAtdItem()) {
-                service.getAttendanceItemByCodes([self.currentAtdItemCondition.singleAtdItem()]).done((lstItems) => {
+                service.getAttendanceItemByCodes([self.currentAtdItemCondition.singleAtdItem()], self.mode).done((lstItems) => {
                     if (lstItems && lstItems.length > 0) {
                         self.displayCompareAtdItems(lstItems[0].attendanceItemName);
                         $("#display-compare-item").trigger("validate");
@@ -237,8 +243,8 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             let dfd = $.Deferred<any>();
             if (self.currentAtdItemCondition.conditionAtr() === 0) {
                 //With type 回数 - Times
-                service.getAttendanceItemByAtr(2).done((lstAtdItem) => {
-                    service.getOptItemByAtr(1).done((lstOptItem) => {
+                service.getAttendanceItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.NUMBER : DailyAttendanceItemAtr.NumberOfTime, self.mode).done((lstAtdItem) => {
+                    service.getOptItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.NUMBER : 1, self.mode).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             lstAtdItem.push(lstOptItem[i]);
                         }
@@ -247,8 +253,8 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 });
             } else if (self.currentAtdItemCondition.conditionAtr() === 1) {
                 //With type 時間 - Time
-                service.getAttendanceItemByAtr(5).done((lstAtdItem) => {
-                    service.getOptItemByAtr(0).done((lstOptItem) => {
+                service.getAttendanceItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.TIME : DailyAttendanceItemAtr.Time, self.mode).done((lstAtdItem) => {
+                    service.getOptItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.TIME : 0, self.mode).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             lstAtdItem.push(lstOptItem[i]);
                         }
@@ -257,18 +263,22 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 });
             } else if (self.currentAtdItemCondition.conditionAtr() === 2) {
                 //With type 時刻 - TimeWithDay
-                service.getAttendanceItemByAtr(6).done((lstAtdItem) => {
+                service.getAttendanceItemByAtr(DailyAttendanceItemAtr.TimeOfDay, self.mode).done((lstAtdItem) => {
                     dfd.resolve(lstAtdItem);
                 });
             } else if (self.currentAtdItemCondition.conditionAtr() === 3) {
                 //With type 金額 - AmountMoney
-                service.getAttendanceItemByAtr(3).done((lstAtdItem) => {
-                    service.getOptItemByAtr(2).done((lstOptItem) => {
+                service.getAttendanceItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.AMOUNT : DailyAttendanceItemAtr.AmountOfMoney, self.mode).done((lstAtdItem) => {
+                    service.getOptItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.AMOUNT : 2, self.mode).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             lstAtdItem.push(lstOptItem[i]);
                         }
                         dfd.resolve(lstAtdItem);
                     });
+                });
+            } else { // 日数
+                service.getAttendanceItemByAtr(MonthlyAttendanceItemAtr.DAYS, self.mode).done((lstAtdItem) => {
+                    dfd.resolve(lstAtdItem);
                 });
             }
             return dfd.promise();
@@ -411,6 +421,39 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 console.log(v);
             });
         }
+        
+    }
+    
+    enum MonthlyAttendanceItemAtr {
+        /* 時間 */
+        TIME = 1,
+        /* 回数 */
+        NUMBER = 2,
+        /* 金額 */
+        AMOUNT = 3,
+        /* 日数 */
+        DAYS = 4,
+        /* マスタを参照する */
+        REFER_TO_MASTER = 5
+    }
+
+    enum DailyAttendanceItemAtr {
+        /* コード */
+        Code = 0,
+        /* マスタを参照する */
+        ReferToMaster = 1,
+        /* 回数*/
+        NumberOfTime = 2,
+        /* 金額*/
+        AmountOfMoney = 3,
+        /* 区分 */
+        Classification = 4,
+        /* 時間 */
+        Time = 5,
+        /* 時刻*/
+        TimeOfDay = 6,
+        /* 文字 */
+        Character = 7
     }
 
 }
