@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.shorttimework;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -121,7 +120,7 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 	}
 
 	@Override
-	public List<ShortTimeOfDailyPerformance> finds(Map<String, GeneralDate> param) {
+	public List<ShortTimeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
 		List<ShortTimeOfDailyPerformance> result = new ArrayList<>();
 		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDaiShortWorkTime a ");
 		query.append("WHERE a.krcdtDaiShortWorkTimePK.sid IN :employeeId ");
@@ -129,9 +128,9 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 		TypedQueryWrapper<KrcdtDaiShortWorkTime> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiShortWorkTime.class);
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
 			result.addAll(tQuery.setParameter("employeeId", p.keySet())
-								.setParameter("date", new HashSet<>(p.values()))
+								.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
 								.getList().stream()
-								.filter(c -> c.krcdtDaiShortWorkTimePK.ymd.equals(p.get(c.krcdtDaiShortWorkTimePK.sid)))
+								.filter(c -> p.get(c.krcdtDaiShortWorkTimePK.sid).contains(c.krcdtDaiShortWorkTimePK.ymd))
 								.collect(Collectors.groupingBy(
 										c -> c.krcdtDaiShortWorkTimePK.sid + c.krcdtDaiShortWorkTimePK.ymd.toString()))
 								.entrySet().stream()

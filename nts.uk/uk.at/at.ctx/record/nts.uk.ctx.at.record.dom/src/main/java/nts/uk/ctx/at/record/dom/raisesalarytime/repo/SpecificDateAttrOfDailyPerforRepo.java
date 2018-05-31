@@ -16,7 +16,7 @@ public interface SpecificDateAttrOfDailyPerforRepo {
 	
 	public List<SpecificDateAttrOfDailyPerfor> finds(List<String> employeeId, DatePeriod baseDate);
 	
-	public List<SpecificDateAttrOfDailyPerfor> finds(Map<String, GeneralDate> param);
+	public List<SpecificDateAttrOfDailyPerfor> finds(Map<String, List<GeneralDate>> param);
 	
 	public void update(SpecificDateAttrOfDailyPerfor domain);
 
