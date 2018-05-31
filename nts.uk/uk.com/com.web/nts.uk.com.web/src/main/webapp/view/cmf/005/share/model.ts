@@ -13,10 +13,10 @@ module nts.uk.com.view.cmf005.share.model {
     }
 
     export enum TIME_STORE {
-        MONTHLY = 0,
-        ANNUAL = 1,
-        FULL_TIME = 2,
-        DAILY = 3
+        FULL_TIME = 0,
+        DAILY = 1,
+        MONTHLY = 2,
+        ANNUAL = 3
     }
 
     export enum STORAGE_RANGE_SAVE {
