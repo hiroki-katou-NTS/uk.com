@@ -124,7 +124,7 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 		List<ShortTimeOfDailyPerformance> result = new ArrayList<>();
 		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDaiShortWorkTime a ");
 		query.append("WHERE a.krcdtDaiShortWorkTimePK.sid IN :employeeId ");
-		query.append("AND a.krcdtDaiShortWorkTimePK.ymd <= :date");
+		query.append("AND a.krcdtDaiShortWorkTimePK.ymd IN :date");
 		TypedQueryWrapper<KrcdtDaiShortWorkTime> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiShortWorkTime.class);
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
 			result.addAll(tQuery.setParameter("employeeId", p.keySet())
