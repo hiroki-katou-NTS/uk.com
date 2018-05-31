@@ -356,7 +356,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         private nextFromBToD() {
             let self = this;
             self.next();
-//            $("#D4_2").focus();
+//            $('#D4_2').find("input").first().focus();
         }
 
         /**

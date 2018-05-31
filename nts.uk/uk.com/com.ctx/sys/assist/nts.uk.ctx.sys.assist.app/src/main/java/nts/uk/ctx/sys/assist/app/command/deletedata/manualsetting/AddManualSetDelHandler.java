@@ -81,7 +81,7 @@ public class AddManualSetDelHandler extends CommandHandlerWithResult<ManualSetDe
 		repo.addManualSetting(domain);
 		
 		try {
-			manualSetDeletionService.start(delId);
+			manualSetDeletionService.start(domain);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

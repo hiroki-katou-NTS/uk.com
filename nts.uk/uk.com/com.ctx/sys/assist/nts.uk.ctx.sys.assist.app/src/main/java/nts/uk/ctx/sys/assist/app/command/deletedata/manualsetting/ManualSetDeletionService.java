@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -37,7 +38,6 @@ import nts.uk.ctx.sys.assist.dom.deletedata.FileName;
 import nts.uk.ctx.sys.assist.dom.deletedata.ManagementDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.ManagementDeletionRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletion;
-import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletionRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.OperatingCondition;
 import nts.uk.ctx.sys.assist.dom.deletedata.Result;
 import nts.uk.ctx.sys.assist.dom.deletedata.ResultDeletion;
@@ -96,8 +96,8 @@ public class ManualSetDeletionService extends ExportService<Object>{
 	private EmployeesDeletionRepository repoEmployeesDel;
 	@Inject
 	private CategoryDeletionRepository repoCategoryDel;
-	@Inject
-	private ManualSetDeletionRepository repoManualSetDel;
+//	@Inject
+//	private ManualSetDeletionRepository repoManualSetDel;
 	@Inject
 	private CategoryRepository repoCategory;
 	@Inject
@@ -113,8 +113,9 @@ public class ManualSetDeletionService extends ExportService<Object>{
 	
 	@Override
 	protected void handle(ExportServiceContext<Object> context) {
-		String delId = context.getQuery().toString();
-		serverManualDelProcessing(delId, context.getGeneratorContext());
+		ManualSetDeletion domain = (ManualSetDeletion) context.getQuery();
+//		String delId = domain.getDelId();
+		serverManualDelProcessing(domain, context.getGeneratorContext());
 	}
 
 	/**
@@ -122,12 +123,12 @@ public class ManualSetDeletionService extends ExportService<Object>{
 	 * @param delId
 	 * @param generatorContext
 	 */
-	public void serverManualDelProcessing(String delId, FileGeneratorContext generatorContext) {
+	public void serverManualDelProcessing(ManualSetDeletion domain, FileGeneratorContext generatorContext) {
 		// ドメインモデル「データ削除の手動設定」を読み込む
-		Optional<ManualSetDeletion> manualSetDeletion = repoManualSetDel.getManualSetDeletionById(delId);
-
-		if (manualSetDeletion.isPresent()) {
-			ManualSetDeletion domain = manualSetDeletion.get();
+//		Optional<ManualSetDeletion> manualSetDeletion = repoManualSetDel.getManualSetDeletionById(delId);
+		if (domain != null) {
+			String delId = domain.getDelId();
+//			ManualSetDeletion domain = manualSetDeletion.get();
 
 			// ドメインモデル「データ削除の保存結果」へ追加する
 			saveStartResultDel(domain);
@@ -376,27 +377,35 @@ public class ManualSetDeletionService extends ExportService<Object>{
 			// 対象社員の内容をCSVファイルに暗号化して書き出す
 			generalEmployeesToCsv(generatorContext, delId);
 
-			int categoryCount = 0;
-			for (TableDeletionDataCsv tableDataDel : tableDeletionDataCsvs) {
-				categoryCount++;
-				// ドメインモデル「データ削除動作管理」を更新する
-				repoManagementDel.updateCatCount(delId, categoryCount);
+			
+			Map<String, List<TableDeletionDataCsv>> mapCatWithDatas = mapCatWithDataDel(tableDeletionDataCsvs);
+			if (mapCatWithDatas != null && mapCatWithDatas.size() > 0) {
+				int categoryCount = 0;
+				for (Entry<String, List<TableDeletionDataCsv>> entry : mapCatWithDatas.entrySet()) {
+					categoryCount++;
+					
+					// ドメインモデル「データ削除動作管理」を更新する
+					repoManagementDel.updateCatCount(delId, categoryCount);
 
-				// ドメインモデル「データ削除動作管理.中断するしない」を確認
-				Optional<ManagementDeletion> maOptional = repoManagementDel.getManagementDeletionById(delId);
-				if (maOptional.isPresent()) {
-					if (maOptional.get().isInterruptedFlg()) {
-						return ResultState.TERMINATE;
+					// ドメインモデル「データ削除動作管理.中断するしない」を確認
+					Optional<ManagementDeletion> maOptional = repoManagementDel.getManagementDeletionById(delId);
+					if (maOptional.isPresent()) {
+						if (maOptional.get().isInterruptedFlg()) {
+							return ResultState.TERMINATE;
+						}
+					} else {
+						return ResultState.ABNORMAL_END;
 					}
-				} else {
-					return ResultState.ABNORMAL_END;
-				}
-
-				// アルゴリズム「サーバデータ削除テーブルデータ書出」を実行する
-				ResultState generalResult = generalDataForCategoryToCsv(generatorContext, domain, employeeDeletions,
-						categories, tableDataDel);
-				if (generalResult == ResultState.ABNORMAL_END) {
-					return ResultState.ABNORMAL_END;
+					
+					List<TableDeletionDataCsv> catDatas = entry.getValue();
+					for (TableDeletionDataCsv tableDataDel : catDatas) {
+						// アルゴリズム「サーバデータ削除テーブルデータ書出」を実行する
+						ResultState generalResult = generalDataForCategoryToCsv(generatorContext, domain,
+								employeeDeletions, categories, tableDataDel);
+						if (generalResult == ResultState.ABNORMAL_END) {
+							return ResultState.ABNORMAL_END;
+						}
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -405,6 +414,32 @@ public class ManualSetDeletionService extends ExportService<Object>{
 		}
 
 		return ResultState.NORMAL_END;
+	}
+	
+	/**
+	 * 
+	 * @param categories
+	 * @param tableDeletionDataCsvs
+	 * @return
+	 */
+	private Map<String, List<TableDeletionDataCsv>> mapCatWithDataDel(List<TableDeletionDataCsv> tableDeletionDataCsvs) {
+		Map<String, List<TableDeletionDataCsv>> mapCatWithDatas = new HashMap<>();
+		
+		for (TableDeletionDataCsv tableDataDel : tableDeletionDataCsvs) {
+			String categoryId = tableDataDel.getCategoryId();
+			
+			List<TableDeletionDataCsv> catDatas = mapCatWithDatas.get(categoryId);
+			if (catDatas == null) {
+				catDatas = new ArrayList<>();
+				catDatas.add(tableDataDel);
+				mapCatWithDatas.put(categoryId, catDatas);
+			}
+			else {
+				catDatas.add(tableDataDel);
+			}
+		}
+		
+		return mapCatWithDatas;
 	}
 
 	/**
@@ -742,32 +777,47 @@ public class ManualSetDeletionService extends ExportService<Object>{
 	private ResultState deleteDataAgth(String delId, ManualSetDeletion domain,
 			List<TableDeletionDataCsv> tableDeletionDataCsvs, List<EmployeeDeletion> employeeDeletions,
 			List<Category> categories) {
-		// Update domain model 「データ削除動作管理」
-		repoManagementDel.updateCatCountAnCond(delId, 0, OperatingCondition.DELETING);
 
-		int categoryCount = 0;
-		for (TableDeletionDataCsv tableDataDel : tableDeletionDataCsvs) {
-			categoryCount++;
-			// ドメインモデル「データ削除動作管理」を更新する
-			repoManagementDel.updateCatCount(delId, categoryCount);
+		try {
+			// Update domain model 「データ削除動作管理」
+			repoManagementDel.updateCatCountAnCond(delId, 0, OperatingCondition.DELETING);
 
-			// ドメインモデル「データ削除動作管理.中断するしない」を確認
-			Optional<ManagementDeletion> maOptional = repoManagementDel.getManagementDeletionById(delId);
-			if (maOptional.isPresent()) {
-				if (maOptional.get().isInterruptedFlg()) {
-					return ResultState.TERMINATE;
+			Map<String, List<TableDeletionDataCsv>> mapCatWithDatas = mapCatWithDataDel(tableDeletionDataCsvs);
+			if (mapCatWithDatas != null && mapCatWithDatas.size() > 0) {
+				int categoryCount = 0;
+				for (Entry<String, List<TableDeletionDataCsv>> entry : mapCatWithDatas.entrySet()) {
+					categoryCount++;
+
+					// ドメインモデル「データ削除動作管理」を更新する
+					repoManagementDel.updateCatCount(delId, categoryCount);
+
+					// ドメインモデル「データ削除動作管理.中断するしない」を確認
+					Optional<ManagementDeletion> maOptional = repoManagementDel.getManagementDeletionById(delId);
+					if (maOptional.isPresent()) {
+						if (maOptional.get().isInterruptedFlg()) {
+							return ResultState.TERMINATE;
+						}
+					} else {
+						return ResultState.ABNORMAL_END;
+					}
+
+					List<TableDeletionDataCsv> catDatas = entry.getValue();
+					for (TableDeletionDataCsv tableDataDel : catDatas) {
+
+						// アルゴリズム「サーバデータ削除実行カテゴリ」を実行する
+						String msgError = deleteDataForCategory(tableDataDel, employeeDeletions);
+						if (msgError != null) {
+							// ドメインモデル「データ削除の結果ログ」を追加する
+							saveErrorLogResult(domain, msgError);
+							return ResultState.ABNORMAL_END;
+						}
+					}
 				}
-			} else {
-				return ResultState.ABNORMAL_END;
 			}
-
-			// アルゴリズム「サーバデータ削除実行カテゴリ」を実行する
-			String msgError = deleteDataForCategory(tableDataDel, employeeDeletions);
-			if (msgError != null) {
-				//ドメインモデル「データ削除の結果ログ」を追加する
-				saveErrorLogResult(domain, msgError);
-				return ResultState.ABNORMAL_END;
-			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			saveErrorLogResult(domain, e.getMessage());
+			return ResultState.ABNORMAL_END;
 		}
 
 		return ResultState.NORMAL_END;
