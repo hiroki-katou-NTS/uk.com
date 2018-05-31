@@ -17,7 +17,7 @@ public interface WorkInformationRepository {
 	
 	List<WorkInfoOfDailyPerformance> findByPeriodOrderByYmdDesc(String employeeId, DatePeriod datePeriod);
 	
-	List<WorkInfoOfDailyPerformance> finds(Map<String, GeneralDate> param);
+	List<WorkInfoOfDailyPerformance> finds(Map<String, List<GeneralDate>> param);
 	
 	List<WorkInfoOfDailyPerformance> findByListEmployeeId(List<String> employeeIds, DatePeriod ymds);
 	

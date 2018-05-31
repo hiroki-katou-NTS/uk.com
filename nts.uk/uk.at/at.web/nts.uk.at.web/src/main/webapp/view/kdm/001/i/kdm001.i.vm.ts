@@ -26,34 +26,16 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         selectedCodeSubHoliday: KnockoutObservable<number> = ko.observable(null);
         itemListOptionSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
         selectedCodeOptionSubHoliday: KnockoutObservable<string> = ko.observable('');
-        isOptionSubHolidayEnable: KnockoutObservable<boolean> = ko.observable(false);
         closureId: KnockoutObservable<number> = ko.observable(0);
         //RemaningDay
         numberHoliday: KnockoutObservable<string> = ko.observable('');
         numberSubHoliday: KnockoutObservable<string> = ko.observable('');
         numberSplitHoliday: KnockoutObservable<string> = ko.observable('');
         totalDay: KnockoutObservable<number> = ko.observable(null);
-        //Require 分割消化
-        checkRequire: KnockoutObservable<boolean> = ko.observable(false);
-        checkRequireOptionSubHoliday: KnockoutObservable<boolean> = ko.observable(false);
+
         constructor() {
             let self = this;
             self.initScreen();
-            self.checkedSplit.subscribe((v) => {
-                if (!v) {
-                    self.isOptionSubHolidayEnable(false);
-                } else {
-                    self.isOptionSubHolidayEnable(true);
-                }
-            });
-            //Check require
-            self.checkedSubHoliday.subscribe(v => {
-                self.checkRequire(v);
-            });
-            //Check require option sub holiday
-            self.checkedSplit.subscribe(v => {
-                self.checkRequireOptionSubHoliday(v);
-            });
             //休出残数算出処理
             self.checkedHoliday.subscribe((v) => {
                 let remainDayObject = {
@@ -67,7 +49,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                 self.dayRemaining(self.getRemainDay(remainDayObject));
             });
             self.checkedSubHoliday.subscribe((v) => {
-                
+
                 let remainDayObject = {
                     checkBox1: self.checkedHoliday(),
                     checkBox2: v,
@@ -78,7 +60,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                 }
                 self.dayRemaining(self.getRemainDay(remainDayObject));
             });
-            
+
             self.checkedSplit.subscribe((v) => {
                 let remainDayObject = {
                     checkBox1: self.checkedHoliday(),
@@ -101,7 +83,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                 }
                 self.dayRemaining(self.getRemainDay(remainDayObject));
             });
-            
+
             self.selectedCodeSubHoliday.subscribe((v) => {
                 let remainDayObject = {
                     checkBox1: self.checkedHoliday(),
@@ -126,7 +108,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             });
         }
         getRemainDay(remainObject: any): string {
-            if (!remainObject.checkBox1) {
+            if (!remainObject.checkBox1 && !remainObject.checkBox2 && !remainObject.checkBox3) {
                 return "0";
             } else if (remainObject.checkBox1 && !remainObject.checkBox2 && !remainObject.checkBox3) {
                 return remainObject.value1;
@@ -134,8 +116,14 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                 return (remainObject.value1 - remainObject.value2).toString();
             } else if (remainObject.checkBox1 && remainObject.checkBox2 && remainObject.checkBox3) {
                 return (remainObject.value1 - remainObject.value2 - remainObject.value3).toString();
-            }else if (remainObject.checkBox1 && !remainObject.checkBox2 && remainObject.checkBox3) {
+            } else if (remainObject.checkBox1 && !remainObject.checkBox2 && remainObject.checkBox3) {
                 return (remainObject.value1 - remainObject.value3).toString();
+            } else if (!remainObject.checkBox1 && remainObject.checkBox2 && !remainObject.checkBox3) {
+                return (remainObject.value2).toString();
+            } else if (!remainObject.checkBox1 && remainObject.checkBox2 && remainObject.checkBox3) {
+                return (remainObject.value2 - remainObject.value3).toString();
+            } else if (!remainObject.checkBox1 && !remainObject.checkBox2 && remainObject.checkBox3) {
+                return (remainObject.value3).toString();
             }
         }
         initScreen(): void {
@@ -176,7 +164,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     dayRemaining: self.dayRemaining(),
                     closureId: self.closureId()
                 };
-                if (!self.checkedSubHoliday()){
+                if (!self.checkedSubHoliday()) {
                     data.selectedCodeSubHoliday = 0;
                 }
                 console.log(data);
@@ -196,8 +184,8 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                                 $('#I11_1').ntsError('set', { messageId: "Msg_737" });
                             }
                             else if (errorId === "Msg_737_sub_option_holiday") {
-                                $('#I11_1').ntsError('set', { messageId: "Msg_737" });
-                            }    
+                                $('#I12_2').ntsError('set', { messageId: "Msg_737" });
+                            }
                             else if (errorId === "Msg_745_1") {
                                 $('#I6_1').ntsError('set', { messageId: "Msg_745" });
                             }

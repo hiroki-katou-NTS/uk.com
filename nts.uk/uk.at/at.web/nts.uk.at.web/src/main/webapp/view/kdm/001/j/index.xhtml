@@ -56,6 +56,7 @@
 							columns: columns,
 							multiple: true,
 							rows: 8,
+							selectionDisables: disables,
 							value: currentCodeList
 						}" tabindex="1"></table>
 				</div>
@@ -67,7 +68,7 @@
 			</div>
 			<div id="functions-area-bottom">
 				<!-- J31_1 登録 -->
-				<button id="J31_1" style="margin-top: 10px" class="proceed" data-bind="click: update" tabindex="2">#{i18n.getText('KDM001_89')}</button>
+				<button id="J31_1" style="margin-top: 10px" class="proceed large" data-bind="click: update" tabindex="2">#{i18n.getText('KDM001_89')}</button>
 				<!-- J31_2 キャンセル -->
 				<button id="J31_2" style="margin-top: 10px" data-bind="click: closeDialog" tabindex="3">#{i18n.getText('KDM001_90')}</button>
 			</div>

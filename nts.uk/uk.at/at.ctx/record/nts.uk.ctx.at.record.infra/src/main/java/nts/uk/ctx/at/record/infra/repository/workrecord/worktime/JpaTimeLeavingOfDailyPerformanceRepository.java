@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.worktime;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -257,7 +256,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 	}
 
 	@Override
-	public List<TimeLeavingOfDailyPerformance> finds(Map<String, GeneralDate> param) {
+	public List<TimeLeavingOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
 		List<TimeLeavingOfDailyPerformance> result = new ArrayList<>();
 		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDaiLeavingWork a ");
 		query.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId IN :employeeId ");
@@ -265,9 +264,9 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		TypedQueryWrapper<KrcdtDaiLeavingWork> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiLeavingWork.class);
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
 			result.addAll(tQuery.setParameter("employeeId", p.keySet())
-							.setParameter("date", new HashSet<>(p.values()))
+							.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
 							.getList().stream()
-							.filter(c -> c.krcdtDaiLeavingWorkPK.ymd.equals(p.get(c.krcdtDaiLeavingWorkPK.employeeId)))
+							.filter(c -> p.get(c.krcdtDaiLeavingWorkPK.employeeId).contains(c.krcdtDaiLeavingWorkPK.ymd))
 							.map(f -> f.toDomain()).collect(Collectors.toList()));
 		});
 		return result;

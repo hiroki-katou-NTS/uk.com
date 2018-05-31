@@ -20,7 +20,7 @@ public interface OutingTimeOfDailyPerformanceRepository {
 	
 	List<OutingTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd);
 	
-	List<OutingTimeOfDailyPerformance> finds(Map<String, GeneralDate> param);
+	List<OutingTimeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param);
 	
 	void add(OutingTimeOfDailyPerformance outing);
 	

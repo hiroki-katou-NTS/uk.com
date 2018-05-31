@@ -112,52 +112,52 @@ public class AddSubHdManagementService {
 		String companyId = AppContexts.user().companyId();
 		int closureId = subHdManagementData.getClosureId();
 		YearMonth processYearMonth = GeneralDate.today().yearMonth();
+		String employeeId = subHdManagementData.getEmployeeId();
 		// ドメインモデル「締め」を読み込む
 		Optional<GeneralDate> closureDate = this.getClosureDate(closureId, processYearMonth);
 
-		if (subHdManagementData.getCheckedHoliday()) {
-			String employeeId = subHdManagementData.getEmployeeId();
-			errorList.addAll(this.checkHoliday(subHdManagementData.getDateHoliday(), closureDate, closureId));
-			for (int i = 0; i < errorList.size(); i++) {
-				if (errorList.get(i).equals("Msg_745")) {
-					errorList.set(i, "Msg_745_1");
+		if(!subHdManagementData.getCheckedHoliday() && !subHdManagementData.getCheckedSubHoliday()){
+			errorList.add("Msg_728");
+		} else {
+			if(subHdManagementData.getCheckedHoliday()){
+				errorList.addAll(this.checkHoliday(subHdManagementData.getDateHoliday(), closureDate, closureId));
+				if(errorList.contains("Msg_745")){
+					errorList.set(errorList.indexOf("Msg_745"), "Msg_745_1");
 				}
 			}
 			// ドメインモデル「休出管理データ」を読み込む
-			GeneralDate dateHoliday = subHdManagementData.getDateHoliday();
+			GeneralDate dateHoliday = subHdManagementData.getCheckedHoliday() ? subHdManagementData.getDateHoliday() : subHdManagementData.getDateSubHoliday();
 			List<LeaveManagementData> leaveManagementDatas = repoLeaveManaData.getBySidWithHolidayDate(companyId,
 					employeeId, dateHoliday);
 			if (!leaveManagementDatas.isEmpty()) {
-				errorList.add("Msg_737_holiday");
+				if(subHdManagementData.getCheckedHoliday()){
+					errorList.add("Msg_737_holiday");
+				} else if (subHdManagementData.getCheckedSubHoliday()){
+					errorList.add("Msg_737_sub_holiday");
+				}
 			}
-			// チェックボタン「代休」をチェックする
 			if (subHdManagementData.getCheckedSubHoliday()) {
 				// 代休（年月日）チェック処理
-				errorList.addAll(this.checkDateHoliday(Optional.of(subHdManagementData.getDateHoliday()),
-						subHdManagementData.getDateSubHoliday(), closureDate, closureId));
-				// 代休管理データ
-				errorList.addAll(this.checkHoliday(subHdManagementData.getDateHoliday(), closureDate, closureId));
-				for (int i = 0; i < errorList.size(); i++) {
-					if (errorList.get(i).equals("Msg_745")) {
-						errorList.set(i, "Msg_745_2");
-					}
-				}
+				errorList.addAll(this.checkDateHoliday(Optional.empty(), subHdManagementData.getDateSubHoliday(),
+						closureDate, closureId));
+				//ドメインモデル「代休管理データ」を読み込む
 				GeneralDate dateSubHoliday = subHdManagementData.getDateSubHoliday();
 				List<CompensatoryDayOffManaData> compensatoryDayOffManaDatas = repoComDayOffManaData
-						.getBySidWithHolidayDateCondition(employeeId, companyId, dateSubHoliday);
+						.getBySidWithHolidayDateCondition(companyId, employeeId, dateSubHoliday);
 				if (!compensatoryDayOffManaDatas.isEmpty()) {
 					errorList.add("Msg_737_sub_holiday");
 				}
-				//チェックボタン「分割消化」をチェックする
-				if (subHdManagementData.getCheckedSubHoliday()) {
-					List<CompensatoryDayOffManaData> dayoff =  repoComDayOffManaData.getBySidWithHolidayDateCondition(companyId, employeeId, dateSubHoliday);
-					if (!dayoff.isEmpty()) {
-						errorList.add("Msg_737_sub_option_holiday");
-					}
+			}
+
+			// チェックボタン「分割消化」をチェックする
+			if (subHdManagementData.getCheckedSplit()) {
+				GeneralDate dateOptionSubHoliday = subHdManagementData.getDateOptionSubHoliday();
+				List<CompensatoryDayOffManaData> dayoff = repoComDayOffManaData
+						.getBySidWithHolidayDateCondition(companyId, employeeId, dateOptionSubHoliday);
+				if (!dayoff.isEmpty()) {
+					errorList.add("Msg_737_sub_option_holiday");
 				}
 			}
-		} else {
-			errorList.add("Msg_728");
 		}
 		// アルゴリズム「休出代休日数チェック処理」を実行する
 		errorList.addAll(checkHolidayAndSubHoliday(subHdManagementData));
@@ -203,7 +203,6 @@ public class AddSubHdManagementService {
 		if (!closureDate.isPresent()) {
 			closureDate = this.getClosureDate(closureId, processYearMonth);
 		}
-
 		// 代休（年月日）と締め日をチェックする
 		if (closureDate.isPresent() && !closureDate.get().after(subHolidayDate)) {
 			errorList.add("Msg_746");

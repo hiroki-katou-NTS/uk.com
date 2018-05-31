@@ -24,9 +24,11 @@ public class DayOffManaCommandHandler extends CommandHandlerWithResult<DayOffMan
 		DayOffManaCommand dayOffManaCommand = context.getCommand();
 
 		DayOffManagementData dayOffManagementData = new DayOffManagementData(
-				dayOffManaCommand.getComDayOffManaDtos().stream().map(item -> {
-					return new DaysOffMana(item.getComDayOffID(), item.getDayOff(), item.getRemainDays());
-				}).collect(Collectors.toList()), dayOffManaCommand.getEmployeeId(), dayOffManaCommand.getLeaveId(), dayOffManaCommand.getNumberDayParam());
+				dayOffManaCommand.getComDayOffManaDtos().stream()
+						.map(item -> new DaysOffMana(item.getComDayOffID(), item.getDayOff(), item.getRemainDays()))
+						.collect(Collectors.toList()),
+				dayOffManaCommand.getEmployeeId(), dayOffManaCommand.getLeaveId(),
+				dayOffManaCommand.getNumberDayParam());
 		 
 		return dayOffManaService.updateDayOff(dayOffManagementData);
 	}

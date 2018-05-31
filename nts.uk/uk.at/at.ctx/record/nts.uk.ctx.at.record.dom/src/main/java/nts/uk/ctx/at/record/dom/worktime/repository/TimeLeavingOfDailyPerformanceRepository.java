@@ -18,7 +18,7 @@ public interface TimeLeavingOfDailyPerformanceRepository {
 	
 	List<TimeLeavingOfDailyPerformance> finds(List<String> employeeIds, DatePeriod ymd);
 	
-	List<TimeLeavingOfDailyPerformance> finds(Map<String, GeneralDate> param);
+	List<TimeLeavingOfDailyPerformance> finds(Map<String, List<GeneralDate>> param);
 	
 	void add(TimeLeavingOfDailyPerformance timeLeaving);
 	

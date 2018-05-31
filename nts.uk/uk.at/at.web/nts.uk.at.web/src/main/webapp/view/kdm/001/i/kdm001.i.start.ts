@@ -2,6 +2,6 @@ module nts.uk.at.view.kdm001.i {
     __viewContext.ready(function() {
         let screenModel = new nts.uk.at.view.kdm001.i.viewmodel.ScreenModel();
             __viewContext.bind(screenModel);
-            _.defer(() => {$('#checkedHoliday').focus()});
+            _.defer(() => {$('#I4').focus()});
     });
 }

@@ -1,6 +1,5 @@
 package nts.uk.screen.at.app.dailymodify.command;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -101,7 +100,10 @@ public class DailyModifyCommandFacade {
 	
 	private List<DailyRecordDto> toDto(List<DailyModifyQuery> query) {
 		List<DailyRecordDto> oldValues = finder.find(query.stream()
-									.collect(Collectors.toMap(c -> c.getEmployeeId(), c -> c.getBaseDate())));
+									.collect(Collectors.groupingBy(c -> c.getEmployeeId(), 
+												Collectors.collectingAndThen(Collectors.toList(), 
+													c -> c.stream().map(q -> q.getBaseDate())
+																	.collect(Collectors.toList())))));
 		return oldValues.stream().map(o -> {
 			List<ItemValue> itemValues = query.stream().filter(q -> q.getBaseDate().equals(o.workingDate()) 
 																&& q.getEmployeeId().equals(o.employeeId()))
