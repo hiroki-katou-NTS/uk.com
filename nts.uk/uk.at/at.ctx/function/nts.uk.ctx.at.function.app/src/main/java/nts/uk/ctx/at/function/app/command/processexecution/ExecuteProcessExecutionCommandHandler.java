@@ -1269,21 +1269,21 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			// 日別実績の作成
 			this.dailyPerformanceCreation( companyId,context, procExec, empCalAndSumExeLog, createProcessForChangePerOrWorktype.getNoLeaderEmpIdList(),
 					calculateDailyPeriod.getDailyCreationPeriod(), workPlaceIds, typeExecution,dailyCreateLog);
-			
+		
 			typeExecution = "日別計算";
 			// 日別実績の計算
 			this.dailyPerformanceCreation( companyId,context, procExec, empCalAndSumExeLog, createProcessForChangePerOrWorktype.getNoLeaderEmpIdList(),
 					calculateDailyPeriod.getDailyCalcPeriod(), workPlaceIds, typeExecution,dailyCalLog);
 			
-			
+		
 			
 			// 勤務種別変更者を再作成 =true
-			if (!procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()) {
+			if (procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()) {
 				DatePeriod maxDatePeriod = this.getMaxDatePeriod(calculateDailyPeriod.getDailyCreationPeriod(),
 						calculateDailyPeriod.getDailyCalcPeriod());
 				// 再作成処理
 				this.recreateProcess(context, closure.getClosureId().value, empCalAndSumExeLog, maxDatePeriod,
-						workPlaceIds, createProcessForChangePerOrWorktype.getLeaderEmpIdList(), companyId, procExecLog, procExec);
+						workPlaceIds, createProcessForChangePerOrWorktype.getLeaderEmpIdList(), companyId, procExecLog, procExec, dailyCreateLog);
 
 			} 
 			
@@ -1592,10 +1592,10 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		GeneralDate endDate ;
 		if(targetDate==1){
 			if(createPeriod==1){
-				endDate =	GeneralDate.ymd(today.year(), startMonth, startDate.localDate().getMonth().maxLength());
+				endDate =	GeneralDate.ymd(today.year(), startMonth, 1);
 				endDate = GeneralDate.ymd(today.year(), startMonth, endDate.localDate().getMonth().maxLength());
 			}else{
-				endDate =	GeneralDate.ymd(today.year(), startMonth+createPeriod-1, startDate.localDate().getMonth().maxLength());
+				endDate =	GeneralDate.ymd(today.year(), startMonth+createPeriod-1, 1);
 				endDate =	GeneralDate.ymd(today.year(), startMonth+createPeriod-1, endDate.localDate().getMonth().maxLength());
 			}
 		}else{
@@ -2676,7 +2676,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	private boolean recreateProcess(CommandHandlerContext<ExecuteProcessExecutionCommand> context, int closureId,
 			EmpCalAndSumExeLog empCalAndSumExeLog, DatePeriod period, List<String> workPlaceIds,
 			List<String> empIdList, String companyId, ProcessExecutionLog procExecLog,
-			ProcessExecution processExecution) throws CreateDailyException, DailyCalculateException {
+			ProcessExecution processExecution,ExecutionLog dailyCreateLog) throws CreateDailyException, DailyCalculateException {
 		// 承認結果の反映の実行ログを作成
 		//this.createExecLogReflecAppResult(empCalAndSumExeLog.getCaseSpecExeContentID(), companyId, procExecLog);
 		// 期間を計算
@@ -2808,7 +2808,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		for (int i = 0; i < size; i++) {
 			String empId = newEmpIdList.get(i);
 			isHasInterrupt = this.RedoDailyPerformanceProcessing(context, companyId, empId, calculatePeriod,
-					empCalAndSumExeLog.getEmpCalAndSumExecLogID());
+					empCalAndSumExeLog.getEmpCalAndSumExecLogID(), dailyCreateLog);
 			if (isHasInterrupt) {
 				break;
 			}
@@ -2869,13 +2869,13 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	}
 
 	private boolean RedoDailyPerformanceProcessing(CommandHandlerContext<ExecuteProcessExecutionCommand> context,
-			String companyId, String empId, DatePeriod period, String empCalAndSumExeLogId) throws CreateDailyException, DailyCalculateException {
+			String companyId, String empId, DatePeriod period, String empCalAndSumExeLogId,ExecutionLog dailyCreateLog) throws CreateDailyException, DailyCalculateException {
 		AsyncCommandHandlerContext<ExecuteProcessExecutionCommand> asyncContext = (AsyncCommandHandlerContext<ExecuteProcessExecutionCommand>) context;
 				ProcessState processState1;
 		try {
 			// ⑤社員の日別実績を作成する
 			 processState1 = this.createDailyService.createDailyResultEmployeeWithNoInfoImport(asyncContext, empId, period,
-					companyId, empCalAndSumExeLogId, null, true);
+					companyId, empCalAndSumExeLogId,Optional.ofNullable(dailyCreateLog), true);
 		} catch (Exception e) {
 			throw new CreateDailyException();
 		}
