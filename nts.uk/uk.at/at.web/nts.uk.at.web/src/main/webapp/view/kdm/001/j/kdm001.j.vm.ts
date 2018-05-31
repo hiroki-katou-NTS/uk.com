@@ -137,7 +137,7 @@ module nts.uk.at.view.kdm001.j.viewmodel {
             let self = this;
             service.getAll(leaveId, employeeId).done(function(data) {
 
-                if (!data.errorCode) {
+                if (data.errorCode != null) {
                     nts.uk.ui.dialog.alertError({ messageId: data.errorCode });
                 }
                 for (let i = 0; i < data.listDayOff.length; i++) {
