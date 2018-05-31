@@ -2,7 +2,9 @@ package nts.uk.file.at.app.export.dailyschedule.totalsum;
 
 import java.math.BigDecimal;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -11,6 +13,8 @@ import nts.arc.time.GeneralDate;
  *
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class TotalValue {
 	/** The Constant INTEGER. */
 	public static final int INTEGER = 0;
@@ -54,4 +58,5 @@ public class TotalValue {
 			throw new RuntimeException("invalid type: " + this.valueType);
 		}
 	}
+
 }

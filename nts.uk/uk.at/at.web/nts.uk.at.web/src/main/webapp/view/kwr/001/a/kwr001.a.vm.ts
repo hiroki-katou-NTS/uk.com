@@ -466,10 +466,14 @@ module nts.uk.at.view.kwr001.a {
                                 condition: data
                             };
                             nts.uk.ui.block.grayout();
-                            service.exportExcel(dto).done(function(){
+                            service.exportExcel(dto).done(function(response){
+                            }).fail(function(error){
+                                nts.uk.ui.dialog.error({ messageId: error.message, messageParams: null});
                             }).always(function() {
                                nts.uk.ui.block.clear(); 
                             });
+                        }).fail(function(error) {
+                            nts.uk.ui.dialog.alertError(error);
                         }); 
                     });
                 }

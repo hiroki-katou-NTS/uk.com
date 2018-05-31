@@ -6,6 +6,7 @@ import java.util.Map;
 
 import lombok.Data;
 import nts.uk.file.at.app.export.dailyschedule.totalsum.TotalCountDay;
+import nts.uk.file.at.app.export.dailyschedule.totalsum.TotalValue;
 
 /**
  * Instantiates a new employee report data.
@@ -33,5 +34,5 @@ public class EmployeeReportData {
 	public TotalCountDay totalCountDay = new TotalCountDay();
 	
 	/** The personal total. */
-	public Map<Integer, String> mapPersonalTotal = new LinkedHashMap<>();
+	public Map<Integer, TotalValue> mapPersonalTotal = new LinkedHashMap<>();
 }

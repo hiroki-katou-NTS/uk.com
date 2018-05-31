@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceType;
@@ -80,10 +82,16 @@ public class TotalDayCountWs {
 	 * @param dayType
 	 * @return
 	 */
-	private void calculateNonPredeterminedDay(String employeeId, DateRange dateRange, TotalCountDay totalCountDay) {
+	private TotalCountDay calculateNonPredeterminedDay(String employeeId, DateRange dateRange, TotalCountDay totalCountDay) {
 		// ドメインモデル「画面で利用できる勤怠項目一覧」を取得する
 //		AttendanceType attendanceType = attendanceTypeRepository.getItemByScreenUseAtr(AppContexts.user().companyId(), 19)
 //				.stream().filter(x -> x.getAttendanceItemId() == 58 && x.getAttendanceItemType().value == 1).findFirst().get();
+		
+		// ドメインモデル「日別実績の勤務情報」を取得する
+		List<String> empList = new ArrayList<>();
+		empList.add(employeeId);
+		// 予定勤務種類コードを取得する
+		List<WorkInfoOfDailyPerformanceDetailDto> dailyPerformanceList = dailyPerformanceRepo.find(empList, dateRange);
 		
 		for (DayType dayType : DayType.values()) {
 			// ドメインモデル「勤務種類」を取得する
@@ -94,40 +102,35 @@ public class TotalDayCountWs {
 			
 			if (lstWorkType.size() > 0) {
 				
-				// ドメインモデル「日別実績の勤務情報」を取得する
-				List<String> empList = new ArrayList<>();
-				empList.add(employeeId);
-				// 予定勤務種類コードを取得する
-				List<WorkInfoOfDailyPerformanceDetailDto> dailyPerformanceList = dailyPerformanceRepo.find(empList, dateRange);
-				
 				for (WorkType workType: lstWorkType) {
 					// 日数をカウントする
-					int dayCount = dailyPerformanceList.stream().filter(x -> x.getScheduleWorkInformation().getWorkTypeCode() == workType.getWorkTypeCode().v()).collect(Collectors.toList()).size();
+					int dayCount = dailyPerformanceList.stream().filter(x -> StringUtils.equals(x.getScheduleWorkInformation().getWorkTypeCode(),workType.getWorkTypeCode().v())).collect(Collectors.toList()).size();
 					//int dayCount = lstWorkType.size();
 					switch (dayType) {
 					case ATTEND:
-						totalCountDay.setWorkingDay(dayCount);
+						totalCountDay.setWorkingDay(totalCountDay.getWorkingDay() + dayCount);
 						break;
 					case ABSENCE:
-						totalCountDay.setAbsenceDay(dayCount);
+						totalCountDay.setAbsenceDay(totalCountDay.getAbsenceDay() + dayCount);
 						break;
 					case ANNUAL_HOLIDAY:
-						totalCountDay.setYearOffUsage(dayCount);
+						totalCountDay.setYearOffUsage(totalCountDay.getYearOffUsage() + dayCount);
 						break;
 					case OFF_WORK:
-						totalCountDay.setOffDay(dayCount);
+						totalCountDay.setOffDay(totalCountDay.getOffDay() + dayCount);
 						break;
 					case SPECIAL:
-						totalCountDay.setSpecialHoliday(dayCount);
+						totalCountDay.setSpecialHoliday(totalCountDay.getSpecialHoliday() + dayCount);
 						break;
 					case YEARLY_RESERVED:
-						totalCountDay.setHeavyHolDay(dayCount);
+						totalCountDay.setHeavyHolDay(totalCountDay.getHeavyHolDay() + dayCount);
 						break;
 					}
 				}
 				
 			}
 		}
+		return totalCountDay;
 	}
 	
 	/**
@@ -194,7 +197,7 @@ public class TotalDayCountWs {
 	 */
 	public void calculateAllDayCount(String employeeId, DateRange dateRange, TotalCountDay totalCountDay) {
 		calculatePredeterminedDay(employeeId, dateRange, totalCountDay);
-		calculateNonPredeterminedDay(employeeId, dateRange, totalCountDay);
+		totalCountDay = calculateNonPredeterminedDay(employeeId, dateRange, totalCountDay);
 		calculateDayCount(employeeId, dateRange, totalCountDay);
 	}
 }
