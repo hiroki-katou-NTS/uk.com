@@ -92,6 +92,7 @@ import nts.uk.file.at.app.export.dailyschedule.data.DailyReportData;
 import nts.uk.file.at.app.export.dailyschedule.data.DailyWorkplaceData;
 import nts.uk.file.at.app.export.dailyschedule.data.DetailedDailyPerformanceReportData;
 import nts.uk.file.at.app.export.dailyschedule.data.EmployeeReportData;
+import nts.uk.file.at.app.export.dailyschedule.data.OutputItemSetting;
 import nts.uk.file.at.app.export.dailyschedule.data.WorkplaceDailyReportData;
 import nts.uk.file.at.app.export.dailyschedule.data.WorkplaceReportData;
 import nts.uk.file.at.app.export.dailyschedule.totalsum.TotalCountDay;
@@ -271,7 +272,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			writeHeaderData(query, sheet, reportData, dateRow);
 			
 			// Copy footer
-			copyFooter(sheet, sheetCollection.get(6));
+			//copyFooter(sheet, sheetCollection.get(6));
 			 	
 			// Set all fixed cell
 			setFixedData(condition, sheet, reportData, currentRow);
@@ -850,6 +851,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		lstReportData.values().forEach((value) -> {
 			List<TotalValue> lstActualValue = value.getWorkplaceTotal().getTotalWorkplaceValue();
 			lstActualValue.forEach(actualValue -> {
+				if (actualValue == null) return;
 				Optional<TotalValue> optTotalVal = lstTotalValue.stream().filter(x -> x.getAttendanceId() == actualValue.getAttendanceId()).findFirst();
 				TotalValue totalValue;
 				if (optTotalVal.isPresent()) {
@@ -861,8 +863,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				else {
 					totalValue = new TotalValue();
 					totalValue.setAttendanceId(actualValue.getAttendanceId());
-					if (totalValue.getValueType() == ActualValue.INTEGER || totalValue.getValueType() == ActualValue.BIG_DECIMAL)
-						totalValue.setValue(actualValue.getValue());
+					if (totalValue.getValueType() == ActualValue.INTEGER || totalValue.getValueType() == ActualValue.BIG_DECIMAL) {
+						if (actualValue.getValue() != null)
+							totalValue.setValue(actualValue.getValue());
+						else
+							totalValue.setValue("0");
+					}
 					totalValue.setValueType(actualValue.getValueType());
 					lstTotalValue.add(totalValue);
 				}
@@ -1098,7 +1104,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		
 		List<Integer> lstAttendanceId = lstItem.stream().map(x -> x.getAttendanceDisplay()).collect(Collectors.toList());
 		List<DailyAttendanceItem> lstDailyAttendanceItem = attendanceNameService.getNameOfDailyAttendanceItem(lstAttendanceId);
-		headerData.lstOutputItemSettingCode = lstDailyAttendanceItem.stream().map(x -> x.getAttendanceItemName()).collect(Collectors.toList());
+		headerData.lstOutputItemSettingCode = lstDailyAttendanceItem.stream().map(x -> {
+			OutputItemSetting setting = new OutputItemSetting();
+			setting.setItemCode(x.getAttendanceItemDisplayNumber());
+			setting.setItemName(x.getAttendanceItemName());
+			return setting;
+		}).collect(Collectors.toList());
 	}
 	
 	/**
@@ -1185,7 +1196,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param nSize the n size
 	 */
 	public void writeDisplayMap(Cells cells, DailyPerformanceReportData reportData, int currentRow, int nSize) {
-		List<String> lstItem = reportData.getHeaderData().getLstOutputItemSettingCode();
+		List<OutputItemSetting> lstItem = reportData.getHeaderData().getLstOutputItemSettingCode();
 		
 		// Divide list into smaller lists (max 16 items)
 		int numOfChunks = (int)Math.ceil((double)lstItem.size() / CHUNK_SIZE);
@@ -1194,13 +1205,16 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
             int start = i * CHUNK_SIZE;
             int length = Math.min(lstItem.size() - start, CHUNK_SIZE);
 
-            List<String> lstItemRow = lstItem.subList(start, start + length);
+            List<OutputItemSetting> lstItemRow = lstItem.subList(start, start + length);
             
             for (int j = 0; j < length; j++) {
             	// Column 4, 6, 8,...
             	// Row 3, 4, 5
-            	Cell cell = cells.get(currentRow + i, DATA_COLUMN_INDEX[0] + j * 2); 
-            	cell.setValue(lstItemRow.get(j));
+            	Cell cell = cells.get(currentRow + i*2, DATA_COLUMN_INDEX[0] + j * 2); 
+            	cell.setValue(lstItemRow.get(j).getItemName());
+            	
+            	cell = cells.get(currentRow + i*2 + 1, DATA_COLUMN_INDEX[0] + j * 2); 
+            	cell.setValue(lstItemRow.get(j).getItemCode());
             }
         }
 	}

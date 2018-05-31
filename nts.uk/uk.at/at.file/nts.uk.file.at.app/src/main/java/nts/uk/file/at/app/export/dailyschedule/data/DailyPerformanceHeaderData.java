@@ -17,5 +17,5 @@ public class DailyPerformanceHeaderData {
 	
 	public List<String> fixedHeaderData;
 	
-	public List<String> lstOutputItemSettingCode;
+	public List<OutputItemSetting> lstOutputItemSettingCode;
 }
