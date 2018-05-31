@@ -62,6 +62,6 @@ public class OvertimeInputDto {
 				"", 
 				overTimeInput.getStartTime() == null ? null : overTimeInput.getStartTime().v(), 
 				overTimeInput.getEndTime() == null? null: overTimeInput.getEndTime().v(), 
-				overTimeInput.getApplicationTime().v(),0);
+				overTimeInput.getApplicationTime()== null ? null: overTimeInput.getApplicationTime().v(),0);
 	}
 }

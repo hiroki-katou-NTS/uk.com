@@ -1,17 +1,18 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber;
 
-import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.IntegerRange;
+import nts.arc.primitive.HalfIntegerPrimitiveValue;
+import nts.arc.primitive.constraint.HalfIntegerRange;
 
-@IntegerRange(min = 0 , max = 366)
-public class DayNumberOver extends IntegerPrimitiveValue<DayNumberOver>{
+// tepy - 特別休暇残数用付与日数
+@HalfIntegerRange(min = 0, max = 999.5)
+public class DayNumberOver extends HalfIntegerPrimitiveValue<DayNumberOver>{
 
 	/**
 	 *  日数
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public DayNumberOver(Integer rawValue) {
+	public DayNumberOver(Double rawValue) {
 		super(rawValue);
 	}
 

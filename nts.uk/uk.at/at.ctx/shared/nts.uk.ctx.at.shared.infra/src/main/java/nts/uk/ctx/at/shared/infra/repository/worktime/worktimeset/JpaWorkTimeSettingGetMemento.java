@@ -30,82 +30,110 @@ public class JpaWorkTimeSettingGetMemento implements WorkTimeSettingGetMemento {
 	/**
 	 * Instantiates a new jpa work time setting get memento.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 */
 	public JpaWorkTimeSettingGetMemento(KshmtWorkTimeSet entity) {
 		this.entity = entity;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento#getCompanyId()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento#
+	 * getCompanyId()
 	 */
 	@Override
 	public String getCompanyId() {
 		return this.entity.getKshmtWorkTimeSetPK().getCid();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento#getWorktimeCode()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento#
+	 * getWorktimeCode()
 	 */
 	@Override
 	public WorkTimeCode getWorktimeCode() {
 		return new WorkTimeCode(this.entity.getKshmtWorkTimeSetPK().getWorktimeCd());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento#getWorkTimeDivision()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento#
+	 * getWorkTimeDivision()
 	 */
 	@Override
 	public WorkTimeDivision getWorkTimeDivision() {
-		return WorkTimeDivision.builder()
-				.workTimeDailyAtr(WorkTimeDailyAtr.valueOf(this.entity.getDailyWorkAtr()))
-				.workTimeMethodSet(WorkTimeMethodSet.valueOf(this.entity.getWorktimeSetMethod()))
-				.build();
+		return new WorkTimeDivision(WorkTimeDailyAtr.valueOf(this.entity.getDailyWorkAtr()),
+				WorkTimeMethodSet.valueOf(this.entity.getWorktimeSetMethod()));
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento#getAbolishAtr()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento#
+	 * getAbolishAtr()
 	 */
 	@Override
 	public AbolishAtr getAbolishAtr() {
 		return AbolishAtr.valueOf(this.entity.getAbolitionAtr());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento#getColorCode()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento#
+	 * getColorCode()
 	 */
 	@Override
 	public ColorCode getColorCode() {
 		return new ColorCode(this.entity.getColor());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento#getWorkTimeDisplayName()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento#
+	 * getWorkTimeDisplayName()
 	 */
 	@Override
 	public WorkTimeDisplayName getWorkTimeDisplayName() {
-		return WorkTimeDisplayName.builder()
-				.workTimeName(new WorkTimeName(this.entity.getName()))
+		return WorkTimeDisplayName.builder().workTimeName(new WorkTimeName(this.entity.getName()))
 				.workTimeAbName(new WorkTimeAbName(this.entity.getAbname()))
-				.workTimeSymbol(new WorkTimeSymbol(this.entity.getSymbol()))
-				.build();
+				.workTimeSymbol(new WorkTimeSymbol(this.entity.getSymbol())).build();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento#getMemo()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento#
+	 * getMemo()
 	 */
 	@Override
 	public Memo getMemo() {
 		return new Memo(this.entity.getMemo());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento#getNote()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento#
+	 * getNote()
 	 */
 	@Override
 	public WorkTimeNote getNote() {
 		return new WorkTimeNote(this.entity.getNote());
 	}
 
-	
 }

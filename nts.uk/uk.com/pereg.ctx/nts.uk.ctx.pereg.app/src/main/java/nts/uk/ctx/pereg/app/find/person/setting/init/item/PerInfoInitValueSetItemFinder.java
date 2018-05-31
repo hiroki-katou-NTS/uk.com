@@ -18,13 +18,15 @@ import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.category.CategoryStateDto;
 import nts.uk.ctx.pereg.dom.common.PredetemineTimeSettingRepo;
 import nts.uk.ctx.pereg.dom.common.WorkTimeSettingRepo;
+import nts.uk.ctx.pereg.dom.copysetting.item.IsRequired;
+import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCtgByCompanyRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
-import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItem;
+import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItemDetail;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
@@ -42,12 +44,12 @@ public class PerInfoInitValueSetItemFinder {
 	private PredetemineTimeSettingRepo predetemineTimeSettingRepo;
 	@Inject
 	private PerInfoCtgByCompanyRepositoty ctgRepo;
-	
-	@Inject 
+
+	@Inject
 	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
 
 	public List<PerInfoInitValueSettingItemDto> getAllItem(String settingId, String perInfoCtgId) {
-		List<PerInfoInitValueSetItem> item = this.settingItemRepo.getAllItem(settingId, perInfoCtgId);
+		List<PerInfoInitValueSetItemDetail> item = this.settingItemRepo.getAllItem(settingId, perInfoCtgId);
 		if (item != null && !item.isEmpty()) {
 			List<PerInfoInitValueSettingItemDto> itemDto = this.convertItemDtoLst(item);
 			return itemDto;
@@ -60,80 +62,22 @@ public class PerInfoInitValueSetItemFinder {
 		String companyId = AppContexts.user().companyId();
 		String contract = AppContexts.user().contractCode();
 		CategoryStateDto ctgState = new CategoryStateDto();
-		List<PerInfoInitValueSetItem> item = this.settingItemRepo.getAllItem(settingId, perInfoCtgId);
+		List<PerInfoInitValueSetItemDetail> item = this.settingItemRepo.getAllItem(settingId, perInfoCtgId);
 		PersonInfoCategory ctg = this.ctgRepo.getDetailCategoryInfo(companyId, perInfoCtgId, contract)
 				.orElseThrow(null);
-		if(item.isEmpty()) return ctgState;
+		if (item.isEmpty())
+			return ctgState;
 		String ctgCode = item.get(0).getCtgCode();
 		List<String> itemList = this.createItemTimePointOfCS00020();
 		List<ItemRequiredBackGroud> itemRequired = new ArrayList<>();
 		List<ItemDto> itemDto = new ArrayList<>();
 		if (item != null) {
 			if (ctgCode.equals("CS00020")) {
-				item.stream().filter(c -> {
+				item = item.stream().filter(c -> {
 					return !itemList.contains(c.getItemCode());
-				}).forEach(c -> {
-					boolean checkDisable = c.getItemName().equals("終了日")
-							&& (ctg != null ? (ctg.getCategoryType().value == 3 ? true : false) : false);
-					itemDto.add(new ItemDto(c.getPerInfoItemDefId(), c.getItemName(), false, c.getIsRequired().value));
-					ItemRequiredBackGroud itemNamebackGroud = new ItemRequiredBackGroud();
-					ItemRequiredBackGroud disablebackGroud = new ItemRequiredBackGroud();
-					itemNamebackGroud.setColumnKey("itemName");
-					itemNamebackGroud.setRowId(c.getPerInfoItemDefId());
-					disablebackGroud.setColumnKey("disabled");
-					disablebackGroud.setRowId(c.getPerInfoItemDefId());
-					if (checkDisable) {
-						disablebackGroud.setState(toList("ntsgrid-disable"));
-						if (c.getIsRequired().value == 1) {
-							itemNamebackGroud.setState(toList("requiredCell"));
-						} else {
-							itemNamebackGroud.setState(toList("notrequiredCell"));
-						}
-					} else {
-						if (c.getIsRequired().value == 1) {
-							itemNamebackGroud.setState(toList("requiredCell"));
-							disablebackGroud.setState(toList("requiredCell"));
-						} else {
-							itemNamebackGroud.setState(toList("notrequiredCell"));
-							disablebackGroud.setState(toList("notrequiredCell"));
-						}
-					}
-					itemRequired.add(itemNamebackGroud);
-					itemRequired.add(disablebackGroud);
-				});
-
-			} else {
-				item.stream().forEach(c -> {
-					boolean checkDisable = c.getItemName().equals("終了日")
-							&& (ctg != null ? (ctg.getCategoryType().value == 3 ? true : false) : false);
-					itemDto.add(new ItemDto(c.getPerInfoItemDefId(), c.getItemName(), false, c.getIsRequired().value));
-					ItemRequiredBackGroud itemNamebackGroud = new ItemRequiredBackGroud();
-					ItemRequiredBackGroud disablebackGroud = new ItemRequiredBackGroud();
-					itemNamebackGroud.setColumnKey("itemName");
-					itemNamebackGroud.setRowId(c.getPerInfoItemDefId());
-					disablebackGroud.setColumnKey("disabled");
-					disablebackGroud.setRowId(c.getPerInfoItemDefId());
-
-					if (checkDisable) {
-						disablebackGroud.setState(toList("ntsgrid-disable"));
-						if (c.getIsRequired().value == 1) {
-							itemNamebackGroud.setState(toList("requiredCell"));
-						} else {
-							itemNamebackGroud.setState(toList("notrequiredCell"));
-						}
-					} else {
-						if (c.getIsRequired().value == 1) {
-							itemNamebackGroud.setState(toList("requiredCell"));
-							disablebackGroud.setState(toList("requiredCell"));
-						} else {
-							itemNamebackGroud.setState(toList("notrequiredCell"));
-							disablebackGroud.setState(toList("notrequiredCell"));
-						}
-					}
-					itemRequired.add(itemNamebackGroud);
-					itemRequired.add(disablebackGroud);
-				});
+				}).collect(Collectors.toList());
 			}
+			this.setRequiredBackGround(item, ctg, itemDto, itemRequired);
 			ctgState.setItemLst(itemDto);
 			ctgState.setItemRequired(itemRequired);
 		}
@@ -144,93 +88,93 @@ public class PerInfoInitValueSetItemFinder {
 		return Stream.of(item).collect(Collectors.toCollection(ArrayList::new));
 	}
 
-	public List<PerInfoInitValueSettingItemDto> convertItemDtoLst(List<PerInfoInitValueSetItem> items) {
+	public List<PerInfoInitValueSettingItemDto> convertItemDtoLst(List<PerInfoInitValueSetItemDetail> items) {
 		String ctgCode = items.get(0).getCtgCode();
 		List<PerInfoInitValueSettingItemDto> itemDto = new ArrayList<>();
-		//アルゴリズム「勤務開始終了時刻を活性にするかチェックする」
-		List<String> itemEven = Arrays.asList("IS00133", "IS00134", "IS00142", "IS00143", "IS00160", "IS00161", "IS00169",
-				"IS00170", "IS00178", "IS00179", "IS00151", "IS00152", "IS00196", "IS00197", "IS00205", "IS00206",
-				"IS00214", "IS00215", "IS00223", "IS00224", "IS00232", "IS00233", "IS00214", "IS00215", "IS00241",
-				"IS00242", "IS00187", "IS00188");
+		// アルゴリズム「勤務開始終了時刻を活性にするかチェックする」
+		List<String> itemEven = Arrays.asList("IS00133", "IS00134", "IS00142", "IS00143", "IS00160", "IS00161",
+				"IS00169", "IS00170", "IS00178", "IS00179", "IS00151", "IS00152", "IS00196", "IS00197", "IS00205",
+				"IS00206", "IS00214", "IS00215", "IS00223", "IS00224", "IS00232", "IS00233", "IS00214", "IS00215",
+				"IS00241", "IS00242", "IS00187", "IS00188");
 
-		//アルゴリズム「勤務開始終了時刻を活性にするかチェックする」AND 「アルゴリズム「複数回項目を活性にするかチェックする」
-		List<String> itemOld = Arrays.asList("IS00136", "IS00137", "IS00145", "IS00146", "IS00163", "IS00164", "IS00172",
-				"IS00173", "IS00181", "IS00182", "IS00154", "IS00155", "IS00199", "IS00200", "IS00208", "IS00209",
-				"IS00217", "IS00218", "IS00226", "IS00227", "IS00235", "IS00236", "IS00217", "IS00218", "IS00244",
-				"IS00245", "IS00190", "IS00191");
-		
+		// アルゴリズム「勤務開始終了時刻を活性にするかチェックする」AND 「アルゴリズム「複数回項目を活性にするかチェックする」
+		List<String> itemOld = Arrays.asList("IS00136", "IS00137", "IS00145", "IS00146", "IS00163", "IS00164",
+				"IS00172", "IS00173", "IS00181", "IS00182", "IS00154", "IS00155", "IS00199", "IS00200", "IS00208",
+				"IS00209", "IS00217", "IS00218", "IS00226", "IS00227", "IS00235", "IS00236", "IS00217", "IS00218",
+				"IS00244", "IS00245", "IS00190", "IS00191");
+		List<String> itemParents = Arrays.asList("IS00131", "IS00140", "IS00158", "IS00167", "IS00176", "IS00149",
+				"IS00194", "IS00203", "IS00212", "IS00221", "IS00230", "IS00239", "IS00185");
+
+		List<PerInfoInitValueSetItemDetail> itemFilter = items.stream().filter(c -> {
+			return itemParents.contains(c.getItemCode());
+		}).collect(Collectors.toList());
 		// Get company id
 		String companyId = AppContexts.user().companyId();
 		// Get Command
-		Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty.getPerInfoCategoryByCtgCD(ctgCode,companyId);
-		
-		if (!perInfoCategory.isPresent()){
+		Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty.getPerInfoCategoryByCtgCD(ctgCode,
+				companyId);
+		boolean isContinious = perInfoCategory.isPresent()
+				? (perInfoCategory.get().getCategoryType() == CategoryType.CONTINUOUSHISTORY ? true : false)
+				: false;
+
+		if (!perInfoCategory.isPresent()) {
 			throw new RuntimeException("invalid PersonInfoCategory");
 		}
 		PersonEmployeeType personEmployeeType = perInfoCategory.get().getPersonEmployeeType();
+		if (ctgCode.equals("CS00001")) {
+			items = items.stream().filter(c -> {
+				return !c.getItemCode().equals("IS00001");
+			}).collect(Collectors.toList());
+
+		}
 		
+		if (ctgCode.equals("CS00003")) {
+			items = items.stream().filter(c -> {
+				return !c.getItemCode().equals("IS00020");
+			}).collect(Collectors.toList());
+
+		}
 		if (ctgCode.equals("CS00020")) {
 			itemDto = items.stream().map(item -> {
 
 				PerInfoInitValueSettingItemDto dto = PerInfoInitValueSettingItemDto.fromDomain(item);
 				boolean isEven = itemEven.contains(item.getItemCode());
 				boolean isOld = itemOld.contains(item.getItemCode());
-				if (isOld || isEven) {
+				String selectionId = item.getSelectionItemId();
+				this.setCompareItemCode(item, itemFilter, itemParents, dto, selectionId, isOld, isEven);
+				if (((item.getItemName().equals("終了日") && isContinious)) || isEven || isOld) {
 					dto.setDisableCombox(true);
-				} else {
-					dto.setDisableCombox(false);
 				}
-
-				if (isOld) {
-					if (item.getSelectionItemId() == null) {
-						dto.setEnableControl(false);
-					} else {
-						dto.setEnableControl(this.predetemineTimeSettingRepo.isWorkingTwice(item.getSelectionItemId())
-								&& this.workTimeSettingRepo.isFlowWork(item.getSelectionItemId()));
-					}
-				}
-
-				if (isEven) {
-					if (item.getSelectionItemId() == null) {
-						dto.setEnableControl(false);
-					} else {
-						dto.setEnableControl(this.workTimeSettingRepo.isFlowWork(item.getSelectionItemId()));
-					}
-				}
-				
-				return getInitItemDto(dto, personEmployeeType);
-			}).collect(Collectors.toList());
-		} else if (ctgCode.equals("CS00001")) {
-			itemDto = items.stream().filter(c -> {
-				return !c.getItemCode().equals("IS00001");
-			}).map(c -> {
-				PerInfoInitValueSettingItemDto dto = PerInfoInitValueSettingItemDto.fromDomain(c);
-				return getInitItemDto(dto, personEmployeeType);
+				return getInitItemDto(dto, personEmployeeType, ctgCode);
 			}).collect(Collectors.toList());
 		} else {
 			itemDto = items.stream().map(c -> {
 				PerInfoInitValueSettingItemDto dto = PerInfoInitValueSettingItemDto.fromDomain(c);
-				return getInitItemDto(dto, personEmployeeType);
-			}).collect(Collectors.toList());;
+				if (c.getItemName().equals("終了日") && isContinious) {
+					dto.setDisableCombox(true);
+				}
+				return getInitItemDto(dto, personEmployeeType, ctgCode);
+			}).collect(Collectors.toList());
+			;
 		}
-		
+
 		return itemDto;
 
 	}
-	
+
 	private PerInfoInitValueSettingItemDto getInitItemDto(PerInfoInitValueSettingItemDto dto,
-			PersonEmployeeType personEmployeeType) {
+			PersonEmployeeType personEmployeeType, String categoryCode) {
 		int dataType = dto.getDataType();
 		if (dataType == DataTypeValue.SELECTION.value || dataType == DataTypeValue.SELECTION_BUTTON.value
 				|| dataType == DataTypeValue.SELECTION_RADIO.value) {
 			boolean isDataType6 = dataType == DataTypeValue.SELECTION.value;
-			dto.setSelection(getSelectionItem(dto, personEmployeeType, isDataType6));
+			dto.setSelection(getSelectionItem(dto, personEmployeeType, isDataType6, categoryCode));
 		}
 		return dto;
 	}
-	
+
 	private List<ComboBoxObject> getSelectionItem(PerInfoInitValueSettingItemDto dto,
-			PersonEmployeeType personEmployeeType, boolean isDataType6) {
+			PersonEmployeeType personEmployeeType, boolean isDataType6, String categoryCode) {
 		SelectionItemDto selectionItemDto = null;
 		ReferenceTypes refenceType = EnumAdaptor.valueOf(dto.getSelectionItemRefType(), ReferenceTypes.class);
 		switch (refenceType) {
@@ -248,23 +192,25 @@ public class PerInfoInitValueSetItemFinder {
 			break;
 		}
 		return this.comboBoxFactory.getComboBox(selectionItemDto, AppContexts.user().employeeId(), GeneralDate.today(),
-				true, personEmployeeType, isDataType6);
+				true, personEmployeeType, isDataType6, categoryCode);
 	}
 
-	public List<PerInfoInitValueSettingItemDto> filterItemTimePointOfCS00020(List<PerInfoInitValueSetItem> items) {
+	public List<PerInfoInitValueSettingItemDto> filterItemTimePointOfCS00020(List<PerInfoInitValueSetItemDetail> items,
+			String categorycode) {
 		String ctgCode = items.get(0).getCtgCode();
 		List<String> itemList = this.createItemTimePointOfCS00020();
-		
+
 		// Get company id
 		String companyId = AppContexts.user().companyId();
 		// Get Command
-		Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty.getPerInfoCategoryByCtgCD(ctgCode,companyId);
-		
-		if (!perInfoCategory.isPresent()){
+		Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty.getPerInfoCategoryByCtgCD(ctgCode,
+				companyId);
+
+		if (!perInfoCategory.isPresent()) {
 			throw new RuntimeException("invalid PersonInfoCategory");
 		}
-		List<PerInfoInitValueSetItem> filteredItems = null;
-		
+		List<PerInfoInitValueSetItemDetail> filteredItems = null;
+
 		if (ctgCode.equals("CS00020")) {
 			filteredItems = items.stream().filter(x -> {
 				return !itemList.contains(x.getItemCode());
@@ -273,13 +219,17 @@ public class PerInfoInitValueSetItemFinder {
 			filteredItems = items.stream().filter(c -> {
 				return !c.getItemCode().equals("IS00001");
 			}).collect(Collectors.toList());
+		} else if (ctgCode.equals("CS00003")) {
+			filteredItems = items.stream().filter(c -> {
+				return !c.getItemCode().equals("IS00020");
+			}).collect(Collectors.toList());
 		} else {
 			filteredItems = items;
 		}
-		
+
 		return filteredItems.stream().map(c -> {
 			PerInfoInitValueSettingItemDto dto = PerInfoInitValueSettingItemDto.fromDomain(c);
-			return getInitItemDto(dto, perInfoCategory.get().getPersonEmployeeType());
+			return getInitItemDto(dto, perInfoCategory.get().getPersonEmployeeType(), categorycode);
 		}).collect(Collectors.toList());
 	}
 
@@ -292,4 +242,91 @@ public class PerInfoInitValueSetItemFinder {
 				"IS00214", "IS00215", "IS00217", "IS00218", "IS00241", "IS00242", "IS00244", "IS00245", "IS00187",
 				"IS00188", "IS00190", "IS00191");
 	}
+
+	private void setCompareItemCode(PerInfoInitValueSetItemDetail item, List<PerInfoInitValueSetItemDetail> itemFilter,
+			List<String> itemParents, PerInfoInitValueSettingItemDto dto, String selectionId, boolean isOld,
+			boolean isEven) {
+		List<String> itemLst = this.createItemTimePointOfCS00020();
+		List<PerInfoInitValueSetItemDetail> itemParent = new ArrayList<>();
+		itemParents.stream().forEach(i -> {
+			List<PerInfoInitValueSetItemDetail> itemParentFilter = itemFilter.stream().filter(c -> {
+				return c.getItemCode().equals(i);
+			}).collect(Collectors.toList());
+			if (itemParentFilter.size() > 0) {
+				itemParent.addAll(itemParentFilter);
+			}
+		});
+
+		for (int i = 0; i < itemLst.size(); i = i + 4) {
+			if (i + 4 <= itemLst.size()) {
+				if (item.getItemCode().equals(itemLst.get(i)) || item.getItemCode().equals(itemLst.get(i + 1))
+						|| item.getItemCode().equals(itemLst.get(i + 2))
+						|| item.getItemCode().equals(itemLst.get(i + 3))) {
+					setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
+					break;
+				}
+			}
+
+		}
+
+	}
+
+	private void setEnableControl(PerInfoInitValueSetItemDetail item, List<PerInfoInitValueSetItemDetail> itemParent,
+			PerInfoInitValueSettingItemDto dto, String selectionId, boolean isOld, boolean isEven) {
+
+		if (itemParent.size() > 0) {
+			if (itemParent.get(0).getSelectionItemId() != null && itemParent.get(0).getStringValue() != null) {
+				selectionId = itemParent.get(0).getStringValue();
+			} else {
+				selectionId = itemParent.get(0).getSelectionItemId();
+			}
+			if (isOld) {
+
+				if (selectionId == null) {
+					dto.setEnableControl(false);
+				} else {
+					dto.setEnableControl(this.predetemineTimeSettingRepo.isWorkingTwice(selectionId)
+							&& this.workTimeSettingRepo.isFlowWork(selectionId));
+				}
+			}
+
+			if (isEven) {
+				if (selectionId == null) {
+					dto.setEnableControl(false);
+				} else {
+					dto.setEnableControl(this.workTimeSettingRepo.isFlowWork(selectionId));
+				}
+			}
+		}
+	}
+
+	private void setRequiredBackGround(List<PerInfoInitValueSetItemDetail> item, PersonInfoCategory ctg,
+			List<ItemDto> itemDto, List<ItemRequiredBackGroud> itemRequired) {
+		item.stream().forEach(c -> {
+			boolean checkDisable = c.getItemName().equals("終了日")
+					&& (ctg != null ? (ctg.getCategoryType() == CategoryType.CONTINUOUSHISTORY ? true : false) : false);
+			itemDto.add(new ItemDto(c.getPerInfoItemDefId(), c.getItemName(), false, c.getIsRequired()));
+			ItemRequiredBackGroud itemNamebackGroud = new ItemRequiredBackGroud();
+			ItemRequiredBackGroud disablebackGroud = new ItemRequiredBackGroud();
+			itemNamebackGroud.setColumnKey("itemName");
+			itemNamebackGroud.setRowId(c.getPerInfoItemDefId());
+			disablebackGroud.setColumnKey("disabled");
+			disablebackGroud.setRowId(c.getPerInfoItemDefId());
+
+			if (checkDisable) {
+				disablebackGroud.setState(toList("ntsgrid-disable"));
+				if (c.getIsRequired() == IsRequired.REQUIRED.value) {
+					itemNamebackGroud.setState(toList("requiredCell"));
+				}
+			} else {
+				if (c.getIsRequired() == IsRequired.REQUIRED.value) {
+					itemNamebackGroud.setState(toList("requiredCell"));
+					disablebackGroud.setState(toList("requiredCell"));
+				}
+			}
+			itemRequired.add(itemNamebackGroud);
+			itemRequired.add(disablebackGroud);
+		});
+	}
+
 }

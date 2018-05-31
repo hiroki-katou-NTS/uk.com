@@ -1,7 +1,11 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param;
 
+import java.util.Optional;
+
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -9,6 +13,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author shuichu_ishida
  */
 @Getter
+@Setter
 public class AggregatePeriodWork {
 
 	/** 期間 */
@@ -21,6 +26,8 @@ public class AggregatePeriodWork {
 	private boolean afterGrant;
 	/** 消滅フラグ */
 	private boolean lapsedAtr;
+	/** 年休付与 */
+	private Optional<NextAnnualLeaveGrant> annualLeaveGrant;
 	
 	/**
 	 * コンストラクタ
@@ -32,6 +39,7 @@ public class AggregatePeriodWork {
 		this.grantAtr = false;
 		this.afterGrant = false;
 		this.lapsedAtr = false;
+		this.annualLeaveGrant = Optional.empty();
 	}
 	
 	/**
@@ -40,7 +48,8 @@ public class AggregatePeriodWork {
 	 * @param nextDayAfterPeriodEnd 期間終了後翌日
 	 * @param grantAtr 付与フラグ
 	 * @param afterGrant 付与後
-	 * @param lapsedAtr　消滅フラグ
+	 * @param lapsedAtr 消滅フラグ
+	 * @param annualLeaveGrant 年休付与
 	 * @return 年休集計期間WORK
 	 */
 	public static AggregatePeriodWork of(
@@ -48,7 +57,8 @@ public class AggregatePeriodWork {
 			boolean nextDayAfterPeriodEnd,
 			boolean grantAtr,
 			boolean afterGrant,
-			boolean lapsedAtr){
+			boolean lapsedAtr,
+			Optional<NextAnnualLeaveGrant> annualLeaveGrant){
 		
 		AggregatePeriodWork domain = new AggregatePeriodWork();
 		domain.period = period;
@@ -56,6 +66,7 @@ public class AggregatePeriodWork {
 		domain.grantAtr = grantAtr;
 		domain.afterGrant = afterGrant;
 		domain.lapsedAtr = lapsedAtr;
+		domain.annualLeaveGrant = annualLeaveGrant;
 		return domain;
 	}
 }

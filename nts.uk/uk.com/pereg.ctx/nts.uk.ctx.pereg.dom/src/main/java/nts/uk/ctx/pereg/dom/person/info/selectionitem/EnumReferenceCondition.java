@@ -6,6 +6,11 @@ import lombok.Getter;
 public class EnumReferenceCondition extends ReferenceTypeState {
 
 	private EnumName enumName;
+	
+	@Override
+	public String getReferenceCode() {
+		return this.enumName.v();
+	}
 
 	private EnumReferenceCondition(String enumName) {
 		super();

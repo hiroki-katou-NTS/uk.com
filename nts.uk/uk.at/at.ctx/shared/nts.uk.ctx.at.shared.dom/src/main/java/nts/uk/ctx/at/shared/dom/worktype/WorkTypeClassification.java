@@ -75,13 +75,7 @@ public enum WorkTypeClassification {
 	public final String nameId;
 	
 	
-	/**
-	 * 休日出勤であるか判定する
-	 * @return　休日出勤である
-	 */
-	public boolean isHolidayWork() {
-		return HolidayWork.equals(this);
-	}
+
 	
 	/**
 	 * 年休であるか判定する
@@ -117,55 +111,41 @@ public enum WorkTypeClassification {
 	public boolean isSubstituteHoliday() {
 		return SubstituteHoliday.equals(this);
 	}
-	
-	/**
-	 * 休日系か判定する
-	 * @return　休日系である
+		/**
+	 * 休日であるか判定する
+	 * @return　休日である
 	 */
 	public boolean isHoliday() {
-		switch (this) {
-		case Absence:
-		case AnnualHoliday:
-		case Closure:
-		case Holiday:
-		case LeaveOfAbsence:
-		case Pause:
-		case SpecialHoliday:
-		case SubstituteHoliday:
-		case TimeDigestVacation:
-		case YearlyReserved:
-		case ContinuousWork:
-			return true;
-			
-		case HolidayWork:
-		case Attendance:
-		case Shooting:
-			return false;
-			
-		default:
-			throw new RuntimeException("invalid value: " + this);
-		}
+		return Holiday.equals(this);
+	}
+	/**
+	 * 振出であるか判定する
+	 * @return　振出である
+	 */
+	public boolean isShooting() {
+		return Shooting.equals(this);
 	}
 	
 	public boolean isAttendance() {
-		return !this.isHoliday();
+		return !this.isHolidayType();
 	}
 	
 	/**
-	 * 平日出勤系か判定する
+	 * 出勤系か判定する
 	 * @return　平日出勤系である
 	 */
 	public boolean isWeekDayAttendance() {
 		switch (this) {
 		case Attendance:
 		case Shooting:
+		
 			return true;
+		case HolidayWork:
 		case Absence:
 		case AnnualHoliday:
 		case Closure:
 		case ContinuousWork:
 		case Holiday:
-		case HolidayWork:
 		case LeaveOfAbsence:
 		case Pause:
 		case SpecialHoliday:
@@ -178,5 +158,70 @@ public enum WorkTypeClassification {
 			throw new RuntimeException("invalid value: " + this);
 		}
 	}
+	
+	/**
+	 * 休日系か判定する
+	 * @return　休日系である
+	 */
+	public boolean isHolidayType() {
+		switch (this) {
+		case Absence:
+		case AnnualHoliday:
+		case Closure:
+		case Holiday:
+		case LeaveOfAbsence:
+		case Pause:
+		case SpecialHoliday:
+		case SubstituteHoliday:
+		case TimeDigestVacation:
+		case YearlyReserved:
+		case ContinuousWork:
+			return true;
+			
+		case HolidayWork:
+		case Attendance:
+		case Shooting:
+			return false;
+			
+		default:
+			throw new RuntimeException("invalid value: " + this);
+		}
+	}
+	
+	/**
+	 * 休日出勤(休出系)であるか判定する
+	 * @return　休日出勤である
+	 */
+	public boolean isHolidayWork() {
+		return HolidayWork.equals(this);
+	}
+	/**
+	 * 休暇系であるか判定する
+	 * @return　休暇系である
+	 */
+	public boolean isVacation() {
+		switch (this) {
+		case AnnualHoliday:
+		case SpecialHoliday:
+		case Absence:
+		case SubstituteHoliday:
+		case TimeDigestVacation:
+			return true;
+		case Closure:
+		case Holiday:
+		case LeaveOfAbsence:
+		case Pause:
+		case HolidayWork:
+		case Attendance:
+		case Shooting:
+		case YearlyReserved:
+		case ContinuousWork:
+			return false;
+		default:
+			throw new RuntimeException("invalid value: " + this);
+		}
+	}
+	
+
 	
 }

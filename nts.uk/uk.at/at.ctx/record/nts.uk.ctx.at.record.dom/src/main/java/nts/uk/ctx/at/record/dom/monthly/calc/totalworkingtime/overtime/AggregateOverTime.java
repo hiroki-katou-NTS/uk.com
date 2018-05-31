@@ -18,7 +18,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author shuichi_ishida
  */
 @Getter
-public class AggregateOverTime {
+public class AggregateOverTime implements Cloneable {
 
 	/** 残業枠NO */
 	private final OverTimeFrameNo overTimeFrameNo;
@@ -79,6 +79,28 @@ public class AggregateOverTime {
 		domain.legalOverTime = legalOverTime;
 		domain.legalTransferOverTime = legalTransferOverTime;
 		return domain;
+	}
+	
+	@Override
+	public AggregateOverTime clone() {
+		AggregateOverTime cloned = new AggregateOverTime(this.overTimeFrameNo);
+		try {
+			cloned.overTime = new TimeMonthWithCalculation(
+					new AttendanceTimeMonth(this.overTime.getTime().v()),
+					new AttendanceTimeMonth(this.overTime.getCalcTime().v()));
+			cloned.beforeOverTime = new AttendanceTimeMonth(this.beforeOverTime.v());
+			cloned.transferOverTime = new TimeMonthWithCalculation(
+					new AttendanceTimeMonth(this.transferOverTime.getTime().v()),
+					new AttendanceTimeMonth(this.transferOverTime.getCalcTime().v()));
+			cloned.legalOverTime = new AttendanceTimeMonth(this.legalOverTime.v());
+			cloned.legalTransferOverTime = new AttendanceTimeMonth(this.legalTransferOverTime.v());
+			// ※　Shallow Copy.
+			cloned.timeSeriesWorks = this.timeSeriesWorks;
+		}
+		catch (Exception e){
+			throw new RuntimeException("AggregateOverTime clone error.");
+		}
+		return cloned;
 	}
 	
 	/**
@@ -145,5 +167,20 @@ public class AggregateOverTime {
 			this.legalTransferOverTime = this.legalTransferOverTime.addMinutes(
 					timeSeriesWork.getLegalOverTime().getTransferTime().getTime().v());
 		}
+	}
+	
+	/**
+	 * 合算する
+	 * @param target　加算対象
+	 */
+	public void sum(AggregateOverTime target){
+		
+		this.overTime = this.overTime.addMinutes(
+				target.overTime.getTime().v(), target.overTime.getCalcTime().v());
+		this.beforeOverTime = this.beforeOverTime.addMinutes(target.beforeOverTime.v());
+		this.transferOverTime = this.transferOverTime.addMinutes(
+				target.transferOverTime.getTime().v(), target.transferOverTime.getCalcTime().v());
+		this.legalOverTime = this.legalOverTime.addMinutes(target.legalOverTime.v());
+		this.legalTransferOverTime = this.legalTransferOverTime.addMinutes(target.legalTransferOverTime.v());
 	}
 }

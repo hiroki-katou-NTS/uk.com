@@ -9,6 +9,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ShowColumnDependent {
+  private int itemId;
   /*使用区分 */
   private boolean columnTimeUseSet;
   /*乖離理由入力設定 */
@@ -23,5 +24,9 @@ public class ShowColumnDependent {
 	  this.columnInputUseSet = false;
 	  this.columnSelectUseSet = false;
 	  this.reasons = new ArrayList<>();
+  }
+  
+  public static ShowColumnDependent createDefault(){
+	  return new ShowColumnDependent();
   }
 }

@@ -53,7 +53,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_TIME_CHK_MONTHLY")
+@Table(name = "KRCMT_ERAL_CONDITION")
 public class KrcmtTimeChkMonthly extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -69,10 +69,10 @@ public class KrcmtTimeChkMonthly extends UkJpaEntity implements Serializable {
 	public String messageDisplay;
 
 	@Column(name = "OPERATOR_BETWEEN_GROUPS")
-	public BigDecimal operatorBetweenGroups;
+	public int operatorBetweenGroups;
 
 	@Column(name = "GROUP2_USE_ATR")
-	public BigDecimal group2UseAtr;
+	public int group2UseAtr;
 
 	@Basic(optional = true)
 	@Column(name = "ATD_ITEM_CONDITION_GROUP1")
@@ -104,23 +104,19 @@ public class KrcmtTimeChkMonthly extends UkJpaEntity implements Serializable {
 		domain.setDisplayMessage(entity.messageDisplay);
 		// Set AttendanceItemCondition
 		List<ErAlAttendanceItemCondition<?>> conditionsGroup1 = Optional.ofNullable(entity.krcstErAlConGroup1)
-				.orElse(new KrcstErAlConGroup("", new BigDecimal(0), new ArrayList<>())).lstAtdItemCon.stream().map(
+				.orElse(new KrcstErAlConGroup("", 0, new ArrayList<>())).lstAtdItemCon.stream().map(
 						atdItemCon -> convertKrcmtErAlAtdItemConToDomain(entity, atdItemCon, companyId, errorAlarmCode))
 						.collect(Collectors.toList());
 		List<ErAlAttendanceItemCondition<?>> conditionsGroup2 = Optional.ofNullable(entity.krcstErAlConGroup2)
-				.orElse(new KrcstErAlConGroup("", new BigDecimal(0), new ArrayList<>())).lstAtdItemCon.stream().map(
+				.orElse(new KrcstErAlConGroup("", 0, new ArrayList<>())).lstAtdItemCon.stream().map(
 						atdItemCon -> convertKrcmtErAlAtdItemConToDomain(entity, atdItemCon, companyId, errorAlarmCode))
 						.collect(Collectors.toList());
-		domain.createAttendanceItemCondition(
-				(entity.operatorBetweenGroups == null ? 0 : entity.operatorBetweenGroups.intValue()),
-				(entity.group2UseAtr != null && entity.group2UseAtr.intValue() == 1))
+		domain.createAttendanceItemCondition(entity.operatorBetweenGroups, entity.group2UseAtr == 1)
 				.setAttendanceItemConditionGroup1(Optional.ofNullable(entity.krcstErAlConGroup1)
-						.orElse(new KrcstErAlConGroup("", new BigDecimal(0), new ArrayList<>())).conditionOperator
-								.intValue(),
+						.orElse(new KrcstErAlConGroup("", (0), new ArrayList<>())).conditionOperator,
 						conditionsGroup1)
 				.setAttendanceItemConditionGroup2(Optional.ofNullable(entity.krcstErAlConGroup2)
-						.orElse(new KrcstErAlConGroup("", new BigDecimal(0), new ArrayList<>())).conditionOperator
-								.intValue(),
+						.orElse(new KrcstErAlConGroup("", (0), new ArrayList<>())).conditionOperator,
 						conditionsGroup2);
 		return domain;
 	}
@@ -129,93 +125,71 @@ public class KrcmtTimeChkMonthly extends UkJpaEntity implements Serializable {
 	private static <V> ErAlAttendanceItemCondition<V> convertKrcmtErAlAtdItemConToDomain(KrcmtTimeChkMonthly entity,
 			KrcmtErAlAtdItemCon atdItemCon, String companyId, String errorAlarmCode) {
 		ErAlAttendanceItemCondition<V> atdItemConDomain = new ErAlAttendanceItemCondition<V>(companyId, errorAlarmCode,
-				(atdItemCon.krcmtErAlAtdItemConPK.atdItemConNo == null ? 0
-						: atdItemCon.krcmtErAlAtdItemConPK.atdItemConNo.intValue()),
-				(atdItemCon.conditionAtr == null ? 0 : atdItemCon.conditionAtr.intValue()),
-				(atdItemCon.useAtr != null && atdItemCon.useAtr.intValue() == 1));
+				(atdItemCon.krcmtErAlAtdItemConPK.atdItemConNo),
+				(atdItemCon.conditionAtr),
+				(atdItemCon.useAtr == 1));
 		// Set Target
-		if (atdItemCon.conditionAtr != null && atdItemCon.conditionAtr.intValue() == ConditionAtr.TIME_WITH_DAY.value) {
+		if (atdItemCon.conditionAtr == ConditionAtr.TIME_WITH_DAY.value) {
 			atdItemConDomain.setUncountableTarget(
 					Optional.ofNullable(atdItemCon.lstAtdItemTarget).orElse(Collections.emptyList()).stream()
-							.filter(atdItemTarget -> (atdItemTarget.targetAtr != null
-									&& atdItemTarget.targetAtr.intValue() == 2))
-							.findFirst().get().krcstErAlAtdTargetPK.attendanceItemId.intValue());
+							.filter(atdItemTarget -> (atdItemTarget.targetAtr == 2))
+							.findFirst().get().krcstErAlAtdTargetPK.attendanceItemId);
 		} else {
 			atdItemConDomain.setCountableTarget(
 					Optional.ofNullable(atdItemCon.lstAtdItemTarget).orElse(Collections.emptyList()).stream()
-							.filter(atdItemTarget -> atdItemTarget.targetAtr.intValue() == 0)
-							.map(addItem -> addItem.krcstErAlAtdTargetPK.attendanceItemId.intValue())
+							.filter(atdItemTarget -> atdItemTarget.targetAtr == 0)
+							.map(addItem -> addItem.krcstErAlAtdTargetPK.attendanceItemId)
 							.collect(Collectors.toList()),
 					Optional.ofNullable(atdItemCon.lstAtdItemTarget).orElse(Collections.emptyList()).stream()
-							.filter(atdItemTarget -> atdItemTarget.targetAtr.intValue() == 1)
-							.map(addItem -> addItem.krcstErAlAtdTargetPK.attendanceItemId.intValue())
+							.filter(atdItemTarget -> atdItemTarget.targetAtr == 1)
+							.map(addItem -> addItem.krcstErAlAtdTargetPK.attendanceItemId)
 							.collect(Collectors.toList()));
 		}
 		// Set Compare
 		if (atdItemCon.erAlCompareRange != null) {
-			if (atdItemCon.conditionAtr != null
-					&& atdItemCon.conditionAtr.intValue() == ConditionAtr.AMOUNT_VALUE.value) {
-				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr.intValue(),
-						(V) new CheckedAmountValue(atdItemCon.erAlCompareRange.startValue.intValue()),
-						(V) new CheckedAmountValue(atdItemCon.erAlCompareRange.endValue.intValue()));
-			} else if (atdItemCon.conditionAtr != null
-					&& atdItemCon.conditionAtr.intValue() == ConditionAtr.TIME_DURATION.value) {
-				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr.intValue(),
-						(V) new CheckedTimeDuration(atdItemCon.erAlCompareRange.startValue.intValue()),
-						(V) new CheckedTimeDuration(atdItemCon.erAlCompareRange.endValue.intValue()));
-			} else if (atdItemCon.conditionAtr != null
-					&& atdItemCon.conditionAtr.intValue() == ConditionAtr.TIME_WITH_DAY.value) {
-				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr.intValue(),
-						(V) new TimeWithDayAttr(atdItemCon.erAlCompareRange.startValue.intValue()),
-						(V) new TimeWithDayAttr(atdItemCon.erAlCompareRange.endValue.intValue()));
-			} else if (atdItemCon.conditionAtr != null
-					&& atdItemCon.conditionAtr.intValue() == ConditionAtr.TIMES.value) {
-				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr.intValue(),
-						(V) new CheckedTimesValue(atdItemCon.erAlCompareRange.startValue.intValue()),
-						(V) new CheckedTimesValue(atdItemCon.erAlCompareRange.endValue.intValue()));
+			if (atdItemCon.conditionAtr == ConditionAtr.AMOUNT_VALUE.value) {
+				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr,
+						(V) new CheckedAmountValue(atdItemCon.erAlCompareRange.startValue),
+						(V) new CheckedAmountValue(atdItemCon.erAlCompareRange.endValue));
+			} else if (atdItemCon.conditionAtr == ConditionAtr.TIME_DURATION.value) {
+				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr,
+						(V) new CheckedTimeDuration(atdItemCon.erAlCompareRange.startValue),
+						(V) new CheckedTimeDuration(atdItemCon.erAlCompareRange.endValue));
+			} else if (atdItemCon.conditionAtr == ConditionAtr.TIME_WITH_DAY.value) {
+				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr,
+						(V) new TimeWithDayAttr(atdItemCon.erAlCompareRange.startValue),
+						(V) new TimeWithDayAttr(atdItemCon.erAlCompareRange.endValue));
+			} else if (atdItemCon.conditionAtr == ConditionAtr.TIMES.value) {
+				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr,
+						(V) new CheckedTimesValue(atdItemCon.erAlCompareRange.startValue),
+						(V) new CheckedTimesValue(atdItemCon.erAlCompareRange.endValue));
 			}
 		} else if (atdItemCon.erAlCompareSingle != null) {
-			if (atdItemCon.erAlCompareSingle.conditionType != null
-					&& atdItemCon.erAlCompareSingle.conditionType.intValue() == ConditionType.FIXED_VALUE.value) {
-				if (atdItemCon.conditionAtr != null
-						&& atdItemCon.conditionAtr.intValue() == ConditionAtr.AMOUNT_VALUE.value) {
-					atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr.intValue(),
-							atdItemCon.erAlCompareSingle.conditionType.intValue(),
-							(V) new CheckedAmountValue(atdItemCon.erAlSingleFixed.fixedValue.intValue()));
-				} else if (atdItemCon.conditionAtr != null
-						&& atdItemCon.conditionAtr.intValue() == ConditionAtr.TIME_DURATION.value) {
+			if (atdItemCon.erAlCompareSingle.conditionType == ConditionType.FIXED_VALUE.value) {
+				if (atdItemCon.conditionAtr == ConditionAtr.AMOUNT_VALUE.value) {
+					atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr,
+							atdItemCon.erAlCompareSingle.conditionType,
+							(V) new CheckedAmountValue(atdItemCon.erAlSingleFixed.fixedValue));
+				} else if (atdItemCon.conditionAtr == ConditionAtr.TIME_DURATION.value) {
 					atdItemConDomain.setCompareSingleValue(
-							atdItemCon.erAlCompareSingle.compareAtr == null ? 0
-									: atdItemCon.erAlCompareSingle.compareAtr.intValue(),
-							atdItemCon.erAlCompareSingle.conditionType == null ? 0
-									: atdItemCon.erAlCompareSingle.conditionType.intValue(),
-							(V) new CheckedTimeDuration(atdItemCon.erAlSingleFixed.fixedValue == null ? 0
-									: atdItemCon.erAlSingleFixed.fixedValue.intValue()));
-				} else if (atdItemCon.conditionAtr != null
-						&& atdItemCon.conditionAtr.intValue() == ConditionAtr.TIME_WITH_DAY.value) {
+							atdItemCon.erAlCompareSingle.compareAtr,
+							atdItemCon.erAlCompareSingle.conditionType,
+							(V) new CheckedTimeDuration(atdItemCon.erAlSingleFixed.fixedValue));
+				} else if (atdItemCon.conditionAtr == ConditionAtr.TIME_WITH_DAY.value) {
 					atdItemConDomain.setCompareSingleValue(
-							atdItemCon.erAlCompareSingle.compareAtr == null ? 0
-									: atdItemCon.erAlCompareSingle.compareAtr.intValue(),
-							atdItemCon.erAlCompareSingle.conditionType == null ? 0
-									: atdItemCon.erAlCompareSingle.conditionType.intValue(),
-							(V) new TimeWithDayAttr(atdItemCon.erAlSingleFixed.fixedValue == null ? 0
-									: atdItemCon.erAlSingleFixed.fixedValue.intValue()));
-				} else if (atdItemCon.conditionAtr != null
-						&& atdItemCon.conditionAtr.intValue() == ConditionAtr.TIMES.value) {
+							atdItemCon.erAlCompareSingle.compareAtr,
+							atdItemCon.erAlCompareSingle.conditionType,
+							(V) new TimeWithDayAttr(atdItemCon.erAlSingleFixed.fixedValue));
+				} else if (atdItemCon.conditionAtr == ConditionAtr.TIMES.value) {
 					atdItemConDomain.setCompareSingleValue(
-							atdItemCon.erAlCompareSingle.compareAtr == null ? 0
-									: atdItemCon.erAlCompareSingle.compareAtr.intValue(),
-							atdItemCon.erAlCompareSingle.conditionType == null ? 0
-									: atdItemCon.erAlCompareSingle.conditionType.intValue(),
-							(V) new CheckedTimesValue(atdItemCon.erAlSingleFixed.fixedValue == null ? 0
-									: atdItemCon.erAlSingleFixed.fixedValue.intValue()));
+							atdItemCon.erAlCompareSingle.compareAtr,
+							atdItemCon.erAlCompareSingle.conditionType,
+							(V) new CheckedTimesValue(atdItemCon.erAlSingleFixed.fixedValue));
 				}
 			} else {
 				atdItemConDomain.setCompareSingleValue(
-						atdItemCon.erAlCompareSingle.compareAtr == null ? 0
-								: atdItemCon.erAlCompareSingle.compareAtr.intValue(),
-						atdItemCon.erAlCompareSingle.conditionType == null ? 0
-								: atdItemCon.erAlCompareSingle.conditionType.intValue(),
+						atdItemCon.erAlCompareSingle.compareAtr,
+						atdItemCon.erAlCompareSingle.conditionType,
 						(V) new AttendanceItemId(
 								atdItemCon.erAlSingleAtd.get(0).krcstEralSingleAtdPK.attendanceItemId));
 			}
@@ -226,21 +200,18 @@ public class KrcmtTimeChkMonthly extends UkJpaEntity implements Serializable {
 	public static KrcmtTimeChkMonthly fromDomain(TimeItemCheckMonthly domain) {
 		String eralCheckId = domain.getErrorAlarmCheckID();
 		String displayMessage = "";
-		BigDecimal operatorBetweenGroups = new BigDecimal(
-				domain.getAtdItemCondition().getOperatorBetweenGroups().value);
-		BigDecimal group2UseAtr = new BigDecimal(domain.getAtdItemCondition().getGroup2UseAtr() ? 1 : 0);
+		int operatorBetweenGroups = domain.getAtdItemCondition().getOperatorBetweenGroups().value;
+		int group2UseAtr = domain.getAtdItemCondition().isUseGroup2() ? 1 : 0;
 		String atdItemConditionGroup1 = domain.getAtdItemCondition().getGroup1().getAtdItemConGroupId();
 		String atdItemConditionGroup2 = domain.getAtdItemCondition().getGroup2().getAtdItemConGroupId();
-		BigDecimal conditionOperator1 = new BigDecimal(
-				domain.getAtdItemCondition().getGroup1().getConditionOperator().value);
+		int conditionOperator1 = domain.getAtdItemCondition().getGroup1().getConditionOperator().value;
 		List<KrcmtErAlAtdItemCon> lstAtdItemCon1 = domain.getAtdItemCondition().getGroup1().getLstErAlAtdItemCon()
 				.stream()
 				.map(erAlAtdItemCon -> getKrcmtErAlAtdItemConFromDomain(atdItemConditionGroup1, erAlAtdItemCon))
 				.collect(Collectors.toList());
 		KrcstErAlConGroup krcstErAlConGroup1 = new KrcstErAlConGroup(atdItemConditionGroup1, conditionOperator1,
 				lstAtdItemCon1);
-		BigDecimal conditionOperator2 = new BigDecimal(
-				domain.getAtdItemCondition().getGroup2().getConditionOperator().value);
+		int conditionOperator2 = domain.getAtdItemCondition().getGroup2().getConditionOperator().value;
 		List<KrcmtErAlAtdItemCon> lstAtdItemCon2 = domain.getAtdItemCondition().getGroup2().getLstErAlAtdItemCon()
 				.stream()
 				.map(erAlAtdItemCon -> getKrcmtErAlAtdItemConFromDomain(atdItemConditionGroup2, erAlAtdItemCon))
@@ -255,96 +226,90 @@ public class KrcmtTimeChkMonthly extends UkJpaEntity implements Serializable {
 	private static KrcmtErAlAtdItemCon getKrcmtErAlAtdItemConFromDomain(String atdItemConditionGroup1,
 			ErAlAttendanceItemCondition<?> erAlAtdItemCon) {
 		KrcmtErAlAtdItemConPK krcmtErAlAtdItemConPK = new KrcmtErAlAtdItemConPK(atdItemConditionGroup1,
-				new BigDecimal(erAlAtdItemCon.getTargetNO()));
+				(erAlAtdItemCon.getTargetNO()));
 		List<KrcstErAlAtdTarget> lstAtdItemTarget = new ArrayList<>();
 		if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY) {
 			lstAtdItemTarget.add(new KrcstErAlAtdTarget(
-					new KrcstErAlAtdTargetPK(atdItemConditionGroup1, new BigDecimal(erAlAtdItemCon.getTargetNO()),
-							new BigDecimal(erAlAtdItemCon.getUncountableTarget().getAttendanceItem())),
-					new BigDecimal(2)));
+					new KrcstErAlAtdTargetPK(atdItemConditionGroup1, erAlAtdItemCon.getTargetNO(),
+							erAlAtdItemCon.getUncountableTarget().getAttendanceItem()),
+					2));
 		} else {
 			List<KrcstErAlAtdTarget> lstAtdItemTargetAdd = erAlAtdItemCon.getCountableTarget()
 					.getAddSubAttendanceItems().getAdditionAttendanceItems().stream()
 					.map(atdItemId -> new KrcstErAlAtdTarget(
 							new KrcstErAlAtdTargetPK(atdItemConditionGroup1,
-									new BigDecimal(erAlAtdItemCon.getTargetNO()), new BigDecimal(atdItemId)),
-							new BigDecimal(0)))
+									erAlAtdItemCon.getTargetNO(), atdItemId),
+							0))
 					.collect(Collectors.toList());
 			List<KrcstErAlAtdTarget> lstAtdItemTargetSub = erAlAtdItemCon.getCountableTarget()
 					.getAddSubAttendanceItems().getSubstractionAttendanceItems().stream()
 					.map(atdItemId -> new KrcstErAlAtdTarget(
 							new KrcstErAlAtdTargetPK(atdItemConditionGroup1,
-									new BigDecimal(erAlAtdItemCon.getTargetNO()), new BigDecimal(atdItemId)),
-							new BigDecimal(1)))
+									erAlAtdItemCon.getTargetNO(), atdItemId),
+							1))
 					.collect(Collectors.toList());
 			lstAtdItemTarget.addAll(lstAtdItemTargetAdd);
 			lstAtdItemTarget.addAll(lstAtdItemTargetSub);
 		}
-		BigDecimal compareAtr = new BigDecimal(0);
-		BigDecimal conditionType = new BigDecimal(0);
-		BigDecimal startValue = new BigDecimal(0);
-		BigDecimal endValue = new BigDecimal(0);
+		int compareAtr = 0;
+		int conditionType = 0;
+		int startValue = 0;
+		int endValue = 0;
 		KrcstErAlCompareSingle erAlCompareSingle = null;
 		KrcstErAlCompareRange erAlCompareRange = null;
 		KrcstErAlSingleFixed erAlSingleFixed = null;
 		List<KrcstErAlSingleAtd> erAlSingleAtd = new ArrayList<>();
 		if (erAlAtdItemCon.getCompareRange() != null) {
-			compareAtr = new BigDecimal(erAlAtdItemCon.getCompareRange().getCompareOperator().value);
+			compareAtr = erAlAtdItemCon.getCompareRange().getCompareOperator().value;
 			if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.AMOUNT_VALUE) {
-				startValue = new BigDecimal(
-						((CheckedAmountValue) erAlAtdItemCon.getCompareRange().getStartValue()).v());
-				endValue = new BigDecimal(((CheckedAmountValue) erAlAtdItemCon.getCompareRange().getEndValue()).v());
+				startValue = ((CheckedAmountValue) erAlAtdItemCon.getCompareRange().getStartValue()).v();
+				endValue = ((CheckedAmountValue) erAlAtdItemCon.getCompareRange().getEndValue()).v();
 			} else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIME_DURATION) {
-				startValue = new BigDecimal(
-						((CheckedTimeDuration) erAlAtdItemCon.getCompareRange().getStartValue()).v());
-				endValue = new BigDecimal(((CheckedTimeDuration) erAlAtdItemCon.getCompareRange().getEndValue()).v());
+				startValue = ((CheckedTimeDuration) erAlAtdItemCon.getCompareRange().getStartValue()).v();
+				endValue = ((CheckedTimeDuration) erAlAtdItemCon.getCompareRange().getEndValue()).v();
 			} else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY) {
-				startValue = new BigDecimal(((TimeWithDayAttr) erAlAtdItemCon.getCompareRange().getStartValue()).v());
-				endValue = new BigDecimal(((TimeWithDayAttr) erAlAtdItemCon.getCompareRange().getEndValue()).v());
+				startValue = ((TimeWithDayAttr) erAlAtdItemCon.getCompareRange().getStartValue()).v();
+				endValue = ((TimeWithDayAttr) erAlAtdItemCon.getCompareRange().getEndValue()).v();
 			} else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIMES) {
-				startValue = new BigDecimal(((CheckedTimesValue) erAlAtdItemCon.getCompareRange().getStartValue()).v());
-				endValue = new BigDecimal(((CheckedTimesValue) erAlAtdItemCon.getCompareRange().getEndValue()).v());
+				startValue = ((CheckedTimesValue) erAlAtdItemCon.getCompareRange().getStartValue()).v();
+				endValue = ((CheckedTimesValue) erAlAtdItemCon.getCompareRange().getEndValue()).v();
 			}
 			erAlCompareRange = new KrcstErAlCompareRange(
-					new KrcstErAlCompareRangePK(atdItemConditionGroup1, new BigDecimal(erAlAtdItemCon.getTargetNO())),
+					new KrcstErAlCompareRangePK(atdItemConditionGroup1, erAlAtdItemCon.getTargetNO()),
 					compareAtr, startValue, endValue);
 		} else if (erAlAtdItemCon.getCompareSingleValue() != null) {
-			compareAtr = new BigDecimal(erAlAtdItemCon.getCompareSingleValue().getCompareOpertor().value);
-			conditionType = new BigDecimal(erAlAtdItemCon.getCompareSingleValue().getConditionType().value);
+			compareAtr = erAlAtdItemCon.getCompareSingleValue().getCompareOpertor().value;
+			conditionType = erAlAtdItemCon.getCompareSingleValue().getConditionType().value;
 			erAlCompareSingle = new KrcstErAlCompareSingle(
-					new KrcstErAlCompareSinglePK(atdItemConditionGroup1, new BigDecimal(erAlAtdItemCon.getTargetNO())),
+					new KrcstErAlCompareSinglePK(atdItemConditionGroup1, erAlAtdItemCon.getTargetNO()),
 					compareAtr, conditionType);
 			if (erAlAtdItemCon.getCompareSingleValue().getConditionType() == ConditionType.FIXED_VALUE) {
-				BigDecimal fixedValue = new BigDecimal(0);
+				int fixedValue = 0;
 				if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.AMOUNT_VALUE) {
-					fixedValue = new BigDecimal(
-							((CheckedAmountValue) erAlAtdItemCon.getCompareSingleValue().getValue()).v());
+					fixedValue = ((CheckedAmountValue) erAlAtdItemCon.getCompareSingleValue().getValue()).v();
 				} else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIME_DURATION) {
-					fixedValue = new BigDecimal(
-							((CheckedTimeDuration) erAlAtdItemCon.getCompareSingleValue().getValue()).v());
+					fixedValue = ((CheckedTimeDuration) erAlAtdItemCon.getCompareSingleValue().getValue()).v();
 				} else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY) {
-					fixedValue = new BigDecimal(
-							((TimeWithDayAttr) erAlAtdItemCon.getCompareSingleValue().getValue()).v());
+					fixedValue = ((TimeWithDayAttr) erAlAtdItemCon.getCompareSingleValue().getValue()).v();
 				} else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIMES) {
-					fixedValue = new BigDecimal(
-							((CheckedTimesValue) erAlAtdItemCon.getCompareSingleValue().getValue()).v());
+					fixedValue = ((CheckedTimesValue) erAlAtdItemCon.getCompareSingleValue().getValue()).v();
 				}
 				erAlSingleFixed = new KrcstErAlSingleFixed(new KrcstErAlSingleFixedPK(atdItemConditionGroup1,
-						new BigDecimal(erAlAtdItemCon.getTargetNO())), fixedValue);
+						erAlAtdItemCon.getTargetNO()), fixedValue);
 			} else {
 				erAlSingleAtd.add(new KrcstErAlSingleAtd(
-						new KrcstErAlSingleAtdPK(atdItemConditionGroup1, new BigDecimal(erAlAtdItemCon.getTargetNO()),
-								(((AttendanceItemId) erAlAtdItemCon.getCompareSingleValue().getValue()).v())),
-						new BigDecimal(2)));
+						new KrcstErAlSingleAtdPK(atdItemConditionGroup1, erAlAtdItemCon.getTargetNO(),
+								((AttendanceItemId) erAlAtdItemCon.getCompareSingleValue().getValue()).v()),
+						2));
 			}
 		}
-		return new KrcmtErAlAtdItemCon(krcmtErAlAtdItemConPK, new BigDecimal(erAlAtdItemCon.getConditionAtr().value),
-				new BigDecimal(erAlAtdItemCon.getUseAtr() ? 1 : 0), lstAtdItemTarget, erAlCompareSingle,
+		return new KrcmtErAlAtdItemCon(krcmtErAlAtdItemConPK, erAlAtdItemCon.getConditionAtr().value,
+				erAlAtdItemCon.isUse() ? 1 : 0, lstAtdItemTarget, erAlCompareSingle,
 				erAlCompareRange, erAlSingleFixed, erAlSingleAtd);
 	}
 
-	public KrcmtTimeChkMonthly(String eralCheckId, String messageDisplay, BigDecimal operatorBetweenGroups,
-			BigDecimal group2UseAtr, String atdItemConditionGroup1, KrcstErAlConGroup krcstErAlConGroup1,
+	public KrcmtTimeChkMonthly(String eralCheckId, String messageDisplay, int operatorBetweenGroups,
+			int group2UseAtr, String atdItemConditionGroup1, KrcstErAlConGroup krcstErAlConGroup1,
 			String atdItemConditionGroup2, KrcstErAlConGroup krcstErAlConGroup2) {
 		super();
 		this.eralCheckId = eralCheckId;

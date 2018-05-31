@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 
 /** 計算付き時間 and 計算付き時間(マイナス有り) */
 @Data
@@ -28,16 +29,29 @@ public class CalcAttachTimeDto {
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer time;
 	
+	/** 乖離時間 */
+	@AttendanceItemLayout(layout = "A", jpPropertyName="乖離時間")
+	@AttendanceItemValue(type = ValueType.INTEGER)
+	private Integer divergenceTime;
+
+	public CalcAttachTimeDto(Integer calcTime, Integer time) {
+		super();
+		this.calcTime = calcTime;
+		this.time = time;
+	}
+	
 	public static CalcAttachTimeDto toTimeWithCal(TimeDivergenceWithCalculationMinusExist time){
 		return time == null ? null : new CalcAttachTimeDto(
 											time.getCalcTime() == null ? null : time.getCalcTime().valueAsMinutes(), 
-											time.getTime() == null ? null : time.getTime().valueAsMinutes());
+											time.getTime() == null ? null : time.getTime().valueAsMinutes(), 
+											time.getDivergenceTime() == null ? null : time.getDivergenceTime().valueAsMinutes());
 	}
 	
 	public static CalcAttachTimeDto toTimeWithCal(TimeDivergenceWithCalculation time){
 		return time == null ? null : new CalcAttachTimeDto(
 											time.getCalcTime() == null ? null : time.getCalcTime().valueAsMinutes(), 
-											time.getTime() == null ? null : time.getTime().valueAsMinutes());
+											time.getTime() == null ? null : time.getTime().valueAsMinutes(), 
+											time.getDivergenceTime() == null ? null : time.getDivergenceTime().valueAsMinutes());
 	}
 	
 	public static CalcAttachTimeDto toTimeWithCal(TimeWithCalculation time){
@@ -62,5 +76,11 @@ public class CalcAttachTimeDto {
 		return TimeDivergenceWithCalculation.createTimeWithCalculation(
 										time == null ? null : new AttendanceTime(time), 
 										calcTime == null ? null : new AttendanceTime(calcTime));
+	}
+	
+	public TimeDivergenceWithCalculationMinusExist createTimeDivWithMinus(){
+		return TimeDivergenceWithCalculationMinusExist.createTimeWithCalculation(
+				time == null ? null : new AttendanceTimeOfExistMinus(time), 
+				calcTime == null ? null : new AttendanceTimeOfExistMinus(calcTime));
 	}
 }

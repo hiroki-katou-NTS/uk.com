@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.ctx.sys.auth.pub.grant.RoleFromUserIdPub;
 import nts.uk.ctx.sys.auth.pub.spr.UserSprExport;
@@ -37,7 +38,7 @@ public class UserSprPubImpl implements UserSprPub {
 
 	@Override
 	public Optional<String> getRoleFromUserId(String companyID, String userId, int roleType) {
-		return roleFromUserIdPub.findByUserCompanyRoleType(companyID, userId, roleType);
+		return Optional.ofNullable(roleFromUserIdPub.getRoleFromUserId(userId, roleType, GeneralDate.today()));
 	}
 
 }

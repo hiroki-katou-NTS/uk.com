@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+	
+		<ui:define name="htmlHead">
+		
+			<script>
+				var dialogSize = {
+					width : 550,
+					height : 500
+				};
+			</script>
+			
+			<com:scriptfile set="IGNITE" />
+			
+			<com:scriptfile path="../a5/kmk003.a5.vm.js" />
+			<com:stylefile path="kmk003.g.style.css" />
+			<com:scriptfile path="kmk003.g.vm.js" />
+			<com:scriptfile path="kmk003.g.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+
+			<div id="contents-area">
+				<div class="main-container">
+				
+					<!-- START form label -  -->
+					<div class="dialog-rows">
+						<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_234')}</div>			
+					</div>	
+					<div><hr/></div>
+					<!-- END form label -  -->
+					
+					<!-- START setting items -  -->
+					<div class="radio-group-block">
+						<div class="dialog-rows">
+							<div tabindex ="2" data-bind="ntsRadioBoxGroup: {
+										options: lstRest,
+										name: '#[KMK003_234]',
+										optionsValue: 'id',
+										optionsText: 'name',
+										value: selectedRest,
+										enable: true}"></div>		
+						</div>	
+					</div>				
+					<!-- END setting items -  -->
+					
+					<!-- ====================================================================================== -->
+					
+					<!-- START form label -  -->
+					<div class="dialog-rows" data-bind="visible: isFlow">
+						<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_230')}</div>			
+					</div>	
+					<div data-bind="visible: isFlow"><hr/></div>
+					<!-- END form label -  -->
+					
+					<!-- START setting items -  -->
+					<div class="dialog-block" data-bind="visible: isFlow">
+						<div class="dialog-rows">
+							<label>#{i18n.getText('KMK003_231')}</label>
+						</div>	
+						<div class="dialog-rows">
+							<div tabindex="3" class="cf control-warp pad-bottom" id= "switch-btn" data-bind="ntsSwitchButton: {
+									name: '#[KMK003_230]',
+									options: switchOptions,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: switchValue,
+									enable: true }"></div>
+							<div class="control-warp" style="width: 70px;">
+								<div tabindex="4" style="width: 70px;" data-bind="ntsComboBox: {
+										options: unitComboBoxOptions,
+										name: '#[KMK003_232]',
+										optionsValue: 'code',
+										visibleItemsCount: 8,
+										value: unitValue,
+										optionsText: 'name',
+										dropDownAttachedToBody: true,
+										editable: false,
+										enable: true }"></div>
+							</div>
+							<com:ko tag="if" bind="updateRounding">
+								<div class="control-warp" style="width: 170px;">
+									<div tabindex="5" style="width: 170px;"
+										data-bind="ntsComboBox: {
+										options: roundingComboBoxOptions,
+										name: '#[KMK003_233]',
+										optionsValue: 'code',
+										visibleItemsCount: 3,
+										value: roundingValue,
+										optionsText: 'name',
+										dropDownAttachedToBody: true,
+										editable: false,
+										enable: true }"></div>
+								</div>
+							</com:ko>
+						</div>
+					</div>				
+					<!-- END setting items -  -->
+			
+				</div>
+			</div>
+
+			<div id="functions-area-bottom">
+				<button tabindex="6" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
+				<button tabindex="7" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

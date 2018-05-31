@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSettingSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOdRtSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRtSet;
 
 /**
  * The Class JpaFlexODFlowRestSettingSetMemento.

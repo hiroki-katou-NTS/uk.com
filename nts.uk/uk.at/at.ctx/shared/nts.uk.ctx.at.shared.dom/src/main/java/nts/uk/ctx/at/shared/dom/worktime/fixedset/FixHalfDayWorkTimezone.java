@@ -58,7 +58,7 @@ public class FixHalfDayWorkTimezone extends WorkTimeDomainObject {
 	 * @param fixedWorkSet the fixed work set
 	 * @param other the other
 	 */
-	public void restoreData(ScreenMode screenMode, FixedWorkSetting fixedWorkSet,
+	public void correctData(ScreenMode screenMode, FixedWorkSetting fixedWorkSet,
 			FixHalfDayWorkTimezone other) {
 		switch (screenMode) {
 		case SIMPLE:
@@ -103,11 +103,18 @@ public class FixHalfDayWorkTimezone extends WorkTimeDomainObject {
 	 *
 	 * @param screenMode the screen mode
 	 */
-	public void restoreDefaultData(ScreenMode screenMode) {
+	public void correctDefaultData(ScreenMode screenMode) {
 		if (screenMode.equals(ScreenMode.SIMPLE) && this.getDayAtr() != AmPmAtr.ONE_DAY) {
 			this.restTimezone.restoreDefaultData();
 			this.workTimezone.restoreDefaultData();
 		}
+	}
+	
+	/**
+	 * Correct default data.
+	 */
+	public void correctDefaultData() {
+		this.workTimezone.correctDefaultData();
 	}
 
 	/*
@@ -116,11 +123,7 @@ public class FixHalfDayWorkTimezone extends WorkTimeDomainObject {
 	 * @see nts.arc.layer.dom.DomainObject#validate()
 	 */
 	@Override
-	public void validate() {		
-		if (!this.isInFixedWork()) {
-			this.bundledBusinessExceptions.addMessage("Msg_755");
-		}
-		
+	public void validate() {				
 		//validate Msg_770 for list work
 		this.workTimezone.getLstWorkingTimezone().stream().forEach(item->{
 			item.getTimezone().validateRange("KMK003_86");
@@ -147,7 +150,7 @@ public class FixHalfDayWorkTimezone extends WorkTimeDomainObject {
 	 *
 	 * @return true, if is in fixed work
 	 */
-	private boolean isInFixedWork() {
+	public boolean isInFixedWork() {
 		return this.restTimezone.getLstTimezone().stream().allMatch(
 				dedTime -> this.workTimezone.isInEmTimezone(dedTime) || this.workTimezone.isInOverTimezone(dedTime));
 	}

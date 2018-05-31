@@ -64,7 +64,7 @@ public class AppStampNewDefaultImpl implements AppStampNewDomainService {
 	
 	// 打刻申請の新規登録
 	private String appStampRegistration(AppStamp appStamp) {
-		newBeforeRegister.processBeforeRegister(appStamp.getApplication_New());
+		newBeforeRegister.processBeforeRegister(appStamp.getApplication_New(),0);
 		appStamp.customValidate();
 		appStampRepository.addStamp(appStamp);
 		applicationApprovalService.insert(appStamp.getApplication_New());

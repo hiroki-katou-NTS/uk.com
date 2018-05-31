@@ -20,6 +20,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHistItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implements AffWorkplaceHistoryItemRepository{
@@ -45,6 +46,10 @@ public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implemen
 	
 	private static final String SELECT_BY_WPLIDS = "SELECT aw FROM BsymtAffiWorkplaceHistItem aw"
 			+ " WHERE aw.workPlaceId IN :wplIds";
+	
+	private static final String SELECT_BY_LIST_WKPID_DATEPERIOD = "SELECT awit FROM BsymtAffiWorkplaceHistItem awit"
+			+ " INNER JOIN BsymtAffiWorkplaceHist aw on aw.hisId = awit.hisId"
+			+ " WHERE awit.workPlaceId IN :workplaceIds AND aw.strDate <= :endDate AND :startDate <= aw.endDate";
 	
 	/**
 	 * Convert from entity to domain
@@ -198,6 +203,26 @@ public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implemen
 		});
 		return listHistItem.stream().map(item -> toDomain(item))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<AffWorkplaceHistoryItem> getAffWkpHistItemByListWkpIdAndDatePeriod(DatePeriod dateperiod,
+			List<String> workplaceId) {
+		List<BsymtAffiWorkplaceHistItem> listHistItem = new ArrayList<>();
+		CollectionUtil.split(workplaceId, 1000, subList -> {
+			listHistItem.addAll(this.queryProxy().query(SELECT_BY_LIST_WKPID_DATEPERIOD, BsymtAffiWorkplaceHistItem.class)
+					.setParameter("workplaceIds", subList)
+					.setParameter("startDate", dateperiod.start())
+					.setParameter("endDate", dateperiod.end())
+					.getList());
+		});
+		if(listHistItem.isEmpty()){
+			return Collections.emptyList();
+		}
+		return listHistItem.stream().map(e -> {
+			AffWorkplaceHistoryItem domain = this.toDomain(e);
+			return domain;
+		}).collect(Collectors.toList());
 	}
 
 }

@@ -79,8 +79,10 @@ public class BreakTimeStampIncorrectOrderChecking {
 				}
 				
 				if(breakTimeSheet.getStartTime().greaterThan(breakTimeSheet.getEndTime())){
-					createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId, processingDate,
-							new ErrorAlarmWorkRecordCode("S004"), attendanceItemIDList);
+					if (!attendanceItemIDList.isEmpty()) {
+						createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId, processingDate,
+								new ErrorAlarmWorkRecordCode("S004"), attendanceItemIDList);
+					}
 				}
 			}
 		}

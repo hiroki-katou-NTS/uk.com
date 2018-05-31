@@ -10,7 +10,7 @@
 			<script type='text/javascript'>
 				var dialogSize = {
 					width : 620,
-					height : 900
+					height : 800
 				};
 			</script>
 			<com:scriptfile path="/lib/generic/cropper/cropper.js"
@@ -29,11 +29,11 @@
 				<div style="padding-left: 10px">#{i18n.getText('CPS001_70')}</div>
 				<div id="test"
 					data-bind="ntsImageEditor: { editable: true, 
-															width:600, 
-															height: 600, 
-															freeResize: false, 
-															resizeRatio: 0.75,
-															accept: ['.png','.jpg','.jpeg', '.bmp','.gif'] }"></div>
+												 width:600, 
+												 height: 600, 
+												 freeResize: false,
+												 resizeRatio: 0.75, 
+												 accept: ['.png','.jpg','.jpeg', '.bmp','.gif'] }"></div>
 			</div>
 			<div id="functions-area-bottom">
 				<button class="proceed x-large"

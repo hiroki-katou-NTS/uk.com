@@ -19,5 +19,8 @@ public class Kmk004ComSaveCommand {
 
 	/** The save com flex command. */
 	private SaveComMonthCalSetCommand saveMonthCommand;
+	
+	/** The reference flex pred. */
+	private int referenceFlexPred;
 
 }

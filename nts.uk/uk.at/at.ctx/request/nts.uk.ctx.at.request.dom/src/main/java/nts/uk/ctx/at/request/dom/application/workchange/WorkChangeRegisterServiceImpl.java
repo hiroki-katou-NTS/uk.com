@@ -34,7 +34,7 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 	public String registerData(AppWorkChange workChange, Application_New app) {
 
 		// アルゴリズム「2-1.新規画面登録前の処理」を実行する
-		newBeforeRegister.processBeforeRegister(app);
+		newBeforeRegister.processBeforeRegister(app,0);
 		
 		// ドメインモデル「勤務変更申請設定」の新規登録をする
 		appRepository.insert(app);

@@ -1,15 +1,17 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.common.dto;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.worktime.common.HolidayCalculation;
 import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneExtraordTimeSet;
@@ -37,9 +39,6 @@ public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetGetMemento
 	/** The sub hol time set. */
 	private List<WorkTimezoneOtherSubHolTimeSetDto> subHolTimeSet;
 
-	/** The raising salary set. */
-	private String raisingSalarySet;
-
 	/** The medical set. */
 	private List<WorkTimezoneMedicalSetDto> medicalSet;
 
@@ -60,6 +59,12 @@ public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetGetMemento
 
 	/** The late early set. */
 	private WorkTimezoneLateEarlySetDto lateEarlySet;
+
+	/** The holiday calculation. */
+	private HolidayCalculationDto holidayCalculation;
+
+	/** The raising salary set. */
+	private String raisingSalarySet;
 
 	/*
 	 * (non-Javadoc)
@@ -94,19 +99,8 @@ public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetGetMemento
 	 */
 	@Override
 	public List<WorkTimezoneOtherSubHolTimeSet> getSubHolTimeSet() {
-		return this.subHolTimeSet.stream().map(item -> new WorkTimezoneOtherSubHolTimeSet(item)).collect(Collectors.toList());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetGetMemento#
-	 * getRaisingSalarySet()
-	 */
-	@Override
-	public BonusPaySettingCode getRaisingSalarySet() {
-		return new BonusPaySettingCode(this.raisingSalarySet);
+		return this.subHolTimeSet.stream().map(item -> new WorkTimezoneOtherSubHolTimeSet(item))
+				.collect(Collectors.toList());
 	}
 
 	/*
@@ -193,4 +187,30 @@ public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetGetMemento
 		return new WorkTimezoneLateEarlySet(this.lateEarlySet);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetGetMemento#
+	 * getHolidayCalculation()
+	 */
+	@Override
+	public HolidayCalculation getHolidayCalculation() {
+		return new HolidayCalculation(this.holidayCalculation);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetGetMemento#
+	 * getRaisingSalarySet()
+	 */
+	@Override
+	public Optional<BonusPaySettingCode> getRaisingSalarySet() {
+		if (this.raisingSalarySet == null) {
+			return Optional.empty();
+		}
+		return Optional.of(new BonusPaySettingCode(this.raisingSalarySet));
+	}
 }

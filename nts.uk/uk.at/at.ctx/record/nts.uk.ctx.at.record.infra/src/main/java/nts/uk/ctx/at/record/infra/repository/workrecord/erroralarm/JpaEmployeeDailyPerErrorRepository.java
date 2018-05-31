@@ -10,7 +10,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtSyainDpErList;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -24,50 +23,77 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 	private static final String FIND_BY_PERIOD_ORDER_BY_YMD;
 
 	private static final String REMOVE_DATA;
+	
+	private static final String REMOVE_DATA_ATTENDANCE_ITEM;
+	
+	private static final String CHECK_EXIST_CODE_BY_LIST_DATE;
+	
+	private static final String CHECK_EMPLOYEE_HAS_ERROR_ON_PROCESSING_DATE;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT COUNT(a) ");
 		builderString.append("FROM KrcdtSyainDpErList a ");
-		builderString.append("WHERE a.krcdtSyainDpErListPK.processingDate = :processingDate ");
-		builderString.append("AND a.krcdtSyainDpErListPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtSyainDpErListPK.errorCode = :errorCode ");
+		builderString.append("WHERE a.processingDate = :processingDate ");
+		builderString.append("AND a.employeeId = :employeeId ");
+		builderString.append("AND a.errorCode = :errorCode ");
 		FIND_ERROR_CODE = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT COUNT(a) ");
 		builderString.append("FROM KrcdtSyainDpErList a ");
-		builderString.append("WHERE a.krcdtSyainDpErListPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtSyainDpErListPK.processingDate >= :start ");
-		builderString.append("AND a.krcdtSyainDpErListPK.processingDate <= :end ");
-		builderString.append("AND a.krcdtSyainDpErListPK.errorCode = :errorCode ");
+		builderString.append("WHERE a.employeeId = :employeeId ");
+		builderString.append("AND a.processingDate >= :start ");
+		builderString.append("AND a.processingDate <= :end ");
+		builderString.append("AND a.errorCode = :errorCode ");
 		FIND_ERROR_CODE_BY_PERIOD = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcdtSyainDpErList a ");
-		builderString.append("WHERE a.krcdtSyainDpErListPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtSyainDpErListPK.processingDate >= :start ");
-		builderString.append("AND a.krcdtSyainDpErListPK.processingDate <= :end ");
-		builderString.append("ORDER BY a.krcdtSyainDpErListPK.processingDate ");
+		builderString.append("WHERE a.employeeId = :employeeId ");
+		builderString.append("AND a.processingDate >= :start ");
+		builderString.append("AND a.processingDate <= :end ");
+		builderString.append("ORDER BY a.processingDate ");
 		FIND_BY_PERIOD_ORDER_BY_YMD = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("DELETE ");
 		builderString.append("FROM KrcdtSyainDpErList a ");
-		builderString.append("WHERE a.krcdtSyainDpErListPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtSyainDpErListPK.processingDate = :start ");
+		builderString.append("WHERE a.employeeId = :employeeId ");
+		builderString.append("AND a.processingDate = :start ");
 		REMOVE_DATA = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("DELETE ");
+		builderString.append("FROM KrcdtErAttendanceItem a ");
+		builderString.append("WHERE a.krcdtErAttendanceItemPK.iD = :iD ");
+		REMOVE_DATA_ATTENDANCE_ITEM = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT COUNT(a) ");
+		builderString.append("FROM KrcdtSyainDpErList a ");
+		builderString.append("WHERE a.employeeId = :employeeId ");
+		builderString.append("AND a.companyID = :companyID ");
+		builderString.append("AND a.processingDate IN :processingDates ");
+		CHECK_EXIST_CODE_BY_LIST_DATE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT COUNT(a) ");
+		builderString.append("FROM KrcdtSyainDpErList a ");
+		builderString.append("WHERE a.employeeId = :employeeId ");
+		builderString.append("AND a.processingDate = :processingDate ");
+		CHECK_EMPLOYEE_HAS_ERROR_ON_PROCESSING_DATE = builderString.toString();
 
 	}
 
 	@Override
 	public void insert(EmployeeDailyPerError employeeDailyPerformanceError) {
-		if (KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError).size() > 1) {
-			this.commandProxy().insert(KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError).get(0));
-		} else {
-			KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError).forEach(f -> this.commandProxy().insert(f));
-		}
+//		if (KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError).size() > 1) {
+//			this.commandProxy().insert(KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError).get(0));
+//		} else {
+			this.commandProxy().insert(KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError));
+//		}
 		this.getEntityManager().flush();
 	}
 
@@ -85,33 +111,24 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 	}
 
 	@Override
-	public EmployeeDailyPerError find(String employeeID, GeneralDate processingDate) {
+	public List<EmployeeDailyPerError> find(String employeeID, GeneralDate processingDate) {
+		List<KrcdtSyainDpErList> result = findEntities(employeeID, processingDate);
+		if (!result.isEmpty()) {
+			return result.stream().map(item -> item.toDomain()).collect(Collectors.toList());
+		}
+
+		return new ArrayList<>();
+	}
+
+	private List<KrcdtSyainDpErList> findEntities(String employeeID, GeneralDate processingDate) {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcdtSyainDpErList a ");
-		builderString.append("WHERE a.krcdtSyainDpErListPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtSyainDpErListPK.processingDate = :ymd ");
+		builderString.append("WHERE a.employeeId = :employeeId ");
+		builderString.append("AND a.processingDate = :ymd ");
 		List<KrcdtSyainDpErList> result = this.queryProxy().query(builderString.toString(), KrcdtSyainDpErList.class)
 				.setParameter("employeeId", employeeID).setParameter("ymd", processingDate).getList();
-		if (!result.isEmpty()) {
-			return toDomain(result);
-		}
-
-		return null;
-	}
-
-	public EmployeeDailyPerError toDomain(List<KrcdtSyainDpErList> result) {
-		return new EmployeeDailyPerError(result.get(0).krcdtSyainDpErListPK.companyID,
-				result.get(0).krcdtSyainDpErListPK.employeeId, result.get(0).krcdtSyainDpErListPK.processingDate,
-				new ErrorAlarmWorkRecordCode(result.get(0).krcdtSyainDpErListPK.errorCode),
-				result.stream().map(c -> c.attendanceItemId).collect(Collectors.toList()),
-				result.get(0).errorCancelable);
-	}
-
-	@Override
-	public void update(EmployeeDailyPerError employeeDailyPerformanceError) {
-		this.commandProxy().updateAll(KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError));
-		this.getEntityManager().flush();
+		return result;
 	}
 
 	@Override
@@ -120,8 +137,9 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 				.setParameter("employeeId", employeeId).setParameter("start", datePeriod.start())
 				.setParameter("end", datePeriod.end()).getList().stream()
 				.collect(Collectors.groupingBy(
-						c -> c.krcdtSyainDpErListPK.employeeId + c.krcdtSyainDpErListPK.processingDate.toString()))
-				.entrySet().stream().map(c -> toDomain(c.getValue())).collect(Collectors.toList());
+						c -> c.employeeId + c.processingDate.toString()))
+				.entrySet().stream().map(c -> c.getValue().stream().map(item -> item.toDomain())
+						.collect(Collectors.toList())).flatMap(List::stream).collect(Collectors.toList());
 	}
 
 	@Override
@@ -129,21 +147,24 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcdtSyainDpErList a ");
-		builderString.append("WHERE a.krcdtSyainDpErListPK.employeeId IN :employeeId ");
-		builderString.append("AND a.krcdtSyainDpErListPK.processingDate <= :end ");
-		builderString.append("AND a.krcdtSyainDpErListPK.processingDate >= :start ");
+		builderString.append("WHERE a.employeeId IN :employeeId ");
+		builderString.append("AND a.processingDate <= :end ");
+		builderString.append("AND a.processingDate >= :start ");
 		return this.queryProxy().query(builderString.toString(), KrcdtSyainDpErList.class)
 				.setParameter("employeeId", employeeID).setParameter("end", processingDate.end())
 				.setParameter("start", processingDate.start()).getList().stream()
 				.collect(Collectors.groupingBy(
-						c -> c.krcdtSyainDpErListPK.employeeId + c.krcdtSyainDpErListPK.processingDate.toString()))
-				.entrySet().stream().map(c -> toDomain(c.getValue())).collect(Collectors.toList());
+						c -> c.employeeId + c.processingDate.toString()))
+				.entrySet().stream().map(c -> c.getValue().stream().map(item -> item.toDomain())
+						.collect(Collectors.toList())).flatMap(List::stream).collect(Collectors.toList());
 	}
 
 	@Override
 	public void removeParam(String sid, GeneralDate date) {
-		this.getEntityManager().createQuery(REMOVE_DATA, KrcdtSyainDpErList.class).setParameter("employeeId", sid)
-				.setParameter("start", date).executeUpdate();
+		List<KrcdtSyainDpErList> result = findEntities(sid, date);
+		if(!result.isEmpty()){
+			commandProxy().removeAll(result);
+		}
 	}
 
 	@Override
@@ -151,33 +172,24 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcdtSyainDpErList a ");
-		builderString.append("WHERE a.krcdtSyainDpErListPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtSyainDpErListPK.companyID = :companyId ");
+		builderString.append("WHERE a.employeeId = :employeeId ");
+		builderString.append("AND a.companyID = :companyId ");
 		return this.queryProxy().query(builderString.toString(), KrcdtSyainDpErList.class)
 				.setParameter("employeeId", employeeID).setParameter("companyId", companyID)
-				.getList(x -> this.toDomain(x));
-	}
-
-	EmployeeDailyPerError toDomain(KrcdtSyainDpErList krcdtSyainDpErList) {
-		List<Integer> lstAttendanceItemId = new ArrayList<Integer>();
-		lstAttendanceItemId.add(krcdtSyainDpErList.attendanceItemId);
-		return new EmployeeDailyPerError(krcdtSyainDpErList.krcdtSyainDpErListPK.companyID,
-				krcdtSyainDpErList.krcdtSyainDpErListPK.employeeId,
-				krcdtSyainDpErList.krcdtSyainDpErListPK.processingDate,
-				new ErrorAlarmWorkRecordCode(krcdtSyainDpErList.krcdtSyainDpErListPK.errorCode), lstAttendanceItemId,
-				krcdtSyainDpErList.errorCancelable.intValue());
+				.getList(x -> x.toDomain());
 	}
 
 	@Override
-	public List<EmployeeDailyPerError> findAll(String employeeID, GeneralDate processingDate) {
-		StringBuilder builderString = new StringBuilder();
-		builderString.append("SELECT a ");
-		builderString.append("FROM KrcdtSyainDpErList a ");
-		builderString.append("WHERE a.krcdtSyainDpErListPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtSyainDpErListPK.processingDate = :ymd ");
-		return this.queryProxy().query(builderString.toString(), KrcdtSyainDpErList.class)
-				.setParameter("employeeId", employeeID).setParameter("ymd", processingDate).getList(x -> toDomain(x));
+	public boolean checkExistRecordErrorListDate(String companyID, String employeeID, List<GeneralDate> lstDate) {
+		return this.queryProxy().query(CHECK_EXIST_CODE_BY_LIST_DATE, long.class).setParameter("employeeId", employeeID)
+				.setParameter("companyID", companyID)
+				.setParameter("processingDates", lstDate).getSingle().get() > 0;
+	}
 
+	@Override
+	public boolean checkEmployeeHasErrorOnProcessingDate(String employeeID, GeneralDate processingDate) {
+		return this.queryProxy().query(CHECK_EMPLOYEE_HAS_ERROR_ON_PROCESSING_DATE, long.class).setParameter("employeeId", employeeID)
+				.setParameter("processingDate", processingDate).getSingle().get() > 0;
 	}
 	
 

@@ -1,4 +1,4 @@
-#button1{
+/* #button1{
     display: inline-block;
     width: 70px;
     margin-left: 15px;
@@ -6,16 +6,16 @@
 #button2{
     width: 70px;
     margin: 0px 0px 0px 88px;
-}
-#buttonArea{
+} */
+/* #buttonArea{
 	border-top: solid 1px #B1B1B1;
     margin: 60px 20px 20px 0px;
     padding: 20px 20px 20px;
-}
+} */
 #simpleList{
 	margin-left: 28px;
 }
 #label1{
 	margin-left: 28px;
-	width: 195px;
+	width: 300px;
 }

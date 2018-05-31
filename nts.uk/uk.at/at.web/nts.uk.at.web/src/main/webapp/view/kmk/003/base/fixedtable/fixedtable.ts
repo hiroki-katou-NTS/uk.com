@@ -247,9 +247,11 @@ module nts.fixedtable {
                 // update status button
                 self.isEnaleAddButton(newList.length < self.maxRow);
                 self.isEnaleRemoveButton(newList.length > self.minRow);
-                
+
                 if (newList.length <= 0) {
                     self.isSelectAll(false);
+                    // Add default data
+                    self.addMinRows();
                     return;
                 }
                 // add properties isChecked when multiple select
@@ -286,6 +288,18 @@ module nts.fixedtable {
             // render html table
             return self.renderTable();
         }
+
+        /**
+         * Add minimum rows
+         */
+        public addMinRows(): void {
+            let self = this;
+            if (self.minRow > 0 && self.itemList().length == 0) {
+                for (let i = 0; i < self.minRow; i++) {
+                    self.addRowItem();
+                }
+            }
+        }
         
         /**
          * Add a row table
@@ -303,10 +317,13 @@ module nts.fixedtable {
                 });
             });
             self.itemList.push(row);
-            self.$element.find('.time-range-editor').ntsError('clear');
-            self.$element.find('.time-range-editor').each((index, element) => {
-                $('#' + element.id).validateTimeRange();
-            });
+            const e = self.$element;
+            if (e) {
+                e.find('.time-range-editor').ntsError('clear');
+                e.find('.time-range-editor').each((index, element) => {
+                    $('#' + element.id).validateTimeRange();
+                });
+            }
         }
         
         /**
@@ -382,8 +399,10 @@ module nts.fixedtable {
             if (newValue == null) {
                 return;
             }
-            _.forEach(self.itemList(), row => {
-                row.isChecked(newValue);
+            _.forEach(self.itemList(), (row, index) => {
+                if (index >= self.minRow) {
+                    row.isChecked(newValue);
+                }
             });
         }
         
@@ -711,21 +730,23 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                     });
                 }
                 screenModel.initEventChangeComboBox($(element));
-                screenModel.$element.find('.table-fixed-kmk003').ntsFixedTable({height: screenModel.tableStyle.height})
+                screenModel.$element.find('.table-fixed-kmk003').ntsFixedTable({height: screenModel.tableStyle.height});
                 //screenModel.$tableSelector.ntsFixedTable({ height: 120, width: 814 });
                 screenModel.$element.on('click', '.check-box-column > div', function(event){
                     _.defer(() => screenModel.itemList.valueHasMutated());
-                })
+                });
                 screenModel.$element.on('keypress', '.check-box-column > div', function(event){
                     if (event.keyCode === 0 || event.keyCode === 32) {
                         event.preventDefault();
                         _.defer(() => screenModel.itemList.valueHasMutated());
                     }
-                })
+                });
                 
                 screenModel.$element.on('change', '.time-edior-column', function(event){
                     _.defer(() => screenModel.itemList.valueHasMutated());
-                })
+                });
+                // Add default data
+                screenModel.addMinRows();
             });
         });
     }

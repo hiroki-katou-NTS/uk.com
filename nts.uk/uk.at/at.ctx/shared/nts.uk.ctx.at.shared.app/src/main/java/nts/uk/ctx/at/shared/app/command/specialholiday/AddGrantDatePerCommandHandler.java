@@ -45,6 +45,10 @@ public class AddGrantDatePerCommandHandler extends CommandHandlerWithResult<Gran
 		
 		if (errList.isEmpty()) {
 			// Add new data
+			if(domain.getProvision() == 1) {
+				grantRegularRepository.changeAllProvision();
+			}
+			
 			grantRegularRepository.addPer(domain);
 		}
 		

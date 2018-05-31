@@ -5,8 +5,8 @@
 package nts.uk.ctx.at.shared.infra.repository.worktime.flexset;
 
 import nts.uk.ctx.at.shared.dom.worktime.flexset.TimeSheetGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSetPK;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**

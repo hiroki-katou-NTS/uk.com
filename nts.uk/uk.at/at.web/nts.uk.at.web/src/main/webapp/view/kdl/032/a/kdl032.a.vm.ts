@@ -13,8 +13,8 @@ module nts.uk.at.view.kdl032.a.viewmodel {
 
 
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KDL032_3"), prop: 'divReasonCode', width: 40 },
-                { headerText: nts.uk.resource.getText("KDL032_4"), prop: 'divReasonContent', width: 210 }
+                { headerText: nts.uk.resource.getText("KDL032_3"), prop: 'divergenceReasonCode', width: 40 },
+                { headerText: nts.uk.resource.getText("KDL032_4"), prop: 'reason', width: 210 }
 
             ]);
 
@@ -29,11 +29,11 @@ module nts.uk.at.view.kdl032.a.viewmodel {
             var dfd = $.Deferred();
 
             if (parameter != null) {
-                service.getData(parameter.divergenceTimeID).done(function(deviationTimeList: Array<DeviationTime>) {
-                    deviationTimeList = _.orderBy(deviationTimeList, ["divReasonCode"], ["asc"]);
-                    self.deviationTimeList(deviationTimeList);
-                    self.deviationTimeList.unshift(new DeviationTime("", nts.uk.resource.getText("KDL032_7")));
-                    self.selectCode(parameter.reasonCD);
+                 service.getData(parameter.divergenceTimeID).done(function(deviationTimeList: Array<DeviationTime>) {
+                    deviationTimeList = _.orderBy(deviationTimeList, ["divergenceReasonCode"], ["asc"]);
+                   self.deviationTimeList(deviationTimeList);
+                   self.deviationTimeList.unshift(new DeviationTime("", nts.uk.resource.getText("KDL032_7")));
+                    self.selectCode(parameter.reasonCD);   
 
                 });
             }
@@ -53,9 +53,9 @@ module nts.uk.at.view.kdl032.a.viewmodel {
         submit() {
 
             var self = this;
-            var selectDeviationTime = _.find(self.deviationTimeList(), ['divReasonCode', self.selectCode()]);
+            var selectDeviationTime = _.find(self.deviationTimeList(), ['divergenceReasonCode', self.selectCode()]);
             if (selectDeviationTime !== undefined) {
-                nts.uk.ui.windows.setShared("ReturnData", selectDeviationTime.divReasonCode);
+                nts.uk.ui.windows.setShared("ReturnData", selectDeviationTime.divergenceReasonCode);
             }
             else {
                 nts.uk.ui.windows.setShared("ReturnData", null, true);
@@ -67,12 +67,12 @@ module nts.uk.at.view.kdl032.a.viewmodel {
 
     }
     class DeviationTime {
-        divReasonCode: string;
-        divReasonContent: string;
+        divergenceReasonCode: string;
+        reason: string;
 
-        constructor(divReasonCode: string, divReasonContent: string) {
-            this.divReasonCode = divReasonCode;
-            this.divReasonContent = divReasonContent;
+        constructor(divergenceReasonCode: string, reason: string) {
+            this.divergenceReasonCode = divergenceReasonCode;
+            this.reason = reason;
 
         }
     }

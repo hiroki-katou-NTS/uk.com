@@ -48,42 +48,6 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 	protected void handle(CommandHandlerContext<SaveWindowAccountCommand> context) {
 		// Get command
 		SaveWindowAccountCommand command = context.getCommand();
-		
-		//validate duplicate win account in list win account save	
-		List<WindowAccountDto> listWinAccSaveCheckDupli = new ArrayList<>();
-		List<WindowAccountDto> listOtherWinAccSaveCheckDupli = new ArrayList<>();
-			
-		listWinAccSaveCheckDupli.add(command.getWinAcc1());
-		listWinAccSaveCheckDupli.add(command.getWinAcc2());
-		listWinAccSaveCheckDupli.add(command.getWinAcc3());
-		listWinAccSaveCheckDupli.add(command.getWinAcc4());
-		listWinAccSaveCheckDupli.add(command.getWinAcc5());
-
-		boolean isError = false;
-		BundledBusinessException exceptions = BundledBusinessException.newInstance();
-		
-		
-		for(WindowAccountDto winAcc : listWinAccSaveCheckDupli){
-			listOtherWinAccSaveCheckDupli.removeAll(listOtherWinAccSaveCheckDupli);
-			listOtherWinAccSaveCheckDupli.addAll(listWinAccSaveCheckDupli);
-			if (winAcc.getHostName().v() != "" && winAcc.getUserName().v() != "") {
-				listOtherWinAccSaveCheckDupli.remove(winAcc);
-				isError = this.findByHostNameAndUserName(winAcc.getHostName().v(), winAcc.getUserName().v(), listOtherWinAccSaveCheckDupli);
-				
-				if(isError){
-					//isError = true;
-					exceptions.addMessage("Msg_616");
-					break;
-				}
-				
-			}
-				
-		}			
-		
-		if (isError) {
-			// show error list
-			exceptions.throwExceptions();
-		}	
 
 			List<WindowAccountDto> listWinAccDto = new ArrayList<>();
 						
@@ -132,22 +96,9 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 
 		}
 	
-	private boolean findByHostNameAndUserName(String hostName, String userName,
-			List<WindowAccountDto> listOtherWinAccCheckDupli) {
-
-		Optional<WindowAccountDto> winAccount = listOtherWinAccCheckDupli.stream().filter(
-				winAcc -> hostName.equals(winAcc.getHostName()) && userName.equals(winAcc.getUserName()))
-				.findAny();
-
-		if (winAccount.isPresent()) {
-			return true;
-		}
-		return false;
-
-	}
-	
 	private void save(Optional<WindowsAccount> optWindowAccDB, List<WindowAccountDto> listWinAccDto) {
 		WindowsAccount windAccCommand = this.toWindowsAccountDomain(listWinAccDto);
+		windAccCommand.validate();
 		
 		Map<Integer, WindowsAccountInfo> mapWinAcc = new HashMap<Integer, WindowsAccountInfo>();
 		

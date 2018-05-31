@@ -15,13 +15,12 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * 月別実績の積立年休使用時間
  * @author shuichi_ishida
  */
-public class RetentionYearlyUseTimeOfMonthly {
+@Getter
+public class RetentionYearlyUseTimeOfMonthly implements Cloneable {
 	
 	/** 使用時間 */
-	@Getter
 	private AttendanceTimeMonth useTime;
 	/** 時系列ワーク */
-	@Getter
 	private Map<GeneralDate, RetentionYearlyUseTimeOfTimeSeries> timeSeriesWorks;
 
 	/**
@@ -45,6 +44,20 @@ public class RetentionYearlyUseTimeOfMonthly {
 		domain.useTime = useTime;
 		return domain;
 	}
+
+	@Override
+	public RetentionYearlyUseTimeOfMonthly clone() {
+		RetentionYearlyUseTimeOfMonthly cloned = new RetentionYearlyUseTimeOfMonthly();
+		try {
+			cloned.useTime = new AttendanceTimeMonth(this.useTime.v());
+			// ※　Shallow Copy.
+			cloned.timeSeriesWorks = this.timeSeriesWorks;
+		}
+		catch (Exception e){
+			throw new RuntimeException("RetentionYearlyUseTimeOfMonthly clone error.");
+		}
+		return cloned;
+	}
 	
 	/**
 	 * 積立年休使用時間を確認する
@@ -63,14 +76,14 @@ public class RetentionYearlyUseTimeOfMonthly {
 			// 「日別実績の積立年休」を取得する
 			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
 			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
-			//*****（未）　ここから先のドメインがまだない
-			//VacationOfDaily vacationOfDaily = totalWorkingTime.getVacation();
-			//RetentionYearlyOfDaily retentionYearlyOfDaily = vacationOfDaily.getRetentionYearly();
+			if (totalWorkingTime.getHolidayOfDaily() == null) return;
+			val holidayOfDaily = totalWorkingTime.getHolidayOfDaily();
+			if (holidayOfDaily.getYearlyReserved() == null) return;
+			val yearlyReserved = holidayOfDaily.getYearlyReserved();
 			
 			// 取得した使用時間を「月別実績の積立年休使用時間」に入れる
-			//*****（未）　「日別実績の積立年休」クラスをnewして、値を入れて、それをset？
-			val retentionYearlyUseTimeOfTimeSeries = RetentionYearlyUseTimeOfTimeSeries.of(ymd);
-			this.timeSeriesWorks.putIfAbsent(ymd, retentionYearlyUseTimeOfTimeSeries);
+			val retentionYearlyUseTime = RetentionYearlyUseTimeOfTimeSeries.of(ymd, yearlyReserved);
+			this.timeSeriesWorks.putIfAbsent(ymd, retentionYearlyUseTime);
 		}
 	}
 	
@@ -84,8 +97,31 @@ public class RetentionYearlyUseTimeOfMonthly {
 		
 		for (val timeSeriesWork : this.timeSeriesWorks.values()){
 			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
-			//RetentionYearlyOfDaily retentionYearly = timeSeriesWork.getRetentionYearly();
-			//this.useTime.addMinutes(retentionYearly.getUseTime().valueAsMinutes());
+			this.addMinuteToUseTime(timeSeriesWork.getRetentionYearlyUseTime().getUseTime().v());
 		}
+	}
+	
+	/**
+	 * 積立年休使用時間を求める
+	 * @param datePeriod 期間
+	 * @return 積立年休使用時間
+	 */
+	public AttendanceTimeMonth getTotalUseTime(DatePeriod datePeriod){
+		
+		AttendanceTimeMonth returnTime = new AttendanceTimeMonth(0);
+		
+		for (val timeSeriesWork : this.timeSeriesWorks.values()){
+			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
+			returnTime = returnTime.addMinutes(timeSeriesWork.getRetentionYearlyUseTime().getUseTime().v());
+		}
+		return returnTime;
+	}
+	
+	/**
+	 * 使用時間に分を加算する
+	 * @param minutes 分
+	 */
+	public void addMinuteToUseTime(int minutes){
+		this.useTime = this.useTime.addMinutes(minutes);
 	}
 }

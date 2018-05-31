@@ -13,7 +13,7 @@ module nts.uk.at.view.kdw004.a.service {
         return nts.uk.request.ajax(paths.extractApprovalStatusData, param);
     }
     
-    export function getDateRange(param) {
-        return nts.uk.request.ajax(paths.getDateRange + param);
+    export function getDateRange(param,currentYearMonth) {
+        return nts.uk.request.ajax(paths.getDateRange + param+"/"+currentYearMonth);
     }
 }

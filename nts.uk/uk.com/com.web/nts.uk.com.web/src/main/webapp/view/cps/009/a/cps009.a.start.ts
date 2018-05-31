@@ -6,22 +6,10 @@ module nts.uk.com.view.cps009.a {
 
         var screenModel = new viewmodel.ViewModel();
         __viewContext["viewModel"] = screenModel;
-
-
         __viewContext.bind(__viewContext["viewModel"]);
         
         $(document).ready(function() {
-            let features: Array<any> = [
-                {name: "Selection", multipleSelection: false, inherit: true},
-                {name: "Tooltips", 
-                 columnSettings: 
-                 [{columnKey: "settingCode", allowTooltips: true},
-                  {columnKey: "settingName", allowTooltips: true}],
-                 visibility: "overflow", showDelay: 200, hideDelay: 200
-               },
-               {name: "Resizing"}];
-
-            $("#category_grid").igGrid("option","features", features);
+            __viewContext["viewModel"].checkBrowse();
         });
 
         if (window.top != window.self) {
@@ -36,6 +24,40 @@ module nts.uk.com.view.cps009.a {
         });
     });
 }
+
+
+$(function() {
+    $(document).on('click', '.search-btn', function(evt) {
+        let dataSourceFilter: Array<any> = $("#item_grid").igGrid("option", "dataSource");
+        __viewContext["viewModel"].isFilter(true);
+        __viewContext["viewModel"].dataSourceFilter = [];
+
+        if (dataSourceFilter.length > 0) {
+            __viewContext["viewModel"].currentItemId(dataSourceFilter[0].perInfoCtgId);
+        } else {
+            __viewContext["viewModel"].currentCategory().itemList([]);
+
+        }
+        __viewContext["viewModel"].dataSourceFilter = dataSourceFilter;
+    });
+
+    $(document).on('click', '.clear-btn', function(evt) {
+        let dataSourceFilter: Array<any> = $("#item_grid").igGrid("option", "dataSource");
+
+        if (dataSourceFilter.length > 0) {
+            if (nts.uk.text.isNullOrEmpty(__viewContext["viewModel"].currentItemId())) {
+                __viewContext["viewModel"].currentItemId(dataSourceFilter[0].perInfoCtgId);
+            }
+        } else {
+            __viewContext["viewModel"].currentCategory().itemList([]);
+
+        }
+        __viewContext["viewModel"].isFilter(false);
+        __viewContext["viewModel"].dataSourceFilter = [];
+    })
+})
+
+
 
 
 

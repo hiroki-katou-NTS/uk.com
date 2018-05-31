@@ -6,6 +6,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -148,10 +149,12 @@ public class KrqstApplicationSetting extends UkJpaEntity {
 	
 	@OneToMany(targetEntity=KrqstAppTypeDiscrete.class, cascade = CascadeType.ALL, mappedBy = "krqstApplicationSetting")
 	@JoinTable(name = "KRQST_APP_TYPE_DISCRETE")
+	@JoinColumn(insertable=false, updatable=false)
 	public List<KrqstAppTypeDiscrete> krqstAppTypeDiscretes;
 	
 	@OneToMany(targetEntity=KrqstAppDeadline.class, cascade = CascadeType.ALL, mappedBy = "krqstApplicationSetting")
 	@JoinTable(name = "KRQST_APP_DEADLINE")
+	@JoinColumn(insertable=false, updatable=false)
 	public List<KrqstAppDeadline> krqstAppDeadlines;
 	
 	@Override

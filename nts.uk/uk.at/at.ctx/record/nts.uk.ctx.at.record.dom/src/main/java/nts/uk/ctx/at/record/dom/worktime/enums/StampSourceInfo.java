@@ -40,8 +40,9 @@ public enum StampSourceInfo {
 	/** モバイル打刻(エリア外)*/
 	MOBILE_STAMP_OUTSIDE(16),
 	/** 打刻漏れ補正 */
-	STAMP_LEAKAGE_CORRECTION(17);
-	
+	STAMP_LEAKAGE_CORRECTION(17),
+	/**連携打刻 */
+	SPR(18);
 	public final int value;
 
 }

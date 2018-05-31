@@ -14,93 +14,17 @@ import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.shr.pereg.app.PeregItem;
-import nts.uk.shr.pereg.app.find.dto.DataClassification;
-import nts.uk.shr.pereg.app.find.dto.EmpOptionalDto;
+import nts.uk.shr.pereg.app.find.dto.OptionalItemDataDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
-import nts.uk.shr.pereg.app.find.dto.PersonOptionalDto;
 
 /**
  * @author danpv
  *
  */
 public class MappingFactory {
+
 	
-	public static void mapItemClass(PeregDto peregDto, LayoutPersonInfoClsDto classItem) {
-
-		// map data
-		Map<String, Object> itemCodeValueMap = getFullDtoValue(peregDto);
-
-		for (Object item : classItem.getItems()) {
-			LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
-			valueItem.setValue(itemCodeValueMap.get(valueItem.getItemCode()));
-		}
-
-		// map record ID
-		String recordId = peregDto.getDomainDto().getRecordId();
-		for (Object item : classItem.getItems()) {
-			LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
-			boolean optionItemNoValue = !itemCodeValueMap.containsKey(valueItem.getItemCode())
-					&& valueItem.getItemCode().charAt(1) == 'O';
-			if (!optionItemNoValue) {
-				valueItem.setRecordId(recordId);
-			}
-
-		}
-
-	}
-
-	/**
-	 * map peregDto to classItemList which is same category
-	 * 
-	 * @param peregDto
-	 * @param classItemList
-	 */
-	public static void mapListItemClass(PeregDto peregDto, List<LayoutPersonInfoClsDto> classItemList) {
-
-		// map data
-		Map<String, Object> itemCodeValueMap = getFullDtoValue(peregDto);
-		String recordId = peregDto.getDomainDto().getRecordId();
-		for (LayoutPersonInfoClsDto classItem : classItemList) {
-			for (Object item : classItem.getItems()) {
-				
-				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
-				Object value = itemCodeValueMap.get(valueItem.getItemCode());
-				if (valueItem.getItem() != null) {
-					int itemType = valueItem.getItem().getDataTypeValue() ;
-					if(itemType == DataTypeValue.SELECTION.value || 
-							itemType == DataTypeValue.SELECTION_BUTTON.value || 
-							itemType == DataTypeValue.SELECTION_RADIO.value) {
-						value = value == null ? null : value.toString();
-					}
-				}
-				valueItem.setValue(value);
-				
-				// update 2018/02/22 bug 87560
-				valueItem.setShowColor(false);
-				
-				boolean optionItemNoValue = itemCodeValueMap.containsKey(valueItem.getItemCode());
-				if (optionItemNoValue) {
-					valueItem.setRecordId(recordId);
-				}
-			}
-		}
-
-		// map record ID
-		// String recordId = peregDto.getDomainDto().getRecordId();
-		// for (LayoutPersonInfoClsDto classItem : classItemList) {
-		// for (Object item : classItem.getItems()) {
-		// LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
-		// boolean optionItemNoValue =
-		// itemCodeValueMap.containsKey(valueItem.getItemCode());
-		// if (optionItemNoValue ) {
-		// valueItem.setRecordId(recordId);
-		// }
-		// }
-		// }
-
-	}
-
 	public static Map<String, Object> getFullDtoValue(PeregDto peregDto) {
 		// Map<itemcode, Object: value of field>
 		Map<String, Object> itemCodeValueMap = new HashMap<String, Object>();
@@ -120,55 +44,73 @@ public class MappingFactory {
 		});
 
 		// map from option data
-		if (peregDto.getDataType() == DataClassification.EMPLOYEE) {
-			peregDto.getEmpOptionalData()
-					.forEach(empData -> itemCodeValueMap.put(empData.getItemCode(), empData.getValue()));
-		} else {
-			peregDto.getPerOptionalData()
-					.forEach(perData -> itemCodeValueMap.put(perData.getItemCode(), perData.getValue()));
-		}
+		peregDto.getOptionalItemData()
+				.forEach(empData -> itemCodeValueMap.put(empData.getItemCode(), empData.getValue()));
 
 		return itemCodeValueMap;
 	}
+	
+	/**
+	 * map peregDto to classItemList which is same category
+	 * 
+	 * @param peregDto
+	 * @param classItemsOfCategory
+	 */
+	public static void mapListItemClass(PeregDto peregDto, List<LayoutPersonInfoClsDto> classItemsOfCategory) {
 
-	public static void matchPerOptionData(String recordId, List<LayoutPersonInfoClsDto> classItemList,
-			List<PersonOptionalDto> dataItems) {
-		for (LayoutPersonInfoClsDto classItem : classItemList) {
-			for (Object item : classItem.getItems()) {
-				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
+		// map data
+		Map<String, Object> itemCodeValueMap = getFullDtoValue(peregDto);
+		String recordId = peregDto.getDomainDto().getRecordId();
+		for (LayoutPersonInfoClsDto classItem : classItemsOfCategory) {
+			for (LayoutPersonInfoValueDto valueItem : classItem.getItems()) {
+				
+				Object value = getValue(itemCodeValueMap, valueItem);
+				valueItem.setValue(value);
 				
 				// update 2018/02/22 bug 87560
 				valueItem.setShowColor(false);
 				
-				// data
-				for (PersonOptionalDto dataItem : dataItems) {
-					if (valueItem.getItemCode().equals(dataItem.getItemCode())) {
-						// recordId
-						valueItem.setRecordId(recordId);
-						valueItem.setValue(dataItem.getValue());
-					}
-				}
+				// trong 1 category, hoặc là tất cả các classItem đều có recordId hoặc là tất cả đều không có recordId
+				valueItem.setRecordId(recordId);
 			}
 		}
 
 	}
+	
+	private static Object getValue(Map<String, Object> itemCodeValueMap, LayoutPersonInfoValueDto valueItem) {
+		Object value = itemCodeValueMap.get(valueItem.getItemCode());
+		if (valueItem.getItem() != null) {
+			int itemType = valueItem.getItem().getDataTypeValue() ;
+			if(itemType == DataTypeValue.SELECTION.value || 
+					itemType == DataTypeValue.SELECTION_BUTTON.value || 
+					itemType == DataTypeValue.SELECTION_RADIO.value) {
+				value = value == null ? null : value.toString();
+			}
+		}
+		return value;
+	}
 
-	public static void matchEmpOptionData(String recordId, List<LayoutPersonInfoClsDto> classItemList,
-			List<EmpOptionalDto> dataItems) {
+	public static void matchOptionalItemData(String recordId, List<LayoutPersonInfoClsDto> classItemList,
+			List<OptionalItemDataDto> dataItems) {
 		for (LayoutPersonInfoClsDto classItem : classItemList) {
-			for (Object item : classItem.getItems()) {
-				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
-				
-				// update 2018/02/22 bug 87560
-				valueItem.setShowColor(false);
-				
-				// data
-				for (EmpOptionalDto dataItem : dataItems) {
-					if (valueItem.getItemCode().equals(dataItem.getItemCode())) {
-						// recordId
-						valueItem.setRecordId(recordId);
-						valueItem.setValue(dataItem.getValue());
-					}
+			matchDataToValueItems(recordId, classItem.getItems(), dataItems);
+		}
+
+	}
+	
+	public static void matchDataToValueItems(String recordId, List<LayoutPersonInfoValueDto> valueItems,
+			List<OptionalItemDataDto> dataItems) {
+		for (LayoutPersonInfoValueDto valueItem : valueItems) {
+
+			// update 2018/02/22 bug 87560
+			valueItem.setShowColor(false);
+
+			// data
+			for (OptionalItemDataDto dataItem : dataItems) {
+				if (valueItem.getItemCode().equals(dataItem.getItemCode())) {
+					// recordId
+					valueItem.setRecordId(recordId);
+					valueItem.setValue(dataItem.getValue());
 				}
 			}
 		}

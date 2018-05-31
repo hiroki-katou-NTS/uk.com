@@ -11,7 +11,7 @@
 
 			<script>
 				var dialogSize = {
-					width : 863,
+					width : 905,
 					height : 800
 				};
 			</script>
@@ -63,7 +63,7 @@
 						<tr>
 							<td data-itemCode="IS00410 IS00425 IS00440 IS00455 IS00470 IS00485 IS00500 IS00515 IS00530 IS00545 IS00630 IS00645 IS00660 IS00675 IS00690 IS00705 IS00720 IS00735 IS00750 IS00765 deadlineDate"><div
 									data-bind="ntsFormLabel: {required: true}"></div></td>
-							<td><div tabindex="8" 
+							<td><div tabindex="8" id= "idDeadline"
 									data-bind="ntsDatePicker: {name:  '期限日' , value: deadlineDateInp, dateFormat: 'YYYY/MM/DD' , required: true }"></div></td>
 						</tr>
 						<!-- Line 3 -->
@@ -125,7 +125,7 @@
 									<!-- Line 6-->
 									<tr>
 										
-										<td><div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CPS001_115')}</div></td>
+										<td><div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CPS001_116')}</div></td>
 										<td data-itemCode="IS00417 IS00432 IS00447 IS00462 IS00477 IS00492 IS00507 IS00522 IS00537 IS00552 IS00637 IS00652 IS00667 IS00682 IS00697 IS00712 IS00727 IS00742 IS00757 IS00772 dayNumberOfUse" class="tdTxt"><div></div></td>
 										<td><input id ="dayNumberOfUse" tabindex="12" data-bind="ntsNumberEditor: {
 																	name: nameDayNumberOfUse,
@@ -190,7 +190,7 @@
 									</tr>
 									<!-- Line 8-->
 									<tr>
-										<td><div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CPS001_115')}</div></td>
+										<td><div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CPS001_117')}</div></td>
 										<td data-itemCode="IS00422 IS00437 IS00452 IS00467 IS00482 IS00497 IS00512 IS00527 IS00542 IS00557 IS00642 IS00657 IS00672 IS00687 IS00702 IS00717 IS00732 IS00747 IS00762 IS00777 dayNumberOfReam" class="tdTxt"><div></div></td>
 										<td><input id = "dayNumberOfReam" tabindex="16" data-bind="ntsNumberEditor: {
 																	name: nameDayNumberOfRemain,

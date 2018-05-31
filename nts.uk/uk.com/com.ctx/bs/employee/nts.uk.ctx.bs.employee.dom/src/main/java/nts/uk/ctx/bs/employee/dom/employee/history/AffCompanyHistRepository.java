@@ -3,6 +3,7 @@ package nts.uk.ctx.bs.employee.dom.employee.history;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface AffCompanyHistRepository {
 	/** add new affiliation history */
@@ -30,6 +31,13 @@ public interface AffCompanyHistRepository {
 	AffCompanyHist getAffCompanyHistoryOfEmployeeDesc(String cid, String employeeId);
 	
 	List<AffCompanyHist> getAffCompanyHistoryOfEmployees(List<String> employeeIds);
+	
+	/**
+	 * return AffCompanyHistByEmployee
+	 * @param employeeIds
+	 * @return
+	 */
+	List<AffCompanyHistByEmployee> getAffEmployeeHistory(List<String> employeeIds);
 
 	AffCompanyHist getAffCompanyHistoryOfEmployeeAndBaseDate(String employeeId, GeneralDate baseDate);
 
@@ -44,4 +52,6 @@ public interface AffCompanyHistRepository {
 	void update(AffCompanyHistItem item);
 
 	/** End */
+	
+	List<AffCompanyHist> getAffComHisEmpByLstSidAndPeriod(List<String> employeeIds, DatePeriod datePeriod);
 }

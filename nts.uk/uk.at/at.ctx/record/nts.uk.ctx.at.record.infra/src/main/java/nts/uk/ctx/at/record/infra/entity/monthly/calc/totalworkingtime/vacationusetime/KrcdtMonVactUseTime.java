@@ -12,8 +12,15 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.AnnualLeaveUseTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.CompensatoryLeaveUseTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.RetentionYearlyUseTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.SpecialHolidayUseTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.VacationUseTimeOfMonthly;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTimePK;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -65,5 +72,50 @@ public class KrcdtMonVactUseTime extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {		
 		return this.PK;
+	}
+	
+	/**
+	 * ドメインに変換
+	 * @return 月別実績の休暇使用時間
+	 */
+	public VacationUseTimeOfMonthly toDomain(){
+		
+		return VacationUseTimeOfMonthly.of(
+				AnnualLeaveUseTimeOfMonthly.of(
+						new AttendanceTimeMonth(this.annualLeaveUseTime)),
+				RetentionYearlyUseTimeOfMonthly.of(
+						new AttendanceTimeMonth(this.retentionYearlyUseTime)),
+				SpecialHolidayUseTimeOfMonthly.of(
+						new AttendanceTimeMonth(this.specialHolidayUseTime)),
+				CompensatoryLeaveUseTimeOfMonthly.of(
+						new AttendanceTimeMonth(this.compensatoryLeaveUseTime)));
+	}
+	
+	/**
+	 * ドメインから変換　（for Insert）
+	 * @param key キー値：月別実績の勤怠時間
+	 * @param domain 月別実績の休暇使用時間
+	 */
+	public void fromDomainForPersist(AttendanceTimeOfMonthlyKey key, VacationUseTimeOfMonthly domain){
+		
+		this.PK = new KrcdtMonAttendanceTimePK(
+				key.getEmployeeId(),
+				key.getYearMonth().v(),
+				key.getClosureId().value,
+				key.getClosureDate().getClosureDay().v(),
+				(key.getClosureDate().getLastDayOfMonth() ? 1 : 0));
+		this.fromDomainForUpdate(domain);
+	}
+	
+	/**
+	 * ドメインから変換　(for Update)
+	 * @param domain 月別実績の休暇使用時間
+	 */
+	public void fromDomainForUpdate(VacationUseTimeOfMonthly domain){
+		
+		this.annualLeaveUseTime = domain.getAnnualLeave().getUseTime().v();
+		this.retentionYearlyUseTime = domain.getRetentionYearly().getUseTime().v();
+		this.specialHolidayUseTime = domain.getSpecialHoliday().getUseTime().v();
+		this.compensatoryLeaveUseTime = domain.getCompensatoryLeave().getUseTime().v();
 	}
 }

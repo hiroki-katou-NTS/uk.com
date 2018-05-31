@@ -4,7 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.pubimp.worktime.worktimeset;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -43,6 +46,15 @@ public class WorkTimeSettingPubImpl implements WorkTimeSettingPub {
 
 		return opWorkTimeSetting.get().getWorkTimeDivision().isFlow();
 	}
+	
+	@Override
+	public Map<String, Boolean> checkFlowWork(String companyId, List<String> worktimeCodes) {
+		return this.workTimeSettingRepository.findByCodes(companyId, worktimeCodes).stream()
+				.collect(Collectors.toMap(wtsetting -> wtsetting.getWorktimeCode().v(), 
+						wtsetting -> wtsetting.getWorkTimeDivision().isFlow()));
+	}
+	
+	
 
 	/*
 	 * (non-Javadoc)

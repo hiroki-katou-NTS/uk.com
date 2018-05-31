@@ -1,5 +1,6 @@
 module nts.uk.at.view.ksu001.o.service {
     var paths: any = {
+        // init
         getWorkTypeTimeAndStartEndDate: "screen/at/schedule/basicschedule"
     }
 

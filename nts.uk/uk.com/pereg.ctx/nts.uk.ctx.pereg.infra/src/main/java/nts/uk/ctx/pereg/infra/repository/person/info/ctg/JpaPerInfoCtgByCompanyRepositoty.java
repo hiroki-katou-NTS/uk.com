@@ -2,6 +2,7 @@ package nts.uk.ctx.pereg.infra.repository.person.info.ctg;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -31,7 +32,7 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 			+ " WHERE c.ppemtPerInfoItemCmPK.contractCd = :contractCd AND c.systemRequiredAtr = 1 "
 			+ " AND i.perInfoCtgId = :perInfoCtgId";
 
-	private final static String DELELE_BY_COMPANY_ID = " DELETE FROM PpemtPerInfoCtgOrder c where c.cid =:cid";
+	private final static String FIND_ALL_BY_COMPANY = "SELECT c FROM PpemtPerInfoCtgOrder c where c.cid =:cid";
 
 	private final static String SELECT_CTG_NAME_BY_CTG_CD_QUERY = "SELECT c.categoryName"
 			+ " FROM PpemtPerInfoCtg c WHERE c.cid = :cid AND c.categoryCd = :categoryCd";
@@ -110,18 +111,16 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 	}
 
 	@Override
-	public void deleteByCompanyId(String companyId) {
-		this.getEntityManager().createQuery(DELELE_BY_COMPANY_ID)
-			.setParameter("cid", companyId)
-			.executeUpdate();
-		this.getEntityManager().flush();
-
-	}
-
-	@Override
 	public void addPerCtgOrder(PersonInfoCtgOrder domain) {
 		this.commandProxy().update(toEntityCategoryOrder(domain));
 
+	}
+	
+	@Override
+	public void updatePerCtgOrder(List<PersonInfoCtgOrder> domainList) {
+		List<PpemtPerInfoCtgOrder> orderEntities = domainList.stream().map(domain -> toEntityCategoryOrder(domain))
+				.collect(Collectors.toList());
+		this.commandProxy().updateAll(orderEntities);
 	}
 
 	@Override
@@ -141,6 +140,15 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public List<PersonInfoCtgOrder> getOrderList(String companyId) {
+		List<PpemtPerInfoCtgOrder> entities = this.queryProxy().query(FIND_ALL_BY_COMPANY, PpemtPerInfoCtgOrder.class)
+				.setParameter("cid", companyId).getList();
+
+		return entities.stream().map(entity -> PersonInfoCtgOrder.createCategoryOrder(companyId,
+				entity.ppemtPerInfoCtgPK.perInfoCtgId, entity.disporder)).collect(Collectors.toList());
 	}
 
 }

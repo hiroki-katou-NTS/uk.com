@@ -23,7 +23,6 @@ import nts.uk.ctx.sys.gateway.app.find.singlesignon.OtherSysAccFinderDto;
  */
 @Path("ctx/sys/gateway/single/signon")
 @Produces("application/json")
-@Stateless
 public class OtherSysAccountWs extends WebService{
 
 	/** The save other sys account command handler. */

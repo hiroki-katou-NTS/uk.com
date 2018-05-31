@@ -5,7 +5,6 @@
 package nts.uk.ctx.bs.employee.infra.repository.employee.mngdata;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,6 +19,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeInfo;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeSimpleInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfoPk;
 
@@ -46,8 +46,8 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	private static final String SELECT_BY_COM_ID = String.join(" ", SELECT_NO_PARAM, "WHERE e.companyId = :companyId");
 
 	private final String GET_LAST_EMPLOYEE = "SELECT c.employeeCode FROM BsymtEmployeeDataMngInfo c "
-			+ " WHERE c.companyId = :companyId AND c.employeeCode LIKE CONCAT(:emlCode, '%')"
-			+ " ORDER BY  c.employeeCode DESC";
+			+ " WHERE c.companyId = :companyId AND c.delStatus = 0 AND c.employeeCode LIKE CONCAT(:emlCode, '%')"
+			+ " ORDER BY c.employeeCode DESC";
 
 	// Lanlt end
 	private static final String SELECT_BY_SID_1 = "SELECT e.employeeCode, p.personName, p.businessName , p.birthday, p.gender, p.bpsmtPersonPk.pId "
@@ -60,6 +60,13 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			+ " AND d.bsymtDepartmentInfoPK.histId = h.bsymtDepartmentHistPK.histId "
 			+ " AND d.bsymtDepartmentInfoPK.cid = h.bsymtDepartmentHistPK.cid"
 			+ " WHERE  d.bsymtDepartmentInfoPK.depId =:depId" + " AND h.strD <= :date" + " AND h.endD >= :date";
+
+	private static final String SELECT_INFO_BY_IDS = String.join(" ",
+			"SELECT e.bsymtEmployeeDataMngInfoPk.sId, e.employeeCode, p.businessName",
+			"FROM BsymtEmployeeDataMngInfo e INNER JOIN BpsmtPerson p",
+			"ON e.bsymtEmployeeDataMngInfoPk.pId = p.bpsmtPersonPk.pId",
+			"WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :lstId AND e.delStatus = 0",
+			"ORDER BY e.bsymtEmployeeDataMngInfoPk.sId ASC");
 
 	// Lanlt end
 	private static final String GET_ALL_BY_CID = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid AND e.delStatus = 1 ORDER BY  e.employeeCode ASC";
@@ -92,6 +99,9 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	/** The select by cid and sid. */
 	public final String SELECT_BY_SIDS = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid";
+	
+	private static final String GET_ALL = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid ORDER BY  e.employeeCode ASC";
+
 
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
@@ -190,23 +200,18 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				} else if (Integer.valueOf(entity[4].toString()) == 2) {
 					emp.setGender("女性");
 				}
-
 			}
 
 			if (entity[5] != null) {
-
 				emp.setPId(entity[5].toString());
-
 			}
 
 		} else if (component == 1) {
 			if (entity[0] != null && entity[1] != null)
 				emp.setDepartmentName(entity[0].toString() + " " + entity[1].toString());
-
 		}
 
 		return emp;
-
 	}
 
 	// Lanlt end
@@ -234,7 +239,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	@Override
 	public void updateRemoveReason(EmployeeDataMngInfo domain) {
-		
+
 		this.updateAfterRemove(domain);
 	}
 
@@ -243,7 +248,15 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		Optional<EmployeeInfo> emp = queryProxy().query(SELECT_BY_SID_1, Object[].class).setParameter("sid", sid)
 				.getSingle(c -> toDomain(c, 0));
 		return emp;
+	}
 
+	@Override
+	public List<EmployeeSimpleInfo> findByIds(List<String> lstId) {
+		List<EmployeeSimpleInfo> emps = queryProxy().query(SELECT_INFO_BY_IDS, Object[].class)
+				.setParameter("lstId", lstId)
+				.getList(m -> new EmployeeSimpleInfo(m[0].toString(), m[1].toString(), m[2].toString()));
+		
+		return emps;
 	}
 
 	@Override
@@ -380,34 +393,17 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	// sonnlb code start
 	@Override
-	public String findLastEml(String companyId, String startLetters) {		
-		List<Object[]> lst = this.queryProxy().query(GET_LAST_EMPLOYEE).setParameter("companyId", companyId)
+	public Optional<String> findLastEml(String companyId, String startLetters) {
+		List<String> lastEmployeeCode = this.queryProxy().query(GET_LAST_EMPLOYEE, String.class)
+				.setParameter("companyId", companyId)
 				.setParameter("emlCode", StringUtils.isEmpty(startLetters) ? "" : startLetters).getList();
-		String returnStr = "";
-		if (lst.size() > 0) {
-			Object obj = lst.get(0);
-			returnStr = obj.toString();
+		if (!lastEmployeeCode.isEmpty()) {
+			return Optional.of(lastEmployeeCode.get(0));
 		}
-
-		return returnStr;
+		return Optional.empty();
 	}
 
 	// sonnlb code end
-
-	// laitv code start
-
-	@Override
-	public List<EmployeeDataMngInfo> getByListEmployeeId(List<String> listSid) {
-		// check exist input
-		if (CollectionUtil.isEmpty(listSid)) {
-			return Collections.emptyList();
-		}
-
-		List<EmployeeDataMngInfo> result = this.queryProxy().query(SELECT_BY_SIDS, BsymtEmployeeDataMngInfo.class)
-				.setParameter("listSid", listSid).getList(c -> toDomain(c));
-
-		return result;
-	}
 
 	@Override
 	public void updateAfterRemove(EmployeeDataMngInfo domain) {
@@ -422,16 +418,22 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			if (domain.getExternalCode() != null && !domain.getExternalCode().v().equals("")) {
 				entity.extCode = domain.getExternalCode().v();
 			}
-			
+
 			entity.removeReason = domain.getRemoveReason() != null ? domain.getRemoveReason().v() : null;
 			entity.delStatus = domain.getDeletedStatus().value;
 			entity.delDateTmp = domain.getDeleteDateTemporary();
-			
-			
-			
+
 			commandProxy().update(entity);
 		}
-		
+
+	}
+
+	@Override
+	public List<EmployeeDataMngInfo> getAllByCid(String cid) {
+		List<BsymtEmployeeDataMngInfo> listEntity = this.queryProxy()
+				.query(GET_ALL, BsymtEmployeeDataMngInfo.class).setParameter("cid", cid).getList();
+
+		return toListEmployeeDataMngInfo(listEntity);
 	}
 
 	// laitv code end

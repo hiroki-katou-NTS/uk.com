@@ -70,12 +70,12 @@ table.table-right th, table.table-right td {
 	border-top: 1px solid #000 ;
 }
 
-#b5_8, #b7_23, #b7_24, #b7_8, #b7_9, #b7_23, #b7_24 {
+#b5_8, #b7_8 {
 	padding-left: 90px;
 }
 
-#b5_9, #b5_22, #b5_23 {
-	margin-left: 100px;
+#b5_9, #b5_22, #b5_23, #b7_9, #b7_23, #b7_24 {
+	margin-left: 80px;
 }
 
 #b6_8, #b6_16, #b6_23, #b6_21, #b6_22 {

@@ -250,9 +250,10 @@ module nts.uk.at.view.kaf006.b{
             self.employeeName(data.employeeName);
             self.employeeID(data.employeeID);
             self.prePostSelected(data.application.prePostAtr);
-            self.convertListHolidayType(data.holidayAppTypes);
+            self.convertListHolidayType(data.holidayAppTypeName);
             self.holidayTypeCode(data.holidayAppType);
             self.displayPrePostFlg(data.prePostFlg);
+            self.requiredReason(data.appReasonRequire);
             self.workTimeCode(data.workTimeCode);
             self.displayWorkTimeName(nts.uk.util.isNullOrEmpty(data.workTimeCode) ? nts.uk.resource.getText('KAF006_21') : data.workTimeCode +"　"+ data.workTimeName);
             if(data.applicationReasonDtos != null && data.applicationReasonDtos.length > 0){
@@ -277,7 +278,7 @@ module nts.uk.at.view.kaf006.b{
             self.displayHalfDayValue(data.halfDayFlg);
             self.startAppDate(moment(data.application.applicationDate ).format(self.DATE_FORMAT));
             self.endAppDate(data.application.endDate);
-            if(nts.uk.util.isNullOrEmpty(self.endAppDate())){
+            if(self.endAppDate() === self.startAppDate()){
                 self.appDate(moment(data.application.applicationDate ).format(self.DATE_FORMAT));
             }else{
                 let appDateAll = moment(data.application.applicationDate ).format(self.DATE_FORMAT) +"　"+ nts.uk.resource.getText('KAF005_38')　+"　"+  moment(data.application.endDate).format(self.DATE_FORMAT);
@@ -328,7 +329,7 @@ module nts.uk.at.view.kaf006.b{
                 self.reasonCombo(),
                 self.multilContent()
             );
-             let appReasonError = !appcommon.CommonProcess.checkAppReason(true, self.typicalReasonDisplayFlg(), self.displayAppReasonContentFlg(), appReason);
+             let appReasonError = !appcommon.CommonProcess.checkAppReason(self.requiredReason(), self.typicalReasonDisplayFlg(), self.displayAppReasonContentFlg(), appReason);
              if (appReasonError) {
                  nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function() { nts.uk.ui.block.clear(); });
                  return;
@@ -433,11 +434,10 @@ module nts.uk.at.view.kaf006.b{
             })
             return dfd.promise();
         }
-        convertListHolidayType(data: any){
-            let self =  this;
-            let nameHolidayType  = { 0: "年次有休",1: "代休",2: "欠勤",3: "特別休暇",4: "積立年休",5: "休日",6: "時間消化",7: "振休"};
-            for(let i = 0; i < data.length ; i++){
-                self.holidayTypes.push(new common.HolidayType(data[i],nameHolidayType[data[i]]));
+        convertListHolidayType(data: any) {
+            let self = this;
+            for (let i = 0; i < data.length; i++) {
+                self.holidayTypes.push(new common.HolidayType(data[i].holidayAppTypeCode, data[i].holidayAppTypeName));
             }
         }
         

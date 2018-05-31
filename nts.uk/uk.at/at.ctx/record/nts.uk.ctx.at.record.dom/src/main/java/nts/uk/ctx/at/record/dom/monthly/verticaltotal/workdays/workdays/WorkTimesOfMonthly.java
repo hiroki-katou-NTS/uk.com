@@ -49,4 +49,13 @@ public class WorkTimesOfMonthly {
 		// 日別実績の「勤務回数」を集計する
 		this.times = this.times.addTimes(totalWorkingTime.getWorkTimes().v());
 	}
+
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(WorkTimesOfMonthly target){
+		
+		this.times = this.times.addTimes(target.times.v());
+	}
 }

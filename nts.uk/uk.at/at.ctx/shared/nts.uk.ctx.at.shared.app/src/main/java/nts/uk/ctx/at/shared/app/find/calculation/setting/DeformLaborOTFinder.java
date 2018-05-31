@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.app.find.calculation.setting;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -23,8 +24,16 @@ public class DeformLaborOTFinder {
 	 * 
 	 * @return
 	 */
-	public List<DeformLaborOT> findAllDeformLaborOT() {
+	public List<DeformLaborOTDto> findAllDeformLaborOT() {
 		String companyId = AppContexts.user().companyId();
-		return repository.findByCompanyId(companyId);
+		return repository.findByCompanyId(companyId).stream().map(e -> {
+			return convertToDbType(e);
+		}).collect(Collectors.toList());
+	}
+	
+	private DeformLaborOTDto convertToDbType(DeformLaborOT deformLaborOT){
+		DeformLaborOTDto deformLaborOTDto = new DeformLaborOTDto();
+		deformLaborOTDto.setLegalOtCalc(deformLaborOT.getLegalOtCalc());
+		return deformLaborOTDto;
 	}
 }

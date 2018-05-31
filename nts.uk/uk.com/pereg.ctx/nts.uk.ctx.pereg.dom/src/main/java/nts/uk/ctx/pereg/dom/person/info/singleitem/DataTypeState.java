@@ -10,6 +10,7 @@ import nts.uk.ctx.pereg.dom.person.info.selectionitem.NumericButton;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReadOnly;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReadOnlyButton;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypeState;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.RelatedCategory;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionButton;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionItem;
@@ -21,6 +22,14 @@ import nts.uk.ctx.pereg.dom.person.info.timepointitem.TimePointItem;
 public class DataTypeState extends AggregateRoot {
 	@Getter
 	protected DataTypeValue dataTypeValue;
+	
+	public ReferenceTypes getReferenceTypes() {
+		return null;
+	}
+	
+	public String getReferenceCode() {
+		return null;
+	}
 
 	public static DataTypeState createTimeItem(int max, int min) {
 		return TimeItem.createFromJavaType(max, min);
@@ -73,4 +82,5 @@ public class DataTypeState extends AggregateRoot {
 	public static DataTypeState createReadonlyButton(String readText) {
 		return ReadOnlyButton.createFromJavaType(readText);
 	}
+	
 }

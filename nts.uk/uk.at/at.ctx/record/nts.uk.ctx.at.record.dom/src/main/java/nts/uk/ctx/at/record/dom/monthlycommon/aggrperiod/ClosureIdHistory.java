@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -16,6 +17,7 @@ public class ClosureIdHistory {
 	/** 締めID */
 	private ClosureId closureId;
 	/** 期間 */
+	@Setter
 	private DatePeriod period;
 	
 	/**

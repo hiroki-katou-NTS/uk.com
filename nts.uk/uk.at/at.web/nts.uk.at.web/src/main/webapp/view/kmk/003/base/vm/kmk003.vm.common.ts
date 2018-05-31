@@ -43,11 +43,20 @@ module nts.uk.at.view.kmk003.a {
     import EmTimeZoneSetDto = service.model.common.EmTimeZoneSetDto;
     import FixedWorkRestSetDto = service.model.common.FixedWorkRestSetDto;
     import FixedWorkTimezoneSetDto = service.model.common.FixedWorkTimezoneSetDto;
+    import HolidayCalculationDto = service.model.common.HolidayCalculationDto;
+    import OverTimeCalcNoBreakDto = service.model.common.OverTimeCalcNoBreakDto;
+    import ExceededPredAddVacationCalcDto = service.model.common.ExceededPredAddVacationCalcDto;
+    import FixedWorkCalcSettingDto = service.model.common.FixedWorkCalcSettingDto;
+    import ScheduleBreakCalculationDto = service.model.common.ScheduleBreakCalculationDto;
+    import StampBreakCalculationDto = service.model.common.StampBreakCalculationDto;
 
     import LateEarlyAtr = service.model.common.LateEarlyAtr;
     import WorkSystemAtr = service.model.common.WorkSystemAtr;
     import SubHolidayOriginAtr = service.model.common.SubHolidayOriginAtr;
     import SubHolTransferSetAtr = service.model.common.SubHolTransferSetAtr;
+    import StampPiorityAtr = service.model.common.StampPiorityAtr;
+    import Superiority = service.model.common.Superiority;
+    import TimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.predset.TimezoneModel;
 
     export module viewmodel {
         export module common {
@@ -67,7 +76,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 toDto(): DesignatedTimeDto {
-                    var dataDTO: DesignatedTimeDto = {                       
+                    var dataDTO: DesignatedTimeDto = {
                         oneDayTime: nts.uk.util.isNullOrEmpty(this.oneDayTime()) ? 0 : this.oneDayTime(),
                         halfDayTime: nts.uk.util.isNullOrEmpty(this.halfDayTime()) ? 0 : this.halfDayTime()
                     };
@@ -112,7 +121,7 @@ module nts.uk.at.view.kmk003.a {
 
                 constructor() {
                     this.roundingTime = ko.observable(0);
-                    this.rounding = ko.observable(1);
+                    this.rounding = ko.observable(0);
                 }
 
                 updateData(data: TimeRoundingSettingDto) {
@@ -129,8 +138,8 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 resetData() {
-                    this.roundingTime(0);                                       
-                    this.rounding(1);
+                    this.roundingTime(0);
+                    this.rounding(0);
                 }
             }
 
@@ -227,6 +236,7 @@ module nts.uk.at.view.kmk003.a {
                 shortTimeWorkSet: WorkTimezoneShortTimeWorkSetModel;
                 extraordTimeSet: WorkTimezoneExtraordTimeSetModel;
                 lateEarlySet: WorkTimezoneLateEarlySetModel;
+                holidayCalculation: HolidayCalculationModel;
 
                 constructor() {
                     this.zeroHStraddCalculateSet = ko.observable(false);
@@ -240,6 +250,7 @@ module nts.uk.at.view.kmk003.a {
                     this.shortTimeWorkSet = new WorkTimezoneShortTimeWorkSetModel();
                     this.extraordTimeSet = new WorkTimezoneExtraordTimeSetModel();
                     this.lateEarlySet = new WorkTimezoneLateEarlySetModel();
+                    this.holidayCalculation = new HolidayCalculationModel();
                 }
 
                 updateData(data: WorkTimezoneCommonSetDto) {
@@ -295,6 +306,7 @@ module nts.uk.at.view.kmk003.a {
                         this.shortTimeWorkSet.updateData(data.shortTimeWorkSet);
                         this.extraordTimeSet.updateData(data.extraordTimeSet);
                         this.lateEarlySet.updateData(data.lateEarlySet);
+                        this.holidayCalculation.updateData(data.holidayCalculation);
                     }
                 }
 
@@ -312,7 +324,8 @@ module nts.uk.at.view.kmk003.a {
                         lateNightTimeSet: this.lateNightTimeSet.toDto(),
                         shortTimeWorkSet: this.shortTimeWorkSet.toDto(),
                         extraordTimeSet: this.extraordTimeSet.toDto(),
-                        lateEarlySet: this.lateEarlySet.toDto()
+                        lateEarlySet: this.lateEarlySet.toDto(),
+                        holidayCalculation: this.holidayCalculation.toDto()
                     };
                     return dataDTO;
                 }
@@ -339,6 +352,7 @@ module nts.uk.at.view.kmk003.a {
                     this.shortTimeWorkSet.resetData();
                     this.extraordTimeSet.resetData();
                     this.lateEarlySet.resetData();
+                    this.holidayCalculation.resetData();
                 }
 
                 public static getDefaultSubHol(originAtr: SubHolidayOriginAtr): WorkTimezoneOtherSubHolTimeSetModel {
@@ -465,40 +479,91 @@ module nts.uk.at.view.kmk003.a {
             }
 
             export class FlowFixedRestSetModel {
-                isReferRestTime: KnockoutObservable<boolean>;
-                usePrivateGoOutRest: KnockoutObservable<boolean>;
-                useAssoGoOutRest: KnockoutObservable<boolean>;
                 calculateMethod: KnockoutObservable<number>;
+                calculateFromSchedule: ScheduleBreakCalculationModel;
+                calculateFromStamp: StampBreakCalculationModel;
 
                 constructor() {
-                    this.isReferRestTime = ko.observable(false);
-                    this.usePrivateGoOutRest = ko.observable(false);
-                    this.useAssoGoOutRest = ko.observable(false);
                     this.calculateMethod = ko.observable(0);
+                    this.calculateFromSchedule = new ScheduleBreakCalculationModel();
+                    this.calculateFromStamp = new StampBreakCalculationModel();
                 }
 
                 updatedData(data: FlowFixedRestSetDto) {
-                    this.isReferRestTime(data.isReferRestTime);
-                    this.usePrivateGoOutRest(data.usePrivateGoOutRest);
-                    this.useAssoGoOutRest(data.useAssoGoOutRest);
                     this.calculateMethod(data.calculateMethod);
+                    this.calculateFromSchedule.updatedData(data.calculateFromSchedule);
+                    this.calculateFromStamp.updatedData(data.calculateFromStamp);
                 }
 
                 toDto(): FlowFixedRestSetDto {
                     var dataDTO: FlowFixedRestSetDto = {
+                        calculateMethod: this.calculateMethod(),
+                        calculateFromSchedule: this.calculateFromSchedule.toDto(),
+                        calculateFromStamp: this.calculateFromStamp.toDto()
+                    };
+                    return dataDTO;
+                }
+
+                resetData() {
+                    this.calculateMethod(0);
+                    this.calculateFromSchedule.resetData();
+                    this.calculateFromStamp.resetData();
+                }
+            }
+
+            export class ScheduleBreakCalculationModel {
+                isReferRestTime: KnockoutObservable<boolean>;
+                isCalcFromSchedule: KnockoutObservable<boolean>;
+
+                constructor() {
+                    this.isReferRestTime = ko.observable(false);
+                    this.isCalcFromSchedule = ko.observable(false);
+                }
+
+                updatedData(data: ScheduleBreakCalculationDto) {
+                    this.isReferRestTime(data.isReferRestTime);
+                    this.isCalcFromSchedule(data.isCalcFromSchedule);
+                }
+
+                toDto(): ScheduleBreakCalculationDto {
+                    var dataDTO: ScheduleBreakCalculationDto = {
                         isReferRestTime: this.isReferRestTime(),
-                        usePrivateGoOutRest: this.usePrivateGoOutRest(),
-                        useAssoGoOutRest: this.useAssoGoOutRest(),
-                        calculateMethod: this.calculateMethod()
+                        isCalcFromSchedule: this.isCalcFromSchedule()
                     };
                     return dataDTO;
                 }
 
                 resetData() {
                     this.isReferRestTime(false);
+                    this.isCalcFromSchedule(false);
+                }
+            }
+
+            export class StampBreakCalculationModel {
+                usePrivateGoOutRest: KnockoutObservable<boolean>;
+                useAssoGoOutRest: KnockoutObservable<boolean>;
+
+                constructor() {
+                    this.usePrivateGoOutRest = ko.observable(false);
+                    this.useAssoGoOutRest = ko.observable(false);
+                }
+
+                updatedData(data: StampBreakCalculationDto) {
+                    this.usePrivateGoOutRest(data.usePrivateGoOutRest);
+                    this.useAssoGoOutRest(data.useAssoGoOutRest);
+                }
+
+                toDto(): StampBreakCalculationDto {
+                    var dataDTO: StampBreakCalculationDto = {
+                        usePrivateGoOutRest: this.usePrivateGoOutRest(),
+                        useAssoGoOutRest: this.useAssoGoOutRest()
+                    };
+                    return dataDTO;
+                }
+
+                resetData() {
                     this.usePrivateGoOutRest(false);
                     this.useAssoGoOutRest(false);
-                    this.calculateMethod(0);
                 }
             }
 
@@ -506,24 +571,28 @@ module nts.uk.at.view.kmk003.a {
                 flowRestSetting: FlowRestSetModel;
                 flowFixedRestSetting: FlowFixedRestSetModel;
                 usePluralWorkRestTime: KnockoutObservable<boolean>;
+                roundingBreakMultipleWork: TimeRoundingSettingModel;
 
                 constructor() {
                     this.flowRestSetting = new FlowRestSetModel();
                     this.flowFixedRestSetting = new FlowFixedRestSetModel();
                     this.usePluralWorkRestTime = ko.observable(false);
+                    this.roundingBreakMultipleWork = new TimeRoundingSettingModel();
                 }
 
                 updateData(data: FlowWorkRestSettingDetailDto) {
                     this.flowRestSetting.updateData(data.flowRestSetting);
                     this.flowFixedRestSetting.updatedData(data.flowFixedRestSetting);
                     this.usePluralWorkRestTime(data.usePluralWorkRestTime);
+                    this.roundingBreakMultipleWork.updateData(data.roundingBreakMultipleWork);
                 }
 
                 toDto(): FlowWorkRestSettingDetailDto {
                     var dataDTO: FlowWorkRestSettingDetailDto = {
                         flowRestSetting: this.flowRestSetting.toDto(),
                         flowFixedRestSetting: this.flowFixedRestSetting.toDto(),
-                        usePluralWorkRestTime: this.usePluralWorkRestTime()
+                        usePluralWorkRestTime: this.usePluralWorkRestTime(),
+                        roundingBreakMultipleWork: this.roundingBreakMultipleWork.toDto()
                     };
                     return dataDTO;
                 }
@@ -532,6 +601,7 @@ module nts.uk.at.view.kmk003.a {
                     this.flowRestSetting.resetData();
                     this.flowFixedRestSetting.resetData();
                     this.usePluralWorkRestTime(false);
+                    this.roundingBreakMultipleWork.resetData();
                 }
             }
 
@@ -641,6 +711,12 @@ module nts.uk.at.view.kmk003.a {
 
             export class TimeRangeModel {
                 column1: KnockoutObservable<TimeRange>;
+                constructor(deductionTimeModel: DeductionTimeModel) {
+                    let range = new TimeRange();
+                    range.startTime = deductionTimeModel.start();
+                    range.endTime = deductionTimeModel.end();
+                    this.column1 = ko.observable(range);
+                }
             }
 
             export class TimeRange {
@@ -648,11 +724,29 @@ module nts.uk.at.view.kmk003.a {
                 endTime: number;
             }
 
-            export abstract class FixedTableDataConverter<C, O> {
-                convertedList: KnockoutObservableArray<C>;
-                originalList: KnockoutObservableArray<O>;
+            export abstract class BaseDataModel {
+                abstract updateData(data: any): void;
+                abstract toDto(): any;
+            }
+
+            /**
+             * Data converter for fixed table component
+             * @sample uses: FlowWorkTzSettingModel, DiffTimeRestTimezoneModel
+             * @Note:
+             * In case there are 2 list need to be in FixedTable component in the same original class,
+             * you need to implements the methods for second list.
+             */
+            export abstract class FixedTableDataConverter<Converted, Original extends BaseDataModel> {
+                convertedList: KnockoutObservableArray<Converted>;
+                originalList: KnockoutObservableArray<Original>;
                 originalListTemp: Array<any>;
                 convertedListTemp: Array<any>;
+
+                // These attributes are used for second list
+                convertedList2: KnockoutObservableArray<any>;
+                originalList2: KnockoutObservableArray<any>;
+                originalListTemp2: Array<any>;
+                convertedListTemp2: Array<any>;
 
                 constructor() {
                     let self = this;
@@ -660,51 +754,177 @@ module nts.uk.at.view.kmk003.a {
                     self.originalList = ko.observableArray([]);
                     self.originalListTemp = [];
                     self.convertedListTemp = [];
+                    self.convertedList2 = ko.observableArray([]);
+                    self.originalList2 = ko.observableArray([]);
+                    self.originalListTemp2 = [];
+                    self.convertedListTemp2 = [];
 
                     self.originalList.subscribe(newList => {
                         // set new original list temp
-                        self.originalListTemp = self.toOriginalListTemp(newList);
+                        self.originalListTemp = self.toListOriginalDto(newList);
 
                         // check new converted list vs converted list temp
-                        let newConverted = self.toConvertedList();
-                        let newConvertedTemp = self.toConvertedListTemp(newConverted);
+                        const newConverted = self.fromOriginalListToConvertedList();
+                        const newConvertedTemp = _.cloneDeep(self.originalListTemp);
                         if (self.isNotEqual(newConvertedTemp, self.convertedListTemp)) {
-                            self.convertedList(newConverted); // update new converted list
+                            // update new converted list
+                            self.convertedList(newConverted);
                         }
                     });
 
                     self.convertedList.subscribe(newList => {
-                        // set new converted list temp
-                        self.convertedListTemp = self.toConvertedListTemp(newList);
+                        const firstItemSize = _.size(newList[0]);
+                        const newOriginal = self.toListOriginalModel(newList);
 
-                        // check new original list vs original list temp
-                        let newOriginal = self.fromConvertedList(newList);
-                        let newOriginalTemp = self.toOriginalListTemp(newOriginal);
-                        if (self.isNotEqual(newOriginalTemp, self.originalListTemp)) {
-                            self.originalList(newOriginal); // update new original list
+                        // convert all rows to full columns
+                        if (self.convertedListTemp.length == 0 || _.some(newList, i => _.size(i) != firstItemSize)) {
+                            // update convertedListTemp length
+                            self.convertedListTemp.push("");
+
+                            // update converted list with full columns
+                            self.convertedList(self.toListConvertedModel(newOriginal));
+                        }
+                        else {
+                            // set new converted list temp
+                            self.convertedListTemp = self.fromListConvertedToListOriginalDto(newList);
+
+                            // check new original list vs original list temp
+                            let newOriginalTemp = _.cloneDeep(self.convertedListTemp);
+                            if (self.isNotEqual(newOriginalTemp, self.originalListTemp)) {
+                                // update new original list
+                                self.originalList(newOriginal);
+                            }
+                        }
+                    });
+
+                    // For second list on fixed table
+                    self.convertedList2.subscribe(newList => {
+                        const firstItemSize = _.size(newList[0]);
+                        const newOriginal = self.toListOriginalModel2(newList);
+
+                        // convert all rows to full columns
+                        if (self.convertedListTemp2.length == 0 || _.some(newList, i => _.size(i) != firstItemSize)) {
+                            // update convertedListTemp length
+                            self.convertedListTemp2.push("");
+
+                            // update converted list with full columns
+                            self.convertedList2(self.toListConvertedModel2(newOriginal));
+                        }
+                        else {
+                            // set new converted list temp
+                            self.convertedListTemp2 = self.fromListConvertedToListOriginalDto2(newList);
+
+                            // check new original list vs original list temp
+                            let newOriginalTemp = _.cloneDeep(self.convertedListTemp2);
+                            if (self.isNotEqual(newOriginalTemp, self.originalListTemp2)) {
+                                // update new original list
+                                self.originalList2(newOriginal);
+                            }
+                        }
+                    });
+
+                    self.originalList2.subscribe(newList => {
+                        // set new original list temp
+                        self.originalListTemp2 = self.toListOriginalDto(newList);
+
+                        // check new converted list vs converted list temp
+                        const newConverted = self.fromOriginalListToConvertedList2();
+                        const newConvertedTemp = _.cloneDeep(self.originalListTemp2);
+                        if (self.isNotEqual(newConvertedTemp, self.convertedListTemp2)) {
+                            // update new converted list
+                            self.convertedList2(newConverted);
                         }
                     });
                 }
 
-                /**
-                 * To converted list temp
-                 */
-                abstract toConvertedListTemp(list: Array<C>): any;
+                fromOriginalListToConvertedList(): Array<Converted> {
+                    let self = this;
+                    return self.toListConvertedModel(self.originalList());
+                }
+
+                fromListConvertedToListOriginalDto(list: Array<Converted>): Array<any> {
+                    let self = this;
+                    return _.map(list, item => self.toOriginalDto(item));
+                }
+
+                toListConvertedModel(originalList: Array<Original>): Array<Converted> {
+                    let self = this;
+                    return _.map(originalList, o => self.createConverted(o));
+                }
 
                 /**
                  * To original list temp
                  */
-                abstract toOriginalListTemp(list: Array<O>): any;
-
-                /**
-                 * Convert to list time range
-                 */
-                abstract toConvertedList(): Array<C>;
+                toListOriginalDto(list: Array<any>): Array<any> {
+                    return _.map(list, item => {
+                        return item.toDto();
+                    });
+                }
 
                 /**
                  * Revert to original list
                  */
-                abstract fromConvertedList(newList: Array<C>): Array<O>;
+                toListOriginalModel(newList: Array<Converted>): Array<Original> {
+                    let self = this;
+                    let processed = self.optionalProcessing(newList);
+                    return _.map(processed, newVl => {
+                        let vl = this.createOriginal();
+                        vl.updateData(self.toOriginalDto(newVl));
+                        return vl;
+                    });
+                }
+
+                /**
+                 * Override this method if the list need special processing
+                 * @sample: FlowWorkTzSettingModel
+                 */
+                optionalProcessing(list: Array<Converted>): Array<Converted> {
+                    return list;
+                }
+
+                /**
+                 * From converted item to original Dto
+                 */
+                abstract toOriginalDto(convertedItem: Converted): any;
+
+                /**
+                 * Create new Original model
+                 */
+                abstract createOriginal(): Original;
+
+                /**
+                 * Create new Converted model
+                 */
+                abstract createConverted(original: Original): Converted;
+
+                // These methods below are optional and only used for second list.
+                // Implement these methods if second list is used
+                toOriginalDto2(convertedItem: any): any { return null; }
+                createOriginal2(): any { return null; }
+                createConverted2(original: any): any { return null; }
+                optionalProcessing2(list: Array<any>): Array<any> { return list; }
+
+                toListOriginalModel2(newList: Array<any>): Array<any> {
+                    let self = this;
+                    let processed = self.optionalProcessing2(newList);
+                    return _.map(processed, newVl => {
+                        let vl = this.createOriginal2();
+                        vl.updateData(self.toOriginalDto2(newVl));
+                        return vl;
+                    });
+                }
+                toListConvertedModel2(originalList: Array<any>): Array<any> {
+                    let self = this;
+                    return _.map(originalList, o => self.createConverted2(o));
+                }
+                fromListConvertedToListOriginalDto2(list: Array<any>): Array<any> {
+                    let self = this;
+                    return _.map(list, item => self.toOriginalDto2(item));
+                }
+                fromOriginalListToConvertedList2(): Array<Converted> {
+                    let self = this;
+                    return self.toListConvertedModel2(self.originalList2());
+                }
 
                 /**
                  * Evaluate 2 arrays
@@ -719,49 +939,22 @@ module nts.uk.at.view.kmk003.a {
                     super();
                 }
 
-                toConvertedListTemp(list: Array<OtherFlowColumnSetting>): Array<HDWorkTimeSheetSettingDto> {
-                    let self = this;
-                    return _.map(list, item => self.toOriginalDto(item));
-                }
-
-                /**
-                 * To original list temp
-                 */
-                toOriginalListTemp(list: Array<HDWorkTimeSheetSettingModel>): Array<HDWorkTimeSheetSettingDto> {
-                    return _.map(list, item => {
-                        return item.toDto();
-                    });
-                }
-
-                /**
-                 * Convert to list time range
-                 */
-                toConvertedList(): Array<OtherFlowColumnSetting> {
-                    let self = this;
-                    return _.map(self.originalList(), wtz => new OtherFlowColumnSetting(wtz));
-                }
-
-                /**
-                 * Revert to original list
-                 */
-                fromConvertedList(newList: Array<OtherFlowColumnSetting>): Array<HDWorkTimeSheetSettingModel> {
-                    let self = this;
-                    self.setWorkTimeNo(newList);
-                    return _.map(newList, newVl => {
-                        let vl = new HDWorkTimeSheetSettingModel();
-                        vl.updateData(self.toOriginalDto(newVl));
-                        return vl;
-                    });
-                }
-
-                setWorkTimeNo(list: Array<OtherFlowColumnSetting>): void {
+                optionalProcessing(list: Array<OtherFlowColumnSetting>): Array<OtherFlowColumnSetting> {
                     let count = 0;
-                    _.forEach(list, item => item.workTimeNo = ++count);
+                    return _.forEach(list, item => item.workTimeNo = ++count);
+                }
+
+                createOriginal(): HDWorkTimeSheetSettingModel {
+                    return new HDWorkTimeSheetSettingModel();
+                }
+
+                createConverted(original: HDWorkTimeSheetSettingModel): OtherFlowColumnSetting {
+                    return new OtherFlowColumnSetting(original);
                 }
 
                 toOriginalDto(convertedModel: OtherFlowColumnSetting): HDWorkTimeSheetSettingDto {
                     return {
-                        workTimeNo: 0, // set workTimeNo later.
+                        workTimeNo: convertedModel.workTimeNo,
                         timezone: {
                             rounding: {
                                 rounding: convertedModel.rounding(),
@@ -812,33 +1005,12 @@ module nts.uk.at.view.kmk003.a {
 
             }
 
-            export abstract class TimeRangeModelConverter<T> extends FixedTableDataConverter<TimeRangeModel, T> {
-
-                toConvertedListTemp(list: Array<TimeRangeModel>): any {
-                    return _.map(list, item => {
-                        return { start: item.column1().startTime, end: item.column1().endTime };
-                    });
-                }
-
-                toOriginalListTemp(list: Array<any>): any {
-                    return _.map(list, item => {
-                        return { start: item.start(), end: item.end() };
-                    });
-                }
-
-                /**
-                 * Convert to TimeRangeItem
-                 */
-                public toTimeRangeItem(start: number, end: number): TimeRangeModel {
-                    return { column1: ko.observable({ startTime: start, endTime: end }) };
-                }
-            }
-
-            export class DeductionTimeModel {
+            export class DeductionTimeModel extends BaseDataModel {
                 start: KnockoutObservable<number>;
                 end: KnockoutObservable<number>;
 
                 constructor() {
+                    super();
                     this.start = ko.observable(0);
                     this.end = ko.observable(0);
                 }
@@ -855,55 +1027,10 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
+
                 resetData() {
                     this.start(0);
                     this.end(0);
-                }
-            }
-
-            export class TimezoneOfFixedRestTimeSetModel extends TimeRangeModelConverter<DeductionTimeModel> {
-                timezones: KnockoutObservableArray<DeductionTimeModel>;
-
-                constructor() {
-                    super();
-                    this.timezones = this.originalList;
-                }
-
-                toConvertedList(): Array<TimeRangeModel> {
-                    let self = this;
-                    return _.map(self.timezones(), tz => self.toTimeRangeItem(tz.start(), tz.end()));
-                }
-
-                fromConvertedList(newList: Array<TimeRangeModel>): Array<DeductionTimeModel> {
-                    return _.map(newList, newVl => {
-                        let vl = new DeductionTimeModel();
-                        vl.start(newVl.column1().startTime);
-                        vl.end(newVl.column1().endTime);
-                        return vl;
-                    });
-                }
-
-                updateData(data: TimezoneOfFixedRestTimeSetDto) {
-                    let mapped = _.map(data.timezones, dto => {
-                        let model = new DeductionTimeModel();
-                        model.updateData(dto);
-                        return model
-                    });
-                    this.timezones(_.sortBy(mapped, item => item.start()));
-                }
-
-                toDto(): TimezoneOfFixedRestTimeSetDto {
-                    var timezones: DeductionTimeDto[] = [];
-                    _.forEach(this.timezones(), tz => timezones.push(tz.toDto()));
-                    var dataDTO: TimezoneOfFixedRestTimeSetDto = {
-                        timezones: timezones
-                    };
-                    return dataDTO;
-                }
-
-                resetData() {
-                    this.timezones([]);
                 }
             }
 
@@ -935,6 +1062,50 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
+            export class FixRestTimezoneSetModel extends FixedTableDataConverter<TimeRangeModel, DeductionTimeModel> {
+                timezones: KnockoutObservableArray<DeductionTimeModel>;
+
+                constructor() {
+                    super();
+                    this.timezones = this.originalList;
+                }
+
+                toOriginalDto(convertedItem: TimeRangeModel): DeductionTimeDto {
+                    return {
+                        start: convertedItem.column1().startTime,
+                        end: convertedItem.column1().endTime,
+                    };
+                }
+
+                createOriginal(): DeductionTimeModel {
+                    return new DeductionTimeModel();
+                }
+
+                createConverted(original: DeductionTimeModel): TimeRangeModel {
+                    return new TimeRangeModel(original);
+                }
+
+                updateData(data: TimezoneOfFixedRestTimeSetDto) {
+                    let mapped = _.map(data.timezones, (dataDTO) => {
+                        let dataModel = new DeductionTimeModel();
+                        dataModel.updateData(dataDTO);
+                        return dataModel;
+                    });
+                    this.timezones(_.sortBy(mapped, item => item.start()));
+                }
+
+                toDto(): TimezoneOfFixedRestTimeSetDto {
+                    let lstTimezone: DeductionTimeDto[] = _.map(this.timezones(), dataModel => dataModel.toDto());
+                    return {
+                        timezones: lstTimezone
+                    };
+                }
+
+                resetData() {
+                    this.timezones([]);                    
+                }
+            }
+
             export class FlowRestTimezoneModel extends FixedTableDataConverter<FixedTableTimeEditorModel, FlowRestSettingModel> {
                 flowRestSets: KnockoutObservableArray<FlowRestSettingModel>;
                 useHereAfterRestSet: KnockoutObservable<boolean>;
@@ -947,43 +1118,19 @@ module nts.uk.at.view.kmk003.a {
                     this.hereAfterRestSet = new FlowRestSettingModel();
                 }
 
-                toConvertedListTemp(list: Array<FixedTableTimeEditorModel>): any {
-                    return _.map(list, item => {
-                        return { start: item.startCol(), end: item.endCol() };
-                    });
+                createOriginal(): FlowRestSettingModel {
+                    return new FlowRestSettingModel();
                 }
 
-                /**
-                 * To original list temp
-                 */
-                toOriginalListTemp(list: Array<FlowRestSettingModel>): any {
-                    return _.map(list, item => {
-                        return { start: item.flowPassageTime(), end: item.flowRestTime() };
-                    });
+                createConverted(original: FlowRestSettingModel): FixedTableTimeEditorModel {
+                    return new FixedTableTimeEditorModel(original);
                 }
 
-                /**
-                 * Convert to list time range
-                 */
-                toConvertedList(): Array<FixedTableTimeEditorModel> {
-                    let self = this;
-                    return _.map(self.flowRestSets(), rs => self.toTimeEditorItem(rs.flowPassageTime(), rs.flowRestTime()));
-                }
-
-                /**
-                 * Revert to original list
-                 */
-                fromConvertedList(newList: Array<FixedTableTimeEditorModel>): Array<FlowRestSettingModel> {
-                    return _.map(newList, newVl => {
-                        let vl = new FlowRestSettingModel();
-                        vl.flowPassageTime(newVl.startCol());
-                        vl.flowRestTime(newVl.endCol());
-                        return vl;
-                    });
-                }
-
-                private toTimeEditorItem(start: number, end: number): any {
-                    return { startCol: ko.observable(start), endCol: ko.observable(end) };
+                toOriginalDto(convertedModel: FixedTableTimeEditorModel): FlowRestSettingDto {
+                    return {
+                        flowPassageTime: convertedModel.startCol(),
+                        flowRestTime: convertedModel.endCol()
+                    };
                 }
 
                 updateData(data: FlowRestTimezoneDto) {
@@ -1017,16 +1164,21 @@ module nts.uk.at.view.kmk003.a {
             export class FixedTableTimeEditorModel {
                 startCol: KnockoutObservable<number>;
                 endCol: KnockoutObservable<number>;
+
+                constructor(flowRestSet: FlowRestSettingModel) {
+                    this.startCol = ko.observable(flowRestSet.flowPassageTime());
+                    this.endCol = ko.observable(flowRestSet.flowRestTime());
+                }
             }
 
             export class FlowWorkRestTimezoneModel {
                 fixRestTime: KnockoutObservable<boolean>;
-                fixedRestTimezone: TimezoneOfFixedRestTimeSetModel;
+                fixedRestTimezone: FixRestTimezoneSetModel;
                 flowRestTimezone: FlowRestTimezoneModel;
 
                 constructor() {
                     this.fixRestTime = ko.observable(true);
-                    this.fixedRestTimezone = new TimezoneOfFixedRestTimeSetModel();
+                    this.fixedRestTimezone = new FixRestTimezoneSetModel();
                     this.flowRestTimezone = new FlowRestTimezoneModel();
                 }
 
@@ -1285,7 +1437,7 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
+
                 resetData(section: number) {
                     this.fontRearSection(section == 0 ? 1 : 0);
                     this.roundingTimeUnit(0);
@@ -1313,7 +1465,7 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
+
                 resetData() {
                     this.roundingSet.resetData(this.section());
                 }
@@ -1324,9 +1476,9 @@ module nts.uk.at.view.kmk003.a {
                 stampAtr: KnockoutObservable<number>;
 
 
-                constructor(priorityAtr: number) {
-                    this.priorityAtr = ko.observable(priorityAtr);
-                    this.stampAtr = ko.observable(0);
+                constructor(stampAtr: number) {
+                    this.stampAtr = ko.observable(stampAtr);
+                    this.priorityAtr = ko.observable((this.stampAtr() == StampPiorityAtr.LEAVE_WORK || this.stampAtr() == StampPiorityAtr.EXIT || this.stampAtr() == StampPiorityAtr.PC_LOGOUT) ? 1 : 0);
                 }
 
                 updateData(data: PrioritySettingDto) {
@@ -1341,9 +1493,9 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
+
                 resetData() {
-                    this.stampAtr(this.priorityAtr() == 1 ? 1 : 0);
+                    this.priorityAtr = ko.observable((this.stampAtr() == StampPiorityAtr.LEAVE_WORK || this.stampAtr() == StampPiorityAtr.EXIT || this.stampAtr() == StampPiorityAtr.PC_LOGOUT) ? 1 : 0);
                 }
             }
 
@@ -1359,29 +1511,37 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 initPrioritySets() {
-                    var dataPriorityModel1: PrioritySettingModel = new PrioritySettingModel(0);
-                    var dataPriorityModel2: PrioritySettingModel = new PrioritySettingModel(1);
-                    this.prioritySets.push(dataPriorityModel1);
-                    this.prioritySets.push(dataPriorityModel2);
+                    for (let item in StampPiorityAtr) {
+                        if (!isNaN(Number(item))) {
+                            let dataPriorityModel: PrioritySettingModel = new PrioritySettingModel(Number(item));
+                            this.prioritySets.push(dataPriorityModel);
+                        }
+                    }
                 }
 
                 initRoundingSets() {
-                    var dataRoundingModel1: RoundingSetModel = new RoundingSetModel(0);
-                    var dataRoundingModel2: RoundingSetModel = new RoundingSetModel(1);
-                    this.roundingSets.push(dataRoundingModel1);
-                    this.roundingSets.push(dataRoundingModel2);
+                    for (let item in Superiority) {
+                        if (!isNaN(Number(item))) {
+                            let dataRoundingModel: RoundingSetModel = new RoundingSetModel(Number(item));
+                            this.roundingSets.push(dataRoundingModel);
+                        }
+                    }
                 }
 
                 updateData(data: WorkTimezoneStampSetDto) {
                     var self = this;
-                    data.roundingSets.forEach(function(dataRoundingDTO, index) {
-                        //                        var dataRoundingModel: RoundingSetModel = new RoundingSetModel(index);
-                        //                        dataRoundingModel.updateData(dataRoundingDTO);
-                        self.roundingSets[dataRoundingDTO.section].updateData(dataRoundingDTO);
+                    data.roundingSets.forEach((dataRoundingDTO, index) => {
+                        let currentItem: RoundingSetModel = _.find(self.roundingSets, p => p.section() == dataRoundingDTO.section);
+                        if (!nts.uk.util.isNullOrUndefined(currentItem)) {
+                            currentItem.updateData(dataRoundingDTO);
+                        }
                     });
 
                     data.prioritySets.forEach(function(dataPriorityDTO, index) {
-                        self.prioritySets[dataPriorityDTO.priorityAtr].updateData(dataPriorityDTO);
+                        let currentItem: PrioritySettingModel = _.find(self.prioritySets, p => p.stampAtr() == dataPriorityDTO.stampAtr);
+                        if (!nts.uk.util.isNullOrUndefined(currentItem)) {
+                            currentItem.updateData(dataPriorityDTO);
+                        }
                     });
                 }
 
@@ -1401,7 +1561,7 @@ module nts.uk.at.view.kmk003.a {
 
                     return dataDTO;
                 }
-                
+
                 resetData() {
                     this.roundingSets.forEach(function(item, index) {
                         item.resetData();
@@ -1411,6 +1571,18 @@ module nts.uk.at.view.kmk003.a {
                         item.resetData();
                     });
                 }
+
+                getPrioritySetsGoWork(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.GOING_WORK) }
+                getPrioritySetsLeaveWork(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.LEAVE_WORK) }
+                getPrioritySetsEnter(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.ENTERING) }
+                getPrioritySetsExit(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.EXIT) }
+                getPrioritySetsPcLogin(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.PCLOGIN) }
+                getPrioritySetsPcLogout(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.PC_LOGOUT) }
+
+                getRoundingSetsAttendance(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == Superiority.ATTENDANCE) }
+                getRoundingSetsOfficeWork(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == Superiority.OFFICE_WORK) }
+                getRoundingSetsGoOut(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == Superiority.GO_OUT) }
+                getRoundingSetsTurnBack(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == Superiority.TURN_BACK) }
             }
 
             export class WorkTimezoneLateNightTimeSetModel {
@@ -1430,9 +1602,9 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
+
                 resetData() {
-                    this.roundingSetting.resetData();    
+                    this.roundingSetting.resetData();
                 }
             }
 
@@ -1462,11 +1634,11 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
+
                 resetData() {
                     this.nursTimezoneWorkUse(false);
                     this.employmentTimeDeduct(false);
-                    this.childCareWorkUse(false);    
+                    this.childCareWorkUse(false);
                 }
             }
 
@@ -1496,7 +1668,7 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
+
                 resetData() {
                     this.inLegalBreakoutFrameNo(1);
                     this.outLegalBreakoutFrameNo(1);
@@ -1566,7 +1738,7 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
+
                 resetData() {
                     this.holidayFrameSet.resetData();
                     this.timeRoundingSet.resetData();
@@ -1593,6 +1765,9 @@ module nts.uk.at.view.kmk003.a {
                     return dataDTO;
                 }
 
+                resetData() {
+                    this.delFromEmTime(false);
+                }
             }
 
             export class GraceTimeSettingModel {
@@ -1711,7 +1886,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 resetData() {
-                    //this.commonSet.resetData();
+                    this.commonSet.resetData();
                     let lateSet = _.find(this.otherClassSets, o => o.lateEarlyAtr() == LateEarlyAtr.LATE);
                     lateSet.updateData(WorkTimezoneLateEarlySetModel.getDefaultOtherSet(LateEarlyAtr.LATE).toDto());
                     let leaveEarlySet = _.find(this.otherClassSets, o => o.lateEarlyAtr() == LateEarlyAtr.EARLY);
@@ -1734,11 +1909,12 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
-            export class EmTimeZoneSetModel {
+            export class EmTimeZoneSetModel extends BaseDataModel {
                 employmentTimeFrameNo: KnockoutObservable<number>;
                 timezone: TimeZoneRoundingModel;
 
                 constructor() {
+                    super();
                     this.employmentTimeFrameNo = ko.observable(0);
                     this.timezone = new TimeZoneRoundingModel();
                 }
@@ -1757,7 +1933,30 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
-            export class OverTimeOfTimeZoneSetModel {
+            export class EmTimeZoneSetFixedTableModel {
+                employmentTimeFrameNo: number;
+                timeRange: KnockoutObservable<TimePeriod>;
+                roundingTime: KnockoutObservable<number>;
+                rounding: KnockoutObservable<number>;
+
+                constructor(original: EmTimeZoneSetModel) {
+                    let self = this;
+                    self.employmentTimeFrameNo = original.employmentTimeFrameNo();
+                    self.timeRange = ko.observable({
+                        startTime: original.timezone.start(),
+                        endTime: original.timezone.end(),
+                    });
+                    self.roundingTime = ko.observable(original.timezone.rounding.roundingTime());
+                    self.rounding = ko.observable(original.timezone.rounding.rounding());
+                }
+            }
+
+            export interface TimePeriod {
+                startTime: number;
+                endTime: number;
+            }
+
+            export class OverTimeOfTimeZoneSetModel extends BaseDataModel {
                 workTimezoneNo: KnockoutObservable<number>;
                 restraintTimeUse: KnockoutObservable<boolean>;
                 earlyOTUse: KnockoutObservable<boolean>;
@@ -1767,6 +1966,7 @@ module nts.uk.at.view.kmk003.a {
                 settlementOrder: KnockoutObservable<number>;
 
                 constructor() {
+                    super();
                     this.workTimezoneNo = ko.observable(0);
                     this.restraintTimeUse = ko.observable(false);
                     this.earlyOTUse = ko.observable(false);
@@ -1823,31 +2023,40 @@ module nts.uk.at.view.kmk003.a {
                 toDto(): StampReflectTimezoneDto {
                     var dataDTO: StampReflectTimezoneDto = {
                         workNo: this.workNo(),
-                        classification: this.workNo(),
+                        classification: this.classification(),
                         endTime: this.endTime(),
                         startTime: this.startTime()
-                    };
+                    }
                     return dataDTO;
+                }
+
+                resetData() {
+                    this.endTime(0);
+                    this.startTime(0);
                 }
             }
 
             export class FixedWorkRestSetModel {
                 commonRestSet: CommonRestSettingModel;
+                isPlanActualNotMatchMasterRefer: KnockoutObservable<boolean>;
                 fixedRestCalculateMethod: KnockoutObservable<number>;
 
                 constructor() {
                     this.commonRestSet = new CommonRestSettingModel();
+                    this.isPlanActualNotMatchMasterRefer = ko.observable(false);
                     this.fixedRestCalculateMethod = ko.observable(0);
                 }
 
                 updateData(data: FixedWorkRestSetDto) {
                     this.commonRestSet.updateData(data.commonRestSet);
+                    this.isPlanActualNotMatchMasterRefer(data.isPlanActualNotMatchMasterRefer);
                     this.fixedRestCalculateMethod(data.fixedRestCalculateMethod);
                 }
 
                 toDto(): FixedWorkRestSetDto {
                     let dataDTO: FixedWorkRestSetDto = {
                         commonRestSet: this.commonRestSet.toDto(),
+                        isPlanActualNotMatchMasterRefer: this.isPlanActualNotMatchMasterRefer(),
                         fixedRestCalculateMethod: this.fixedRestCalculateMethod()
                     };
                     return dataDTO;
@@ -1855,17 +2064,128 @@ module nts.uk.at.view.kmk003.a {
 
                 resetData() {
                     this.commonRestSet.resetData();
+                    this.isPlanActualNotMatchMasterRefer(false);
                     this.fixedRestCalculateMethod(0);
                 }
             }
 
-            export class FixedWorkTimezoneSetModel {
+            export class OverTimeFixedTableModel {
+                workTimezoneNo: number;
+                timezone: KnockoutObservable<any>;
+                rounding: KnockoutObservable<number>;
+                roundingTime: KnockoutObservable<number>;
+                restraintTimeUse: KnockoutObservable<boolean>;
+                otFrameNo: KnockoutObservable<number>;
+                earlyOTUse: KnockoutObservable<boolean>;
+                legalOTframeNo: KnockoutObservable<number>;
+                settlementOrder: KnockoutObservable<number>;
+
+                constructor(otModel: OverTimeOfTimeZoneSetModel) {
+                    this.workTimezoneNo = otModel.workTimezoneNo();
+                    this.timezone = ko.observable({
+                        startTime: otModel.timezone.start(),
+                        endTime: otModel.timezone.end()
+                    });
+                    this.rounding = ko.observable(otModel.timezone.rounding.rounding());
+                    this.roundingTime = ko.observable(otModel.timezone.rounding.roundingTime());
+                    this.restraintTimeUse = ko.observable(otModel.restraintTimeUse());
+                    this.otFrameNo = ko.observable(otModel.otFrameNo());
+                    this.earlyOTUse = ko.observable(otModel.earlyOTUse());
+                    this.legalOTframeNo = ko.observable(otModel.legalOTframeNo());
+                    this.settlementOrder = ko.observable(otModel.settlementOrder());
+                }
+            }
+
+            export class FixedWorkTimezoneSetModel extends FixedTableDataConverter<OverTimeFixedTableModel, OverTimeOfTimeZoneSetModel> {
                 lstWorkingTimezone: KnockoutObservableArray<EmTimeZoneSetModel>;
                 lstOTTimezone: KnockoutObservableArray<OverTimeOfTimeZoneSetModel>;
 
-                constructor() {
-                    this.lstWorkingTimezone = ko.observableArray([]);
-                    this.lstOTTimezone = ko.observableArray([]);
+                lstWorkingTimezoneSimpleMode: KnockoutObservableArray<EmTimeZoneSetFixedTableModel>;
+                displayMode: KnockoutObservable<number>;
+
+                constructor(displayMode: KnockoutObservable<number>) {
+                    super();
+                    this.displayMode = displayMode;
+                    this.lstWorkingTimezone = this.originalList2;
+                    this.lstOTTimezone = this.originalList;
+                    this.lstWorkingTimezoneSimpleMode = ko.observableArray([]);
+                }
+
+                public initSubscribeForTab2(timezone: TimezoneModel): void {
+                    let self = this;
+
+                    timezone.valueChangedNotifier.subscribe(() => {
+                        const cloned = _.cloneDeep(self.lstWorkingTimezoneSimpleMode()[0]);
+                        if (cloned) {
+                            const updatedTime = <TimePeriod>{};
+                            updatedTime.startTime = timezone.start();
+                            updatedTime.endTime = timezone.end();
+                            cloned.timeRange(updatedTime);
+
+                            // update list on fixed table
+                            self.lstWorkingTimezoneSimpleMode([cloned]);
+                        } 
+                    });
+
+                }
+
+                toOriginalDto(convertedItem: OverTimeFixedTableModel): OverTimeOfTimeZoneSetDto {
+                    return {
+                        workTimezoneNo: convertedItem.workTimezoneNo ? convertedItem.workTimezoneNo : 0,
+                        timezone: {
+                            rounding: {
+                                roundingTime: convertedItem.roundingTime(),
+                                rounding: convertedItem.rounding()
+                            },
+                            start: convertedItem.timezone().startTime,
+                            end: convertedItem.timezone().endTime
+                        },
+                        restraintTimeUse: convertedItem.restraintTimeUse ? convertedItem.restraintTimeUse() : false,
+                        earlyOTUse: convertedItem.earlyOTUse(),
+                        otFrameNo: convertedItem.otFrameNo(),
+                        legalOTframeNo: convertedItem.legalOTframeNo ? convertedItem.legalOTframeNo() : 1,
+                        settlementOrder: convertedItem.settlementOrder ? convertedItem.settlementOrder() : 1
+                    };
+                }
+
+                createOriginal(): OverTimeOfTimeZoneSetModel {
+                    return new OverTimeOfTimeZoneSetModel();
+                }
+
+                createConverted(original: OverTimeOfTimeZoneSetModel): OverTimeFixedTableModel {
+                    return new OverTimeFixedTableModel(original);
+                }
+
+                optionalProcessing(list: Array<OverTimeFixedTableModel>): Array<OverTimeFixedTableModel> {
+                    let count = 0;
+                    return _.forEach(list, item => item.workTimezoneNo = ++count);
+                }
+
+                optionalProcessing2(list: Array<EmTimeZoneSetFixedTableModel>): Array<EmTimeZoneSetFixedTableModel> {
+                    let count = 0;
+                    return _.forEach(list, item => item.employmentTimeFrameNo = ++count);
+                }
+
+                toOriginalDto2(convertedItem: EmTimeZoneSetFixedTableModel): EmTimeZoneSetDto {
+                    return {
+                        employmentTimeFrameNo: convertedItem.employmentTimeFrameNo ? convertedItem.employmentTimeFrameNo : 0,
+                        timezone: {
+                            rounding: {
+                                roundingTime: convertedItem.roundingTime(),
+                                rounding: convertedItem.rounding()
+                            },
+                            start: convertedItem.timeRange().startTime,
+                            end: convertedItem.timeRange().endTime
+                        }
+                    };
+                }
+
+                createOriginal2(): EmTimeZoneSetModel {
+                    return new EmTimeZoneSetModel();
+                }
+
+                createConverted2(original: EmTimeZoneSetModel): EmTimeZoneSetFixedTableModel {
+                    return new EmTimeZoneSetFixedTableModel(original);
                 }
 
                 updateData(data: FixedWorkTimezoneSetDto) {
@@ -1874,14 +2194,12 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 updateOvertimeZone(lstOTTimezone: OverTimeOfTimeZoneSetDto[]) {
-                    this.lstOTTimezone([]);
-                    var dataModelTimezone: OverTimeOfTimeZoneSetModel[] = [];
-                    for (var dataDTO of lstOTTimezone) {
-                        var dataModel: OverTimeOfTimeZoneSetModel = new OverTimeOfTimeZoneSetModel();
-                        dataModel.updateData(dataDTO);
-                        dataModelTimezone.push(dataModel);
-                    }
-                    this.lstOTTimezone(dataModelTimezone);
+                    const updatedList = _.map(lstOTTimezone, dto => {
+                        const model = new OverTimeOfTimeZoneSetModel();
+                        model.updateData(dto);
+                        return model;
+                    });
+                    this.lstOTTimezone(updatedList);
                 }
 
 
@@ -1893,6 +2211,19 @@ module nts.uk.at.view.kmk003.a {
                         return m;
                     });
                     self.lstWorkingTimezone(updatedList);
+
+                    // for simple mode list
+                    const firstItem = updatedList[0];
+                    if (firstItem) {
+                        let simple = self.lstWorkingTimezoneSimpleMode()[0];
+                        if (simple) {
+                            simple.roundingTime(firstItem.timezone.rounding.roundingTime());
+                            simple.rounding(firstItem.timezone.rounding.rounding());
+                        } else {
+                            simple = new EmTimeZoneSetFixedTableModel(firstItem);
+                        }
+                        self.lstWorkingTimezoneSimpleMode([simple]);
+                    }
                 }
 
                 getWorkingTimezoneByEmploymentTimeFrameNo(employmentTimeFrameNo: number) {
@@ -1901,6 +2232,22 @@ module nts.uk.at.view.kmk003.a {
                 toDto(): FixedWorkTimezoneSetDto {
                     let lstWorkingTimezone: EmTimeZoneSetDto[] = _.map(this.lstWorkingTimezone(), (dataModel) => dataModel.toDto());
                     let lstOTTimezone: OverTimeOfTimeZoneSetDto[] = _.map(this.lstOTTimezone(), (dataModel) => dataModel.toDto());
+
+                    // get data from simple mode (tab2)
+                    if (this.displayMode() == 1) {
+                        const simple = this.lstWorkingTimezoneSimpleMode()[0];
+                        if (simple) {
+                            const detail = <EmTimeZoneSetDto>{};
+                            detail.employmentTimeFrameNo = 1;
+                            detail.timezone = <TimeZoneRoundingDto>{};
+                            detail.timezone.rounding = <TimeRoundingSettingDto>{};
+                            detail.timezone.rounding.roundingTime = simple.roundingTime();
+                            detail.timezone.rounding.rounding = simple.rounding();
+                            detail.timezone.start = simple.timeRange().startTime;
+                            detail.timezone.end = simple.timeRange().endTime;
+                            lstWorkingTimezone = [detail];
+                        }
+                    }
 
                     let dataDTO: FixedWorkTimezoneSetDto = {
                         lstWorkingTimezone: lstWorkingTimezone,
@@ -1912,9 +2259,121 @@ module nts.uk.at.view.kmk003.a {
                 resetData() {
                     this.lstWorkingTimezone([]);
                     this.lstOTTimezone([]);
+                    this.lstWorkingTimezoneSimpleMode([]);
                 }
             }
 
+            export class HolidayCalculationModel {
+                isCalculate: KnockoutObservable<number>;
+
+                constructor() {
+                    this.isCalculate = ko.observable(0);
+                }
+
+                updateData(data: HolidayCalculationDto) {
+                    this.isCalculate(data.isCalculate);
+                }
+
+                toDto(): HolidayCalculationDto {
+                    let dataDTO: HolidayCalculationDto = {
+                        isCalculate: this.isCalculate()
+                    };
+                    return dataDTO;
+                }
+
+                resetData() {
+                    this.isCalculate(0);
+                }
+            }
+
+            export class OverTimeCalcNoBreakModel {
+                calcMethod: KnockoutObservable<number>;
+                inLawOT: KnockoutObservable<number>;
+                notInLawOT: KnockoutObservable<number>;
+
+                constructor() {
+                    this.calcMethod = ko.observable(0);
+                    this.inLawOT = ko.observable(0);
+                    this.notInLawOT = ko.observable(0);
+                }
+
+                updateData(data: OverTimeCalcNoBreakDto) {
+                    this.calcMethod(data.calcMethod);
+                    this.inLawOT(data.inLawOT);
+                    this.notInLawOT(data.notInLawOT);
+                }
+
+                toDto(): OverTimeCalcNoBreakDto {
+                    let dataDTO: OverTimeCalcNoBreakDto = {
+                        calcMethod: this.calcMethod(),
+                        inLawOT: this.inLawOT(),
+                        notInLawOT: this.notInLawOT()
+                    };
+                    return dataDTO;
+                }
+
+                resetData() {
+                    this.calcMethod(0);
+                    this.inLawOT(0);
+                    this.notInLawOT(0);
+                }
+            }
+
+            export class ExceededPredAddVacationCalcModel {
+                calcMethod: KnockoutObservable<number>;
+                otFrameNo: KnockoutObservable<number>;
+
+                constructor() {
+                    this.calcMethod = ko.observable(0);
+                    this.otFrameNo = ko.observable(0);
+                }
+
+                updateData(data: ExceededPredAddVacationCalcDto) {
+                    this.calcMethod(data.calcMethod);
+                    this.otFrameNo(data.otFrameNo);
+                }
+
+                toDto(): ExceededPredAddVacationCalcDto {
+                    let dataDTO: ExceededPredAddVacationCalcDto = {
+                        calcMethod: this.calcMethod(),
+                        otFrameNo: this.otFrameNo()
+                    };
+                    return dataDTO;
+                }
+
+                resetData() {
+                    this.calcMethod(0);
+                    this.otFrameNo(0);
+                }
+            }
+
+            export class FixedWorkCalcSettingModel {
+                exceededPredAddVacationCalc: ExceededPredAddVacationCalcModel;
+                overTimeCalcNoBreak: OverTimeCalcNoBreakModel;
+
+                constructor() {
+                    this.exceededPredAddVacationCalc = new ExceededPredAddVacationCalcModel();
+                    this.overTimeCalcNoBreak = new OverTimeCalcNoBreakModel();
+                }
+
+                updateData(data: FixedWorkCalcSettingDto) {
+                    this.exceededPredAddVacationCalc.updateData(data.exceededPredAddVacationCalc);
+                    this.overTimeCalcNoBreak.updateData(data.overTimeCalcNoBreak);
+                }
+
+                toDto(): FixedWorkCalcSettingDto {
+                    let dataDTO: FixedWorkCalcSettingDto = {
+                        exceededPredAddVacationCalc: this.exceededPredAddVacationCalc.toDto(),
+                        overTimeCalcNoBreak: this.overTimeCalcNoBreak.toDto()
+                    };
+                    return dataDTO;
+                }
+
+                resetData() {
+                    this.exceededPredAddVacationCalc.resetData();
+                    this.overTimeCalcNoBreak.resetData();
+                }
+            }
         }
     }
 }

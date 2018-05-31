@@ -10,7 +10,8 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DayOffTimezoneSetting;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.HDWorkTimeSheetSettingDto;
+import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDayOffWorkTimezoneSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeRestTimezone;
 
@@ -25,7 +26,7 @@ public class DiffTimeDayOffWorkTimezoneDto implements DiffTimeDayOffWorkTimezone
 	private DiffTimeRestTimezoneDto restTimezone;
 
 	/** The work timezone. */
-	private List<DayOffTimezoneSettingDto> workTimezones;
+	private List<HDWorkTimeSheetSettingDto> workTimezones;
 
 	@Override
 	public void setRestTimezone(DiffTimeRestTimezone restTimezone) {
@@ -34,10 +35,10 @@ public class DiffTimeDayOffWorkTimezoneDto implements DiffTimeDayOffWorkTimezone
 	}
 
 	@Override
-	public void setWorkTimezones(List<DayOffTimezoneSetting> workTimezone) {
-		this.workTimezones = new ArrayList<DayOffTimezoneSettingDto>();
+	public void setWorkTimezones(List<HDWorkTimeSheetSetting> workTimezone) {
+		this.workTimezones = new ArrayList<HDWorkTimeSheetSettingDto>();
 		this.workTimezones.addAll(workTimezone.stream().map(item -> {
-			DayOffTimezoneSettingDto dto = new DayOffTimezoneSettingDto();
+			HDWorkTimeSheetSettingDto dto = new HDWorkTimeSheetSettingDto();
 			item.saveToMemento(dto);
 			return dto;
 		}).collect(Collectors.toList()));

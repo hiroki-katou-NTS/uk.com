@@ -12,5 +12,5 @@ public interface OverTimeInstructPub {
 	 * @param instructDate
 	 * @return
 	 */
-	public List<GeneralDate> acquireOverTimeWorkInstruction(String sId, GeneralDate startDate, GeneralDate endDate);
+	public List<OverTimeInstructExport> acquireOverTimeWorkInstruction(String sId, GeneralDate startDate, GeneralDate endDate);
 }

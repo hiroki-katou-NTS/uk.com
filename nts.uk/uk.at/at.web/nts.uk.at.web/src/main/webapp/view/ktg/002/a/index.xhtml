@@ -7,24 +7,20 @@
 <body>
 	<ui:composition template="../../../../master/freelayout.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 300, height: 200 };</script>
-			<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
-				</com:ValidatorScript>
-			<com:stylefile path="ktg002.a.style.css" />
-			<com:scriptfile path="ktg002.a.service.js" />
-			<com:scriptfile path="ktg002.a.vm.js" />
-			<com:scriptfile path="ktg002.a.start.js" />
+			<com:stylefile path="/view/ktg/002/a/ktg002.a.style.css" of="/nts.uk.at.web" />
+			<com:scriptfile path="/view/ktg/002/a/ktg002.a.service.js" of="/nts.uk.at.web"  />
+			<com:scriptfile path="/view/ktg/002/a/ktg002.a.vm.js" of="/nts.uk.at.web"  />
+			<com:scriptfile path="/view/ktg/002/a/ktg002.a.start.js" of="/nts.uk.at.web"  />
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="contents-area">
+			<div id="contents-area" class="ktg002">
 				<table class="widget-table">
 					<tr>
-						<td>#{i18n.getText('KTG002_3')}</td>
+						<td style="padding-right: 16px;">#{i18n.getText('KTG002_3')}</td>
 					</tr>
 					<tr>
-						<td>
+						<td class="bottom">
 							<table class="widget-table">
 								<tr>
 									<td data-bind="text: text"></td>

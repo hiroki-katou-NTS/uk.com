@@ -15,8 +15,17 @@ module nts.uk.at.view.kmk003.a {
             saveFixedWorkSetting: "at/shared/worktimesetting/fixedset/save",
             saveFlowWorkSetting: "at/shared/worktimesetting/flowset/save",
             saveDiffTimeWorkSetting: "at/shared/worktimesetting/difftimeset/save",
-            removeWorkTimeByCode: "at/shared/worktimesetting/remove"
+            removeWorkTimeByCode: "at/shared/worktimesetting/remove",
+            findSettingFlexWork: "shared/selection/func/settingflexwork/get",
+            findAllUsedOvertimeWorkFrame: "at/shared/overtimeworkframe/findall/used"
         };
+
+        /**
+         * function find all work time set
+         */
+        export function findSettingFlexWork(): JQueryPromise<model.common.SettingFlexWorkDto> {
+            return nts.uk.request.ajax(servicePath.findSettingFlexWork);
+        }
 
         /**
          * function find all work time set
@@ -93,6 +102,22 @@ module nts.uk.at.view.kmk003.a {
          */
         export function removeWorkTime(workTimeCode: string): JQueryPromise<void> {
             return nts.uk.request.ajax(servicePath.removeWorkTimeByCode, { workTimeCode: workTimeCode });
+        }
+        
+        /**
+         * function find all overtime work frame
+         */
+        export function findAllUsedOvertimeWorkFrame(): JQueryPromise<model.OvertimeWorkFrameFindDto[]> {
+            return nts.uk.request.ajax(servicePath.findAllUsedOvertimeWorkFrame);
+        }
+        
+        export module model {
+            export interface OvertimeWorkFrameFindDto {
+                overtimeWorkFrNo: number;
+                overtimeWorkFrName: string;
+                transferFrName: string;
+                useAtr: number;
+            }
         }
     }
 }

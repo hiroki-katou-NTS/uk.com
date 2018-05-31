@@ -58,7 +58,6 @@ public class SpecialLeaveGrantRemWebService {
 	@POST
 	@Path("save")
 	public void save(SpecialLeaveRemainCommand command) {
-		System.out.println(command);
 		if (command.getSpecialid() == null) {
 			add.handle(command);
 		} else {

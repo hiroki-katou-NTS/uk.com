@@ -9,6 +9,9 @@ import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.output.ApprovalRootPattern;
+import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.RecordDate;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 /**
  * 
@@ -21,6 +24,9 @@ public class CollectApprovalRootPatternImpl implements CollectApprovalRootPatter
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
 	
+	@Inject
+	private RequestSettingRepository requestSettingRepository;
+	
 	@Override
 	public ApprovalRootPattern getApprovalRootPatternService(String companyID, String employeeID, EmploymentRootAtr rootAtr,
 			ApplicationType appType, GeneralDate appDate, String appID, Boolean isCreate) {
@@ -28,9 +34,10 @@ public class CollectApprovalRootPatternImpl implements CollectApprovalRootPatter
 		ApprovalRootContentImport_New approvalRootContentImport = null;
 		// ドメインモデル「申請設定」．承認ルートの基準日をチェックする
 		// 承認ルートの基準日
-		BaseDateFlg baseDateFlg = BaseDateFlg.SYSTEM_DATE;
-		
-		if(baseDateFlg.equals(BaseDateFlg.SYSTEM_DATE)){
+		RecordDate baseDateFlg = RecordDate.SYSTEM_DATE;
+		RequestSetting requestSetting = requestSettingRepository.findByCompany(companyID).get();
+		baseDateFlg = requestSetting.getApplicationSetting().getRecordDate();
+		if(baseDateFlg.equals(RecordDate.SYSTEM_DATE)){
 			approvalRootContentImport = approvalRootStateAdapter.getApprovalRootContent(companyID, employeeID, appType.value, appDate, appID, isCreate);
 			baseDate = GeneralDate.today();
 			return new ApprovalRootPattern(baseDate, approvalRootContentImport);
@@ -39,7 +46,7 @@ public class CollectApprovalRootPatternImpl implements CollectApprovalRootPatter
 			baseDate = GeneralDate.today();
 			return new ApprovalRootPattern(baseDate, approvalRootContentImport);
 		}
-		approvalRootStateAdapter.getApprovalRootContent(companyID, employeeID, appType.value, appDate, appID, isCreate);
+		approvalRootContentImport = approvalRootStateAdapter.getApprovalRootContent(companyID, employeeID, appType.value, appDate, appID, isCreate);
 		baseDate = appDate;
 		return new ApprovalRootPattern(baseDate, approvalRootContentImport);
 	}

@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
@@ -10,30 +10,23 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset;
 public interface FlowFixedRestSetSetMemento {
 
 	/**
-	 * Sets the checks if is refer rest time.
-	 *
-	 * @param val the new checks if is refer rest time
-	 */
- 	void setIsReferRestTime(boolean val);
-
-	/**
-	 * Sets the use private go out rest.
-	 *
-	 * @param val the new use private go out rest
-	 */
-	 void setUsePrivateGoOutRest(boolean val);
-
-	/**
-	 * Sets the use asso go out rest.
-	 *
-	 * @param val the new use asso go out rest
-	 */
-	 void setUseAssoGoOutRest(boolean val);
-
-	/**
 	 * Sets the calculate method.
 	 *
-	 * @param method the new calculate method
+	 * @param val the new calculate method
 	 */
-	 void setCalculateMethod(FlowFixedRestCalcMethod method);
+	void setCalculateMethod(FlowFixedRestCalcMethod val);
+
+	/**
+	 * Sets the calculate from schedule.
+	 *
+	 * @param val the new calculate from schedule
+	 */
+	void setCalculateFromSchedule(ScheduleBreakCalculation val);
+
+	/**
+	 * Sets the calculate from stamp.
+	 *
+	 * @param val the new calculate from stamp
+	 */
+	void setCalculateFromStamp(StampBreakCalculation val);
 }

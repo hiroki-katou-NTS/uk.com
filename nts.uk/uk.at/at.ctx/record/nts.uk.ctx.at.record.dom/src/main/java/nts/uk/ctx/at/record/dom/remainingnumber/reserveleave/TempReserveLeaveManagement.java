@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.reserveleave;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.ManagementDays;
@@ -17,9 +18,12 @@ public class TempReserveLeaveManagement extends AggregateRoot {
 	private String employeeId;
 	/** 年月日 */
 	private GeneralDate ymd;
+	
 	/** 積立年休使用日数 */
+	@Setter
 	private ManagementDays reserveLeaveUseDays;
 	/** 予定実績区分 */
+	@Setter
 	private ScheduleRecordAtr scheduleRecordAtr;
 	
 	/**
@@ -32,6 +36,9 @@ public class TempReserveLeaveManagement extends AggregateRoot {
 		super();
 		this.employeeId = employeeId;
 		this.ymd = ymd;
+		
+		this.reserveLeaveUseDays = new ManagementDays(0.0);
+		this.scheduleRecordAtr = ScheduleRecordAtr.NOT_APPLICABLE;
 	}
 	
 	/**

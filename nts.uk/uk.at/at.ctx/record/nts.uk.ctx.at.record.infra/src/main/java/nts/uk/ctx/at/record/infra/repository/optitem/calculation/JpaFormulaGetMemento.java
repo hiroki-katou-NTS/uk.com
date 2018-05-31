@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.optitem.calculation;
 
+import java.util.Optional;
+
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
 import nts.uk.ctx.at.record.dom.optitem.calculation.CalcFormulaSetting;
@@ -134,11 +136,11 @@ public class JpaFormulaGetMemento implements FormulaGetMemento {
 	 * getMonthlyRounding()
 	 */
 	@Override
-	public Rounding getMonthlyRounding() {
+	public Optional<Rounding> getMonthlyRounding() {
 		JpaRoundingGetMemento memento = new JpaRoundingGetMemento(this.entity.getKrcmtFormulaRoundings().stream()
 				.filter(item -> item.getKrcmtFormulaRoundingPK().getRoundingAtr() == KrcmtFormulaRoundingPK.MONTHLY_ATR)
 				.findFirst().get());
-		return new Rounding(memento);
+		return Optional.of(new Rounding(memento));
 	}
 
 	/*
@@ -148,11 +150,11 @@ public class JpaFormulaGetMemento implements FormulaGetMemento {
 	 * getDailyRounding()
 	 */
 	@Override
-	public Rounding getDailyRounding() {
+	public Optional<Rounding> getDailyRounding() {
 		JpaRoundingGetMemento memento = new JpaRoundingGetMemento(this.entity.getKrcmtFormulaRoundings().stream()
 				.filter(item -> item.getKrcmtFormulaRoundingPK().getRoundingAtr() == KrcmtFormulaRoundingPK.DAILY_ATR)
 				.findFirst().get());
-		return new Rounding(memento);
+		return Optional.of(new Rounding(memento));
 	}
 
 	/*

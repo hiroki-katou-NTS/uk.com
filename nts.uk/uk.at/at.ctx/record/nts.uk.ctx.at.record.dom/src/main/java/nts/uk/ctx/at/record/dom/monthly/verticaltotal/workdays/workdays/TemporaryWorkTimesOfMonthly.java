@@ -46,4 +46,13 @@ public class TemporaryWorkTimesOfMonthly {
 		// 勤務回数を計算
 		this.times = this.times.addTimes(temporaryTimeOfDaily.getWorkTimes().v());
 	}
+
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(TemporaryWorkTimesOfMonthly target){
+		
+		this.times = this.times.addTimes(target.times.v());
+	}
 }

@@ -1,8 +1,10 @@
 package nts.uk.ctx.workflow.app.find.approvermanagement.workroot;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-@Value
+@Data
+@AllArgsConstructor
 public class ObjectDate {
 	private String approvalId;
 	private String startDate;

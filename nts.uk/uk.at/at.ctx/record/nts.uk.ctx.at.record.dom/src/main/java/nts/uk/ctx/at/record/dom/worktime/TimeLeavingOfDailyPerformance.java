@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.worktime;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +41,17 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 		return this.timeLeavingWorks.stream().filter(ts -> ts.getWorkNo().v().intValue() == workNo.v().intValue()).findFirst();
 	}
 	
+	/** <<Event>> 実績の出退勤が変更されたイベントを発行する　*/
+	public void timeLeaveChangedByNo(int no) {
+		timeLeavingWorks.stream().filter(tl -> tl.getWorkNo().v() == no).findFirst().ifPresent(tl -> {
+			TimeLeaveChangeEvent.builder().employeeId(employeeId).targetDate(ymd).timeLeave(Arrays.asList(tl)).build().toBePublished();
+		});
+	}
+	
+	/** <<Event>> 実績の出退勤が変更されたイベントを発行する　*/
+	public void timeLeavesChanged() {
+		TimeLeaveChangeEvent.builder().employeeId(employeeId).targetDate(ymd).timeLeave(timeLeavingWorks).build().toBePublished();
+	}
 //	/**
 //	 * 計算可能な打刻であるか判定する
 //	 * @return　計算可能である
@@ -58,6 +70,18 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 //		}
 //	}
 	
+	/**
+	 * 打刻漏れであるか判定する
+	 * @return　打刻漏れである
+	 */
+	public boolean isLeakageStamp(){
+		for(TimeLeavingWork timeLeavingWork:this.timeLeavingWorks) {
+			//打刻漏れを起こしている(計算できる状態でない)
+			if(!timeLeavingWork.checkLeakageStamp())
+				return true;
+		}
+		return false;
+	}
 	
 	/**
 	 * 指定した勤怠Noのデータを取得する

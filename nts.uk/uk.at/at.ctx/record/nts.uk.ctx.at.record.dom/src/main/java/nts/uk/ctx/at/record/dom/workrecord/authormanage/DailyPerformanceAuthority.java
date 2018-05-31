@@ -9,12 +9,15 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
+ * 勤務実績の権限
  * @author danpv
  *
  */
 @Getter
 public class DailyPerformanceAuthority extends AggregateRoot {
-
+	
+	private String companyId;
+	
 	/**
 	 * ロールID
 	 */
@@ -31,7 +34,8 @@ public class DailyPerformanceAuthority extends AggregateRoot {
 	 */
 	private boolean availability;
 
-	public DailyPerformanceAuthority(String roleId, BigDecimal functionNo, boolean availability) {
+	public DailyPerformanceAuthority(String companyId, String roleId, BigDecimal functionNo, boolean availability) {
+		this.companyId = companyId;
 		this.roleID = roleId;
 		this.functionNo = new DailyPerformanceFunctionNo(functionNo);
 		this.availability = availability;

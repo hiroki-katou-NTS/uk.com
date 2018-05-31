@@ -17,6 +17,7 @@ import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.latetime.IntervalExemptionTime;
 import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
+import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -60,6 +61,11 @@ public class KrcdtDayLateTime extends UkJpaEntity implements Serializable {
 			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KrcdtDayAttendanceTime krcdtDayAttendanceTime;
+//	@ManyToOne
+//	@JoinColumns(value = {
+//			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+//			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
+//	public KrcdtDayTime krcdtDayTime;
 
 	@Override
 	protected Object getKey() {

@@ -64,6 +64,7 @@ subprojects {
         from "build/libs"
         into "${project(':at.web').projectDir}/../../uk.repo"
         include "nts*.jar"
+        exclude "nts*web.jar"
 	}
 	
 	task initd (dependsOn: [
@@ -77,6 +78,7 @@ subprojects {
 		':at.ctx:record:nts.uk.ctx.at.record.app:upver',
 		':at.ctx:record:nts.uk.ctx.at.record.dom:upver',
 		':at.ctx:record:nts.uk.ctx.at.record.infra:upver',
+		':at.ctx:record:nts.uk.ctx.at.record.pub:upver',
 		':at.ctx:request:nts.uk.ctx.at.request.app:upver',
 		':at.ctx:request:nts.uk.ctx.at.request.dom:upver',
 		':at.ctx:request:nts.uk.ctx.at.request.pub:upver',
@@ -359,6 +361,7 @@ project (':at.ctx:function:nts.uk.ctx.at.function.app') {
 project (':at.ctx:function:nts.uk.ctx.at.function.infra') {
 	dependencies {
 		compile project(':at.ctx:function:nts.uk.ctx.at.function.dom')
+		compile group: 'aspose', name: 'cells', version: '9.0.0'
 	}
 }
 
@@ -373,6 +376,7 @@ project (':at.ctx:function:nts.uk.ctx.at.function.ac') {
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: version)
 		compile(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: version)
 		compile(group: 'com.query', name: 'nts.uk.query.pub', version: version)
+		compile(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.pub', version: version)
 	}
 }
 
@@ -484,6 +488,7 @@ project (':at.ctx:request:nts.uk.ctx.at.request.app') {
 project (':at.ctx:request:nts.uk.ctx.at.request.infra') {
 	dependencies {
 		compile project(':at.ctx:request:nts.uk.ctx.at.request.dom')
+		compile group: 'aspose', name: 'cells', version: '9.0.0'
 	}
 }
 
@@ -498,6 +503,7 @@ project (':at.ctx:request:nts.uk.ctx.at.request.ac') {
 		compile project(':at.ctx:function:nts.uk.ctx.at.function.app')
 		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: version)
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: version)
+		compile(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.pub', version: version)
 	}
 }
 
@@ -751,6 +757,9 @@ project (':at.web:nts.uk.at.web') {
 		runtime group: 'com.basic.company', name: 'nts.uk.ctx.basic.pub', version: version
 		runtime group: 'com.basic.company', name: 'nts.uk.ctx.basic.pubimp', version: version
 		runtime group: 'com.basic.company', name: 'nts.uk.ctx.basic.ac', version: version
+		
+		runtime group: 'com.screen', name: 'nts.uk.screen.com.app', version: version
+		runtime group: 'com.screen', name: 'nts.uk.screen.com.infra', version: version
 	}	
 	
 	task tsc(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {

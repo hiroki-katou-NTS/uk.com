@@ -12,5 +12,5 @@ public interface OvertimeInstructRepository {
 	 * @param sId
 	 * @return
 	 */
-	public List<OverTimeInstruct> getAllOverTimeInstructBySId(String sId);
+	public List<OverTimeInstruct> getAllOverTimeInstructBySId(String sId, GeneralDate strDate, GeneralDate endDate);
 }

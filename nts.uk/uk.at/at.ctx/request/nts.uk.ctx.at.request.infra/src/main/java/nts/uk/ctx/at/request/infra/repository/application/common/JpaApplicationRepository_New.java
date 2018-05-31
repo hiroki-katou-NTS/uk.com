@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.request.infra.repository.application.common;
 
+<<<<<<< HEAD
 import java.util.Collection;
+=======
+>>>>>>> delivery/release_user
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -63,8 +66,6 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	
 	private final String SELECT_APP_BY_CONDS = "SELECT a FROM KrqdtApplication_New a WHERE a.employeeID IN :employeeID AND a.appDate >= :startDate AND a.appDate <= :endDate"
 			+ " AND a.prePostAtr = 1 AND (a.stateReflectionReal = 0 OR a.stateReflectionReal = 1) ORDER BY a.appDate ASC, a.inputDate DESC";
-	
-	private final String SELECT_APP_BY_ID = SELECT_BY_DATE + " and a.stateReflectionReal IN (0,1,2,5,6) ORDER BY a.appDate , a.appType";
 	@Override
 	public Optional<Application_New> findByID(String companyID, String appID) {
 		return this.queryProxy().query(SELECT_APPLICATION_BY_ID, KrqdtApplication_New.class)
@@ -196,19 +197,6 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 		
 		return data;
 	}
-	
-	//TODO
-	@Override
-	public List<Application_New> getListAppById(String sID, String empId, GeneralDate startDate, GeneralDate endDate) {
-		List<Application_New> data = this.queryProxy().query(SELECT_APP_BY_ID, KrqdtApplication_New.class)
-				.setParameter("employeeID", empId)
-				.setParameter("companyID", sID)
-				.setParameter("startDate", startDate)
-				.setParameter("endDate", endDate)
-				.getList(c -> c.toDomain());
-		
-		return data;
-	}
 	@Override
 	public List<Application_New> findByListID(String companyID, List<String> listAppID) {
 		if(CollectionUtil.isEmpty(listAppID)){
@@ -219,4 +207,44 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 				.setParameter("companyID", companyID)
 				.getList(x -> x.toDomain());
 	}
+	/**
+	 * RequestList 232 param 反映状態   ＝  「反映済み」または「反映待ち」 
+	 * RequestList 233 param 反映状態   ＝  「未承認」または「差戻し」
+	 * RequestList 234 param 反映状態   ＝  「否認」
+	 * RequestList 235 param 反映状態   ＝  「差戻し」
+	 */
+	private final String SELECT_LIST_REFSTATUS = "SELECT a FROM KrqdtApplication_New a"
+			+ " WHERE a.employeeID = :employeeID "
+			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate"
+			+ " AND a.stateReflectionReal IN :listReflecInfor"	
+			+ " ORDER BY a.appDate ASC,"
+			+ " a.prePostAtr DESC";
+	
+	@Override
+	public List<Application_New> getByListRefStatus(String employeeID, GeneralDate startDate, GeneralDate endDate, List<Integer> listReflecInfor) {
+		// TODO Auto-generated method stub
+		if(listReflecInfor.size()==0) {
+			return Collections.emptyList();
+		}
+		return this.queryProxy().query(SELECT_LIST_REFSTATUS, KrqdtApplication_New.class)
+			.setParameter("employeeID", employeeID)
+			.setParameter("startDate", startDate)
+			.setParameter("endDate", endDate)
+			.setParameter("listReflecInfor", listReflecInfor)
+			.getList(x -> x.toDomain());
+	}
+<<<<<<< HEAD
+	@Override
+	public List<Application_New> findByListID(String companyID, List<String> listAppID) {
+		if(CollectionUtil.isEmpty(listAppID)){
+			return Collections.emptyList();
+		}
+		return this.queryProxy().query(SELECT_APP_BY_LIST_ID, KrqdtApplication_New.class)
+				.setParameter("listAppID", listAppID)
+				.setParameter("companyID", companyID)
+				.getList(x -> x.toDomain());
+	}
+=======
+	
+>>>>>>> delivery/release_user
 }

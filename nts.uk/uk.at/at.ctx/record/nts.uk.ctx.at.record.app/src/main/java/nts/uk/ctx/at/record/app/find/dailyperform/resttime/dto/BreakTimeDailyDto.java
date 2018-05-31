@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto;
 
-import java.util.Arrays;
 import java.util.List;
 
 import lombok.Data;
@@ -79,6 +78,12 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 	public BreakTimeOfDailyPerformance toDomain(String emp, GeneralDate date) {
 		if(!this.isHaveData()) {
 			return null;
+		}
+		if (employeeId == null) {
+			employeeId = this.employeeId();
+		}
+		if (date == null) {
+			date = this.workingDate();
 		}
 		return new BreakTimeOfDailyPerformance(emp,
 					EnumAdaptor.valueOf(restTimeType, BreakType.class),

@@ -46,28 +46,28 @@ public class PrioritySetting extends WorkTimeDomainObject {
 	}
 
 	/**
-	 * Restore data.
+	 * Correct data.
 	 *
 	 * @param screenMode
 	 *            the screen mode
 	 * @param oldDomain
 	 *            the old domain
 	 */
-	public void restoreData(ScreenMode screenMode, PrioritySetting oldDomain) {
+	public void correctData(ScreenMode screenMode, PrioritySetting oldDomain) {
 		if (screenMode == ScreenMode.SIMPLE) {
 			if (this.stampAtr == StampPiorityAtr.GOING_WORK || this.stampAtr == StampPiorityAtr.LEAVE_WORK) {
-				this.priorityAtr = oldDomain.priorityAtr;
+				this.priorityAtr = MultiStampTimePiorityAtr.BEFORE_PIORITY;
 			}
 		}
 	}
 
 	/**
-	 * Restore default data.
+	 * Correct default data.
 	 *
 	 * @param screenMode
 	 *            the screen mode
 	 */
-	public void restoreDefaultData(ScreenMode screenMode) {
+	public void correctDefaultData(ScreenMode screenMode) {
 		if (screenMode == ScreenMode.SIMPLE) {
 			if (this.stampAtr == StampPiorityAtr.GOING_WORK) {
 				this.priorityAtr = MultiStampTimePiorityAtr.BEFORE_PIORITY;

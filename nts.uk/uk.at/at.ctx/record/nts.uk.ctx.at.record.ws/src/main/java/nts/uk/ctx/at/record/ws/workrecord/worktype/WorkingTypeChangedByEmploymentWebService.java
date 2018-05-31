@@ -12,6 +12,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.uk.ctx.at.record.app.command.workrecord.worktype.CopyEmploymentCommand;
+import nts.uk.ctx.at.record.app.command.workrecord.worktype.CopyEmploymentCommandHandler;
 import nts.uk.ctx.at.record.app.command.workrecord.worktype.WorkTypeEmploymentCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.worktype.WorkTypeEmploymentCommandHandler;
 import nts.uk.ctx.at.record.app.find.workrecord.worktype.WorkTypeGroupDto;
@@ -35,6 +37,9 @@ public class WorkingTypeChangedByEmploymentWebService {
 	@Inject
 	private WorkTypeEmploymentCommandHandler handler;
 	
+	@Inject
+	private CopyEmploymentCommandHandler copyHandler;
+	
 	@POST
 	@Path("get/{empCode}")
 	public List<WorkTypeGroupDto> findWorkTypeGroups(@PathParam("empCode") String empCode) {
@@ -54,6 +59,17 @@ public class WorkingTypeChangedByEmploymentWebService {
 		handler.handle(command);
 	}
 	
+	@POST
+	@Path("checkSetting")
+	public List<String> checkSetting(List<String> param){
+		String companyId = AppContexts.user().companyId();
+		return this.worktypeRepo.checkSetting(companyId, param);
+	}
 	
+	@POST
+	@Path("copy") 
+	public void copy(CopyEmploymentCommand command) {
+		copyHandler.handle(command);
+	}
 
 }

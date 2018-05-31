@@ -33,9 +33,17 @@ implements PeregUpdateCommandHandler<UpdateOtherHolidayInfoCommand> {
 	protected void handle(CommandHandlerContext<UpdateOtherHolidayInfoCommand> context) {
 		val command = context.getCommand();
 		String cid = AppContexts.user().companyId();
-		PublicHolidayRemain pubHD = new PublicHolidayRemain(cid, command.getEmployeeId(), command.getPubHdremainNumber());
-		ExcessLeaveInfo exLeav = new ExcessLeaveInfo(cid, command.getEmployeeId(), command.getUseAtr().intValue(), command.getOccurrenceUnit().intValue(), command.getPaymentMethod().intValue());
-		otherHolidayInfoService.updateOtherHolidayInfo(cid, pubHD, exLeav, command.getRemainNumber(), command.getRemainsLeft());
+		
+		//公休付与残数データ
+		PublicHolidayRemain pubHD = new PublicHolidayRemain(cid, command.getEmployeeId(),
+				command.getPubHdremainNumber());
+		
+		//超過有休基本情報
+		ExcessLeaveInfo exLeav = ExcessLeaveInfo.createDomain(cid, command.getEmployeeId(), command.getUseAtr(),
+				command.getOccurrenceUnit(), command.getPaymentMethod());
+		
+		otherHolidayInfoService.updateOtherHolidayInfo(cid, pubHD, exLeav, command.getRemainNumber(),
+				command.getRemainsLeft());
 	}
 
 }

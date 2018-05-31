@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.dom.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,6 +55,7 @@ public class ApprovalRootStateStatusImpl implements ApprovalRootStateStatusServi
 		DailyConfirmAtr dailyConfirmAtr = DailyConfirmAtr.UNAPPROVED;
 		Boolean currentPhaseUnapproved = false;
 		// ドメインモデル「承認フェーズインスタンス」．順序5～1の順でループする
+		approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed());
 		for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
 			// ループ中のドメインモデル「承認フェーズインスタンス」．承認区分をチェックする
 			if(!approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){

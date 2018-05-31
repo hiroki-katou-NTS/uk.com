@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.entity.worktime.flowset;
@@ -35,6 +35,10 @@ public class KshmtFlowStampReflectPK implements Serializable {
 	@Column(name = "WORK_NO")
 	private int workNo;
 
+	/** The attend atr. */
+	@Column(name = "ATTEND_ATR")
+	private int attendAtr;
+
 	/**
 	 * Instantiates a new kshmt flow stamp reflect PK.
 	 */
@@ -49,11 +53,13 @@ public class KshmtFlowStampReflectPK implements Serializable {
 	 */
 	@Override
 	public int hashCode() {
-		int hash = 0;
-		hash += (cid != null ? cid.hashCode() : 0);
-		hash += (worktimeCd != null ? worktimeCd.hashCode() : 0);
-		hash += (int) workNo;
-		return hash;
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + attendAtr;
+		result = prime * result + ((cid == null) ? 0 : cid.hashCode());
+		result = prime * result + workNo;
+		result = prime * result + ((worktimeCd == null) ? 0 : worktimeCd.hashCode());
+		return result;
 	}
 
 	/*
@@ -62,22 +68,29 @@ public class KshmtFlowStampReflectPK implements Serializable {
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object object) {
-		if (!(object instanceof KshmtFlowStampReflectPK)) {
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		}
-		KshmtFlowStampReflectPK other = (KshmtFlowStampReflectPK) object;
-		if ((this.cid == null && other.cid != null)
-				|| (this.cid != null && !this.cid.equals(other.cid))) {
+		if (getClass() != obj.getClass())
 			return false;
-		}
-		if ((this.worktimeCd == null && other.worktimeCd != null)
-				|| (this.worktimeCd != null && !this.worktimeCd.equals(other.worktimeCd))) {
+		KshmtFlowStampReflectPK other = (KshmtFlowStampReflectPK) obj;
+		if (attendAtr != other.attendAtr)
 			return false;
-		}
-		if (this.workNo != other.workNo) {
+		if (cid == null) {
+			if (other.cid != null)
+				return false;
+		} else if (!cid.equals(other.cid))
 			return false;
-		}
+		if (workNo != other.workNo)
+			return false;
+		if (worktimeCd == null) {
+			if (other.worktimeCd != null)
+				return false;
+		} else if (!worktimeCd.equals(other.worktimeCd))
+			return false;
 		return true;
 	}
+
 }

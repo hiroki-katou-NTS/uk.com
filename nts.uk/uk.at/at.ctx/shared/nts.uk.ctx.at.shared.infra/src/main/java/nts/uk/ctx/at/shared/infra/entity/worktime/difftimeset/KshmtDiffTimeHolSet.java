@@ -75,10 +75,6 @@ public class KshmtDiffTimeHolSet extends UkJpaEntity implements Serializable {
 	@Column(name = "PUB_HOL_FRAME_NO")
 	private int pubHolFrameNo;
 
-	/** The upd start time. */
-	@Column(name = "UPD_START_TIME")
-	private int updStartTime;
-
 	/**
 	 * Instantiates a new kshmt diff time hol set.
 	 */

@@ -14,7 +14,7 @@ public interface OvertimeService {
 	 * @param url
 	 * @return
 	 */
-	public int checkOvertime(String url);
+	public int checkOvertimeAtr(String url);
 	
 	/**
 	 * 07_勤務種類取得

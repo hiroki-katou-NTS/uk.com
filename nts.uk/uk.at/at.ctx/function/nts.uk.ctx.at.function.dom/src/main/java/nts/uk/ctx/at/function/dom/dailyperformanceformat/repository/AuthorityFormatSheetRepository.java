@@ -17,4 +17,6 @@ public interface AuthorityFormatSheetRepository {
 	void remove(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode);
 	
 	boolean checkExistData(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode, BigDecimal sheetNo);
+	
+	void deleteBySheetNo(String companyId, String dailyPerformanceFormatCode,BigDecimal sheetNo);
 }

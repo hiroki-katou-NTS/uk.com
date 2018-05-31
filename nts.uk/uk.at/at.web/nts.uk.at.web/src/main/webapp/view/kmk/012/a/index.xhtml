@@ -28,22 +28,22 @@
 				<div id="contents-area">
 					<table>
 						<tr>
-							<td id="contents-left"
-								class="bg-green caret-right caret-background">
-								<div
-									tabindex="3" 
-									id="lstClosureHistory" 
-										data-bind="ntsListBox: {
+						<td id="contents-left"
+							class="caret-right caret-background">
+							<div class="bg-green" style="padding: 20px;">
+								<div tabindex="3" id="lstClosureHistory"
+									data-bind="ntsListBox: {
 										options: lstClosureHistory,
 										optionsValue: 'id',
 										optionsText: 'view',
 										multiple: false,
 										value: selectCodeLstClosure,
 										enable: true,
-										rows: 5  }" >
+										rows: 5  }">
 								</div>
+							</div>
 						</td>
-							<td id="contents-right">
+						<td id="contents-right">
 	
 								<div class="contents" data-bind="if : visibleUseClassification()">
 									<div tabindex="-1" class="lableData" data-bind="ntsFormLabel: {required: false}">
@@ -87,19 +87,20 @@
 								<br />
 								<br />
 								<br />
-								<div class="contents">
+								<!--<br />
+								 <div class="contents">
 									<hr/>	
-								</div>
+								</div> -->
 								
-								<div class="contents" >
+								<div class="contents" style="display:  none;">
 									<button tabindex="6" 
 										data-bind="click: openConfirmClosingPeriodDialog, 
 										enable: enableUseClassification">#{i18n.getText('KMK012_6')}
 									</button>
 								</div>
 								
-								<div class="contents">
-									<div class="lableData"  
+								<!-- <div class="contents"> -->
+									<div class="lableData"  style="display:  none;"
 										tabindex="7"  
 										id="lstClosureHistoryHistory" 
 										data-bind="ntsListBox: {
@@ -111,8 +112,9 @@
 										enable: enableUseClassification,
 										rows: 10  }">
 									</div>	
+									
 									<div class="contents">
-										<div tabindex="-1" class="lableDataEnd" 
+										<div tabindex="-1" class="lableData" 
 											data-bind="ntsFormLabel: {required: true, 
 											constraint: 'ClosureName'}">
 											<label>#{i18n.getText('KMK012_9')}</label>
@@ -134,7 +136,7 @@
 									<br />
 									<br />
 									<div class="contents">
-										<div tabindex="-1" class="lableDataEnd" 
+										<div tabindex="-1" class="lableData" 
 											data-bind="ntsFormLabel: {required: true}">
 											<label>#{i18n.getText('KMK012_10')}</label>
 										</div>
@@ -153,7 +155,8 @@
 												]}"></div>
 										</div>
 									</div>
-								</div>
+									
+								<!-- </div> -->
 							</td>
 						</tr>
 					</table>

@@ -6,18 +6,22 @@ package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 
 /**
@@ -110,21 +114,23 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot {
 	 * @param workTimeType the work time type
 	 * @param other the other
 	 */
-	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, FlexWorkSetting other) {
-		this.commonSetting.restoreData(screenMode, other.getCommonSetting());
+	public void correctData(ScreenMode screenMode, WorkTimeDivision workTimeType, FlexWorkSetting other) {
+		// Dialog J: list stamp timezone
+		Map<Entry<WorkNo, GoLeavingWorkAtr>, StampReflectTimezone> mapStampReflectTimezone = other.getLstStampReflectTimezone().stream()
+				.collect(Collectors.toMap(
+						item -> new ImmutablePair<WorkNo, GoLeavingWorkAtr>(item.getWorkNo(), item.getClassification()), 
+						Function.identity()));
+		this.lstStampReflectTimezone.forEach(item -> item.correctData(screenMode, mapStampReflectTimezone.get(
+				new ImmutablePair<WorkNo, GoLeavingWorkAtr>(item.getWorkNo(), item.getClassification()))));
 		
-		// restore 平日勤務時間帯
-		if (workTimeType.getWorkTimeDailyAtr() == WorkTimeDailyAtr.FLEX_WORK) {
-			// convert map
-			Map<AmPmAtr, FlexHalfDayWorkTime> mapFixHalfWork = other.getLstHalfDayWorkTimezone().stream()
-					.collect(Collectors.toMap(item -> ((FlexHalfDayWorkTime) item).getAmpmAtr(), Function.identity()));
-			
-			this.lstHalfDayWorkTimezone.forEach(item -> item.restoreData(screenMode, this,
-					mapFixHalfWork.get(item.getAmpmAtr())));
-		} else {
-			this.lstHalfDayWorkTimezone = other.getLstHalfDayWorkTimezone();
-		}
-		this.offdayWorkTime.restoreData(screenMode, other);
+		this.commonSetting.correctData(screenMode, other.getCommonSetting());
+		
+		this.offdayWorkTime.correctData(screenMode, other);
+		
+		this.coreTimeSetting.correctData(screenMode, other.getCoreTimeSetting());
+		//for dialog H
+		this.restSetting.correctData(screenMode, other.getRestSetting(), this.getLstHalfDayWorkTimezone().size() > 0
+				? this.getLstHalfDayWorkTimezone().get(0).getRestTimezone().isFixRestTime() : false);
 	}
 	
 	/**
@@ -132,8 +138,17 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot {
 	 *
 	 * @param screenMode the screen mode
 	 */
-	public void restoreDefaultData(ScreenMode screenMode) {
-		this.commonSetting.restoreDefaultData(screenMode);
+	public void correctDefaultData(ScreenMode screenMode) {
+		// Dialog J: list stamp timezone
+		this.lstStampReflectTimezone.forEach(item -> item.correctDefaultData(screenMode));
+		
+		this.commonSetting.correctDefaultData(screenMode);
+		
+		this.coreTimeSetting.correctDefaultData(screenMode);
+		
+		//for dialog H
+		this.restSetting.correctDefaultData(screenMode,this.getLstHalfDayWorkTimezone().size() > 0
+				? this.getLstHalfDayWorkTimezone().get(0).getRestTimezone().isFixRestTime() : false);
 	}
 	
 }

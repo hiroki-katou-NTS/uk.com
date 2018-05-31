@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.entity.monthly.agreement;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -8,6 +9,16 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import lombok.val;
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeBreakdown;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -92,5 +103,81 @@ public class KrcdtMonMngAgreTime extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		return this.PK;
+	}
+	
+	/**
+	 * ドメインに変換
+	 * @return 管理期間の36協定時間
+	 */
+	public AgreementTimeOfManagePeriod toDomain(){
+		
+		// 月別実績の36協定時間
+		val agreementTime = AgreementTimeOfMonthly.of(
+				new AttendanceTimeMonth(this.agreementTime),
+				new LimitOneMonth(this.limitErrorTime),
+				new LimitOneMonth(this.limitAlarmTime),
+				(this.exceptionLimitErrorTime == null ?
+						Optional.empty() : Optional.of(new LimitOneMonth(this.exceptionLimitErrorTime))),
+				(this.exceptionLimitAlarmTime == null ?
+						Optional.empty() : Optional.of(new LimitOneMonth(this.exceptionLimitAlarmTime))),
+				EnumAdaptor.valueOf(this.status, AgreementTimeStatusOfMonthly.class));
+		
+		// 36協定時間内訳
+		val breakdown = AgreementTimeBreakdown.of(
+				new AttendanceTimeMonth(this.overTime),
+				new AttendanceTimeMonth(this.transferOverTime),
+				new AttendanceTimeMonth(this.holidayWorkTime),
+				new AttendanceTimeMonth(this.transferHolidayWorkTime),
+				new AttendanceTimeMonth(this.flexExcessTime),
+				new AttendanceTimeMonth(this.withinPresctibedPremiumTime),
+				new AttendanceTimeMonth(this.weeklyPremiumTime),
+				new AttendanceTimeMonth(this.monthlyPremiumTime));
+		
+		return AgreementTimeOfManagePeriod.of(
+				this.PK.employeeId,
+				new YearMonth(this.PK.yearMonth),
+				new Year(this.year),
+				agreementTime,
+				breakdown);
+	}
+	
+	/**
+	 * ドメインから変換　（for Insert）
+	 * @param domain 管理期間の36協定時間
+	 */
+	public void fromDomainForPersist(AgreementTimeOfManagePeriod domain){
+		
+		this.PK = new KrcdtMonMngAgreTimePK(
+				domain.getEmployeeId(),
+				domain.getYearMonth().v());
+		this.fromDomainForUpdate(domain);
+	}
+	
+	/**
+	 * ドメインから変換　(for Update)
+	 * @param domain 管理期間の36協定時間
+	 */
+	public void fromDomainForUpdate(AgreementTimeOfManagePeriod domain){
+		
+		val agreementTime = domain.getAgreementTime();
+		val breakdown = domain.getBreakdown();
+		
+		this.year = domain.getYear().v();
+		this.agreementTime = agreementTime.getAgreementTime().v();
+		this.limitErrorTime = agreementTime.getLimitErrorTime().v();
+		this.limitAlarmTime = agreementTime.getLimitAlarmTime().v();
+		this.exceptionLimitErrorTime = (agreementTime.getExceptionLimitErrorTime().isPresent() ?
+				agreementTime.getExceptionLimitErrorTime().get().v() : null);
+		this.exceptionLimitAlarmTime = (agreementTime.getExceptionLimitAlarmTime().isPresent() ?
+				agreementTime.getExceptionLimitAlarmTime().get().v() : null);
+		this.status = agreementTime.getStatus().value;
+		this.withinPresctibedPremiumTime = breakdown.getWithinPrescribedPremiumTime().v();
+		this.overTime = breakdown.getOverTime().v();
+		this.transferOverTime = breakdown.getTransferOverTime().v();
+		this.holidayWorkTime = breakdown.getHolidayWorkTime().v();
+		this.transferHolidayWorkTime = breakdown.getTransferTime().v();
+		this.flexExcessTime = breakdown.getFlexExcessTime().v();
+		this.weeklyPremiumTime = breakdown.getWeeklyPremiumTime().v();
+		this.monthlyPremiumTime = breakdown.getMonthlyPremiumTime().v();
 	}
 }

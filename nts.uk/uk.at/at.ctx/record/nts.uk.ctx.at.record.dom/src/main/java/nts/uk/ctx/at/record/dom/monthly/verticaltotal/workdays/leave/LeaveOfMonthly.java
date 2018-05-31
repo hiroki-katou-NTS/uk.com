@@ -81,4 +81,33 @@ public class LeaveOfMonthly {
 			}
 		}
 	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(LeaveOfMonthly target){
+		
+		for (val fixLeaveDay : this.fixLeaveDays.values()){
+			val leaveAtr = fixLeaveDay.getLeaveAtr();
+			if (target.fixLeaveDays.containsKey(leaveAtr)){
+				fixLeaveDay.addDays(target.fixLeaveDays.get(leaveAtr).getDays().v());
+			}
+		}
+		for (val targetFixLeaveDay : target.fixLeaveDays.values()){
+			val leaveAtr = targetFixLeaveDay.getLeaveAtr();
+			this.fixLeaveDays.putIfAbsent(leaveAtr, targetFixLeaveDay);
+		}
+		
+		for (val anyLeaveDay : this.anyLeaveDays.values()){
+			val anyLeaveNo = anyLeaveDay.getAnyLeaveNo();
+			if (target.anyLeaveDays.containsKey(anyLeaveNo)){
+				anyLeaveDay.addDays(target.anyLeaveDays.get(anyLeaveNo).getDays().v());
+			}
+		}
+		for (val targetAnyLeaveDay : target.anyLeaveDays.values()){
+			val anyLeaveNo = targetAnyLeaveDay.getAnyLeaveNo();
+			this.anyLeaveDays.putIfAbsent(anyLeaveNo, targetAnyLeaveDay);
+		}
+	}
 }

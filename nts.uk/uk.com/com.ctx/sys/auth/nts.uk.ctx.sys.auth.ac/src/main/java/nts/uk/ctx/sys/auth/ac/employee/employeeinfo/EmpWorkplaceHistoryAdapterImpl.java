@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.auth.ac.employee.employeeinfo;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -36,4 +37,11 @@ public class EmpWorkplaceHistoryAdapterImpl implements EmpWorkplaceHistoryAdapte
 		}
 		return Optional.of(toImport(syWorkplacePub.findBySid(employeeID, baseDate)));
 }
+
+
+	@Override
+	public List<String> getListWorkPlaceIDByDate(GeneralDate date) {
+		 List<String> data = syWorkplacePub.findListWorkplaceIdByBaseDate(date);
+		return data;
+	}
 }

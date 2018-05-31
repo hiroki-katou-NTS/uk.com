@@ -8,11 +8,7 @@
       <ui:composition template="../../../../master/base.xhtml">
          <ui:define name="htmlHead">
             <com:ValidatorScript>
-               nts.uk.ctx.at.record.dom.optitem.OptionalItemName
-               nts.uk.ctx.at.record.dom.optitem.NumberRangeValue
-               nts.uk.ctx.at.record.dom.optitem.TimeRangeValue
-               nts.uk.ctx.at.record.dom.optitem.AmountRangeValue
-               nts.uk.ctx.at.record.dom.optitem.calculation.FormulaName
+               nts.uk.ctx.at.request.dom.settting.worktype.history.OptionalMaxDay
             </com:ValidatorScript>
             <com:scriptfile set="IGNITE" />
             <com:stylefile path="kmk015.a.style.css" />
@@ -80,12 +76,16 @@
 	                    <tr>
 	                       <td style="display: -webkit-box;">
 	                          	<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK015_8')}</div>
-	                          	<div data-bind="with: numbereditor" style="padding-top: 3px;padding-left: 30px;">
+	                          	<div style="padding-top: 3px;padding-left: 30px;">
 									<input tabindex="3" id="number-1" data-bind="ntsNumberEditor: { 
 										name: 'Number', 
 										value: numberDay, 
-										constraint: constraint, 
-										option: option, 
+										constraint: 'OptionalMaxDay', 
+										option: {
+					                        width: '50',
+					                        defaultValue: 0,
+					                        unitID: 'DAYS'
+					                    }, 
 										required: true, 
 										enable: true, 
 										readonly: false}" />

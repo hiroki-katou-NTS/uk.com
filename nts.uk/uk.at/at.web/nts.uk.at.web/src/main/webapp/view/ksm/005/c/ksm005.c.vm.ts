@@ -32,6 +32,7 @@ module nts.uk.at.view.ksm005.c {
             alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
             isShowNoSelectRow: KnockoutObservable<boolean>;
             employeeList: KnockoutObservableArray<UnitModel>;
+            optionalColumnDatasource: KnockoutObservableArray<any>;
             
             // list hist
             histList: KnockoutObservableArray<any>;
@@ -63,6 +64,7 @@ module nts.uk.at.view.ksm005.c {
                 self.selectedHist = ko.observable(null)
                 self.isEnableListHist = ko.observable(false);
                 self.selectedHists = ko.observableArray([]);
+                self.optionalColumnDatasource = ko.observableArray([]);
                 
                 // list monthly pattern
                 self.monthlyPatternList = ko.observableArray([]);
@@ -220,6 +222,7 @@ module nts.uk.at.view.ksm005.c {
                 var employeeSearchs: UnitModel[] = [];
                 for (var employeeSearch of dataList) {
                     var employee: UnitModel = {
+                        id: employeeSearch.employeeId,
                         code: employeeSearch.employeeCode,
                         name: employeeSearch.employeeName,
                         workplaceName: employeeSearch.workplaceName
@@ -232,11 +235,11 @@ module nts.uk.at.view.ksm005.c {
                 }
                 
                 self.findAllByEmployeeIds(self.getAllEmployeeIdBySearch()).done(function(data){
-                    if (data != null){
-                        self.alreadySettingList(data);
+                    if (data.length > 0){
+                        self.alreadySettingList(data); 
                     }
                     self.listComponentOption = {
-                        isShowAlreadySet: true,
+                        isShowAlreadySet: false,
                         isMultiSelect: false,
                         listType: ListType.EMPLOYEE,
                         employeeInputList: self.employeeList,
@@ -248,7 +251,10 @@ module nts.uk.at.view.ksm005.c {
                         isShowWorkPlaceName: true,
                         isShowSelectAllButton: false,
                         maxRows: 15,
-                        maxWidth: 450
+                        maxWidth: 450,
+                        showOptionalColumn: true,
+                        optionalColumnName: nts.uk.resource.getText('KSM005_18'),
+                        optionalColumnDatasource: self.optionalColumnDatasource
                     }; 
                     //$('#component-items-list').ntsListComponent(self.listComponentOption);                    
                 });
@@ -398,6 +404,7 @@ module nts.uk.at.view.ksm005.c {
             public findAllByEmployeeIds(employeeIds: string[]) : JQueryPromise<UnitAlreadySettingModel[]> {
                 var dfd = $.Deferred();
                 var dataRes: UnitAlreadySettingModel[] = [];
+                var dataSource: any = [];
                 var self = this;
                 var monthlyPatternCodes: string[] = [];
                 self.monthlyPatternList().forEach(e => monthlyPatternCodes.push(e.code));
@@ -405,9 +412,19 @@ module nts.uk.at.view.ksm005.c {
                     if(data != null){
                         data.forEach(function(item){
                             var setting: UnitAlreadySettingModel;
-                            setting = { code: self.findEmployeeCodeById(item.employeeId), isAlreadySetting: true };
-                            dataRes.push(setting);
-                        })
+                            var setingContent : OptionalColumnDataSource;
+                            
+                            var monthlyPatternName : string;
+                            self.monthlyPatternList().length > 0 ? monthlyPatternName = self.monthlyPatternList().filter(ob => ob.code == item.monthlyPatternCode)[0].name : monthlyPatternName = "";
+                            
+                            setingContent = {empId: self.findEmployeeCodeById(item.employeeId) , content: monthlyPatternName};
+                            dataSource.push(setingContent);
+                            
+                            setting = { code: self.findEmployeeCodeById(item.employeeId), isAlreadySetting: true }; 
+                            dataRes.push(setting);    
+                        });
+                        self.optionalColumnDatasource(dataSource);
+                        self.alreadySettingList(dataRes);
                     }
                     
                     dfd.resolve(dataRes);
@@ -470,7 +487,13 @@ module nts.uk.at.view.ksm005.c {
                 }
                 
                 let dataSource = self.employeeList();
-                let itemListSetting = dataSource.filter(e => e.isAlreadySetting == true).map(e => self.findEmployeeIdByCode(e.code));
+                let itemListSetting = [];
+                self.alreadySettingList().forEach(function (item: any){
+                    if(dataSource.filter(e => e.code == item.code).length > 0){
+                        dataSource.filter(e => e.code == item.code)[0].isAlreadySetting = true;
+                        itemListSetting.push(dataSource.filter(e => e.code == item.code)[0]);
+                    } 
+                });
                 
                 let object: IObjectDuplication = {
                     code: self.selectedCode(),
@@ -654,6 +677,7 @@ module nts.uk.at.view.ksm005.c {
     }
 
     export interface UnitModel {
+        id: string;
         code: string;
         name?: string;
         workplaceName?: string;
@@ -670,6 +694,11 @@ module nts.uk.at.view.ksm005.c {
     export interface UnitAlreadySettingModel {
         code: string;
         isAlreadySetting: boolean;
+    }
+    
+    export interface OptionalColumnDataSource {
+        empId: string;
+        content: any;
     }
     
     export class HistModel {

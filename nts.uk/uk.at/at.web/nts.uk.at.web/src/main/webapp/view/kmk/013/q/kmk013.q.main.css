@@ -37,9 +37,11 @@
 }
 
 .constText1 {
-	width: 236px;
-	margin-left: 468px;
-	margin-bottom: 10px;
+	width: 100%;
+	height: 104px;
+	/* padding-left: 220px; */
+	/* margin-bottom: 10px; */
+	position: relative;
 }
 
 .constText1 > div:nth-child(1) > span {
@@ -80,52 +82,53 @@
 
 #imgq6_1 {
 	position: absolute;
-	left: 248px;
-	top: 315px;
+	left: 220px;
+	top: 0;
 }
 
 #imgq6_2 {
 	position: absolute;
-	left: 278px;
-	top: 371px;
+	left: 250px;
+	top: 56px;
 }
 
 #imgq6_3 {
 	position: absolute;
-	left: 389px;
-	top: 315px;
+	left: 361px;
+	top: 0;
 }
 
 #imgq6_4 {
 	position: absolute;
-	left: 414px;
-	top: 357px;
+	left: 386px;
+	top: 42px;
 }
 
 #imgq6_5 {
 	position: absolute;
-	left: 193px;
-	top: 463px;
+	left: 162px;
+	top: -38px;
 }
 
 #imgq6_6 {
 	position: absolute;
-	left: 191px;
-	top: 463px;
+	left: 162px;
+	top: -38px;
 }
 
 #imgq6_7 {
 	position: absolute;
-	left: 332px;
-	top: 544px;
+	left: 313px;
+	top: 35%;
 }
 
 #img-chart {
-	margin-top: 30px;
+	margin-top: 38px;
+	position: relative;
 }
 
 #img-chart > img:nth-child(2) {
-	margin-left: 275px
+	/* margin-left: 275px */
 }
 
 .tableQ8_1 a {
@@ -137,7 +140,8 @@
 }
 
 #img-chart-tab-2 {
-	display: flex
+	display: flex;
+	position:  relative;
 }
 
 #img-chart-tab-2 > div:nth-child(2) {
@@ -145,40 +149,50 @@
 	margin-left: 20px;
 }
 
+#imgq9_1 {
+	margin-top: -4px;
+}
+
+#imgq9_2 {
+	position:absolute;
+	left: 472px;
+	top: 0;
+}
+
 #imgq14_1 {
 	position: absolute;
-	left: 248px;
-	top: 315px;
+	left: 220px;
+	top: 0px;
 }
 
 #imgq14_2 {
 	position: absolute;
-	left: 278px;
-	top: 371px;
+	left: 250px;
+	top: 56px;
 }
 
 #imgq14_3 {
 	position: absolute;
-	left: 389px;
-	top: 315px;
+	left: 361px;
+	top: 0px;
 }
 
 #imgq14_4 {
 	position: absolute;
-	left: 414px;
-	top: 357px;
+	left: 386px;
+	top: 42px;
 }
 
 #imgq14_5 {
 	position: absolute;
 	left: 196px;
-	top: 461px;
+	top: -30px;
 }
 
 #imgq14_6 {
 	position: absolute;
-	left: 231px;
-	top: 462px;
+	left: 205px;
+	top: -27px;
 }
 
 #img-chart-tab-2 > img {
@@ -187,4 +201,22 @@
 
 .tableQ8_1 tr > td:nth-child(3) {
 	vertical-align: top
+}
+
+.panel-caret-warpper {
+	margin-left: 464px;
+}
+
+.caret-bottom {
+	color: #CFF1A5
+}
+
+.panel-caret-warpper .panel.panel-gray-bg {
+	width: 220px
+}
+
+.panel-caret-warpper > div:nth-child(1) {
+	margin-bottom: 5px;
+	padding-top: 5px;
+	padding-left: 30%
 }

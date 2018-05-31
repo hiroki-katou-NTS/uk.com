@@ -86,8 +86,10 @@ public class LackOfStampingAlgorithm {
 								attendanceItemIDList.add(44);
 							}
 						}
-						createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate,
-								new ErrorAlarmWorkRecordCode("S001"), attendanceItemIDList);
+						if (!attendanceItemIDList.isEmpty()) {
+							createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate,
+									new ErrorAlarmWorkRecordCode("S001"), attendanceItemIDList);
+						}						
 					}					
 				}
 			}

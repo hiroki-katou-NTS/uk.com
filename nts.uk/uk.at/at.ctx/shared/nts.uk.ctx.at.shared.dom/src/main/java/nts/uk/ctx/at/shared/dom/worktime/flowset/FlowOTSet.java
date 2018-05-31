@@ -41,7 +41,7 @@ public class FlowOTSet extends WorkTimeDomainObject {
 	 *
 	 * @param other the other
 	 */
-	public void restoreData(FlowOTSet other) {
+	public void correctData(FlowOTSet other) {
 		this.fixedChangeAtr = other.getFixedChangeAtr();
 	}
 }

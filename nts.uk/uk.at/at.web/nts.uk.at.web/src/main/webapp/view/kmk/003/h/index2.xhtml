@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 500,
+					height : 600
+				};
+			</script>
+			
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmk003.h.style.css" />			
+			<com:scriptfile path="kmk003.h.vm.js" />
+			<com:scriptfile path="kmk003.h.start.js" />
+		</ui:define>
+	
+		<ui:define name="content">
+		
+			<div id="contents-area" style="display: none" data-bind="visible: true">
+				<div class="main-container">
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_238')}</div>
+					<hr/>
+					<div tabindex="1" id="initial-focus-h2" class="margin-first-child" data-bind="ntsRadioBoxGroup: {
+						options: [
+							{value: 0, text: nts.uk.resource.getText('KMK003_241')},
+							{value: 1, text: nts.uk.resource.getText('KMK003_252')}
+						],
+						optionsValue: 'value',
+						optionsText: 'text',
+						value: calcMethodFluctuation}"></div>
+					<br/>
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_253')}</div>
+					<hr />
+					<div class="margin-first-child">
+						<div class="checkbox_display control-group" tabindex="2" data-bind="ntsCheckBox: { checked: useStamp }">#{i18n.getText('KMK003_255')}
+						</div>
+					</div>
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_256')}</div>
+					<hr />
+					<div tabindex="3" class="margin-first-child" data-bind="ntsRadioBoxGroup: {
+						options: [
+							{value: 0, text: nts.uk.resource.getText('KMK003_257')},
+							{value: 1, text: nts.uk.resource.getText('KMK003_258')}
+						],
+						optionsValue: 'value',
+						optionsText: 'text',
+						value: useStampCalcMethod}"></div>
+					<br/>
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_259')}</div>
+					<hr />
+					<div tabindex="4" class="margin-first-child" data-bind="ntsRadioBoxGroup: {
+						options: [
+							{value: 0, text: nts.uk.resource.getText('KMK003_260')},
+							{value: 1, text: nts.uk.resource.getText('KMK003_261')}
+						],
+						optionsValue: 'value',
+						optionsText: 'text',
+						value: timeManagerSetAtr}"></div>
+				</div>
+			</div>
+		
+			<div id="functions-area-bottom">
+				<button tabindex="5" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
+				<button tabindex="6" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -62,6 +62,37 @@ public class W4D4AlarmService {
 
 	}
 	
+	public List<ValueExtractAlarm> calculateTotal4W4D(List<EmployeeSearchDto> employee, DatePeriod period, String checkConditionCode, List<String> empIds) {
+		String companyID = AppContexts.user().companyId();
+		List<ValueExtractAlarm> result = new ArrayList<ValueExtractAlarm>();
+		
+		Optional<AlarmCheckConditionByCategory> optAlarmCheckConditionByCategory = alarmCheckConditionByCategoryRepository.find(companyID, AlarmCategory.SCHEDULE_4WEEK.value, checkConditionCode);
+		if (!optAlarmCheckConditionByCategory.isPresent())
+			throw new RuntimeException("Can't find AlarmCheckConditionByCategory with category: 4W4D and code: " + checkConditionCode);
+		
+		// TODO: Narrow down the target audience
+		List<RegulationInfoEmployeeResult> listTarget = erAlWorkRecordCheckAdapter.filterEmployees(period.end(), empIds, optAlarmCheckConditionByCategory.get().getExtractTargetCondition());
+		if(!listTarget.isEmpty()) {
+			for(RegulationInfoEmployeeResult target : listTarget) {
+				Optional<EmployeeSearchDto> emOp = employee.stream().filter(e -> e.getId().equals(target.getEmployeeId())).findFirst();
+				if(emOp.isPresent()) {
+					AlarmCheckConditionByCategory alarmCheckConditionByCategory = optAlarmCheckConditionByCategory.get();
+					AlarmCheckCondition4W4D fourW4DCheckCond = (AlarmCheckCondition4W4D) alarmCheckConditionByCategory.getExtractionCondition();
+					
+					if (fourW4DCheckCond.isForActualResultsOnly()) {
+						Optional<ValueExtractAlarm> optAlarm = this.checkWithActualResults(emOp.get(), period);
+						if (optAlarm.isPresent())
+							result.add(optAlarm.get());
+					}
+					break;
+				}
+			}
+		}
+	
+		return result;
+
+	}
+	
 	public Optional<ValueExtractAlarm> checkWithActualResults(EmployeeSearchDto employee, DatePeriod period) {
 		return w4D4CheckAdapter.checkHoliday(employee.getWorkplaceId(), employee.getId(), period);
 	}

@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 500,
+					height : 450
+				};
+			</script>
+			
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmk003.h.style.css" />			
+			<com:scriptfile path="kmk003.h.vm.js" />
+			<com:scriptfile path="kmk003.h.start.js" />
+		</ui:define>
+	
+		<ui:define name="content">
+		
+			<div id="contents-area" style="display: none" data-bind="visible: true">
+				<div class="main-container">
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_238')}</div>
+					<hr/>
+					<div class="margin-first-child">
+						<div tabindex="1" id="initial-focus-h" data-bind="ntsRadioBoxGroup: {
+							options: [
+								{value: 0, text: nts.uk.resource.getText('KMK003_241')},
+								{value: 1, text: nts.uk.resource.getText('KMK003_242')},
+								{value: 2, text: nts.uk.resource.getText('KMK003_243')}
+							],
+							optionsValue: 'value',
+							optionsText: 'text',
+							value: calcMethodFixed}"></div>
+					</div>
+					<div class="margin-second-child">
+						<div class="checkbox_display control-group" tabindex="2"
+							data-bind="ntsCheckBox: { checked: isCalcFromSchedule, enable: calcMethodFixed() == 1 }">
+							#{i18n.getText('KMK003_293')}
+						</div>
+						<br/>
+						<div class="checkbox_display control-group" tabindex="3"
+							data-bind="ntsCheckBox: { checked: isReferRestTime, enable: calcMethodFixed() == 1 }">
+							#{i18n.getText('KMK003_294')}
+						</div>
+						<br/>
+						<div class="checkbox_display control-group" tabindex="4"
+							data-bind="ntsCheckBox: { checked: usePrivateGoOutRest, enable: calcMethodFixed() == 2 }">
+							#{i18n.getText('KMK003_250')}
+						</div>
+						<br/>
+						<div class="checkbox_display control-group" tabindex="5"
+							data-bind="ntsCheckBox: { checked: useAssoGoOutRest, enable: calcMethodFixed() == 2 }">
+							#{i18n.getText('KMK003_251')}
+						</div>
+					</div>
+				</div>
+			</div>
+		
+			<div id="functions-area-bottom">
+				<button tabindex="6" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
+				<button tabindex="7" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -21,6 +21,8 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedulestate.KscstWorkS
 public class JpaWorkScheduleState extends JpaRepository implements WorkScheduleStateRepository {
 
 	private final String SELECT_ALL = "SELECT a FROM KscstWorkScheduleState a";
+	private final String SELCET_BY_DATE_EMPID = "SELECT a FROM KscstWorkScheduleState a "
+			+ "WHERE a.kscstWorkScheduleStatePK.employeeId =: sId " + "AND a.kscstWorkScheduleStatePK.date =: date";
 
 	private final WorkScheduleState toDomain(KscstWorkScheduleState entity) {
 		WorkScheduleState domain = WorkScheduleState.createFromJavaType(entity.scheduleEditState,
@@ -44,5 +46,11 @@ public class JpaWorkScheduleState extends JpaRepository implements WorkScheduleS
 			this.commandProxy().update(kscstWorkScheduleState);
 			this.getEntityManager().flush();
 		}
+	}
+
+	@Override
+	public List<WorkScheduleState> findByDateAndEmpId(String sId, GeneralDate date) {
+		return this.queryProxy().query(SELCET_BY_DATE_EMPID, KscstWorkScheduleState.class).setParameter("sId", sId)
+				.setParameter("date", date).getList(x -> toDomain(x));
 	}
 }

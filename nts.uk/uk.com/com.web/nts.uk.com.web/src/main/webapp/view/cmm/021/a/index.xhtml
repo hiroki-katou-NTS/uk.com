@@ -10,6 +10,12 @@
 
 		<ui:define name="sidebar-head" tabindex="-1">
 			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+		
 			<com:scriptfile path="cmm021.a.service.js" />
 			<com:scriptfile path="cmm021.a.vm.js" />
 			<com:scriptfile path="cmm021.a.start.js" />
@@ -47,26 +53,15 @@
 				</span>
 			</div>
 			<div class="fixed-flex-layout">
+			<div id="com-ccg001"></div>
 			<!-- start-left-content -->
 			<div class="master-list-select fixed-flex-layout-left">
 				<div class="caret-right caret-background bg-green">
 					<i class="icon icon-searchbox"></i>
-					<div class="reference-date">
-						<!-- A5_1 -->
-						<div data-bind="ntsFormLabel: {}" style="margin-bottom: 10px;">#{i18n.getText('CMM021_8')}</div>
-						<!-- A5_2 -->
-						<div tabindex="4" class="base-date-editor"
-							style="margin-left: 20px;"
-							data-bind=" ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: inputDate, name: '#[CMM021_8]', required: true}"></div>
-						<!-- A5_3 -->
-						<button tabindex="5" data-bind="click: loadUserInfo"
-							style="width: 60px; margin-left: 3px"
-							class="button-load-user-info">#{i18n.getText('CMM021_9')}</button>
-					</div>
 
 					<!-- A6_2 , A6_3 , A6_4: Setting Use -->
 					<div class="switch-button">
-						<div tabindex="6" id="switch-use"
+						<div tabindex="6" id="switch-use" style="padding-top: 25px"
 							data-bind="ntsSwitchButton: {
 									name: '#[CMM021_41]',							
 									options: useSet,

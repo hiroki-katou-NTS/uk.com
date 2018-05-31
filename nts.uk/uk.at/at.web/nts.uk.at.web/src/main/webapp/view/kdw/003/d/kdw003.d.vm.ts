@@ -15,7 +15,6 @@ module nts.uk.at.view.kdw003.d.viewmodel {
             ]);
             self.lstErrorAlarm = ko.observableArray([]);
             self.lstSelectedErrorAlarm = ko.observableArray([]);
-            debugger;
             //パラメータ            
             self.errorParam =  nts.uk.ui.windows.getShared("KDW003D_ErrorParam");
             if(nts.uk.util.isNullOrUndefined(self.errorParam)){

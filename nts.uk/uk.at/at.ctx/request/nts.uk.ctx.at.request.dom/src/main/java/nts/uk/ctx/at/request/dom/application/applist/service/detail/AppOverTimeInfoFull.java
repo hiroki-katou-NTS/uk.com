@@ -26,17 +26,15 @@ public class AppOverTimeInfoFull {
 	 * 勤務時間To2
 	 */
 	private String workClockTo2;
-	/**残業時間合計 - wait loivt*/
-	private int total;
 	
 	private List<OverTimeFrame> lstFrame;
 	/**
 	 * 就業時間外深夜時間
 	 */
-	private int overTimeShiftNight;
+	private String overTimeShiftNight;
 	
 	/**
 	 * フレックス超過時間
 	 */
-	private int flexExessTime;
+	private String flexExessTime;
 }

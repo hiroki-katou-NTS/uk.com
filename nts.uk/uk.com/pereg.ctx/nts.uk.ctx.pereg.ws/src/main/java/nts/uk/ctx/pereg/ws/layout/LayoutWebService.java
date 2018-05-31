@@ -10,9 +10,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.find.remainingnumber.annleagrtremnum.AnnualLeaveNumberFinder;
 import nts.uk.ctx.at.record.app.find.remainingnumber.rervleagrtremnum.ResvLeaRemainNumberFinder;
-import nts.uk.ctx.at.record.dom.remainingnumber.otherholiday.OtherHolidayInfoService;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainService;
 import nts.uk.ctx.pereg.app.command.addemployee.AddEmployeeCommand;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
@@ -40,15 +38,7 @@ public class LayoutWebService extends WebService {
 	private SpecialLeaveGrantRemainService specialLeaveGrantRemainService;
 	
 	@Inject
-	private OtherHolidayInfoService otherHolidayInfoService;
-	
-	@Inject
-	private AnnualLeaveNumberFinder annLeaNumberFinder;
-	
-	@Inject
 	private ResvLeaRemainNumberFinder resvLeaNumberFinder;
-	
-	
 	
 	@Path("getByCreateType")
 	@POST
@@ -79,47 +69,15 @@ public class LayoutWebService extends WebService {
 	@Path("find/gettabdetail")
 	@POST
 	public EmpMaintLayoutDto getTabDetail(PeregQuery query){
-		return this.layoutProcessor.getCategoryChild(query);
+		return this.layoutProcessor.getCategoryDetail(query);
 	}
 	
-	/**
-	 * @author xuan vinh
-	 * @param query
-	 * @return
-	 */
-	
-	@Path("find/gettabsubdetail")
-	@POST
-	public EmpMaintLayoutDto getTabSubDetail(PeregQuery query){
-		return this.layoutProcessor.getSubDetailInCtgChild(query);
-	}
 	
 	@Path("calDayTime/{sid}/{specialCD}")
 	@POST
 	public Object calDayTime(@PathParam("sid")String sid , @PathParam("specialCD")int specialCD){
 		String dayTime = specialLeaveGrantRemainService.calDayTime(sid, specialCD);
 		return new Object[] {dayTime};
-	}
-	
-	@Path("checkEnableRemainDays")
-	@POST
-	public Object checkEnableRemainDays(String sid){
-		boolean result = otherHolidayInfoService.checkEnableLeaveMan(sid);
-		return new Object[] {result};
-	}
-	
-	@Path("checkEnableRemainLeft")
-	@POST
-	public Object checkEnableRemainLeft(String sid, int specialCD){
-		boolean result = otherHolidayInfoService.checkEnablePayout(sid);
-		return new Object[] {result};
-	}
-	
-	@POST
-	@Path("getAnnLeaNumber/{sid}")
-	public Object getAnnLeaNum(@PathParam("sid") String employeeId) {
-		String dayNumber = annLeaNumberFinder.getAnnualLeaveNumber(employeeId);
-		return new Object[] {dayNumber};
 	}
 	
 	@POST

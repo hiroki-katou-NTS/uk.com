@@ -249,7 +249,7 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 	 * @return true, if is work time valid
 	 */
 	private boolean isWorkTimeValid(String workTimeCode) {
-		if (StringUtil.isNullOrEmpty(workTimeCode, true) || workTimeCode.equals("000")) {
+		if (StringUtil.isNullOrEmpty(workTimeCode, true) || StringUtil.isNullOrEmpty(workTimeCode, true)) {
 			return false;
 		}
 		return true;

@@ -1,25 +1,44 @@
 module nts.uk.at.view.kdw002.c {
     export module service {
         var paths: any = {
-            getAttendanceItems: "at/record/businesstype/attendanceItem/getAttendanceItems",
+            //daily
             getEmpRole: "at/record/workrecord/authfuncrest/find-emp-roles",
-            getListDailyServiceTypeControl: "at/record/DailyAttdItemAuth/getListDailyAttendanceItemAuthority/",
-            updateDailyService: "at/record/DailyAttdItemAuth/UpdateListDailyAttendanceItemAuthority"
+            getDailyAttdItemByRoleID : "at/shared/scherec/dailyattditem/auth/getdailyattd",
+            getListDailyAttdItem : "at/shared/scherec/dailyattditem/getalldailyattd",
+            updateDailyAttdItem :"at/shared/scherec/dailyattditem/auth/updatedailyattd",
+            //monthly
+            getListMonthlyAttdItem:"at/record/attendanceitem/monthly/findall",
+            getMonthlyAttdItemByRoleID : "at/shared/scherec/monthlyattditem/auth/getmonthlyattd",
+            updateMonthlyAttdItem :"at/shared/scherec/monthlyattditem/auth/updatemonthlyattd"
             }
-        export function getAttendanceItems(): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.getAttendanceItems);
-        }
+        //daily
         export function getEmpRole(): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.getEmpRole);
         }
-        
-         export function getListDailyServiceTypeControl(authorityId): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.getListDailyServiceTypeControl + authorityId);
+        export function updateDailyAttdItem(command): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.updateDailyAttdItem,command);
         }
         
-         export function updateDailyService(command): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.updateDailyService , command);
+        export function getListDailyAttdItem(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getListDailyAttdItem);
         }
+        
+        export function getDailyAttdItemByRoleID(roleID:string): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getDailyAttdItemByRoleID +"/" +roleID);
+        }
+        
+        // monthly
+        export function getListMonthlyAttdItem(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getListMonthlyAttdItem);
+        }
+        export function getMonthlyAttdItemByRoleID(roleID:string): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getMonthlyAttdItemByRoleID +"/" +roleID);
+        }
+        
+        export function updateMonthlyAttdItem(command): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.updateMonthlyAttdItem,command);
+        }
+        
         
     }
 }

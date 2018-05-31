@@ -56,12 +56,12 @@ public class WorkRegularAdditionSet extends AggregateRoot{
 																int incChildNursingCare1, int additionTime1, int notDeductLateleave1, 
 																int deformatExcValue1, int exemptTaxTime2, int calcActualOperation2, 
 																int incChildNursingCare2, int notDeductLateleave2,
-																int additionTime2, int enableSetPerWorkHour1, int enableSetPerWorkHour2) {
+																int additionTime2, int enableSetPerWorkHour1) {
 		return new WorkRegularAdditionSet(companyId, calcActualOperation1,
 				exemptTaxTime1, incChildNursingCare1, additionTime1, notDeductLateleave1,
 				deformatExcValue1, exemptTaxTime2,
 				calcActualOperation2, incChildNursingCare2,
-				notDeductLateleave2, additionTime2, enableSetPerWorkHour1, enableSetPerWorkHour2);
+				notDeductLateleave2, additionTime2, enableSetPerWorkHour1);
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class WorkRegularAdditionSet extends AggregateRoot{
 										int incChildNursingCare1, int additionTime1, int notDeductLateleave1, 
 										int deformatExcValue1, int exemptTaxTime2, int calcActualOperation2, 
 										int incChildNursingCare2, int notDeductLateleave2, int additionTime2, 
-										int enableSetPerWorkHour1, int enableSetPerWorkHour2) {
+										int enableSetPerWorkHour1) {
 		super();
 		this.companyId = companyId;
 		IncludeHolidaysPremiumCalcDetailSet includeHolidaysPremiumCalcDetailSet = new IncludeHolidaysPremiumCalcDetailSet(additionTime1, deformatExcValue1, null);

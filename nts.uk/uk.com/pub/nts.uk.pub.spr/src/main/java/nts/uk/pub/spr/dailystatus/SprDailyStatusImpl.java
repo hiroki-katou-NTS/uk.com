@@ -18,6 +18,7 @@ import nts.uk.ctx.bs.employee.pub.spr.export.EmpSprExport;
 import nts.uk.ctx.workflow.pub.spr.SprAppRootStatePub;
 import nts.uk.ctx.workflow.pub.spr.export.AppRootStateStatusSprExport;
 import nts.uk.pub.spr.dailystatus.output.DailyStatusSpr;
+import nts.uk.pub.spr.login.paramcheck.LoginParamCheck;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -27,8 +28,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 @Stateless
 public class SprDailyStatusImpl implements SprDailyStatusService {
-
-	private final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	@Inject
 	private EmployeeSprPub employeeSprPub;
@@ -38,6 +37,9 @@ public class SprDailyStatusImpl implements SprDailyStatusService {
 	
 	@Inject
 	private IndentificationPub indentificationPub;
+	
+	@Inject
+	private LoginParamCheck loginParamCheck;
 	
 	@Override
 	public List<DailyStatusSpr> getStatusOfDaily(String loginEmpCD, String employeeCD, String startDate,
@@ -53,8 +55,8 @@ public class SprDailyStatusImpl implements SprDailyStatusService {
 		// アルゴリズム「実績残業報告の有無」を実行する
 		return getEmpDailyStatus(
 				opEmployeeSpr.get().getEmployeeID(), 
-				GeneralDate.fromString(startDate, DATE_FORMAT), 
-				GeneralDate.fromString(endDate, DATE_FORMAT));
+				loginParamCheck.getDate(startDate), 
+				loginParamCheck.getDate(endDate));
 	}
 
 	@Override
@@ -75,23 +77,19 @@ public class SprDailyStatusImpl implements SprDailyStatusService {
 		if(Strings.isBlank(startDate)){
 			throw new BusinessException("Msg_1001", "Msg_1026");
 		}
-		GeneralDate startD;
+		GeneralDate startD = loginParamCheck.getDate(startDate);
 		// 取得期間の開始日(startdate)の形式をチェックする　日付型（yyyy/mm/dd）
-		try {
-			startD = GeneralDate.fromString(startDate, DATE_FORMAT);
-		} catch (Exception e) {
+		if(startD==null){
 			throw new BusinessException("Msg_1001", startDate);
 		}
 		// フォームデータ「取得期間の終了日(enddate)」を取得する
 		if(Strings.isBlank(endDate)){
 			throw new BusinessException("Msg_1002", "Msg_1026");
 		}
-		GeneralDate endD;
+		GeneralDate endD = loginParamCheck.getDate(endDate);
 		// 取得期間の終了日(enddate)の形式をチェックする　日付型（yyyy/mm/dd）
-		try {
-			endD = GeneralDate.fromString(endDate, DATE_FORMAT);
-		} catch (Exception e) {
-			throw new BusinessException("Msg_1002", endDate);
+		if(endD==null){
+			throw new BusinessException("Msg_1002", startDate);
 		}
 		// 取得期間の開始日、終了日の逆転チェック
 		if(startD.after(endD)){
@@ -104,7 +102,10 @@ public class SprDailyStatusImpl implements SprDailyStatusService {
 	public List<DailyStatusSpr> getEmpDailyStatus(String employeeID, GeneralDate startDate, GeneralDate endDate) {
 		List<DailyStatusSpr> resultList = new ArrayList<>();
 		// 取得期間を日単位でループする（開始日～終了日）　MAX 31日
-		for(int i = 0; startDate.compareTo(endDate) + i <= 0; i++){
+		for(int i = 0; startDate.addDays(i).compareTo(endDate) <= 0; i++){
+			if(i==31){
+				break;
+			}
 			GeneralDate loopDate = startDate.addDays(i);
 			// 本人確認状況
 			Integer status1 = this.getEmployeeStatus(loopDate, employeeID);

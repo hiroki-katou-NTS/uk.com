@@ -1,25 +1,16 @@
 package nts.uk.ctx.at.schedule.dom.appreflectprocess.service.appforleave;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.CommonReflectParamSche;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.StartEndTimeReflectScheService;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.servicedto.TimeReflectScheDto;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.ScheduleEditState;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleStateRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class ForleaveReflectScheImpl implements ForleaveReflectSche{
@@ -34,17 +25,22 @@ public class ForleaveReflectScheImpl implements ForleaveReflectSche{
 	@Override
 	public boolean forlearveReflectSche(CommonReflectParamSche reflectParam) {
 		try {
-			//勤種の反映
-			//勤務種類を反映する
-			//ドメインモデル「勤務予定基本情報」を取得する			
-			basicSche.changeWorkTypeTime(reflectParam.getEmployeeId(), reflectParam.getDatePara(), reflectParam.getWorktypeCode(), reflectParam.getWorkTimeCode());
-			//勤務種類の編集状態を更新する
-			WorkScheduleState scheData = new WorkScheduleState(ScheduleEditState.REFLECT_APPLICATION,
-					1,
-					reflectParam.getDatePara(),
-					reflectParam.getEmployeeId());
-			workScheReposi.updateScheduleEditState(scheData);
-			//時刻の反映
+			for(int i = 0; reflectParam.getStartDate().compareTo(reflectParam.getEndDate()) + i <= 0; i++){
+				GeneralDate loopDate = reflectParam.getStartDate().addDays(i);
+				//勤種の反映
+				//勤務種類を反映する
+				//ドメインモデル「勤務予定基本情報」を取得する			
+				basicSche.changeWorkTypeTime(reflectParam.getEmployeeId(), loopDate, reflectParam.getWorktypeCode(), reflectParam.getWorkTimeCode());
+				//勤務種類の編集状態を更新する
+				WorkScheduleState scheData = new WorkScheduleState(ScheduleEditState.REFLECT_APPLICATION,
+						1,
+						loopDate,
+						reflectParam.getEmployeeId());
+				workScheReposi.updateScheduleEditState(scheData);
+				//時刻の反映
+				this.reflectTime(reflectParam.getEmployeeId(), loopDate, reflectParam.getWorktypeCode(), reflectParam.getStartTime(), reflectParam.getEndTime());
+			}
+			
 			return true;
 		} catch (Exception e) {
 			return false;

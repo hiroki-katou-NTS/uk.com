@@ -5,16 +5,18 @@ module nts.uk.com.view.cps017.c.viewmodel {
     import formatDate = nts.uk.time.formatDate;
 
     export class ScreenModel {
-        listHistorySelection: KnockoutObservableArray<IHistorySelection> = ko.observableArray([]);
-        historySelection: KnockoutObservable<HistorySelection> = ko.observable(new HistorySelection({ histId: '', selectionItemId: '' }));
-        selectionName: KnockoutObservable<string> = ko.observable('');
-        data: any;
-
+        selectionName: KnockoutObservable<string> = ko.observable(null);
+        selectionItemId: KnockoutObservable<string> = ko.observable('');
+        selectingHistId: KnockoutObservable<string> = ko.observable('');
+        startDate: KnockoutObservable<string> = ko.observable(formatDate(new Date()) || undefined);
+        
         constructor() {
             let self = this;
-            self.data = getShared('CPS017C_PARAMS');
+            let data = getShared('CPS017C_PARAMS');
             //get name from screen main
-            self.selectionName(self.data.name);
+            self.selectionName(data.name);
+            self.selectionItemId(data.selectHistory.selectionItemId);
+            self.selectingHistId(data.selectHistory.histId);
         }
 
         closeDialog() {
@@ -23,13 +25,12 @@ module nts.uk.com.view.cps017.c.viewmodel {
 
         addHistory() {
             block.invisible();
-            let self = this,
-                currentItem: HistorySelection = self.historySelection(),
-                selectHistory = self.data.selectHistory;
-            currentItem.companyId(selectHistory.companyId);
-            currentItem.selectionItemId(selectHistory.selectionItemId);
-            currentItem.histId(selectHistory.histId);
-            let command = ko.toJS(currentItem);
+            let self = this;
+            let command = { 
+                selectionItemId : self.selectionItemId(),
+                selectingHistId : self.selectingHistId(),
+                startDate : self.startDate()
+            }
             service.addHistoryData(command).done(function() {
                 dialog.info({ messageId: "Msg_15" }).then(function() {
                     nts.uk.ui.windows.close();
@@ -43,31 +44,5 @@ module nts.uk.com.view.cps017.c.viewmodel {
         }
     }
 
-    // History:
-    interface IHistorySelection {
-        histId?: string;
-        selectionItemId?: string;
-        companyId: string;
-        startDate: string;
-        endDate: string;
-    }
-
-    class HistorySelection {
-        histId: KnockoutObservable<string> = ko.observable('');
-        selectionItemId: KnockoutObservable<string> = ko.observable('');
-        companyId: KnockoutObservable<string> = ko.observable('');
-        startDate: KnockoutObservable<string> = ko.observable(formatDate(new Date()) || undefined);
-        endDate: KnockoutObservable<string> = ko.observable('');
-
-        constructor(param: IHistorySelection) {
-            let self = this;
-            self.histId(param.histId || '');
-            self.selectionItemId(param.selectionItemId || '');
-            self.companyId(param.companyId || '');
-            self.startDate(formatDate(new Date()) || undefined);
-            self.endDate(param.endDate || '');
-        }
-
-    }
 
 }

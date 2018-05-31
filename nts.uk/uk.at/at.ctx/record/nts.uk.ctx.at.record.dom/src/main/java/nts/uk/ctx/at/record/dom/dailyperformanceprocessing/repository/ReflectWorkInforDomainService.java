@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.AffiliationInforState;
@@ -10,6 +11,8 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ClosureOfDaily
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 
 /**
  * 
@@ -20,6 +23,9 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 public interface ReflectWorkInforDomainService {
 
 	void reflectWorkInformation(String companyID, String employeeID, GeneralDate processingDate,
+			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType, EmployeeGeneralInfoImport employeeGeneralInfoImport);
+
+	void reflectWorkInformationWithNoInfoImport(String companyID, String employeeID, GeneralDate processingDate,
 			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType);
 
 	AffiliationInforState createAffiliationInforOfDailyPerfor(String companyId, String employeeId, GeneralDate day,
@@ -65,4 +71,8 @@ public interface ReflectWorkInforDomainService {
 	 * @return
 	 */
 	CalAttrOfDailyPerformance reflectCalAttOfDaiPer(String companyId, String employeeId, GeneralDate day);
+	
+	TimeLeavingOfDailyPerformance createStamp(String companyId, WorkInfoOfDailyPerformance workInfoOfDailyPerformanceUpdate,
+			Optional<WorkingConditionItem> workingConditionItem, TimeLeavingOfDailyPerformance timeLeavingOptional,
+			String employeeID, GeneralDate day);
 }

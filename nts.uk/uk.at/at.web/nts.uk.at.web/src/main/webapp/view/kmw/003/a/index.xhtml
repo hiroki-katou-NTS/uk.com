@@ -1,0 +1,167 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile
+				path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js"
+				of="/nts.uk.com.js.web" />
+			<com:scriptfile
+				path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js"
+				of="/nts.uk.com.js.web" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js"
+				of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="kmw003.a.start.js" />
+			<com:scriptfile path="kmw003.a.vm.js" />
+			<com:scriptfile path="kmw003.a.service.js" />
+			<com:stylefile path="kmw003.a.style.css" />
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:ValidatorScript>
+					nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode
+					nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode
+					nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD
+					nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode
+					nts.uk.shr.com.primitive.WorkplaceCode
+					nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode
+					nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode
+					nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode
+		    </com:ValidatorScript>
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<div id="function-content">
+					<!--A1_1 確定ボタン--> 
+					<button data-bind="enable: $root.errors.isEmpty , 
+										visible: showButton().available_A1_1,
+										enable: showButton().enable_A1_1, click : insertUpdate" class="proceed">#{i18n.getText('KMW003_2')}</button>
+					<!--A1_2 保存ボタン--> 
+					<button data-bind="{visible: showButton().available_A1_2,
+										enable: showButton().enable_A1_2}">#{i18n.getText('KMW003_3')}</button>
+					<!--A1_3 就業確定ボタン--> 
+					<!-- <button data-bind="{}">#{i18n.getText('KMW003_4')}</button> -->
+					<!--A1_4 抽出条件の設定ボタン--> 
+					<button data-bind="{visible: showButton().available_A1_4, click: extractCondition}">#{i18n.getText('KMW003_5')}</button>
+					<!--A1_5 表示項目の選択ボタン--> 
+					<button data-bind="{click: displayItem, enable:showButton().enable_A1_5}">#{i18n.getText('KMW003_6')}</button>
+					<!--  対象外 --> 
+					<!--A1_6 修正履歴ボタン-->					
+					<!--A1_7 印刷ボタン--> 
+					<!--A1_8 ロック解除ボタン--> 
+					<com:ko-if bind="showButton().available_A1_8">
+						<button data-bind="{click:unlockProcess}">#{i18n.getText('KMW003_31')}</button>
+					</com:ko-if>
+					<!--A1_9 再ロックボタン--> 
+					<com:ko-if bind="showButton().available_A1_9">
+						<button data-bind="{click:lockProcess}">#{i18n.getText('KMW003_32')}</button>
+					</com:ko-if>
+				</div>
+			</div>
+			<div id="contents-area" class="fixed-flex-layout">
+				<div class="fixed-flex-layout-left">				
+					<div style="min-width: 100px">
+						<!--A1_11 ロック解除中--> 
+						<div class="label warning" data-bind="{visible:showButton().available_A1_11}">#{i18n.getText('KMW003_34')}</div>	
+						<!--A2_1 社員範囲選択--> 						
+						<div id="ccg001"></div>
+					</div>					
+				</div>
+				<div class="fixed-flex-layout-right">
+					<div class="control-group">
+						<!--A3_1 処理年月--> 
+						<div data-bind="ntsFormLabel: {requiered: true}">#{i18n.getText('KMW003_9')}</div>
+						<!--A3_2 処理年月--> 
+						<div data-bind="ntsDatePicker: { 
+									name: '#[KMW003_9]', 
+									enable: true, 
+									value: yearMonth,
+									dateFormat: 'yearmonth',
+									valueFormat: 'YYYYMM',
+									showJumpButtons: true}" />
+						<!--A4_3 実績期間--> 
+						<div id="dislayFormatLbl" class="label" style="width: 80px">#{i18n.getText('KMW003_11')}</div>
+						<!--A4_4 実績期間選択--> 
+						<div  id="dislayFormatLbl" style="width:218px" data-bind="ntsComboBox: {
+								options: actualTimeOptionDisp,
+								optionsValue: 'code',
+								value: actualTimeSelectedCode,
+								optionsText: 'name',
+								enable: showButton().enable_multiActualTime,
+								name:'#[KMW003_12]',
+								columns: [
+									{ prop: 'name', length: 10 },
+								]}">
+						</div>
+					</div>
+					<div class="control-group">
+						<!--A4_1 締め日--> 
+						<div class="label" style="width: 70px">#{i18n.getText('KMW003_10')}</div>
+						<!--A4_2 対象締め日--> 
+						<div data-bind="{text: closureName}" id="dislayFormatLbl" class="label"  style="width: 70px"></div>
+						<!--A4_6 複数実績メッセージ--> 
+						<div id="multi-archieve-message" data-bind="{visible:showButton().enable_multiActualTime}" class="label">#{i18n.getText('KMW003_13')}</div>
+					</div>
+					<div id="content-grid-not">
+						<!--A5_1 一括承認ボタン--> 
+						<button id="btn-signAll" data-bind="click: signAll, visible: false">#{i18n.getText('KMW003_14')}</button>
+						<!--A5_6 一括解除ボタン	--> 
+						<button id="btn-unSignAll" data-bind="click: releaseAll, visible: false">#{i18n.getText('KMW003_88')}</button>
+						<!--A5_3 凡例ボタン--> 
+						<button id="btn-legend" data-bind="ntsLegendButton: legendOptions">#{i18n.getText('KMW003_33')}</button>
+						<!--A5_4 列幅保存ボタン--> 							
+						<button id="btn-saveColumnWidth" data-bind="{visible:showButton().available_A5_4, enable:showButton().enable_A5_4}">#{i18n.getText('KMW003_15')}</button>
+						<div class="setting-container">
+							<!--A5_5 画面固有情報の設定ボタン--> 
+							<button id="btn-setting" data-bind="click: btnSetting_Click , visible:true">&#9881;</button>
+							<div id="setting-content">
+								<!--A8_2 カーソルの移動方向--> 
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMW003_16')}</div>
+								<!--A8_3 カーソルの移動方向選択--> 
+								<!--A8_4 カーソルの移動方向選択肢--> 
+								<div id="cbCursorMoveDirection"
+									data-bind="ntsComboBox: {
+												visibleItemsCount: 2,
+												name:'#[KMW003_16]',
+												options: cursorMoveDirections,
+												optionsValue: 'code',
+												value: selectedDirection,
+												optionsText: 'name',
+												enable: true,
+												columns: [
+													{ prop: 'name', length: 3 }
+												]}">
+								</div>
+								<br />
+								<!--A9_1 値がゼロの時表示--> 
+								<div data-bind="ntsCheckBox: { checked: displayWhenZero }">#{i18n.getText('KMW003_17')}</div>
+								<br />
+								<!--A10_1 番号を表示--> 
+								<div data-bind="ntsCheckBox: { checked: showHeaderNumber }">#{i18n.getText('KMW003_18')}</div>
+								<br />
+								<!--A11_1 プロフィールアイコン--> 
+								<div data-bind="ntsCheckBox: { checked: showProfileIcon }">#{i18n.getText('KMW003_19')}</div>
+								<br />
+							</div>
+						</div>
+					</div>
+					<div class="compact-grid grid-container" id="gid">
+						<table id="dpGrid"></table>
+					</div>
+					<!--A7_1 コメント--> 
+					<span style="margin: 10px 0 0 0px; display: inline-block; width : 50%" data-bind="text: comment"></span>
+				</div>
+				<div id="tooltip"><span id="textLock"></span></div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

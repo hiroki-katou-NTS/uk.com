@@ -16,6 +16,7 @@
 			<com:scriptfile path="ccg031.a.start.js" />
 			<com:stylefile path="/view/ccg/common/common.css" />
 			<com:stylefile path="ccg031.a.style.css" />
+			
 		</ui:define>
 
 		<ui:define name="content">
@@ -64,6 +65,25 @@
 											<com:ko bind="topPagePart" tag="with">
 												<ui:include src="/view/ccg/common/flowmenu.xhtml" />
 											</com:ko>
+											
+										</com:ko-if>
+										<!-- Standard Widget-->
+										<com:ko-if bind="isStandardWidget()">
+											<div class="panel-header">
+												<span class="title" data-bind="text: name"></span>
+											</div>
+											<div class="panel-content">
+												<iframe data-bind="attr:{src: url}" />
+											</div>
+										</com:ko-if>
+										<!-- Optional Widget-->
+										<com:ko-if bind="isOptionalWidget()">
+											<div class="panel-header">
+												<span class="title" data-bind="text: name"></span>
+											</div>
+											<div class="panel-content">
+												<iframe data-bind="attr:{src: url}" />
+											</div>
 										</com:ko-if>
 									</div>
 								</com:ko-foreach>

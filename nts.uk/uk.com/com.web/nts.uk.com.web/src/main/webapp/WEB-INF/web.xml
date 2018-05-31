@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
     
-    <!-- <distributable/> -->
+    <distributable/>
     
     <session-config>
         <session-timeout>1440</session-timeout>
@@ -31,6 +31,28 @@
     </context-param>
     
     <filter>
+		<filter-name>SecurityFilter</filter-name>
+		<filter-class>nts.uk.shr.infra.application.auth.SSOSecurityFilter</filter-class>
+		<init-param>
+			<param-name>authProvider</param-name>
+			<param-value>waffle.windows.auth.impl.WindowsAuthProviderImpl</param-value>
+		</init-param>
+		<init-param>
+			<param-name>allowGuestLogin</param-name>
+			<param-value>false</param-value>
+		</init-param>
+		<init-param>
+			<param-name>impersonate</param-name>
+			<param-value>false</param-value>
+		</init-param>
+	</filter>
+		
+	<filter-mapping>
+		<filter-name>SecurityFilter</filter-name>
+		<url-pattern>/view/ccg/007/*</url-pattern>
+	</filter-mapping>
+	
+    <filter>
     	<filter-name>RequestPreProcessor</filter-name>
     	<filter-class>nts.arc.layer.ws.preprocess.RequestPreProcessor</filter-class>
     </filter>
@@ -39,6 +61,12 @@
     	<filter-name>RequestPreProcessor</filter-name>
     	<url-pattern>*</url-pattern>
     </filter-mapping>
+	
+	<login-config>
+		<auth-method>BASIC</auth-method>
+		<realm-name>authentication-policy</realm-name>
+	</login-config>
+	
     <servlet>
     	<servlet-name>nts.uk.shr.infra.web.WebApiSetting</servlet-name>
     </servlet>

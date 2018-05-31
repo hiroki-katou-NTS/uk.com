@@ -1,0 +1,99 @@
+
+hr {
+	margin-left: 10px;
+	margin-right: 10px;
+}
+.textlabel{
+	margin-left: 20px;
+}
+
+/* tab1 */
+
+#contents-area .start{width: 270px; float: left; padding: 30px 0 0 36px;}
+#contents-area .end{width: 270px; float: left; padding: 30px 0 0 60px;}
+#contents-area .centerSys{float: left;  position: relative; top: 95px;}
+
+.day, .month{
+	margin-top: 20px;
+}
+
+.input-box {
+	height: 20px;
+	width: 25px;
+	text-align: center;
+	margin-left: 10px;
+}
+
+.lableMonth, .checkMonth {
+	position: relative;
+	top: -9px;
+}
+
+.comboboxMonth {
+	width: 100px;
+}
+
+
+.tab-size{
+	height: 250px !important; 
+}
+#tab-5{
+	height: 250px !important; 
+}
+
+/* tab2 */
+
+#contents-area .start2{width: 220px; float: left; padding: 30px 0 0 36px;}
+#contents-area .end2{width: 270px; float: left; padding: 30px 0 0 75px;}
+#contents-area .centerSys2{float: left;  position: relative; top: 70px;}
+.comboboxMonth2 {
+	width: 100px;
+	padding-top: 15px;
+    padding-left: 20px;
+}
+
+
+/*tab3 */
+#contents-area .start3{width: 240px; float: left; padding: 30px 0 0 36px;}
+#contents-area .end3{width: 270px; float: left; padding: 30px 0 0 75px;}
+#contents-area .centerSys3{float: left;  position: relative; top: 90px;}
+
+.comboboxMonth3 {
+	width: 100px;
+}
+
+.month3, .year3{
+	margin-top: 20px;
+	margin-left: 20px;
+}
+.checkMonth3{
+	top: -9px;
+	position: relative;	
+}
+
+/*tab4 */
+#contents-area .start4{width: 240px; float: left; padding: 30px 0 0 36px;}
+#contents-area .end4{width: 270px; float: left; padding: 30px 0 0 75px;}
+#contents-area .centerSys4{float: left;  position: relative; top: 90px;}
+
+.comboboxMonth4 {
+	width: 100px;
+}
+
+.month4, .year4{
+	margin-top: 20px;
+	margin-left: 20px;
+}
+.checkMonth4{
+	top: -9px;
+	position: relative;	
+}
+
+/*  tab5 */
+.input-box5{
+	width: 35px;
+}
+.radioButton5{
+	margin-top: 10px;
+	margin-left: 30px;
+}

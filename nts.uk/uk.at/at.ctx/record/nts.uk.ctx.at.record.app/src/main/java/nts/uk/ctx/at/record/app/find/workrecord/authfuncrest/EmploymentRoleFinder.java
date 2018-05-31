@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.find.workrecord.authfuncrest;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

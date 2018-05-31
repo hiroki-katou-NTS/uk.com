@@ -9,8 +9,8 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.IPerInfoSelectionItemRepository;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoSelectionItem;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.IPerInfoSelectionItemRepository;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.PerInfoSelectionItem;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -21,30 +21,29 @@ public class UpdateSelectionItemCommandHandler extends CommandHandler<UpdateSele
 	@Override
 	protected void handle(CommandHandlerContext<UpdateSelectionItemCommand> context) {
 		UpdateSelectionItemCommand command = context.getCommand();
-		
-		// ドメインモデル「個人情報の選択項目」のエラーチェック
-		Optional<PerInfoSelectionItem> optCheckExistByName = this.perInfoSelectionItemRepo
-				.getSelectionItemByName(command.getSelectionItemName());
+	
+		validateSelectionItemName(command.getSelectionItemName(), command.getSelectionItemId());
 		
 		Optional<PerInfoSelectionItem> updateObject = this.perInfoSelectionItemRepo
 				.getSelectionItemBySelectionItemId(command.getSelectionItemId());
 		
-		// 「選択項目名称」は重複してはならない
-		if (optCheckExistByName.isPresent() && !command.getSelectionItemName().equals(updateObject.get().getSelectionItemName().v())) {
-			throw new BusinessException(new RawErrorMessage("Msg_513"));
+		if (!updateObject.isPresent()) {
+			throw new RuntimeException("The selection item is not exist!");
 		}
 
-		// ドメインモデル「個人情報の選択項目」を登録する
-		PerInfoSelectionItem domain = PerInfoSelectionItem.createFromJavaType(command.getSelectionItemId(),
-				command.getSelectionItemName(), command.getMemo(),
-				command.isSelectionItemClassification() == true ? 1 : 0, AppContexts.user().contractCode(),
-				command.getIntegrationCode(), command.getFormatSelection().getSelectionCode(),
-				command.getFormatSelection().isSelectionCodeCharacter() == true ? 1 : 0,
-				command.getFormatSelection().getSelectionName(),
-				command.getFormatSelection().getSelectionExternalCode());
+		// Update
+		updateObject.get().updateDomain(command.getSelectionItemName(), command.getIntegrationCode(), command.getMemo());
 
-		// 選択項目ID:「個人情報の選択項目」を登録する
-		this.perInfoSelectionItemRepo.update(domain);
+		this.perInfoSelectionItemRepo.update(updateObject.get());
+	}
+	
+	private void validateSelectionItemName(String name, String selectionItemId) {
+		Optional<PerInfoSelectionItem> optCheckExistByName = this.perInfoSelectionItemRepo
+				.getSelectionItemByName(AppContexts.user().contractCode(), name, selectionItemId);
+
+		if (optCheckExistByName.isPresent()) {
+			throw new BusinessException(new RawErrorMessage("Msg_513"));
+		}
 	}
 
 }

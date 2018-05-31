@@ -1,7 +1,6 @@
 package nts.uk.ctx.bs.employee.dom.employee.history;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -105,6 +104,33 @@ public class AffCompanyHistByEmployee extends DomainEvent
 				.collect(Collectors.toList());
 
 		return Optional.of(listHist.get(0));
+	}
+	
+	public DatePeriod getLatestPeriod() {
+		return this.lstAffCompanyHistoryItem.get(0).getDatePeriod();
+	}
+	
+	public List<AffCompanyHistItem> historyIncludePeriod(DatePeriod period) {
+		return lstAffCompanyHistoryItem.stream().filter(histItem -> histItem.includePeriod(period))
+				.collect(Collectors.toList());
+	}
+	
+	public boolean hasPreviousHistory(GeneralDate standardDate) {
+		for (AffCompanyHistItem histItem : lstAffCompanyHistoryItem) {
+			if (histItem.beforeOrEqualsStandardDate(standardDate)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean hasAfterHistory(GeneralDate standardDate) {
+		for (AffCompanyHistItem histItem : lstAffCompanyHistoryItem) {
+			if (histItem.afterOrEqualsStandardDate(standardDate)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

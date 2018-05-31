@@ -8,14 +8,15 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.dom.company.ICompanyRepo;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoHistorySelection;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoHistorySelectionRepository;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.history.PerInfoHistorySelection;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.history.PerInfoHistorySelectionRepository;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.Selection;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionItemOrder;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionItemOrderRepository;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionRepository;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionorder.SelectionItemOrder;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionorder.SelectionItemOrderRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -34,7 +35,7 @@ public class ReflUnrCompCommandHandler extends CommandHandlerWithResult<ReflUnrC
 
 	@Inject
 	private SelectionItemOrderRepository selectOrderRepo;
-	
+
 	@Inject
 	private ICompanyRepo companyRepo;
 
@@ -43,16 +44,17 @@ public class ReflUnrCompCommandHandler extends CommandHandlerWithResult<ReflUnrC
 		ReflUnrCompCommand command = context.getCommand();
 		String newHistId = IdentifierUtil.randomUniqueId();
 		String selectionItemId = command.getSelectionItemId();
-		
-		//共通アルゴリズム「契約内ゼロ会社の会社IDを取得する」を実行する:Thực thi thuật toán 「契約内ゼロ会社の会社IDを取得する」
+
+		// 共通アルゴリズム「契約内ゼロ会社の会社IDを取得する」を実行する:Thực thi thuật toán
+		// 「契約内ゼロ会社の会社IDを取得する」
 		String zeroCompanyId = AppContexts.user().zeroCompanyIdInContract();
-		
+
 		List<String> companyIdList = companyRepo.acquireAllCompany();
 		// Delete data:
 		for (String cid : companyIdList) {
 			// History:
 			List<PerInfoHistorySelection> historyList = this.historyRepo
-					.getAllHistoryBySelectionItemIdAndCompanyId(selectionItemId, cid);
+					.getAllBySelecItemIdAndCompanyId(selectionItemId, cid);
 			historyList.stream().forEach(x -> {
 				String histId = x.getHistId();
 
@@ -112,12 +114,16 @@ public class ReflUnrCompCommandHandler extends CommandHandlerWithResult<ReflUnrC
 
 			this.selectionRepo.add(domain);
 
-			SelectionItemOrder orderOrg = orderList.stream().filter(o -> o.getSelectionID().equals(x.getSelectionID()))
-					.collect(Collectors.toList()).get(0);
-			SelectionItemOrder domainOrder = SelectionItemOrder.selectionItemOrder(newSelectionID, histId,
-					orderOrg.getDisporder().v(), orderOrg.getInitSelection().value);
+			List<SelectionItemOrder> orderOrgs = orderList.stream()
+					.filter(o -> o.getSelectionID().equals(x.getSelectionID())).collect(Collectors.toList());
 
-			this.selectOrderRepo.add(domainOrder);
+			if (!CollectionUtil.isEmpty(orderOrgs)) {
+				SelectionItemOrder orderOrg = orderOrgs.get(0);
+				SelectionItemOrder domainOrder = SelectionItemOrder.selectionItemOrder(newSelectionID, histId,
+						orderOrg.getDisporder().v(), orderOrg.getInitSelection().value);
+
+				this.selectOrderRepo.add(domainOrder);
+			}
 		});
 	}
 }

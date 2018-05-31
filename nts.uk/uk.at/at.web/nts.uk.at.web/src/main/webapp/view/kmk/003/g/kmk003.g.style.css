@@ -1,0 +1,48 @@
+.main-container {
+	margin: 10px;
+}
+
+.dialog-block {
+	margin: 20px;
+}
+
+.radio-group-block{
+	margin: 20px;
+	width:400px;
+}
+
+.dialog-rows {
+	margin-top: 10px;
+	width: 100%;
+	display: flex;
+    align-items: center;
+}
+
+.input-warp {
+	width: 50px;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.label-warp {
+	min-width: 60px;
+	margin-left: 10px;
+	margin-right: 10px;
+	text-align: right;
+}
+
+.control-warp {
+	margin-left: 10px;
+}
+
+.cf .nts-switch-button {
+	min-width: 80px;
+} 
+
+.ntsRadioBox {
+	padding-bottom: 10px;
+}
+.pad-bottom
+{
+	padding-bottom: 2px;
+}

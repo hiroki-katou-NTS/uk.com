@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * エンティティ：時間外超過の時間丸め
+ * エンティティ：月別実績の項目丸め設定
  * @author shuichu_ishida
  */
 @Entity

@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantdate.GrantDatePer;
@@ -28,6 +29,10 @@ public class RemoveGrantDatePerCommandHandler extends CommandHandler<RemoveGrant
 			throw new RuntimeException("Grant Date Per Not Found");
 		}
 				
+		if(grantDatePer.get().getProvision() == 1) {
+			throw new BusinessException("Msg_1219");
+		}
+		
 		// remove Grant Date Per by code
 		grantRegularRepository.removePer(companyId, command.getSpecialHolidayCode(), command.getPersonalGrantDateCode());
 		// remove Grant Date Per Set by code

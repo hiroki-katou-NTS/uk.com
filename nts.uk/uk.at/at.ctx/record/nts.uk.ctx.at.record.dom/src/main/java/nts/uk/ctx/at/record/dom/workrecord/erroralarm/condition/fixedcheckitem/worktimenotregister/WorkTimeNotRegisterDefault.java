@@ -42,7 +42,7 @@ public class WorkTimeNotRegisterDefault implements WorkTimeNotRegisterService {
 		if(check || workTimeCD==null)
 			return Optional.empty();
 		String comment = fixedConditionDataRepository.getFixedByNO(2).get().getMessage().v();
-		Optional<ValueExtractAlarmWR> valueExtractAlarmWR = createErrorForEmployeeService.createErrorForEmployeeService(workplaceID,companyID, employeeID, date, ERROR_CODE, LIST_TIME_ITEM_ID);
+		Optional<ValueExtractAlarmWR> valueExtractAlarmWR = createErrorForEmployeeService.createErrorForEmployeeService(workplaceID,companyID, employeeID, date);
 		if(valueExtractAlarmWR.isPresent()) {
 			valueExtractAlarmWR.get().setAlarmItem(TextResource.localize("KAL010_8"));
 			valueExtractAlarmWR.get().setAlarmValueMessage(TextResource.localize("KAL010_9",workTimeCD));

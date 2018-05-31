@@ -14,10 +14,25 @@ import nts.arc.primitive.constraint.IntegerRange;
 @IntegerRange(min = 1, max = 10)
 public class OTFrameNo extends IntegerPrimitiveValue<OTFrameNo> {
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Instantiates a new OT frame no.
+	 *
+	 * @param rawValue the raw value
+	 */
 	public OTFrameNo(Integer rawValue) {
 		super(rawValue);
+	}
+
+	/**
+	 * Gets the default data.
+	 *
+	 * @return the default data
+	 */
+	public static OTFrameNo getDefaultData() {
+		return new OTFrameNo(1);
 	}
 
 }

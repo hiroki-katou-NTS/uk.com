@@ -18,8 +18,8 @@ module nts.uk.pr.view.ccg007.b {
         /**
           * Function is used to copy new Top Page.
           */
-        export function submitLogin(data: any): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.submitLogin, data);
+        export function submitLogin(data: SubmitData): JQueryPromise<string> {
+            return nts.uk.request.ajax(servicePath.submitLogin + location.search, data);
         }
 
         export interface SystemConfigDto {
@@ -30,6 +30,13 @@ module nts.uk.pr.view.ccg007.b {
             contractCode: string;
             startDate: string;
             endDate: string;
+        }
+        
+        export interface SubmitData {
+            loginId: string;
+            password: string;
+            contractCode: string;
+            contractPassword: string;
         }
     }
 }

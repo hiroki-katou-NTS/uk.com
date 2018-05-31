@@ -6,8 +6,8 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.flexset;
 
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexCalcSettingSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSetPK;
 
 /**
  * The Class JpaFlexCalcSettingSetMemento.

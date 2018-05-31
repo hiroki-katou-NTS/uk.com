@@ -651,7 +651,7 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 	 * findByClosureIdAndCurrentMonth(java.lang.Integer, java.lang.Integer)
 	 */
 	@Override
-	public Optional<ClosureHistory> findByClosureIdAndCurrentMonth(Integer closureId, Integer closureMonth) {
+	public Optional<ClosureHistory> findByClosureIdAndCurrentMonth(String companyId, Integer closureId, Integer closureMonth) {
 
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
@@ -668,6 +668,8 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 		// equal closure id
 		lstpredicateWhere.add(criteriaBuilder
 				.equal(root.get(KclmtClosureHist_.kclmtClosureHistPK).get(KclmtClosureHistPK_.closureId), closureId));
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(KclmtClosureHist_.kclmtClosureHistPK).get(KclmtClosureHistPK_.cid), companyId));
 		// current month between startMonth and endMonth
 		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
 				root.get(KclmtClosureHist_.kclmtClosureHistPK).get(KclmtClosureHistPK_.strYM), closureMonth));

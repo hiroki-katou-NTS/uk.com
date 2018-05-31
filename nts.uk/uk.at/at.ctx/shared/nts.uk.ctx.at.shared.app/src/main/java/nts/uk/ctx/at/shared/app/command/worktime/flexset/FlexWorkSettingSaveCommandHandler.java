@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.flexset;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -16,8 +14,8 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.app.command.worktime.common.WorkTimeCommonSaveCommandHandler;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.policy.FlexWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -59,21 +57,21 @@ public class FlexWorkSettingSaveCommandHandler extends CommandHandler<FlexWorkSe
 
 		// check is add mode
 		if (command.isAddMode()) {
-			flexWorkSetting.restoreDefaultData(ScreenMode.valueOf(command.getScreenMode()));
+			flexWorkSetting.correctDefaultData(ScreenMode.valueOf(command.getScreenMode()));
 			// Validate + common handler
 			this.validate(command, flexWorkSetting);
 			this.flexWorkSettingRepository.add(flexWorkSetting);
-		} else {
-			Optional<FlexWorkSetting> opFlexWorkSetting = this.flexWorkSettingRepository.find(companyId,
-					command.getWorktimeSetting().worktimeCode);
-			if (opFlexWorkSetting.isPresent()) {
-				flexWorkSetting.restoreData(ScreenMode.valueOf(command.getScreenMode()),
-						command.getWorktimeSetting().getWorkTimeDivision(), opFlexWorkSetting.get());
-				// Validate + common handler
-				this.validate(command, flexWorkSetting);
-				this.flexWorkSettingRepository.update(flexWorkSetting);
-			}
+			return;
 		}
+
+		// update mode
+		FlexWorkSetting oldDomain = this.flexWorkSettingRepository
+				.find(companyId, command.getWorktimeSetting().worktimeCode).get();
+		flexWorkSetting.correctData(ScreenMode.valueOf(command.getScreenMode()),
+				command.getWorktimeSetting().getWorkTimeDivision(), oldDomain);
+		// Validate + common handler
+		this.validate(command, flexWorkSetting);
+		this.flexWorkSettingRepository.update(flexWorkSetting);
 	}
 
 	/**
@@ -110,7 +108,8 @@ public class FlexWorkSettingSaveCommandHandler extends CommandHandler<FlexWorkSe
 		}
 
 		// Check policy
-		this.flexPolicy.validate(bundledBusinessExceptions, command.toDomainPredetemineTimeSetting(), flexWorkSetting);
+		this.flexPolicy.validate(bundledBusinessExceptions, command.toDomainPredetemineTimeSetting(),
+				command.toWorkTimeDisplayMode(), flexWorkSetting);
 
 		// Throw exceptions if exist
 		if (!bundledBusinessExceptions.cloneExceptions().isEmpty()) {

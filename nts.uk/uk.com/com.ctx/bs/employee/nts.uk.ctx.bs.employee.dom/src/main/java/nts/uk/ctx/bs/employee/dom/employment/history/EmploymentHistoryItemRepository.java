@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface EmploymentHistoryItemRepository {
 	
@@ -89,5 +89,14 @@ public interface EmploymentHistoryItemRepository {
 	 * @return List EmploymentHistoryOfEmployee
 	 */
 	List<EmploymentHistoryOfEmployee> getEmploymentBySID(String employeeId);
+	
+	/**
+	 * Search employee.
+	 *
+	 * @param baseDate the base date
+	 * @param employmentCodes the employment codes
+	 * @return the list
+	 */
+	List<EmploymentHistoryItem> getListEmptByListCodeAndDatePeriod(DatePeriod datePeriod, List<String> employmentCodes );
 
 }
