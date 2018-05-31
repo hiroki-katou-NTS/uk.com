@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 1100,
+					width : 1200,
 					height : 900
 				};
 			</script>
@@ -64,7 +64,7 @@
 						<div class="fixed-flex-layout-left external">
 							<div
 								class="panel ntsPanel caret-background caret-right direction-right"
-								data-bind="ntsPanel:{width: '400px', height: '460px', direction: 'right', showIcon: true, visible: true}"
+								data-bind="ntsPanel:{width: '390px', height: '460px', direction: 'right', showIcon: true, visible: true}"
 								style="margin: unset;">
 								<i class="icon icon-searchbox"></i>
 								<div style="display: inline-flex; margin-bottom: 10px;"
@@ -119,12 +119,12 @@
 							<div style="display: block; margin: 35px;">
 								<!-- E6_1 -->
 								<div>
-									<button tabindex="6" class="small" style="width: 40px; height: 30px;"
+									<button tabindex="6" class="small" style="width: 50px; height: 35px;"
 										data-bind="click: writeItemWithAdd">#{i18n.getText('KWR002_178')}</button>
 								</div>
 								<!-- E6_2 -->
 								<div style="margin-top: 50px;">
-									<button tabindex="7" class="small" style="width: 40px; height: 30px;"
+									<button tabindex="7" class="small" style="width: 50px; height: 35px;"
 										data-bind="click: writeItemWithSubtract">#{i18n.getText('KWR002_179')}</button>
 								</div>
 							</div>
@@ -160,11 +160,11 @@
 						</div>
 					</div>
 				</div>
-				<div class="external" style="margin-left: 30px;">
+				<div class="external" style="margin-left: 45px;">
 					<!-- E9_1 -->
 					<div data-bind="ntsFormLabel: {}" class="form-label">#{i18n.getText('KWR002_190')}</div>
 				</div>
-				<div class="external" style="margin-left: 30px;">
+				<div class="external" style="margin-left: 45px;">
 					<!-- E9_2 -->
 					<textarea id="multiline-textbox"
 						data-bind="ntsMultilineEditor: {value: formulaContent, readonly: true, name: '#{i18n.getText('KWR002_191')}'}" />

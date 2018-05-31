@@ -4,7 +4,7 @@ body {
 }
 .external {
 	margin-top: 10px;
-	margin-left: 10px;
+	margin-left: 15px;
 }
 
 textarea {
@@ -12,13 +12,14 @@ textarea {
 }
 
 #multiline-textbox {
-	width: 1020px; 
-	height: 70px;
+	width: 1070px; 
+	height: 80px;
 	border-radius: 5px;
 }
 
 table#selected-list {
 	border: 0.5px solid grey;
+	width: 440px;
 }
 table .ui-iggrid-layout-helper {
 	border: 0.5px solid grey;
@@ -34,7 +35,7 @@ table .ui-iggrid-layout-helper {
 
 #selected-list tbody {
 	overflow-y: scroll;
-	height: 430px;
+	height: 410px;
 }
 
 tr#selected-list {
