@@ -6,9 +6,9 @@ package nts.uk.file.at.app.export.dailyschedule;
  *
  */
 public enum OutputConditionSetting {
-	USE_CONDITION(0),
+	USE_CONDITION(1),
 	
-	NOT_USE_CONDITION(1);
+	NOT_USE_CONDITION(0);
 	
 	private final int outputSetting;
 

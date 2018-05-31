@@ -837,8 +837,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					else {
 						totalValue = new TotalValue();
 						totalValue.setAttendanceId(actualValue.getAttendanceId());
-						if (totalValue.getValueType() == TotalValue.INTEGER || totalValue.getValueType() == TotalValue.BIG_DECIMAL)
+						if (actualValue.getValueType() == TotalValue.INTEGER || actualValue.getValueType() == TotalValue.BIG_DECIMAL) {
 							totalValue.setValue(actualValue.getValue());
+						}
 						totalValue.setValueType(actualValue.getValueType());
 						lstTotalValue.add(totalValue);
 					}
@@ -856,18 +857,19 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				TotalValue totalValue;
 				if (optTotalVal.isPresent()) {
 					totalValue = optTotalVal.get();
-					if (totalValue.getValueType() == ActualValue.INTEGER || totalValue.getValueType() == ActualValue.BIG_DECIMAL) {
+					if ((totalValue.getValueType() == ActualValue.INTEGER || totalValue.getValueType() == ActualValue.BIG_DECIMAL) && actualValue.getValue() != null) {
 						totalValue.setValue(String.valueOf(Integer.parseInt(totalValue.getValue()) + Integer.parseInt(actualValue.getValue())));
 					}
 				}
 				else {
 					totalValue = new TotalValue();
 					totalValue.setAttendanceId(actualValue.getAttendanceId());
-					if (totalValue.getValueType() == ActualValue.INTEGER || totalValue.getValueType() == ActualValue.BIG_DECIMAL) {
-						if (actualValue.getValue() != null)
+					if (actualValue.getValueType() == ActualValue.INTEGER || actualValue.getValueType() == ActualValue.BIG_DECIMAL) {
+						if (actualValue.getValue() != null) {
 							totalValue.setValue(actualValue.getValue());
-						else
+						} else {
 							totalValue.setValue("0");
+						}
 					}
 					totalValue.setValueType(actualValue.getValueType());
 					lstTotalValue.add(totalValue);
@@ -901,8 +903,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				else {
 					totalValue = new TotalValue();
 					totalValue.setAttendanceId(totalVal.getAttendanceId());
-					if (totalValue.getValueType() == ActualValue.INTEGER || totalValue.getValueType() == ActualValue.BIG_DECIMAL)
+					if (totalValue.getValueType() == ActualValue.INTEGER || totalValue.getValueType() == ActualValue.BIG_DECIMAL) {
 						totalValue.setValue(totalVal.getValue());
+					}
+					totalValue.setValueType(totalVal.getValueType());
 					lstGrossTotal.add(totalValue);
 				}
 			});
@@ -1375,20 +1379,40 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					personalTotalCellTag.setValue(WorkScheOutputConstants.PERSONAL_TOTAL);
 					
 					// A6_2
-					int numOfChunks = (int) Math.ceil( (double) employeeReportData.getMapPersonalTotal().size() / CHUNK_SIZE);
+					Map<Integer, String> mapPersonalTotal = employeeReportData.getMapPersonalTotal();
+					int numOfChunks = (int) Math.ceil( (double) mapPersonalTotal.size() / CHUNK_SIZE);
 					
 			        for(int i = 0; i < numOfChunks; i++) {
 			            int start = i * CHUNK_SIZE;
-			            int length = Math.min(employeeReportData.getMapPersonalTotal().size() - start, CHUNK_SIZE);
-	
-			            List<String> lstItemRow = employeeReportData.getMapPersonalTotal().values().stream().collect(Collectors.toList()).subList(start, start + length);
+			            int length = Math.min(mapPersonalTotal.size() - start, CHUNK_SIZE);
+			            
+			            List<String> lstItemRow = mapPersonalTotal.values().stream().collect(Collectors.toList()).subList(start, start + length);
+			            List<Integer> lstValueType = mapPersonalTotal.keySet().stream().collect(Collectors.toList()).subList(start, start + length);
+			            int valueType;
 			            
 			            for (int j = 0; j < length; j++) {
 			            	String value = lstItemRow.get(j);
-			            	if (value != "0") {
-				            	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
-				            	cell.setValue(value);
-			            	}
+			            	valueType = lstValueType.get(j);
+			            	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
+			            	Style style = cell.getStyle();
+			            	switch (valueType) {
+							case ActualValue.INTEGER:
+								TimeWithDayAttr timeWithDayAttr;
+								if (value != null)
+									timeWithDayAttr = new TimeWithDayAttr(Integer.parseInt(value));
+								else
+									timeWithDayAttr = new TimeWithDayAttr(0);
+								cell.setValue(timeWithDayAttr.getInDayTimeWithFormat());
+								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+								break;
+							case ActualValue.BIG_DECIMAL:
+							case ActualValue.DATE:
+							case ActualValue.STRING:
+								cell.setValue(value);
+								style.setHorizontalAlignment(TextAlignmentType.LEFT);
+							}
+			            	setFontStyle(style);
+			            	cell.setStyle(style);
 			            }
 			            currentRow++;
 			        }
@@ -1747,10 +1771,26 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		    
 		    for (int j = 0; j < length; j++) {
 		    	String value = lstItemRow.get(j).getValue();
-		    	if (value != "0") {
-		        	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
-		        	cell.setValue(value);
-		    	}
+	        	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
+	        	Style style = cell.getStyle();
+            	switch (lstItemRow.get(j).getValueType()) {
+				case ActualValue.INTEGER:
+					TimeWithDayAttr timeWithDayAttr;
+					if (value != null)
+						timeWithDayAttr = new TimeWithDayAttr(Integer.parseInt(value));
+					else
+						timeWithDayAttr = new TimeWithDayAttr(0);
+					cell.setValue(timeWithDayAttr.getInDayTimeWithFormat());
+					style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+					break;
+				case ActualValue.BIG_DECIMAL:
+				case ActualValue.DATE:
+				case ActualValue.STRING:
+					cell.setValue(value);
+					style.setHorizontalAlignment(TextAlignmentType.LEFT);
+				}
+            	setFontStyle(style);
+            	cell.setStyle(style);
 		    }
 		    currentRow++;
 		}
@@ -1779,10 +1819,26 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		    
 		    for (int j = 0; j < length; j++) {
 		    	String value = lstItemRow.get(j).getValue();
-		    	if (value != "0") {
-		        	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
-		        	cell.setValue(value);
-		    	}
+	        	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
+	        	Style style = cell.getStyle();
+            	switch (lstItemRow.get(j).getValueType()) {
+				case ActualValue.INTEGER:
+					TimeWithDayAttr timeWithDayAttr;
+					if (value != null)
+						timeWithDayAttr = new TimeWithDayAttr(Integer.parseInt(value));
+					else
+						timeWithDayAttr = new TimeWithDayAttr(0);
+					cell.setValue(timeWithDayAttr.getInDayTimeWithFormat());
+					style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+					break;
+				case ActualValue.BIG_DECIMAL:
+				case ActualValue.DATE:
+				case ActualValue.STRING:
+					cell.setValue(value);
+					style.setHorizontalAlignment(TextAlignmentType.LEFT);
+				}
+            	setFontStyle(style);
+            	cell.setStyle(style);
 		    }
 		    currentRow++;
 		}
