@@ -29,7 +29,7 @@ public class KrcstOptionalItemPK implements Serializable {
 	
 	/** The optional item no. */
 	@Column(name = "OPTIONAL_ITEM_NO")
-	private String optionalItemNo;
+	private Integer optionalItemNo;
 
 	/**
 	 * Instantiates a new krcst optional item PK.
@@ -44,7 +44,7 @@ public class KrcstOptionalItemPK implements Serializable {
 	 * @param cid the cid
 	 * @param optionalItemNo the optional item no
 	 */
-	public KrcstOptionalItemPK(String cid, String optionalItemNo) {
+	public KrcstOptionalItemPK(String cid, Integer optionalItemNo) {
 		this.cid = cid;
 		this.optionalItemNo = optionalItemNo;
 	}

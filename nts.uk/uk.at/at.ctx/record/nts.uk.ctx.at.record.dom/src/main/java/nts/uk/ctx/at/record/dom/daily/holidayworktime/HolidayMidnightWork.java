@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -77,5 +78,15 @@ public class HolidayMidnightWork {
 			list.add(midNightTime.calcDiverGenceTime());
 		}
 		return new HolidayMidnightWork(list);
+	}
+	
+	/**
+	 * 深夜時間(全List分)の合計を求める 
+	 * @return
+	 */
+	public AttendanceTime calcAllMidTime() {
+		return new AttendanceTime(this.getHolidayWorkMidNightTime().stream()
+												.map(tc -> tc.getTime().getCalcTime().valueAsMinutes())
+												.collect(Collectors.summingInt(tc -> tc)));
 	}
 }

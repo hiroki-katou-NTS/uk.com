@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.diagnose.stopwatch.Stopwatches;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CheckExcessAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
@@ -40,15 +42,15 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 	private DailyRecordToAttendanceItemConverter dailyRecordToAttendanceItemConverter;
 	
 	@Override
-	public IntegrationOfDaily errorCheck(IntegrationOfDaily integrationOfDaily) {
-		
-		val errorItemList = errorAlarmWorkRecordRepository.getListErrorAlarmWorkRecord(AppContexts.user().companyId());
+	public IntegrationOfDaily errorCheck(IntegrationOfDaily integrationOfDaily, List<ErrorAlarmWorkRecord> errorAlarm) {
+		Stopwatches.start("ERALALL");
+		String companyID = AppContexts.user().companyId();
 		List<EmployeeDailyPerError> addItemList = new ArrayList<>();
 //		if(!integrationOfDaily.getEmployeeError().isEmpty() &&  integrationOfDaily.getEmployeeError() != null)
 //			addItemList = integrationOfDaily.getEmployeeError();
 		DailyRecordToAttendanceItemConverter attendanceItemConverter = this.dailyRecordToAttendanceItemConverter.setData(integrationOfDaily);
 		//勤務実績のエラーアラーム数分ループ
-		for(ErrorAlarmWorkRecord errorItem : errorItemList) {
+		for(ErrorAlarmWorkRecord errorItem : errorAlarm) {
 			//使用しない
 			if(!errorItem.getUseAtr()) continue;
 			
@@ -72,7 +74,8 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 			}
 			//ユーザ設定
 			else {
-				val addItems = erAlCheckService.checkErrorFor(integrationOfDaily.getAffiliationInfor().getEmployeeId(), integrationOfDaily.getAffiliationInfor().getYmd());
+				val addItems = erAlCheckService.checkErrorFor(companyID, integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
+						integrationOfDaily.getAffiliationInfor().getYmd(), errorItem, integrationOfDaily);
 				if(!addItems.isEmpty() && addItems != null) {
 					for(val item : addItems) {
 						Boolean flg = true;
@@ -90,6 +93,7 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 			}
 		}
 		integrationOfDaily.setEmployeeError(addItemList);
+		Stopwatches.stop("ERALALL");
 		return integrationOfDaily;
 	}
 
@@ -179,9 +183,11 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 					return divTimeSysFixedCheckService.divergenceTimeCheckBySystemFixed(AppContexts.user().companyId(), 
 																			 	 integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
 																			 	 integrationOfDaily.getAffiliationInfor().getYmd(),
-																			 	 integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime().getDivergenceTime()
-																			 	);
+																			 	 integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime().getDivergenceTime(),
+																			 	integrationOfDaily.getAttendanceLeave(),
+																			 	Arrays.asList(errorItem));
 				}
+				return Collections.emptyList();
 			//遅刻
 			case LATE:
 				return integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 

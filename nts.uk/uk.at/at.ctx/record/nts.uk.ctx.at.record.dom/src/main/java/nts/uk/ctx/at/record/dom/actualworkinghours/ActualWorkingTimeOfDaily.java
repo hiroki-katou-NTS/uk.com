@@ -139,12 +139,10 @@ public class ActualWorkingTimeOfDaily {
 	 * @param workScheduleTime 
 	 * @param flexSetting 
 	 */
-	public static ActualWorkingTimeOfDaily calcRecordTime(CalculationRangeOfOneDay oneDay,AutoCalOvertimeSetting overTimeAutoCalcSet,AutoCalSetting holidayAutoCalcSetting,
+	public static ActualWorkingTimeOfDaily calcRecordTime(CalculationRangeOfOneDay oneDay,
 			   Optional<PersonalLaborCondition> personalCondition,
 			   VacationClass vacationClass,
 			   WorkType workType,
-			   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-			   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 			   WorkingSystem workingSystem,
 			   WorkDeformedLaborAdditionSet illegularAddSetting,
 			   WorkFlexAdditionSet flexAddSetting,
@@ -154,7 +152,6 @@ public class ActualWorkingTimeOfDaily {
 		       Optional<WorkTimeDailyAtr> workTimeDailyAtr,
 			   Optional<SettingOfFlexWork> flexCalcMethod,
 			   HolidayCalcMethodSet holidayCalcMethodSet,
-			   AutoCalRaisingSalarySetting raisingAutoCalcSet,
 			   BonusPayAutoCalcSet bonusPayAutoCalcSet,
 			   CalAttrOfDailyPerformance calcAtrOfDaily,
 			   List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
@@ -172,12 +169,10 @@ public class ActualWorkingTimeOfDaily {
 
 		
 		/* 総労働時間の計算 */
-		val totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(oneDay,overTimeAutoCalcSet,holidayAutoCalcSetting,
+		val totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(oneDay,
 				    personalCondition,
 				    vacationClass,
 				    workType,
-				    late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-				    leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 				    workingSystem,
 				    illegularAddSetting,
 				    flexAddSetting,
@@ -187,7 +182,6 @@ public class ActualWorkingTimeOfDaily {
 				    workTimeDailyAtr,
 				    flexCalcMethod,
 				    holidayCalcMethodSet,
-					raisingAutoCalcSet,
 					bonusPayAutoCalcSet,
 					calcAtrOfDaily,
 					eachWorkTimeSet,
@@ -205,7 +199,7 @@ public class ActualWorkingTimeOfDaily {
 											fixRestTimeSetting,
 											oneDay.getPredetermineTimeSetForCalc().getAdditionSet().getPredTime().getOneDay(),
 											ootsukaFixedCalcSet,
-											overTimeAutoCalcSet,
+											calcAtrOfDaily.getOvertimeSetting(),
 											dailyUnit,
 											oneDay.getAttendanceLeavingWork());
 		

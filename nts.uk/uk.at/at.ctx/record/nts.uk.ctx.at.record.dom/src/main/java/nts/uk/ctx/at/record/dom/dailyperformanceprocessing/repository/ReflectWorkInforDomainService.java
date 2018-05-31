@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.AffiliationInforState;
@@ -22,6 +23,9 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 public interface ReflectWorkInforDomainService {
 
 	void reflectWorkInformation(String companyID, String employeeID, GeneralDate processingDate,
+			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType, EmployeeGeneralInfoImport employeeGeneralInfoImport);
+
+	void reflectWorkInformationWithNoInfoImport(String companyID, String employeeID, GeneralDate processingDate,
 			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType);
 
 	AffiliationInforState createAffiliationInforOfDailyPerfor(String companyId, String employeeId, GeneralDate day,

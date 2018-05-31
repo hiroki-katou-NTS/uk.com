@@ -60,7 +60,7 @@ public class JpaExecutionTaskLogRepository extends JpaRepository
 							Optional<KfnmtExecutionTaskLog> entityOpt = this.queryProxy().find(pk, KfnmtExecutionTaskLog.class);
 							if (entityOpt.isPresent()) {
 								KfnmtExecutionTaskLog entity = entityOpt.get();
-								entity.status = task.getStatus().value;
+								entity.status = (task.getStatus()!=null && task.getStatus().isPresent())?task.getStatus().get().value:null;
 								return entity;
 							}
 							return null;

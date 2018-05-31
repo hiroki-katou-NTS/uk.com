@@ -24,36 +24,38 @@
 				<table id="table-label" class="from-label">
 					<tr>
 						<td>
-							<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_80')}</div>
+							<div style="float:left;" data-bind="ntsFormLabel: {}, visible: exeContentEnable ">#{i18n.getText('KDW001_80')}</div>
 						</td>
 						<!-- H1_2 -->
-						<td colspan="2" data-bind="text : executionContentName"></td>
+						<td colspan="2"> <span data-bind="text : executionContentName, visible: exeContentEnable "></span> </td>
 					</tr>
 					<tr>
 						<td>
 							<!-- H1_5 -->
-							<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_81')}</div>
+							<div style="float:left;" data-bind="ntsFormLabel: {}, visible: processingMonthEnable">#{i18n.getText('KDW001_81')}</div>
 						</td>
 						<!-- H1_6 -->
-						<td><span data-bind="text:processingMonth"></span></td>
+						<td><div data-bind="text:processingMonth, visible: processingMonthEnable "></div></td>
 						<!-- H1_9 -->
-						<td><span data-bind="text:nameClosue"></span></td>
+						<td><span data-bind="text:nameClosue , visible: clouseEnable"></span></td>
 					</tr>
 					<tr>
 						<td>
 							<!-- H1_3 -->
-							<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_15')}</div>
+							<div style="float:left;" data-bind="ntsFormLabel: {}, visible: feriodEnable">#{i18n.getText('KDW001_15')}</div>
 						</td>
 						<!-- H1_4 -->
-						<td colspan="2"><span data-bind="text : objectPeriod.startDate"></span> ～ <span data-bind="text : objectPeriod.endDate"></span></td>
+						<td colspan="2"><div data-bind="visible: feriodEnable">  <span data-bind="text : objectPeriod.startDate"></span> ～ <span data-bind="text : objectPeriod.endDate"></span>
+						</div>
+						</td>
 					</tr>
 					<tr>
 						<td>
 							<!-- H1_7 -->
-							<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_20')}</div>
+							<div style="float:left;" data-bind="ntsFormLabel: {},visible: errorEnable ">#{i18n.getText('KDW001_20')}</div>
 						</td>
 						<!-- H1_8 -->
-						<td colspan="2"><span data-bind="text : listPeson.length"></span>人</td>
+						<td colspan="2"><div><div style="float:left" data-bind="text : listPeson.length, visible: errorEnable"></div> <div style="float:left" data-bind="visible: errorEnable">人</div> </div>  </td>
 					</tr>
 				</table>
 				<div>

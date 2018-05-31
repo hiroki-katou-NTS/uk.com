@@ -488,6 +488,7 @@ project (':at.ctx:request:nts.uk.ctx.at.request.app') {
 project (':at.ctx:request:nts.uk.ctx.at.request.infra') {
 	dependencies {
 		compile project(':at.ctx:request:nts.uk.ctx.at.request.dom')
+		compile group: 'aspose', name: 'cells', version: '9.0.0'
 	}
 }
 
@@ -502,6 +503,7 @@ project (':at.ctx:request:nts.uk.ctx.at.request.ac') {
 		compile project(':at.ctx:function:nts.uk.ctx.at.function.app')
 		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: version)
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: version)
+		compile(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.pub', version: version)
 	}
 }
 

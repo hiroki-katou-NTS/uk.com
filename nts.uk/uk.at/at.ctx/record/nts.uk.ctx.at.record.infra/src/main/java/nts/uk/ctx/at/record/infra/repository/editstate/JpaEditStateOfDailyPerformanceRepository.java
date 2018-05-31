@@ -1,14 +1,19 @@
 package nts.uk.ctx.at.record.infra.repository.editstate;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
@@ -90,15 +95,41 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 
 	@Override
 	public List<EditStateOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd) {
-		StringBuilder query = new StringBuilder();
-		query.append("SELECT a FROM KrcdtDailyRecEditSet a ");
+		List<EditStateOfDailyPerformance> result = new ArrayList<>();
+		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDailyRecEditSet a ");
 		query.append("WHERE a.krcdtDailyRecEditSetPK.employeeId IN :employeeId ");
 		query.append("AND a.krcdtDailyRecEditSetPK.processingYmd <= :end AND a.krcdtDailyRecEditSetPK.processingYmd >= :start");
-		return queryProxy().query(query.toString(), KrcdtDailyRecEditSet.class).setParameter("employeeId", employeeId)
-				.setParameter("start", ymd.start()).setParameter("end", ymd.end()).getList().stream()
-				.collect(Collectors.groupingBy(c -> c.krcdtDailyRecEditSetPK.employeeId + c.krcdtDailyRecEditSetPK.processingYmd.toString()))
-				.entrySet().stream().map(c -> c.getValue().stream().map(x -> toDomain(x)).collect(Collectors.toList()))
-				.flatMap(List::stream).collect(Collectors.toList());
+		TypedQueryWrapper<KrcdtDailyRecEditSet> tQuery=  this.queryProxy().query(query.toString(), KrcdtDailyRecEditSet.class);
+		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
+			result.addAll(tQuery.setParameter("employeeId", empIds)
+					.setParameter("start", ymd.start())
+					.setParameter("end", ymd.end())
+					.getList().stream().collect(Collectors.groupingBy(
+							c -> c.krcdtDailyRecEditSetPK.employeeId + c.krcdtDailyRecEditSetPK.processingYmd.toString()))
+					.entrySet().stream().map(c -> c.getValue().stream().map(x -> toDomain(x)).collect(Collectors.toList()))
+					.flatMap(List::stream).collect(Collectors.toList()));
+		});
+		return result;
+	}
+
+	@Override
+	public List<EditStateOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
+		List<EditStateOfDailyPerformance> result = new ArrayList<>();
+		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDailyRecEditSet a ");
+		query.append("WHERE a.krcdtDailyRecEditSetPK.employeeId IN :employeeId ");
+		query.append("AND a.krcdtDailyRecEditSetPK.processingYmd IN :date");
+		TypedQueryWrapper<KrcdtDailyRecEditSet> tQuery=  this.queryProxy().query(query.toString(), KrcdtDailyRecEditSet.class);
+		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
+			result.addAll(tQuery.setParameter("employeeId", p.keySet())
+					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
+					.getList().stream()
+					.filter(c -> p.get(c.krcdtDailyRecEditSetPK.employeeId).contains(c.krcdtDailyRecEditSetPK.processingYmd))
+					.collect(Collectors.groupingBy(
+							c -> c.krcdtDailyRecEditSetPK.employeeId + c.krcdtDailyRecEditSetPK.processingYmd.toString()))
+					.entrySet().stream().map(c -> c.getValue().stream().map(x -> toDomain(x)).collect(Collectors.toList()))
+					.flatMap(List::stream).collect(Collectors.toList()));
+		});
+		return result;
 	}
 
 	@Override

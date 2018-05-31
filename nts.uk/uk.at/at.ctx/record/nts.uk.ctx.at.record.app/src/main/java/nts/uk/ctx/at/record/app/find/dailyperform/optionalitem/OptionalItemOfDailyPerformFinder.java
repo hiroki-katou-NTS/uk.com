@@ -64,4 +64,11 @@ public class OptionalItemOfDailyPerformFinder extends FinderFacade {
 				.collect(Collectors.toList());
 	}
 
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends ConvertibleAttendanceItem> List<T> find(Map<String, List<GeneralDate>> param) {
+		return (List<T>) this.repo.finds(param).stream()
+			.map(c -> OptionalItemOfDailyPerformDto.getDto(c)).collect(Collectors.toList());
+	}
+
 }

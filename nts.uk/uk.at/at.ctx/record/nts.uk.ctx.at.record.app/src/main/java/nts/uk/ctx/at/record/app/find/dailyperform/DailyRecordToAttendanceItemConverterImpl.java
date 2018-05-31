@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.AffiliationInforOfDailyPerforDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.BusinessTypeOfDailyPerforDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.dto.AttendanceLeavingGateOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.dto.CalcAttrOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.dto.AttendanceTimeDailyPerformDto;
@@ -33,6 +34,7 @@ import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.TimeLeavingOfDa
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.AttendanceTimeByWorkOfDaily;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
+import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
@@ -99,6 +101,7 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 		this.withWorkInfo(domain.getWorkInformation());
 		this.withCalcAttr(domain.getCalAttr());
 		this.withAffiliationInfo(domain.getAffiliationInfor());
+		this.withBusinessType(domain.getBusinessType().orElse(null));
 		if(domain.getEmployeeError() != null && !domain.getEmployeeError().isEmpty()) {
 			this.withEmployeeErrors(domain.getEmployeeError().get(0));
 		}
@@ -128,6 +131,11 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 
 	public DailyRecordToAttendanceItemConverter withCalcAttr(CalAttrOfDailyPerformance domain) {
 		this.dailyRecord.withCalcAttr(CalcAttrOfDailyPerformanceDto.getDto(domain));
+		return this;
+	}
+
+	public DailyRecordToAttendanceItemConverter withBusinessType(WorkTypeOfDailyPerformance domain) {
+		this.dailyRecord.withBusinessType(BusinessTypeOfDailyPerforDto.getDto(domain));
 		return this;
 	}
 

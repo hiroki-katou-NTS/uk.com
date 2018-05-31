@@ -9,7 +9,8 @@ import nts.arc.time.GeneralDate;
 @Setter
 @NoArgsConstructor
 public class PeregQuery {
-
+	
+	// add new
 	private String categoryId;
 
 	private String categoryCode;
@@ -22,10 +23,17 @@ public class PeregQuery {
 
 	private String infoId;
 	
-	private int ctgType;
+	public static PeregQuery createQueryLayout(String categoryCode, String employeeId, String personId,
+			GeneralDate standardDate) {
+		return new PeregQuery(categoryCode, employeeId, personId, standardDate);
+	}
+	
+	public static PeregQuery createQueryCategory(String infoId, String categoryCode, String employeeId, String personId) {
+		return new PeregQuery(infoId, categoryCode, employeeId, personId);
+	}
 
 	// layout case
-	public PeregQuery(String categoryCode, String employeeId, String personId, GeneralDate standardDate) {
+	private PeregQuery(String categoryCode, String employeeId, String personId, GeneralDate standardDate) {
 		this.categoryCode = categoryCode;
 		this.employeeId = employeeId;
 		this.personId = personId;
@@ -33,7 +41,7 @@ public class PeregQuery {
 	}
 	
 	// category case
-	public PeregQuery(String infoId, String categoryCode, String employeeId, String personId) {
+	private PeregQuery(String infoId, String categoryCode, String employeeId, String personId) {
 		this.infoId = infoId;
 		this.categoryCode = categoryCode;
 		this.employeeId = employeeId;

@@ -216,6 +216,7 @@ public class OtherHolidayInfoService {
 		// 半日相当時間←指定時間．半日の時間
 		// TODO QA
 		DesignatedTime commonSet = getWorkTimeSetting(cid, sid);
+		
 		int aDay = commonSet.getOneDayTime().v();
 		int aHalf = commonSet.getHalfDayTime().v();
 		while (remainNumberTpm.compareTo(ZERO) > 0) {
@@ -285,7 +286,8 @@ public class OtherHolidayInfoService {
 		if (!workingCondItem.isPresent()) {
 			return result;
 		}
-		Optional<WorkTimeCode> workTimeCD = workingCondItem.get().getWorkCategory().getHolidayTime().getWorkTimeCode();
+		//労働条件項目．区分別勤務．休日出勤時．就業時間帯コードの就業時間帯
+		Optional<WorkTimeCode> workTimeCD = workingCondItem.get().getWorkCategory().getHolidayWork().getWorkTimeCode();
 
 		if (!workTimeCD.isPresent()) {
 			return getCompanySet(cid);
@@ -330,8 +332,7 @@ public class OtherHolidayInfoService {
 			return result;
 		}
 		Optional<WorkTimezoneOtherSubHolTimeSet> subHolTimeSet = flexWork.get().getCommonSetting().getSubHolTimeSet()
-				.stream().filter(i -> i.getOriginAtr() == CompensatoryOccurrenceDivision.WorkDayOffTime
-						&& i.getSubHolTimeSet().isUseDivision())
+				.stream().filter(i -> i.getOriginAtr().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value && (i.getSubHolTimeSet().isUseDivision() == true))
 				.findFirst();
 		if (subHolTimeSet.isPresent()) {
 			return subHolTimeSet.get().getSubHolTimeSet().getDesignatedTime();
@@ -374,8 +375,7 @@ public class OtherHolidayInfoService {
 			return result;
 		}
 		Optional<DesignatedTime> designTime = fixedWork.get().getCommonSetting().getSubHolTimeSet().stream()
-				.filter(i -> i.getOriginAtr().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value
-						&& i.getSubHolTimeSet().isUseDivision())
+				.filter(i -> i.getOriginAtr().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value && (i.getSubHolTimeSet().isUseDivision() == true) )
 				.findFirst().map(i -> i.getSubHolTimeSet().getDesignatedTime());
 
 		if (!designTime.isPresent()) {
@@ -398,8 +398,7 @@ public class OtherHolidayInfoService {
 			return result;
 		}
 		Optional<DesignatedTime> designTime = flowWork.get().getCommonSetting().getSubHolTimeSet().stream()
-				.filter(i -> i.getOriginAtr().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value
-						&& i.getSubHolTimeSet().isUseDivision())
+				.filter(i -> i.getOriginAtr().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value && (i.getSubHolTimeSet().isUseDivision() == true))
 				.findFirst().map(i -> i.getSubHolTimeSet().getDesignatedTime());
 
 		if (!designTime.isPresent()) {
@@ -422,8 +421,7 @@ public class OtherHolidayInfoService {
 			return result;
 		}
 		Optional<DesignatedTime> designTime = diffTime.get().getCommonSet().getSubHolTimeSet().stream()
-				.filter(i -> i.getOriginAtr().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value
-						&& i.getSubHolTimeSet().isUseDivision())
+				.filter(i ->  i.getOriginAtr().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value && (i.getSubHolTimeSet().isUseDivision() == true))
 				.findFirst().map(i -> i.getSubHolTimeSet().getDesignatedTime());
 
 		if (!designTime.isPresent()) {

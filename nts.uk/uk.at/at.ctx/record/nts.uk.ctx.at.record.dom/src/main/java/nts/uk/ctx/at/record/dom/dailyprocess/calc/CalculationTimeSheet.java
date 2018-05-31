@@ -648,21 +648,27 @@ public abstract class CalculationTimeSheet {
 	public void addDuplicatedDeductionTimeSheet(List<TimeSheetOfDeductionItem> deductionTimeSheet,DeductionAtr dedAtr) {
 		if(dedAtr.isAppropriate()) {
 			if(this.recordedTimeSheet != null && !this.recordedTimeSheet.isEmpty()) {
-				this.recordedTimeSheet.addAll(getDuplicatedDeductionTimeSheet(deductionTimeSheet));
+				val test = getDuplicatedDeductionTimeSheet(deductionTimeSheet);
+				if(test != null)
+					this.recordedTimeSheet.addAll(test);
 			}
 			else {
-//				this.recordedTimeSheet = Collections.emptyList();
-				this.recordedTimeSheet = getDuplicatedDeductionTimeSheet(deductionTimeSheet);
+				val test = getDuplicatedDeductionTimeSheet(deductionTimeSheet);
+				if(test != null)
+					this.recordedTimeSheet = test;
 			}
 				
 		}
 		else {
 			if(this.deductionTimeSheet != null && !this.recordedTimeSheet.isEmpty()) {
-				this.deductionTimeSheet.addAll(getDuplicatedDeductionTimeSheet(deductionTimeSheet));
+				val test = getDuplicatedDeductionTimeSheet(deductionTimeSheet);
+				if(test != null)
+					this.deductionTimeSheet.addAll(test);
 			}
 			else {
-//				this.deductionTimeSheet = Collections.emptyList();
-				this.deductionTimeSheet = getDuplicatedDeductionTimeSheet(deductionTimeSheet);
+				val test = getDuplicatedDeductionTimeSheet(deductionTimeSheet);
+				if(test != null)
+					this.deductionTimeSheet = test;
 
 			}
 		}

@@ -11,6 +11,8 @@ import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ErrorPresent;
@@ -20,6 +22,10 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -41,6 +47,7 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 	@Inject
 	private DailyCalculationEmployeeService dailyCalculationEmployeeService;
 
+	
 	//休暇加算設定
 	@Inject
 	private HolidayAddtionRepository holidayAddtionRepository;
@@ -53,6 +60,10 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 	//乖離
 	@Inject 
 	private DivergenceTimeRepository divergenceTimeRepository;
+	
+	//エラーアラーム設定
+	@Inject
+	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepository;
 	
 	/**
 	 * Managerクラス
@@ -92,11 +103,15 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 		this.empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID, executionContent.value,
 				ExecutionStatus.PROCESSING.value);
 		
+		//会社共通の設定を
 		val companyCommonSetting = new ManagePerCompanySet(holidayAddtionRepository.findByCompanyId(AppContexts.user().companyId()),
-				   holidayAddtionRepository.findByCId(AppContexts.user().companyId()),
-				   specificWorkRuleRepository.findCalcMethodByCid(AppContexts.user().companyId()),
-				   compensLeaveComSetRepository.find(AppContexts.user().companyId()),
-				   divergenceTimeRepository.getAllDivTime(AppContexts.user().companyId()));
+														   holidayAddtionRepository.findByCId(AppContexts.user().companyId()),
+														   specificWorkRuleRepository.findCalcMethodByCid(AppContexts.user().companyId()),
+														   compensLeaveComSetRepository.find(AppContexts.user().companyId()),
+														   divergenceTimeRepository.getAllDivTime(AppContexts.user().companyId()),
+														   errorAlarmWorkRecordRepository.getListErrorAlarmWorkRecord(AppContexts.user().companyId())
+														   );
+		
 		
 		// 社員分ループ
 		int calculatedCount = 0;

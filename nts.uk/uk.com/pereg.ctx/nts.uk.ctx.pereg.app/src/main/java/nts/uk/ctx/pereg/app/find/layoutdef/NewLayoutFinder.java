@@ -27,28 +27,17 @@ public class NewLayoutFinder {
 	@Inject
 	private LayoutPersonInfoClsFinder clsFinder;
 
-	public NewLayoutDto getLayout() {
-		return getLayout(true);
-
+	public Boolean checkLayoutExist() {
+		Optional<NewLayout> layout = repo.getLayout();
+		return layout.isPresent();
 	}
 
-	public NewLayoutDto getLayoutCanNull() {
-		return getLayout(false);
-	}
-
-	private NewLayoutDto getLayout(boolean canNull) {
-		Optional<NewLayout> layout = repo.getLayout(canNull);
-		if (layout.isPresent()) {
-			NewLayout _layout = layout.get();
-			// get classifications
-
+	public Optional<NewLayoutDto> getLayout() {
+		return repo.getLayout().map(m -> {
 			// Get list Classification Item by layoutID
-			List<LayoutPersonInfoClsDto> listItemCls = this.clsFinder.getListClsDto(_layout.getLayoutID());
+			List<LayoutPersonInfoClsDto> listItemCls = this.clsFinder.getListClsDto(m.getLayoutID());
 
-			return NewLayoutDto.fromDomain(_layout, listItemCls);
-		} else {
-			return null;
-		}
+			return NewLayoutDto.fromDomain(m, listItemCls);
+		});
 	}
-
 }

@@ -21,10 +21,12 @@ public class OptionalItemOfDailyPerformCommandUpdateHandler extends CommandFacad
 	@Override
 	protected void handle(CommandHandlerContext<OptionalItemOfDailyPerformCommand> context) {
 		OptionalItemOfDailyPerformCommand command = context.getCommand();
-		if (command.getData().isPresent()) {
-			AnyItemValueOfDaily domain = command.getData().get();
-			domain.correctAnyType(optionalMasterRepo);
-			repo.update(domain);
+//		if (command.getData().isPresent()) {
+//			AnyItemValueOfDaily domain = command.getData().get();
+//			domain.correctAnyType(optionalMasterRepo);
+//			repo.update(domain);
+		if(command.getData().isPresent()){
+			repo.update(command.toDomain().get());
 		}
 	}
 

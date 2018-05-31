@@ -67,7 +67,13 @@ public class KrcdtDayLeaveEarlyTime  extends UkJpaEntity implements Serializable
 			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false)
 	})
-	public KrcdtDayTime krcdtDayTime;
+	public KrcdtDayAttendanceTime krcdtDayAttendanceTime;
+//	@ManyToOne
+//	@JoinColumns(value = { 
+//			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+//			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false)
+//	})
+//	public KrcdtDayTime krcdtDayTime;
 	
 	@Override
 	protected Object getKey() {

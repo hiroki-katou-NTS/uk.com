@@ -5,23 +5,23 @@ module nts.uk.at.view.kaf018.h.viewmodel {
     import error = nts.uk.ui.dialog.alertError;
     import ntsError = nts.uk.ui.errors;
     import confirm = nts.uk.ui.dialog.confirm;
-    import model = kaf018.share.model;
+    import shareModel = kaf018.share.model;
 
     export class ScreenModel {
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
+
+        useSetting: shareModel.UseSetting;
+
         checkH3: KnockoutObservable<boolean> = ko.observable(false);
         checkH2: KnockoutObservable<boolean> = ko.observable(false);
         checkH1: KnockoutObservable<boolean> = ko.observable(false);
 
-        appApprovalUnapproved: model.MailTemp = null;
-        dailyUnconfirmByPrincipal: model.MailTemp = null;
-        dailyUnconfirmByConfirmer: model.MailTemp = null;
-        monthlyUnconfirmByConfirmer: model.MailTemp = null;
-        workConfirmation: model.MailTemp = null;
-
-        identityProcessUseSet: model.IdentityProcessUseSet = new model.IdentityProcessUseSet(false);
-        approvalProcessingUseSet: model.ApprovalProcessingUseSetting = new model.ApprovalProcessingUseSetting(false, false);
+        appApprovalUnapproved: shareModel.MailTemp = null;
+        dailyUnconfirmByPrincipal: shareModel.MailTemp = null;
+        dailyUnconfirmByConfirmer: shareModel.MailTemp = null;
+        monthlyUnconfirmByConfirmer: shareModel.MailTemp = null;
+        workConfirmation: shareModel.MailTemp = null;
 
         screenEditMode: KnockoutObservable<boolean> = ko.observable(false);
 
@@ -29,9 +29,9 @@ module nts.uk.at.view.kaf018.h.viewmodel {
             var self = this;
             self.tabs = ko.observableArray([
                 { id: 'tab-1', title: text("KAF018_77"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-2', title: text("KAF018_78"), content: '.tab-content-2', enable: self.checkH3, visible: ko.observable(true) },
-                { id: 'tab-3', title: text("KAF018_79"), content: '.tab-content-3', enable: self.checkH2, visible: ko.observable(true) },
-                { id: 'tab-4', title: text("KAF018_80"), content: '.tab-content-4', enable: self.checkH1, visible: ko.observable(true) },
+                { id: 'tab-2', title: text("KAF018_78"), content: '.tab-content-2', enable: self.checkH3, visible: self.checkH3 },
+                { id: 'tab-3', title: text("KAF018_79"), content: '.tab-content-3', enable: self.checkH2, visible: self.checkH2 },
+                { id: 'tab-4', title: text("KAF018_80"), content: '.tab-content-4', enable: self.checkH1, visible: self.checkH1 },
                 { id: 'tab-5', title: text("KAF018_81"), content: '.tab-content-5', enable: ko.observable(true), visible: ko.observable(true) }
             ]);
             self.selectedTab = ko.observable('tab-1');
@@ -65,43 +65,60 @@ module nts.uk.at.view.kaf018.h.viewmodel {
             var self = this;
             let dfd = $.Deferred();
             block.invisible();
+            service.getUseSetting().done(function(useSetting) {
+                self.useSetting = useSetting;
+                service.getMailTemp().done(function(data: any) {
+                    _.each(data, function(mail) {
+                        let temp = new shareModel.MailTemp(
+                            mail.mailType,
+                            mail.mailSubject,
+                            mail.mailContent,
+                            mail.urlApprovalEmbed,
+                            mail.urlDayEmbed,
+                            mail.urlMonthEmbed,
+                            mail.editMode);
+                        switch (mail.mailType) {
+                            case 0:
+                                self.appApprovalUnapproved = temp;
+                                break
+                            case 1:
+                                self.dailyUnconfirmByPrincipal = temp;
+                                break
+                            case 2:
+                                self.dailyUnconfirmByConfirmer = temp;
+                                break
+                            case 3:
+                                self.monthlyUnconfirmByConfirmer = temp;
+                                break
+                            case 4:
+                                self.workConfirmation = temp;
+                                break;
+                        }
+                    });
 
-            service.getMailBySetting().done(function(data: any) {
-                _.each(data, function(mail) {
-                    let temp = new model.MailTemp(
-                        mail.mailType,
-                        mail.mailSubject,
-                        mail.mailContent,
-                        mail.urlApprovalEmbed,
-                        mail.urlDayEmbed,
-                        mail.urlMonthEmbed,
-                        mail.editMode);
-                    switch (mail.mailType) {
-                        case 0:
-                            self.appApprovalUnapproved = temp;
-                            break
-                        case 1:
-                            self.dailyUnconfirmByPrincipal = temp;
-                            break
-                        case 2:
-                            self.dailyUnconfirmByConfirmer = temp;
-                            break
-                        case 3:
-                            self.monthlyUnconfirmByConfirmer = temp;
-                            break
-                        case 4:
-                            self.workConfirmation = temp;
-                            break;
+                    self.screenEditMode(self.appApprovalUnapproved.editMode());
+                    if (self.dailyUnconfirmByPrincipal.editMode()) {
+                        self.checkH3(true);
                     }
+                    else {
+                        self.checkH3(self.useSetting.usePersonConfirm);
+                    }
+                    if (self.dailyUnconfirmByConfirmer.editMode()) {
+                        self.checkH2(true);
+                    }
+                    else {
+                        self.checkH2(self.useSetting.useBossConfirm);
+                    }
+                    if (self.monthlyUnconfirmByConfirmer.editMode()) {
+                        self.checkH1(true);
+                    }
+                    else {
+                        self.checkH1(self.useSetting.monthlyConfirm);
+                    }
+
+                    block.clear();
+                    dfd.resolve();
                 });
-
-                self.screenEditMode(self.appApprovalUnapproved.editMode());
-                self.checkH3(self.dailyUnconfirmByPrincipal == null ? false : true);
-                self.checkH2(self.dailyUnconfirmByConfirmer == null ? false : true);
-                self.checkH1(self.monthlyUnconfirmByConfirmer == null ? false : true);
-
-                block.clear();
-                dfd.resolve();
             });
             return dfd.promise();
         }
@@ -113,9 +130,9 @@ module nts.uk.at.view.kaf018.h.viewmodel {
             var self = this;
 
             //validate
-            /*if (ntsError.hasError()) {
+            if (self.hasError()) {
                 return;
-            }*/
+            }
 
             block.invisible();
             let listMail = [
@@ -137,6 +154,7 @@ module nts.uk.at.view.kaf018.h.viewmodel {
                 //画面モード　＝　更新
                 self.screenEditMode(true);
                 self.appApprovalUnapproved.editMode(true);
+                self.workConfirmation.editMode(true);
                 if (self.checkH3()) {
                     self.dailyUnconfirmByPrincipal.editMode(true);
                 }
@@ -146,11 +164,27 @@ module nts.uk.at.view.kaf018.h.viewmodel {
                 if (self.checkH1()) {
                     self.monthlyUnconfirmByConfirmer.editMode(true);
                 }
+                info({ messageId: "Msg_15" });
                 block.clear();
             });
         }
 
-        private getMailTempJS(mail: model.MailTemp) {
+        private hasError(): boolean {
+            $('#H3_1_1').ntsError('check');
+            $('#H3_2_1').ntsError('check');
+            $('#H4_1_1').ntsError('check');
+            $('#H4_2_1').ntsError('check');
+            $('#H5_1_1').ntsError('check');
+            $('#H5_2_1').ntsError('check');
+            $('#H6_1_1').ntsError('check');
+            $('#H6_2_1').ntsError('check');
+            $('#H7_1_1').ntsError('check');
+            $('#H7_2_1').ntsError('check');
+
+            return ntsError.hasError();
+        }
+
+        private getMailTempJS(mail: shareModel.MailTemp) {
             let obj = ko.toJS(mail)
             obj.urlApprovalEmbed = obj.urlApprovalEmbed ? 1 : 0;
             obj.urlDayEmbed = obj.urlDayEmbed ? 1 : 0;

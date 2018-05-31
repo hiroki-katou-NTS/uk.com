@@ -90,7 +90,7 @@ public class BreakTimeOfDaily {
 	 * @param oneDay 
 	 * @return
 	 */
-	private static DeductionTotalTime calculationDedBreakTime(DeductionAtr dedAtr, CalculationRangeOfOneDay oneDay) {
+	public static DeductionTotalTime calculationDedBreakTime(DeductionAtr dedAtr, CalculationRangeOfOneDay oneDay) {
 		return createDudAllTime(ConditionAtr.BREAK,dedAtr,TimeSheetRoundingAtr.PerTimeSheet,oneDay);
 	}
 	

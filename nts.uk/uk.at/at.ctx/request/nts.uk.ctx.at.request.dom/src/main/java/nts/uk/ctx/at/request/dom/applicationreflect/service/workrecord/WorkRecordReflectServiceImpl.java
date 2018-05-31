@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 
@@ -24,6 +25,18 @@ public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 		if (!checkReflect) {
 			return statesInfor;
 		}*/
+		if(recordInfor.getAppInfor().getStartDate().isPresent() && recordInfor.getAppInfor().getEndDate().isPresent()) {
+			for(int i = 0; recordInfor.getAppInfor().getStartDate().get().compareTo(recordInfor.getAppInfor().getEndDate().get()) + i <= 0; i++){
+				GeneralDate loopDate = recordInfor.getAppInfor().getStartDate().get().addDays(i);
+				if(!reflectRecord.isRecordData(recordInfor.getAppInfor().getEmployeeID(), loopDate)) {
+					return false;
+				}
+			}	
+		}else {
+			if(!reflectRecord.isRecordData(recordInfor.getAppInfor().getEmployeeID(), recordInfor.getAppInfor().getAppDate())) {
+				return false;
+			}	
+		}
 		//事前事後区分を取得
 		if(recordInfor.getAppInfor().getPrePostAtr() == PrePostAtr.PREDICT) {
 			//申請種類

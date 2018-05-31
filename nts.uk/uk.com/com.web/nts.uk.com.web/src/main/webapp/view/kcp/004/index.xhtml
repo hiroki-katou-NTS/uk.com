@@ -42,6 +42,10 @@ h4 {
 					<!-- BEGIN ORVERVIEW -->
 					<div>
 						<h1>KCP004 職場リスト（共通部品）Workplace List</h1>
+						<note style="width:500px;"> <b>Update
+							2018/04/19</b> <br></br>
+						- Add optional properties: restrictionOfReferenceRange
+						</note>
 						<h2>Overview</h2>
 						<div style="margin: 20px 0px;">
 							<button data-bind="click: copy">Copy</button>
@@ -79,6 +83,7 @@ h4 {
 								<div
 									data-bind="ntsCheckBox:{checked: isShowSelectButton, enable: enableShowSelectButton}">Show
 									SelectAll/SelectSubParent button</div>
+								<div data-bind="ntsCheckBox:{checked: restrictionOfReferenceRange}">Enable restriction of reference range</div>
 							</div>
 
 							<div>
@@ -313,6 +318,12 @@ $('#tree-grid').ntsTreeComponent(self.treeGrid);
 												<i>(optional)</i></lable></td>
 											<td><b>Type:</b> number<br /> <b>Default:</b><i> If
 													not set, tabindex will same as spec of KCPs.</i><br /></td>
+
+										</tr>
+										<tr>
+											<td><lable>restrictionOfReferenceRange</lable> <br /> <lable>
+												<i>(optional)</i></lable></td>
+											<td><b>Type:</b> boolean<br /> <b>Default:</b><i>undefined</i><br /></td>
 
 										</tr>
 									</table>

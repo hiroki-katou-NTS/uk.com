@@ -64,7 +64,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class PrevisionalCalculationServiceImpl implements ProvisionalCalculationService {
 
 	@Inject
-	private CalculateDailyRecordService calculateDailyRecordService;
+	private CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter;
 
 	@Inject
 	private WorkInformationRepository workInformationRepository;
@@ -102,9 +102,11 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 		// 控除置き換え
 		val provisionalDailyRecord = replaceDeductionTimeSheet(provisionalRecord.get(), breakTimeSheets,
 				outingTimeSheets, shortWorkingTimeSheets, employeeId, targetDate);
+		List<IntegrationOfDaily> integraionList = new ArrayList<>();
+		integraionList.add(provisionalDailyRecord);
 		// ドメインモデル「日別実績の勤怠時間」を返す
-		val test = calculateDailyRecordService.calculate(provisionalDailyRecord,null);
-		return Optional.of(test);
+		val test = calculateDailyRecordServiceCenter.calculate(integraionList);
+		return test.stream().findFirst();
 
 	}
 
@@ -189,10 +191,10 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 		// return new IntegrationOfDaily(workInformation, timeAttendance,
 		// attendanceTime.get());
 		return Optional.of(new IntegrationOfDaily(workInformation, calAttrOfDailyPerformance,
-				employeeState.getAffiliationInforOfDailyPerfor().get(), Optional.empty(), Collections.emptyList(),
-				goOutTimeSheet, breakTimeSheet, attendanceTime, Optional.empty(), Optional.of(timeAttendance),
-				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Collections.emptyList(),
-				Optional.empty()));
+				employeeState.getAffiliationInforOfDailyPerfor().get(), Optional.empty(), Optional.empty(), 
+				Collections.emptyList(), goOutTimeSheet, breakTimeSheet, attendanceTime, Optional.empty(), 
+				Optional.of(timeAttendance), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), 
+				Collections.emptyList(), Optional.empty()));
 	}
 
 	private IntegrationOfDaily replaceDeductionTimeSheet(IntegrationOfDaily provisionalRecord,

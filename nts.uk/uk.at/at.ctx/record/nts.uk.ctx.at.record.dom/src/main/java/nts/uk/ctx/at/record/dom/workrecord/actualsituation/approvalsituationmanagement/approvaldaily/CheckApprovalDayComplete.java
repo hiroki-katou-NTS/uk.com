@@ -33,17 +33,18 @@ public class CheckApprovalDayComplete {
 	private ApprovalStatusAdapter approvalStatusAdapter;
 	
 	public Optional<ApprovalDayComplete> checkApprovalDayComplete(String employeeId, DatePeriod date){
-		//TODO 社員が日の承認処理を利用できるかチェックする
+		// 社員が日の承認処理を利用できるかチェックする
 		boolean checkUse = checkEmployeeUseApproval.checkEmployeeUseApproval(employeeId, date.end());
+		
 		if(!checkUse){
 		  return Optional.of(new ApprovalDayComplete(true, Collections.emptyList()));
 		}
-		//TODO 対応するImported「（就業．勤務実績）承認対象者の承認状況」をすべて取得する
+		//対応するImported「（就業．勤務実績）承認対象者の承認状況」をすべて取得する
 		List<ApproveRootStatusForEmpImport> appRoots = approvalStatusAdapter.getApprovalByListEmplAndListApprovalRecordDate(toListDate(date), Arrays.asList(employeeId), 1);
 		if(appRoots.isEmpty()) return Optional.of(new ApprovalDayComplete(false, toListDate(date)));
 		List<GeneralDate> dates = appRoots.stream().filter(x -> x.getApprovalStatus() != ApprovalStatusForEmployee.APPROVED).map(x -> x.getAppDate()).collect(Collectors.toList());
 		if(dates.isEmpty())  return Optional.of(new ApprovalDayComplete(true, Collections.emptyList()));
-		return Optional.of(new ApprovalDayComplete(true, dates));
+		return Optional.of(new ApprovalDayComplete(false, dates));
 	}
 	
 	private List<GeneralDate> toListDate( DatePeriod date) {

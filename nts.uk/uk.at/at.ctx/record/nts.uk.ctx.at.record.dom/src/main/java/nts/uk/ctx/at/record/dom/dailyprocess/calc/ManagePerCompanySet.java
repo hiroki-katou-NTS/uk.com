@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrule.specific.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
@@ -37,6 +38,9 @@ public class ManagePerCompanySet {
 	//乖離時間
 	List<DivergenceTime> divergenceTime;
 	
+	//エラーアラームマスタ
+	List<ErrorAlarmWorkRecord> errorAlarm; 
+	
 	//労働条件
 	@Setter
 	Optional<WorkingConditionItem> personInfo;
@@ -47,12 +51,15 @@ public class ManagePerCompanySet {
 	public ManagePerCompanySet(Map<String, AggregateRoot> holidayAddition,
 			Optional<HolidayAddtionSet> holidayAdditionPerCompany,
 			Optional<CalculateOfTotalConstraintTime> calculateOfTotalCons,
-			CompensatoryLeaveComSetting compensatoryLeaveComSet, List<DivergenceTime> divergenceTime) {
+			CompensatoryLeaveComSetting compensatoryLeaveComSet,
+			List<DivergenceTime> divergenceTime,
+			List<ErrorAlarmWorkRecord> errorAlarm) {
 		super();
 		this.holidayAddition = holidayAddition;
 		this.holidayAdditionPerCompany = holidayAdditionPerCompany;
 		this.calculateOfTotalCons = calculateOfTotalCons;
 		this.compensatoryLeaveComSet = compensatoryLeaveComSet;
 		this.divergenceTime = divergenceTime;
+		this.errorAlarm = errorAlarm;
 	}
 }

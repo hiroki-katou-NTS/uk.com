@@ -44,7 +44,7 @@ public class AddEmpCalSumAndTargetCommandAssembler {
 				// closureID
 				command.getClosureID(),
 				// caseSpecExeContentID
-				command.getCaseSpecExeContentID());
+				command.getCaseSpecExeContentID(),0);
 		
 		if (command.getScreen().equals("J"))
 			empCalAndSumExeLog.setExecutedMenu(ExecutedMenu.EXECUTION_BY_CASE);

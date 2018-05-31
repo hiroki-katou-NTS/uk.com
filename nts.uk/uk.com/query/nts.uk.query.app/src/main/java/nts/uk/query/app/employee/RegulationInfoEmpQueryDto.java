@@ -19,8 +19,8 @@ import nts.uk.query.model.employee.EmployeeSearchQuery;
  */
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class RegulationInfoEmpQueryDto implements Serializable {
 
 	/** The Constant TIME_DAY_START. */

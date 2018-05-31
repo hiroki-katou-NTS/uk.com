@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
@@ -50,20 +51,18 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  * @author keisuke_hoshina
  *
  */
+@Getter
 public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements LateLeaveEarlyManagementTimeFrame {
 
-	@Getter
 	private final EmTimeFrameNo workingHoursTimeNo;
 	
-	@Getter
-	private final Optional<TimeSpanForCalc> premiumTimeSheetInPredetermined;
-	
-	@Getter
 	//遅刻時間帯・・・deductByLateLeaveEarlyを呼ぶまでは値が無い
 	private Optional<LateTimeSheet> lateTimeSheet;
-	@Getter
 	//早退時間帯・・・deductByLateLeaveEarlyを呼ぶまでは値が無い
 	private Optional<LeaveEarlyTimeSheet> leaveEarlyTimeSheet;
+	//計算用所定内割増時間
+	@Setter
+	private Optional<WithinPremiumTimeSheetForCalc> premiumTimeSheetInPredetermined;
 	
 	
 	/**
@@ -86,9 +85,9 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		
 		super(timeSheet, calculationTimeSheet,recorddeductionTimeSheets,deductionTimeSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet);
 		this.workingHoursTimeNo = workingHoursTimeNo;
-		this.premiumTimeSheetInPredetermined = Optional.empty();
 		this.lateTimeSheet = lateTimeSheet;
 		this.leaveEarlyTimeSheet = leaveEarlyTimeSheet;
+		this.premiumTimeSheetInPredetermined = Optional.empty();
 	}
 	
 
@@ -441,7 +440,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
   		//就業時間内時間帯から控除するか判断し控除する    
 		//  if(workTimeCalcMethodDetailOfHoliday.decisionLateDeductSetting(lateDeductTime, workTimezoneLateEarlySet.getOtherEmTimezoneLateEarlySet(LateEarlyAtr.LATE).getGraceTimeSet())) {    
   		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()) {
-   			if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().decisionLateDeductSetting(lateDeductTime, workTimezoneLateEarlySet.getOtherEmTimezoneLateEarlySet(LateEarlyAtr.LATE).getGraceTimeSet())) {   
+   			if(!holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().decisionLateDeductSetting(lateDeductTime, workTimezoneLateEarlySet.getOtherEmTimezoneLateEarlySet(LateEarlyAtr.LATE).getGraceTimeSet())) {   
     		//遅刻時間帯の終了時刻を開始時刻にする
     			dupTimeSheet = new EmTimeZoneSet(duplicateTimeSheet.getWorkingHoursTimeNo(), 
              									 new TimeZoneRounding(lateTimeSheet.getForDeducationTimeSheet().isPresent()?lateTimeSheet.getForDeducationTimeSheet().get().getTimeSheet().getStart()
@@ -463,7 +462,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
   		AttendanceTime LeaveEarlyDeductTime = LeaveEarlyTimeSheet.getForDeducationTimeSheet().isPresent()?LeaveEarlyTimeSheet.getForDeducationTimeSheet().get().calcTotalTime():new AttendanceTime(0);
   		//就業時間内時間帯から控除するか判断し控除する
   		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()) {
-  	  		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().decisionLateDeductSetting(LeaveEarlyDeductTime, workTimezoneLateEarlySet.getOtherEmTimezoneLateEarlySet(LateEarlyAtr.EARLY).getGraceTimeSet())) {
+  	  		if(!holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().decisionLateDeductSetting(LeaveEarlyDeductTime, workTimezoneLateEarlySet.getOtherEmTimezoneLateEarlySet(LateEarlyAtr.EARLY).getGraceTimeSet())) {
   	     		//早退時間帯の開始時刻を終了時刻にする
   	     		dupTimeSheet = new EmTimeZoneSet(new EmTimeFrameNo(workNo), 
   	              							 new TimeZoneRounding(dupTimeSheet.getTimezone().getStart(),
