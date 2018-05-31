@@ -834,7 +834,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					TotalValue totalValue;
 					if (optTotalVal.isPresent()) {
 						totalValue = optTotalVal.get();
-						if (totalValue.getValueType() == TotalValue.INTEGER || totalValue.getValueType() == TotalValue.BIG_DECIMAL) {
+						if ((totalValue.getValueType() == TotalValue.INTEGER || totalValue.getValueType() == TotalValue.BIG_DECIMAL) && actualValue.getValue() != null) {
 							totalValue.setValue(String.valueOf(Integer.parseInt(totalValue.getValue()) + Integer.parseInt(actualValue.getValue())));
 						}
 					}
@@ -842,7 +842,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						totalValue = new TotalValue();
 						totalValue.setAttendanceId(actualValue.getAttendanceId());
 						if (actualValue.getValueType() == TotalValue.INTEGER || actualValue.getValueType() == TotalValue.BIG_DECIMAL) {
-							totalValue.setValue(actualValue.getValue());
+							if (actualValue.getValue() != null) {
+								totalValue.setValue(actualValue.getValue());
+							} else {
+								totalValue.setValue("0");
+							}
 						}
 						totalValue.setValueType(actualValue.getValueType());
 						lstTotalValue.add(totalValue);
@@ -1652,10 +1656,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			Cell workplaceCell = cells.get(currentRow, 2);
 			workplaceCell.setValue(rootWorkplace.getWorkplaceCode() + " " + rootWorkplace.getWorkplaceName());
 			
-			// Remove top border
-			Range borderRange = cells.createRange(currentRow, 7, 1, 17);
-			borderRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.NONE, Color.getEmpty());
-			
 			currentRow++;
 			
 			// Employee data
@@ -1764,6 +1764,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			Range wkpHierTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
 			Range wkpHierTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
 			wkpHierTotalRange.copy(wkpHierTotalRangeTemp);
+			wkpHierTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 			
 			// B7_1 - B11_1
 			Cell workplaceTotalCellTag = cells.get(currentRow, 0);
