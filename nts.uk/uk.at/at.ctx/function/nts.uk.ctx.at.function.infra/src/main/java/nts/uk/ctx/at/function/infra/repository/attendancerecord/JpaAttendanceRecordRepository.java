@@ -48,7 +48,7 @@ public abstract class JpaAttendanceRecordRepository extends JpaRepository {
 
 		// query data
 		List<KfnstAttndRecItem> kfnstAttndRecItems = em.createQuery(criteriaQuery).getResultList();
-		return kfnstAttndRecItems.isEmpty() ? new ArrayList<KfnstAttndRecItem>() : kfnstAttndRecItems;
+		return kfnstAttndRecItems;
 	}
 
 	List<KfnstAttndRecItem> findAllAttendanceRecordItem(String companyId, ExportSettingCode exportSettingCode) {
@@ -70,7 +70,7 @@ public abstract class JpaAttendanceRecordRepository extends JpaRepository {
 
 		// query data
 		List<KfnstAttndRecItem> kfnstAttndRecItems = em.createQuery(criteriaQuery).getResultList();
-		return kfnstAttndRecItems.isEmpty() ? new ArrayList<KfnstAttndRecItem>() : kfnstAttndRecItems;
+		return kfnstAttndRecItems;
 	}
 
 

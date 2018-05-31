@@ -54,16 +54,14 @@ module nts.uk.com.view.kwr002.b {
 
             self.currentARESCode.subscribe((value) => {
                 if (value) {
-                    console.log(value);
+                    
                     let foundItem: IARES = _.find(self.aRES(), (item: IARES) => {
                         return item.code == value;
                     });
 
                     service.getARESByCode(foundItem.code).done((aRESData) => {
-                        console.log(self.currentARES());
                         self.currentARES(new AttendanceRecordExportSetting(aRESData));
                         self.updateMode(true);
-                        console.log(self.currentARES());
                     }).fail((error) => {
                         alert(error.message);
                     })
@@ -103,7 +101,6 @@ module nts.uk.com.view.kwr002.b {
                         if(_.isEmpty(newVal)){
                             this.onNew()
                         }else{
-                            // console.log(newVal);
                             self.aRES(newVal);
                             let firstData = _.first(self.aRES());
                             self.currentARESCode(firstData.code);
@@ -111,9 +108,7 @@ module nts.uk.com.view.kwr002.b {
                     });
                 })
             }).ifNo(() => {
-                info({messageId: 'Msg_36'}).then(() => {
-                    return;
-                })
+                info({messageId: 'Msg_36'});
             });
 
         }
@@ -158,8 +153,6 @@ module nts.uk.com.view.kwr002.b {
                 }
             };
 
-//            console.log("is Invalid:" + rcdExport.isInvalid());
-
             if (self.updateMode()) { //in update mode
                 if (rcdExport.isInvalid()) {
                     alertError({messageId: 'Msg_1130'});
@@ -187,8 +180,6 @@ module nts.uk.com.view.kwr002.b {
                     }
                 })
             }
-
-            nts.uk.ui.block.clear();
         };
 
         callGetAll(self, currentData) {
@@ -201,13 +192,11 @@ module nts.uk.com.view.kwr002.b {
                         let firstData = _.first(data);
                         self.currentARESCode(firstData.code);
                     }
-
-
                 } else {
                     self.onNew();
                 }
             }).always(() => {
-                nts.uk.ui.block.clear();
+                block.clear();
             });
         };
 
@@ -290,7 +279,7 @@ module nts.uk.com.view.kwr002.b {
                 dfd.reject();
                 alert(error.message);
             }).always(() => {
-                nts.uk.ui.block.clear();
+                block.clear();
             });
 
             return dfd.promise();
@@ -377,7 +366,7 @@ module nts.uk.com.view.kwr002.b {
         public openScreenC() {
             let self = this;
             block.grayout();
-            //            console.log(self.code());
+            
             setShared('attendanceRecExpSetCode', self.code(), true);
             setShared('attendanceRecExpSetName', self.name(), true);
             setShared('useSeal', self.sealUseAtr(), true);
