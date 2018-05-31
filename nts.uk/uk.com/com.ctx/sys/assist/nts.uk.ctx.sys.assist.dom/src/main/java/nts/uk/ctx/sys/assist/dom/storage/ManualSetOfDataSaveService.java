@@ -164,17 +164,17 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 				case DAILY:
 					saveDateFrom = optManualSetting.get().getDaySaveStartDate();
 					saveDateTo = optManualSetting.get().getDaySaveEndDate();
-					screenRetentionPeriod = new DatePeriod(saveDateFrom, saveDateTo).toString();
+					screenRetentionPeriod = saveDateFrom.toString("yyyy/MM/dd") + "～" + saveDateTo.toString("yyyy/MM/dd");
 					break;
 				case MONTHLY:
 					saveDateFrom = optManualSetting.get().getMonthSaveStartDate();
 					saveDateTo = optManualSetting.get().getMonthSaveEndDate();
-					screenRetentionPeriod = new DatePeriod(saveDateFrom, saveDateTo).toString();
+					screenRetentionPeriod = saveDateFrom.toString("yyyy/MM") + "～" + saveDateTo.toString("yyyy/MM");
 					break;
 				case ANNUAL:
 					saveDateFrom = GeneralDate.ymd(optManualSetting.get().getStartYear().v(), 1, 1);
 					saveDateTo = GeneralDate.ymd(optManualSetting.get().getEndYear().v(), 12, 31);
-					screenRetentionPeriod = new DatePeriod(saveDateFrom, saveDateTo).toString();
+					screenRetentionPeriod = saveDateFrom.toString("yyyy") + "～" + saveDateTo.toString("yyyy");
 					break;
 				default:
 					break;

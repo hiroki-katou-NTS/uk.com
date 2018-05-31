@@ -70,7 +70,7 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	/**
 	 * 付加取得項目_会社ID
 	 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "FIELD_ACQ_CID")
 	public String fieldAcqCid;
 
@@ -280,7 +280,7 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 * 復旧対象選択
 	 */
 	@Basic(optional = true)
-	@Column(name = "SELECTION_TARGET_FORRES")
+	@Column(name = "SELECTION_TARGET_FOR_RES")
 	public String selectionTargetForRes;
 
 	/**
@@ -377,7 +377,7 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	/**
 	 * 抽出キー項目4
 	 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "FIELD_KEY_QUERY_4")
 	public String fieldKeyQuery4;
 
