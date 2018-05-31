@@ -7076,6 +7076,7 @@ var nts;
                                 style.detCell(self.$container, td, rowIdx, key);
                                 tdStyle += "; padding: 0px;";
                                 td.style.cssText += tdStyle;
+                                widget.textOverflow(td);
                                 return td;
                             }
                             if (!uk.util.isNullOrUndefined(column.handlerType) && !self.options.isHeader) {
@@ -7122,6 +7123,7 @@ var nts;
                             //                spread.bindSticker(td, rowIdx , key, self.options);
                             style.detCell(self.$container, td, rowIdx, key);
                             td.style.cssText += tdStyle;
+                            widget.textOverflow(td);
                             return td;
                         };
                         Painter.prototype.row = function (data, config, rowIdx) {
@@ -11446,6 +11448,7 @@ var nts;
                     events.MOUSE_OVER = "mouseover";
                     events.MOUSE_ENTER = "mouseenter";
                     events.MOUSE_OUT = "mouseout";
+                    events.MOUSE_LEAVE = "mouseleave";
                     events.FOCUS_IN = "focusin";
                     events.PASTE = "paste";
                     events.MOUSE_WHEEL = "wheel";
@@ -14143,6 +14146,27 @@ var nts;
                         return wType;
                     }
                     widget.bind = bind;
+                    function textOverflow($cell) {
+                        //            $cell.addXEventListener(events.MOUSE_ENTER + ".overflow", function(evt: any) {
+                        //                let $target = $(evt.target);
+                        //                let $view = $("<div />").addClass("x-text-overflow")
+                        //                            .text($target.text() || $target.val())
+                        //                            .appendTo("body")
+                        //                            .position({
+                        //                                my: "left top",
+                        //                                at: "left bottom",
+                        //                                of: $target,
+                        //                                collision: "flip"
+                        //                            });
+                        //                
+                        //                $cell.addXEventListener(events.MOUSE_LEAVE + ".overflow", function(evt: any) {
+                        //                    $cell.removeXEventListener(events.MOUSE_LEAVE + ".overflow");
+                        //                    $view.remove();
+                        //                });
+                        //
+                        //            });
+                    }
+                    widget.textOverflow = textOverflow;
                     /**
                      * Hide.
                      */
@@ -14546,6 +14570,7 @@ var nts;
             var koExtentions;
             (function (koExtentions) {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 var notSelected;
                 (function (notSelected) {
                     var DATA = "not-selected";
@@ -14593,6 +14618,10 @@ var nts;
                 var WoC = 14, MINWIDTH = 'initial', TAB_INDEX = 'tabindex', KEYPRESS = 'keypress', KEYDOWN = 'keydown', FOCUS = 'focus', VALIDATE = 'validate', OPENDDL = 'openDropDown', CLOSEDDL = 'closeDropDown', OPENED = 'dropDownOpened', IGCOMB = 'igCombo', OPTION = 'option', ENABLE = 'enable', EDITABLE = 'editable', DROPDOWN = 'dropdown', COMBOROW = 'nts-combo-item', COMBOCOL = 'nts-column nts-combo-column', DATA = '_nts_data', CHANGED = '_nts_changed', SHOWVALUE = '_nts_show', NAME = '_nts_name', CWIDTH = '_nts_col_width', VALUE = '_nts_value', REQUIRED = '_nts_required';
                 var ComboBoxBindingHandler = /** @class */ (function () {
 >>>>>>> e9c9178... (NtsGrid) Override cell state
+=======
+                var WoC = 14, MINWIDTH = 'initial', TAB_INDEX = 'tabindex', KEYPRESS = 'keypress', KEYDOWN = 'keydown', FOCUS = 'focus', VALIDATE = 'validate', OPENDDL = 'openDropDown', CLOSEDDL = 'closeDropDown', OPENED = 'dropDownOpened', IGCOMB = 'igCombo', OPTION = 'option', ENABLE = 'enable', EDITABLE = 'editable', DROPDOWN = 'dropdown', COMBOROW = 'nts-combo-item', COMBOCOL = 'nts-column nts-combo-column', DATA = '_nts_data', CHANGED = '_nts_changed', SHOWVALUE = '_nts_show', NAME = '_nts_name', CWIDTH = '_nts_col_width', VALUE = '_nts_value', REQUIRED = '_nts_required';
+                var ComboBoxBindingHandler = /** @class */ (function () {
+>>>>>>> 1fbfb28... Update GridList formatter
                     function ComboBoxBindingHandler() {
                         this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                             var template = '', $element = $(element), accessor = valueAccessor(), 
@@ -14746,6 +14775,7 @@ var nts;
                                     else {
                                         var value = ui.items[0]["data"][optionsValue];
                                         $element.trigger(CHANGED, [VALUE, value]);
+<<<<<<< HEAD
                                     }
                                 },
                                 dropDownClosed: function (evt, ui) {
@@ -14791,6 +14821,53 @@ var nts;
                                             .data('_nts_bind', true)
                                             .attr('tabindex', -1);
                                     }
+=======
+                                    }
+                                },
+                                dropDownClosed: function (evt, ui) {
+                                    setTimeout(function () {
+                                        var data = $element.data(DATA);
+                                        // set value on select
+                                        accessor.value(data[VALUE]);
+                                        // validate if required
+                                        $element
+                                            .trigger(VALIDATE)
+                                            .trigger(SHOWVALUE)
+                                            .focus();
+                                    }, 10);
+                                },
+                                dropDownOpening: function (evt, ui) {
+                                    var data = $element.data(DATA), cws = data[CWIDTH], ks = _.keys(cws);
+                                    // move searchbox to list
+                                    $element
+                                        .find('.ui-igcombo-fieldholder')
+                                        .prependTo(ui.list);
+                                    // show searchbox if editable
+                                    var $input = ui.list
+                                        .find('.ui-igcombo-fieldholder')
+                                        .css('height', !!data[EDITABLE] ? '' : '0px')
+                                        .css('padding', !!data[EDITABLE] ? '3px' : '')
+                                        .css('background-color', !!data[EDITABLE] ? '#f6f6f6' : '')
+                                        .show()
+                                        .find('input')
+                                        .css('height', !!data[EDITABLE] ? '29px' : '0px')
+                                        .css('border', !!data[EDITABLE] ? '1px solid #ccc' : 'none');
+                                    if (!$input.data('_nts_bind')) {
+                                        $input
+                                            .on(KEYDOWN, function (evt, ui) {
+                                            if ([13].indexOf(evt.which || evt.keyCode) > -1) {
+                                                if ($element.data(IGCOMB)) {
+                                                    // fire click of igcombo-button
+                                                    $element
+                                                        .find('.ui-igcombo-button')
+                                                        .trigger('click');
+                                                }
+                                            }
+                                        })
+                                            .data('_nts_bind', true)
+                                            .attr('tabindex', -1);
+                                    }
+>>>>>>> 1fbfb28... Update GridList formatter
                                     // calc new size of template columns
                                     _.each(ks, function (k) {
                                         $(ui.list).find("." + k.toLowerCase() + ":not(:last-child)")
@@ -16964,6 +17041,7 @@ var nts;
                                 }
                             }
                             else {
+                                var formatter_1 = c.formatter;
                                 c.formatter = function (val, row) {
                                     if (row) {
                                         setTimeout(function () {
@@ -16981,7 +17059,7 @@ var nts;
                                             });
                                         }, 0);
                                     }
-                                    return val;
+                                    return formatter_1 ? formatter_1(val, row) : val;
                                 };
                             }
                             return c;

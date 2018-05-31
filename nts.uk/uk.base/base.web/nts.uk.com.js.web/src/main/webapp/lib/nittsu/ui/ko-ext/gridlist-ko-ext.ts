@@ -107,6 +107,7 @@ module nts.uk.ui.koExtentions {
                         ROW_HEIGHT = 30;
                     }       
                 } else {
+                    let formatter = c.formatter;
                     c.formatter = function(val, row) {
                         if (row) {
                             setTimeout(() => {
@@ -122,7 +123,7 @@ module nts.uk.ui.koExtentions {
                                 });
                             }, 0);
                         }
-                        return val;
+                        return formatter ? formatter(val, row) : val;
                     };
                 }
                 return c; 
