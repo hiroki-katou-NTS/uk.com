@@ -64,6 +64,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmployeeBasicInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
@@ -76,6 +77,9 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vaca
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
+import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompanyRepository;
+import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceRepository;
 import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -144,7 +148,16 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 
 	@Inject
 	private ApplicationRepository_New repoApp;
+	
+	@Inject
+	private RequestOfEachWorkplaceRepository repoRequestWkp;
+	
+	@Inject
+	private RequestOfEachCompanyRepository repoRequestCompany;
 
+	@Inject
+	private WorkplaceAdapter wkpAdapter;
+	
 	@Override
 	public List<ApprovalStatusEmployeeOutput> getApprovalStatusEmployee(String wkpId, GeneralDate closureStart,
 			GeneralDate closureEnd, List<String> listEmpCd) {
@@ -284,7 +297,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	private List<ApplicationApprContent> getAppSttAcquisitionAppl(ApprovalStatusEmployeeOutput approvalStt) {
 		List<ApplicationApprContent> listAppSttAcquisitionAppl = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
-		String sId = approvalStt.getSId();
+		String sId = approvalStt.getSid();
 		GeneralDate startDate = approvalStt.getStartDate();
 		GeneralDate endDate = approvalStt.getEndDate();
 		List<Application_New> listApp = appRepoNew.getListAppBySID(companyId, sId, startDate, endDate);
@@ -673,7 +686,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// 社員ID(リスト)
 		for (ApprovalStatusEmployeeOutput appStt : listAppSttEmp) {
 			List<String> listEmpId = new ArrayList<>();
-			listEmpId.add(appStt.getSId());
+			listEmpId.add(appStt.getSid());
 			if (listEmpId.isEmpty())
 				continue;
 			// Imported（就業）「個人社員基本情報」を取得する
@@ -694,7 +707,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			// アルゴリズム「承認状況日別状態作成」を実行する
 			List<DailyStatus> dailyStatus = this.getApprovalSttByDate(appStt.getStartDate(), appStt.getEndDate(),
 					listApprovalContent);
-			listDailyStatus.add(new DailyStatusOutput(appStt.getSId(), empName, dailyStatus));
+			listDailyStatus.add(new DailyStatusOutput(appStt.getSid(), empName, dailyStatus));
 		}
 		return new ApprovalSttByEmpListOutput(listDailyStatus, listAppSttEmp);
 	}
@@ -790,6 +803,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	 */
 	private List<ApprovalSttAppDetail> getApprovalSttAppDetail(List<ApplicationApprContent> listAppContent) {
 		List<ApprovalSttAppDetail> listApprovalSttAppDetail = new ArrayList<>();
+		String companyId = AppContexts.user().companyId();
 		for (ApplicationApprContent appContent : listAppContent) {
 			Application_New app = appContent.getApplication();
 			/// ドメインモデル「申請表示名」より申請表示名称を取得する
@@ -800,12 +814,26 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			ApprovalSttDetailRecord approvalSttDetail = this.getApplicationDetailRecord(appContent);
 			// アルゴリズム「承認状況申請内容取得休暇」を実行する
 			String relationshipName = this.getApprovalSttDetailVacation(app);
+			WkpHistImport wkp = wkpAdapter.findWkpBySid(app.getEmployeeID(), app.getAppDate());
+			int detailSet = this.detailSet(companyId, wkp.getWorkplaceId(), app.getAppType().value);
 			listApprovalSttAppDetail.add(new ApprovalSttAppDetail(appContent, appDispName.get(), listApprover,
-					approvalSttDetail, relationshipName));
+					approvalSttDetail, relationshipName, detailSet));
 		}
 		return listApprovalSttAppDetail;
 	}
 
+	private Integer detailSet(String companyId, String wkpId, Integer appType){
+		//ドメイン「職場別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by workplace)
+		Optional<ApprovalFunctionSetting> appFuncSet = null;
+		appFuncSet = repoRequestWkp.getFunctionSetting(companyId, wkpId, appType);
+		//対象が存在しない場合 - TH doi tuong k ton tai
+		if(!appFuncSet.isPresent()){
+			//ドメイン「会社別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by company)
+			appFuncSet = repoRequestCompany.getFunctionSetting(companyId, appType);
+		}
+		return appFuncSet.isPresent() ? appFuncSet.get().getApplicationDetailSetting().get().getTimeCalUse().value : null;
+	} 
+	
 	/**
 	 * 「承認状況申請内容取得振休振出
 	 */

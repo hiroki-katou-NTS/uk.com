@@ -13,7 +13,7 @@ public interface CalAttrOfDailyPerformanceRepository {
 	
 	public List<CalAttrOfDailyPerformance> finds(List<String> employeeId, DatePeriod baseDate);
 
-	public List<CalAttrOfDailyPerformance> finds(Map<String, GeneralDate> param);
+	public List<CalAttrOfDailyPerformance> finds(Map<String, List<GeneralDate>> param);
 
 	public void update(CalAttrOfDailyPerformance domain);
 
