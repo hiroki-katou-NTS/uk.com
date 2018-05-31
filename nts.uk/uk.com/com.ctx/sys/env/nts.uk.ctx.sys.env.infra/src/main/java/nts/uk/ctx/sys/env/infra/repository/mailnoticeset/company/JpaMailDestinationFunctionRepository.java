@@ -23,6 +23,10 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstMailDestinFunc;
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstMailDestinFuncPK_;
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstMailDestinFunc_;
+<<<<<<< HEAD
+import nts.uk.shr.com.enumcommon.NotUseAtr;
+=======
+>>>>>>> delivery/release_user
 
 /**
  * The Class JpaMailDestinationFunctionRepository.
@@ -111,4 +115,40 @@ public class JpaMailDestinationFunctionRepository extends JpaRepository implemen
 		em.createQuery(cq).executeUpdate();
 	}
 
+<<<<<<< HEAD
+	@Override
+	public MailDestinationFunction findByCidSettingItemAndUse(String cID, Integer functionID, NotUseAtr use) {
+
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<SevstMailDestinFunc> cq = criteriaBuilder.createQuery(SevstMailDestinFunc.class);
+		Root<SevstMailDestinFunc> root = cq.from(SevstMailDestinFunc.class);
+
+		// Build query
+		cq.select(root);
+
+		// Add where conditions
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(SevstMailDestinFunc_.sevstMailDestinFuncPK).get(SevstMailDestinFuncPK_.cid), cID));
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(SevstMailDestinFunc_.sevstMailDestinFuncPK).get(SevstMailDestinFuncPK_.functionId),
+				functionID));
+
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		List<SevstMailDestinFunc> listSevstMailDestinFunc = em.createQuery(cq).getResultList();
+
+		// Check exist
+		if (CollectionUtil.isEmpty(listSevstMailDestinFunc)) {
+			return null;
+		}
+		// Return
+		return new MailDestinationFunction(new JpaMailDestinationFunctionGetMemento(listSevstMailDestinFunc),use);
+
+	}
+
+=======
+>>>>>>> delivery/release_user
 }
