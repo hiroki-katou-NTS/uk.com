@@ -200,11 +200,17 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		for (AttendanceItemValueImport attendanceItem : attendanceItemsValue) {
 			//0: integer, 2 decimal
 			if (attendanceItem.isNumber()) {
+				BigDecimal val;
+				try {
+					val = new BigDecimal(attendanceItem.getValue());
+				} catch (Exception e) {
+					continue;
+				}
 				// 0: subtract, 1: plus
 				if (operationMap.get(attendanceItem.getItemId()) == 0) {
-					sum = sum.subtract(new BigDecimal(attendanceItem.getValue()));
+					sum = sum.subtract(val);
 				} else {
-					sum = sum.add(new BigDecimal(attendanceItem.getValue()));
+					sum = sum.add(val);
 				}
 			}
 		}
