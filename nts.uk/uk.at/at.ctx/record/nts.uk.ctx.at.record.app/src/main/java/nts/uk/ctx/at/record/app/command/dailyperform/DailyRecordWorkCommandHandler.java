@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.command.dailyperform;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -167,10 +168,10 @@ public class DailyRecordWorkCommandHandler {
 
 	/** 編集状態: 日別実績の編集状態 */
 	@Inject
-	//@AttendanceItemLayout(layout = "N", jpPropertyName = "", index = 14)
+	@AttendanceItemLayout(layout = "N", jpPropertyName = "", index = 14)
 	private EditStateOfDailyPerformCommandAddHandler editStateAddHandler;
 	@Inject
-	//@AttendanceItemLayout(layout = "N", jpPropertyName = "", index = 14)
+	@AttendanceItemLayout(layout = "N", jpPropertyName = "", index = 14)
 	private EditStateOfDailyPerformCommandUpdateHandler editStateUpdateHandler;
 
 	/** 臨時出退勤: 日別実績の臨時出退勤 */
@@ -262,7 +263,8 @@ public class DailyRecordWorkCommandHandler {
 	@SuppressWarnings({ "unchecked" })
 	private <T extends DailyWorkCommonCommand> void registerNotCalcDomain(List<DailyRecordWorkCommand> commands, boolean isUpdate) {
 		commands.stream().forEach(command -> {
-			Set<String> mapped = new HashSet<>();
+			Set<String> mapped = new LinkedHashSet<>();
+			mapped.add("N");
 			mapped.addAll(command.itemValues().stream().map(c -> getGroup(c)).distinct().collect(Collectors.toSet()));
 			mapped.stream().filter(c -> !DOMAIN_CHANGED_BY_CALCULATE.contains(c)).forEach(c -> {
 				CommandFacade<T> handler = (CommandFacade<T>) getHandler(c, isUpdate);
