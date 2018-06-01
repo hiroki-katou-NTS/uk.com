@@ -538,6 +538,14 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 $("#B3_5").focus();
             }
         }
+        
+        /**
+         * back to D
+         */
+        private previousD(): void {
+            var self = this;
+            self.previous();
+        }
 
         /**
         * validation D form
@@ -572,6 +580,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                         }
                     }
                 }
+                self.employeeDeletionList(_.orderBy(self.employeeDeletionList(), ['code'], ['asc']));
             }
         }
 
@@ -580,6 +589,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
          */
         setCategoryDeletionList() {
             var self = this;
+            self.categoryDeletionList.removeAll();
             for (var i = 0; i < self.listDataCategory().length; i++) {
                 let category = self.listDataCategory()[i];
                 self.categoryDeletionList.push(new CategoryDeletion(category.categoryId));
