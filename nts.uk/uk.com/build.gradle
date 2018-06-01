@@ -1044,6 +1044,14 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':com.ctx:sys:env:nts.uk.ctx.sys.env.pubimp')
 		runtime project (':com.ctx:sys:env:nts.uk.ctx.sys.env.ws')
 
+		runtime project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.ac')
+		runtime project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.app')
+		runtime project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.dom')
+		runtime project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.infra')
+		runtime project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.pub')
+		runtime project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.pubimp')
+		runtime project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.ws')
+		
 		runtime project (':com.ctx:sys:log:nts.uk.ctx.sys.log.ac')
 		runtime project (':com.ctx:sys:log:nts.uk.ctx.sys.log.app')
 		runtime project (':com.ctx:sys:log:nts.uk.ctx.sys.log.dom')
