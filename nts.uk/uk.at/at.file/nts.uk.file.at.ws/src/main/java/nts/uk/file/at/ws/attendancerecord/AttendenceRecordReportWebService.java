@@ -6,7 +6,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
-import nts.uk.file.at.app.export.attendancerecord.AttendanceRecordExportTestService;
+import nts.uk.file.at.app.export.attendancerecord.AttendanceRecordExportService;
 import nts.uk.file.at.app.export.attendancerecord.AttendanceRecordRequest;
 
 @Path("at/function/attendancerecord/report")
@@ -14,7 +14,7 @@ import nts.uk.file.at.app.export.attendancerecord.AttendanceRecordRequest;
 public class AttendenceRecordReportWebService {
 	
 	@Inject
-	private AttendanceRecordExportTestService exportService;
+	private AttendanceRecordExportService exportService;
 	
 	@POST
 	@Path("export")

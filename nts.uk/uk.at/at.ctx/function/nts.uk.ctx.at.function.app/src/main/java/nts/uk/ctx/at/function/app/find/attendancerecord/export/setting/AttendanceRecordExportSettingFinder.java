@@ -26,6 +26,9 @@ public class AttendanceRecordExportSettingFinder {
 	@Inject
 	PermissionOfEmploymentFormRepository permissionRepo;
 
+	/** The Constant EXPORT_AUTHORIZATION. */
+	final static int EXPORT_AUTHORIZATION = 3;
+
 	/**
 	 * Gets the all attendance record export setting.
 	 *
@@ -102,7 +105,7 @@ public class AttendanceRecordExportSettingFinder {
 		String companyId = AppContexts.user().companyId();
 		String roleId = AppContexts.user().roles().forAttendance();
 
-		Optional<PermissionOfEmploymentForm> optionalPermission = permissionRepo.find(companyId, roleId, 3);
+		Optional<PermissionOfEmploymentForm> optionalPermission = permissionRepo.find(companyId, roleId, EXPORT_AUTHORIZATION);
 
 		if (optionalPermission.isPresent()) {
 			PermissionOfEmploymentForm permission = optionalPermission.get();

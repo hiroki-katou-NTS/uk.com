@@ -19,9 +19,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The Class JpaAttendanceRecordExportRepository.
+ * 
+ * @author NWS_QUANGNT
+ */
 @Stateless
 public class JpaAttendanceRecordExportRepository extends JpaRepository implements AttendanceRecordExportRepository {
 
+	static final long UPPER_POSITION = 1;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.function.dom.attendancerecord.export.
+	 * AttendanceRecordExportRepository#getAllAttendanceRecordExportDaily(java.
+	 * lang.String, long)
+	 */
 	@Override
 	public List<AttendanceRecordExport> getAllAttendanceRecordExportDaily(String companyId, long exportSettingCode) {
 
@@ -52,15 +66,16 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 		// for each item of entityList
 		entityList.forEach(item1 -> {
 			// find domain is exist?,
-			if (!findInList(domainList, item1))
+			if (!findInList(domainList, item1)) {
+				long columnIndex1 = item1.getId().getColumnIndex();
+				long position1 = item1.getId().getPosition();
 				// if not exist, toDomain
 				entityList.forEach(item2 -> {
 					// find if the same columnIndex
-					if (item1.getId().getColumnIndex() == item2.getId().getColumnIndex()
-							&& item1.getId().getPosition() != item2.getId().getPosition()) {
+					if (columnIndex1 == item2.getId().getColumnIndex() && position1 != item2.getId().getPosition()) {
 						// toDomain
 						AttendanceRecordExport domain = new AttendanceRecordExport();
-						if (item1.getId().getPosition() == 1)
+						if (columnIndex1 == UPPER_POSITION)
 							domain = this.toDomain(item1, item2);
 						else
 							domain = this.toDomain(item2, item1);
@@ -68,6 +83,7 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 						domainList.add(domain);
 					}
 				});
+			}
 			if (!findInList(domainList, item1)) {
 				AttendanceRecordExport domain = new AttendanceRecordExport();
 				domain = this.toDomain(item1, null);
@@ -79,6 +95,15 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 		return domainList.stream().filter(item -> item != null).collect(Collectors.toList());
 	}
 
+	/**
+	 * Find in list.
+	 *
+	 * @param list
+	 *            the list
+	 * @param item
+	 *            the item
+	 * @return the boolean
+	 */
 	public Boolean findInList(List<AttendanceRecordExport> list, KfnstAttndRec item) {
 
 		for (AttendanceRecordExport e : list) {
@@ -89,6 +114,13 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 		return false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.function.dom.attendancerecord.export.
+	 * AttendanceRecordExportRepository#getAllAttendanceRecordExportMonthly(java
+	 * .lang.String, long)
+	 */
 	@Override
 	public List<AttendanceRecordExport> getAllAttendanceRecordExportMonthly(String companyId, long exportSettingCode) {
 		EntityManager em = this.getEntityManager();
@@ -118,15 +150,17 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 		// for each item of entityList
 		entityList.forEach(item1 -> {
 			// find domain is exist?,
-			if (!findInList(domainList, item1))
+			if (!findInList(domainList, item1)) {
+
+				long columnIndex1 = item1.getId().getColumnIndex();
+				long position1 = item1.getId().getPosition();
 				// if not exist, toDomain
 				entityList.forEach(item2 -> {
 					// find if the same columnIndex
-					if (item1.getId().getColumnIndex() == item2.getId().getColumnIndex()
-							&& item1.getId().getPosition() != item2.getId().getPosition()) {
+					if (columnIndex1 == item2.getId().getColumnIndex() && position1 != item2.getId().getPosition()) {
 						// toDomain
 						AttendanceRecordExport domain = new AttendanceRecordExport();
-						if (item1.getId().getPosition() == 1)
+						if (position1 == UPPER_POSITION)
 							domain = this.toDomain(item1, item2);
 						else
 							domain = this.toDomain(item2, item1);
@@ -134,6 +168,7 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 						domainList.add(domain);
 					}
 				});
+			}
 			if (!findInList(domainList, item1)) {
 				AttendanceRecordExport domain = new AttendanceRecordExport();
 				domain = this.toDomain(item1, null);
@@ -145,18 +180,40 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 		return domainList.stream().filter(item -> item != null).collect(Collectors.toList());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.function.dom.attendancerecord.export.
+	 * AttendanceRecordExportRepository#updateAttendanceRecordExport(nts.uk.ctx.
+	 * at.function.dom.attendancerecord.export.AttendanceRecordExport)
+	 */
 	@Override
 	public void updateAttendanceRecordExport(AttendanceRecordExport attendanceRecordExport) {
 		// TODO Auto-generated method stub
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.function.dom.attendancerecord.export.
+	 * AttendanceRecordExportRepository#addAttendanceRecordExport(nts.uk.ctx.at.
+	 * function.dom.attendancerecord.export.AttendanceRecordExport)
+	 */
 	@Override
 	public void addAttendanceRecordExport(AttendanceRecordExport attendanceRecordExport) {
 		// TODO Auto-generated method stub
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.function.dom.attendancerecord.export.
+	 * AttendanceRecordExportRepository#deleteAttendanceRecord(java.lang.String,
+	 * nts.uk.ctx.at.function.dom.attendancerecord.export.setting.
+	 * ExportSettingCode)
+	 */
 	@Override
 	public void deleteAttendanceRecord(String companyId, ExportSettingCode exportSettingCode) {
 		List<KfnstAttndRec> items = this.findAllAttendanceRecord(companyId, exportSettingCode);
@@ -183,6 +240,15 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 
 	}
 
+	/**
+	 * Find all attendance record.
+	 *
+	 * @param companyId
+	 *            the company id
+	 * @param exportSettingCode
+	 *            the export setting code
+	 * @return the list
+	 */
 	private List<KfnstAttndRec> findAllAttendanceRecord(String companyId, ExportSettingCode exportSettingCode) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -205,6 +271,12 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 		return kfnstAttndRecs.isEmpty() ? new ArrayList<>() : kfnstAttndRecs;
 	}
 
+	/**
+	 * Removes the all attnd rec.
+	 *
+	 * @param items
+	 *            the items
+	 */
 	public void removeAllAttndRec(List<KfnstAttndRec> items) {
 		if (!items.isEmpty()) {
 			this.commandProxy().removeAll(items);
