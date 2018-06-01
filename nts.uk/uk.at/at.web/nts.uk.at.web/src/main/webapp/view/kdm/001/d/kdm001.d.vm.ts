@@ -12,7 +12,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         employeeName: KnockoutObservable<string>  = ko.observable('');
         remainDays: KnockoutObservable<number>    = ko.observable(0);
         unit: KnockoutObservable<string>          = ko.observable('');
-        lawAtr: KnockoutObservable<number>        = ko.observable();
+        lawAtr: KnockoutObservable<number>        = ko.observable(0);
         pickUp: KnockoutObservable<boolean>    = ko.observable(true);;
         pause: KnockoutObservable<boolean> = ko.observable(true);
         checkedSplit: KnockoutObservable<boolean>      = ko.observable(false);
@@ -145,12 +145,10 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 subDays: self.subDays()
             };
             
-            console.log(data);
             service.save(data).done(result => {
                 if (result && result.length > 0) {
                     for (let error of result) { 
                         if (error === "Msg_737_PayMana") {
-                        
                             $('#D6_1').ntsError('set', { messageId: "Msg_737" });
                         }
                         if (error === "Msg_737_SubPay") {

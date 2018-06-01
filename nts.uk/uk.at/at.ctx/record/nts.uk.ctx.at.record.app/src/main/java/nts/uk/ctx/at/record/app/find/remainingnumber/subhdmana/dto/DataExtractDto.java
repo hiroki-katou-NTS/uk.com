@@ -77,7 +77,7 @@ public class DataExtractDto {
 	public static DataExtractDto convertFromLeaveDataToDto(int type, LeaveManagementData leaveData) {
 		return new DataExtractDto(type, leaveData.getID(), leaveData.getCID(), leaveData.getSID(),
 				leaveData.getComDayOffDate().isUnknownDate() ? 1 : 0,
-				leaveData.getComDayOffDate().getDayoffDate().get(), leaveData.getExpiredDate(),
+				leaveData.getComDayOffDate().getDayoffDate().orElse(null), leaveData.getExpiredDate(),
 				leaveData.getOccurredDays().v().doubleValue(), leaveData.getOccurredTimes().v().intValue(),
 				leaveData.getUnUsedDays().v().doubleValue(), leaveData.getUnUsedTimes().v().intValue(),
 				leaveData.getSubHDAtr().value, leaveData.getFullDayTime().v().intValue(),
@@ -86,7 +86,7 @@ public class DataExtractDto {
 	
 	public static DataExtractDto convertFromCompensatoryDataToDto(int type, CompensatoryDayOffManaData compensatoryData) {
 		return new DataExtractDto(type, compensatoryData.getComDayOffID(), compensatoryData.getSID(), compensatoryData.getCID(),
-				compensatoryData.getDayOffDate().isUnknownDate() ? 1 : 0, compensatoryData.getDayOffDate().getDayoffDate().get(), compensatoryData.getRequireDays().v(),
+				compensatoryData.getDayOffDate().isUnknownDate() ? 1 : 0, compensatoryData.getDayOffDate().getDayoffDate().orElse(null), compensatoryData.getRequireDays().v(),
 				compensatoryData.getRequiredTimes().v(), compensatoryData.getRemainDays().v(),
 				compensatoryData.getRemainTimes().v());
 	}
