@@ -195,6 +195,15 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                             else if (errorId === "Msg_730") {
                                 $('#I11_1').ntsError('set', { messageId: "Msg_730" });
                             }
+                            else if (errorId === "Msg_730_1") {
+                                $('#I12_2').ntsError('set', { messageId: "Msg_730" });
+                            }
+                            else if (errorId === "Msg_746_1") {
+                                $('#I12_2').ntsError('set', { messageId: "Msg_746" });
+                            }
+                            else if (errorId === "Msg_744") {
+                                $('#I12_2').ntsError('set', { messageId: "Msg_744" });
+                            }   
                             else if (errorId === "Msg_1259") {
                                 $('#I11_3').ntsError('set', { messageId: "Msg_1259" });
                             }

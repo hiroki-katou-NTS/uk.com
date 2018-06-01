@@ -138,8 +138,9 @@ public class AddSubHdManagementService {
 			}
 			if (subHdManagementData.getCheckedSubHoliday()) {
 				// 代休（年月日）チェック処理
-				errorList.addAll(this.checkDateHoliday(Optional.empty(), subHdManagementData.getDateSubHoliday(),
-						closureDate, closureId));
+				errorList.addAll(this.checkDateHoliday(Optional.of(subHdManagementData.getDateHoliday()), subHdManagementData.getDateSubHoliday(),
+						closureDate, closureId, subHdManagementData.getCheckedSplit(),
+						Optional.of(subHdManagementData.getDateOptionSubHoliday())));
 				//ドメインモデル「代休管理データ」を読み込む
 				GeneralDate dateSubHoliday = subHdManagementData.getDateSubHoliday();
 				List<CompensatoryDayOffManaData> compensatoryDayOffManaDatas = repoComDayOffManaData
@@ -192,11 +193,13 @@ public class AddSubHdManagementService {
 	 * 
 	 * @param holidayDate
 	 * @param subHolidayDate
+	 * @param  
+	 * @param  checkSplit 
 	 * @param closure
 	 * @return
 	 */
 	public List<String> checkDateHoliday(Optional<GeneralDate> holidayDate, GeneralDate subHolidayDate,
-			Optional<GeneralDate> closureDate, int closureId) {
+			Optional<GeneralDate> closureDate, int closureId, Boolean checkSplit, Optional<GeneralDate> splitDate ) {
 		List<String> errorList = new ArrayList<>();
 		YearMonth processYearMonth = GeneralDate.today().yearMonth();
 		// 既にドメインモデル「締め」を読み込んでいるかチェックする
@@ -210,6 +213,22 @@ public class AddSubHdManagementService {
 		// 休出（年月日）と代休（年月日）をチェックする
 		if (holidayDate.isPresent() && subHolidayDate.compareTo(holidayDate.get()) == 0) {
 			errorList.add("Msg_730");
+		}
+		
+		//チェックボタン「分割消化」をチェックする
+		if(checkSplit){
+			//代休（年月日）と分割消化.代休（年月日）をチェックする
+			if(subHolidayDate.compareTo(splitDate.get()) == 0){
+				errorList.add("Msg_744");
+			}
+			//分割消化.代休（年月日）と締め日をチェックする
+			if(!closureDate.get().after(splitDate.get())){
+				errorList.add("Msg_746_1");
+			}
+			//分割消化.休出（年月日）と代休（年月日）をチェックする
+			if (holidayDate.get().compareTo(splitDate.get()) == 0) {
+				errorList.add("Msg_730_1");
+			}
 		}
 		return errorList;
 	}
