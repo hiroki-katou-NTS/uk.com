@@ -356,7 +356,8 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         private nextFromBToD() {
             let self = this;
             self.next();
-//            $('#D4_2').find("input").first().focus();
+            $('#D4_2').focus();
+            self.scrollBottomToLeft();
         }
 
         /**
@@ -502,7 +503,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             var self = this;
             var employeeSearchs: UnitModel[] = [];
             _.forEach(dataEmployee, function(item: EmployeeSearchDto) {
-                employeeSearchs.push(new UnitModel(item.employeeCode,
+                employeeSearchs.push(new UnitModel(item.employeeId, item.employeeCode,
                     item.employeeName, item.workplaceName));
             });
             self.employeeList(employeeSearchs);
@@ -545,6 +546,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         private previousD(): void {
             var self = this;
             self.previous();
+            $('#D4_2').focus();
         }
 
         /**
@@ -575,7 +577,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                         let employee = self.employeeList()[j];
                         if (employee.code == self.selectedEmployeeCode()[i]) {
                             self.employeeDeletionList.push(
-                                new EmployeeDeletion(employee.code, employee.name,
+                                new EmployeeDeletion(employee.code, employee.name, employee.id,
                                     employee.code, employee.name));
                         }
                     }
@@ -655,6 +657,13 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             }).always(() => {
             });
         }
+        
+        /**
+         * 
+         */
+        private scrollBottomToLeft() : void {
+            $("#contents-area").scrollLeft(0);
+        }
     }
 
     function timeStore(value, row) {
@@ -678,11 +687,13 @@ module nts.uk.com.view.cmf005.b.viewmodel {
     }
 
     export class UnitModel {
+        id: string;
         code: string;
         name: string;
         workplaceName: string;
 
-        constructor(code: string, name: string, workplaceName: string) {
+        constructor(id: string, code: string, name: string, workplaceName: string) {
+            this.id = id;
             this.code = code;
             this.name = name;
             this.workplaceName = workplaceName;
@@ -712,12 +723,14 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         code: string;
         name: string;
         employeeId: string;
+        employeeCode:string;
         businessName: string;
 
-        constructor(code: string, name: string, employeeId: string, businessName: string) {
+        constructor(code: string, name: string, employeeId: string, employeeCode:string, businessName: string) {
             this.code = code;
             this.name = name;
             this.employeeId = employeeId;
+            this.employeeCode = employeeCode;
             this.businessName = businessName;
         }
     }
