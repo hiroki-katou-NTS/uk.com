@@ -18,13 +18,13 @@ import lombok.Setter;
 public class AttendanceRecordReportData {
 
 	/** The company name. */
-	private String companyName = "日通システム　株式会社";
+	private String companyName;
 
 	/** The report name. */
-	private String reportName = "出勤簿";
+	private String reportName;
 
 	/** The export date time. */
-	private String exportDateTime = "2018/3/26　15:14:23";
+	private String exportDateTime;
 
 	/** The monthly header. */
 	private List<AttendanceRecordReportColumnData> monthlyHeader;
