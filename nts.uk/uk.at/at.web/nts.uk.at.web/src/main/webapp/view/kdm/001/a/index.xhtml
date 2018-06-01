@@ -17,6 +17,10 @@
 			<com:scriptfile path="/view/kcp/009/kcp009.js" of="/nts.uk.com.web" />
 			<com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web" />
 			
+			<com:scriptfile path="../b/kdm001.b.service.js" />
+			<com:scriptfile path="../b/kdm001.b.vm.js" />
+			<com:stylefile path="../b/kdm001.b.main.css" />
+			
 			<com:scriptfile path="kdm001.a.service.js" />
 			<com:scriptfile path="kdm001.a.vm.js" />
 			<com:scriptfile path="kdm001.a.start.js" />
@@ -27,14 +31,16 @@
 				<!-- 残数管理データ登録_振休管理 -->
 				<li><a tabindex="-1" href="#tabpanel-1" role="tab-navigator">#{i18n.getText('KDM001_149')}</a></li>
 				<!-- 残数管理データ登録_代休管理 -->
-				<li><a tabindex="-1" data-bind="click: goToScreenB" role="tab-navigator">#{i18n.getText('KDM001_150')}</a></li>
+				<li><a tabindex="-1" href="#tabpanel-2" class="tab-b" role="tab-navigator">#{i18n.getText('KDM001_150')}</a></li>
 				<!-- 残数管理データ登録_６０Ｈ超休管理 -->
 				<li><a tabindex="-1" href="#tabpanel-3" role="tab-navigator">#{i18n.getText('KDM001_151')}</a></li>
 			</ul>
 		</ui:define>
 		<ui:define name="sidebar-content">
+			<!-- CCG001 -->
+			<div id="ccgcomponentA"></div>
 			<!-- 残数管理データ登録_振休管理 -->
-			<div id="tabpanel-1" role="tabpanel">
+			<div id="tabpanel-1" role="tabpanel" data-bind="with: viewmodelA">
 				<!-- A1 -->
 				<div
 					class="sidebar-content-header flex valign-center header-content">
@@ -52,13 +58,11 @@
 
 				</div>
 				<div class="contents-area">
-					<!-- CCG001 -->
-					<div id="ccgcomponentA"></div>
 					<!-- A2 -->
 					<div class="div-table">
 						<!-- KCP009  対象者  -->
 						<div class = "emp-component-size">
-							<div tabindex="1" id="emp-component"></div>
+							<div tabindex="1" id="emp-componentA"></div>
 						</div>
 						<!-- A3 -->
 						<div class="div-table-row">
@@ -127,7 +131,8 @@
 				</div>
 			</div>
 			<!-- 残数管理データ登録_代休管理 -->
-			<div id="tabpanel-2" role="tabpanel">
+			<div id="tabpanel-2" role="tabpanel" data-bind="with: viewmodelB">
+				<ui:include src="../b/index.xhtml" />
 			</div>
 			<div id="tabpanel-3" role="tabpanel"></div>
 		</ui:define>
