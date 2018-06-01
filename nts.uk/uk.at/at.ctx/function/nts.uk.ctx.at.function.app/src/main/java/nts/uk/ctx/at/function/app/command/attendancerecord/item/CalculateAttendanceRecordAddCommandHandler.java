@@ -15,14 +15,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * The type CalculateAttendanceRecordAddCommandHandler.
+ *
  * @author locph
- * @author tuannt-nws
  *
  */
 @Stateless
 public class CalculateAttendanceRecordAddCommandHandler extends CommandHandler<CalculateAttendanceRecordAddCommand> {
 
-	/** The calculate attendance record repository. */
+	/**
+	 * The CalculateAttendanceRecordRepositoty.
+	 */
 	@Inject
 	CalculateAttendanceRecordRepositoty calculateAttendanceRecordRepository;
 

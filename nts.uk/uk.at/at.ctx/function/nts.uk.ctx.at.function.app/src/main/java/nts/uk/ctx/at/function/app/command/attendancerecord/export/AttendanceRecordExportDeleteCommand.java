@@ -4,28 +4,41 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * @author locph
  * The Class AttendanceRecordExportSaveCommand.
+ *
+ * @author locph
  */
 @Getter
 @Setter
 public class AttendanceRecordExportDeleteCommand {
 
-	/** The export code. */
+	/**
+	 * The export code.
+	 */
 	long exportSettingCode;
 
-	/** The export atr. */
+	/**
+	 * The export atr.
+	 */
 	int exportAtr;
 
-	/** The column index. */
+	/**
+	 * The column index.
+	 */
 	int columnIndex;
 
-	/** The user atr. */
+	/**
+	 * The user atr.
+	 */
 	Boolean userAtr;
 
-	/** The upper position. */
+	/**
+	 * The upper position.
+	 */
 	String upperPosition;
 
-	/** The lowwer position. */
+	/**
+	 * The lowwer position.
+	 */
 	String lowwerPosition;
 }

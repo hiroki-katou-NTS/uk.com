@@ -8,21 +8,31 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+
 /**
+ * The type NewAttendanceRecordExportSettingCommandHandler.
+ *
  * @author locph
  */
 @Stateless
 @Transactional
 public class NewAttendanceRecordExportSettingCommandHandler extends CommandHandler<NewAttendanceRecordExportSettingCommand>{
 
+    /**
+     * The AttendanceRecordExportSettingAddCommandHandler.
+     */
     @Inject
     AttendanceRecordExportSettingAddCommandHandler cmdHandler;
 
+    /**
+     * The AttendanceRecordAddCommandHandler.
+     */
     @Inject
     AttendanceRecordAddCommandHandler itemCmdHandler;
 
     /**
-     * Hadle add/update AttendanceRecordExportSetting
+     * Handle add/update AttendanceRecordExportSetting
+     *
      * @param context
      */
     @Override

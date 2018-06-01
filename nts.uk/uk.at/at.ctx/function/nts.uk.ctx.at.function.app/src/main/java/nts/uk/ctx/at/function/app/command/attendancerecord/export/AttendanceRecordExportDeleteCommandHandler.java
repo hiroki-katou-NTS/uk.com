@@ -11,11 +11,16 @@ import javax.inject.Inject;
 
 
 /**
+ * The type AttendanceRecordExportDeleteCommandHandler.
+ *
  * @author locph
  */
 @Stateless
 public class AttendanceRecordExportDeleteCommandHandler extends CommandHandler<AttendanceRecordExportDeleteCommand> {
 
+	/**
+	 * The AttendanceRecordExportRepository.
+	 */
 	@Inject
 	AttendanceRecordExportRepository attendanceRecExpRepo;
 

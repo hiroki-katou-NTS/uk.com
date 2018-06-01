@@ -7,11 +7,9 @@ import lombok.Setter;
 import java.util.List;
 
 /**
+ * The type CalculateAttendanceRecordAddCommand.
+ *
  * @author locph
-=======
-
-/**
- * @author tuannt-nws
  *
  */
 @AllArgsConstructor
@@ -43,7 +41,7 @@ public class CalculateAttendanceRecordAddCommand {
 	private String name;
 
 	/**
-	 * Instantiates a new calculate attendance record save command.
+	 * Instantiates a new CalculateAttendanceRecordAddCommand.
 	 */
 	public CalculateAttendanceRecordAddCommand() {
 		super();
