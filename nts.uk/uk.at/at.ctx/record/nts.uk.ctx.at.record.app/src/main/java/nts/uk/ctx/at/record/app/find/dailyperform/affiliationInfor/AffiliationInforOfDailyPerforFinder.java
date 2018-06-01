@@ -37,7 +37,7 @@ public class AffiliationInforOfDailyPerforFinder extends FinderFacade {
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends ConvertibleAttendanceItem> List<T> find(Map<String, GeneralDate> param) {
+	public <T extends ConvertibleAttendanceItem> List<T> find(Map<String, List<GeneralDate>> param) {
 		return (List<T>) this.affiliationInfoRepo.finds(param).stream()
 				.map(c -> AffiliationInforOfDailyPerforDto.getDto(c)).collect(Collectors.toList());
 	}

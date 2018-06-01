@@ -19,7 +19,7 @@ public interface AttendanceTimeRepository {
 	
 	List<AttendanceTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd);
 	
-	List<AttendanceTimeOfDailyPerformance> finds(Map<String, GeneralDate> param);
+	List<AttendanceTimeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param);
 	
 	void updateFlush(AttendanceTimeOfDailyPerformance attendanceTime);
 	

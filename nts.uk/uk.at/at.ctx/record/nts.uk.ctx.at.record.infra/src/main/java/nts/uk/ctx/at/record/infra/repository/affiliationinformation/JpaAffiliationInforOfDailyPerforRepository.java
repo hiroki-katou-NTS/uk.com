@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.affiliationinformation;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -111,7 +110,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 	}
 
 	@Override
-	public List<AffiliationInforOfDailyPerfor> finds(Map<String, GeneralDate> param) {
+	public List<AffiliationInforOfDailyPerfor> finds(Map<String, List<GeneralDate>> param) {
 		List<AffiliationInforOfDailyPerfor> result = new ArrayList<>();
 		StringBuilder query = new StringBuilder("SELECT af FROM KrcdtDaiAffiliationInf af ");
 		query.append("WHERE af.krcdtDaiAffiliationInfPK.employeeId IN :employeeId ");
@@ -119,9 +118,9 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		TypedQueryWrapper<KrcdtDaiAffiliationInf> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiAffiliationInf.class);
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
 			result.addAll(tQuery.setParameter("employeeId", p.keySet())
-								.setParameter("date", new HashSet<>(p.values()))
+								.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
 								.getList().stream()
-								.filter(c -> c.krcdtDaiAffiliationInfPK.ymd.equals(p.get(c.krcdtDaiAffiliationInfPK.employeeId)))
+								.filter(c -> p.get(c.krcdtDaiAffiliationInfPK.employeeId).contains(c.krcdtDaiAffiliationInfPK.ymd))
 								.map(af -> af.toDomain()).collect(Collectors.toList()));
 		});
 		return result;

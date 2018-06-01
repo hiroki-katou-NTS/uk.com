@@ -41,7 +41,7 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 	}
 
 	@Override
-	public List<AnyItemValueOfDaily> finds(Map<String, GeneralDate> param) {
+	public List<AnyItemValueOfDaily> finds(Map<String, List<GeneralDate>> param) {
 		// TODO Auto-generated method stub
 		return Collections.emptyList();
 	}

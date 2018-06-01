@@ -14545,340 +14545,269 @@ var nts;
         (function (ui_6) {
             var koExtentions;
             (function (koExtentions) {
-                var WoC = 14, MINWIDTH = 'initial', TAB_INDEX = 'tabindex', KEYPRESS = 'keypress', KEYDOWN = 'keydown', FOCUS = 'focus', VALIDATE = 'validate', OPENDDL = 'openDropDown', CLOSEDDL = 'closeDropDown', OPENED = 'dropDownOpened', IGCOMB = 'igCombo', OPTION = 'option', ENABLE = 'enable', EDITABLE = 'editable', DROPDOWN = 'dropdown', COMBOROW = 'nts-combo-item', COMBOCOL = 'nts-column nts-combo-column', DATA = '_nts_data', CHANGED = '_nts_changed', SHOWVALUE = '_nts_show', NAME = '_nts_name', CWIDTH = '_nts_col_width', VALUE = '_nts_value', REQUIRED = '_nts_required';
+                var notSelected;
+                (function (notSelected) {
+                    var DATA = "not-selected";
+                    function set($element, value) {
+                        $element.data(DATA, value);
+                    }
+                    notSelected.set = set;
+                    function get($element) {
+                        return $element.data(DATA) === true;
+                    }
+                    notSelected.get = get;
+                })(notSelected || (notSelected = {}));
+                var required;
+                (function (required) {
+                    var DATA = "required";
+                    function set($element, value) {
+                        $element.data(DATA, value);
+                    }
+                    required.set = set;
+                    function get($element) {
+                        return $element.data(DATA) === true;
+                    }
+                    required.get = get;
+                })(required || (required = {}));
+                var controlName;
+                (function (controlName) {
+                    var DATA = "control-name";
+                    function set($element, value) {
+                        $element.data(DATA, value);
+                    }
+                    controlName.set = set;
+                    function get($element) {
+                        return $element.data(DATA);
+                    }
+                    controlName.get = get;
+                })(controlName || (controlName = {}));
+                /**
+                 * ComboBox binding handler
+                 */
                 var ComboBoxBindingHandler = (function () {
+                    /**
+                     * Constructor.
+                     */
                     function ComboBoxBindingHandler() {
-                        this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                            var template = '', $element = $(element), accessor = valueAccessor(), 
-                            // dataSource of igCombo
-                            options = ko.unwrap(accessor.options), 
-                            // enable or disable
-                            enable = _.has(accessor, 'enable') ? ko.unwrap(accessor.enable) : true, 
-                            // mode of dropdown
-                            editable = _.has(accessor, 'editable') ? ko.unwrap(accessor.editable) : false, 
-                            // require or no
-                            required = _.has(accessor, 'required') ? ko.unwrap(accessor.required) : false, 
-                            // textKey
-                            optionsText = _.has(accessor, 'optionsText') ? ko.unwrap(accessor.optionsText) : null, 
-                            // valueKey
-                            optionsValue = _.has(accessor, 'optionsValue') ? ko.unwrap(accessor.optionsValue) : null, 
-                            // columns
-                            columns = _.has(accessor, 'columns') ? ko.unwrap(accessor.columns) : [{ prop: optionsText }], visibleItemsCount = _.has(accessor, 'visibleItemsCount') ? ko.unwrap(accessor.visibleItemsCount) : 5, dropDownAttachedToBody = _.has(accessor, 'dropDownAttachedToBody') ? ko.unwrap(accessor.dropDownAttachedToBody) : false, $show = $('<div>', {
-                                'class': 'nts-toggle-dropdown',
-                                'style': 'padding-left: 2px; color: #000; height: 29px',
-                                click: function (evt) {
-                                    if ($element.data(IGCOMB)) {
-                                        if ($element.igCombo(OPENED)) {
-                                            $element.igCombo(CLOSEDDL);
-                                            evt.stopPropagation();
+                    }
+                    /**
+                     * Init.
+                     */
+                    ComboBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var container = $(element);
+                        //            if(nts.uk.util.isNullOrUndefined(container.attr("tabindex"))){
+                        //                container.attr("tabindex", "0");    
+                        //            }
+                        container.data("tabindex", container.attr("tabindex"));
+                        container.removeAttr("tabindex");
+                        container.keypress(function (evt, ui) {
+                            var code = evt.which || evt.keyCode;
+                            if (code === 32) {
+                                container.igCombo("openDropDown");
+                                evt.preventDefault();
+                                //                    $('html, body').scrollTop(container.first().offset().top - 200);      
+                            }
+                        });
+                        container.bind("validate", function () {
+                            if (required.get(container) && notSelected.get(container)) {
+                                container.ntsError("set", uk.resource.getMessage("FND_E_REQ_SELECT", [controlName.get(container)]), "FND_E_REQ_SELECT");
+                            }
+                            else {
+                                container.ntsError("clear");
+                            }
+                        });
+                        ui.bindErrorStyle.useDefaultErrorClass(container);
+                    };
+                    /**
+                     * Update
+                     */
+                    ComboBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data.
+                        var data = valueAccessor();
+                        var self = this;
+                        // Get options. 
+                        var options = ko.unwrap(data.options);
+                        // Get options value.
+                        var optionValue = data.optionsValue === undefined ? null : ko.unwrap(data.optionsValue);
+                        var optionText = data.optionsText === undefined ? null : ko.unwrap(data.optionsText);
+                        var selectedValue = ko.unwrap(data.value);
+                        var editable = ko.unwrap(data.editable);
+                        var isRequired = ko.unwrap(data.required) === true;
+                        var enable = data.enable !== undefined ? ko.unwrap(data.enable) : true;
+                        var selectFirstIfNull = !(ko.unwrap(data.selectFirstIfNull) === false); // default: true
+                        var columns = ko.unwrap(data.columns);
+                        var visibleItemsCount = data.visibleItemsCount === undefined ? 5 : ko.unwrap(data.visibleItemsCount);
+                        var dropDownAttachedToBody = data.dropDownAttachedToBody === undefined ? null : ko.unwrap(data.dropDownAttachedToBody);
+                        if (dropDownAttachedToBody === null) {
+                            if ($(element).closest(".ui-iggrid").length != 0)
+                                dropDownAttachedToBody = true;
+                            else
+                                dropDownAttachedToBody = false;
+                        }
+                        // Container.
+                        var container = $(element);
+                        var comboMode = editable ? 'editable' : 'dropdown';
+                        controlName.set(container, ko.unwrap(data.name));
+                        // Default values.
+                        var distanceColumns = '     ';
+                        var fillCharacter = ' '; // Character used fill to the columns.
+                        var maxWidthCharacter = 15;
+                        // Default value
+                        var defVal = new nts.uk.util.value.DefaultValue().onReset(container, data.value);
+                        var getValue = function (item) {
+                            return optionValue === null ? item : item[optionValue];
+                        };
+                        // required
+                        required.set(container, isRequired);
+                        if (selectFirstIfNull && options.length !== 0 && uk.util.isNullOrEmpty(selectedValue)) {
+                            selectedValue = getValue(options[0]);
+                            data.value(selectedValue);
+                            notSelected.set(container, false);
+                            container.ntsError("clear");
+                        }
+                        else {
+                            // Check if selected code exists in list.
+                            // But "null" and "undefined" are "not-selected" even if the "null" or "undefined" exist in list.
+                            // この仕様は、「未選択」という項目を持つことを許容するためのもの。
+                            var isValidValue = !uk.util.isNullOrUndefined(selectedValue) && _.some(options, function (item) { return getValue(item) === selectedValue; });
+                            notSelected.set(container, !isValidValue);
+                            if (!isValidValue) {
+                                notSelected.set(container, true);
+                            }
+                            else {
+                                notSelected.set(container, false);
+                                container.ntsError("clear");
+                            }
+                        }
+                        var haveColumn = columns && columns.length > 0;
+                        var isChangeOptions = !_.isEqual(container.data("options"), options);
+                        if (isChangeOptions) {
+                            container.data("options", options.slice());
+                            options = options.map(function (option) {
+                                var newOptionText = '';
+                                // Check muti columns.
+                                if (haveColumn) {
+                                    _.forEach(columns, function (item, i) {
+                                        var prop = option[item.prop];
+                                        if (uk.util.isNullOrUndefined(prop)) {
+                                            prop = "";
+                                        }
+                                        var length = item.length;
+                                        if (i === columns.length - 1) {
+                                            newOptionText += prop;
                                         }
                                         else {
-                                            $element.igCombo(OPENDDL, function () { }, true, true);
-                                            evt.stopPropagation();
+                                            newOptionText += uk.text.padRight(prop, fillCharacter, length) + distanceColumns;
                                         }
-                                    }
+                                    });
                                 }
+                                else {
+                                    newOptionText = optionText === null ? option : option[optionText];
+                                }
+                                // Add label attr.
+                                option['nts-combo-label'] = newOptionText;
+                                return option;
                             });
-                            // filter valid options
-                            options = _(options)
-                                .filter(function (x) { return _.isObject(x); })
-                                .value();
-                            // fix show dropdown in igGrid
-                            if (!!$element.closest(".ui-iggrid").length) {
-                                dropDownAttachedToBody = true;
+                        }
+                        var $input = container.find(".ui-igcombo-field");
+                        var currentColumnSetting = container.data("columns");
+                        var currentComboMode = container.data("comboMode");
+                        var isInitCombo = !_.isEqual(currentColumnSetting, columns) || !_.isEqual(currentComboMode, comboMode);
+                        if (isInitCombo) {
+                            // Delete igCombo.
+                            if (container.data("igCombo") != null) {
+                                container.igCombo('destroy');
+                                container.removeClass('ui-state-disabled');
                             }
-                            // generate template if has columns
-                            if (_.isArray(columns)) {
-                                template = "<div class='" + COMBOROW + "'>" + _.map(columns, function (c, i) { return "<div data-ntsclass='" + (c.toggle || '') + "' class='" + COMBOCOL + "-" + i + " " + c.prop.toLowerCase() + " " + (c.toggle || '') + "'>${" + c.prop + "}&nbsp;</div>"; }).join('') + "</div>";
+                            // Set attribute for multi column.
+                            var itemTemplate = undefined;
+                            if (haveColumn) {
+                                itemTemplate = '<div class="nts-combo-item">';
+                                _.forEach(columns, function (item, i) {
+                                    // Set item template.
+                                    itemTemplate += '<div class="nts-column nts-combo-column-' + i + '">${' + item.prop + '}</div>';
+                                });
+                                itemTemplate += '</div>';
                             }
-                            if (!$element.attr('tabindex')) {
-                                $element.attr('tabindex', 0);
-                            }
-                            $element
-                                .on(SHOWVALUE, function (evt) {
-                                var data = $element.data(DATA), cws = data[CWIDTH], ks = _.keys(cws);
-                                var option = _.find(data[DATA], function (t) { return t[optionsValue] == data[VALUE]; }), _template = template;
-                                if (option) {
-                                    _.each(_.keys(option), function (k) {
-                                        _template = _template.replace("${" + k + "}", option[k]);
-                                    });
-                                    $show.html(_template);
-                                    _.each(ks, function (k) {
-                                        $show.find("." + k.toLowerCase() + ":not(:last-child)")
-                                            .css('min-width', cws[k] * WoC + "px");
-                                        $show.find("." + k.toLowerCase())
-                                            .css('height', '31px')
-                                            .css('line-height', '27px')
-                                            .find('.nts-column:last-child').css('margin-right', 0);
-                                        ;
-                                    });
-                                }
-                                else {
-                                    $show.empty();
-                                }
-                            })
-                                .on(CHANGED, function (evt, key, value) {
-                                if (value === void 0) { value = undefined; }
-                                var data = $element.data(DATA) || {};
-                                {
-                                    data[key] = value;
-                                    $element.data(DATA, data);
-                                }
-                            })
-                                .on(VALIDATE, function (evt, ui) {
-                                var data = $element.data(DATA), value = data[VALUE];
-                                if (data[ENABLE] && data[REQUIRED] && (_.isEmpty(String(value).trim()) || _.isNull(value) || _.isUndefined(value))) {
-                                    $element
-                                        .addClass('error')
-                                        .ntsError("set", uk.resource.getMessage("FND_E_REQ_SELECT", [data[NAME]]), "FND_E_REQ_SELECT");
-                                }
-                                else {
-                                    $element
-                                        .removeClass('error')
-                                        .ntsError("clear");
-                                }
-                            })
-                                .on(KEYDOWN, function (evt, ui) {
-                                if ($element.data(IGCOMB)) {
-                                    if ([13].indexOf(evt.which || evt.keyCode) > -1) {
-                                        // fire click of igcombo-button
-                                        $element
-                                            .find('.ui-igcombo-button')
-                                            .trigger('click');
-                                    }
-                                    else if ([32, 38, 40].indexOf(evt.which || evt.keyCode) > -1) {
-                                        if (!$element.igCombo(OPENED)) {
-                                            // fire click of igcombo-button
-                                            $element
-                                                .find('.ui-igcombo-button')
-                                                .trigger('click');
-                                        }
-                                    }
-                                }
-                            })
-                                .igCombo({
-                                loadOnDemandSettings: {
-                                    enabled: true,
-                                    pageSize: 15
-                                },
+                            // Create igCombo.
+                            container.igCombo({
                                 dataSource: options,
-                                placeHolder: '',
-                                textKey: 'nts_' + optionsText,
-                                valueKey: optionsValue,
-                                mode: editable ? EDITABLE : DROPDOWN,
-                                disabled: !ko.toJS(enable),
-                                enableClearButton: false,
-                                itemTemplate: template,
-                                dropDownWidth: "auto",
-                                tabIndex: $element.attr('tabindex') || 0,
+                                valueKey: data.optionsValue,
                                 visibleItemsCount: visibleItemsCount,
                                 dropDownAttachedToBody: dropDownAttachedToBody,
-                                rendered: function (evt, ui) {
-                                    $element
-                                        .find('.ui-igcombo')
-                                        .css('background', '#f6f6f6')
-                                        .find('.ui-igcombo-fieldholder').hide();
-                                    $element
-                                        .find('.ui-igcombo-hidden-field')
-                                        .parent()
-                                        .append($show)
-                                        .css('overflow', 'hidden');
-                                },
-                                itemsRendered: function (evt, ui) {
-                                    var data = $element.data(DATA) || {}, cws = data[CWIDTH] || [], ks = _.keys(cws);
-                                    // calc new size of template columns
-                                    _.each(ks, function (k) {
-                                        $("[class*=ui-igcombo-orientation]")
-                                            .find("." + k.toLowerCase() + ":not(:last-child)")
-                                            .css('min-width', cws[k] * WoC + "px");
-                                    });
-                                },
+                                textKey: 'nts-combo-label',
+                                mode: comboMode,
+                                disabled: !enable,
+                                placeHolder: '',
+                                tabIndex: nts.uk.util.isNullOrEmpty(container.data("tabindex")) ? 0 : parseInt(container.data("tabindex")),
+                                enableClearButton: false,
+                                initialSelectedItems: [
+                                    { value: selectedValue }
+                                ],
+                                itemTemplate: itemTemplate,
                                 selectionChanged: function (evt, ui) {
-                                    if (!_.size(ui.items)) {
-                                        $element.trigger(CHANGED, [VALUE, null]);
+                                    if (ui.items.length > 0) {
+                                        data.value(getValue(ui.items[0].data));
                                     }
-                                    else {
-                                        var value = ui.items[0]["data"][optionsValue];
-                                        $element.trigger(CHANGED, [VALUE, value]);
-                                    }
-                                },
-                                dropDownClosed: function (evt, ui) {
-                                    setTimeout(function () {
-                                        var data = $element.data(DATA);
-                                        // set value on select
-                                        accessor.value(data[VALUE]);
-                                        // validate if required
-                                        $element
-                                            .trigger(VALIDATE)
-                                            .trigger(SHOWVALUE)
-                                            .focus();
-                                    }, 10);
-                                },
-                                dropDownOpening: function (evt, ui) {
-                                    var data = $element.data(DATA), cws = data[CWIDTH], ks = _.keys(cws);
-                                    // move searchbox to list
-                                    $element
-                                        .find('.ui-igcombo-fieldholder')
-                                        .prependTo(ui.list);
-                                    // show searchbox if editable
-                                    var $input = ui.list
-                                        .find('.ui-igcombo-fieldholder')
-                                        .css('height', !!data[EDITABLE] ? '' : '0px')
-                                        .css('padding', !!data[EDITABLE] ? '3px' : '')
-                                        .css('background-color', !!data[EDITABLE] ? '#f6f6f6' : '')
-                                        .show()
-                                        .find('input')
-                                        .css('height', !!data[EDITABLE] ? '29px' : '0px')
-                                        .css('border', !!data[EDITABLE] ? '1px solid #ccc' : 'none');
-                                    if (!$input.data('_nts_bind')) {
-                                        $input
-                                            .on(KEYDOWN, function (evt, ui) {
-                                            if ([13].indexOf(evt.which || evt.keyCode) > -1) {
-                                                if ($element.data(IGCOMB)) {
-                                                    // fire click of igcombo-button
-                                                    $element
-                                                        .find('.ui-igcombo-button')
-                                                        .trigger('click');
-                                                }
-                                            }
-                                        })
-                                            .data('_nts_bind', true)
-                                            .attr('tabindex', -1);
-                                    }
-                                    // calc new size of template columns
-                                    _.each(ks, function (k) {
-                                        $(ui.list).find("." + k.toLowerCase() + ":not(:last-child)")
-                                            .css('min-width', cws[k] * WoC + "px");
-                                    });
-                                    // fix min width of dropdown = $element.width();
-                                    $(ui.list)
-                                        .css('min-width', $element.width() + 'px')
-                                        .find('.nts-column:last-child')
-                                        .css('margin-right', 0);
                                 }
-                            })
-                                .trigger(CHANGED, [DATA, options])
-                                .addClass('ntsControl')
-                                .on('blur', function () { $element.css('box-shadow', ''); })
-                                .on('focus', function () {
-                                $element
-                                    .css('outline', 'none')
-                                    .css('box-shadow', '0 0 1px 1px #0096f2');
                             });
-                        };
-                        this.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                            var ss = new Date().getTime(), $element = $(element), accessor = valueAccessor(), width = _.has(accessor, 'width') ? ko.unwrap(accessor.width) : MINWIDTH, name = ko.unwrap(accessor.name), value = ko.unwrap(accessor.value), 
-                            // dataSource of igCombo
-                            options = ko.unwrap(accessor.options), 
-                            // init default selection
-                            selectFirstIfNull = !(ko.unwrap(accessor.selectFirstIfNull) === false), // default: true
-                            // enable or disable
-                            enable = _.has(accessor, 'enable') ? ko.unwrap(accessor.enable) : true, 
-                            // mode of dropdown
-                            editable = _.has(accessor, 'editable') ? ko.unwrap(accessor.editable) : false, 
-                            // require or no
-                            required = _.has(accessor, 'required') ? ko.unwrap(accessor.required) : false, 
-                            // textKey
-                            optionsText = _.has(accessor, 'optionsText') ? ko.unwrap(accessor.optionsText) : null, 
-                            // valueKey
-                            optionsValue = _.has(accessor, 'optionsValue') ? ko.unwrap(accessor.optionsValue) : null, 
-                            // columns
-                            columns = _.has(accessor, 'columns') ? ko.unwrap(accessor.columns) : [{ prop: optionsText }];
-                            // filter valid options
-                            options = _(options)
-                                .filter(function (x) { return _.isObject(x); })
-                                .value();
-                            var props = columns.map(function (c) { return c.prop; }), 
-                            // list key value
-                            vkl = _(options)
-                                .map(function (m) {
-                                if (!!m) {
-                                    return _(m)
-                                        .keys(m)
-                                        .map(function (t) { return ({
-                                        k: t,
-                                        w: _.max([_.trim(m[t]).length, (_.find(columns, function (c) { return c.prop == t; }) || {}).length || 0])
-                                    }); })
-                                        .filter(function (m) { return props.indexOf(m.k) > -1; })
-                                        .keyBy('k')
-                                        .mapValues('w')
-                                        .value();
+                            $input = container.find(".ui-igcombo-field");
+                            $input.focus(function (evt, ui) {
+                                $input[0].selectionStart = 0;
+                                $input[0].selectionEnd = 0;
+                                //                    container.focus();
+                            });
+                        }
+                        else {
+                            container.igCombo("option", "disabled", !enable);
+                        }
+                        if (!enable) {
+                            defVal.applyReset(container, data.value);
+                            $input.attr("disabled", "disabled");
+                            //                container.attr("tabindex", "-1");
+                        }
+                        else {
+                            $input.removeAttr("disabled");
+                            //                container.attr("tabindex", container.data("tabindex"));    
+                        }
+                        if (isChangeOptions && !isInitCombo) {
+                            container.igCombo("option", "dataSource", options);
+                            container.igCombo("dataBind");
+                        }
+                        if (notSelected.get(container) || uk.util.isNullOrUndefined(selectedValue)) {
+                            container.igCombo("value", "");
+                        }
+                        else {
+                            container.igCombo("value", selectedValue);
+                        }
+                        container.data("columns", _.cloneDeep(columns));
+                        container.data("comboMode", comboMode);
+                        var isDropDownWidthSpecified = false;
+                        // Set width for multi columns.
+                        if (haveColumn && (isChangeOptions || isInitCombo)) {
+                            var componentWidth = 0;
+                            var $dropDownOptions = $(container.igCombo("dropDown"));
+                            _.forEach(columns, function (item, i) {
+                                isDropDownWidthSpecified = (isDropDownWidthSpecified || item.lengthDropDown !== undefined);
+                                if (item.lengthDropDown === undefined) {
+                                    item.lengthDropDown = item.length;
                                 }
-                                return undefined;
-                            }).filter(function (f) { return !!f; }).value(), cws = _(props)
-                                .map(function (p) { return ({ k: p, v: _.maxBy(vkl, p) }); })
-                                .map(function (m) { return ({ k: m.k, v: (m.v || {})[m.k] || 0 }); })
-                                .keyBy('k')
-                                .mapValues('v')
-                                .value();
-                            // map new options width nts_[optionsText]
-                            // (show new prop on filter box)
-                            options = _(options)
-                                .map(function (m) {
-                                var c = {}, k = ko.toJS(m), t = k[optionsText], v = k[optionsValue], n = _.omit(k, [optionsValue]), nt = _.map(props, function (p) { return k[p]; }).join(' ').trim();
-                                c[optionsValue] = v || ' ';
-                                c['nts_' + optionsText] = nt || t || ' ';
-                                return _.extend(n, c);
-                            })
-                                .value();
-                            // check value has exist in option
-                            var vio = _.find(options, function (f) { return f[optionsValue] == value; });
-                            if (!vio) {
-                                if (selectFirstIfNull) {
-                                    vio = _.head(options);
-                                    if (!vio) {
-                                        value = undefined;
-                                    }
-                                    else {
-                                        value = vio[optionsValue];
-                                    }
-                                }
-                                else {
-                                    value = undefined;
-                                }
+                                var componentColumnWidth = item.length * maxWidthCharacter + 10;
+                                var dropDownColumnWidth = item.lengthDropDown * maxWidthCharacter + 10;
+                                $dropDownOptions.find('.nts-combo-column-' + i).css("width", dropDownColumnWidth);
+                                componentWidth += componentColumnWidth + 10;
+                            });
+                            container.css({ 'min-width': componentWidth });
+                            if (isDropDownWidthSpecified) {
+                                container.find(".ui-igcombo-dropdown").css("width", "auto");
                             }
-                            // save change value
-                            $element
-                                .trigger(CHANGED, [CWIDTH, cws])
-                                .trigger(CHANGED, [NAME, name])
-                                .trigger(CHANGED, [VALUE, value])
-                                .trigger(CHANGED, [ENABLE, enable])
-                                .trigger(CHANGED, [EDITABLE, editable])
-                                .trigger(CHANGED, [REQUIRED, required]);
-                            // if igCombo has init
-                            if ($element.data("igCombo")) {
-                                var data = $element.data(DATA), olds = data[DATA];
-                                // change dataSource if changed
-                                if (!_.isEqual(olds, options)) {
-                                    $element.igCombo(OPTION, "dataSource", options);
-                                }
-                                $element
-                                    .igCombo(OPTION, "disabled", !enable)
-                                    .igCombo("value", value);
-                                $element
-                                    .trigger('validate');
-                                if (!value) {
-                                    $element
-                                        .igCombo("deselectAll");
-                                }
-                                // set width of container
-                                if (width != MINWIDTH && width != 'auto') {
-                                    $element.igCombo("option", "width", width);
-                                }
-                                else if (width == 'auto') {
-                                    $element
-                                        .igCombo("option", "width", (_.sum(_.map(cws, function (c) { return c; })) * WoC + 20) + 'px');
-                                }
-                            }
-                            // set new dataSource to data;
-                            $element
-                                .trigger(CHANGED, [DATA, options])
-                                .trigger(SHOWVALUE);
-                        };
-                    }
+                        }
+                        if (notSelected.get(container)) {
+                            //container.find("input").val("");
+                        }
+                    };
                     return ComboBoxBindingHandler;
                 }());
-                koExtentions.ComboBoxBindingHandler = ComboBoxBindingHandler;
                 ko.bindingHandlers['ntsComboBox'] = new ComboBoxBindingHandler();
             })(koExtentions = ui_6.koExtentions || (ui_6.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
