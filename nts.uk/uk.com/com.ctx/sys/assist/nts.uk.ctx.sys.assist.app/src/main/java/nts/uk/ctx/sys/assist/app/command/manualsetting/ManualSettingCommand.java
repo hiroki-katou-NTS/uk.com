@@ -6,9 +6,8 @@ package nts.uk.ctx.sys.assist.app.command.manualsetting;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.ejb.Stateless;
-
-import lombok.Value;
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.storage.BusinessName;
@@ -21,7 +20,8 @@ import nts.uk.ctx.sys.assist.dom.storage.TargetEmployees;
  * @author nam.lh
  *
  */
-@Value
+@Setter
+@Getter
 public class ManualSettingCommand {
 
 	private String cid;

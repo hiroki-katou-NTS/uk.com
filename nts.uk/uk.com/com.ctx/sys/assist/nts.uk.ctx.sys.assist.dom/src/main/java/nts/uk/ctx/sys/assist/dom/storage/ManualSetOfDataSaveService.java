@@ -39,7 +39,6 @@ import nts.uk.ctx.sys.assist.dom.tablelist.TableListRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.EntityTypeUtil;
 import nts.uk.shr.infra.file.csv.CSVFileData;
 import nts.uk.shr.infra.file.csv.CSVReportGenerator;
@@ -50,6 +49,32 @@ import nts.uk.shr.infra.file.csv.CSVReportGenerator;
  */
 @Stateless
 public class ManualSetOfDataSaveService extends ExportService<Object> {
+
+	private static final List<String> LST_NAME_ID_HEADER_TABLE = Arrays.asList("CMF003_500", "CMF003_501", "CMF003_502",
+			"CMF003_503", "CMF003_504", "CMF003_505", "CMF003_506", "CMF003_507", "CMF003_508", "CMF003_509",
+			"CMF003_510", "CMF003_511", "CMF003_512", "CMF003_513", "CMF003_514", "CMF003_515", "CMF003_516",
+			"CMF003_517", "CMF003_518", "CMF003_519", "CMF003_520", "CMF003_521", "CMF003_522", "CMF003_523",
+			"CMF003_524", "CMF003_525", "CMF003_526", "CMF003_527", "CMF003_528", "CMF003_529", "CMF003_530",
+			"CMF003_531", "CMF003_532", "CMF003_533", "CMF003_534", "CMF003_535", "CMF003_536", "CMF003_537",
+			"CMF003_538", "CMF003_539", "CMF003_540", "CMF003_541", "CMF003_542", "CMF003_543", "CMF003_544",
+			"CMF003_545", "CMF003_546", "CMF003_547", "CMF003_548", "CMF003_549", "CMF003_550", "CMF003_551",
+			"CMF003_552", "CMF003_553", "CMF003_554", "CMF003_555", "CMF003_556", "CMF003_557", "CMF003_558",
+			"CMF003_559", "CMF003_560", "CMF003_561", "CMF003_562", "CMF003_563", "CMF003_564", "CMF003_565",
+			"CMF003_566", "CMF003_567", "CMF003_568", "CMF003_569", "CMF003_570", "CMF003_571", "CMF003_572",
+			"CMF003_573", "CMF003_574", "CMF003_575", "CMF003_576", "CMF003_577", "CMF003_578", "CMF003_579",
+			"CMF003_580", "CMF003_581", "CMF003_582", "CMF003_583", "CMF003_584");
+
+	private static final List<String> LST_NAME_ID_HEADER_TABLE_CSV2 = Arrays.asList("ヘッダ部", "SID", "SCD",
+			"BUSINESS_NAME");
+
+	private static final List<String> LST_NAME_ID_HEADER_TABLE_CSV3 = Arrays.asList("H_CID", "H_SID", "H_DATE",
+			"H_DATE_START", "H_DATE_END");
+
+	private static final String CSV_EXTENSION = ".csv";
+	private static final String ZIP_EXTENSION = ".zip";
+	private static final String FILE_NAME_CSV1 = "保存対象テーブル一覧";
+	private static final String FILE_NAME_CSV2 = "対象社員";
+
 	@Inject
 	private ResultOfSavingRepository repoResultSaving;
 	@Inject
@@ -73,38 +98,16 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	@Inject
 	private SaveTargetCsvRepository csvRepo;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.arc.layer.app.file.export.ExportService#handle(nts.arc.layer.app.file
-	 * .export.ExportServiceContext)
-	 */
 	@Override
 	protected void handle(ExportServiceContext<Object> context) {
-		generalCsvAuto(context.getGeneratorContext());
 		String storeProcessingId = context.getQuery().toString();
 		serverManualSaveProcessing(storeProcessingId, context.getGeneratorContext());
 	}
 
 	public void serverManualSaveProcessing(String storeProcessingId, FileGeneratorContext generatorContext) {
-
-		// ドメインモデル「データ保存動作管理」を登録する ( Save data to Data storage operation
-		// management )
-		int categoryTotalCount = 0;
-		int categoryCount = 0;
-		int errorCount = 0;
-		OperatingCondition operatingCondition = OperatingCondition.INPREPARATION;
-		NotUseAtr doNotInterrupt = NotUseAtr.NOT_USE;
-		DataStorageMng domain = new DataStorageMng(storeProcessingId, doNotInterrupt, categoryCount, categoryTotalCount,
-				errorCount, operatingCondition);
-
-		repoDataSto.add(domain);
-
 		// Selection of target table and condition setting
 		Optional<ManualSetOfDataSave> optManualSetting = repoMalSetOfSave.getManualSetOfDataSaveById(storeProcessingId);
-		// Optional<TargetEmployees> targetEmployees =
-		// repoTargetEmp.getTargetEmployeesListById(storeProcessingId);
+
 		if (optManualSetting.isPresent()) {
 			// ドメインモデル「データ保存の保存結果」へ書き出す ( Save data to Save result of data
 			// saving)
@@ -132,127 +135,21 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					compressedPassword, practitioner, targetNumberPeople, saveStatus, saveForInvest, fileId);
 			repoResultSaving.add(data);
 
-			// Get list category from
-			List<TargetCategory> targetCategories = repoTargetCat.getTargetCategoryListById(storeProcessingId);
-			List<String> categoryIds = targetCategories.stream().map(x -> {
-				return x.getCategoryId();
-			}).collect(Collectors.toList());
-			List<Category> categorys = repoCategory.getCategoryByListId(categoryIds);
-			List<CategoryFieldMt> categoryFieldMts = repoCateField.getCategoryFieldMtByListId(categoryIds);
-			// TODO insert to table list
+			// ドメインモデル「データ保存動作管理」を登録する
+			repoDataSto.update(storeProcessingId, OperatingCondition.INPREPARATION);
 
-			for (CategoryFieldMt categoryFieldMt : categoryFieldMts) {
-				String categoryName = "";
-				String storageRangeSaved = "";
-				TimeStore retentionPeriodCls = null;
-				int anotherComCls = 0;
-				String screenRetentionPeriod = "";
-				GeneralDate saveDateFrom = null;
-				GeneralDate saveDateTo = null;
-				int surveyPreservation = optManualSetting.get().getIdentOfSurveyPre().value;
-				String compressedFileName = "";
-				Optional<Category> category = categorys.stream()
-						.filter(c -> c.getCategoryId().equals(categoryFieldMt.getCategoryId())).findFirst();
-				if (category.isPresent()) {
-					categoryName = category.get().getCategoryName().v();
-					storageRangeSaved = category.get().getStorageRangeSaved().toString();
-					retentionPeriodCls = category.get().getTimeStore();
-					anotherComCls = category.get().getOtherCompanyCls().value;
-				}
-
-				switch (retentionPeriodCls) {
-				case DAILY:
-					saveDateFrom = optManualSetting.get().getDaySaveStartDate();
-					saveDateTo = optManualSetting.get().getDaySaveEndDate();
-					screenRetentionPeriod = saveDateFrom.toString("yyyy/MM/dd") + "～" + saveDateTo.toString("yyyy/MM/dd");
-					break;
-				case MONTHLY:
-					saveDateFrom = optManualSetting.get().getMonthSaveStartDate();
-					saveDateTo = optManualSetting.get().getMonthSaveEndDate();
-					screenRetentionPeriod = saveDateFrom.toString("yyyy/MM") + "～" + saveDateTo.toString("yyyy/MM");
-					break;
-				case ANNUAL:
-					saveDateFrom = GeneralDate.ymd(optManualSetting.get().getStartYear().v(), 1, 1);
-					saveDateTo = GeneralDate.ymd(optManualSetting.get().getEndYear().v(), 12, 31);
-					screenRetentionPeriod = saveDateFrom.toString("yyyy") + "～" + saveDateTo.toString("yyyy");
-					break;
-				default:
-					break;
-				}
-				// B42
-				String datetimenow = LocalDateTime.now().toString();
-				SaveSetName savename = optManualSetting.get().getSaveSetName();
-				compressedFileName = storeProcessingId + savename.toString() + datetimenow;
-
-				String internalFileName = storeProcessingId + categoryName + categoryFieldMt.getTableJapanName();
-
-				TableList listtable = new TableList(
-						categoryFieldMt.getCategoryId(), categoryName, storeProcessingId,
-						"", categoryFieldMt.getTableNo(), categoryFieldMt.getTableJapanName(), "",
-						categoryFieldMt.getFieldAcqCid(), categoryFieldMt.getFieldAcqDateTime(), categoryFieldMt.getFieldAcqEmployeeId(), categoryFieldMt.getFieldAcqEndDate(), categoryFieldMt.getFieldAcqStartDate(),
-						"", optManualSetting.get().getSaveSetName().toString(), "", "0", saveDateFrom, saveDateTo, 
-						storageRangeSaved, retentionPeriodCls.value,
-						internalFileName, anotherComCls, "", "", compressedFileName,
-						categoryFieldMt.getFieldChild1(), categoryFieldMt.getFieldChild2(), categoryFieldMt.getFieldChild3(), categoryFieldMt.getFieldChild4(), categoryFieldMt.getFieldChild5(),
-						categoryFieldMt.getFieldChild6(), categoryFieldMt.getFieldChild7(), categoryFieldMt.getFieldChild8(), categoryFieldMt.getFieldChild9(), categoryFieldMt.getFieldChild10(),
-						categoryFieldMt.getHistoryCls().value,
-						"", "",
-						categoryFieldMt.getClsKeyQuery1().toString(), categoryFieldMt.getClsKeyQuery2().toString(),
-						categoryFieldMt.getClsKeyQuery3().toString(), categoryFieldMt.getClsKeyQuery4().toString(),
-						categoryFieldMt.getClsKeyQuery5().toString(), categoryFieldMt.getClsKeyQuery6().toString(),
-						categoryFieldMt.getClsKeyQuery7().toString(), categoryFieldMt.getClsKeyQuery8().toString(),
-						categoryFieldMt.getClsKeyQuery9().toString(), categoryFieldMt.getClsKeyQuery10().toString(),
-						categoryFieldMt.getFieldKeyQuery1(), categoryFieldMt.getFieldKeyQuery2(),
-						categoryFieldMt.getFieldKeyQuery3(), categoryFieldMt.getFieldKeyQuery4(),
-						categoryFieldMt.getFieldKeyQuery5(), categoryFieldMt.getFieldKeyQuery6(),
-						categoryFieldMt.getFieldKeyQuery7(), categoryFieldMt.getFieldKeyQuery8(),
-						categoryFieldMt.getFieldKeyQuery9(), categoryFieldMt.getFieldKeyQuery10(),
-						categoryFieldMt.getDefaultCondKeyQuery(), categoryFieldMt.getFieldDate1(),
-						categoryFieldMt.getFieldDate2(), categoryFieldMt.getFieldDate3(),
-						categoryFieldMt.getFieldDate4(), categoryFieldMt.getFieldDate5(),
-						categoryFieldMt.getFieldDate6(), categoryFieldMt.getFieldDate7(),
-						categoryFieldMt.getFieldDate8(), categoryFieldMt.getFieldDate9(),
-						categoryFieldMt.getFieldDate10(), categoryFieldMt.getFieldDate11(),
-						categoryFieldMt.getFieldDate12(), categoryFieldMt.getFieldDate13(),
-						categoryFieldMt.getFieldDate14(), categoryFieldMt.getFieldDate15(),
-						categoryFieldMt.getFieldDate16(), categoryFieldMt.getFieldDate17(),
-						categoryFieldMt.getFieldDate18(), categoryFieldMt.getFieldDate19(), categoryFieldMt.getFieldDate20(), 
-						categoryFieldMt.getFiledKeyUpdate1(), categoryFieldMt.getFiledKeyUpdate2(), categoryFieldMt.getFiledKeyUpdate3(),
-						categoryFieldMt.getFiledKeyUpdate4(), categoryFieldMt.getFiledKeyUpdate5(),
-						categoryFieldMt.getFiledKeyUpdate6(), categoryFieldMt.getFiledKeyUpdate7(),
-						categoryFieldMt.getFiledKeyUpdate8(), categoryFieldMt.getFiledKeyUpdate9(),
-						categoryFieldMt.getFiledKeyUpdate10(), categoryFieldMt.getFiledKeyUpdate11(),
-						categoryFieldMt.getFiledKeyUpdate12(), categoryFieldMt.getFiledKeyUpdate13(),
-						categoryFieldMt.getFiledKeyUpdate14(), categoryFieldMt.getFiledKeyUpdate15(),
-						categoryFieldMt.getFiledKeyUpdate16(), categoryFieldMt.getFiledKeyUpdate17(),
-						categoryFieldMt.getFiledKeyUpdate18(), categoryFieldMt.getFiledKeyUpdate19(), categoryFieldMt.getFiledKeyUpdate20(), 
-						screenRetentionPeriod, optManualSetting.get().getSuppleExplanation(),
-						categoryFieldMt.getParentTblJpName(), categoryFieldMt.getHasParentTable().value, categoryFieldMt.getParentTblName(),
-						categoryFieldMt.getFieldParent1(), categoryFieldMt.getFieldParent2(),
-						categoryFieldMt.getFieldParent3(), categoryFieldMt.getFieldParent4(),
-						categoryFieldMt.getFieldParent5(), categoryFieldMt.getFieldParent6(),
-						categoryFieldMt.getFieldParent7(), categoryFieldMt.getFieldParent8(),
-						categoryFieldMt.getFieldParent9(), categoryFieldMt.getFieldParent10(),
-						surveyPreservation);
-
-				repoTableList.add(listtable);
-			}
-
-			// end
+			// アルゴリズム「対象テーブルの選定と条件設定」を実行
+			int countCategories = selectTargetTable(storeProcessingId, optManualSetting.get());
 
 			// update domain 「データ保存動作管理」 Data storage operation management
-			storeProcessingId = domain.getStoreProcessingId();
-			categoryTotalCount = categorys.size();
-			categoryCount = 1;
-			operatingCondition = OperatingCondition.SAVING;
-			repoDataSto.update(storeProcessingId, categoryTotalCount, categoryCount, operatingCondition);
+			repoDataSto.update(storeProcessingId, countCategories, 1, OperatingCondition.SAVING);
 
-			// Execute algorithm "Save target data"
-
-			/***/
+			// アルゴリズム「対象データの保存」を実行
 			ApplicationTemporaryFilesContainer applicationTemporaryFilesContainer = applicationTemporaryFileFactory
 					.createContainer();
 
+			// テーブル一覧の内容をテンポラリーフォルダにcsvファイルで書き出す
+			
 			// Get
 			List<SaveTargetCsv> csvTarRepo = commonCsv(storeProcessingId);
 
@@ -263,31 +160,132 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			generalCsv2(storeProcessingId, generatorContext);
 
 			// Add Table to CSV Auto
-			// generalCsvAuto(csvTarRepo, generatorContext, categoryIds);
+			generalCsvAuto(generatorContext);
 
-			// Add folder temp to zip
-			// applicationTemporaryFilesContainer.addFile(generatorContext);
-
-			int passwordAvailability = optManualSetting.get().getPasswordAvailability().value;
-
-			if (passwordAvailability == 0) {
-				applicationTemporaryFilesContainer.zipWithName(generatorContext, "test");
+			Path compressedFile = null;
+			NotUseAtr passwordAvailability = optManualSetting.get().getPasswordAvailability();
+			String fileName = AppContexts.user().companyCode() + ZIP_EXTENSION;
+			if (passwordAvailability == NotUseAtr.NOT_USE) {
+				compressedFile = applicationTemporaryFilesContainer.zipWithName(generatorContext, fileName);
 			}
-			if (passwordAvailability == 1) {
+			if (passwordAvailability == NotUseAtr.USE) {
 				String password = optManualSetting.get().getCompressedPassword().v();
-				applicationTemporaryFilesContainer.zipWithName(generatorContext, "test",
+				compressedFile = applicationTemporaryFilesContainer.zipWithName(generatorContext, fileName,
 						CommonKeyCrypt.encrypt(password));
 			}
 
-			Path compressedFile = applicationTemporaryFilesContainer.getPath();
 			applicationTemporaryFilesContainer.removeContainer();
-
-			/** finally */
-			// OutputStream zippedFile =
-			// applicationTemporaryFilesContainer.zip("pass");
-			// applicationTemporaryFilesContainer.removeContainer();
 		}
 
+	}
+
+	private int selectTargetTable(String storeProcessingId, ManualSetOfDataSave optManualSetting) {
+		// Get list category from
+		List<TargetCategory> targetCategories = repoTargetCat.getTargetCategoryListById(storeProcessingId);
+		List<String> categoryIds = targetCategories.stream().map(x -> {
+			return x.getCategoryId();
+		}).collect(Collectors.toList());
+		List<Category> categorys = repoCategory.getCategoryByListId(categoryIds);
+		List<CategoryFieldMt> categoryFieldMts = repoCateField.getCategoryFieldMtByListId(categoryIds);
+		// TODO insert to table list
+
+		for (CategoryFieldMt categoryFieldMt : categoryFieldMts) {
+			String categoryName = "";
+			String storageRangeSaved = "";
+			TimeStore retentionPeriodCls = null;
+			int anotherComCls = 0;
+			String screenRetentionPeriod = "";
+			GeneralDate saveDateFrom = null;
+			GeneralDate saveDateTo = null;
+			int surveyPreservation = optManualSetting.getIdentOfSurveyPre().value;
+			String compressedFileName = "";
+			Optional<Category> category = categorys.stream()
+					.filter(c -> c.getCategoryId().equals(categoryFieldMt.getCategoryId())).findFirst();
+			if (category.isPresent()) {
+				categoryName = category.get().getCategoryName().v();
+				storageRangeSaved = category.get().getStorageRangeSaved().toString();
+				retentionPeriodCls = category.get().getTimeStore();
+				anotherComCls = category.get().getOtherCompanyCls().value;
+			}
+
+			switch (retentionPeriodCls) {
+			case DAILY:
+				saveDateFrom = optManualSetting.getDaySaveStartDate();
+				saveDateTo = optManualSetting.getDaySaveEndDate();
+				screenRetentionPeriod = saveDateFrom.toString("yyyy/MM/dd") + "～" + saveDateTo.toString("yyyy/MM/dd");
+				break;
+			case MONTHLY:
+				saveDateFrom = optManualSetting.getMonthSaveStartDate();
+				saveDateTo = optManualSetting.getMonthSaveEndDate();
+				screenRetentionPeriod = saveDateFrom.toString("yyyy/MM") + "～" + saveDateTo.toString("yyyy/MM");
+				break;
+			case ANNUAL:
+				saveDateFrom = GeneralDate.ymd(optManualSetting.getStartYear().v(), 1, 1);
+				saveDateTo = GeneralDate.ymd(optManualSetting.getEndYear().v(), 12, 31);
+				screenRetentionPeriod = saveDateFrom.toString("yyyy") + "～" + saveDateTo.toString("yyyy");
+				break;
+			default:
+				break;
+			}
+			// B42
+			String datetimenow = LocalDateTime.now().toString();
+			SaveSetName savename = optManualSetting.getSaveSetName();
+			compressedFileName = storeProcessingId + savename.toString() + datetimenow;
+
+			String internalFileName = storeProcessingId + categoryName + categoryFieldMt.getTableJapanName();
+
+			TableList listtable = new TableList(categoryFieldMt.getCategoryId(), categoryName, storeProcessingId, "",
+					categoryFieldMt.getTableNo(), categoryFieldMt.getTableJapanName(), "",
+					categoryFieldMt.getFieldAcqCid(), categoryFieldMt.getFieldAcqDateTime(),
+					categoryFieldMt.getFieldAcqEmployeeId(), categoryFieldMt.getFieldAcqEndDate(),
+					categoryFieldMt.getFieldAcqStartDate(), "", optManualSetting.getSaveSetName().toString(), "", "0",
+					saveDateFrom, saveDateTo, storageRangeSaved, retentionPeriodCls.value, internalFileName,
+					anotherComCls, "", "", compressedFileName, categoryFieldMt.getFieldChild1(),
+					categoryFieldMt.getFieldChild2(), categoryFieldMt.getFieldChild3(),
+					categoryFieldMt.getFieldChild4(), categoryFieldMt.getFieldChild5(),
+					categoryFieldMt.getFieldChild6(), categoryFieldMt.getFieldChild7(),
+					categoryFieldMt.getFieldChild8(), categoryFieldMt.getFieldChild9(),
+					categoryFieldMt.getFieldChild10(), categoryFieldMt.getHistoryCls().value, "", "",
+					categoryFieldMt.getClsKeyQuery1().toString(), categoryFieldMt.getClsKeyQuery2().toString(),
+					categoryFieldMt.getClsKeyQuery3().toString(), categoryFieldMt.getClsKeyQuery4().toString(),
+					categoryFieldMt.getClsKeyQuery5().toString(), categoryFieldMt.getClsKeyQuery6().toString(),
+					categoryFieldMt.getClsKeyQuery7().toString(), categoryFieldMt.getClsKeyQuery8().toString(),
+					categoryFieldMt.getClsKeyQuery9().toString(), categoryFieldMt.getClsKeyQuery10().toString(),
+					categoryFieldMt.getFieldKeyQuery1(), categoryFieldMt.getFieldKeyQuery2(),
+					categoryFieldMt.getFieldKeyQuery3(), categoryFieldMt.getFieldKeyQuery4(),
+					categoryFieldMt.getFieldKeyQuery5(), categoryFieldMt.getFieldKeyQuery6(),
+					categoryFieldMt.getFieldKeyQuery7(), categoryFieldMt.getFieldKeyQuery8(),
+					categoryFieldMt.getFieldKeyQuery9(), categoryFieldMt.getFieldKeyQuery10(),
+					categoryFieldMt.getDefaultCondKeyQuery(), categoryFieldMt.getFieldDate1(),
+					categoryFieldMt.getFieldDate2(), categoryFieldMt.getFieldDate3(), categoryFieldMt.getFieldDate4(),
+					categoryFieldMt.getFieldDate5(), categoryFieldMt.getFieldDate6(), categoryFieldMt.getFieldDate7(),
+					categoryFieldMt.getFieldDate8(), categoryFieldMt.getFieldDate9(), categoryFieldMt.getFieldDate10(),
+					categoryFieldMt.getFieldDate11(), categoryFieldMt.getFieldDate12(),
+					categoryFieldMt.getFieldDate13(), categoryFieldMt.getFieldDate14(),
+					categoryFieldMt.getFieldDate15(), categoryFieldMt.getFieldDate16(),
+					categoryFieldMt.getFieldDate17(), categoryFieldMt.getFieldDate18(),
+					categoryFieldMt.getFieldDate19(), categoryFieldMt.getFieldDate20(),
+					categoryFieldMt.getFiledKeyUpdate1(), categoryFieldMt.getFiledKeyUpdate2(),
+					categoryFieldMt.getFiledKeyUpdate3(), categoryFieldMt.getFiledKeyUpdate4(),
+					categoryFieldMt.getFiledKeyUpdate5(), categoryFieldMt.getFiledKeyUpdate6(),
+					categoryFieldMt.getFiledKeyUpdate7(), categoryFieldMt.getFiledKeyUpdate8(),
+					categoryFieldMt.getFiledKeyUpdate9(), categoryFieldMt.getFiledKeyUpdate10(),
+					categoryFieldMt.getFiledKeyUpdate11(), categoryFieldMt.getFiledKeyUpdate12(),
+					categoryFieldMt.getFiledKeyUpdate13(), categoryFieldMt.getFiledKeyUpdate14(),
+					categoryFieldMt.getFiledKeyUpdate15(), categoryFieldMt.getFiledKeyUpdate16(),
+					categoryFieldMt.getFiledKeyUpdate17(), categoryFieldMt.getFiledKeyUpdate18(),
+					categoryFieldMt.getFiledKeyUpdate19(), categoryFieldMt.getFiledKeyUpdate20(), screenRetentionPeriod,
+					optManualSetting.getSuppleExplanation(), categoryFieldMt.getParentTblJpName(),
+					categoryFieldMt.getHasParentTable().value, categoryFieldMt.getParentTblName(),
+					categoryFieldMt.getFieldParent1(), categoryFieldMt.getFieldParent2(),
+					categoryFieldMt.getFieldParent3(), categoryFieldMt.getFieldParent4(),
+					categoryFieldMt.getFieldParent5(), categoryFieldMt.getFieldParent6(),
+					categoryFieldMt.getFieldParent7(), categoryFieldMt.getFieldParent8(),
+					categoryFieldMt.getFieldParent9(), categoryFieldMt.getFieldParent10(), surveyPreservation);
+
+			repoTableList.add(listtable);
+		}
+		return categorys.size();
 	}
 
 	private List<SaveTargetCsv> commonCsv(String storeProcessingId) {
@@ -387,7 +385,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			dataSourceCsv.add(rowCsv);
 		}
 
-		CSVFileData fileData = new CSVFileData(FILE_NAME_CSV1 + FILE_EXTENSION, headerCsv, dataSourceCsv);
+		CSVFileData fileData = new CSVFileData(FILE_NAME_CSV1 + CSV_EXTENSION, headerCsv, dataSourceCsv);
 		// FileGeneratorContext generatorContext = new FileGeneratorContext();
 		generator.generate(generatorContext, fileData);
 
@@ -406,7 +404,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			dataSourceCsv2.add(rowCsv2);
 		}
 
-		CSVFileData fileData = new CSVFileData(FILE_NAME_CSV2 + FILE_EXTENSION, headerCsv2, dataSourceCsv2);
+		CSVFileData fileData = new CSVFileData(FILE_NAME_CSV2 + CSV_EXTENSION, headerCsv2, dataSourceCsv2);
 
 		// FileGeneratorContext generatorContext = new FileGeneratorContext();
 
@@ -427,7 +425,28 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 				Map<String, Object> rowCsv = new HashMap<>();
 
 				for (String key : headerCsv) {
-					String fieldName = repoTableList.getFieldForColumnName(object.getClass(), key);
+					String header = key;
+					if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(0))
+							&& !Strings.isNullOrEmpty(tableList.getFieldAcqCid())) {
+						header = tableList.getFieldAcqCid();
+					}
+					if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(1))
+							&& !Strings.isNullOrEmpty(tableList.getFieldAcqEmployeeId())) {
+						header = tableList.getFieldAcqEmployeeId();
+					}
+					if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(2))
+							&& !Strings.isNullOrEmpty(tableList.getFieldAcqDateTime())) {
+						header = tableList.getFieldAcqDateTime();
+					}
+					if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(3))
+							&& !Strings.isNullOrEmpty(tableList.getFieldAcqStartDate())) {
+						header = tableList.getFieldAcqStartDate();
+					}
+					if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(4))
+							&& !Strings.isNullOrEmpty(tableList.getFieldAcqEndDate())) {
+						header = tableList.getFieldAcqEndDate();
+					}
+					String fieldName = repoTableList.getFieldForColumnName(object.getClass(), header);
 					Object resultObj = null;
 					if (!Strings.isNullOrEmpty(fieldName)) {
 						resultObj = object;
@@ -442,7 +461,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			}
 
 			CSVFileData fileData = new CSVFileData(AppContexts.user().companyCode() + tableList.getCategoryName()
-					+ tableList.getTableJapaneseName() + FILE_EXTENSION, headerCsv, dataSourceCsv);
+					+ tableList.getTableJapaneseName() + CSV_EXTENSION, headerCsv, dataSourceCsv);
 
 			generator.generate(generatorContext, fileData);
 		}
@@ -458,36 +477,6 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		}
 		return null;
 	}
-
-	private static final List<String> LST_NAME_ID_HEADER_TABLE = Arrays.asList("CMF003_500", "CMF003_501", "CMF003_502",
-			"CMF003_503", "CMF003_504", "CMF003_505", "CMF003_506", "CMF003_507", "CMF003_508", "CMF003_509",
-			"CMF003_510", "CMF003_511", "CMF003_512", "CMF003_513", "CMF003_514", "CMF003_515", "CMF003_516",
-			"CMF003_517", "CMF003_518", "CMF003_519", "CMF003_520", "CMF003_521", "CMF003_522", "CMF003_523",
-			"CMF003_524", "CMF003_525", "CMF003_526", "CMF003_527", "CMF003_528", "CMF003_529", "CMF003_530",
-			"CMF003_531", "CMF003_532", "CMF003_533", "CMF003_534", "CMF003_535", "CMF003_536", "CMF003_537",
-			"CMF003_538", "CMF003_539", "CMF003_540", "CMF003_541", "CMF003_542", "CMF003_543", "CMF003_544",
-			"CMF003_545", "CMF003_546", "CMF003_547", "CMF003_548", "CMF003_549", "CMF003_550", "CMF003_551",
-			"CMF003_552", "CMF003_553", "CMF003_554", "CMF003_555", "CMF003_556", "CMF003_557", "CMF003_558",
-			"CMF003_559", "CMF003_560", "CMF003_561", "CMF003_562", "CMF003_563", "CMF003_564", "CMF003_565",
-			"CMF003_566", "CMF003_567", "CMF003_568", "CMF003_569", "CMF003_570", "CMF003_571", "CMF003_572",
-			"CMF003_573", "CMF003_574", "CMF003_575", "CMF003_576", "CMF003_577", "CMF003_578", "CMF003_579",
-			"CMF003_580", "CMF003_581", "CMF003_582", "CMF003_583", "CMF003_584");
-
-	private static final List<String> LST_NAME_ID_HEADER_TABLE_CSV2 = Arrays.asList("ヘッダ部", "SID", "SCD",
-			"BUSINESS_NAME");
-
-	/*
-	 * private static final List<String> LST_NAME_ID_HEADER_TABLE_CSV3 =
-	 * Arrays.asList("ヘッダ部", "INS_DATE", "INS_CCD", "INS_SCD", "INS_PG",
-	 * "UPD_DATE", "UPD_CCD", "UPD_SCD", "UPD_PG", "EXCLUS_VER", "CID",
-	 * "MANAGE_ATR", "PERMIT_ATR", "PRIORITY_TYPE");
-	 */
-
-	private static final String PGID = "CMF003";
-
-	private static final String FILE_EXTENSION = ".csv";
-	private static final String FILE_NAME_CSV1 = "保存対象テーブル一覧";
-	private static final String FILE_NAME_CSV2 = "対象社員";
 
 	private List<String> getTextHeader() {
 		List<String> lstHeader = new ArrayList<>();
@@ -507,25 +496,8 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 	private List<String> getTextHeaderCsv3(TableList tableList) {
 		List<String> columnNames = EntityTypeUtil.getAllColumnNames(tableList.getTableEnglishName());
-		List<String> columnFix = new ArrayList<>(
-				Arrays.asList("H_CID", "H_SID", "H_DATE", "H_DATE_START", "H_DATE_END"));
-		List<String> columnDynamic = new ArrayList<>();
-		for (String columnName : columnNames) {
-			if (tableList.getFieldAcqCid().equals(columnName)) {
-				columnFix.set(0, columnName);
-			} else if (tableList.getFieldAcqEmployeeId().equals(columnName)) {
-				columnFix.set(1, columnName);
-			} else if (tableList.getFieldAcqDateTime().equals(columnName)) {
-				columnFix.set(2, columnName);
-			} else if (tableList.getFieldAcqStartDate().equals(columnName)) {
-				columnFix.set(3, columnName);
-			} else if (tableList.getFieldAcqEndDate().equals(columnName)) {
-				columnFix.set(4, columnName);
-			} else {
-				columnDynamic.add(columnName);
-			}
-		}
-		columnFix.addAll(columnDynamic);
+		List<String> columnFix = new ArrayList<>(LST_NAME_ID_HEADER_TABLE_CSV3);
+		columnFix.addAll(columnNames);
 		return columnFix;
 	}
 

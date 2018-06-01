@@ -27,6 +27,7 @@ public interface DataStorageMngRepository {
 	 */
 	void update(String storeProcessingId, int categoryTotalCount, int categoryCount,
 			OperatingCondition operatingCondition);
+	void update(String storeProcessingId, OperatingCondition operatingCondition);
 	
 	void update(DataStorageMng domain);
 	

@@ -47,9 +47,15 @@ public class JpaDataStorageMngRepository extends JpaRepository implements DataSt
 	public void update(String storeProcessingId, int categoryTotalCount, int categoryCount,
 			OperatingCondition operatingCondition) {
 		DataStorageMng entity = this.getEntityManager().find(DataStorageMng.class, storeProcessingId);
-		entity.storeProcessingId = storeProcessingId;
 		entity.categoryTotalCount = categoryTotalCount;
 		entity.categoryCount = categoryCount;
+		entity.operatingCondition = operatingCondition;
+		this.commandProxy().update(entity);
+	}
+	
+	@Override
+	public void update(String storeProcessingId, OperatingCondition operatingCondition) {
+		DataStorageMng entity = this.getEntityManager().find(DataStorageMng.class, storeProcessingId);
 		entity.operatingCondition = operatingCondition;
 		this.commandProxy().update(entity);
 	}
@@ -63,4 +69,5 @@ public class JpaDataStorageMngRepository extends JpaRepository implements DataSt
     public void remove(String storeProcessingId){
         this.commandProxy().remove(SspmtDataStorageMng.class, storeProcessingId); 
     }
+
 }
