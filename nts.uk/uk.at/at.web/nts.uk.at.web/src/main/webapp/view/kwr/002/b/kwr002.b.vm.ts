@@ -54,7 +54,7 @@ module nts.uk.com.view.kwr002.b {
 
             self.currentARESCode.subscribe((value) => {
                 if (value) {
-                    
+
                     let foundItem: IARES = _.find(self.aRES(), (item: IARES) => {
                         return item.code == value;
                     });
@@ -73,15 +73,15 @@ module nts.uk.com.view.kwr002.b {
         //Close Dialog
         onClose() {
             windows.close();
-        }
+        };
 
         onDelete() {
-            if(self.newMode()) return;
-            
             let self = this;
             errors.clearAll();
-            confirm({messageId: 'Msg_18'}).ifYes(() => {
-                info({messageId: 'Msg_35'}).then(() => {
+            if (self.newMode()) return;
+
+            confirm({ messageId: 'Msg_18' }).ifYes(() => {
+                info({ messageId: 'Msg_35' }).then(() => {
                     let currentData = self.currentARES();
                     let delARESCmd = {
                         code: Number(currentData.code()),
@@ -100,9 +100,9 @@ module nts.uk.com.view.kwr002.b {
                         let newVal = _.reject(self.aRES(), ['code', currentData.code()]);
                         self.aRES(newVal);
 
-                        if(_.isEmpty(newVal)){
+                        if (_.isEmpty(newVal)) {
                             this.onNew()
-                        }else{
+                        } else {
                             self.aRES(newVal);
                             let firstData = _.first(self.aRES());
                             self.currentARESCode(firstData.code);
@@ -110,29 +110,28 @@ module nts.uk.com.view.kwr002.b {
                     });
                 })
             }).ifNo(() => {
-                info({messageId: 'Msg_36'});
+                info({ messageId: 'Msg_36' });
             });
-
         }
 
         /** new mode */
         onNew() {
             let self = this;
-            if(self.newMode()) return;
             errors.clearAll();
 
-            let params = {
-                code: "",
-                name: "",
-                sealUseAtr: false,
-                nameUseAtr: 1
-            };
-            self.currentARES(new AttendanceRecordExportSetting(params));
-            self.currentARESCode("");
+            if (!self.newMode()) {
+                let params = {
+                    code: "",
+                    name: "",
+                    sealUseAtr: false,
+                    nameUseAtr: 1
+                };
+                self.currentARES(new AttendanceRecordExportSetting(params));
+                self.currentARESCode("");
 
+                self.newMode(true);
+            }
             $("#code").focus();
-            self.newMode(true);
-            
         }
 
         onRegister() {
@@ -150,7 +149,7 @@ module nts.uk.com.view.kwr002.b {
                 sealStamp: getShared('sealStamp'),
                 useSeal: getShared('useSeal'),
 
-                isInvalid: function () {
+                isInvalid: function() {
                     return ((!_.isArray(this.attendanceRecExpDaily) || !_.isArray(this.attendanceRecExpMonthly))
                         || (this.attendanceRecExpDaily.length < 9 && this.attendanceRecExpMonthly.length < 9));
 
@@ -159,28 +158,28 @@ module nts.uk.com.view.kwr002.b {
 
             if (!self.newMode()) { //in update mode
                 if (rcdExport.isInvalid()) {
-                    alertError({messageId: 'Msg_1130'});
+                    alertError({ messageId: 'Msg_1130' });
                     block.clear();
                 } else {
                     let data = self.createTransferData(currentData, rcdExport);
                     //update ARES
-                    service.addARES(data).done((rs) => {
+                    service.addARES(data).done(() => {
                         self.callGetAll(self, currentData);
                     });
                 }
             } else { // in new mode
                 service.getARESByCode(currentData.code()).done((rs) => {
                     if (!_.isNull(rs.code)) {
-                        alertError({messageId: 'Msg_3'});
+                        alertError({ messageId: 'Msg_3' });
                         block.clear();
                     } else {
                         if (rcdExport.isInvalid()) {
-                            alertError({messageId: 'Msg_1130'});
+                            alertError({ messageId: 'Msg_1130' });
                             block.clear();
                         } else {
                             let data = self.createTransferData(currentData, rcdExport);
                             //add new ARES
-                            service.addARES(data).done((rs) => {
+                            service.addARES(data).done(() => {
                                 self.callGetAll(self, null);
                             });
                         }
@@ -237,28 +236,6 @@ module nts.uk.com.view.kwr002.b {
                 }
             });
 
-            // let sARCommand = {
-            //     exportSettingCode: currentData.code(),
-            //     useAtr: false,
-            //     exportAtr: rcdExport.attendanceRecItemList.exportAtr,
-            //     columnIndex: rcdExport.attendanceRecItemList.columnIndex,
-            //     position: rcdExport.attendanceRecItemList.position,
-            //     timeItemId: rcdExport.attendanceRecItemList.attendanceId,
-            //     attribute: rcdExport.attendanceRecItemList.attribute,
-            //     name: rcdExport.attendanceRecItemList.layoutName,//not sure
-            // };
-            //
-            // let cARCommand = {
-            //     exportSettingCode: currentData.code(),
-            //     useAtr: false,
-            //     exportAtr: rcdExport.attendanceRecItemList.exportAtr,
-            //     columnIndex: rcdExport.attendanceRecItemList.columnIndex,
-            //     position: rcdExport.attendanceRecItemList.position,
-            //     timeItems: rcdExport.attendanceRecItemList.attendanceId,
-            //     attribute: rcdExport.attendanceRecItemList.attribute,
-            //     name: rcdExport.attendanceRecItemList.layoutName,//not sure
-            // };
-
             let data = {
                 cmd: cmd,
                 itemCmd: itemCmd,
@@ -291,7 +268,6 @@ module nts.uk.com.view.kwr002.b {
 
             return dfd.promise();
         }
-
     }
 
     class SingleAttendanceRecordExportCommand {
@@ -373,7 +349,7 @@ module nts.uk.com.view.kwr002.b {
         public openScreenC() {
             let self = this;
             block.grayout();
-            
+
             setShared('attendanceRecExpSetCode', self.code(), true);
             setShared('attendanceRecExpSetName', self.name(), true);
             setShared('useSeal', self.sealUseAtr(), true);
@@ -385,11 +361,14 @@ module nts.uk.com.view.kwr002.b {
                 setShared('attendanceRecExpMonthly', getShared('attendanceRecExpMonthly'), true);
                 setShared('attendanceRecItemList', getShared('attendanceRecItemList'), true);
                 setShared('sealStamp', getShared('sealStamp'), true);
+            } else {
+                setShared('attendanceRecExpDaily', null, true);
+                setShared('attendanceRecExpMonthly', null, true);
+                setShared('attendanceRecItemList', null, true);
+                setShared('sealStamp', null, true);
             }
 
-            modal('../c/index.xhtml', {}).onClosed(function (): any {
-
-            })
+            modal('../c/index.xhtml', {});
         }
     }
 
@@ -398,7 +377,7 @@ module nts.uk.com.view.kwr002.b {
         name: string;
 
         constructor(code: number, name: string) {
-            this.code = code
+            this.code = code;
             this.name = name;
         }
     }
