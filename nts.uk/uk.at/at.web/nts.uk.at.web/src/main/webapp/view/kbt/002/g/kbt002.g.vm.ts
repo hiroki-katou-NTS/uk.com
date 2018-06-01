@@ -52,31 +52,34 @@ module nts.uk.at.view.kbt002.g {
             private createLinkAndSharedObject(taskId, logHistory) {
                 let self = this;
                 if (taskId == 0) { // スケジュールの作成
-                    self.sharedObj = {execId : logHistory.execId,
+                    self.sharedObj = {executionId : logHistory.execId,
                                      startDate : logHistory.schCreateStart,
                                      endDate : logHistory.schCreateEnd};
+                    nts.uk.ui.windows.setShared('dataFromDetailDialog', self.sharedObj);
                     self.modalLink = "/view/ksc/001/k/index.xhtml";
                 } else if (taskId == 1) { // 日別作成
                     self.sharedObj = { empCalAndSumExecLogID : logHistory.execId, //・就業計算と集計実行ログID
-                                       executionContentName : '',
+                                       executionContentName : null,
                                        executionContent : 0,  // 日別作成
                                        listTargetPerson : [], //・社員ID（list）  ・従業員の実行状況
                                        executionStartTime : logHistory.lastExecDateTime, //・実行開始日時
-                                       objectPeriod : {start : logHistory.dailyCreateStart, end : logHistory.dailyCreateStart}, //・対象期間
-                                       nameClosue : 0, //・選択した締め
-                                       processingMonth : '' //・処理月
+                                       objectPeriod : {startDate : null, endDate : null}, //・対象期間
+                                       nameClosue : null, //・選択した締め
+                                       processingMonth : null //・処理月
                                      };
+                      nts.uk.ui.windows.setShared("openH", self.sharedObj);
                     self.modalLink = "/view/kdw/001/h/index.xhtml";
                 } else if (taskId == 2) { // 日別計算
                     self.sharedObj = { empCalAndSumExecLogID : logHistory.execId, //・就業計算と集計実行ログID
-                                       executionContentName : '',
+                                       executionContentName : null,
                                        executionContent : 1,  // 日別計算
                                        listTargetPerson : [], //・社員ID（list）  ・従業員の実行状況
                                        executionStartTime : logHistory.lastExecDateTime, //・実行開始日時
-                                       objectPeriod : {start : logHistory.dailyCreateStart, end : logHistory.dailyCreateStart}, //・対象期間
-                                       nameClosue : 0, //・選択した締め
-                                       processingMonth : '' //・処理月
+                                       objectPeriod : {startDate : null, endDate : null}, //・対象期間
+                                       nameClosue : null, //・選択した締め
+                                       processingMonth : null //・処理月
                                      };
+                      nts.uk.ui.windows.setShared("openH", self.sharedObj);
                     self.modalLink = "/view/kdw/001/h/index.xhtml";
                 } else if (taskId == 3) { // 承認結果反映
                     self.sharedObj = { empCalAndSumExecLogID : logHistory.execId, //・就業計算と集計実行ログID
@@ -93,15 +96,16 @@ module nts.uk.at.view.kbt002.g {
                     
                 } else if (taskId == 4) { // 月別集計
                     self.sharedObj = { empCalAndSumExecLogID : logHistory.execId, //・就業計算と集計実行ログID
-                                       executionContentName : '',
+                                       executionContentName : null,
                                        executionContent : 3,  // 月別集計
                                        listTargetPerson : [], //・社員ID（list）  ・従業員の実行状況
                                        executionStartTime : logHistory.lastExecDateTime, //・実行開始日時
-                                       objectPeriod : {}, //・対象期間
-                                       nameClosue : 0, //・選択した締め
-                                       processingMonth : '' //・処理月
+                                       objectPeriod : {startDate : null, endDate : null}, //・対象期間
+                                       nameClosue : null, //・選択した締め
+                                       processingMonth : null //・処理月
                                      };
-                    self.modalLink = "/view/kbt/002/g/index.xhtml";
+                    nts.uk.ui.windows.setShared("openH", self.sharedObj);
+                    self.modalLink = "/view/kdw/001/h/index.xhtml";
                 } else if (taskId == 5) { // アラーム抽出（個人別）
                 } else if (taskId == 6) { // アラーム抽出（職場別）
                 }
