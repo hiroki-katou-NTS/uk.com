@@ -183,7 +183,7 @@ module nts.uk.ui.validation {
                 result.success(inputText);
                 return result;
             }
-            let validateResult;
+            //let validateResult;
             // Check CharType
             result= checkCharType(inputText,this.charType);
             if(!result.isValid) return result;
@@ -191,8 +191,8 @@ module nts.uk.ui.validation {
             if (this.constraint !== undefined && this.constraint !== null) {
                 if (this.constraint.maxLength !== undefined && text.countHalf(inputText) > this.constraint.maxLength) {
                     let maxLength = this.constraint.maxLength;
-                    result.fail(nts.uk.resource.getMessage(validateResult.errorMessage,
-                                [ this.name, maxLength ]), validateResult.errorCode);
+                    result.fail(nts.uk.resource.getMessage(result.errorMessage,
+                                [ this.name, maxLength ]), result.errorCode);
                     return result;
                 }
                 
@@ -232,7 +232,7 @@ module nts.uk.ui.validation {
                 result.success(inputText);
                 return result;
             }
-            let validateResult;
+            //let validateResult;
             // Check CharType
             result= checkCharType(inputText,this.charType);
             if(!result.isValid) return result;
@@ -240,8 +240,8 @@ module nts.uk.ui.validation {
             if (this.constraint !== undefined && this.constraint !== null) {
                 if (this.constraint.maxLength !== undefined && text.countHalf(inputText) > this.constraint.maxLength) {
                     let maxLength = this.constraint.maxLength;
-                    result.fail(nts.uk.resource.getMessage(validateResult.errorMessage,
-                                [ this.name, maxLength ]), validateResult.errorCode);
+                    result.fail(nts.uk.resource.getMessage(result.errorMessage,
+                                [ this.name, maxLength ]), result.errorCode);
                     return result;
                 }
                 
