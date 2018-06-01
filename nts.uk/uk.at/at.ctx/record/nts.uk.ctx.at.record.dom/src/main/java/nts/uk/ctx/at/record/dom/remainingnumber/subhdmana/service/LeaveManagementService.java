@@ -82,17 +82,17 @@ public class LeaveManagementService {
 			List<LeaveManagementData> leaveManaUpdate = this.leaveManaDataRepository.getByComDayOffId(companyId, leaveManagementData.getEmployeeId(),
 					leaveManagementData.getComDayOffID());
 			
-			List<String> updateUnUsedDay = new ArrayList<>();
+			/*List<String> updateUnUsedDay = new ArrayList<>();
 			for (int i = 0; i < leaveManaUpdate.size(); i++) {
 				if(leaveManaUpdate.get(i).getOccurredDays().v() != Double.parseDouble(leaveManagementData.getNumberDayParam())) {
 					updateUnUsedDay.add(leaveManaUpdate.get(i).getID());
-					leaveManaUpdate.remove(i);
+					//leaveManaUpdate.remove(i);
 				}
 			}
 			// update unUsedDay when not used 
 			if(!updateUnUsedDay.isEmpty()) {
 				leaveManaDataRepository.updateUnUseDayLeaveId(updateUnUsedDay);
-			}
+			}*/
 			
 			List<String> currentLeaveMana = leaveManaUpdate.stream().map(LeaveManagementData::getID)
 					.collect(Collectors.toList());

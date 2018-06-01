@@ -37,7 +37,7 @@ public class LeaveManaFinder {
 		allLeaveMana.addAll(resultLeaveFreeMana);
 		result.setListLeaveMana(allLeaveMana);
 		if(allLeaveMana.isEmpty()) {
-			result.setErrorCode("Msg_1073");
+			result.setErrorCode("Msg_1074");
 		}
 		return result;
 	}
