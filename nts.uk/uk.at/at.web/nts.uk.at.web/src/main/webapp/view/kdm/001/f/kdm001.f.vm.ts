@@ -71,7 +71,6 @@ module nts.uk.at.view.kdm001.f.viewmodel {
                     self.residualDay(sumNum - day);
                     residualValue = (sumNum - day) > 0 ? (sumNum - day).toFixed(1) : (sumNum - day);
                     self.residualDayDispay(residualValue + " " + getText('KDM001_27'));
-                   
                 }
             });
             if (self.residualDay() < 0) {
@@ -153,11 +152,11 @@ module nts.uk.at.view.kdm001.f.viewmodel {
                 return false;
             } else if (self.currentCodeList().length == 2) {
                 if (self.currentList()[0].occurredDays === 1) {
-                    $('#multi-list').ntsError('set', { messageId: "Msg_732" });
+                    $('#multi-list').ntsError('set', { messageId: "Msg_743" });
                     return false;
                 }
                 if (parseFloat(self.numberDay()) !== (self.currentList()[0].occurredDays + self.currentList()[1].occurredDays)) {
-                    $('#multi-list').ntsError('set', { messageId: "Msg_731" });
+                    $('#multi-list').ntsError('set', { messageId: "Msg_732" });
                     return false;
                 }
             }
