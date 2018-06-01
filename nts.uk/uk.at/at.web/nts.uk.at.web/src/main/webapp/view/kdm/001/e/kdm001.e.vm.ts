@@ -91,7 +91,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
                         });
                     }
                     _.forEach(self.items(), function(item: ItemModel) {
-                        if(item.requiredDays > parseFloat(self.info.rowValue.requiredDays)) {
+                        if(item.requiredDays > parseFloat(self.info.rowValue.occurredDays)) {
                             self.disables.push(item.subOfHDID);    
                         }    
                     })
