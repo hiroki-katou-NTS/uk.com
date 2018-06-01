@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.function.dom.dailyfix.AppliCalDaiCorrec;
+import nts.uk.ctx.at.function.dom.dailyfix.ApplicationCall;
 import nts.uk.ctx.at.function.dom.dailyfix.IAppliCalDaiCorrecRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -18,7 +18,7 @@ public class AppliCalDaiCorrecFinder {
 	
 	public AppliCalDaiCorrecDto find(){
 		String companyId = AppContexts.user().companyId();
-		List<AppliCalDaiCorrec> appCal = this.appCalRep.findByCom(companyId);
+		List<ApplicationCall> appCal = this.appCalRep.findByCom(companyId);
 		return new AppliCalDaiCorrecDto(appCal.stream()
 										.map(x -> x.getAppType().value).collect(Collectors.toList()));
 	} 

@@ -6,23 +6,25 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.function.dom.dailyfix.AppliCalDaiCorrec;
+import nts.uk.ctx.at.function.dom.dailyfix.ApplicationCall;
 import nts.uk.ctx.at.function.dom.dailyfix.IAppliCalDaiCorrecRepository;
-import nts.uk.ctx.at.function.infra.entity.dailyfix.KfnstAppliCalDaiCorrec;
+import nts.uk.ctx.at.function.infra.entity.dailymodification.KfnmtApplicationCall;
+import nts.uk.ctx.at.function.infra.entity.dailymodification.KfnmtApplicationCallPK;
 
 @Stateless
 public class JpaAppliCalDaiCorrecRepository extends JpaRepository implements IAppliCalDaiCorrecRepository{
 	
-	private final String SELECT_NO_WHERE = "SELECT c FROM KfnstAppliCalDaiCorrec c ";
-	private final String SELECT_BY_COM = SELECT_NO_WHERE + "WHERE c.companyId = :companyId ";
-	private final String DELETE_BY_COM = "DELETE FROM KfnstAppliCalDaiCorrec c "
-												+ "WHERE c.companyId = :companyId ";
+	private final String SELECT_NO_WHERE = "SELECT c FROM KfnmtApplicationCall c ";
+	private final String SELECT_BY_COM = SELECT_NO_WHERE + "WHERE c.kfnmtApplicationCallPK.companyId = :companyId ";
+	private final String DELETE_BY_COM = "DELETE FROM KfnmtApplicationCall c "
+												+ "WHERE c.kfnmtApplicationCallPK.companyId = :companyId ";
 	
 	@Override
-	public List<AppliCalDaiCorrec> findByCom(String companyId) {
-		return this.queryProxy().query(SELECT_BY_COM, KfnstAppliCalDaiCorrec.class)
+	public List<ApplicationCall> findByCom(String companyId) {
+		return this.queryProxy().query(SELECT_BY_COM, KfnmtApplicationCall.class)
 				.setParameter("companyId", companyId)
-				.getList().stream().map(x -> AppliCalDaiCorrec.createFromJavaType(x.companyId, x.appType))
+				.getList().stream().map(x -> ApplicationCall.createFromJavaType(x.kfnmtApplicationCallPK.companyId, 
+																				x.kfnmtApplicationCallPK.applicationType))
 				.collect(Collectors.toList());
 	}
 
@@ -34,9 +36,9 @@ public class JpaAppliCalDaiCorrecRepository extends JpaRepository implements IAp
 	}
 
 	@Override
-	public void insert(AppliCalDaiCorrec appliCalDaiCorrec) {
-		this.commandProxy().insert(new KfnstAppliCalDaiCorrec(appliCalDaiCorrec.getCompanyId(), 
-																appliCalDaiCorrec.getAppType().value));
+	public void insert(ApplicationCall appliCalDaiCorrec) {
+		this.commandProxy().insert(new KfnmtApplicationCall(new KfnmtApplicationCallPK(appliCalDaiCorrec.getCompanyId(), 
+																appliCalDaiCorrec.getAppType().value)));
 	}
 
 }

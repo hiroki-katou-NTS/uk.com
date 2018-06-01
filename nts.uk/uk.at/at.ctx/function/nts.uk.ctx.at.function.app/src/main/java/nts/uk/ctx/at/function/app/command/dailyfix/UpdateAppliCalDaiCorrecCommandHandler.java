@@ -5,7 +5,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.function.dom.dailyfix.AppliCalDaiCorrec;
+import nts.uk.ctx.at.function.dom.dailyfix.ApplicationCall;
 import nts.uk.ctx.at.function.dom.dailyfix.IAppliCalDaiCorrecRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -19,7 +19,7 @@ public class UpdateAppliCalDaiCorrecCommandHandler extends CommandHandler<AppliC
 		String companyId = AppContexts.user().companyId();
 		appCalRep.delete(companyId);
 		for(Integer item : cm.getAppTypes()){
-			appCalRep.insert(AppliCalDaiCorrec.createFromJavaType(companyId, item));
+			appCalRep.insert(ApplicationCall.createFromJavaType(companyId, item));
 		}
 	}
 

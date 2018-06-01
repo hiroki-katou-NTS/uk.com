@@ -9,7 +9,7 @@ public interface IAppliCalDaiCorrecRepository {
 	 * @return
 	 * @author yennth
 	 */
-	List<AppliCalDaiCorrec> findByCom(String companyId);
+	List<ApplicationCall> findByCom(String companyId);
 	/**
 	 * update AppliCalDaiCorrec
 	 * @param appliCalDaiCorrec
@@ -27,5 +27,5 @@ public interface IAppliCalDaiCorrecRepository {
 	 * @param appliCalDaiCorrec
 	 * @author yennth
 	 */
-	void insert(AppliCalDaiCorrec appliCalDaiCorrec);
+	void insert(ApplicationCall appliCalDaiCorrec);
 }

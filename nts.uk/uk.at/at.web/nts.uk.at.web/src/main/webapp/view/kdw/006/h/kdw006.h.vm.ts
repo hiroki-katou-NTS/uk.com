@@ -4,11 +4,11 @@ module nts.uk.at.view.kdw006.h.viewmodel {
         items: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<NtsGridListColumn>;
         currentCodeList: KnockoutObservableArray<any>;
-        multicheck: KnockoutObservable<boolean>;
+        multicheck: boolean;
 
         constructor() {
             let self = this;
-            self.multicheck = ko.observable(false);
+            self.multicheck = false;
             self.items = ko.observableArray([]);
             this.columns = ko.observableArray([
                 { headerText: 'コード', key: 'code', width: 100, hidden: true},
@@ -38,7 +38,7 @@ module nts.uk.at.view.kdw006.h.viewmodel {
             var dfd = $.Deferred();
             let getData = nts.uk.ui.windows.getShared("kdw006CResult");
             self.currentCodeList(getData.appTypes);
-            self.multicheck(getData.multi);
+            self.multicheck = getData.multi;
             dfd.resolve();
             return dfd.promise();
         }
