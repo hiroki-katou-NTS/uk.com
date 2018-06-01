@@ -59,7 +59,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
             self.residualDayDispay(day.toFixed(1)  + " " + getText('KDM001_27'));
             _.each(self.currentList(), function (x) {
                 if (self.dateHoliday() === x.dayoffDate) {
-                    $('#multi-list').ntsError('set', { messageId: "Msg_766" });
+                    $('#multi-list').ntsError('set', { messageId: "Msg_729" });
                 } else {                
                     sumNum = sumNum + x.requiredDays;
                     self.residualDay(day - sumNum);
