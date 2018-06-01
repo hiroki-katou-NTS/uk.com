@@ -6339,6 +6339,7 @@ var nts;
                         this.updateMode = EDIT;
                         this.pasteOverWrite = true;
                         this.stickOverWrite = true;
+                        this.overflowTooltipOn = false;
                         this.$container = $container[0];
                         this.$commander = options.primaryTable ? options.primaryTable[0] : null;
                         this.$follower = options.secondaryTable ? options.secondaryTable[0] : null;
@@ -6362,6 +6363,8 @@ var nts;
                         this.pasteOverWrite = options.pasteOverWrite;
                         this.stickOverWrite = options.stickOverWrite;
                         this.viewMode = options.viewMode;
+                        this.overflowTooltipOn = !uk.util.isNullOrUndefined(options.showTooltipIfOverflow)
+                            ? options.showTooltipIfOverflow : false;
                         this.determination = options.determination;
                         this.features = options.features;
                         $.data(this.$container, internal.X_OCCUPY, this.windowXOccupation);
@@ -6447,10 +6450,16 @@ var nts;
                     ExTable.prototype.setHeaderClass = function (options, part) {
                         options.tableClass = HEADER_TBL_PRF + part;
                         options.containerClass = HEADER_PRF + part;
+                        if (uk.util.isNullOrUndefined(options.showTooltipIfOverflow)) {
+                            options.overflowTooltipOn = this.overflowTooltipOn;
+                        }
                     };
                     ExTable.prototype.setBodyClass = function (options, part) {
                         options.tableClass = BODY_TBL_PRF + part;
                         options.containerClass = BODY_PRF + part;
+                        if (uk.util.isNullOrUndefined(options.showTooltipIfOverflow)) {
+                            options.overflowTooltipOn = this.overflowTooltipOn;
+                        }
                     };
                     /**
                      * Create.
@@ -7076,7 +7085,12 @@ var nts;
                                 style.detCell(self.$container, td, rowIdx, key);
                                 tdStyle += "; padding: 0px;";
                                 td.style.cssText += tdStyle;
+<<<<<<< HEAD
                                 widget.textOverflow(td);
+=======
+                                if (self.options.overflowTooltipOn)
+                                    widget.textOverflow(td);
+>>>>>>> 83e6cfc... Show tooltip on ExTable
                                 return td;
                             }
                             if (!uk.util.isNullOrUndefined(column.handlerType) && !self.options.isHeader) {
@@ -7115,6 +7129,7 @@ var nts;
                                     td.appendChild(icon);
                                 }
                                 else if (!column.control) {
+                                    tdStyle += " text-overflow: ellipsis; -ms-text-overflow: ellipsis;";
                                     td.innerText = data;
                                 }
                                 controls.check(td, column, data, helper.call(column.handler, rData, rowIdx, key));
@@ -7123,7 +7138,12 @@ var nts;
                             //                spread.bindSticker(td, rowIdx , key, self.options);
                             style.detCell(self.$container, td, rowIdx, key);
                             td.style.cssText += tdStyle;
+<<<<<<< HEAD
                             widget.textOverflow(td);
+=======
+                            if (self.options.overflowTooltipOn)
+                                widget.textOverflow(td);
+>>>>>>> 83e6cfc... Show tooltip on ExTable
                             return td;
                         };
                         Painter.prototype.row = function (data, config, rowIdx) {
@@ -14168,6 +14188,47 @@ var nts;
                     }
                     widget.textOverflow = textOverflow;
                     /**
+                     * Text overflow.
+                     */
+                    function textOverflow($cell) {
+                        $cell.addXEventListener(events.MOUSE_ENTER + ".celloverflow", function (evt) {
+                            var $target = $(evt.target);
+                            if (!displayFullText($target)) {
+                                var $link = $target.find("a");
+                                if ($link.length > 0) {
+                                    displayFullText($link, $target);
+                                }
+                            }
+                        });
+                    }
+                    widget.textOverflow = textOverflow;
+                    /**
+                     * Display full text.
+                     */
+                    function displayFullText($target, $s) {
+                        if ($target.outerWidth() < $target[0].scrollWidth) {
+                            var $container_1 = $s ? $s : $target;
+                            var $view_2 = $("<div />").addClass("x-cell-overflow")
+                                .text($target.text() || $target.val())
+                                .appendTo("body")
+                                .position({
+                                my: "left top",
+                                at: "left bottom",
+                                of: $container_1,
+                                collision: "flip"
+                            }).on(events.MOUSE_OVER, function (evt) {
+                                $view_2.remove();
+                            });
+                            $container_1[0].addXEventListener(events.MOUSE_LEAVE + ".celloverflow", function (evt) {
+                                $view_2.remove();
+                                setTimeout(function () {
+                                    $container_1[0].removeXEventListener(events.MOUSE_LEAVE + ".celloverflow");
+                                }, 0);
+                            });
+                            return true;
+                        }
+                    }
+                    /**
                      * Hide.
                      */
                     function hideIfOutside($w) {
@@ -14571,6 +14632,7 @@ var nts;
             (function (koExtentions) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 var notSelected;
                 (function (notSelected) {
                     var DATA = "not-selected";
@@ -14622,6 +14684,10 @@ var nts;
                 var WoC = 14, MINWIDTH = 'initial', TAB_INDEX = 'tabindex', KEYPRESS = 'keypress', KEYDOWN = 'keydown', FOCUS = 'focus', VALIDATE = 'validate', OPENDDL = 'openDropDown', CLOSEDDL = 'closeDropDown', OPENED = 'dropDownOpened', IGCOMB = 'igCombo', OPTION = 'option', ENABLE = 'enable', EDITABLE = 'editable', DROPDOWN = 'dropdown', COMBOROW = 'nts-combo-item', COMBOCOL = 'nts-column nts-combo-column', DATA = '_nts_data', CHANGED = '_nts_changed', SHOWVALUE = '_nts_show', NAME = '_nts_name', CWIDTH = '_nts_col_width', VALUE = '_nts_value', REQUIRED = '_nts_required';
                 var ComboBoxBindingHandler = /** @class */ (function () {
 >>>>>>> 1fbfb28... Update GridList formatter
+=======
+                var WoC = 14, MINWIDTH = 'initial', TAB_INDEX = 'tabindex', KEYPRESS = 'keypress', KEYDOWN = 'keydown', FOCUS = 'focus', VALIDATE = 'validate', OPENDDL = 'openDropDown', CLOSEDDL = 'closeDropDown', OPENED = 'dropDownOpened', IGCOMB = 'igCombo', OPTION = 'option', ENABLE = 'enable', EDITABLE = 'editable', DROPDOWN = 'dropdown', COMBOROW = 'nts-combo-item', COMBOCOL = 'nts-column nts-combo-column', DATA = '_nts_data', CHANGED = '_nts_changed', SHOWVALUE = '_nts_show', NAME = '_nts_name', CWIDTH = '_nts_col_width', VALUE = '_nts_value', REQUIRED = '_nts_required';
+                var ComboBoxBindingHandler = /** @class */ (function () {
+>>>>>>> 83e6cfc... Show tooltip on ExTable
                     function ComboBoxBindingHandler() {
                         this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                             var template = '', $element = $(element), accessor = valueAccessor(), 
@@ -14776,6 +14842,7 @@ var nts;
                                         var value = ui.items[0]["data"][optionsValue];
                                         $element.trigger(CHANGED, [VALUE, value]);
 <<<<<<< HEAD
+<<<<<<< HEAD
                                     }
                                 },
                                 dropDownClosed: function (evt, ui) {
@@ -14868,6 +14935,53 @@ var nts;
                                             .attr('tabindex', -1);
                                     }
 >>>>>>> 1fbfb28... Update GridList formatter
+=======
+                                    }
+                                },
+                                dropDownClosed: function (evt, ui) {
+                                    setTimeout(function () {
+                                        var data = $element.data(DATA);
+                                        // set value on select
+                                        accessor.value(data[VALUE]);
+                                        // validate if required
+                                        $element
+                                            .trigger(VALIDATE)
+                                            .trigger(SHOWVALUE)
+                                            .focus();
+                                    }, 10);
+                                },
+                                dropDownOpening: function (evt, ui) {
+                                    var data = $element.data(DATA), cws = data[CWIDTH], ks = _.keys(cws);
+                                    // move searchbox to list
+                                    $element
+                                        .find('.ui-igcombo-fieldholder')
+                                        .prependTo(ui.list);
+                                    // show searchbox if editable
+                                    var $input = ui.list
+                                        .find('.ui-igcombo-fieldholder')
+                                        .css('height', !!data[EDITABLE] ? '' : '0px')
+                                        .css('padding', !!data[EDITABLE] ? '3px' : '')
+                                        .css('background-color', !!data[EDITABLE] ? '#f6f6f6' : '')
+                                        .show()
+                                        .find('input')
+                                        .css('height', !!data[EDITABLE] ? '29px' : '0px')
+                                        .css('border', !!data[EDITABLE] ? '1px solid #ccc' : 'none');
+                                    if (!$input.data('_nts_bind')) {
+                                        $input
+                                            .on(KEYDOWN, function (evt, ui) {
+                                            if ([13].indexOf(evt.which || evt.keyCode) > -1) {
+                                                if ($element.data(IGCOMB)) {
+                                                    // fire click of igcombo-button
+                                                    $element
+                                                        .find('.ui-igcombo-button')
+                                                        .trigger('click');
+                                                }
+                                            }
+                                        })
+                                            .data('_nts_bind', true)
+                                            .attr('tabindex', -1);
+                                    }
+>>>>>>> 83e6cfc... Show tooltip on ExTable
                                     // calc new size of template columns
                                     _.each(ks, function (k) {
                                         $(ui.list).find("." + k.toLowerCase() + ":not(:last-child)")
