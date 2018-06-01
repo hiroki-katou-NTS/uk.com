@@ -12,6 +12,10 @@ import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecordRe
 import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleItemAttributes;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * @author tuannt-nws
+ *
+ */
 @Stateless
 public class SingleAttendanceRecordSaveCommandHandler extends CommandHandler<SingleAttendanceRecordSaveCommand>{
 	

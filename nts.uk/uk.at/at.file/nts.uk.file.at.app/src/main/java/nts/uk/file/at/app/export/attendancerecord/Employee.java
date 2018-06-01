@@ -7,7 +7,6 @@ import lombok.Value;
 /**
  * The Class Employee.
  */
-@Value
 @Getter
 @Setter
 public class Employee {

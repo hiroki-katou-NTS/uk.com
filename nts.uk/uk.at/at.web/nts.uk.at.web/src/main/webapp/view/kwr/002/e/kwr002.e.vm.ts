@@ -39,7 +39,7 @@ module nts.uk.com.view.kwr002.e {
                     new model.SelectionType(17, nts.uk.resource.getMessage("Msg_1210", [])),
                     new model.SelectionType(18, nts.uk.resource.getMessage("Msg_1211", [])),
                 ]);
-                self.selectionTypeValue = ko.observable(16);
+                self.selectionTypeValue = ko.observable(0);
                 self.selectionTypeValue.subscribe(function(codeChange) {
                     self.gridItems([]);
                     self.currentCodeList([]);
@@ -66,8 +66,8 @@ module nts.uk.com.view.kwr002.e {
                 self.attendanceItem(nts.uk.ui.windows.getShared('attendanceItem'));
                 var attendanceItem = self.attendanceItem();
                 if(attendanceItem.attendanceId != null || attendanceItem.attendanceId != undefined) {
+                    self.selectionTypeValue(attendanceItem.attribute);
                     self.selectedGridItems(attendanceItem.attendanceId);
-                    self.findAttndRecByScreen(self.attendanceItem().attribute);
                     dfd.resolve();
                 } 
                 else {
@@ -80,9 +80,9 @@ module nts.uk.com.view.kwr002.e {
                     service.getCalculateAttndRecInfo(attendanceRecordKey).done(function(calculateAttendanceRecordDto: model.CalculateAttendanceRecordDto) {
                         if(calculateAttendanceRecordDto != null) {
                             if(calculateAttendanceRecordDto.attribute != null || calculateAttendanceRecordDto.attribute != undefined) {
-                                self.findAttndRecByScreen(calculateAttendanceRecordDto.attribute);
+                                self.selectionTypeValue(attendanceItem.attribute);
                             } else {
-                                self.findAttndRecByScreen(16);
+                                self.selectionTypeValue(16);
                             }
                             var calculateAttendanceRecordList: Array<model.SelectedItem> = [];
                             calculateAttendanceRecordDto.addedItem.forEach(function(item) {
@@ -95,12 +95,13 @@ module nts.uk.com.view.kwr002.e {
                             self.selectedGridItems(calculateAttendanceRecordList);
                         }
                         else {
-                            self.findAttndRecByScreen(16);
+                            self.selectionTypeValue(16);
                         }
                         dfd.resolve();
                     });
                 }
-                self.layoutCode(attendanceItem.layoutCode);
+                var layouCodeText = attendanceItem.layoutCode < 10 ? "0" + attendanceItem.layoutCode : "" + attendanceItem.layoutCode;
+                self.layoutCode(layouCodeText);
                 self.layoutName(attendanceItem.layoutName);
                 // process display
                 if (attendanceItem.exportAtr == 1) {
@@ -212,7 +213,7 @@ module nts.uk.com.view.kwr002.e {
                                 exportAtr: attendanceItem.exportAtr,
                                 attendanceId: outputItems,
                                 attribute: self.selectionTypeValue()
-                            }, true);
+                            });
                         }
                         nts.uk.ui.windows.close();
                     }

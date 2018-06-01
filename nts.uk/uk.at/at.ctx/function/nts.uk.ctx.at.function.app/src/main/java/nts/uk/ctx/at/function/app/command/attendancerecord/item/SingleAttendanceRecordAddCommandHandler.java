@@ -14,18 +14,26 @@ import javax.inject.Inject;
 
 
 /**
+ * The type SingleAttendanceRecordAddCommandHandler.
+ *
  * @author locph
+ *
  */
 @Stateless
 public class SingleAttendanceRecordAddCommandHandler extends CommandHandler<SingleAttendanceRecordAddCommand>{
-	
-	/** The single attendance record repository. */
+
+	/**
+	 * The SingleAttendanceRecordRepository.
+	 */
 	@Inject
 	SingleAttendanceRecordRepository singleAttendanceRecordRepository;
 	
 	/* (non-Javadoc)
-	 * Handle add SingleAttendanceRecord Item
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	 *
+	 * Handle add SingleAttendanceRecord Item
+	 *
+	 * @param context
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<SingleAttendanceRecordAddCommand> context) {

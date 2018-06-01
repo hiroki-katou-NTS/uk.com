@@ -167,13 +167,13 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 						// Report by Month
 						while (startDateByClosure.beforeOrEquals(endDateByClosure)) {
 							flag++;
-							List<AttendanceRecordRespond> upperDailyRespond = new ArrayList<>();
-							List<AttendanceRecordRespond> lowerDailyRespond = new ArrayList<>();
+							List<AttendanceRecordResponse> upperDailyRespond = new ArrayList<>();
+							List<AttendanceRecordResponse> lowerDailyRespond = new ArrayList<>();
 							// return result upper-daily-singleItems
 							AttendanceItemValueService.AttendanceItemValueResult valueSingleUpper = attendanceService
 									.getValueOf(employee.getEmployeeId(), startDateByClosure, singleIdUpper);
 							valueSingleUpper.getAttendanceItems().forEach(item -> {
-								upperDailyRespond.add(new AttendanceRecordRespond(employee.getEmployeeId(),
+								upperDailyRespond.add(new AttendanceRecordResponse(employee.getEmployeeId(),
 										employee.getEmployeeName(), startDateByClosure, "", item.getValue()));
 
 							});
@@ -193,7 +193,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								String result = this.getSumCalculateAttendanceItem(
 										addValueCalUpper.getAttendanceItems(), subValueCalUpper.getAttendanceItems());
 
-								upperDailyRespond.add(new AttendanceRecordRespond(employee.getEmployeeId(),
+								upperDailyRespond.add(new AttendanceRecordResponse(employee.getEmployeeId(),
 										employee.getEmployeeName(), startDateByClosure, "", result));
 
 							});
@@ -203,7 +203,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 									.getValueOf(employee.getEmployeeId(), startDateByClosure, singleIdLower);
 
 							valueSingleLower.getAttendanceItems().forEach(item -> {
-								lowerDailyRespond.add(new AttendanceRecordRespond(employee.getEmployeeId(),
+								lowerDailyRespond.add(new AttendanceRecordResponse(employee.getEmployeeId(),
 										employee.getEmployeeName(), startDateByClosure, "", item.getValue()));
 
 							});
@@ -221,7 +221,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								// get result lower calculate
 								String result = this.getSumCalculateAttendanceItem(
 										addValueCalUpper.getAttendanceItems(), subValueCalUpper.getAttendanceItems());
-								lowerDailyRespond.add(new AttendanceRecordRespond(employee.getEmployeeId(),
+								lowerDailyRespond.add(new AttendanceRecordResponse(employee.getEmployeeId(),
 										employee.getEmployeeName(), startDateByClosure, "", result));
 							});
 
@@ -230,12 +230,12 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							dailyData.setDayOfWeek(startDateByClosure.localDate().getDayOfWeek().toString());
 							AttendanceRecordReportColumnData[] columnDatasArray = new AttendanceRecordReportColumnData[9];
 							int index = 0;
-							for (AttendanceRecordRespond item : upperDailyRespond) {
+							for (AttendanceRecordResponse item : upperDailyRespond) {
 								columnDatasArray[index] = new AttendanceRecordReportColumnData(item.getValue(), "");
 								index++;
 							}
 							index = 0;
-							for (AttendanceRecordRespond item : lowerDailyRespond) {
+							for (AttendanceRecordResponse item : lowerDailyRespond) {
 								columnDatasArray[index].setLower(item.getValue());
 								index++;
 

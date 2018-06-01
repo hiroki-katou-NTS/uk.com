@@ -18,15 +18,15 @@ textarea {
 }
 
 table#selected-list {
-	border: 0.5px solid grey;
+	border: 1px solid #dddddd;
 	width: 440px;
 }
 table .ui-iggrid-layout-helper {
-	border: 0.5px solid grey;
+	border: 1px solid #dddddd;
 }
 
-#selected-list tbody, thead, tr, th, td {
-	border: 0.5px solid grey;
+#selected-list tr, th, td {
+	border: 2px solid #dddddd;
 }
 
 #selected-list tbody, #selected-list thead {

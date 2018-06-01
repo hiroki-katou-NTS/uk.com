@@ -7,14 +7,22 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 /**
+ * The type AttendanceRecordAddCommandHandler.
+ *
  * @author locph
  */
 @Stateless
 public class AttendanceRecordAddCommandHandler extends CommandHandler<AttendanceRecordAddCommand>{
 
+	/**
+	 * The SingleAttendanceRecordAddCommandHandler.
+	 */
 	@Inject
 	SingleAttendanceRecordAddCommandHandler singleHandler;
 
+	/**
+	 * The CalculateAttendanceRecordAddCommandHandler.
+	 */
 	@Inject
 	CalculateAttendanceRecordAddCommandHandler calculateHandler;
 

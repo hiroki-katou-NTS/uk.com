@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
+ * The type SingleAttendanceRecordAddCommand.
+ *
  * @author locph
  */
 @AllArgsConstructor
@@ -37,7 +39,7 @@ public class SingleAttendanceRecordAddCommand {
 	private String name;
 
 	/**
-	 * Instantiates a new single attendance record save command.
+	 * Instantiates a new SingleAttendanceRecordAddCommand.
 	 */
 	public SingleAttendanceRecordAddCommand() {
 		super();

@@ -25,12 +25,25 @@ import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecIt
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecItem_;
 import nts.uk.shr.com.context.AppContexts;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class JpaSingleAttendanceRecordRepository.
  */
+/**
+ * @author tuannt-nws
+ *
+ */
 @Stateless
 public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepository implements SingleAttendanceRecordRepository {
+	
+	/** The dont use attribute. */
+	private final int NOT_USE_ATTRIBUTE = 0;
+	
+	/** The use attribute. */
+	private final int USE_ATTRIBUTE = 1;
+	
+	/** The single formula type. */
+	private final int SINGLE_FORMULA_TYPE = 3;
+	
 
 	/*
 	 * (non-Javadoc)
@@ -85,7 +98,7 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 			KfnstAttndRec kfnstAttndRecUpdate = kfnstAttndRec.get();
 			kfnstAttndRecUpdate.setItemName(singleAttendanceRecord.getName().toString());
 			kfnstAttndRecUpdate.setAttribute(new BigDecimal(singleAttendanceRecord.getAttribute().value));
-			int useAtrValue = useAtr ? 1 : 0;
+			int useAtrValue = useAtr ? USE_ATTRIBUTE : NOT_USE_ATTRIBUTE;
 			kfnstAttndRecUpdate.setAttribute(new BigDecimal(useAtrValue));
 			this.commandProxy().update(kfnstAttndRecUpdate);
 		} else {
@@ -94,7 +107,7 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 		}
 		// check and update attendanceRecordItem
 		List<KfnstAttndRecItem> listKfnstAttndRecItem = this.findAttendanceRecordItems(kfnstAttndRecPK);
-		KfnstAttndRecItem kfnstAttndRecItem = (listKfnstAttndRecItem!=null && listKfnstAttndRecItem.size()!=0) ? listKfnstAttndRecItem.get(0) : null;
+		KfnstAttndRecItem kfnstAttndRecItem = (listKfnstAttndRecItem.size()!=0) ? listKfnstAttndRecItem.get(0) : null;
 		if (kfnstAttndRecItem!=null) {
 			this.commandProxy().remove(kfnstAttndRecItem);
 			this.getEntityManager().flush();
@@ -102,7 +115,7 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 					singleAttendanceRecord));
 		} else {
 			KfnstAttndRecItemPK pk = new KfnstAttndRecItemPK(companyId, exportSettingCode.v(), columnIndex, position, exportArt, singleAttendanceRecord.getTimeItemId());
-			kfnstAttndRecItem = new KfnstAttndRecItem(pk,new BigDecimal(3));
+			kfnstAttndRecItem = new KfnstAttndRecItem(pk,new BigDecimal(SINGLE_FORMULA_TYPE));
 			this.commandProxy().insert(kfnstAttndRecItem);
 		}
 		this.getEntityManager().flush();
@@ -130,7 +143,7 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 
 		// find and delete KfnstAttndRecItem
 		List<KfnstAttndRecItem> listKfnstAttndRecItem = this.findAttendanceRecordItems(kfnstAttndRecPK);
-		KfnstAttndRecItem kfnstAttndRecItem = (listKfnstAttndRecItem!=null && listKfnstAttndRecItem.size()!=0) ? listKfnstAttndRecItem.get(0) : null;
+		KfnstAttndRecItem kfnstAttndRecItem = (listKfnstAttndRecItem.size()!=0) ? listKfnstAttndRecItem.get(0) : null;
 		if (kfnstAttndRecItem!=null)
 			this.commandProxy().remove(kfnstAttndRecItem);
 		this.getEntityManager().flush();
@@ -183,31 +196,27 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 				.orElse(new KfnstAttndRec(kfnstAttndRecPk, new BigDecimal(0), null, new BigDecimal(0)));
 		// find entites KfnstAttndRecItem by attendanceRecordPK
 		List<KfnstAttndRecItem> listAttndRecItemEntity = this.findAttendanceRecordItems(kfnstAttndRecPk);
-		KfnstAttndRecItem attendanceRecItemEntity = listAttndRecItemEntity==null||listAttndRecItemEntity.isEmpty() ? new KfnstAttndRecItem() : listAttndRecItemEntity.get(0);
+		KfnstAttndRecItem attendanceRecItemEntity = listAttndRecItemEntity.isEmpty() ? new KfnstAttndRecItem() : listAttndRecItemEntity.get(0);
 		if(attendanceRecItemEntity.getId()==null) {
 			KfnstAttndRecItemPK attendanceRecItemPK = new KfnstAttndRecItemPK(companyId, exportSettingCode.v(), columnIndex, position, exportArt,singleAttendanceRecord.getAttribute().value );
 			attendanceRecItemEntity.setId(attendanceRecItemPK);
 		}
 		singleAttendanceRecord.saveToMemento(new JpaSingleAttendanceRecordSetMemento(kfnstAttndRec, attendanceRecItemEntity));
-		int useAtrValue = useAtr ? 1 : 0;
+		int useAtrValue = useAtr ? USE_ATTRIBUTE : NOT_USE_ATTRIBUTE;
 		kfnstAttndRec.setUseAtr(new BigDecimal(useAtrValue));
 
 		return kfnstAttndRec;
 	}
 
+
 	/**
-	 * To attnd rec item entity.
+	 * To entity attnd rec item.
 	 *
-	 * @param exportSettingCode
-	 *            the export setting code
-	 * @param columnIndex
-	 *            the column index
-	 * @param position
-	 *            the position
-	 * @param exportArt
-	 *            the export art
-	 * @param singleAttendanceRecord
-	 *            the single attendance record
+	 * @param exportSettingCode the export setting code
+	 * @param columnIndex the column index
+	 * @param position the position
+	 * @param exportArt the export art
+	 * @param singleAttendanceRecord the single attendance record
 	 * @return the kfnst attnd rec item
 	 */
 	private KfnstAttndRecItem toEntityAttndRecItem(ExportSettingCode exportSettingCode, long columnIndex, long position,
@@ -221,13 +230,14 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 
 		KfnstAttndRecItemPK kfnstAttndRecItemPk = new KfnstAttndRecItemPK(companyId, exportSettingCode.v(), columnIndex,
 				position, exportArt, singleAttendanceRecord.getTimeItemId());
-		KfnstAttndRecItem kfnstAttndRecItem = new KfnstAttndRecItem(kfnstAttndRecItemPk, new BigDecimal(3));
+		KfnstAttndRecItem kfnstAttndRecItem = new KfnstAttndRecItem(kfnstAttndRecItemPk, new BigDecimal(SINGLE_FORMULA_TYPE));
 
 //		singleAttendanceRecord.saveToMemento(new JpaSingleAttendanceRecordSetMemento(kfnstAttndRec, kfnstAttndRecItem));
 		// set formulaType
-		kfnstAttndRecItem.setFormulaType(new BigDecimal(1));
+//		kfnstAttndRecItem.setFormulaType(new BigDecimal(1));
 		return kfnstAttndRecItem;
 	}
+
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecordRepository#getIdSingleAttendanceRecordByPosition(java.lang.String, long, long)

@@ -26,9 +26,12 @@ import nts.uk.ctx.at.function.app.find.attendancerecord.item.CalculateAttendance
 import nts.uk.ctx.at.function.app.find.attendancerecord.item.SingleAttendanceRecordDto;
 import nts.uk.ctx.at.function.app.find.attendancerecord.item.SingleAttendanceRecordFinder;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class AttendanceRecordItemWebService.
+ */
+/**
+ * @author tuannt-nws
+ *
  */
 @Path("at/function/attendancerecord/item")
 @Produces("application/json")

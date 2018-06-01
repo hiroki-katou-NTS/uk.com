@@ -25,6 +25,10 @@ import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecIt
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecItemPK;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * @author tuannt-nws
+ *
+ */
 @Stateless
 public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordRepository
 		implements CalculateAttendanceRecordRepositoty {
@@ -49,8 +53,6 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 	@Override
 	public void addCalculateAttendanceRecord(String CompanyId, ExportSettingCode code, int columnIndex, int position,
 			long exportArt, CalculateAttendanceRecord calculateAttendanceRecord) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -82,7 +84,7 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 		
 		// check and update attendanceRecordItems
 		List<KfnstAttndRecItem> kfnstAttndRecItemsOld = this.findAttendanceRecordItems(kfnstAttndRecPK);
-		if (kfnstAttndRecItemsOld != null && !kfnstAttndRecItemsOld.isEmpty()) {
+		if (kfnstAttndRecItemsOld != null) {
 			this.removeAllAttndRecItem(kfnstAttndRecItemsOld);
 		} 
 		this.commandProxy().insertAll(kfnstAttndRecItems);

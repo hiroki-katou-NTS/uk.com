@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
+ * The type AttendanceRecordItemDeleteCommand.
+ *
  * @author locph
  */
 @AllArgsConstructor
@@ -12,7 +14,9 @@ import lombok.Setter;
 @Setter
 public class AttendanceRecordItemDeleteCommand {
 
-    /** The export setting code. */
+    /**
+     * The export setting code.
+     */
     protected int exportSettingCode;
 
 }
