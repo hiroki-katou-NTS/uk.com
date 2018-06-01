@@ -5,19 +5,18 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
-<<<<<<< Updated upstream
- * @author locph
-=======
- * @author tuannt
+ * The type AttendanceRecordItemDeleteCommand.
  *
->>>>>>> Stashed changes
+ * @author locph
  */
 @AllArgsConstructor
 @Getter
 @Setter
 public class AttendanceRecordItemDeleteCommand {
 
-    /** The export setting code. */
+    /**
+     * The export setting code.
+     */
     protected int exportSettingCode;
 
 }

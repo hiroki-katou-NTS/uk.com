@@ -5,12 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
-<<<<<<< Updated upstream
- * @author locph
-=======
- * @author tuannt-nws
+ * The type SingleAttendanceRecordAddCommand.
  *
->>>>>>> Stashed changes
+ * @author locph
  */
 @AllArgsConstructor
 @Getter
@@ -42,7 +39,7 @@ public class SingleAttendanceRecordAddCommand {
 	private String name;
 
 	/**
-	 * Instantiates a new single attendance record save command.
+	 * Instantiates a new SingleAttendanceRecordAddCommand.
 	 */
 	public SingleAttendanceRecordAddCommand() {
 		super();

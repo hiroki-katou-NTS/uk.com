@@ -10,19 +10,16 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 /**
-<<<<<<< Updated upstream
- * @author locph
-=======
- * @author tuannt-nws
+ * The type AttendanceRecordItemDeleteCommandHandler.
  *
->>>>>>> Stashed changes
+ * @author locph
  */
 @Stateless
 public class AttendanceRecordItemDeleteCommandHandler
         extends CommandHandler<AttendanceRecordItemDeleteCommand> {
 
     /**
-     * The calculate attendance record repository.
+     * The AttendanceRecordRepositoty.
      */
     @Inject
     AttendanceRecordRepositoty attendanceRecordRepositoty;
