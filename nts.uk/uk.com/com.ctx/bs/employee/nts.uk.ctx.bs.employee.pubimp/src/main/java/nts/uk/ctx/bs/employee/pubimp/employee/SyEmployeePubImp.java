@@ -409,32 +409,18 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			return Collections.emptyList();
 		}
 		// Lấy toàn bộ domain「社員データ管理情報」
-<<<<<<< HEAD
-		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.getByListEmployeeId(sIds);
-=======
 		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.findByListEmployeeId(sIds);
->>>>>>> delivery/release_user
 
 		if (CollectionUtil.isEmpty(emps)) {
 			return Collections.emptyList();
 		}
 
 		List<String> pIds = emps.stream().map(EmployeeDataMngInfo::getPersonId).collect(Collectors.toList());
-<<<<<<< HEAD
-		
-=======
-
->>>>>>> delivery/release_user
 		// Lấy toàn bộ domain「個人基本情報」
 		List<Person> persons = this.personRepository.getPersonByPersonIds(pIds);
 
 		Map<String, Person> mapPersons = persons.stream()
 				.collect(Collectors.toMap(Person::getPersonId, Function.identity()));
-<<<<<<< HEAD
-		
-=======
-
->>>>>>> delivery/release_user
 		return emps.stream().map(employee -> {
 
 			EmployeeInfoExport result = new EmployeeInfoExport();
@@ -452,9 +438,6 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			return result;
 		}).collect(Collectors.toList());
 	}
-
-<<<<<<< HEAD
-=======
 	@Override
 	public List<String> getListEmpByWkpAndEmpt(List<String> wkpsId, List<String> lstemptsCode, DatePeriod dateperiod) {
 
@@ -569,6 +552,4 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 		return result;
 	}
-
->>>>>>> delivery/release_user
 }
