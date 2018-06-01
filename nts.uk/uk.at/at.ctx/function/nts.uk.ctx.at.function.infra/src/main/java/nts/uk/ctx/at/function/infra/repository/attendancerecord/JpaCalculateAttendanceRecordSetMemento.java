@@ -22,6 +22,12 @@ public class JpaCalculateAttendanceRecordSetMemento implements CalculateAttendan
 	
 	/** The kfnst attnd rec items. */
 	private List<KfnstAttndRecItem> kfnstAttndRecItems;
+	
+	/** The add formula type. */
+	private final int ADD_FORMULA_TYPE = 1;
+	
+	/** The subtract formualt type. */
+	private final int SUBTRACT_FORMULA_TYPE = 2;
 
 	/**
 	 * Instantiates a new jpa calculate attendance record set memento.
@@ -56,7 +62,7 @@ public class JpaCalculateAttendanceRecordSetMemento implements CalculateAttendan
 	public void setAddedItem(List<Integer> idListAdd) {
 		// remove old value
 		this.kfnstAttndRecItems.forEach(e -> {
-			if (e.getFormulaType() == new BigDecimal(3)) {
+			if (e.getFormulaType() == new BigDecimal(ADD_FORMULA_TYPE)) {
 				this.kfnstAttndRecItems.remove(e);
 			}
 		});
@@ -66,8 +72,7 @@ public class JpaCalculateAttendanceRecordSetMemento implements CalculateAttendan
 				this.kfnstAttndRec.getId().getPosition(), this.kfnstAttndRec.getId().getOutputAtr(), 0);
 		idListAdd.forEach(e -> {
 			pk.setTimeItemId(e);
-			int formularType = 1;
-			KfnstAttndRecItem item = new KfnstAttndRecItem(pk, new BigDecimal(formularType));
+			KfnstAttndRecItem item = new KfnstAttndRecItem(pk, new BigDecimal(ADD_FORMULA_TYPE));
 			this.kfnstAttndRecItems.add(item);
 		});
 	}
@@ -79,7 +84,7 @@ public class JpaCalculateAttendanceRecordSetMemento implements CalculateAttendan
 	public void setSubtractedItem(List<Integer> idListSubtract) {
 		// remove old value
 		this.kfnstAttndRecItems.forEach(e -> {
-			if (e.getFormulaType() == new BigDecimal(3)) {
+			if (e.getFormulaType() == new BigDecimal(SUBTRACT_FORMULA_TYPE)) {
 				this.kfnstAttndRecItems.remove(e);
 			}
 		});
@@ -89,8 +94,7 @@ public class JpaCalculateAttendanceRecordSetMemento implements CalculateAttendan
 				this.kfnstAttndRec.getId().getPosition(), this.kfnstAttndRec.getId().getOutputAtr(), 0);
 		idListSubtract.forEach(e -> {
 			pk.setTimeItemId(e);
-			int formularType = 2;
-			KfnstAttndRecItem item = new KfnstAttndRecItem(pk, new BigDecimal(formularType));
+			KfnstAttndRecItem item = new KfnstAttndRecItem(pk, new BigDecimal(SUBTRACT_FORMULA_TYPE));
 			this.kfnstAttndRecItems.add(item);
 		});
 	}

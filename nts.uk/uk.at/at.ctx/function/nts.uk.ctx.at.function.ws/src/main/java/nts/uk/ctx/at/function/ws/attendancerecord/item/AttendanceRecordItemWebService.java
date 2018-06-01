@@ -75,8 +75,7 @@ public class AttendanceRecordItemWebService {
 	@POST
 	@Path("getSingleAttndRecInfo")
 	public SingleAttendanceRecordDto getSingleAttendanceRecordInfo(AttendanceRecordKeyDto attendanceRecordKey) {
-		SingleAttendanceRecordDto result = this.singleAttendanceRecordFinder.getSingleAttendanceRecord(attendanceRecordKey);
-		return result;
+		return this.singleAttendanceRecordFinder.getSingleAttendanceRecord(attendanceRecordKey);
 	}
 
 	/**

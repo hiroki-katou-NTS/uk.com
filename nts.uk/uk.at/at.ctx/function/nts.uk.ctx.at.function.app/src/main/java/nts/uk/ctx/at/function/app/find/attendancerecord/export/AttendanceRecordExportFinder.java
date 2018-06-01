@@ -2,7 +2,6 @@ package nts.uk.ctx.at.function.app.find.attendancerecord.export;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -36,27 +35,26 @@ public class AttendanceRecordExportFinder {
 				code);
 
 		// Convert domain to Dto
-		
+
 		List<AttendanceRecordExportDto> dtoList = new ArrayList<AttendanceRecordExportDto>();
 
 		if (!domainList.isEmpty())
 			domainList.forEach(item -> {
-				if (item != null) {
-					AttendanceRecordExportDto dto = new AttendanceRecordExportDto();
-					dto.setColumnIndex(item.getColumnIndex());
-					dto.setExportAtr(item.getExportAtr().value);
-					dto.setUserAtr(item.getUseAtr());
-					if (item.getUpperPosition().isPresent())
-						dto.setUpperPosition(item.getUpperPosition().get().getNameDisplay());
-					else
-						dto.setUpperPosition("");
-					if (item.getLowerPosition().isPresent())
-						dto.setLowwerPosition(item.getLowerPosition().get().getNameDisplay());
-					else
-						dto.setLowwerPosition("");
+				AttendanceRecordExportDto dto = new AttendanceRecordExportDto();
+				dto.setColumnIndex(item.getColumnIndex());
+				dto.setExportAtr(item.getExportAtr().value);
+				dto.setUserAtr(item.getUseAtr());
+				if (item.getUpperPosition().isPresent())
+					dto.setUpperPosition(item.getUpperPosition().get().getNameDisplay());
+				else
+					dto.setUpperPosition("");
+				if (item.getLowerPosition().isPresent())
+					dto.setLowwerPosition(item.getLowerPosition().get().getNameDisplay());
+				else
+					dto.setLowwerPosition("");
 
-					dtoList.add(dto);
-				}
+				dtoList.add(dto);
+
 			});
 
 		return dtoList;
@@ -82,22 +80,21 @@ public class AttendanceRecordExportFinder {
 		List<AttendanceRecordExportDto> dtoList = new ArrayList<AttendanceRecordExportDto>();
 		if (!domainList.isEmpty())
 			domainList.forEach(item -> {
-				if (item != null) {
-					AttendanceRecordExportDto dto = new AttendanceRecordExportDto();
-					dto.setColumnIndex(item.getColumnIndex());
-					dto.setExportAtr(item.getExportAtr().value);
-					dto.setUserAtr(item.getUseAtr());
-					if (item.getUpperPosition().isPresent())
-						dto.setUpperPosition(item.getUpperPosition().get().getNameDisplay());
-					else
-						dto.setUpperPosition("");
-					if (item.getLowerPosition().isPresent())
-						dto.setLowwerPosition(item.getLowerPosition().get().getNameDisplay());
-					else
-						dto.setLowwerPosition("");
+				AttendanceRecordExportDto dto = new AttendanceRecordExportDto();
+				dto.setColumnIndex(item.getColumnIndex());
+				dto.setExportAtr(item.getExportAtr().value);
+				dto.setUserAtr(item.getUseAtr());
+				if (item.getUpperPosition().isPresent())
+					dto.setUpperPosition(item.getUpperPosition().get().getNameDisplay());
+				else
+					dto.setUpperPosition("");
+				if (item.getLowerPosition().isPresent())
+					dto.setLowwerPosition(item.getLowerPosition().get().getNameDisplay());
+				else
+					dto.setLowwerPosition("");
 
-					dtoList.add(dto);
-				}
+				dtoList.add(dto);
+
 			});
 
 		return dtoList;

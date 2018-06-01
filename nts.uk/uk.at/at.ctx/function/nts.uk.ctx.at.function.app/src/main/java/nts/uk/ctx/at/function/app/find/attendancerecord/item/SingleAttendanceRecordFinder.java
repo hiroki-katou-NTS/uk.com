@@ -36,9 +36,7 @@ public class SingleAttendanceRecordFinder {
 				.getSingleAttendanceRecord(AppContexts.user().companyId(),
 						new ExportSettingCode(attendanceRecordKey.getCode()), attendanceRecordKey.getColumnIndex(),
 						attendanceRecordKey.getPosition(), attendanceRecordKey.getExportAtr());
-
 		// convert to Dto
-		
 		if (optionalSingleAttendanceRecord.isPresent()) {
 			SingleAttendanceRecord singleAttendanceRecord = optionalSingleAttendanceRecord.get();
 			int atrribute = singleAttendanceRecord.getAttribute()!=null ? singleAttendanceRecord.getAttribute().value : 0;
