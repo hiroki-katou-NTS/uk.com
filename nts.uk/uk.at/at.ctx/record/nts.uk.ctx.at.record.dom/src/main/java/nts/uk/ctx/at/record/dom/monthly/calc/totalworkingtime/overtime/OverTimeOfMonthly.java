@@ -364,7 +364,6 @@ public class OverTimeOfMonthly implements Cloneable {
 				}
 				break;
 			}
-			break;
 		}
 	
 		return timeAfterCalc;

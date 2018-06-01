@@ -663,7 +663,7 @@ public abstract class CalculationTimeSheet {
 				
 		}
 		else {
-			if(this.deductionTimeSheet != null && !this.recordedTimeSheet.isEmpty()) {
+			if(this.deductionTimeSheet != null && !this.deductionTimeSheet.isEmpty()) {
 				val test = getDuplicatedDeductionTimeSheet(deductionTimeSheet);
 				if(test != null)
 					this.deductionTimeSheet.addAll(test);

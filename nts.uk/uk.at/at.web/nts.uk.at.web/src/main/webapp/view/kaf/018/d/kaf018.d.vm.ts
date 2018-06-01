@@ -30,7 +30,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
             if (params) {
                 self.dispEmpName = params.empName;
                 _.each(params.listStatusEmp, function(item) {
-                    self.listStatusEmp.push(new ApprovalStatusEmployee(item.sId, new Date(item.startDate), new Date(item.endDate)));
+                    self.listStatusEmp.push(new ApprovalStatusEmployee(item.sid, new Date(item.startDate), new Date(item.endDate)));
                 });
             }
             let paramsTranfer = {
@@ -393,11 +393,11 @@ module nts.uk.at.view.kaf018.d.viewmodel {
     }
 
     class ApprovalStatusEmployee {
-        sId: string;
+        sid: string;
         startDate: Date;
         endDate: Date;
-        constructor(sId: string, startDate: Date, endDate: Date) {
-            this.sId = sId;
+        constructor(sid: string, startDate: Date, endDate: Date) {
+            this.sid = sid;
             this.startDate = startDate;
             this.endDate = endDate;
         }

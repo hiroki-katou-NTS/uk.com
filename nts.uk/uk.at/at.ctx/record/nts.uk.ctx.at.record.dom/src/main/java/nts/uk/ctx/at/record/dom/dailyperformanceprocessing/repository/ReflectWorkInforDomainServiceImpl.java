@@ -489,9 +489,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					} else {
 						if (businessTypeOfEmployee.get().getBusinessTypeCode()
 								.equals(workTypeOfDailyPerformance.get().getWorkTypeCode())) {
-							exitStatus = ExitStatus.RECREATE;
 							return exitStatus;
 						} else {
+							exitStatus = ExitStatus.RECREATE;
 							return exitStatus;
 						}
 					}

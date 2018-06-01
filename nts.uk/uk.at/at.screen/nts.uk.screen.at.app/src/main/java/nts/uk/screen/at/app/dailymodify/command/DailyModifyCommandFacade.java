@@ -1,6 +1,5 @@
 package nts.uk.screen.at.app.dailymodify.command;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -101,7 +100,10 @@ public class DailyModifyCommandFacade {
 	
 	private List<DailyRecordDto> toDto(List<DailyModifyQuery> query) {
 		List<DailyRecordDto> oldValues = finder.find(query.stream()
-									.collect(Collectors.toMap(c -> c.getEmployeeId(), c -> c.getBaseDate())));
+									.collect(Collectors.groupingBy(c -> c.getEmployeeId(), 
+												Collectors.collectingAndThen(Collectors.toList(), 
+													c -> c.stream().map(q -> q.getBaseDate())
+																	.collect(Collectors.toList())))));
 		return oldValues.stream().map(o -> {
 			List<ItemValue> itemValues = query.stream().filter(q -> q.getBaseDate().equals(o.workingDate()) 
 																&& q.getEmployeeId().equals(o.employeeId()))
@@ -127,15 +129,15 @@ public class DailyModifyCommandFacade {
 	}
 
 	public void handleEditCell(List<DPItemValue> data) {
-		String sid = AppContexts.user().employeeId();
-		List<EditStateOfDailyPerformance> editData = data.stream().map(x -> {
-			return new EditStateOfDailyPerformance(x.getEmployeeId(), x.getItemId(), x.getDate(),
-					sid.equals(x.getEmployeeId()) ? EditStateSetting.HAND_CORRECTION_MYSELF
-							: EditStateSetting.HAND_CORRECTION_OTHER);
-		}).collect(Collectors.toList());
-		EditStateColorOfDailyPerformCommand command = new EditStateColorOfDailyPerformCommand();
-		command.getData().addAll(editData);
-		editStateHandler.handle(command);
+//		String sid = AppContexts.user().employeeId();
+//		List<EditStateOfDailyPerformance> editData = data.stream().map(x -> {
+//			return new EditStateOfDailyPerformance(x.getEmployeeId(), x.getItemId(), x.getDate(),
+//					sid.equals(x.getEmployeeId()) ? EditStateSetting.HAND_CORRECTION_MYSELF
+//							: EditStateSetting.HAND_CORRECTION_OTHER);
+//		}).collect(Collectors.toList());
+//		EditStateColorOfDailyPerformCommand command = new EditStateColorOfDailyPerformCommand();
+//		command.getData().addAll(editData);
+//		editStateHandler.handle(command);
 	}
 
 	public void insertSign(List<DPItemCheckBox> dataCheckSign) {

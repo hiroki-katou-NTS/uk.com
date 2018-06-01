@@ -1,8 +1,11 @@
 package nts.uk.ctx.at.record.app.command.dailyperform;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -43,15 +46,16 @@ import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.AttendanceTimeBy
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.AttendanceTimeByWorkOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDailyPerformanceCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDailyPerformanceCommandUpdateHandler;
+import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
-import nts.uk.ctx.at.record.dom.divergencetime.service.DivCheckSharedData;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlCheckService;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 
 @Stateless
@@ -163,10 +167,10 @@ public class DailyRecordWorkCommandHandler {
 
 	/** 編集状態: 日別実績の編集状態 */
 	@Inject
-	//@AttendanceItemLayout(layout = "N", jpPropertyName = "", index = 14)
+	@AttendanceItemLayout(layout = "N", jpPropertyName = "", index = 14)
 	private EditStateOfDailyPerformCommandAddHandler editStateAddHandler;
 	@Inject
-	//@AttendanceItemLayout(layout = "N", jpPropertyName = "", index = 14)
+	@AttendanceItemLayout(layout = "N", jpPropertyName = "", index = 14)
 	private EditStateOfDailyPerformCommandUpdateHandler editStateUpdateHandler;
 
 	/** 臨時出退勤: 日別実績の臨時出退勤 */
@@ -199,6 +203,19 @@ public class DailyRecordWorkCommandHandler {
 	
 	@Inject
 	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepository;
+	
+	@Inject
+	private DailyRecordWorkFinder finder;
+	
+	private final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList("G");
+	
+	private final List<String> DOMAIN_CHANGE_EVENT = Arrays.asList("A", "I");
+	
+	private final Map<String, List<String>> DOMAIN_CHANGED_BY_EVENT = new HashMap<>();
+	{
+		DOMAIN_CHANGED_BY_EVENT.put("A", Arrays.asList("I", "F"));
+		DOMAIN_CHANGED_BY_EVENT.put("I", Arrays.asList("F"));
+	}
 
 	public void handleAdd(DailyRecordWorkCommand command) {
 		handler(command, false);
@@ -216,34 +233,37 @@ public class DailyRecordWorkCommandHandler {
 		handler(command, true);
 	}
 
-	@SuppressWarnings({ "unchecked" })
 	private <T extends DailyWorkCommonCommand> void handler(DailyRecordWorkCommand command, boolean isUpdate) {
-		Set<String> mapped = command.itemValues().stream().map(c -> getGroup(c))
-				.distinct().collect(Collectors.toSet());
-		List<EmployeeDailyPerError> errors = calcIfNeed(mapped, Arrays.asList(command));
-		mapped.stream().forEach(c -> {
-			CommandFacade<T> handler = (CommandFacade<T>) getHandler(c, isUpdate);
-			if(handler != null){
-				handler.handle((T) command.getCommand(c));
-			}
-		});
-		//remove data error
-		employeeDailyPerErrorRepository.removeParam(command.getEmployeeId(), command.getWorkDate());
-		//check and insert error;
-//		determineErrorAlarmWorkRecordService.checkAndInsert(command.getEmployeeId(), command.getWorkDate());
-		determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(errors);
-		
-		DivCheckSharedData.clearAll();
+		handler(Arrays.asList(command), isUpdate);
 	}
 	
 	@SuppressWarnings({ "unchecked" })
 	private <T extends DailyWorkCommonCommand> void handler(List<DailyRecordWorkCommand> commands, boolean isUpdate) {
+		registerNotCalcDomain(commands, isUpdate);
+		
 		Set<String> mapped = new HashSet<>();
-				
 		List<EmployeeDailyPerError> errors = calcIfNeed(mapped, commands);
 		commands.stream().forEach(command -> {
-			mapped.addAll(command.itemValues().stream().map(c -> getGroup(c)).distinct().collect(Collectors.toSet()));
 			mapped.stream().forEach(c -> {
+				CommandFacade<T> handler = (CommandFacade<T>) getHandler(c, isUpdate);
+				if(handler != null){
+					handler.handle((T) command.getCommand(c));
+				}
+			});
+		});
+		
+		//check and insert error;
+//		determineErrorAlarmWorkRecordService.checkAndInsert(command.getEmployeeId(), command.getWorkDate());
+		determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(errors);
+	}
+
+	@SuppressWarnings({ "unchecked" })
+	private <T extends DailyWorkCommonCommand> void registerNotCalcDomain(List<DailyRecordWorkCommand> commands, boolean isUpdate) {
+		commands.stream().forEach(command -> {
+			Set<String> mapped = new LinkedHashSet<>();
+			mapped.add("N");
+			mapped.addAll(command.itemValues().stream().map(c -> getGroup(c)).distinct().collect(Collectors.toSet()));
+			mapped.stream().filter(c -> !DOMAIN_CHANGED_BY_CALCULATE.contains(c)).forEach(c -> {
 				CommandFacade<T> handler = (CommandFacade<T>) getHandler(c, isUpdate);
 				if(handler != null){
 					handler.handle((T) command.getCommand(c));
@@ -251,13 +271,15 @@ public class DailyRecordWorkCommandHandler {
 			});
 			//remove data error
 			employeeDailyPerErrorRepository.removeParam(command.getEmployeeId(), command.getWorkDate());
+			Set<String> updating = new HashSet<>();
+			DOMAIN_CHANGE_EVENT.stream().filter(l -> mapped.contains(l)).forEach(l -> {
+				updating.addAll(DOMAIN_CHANGED_BY_EVENT.get(l));
+			});
+			updating.stream().forEach(layout -> {
+				ConvertibleAttendanceItem updatedD = finder.getFinder(layout).find(command.getEmployeeId(), command.getWorkDate());
+				command.getCommand(layout).setRecords(updatedD);
+			});
 		});
-		
-		//check and insert error;
-//		determineErrorAlarmWorkRecordService.checkAndInsert(command.getEmployeeId(), command.getWorkDate());
-		determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(errors);
-		
-		DivCheckSharedData.clearAll();
 	}
 	
 	private List<EmployeeDailyPerError> calcIfNeed(Set<String> group, List<DailyRecordWorkCommand> commands){
@@ -270,7 +292,7 @@ public class DailyRecordWorkCommandHandler {
 				c.getAttendanceTime().updateData(d.getAttendanceTimeOfDailyPerformance().orElse(null));
 			});
 		});
-		group.add("G");
+		group.addAll(DOMAIN_CHANGED_BY_CALCULATE);
 		return calced.stream().map(d -> d.getEmployeeError()).flatMap(List::stream).collect(Collectors.toList());
 //		}
 	}

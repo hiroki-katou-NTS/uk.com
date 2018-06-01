@@ -22,7 +22,6 @@ public class JpaCategoryFieldMtRepository extends JpaRepository implements Categ
     
     @Override
     public void remove(){
-       // this.commandProxy().remove(SspmtCategoryFieldMt.class, new SspmtCategoryFieldMtPk()); 
     }
 
 
@@ -30,7 +29,6 @@ public class JpaCategoryFieldMtRepository extends JpaRepository implements Categ
 
 	@Override
 	public List<CategoryFieldMt> getAllCategoryFieldMt() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -39,7 +37,6 @@ public class JpaCategoryFieldMtRepository extends JpaRepository implements Categ
 
 	@Override
 	public Optional<CategoryFieldMt> getCategoryFieldMtById() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -48,8 +45,6 @@ public class JpaCategoryFieldMtRepository extends JpaRepository implements Categ
 
 	@Override
 	public void add(CategoryFieldMt domain) {
-		// TODO Auto-generated method stub
-		
 	}
 
 
@@ -57,7 +52,6 @@ public class JpaCategoryFieldMtRepository extends JpaRepository implements Categ
 
 	@Override
 	public void update(CategoryFieldMt domain) {
-		// TODO Auto-generated method stub
 		
 	}
 
