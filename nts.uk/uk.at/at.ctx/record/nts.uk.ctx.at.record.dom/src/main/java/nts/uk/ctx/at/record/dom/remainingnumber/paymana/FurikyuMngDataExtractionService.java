@@ -74,7 +74,7 @@ public class FurikyuMngDataExtractionService {
 			totalUndeliveredDay += item.getRemainDays().v();
 		}
 		
-		return totalUndeliveredDay - totalUnUseDay;
+		return totalUnUseDay - totalUndeliveredDay;
 	}
 	
 	public int getExpirationDate(String sid) {
