@@ -14,12 +14,14 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExportRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecord;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordRepositoty;
@@ -30,6 +32,8 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
+import nts.uk.ctx.bs.company.dom.company.Company;
+import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportColumnData;
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportDailyData;
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportData;
@@ -64,6 +68,9 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 	@Inject
 	private AttendanceRecordReportGenerator reportGenerator;
+	
+	@Inject 
+	private CompanyRepository companyRepo;
 
 	@Override
 	protected void handle(ExportServiceContext<AttendanceRecordRequest> context) {
@@ -355,6 +362,11 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 					}
 
 				}
+				else{
+					BundledBusinessException exceptions = BundledBusinessException.newInstance();
+					exceptions.addMessage("Msg_1269");
+					exceptions.throwExceptions();
+				}
 
 			}
 
@@ -404,13 +416,15 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		String exportDate = LocalDate.now().toString();
 
 		AttendanceRecordReportData recordReportData = new AttendanceRecordReportData();
-
-		recordReportData.setCompanyName("Company A");
+		Optional<Company> optionalCompany = companyRepo.find(companyId);
+		Optional<AttendanceRecordExportSetting> optionalAttendanceRecExpSet = attendanceRecExpSetRepo.getAttendanceRecExpSet(companyId, request.getLayout());
+		
+		recordReportData.setCompanyName(optionalCompany.get().getCompanyName().toString());
 		recordReportData.setDailyHeader(dailyHeader);
 		recordReportData.setExportDateTime(exportDate);
 		recordReportData.setMonthlyHeader(monthlyHeader);
 		recordReportData.setReportData(reportData);
-		recordReportData.setReportName("NoName");
+		recordReportData.setReportName(optionalAttendanceRecExpSet.get().getName().v());
 		recordReportData.setSealColName(sealStamp);
 
 		AttendanceRecordReportDatasource recordReportDataSource = new AttendanceRecordReportDatasource(
