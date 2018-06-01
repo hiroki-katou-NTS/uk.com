@@ -90,6 +90,14 @@ public class JpaTempReserveLeaveMngRepo extends JpaRepository implements TempRes
 				.setParameter("criteriaDate", criteriaDate)
 				.executeUpdate();
 	}
+	
+	@Override
+	public void removeBetweenPeriod(String employeeId, DatePeriod period) {
+		List<KrcdtRsvleaMngTemp> listEntity = this.queryProxy().query(SELECT_BY_PERIOD, KrcdtRsvleaMngTemp.class)
+				.setParameter("employeeId", employeeId).setParameter("startYmd", period.start())
+				.setParameter("endYmd", period.end()).getList();
+		this.commandProxy().removeAll(listEntity);
+	}
 
 	@Override
 	public List<TempReserveLeaveManagement> findByEmployeeId(String employeeId) {
