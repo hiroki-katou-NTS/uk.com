@@ -9,6 +9,9 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.shared.dom.remainmng.absencerecruitment.interim.InterimAbsMng;
+import nts.uk.ctx.at.shared.dom.remainmng.absencerecruitment.interim.InterimRecAbsMng;
+import nts.uk.ctx.at.shared.dom.remainmng.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainmng.breakdayoffmng.export.query.InterimRemainAggregateOutputData;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -37,4 +40,60 @@ public interface AbsenceReruitmentManaQuery {
 	 * @return
 	 */
 	Double getUsedDays(String employeeId, DatePeriod dateData);
+	/**
+	 * 振出振休発生消化履歴の取得
+	 * @param cid
+	 * @param sid
+	 * @param baseDate
+	 * @return
+	 */
+	AbsRecGenerationDigestionHis generationDigestionHis(String cid, String sid, GeneralDate baseDate);
+	/**
+	 * 暫定管理データを取得する
+	 * @param sid
+	 * @param baseDate
+	 * @return
+	 */
+	AbsRecInterimOutputPara getAbsRecInterimData(String sid, GeneralDate baseDate);
+	/**
+	 * 指定期間内に発生した暫定振出と紐付いた確定振休・暫定振休を取得する
+	 * @param sid
+	 * @param dateData
+	 * @return
+	 */
+	AbsRecInterimOutputPara getInterimAbsMng(String sid, DatePeriod dateData);
+	/**
+	 * 未消化の確定振出に紐付いた暫定振休を取得する
+	 * @param sid
+	 * @param dateData
+	 * @return
+	 */
+	AbsRecInterimOutputPara getNotInterimAbsMng(String sid, DatePeriod dateData, AbsRecInterimOutputPara absRecData);
+	/**
+	 * 振出履歴を作成する
+	 * @param interimData: 暫定振出管理データ
+	 * @return
+	 */
+	List<RecruitmentHistoryOutPara> createRecruitmentHis(List<InterimRecMng> interimData);
+	/**
+	 * 振休履歴を作成する
+	 * @param interimData : 暫定振休管理データ
+	 * @return
+	 */
+	List<AbsenceHistoryOutputPara> createAbsenceHis(List<InterimAbsMng> interimData);
+	/**
+	 * 振出振休履歴対照情報を作成する
+	 * @param lstRecHis 振出履歴
+	 * @param lstAbsHis 振休履歴
+	 * @param lstInterimData 暫定振出振休紐付け管理
+	 * @return
+	 */
+	List<RecAbsHistoryOutputPara> createRecAbsHis(List<RecruitmentHistoryOutPara> lstRecHis, List<AbsenceHistoryOutputPara> lstAbsHis, List<InterimRecAbsMng> lstInterimData);
+	/**
+	 * 残数集計情報を作成する
+	 * @param lstRecHis 振出履歴
+	 * @param lstAbsHis 振休履歴
+	 * @return
+	 */
+	AsbRemainTotalInfor getAbsRemainTotalInfor(List<RecruitmentHistoryOutPara> lstRecHis, List<AbsenceHistoryOutputPara> lstAbsHis);
 }

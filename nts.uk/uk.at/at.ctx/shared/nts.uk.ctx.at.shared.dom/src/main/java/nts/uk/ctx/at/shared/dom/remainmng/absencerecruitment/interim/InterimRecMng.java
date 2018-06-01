@@ -19,7 +19,7 @@ public class InterimRecMng extends AggregateRoot{
 	/**	暫定振出管理データID */
 	private String recruitmentMngId;
 	/**	使用期限日 */
-	private GeneralDate expirationDays;
+	private GeneralDate expirationDate;
 	/**	発生日数 */
 	private OccurrenceDay occurrenceDays;
 	/**	法定内外区分 */

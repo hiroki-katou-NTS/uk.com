@@ -20,5 +20,5 @@ public class InterimAbsMng extends AggregateRoot{
 	/**	必要日数 */
 	private RequiredDay requeiredDays;
 	/**	未相殺日数 */
-	private UnOffsetDay unOffsetDAys;
+	private UnOffsetDay unOffsetDays;
 }

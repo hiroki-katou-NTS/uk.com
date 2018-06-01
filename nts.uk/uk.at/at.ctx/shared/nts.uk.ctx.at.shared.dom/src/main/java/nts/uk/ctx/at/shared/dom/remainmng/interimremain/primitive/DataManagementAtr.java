@@ -9,8 +9,14 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public enum DataManagementAtr {
-	INTERIM(0,""),
-	CONFIRM(1,"");
+	/**
+	 * 暫定
+	 */
+	INTERIM(0,"暫定"),
+	/**
+	 * 確定
+	 */
+	CONFIRM(1,"確定");
 	
 	public final Integer values;
 	public final String name;

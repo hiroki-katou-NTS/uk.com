@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.infra.repository.remainmng.interimremain;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -11,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.remainmng.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainmng.interimremain.primitive.CreaterAtr;
 import nts.uk.ctx.at.shared.dom.remainmng.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainmng.interimremain.primitive.RemainType;
+import nts.uk.ctx.at.shared.infra.entity.remainmng.breakdayoff.interim.KrcmtInterimBreakMng;
 import nts.uk.ctx.at.shared.infra.entity.remainmng.interimremain.KrcmtInterimRemainMng;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
@@ -35,5 +37,11 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 				EnumAdaptor.valueOf(c.remainType, RemainType.class),
 				EnumAdaptor.valueOf(c.remainAtr, RemainAtr.class));
 	}
+	@Override
+	public Optional<InterimRemain> getById(String remainId) {
+		return this.queryProxy().find(remainId, KrcmtInterimRemainMng.class)
+				.map(x -> convertToDomainSet(x));
+	}
+	
 
 }
