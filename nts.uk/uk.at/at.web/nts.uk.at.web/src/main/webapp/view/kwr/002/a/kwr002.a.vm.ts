@@ -264,17 +264,22 @@ module nts.uk.com.view.kwr002.a {
                 return employee;
             }
 
+            /**
+             * convert string to date
+             */
+            private toDate(strDate: string): Date {
+                return moment(strDate, 'YYYY/MM/DD').toDate();
+            }
+
             public print() {
                 // mode = 1 for export file excel
                 let self = this;
-                let startDate;
-                let endDate;
                 console.log(self.currentCodeList());
                 if (self.selectedEmployee().length <= 0) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_1129" });
                     return;
                 }
-                self.exportDto(new ExportDto(self.selectedEmployee(), self.dateValue().startDate, self.dateValue().endDate, self.selectedCode(), 1));
+                self.exportDto(new ExportDto(self.selectedEmployee(), self.toDate(self.dateValue().startDate), self.toDate(self.dateValue().endDate), self.selectedCode(), 1));                
                 service.exportService(self.exportDto()).done(() => {
 
                 }).fail((error) => {
@@ -285,12 +290,12 @@ module nts.uk.com.view.kwr002.a {
             public exportExcel() {
                 // mode = 2 for export file excel
                 let self = this;
-                if (self.selectedEmployee.length <= 0) {
+                if (self.selectedEmployee().length <= 0) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_1129" });
                     return;
                 }
 
-                self.exportDto(new ExportDto(self.selectedEmployee(), self.dateValue().startDate, self.dateValue().endDate, self.selectedCode(), 2));
+                self.exportDto(new ExportDto(self.selectedEmployee(), self.toDate(self.dateValue().startDate), self.toDate(self.dateValue().endDate), self.selectedCode(), 2));
                 service.exportService(self.exportDto()).done(() => {
 
                 }).fail((error) => {
@@ -379,12 +384,12 @@ module nts.uk.com.view.kwr002.a {
 
         export class ExportDto {
             employeeList: Array<Employee>;
-            startDate: string;
-            endDate: string;
+            startDate: Date;
+            endDate: Date;
             layout: string;
             mode: number;
 
-            constructor(employeeList: Array<Employee>, startDate: string, endDate: string, layout: string, mode: number) {
+            constructor(employeeList: Array<Employee>, startDate: Date, endDate: Date, layout: string, mode: number) {
                 this.employeeList = employeeList;
                 this.startDate = startDate;
                 this.endDate = endDate;

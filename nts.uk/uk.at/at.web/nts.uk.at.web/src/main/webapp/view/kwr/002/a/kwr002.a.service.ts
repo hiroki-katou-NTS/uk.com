@@ -17,8 +17,8 @@ module nts.uk.com.view.kwr002.a {
             return nts.uk.request.ajax("at", path.getPermission);
         }
 
-        export function exportService(data): JQueryPromise<a.viewModel.ExportDto> {
-            return nts.uk.request.ajax("at", path.exportService, data);
+        export function exportService(data: a.viewModel.ExportDto): JQueryPromise<a.viewModel.ExportDto> {
+            return nts.uk.request.exportFile(path.exportService, data);
         }
     }
 }
