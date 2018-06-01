@@ -15,6 +15,10 @@ import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateItemAttributes;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * @author tuannt-nws
+ *
+ */
 @Stateless
 public class CalculateAttendanceRecordDeleteCommandHandler
 		extends CommandHandler<CalculateAttendanceRecordDeleteCommand> {

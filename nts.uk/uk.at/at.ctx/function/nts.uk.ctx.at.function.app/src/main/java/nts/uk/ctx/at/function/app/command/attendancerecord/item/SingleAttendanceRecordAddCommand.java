@@ -5,7 +5,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
+<<<<<<< Updated upstream
  * @author locph
+=======
+ * @author tuannt-nws
+ *
+>>>>>>> Stashed changes
  */
 @AllArgsConstructor
 @Getter

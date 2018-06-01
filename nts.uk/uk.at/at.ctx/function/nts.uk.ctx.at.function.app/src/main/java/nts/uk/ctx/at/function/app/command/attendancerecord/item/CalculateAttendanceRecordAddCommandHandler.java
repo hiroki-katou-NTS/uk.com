@@ -16,6 +16,8 @@ import java.util.stream.Collectors;
 
 /**
  * @author locph
+ * @author tuannt-nws
+ *
  */
 @Stateless
 public class CalculateAttendanceRecordAddCommandHandler extends CommandHandler<CalculateAttendanceRecordAddCommand> {
@@ -24,17 +26,22 @@ public class CalculateAttendanceRecordAddCommandHandler extends CommandHandler<C
 	@Inject
 	CalculateAttendanceRecordRepositoty calculateAttendanceRecordRepository;
 
-	/**
-	 * Handle add CalculateAttendanceRecord Item
-	 * @param context
+	/** The add formular type. */
+	final int ADD_FORMULAR_TYPE = 1;
+	
+	/** The sub formular type. */
+	final int SUB_FORMULAR_TYPE = 2;
+	
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<CalculateAttendanceRecordAddCommand> context) {
 		CalculateAttendanceRecordAddCommand command = context.getCommand();
 		// get list added, suctracted
-		List<Integer> addedItems = command.getTimeItems().stream().filter(e -> e.getFormulaType() == 1)
+		List<Integer> addedItems = command.getTimeItems().stream().filter(e -> e.getFormulaType() == ADD_FORMULAR_TYPE)
 				.map(TimeItemDto::getTimeItemId).collect(Collectors.toList());
-		List<Integer> subtractedItems = command.getTimeItems().stream().filter(e -> e.getFormulaType() == 2)
+		List<Integer> subtractedItems = command.getTimeItems().stream().filter(e -> e.getFormulaType() == SUB_FORMULAR_TYPE)
 				.map(TimeItemDto::getTimeItemId).collect(Collectors.toList());
 		// convert to domain
 		CalculateAttendanceRecord calculateAttendanceRecord = new CalculateAttendanceRecord(

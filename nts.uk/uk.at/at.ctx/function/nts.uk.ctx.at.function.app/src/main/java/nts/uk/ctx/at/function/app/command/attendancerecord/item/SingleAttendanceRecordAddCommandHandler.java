@@ -15,6 +15,10 @@ import javax.inject.Inject;
 
 /**
  * @author locph
+=======
+/**
+ * @author tuannt-nws
+ *
  */
 @Stateless
 public class SingleAttendanceRecordAddCommandHandler extends CommandHandler<SingleAttendanceRecordAddCommand>{

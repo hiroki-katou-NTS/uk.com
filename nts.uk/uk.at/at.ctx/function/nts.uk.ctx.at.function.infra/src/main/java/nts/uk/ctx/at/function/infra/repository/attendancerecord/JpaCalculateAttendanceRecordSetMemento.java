@@ -7,47 +7,92 @@ import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecor
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateItemAttributes;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecItem;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecItemPK;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class JpaCalculateAttendanceRecordSetMemento.
+ *
+ * @author tuannt-nws
+ */
 public class JpaCalculateAttendanceRecordSetMemento implements CalculateAttendanceRecordSetMemento {
 	/** The kfnst attnd rec. */
 	private KfnstAttndRec kfnstAttndRec;
+	
+	/** The kfnst attnd rec items. */
+	private List<KfnstAttndRecItem> kfnstAttndRecItems;
 
 	/**
 	 * Instantiates a new jpa calculate attendance record set memento.
 	 *
-	 * @param kfnstAttndRec
-	 *            the kfnst attnd rec
-	 * @param kfnstAttndRecItems
-	 *            the kfnst attnd rec items
+	 * @param kfnstAttndRec            the kfnst attnd rec
 	 */
 	public JpaCalculateAttendanceRecordSetMemento(KfnstAttndRec kfnstAttndRec) {
 		super();
 		this.kfnstAttndRec = kfnstAttndRec;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordSetMemento#setAttribute(nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateItemAttributes)
+	 */
 	@Override
 	public void setAttribute(CalculateItemAttributes attribute) {
 		this.kfnstAttndRec.setAttribute(new BigDecimal(attribute.value));
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordSetMemento#setName(nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName)
+	 */
 	@Override
 	public void setName(ItemName name) {
 		this.kfnstAttndRec.setItemName(name.v());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordSetMemento#setAddedItem(java.util.List)
+	 */
 	@Override
-	public void setAddedItem(List<Integer> idList) {
-		// idList.forEach(e -> {
-		// KfnstAttndRecItemPK pk = new KfnstAttndRecItemPK(null, 0, 0, 0, 0, e);
-		// KfnstAttndRecItem entity = new KfnstAttndRecItem(pk, new BigDecimal(1));
-		// kfnstAttndRecItems.add(entity);
-		// });
+	public void setAddedItem(List<Integer> idListAdd) {
+		// remove old value
+		this.kfnstAttndRecItems.forEach(e -> {
+			if (e.getFormulaType() == new BigDecimal(3)) {
+				this.kfnstAttndRecItems.remove(e);
+			}
+		});
+		// add new value
+		KfnstAttndRecItemPK pk = new KfnstAttndRecItemPK(this.kfnstAttndRec.getId().getCid(),
+				this.kfnstAttndRec.getId().getExportCd(), this.kfnstAttndRec.getId().getColumnIndex(),
+				this.kfnstAttndRec.getId().getPosition(), this.kfnstAttndRec.getId().getOutputAtr(), 0);
+		idListAdd.forEach(e -> {
+			pk.setTimeItemId(e);
+			int formularType = 1;
+			KfnstAttndRecItem item = new KfnstAttndRecItem(pk, new BigDecimal(formularType));
+			this.kfnstAttndRecItems.add(item);
+		});
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordSetMemento#setSubtractedItem(java.util.List)
+	 */
 	@Override
-	public void setSubtractedItem(List<Integer> idList) {
-		// TODO Auto-generated method stub
-
+	public void setSubtractedItem(List<Integer> idListSubtract) {
+		// remove old value
+		this.kfnstAttndRecItems.forEach(e -> {
+			if (e.getFormulaType() == new BigDecimal(3)) {
+				this.kfnstAttndRecItems.remove(e);
+			}
+		});
+		// add new value
+		KfnstAttndRecItemPK pk = new KfnstAttndRecItemPK(this.kfnstAttndRec.getId().getCid(),
+				this.kfnstAttndRec.getId().getExportCd(), this.kfnstAttndRec.getId().getColumnIndex(),
+				this.kfnstAttndRec.getId().getPosition(), this.kfnstAttndRec.getId().getOutputAtr(), 0);
+		idListSubtract.forEach(e -> {
+			pk.setTimeItemId(e);
+			int formularType = 2;
+			KfnstAttndRecItem item = new KfnstAttndRecItem(pk, new BigDecimal(formularType));
+			this.kfnstAttndRecItems.add(item);
+		});
 	}
 
 }

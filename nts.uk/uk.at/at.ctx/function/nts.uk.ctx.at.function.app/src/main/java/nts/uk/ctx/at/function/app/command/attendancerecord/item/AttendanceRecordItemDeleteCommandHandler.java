@@ -10,7 +10,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 /**
+<<<<<<< Updated upstream
  * @author locph
+=======
+ * @author tuannt-nws
+ *
+>>>>>>> Stashed changes
  */
 @Stateless
 public class AttendanceRecordItemDeleteCommandHandler
