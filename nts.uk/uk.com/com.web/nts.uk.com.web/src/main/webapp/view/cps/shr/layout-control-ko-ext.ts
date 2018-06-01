@@ -850,7 +850,7 @@ module nts.custombinding {
                         <input data-bind=" ntsTextEditor: {
                                 name: itemName,
                                 value: value,
-                                constraint: nameid,
+                                constraint: nameid == 'COM1000000000000000CS00069IS00779' ? 'StampNumber' : nameid,
                                 required: required,
                                 option: {
                                     textmode: 'text'
@@ -1606,6 +1606,13 @@ module nts.custombinding {
 
                     if (constraints && constraints.length) {
                         exceptConsts = [];
+                        
+                        // fix bug stampNumber error msg
+                        let stampNumber = _.clone(constraints['COM1000000000000000CS00069IS00779']);
+                        if (stampNumber) {
+                            constraints.push(stampNumber);
+                        }
+
                         writeConstraints(constraints);
                     }
                 },
