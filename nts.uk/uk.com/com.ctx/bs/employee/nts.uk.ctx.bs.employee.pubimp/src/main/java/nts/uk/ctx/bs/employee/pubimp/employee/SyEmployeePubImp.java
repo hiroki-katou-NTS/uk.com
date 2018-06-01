@@ -416,13 +416,11 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		}
 
 		List<String> pIds = emps.stream().map(EmployeeDataMngInfo::getPersonId).collect(Collectors.toList());
-
 		// Lấy toàn bộ domain「個人基本情報」
 		List<Person> persons = this.personRepository.getPersonByPersonIds(pIds);
 
 		Map<String, Person> mapPersons = persons.stream()
 				.collect(Collectors.toMap(Person::getPersonId, Function.identity()));
-
 		return emps.stream().map(employee -> {
 
 			EmployeeInfoExport result = new EmployeeInfoExport();
@@ -440,7 +438,6 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			return result;
 		}).collect(Collectors.toList());
 	}
-
 	@Override
 	public List<String> getListEmpByWkpAndEmpt(List<String> wkpsId, List<String> lstemptsCode, DatePeriod dateperiod) {
 
@@ -555,5 +552,4 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 		return result;
 	}
-
 }

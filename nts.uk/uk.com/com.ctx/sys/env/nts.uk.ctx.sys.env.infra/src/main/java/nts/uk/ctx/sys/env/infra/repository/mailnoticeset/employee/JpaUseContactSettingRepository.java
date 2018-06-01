@@ -125,5 +125,43 @@ public class JpaUseContactSettingRepository extends JpaRepository implements Use
 		return this.queryProxy().find(pk, SevstUseContactSet.class)
 				.map(entity -> new UseContactSetting(new JpaUseContactSettingGetMemento(entity)));
 	}
+	// sonnlb Code
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSettingRepository
+	 * #findByListEmployeeId(java.util.List, java.lang.String)
+	 */
+	@Override
+	public List<UseContactSetting> findByListEmployeeId(List<String> employeeIds, String companyId) {
+		List<UseContactSetting> lstReturn = new ArrayList<>();
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<SevstUseContactSet> cq = criteriaBuilder.createQuery(SevstUseContactSet.class);
+		Root<SevstUseContactSet> root = cq.from(SevstUseContactSet.class);
+
+		// Build query
+		cq.select(root);
+
+		// Add where conditions
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(SevstUseContactSet_.sevstUseContactSetPK).get(SevstUseContactSetPK_.cid), companyId));
+		lstpredicateWhere.add(criteriaBuilder.and(
+				root.get(SevstUseContactSet_.sevstUseContactSetPK).get(SevstUseContactSetPK_.sid).in(employeeIds)));
+
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		List<SevstUseContactSet> listSevstUseContactSet = em.createQuery(cq).getResultList();
+
+		// Check exist
+		if (!CollectionUtil.isEmpty(listSevstUseContactSet)) {
+			listSevstUseContactSet.stream().forEach(
+					entity -> lstReturn.add(new UseContactSetting(new JpaUseContactSettingGetMemento(entity))));
+		}
+
+		return lstReturn;
+	}
 }
