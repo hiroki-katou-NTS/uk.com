@@ -272,7 +272,7 @@ module nts.uk.com.view.kwr002.b {
 
     class SingleAttendanceRecordExportCommand {
         exportSettingCode: number;
-        useAtr: false;
+        useAtr: boolean;
         exportAtr: number;
         columnIndex: number;
         position: number;
@@ -281,7 +281,7 @@ module nts.uk.com.view.kwr002.b {
         name: string;
 
 
-        constructor(exportSettingCode: number, useAtr: false, exportAtr: number, columnIndex: number, position: number, timeItemId: number, attribute: number, name: string) {
+        constructor(exportSettingCode: number, useAtr: boolean, exportAtr: number, columnIndex: number, position: number, timeItemId: number, attribute: number, name: string) {
             this.exportSettingCode = exportSettingCode;
             this.useAtr = useAtr;
             this.exportAtr = exportAtr;
@@ -295,7 +295,7 @@ module nts.uk.com.view.kwr002.b {
 
     class CalculateAttendanceRecordExportCommand {
         exportSettingCode: number;
-        useAtr: false;
+        useAtr: boolean;
         exportAtr: number;
         columnIndex: number;
         position: number;
@@ -303,7 +303,7 @@ module nts.uk.com.view.kwr002.b {
         attribute: number;
         name: string;
 
-        constructor(exportSettingCode: number, useAtr: false, exportAtr: number, columnIndex: number, position: number, timeItems: Array<nts.uk.com.view.kwr002.b.TimeItem>, attribute: number, name: string) {
+        constructor(exportSettingCode: number, useAtr: boolean, exportAtr: number, columnIndex: number, position: number, timeItems: Array<nts.uk.com.view.kwr002.b.TimeItem>, attribute: number, name: string) {
             this.exportSettingCode = exportSettingCode;
             this.useAtr = useAtr;
             this.exportAtr = exportAtr;

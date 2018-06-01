@@ -11,7 +11,7 @@ module nts.uk.com.view.kwr002.b.service {
         return nts.uk.request.ajax("at", paths.getAllARES);
     }
 
-    export function getARESByCode(code: string): JQueryPromise<attendanceRecordExportSetting> {
+    export function getARESByCode(code: any): JQueryPromise<attendanceRecordExportSetting> {
         return nts.uk.request.ajax("at", paths.getARESByCode + code);
     }
 
