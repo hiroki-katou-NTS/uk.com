@@ -6,10 +6,10 @@ module nts.uk.com.view.cmf003.c {
             var paths = {
                 //TODO: Fake ws
                 getCategoryBySytem: "ctx/sys/assist/app/findCategory/{0}",
-                getSystemType: "exio/exi/condset/getSysType"
+                getSystemType: "ctx/sys/assist/app/getSysType"
             }
          
-            export function getSysTypes(condSetCode: string): JQueryPromise<any> {
+            export function getSysTypes(): JQueryPromise<any> {
                 return ajax("com", paths.getSystemType);
             }
         
