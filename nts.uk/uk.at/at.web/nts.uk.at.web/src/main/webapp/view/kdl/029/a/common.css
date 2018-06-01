@@ -19,6 +19,10 @@
 	padding: 5px;
 }
 
+#content-right{
+	float: left;
+}
+
 .div_line {
 	margin-top: 10px;
 	float: left;

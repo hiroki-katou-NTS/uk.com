@@ -10,8 +10,9 @@ module nts.uk.at.view.kdl029.a.screenModel {
     export class ViewModel {
 
         columns = ko.observableArray([
-            { code: 0, text: text('KAF011_14') },
-            { code: 1, text: text('KAF011_15') }]);
+            { headerText: text('KAF011_14'), prop: 'code', width: 90 },
+            { headerText: text('KAF011_15'), prop: 'text', width: 245 }
+        ]);
         data = ko.observableArray([
             { code: 0, text: text('KAF011_14') },
             { code: 1, text: text('KAF011_15') }]);
@@ -56,7 +57,7 @@ module nts.uk.at.view.kdl029.a.screenModel {
             returnDataFromCcg001: (data: any) => {
                 let self: ViewModel = this;
 
-              
+
             }
         };
 
@@ -64,6 +65,10 @@ module nts.uk.at.view.kdl029.a.screenModel {
             let self = this;
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
 
+        }
+
+        closeDialog() {
+            nts.uk.ui.windows.close();
         }
         start(): JQueryPromise<any> {            block.invisible();
             var self = this,

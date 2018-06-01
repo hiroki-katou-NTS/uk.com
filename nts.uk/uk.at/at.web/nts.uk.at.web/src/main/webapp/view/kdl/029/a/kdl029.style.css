@@ -3,3 +3,12 @@
 #totalTable {
 	width: 250px;
 }
+
+#content-left {
+	width: 250px;
+	height: 300px;
+}
+
+#contents-area {
+	padding: 10px !important;
+}
