@@ -73,11 +73,14 @@ public class SprWebService {
 		String stampProtectionReal = stampProtection;
 		LoginUserContextSpr loginUserContextSpr = null;
 		try {
-			byte[] reasonBytes = new byte[reason.length()];
-			for (int i = 0; i < reason.length(); i++) {
-				reasonBytes[i] = (byte)(reason.codePointAt(i));
+			Integer menuCD = Integer.valueOf(menuCode);
+			if(menuCD==1||menuCD==2){
+				byte[] reasonBytes = new byte[reason.length()];
+				for (int i = 0; i < reason.length(); i++) {
+					reasonBytes[i] = (byte)(reason.codePointAt(i));
+				}
+				reasonReal = new String(reasonBytes, "sjis");
 			}
-			reasonReal = new String(reasonBytes, "sjis");
 			loginUserContextSpr = sprLoginFormService.loginFromSpr(
 					menuCDReal, 
 					loginEmployeeCDReal, 
