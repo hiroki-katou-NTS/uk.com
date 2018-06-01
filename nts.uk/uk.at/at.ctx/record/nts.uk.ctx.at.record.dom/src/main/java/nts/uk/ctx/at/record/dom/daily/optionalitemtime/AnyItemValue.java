@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.daily.optionalitemtime;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -30,13 +31,13 @@ public class AnyItemValue {
 	}
 
 	public void markAsTime() {
-		this.times = Optional.of(new AnyItemTimes(0));
+		this.times = Optional.of(new AnyItemTimes(BigDecimal.valueOf(0)));
 		this.amount = Optional.of(new AnyItemAmount(0));
 	}
 
 	public void markAsAmount() {
 		this.time = Optional.of(new AnyItemTime(0));
-		this.times = Optional.of(new AnyItemTimes(0));
+		this.times = Optional.of(new AnyItemTimes(BigDecimal.valueOf(0)));
 	}
 
 }

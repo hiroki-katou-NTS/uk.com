@@ -140,17 +140,17 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KrcdtDayPrsIncldTime krcdtDayPrsIncldTime;
 
-//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime", orphanRemoval = true)
-//	public List<KrcdtDayLeaveEarlyTime> krcdtDayLeaveEarlyTime;
-//
-//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime", orphanRemoval = true)
-//	public List<KrcdtDayLateTime> krcdtDayLateTime;
-//
-//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime", orphanRemoval = true)
-//	public List<KrcdtDaiShortWorkTime> krcdtDaiShortWorkTime;
-//	
-//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime", orphanRemoval = true)
-//	public List<KrcdtDayShorttime> KrcdtDayShorttime;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime", orphanRemoval = true)
+	public List<KrcdtDayLeaveEarlyTime> krcdtDayLeaveEarlyTime;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime", orphanRemoval = true)
+	public List<KrcdtDayLateTime> krcdtDayLateTime;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime", orphanRemoval = true)
+	public List<KrcdtDaiShortWorkTime> krcdtDaiShortWorkTime;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime", orphanRemoval = true)
+	public List<KrcdtDayShorttime> KrcdtDayShorttime;
 	
 	@OneToOne(cascade = CascadeType.REMOVE)
 	@JoinColumns(value = { 

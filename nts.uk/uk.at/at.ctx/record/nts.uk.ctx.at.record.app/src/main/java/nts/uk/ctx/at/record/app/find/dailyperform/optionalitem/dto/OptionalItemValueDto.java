@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.optionalitem.dto;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -26,7 +27,7 @@ public class OptionalItemValueDto {
 	/** 任意項目: 回数, 時間, 金額 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(layout = "A", jpPropertyName = "値")
-	private int value;
+	private String value;
 
 	@Getter
 	private int itemNo;
@@ -42,9 +43,9 @@ public class OptionalItemValueDto {
 			boolean isTimes = attr == OptionalItemAtr.NUMBER;
 			boolean isAmount = attr == OptionalItemAtr.AMOUNT;
 			boolean isTime = attr == OptionalItemAtr.TIME;
-			int value = isAmount ? c.getAmount().get().v() : 
-						isTime ? c.getTime().get().valueAsMinutes() : 
-							     c.getTimes().get().v();
+			String value = isAmount ? String.valueOf(c.getAmount().get().v() ): 
+						isTime ? String.valueOf(c.getTime().get().valueAsMinutes()) : 
+							     c.getTimes().get().v().toString();
 			return new OptionalItemValueDto(value, c.getItemNo().v(), isTime, isTimes, isAmount);
 		}
 		return null;
@@ -53,37 +54,22 @@ public class OptionalItemValueDto {
 	public AnyItemValue toDomain() {
 		return new AnyItemValue(new AnyItemNo(this.itemNo), 
 						this.isTimesItem ? Optional.of(new AnyItemTimes(new BigDecimal(this.value))) : Optional.empty(),
-						this.isAmountItem ? Optional.of(new AnyItemAmount(new BigDecimal(this.value))) : Optional.empty(),
+						this.isAmountItem ? Optional.of(new AnyItemAmount(Integer.parseInt(this.value))) : Optional.empty(),
 						this.isTimeItem ? Optional.of(new AnyItemTime(Integer.valueOf(this.value))) : Optional.empty());
 	}
-	
-		if(c != null) {
-			boolean isTimes = c.getTimes().isPresent();
-			boolean isAmount = c.getAmount().isPresent();
-			boolean isTime = c.getTime().isPresent();
-			String value = isAmount ? c.getAmount().get().v().toString()
-					: isTime ? String.valueOf(c.getTime().get().valueAsMinutes())
-							: String.valueOf(c.getTimes().get().v());
-			return new OptionalItemValueDto(value, c.getItemNo().v(), isTime, isTimes, isAmount);
-		}
-		return null;
-	}
-	
-	public AnyItemValue toDomain() {
-		return new AnyItemValue(new AnyItemNo(this.itemNo), 
-						this.isTimesItem ? Optional.of(new AnyItemTimes(new BigDecimal(this.value))) : Optional.empty(),
-						this.isAmountItem ? Optional.of(new AnyItemAmount(new BigDecimal(this.value))) : Optional.empty(),
-						this.isTimeItem ? Optional.of(new AnyItemTime(Integer.valueOf(this.value))) : Optional.empty());
-	}
-	
+
 	public static OptionalItemValueDto from(AnyItemOfMonthly c) {
+		return from(c, null);
+	}
+	
+	public static OptionalItemValueDto from(AnyItemOfMonthly c, OptionalItemAtr attr) {
 		if(c != null) {
-			boolean isTimes = c.getTimes().isPresent();
-			boolean isAmount = c.getAmount().isPresent();
-			boolean isTime = c.getTime().isPresent();
-			String value = isTimes ? c.getTimes().get().v().toString()
-					: isAmount ? String.valueOf(c.getAmount().get().v())
-							: String.valueOf(c.getTime().get().valueAsMinutes());
+			boolean isTimes = attr == OptionalItemAtr.NUMBER;
+			boolean isAmount = attr == OptionalItemAtr.AMOUNT;
+			boolean isTime = attr == OptionalItemAtr.TIME;
+			String value = isAmount ? String.valueOf(c.getAmount().get().v() ): 
+				isTime ? String.valueOf(c.getTime().get().valueAsMinutes()) : 
+					     c.getTimes().get().v().toString();
 			return new OptionalItemValueDto(value, c.getAnyItemId(), isTime, isTimes, isAmount);
 		}
 		return null;
@@ -96,16 +82,16 @@ public class OptionalItemValueDto {
 		return null;
 	}
 	
-	public Integer getDailyTimes(){
+	public BigDecimal getDailyTimes(){
 		if(isTimesItem){
-			return Integer.parseInt(value);
+			return new BigDecimal(value);
 		}
 		return null;
 	}
 	
-	public BigDecimal getDailyAmount(){
+	public Integer getDailyAmount(){
 		if(isAmountItem){
-			return new BigDecimal(value);
+			return Integer.parseInt(value);
 		}
 		return null;
 	}

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.daily.optionalitemtime;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -74,9 +75,9 @@ public class AnyItemValueOfDaily {
         
         /*パラメータ：任意項目の計算結果から任意項目値クラスへ変換(上で計算した項目のみ更新する)*/
         for(CalcResultOfAnyItem calcResultOfAnyItem:anyItemList) {
-        	int itemNo = Integer.parseInt(calcResultOfAnyItem.getOptionalItemNo().v());
+        	int itemNo = calcResultOfAnyItem.getOptionalItemNo().v();
         	items.set(itemNo - 1, new AnyItemValue(new AnyItemNo(itemNo),
-					  calcResultOfAnyItem.getCount().map(v -> new AnyItemTimes(v)),
+					  calcResultOfAnyItem.getCount().map(v -> new AnyItemTimes(BigDecimal.valueOf(v))),
 					  calcResultOfAnyItem.getMoney().map(v -> new AnyItemAmount(v)),
 					  calcResultOfAnyItem.getTime().map(v -> new AnyItemTime(v)))); 
         }
@@ -85,11 +86,10 @@ public class AnyItemValueOfDaily {
     }
     
     public void correctAnyType(OptionalItemRepository optionalMasterRepo){
-    	List<String> itemIds = items.stream().map(i -> i.getItemNo().v())
-				.map(id -> StringUtil.padLeft(String.valueOf(id), 3, '0')).collect(Collectors.toList());
+    	List<Integer> itemIds = items.stream().map(i -> i.getItemNo().v()).collect(Collectors.toList());
 		Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
 				.findByListNos(AppContexts.user().companyId(), itemIds).stream()
-				.collect(Collectors.toMap(c -> Integer.parseInt(c.getOptionalItemNo().v()), c -> c));
+				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
 		if(!optionalMaster.isEmpty()){
 			items.stream().forEach(i -> {
 				OptionalItem master = optionalMaster.get(i.getItemNo().v());

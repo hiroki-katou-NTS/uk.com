@@ -99,9 +99,9 @@ public class JpaEmpConditionRepository extends JpaRepository implements EmpCondi
 	 * java.lang.String, java.lang.String)
 	 */
 	@Override
-	public List<EmpCondition> findAll(String companyId, List<String> optionalItemNoList) {
+	public List<EmpCondition> findAll(String companyId, List<Integer> optionalItemNoList) {
 		List<EmpCondition> result = new ArrayList<>();
-		for(String optionalItemNo:optionalItemNoList) {
+		for(Integer optionalItemNo:optionalItemNoList) {
 			result.add(this.find(companyId, optionalItemNo));
 		}
 		return result;
