@@ -81,8 +81,8 @@ public class ManualSetDeletionService extends ExportService<Object>{
 			"CMF003_579", "CMF003_580", "CMF003_581", "CMF003_582", "CMF003_583", "CMF003_584");
 
 	private static final List<String> LST_NAME_ID_HEADER_EMPLOYEE_FILE = Arrays.asList("SID", "SCD", "BUSINESS_NAME");
-	private static final List<String> LST_NAME_HEADER_FIX_DATA_FILE = Arrays.asList("H_CID", "H_SID", "H_DATE",
-			"H_DATE_START", "H_DATE_END");
+	private static final List<String> LST_NAME_HEADER_FIX_DATA_FILE = Arrays.asList("CMF003_620", "CMF003_621", "CMF003_622",
+			"CMF003_623", "CMF003_624");
 
 	private static final String TABLE_NAME_FILE = "保存対象テーブル一覧";
 	private static final String EMPLOYEE_NAME_FILE = "対象社員";
@@ -768,7 +768,7 @@ public class ManualSetDeletionService extends ExportService<Object>{
 	private List<String> getHeaderForDataFile(List<String> columNames) {
 		List<String> lstHeader = new ArrayList<>();
 		for (String nameId : LST_NAME_HEADER_FIX_DATA_FILE) {
-			lstHeader.add(nameId);
+			lstHeader.add(TextResource.localize(nameId));
 		}
 
 		for (String nameColumn : columNames) {
