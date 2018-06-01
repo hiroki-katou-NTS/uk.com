@@ -165,16 +165,18 @@ public class KTG027QueryProcessor {
 				break;
 			}
 			AgreementTimeList36 agreementTimeList36 = new AgreementTimeList36(personInfor.get().getEmployeeCode(), personInfor.get().getBusinessName(), null,
-					new AgreementTimeOfMonthlyDto(agreementTimeDetail.getConfirmed().getAgreementTime().v(), agreementTimeDetail.getConfirmed().getLimitErrorTime() == null ? 0 : agreementTimeDetail.getConfirmed().getLimitErrorTime().v(),
-							agreementTimeDetail.getConfirmed().getLimitAlarmTime() == null ? 0 : agreementTimeDetail.getConfirmed().getLimitAlarmTime().v(),
-							!agreementTimeDetail.getConfirmed().getExceptionLimitErrorTime().isPresent() ? 0 : agreementTimeDetail.getConfirmed().getExceptionLimitErrorTime().get().v(),
-							!agreementTimeDetail.getConfirmed().getExceptionLimitAlarmTime().isPresent() ? 0 : agreementTimeDetail.getConfirmed().getExceptionLimitAlarmTime().get().v(), agreementTimeDetail.getConfirmed().getStatus().value),
-					new AgreementTimeOfMonthlyDto(agreementTimeDetail.getAfterAppReflect().getAgreementTime().v(),
-							agreementTimeDetail.getAfterAppReflect().getLimitErrorTime() == null ? 0 : agreementTimeDetail.getAfterAppReflect().getLimitErrorTime().v(),
-							agreementTimeDetail.getAfterAppReflect().getLimitAlarmTime() == null ? 0 : agreementTimeDetail.getAfterAppReflect().getLimitAlarmTime().v(),
-							!agreementTimeDetail.getAfterAppReflect().getExceptionLimitErrorTime().isPresent() ? 0 : agreementTimeDetail.getAfterAppReflect().getExceptionLimitErrorTime().get().v(),
-							!agreementTimeDetail.getAfterAppReflect().getExceptionLimitAlarmTime().isPresent() ? 0 : agreementTimeDetail.getAfterAppReflect().getExceptionLimitAlarmTime().get().v(),
-							agreementTimeDetail.getAfterAppReflect().getStatus().value));
+					new AgreementTimeOfMonthlyDto(!agreementTimeDetail.getConfirmed().isPresent()? 0 : agreementTimeDetail.getConfirmed().get().getAgreementTime().v(),
+							!agreementTimeDetail.getConfirmed().isPresent() ? 0 : agreementTimeDetail.getConfirmed().get().getLimitErrorTime().v(),
+							!agreementTimeDetail.getConfirmed().isPresent() ? 0 : agreementTimeDetail.getConfirmed().get().getLimitAlarmTime().v(),
+							!agreementTimeDetail.getConfirmed().isPresent() ? 0 : (!agreementTimeDetail.getConfirmed().get().getExceptionLimitErrorTime().isPresent() ? 0 :agreementTimeDetail.getConfirmed().get().getExceptionLimitErrorTime().get().v()),
+							!agreementTimeDetail.getConfirmed().isPresent() ? 0 : (!agreementTimeDetail.getConfirmed().get().getExceptionLimitAlarmTime().isPresent() ? 0 :agreementTimeDetail.getConfirmed().get().getExceptionLimitAlarmTime().get().v()),
+							!agreementTimeDetail.getConfirmed().isPresent() ? 0 : agreementTimeDetail.getConfirmed().get().getStatus().value),
+					new AgreementTimeOfMonthlyDto(!agreementTimeDetail.getAfterAppReflect().isPresent()? 0 : agreementTimeDetail.getAfterAppReflect().get().getAgreementTime().v(),
+							!agreementTimeDetail.getAfterAppReflect().isPresent() ? 0 : agreementTimeDetail.getAfterAppReflect().get().getLimitErrorTime().v(),
+							!agreementTimeDetail.getAfterAppReflect().isPresent() ? 0 : agreementTimeDetail.getAfterAppReflect().get().getLimitAlarmTime().v(),
+							!agreementTimeDetail.getAfterAppReflect().isPresent() ? 0 : (!agreementTimeDetail.getAfterAppReflect().get().getExceptionLimitErrorTime().isPresent() ? 0 :agreementTimeDetail.getAfterAppReflect().get().getExceptionLimitErrorTime().get().v()),
+							!agreementTimeDetail.getAfterAppReflect().isPresent() ? 0 : (!agreementTimeDetail.getAfterAppReflect().get().getExceptionLimitAlarmTime().isPresent() ? 0 :agreementTimeDetail.getAfterAppReflect().get().getExceptionLimitAlarmTime().get().v()),
+							!agreementTimeDetail.getAfterAppReflect().isPresent() ? 0 : agreementTimeDetail.getAfterAppReflect().get().getStatus().value));
 			data.add(agreementTimeList36);
 		}
 
@@ -189,7 +191,7 @@ public class KTG027QueryProcessor {
 		// 対象月が過去月かどうかチェック(Check targetMonth có phải là tháng quá khứ ko)
 		for (AgreementTimeDetail agreeTime : listAgreementTimeDetail) {
 			if (!GeneralDate.today().after(targetMonth) == true) {
-				if (agreeTime.getAfterAppReflect().getStatus().value == 1 || agreeTime.getAfterAppReflect().getStatus().value == 2) {
+				if (agreeTime.getAfterAppReflect().get().getStatus().value == 1 || agreeTime.getAfterAppReflect().get().getStatus().value == 2) {
 					return true;
 				}
 				return true;
