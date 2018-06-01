@@ -7,11 +7,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.sys.assist.dom.deletedata.EmployeeDeletion;
-import nts.uk.ctx.sys.assist.dom.deletedata.SyEmployeeAdapter;
+import nts.uk.ctx.sys.assist.dom.deletedata.SysEmployeeDelAdapter;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 
 @Stateless
-public class SyEmployeeAdapterImpl implements SyEmployeeAdapter {
+public class SysEmployeeDelAdapterImpl implements SysEmployeeDelAdapter {
 
 	/** The SyEmployeePub pub. */
 	@Inject

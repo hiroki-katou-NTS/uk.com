@@ -18,7 +18,7 @@ import nts.uk.ctx.sys.assist.dom.deletedata.EmployeeDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.EmployeesDeletionRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletionRepository;
-import nts.uk.ctx.sys.assist.dom.deletedata.SyEmployeeAdapter;
+import nts.uk.ctx.sys.assist.dom.deletedata.SysEmployeeDelAdapter;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -37,7 +37,7 @@ public class AddManualSetDelHandler extends CommandHandlerWithResult<ManualSetDe
 	@Inject
 	private ManualSetDeletionService manualSetDeletionService;
 	@Inject
-	private SyEmployeeAdapter syEmployeeAdapter;
+	private SysEmployeeDelAdapter syEmployeeAdapter;
 
 	/*
 	 * (non-Javadoc)
