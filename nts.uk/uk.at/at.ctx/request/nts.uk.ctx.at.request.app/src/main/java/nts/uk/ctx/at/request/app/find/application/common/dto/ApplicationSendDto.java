@@ -10,6 +10,9 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforIm
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApprovalFrameOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApprovalPhaseStateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApprovalRootOutput;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 @Value
 @AllArgsConstructor
 public class ApplicationSendDto {

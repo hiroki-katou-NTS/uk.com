@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.request.dom.application.common.service.application;
 
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -44,6 +47,14 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 		Optional<Application_New> application_New = this.applicationRepository.findByID(companyID, appID);
 		ApprovalRootContentImport_New approvalRootContentImport = approvalRootStateAdapter.getApprovalRootContent(companyID, null, null, null, appID, false);
 		ApprovalRootOutput approvalRoot = this.fromApprovalRootToApprovalRootOutput(approvalRootContentImport);
+		List<PesionInforImport> listApproverDetail = new ArrayList<PesionInforImport>();
+		approvalRootContentImport.getApprovalRootState().getListApprovalPhaseState().forEach(x -> { 
+			x.getListApprovalFrame().forEach(y -> {
+				y.getListApprover().forEach(z -> {
+					listApproverDetail.add(employeeRequestAdapter.getEmployeeInfor(z.getApproverID()));
+				});
+			});
+		});
 		Optional<ApprovalTemp> appTemp = appRep.getAppTem();
 		String appTempAsStr = "";
 		if (appTemp.isPresent()){

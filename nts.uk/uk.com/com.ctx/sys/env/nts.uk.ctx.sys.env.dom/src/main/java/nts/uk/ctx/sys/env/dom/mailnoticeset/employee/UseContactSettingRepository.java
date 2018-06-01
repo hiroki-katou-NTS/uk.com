@@ -46,7 +46,6 @@ public interface UseContactSettingRepository {
 	 * @param companyId the company id
 	 */
 	void update(UseContactSetting useContactSetting, String companyId);
-<<<<<<< HEAD
 	
 	
 	/**
@@ -57,6 +56,4 @@ public interface UseContactSettingRepository {
 	 * @return the list
 	 */
 	List<UseContactSetting> findByListEmployeeId(List<String> employeeIds, String companyId);
-=======
->>>>>>> delivery/release_user
 }

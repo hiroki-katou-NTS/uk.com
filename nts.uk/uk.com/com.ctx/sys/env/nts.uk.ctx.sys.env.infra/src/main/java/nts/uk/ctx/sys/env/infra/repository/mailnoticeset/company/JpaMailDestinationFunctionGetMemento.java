@@ -11,10 +11,7 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.company.MailDestinationFunctionGetMe
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.SendMailByFunctionSetting;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstMailDestinFunc;
-<<<<<<< HEAD
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-=======
->>>>>>> delivery/release_user
 
 /**
  * The Class JpaMailDestinationFunctionGetMemento.
@@ -28,16 +25,22 @@ public class JpaMailDestinationFunctionGetMemento implements MailDestinationFunc
 	 * Instantiates a new jpa mail destination function get memento.
 	 *
 <<<<<<< HEAD
+	 * @param lstEntity the lst entity
+=======
+<<<<<<< HEAD
 	 * @param lstEntity
 	 *            the lst entity
 =======
 	 * @param lstEntity the lst entity
 >>>>>>> delivery/release_user
+>>>>>>> pj/at/dev/Team_D/KDL030
 	 */
 	public JpaMailDestinationFunctionGetMemento(List<SevstMailDestinFunc> lstEntity) {
 		this.lstEntity = lstEntity;
 	}
-
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.company.MailDestinationFunctionGetMemento#getSettingItem()
+=======
 <<<<<<< HEAD
 	/*
 	 * (non-Javadoc)
@@ -48,12 +51,15 @@ public class JpaMailDestinationFunctionGetMemento implements MailDestinationFunc
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.company.MailDestinationFunctionGetMemento#getSettingItem()
 >>>>>>> delivery/release_user
+>>>>>>> pj/at/dev/Team_D/KDL030
 	 */
 	@Override
 	public UserInfoItem getSettingItem() {
 		return UserInfoItem.valueOf(this.lstEntity.get(0).getSevstMailDestinFuncPK().getSettingItem());
 	}
-
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.company.MailDestinationFunctionGetMemento#getSendByFunctionSetting()
+=======
 <<<<<<< HEAD
 	/*
 	 * (non-Javadoc)
@@ -64,6 +70,7 @@ public class JpaMailDestinationFunctionGetMemento implements MailDestinationFunc
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.company.MailDestinationFunctionGetMemento#getSendByFunctionSetting()
 >>>>>>> delivery/release_user
+>>>>>>> pj/at/dev/Team_D/KDL030
 	 */
 	@Override
 	public List<SendMailByFunctionSetting> getSendByFunctionSetting() {
@@ -71,8 +78,6 @@ public class JpaMailDestinationFunctionGetMemento implements MailDestinationFunc
 			return new SendMailByFunctionSetting(new JpaSendMailByFunctionSettingGetMemento(item));
 		}).collect(Collectors.toList());
 	}
-
-<<<<<<< HEAD
 	@Override
 	public List<SendMailByFunctionSetting> getSendByFunctionSetting(NotUseAtr use) {
 		return this.lstEntity.stream().map(item -> {
@@ -80,7 +85,4 @@ public class JpaMailDestinationFunctionGetMemento implements MailDestinationFunc
 		}).collect(Collectors.toList()).stream().filter(item -> item.getSendSetting().equals(use))
 				.collect(Collectors.toList());
 	}
-
-=======
->>>>>>> delivery/release_user
 }

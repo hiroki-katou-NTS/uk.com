@@ -11,10 +11,8 @@ import lombok.Value;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.MailDestinationFunctionGetMemento;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.SendMailByFunctionSetting;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
-<<<<<<< HEAD
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-=======
->>>>>>> delivery/release_user
+
 
 /**
  * The Class MailDestinationFunctionDto.
@@ -51,8 +49,6 @@ public class MailDestinationFunctionDto implements MailDestinationFunctionGetMem
 	public UserInfoItem getSettingItem() {
 		return UserInfoItem.valueOf(this.settingItem);
 	}
-
-<<<<<<< HEAD
 	@Override
 	public List<SendMailByFunctionSetting> getSendByFunctionSetting(NotUseAtr use) {
 		return this.sendByFunctionSetting.stream()
@@ -61,6 +57,4 @@ public class MailDestinationFunctionDto implements MailDestinationFunctionGetMem
 				.collect(Collectors.toList());
 	}
 
-=======
->>>>>>> delivery/release_user
 }
