@@ -59,7 +59,7 @@ module nts.uk.ui.validation {
                 return result; 
             }
             
-            let validateResult;
+            //let validateResult;
             // Check CharType
             result= checkCharType(inputText,this.charType);
             if(!result.isValid) return result;
@@ -67,8 +67,8 @@ module nts.uk.ui.validation {
             if (this.constraint !== undefined && this.constraint !== null) {
                 if (this.constraint.maxLength !== undefined && text.countHalf(inputText) > this.constraint.maxLength) {
                     let maxLength = this.constraint.maxLength;
-                    result.fail(nts.uk.resource.getMessage(validateResult.errorMessage,
-                                [ this.name, maxLength ]), validateResult.errorCode);
+                    result.fail(nts.uk.resource.getMessage(result.errorMessage,
+                                [ this.name, maxLength ]), result.errorCode);
                     return result;
                 }
                 
@@ -88,18 +88,18 @@ module nts.uk.ui.validation {
         var result = new ValidationResult();
         let validateResult;
         if (!util.isNullOrUndefined(charType)) { 
-                inputText = autoConvertText(inputText, charType);
-                validateResult = charType.validate(inputText); 
-                if (!validateResult.isValid) {
-                    result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, 
-                                [ this.name, !util.isNullOrUndefined(this.constraint) 
-                                ? (!util.isNullOrUndefined(this.constraint.maxLength) 
-                                    ? this.constraint.maxLength : 9999) : 9999 ]), validateResult.errorCode);
-                    return result;
-                }
+            inputText = autoConvertText(inputText, charType);
+            validateResult = charType.validate(inputText); 
+            if (!validateResult.isValid) {
+                result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, 
+                            [ this.name, !util.isNullOrUndefined(this.constraint) 
+                            ? (!util.isNullOrUndefined(this.constraint.maxLength) 
+                                ? this.constraint.maxLength : 9999) : 9999 ]), validateResult.errorCode);
+                return result;
             }
-          result.success(inputText);
-          return result;
+        }
+        result.success(inputText);
+        return result;
     }
     function autoConvertText(inputText: string, charType:nts.uk.text.CharType):string{
         if (charType.viewName === '半角英数字') {
@@ -302,7 +302,10 @@ module nts.uk.ui.validation {
                                     ? this.charType.getViewLength(this.constraint.maxLength) : 9999) ]), validateResult.errorCode);
                     return result;
                 }
+            } else {
+                validateResult = result;    
             }
+            
             // Check Constraint
             if (this.constraint.maxLength !== undefined && text.countHalf(inputText) > this.constraint.maxLength) {
             	let maxLength = this.constraint.maxLength;
