@@ -293,9 +293,11 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             }
             
             // set data for KCP009 screen B
-            __viewContext.viewModel.viewmodelB.employeeInputList([]);
-            __viewContext.viewModel.viewmodelB.employeeInputList(self.employeeInputList());
-            $('#emp-component').ntsLoadListComponent(__viewContext.viewModel.viewmodelB.listComponentOption);
+            if(!($("#tabpanel-2").hasClass("disappear"))) {
+                __viewContext.viewModel.viewmodelB.employeeInputList([]);
+                __viewContext.viewModel.viewmodelB.employeeInputList(self.employeeInputList());
+                $('#emp-component').ntsLoadListComponent(__viewContext.viewModel.viewmodelB.listComponentOption);
+            }
         }
 
         findIdSelected(dataList: Array<any>, selectedItem: string): any {
