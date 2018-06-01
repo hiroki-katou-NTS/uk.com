@@ -206,7 +206,6 @@ public class SprWebService {
 			}
 		});
 		html.append("<script>");
-		html.append("debugger;");
 		html.append("window.sessionStorage.setItem(\"paramSPR\", JSON.stringify({"+paramStringValue+"}));");
 		html.append("window.location.href = '../../../../view/spr/index.xhtml'");
 		html.append("</script>");

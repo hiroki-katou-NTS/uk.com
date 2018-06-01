@@ -1,13 +1,12 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -15,13 +14,13 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
+import nts.uk.ctx.at.record.dom.divergencetime.service.DivCheckMasterShareBus;
+import nts.uk.ctx.at.record.dom.divergencetime.service.DivCheckMasterShareBus.DivCheckMasterShareContainer;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -64,13 +63,15 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		
 		if(integrationOfDaily.isEmpty()) return integrationOfDaily;
 		//会社共通の設定を
+		DivCheckMasterShareContainer shareContainer = DivCheckMasterShareBus.open();
 		val companyCommonSetting = new ManagePerCompanySet(holidayAddtionRepository.findByCompanyId(AppContexts.user().companyId()),
 														   holidayAddtionRepository.findByCId(AppContexts.user().companyId()),
 														   specificWorkRuleRepository.findCalcMethodByCid(AppContexts.user().companyId()),
 														   compensLeaveComSetRepository.find(AppContexts.user().companyId()),
 														   divergenceTimeRepository.getAllDivTime(AppContexts.user().companyId()),
-														   errorAlarmWorkRecordRepository.getListErrorAlarmWorkRecord(AppContexts.user().companyId()));
+														   errorAlarmWorkRecordRepository.getAllErAlCompanyAndUseAtr(AppContexts.user().companyId(), true));
 
+		companyCommonSetting.setShareContainer(shareContainer);
 		//社員毎の期間取得
 		val integraListByRecordAndEmpId = getIntegrationOfDailyByEmpId(integrationOfDaily);
 		
@@ -119,6 +120,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 				returnList.add(nowIntegration);
 			}
 		}
+		shareContainer.clearAll();
+		shareContainer= null;
 		return returnList;
 	}
 //			if(calCalc) {
