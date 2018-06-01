@@ -10,7 +10,7 @@ module nts.uk.com.view.kwr002.a {
     export module viewModel {
         export class ScreenModel {
             ccgcomponent: GroupOption;
-            exportDto: KnockoutObservable<exportDto>;
+            exportDto: KnockoutObservable<ExportDto>;
             enableSave: KnockoutObservable<boolean>;
             baseDate: KnockoutObservable<Date>;
             periodStartDate: KnockoutObservable<moment.Moment>;
@@ -46,7 +46,7 @@ module nts.uk.com.view.kwr002.a {
                 self.startDateString = ko.observable("");
                 self.endDateString = ko.observable("");
                 self.dateValue = ko.observable({ startDate: currentDate, endDate: currentDate });
-                self.exportDto = ko.observable<exportDto>();
+                self.exportDto = ko.observable<ExportDto>();
 
                 self.startDateString.subscribe(function(value) {
                     self.dateValue().startDate = value;
@@ -156,8 +156,8 @@ module nts.uk.com.view.kwr002.a {
                 service.getAllAttendanceRecExpSet().done(function(listAttendance: Array<AttendanceRecordExportSettingDto>) {
                     if (listAttendance === undefined || listAttendance.length == 0) {
                         self.attendanceRecordList();
-                        $('#print').attr("disabled","disabled")
-                        $('#exportExcel').attr("disabled","disabled")
+                        $('#print').attr("disabled", "disabled")
+                        $('#exportExcel').attr("disabled", "disabled")
                     } else {
                         self.attendanceRecordList(listAttendance);
                         self.selectedCode = ko.observable(listAttendance[0].code);
@@ -274,8 +274,12 @@ module nts.uk.com.view.kwr002.a {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_1129" });
                     return;
                 }
-                self.exportDto(new exportDto(self.selectedEmployee(), self.dateValue().startDate, self.dateValue().endDate, self.selectedCode(), 1));
-                console.log(self.exportDto());
+                self.exportDto(new ExportDto(self.selectedEmployee(), self.dateValue().startDate, self.dateValue().endDate, self.selectedCode(), 1));
+                service.exportService(self.exportDto()).done(() => {
+
+                }).fail((error) => {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1269" });
+                })
             }
 
             public exportExcel() {
@@ -286,7 +290,12 @@ module nts.uk.com.view.kwr002.a {
                     return;
                 }
 
-                self.exportDto(new exportDto(self.selectedEmployee(), self.dateValue().startDate, self.dateValue().endDate, self.selectedCode(), 2));
+                self.exportDto(new ExportDto(self.selectedEmployee(), self.dateValue().startDate, self.dateValue().endDate, self.selectedCode(), 2));
+                service.exportService(self.exportDto()).done(() => {
+
+                }).fail((error) => {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1269" });
+                })
             }
 
             public openBDialog(): void {
@@ -368,7 +377,7 @@ module nts.uk.com.view.kwr002.a {
             }
         }
 
-        export class exportDto {
+        export class ExportDto {
             employeeList: Array<Employee>;
             startDate: string;
             endDate: string;
