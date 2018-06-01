@@ -15,6 +15,7 @@ module nts.uk.com.view.kwr002.a {
             baseDate: KnockoutObservable<Date>;
             periodStartDate: KnockoutObservable<moment.Moment>;
             employeeList: KnockoutObservableArray<UnitModel>;
+            listEmployee: KnockoutObservableArray<Employee>;
             //            alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
             //            listComponentOption: any;
             //            optionalColumnDatasource: KnockoutObservableArray<any>;
@@ -47,7 +48,7 @@ module nts.uk.com.view.kwr002.a {
                 self.endDateString = ko.observable("");
                 self.dateValue = ko.observable({ startDate: currentDate, endDate: currentDate });
                 self.exportDto = ko.observable<ExportDto>();
-
+                self.listEmployee = ko.observableArray<Employee>([]);
                 self.startDateString.subscribe(function(value) {
                     self.dateValue().startDate = value;
                     self.dateValue.valueHasMutated();
@@ -126,6 +127,7 @@ module nts.uk.com.view.kwr002.a {
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                         //                        self.selectedEmployee(data.listEmployee);
                         self.applyKCP005ContentSearch(data.listEmployee);
+                        self.listEmployee(data.listEmployee);
                     }
                 }
 
@@ -252,11 +254,11 @@ module nts.uk.com.view.kwr002.a {
             /**
              * update selected employee kcp005 => detail
              */
-            public findByIdEmployee(employeeId: string): UnitModel {
-                let employee: UnitModel;
+            public findByIdEmployee(employeeId: string): Employee {
+                let employee: Employee;
                 let self = this;
-                for (let employeeSelect of self.employeeList()) {
-                    if (employeeSelect.id === employeeId) {
+                for (let employeeSelect of self.listEmployee()) {
+                    if (employeeSelect.employeeId === employeeId) {
                         employee = employeeSelect;
                         break;
                     }
