@@ -32,15 +32,15 @@
 					<!-- E1_2 -->
 					<label data-bind="text: layoutCode"></label>
 					<!-- E1_3 -->
-					<label data-bind="text: layoutName" style="margin-left: 10px;"></label>
+					<label data-bind="text: layoutName" style="margin-left: 5px;"></label>
 					<!-- E1_4 -->
-					<label data-bind="text: dailyMonthly" style="margin-left: 10px;"></label>
+					<label data-bind="text: dailyMonthly" style="margin-left: 15px;"></label>
 					<!-- E1_5 -->
-					<label data-bind="text: columnIndex" style="margin-left: 10px;"></label>
+					<label data-bind="text: columnIndex" style="margin-left: 5px;"></label>
 					<!-- E1_6 -->
 					<label>#{i18n.getText('KWR002_162')}</label>
 					<!-- E1_7 -->
-					<label data-bind="text: position" style="margin-left: 10px;"></label>
+					<label data-bind="text: position" style="margin-left: 5px;"></label>
 					<!-- E1_8 -->
 					<label>#{i18n.getText('KWR002_163')}</label>
 					<hr></hr>
@@ -118,32 +118,30 @@
 							style="display: inline-flex; margin-top: 40px; margin-right: 20px;">
 							<div style="display: block; margin: 35px;">
 								<!-- E6_1 -->
-								<div>
-									<button tabindex="6" class="small" style="width: 50px; height: 35px;"
+								<div style="margin-top: 150px;">
+									<button tabindex="6" class="small" style="width: 50px; height: 35px; font-size: 17px;"
 										data-bind="click: writeItemWithAdd">#{i18n.getText('KWR002_178')}</button>
 								</div>
 								<!-- E6_2 -->
 								<div style="margin-top: 50px;">
-									<button tabindex="7" class="small" style="width: 50px; height: 35px;"
+									<button tabindex="7" class="small" style="width: 50px; height: 35px; font-size: 17px;"
 										data-bind="click: writeItemWithSubtract">#{i18n.getText('KWR002_179')}</button>
 								</div>
 							</div>
 							<div class="external" style="height: 450px;">
 								<table id="selected-list" tabindex="8"
 									data-bind="name: '#{i18n.getText('KWR002_185')}'">
-									<thead class="bg-green">
+									<thead style="background-color: #cff1a5;">
 										<tr height="30px">
-											<th width="44px"></th>
-											<th width="97px"><label style="margin-left: 2px;">#{i18n.getText('KWR002_186')}</label></th>
-											<th width="103px"><label style="margin-left: 2px;">#{i18n.getText('KWR002_187')}</label></th>
-											<th width="203px"><label style="margin-left: 2px;">#{i18n.getText('KWR002_188')}</label></th>
-											<th width="73px"><label style="margin-left: 2px;">#{i18n.getText('KWR002_189')}</label></th>
-											<th width="23px"></th>
+											<th width="104px"><label style="margin-left: 2px; font-weight: bold;">#{i18n.getText('KWR002_186')}</label></th>
+											<th width="105px"><label style="margin-left: 2px; font-weight: bold;">#{i18n.getText('KWR002_187')}</label></th>
+											<th width="210px"><label style="margin-left: 2px; font-weight: bold;">#{i18n.getText('KWR002_188')}</label></th>
+											<th width="74px"><label style="margin-left: 2px; font-weight: bold;">#{i18n.getText('KWR002_189')}</label></th>
+											<th width="19px"></th>
 										</tr>
 									</thead>
 									<tbody data-bind="foreach: selectedGridItems">
 										<tr height="30px">
-											<td width="40px" style="text-align: right;" class="bg-green"><span data-bind="text: $index() + 1" style="margin-right: 2px;"></span></td>
 											<td width="100px" style="text-align: center;"><span
 												data-bind="text: action"></span></td>
 											<td width="100px"><span data-bind="text: code" style="margin-left: 2px;"></span></td>
