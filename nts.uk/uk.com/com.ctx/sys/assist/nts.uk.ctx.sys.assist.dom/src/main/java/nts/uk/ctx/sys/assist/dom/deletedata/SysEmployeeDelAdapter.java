@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * The Interface SystemTypeAdapter.
  */
-public interface SyEmployeeAdapter {
+public interface SysEmployeeDelAdapter {
 	/**
 	 * Get list of employees by company id
 	 * @return SystemTypeImport
