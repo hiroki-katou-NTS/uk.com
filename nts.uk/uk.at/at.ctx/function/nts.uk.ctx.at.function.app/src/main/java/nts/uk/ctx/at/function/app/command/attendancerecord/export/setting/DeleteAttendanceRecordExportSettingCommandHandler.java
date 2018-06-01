@@ -10,24 +10,35 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 /**
+ * The type DeleteAttendanceRecordExportSettingCommandHandler.
+ *
  * @author locph
  */
 @Stateless
 @Transactional
 public class DeleteAttendanceRecordExportSettingCommandHandler extends CommandHandler<DeleteAttendanceRecordExportSettingCommand>{
 
+    /**
+     * The AttendanceRecordExportSettingDeleteCommandHandler.
+     */
     @Inject
     AttendanceRecordExportSettingDeleteCommandHandler delARESHandler;
 
+    /**
+     * The AttendanceRecordExportDeleteCommandHandler.
+     */
     @Inject
     AttendanceRecordExportDeleteCommandHandler delAREHandler;
 
+    /**
+     * The AttendanceRecordItemDeleteCommandHandler.
+     */
     @Inject
     AttendanceRecordItemDeleteCommandHandler delARIHandler;
 
 
     /**
-     * hadle delete AttendanceRecordExportSetting
+     * Handle delete AttendanceRecordExportSetting
      *
      * @param context
      */

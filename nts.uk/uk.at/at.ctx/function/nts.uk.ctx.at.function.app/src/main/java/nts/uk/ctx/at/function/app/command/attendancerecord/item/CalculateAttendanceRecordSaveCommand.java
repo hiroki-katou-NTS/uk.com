@@ -6,49 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-// TODO: Auto-generated Javadoc
 /**
- * Instantiates a new calculate attendance record save command.
- */
-
-/**
- * Instantiates a new calculate attendance record save command.
+ * @author tuannt-nws
  *
- * @param exportSettingCode the export setting code
- * @param useAtr the use atr
- * @param exportAtr the export atr
- * @param columnIndex the column index
- * @param position the position
- * @param timeTimes the time times
- * @param attribute the attribute
- * @param name the name
  */
 @AllArgsConstructor
-
-/**
- * Gets the name.
- *
- * @return the name
- */
-
-/**
- * Gets the name.
- *
- * @return the name
- */
 @Getter
-
-/**
- * Sets the name.
- *
- * @param name the new name
- */
-
-/**
- * Sets the name.
- *
- * @param name the new name
- */
 @Setter
 public class CalculateAttendanceRecordSaveCommand {
 	/** The export setting code. */

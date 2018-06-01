@@ -6,6 +6,10 @@ import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleItemAttributes;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecItem;
 
+/**
+ * @author tuannt-nws
+ *
+ */
 public class JpaSingleAttendanceRecordGetMemento implements SingleAttendanceRecordGetMemento {
 
 	/** The kfnst attnd rec. */
@@ -54,6 +58,9 @@ public class JpaSingleAttendanceRecordGetMemento implements SingleAttendanceReco
 		return new ItemName(kfnstAttndRec.getItemName().toString());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecordGetMemento#getTimeItemId()
+	 */
 	@Override
 	public Integer getTimeItemId() {
 		if (this.kfnstAttndRecItem.getId()== null)

@@ -2,11 +2,14 @@ module nts.uk.com.view.kwr002.d {
     import blockUI = nts.uk.ui.block;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+
+    const DAILY_ATRRIBUTE: number = 1;
     export module viewmodel {
         export class ScreenModel {
+
             allAttendanceDaily: KnockoutObservableArray<viewmodel.model.AttendanceRecordItem>;
             columns: KnockoutObservableArray<any>;
-            currentCodeAttendace: KnockoutObservable<number>;
+            currentCodeAttendance: KnockoutObservable<number>;
             dataSource: KnockoutObservableArray<viewmodel.model.AttendanceRecordItem>;
             typeAttendanceCodeSelected: KnockoutObservable<number>;
             listAttendanceType: KnockoutObservableArray<viewmodel.model.AttendaceType>;
@@ -36,7 +39,7 @@ module nts.uk.com.view.kwr002.d {
                     { headerText: nts.uk.resource.getText('KWR002_146'), key: 'attendanceItemId', width: 80 },
                     { headerText: nts.uk.resource.getText('KWR002_147'), key: 'attendanceItemName', formatter: _.escape, width: 150 }
                 ]);
-                self.currentCodeAttendace = ko.observable(0);
+                self.currentCodeAttendance = ko.observable(0);
                 self.attendanceRecordExport = ko.observable(null);
                 self.dataSource = ko.observableArray([]);
                 self.typeAttendanceCodeSelected = ko.observable(0);
@@ -60,7 +63,7 @@ module nts.uk.com.view.kwr002.d {
                     if (codeChanged == 0) {
                         return;
                     }
-                    var exportAttribute = self.exportAtr() != 0 ? self.exportAtr() : 1;  //1 is type daily
+                    var exportAttribute = self.exportAtr() ? self.exportAtr() : DAILY_ATRRIBUTE;  //1 is type daily
                     var attendanceTypeKey: model.AttendanceTypeKey = new model.AttendanceTypeKey(codeChanged, exportAttribute);
                     service.getAllAttndByAtrAndType(attendanceTypeKey).done(function(listAttendanceRecordItem: Array<viewmodel.model.AttendanceRecordItem>) {
                         //check attendance selected existed 
@@ -83,14 +86,8 @@ module nts.uk.com.view.kwr002.d {
                 let attendanceRecordExportShared: viewmodel.model.AttendanceRecordExport = getShared('attendanceItem');
                 if (attendanceRecordExportShared != null && attendanceRecordExportShared != undefined) {
                     self.attendanceRecordExport(attendanceRecordExportShared);
-                    self.attendanceRecordName(self.attendanceRecordExport().attendanceItemName);
-                    var layouCodeText = self.attendanceRecordExport().layoutCode < 10 ? "0" + self.attendanceRecordExport().layoutCode : "" + self.attendanceRecordExport().layoutCode;
-                    self.layoutCode(layouCodeText);
-                    self.layoutName(self.attendanceRecordExport().layoutName);
-                    var positionText = self.attendanceRecordExport().position == 1 ? "上" : "下";
-                    self.position(positionText);
-                    self.columnIndex(self.attendanceRecordExport().columnIndex);
-                    self.exportAtr(self.attendanceRecordExport().exportAtr);
+                    self.setHeaderDisplay(attendanceRecordExportShared);
+
                 }
                 self.directText(nts.uk.resource.getText('KWR002_131') + self.columnIndex() + nts.uk.resource.getText('KWR002_132') +
                     self.position() + nts.uk.resource.getText('KWR002_133'));
@@ -100,7 +97,7 @@ module nts.uk.com.view.kwr002.d {
                 var attendanceTypeCodeInit = self.listAttendanceType()[0].attendanceTypeCode;//init attendance type code
                 self.typeAttendanceCodeSelected(attendanceTypeCodeInit);
                 //get list AttendanceItem
-                var exportAttribute = self.exportAtr() != 0 ? self.exportAtr() : 1;  //1 is type daily
+                var exportAttribute = self.exportAtr() ? self.exportAtr() : DAILY_ATRRIBUTE;  //1 is type daily
                 var attendanceTypeKey: model.AttendanceTypeKey = new model.AttendanceTypeKey(attendanceTypeCodeInit, exportAttribute);
                 service.getAllAttndByAtrAndType(attendanceTypeKey).done(function(listAttendanceRecordItem: Array<viewmodel.model.AttendanceRecordItem>) {
                     blockUI.clear();
@@ -109,13 +106,15 @@ module nts.uk.com.view.kwr002.d {
                     } else {
                         //get singleAttendanceRecord selected
                         if (!nts.uk.util.isNullOrUndefined(self.attendanceRecordExport())) {
-                            let attendanceRecordKey: viewmodel.model.AttendanceRecordKey = new viewmodel.model.AttendanceRecordKey(self.attendanceRecordExport().layoutCode,
-                                self.attendanceRecordExport().columnIndex, self.attendanceRecordExport().position, self.attendanceRecordExport().exportAtr);
+                            var attendanceRecord: viewmodel.model.AttendanceRecordExport = self.attendanceRecordExport();
+
+                            let attendanceRecordKey: viewmodel.model.AttendanceRecordKey = new viewmodel.model.AttendanceRecordKey(attendanceRecord.layoutCode,
+                                attendanceRecord.columnIndex, attendanceRecord.position, attendanceRecord.exportAtr);
                             //get singleAttendaceItem form shared
-                            var attendanceId = self.attendanceRecordExport().attendanceId;
+                            var attendanceId = attendanceRecord.attendanceId;
                             if (attendanceId != undefined && attendanceId != 0) {
                                 //set value display
-                                var singleAttendanceSelected = new model.SingleAttendanceRecord(self.attendanceRecordExport().attendanceItemName, attendanceId, self.attendanceRecordExport().attribute);
+                                var singleAttendanceSelected = new model.SingleAttendanceRecord(attendanceRecord.attendanceItemName, attendanceId, attendanceRecord.attribute);
                                 self.handleLoadListAttendanceSelect(singleAttendanceSelected, listAttendanceRecordItem);
                             } else {
                                 self.dataSource(listAttendanceRecordItem);
@@ -137,7 +136,8 @@ module nts.uk.com.view.kwr002.d {
             public selectAttendanceRec() {
                 var self = this;
                 //not select yet left element
-                if (self.currentCodeAttendace() == undefined || self.currentCodeAttendace() == 0) {
+                var currentCodeAttendance = self.currentCodeAttendance();
+                if (!currentCodeAttendance) {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_1140' });
                     return;
                 }
@@ -146,10 +146,10 @@ module nts.uk.com.view.kwr002.d {
                 if (singleAttendance != null && singleAttendance.itemId != null) {
                     return;
                 }
-                self.codeSingleAttendanceSelected(self.currentCodeAttendace());
+                self.codeSingleAttendanceSelected(currentCodeAttendance);
                 //add to right-list
                 var listSource: Array<viewmodel.model.AttendanceRecordItem> = self.dataSource(),
-                    attendanceSelected = listSource.filter(e => e.attendanceItemId == self.currentCodeAttendace())[0],
+                    attendanceSelected = listSource.filter(e => e.attendanceItemId == currentCodeAttendance)[0],
                     listSelected: Array<viewmodel.model.AttendanceRecordItem> = [attendanceSelected];
                 self.dataSelected(listSelected);
                 var singleAttendanceSelected: viewmodel.model.SingleAttendanceRecord = new viewmodel.model.SingleAttendanceRecord(attendanceSelected.attendanceItemName, self.codeSingleAttendanceSelected(), self.typeAttendanceCodeSelected());
@@ -158,19 +158,19 @@ module nts.uk.com.view.kwr002.d {
                 var index = listSource.indexOf(attendanceSelected);
                 listSource.splice(index, 1);
                 self.dataSource(listSource);
-                //default currenctCodeAttnd (left)
-                self.currentCodeAttendace(0);
+                //reset data current code
+                self.currentCodeAttendance(0);
             }
             //click arrow-left-button
             public removeAttendanceSelected() {
                 var self = this;
-                if (self.codeSingleAttendanceSelected() == 0 || self.codeSingleAttendanceSelected() == undefined) {
+                if (!self.codeSingleAttendanceSelected()) {
                     return;
                 }
                 //return left-list
                 var typeAttendanceCodeCurrent = self.typeAttendanceCodeSelected();
                 self.typeAttendanceCodeSelected(typeAttendanceCodeCurrent);
-                var exportAttribute = self.exportAtr() != 0 ? self.exportAtr() : 1;  //1 is type daily
+                var exportAttribute = self.exportAtr() ? self.exportAtr() : DAILY_ATRRIBUTE;  //1 is type daily
                 var attendanceTypeKey: model.AttendanceTypeKey = new model.AttendanceTypeKey(typeAttendanceCodeCurrent, exportAttribute);
                 service.getAllAttndByAtrAndType(attendanceTypeKey).done(function(listAttendanceRecordItem: Array<viewmodel.model.AttendanceRecordItem>) {
                     //remove right-list
@@ -243,6 +243,20 @@ module nts.uk.com.view.kwr002.d {
                     listData.splice(indexAttendance, 1);
                 }
                 self.dataSource(listData);
+            }
+            /**
+             * set header display with attendanceRecord
+             */
+            private setHeaderDisplay(attendanceRecord:model.AttendanceRecordExport) {
+                var self = this;
+                self.attendanceRecordName(attendanceRecord.attendanceItemName);
+                var layouCodeText = attendanceRecord.layoutCode < 10 ? "0" + attendanceRecord.layoutCode : "" + attendanceRecord.layoutCode;
+                self.layoutCode(layouCodeText);
+                self.layoutName(attendanceRecord.layoutName);
+                var positionText = attendanceRecord.position == 1 ? "上" : "下";
+                self.position(positionText);
+                self.columnIndex(attendanceRecord.columnIndex);
+                self.exportAtr(attendanceRecord.exportAtr);
             }
         }
         export module model {

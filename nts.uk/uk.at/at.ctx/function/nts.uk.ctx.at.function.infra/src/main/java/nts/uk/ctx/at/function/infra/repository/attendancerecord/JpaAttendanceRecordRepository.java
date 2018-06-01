@@ -15,6 +15,10 @@ import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author tuannt-nws
+ *
+ */
 public abstract class JpaAttendanceRecordRepository extends JpaRepository {
 	
 	/**

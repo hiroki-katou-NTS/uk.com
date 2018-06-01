@@ -26,7 +26,7 @@ module nts.uk.com.view.kwr002.b {
         inputARESName: KnockoutObservable<string>;
 
         sealUseAtrSwitchs: KnockoutObservableArray<SealUseAtrSwitch>;
-        updateMode: KnockoutObservable<boolean>;
+        newMode: KnockoutObservable<boolean>;
 
         constructor() {
             let self = this;
@@ -50,7 +50,7 @@ module nts.uk.com.view.kwr002.b {
                 new SealUseAtrSwitch(2, getText("KWR002_46"))
             ]);
 
-            self.updateMode = ko.observable(true);
+            self.newMode = ko.observable(false);
 
             self.currentARESCode.subscribe((value) => {
                 if (value) {
@@ -61,7 +61,7 @@ module nts.uk.com.view.kwr002.b {
 
                     service.getARESByCode(foundItem.code).done((aRESData) => {
                         self.currentARES(new AttendanceRecordExportSetting(aRESData));
-                        self.updateMode(true);
+                        self.newMode(false);
                     }).fail((error) => {
                         alert(error.message);
                     })
@@ -76,6 +76,8 @@ module nts.uk.com.view.kwr002.b {
         }
 
         onDelete() {
+            if(self.newMode()) return;
+            
             let self = this;
             errors.clearAll();
             confirm({messageId: 'Msg_18'}).ifYes(() => {
@@ -116,6 +118,7 @@ module nts.uk.com.view.kwr002.b {
         /** new mode */
         onNew() {
             let self = this;
+            if(self.newMode()) return;
             errors.clearAll();
 
             let params = {
@@ -128,7 +131,8 @@ module nts.uk.com.view.kwr002.b {
             self.currentARESCode("");
 
             $("#code").focus();
-            self.updateMode(false);
+            self.newMode(true);
+            
         }
 
         onRegister() {
@@ -153,9 +157,10 @@ module nts.uk.com.view.kwr002.b {
                 }
             };
 
-            if (self.updateMode()) { //in update mode
+            if (!self.newMode()) { //in update mode
                 if (rcdExport.isInvalid()) {
                     alertError({messageId: 'Msg_1130'});
+                    block.clear();
                 } else {
                     let data = self.createTransferData(currentData, rcdExport);
                     //update ARES
@@ -167,9 +172,11 @@ module nts.uk.com.view.kwr002.b {
                 service.getARESByCode(currentData.code()).done((rs) => {
                     if (!_.isNull(rs.code)) {
                         alertError({messageId: 'Msg_3'});
+                        block.clear();
                     } else {
                         if (rcdExport.isInvalid()) {
                             alertError({messageId: 'Msg_1130'});
+                            block.clear();
                         } else {
                             let data = self.createTransferData(currentData, rcdExport);
                             //add new ARES

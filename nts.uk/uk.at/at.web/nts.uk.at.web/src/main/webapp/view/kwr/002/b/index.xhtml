@@ -90,9 +90,9 @@
 
 									<td colspan="2" class="th-col2">
 										<div>
-											<!-- b6-2 -->
+											<!-- B6_2 -->
 											<input id="code" tabindex="7"
-												data-bind="ntsTextEditor: {name: '#{i18n.getText('KWR002_41')}', value:code, constraint: 'ExportSettingCode', option : { width : '50px'}}" />
+												data-bind="ntsTextEditor: {name: '#{i18n.getText('KWR002_41')}', value:code, constraint: 'ExportSettingCode',enable:$parent.newMode, option : { width : '50px'}}" />
 											<!-- b6-3 -->
 											<input id="name" tabindex="8"
 												data-bind="ntsTextEditor: {name: '#{i18n.getText('KWR002_42')}', value:name, constraint: 'ExportSettingName', option : { width : '200px'}}" />
