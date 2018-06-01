@@ -49,10 +49,8 @@ public interface TempReserveLeaveMngRepository {
 	void removePastYmd(String employeeId, GeneralDate criteriaDate);
 	
 	/**
-	 * 
 	 * @param employeeId
-	 * @param period
+	 * @return List<TempReserveLeaveManagement>
 	 */
-	void removeBetweenPeriod(String employeeId, DatePeriod period);
-	
+	List<TempReserveLeaveManagement> findByEmployeeId(String employeeId);
 }
