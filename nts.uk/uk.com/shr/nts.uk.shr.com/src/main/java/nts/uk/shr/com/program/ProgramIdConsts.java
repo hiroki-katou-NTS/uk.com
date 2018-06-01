@@ -765,12 +765,6 @@ public class ProgramIdConsts {
 	public static final String CMF002Y = "CMF002Y";
 	public static final String CMF002V2 = "CMF002V2";
 
-	public static final String CMF003A = "CMF003A";
-	public static final String CMF003B = "CMF003B"; // B, D, E: is wizard
-	public static final String CMF003C = "CMF003C";
-	public static final String CMF003F = "CMF003F";
-
-
 	public static final String KDR001A = "KRD001A";
 	public static final String KRD001B = "KDR001B";
 	
