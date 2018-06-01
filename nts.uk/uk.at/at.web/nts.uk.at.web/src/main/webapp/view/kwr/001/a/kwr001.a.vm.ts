@@ -460,8 +460,8 @@ module nts.uk.at.view.kwr001.a {
                             var user: any = __viewContext.user;
                             var dto: WorkScheduleOutputQueryDto = {
                                 lstEmployeeId: self.findEmployeeIdsByCodes(self.multiSelectedCode()),
-                                startDate: self.toDate(self.startDatepicker()),
-                                endDate: self.toDate(self.endDatepicker()),
+                                startDate: self.toDate(self.datepickerValue().startDate),
+                                endDate: self.toDate(self.datepickerValue().endDate),
                                 fileType: 0,
                                 condition: data
                             };
@@ -490,8 +490,8 @@ module nts.uk.at.view.kwr001.a {
                             var user: any = __viewContext.user;
                             var dto: WorkScheduleOutputQueryDto = {
                                 lstEmployeeId: self.findEmployeeIdsByCodes(self.multiSelectedCode()),
-                                startDate: self.toDate(self.startDatepicker()),
-                                endDate: self.toDate(self.endDatepicker()),
+                                startDate: self.toDate(self.datepickerValue().startDate),
+                                endDate: self.toDate(self.datepickerValue().endDate),
                                 fileType: 1,
                                 condition: data
                             };

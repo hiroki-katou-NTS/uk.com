@@ -1,7 +1,10 @@
 package nts.uk.file.at.infra.dailyschedule;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -301,13 +304,17 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			// Process designer
 			reportContext.processDesigner();
 			
+			// Get current date and format it
+			DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.JAPAN);
+			String currentFormattedDate = LocalDateTime.now().format(jpFormatter);
+			
 			// Save workbook
 			if (query.getFileType() == FileOutputType.FILE_TYPE_EXCEL)
-				reportContext.saveAsExcel(this.createNewFile(generatorContext, WorkScheOutputConstants.SHEET_FILE_NAME + ".xlsx"));
+				reportContext.saveAsExcel(this.createNewFile(generatorContext, WorkScheOutputConstants.SHEET_FILE_NAME + currentFormattedDate + ".xlsx"));
 			else {
 				// Create print area
 				createPrintArea(currentRow, sheet);
-				reportContext.saveAsPdf(this.createNewFile(generatorContext, WorkScheOutputConstants.SHEET_FILE_NAME + ".pdf"));
+				reportContext.saveAsPdf(this.createNewFile(generatorContext, WorkScheOutputConstants.SHEET_FILE_NAME + currentFormattedDate + ".pdf"));
 			}
 			
 		} catch (Exception e) {
@@ -1381,6 +1388,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					Range personalTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
 					Range personalTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
 					personalTotalRange.copy(personalTotalRangeTemp);
+					personalTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 					
 					Cell personalTotalCellTag = cells.get(currentRow, 0);
 					personalTotalCellTag.setValue(WorkScheOutputConstants.PERSONAL_TOTAL);
@@ -1468,6 +1476,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			Range workplaceTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
 			Range workplaceTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
 			workplaceTotalRange.copy(workplaceTotalRangeTemp);
+			workplaceTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 			Cell workplaceTotalCellTag = cells.get(currentRow, 0);
 			workplaceTotalCellTag.setValue(WorkScheOutputConstants.WORKPLACE_TOTAL);
 			
@@ -1524,6 +1533,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				Range wkpHierTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
 				Range wkpHierTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
 				wkpHierTotalRange.copy(wkpHierTotalRangeTemp);
+				wkpHierTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 				Cell workplaceTotalCellTag = cells.get(currentRow, 0);
 				
 				if (StringUtils.equals(tagStr, WorkScheOutputConstants.GROSS_TOTAL)) {
@@ -1600,7 +1610,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			dateTagCell.setValue(WorkScheOutputConstants.DATE_BRACKET);
 			
 			// B3_2
-			DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("MM/dd (E)", Locale.JAPAN);
+			DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd (E)", Locale.JAPAN);
 			String date = dailyReportData.getDate().toLocalDate().format(jpFormatter);
 			Cell dateCell = cells.get(currentRow, 2);
 			dateCell.setValue(date);
@@ -1658,11 +1668,23 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			
 			currentRow++;
 			
+			// First employee flag, use for page breaking
+			boolean isFirstEmployee = false;
+			
 			// Employee data
 			for (DailyPersonalPerformanceData employee : employeeReportData){
+				
 				List<ActualValue> lstItem = employee.getActualValue();
 				if (lstItem == null) continue;  // Skip to next record if performance is null
 				
+				// Page break from 2nd record
+				if (isFirstEmployee && condition.getPageBreakIndicator() == PageBreakIndicator.EMPLOYEE) {
+					// Page break by employee
+					sheet.getHorizontalPageBreaks().add(currentRow);
+				}
+				
+				// Set flag to true
+				isFirstEmployee = true;
 				Range dateRangeTemp;
 				if (colorWhite) // White row
 					dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_WHITE_ROW + dataRowCount);
@@ -1725,10 +1747,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		        remarkCell.setValue(employee.getDetailedErrorData());
 		        currentRow++;
 		        colorWhite = !colorWhite; // Change to other color
-		        
-		        // Page break by employee
-				if (condition.getPageBreakIndicator() == PageBreakIndicator.EMPLOYEE)
-					sheet.getHorizontalPageBreaks().add(currentRow);
 			}
 		}
 		
