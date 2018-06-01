@@ -292,8 +292,10 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 if (item == undefined) self.selectedItem(sortByEmployeeCode[0].employeeId);
             }
             
+            // set data for KCP009 screen B
             __viewContext.viewModel.viewmodelB.employeeInputList([]);
             __viewContext.viewModel.viewmodelB.employeeInputList(self.employeeInputList());
+            $('#emp-component').ntsLoadListComponent(__viewContext.viewModel.viewmodelB.listComponentOption);
         }
 
         findIdSelected(dataList: Array<any>, selectedItem: string): any {
