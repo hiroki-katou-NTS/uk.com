@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.record.pubimp.workrecord.remainingnumbermanagement;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -12,6 +12,8 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.basicinfo.An
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.AnnualHolidayManagementPub;
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.NextAnnualLeaveGrantExport;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
@@ -32,7 +34,10 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 	
 	@Inject
 	LengthServiceRepository lengthServiceRepository;
-
+	
+	@Inject
+	EmpEmployeeAdapter empEmployeeAdapter;
+	
 	/**
 	 * RequestList210
 	 * 次回年休付与日を取得する
@@ -68,7 +73,7 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 		Optional<DatePeriod> periodDate = period;
 		
 		// Imported(就業)「社員」を取得する
-		// TODO: QA
+		EmployeeImport employee = empEmployeeAdapter.findByEmpId(employeeId);
 		
 		// パラメータ「期間」をチェック
 		if(!period.isPresent()) {
@@ -86,11 +91,18 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 		Optional<GrantHdTblSet> grantHdTblSet = yearHolidayRepository.findByCode(companyId, annualLeaveEmpBasicInfo.get().getGrantRule().getGrantTableCode().v());
 		
 		// 次回年休付与を取得する
-//		List<NextAnnualLeaveGrantExport> nextAnnualLeaveGrantData = nextAnnualLeaveGrant.algorithm(companyId, grantHdTblSet.get().getYearHolidayCode(), 
-//				entryDate, annualLeaveEmpBasicInfo.get().getGrantRule().getGrantStandardDate(), periodDate, isSingleDay);
+		List<NextAnnualLeaveGrantExport> nextAnnualLeaveGrantData = nextAnnualLeaveGrant.algorithm(companyId, grantHdTblSet.get().getYearHolidayCode().v(), 
+				employee.getEntryDate(), annualLeaveEmpBasicInfo.get().getGrantRule().getGrantStandardDate(), periodDate.get(), isSingleDay)
+				.stream().map(x -> new NextAnnualLeaveGrantExport(
+						x.getGrantDate(), 
+						x.getGrantDays(),
+						x.getTimes(),
+						x.getTimeAnnualLeaveMaxDays(),
+						x.getTimeAnnualLeaveMaxTime(),
+						x.getHalfDayAnnualLeaveMaxTimes()))
+				.collect(Collectors.toList());
 		
 		// List<次回年休付与>を返す
-//		return nextAnnualLeaveGrantData;
-		return Collections.emptyList();
+		return nextAnnualLeaveGrantData;
 	}
 }
