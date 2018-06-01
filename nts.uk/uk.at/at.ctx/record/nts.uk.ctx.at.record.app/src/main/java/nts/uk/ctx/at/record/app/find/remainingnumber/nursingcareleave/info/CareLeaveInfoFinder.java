@@ -17,11 +17,11 @@ import nts.uk.shr.pereg.app.find.dto.DataClassification;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 @Stateless
-public class CareLeaveInfoFinder implements PeregFinder<CareLeaveInfoDto>{
+public class CareLeaveInfoFinder implements PeregFinder<CareLeaveInfoDto> {
 
 	@Inject
 	private NursCareLevRemainInfoRepository infoRepo;
-	
+
 	@Inject
 	private NursCareLevRemainDataRepository dataRepo;
 
@@ -43,27 +43,55 @@ public class CareLeaveInfoFinder implements PeregFinder<CareLeaveInfoDto>{
 
 	@Override
 	public PeregDomainDto getSingleData(PeregQuery query) {
-		
+
 		Optional<NursingCareLeaveRemainingInfo> careInfoDomainOpt = infoRepo.getCareByEmpId(query.getEmployeeId());
-		Optional<NursingCareLeaveRemainingInfo> childCareInfoDomainOpt = infoRepo.getChildCareByEmpId(query.getEmployeeId());
+		Optional<NursingCareLeaveRemainingInfo> childCareInfoDomainOpt = infoRepo
+				.getChildCareByEmpId(query.getEmployeeId());
 		Optional<NursingCareLeaveRemainingData> careDataDomainOpt = dataRepo.getCareByEmpId(query.getEmployeeId());
-		Optional<NursingCareLeaveRemainingData> childCareDataDomainOpt = dataRepo.getChildCareByEmpId(query.getEmployeeId());
-		if (careInfoDomainOpt.isPresent() && childCareInfoDomainOpt.isPresent() &&
-				careDataDomainOpt.isPresent() && childCareDataDomainOpt.isPresent()) {
-			NursingCareLeaveRemainingInfo careInfoDomain = careInfoDomainOpt.get();
-			NursingCareLeaveRemainingInfo childCareInfoDomain = childCareInfoDomainOpt.get();
-			NursingCareLeaveRemainingData careDataDomain = careDataDomainOpt.get();
-			NursingCareLeaveRemainingData childCareDataDomain = childCareDataDomainOpt.get();
-			return CareLeaveInfoDto.createDomain(query.getEmployeeId(), childCareInfoDomain.isUseClassification() ? 1: 0, childCareInfoDomain.getUpperlimitSetting().value,
-					childCareInfoDomain.getMaxDayForThisFiscalYear().isPresent() ? childCareInfoDomain.getMaxDayForThisFiscalYear().get() : null, 
-					childCareInfoDomain.getMaxDayForNextFiscalYear().isPresent() ? childCareInfoDomain.getMaxDayForNextFiscalYear().get() : null,  
-					childCareDataDomain.getNumOfUsedDay(), careInfoDomain.isUseClassification()?1:0, careInfoDomain.getUpperlimitSetting().value, 
-					careInfoDomain.getMaxDayForThisFiscalYear().isPresent() ? careInfoDomain.getMaxDayForThisFiscalYear().get() : null, 
-					careInfoDomain.getMaxDayForNextFiscalYear().isPresent() ? careInfoDomain.getMaxDayForNextFiscalYear().get() : null, 
-							careDataDomain.getNumOfUsedDay());
-		} else {
+		Optional<NursingCareLeaveRemainingData> childCareDataDomainOpt = dataRepo
+				.getChildCareByEmpId(query.getEmployeeId());
+
+		if (!careInfoDomainOpt.isPresent() && !childCareInfoDomainOpt.isPresent() && !careDataDomainOpt.isPresent()
+				&& !childCareDataDomainOpt.isPresent()) {
 			return null;
 		}
+
+		CareLeaveInfoDto result = new CareLeaveInfoDto();
+		result.setSId(query.getEmployeeId());
+		result.setRecordId(query.getEmployeeId());
+		
+		if (childCareInfoDomainOpt.isPresent()) {
+			NursingCareLeaveRemainingInfo childCareInfoDomain = childCareInfoDomainOpt.get();
+			result.setChildCareUseArt(childCareInfoDomain.isUseClassification() ? 1 : 0);
+			result.setChildCareUpLimSet(childCareInfoDomain.getUpperlimitSetting().value);
+			result.setChildCareThisFiscal(childCareInfoDomain.getMaxDayForThisFiscalYear().isPresent() ? childCareInfoDomain.getMaxDayForThisFiscalYear().get().v() : null);
+			result.setChildCareNextFiscal(childCareInfoDomain.getMaxDayForNextFiscalYear().isPresent()? childCareInfoDomain.getMaxDayForNextFiscalYear().get().v() : null);
+		}
+		
+		if (childCareDataDomainOpt.isPresent()) {
+			NursingCareLeaveRemainingData childCareDataDomain = childCareDataDomainOpt.get();
+			result.setChildCareUsedDays(childCareDataDomain.getNumOfUsedDay().v());
+		}else {
+			result.setChildCareUsedDays(null);
+		}
+
+		if (careInfoDomainOpt.isPresent()) {
+			NursingCareLeaveRemainingInfo careInfoDomain = careInfoDomainOpt.get();
+			result.setCareUseArt(careInfoDomain.isUseClassification() ? 1 : 0);
+			result.setCareUpLimSet(careInfoDomain.getUpperlimitSetting().value);
+			result.setCareThisFiscal(careInfoDomain.getMaxDayForThisFiscalYear().isPresent()? careInfoDomain.getMaxDayForThisFiscalYear().get().v(): null);
+			result.setCareNextFiscal(careInfoDomain.getMaxDayForNextFiscalYear().isPresent()? careInfoDomain.getMaxDayForNextFiscalYear().get().v(): null);
+		}
+
+		if (careDataDomainOpt.isPresent()) {
+			NursingCareLeaveRemainingData careDataDomain = careDataDomainOpt.get();
+			result.setCareUsedDays(careDataDomain.getNumOfUsedDay().v());
+		}else {
+			result.setCareUsedDays(null);
+		}
+
+		return result;
+
 	}
 
 	@Override

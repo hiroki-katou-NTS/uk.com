@@ -18,6 +18,10 @@ module nts.uk.com.view.ccg.share.ccg {
             getEmploymentRoleFuturePermit: "at/auth/workplace/employmentrole/get/futurerefpermit",
             getListWorkplaceId: "ctx/sys/auth/role/getListWorkplaceId",
             findRegulationInfoEmployee: "query/employee/find",
+            searchByName: "query/employee/find/name",
+            searchByCode: "query/employee/find/code",
+            searchByEntryDate: "query/employee/find/entrydate",
+            searchByRetirementDate: "query/employee/find/retirementdate",
         }
 
         /**
@@ -25,6 +29,20 @@ module nts.uk.com.view.ccg.share.ccg {
          */
         export function findRegulationInfoEmployee(query: model.EmployeeQueryParam): JQueryPromise<Array<model.EmployeeSearchDto>> {
             return nts.uk.request.ajax('com', servicePath.findRegulationInfoEmployee, query);
+        }
+
+        export function searchByCode(query: model.SearchEmployeeQuery): JQueryPromise<Array<model.EmployeeSearchDto>> {
+            return nts.uk.request.ajax('com', servicePath.searchByCode, query);
+        }
+
+        export function searchByName(query: model.SearchEmployeeQuery): JQueryPromise<Array<model.EmployeeSearchDto>> {
+            return nts.uk.request.ajax('com', servicePath.searchByName, query);
+        }
+        export function searchByEntryDate(query: model.SearchEmployeeQuery): JQueryPromise<Array<model.EmployeeSearchDto>> {
+            return nts.uk.request.ajax('com', servicePath.searchByEntryDate, query);
+        }
+        export function searchByRetirementDate(query: model.SearchEmployeeQuery): JQueryPromise<Array<model.EmployeeSearchDto>> {
+            return nts.uk.request.ajax('com', servicePath.searchByRetirementDate, query);
         }
 
         /**
@@ -131,6 +149,16 @@ module nts.uk.com.view.ccg.share.ccg {
         
         export module model{
 
+            export interface SearchEmployeeQuery {
+                systemType: number;
+                code?: string;
+                name?: string;
+                useClosure?: boolean;
+                closureId?: number;
+                period?: any;
+                referenceDate: any;
+            }
+
             export class EmployeeSearchDto {
                 employeeId: string;
                 employeeCode: string;
@@ -143,15 +171,14 @@ module nts.uk.com.view.ccg.share.ccg {
             export interface GroupOption {
 
                 /** Common properties */
-                showEmployeeSelection: boolean; // 検索タイプ
+                showEmployeeSelection?: boolean; // 検索タイプ
                 systemType: number; // システム区分
-                showQuickSearchTab: boolean; // クイック検索
-                showAdvancedSearchTab: boolean; // 詳細検索
-                showBaseDate: boolean; // 基準日利用
-                showClosure: boolean; // 就業締め日利用
-                showAllClosure: boolean; // 全締め表示
-                showPeriod: boolean; // 対象期間利用
-                periodFormatYM: boolean; // 対象期間精度
+                showQuickSearchTab?: boolean; // クイック検索
+                showAdvancedSearchTab?: boolean; // 詳細検索
+                showBaseDate?: boolean; // 基準日利用
+                showAllClosure?: boolean; // 全締め表示
+                showPeriod?: boolean; // 対象期間利用
+                periodFormatYM?: boolean; // 対象期間精度
 
                 /** Required parameter */
                 baseDate?: string; // 基準日
@@ -163,23 +190,25 @@ module nts.uk.com.view.ccg.share.ccg {
                 retirement: boolean; // 退職区分
 
                 /** Quick search tab options */
-                showAllReferableEmployee: boolean; // 参照可能な社員すべて
-                showOnlyMe: boolean; // 自分だけ
-                showSameWorkplace: boolean; // 同じ職場の社員
-                showSameWorkplaceAndChild: boolean; // 同じ職場とその配下の社員
+                showAllReferableEmployee?: boolean; // 参照可能な社員すべて
+                showOnlyMe?: boolean; // 自分だけ
+                showSameWorkplace?: boolean; // 同じ職場の社員
+                showSameWorkplaceAndChild?: boolean; // 同じ職場とその配下の社員
 
                 /** Advanced search properties */
-                showEmployment: boolean; // 雇用条件
-                showWorkplace: boolean; // 職場条件
-                showClassification: boolean; // 分類条件
-                showJobTitle: boolean; // 職位条件
-                showWorktype: boolean; // 勤種条件
-                isMutipleCheck: boolean; // 選択モード
+                showEmployment?: boolean; // 雇用条件
+                showWorkplace?: boolean; // 職場条件
+                showClassification?: boolean; // 分類条件
+                showJobTitle?: boolean; // 職位条件
+                showWorktype?: boolean; // 勤種条件
+                isMutipleCheck?: boolean; // 選択モード
                 // showDepartment: boolean; // 部門条件 not covered
                 // showDelivery: boolean; not covered
 
                 /** Optional properties */
                 isInDialog?: boolean;
+                showOnStart?: boolean;
+                isTab2Lazy?: boolean;
 
                 /** Data returned */
                 returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
@@ -219,6 +248,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 jobTitleCodes: Array<string>;
                 filterByWorktype: boolean;
                 worktypeCodes: Array<string>;
+                filterByClosure: boolean;
+                closureIds: Array<number>;
 
                 periodStart: string;
                 periodEnd: string;

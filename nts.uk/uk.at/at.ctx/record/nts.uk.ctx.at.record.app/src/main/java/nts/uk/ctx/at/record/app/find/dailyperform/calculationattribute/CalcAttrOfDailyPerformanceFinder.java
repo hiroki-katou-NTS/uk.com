@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -25,10 +26,17 @@ public class CalcAttrOfDailyPerformanceFinder extends FinderFacade {
 		return CalcAttrOfDailyPerformanceDto.getDto(this.repo.find(employeeId, baseDate));
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
+	@SuppressWarnings("unchecked")
 	public <T extends ConvertibleAttendanceItem> List<T> find(List<String> employeeId, DatePeriod baseDate) {
 		return (List<T>) this.repo.finds(employeeId, baseDate).stream()
+				.map(c -> CalcAttrOfDailyPerformanceDto.getDto(c)).collect(Collectors.toList());
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends ConvertibleAttendanceItem> List<T> find(Map<String, List<GeneralDate>> param) {
+		return (List<T>) this.repo.finds(param).stream()
 				.map(c -> CalcAttrOfDailyPerformanceDto.getDto(c)).collect(Collectors.toList());
 	}
 }

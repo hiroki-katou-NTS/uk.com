@@ -16,7 +16,7 @@
 			</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.pereg.dom.person.info.item.ItemName
-				nts.uk.ctx.pereg.dom.person.setting.selectionitem.SelectionItemName
+				nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.primitive.SelectionItemName
 			</com:ValidatorScript>
 			<com:stylefile path="cps006.b.style.css" />
 			<com:scriptfile set="IGNITE" />
@@ -132,6 +132,7 @@
 							</com:ko-if>
 
 							<div data-bind="if: displayB2_48()">
+							<com:ko-if bind=" dataType() !== 12 &amp; dataType() !== 11 &amp; dataType() !== 10">
 								<div class="div_line">
 
 									<div class="line_col_1">
@@ -142,6 +143,7 @@
 										<span id="B2_9" data-bind="text:genDatatypeValueText()"></span>
 									</div>
 								</div>
+							</com:ko-if>
 
 								<com:ko-if bind=" dataType() === 1">
 

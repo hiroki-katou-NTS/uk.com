@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.portal.app.find.webmenu;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,7 @@ import nts.uk.ctx.sys.portal.dom.adapter.role.RoleGrantAdapter;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.enums.System;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
+import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuKey;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.MenuBar;
 import nts.uk.ctx.sys.portal.dom.webmenu.SelectedAtr;
@@ -97,10 +99,17 @@ public class WebMenuFinder {
 	 * @param codes codes
 	 * @return menu list
 	 */
-	public List<WebMenuDetailDto> find(List<String> codes) {
-		String companyId = AppContexts.user().companyId();
-		List<WebMenu> webMenus = webMenuRepository.find(companyId, codes);
-		return webMenus.stream().map(m -> toMenuDetails(m, companyId)).collect(Collectors.toList());
+	public List<WebMenuDetailDto> find(List<MenuCodeDto> codes) {
+		List<WebMenuDetailDto> results = new ArrayList<>();
+		Map<String, List<MenuCodeDto>> companyMap = codes.stream().collect(Collectors.groupingBy(c -> c.getCompanyId()));
+		companyMap.forEach((companyId, codeDtos) -> {
+			List<String> menuCodes = codeDtos.stream().map(MenuCodeDto::getMenuCode).collect(Collectors.toList());
+			List<WebMenu> webMenus = webMenuRepository.find(companyId, menuCodes);
+			List<WebMenuDetailDto> menuDtos = webMenus.stream().map(m -> toMenuDetails(m, companyId))
+															.collect(Collectors.toList());
+			results.addAll(menuDtos);
+		});
+		return results;
 	}
 	
 	/**
@@ -145,7 +154,7 @@ public class WebMenuFinder {
 	public List<WebMenuDetailDto> findAllDetails() {
 		LoginUserContext userCtx = AppContexts.user();
 		String companyId = userCtx.companyId();
-		List<String> menus = getMenuSet(companyId, userCtx.userId());
+		List<MenuCodeDto> menus = getMenuSet(companyId, userCtx.userId());
 		return menus != null && !menus.isEmpty() ? find(menus) : Arrays.asList(findDefault());
 	}
 	
@@ -155,25 +164,25 @@ public class WebMenuFinder {
 	 * @param userId userId
 	 * @return list of menu codes
 	 */
-	private List<String> getMenuSet(String companyId, String userId) {
+	private List<MenuCodeDto> getMenuSet(String companyId, String userId) {
 		if (companyId == null || userId == null) return null;
 		// Get role ties
 		List<String> roleIds = roleAdapter.getRoleId(userId);
-		List<String> roleMenuCodes = new ArrayList<>();
+		List<MenuCodeDto> roleMenuCodes = new ArrayList<>();
 		roleIds.stream().forEach(r -> {
 			roleTiesRepository.getRoleByRoleTiesById(r)
-							.ifPresent(t -> roleMenuCodes.add(t.getWebMenuCd().v()));
+							.ifPresent(t -> roleMenuCodes.add(new MenuCodeDto(t.getCompanyId(), t.getWebMenuCd().v())));
 		});
 		
-		List<String> menuCodes = new ArrayList<>();
+		List<MenuCodeDto> menuCodes = new ArrayList<>();
 		// Get role set
 		Optional<String> roleSetCdOpt = roleSetFinder.getRoleSetCode(companyId, userId);
 		if (roleSetCdOpt.isPresent()) {
 			List<RoleSetLinkWebMenu> menus = roleSetLinkMenuRepo.findByRoleSetCd(companyId, roleSetCdOpt.get());
-			menuCodes = menus.stream().map(m -> m.getWebMenuCd().v()).collect(Collectors.toList());
+			menuCodes = menus.stream().map(m -> new MenuCodeDto(m.getCompanyId(), m.getWebMenuCd().v())).collect(Collectors.toList());
 		}
 		
-		for (String menuCode : roleMenuCodes) {
+		for (MenuCodeDto menuCode : roleMenuCodes) {
 			if (menuCodes.stream().noneMatch(m -> menuCode.equals(m))) {
 				menuCodes.add(menuCode);
 			}
@@ -200,10 +209,26 @@ public class WebMenuFinder {
 	 * @return web menu details
 	 */
 	private WebMenuDetailDto toMenuDetails(WebMenu menu, String companyId) {
+		List<StandardMenuKey> keys = new ArrayList<>();
+		menu.getMenuBars().stream().forEach(m -> {
+			keys.add(new StandardMenuKey(companyId, m.getCode().v(), m.getSystem().value, m.getMenuCls().value));
+			m.getTitleMenu().stream().forEach(t -> {
+				t.getTreeMenu().stream().forEach(tm -> {
+					keys.add(new StandardMenuKey(companyId, tm.getCode().v(), tm.getSystem().value, tm.getClassification().value));
+				});
+			});
+		});
+		
+		List<StandardMenu> standardMenus = standardMenuRepository.find(keys);
 		List<MenuBarDetailDto> menuBar = menu.getMenuBars().stream().map(m -> {
 			String link = null;
 			if (m.getSelectedAtr() == SelectedAtr.DirectActivation) {
-				StandardMenu sMenu = findStandardMenu(companyId, m.getCode().v(), m.getSystem().value, m.getMenuCls().value);
+				StandardMenu sMenu = standardMenus.stream()
+						.filter(sm -> sm.getCompanyId().equals(companyId) 
+								&& sm.getCode().v().equals(m.getCode().v())
+								&& sm.getSystem() == m.getSystem()
+								&& sm.getClassification() == m.getMenuCls()).findFirst()
+						.orElseThrow(() -> new RuntimeException("Menu not found."));
 				link = getProgramPath(sMenu);
 			}
 			
@@ -212,7 +237,12 @@ public class WebMenuFinder {
 					String menuCode = tm.getCode().v();
 					int system = tm.getSystem().value;
 					int classification = tm.getClassification().value;
-					StandardMenu stdMenu = findStandardMenu(companyId, menuCode, system, classification);
+					StandardMenu stdMenu = standardMenus.stream()
+							.filter(sm -> sm.getCompanyId().equals(companyId)
+									&& sm.getCode().v().equals(menuCode)
+									&& sm.getSystem() == tm.getSystem()
+									&& sm.getClassification() == tm.getClassification()).findFirst()
+							.orElseThrow(() -> new RuntimeException("Menu not found."));
 					String path = getProgramPath(stdMenu);
 					return new TreeMenuDetailDto(menuCode, stdMenu.getTargetItems(), stdMenu.getDisplayName().v(),
 							path, tm.getDisplayOrder(), system, stdMenu.getMenuAtr().value, classification, 
@@ -232,19 +262,6 @@ public class WebMenuFinder {
 		}).sorted((m1, m2) -> m1.getDisplayOrder() - m2.getDisplayOrder()).collect(Collectors.toList());
 		return new WebMenuDetailDto(companyId, menu.getWebMenuCode().v(),
 				menu.getWebMenuName().v(), menu.getDefaultMenu().value, menuBar);
-	}
-	
-	/**
-	 * Find standard menu.
-	 * @param companyId companyId
-	 * @param menuCode menuCode
-	 * @param system system
-	 * @param classification classification
-	 * @return standard menu
-	 */
-	private StandardMenu findStandardMenu(String companyId, String menuCode, int system, int classification) {
-		Optional<StandardMenu> standardMenu = standardMenuRepository.getStandardMenubyCode(companyId, menuCode, system, classification);
-		return standardMenu.orElseThrow(() -> new RuntimeException("Menu not found."));
 	}
 	
 	/**
@@ -282,21 +299,18 @@ public class WebMenuFinder {
 	 * Get program string.
 	 * @return program string
 	 */
-	public String getProgram() {
+	public List<ProgramNameDto> getProgram() {
 		String companyId = AppContexts.user().companyId();
 		String pgId = RequestContextProvider.get().get(AppContextsConfig.KEY_PROGRAM_ID);
-		if (pgId == null) return "";
+		if (pgId == null) return new ArrayList<>();
 		String programId = pgId, screenId = null;
 		if (pgId.length() > 6) {
 			 programId = pgId.substring(0, 6);
 			 screenId = pgId.substring(6);
 		}
-		Optional<StandardMenu> menuOpt = standardMenuRepository.getProgram(companyId, programId, screenId);
-		if (menuOpt.isPresent()) {
-			StandardMenu menu = menuOpt.get(); 
-			return pgId + " " + menu.getDisplayName().v();
-		}
-		return "";
+		return standardMenuRepository.getProgram(companyId, programId, screenId).stream()
+				.map(m -> new ProgramNameDto(m.getQueryString(), pgId + " " + m.getDisplayName()))
+				.collect(Collectors.toList());
 	}
 	
 	

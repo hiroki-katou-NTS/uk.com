@@ -218,7 +218,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				null, 
 				null, 
 				absenceLeaveApp.getWorkTime1().getStartTime().v(),
-				absenceLeaveApp.getWorkTime2().getEndTime().v());
+				absenceLeaveApp.getWorkTime1().getEndTime().v());
 		return absenceLeave;
 	}
 	

@@ -78,4 +78,14 @@ public interface WorkTimeSettingRepository {
 	 * @param workTimeCode the work time code
 	 */
 	public void remove(String companyId,String workTimeCode);
+	
+	/**
+	 * Find active items.
+	 *
+	 * @param companyId the company id
+	 * @param displayAtr the display atr
+	 * @param abolishAtr the abolish atr
+	 * @return the list
+	 */
+	public List<WorkTimeSetting> findActiveItems(String companyId);
 }

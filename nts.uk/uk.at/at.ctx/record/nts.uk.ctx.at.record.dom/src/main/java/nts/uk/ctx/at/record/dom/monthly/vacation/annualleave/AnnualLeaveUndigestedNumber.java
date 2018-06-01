@@ -10,7 +10,7 @@ import lombok.Setter;
  * @author shuichu_ishida
  */
 @Getter
-public class AnnualLeaveUndigestedNumber {
+public class AnnualLeaveUndigestedNumber implements Cloneable {
 
 	/** 未消化日数 */
 	private UndigestedAnnualLeaveDays undigestedDays;
@@ -41,5 +41,20 @@ public class AnnualLeaveUndigestedNumber {
 		domain.undigestedDays = undigestedDays;
 		domain.undigestedTime = undigestedTime;
 		return domain;
+	}
+	
+	@Override
+	public AnnualLeaveUndigestedNumber clone() {
+		AnnualLeaveUndigestedNumber cloned = new AnnualLeaveUndigestedNumber();
+		try {
+			cloned.undigestedDays = this.undigestedDays.clone();
+			if (this.undigestedTime.isPresent()){
+				cloned.undigestedTime = Optional.of(this.undigestedTime.get().clone());
+			}
+		}
+		catch (Exception e){
+			throw new RuntimeException("AnnualLeaveUndigestedNumber clone error.");
+		}
+		return cloned;
 	}
 }

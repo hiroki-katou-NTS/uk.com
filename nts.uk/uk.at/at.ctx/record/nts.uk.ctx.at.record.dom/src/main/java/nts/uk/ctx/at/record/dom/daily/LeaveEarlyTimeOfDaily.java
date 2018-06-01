@@ -58,6 +58,13 @@ public class LeaveEarlyTimeOfDaily {
 		this.intervalTime = exemptionTime;
 	}
 	
+	public static LeaveEarlyTimeOfDaily noLeaveEarlyTimeOfDaily() {
+		return new LeaveEarlyTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+										 TimeWithCalculation.sameTime(new AttendanceTime(0)),
+										 new WorkNo(1),
+										 new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
+										 new IntervalExemptionTime());
+	}
 	
 	/**
 	 * 早退時間の計算
@@ -108,8 +115,15 @@ public class LeaveEarlyTimeOfDaily {
 		LeaveEarlyTimeSheet leaveEarlyTimeSheet = new LeaveEarlyTimeSheet(Optional.of(forRecordTimeSheet), Optional.of(forDeductTimeSheet), workNo.v(), Optional.empty());
 		
 		//遅刻・早退を控除する
-		NotUseAtr notDeductLateLeaveEarly = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()?holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly()
-																															  :NotUseAtr.NOT_USE;
+//		NotUseAtr notDeductLateLeaveEarly = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()?holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly()
+//																															  :NotUseAtr.NOT_USE;
+		NotUseAtr notDeductLateLeaveEarly = NotUseAtr.NOT_USE;
+		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()) {
+			if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly()) {
+				notDeductLateLeaveEarly = NotUseAtr.USE;
+			}
+		}
+		
 		//早退計上時間の計算
 		TimeWithCalculation leaveEarlyTime = leaveEarlyTimeSheet.calcForRecordTime(leaveEarly);
 		//早退控除時間の計算

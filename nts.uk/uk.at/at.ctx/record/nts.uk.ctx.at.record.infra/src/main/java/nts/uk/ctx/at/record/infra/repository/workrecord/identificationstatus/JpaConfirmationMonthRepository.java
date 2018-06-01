@@ -25,7 +25,7 @@ public class JpaConfirmationMonthRepository  extends JpaRepository implements Co
 			+ "AND a.krcdtConfirmationMonthPK.closureDay = :closureDay "
 			+ "AND a.krcdtConfirmationMonthPK.processYM = :processYM ";
 	
-	private static final String DELETE_BY_SID_YM = "DELETE FROM KrcdtConfirmationMonth a "
+	private static final String FIND_BY_SID_YM = "SELECT a FROM KrcdtConfirmationMonth a "
 			+ "WHERE a.krcdtConfirmationMonthPK.companyID = :companyId "
 			+ "AND a.krcdtConfirmationMonthPK.employeeId = :employeeId "
 			+ "AND a.krcdtConfirmationMonthPK.processYM = :processYM ";
@@ -54,7 +54,7 @@ public class JpaConfirmationMonthRepository  extends JpaRepository implements Co
 
 	@Override
 	public List<ConfirmationMonth> findBySidAndYM(String employeeId, int processYM) {
-		return this.queryProxy().query(DELETE_BY_SID_YM, KrcdtConfirmationMonth.class)
+		return this.queryProxy().query(FIND_BY_SID_YM, KrcdtConfirmationMonth.class)
 				.setParameter("companyId", AppContexts.user().companyId()).setParameter("employeeId", employeeId)
 				.setParameter("processYM", processYM).getList(x -> x.toDomain());
 	}

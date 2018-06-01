@@ -38,9 +38,9 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 	private CollectApprovalAgentInforService collectApprovalAgentInforService;
 
 	@Override
-	public Boolean judgmentTargetPersonIsApprover(String companyID, String rootStateID, String employeeID) {
+	public Boolean judgmentTargetPersonIsApprover(String companyID, String rootStateID, String employeeID, Integer rootType) {
 		Boolean approverFlag = false;
-		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID);
+		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, rootType);
 		if(!opApprovalRootState.isPresent()){
 			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
 		}
@@ -75,9 +75,9 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 	}
 
 	@Override
-	public ApprovalBehaviorAtr determineApprovalStatus(String companyID, String rootStateID) {
+	public ApprovalBehaviorAtr determineApprovalStatus(String companyID, String rootStateID, Integer rootType) {
 		ApprovalBehaviorAtr approvalAtr = ApprovalBehaviorAtr.UNAPPROVED;
-		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID);
+		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, rootType);
 		if(!opApprovalRootState.isPresent()){
 			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
 		}
@@ -109,11 +109,11 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 	}
 
 	@Override
-	public ApproverPersonOutput judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID) {
+	public ApproverPersonOutput judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID, Integer rootType) {
 		Boolean authorFlag = false;
 		ApprovalBehaviorAtr approvalAtr = ApprovalBehaviorAtr.UNAPPROVED;
 		Boolean expirationAgentFlag = false; 
-		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID);
+		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, rootType);
 		if(!opApprovalRootState.isPresent()){
 			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
 		}

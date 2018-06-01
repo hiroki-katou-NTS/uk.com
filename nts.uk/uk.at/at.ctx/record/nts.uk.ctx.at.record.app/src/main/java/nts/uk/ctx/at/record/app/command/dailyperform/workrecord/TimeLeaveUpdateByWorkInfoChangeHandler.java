@@ -18,10 +18,11 @@ import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformance
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
+import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
@@ -61,7 +62,7 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandler<TimeL
 			workTypeRepo.findByPK(companyId, wi.getRecordInfo().getWorkTypeCode().v()).ifPresent(wt -> {
 				/** 取得したドメインモデル「勤務種類．一日の勤務．勤務区分」をチェックする */
 				if (wt.isWokingDay()) {
-					val wts = wt.getWorkTypeSetByAtr(WorkAtr.OneDay);
+					val wts = wt.getWorkTypeSetAvailable();
 					if (wts.getAttendanceTime() == WorkTypeSetCheck.CHECK  || wts.getTimeLeaveWork() == WorkTypeSetCheck.CHECK) {
 						val tlo = timeLeaveRepo.findByKey(command.getEmployeeId(), command.getTargetDate());
 						TimeLeavingOfDailyPerformance tl = null;
@@ -175,11 +176,19 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandler<TimeL
 			} else {
 				tl.getTimeLeavingWorks().stream().forEach(tlw -> {
 					tlw.getAttendanceStamp().ifPresent(as -> {
-						as.removeStamp();
+						as.getStamp().ifPresent(ass -> {
+							if(isRemoveStamp(ass)){
+								as.removeStamp();
+							}
+						});
 					});
 
 					tlw.getLeaveStamp().ifPresent(as -> {
-						as.removeStamp();
+						as.getStamp().ifPresent(ass -> {
+							if(isRemoveStamp(ass)){
+								as.removeStamp();
+							}
+						});
 					});
 				});
 			}
@@ -187,6 +196,13 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandler<TimeL
 			this.timeLeaveRepo.update(tl);
 			tl.timeLeavesChanged();
 		});
+	}
+
+	private boolean isRemoveStamp(WorkStamp ass) {
+		return ass.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT ||
+				ass.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION ||
+				ass.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION_BUTTON || 
+				ass.getStampSourceInfo() == StampSourceInfo.STAMP_AUTO_SET_PERSONAL_INFO;
 	}
 
 }

@@ -18,6 +18,8 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
+import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -46,16 +48,16 @@ public class LateDecisionClock {
 			DeductionTimeSheet deductionTimeSheet,
 			GraceTimeSetting lateGraceTime,
 			TimeLeavingWork timeLeavingWork,
-			Optional<CoreTimeSetting> coreTimeSetting) {
+			Optional<CoreTimeSetting> coreTimeSetting,WorkType workType) {
 
-		Optional<TimezoneUse> predetermineTimeSheet = predetermineTimeSet.getTimeSheets(workNo);
+		Optional<TimezoneUse> predetermineTimeSheet = predetermineTimeSet.getTimeSheets(workType.getDailyWork().decisionNeedPredTime(),workNo);
 		if(!predetermineTimeSheet.isPresent())
 			return Optional.empty();
 //		TimezoneUse predetermineTimeSheet = new TimezoneUse(new TimeWithDayAttr(0), new TimeWithDayAttr(0), UseSetting.NOT_USE , workNo);
 		TimeWithDayAttr decisionClock = new TimeWithDayAttr(0);
 
 		//計算範囲取得
-		Optional<TimeSpanForCalc> calｃRange = getCalcRange(predetermineTimeSheet.get(),timeLeavingWork,coreTimeSetting);
+		Optional<TimeSpanForCalc> calｃRange = getCalcRange(predetermineTimeSheet.get(),timeLeavingWork,coreTimeSetting,predetermineTimeSet,workType.getDailyWork().decisionNeedPredTime());
 		if(calｃRange.isPresent()) {
 			if (lateGraceTime.isZero()) {
 				// 猶予時間が0：00の場合、所定時間の開始時刻を判断時刻にする
@@ -86,7 +88,10 @@ public class LateDecisionClock {
 	 * @param timeLeavingWork
 	 * @return
 	 */
-	static public Optional<TimeSpanForCalc> getCalcRange(TimezoneUse predetermineTimeSet,TimeLeavingWork timeLeavingWork,Optional<CoreTimeSetting> coreTimeSetting)
+	static public Optional<TimeSpanForCalc> getCalcRange(TimezoneUse predetermineTimeSet,
+														 TimeLeavingWork timeLeavingWork,
+														 Optional<CoreTimeSetting> coreTimeSetting,
+														 PredetermineTimeSetForCalc predetermineTimeSetForCalc,AttendanceHolidayAttr attr)
 	{
 		//出勤時刻
 		TimeWithDayAttr attendance = null;
@@ -94,15 +99,6 @@ public class LateDecisionClock {
 			if(timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent()) {
 				if(timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay()!=null) {
 					attendance =  timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay();
-				}
-			}
-		}
-		//退勤時刻
-		TimeWithDayAttr leave = null;
-		if(timeLeavingWork.getLeaveStamp().isPresent()) {
-			if(timeLeavingWork.getLeaveStamp().get().getStamp().isPresent()) {
-				if(timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay()!=null) {
-					leave =  timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay();
 				}
 			}
 		}
@@ -116,9 +112,14 @@ public class LateDecisionClock {
 				if(coreTimeSetting.get().getTimesheet().isNOT_USE()) {
 					return Optional.empty();
 				}
-				result = Optional.of(new TimeSpanForCalc(coreTimeSetting.get().getCoreTimeSheet().getStartTime(), attendance));
+//				if(attendance.greaterThanOrEqualTo(coreTimeSetting.get().getCoreTimeSheet().getEndTime())) {
+				val coreTime = coreTimeSetting.get().getDecisionCoreTimeSheet(attr, predetermineTimeSetForCalc.getAMEndTime(),predetermineTimeSetForCalc.getPMStartTime());
+				if(attendance.greaterThanOrEqualTo(coreTime.getEndTime())) {
+					return Optional.of(new TimeSpanForCalc(coreTime.getStartTime(), coreTime.getEndTime()));
+				}
+				return Optional.of(new TimeSpanForCalc(coreTime.getStartTime(), attendance));
 			}
-			if(leave!=null&&attendance.greaterThanOrEqualTo(predetermineTimeSet.getEnd())) {
+			if(attendance.greaterThanOrEqualTo(predetermineTimeSet.getEnd())) {
 				result = Optional.of(new TimeSpanForCalc(predetermineTimeSet.getStart(), predetermineTimeSet.getEnd()));
 			}
 		}

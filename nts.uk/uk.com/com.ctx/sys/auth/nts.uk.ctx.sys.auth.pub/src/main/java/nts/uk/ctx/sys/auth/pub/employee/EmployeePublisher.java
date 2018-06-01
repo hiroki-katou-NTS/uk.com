@@ -15,4 +15,7 @@ public interface EmployeePublisher {
 	/** RequestList315 */
 	Optional<EmpWithRangeLogin> getByComIDAndEmpCD(String companyID , String employeeCD , GeneralDate referenceDate);
 	
+	/** RequestList334 [No.334]基準日、指定社員から参照可能な職場リストを取得する **/
+	List<String> getListWorkPlaceID(String employeeID , GeneralDate referenceDate);
+	
 }

@@ -22,6 +22,7 @@ module kcp004.a.viewmodel {
         isDialog: KnockoutObservable<boolean>;
         isShowSelectButton: KnockoutObservable<boolean>;
         enableShowSelectButton: KnockoutObservable<boolean>;
+        restrictionOfReferenceRange: KnockoutObservable<boolean>;
         
         
         listSystemType: KnockoutObservableArray<any>;
@@ -55,6 +56,7 @@ module kcp004.a.viewmodel {
             });
             self.isDialog = ko.observable(false);
             self.isShowAlreadySet = ko.observable(true);
+            self.restrictionOfReferenceRange = ko.observable(false);
             self.isShowSelectButton = ko.observable(true);
             self.enableShowSelectButton = ko.computed(function() {
                 return self.isMultipleTreeGrid();
@@ -95,7 +97,8 @@ module kcp004.a.viewmodel {
                 isShowSelectButton: self.isShowSelectButton(),
                 isDialog: self.isDialog(),
                 alreadySettingList: self.alreadySettingList,
-                systemType : self.selectedSystemType()
+                systemType : self.selectedSystemType(),
+                restrictionOfReferenceRange: self.restrictionOfReferenceRange()
                 
             };
             
@@ -128,6 +131,7 @@ module kcp004.a.viewmodel {
             self.isShowAlreadySet.subscribe(function() {
                 self.reloadTreeGrid();
             });
+            self.restrictionOfReferenceRange.subscribe(() => self.reloadTreeGrid());
 //            self.alreadySettingList.subscribe(function() {
 //                self.reloadTreeGrid();
 //            });
@@ -234,7 +238,8 @@ module kcp004.a.viewmodel {
                 isShowSelectButton: self.isShowSelectButton(),
                 isDialog: self.isDialog(),
                 alreadySettingList: self.alreadySettingList,
-                systemType: self.selectedSystemType()
+                systemType: self.selectedSystemType(),
+                restrictionOfReferenceRange: self.restrictionOfReferenceRange()
             };
         }
         

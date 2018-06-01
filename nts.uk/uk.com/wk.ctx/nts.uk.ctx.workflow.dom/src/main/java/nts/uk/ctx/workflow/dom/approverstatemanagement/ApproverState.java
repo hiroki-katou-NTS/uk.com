@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.arc.time.GeneralDate;
 /**
  * 承認枠 : 承認者
  * @author Doan Duy Hung
@@ -24,13 +25,19 @@ public class ApproverState extends DomainObject {
 	
 	private String approverID;
 	
-	public static ApproverState createFromFirst(String rootStateID, ApproverState approverState){
+	private String companyID;
+	
+	private GeneralDate date;
+	
+	public static ApproverState createFromFirst(String companyID, GeneralDate date, String rootStateID, ApproverState approverState){
 		if(Strings.isBlank(approverState.getRootStateID())){
 			return ApproverState.builder()
 					.rootStateID(rootStateID)
 					.phaseOrder(approverState.getPhaseOrder())
 					.frameOrder(approverState.getFrameOrder())
 					.approverID(approverState.getApproverID())
+					.companyID(companyID)
+					.date(date)
 					.build();
 		}
 		return approverState;

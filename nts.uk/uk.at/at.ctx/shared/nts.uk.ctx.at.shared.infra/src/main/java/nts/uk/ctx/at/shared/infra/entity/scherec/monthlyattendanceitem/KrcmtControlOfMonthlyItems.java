@@ -30,14 +30,14 @@ public class KrcmtControlOfMonthlyItems   extends UkJpaEntity implements Seriali
 	public String headerBgColorOfMonthlyPer;
 	
 	@Column(name = "TIME_INPUT_UNIT")
-	public int inputUnitOfTimeItem;
+	public Integer inputUnitOfTimeItem;
 	
 	@Override
 	protected Object getKey() {
 		return krcmtControlOfMonthlyItemsPK;
 	}
 
-	public KrcmtControlOfMonthlyItems(KrcmtControlOfMonthlyItemsPK krcmtControlOfMonthlyItemsPK, String headerBgColorOfMonthlyPer, int inputUnitOfTimeItem) {
+	public KrcmtControlOfMonthlyItems(KrcmtControlOfMonthlyItemsPK krcmtControlOfMonthlyItemsPK, String headerBgColorOfMonthlyPer, Integer inputUnitOfTimeItem) {
 		super();
 		this.krcmtControlOfMonthlyItemsPK = krcmtControlOfMonthlyItemsPK;
 		this.headerBgColorOfMonthlyPer = headerBgColorOfMonthlyPer;
@@ -59,8 +59,8 @@ public class KrcmtControlOfMonthlyItems   extends UkJpaEntity implements Seriali
 		return new  ControlOfMonthlyItems(
 				this.krcmtControlOfMonthlyItemsPK.companyID,
 				this.krcmtControlOfMonthlyItemsPK.itemMonthlyID,
-				new HeaderBackgroundColor(this.headerBgColorOfMonthlyPer),
-				EnumAdaptor.valueOf(this.inputUnitOfTimeItem, TimeInputUnit.class)
+				this.headerBgColorOfMonthlyPer!=null ? new HeaderBackgroundColor(this.headerBgColorOfMonthlyPer) : null,
+				this.inputUnitOfTimeItem!=null ? EnumAdaptor.valueOf(this.inputUnitOfTimeItem, TimeInputUnit.class) :null
 				);
 	}
 	

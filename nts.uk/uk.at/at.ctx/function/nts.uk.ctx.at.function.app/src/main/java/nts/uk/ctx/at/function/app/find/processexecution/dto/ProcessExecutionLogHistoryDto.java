@@ -83,21 +83,54 @@ public class ProcessExecutionLogHistoryDto {
 		this.taskLogList = taskLogList;
 	}
 	
-	public static ProcessExecutionLogHistoryDto fromDomain(ProcessExecutionLogHistory procExecLog) {
-		List<ProcessExecutionTaskLogDto> taskLogList = procExecLog.getTaskLogList().stream().map(x -> ProcessExecutionTaskLogDto.fromDomain(x)).collect(Collectors.toList());
+	public static ProcessExecutionLogHistoryDto fromDomain(ProcessExecutionLogHistory domain) {
+		List<ProcessExecutionTaskLogDto> taskLogList = domain.getTaskLogList().stream().map(x -> ProcessExecutionTaskLogDto.fromDomain(x)).collect(Collectors.toList());
+		GeneralDate schCreateStart = null;
+		GeneralDate schCreateEnd = null;
+		if (domain.getEachProcPeriod() != null
+				&& domain.getEachProcPeriod().getScheduleCreationPeriod() != null
+				&& domain.getEachProcPeriod().getScheduleCreationPeriod().isPresent()) {
+			schCreateStart = domain.getEachProcPeriod().getScheduleCreationPeriod().get().start();
+			schCreateEnd = domain.getEachProcPeriod().getScheduleCreationPeriod().get().end();
+		}
+		GeneralDate dailyCreateStart = null;
+		GeneralDate dailyCreateEnd = null;
+		if (domain.getEachProcPeriod() != null 
+				&& domain.getEachProcPeriod().getDailyCreationPeriod() != null
+				&& domain.getEachProcPeriod().getDailyCreationPeriod().isPresent()) {
+			dailyCreateStart = domain.getEachProcPeriod().getDailyCreationPeriod().get().start();
+			dailyCreateEnd = domain.getEachProcPeriod().getDailyCreationPeriod().get().end();
+		}
+		GeneralDate dailyCalcStart = null;
+		GeneralDate dailyCalcEnd = null;
+		if (domain.getEachProcPeriod() != null
+				&& domain.getEachProcPeriod().getDailyCalcPeriod() != null
+				&& domain.getEachProcPeriod().getDailyCalcPeriod().isPresent()) {
+			dailyCalcStart = domain.getEachProcPeriod().getDailyCalcPeriod().get().start();
+			dailyCalcEnd = domain.getEachProcPeriod().getDailyCalcPeriod().get().end();
+		}
+		GeneralDate reflectApprovalResultStart = null;
+		GeneralDate reflectApprovalResultEnd = null;
+		if (domain.getEachProcPeriod() != null
+				&& domain.getEachProcPeriod().getReflectApprovalResult() != null
+				&& domain.getEachProcPeriod().getReflectApprovalResult().isPresent()) {
+			reflectApprovalResultStart = domain.getEachProcPeriod().getReflectApprovalResult().get().start();
+			reflectApprovalResultEnd = domain.getEachProcPeriod().getReflectApprovalResult().get().end();
+		}
+		
 		return new ProcessExecutionLogHistoryDto(
-				procExecLog.getExecItemCd().v(),
-				procExecLog.getCompanyId(),
-				EnumAdaptor.valueOf(procExecLog.getOverallStatus().value, EndStatus.class).name,
-				EnumAdaptor.valueOf(procExecLog.getOverallError().value, OverallErrorDetail.class).name,
-				procExecLog.getLastExecDateTime().toString(DATE_FORMAT),
-				procExecLog.getEachProcPeriod().getScheduleCreationPeriod().start(),
-				procExecLog.getEachProcPeriod().getScheduleCreationPeriod().end(),
-				procExecLog.getEachProcPeriod().getDailyCreationPeriod().start(),
-				procExecLog.getEachProcPeriod().getDailyCreationPeriod().end(),
-				procExecLog.getEachProcPeriod().getDailyCalcPeriod().start(),
-				procExecLog.getEachProcPeriod().getDailyCalcPeriod().end(),
-				procExecLog.getExecId(), 
+				domain.getExecItemCd().v(),
+				domain.getCompanyId(),
+				(domain.getOverallStatus()!=null && domain.getOverallStatus().isPresent())? EnumAdaptor.valueOf(domain.getOverallStatus().get().value, EndStatus.class).name:" ",
+				(domain.getOverallError()!=null && domain.getOverallError().isPresent())?EnumAdaptor.valueOf(domain.getOverallError().get().value, OverallErrorDetail.class).name: " ",
+				domain.getLastExecDateTime().toString(DATE_FORMAT),
+				schCreateStart,
+				schCreateEnd,
+				dailyCreateStart,
+				dailyCreateEnd,
+				dailyCalcStart,
+				dailyCalcEnd,
+				domain.getExecId(), 
 				taskLogList);
 	}
 }

@@ -5,7 +5,9 @@ module nts.uk.at.view.kdw008.c {
                 findAll: "at/record/businesstype/findBusinessTypeSorted",
                 findAllMonth: "at/record/attendanceitem/monthly/findall",             
                 updateBusinessTypeSorted: "at/record/businesstype/updateBusinessTypeSorted",
-                updateMonth: "at/function/monthlycorrection/updatebusinessMonth"
+                updateMonth: "at/function/monthlycorrection/updatebusinessMonth",
+                
+                getAllBusiness: "at/function/monthlycorrection/getallbusiness"
             };
 
             constructor() {
@@ -28,6 +30,11 @@ module nts.uk.at.view.kdw008.c {
             
             updateMonth(MonthlyRecordWorkTypeCmd: any): JQueryPromise<any> {
                 return nts.uk.request.ajax("at", this.paths.updateMonth, MonthlyRecordWorkTypeCmd);
+            };
+            
+            getAllBusiness(): JQueryPromise<any> {
+                let _path = nts.uk.text.format(this.paths.getAllBusiness);
+                return nts.uk.request.ajax("at", _path);
             };
         }
     }

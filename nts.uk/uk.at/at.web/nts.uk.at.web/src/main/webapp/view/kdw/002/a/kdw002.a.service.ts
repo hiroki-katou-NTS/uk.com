@@ -1,21 +1,34 @@
 module nts.uk.at.view.kdw002.a {
     export module service {
         var paths: any = {
-           // getAttendanceItems: "at/share/attendanceitem/getAttendanceItems",
+            // getAttendanceItems: "at/share/attendanceitem/getAttendanceItems",
             getAttendanceItems: "at/record/businesstype/attendanceItem/getAttendanceItems",
-            getControlOfAttendanceItem: "at/record/ControlOfAttendanceItems/getControlOfAttendanceItem/",
-            updateControlOfAttendanceItem: "at/record/ControlOfAttendanceItems/updateControlOfAttendanceItem"
-            }
-        export function getAttendanceItems(): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.getAttendanceItems);
+            getListDailyAttdItem: "at/shared/scherec/dailyattditem/getalldailyattd",
+            getListMonthlyAttdItem: "at/record/attendanceitem/monthly/findall",
+            getControlOfDailyItem: "at/shared/scherec/daily/findById/",
+            getControlOfMonthlyItem: "at/shared/scherec/monthly/findById/",
+            updateDaily: "at/shared/scherec/daily/update",
+            updateMonthly: "at/shared/scherec/monthly/update"
         }
-        
-        export function getControlOfAttendanceItem(attendanceItemId): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.getControlOfAttendanceItem + attendanceItemId);
+        export function getListDailyAttdItem(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getListDailyAttdItem);
         }
-        
-         export function updateControlOfAttendanceItem(command): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.updateControlOfAttendanceItem, command);
+        export function getListMonthlyAttdItem(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getListMonthlyAttdItem);
+        }
+
+        export function getControlOfDailyItem(attendanceItemId): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getControlOfDailyItem + attendanceItemId);
+        }
+        export function getControlOfMonthlyItem(attendanceItemId): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getControlOfMonthlyItem + attendanceItemId);
+        }
+        export function updateDaily(command): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.updateDaily, command);
+        }
+
+        export function updateMonthly(command): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.updateMonthly, command);
         }
     }
 }

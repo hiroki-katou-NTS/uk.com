@@ -142,9 +142,6 @@ module nts.uk.ui.koExtentions {
                 if (!result.isValid) {
                     $input.ntsError('set', result.errorMessage, result.errorCode, false);
                 } else if (acceptJapaneseCalendar){
-                    if(!validateMinMax(result.parsedValue)){
-                       return; 
-                    }
                     // Day of Week
                     if (hasDayofWeek) {
                         if (util.isNullOrEmpty(result.parsedValue))
@@ -185,12 +182,11 @@ module nts.uk.ui.koExtentions {
                     } else if (isHasMonth && isHasYear) {
                         mesId = "FND_E_DATE_YM", fm = "YYYY/MM";
                     } 
-                    nts.uk.ui.dialog.error({ messageId: mesId, messageParams: [ name, minDate.format(fm), maxDate.format(fm) ] }).then(function(){
-                        if (hasDayofWeek) {
-                            $label.text("");
-                        }
-                        value(null);
-                    });
+                    $input.ntsError('set', { messageId: mesId, messageParams: [ name, minDate.format(fm), maxDate.format(fm) ] }, mesId, false); 
+                    if (hasDayofWeek) {
+                        $label.text(""); 
+                    }
+                    // value(null);
                     return false;
                 }
                 return true

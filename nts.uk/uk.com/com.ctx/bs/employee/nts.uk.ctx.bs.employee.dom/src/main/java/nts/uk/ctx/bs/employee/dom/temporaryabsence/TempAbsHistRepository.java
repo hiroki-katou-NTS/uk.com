@@ -1,9 +1,11 @@
 package nts.uk.ctx.bs.employee.dom.temporaryabsence;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * @author danpv
@@ -44,6 +46,8 @@ public interface TempAbsHistRepository {
 	 */
 	Optional<DateHistoryItem> getItemByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate);
 	
+	
+	List<TempAbsenceHistory> getByListSid(List<String> employeeIds , DatePeriod datePeriod);
 	// ------------------------------ COMMAND HISTORY---------------------------------
 	/**
 	 * ドメインモデル「休職休業」を新規登録する
@@ -62,5 +66,7 @@ public interface TempAbsHistRepository {
 	 * @param histId
 	 */
 	void delete(String histId);
+	
+	
 	
 }

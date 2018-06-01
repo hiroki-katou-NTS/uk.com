@@ -16,31 +16,41 @@
 	}
 }
 
-#contents-area>.left-area, #contents-area .right-area {
+#contents-area>.left-area, 
+#contents-area>.right-area,
+#contents-area>*>.left-area, 
+#contents-area>*>.right-area {
 	float: left;
 }
 
-#contents-area>.left-area {
+#contents-area>.left-area,
+#contents-area>*>.left-area {
 	width: 280px;
 	margin-left: 85px;
 }
 
-#contents-area>.left-area .bg-green {
+#contents-area>.left-area .bg-green,
+#contents-area>*>.left-area .bg-green {
 	padding: 12px;
-	max-height: 250px;
 }
 
-#contents-area>.right-area {
+#contents-area>.right-area,
+#contents-area>*>.right-area {
 	padding-left: 15px;
 	width: 860px;
 }
 
-#contents-area>.left-area #lefttabs {
+#contents-area>.right-area {
+	margin-top: -120px;
+}
+
+#contents-area>.left-area #lefttabs,
+#contents-area>*>.left-area #lefttabs {
 	margin-top: 5px;
 }
 
 #lefttabs .ntsSearchBox.ntsSearchBox_Component {
-	width: 100px;
+	width: 173px;
 }
 
 .bottom-right-area {
@@ -55,7 +65,7 @@
 #contents-area .layout-control .drag-panel {
 	min-width: 860px;
 	min-height: 445px;
-	height: calc(100vh - 365px) !important;
+	height: calc(100vh - 390px) !important;
 }
 
 #contents-area .category-input .cat-has-childs .layout-control .drag-panel
@@ -110,9 +120,13 @@
 	border-width: 35px 10px
 }
 
-.category-input>.title {
+#contents-area>.right-area>.title {
 	display: block;
 	line-height: 37px;
 	text-align: center;
 	background-color: #cee6ff;
+}
+
+#contents-area>.right-area>.ntsControl.layout-control {
+	margin-top: 10px;
 }

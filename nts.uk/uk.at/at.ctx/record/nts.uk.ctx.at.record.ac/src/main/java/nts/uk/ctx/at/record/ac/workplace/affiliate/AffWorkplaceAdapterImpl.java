@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkPlaceSidImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceDto;
+import nts.uk.ctx.bs.employee.pub.workplace.AffAtWorkplaceExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 
@@ -67,15 +68,17 @@ public class AffWorkplaceAdapterImpl implements AffWorkplaceAdapter {
 	}
 	
 	@Override
-	public List<AffAtWorkplaceImport> findBySIdAndBaseDate(List<String> sids, GeneralDate baseDate){		
-		return wkpPub.findBySIdAndBaseDate(sids, baseDate).stream().map(item->{
-			return new AffAtWorkplaceImport(item.getEmployeeId(), item.getWorkplaceId(), item.getHistoryID(), item.getNormalWorkplaceID());
-		}).collect(Collectors.toList());		
-	}
-	
-	@Override
 	public List<String> findAffiliatedWorkPlaceIdsToRoot(String companyId,String employeeId, GeneralDate baseDate) {
 		return this.wkpPub.findWpkIdsBySid(companyId ,employeeId, baseDate);
+	}
+
+	@Override
+	public List<AffAtWorkplaceImport> findBySIdAndBaseDate(List<String> employeeIds, GeneralDate baseDate) {
+		List<AffAtWorkplaceExport> affAtWorkplaceExports = this.wkpPub.findBySIdAndBaseDate(employeeIds, baseDate);
+		List<AffAtWorkplaceImport> workplaceImports = affAtWorkplaceExports.stream().map(item -> {
+			return new AffAtWorkplaceImport(item.getEmployeeId(), item.getWorkplaceId(), item.getHistoryID(), item.getNormalWorkplaceID());
+		}).collect(Collectors.toList());
+		return workplaceImports;
 	}
 	
 }

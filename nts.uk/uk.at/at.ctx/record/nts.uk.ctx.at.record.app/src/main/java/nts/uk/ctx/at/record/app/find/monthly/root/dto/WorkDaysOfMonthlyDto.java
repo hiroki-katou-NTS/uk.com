@@ -11,8 +11,6 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.paydays.PayDaysOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.specificdays.SpecificDaysOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AbsenceDaysOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AggregateAbsenceDays;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AttendanceDaysOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.HolidayDaysOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.HolidayWorkDaysOfMonthly;
@@ -124,7 +122,7 @@ public class WorkDaysOfMonthlyDto {
 	public WorkDaysOfMonthly toDomain() {
 		return WorkDaysOfMonthly.of(
 						AttendanceDaysOfMonthly.of(attendanceDays == null ? null : new AttendanceDaysMonth(attendanceDays)),
-						toAbsenceDays(), predetermineDays == null ? null : predetermineDays.toDomain(),
+						absenceDays == null ? null : absenceDays.toAbsenceDays(), predetermineDays == null ? null : predetermineDays.toDomain(),
 						workDays == null ? null : WorkDaysDetailOfMonthly.of(new AttendanceDaysMonth(workDays)),
 						holidayDays == null ? null : HolidayDaysOfMonthly.of(new AttendanceDaysMonth(holidayDays)), 
 						SpecificDaysOfMonthly.of(ConvertHelper.mapTo(specificDays, c -> c.toDomain())),
@@ -136,13 +134,5 @@ public class WorkDaysOfMonthlyDto {
 						twoTimesWorkTimes == null ? null : TwoTimesWorkTimesOfMonthly.of(new AttendanceTimesMonth(twoTimesWorkTimes)), 
 						temporaryWorkTimes == null ? null : TemporaryWorkTimesOfMonthly.of(new AttendanceTimesMonth(temporaryWorkTimes)),
 						leave == null ? null : leave.toDomain());
-	}
-
-	private AbsenceDaysOfMonthly toAbsenceDays() {
-		return absenceDays == null ? null : AbsenceDaysOfMonthly.of(
-						absenceDays.getTotalAbsenceDays() == null ? null : new AttendanceDaysMonth(absenceDays.getTotalAbsenceDays()),
-						ConvertHelper.mapTo(absenceDays.getDaysList(),
-								c -> AggregateAbsenceDays.of(c.getFrameNo(),
-										c.getDays() == null ? null : new AttendanceDaysMonth(c.getDays()))));
 	}
 }

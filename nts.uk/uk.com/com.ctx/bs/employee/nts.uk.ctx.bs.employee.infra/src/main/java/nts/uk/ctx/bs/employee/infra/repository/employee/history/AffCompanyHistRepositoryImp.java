@@ -44,13 +44,13 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 
 	private static final String SELECT_BY_EMPLOYEE_ID = String.join(" ", SELECT_NO_PARAM,
 			"WHERE c.bsymtAffCompanyHistPk.sId = :sId and c.companyId = :cid ORDER BY c.startDate ");
-	
+
 	private static final String SELECT_BY_EMPLOYEE_ID_DESC = String.join(" ", SELECT_NO_PARAM,
 			"WHERE c.bsymtAffCompanyHistPk.sId = :sId and c.companyId = :cid ORDER BY c.startDate DESC");
 
 	private static final String SELECT_BY_EMPLOYEE_ID_LIST = String.join(" ", SELECT_NO_PARAM,
 			"WHERE c.bsymtAffCompanyHistPk.sId IN :sIdList  ORDER BY c.startDate ");
-	
+
 	private static final String SELECT_BY_EMPID_AND_BASE_DATE = String.join(" ", SELECT_NO_PARAM,
 			"WHERE c.bsymtAffCompanyHistPk.sId = :sId", "AND c.startDate <= :baseDate", "AND c.endDate >= :baseDate",
 			"ORDER BY c.startDate ");
@@ -61,7 +61,10 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 
 	private static final String SELECT_BY_HISTORY_ID = String.join(" ", SELECT_NO_PARAM,
 			"WHERE c.bsymtAffCompanyHistPk.historyId = :histId");
-	
+
+	private static final String SELECT_BY_EMPID_AND_DATE_PERIOD = String.join(" ", SELECT_NO_PARAM,
+			" WHERE c.bsymtAffCompanyHistPk.sId IN :employeeIds   AND c.startDate <= :endDate AND :startDate <= c.endDate ");
+
 	/** The Constant MAX_ELEMENTS. */
 	private static final Integer MAX_ELEMENTS = 1000;
 
@@ -129,7 +132,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 
 		return toDomain(lstBsymtAffCompanyHist);
 	}
-	
+
 	@Override
 	public AffCompanyHist getAffCompanyHistoryOfEmployeeDesc(String cid, String employeeId) {
 		List<BsymtAffCompanyHist> lstBsymtAffCompanyHist = this.queryProxy()
@@ -268,10 +271,83 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 		// Split employeeId List if size of employeeId List is greater than 1000
 		CollectionUtil.split(employeeIds, MAX_ELEMENTS, (subList) -> {
 			List<BsymtAffCompanyHist> lstBsymtAffCompanyHist = this.queryProxy()
-			.query(SELECT_BY_EMPLOYEE_ID_LIST, BsymtAffCompanyHist.class).setParameter("sIdList", employeeIds).getList();
+			.query(SELECT_BY_EMPLOYEE_ID_LIST, BsymtAffCompanyHist.class).setParameter("sIdList", subList).getList();
 			resultList.addAll(lstBsymtAffCompanyHist);
 		});
+
+		// check empty ResultList
+		if (CollectionUtil.isEmpty(resultList)) {
+			return new ArrayList<>();
+		}
+		// Convert Result List to Map
+		Map<String, List<BsymtAffCompanyHist>> resultMap = resultList.parallelStream()
+				.collect(Collectors.groupingBy(item -> item.bsymtAffCompanyHistPk.pId));
+
+		// Foreach Map: Convert to Domain then add to Output List
+		resultMap.entrySet().forEach(data -> {
+			AffCompanyHist affComHist = this.toDomain(data.getValue());
+			resultData.add(affComHist);
+		});
+
+		return resultData;
+	}
+	
+	@Override
+	public List<AffCompanyHistByEmployee> getAffEmployeeHistory(List<String> employeeIds) {
+
+		if (employeeIds.isEmpty()) {
+			return new ArrayList<>();
+		}
+
+		// ResultList
+		List<BsymtAffCompanyHist> entities = new ArrayList<>();
+		// Split employeeId List if size of employeeId List is greater than 1000
+		CollectionUtil.split(employeeIds, MAX_ELEMENTS, (subList) -> {
+			List<BsymtAffCompanyHist> lstBsymtAffCompanyHist = this.queryProxy()
+					.query(SELECT_BY_EMPLOYEE_ID_LIST, BsymtAffCompanyHist.class).setParameter("sIdList", employeeIds)
+					.getList();
+			entities.addAll(lstBsymtAffCompanyHist);
+		});
+
+		// Convert Result List to Map
+		Map<String, List<BsymtAffCompanyHist>> resultMap = entities.stream()
+				.collect(Collectors.groupingBy(item -> item.bsymtAffCompanyHistPk.sId));
+
+		List<AffCompanyHistByEmployee> resultList = new ArrayList<>();
 		
+		resultMap.forEach((employeeId, entitiesOfEmp) -> {
+			List<AffCompanyHistItem> lstAffCompanyHistoryItem = entitiesOfEmp
+					.stream().map(ent -> new AffCompanyHistItem(ent.bsymtAffCompanyHistPk.historyId,
+							ent.destinationData == 1, new DatePeriod(ent.startDate, ent.endDate)))
+					.collect(Collectors.toList());
+			AffCompanyHistByEmployee empHist = new AffCompanyHistByEmployee(employeeId, lstAffCompanyHistoryItem);
+			resultList.add(empHist);
+		});
+		
+		return resultList;
+	}
+
+	@Override
+	public List<AffCompanyHist> getAffComHisEmpByLstSidAndPeriod(List<String> employeeIds, DatePeriod datePeriod) {
+		// OutPut Data
+		List<AffCompanyHist> resultData = new ArrayList<>();
+		// CHECK EMPTY of employeeIds
+		if (CollectionUtil.isEmpty(employeeIds)) {
+			return new ArrayList<>();
+		}
+		// ResultList
+		List<BsymtAffCompanyHist> resultList = new ArrayList<>();
+		// Split employeeId List if size of employeeId List is greater than 1000
+		CollectionUtil.split(employeeIds, MAX_ELEMENTS, (subList) -> {
+			List<BsymtAffCompanyHist> lstBsymtAffCompanyHist = this.queryProxy()
+					.query(SELECT_BY_EMPID_AND_DATE_PERIOD, BsymtAffCompanyHist.class)
+					.setParameter("employeeIds", subList)
+					.setParameter("startDate", datePeriod.start())
+					.setParameter("endDate", datePeriod.end())
+					.getList();
+			resultList.addAll(lstBsymtAffCompanyHist);
+		});
+
 		// check empty ResultList
 		if (CollectionUtil.isEmpty(resultList)) {
 			return new ArrayList<>();
@@ -279,13 +355,13 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 		// Convert Result List to Map
 		Map<String, List<BsymtAffCompanyHist>> resultMap = resultList.stream()
 				.collect(Collectors.groupingBy(item -> item.bsymtAffCompanyHistPk.pId));
-		
+
 		// Foreach Map: Convert to Domain then add to Output List
 		resultMap.entrySet().forEach(data -> {
 			AffCompanyHist affComHist = this.toDomain(data.getValue());
 			resultData.add(affComHist);
 		});
-		
+
 		return resultData;
 	}
 

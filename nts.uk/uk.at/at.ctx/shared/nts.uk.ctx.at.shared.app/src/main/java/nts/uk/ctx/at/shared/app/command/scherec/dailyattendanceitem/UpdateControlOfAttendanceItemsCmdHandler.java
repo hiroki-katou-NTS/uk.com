@@ -19,9 +19,12 @@ public class UpdateControlOfAttendanceItemsCmdHandler extends CommandHandler<Con
 	protected void handle(CommandHandlerContext<ControlOfAttendanceItemsCmd> context) {
 		String companyID = AppContexts.user().companyId();
 		ControlOfAttendanceItemsCmd command = context.getCommand();
+		command.setCompanyID(companyID);
 		Optional<ControlOfAttendanceItems> data = repo.getControlOfAttendanceItem(companyID, command.getItemDailyID());
 		if(data.isPresent()) {
 			repo.updateControlOfAttendanceItem(ControlOfAttendanceItemsCmd.fromDomain(command));
+		}else {
+			repo.insertControlOfAttendanceItem(ControlOfAttendanceItemsCmd.fromDomain(command));
 		}
 		
 		

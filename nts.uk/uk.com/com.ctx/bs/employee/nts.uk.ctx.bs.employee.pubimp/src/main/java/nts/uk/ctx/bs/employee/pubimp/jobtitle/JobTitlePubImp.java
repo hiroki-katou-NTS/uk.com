@@ -32,6 +32,7 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMaster;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMasterRepository;
+import nts.uk.ctx.bs.employee.pub.jobtitle.AffJobTitleBasicExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.AffJobTitleHistoryExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.EmployeeJobHistExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.JobTitleExport;
@@ -316,6 +317,34 @@ public class JobTitlePubImp implements SyJobTitlePub {
 		AffJobTitleHistoryItem optAffJobtitleItem = affJobTitleHisItemRepo.findByHitoryId(hisId).get();
 
 		return Optional.of(new AffJobTitleHistoryExport(affJob.getCompanyId(), affJob.getEmployeeId(), optAffJobtitleItem.getJobTitleId(), affJob.getHistoryItems()));
+
+	}
+
+	@Override
+	public Optional<AffJobTitleBasicExport> getBySidAndBaseDate(String sid, GeneralDate baseDate) {
+		
+		Optional<AffJobTitleHistory> optAffJobtitle = affJobTitleHisRepo.getByEmpIdAndStandardDate(sid,
+				baseDate);
+		if (!optAffJobtitle.isPresent())
+			return Optional.empty();
+
+		AffJobTitleHistory affJob = optAffJobtitle.get();
+
+		if (affJob.getHistoryItems().isEmpty())
+			return Optional.empty();
+
+		String hisId = affJob.getHistoryItems().get(0).identifier();
+
+		AffJobTitleHistoryItem optAffJobtitleItem = affJobTitleHisItemRepo.findByHitoryId(hisId).get();
+		
+		Optional<JobTitleInfo> jobTitleInfoOpt = jobTitleInfoRepository.find(optAffJobtitleItem.getJobTitleId(), baseDate);
+		
+		if (!jobTitleInfoOpt.isPresent())
+			return Optional.empty();
+		
+		JobTitleInfo jobTitleInfo = jobTitleInfoOpt.get();
+		
+		return Optional.of(new AffJobTitleBasicExport(jobTitleInfo.getJobTitleId(), jobTitleInfo.getJobTitleCode().v(), jobTitleInfo.getJobTitleName().v()));
 
 	}
 

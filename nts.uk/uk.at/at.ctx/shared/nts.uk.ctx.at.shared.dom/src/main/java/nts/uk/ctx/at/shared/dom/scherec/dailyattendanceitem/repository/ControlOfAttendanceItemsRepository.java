@@ -10,4 +10,6 @@ public interface ControlOfAttendanceItemsRepository {
 	Optional<ControlOfAttendanceItems> getControlOfAttendanceItem(String companyID,int itemDailyID);
 	
 	void updateControlOfAttendanceItem(ControlOfAttendanceItems	controlOfAttendanceItems);	
+	
+	void insertControlOfAttendanceItem(ControlOfAttendanceItems	controlOfAttendanceItems);
 }

@@ -28,5 +28,8 @@ public class PresentClosingPeriodExport {
 	/** The closure end date. */
 	// 締め終了日
 	private GeneralDate closureEndDate;
+	
+	/** 日付 */
+	private ClosureDateExport closureDate;
 
 }

@@ -193,13 +193,42 @@ public class PredetermineTimeSetForCalc {
 											  master.getStartDateClock());
 	}
 	
+//	/**
+//	 * workNoに一致する所定時間を取得する
+//	 * @param workNo
+//	 * @return
+//	 */
+//	public Optional<TimezoneUse> getTimeSheets(int workNo) {
+//		return this.timeSheets.stream().filter(t -> t.getWorkNo()==workNo).findFirst();
+//	}
+	
 	/**
 	 * workNoに一致する所定時間を取得する
 	 * @param workNo
 	 * @return
 	 */
-	public Optional<TimezoneUse> getTimeSheets(int workNo) {
-		return this.timeSheets.stream().filter(t -> t.getWorkNo()==workNo).findFirst();
+	public Optional<TimezoneUse> getTimeSheets(AttendanceHolidayAttr attr,int workNo) {
+		
+		Optional<TimezoneUse> timeSheet = this.timeSheets.stream().filter(t -> t.getWorkNo()==workNo).findFirst();
+		
+		switch (attr) {
+		case MORNING:
+			if(timeSheet.isPresent()) {
+				return Optional.of(new TimezoneUse(timeSheet.get().getStart(),this.AMEndTime,timeSheet.get().getUseAtr(),timeSheet.get().getWorkNo()));
+			}
+			return Optional.empty();
+		case AFTERNOON:
+			if(timeSheet.isPresent()) {
+				return Optional.of(new TimezoneUse(this.PMStartTime,timeSheet.get().getEnd(),timeSheet.get().getUseAtr(),timeSheet.get().getWorkNo()));
+			}
+			return Optional.empty();
+		case FULL_TIME:
+		case HOLIDAY:
+			return timeSheet;
+		default:
+			throw new RuntimeException("unknown attr:" + attr);
+		}
+		
 	}
 	
 }

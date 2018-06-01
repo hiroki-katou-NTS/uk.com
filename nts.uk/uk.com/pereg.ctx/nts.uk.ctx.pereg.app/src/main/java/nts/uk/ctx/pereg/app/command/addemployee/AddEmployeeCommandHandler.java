@@ -124,7 +124,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		String companyId = AppContexts.user().companyId();
 		String comHistId = IdentifierUtil.randomUniqueId();
 
-		List<ItemsByCategory> inputs = commandFacade.createData(command, personId, employeeId, comHistId);
+		List<ItemsByCategory> inputs = commandFacade.createData(command);
 
 		validateTime(inputs, employeeId, personId);
 		checkRequiredInputs(inputs, employeeId, personId, companyId);
@@ -132,7 +132,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		processHistoryPeriod(inputs, command.getHireDate());
 
 		helper.addBasicData(command, personId, employeeId, comHistId, companyId);
-		commandFacade.addNewFromInputs(personId, employeeId, inputs);
+		commandFacade.addNewFromInputs(personId, employeeId, comHistId, inputs);
 		
 		addNewUser(personId, command, userId);
 		

@@ -23,19 +23,18 @@ public class MonthlyModifyQueryProcessor {
 	public List<MonthlyModifyResult> initScreen(MonthlyMultiQuery query, List<Integer> itemIds, 
 												YearMonth yearMonth, ClosureId closureId, 
 												ClosureDate closureDate) {
-//		if(query.getEmployeeIds() == null || query.getEmployeeIds().isEmpty()){
-//			return new ArrayList<>();
-//		}
-//		return query.getEmployeeIds().stream().map(employee -> {
-//			MonthlyRecordWorkDto recordData = this.monthlyRecordWorkFinder.find(employee, yearMonth, closureId,	closureDate);
-//			return MonthlyModifyResult.builder()
-//					.items(AttendanceItemUtil.toItemValues(recordData, itemIds))
-//					.employeeId(recordData.getEmployeeId())
-//					.yearMonth(recordData.getYearMonth().v())
-//					.closureId(recordData.getClosureId())
-//					.closureDate(recordData.getClosureDate())
-//					.completed();
-//		}).collect(Collectors.toList());
-		return null;
+		if(query.getEmployeeIds() == null || query.getEmployeeIds().isEmpty()){
+			return new ArrayList<>();
+		}
+		return query.getEmployeeIds().stream().map(employee -> {
+			MonthlyRecordWorkDto recordData = this.monthlyRecordWorkFinder.find(employee, yearMonth, closureId,	closureDate);
+			return MonthlyModifyResult.builder()
+					.items(AttendanceItemUtil.toItemValues(recordData, itemIds, AttendanceItemUtil.AttendanceItemType.MONTHLY_ITEM))
+					.employeeId(recordData.getEmployeeId())
+					.yearMonth(recordData.getYearMonth().v())
+					.closureId(recordData.getClosureID())
+					.closureDate(recordData.getClosureDate())
+					.completed();
+		}).collect(Collectors.toList());
 	}
 }

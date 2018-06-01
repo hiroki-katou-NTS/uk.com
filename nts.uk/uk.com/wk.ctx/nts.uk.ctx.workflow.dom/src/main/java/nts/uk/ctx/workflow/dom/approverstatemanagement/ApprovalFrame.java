@@ -58,7 +58,7 @@ public class ApprovalFrame extends DomainObject {
 				.build();
 	}
 	
-	public static ApprovalFrame createFromFirst(String rootStateID, ApprovalFrame approvalFrame){
+	public static ApprovalFrame createFromFirst(String companyID, GeneralDate date, String rootStateID, ApprovalFrame approvalFrame){
 		if(Strings.isBlank(approvalFrame.getRootStateID())){
 			return ApprovalFrame.builder()
 					.rootStateID(rootStateID)
@@ -67,7 +67,7 @@ public class ApprovalFrame extends DomainObject {
 					.approvalAtr(approvalFrame.getApprovalAtr())
 					.confirmAtr(approvalFrame.getConfirmAtr())
 					.listApproverState(approvalFrame.getListApproverState().stream()
-							.map(x -> ApproverState.createFromFirst(rootStateID, x)).collect(Collectors.toList()))
+							.map(x -> ApproverState.createFromFirst(companyID, date, rootStateID, x)).collect(Collectors.toList()))
 					.approverID(approvalFrame.getApproverID())
 					.representerID(approvalFrame.getRepresenterID())
 					.approvalDate(approvalFrame.getApprovalDate())

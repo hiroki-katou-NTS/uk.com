@@ -1,19 +1,24 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.grantnumber;
 
-import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.IntegerRange;
+import nts.arc.primitive.HalfIntegerPrimitiveValue;
+import nts.arc.primitive.constraint.HalfIntegerRange;
 
-//日数 - 特別休暇付与日数
-@IntegerRange(min = 0 , max = 366)
-public class DayNumberOfGrant extends IntegerPrimitiveValue<DayNumberOfGrant>{
+//Type - 特別休暇残数用付与日数
+@HalfIntegerRange(min = 0, max = 999.5)
+public class DayNumberOfGrant extends HalfIntegerPrimitiveValue<DayNumberOfGrant>{
 
+	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	public DayNumberOfGrant(Integer rawValue) {
+	
+	public DayNumberOfGrant(Double rawValue) {
 		super(rawValue);
+		// TODO Auto-generated constructor stub
 	}
 
+	
+
+	
 }

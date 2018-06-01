@@ -6,8 +6,8 @@ module nts.uk.com.view.cps009.a {
 
         var screenModel = new viewmodel.ViewModel();
         __viewContext["viewModel"] = screenModel;
-
         __viewContext.bind(__viewContext["viewModel"]);
+        
         $(document).ready(function() {
             __viewContext["viewModel"].checkBrowse();
         });
@@ -55,16 +55,6 @@ $(function() {
         __viewContext["viewModel"].isFilter(false);
         __viewContext["viewModel"].dataSourceFilter = [];
     })
-
-    $('.search-btn').keypress(function(event) {
-
-        var keycode = (event.keyCode ? event.keyCode : event.which);
-        if (keycode == '13') {
-            alert('You pressed a "enter" key in textbox');
-        }
-
-    });
-
 })
 
 

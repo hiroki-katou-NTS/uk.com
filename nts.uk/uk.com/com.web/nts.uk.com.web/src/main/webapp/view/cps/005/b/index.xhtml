@@ -126,7 +126,7 @@
 										<div tabindex="8" id="combo-box"
 											data-bind="ntsComboBox: {
 											name: '#[CPS005_16]',
-											options: $parents[1].stringItemTypeEnum,
+											options: $parents[1].stringItemTypeEnumFilter,
 											optionsValue: 'value',
 											visibleItemsCount: 5,
 											value: stringItemType,
@@ -609,7 +609,7 @@
 								<span class="label" data-bind="text: itemName"></span>
 							</div>
 
-							<div data-bind="visible: itemType() == 2 &amp; dataType() !== 10">
+							<div data-bind="visible: itemType() == 2 &amp; dataType() !== 10 &amp; dataType() !== 11 &amp; dataType() !== 12">
 								<div
 									class="valign-center control-group control-group-margin-custom">
 									<div data-bind="ntsFormLabel: {}"

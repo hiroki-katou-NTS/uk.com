@@ -20,10 +20,14 @@ import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaisingSalaryTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
@@ -65,15 +69,23 @@ public class HolidayWorkTimeSheet{
 															 Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 															 Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily){
 		Map<Integer,HolidayWorkFrameTime> holidayTimeFrameList = new HashMap<Integer, HolidayWorkFrameTime>();
-		val forceAtr = AutoCalAtrOvertime.CALCULATEMBOSS;
-		for(HolidayWorkFrameTimeSheetForCalc holidayWorkFrameTime:workHolidayTime) {
+		//強制区分
+		val forceAtr = holidayAutoCalcSetting.getCalAtr();
+		//枠時間のソート
+		val sortedFrameTimeSheet = sortFrameTime(workHolidayTime, workType, eachWorkTimeSet, eachCompanyTimeSet);
+		
+		List<HolidayWorkFrameNo> numberOrder = new ArrayList<>();
+		
+		for(HolidayWorkFrameTimeSheetForCalc holidayWorkFrameTime:sortedFrameTimeSheet) {
 			AttendanceTime calcDedTime = holidayWorkFrameTime.correctCalculationTime(holidayAutoCalcSetting,DeductionAtr.Deduction);
 			AttendanceTime calcRecTime = holidayWorkFrameTime.correctCalculationTime(holidayAutoCalcSetting,DeductionAtr.Appropriate);
+			if(!numberOrder.contains(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo()))
+				numberOrder.add(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo());
 			//加算だけ
 			if(holidayTimeFrameList.containsKey(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo().v())) {
 				val frame = holidayTimeFrameList.get(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo().v());
-				frame.addHolidayTime(forceAtr.isCalculateEmbossing()?calcRecTime:new AttendanceTime(0),calcDedTime);
-				holidayTimeFrameList.replace(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo().v(), frame);
+				val addFrame = frame.addHolidayTimeExistReturn(forceAtr.isCalculateEmbossing()?calcRecTime:new AttendanceTime(0),calcDedTime);
+				holidayTimeFrameList.replace(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo().v(), addFrame);
 			}
 			//枠追加
 			else {
@@ -101,17 +113,63 @@ public class HolidayWorkTimeSheet{
 					ts.addBeforeTime(wantAddTime.get().getBeforeApplicationTime().isPresent()?wantAddTime.get().getBeforeApplicationTime().get():new AttendanceTime(0));
 							
 			});
-			
+			List<HolidayWorkFrameTime> reOrderList = new ArrayList<>();
+			for(HolidayWorkFrameNo no : numberOrder){
+				val item = calcHolidayTimeWorkTimeList.stream().filter(tc -> tc.getHolidayFrameNo().equals(no)).findFirst();
+				item.ifPresent(tc -> reOrderList.add(tc));
+			}
+			calcHolidayTimeWorkTimeList = reOrderList;
 		}
 		//staticがついていなので、4末緊急対応	
 		//事前申請を上限とする制御
 		val afterCalcUpperTimeList = afterUpperControl(calcHolidayTimeWorkTimeList,holidayAutoCalcSetting);
 		//振替処理
-		val aftertransTimeList = afterCalcUpperTimeList;//transProcess(workType,
-											  //afterCalcUpperTimeList,
-											  //eachWorkTimeSet,
-											  //eachCompanyTimeSet);
+		val aftertransTimeList = transProcess(workType,
+											  afterCalcUpperTimeList,
+											  eachWorkTimeSet,
+											  eachCompanyTimeSet);
 		return aftertransTimeList;
+	}
+	
+	private List<HolidayWorkFrameTimeSheetForCalc> sortFrameTime(List<HolidayWorkFrameTimeSheetForCalc> frameTimeSheets, WorkType workType, Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet, Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
+		val useSetting = decisionUseSetting(workType, eachWorkTimeSet, eachCompanyTimeSet);
+		if(!useSetting.isPresent())
+			return frameTimeSheets;
+		//指定した時間分振り替える
+		//開始時刻のASC
+		//&& 普通残業を優先するであれば普通残業、早出残業順になるようにする
+		if(useSetting.get().getSubHolTransferSetAtr().isSpecifiedTimeSubHol()) {
+			return frameTimeSheets.stream().sorted((first,second) -> first.timeSheet.getStart().compareTo(second.timeSheet.getStart())).collect(Collectors.toList());
+		}
+		//一定時間
+		//開始時刻のDESC
+		else {
+			return frameTimeSheets.stream().sorted((first,second) -> second.timeSheet.getStart().compareTo(first.timeSheet.getStart())).collect(Collectors.toList());
+		}
+	}
+	
+	/**
+	 * 代休の振替処理(残業用)
+	 * @param workType　当日の勤務種類
+	 * @param eachWorkTimeSet 就業時間帯別代休時間設定
+	 * @param eachCompanyTimeSet 会社別代休時間設定
+	 * 
+	 */
+	public Optional<SubHolTransferSet> decisionUseSetting(WorkType workType,
+													  Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
+													  Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
+		//平日ではない
+		if(!workType.getDailyWork().isHolidayWork()) 
+			return Optional.empty();
+		val transSet = getTransSet(eachWorkTimeSet,eachCompanyTimeSet);
+		//就業時間帯の代休設定取得できない
+		if(!transSet.isPresent()||!transSet.get().isUseDivision()) {
+			return Optional.empty();
+		}
+		else {
+			//代休振替設定判定
+			return transSet;
+		}
 	}
 	
 	/**
@@ -205,36 +263,40 @@ public class HolidayWorkTimeSheet{
 	
 	/**
 	 * 事前申請上限制御処理
-	 * @param calcOverTimeWorkTimeList 残業時間枠リスト
+	 * @param calcHolidayTimeWorkTimeList 残業時間枠リスト
 	 * @param autoCalcSet 残業時間の自動計算設定
 	 */
-	private List<HolidayWorkFrameTime> afterUpperControl(List<HolidayWorkFrameTime> calcOverTimeWorkTimeList,AutoCalSetting autoCalcSet) {
+	private List<HolidayWorkFrameTime> afterUpperControl(List<HolidayWorkFrameTime> calcHolidayTimeWorkTimeList,AutoCalSetting autoCalcSet) {
 		List<HolidayWorkFrameTime> returnList = new ArrayList<>();
-		for(HolidayWorkFrameTime loopOverTimeFrame:calcOverTimeWorkTimeList) {
-			AttendanceTime upperTime = new AttendanceTime(0);
-			switch(autoCalcSet.getUpLimitORtSet()) {
-				//上限なし
-				case NOUPPERLIMIT:
-					upperTime = loopOverTimeFrame.getHolidayWorkTime().get().getCalcTime();
-					break;
-				//指示時間を上限とする
-				case INDICATEDYIMEUPPERLIMIT:
-					upperTime = loopOverTimeFrame.getTransferTime().get().getCalcTime();
-					break;
-				//事前申請を上限とする
-				case LIMITNUMBERAPPLICATION:
-					upperTime = loopOverTimeFrame.getBeforeApplicationTime().get();
-					break;
-				default:
-					throw new RuntimeException("uknown AutoCalcAtr Over Time When Ot After Upper Control");
-			}
-			//上限制御
-			if(upperTime.lessThanOrEqualTo(loopOverTimeFrame.getHolidayWorkTime().get().getCalcTime())) 
-				loopOverTimeFrame = loopOverTimeFrame.changeOverTime(TimeDivergenceWithCalculation.sameTime(upperTime));
+		for(HolidayWorkFrameTime loopHolidayTimeFrame:calcHolidayTimeWorkTimeList) {
 			
-			returnList.add(loopOverTimeFrame);
+			//時間の上限時間算出
+			AttendanceTime upperTime = desictionUseUppserTime(autoCalcSet, loopHolidayTimeFrame,loopHolidayTimeFrame.getHolidayWorkTime().get().getTime());
+			//計算時間の上限算出
+			AttendanceTime upperCalcTime = desictionUseUppserTime(autoCalcSet,  loopHolidayTimeFrame,loopHolidayTimeFrame.getHolidayWorkTime().get().getCalcTime());
+			//振替処理
+			loopHolidayTimeFrame = loopHolidayTimeFrame.changeOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(upperTime.greaterThan(loopHolidayTimeFrame.getHolidayWorkTime().get().getTime())?loopHolidayTimeFrame.getHolidayWorkTime().get().getTime():upperTime,
+																														 upperCalcTime.greaterThan(loopHolidayTimeFrame.getHolidayWorkTime().get().getCalcTime())?loopHolidayTimeFrame.getHolidayWorkTime().get().getCalcTime():upperCalcTime));
+			
+			returnList.add(loopHolidayTimeFrame);
 		}
 		return returnList;
+	}
+	
+	public AttendanceTime desictionUseUppserTime(AutoCalSetting autoCalcSet, HolidayWorkFrameTime loopHolidayTimeFrame,AttendanceTime attendanceTime) {
+		switch(autoCalcSet.getUpLimitORtSet()) {
+		//上限なし
+		case NOUPPERLIMIT:
+			return attendanceTime;
+		//指示時間を上限とする
+		case INDICATEDYIMEUPPERLIMIT:
+			//return loopHolidayTimeFrame.get;
+		//事前申請を上限とする
+		case LIMITNUMBERAPPLICATION:
+			return loopHolidayTimeFrame.getBeforeApplicationTime().get();
+		default:
+			throw new RuntimeException("uknown AutoCalcAtr Over Time When Ot After Upper Control");
+		}
 	}
 	
 	/**
@@ -247,26 +309,20 @@ public class HolidayWorkTimeSheet{
 	public List<HolidayWorkFrameTime> transProcess(WorkType workType, List<HolidayWorkFrameTime> afterCalcUpperTimeList,
 												Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 												Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
-		//平日ではない
-		if(!workType.isWeekDayAttendance()) 
+		val useSettingAtr = decisionUseSetting(workType, eachWorkTimeSet, eachCompanyTimeSet);
+		
+		if(!useSettingAtr.isPresent())
 			return afterCalcUpperTimeList;
-		val transSet = getTransSet(eachWorkTimeSet,eachCompanyTimeSet);
-		//就業時間帯の代休設定取得できない
-		if(!transSet.isPresent()||transSet.get().isUseDivision()) {
-			return afterCalcUpperTimeList;
-		}
-		else {
-			//代休振替設定判定
-			switch(transSet.get().getSubHolTransferSetAtr()) {
-				case CERTAIN_TIME_EXC_SUB_HOL:
-					return periodOfTimeTransfer(transSet.get().getCertainTime(),afterCalcUpperTimeList);
-				case SPECIFIED_TIME_SUB_HOL:
-					return transAllTime(transSet.get().getDesignatedTime().getOneDayTime(),
-										transSet.get().getDesignatedTime().getHalfDayTime(),
-										afterCalcUpperTimeList);
-				default:
-					throw new RuntimeException("unknown daikyuSet:");
-			}
+		//代休振替設定判定
+		switch(useSettingAtr.get().getSubHolTransferSetAtr()) {
+			case CERTAIN_TIME_EXC_SUB_HOL:
+				return periodOfTimeTransfer(useSettingAtr.get().getCertainTime(),afterCalcUpperTimeList);
+			case SPECIFIED_TIME_SUB_HOL:
+				return transAllTime(useSettingAtr.get().getDesignatedTime().getOneDayTime(),
+								    useSettingAtr.get().getDesignatedTime().getHalfDayTime(),
+									afterCalcUpperTimeList);
+			default:
+				throw new RuntimeException("unknown daikyuSet:");
 		}
 	}
 	
@@ -354,12 +410,12 @@ public class HolidayWorkTimeSheet{
 	private AttendanceTime calcTransferTime(UseTimeAtr useTimeAtr, HolidayWorkFrameTime holidayWorkFrameTime, AttendanceTime transAbleTime, AttendanceTime transRestAbleTime) {
 		if(useTimeAtr.isTime()) {
 			return holidayWorkFrameTime.getHolidayWorkTime().get().getTime().greaterThanOrEqualTo(transRestAbleTime)
-																		  ?transAbleTime
+																		  ?transRestAbleTime
 																		  :holidayWorkFrameTime.getHolidayWorkTime().get().getTime();
 		}
 		else {
 			return transAbleTime = holidayWorkFrameTime.getHolidayWorkTime().get().getCalcTime().greaterThanOrEqualTo(transRestAbleTime)
-					  													  ?transAbleTime
+					  													  ?transRestAbleTime
 					  													  :holidayWorkFrameTime.getHolidayWorkTime().get().getCalcTime();
 		}
 	}
@@ -375,12 +431,17 @@ public class HolidayWorkTimeSheet{
 	 */
 	private HolidayWorkFrameTime calcTransTimeInFrame(UseTimeAtr useTimeAtr, HolidayWorkFrameTime holidayWorkTimeFrame,AttendanceTime holidayWorkTime, AttendanceTime transAbleTime){
 		if(useTimeAtr.isTime()) {
-			val changeOverTimeFrame = holidayWorkTimeFrame.changeOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(holidayWorkTime , holidayWorkTimeFrame.getHolidayWorkTime().get().getTime()));
-			return changeOverTimeFrame.changeTransTime(TimeDivergenceWithCalculation.createTimeWithCalculation(holidayWorkTimeFrame.getTransferTime().get().getTime(), transAbleTime));
+			val changeOverTimeFrame = holidayWorkTimeFrame.changeOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(holidayWorkTime , 
+																																  holidayWorkTimeFrame.getHolidayWorkTime().get().getCalcTime()));
+			return changeOverTimeFrame.changeTransTime(TimeDivergenceWithCalculation.createTimeWithCalculation(transAbleTime,
+																											   holidayWorkTimeFrame.getTransferTime().get().getCalcTime()));
 		}
 		else {
-			val changeOverTimeFrame = holidayWorkTimeFrame.changeOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(holidayWorkTime , holidayWorkTimeFrame.getHolidayWorkTime().get().getCalcTime()));
-			return changeOverTimeFrame.changeTransTime(TimeDivergenceWithCalculation.createTimeWithCalculation(holidayWorkTimeFrame.getTransferTime().get().getCalcTime(), transAbleTime));
+			val changeOverTimeFrame = holidayWorkTimeFrame.changeOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(holidayWorkTimeFrame.getHolidayWorkTime().get().getTime(),
+																																  holidayWorkTime));
+			
+			return changeOverTimeFrame.changeTransTime(TimeDivergenceWithCalculation.createTimeWithCalculation(holidayWorkTimeFrame.getTransferTime().get().getTime(),
+																											   transAbleTime));
 		}
 	}
 	

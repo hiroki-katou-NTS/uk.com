@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveGrantRemaining;
 
 /**
  * 実年休
@@ -13,7 +13,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremaini
  */
 @Getter
 @Setter
-public class RealAnnualLeave {
+public class RealAnnualLeave implements Cloneable {
 
 	/** 使用数 */
 	private AnnualLeaveUsedNumber usedNumber;
@@ -57,13 +57,30 @@ public class RealAnnualLeave {
 		return domain;
 	}
 	
+	@Override
+	public RealAnnualLeave clone() {
+		RealAnnualLeave cloned = new RealAnnualLeave();
+		try {
+			cloned.usedNumber = this.usedNumber.clone();
+			cloned.remainingNumber = this.remainingNumber.clone();
+			cloned.remainingNumberBeforeGrant = this.remainingNumberBeforeGrant.clone();
+			if (this.remainingNumberAfterGrant.isPresent()){
+				cloned.remainingNumberAfterGrant = Optional.of(this.remainingNumberAfterGrant.get().clone());
+			}
+		}
+		catch (Exception e){
+			throw new RuntimeException("RealAnnualLeave clone error.");
+		}
+		return cloned;
+	}
+	
 	/**
 	 * 年休付与残数データから年休残数を作成
 	 * @param remainingDataList 年休付与残数データリスト
 	 * @param afterGrantAtr 付与後フラグ
 	 */
 	public void createRemainingNumberFromGrantRemaining(
-			List<AnnualLeaveGrantRemainingData> remainingDataList, boolean afterGrantAtr){
+			List<AnnualLeaveGrantRemaining> remainingDataList, boolean afterGrantAtr){
 		
 		// 年休付与残数データから残数を作成
 		this.remainingNumber.createRemainingNumberFromGrantRemaining(remainingDataList);
@@ -72,12 +89,12 @@ public class RealAnnualLeave {
 		if (afterGrantAtr){
 			
 			// 残数付与後　←　残数
-			this.remainingNumberAfterGrant = Optional.of(this.remainingNumber);
+			this.remainingNumberAfterGrant = Optional.of(this.remainingNumber.clone());
 		}
 		else {
 			
 			// 残数付与前　←　残数
-			this.remainingNumberBeforeGrant = this.remainingNumber;
+			this.remainingNumberBeforeGrant = this.remainingNumber.clone();
 		}
 	}
 	
@@ -86,7 +103,7 @@ public class RealAnnualLeave {
 	 * @param days 日数
 	 * @param afterGrantAtr 付与後フラグ
 	 */
-	public void addUsednumber(double days, boolean afterGrantAtr){
+	public void addUsedNumber(double days, boolean afterGrantAtr){
 	
 		// 使用数．使用日数．使用日数に加算
 		this.usedNumber.getUsedDays().addUsedDays(days);

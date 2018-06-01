@@ -26,20 +26,20 @@ public class AttendanceLeavingGateOfDailyTest {
 	@Test
 	public void test_calcBeforeAttendanceTime() {
 		
-//		List<AttendanceLeavingGate> attendanceLeavingGates = new ArrayList<>();
-//		attendanceLeavingGates.add(new AttendanceLeavingGate(new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(1),
-//										   new WorkStamp(new TimeWithDayAttr(420),new TimeWithDayAttr(420),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER),
-//										   new WorkStamp(new TimeWithDayAttr(1200),new TimeWithDayAttr(1200),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER)));
-////		attendanceLeavingGates.add(new AttendanceLeavingGate(new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(2),
-////										   new WorkStamp(new TimeWithDayAttr(510),new TimeWithDayAttr(510),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER),
-////										   new WorkStamp(new TimeWithDayAttr(1050),new TimeWithDayAttr(1050),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER)));
-//		//日別実績の入退門　　
-//		AttendanceLeavingGateOfDaily attendanceLeavingGateOfDaily = new AttendanceLeavingGateOfDaily("",GeneralDate.today(),attendanceLeavingGates);
-//		
-//		List<TimeLeavingWork> list = new ArrayList<>();
-//		WorkStamp a = new WorkStamp(new TimeWithDayAttr(510),new TimeWithDayAttr(510),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER);
-//		WorkStamp b = new WorkStamp(new TimeWithDayAttr(1050),new TimeWithDayAttr(1050),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER);
-//		
+		List<AttendanceLeavingGate> attendanceLeavingGates = new ArrayList<>();
+		attendanceLeavingGates.add(new AttendanceLeavingGate(new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(1),
+										   new WorkStamp(new TimeWithDayAttr(420),new TimeWithDayAttr(420),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER),
+										   new WorkStamp(new TimeWithDayAttr(1200),new TimeWithDayAttr(1200),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER)));
+//		attendanceLeavingGates.add(new AttendanceLeavingGate(new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(2),
+//										   new WorkStamp(new TimeWithDayAttr(510),new TimeWithDayAttr(510),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER),
+//										   new WorkStamp(new TimeWithDayAttr(1050),new TimeWithDayAttr(1050),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER)));
+		//日別実績の入退門　　
+		AttendanceLeavingGateOfDaily attendanceLeavingGateOfDaily = new AttendanceLeavingGateOfDaily("",GeneralDate.today(),attendanceLeavingGates);
+		
+		List<TimeLeavingWork> list = new ArrayList<>();
+		WorkStamp a = new WorkStamp(new TimeWithDayAttr(510),new TimeWithDayAttr(510),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER);
+		WorkStamp b = new WorkStamp(new TimeWithDayAttr(1050),new TimeWithDayAttr(1050),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER);
+		
 //		list.add(new TimeLeavingWork(new WorkNo(1),Optional.of(new TimeActualStamp(a,a, 1)),Optional.of(new TimeActualStamp(b,b, 1))));
 ////		list.add(new TimeLeavingWork(new WorkNo(2),Optional.of(new TimeActualStamp(a,b, 1)),Optional.of(new TimeActualStamp(a,b, 1))));
 //		

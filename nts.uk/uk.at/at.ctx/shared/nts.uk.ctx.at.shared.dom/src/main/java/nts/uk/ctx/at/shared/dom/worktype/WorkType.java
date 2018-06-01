@@ -88,7 +88,21 @@ public class WorkType extends AggregateRoot {
 
 	/** 出勤系かチェックする　*/
 	private boolean isWorkingType(WorkTypeClassification wt) {
-		return wt == WorkTypeClassification.Attendance || wt == WorkTypeClassification.Shooting;
+		return wt == WorkTypeClassification.Attendance || wt == WorkTypeClassification.Shooting 
+				|| wt == WorkTypeClassification.HolidayWork;
+	}
+	
+	public boolean isNoneWorkTimeType(){
+		if (dailyWork != null && dailyWork.getWorkTypeUnit() == WorkTypeUnit.OneDay) {
+			return isNoneWorkTimeType(dailyWork.getOneDay());
+		}
+		return false;
+	}
+	
+	private boolean isNoneWorkTimeType(WorkTypeClassification wt) {
+		return wt == WorkTypeClassification.Holiday || wt == WorkTypeClassification.Pause
+				|| wt == WorkTypeClassification.LeaveOfAbsence || wt == WorkTypeClassification.Closure
+				|| wt == WorkTypeClassification.ContinuousWork;
 	}
 
 	/**
@@ -182,7 +196,8 @@ public class WorkType extends AggregateRoot {
 	
 	
 	public AttendanceHolidayAttr getAttendanceHolidayAttr() {
-		return this.dailyWork.getAttendanceHolidayAttr();
+//		return this.dailyWork.getAttendanceHolidayAttr();
+		return this.dailyWork.decisionNeedPredTime();
 	}
 	
 	/**
@@ -243,6 +258,12 @@ public class WorkType extends AggregateRoot {
 	public WorkTypeSet getWorkTypeSetByAtr(WorkAtr atr) {
 		return this.getWorkTypeSetList().stream().filter(item -> item.getWorkAtr() == atr).findFirst().get();
 	}
+	
+	public WorkTypeSet getWorkTypeSetAvailable() {
+		return this.getWorkTypeSetList().stream().filter(item -> item.getWorkAtr() == WorkAtr.OneDay 
+				|| item.getWorkAtr() == WorkAtr.Afternoon  
+				|| item.getWorkAtr() == WorkAtr.Monring).findFirst().get();
+	}
 
 	/**
 	 * Gets the work type set.
@@ -301,4 +322,11 @@ public class WorkType extends AggregateRoot {
 		
 							
 	}
+	
+
+	public boolean getDecisionAttendanceHolidayAttr() {
+		return this.dailyWork.getDecidionAttendanceHolidayAttr();
+	}
+	
+	
 }

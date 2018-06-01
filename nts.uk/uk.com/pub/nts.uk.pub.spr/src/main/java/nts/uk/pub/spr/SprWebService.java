@@ -1,5 +1,6 @@
 package nts.uk.pub.spr;
 
+import java.io.UnsupportedEncodingException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,6 +10,8 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+
+import com.google.common.base.Strings;
 
 import lombok.val;
 import nts.uk.pub.spr.SprStubHelper.ApplicationTargetResult;
@@ -20,6 +23,7 @@ import nts.uk.pub.spr.dailystatus.SprDailyStatusService;
 import nts.uk.pub.spr.login.SprLoginFormService;
 import nts.uk.pub.spr.login.output.LoginUserContextSpr;
 import nts.uk.pub.spr.login.output.RoleInfoSpr;
+import nts.uk.pub.spr.login.paramcheck.LoginParamCheck;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 
 @Path("public/spr")
@@ -39,6 +43,9 @@ public class SprWebService {
 	
 	@Inject
 	private LoginUserContextManager loginUserContextManager;
+	
+	@Inject
+	private LoginParamCheck loginParamCheck;
 
 	@POST
 	@Path("01/loginfromspr")
@@ -54,17 +61,56 @@ public class SprWebService {
 			@FormParam("applicationID") String applicationID,
 			@FormParam("reason") String reason,
 			@FormParam("stampProtection") String stampProtection) {
-		LoginUserContextSpr loginUserContextSpr = sprLoginFormService.loginFromSpr(
-				menuCode, 
-				loginEmployeeCode, 
-				targetEmployeeCode, 
-				startTime, 
-				endTime, 
-				targetDate, 
-				selectType, 
-				applicationID, 
-				reason,
-				stampProtection);
+		String menuCDReal = menuCode;
+		String loginEmployeeCDReal = loginEmployeeCode;
+		String targetEmployeeCDReal = targetEmployeeCode;
+		String startTimeReal = startTime;
+		String endTimeReal = endTime;
+		String targetDateReal = targetDate;
+		String selectTypeReal = selectType;
+		String applicationIDReal = applicationID;
+		String reasonReal = "";
+		String stampProtectionReal = stampProtection;
+		LoginUserContextSpr loginUserContextSpr = null;
+		try {
+			byte[] reasonBytes = new byte[reason.length()];
+			for (int i = 0; i < reason.length(); i++) {
+				reasonBytes[i] = (byte)(reason.codePointAt(i));
+			}
+			reasonReal = new String(reasonBytes, "sjis");
+			loginUserContextSpr = sprLoginFormService.loginFromSpr(
+					menuCDReal, 
+					loginEmployeeCDReal, 
+					targetEmployeeCDReal, 
+					startTimeReal, 
+					endTimeReal, 
+					targetDateReal, 
+					selectTypeReal, 
+					applicationIDReal, 
+					reasonReal,
+					stampProtectionReal);
+		} catch (UnsupportedEncodingException e1) {
+			val html = new StringBuilder();
+		    html.append("<!DOCTYPE html>");
+		    html.append("<html><head><meta charset=\"UTF-8\"></head><body>");
+		    html.append(""+ e1.getMessage() +"");
+		    html.append("</body></html>");            
+		    return html.toString();
+		} catch (nts.arc.error.BusinessException ex){
+		    val html = new StringBuilder();
+		    html.append("<!DOCTYPE html>");
+		    html.append("<html><head><meta charset=\"UTF-8\"></head><body>");
+		    html.append(""+ ex.getMessage() +"");
+		    html.append("</body></html>");            
+		    return html.toString();
+		} catch (Exception e) {
+			val html = new StringBuilder();
+		    html.append("<!DOCTYPE html>");
+		    html.append("<html><head><meta charset=\"UTF-8\"></head><body>");
+		    html.append(""+ e.getMessage() +"");
+		    html.append("</body></html>");            
+		    return html.toString();
+		}
 		loginUserContextManager.loggedInAsEmployee(
 				loginUserContextSpr.getUserID(), 
 				loginUserContextSpr.getPersonID(), 
@@ -106,26 +152,35 @@ public class SprWebService {
 			}
 		}
 		val paramsMap = new LinkedHashMap<String, String>();
-		paramsMap.put("menu", SprStubHelper.formatParam(menuCode));
-		paramsMap.put("loginemployeeCode", SprStubHelper.formatParam(loginEmployeeCode));
-		paramsMap.put("employeeCode", SprStubHelper.formatParam(targetEmployeeCode));
-		paramsMap.put("", SprStubHelper.formatParamTime(startTime));
-		paramsMap.put("endtime", SprStubHelper.formatParamTime(endTime));
-		paramsMap.put("date", SprStubHelper.formatParam(targetDate));
-		paramsMap.put("selecttype", SprStubHelper.formatParam(selectType));
-		paramsMap.put("applicationID", SprStubHelper.formatParam(applicationID));
+		paramsMap.put("menu", SprStubHelper.formatParam(menuCDReal));
+		paramsMap.put("loginemployeeCode", SprStubHelper.formatParam(loginEmployeeCDReal));
+		paramsMap.put("employeeCode", SprStubHelper.formatParam(targetEmployeeCDReal));
+		paramsMap.put("", SprStubHelper.formatParamTime(startTimeReal));
+		paramsMap.put("endtime", SprStubHelper.formatParamTime(endTimeReal));
+		paramsMap.put("date", SprStubHelper.formatParam(targetDateReal));
+		paramsMap.put("selecttype", SprStubHelper.formatParam(selectTypeReal));
+		paramsMap.put("applicationID", SprStubHelper.formatParam(applicationIDReal));
+		paramsMap.put("reason", SprStubHelper.formatParam(reasonReal));
+		paramsMap.put("stampProtection", SprStubHelper.formatParam(stampProtectionReal));
+		
+		String date = null;
+		if(!Strings.isNullOrEmpty(targetDateReal)){
+			if(!Strings.isNullOrEmpty(targetDateReal.trim())){
+				date = loginParamCheck.getDate(targetDateReal).toString();
+			}
+		}
 		
 		val paramsValue = new LinkedHashMap<String, String>();
-		paramsValue.put("menu", menuCode);
-		paramsValue.put("loginemployeeCode", loginEmployeeCode);
-		paramsValue.put("employeeCode", targetEmployeeCode);
-		paramsValue.put("starttime", startTime);
-		paramsValue.put("endtime", endTime);
-		paramsValue.put("date", targetDate);
-		paramsValue.put("selecttype", selectType);
-		paramsValue.put("applicationID", applicationID);
-		paramsValue.put("reason", reason);
-		paramsValue.put("stampProtection", stampProtection);
+		paramsValue.put("menu", menuCDReal);
+		paramsValue.put("loginemployeeCode", loginEmployeeCDReal);
+		paramsValue.put("employeeCode", targetEmployeeCDReal);
+		paramsValue.put("starttime", startTimeReal);
+		paramsValue.put("endtime", endTimeReal);
+		paramsValue.put("date", date);
+		paramsValue.put("selecttype", selectTypeReal);
+		paramsValue.put("applicationID", applicationIDReal);
+		paramsValue.put("reason", reasonReal);
+		paramsValue.put("stampProtection", stampProtectionReal);
 		paramsValue.put("userID", loginUserContextSpr.getUserID());
 		paramsValue.put("contractCD", loginUserContextSpr.getContractCD());
 		paramsValue.put("companyID", loginUserContextSpr.getCompanyID());
@@ -137,24 +192,25 @@ public class SprWebService {
 		
 		val html = new StringBuilder()
 				.append("<!DOCTYPE html>")
-				.append("<html><body>");
+				.append("<html><head><meta charset=\"UTF-8\"></head><body>");
 		paramsMap.forEach((name, value) -> {
 			html.append(name + " : " + value + "<br/>");
 			
 		});
-		
 		val paramStringValue = new StringBuilder();
 		paramsValue.forEach((name,value)->{
-			paramStringValue.append(name+":'"+value+"',");
+			if(value==null){
+				paramStringValue.append(name+":'',");
+			} else {
+				paramStringValue.append(name+":'"+value+"',");
+			}
 		});
-		
 		html.append("<script>");
+		html.append("debugger;");
 		html.append("window.sessionStorage.setItem(\"paramSPR\", JSON.stringify({"+paramStringValue+"}));");
 		html.append("window.location.href = '../../../../view/spr/index.xhtml'");
 		html.append("</script>");
 		html.append("</body></html>");
-		
-		
 		return html.toString();
 	}
 	

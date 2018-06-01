@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.nursingcareleavemanagement.data.
 import nts.uk.ctx.at.record.dom.remainingnumber.nursingcareleavemanagement.data.NursingCareLeaveRemainingData;
 import nts.uk.ctx.at.record.dom.remainingnumber.nursingcareleavemanagement.info.NursCareLevRemainInfoRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.nursingcareleavemanagement.info.NursingCareLeaveRemainingInfo;
+import nts.uk.ctx.at.record.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
@@ -41,22 +42,53 @@ implements PeregUpdateCommandHandler<UpdateCareLeaveCommand>{
 	protected void handle(CommandHandlerContext<UpdateCareLeaveCommand> context) {
 		String cId = AppContexts.user().companyId();
 		UpdateCareLeaveCommand data = context.getCommand();
-		NursingCareLeaveRemainingData childCareData = NursingCareLeaveRemainingData.getChildCareHDRemaining(data.getSId(), data.getChildCareUsedDays().intValue());
-		NursingCareLeaveRemainingData careData = NursingCareLeaveRemainingData.getCareHDRemaining(data.getSId(), data.getCareUsedDays().intValue());
-		dataRepo.update(childCareData, cId);
-		dataRepo.update(careData, cId);
+		NursingCareLeaveRemainingData childCareData = NursingCareLeaveRemainingData.getChildCareHDRemaining(data.getSId(), data.getChildCareUsedDays()== null? 0.0: data.getChildCareUsedDays().doubleValue());
+		NursingCareLeaveRemainingData careData = NursingCareLeaveRemainingData.getCareHDRemaining(data.getSId(), data.getCareUsedDays() == null? 0.0: data.getCareUsedDays().doubleValue());
+		
+		// check childCareData isPresent
+		Optional<NursingCareLeaveRemainingData> checkChildCareDataisPresent= dataRepo.getChildCareByEmpId(childCareData.getSId());
+		if (checkChildCareDataisPresent.isPresent()) {
+			dataRepo.update(childCareData, cId);
+		}else {
+			if(data.getChildCareUsedDays() != null)
+			dataRepo.add(childCareData, cId);
+		}
+		
+		//  check careData isPresent
+		Optional<NursingCareLeaveRemainingData> checkCareDataisPresent = dataRepo.getCareByEmpId(careData.getSId());
+		
+		if (checkCareDataisPresent.isPresent()) {
+			dataRepo.update(careData, cId);
+		}else {
+			if(data.getCareUsedDays() != null)
+			dataRepo.add(careData, cId);
+		}
+		
 		
 		NursingCareLeaveRemainingInfo childCareInfo = NursingCareLeaveRemainingInfo.createChildCareLeaveInfo(data.getSId(), data.getChildCareUseArt().intValue(), 
-				data.getChildCareUpLimSet().intValue(), 
-				data.getChildCareThisFiscal() == null ? Optional.empty() : Optional.of(data.getChildCareThisFiscal().intValue()), 
-				data.getChildCareNextFiscal() == null ? Optional.empty() : Optional.of(data.getChildCareNextFiscal().intValue()));
+				data.getChildCareUpLimSet() == null? UpperLimitSetting.FAMILY_INFO.value: data.getChildCareUpLimSet().intValue(), 
+				data.getChildCareThisFiscal() == null? null : data.getChildCareThisFiscal().doubleValue(), 
+				data.getChildCareNextFiscal() == null? null: data.getChildCareNextFiscal().doubleValue());
 		NursingCareLeaveRemainingInfo careInfo= NursingCareLeaveRemainingInfo.createCareLeaveInfo(data.getSId(), data.getCareUseArt().intValue(), 
-				data.getCareUpLimSet().intValue(), 
-				data.getCareThisFiscal() == null ? Optional.empty() : Optional.of(data.getCareThisFiscal().intValue()), 
-				data.getCareNextFiscal() == null ? Optional.empty() : Optional.of(data.getCareNextFiscal().intValue()));
-		infoRepo.update(childCareInfo, cId);
-		infoRepo.update(careInfo, cId);
+				data.getCareUpLimSet() == null? UpperLimitSetting.FAMILY_INFO.value:data.getCareUpLimSet().intValue(), 
+				data.getCareThisFiscal() == null? null: data.getCareThisFiscal().doubleValue(), 
+				data.getCareNextFiscal() == null? null: data.getCareNextFiscal().doubleValue());
 		
+		// check childCareInfo isPresent
+		Optional<NursingCareLeaveRemainingInfo> checkChildCareInfoisPresent= infoRepo.getChildCareByEmpId(childCareInfo.getSId());
+		if (checkChildCareInfoisPresent.isPresent()) {
+			infoRepo.update(childCareInfo, cId);
+		} else {
+			infoRepo.add(childCareInfo, cId);
+		}
+		
+		// check cCareInfo isPresent
+		Optional<NursingCareLeaveRemainingInfo> checkCareInfoisPresent= infoRepo.getCareByEmpId(careInfo.getSId());
+		if (checkCareInfoisPresent.isPresent()) {
+			infoRepo.update(careInfo, cId);
+		} else {
+			infoRepo.add(careInfo, cId);
+		}
 	}
 
 }

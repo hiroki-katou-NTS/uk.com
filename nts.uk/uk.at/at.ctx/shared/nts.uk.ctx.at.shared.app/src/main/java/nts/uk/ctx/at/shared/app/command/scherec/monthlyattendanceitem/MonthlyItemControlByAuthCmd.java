@@ -20,9 +20,9 @@ public class MonthlyItemControlByAuthCmd {
 	/**ロール*/
 	private String authorityMonthlyId;
 	
-	List<DisplayAndInputMonthlyCmd> listDisplayAndInputMonthly = new ArrayList<>();
+	List<DisplayAndInputMonthCmd> listDisplayAndInputMonthly = new ArrayList<>();
 	
-	public MonthlyItemControlByAuthCmd(String companyId, String authorityMonthlyId, List<DisplayAndInputMonthlyCmd> listDisplayAndInputMonthly) {
+	public MonthlyItemControlByAuthCmd(String companyId, String authorityMonthlyId, List<DisplayAndInputMonthCmd> listDisplayAndInputMonthly) {
 		super();
 		this.companyId = companyId;
 		this.authorityMonthlyId = authorityMonthlyId;
@@ -33,7 +33,7 @@ public class MonthlyItemControlByAuthCmd {
 		return new MonthlyItemControlByAuthority(
 				command.getCompanyId(),
 				command.getAuthorityMonthlyId(),
-				command.getListDisplayAndInputMonthly().stream().map(c->DisplayAndInputMonthlyCmd.fromCommand(c)).collect(Collectors.toList())
+				command.getListDisplayAndInputMonthly().stream().map(c->DisplayAndInputMonthCmd.fromCommand(c)).collect(Collectors.toList())
 				);
 	}
 

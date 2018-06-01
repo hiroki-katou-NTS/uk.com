@@ -83,13 +83,13 @@ public class StartEndTimeOffReflectImpl implements StartEndTimeOffReflect{
 		//打刻自動セット区分を取得する
 		if(!worktypeService.checkStampAutoSet(worktypeCode, AttendanceOfficeAtr.ATTENDANCE)
 				&& (workStampStart.getStampSourceInfo() == StampSourceInfo.STAMP_AUTO_SET_PERSONAL_INFO
-				|| workStampStart.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION)) {
+				|| workStampStart.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT)) {
 			isStart = true;
 		}
 		WorkStamp workStampEnd = leavingStamp1.getLeaveStamp().get().getStamp().get();
 		if(!worktypeService.checkStampAutoSet(worktypeCode, AttendanceOfficeAtr.OFFICEWORK)
 				&& (workStampEnd.getStampSourceInfo() == StampSourceInfo.STAMP_AUTO_SET_PERSONAL_INFO
-						|| workStampEnd.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION)) {
+						|| workStampEnd.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT)) {
 			isEnd = true;
 		}
 		TimeReflectPara timeReflectData = new TimeReflectPara(employeeId, dateData, timeData, timeData, 1, isStart, isEnd);

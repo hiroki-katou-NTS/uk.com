@@ -21,11 +21,11 @@ public class Specialleave12informationDto  extends PeregDomainDto {
 	
 	//	特別休暇管理
 	@PeregItem("IS00567")
-	private int useAtr;
+	private Integer useAtr;
 	
 	//	付与設定
 	@PeregItem("IS00568")
-	private int appSet;
+	private Integer appSet;
 	
 	//	付与日数
 	@PeregItem("IS00569")

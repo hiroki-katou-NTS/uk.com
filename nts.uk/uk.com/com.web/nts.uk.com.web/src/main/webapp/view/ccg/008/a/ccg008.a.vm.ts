@@ -93,11 +93,10 @@ module nts.uk.com.view.ccg008.a.viewmodel {
             }
 
             let listPlacement: Array<model.Placement> = _.map(data.placements, (item) => {
-                var html = '<iframe src="' + item.placementPartDto.externalUrl + '"/>';
-                return new model.Placement(item.placementID, item.placementPartDto.name,
+                return new model.Placement(item.placementID, item.placementPartDto.topPageName,
                     item.row, item.column,
-                    item.placementPartDto.width, item.placementPartDto.height, item.placementPartDto.externalUrl,
-                    item.placementPartDto.topPagePartID, item.placementPartDto.type, html);
+                    item.placementPartDto.width, item.placementPartDto.height, item.placementPartDto.url,
+                    item.placementPartDto.topPagePartID, item.placementPartDto.topPageCode ,item.placementPartDto.type, null);
             });
 
             if (data.flowMenu != null) {
@@ -106,7 +105,7 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                     let html = '<iframe style="width:' + ((items.widthSize * 150) - 13) + 'px;height:' + ((items.heightSize * 150) - 50) + 'px" src="' + flowMenuUrl + '"/>';
                     listPlacement.push(new model.Placement(items.fileID, items.topPageName,
                         items.row, items.column,
-                        items.widthSize, items.heightSize, null,
+                        items.widthSize, items.heightSize, null, null,
                         items.toppagePartID, model.TopPagePartType.FLOWMENU, html));
                 });
             }
@@ -182,19 +181,40 @@ module nts.uk.com.view.ccg008.a.viewmodel {
             topPagePartID: string;
             partType: number;
             html: string;
-            constructor(placementID: string, name: string, row: number, column: number, width: number, height: number, url?: string, topPagePartID?: string, partType?: number, html: string) {
+            constructor(placementID: string, name: string, row: number, column: number, width: number, height: number, url?: string, topPagePartID?: string, topPageCode?: string, partType?: number, html: string) {
                 // Non Agruments
-                this.isExternalUrl = (nts.uk.util.isNullOrEmpty(url)) ? false : true;
+                this.isExternalUrl = (partType===4) ? true : false;
                 this.placementID = placementID;
                 this.name = (this.isExternalUrl) ? "外部URL" : name;
                 this.row = nts.uk.ntsNumber.getDecimal(row, 0);
                 this.column = nts.uk.ntsNumber.getDecimal(column, 0);
                 this.width = nts.uk.ntsNumber.getDecimal(width, 0);
                 this.height = nts.uk.ntsNumber.getDecimal(height, 0);
-                this.url = url;
+                let origin: string = window.location.origin;
+                if(partType === 0){
+                    if(topPageCode === "0001"){
+                        this.url = origin + "/nts.uk.at.web/view/ktg/001/a/index.xhtml";
+                        this.html = '<iframe src="' + this.url + '"/>'; 
+                    }else if(topPageCode === "0002"){
+                        this.url = origin + "/nts.uk.at.web/view/ktg/002/a/index.xhtml"; 
+                        this.html = '<iframe src="' + this.url + '"/>'; 
+                    }else if(topPageCode === "0003"){
+                        this.url = origin + ""; 
+                        this.html = '<iframe src="' + this.url + '"/>'; 
+                    }
+                }else if(partType === 1){
+                    this.url = origin + "/nts.uk.at.web/view/ktg/029/a/index.xhtml?code="+topPageCode;
+                    this.html = '<iframe src="' + this.url + '"/>';  
+                }else if(partType === 4){
+                    this.url = url;
+                    this.html = '<iframe src="' + this.url + '"/>';
+                }else{
+                    this.url = url;
+                    this.html = html;
+                }
                 this.topPagePartID = topPagePartID;
                 this.partType = partType;
-                this.html = html;
+                
             }
         }
         /** Server LayoutDto */
@@ -265,10 +285,11 @@ module nts.uk.com.view.ccg008.a.viewmodel {
             checkTopPage: boolean;
         }
         export enum TopPagePartType {
-            WIDGET = 0,
-            DASHBOARD,
-            FLOWMENU,
-            EXTERNAL_URL
+            STANDARD_WIDGET = 0,
+            OPTIONAL_WIDGET =1,
+            DASHBOARD = 2,
+            FLOWMENU = 3,
+            EXTERNAL_URL = 4
         }
         export const MYPAGE = 'mypage';
         export const TOPPAGE = 'toppage';

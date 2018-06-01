@@ -131,8 +131,9 @@ public class SprApprovalSearchPubImpl implements SprApprovalSearchPub {
 	}
 
 	@Override
-	public JudgmentSprExport judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID) {
-		ApproverPersonOutput approverPersonOutput = judgmentApprovalStatusService.judgmentTargetPersonCanApprove(companyID, rootStateID, employeeID);
+	public JudgmentSprExport judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID, Integer rootType) {
+		ApproverPersonOutput approverPersonOutput = judgmentApprovalStatusService
+				.judgmentTargetPersonCanApprove(companyID, rootStateID, employeeID, rootType);
 		return new JudgmentSprExport(
 				approverPersonOutput.getAuthorFlag(), 
 				approverPersonOutput.getApprovalAtr().value, 

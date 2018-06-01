@@ -1,7 +1,11 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.recruitment;
 
+import java.util.Optional;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 /**
  * 事前申請の処理(振出申請)
  * @author do_dt
@@ -30,5 +34,15 @@ public interface RecruitmentRelectRecordService {
 	 * @param employeeId
 	 * @param baseDate
 	 */
-	public void clearRecruitmenFrameTime(String employeeId, GeneralDate baseDate);
+	public void clearRecruitmenFrameTime(String employeeId, GeneralDate baseDate, IntegrationOfDaily daily);
+	/**
+	 * 開始時刻が反映できるか
+	 * @param employeeId
+	 * @param baseDate
+	 * @param frameNo
+	 * @param isAttendence
+	 * @param optTimeLeaving
+	 * @return
+	 */
+	public boolean checkReflectRecordStartEndTime(String workTypeCode, Integer frameNo, boolean isAttendence, String employeeId, GeneralDate baseDate);
 }

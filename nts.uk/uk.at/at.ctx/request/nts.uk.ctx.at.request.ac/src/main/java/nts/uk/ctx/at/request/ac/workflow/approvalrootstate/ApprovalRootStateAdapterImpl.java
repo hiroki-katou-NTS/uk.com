@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.ac.workflow.approvalrootstate;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,10 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalStatusForEmployeeImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApproveRootStatusForEmpImPort;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
@@ -29,6 +33,7 @@ import nts.uk.ctx.workflow.pub.agent.ApproverRepresenterExport;
 import nts.uk.ctx.workflow.pub.service.ApprovalRootStatePub;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalPhaseStateExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootContentExport;
+import nts.uk.ctx.workflow.pub.service.export.ApproveRootStatusForEmpExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExport;
 /**
@@ -112,37 +117,38 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 
 	@Override
 	public void insertByAppType(String companyID, String employeeID, Integer appTypeValue, GeneralDate date, String appID) {
-		approvalRootStatePub.insertAppRootType(companyID, employeeID, appTypeValue, date, appID);
+		approvalRootStatePub.insertAppRootType(companyID, employeeID, appTypeValue, date, appID, 0);
 	}
 
 	@Override
 	public List<String> getNextApprovalPhaseStateMailList(String companyID, String rootStateID,
 			Integer approvalPhaseStateNumber, Boolean isCreate, String employeeID, Integer appTypeValue,
 			GeneralDate appDate) {
-		return approvalRootStatePub.getNextApprovalPhaseStateMailList(companyID, rootStateID, approvalPhaseStateNumber, isCreate, employeeID, appTypeValue, appDate);
+		return approvalRootStatePub.getNextApprovalPhaseStateMailList(companyID, rootStateID, 
+				approvalPhaseStateNumber, isCreate, employeeID, appTypeValue, appDate, 0);
 	}
 
 	@Override
 	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate,
 			Integer appTypeValue, GeneralDate appDate, String memo) {
-		return approvalRootStatePub.doApprove(companyID, rootStateID, employeeID, isCreate, appTypeValue, appDate, memo);
+		return approvalRootStatePub.doApprove(companyID, rootStateID, employeeID, isCreate, appTypeValue, appDate, memo, 0);
 	}
 
 	@Override
 	public Boolean isApproveAllComplete(String companyID, String rootStateID, String employeeID, Boolean isCreate,
 			Integer appTypeValue, GeneralDate appDate) {
 		// TODO Auto-generated method stub
-		return approvalRootStatePub.isApproveAllComplete(companyID, rootStateID, employeeID, isCreate, appTypeValue, appDate);
+		return approvalRootStatePub.isApproveAllComplete(companyID, rootStateID, employeeID, isCreate, appTypeValue, appDate, 0);
 	}
 
 	@Override
 	public void doReleaseAllAtOnce(String companyID, String rootStateID) {
-		approvalRootStatePub.doReleaseAllAtOnce(companyID, rootStateID);
+		approvalRootStatePub.doReleaseAllAtOnce(companyID, rootStateID, 0);
 	}
 
 	@Override
 	public ApproverApprovedImport_New getApproverApproved(String rootStateID) {
-		ApproverApprovedExport approverApprovedExport = approvalRootStatePub.getApproverApproved(rootStateID);
+		ApproverApprovedExport approverApprovedExport = approvalRootStatePub.getApproverApproved(rootStateID, 0);
 		return new ApproverApprovedImport_New(
 				approverApprovedExport.getListApproverWithFlagOutput().stream()
 					.map(x -> new ApproverWithFlagImport_New(x.getEmployeeID(), x.getAgentFlag())).collect(Collectors.toList()), 
@@ -174,34 +180,34 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 
 	@Override
 	public List<String> getMailNotifierList(String companyID, String rootStateID) {
-		return approvalRootStatePub.getMailNotifierList(companyID, rootStateID);
+		return approvalRootStatePub.getMailNotifierList(companyID, rootStateID, 0);
 	}
 
 	@Override
 	public void deleteApprovalRootState(String rootStateID) {
-		approvalRootStatePub.deleteApprovalRootState(rootStateID);
+		approvalRootStatePub.deleteApprovalRootState(rootStateID, 0);
 		
 	}
 
 	@Override
 	public Boolean doRelease(String companyID, String rootStateID, String employeeID) {
-		return approvalRootStatePub.doRelease(companyID, rootStateID, employeeID);
+		return approvalRootStatePub.doRelease(companyID, rootStateID, employeeID, 0);
 	}
 
 	@Override
 	public Boolean doDeny(String companyID, String rootStateID, String employeeID, String memo) {
-		return approvalRootStatePub.doDeny(companyID, rootStateID, employeeID, memo);
+		return approvalRootStatePub.doDeny(companyID, rootStateID, employeeID, memo, 0);
 	}
 
 	@Override
 	public Boolean judgmentTargetPersonIsApprover(String companyID, String rootStateID, String employeeID) {
-		return approvalRootStatePub.judgmentTargetPersonIsApprover(companyID, rootStateID, employeeID);
+		return approvalRootStatePub.judgmentTargetPersonIsApprover(companyID, rootStateID, employeeID, 0);
 	}
 
 	@Override
 	public ApproverPersonImport judgmentTargetPersonCanApprove(String companyID, String rootStateID,
 			String employeeID) {
-		ApproverPersonExport approverPersonExport = approvalRootStatePub.judgmentTargetPersonCanApprove(companyID, rootStateID, employeeID);
+		ApproverPersonExport approverPersonExport = approvalRootStatePub.judgmentTargetPersonCanApprove(companyID, rootStateID, employeeID, 0);
 		return new ApproverPersonImport(
 				approverPersonExport.getAuthorFlag(), 
 				EnumAdaptor.valueOf(approverPersonExport.getApprovalAtr().value, ApprovalBehaviorAtrImport_New.class), 
@@ -210,12 +216,29 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 
 	@Override
 	public List<String> doRemandForApprover(String companyID, String rootStateID, Integer order) {
-		return approvalRootStatePub.doRemandForApprover(companyID, rootStateID, order);
+		return approvalRootStatePub.doRemandForApprover(companyID, rootStateID, order, 0);
 	}
 
 	@Override
 	public void doRemandForApplicant(String companyID, String rootStateID) {
-		approvalRootStatePub.doRemandForApplicant(companyID, rootStateID);
+		approvalRootStatePub.doRemandForApplicant(companyID, rootStateID, 0);
+	}
+	// request list 113
+	@Override
+	public List<ApproveRootStatusForEmpImPort> getApprovalByEmplAndDate(GeneralDate startDate, GeneralDate endDate,
+			String employeeID, String companyID, Integer rootType) {
+		List<ApproveRootStatusForEmpImPort> approveRootStatusForEmpImPorts = new ArrayList<>();
+		List<ApproveRootStatusForEmpExport> approverRootStatus = this.approvalRootStatePub.getApprovalByEmplAndDate(startDate, endDate, employeeID, companyID, rootType);
+		if(CollectionUtil.isEmpty(approverRootStatus)){
+			return approveRootStatusForEmpImPorts;
+		}
+		for(ApproveRootStatusForEmpExport approve : approverRootStatus){
+			ApproveRootStatusForEmpImPort  approveRootStatusForEmp = new ApproveRootStatusForEmpImPort(approve.getEmployeeID(),
+					approve.getAppDate(),
+					EnumAdaptor.valueOf(approve.getApprovalStatus().value,ApprovalStatusForEmployeeImport.class));
+			approveRootStatusForEmpImPorts.add(approveRootStatusForEmp);
+		}
+		return approveRootStatusForEmpImPorts;
 	}
 	
 }

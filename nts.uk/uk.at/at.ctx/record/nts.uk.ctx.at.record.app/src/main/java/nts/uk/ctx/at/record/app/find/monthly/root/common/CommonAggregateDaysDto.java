@@ -22,4 +22,9 @@ public class CommonAggregateDaysDto {
 	@AttendanceItemValue(type = ValueType.DOUBLE)
 	@AttendanceItemLayout(jpPropertyName = "日数", layout = "A")
 	private Double days;
+
+	/** 時間: 勤怠月間時間 */
+	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemLayout(jpPropertyName = "時間", layout = "B")
+	private Integer time;
 }

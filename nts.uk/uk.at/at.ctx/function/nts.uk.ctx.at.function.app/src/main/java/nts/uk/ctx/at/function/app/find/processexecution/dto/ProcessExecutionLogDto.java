@@ -10,8 +10,10 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.OverallErrorDetail;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
 
 @Data
 public class ProcessExecutionLogDto {
@@ -68,6 +70,8 @@ public class ProcessExecutionLogDto {
 	/* 次回実行日時 */
 	private String nextExecDateTime;
 	
+	private String taskLogExecId;
+	
     private List<ProcessExecutionTaskLogDto> taskLogList;
 	
 	public ProcessExecutionLogDto() {
@@ -78,7 +82,7 @@ public class ProcessExecutionLogDto {
 			String currentStatus, Integer overallStatusCd, String overallStatus, String overallError,
 			String lastExecDateTime, GeneralDate schCreateStart, GeneralDate schCreateEnd, GeneralDate dailyCreateStart,
 			GeneralDate dailyCreateEnd, GeneralDate dailyCalcStart, GeneralDate dailyCalcEnd, String execId,
-			List<ProcessExecutionTaskLogDto> taskLogList) {
+			List<ProcessExecutionTaskLogDto> taskLogList,String taskLogExecId) {
 		super();
 		this.execItemCd = execItemCd;
 		this.companyId = companyId;
@@ -96,9 +100,10 @@ public class ProcessExecutionLogDto {
 		this.dailyCalcEnd = dailyCalcEnd;
 		this.execId = execId;
 		this.taskLogList = taskLogList;
+		this.taskLogExecId = taskLogExecId;
 	}
 	
-	public static ProcessExecutionLogDto fromDomain(ProcessExecutionLog procExecLog) {
+	public static ProcessExecutionLogDto fromDomain(ProcessExecutionLog procExecLog, ProcessExecutionLogManage procExecLogMan ) {
 		List<ProcessExecutionTaskLogDto> taskLogList = procExecLog.getTaskLogList().stream().map(x -> ProcessExecutionTaskLogDto.fromDomain(x)).collect(Collectors.toList());
 		Collections.sort(taskLogList, new Comparator<ProcessExecutionTaskLogDto>() {
 			@Override
@@ -106,22 +111,59 @@ public class ProcessExecutionLogDto {
 				return dto1.getTaskId() - dto2.getTaskId();
 			}
 		});
+		String taskLogExecId = "";
+		if(!procExecLog.getTaskLogList().isEmpty()){
+			taskLogExecId = procExecLog.getTaskLogList().get(0).getExecId();
+		}
+		
+		GeneralDate schCreateStart = null;
+		GeneralDate schCreateEnd = null;
+		if (procExecLog.getEachProcPeriod() != null && procExecLog.getEachProcPeriod().isPresent()
+				&& procExecLog.getEachProcPeriod().get().getScheduleCreationPeriod() != null
+				&& procExecLog.getEachProcPeriod().get().getScheduleCreationPeriod().isPresent()) {
+			schCreateStart = procExecLog.getEachProcPeriod().get().getScheduleCreationPeriod().get().start();
+			schCreateEnd = procExecLog.getEachProcPeriod().get().getScheduleCreationPeriod().get().end();
+		}
+		GeneralDate dailyCreateStart = null;
+		GeneralDate dailyCreateEnd = null;
+		if (procExecLog.getEachProcPeriod() != null && procExecLog.getEachProcPeriod().isPresent()
+				&& procExecLog.getEachProcPeriod().get().getDailyCreationPeriod() != null
+				&& procExecLog.getEachProcPeriod().get().getDailyCreationPeriod().isPresent()) {
+			dailyCreateStart = procExecLog.getEachProcPeriod().get().getDailyCreationPeriod().get().start();
+			dailyCreateEnd = procExecLog.getEachProcPeriod().get().getDailyCreationPeriod().get().end();
+		}
+		GeneralDate dailyCalcStart = null;
+		GeneralDate dailyCalcEnd = null;
+		if (procExecLog.getEachProcPeriod() != null && procExecLog.getEachProcPeriod().isPresent()
+				&& procExecLog.getEachProcPeriod().get().getDailyCalcPeriod() != null
+				&& procExecLog.getEachProcPeriod().get().getDailyCalcPeriod().isPresent()) {
+			dailyCalcStart = procExecLog.getEachProcPeriod().get().getDailyCalcPeriod().get().start();
+			dailyCalcEnd = procExecLog.getEachProcPeriod().get().getDailyCalcPeriod().get().end();
+		}
+		GeneralDate reflectApprovalResultStart = null;
+		GeneralDate reflectApprovalResultEnd = null;
+		if (procExecLog.getEachProcPeriod() != null && procExecLog.getEachProcPeriod().isPresent()
+				&& procExecLog.getEachProcPeriod().get().getReflectApprovalResult() != null
+				&& procExecLog.getEachProcPeriod().get().getReflectApprovalResult().isPresent()) {
+			reflectApprovalResultStart = procExecLog.getEachProcPeriod().get().getReflectApprovalResult().get().start();
+			reflectApprovalResultEnd = procExecLog.getEachProcPeriod().get().getReflectApprovalResult().get().end();
+		}
 		return new ProcessExecutionLogDto(
 				procExecLog.getExecItemCd().v(),
 				procExecLog.getCompanyId(),
-				procExecLog.getCurrentStatus() == null ? null : procExecLog.getCurrentStatus().value,
-				procExecLog.getCurrentStatus() == null ? "" : EnumAdaptor.valueOf(procExecLog.getCurrentStatus().value, CurrentExecutionStatus.class).name,
-				procExecLog.getOverallStatus() == null ? null : procExecLog.getOverallStatus().value,
-				procExecLog.getOverallStatus() == null ? "" : EnumAdaptor.valueOf(procExecLog.getOverallStatus().value, EndStatus.class).name,
-				procExecLog.getOverallError() == null ? "" : EnumAdaptor.valueOf(procExecLog.getOverallError().value, OverallErrorDetail.class).name,
-				procExecLog.getLastExecDateTime() == null ? "" : procExecLog.getLastExecDateTime().toString(DATE_FORMAT),
-				procExecLog.getEachProcPeriod().getScheduleCreationPeriod().start(),
-				procExecLog.getEachProcPeriod().getScheduleCreationPeriod().end(),
-				procExecLog.getEachProcPeriod().getDailyCreationPeriod().start(),
-				procExecLog.getEachProcPeriod().getDailyCreationPeriod().end(),
-				procExecLog.getEachProcPeriod().getDailyCalcPeriod().start(),
-				procExecLog.getEachProcPeriod().getDailyCalcPeriod().end(),
+				procExecLogMan.getCurrentStatus() == null ? null : procExecLogMan.getCurrentStatus().value,
+				procExecLogMan.getCurrentStatus() == null ? "" : EnumAdaptor.valueOf(procExecLogMan.getCurrentStatus().value, CurrentExecutionStatus.class).name,
+				(procExecLogMan.getOverallStatus() == null || !procExecLogMan.getOverallStatus().isPresent()) ? null : procExecLogMan.getOverallStatus().get().value,
+				(procExecLogMan.getOverallStatus() == null || !procExecLogMan.getOverallStatus().isPresent()) ? "" : EnumAdaptor.valueOf(procExecLogMan.getOverallStatus().get().value, EndStatus.class).name,
+				procExecLogMan.getOverallError() == null ? "" : EnumAdaptor.valueOf(procExecLogMan.getOverallError().value, OverallErrorDetail.class).name,
+				procExecLogMan.getLastExecDateTime() == null ? "" : procExecLogMan.getLastExecDateTime().toString(DATE_FORMAT),
+				schCreateStart,
+				schCreateEnd,
+				dailyCreateStart,
+				dailyCreateEnd,
+				dailyCalcStart,
+				dailyCalcEnd,
 				procExecLog.getExecId(), 
-				taskLogList);
+				taskLogList,taskLogExecId);
 	}
 }

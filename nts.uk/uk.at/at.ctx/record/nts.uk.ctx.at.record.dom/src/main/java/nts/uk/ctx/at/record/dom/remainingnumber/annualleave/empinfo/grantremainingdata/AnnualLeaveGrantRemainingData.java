@@ -2,7 +2,9 @@ package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremain
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
@@ -14,6 +16,8 @@ import nts.uk.ctx.at.record.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.LeaveExpirationStatus;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 // domain name: 年休付与残数データ
 public class AnnualLeaveGrantRemainingData extends AggregateRoot {
 
@@ -110,7 +114,7 @@ public class AnnualLeaveGrantRemainingData extends AggregateRoot {
 		// 年休残数が足りているかチェック
 		boolean isSubtractRemain = false;
 		val remainingNumber = this.details.getRemainingNumber();
-		if (remainingNumber.getDays().v().doubleValue() > remainingDays) isSubtractRemain = true;
+		if (remainingNumber.getDays().v().doubleValue() >= remainingDays) isSubtractRemain = true;
 		// 「強制的に消化する」をチェック
 		else if (isForcibly) isSubtractRemain = true;
 		
@@ -128,7 +132,7 @@ public class AnnualLeaveGrantRemainingData extends AggregateRoot {
 			}
 			this.details.setUsedNumber(AnnualLeaveUsedNumber.createFromJavaType(newUsed, null, stowageDays));
 			
-			// 年休使用数を0にする
+			// 年休使用残を0にする
 			remainingDays = 0.0;
 		}
 		else {

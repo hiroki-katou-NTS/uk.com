@@ -61,24 +61,42 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 			if(findStartEndTime.isCountReflect1Atr()) {
 				//予定開始時刻の反映
 				//予定終了時刻の反映
+				//INPUT．残業区分をチェックする
+				boolean isEndTime = true;
+				boolean isStartTime = true;
+				if(para.getOvertimePara().getOvertimeAtr() == OverTimeRecordAtr.REGULAROVERTIME) {
+					isStartTime = false;
+				}
+				if(para.getOvertimePara().getOvertimeAtr() == OverTimeRecordAtr.PREOVERTIME) {
+					isEndTime = false;
+				}
+				
 				TimeReflectPara timeData1 = new TimeReflectPara(para.getEmployeeId(), 
 						para.getDateInfo(), 
 						findStartEndTime.getStartTime1(), 
 						findStartEndTime.getEndTime1(), 
-						1, true, true);
+						1, isStartTime, isEndTime);
 				scheWork.updateScheStartEndTime(timeData1);
 			}
 			//２回勤務反映区分(output)をチェックする
 			if(findStartEndTime.isCountReflect2Atr()) {
 				//予定開始時刻２の反映
 				//予定終了時刻２の反映
+				boolean isEndTime = true;
+				boolean isStartTime = true;
+				if(para.getOvertimePara().getOvertimeAtr() == OverTimeRecordAtr.REGULAROVERTIME) {
+					isStartTime = false;
+				}
+				if(para.getOvertimePara().getOvertimeAtr() == OverTimeRecordAtr.PREOVERTIME) {
+					isEndTime = false;
+				}
 				TimeReflectPara timeData2 = new TimeReflectPara(para.getEmployeeId(),
 						para.getDateInfo(),
 						findStartEndTime.getStartTime2(), 
 						findStartEndTime.getEndTime2(), 
 						2,
-						true, 
-						true);
+						isStartTime, 
+						isEndTime);
 				scheWork.updateScheStartEndTime(timeData2);
 			}
 		} else {
@@ -89,7 +107,9 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 						timeTypeData.getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr(), true);
 				boolean isCheckEnd = this.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 1, 
 						timeTypeData.getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr(), false);
-				TimeReflectPara timeData1 = new TimeReflectPara(para.getEmployeeId(), para.getDateInfo(), findStartEndTime.getStartTime1(), findStartEndTime.getEndTime1(), 1, isCheckStart, isCheckEnd);
+				TimeReflectPara timeData1 = new TimeReflectPara(para.getEmployeeId(), para.getDateInfo(), 
+						findStartEndTime.getStartTime1(), findStartEndTime.getEndTime1(), 
+						1, isCheckStart, isCheckEnd);
 				scheWork.updateScheStartEndTime(timeData1);		
 				
 			}
@@ -278,7 +298,8 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 	@Override
 	public boolean checkStartEndTimeReflect(String employeeId, GeneralDate datadata, Integer frameNo,
 			String workTypeCode, OverTimeRecordAtr overTimeAtr, boolean isPre) {
-		if(overTimeAtr == OverTimeRecordAtr.REGULAROVERTIME) {
+		if((overTimeAtr == OverTimeRecordAtr.REGULAROVERTIME && isPre)
+				|| overTimeAtr == OverTimeRecordAtr.PREOVERTIME && !isPre) {
 			return false;
 		}
 		//打刻自動セット区分を取得する

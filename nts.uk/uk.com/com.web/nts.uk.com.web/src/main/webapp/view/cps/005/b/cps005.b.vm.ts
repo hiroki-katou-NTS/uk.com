@@ -91,16 +91,12 @@ module nts.uk.com.view.cps005.b {
                     }
                     new service.Service().updateItemDef(newItemDef).done(function(data: string) {
                         if (data) {
-                            info({ messageId: data }).then(() => {
-                                info({ messageId: "Msg_15" }).then(() => {
+                                info({ messageId: data}).then(() => {
                                     self.reloadData();
                                     self.currentItemData().perInfoItemSelectCode(newItemDef.perInfoItemDefId);
                                     self.currentItemData().perInfoItemSelectCode.valueHasMutated();
                                     block.clear();
-                                }
-
-                                );
-                            });
+                                });
                         } else {
                             info({ messageId: "Msg_15" }).then(() => {
                                 self.reloadData();
@@ -212,6 +208,11 @@ module nts.uk.com.view.cps005.b {
             }
 
             checkRequired(newItemDef: any): boolean {
+                if(newItemDef.itemName == ""){
+                    $("#item-name-control").focus();
+                    block.clear();
+                    return true;    
+                }
 
                 if (newItemDef.singleItem.dataType === 1) {
                     if (newItemDef.singleItem.stringItemLength === null) {
@@ -283,6 +284,7 @@ module nts.uk.com.view.cps005.b {
         dataTypeEnumFilter: Array<any> = new Array();
         //Enum : dataTypeEnum is selected value 1 - 文字列(String)
         stringItemTypeEnum: Array<any> = new Array();
+        stringItemTypeEnumFilter: Array<any> = new Array();
         stringItemDataTypeEnum: Array<any> = new Array();
         //Enum : dataTypeEnum is selected value 2 - 数値(Numeric)
         numericItemAmountAtrEnum: Array<any> = [
@@ -312,6 +314,9 @@ module nts.uk.com.view.cps005.b {
                     return (c.value == 1 || c.value == 2 || c.value == 3 || c.value == 4 || c.value == 5 || c.value == 6);
                 });
                 self.stringItemTypeEnum = params.stringItemTypeEnum || new Array();
+                self.stringItemTypeEnumFilter =  _.filter(params.stringItemTypeEnum, function(c) {
+                    return (c.value == 1 || c.value == 2 || c.value == 3 || c.value == 4 || c.value == 5);
+                });
                 self.stringItemDataTypeEnum = params.stringItemDataTypeEnum || new Array();
                 self.stringItemDataTypeEnum.reverse();
                 self.dateItemTypeEnum = params.dateItemTypeEnum || new Array();

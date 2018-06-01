@@ -12,11 +12,11 @@ public enum CalcMethodExceededPredAddVacation {
 
 	/** The calc as working. */
 	// 就業時間として計算する
-	CALC_AS_WORKING(0, "Enum_CalcMethodExceededPredAddVacation_CALC_AS_WORKING", "就業時間として計算する"),
+	CALC_AS_WORKING(1, "Enum_CalcMethodExceededPredAddVacation_CALC_AS_WORKING", "就業時間として計算する"),
 
 	/** The calc as overtime. */
 	// 残業時間として計算する
-	CALC_AS_OVERTIME(1, "Enum_CalcMethodExceededPredAddVacation_CALC_AS_OVERTIME", "残業時間として計算する");
+	CALC_AS_OVERTIME(0, "Enum_CalcMethodExceededPredAddVacation_CALC_AS_OVERTIME", "残業時間として計算する");
 
 	/** The value. */
 	public final int value;
@@ -77,4 +77,13 @@ public enum CalcMethodExceededPredAddVacation {
 	public boolean isCalcAsWorking() {
 		return CALC_AS_WORKING.equals(this);
 	}
+	
+	/**
+	 * 残業時間として計算するかどうか判定する
+	 * @return　残業時間として判定する
+	 */
+	public boolean isCalcAsOverTime() {
+		return CALC_AS_OVERTIME.equals(this);
+	}
+	
 }

@@ -7,8 +7,8 @@ import nts.uk.ctx.at.record.dom.workrecord.actuallock.DetermineActualResultLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.PerformanceType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
-//import nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.approval.monthly.MonthlyApprovalProcess;
-//import nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.identity.monthly.IdentityConfirmProcess;
+import nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.approval.monthly.MonthlyApprovalProcess;
+import nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.identity.monthly.IdentityConfirmProcess;
 
 /**
  * 月の実績の状況を取得する
@@ -17,16 +17,16 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDa
 public class MonthlyActualSituationStatus {
 	/** 実績ロックされているか判定する */
 	@Inject
-	DetermineActualResultLock lockStatusService;
+	private DetermineActualResultLock lockStatusService;
 	/** 対象月の月の承認が済んでいるかチェックする */
-//	@Inject 
-//	MonthlyApprovalProcess monthlyApprovalProcess;
-//	
-//	@Inject
-//	IdentityConfirmProcess indentityStatus;
+	@Inject 
+	private MonthlyApprovalProcess monthlyApprovalProcess;
 	
 	@Inject
-	CreateEmployeeDailyPerError dailyRecordError;
+	private IdentityConfirmProcess indentityStatus;
+	
+	@Inject
+	private CreateEmployeeDailyPerError dailyRecordError;
 	/**
 	 * 月の実績の状況を取得する
 	 * @param param 実績状況を取得する
@@ -44,15 +44,15 @@ public class MonthlyActualSituationStatus {
 		//TODO 就業確定が対象外のため「未確定」で固定にしてください
 		monthlyResult.setEmploymentFixedStatus(EmploymentFixedStatus.PENDING);
 		//対象月の月の承認が済んでいるかチェックする
-		//monthlyResult.setApprovalStatus(monthlyApprovalProcess.monthlyApprovalCheck(param.getCompanyId(), param.getEmployeeId(), param.getProcessDateYM(), param.getClosureId(), param.getClosureDate()));		
+		monthlyResult.setApprovalStatus(monthlyApprovalProcess.monthlyApprovalCheck(param.getCompanyId(), param.getEmployeeId(), param.getProcessDateYM(), param.getClosureId(), param.getClosureDate()));		
 		DailyActualSituation dailyActualSituation = new DailyActualSituation();
 		//TODO 対象外
 		//日の実績が存在する＝TRUE　で固定
 		dailyActualSituation.setDailyAchievementsExist(true);
 		//対象日の本人確認が済んでいるかチェックする
-		//dailyActualSituation.setIdentificationCompleted(indentityStatus.identityConfirmCheck(param.getCompanyId(), param.getEmployeeId(), param.getDuration()));
+		dailyActualSituation.setIdentificationCompleted(indentityStatus.identityConfirmCheck(param.getCompanyId(), param.getEmployeeId(), param.getDuration()));
 		//対象期間に日別実績のエラーが発生しているかチェックする
-//		dailyActualSituation.setDailyRecordError(dailyRecordError.employeeDailyRecordErrorCheck(param.getCompanyId(), param.getEmployeeId(), param.getDuration()));
+		dailyActualSituation.setDailyRecordError(dailyRecordError.employeeDailyRecordErrorCheck(param.getCompanyId(), param.getEmployeeId(), param.getDuration()));
 		
 		//日別実績が存在しているかチェックする
 		monthlyResult.setDailyActualSituation(dailyActualSituation);

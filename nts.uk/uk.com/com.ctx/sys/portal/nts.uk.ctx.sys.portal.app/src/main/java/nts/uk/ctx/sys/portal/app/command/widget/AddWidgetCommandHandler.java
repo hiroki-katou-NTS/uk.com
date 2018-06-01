@@ -12,6 +12,9 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
+import nts.uk.ctx.sys.portal.dom.enums.UseDivision;
+import nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSettingRepository;
+import nts.uk.ctx.sys.portal.dom.mypage.setting.TopPagePartUseSetting;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartCode;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName;
 import nts.uk.ctx.sys.portal.dom.toppagepart.optionalwidget.OptionalWidget;
@@ -32,12 +35,15 @@ public class AddWidgetCommandHandler extends CommandHandler<AddWidgetCommand> {
 	@Inject
 	private OptionalWidgetRepository opWidgetRepository;
 
+	@Inject
+	private MyPageSettingRepository myPageSettingRepository;
+
 	@Override
 	protected void handle(CommandHandlerContext<AddWidgetCommand> context) {
 		String companyID = AppContexts.user().companyId();
 		String topPagePartId = IdentifierUtil.randomUniqueId();
 		AddWidgetCommand command = context.getCommand();
-		if (opWidgetRepository.isExist(companyID, command.getTopPageCode())) {
+		if (opWidgetRepository.isExist(companyID, command.getTopPageCode(), TopPagePartType.OptionalWidget.value)) {
 			throw new BusinessException("Msg_3");
 		}
 		List<WidgetDisplayItem> wItems = new ArrayList<WidgetDisplayItem>();
@@ -49,6 +55,9 @@ public class AddWidgetCommandHandler extends CommandHandler<AddWidgetCommand> {
 				new TopPagePartCode(command.getTopPageCode()), new TopPagePartName(command.getTopPageName()),
 				TopPagePartType.valueOf(1), Size.createFromJavaType(command.getWidth(), command.getHeight()), wItems));
 
+		myPageSettingRepository.addTopPagePartUseSetting(new TopPagePartUseSetting(companyID, topPagePartId,
+				new TopPagePartCode(command.getTopPageCode()), new TopPagePartName(command.getTopPageName()),
+				UseDivision.Use, TopPagePartType.OptionalWidget));
 	}
 
 }

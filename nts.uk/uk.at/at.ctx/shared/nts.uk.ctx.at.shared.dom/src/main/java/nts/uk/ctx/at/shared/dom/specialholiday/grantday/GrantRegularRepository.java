@@ -110,4 +110,6 @@ public interface GrantRegularRepository {
 	 * 
 	 */
 	void removePerSet(String companyId, int specialHolidayCode, String personalGrantDateCode);
+	
+	void changeAllProvision();
 }

@@ -3,7 +3,7 @@ package nts.uk.screen.at.app.monthlyperformance.correction.query;
 import java.util.List;
 
 import lombok.Data;
-import nts.uk.ctx.at.record.app.find.monthly.root.ClosureDateDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 
 @Data

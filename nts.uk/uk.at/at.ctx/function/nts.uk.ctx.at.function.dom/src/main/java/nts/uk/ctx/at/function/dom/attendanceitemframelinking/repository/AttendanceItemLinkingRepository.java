@@ -22,4 +22,6 @@ public interface AttendanceItemLinkingRepository {
 	 * @author anhnm
 	 */
 	List<AttendanceItemLinking> getByAnyItemCategory(TypeOfItem type);
+	
+	List<AttendanceItemLinking> getByAttendanceIdAndType(List<Integer> attendanceItemIds, TypeOfItem type);
 }

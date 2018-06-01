@@ -36,6 +36,8 @@
 					nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode
 					nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode
 					nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode
+					nts.uk.shr.com.primitive.sample.SampleTimeDuration
+					nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualLeaveGrantDay
 		    </com:ValidatorScript>
 		</ui:define>
 
@@ -44,11 +46,13 @@
 				<div id="function-content">
 					<button class="proceed"
 						data-bind="enable: $root.errors.isEmpty , visible:showButton().available1, click: proceed ">#{i18n.getText('KDW003_4')}</button>
-					<button data-bind="visible: showButton().available4, click: proceedSave">#{i18n.getText('KDW003_5')}</button>
+					<button
+						data-bind="enable: $root.errors.isEmpty, visible: showButton().available4, click: proceedSave">#{i18n.getText('KDW003_5')}</button>
 					<button data-bind="visible: showButton().available2">#{i18n.getText('KDW003_6')}</button>
 					<button data-bind="visible: showButton().available3">#{i18n.getText('KDW003_12')}</button>
 					<button data-bind="click: employmentOk, visible:false">#{i18n.getText('KDW003_65')}</button>
-					<button data-bind="click: tighProcess, visible:showTighProcess()">#{i18n.getText('KDW003_88')}</button><!-- 本人締め処理 -->
+					<button data-bind="click: tighProcess, visible:showTighProcess()">#{i18n.getText('KDW003_88')}</button>
+					<!-- 本人締め処理 -->
 					<button
 						data-bind="click : changeExtractionCondition, visible: showButton().available5">#{i18n.getText('KDW003_13')}</button>
 					<button
@@ -92,7 +96,7 @@
 					<div class="vacationRemaining-container">
 						<button style="visibility: hidden;" id="btnVacationRemaining"
 							data-bind="click: btnVacationRemaining_Click ">#{i18n.getText('KDW003_21')}</button>
-							<!-- visible: referenceVacation().allVacation -->
+						<!-- visible: referenceVacation().allVacation -->
 						<div id="vacationRemaining-content">
 							<button data-bind="visible: referenceVacation().yearHoliday20">#{i18n.getText('Com_PaidHoliday')}</button>
 							<button data-bind="visible: referenceVacation().substVacation">#{i18n.getText('Com_SubstituteHoliday')}</button>
@@ -102,7 +106,7 @@
 						</div>
 						<button id="btnComfirmAttendance"
 							data-bind="click : referencesActualResult, visible: false">#{i18n.getText('KDW003_22')}</button>
-							<!-- visible: showButton().available23 -->
+						<!-- visible: showButton().available23 -->
 						<div id="numberHoliday">
 							<table id="fixed-table">
 								<thead>
@@ -128,7 +132,7 @@
 							</table>
 						</div>
 					</div>
-						<div id="container">
+					<div id="container">
 						<div id="emp-component"></div>
 					</div>
 					<div id="cbListDate">
@@ -142,19 +146,19 @@
 						</div>
 					</div>
 					<!-- <div id="content-grid"> -->
-						<div id="content-grid-not">
+					<div id="content-grid-not">
 						<button id="btn-signAll" data-bind="click: signAll">#{i18n.getText('KDW003_23')}</button>
 						<button id="btn-releaseAll" data-bind="click: releaseAll">#{i18n.getText('KDW003_71')}</button>
-						<button id="btn-legend"
-								data-bind="ntsLegendButton: legendOptions">凡例</button>
-							<button id="btn-saveColumnWidth"
-								data-bind="click: btnSaveColumnWidth_Click, visible : showButton().available8">#{i18n.getText('KDW003_24')}</button>
-							<div class="setting-container">
-								<button id="btn-setting" data-bind="click: btnSetting_Click , visible:true">&#9881;</button>
-								<div id="setting-content">
-									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW003_28')}</div>
-									<div id="cbCursorMoveDirection"
-										data-bind="ntsComboBox: {
+						<button id="btn-legend" data-bind="ntsLegendButton: legendOptions">凡例</button>
+						<button id="btn-saveColumnWidth"
+							data-bind="click: btnSaveColumnWidth_Click, visible : showButton().available11">#{i18n.getText('KDW003_24')}</button>
+						<div class="setting-container">
+							<button id="btn-setting"
+								data-bind="click: btnSetting_Click , visible:true">&#9881;</button>
+							<div id="setting-content">
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW003_28')}</div>
+								<div id="cbCursorMoveDirection"
+									data-bind="ntsComboBox: {
 								options: cursorMoveDirections,
 								optionsValue: 'code',
 								value: selectedDirection,
@@ -163,57 +167,77 @@
 								columns: [
 									{ prop: 'name', length: 3 },
 								]}"></div>
-									<br />
-									<div data-bind="ntsCheckBox: { checked: displayWhenZero }">#{i18n.getText('KDW003_29')}</div>
-									<br />
-									<div data-bind="ntsCheckBox: { checked: showHeaderNumber }">#{i18n.getText('KDW003_30')}</div>
-									<br />
-									<div data-bind="ntsCheckBox: { checked: showProfileIcon }">#{i18n.getText('KDW003_31')}</div>
-									<br />
-								</div>
-							</div>
-						</div>
-						<div class="compact-grid grid-container" id="gid">
-							<table id="dpGrid"></table>
-							<div id="sample-component"></div>
-						</div>
-						<span style="margin: 10px 0 0 18px; display: inline-block;"
-							data-bind="text: comment"></span>
-						<div id="flex">
-							<table id="flex-table">
-								<thead>
-									<tr>
-										<th class="ui-widget-header" style="width: 165px">#{i18n.getText('KDW003_77')}</th>
-										<th class="ui-widget-header" style="width: 75px">#{i18n.getText('KDW003_78')}</th>
-										<th class="ui-widget-header" style="width: 55px">#{i18n.getText('Com_PaidHoliday')}</th>
-										<th class="ui-widget-header" style="width: 55px">#{i18n.getText('KDW003_79')}</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td class="ui-widget-body"><span class="text-holiday"
-											data-bind="text: flexShortage().shortageTime"></span></td>
-										<td class="ui-widget-body" id ="next-month"><span class="text-holiday" 
-											data-bind="text: flexShortage().nextMonthTransferredMoneyTime"></span></td>
-										<td class="ui-widget-body"><span class="text-holiday">
-												<input style="width: 55px"
-												data-bind="ntsNumberEditor: { name:'Deci', value: flexShortage().noOfHolidays, constraint: 'CommonAmount', option:  optionNoOfHolidays, required: true, enable: canFlex, readonly: false} ">
-											</input>
-										</span></td>
-										<td class="ui-widget-body"><span class="text-holiday">
-												<input style="width: 55px"
-												data-bind="ntsTimeEditor: {name: 'Duration', constraint: 'SampleTimeDuration', value: flexShortage().absentDeductionTime, inputFormat: 'time', mode: 'time', enable: canFlex, readonly: false, required: true}"></input>
-										</span></td>
-									</tr>
-								</tbody>
-							</table>
-							<div id ="text-flex">
-								<span style="color: red">#{i18n.getText('KDW003_80')}</span>
+								<br />
+								<div data-bind="ntsCheckBox: { checked: displayWhenZero }">#{i18n.getText('KDW003_29')}</div>
+								<br />
+								<div data-bind="ntsCheckBox: { checked: showHeaderNumber }">#{i18n.getText('KDW003_30')}</div>
+								<br />
+								<div data-bind="ntsCheckBox: { checked: showProfileIcon }">#{i18n.getText('KDW003_31')}</div>
+								<br />
 							</div>
 						</div>
 					</div>
-					<div id="tooltip"><span id="textLock"></span></div>
+					<div class="compact-grid grid-container" id="gid">
+						<table id="dpGrid"></table>
+						<div id="sample-component"></div>
+					</div>
+					<span style="margin: 10px 0 0 18px; display: inline-block;"
+						data-bind="text: comment"></span>
+					<div id="flex" data-bind="visible : showFlex">
+						<table id="flex-table">
+							<thead>
+								<tr>
+									<th class="ui-widget-header" style="width: 165px">#{i18n.getText('KDW003_77')}</th>
+									<th class="ui-widget-header" style="width: 75px">#{i18n.getText('KDW003_78')}</th>
+									<th class="ui-widget-header" style="width: 55px">#{i18n.getText('Com_PaidHoliday')}</th>
+									<th class="ui-widget-header" style="width: 55px">#{i18n.getText('KDW003_79')}</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr data-bind="let: { fst: flexShortage() }">
+									<td class="ui-widget-body"><span class="text-holiday"
+										data-bind="text: fst.shortageTime"></span></td>
+									<td class="text-holiday ui-widget-body" id="next-month">
+										<span data-bind="text: ko.computed(function() { return fst.nextMonthTransferredMoneyTime() })"></span>
+									</td>
+									<td class="ui-widget-body"><span class="text-holiday">
+											<input style="width: 55px"
+											data-bind="ntsNumberEditor: { 
+														name: fst.nameNoOfHolidays, 
+														value: fst.noOfHolidays, 
+														constraint: 'AnnualLeaveGrantDay', 
+														option:  optionNoOfHolidays, 
+														required: true, 
+														enable: canFlex, 
+														readonly: false 
+													} ">
+										</input>
+									</span></td>
+									<td class="ui-widget-body"><span class="text-holiday">
+											<input style="width: 55px"
+											data-bind="ntsTimeEditor: {
+														name: fst.nameAbsentDeductionTime, 
+														constraint: 'SampleTimeDuration', 
+														value: fst.absentDeductionTime, 
+														inputFormat: 'time', 
+														mode: 'time', 
+														enable: canFlex, 
+														readonly: false, 
+														required: true
+													}"></input>
+									</span></td>
+								</tr>
+							</tbody>
+						</table>
+						<div id="text-flex">
+							<span style="color: red" data-bind="text: flexShortage().messageRed"></span> 
+						</div>
+					</div>
 				</div>
+				<div id="tooltip">
+					<span id="textLock"></span>
+				</div>
+			</div>
 			<!-- </div> -->
 		</ui:define>
 	</ui:composition>

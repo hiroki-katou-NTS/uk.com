@@ -34,9 +34,7 @@ module nts.uk.at.view.ktg001.a.viewmodel {
         }
 
         dailyPerformanceConfirm() {
-            block.invisible();
-            nts.uk.request.jump("/view/cmm/045/a/index.xhtml?a=1", {});
-            block.clear();
+           window.top.location = window.location.origin + '/nts.uk.at.web/view/kdw/004/a/index.xhtml';
         }
     }
 }

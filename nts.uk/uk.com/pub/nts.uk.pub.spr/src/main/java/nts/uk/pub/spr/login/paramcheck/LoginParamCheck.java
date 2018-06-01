@@ -1,5 +1,7 @@
 package nts.uk.pub.spr.login.paramcheck;
 
+import nts.arc.time.GeneralDate;
+
 /**
  * 
  * @author Doan Duy Hung
@@ -56,5 +58,7 @@ public interface LoginParamCheck {
 	 * @param appID
 	 */
 	public void checkParamConfirmOvertime(String appID);
+	
+	public GeneralDate getDate(String date);
 	
 }

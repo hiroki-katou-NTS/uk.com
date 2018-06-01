@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.calculationattribute;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -9,8 +10,11 @@ import javax.ejb.Stateless;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfLeaveEarlySetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
@@ -135,35 +139,40 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 
 	@Override
 	public List<CalAttrOfDailyPerformance> finds(List<String> employeeId, DatePeriod baseDate) {
+		List<CalAttrOfDailyPerformance> result = new ArrayList<>();
 		StringBuilder builder = new StringBuilder("SELECT c FROM KrcstDaiCalculationSet c ");
 		builder.append("WHERE c.krcstDaiCalculationSetPK.sid IN :ids ");
 		builder.append("AND c.krcstDaiCalculationSetPK.ymd <= :end AND c.krcstDaiCalculationSetPK.ymd >= :start");
-		List<KrcstDaiCalculationSet> calces = this.queryProxy().query(builder.toString(), KrcstDaiCalculationSet.class)
-				.setParameter("ids", employeeId).setParameter("end", baseDate.end())
-				.setParameter("start", baseDate.start()).getList();
-		if (calces.isEmpty()) {
-			return new ArrayList<>();
-		}
-		List<KrcstOtAutoCalSet> ots = this.queryProxy()
-				.query("SELECT c FROM KrcstOtAutoCalSet c WHERE c.overTimeWorkId IN :ids", KrcstOtAutoCalSet.class)
-				.setParameter("ids", calces.stream().map(c -> c.overTimeWorkId).collect(Collectors.toList())).getList();
-		List<KrcstFlexAutoCalSet> flexes = this.queryProxy()
-				.query("SELECT c FROM KrcstFlexAutoCalSet c WHERE c.flexExcessTimeId IN :ids",
-						KrcstFlexAutoCalSet.class)
-				.setParameter("ids", calces.stream().map(c -> c.flexExcessTimeId).collect(Collectors.toList()))
-				.getList();
-		List<KrcstHolAutoCalSet> holies = this.queryProxy()
-				.query("SELECT c FROM KrcstHolAutoCalSet c WHERE c.holWorkTimeId IN :ids", KrcstHolAutoCalSet.class)
-				.setParameter("ids", calces.stream().map(c -> c.holWorkTimeId).collect(Collectors.toList())).getList();
-		return calces.stream().map(c -> {
-			KrcstFlexAutoCalSet flex = flexes.stream().filter(f -> f.flexExcessTimeId.equals(c.flexExcessTimeId))
-					.findFirst().orElse(null);
-			KrcstOtAutoCalSet ot = ots.stream().filter(f -> f.overTimeWorkId.equals(c.overTimeWorkId)).findFirst()
-					.orElse(null);
-			KrcstHolAutoCalSet holi = holies.stream().filter(f -> f.holWorkTimeId.equals(c.holWorkTimeId)).findFirst()
-					.orElse(null);
-			return toDomain(c, flex, holi, ot);
-		}).collect(Collectors.toList());
+		TypedQueryWrapper<KrcstDaiCalculationSet> tCalcQuery=  this.queryProxy().query(builder.toString(), KrcstDaiCalculationSet.class);
+		TypedQueryWrapper<KrcstOtAutoCalSet> tOtQuery=  this.queryProxy()
+						.query("SELECT c FROM KrcstOtAutoCalSet c WHERE c.overTimeWorkId IN :ids", KrcstOtAutoCalSet.class);
+		TypedQueryWrapper<KrcstFlexAutoCalSet> tFlexQuery=  this.queryProxy()
+						.query("SELECT c FROM KrcstFlexAutoCalSet c WHERE c.flexExcessTimeId IN :ids", KrcstFlexAutoCalSet.class);
+		TypedQueryWrapper<KrcstHolAutoCalSet> tHolQuery=  this.queryProxy()
+						.query("SELECT c FROM KrcstHolAutoCalSet c WHERE c.holWorkTimeId IN :ids", KrcstHolAutoCalSet.class);
+		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
+			List<KrcstDaiCalculationSet> calces = tCalcQuery.setParameter("ids", empIds)
+								.setParameter("start", baseDate.start())
+								.setParameter("end", baseDate.end()).getList();
+			if (!calces.isEmpty()) {
+				List<KrcstOtAutoCalSet> ots = tOtQuery.setParameter("ids", 
+						calces.stream().map(c -> c.overTimeWorkId).collect(Collectors.toList())).getList();
+				List<KrcstFlexAutoCalSet> flexes = tFlexQuery.setParameter("ids", 
+						calces.stream().map(c -> c.flexExcessTimeId).collect(Collectors.toList())).getList();
+				List<KrcstHolAutoCalSet> holies = tHolQuery.setParameter("ids", 
+						calces.stream().map(c -> c.holWorkTimeId).collect(Collectors.toList())).getList();
+				result.addAll(calces.stream().map(c -> {
+					KrcstFlexAutoCalSet flex = flexes.stream().filter(f -> f.flexExcessTimeId.equals(c.flexExcessTimeId))
+							.findFirst().orElse(null);
+					KrcstOtAutoCalSet ot = ots.stream().filter(f -> f.overTimeWorkId.equals(c.overTimeWorkId)).findFirst()
+							.orElse(null);
+					KrcstHolAutoCalSet holi = holies.stream().filter(f -> f.holWorkTimeId.equals(c.holWorkTimeId)).findFirst()
+							.orElse(null);
+					return toDomain(c, flex, holi, ot);
+				}).collect(Collectors.toList()));
+			}
+		});
+		return result;
 	}
 
 	private CalAttrOfDailyPerformance toDomain(KrcstDaiCalculationSet calc, KrcstFlexAutoCalSet flexCalc,
@@ -261,6 +270,45 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 		this.getEntityManager().createQuery(REMOVE_BY_KEY).setParameter("employeeId", employeeId)
 				.setParameter("ymd", baseDate).executeUpdate();
 		this.getEntityManager().flush();
+	}
+
+	@Override
+	public List<CalAttrOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
+		List<CalAttrOfDailyPerformance> result = new ArrayList<>();
+		StringBuilder builder = new StringBuilder("SELECT c FROM KrcstDaiCalculationSet c ");
+		builder.append("WHERE c.krcstDaiCalculationSetPK.sid IN :ids ");
+		builder.append("AND c.krcstDaiCalculationSetPK.ymd IN :date");
+		TypedQueryWrapper<KrcstDaiCalculationSet> tCalcQuery=  this.queryProxy().query(builder.toString(), KrcstDaiCalculationSet.class);
+		TypedQueryWrapper<KrcstOtAutoCalSet> tOtQuery=  this.queryProxy()
+						.query("SELECT c FROM KrcstOtAutoCalSet c WHERE c.overTimeWorkId IN :ids", KrcstOtAutoCalSet.class);
+		TypedQueryWrapper<KrcstFlexAutoCalSet> tFlexQuery=  this.queryProxy()
+						.query("SELECT c FROM KrcstFlexAutoCalSet c WHERE c.flexExcessTimeId IN :ids", KrcstFlexAutoCalSet.class);
+		TypedQueryWrapper<KrcstHolAutoCalSet> tHolQuery=  this.queryProxy()
+						.query("SELECT c FROM KrcstHolAutoCalSet c WHERE c.holWorkTimeId IN :ids", KrcstHolAutoCalSet.class);
+		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
+			List<KrcstDaiCalculationSet> calces = tCalcQuery.setParameter("ids", p.keySet())
+								.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet())).getList();
+			calces = calces.stream().filter(c -> p.get(c.krcstDaiCalculationSetPK.sid).contains(c.krcstDaiCalculationSetPK.ymd))
+									.collect(Collectors.toList());
+			if (!calces.isEmpty()) {
+				List<KrcstOtAutoCalSet> ots = tOtQuery.setParameter("ids", 
+						calces.stream().map(c -> c.overTimeWorkId).collect(Collectors.toList())).getList();
+				List<KrcstFlexAutoCalSet> flexes = tFlexQuery.setParameter("ids", 
+						calces.stream().map(c -> c.flexExcessTimeId).collect(Collectors.toList())).getList();
+				List<KrcstHolAutoCalSet> holies = tHolQuery.setParameter("ids", 
+						calces.stream().map(c -> c.holWorkTimeId).collect(Collectors.toList())).getList();
+				result.addAll(calces.stream().map(c -> {
+					KrcstFlexAutoCalSet flex = flexes.stream().filter(f -> f.flexExcessTimeId.equals(c.flexExcessTimeId))
+							.findFirst().orElse(null);
+					KrcstOtAutoCalSet ot = ots.stream().filter(f -> f.overTimeWorkId.equals(c.overTimeWorkId)).findFirst()
+							.orElse(null);
+					KrcstHolAutoCalSet holi = holies.stream().filter(f -> f.holWorkTimeId.equals(c.holWorkTimeId)).findFirst()
+							.orElse(null);
+					return toDomain(c, flex, holi, ot);
+				}).collect(Collectors.toList()));
+			}
+		});
+		return result;
 	}
 
 }

@@ -32,9 +32,9 @@ public class PredeterminedDaysOfMonthlyDto {
 
 	public PredeterminedDaysOfMonthly toDomain() {
 		return PredeterminedDaysOfMonthly.of(
-						predeterminedDays == null ? null : new AttendanceDaysMonth(predeterminedDays),
-						predeterminedDaysBeforeGrant == null ? null : new AttendanceDaysMonth(predeterminedDaysBeforeGrant), 
-						predeterminedDaysAfterGrant == null ? null : new AttendanceDaysMonth(predeterminedDaysAfterGrant));
+						predeterminedDays == null ? null : new AttendanceDaysMonth(predeterminedDays));//,
+//						predeterminedDaysBeforeGrant == null ? null : new AttendanceDaysMonth(predeterminedDaysBeforeGrant), 
+//						predeterminedDaysAfterGrant == null ? null : new AttendanceDaysMonth(predeterminedDaysAfterGrant));
 	}
 	
 	public static PredeterminedDaysOfMonthlyDto from(PredeterminedDaysOfMonthly domain) {
@@ -42,10 +42,10 @@ public class PredeterminedDaysOfMonthlyDto {
 		if(domain != null) {
 			dto.setPredeterminedDays(domain.getPredeterminedDays() == null 
 					? null : domain.getPredeterminedDays().v());
-			dto.setPredeterminedDaysAfterGrant(domain.getPredeterminedDaysAfterGrant() == null 
-					? null : domain.getPredeterminedDaysAfterGrant().v());
-			dto.setPredeterminedDaysBeforeGrant(domain.getPredeterminedDaysBeforeGrant() == null 
-					? null : domain.getPredeterminedDaysBeforeGrant().v());
+//			dto.setPredeterminedDaysAfterGrant(domain.getPredeterminedDaysAfterGrant() == null 
+//					? null : domain.getPredeterminedDaysAfterGrant().v());
+//			dto.setPredeterminedDaysBeforeGrant(domain.getPredeterminedDaysBeforeGrant() == null 
+//					? null : domain.getPredeterminedDaysBeforeGrant().v());
 		}
 		return dto;
 	}

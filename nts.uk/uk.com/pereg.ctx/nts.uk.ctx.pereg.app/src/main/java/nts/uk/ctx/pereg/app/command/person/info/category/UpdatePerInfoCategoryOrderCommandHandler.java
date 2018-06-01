@@ -1,6 +1,8 @@
 package nts.uk.ctx.pereg.app.command.person.info.category;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -24,15 +26,18 @@ public class UpdatePerInfoCategoryOrderCommandHandler extends CommandHandler<Lis
 
 	@Override
 	protected void handle(CommandHandlerContext<List<UpdatePerInfoCategoryOrderCommand>> context) {
-	
 		List<UpdatePerInfoCategoryOrderCommand> update = context.getCommand();
-			String companyId = AppContexts.user().companyId();
-			if (update.size() > 0) {
-				this.perInfoCtgRepo.deleteByCompanyId(companyId);
-				update.stream().forEach(c -> {
-					this.perInfoCtgRepo.addPerCtgOrder(new PersonInfoCtgOrder(companyId, c.getId(), c.getOrder()));
-				});
-			}
+		String companyId = AppContexts.user().companyId();
+		if (update.size() == 0) {
+			return;
+		}
+		Map<String, Integer> map = update.stream().collect(Collectors.toMap(x -> x.getId(), x -> x.getOrder()));
+
+		// get all from database
+		List<PersonInfoCtgOrder> orders = this.perInfoCtgRepo.getOrderList(companyId);
+		// update order
+		orders.forEach(order -> order.updateDisOrder(map.get(order.getCategoryId())));
+		this.perInfoCtgRepo.updatePerCtgOrder(orders);
 	}
 
 }

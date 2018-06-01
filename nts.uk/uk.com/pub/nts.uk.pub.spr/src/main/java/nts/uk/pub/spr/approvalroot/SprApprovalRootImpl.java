@@ -13,6 +13,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.pub.spr.ApplicationSprPub;
+import nts.uk.ctx.at.request.pub.spr.export.ApplicationSpr;
 //import nts.uk.ctx.at.request.pub.spr.export.ApplicationSpr;
 import nts.uk.ctx.bs.employee.pub.spr.EmployeeSprPub;
 import nts.uk.ctx.bs.employee.pub.spr.export.EmpSprExport;
@@ -21,6 +22,7 @@ import nts.uk.ctx.workflow.pub.spr.SprApprovalSearchPub;
 import nts.uk.ctx.workflow.pub.spr.export.ApprovalRootStateSprExport;
 import nts.uk.ctx.workflow.pub.spr.export.JudgmentSprExport;
 import nts.uk.pub.spr.approvalroot.output.ApprovalRootSpr;
+import nts.uk.pub.spr.login.paramcheck.LoginParamCheck;
 /**
  * 
  * @author Doan Duy Hung
@@ -28,8 +30,6 @@ import nts.uk.pub.spr.approvalroot.output.ApprovalRootSpr;
  */
 @Stateless
 public class SprApprovalRootImpl implements SprApprovalRootService {
-	
-	private final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	@Inject
 	private EmployeeSprPub employeeSprPub;
@@ -39,6 +39,9 @@ public class SprApprovalRootImpl implements SprApprovalRootService {
 	
 	@Inject
 	private ApplicationSprPub applicationSprPub;
+	
+	@Inject
+	private LoginParamCheck loginParamCheck;
 
 	@Override
 	public List<ApprovalRootSpr> getApprovalRoot(String employeeCD, String date) {
@@ -48,7 +51,7 @@ public class SprApprovalRootImpl implements SprApprovalRootService {
 		if(!opEmployeeSpr.isPresent()){
 			throw new BusinessException("Msg_301");
 		}
-		return this.getApproverStatus(companyID, opEmployeeSpr.get().getEmployeeID(), GeneralDate.fromString(date, DATE_FORMAT));
+		return this.getApproverStatus(companyID, opEmployeeSpr.get().getEmployeeID(), loginParamCheck.getDate(date));
 	}
 
 	@Override
@@ -60,9 +63,7 @@ public class SprApprovalRootImpl implements SprApprovalRootService {
 		if(Strings.isBlank(date)){
 			throw new BusinessException("Msg_1009", "Msg_1026");
 		}
-		try {
-			GeneralDate.fromString(date, DATE_FORMAT);
-		} catch (Exception e) {
+		if(loginParamCheck.getDate(date)==null){
 			throw new BusinessException("Msg_1009", date);
 		}
 	}
@@ -100,18 +101,19 @@ public class SprApprovalRootImpl implements SprApprovalRootService {
 		List<ApprovalRootStateSprExport> approvalRootStateSprList = sprApprovalSearchPub.getRootStateByDateAndType(date, rootType);
 		approvalRootStateSprList.forEach(x -> {
 			if(rootType==0){
-//				// ドメインモデル「申請」を取得する
-//				Optional<ApplicationSpr> opApplicationSpr = applicationSprPub.getAppByID(companyID, x.getRootStateID());
-//				if(!opApplicationSpr.isPresent()){
-//					return;
-//				} 
-//				// 申請種類!＝残業種類
-//				if(opApplicationSpr.get().getAppType()!=0){
-//					return;
-//				}
+				// ドメインモデル「申請」を取得する
+				Optional<ApplicationSpr> opApplicationSpr = applicationSprPub.getAppByID(companyID, x.getRootStateID());
+				if(!opApplicationSpr.isPresent()){
+					return;
+				} 
+				// 申請種類!＝残業種類
+				if(opApplicationSpr.get().getAppType()!=0){
+					return;
+				}
 			}
 			// （ワークフローExport）アルゴリズム「3.指定した社員が承認できるかの判断」を実行する
-			JudgmentSprExport judgmentSprExport = sprApprovalSearchPub.judgmentTargetPersonCanApprove(companyID, x.getRootStateID(), employeeID);
+			JudgmentSprExport judgmentSprExport = sprApprovalSearchPub
+					.judgmentTargetPersonCanApprove(companyID, x.getRootStateID(), employeeID, rootType);
 			if(!(judgmentSprExport.getAuthorFlag()&&judgmentSprExport.getApprovalAtr()==0&&!judgmentSprExport.getExpirationAgentFlag())){
 				return;
 			}

@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.infra.repository.daily.remark;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -34,13 +36,29 @@ public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements Rema
 								.append(" AND r.krcdtDayRemarksColumnPK.ymd >= :start")
 								.append(" AND r.krcdtDayRemarksColumnPK.ymd <= :end")
 								.toString();
-		
+		TypedQueryWrapper<KrcdtDayRemarksColumn> tpQuery = queryProxy().query(query, KrcdtDayRemarksColumn.class)
+																		.setParameter("start", baseDate.start())
+																		.setParameter("end", baseDate.end());
 		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, sub -> {
-			remarks.addAll(queryProxy().query(query, KrcdtDayRemarksColumn.class)
-										.setParameter("sid", sub)
-										.setParameter("start", baseDate.start())
-										.setParameter("end", baseDate.end())
-										.getList(c -> c.toDomain()));
+			remarks.addAll(tpQuery.setParameter("sid", sub).getList(c -> c.toDomain()));
+		});
+		return remarks;
+	}
+
+	@Override
+	public List<RemarksOfDailyPerform> getRemarks(Map<String, List<GeneralDate>> param) {
+		List<RemarksOfDailyPerform> remarks = new ArrayList<>();
+		String query = new StringBuilder("SELECT r FROM KrcdtDayRemarksColumn r")
+								.append(" WHERE r.krcdtDayRemarksColumnPK.sid IN :sid")
+								.append(" AND r.krcdtDayRemarksColumnPK.ymd IN :date")
+								.toString();
+		TypedQueryWrapper<KrcdtDayRemarksColumn> tpQuery = queryProxy().query(query, KrcdtDayRemarksColumn.class);
+		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
+			remarks.addAll(tpQuery.setParameter("sid", p.keySet())
+					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
+					.getList().stream()
+					.filter(c -> p.get(c.krcdtDayRemarksColumnPK.sid).contains(c.krcdtDayRemarksColumnPK.ymd))
+					.map(c -> c.toDomain()).collect(Collectors.toList()));
 		});
 		return remarks;
 	}
@@ -52,23 +70,25 @@ public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements Rema
 								.append(" WHERE r.krcdtDayRemarksColumnPK.sid = :sid")
 								.append(" AND r.krcdtDayRemarksColumnPK.ymd IN ymd")
 								.toString();
-		
+		TypedQueryWrapper<KrcdtDayRemarksColumn> tpQuery = queryProxy().query(query, KrcdtDayRemarksColumn.class)
+				.setParameter("sid", employeeId);
 		CollectionUtil.split(baseDate, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, sub -> {
-			remarks.addAll(queryProxy().query(query, KrcdtDayRemarksColumn.class)
-										.setParameter("sid", sub)
-										.setParameter("ymd", baseDate)
-										.getList(c -> c.toDomain()));
+			remarks.addAll(tpQuery.setParameter("ymd", sub).getList(c -> c.toDomain()));
 		});
 		return remarks;
 	}
 
 	@Override
 	public void update(RemarksOfDailyPerform domain) {
-		queryProxy().find(new KrcdtDayRemarksColumnPK(domain.getEmployeeId(), domain.getYmd(), domain.getRemarkNo()), 
-				KrcdtDayRemarksColumn.class).ifPresent(c -> {
+		Optional<KrcdtDayRemarksColumn> remarks = queryProxy().find(new KrcdtDayRemarksColumnPK(domain.getEmployeeId(), domain.getYmd(), domain.getRemarkNo()), 
+				KrcdtDayRemarksColumn.class);
+		if(remarks.isPresent()){
+			KrcdtDayRemarksColumn c = remarks.get();
 			c.remarks = domain.getRemarks() == null ? null : domain.getRemarks().v();
 			commandProxy().update(c);
-		});
+		} else {
+			add(domain);
+		}
 	}
 
 	@Override
@@ -102,7 +122,7 @@ public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements Rema
 	}
 
 	private TypedQueryWrapper<KrcdtDayRemarksColumn> findEntity(String employeeId, GeneralDate workingDate) {
-		String query = "SELECT r FROM KrcdtDayRemarksColumn r WHERE r.krcdtDayRemarksColumnPK.sid == :sid AND r.krcdtDayRemarksColumnPK.ymd = :ymd";
+		String query = "SELECT r FROM KrcdtDayRemarksColumn r WHERE r.krcdtDayRemarksColumnPK.sid = :sid AND r.krcdtDayRemarksColumnPK.ymd = :ymd";
 		return queryProxy().query(query, KrcdtDayRemarksColumn.class)
 				.setParameter("sid", employeeId)
 				.setParameter("ymd", workingDate);

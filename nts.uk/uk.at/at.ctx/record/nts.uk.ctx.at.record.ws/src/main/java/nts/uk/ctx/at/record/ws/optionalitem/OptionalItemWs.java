@@ -47,7 +47,7 @@ public class OptionalItemWs extends WebService {
 	 */
 	@POST
 	@Path("find/{itemNo}")
-	public OptionalItemDto find(@PathParam("itemNo") String itemNo) {
+	public OptionalItemDto find(@PathParam("itemNo") Integer itemNo) {
 		return this.finder.find(itemNo);
 	}
 

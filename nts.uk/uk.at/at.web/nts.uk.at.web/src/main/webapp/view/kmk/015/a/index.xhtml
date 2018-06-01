@@ -1,35 +1,33 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-   xmlns:ui="http://java.sun.com/jsf/facelets"
-   xmlns:com="http://xmlns.jcp.org/jsf/component"
-   xmlns:h="http://xmlns.jcp.org/jsf/html">
-   <body>
-      <ui:composition template="../../../../master/base.xhtml">
-         <ui:define name="htmlHead">
-            <com:ValidatorScript>
-               nts.uk.ctx.at.record.dom.optitem.OptionalItemName
-               nts.uk.ctx.at.record.dom.optitem.NumberRangeValue
-               nts.uk.ctx.at.record.dom.optitem.TimeRangeValue
-               nts.uk.ctx.at.record.dom.optitem.AmountRangeValue
-               nts.uk.ctx.at.record.dom.optitem.calculation.FormulaName
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+               nts.uk.ctx.at.request.dom.vacation.history.OptionalMaxDay
             </com:ValidatorScript>
-            <com:scriptfile set="IGNITE" />
-            <com:stylefile path="kmk015.a.style.css" />
-            <com:scriptfile path="kmk015.a.start.js" />
-            <com:scriptfile path="kmk015.a.service.js" />
-            <com:scriptfile path="kmk015.a.vm.js" />
-         </ui:define>
-         <ui:define name="content">
-               <div id="functions-area">
-                  <button tabindex="1" class="proceed" data-bind="click: submit">
-                  #{i18n.getText('KMK015_2')}</button>
-               </div>
-               <div id="contents-area" style="display: none" data-bind="visible: true" class="fixed-flex-layout">
-                  <!-- Optional item grid list. -->
-                  <div class="opt-item-grid-list pull-left caret-right caret-background bg-green fixed-flex-layout-left">
-                     <table tabindex="2" id="tbl-master-list"
-                        data-bind="ntsGridList: {
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmk015.a.style.css" />
+			<com:scriptfile path="kmk015.a.start.js" />
+			<com:scriptfile path="kmk015.a.service.js" />
+			<com:scriptfile path="kmk015.a.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<button tabindex="1" id="submitHist" class="proceed" data-bind="enable: isSubmit, click: submit">
+					#{i18n.getText('KMK015_2')}</button>
+			</div>
+			<div id="contents-area" style="display: none"
+				data-bind="visible: true" class="fixed-flex-layout">
+				<!-- Optional item grid list. -->
+				<div
+					class="opt-item-grid-list pull-left caret-right caret-background bg-green fixed-flex-layout-left">
+					<table tabindex="2" id="tbl-master-list"
+						data-bind="ntsGridList: {
                         name: '#[kmk015_14]',
                         width: 300,
                         dataSource: listWorkType,
@@ -38,65 +36,82 @@
                         multiple: false,
                         value: selectedCode,
                         rows: 10}">
-                     </table>
-                     <table style="margin-top: 15px; margin-bottom: 15px;">
-                     	<tr>
-	                        <td><button data-bind="click: OpenDialogB">#{i18n.getText('KMK015_9')}</button></td>
-	                        <td>
-	                           <button data-bind="" style="margin-left: 12px">#{i18n.getText('KMK015_10')}</button>
-	                           <button style="margin-left: 12px" data-bind="" class="danger">#{i18n.getText('KMK015_11')}</button>
-	                        </td>
-	                     </tr>
-                	  </table>
-                	  <table tabindex="2" id="tbl-master-list"
-                        data-bind="ntsGridList: {
+					</table>
+					<table tabindex="-1" style="margin-top: 15px; margin-bottom: 15px;">
+						<tr>
+							<td><button tabindex="4" data-bind="click: OpenDialogB">#{i18n.getText('KMK015_9')}</button></td>
+							<td>
+								<button tabindex="5"
+									data-bind="enable: isEnable, click: OpenDialogC"
+									style="margin-left: 20px">#{i18n.getText('KMK015_10')}</button>
+								<button tabindex="6" style="margin-left: 20px"
+									data-bind="enable: isEnable, click: removeHistory"
+									class="danger">#{i18n.getText('KMK015_11')}</button>
+							</td>
+						</tr>
+					</table>
+					<table tabindex="7" id="tbl-master-list"
+						data-bind="enable: isEnable, ntsGridList: {
                         name: '#[kmk015_15]',
-                        width: 250,
+                        width: 300,
                         dataSource: listHistory,
                         optionsValue: 'historyId',
                         columns: columnsHistory,
                         multiple: false,
                         value: selectedCodeHistory,
                         rows: 5}">
-                     </table>
-                  </div>
-                  <!-- Optional Item view model -->
-                  <div class="pull-left opt-item-detail fixed-flex-layout-right layout-right-kmk015">
-                  	<table class="control-group">
-	                    <tr>
-	                       <td style="display: -webkit-box;">
-	                          <div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK015_6')}</div>
-	                          <div data-bind="text: selectedCode" class="padding-text-code"></div>
-	                          <div data-bind="text: nameWorkType" class="padding-text-name"></div>
-	                       </td>
-	                    </tr>
-	                    <tr>
-	                       <td style="padding-top: 10px; display: -webkit-box;">
-	                          <div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK015_7')}</div>
-	                          <div data-bind="text: timeHistory" class="padding-text-code"></div>
-	                       </td>
-	                       <td></td>
-	                    </tr>
-	                    <tr>
-	                       <td style="display: -webkit-box;">
-	                          	<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK015_8')}</div>
-	                          	<div data-bind="with: numbereditor" style="padding-top: 3px;padding-left: 30px;">
-									<input tabindex="3" id="number-1" data-bind="ntsNumberEditor: { 
-										name: 'Number', 
-										value: numberDay, 
-										constraint: constraint, 
-										option: option, 
-										required: true, 
-										enable: true, 
-										readonly: false}" />
-								</div>
-	                       </td>
-	                       <td></td>
-	                    </tr>
-                  	</table>
-                  </div>
-               </div>
-         </ui:define>
-      </ui:composition>
-   </body>
+					</table>
+				</div>
+				<!-- Optional Item view model -->
+				<div
+					class="pull-left opt-item-detail fixed-flex-layout-right layout-right-kmk015">
+					<table tabindex="-1" class="control-group">
+						<tr>
+							<td>
+								<div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK015_6')}</div>
+							</td>
+							<td class="td-style">
+								<div tabindex="-1" data-bind="text: selectedCode"
+									class="padding-text-code"></div>
+							</td>
+							<td class="td-style">
+								<div tabindex="-1" data-bind="text: nameWorkType"></div>
+							</td>
+						</tr>
+						<tr>
+							<td style="padding-top: 10px;">
+								<div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK015_7')}</div>
+							</td>
+							<td colspan="2">
+								<div tabindex="-1" data-bind="text: timeHistory"
+									class="padding-text-code" style="padding-top: 10px; width: 200px;"></div>
+							</td>
+						</tr>
+						<tr>
+							<td tabindex="-1" style="padding-top: 10px;">
+								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK015_8')}</div>
+
+							</td>
+							<td><div style="padding-top: 10px; padding-left: 30px;">
+									<input tabindex="3" id="number-1"
+										data-bind="ntsNumberEditor: { 
+									name: 'Number', 
+									value: numberDay, 
+									constraint: 'OptionalMaxDay', 
+									option: {
+				                        width: '50',
+				                        defaultValue: '',
+				                        unitID: 'DAYS'
+				                    }, 
+									required: true, 
+									enable: isEnableNumber, 
+									readonly: false}" />
+								</div></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
 </html>

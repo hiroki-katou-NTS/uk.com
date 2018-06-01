@@ -14,6 +14,7 @@ public class MPDataDto {
     private String error;
     private String employeeCode;
     private String employeeName;
+    private String employeeId;
     private String typeGroup;
     private boolean identify;
     private boolean approval;
@@ -21,7 +22,7 @@ public class MPDataDto {
     private String dailyCorrectPerformance;
     private Set<MPCellDataDto> cellDatas;
     
-    public MPDataDto(String id, String state, String error, String employeeCode, String employeeName, String typeGroup, boolean identify, boolean approval,
+    public MPDataDto(String id, String state, String error, String employeeCode, String employeeName, String employeeId, String typeGroup, boolean identify, boolean approval,
 			boolean dailyConfirm, String dailyCorrectPerformance) {
     	
 		this.id = id;
@@ -29,6 +30,7 @@ public class MPDataDto {
 		this.error = error;
 		this.employeeCode = employeeCode;
 		this.employeeName = employeeName;
+		this.employeeId = employeeId;
 		this.typeGroup = typeGroup;
 		this.identify = identify;
 		this.approval = approval;

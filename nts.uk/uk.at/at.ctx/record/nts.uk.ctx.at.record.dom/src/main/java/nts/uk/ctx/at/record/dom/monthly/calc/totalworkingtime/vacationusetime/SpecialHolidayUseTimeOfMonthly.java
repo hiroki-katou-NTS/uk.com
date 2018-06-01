@@ -17,7 +17,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  *
  */
 @Getter
-public class SpecialHolidayUseTimeOfMonthly {
+public class SpecialHolidayUseTimeOfMonthly implements Cloneable {
 	
 	/** 使用時間 */
 	private AttendanceTimeMonth useTime;
@@ -47,21 +47,18 @@ public class SpecialHolidayUseTimeOfMonthly {
 		
 	}
 
-	/**
-	 * 複写
-	 * @param useTime 使用時間
-	 * @param timeSeriesWorks 時系列ワーク
-	 * @return 月別実績の特別休暇使用時間
-	 */
-	public static SpecialHolidayUseTimeOfMonthly copyFrom(
-			AttendanceTimeMonth useTime,
-			Map<GeneralDate, SpecialHolidayUseTimeOfTimeSeries> timeSeriesWorks){
-		
-		val domain = new SpecialHolidayUseTimeOfMonthly();
-		domain.useTime = new AttendanceTimeMonth(useTime.valueAsMinutes());
-		domain.timeSeriesWorks = timeSeriesWorks;
-		return domain;
-		
+	@Override
+	public SpecialHolidayUseTimeOfMonthly clone() {
+		SpecialHolidayUseTimeOfMonthly cloned = new SpecialHolidayUseTimeOfMonthly();
+		try {
+			cloned.useTime = new AttendanceTimeMonth(this.useTime.v());
+			// ※　Shallow Copy.
+			cloned.timeSeriesWorks = this.timeSeriesWorks;
+		}
+		catch (Exception e){
+			throw new RuntimeException("SpecialHolidayUseTimeOfMonthly clone error.");
+		}
+		return cloned;
 	}
 	
 	/**
@@ -81,7 +78,9 @@ public class SpecialHolidayUseTimeOfMonthly {
 			// 「日別実績の特別休暇」を取得する
 			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
 			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
+			if (totalWorkingTime.getHolidayOfDaily() == null) return;
 			val holidayOfDaily = totalWorkingTime.getHolidayOfDaily();
+			if (holidayOfDaily.getSpecialHoliday() == null) return;
 			val specialHoliday = holidayOfDaily.getSpecialHoliday();
 			
 			// 取得した使用時間を「月別実績の特別休暇使用時間」に入れる
@@ -100,8 +99,24 @@ public class SpecialHolidayUseTimeOfMonthly {
 		
 		for (val timeSeriesWork : this.timeSeriesWorks.values()){
 			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
-			this.useTime.addMinutes(timeSeriesWork.getSpecialHolidayUseTime().getUseTime().v());
+			this.addMinuteToUseTime(timeSeriesWork.getSpecialHolidayUseTime().getUseTime().v());
 		}
+	}
+	
+	/**
+	 * 特別休暇使用時間を求める
+	 * @param datePeriod 期間
+	 * @return 特別休暇使用時間
+	 */
+	public AttendanceTimeMonth getTotalUseTime(DatePeriod datePeriod){
+		
+		AttendanceTimeMonth returnTime = new AttendanceTimeMonth(0);
+		
+		for (val timeSeriesWork : this.timeSeriesWorks.values()){
+			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
+			returnTime = returnTime.addMinutes(timeSeriesWork.getSpecialHolidayUseTime().getUseTime().v());
+		}
+		return returnTime;
 	}
 	
 	/**

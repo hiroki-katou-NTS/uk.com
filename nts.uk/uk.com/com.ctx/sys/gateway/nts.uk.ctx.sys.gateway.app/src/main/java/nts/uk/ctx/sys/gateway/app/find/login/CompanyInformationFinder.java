@@ -30,4 +30,14 @@ public class CompanyInformationFinder {
 	public List<CompanyInformationImport> findAll() {
 		return companyInformationAdapter.findAll();
 	}
+	
+	/**
+	 * Gets the company infor by code.
+	 *
+	 * @param companyId the company id
+	 * @return the company infor by code
+	 */
+	public CompanyInformationImport getCompanyInforByCode(String companyId) {
+		return companyInformationAdapter.findById(companyId);
+	}
 }

@@ -32,8 +32,8 @@ public class EmpCopySettingItemWebService {
 	@POST
 	@Path("getAll/{employeeId}/{categoryCd}/{baseDate}")
 	public List<SettingItemDto> getAllCopyItemByCtgCode(@PathParam("categoryCd") String categoryCd,
-			@PathParam("employeeId") String employeeId, @PathParam("baseDate") String baseDate) {
-		return this.finder.getAllCopyItemByCtgCode(true, categoryCd, employeeId,
+			@PathParam("employeeId") String selectedEmployeeId, @PathParam("baseDate") String baseDate) {
+		return this.finder.getAllCopyItemByCtgCode(categoryCd, selectedEmployeeId,
 				GeneralDate.fromString(baseDate, "yyyyMMdd"));
 	}
 
@@ -46,7 +46,7 @@ public class EmpCopySettingItemWebService {
 	@POST
 	@Path("findby/getPerInfoItemByCtgId")
 	public List<CopySettingItemDto> getPerInfoItemByCtgId(String ctgId) {
-		return this.finder.getPerInfoDefByIdNo812(ctgId);
+		return this.finder.getPerInfoDefById(ctgId);
 	}
 
 }

@@ -259,6 +259,7 @@ module nts.uk.at.view.ksc001.b {
                 var self = this;
                 self.employeeList([]);
                 var employeeSearchs: UnitModel[] = [];
+                self.selectedEmployeeCode([]);
                 for (var employeeSearch of dataList) {
                     var employee: UnitModel = {
                         code: employeeSearch.employeeCode,

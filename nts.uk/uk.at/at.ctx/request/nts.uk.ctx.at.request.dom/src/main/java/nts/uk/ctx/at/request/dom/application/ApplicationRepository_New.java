@@ -79,7 +79,5 @@ public interface ApplicationRepository_New {
 	 */
 	public List<Application_New> getListApp(String sID, GeneralDate startDate, GeneralDate endDate);
 	
-	//ドメインモデル「申請」を取得する
-	//TODO
-	public List<Application_New> getListAppById(String sID, String empId, GeneralDate startDate, GeneralDate endDate);
+	public List<Application_New> getByListRefStatus(String employeeID ,GeneralDate startDate, GeneralDate endDate , List<Integer> listReflecInfor  );
 }

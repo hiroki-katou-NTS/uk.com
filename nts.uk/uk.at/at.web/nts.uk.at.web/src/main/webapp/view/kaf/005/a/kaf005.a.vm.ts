@@ -139,7 +139,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.appDate(transferData.appDate);
                 self.multilContent(transferData.applicationReason);
                 self.employeeIDs(transferData.employeeIDs); 
-                self.uiType(1); 
+                self.uiType(transferData.uiType); 
             }
                     
             //KAF000_A
@@ -461,7 +461,20 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 //勤務内容を変更後に計算ボタン押下。計算フラグ=0にする。 
                 if(!self.isEmptyOverTimeInput(ko.toJS(self.overtimeHours()))){
                     self.calculateFlag(0);
-                } 
+                }
+                 //setting work content
+                self.preWorkContent = {
+                    applicationDate: self.appDate(),
+                    workType: self.workTypeCd(),
+                    siftType: self.siftCD(),
+                    workClockFrom1: self.timeStart1(),
+                    workClockTo1: self.timeEnd1(),
+                    workClockFrom2: self.timeStart2(),
+                    workClockTo2: self.timeEnd2(),
+                    overtimeHours:  ko.toJS(self.overtimeHours())
+                }
+                 //Check work content Changed
+                self.checkWorkContentChanged(); 
             }
             
             self.overtimeAtr(data.overtimeAtr);

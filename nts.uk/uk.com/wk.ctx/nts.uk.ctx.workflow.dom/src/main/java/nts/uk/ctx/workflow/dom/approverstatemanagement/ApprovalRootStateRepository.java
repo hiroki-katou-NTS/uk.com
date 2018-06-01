@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDate;
  */
 public interface ApprovalRootStateRepository {
 	
-	public Optional<ApprovalRootState> findByID(String rootStateID);
+	public Optional<ApprovalRootState> findByID(String rootStateID, Integer rootType);
 	/**
 	 * @param startDate
 	 * @param endDate
@@ -32,7 +32,8 @@ public interface ApprovalRootStateRepository {
 	 * @param endDate
 	 * @return List<ApprovalRootState>
 	 */
-	public List<ApprovalRootState> findEmployeeAppByApprovalRecordDateAndNoRootType(GeneralDate startDate, GeneralDate endDate,String approverID);
+	public List<ApprovalRootState> findEmployeeAppByApprovalRecordDateAndNoRootType(String companyID, 
+			GeneralDate startDate, GeneralDate endDate,String approverID);
 	
 	/** 
 	 * 対象者と期間から承認ルートインスタンスを取得する
@@ -62,18 +63,21 @@ public interface ApprovalRootStateRepository {
 	 */
 	public List<ApprovalRootState> findAppByListEmployeeIDAndListRecordDate(List<GeneralDate> approvalRecordDates,List<String> employeeIDs,Integer rootType);
 	
-	public List<ApprovalRootState> findEmploymentApps(List<String> rootStateIDs);
+	public List<ApprovalRootState> findEmploymentApps(List<String> rootStateIDs, String approverID);
 	
 	public Optional<ApprovalRootState> findEmploymentApp(String rootStateID);
 	
-	public void insert(ApprovalRootState approvalRootState);
+	public void insert(String companyID, ApprovalRootState approvalRootState, Integer rootType);
 
-	public void update(ApprovalRootState approvalRootState);
+	public void update(ApprovalRootState approvalRootState, Integer rootType);
 	
-	public void delete(String rootStateID);
+	public void delete(String rootStateID, Integer rootType);
 	
 	public List<ApprovalRootState> getRootStateByDateAndType(GeneralDate date, Integer rootType);
 	
 	public void deleteConfirmDay(String employeeID, GeneralDate date);
+	
+	public List<ApprovalRootState> findByApprover(String companyID, GeneralDate startDate, GeneralDate endDate,
+			String approverID, Integer rootType);
 	
 }

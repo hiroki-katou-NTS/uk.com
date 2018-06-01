@@ -9,7 +9,7 @@ import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
-//import nts.uk.ctx.at.record.app.find.monthly.root.dto.ClosureDateDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.FormatPerformanceDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.IdentityProcessDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
@@ -85,7 +85,7 @@ public class MonthlyPerformanceCorrectionDto {
 	/**
 	 * 締め日: 日付
 	 */
-	//private ClosureDateDto closureDate;
+	private ClosureDateDto closureDate;
 	
 	public MonthlyPerformanceCorrectionDto(){
 		super();
