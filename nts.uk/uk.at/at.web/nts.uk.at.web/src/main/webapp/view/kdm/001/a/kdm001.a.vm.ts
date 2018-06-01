@@ -4,6 +4,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import getText = nts.uk.resource.getText;
     import modal = nts.uk.ui.windows.sub.modal;
+    import block = nts.uk.ui.block;
     export class ScreenModel {
         closureID: string;
         selectedEmployeeObject: any;
@@ -239,6 +240,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
+            block.invisible();
             
             service.getInfoEmLogin().done(function(emp) {
                 service.getWpName().done(function(wp) {
@@ -247,10 +249,16 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     self.employeeInputList.push(new EmployeeKcp009(emp.sid,
                             emp.employeeCode, emp.employeeName, wp.name, wp.name));
                     self.initKCP009();
+                    dfd.resolve();
+                }).fail(function(result) {
+                    dialog.alertError(result.errorMessage);
+                    dfd.reject();
                 });
+            }).fail(function(result) {
+                dialog.alertError(result.errorMessage);
+                dfd.reject();
             });
 
-            dfd.resolve();
             return dfd.promise();
         }
         
@@ -266,7 +274,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 selectedItem: self.selectedItem,
                 tabIndex: self.tabindex
             };
-            $('#emp-component').ntsLoadListComponent(self.listComponentOption);
+            $('#emp-componentA').ntsLoadListComponent(self.listComponentOption);
         }
 
         convertEmployeeCcg01ToKcp009(dataList: EmployeeSearchDto[]): void {
@@ -275,13 +283,20 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             _.each(dataList, function(item) {
                 self.employeeInputList.push(new EmployeeKcp009(item.employeeId, item.employeeCode, item.employeeName, item.workplaceName, ""));
             });
-            $('#emp-component').ntsLoadListComponent(self.listComponentOption);
+            $('#emp-componentA').ntsLoadListComponent(self.listComponentOption);
             if (dataList.length == 0) {
                 self.selectedItem('');
             } else {
                 let item = self.findIdSelected(dataList, self.selectedItem());
                 let sortByEmployeeCode = _.orderBy(dataList, ["employeeCode"], ["asc"]);
                 if (item == undefined) self.selectedItem(sortByEmployeeCode[0].employeeId);
+            }
+            
+            // set data for KCP009 screen B
+            if(!($("#tabpanel-2").hasClass("disappear"))) {
+                __viewContext.viewModel.viewmodelB.employeeInputList([]);
+                __viewContext.viewModel.viewmodelB.employeeInputList(self.employeeInputList());
+                $('#emp-component').ntsLoadListComponent(__viewContext.viewModel.viewmodelB.listComponentOption);
             }
         }
 

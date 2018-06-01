@@ -59,7 +59,7 @@
 					<span class="label" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_111')}</span>
 					<!-- I6_3 休出日数 -->
 					<!-- Combobox -->
-					<div id="I6_3" tabindex="3"
+					<div id="I6_3" tabindex="3" class="combo-box-holiday"
 						data-bind="ntsComboBox: {
 					name: '#[KDM001_112]',
 					options: itemListHoliday,
@@ -69,7 +69,6 @@
 					optionsText: 'name',
 					editable: false,
 					enable: true,
-					width: 95,
 					columns: [
 						{ prop: 'name', length: 5 },
 					]}">
@@ -106,7 +105,7 @@
 					<span class="label" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_115')}</span>
 					<!-- I11_3 代休日数 -->
 					<!-- Combobox -->
-					<div tabindex="6" id="I11_3" 
+					<div tabindex="6" id="I11_3" class="combo-box-sub-holiday"
 						data-bind="ntsComboBox: {
 					name: '#[KDM001_116]',
 					options: itemListSubHoliday,
@@ -116,7 +115,6 @@
 					optionsText: 'name',
 					editable: false,
 					enable: true,
-					width: 95,
 					columns: [
 						{ prop: 'name', length: 5 },
 					]}">
@@ -137,7 +135,7 @@
 						<span class="label" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_115')}</span>
 						<!-- I12_4 代休日数 -->
 						<!-- Combobox -->
-						<div tabindex="8" id="I12_4" 
+						<div tabindex="8" id="I12_4" class="combo-box-option-sub-holiday"
 							data-bind="ntsComboBox: {
 							name: '#[KDM001_116]',
 							options: itemListOptionSubHoliday,
@@ -147,7 +145,6 @@
 							optionsText: 'name',
 							editable: false,
 							enable: checkedSplit,
-							width: 95,
 							columns: [
 								{ prop: 'name', length: 5 },
 							]}">

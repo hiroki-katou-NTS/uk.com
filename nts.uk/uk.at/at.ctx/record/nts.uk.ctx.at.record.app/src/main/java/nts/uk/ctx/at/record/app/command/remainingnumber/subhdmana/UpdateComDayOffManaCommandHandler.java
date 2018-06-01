@@ -40,7 +40,7 @@ public class UpdateComDayOffManaCommandHandler
 	 */
 	private List<String> updateComDayOffManaProcess(CompensatoryDayOffManaDataCommand command) {
 		// アルゴリズム「代休（年月日）チェック処理」を実行する
-		List<String> errorList = this.addSubHdManaService.checkDateHoliday(Optional.empty(), command.getDayOffDate(), Optional.empty(), command.getClosureId());
+		List<String> errorList = this.addSubHdManaService.checkDateHoliday(Optional.empty(), command.getDayOffDate(), Optional.empty(), command.getClosureId(), false,Optional.empty() );
 
 		if (!errorList.isEmpty()) {
 			return errorList;
