@@ -83,6 +83,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
 
         //Parameter setting
         monthlyParam: KnockoutObservable<any> = ko.observable(null);
+        reloadParam : KnockoutObservable<any> = ko.observable(null);
         //Date YYYYMM picker
         yearMonth: KnockoutObservable<number>;
         //Combobox display actual time
@@ -90,6 +91,11 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         actualTimeSelectedCode: KnockoutObservable<number> = ko.observable(0);
         actualTimeDats: KnockoutObservableArray<any> = ko.observableArray([]);;
         actualTimeSelectedDat: KnockoutObservable<any> = ko.observable(null);
+        
+        closureId : KnockoutObservable<number> = ko.observable(0);
+        
+        closureDateDto : KnockoutObservable<any> = ko.observable(null);
+        
         constructor() {
             let self = this;
             self.yearMonth = ko.observable(Number(moment(new Date()).format("YYYYMM")));
@@ -109,6 +115,15 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 correctionOfDaily: null,
                 errorCodes: [],
                 lstLockStatus: []
+            });
+            
+            self.reloadParam({
+                processDate: self.yearMonth,
+                initScreenMode: self.initMode(),
+                //抽出対象社員一覧
+                lstEmployees: [],
+                closureId : self.closureId(),
+                lstAtdItemUnique : []
             });
 
             self.actualTimeSelectedCode.subscribe(value => {
@@ -145,7 +160,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 nts.uk.ui.block.clear();
                 dfd.resolve();
             }).fail(function(error) {
-                nts.uk.ui.dialog.alert(error.message);
+//                nts.uk.ui.dialog.alert(error.message);
+                nts.uk.ui.dialog.alert(error.message).then(function() {
+                    nts.uk.request.jumpToTopPage();
+                });
                 nts.uk.ui.block.clear();
                 dfd.reject();
             });
@@ -164,10 +182,18 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 /*********************************
                  * Screen data
                  *********************************/
+                // attendance item
+                self.lstAttendanceItem(data.param.lstAtdItemUnique);
+                // closure ID
+                self.closureId(data.closureId);
+                self.reloadParam().closureId = data.closureId;
+                self.reloadParam().lstAtdItemUnique = data.param.lstAtdItemUnique;
                 //Closure name
                 self.closureName(data.closureName);
                 //date process
                 self.yearMonth(data.processDate);
+                // closureDateDto
+                self.closureDateDto(data.closureDate);
                 //actual times
                 self.actualTimeDats(data.lstActualTimes);
                 self.actualTimeSelectedDat(data.selectedActualTime);
@@ -213,6 +239,153 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 ]
             };
         }
+        
+        /**********************************
+         * Button Event 
+         **********************************/
+        /**
+         * A1_1 確定ボタン
+         */
+        insertUpdate() {
+            var self = this;
+            let errorGrid: any = $("#dpGrid").ntsGrid("errors");
+            let dataUpdate = {
+                /** 年月: 年月 */
+               yearMonth : self.yearMonth(),
+                /** 締めID: 締めID */
+                closureId : self.closureId(),
+                /** 締め日: 日付 */
+                closureDate : self.closureDateDto(),
+                mPItemDetails: []
+            }
+            if (errorGrid == undefined || errorGrid.length == 0) {
+                nts.uk.ui.block.invisible();
+                nts.uk.ui.block.grayout();
+                let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
+                var dataSource = $("#dpGrid").igGrid("option", "dataSource");
+                let dataChangeProcess: any = [];
+                
+                 _.each(dataChange, (data: any) => {
+                     let dataTemp = _.find(dataSource, (item: any) => {
+                        return item.id == data.rowId;
+                    });
+                     
+                     if (data.columnKey != "sign" && data.columnKey != "approval") {
+                         //get layout , and type
+                        let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
+                            return item.itemId == data.columnKey.substring(1, data.columnKey.length);
+                        });
+                        let item = self.lstAttendanceItem()[Number(data.columnKey.substring(1, data.columnKey.length))];
+//                        _.find(self.lstAttendanceItem(), (value) => {
+//                            return String(value.id) === data.columnKey.substring(1, data.columnKey.length);
+//                        })
+                        let value: any;
+                        value = self.getPrimitiveValue(data.value, item.attendanceAtr);
+                        let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, 0);
+                        dataChangeProcess.push(dataMap); 
+                     }
+                 });
+                dataUpdate.mPItemDetails = dataChangeProcess;
+                let checkDailyChange = (dataChangeProcess.length > 0);
+                if (checkDailyChange) {
+                    service.addAndUpdate(dataUpdate).done((data) => {
+                        nts.uk.ui.block.clear();
+                self.updateDate(self.yearMonth());
+                    })
+                }
+            }
+        };
+        
+        getPrimitiveValue(value: any, atr: any): string {
+            var self = this;
+            let valueResult: string = "";
+            if (atr != undefined && atr != null) {
+                if (atr == 6) {
+                    // Time
+                    valueResult = value == "" ? null : String(self.getHoursAll(value));
+                } else if (atr == 5) {
+                    valueResult = value == "" ? null : String(self.getHoursTime(value));
+                } else {
+                    valueResult = value;
+                }
+            } else {
+                valueResult = value;
+            }
+            return valueResult;
+        };
+        
+        //time
+        getHoursTime(value): number {
+            var self = this;
+            if (value.indexOf(":") != -1) {
+                if (value.indexOf("-") != -1) {
+                    let valueTemp = value.split('-')[1];
+                    return 0 - self.getHours(valueTemp);
+                } else {
+                    return self.getHours(value);
+                }
+            } else {
+                return value;
+            }
+        };
+
+        //time day
+        getHoursAll(value: any): number {
+            var self = this;
+            if (value.indexOf(":") != -1) {
+                if (value.indexOf("-") != -1) {
+                    let valueTemp = value.split('-')[1];
+                    return self.getHours(valueTemp) - 24 * 60;
+                } else {
+                    return self.getHours(value);
+                }
+            } else {
+                return value;
+            }
+        };
+        
+        /**
+         * 期間を変更する
+         */
+        updateDate(date: any) {
+            let self = this;
+            let dfd = $.Deferred();
+            self.reloadParam().processDate = date;
+            service.updateScreen(self.reloadParam()).done((data) => {
+                //self.itemValueAll(data.itemValues);
+                self.receiveData(data);
+                /*********************************
+                 * Screen data
+                 *********************************/
+                // closure ID
+                self.closureId(data.closureId);
+                //Closure name
+                self.closureName(data.closureName);
+                //date process
+                self.yearMonth(data.processDate);
+                //actual times
+                self.actualTimeDats(data.lstActualTimes);
+                self.actualTimeSelectedDat(data.selectedActualTime);
+                self.initActualTime();
+                self.lstEmployee(_.orderBy(data.lstEmployee, ['code'], ['asc']));
+                /*********************************
+                 * Grid data
+                 *********************************/
+                // Fixed Header
+                self.setFixedHeader(data.lstFixedHeader);
+
+                let employeeLogin: any = _.find(self.lstEmployee(), function(data) {
+                    return data.loginUser == true;
+                });
+                self.employIdLogin = employeeLogin;
+                
+                let datasource = self.formatDate(self.dpData);
+                $("#dpGrid").igGrid("option","dataSource", datasource);
+                dfd.resolve();
+            })
+            return dfd.promise();
+            
+        };
         /**
          * 実績期間: List<DatePeriod> actualTimeDats
          * 実績期間選択: DatePeriod actualTimeSelectedDat
@@ -230,7 +403,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 }
             }
             self.actualTimeSelectedCode(selectedIndex);
-        }
+        };
         /*********************************/
         receiveData(data) {
             let self = this;
@@ -239,7 +412,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             self.optionalHeader = data.lstControlDisplayItem.lstHeader;
             self.sheetsGrid(data.lstControlDisplayItem.lstSheet);
             self.sheetsGrid.valueHasMutated();
-        }
+        };
 
         extractionData() {
             let self = this;
@@ -247,7 +420,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             self.fixColGrid = self.fixHeaders;
 
             self.loadHeader(self.displayFormat());
-        }
+        };
         //init ccg001
         initCcg001() {
             let self = this;
@@ -308,18 +481,22 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         };
                     }));
                     self.lstEmployee(_.orderBy(self.lstEmployee(), ['code'], ['asc']));
+//                    self.lstEmployee(_.orderBy(self.lstEmployee(), ['code'], ['asc']));
                     //Reload screen
+                    $("#dpGrid").ntsGrid("destroy");
                     self.monthlyParam().lstEmployees = self.lstEmployee();
+                    self.reloadParam().lstEmployees = self.lstEmployee();
                     self.initScreen();
+//                    self.updateDate(self.yearMonth());
                 },
             }
-        }
+        };
 
         //load ccg001 component: search employee
         loadCcg001() {
             let self = this;
             $('#ccg001').ntsGroupComponent(self.ccg001);
-        }
+        };
 
         loadGrid() {
             let self = this;
@@ -359,7 +536,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 ntsFeatures: self.getNtsFeatures(),
                 ntsControls: self.getNtsControls()
             });
-        }
+        };
         /**********************************
         * Grid Data Setting 
         **********************************/
@@ -369,7 +546,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 return { columnKey: item.key, isFixed: true };
             });
             self.fixHeaders(fixedData);
-        }
+        };
         checkIsColumn(dataCell: any, key: any): boolean {
             let check = false;
             _.each(dataCell, (item: any) => {
@@ -379,21 +556,21 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 }
             });
             return check;
-        }
+        };
 
         isDisableRow(id) {
             let self = this;
             for (let i = 0; i < self.rowStates().length; i++) {
                 return self.rowStates()[i].rowId == id;
             }
-        }
+        };
 
         isDisableSign(id) {
             let self = this;
             for (let i = 0; i < self.cellStates().length; i++) {
                 return self.cellStates()[i].rowId == id && self.cellStates()[i].columnKey == 'sign';
             }
-        }
+        };
         formatDate(lstData) {
             let self = this;
             let start = performance.now();
@@ -591,7 +768,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         if (data != "") {
                             let lock = data.split("|");
                             let tempD = "<span>";
-                            for (let i = 1; i < lock.length; i++) {
+                            for (let i = 0; i < lock.length; i++) {
                                 //月別実績のロック
                                 if (lock[i] == "monthlyResultLock")
                                     tempD += nts.uk.resource.getText("KMW003_35") + '<br/>';
@@ -615,7 +792,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                                     tempD += nts.uk.resource.getText("KMW003_41") + '<br/>';
 
                             }
-                            tempD += nts.uk.resource.getText("KDW003_67") + '</span>';
+                            tempD += '</span>';
                             $('#textLock').html(tempD);
                         }
                         self.helps(evt, "");
@@ -738,17 +915,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             });
             self.lockMessage(data);
             $("#tooltip").show();
-        }
-        /**********************************
-         * Button Event 
-         **********************************/
-        /**
-         * 期間を変更する
-         */
-        updateDate(date: any) {
-            let self = this;
-            self.monthlyParam().yearMonth = date;
-            //self.initScreen();
         }
         /**
          * 実績期間を変更する
@@ -986,16 +1152,14 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         valueType: number;
         layoutCode: string;
         employeeId: string;
-        date: any;
         typeGroup: number;
-        constructor(rowId: any, itemId: any, value: any, valueType: number, layoutCode: string, employeeId: string, date: any, typeGroup: number) {
+        constructor(rowId: any, itemId: any, value: any, valueType: number, layoutCode: string, employeeId: string, typeGroup: number) {
             this.rowId = rowId;
             this.itemId = itemId;
             this.value = value;
             this.valueType = valueType;
             this.layoutCode = layoutCode;
             this.employeeId = employeeId;
-            this.date = date;
             this.typeGroup = typeGroup;
         }
     }

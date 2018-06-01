@@ -32,6 +32,8 @@ public class GrantDatePer extends DomainObject {
 
 	/*特別休暇名称*/
 	private PersonalGrantDateName personalGrantDateName;
+	
+	private int provision;
 
 	/*一律基準日*/
 	private GeneralDate grantDate;
@@ -45,11 +47,12 @@ public class GrantDatePer extends DomainObject {
 	 * Create from java type
 	 */
 	public static GrantDatePer createSimpleFromJavaType(String companyId, int specialHolidayCode, String personalGrantDateCode, String personalGrantDateName,
-			GeneralDate grantDate, int grantDateAtr, List<GrantDatePerSet> grantDatePerSet) {
+			int provision, GeneralDate grantDate, int grantDateAtr, List<GrantDatePerSet> grantDatePerSet) {
 		return new GrantDatePer(companyId,
 				specialHolidayCode,
 				new PersonalGrantDateCode(personalGrantDateCode),
 				new PersonalGrantDateName(personalGrantDateName),
+				provision,
 				grantDate,
 				EnumAdaptor.valueOf(grantDateAtr, GrantDateAtr.class),
 				grantDatePerSet);

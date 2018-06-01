@@ -253,7 +253,8 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		builderString.append(" ON a.wwfdpApprovalRootDayPK.rootStateID = b.wwfdpApproverDayPK.rootStateID ");
 		builderString.append(" WHERE (b.wwfdpApproverDayPK.approverID = :approverID");
 		builderString.append(" OR b.wwfdpApproverDayPK.approverID IN");
-		builderString.append(" (SELECT d.cmmmtAgentPK.employeeId FROM CmmmtAgent d WHERE d.agentSid1 = :approverID))");
+		builderString.append(" (SELECT d.cmmmtAgentPK.employeeId FROM CmmmtAgent d WHERE d.agentSid1 = :approverID");
+		builderString.append(" AND :startDate <= d.endDate AND :endDate >= d.startDate))");
 		builderString.append(" AND b.companyID = :companyID");
 		builderString.append(" AND b.recordDate >= :startDate AND b.recordDate <= :endDate)");
 		SELECT_CFS_DAY_BY_APPROVER = builderString.toString();
@@ -549,8 +550,8 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 			CollectionUtil.split(listAppRootMonthSimp, 20, subIdList -> {
 				listAppRootMonth.addAll(
 						this.queryProxy().query(SELECT_CF_MONTH_BY_IDS, WwfdtApprovalRootMonth.class)
-						.setParameter("startDate", date)
-						.setParameter("endDate", date).getList(x -> x.toDomain()));
+						.setParameter("rootStateIDs", subIdList)
+						.getList(x -> x.toDomain()));
 			});
 			return listAppRootMonth;
 		default:
@@ -562,8 +563,8 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 			CollectionUtil.split(listAppRootStateSimp, 20, subIdList -> {
 				listAppRootState.addAll(
 						this.queryProxy().query(SELECT_APP_BY_IDS, WwfdtApprovalRootState.class)
-						.setParameter("startDate", date)
-						.setParameter("endDate", date).getList(x -> x.toDomain()));
+						.setParameter("rootStateIDs", subIdList)
+						.getList(x -> x.toDomain()));
 			});
 			return listAppRootState;
 		}

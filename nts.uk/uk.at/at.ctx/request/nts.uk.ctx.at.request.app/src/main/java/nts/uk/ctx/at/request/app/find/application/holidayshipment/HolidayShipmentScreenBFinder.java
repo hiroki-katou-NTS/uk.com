@@ -155,21 +155,21 @@ public class HolidayShipmentScreenBFinder {
 	}
 
 	private void setEmployeeDisplayText(String employeeID, Application_New appOutput) {
-		String employeeDisplayText = "";
-		boolean isSameLoginAndEnteredEmployeeName = appOutput.getEmployeeID().equals(appOutput.getEnteredPersonID());
-		if (isSameLoginAndEnteredEmployeeName) {
+		String resultName = "", appEmployeeID = appOutput.getEnteredPersonID(), loginEmployeeID = employeeID;
 
-			employeeDisplayText = empAdaptor.getEmployeeName(employeeID);
+		boolean isSameLogin = loginEmployeeID.equals(appEmployeeID);
+		if (isSameLogin) {
+
+			resultName = empAdaptor.getEmployeeName(employeeID);
 
 		} else {
-			String loginEmployeeName = empAdaptor.getEmployeeName(appOutput.getEmployeeID());
 
-			String enteredEmployeeName = " (入力者 : " + empAdaptor.getEmployeeName(appOutput.getEnteredPersonID()) + ")";
-
-			employeeDisplayText = loginEmployeeName + enteredEmployeeName;
+			String appEmployeeName = empAdaptor.getEmployeeName(appEmployeeID);
+			String loginEmployeeName = " (入力者 : " + empAdaptor.getEmployeeName(loginEmployeeID) + ")";
+			resultName = appEmployeeName + loginEmployeeName;
 
 		}
-		screenInfo.setEmployeeName(employeeDisplayText);
+		screenInfo.setEmployeeName(resultName);
 
 	}
 

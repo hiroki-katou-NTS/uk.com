@@ -13,6 +13,12 @@ module nts.uk.at.view.kbt002.f {
             gridListColumns: KnockoutObservableArray<any>;
             selectedExecCd: KnockoutObservable<string> = ko.observable('');
             currentExecLog : KnockoutObservable<any> = ko.observable({});
+            taskId: KnockoutObservable<string> = ko.observable("");
+            isOnceMessage101: KnockoutObservable<boolean> = ko.observable(true);
+            isOnceExecType: KnockoutObservable<boolean> = ko.observable(true);
+            isOnceCurrentStatus: KnockoutObservable<boolean> = ko.observable(true);
+            isOnceInterupt: KnockoutObservable<boolean> = ko.observable(true);
+            isCreateSchedule: KnockoutObservable<boolean> = ko.observable(true);
             constructor() {
                 var self = this;
                 self.execLogList([]);
@@ -27,7 +33,7 @@ module nts.uk.at.view.kbt002.f {
                     { headerText: getText("KBT002_143"), key: 'overallStatus', width: 100, formatter: _.escape },
                     {
                         headerText: "", key: 'execItemCd', width: 55, unbound: true, dataType: "string",
-                        template: '<button tabindex="-1" class="setting small" data-bind="click: function(data, event) { openDialogG(data, event)}, enable: {{if ((${overallStatusCd} != "") && (${overallStatusCd} == 3)) }}true{{else}} false {{/if}}" data-code="${execItemCd}" style="margin-left: 7px;">' + getText("KBT002_144") + '</button>',
+                        template: '<button tabindex="-1" class="setting small" data-bind="click: function(data, event) { openDialogG(data, event)}, enable: {{if ((${overallStatusCd} != "") && (${overallStatusCd} == 3)) && (${currentStatus} !=0)  }}true{{else}} false {{/if}}" data-code="${execItemCd}" style="margin-left: 7px;">' + getText("KBT002_144") + '</button>',
                     },
                     { headerText: getText("KBT002_131"), key: 'nextExecDateTime', width: 180, formatter: _.escape },
                     {
@@ -40,7 +46,7 @@ module nts.uk.at.view.kbt002.f {
                     },
                     {
                         headerText: "", key: 'execItemCd', width: 55, unbound: true, dataType: "string",
-                        template: '<button tabindex="-1" class="setting small" onclick="openDlg(this)" data-code="${execItemCd}" style="margin-left: 7px;">' + getText("KBT002_147") + '</button>',
+                        template: '<button tabindex="-1" class="setting small" data-bind="click: function(data, event) { openDialogH(data, event)}" data-code="${execItemCd}" style="margin-left: 7px;">' + getText("KBT002_147") + '</button>',
                     },
                 ]);
                 
@@ -97,39 +103,65 @@ module nts.uk.at.view.kbt002.f {
                     block.clear();
                 });    
             }
+            openDialogH(data, event){
+                let self = this;
+                block.grayout();
+                var execItemCd = $(event.target).data("code");
+                setShared('inputDialogH', {execItemCd: execItemCd});
+                modal("/view/kbt/002/h/index.xhtml").onClosed(function(){
+                    block.clear();
+                });    
+            }
+            
+            updateInfo(){
+                let self = this;
+                 ko.cleanNode(igrid);
+                  $.when(self.getProcExecLogList()).done(()=>{
+                     ko.applyBindings(self,igrid);
+                });
+            }
             
              execute(data, event){
                 let self = this;
 //                var dfd = $.Deferred();
                 block.grayout();
                 let command: any = self.toJsonObject();
-                service.execute(command).done(function() {
-//                    $.when(self.getProcExecLogList()).done(()=>{
-                        block.clear();
-//                        dfd.resolve();
-//                    });
-                });
+                service.execute(command).done(function(x) {
+                    self.taskId(x.id);
+                    self.repeatCheckAsyncResult();
+                     /* ko.cleanNode(igrid);
+                        $.when(self.getProcExecLogList()).done(()=>{
+                             ko.applyBindings(self,igrid);
+                             block.clear();
+                        }); 
+                    */
+                    block.clear();
+                }).fail(function(res) {
+                         nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                        self.getProcExecLogList();
+                    });
+                 
                  let newExecLogList = [];
                  _.forEach(self.execLogList(),function(x) {
                        if(x.execItemCd==command.execItemCd){
-                           newExecLogList.push( {execItemCd : x.execItemCd, 
-            companyId:           x.companyId,
-            execItemName:        x.execItemName,
-            currentStatusCd:     0,
-            currentStatus:       "実行中",
-            overallStatusCd:     x.overallStatusCd,
-            overallStatus:       " ",
-            overallError:        x.overallError,
-            prevExecDateTime:    x.prevExecDateTime,
-            schCreateStart:      x.schCreateStart,
-            schCreateEnd:        x.schCreateEnd,
-            dailyCreateStart:    x.dailyCreateStart,
-            dailyCreateEnd:      x.dailyCreateEnd,
-            dailyCalcStart:      x.dailyCalcStart,
-            dailyCalcEnd:        x.dailyCalcEnd,
-            execId:              x.execId,
-            prevExecDateTimeEx:  x.prevExecDateTimeEx,
-            taskLogList:         x.taskLogList,
+                            newExecLogList.push( {execItemCd : x.execItemCd, 
+                            companyId:           x.companyId,
+                            execItemName:        x.execItemName,
+                            currentStatusCd:     0,
+                            currentStatus:       "実行中",
+                            overallStatusCd:     x.overallStatusCd,
+                            overallStatus:       " ",
+                            overallError:        x.overallError,
+                            prevExecDateTime:    x.prevExecDateTime,
+                            schCreateStart:      x.schCreateStart,
+                            schCreateEnd:        x.schCreateEnd,
+                            dailyCreateStart:    x.dailyCreateStart,
+                            dailyCreateEnd:      x.dailyCreateEnd,
+                            dailyCalcStart:      x.dailyCalcStart,
+                            dailyCalcEnd:        x.dailyCalcEnd,
+                            execId:              x.execId,
+                            prevExecDateTimeEx:  x.prevExecDateTimeEx,
+                            taskLogList:         x.taskLogList,
                         });
                      }else{
                         newExecLogList.push(x);     
@@ -140,9 +172,65 @@ module nts.uk.at.view.kbt002.f {
                  ko.cleanNode(igrid);
                  self.execLogList(newExecLogList);
                  ko.applyBindings(self,igrid);
-           
+
 //                return dfd.promise();
             }
+            
+            private repeatCheckAsyncResult(): void{
+                var self = this;
+                nts.uk.deferred.repeat(conf => conf
+                .task(() => {
+                 return nts.uk.request.asyncTask.getInfo(self.taskId()).done(info => {
+                        //ExecuteProcessExecCommandHandler
+                     var message101 = self.getAsyncData(info.taskDatas, "message101").valueAsString;
+                    if(message101 =="Msg_1101" && self.isOnceMessage101()){
+                        self.isOnceMessage101(false);
+                       nts.uk.ui.dialog.alertError({ messageId: m });
+                       ko.cleanNode(igrid);
+                        $.when(self.getProcExecLogList()).done(()=>{
+                             ko.applyBindings(self,igrid);
+                        });
+                    }
+                    
+                     //TerminateProcessExecutionCommandHandler
+                     var currentStatusIsOneOrTwo = self.getAsyncData(info.taskDatas, "currentStatusIsOneOrTwo").valueAsString;
+                     if(currentStatusIsOneOrTwo=="Msg_1102"&& self.isOnceCurrentStatus()){
+                        self.isOnceCurrentStatus(false);
+                        nts.uk.ui.dialog.alertError({ messageId: currentStatusIsOneOrTwo }); 
+                        ko.cleanNode(igrid);
+                        $.when(self.getProcExecLogList()).done(()=>{
+                             ko.applyBindings(self,igrid);
+                        });  
+                     }
+                     var interupt = self.getAsyncData(info.taskDatas, "interupt").valueAsString;
+                     if(interupt=="true" && self.isOnceInterupt()){
+                        self.isOnceInterupt(false);
+                        ko.cleanNode(igrid);
+                        $.when(self.getProcExecLogList()).done(()=>{
+                             ko.applyBindings(self,igrid);
+                        });
+                     }
+                     var createSchedule = self.getAsyncData(info.taskDatas, "createSchedule").valueAsString;
+                     if(createSchedule=="done" && self.isCreateSchedule()){
+                        self.isCreateSchedule(false);
+                        ko.cleanNode(igrid);
+                        $.when(self.getProcExecLogList()).done(()=>{
+                             ko.applyBindings(self,igrid);
+                        });
+                     }
+                     
+                 });   
+                }) .while(info => info.pending || info.running)
+                .pause(1000)
+            );    
+            }
+            
+            private getAsyncData(data: Array<any>, key: string): any {
+            var result = _.find(data, (item) => {
+                return item.key == key;
+            });
+            return result || { valueAsString: "", valueAsNumber: 0, valueAsBoolean: false };
+        }
             
             terminate(data, event){
                 let self = this;
@@ -150,14 +238,11 @@ module nts.uk.at.view.kbt002.f {
 //                var dfd = $.Deferred();
                 let command: any = self.toJsonObject();
                 service.terminate(command).done(function() {
-                    ko.cleanNode(igrid);
+                        ko.cleanNode(igrid);
                         $.when(self.getProcExecLogList()).done(()=>{
                              ko.applyBindings(self,igrid);
                              block.clear();
                         });  
-//                    $.when(self.getProcExecLogList()).done(()=>{
-//                        dfd.resolve();
-//                    });
                 });
 //                return dfd.promise();
             }
@@ -226,6 +311,8 @@ module nts.uk.at.view.kbt002.f {
             execId:              string;
             prevExecDateTimeEx:  string;
             taskLogList:         Array<TaskLog>;
+            taskLogExecId:        string;   
+            
             
         }
         
@@ -248,6 +335,7 @@ module nts.uk.at.view.kbt002.f {
             execId:              KnockoutObservable<string> = ko.observable('');
             prevExecDateTimeEx:  KnockoutObservable<string> = ko.observable('');
             taskLogList:         KnockoutObservableArray<TaskLog> = ko.observableArray([]);
+            taskLogExecId:  string;
             constructor(param: IExecutionLog) {
                 let self = this;
                 self.execItemCd(param.execItemCd || '');
@@ -268,6 +356,7 @@ module nts.uk.at.view.kbt002.f {
                 self.execId(param.execId || '');
                 self.prevExecDateTimeEx(param.prevExecDateTimeEx || '');
                 self.taskLogList(param.taskLogList || []);
+                self.taskLogExecId = param.taskLogExecId||'';
             }
         }
         

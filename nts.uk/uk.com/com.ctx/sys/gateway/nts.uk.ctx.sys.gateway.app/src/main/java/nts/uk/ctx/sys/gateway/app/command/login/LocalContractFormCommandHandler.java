@@ -48,12 +48,12 @@ public class LocalContractFormCommandHandler
 			// case Cloud
 			if (systemConfig.value == InstallationType.CLOUD.value) {
 				if (this.isShowContract(command)) {
-					return new CheckContractDto(true);
+					return new CheckContractDto(true,false);
 				}
-				return new CheckContractDto(false);
+				return new CheckContractDto(false,false);
 			}
 			// case OnPre
-			return new CheckContractDto(false);
+			return new CheckContractDto(false,true);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -80,7 +80,7 @@ public class LocalContractFormCommandHandler
 			return true;
 		}
 		// compare contract pass
-		if (!PasswordHash.verifyThat(contractPassword, contractCode).isEqualTo(contract.get().getPassword().v())) {
+		if ((contractPassword==null)|| !PasswordHash.verifyThat(contractPassword, contractCode).isEqualTo(contract.get().getPassword().v())) {
 			return true;
 		}
 		// check time limit

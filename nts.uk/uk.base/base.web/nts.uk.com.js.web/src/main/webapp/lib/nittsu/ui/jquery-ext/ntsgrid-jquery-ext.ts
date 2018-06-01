@@ -339,6 +339,7 @@ module nts.uk.ui.jqueryExtentions {
             export let CELL_STATE = "CellState";
             export let ROW_STATE = "RowState";
             export let TEXT_COLOR = "TextColor";
+            export let TEXT_STYLE = "TextStyle";
             export let HEADER_STYLES = "HeaderStyles";
             export let HIDING = "Hiding";
             export let SHEET = "Sheet";
@@ -1452,6 +1453,7 @@ module nts.uk.ui.jqueryExtentions {
             export let CHECK_ALL: string = "checkAll";
             export let UNCHECK_ALL: string = "uncheckAll";
             export let HEADER_TEXT: string = "headerText";
+            export let SELECTED_SHEET: string = "selectedSheet";
             export let DESTROY: string = "destroy";
             
             /**
@@ -1500,6 +1502,8 @@ module nts.uk.ui.jqueryExtentions {
                     case DESTROY:
                         destroy($grid);
                         break;
+                    case SELECTED_SHEET:
+                        return getSelectedSheet($grid);
                     case UPDATED_CELLS:
                         return $grid.data(internal.UPDATED_CELLS);
                     case ERRORS:
@@ -1794,6 +1798,17 @@ module nts.uk.ui.jqueryExtentions {
             }
             
             /**
+             * Get selected sheet.
+             */
+            function getSelectedSheet($grid: JQuery) {
+                let sheet = $grid.data(internal.SHEETS);
+                if (!sheet || !sheet.currentSheet) return;
+                return _.find(sheet.sheets, function(s) {
+                    return s.name === sheet.currentSheet;
+                });
+            }
+            
+            /**
              * Destroy
              */
             function destroy($grid: JQuery) {
@@ -1878,6 +1893,7 @@ module nts.uk.ui.jqueryExtentions {
                             };
                             cellFormatter.style($grid, cellElement);
                             cellFormatter.setTextColor($grid, cellElement);
+                            cellFormatter.setTextStyle($grid, cellElement);
                         }
                     }, 0);
 
@@ -3720,6 +3736,8 @@ module nts.uk.ui.jqueryExtentions {
                 // Text color
                 textColorFeatureDef: any;
                 textColorsTable: any;
+                textStyleFeatureDef: any;
+                textStylesTable: any;
                 
                 constructor($grid, features, ntsFeatures, flatCols) {
                     this.$grid = $grid;
@@ -3736,6 +3754,10 @@ module nts.uk.ui.jqueryExtentions {
                     // Text color
                     this.textColorFeatureDef = feature.find(ntsFeatures, feature.TEXT_COLOR);
                     this.setTextColorsTableMap(ntsFeatures);
+                    
+                    // Text style
+                    this.textStyleFeatureDef = feature.find(ntsFeatures, feature.TEXT_STYLE);
+                    this.setTextStylesTableMap();
                 }
                 
                 /**
@@ -3827,6 +3849,21 @@ module nts.uk.ui.jqueryExtentions {
                         this.textColorsTable[key] = _.groupBy(this.textColorsTable[key], (item) => {
                             return item[columnKeyName];
                         });
+                    });
+                }
+                
+                /**
+                 * Set text styles.
+                 */
+                private setTextStylesTableMap() {
+                    if (util.isNullOrUndefined(this.textStyleFeatureDef)) return;
+                    let rowIdName = this.textStyleFeatureDef.rowId;
+                    let columnKeyName = this.textStyleFeatureDef.columnKey;
+                    let styleName = this.textStyleFeatureDef.style;
+                    let stylesTable = this.textStyleFeatureDef.styles;
+                    this.textStylesTable = _.groupBy(stylesTable, rowIdName);
+                    _.forEach(this.textStylesTable, (value, key) => {
+                        this.textStylesTable[key] = _.groupBy(this.textStylesTable[key], columnKeyName);
                     });
                 }
                 
@@ -4015,6 +4052,26 @@ module nts.uk.ui.jqueryExtentions {
                             return;
                         }
                         cell.$element.addClass(txtColor);
+                    }
+                }
+                
+                /**
+                 * Set text style.
+                 */
+                setTextStyle($grid: JQuery, cell: any) {
+                    if (util.isNullOrUndefined(this.textStyleFeatureDef)) return;
+                    let rowIdName: string = this.textStyleFeatureDef.rowId;
+                    let columnKeyName: string = this.textStyleFeatureDef.columnKey;
+                    let styleName: string = this.textStyleFeatureDef.style;
+                    let stylesTable: any = this.textStyleFeatureDef.styles;
+                    
+                    if (!util.isNullOrUndefined(stylesTable) && !util.isNullOrUndefined(rowIdName)
+                        && !util.isNullOrUndefined(columnKeyName) && !util.isNullOrUndefined(styleName)
+                        && !util.isNullOrUndefined(this.textStylesTable[cell.id])) {
+                        let textStyle = this.textStylesTable[cell.id][cell.columnKey];
+                        if (util.isNullOrUndefined(textStyle) || textStyle.length === 0) return;
+                        let txtStyle = textStyle[0][styleName];
+                        cell.$element.addClass(txtStyle);
                     }
                 }
             }

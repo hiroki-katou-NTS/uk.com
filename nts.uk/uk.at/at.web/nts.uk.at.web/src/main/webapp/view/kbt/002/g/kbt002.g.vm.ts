@@ -37,8 +37,8 @@ module nts.uk.at.view.kbt002.g {
             openDetailDialog(data, event){
                 let self = this;
                 block.grayout();
-                service.getLogHistory(self.execLog.execItemCd, self.execLog.execId).done(function(logHistory) {
-                    var taskId = $(event.target).data("code");
+                service.getLogHistory(self.execLog.execItemCd, self.execLog.taskLogExecId).done(function(logHistory) {
+                    var taskId =  data.taskId;
                     self.createLinkAndSharedObject(taskId, logHistory);
                     
                     setShared('inputDialogG', self.sharedObj);
@@ -79,6 +79,18 @@ module nts.uk.at.view.kbt002.g {
                                      };
                     self.modalLink = "/view/kdw/001/h/index.xhtml";
                 } else if (taskId == 3) { // 承認結果反映
+                    self.sharedObj = { empCalAndSumExecLogID : logHistory.execId, //・就業計算と集計実行ログID
+                                       executionContentName : null,
+                                       executionContent : 2, //ExecutionContent = 承認結果反映 
+                                       listTargetPerson : [], //・社員ID（list）  ・従業員の実行状況
+                                       executionStartTime : logHistory.lastExecDateTime, //・実行開始日時
+                                       objectPeriod : {startDate : null, endDate : null}, //・対象期間
+                                       nameClosue : null, //・選択した締め
+                                       processingMonth : null //・処理月
+                                     };
+                    nts.uk.ui.windows.setShared("openH", self.sharedObj);
+                    self.modalLink = "/view/kdw/001/h/index.xhtml";
+                    
                 } else if (taskId == 4) { // 月別集計
                     self.sharedObj = { empCalAndSumExecLogID : logHistory.execId, //・就業計算と集計実行ログID
                                        executionContentName : '',

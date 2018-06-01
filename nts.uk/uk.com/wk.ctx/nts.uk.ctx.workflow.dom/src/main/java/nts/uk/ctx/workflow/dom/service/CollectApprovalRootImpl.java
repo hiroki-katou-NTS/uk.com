@@ -342,7 +342,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		}
 		for(int i = 0; i < listApprovalPhaseBefore.size(); i++){
 			ApprovalPhase approvalPhaseBefore = listApprovalPhaseBefore.get(i);
-			ApprovalPhase approvalPhaseAfter = listApprovalPhaseBefore.get(i);
+			ApprovalPhase approvalPhaseAfter = listApprovalPhaseAfter.get(i);
 			if(CollectionUtil.isEmpty(approvalPhaseBefore.getApprovers())){
 				continue;
 			}

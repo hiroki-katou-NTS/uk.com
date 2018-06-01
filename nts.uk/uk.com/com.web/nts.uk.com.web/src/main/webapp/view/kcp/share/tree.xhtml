@@ -41,7 +41,7 @@
 					]}"></div>
 		</div>
 
-		<div>
+		<div style="width: 420px">
 			<div style="width: 264px; display: inline-block;"
 				data-bind="attr: {tabindex: isSetTabindex() ? tabindex : 4}, ntsSearchBox: {
 					targetKey: 'workplaceId',
@@ -75,6 +75,8 @@
 					primaryText: 'nodeText',
 					multiple: isMultiSelect,
 					enable: true,
+					virtualization: true,
+					virtualizationMode: 'continuous',
 					extColumns: treeComponentColumn,
 					showCheckBox: isMultiSelect}">
 			</table>
@@ -90,6 +92,8 @@
 					optionsChild: 'childs',
 					optionsText: 'nodeText',
 					multiple: isMultiSelect,
+					virtualization: true,
+					virtualizationMode: 'continuous',
 					extColumns: treeComponentColumn,
 					enable: true,
 					showCheckBox: isMultiSelect}">

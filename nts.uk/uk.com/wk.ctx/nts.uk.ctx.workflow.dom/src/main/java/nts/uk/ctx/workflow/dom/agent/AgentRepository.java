@@ -109,4 +109,12 @@ public interface AgentRepository {
 	
 	public List<AgentInfoOutput> findAgentByPeriod(String companyID, List<String> listApprover, 
 			GeneralDate startDate, GeneralDate endDate, Integer agentType);
+	
+	/**
+	 * get agent by agentSid
+	 * @param companyId
+	 * @param agentSid
+	 * @return
+	 */
+	List<Agent> getAgentBySidDate(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate);
 }

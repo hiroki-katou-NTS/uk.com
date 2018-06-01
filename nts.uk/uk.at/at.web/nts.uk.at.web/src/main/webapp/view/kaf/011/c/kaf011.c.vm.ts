@@ -54,15 +54,7 @@ module nts.uk.at.view.kaf011.c.screenModel {
 
 
 
-            self.appReasons.subscribe((appReasons) => {
-                if (appReasons) {
-                    let defaultReason = _.find(appReasons, { 'defaultFlg': 1 });
-                    if (defaultReason) {
-                        self.appReasonSelectedID(defaultReason.reasonID);
-                    }
-                }
 
-            });
         }
 
         start(): JQueryPromise<any> {
@@ -214,6 +206,9 @@ module nts.uk.at.view.kaf011.c.screenModel {
                 }
                 self.absWk(new common.AppItems(param.absApp));
                 self.version(param.version);
+                if (param.appReasonSelectedID) {
+                    self.appReasonSelectedID(param.appReasonSelectedID);
+                }
             }
             self.absWk().appDate('');
         }

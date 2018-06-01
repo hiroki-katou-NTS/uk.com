@@ -19,11 +19,48 @@ module nts.uk.at.view.kdw001.h {
             listErrMessageInfo: KnockoutObservableArray<model.ErrMessageInfo>;
             executionContent: number;
             executionContentName:string;
+            exeContentEnable: boolean;
+            processingMonthEnable:boolean;
+            feriodEnable:boolean;
+            errorEnable:boolean;
+            clouseEnable:boolean;
+            
 
             constructor() {
                 let self = this;
                 let param = nts.uk.ui.windows.getShared("openH");
                 if (param != null) {
+                    
+                    if(nts.uk.util.isNullOrUndefined(param.executionContentName)){
+                        self.exeContentEnable = false;
+                    }else{
+                        self.exeContentEnable = true;
+                    }
+                    if(nts.uk.util.isNullOrUndefined(param.processingMonth)){
+                        self.processingMonthEnable= false;
+                    }else{
+                        self.processingMonthEnable= true;
+                    }
+                    
+                    if(nts.uk.util.isNullOrUndefined(param.objectPeriod.startDate)){
+                        self.feriodEnable = false;
+                    }else{
+                        self.feriodEnable = true;
+                    }
+                    
+                    if(param.listTargetPerson.length<=0){
+                        self.errorEnable =false;
+                    }else{
+                        self.errorEnable= true;    
+                    }
+                    
+                    if(nts.uk.util.isNullOrUndefined(param.nameClosue)){
+                        self.clouseEnable = false;
+                    }else{
+                        self.clouseEnable = true;    
+                    }
+                    
+                    
                     self.executionContent = param.executionContent;
                     self.empCalAndSumExecLogID = param.empCalAndSumExecLogID;
                     self.executionStartTime = param.executionStartTime;

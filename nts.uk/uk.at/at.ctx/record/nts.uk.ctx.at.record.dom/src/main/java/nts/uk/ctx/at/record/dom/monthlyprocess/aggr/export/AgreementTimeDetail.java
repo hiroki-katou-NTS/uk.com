@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
 
@@ -13,9 +15,11 @@ public class AgreementTimeDetail {
 	/** 社員ID */
 	private String employeeId;
 	/** 確定情報 */
-	private AgreementTimeOfMonthly confirmed;
+	private Optional<AgreementTimeOfMonthly> confirmed;
 	/** 申請反映後情報 */
-	private AgreementTimeOfMonthly afterAppReflect;
+	private Optional<AgreementTimeOfMonthly> afterAppReflect;
+	/** エラーメッセージ */
+	private Optional<String> errorMessage;
 	
 	/**
 	 * コンストラクタ
@@ -24,8 +28,9 @@ public class AgreementTimeDetail {
 	public AgreementTimeDetail(String employeeId){
 		
 		this.employeeId = employeeId;
-		this.confirmed = new AgreementTimeOfMonthly();
-		this.afterAppReflect = new AgreementTimeOfMonthly();
+		this.confirmed = Optional.empty();
+		this.afterAppReflect = Optional.empty();
+		this.errorMessage = Optional.empty();
 	}
 	
 	/**
@@ -33,16 +38,19 @@ public class AgreementTimeDetail {
 	 * @param employeeId 社員ID
 	 * @param confirmed 確定情報
 	 * @param afterAppReflect 申請反映後情報
+	 * @param errorMessage エラーメッセージ
 	 * @return 36協定時間一覧
 	 */
 	public static AgreementTimeDetail of(
 			String employeeId,
 			AgreementTimeOfMonthly confirmed,
-			AgreementTimeOfMonthly afterAppReflect){
+			AgreementTimeOfMonthly afterAppReflect,
+			String errorMessage){
 		
 		AgreementTimeDetail domain = new AgreementTimeDetail(employeeId);
-		domain.confirmed = confirmed;
-		domain.afterAppReflect = afterAppReflect;
+		domain.confirmed = Optional.ofNullable(confirmed);
+		domain.afterAppReflect = Optional.ofNullable(afterAppReflect);
+		domain.errorMessage = Optional.ofNullable(errorMessage);
 		return domain;
 	}
 }

@@ -82,6 +82,8 @@ public class BsymtAffClassHistory extends UkJpaEntity{
 		return historyId;
 	}
 
-	
+	public String getEmployeeId() {
+		return sid;
+	}
 
 }

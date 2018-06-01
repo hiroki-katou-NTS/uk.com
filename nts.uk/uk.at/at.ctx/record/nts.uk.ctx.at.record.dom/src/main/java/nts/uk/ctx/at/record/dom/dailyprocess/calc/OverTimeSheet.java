@@ -119,7 +119,8 @@ public class OverTimeSheet {
 			//残業時間　－　控除時間算出
 			AttendanceTime calcDedTime = overTimeFrameTime.correctCalculationTime(Optional.empty(), autoCalcSet,DeductionAtr.Deduction);
 			AttendanceTime calcRecTime = overTimeFrameTime.correctCalculationTime(Optional.empty(), autoCalcSet,DeductionAtr.Appropriate);
-			numberOrder.add(overTimeFrameTime.getFrameTime().getOverWorkFrameNo());
+			if(!numberOrder.contains(overTimeFrameTime.getFrameTime().getOverWorkFrameNo()))
+				numberOrder.add(overTimeFrameTime.getFrameTime().getOverWorkFrameNo());
 			//加算だけ
 			if(overTimeFrameList.containsKey(overTimeFrameTime.getFrameTime().getOverWorkFrameNo().v())) {
 				val frame = overTimeFrameList.get(overTimeFrameTime.getFrameTime().getOverWorkFrameNo().v());

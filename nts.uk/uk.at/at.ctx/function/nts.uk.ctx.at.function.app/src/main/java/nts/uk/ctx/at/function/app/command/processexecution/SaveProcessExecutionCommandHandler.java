@@ -24,9 +24,11 @@ import nts.uk.ctx.at.function.dom.processexecution.alarmextraction.IndividualAla
 import nts.uk.ctx.at.function.dom.processexecution.alarmextraction.WorkplaceAlarmExtraction;
 import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.DailyPerformanceCreation;
 import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.DailyPerformanceItem;
+import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.TargetGroupClassification;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.CreationPeriod;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreation;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreationPeriod;
@@ -37,6 +39,7 @@ import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetMonth;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetSetting;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionScopeItemRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.LastExecDateTimeRepository;
+import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -55,8 +58,10 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 	
 	@Inject
 	private ExecutionScopeItemRepository scopeItemRepo;
+	@Inject
+	private ProcessExecutionLogManageRepository processExecLogManRepo;
 
-
+	//登録ボタン押下時処理
 	@Override
 	protected String handle(CommandHandlerContext<SaveProcessExecutionCommand> context) {
 		String companyId = AppContexts.user().companyId();
@@ -90,8 +95,8 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 		PersonalScheduleCreation perSchCreation = new PersonalScheduleCreation(period, command.isPerScheduleCls(), target);
 		DailyPerformanceCreation dailyPerfCreation =
 								new DailyPerformanceCreation(command.isDailyPerfCls(),
-										EnumAdaptor.valueOf(command.getDailyPerfItem(), DailyPerformanceItem.class),
-										command.isMidJoinEmployee());
+										EnumAdaptor.valueOf(command.getDailyPerfItem(), DailyPerformanceItem.class)
+										,new TargetGroupClassification(command.isRecreateTypeChangePerson(), command.isMidJoinEmployee(), command.isRecreateTransfers()));
 
 		ProcessExecutionSetting execSetting = 
 				new ProcessExecutionSetting(indvAlarm, wkpAlarm, perSchCreation, dailyPerfCreation, command.isReflectResultCls(), command.isMonthlyAggCls());
@@ -103,6 +108,7 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 		
 		procExec.validate();
 		if (command.isNewMode()) {
+			//新規登録処理
 			Optional<ProcessExecution> procExecOpt = this.procExecRepo.getProcessExecutionByCidAndExecCd(companyId, command.getExecItemCd());
 			if (procExecOpt.isPresent()) {
 				throw new BusinessException("Msg_3");
@@ -110,15 +116,9 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 			// ドメインモデル「更新処理自動実行」に新規登録する
 			procExecRepo.insert(procExec);
 			
-			// ドメインモデル「更新処理自動実行ログ」に新規登録する
-			String execId = IdentifierUtil.randomUniqueId();
-			ProcessExecutionLog procExecLog =
-								new ProcessExecutionLog(new ExecutionCode(command.getExecItemCd()),
-														companyId,
-														EndStatus.NOT_IMPLEMENT,
-														execId,
-														CurrentExecutionStatus.INVALID);
-			this.procExecLogRepo.insert(procExecLog);
+			//ドメインモデル「更新処理自動実行管理」に新規登録する
+			ProcessExecutionLogManage processExecutionLogManage = new ProcessExecutionLogManage(new ExecutionCode(command.getExecItemCd()),companyId,EndStatus.NOT_IMPLEMENT,CurrentExecutionStatus.WAITING);
+			this.processExecLogManRepo.insert(processExecutionLogManage);
 			this.lastDateTimeRepo.insert(new LastExecDateTime(companyId,
 																new ExecutionCode(command.getExecItemCd()),
 																null));

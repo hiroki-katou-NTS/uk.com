@@ -54,7 +54,7 @@ public class JpaFormulaOrderRepository extends JpaRepository implements FormulaD
 	 * FormulaDispOrderRepository#remove(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void remove(String comId, String optItemNo) {
+	public void remove(String comId, Integer optItemNo) {
 		List<KrcstFormulaDisporder> entities = this.findByItemNo(comId, optItemNo);
 
 		if (CollectionUtil.isEmpty(entities)) {
@@ -73,7 +73,7 @@ public class JpaFormulaOrderRepository extends JpaRepository implements FormulaD
 	 * java.lang.String)
 	 */
 	@Override
-	public List<FormulaDispOrder> findByOptItemNo(String companyId, String optItemNo) {
+	public List<FormulaDispOrder> findByOptItemNo(String companyId, Integer optItemNo) {
 		List<KrcstFormulaDisporder> entities = this.findByItemNo(companyId, optItemNo);
 
 		if (CollectionUtil.isEmpty(entities)) {
@@ -94,7 +94,7 @@ public class JpaFormulaOrderRepository extends JpaRepository implements FormulaD
 	 *            the opt item no
 	 * @return the list
 	 */
-	private List<KrcstFormulaDisporder> findByItemNo(String comId, String optItemNo) {
+	private List<KrcstFormulaDisporder> findByItemNo(String comId, Integer optItemNo) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 

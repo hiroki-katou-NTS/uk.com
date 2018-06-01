@@ -173,7 +173,7 @@ module nts.uk.com.view.cmm007.b {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
                         dfd.resolve();
                         blockUI.clear();
-                        $('#com_person').focus();
+                        $('#com_company').focus();
                     });
                 });
                 

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.infra.repository.monthly.anyitem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -11,10 +12,8 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
-import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.anyitem.KrcdtMonAnyItemValue;
 import nts.uk.ctx.at.record.infra.entity.monthly.anyitem.KrcdtMonAnyItemValuePK;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
@@ -32,11 +31,13 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 			+ "AND a.PK.yearMonth = :yearMonth "
 			+ "AND a.PK.closureId = :closureId "
 			+ "AND a.PK.closureDay = :closureDay "
-			+ "AND a.PK.isLastDay = :isLastDay ";
+			+ "AND a.PK.isLastDay = :isLastDay "
+			+ "ORDER BY a.PK.anyItemId ";
 
 	private static final String FIND_BY_MONTHLY = "SELECT a FROM KrcdtMonAnyItemValue a "
 			+ "WHERE a.PK.employeeId = :employeeId "
-			+ "AND a.PK.yearMonth = :yearMonth ";
+			+ "AND a.PK.yearMonth = :yearMonth "
+			+ "ORDER BY a.PK.isLastDay DESC, a.PK.closureDay, a.PK.anyItemId ";
 
 	private static final String FIND_BY_EMPLOYEES = "SELECT a FROM KrcdtMonAnyItemValue a "
 			+ "WHERE a.PK.employeeId IN :employeeIds "
@@ -44,7 +45,21 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 			+ "AND a.PK.closureId = :closureId "
 			+ "AND a.PK.closureDay = :closureDay "
 			+ "AND a.PK.isLastDay = :isLastDay "
-			+ "AND a.PK.anyItemId = :anyItemId ";
+			+ "AND a.PK.anyItemId = :anyItemId "
+			+ "ORDER BY a.PK.employeeId ";
+
+	private static final String FIND_BY_SIDS = "SELECT a FROM KrcdtMonAnyItemValue a "
+			+ "WHERE a.PK.employeeId IN :employeeIds "
+			+ "AND a.PK.yearMonth = :yearMonth "
+			+ "AND a.PK.closureId = :closureId "
+			+ "AND a.PK.closureDay = :closureDay "
+			+ "AND a.PK.isLastDay = :isLastDay "
+			+ "ORDER BY a.PK.employeeId, a.PK.anyItemId ";
+
+	private static final String FIND_BY_SIDS_AND_MONTHS = "SELECT a FROM KrcdtMonAnyItemValue a "
+			+ "WHERE a.PK.employeeId IN :employeeIds "
+			+ "AND a.PK.yearMonth IN :yearMonths "
+			+ "ORDER BY a.PK.employeeId, a.PK.yearMonth, a.PK.isLastDay DESC, a.PK.closureDay, a.PK.anyItemId ";
 
 	private static final String DELETE_BY_MONTHLY_AND_CLOSURE = "DELETE FROM KrcdtMonAnyItemValue a "
 			+ "WHERE a.PK.employeeId = :employeeId "
@@ -98,7 +113,7 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 				.getList(c -> c.toDomain());
 	}
 
-	/** 検索　（社員リスト） */
+	/** 検索　（社員IDリスト） */
 	@Override
 	public List<AnyItemOfMonthly> findByEmployees(List<String> employeeIds, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate, int anyItemId) {
@@ -112,6 +127,40 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 					.setParameter("closureDay", closureDate.getClosureDay().v())
 					.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
 					.setParameter("anyItemId", anyItemId)
+					.getList(c -> c.toDomain()));
+		});
+		return results;
+	}
+	
+	/** 検索　（社員IDリスト） */
+	@Override
+	public List<AnyItemOfMonthly> findByEmployees(List<String> employeeIds, YearMonth yearMonth, ClosureId closureId,
+			ClosureDate closureDate) {
+		
+		List<AnyItemOfMonthly> results = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			results.addAll(this.queryProxy().query(FIND_BY_SIDS, KrcdtMonAnyItemValue.class)
+					.setParameter("employeeIds", splitData)
+					.setParameter("yearMonth", yearMonth.v())
+					.setParameter("closureId", closureId.value)
+					.setParameter("closureDay", closureDate.getClosureDay().v())
+					.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
+					.getList(c -> c.toDomain()));
+		});
+		return results;
+	}
+	
+	/** 検索　（社員IDリストと月度リスト） */
+	@Override
+	public List<AnyItemOfMonthly> findBySidsAndMonths(List<String> employeeIds, List<YearMonth> yearMonths) {
+		
+		val yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toList());
+		
+		List<AnyItemOfMonthly> results = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_MONTHS, KrcdtMonAnyItemValue.class)
+					.setParameter("employeeIds", splitData)
+					.setParameter("yearMonths", yearMonthValues)
 					.getList(c -> c.toDomain()));
 		});
 		return results;

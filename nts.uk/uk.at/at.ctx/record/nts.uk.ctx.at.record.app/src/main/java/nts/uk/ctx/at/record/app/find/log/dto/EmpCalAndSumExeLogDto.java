@@ -49,7 +49,7 @@ public class EmpCalAndSumExeLogDto {
 	/**
 	 * 実行状況
 	 */
-	private int executionStatus;
+	private Integer executionStatus;
 	
 	/**
 	 * 実行状況 Name Japan
@@ -92,8 +92,8 @@ public class EmpCalAndSumExeLogDto {
 				domain.getProcessingMonth().v(), 
 				domain.getExecutedMenu().value, 
 				domain.getExecutionDate(), 
-				domain.getExecutionStatus().value,
-				domain.getExecutionStatus().nameId,
+				(domain.getExecutionStatus()!=null && domain.getExecutionStatus().isPresent())?	domain.getExecutionStatus().get().value:null,
+				((domain.getExecutionStatus()!=null && domain.getExecutionStatus().isPresent()))?domain.getExecutionStatus().get().nameId: " ",
 				domain.getEmployeeID(),
 				domain.getClosureID(),
 				domain.getCaseSpecExeContentID(),

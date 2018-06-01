@@ -8,14 +8,15 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
 import nts.uk.ctx.at.request.dom.mail.CheckTransmission;
 
 @Stateless
-public class SendMailCommandHandler extends CommandHandlerWithResult<SendMailCommand, List<Integer>>{
+public class SendMailCommandHandler extends CommandHandlerWithResult<SendMailCommand, MailSenderResult>{
 	
 	@Inject
 	private CheckTransmission checkTranmission;
-	protected List<Integer> handle(CommandHandlerContext<SendMailCommand> context)  {
+	protected MailSenderResult handle(CommandHandlerContext<SendMailCommand> context)  {
 		List<String> employeeIdList = new ArrayList<String>();
 		context.getCommand().getSendMailOption().forEach(x -> {
 			employeeIdList.add(x.getEmployeeID());

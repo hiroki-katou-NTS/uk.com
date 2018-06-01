@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.app.command.processexecution;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
@@ -13,7 +14,7 @@ public class EmpCalAndSumExeLogOutput {
 
 	private EmpCalAndSumExeLog empCalAndSumExeLog;
 
-	private List<ExecutionLog> executionLogs;
+	private List<ExecutionLog> executionLogs = new ArrayList<ExecutionLog>();
 	
 	public void addExecutionLog(ExecutionLog executionLog){
 		this.executionLogs.add(executionLog);
