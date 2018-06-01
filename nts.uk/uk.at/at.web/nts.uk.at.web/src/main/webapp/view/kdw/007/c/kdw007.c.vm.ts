@@ -83,7 +83,7 @@ module nts.uk.at.view.kdw007.c.viewmodel {
         
         handleListResult(lstItems: Array<any>, listType: number) {
             let self = this,
-            listItems = [];
+            listItems = self.lstAddSubItems();
             _.forEach(lstItems, (item) => {
                 listItems.push({ code: item.attendanceItemId, name: item.attendanceItemName, operator: '-', displayOrder: item.attendanceItemDisplayNumber });
             });
