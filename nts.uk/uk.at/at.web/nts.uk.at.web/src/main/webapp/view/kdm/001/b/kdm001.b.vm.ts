@@ -96,6 +96,12 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 }
                 self.isOnStartUp = false;
             });
+            self.selectedPeriodItem.subscribe(x => {
+                if (x == 0){
+                    $('.ntsStartDatePicker ').ntsError('clear');
+                    $('.ntsEndDatePicker ').ntsError('clear');
+                }
+            });
         }
         openConfirmScreen() {
             let self = this, data;
@@ -129,8 +135,14 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         }
         filterByPeriod() {
             let self = this;
-            self.getSubstituteDataList(self.getSearchCondition());
-            $('#substituteDataGrid').focus();
+            if (self.selectedPeriodItem() == 1){
+                $(".ntsStartDatePicker").trigger("validate");
+                $(".ntsEndDatePicker").trigger("validate");
+            }
+            if (!nts.uk.ui.errors.hasError()) {
+                self.getSubstituteDataList(self.getSearchCondition());
+                $('#substituteDataGrid').focus();
+            }
         }
         getSubstituteDataList(searchCondition: any) {
             let self = this;
