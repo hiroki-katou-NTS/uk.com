@@ -1,6 +1,7 @@
 package nts.uk.file.at.infra.attendancerecord.generator;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,75 +19,128 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.file.at.app.export.attendancerecord.AttendanceRecordReportDatasource;
 import nts.uk.file.at.app.export.attendancerecord.AttendanceRecordReportGenerator;
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportColumnData;
+import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportDailyData;
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportData;
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportEmployeeData;
+import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportWeeklyData;
+import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportWeeklySumaryData;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
+/**
+ * The Class AsposeAttendanceRecordReportGenerator.
+ */
 @Stateless
 public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGenerator
 		implements AttendanceRecordReportGenerator {
 
+	/** The Constant TEMPLATE_FILE. */
 	private static final String TEMPLATE_FILE = "report/KWR002.xlsx";
 
+	/** The Constant REPORT_FILE_NAME. */
 	private static final String REPORT_FILE_NAME = "サンプル帳票.xlsx";
 
+	/** The Constant REPORT_ID. */
 	private static final String REPORT_ID = "ReportSample";
 
+	/** The Constant REPORT_LEFT_ROW. */
+	private static final String REPORT_LEFT_ROW = "REPORT_LEFT_ROW";
+
+	/** The Constant REPORT_RIGHT_ROW. */
+	private static final String REPORT_RIGHT_ROW = "REPORT_RIGHT_ROW";
+	
+	/** The Constant REPORT_ROW_BG. */
+	private static final String REPORT_ROW_BG = "REPORT_ROW_BG";
+	
+	/** The Constant REPORT_ROW_START_RIGHT. */
+	private static final String REPORT_ROW_START_RIGHT = "REPORT_ROW_START_RIGHT";
+
+	/** The Constant REPORT_PAGE_ADDR. */
 	private static final String REPORT_PAGE_ADDR = "A1:AO";
 
-	private static final String PAGE_NUMBER_START_COL = "AD";
+	/** The Constant PAGE_NUMBER_ADDR. */
+	private static final String PAGE_NUMBER_ADDR = "AD%d:AO%d";
 
-	private static final String PAGE_NUMBER_END_COL = "AO";
+	/** The Constant MONTHLY_DATA_ADDR. */
+	private static final String MONTHLY_DATA_ADDR = "C%d:Z%d";
 
-	private static final String MONTHLY_DATA_START_COL = "C";
-
-	private static final String MONTHLY_DATA_END_COL = "Z";
-
+	/** The Constant DAILY_W_RANGE_TMPL_ADDR. */
 	private static final String DAILY_W_RANGE_TMPL_ADDR = "AQ1:BJ2";
 
+	/** The Constant DAILY_B_RANGE_TMPL_ADDR. */
 	private static final String DAILY_B_RANGE_TMPL_ADDR = "AQ4:BJ5";
 
+	/** The Constant WEEKLY_RANGE_TMPL_ADDR. */
 	private static final String WEEKLY_RANGE_TMPL_ADDR = "AQ11:BJ12";
 
+	/** The Constant SEAL_RANGE_TMPL_ADDR. */
 	private static final String SEAL_RANGE_TMPL_ADDR = "AQ14:AR17";
 
+	/** The Constant SEAL_COL_ADDR. */
 	private static final List<String> SEAL_COL_ADDR = Arrays
 			.asList(new String[] { "AN6", "AL6", "AJ6", "AH6", "AF6", "AD6" });
 
+	/** The Constant START_REPORT_COL1. */
 	private static final String START_REPORT_COL1 = "A";
 
-	private static final String START_REPORT_COL2 = "V";
-
+	/** The Constant END_REPORT_COL2. */
 	private static final String END_REPORT_COL2 = "AO";
-	
+
+	/** The Constant REPORT_LEFT_COL_ADDR. */
 	private static final String REPORT_LEFT_COL_ADDR = "A%d:T%d";
-	
+
+	/** The Constant REPORT_RIGHT_COL_ADDR. */
 	private static final String REPORT_RIGHT_COL_ADDR = "V%d:AO%d";
 
+	/** The Constant START_EMPLOYEE_DATA_ROW. */
 	private static final int START_EMPLOYEE_DATA_ROW = 11;
 
+	/** The Constant START_REPORT_DATA_ROW. */
 	private static final int START_REPORT_DATA_ROW = 14;
 
-	private static final int START_REPORT_ROW = 0;
-
+	/** The Constant MAX_ROW_PER_EMPL. */
 	private static final int MAX_ROW_PER_EMPL = 51;
 
+	/** The Constant EMPL_INVIDUAL_INDEX. */
 	private static final int EMPL_INVIDUAL_INDEX = 0;
 
+	/** The Constant EMPL_WORKPLACE_INDEX. */
 	private static final int EMPL_WORKPLACE_INDEX = 7;
 
+	/** The Constant EMPL_EMPLOYMENT_INDEX. */
 	private static final int EMPL_EMPLOYMENT_INDEX = 0;
 
+	/** The Constant EMPL_TITLE_INDEX. */
 	private static final int EMPL_TITLE_INDEX = 5;
 
+	/** The Constant EMPL_WORKTYPE_INDEX. */
 	private static final int EMPL_WORKTYPE_INDEX = 10;
 
-	private static final int EMPL_YEARMONTH_INDEX = 17;
+	/** The Constant EMPL_YEARMONTH_INDEX. */
+	private static final int EMPL_YEARMONTH_INDEX = 16;
 
+	/** The Constant PAGE_NUMBER_START_ROW. */
 	private static final int PAGE_NUMBER_START_ROW = 3;
 
+	/** The Constant MONTHLY_DATA_START_ROW. */
 	private static final int MONTHLY_DATA_START_ROW = 8;
+	
+	/** The Constant REPORT_ROW_BG_WHITE. */
+	private static final int REPORT_ROW_BG_WHITE = 1;
+	
+	/** The Constant REPORT_ROW_BG_BLUE. */
+	private static final int REPORT_ROW_BG_BLUE = 2;
+	
+	/** The Constant REPORT_ROW_START_RIGHT_COUNT. */
+	private static final int REPORT_ROW_START_RIGHT_COUNT = 1;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.file.at.app.export.attendancerecord.AttendanceRecordReportGenerator#
+	 * generate(nts.arc.layer.infra.file.export.FileGeneratorContext,
+	 * nts.uk.file.at.app.export.attendancerecord.AttendanceRecordReportDatasource)
+	 */
 	@Override
 	public void generate(FileGeneratorContext generatorContext, AttendanceRecordReportDatasource dataSource) {
 
@@ -115,11 +169,12 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			Range dailyBTmpl = templateSheet.getCells().createRange(DAILY_B_RANGE_TMPL_ADDR);
 			Range weeklyRangeTmpl = templateSheet.getCells().createRange(WEEKLY_RANGE_TMPL_ADDR);
 
-			// Create seal column
-			this.createSealCol(templateSheet, data.getSealColName());
+			// Generate seal column
+			this.generateSealColumn(templateSheet, data.getSealColName());
 
 			// Init report page
 			int page = 1;
+
 			// Start loop to create report for earch month
 			Map<String, List<AttendanceRecordReportEmployeeData>> reportDatas = data.getReportData();
 			for (String sheetName : reportDatas.keySet()) {
@@ -132,18 +187,20 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 
 				// get list employee data
 				List<AttendanceRecordReportEmployeeData> reportEmployeeDatas = reportDatas.get(sheetName);
-				// create employee report page
+				// Generate employee report page
 				for (AttendanceRecordReportEmployeeData employeeData : reportEmployeeDatas) {
-					
-					this.createEmployeeReportPage(worksheet, employeeData, page, sheetPage, reportPageTmpl,
+
+					this.generateEmployeeReportPage(worksheet, employeeData, page, sheetPage, reportPageTmpl,
 							dailyWTmpl, dailyBTmpl, weeklyRangeTmpl);
 					sheetPage++;
 					page++;
 				}
 
+				worksheet.getCells().deleteColumns(42, 20, true);
 			}
 
-			// createTestFile(workbook);
+			// delete template sheet
+			worksheetCollection.removeAt(0);
 
 			// save as PDF file
 			reportContext.saveAsExcel(this.createNewFile(generatorContext, REPORT_FILE_NAME));
@@ -154,7 +211,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	}
 
 	/**
-	 * Creates the seal col.
+	 * Generate seal column.
 	 *
 	 * @param templateSheet
 	 *            the template sheet
@@ -163,7 +220,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	 * @throws Exception
 	 *             the exception
 	 */
-	private void createSealCol(Worksheet templateSheet, List<String> sealColNames) throws Exception {
+	private void generateSealColumn(Worksheet templateSheet, List<String> sealColNames) throws Exception {
 		Range sealColTmpl = templateSheet.getCells().createRange(SEAL_RANGE_TMPL_ADDR);
 
 		for (int i = 0, j = sealColNames.size(); i < j; i++) {
@@ -175,24 +232,32 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	}
 
 	/**
-	 * Creates the employee report page.
+	 * Generate employee report page.
 	 *
-	 * @param worksheet the worksheet
-	 * @param employeeData the employee data
-	 * @param page the page
-	 * @param sheetPage the sheet page
-	 * @param pageTmpl the page tmpl
-	 * @param dailyWTmpl the daily W tmpl
-	 * @param dailyBTmpl the daily B tmpl
-	 * @param weeklyRangeTmpl the weekly range tmpl
-	 * @throws Exception the exception
+	 * @param worksheet
+	 *            the worksheet
+	 * @param employeeData
+	 *            the employee data
+	 * @param page
+	 *            the page
+	 * @param sheetPage
+	 *            the sheet page
+	 * @param pageTmpl
+	 *            the page tmpl
+	 * @param dailyWTmpl
+	 *            the daily W tmpl
+	 * @param dailyBTmpl
+	 *            the daily B tmpl
+	 * @param weeklyRangeTmpl
+	 *            the weekly range tmpl
+	 * @throws Exception
+	 *             the exception
 	 */
-	private void createEmployeeReportPage(Worksheet worksheet, AttendanceRecordReportEmployeeData employeeData,
+	private void generateEmployeeReportPage(Worksheet worksheet, AttendanceRecordReportEmployeeData employeeData,
 			int page, int sheetPage, Range pageTmpl, Range dailyWTmpl, Range dailyBTmpl, Range weeklyRangeTmpl)
 			throws Exception {
 		int startNewPage = MAX_ROW_PER_EMPL * sheetPage;
 		if (sheetPage > 0) {
-
 			// copy new report place
 			Range newReportPage = worksheet.getCells().createRange(START_REPORT_COL1 + (startNewPage + 1));
 			newReportPage.copy(pageTmpl);
@@ -201,19 +266,17 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		}
 
 		// Add page number
-		Range pageNumberRange = worksheet.getCells().createRange(
-				PAGE_NUMBER_START_COL + (startNewPage + PAGE_NUMBER_START_ROW),
-				PAGE_NUMBER_END_COL + (startNewPage + PAGE_NUMBER_START_ROW + 1));
+		Range pageNumberRange = worksheet.getCells().createRange(String.format(PAGE_NUMBER_ADDR,
+				(startNewPage + PAGE_NUMBER_START_ROW), (startNewPage + PAGE_NUMBER_START_ROW + 1)));
 		pageNumberRange.get(0, 0).setValue(page + "" + pageNumberRange.get(0, 0).getValue());
-		
+
 		// Add monthly data
-		Range monththDataRange = worksheet.getCells().createRange(
-				MONTHLY_DATA_START_COL + (startNewPage + MONTHLY_DATA_START_ROW),
-				MONTHLY_DATA_END_COL + (startNewPage + MONTHLY_DATA_START_ROW + 1));
+		Range monththDataRange = worksheet.getCells().createRange(String.format(MONTHLY_DATA_ADDR,
+				(startNewPage + MONTHLY_DATA_START_ROW), (startNewPage + MONTHLY_DATA_START_ROW + 1)));
 		List<AttendanceRecordReportColumnData> monthLyData = employeeData.getEmployeeMonthlyData();
-		for (int i = 0; i < monthLyData.size(); i++) {
-			monththDataRange.get(0, i*2).setValue(monthLyData.get(i).getUper());
-			monththDataRange.get(1, i*2).setValue(monthLyData.get(i).getLower());
+		for (int i = 0, j = monthLyData.size(); i < j; i++) {
+			monththDataRange.get(0, i * 2).setValue(monthLyData.get(i).getUper());
+			monththDataRange.get(1, i * 2).setValue(monthLyData.get(i).getLower());
 		}
 
 		// Add employee info
@@ -235,41 +298,106 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		employeeInfoR.get(0, EMPL_YEARMONTH_INDEX)
 				.setValue(employeeInfoR.get(0, EMPL_YEARMONTH_INDEX).getValue() + " " + employeeData.getYearMonth());
 
+		// Create weekly data
+		List<AttendanceRecordReportWeeklyData> weeklyDatas = employeeData.getWeeklyDatas();
+		Map<String, Integer> dataRow = new HashMap<>();
+		dataRow.put(REPORT_LEFT_ROW, startNewPage + START_REPORT_DATA_ROW);
+		dataRow.put(REPORT_RIGHT_ROW, startNewPage + START_REPORT_DATA_ROW);
+		dataRow.put(REPORT_ROW_BG, REPORT_ROW_BG_WHITE);
+		dataRow.put(REPORT_ROW_START_RIGHT, REPORT_ROW_START_RIGHT_COUNT);
+		for (AttendanceRecordReportWeeklyData weeklyData : weeklyDatas) {
+			generateWeeklyData(worksheet, weeklyData, dataRow, dailyWTmpl, dailyBTmpl, weeklyRangeTmpl);
+		}
+
 		// create print area
 		PageSetup pageSetup = worksheet.getPageSetup();
 		pageSetup.setPrintArea(REPORT_PAGE_ADDR + (startNewPage + MAX_ROW_PER_EMPL));
 	}
-/*
-	private void createTestFile(Workbook workbook) throws Exception {
 
-		WorksheetCollection worksheets = workbook.getWorksheets();
+	/**
+	 * Generate weekly data.
+	 *
+	 * @param worksheet
+	 *            the worksheet
+	 * @param weeklyData
+	 *            the weekly data
+	 * @param dataRow
+	 *            the data row
+	 * @param dailyDataW
+	 *            the daily data W
+	 * @param dailyDataB
+	 *            the daily data B
+	 * @param weekSumaryTmpl
+	 *            the week sumary
+	 * @throws Exception
+	 *             the exception
+	 */
+	private void generateWeeklyData(Worksheet worksheet, AttendanceRecordReportWeeklyData weeklyData,
+			Map<String, Integer> dataRow, Range dailyDataW, Range dailyDataB, Range weekSumaryTmpl) throws Exception {
 
-		Worksheet worksheet = worksheets.get(0);
+		List<AttendanceRecordReportDailyData> dailyDatas = weeklyData.getDailyDatas();
+		boolean isWhiteBackground = dataRow.get(REPORT_ROW_BG) == REPORT_ROW_BG_WHITE;
+		for (int i = 1, j = dailyDatas.size(); i <= j; i++) {
+			Range dailyRange;
+			AttendanceRecordReportDailyData data = dailyDatas.get(i - 1);
+			if (!data.isSecondCol()) {
+				int row = dataRow.get(REPORT_LEFT_ROW);
 
-		Range reportPage = worksheet.getCells().createRange(REPORT_PAGE_ADDR + MAX_ROW_PER_EMPL);
-		int startNewPage = MAX_ROW_PER_EMPL + 1;
-		for (int i = 0; i < 3; i++) {
-			Range newReportPage = worksheet.getCells().createRange(START_REPORT_COL1 + startNewPage);
-			newReportPage.copy(reportPage);
-			startNewPage += MAX_ROW_PER_EMPL;
-			HorizontalPageBreakCollection hPageBreaks = worksheets.get(0).getHorizontalPageBreaks();
-			hPageBreaks.add("AO" + startNewPage);
+				// Get range
+				dailyRange = worksheet.getCells().createRange(String.format(REPORT_LEFT_COL_ADDR, row, (row + 1)));
+				dailyRange.copy(isWhiteBackground ? dailyDataW : dailyDataB);
+
+				dataRow.put(REPORT_LEFT_ROW, row + 2);
+			} else {
+				if (dataRow.get(REPORT_ROW_START_RIGHT) == REPORT_ROW_START_RIGHT_COUNT) {
+					dataRow.put(REPORT_ROW_START_RIGHT, REPORT_ROW_START_RIGHT_COUNT+1);
+					isWhiteBackground = true;
+				}
+				int row = dataRow.get(REPORT_RIGHT_ROW);
+
+				// Get range
+				dailyRange = worksheet.getCells().createRange(String.format(REPORT_RIGHT_COL_ADDR, row, row + 1));
+				dailyRange.copy(isWhiteBackground ? dailyDataW : dailyDataB);
+
+				dataRow.put(REPORT_RIGHT_ROW, row + 2);
+			}
+
+			// fill data data
+			dailyRange.get(0, 0).setValue(data.getDate());
+			dailyRange.get(0, 1).setValue(data.getDayOfWeek());
+			List<AttendanceRecordReportColumnData> reportColumnDatas = data.getColumnDatas();
+			for (int k = 0, l = reportColumnDatas.size(); k < l; k++) {
+				dailyRange.get(0, 2 * (k + 1)).setValue(reportColumnDatas.get(k).getUper());
+				dailyRange.get(1, 2 * (k + 1)).setValue(reportColumnDatas.get(k).getLower());
+			}
+
+			isWhiteBackground = !isWhiteBackground;
 		}
 
-		// get daily and weekly template
-		Range dailyRangeTmpl = worksheet.getCells().createRange(DAILY_W_RANGE_TMPL_ADDR);
-
-		Range weeklyRangeTmpl = worksheet.getCells().createRange(WEEKLY_RANGE_TMPL_ADDR);
-
-		Range dailyReport = worksheet.getCells().createRange(START_REPORT_COL1 + START_REPORT_DATA_ROW);
-		dailyReport.copy(dailyRangeTmpl);
-
-		dailyReport = worksheet.getCells().createRange(START_REPORT_COL2 + START_REPORT_DATA_ROW);
-		dailyReport.copy(dailyRangeTmpl);
-
-		for (int i = 0; i < 5; i++) {
-			worksheets.addCopy(0);
-			worksheets.get(i + 1).setName("VLLLL" + i);
+		// fill weekly summary data
+		AttendanceRecordReportWeeklySumaryData sumaryData = weeklyData.getWeeklySumaryData();
+		Range weeklySumaryRange;
+		if (!sumaryData.isSecondCol()) {
+			int row = dataRow.get(REPORT_LEFT_ROW);
+			// Get range
+			weeklySumaryRange = worksheet.getCells().createRange(String.format(REPORT_LEFT_COL_ADDR, row, row + 1));
+			dataRow.put(REPORT_LEFT_ROW, row + 2);
+		} else {
+			int row = dataRow.get(REPORT_RIGHT_ROW);
+			// Get range
+			weeklySumaryRange = worksheet.getCells().createRange(String.format(REPORT_RIGHT_COL_ADDR, row, row + 1));
+			dataRow.put(REPORT_RIGHT_ROW, row + 2);
 		}
-	}*/
+		weeklySumaryRange.copy(weekSumaryTmpl);
+		weeklySumaryRange.get(1, 0).setValue(sumaryData.getDateRange());
+
+		List<AttendanceRecordReportColumnData> summaryColDatas = sumaryData.getColumnDatas();
+		for (int i = 0, j = summaryColDatas.size(); i < j; i++) {
+			weeklySumaryRange.get(0, 14 + (i * 2)).setValue(summaryColDatas.get(i).getUper());
+			weeklySumaryRange.get(1, 14 + (i * 2)).setValue(summaryColDatas.get(i).getLower());
+		}
+		
+		// update last next row color
+		dataRow.put(REPORT_ROW_BG, isWhiteBackground ? REPORT_ROW_BG_WHITE : REPORT_ROW_BG_BLUE);
+	}
 }
