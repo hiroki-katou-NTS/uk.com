@@ -27,6 +27,7 @@ import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AggrResultOfAnnualLeave
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AnnLeaveOfThisMonth;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AnnLeaveRemainNumberPub;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.ClosurePeriodEachYear;
+import nts.uk.ctx.at.record.pub.remainnumber.annualleave.NextHolidayGrantDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
@@ -139,6 +140,8 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 					Optional.empty());
 			// 締め処理期間のうち、同じ年月の期間をまとめる
 			Map<YearMonth, List<ClosurePeriod>> listMap = listClosurePeriod.stream()
+					.filter(item -> item.getYearMonth().compareTo(datePeriod.start().yearMonth()) >= 0
+							&& item.getYearMonth().compareTo(datePeriod.end().yearMonth()) <= 0)
 					.collect(Collectors.groupingBy(ClosurePeriod::getYearMonth));
 
 			List<ClosurePeriodEachYear> listClosurePeriodEachYear = new ArrayList<ClosurePeriodEachYear>();
@@ -177,5 +180,19 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	@Override
+	public NextHolidayGrantDate getNextHolidayGrantDate(String companyId, String employeeId) {
+		NextHolidayGrantDate result = new NextHolidayGrantDate();
+		// ドメインモデル「年休社員基本情報」を取得
+		Optional<AnnualLeaveEmpBasicInfo> basicInfo = annLeaBasicInfoRepo.get(employeeId);
+		// 次回年休付与を計算
+		List<NextAnnualLeaveGrant> annualLeaveGrant = calcNextAnnualLeaveGrantDate.algorithm(companyId, employeeId,
+				Optional.empty());
+		if (annualLeaveGrant.size() == 0)
+			return null;
+		result.setGrantDate(annualLeaveGrant.get(0).getGrantDate());
+		return result;
 	}
 }
