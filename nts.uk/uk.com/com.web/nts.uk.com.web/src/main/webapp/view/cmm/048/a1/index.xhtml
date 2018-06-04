@@ -22,7 +22,7 @@
 					<table class="table-form">
 						<tr>
 							<td style="width: 200px;"><div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('CMM048_8')}</div></td>
-							<td><input tabindex="4" data-bind="ntsTextEditor: {
+							<td><input tabindex="4" class="input-column" data-bind="ntsTextEditor: {
 								name: '#[CMM048_8]',
 								constraint: 'RawPassword',
 								value: mainModel.oldPassword, 
@@ -30,7 +30,7 @@
 						</tr>
 						<tr>
 							<td style="width: 200px;"><div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('CMM048_9')}</div></td>
-							<td><input tabindex="5" data-bind="ntsTextEditor: {
+							<td><input tabindex="5" class="input-column" data-bind="ntsTextEditor: {
 								name: '#[CMM048_9]',
 								constraint: 'RawPassword',
 								value: mainModel.newPassword, 
@@ -38,7 +38,7 @@
 						</tr>
 						<tr>
 							<td style="width: 200px;"><div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('CMM048_10')}</div></td>
-							<td><input tabindex="6" data-bind="ntsTextEditor: {
+							<td><input tabindex="6" class="input-column" data-bind="ntsTextEditor: {
 								name: '#[CMM048_10]',
 								constraint: 'RawPassword',
 								value: mainModel.confirmNewPassword, 

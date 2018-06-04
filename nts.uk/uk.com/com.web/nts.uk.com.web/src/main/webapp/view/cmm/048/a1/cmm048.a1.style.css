@@ -13,5 +13,9 @@
 }
 .left-column{
 	padding-left:10px;
-	width:170px;
+	width:140px;
+}
+.input-column{
+	width: 250px !important;
+    margin-left: 20px;
 }

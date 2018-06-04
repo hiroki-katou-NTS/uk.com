@@ -4,14 +4,19 @@
  *****************************************************************/
 package nts.uk.ctx.sys.env.ac.mailnoticeset;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.sys.auth.pub.user.ChangeUserPasswordPublisher;
 import nts.uk.ctx.sys.auth.pub.user.CheckBeforeChangePassOutput;
 import nts.uk.ctx.sys.auth.pub.user.CheckBeforePasswordPublisher;
+import nts.uk.ctx.sys.auth.pub.user.PasswordMessageObject;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.adapter.EnvPasswordAdapter;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.CheckChangePassOutput;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PasswordMessageImport;
 
 /**
  * The Class EnvPasswordAdapterImpl.
@@ -39,7 +44,14 @@ public class EnvPasswordAdapterImpl implements EnvPasswordAdapter {
 			String reNewPass) {
 		CheckBeforeChangePassOutput result = this.checkBeforePasswordPublisher.checkBeforeChangePassword(userId,
 				currentPass, newPass, reNewPass);
-		return new CheckChangePassOutput(result.isError(), result.getMessage());
+		return new CheckChangePassOutput(result.isError(), this.convert(result.getMessage()));
+	}
+
+	//covert from List<PasswordMessageObject> to List<PasswordMessageImport>
+	private List<PasswordMessageImport> convert(List<PasswordMessageObject> lstMsg) {
+		return lstMsg.stream().map(item -> {
+			return new PasswordMessageImport(item.getMessage(), item.getParam());
+		}).collect(Collectors.toList());
 	}
 
 	/*
