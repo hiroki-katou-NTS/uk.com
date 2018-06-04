@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.record.dom.actualworkinghours.SubHolOccurrenceInfo;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.BonusPayAutoCalcSet;
@@ -28,6 +29,7 @@ import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinPremiumTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaiseSalaryTimeOfDailyPerfor;
+import nts.uk.ctx.at.record.dom.raisesalarytime.RaisingSalaryTime;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
@@ -307,39 +309,61 @@ public class CalculationRangeOfOneDay {
 				}
 			}
 		}
-//		forOOtsukaPartMethod(statutorySet, 
-//							 dailyTime,
-//							 this.outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().getFrameTimeSheets(),
-//							 autoCalculationSet,
-//							 breakdownTimeDay,
-//							 overTimeHourSetList,
-//							 dailyUnit,
-//							 holidayCalcMethodSet,
-//							 null,
-//							 vacationClass,
-//							 timevacationUseTimeOfDaily,
-//							 afterDay,
-//							 predetermineTimeSetForCalc,
-//							 siftCode,
-//							 personalCondition,
-//							 leaveEarly,
-//							 workingSystem,
-//							 holidayAddtionSet,
-//							 regularAddSetting,
-//							 flexAddSetting,
-//							 illegularAddSetting,
-//							 leaveEarly);
+		val overTimeFrame = forOOtsukaPartMethod(statutorySet, 
+							 dailyTime,
+							 this.outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().getFrameTimeSheets(),
+							 autoCalculationSet,
+							 breakdownTimeDay,
+							 overTimeHourSetList,
+							 dailyUnit,
+							 holidayCalcMethodSet,
+							 vacationClass,
+							 timevacationUseTimeOfDaily,
+							 afterDay,
+							 predetermineTimeSetForCalc,
+							 siftCode,
+							 personalCondition,
+							 leaveEarly,
+							 workingSystem,
+							 holidayAddtionSet,
+							 regularAddSetting,
+							 flexAddSetting,
+							 illegularAddSetting,
+							 leaveEarly);
+		if(!overTimeFrame.isEmpty()) {
+			if(outsideWorkTimeSheet.isPresent()) {
+				if(outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) {
+					outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().getFrameTimeSheets().addAll(overTimeFrame);
+					return;
+				}
+				//残業追加
+				else {
+					this.outsideWorkTimeSheet = Finally.of(new OutsideWorkTimeSheet(Optional.of(new OverTimeSheet(new RaisingSalaryTime(),
+						  																					  	  overTimeFrame,
+						  																					  	  new SubHolOccurrenceInfo()
+																					)),
+												this.outsideWorkTimeSheet.get().getHolidayWorkTimeSheet()
+												));
+				}
+			}
+			//所定外インスタンス作成
+			else {
+				this.outsideWorkTimeSheet = Finally.of(new OutsideWorkTimeSheet(Optional.of(new OverTimeSheet(new RaisingSalaryTime(),
+																										  overTimeFrame,
+																										  new SubHolOccurrenceInfo()
+							   						 						)),
+					   														Optional.of(new HolidayWorkTimeSheet(new RaisingSalaryTime(),
+					   																							 Collections.emptyList(), 
+					   																							 new SubHolOccurrenceInfo()))
+					   														));
+			}
+		}		
 	}
 
-
-
-
 	
-
-	
-	private void forOOtsukaPartMethod(LegalOTSetting statutorySet, DailyTime dailyTime, List<OverTimeFrameTimeSheetForCalc> overTimeWorkFrameTimeSheetList, 
+	private List<OverTimeFrameTimeSheetForCalc> forOOtsukaPartMethod(LegalOTSetting statutorySet, DailyTime dailyTime, List<OverTimeFrameTimeSheetForCalc> overTimeWorkFrameTimeSheetList, 
 									  AutoCalOvertimeSetting autoCalculationSet, BreakDownTimeDay breakdownTimeDay, List<OverTimeOfTimeZoneSet> overTimeHourSetList, 
-									  DailyUnit dailyUnit, HolidayCalcMethodSet holidayCalcMethodSet, WithinWorkTimeSheet createWithinWorkTimeSheet, 
+									  DailyUnit dailyUnit, HolidayCalcMethodSet holidayCalcMethodSet,
 									  VacationClass vacationClass, TimevacationUseTimeOfDaily timevacationUseTimeOfDaily, WorkType workType, 
 									  PredetermineTimeSetForCalc predetermineTimeSet, Optional<WorkTimeCode> siftCode, Optional<PersonalLaborCondition> personalCondition, 
 									  boolean late, WorkingSystem workingSystem, HolidayAddtionSet holidayAddtionSet, WorkRegularAdditionSet regularAddSetting, 
@@ -377,7 +401,7 @@ public class CalculationRangeOfOneDay {
 				}
 			}
 		}
-		OverTimeFrameTimeSheetForCalc.diciaionCalcStatutory(statutorySet, 
+		return OverTimeFrameTimeSheetForCalc.diciaionCalcStatutory(statutorySet, 
 															dailyTime, 
 															overTimeWorkFrameTimeSheetList, 
 															autoCalculationSet, 
@@ -385,7 +409,7 @@ public class CalculationRangeOfOneDay {
 															overTimeHourSetList, 
 															dailyUnit, 
 															holidayCalcMethodSet, 
-															createWithinWorkTimeSheet, 
+															withinWorkingTimeSheet.get(), 
 															vacationClass, 
 															timevacationUseTimeOfDaily, 
 															workType, 
