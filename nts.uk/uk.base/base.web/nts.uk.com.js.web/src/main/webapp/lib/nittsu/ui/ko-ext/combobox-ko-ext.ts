@@ -105,7 +105,7 @@ module nts.uk.ui.koExtentions {
 
                         _.each(ks, k => {
                             $show.find(`.${k.toLowerCase()}:not(:last-child)`)
-                                .css('min-width', `${cws[k] * WoC}px`);
+                                .css('width', `${cws[k] * WoC}px`);
 
                             $show.find(`.${k.toLowerCase()}`)
                                 .css('height', '31px')
@@ -195,7 +195,7 @@ module nts.uk.ui.koExtentions {
                         _.each(ks, k => {
                             $("[class*=ui-igcombo-orientation]")
                                 .find(`.${k.toLowerCase()}:not(:last-child)`)
-                                .css('min-width', `${cws[k] * WoC}px`);
+                                .css('width', `${cws[k] * WoC}px`);
                         });
                     },
                     selectionChanged: (evt, ui) => {
@@ -265,7 +265,7 @@ module nts.uk.ui.koExtentions {
                         // calc new size of template columns
                         _.each(ks, k => {
                             $(ui.list).find(`.${k.toLowerCase()}${_.size(ks) == 1 ? '' : ':not(:last-child)'}`)
-                                .css('min-width', `${cws[k] * WoC}px`);
+                                .css('width', `${cws[k] * WoC}px`);
                         });
 
                         // fix min width of dropdown = $element.width();
