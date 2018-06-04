@@ -377,6 +377,7 @@ module nts.uk.ui.koExtentions {
                 } else {
                     value = undefined;
                 }
+                accessor.value(value);
             }
 
             // check flag changed for validate
