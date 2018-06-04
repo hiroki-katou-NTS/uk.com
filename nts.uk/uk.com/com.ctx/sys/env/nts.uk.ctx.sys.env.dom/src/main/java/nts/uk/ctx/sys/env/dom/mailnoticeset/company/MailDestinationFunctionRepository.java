@@ -7,6 +7,7 @@ package nts.uk.ctx.sys.env.dom.mailnoticeset.company;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 /**
  * The Interface MailDestinationFunctionRepository.
  */

@@ -27,6 +27,5 @@ public interface MailDestinationFunctionGetMemento {
 	 * @return the send by function setting
 	 */
 	public List<SendMailByFunctionSetting> getSendByFunctionSetting();
-
 	public List<SendMailByFunctionSetting> getSendByFunctionSetting(NotUseAtr use);
 }

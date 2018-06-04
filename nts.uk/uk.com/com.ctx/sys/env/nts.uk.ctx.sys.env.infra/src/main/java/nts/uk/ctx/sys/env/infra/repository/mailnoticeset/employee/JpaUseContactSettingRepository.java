@@ -125,7 +125,6 @@ public class JpaUseContactSettingRepository extends JpaRepository implements Use
 		return this.queryProxy().find(pk, SevstUseContactSet.class)
 				.map(entity -> new UseContactSetting(new JpaUseContactSettingGetMemento(entity)));
 	}
-
 	// sonnlb Code
 
 	/*
@@ -165,5 +164,4 @@ public class JpaUseContactSettingRepository extends JpaRepository implements Use
 
 		return lstReturn;
 	}
-
 }
