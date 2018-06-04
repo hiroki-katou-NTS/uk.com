@@ -1142,6 +1142,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	public void writeHeaderData(WorkScheduleOutputQuery query, Worksheet sheet, DailyPerformanceReportData reportData, int dateRow) {
 		PageSetup pageSetup = sheet.getPageSetup();
 		pageSetup.setHeader(0, "&8 " + reportData.getHeaderData().companyName);
+
+		// Set header date
+		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
+		pageSetup.setHeader(2, "&8 " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &[Page]");
 		
 		Cells cells = sheet.getCells();
 		Cell periodCell = cells.get(dateRow,0);
