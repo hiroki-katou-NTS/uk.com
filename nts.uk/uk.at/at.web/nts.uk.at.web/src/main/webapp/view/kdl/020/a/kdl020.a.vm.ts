@@ -6,6 +6,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
     import block = nts.uk.ui.block;
     import jump = nts.uk.request.jump;
     import alError = nts.uk.ui.dialog.alertError;
+    import getShared = nts.uk.ui.windows.getShared;
 
     export class ViewModel {
 
@@ -45,10 +46,10 @@ module nts.uk.at.view.kdl020.a.screenModel {
             self.isShowWorkPlaceName = ko.observable(false);
             self.isShowSelectAllButton = ko.observable(false);
             this.employeeList = ko.observableArray<UnitModel>([
-                { code: '1', name: 'Angela Baby', workplaceName: 'HN' },
-                { code: '2', name: 'Xuan Toc Do', workplaceName: 'HN' },
-                { code: '3', name: 'Park Shin Hye', workplaceName: 'HCM' },
-                { code: '4', name: 'Vladimir Nabokov', workplaceName: 'HN' }
+                { code: '1', name: 'Angela Baby' },
+                { code: '2', name: 'Xuan Toc Do' },
+                { code: '3', name: 'Park Shin Hye' },
+                { code: '4', name: 'Vladimir Nabokov' }
             ]);
             self.listComponentOption = {
                 isShowAlreadySet: self.isShowAlreadySet(),
@@ -69,6 +70,11 @@ module nts.uk.at.view.kdl020.a.screenModel {
             let self = this,
                 dfd = $.Deferred();
 
+
+            let data: any = getShared('KDL020A_PARAM');
+            if (data) {
+                self.listComponentOption.employeeInputList = data;
+            }
             $('#component-items-list').ntsListComponent(self.listComponentOption);
             block.clear();
 

@@ -3,3 +3,7 @@
 #totalTable {
 	width: 250px;
 }
+#content-right{
+	float: left;
+	margin-left: 25px;
+}
