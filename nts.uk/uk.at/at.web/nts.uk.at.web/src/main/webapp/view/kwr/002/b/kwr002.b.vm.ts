@@ -223,15 +223,20 @@ module nts.uk.com.view.kwr002.b {
             _.forEach(rcdExport.attendanceRecItemList, (o) => {
                 let code = Number(currentData.code());
                 let name = o.attendanceItemName;
-                let timeItems = o.attendanceId;
+                let timeItemIds = o.attendanceId;
                 let columnIndex = Number(o.columnIndex);
-                if (_.isArray(timeItems)) {
+                if (_.isArray(timeItemIds)) {
+                    let timeItems = _.map(timeItemIds, (item) => {
+                        let type = _.isEqual(_.trim(item.action),getText("KWR002_178")) ? 1 : 2; //KWR002_178
+                        return new TimeItem(type, item.code);
+                    });
+
                     let item = new CalculateAttendanceRecordExportCommand(code, o.useAtr, o.exportAtr,
                         columnIndex, o.position, timeItems, o.attribute, name);
                     itemCmd.calculateList.push(item);
                 } else {
                     let item = new SingleAttendanceRecordExportCommand(code, o.useAtr, o.exportAtr,
-                        columnIndex, o.position, timeItems, o.attribute, name);
+                        columnIndex, o.position, timeItemIds, o.attribute, name);
                     itemCmd.singleList.push(item)
                 }
             });

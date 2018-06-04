@@ -9,6 +9,47 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 		<script>var dialogSize = { width: 1350, height: 720 };</script>
+
+			<!--<script>-->
+				<!--__viewContext.primitiveValueConstraints = __viewContext.primitiveValueConstraints-->
+						<!--|| {};-->
+				<!--__viewContext.primitiveValueConstraints.YearMonth = {-->
+					<!--valueType : 'Integer',-->
+				<!--};-->
+				<!--__viewContext.primitiveValueConstraints.ResidenceCode = {-->
+					<!--valueType : 'String',-->
+					<!--charType : 'Numeric',-->
+					<!--maxLength : 6,-->
+				<!--};-->
+				<!--__viewContext.primitiveValueConstraints.ProcessingNo = {-->
+					<!--valueType : 'Integer',-->
+					<!--min : 1,-->
+					<!--max : 5,-->
+				<!--};-->
+				<!--__viewContext.primitiveValueConstraints.PersonalWageCode = {-->
+					<!--valueType : 'String',-->
+					<!--charType : 'AlphaNumeric',-->
+					<!--maxLength : 2,-->
+				<!--};-->
+				<!--__viewContext.primitiveValueConstraints.CommonAmount = {-->
+					<!--valueType : 'Decimal',-->
+					<!--max : 9999999999,-->
+					<!--min : 0,-->
+					<!--mantissaMaxLength : 1,-->
+				<!--};-->
+				<!--__viewContext.primitiveValueConstraints.SampleKana = {-->
+					<!--valueType : 'String',-->
+					<!--maxLength : 10,-->
+					<!--charType : 'Kana',-->
+				<!--};-->
+				<!--__viewContext.primitiveValueConstraints.SampleCode = {-->
+					<!--valueType : 'String',-->
+					<!--charType : 'AlphaNumeric',-->
+					<!--maxLength : 2,-->
+					<!--isZeroPadded : false,-->
+				<!--};-->
+			<!--</script>-->
+
 			<com:ValidatorScript>
 			nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode
 			nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingName
@@ -92,10 +133,10 @@
 										<div>
 											<!-- B6_2 -->
 											<input id="code" tabindex="7"
-												data-bind="ntsTextEditor: {name: '#{i18n.getText('KWR002_41')}', value:code, constraint: 'ExportSettingCode',enable:$parent.newMode, option : { width : '50px'}}" />
+												data-bind="ntsTextEditor: {name: '#[KWR002_41]', value:code, constraint: 'ExportSettingCode',enable:$parent.newMode, option : { width : '50px'}}" />
 											<!-- b6-3 -->
 											<input id="name" tabindex="8"
-												data-bind="ntsTextEditor: {name: '#{i18n.getText('KWR002_42')}', value:name, constraint: 'ExportSettingName', option : { width : '200px'}}" />
+												data-bind="ntsTextEditor: {name: '#[KWR002_42]', value:name, constraint: 'ExportSettingName', option : { width : '200px'}}" />
 										</div>
 									</td>
 								</tr>
