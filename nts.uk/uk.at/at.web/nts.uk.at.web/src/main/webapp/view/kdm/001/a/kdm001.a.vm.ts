@@ -543,12 +543,12 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             this.lawAtr = params.lawAtr;
             this.unUsedDays = params.unUsedDays;
             this.stateAtr = params.stateAtr;
-            this.payoutTied = params.payoutTied ? getText("KDM001_124") : "";
+            this.payoutTied = params.payoutTied ? getText("KDM001_130") : "";
             this.subOfHDID = params.subOfHDID;
             this.unknownDateSub = params.unknownDateSub;
             this.dayoffDateSub = params.unknownDateSub ? params.dayoffDateSub + "※" : params.dayoffDateSub;
             this.remainDays = params.remainDays;
-            this.subTied = params.subTied ? getText("KDM001_124") : "";
+            this.subTied = params.subTied ? getText("KDM001_130") : "";
             
             if(params.occurredDays != null) {
                 if(params.occurredDays > 0) {
