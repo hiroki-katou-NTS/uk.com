@@ -82,7 +82,7 @@ public class SacmtUser extends UkJpaEntity implements Serializable {
 	
     /* パスワード状態 */
  	/** PasswordStatus **/
-    @Column(name = "pass_Status")
+    @Column(name = "PASS_STATUS")
     public int passStatus;
     
 	@Override
