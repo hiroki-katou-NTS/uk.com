@@ -10,14 +10,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.AddSpecialLeaCommandHandler;
-import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.DeleteSpecialLeaCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.DeleteSpecialLeaCommandHandler;
-import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.SpecialLeaveRemainCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.UpdateSpecialLeaCommandHandler;
-import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.SpecialLeaveGrantDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.SpecialLeaveGrantFinder;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.AddSpecialLeaCommandHandler;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.DeleteSpecialLeaCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.DeleteSpecialLeaCommandHandler;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.SpecialLeaveRemainCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.UpdateSpecialLeaCommandHandler;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.SpecialLeaveGrantDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.SpecialLeaveGrantFinder;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 
 @Path("at/record/remainnumber/special")
 @Produces("application/json")

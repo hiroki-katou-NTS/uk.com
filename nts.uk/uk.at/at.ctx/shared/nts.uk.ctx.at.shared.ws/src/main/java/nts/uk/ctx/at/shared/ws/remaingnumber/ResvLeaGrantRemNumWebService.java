@@ -10,14 +10,14 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.AddResvLeaCommandHandler;
-import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.AddResvLeaRemainCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.RemoveResvLeaCommandHandler;
-import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.RemoveResvLeaRemainCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.UpdateResvLeaCommandHandler;
-import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.UpdateResvLeaRemainCommand;
-import nts.uk.ctx.at.record.app.find.remainingnumber.rervleagrtremnum.ResvLeaGrantRemNumDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.rervleagrtremnum.ResvLeaGrantRemNumFinder;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.rervleagrtremnum.AddResvLeaCommandHandler;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.rervleagrtremnum.AddResvLeaRemainCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.rervleagrtremnum.RemoveResvLeaCommandHandler;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.rervleagrtremnum.RemoveResvLeaRemainCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.rervleagrtremnum.UpdateResvLeaCommandHandler;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.rervleagrtremnum.UpdateResvLeaRemainCommand;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.rervleagrtremnum.ResvLeaGrantRemNumDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.rervleagrtremnum.ResvLeaGrantRemNumFinder;
 
 @Path("record/remainnumber/resv-lea")
 @Produces("application/json")

@@ -8,8 +8,8 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.app.find.remainingnumber.paymana.FurikyuMngDataExtractionDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.paymana.FurikyuMngDataExtractionFinder;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.FurikyuMngDataExtractionDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.FurikyuMngDataExtractionFinder;
 
 @Path("at/record/remainnumber/paymana")
 @Produces("application/json")

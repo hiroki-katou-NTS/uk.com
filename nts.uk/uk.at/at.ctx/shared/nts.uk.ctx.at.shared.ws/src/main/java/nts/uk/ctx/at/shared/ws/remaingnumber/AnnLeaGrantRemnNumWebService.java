@@ -10,16 +10,16 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.app.command.remainingnumber.annleagrtremnum.AddAnnLeaCommandHandler;
-import nts.uk.ctx.at.record.app.command.remainingnumber.annleagrtremnum.AnnLeaGrantRemnNumCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.annleagrtremnum.DeleteAnnLeaCommandHandler;
-import nts.uk.ctx.at.record.app.command.remainingnumber.annleagrtremnum.DeleteLeaGrantRemnNumCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.annleagrtremnum.UpdateAnnLeaCommandHandler;
-import nts.uk.ctx.at.record.app.find.remainingnumber.annleagrtremnum.AnnLeaGrantRemnNumDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.annleagrtremnum.AnnLeaGrantRemnNumFinder;
-import nts.uk.ctx.at.record.app.find.remainingnumber.annualleave.remainnumber.AnnualLeaveNumberFinder;
-import nts.uk.ctx.at.record.app.find.remainingnumber.annualleave.remainnumber.RemainNumberInfoDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.rervleagrtremnum.ResvLeaRemainNumberFinder;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.annleagrtremnum.AddAnnLeaCommandHandler;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.annleagrtremnum.AnnLeaGrantRemnNumCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.annleagrtremnum.DeleteAnnLeaCommandHandler;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.annleagrtremnum.DeleteLeaGrantRemnNumCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.annleagrtremnum.UpdateAnnLeaCommandHandler;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.annleagrtremnum.AnnLeaGrantRemnNumDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.annleagrtremnum.AnnLeaGrantRemnNumFinder;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.annualleave.remainnumber.AnnualLeaveNumberFinder;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.annualleave.remainnumber.RemainNumberInfoDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.rervleagrtremnum.ResvLeaRemainNumberFinder;
 
 @Path("at/record/remainnumber/annlea")
 @Produces("application/json")

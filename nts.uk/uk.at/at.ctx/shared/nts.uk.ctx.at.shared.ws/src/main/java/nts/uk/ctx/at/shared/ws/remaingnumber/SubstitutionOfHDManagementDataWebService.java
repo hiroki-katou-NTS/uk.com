@@ -9,18 +9,18 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.DeleteSubstitutionOfHDManaDataCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.DeleteSubstitutionOfHDManaDataCommandHandler;
-import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.PayoutSubofHDManagementCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.PayoutSubofHDManagementCommandHandler;
-import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.UpdateSubstitutionOfHDManaDataCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.UpdateSubstitutionOfHDManaDataCommandHandler;
-import nts.uk.ctx.at.record.app.find.remainingnumber.paymana.SubstitutionOfHDManagementDataDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.paymana.SubstitutionOfHDManagementDataFinder;
-import nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.SubstitutionManagementDataFinder;
-import nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.dto.ExtraHolidayManagementDataDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.dto.SubDataSearchConditionDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.subhdmana.dto.SubstituteDataManagementDto;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.paymana.DeleteSubstitutionOfHDManaDataCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.paymana.DeleteSubstitutionOfHDManaDataCommandHandler;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.paymana.PayoutSubofHDManagementCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.paymana.PayoutSubofHDManagementCommandHandler;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.paymana.UpdateSubstitutionOfHDManaDataCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.paymana.UpdateSubstitutionOfHDManaDataCommandHandler;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.SubstitutionOfHDManagementDataDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.SubstitutionOfHDManagementDataFinder;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.SubstitutionManagementDataFinder;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.ExtraHolidayManagementDataDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.SubDataSearchConditionDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.SubstituteDataManagementDto;
 
 @Path("at/record/remainnumber/subhd")
 @Produces("application/json")

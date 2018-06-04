@@ -11,16 +11,16 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.AddPayManaCommandHandler;
-import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.DeletePayoutManagementDataCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.DeletePayoutManagementDataCommandHandler;
-import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.PayManaRemainCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.PayoutManagementDataCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.SubOfHDPayoutManaDataCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.SubOfHDPayoutManaDataCommandHandler;
-import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.UpdatePayoutManagementDataCommandHandler;
-import nts.uk.ctx.at.record.app.find.remainingnumber.paymana.PayoutManagementDataDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.paymana.PayoutManagementDataFinder;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.paymana.AddPayManaCommandHandler;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.paymana.DeletePayoutManagementDataCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.paymana.DeletePayoutManagementDataCommandHandler;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.paymana.PayManaRemainCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.paymana.PayoutManagementDataCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.paymana.SubOfHDPayoutManaDataCommand;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.paymana.SubOfHDPayoutManaDataCommandHandler;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.paymana.UpdatePayoutManagementDataCommandHandler;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.PayoutManagementDataDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.PayoutManagementDataFinder;
 
 @Path("at/record/remainnumber")
 @Produces("application/json")

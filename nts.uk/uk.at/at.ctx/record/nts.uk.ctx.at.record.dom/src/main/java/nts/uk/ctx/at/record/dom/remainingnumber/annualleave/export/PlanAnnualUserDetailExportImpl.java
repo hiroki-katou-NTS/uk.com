@@ -7,8 +7,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.comfirmdata.AnnualHolidayPlanManRepository;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.comfirmdata.AnnualHolidayPlanMana;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.comfirmdata.AnnualHolidayPlanManRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.comfirmdata.AnnualHolidayPlanMana;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
 @Stateless
 public class PlanAnnualUserDetailExportImpl implements PlanAnnualUserDetailExport{
