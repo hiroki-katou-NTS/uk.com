@@ -36,21 +36,15 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	/** The Constant TEMPLATE_FILE. */
 	private static final String TEMPLATE_FILE = "report/KWR002.xlsx";
 
-	/** The Constant REPORT_FILE_NAME. */
-	private static final String REPORT_FILE_NAME = "サンプル帳票.xlsx";
-
-	/** The Constant REPORT_ID. */
-	private static final String REPORT_ID = "ReportSample";
-
 	/** The Constant REPORT_LEFT_ROW. */
 	private static final String REPORT_LEFT_ROW = "REPORT_LEFT_ROW";
 
 	/** The Constant REPORT_RIGHT_ROW. */
 	private static final String REPORT_RIGHT_ROW = "REPORT_RIGHT_ROW";
-	
+
 	/** The Constant REPORT_ROW_BG. */
 	private static final String REPORT_ROW_BG = "REPORT_ROW_BG";
-	
+
 	/** The Constant REPORT_ROW_START_RIGHT. */
 	private static final String REPORT_ROW_START_RIGHT = "REPORT_ROW_START_RIGHT";
 
@@ -123,15 +117,21 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 
 	/** The Constant MONTHLY_DATA_START_ROW. */
 	private static final int MONTHLY_DATA_START_ROW = 8;
-	
+
 	/** The Constant REPORT_ROW_BG_WHITE. */
 	private static final int REPORT_ROW_BG_WHITE = 1;
-	
+
 	/** The Constant REPORT_ROW_BG_BLUE. */
 	private static final int REPORT_ROW_BG_BLUE = 2;
-	
+
 	/** The Constant REPORT_ROW_START_RIGHT_COUNT. */
 	private static final int REPORT_ROW_START_RIGHT_COUNT = 1;
+
+	/** The Constant EXPORT_EXCEL. */
+	private static final int EXPORT_EXCEL = 2;
+
+	/** The Constant EXPORT_PDF. */
+	private static final int EXPORT_PDF = 1;
 
 	/*
 	 * (non-Javadoc)
@@ -146,7 +146,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 
 		AttendanceRecordReportData data = dataSource.getData();
 
-		try (val reportContext = this.createContext(TEMPLATE_FILE, REPORT_ID)) {
+		try (val reportContext = this.createContext(TEMPLATE_FILE, data.getExportDateTime())) {
 
 			// Get workbook
 			Workbook workbook = reportContext.getWorkbook();
@@ -202,8 +202,18 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			// delete template sheet
 			worksheetCollection.removeAt(0);
 
-			// save as PDF file
-			reportContext.saveAsExcel(this.createNewFile(generatorContext, REPORT_FILE_NAME));
+			// Create file name
+			String fileName = data.getReportName() + "＿"
+					+ data.getExportDateTime().replaceAll(" ", "_").replaceAll(":", "").replaceAll("/", "");
+
+			if (dataSource.getMode() == EXPORT_EXCEL) {
+				// save as PDF file
+				fileName = fileName + ".xlsx";
+				reportContext.saveAsExcel(this.createNewFile(generatorContext, fileName));
+			} else if (dataSource.getMode() == EXPORT_PDF) {
+				fileName = fileName + ".pdf";
+				reportContext.saveAsPdf(this.createNewFile(generatorContext, fileName));
+			}
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -350,7 +360,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 				dataRow.put(REPORT_LEFT_ROW, row + 2);
 			} else {
 				if (dataRow.get(REPORT_ROW_START_RIGHT) == REPORT_ROW_START_RIGHT_COUNT) {
-					dataRow.put(REPORT_ROW_START_RIGHT, REPORT_ROW_START_RIGHT_COUNT+1);
+					dataRow.put(REPORT_ROW_START_RIGHT, REPORT_ROW_START_RIGHT_COUNT + 1);
 					isWhiteBackground = true;
 				}
 				int row = dataRow.get(REPORT_RIGHT_ROW);
@@ -396,7 +406,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			weeklySumaryRange.get(0, 14 + (i * 2)).setValue(summaryColDatas.get(i).getUper());
 			weeklySumaryRange.get(1, 14 + (i * 2)).setValue(summaryColDatas.get(i).getLower());
 		}
-		
+
 		// update last next row color
 		dataRow.put(REPORT_ROW_BG, isWhiteBackground ? REPORT_ROW_BG_WHITE : REPORT_ROW_BG_BLUE);
 	}
