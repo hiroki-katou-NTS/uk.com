@@ -216,6 +216,9 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                     dialog.info({ messageId: "Msg_725" }).then(() => {
                  });
                 } else {
+                    if (this.remainDays == undefined) {
+                        this.calRemainDays();
+                    }
                     this.submitForm();
                 }
             }
