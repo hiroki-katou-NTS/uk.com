@@ -25,6 +25,7 @@ import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstMailDestinFunc
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstMailDestinFunc_;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
+
 /**
  * The Class JpaMailDestinationFunctionRepository.
  */
@@ -111,7 +112,6 @@ public class JpaMailDestinationFunctionRepository extends JpaRepository implemen
 
 		em.createQuery(cq).executeUpdate();
 	}
-
 	@Override
 	public MailDestinationFunction findByCidSettingItemAndUse(String cID, Integer functionID, NotUseAtr use) {
 
@@ -144,5 +144,4 @@ public class JpaMailDestinationFunctionRepository extends JpaRepository implemen
 		return new MailDestinationFunction(new JpaMailDestinationFunctionGetMemento(listSevstMailDestinFunc),use);
 
 	}
-
 }

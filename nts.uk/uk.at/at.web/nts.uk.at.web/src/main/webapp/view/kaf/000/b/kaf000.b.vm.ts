@@ -320,10 +320,15 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         }
 
         btnRemand() {
-            var self = this;
-            let command = self.convertToApproverList();
+            let self = this;
+            let command = {appID: self.appID()};
             setShared("KDL034_PARAM", command);
-            nts.uk.ui.windows.sub.modal("/view/kdl/034/a/index.xhtml");
+            nts.uk.ui.windows.sub.modal("/view/kdl/034/a/index.xhtml").onClosed(() => {
+                let res = getShared("KDL034_PARAM_RES", command);
+                if (res){
+                    self.reasonApp(res.returnReason);
+                }
+            });
         }
 
         /**
@@ -366,8 +371,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
          */
         btnSendEmail() {
             let self = this;
-            // send (Cid, appId , content, Eid, date) in screen KDL030
-            //nts.uk.request.jump("/view/kdl/030/a/index.xhtml");
+            let command = {appID: self.appID()};
+            setShared("KDL030_PARAM", command);
+            nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
+                location.reload();
+            });
         }
         /**
          *  btn Delete 削除
