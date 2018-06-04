@@ -12,7 +12,7 @@ public interface RemarksOfDailyPerformRepo {
 	
 	public List<RemarksOfDailyPerform> getRemarks(List<String> employeeId, DatePeriod baseDate);
 	
-	public List<RemarksOfDailyPerform> getRemarks(Map<String, GeneralDate> param);
+	public List<RemarksOfDailyPerform> getRemarks(Map<String, List<GeneralDate>> param);
 
 	public List<RemarksOfDailyPerform> getRemarks(String employeeId, List<GeneralDate> baseDate);
 	

@@ -1240,16 +1240,15 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 			// 日別実績の作成
 			this.dailyPerformanceCreation(context, procExec, empCalAndSumExeLog, createProcessForChangePerOrWorktype.getNoLeaderEmpIdList(),
 					calculateDailyPeriod.getDailyCreationPeriod(), workPlaceIds, typeExecution,dailyCreateLog);
-			
+
 			typeExecution = "日別計算";
 			// 日別実績の計算
 			this.dailyPerformanceCreation(context, procExec, empCalAndSumExeLog, createProcessForChangePerOrWorktype.getNoLeaderEmpIdList(),
 					calculateDailyPeriod.getDailyCalcPeriod(), workPlaceIds, typeExecution,dailyCalLog);
 			
 			
-			
 			// 勤務種別変更者を再作成 =true
-			if (!procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()) {
+			if (procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()) {
 				DatePeriod maxDatePeriod = this.getMaxDatePeriod(calculateDailyPeriod.getDailyCreationPeriod(),
 						calculateDailyPeriod.getDailyCalcPeriod());
 				// 再作成処理

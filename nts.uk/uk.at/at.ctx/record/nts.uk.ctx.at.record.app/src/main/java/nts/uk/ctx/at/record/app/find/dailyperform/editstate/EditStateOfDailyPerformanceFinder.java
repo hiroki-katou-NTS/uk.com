@@ -43,7 +43,7 @@ public class EditStateOfDailyPerformanceFinder extends FinderFacade {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends ConvertibleAttendanceItem> List<T> find(Map<String, GeneralDate> param) {
+	public <T extends ConvertibleAttendanceItem> List<T> find(Map<String, List<GeneralDate>> param) {
 		return (List<T>) this.repo.finds(param).stream()
 			.map(c -> EditStateOfDailyPerformanceDto.getDto(c)).collect(Collectors.toList());
 	}

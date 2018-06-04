@@ -85,15 +85,12 @@ module nts.uk.at.view.kdw007.c.viewmodel {
             let self = this,
             listItems = [];
             _.forEach(lstItems, (item) => {
-                listItems.push({ code: item.attendanceItemId, name: item.attendanceItemName, operator: '-', displayOrder: item.attendanceItemDisplayNumber });
+                listItems.push({ code: item.attendanceItemId, name: item.attendanceItemName, operator: listType == 1 ? '+' : '-', displayOrder: item.attendanceItemDisplayNumber });
             });
-            switch (listType) {
-                case 0: // list All items
-                    self.lstAllItems(listItems);
-                    break;
-                default: // list Add or Sub items
-                    self.lstAddSubItems(listItems);
-                    break;
+            if (listType == 0) { // list All items
+                self.lstAllItems(listItems);
+            } else { // list Add or Sub items
+                ko.utils.arrayPushAll(self.lstAddSubItems, listItems);
             }
             self.sortGridList();
         }
