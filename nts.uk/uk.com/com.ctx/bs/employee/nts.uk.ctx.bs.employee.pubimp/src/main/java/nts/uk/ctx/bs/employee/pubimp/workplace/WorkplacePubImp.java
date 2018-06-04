@@ -223,9 +223,28 @@ public class WorkplacePubImp implements SyWorkplacePub {
 
 		if (listSid.isEmpty())
 			return new ArrayList<>();
+		
+		List<AffCompanyHist> listAffCompanyHist = new ArrayList<>();
 
-		List<AffCompanyHist> listAffCompanyHist = affCompanyHistRepo.getAffCompanyHistoryOfEmployees(listSid);
+		// vidu listSid = 25100
+		if (listSid.size() > 1000) {
+			int max = listSid.size() / 1000;
+			for (int i = 0; i <= max; i++) {
+				if (i != max) {
+					ArrayList<String> subListSid = new ArrayList<String>(listSid.subList(i * 1000, i * 1000 + 999));
+					List<AffCompanyHist> lstAffCompanyHist = affCompanyHistRepo.getAffCompanyHistoryOfEmployees(subListSid);
+					listAffCompanyHist.addAll(lstAffCompanyHist);
+				} else {
+					ArrayList<String> subListSid = new ArrayList<String>(listSid.subList(max * 1000, listSid.size()));
+					List<AffCompanyHist> lstAffCompanyHist = affCompanyHistRepo.getAffCompanyHistoryOfEmployees(subListSid);
+					listAffCompanyHist.addAll(lstAffCompanyHist);
+				}
+			}
 
+		} else {
+			listAffCompanyHist = affCompanyHistRepo.getAffCompanyHistoryOfEmployees(listSid);
+		}
+		
 		Map<String, AffCompanyHist> mapPidAndAffCompanyHist = listAffCompanyHist.stream()
 				.collect(Collectors.toMap(x -> x.getPId(), x -> x));
 
@@ -234,18 +253,25 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		listSid.forEach(sid -> {
 
 			AffCompanyHist affCompanyHist = mapPidAndAffCompanyHist.get(mapSidPid.get(sid));
+			if(affCompanyHist != null){
+				AffCompanyHistByEmployee affCompanyHistByEmp = affCompanyHist.getAffCompanyHistByEmployee(sid);
+				Optional.ofNullable(affCompanyHistByEmp).ifPresent(f -> {
+					if (f.items() != null) {
+						List<AffCompanyHistItem> listAffComHisItem = affCompanyHistByEmp.getLstAffCompanyHistoryItem();
 
-			AffCompanyHistByEmployee affCompanyHistByEmp = affCompanyHist.getAffCompanyHistByEmployee(sid);
+						if (!CollectionUtil.isEmpty(listAffComHisItem)) {
+							listAffComHisItem.forEach(m -> {
+								if (m.start().beforeOrEquals(startDate) && m.end().afterOrEquals(endDate)) {
+									AffWorkplaceExport aff = new AffWorkplaceExport(sid, m.start(), m.end());
+									result.add(aff);
+								}
+							});
+						}
 
-			List<AffCompanyHistItem> listAffComHisItem = affCompanyHistByEmp.getLstAffCompanyHistoryItem();
-
-			if (!CollectionUtil.isEmpty(listAffComHisItem)) {
-				listAffComHisItem.forEach(m -> {
-					if (m.start().beforeOrEquals(startDate) && m.end().afterOrEquals(endDate)) {
-						AffWorkplaceExport aff = new AffWorkplaceExport(sid, m.start(), m.end());
-						result.add(aff);
 					}
 				});
+			}else{
+				System.out.println("data sai: " + sid);
 			}
 		});
 

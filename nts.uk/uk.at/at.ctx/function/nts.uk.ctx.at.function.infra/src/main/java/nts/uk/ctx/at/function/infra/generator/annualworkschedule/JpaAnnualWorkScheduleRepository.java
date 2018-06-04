@@ -3,12 +3,12 @@ package nts.uk.ctx.at.function.infra.generator.annualworkschedule;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,10 +58,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	private CompanyAdapter companyAdapter;
 	@Inject
 	private RegulationInfoEmployeeAdapter employeeAdapter;
-	/**
-	 * 36協定時間
-	 */
-	private final String CD_36_AGREEMENT_TIME = "01";
+
 	private YearMonth startYmFinal;
 	private YearMonth endYmFinal;
 	private int numMonth;
@@ -73,7 +70,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 			String endYearMonth, List<Employee> employees) {
 		this.startYmFinal = YearMonth.parse(startYearMonth, DateTimeFormatter.ofPattern("uuuu/MM"));
 		this.endYmFinal = YearMonth.parse(endYearMonth, DateTimeFormatter.ofPattern("uuuu/MM"));
-		this.numMonth = (int) this.startYmFinal.until(this.endYmFinal, ChronoUnit.MONTHS);
+		this.numMonth = (int) this.startYmFinal.until(this.endYmFinal, ChronoUnit.MONTHS) + 1;
 		ExportData data = new ExportData();
 		LocalDate endYmd = LocalDate.of(this.endYmFinal.getYear(), this.endYmFinal.getMonthValue(), 1)
 				.plus(1, ChronoUnit.MONTHS)
@@ -86,7 +83,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 								1,
 								null,
 								null,
-								GeneralDateTime.localDateTime(LocalDateTime.from(endYmd))));
+								GeneralDateTime.localDateTime(LocalDateTime.of(endYmd, LocalTime.of(0, 0)))));
 
 		data.setEmployees(new HashMap<>());
 		Map<String, String> empNameMap = employees.stream()
@@ -136,6 +133,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		YearMonth startYm = YearMonth.of(this.startYmFinal.getYear(), this.startYmFinal.getMonthValue());
 		YearMonth endYm = YearMonth.of(this.endYmFinal.getYear(), this.endYmFinal.getMonthValue());
 
+		//期間
 		YearMonthPeriod range = new YearMonthPeriod(nts.arc.time.YearMonth.of(startYm.getYear(), startYm.getMonthValue()),
 													nts.arc.time.YearMonth.of(endYm.getYear(), endYm.getMonthValue()));
 		//set C2_3, C2_5
@@ -147,23 +145,20 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 
 		//アルゴリズム「年間勤務表の作成」を実行する
 		Optional<ItemOutTblBook> outputAgreementTime36 = listItemOut.stream()
-				.filter(m -> CD_36_AGREEMENT_TIME.equals(m.getCd().v())).findFirst();
+				.filter(m -> m.isItem36AgreementTime()).findFirst();
 		//TODO 36協定時間を出力するかのチェックをする
 		if (outputAgreementTime36.isPresent()) {
 			List<MonthlyAttendanceResultImport> monthlyAttendanceResult
 				= monthlyAttendanceItemAdapter
-					.getMonthlyValueOf(employees.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList()),
-										range, Arrays.asList(202)); //attendance id item 36協定時間 is 202
+					.getMonthlyValueOf(employeeIds, range, Arrays.asList(202)); //attendance id item 36協定時間 is 202
 	
 			this.buildAnnualWorkScheduleData(data, outputAgreementTime36.get(), monthlyAttendanceResult);
 		}
 
-		listItemOut.stream().filter(item -> !CD_36_AGREEMENT_TIME.equals(item.getCd().v()))
+		listItemOut.stream().filter(item -> !item.isItem36AgreementTime())
 			.forEach(item -> {
 				List<MonthlyAttendanceResultImport> monthlyAttendanceResult
-					= monthlyAttendanceItemAdapter.getMonthlyValueOf(employees.stream()
-							.map(emp -> emp.getEmployeeId())
-							.collect(Collectors.toList()),
+					= monthlyAttendanceItemAdapter.getMonthlyValueOf(employeeIds,
 									range,
 									item.getListOperationSetting()
 									.stream().map(os -> os.getAttendanceItemId()).collect(Collectors.toList()));
@@ -205,11 +200,17 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		for (AttendanceItemValueImport attendanceItem : attendanceItemsValue) {
 			//0: integer, 2 decimal
 			if (attendanceItem.isNumber()) {
+				BigDecimal val;
+				try {
+					val = new BigDecimal(attendanceItem.getValue());
+				} catch (Exception e) {
+					continue;
+				}
 				// 0: subtract, 1: plus
 				if (operationMap.get(attendanceItem.getItemId()) == 0) {
-					sum = sum.subtract(new BigDecimal(attendanceItem.getValue()));
+					sum = sum.subtract(val);
 				} else {
-					sum = sum.add(new BigDecimal(attendanceItem.getValue()));
+					sum = sum.add(val);
 				}
 			}
 		}
