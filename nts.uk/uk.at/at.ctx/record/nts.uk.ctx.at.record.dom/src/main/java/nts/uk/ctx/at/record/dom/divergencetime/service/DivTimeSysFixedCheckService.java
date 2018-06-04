@@ -594,17 +594,18 @@ public class DivTimeSysFixedCheckService {
 	private String getMessage(boolean isByWt, boolean isWithBonusText, String comId, int divNo, 
 			boolean isAlarm, BusinessTypeCode wtCode, DivCheckMasterShareContainer shareContainer) {
 		ErrorAlarmMessage message = null;
+		CompanyId comIdD = shareContainer.getShared("CompanyId", () -> new CompanyId(comId));
 		if(!isByWt) {
 			DivergenceTimeErrorAlarmMessage mes = shareContainer.getShared(
 					join(DIVERGENCE_MESSAGE_KEY, SEPERATOR, comId, SEPERATOR, String.valueOf(divNo)), 
-					() -> this.divMesRepo.findByDivergenceTimeNo(new CompanyId(comId), divNo).orElse(null));
+					() -> this.divMesRepo.findByDivergenceTimeNo(comIdD, divNo).orElse(null));
 			if(mes != null) {
 				message = isAlarm ? mes.getAlarmMessage().orElse(null) : mes.getErrorMessage().orElse(null);
 			}
 		} else {
 			WorkTypeDivergenceTimeErrorAlarmMessage mes = shareContainer.getShared(
 					join(DIVERGENCE_MESSAGE_KEY, SEPERATOR, comId, SEPERATOR, String.valueOf(divNo), SEPERATOR, wtCode.toString()), 
-					() -> this.wtDivMesRepo.getByDivergenceTimeNo(divNo, new CompanyId(comId), wtCode).orElse(null));
+					() -> this.wtDivMesRepo.getByDivergenceTimeNo(divNo, comIdD, wtCode).orElse(null));
 			if(mes != null) {
 				message = isAlarm ? mes.getAlarmMessage().orElse(null) : mes.getErrorMessage().orElse(null);
 			}
