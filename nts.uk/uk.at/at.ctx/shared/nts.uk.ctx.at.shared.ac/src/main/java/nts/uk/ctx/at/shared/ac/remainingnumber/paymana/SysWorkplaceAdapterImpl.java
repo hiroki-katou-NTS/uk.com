@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.ac.remainingnumber.paymana;
+package nts.uk.ctx.at.shared.ac.remainingnumber.paymana;
 
 import java.util.Optional;
 

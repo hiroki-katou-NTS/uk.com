@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.ws.remaingnumber;
+package nts.uk.ctx.at.shared.ws.remaingnumber;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
