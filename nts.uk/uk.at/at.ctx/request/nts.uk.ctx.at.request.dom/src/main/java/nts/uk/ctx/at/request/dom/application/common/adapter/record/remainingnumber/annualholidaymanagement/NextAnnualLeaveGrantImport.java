@@ -1,14 +1,10 @@
 package nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantNum;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedHalfHdCnt;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdDays;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdTime;
 
 /**
  * @author sonnlb
@@ -19,13 +15,13 @@ public class NextAnnualLeaveGrantImport {
 	/** 付与年月日 */
 	public GeneralDate grantDate;
 	/** 付与日数 */
-	public GrantDays grantDays;
+	public BigDecimal grantDays;
 	/** 回数 */
-	public GrantNum times;
+	public Integer times;
 	/** 時間年休上限日数 */
-	public Optional<LimitedTimeHdDays> timeAnnualLeaveMaxDays;
+	public Optional<Integer>  timeAnnualLeaveMaxDays;
 	/** 時間年休上限時間 */
-	public Optional<LimitedTimeHdTime> timeAnnualLeaveMaxTime;
+	public Optional<Integer> timeAnnualLeaveMaxTime;
 	/** 半日年休上限回数 */
-	public Optional<LimitedHalfHdCnt> halfDayAnnualLeaveMaxTimes;
+	public Optional<Integer> halfDayAnnualLeaveMaxTimes;
 }

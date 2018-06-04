@@ -1,11 +1,10 @@
 package nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement.nextannualleavegrantimport.AttendanceDaysMonthImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement.nextannualleavegrantimport.AttendanceRateImport;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays;
 
 /**
  * @author sonnlb
@@ -19,19 +18,19 @@ public class AttendRateAtNextHolidayImport {
 	private GeneralDate nextHolidayGrantDate;
 
 	/** 次回年休付与日数 */
-	private GrantDays nextHolidayGrantDays;
+	private BigDecimal nextHolidayGrantDays;
 
 	/** 出勤率 */
-	private AttendanceRateImport attendanceRate;
+	private BigDecimal attendanceRate;
 
 	/** 出勤日数 */
-	private AttendanceDaysMonthImport attendanceDays;
+	private BigDecimal attendanceDays;
 
 	/** 所定日数 */
-	private AttendanceDaysMonthImport predeterminedDays;
+	private Double predeterminedDays;
 
 	/** 年間所定日数 */
-	private AttendanceDaysMonthImport annualPerYearDays;
+	private Double annualPerYearDays;
 	
 	
 }

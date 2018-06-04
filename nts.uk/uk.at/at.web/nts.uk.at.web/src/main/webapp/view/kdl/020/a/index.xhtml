@@ -9,6 +9,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<!-- kdl020 a-->
 			<com:stylefile path="kdl020.style.css" />
 			<com:scriptfile path="kdl020.a.vm.js" />
@@ -22,7 +23,9 @@
 		<ui:define name="content">
 			<div id="functions-area"></div>
 			<div id="contents-area" class="cf">
-				<div id="left_content"></div>
+				<div id="left_content">
+					<div id="component-items-list"></div>
+				</div>
 				<div id="right_content">
 					<div id="right_content_top">
 						<div class="div_line">
