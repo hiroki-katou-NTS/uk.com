@@ -19,7 +19,8 @@ public class JpaTargetEmployeesRepository extends JpaRepository implements Targe
 			+ " WHERE  f.targetEmployeesPk.storeProcessingId =:storeProcessingId AND  f.targetEmployeesPk.employeeId =:employeeId ";
 	private static final String SELECT_BY_KEY_STRING_LIST = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.targetEmployeesPk.storeProcessingId =:storeProcessingId";
-	
+	private static final String REMOVE_BUSINESS_NAME = "UPDATE SspmtTargetEmployees f SET f.businessname = NULL"
+			+ " WHERE  f.targetEmployeesPk.storeProcessingId =:storeProcessingId";
 
 	@Override
 	public List<TargetEmployees> getAllTargetEmployees() {
@@ -71,8 +72,9 @@ public class JpaTargetEmployeesRepository extends JpaRepository implements Targe
 
 	@Override
 	public void removeBusinessName(String storeProcessingId) {
-		// TODO Auto-generated method stub
-		
+		this.getEntityManager().createQuery(REMOVE_BUSINESS_NAME)
+		.setParameter("storeProcessingId", storeProcessingId)
+		.executeUpdate();
 	}
 
 }

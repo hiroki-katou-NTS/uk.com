@@ -35,6 +35,7 @@ import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMt;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMtRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.Result;
+import nts.uk.ctx.sys.assist.dom.deletedata.ResultState;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableListRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -148,21 +149,22 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			ApplicationTemporaryFilesContainer applicationTemporaryFilesContainer = applicationTemporaryFileFactory
 					.createContainer();
 
-			// テーブル一覧の内容をテンポラリーフォルダにcsvファイルで書き出す
-			
 			// Get
-			List<SaveTargetCsv> csvTarRepo = csvRepo.getSaveTargetCsvById(storeProcessingId);
+			List<SaveTargetCsv> listSaveTargetCsv = csvRepo.getSaveTargetCsvById(storeProcessingId);
 
-			// Add Table to CSV
-			generalCsv(csvTarRepo, generatorContext);
-			
+			// テーブル一覧の内容をテンポラリーフォルダにcsvファイルで書き出す
+			generalCsv(listSaveTargetCsv, generatorContext);
+
 			// 「テーブル一覧」の調査保存の識別が「する」の場合、ドメインモデル「対象社員」のビジネスネームを全てNULLクリアする
 			if (optManualSetting.get().getIdentOfSurveyPre() == NotUseAtr.USE) {
-				
+				repoTargetEmp.removeBusinessName(storeProcessingId);
 			}
 
-			// Add Table to CSV2
-			generalCsv2(storeProcessingId, generatorContext);
+			// 対象社員のカウント件数を取り保持する
+			List<TargetEmployees> targetEmployees = repoTargetEmp.getTargetEmployeesListById(storeProcessingId);
+
+			// 対象社員の内容をcsvファイルに暗号化して書き出す
+			generalCsv2(targetEmployees, generatorContext);
 
 			// Add Table to CSV Auto
 			generalCsvAuto(generatorContext);
@@ -293,111 +295,111 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		return categorys.size();
 	}
 
-	private List<SaveTargetCsv> commonCsv(String storeProcessingId) {
-		List<SaveTargetCsv> csvTarRepoCommon = csvRepo.getSaveTargetCsvById(storeProcessingId);
-		return csvTarRepoCommon;
-	}
+	private ResultState generalCsv(List<SaveTargetCsv> listSaveTargetCsv, FileGeneratorContext generatorContext) {
+		try {
+			List<String> headerCsv = this.getTextHeader();
+			// Get data from Manual Setting table
+			List<Map<String, Object>> dataSourceCsv = new ArrayList<>();
+			for (SaveTargetCsv dataTarget : listSaveTargetCsv) {
+				Map<String, Object> rowCsv = new HashMap<>();
+				rowCsv.put(headerCsv.get(0), dataTarget.getStoreProcessingId());
+				rowCsv.put(headerCsv.get(1), dataTarget.getSaveForm());
+				rowCsv.put(headerCsv.get(2), dataTarget.getSaveSetCode());
+				rowCsv.put(headerCsv.get(3), dataTarget.getSaveName());
+				rowCsv.put(headerCsv.get(4), dataTarget.getSuppleExplanation());
+				rowCsv.put(headerCsv.get(5), dataTarget.getCategoryId());
+				rowCsv.put(headerCsv.get(6), dataTarget.getCategoryName());
+				rowCsv.put(headerCsv.get(7), dataTarget.getTimeStore());
+				rowCsv.put(headerCsv.get(8), dataTarget.getRecoveryStorageRange());
+				// CMF003_509,CMF003_510, CMF003_511 missing
+				rowCsv.put(headerCsv.get(12), dataTarget.getSaveForInvest());
+				rowCsv.put(headerCsv.get(13), dataTarget.getOtherCompanyCls());
+				// CMF003_514 missing
+				rowCsv.put(headerCsv.get(15), dataTarget.getTableJapanName());
+				rowCsv.put(headerCsv.get(16), dataTarget.getTableEnglishName());
+				rowCsv.put(headerCsv.get(17), dataTarget.getHistoryCls());
+				rowCsv.put(headerCsv.get(18), dataTarget.getDefaultCondKeyQuery());
 
-	private void generalCsv(List<SaveTargetCsv> csvTarRepo, FileGeneratorContext generatorContext) {
+				rowCsv.put(headerCsv.get(19), dataTarget.getFieldKeyQuery1());
+				rowCsv.put(headerCsv.get(20), dataTarget.getFieldKeyQuery2());
+				rowCsv.put(headerCsv.get(21), dataTarget.getFieldKeyQuery3());
+				rowCsv.put(headerCsv.get(22), dataTarget.getFieldKeyQuery4());
+				rowCsv.put(headerCsv.get(23), dataTarget.getFieldKeyQuery5());
+				rowCsv.put(headerCsv.get(24), dataTarget.getFieldKeyQuery6());
+				rowCsv.put(headerCsv.get(25), dataTarget.getFieldKeyQuery7());
+				rowCsv.put(headerCsv.get(26), dataTarget.getFieldKeyQuery8());
+				rowCsv.put(headerCsv.get(27), dataTarget.getFieldKeyQuery9());
+				rowCsv.put(headerCsv.get(28), dataTarget.getFieldKeyQuery10());
 
-		List<String> headerCsv = this.getTextHeader();
-		// Get data from Manual Setting table
-		List<Map<String, Object>> dataSourceCsv = new ArrayList<>();
-		for (SaveTargetCsv dataTarget : csvTarRepo) {
-			Map<String, Object> rowCsv = new HashMap<>();
-			rowCsv.put(headerCsv.get(0), dataTarget.getStoreProcessingId());
-			rowCsv.put(headerCsv.get(1), dataTarget.getSaveForm());
-			rowCsv.put(headerCsv.get(2), dataTarget.getSaveSetCode());
-			rowCsv.put(headerCsv.get(3), dataTarget.getSaveName());
-			rowCsv.put(headerCsv.get(4), dataTarget.getSuppleExplanation());
-			rowCsv.put(headerCsv.get(5), dataTarget.getCategoryId());
-			rowCsv.put(headerCsv.get(6), dataTarget.getCategoryName());
-			rowCsv.put(headerCsv.get(7), dataTarget.getTimeStore());
-			rowCsv.put(headerCsv.get(8), dataTarget.getRecoveryStorageRange());
-			// CMF003_509,CMF003_510, CMF003_511 missing
-			rowCsv.put(headerCsv.get(12), dataTarget.getSaveForInvest());
-			rowCsv.put(headerCsv.get(13), dataTarget.getOtherCompanyCls());
-			// CMF003_514 missing
-			rowCsv.put(headerCsv.get(15), dataTarget.getTableJapanName());
-			rowCsv.put(headerCsv.get(16), dataTarget.getTableEnglishName());
-			rowCsv.put(headerCsv.get(17), dataTarget.getHistoryCls());
-			rowCsv.put(headerCsv.get(18), dataTarget.getDefaultCondKeyQuery());
+				rowCsv.put(headerCsv.get(29), dataTarget.getClsKeyQuery1());
+				rowCsv.put(headerCsv.get(30), dataTarget.getClsKeyQuery2());
+				rowCsv.put(headerCsv.get(31), dataTarget.getClsKeyQuery3());
+				rowCsv.put(headerCsv.get(32), dataTarget.getClsKeyQuery4());
+				rowCsv.put(headerCsv.get(33), dataTarget.getClsKeyQuery5());
+				rowCsv.put(headerCsv.get(34), dataTarget.getClsKeyQuery6());
+				rowCsv.put(headerCsv.get(35), dataTarget.getClsKeyQuery7());
+				rowCsv.put(headerCsv.get(36), dataTarget.getClsKeyQuery8());
+				rowCsv.put(headerCsv.get(37), dataTarget.getClsKeyQuery9());
+				rowCsv.put(headerCsv.get(38), dataTarget.getClsKeyQuery10());
 
-			rowCsv.put(headerCsv.get(19), dataTarget.getFieldKeyQuery1());
-			rowCsv.put(headerCsv.get(20), dataTarget.getFieldKeyQuery2());
-			rowCsv.put(headerCsv.get(21), dataTarget.getFieldKeyQuery3());
-			rowCsv.put(headerCsv.get(22), dataTarget.getFieldKeyQuery4());
-			rowCsv.put(headerCsv.get(23), dataTarget.getFieldKeyQuery5());
-			rowCsv.put(headerCsv.get(24), dataTarget.getFieldKeyQuery6());
-			rowCsv.put(headerCsv.get(25), dataTarget.getFieldKeyQuery7());
-			rowCsv.put(headerCsv.get(26), dataTarget.getFieldKeyQuery8());
-			rowCsv.put(headerCsv.get(27), dataTarget.getFieldKeyQuery9());
-			rowCsv.put(headerCsv.get(28), dataTarget.getFieldKeyQuery10());
+				rowCsv.put(headerCsv.get(39), dataTarget.getFiledKeyUpdate1());
+				rowCsv.put(headerCsv.get(40), dataTarget.getFiledKeyUpdate2());
+				rowCsv.put(headerCsv.get(41), dataTarget.getFiledKeyUpdate3());
+				rowCsv.put(headerCsv.get(42), dataTarget.getFiledKeyUpdate4());
+				rowCsv.put(headerCsv.get(43), dataTarget.getFiledKeyUpdate5());
+				rowCsv.put(headerCsv.get(44), dataTarget.getFiledKeyUpdate6());
+				rowCsv.put(headerCsv.get(45), dataTarget.getFiledKeyUpdate7());
+				rowCsv.put(headerCsv.get(46), dataTarget.getFiledKeyUpdate8());
+				rowCsv.put(headerCsv.get(47), dataTarget.getFiledKeyUpdate9());
+				rowCsv.put(headerCsv.get(48), dataTarget.getFiledKeyUpdate10());
+				rowCsv.put(headerCsv.get(49), dataTarget.getFiledKeyUpdate11());
+				rowCsv.put(headerCsv.get(50), dataTarget.getFiledKeyUpdate12());
+				rowCsv.put(headerCsv.get(51), dataTarget.getFiledKeyUpdate13());
+				rowCsv.put(headerCsv.get(52), dataTarget.getFiledKeyUpdate14());
+				rowCsv.put(headerCsv.get(53), dataTarget.getFiledKeyUpdate15());
+				rowCsv.put(headerCsv.get(54), dataTarget.getFiledKeyUpdate16());
+				rowCsv.put(headerCsv.get(55), dataTarget.getFiledKeyUpdate17());
+				rowCsv.put(headerCsv.get(56), dataTarget.getFiledKeyUpdate18());
+				rowCsv.put(headerCsv.get(57), dataTarget.getFiledKeyUpdate19());
+				rowCsv.put(headerCsv.get(58), dataTarget.getFiledKeyUpdate20());
 
-			rowCsv.put(headerCsv.get(29), dataTarget.getClsKeyQuery1());
-			rowCsv.put(headerCsv.get(30), dataTarget.getClsKeyQuery2());
-			rowCsv.put(headerCsv.get(31), dataTarget.getClsKeyQuery3());
-			rowCsv.put(headerCsv.get(32), dataTarget.getClsKeyQuery4());
-			rowCsv.put(headerCsv.get(33), dataTarget.getClsKeyQuery5());
-			rowCsv.put(headerCsv.get(34), dataTarget.getClsKeyQuery6());
-			rowCsv.put(headerCsv.get(35), dataTarget.getClsKeyQuery7());
-			rowCsv.put(headerCsv.get(36), dataTarget.getClsKeyQuery8());
-			rowCsv.put(headerCsv.get(37), dataTarget.getClsKeyQuery9());
-			rowCsv.put(headerCsv.get(38), dataTarget.getClsKeyQuery10());
+				rowCsv.put(headerCsv.get(59), dataTarget.getFieldDate1());
+				rowCsv.put(headerCsv.get(60), dataTarget.getFieldDate2());
+				rowCsv.put(headerCsv.get(61), dataTarget.getFieldDate3());
+				rowCsv.put(headerCsv.get(62), dataTarget.getFieldDate4());
+				rowCsv.put(headerCsv.get(63), dataTarget.getFieldDate5());
+				rowCsv.put(headerCsv.get(64), dataTarget.getFieldDate6());
+				rowCsv.put(headerCsv.get(65), dataTarget.getFieldDate7());
+				rowCsv.put(headerCsv.get(66), dataTarget.getFieldDate8());
+				rowCsv.put(headerCsv.get(67), dataTarget.getFieldDate9());
+				rowCsv.put(headerCsv.get(68), dataTarget.getFieldDate10());
+				rowCsv.put(headerCsv.get(69), dataTarget.getFieldDate11());
+				rowCsv.put(headerCsv.get(70), dataTarget.getFieldDate12());
+				rowCsv.put(headerCsv.get(71), dataTarget.getFieldDate13());
+				rowCsv.put(headerCsv.get(72), dataTarget.getFieldDate14());
+				rowCsv.put(headerCsv.get(73), dataTarget.getFieldDate15());
+				rowCsv.put(headerCsv.get(74), dataTarget.getFieldDate16());
+				rowCsv.put(headerCsv.get(75), dataTarget.getFieldDate17());
+				rowCsv.put(headerCsv.get(76), dataTarget.getFieldDate18());
+				rowCsv.put(headerCsv.get(77), dataTarget.getFieldDate19());
+				rowCsv.put(headerCsv.get(78), dataTarget.getFieldDate20());
 
-			rowCsv.put(headerCsv.get(39), dataTarget.getFiledKeyUpdate1());
-			rowCsv.put(headerCsv.get(40), dataTarget.getFiledKeyUpdate2());
-			rowCsv.put(headerCsv.get(41), dataTarget.getFiledKeyUpdate3());
-			rowCsv.put(headerCsv.get(42), dataTarget.getFiledKeyUpdate4());
-			rowCsv.put(headerCsv.get(43), dataTarget.getFiledKeyUpdate5());
-			rowCsv.put(headerCsv.get(44), dataTarget.getFiledKeyUpdate6());
-			rowCsv.put(headerCsv.get(45), dataTarget.getFiledKeyUpdate7());
-			rowCsv.put(headerCsv.get(46), dataTarget.getFiledKeyUpdate8());
-			rowCsv.put(headerCsv.get(47), dataTarget.getFiledKeyUpdate9());
-			rowCsv.put(headerCsv.get(48), dataTarget.getFiledKeyUpdate10());
-			rowCsv.put(headerCsv.get(49), dataTarget.getFiledKeyUpdate11());
-			rowCsv.put(headerCsv.get(50), dataTarget.getFiledKeyUpdate12());
-			rowCsv.put(headerCsv.get(51), dataTarget.getFiledKeyUpdate13());
-			rowCsv.put(headerCsv.get(52), dataTarget.getFiledKeyUpdate14());
-			rowCsv.put(headerCsv.get(53), dataTarget.getFiledKeyUpdate15());
-			rowCsv.put(headerCsv.get(54), dataTarget.getFiledKeyUpdate16());
-			rowCsv.put(headerCsv.get(55), dataTarget.getFiledKeyUpdate17());
-			rowCsv.put(headerCsv.get(56), dataTarget.getFiledKeyUpdate18());
-			rowCsv.put(headerCsv.get(57), dataTarget.getFiledKeyUpdate19());
-			rowCsv.put(headerCsv.get(58), dataTarget.getFiledKeyUpdate20());
+				dataSourceCsv.add(rowCsv);
+			}
 
-			rowCsv.put(headerCsv.get(59), dataTarget.getFieldDate1());
-			rowCsv.put(headerCsv.get(60), dataTarget.getFieldDate2());
-			rowCsv.put(headerCsv.get(61), dataTarget.getFieldDate3());
-			rowCsv.put(headerCsv.get(62), dataTarget.getFieldDate4());
-			rowCsv.put(headerCsv.get(63), dataTarget.getFieldDate5());
-			rowCsv.put(headerCsv.get(64), dataTarget.getFieldDate6());
-			rowCsv.put(headerCsv.get(65), dataTarget.getFieldDate7());
-			rowCsv.put(headerCsv.get(66), dataTarget.getFieldDate8());
-			rowCsv.put(headerCsv.get(67), dataTarget.getFieldDate9());
-			rowCsv.put(headerCsv.get(68), dataTarget.getFieldDate10());
-			rowCsv.put(headerCsv.get(69), dataTarget.getFieldDate11());
-			rowCsv.put(headerCsv.get(70), dataTarget.getFieldDate12());
-			rowCsv.put(headerCsv.get(71), dataTarget.getFieldDate13());
-			rowCsv.put(headerCsv.get(72), dataTarget.getFieldDate14());
-			rowCsv.put(headerCsv.get(73), dataTarget.getFieldDate15());
-			rowCsv.put(headerCsv.get(74), dataTarget.getFieldDate16());
-			rowCsv.put(headerCsv.get(75), dataTarget.getFieldDate17());
-			rowCsv.put(headerCsv.get(76), dataTarget.getFieldDate18());
-			rowCsv.put(headerCsv.get(77), dataTarget.getFieldDate19());
-			rowCsv.put(headerCsv.get(78), dataTarget.getFieldDate20());
-
-			dataSourceCsv.add(rowCsv);
+			CSVFileData fileData = new CSVFileData(FILE_NAME_CSV1 + CSV_EXTENSION, headerCsv, dataSourceCsv);
+			// FileGeneratorContext generatorContext = new
+			// FileGeneratorContext();
+			generator.generate(generatorContext, fileData);
+			return ResultState.NORMAL_END;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResultState.ABNORMAL_END;
 		}
 
-		CSVFileData fileData = new CSVFileData(FILE_NAME_CSV1 + CSV_EXTENSION, headerCsv, dataSourceCsv);
-		// FileGeneratorContext generatorContext = new FileGeneratorContext();
-		generator.generate(generatorContext, fileData);
-
 	}
 
-	private void generalCsv2(String storeProcessingId, FileGeneratorContext generatorContext) {
-		List<TargetEmployees> targetEmployees = repoTargetEmp.getTargetEmployeesListById(storeProcessingId);
+	private void generalCsv2(List<TargetEmployees> targetEmployees, FileGeneratorContext generatorContext) {
 		// Add Table to CSV2
 		List<String> headerCsv2 = this.getTextHeaderCSV2();
 		List<Map<String, Object>> dataSourceCsv2 = new ArrayList<>();
@@ -411,10 +413,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 		CSVFileData fileData = new CSVFileData(FILE_NAME_CSV2 + CSV_EXTENSION, headerCsv2, dataSourceCsv2);
 
-		// FileGeneratorContext generatorContext = new FileGeneratorContext();
-
 		generator.generate(generatorContext, fileData);
-		// applicationTemporaryFilesContainer.addFile(generatorContext);
 
 	}
 
