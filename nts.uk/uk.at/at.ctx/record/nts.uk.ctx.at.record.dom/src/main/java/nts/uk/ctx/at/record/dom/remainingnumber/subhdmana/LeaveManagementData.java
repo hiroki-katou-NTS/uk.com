@@ -15,6 +15,11 @@ import nts.uk.ctx.at.record.dom.remainingnumber.base.ManagementDataHours;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
+/**
+ * 休出管理データ
+ * @author HopNT
+ *
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -56,6 +61,9 @@ public class LeaveManagementData extends AggregateRoot {
 	// 半日相当時間
 	private AttendanceTime halfDayTime;
 	
+	// 消滅日
+	public GeneralDate disapearDate;
+	
 	public LeaveManagementData(String id, String cid, String sid, boolean unknowDate, GeneralDate dayoffDate, GeneralDate expiredDate,
 			Double occurredDays, int occurredTimes, Double unUsedDays, int unUsedTimes, int subHDAtr, int equivalentADay, int equivalentHalfDay){
 		this.ID = id;
@@ -72,5 +80,26 @@ public class LeaveManagementData extends AggregateRoot {
 		this.halfDayTime = new AttendanceTime(equivalentHalfDay);
 		
 	}
+	
+	
+	public LeaveManagementData(String id, String cid, String sid, boolean unknowDate, GeneralDate dayoffDate, GeneralDate expiredDate,
+			Double occurredDays, int occurredTimes, Double unUsedDays, int unUsedTimes, int subHDAtr, int equivalentADay, int equivalentHalfDay, GeneralDate disapearDate){
+		this.ID = id;
+		this.cID = cid;
+		this.sID = sid;
+		this.ComDayOffDate = new CompensatoryDayoffDate(unknowDate, Optional.ofNullable(dayoffDate));
+		this.expiredDate = expiredDate;
+		this.occurredDays = new ManagementDataDaysAtr(occurredDays);
+		this.occurredTimes = new ManagementDataHours(occurredTimes);
+		this.unUsedDays = new ManagementDataRemainUnit(unUsedDays);
+		this.unUsedTimes = new ManagementDataHours(unUsedTimes);
+		this.subHDAtr = EnumAdaptor.valueOf(subHDAtr, DigestionAtr.class);
+		this.fullDayTime = new AttendanceTime(equivalentADay);
+		this.halfDayTime = new AttendanceTime(equivalentHalfDay);
+		this.disapearDate = disapearDate;
+		
+	}
+	
+	
 	
 }

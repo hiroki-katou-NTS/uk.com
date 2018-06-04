@@ -1,0 +1,20 @@
+package nts.uk.ctx.at.record.dom.remainingnumber.paymana;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+public class SubOfHDManagement {
+
+	private String payoutId;
+	private String dayoffDate;
+	private Double occurredDays;
+
+	public SubOfHDManagement(String payoutId, String dayoffDate, Double occurredDays) {
+		super();
+		this.payoutId = payoutId;
+		this.dayoffDate = dayoffDate;
+		this.occurredDays = occurredDays;
+	}
+}

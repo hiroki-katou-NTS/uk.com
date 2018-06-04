@@ -50,6 +50,9 @@ public class PayoutManagementData extends AggregateRoot {
 	// 振休消化区分
 	private DigestionAtr stateAtr;
 	
+	// 消滅日
+	public GeneralDate disapearDate;
+	
 	public PayoutManagementData(String payoutId,String cid, String sid, boolean unknowDate, GeneralDate dayoffDate, GeneralDate expiredDate, int lawId,
 			Double occurredDays, Double unUsedDays, int stateAtr){
 		this.payoutId = payoutId;
@@ -60,6 +63,28 @@ public class PayoutManagementData extends AggregateRoot {
 		this.lawAtr = EnumAdaptor.valueOf(lawId, HolidayAtr.class);
 		this.occurredDays = new ManagementDataDaysAtr(occurredDays);
 		this.unUsedDays = new ManagementDataRemainUnit(unUsedDays);
+		this.stateAtr = EnumAdaptor.valueOf(stateAtr, DigestionAtr.class);
+	}
+	
+	public PayoutManagementData(String payoutId,String cid, String sid, boolean unknowDate, GeneralDate dayoffDate, GeneralDate expiredDate, int lawId,
+			Double occurredDays, Double unUsedDays, int stateAtr, GeneralDate disapearDate){
+		this.payoutId = payoutId;
+		this.cID = cid;
+		this.sID = sid;
+		this.payoutDate = new CompensatoryDayoffDate(unknowDate, Optional.ofNullable(dayoffDate));
+		this.expiredDate = expiredDate;
+		this.lawAtr = EnumAdaptor.valueOf(lawId, HolidayAtr.class);
+		this.occurredDays = new ManagementDataDaysAtr(occurredDays);
+		this.unUsedDays = new ManagementDataRemainUnit(unUsedDays);
+		this.stateAtr = EnumAdaptor.valueOf(stateAtr, DigestionAtr.class);
+		this.disapearDate = disapearDate;
+	}
+	
+	public void setRemainNumber(Double remain){
+		this.unUsedDays = new ManagementDataRemainUnit(remain);
+	}
+	
+	public void setStateAtr(int stateAtr){
 		this.stateAtr = EnumAdaptor.valueOf(stateAtr, DigestionAtr.class);
 	}
 }

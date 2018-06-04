@@ -47,4 +47,10 @@ public class SubstitutionOfHDManagementData extends AggregateRoot {
 		this.requiredDays = new ManagementDataDaysAtr(requiredDays);
 		this.remainDays = new ManagementDataRemainUnit(remainDays);
 	}
+	
+	public void setRemainsDay(Double remainNumber){
+		this.remainDays = new ManagementDataRemainUnit(remainNumber);
+	}
+	
+	
 }
