@@ -157,10 +157,12 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                     new nts.uk.ui.exTable.ExTable($("#extable"), {
                         headerHeight: "42px", bodyRowHeight: "22px", bodyHeight: "330px",
                         horizontalSumBodyRowHeight: "0px",
+                        areaResize: false,
                         remainSizes: false,
                         bodyHeightMode: "fixed",
                         windowXOccupation: 50,
-                        windowYOccupation: 20
+                        windowYOccupation: 20,
+                        primaryTable: $("#extable")
                     })
                         .LeftmostHeader(initExTable.leftmostHeader).LeftmostContent(initExTable.leftmostContent)
                         .DetailHeader(initExTable.detailHeader).DetailContent(initExTable.detailContent)
@@ -245,7 +247,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             //create Detail Header
             detailHeader = {
                 columns: detailHeaderColumns,
-                width: "1000px",
+                width: "1200px",
                 features: [
                     {
                         name: "HeaderRowHeight",
