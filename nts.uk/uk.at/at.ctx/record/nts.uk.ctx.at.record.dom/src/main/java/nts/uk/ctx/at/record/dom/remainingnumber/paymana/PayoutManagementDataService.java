@@ -107,11 +107,8 @@ public class PayoutManagementDataService {
 			if (this.checkInfoSubPayMana(subMana)) {
 				errors.add("Msg_737_SubPay");
 			}
-			errors.addAll(this.checkDateClosing(subMana.getHolidayDate().getDayoffDate().orElse(null), payMana.getPayoutDate().getDayoffDate().orElse(null),
+			errors.addAll(this.checkOffHolidate(subMana.getHolidayDate().getDayoffDate().orElse(null), payMana.getPayoutDate().getDayoffDate().orElse(null),
 						splitMana.getHolidayDate().getDayoffDate().orElse(null), closureDate, closureId, checkedSplit));
-			if (subMana.getHolidayDate().getDayoffDate().get().equals(payMana.getPayoutDate().getDayoffDate().orElse(null))) {
-				errors.add("Msg_729_SubPay");
-			}
 			if (checkedSplit) {
 				if (this.checkInfoSubPayMana(splitMana)) {
 					errors.add("Msg_737_splitMana");
@@ -163,7 +160,7 @@ public class PayoutManagementDataService {
 		return false;
 	}
 	
-	private List<String> checkDateClosing(GeneralDate restDate,GeneralDate workDate,GeneralDate splitDate, Optional<GeneralDate> closureDate, int closureId,Boolean split) {
+	private List<String> checkOffHolidate(GeneralDate restDate,GeneralDate workDate,GeneralDate splitDate, Optional<GeneralDate> closureDate, int closureId,Boolean split) {
 		List<String> errors = new ArrayList<String>();
 		if(checkDateClosing(restDate,closureDate,closureId)) {
 			errors.add("Msg_744");
