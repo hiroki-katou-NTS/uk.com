@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
+import nts.uk.ctx.at.record.dom.divergencetime.service.DivCheckMasterShareBus.DivCheckMasterShareContainer;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrule.specific.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
@@ -47,6 +48,9 @@ public class ManagePerCompanySet {
 	//法定労働
 	@Setter
 	DailyUnit dailyUnit;
+	
+	@Setter
+	DivCheckMasterShareContainer shareContainer;
 
 	public ManagePerCompanySet(Map<String, AggregateRoot> holidayAddition,
 			Optional<HolidayAddtionSet> holidayAdditionPerCompany,
