@@ -10,7 +10,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         employeeCode: KnockoutObservable<string>                  = ko.observable('');
         employeeId: KnockoutObservable<string>                    = ko.observable('');
         employeeName: KnockoutObservable<string>                  = ko.observable('');
-        remainDays: KnockoutObservable<number>                    = ko.observable();
+        remainDays: KnockoutObservable<number>                    = ko.observable(0);
         unit: KnockoutObservable<string>                          = ko.observable('');
         lawAtr: KnockoutObservable<number>                        = ko.observable(0);
         pickUp: KnockoutObservable<boolean>                       = ko.observable(true);;
@@ -219,9 +219,6 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                     dialog.info({ messageId: "Msg_725" }).then(() => {
                  });
                 } else {
-                    if (this.remainDays == undefined) {
-                        this.calRemainDays();
-                    }
                     this.submitForm();
                 }
             }
