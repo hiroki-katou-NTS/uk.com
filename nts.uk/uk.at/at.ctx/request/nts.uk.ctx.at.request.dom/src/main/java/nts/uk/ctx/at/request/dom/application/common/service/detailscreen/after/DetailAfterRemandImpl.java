@@ -19,6 +19,9 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailDestinationImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.OutGoingMailImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationContentService;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
@@ -69,6 +72,9 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 	@Inject 
 	private IApplicationContentService appContentService;
 	
+	@Inject
+	private EnvAdapter envAdapter;
+	
 	@Override
 	public MailSenderResult doRemand(String companyID, String appID, Long version, Integer order, String returnReason) {
 		Application_New application = applicationRepository.findByID(companyID, appID).get();
@@ -117,11 +123,16 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 		Optional<UrlEmbedded> urlEmbedded = urlEmbeddedRepo.getUrlEmbeddedById(AppContexts.user().companyId());
 		List<String> successList = new ArrayList<>();
 		List<String> errorList = new ArrayList<>();
+		
+		// Using RQL 419 instead (1 not have mail)
+		//get list mail by list sID
+		List<MailDestinationImport> lstMail = envAdapter.getEmpEmailAddress(cid, employeeList, 6);
 		for (String employee : employeeList) {
 			String employeeName = employeeAdapter.getEmployeeName(employee);
-			// Using RQL 419 instead (1 not have mail)
-			String employeeMail = employeeAdapter.empEmail(employee);
-			employeeMail = "hiep.ld@3si.vn";
+			OutGoingMailImport mail = envAdapter.findMailBySid(lstMail, employee);
+			String employeeMail = mail == null ? "" : mail.getEmailAddress();
+//			String employeeMail = employeeAdapter.empEmail(employee);
+//			employeeMail = "hiep.ld@3si.vn";
 			// TODO
 			String urlInfo = "";
 			if (urlEmbedded.isPresent()) {
