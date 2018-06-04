@@ -59,7 +59,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 	 * String, java.lang.String)
 	 */
 	@Override
-	public OptionalItem find(String companyId, String optionalItemNo) {
+	public OptionalItem find(String companyId, Integer optionalItemNo) {
 		KrcstOptionalItem entity = this.queryProxy()
 				.find(new KrcstOptionalItemPK(companyId, optionalItemNo), KrcstOptionalItem.class).get();
 
@@ -154,7 +154,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 	 * java.lang.String, java.util.List)
 	 */
 	@Override
-	public List<OptionalItem> findByListNos(String companyId, List<String> optionalitemNos) {
+	public List<OptionalItem> findByListNos(String companyId, List<Integer> optionalitemNos) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 

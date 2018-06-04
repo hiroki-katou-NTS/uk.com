@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.record.pubimp.monthly.agreement;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -15,8 +17,10 @@ import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeBreakdown;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeOfManagePeriodPub;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 /**
  * 実装：管理期間の36協定時間の取得
@@ -38,20 +42,33 @@ public class AgreementTimeOfManagePeriodPubImpl implements AgreementTimeOfManage
 	}
 	
 	@Override
-	public List<AgreementTimeOfManagePeriod> findByRange(String employeeId, DatePeriod range) {
-
+	public Map<YearMonth, AttendanceTimeMonth> getTimeByPeriod(String employeeId, YearMonthPeriod period) {
+		
 		List<String> employeeIds = new ArrayList<>();
 		employeeIds.add(employeeId);
 		
 		List<YearMonth> ymRange = new ArrayList<>();
-		YearMonth startYm = YearMonth.of(range.start().year(), range.start().month());
-		YearMonth endYm = YearMonth.of(range.end().year(), range.end().month());
+		YearMonth startYm = YearMonth.of(period.start().year(), period.start().month());
+		YearMonth endYm = period.end();
 		while (startYm.lessThanOrEqualTo(endYm)){
 			ymRange.add(startYm);
 			startYm = startYm.addMonths(1);
 		}
 		
 		val srcAgreementTimeList = this.agreementTimeRepo.findBySidsAndYearMonths(employeeIds, ymRange);
+		Map<YearMonth, AttendanceTimeMonth> result = new HashMap<>();
+		for (val srcAgreementTime : srcAgreementTimeList){
+			result.put(srcAgreementTime.getYearMonth(), srcAgreementTime.getAgreementTime().getAgreementTime());
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public List<AgreementTimeOfManagePeriod> findByYear(String employeeId, Year year) {
+
+		val srcAgreementTimeList = this.agreementTimeRepo.findByYearOrderByYearMonth(employeeId, year);
+		
 		return srcAgreementTimeList.stream().map(c -> this.toPubDomain(c)).collect(Collectors.toList());
 	}
 	

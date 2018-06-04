@@ -189,15 +189,12 @@ public class ApprovalStatusFinder {
 	 * @param closureDate
 	 * @return
 	 */
-	public ApprovalStatusPeriorDto getApprovalStatusPerior(int closureId, int closureDate) {
+	public ApprovalStatusPeriorDto getApprovalStatusPerior(int closureId) {
 		// Get companyID.
 		String companyId = AppContexts.user().companyId();
 		GeneralDate startDate = null;
 		GeneralDate endDate = null;
 		int processingYmNew = 0;
-		// 当月の期間を算出する
-		YearMonth processingYm = new YearMonth(closureDate);
-
 		List<ClosureEmployment> listEmployee = new ArrayList<>();
 		Optional<Closure> closure = repository.findById(companyId, closureId);
 		if (!closure.isPresent()) {
@@ -206,6 +203,8 @@ public class ApprovalStatusFinder {
 
 		val yearMonth = closure.get().getClosureMonth().getProcessingYm();
 		processingYmNew = yearMonth.v();
+		// 当月の期間を算出する
+		YearMonth processingYm = new YearMonth(processingYmNew);
 		// アルゴリズム「当月の期間を算出する」を実行する
 		DatePeriod closurePeriod = this.closureService.getClosurePeriod(closureId, processingYm);
 		startDate = closurePeriod.start();
@@ -279,7 +278,8 @@ public class ApprovalStatusFinder {
 		//List<ApplicationDto_New> listApp = new ArrayList<>();
 		for (ApprovalSttAppDetail app : listAppSttDetail) {
 			ApplicationDetailDto detail = new ApplicationDetailDto();
-
+			
+			int detailSet = app.getDetailSet();
 			ApplicationType appType = app.getAppDispName().getAppType();
 			ApplicationDto_New applicaton_N = ApplicationDto_New.fromDomain(app.getAppContent().getApplication());
 			//listApp.add(applicaton_N);
@@ -291,8 +291,6 @@ public class ApprovalStatusFinder {
 			detail.setPrePostAtr(applicaton_N.getPrePostAtr());
 			detail.setApplicationDate(applicaton_N.getApplicationDate());
 			detail.setApplicationID(applicaton_N.getApplicationID());
-			detail.setApplicationReason(applicaton_N.getApplicationReason());
-			detail.setDispReason(isDisplayReason(applicaton_N, companyID));
 			List<ApprovalPhaseStateImport_New> listApprovalPhase = app.getAppContent().getApprRootContentExport()
 					.getApprovalRootState().getListApprovalPhaseState();
 			listApprovalPhase.sort((ApprovalPhaseStateImport_New x1,
@@ -348,7 +346,7 @@ public class ApprovalStatusFinder {
 			switch (appType) {
 			// 残業申請
 			case OVER_TIME_APPLICATION:
-				appContent = getAppContentOverTime(companyID, appId);
+				appContent = getAppContentOverTime(companyID, appId, detailSet);
 				break;
 			// 休暇申請
 			case ABSENCE_APPLICATION:
@@ -447,7 +445,6 @@ public class ApprovalStatusFinder {
 			}
 		}
 		appContent += I18NText.getText("KAF018_276") + " " + clockShorHm(totalTime) + "（" + contentOther + "）";
-		appContent += "<br/>" + applicaton_N.getApplicationReason();
 		return appContent;
 	}
 
@@ -493,19 +490,19 @@ public class ApprovalStatusFinder {
 		return appContent;
 	}
 
-	private String getAppContentOverTime(String companyID, String appId) {
+	private String getAppContentOverTime(String companyID, String appId, int detailSet) {
 		String appContent = "";
-
 		AppOverTimeInfoFull appOverTime = appDetailInfoRepo.getAppOverTimeInfo(companyID, appId);
 		appContent += I18NText.getText("KAF018_268");
-		appContent += appOverTime.getWorkClockFrom1();
-		appContent += I18NText.getText("KAF018_220");
-		appContent += appOverTime.getWorkClockTo1();
-		appContent += appOverTime.getWorkClockFrom2() != "" ? appOverTime.getWorkClockFrom2() : "";
-		appContent += appOverTime.getWorkClockTo2() != "" ? I18NText.getText("KAF018_220") : "";
-		appContent += appOverTime.getWorkClockTo2() != "" ? appOverTime.getWorkClockTo2() : "";
+		if(detailSet == 1) {
+			appContent += appOverTime.getWorkClockFrom1();
+			appContent += I18NText.getText("KAF018_220");
+			appContent += appOverTime.getWorkClockTo1();
+			appContent += appOverTime.getWorkClockFrom2() != "" ? appOverTime.getWorkClockFrom2() : "";
+			appContent += appOverTime.getWorkClockTo2() != "" ? I18NText.getText("KAF018_220") : "";
+			appContent += appOverTime.getWorkClockTo2() != "" ? appOverTime.getWorkClockTo2() : "";
+		}
 		appContent += "残業合計  ";
-
 		List<OverTimeFrame> lstFrame = appOverTime.getLstFrame();
 		Comparator<OverTimeFrame> sortList = Comparator.comparing(OverTimeFrame::getAttendanceType)
 				.thenComparing(OverTimeFrame::getFrameNo);
@@ -590,26 +587,9 @@ public class ApprovalStatusFinder {
 					: I18NText.getText("KAF018_220");
 			appContent += appabsence.getEndTime2();
 		}
-		if (isDisplayReason(applicaton_N, companyID)) {
-			appContent += "<br/>" + applicaton_N.getApplicationReason();
-		}
 		return appContent;
 	}
-
-	private boolean isDisplayReason(ApplicationDto_New applicaton_N, String companyID) {
-		Optional<RequestSetting> requestSet = repoRequestSet.findByCompany(companyID);
-		ApprovalListDisplaySetting appDisplaySet = null;
-		ApprovalListDisplaySetDto displaySet = null;
-		if (requestSet.isPresent()) {
-			appDisplaySet = requestSet.get().getApprovalListDisplaySetting();
-			displaySet = ApprovalListDisplaySetDto.fromDomain(appDisplaySet);
-		}
-		if (displaySet.getAppReasonDisAtr() == 1 && !Objects.isNull(applicaton_N.getApplicationReason())) {
-			return true;
-		}
-		return false;
-	}
-
+	
 	private String clockShorHm(Integer minute) {
 		return (minute / 60 + ":" + (minute % 60 < 10 ? "0" + minute % 60 : minute % 60));
 	}

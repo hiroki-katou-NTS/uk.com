@@ -80,7 +80,7 @@
 							<td data-bind="text: $parent.getRecord(approvedNumOfCase)"></td>
 							<td data-bind="text: $parent.getRecord(numOfDenials)"></td>
 							
-							<td><div tabindex="-1" data-bind="ntsCheckBox: { checked: isChecked, enable: isEnabled }" /></td>
+							<td><div tabindex="-1" data-bind="ntsCheckBox: { checked: isChecked, enable: isEnabled }, visible: isEnabled" /></td>
 						</tr>
 					</tbody>
 				</table>

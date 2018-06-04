@@ -330,3 +330,43 @@ tbody a.x-link {
 #oViewModel>div:FIRST-CHILD {
 	position: relative;
 }
+
+.extable .xheader td.bg-daily-alter-other {
+	background-color: #CEE6FF;
+}
+
+.extable .xheader td.bg-daily-alter-self {
+	background-color: #94B7FE;
+}
+
+.extable .xheader td.bg-daily-reflect-application {
+	background-color: #BFEA60;
+}
+
+.extable .xheader td.color-schedule-performance {
+	color: #92D050;
+}
+
+.extable .xheader td.color-attendance {
+	color: #0000ff;
+}
+
+.extable .xheader td.color-holiday {
+	color: #ff0000;
+}
+
+.extable .xheader td.color-half-day-work {
+	color: #FF7F27;
+}
+
+.extable .xheader td.color-schedule-sunday {
+	color: #FF0000;
+}
+
+.extable .xheader td.color-schedule-saturday {
+	color: #0000FF;
+}
+
+.extable .xheader td.color-weekdays {
+	color: #404040;
+}

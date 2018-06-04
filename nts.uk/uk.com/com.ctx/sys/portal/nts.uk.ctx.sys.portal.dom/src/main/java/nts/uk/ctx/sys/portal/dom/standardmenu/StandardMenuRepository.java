@@ -70,6 +70,13 @@ public interface StandardMenuRepository {
 	Optional<StandardMenu> getStandardMenubyCode(String companyId, String code, int system, int classification);
 
 	/**
+	 * Find standard menus.
+	 * @param keys
+	 * @return menu list
+	 */
+	List<StandardMenu> find(List<StandardMenuKey> keys);
+	
+	/**
 	 * yennth
 	 * 
 	 * @param List

@@ -180,26 +180,17 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 	private boolean checkTimeZone(List<String> errList, List<WorkScheduleTimeZone> workScheduleTimeZonesCommand) {
 		WorkScheduleTimeZone timeZone = workScheduleTimeZonesCommand.get(0);
 		timeZone.validate();
-		try {
-			timeZone.validateTime();
-			if (basicScheduleService.isReverseStartAndEndTime(timeZone.getScheduleStartClock(),
-					timeZone.getScheduleEndClock())) {
-				addMessage(errList, "Msg_441,KSU001_73,KSU001_74");
-				return false;
+		Map<String, String> msgErrMap = timeZone.validateTime();
+		if (!msgErrMap.isEmpty()) {
+			for (Map.Entry<String, String> m : msgErrMap.entrySet()) {
+				addMessage(errList, m.getValue() + "," + m.getKey());
 			}
-		} catch (BusinessException ex) {
-			int param = Integer.parseInt(ex.getParameters().get(0));
-			String paramStr = null;
-			if (param == 73) {
-				paramStr = "KSU001_73";
-			}
+			return false;
+		}
 
-			if (param == 74) {
-				paramStr = "KSU001_74";
-			}
-
-			String msgError = ex.getMessageId() + "," + paramStr;
-			addMessage(errList, msgError);
+		if (basicScheduleService.isReverseStartAndEndTime(timeZone.getScheduleStartClock(),
+				timeZone.getScheduleEndClock())) {
+			addMessage(errList, "Msg_441,KSU001_73,KSU001_74");
 			return false;
 		}
 

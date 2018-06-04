@@ -137,6 +137,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         listCareError: KnockoutObservableArray<any> = ko.observableArray([]);
         listCareInputError: KnockoutObservableArray<any> = ko.observableArray([]);
         listCheckHolidays: KnockoutObservableArray<any> = ko.observableArray([]);
+        listCheck28: KnockoutObservableArray<any> = ko.observableArray([]);
         employIdLogin: any;
         dialogShow: any;
         //contain data share
@@ -626,6 +627,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.listCareError([]);
                 self.listCareInputError([]);
                 self.listCheckHolidays([]);
+                self.listCheck28([]);
                 let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
                 var dataSource = $("#dpGrid").igGrid("option", "dataSource");
                 let dataChangeProcess: any = [];
@@ -745,6 +747,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             if (data[2] != undefined) {
                                 self.listCheckHolidays(data[2]);
                                 self.reloadScreen();
+                            }
+                            
+                            if(data[3] != undefined){
+                               self.listCheck28(data[3]); 
                             }
                             self.showErrorDialog();
                         }
@@ -1078,11 +1084,32 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 let object = { date: value.date, employeeCode: self.dpData[0].employeeCode, employeeName: self.dpData[0].employeeName, message: value.valueType, itemName: value.rowId, columnKey: value.itemId };
                 errorValidateScreeen.push(object);
             });
+            
+            // check item28 input listCheck28
+            _.each(self.listCheck28(), value => {
+                let dateCon = _.find(self.dpData, (item: any) => {
+                    return item.id == value.rowId.substring(1, value.rowId.length);
+                });
+                let object = { date: dateCon.date, employeeCode: dateCon.employeeCode, employeeName: dateCon.employeeName, message: nts.uk.resource.getMessage("Msg_1270"), itemName: "", columnKey: value.itemId };
+//                let item = _.find(self.optionalHeader, (data) => {
+//                    return String(data.key) === "A" + value.itemId;
+//                })
+                let item = _.find(self.optionalHeader, (data) => {
+                    if (data.group != undefined && data.group != null) {
+                        return String(data.group[0].key) === "Code" + value.itemId;
+                    } else {
+                        return String(data.key) === "A" + value.itemId;
+                    }
+                })
+                object.itemName = (item == undefined) ? "" : item.headerText;
+                errorValidateScreeen.push(object);
+            });
+            
             if (self.displayFormat() === 0) {
                 lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
                     return employee.id === self.selectedEmployee();
                 }));
-            } else {
+            } else { 
                 lstEmployee = self.lstEmployee();
             }
             let param = {

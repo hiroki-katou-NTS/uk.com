@@ -1,11 +1,13 @@
 package nts.uk.ctx.bs.employee.pub.generalinfo.jobtitle;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 public class ExJobTitleHistItemDto {
 	
 	private String historyId;

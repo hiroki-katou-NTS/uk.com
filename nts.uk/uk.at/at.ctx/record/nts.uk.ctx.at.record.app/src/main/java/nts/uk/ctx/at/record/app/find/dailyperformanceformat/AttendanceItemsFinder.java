@@ -18,9 +18,12 @@ import nts.uk.ctx.at.record.app.find.attdItemLinking.AttendanceItemLinkingFinder
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttdItemDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttendanceItemDto;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.FrameNoAdapterDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -39,6 +42,9 @@ public class AttendanceItemsFinder {
 
 	@Inject
 	private DailyAttendanceItemRepository dailyAttendanceItemRepository;
+	
+	@Inject
+	private MonthlyAttendanceItemRepository monthlyAttendanceItemRepo;
 
 	/** The attd item linking finder. */
 	@Inject
@@ -139,6 +145,30 @@ public class AttendanceItemsFinder {
 
 		return attendanceItemDtos;
 	}
+	
+	/**
+	 * added by HungTT
+	 * @param monthlyAttendanceAtr
+	 * @return List
+	 */
+	public List<AttdItemDto> findListMonthlyByAttendanceAtr(int monthlyAttendanceAtr) {
+		LoginUserContext login = AppContexts.user();
+		String companyId = login.companyId();
+
+		List<AttdItemDto> attendanceItemDtos = this.monthlyAttendanceItemRepo
+				.findByAtr(companyId, EnumAdaptor.valueOf(monthlyAttendanceAtr, MonthlyAttendanceItemAtr.class)).stream()
+				.map(f -> {
+					AttdItemDto attdItemDto = new AttdItemDto();
+					attdItemDto.setAttendanceItemDisplayNumber(f.getDisplayNumber());
+					attdItemDto.setAttendanceItemId(f.getAttendanceItemId());
+					attdItemDto.setAttendanceItemName(f.getAttendanceName().v());
+					attdItemDto.setDailyAttendanceAtr(f.getMonthlyAttendanceAtr().value);
+					attdItemDto.setNameLineFeedPosition(f.getNameLineFeedPosition());
+					return attdItemDto;
+				}).collect(Collectors.toList());
+
+		return attendanceItemDtos;
+	}
 
 	/**
 	 * Find by any item.
@@ -154,12 +184,12 @@ public class AttendanceItemsFinder {
 
 		if (!CollectionUtil.isEmpty(request.getAnyItemNos())) {
 			// get attendance item linking
-			Map<Integer, Integer> attdItemLinks = this.attdItemLinkingFinder.findByAnyItem(request).stream()
-					.collect(Collectors.toMap(item -> item.getAttendanceItemId(), item -> item.getAttendanceItemId()));
+			List<Integer> attdItemLinks = this.attdItemLinkingFinder.findByAnyItem(request).stream().map(FrameNoAdapterDto::getAttendanceItemId)
+					.collect(Collectors.toList());
 
 			// get list attendance item filtered by attdItemLinks
 			List<AttdItemDto> filtered = this.findAll().stream()
-					.filter(item -> attdItemLinks.containsKey(item.getAttendanceItemId())).collect(Collectors.toList());
+					.filter(item -> attdItemLinks.contains(item.getAttendanceItemId())).collect(Collectors.toList());
 
 			// merge two list attendance items
 			attdItems.addAll(filtered);
