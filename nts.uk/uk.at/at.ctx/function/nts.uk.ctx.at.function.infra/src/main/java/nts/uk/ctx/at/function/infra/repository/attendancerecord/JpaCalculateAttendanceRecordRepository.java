@@ -158,13 +158,13 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 			kfnstAttndRec.setId(kfnstAttndRecPk);
 		}
 
-//		// find entity KfnstAttndRecItem by pk
-//		List<KfnstAttndRecItem> kfnstAttndRecItems = this.findAttendanceRecordItems(companyId, exportSettingCode,
-//				columnIndex, position, exportArt);
+		// find entity KfnstAttndRecItem by pk
+		List<KfnstAttndRecItem> kfnstAttndRecItems = this.findAttendanceRecordItems(kfnstAttndRecPk);
 
 		calculateAttendanceRecord
-				.saveToMemento(new JpaCalculateAttendanceRecordSetMemento(kfnstAttndRec));
+				.saveToMemento(new JpaCalculateAttendanceRecordSetMemento(kfnstAttndRec,kfnstAttndRecItems));
 		int useAtrValue = useAtr ? 1 : 0;
+		
 		kfnstAttndRec.setUseAtr(new BigDecimal(useAtrValue));
 		return kfnstAttndRec;
 

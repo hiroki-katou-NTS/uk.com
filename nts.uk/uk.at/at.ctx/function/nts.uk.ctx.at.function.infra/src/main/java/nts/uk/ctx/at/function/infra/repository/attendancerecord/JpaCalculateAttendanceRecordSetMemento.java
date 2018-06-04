@@ -34,9 +34,10 @@ public class JpaCalculateAttendanceRecordSetMemento implements CalculateAttendan
 	 *
 	 * @param kfnstAttndRec            the kfnst attnd rec
 	 */
-	public JpaCalculateAttendanceRecordSetMemento(KfnstAttndRec kfnstAttndRec) {
+	public JpaCalculateAttendanceRecordSetMemento(KfnstAttndRec kfnstAttndRec, List<KfnstAttndRecItem> kfnstAttndRecItems ) {
 		super();
 		this.kfnstAttndRec = kfnstAttndRec;
+		this.kfnstAttndRecItems = kfnstAttndRecItems;
 	}
 
 	/* (non-Javadoc)
