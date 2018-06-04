@@ -4,7 +4,7 @@ module nts.uk.ui.koExtentions {
 
     import count = nts.uk.text.countHalf;
 
-    const WoC = 6,
+    const WoC = 8,
         MINWIDTH = 'auto',
         TAB_INDEX = 'tabindex',
         KEYPRESS = 'keypress',
