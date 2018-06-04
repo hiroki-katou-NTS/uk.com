@@ -201,13 +201,13 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 				String moreInf = "";
 				int count = 0;
 				int totalWorkUnit = 0;
-				if (overTime.getOverTimeShiftNight() > 0) {
+				if (overTime.getOverTimeShiftNight() != null && overTime.getOverTimeShiftNight() > 0) {
 					totalWorkUnit += overTime.getOverTimeShiftNight();
 					if (count < 3)
 						moreInf += I18NText.getText("CMM045_270") + " " + clockShorHm(overTime.getOverTimeShiftNight()) + " ";
 					count++;
 				}
-				if (overTime.getFlexExessTime() > 0) {
+				if (overTime.getFlexExessTime() != null && overTime.getFlexExessTime() > 0) {
 					totalWorkUnit += overTime.getFlexExessTime();
 					if (count < 3)
 						moreInf += I18NText.getText("CMM045_271") + " " + clockShorHm(overTime.getFlexExessTime()) + " ";
@@ -1078,6 +1078,9 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 	}
 
 	private String clockShorHm(Integer minute) {
+		if(minute == null){
+			return "";
+		}
 		return (minute / 60 + ":" + (minute % 60 < 10 ? "0" + minute % 60 : minute % 60));
 	}
 }
