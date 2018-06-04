@@ -442,12 +442,12 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 
 /* line 9, ../sass/components/_color.scss */
 .color-attendance {
-  color: #0000ff !important;
+  color: #0000ff;
 }
 
 /* line 10, ../sass/components/_color.scss */
 .color-holiday {
-  color: #ff0000 !important;
+  color: #ff0000;
 }
 
 /* line 11, ../sass/components/_color.scss */
@@ -462,17 +462,17 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 
 /* line 13, ../sass/components/_color.scss */
 .bg-daily-alter-self {
-  background-color: #94B7FE !important;
+  background-color: #94B7FE;
 }
 
 /* line 14, ../sass/components/_color.scss */
 .bg-daily-alter-other {
-  background-color: #CEE6FF !important;
+  background-color: #CEE6FF;
 }
 
 /* line 15, ../sass/components/_color.scss */
 .bg-daily-reflect-application {
-  background-color: #BFEA60 !important;
+  background-color: #BFEA60;
 }
 
 /* line 16, ../sass/components/_color.scss */
@@ -492,7 +492,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 
 /* line 20, ../sass/components/_color.scss */
 .color-schedule-performance {
-  color: #92D050 !important;
+  color: #92D050;
 }
 
 /* line 21, ../sass/components/_color.scss */
@@ -502,12 +502,12 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 
 /* line 22, ../sass/components/_color.scss */
 .color-schedule-saturday {
-  color: #0000FF !important;
+  color: #0000FF;
 }
 
 /* line 23, ../sass/components/_color.scss */
 .color-schedule-sunday {
-  color: #FF0000 !important;
+  color: #FF0000;
 }
 
 /* line 24, ../sass/components/_color.scss */
@@ -552,22 +552,22 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 
 /* line 32, ../sass/components/_color.scss */
 .bg-schedule-saturday {
-  background-color: #8bd8ff !important;
+  background-color: #8bd8ff;
 }
 
 /* line 33, ../sass/components/_color.scss */
 .bg-schedule-sunday {
-  background-color: #fabf8f !important;
+  background-color: #fabf8f;
 }
 
 /* line 34, ../sass/components/_color.scss */
 .bg-schedule-specific-date {
-  background-color: #ffc0cb !important;
+  background-color: #ffc0cb;
 }
 
 /* line 35, ../sass/components/_color.scss */
 .bg-schedule-that-day {
-  background-color: #ffff00 !important;
+  background-color: #ffff00;
 }
 
 /* line 36, ../sass/components/_color.scss */
@@ -647,17 +647,17 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 
 /* line 53, ../sass/components/_color.scss */
 .color-half-day-work {
-  color: #FF7F27 !important;
+  color: #FF7F27;
 }
 
 /* line 54, ../sass/components/_color.scss */
 .bg-weekdays {
-  background-color: #D9D9D9 !important;
+  background-color: #D9D9D9;
 }
 
 /* line 55, ../sass/components/_color.scss */
 .color-weekdays {
-  color: #404040 !important;
+  color: #404040;
 }
 
 /* line 56, ../sass/components/_color.scss */
@@ -2739,6 +2739,10 @@ button.nts-switch-button[disabled]:hover {
   display: none;
 }
 
+.ui-iggrid table .row-disable {
+  background-color: #CCC;
+}
+
 /* line 1, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs {
   border: none;
@@ -4423,6 +4427,27 @@ button.nts-switch-button[disabled]:hover {
 /* line 24, ../sass/components/_extable.scss */
 .extable div.xseal, .extable td.xseal {
   background-color: #CCC;
+}
+
+.extable div.bg-weekdays, .extable td.bg-weekdays, .xheader td.bg-weekdays {
+    background-color: #D9D9D9;
+}
+
+.extable div.bg-schedule-specific-date, .extable td.bg-schedule-specific-date, 
+.xheader td.bg-schedule-specific-date {
+    background-color: #ffc0cb;
+}
+
+.extable div.bg-schedule-sunday, .extable td.bg-schedule-sunday, .xheader td.bg-schedule-sunday {
+    background-color: #fabf8f;
+}
+
+.extable div.bg-schedule-saturday, .extable td.bg-schedule-saturday, .xheader td.bg-schedule-saturday {
+    background-color: #8bd8ff;
+}
+
+.extable div.bg-schedule-that-day, .extable td.bg-schedule-that-day, .xheader td.bg-schedule-that-day {
+    background-color: #ffff00;
 }
 
 /* line 27, ../sass/components/_extable.scss */

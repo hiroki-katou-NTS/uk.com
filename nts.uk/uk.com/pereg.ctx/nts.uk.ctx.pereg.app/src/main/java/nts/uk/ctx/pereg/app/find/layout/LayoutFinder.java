@@ -19,8 +19,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
-import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
 import nts.uk.ctx.pereg.app.find.common.InitDefaultValue;
+import nts.uk.ctx.pereg.app.find.common.LayoutControlComBoBox;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.common.StampCardLength;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
@@ -31,7 +31,6 @@ import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsFin
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.definition.LayoutPersonInfoClsDefFinder;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
-import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
@@ -100,9 +99,6 @@ public class LayoutFinder {
 	private IMaintenanceLayoutRepository layoutRepo;
 
 	@Inject
-	private ComboBoxRetrieveFactory comboBoxFactory;
-
-	@Inject
 	private LayoutPersonInfoClsDefFinder clsItemDefFinder;
 
 	@Inject
@@ -110,6 +106,9 @@ public class LayoutFinder {
 	
 	@Inject
 	private StampCardLength stampCardLength;
+	
+	@Inject
+	private LayoutControlComBoBox layoutControlComboBox;
 	
 	public List<SimpleEmpMainLayoutDto> getSimpleLayoutList(String browsingEmpId) {
 
@@ -381,29 +380,12 @@ public class LayoutFinder {
 			switch (perInfoCategory.getCategoryType()) {
 			case SINGLEINFO:
 				// authClassItem);
-				if (perInfoCategory.getPersonEmployeeType() == PersonEmployeeType.PERSON) {
-					List<PerInfoCtgData> perInfoCtgDatas = perInCtgDataRepo.getByPerIdAndCtgId(personId,
-							perInfoCategory.getPersonInfoCategoryId());
-					if (!perInfoCtgDatas.isEmpty()) {
-						String recordId = perInfoCtgDatas.get(0).getRecordId();
-						List<OptionalItemDataDto> dataItems = perInItemDataRepo.getAllInfoItemByRecordId(recordId)
-								.stream().map(x -> x.genToPeregDto()).collect(Collectors.toList());
-						MappingFactory.matchOptionalItemData(recordId, classItemList, dataItems);
-					}
-				} else {
-					List<EmpInfoCtgData> empInfoCtgDatas = empInCtgDataRepo.getByEmpIdAndCtgId(employeeId,
-							perInfoCategory.getPersonInfoCategoryId());
-					if (!empInfoCtgDatas.isEmpty()) {
-						String recordId = empInfoCtgDatas.get(0).getRecordId();
-						List<OptionalItemDataDto> dataItems = empInItemDataRepo.getAllInfoItemByRecordId(recordId)
-								.stream().map(x -> x.genToPeregDto()).collect(Collectors.toList());
-						MappingFactory.matchOptionalItemData(recordId, classItemList, dataItems);
-					}
-
-				}
+				getSingleOptionData(classItemList, perInfoCategory, query);
 				break;
 			case CONTINUOUSHISTORY:
 			case NODUPLICATEHISTORY:
+			case DUPLICATEHISTORY:
+			case CONTINUOUS_HISTORY_FOR_ENDDATE:
 				if (perInfoCategory.getPersonEmployeeType() == PersonEmployeeType.PERSON) {
 					// person history
 					getPersDataHistoryType(perInfoCategory.getPersonInfoCategoryId(), classItemList, personId,
@@ -421,65 +403,47 @@ public class LayoutFinder {
 		}
 
 		// For each classification item to get combo box list
-		getComboBoxListForSelectionItems(employeeId, perInfoCategory, classItemList, comboBoxStandardDate);
+		layoutControlComboBox.getComboBoxListForSelectionItems(employeeId, perInfoCategory, classItemList, comboBoxStandardDate);
 
 		// set default value
 		initDefaultValue.setDefaultValue(classItemList);
 
 	}
 
-	private void getComboBoxListForSelectionItems(String employeeId, PersonInfoCategory perInfoCategory,
-			List<LayoutPersonInfoClsDto> classItemList, GeneralDate comboBoxStandardDate) {
-		// For each classification item to get combo box list
-		for (LayoutPersonInfoClsDto classItem : classItemList) {
-			for (LayoutPersonInfoValueDto valueItem : classItem.getItems()) {
-
-				if (valueItem.isComboBoxItem()) {
-					SelectionItemDto selectionItemDto = (SelectionItemDto) valueItem.getItem();
-					boolean isDataType6 = valueItem.isSelectionItem();
-					valueItem.setLstComboBoxValue(comboBoxFactory.getComboBox(selectionItemDto, employeeId,
-							comboBoxStandardDate, valueItem.isRequired(), perInfoCategory.getPersonEmployeeType(),
-							isDataType6, perInfoCategory.getCategoryCode().v()));
-				}
-				
-			}
-		}
-	}
-
 	private void getDataforListItem(PersonInfoCategory perInfoCategory, LayoutPersonInfoClsDto classItem,
 			GeneralDate standardDate, String personId, String employeeId, PeregQuery query) {
+		
+		classItem.setItems(new ArrayList<>());
+		
 		if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
 			List<PeregDto> peregDtoList = layoutingProcessor.findList(query);
-			List<LayoutPersonInfoValueDto> items = new ArrayList<>();
 			
 			if (peregDtoList.isEmpty()) {
 				// nếu không có dữ liệu nào thì tự tạo một cái mới trên Server và trả về.
-				List<LayoutPersonInfoValueDto> itemsOfPeregDto = classItem.getListItemDf().stream()
-						.map(itemDef -> LayoutPersonInfoValueDto.cloneFromItemDef(perInfoCategory, itemDef))
-						.collect(Collectors.toList());
+				classItem.getItems().addAll(convertDefItem(perInfoCategory, classItem.getListItemDf()));
 				
-				items.addAll(itemsOfPeregDto);
 			} else {
 				for (PeregDto peregDto : peregDtoList) {
 
-					List<LayoutPersonInfoValueDto> itemsOfPeregDto = convertPeregDtoToValueItemList(perInfoCategory,
+					List<LayoutPersonInfoValueDto> valueItemsOfPeregDto = convertPeregDtoToValueItemList(perInfoCategory,
 							peregDto, classItem.getListItemDf());
 
-					items.addAll(itemsOfPeregDto);
+					classItem.getItems().addAll(valueItemsOfPeregDto);
 				}
 			}
-
-			
-			classItem.setListItemDf(null);
-			classItem.setPersonInfoCategoryCD(perInfoCategory.getCategoryCode().v());
-			classItem.setItems(items);
+		} else {
+			// get option category data
+			getMultiOptionData(classItem, perInfoCategory, query);
 		}
+		
+		classItem.setListItemDf(null);
+		classItem.setPersonInfoCategoryCD(perInfoCategory.getCategoryCode().v());
 		
 		// special process with category CS00069 item IS00779. change string length
 		stampCardLength.updateLength(perInfoCategory, Arrays.asList(classItem));
 
-		// getComboBoxListForSelectionItems(employeeId, perInfoCategory,
-		// Arrays.asList(classItem), comboBoxStandardDate);
+		layoutControlComboBox.getComboBoxListForSelectionItems(employeeId, perInfoCategory, Arrays.asList(classItem),
+				GeneralDate.today());
 
 	}
 
@@ -510,6 +474,84 @@ public class LayoutFinder {
 		}
 
 		return items;
+	}
+	
+	private void getSingleOptionData(List<LayoutPersonInfoClsDto> classItemList, PersonInfoCategory perInfoCategory,
+			PeregQuery query) {
+		// authClassItem);
+		if (perInfoCategory.isPersonType()) {
+			List<PerInfoCtgData> perInfoCtgDatas = perInCtgDataRepo.getByPerIdAndCtgId(query.getPersonId(),
+					perInfoCategory.getPersonInfoCategoryId());
+			if (!perInfoCtgDatas.isEmpty()) {
+				String recordId = perInfoCtgDatas.get(0).getRecordId();
+				List<OptionalItemDataDto> dataItems = perInItemDataRepo.getAllInfoItemByRecordId(recordId).stream()
+						.map(x -> x.genToPeregDto()).collect(Collectors.toList());
+				MappingFactory.matchOptionalItemData(recordId, classItemList, dataItems);
+			}
+		} else {
+			List<EmpInfoCtgData> empInfoCtgDatas = empInCtgDataRepo.getByEmpIdAndCtgId(query.getEmployeeId(),
+					perInfoCategory.getPersonInfoCategoryId());
+			if (!empInfoCtgDatas.isEmpty()) {
+				String recordId = empInfoCtgDatas.get(0).getRecordId();
+				List<OptionalItemDataDto> dataItems = empInItemDataRepo.getAllInfoItemByRecordId(recordId).stream()
+						.map(x -> x.genToPeregDto()).collect(Collectors.toList());
+				MappingFactory.matchOptionalItemData(recordId, classItemList, dataItems);
+			}
+
+		}
+
+	}
+	
+	private void getMultiOptionData(LayoutPersonInfoClsDto classItem, PersonInfoCategory perInfoCategory,
+			PeregQuery query) {
+		if (perInfoCategory.isPersonType()) {
+			List<PerInfoCtgData> perInfoCtgDatas = perInCtgDataRepo.getByPerIdAndCtgId(query.getPersonId(),
+					perInfoCategory.getPersonInfoCategoryId());
+
+			for (PerInfoCtgData perInfoCtgData : perInfoCtgDatas) {
+				
+				// create new line data
+				List<LayoutPersonInfoValueDto> valueItems = convertDefItem(perInfoCategory, classItem.getListItemDf());
+				
+				// get person option data and map
+				String recordId = perInfoCtgData.getRecordId();
+				List<OptionalItemDataDto> dataItems = perInItemDataRepo.getAllInfoItemByRecordId(recordId).stream()
+						.map(x -> x.genToPeregDto()).collect(Collectors.toList());
+				
+				MappingFactory.matchDataToValueItems(recordId, valueItems, dataItems);
+				
+				classItem.getItems().addAll(valueItems);
+			}
+
+		} else {
+
+			List<EmpInfoCtgData> empInfoCtgDatas = empInCtgDataRepo.getByEmpIdAndCtgId(query.getEmployeeId(),
+					perInfoCategory.getPersonInfoCategoryId());
+			
+			for (EmpInfoCtgData empInfoCtgData : empInfoCtgDatas) {
+				
+				// create new line data
+				List<LayoutPersonInfoValueDto> valueItems = convertDefItem(perInfoCategory, classItem.getListItemDf());
+				
+				
+				// get employee option data and map
+				String recordId = empInfoCtgData.getRecordId();
+				List<OptionalItemDataDto> dataItems = empInItemDataRepo.getAllInfoItemByRecordId(recordId).stream()
+						.map(x -> x.genToPeregDto()).collect(Collectors.toList());
+				
+				MappingFactory.matchDataToValueItems(recordId, valueItems, dataItems);
+				
+				classItem.getItems().addAll(valueItems);
+			}
+
+		}
+	
+	}
+	
+	private List<LayoutPersonInfoValueDto> convertDefItem(PersonInfoCategory perInfoCategory,
+			List<PerInfoItemDefDto> listItemDf) {
+		return listItemDf.stream().map(itemDef -> LayoutPersonInfoValueDto.cloneFromItemDef(perInfoCategory, itemDef))
+				.collect(Collectors.toList());
 	}
 	
 	/**

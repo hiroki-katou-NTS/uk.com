@@ -8,4 +8,5 @@ import lombok.Data;
 public class EmployeeOrderApproverAsAppOutput {
 	int disOrder;
 	String employeeName;
+	boolean confirmPerson;
 }

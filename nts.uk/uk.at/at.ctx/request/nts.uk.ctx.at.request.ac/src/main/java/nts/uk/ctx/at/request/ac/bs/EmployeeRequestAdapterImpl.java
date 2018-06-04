@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.AffWorkplaceImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.ConcurrentEmployeeRequest;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
@@ -25,6 +26,7 @@ import nts.uk.ctx.bs.employee.pub.employment.SEmpHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
+import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 
@@ -166,16 +168,22 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 						x.getPName(),
 						x.getEntryDate(),
 						x.getRetiredDate(),
-						x.getCompanyMailAddr() != null ? x.getCompanyMailAddr().v() : null
+						x.getCompanyMailAddr() != null ? x.getCompanyMailAddr().v() : "ledat010994@gmail.com"
 					)).collect(Collectors.toList());
 		return data;
 	}
 
 	@Override
-	public List<String> getListSIdByWkpIdAndPeriod(String workplaceId, GeneralDate startDate,
+	public List<AffWorkplaceImport> getListSIdByWkpIdAndPeriod(String workplaceId, GeneralDate startDate,
 			GeneralDate endDate) {
-//		List<String> data = this.workplacePub.findListSIdByCidAndWkpIdAndPeriod(workplaceId, startDate, endDate);
-//		return data;
-		return null;
+		List<AffWorkplaceImport> data = this.workplacePub
+				.findListSIdByCidAndWkpIdAndPeriod(workplaceId, startDate, endDate)
+				.stream()
+				.map(x -> new AffWorkplaceImport(
+						x.getEmployeeId(), 
+						x.getJobEntryDate(), 
+						x.getRetirementDate()))
+				.collect(Collectors.toList());
+		return data;
 	}
 }

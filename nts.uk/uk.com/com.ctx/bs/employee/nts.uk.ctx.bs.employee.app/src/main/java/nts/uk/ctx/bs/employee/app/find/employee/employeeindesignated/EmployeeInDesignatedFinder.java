@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -97,21 +96,6 @@ public class EmployeeInDesignatedFinder {
 		// Employee Id List from Employees In Designated
 		List<String> empIdList = empListInDesignated.stream().map(EmployeeInDesignatedDto::getEmployeeId)
 				.collect(Collectors.toList());
-				
-		List<AffWorkplaceHistoryItem> affWorkplaceHistItemList = 
-				this.affWorkplaceHistoryItemRepo.getAffWrkplaHistItemByListEmpIdAndDate(input.getReferenceDate(),empIdList);
-		
-		if (CollectionUtil.isEmpty(affWorkplaceHistItemList)) {
-			return Collections.emptyList();
-		}
-		
-		List<String> workplaceList = affWorkplaceHistItemList.stream().map(a -> {
-			return a.getWorkplaceId();
-		}).collect(Collectors.toList());
-
-		// List WorkplaceInfo
-		List<WorkplaceInfo> workplaceInfoList = this.workplaceInfoRepo.getByWkpIds(workplaceList,
-				input.getReferenceDate());
 
 		// Get All Employee Domain from Employee Id List Above
 		List<EmployeeDataMngInfo> employeeList = employeeDataRepo.findByListEmployeeId(AppContexts.user().companyId(), empIdList);
@@ -120,33 +104,35 @@ public class EmployeeInDesignatedFinder {
 		List<String> personIds = employeeList.stream().map(EmployeeDataMngInfo::getPersonId).collect(Collectors.toList());
 		// Get All Person Domain from PersonIds above
 		List<Person> personList = this.personRepo.getPersonByPersonIds(personIds);
+		
+		Map<String, Person> personMap = personList.parallelStream().collect(Collectors.toMap(Person::getPersonId, Function.identity()));
 
-		// update use AffWorkplaceHistory
-		List<AffWorkplaceHistory> affWorkplaceHistList = 
-				this.affWorkplaceHistoryRepo.getWorkplaceHistoryByEmpIdsAndDate(input.getReferenceDate(), empIdList);
+		List<AffWorkplaceHistoryItem> affWkpHistItems = 
+				this.affWorkplaceHistoryItemRepo.getAffWrkplaHistItemByListEmpIdAndDate(input.getReferenceDate(), empIdList);
+		
+		Map<String, String> affWkpHistItemMap = affWkpHistItems.parallelStream()
+				.collect(Collectors.toMap(AffWorkplaceHistoryItem::getEmployeeId,
+						AffWorkplaceHistoryItem::getWorkplaceId));
+		
+		if (CollectionUtil.isEmpty(affWkpHistItems)) {
+			return Collections.emptyList();
+		}
+		
+		// List WorkplaceInfo
+		List<WorkplaceInfo> workplaceInfoList = this.workplaceInfoRepo.getByWkpIds(input.getWorkplaceIdList(),
+				input.getReferenceDate());
+		
+		Map<String, WorkplaceInfo> workplaceInfoMap = workplaceInfoList.parallelStream().collect(Collectors.toMap(WorkplaceInfo::getWorkplaceId, Function.identity()));
 					
 		// Add Employee Data
 		employeeList.stream().forEach(employeeInfo -> {
 			// Get Person by personId
-			Person person = new Person();
-			if (!CollectionUtil.isEmpty(personList)) {
-				person = personList.stream().filter(p -> {
-					return employeeInfo.getPersonId().equals(p.getPersonId());
-				}).findFirst().orElse(null);
-			}
+			Person person = personMap.get(employeeInfo.getPersonId());
 
-			// Get AffWorkplaceHistory
-			AffWorkplaceHistory affWkpHist = affWorkplaceHistList.stream().filter(aff -> {
-				return employeeInfo.getEmployeeId().equals(aff.getEmployeeId());
-			}).findFirst().orElse(null);
-			
-			AffWorkplaceHistoryItem affWkpHistItem = 
-					this.affWorkplaceHistoryItemRepo.getByHistId(affWkpHist.getHistoryItems().get(0).identifier()).get();
+			String workplaceId =  affWkpHistItemMap.get(employeeInfo.getEmployeeId());
 			
 			// Get WorkplaceInfo
-			WorkplaceInfo wkpInfo = workplaceInfoList.stream().filter(wkp -> {
-				return affWkpHistItem.getWorkplaceId() == wkp.getWorkplaceId();
-			}).findFirst().orElse(null);
+			WorkplaceInfo wkpInfo = workplaceInfoMap.get(workplaceId);
 
 			// Employee Data 
 			EmployeeSearchOutput empData = EmployeeSearchOutput.builder().employeeId(employeeInfo.getEmployeeId())
@@ -154,8 +140,8 @@ public class EmployeeInDesignatedFinder {
 					.employeeName((person == null || person.getPersonNameGroup() == null
 							|| (person.getPersonNameGroup().getBusinessName() == null)) ? null
 									: person.getPersonNameGroup().getBusinessName().v())
-					.workplaceId(affWkpHistItem == null || (affWkpHistItem.getWorkplaceId() == null) ? null
-							: affWkpHistItem.getWorkplaceId())
+					.workplaceId(wkpInfo == null || (wkpInfo.getWorkplaceId() == null) ? null
+							: wkpInfo.getWorkplaceId())
 					.workplaceCode((wkpInfo == null) || (wkpInfo.getWorkplaceCode() == null) ? null
 							: wkpInfo.getWorkplaceCode().v())
 					.workplaceName((wkpInfo == null) || (wkpInfo.getWorkplaceName() == null) ? null
@@ -187,28 +173,32 @@ public class EmployeeInDesignatedFinder {
 			Collections.emptyList();
 		}
 		// Get List of Employee Id
-		List<String> empIdList = affWorkplaceHistList.stream().map(AffWorkplaceHistory::getEmployeeId)
+		List<String> empIdList = affWorkplaceHistList.parallelStream().map(AffWorkplaceHistory::getEmployeeId)
 				.collect(Collectors.toList());
 		
 		// Output List
 		List<EmploymentStatusDto> employmentStatus =  this.getStatusOfEmployments(empIdList,
 				referenceDate);
 		
-		Map<String, EmploymentStatusDto> empStatusMap = employmentStatus.stream()
-				.collect(Collectors.toMap(EmploymentStatusDto::getEmployeeId, Function.identity()));
+		List<String> empIds = employmentStatus.stream().map(EmploymentStatusDto::getEmployeeId).collect(Collectors.toList());
 		
-			// TODO: Solution for temporary case: can't get Status of Employment is in proportion to empId
-			List<String> empIdWithSttList = employmentStatus.stream().map(EmploymentStatusDto::getEmployeeId)
-					.collect(Collectors.toList());
-			// End of solution (replace empIdList by newEmpIdList. As below)
-			
-			return empIdWithSttList.stream().map(empId -> {
+		Map<String, EmploymentStatusDto> empStatusMap = employmentStatus.parallelStream()
+				.collect(Collectors.toMap(EmploymentStatusDto::getEmployeeId, Function.identity()));
+
+		// TODO: Solution for temporary case: can't get Status of Employment is
+		// in proportion to empId
+		List<String> empIdWithSttList = employmentStatus.stream()
+				.map(EmploymentStatusDto::getEmployeeId).collect(Collectors.toList());
+		// End of solution (replace empIdList by newEmpIdList. As below)
+
+		return empIdWithSttList.stream().map(empId -> {
 			// Initialize EmployeeInDesignatedDto
 			EmployeeInDesignatedDto empInDes = EmployeeInDesignatedDto.builder().build();
 			EmploymentStatusDto empStatusOfMap = empStatusMap.get(empId);
-			//check if null
+			// check if null
 			if (empStatus != null) {
-				// Every EmpStatus Acquired from screen. Compare to empStatus Acquired above
+				// Every EmpStatus Acquired from screen. Compare to empStatus
+				// Acquired above
 				empStatus.stream().forEach(s -> {
 					if (empStatusOfMap.getStatusOfEmployment() == s) {
 						// Set EmployeeInDesignatedDto
@@ -244,8 +234,16 @@ public class EmployeeInDesignatedFinder {
 			AffCompanyHistByEmployee histByEmp = affComHist.getLstAffCompanyHistByEmployee().get(0);
 			affComHistByEmpList.add(histByEmp);
 		});
+		
+		// Get "TempAbsenceHistory", "TempAbsenceHisItem"
+		List<TempAbsenceHisItem> tempAbsItems = temporaryAbsenceItemRepo
+				.getByEmpIdsAndStandardDate(employeeIds, referenceDate);
+		
+		Map<String, TempAbsenceHisItem> mapTempAbsItems = tempAbsItems.parallelStream()
+				.collect(Collectors.toMap(TempAbsenceHisItem::getEmployeeId, Function.identity()));
+		
 		// Convert to dto
-		return affComHistByEmpList.stream().map(affComHistByEmp -> {
+		return affComHistByEmpList.parallelStream().map(affComHistByEmp -> {
 			EmploymentStatusDto statusOfEmploymentExport = new EmploymentStatusDto();
 			statusOfEmploymentExport.setEmployeeId(affComHistByEmp.getSId());
 			statusOfEmploymentExport.setRefereneDate(referenceDate);
@@ -280,19 +278,14 @@ public class EmployeeInDesignatedFinder {
 				} else {
 					// StatusOfEmployment = RETIREMENT
 					statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.RETIREMENT.value);
-			}
+				}
 
 			} else {// Case: Filtered ListEntryJobHist 
 				// (Condition: History.Period.StartDate <= BaseDate <= History.Period.Endate) is not empty
-
-				// Get "TempAbsenceHistory", "TempAbsenceHisItem"
-				Optional<TempAbsenceHisItem> tempAbsItem = temporaryAbsenceItemRepo
-						.getByEmpIdAndStandardDate(affComHistByEmp.getSId(), referenceDate);
-
-				if (tempAbsItem.isPresent()) {
+				if (mapTempAbsItems.get(affComHistByEmp.getSId()) != null) {
 					// Domain TempAbsenceHisItem is Present
 
-					int tempAbsFrNo = tempAbsItem.get().getTempAbsenceFrNo().v().intValue();
+					int tempAbsFrNo = mapTempAbsItems.get(affComHistByEmp.getSId()).getTempAbsenceFrNo().v().intValue();
 					int tempAbsenceType = tempAbsFrNo <= 6 ? tempAbsFrNo : 7;
 					// Set LeaveHolidayType to statusOfEmploymentExport
 					statusOfEmploymentExport.setLeaveHolidayType(tempAbsenceType);
@@ -311,7 +304,7 @@ public class EmployeeInDesignatedFinder {
 				}
 			}
 			return statusOfEmploymentExport;
-		}).collect(Collectors.toList());
+		}).distinct().collect(Collectors.toList());
 
 	}
 

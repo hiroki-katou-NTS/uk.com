@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.uk.ctx.sys.portal.dom.webmenu.MenuBar;
 import nts.uk.ctx.sys.portal.dom.webmenu.TitleBar;
 import nts.uk.ctx.sys.portal.dom.webmenu.TreeMenu;
@@ -77,8 +78,9 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 		StringBuilder queryStr = new StringBuilder(SEL_1);
 		if (webMenuCodes == null) return null;
 		queryStr.append(" AND a.ccgstWebMenuPK.webMenuCd IN :codes");
-		return this.queryProxy().query(queryStr.toString(), CcgstWebMenu.class)
-				.setParameter("companyId", companyId)
+		TypedQueryWrapper<CcgstWebMenu> typedQuery = this.queryProxy().query(queryStr.toString(), CcgstWebMenu.class);
+		typedQuery.getQuery().setHint("eclipselink.batch", "a.menuBars.titleMenus.treeMenus");
+		return typedQuery.setParameter("companyId", companyId)
 				.setParameter("codes", webMenuCodes).getList(w -> {
 			return toDomain(companyId, w);
 		});

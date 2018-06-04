@@ -16,6 +16,7 @@
 		<jar-file>lib/nts.uk.ctx.workflow.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.sys.env.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.sys.auth.infra.jar</jar-file> 
+		<jar-file>lib/nts.uk.ctx.sys.gateway.infra.jar</jar-file> 
 		<jar-file>lib/nts.uk.ctx.sys.portal.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.at.auth.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.at.function.infra.jar</jar-file>
@@ -44,8 +45,7 @@
 			<!-- Disable weaving change tracking, for entity is always updated with 
 				JPA -->
 			<property name="eclipselink.weaving.changetracking" value="false" />
-			<property name="eclipselink.logging.level.sql" value="FINE" />
-			<property name="eclipselink.logging.parameters" value="true" />
+			<property name="eclipselink.profiler" value="nts.arc.layer.infra.data.log.QueryLogging"/>
 		</properties>
 	</persistence-unit>
 </persistence>

@@ -6,7 +6,9 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.CDI;
 
 import lombok.extern.slf4j.Slf4j;
+import nts.arc.layer.infra.data.log.RepositoryLogger;
 import nts.arc.layer.ws.exception.ServerError;
+import nts.arc.layer.ws.preprocess.filters.RequestPerformanceDiagnose;
 import nts.uk.shr.com.system.config.InitializeWhenDeploy;
 
 @ApplicationScoped
@@ -18,6 +20,8 @@ public class ApplicationInitializer {
 		log.info("ApplicationInitializer START");
 		
 		ServerError.EXPOSES_DEFAILS_OF_ERROR = true;
+		RequestPerformanceDiagnose.THRESHOLD_MILLISEC_TO_WARN = 500;
+		RepositoryLogger.THRESHOLD_MILLISECS_TO_WARN = 300;
 		
 		CDI.current().select(InitializeWhenDeploy.class).forEach(obj -> obj.initialize());
 

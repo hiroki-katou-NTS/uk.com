@@ -6,7 +6,7 @@ module nts.uk.at.view.kmw003.a.service {
         selectFormatCode: "screen/at/correctionofdailyperformance/selectCode",
         findCodeName: "screen/at/correctionofdailyperformance/findCodeName",
         findAllCodeName: "screen/at/correctionofdailyperformance/findAllCodeName",
-        addAndUpdate: "screen/at/correctionofdailyperformance/addAndUpdate",
+        addAndUpdate: "screen/at/monthlyperformance/addAndUpdate",
         getApplication: "screen/at/correctionofdailyperformance/getApplication",
         updateScreen: "screen/at/monthlyperformance/updateScreen",
     }

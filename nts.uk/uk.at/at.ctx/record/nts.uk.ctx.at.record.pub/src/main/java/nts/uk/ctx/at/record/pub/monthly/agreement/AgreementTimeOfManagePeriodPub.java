@@ -1,10 +1,13 @@
 package nts.uk.ctx.at.record.pub.monthly.agreement;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.YearMonth;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 /**
  * 管理期間の36協定時間の取得
@@ -21,11 +24,20 @@ public interface AgreementTimeOfManagePeriodPub {
 	Optional<AgreementTimeOfManagePeriod> find(String employeeId, YearMonth yearMonth);
 
 	/**
-	 * 検索　（期間）
+	 * 36協定時間を取得する
 	 * @param employeeId 社員ID
-	 * @param range 期間
-	 * @return 該当する管理期間の36協定時間　（年月順）
+	 * @param period 期間（年月）
+	 * @return 36協定時間マップ
+	 */
+	// RequestList287
+	Map<YearMonth, AttendanceTimeMonth> getTimeByPeriod(String employeeId, YearMonthPeriod period);
+	
+	/**
+	 * 年間の36協定の時間を取得する
+	 * @param employeeId 社員ID
+	 * @param year 年度
+	 * @return 該当する管理期間の36協定時間
 	 */
 	// RequestList421
-	List<AgreementTimeOfManagePeriod> findByRange(String employeeId, DatePeriod range);
+	List<AgreementTimeOfManagePeriod> findByYear(String employeeId, Year year);
 }

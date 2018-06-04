@@ -12,7 +12,7 @@ import nts.uk.ctx.at.record.app.command.monthly.attendancetime.AttendanceTimeOfM
 import nts.uk.ctx.at.record.app.command.monthly.reserveleave.RsvLeaRemNumEachMonthCommand;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 
 public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
@@ -66,13 +66,13 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 	}
 	
 	@Override
-	public void setRecords(AttendanceItemCommon item) {
+	public void setRecords(ConvertibleAttendanceItem item) {
 		MonthlyRecordWorkDto fullDto = (MonthlyRecordWorkDto) item;
 		this.affiliationInfo.setRecords(fullDto.getAffiliation());
 		this.attendanceTime.setRecords(fullDto.getAttendanceTime());
-		this.anyItem.setRecords(fullDto.getAffiliation());
-		this.annualLeave.setRecords(fullDto.getAttendanceTime());
-		this.reserveLeave.setRecords(fullDto.getAffiliation());
+		this.anyItem.setRecords(fullDto.getAnyItem());
+		this.annualLeave.setRecords(fullDto.getAnnLeave());
+		this.reserveLeave.setRecords(fullDto.getRsvLeave());
 	}
 
 	@Override

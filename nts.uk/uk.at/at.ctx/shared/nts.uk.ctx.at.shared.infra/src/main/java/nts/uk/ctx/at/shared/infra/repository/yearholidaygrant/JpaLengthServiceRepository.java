@@ -39,7 +39,7 @@ public class JpaLengthServiceRepository extends JpaRepository implements LengthS
 		val entity = new KshstLengthServiceTbl();
 		entity.kshstLengthServiceTblPK = new KshstLengthServiceTblPK(domain.getCompanyId(), domain.getYearHolidayCode().v(), domain.getGrantNum().v());
 		entity.allowStatus = domain.getAllowStatus().value;
-		entity.month = domain.getMonth().v();
+		entity.month = domain.getMonth() != null ? domain.getMonth().v() : 0;
 		entity.year = domain.getYear().v();
 		entity.standGrantDay = domain.getStandGrantDay().value;
 		return entity;
