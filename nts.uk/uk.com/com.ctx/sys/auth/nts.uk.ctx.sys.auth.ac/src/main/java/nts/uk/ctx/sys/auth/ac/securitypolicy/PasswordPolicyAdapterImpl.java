@@ -19,7 +19,7 @@ public class PasswordPolicyAdapterImpl implements PasswordPolicyAdapter{
 	public Optional<PasswordPolicyImport> getPasswordPolicy(String contractCode) {
 		Optional<PasswordPolicyDto> passwordPolicyOpt  =	this.passwordPolicyPub.getPasswordPolicy( contractCode); 
 		if(passwordPolicyOpt.isPresent()){
-			PasswordPolicyDto passwordPolicyDto =	passwordPolicyOpt.get();
+			return Optional.ofNullable(this.toImport(passwordPolicyOpt.get()));
 		}
 		return Optional.empty();
 	}
