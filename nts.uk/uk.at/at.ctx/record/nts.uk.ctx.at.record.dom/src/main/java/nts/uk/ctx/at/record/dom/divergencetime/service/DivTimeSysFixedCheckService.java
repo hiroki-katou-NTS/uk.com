@@ -368,6 +368,7 @@ public class DivTimeSysFixedCheckService {
 				});
 			});
 		});
+		shareContainer.share("LAST_TIME_CHECK_NO", divCheckNos);
 		return checkR;
 	}
 
@@ -499,15 +500,15 @@ public class DivTimeSysFixedCheckService {
 	
 	private void shareDivRefTime(boolean isBussiness, String hisId, List<Integer> divNos, BusinessTypeCode bsCode, 
 			DivCheckMasterShareContainer shareContainer){
-		
+		List<Integer> lastNos = shareContainer.getShared("LAST_TIME_CHECK_NO", () -> new ArrayList<>());
 		if(isBussiness){
 			String key = join(WT_DIV_REF_TIME_KEY, SEPERATOR, hisId, SEPERATOR, bsCode.toString());
-			if(!shareContainer.isShared(key)){
+			if(!shareContainer.isShared(key) || !lastNos.containsAll(divNos)){
 				shareContainer.share(key, wtDivRefTime.findByHistoryIdAndDivergenceTimeNos(bsCode, hisId, divNos));
 			}
 		} else {
 			String key = join(COM_DIV_REF_TIME_KEY, SEPERATOR, hisId);
-			if(!shareContainer.isShared(key)){
+			if(!shareContainer.isShared(key) || !lastNos.containsAll(divNos)){
 				shareContainer.share(key, comDivRefTime.findByHistoryIdAndDivergenceTimeNos(hisId, divNos));
 			}
 		}
@@ -546,7 +547,6 @@ public class DivTimeSysFixedCheckService {
 	@SuppressWarnings("unchecked")
 	private WorkTypeDivergenceReferenceTime getWTDivRefTime(int divNo, String hisId, BusinessTypeCode bsCode, 
 			DivCheckMasterShareContainer shareContainer) {
-		
 		List<WorkTypeDivergenceReferenceTime> lst = (List<WorkTypeDivergenceReferenceTime>) 
 				shareContainer.getShared(join(WT_DIV_REF_TIME_KEY, SEPERATOR, hisId, SEPERATOR, bsCode.toString()));
 		
@@ -594,17 +594,18 @@ public class DivTimeSysFixedCheckService {
 	private String getMessage(boolean isByWt, boolean isWithBonusText, String comId, int divNo, 
 			boolean isAlarm, BusinessTypeCode wtCode, DivCheckMasterShareContainer shareContainer) {
 		ErrorAlarmMessage message = null;
+		CompanyId comIdD = shareContainer.getShared("CompanyId", () -> new CompanyId(comId));
 		if(!isByWt) {
 			DivergenceTimeErrorAlarmMessage mes = shareContainer.getShared(
 					join(DIVERGENCE_MESSAGE_KEY, SEPERATOR, comId, SEPERATOR, String.valueOf(divNo)), 
-					() -> this.divMesRepo.findByDivergenceTimeNo(new CompanyId(comId), divNo).orElse(null));
+					() -> this.divMesRepo.findByDivergenceTimeNo(comIdD, divNo).orElse(null));
 			if(mes != null) {
 				message = isAlarm ? mes.getAlarmMessage().orElse(null) : mes.getErrorMessage().orElse(null);
 			}
 		} else {
 			WorkTypeDivergenceTimeErrorAlarmMessage mes = shareContainer.getShared(
 					join(DIVERGENCE_MESSAGE_KEY, SEPERATOR, comId, SEPERATOR, String.valueOf(divNo), SEPERATOR, wtCode.toString()), 
-					() -> this.wtDivMesRepo.getByDivergenceTimeNo(divNo, new CompanyId(comId), wtCode).orElse(null));
+					() -> this.wtDivMesRepo.getByDivergenceTimeNo(divNo, comIdD, wtCode).orElse(null));
 			if(mes != null) {
 				message = isAlarm ? mes.getAlarmMessage().orElse(null) : mes.getErrorMessage().orElse(null);
 			}
