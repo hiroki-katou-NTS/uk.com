@@ -2,8 +2,7 @@ package nts.uk.ctx.at.function.dom.attendancerecord.export.setting;
 
 import nts.arc.primitive.LongPrimitiveValue;
 import nts.arc.primitive.PrimitiveValue;
-import nts.arc.primitive.constraint.LongMaxValue;
-import nts.arc.primitive.constraint.LongMinValue;
+import nts.arc.primitive.constraint.*;
 
 /**
  * The Class OutputSettingCode.
@@ -11,6 +10,8 @@ import nts.arc.primitive.constraint.LongMinValue;
 //出力項目設定コード
 @LongMinValue(0)
 @LongMaxValue(99)
+@StringCharType(CharType.NUMERIC)
+@StringMaxLength(2)
 public class ExportSettingCode extends LongPrimitiveValue<PrimitiveValue<Long>> {
 
 	/** serialVersionUID. */
