@@ -147,7 +147,8 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 		if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
 			
 			// 休出を集計するか確認する
-			this.confirmAggregateHolidayWork(companyId, workInfo, excessOutsideTimeSet, repositories);
+			isAggregateHolidayWork = this.confirmAggregateHolidayWork(
+					companyId, workInfo, excessOutsideTimeSet, repositories);
 		}
 		if (isAggregateHolidayWork){
 			

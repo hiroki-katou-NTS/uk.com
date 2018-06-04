@@ -311,6 +311,8 @@ module nts.uk.at.view.kbt002.f {
             execId:              string;
             prevExecDateTimeEx:  string;
             taskLogList:         Array<TaskLog>;
+            taskLogExecId:        string;   
+            
             
         }
         
@@ -333,6 +335,7 @@ module nts.uk.at.view.kbt002.f {
             execId:              KnockoutObservable<string> = ko.observable('');
             prevExecDateTimeEx:  KnockoutObservable<string> = ko.observable('');
             taskLogList:         KnockoutObservableArray<TaskLog> = ko.observableArray([]);
+            taskLogExecId:  string;
             constructor(param: IExecutionLog) {
                 let self = this;
                 self.execItemCd(param.execItemCd || '');
@@ -353,6 +356,7 @@ module nts.uk.at.view.kbt002.f {
                 self.execId(param.execId || '');
                 self.prevExecDateTimeEx(param.prevExecDateTimeEx || '');
                 self.taskLogList(param.taskLogList || []);
+                self.taskLogExecId = param.taskLogExecId||'';
             }
         }
         
