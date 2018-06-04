@@ -61,6 +61,7 @@ module nts.uk.at.view.kdm001.g.viewmodel {
                 self.expiredDate(info.rowValue.expiredDate);
                 self.unUsedDays(info.rowValue.unUsedDays);
                 self.unknownDate(info.rowValue.unknownDatePayout);
+                self.stateAtr(info.rowValue.stateAtr),
                 self.checkBox(info.rowValue.stateAtr == 1 || info.rowValue.stateAtr == 2);
                 
             }
@@ -83,7 +84,8 @@ module nts.uk.at.view.kdm001.g.viewmodel {
                     lawAtr: parseInt(self.lawAtr()),
                     occurredDays: parseFloat(self.occurredDays()),
                     unUsedDays: self.unUsedDays(),
-                    checkBox: self.checkBox()
+                    checkBox: self.checkBox(),
+                    stateAtr: self.stateAtr()
                 };
                 service.updatePayout(data).done((result) => {
                     if (result && result.length > 0) {
