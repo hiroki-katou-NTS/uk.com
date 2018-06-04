@@ -46,8 +46,19 @@
 
 #D7_1 {
 	width: 80px;
+	margin-left: 10px;
 }
 
 .labelTitle {
 	width: 70px;
+}
+
+
+.ntsDatepicker {
+    width: 90px !important;
+    margin-left: 10px !important;
+}
+.style {
+    min-width: 115px !important;
+    margin-left: 10px !important;
 }

@@ -5,25 +5,25 @@ module nts.uk.at.view.kdm001.d.viewmodel {
     import block = nts.uk.ui.block;
     import dialog    = nts.uk.ui.dialog;
     export class ScreenModel {
-        workCode: KnockoutObservable<string>      = ko.observable('');
-        workplaceName: KnockoutObservable<string> = ko.observable('');
-        employeeCode: KnockoutObservable<string>  = ko.observable('');
-        employeeId: KnockoutObservable<string>  = ko.observable('');
-        employeeName: KnockoutObservable<string>  = ko.observable('');
-        remainDays: KnockoutObservable<number>    = ko.observable(0);
-        unit: KnockoutObservable<string>          = ko.observable('');
-        lawAtr: KnockoutObservable<number>        = ko.observable(0);
-        pickUp: KnockoutObservable<boolean>    = ko.observable(true);;
-        pause: KnockoutObservable<boolean> = ko.observable(true);
-        checkedSplit: KnockoutObservable<boolean>      = ko.observable(false);
-        dayOff: KnockoutObservable<string>        = ko.observable('');
-        expiredDate: KnockoutObservable<string>     = ko.observable('');
-        subDayoffDate: KnockoutObservable<string>     = ko.observable('');
-        holidayDate: KnockoutObservable<string>    = ko.observable('');
-        requiredDays: KnockoutObservable<number> = ko.observable(1);
+        workCode: KnockoutObservable<string>                      = ko.observable('');
+        workplaceName: KnockoutObservable<string>                 = ko.observable('');
+        employeeCode: KnockoutObservable<string>                  = ko.observable('');
+        employeeId: KnockoutObservable<string>                    = ko.observable('');
+        employeeName: KnockoutObservable<string>                  = ko.observable('');
+        remainDays: KnockoutObservable<number>                    = ko.observable();
+        unit: KnockoutObservable<string>                          = ko.observable('');
+        lawAtr: KnockoutObservable<number>                        = ko.observable(0);
+        pickUp: KnockoutObservable<boolean>                       = ko.observable(true);;
+        pause: KnockoutObservable<boolean>                        = ko.observable(true);
+        checkedSplit: KnockoutObservable<boolean>                 = ko.observable(false);
+        dayOff: KnockoutObservable<string>                        = ko.observable('');
+        expiredDate: KnockoutObservable<string>                   = ko.observable('');
+        subDayoffDate: KnockoutObservable<string>                 = ko.observable('');
+        holidayDate: KnockoutObservable<string>                   = ko.observable('');
+        requiredDays: KnockoutObservable<number>                  = ko.observable(1);
         typeHoliday: KnockoutObservableArray<model.ItemModel>     = ko.observableArray(model.getTypeHoliday());
-        itemListHoliday: KnockoutObservableArray<model.ItemModel>    = ko.observableArray(model.getNumberOfDays());
-        occurredDays: KnockoutObservable<number>              = ko.observable(1);
+        itemListHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
+        occurredDays: KnockoutObservable<number>                  = ko.observable(1);
         itemListSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
         subDays: KnockoutObservable<number>           = ko.observable(1);
         itemListOptionSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
@@ -98,8 +98,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                     self.enableSplit(true); 
             } else {
                 self.enableSplit(false);
-               
-             }
+            }
         }
 
         initScreen(): void {
@@ -153,6 +152,9 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                         }
                         if (error === "Msg_737_SubPay") {
                             $('#D11_1').ntsError('set', { messageId: "Msg_737" });
+                        }
+                        if (error === "Msg_737_splitMana") {
+                            $('#D12_2').ntsError('set', { messageId: "Msg_737" });
                         }
                         if (error === "Msg_740") {
                             $('#D6_1').ntsError('set', { messageId: "Msg_740" });
@@ -217,6 +219,9 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                     dialog.info({ messageId: "Msg_725" }).then(() => {
                  });
                 } else {
+                    if (this.remainDays == undefined) {
+                        this.calRemainDays();
+                    }
                     this.submitForm();
                 }
             }

@@ -104,27 +104,19 @@ public class PayoutManagementDataService {
 			}
 		}
 		if (pause) {
-				errors.addAll(this.checkDateClosing(subMana.getHolidayDate().getDayoffDate().orElse(null), payMana.getPayoutDate().getDayoffDate().orElse(null),
-						splitMana.getHolidayDate().getDayoffDate().orElse(null), closureDate, closureId, checkedSplit));
-			if (subMana.getHolidayDate().getDayoffDate().get().equals(payMana.getPayoutDate().getDayoffDate().orElse(null))) {
-				errors.add("Msg_729_SubPay");
-			}
-			if (checkedSplit) {
-				if(subMana.getHolidayDate().getDayoffDate().get().equals(splitMana.getHolidayDate().getDayoffDate().orElse(null))) {
-					errors.add("Msg_744");
-				}
-				if(this.checkDateClosing(splitMana.getHolidayDate().getDayoffDate().get(), closureDate, closureId)) {
-					errors.add("Msg_744");
-				}
-				if(splitMana.getHolidayDate().getDayoffDate().get().equals(payMana.getPayoutDate().getDayoffDate().orElse(null))) {
-					errors.add("Msg_729");
-				}
-			}
 			if (this.checkInfoSubPayMana(subMana)) {
 				errors.add("Msg_737_SubPay");
 			}
+			errors.addAll(this.checkOffHolidate(subMana.getHolidayDate().getDayoffDate().orElse(null), payMana.getPayoutDate().getDayoffDate().orElse(null),
+						splitMana.getHolidayDate().getDayoffDate().orElse(null), closureDate, closureId, checkedSplit));
+			if (checkedSplit) {
+				if (this.checkInfoSubPayMana(splitMana)) {
+					errors.add("Msg_737_splitMana");
+				}
+			}
+
 		}
-		errors.addAll(checkHolidate(pickUp, pause, checkedSplit, subMana.getRequiredDays().v(), splitMana.getRequiredDays().v(), payMana.getOccurredDays().v() ));
+		errors.addAll(checkHolidate(pickUp, pause, checkedSplit, splitMana.getRequiredDays().v(),subMana.getRequiredDays().v(), payMana.getOccurredDays().v() ));
 		if (errors.isEmpty()) {
 			if (pickUp) {
 				payoutManagementDataRepository.create(payMana);
@@ -168,7 +160,7 @@ public class PayoutManagementDataService {
 		return false;
 	}
 	
-	private List<String> checkDateClosing(GeneralDate restDate,GeneralDate workDate,GeneralDate splitDate, Optional<GeneralDate> closureDate, int closureId,Boolean split) {
+	private List<String> checkOffHolidate(GeneralDate restDate,GeneralDate workDate,GeneralDate splitDate, Optional<GeneralDate> closureDate, int closureId,Boolean split) {
 		List<String> errors = new ArrayList<String>();
 		if(checkDateClosing(restDate,closureDate,closureId)) {
 			errors.add("Msg_744");
