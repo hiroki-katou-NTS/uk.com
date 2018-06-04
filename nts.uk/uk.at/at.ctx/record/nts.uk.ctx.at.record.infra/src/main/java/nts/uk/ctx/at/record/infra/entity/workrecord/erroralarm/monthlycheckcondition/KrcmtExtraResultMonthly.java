@@ -59,7 +59,7 @@ public class KrcmtExtraResultMonthly extends UkJpaEntity implements Serializable
 	
 	// attditemcondition
 	@Column(name = "OPERATOR_BETWEEN_GROUPS")
-	public int operatorBetweenGroups;
+	public Integer operatorBetweenGroups;
 
 	@Column(name = "GROUP2_USE_ATR")
 	@Basic(optional = true)
@@ -88,7 +88,7 @@ public class KrcmtExtraResultMonthly extends UkJpaEntity implements Serializable
 	
 	public KrcmtExtraResultMonthly(
 			String errorAlarmCheckID, int sortBy, String extraResultMonName, int useAtr, int typeCheckItem, int messageBold, String messageColor, String messageDisplay, 
-			int operatorBetweenGroups,
+			Integer operatorBetweenGroups,
 			Integer group2UseAtr, String atdItemConditionGroup1, KrcstErAlConGroup krcstErAlConGroup1, String atdItemConditionGroup2, KrcstErAlConGroup krcstErAlConGroup2) {
 		super();
 		this.errorAlarmCheckID = errorAlarmCheckID;
@@ -128,14 +128,16 @@ public class KrcmtExtraResultMonthly extends UkJpaEntity implements Serializable
 	}
 	
 	public ExtraResultMonthly toDomain() {
-		AttendanceItemCondition attdItemCon = AttendanceItemCondition.init(
+		AttendanceItemCondition attdItemCon = null;
+		if(this.operatorBetweenGroups != null) {
+		 attdItemCon = AttendanceItemCondition.init(
 				//LogicalOperator operatorBetweenGroups, Boolean group2UseAtr
 				EnumAdaptor.valueOf(this.operatorBetweenGroups, LogicalOperator.class),	
-				new Boolean(this.group2UseAtr.intValue()==1?true:false)
+				this.group2UseAtr ==null?null:new Boolean(this.group2UseAtr.intValue()==1?true:false)
 				);
 			attdItemCon.setGroup1(krcstErAlConGroup1.toDomain(AppContexts.user().companyId(), this.errorAlarmCheckID));
 			attdItemCon.setGroup2(krcstErAlConGroup2 ==null?null :krcstErAlConGroup2.toDomain(AppContexts.user().companyId(), this.errorAlarmCheckID));
-		
+		}
 		
 		return new ExtraResultMonthly(
 			this.errorAlarmCheckID,

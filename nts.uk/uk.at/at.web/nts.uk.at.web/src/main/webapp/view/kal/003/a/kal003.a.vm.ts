@@ -381,7 +381,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         item.monAlarmCheckCon().listFixExtraMon(_listFixExtraMon);
                         
                         let _listExtraMon: Array<model.ExtraResultMonthly> = _.map(result.monAlarmCheckConDto.arbExtraCon, acc => {
-                            return new model.ExtraResultMonthly(acc);
+                            return shareutils.getDefaultExtraResultMonthly(acc);
                         });
                         item.monAlarmCheckCon().listExtraResultMonthly(_listExtraMon);
                         self.selectedAlarmCheckCondition(item);

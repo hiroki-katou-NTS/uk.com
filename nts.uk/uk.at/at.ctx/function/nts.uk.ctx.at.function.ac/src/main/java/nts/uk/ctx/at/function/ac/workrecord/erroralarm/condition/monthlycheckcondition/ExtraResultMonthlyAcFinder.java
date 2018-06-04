@@ -47,6 +47,8 @@ public class ExtraResultMonthlyAcFinder implements ExtraResultMonthlyFunAdapter 
 
 	private ExtraResultMonthlyDomainEventDto convertToExport(ExtraResultMonthlyPubEx export) {
 		return new ExtraResultMonthlyDomainEventDto(export.getErrorAlarmCheckID(), export.getSortBy(), export.getNameAlarmExtraCon(), export.isUseAtr(), export.getTypeCheckItem(), export.isMessageBold(), export.getMessageColor(),
-				export.getDisplayMessage(), WorkRecordExtraConAcFinder.convertToAttendanceItemCon(export.getCheckConMonthly()));
+				export.getDisplayMessage(),
+				export.getCheckConMonthly()==null?null:
+				WorkRecordExtraConAcFinder.convertToAttendanceItemCon(export.getCheckConMonthly()));
 	}
 }

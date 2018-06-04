@@ -38,6 +38,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
         category : KnockoutObservable<number> = ko.observable(0);
         //monthly
         listEnumRoleType: KnockoutObservableArray<any>;
+        listTypeCheckVacation : KnockoutObservableArray<any>;
         private settingExtraMon : sharemodel.ExtraResultMonthly;
         extraResultMonthly : KnockoutObservable<sharemodel.ExtraResultMonthly>;
         
@@ -84,9 +85,13 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 case sharemodel.CATEGORY.MONTHLY :
                     //monthly
                     self.listEnumRoleType = ko.observableArray(__viewContext.enums.TypeMonCheckItem);
-                    self.settingExtraMon = $.extend({}, shareutils.getDefaultExtraResultMonthly(0), option.data);
-                    let extraResultMonthly = shareutils.convertTransferDataToExtraResultMonthly(self.settingExtraMon);
-                    self.extraResultMonthly = ko.observable(extraResultMonthly);
+                    self.listTypeCheckVacation = ko.observableArray(__viewContext.enums.TypeCheckVacation);
+//                    self.settingExtraMon = $.extend({}, shareutils.getDefaultExtraResultMonthly(0), option.data);
+//                    let extraResultMonthly = shareutils.convertTransferDataToExtraResultMonthly(self.settingExtraMon);
+                    let data = ko.mapping.fromJS(option.data);
+                    data.currentConditions = ko.observableArray([]);
+                    sharemodel.setupCurrent(data);
+                    self.extraResultMonthly = ko.observable(data);
                 break ;
                 default :break;
             }

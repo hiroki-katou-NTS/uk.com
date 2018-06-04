@@ -46,7 +46,8 @@ public class MonAlarmCheckConEventSubscriber implements DomainEventSubscriber<Mo
 				export.isCheckAdd(),
 				export.isCheckDelete(),
 				export.getListExtraResultMonthly().stream()
-				.map(c->convertToExtraResultMonthlyDomainEventDto(c)).collect(Collectors.toList())
+				.map(c->convertToExtraResultMonthlyDomainEventDto(c)).collect(Collectors.toList()),
+				export.getListEralCheckIDOld()
 				);
 	}
 	

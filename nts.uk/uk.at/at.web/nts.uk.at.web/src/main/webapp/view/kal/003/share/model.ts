@@ -291,163 +291,241 @@ module nts.uk.at.view.kal003.share.model {
         OTHER = 2
     }
     // class and interface : ExtraResultMonthly
-    export interface IExtraResultMonthly{
-        errorAlarmCheckID : string;
-        sortBy : number;
-        nameAlarmExtraCon : string;
-        useAtr : boolean;
-        typeCheckItem : number;
-        messageBold : boolean;
-        messageColor : string;
-        displayMessage : string;
-        checkConMonthly : IAttendanceItemCondition;
-        rowId: number;
-        specHolidayCheckCon : ISpecHolidayCheckCon;
-        checkRemainNumberMon : ICheckRemainNumberMon;
-        agreementCheckCon36 : IAgreementCheckCon36;
-        
-    }
+//    export interface IExtraResultMonthly{
+//        errorAlarmCheckID : string;
+//        sortBy : number;
+//        nameAlarmExtraCon : string;
+//        useAtr : boolean;
+//        typeCheckItem : number;
+//        messageBold : boolean;
+//        messageColor : string;
+//        displayMessage : string;
+//        checkConMonthly : IAttendanceItemCondition;
+//        rowId: number;
+//        specHolidayCheckCon : ISpecHolidayCheckCon;
+//        checkRemainNumberMon : ICheckRemainNumberMon;
+//        agreementCheckCon36 : IAgreementCheckCon36;
+//        
+//    }
     
-    export class ExtraResultMonthly{
-        errorAlarmCheckID : string;
-        sortBy : number;
-        nameAlarmExtraCon : KnockoutObservable<string> = ko.observable('');
-        useAtr : KnockoutObservable<boolean> = ko.observable(false);
-        typeCheckItem : KnockoutObservable<number> = ko.observable(0);
-        messageBold : KnockoutObservable<boolean> = ko.observable(false);
-        messageColor : KnockoutObservable<string> = ko.observable('');
+    export class ExtraResultMonthly {
+        errorAlarmCheckID : KnockoutObservable<string> = ko.observable('');//
+        sortBy : KnockoutObservable<number> = ko.observable('');//
+        nameAlarmExtraCon : KnockoutObservable<string> = ko.observable('');//
+        useAtr : KnockoutObservable<boolean> = ko.observable(false);//
+        typeCheckItem : KnockoutObservable<number> = ko.observable(0);//
+        messageBold : KnockoutObservable<boolean> = ko.observable(false);//
+        messageColor : KnockoutObservable<string> = ko.observable('');//
         displayMessage : KnockoutObservable<string> = ko.observable('');
-        checkConMonthly : KnockoutObservable<AttendanceItemCondition>;
-        rowId: KnockoutObservable<number> = ko.observable(0);
-        specHolidayCheckCon : KnockoutObservable<SpecHolidayCheckCon> = ko.observable(null);
-        checkRemainNumberMon : KnockoutObservable<CheckRemainNumberMon> = ko.observable(null);
-        agreementCheckCon36 : KnockoutObservable<AgreementCheckCon36> = ko.observable(null); 
-        constructor(param: IExtraResultMonthly) {
+        rowId: KnockoutObservable<number> = ko.observable(0);//common
+        conditions: KnockoutObservableArray<ExtractCondition>;       
+        currentConditions: KnockoutObservableArray<ExtractCondition>;   
+        constructor(param: any) {
             let self = this;
             self.errorAlarmCheckID = param.errorAlarmCheckID || '';
             self.sortBy = param.sortBy || 0;
             self.nameAlarmExtraCon(param.nameAlarmExtraCon);
             self.useAtr(param.useAtr || false);
-            self.typeCheckItem(param.typeCheckItem || 0);
             self.messageBold(param.messageBold);
             self.messageColor(param.messageColor);
             self.displayMessage(param.displayMessage || '');
-            self.checkConMonthly = ko.observable(param && param.checkConMonthly ? new AttendanceItemCondition(param.checkConMonthly) : null);
             self.rowId(param.rowId || 0);
-            self.specHolidayCheckCon( param && param.specHolidayCheckCon?new SpecHolidayCheckCon(param.specHolidayCheckCon) :null);
-            self.checkRemainNumberMon( param && param.checkRemainNumberMon?new CheckRemainNumberMon (param.checkRemainNumberMon) :null);
-            self.agreementCheckCon36( param && param.agreementCheckCon36?  new AgreementCheckCon36(param.agreementCheckCon36) : null);
+            let temp = [];
+            temp.push(new AttdItemConCommon(param.checkConMonthly));
+            temp.push(new SpecHolidayCheckCon(param.specHolidayCheckCon));
+            temp.push(new CheckRemainNumberMon (param.checkRemainNumberMon));
+            let ag36 = new AgreementCheckCon36(param.agreementCheckCon36);
+            temp.push(ag36);
+            temp.push(ag36.setupDefaultOtherType(param.agreementCheckCon36));
+            
+            self.conditions = ko.observableArray(temp);
+            self.currentConditions = ko.observableArray(temp);
+            self.typeCheckItem = ko.observable(param.typeCheckItem || 0);
+            
         }
     }
     
-    export interface ISpecHolidayCheckCon{
-        errorAlarmCheckID : string ;
-        compareOperator : number;
-        numberDayDiffHoliday1 : number;
-        numberDayDiffHoliday2 : number;
+    export function setupCurrent(data: ExtraResultMonthly){
+        let self = data;
+        self.typeCheckItem.subscribe((v) => {
+            let current = (_.filter(self.conditions, (con: ExtractCondition) => {
+                return con.extractType() === v;
+            }));
+            self.currentConditions(current);
+        });    
+        self.typeCheckItem.valueHasMutated();
     }
     
-    export class SpecHolidayCheckCon{
-        errorAlarmCheckID : string ;
-        compareOperator : KnockoutObservable<number> = ko.observable(0);
+    export class ExtractCondition {
+        errorAlarmCheckID : KnockoutObservable<string>= ko.observable('') ;
+        operator: KnockoutObservable<number>= ko.observable(0); 
+        extractType: KnockoutObservable<number>= ko.observable(0);
+        textLabel: KnockoutObservable<string>= ko.observable('');
+        haveTypeVacation :KnockoutObservable<boolean>= ko.observable(false);
+        haveCombobox: KnockoutObservable<boolean>= ko.observable(false);
+        haveSelect: KnockoutObservable<boolean>= ko.observable(false);
+        haveGroup: KnockoutObservable<boolean>= ko.observable(false);
+        haveInput: KnockoutObservable<number>= ko.observable(0);
+    }
+    
+//    export interface ISpecHolidayCheckCon{
+//        errorAlarmCheckID : string ;
+//        compareOperator : number;
+//        numberDayDiffHoliday1 : number;
+//        numberDayDiffHoliday2 : number;
+//    }
+    
+    export class SpecHolidayCheckCon extends ExtractCondition{
         numberDayDiffHoliday1 : KnockoutObservable<number> = ko.observable(0);
         numberDayDiffHoliday2 : KnockoutObservable<number> = ko.observable(null);
-        constructor(data : ISpecHolidayCheckCon){
-            this.errorAlarmCheckID = data.errorAlarmCheckID;
-            this.compareOperator(data.compareOperator || 0);
+        constructor(data : any){
+            super();
+            this.errorAlarmCheckID(data.errorAlarmCheckID);
+            this.operator(data.compareOperator || 0);
+            this.extractType(0);
+            this.textLabel("所定公休日数の");
+            this.haveTypeVacation(false);
+            this.haveCombobox(true);
+            this.haveSelect(false);
+            this.haveGroup(false);
+            this.haveInput(0);
+            
             this.numberDayDiffHoliday1(data.numberDayDiffHoliday1 || 0);
             this.numberDayDiffHoliday2(data.numberDayDiffHoliday2 || null);    
         }
     }
     
+//    export interface ICheckRemainNumberMon{
+//        errorAlarmCheckID : string ;
+//        checkVacation : number;
+//        checkOperatorType : number;
+//        compareRangeEx : ICompareRangeImport;
+//        compareSingleValueEx : ICompareSingleValueImport;
+//    }
     
-    
-    export interface ICheckRemainNumberMon{
-        errorAlarmCheckID : string ;
-        checkVacation : number;
-        checkOperatorType : number;
-        compareRangeEx : ICompareRangeImport;
-        compareSingleValueEx : ICompareSingleValueImport;
-    }
-    
-    export class CheckRemainNumberMon{
-        errorAlarmCheckID : string ;
+    export class CheckRemainNumberMon extends ExtractCondition{
         checkVacation : KnockoutObservable<number> = ko.observable(0);
-        checkOperatorType : KnockoutObservable<number> = ko.observable(0);
         compareRangeEx : KnockoutObservable<CompareRangeImport> = ko.observable(null); 
         compareSingleValueEx : KnockoutObservable<CompareSingleValueImport> = ko.observable(null);
-        constructor(data : ICheckRemainNumberMon){
-            this.errorAlarmCheckID = data.errorAlarmCheckID;
+        constructor(data : any){
+            super();
+            this.errorAlarmCheckID(data.errorAlarmCheckID);
+            this.operator(data.checkOperatorType || 0);
+            this.extractType(3);
+            this.textLabel("");
+            this.haveTypeVacation(true);
+            this.haveCombobox(true);
+            this.haveSelect(true);
+            this.haveGroup(false);
+            this.haveInput(3);
+            
             this.checkVacation(data.checkVacation || 0);
-            this.checkOperatorType(data.checkOperatorType || 0);
             this.compareRangeEx(data && data.compareRangeEx?new CompareRangeImport(data.compareRangeEx) : null);
             this.compareSingleValueEx(data && data.compareSingleValueEx? new CompareSingleValueImport( data.compareSingleValueEx) : null);
             
         }
     }
-    
-    export interface ICompareRangeImport{
-        compareOperator : number;
-        startValue : ICheckConValueRemainNumberImport;
-        endValue :  ICheckConValueRemainNumberImport;
-    }
+//    
+//    export interface ICompareRangeImport{
+//        compareOperator : number;
+//        startValue : ICheckConValueRemainNumberImport;
+//        endValue :  ICheckConValueRemainNumberImport;
+//    }
     
     export class CompareRangeImport{
         compareOperator : KnockoutObservable<number> = ko.observable(0);
         startValue : KnockoutObservable<CheckConValueRemainNumberImport> = ko.observable(null);
         endValue : KnockoutObservable<CheckConValueRemainNumberImport> = ko.observable(null);   
-        constructor(data : ICompareRangeImport ){
+        constructor(data : any ){
         this.compareOperator(data.compareOperator ||0);
             this.startValue(data && data.startValue?new CheckConValueRemainNumberImport(data.startValue) : null);    
             this.endValue(data && data.endValue?new CheckConValueRemainNumberImport(data.endValue) : null);
         }
     }
     
-    export interface ICompareSingleValueImport{
-        compareOperator : number;
-        value : ICheckConValueRemainNumberImport;
-    }
+//    export interface ICompareSingleValueImport{
+//        compareOperator : number;
+//        value : ICheckConValueRemainNumberImport;
+//    }
     
     export class CompareSingleValueImport{
         compareOperator : KnockoutObservable<number> = ko.observable(0);
         value : KnockoutObservable<CheckConValueRemainNumberImport> = ko.observable(null);
-        constructor(data : ICompareSingleValueImport){
+        constructor(data : any){
         this.compareOperator(data.compareOperator ||0);
         this.value(data && data.value?new CheckConValueRemainNumberImport(data.value) : null);
         }
     }
     
-    export interface ICheckConValueRemainNumberImport{
-        daysValue : number;
-        timeValue :number;
-    }
-    
+//    export interface ICheckConValueRemainNumberImport{
+//        daysValue : number;
+//        timeValue :number;
+//    }
+//    
     export class CheckConValueRemainNumberImport {
         daysValue : KnockoutObservable<number> = ko.observable(0);
         timeValue : KnockoutObservable<number> = ko.observable(0);
-        constructor(data : ICheckConValueRemainNumberImport){
+        constructor(data : any){
             this.daysValue(data.daysValue || 0);
             this.timeValue(data.timeValue || null); 
         }
     }
     
-    export interface IAgreementCheckCon36{
-        errorAlarmCheckID: string;
-        classification : number;
-        compareOperator : number;
-        eralBeforeTime : number;
+//    export interface IAgreementCheckCon36{
+//        errorAlarmCheckID: string;
+//        classification : number;
+//        compareOperator : number;
+//        eralBeforeTime : number;
+//    }
+    
+    export class AgreementCheckCon36 extends ExtractCondition {
+        classification : KnockoutObservable<number> = ko.observable(0);
+        eralBeforeTime : KnockoutObservable<number> = ko.observable(0);
+        constructor(data : any){
+            super();
+            this.errorAlarmCheckID(data.errorAlarmCheckID);
+            this.operator(data.compareOperator || 0);
+            this.extractType(data.classification == 0 ? 1 : 2);
+            this.textLabel(data.classification == 0 ? "エラー時間" : "アラーム時間");
+            this.haveTypeVacation(false);
+            this.haveCombobox(true);
+            this.haveSelect(false);
+            this.haveGroup(false);
+            this.haveInput(data.classification == 0 ? 1 : 2);
+            
+            this.classification(data.classification || 0);
+            this.eralBeforeTime(data.eralBeforeTime || 0);
+        }
+        
+        setupDefaultOtherType(data : any): AgreementCheckCon36 {
+            data.classification = data.classification === 0 ? 1 : 0;
+            data.compareOperator = 0;
+            data.eralBeforeTime = 0;
+            return new AgreementCheckCon36(data);
+        }
     }
     
-    export class AgreementCheckCon36{
-        errorAlarmCheckID: string;
-        classification : KnockoutObservable<number> = ko.observable(0);
-        compareOperator : KnockoutObservable<number> = ko.observable(0);
-        eralBeforeTime : KnockoutObservable<number> = ko.observable(0);
-        constructor(data : IAgreementCheckCon36){
-            this.errorAlarmCheckID = data.errorAlarmCheckID;
-            this.classification(data.classification || 0);
-            this.compareOperator(data.compareOperator || 0);
-            this.eralBeforeTime(data.eralBeforeTime || 0);
+    export class AttdItemConCommon extends ExtractCondition{
+        group1: KnockoutObservable<ErAlConditionsAttendanceItem>;
+        group2UseAtr: KnockoutObservable<boolean> = ko.observable(false);
+        group2: KnockoutObservable<ErAlConditionsAttendanceItem>;
+        
+        constructor(param: any) {
+            super();
+            let self = this;
+            self.errorAlarmCheckID(param.errorAlarmCheckID);
+            self.operator(param ? param.operatorBetweenGroups || 0 : 0);
+            self.extractType(8);
+            self.textLabel("");
+            this.haveTypeVacation(false);
+            this.haveCombobox(false);
+            this.haveSelect(false);
+            this.haveGroup(true);   
+            this.haveInput(8);
+            
+            self.group1 = ko.observable(param ? new ErAlConditionsAttendanceItem(param.group1) : null);
+            self.group2UseAtr(param ? param.group2UseAtr || false : false);
+            self.group2 = ko.observable(param ? new ErAlConditionsAttendanceItem(param.group2) : null);
         }
     }
 
@@ -486,6 +564,8 @@ module nts.uk.at.view.kal003.share.model {
             self.rowId(param.rowId || 0);
         }
     }
+    
+    
 
     //---------------- KAL003 - B begin----------------//
     //Condition of group (C screen) ErAlAtdItemCondition
@@ -700,7 +780,7 @@ module nts.uk.at.view.kal003.share.model {
             if (self.compareEndValue() == null) self.compareEndValue(0);
             let param = ko.mapping.toJS(self);
 
-            nts.uk.ui.windows.setShared("KDW007BParams", param, true);
+            nts.uk.ui.windows.setShared("KDW007BParams", {mode: 0, data: param}, true);
             nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/b/index.xhtml", { title: "計算式の設定" }).onClosed(() => {
                 let output = getShared("KDW007BResult");
                 if (output) {

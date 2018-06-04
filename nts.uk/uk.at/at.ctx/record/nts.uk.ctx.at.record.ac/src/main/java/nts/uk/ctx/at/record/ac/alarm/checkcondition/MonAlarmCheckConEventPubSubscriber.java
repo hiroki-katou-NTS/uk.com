@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.ac.alarm.checkcondition;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -8,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.event.DomainEventSubscriber;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.pub.alarm.checkcondition.MonAlarmCheckConEventPub;
@@ -79,76 +81,172 @@ public class MonAlarmCheckConEventPubSubscriber implements DomainEventSubscriber
 				// add ExtraResultMonthly
 				String errorAlarmCheckID = IdentifierUtil.randomUniqueId();
 				extraResultMonthly.setErrorAlarmCheckID(errorAlarmCheckID);
-				extraResultMonthlyRepo.addExtraResultMonthly(convertToExtraResultMonDto(extraResultMonthly));
+				addExtraResultMonthly(convertToExtraResultMonDto(extraResultMonthly));
 
 				if (extraResultMonthly.getTypeCheckItem() == 0) {
 
 					// add SpecHolidayCheckCon
 					extraResultMonthly.getSpecHolidayCheckCon().setErrorAlarmCheckID(errorAlarmCheckID);
 					SpecHolidayCheckCon specHolidayCheckCon = convertToSpecHolidayCheckConDto(extraResultMonthly.getSpecHolidayCheckCon());
-					specHolidayCheckConRepo.addSpecHolidayCheckCon(specHolidayCheckCon);
-				}else if (extraResultMonthly.getTypeCheckItem() == 1 || extraResultMonthly.getTypeCheckItem() == 2) {
+					addSpecHolidayCheckCon(specHolidayCheckCon);
+				} else if (extraResultMonthly.getTypeCheckItem() == 1 || extraResultMonthly.getTypeCheckItem() == 2) {
 					// add listAgreementCheckCon36
 					extraResultMonthly.getAgreementCheckCon36().setErrorAlarmCheckID(errorAlarmCheckID);
 					AgreementCheckCon36 agreementCheckCon36 = convertToAgreementCheckCon36AdapterPubDto(extraResultMonthly.getAgreementCheckCon36());
-					agreementCheckCon36Repo.addAgreementCheckCon36(agreementCheckCon36);
-				}else {
+					addAgreementCheckCon36(agreementCheckCon36);
+				} else if (extraResultMonthly.getTypeCheckItem() == 8) {
+
+				} else { // when typecheck = 3 4 5 6 7
 					// add CheckRemainNumberMon
 					extraResultMonthly.getCheckRemainNumberMon().setErrorAlarmCheckID(errorAlarmCheckID);
 					CheckRemainNumberMon checkRemainNumberMon = convertToCheckRemainNumberMonAdapterPubDto(extraResultMonthly.getCheckRemainNumberMon());
-					checkRemainNumberMonRepo.addCheckRemainNumberMon(checkRemainNumberMon);
+					addCheckRemainNumberMon(checkRemainNumberMon);
 				}
-				
 
 			}
 		} else if (domainEvent.isCheckUpdate()) {
+			List<String> listEralIDOld = domainEvent.getListEralCheckIDOld();
+			List<String> listEralIDNew = listCheckConMonthly.stream().map(c -> c.getErrorAlarmCheckID()).collect(Collectors.toList());
+			List<String> listEralIdRemove = new ArrayList<>();
+			for(String eralIdOld : listEralIDOld  ) {
+				boolean checkExist = false;
+				for(String eralIdNew : listEralIDNew  ) {
+					if(eralIdOld.equals(eralIdNew)) {
+						checkExist = true;
+						break;
+					}
+				}
+				if(checkExist) {
+					listEralIdRemove.add(eralIdOld);
+				}
+			}
+			
+			//remove
+			for (String eralCheckID : listEralIdRemove) {
+				// delete ExtraResultMonthly
+				removeExtraResultMonthly(eralCheckID);
+				// delete SpecHolidayCheckCon
+				removeSpecHolidayCheckCon(eralCheckID);
+				// delete CheckRemainNumberMon
+				removeCheckRemainNumberMon(eralCheckID);
+				// delete agreementCheckCon36
+				removeAgreementCheckCon36(eralCheckID);
+			}
+			
 			for (ExtraResultMonthlyDomainEventPubDto extraResultMonthly : listCheckConMonthly) {
-				String errorAlarmCheckID = extraResultMonthly.getErrorAlarmCheckID();
 				// update ExtraResultMonthly
-				if (extraResultMonthlyRepo.getExtraResultMonthlyByID(errorAlarmCheckID).isPresent()) {
-					extraResultMonthlyRepo.updateExtraResultMonthly(convertToExtraResultMonDto(extraResultMonthly));
-				} else {
-					extraResultMonthlyRepo.addExtraResultMonthly(convertToExtraResultMonDto(extraResultMonthly));
-				}
-				// update SpecHolidayCheckCon
-				if (specHolidayCheckConRepo.getSpecHolidayCheckConById(errorAlarmCheckID).isPresent()) {
-					specHolidayCheckConRepo.updateSpecHolidayCheckCon(convertToSpecHolidayCheckConDto(extraResultMonthly.getSpecHolidayCheckCon()));
-				} else {
-					specHolidayCheckConRepo.addSpecHolidayCheckCon(convertToSpecHolidayCheckConDto(extraResultMonthly.getSpecHolidayCheckCon()));
-				}
-				// update CheckRemainNumberMon
-				CheckRemainNumberMon checkRemainNumberMon = convertToCheckRemainNumberMonAdapterPubDto(extraResultMonthly.getCheckRemainNumberMon());
-				if (checkRemainNumberMonRepo.getByEralCheckID(errorAlarmCheckID).isPresent()) {
-					checkRemainNumberMonRepo.updateCheckRemainNumberMon(checkRemainNumberMon);
-				} else {
-					checkRemainNumberMonRepo.addCheckRemainNumberMon(checkRemainNumberMon);
-				}
-				// update agreementCheckCon36
-				if (agreementCheckCon36Repo.getAgreementCheckCon36ById(errorAlarmCheckID).isPresent()) {
+				updateExtraResultMonthly(convertToExtraResultMonDto(extraResultMonthly));
+				if (extraResultMonthly.getTypeCheckItem() == 0) {
+					// update SpecHolidayCheckCon
+					updateSpecHolidayCheckCon(convertToSpecHolidayCheckConDto(extraResultMonthly.getSpecHolidayCheckCon()));
+					removeAgreementCheckCon36(extraResultMonthly.getErrorAlarmCheckID());
+					removeCheckRemainNumberMon(extraResultMonthly.getErrorAlarmCheckID());
+				} else if (extraResultMonthly.getTypeCheckItem() == 1 || extraResultMonthly.getTypeCheckItem() == 2) {
+					// update CheckRemainNumberMon
+					CheckRemainNumberMon checkRemainNumberMon = convertToCheckRemainNumberMonAdapterPubDto(extraResultMonthly.getCheckRemainNumberMon());
+					updateCheckRemainNumberMon(checkRemainNumberMon);
+					removeAgreementCheckCon36(extraResultMonthly.getErrorAlarmCheckID());
+					removeSpecHolidayCheckCon(extraResultMonthly.getErrorAlarmCheckID());
+				} else if (extraResultMonthly.getTypeCheckItem() == 8) {
+
+				} else { // when typecheck = 3 4 5 6 7	
+					// update agreementCheckCon36
 					AgreementCheckCon36 agreementCheckCon36 = convertToAgreementCheckCon36AdapterPubDto(extraResultMonthly.getAgreementCheckCon36());
-					agreementCheckCon36Repo.updateAgreementCheckCon36(agreementCheckCon36);
-				} else {
-					AgreementCheckCon36 agreementCheckCon36 = convertToAgreementCheckCon36AdapterPubDto(extraResultMonthly.getAgreementCheckCon36());
-					agreementCheckCon36Repo.addAgreementCheckCon36(agreementCheckCon36);
+					updateAgreementCheckCon36(agreementCheckCon36);
+					removeSpecHolidayCheckCon(extraResultMonthly.getErrorAlarmCheckID());
+					removeCheckRemainNumberMon(extraResultMonthly.getErrorAlarmCheckID());
 				}
 			}
 		} else if (domainEvent.isCheckDelete()) {
-			List<String> listEralID = listCheckConMonthly.stream().map(c -> c.getErrorAlarmCheckID()).collect(Collectors.toList());
+			List<String> listEralID = domainEvent.getListEralCheckIDOld();
 			for (String eralCheckID : listEralID) {
 				// delete ExtraResultMonthly
-				if (extraResultMonthlyRepo.getExtraResultMonthlyByID(eralCheckID).isPresent())
-					extraResultMonthlyRepo.deleteExtraResultMonthly(eralCheckID);
+				removeExtraResultMonthly(eralCheckID);
 				// delete SpecHolidayCheckCon
-				if (specHolidayCheckConRepo.getSpecHolidayCheckConById(eralCheckID).isPresent())
-					specHolidayCheckConRepo.deleteSpecHolidayCheckCon(eralCheckID);
-				// delete DheckRemainNumberMon
-				if (checkRemainNumberMonRepo.getByEralCheckID(eralCheckID).isPresent())
-					checkRemainNumberMonRepo.deleteCheckRemainNumberMon(eralCheckID);
+				removeSpecHolidayCheckCon(eralCheckID);
+				// delete CheckRemainNumberMon
+				removeCheckRemainNumberMon(eralCheckID);
 				// delete agreementCheckCon36
-				if (!agreementCheckCon36Repo.getAgreementCheckCon36ById(eralCheckID).isPresent())
-					agreementCheckCon36Repo.deleteAgreementCheckCon36(eralCheckID);
+				removeAgreementCheckCon36(eralCheckID);
 			}
 		}
+	}
+
+	/**
+	 * Add
+	 */
+	private void addExtraResultMonthly(ExtraResultMonthly extraResultMonthly) {
+		if (extraResultMonthlyRepo.getExtraResultMonthlyByID(extraResultMonthly.getErrorAlarmCheckID()).isPresent())
+			throw new BusinessException("Msg_3");
+		extraResultMonthlyRepo.addExtraResultMonthly(extraResultMonthly);
+	}
+
+	private void addSpecHolidayCheckCon(SpecHolidayCheckCon specHolidayCheckCon) {
+		if (specHolidayCheckConRepo.getSpecHolidayCheckConById(specHolidayCheckCon.getErrorAlarmCheckID()).isPresent())
+			throw new BusinessException("Msg_3");
+		specHolidayCheckConRepo.addSpecHolidayCheckCon(specHolidayCheckCon);
+	}
+
+	private void addCheckRemainNumberMon(CheckRemainNumberMon checkRemainNumberMon) {
+		if (checkRemainNumberMonRepo.getByEralCheckID(checkRemainNumberMon.getErrorAlarmCheckID()).isPresent())
+			throw new BusinessException("Msg_3");
+		checkRemainNumberMonRepo.addCheckRemainNumberMon(checkRemainNumberMon);
+	}
+
+	private void addAgreementCheckCon36(AgreementCheckCon36 agreementCheckCon36) {
+		if (agreementCheckCon36Repo.getAgreementCheckCon36ById(agreementCheckCon36.getErrorAlarmCheckID()).isPresent())
+			throw new BusinessException("Msg_3");
+		agreementCheckCon36Repo.addAgreementCheckCon36(agreementCheckCon36);
+	}
+
+	/**
+	 * Update
+	 */
+	private void updateExtraResultMonthly(ExtraResultMonthly extraResultMonthly) {
+		if (!extraResultMonthlyRepo.getExtraResultMonthlyByID(extraResultMonthly.getErrorAlarmCheckID()).isPresent())
+			addExtraResultMonthly(extraResultMonthly);
+		extraResultMonthlyRepo.updateExtraResultMonthly(extraResultMonthly);
+	}
+
+	private void updateSpecHolidayCheckCon(SpecHolidayCheckCon specHolidayCheckCon) {
+		if (!specHolidayCheckConRepo.getSpecHolidayCheckConById(specHolidayCheckCon.getErrorAlarmCheckID()).isPresent())
+			addSpecHolidayCheckCon(specHolidayCheckCon);
+		specHolidayCheckConRepo.updateSpecHolidayCheckCon(specHolidayCheckCon);
+	}
+
+	private void updateCheckRemainNumberMon(CheckRemainNumberMon checkRemainNumberMon) {
+		if (!checkRemainNumberMonRepo.getByEralCheckID(checkRemainNumberMon.getErrorAlarmCheckID()).isPresent())
+			addCheckRemainNumberMon(checkRemainNumberMon);
+		checkRemainNumberMonRepo.updateCheckRemainNumberMon(checkRemainNumberMon);
+	}
+
+	private void updateAgreementCheckCon36(AgreementCheckCon36 agreementCheckCon36) {
+		if (!agreementCheckCon36Repo.getAgreementCheckCon36ById(agreementCheckCon36.getErrorAlarmCheckID()).isPresent())
+			addAgreementCheckCon36(agreementCheckCon36);
+		agreementCheckCon36Repo.updateAgreementCheckCon36(agreementCheckCon36);
+	}
+
+	/**
+	 * Remove
+	 */
+	private void removeExtraResultMonthly(String eralCheckID) {
+		if (extraResultMonthlyRepo.getExtraResultMonthlyByID(eralCheckID).isPresent())
+			extraResultMonthlyRepo.deleteExtraResultMonthly(eralCheckID);
+	}
+
+	private void removeSpecHolidayCheckCon(String eralCheckID) {
+		if (specHolidayCheckConRepo.getSpecHolidayCheckConById(eralCheckID).isPresent())
+			specHolidayCheckConRepo.deleteSpecHolidayCheckCon(eralCheckID);
+	}
+
+	private void removeCheckRemainNumberMon(String eralCheckID) {
+		if (checkRemainNumberMonRepo.getByEralCheckID(eralCheckID).isPresent())
+			checkRemainNumberMonRepo.deleteCheckRemainNumberMon(eralCheckID);
+	}
+
+	private void removeAgreementCheckCon36(String eralCheckID) {
+		if (!agreementCheckCon36Repo.getAgreementCheckCon36ById(eralCheckID).isPresent())
+			agreementCheckCon36Repo.deleteAgreementCheckCon36(eralCheckID);
 	}
 
 	private AgreementCheckCon36 convertToAgreementCheckCon36AdapterPubDto(AgreementCheckCon36AdapterPubDto dto) {

@@ -84,23 +84,23 @@ module nts.uk.at.view.kal003.share {
             });
         }
         
-        export function getDefaultExtraResultMonthly(typeCheckItem : number):model.ExtraResultMonthly{
+        export function getDefaultExtraResultMonthly(data : any):model.ExtraResultMonthly{
             
             
             let extraResultMonthly = new model.ExtraResultMonthly({
-                errorAlarmCheckID: '',
-                sortBy :0,
-                nameAlarmExtraCon : '',
-                useAtr : false,
-                typeCheckItem : typeCheckItem ||0,
-                messageBold: false,
-                messageColor: '',
-                displayMessage : '',
-                checkConMonthly :getDefaultAttendanceItemCondition(),
-                rowId: 0,
-                specHolidayCheckCon : getDefaultSpecHolidayCheckCon(),
-                checkRemainNumberMon : getDefaultCheckRemainNumberMon() ,
-                agreementCheckCon36 : getDefaultAgreementCheckCon36()
+                errorAlarmCheckID: data.errorAlarmCheckID || '',
+                sortBy : data.sortBy || 0,
+                nameAlarmExtraCon : data.nameAlarmExtraCon || '',
+                useAtr : data.useAtr ||  false,
+                typeCheckItem : data.typeCheckItem ||0,
+                messageBold: data.messageBold || false,
+                messageColor: data.messageColor || '',
+                displayMessage : data.displayMessage || '',
+                rowId: data.rowId ||  0,
+                checkConMonthly : data.checkConMonthly === null ? getDefaultAttendanceItemCondition() : data.checkConMonthly,
+                specHolidayCheckCon :data.specHolidayCheckCon ===null? getDefaultSpecHolidayCheckCon():data.specHolidayCheckCon,
+                checkRemainNumberMon :data.checkRemainNumberMon === null? getDefaultCheckRemainNumberMon(): data.checkRemainNumberMon,
+                agreementCheckCon36 :data.agreementCheckCon36 === null? getDefaultAgreementCheckCon36():data.agreementCheckCon36
                 
             });
             return extraResultMonthly;
@@ -281,6 +281,31 @@ module nts.uk.at.view.kal003.share {
          * Covert all data array to array data of JSon
          */
         export function convertArrayOfAttendanceItemCondition(dataAttItemJS, attItemCondition: model.AttendanceItemCondition): any {
+            let lstErAlAtdItemCon1 = attItemCondition.group1().lstErAlAtdItemCon();
+            dataAttItemJS.group1.lstErAlAtdItemCon = _.values(lstErAlAtdItemCon1);
+            if (lstErAlAtdItemCon1) {
+                for (var i = 0; i < lstErAlAtdItemCon1.length; i++) {
+                    dataAttItemJS.group1.lstErAlAtdItemCon[i] = ko.toJS(lstErAlAtdItemCon1[i])
+                    dataAttItemJS.group1.lstErAlAtdItemCon[i].countableAddAtdItems = _.values(lstErAlAtdItemCon1[i].countableAddAtdItems());
+                    dataAttItemJS.group1.lstErAlAtdItemCon[i].countableSubAtdItems = _.values(lstErAlAtdItemCon1[i].countableSubAtdItems());
+                }
+            }
+
+            let lstErAlAtdItemCon2 = attItemCondition.group2().lstErAlAtdItemCon();
+            dataAttItemJS.group2.lstErAlAtdItemCon = _.values(lstErAlAtdItemCon2);
+
+            if (lstErAlAtdItemCon2) {
+                for (var i = 0; i < lstErAlAtdItemCon2.length; i++) {
+                    dataAttItemJS.group2.lstErAlAtdItemCon[i] = ko.toJS(lstErAlAtdItemCon2[i])
+                    dataAttItemJS.group2.lstErAlAtdItemCon[i].countableAddAtdItems = _.values(lstErAlAtdItemCon2[i].countableAddAtdItems());
+                    dataAttItemJS.group2.lstErAlAtdItemCon[i].countableSubAtdItems = _.values(lstErAlAtdItemCon2[i].countableSubAtdItems());
+                }
+            }
+            return dataAttItemJS;
+
+        }
+        
+        export function convertArrayOfAttdItemConCommon(dataAttItemJS, attItemCondition: model.AttdItemConCommon): any {
             let lstErAlAtdItemCon1 = attItemCondition.group1().lstErAlAtdItemCon();
             dataAttItemJS.group1.lstErAlAtdItemCon = _.values(lstErAlAtdItemCon1);
             if (lstErAlAtdItemCon1) {

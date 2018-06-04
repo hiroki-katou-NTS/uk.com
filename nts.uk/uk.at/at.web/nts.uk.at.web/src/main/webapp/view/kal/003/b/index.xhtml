@@ -22,6 +22,7 @@
             </com:ValidatorScript>
 			<com:EnumScript>
 				nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeMonCheckItem
+				nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeCheckVacation
 			</com:EnumScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
@@ -34,7 +35,7 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="contents-area">
+			<div id="contents-area" data-bind="let: { viewModel: $data}">
 				<!-- <div class="form-group" -->
 				<com:ko-if bind="category() == 5">
 					<div id="content" class="cf"
@@ -696,27 +697,46 @@
 											</div>
 										</td>
 									</tr>
-									<com:ko bind="conditions" tag ="foreach">
-										<tr class="row" data-bind="text: $data">
+									<com:ko bind="currentConditions" tag ="foreach">
+										<tr class="row">
 											<!-- B1-1: チェック項目 - Item check-->
-											<td class="pad_left_10px">
+											<td class="pad_left_10px" style=" padding-bottom: 50px;">
 												<div>#{i18n.getText('チェック条件')}</div>
 											</td>
 											<td class="pad_left_5px">
-												<com:ko bind="haveSelect" tag ="if">
-													<!-- bind select -->
-													<button id="btnSettingBA2_2" data-bind="click : $parent.btnSettingBA2_2_click.bind($parent), enable: true">#{i18n.getText('KAL003_57')}</button>
-													<input id ="display-target-item" class="display-list-label need-check" data-bind="ntsTextEditor: {
-														   value: $parent.displayAttendanceItemSelections_BA2_3,
-														   require: true,
-														   readonly: true}" />
-												</com:ko>
-												<com:ko bind="haveCombobox" tag ="if">
-													<!-- bind combo -->
+												 <com:ko bind="haveTypeVacation() === true" tag ="if">
 													<div id="comBoxOperator" class="combo-box"
 				                                            data-bind="ntsComboBox: {
 				                                                name:'#[KAL003_60]',
-				                                                options: $parent.listCompareTypes,
+				                                                options: viewModel.listTypeCheckVacation,
+				                                                optionsValue: 'value',
+				                                                visibleItemsCount: 5,
+				                                                value: checkVacation,
+				                                                optionsText: 'localizedName',
+				                                                editable: false,
+				                                                enable: true,
+				                                                columns: [
+				                                                    { prop: 'name', length: 16 }
+				                                                ]}">
+				                                    </div>
+												</com:ko> 
+												<com:ko bind="haveSelect() === true" tag ="if">
+													<!-- bind select -->
+													<div style="    float: right;">
+														<button id="btnSettingBA2_2" data-bind="click : viewModel.btnSettingBA2_2_click.bind($parent), enable: true">#{i18n.getText('KAL003_57')}</button>
+														<input id ="display-target-item" class="display-list-label need-check" data-bind="ntsTextEditor: {
+															   value: viewModel.displayAttendanceItemSelections_BA2_3,
+															   require: true,
+															   readonly: true}" />
+												   </div>
+												   <br />
+												</com:ko>
+												<com:ko bind="haveCombobox() === true" tag ="if">
+													<!-- bind combo -->
+													<div id="comBoxOperator" class="combo-box" style="padding-top: 10px;"
+				                                            data-bind="ntsComboBox: {
+				                                                name:'#[KAL003_60]',
+				                                                options: viewModel.listCompareTypes,
 				                                                optionsValue: 'value',
 				                                                visibleItemsCount: 5,
 				                                                value: extractType,
@@ -728,13 +748,249 @@
 				                                                ]}">
 				                                    </div>
 												</com:ko>
-												<com:ko bind="haveInput" tag ="if">
+												
+												<com:ko bind="haveInput() === 0" tag ="if">
+													<!-- bind input -->
+													<div data-bind="text : textLabel"></div>
+													<input style="width: 50px;" data-bind="ntsTimeEditor: {value: numberDayDiffHoliday1 , inputFormat: 'D', mode: 'D',required: true}" />日
+													<input style="width: 50px;" data-bind="ntsTimeEditor: {value: numberDayDiffHoliday2 , inputFormat: 'D',enable : false,required: true }" />日
+												</com:ko>
+												<com:ko bind="haveInput() === 1 || haveInput() === 2" tag ="if">
+													<!-- bind input -->
+													<div data-bind="text : textLabel"></div>
+													<input style="width: 50px;" data-bind="ntsTimeEditor: {value: eralBeforeTime , inputFormat: 'time'}" />
+												</com:ko>
+												<com:ko bind="haveInput() === 3" tag ="if">
 													<!-- bind input -->
 													<div data-bind="text : textLabel"></div>
 												</com:ko>
-												<com:ko bind="haveGroup" tag ="if">
+												<com:ko bind="haveGroup() === true" tag ="if">
 													<!-- bind group: AttendanceItemCondition -->
-													<div id='div_compound_condition' data-bind="with: errorAlarmCondition().atdItemCondition, visible : checkItem() == 7">
+													<!--  group 1 -->
+													<div>
+														<table>
+															<colgroup>
+																<col width="190px" />
+																<col width="200px" />
+																<col width="*" />
+															</colgroup>
+															<tr class="row">
+																<!-- B5-1:  -->
+																<td class="pad_left_10px">
+																	<div>#{i18n.getText('KAL003_31')}</div>
+																</td>
+																<!-- B5-2:  -->
+																<td class="pad_left_5px">
+																	<div>#{i18n.getText('KAL003_32')}</div>
+																</td>
+																<!-- B5-3:  -->
+																<td class="pad_left_5px">
+																	<div class="cf"
+																		data-bind="ntsSwitchButton: {
+						                                            name: '#[KAL003_32]',
+																    options: viewModel.swANDOR_B5_3,
+																    optionsValue: 'value',
+																    optionsText: 'localizedName',
+																    value: group1.conditionOperator,
+																    enable: true }"></div>
+																</td>
+															</tr>
+														</table>
+													</div>
+						
+													<div class="pad_left_10px">
+														<!-- B5_4 -->
+														<table id="table-group1conditionmon">
+															<colgroup>
+																<col width="180px" />
+																<col width="60px" />
+																<col width="180px" />
+																<col width="60px" />
+																<col width="180px" />
+																<col width="52" />
+															</colgroup>
+															<thead>
+																<tr>
+																	<!-- B5_5 -->
+																	<th class="ui-widget-header"  colspan="6"
+																		style="text-align: center;">#{i18n.getText('KAL003_33')}</th>
+																</tr>
+															</thead>
+															<tbody data-bind="foreach: group1.lstErAlAtdItemCon">
+																<tr>
+																	<!-- B5_6 -->
+																	<com:ko-if
+																		bind="$data.compareOperator() == 6 || $data.compareOperator() == 7">
+																		<td><span class="limited-label" style="width: 160px"
+																			data-bind="text: $data.displayLeftCompare"></span></td>
+																		<td><span class="limited-label" style="width: 50px"
+																			data-bind="text: $data.displayLeftOperator"></span></td>
+																		<td><span class="limited-label"
+																			style="width: 160px; text-align: center;"
+																			data-bind="text: $data.displayTarget"></span></td>
+																		<td><span class="limited-label" style="width: 50px"
+																			data-bind="text: $data.displayRightOperator"></span></td>
+																		<td><span class="limited-label" style="width: 160px"
+																			data-bind="text: $data.displayRightCompare"></span></td>
+																	</com:ko-if>
+																	<com:ko-if
+																		bind="$data.compareOperator() == 8 || $data.compareOperator() == 9">
+																		<td><span class="limited-label" style="width: 160px"
+																			data-bind="text: $data.displayTarget"></span></td>
+																		<td><span class="limited-label" style="width: 50px"
+																			data-bind="text: $data.displayLeftOperator"></span></td>
+																		<td><span class="limited-label"
+																			style="width: 160px; text-align: center;"
+																			data-bind="text: $data.displayLeftCompare() + ', ' + $data.displayRightCompare()"></span></td>
+																		<td><span class="limited-label" style="width: 50px"
+																			data-bind="text: $data.displayRightOperator"></span></td>
+																		<td><span class="limited-label" style="width: 160px"
+																			data-bind="text: $data.displayTarget"></span></td>
+																	</com:ko-if>
+																	<com:ko-if bind="$data.compareOperator() &lt; 6">
+																		<td><span class="limited-label" style="width: 160px"
+																			data-bind="text: $data.displayTarget"></span></td>
+																		<td><span class="limited-label" style="width: 50px"
+																			data-bind="text: $data.displayLeftOperator"></span></td>
+																		<td><span class="limited-label" style="width: 160px"
+																			data-bind="text: $data.displayLeftCompare"></span></td>
+																		<td><span class="limited-label" style="width: 50px"
+																			data-bind="text: $data.displayRightOperator"></span></td>
+																		<td><span class="limited-label" style="width: 160px"
+																			data-bind="text: $data.displayRightCompare"></span></td>
+																	</com:ko-if>
+																	<!-- B5_7 -->
+																	<td><button id="btnSettingB5_7"
+																			data-bind="click: $data.openAtdItemConditionDialog, enable: true">#{i18n.getText('KAL003_14')}</button></td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
+													<!--  group 2 -->
+													<div class="pad_left_10px">
+														<table>
+															<colgroup>
+																<col width="180px" />
+																<col width="200" />
+																<col width="*" />
+															</colgroup>
+															<tr class="row">
+																<!-- B6-1:  -->
+																<td>
+																	<div
+																		data-bind="ntsCheckBox: { checked: group2UseAtr, enable: true}">#{i18n.getText('KAL003_34')}</div>
+																</td>
+																<!-- B6-2:  -->
+																<com:ko-if bind="group2UseAtr()">
+																	<td class="pad_left_5px">
+																		<div id="div_b6_2">#{i18n.getText('KAL003_35')}</div>
+																	</td>
+																	<!-- B6-3:  -->
+																	<td class="pad_left_5px">
+																		<div id="div_b6_3" class="cf"
+																			data-bind="ntsSwitchButton: {
+							                                            name: '#[KAL003_35]',
+							                                            options: viewModel.swANDOR_B6_3,
+							                                            optionsValue: 'value',
+							                                            optionsText: 'localizedName',
+							                                            value: group2.conditionOperator,
+							                                            enable: true }"></div>
+																	</td>
+																</com:ko-if>
+															</tr>
+														</table>
+													</div>
+													<div id="div_B16" class="pad_left_10px cf"
+														data-bind="visible : group2UseAtr()">
+														<!-- B16_1 -->
+														<table id="table-group2conditionmon">
+															<colgroup>
+																<col width="180" />
+																<col width="60" />
+																<col width="180" />
+																<col width="60" />
+																<col width="180" />
+																<col width="52" />
+															</colgroup>
+															<thead>
+																<tr>
+																	<!-- B16_2 -->
+																	<th class="ui-widget-header" colspan="6"
+																		style="text-align: center;">#{i18n.getText('KAL003_33')}</th>
+																</tr>
+															</thead>
+															<tbody data-bind="foreach: group2.lstErAlAtdItemCon">
+																<tr>
+																	<!-- B16_3 -->
+																	<com:ko-if
+																		bind="$data.compareOperator() &gt; 5 &amp;&amp; $data.compareOperator() &lt; 8">
+																		<td><span class="limited-label" style="width: 160px"
+																			data-bind="text: $data.displayLeftCompare"></span></td>
+																		<td><span class="limited-label" style="width: 50px"
+																			data-bind="text: $data.displayLeftOperator"></span></td>
+																		<td><span class="limited-label" style="width: 160px"
+																			data-bind="text: $data.displayTarget"></span></td>
+																	</com:ko-if>
+																	<com:ko-if bind="$data.compareOperator() &lt; 6">
+																		<td><span class="limited-label" style="width: 160px"
+																			data-bind="text: $data.displayTarget"></span></td>
+																		<td><span class="limited-label" style="width: 50px"
+																			data-bind="text: $data.displayLeftOperator"></span></td>
+																		<td><span class="limited-label" style="width: 160px"
+																			data-bind="text: $data.displayLeftCompare"></span></td>
+																	</com:ko-if>
+																	<com:ko-if
+																		bind="$data.compareOperator() == 8 || $data.compareOperator() == 9">
+																		<td><span class="limited-label" style="width: 160px"
+																			data-bind="text: $data.displayTarget"></span></td>
+																		<td><span class="limited-label" style="width: 50px"
+																			data-bind="text: $data.displayLeftOperator"></span></td>
+																		<td><span class="limited-label" style="width: 160px;"
+																			data-bind="text: $data.displayLeftCompare() + ', ' + $data.displayRightCompare()"></span></td>
+																		<td><span class="limited-label" style="width: 50px"
+																			data-bind="text: $data.displayRightOperator"></span></td>
+																		<td><span class="limited-label" style="width: 160px"
+																			data-bind="text: $data.displayTarget"></span></td>
+																	</com:ko-if>
+																	<com:ko-if bind="$data.compareOperator() &lt; 8">
+																		<td><span class="limited-label" style="width: 50px"
+																			data-bind="text: $data.displayRightOperator"></span></td>
+																		<td><span class="limited-label" style="width: 160px"
+																			data-bind="text: $data.displayRightCompare"></span></td>
+																	</com:ko-if>
+																	<!-- B16_4 -->
+																	<td><button id="btnSettingB16_5"
+																			data-bind="click: $data.openAtdItemConditionDialog, enable: true">#{i18n.getText('KAL003_14')}</button></td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
+													<div id="div_b7" data-bind="visible : group2UseAtr()">
+														<table>
+															<colgroup>
+																<col width="300px" />
+																<col width="*" />
+															</colgroup>
+															<tr class="row">
+																<!-- B7-1:  -->
+																<td class="pad_left_10px">
+						
+																	<div>#{i18n.getText('KAL003_36')}</div>
+																</td>
+																<!-- B7-2:  -->
+																<td class="pad_left_5px">
+																	<div class="cf"
+																		data-bind="ntsSwitchButton: {
+						                                            name: '#[KAL003_36]',
+						                                            options:viewModel.swANDOR_B7_2,
+						                                            optionsValue: 'value',
+						                                            optionsText: 'localizedName',
+						                                            value: operator,
+						                                            enable: true }"></div>
+																</td>
+						
+															</tr>
+														</table>
 													</div>
 												</com:ko>
 											</td>
@@ -753,7 +1009,16 @@
 											<div>#{i18n.getText('表記するメッセージ')}</div>
 										</td>
 										<td class="pad_left_5px">
-											<textarea id="message" data-bind="ntsMultilineEditor: { value: displayMessage }" />
+											<textarea style="width: 400px;height: 100px;" id="message" data-bind="ntsMultilineEditor: { value: displayMessage }" />
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="pad_left_10px">
+											
+										</td>
+										<td class="pad_left_5px">
+											<div data-bind="ntsCheckBox: { checked: messageBold , text: 'メッセージを太字にする' }"></div>
+											<!-- </div><div>#{i18n.getText('メッセージを太字にする')}</div> -->
 										</td>
 									</tr>
 								</tbody>
