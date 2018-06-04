@@ -29,7 +29,7 @@ public class RecAbsHistoryOutputPara {
 	 * 振休履歴
 	 */
 	private Optional<AbsenceHistoryOutputPara> absHisData;
-	/*
+	/**
 	 * 振出履歴
 	 */
 	private Optional<RecruitmentHistoryOutPara> recHisData;

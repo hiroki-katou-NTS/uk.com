@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.remainmng.interimremain;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.at.shared.dom.remainmng.interimremain.primitive.RemainType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface InterimRemainRepository {
@@ -14,7 +15,7 @@ public interface InterimRemainRepository {
 	 * ・対象日≦INPUT.期間.終了年月日
 	 * @return
 	 */
-	List<InterimRemain> getRemainBySidPriod(String employeeId, DatePeriod dateData);
+	List<InterimRemain> getRemainBySidPriod(String employeeId, DatePeriod dateData, RemainType remainType);
 	
 	Optional<InterimRemain> getById(String remainId);
 }

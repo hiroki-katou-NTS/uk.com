@@ -19,7 +19,7 @@ public class RecruitmentHistoryOutPara {
 	/**使用期限日	 */
 	private GeneralDate expirationDate;
 	/**消滅済	 */
-	private boolean isDisappeared;
+	private boolean chkDisappeared;
 	/**	状態 */
 	private MngDataAtr dataAtr;
 	/**	振出データID */

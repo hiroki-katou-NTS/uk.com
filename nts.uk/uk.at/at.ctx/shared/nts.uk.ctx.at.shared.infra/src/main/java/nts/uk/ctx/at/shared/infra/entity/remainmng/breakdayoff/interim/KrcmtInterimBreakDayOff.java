@@ -22,22 +22,22 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class KrcmtInterimBreakDayOff extends UkJpaEntity implements Serializable{
 	/**	 */
 	@EmbeddedId
-	private KrcmtInterimBreakDayOffPK breakDayOffKey;
+	public KrcmtInterimBreakDayOffPK breakDayOffKey;
 	/**	休出管理データ区分 */
 	@Column(name = "BREAK_MNG_ATR")
-	private int breakMngAtr;
+	public int breakMngAtr;
 	/**	代休管理データ区分 */
 	@Column(name = "DAYOFF_MNG_ATR")
-	private int dayOffMngAtr;
+	public int dayOffMngAtr;
 	/**	使用時間数 */
 	@Column(name = "USE_TIMES")
-	private int userTimes;
+	public int userTimes;
 	/**	使用日数 */
 	@Column(name = "USE_DAYS")
-	private Double userDays;
+	public Double userDays;
 	/**	対象選択区分 */
 	@Column(name = "SELECTED_ATR")
-	private int selectedAtr;
+	public int selectedAtr;
 	/**
 	 * 
 	 */

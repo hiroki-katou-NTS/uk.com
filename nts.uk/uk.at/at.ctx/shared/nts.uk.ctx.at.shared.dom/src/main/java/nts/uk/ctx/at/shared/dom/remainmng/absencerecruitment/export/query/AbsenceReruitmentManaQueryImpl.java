@@ -21,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.remainmng.export.RemainManagementExport;
 import nts.uk.ctx.at.shared.dom.remainmng.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainmng.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainmng.interimremain.primitive.CreaterAtr;
+import nts.uk.ctx.at.shared.dom.remainmng.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
@@ -66,7 +67,7 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 	@Override
 	public Double getTotalOccurrentDay(String employeeId, DatePeriod dateData) {
 		//ドメインモデル「暫定振出管理データ」を取得する
-		List<InterimRemain> getRemainBySidPriod = remainRepo.getRemainBySidPriod(employeeId, dateData);
+		List<InterimRemain> getRemainBySidPriod = remainRepo.getRemainBySidPriod(employeeId, dateData, RemainType.COMPLEMENTLEAVE);
 		Double outputData = (double) 0;
 		if(!getRemainBySidPriod.isEmpty()) {
 			for (InterimRemain data : getRemainBySidPriod) {
@@ -83,7 +84,7 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 	@Override
 	public Double getUsedDays(String employeeId, DatePeriod dateData) {
 		//ドメインモデル「暫定振休管理データ」を取得する
-		List<InterimRemain> getRemainBySidPriod = remainRepo.getRemainBySidPriod(employeeId, dateData);
+		List<InterimRemain> getRemainBySidPriod = remainRepo.getRemainBySidPriod(employeeId, dateData, RemainType.COMPLEMENTLEAVE);
 		Double outputData = (double) 0;
 		if(!getRemainBySidPriod.isEmpty()) {
 			for (InterimRemain data : getRemainBySidPriod) {
@@ -117,13 +118,8 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 	}
 	@Override
 	public AbsRecInterimOutputPara getAbsRecInterimData(String sid, GeneralDate baseDate) {
-		// 対象期間を決定する		
-		DatePeriod closureBySid = closureService.findClosurePeriod(sid, baseDate);
-		if(closureBySid == null) {
-			return null;
-		}
-		GeneralDate endDate = closureBySid.end().addYears(1).addDays(-1);  
-		DatePeriod adjustDate = new DatePeriod(closureBySid.start(), endDate);
+		// 対象期間を決定する
+		DatePeriod adjustDate = remainManaExport.periodCovered(sid, baseDate);
 		//指定期間内に発生した暫定振出と紐付いた確定振休・暫定振休を取得する
 		AbsRecInterimOutputPara outputData = this.getInterimAbsMng(sid, adjustDate);
 		//未消化の確定振出に紐付いた暫定振休を取得する
@@ -134,7 +130,7 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 	@Override
 	public AbsRecInterimOutputPara getInterimAbsMng(String sid, DatePeriod dateData) {
 		
-		List<InterimRemain> lstRemain = remainRepo.getRemainBySidPriod(sid, dateData);
+		List<InterimRemain> lstRemain = remainRepo.getRemainBySidPriod(sid, dateData, RemainType.COMPLEMENTLEAVE);
 		if(lstRemain.isEmpty()) {
 			return null;
 		}
@@ -184,7 +180,7 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 				hisData.setExpirationDate(x.getExpirationDate());
 				hisData.setOccurrenceDays(x.getOccurrenceDays().v());
 				hisData.setUnUseDays(x.getUnUsedDays().v());
-				hisData.setDisappeared(false);
+				hisData.setChkDisappeared(false);
 				Optional<InterimRemain> optRemainData = remainRepo.getById(x.getRecruitmentMngId());
 				if(optRemainData.isPresent()) {
 					hisData.setDataAtr(EnumAdaptor.valueOf(optRemainData.get().getCreatorAtr().value, MngDataAtr.class));
@@ -261,38 +257,45 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		//暫定振出振休紐付け管理の件数分ループ
 		lstInterimData.stream().forEach(x -> {
 			RecAbsHistoryOutputPara outPutData = new RecAbsHistoryOutputPara();
+			outPutData.setUseDays(Optional.of(x.getUseDays().v()));
 			//振出データID＝暫定振出振休紐付け管理.振出管理データ
 			List<RecruitmentHistoryOutPara> lstRecRuiment = lstRecHis.stream().filter(z -> x.getRecruitmentMngId() == z.getRecId())
-			.collect(Collectors.toList());
-			outPutData.setUseDays(Optional.of(x.getUseDays().v()));
-			RecruitmentHistoryOutPara recRuiment = lstRecRuiment.get(0);
-			List<RecAbsHistoryOutputPara> lstTmp = lstOutputPara.stream().filter(z -> recRuiment.getRecDate().equals(z.getYmd())).collect(Collectors.toList());
-			if(lstTmp.isEmpty()) {
-				outPutData.setYmd(recRuiment.getRecDate());
-				outPutData.setRecHisData(Optional.of(recRuiment));
-				lstOutputPara.add(outPutData);
-			} else {
-				RecAbsHistoryOutputPara tmpOutput = lstTmp.get(0);
-				lstOutputPara.remove(tmpOutput);
-				tmpOutput.setRecHisData(Optional.of(recRuiment));
-				lstOutputPara.add(tmpOutput);
+			.collect(Collectors.toList());			
+			List<RecAbsHistoryOutputPara> lstTmp = new ArrayList<>();
+			if(!lstRecRuiment.isEmpty()) {
+				RecruitmentHistoryOutPara recRuiment = lstRecRuiment.get(0);
+				lstTmp = lstOutputPara.stream().filter(z -> recRuiment.getRecDate().equals(z.getYmd())).collect(Collectors.toList());
+				if(lstTmp.isEmpty()) {
+					outPutData.setYmd(recRuiment.getRecDate());
+					outPutData.setRecHisData(Optional.of(recRuiment));
+					lstOutputPara.add(outPutData);
+				} else {
+					RecAbsHistoryOutputPara tmpOutput = lstTmp.get(0);
+					lstOutputPara.remove(tmpOutput);
+					tmpOutput.setRecHisData(Optional.of(recRuiment));
+					lstOutputPara.add(tmpOutput);
+				}
 			}
+			
 				
 			//振休データID＝暫定振出振休紐付け管理.振休管理データ
 			List<AbsenceHistoryOutputPara> lstAbsInterim = lstAbsHis.stream().filter(z -> x.getAbsenceMngId() == z.getAbsId())
 					.collect(Collectors.toList());
-			AbsenceHistoryOutputPara absInterim = lstAbsInterim.get(0);
-			lstTmp = lstOutputPara.stream().filter(z -> absInterim.getAbsDate().equals(z.getYmd())).collect(Collectors.toList());
-			if(lstTmp.isEmpty()) {
-				outPutData.setYmd(absInterim.getAbsDate());
-				outPutData.setAbsHisData(Optional.of(absInterim));
-				lstOutputPara.add(outPutData);
-			} else {
-				RecAbsHistoryOutputPara tmpOutput = lstTmp.get(0);
-				lstOutputPara.remove(tmpOutput);
-				tmpOutput.setAbsHisData(Optional.of(absInterim));
-				lstOutputPara.add(tmpOutput);
+			if(!lstAbsInterim.isEmpty()) {
+				AbsenceHistoryOutputPara absInterim = lstAbsInterim.get(0);
+				lstTmp = lstOutputPara.stream().filter(z -> absInterim.getAbsDate().equals(z.getYmd())).collect(Collectors.toList());
+				if(lstTmp.isEmpty()) {
+					outPutData.setYmd(absInterim.getAbsDate());
+					outPutData.setAbsHisData(Optional.of(absInterim));
+					lstOutputPara.add(outPutData);
+				} else {
+					RecAbsHistoryOutputPara tmpOutput = lstTmp.get(0);
+					lstOutputPara.remove(tmpOutput);
+					tmpOutput.setAbsHisData(Optional.of(absInterim));
+					lstOutputPara.add(tmpOutput);
+				}
 			}
+			
 		});
 		
 		return lstOutputPara;

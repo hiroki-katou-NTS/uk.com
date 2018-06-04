@@ -14,4 +14,11 @@ public interface InterimBreakDayOffMngRepository {
 	 * @return
 	 */
 	Optional<InterimDayOffMng> getDayoffById(String dayOffManaId);
+	/**
+	 * 暫定休出代休紐付け管理
+	 * @param mngId
+	 * @param breakDay: True: 休出管理データ, false: 代休管理データ
+	 * @return
+	 */
+	Optional<InterimBreakDayOffMng> getBreakDayOffMng(String mngId, boolean breakDay);
 }

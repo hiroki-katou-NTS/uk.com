@@ -18,7 +18,7 @@ public enum RemainType {
 	/**	振出振休 */
 	COMPLEMENTLEAVE(3,"振出振休"),
 	/**	休出代休 */
-	BREAKSUBS(4,"休出代休"),
+	BREAKDAYOFF(4,"休出代休"),
 	/**	時間年休 */
 	TIMEANNUAL(5, "時間年休");
 	

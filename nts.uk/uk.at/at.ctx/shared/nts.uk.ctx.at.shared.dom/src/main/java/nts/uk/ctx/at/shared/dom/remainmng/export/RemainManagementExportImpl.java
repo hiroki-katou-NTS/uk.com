@@ -54,5 +54,15 @@ public class RemainManagementExportImpl implements RemainManagementExport{
 		
 		return new DatePeriod(dateData1.start(), dateData2.end());
 	}
+	@Override
+	public DatePeriod periodCovered(String sid, GeneralDate baseDate) {
+		DatePeriod closureBySid = closureService.findClosurePeriod(sid, baseDate);
+		if(closureBySid == null) {
+			return null;
+		}
+		GeneralDate endDate = closureBySid.end().addYears(1).addDays(-1);  
+		DatePeriod adjustDate = new DatePeriod(closureBySid.start(), endDate);
+		return adjustDate;
+	}
 
 }

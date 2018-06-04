@@ -15,6 +15,18 @@ public interface RemainManagementExport {
 	 */
 	public ClosureRemainPeriodOutputData getClosureRemainPeriod(String employeeId, GeneralDate baseDate, YearMonth startMonth, YearMonth endMonth);
 	
-	//getClosureOfMonthDesignation
+	/**
+	 * getClosureOfMonthDesignation
+	 * @param closureData
+	 * @param ym
+	 * @return
+	 */
 	public DatePeriod getClosureOfMonthDesignation(Closure closureData, YearMonth ym);
+	/**
+	 * 対象期間を決定する
+	 * @param sid
+	 * @param baseDate
+	 * @return
+	 */
+	public DatePeriod periodCovered(String sid, GeneralDate baseDate);
 }

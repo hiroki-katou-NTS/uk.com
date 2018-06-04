@@ -17,7 +17,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface AbsenceReruitmentManaQuery {
 	/**
-	 * RequestList 270 月度別振休残数集計を取得
+	 * RequestList270 月度別振休残数集計を取得
 	 * @param employeeId
 	 * @param baseDate
 	 * @param startMonth
