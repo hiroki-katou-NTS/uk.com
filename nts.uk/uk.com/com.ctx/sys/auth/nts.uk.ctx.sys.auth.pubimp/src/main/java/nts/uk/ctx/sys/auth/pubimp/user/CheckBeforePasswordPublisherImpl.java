@@ -67,10 +67,7 @@ public class CheckBeforePasswordPublisherImpl implements CheckBeforePasswordPubl
 		}
 
 		// ドメインモデル「パスワードポリシー」を取得する
-		PasswordPolicyImport passwordPolicyImport = this.passwordPolicyAdap
-				.getPasswordPolicy(user.getContractCode().v()).get();
-
-		return this.passwordPolicyCheck(userId, reNewPass, passwordPolicyImport);
+		return this.passwordPolicyCheck(userId, reNewPass, user.getContractCode().v());
 	}
 
 	/**
@@ -80,13 +77,15 @@ public class CheckBeforePasswordPublisherImpl implements CheckBeforePasswordPubl
 	 *            the user id
 	 * @param newPass
 	 *            the new pass
-	 * @param passwordPolicyImport
-	 *            the password policy import
+	 * @param contractCode
+	 *            the contract code
 	 * @return the check before change pass output
 	 */
 	// パスワードポリシーチェック
-	private CheckBeforeChangePassOutput passwordPolicyCheck(String userId, String newPass,
-			PasswordPolicyImport passwordPolicyImport) {
+	@Override
+	public CheckBeforeChangePassOutput passwordPolicyCheck(String userId, String newPass, String contractCode) {
+		//get PasswordPolicy
+		PasswordPolicyImport passwordPolicyImport = this.passwordPolicyAdap.getPasswordPolicy(contractCode).get();
 
 		List<String> messages = new ArrayList<>();
 		PasswordPolicyCountChar countChar = this.getCountChar(newPass);

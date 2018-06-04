@@ -15,6 +15,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
 import nts.uk.ctx.sys.gateway.dom.login.EmployCodeEditType;
@@ -45,7 +46,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
 	@Override
-	protected String internalHanler(CommandHandlerContext<SubmitLoginFormTwoCommand> context) {
+	protected CheckChangePassDto internalHanler(CommandHandlerContext<SubmitLoginFormTwoCommand> context) {
 
 		SubmitLoginFormTwoCommand command = context.getCommand();
 		if (command.isSignOn()) {
@@ -79,7 +80,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			// check password
 			String msgErrorId = this.compareHashPassword(user, password);
 			if (msgErrorId != null){
-				return msgErrorId;
+				return new CheckChangePassDto(false, msgErrorId);
 			} 
 			
 			// check time limit
@@ -92,7 +93,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			//set role Id for LoginUserContextManager
 			this.setRoleId(user.getUserId());
 		}
-		return null;
+		return new CheckChangePassDto(false, null);
 	}
 
 	/**

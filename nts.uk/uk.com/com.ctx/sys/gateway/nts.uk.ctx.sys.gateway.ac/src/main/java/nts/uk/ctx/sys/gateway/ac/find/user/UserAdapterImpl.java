@@ -11,8 +11,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.sys.auth.pub.user.ChangeUserPasswordPublisher;
+import nts.uk.ctx.sys.auth.pub.user.CheckBeforeChangePassOutput;
+import nts.uk.ctx.sys.auth.pub.user.CheckBeforePasswordPublisher;
 import nts.uk.ctx.sys.auth.pub.user.UserExport;
 import nts.uk.ctx.sys.auth.pub.user.UserPublisher;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.CheckBeforeChangePass;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
 
@@ -25,6 +29,12 @@ public class UserAdapterImpl implements UserAdapter {
 	/** The user publisher. */
 	@Inject
 	private UserPublisher userPublisher;
+	
+	@Inject
+	private CheckBeforePasswordPublisher checkPasswordPublisher;
+	
+	@Inject
+	private ChangeUserPasswordPublisher changeUserPasswordPublisher;
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter
@@ -96,6 +106,9 @@ public class UserAdapterImpl implements UserAdapter {
 		.build()).collect(Collectors.toList());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter#findByUserId(java.lang.String)
+	 */
 	@Override
 	public Optional<UserImport> findByUserId(String userId) {
 		Optional<UserExport> optUserExport = this.userPublisher.getByUserId(userId);
@@ -104,5 +117,33 @@ public class UserAdapterImpl implements UserAdapter {
 		}
 		return Optional.empty();
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter#passwordPolicyCheck(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public CheckBeforeChangePass passwordPolicyCheck(String userId, String newPass, String contractCode) {
+		CheckBeforeChangePassOutput result = this.checkPasswordPublisher.passwordPolicyCheck(userId, newPass, contractCode);
+		
+		return new CheckBeforeChangePass(result.isError(), result.getMessage());
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter#checkBeforeChangePassword(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public CheckBeforeChangePass checkBeforeChangePassword(String userId, String currentPass, String newPass,
+			String reNewPass) {
+		CheckBeforeChangePassOutput result = this.checkPasswordPublisher.checkBeforeChangePassword(userId,
+				currentPass, newPass, reNewPass);
+		return new CheckBeforeChangePass(result.isError(), result.getMessage());
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter#updatePassword(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void updatePassword(String userId, String newPassword) {
+		changeUserPasswordPublisher.changePass(userId, newPassword);
+	}
 }

@@ -11,8 +11,10 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
 
@@ -30,7 +32,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
 	@Override
-	protected String internalHanler(CommandHandlerContext<SubmitLoginFormOneCommand> context) {
+	protected CheckChangePassDto internalHanler(CommandHandlerContext<SubmitLoginFormOneCommand> context) {
 		
 		SubmitLoginFormOneCommand command = context.getCommand();
 		if (command.isSignOn()) {
@@ -53,7 +55,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 			// check password
 			String msgErrorId = this.compareHashPassword(user.get(), password);
 			if (!StringUtil.isNullOrEmpty(msgErrorId, true)){
-				return msgErrorId;
+				return new CheckChangePassDto(false, msgErrorId);
 			} 
 	
 			// check time limit
@@ -64,9 +66,11 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 			this.initSession(user.get());
 			
 			//アルゴリズム「ログイン記録」を実行する１
-			this.checkAfterLogin(user.get());
+			if (this.checkAfterLogin(user.get()){
+				return new CheckChangePassDto(true, null);
+			}
 		}
-		return null;
+		return new CheckChangePassDto(false, null);
 	}
 
 	/**

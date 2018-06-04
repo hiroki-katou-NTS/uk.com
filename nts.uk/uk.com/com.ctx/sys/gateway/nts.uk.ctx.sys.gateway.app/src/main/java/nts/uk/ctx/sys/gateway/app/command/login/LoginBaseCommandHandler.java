@@ -5,7 +5,6 @@
 package nts.uk.ctx.sys.gateway.app.command.login;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,7 +21,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.security.hash.password.PasswordHash;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckBeforeChangePassOutput;
+import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.CheckBeforeChangePass;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.PassStatus;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
@@ -67,7 +67,7 @@ import nts.uk.shr.com.system.config.InstallationType;
  *            the generic type
  */
 @Stateless
-public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResult<T, String> {
+public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResult<T, CheckChangePassDto> {
 
 	/** The employee adapter. */
 	@Inject
@@ -128,7 +128,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 */
 	@Override
 	@Transactional
-	protected String handle(CommandHandlerContext<T> context) {
+	protected CheckChangePassDto handle(CommandHandlerContext<T> context) {
 		return this.internalHanler(context);
 	}
 
@@ -137,7 +137,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 *
 	 * @param context the context
 	 */
-	protected abstract String internalHanler(CommandHandlerContext<T> context);
+	protected abstract CheckChangePassDto internalHanler(CommandHandlerContext<T> context);
 
 	/**
 	 * Re check contract.
@@ -182,13 +182,15 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @param sid
 	 *            the sid
 	 */
-	protected void checkEmployeeDelStatus(String sid) {
+	protected CheckChangePassDto checkEmployeeDelStatus(String sid) {
 		// get Employee status
 		Optional<EmployeeDataMngInfoImport> optMngInfo = this.employeeAdapter.getSdataMngInfo(sid);
 
 		if (!optMngInfo.isPresent() || !SDelAtr.NOTDELETED.equals(optMngInfo.get().getDeletedStatus())) {
 			throw new BusinessException("Msg_301");
 		}
+		
+		return new CheckChangePassDto(false, null);
 	}
 
 	/**
@@ -240,7 +242,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 *            the user
 	 */
 	// init session
-	protected void initSession(UserImport user) {
+	protected CheckChangePassDto initSession(UserImport user) {
 		List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.getUserId(), user.getAssociatePersonId());
 		if (lstCompanyId.isEmpty()) {
 			manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId(), user.getContractCode(), null,
@@ -270,60 +272,60 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			}
 		}
 		this.setRoleId(user.getUserId());
+		
+		return new CheckChangePassDto(false, null);
 	}
 
-	
 	/**
 	 * Check after login.
 	 *
-	 * @param user the user
+	 * @param user
+	 *            the user
 	 */
-	protected void checkAfterLogin(UserImportNew user) {
+	protected boolean checkAfterLogin(UserImportNew user) {
 
 		if (user.getPassStatus() == PassStatus.Official) {
-			//Get PasswordPolicy
+			// Get PasswordPolicy
 			Optional<PasswordPolicy> passwordPolicyOpt = this.PasswordPolicyRepo
 					.getPasswordPolicy(new ContractCode(user.getContractCode()));
-			
-			if(passwordPolicyOpt.isPresent()){
-				//Event Check
-				this.checkEvent(passwordPolicyOpt.get(), user);
+
+			if (passwordPolicyOpt.isPresent()) {
+				// Event Check
+				return this.checkEvent(passwordPolicyOpt.get(), user);
 			}
 		}
 
+		return false;
+
 	}
-	
+
 	/**
 	 * Check event.
 	 *
-	 * @param passwordPolicy the password policy
-	 * @param user the user
+	 * @param passwordPolicy
+	 *            the password policy
+	 * @param user
+	 *            the user
 	 */
-	protected void checkEvent(PasswordPolicy passwordPolicy, UserImportNew user){
-		//Check passwordPolicy isUse
-		if (passwordPolicy.isUse()){
-			//Check Change Password at first login
-			if (passwordPolicy.isInitialPasswordChange()){
-				//Check state
-				if (user.getPassStatus() != PassStatus.InitPassword){
-					//Math PassPolicy
-					this.checkPassMathPolicy(passwordPolicy, user);
+	protected boolean checkEvent(PasswordPolicy passwordPolicy, UserImportNew user) {
+		// Check passwordPolicy isUse
+		if (passwordPolicy.isUse()) {
+			// Check Change Password at first login
+			if (passwordPolicy.isInitialPasswordChange()) {
+				// Check state
+				if (user.getPassStatus() != PassStatus.InitPassword) {
+					// Math PassPolicy
+					CheckBeforeChangePass mess = this.userAdapter.passwordPolicyCheck(user.getUserId(),
+							user.getPassword(), user.getContractCode());
+					
+					if (mess.isError()) return false;
+					
+					return true;
 				}
+				return false;
 			}
 		}
-	}
-	
-	protected void checkPassMathPolicy(PasswordPolicy passwordPolicy, UserImportNew user){
-		//List message 
-		List<String> messages = new ArrayList<String>();
-		//Check isUser
-		if (passwordPolicy.isUse()){
-			//Check degit pass
-			if (user.getPassword().length() < passwordPolicy.getLowestDigits().v().intValue()){
-				messages.add("#Msg_1186");
-				return new CheckBeforeChangePassOutput(true, messages);
-			}
-		}
+		return true;
 	}
 
 	/**
@@ -333,7 +335,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 *            the new role id
 	 */
 	// set roll id into login user context
-	protected void setRoleId(String userId) {
+	protected CheckChangePassDto setRoleId(String userId) {
 		String humanResourceRoleId = this.getRoleId(userId, RoleType.HUMAN_RESOURCE);
 		String employmentRoleId = this.getRoleId(userId, RoleType.EMPLOYMENT);
 		String salaryRoleId = this.getRoleId(userId, RoleType.SALARY);
@@ -373,6 +375,8 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		if (personalInfoRoleId != null) {
 			manager.roleIdSetter().forPersonalInfo(personalInfoRoleId);
 		}
+		
+		return new CheckChangePassDto(false, null);
 	}
 
 	/**
@@ -473,7 +477,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * Compare account.
 	 */
 	// アルゴリズム「アカウント照合」を実行する
-	protected void compareAccount(HttpServletRequest context) {
+	protected CheckChangePassDto compareAccount(HttpServletRequest context) {
 		// Windowsログイン時のアカウントを取得する
 		// get UserName and HostName
 		String username = AppContexts.windowsAccount().getUserName();
@@ -498,6 +502,8 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			} else {
 				this.getUserAndCheckLimitTime(context, opWindowAccount.get());
 			}
+			
+			return new CheckChangePassDto(false, null);
 		}
 	}
 
@@ -508,7 +514,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 *            the window account
 	 * @return the user and check limit time
 	 */
-	private void getUserAndCheckLimitTime(HttpServletRequest request, WindowsAccount windowAccount) {
+	private CheckChangePassDto getUserAndCheckLimitTime(HttpServletRequest request, WindowsAccount windowAccount) {
 		// get user
 		Optional<UserImport> optUserImport = this.userAdapter.findByUserId(windowAccount.getUserId());
 
@@ -521,5 +527,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			request.changeSessionId();
 			this.initSession(optUserImport.get());
 		}
+		
+		return new CheckChangePassDto(false, null);
 	}
 }
