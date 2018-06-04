@@ -510,11 +510,6 @@ module nts.custombinding {
                         line-height: 30px;
                     }
 
-                    .layout-control .item-classification .ui-igcombo-wrapper {
-                        width: auto;
-                        width: initial;                            
-                    }
-
                     .layout-control .item-classification .form-label {
                         width: 210px;
                         white-space: nowrap;
@@ -855,7 +850,7 @@ module nts.custombinding {
                         <input data-bind=" ntsTextEditor: {
                                 name: itemName,
                                 value: value,
-                                constraint: nameid,
+                                constraint: nameid == 'COM1000000000000000CS00069IS00779' ? 'StampNumber' : nameid,
                                 required: required,
                                 option: {
                                     textmode: 'text'
@@ -1036,6 +1031,7 @@ module nts.custombinding {
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.SELECTION -->
                         <div data-bind="ntsComboBox: {
+                                    width: '200px',
                                     name: itemName,
                                     value: value,
                                     options: lstComboBoxValue,
@@ -1047,7 +1043,7 @@ module nts.custombinding {
                                     visibleItemsCount: 5,
                                     selectFirstIfNull: false,
                                     dropDownAttachedToBody: true,
-                                    columns: [{ prop: 'optionText', length: 10, lengthDropDown: 20 }]
+                                    columns: [{ prop: 'optionText', length: _.max(ko.toJS(lstComboBoxValue).map(function(v) {return v['optionText'].length; }))}]
                                 }, attr: {
                                     id: nameid,
                                     nameid: nameid,
@@ -1057,7 +1053,7 @@ module nts.custombinding {
                                     'data-category': categoryCode,
                                     'data-required': required,
                                     'data-defv': defValue
-                                }"></div>
+                                }", style='width: 200px; min-width: 200px; max-width: 580px;'></div>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.SEL_RADIO -->
                             <div data-bind="ntsRadioBoxGroup: {
@@ -1223,7 +1219,10 @@ module nts.custombinding {
                         options: ko.observableArray([]),
                         optionsValue: 'id',
                         optionsText: 'categoryName',
-                        columns: [{ prop: 'categoryName', length: 15 }]
+                        columns: [
+                            { prop: 'categoryCode', 'toggle': 'hidden', length: 20 },
+                            { prop: 'categoryName', length: 20 }
+                        ]
                     },
                     searchbox: {
                         mode: 'listbox',
@@ -1607,6 +1606,13 @@ module nts.custombinding {
 
                     if (constraints && constraints.length) {
                         exceptConsts = [];
+                        
+                        // fix bug stampNumber error msg
+                        let stampNumber = _.clone(constraints['COM1000000000000000CS00069IS00779']);
+                        if (stampNumber) {
+                            constraints.push(stampNumber);
+                        }
+
                         writeConstraints(constraints);
                     }
                 },
@@ -2784,8 +2790,8 @@ module nts.custombinding {
             // init radio box group
             ko.bindingHandlers['ntsRadioBoxGroup'].init(ctrls.radios, () => opts.radios, allBindingsAccessor, viewModel, bindingContext);
 
-            //ko.bindingHandlers['ntsComboBox'].init(ctrls.combobox, () => opts.combobox, allBindingsAccessor, viewModel, bindingContext);
-            ko.bindingHandlers['ntsDropDownList'].init(ctrls.combobox, () => ({
+            ko.bindingHandlers['ntsComboBox'].init(ctrls.combobox, () => opts.combobox, allBindingsAccessor, viewModel, bindingContext);
+            /*ko.bindingHandlers['ntsDropDownList'].init(ctrls.combobox, () => ({
                 value: opts.combobox.value,
                 dataSource: opts.combobox.options,
                 textKey: opts.combobox.optionsText,
@@ -2796,7 +2802,7 @@ module nts.custombinding {
                     { prop: 'categoryCode', 'class': 'hidden' },
                     { prop: 'categoryName' }
                 ]
-            }), allBindingsAccessor, viewModel, bindingContext);
+            }), allBindingsAccessor, viewModel, bindingContext);*/
 
             ko.bindingHandlers['ntsSearchBox'].init(ctrls.searchbox, () => opts.searchbox, allBindingsAccessor, viewModel, bindingContext);
 
@@ -2817,8 +2823,8 @@ module nts.custombinding {
 
             ko.bindingHandlers['ntsRadioBoxGroup'].update(ctrls.radios, () => opts.radios, allBindingsAccessor, viewModel, bindingContext);
 
-            //ko.bindingHandlers['ntsComboBox'].update(ctrls.combobox, () => opts.combobox, allBindingsAccessor, viewModel, bindingContext);
-            ko.bindingHandlers['ntsDropDownList'].update(ctrls.combobox, () => ({
+            ko.bindingHandlers['ntsComboBox'].update(ctrls.combobox, () => opts.combobox, allBindingsAccessor, viewModel, bindingContext);
+            /*ko.bindingHandlers['ntsDropDownList'].update(ctrls.combobox, () => ({
                 value: opts.combobox.value,
                 dataSource: opts.combobox.options,
                 textKey: opts.combobox.optionsText,
@@ -2829,7 +2835,7 @@ module nts.custombinding {
                     { prop: 'categoryCode', 'class': 'hidden' },
                     { prop: 'categoryName' }
                 ]
-            }), allBindingsAccessor, viewModel, bindingContext);
+            }), allBindingsAccessor, viewModel, bindingContext);*/
 
             ko.bindingHandlers['ntsSearchBox'].update(ctrls.searchbox, () => opts.searchbox, allBindingsAccessor, viewModel, bindingContext);
 
@@ -3044,14 +3050,6 @@ module nts.custombinding {
         SET_MULTILINE_W_RADIO = <any>"SET_MULTILINE_W_RADIO",
         SET_MULTILINE_W_TITLE = <any>"SET_MULTILINE_W_TITLE"
     }
-}
-
-let scripts = $("script[src*='cbx-control-ko-ext.js']");
-if (scripts.length == 0) {
-    $('head').append($('<script>', {
-        'type': 'text/javascript',
-        'src': '/nts.uk.com.web/view/cps/shr/cbx-control-ko-ext.js'
-    }));
 }
 
 ko.bindingHandlers["ntsProp"] = new nts.custombinding.PropControl();
