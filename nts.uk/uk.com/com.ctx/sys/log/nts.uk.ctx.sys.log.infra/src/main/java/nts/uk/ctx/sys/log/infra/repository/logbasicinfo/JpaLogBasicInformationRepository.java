@@ -19,10 +19,10 @@ import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 public class JpaLogBasicInformationRepository extends JpaRepository implements LogBasicInfoRepository {
 
 	@Override
-	public List<LogBasicInformation> getAllLogBasicInfo(String companyId, List<String> listEmployeeId) {
-		String query = "SELECT a FROM SrcdtLogBasicInfo a WHERE a.companyId = :companyId AND a.employeeId IN :listEmpId";
+	public List<LogBasicInformation> getAllLogBasicInfo(String companyId, String loginEmployeeId) {
+		String query = "SELECT a FROM SrcdtLogBasicInfo a WHERE a.companyId = :companyId AND a.employeeId = :loginEmpId";
 		return this.queryProxy().query(query, SrcdtLogBasicInfo.class).setParameter("companyId", companyId)
-				.setParameter("listEmpId", listEmployeeId).getList(item -> item.toDomain());
+				.setParameter("loginEmpId", loginEmployeeId).getList(item -> item.toDomain());
 	}
 
 }

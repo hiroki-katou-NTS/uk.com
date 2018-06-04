@@ -64,8 +64,8 @@ module nts.uk.com.view.cdl027.a.viewmodel {
                                             self.formatTargetDate(self.params.functionId, r.targetDate), 
                                             r.targetUser, 
                                             r.item, 
-                                            self.formatValue(r.dataType, r.valueBefore), 
-                                            self.formatValue(r.dataType, r.valueAfter), 
+                                            r.valueBefore, 
+                                            r.valueAfter, 
                                             r.modifiedPerson, 
                                             r.modifiedDateTime, 
                                             r.correctionAttr));
@@ -144,18 +144,6 @@ module nts.uk.com.view.cdl027.a.viewmodel {
             }
         }
         
-        private formatValue(valueType: number, value: string): string {
-            switch (valueType) {
-                case DATA_TYPE.STRING:
-                case DATA_TYPE.COUNT:
-                    return nts.uk.ntsNumber.getDecimal(value, 0).toString();
-                case DATA_TYPE.MONEY:
-                    return nts.uk.ntsNumber.formatNumber(value, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 2}));
-                default:
-                    return nts.uk.time.parseTimeOfTheDay(value).format();
-            }         
-        }
-
         private initIGrid() {
             let self = this;
             $("#list").igGrid({
@@ -213,13 +201,15 @@ module nts.uk.com.view.cdl027.a.viewmodel {
             this.modifiedDateTime = moment.utc(modifiedDateTime).format("YYYY/MM/DD(dd) hh:mm");
             switch (correctionAttr) {
                 case CORRECTION_ATTR.EDIT: 
-                    this.correctionAttr = "Edit";
+                    this.correctionAttr = getText("Enum_CorrectionAttr_EDIT");
                     break;
                 case CORRECTION_ATTR.CALCULATE: 
-                    this.correctionAttr = "Manual";
+                    this.correctionAttr = getText("Enum_CorrectionAttr_CALCULATE");
                     break;
-                default: 
-                    this.correctionAttr = "Reflect";
+                case CORRECTION_ATTR.REFLECT: 
+                    this.correctionAttr = getText("Enum_CorrectionAttr_REFLECT");
+                    break;
+                default:
                     break;
             }
         }
@@ -248,12 +238,5 @@ module nts.uk.com.view.cdl027.a.viewmodel {
         REFLECT = 2
     }
     
-    enum DATA_TYPE {
-        STRING = 0,
-        COUNT = 1,
-        MONEY = 2,
-        TIME = 3
-    }
-
 }
 

@@ -15,8 +15,8 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.log.app.finder.datacorrectionlog.DataCorrectionLogDto;
 import nts.uk.ctx.sys.log.app.finder.datacorrectionlog.DataCorrectionLogFinder;
 import nts.uk.ctx.sys.log.app.finder.datacorrectionlog.DataCorrectionLogParams;
-//import nts.uk.ctx.sys.log.dom.datacorrectionlog.DataCorrectionLogRepository;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
 import nts.uk.shr.infra.file.csv.CSVFileData;
 import nts.uk.shr.infra.file.csv.CSVReportGenerator;
 
@@ -31,9 +31,6 @@ public class DataCorrectionLogExportService extends ExportService<DataCorrection
 
 	@Inject
 	private CSVReportGenerator generator;
-
-//	@Inject
-//	private DataCorrectionLogRepository repo;
 
 	@Inject
 	private DataCorrectionLogFinder finder;
@@ -81,12 +78,26 @@ public class DataCorrectionLogExportService extends ExportService<DataCorrection
 			row.put(headers.get(4), d.getValueAfter());
 			row.put(headers.get(5), d.getModifiedDateTime());
 			row.put(headers.get(6), d.getModifiedPerson());
-			row.put(headers.get(7), d.getCorrectionAttr());
+			row.put(headers.get(7), getCorrectionAttr(d.getCorrectionAttr()));
 			dataSource.add(row);
 		}
 		CSVFileData fileData = new CSVFileData(
 				"PGID" + "_" + GeneralDateTime.now().toString("yyyyMMddHHmmss") + FILE_EXTENSION, headers, dataSource);
 		generator.generate(context.getGeneratorContext(), fileData);
+	}
+	
+	private String getCorrectionAttr(int attr) {
+		CorrectionAttr correctionAttr = CorrectionAttr.of(attr);
+		switch (correctionAttr) {
+		case EDIT:
+			return TextResource.localize("Enum_CorrectionAttr_EDIT");
+		case CALCULATE:
+			return TextResource.localize("Enum_CorrectionAttr_CALCULATE");
+		case REFLECT:
+			return TextResource.localize("Enum_CorrectionAttr_REFLECT");
+		default:
+			return "";
+		}
 	}
 
 }

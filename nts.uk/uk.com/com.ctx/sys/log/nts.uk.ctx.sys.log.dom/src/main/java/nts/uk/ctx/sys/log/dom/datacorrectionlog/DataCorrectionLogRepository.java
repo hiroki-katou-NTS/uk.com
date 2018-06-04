@@ -15,10 +15,10 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 public interface DataCorrectionLogRepository {
 
-	List<DataCorrectionLog> getAllLogData(String operationId, List<String> listEmployeeId, DatePeriod datePeriod);
+	List<DataCorrectionLog> getAllLogData(List<String> listOperationId, List<String> listEmployeeId, DatePeriod datePeriod);
 
-	List<DataCorrectionLog> getAllLogData(String operationId, List<String> listEmployeeId, YearMonthPeriod ymPeriod);
+	List<DataCorrectionLog> getAllLogData(List<String> listOperationId, List<String> listEmployeeId, YearMonthPeriod ymPeriod);
 
-	List<DataCorrectionLog> getAllLogData(String operationId, List<String> listEmployeeId, Year yearStart, Year yearEnd);
+	List<DataCorrectionLog> getAllLogData(List<String> listOperationId, List<String> listEmployeeId, Year yearStart, Year yearEnd);
 
 }

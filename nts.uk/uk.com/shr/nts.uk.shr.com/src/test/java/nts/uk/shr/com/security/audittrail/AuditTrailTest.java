@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.DataValueAttribute;
 import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
@@ -45,7 +46,7 @@ public class AuditTrailTest {
 				TargetDataType.DAILY_RECORD,
 				TargetDataKey.of(date),
 				CorrectionAttr.EDIT,
-				ItemInfo.create("遅刻回数", DataValueAttribute.COUNT, 1, 2),
+				ItemInfo.create(IdentifierUtil.randomUniqueId(), "遅刻回数", DataValueAttribute.COUNT, 1, 2),
 				100);
 	}
 

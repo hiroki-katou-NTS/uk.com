@@ -6,19 +6,24 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
+import nts.uk.shr.com.security.audittrail.UserInfo;
+import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
+import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
+import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
+import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * 
- * @author HungTT -
+ * @author HungTT
  *
  */
 
@@ -30,7 +35,7 @@ public class SrcdtDataCorrectionLog extends UkJpaEntity {
 
 	@EmbeddedId
 	SrcdtDataCorrectionLogPk pk;
-	
+
 	@Column(name = "USER_NAME")
 	@Basic(optional = false)
 	String userName;
@@ -48,6 +53,9 @@ public class SrcdtDataCorrectionLog extends UkJpaEntity {
 	@Column(name = "Y_KEY")
 	Integer yKey;
 
+	@Column(name = "STRING_KEY")
+	String stringKey;
+
 	@Column(name = "CORRECTION_ATR")
 	@Basic(optional = false)
 	int correctionAttr;
@@ -55,61 +63,44 @@ public class SrcdtDataCorrectionLog extends UkJpaEntity {
 	@Column(name = "ITEM_NAME")
 	@Basic(optional = false)
 	String itemName;
-	
-//	@Column(name = "RAW_VALUE_BEFORE")
-//	@Basic(optional = true)
-//	String rawValueBefore;
+
+	@Column(name = "RAW_VALUE_BEFORE_ID")
+	String rawValueBefore;
 
 	@Column(name = "VIEW_VALUE_BEFORE")
-	@Basic(optional = true)
 	String viewValueBefore;
 
-//	@Column(name = "RAW_VALUE_AFTER")
-//	@Basic(optional = true)
-//	String rawValueAfter;
+	@Column(name = "RAW_VALUE_AFTER_ID")
+	String rawValueAfter;
 
 	@Column(name = "VIEW_VALUE_AFTER")
-	@Basic(optional = true)
 	String viewValueAfter;
-	
+
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumns({
-		@JoinColumn(name = "operationId", referencedColumnName = "operationId", insertable = false, updatable = false),
-		@JoinColumn(name = "userId", referencedColumnName = "userId", insertable = false, updatable = false),
-		@JoinColumn(name = "targetDataType", referencedColumnName = "targetDataType", insertable = false, updatable = false),
-		@JoinColumn(name = "stringKey", referencedColumnName = "stringKey", insertable = false, updatable = false)
-	})
+	@JoinColumn(name = "RAW_VALUE_BEFORE_ID", insertable = false, updatable = false)
 	SrcdtDecimalRawValue rawDecimalValueBefore;
-	
+
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumns({
-		@JoinColumn(name = "operationId", referencedColumnName = "operationId", insertable = false, updatable = false),
-		@JoinColumn(name = "userId", referencedColumnName = "userId", insertable = false, updatable = false),
-		@JoinColumn(name = "targetDataType", referencedColumnName = "targetDataType", insertable = false, updatable = false),
-		@JoinColumn(name = "stringKey", referencedColumnName = "stringKey", insertable = false, updatable = false)
-	})
+	@JoinColumn(name = "RAW_VALUE_AFTER_ID", insertable = false, updatable = false)
 	SrcdtDecimalRawValue rawDecimalValueAfter;
-	
+
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumns({
-		@JoinColumn(name = "operationId", referencedColumnName = "operationId", insertable = false, updatable = false),
-		@JoinColumn(name = "userId", referencedColumnName = "userId", insertable = false, updatable = false),
-		@JoinColumn(name = "targetDataType", referencedColumnName = "targetDataType", insertable = false, updatable = false),
-		@JoinColumn(name = "stringKey", referencedColumnName = "stringKey", insertable = false, updatable = false)
-	})
+	@JoinColumn(name = "RAW_VALUE_BEFORE_ID", insertable = false, updatable = false)
 	SrcdtVarcharRawValue rawVarcharValueBefore;
-	
+
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumns({
-		@JoinColumn(name = "operationId", referencedColumnName = "operationId", insertable = false, updatable = false),
-		@JoinColumn(name = "userId", referencedColumnName = "userId", insertable = false, updatable = false),
-		@JoinColumn(name = "targetDataType", referencedColumnName = "targetDataType", insertable = false, updatable = false),
-		@JoinColumn(name = "stringKey", referencedColumnName = "stringKey", insertable = false, updatable = false)
-	})
+	@JoinColumn(name = "RAW_VALUE_AFTER_ID", insertable = false, updatable = false)
 	SrcdtVarcharRawValue rawVarcharValueAfter;
 
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "RAW_VALUE_BEFORE_ID", insertable = false, updatable = false)
+	SrcdtNvarcharRawValue rawNvarcharValueBefore;
+
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "RAW_VALUE_AFTER_ID", insertable = false, updatable = false)
+	SrcdtNvarcharRawValue rawNvarcharValueAfter;
+
 	@Column(name = "VALUE_DATA_TYPE")
-	@Basic(optional = true)
 	Integer valueType;
 
 	@Column(name = "SHOW_ORDER")
@@ -117,40 +108,31 @@ public class SrcdtDataCorrectionLog extends UkJpaEntity {
 	int showOrder;
 
 	@Column(name = "NOTE")
-	@Basic(optional = true)
 	String note;
-	
-	
 
 	@Override
 	protected Object getKey() {
 		return this.pk;
 	}
 
-	public DataCorrectionLog toDomain() {
-//		return new DataCorrectionLog(pk.operationId, new UserInfo(pk.userId, userName, employeeId),
-//				TargetDataType.of(targetDataType),
-//				TargetDataKey.of(ymdKey, stringKey),
-//				CorrectionAttr.of(correctionAttr),
-//				ItemInfo.create(pk.itemName, DataValueAttribute.of(valueType), rawValueBefore, rawValueAfter), showOrder,
-//				note);
-		return null;
-	}
-
-	public static SrcdtDataCorrectionLog fromDomain(DataCorrectionLog domain) {
-//		return new SrcdtDataCorrectionLog(
-//				new SrcdtDataCorrectionLogPk(domain.getOperationId(), domain.getTargetUser().getUserId(),
-//						domain.getCorrectedItem().getName()),
-//				domain.getTargetUser().getUserName(), domain.getTargetUser().getEmployeeId(),
-//				domain.getTargetDataType().value, domain.getTargetDataKey().getYmdKey().get(),
-//				domain.getTargetDataKey().getYmKey().get().v(), domain.getTargetDataKey().getYKey().get().getValue(),
-//				domain.getTargetDataKey().getStringKey().get(), domain.getCorrectionAttr().value,
-//				domain.getCorrectedItem().getValueBefore().getRawValue().toString(),
-//				domain.getCorrectedItem().getValueBefore().getViewValue(),
-//				domain.getCorrectedItem().getValueAfter().getRawValue().toString(),
-//				domain.getCorrectedItem().getValueAfter().getViewValue(), domain.getShowOrder(),
-//				domain.getCorrectedItem().getValueAfter().getRawValue().getType().value, domain.getRemark());
-		return null;
+	/**
+	 * convert data to read only, not to write
+	 * 
+	 * @return domain DataCorrectionLog
+	 */
+	public DataCorrectionLog toDomainToView() {
+		GeneralDate ymd = this.ymdKey;
+		if (this.ymKey != null) {
+			YearMonth ym = YearMonth.of(this.ymKey);
+			ymd = GeneralDate.ymd(ym.year(), ym.month(), 1);
+		}
+		if (this.yKey != null)
+			ymd = GeneralDate.ymd(this.yKey, 1, 1);
+		return new DataCorrectionLog(this.pk.operationId, new UserInfo(this.pk.userId, this.userName, this.employeeId),
+				TargetDataType.of(this.pk.targetDataType), TargetDataKey.of(ymd, this.stringKey),
+				CorrectionAttr.of(this.correctionAttr),
+				ItemInfo.createToView(this.pk.itemId, this.itemName, this.viewValueBefore, this.viewValueAfter),
+				this.showOrder, this.note);
 	}
 
 }

@@ -12,6 +12,6 @@ import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 
 public interface LogBasicInfoRepository {
 
-	List<LogBasicInformation> getAllLogBasicInfo(String companyId, List<String> listEmployeeId);
+	List<LogBasicInformation> getAllLogBasicInfo(String companyId, String loginEmployeeId);
 	
 }

@@ -18,7 +18,6 @@ public class DataCorrectionLogDto {
 	private String item;
 	private String valueBefore;
 	private String valueAfter;
-	private int dataType;
 	private String modifiedPerson;
 	private GeneralDateTime modifiedDateTime;
 	private int correctionAttr;

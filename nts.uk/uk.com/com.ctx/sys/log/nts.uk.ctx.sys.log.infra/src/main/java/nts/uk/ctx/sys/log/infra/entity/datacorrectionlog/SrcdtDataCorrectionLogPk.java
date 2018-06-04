@@ -32,8 +32,8 @@ public class SrcdtDataCorrectionLogPk {
 	@Basic(optional = false)
 	int targetDataType;
 	
-	@Column(name = "STRING_KEY")
+	@Column(name = "ITEM_ID")
 	@Basic(optional = false)
-	String stringKey;
+	String itemId;
 
 }

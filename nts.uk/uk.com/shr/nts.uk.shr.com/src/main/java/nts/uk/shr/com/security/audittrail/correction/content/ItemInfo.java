@@ -12,6 +12,10 @@ import nts.arc.time.GeneralDate;
 @RequiredArgsConstructor
 public class ItemInfo {
 
+	/** 項目ID */
+	@Getter
+	private final String id;
+	
 	/** 項目名 */
 	@Getter
 	private final String name;
@@ -24,8 +28,20 @@ public class ItemInfo {
 	@Getter
 	private final Value valueAfter;
 	
-	public static ItemInfo create(String name, DataValueAttribute attr, Object valueBefore, Object valueAfter) {
-		return new ItemInfo(name, Value.create(valueBefore, attr), Value.create(valueBefore, attr));
+	public static ItemInfo create(String id, String name, DataValueAttribute attr, Object valueBefore, Object valueAfter) {
+		return new ItemInfo(id, name, Value.create(valueBefore, attr), Value.create(valueBefore, attr));
+	}
+	
+	/**
+	 * create to read data only, not to write
+	 * @param id
+	 * @param name
+	 * @param valueBefore
+	 * @param valueAfter
+	 * @return
+	 */
+	public static ItemInfo createToView(String id, String name, String valueBefore, String valueAfter) {
+		return new ItemInfo(id, name, Value.createToView(valueBefore), Value.createToView(valueAfter));
 	}
 	
 	@RequiredArgsConstructor
@@ -52,6 +68,15 @@ public class ItemInfo {
 			default:
 				throw new RuntimeException("invalid attribute: " + attr);
 			}
+		}
+		
+		/**
+		 * create to read data only, not to write
+		 * @param value
+		 * @return
+		 */
+		static Value createToView(String value) {
+			return new Value(null, value);
 		}
 	}
 	

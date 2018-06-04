@@ -18,10 +18,10 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 
 @Entity
-@Table(name = "SRCDT_VARCHAR_RAW_VALUE")
+@Table(name = "SRCDT_NVARCHAR_RAW_VALUE")
 @NoArgsConstructor
 @AllArgsConstructor
-public class SrcdtVarcharRawValue extends UkJpaEntity {
+public class SrcdtNvarcharRawValue extends UkJpaEntity {
 
 	@Id
 	@Column(name = "ID")
@@ -31,10 +31,10 @@ public class SrcdtVarcharRawValue extends UkJpaEntity {
 	@Basic(optional = false)
 	String value;
 
-	@OneToOne(mappedBy = "rawVarcharValueBefore")
+	@OneToOne(mappedBy = "rawNvarcharValueBefore")
 	SrcdtDataCorrectionLog beforeLog;
 
-	@OneToOne(mappedBy = "rawVarcharValueBefore")
+	@OneToOne(mappedBy = "rawNvarcharValueAfter")
 	SrcdtDataCorrectionLog afterLog;
 
 	@Override
