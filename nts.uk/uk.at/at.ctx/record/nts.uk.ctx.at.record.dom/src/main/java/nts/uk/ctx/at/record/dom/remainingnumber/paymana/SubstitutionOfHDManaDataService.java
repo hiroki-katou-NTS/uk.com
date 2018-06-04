@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.base.DayOffManagement;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.AddSubHdManagementService;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class SubstitutionOfHDManaDataService {
@@ -80,31 +81,35 @@ public class SubstitutionOfHDManaDataService {
 	/**
 	 * KDM001 update screen H
 	 */
-	private List<String> checkClosureDate(int closureId, GeneralDate dayoffDate, String subOfHDID) {
+	private List<String> checkClosureDate(int closureId, GeneralDate dayoffDate, String subOfHDID , String sId) {
 		List<String> errorList = new ArrayList<>();
 		YearMonth processYearMonth = GeneralDate.today().yearMonth();
 		Optional<GeneralDate> closureDate = addSubHdManagementService.getClosureDate(closureId, processYearMonth);
 		if (dayoffDate.compareTo(closureDate.get()) >= 0) {
 			errorList.add("Msg_744");
 		}
-		List<PayoutManagementData> listPayout = payoutManagementDataRepository.getDayoffDateBysubOfHDID(subOfHDID);
-		if (!listPayout.isEmpty()) {
-			for (PayoutManagementData payout : listPayout) {
-				Optional<GeneralDate> dayoffDateOfPayout = payout.getPayoutDate().getDayoffDate();
-				if (dayoffDateOfPayout.isPresent()) {
-					if (dayoffDate.equals(dayoffDateOfPayout.get())) {
-						errorList.add("Msg_729");
-					}
-				}
-			}
-
+//		List<PayoutManagementData> listPayout = payoutManagementDataRepository.getDayoffDateBysubOfHDID(subOfHDID);
+//		if (!listPayout.isEmpty()) {
+//			for (PayoutManagementData payout : listPayout) {
+//				Optional<GeneralDate> dayoffDateOfPayout = payout.getPayoutDate().getDayoffDate();
+//				if (dayoffDateOfPayout.isPresent()) {
+//					if (dayoffDate.equals(dayoffDateOfPayout.get())) {
+//						errorList.add("Msg_729");
+//					}
+//				}
+//			}
+//		}
+		String cID = AppContexts.user().companyId();
+		Optional<PayoutManagementData> dayoffDatePayout = payoutManagementDataRepository.find(cID, sId, dayoffDate);
+		if(dayoffDatePayout.isPresent()){
+			errorList.add("Msg_729");
 		}
 		return errorList;
 	}
 
 	public List<String> updateSubOfHD(SubstitutionOfHDManagementData data, int closureId) {
 		List<String> errorListClosureDate = checkClosureDate(closureId, data.getHolidayDate().getDayoffDate().get(),
-				data.getSubOfHDID());
+				data.getSubOfHDID(), data.getSID());
 		if (errorListClosureDate.isEmpty()) {
 			substitutionOfHDManaDataRepository.update(data);
 		}
