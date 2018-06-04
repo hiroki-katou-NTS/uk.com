@@ -153,6 +153,9 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                         if (error === "Msg_737_SubPay") {
                             $('#D11_1').ntsError('set', { messageId: "Msg_737" });
                         }
+                        if (error === "Msg_737_splitMana") {
+                            $('#D12_2').ntsError('set', { messageId: "Msg_737" });
+                        }
                         if (error === "Msg_740") {
                             $('#D6_1').ntsError('set', { messageId: "Msg_740" });
                         }
