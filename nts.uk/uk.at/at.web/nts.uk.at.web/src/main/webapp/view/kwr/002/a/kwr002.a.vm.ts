@@ -281,11 +281,11 @@ module nts.uk.com.view.kwr002.a {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_1129" });
                     return;
                 }
-                self.exportDto(new ExportDto(self.selectedEmployee(), self.toDate(self.dateValue().startDate), self.toDate(self.dateValue().endDate), self.selectedCode(), 1));                
+                self.exportDto(new ExportDto(self.selectedEmployee(), self.toDate(self.dateValue().startDate), self.toDate(self.dateValue().endDate), self.selectedCode(), 1));
                 service.exportService(self.exportDto()).done(() => {
 
-                }).fail((error) => {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1269" });
+                }).fail((res: any) => {
+                    self.showMessageError(res);
                 })
             }
 
@@ -300,9 +300,28 @@ module nts.uk.com.view.kwr002.a {
                 self.exportDto(new ExportDto(self.selectedEmployee(), self.toDate(self.dateValue().startDate), self.toDate(self.dateValue().endDate), self.selectedCode(), 2));
                 service.exportService(self.exportDto()).done(() => {
 
-                }).fail((error) => {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1269" });
+                }).fail((res: any) => {
+                    self.showMessageError(res);
                 })
+            }
+
+            /**
+             * showMessageError
+             */
+            public showMessageError(res: any) {
+                let dfd = $.Deferred<any>();
+
+                // check error business exception
+                if (!res.businessException) {
+                    return;
+                }
+
+                // show error message
+                if (Array.isArray(res.errors)) {
+                    nts.uk.ui.dialog.bundledErrors(res);
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                }
             }
 
             public openBDialog(): void {
