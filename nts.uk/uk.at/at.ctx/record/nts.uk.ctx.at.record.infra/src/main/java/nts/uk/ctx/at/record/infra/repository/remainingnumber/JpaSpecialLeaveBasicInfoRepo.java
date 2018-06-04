@@ -10,6 +10,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.basicinfo.S
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
 import nts.uk.ctx.at.record.infra.entity.remainingnumber.spLea.basicInfo.KrcmtSpecialLeaveInfo;
 import nts.uk.ctx.at.record.infra.entity.remainingnumber.spLea.basicInfo.KrcmtSpecialLeaveInfoPK;
+import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 
 @Stateless
 public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements SpecialLeaveBasicInfoRepository {
@@ -17,7 +18,12 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 	private String FIND_QUERY = "SELECT s FROM KrcmtSpecialLeaveInfo s WHERE s.key.employeeId = :employeeId ";
 
 	private String FIND_QUERY_BYSIDCD = String.join(" ", FIND_QUERY, "AND s.key.spLeaveCD = :spLeaveCD");
-
+	
+	private String QUERY_BY_SID_LEAVECD_ISUSE = "SELECT s FROM KrcmtSpecialLeaveInfo s"
+			+ " WHERE s.key.employeeId = :employeeId "
+			+ " AND s.key.spLeaveCD = :spLeaveCD "
+			+ " AND s.useCls = :useCls";
+	
 	@Override
 	public List<SpecialLeaveBasicInfo> listSPLeav(String sid) {
 		List<SpecialLeaveBasicInfo> result = this.queryProxy().query(FIND_QUERY, KrcmtSpecialLeaveInfo.class)
@@ -119,6 +125,17 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 		Optional<SpecialLeaveBasicInfo> result = this.queryProxy()
 				.query(FIND_QUERY_BYSIDCD, KrcmtSpecialLeaveInfo.class).setParameter("employeeId", sid)
 				.setParameter("spLeaveCD", spLeaveCD).getSingle(item -> toDomain(item));
+		return result;
+	}
+
+	@Override
+	public Optional<SpecialLeaveBasicInfo> getBySidLeaveCdUser(String sid, int spLeaveCD, UseAtr use) {
+		Optional<SpecialLeaveBasicInfo> result = this.queryProxy()
+				.query(QUERY_BY_SID_LEAVECD_ISUSE, KrcmtSpecialLeaveInfo.class)
+				.setParameter("employeeId", sid)
+				.setParameter("spLeaveCD", spLeaveCD)
+				.setParameter("useCls", use.value)				
+				.getSingle(item -> toDomain(item));
 		return result;
 	}
 
