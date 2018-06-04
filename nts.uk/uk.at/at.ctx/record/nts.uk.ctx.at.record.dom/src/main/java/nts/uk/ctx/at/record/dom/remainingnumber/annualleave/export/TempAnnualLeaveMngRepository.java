@@ -12,7 +12,12 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author shuichu_ishida
  */
 public interface TempAnnualLeaveMngRepository {
-
+	
+	/**
+	 * @param employeeID
+	 * @return List<TempAnnualLeaveManagement>
+	 */
+	List<TempAnnualLeaveManagement> findByEmployeeID(String employeeID);
 	/**
 	 * 検索
 	 * @param employeeId 社員ID
