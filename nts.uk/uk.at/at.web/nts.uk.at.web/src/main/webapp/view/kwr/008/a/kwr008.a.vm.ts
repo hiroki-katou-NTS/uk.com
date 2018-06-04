@@ -122,19 +122,6 @@ module nts.uk.at.view.kwr008.a {
                 var self = this;
                 if (self.validate()) return;
                 nts.uk.ui.block.invisible();
-                //対象期間をチェックする
-                if (moment(self.dateValue().startDate, 'YYYY/MM').add(12, 'M').toDate() <=
-                    moment(self.dateValue().endDate, 'YYYYMM').toDate()) {
-                    nts.uk.ui.dialog.alertError({messageId: 'Msg_883'});
-                    nts.uk.ui.block.clear();
-                    return;
-                }
-                //出力対象の社員をチェックする
-                if (!self.selectedEmployeeCode().length) {
-                    nts.uk.ui.dialog.alertError({messageId: 'Msg_884'});
-                    nts.uk.ui.block.clear();
-                    return;
-                }
                 var data = new model.EmployeeDto();
                 data.startYearMonth   = self.dateValue().startDate;
                 data.endYearMonth     = self.dateValue().endDate;

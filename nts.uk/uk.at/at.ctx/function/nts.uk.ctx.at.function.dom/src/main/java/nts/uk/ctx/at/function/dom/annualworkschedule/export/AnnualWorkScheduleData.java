@@ -19,7 +19,9 @@ public class AnnualWorkScheduleData {
 	*/
 	private ValueOuputFormat valOutFormat;
 	private String headingName;
+	private YearMonth startYm;
 	private int numMonth;
+
 	private BigDecimal month1st;
 	private BigDecimal month2nd;
 	private BigDecimal month3rd;
@@ -47,8 +49,8 @@ public class AnnualWorkScheduleData {
 
 	private Integer maxDigitAfterDecimalPoint = null;
 
-	public void setMonthlyData(BigDecimal value, YearMonth startYm, YearMonth ym) {
-		int monthIndex = (int) startYm.until(ym, ChronoUnit.MONTHS);
+	public void setMonthlyData(BigDecimal value, YearMonth ym) {
+		int monthIndex = (int) this.startYm.until(ym, ChronoUnit.MONTHS);
 		switch (monthIndex) {
 		case 0:
 			this.month1st = value;

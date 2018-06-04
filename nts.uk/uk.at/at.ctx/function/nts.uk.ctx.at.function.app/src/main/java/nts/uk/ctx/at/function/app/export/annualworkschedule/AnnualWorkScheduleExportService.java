@@ -1,11 +1,15 @@
 package nts.uk.ctx.at.function.app.export.annualworkschedule;
 
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.ctx.at.function.dom.annualworkschedule.Employee;
@@ -24,12 +28,18 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 
 	@Override
 	protected void handle(ExportServiceContext<AnnualWorkScheduleExportQuery> context) {
-
 		String companyId = AppContexts.user().companyId();
 		AnnualWorkScheduleExportQuery query = context.getQuery();
 
+		YearMonth startYm = YearMonth.parse(query.getStartYearMonth(), DateTimeFormatter.ofPattern("uuuu/MM"));
+		YearMonth endYm = YearMonth.parse(query.getEndYearMonth(), DateTimeFormatter.ofPattern("uuuu/MM"));
+		//対象期間をチェックする
+		if (startYm.until(endYm, ChronoUnit.MONTHS) + 1 > 12) throw new BusinessException("Msg_883");
+		//出力対象の社員をチェックする
+		if (query.getEmployees() == null || query.getEmployees().isEmpty()) throw new BusinessException("Msg_884");
+
 		ExportData data = this.repostory.getData(companyId, query.getSetItemsOutputCd(),
-				query.getStartYearMonth(), query.getEndYearMonth(),
+				startYm, endYm,
 				query.getEmployees().stream().map(m -> new Employee(m.getEmployeeId(), m.getCode(),
 						m.getName(), m.getWorkplaceName()))
 				.collect(Collectors.toList()));
@@ -38,5 +48,4 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		// invoke generator
 		this.generator.generate(context.getGeneratorContext(), data);
 	}
-	
 }
