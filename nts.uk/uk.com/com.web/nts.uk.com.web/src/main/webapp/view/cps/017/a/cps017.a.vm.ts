@@ -33,7 +33,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
         isDialog: KnockoutObservable<boolean> = ko.observable(false);
 
         selHistId: KnockoutObservable<string> = ko.observable('');
-        isGroupManager: KnockoutObservable<boolean>;
+        isGroupManager: boolean;
 
         // status of function-button
         enableRegister: KnockoutObservable<boolean> = ko.observable(false);
@@ -59,7 +59,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
             let selection: Selection = self.selection();
             let perInfoSelectionItem: ISelectionItem1 = self.perInfoSelectionItem();
 
-            self.isGroupManager = ko.observable(false);
+            let groupCompanyAdmin = __viewContext.user.role.groupCompanyAdmin;
+            self.isGroupManager = groupCompanyAdmin !== 'null';
             //check insert/update
             self.checkCreate = ko.observable(true);
             self.checkCreateaaa = ko.observable(true);
@@ -115,7 +116,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
                     }
                     // システム管理者　かつ　選択している選択項目の「選択項目区分」＝社員のとき
-                    if (self.isGroupManager() === true && perInfoSelectionItem.selectionItemClassification() === 1) {
+                    if (self.isGroupManager === true && perInfoSelectionItem.selectionItemClassification() === 1) {
                         self.showRefecToAll(true);
                     } else {
                         self.showRefecToAll(false);
@@ -227,9 +228,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
             nts.uk.ui.errors.clearAll();
             //xu ly dialog: 
             let param = getShared('CPS017_PARAMS');
-
-            // group manager;
-            self.isGroupManager(false);
 
             // ドメインモデル「個人情報の選択項目」をすべて取得する
             service.getAllSelectionItems().done((itemList: Array<ISelectionItem1>) => {
