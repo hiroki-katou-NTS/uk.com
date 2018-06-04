@@ -11,6 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.AnnualHolidayManagementPub;
+import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.AttendRateAtNextHolidayExport;
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.NextAnnualLeaveGrantExport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
@@ -105,4 +106,26 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 		// List<次回年休付与>を返す
 		return nextAnnualLeaveGrantData;
 	}
+	
+	/**
+	 * RequestList323
+	 * 次回年休付与時点の出勤率・出勤日数・所定日数・年間所定日数を取得する
+	 * 
+	 * @param companyId
+	 * @param employeeId
+	 * @return
+	 */
+
+	@Override
+	public Optional<AttendRateAtNextHolidayExport> getDaysPerYear(String companyId, String employeeId) {
+		// ドメインモデル「年休社員基本情報」を取得
+		Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo = annLeaEmpBasicInfoRepository.get(employeeId);
+		
+		// 次回年休付与を計算
+		List<NextAnnualLeaveGrantExport> result = calculateNextHolidayGrant(companyId, employeeId, null, annualLeaveEmpBasicInfo);
+		return null;
+	}
+	
+	
+	
 }
