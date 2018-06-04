@@ -53,4 +53,9 @@ public class BreakTimeDailyFinder extends FinderFacade {
 		return (List<T>) this.repo.finds(param).stream()
 			.map(c -> BreakTimeDailyDto.getDto(c)).collect(Collectors.toList());
 	}
+
+	@Override
+	public Object getDomain(String employeeId, GeneralDate baseDate) {
+		return repo.findByKey(employeeId, baseDate);
+	}
 }

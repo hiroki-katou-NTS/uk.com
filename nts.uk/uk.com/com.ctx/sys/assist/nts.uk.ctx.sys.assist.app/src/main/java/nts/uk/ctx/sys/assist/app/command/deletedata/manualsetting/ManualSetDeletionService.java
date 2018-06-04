@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -494,8 +495,8 @@ public class ManualSetDeletionService extends ExportService<Object>{
 		
 		// ファイル圧縮実行
 		boolean isExistCompressPassFlg = domain.isExistCompressPassFlg();
-		SimpleDateFormat sdf = new SimpleDateFormat("hhmm");
-		String executeDate = sdf.format(domain.getExecutionDateTime().date()); 
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+		String executeDate = sdf.format(new Date()); 
 		String nameFile = domain.getCompanyId()+"_" + domain.getDelName() + "_" + executeDate + ZIP_FILE_EXTENSION;
 		
 		Path compressedFile = null;

@@ -158,6 +158,11 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		this.businessType = Optional.ofNullable(businessType);
 		return this;
 	}
+	
+	public DailyRecordDto withBusinessTypeO(Optional<BusinessTypeOfDailyPerforDto> businessType) {
+		this.businessType = businessType;
+		return this;
+	}
 
 	public DailyRecordDto withAffiliationInfo(AffiliationInforOfDailyPerforDto affiliationInfo) {
 		this.affiliationInfo = affiliationInfo;
@@ -171,6 +176,11 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	
 	public DailyRecordDto outingTime(OutingTimeOfDailyPerformanceDto outingTime) {
 		this.outingTime = Optional.ofNullable(outingTime);
+		return this;
+	}
+	
+	public DailyRecordDto outingTimeO(Optional<OutingTimeOfDailyPerformanceDto> outingTime) {
+		this.outingTime = outingTime;
 		return this;
 	}
 
@@ -197,8 +207,18 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		return this;
 	}
 
+	public DailyRecordDto attendanceTimeO(Optional<AttendanceTimeDailyPerformDto> attendanceTime) {
+		this.attendanceTime = attendanceTime;
+		return this;
+	}
+
 	public DailyRecordDto attendanceTimeByWork(AttendanceTimeByWorkOfDailyDto attendanceTimeByWork) {
 		this.attendanceTimeByWork = Optional.ofNullable(attendanceTimeByWork);
+		return this;
+	}
+
+	public DailyRecordDto attendanceTimeByWorkO(Optional<AttendanceTimeByWorkOfDailyDto> attendanceTimeByWork) {
+		this.attendanceTimeByWork = attendanceTimeByWork;
 		return this;
 	}
 
@@ -207,8 +227,18 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		return this;
 	}
 
+	public DailyRecordDto timeLeavingO(Optional<TimeLeavingOfDailyPerformanceDto> timeLeaving) {
+		this.timeLeaving = timeLeaving;
+		return this;
+	}
+
 	public DailyRecordDto shortWorkTime(ShortTimeOfDailyDto shortWorkTime) {
 		this.shortWorkTime = Optional.ofNullable(shortWorkTime);
+		return this;
+	}
+
+	public DailyRecordDto shortWorkTimeO(Optional<ShortTimeOfDailyDto> shortWorkTime) {
+		this.shortWorkTime = shortWorkTime;
 		return this;
 	}
 
@@ -217,13 +247,28 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		return this;
 	}
 
+	public DailyRecordDto specificDateAttrO(Optional<SpecificDateAttrOfDailyPerforDto> specificDateAttr) {
+		this.specificDateAttr = specificDateAttr;
+		return this;
+	}
+
 	public DailyRecordDto attendanceLeavingGate(AttendanceLeavingGateOfDailyDto attendanceLeavingGate) {
 		this.attendanceLeavingGate = Optional.ofNullable(attendanceLeavingGate);
 		return this;
 	}
 
+	public DailyRecordDto attendanceLeavingGateO(Optional<AttendanceLeavingGateOfDailyDto> attendanceLeavingGate) {
+		this.attendanceLeavingGate = attendanceLeavingGate;
+		return this;
+	}
+
 	public DailyRecordDto optionalItems(OptionalItemOfDailyPerformDto optionalItem) {
 		this.optionalItem = Optional.ofNullable(optionalItem);
+		return this;
+	}
+
+	public DailyRecordDto optionalItemsO(Optional<OptionalItemOfDailyPerformDto> optionalItem) {
+		this.optionalItem = optionalItem;
 		return this;
 	}
 
@@ -253,8 +298,19 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		this.temporaryTime = Optional.ofNullable(temporaryTime);
 		return this;
 	}
+
+	public DailyRecordDto temporaryTimeO(Optional<TemporaryTimeOfDailyPerformanceDto> temporaryTime) {
+		this.temporaryTime = temporaryTime;
+		return this;
+	}
+	
 	public DailyRecordDto pcLogInfo(PCLogOnInforOfDailyPerformDto pcLogInfo) {
 		this.pcLogInfo = Optional.ofNullable(pcLogInfo);
+		return this;
+	}
+	
+	public DailyRecordDto pcLogInfoO(Optional<PCLogOnInforOfDailyPerformDto> pcLogInfo) {
+		this.pcLogInfo = pcLogInfo;
 		return this;
 	}
 	

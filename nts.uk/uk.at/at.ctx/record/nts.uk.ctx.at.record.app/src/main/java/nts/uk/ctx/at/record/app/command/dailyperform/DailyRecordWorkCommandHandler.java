@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -53,9 +54,9 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlCheckService;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 
 @Stateless
@@ -276,8 +277,14 @@ public class DailyRecordWorkCommandHandler {
 				updating.addAll(DOMAIN_CHANGED_BY_EVENT.get(l));
 			});
 			updating.stream().forEach(layout -> {
-				ConvertibleAttendanceItem updatedD = finder.getFinder(layout).find(command.getEmployeeId(), command.getWorkDate());
-				command.getCommand(layout).setRecords(updatedD);
+				Object updatedD = finder.getFinder(layout).getDomain(command.getEmployeeId(), command.getWorkDate());
+				if(ConvertHelper.isCollection(updatedD)){
+					command.getCommand(layout).updateDatas((List<Object>) updatedD);
+				} else if (ConvertHelper.isOptional(updatedD)) {
+					command.getCommand(layout).updateDataO((Optional<?>) updatedD);
+				} else {
+					command.getCommand(layout).updateData(updatedD);
+				}
 			});
 		});
 	}
@@ -289,7 +296,7 @@ public class DailyRecordWorkCommandHandler {
 			calced.stream().filter(d -> d.getAffiliationInfor().getEmployeeId().equals(c.getEmployeeId()) 
 					&& d.getAffiliationInfor().getYmd().equals(c.getWorkDate()))
 			.findFirst().ifPresent(d -> {
-				c.getAttendanceTime().updateData(d.getAttendanceTimeOfDailyPerformance().orElse(null));
+				c.getAttendanceTime().updateDataO(d.getAttendanceTimeOfDailyPerformance());
 			});
 		});
 		group.addAll(DOMAIN_CHANGED_BY_CALCULATE);
