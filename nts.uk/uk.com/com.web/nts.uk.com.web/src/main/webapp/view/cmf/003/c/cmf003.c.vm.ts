@@ -14,7 +14,7 @@ module nts.uk.com.view.cmf003.c {
            currentCateSelected: KnockoutObservableArray<any>;
            
            // systemType
-           systemTypes: KnockoutObservableArray<any>;
+           systemTypes: KnockoutObservableArray<number>;
            selectedCode: KnockoutObservable<string>;
            currentItem: KnockoutObservable<ItemSystemType>;
            isEnable: KnockoutObservable<boolean>;
@@ -35,7 +35,7 @@ module nts.uk.com.view.cmf003.c {
                    service.getSysTypes().done(function(data: Array<any>) {
                         if (data && data.length) {
                             _.forOwn(data, function(index) {
-                                self.systemTypes.push(new ItemSystemType(index.type,index.name));
+                                self.systemTypes.push(new ItemSystemType(index.value,index.localizedName));
                               });
                              
                             systemIdSelected = self.systemTypes()[0].code;
@@ -155,9 +155,9 @@ module nts.uk.com.view.cmf003.c {
        }
 
     class ItemSystemType {
-           code: string;
+           code: number;
            name: string;
-           constructor(code: string, name: string) {
+           constructor(code: number, name: string) {
                 this.code = code;
                 this.name = name;
           }
