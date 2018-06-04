@@ -77,14 +77,13 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 			List<MailDestinationImport> lstMail = envAdapter.getEmpEmailAddress(companyID, Arrays.asList(app.getEmployeeID()), 6);
 			List<OutGoingMailImport> outGoingMails = lstMail.get(0).getOutGoingMails();
 			String applicantMail = outGoingMails.isEmpty() ? "" : outGoingMails.get(0).getEmailAddress();
-//			String applicantMail = "hiep.ld@3si.vn";
+			//login
 			PesionInforImport loginer = employeeRequestAdapter.getEmployeeInfor(AppContexts.user().employeeId());
 			String loginName = Objects.isNull(loginer) ? "" : loginer.getPname();
 			//get mail login : rq419
 			List<MailDestinationImport> lstMailLogin = envAdapter.getEmpEmailAddress(companyID, Arrays.asList(AppContexts.user().employeeId()), 6);
 			List<OutGoingMailImport> outMails = lstMailLogin.get(0).getOutGoingMails();
 			String loginMail = outMails.isEmpty() ? "" : outMails.get(0).getEmailAddress();
-//			String loginMail = "D00001@nittsusystime.co.jp";
 			String appContent = appContentService.getApplicationContent(application_New.get());
 			String mailContentToSend = I18NText.getText("Msg_703",
 					loginName, appTempAsStr,
@@ -106,7 +105,6 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 					List<MailDestinationImport> lstMail = envAdapter.getEmpEmailAddress(cid, Arrays.asList(z.getApproverID()), 6);
 					List<OutGoingMailImport> outGoingMails = lstMail.get(0).getOutGoingMails();
 					String sMail = outGoingMails.isEmpty() ? "" : outGoingMails.get(0).getEmailAddress();
-//					String sMail = "hiep.ld@3si.vn";
 					z.setSMail(sMail);
 				});
 			});

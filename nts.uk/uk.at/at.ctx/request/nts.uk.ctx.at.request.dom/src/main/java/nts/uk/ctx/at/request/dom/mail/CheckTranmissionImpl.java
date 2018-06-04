@@ -50,7 +50,7 @@ public class CheckTranmissionImpl implements CheckTransmission {
 	private RegisterEmbededURL registerEmbededURL;
 
 	@Inject
-	private AtEmployeeAdapter employeeRequestAdapter;
+	private AtEmployeeAdapter empAdapter;
 	
 	@Inject
 	private EnvAdapter envAdapter;
@@ -63,39 +63,19 @@ public class CheckTranmissionImpl implements CheckTransmission {
 		Optional<UrlEmbedded> urlEmbedded = urlEmbeddedRepo.getUrlEmbeddedById(cid);
 		List<String> successList = new ArrayList<>();
 		List<String> errorList = new ArrayList<>();
-//		String appContent = "app contents";
-//		if (urlEmbedded.isPresent()) {
-//			int urlEmbeddedCls = urlEmbedded.get().getUrlEmbedded().value;
-//			NotUseAtr checkUrl = NotUseAtr.valueOf(urlEmbeddedCls);
-//			if (checkUrl == NotUseAtr.USE) {
-//				String urlInfo = registerEmbededURL.obtainApplicationEmbeddedUrl(appId, application.getAppType().value,
-//						application.getPrePostAtr().value, application.getEmployeeID());
-//				if (!Strings.isEmpty(urlInfo)){
-//					appContent += "\n" + "#KDL030_30" + " " + application.getAppID() + "\n" + urlInfo;
-//				}
-//			}
-//		}
-//		String loginName = "D00001";
-//		String loginMail = "D00001@nittsusystime.co.jp";
-//		String empName = "D00001 name";
-//		String mailContentToSend = I18NText.getText("Msg_703",
-//				loginName, mailBody,
-//				GeneralDate.today().toString(), application.getAppType().nameId,
-//				empName, application.getAppDate().toLocalDate().toString(),
-//				appContent, loginName, loginMail);
 		//get list mail by list sID : rq419
 		List<MailDestinationImport> lstMail = envAdapter.getEmpEmailAddress(cid, employeeIdList, 6);
 		for(String employeeToSendId: employeeIdList){
 			//find mail by sID
 			OutGoingMailImport mail = envAdapter.findMailBySid(lstMail, employeeToSendId);
 			String employeeMail = mail == null ? "" : mail.getEmailAddress();
-//			String mail = employeeToSendId;
-//			String employeeMail = "hiep.ld@3si.vn";
 			if (mail == null) {//TH k co mail -> se k xay ra
-				errorList.add(employeeToSendId);
+				List<EmployeeInfoImport> empObj = empAdapter.getByListSID(Arrays.asList(employeeToSendId));
+				if(!empObj.isEmpty() && empObj.size() > 1){
+					errorList.add(empObj.get(0).getBussinessName());
+				}
 			} else {
 				mailSender.send("mailadmin@uk.com", employeeMail, new MailContents("", mailBody));
-//				mailSender.send("tarou@nittsusystem.co.jp", employeeMail, new MailContents("", mailContentToSend));
 				successList.add(employeeToSendId);
 		
 			}
