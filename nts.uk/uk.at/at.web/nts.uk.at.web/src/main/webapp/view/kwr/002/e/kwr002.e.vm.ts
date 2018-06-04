@@ -80,7 +80,7 @@ module nts.uk.com.view.kwr002.e {
                     service.getCalculateAttndRecInfo(attendanceRecordKey).done(function(calculateAttendanceRecordDto: model.CalculateAttendanceRecordDto) {
                         if(calculateAttendanceRecordDto != null) {
                             if(calculateAttendanceRecordDto.attribute != null || calculateAttendanceRecordDto.attribute != undefined) {
-                                self.selectionTypeValue(attendanceItem.attribute);
+                                self.selectionTypeValue(calculateAttendanceRecordDto.attribute);
                             } else {
                                 self.selectionTypeValue(16);
                             }
