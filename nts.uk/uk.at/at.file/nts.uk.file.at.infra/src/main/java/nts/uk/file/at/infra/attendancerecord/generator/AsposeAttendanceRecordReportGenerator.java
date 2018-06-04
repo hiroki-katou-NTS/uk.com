@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 
 import com.aspose.cells.HorizontalPageBreakCollection;
 import com.aspose.cells.PageSetup;
+import com.aspose.cells.PaperSizeType;
 import com.aspose.cells.Range;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
@@ -322,6 +323,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		// create print area
 		PageSetup pageSetup = worksheet.getPageSetup();
 		pageSetup.setPrintArea(REPORT_PAGE_ADDR + (startNewPage + MAX_ROW_PER_EMPL));
+		pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
 	}
 
 	/**
