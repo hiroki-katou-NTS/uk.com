@@ -126,7 +126,7 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandler<TimeL
 	}
 
 	private List<Integer> mergeItems() {
-		return Stream.of(leaveItems, attendanceItems).flatMap(List::stream).collect(Collectors.toList());
+		return Stream.of(leaveItems, attendanceItems, Arrays.asList(157)).flatMap(List::stream).collect(Collectors.toList());
 	}
 
 	/** 申請反映の勤怠項目を判断する */

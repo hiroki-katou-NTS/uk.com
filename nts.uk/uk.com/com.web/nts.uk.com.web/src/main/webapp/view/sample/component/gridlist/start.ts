@@ -32,7 +32,12 @@ module nts.uk.ui.gridlist {
                     { headerText: 'コード', key: 'code', width: 100, hidden: true },
                     { headerText: '名称', key: 'name', width: 150, columnCssClass: "test" },
                     { headerText: '説明', key: 'description', width: 150 },
-                    { headerText: '説明1', key: 'other1', width: 150 },
+                    { headerText: '説明1', key: 'other1', width: 150, formatter: v => {
+                        if (v === "2010/1/1") {
+                            return '<div style="text-align: center; max-height: 18px;"><i class="ui-icon ui-icon-info"></i>' + v + '</div>';
+                        }
+                        return '';
+                    } },
                     { headerText: '説明2', key: 'other2', width: 150, isDateColumn: true, format: 'YYYY/MM/DD' }
                 ]);
                 this.currentCode = ko.observable();

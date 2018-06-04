@@ -32,7 +32,7 @@
 					</div>
 				</div>
 			</ui:insert>
-			<div id="master-content">
+			<div id="master-content" data-bind="let: { $vm: $data }">
 				<ui:insert name="content" />
 			</div>
 		</ui:insert>
