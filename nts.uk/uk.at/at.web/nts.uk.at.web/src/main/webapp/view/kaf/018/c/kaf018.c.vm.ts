@@ -162,6 +162,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                         bodyHeightMode: "fixed",
                         windowXOccupation: 50,
                         windowYOccupation: 20,
+                        showTooltipIfOverflow: true,
                         primaryTable: $("#extable")
                     })
                         .LeftmostHeader(initExTable.leftmostHeader).LeftmostContent(initExTable.leftmostContent)
@@ -307,7 +308,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         }
 
         //職場名
-        private displayWkp(): string {
+        displayWkp(): string {
             var self = this;
             return self.selectedWplName();
         }

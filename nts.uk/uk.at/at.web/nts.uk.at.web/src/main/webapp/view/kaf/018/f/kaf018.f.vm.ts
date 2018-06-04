@@ -283,6 +283,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                         bodyHeightMode: "fixed",
                         windowXOccupation: 50,
                         windowYOccupation: 20,
+                        showTooltipIfOverflow: true,
                         primaryTable: $("#extable")
                     })
                         .LeftmostHeader(initExTable.leftmostHeader).LeftmostContent(initExTable.leftmostContent)

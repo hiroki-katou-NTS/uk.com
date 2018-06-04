@@ -59,7 +59,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
             return dfd.promise();
         }
 
-        private sendMails() {
+        sendMails() {
             var self = this;
             block.invisible();
             let confirmStatus: Array<model.UnApprovalSendMail> = [];
@@ -102,18 +102,18 @@ module nts.uk.at.view.kaf018.b.viewmodel {
             });
         }
 
-        private getRecord1(value1: number, value2: number): string {
+        getRecord1(value1: number, value2: number): string {
             let val2: string =  value2 > 0 ? value2 : "";
             let val1: string = value1 > 0 ? value1 + "件" : "";
             let symb = (val1 != "" && val2 != "") ? "/" : "";
             return val2 + symb + val1;
         }
 
-        private getRecord(value?: number) {
+        getRecord(value?: number) {
             return value ? value + "件" : "";
         }
 
-        private getTargetDate(): string {
+        getTargetDate(): string {
             var self = this;
             let startDate = nts.uk.time.formatDate(new Date(self.startDate), 'yyyy/MM/dd');
             let endDate = nts.uk.time.formatDate(new Date(self.endDate), 'yyyy/MM/dd');
