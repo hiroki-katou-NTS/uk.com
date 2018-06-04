@@ -164,7 +164,7 @@ module nts.uk.at.view.kaf018.h.viewmodel {
                 if (self.checkH1()) {
                     self.monthlyUnconfirmByConfirmer.editMode(true);
                 }
-
+                info({ messageId: "Msg_15" });
                 block.clear();
             });
         }

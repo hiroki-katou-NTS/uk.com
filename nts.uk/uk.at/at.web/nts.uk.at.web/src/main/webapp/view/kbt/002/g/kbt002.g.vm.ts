@@ -37,7 +37,7 @@ module nts.uk.at.view.kbt002.g {
             openDetailDialog(data, event){
                 let self = this;
                 block.grayout();
-                service.getLogHistory(self.execLog.execItemCd, self.execLog.execId).done(function(logHistory) {
+                service.getLogHistory(self.execLog.execItemCd, self.execLog.taskLogExecId).done(function(logHistory) {
                     var taskId =  data.taskId;
                     self.createLinkAndSharedObject(taskId, logHistory);
                     
