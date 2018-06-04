@@ -25,4 +25,6 @@ public interface TargetEmployeesRepository {
 	void addAll(List<TargetEmployees> employees);
 
 	List<TargetEmployees> getTargetEmployeesListById(String storeProcessingId);
+	
+	void removeBusinessName(String storeProcessingId);
 }

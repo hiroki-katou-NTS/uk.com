@@ -34,6 +34,7 @@ import nts.uk.ctx.sys.assist.dom.category.CategoryRepository;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMt;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMtRepository;
+import nts.uk.ctx.sys.assist.dom.deletedata.Result;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableListRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -120,7 +121,6 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			int saveForInvest = optManualSetting.get().getIdentOfSurveyPre().value;
 			GeneralDateTime saveStartDatetime = GeneralDateTime.now();
 
-			// Todo : value affer is Optional
 			int fileSize = 0;
 			String saveFileName = null;
 			GeneralDateTime saveEndDatetime = null;
@@ -151,10 +151,15 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			// テーブル一覧の内容をテンポラリーフォルダにcsvファイルで書き出す
 			
 			// Get
-			List<SaveTargetCsv> csvTarRepo = commonCsv(storeProcessingId);
+			List<SaveTargetCsv> csvTarRepo = csvRepo.getSaveTargetCsvById(storeProcessingId);
 
 			// Add Table to CSV
 			generalCsv(csvTarRepo, generatorContext);
+			
+			// 「テーブル一覧」の調査保存の識別が「する」の場合、ドメインモデル「対象社員」のビジネスネームを全てNULLクリアする
+			if (optManualSetting.get().getIdentOfSurveyPre() == NotUseAtr.USE) {
+				
+			}
 
 			// Add Table to CSV2
 			generalCsv2(storeProcessingId, generatorContext);
