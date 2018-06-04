@@ -71,41 +71,19 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		this.startYmFinal = YearMonth.parse(startYearMonth, DateTimeFormatter.ofPattern("uuuu/MM"));
 		this.endYmFinal = YearMonth.parse(endYearMonth, DateTimeFormatter.ofPattern("uuuu/MM"));
 		this.numMonth = (int) this.startYmFinal.until(this.endYmFinal, ChronoUnit.MONTHS) + 1;
-		ExportData data = new ExportData();
+		ExportData exportData = new ExportData();
 		LocalDate endYmd = LocalDate.of(this.endYmFinal.getYear(), this.endYmFinal.getMonthValue(), 1)
 				.plus(1, ChronoUnit.MONTHS)
 				.minus(1, ChronoUnit.DAYS);
-		//sort by employee code
 		List<String> employeeIds = employees.stream()
 				.map(m -> m.getEmployeeId()).collect(Collectors.toList());
-		data.setEmployeeIds(employeeAdapter.sortEmployee(AppContexts.user().companyId(),
-								employeeIds,
-								1,
-								null,
-								null,
-								GeneralDateTime.localDateTime(LocalDateTime.of(endYmd, LocalTime.of(0, 0)))));
-
-		data.setEmployees(new HashMap<>());
-		Map<String, String> empNameMap = employees.stream()
-				.collect(Collectors.toMap(Employee::getEmployeeId, Employee::getName));
-		employeeInformationAdapter.getEmployeeInfo(
-				new EmployeeInformationQueryDtoImport(data.getEmployeeIds(),
-					GeneralDate.localDate(endYmd), true, false, true, true, false, false)).forEach(emp -> {
-						data.getEmployees().put(emp.getEmployeeId(),
-								EmployeeData.builder()
-								.employeeInfo(new EmployeeInfo(emp.getWorkplace() == null? "" : emp.getWorkplace().getWorkplaceCode(),
-																emp.getWorkplace() == null? "マスタ未登録" : TextResource.localize("KWR008_50") 
-																		+ " " + emp.getWorkplace().getWorkplaceName(),
-																emp.getEmployeeCode(),
-																empNameMap.get(emp.getEmployeeId()),
-																emp.getEmployment() == null? "" : emp.getEmployment().getEmploymentName(),
-																emp.getPosition() == null? "" : emp.getPosition().getPositionName()))
-								.annualWorkSchedule(new HashMap<>()).build());
-					});
+		//init map employees data
+		//社員の情報を取得する
+		exportData.setEmployees(this.getEmployeeInfo(employees, employeeIds, endYmd));
 
 		//ドメインモデル「年間勤務表（36チェックリスト）の出力項目設定」を取得する
 		SetOutItemsWoSc setOutItemsWoSc = setOutItemsWoScRepository.getSetOutItemsWoScById(cid, setItemsOutputCd).get();
-		data.setOutNumExceedTime36Agr(setOutItemsWoSc.isOutNumExceedTime36Agr());
+		exportData.setOutNumExceedTime36Agr(setOutItemsWoSc.isOutNumExceedTime36Agr());
 		HeaderData header = new HeaderData();
 		header.setOutputAgreementTime(setOutItemsWoSc.getDisplayFormat());
 		header.setTitle(companyAdapter.getCurrentCompany().map(m -> m.getCompanyName()).orElse(""));
@@ -121,7 +99,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 				.filter(item -> item.isUseClassification())
 				.sorted((i1, i2) -> Integer.compare(i1.getSortBy(), i2.getSortBy()))
 				.collect(Collectors.toList());
-		data.setExportItems(listItemOut.stream().map(m -> new ExportItem(m.getCd().v(), m.getHeadingName().v())).collect(Collectors.toList()));
+		exportData.setExportItems(listItemOut.stream().map(m -> new ExportItem(m.getCd().v(), m.getHeadingName().v())).collect(Collectors.toList()));
 		//出力項目数による個人情報の出力制限について
 		if (listItemOut.size() == 1) {
 			header.setEmpInfoLabel(TextResource.localize("KWR008_44"));
@@ -134,65 +112,180 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		YearMonth endYm = YearMonth.of(this.endYmFinal.getYear(), this.endYmFinal.getMonthValue());
 
 		//期間
-		YearMonthPeriod range = new YearMonthPeriod(nts.arc.time.YearMonth.of(startYm.getYear(), startYm.getMonthValue()),
+		YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(nts.arc.time.YearMonth.of(startYm.getYear(), startYm.getMonthValue()),
 													nts.arc.time.YearMonth.of(endYm.getYear(), endYm.getMonthValue()));
 		//set C2_3, C2_5
 		header.setMonthPeriodLabels(this.createMonthPeriodLabels(startYm, endYm, setOutItemsWoSc.getDisplayFormat()));
 		//set C1_2
 		header.setMonths(this.createMonthLabels(startYm, endYm));
+		exportData.setHeader(header);
 
-		data.setHeader(header);
+		this.createAnnualWorkSchedule(exportData, yearMonthPeriod, employeeIds, listItemOut);
+		//社員を並び替える
+		exportData.setEmployeeIds(this.sortEmployees(employeeIds, endYmd));
+		//出力するデータ件数をチェックする
+		if (exportData.getEmployees() == null || exportData.getEmployees().isEmpty()) {
+			throw new BusinessException("Msg_885");
+		}
+		return exportData;
+	}
 
+	/**
+	 * 社員を並び替える
+	 * @param employeeIds List＜社員ID＞
+	 * @param endYmd 対象期間の終了日
+	 * @return
+	 */
+	private List<String> sortEmployees(List<String> employeeIds, LocalDate endYmd) {
+		return employeeAdapter.sortEmployee(AppContexts.user().companyId(),
+				employeeIds,
+				1,
+				null,
+				null,
+				GeneralDateTime.localDateTime(LocalDateTime.of(endYmd, LocalTime.of(0, 0))));
+	}
+
+	/**
+	 * 社員の情報を取得する
+	 * @param employees data Employees from client
+	 * @param employeeIds 対象社員ID（List）
+	 * @param endYmd 対象期間の終了日
+	 * @return
+	 */
+	private Map<String, EmployeeData> getEmployeeInfo(List<Employee> employees,
+			List<String> employeeIds,
+			LocalDate endYmd) {
+		//init Employee name map
+		Map<String, String> empNameMap = employees.stream()
+				.collect(Collectors.toMap(Employee::getEmployeeId, Employee::getName));
+		Map<String, EmployeeData> employeesData = new HashMap<>();
+		employeeInformationAdapter.getEmployeeInfo(
+				new EmployeeInformationQueryDtoImport(employeeIds,
+					GeneralDate.localDate(endYmd), true, false, true, true, false, false)).forEach(emp -> {
+						employeesData.put(emp.getEmployeeId(),
+								EmployeeData.builder()
+								.employeeInfo(new EmployeeInfo(emp.getWorkplace() == null? "" : emp.getWorkplace().getWorkplaceCode(),
+																emp.getWorkplace() == null? "マスタ未登録" : TextResource.localize("KWR008_50") 
+																		+ " " + emp.getWorkplace().getWorkplaceName(),
+																emp.getEmployeeCode(),
+																empNameMap.get(emp.getEmployeeId()),
+																emp.getEmployment() == null? "" : emp.getEmployment().getEmploymentName(),
+																emp.getPosition() == null? "" : emp.getPosition().getPositionName()))
+								.annualWorkSchedule(new HashMap<>()).build());
+					});
+		return employeesData;
+	}
+
+	/**
+	 * アルゴリズム「年間勤務表の作成」を実行する
+	 * (thực hiện thuật toán 「年間勤務表の作成-tạo bảng biểu」)
+	 * @param yearMonthPeriod
+	 * @param employeeIds
+	 */
+	private void createAnnualWorkSchedule(ExportData exportData, YearMonthPeriod yearMonthPeriod, List<String> employeeIds, List<ItemOutTblBook> listItemOut) {
 		//アルゴリズム「年間勤務表の作成」を実行する
 		Optional<ItemOutTblBook> outputAgreementTime36 = listItemOut.stream()
 				.filter(m -> m.isItem36AgreementTime()).findFirst();
-		//TODO 36協定時間を出力するかのチェックをする
-		if (outputAgreementTime36.isPresent()) {
-			List<MonthlyAttendanceResultImport> monthlyAttendanceResult
-				= monthlyAttendanceItemAdapter
-					.getMonthlyValueOf(employeeIds, range, Arrays.asList(202)); //attendance id item 36協定時間 is 202
-	
-			this.buildAnnualWorkScheduleData(data, outputAgreementTime36.get(), monthlyAttendanceResult);
-		}
+		employeeIds.forEach(empId -> {
+			EmployeeData empData = exportData.getEmployees().get(empId);
+			Map<String, AnnualWorkScheduleData> annualWorkScheduleData = new HashMap<>();
+			//TODO 36協定時間を出力するかのチェックをする
+			if (outputAgreementTime36.isPresent()) {
+				annualWorkScheduleData.putAll(this.create36AgreementTime(yearMonthPeriod, empId, outputAgreementTime36.get()));
+			}
 
-		listItemOut.stream().filter(item -> !item.isItem36AgreementTime())
-			.forEach(item -> {
-				List<MonthlyAttendanceResultImport> monthlyAttendanceResult
-					= monthlyAttendanceItemAdapter.getMonthlyValueOf(employeeIds,
-									range,
-									item.getListOperationSetting()
-									.stream().map(os -> os.getAttendanceItemId()).collect(Collectors.toList()));
+			annualWorkScheduleData.putAll(this.createOptionalItems(yearMonthPeriod,
+																	empId,
+																	listItemOut.stream()
+																	.filter(item -> !item.isItem36AgreementTime())
+																	.collect(Collectors.toList())));
 
-				this.buildAnnualWorkScheduleData(data, item, monthlyAttendanceResult);
-			});
+			empData.setAnnualWorkSchedule(annualWorkScheduleData);
+		});
+	}
 
-		//出力するデータ件数をチェックする
-		if (data.getEmployees() == null || data.getEmployees().isEmpty()) {
-			throw new BusinessException("Msg_885");
-		}
+	/**
+	 * アルゴリズム「36協定時間の作成」を実行する
+	 * (Thực hiện thuật toán 「36協定時間の作成」- tạo 36協定時間 )
+	 * 
+	 * @param yearMonthPeriod 対象期間
+	 * @param employeeId 社員ID
+	 * @param outNumExceedTime36Agr 超過月数出力するか TODO add
+	 * @param displayFormat 表示形式 TODO add
+	 */
+	private Map<String, AnnualWorkScheduleData> create36AgreementTime(YearMonthPeriod yearMonthPeriod,
+			String employeeId,
+			ItemOutTblBook outputAgreementTime36) {
+		Map<String, AnnualWorkScheduleData> data = new HashMap<>();
+		//36協定時間を取得する TODO thay thế RequestList421
+		List<MonthlyAttendanceResultImport> monthlyAttendanceResult
+			= monthlyAttendanceItemAdapter
+				.getMonthlyValueOf(employeeId,
+						yearMonthPeriod,
+						outputAgreementTime36.getListOperationSetting()
+						.stream().map(os -> os.getAttendanceItemId()).collect(Collectors.toList())); //attendance id item 36協定時間 is 202
+		data.put(outputAgreementTime36.getCd().v(), this.buildAnnualWorkScheduleData(outputAgreementTime36, monthlyAttendanceResult));
 		return data;
 	}
 
-	private void buildAnnualWorkScheduleData(ExportData data, ItemOutTblBook itemOut,
+	/**
+	 * アルゴリズム「任意項目の作成」を実行する
+	 * (Thực hiện thuật toán 「任意項目の作成」)
+	 * 
+	 * @param yearMonthPeriod 対象期間
+	 * @param employeeId 社員ID
+	 * @param listItemOut 「36協定時間」以外の出力対象の項目設定（List）
+	 */
+	private Map<String, AnnualWorkScheduleData> createOptionalItems(YearMonthPeriod yearMonthPeriod,
+			String employeeId,
+			List<ItemOutTblBook> listItemOut) {
+		Map<String, AnnualWorkScheduleData> data = new HashMap<>();
+		listItemOut.forEach(itemOut -> {
+			data.put(itemOut.getCd().v(), this.createOptionalItem(yearMonthPeriod, employeeId, itemOut));
+		});
+		return data;
+	}
+
+	/**
+	 * アルゴリズム「出力項目の値の算出」を実行する
+	 * (THực hiện thuật toán 「出力項目の値の算出」)
+	 * 
+	 * @param yearMonthPeriod 対象期間
+	 * @param employeeId 社員ID
+	 * @param itemOutTblBook
+	 * @return
+	 */
+	private AnnualWorkScheduleData createOptionalItem(YearMonthPeriod yearMonthPeriod,
+			String employeeId,
+			ItemOutTblBook itemOutTblBook) {
+		List<MonthlyAttendanceResultImport> monthlyAttendanceResult
+			= monthlyAttendanceItemAdapter
+				.getMonthlyValueOf(employeeId, yearMonthPeriod,
+						itemOutTblBook.getListOperationSetting()
+						.stream().map(os -> os.getAttendanceItemId()).collect(Collectors.toList()));
+		return this.buildAnnualWorkScheduleData(itemOutTblBook, monthlyAttendanceResult);
+	}
+
+	/**
+	 * 
+	 * @param itemOut
+	 * @param monthlyAttendanceResult
+	 * @return
+	 */
+	private AnnualWorkScheduleData buildAnnualWorkScheduleData(ItemOutTblBook itemOut,
 			List<MonthlyAttendanceResultImport> monthlyAttendanceResult) {
 		final Map<Integer, Integer> operationMap = itemOut.getListOperationSetting().stream()
 				.collect(Collectors.toMap(CalcFormulaItem::getAttendanceItemId, CalcFormulaItem::getOperation));
 
+		AnnualWorkScheduleData annualWorkScheduleData = new AnnualWorkScheduleData();
+		annualWorkScheduleData.setHeadingName(itemOut.getHeadingName().v());
+		annualWorkScheduleData.setValOutFormat(itemOut.getValOutFormat());
+		annualWorkScheduleData.setNumMonth(this.numMonth);
 		monthlyAttendanceResult.forEach(m -> {
-			String empId = m.getEmployeeId();
-			EmployeeData empData = data.getEmployees().get(empId);
-			AnnualWorkScheduleData annualWorkScheduleData = empData.getAnnualWorkSchedule().get(itemOut.getCd().v());
-			if (annualWorkScheduleData == null) {
-				annualWorkScheduleData = new AnnualWorkScheduleData();
-				annualWorkScheduleData.setNumMonth(this.numMonth);
-				empData.getAnnualWorkSchedule().put(itemOut.getCd().v(), annualWorkScheduleData);
-			}
-
-			annualWorkScheduleData.setHeadingName(itemOut.getHeadingName().v());
-			annualWorkScheduleData.setValOutFormat(itemOut.getValOutFormat());
 			annualWorkScheduleData.setMonthlyData(this.sumAttendanceData(operationMap, m.getAttendanceItems()),
 					this.startYmFinal, YearMonth.of(m.getYearMonth().year(), m.getYearMonth().month()));
 		});
+		return annualWorkScheduleData;
 	}
 
 	private BigDecimal sumAttendanceData(Map<Integer, Integer> operationMap, List<AttendanceItemValueImport> attendanceItemsValue) {
