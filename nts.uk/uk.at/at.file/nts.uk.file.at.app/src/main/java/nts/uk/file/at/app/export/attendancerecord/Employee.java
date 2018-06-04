@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.Value;
 
 /**
  * The Class Employee.
@@ -14,11 +13,14 @@ import lombok.Value;
 @Getter
 @Setter
 public class Employee {
-	
+
 	/** The employee id. */
 	String employeeId;
-	
+
 	/** The employee name. */
 	String employeeName;
+	
+	/** The employee code. */
+	String employeeCode;
 
 }
