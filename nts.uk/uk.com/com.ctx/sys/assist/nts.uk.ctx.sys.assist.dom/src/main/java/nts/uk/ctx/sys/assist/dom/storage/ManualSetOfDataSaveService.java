@@ -148,12 +148,16 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			// アルゴリズム「対象データの保存」を実行
 			ApplicationTemporaryFilesContainer applicationTemporaryFilesContainer = applicationTemporaryFileFactory
 					.createContainer();
-
+			ResultState resultState;
 			// Get
 			List<SaveTargetCsv> listSaveTargetCsv = csvRepo.getSaveTargetCsvById(storeProcessingId);
 
 			// テーブル一覧の内容をテンポラリーフォルダにcsvファイルで書き出す
-			generalCsv(listSaveTargetCsv, generatorContext);
+			resultState = generalCsv(listSaveTargetCsv, generatorContext);
+
+			if (resultState == ResultState.ABNORMAL_END) {
+				return;
+			}
 
 			// 「テーブル一覧」の調査保存の識別が「する」の場合、ドメインモデル「対象社員」のビジネスネームを全てNULLクリアする
 			if (optManualSetting.get().getIdentOfSurveyPre() == NotUseAtr.USE) {
@@ -164,8 +168,12 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			List<TargetEmployees> targetEmployees = repoTargetEmp.getTargetEmployeesListById(storeProcessingId);
 
 			// 対象社員の内容をcsvファイルに暗号化して書き出す
-			generalCsv2(targetEmployees, generatorContext);
+			resultState = generalCsv2(targetEmployees, generatorContext);
 
+			if (resultState == ResultState.ABNORMAL_END) {
+				return;
+			}
+			
 			// Add Table to CSV Auto
 			generalCsvAuto(generatorContext);
 
@@ -388,8 +396,6 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			}
 
 			CSVFileData fileData = new CSVFileData(FILE_NAME_CSV1 + CSV_EXTENSION, headerCsv, dataSourceCsv);
-			// FileGeneratorContext generatorContext = new
-			// FileGeneratorContext();
 			generator.generate(generatorContext, fileData);
 			return ResultState.NORMAL_END;
 		} catch (Exception e) {
@@ -399,21 +405,27 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 	}
 
-	private void generalCsv2(List<TargetEmployees> targetEmployees, FileGeneratorContext generatorContext) {
-		// Add Table to CSV2
-		List<String> headerCsv2 = this.getTextHeaderCSV2();
-		List<Map<String, Object>> dataSourceCsv2 = new ArrayList<>();
-		for (TargetEmployees targetEmp : targetEmployees) {
-			Map<String, Object> rowCsv2 = new HashMap<>();
-			rowCsv2.put(headerCsv2.get(0), targetEmp.getSid());
-			rowCsv2.put(headerCsv2.get(1), targetEmp.getScd());
-			rowCsv2.put(headerCsv2.get(2), CommonKeyCrypt.encrypt(targetEmp.getBusinessname().v()));
-			dataSourceCsv2.add(rowCsv2);
+	private ResultState generalCsv2(List<TargetEmployees> targetEmployees, FileGeneratorContext generatorContext) {
+		try {
+			// Add Table to CSV2
+			List<String> headerCsv2 = this.getTextHeaderCSV2();
+			List<Map<String, Object>> dataSourceCsv2 = new ArrayList<>();
+			for (TargetEmployees targetEmp : targetEmployees) {
+				Map<String, Object> rowCsv2 = new HashMap<>();
+				rowCsv2.put(headerCsv2.get(0), targetEmp.getSid());
+				rowCsv2.put(headerCsv2.get(1), targetEmp.getScd());
+				rowCsv2.put(headerCsv2.get(2), CommonKeyCrypt.encrypt(targetEmp.getBusinessname().v()));
+				dataSourceCsv2.add(rowCsv2);
+			}
+
+			CSVFileData fileData = new CSVFileData(FILE_NAME_CSV2 + CSV_EXTENSION, headerCsv2, dataSourceCsv2);
+
+			generator.generate(generatorContext, fileData);
+			return ResultState.NORMAL_END;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResultState.ABNORMAL_END;
 		}
-
-		CSVFileData fileData = new CSVFileData(FILE_NAME_CSV2 + CSV_EXTENSION, headerCsv2, dataSourceCsv2);
-
-		generator.generate(generatorContext, fileData);
 
 	}
 
