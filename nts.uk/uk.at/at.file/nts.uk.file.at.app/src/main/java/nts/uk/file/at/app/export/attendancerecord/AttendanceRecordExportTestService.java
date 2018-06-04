@@ -40,7 +40,7 @@ public class AttendanceRecordExportTestService extends ExportService<AttendanceR
 	@Override
 	protected void handle(ExportServiceContext<AttendanceRecordRequest> context) {
 		AttendanceRecordReportData data = this.createTestData();
-		AttendanceRecordReportDatasource datasource = new AttendanceRecordReportDatasource(data);
+		AttendanceRecordReportDatasource datasource = new AttendanceRecordReportDatasource(data, context.getQuery().getMode());
 
 		this.generator.generate(context.getGeneratorContext(), datasource);
 

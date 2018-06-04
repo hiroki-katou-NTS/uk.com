@@ -205,7 +205,7 @@ module nts.uk.com.view.kwr002.e {
                         else {
                             var attendanceItem = self.attendanceItem();
                             nts.uk.ui.windows.setShared('attendanceRecordExport', {
-                                attendanceItemName: self.attendanceRecordName().trim(),
+                                attendanceItemName: self.attendanceRecordName(),
                                 layoutCode: attendanceItem.layoutCode,
                                 layoutName: attendanceItem.layoutName,
                                 columnIndex: attendanceItem.columnIndex,

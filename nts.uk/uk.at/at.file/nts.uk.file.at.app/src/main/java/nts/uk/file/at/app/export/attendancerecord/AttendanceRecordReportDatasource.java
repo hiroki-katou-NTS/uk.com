@@ -17,4 +17,7 @@ public class AttendanceRecordReportDatasource {
 	
 	/** The data. */
 	private AttendanceRecordReportData data;
+	
+	/** The mode. */
+	private int mode;
 }
