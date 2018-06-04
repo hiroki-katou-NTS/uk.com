@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.shared.dom.remainmng.breakdayoffmng.export.query;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -129,8 +131,11 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		//代休履歴を作成する
 		List<DayOffHistoryData> lstDayOffHis = this.dayOffHisData(interimMngData.getLstDayOffMng());
 		//休出代休履歴対照情報を作成する
+		List<BreakDayOffHistory> lstOutput = this.lstBreakDayOffHis(interimMngData.getLstBreakDayOffMng(), lstBreakHis, lstDayOffHis);
+		//残数集計情報を作成する
+		AsbRemainTotalInfor totalOutput = this.totalInfor(lstBreakHis, lstDayOffHis);
 		
-		return null;
+		return new BreakDayOffOutputHisData(lstOutput, totalOutput);
 	}
 	@Override
 	public BreakDayOffInterimMngData getMngData(String sid, GeneralDate baseDate) {
@@ -216,6 +221,24 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 	public List<BreakDayOffHistory> lstBreakDayOffHis(List<InterimBreakDayOffMng> lstInterimBreakDayOff, List<BreakHistoryData> lstBreakHis, 
 			List<DayOffHistoryData> lstDayOffHis) {
 		List<BreakDayOffHistory> lstOutputData = new ArrayList<>();
+		//紐付き対象のない休出代休履歴対象情報を作成してListに追加する
+		//休出履歴を抽出する ・  休出管理データ.未使用日数＞0
+		List<BreakHistoryData> lstBreakUnUse = lstBreakHis.stream().filter(x -> x.getUnUseDays() > 0).collect(Collectors.toList());
+		lstBreakUnUse.stream().forEach(x -> {
+			BreakDayOffHistory outData = new BreakDayOffHistory();
+			outData.setHisDate(x.getBreakDate());
+			outData.setBreakHis(Optional.of(x));
+			lstOutputData.add(outData);
+		});
+		//代休履歴を抽出する ・代休管理データ.未相殺日数＞0
+		List<DayOffHistoryData> lstDayOffUnUse = lstDayOffHis.stream().filter(x -> x.getUnOffsetDays() > 0).collect(Collectors.toList());
+		lstDayOffUnUse.stream().forEach(x -> {
+			BreakDayOffHistory outData = new BreakDayOffHistory();
+			outData.setHisDate(x.getDayOffDate());
+			outData.setDayOffHis(Optional.of(x));
+			lstOutputData.add(outData);
+		});		
+		
 		// TODO 休出代休紐付け管理の件数分ループ
 		
 		//暫定休出代休紐付け管理の件数分ループ
@@ -258,8 +281,11 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 				}
 			});
 		});
-		lstOutputData.addAll(lstInterimOutput);
-		return null;
+		if(!lstInterimOutput.isEmpty()) {
+			lstOutputData.addAll(lstInterimOutput);	
+		}
+		Collections.sort(lstOutputData, Comparator.comparing(BreakDayOffHistory :: getHisDate));
+		return lstOutputData;
 	}
 	@Override
 	public AsbRemainTotalInfor totalInfor(List<BreakHistoryData> lstBreakHis, List<DayOffHistoryData> lstDayOffHis) {

@@ -221,41 +221,31 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 			List<AbsenceHistoryOutputPara> lstAbsHis, List<InterimRecAbsMng> lstInterimData) {
 		List<RecAbsHistoryOutputPara> lstOutputPara = new ArrayList<>();
 		//紐付き対象のない振出振休履歴対象情報を作成してListに追加する
-		if(lstInterimData.isEmpty()) {//TODO them dieu kien
-			RecAbsHistoryOutputPara outPutData = new RecAbsHistoryOutputPara();
-			
-			//振出履歴を抽出する
-			List<RecruitmentHistoryOutPara> lstRecHisTmp = lstRecHis.stream().filter(z -> z.getUnUseDays() > 0)
-					.collect(Collectors.toList());
-			lstRecHisTmp.stream().forEach(x -> {
-				outPutData.setYmd(x.getRecDate());
-				outPutData.setRecHisData(Optional.of(x));
-				lstOutputPara.add(outPutData);
-			});
-			//振休履歴を抽出する
-			List<AbsenceHistoryOutputPara> lstAbsHisTmp = lstAbsHis.stream().filter(z -> z.getUnOffsetDays() > 0)
-					.collect(Collectors.toList());
-			lstAbsHisTmp.stream().forEach(x -> {
-				List<RecAbsHistoryOutputPara> lstOutputTmp = lstOutputPara.stream()
-						.filter(z -> z.getYmd().equals(x.getAbsDate())).collect(Collectors.toList());
-				if(lstOutputTmp.isEmpty()) {
-					outPutData.setYmd(x.getAbsDate());
-					outPutData.setAbsHisData(Optional.of(x));
-					lstOutputPara.add(outPutData);
-				} else {
-					RecAbsHistoryOutputPara tmpOutput = lstOutputTmp.get(0);
-					lstOutputPara.remove(tmpOutput);
-					tmpOutput.setAbsHisData(Optional.of(x));
-					lstOutputPara.add(tmpOutput);
-				}
-			});
-			return lstOutputPara;	
-		}
-		
+		//振出履歴を抽出する
+		List<RecruitmentHistoryOutPara> lstRecHisTmp = lstRecHis.stream().filter(z -> z.getUnUseDays() > 0)
+				.collect(Collectors.toList());
+		lstRecHisTmp.stream().forEach(x -> {
+			RecAbsHistoryOutputPara outPutData = new RecAbsHistoryOutputPara();	
+			outPutData.setYmd(x.getRecDate());
+			outPutData.setRecHisData(Optional.of(x));
+			lstOutputPara.add(outPutData);
+		});
+		//振休履歴を抽出する
+		List<AbsenceHistoryOutputPara> lstAbsHisTmp = lstAbsHis.stream().filter(z -> z.getUnOffsetDays() > 0)
+				.collect(Collectors.toList());
+		lstAbsHisTmp.stream().forEach(x -> {
+			RecAbsHistoryOutputPara outPutData = new RecAbsHistoryOutputPara();	
+			outPutData.setYmd(x.getAbsDate());
+			outPutData.setAbsHisData(Optional.of(x));
+			lstOutputPara.add(outPutData);
+		});
+				
 		// TODO 振出振休紐付け管理の件数分ループ
 		
+		
+		List<RecAbsHistoryOutputPara> lstInterim = new ArrayList<>();
 		//暫定振出振休紐付け管理の件数分ループ
-		lstInterimData.stream().forEach(x -> {
+		lstInterimData.stream().forEach(x ->  {
 			RecAbsHistoryOutputPara outPutData = new RecAbsHistoryOutputPara();
 			outPutData.setUseDays(Optional.of(x.getUseDays().v()));
 			//振出データID＝暫定振出振休紐付け管理.振出管理データ
@@ -264,16 +254,16 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 			List<RecAbsHistoryOutputPara> lstTmp = new ArrayList<>();
 			if(!lstRecRuiment.isEmpty()) {
 				RecruitmentHistoryOutPara recRuiment = lstRecRuiment.get(0);
-				lstTmp = lstOutputPara.stream().filter(z -> recRuiment.getRecDate().equals(z.getYmd())).collect(Collectors.toList());
+				lstTmp = lstInterim.stream().filter(z -> recRuiment.getRecDate().equals(z.getYmd())).collect(Collectors.toList());
 				if(lstTmp.isEmpty()) {
 					outPutData.setYmd(recRuiment.getRecDate());
 					outPutData.setRecHisData(Optional.of(recRuiment));
-					lstOutputPara.add(outPutData);
+					lstInterim.add(outPutData);
 				} else {
 					RecAbsHistoryOutputPara tmpOutput = lstTmp.get(0);
-					lstOutputPara.remove(tmpOutput);
+					lstInterim.remove(tmpOutput);
 					tmpOutput.setRecHisData(Optional.of(recRuiment));
-					lstOutputPara.add(tmpOutput);
+					lstInterim.add(tmpOutput);
 				}
 			}
 			
@@ -283,21 +273,24 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 					.collect(Collectors.toList());
 			if(!lstAbsInterim.isEmpty()) {
 				AbsenceHistoryOutputPara absInterim = lstAbsInterim.get(0);
-				lstTmp = lstOutputPara.stream().filter(z -> absInterim.getAbsDate().equals(z.getYmd())).collect(Collectors.toList());
+				lstTmp = lstInterim.stream().filter(z -> absInterim.getAbsDate().equals(z.getYmd())).collect(Collectors.toList());
 				if(lstTmp.isEmpty()) {
 					outPutData.setYmd(absInterim.getAbsDate());
 					outPutData.setAbsHisData(Optional.of(absInterim));
-					lstOutputPara.add(outPutData);
+					lstInterim.add(outPutData);
 				} else {
 					RecAbsHistoryOutputPara tmpOutput = lstTmp.get(0);
-					lstOutputPara.remove(tmpOutput);
+					lstInterim.remove(tmpOutput);
 					tmpOutput.setAbsHisData(Optional.of(absInterim));
-					lstOutputPara.add(tmpOutput);
+					lstInterim.add(tmpOutput);
 				}
 			}
 			
 		});
-		
+		if(!lstInterim.isEmpty()) {
+			lstOutputPara.addAll(lstInterim);
+		}
+		lstOutputPara.stream().sorted((a, b) -> b.getYmd().compareTo(a.getYmd()));
 		return lstOutputPara;
 	}
 	@Override
