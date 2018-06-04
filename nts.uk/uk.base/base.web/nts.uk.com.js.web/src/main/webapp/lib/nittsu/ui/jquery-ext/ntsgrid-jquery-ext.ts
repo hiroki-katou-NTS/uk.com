@@ -1461,6 +1461,7 @@ module nts.uk.ui.jqueryExtentions {
             export let HEADER_TEXT: string = "headerText";
             export let SELECTED_SHEET: string = "selectedSheet";
             export let CLEAR_ROW_STATES: string = "clearRowStates";
+            export let RESET_ORIG_DS: string = "resetOrigDataSource";
             export let DESTROY: string = "destroy";
             
             /**
@@ -1509,6 +1510,9 @@ module nts.uk.ui.jqueryExtentions {
                     case CLEAR_ROW_STATES:
                         clearStates($grid, params[0]);
                         break;
+                    case RESET_ORIG_DS:
+                        resetOrigDs($grid, params[0]);
+                        break;
                     case DESTROY:
                         destroy($grid);
                         break;
@@ -1533,6 +1537,17 @@ module nts.uk.ui.jqueryExtentions {
              * Update row
              */
             function updateRow($grid: JQuery, rowId: any, object: any, autoCommit: boolean) {
+                let selectedSheet = getSelectedSheet($grid);
+                if (selectedSheet) {
+                    let grid = $grid.data("igGrid");
+                    Object.keys(object).forEach(function(k) {
+                        if (!_.includes(selectedSheet.columns, k)) {
+                            grid.dataSource.setCellValue(rowId, k, object[k], grid.options.autoCommit);
+                            delete object[k];
+                        }
+                    });
+                }
+                
                 updating.updateRow($grid, rowId, object, undefined, true);
                 if (!autoCommit) {
                     var updatedRow = $grid.igGrid("rowById", rowId, false);
@@ -1835,6 +1850,14 @@ module nts.uk.ui.jqueryExtentions {
                         if ($cells.hasClass(s)) $cells.removeClass(s);
                     });
                 }
+            }
+            
+            /**
+             * Reset orig ds.
+             */
+            function resetOrigDs($grid: JQuery, ds: any) {
+                $grid.data(internal.ORIG_DS, ds);
+                $grid.data(internal.UPDATED_CELLS, null);
             }
             
             /**

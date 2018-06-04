@@ -23756,6 +23756,7 @@ var nts;
                         functions.HEADER_TEXT = "headerText";
                         functions.SELECTED_SHEET = "selectedSheet";
                         functions.CLEAR_ROW_STATES = "clearRowStates";
+                        functions.RESET_ORIG_DS = "resetOrigDataSource";
                         functions.DESTROY = "destroy";
                         /**
                          * Actions
@@ -23803,6 +23804,9 @@ var nts;
                                 case functions.CLEAR_ROW_STATES:
                                     clearStates($grid, params[0]);
                                     break;
+                                case functions.RESET_ORIG_DS:
+                                    resetOrigDs($grid, params[0]);
+                                    break;
                                 case functions.DESTROY:
                                     destroy($grid);
                                     break;
@@ -23827,6 +23831,16 @@ var nts;
                          * Update row
                          */
                         function updateRow($grid, rowId, object, autoCommit) {
+                            var selectedSheet = getSelectedSheet($grid);
+                            if (selectedSheet) {
+                                var grid_1 = $grid.data("igGrid");
+                                Object.keys(object).forEach(function (k) {
+                                    if (!_.includes(selectedSheet.columns, k)) {
+                                        grid_1.dataSource.setCellValue(rowId, k, object[k], grid_1.options.autoCommit);
+                                        delete object[k];
+                                    }
+                                });
+                            }
                             updating.updateRow($grid, rowId, object, undefined, true);
                             if (!autoCommit) {
                                 var updatedRow = $grid.igGrid("rowById", rowId, false);
@@ -24126,6 +24140,13 @@ var nts;
                                         $cells_1.removeClass(s);
                                 });
                             }
+                        }
+                        /**
+                         * Reset orig ds.
+                         */
+                        function resetOrigDs($grid, ds) {
+                            $grid.data(internal.ORIG_DS, ds);
+                            $grid.data(internal.UPDATED_CELLS, null);
                         }
                         /**
                          * Get selected sheet.
