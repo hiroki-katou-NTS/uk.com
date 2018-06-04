@@ -4616,6 +4616,22 @@ div .ex-area-line.x-stay {
   text-decoration: underline;
   cursor: pointer;
   user-select: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -ms-text-overflow: ellipsis;
+  width: 100%;
+}
+
+.x-cell-overflow {
+  position: absolute;
+  display: inline-block;
+  background: #ffc;
+  border: solid 1px #aaa;
+  padding: 5px;
+  z-index: 120100;
+  -webkit-box-shadow: 1px 1px 5px 1px #888;
+  -moz-box-shadow: 1px 1px 5px 1px #888;
+  box-shadow: 1px 1px 5px 1px #888;
 }
 
 /*****************************

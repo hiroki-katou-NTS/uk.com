@@ -40,4 +40,9 @@ public class AttendanceTimeByWorkOfDailyFinder extends FinderFacade {
 			.map(c -> AttendanceTimeByWorkOfDailyDto.getDto(c)).collect(Collectors.toList());
 	}
 
+	@Override
+	public Object getDomain(String employeeId, GeneralDate baseDate) {
+		return repo.find(employeeId, baseDate);
+	}
+
 }

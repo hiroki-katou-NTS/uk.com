@@ -40,4 +40,9 @@ public class OutingTimeOfDailyPerformanceFinder extends FinderFacade {
 		return (List<T>) this.repo.finds(param).stream()
 			.map(c -> OutingTimeOfDailyPerformanceDto.getDto(c)).collect(Collectors.toList());
 	}
+
+	@Override
+	public Object getDomain(String employeeId, GeneralDate baseDate) {
+		return repo.findByEmployeeIdAndDate(employeeId, baseDate);
+	}
 }
