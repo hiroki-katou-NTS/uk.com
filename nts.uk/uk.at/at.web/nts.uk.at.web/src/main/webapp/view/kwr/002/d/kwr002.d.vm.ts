@@ -215,7 +215,7 @@ module nts.uk.com.view.kwr002.d {
                             return;
                         }
                         var attendanceRecord: model.AttendanceRecordExport = new model.AttendanceRecordExport(
-                            self.attendanceRecordName().trim(),
+                            self.attendanceRecordName(),
                             self.attendanceRecordExport().layoutCode,
                             self.layoutName(),
                             self.attendanceRecordExport().columnIndex,

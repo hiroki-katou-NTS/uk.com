@@ -33,6 +33,12 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordRepository
 		implements CalculateAttendanceRecordRepositoty {
 
+	/** The add formula type. */
+	private final int ADD_FORMULA_TYPE = 1;
+
+	/** The subtract formula type. */
+	private final int SUBTRACT_FORMULA_TYPE = 2;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -58,8 +64,8 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 	@Override
 	public void updateCalculateAttendanceRecord(String companyId, ExportSettingCode exportSettingCode, int columnIndex,
 			int position, long exportArt, boolean useAtr, CalculateAttendanceRecord calculateAttendanceRecord) {
-		
-		//check and update AttendanceRecord
+
+		// check and update AttendanceRecord
 		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, exportSettingCode.v(), columnIndex, exportArt,
 				position);
 		Optional<KfnstAttndRec> kfnstAttndRec = this.queryProxy().find(kfnstAttndRecPK, KfnstAttndRec.class);
@@ -70,40 +76,43 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 			this.commandProxy().insert(this.toEntityAttndRec(exportSettingCode, columnIndex, position, exportArt,
 					useAtr, calculateAttendanceRecord));
 		}
-		
-		//get listItemAdded, listItemSubtracted
-		List<KfnstAttndRecItem> listKfnstAttndRecItemAdded = calculateAttendanceRecord.getAddedItem().stream().map(e -> 
-		toEntityAttndRecItemAdded(exportSettingCode, columnIndex, position, exportArt, e)).collect(Collectors.toList());
-		
-		List<KfnstAttndRecItem> listKfnstAttndRecItemSubtracted = calculateAttendanceRecord.getSubtractedItem().stream().map(e -> 
-		toEntityAttndRecItemSubtracted(exportSettingCode, columnIndex, position, exportArt, e)).collect(Collectors.toList());
-		
+
+		// get listItemAdded, listItemSubtracted
+		List<KfnstAttndRecItem> listKfnstAttndRecItemAdded = calculateAttendanceRecord.getAddedItem().stream()
+				.map(e -> toEntityAttndRecItemAdded(exportSettingCode, columnIndex, position, exportArt, e))
+				.collect(Collectors.toList());
+
+		List<KfnstAttndRecItem> listKfnstAttndRecItemSubtracted = calculateAttendanceRecord.getSubtractedItem().stream()
+				.map(e -> toEntityAttndRecItemSubtracted(exportSettingCode, columnIndex, position, exportArt, e))
+				.collect(Collectors.toList());
+
 		List<KfnstAttndRecItem> kfnstAttndRecItems = new ArrayList<KfnstAttndRecItem>();
 		kfnstAttndRecItems.addAll(listKfnstAttndRecItemAdded);
 		kfnstAttndRecItems.addAll(listKfnstAttndRecItemSubtracted);
-		
+
 		// check and update attendanceRecordItems
 		List<KfnstAttndRecItem> kfnstAttndRecItemsOld = this.findAttendanceRecordItems(kfnstAttndRecPK);
 		if (kfnstAttndRecItemsOld != null) {
 			this.removeAllAttndRecItem(kfnstAttndRecItemsOld);
-		} 
+		}
 		this.commandProxy().insertAll(kfnstAttndRecItems);
-		
+
 		this.getEntityManager().flush();
 
 	}
 
 	@Override
 	public void deleteCalculateAttendanceRecord(String companyId, ExportSettingCode exportSettingCode, int columnIndex,
-		int position, long exportArt, CalculateAttendanceRecord calculateAttendanceRecord) {
-		//find and delete KfnstAttndRec, KfnstAttndRecItem
-		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, Long.valueOf(exportSettingCode.v()), columnIndex, exportArt, position);
+			int position, long exportArt, CalculateAttendanceRecord calculateAttendanceRecord) {
+		// find and delete KfnstAttndRec, KfnstAttndRecItem
+		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, Long.valueOf(exportSettingCode.v()),
+				columnIndex, exportArt, position);
 		Optional<KfnstAttndRec> optionalKfnstAttndRec = this.queryProxy().find(kfnstAttndRecPK, KfnstAttndRec.class);
 		optionalKfnstAttndRec.ifPresent(kfnstAttndRec -> this.commandProxy().remove(kfnstAttndRec));
 
-		//find and delete KfnstAttndRecItem
+		// find and delete KfnstAttndRecItem
 		List<KfnstAttndRecItem> kfnstAttndRecItems = this.findAttendanceRecordItems(kfnstAttndRecPK);
-		if(kfnstAttndRecItems!=null && !kfnstAttndRecItems.isEmpty()) {
+		if (kfnstAttndRecItems != null && !kfnstAttndRecItems.isEmpty()) {
 			this.commandProxy().removeAll(kfnstAttndRecItems);
 		}
 		this.getEntityManager().flush();
@@ -150,21 +159,29 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 			long exportArt, boolean useAtr, CalculateAttendanceRecord calculateAttendanceRecord) {
 		// find entity KfnstAttndRec by pk
 		String companyId = AppContexts.user().companyId();
-		KfnstAttndRecPK kfnstAttndRecPk = new KfnstAttndRecPK(companyId, Long.valueOf(exportSettingCode.v()), columnIndex, exportArt,
-				position);
+		KfnstAttndRecPK kfnstAttndRecPk = new KfnstAttndRecPK(companyId, Long.valueOf(exportSettingCode.v()),
+				columnIndex, exportArt, position);
 		KfnstAttndRec kfnstAttndRec = this.queryProxy().find(kfnstAttndRecPk, KfnstAttndRec.class)
 				.orElse(new KfnstAttndRec());
-		if(kfnstAttndRec.getId()==null) {
+		if (kfnstAttndRec.getId() == null) {
 			kfnstAttndRec.setId(kfnstAttndRecPk);
 		}
-
-		// find entity KfnstAttndRecItem by pk
-		List<KfnstAttndRecItem> kfnstAttndRecItems = this.findAttendanceRecordItems(kfnstAttndRecPk);
+	
+		// get listItemAdded, listItemSubtracted
+		List<KfnstAttndRecItem> listKfnstAttndRecItemAdded = calculateAttendanceRecord.getAddedItem().stream()
+				.map(e -> toEntityAttndRecItemAdded(exportSettingCode, columnIndex, position, exportArt, e))
+				.collect(Collectors.toList());
+		List<KfnstAttndRecItem> listKfnstAttndRecItemSubtracted = calculateAttendanceRecord.getSubtractedItem().stream()
+				.map(e -> toEntityAttndRecItemSubtracted(exportSettingCode, columnIndex, position, exportArt, e))
+				.collect(Collectors.toList());
+		List<KfnstAttndRecItem> kfnstAttndRecItems = new ArrayList<KfnstAttndRecItem>();
+		kfnstAttndRecItems.addAll(listKfnstAttndRecItemAdded);
+		kfnstAttndRecItems.addAll(listKfnstAttndRecItemSubtracted);
 
 		calculateAttendanceRecord
-				.saveToMemento(new JpaCalculateAttendanceRecordSetMemento(kfnstAttndRec,kfnstAttndRecItems));
+				.saveToMemento(new JpaCalculateAttendanceRecordSetMemento(kfnstAttndRec, kfnstAttndRecItems));
 		int useAtrValue = useAtr ? 1 : 0;
-		
+
 		kfnstAttndRec.setUseAtr(new BigDecimal(useAtrValue));
 		return kfnstAttndRec;
 
@@ -185,19 +202,19 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 	 *            the time item id
 	 * @return the kfnst attnd rec item
 	 */
-	private KfnstAttndRecItem toEntityAttndRecItemSubtracted(ExportSettingCode exportSettingCode, long columnIndex, long position,
-			long exportArt, int timeItemId) {
+	private KfnstAttndRecItem toEntityAttndRecItemSubtracted(ExportSettingCode exportSettingCode, long columnIndex,
+			long position, long exportArt, int timeItemId) {
 		KfnstAttndRecItemPK kfnstAttendRecItemPK = new KfnstAttndRecItemPK(AppContexts.user().companyId(),
 				exportSettingCode.v(), columnIndex, position, exportArt, timeItemId);
-		KfnstAttndRecItem kfnstAttendRecItem = new KfnstAttndRecItem(kfnstAttendRecItemPK, new BigDecimal(2));
+		KfnstAttndRecItem kfnstAttendRecItem = new KfnstAttndRecItem(kfnstAttendRecItemPK, new BigDecimal(SUBTRACT_FORMULA_TYPE));
 		return kfnstAttendRecItem;
 	}
-	
-	private KfnstAttndRecItem toEntityAttndRecItemAdded(ExportSettingCode exportSettingCode, long columnIndex, long position,
-			long exportArt, int timeItemId) {
+
+	private KfnstAttndRecItem toEntityAttndRecItemAdded(ExportSettingCode exportSettingCode, long columnIndex,
+			long position, long exportArt, int timeItemId) {
 		KfnstAttndRecItemPK kfnstAttendRecItemPK = new KfnstAttndRecItemPK(AppContexts.user().companyId(),
 				exportSettingCode.v(), columnIndex, position, exportArt, timeItemId);
-		KfnstAttndRecItem kfnstAttendRecItem = new KfnstAttndRecItem(kfnstAttendRecItemPK, new BigDecimal(1));
+		KfnstAttndRecItem kfnstAttendRecItem = new KfnstAttndRecItem(kfnstAttendRecItemPK, new BigDecimal(ADD_FORMULA_TYPE));
 		return kfnstAttendRecItem;
 	}
 
@@ -214,8 +231,12 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordRepositoty#getIdCalculateAttendanceRecordDailyByPosition(java.lang.String, long, long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.function.dom.attendancerecord.item.
+	 * CalculateAttendanceRecordRepositoty#
+	 * getIdCalculateAttendanceRecordDailyByPosition(java.lang.String, long, long)
 	 */
 	@Override
 	public List<CalculateAttendanceRecord> getIdCalculateAttendanceRecordDailyByPosition(String companyId,
@@ -247,8 +268,12 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 				: kfnstAttndRecItems.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordRepositoty#getIdCalculateAttendanceRecordMonthlyByPosition(java.lang.String, long, long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.function.dom.attendancerecord.item.
+	 * CalculateAttendanceRecordRepositoty#
+	 * getIdCalculateAttendanceRecordMonthlyByPosition(java.lang.String, long, long)
 	 */
 	@Override
 	public List<CalculateAttendanceRecord> getIdCalculateAttendanceRecordMonthlyByPosition(String companyId,
