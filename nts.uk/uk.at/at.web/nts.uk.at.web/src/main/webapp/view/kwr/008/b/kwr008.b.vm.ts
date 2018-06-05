@@ -15,6 +15,12 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
         //enum value output format
         valOutFormat: KnockoutObservableArray<any> = ko.observableArray([]);
+        
+        //年間勤務表印刷形式
+        listSheetPrintingForm: KnockoutObservableArray<any> = ko.observableArray([
+            new model.ItemModel(0, getText('KWR008_53')),
+            new model.ItemModel(1, getText('KWR008_54'))
+        ]);
 
         //B2_2
         listStandardImportSetting: KnockoutObservableArray<SetOutputSettingCode> = ko.observableArray([]);
@@ -577,14 +583,20 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         outNumExceedTime36Agr: KnockoutObservable<boolean> = ko.observable(false);
         displayFormat: KnockoutObservable<number> = ko.observable(0);
         listItemOutput: KnockoutObservableArray<OutputItemData> = ko.observableArray([]);
+        printForm: KnockoutObservable<number> = ko.observable(0);
         constructor(param) {
             let self = this;
+            self.printForm.subscribe(data=>{
+                self.outNumExceedTime36Agr(false);
+                self.displayFormat(0); 
+            });
             self.cd(param ? param.cd || '' : '');
             self.displayCode = self.cd();
             self.name(param ? param.name || '' : '');
             self.displayName = self.name();
             self.outNumExceedTime36Agr(param ? param.outNumExceedTime36Agr || false : false);
             self.displayFormat(param ? param.displayFormat || 0 : 0);
+            self.printForm(param ? param.printForm || 0 : 0);
         }
 
         buildListItemOutput(listItemOutput: Array<any>) {

@@ -67,6 +67,19 @@
                         <input id="B3_3" tabindex="7" data-bind="ntsTextEditor: {name: '#[KWR008_26]', value : name, required: true, option : { width : '200px'}, constraint: 'OutItemsWoScName'}" />
                         
                     </div>
+                    
+                    <!-- B6 -->
+                    <div data-bind="with: currentSetOutputSettingCode" style="margin-top: 5px;">
+                    	<span class="label">#{i18n.getText('KWR008_35')}</span>
+                    	<div class="listSheetPrintingForm" data-bind="ntsSwitchButton: {
+							name: '#[KWR008_35]',
+							options: $parent.listSheetPrintingForm,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: printForm,
+							required: true,
+							enable: true }"></div>
+                    </div>
 
                     <!-- B4 -->
                     <div style="margin-top: 5px;">
@@ -123,22 +136,27 @@
                            </tbody>
                        </table>
                        </div>
-                    </div>
-                    <div data-bind="with: currentSetOutputSettingCode" style="margin-top: 3px;">
-                        <!-- B5_1 -->
-                        <div tabindex="9" data-bind="ntsCheckBox: { checked: outNumExceedTime36Agr }">${i18n.getText('KWR008_35')}</div>
-                    </div>
-                    <div data-bind="with: currentSetOutputSettingCode" style="margin-top: 3px; margin-bottom:5px">
-                        <!-- B5_2 -->
-                        <span class="label">#{i18n.getText('KWR008_36')}</span>
-                        <!-- B5_3 -->
-                        <div id="B5_3" tabindex="10"  data-bind="ntsRadioBoxGroup: {
-                            options: $parent.itemRadio,
-                            optionsValue: 'code',
-                            optionsText: 'name',
-                            value: displayFormat}">
-                        </div>
-                    </div>
+                    </div>    
+                    
+                    <div data-bind="visible: currentSetOutputSettingCode().printForm">
+	                    <div data-bind="with: currentSetOutputSettingCode" style="margin-top: 3px;">
+	                        <!-- B5_1 -->
+	                        <div tabindex="9" data-bind="ntsCheckBox: { checked: outNumExceedTime36Agr,  }">${i18n.getText('KWR008_35')}</div>
+	                    </div>
+	                    <div data-bind="with: currentSetOutputSettingCode" style="margin-top: 3px; margin-bottom:5px">
+	                        <!-- B5_2 -->
+	                        <span class="label">#{i18n.getText('KWR008_36')}</span>
+	                        <!-- B5_3 -->
+	                        <div id="B5_3" tabindex="10"  data-bind="ntsRadioBoxGroup: {
+	                            options: $parent.itemRadio,
+	                            optionsValue: 'code',
+	                            optionsText: 'name',
+	                            value: displayFormat}">
+	                        </div>
+	                    </div>
+					</div>
+						
+						
                 </div>
             </div>
         </ui:define>
