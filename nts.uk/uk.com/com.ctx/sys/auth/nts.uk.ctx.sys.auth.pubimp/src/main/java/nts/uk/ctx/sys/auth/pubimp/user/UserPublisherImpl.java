@@ -4,14 +4,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
+import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
+import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.ctx.sys.auth.pub.user.UserDto;
 import nts.uk.ctx.sys.auth.pub.user.UserExport;
+import nts.uk.ctx.sys.auth.pub.user.UserInforEx;
 import nts.uk.ctx.sys.auth.pub.user.UserPublisher;
 
 @Stateless
@@ -19,6 +20,9 @@ public class UserPublisherImpl implements UserPublisher {
 
 	@Inject
 	private UserRepository userRepo;
+	
+	@Inject
+	private IPersonInfoPub iPersonInfoPub;
 	
 	@Override
 	public Optional<UserDto> getUserInfo(String userId) {
@@ -69,5 +73,27 @@ public class UserPublisherImpl implements UserPublisher {
 			return Optional.of(this.fromDomain(optUser.get()));
 		}
 		return Optional.empty();
+	}
+
+
+	@Override
+	public Optional<UserInforEx> getByEmpID(String empID) {
+		// Lay RequestList No.1
+		PersonInfoExport exportData = iPersonInfoPub.getPersonInfo(empID);
+		if(exportData == null){
+			return Optional.empty();
+		}
+		else{
+	      Optional<User> user = userRepo.getByAssociatedPersonId(exportData.getPid());
+	      if(!user.isPresent()){
+	    	  return Optional.empty();
+	      }
+	      return Optional.of( new UserInforEx(
+	    		  user.get().getUserID(),
+	    		  user.get().getLoginID().v(),
+	    		  exportData.getEmployeeId(),
+	    		  exportData.getEmployeeCode()));
+		}
+		
 	}
 }
