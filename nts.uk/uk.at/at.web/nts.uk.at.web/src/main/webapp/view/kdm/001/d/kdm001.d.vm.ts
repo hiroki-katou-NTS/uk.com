@@ -60,7 +60,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             self.checkedSplit.subscribe((v) => {
                 self.calRemainDays();
             });
-            self.lawAtr(self.lawAtr()[0].code);
+            self.lawAtr(self.typeHoliday()[0].code);
   
         }
         
