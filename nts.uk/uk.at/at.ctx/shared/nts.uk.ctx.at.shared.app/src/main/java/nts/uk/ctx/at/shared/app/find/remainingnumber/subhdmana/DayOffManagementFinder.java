@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,6 +11,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.DayOffManagementDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.DayOffResult;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.LeaveManaDto;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.shr.com.context.AppContexts;
@@ -34,6 +37,11 @@ public class DayOffManagementFinder {
 		resultDaysOffMana = daysOffMana.stream().map(p -> new DayOffManagementDto(p.getDayOffDate().getDayoffDate().orElse(null),p.getRequireDays().v().toString(),true,p.getComDayOffID())).collect(Collectors.toList());
 		dayOffAll.addAll(resultDaysOffMana);
 		dayOffAll.addAll(resultDayFreeMana);
+		Collections.sort(dayOffAll, new Comparator<DayOffManagementDto>() {
+			  public int compare(DayOffManagementDto o1, DayOffManagementDto o2) {
+			      return o1.getDateHoliday().compareTo(o2.getDateHoliday());
+			  }
+		});
 		dayOffResult.setListDayOff(dayOffAll);
 		if(dayOffAll.isEmpty()) {
 			dayOffResult.setErrorCode("Msg_1073");
