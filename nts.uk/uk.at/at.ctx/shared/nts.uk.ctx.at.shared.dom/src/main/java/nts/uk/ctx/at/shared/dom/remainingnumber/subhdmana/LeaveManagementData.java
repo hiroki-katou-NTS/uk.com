@@ -62,7 +62,7 @@ public class LeaveManagementData extends AggregateRoot {
 	private AttendanceTime halfDayTime;
 	
 	// 消滅日
-	public GeneralDate disapearDate;
+	public Optional<GeneralDate> disapearDate;
 	
 	public LeaveManagementData(String id, String cid, String sid, boolean unknowDate, GeneralDate dayoffDate, GeneralDate expiredDate,
 			Double occurredDays, int occurredTimes, Double unUsedDays, int unUsedTimes, int subHDAtr, int equivalentADay, int equivalentHalfDay){
@@ -96,7 +96,7 @@ public class LeaveManagementData extends AggregateRoot {
 		this.subHDAtr = EnumAdaptor.valueOf(subHDAtr, DigestionAtr.class);
 		this.fullDayTime = new AttendanceTime(equivalentADay);
 		this.halfDayTime = new AttendanceTime(equivalentHalfDay);
-		this.disapearDate = disapearDate;
+		this.disapearDate = Optional.ofNullable(disapearDate);
 		
 	}
 	

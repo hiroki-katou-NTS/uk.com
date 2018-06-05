@@ -81,7 +81,7 @@ public class DataExtractDto {
 				leaveData.getOccurredDays().v().doubleValue(), leaveData.getOccurredTimes().v().intValue(),
 				leaveData.getUnUsedDays().v().doubleValue(), leaveData.getUnUsedTimes().v().intValue(),
 				leaveData.getSubHDAtr().value, leaveData.getFullDayTime().v().intValue(),
-				leaveData.getHalfDayTime().v().intValue(), leaveData.getDisapearDate());
+				leaveData.getHalfDayTime().v().intValue(), leaveData.getDisapearDate().orElse(null));
 	}
 	
 	public static DataExtractDto convertFromCompensatoryDataToDto(int type, CompensatoryDayOffManaData compensatoryData) {
