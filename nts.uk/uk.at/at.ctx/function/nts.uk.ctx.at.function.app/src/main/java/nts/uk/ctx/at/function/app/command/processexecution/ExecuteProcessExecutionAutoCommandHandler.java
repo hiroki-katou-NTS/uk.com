@@ -284,13 +284,13 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 		// ・ドメインモデル「更新処理自動実行.実行設定.承認結果反映」
 		boolean monthlyAggCls = procExec.getExecSetting().isMonthlyAggCls();
 		EmpCalAndSumExeLog empCalAndSumExeLog = null;
-		if (dailyPerfCls || reflectResultCls || monthlyAggCls) {
+		//if (dailyPerfCls || reflectResultCls || monthlyAggCls) {
 			// ドメインモデル「就業計算と集計実行ログ」を追加する
 			empCalAndSumExeLog = new EmpCalAndSumExeLog(execId, command.getCompanyId(), new YearMonth(GeneralDate.today().year()*100+1),
 					ExecutedMenu.SELECT_AND_RUN, GeneralDate.today(), null, AppContexts.user().employeeId(), 1,
 					IdentifierUtil.randomUniqueId(), CalAndAggClassification.AUTOMATIC_EXECUTION);
 			this.empCalSumRepo.add(empCalAndSumExeLog);
-		}
+		//}
 
 		// アルゴリズム「実行前登録処理」を実行する
 		// 実行前登録処理
@@ -1240,16 +1240,15 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 			// 日別実績の作成
 			this.dailyPerformanceCreation(context, procExec, empCalAndSumExeLog, createProcessForChangePerOrWorktype.getNoLeaderEmpIdList(),
 					calculateDailyPeriod.getDailyCreationPeriod(), workPlaceIds, typeExecution,dailyCreateLog);
-			
+
 			typeExecution = "日別計算";
 			// 日別実績の計算
 			this.dailyPerformanceCreation(context, procExec, empCalAndSumExeLog, createProcessForChangePerOrWorktype.getNoLeaderEmpIdList(),
 					calculateDailyPeriod.getDailyCalcPeriod(), workPlaceIds, typeExecution,dailyCalLog);
 			
 			
-			
 			// 勤務種別変更者を再作成 =true
-			if (!procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()) {
+			if (procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()) {
 				DatePeriod maxDatePeriod = this.getMaxDatePeriod(calculateDailyPeriod.getDailyCreationPeriod(),
 						calculateDailyPeriod.getDailyCalcPeriod());
 				// 再作成処理
@@ -2124,7 +2123,7 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 		}
 		this.procExecLogRepo.update(ProcessExecutionLog);
 		// 月別集計の判定
-		boolean reflectResultCls = processExecution.getExecSetting().isReflectResultCls();
+		boolean reflectResultCls = processExecution.getExecSetting().isMonthlyAggCls();
 		if (!reflectResultCls) {
 			// ドメインモデル「更新処理自動実行ログ」を更新する
 			for (int i = 0; i < size; i++) {
@@ -2602,7 +2601,7 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 		if ("日別作成".equals(typeExecution)) {
 			try {
 				// ⑤社員の日別実績を作成する 
-				processState = this.createDailyService.createDailyResultEmployee(asyContext, employeeId, period,
+				processState = this.createDailyService.createDailyResultEmployeeWithNoInfoImport(asyContext, employeeId, period,
 						empCalAndSumExeLog.getCompanyID(), empCalAndSumExeLog.getEmpCalAndSumExecLogID(),Optional.ofNullable(dailyCreateLog),
 						processExecution.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()? true
 								: false);
@@ -2840,7 +2839,7 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 				ProcessState processState1;
 		try {
 			// ⑤社員の日別実績を作成する
-			 processState1 = this.createDailyService.createDailyResultEmployee(asyncContext, empId, period,
+			 processState1 = this.createDailyService.createDailyResultEmployeeWithNoInfoImport(asyncContext, empId, period,
 					companyId, empCalAndSumExeLogId, null, true);
 		} catch (Exception e) {
 			throw new CreateDailyException();

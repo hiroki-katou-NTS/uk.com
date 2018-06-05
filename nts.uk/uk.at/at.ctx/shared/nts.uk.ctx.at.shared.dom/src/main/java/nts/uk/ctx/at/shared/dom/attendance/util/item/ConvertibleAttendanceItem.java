@@ -13,4 +13,10 @@ public interface ConvertibleAttendanceItem {
 	}
 	
 	Object toDomain(String employeeId, GeneralDate date);
+	
+	default boolean isHaveData() {
+		return false;
+	}
+	
+	default void exsistData() { }
 }
