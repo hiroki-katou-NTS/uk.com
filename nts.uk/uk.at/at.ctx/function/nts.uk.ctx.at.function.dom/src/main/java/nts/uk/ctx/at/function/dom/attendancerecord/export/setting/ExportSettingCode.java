@@ -11,9 +11,6 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
 //出力項目設定コード
 @LongMinValue(0)
 @LongMaxValue(99)
-@StringCharType(CharType.NUMERIC)
-@StringMaxLength(2)
-@ZeroPaddedCode
 public class ExportSettingCode extends LongPrimitiveValue<PrimitiveValue<Long>> {
 
 	/** serialVersionUID. */

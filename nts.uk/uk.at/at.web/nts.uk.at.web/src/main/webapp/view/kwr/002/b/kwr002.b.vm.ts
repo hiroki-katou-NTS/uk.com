@@ -12,7 +12,7 @@ module nts.uk.com.view.kwr002.b {
 
     export class ScreenModel {
 
-        aRES: KnockoutObservableArray<IARES>;
+        aRES: KnockoutObservableArray<AttendanceRecordExportSetting>;
         currentARES: KnockoutObservable<AttendanceRecordExportSetting>;
         currentARESCode: KnockoutObservable<string>;
         currentARESName: KnockoutObservable<string>;
@@ -54,12 +54,7 @@ module nts.uk.com.view.kwr002.b {
 
             self.currentARESCode.subscribe((value) => {
                 if (value) {
-
-                    let foundItem: IARES = _.find(self.aRES(), (item: IARES) => {
-                        return item.code == value;
-                    });
-
-                    service.getARESByCode(foundItem.code).done((aRESData) => {
+                    service.getARESByCode(value).done((aRESData) => {
                         self.currentARES(new AttendanceRecordExportSetting(aRESData));
                         self.newMode(false);
                     }).fail((error) => {
@@ -105,7 +100,7 @@ module nts.uk.com.view.kwr002.b {
                         } else {
                             self.aRES(newVal);
                             let firstData = _.first(self.aRES());
-                            self.currentARESCode(firstData.code);
+                            self.currentARESCode(firstData.code());
                         }
                     });
                 })
@@ -191,6 +186,9 @@ module nts.uk.com.view.kwr002.b {
         callGetAll(self, currentData) {
             service.getAllARES().done((data) => {
                 if (data.length > 0) {
+                    _.map(data,(item)=>{
+                        item.code=_.padStart(item.code, 2, '0');
+                    });
                     self.aRES(data);
                     if (currentData) {
                         self.currentARESCode(currentData.code());
@@ -257,6 +255,10 @@ module nts.uk.com.view.kwr002.b {
 
             service.getAllARES().done((data) => {
                 if (data.length > 0) {
+                    _.map(data,(item)=>{
+                        item.code=_.padStart(item.code, 2, '0');
+                        // new AttendanceRecordExportSetting(item);
+                    });
                     self.aRES(data);
                     let firstData = _.first(data);
                     self.currentARESCode(firstData.code);
