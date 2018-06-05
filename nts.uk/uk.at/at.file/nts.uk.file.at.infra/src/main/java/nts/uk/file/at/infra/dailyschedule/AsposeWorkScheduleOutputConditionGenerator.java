@@ -1146,7 +1146,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 
 		// Set header date
 		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
-		pageSetup.setHeader(2, "&8 " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &[Page]");
+		pageSetup.setHeader(2, "&8 " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
 		
 		Cells cells = sheet.getCells();
 		Cell periodCell = cells.get(dateRow,0);
@@ -1263,7 +1263,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		
 		// Root workplace won't have employee
 		if (lstEmployeeReportData != null && lstEmployeeReportData.size() > 0) {
-			for (EmployeeReportData employeeReportData: lstEmployeeReportData) {
+			Iterator<EmployeeReportData> iteratorEmployee = lstEmployeeReportData.iterator();
+			while (iteratorEmployee.hasNext()) {
+				EmployeeReportData employeeReportData = iteratorEmployee.next();
+				
 				Range workplaceRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_WORKPLACE_ROW);
 				Range workplaceRange = cells.createRange(currentRow, 0, 1, 39);
 				workplaceRange.copy(workplaceRangeTemp);
@@ -1464,15 +1467,21 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		        }
 		        
 		        // Page break by employee
-				if (condition.getPageBreakIndicator() == PageBreakIndicator.EMPLOYEE)
+				if (condition.getPageBreakIndicator() == PageBreakIndicator.EMPLOYEE && iteratorEmployee.hasNext())
 					sheet.getHorizontalPageBreaks().add(currentRow);
 			}
 		}
 		
 		// Process to child workplace
 		Map<String, WorkplaceReportData> mapChildWorkplace = workplaceReportData.getLstChildWorkplaceReportData();
-		for (Map.Entry<String, WorkplaceReportData> entry: mapChildWorkplace.entrySet()) {
+		Iterator<Map.Entry<String, WorkplaceReportData>> it = mapChildWorkplace.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<String, WorkplaceReportData> entry = it.next();
 			currentRow = writeDetailedWorkSchedule(currentRow, templateSheetCollection, sheet, entry.getValue(), dataRowCount, condition);
+			
+			// Page break by workplace
+			if (condition.getPageBreakIndicator() == PageBreakIndicator.WORKPLACE && it.hasNext())
+				sheet.getHorizontalPageBreaks().add(currentRow);
 		}
 		
 		// Skip writing total for root, use gross total instead
@@ -1558,7 +1567,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		            
 		            for (int j = 0; j < length; j++) {
 		            	String value = lstItemRow.get(j).getValue();
-		            	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
+		            	Cell cell = cells.get(currentRow + i, DATA_COLUMN_INDEX[0] + j * 2); 
 		            	Style style = cell.getStyle();
 		            	switch (lstItemRow.get(j).getValueType()) {
 						case ActualValue.INTEGER:
@@ -1577,13 +1586,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		            }
 		        }
 			}
+			currentRow += dataRowCount;
 		}
-		
-		// Page break by workplace
-		if (condition.getPageBreakIndicator() == PageBreakIndicator.WORKPLACE)
-			sheet.getHorizontalPageBreaks().add(currentRow);
-        
-        currentRow++;
 		
 		return currentRow;
 	}
