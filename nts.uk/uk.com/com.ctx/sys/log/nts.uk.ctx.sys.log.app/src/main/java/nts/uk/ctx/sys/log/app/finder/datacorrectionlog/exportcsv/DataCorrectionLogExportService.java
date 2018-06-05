@@ -15,6 +15,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.log.app.finder.datacorrectionlog.DataCorrectionLogDto;
 import nts.uk.ctx.sys.log.app.finder.datacorrectionlog.DataCorrectionLogFinder;
 import nts.uk.ctx.sys.log.app.finder.datacorrectionlog.DataCorrectionLogParams;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
 import nts.uk.shr.infra.file.csv.CSVFileData;
@@ -42,6 +43,8 @@ public class DataCorrectionLogExportService extends ExportService<DataCorrection
 			"CDL027_9", "CDL027_11", "CDL027_12", "CDL027_13", "CDL027_14");
 
 	private static final String FILE_EXTENSION = ".csv";
+	
+	private static final String PGID = AppContexts.programId();
 
 	private List<String> getTextHeader(int displayFormat) {
 		List<String> lstHeader = new ArrayList<>();
@@ -82,7 +85,7 @@ public class DataCorrectionLogExportService extends ExportService<DataCorrection
 			dataSource.add(row);
 		}
 		CSVFileData fileData = new CSVFileData(
-				"PGID" + "_" + GeneralDateTime.now().toString("yyyyMMddHHmmss") + FILE_EXTENSION, headers, dataSource);
+				PGID + "_" + GeneralDateTime.now().toString("yyyyMMddHHmmss") + FILE_EXTENSION, headers, dataSource);
 		generator.generate(context.getGeneratorContext(), fileData);
 	}
 	
