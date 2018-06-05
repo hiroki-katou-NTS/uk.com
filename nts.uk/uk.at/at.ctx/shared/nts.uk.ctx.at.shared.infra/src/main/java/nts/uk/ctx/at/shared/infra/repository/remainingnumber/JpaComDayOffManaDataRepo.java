@@ -112,29 +112,32 @@ private String GET_BYSID = "SELECT a FROM KrcmtComDayoffMaData a WHERE a.sID = :
 		List<KrcmtComDayoffMaData> list = new ArrayList<>();
 		if (!Objects.isNull(startDate) && !Objects.isNull(endDate)) {
 			query = "SELECT a FROM KrcmtComDayoffMaData a WHERE a.cID = :cid AND"
-					+ " a.sID =:employeeId AND a.dayOff >= :startDate AND a.dayOff <= :endDate OR "
+					+ " a.sID =:employeeId AND a.dayOff >= :startDate AND a.dayOff <= :endDate  OR "
 					+ " a.comDayOffID IN  (SELECT c.krcmtLeaveDayOffManaPK.comDayOffID FROM KrcmtLeaveDayOffMana c "
-					+ "INNER JOIN KrcmtLeaveManaData b ON b.leaveID = c.krcmtLeaveDayOffManaPK.leaveID WHERE b.cID = :cid AND"
-					+ " b.sID =:employeeId AND b.dayOff >= :startDate AND b.dayOff <= :endDate)";
+					+ "INNER JOIN KrcmtLeaveManaData b ON c.krcmtLeaveDayOffManaPK.leaveID = b.leaveID WHERE b.cID = :cid AND"
+					+ " b.sID =:employeeId AND b.dayOff >= :startDate AND b.dayOff <= :endDate )";
 			list = this.queryProxy().query(query, KrcmtComDayoffMaData.class).setParameter("employeeId", sid)
 					.setParameter("cid", cid).setParameter("startDate", startDate).setParameter("endDate", endDate)
 					.getList();
 		} else if (!Objects.isNull(startDate)) {
 			query = "SELECT a FROM KrcmtComDayoffMaData a WHERE a.cID = :cid AND"
 					+ " a.sID =:employeeId AND a.dayOff >= :startDate OR "
-					+ " a.comDayOffID IN  (SELECT c.krcmtLeaveDayOffManaPK.comDayOffID FROM KrcmtLeaveManaData b JOIN KrcmtLeaveDayOffMana c ON b.leaveID = c.krcmtLeaveDayOffManaPK.leaveID WHERE b.cID = :cid AND b.sID =:employeeId AND b.dayOff >= :startDate)";
+					+ " a.comDayOffID IN  (SELECT c.krcmtLeaveDayOffManaPK.comDayOffID FROM KrcmtLeaveDayOffMana c "
+					+ "INNER JOIN KrcmtLeaveManaData b ON c.krcmtLeaveDayOffManaPK.leaveID = b.leaveID WHERE b.cID = :cid AND b.sID =:employeeId )";
 			list = this.queryProxy().query(query, KrcmtComDayoffMaData.class).setParameter("employeeId", sid)
 					.setParameter("cid", cid).setParameter("startDate", startDate).getList();
 		} else if (!Objects.isNull(endDate)) {
 			query = "SELECT a FROM KrcmtComDayoffMaData a WHERE a.cID = :cid AND"
-					+ " a.sID =:employeeId AND a.dayOff <= :endDate OR "
-					+ " a.comDayOffID IN  (SELECT c.krcmtLeaveDayOffManaPK.comDayOffID FROM KrcmtLeaveManaData b JOIN KrcmtLeaveDayOffMana c ON b.leaveID = c.krcmtLeaveDayOffManaPK.leaveID WHERE b.cID = :cid AND b.sID =:employeeId AND b.dayOff <= :endDate)";
+					+ " a.sID =:employeeId AND a.dayOff <= :endDate  OR "
+					+ " a.comDayOffID IN  (SELECT c.krcmtLeaveDayOffManaPK.comDayOffID FROM KrcmtLeaveDayOffMana c "
+					+ "INNER JOIN KrcmtLeaveManaData b ON c.krcmtLeaveDayOffManaPK.leaveID = b.leaveID WHERE b.cID = :cid AND b.sID =:employeeId AND b.dayOff <= :endDate )";
 			list = this.queryProxy().query(query, KrcmtComDayoffMaData.class).setParameter("employeeId", sid)
 					.setParameter("cid", cid).setParameter("endDate", endDate).getList();
 		} else {
 			query = "SELECT a FROM KrcmtComDayoffMaData a WHERE a.cID = :cid AND"
 					+ " a.sID =:employeeId OR "
-					+ " a.comDayOffID IN  (SELECT c.krcmtLeaveDayOffManaPK.comDayOffID FROM KrcmtLeaveManaData b JOIN KrcmtLeaveDayOffMana c ON b.leaveID = c.krcmtLeaveDayOffManaPK.leaveID WHERE b.cID = :cid AND b.sID =:employeeId )";
+					+ " a.comDayOffID IN  (SELECT c.krcmtLeaveDayOffManaPK.comDayOffID FROM KrcmtLeaveDayOffMana c "
+					+ "INNER JOIN KrcmtLeaveManaData b ON c.krcmtLeaveDayOffManaPK.leaveID = b.leaveID WHERE b.cID = :cid AND b.sID =:employeeId )";
 			list = this.queryProxy().query(query, KrcmtComDayoffMaData.class).setParameter("employeeId", sid)
 					.setParameter("cid", cid).getList();
 		}
