@@ -36,7 +36,8 @@ public class JpaManualSetOfDataSaveRepository extends JpaRepository implements M
 	private SspmtManualSetOfDataSave toEntity(ManualSetOfDataSave dom) {
 		return new SspmtManualSetOfDataSave(dom.getCid(), dom.getStoreProcessingId(), dom.getSystemType().value,
 				dom.getPasswordAvailability().value, dom.getSaveSetName().v(), dom.getReferenceDate(),
-				dom.getCompressedPassword().v(), dom.getExecutionDateAndTime(), dom.getDaySaveEndDate(),
+				dom.getCompressedPassword() != null  ? dom.getCompressedPassword().v() : null,
+				dom.getExecutionDateAndTime(), dom.getDaySaveEndDate(),
 				dom.getDaySaveStartDate(), dom.getMonthSaveEndDate(), dom.getMonthSaveStartDate(),
 				dom.getSuppleExplanation(), dom.getEndYear().v().intValue(), dom.getStartYear().v().intValue(),
 				dom.getPresenceOfEmployee().value, dom.getIdentOfSurveyPre().value, dom.getPractitioner());
