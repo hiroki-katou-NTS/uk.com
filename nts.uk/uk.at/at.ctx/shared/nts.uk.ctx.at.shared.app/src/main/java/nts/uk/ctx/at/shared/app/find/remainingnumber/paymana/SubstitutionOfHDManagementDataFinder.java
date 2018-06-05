@@ -35,9 +35,6 @@ public class SubstitutionOfHDManagementDataFinder {
 					}
 					return subDto;
 				}).collect(Collectors.toList());
-		if(lstSubstitutionOfHDManagement.isEmpty()) {
-			throw new BusinessException("Msg_1071");
-		}
 		return lstSubstitutionOfHDManagement;
 	}
 	
