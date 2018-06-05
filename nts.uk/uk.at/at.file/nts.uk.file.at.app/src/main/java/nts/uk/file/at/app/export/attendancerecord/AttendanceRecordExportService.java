@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -48,6 +47,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 	final static long UPPER_POSITION = 1;
 	final static long LOWER_POSITION = 2;
+	final static int PDF_MODE = 1;
 
 	@Inject
 	private ClosureEmploymentService closureEmploymentService;
@@ -393,7 +393,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 						 **/
 						// Fake Data
 						attendanceRecRepEmpData.setEmployment("Nothing");
-						attendanceRecRepEmpData.setInvidual(employee.getEmployeeCode() + employee.getEmployeeName());
+						attendanceRecRepEmpData
+								.setInvidual(employee.getEmployeeCode() + " " + employee.getEmployeeName());
 						attendanceRecRepEmpData.setTitle("Blank");
 						attendanceRecRepEmpData.setWorkplace("NoWhere");
 						attendanceRecRepEmpData.setWorkType("FullTime");
@@ -413,20 +414,18 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			}
 
 		});
-		if (request.getMode() == 1) {
-			List<String> nameList = request.getEmployeeList().stream().map(item -> item.getEmployeeName())
-					.collect(Collectors.toList());
+		if (request.getMode() == PDF_MODE) {
 
-			for (String employeeName : nameList) {
+			for (Employee employee : request.getEmployeeList()) {
 				List<AttendanceRecordReportEmployeeData> attendanceRecRepEmpDataByMonthList = new ArrayList<>();
 				for (AttendanceRecordReportEmployeeData item : attendanceRecRepEmpDataList) {
 
-					if (item.getInvidual().equals(employeeName)) {
+					if (this.getNameFromInvidual(item.getInvidual()).equals(employee.getEmployeeName())) {
 						attendanceRecRepEmpDataByMonthList.add(item);
 					}
 
 				}
-				reportData.put(employeeName, attendanceRecRepEmpDataByMonthList);
+				reportData.put(employee.getEmployeeCode(), attendanceRecRepEmpDataByMonthList);
 
 			}
 
@@ -438,10 +437,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 			while (yearMonth.lessThanOrEqualTo(endYearMonth)) {
 				List<AttendanceRecordReportEmployeeData> attendanceRecRepEmpDataByMonthList = new ArrayList<>();
-				YearMonth yearMonthTemp = new YearMonth(yearMonth.v());
 				for (AttendanceRecordReportEmployeeData item : attendanceRecRepEmpDataList) {
-
-					if (item.getYearMonth().equals(yearMonthTemp)) {
+					if (item.getYearMonth().equals(yearMonth)) {
 						attendanceRecRepEmpDataByMonthList.add(item);
 					}
 
@@ -474,7 +471,9 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 				dailyHeader.add(temp);
 				System.out.println(dailyHeader.size());
 			} catch (Exception ex) {
-				String mes = ex.getMessage();
+				BundledBusinessException exceptions = BundledBusinessException.newInstance();
+				exceptions.addMessage(ex.getMessage());
+				exceptions.throwExceptions();
 			}
 		});
 
