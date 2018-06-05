@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 
@@ -46,4 +47,8 @@ public interface ComDayOffManaDataRepository {
 	void updateReDayByComDayId(List<String> comDayIds);
 	
 	void updateReDayReqByComDayId(List<String> comDayIds);
+	
+	Optional<CompensatoryDayOffManaData> getBycomdayOffId(String comDayOffId);
+	
+	void updateRemainDay(String comDayOffID, Double remainDay);
 }
