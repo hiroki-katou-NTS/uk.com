@@ -1,5 +1,6 @@
 module nts.uk.com.view.cps017.d.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
+    import dialog = nts.uk.ui.dialog;
     import block = nts.uk.ui.block;
 
     export class ScreenModel {
@@ -13,10 +14,11 @@ module nts.uk.com.view.cps017.d.viewmodel {
             let self = this;
             let data = getShared('CPS017D_PARAMS');
             
-            self.selectionName(data.sel_name);
-            self.selectionItemId(data.sel_history.selectionItemId);
-            self.selectingHistId(data.sel_history.histId);
-            self.startDate(data.sel_history.startDate);
+            self.selectionName(data.name);
+            self.selectionItemId(data.id);
+            
+            self.selectingHistId(data.histId);
+            self.startDate(data.startDate);
             
         }
         /**
@@ -38,7 +40,9 @@ module nts.uk.com.view.cps017.d.viewmodel {
                 newStartDate : self.startDate()
             }
             service.editHistoryData(command).done(function() {
-                nts.uk.ui.windows.close();
+                dialog.info({ messageId: "Msg_15" }).then(function() {
+                    nts.uk.ui.windows.close();
+                });
             }).fail(function(res){
                 if(res.messageId == 'Msg_127'){
                     $('#start-date-sel').ntsError('set', {messageId: res.messageId});

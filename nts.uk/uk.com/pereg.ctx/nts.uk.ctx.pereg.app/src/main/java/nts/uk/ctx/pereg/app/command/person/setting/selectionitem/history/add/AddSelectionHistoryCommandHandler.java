@@ -1,31 +1,32 @@
-package nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection;
+package nts.uk.ctx.pereg.app.command.person.setting.selectionitem.history.add;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.history.PerInfoHistorySelection;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.history.PerInfoHistorySelectionRepository;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.history.SelectionHistory;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.history.SelectionHistoryRepository;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.Selection;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionRepository;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionorder.SelectionItemOrder;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionorder.SelectionItemOrderRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<AddSelectionHistoryCommand, String> {
 
 	@Inject
-	private PerInfoHistorySelectionRepository historySelectionRepository;
+	private SelectionHistoryRepository selectionHistoryRepo;
 
 	@Inject
 	private SelectionRepository selectionRepo;
@@ -42,35 +43,28 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 		String companyId = isGroupManager() ? AppContexts.user().zeroCompanyIdInContract()
 				: AppContexts.user().companyId();
 
-		List<PerInfoHistorySelection> historyList = this.historySelectionRepository
-				.getAllBySelecItemIdAndCompanyId(selectItemID, companyId);
-
-		// validate
-		validateStartDate(historyList, startDate);
+		Optional<SelectionHistory> domainHistOpt = this.selectionHistoryRepo.get(selectItemID, companyId);
+		
+		SelectionHistory domainHist;
+		if (domainHistOpt.isPresent()) {
+			domainHist = domainHistOpt.get();
+		} else {
+			domainHist = SelectionHistory.createNewHistorySelection(selectItemID, companyId);
+		}
 
 		// add new history
 		String newHistoryId = IdentifierUtil.randomUniqueId();
 		DatePeriod period = new DatePeriod(startDate, GeneralDate.max());
-		PerInfoHistorySelection domainHist = PerInfoHistorySelection.createHistorySelection(newHistoryId, selectItemID,
-				companyId, period);
-		this.historySelectionRepository.add(domainHist);
-
-		// update the previous history
-		updateBeforeHistory(historyList, startDate);
+		DateHistoryItem dateHistoryItem = new DateHistoryItem(newHistoryId, period);
+		
+		domainHist.add(dateHistoryItem);
+		
+		this.selectionHistoryRepo.add(domainHist);
 
 		// copy selection and selection-order
 		copyHistory(command.getSelectingHistId(), newHistoryId);
 
 		return newHistoryId;
-	}
-
-	private void validateStartDate(List<PerInfoHistorySelection> lstHist, GeneralDate startDate) {
-		if (!lstHist.isEmpty()) {
-			PerInfoHistorySelection histLast = lstHist.get(0);
-			if (startDate.beforeOrEquals(histLast.getPeriod().start())) {
-				throw new BusinessException("Msg_102");
-			}
-		}
 	}
 
 	private boolean isGroupManager() {
@@ -81,18 +75,6 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 		return false;
 	}
 
-	private void updateBeforeHistory(List<PerInfoHistorySelection> historyList, GeneralDate startDate) {
-		// if last history isPresent (not first time create)
-		if (!historyList.isEmpty()) {
-			PerInfoHistorySelection lastHist = historyList.get(0);
-			// set end date lastHist = startDate of newHist -1
-			DatePeriod lastHistPeriod = new DatePeriod(lastHist.getPeriod().start(), startDate.addDays(-1));
-			lastHist.setPeriod(lastHistPeriod);
-
-			this.historySelectionRepository.update(lastHist);
-
-		}
-	}
 
 	private void copyHistory(String sourceHistId, String newHistoryId) {
 		List<Selection> sourceSelectionList = this.selectionRepo.getAllSelectByHistId(sourceHistId);
