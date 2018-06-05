@@ -149,7 +149,7 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 					.findbyUserNameAndHostName(dto.getUserName().v(), dto.getHostName().v());
 
 			// Check condition
-			if (opWindowAccount.isPresent()) {
+			if (opWindowAccount.isPresent() && !opWindowAccount.get().getUserId().equals(dto.getUserId())) {
 				// Has error, throws message
 				isError = true;
 				exceptions.addMessage("Msg_616");

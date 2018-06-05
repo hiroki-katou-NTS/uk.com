@@ -65,23 +65,33 @@ public class MailNoticeSetSaveCommandHandler extends CommandHandler<MailNoticeSe
 			String oldPassword = command.getOldPassword();
 			String newPassword = command.getNewPassword();
 			String confirmNewPassword = command.getConfirmNewPassword();
-			
-			if (!StringUtil.isNullOrEmpty(oldPassword, true)
-					&& !StringUtil.isNullOrEmpty(newPassword, true)
-					&& !StringUtil.isNullOrEmpty(confirmNewPassword, true)) {
+
+			if (!StringUtil.isNullOrEmpty(oldPassword, true) || !StringUtil.isNullOrEmpty(newPassword, true)
+					|| !StringUtil.isNullOrEmpty(confirmNewPassword, true)) {
 				// Check password - Request List 383
-				CheckChangePassOutput checkResult = this.passwordAdapter.checkBeforeChangePassword(userId, oldPassword, newPassword, confirmNewPassword);
+				CheckChangePassOutput checkResult = this.passwordAdapter.checkBeforeChangePassword(userId, oldPassword,
+						newPassword, confirmNewPassword);
 				if (checkResult.isError()) {
 					// Throw error list
 					BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
-					checkResult.getMessage().forEach(bundledBusinessExceptions::addMessage);
+					checkResult.getMessage().forEach(item -> {
+						// get messageId
+						String msgId = item.getMessage();
+						String param = item.getParam();
+						if (param != null) {
+							bundledBusinessExceptions.addMessage(msgId, param);
+						} else {
+							bundledBusinessExceptions.addMessage(msgId);
+						}
+
+					});
 					if (!bundledBusinessExceptions.cloneExceptions().isEmpty()) {
 						throw bundledBusinessExceptions;
 					}
 				} else {
-					// Update password - Request List 384				
-					this.passwordAdapter.updatePassword(userId,newPassword);
-				}	
+					// Update password - Request List 384
+					this.passwordAdapter.updatePassword(userId, newPassword);
+				}
 			}
 		}
 
@@ -104,5 +114,5 @@ public class MailNoticeSetSaveCommandHandler extends CommandHandler<MailNoticeSe
 			});
 		}
 	}
-	
+
 }
