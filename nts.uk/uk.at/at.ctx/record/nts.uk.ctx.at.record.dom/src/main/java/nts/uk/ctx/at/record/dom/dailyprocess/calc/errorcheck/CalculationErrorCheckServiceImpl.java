@@ -165,6 +165,8 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 			case DIVERGENCE_ERROR_2:
 			case DIVERGENCE_ALARM_2:
 			case DIVERGENCE_ERROR_3:
+			case DIVERGENCE_ALARM_3:
+			case DIVERGENCE_ERROR_4:
 			case DIVERGENCE_ALARM_4:
 			case DIVERGENCE_ERROR_5:
 			case DIVERGENCE_ALARM_5:
@@ -201,6 +203,20 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 												integrationOfDaily.getAffiliationInfor().getYmd(),
 												fixedErrorAlarmCode.get(),
 												CheckExcessAtr.LEAVE_EARLY);
+			//出勤打刻漏れ
+			case TIME_LEAVING_STAMP_LEAKAGE:
+			//入退門	
+			case ENTRANCE_STAMP_LACKING:
+			//PCログ打刻漏れ
+			case PCLOG_STAMP_LEAKAGE:
+			//打刻順序不正
+			case INCORRECT_STAMP: 
+			//休日打刻
+			case HOLIDAY_STAMP:
+			//二重打刻
+			case DOUBLE_STAMP:
+				
+				
 			//それ以外ルート
 			default:
 				return Collections.emptyList();
