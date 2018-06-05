@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.app.command.person.setting.selectionitem.domainservice;
+package nts.uk.ctx.pereg.dom.person.setting.selectionitem.domainservice;
 
 import java.util.List;
 
