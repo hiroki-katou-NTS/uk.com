@@ -12,3 +12,7 @@
 	/* border: none;
 	height: 30px; */
 }
+
+.switch-btn>button{
+	width: 80px;
+}

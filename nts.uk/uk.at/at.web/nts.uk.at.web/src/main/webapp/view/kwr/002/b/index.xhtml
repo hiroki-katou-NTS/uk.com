@@ -8,7 +8,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-		<script>var dialogSize = { width: 1350, height: 610 };</script>
+			<script>var dialogSize = { width: 900, height: 600 };</script>
 
 			<script>
 				__viewContext.primitiveValueConstraints = __viewContext.primitiveValueConstraints
@@ -60,7 +60,7 @@
 			<!-- <com:scriptfile path="../share/model.js" /> -->
 			<com:scriptfile path="kwr002.b.vm.js" />
 			<com:scriptfile path="kwr002.b.start.js" />
-			
+
 		</ui:define>
 
 		<ui:define name="content">
@@ -70,14 +70,15 @@
 				<!-- B1_2 -->
 				<button tabindex="2" data-bind="click: onRegister" class="proceed">#{i18n.getText('KWR002_31')}</button>
 				<!-- B1_3 -->
-				<button tabindex="3" data-bind="click: onDelete" class="danger">#{i18n.getText('KWR002_32')}</button>
+				<button tabindex="3" data-bind="click: onDelete" class="danger"
+					style="margin-right: 0px;">#{i18n.getText('KWR002_32')}</button>
 				<!-- B1_4 -->
 				<button tabindex="4" data-bind="click: onClose">#{i18n.getText('KWR002_33')}</button>
 				<!-- <button tabindex="5">#{i18n.getText('B1_5')}</button> -->
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
 				<div class="fixed-flex-layout-left"
-					style="padding-top: 20px; padding-left: 20px">
+					style="padding-top: 20px; padding-left: 20px;margin-right:5px;">
 					<!-- B2_1 -->
 					<div
 						data-bind="ntsPanel:{width: '260px', height: '410px', showIcon: true, visible: true, direction: 'right'}">
@@ -114,13 +115,17 @@
 						</div>
 					</div>
 				</div>
-				<div class="fixed-flex-layout-right" style="padding-top: 100px;"
+				<div class="fixed-flex-layout-right" style="padding-top: 35px;"
 					data-bind="with: currentARES">
 
 					<div class="table fixed-height">
 						<table>
+							<colgroup>
+								<col width="230" />
+								<col width="*" />
+							</colgroup>
 							<tbody>
-								<tr style="margin-top: 5px;">
+								<tr style="margin-top: 5px;" class="row">
 									<td colspan="1" class="th-col1">
 										<div
 											data-bind="ntsFormLabel:{required: true , constraint: ['ExportSettingCode','ExportSettingName']}">
@@ -136,7 +141,7 @@
 												data-bind="ntsTextEditor: {name: '#[KWR002_41]', value:code, required: true, constraint: 'AExportSettingCode',enable:$parent.newMode, option : { width : '50px'}}" />
 											<!-- b6-3 -->
 											<input id="name" tabindex="8"
-												data-bind="ntsTextEditor: {name: '#[KWR002_42]', value:name, required: true, constraint: 'ExportSettingName', option : { width : '200px'}}" />
+												data-bind="ntsTextEditor: {name: '#[KWR002_42]', value:name, required: true, constraint: 'ExportSettingName', option : { width : '130px'}}" />
 										</div>
 									</td>
 								</tr>
@@ -148,7 +153,7 @@
 									</td>
 									<!--B7_2-->
 									<td colspan="2" class="th-col2">
-										<div class="cf" tabindex="9"
+										<div class="cf switch-btn" tabindex="9"
 											data-bind="ntsSwitchButton: {
 											name: '#[KWR002_44]',
 											options: $parent.sealUseAtrSwitchs,
@@ -169,7 +174,8 @@
 
 									<td colspan="2" class="th-col2">
 										<div>
-											<button tabindex="10" data-bind="click:openScreenC, enable:code">#{i18n.getText('KWR002_48')}</button>
+											<button style="min-width: 65px;" tabindex="10"
+												data-bind="click:openScreenC, enable:code">#{i18n.getText('KWR002_48')}</button>
 										</div>
 									</td>
 								</tr>
