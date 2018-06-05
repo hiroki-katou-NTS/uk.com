@@ -13,19 +13,7 @@ import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
 /**
  * The Class TotalConditionDto.
  */
-
-/**
- * Gets the attendance item id.
- *
- * @return the attendance item id
- */
 @Getter
-
-/**
- * Sets the attendance item id.
- *
- * @param attendanceItemId the new attendance item id
- */
 @Setter
 public class TotalConditionDto implements TotalConditionSetMemento {
 

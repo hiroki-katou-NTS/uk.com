@@ -62,8 +62,8 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             console.log(self.attendanceCode());
 
             this.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText('KWR002_86'), prop: 'attendanceItemId', width: 100 },
-                { headerText: nts.uk.resource.getText('KWR002_87'), prop: 'attendanceItemName', width: 200 }
+                { headerText: nts.uk.resource.getText('KWR002_86'), key: 'attendanceItemId', width: 100 },
+                { headerText: nts.uk.resource.getText('KWR002_87'), key: 'attendanceItemName', width: 200 }
             ]);
             self.useSealValue = ko.observable(true);
             self.useSeal = ko.observableArray([
@@ -106,12 +106,15 @@ module nts.uk.com.view.kwr002.c.viewmodel {
 
                 var attendanceItemName: String;
 
+                var positionTop:any = $(element).hasClass('top');
+                var positionBot:any = $(element).hasClass('bot');
+                
                 var position: number;
 
                 var exportAtr: number;
 
                 var attItem: model.AttendanceRecExp;
-                if (position == "upperPosition") {
+                if (position == "upperPosition" || position == "upperShow()") {
                     position = 1;
                 }
                 else position = 2;
@@ -179,14 +182,25 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                     }
                     var attendanceItem = getShared('attendanceRecordExport');
                     if (attendanceItem) {
+
                         if (exportAtr == 1) {
-                            if (position == 1)
+                            if (position == 1) {
                                 self.attendanceRecExpDaily()[columnIndex].upperPosition(attendanceItem.attendanceItemName);
-                            else self.attendanceRecExpDaily()[columnIndex].lowwerPosition(attendanceItem.attendanceItemName);
+                                self.attendanceRecExpDaily()[columnIndex].upperShow(true);
+                            }
+                            else {
+                                self.attendanceRecExpDaily()[columnIndex].lowwerPosition(attendanceItem.attendanceItemName);
+                                self.attendanceRecExpDaily()[columnIndex].lowerShow(true);
+                            }
                         } else {
-                            if (position == 1)
+                            if (position == 1) {
                                 self.attendanceRecExpMonthly()[columnIndex].upperPosition(attendanceItem.attendanceItemName);
-                            else self.attendanceRecExpMonthly()[columnIndex].lowwerPosition(attendanceItem.attendanceItemName);
+                                self.attendanceRecExpMonthly()[columnIndex].upperShow(true);
+                            }
+                            else {
+                                self.attendanceRecExpMonthly()[columnIndex].lowwerPosition(attendanceItem.attendanceItemName);
+                                self.attendanceRecExpMonthly()[columnIndex].lowerShow(true);
+                            }
                         }
 
 
@@ -196,7 +210,6 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                             attendanceItem.attendanceId, attendanceItem.attribute)
                         self.updateAttendanceRecItemList(item);
 
-                        $(element).load(window.location.href + element);
                     }
                 })
 
@@ -206,14 +219,14 @@ module nts.uk.com.view.kwr002.c.viewmodel {
         decision(): void {
             var self = this;
             var attendanceRecExpDailyRes: viewmodel.model.AttendanceRecExpRespond[] = [];
-            if(!self.attendanceRecExpDaily()[0]){
-            attendanceRecExpDailyRes.push(new viewmodel.model.AttendanceRecExpRespond(0, 0, false, null, null));
-                }
+            if (!self.attendanceRecExpDaily()[0]) {
+                attendanceRecExpDailyRes.push(new viewmodel.model.AttendanceRecExpRespond(0, 0, false, null, null));
+            }
             var attendanceRecExpMonthlyRes: viewmodel.model.AttendanceRecExpRespond[] = [];
-            if(!self.attendanceRecExpMonthly()[0]){
-            attendanceRecExpMonthlyRes.push(new viewmodel.model.AttendanceRecExpRespond(0, 0, false, null, null));
-                }
-            
+            if (!self.attendanceRecExpMonthly()[0]) {
+                attendanceRecExpMonthlyRes.push(new viewmodel.model.AttendanceRecExpRespond(0, 0, false, null, null));
+            }
+
             self.attendanceRecExpDaily().forEach((item) => {
                 attendanceRecExpDailyRes.push(new viewmodel.model.AttendanceRecExpRespond(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition(), item.lowwerPosition()));
             });
@@ -240,7 +253,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             setShared('attendanceRecExpMonthly', null, true);
             setShared('attendanceRecItemList', null, true);
             setShared('sealStamp', null, true);
-            setShared('useSeal', null,true);
+            setShared('useSeal', null, true);
             nts.uk.ui.windows.close();
         }
 
@@ -287,7 +300,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                 self.attendanceName(attendanceRecExpSetName);
             }
 
-            
+
 
             if (attendanceRecExpDaily != null || attendanceRecExpMonthly != null || attendanceRecItemList != null) {
                 self.useSealValue(useSeal == 1 ? true : false);
@@ -398,6 +411,8 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             userAtr: Boolean;
             upperPosition: KnockoutObservable<string>;
             lowwerPosition: KnockoutObservable<string>;
+            upperShow: KnockoutObservable<boolean>;
+            lowerShow: KnockoutObservable<boolean>;
 
             constructor(exportAtr: number, columnIndex: number, userAtr: Boolean, upperPosition: string, lowwerPosition: string) {
 
@@ -406,6 +421,9 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                 this.userAtr = userAtr;
                 this.upperPosition = ko.observable(upperPosition);
                 this.lowwerPosition = ko.observable(lowwerPosition);
+
+                this.upperShow = this.upperPosition() == "" ? ko.observable(false) : ko.observable(true);
+                this.lowerShow = this.lowwerPosition() == "" ? ko.observable(false) : ko.observable(true);
             }
         }
 

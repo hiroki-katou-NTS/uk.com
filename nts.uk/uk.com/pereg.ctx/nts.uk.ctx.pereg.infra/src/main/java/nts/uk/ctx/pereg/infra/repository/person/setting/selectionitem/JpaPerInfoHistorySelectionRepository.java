@@ -54,18 +54,6 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 	}
 
 	@Override
-	public void update(PerInfoHistorySelection domain) {
-		PpemtHistorySelection newEntity = toHistEntity(domain);
-		PpemtHistorySelection updateEntity = this.queryProxy().find(newEntity.histidPK, PpemtHistorySelection.class)
-				.get();
-		updateEntity.companyId = newEntity.companyId;
-		updateEntity.selectionItemId = newEntity.selectionItemId;
-		updateEntity.startDate = newEntity.startDate;
-		updateEntity.endDate = newEntity.endDate;
-		this.commandProxy().update(updateEntity);
-	}
-
-	@Override
 	public void remove(String histId) {
 		PpemtHistorySelectionPK pk = new PpemtHistorySelectionPK(histId);
 		this.commandProxy().remove(PpemtHistorySelection.class, pk);

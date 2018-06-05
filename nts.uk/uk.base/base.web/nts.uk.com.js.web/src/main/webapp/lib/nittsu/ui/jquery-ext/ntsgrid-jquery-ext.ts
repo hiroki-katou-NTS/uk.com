@@ -841,7 +841,7 @@ module nts.uk.ui.jqueryExtentions {
             /**
              * Render cell
              */
-            export function renderCell($grid: JQuery, rowId: any, columnKey: any, latestValues?: any) {
+            export function renderCell($grid: JQuery, rowId: any, columnKey: any, latestValues?: any, clearStates?: any) {
                 let grid: any = $grid.data("igGrid");
                 if (!utils.updatable($grid)) return;
                 let gridUpdate: any = $grid.data("igGridUpdating");
@@ -850,6 +850,12 @@ module nts.uk.ui.jqueryExtentions {
                     return col.key === columnKey;
                 });
                 let $cell = $grid.igGrid("cellById", rowId, columnKey);
+                if (clearStates) {
+                    [ color.Error, color.Alarm, color.ManualEditTarget, color.ManualEditOther,
+                        color.Reflect, color.Calculation, color.Disable ].forEach(s => {
+                            if ($cell.hasClass(s)) $cell.removeClass(s);
+                    });
+                }
                 $cell.html(String(grid._renderCell(rowData[columnKey], column, rowData)));
                 return $cell;
             }
@@ -1454,6 +1460,8 @@ module nts.uk.ui.jqueryExtentions {
             export let UNCHECK_ALL: string = "uncheckAll";
             export let HEADER_TEXT: string = "headerText";
             export let SELECTED_SHEET: string = "selectedSheet";
+            export let CLEAR_ROW_STATES: string = "clearRowStates";
+            export let RESET_ORIG_DS: string = "resetOrigDataSource";
             export let DESTROY: string = "destroy";
             
             /**
@@ -1499,6 +1507,12 @@ module nts.uk.ui.jqueryExtentions {
                     case HEADER_TEXT:
                         setHeaderText($grid, params[0], params[1], params[2]);
                         break;
+                    case CLEAR_ROW_STATES:
+                        clearStates($grid, params[0]);
+                        break;
+                    case RESET_ORIG_DS:
+                        resetOrigDs($grid, params[0]);
+                        break;
                     case DESTROY:
                         destroy($grid);
                         break;
@@ -1523,6 +1537,48 @@ module nts.uk.ui.jqueryExtentions {
              * Update row
              */
             function updateRow($grid: JQuery, rowId: any, object: any, autoCommit: boolean) {
+                let selectedSheet = getSelectedSheet($grid);
+                if (selectedSheet) {
+                    let grid = $grid.data("igGrid");
+                    let options = grid.options;
+                    Object.keys(object).forEach(function(k) {
+                        if (!_.includes(selectedSheet.columns, k)) {
+                            grid.dataSource.setCellValue(rowId, k, object[k], grid.options.autoCommit);
+                            delete object[k];
+                            if (!util.isNullOrUndefined(options.userId) && _.isFunction(options.getUserId)) {
+                                let uId = options.getUserId(rowId);
+                                if (uId === options.userId) {
+                                    let targetEdits = $grid.data(internal.TARGET_EDITS);
+                                    if (!targetEdits) {
+                                        targetEdits = {};
+                                        targetEdits[rowId] = [ k ];
+                                        $grid.data(internal.TARGET_EDITS, targetEdits);    
+                                        return;
+                                    }
+                                    if (!targetEdits[rowId]) {
+                                        targetEdits[rowId] = [ k ];
+                                        return;
+                                    }
+                                    targetEdits[rowId].push(k);
+                                } else {
+                                    let otherEdits = $grid.data(internal.OTHER_EDITS);
+                                    if (!otherEdits) {
+                                        otherEdits = {};
+                                        otherEdits[rowId] = [ k ];
+                                        $grid.data(internal.OTHER_EDITS, otherEdits);
+                                        return;
+                                    }
+                                    if (!otherEdits[rowId]) {
+                                        otherEdits[rowId] = [ k ];
+                                        return;
+                                    }
+                                    otherEdits[rowId].push(k);
+                                }
+                            }
+                        }
+                    });
+                }
+                
                 updating.updateRow($grid, rowId, object, undefined, true);
                 if (!autoCommit) {
                     var updatedRow = $grid.igGrid("rowById", rowId, false);
@@ -1542,8 +1598,8 @@ module nts.uk.ui.jqueryExtentions {
                     if (row) {
                         let sts = row[key];
                         if (sts) {
-                            if (sts[0][cellStateFeatureDef]) {
-                                sts[0][cellStateFeatureDef] = states;
+                            if (sts[0][cellStateFeatureDef.state]) {
+                                sts[0][cellStateFeatureDef.state] = states;
                             }
                         } else {
                             let cellState = {};
@@ -1570,7 +1626,21 @@ module nts.uk.ui.jqueryExtentions {
                     colState[key] = [ cellState ];
                     cellFormatter.rowStates[rowId] = colState;
                 }
-                updating.renderCell($grid, rowId, key);
+                
+                let selectedSheet = getSelectedSheet($grid);
+                if (selectedSheet && !_.includes(selectedSheet.columns, key)) {
+                    let options = $grid.data(internal.GRID_OPTIONS);
+                    let stateFt = feature.find(options.ntsFeatures, feature.CELL_STATE);
+                    if (stateFt) {
+                        let newState = {};
+                        newState[stateFt.rowId] = rowId;
+                        newState[stateFt.columnKey] = key;
+                        newState[stateFt.state] = states;
+                        stateFt.states.push(newState);
+                    }
+                    return;
+                }
+                updating.renderCell($grid, rowId, key, undefined, true);
             }
 
             /**
@@ -1798,6 +1868,30 @@ module nts.uk.ui.jqueryExtentions {
             }
             
             /**
+             * Clear states.
+             */
+            function clearStates($grid: JQuery, id: any) {
+                let cellFormatter = $grid.data(internal.CELL_FORMATTER);
+                if (cellFormatter && cellFormatter.rowStates && cellFormatter.rowStates[id]) {
+                    delete cellFormatter.rowStates[id];
+                    let $row = $grid.igGrid("rowById", id, false);
+                    let $cells = $row.find("td");
+                    [ color.Error, color.Alarm, color.ManualEditTarget, color.ManualEditOther,
+                        color.Reflect, color.Calculation, color.Disable].forEach(s => {
+                        if ($cells.hasClass(s)) $cells.removeClass(s);
+                    });
+                }
+            }
+            
+            /**
+             * Reset orig ds.
+             */
+            function resetOrigDs($grid: JQuery, ds: any) {
+                $grid.data(internal.ORIG_DS, ds);
+                $grid.data(internal.UPDATED_CELLS, null);
+            }
+            
+            /**
              * Get selected sheet.
              */
             function getSelectedSheet($grid: JQuery) {
@@ -1815,12 +1909,14 @@ module nts.uk.ui.jqueryExtentions {
                 let $container = $grid.closest(".nts-grid-container");
                 if ($container.length === 0) {
                     $grid.igGrid("destroy");
+                    $grid.off();
                     $grid.removeData();
                     return;
                 }
                 $container.find(".nts-grid-sheet-buttons").remove();
                 $($grid.igGrid("container")).unwrap().unwrap();
                 $grid.igGrid("destroy");
+                $grid.off();
                 $grid.removeData();
             }
         }

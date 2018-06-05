@@ -17,7 +17,7 @@
 <h:body>
 	<div id="master-wrapper" data-bind="with: content">
 		<ui:insert name="base-content">
-			<div id="master-content">
+			<div id="master-content" data-bind="let: { $vm: $data }">
 				<ui:insert name="content" />
 			</div>
 		</ui:insert>
