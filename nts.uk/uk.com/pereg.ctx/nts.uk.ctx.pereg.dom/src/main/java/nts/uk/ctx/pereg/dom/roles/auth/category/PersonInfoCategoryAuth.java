@@ -285,6 +285,7 @@ public class PersonInfoCategoryAuth extends AggregateRoot {
     		this.otherAllowAddMulti = EnumAdaptor.valueOf(otherAllowAddMulti, PersonInfoPermissionType.class);
     		this.otherAllowDelMulti = EnumAdaptor.valueOf(otherAllowDelMulti, PersonInfoPermissionType.class);
     		break;
+         case CONTINUOUSHISTORY:
          case DUPLICATEHISTORY:
          case NODUPLICATEHISTORY:
     		this.selfPastHisAuth = EnumAdaptor.valueOf(selfPastHisAuth, PersonInfoAuthType.class);

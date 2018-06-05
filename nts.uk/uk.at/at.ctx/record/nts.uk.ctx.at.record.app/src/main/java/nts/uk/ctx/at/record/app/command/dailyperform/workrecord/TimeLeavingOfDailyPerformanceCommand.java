@@ -11,21 +11,33 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 public class TimeLeavingOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 
 	@Getter
-	private Optional<TimeLeavingOfDailyPerformanceDto> data;
+	private Optional<TimeLeavingOfDailyPerformance> data;
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
-		this.data = item == null || !item.isHaveData() ? Optional.empty() : Optional.of((TimeLeavingOfDailyPerformanceDto) item);
+		this.data = item == null || !item.isHaveData() ? Optional.empty() 
+				: Optional.of(((TimeLeavingOfDailyPerformanceDto) item).toDomain(getEmployeeId(), getWorkDate()));
 	}
 
 	@Override
 	public void updateData(Object item) {
 		if(data == null){ return; }
-		setRecords(TimeLeavingOfDailyPerformanceDto.getDto((TimeLeavingOfDailyPerformance) item));
+		this.data = Optional.of((TimeLeavingOfDailyPerformance) item);
 	}
 
 	@Override
 	public Optional<TimeLeavingOfDailyPerformance> toDomain() {
-		return data == null ? null : data.map(c -> c.toDomain(getEmployeeId(), getWorkDate()));
+		return data;
+	}
+
+	@Override
+	public Optional<TimeLeavingOfDailyPerformanceDto> toDto() {
+		return getData().map(b -> TimeLeavingOfDailyPerformanceDto.getDto(b));
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public void updateDataO(Optional<?> data) {
+		this.data = (Optional<TimeLeavingOfDailyPerformance>) data;
 	}
 }
