@@ -1540,10 +1540,41 @@ module nts.uk.ui.jqueryExtentions {
                 let selectedSheet = getSelectedSheet($grid);
                 if (selectedSheet) {
                     let grid = $grid.data("igGrid");
+                    let options = grid.options;
                     Object.keys(object).forEach(function(k) {
                         if (!_.includes(selectedSheet.columns, k)) {
                             grid.dataSource.setCellValue(rowId, k, object[k], grid.options.autoCommit);
                             delete object[k];
+                            if (!util.isNullOrUndefined(options.userId) && _.isFunction(options.getUserId)) {
+                                let uId = options.getUserId(rowId);
+                                if (uId === options.userId) {
+                                    let targetEdits = $grid.data(internal.TARGET_EDITS);
+                                    if (!targetEdits) {
+                                        targetEdits = {};
+                                        targetEdits[rowId] = [ k ];
+                                        $grid.data(internal.TARGET_EDITS, targetEdits);    
+                                        return;
+                                    }
+                                    if (!targetEdits[rowId]) {
+                                        targetEdits[rowId] = [ k ];
+                                        return;
+                                    }
+                                    targetEdits[rowId].push(k);
+                                } else {
+                                    let otherEdits = $grid.data(internal.OTHER_EDITS);
+                                    if (!otherEdits) {
+                                        otherEdits = {};
+                                        otherEdits[rowId] = [ k ];
+                                        $grid.data(internal.OTHER_EDITS, otherEdits);
+                                        return;
+                                    }
+                                    if (!otherEdits[rowId]) {
+                                        otherEdits[rowId] = [ k ];
+                                        return;
+                                    }
+                                    otherEdits[rowId].push(k);
+                                }
+                            }
                         }
                     });
                 }
@@ -1878,12 +1909,14 @@ module nts.uk.ui.jqueryExtentions {
                 let $container = $grid.closest(".nts-grid-container");
                 if ($container.length === 0) {
                     $grid.igGrid("destroy");
+                    $grid.off();
                     $grid.removeData();
                     return;
                 }
                 $container.find(".nts-grid-sheet-buttons").remove();
                 $($grid.igGrid("container")).unwrap().unwrap();
                 $grid.igGrid("destroy");
+                $grid.off();
                 $grid.removeData();
             }
         }
