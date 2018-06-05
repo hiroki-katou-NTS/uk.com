@@ -70,6 +70,7 @@ module nts.uk.ui.koExtentions {
             var iggridColumns = _.map(observableColumns, c => {
                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
                 c["dataType"] = 'string';
+                let formatter = c["formatter"];
                 if(c["controlType"] === "switch"){
                     let switchF = _.find(gridFeatures, function(s){ 
                         return s["name"] === "Switch"
@@ -81,7 +82,8 @@ module nts.uk.ui.koExtentions {
                         let switchText = switchF['optionsText'];
                         c["formatter"] = function createButton(val, row) {
                             let result: JQuery = $('<div class="ntsControl"/>');
-                            result.attr("data-value", val);
+                            let rVal = nts.uk.util.isNullOrUndefined(formatter) ? val : formatter(val, row);
+                            result.attr("data-value", rVal);
                             _.forEach(switchOptions, function(opt) {
                                 let value = opt[switchValue];
                                 let text = opt[switchText]; 
@@ -90,7 +92,7 @@ module nts.uk.ui.koExtentions {
                                     btn.attr("disabled", "disabled");      
                                 }
                                 btn.attr('data-value', value);
-                                if (val == value) {
+                                if (rVal == value) {
                                     btn.addClass('selected');
                                 }
                                 btn.appendTo(result);
@@ -107,6 +109,7 @@ module nts.uk.ui.koExtentions {
                         ROW_HEIGHT = 30;
                     }       
                 } else {
+                    let formatter = c.formatter;
                     c.formatter = function(val, row) {
                         if (row) {
                             setTimeout(() => {
@@ -122,7 +125,7 @@ module nts.uk.ui.koExtentions {
                                 });
                             }, 0);
                         }
-                        return val;
+                        return nts.uk.util.isNullOrUndefined(formatter) ? val : formatter(val, row);
                     };
                 }
                 return c; 

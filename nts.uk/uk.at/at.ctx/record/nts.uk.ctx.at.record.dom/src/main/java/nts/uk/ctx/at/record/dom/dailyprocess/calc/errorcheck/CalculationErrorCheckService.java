@@ -1,10 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck;
 
-import java.util.List;
-
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 
 /**
  * ドメインサービス：日別計算のエラーチェック処理

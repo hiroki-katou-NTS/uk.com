@@ -70,4 +70,9 @@ public class OptionalItemOfDailyPerformFinder extends FinderFacade {
 			.map(c -> OptionalItemOfDailyPerformDto.getDto(c)).collect(Collectors.toList());
 	}
 
+	@Override
+	public Object getDomain(String employeeId, GeneralDate baseDate) {
+		return repo.find(employeeId, baseDate);
+	}
+
 }

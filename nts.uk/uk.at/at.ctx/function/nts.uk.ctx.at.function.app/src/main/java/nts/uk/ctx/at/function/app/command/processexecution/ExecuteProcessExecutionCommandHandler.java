@@ -1592,10 +1592,10 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		GeneralDate endDate ;
 		if(targetDate==1){
 			if(createPeriod==1){
-				endDate =	GeneralDate.ymd(today.year(), startMonth, startDate.localDate().getMonth().maxLength());
+				endDate =	GeneralDate.ymd(today.year(), startMonth, 1);
 				endDate = GeneralDate.ymd(today.year(), startMonth, endDate.localDate().getMonth().maxLength());
 			}else{
-				endDate =	GeneralDate.ymd(today.year(), startMonth+createPeriod-1, startDate.localDate().getMonth().maxLength());
+				endDate =	GeneralDate.ymd(today.year(), startMonth+createPeriod-1, 1);
 				endDate =	GeneralDate.ymd(today.year(), startMonth+createPeriod-1, endDate.localDate().getMonth().maxLength());
 			}
 		}else{
