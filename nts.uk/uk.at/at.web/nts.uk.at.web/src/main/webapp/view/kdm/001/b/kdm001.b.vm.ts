@@ -192,13 +192,13 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     if (occurredDays != 0) {
                         occurredDays = occurredDays.toFixed(1) + getText('KDM001_27');
                     }
-                    listData.push(new SubstitutedData(data.id, dayOffDate, occurredDays, data.linked == 1 ? '有' : "", null, null, null, remain, expired, data.linked));
+                    listData.push(new SubstitutedData(data.id, dayOffDate, occurredDays, data.linked == 1 ? getText('KDM001_130') : "", null, null, null, remain, expired, data.linked));
                 } else {
                     requireDays = data.requireDays;
                     if (requireDays != 0) {
                         requireDays = requireDays.toFixed(1) + getText('KDM001_27');
                     }
-                    listData.push(new SubstitutedData(data.comDayOffID, null, null, null, dayOffDate, requireDays, data.linked == 1 ? '有' : "", remain, expired, data.linked));
+                    listData.push(new SubstitutedData(data.comDayOffID, null, null, null, dayOffDate, requireDays, data.linked == 1 ? getText('KDM001_130') : "", remain, expired, data.linked));
                 }
             });
             if (self.listExtractData.length == 0) {
@@ -284,7 +284,9 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     self.listExtractData = result.extraHolidayManagementDataDto.extraData;
                     self.convertToDisplayList();
                     self.updateSubstituteDataList();
-                    self.dispExpiredDate(result.compenSettingEmpExpiredDate);
+                    if (result.leaveSettingExpiredDate >0){
+                        self.dispExpiredDate(result.leaveSettingExpiredDate);
+                    } else self.dispExpiredDate(result.compenSettingEmpExpiredDate);
                     self.initKCP009();
                     self.disableLinkedData();
                     dfd.resolve();
