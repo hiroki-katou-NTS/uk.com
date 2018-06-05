@@ -105,32 +105,44 @@ public class GetTimeAndCountFromDailyRecordImpl implements GetTimeAndCountFromDa
 			
 			// 勤務情報の判断
 			boolean isTargetWork = false;
-			/*
-			val totalSubjects = totalTimes.getTotalSubjects();
-			switch (totalTimes.getSummaryAtr()){
-			case COMBINATION:
-				for (val totalSubject : totalSubjects){
-					//*****（未）　就業時間帯コードに不備があるため、修正された後、コード判定を追加する
-					if (totalSubject.getWorkTypeCode() == null) continue;
-					if (totalSubject.getWorkTypeCode().v().compareTo(workInfo.getWorkTypeCode().v()) == 0){
-						isTargetWork = true;
-						break;
+			if (totalTimes.getSummaryList().isPresent()){
+				val summaryList = totalTimes.getSummaryList().get();
+				switch (totalTimes.getSummaryAtr()){
+				case COMBINATION:
+					boolean isExistWorkType = false;
+					for (val sumWorkType : summaryList.getWorkTypeCodes()){
+						if (sumWorkType.compareTo(workInfo.getWorkTypeCode().v()) == 0){
+							isExistWorkType = true;
+							break;
+						}
 					}
-				}
-				break;
-			case WORKINGTIME:
-				break;
-			case DUTYTYPE:
-				for (val totalSubject : totalSubjects){
-					if (totalSubject.getWorkTypeCode() == null) continue;
-					if (totalSubject.getWorkTypeCode().v().compareTo(workInfo.getWorkTypeCode().v()) == 0){
-						isTargetWork = true;
-						break;
+					boolean isExistWorkTime = false;
+					for (val sumWorkTime : summaryList.getWorkTimeCodes()){
+						if (sumWorkTime.compareTo(workInfo.getWorkTimeCode().v()) == 0){
+							isExistWorkTime = true;
+							break;
+						}
 					}
+					if (isExistWorkType && isExistWorkTime) isTargetWork = true;
+					break;
+				case WORKINGTIME:
+					for (val sumWorkTime : summaryList.getWorkTimeCodes()){
+						if (sumWorkTime.compareTo(workInfo.getWorkTimeCode().v()) == 0){
+							isTargetWork = true;
+							break;
+						}
+					}
+					break;
+				case DUTYTYPE:
+					for (val sumWorkType : summaryList.getWorkTypeCodes()){
+						if (sumWorkType.compareTo(workInfo.getWorkTypeCode().v()) == 0){
+							isTargetWork = true;
+							break;
+						}
+					}
+					break;
 				}
-				break;
 			}
-			*/
 			if (!isTargetWork) continue;
 			
 			// 出勤状態の判断

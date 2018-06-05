@@ -15,7 +15,7 @@ module nts.uk.at.view.kdm001.h.viewmodel {
         holidayTime: KnockoutObservable<string> = ko.observable('');
         remainDaysList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getremainDay());
         remainDays: KnockoutObservable<string> = ko.observable('');
-        itemRequireDay: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getRequireDay());
+        itemRequireDay: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getRequireDayList());
         subOfHDID: KnockoutObservable<string> = ko.observable('');
         holidayDate: KnockoutObservable<string> = ko.observable('');
         requiredDays: KnockoutObservable<string> = ko.observable('');
