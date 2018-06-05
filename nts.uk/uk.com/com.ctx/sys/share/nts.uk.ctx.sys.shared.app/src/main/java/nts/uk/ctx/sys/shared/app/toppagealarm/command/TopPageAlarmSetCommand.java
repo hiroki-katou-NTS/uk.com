@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UpdateTopPageAlarmSetCommand {
+public class TopPageAlarmSetCommand {
 	private int alarmCategory;
 	private int useAtr;
 }

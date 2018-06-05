@@ -25,6 +25,7 @@ public class KrcstToppageAlarmSet extends UkJpaEntity implements Serializable {
 	@Column(name = "CID")
 	public String companyId;
 	
+	@Id
 	@Column(name = "ALARM_CATEGORY")
 	public int alarmCategory;
 	

@@ -10,14 +10,14 @@ import nts.uk.ctx.sys.shared.dom.toppagealarmset.TopPageAlarmSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class UpdateTopPageAlarmSetCommandHandler extends CommandHandler<UpdateTopPageAlarmSetCommand>{
+public class UpdateTopPageAlarmSetCommandHandler extends CommandHandler<TopPageAlarmSetCommand>{
 	@Inject
 	private TopPageAlarmSetRepository toppageAlarmSetRep;
 
 	@Override
-	protected void handle(CommandHandlerContext<UpdateTopPageAlarmSetCommand> context) {
+	protected void handle(CommandHandlerContext<TopPageAlarmSetCommand> context) {
 		String companyId = AppContexts.user().companyId();
-		UpdateTopPageAlarmSetCommand command = context.getCommand();
+		TopPageAlarmSetCommand command = context.getCommand();
 		TopPageAlarmSet toppageSet = TopPageAlarmSet.createFromJavaType(companyId, command.getAlarmCategory(), command.getUseAtr());
 		toppageAlarmSetRep.update(toppageSet);
 	}

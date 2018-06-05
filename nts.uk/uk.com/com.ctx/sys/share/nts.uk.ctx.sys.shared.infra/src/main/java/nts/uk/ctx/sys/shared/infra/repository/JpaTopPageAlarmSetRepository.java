@@ -18,6 +18,7 @@ import nts.uk.ctx.sys.shared.infra.entity.KrcstToppageAlarmSet;
 @Stateless
 public class JpaTopPageAlarmSetRepository extends JpaRepository implements TopPageAlarmSetRepository{
 	private final String SELECT_NO_WHERE = "SELECT c FROM KrcstToppageAlarmSet c ";
+	private final String SELECT_BY_COM = SELECT_NO_WHERE + "WHERE c.companyId = :companyId ";
 	/**
 	 * convert from top page alarm set entity to domain
 	 * @param entity
@@ -39,16 +40,10 @@ public class JpaTopPageAlarmSetRepository extends JpaRepository implements TopPa
 	 * @author yennth
 	 */
 	@Override
-	public List<TopPageAlarmSet> getAll() {
-		return this.queryProxy().query(SELECT_NO_WHERE, KrcstToppageAlarmSet.class).getList(c -> toDomain(c));
-	}
-	/**
-	 * find by companyId
-	 * @author yennth
-	 */
-	@Override
-	public Optional<TopPageAlarmSet> getByCom(String companyId) {
-		return this.queryProxy().find(companyId, KrcstToppageAlarmSet.class).map(x -> toDomain(x));
+	public List<TopPageAlarmSet> getAll(String companyId) {
+		return this.queryProxy().query(SELECT_BY_COM, KrcstToppageAlarmSet.class)
+				.setParameter("companyId", companyId)
+				.getList(c -> toDomain(c));
 	}
 	/**
 	 * update a top page alarm set

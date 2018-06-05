@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ccg009.a.style.css" />
+			<com:scriptfile path="ccg009.a.start.js" />
+			<com:scriptfile path="ccg009.a.vm.js" />
+			<com:scriptfile path="ccg009.a.service.js" />
+
+
+			<com:EnumScript>
+				nts.uk.ctx.sys.shared.dom.toppagealarmset.AlarmCategory
+			</com:EnumScript>
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<div class="container">
+					<button id="register-button" class="proceed" tabindex="1"
+						data-bind="click: saveData, enable: $root.errors.isEmpty &amp;&amp; currentAlarm().value > 0">#{i18n.getText('CCG009_2')}</button>
+				</div>
+			</div>
+			<div id="contents-area">
+				<div id = "left-content">
+					<div class="bg-green caret-right caret-background cf" 
+						style="margin-top: 12px; margin-left: 20px; width: 400px; height: 350px;">
+						<i class="icon icon-searchbox"></i>
+						<div id="searchbox" tabindex="2" data-bind="ntsSearchBox: {searchMode: 'highlight', targetKey: 'value', comId: 'single-list', 
+		                         items: items, selected: currentCode, selectedKey: 'code', fields: ['value', 'name'], mode: 'igGrid'}" />
+						<div id = "listalarm">
+							<table id="single-list" tabindex="3"
+								data-bind="ntsGridList: {	
+									width: 350,  
+									height: 256,
+									dataSource: items,
+									primaryKey: 'value',
+									columns: columns,
+									value: currentCode}">
+							</table>
+						</div>
+					</div>
+				</div>
+				<div id = "right-content" data-bind="with: currentAlarm">
+					<div id = "labelNotRequired" data-bind="ntsFormLabel: {}">#{i18n.getText('CCG009_6')}</div>
+					<span id = "name" data-bind = "text: name"></span>
+					<br /><div id = "labelRequired" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG009_7')}</div>
+					<div class="cf" tabindex="4" data-bind="ntsSwitchButton: {
+																name: 'Sample Switch',
+																options: $parent.roundingRules,
+																optionsValue: 'code',
+																optionsText: 'name',
+																value: useAtr,
+																required: true }"></div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

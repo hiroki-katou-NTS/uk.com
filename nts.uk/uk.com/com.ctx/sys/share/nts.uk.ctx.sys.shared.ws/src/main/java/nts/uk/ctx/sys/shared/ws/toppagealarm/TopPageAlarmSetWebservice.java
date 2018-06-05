@@ -1,6 +1,6 @@
 package nts.uk.ctx.sys.shared.ws.toppagealarm;
 
-import java.util.Optional;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -8,7 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.sys.shared.app.toppagealarm.command.UpdateTopPageAlarmSetCommand;
+import nts.uk.ctx.sys.shared.app.toppagealarm.command.TopPageAlarmSetCommand;
 import nts.uk.ctx.sys.shared.app.toppagealarm.command.UpdateTopPageAlarmSetCommandHandler;
 import nts.uk.ctx.sys.shared.app.toppagealarm.find.TopPageAlarmSetDto;
 import nts.uk.ctx.sys.shared.app.toppagealarm.find.TopPageAlarmSetFinder;
@@ -24,13 +24,13 @@ public class TopPageAlarmSetWebservice extends WebService{
 	
 	@Path("find")
 	@POST
-	public Optional<TopPageAlarmSetDto> find() {
+	public List<TopPageAlarmSetDto> find() {
 		return toppageAlarmFinder.finder();
 	}
 	
 	@Path("add")
 	@POST
-	public void update(UpdateTopPageAlarmSetCommand cmd) {
-		this.updateToppageSet.handle(cmd);;
+	public void update(TopPageAlarmSetCommand cmd) {
+		this.updateToppageSet.handle(cmd);
 	}
 }

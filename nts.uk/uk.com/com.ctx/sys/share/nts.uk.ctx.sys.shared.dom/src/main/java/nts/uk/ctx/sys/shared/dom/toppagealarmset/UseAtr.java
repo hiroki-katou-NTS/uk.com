@@ -8,7 +8,7 @@ public enum UseAtr {
 	/** スケジュール作成 */
 	USE(1),
 	/** 日別実績の作成 */
-	NOT_USE(2);
+	NOT_USE(0);
 	public final int value;
 	private UseAtr(int type){
 		this.value = type;
