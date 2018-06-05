@@ -1615,6 +1615,9 @@ module nts.layout {
                         .primitiveValueConstraints[ctrls[0].id.replace(/#/g, '')]
                         .stringExpression = /^[a-zA-Z0-9\s"#$%&(~|{}\[\]@:`*+?;\\/_\-><)]{1,20}$/;
 
+                    __viewContext.primitiveValueConstraints['StampNumber'].stringExpression = __viewContext
+                        .primitiveValueConstraints[ctrls[0].id.replace(/#/g, '')].stringExpression;
+
                     fetch.get_stc_setting().done((stt: StampCardEditing) => {
                         let _bind = $(document).data('_nts_bind') || {};
 
@@ -1886,9 +1889,9 @@ module nts.layout {
     }
 
     enum EDIT_METHOD {
-        PreviousZero = 0,
-        AfterZero = 1,
-        PreviousSpace = 2,
-        AfterSpace = 3
+        PreviousZero = 1,
+        AfterZero = 2,
+        PreviousSpace = 3,
+        AfterSpace = 4
     }
 }

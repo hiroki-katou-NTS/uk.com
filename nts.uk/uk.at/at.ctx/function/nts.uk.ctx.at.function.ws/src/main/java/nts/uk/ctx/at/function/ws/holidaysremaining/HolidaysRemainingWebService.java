@@ -8,6 +8,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.command.holidaysremaining.AddHdRemainManageCommandHandler;
 import nts.uk.ctx.at.function.app.command.holidaysremaining.HdRemainManageCommand;
@@ -17,6 +19,8 @@ import nts.uk.ctx.at.function.app.find.holidaysremaining.DateHolidayRemainingDto
 import nts.uk.ctx.at.function.app.find.holidaysremaining.HdRemainManageDto;
 import nts.uk.ctx.at.function.app.find.holidaysremaining.HdRemainManageFinder;
 import nts.uk.ctx.at.function.app.find.holidaysremaining.PermissionOfEmploymentFormDto;
+import nts.uk.ctx.at.function.dom.holidaysremaining.BreakSelection;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 @Path("at/function/holidaysremaining")
 @Produces("application/json")
@@ -35,7 +39,9 @@ public class HolidaysRemainingWebService extends WebService {
 	@Inject
 	private RemoveHdRemainManageCommandHandler removeHdRemainManageCommandHandler;
 	
-
+	@Inject
+	private I18NResourcesForUK i18n;
+	
 	@POST
 	@Path("findAll")
 	public List<HdRemainManageDto> getHdRemainManageList() {
@@ -76,5 +82,11 @@ public class HolidaysRemainingWebService extends WebService {
 	@Path("getPermissionOfEmploymentForm")
 	public PermissionOfEmploymentFormDto getPermissionOfEmploymentForm() {
 		return this.hdRemainManageFinder.getPermissionOfEmploymentForm();
+	}
+	
+	@POST
+	@Path("getBreakSelection")
+	public List<EnumConstant> getEnumValueOutputFormat(){
+		return EnumAdaptor.convertToValueNameList(BreakSelection.class, i18n);
 	}
 }

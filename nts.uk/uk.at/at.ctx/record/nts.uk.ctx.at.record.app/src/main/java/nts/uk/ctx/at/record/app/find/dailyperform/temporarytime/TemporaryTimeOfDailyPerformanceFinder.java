@@ -40,4 +40,9 @@ public class TemporaryTimeOfDailyPerformanceFinder extends FinderFacade {
 			.map(c -> TemporaryTimeOfDailyPerformanceDto.getDto(c)).collect(Collectors.toList());
 	}
 
+	@Override
+	public Object getDomain(String employeeId, GeneralDate baseDate) {
+		return repo.findByKey(employeeId, baseDate);
+	}
+
 }

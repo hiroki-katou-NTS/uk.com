@@ -6,16 +6,19 @@ package nts.uk.ctx.at.shared.infra.repository.scherec.totaltimes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.CountAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.SummaryAtr;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.SummaryList;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalCondition;
-import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalSubjects;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesABName;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesName;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesSetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.WorkTypeAtr;
 import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalCondition;
 import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalSubjects;
 import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalSubjectsPK;
@@ -146,7 +149,7 @@ public class JpaTotalTimesSetMemento implements TotalTimesSetMemento {
 	 * setTotalSubjects(java.util.List)
 	 */
 	@Override
-	public void setTotalSubjects(List<TotalSubjects> summaryList) {
+	public void setSummaryList(Optional<SummaryList> summaryList) {
 		String companyId = this.entity.getKshstTotalTimesPK().getCid();
 		int totalTimeNo = this.entity.getKshstTotalTimesPK().getTotalTimesNo();
 		
@@ -154,25 +157,39 @@ public class JpaTotalTimesSetMemento implements TotalTimesSetMemento {
 		
 		List<KshstTotalSubjects> lstTotalSubjectDB = this.entity.listTotalSubjects;
 		
-		for (TotalSubjects totalObj : summaryList) {
-		    
-		    // find entity existed
-		    KshstTotalSubjects entityTotal = lstTotalSubjectDB.stream()
-		            .filter(entity -> {
-		                KshstTotalSubjectsPK pk = entity.getKshstTotalSubjectsPK();
-                        return pk.getCid().equals(companyId) && pk.getTotalTimesNo() == totalTimeNo
-                                && pk.getWorkTypeAtr() == totalObj.getWorkTypeAtr().value
-                                && pk.getWorkTypeCd().equals(totalObj.getWorkTypeCode().v());
-		            })
-		            .findFirst()
-		            .orElse(new KshstTotalSubjects());
-		    
-		    // save to memento
-		    totalObj.saveToMemento(new JpaTotalSubjectsSetMemento(companyId, totalTimeNo, entityTotal));
-		    
-		    // add list total subjects
-		    lstTotalSubjectCommand.add(entityTotal);
-		}
+		summaryList.ifPresent(item -> {
+			if (!CollectionUtil.isEmpty(item.getWorkTimeCodes())) {
+				item.getWorkTimeCodes().stream().forEach(workTimeCode -> {
+					// find entity existed
+					KshstTotalSubjects entityTotal = lstTotalSubjectDB.stream().filter(entity -> {
+						KshstTotalSubjectsPK pk = entity.getKshstTotalSubjectsPK();
+						return pk.getCid().equals(companyId) && pk.getTotalTimesNo() == totalTimeNo
+								&& pk.getWorkTypeAtr() == WorkTypeAtr.WORKINGTIME.value
+								&& pk.getWorkTypeCd().equals(workTimeCode);
+					}).findFirst().orElse(new KshstTotalSubjects(new KshstTotalSubjectsPK(companyId,
+							totalTimeNo, WorkTypeAtr.WORKINGTIME.value, workTimeCode)));
+
+					// add list total subjects
+					lstTotalSubjectCommand.add(entityTotal);
+				});
+			}
+
+			if (!CollectionUtil.isEmpty(item.getWorkTypeCodes())) {
+				item.getWorkTypeCodes().stream().forEach(workTypeCode -> {
+					// find entity existed
+					KshstTotalSubjects entityTotal = lstTotalSubjectDB.stream().filter(entity -> {
+						KshstTotalSubjectsPK pk = entity.getKshstTotalSubjectsPK();
+						return pk.getCid().equals(companyId) && pk.getTotalTimesNo() == totalTimeNo
+								&& pk.getWorkTypeAtr() == WorkTypeAtr.WORKTYPE.value
+								&& pk.getWorkTypeCd().equals(workTypeCode);
+					}).findFirst().orElse(new KshstTotalSubjects(new KshstTotalSubjectsPK(companyId,
+							totalTimeNo, WorkTypeAtr.WORKTYPE.value, workTypeCode)));
+
+					// add list total subjects
+					lstTotalSubjectCommand.add(entityTotal);
+				});
+			}
+		});
 		
 		this.entity.setListTotalSubjects(lstTotalSubjectCommand);
 	}
