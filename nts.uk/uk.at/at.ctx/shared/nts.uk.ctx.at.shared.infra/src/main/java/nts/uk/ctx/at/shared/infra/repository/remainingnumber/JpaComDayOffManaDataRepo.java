@@ -143,7 +143,7 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.
+	 * @see nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.
 	 * ComDayOffManaDataRepository#getBySidWithHolidayDateCondition(java.lang.
 	 * String, java.lang.String, nts.arc.time.GeneralDate)
 	 */

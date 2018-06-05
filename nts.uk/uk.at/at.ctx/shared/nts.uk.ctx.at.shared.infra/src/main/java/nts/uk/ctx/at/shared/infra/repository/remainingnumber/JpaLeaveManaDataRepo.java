@@ -118,7 +118,7 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.
+	 * @see nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.
 	 * LeaveManaDataRepository#getBySidWithHolidayDate(java.lang.String,
 	 * java.lang.String, nts.arc.time.GeneralDate)
 	 */
