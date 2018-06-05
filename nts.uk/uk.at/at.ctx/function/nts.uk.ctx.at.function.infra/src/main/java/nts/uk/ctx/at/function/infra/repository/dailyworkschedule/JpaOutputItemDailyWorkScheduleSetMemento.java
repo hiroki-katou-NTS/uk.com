@@ -101,7 +101,7 @@ public class JpaOutputItemDailyWorkScheduleSetMemento implements OutputItemDaily
 																key.setItemCode(this.kfnmtItemWorkSchedule.getId().getItemCode());
 																key.setPrintItem(obj.getPrintItem().value);
 																entity.setId(key);
-																entity.setUseCls(new BigDecimal(obj.isUsedClassification() == true ? 1 : 0));
+																entity.setUseCls(new BigDecimal(obj.isUsedClassification() ? 1 : 0));
 																return entity;
 															}).collect(Collectors.toList());
 		kfnmtItemWorkSchedule.setLstKfnmtPrintRemarkCont(lstKfnmtAttendanceDisplay);		

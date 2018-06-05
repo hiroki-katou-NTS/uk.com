@@ -73,7 +73,7 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 	 */
 	@Override
 	public void delete(OutputItemDailyWorkSchedule domain) {
-		this.commandProxy().remove(this.toEntity(domain));;
+		this.commandProxy().remove(this.toEntity(domain));
 	}
 
 	/* (non-Javadoc)
@@ -138,8 +138,7 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 	 * @return the output item daily work schedule
 	 */
 	private OutputItemDailyWorkSchedule toDomain(KfnmtItemWorkSchedule entity) {
-		OutputItemDailyWorkSchedule domain = new OutputItemDailyWorkSchedule(new JpaOutputItemDailyWorkScheduleGetMemento(entity));
-		return domain;
+		return new OutputItemDailyWorkSchedule(new JpaOutputItemDailyWorkScheduleGetMemento(entity));
 	}
 	
 	/**

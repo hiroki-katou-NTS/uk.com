@@ -66,7 +66,13 @@ module nts.uk.at.view.kwr001.c {
                 self.currentCodeListSwap = ko.observableArray([]);
                 self.test = ko.observableArray([]);
                 
-                self.currentCodeListSwap.subscribe(function(value) {})
+                self.currentCodeListSwap.subscribe(function(value) {
+                    console.log(value);
+                })
+                
+                self.items.subscribe(function(value) {
+                    console.log(value);        
+                })
                 
                 self.enableBtnDel = ko.observable(false);
                 self.enableCodeC3_2 = ko.observable(false);

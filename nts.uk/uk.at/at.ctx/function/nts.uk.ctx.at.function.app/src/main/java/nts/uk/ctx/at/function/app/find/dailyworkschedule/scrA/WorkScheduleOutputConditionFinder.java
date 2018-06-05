@@ -155,9 +155,11 @@ public class WorkScheduleOutputConditionFinder {
 		
 		// Get domain 対応するドメインモデル「雇用に紐づく就業締め」を取得する (Lấy về domain model "Thuê" tương ứng)
 		Optional<ClosureEmployment> optClosureEmployment = closureEmploymentRepository.findByEmploymentCD(companyId, sEmpHistExportImported.getEmploymentCode());
-		
-		// Get domain 対応するドメインモデル「締め」を取得する (Lấy về domain model "Hạn định" tương ứng)
-		return closureRepository.findById(companyId, optClosureEmployment.get().getClosureId());
+		if (optClosureEmployment.isPresent()) {
+			// Get domain 対応するドメインモデル「締め」を取得する (Lấy về domain model "Hạn định" tương ứng)
+			return closureRepository.findById(companyId, optClosureEmployment.get().getClosureId());
+		} 
+		return Optional.empty();
 	}
 	
 	/**
@@ -171,9 +173,7 @@ public class WorkScheduleOutputConditionFinder {
 		// ドメインモデル「勤務実績のエラーアラーム」を取得する(Acquire domain model "work error actual alarm")
 		List<ErrorAlarmWorkRecord> lstErrorAlarmWorkRecord = errorAlarmWorkRecordRepository.getAllErAlCompanyAndUseAtr(companyId, true);
 		return lstErrorAlarmWorkRecord.stream()
-								.map(domain -> {
-									return new ErrorAlarmCodeDto(domain.getCode().v(), domain.getName().v());
-								})
+								.map(domain -> new ErrorAlarmCodeDto(domain.getCode().v(), domain.getName().v()))
 								.sorted(Comparator.comparing(ErrorAlarmCodeDto::getCode))
 								.collect(Collectors.toList());
 	} 
@@ -181,10 +181,8 @@ public class WorkScheduleOutputConditionFinder {
 	// convert to DTO
 	private List<DataInforReturnDto> getOutputItemDailyWorkSchedule(List<OutputItemDailyWorkSchedule> lstOutputItemDailyWorkSchedule) {
 		return lstOutputItemDailyWorkSchedule.stream()
-						.map(domain -> {
-											return new DataInforReturnDto(String.valueOf(domain.getItemCode().v()), 
-																							domain.getItemName().v());
-										})
+						.map(domain -> new DataInforReturnDto(String.valueOf(domain.getItemCode().v()), 
+																							domain.getItemName().v()))
 						.collect(Collectors.toList());
 	}
 }

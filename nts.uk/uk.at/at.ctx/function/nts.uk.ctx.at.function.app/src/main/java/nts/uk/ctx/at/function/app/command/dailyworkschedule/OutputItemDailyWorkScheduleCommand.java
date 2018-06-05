@@ -67,9 +67,7 @@ public class OutputItemDailyWorkScheduleCommand implements OutputItemDailyWorkSc
 	public List<AttendanceItemsDisplay> getLstDisplayedAttendance() {
 		return lstDisplayedAttendance.stream()
 										.map(command -> {
-											AttendanceItemsDisplay domainObject = new AttendanceItemsDisplay(command.getSortBy(), 
-																										command.getItemToDisplay());
-											return domainObject;
+											return new AttendanceItemsDisplay(command.getSortBy(), command.getItemToDisplay());
 										}).collect(Collectors.toList());
 	}
 
@@ -80,9 +78,8 @@ public class OutputItemDailyWorkScheduleCommand implements OutputItemDailyWorkSc
 	public List<PrintRemarksContent> getLstRemarkContent() {
 		return lstRemarkContent.stream()
 									.map(command -> {
-										PrintRemarksContent domainObject = new PrintRemarksContent(command.getUsedClassification(), 
+										return new PrintRemarksContent(command.getUsedClassification(), 
 																									command.getPrintItem());
-										return domainObject;
 									}).collect(Collectors.toList());
 	}
 
@@ -91,7 +88,6 @@ public class OutputItemDailyWorkScheduleCommand implements OutputItemDailyWorkSc
 	 */
 	@Override
 	public String getCompanyID() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

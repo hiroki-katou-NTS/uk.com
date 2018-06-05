@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkScheduleCopyCommand;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceType;
@@ -44,7 +43,6 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
@@ -122,6 +120,7 @@ public class OutputItemDailyWorkScheduleFinder {
 		// Get domain 任意項目
 		List<OptionalItem> lstOptionalItem = optionalItemRepository.findAll(companyID);
 		
+		// TODO: hoangdd - doi QA
 //		lstOptionalItem = lstOptionalItem.stream()
 //								.filter(domain -> (domain.getPerformanceAtr().value == PerformanceAtr.DAILY_PERFORMANCE.value
 //													&& (domain.getOptionalItemAtr().value == OptionalItemAtr.AMOUNT.value 
@@ -132,9 +131,26 @@ public class OutputItemDailyWorkScheduleFinder {
 //								.collect(Collectors.toList());
 		
 		// Use condition filter to get 画面で利用できる勤怠項目一覧
-		List<AttendanceType> lstAttendanceTypeFilter = lstOptionalItem.stream()
-				.flatMap(domainOptionItem -> lstAttendanceType.stream()
-								.filter(domainAttendance -> domainOptionItem.getPerformanceAtr().value == PerformanceAtr.DAILY_PERFORMANCE.value 
+		// dao nguoc lai de lay lstOptionalItem, sau do su dung file excel cua KH cung cap, + them 640 se ra duoc attendanceId
+//		List<AttendanceType> lstAttendanceTypeFilter = lstOptionalItem.stream()
+//				.flatMap(domainOptionItem -> lstAttendanceType.stream()
+//								.filter(domainAttendance -> domainOptionItem.getPerformanceAtr().value == PerformanceAtr.DAILY_PERFORMANCE.value 
+//																&& (
+//																		( domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.TIME.value 
+//																			&& domainAttendance.getScreenUseAtr().value == ScreenUseAtr.WORK_TIME.value)
+//																		|| (domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.NUMBER.value 
+//																			&& domainAttendance.getScreenUseAtr().value == ScreenUseAtr.ATTENDANCE_TIMES.value)
+//																		|| (domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.AMOUNT.value 
+//																			&& domainAttendance.getScreenUseAtr().value == ScreenUseAtr.TOTAL_COMMUTING_AMOUNT.value)
+//																		|| (domainAttendance.getScreenUseAtr().value == ScreenUseAtr.DAILY_WORK_SCHEDULE.value)
+//																))
+//								.map(domainAttendance -> domainAttendance))
+//								.sorted(Comparator.comparing(AttendanceType::getAttendanceItemId))
+//								.distinct()
+//				.collect(Collectors.toList());
+		List<OptionalItem> lstAttendanceTypeFilter = lstAttendanceType.stream()
+				.flatMap(domainAttendance -> lstOptionalItem.stream()
+								.filter(domainOptionItem -> domainOptionItem.getPerformanceAtr().value == PerformanceAtr.DAILY_PERFORMANCE.value 
 																&& (
 																		( domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.TIME.value 
 																			&& domainAttendance.getScreenUseAtr().value == ScreenUseAtr.WORK_TIME.value)
@@ -142,20 +158,34 @@ public class OutputItemDailyWorkScheduleFinder {
 																			&& domainAttendance.getScreenUseAtr().value == ScreenUseAtr.ATTENDANCE_TIMES.value)
 																		|| (domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.AMOUNT.value 
 																			&& domainAttendance.getScreenUseAtr().value == ScreenUseAtr.TOTAL_COMMUTING_AMOUNT.value)
-																		|| (domainAttendance.getScreenUseAtr().value == ScreenUseAtr.DAILY_WORK_SCHEDULE.value)
+																		|| (domainAttendance.getScreenUseAtr().value == ScreenUseAtr.DAILY_WORK_SCHEDULE.value
+																			&& (domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.AMOUNT.value 
+																				|| domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.NUMBER.value 
+																				|| domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.TIME.value))
 																))
-								.map(domainAttendance -> {
-									return domainAttendance;
-								}))
-								.sorted(Comparator.comparing(AttendanceType::getAttendanceItemId))
+								.map(domainOptionItem -> domainOptionItem))
+//								.sorted(Comparator.comparing(AttendanceType::getAttendanceItemId))
 								.distinct()
 				.collect(Collectors.toList());
+		
 		// End algorithm 画面で利用できる任意項目を含めた勤怠項目一覧を取得する
 		
 		// Get list attendanceID from domain 画面で利用できる勤怠項目一覧 
+//		List<Integer> lstAttendanceID = lstAttendanceTypeFilter.stream()
+//													.map(domain -> domain.getAttendanceItemId())
+//													.collect(Collectors.toList());
+		
+		// get list attendanceId of OptionalItem. according file 日次項目一覧.xls参照
 		List<Integer> lstAttendanceID = lstAttendanceTypeFilter.stream()
-													.map(domain -> domain.getAttendanceItemId())
-													.collect(Collectors.toList());
+				.map(domain -> domain.getOptionalItemNo().v() + 640)
+				.collect(Collectors.toList());
+		
+		// get list attendanceId of AttendanceType
+		List<Integer> lstAttendanceID2 = lstAttendanceType.stream()
+				.map(domain -> domain.getAttendanceItemId())
+				.collect(Collectors.toList());
+		lstAttendanceID.addAll(lstAttendanceID2);
+		
 		// get domain 日次の勤怠項目
 		// TODO: hoangdd - chua sort nhu note tren eap
 		List<DailyAttendanceItem> lstDailyAttendanceItem = dailyAttendanceItemRepository.getListById(companyID, lstAttendanceID);
@@ -202,6 +232,9 @@ public class OutputItemDailyWorkScheduleFinder {
 		// Get domain 実績修正画面で利用するフォーマット from request list 402
 		Optional<FormatPerformanceImport> optFormatPerformanceImport = formatPerformanceAdapter.getFormatPerformance(companyId);
 		
+		if (!optFormatPerformanceImport.isPresent()) {
+			return new ArrayList<>();
+		}
 		switch (optFormatPerformanceImport.get().getSettingUnitType()) 
 		{
 			case AUTHORITY: // In case of authority
@@ -224,12 +257,11 @@ public class OutputItemDailyWorkScheduleFinder {
 	
 				return lstBusinessType.stream()
 					.filter(domain -> setBusinessTypeFormatDailyCode.contains(domain.getBusinessTypeCode().v()))
-					.map(domain -> {
-						return new DataInforReturnDto(domain.getBusinessTypeCode().v(), domain.getBusinessTypeName().v());
-					})
+					.map(domain -> new DataInforReturnDto(domain.getBusinessTypeCode().v(), domain.getBusinessTypeName().v()))
 				.collect(Collectors.toList());
+				default:
+					return new ArrayList<>();
 		}
-		return new ArrayList<>();
 	}
 	
 	// algorithm for screen D: copy
@@ -253,30 +285,30 @@ public class OutputItemDailyWorkScheduleFinder {
 		
 		List<DataInforReturnDto> lstDataReturn = new ArrayList<>();
 		
-		switch (optFormatPerformanceImport.get().getSettingUnitType()) 
-		{
-			case AUTHORITY: // In case of authority
-				// ドメインモデル「会社の日別実績の修正のフォーマット」を取得する (Acquire the domain model "format of company's daily performance correction")
-				// 「日別実績の修正の表示項目」から表示項目を取得する (Acquire display items from "display items for correction of daily performance")
-				List<AuthorityFomatDaily>  lstAuthorityFomatDaily = authorityFormatDailyRepository.getAuthorityFormatDailyDetail(companyId, new DailyPerformanceFormatCode(code), new BigDecimal(1));
-				lstAuthorityFomatDaily.sort(Comparator.comparing(AuthorityFomatDaily::getDisplayOrder));
-				lstDataReturn = lstAuthorityFomatDaily.stream()
-														.map(domain -> {
-															return new DataInforReturnDto(domain.getAttendanceItemId()+"", "");
-														})
-														.collect(Collectors.toList());
-				break;
-			case BUSINESS_TYPE:
-				// ドメインモデル「勤務種別日別実績の修正のフォーマット」を取得する (Acquire the domain model "Format of working type daily performance correction)
-				// 「日別実績の修正の表示項目」から表示項目を取得する (Acquire display items from "display items for correction of daily performance")
-				List<BusinessTypeFormatDaily> lstBusinessTypeFormatDaily = businessTypeFormatDailyRepository.getBusinessTypeFormat(companyId, new BusinessTypeCode(code).v());
-				lstBusinessTypeFormatDaily.sort(Comparator.comparing(BusinessTypeFormatDaily::getOrder));
-				lstDataReturn = lstBusinessTypeFormatDaily.stream()
-														.map(domain -> {
-															return new DataInforReturnDto(domain.getAttendanceItemId()+"", "");
-														})
-														.collect(Collectors.toList());
-				break;
+		if (optFormatPerformanceImport.isPresent()) {
+			switch (optFormatPerformanceImport.get().getSettingUnitType()) 
+			{
+				case AUTHORITY: // In case of authority
+					// ドメインモデル「会社の日別実績の修正のフォーマット」を取得する (Acquire the domain model "format of company's daily performance correction")
+					// 「日別実績の修正の表示項目」から表示項目を取得する (Acquire display items from "display items for correction of daily performance")
+					List<AuthorityFomatDaily>  lstAuthorityFomatDaily = authorityFormatDailyRepository.getAuthorityFormatDailyDetail(companyId, new DailyPerformanceFormatCode(code), new BigDecimal(1));
+					lstAuthorityFomatDaily.sort(Comparator.comparing(AuthorityFomatDaily::getDisplayOrder));
+					lstDataReturn = lstAuthorityFomatDaily.stream()
+															.map(domain -> new DataInforReturnDto(domain.getAttendanceItemId()+"", ""))
+															.collect(Collectors.toList());
+					break;
+				case BUSINESS_TYPE:
+					// ドメインモデル「勤務種別日別実績の修正のフォーマット」を取得する (Acquire the domain model "Format of working type daily performance correction)
+					// 「日別実績の修正の表示項目」から表示項目を取得する (Acquire display items from "display items for correction of daily performance")
+					List<BusinessTypeFormatDaily> lstBusinessTypeFormatDaily = businessTypeFormatDailyRepository.getBusinessTypeFormat(companyId, new BusinessTypeCode(code).v());
+					lstBusinessTypeFormatDaily.sort(Comparator.comparing(BusinessTypeFormatDaily::getOrder));
+					lstDataReturn = lstBusinessTypeFormatDaily.stream()
+															.map(domain -> new DataInforReturnDto(domain.getAttendanceItemId()+"", ""))
+															.collect(Collectors.toList());
+					break;
+				default:
+					break;
+			}
 		}
 		
 		Map<String, String> mapCodeName =  lstCommandCopy.stream()
@@ -297,45 +329,22 @@ public class OutputItemDailyWorkScheduleFinder {
 	}
 	
 	/**
-	 * Gets the data for start page.
-	 *
-	 * @return the data for start page
-	 */
-	// algorithm for screen B: start screen
-	private List<ErrorAlarmWorkRecordDto> getDataForStartPage() {
-		String companyId = AppContexts.user().companyId();
-		
-		// get domain "work error actual alarm" 勤務実績のエラーアラーム
-		List<ErrorAlarmWorkRecord> lstErrorAlarmWorkRecord = errorAlarmWorkRecordRepository.getListErrorAlarmWorkRecord(companyId);
-		errorAlarmWorkRecordRepository.getAllErAlCompanyAndUseAtr(companyId, true);
-		
-		return lstErrorAlarmWorkRecord.stream()
-								.map(domain -> {
-									ErrorAlarmWorkRecordDto dto = new ErrorAlarmWorkRecordDto();
-									dto.setCode(domain.getCode().v());
-									dto.setName(domain.getName().v());
-									return dto;
-								}).collect(Collectors.toList());
-	}
-	
-	/**
 	 * To dto timeitem tobe display.
 	 *
 	 * @param lstDomainObject the lst domain object
 	 * @return the list
 	 */
 	private List<TimeitemTobeDisplayDto> toDtoTimeitemTobeDisplay(List<AttendanceItemsDisplay> lstDomainObject, Map<String, String> mapCodeManeAttendance) {
-		List<TimeitemTobeDisplayDto> lstDto = lstDomainObject.stream()
-												.map(domain -> {
-													TimeitemTobeDisplayDto dto = new TimeitemTobeDisplayDto();
-													dto.setAttendanceDisplay(domain.getAttendanceDisplay());
-													dto.setOrderNo(domain.getOrderNo());
-													dto.setAttendanceName(mapCodeManeAttendance.get(String.valueOf(domain.getAttendanceDisplay())));
-													return dto;
-												})
-												.sorted(Comparator.comparing(TimeitemTobeDisplayDto::getOrderNo))
-												.collect(Collectors.toList());
-		return lstDto;
+		return lstDomainObject.stream()
+									.map(domain -> {
+										TimeitemTobeDisplayDto dto = new TimeitemTobeDisplayDto();
+										dto.setAttendanceDisplay(domain.getAttendanceDisplay());
+										dto.setOrderNo(domain.getOrderNo());
+										dto.setAttendanceName(mapCodeManeAttendance.get(String.valueOf(domain.getAttendanceDisplay())));
+										return dto;
+									})
+									.sorted(Comparator.comparing(TimeitemTobeDisplayDto::getOrderNo))
+									.collect(Collectors.toList());
 	}
 	
 	/**
@@ -345,16 +354,15 @@ public class OutputItemDailyWorkScheduleFinder {
 	 * @return the list
 	 */
 	private List<PrintRemarksContentDto> toDtoPrintRemarksContent(List<PrintRemarksContent> lstDomainObject) {
-		List<PrintRemarksContentDto> lstDto = lstDomainObject.stream()
-												.map(domain -> {
-													PrintRemarksContentDto dto = new PrintRemarksContentDto();
-													dto.setPrintItem(domain.getPrintItem().value);
-													dto.setUsedClassification(domain.isUsedClassification() == true ? USE : NOT_USE);
-													return dto;
-												})
-												.sorted(Comparator.comparing(PrintRemarksContentDto::getPrintItem))
-												.collect(Collectors.toList());
-		return lstDto;
+		return lstDomainObject.stream()
+								.map(domain -> {
+									PrintRemarksContentDto dto = new PrintRemarksContentDto();
+									dto.setPrintItem(domain.getPrintItem().value);
+									dto.setUsedClassification(domain.isUsedClassification() ? USE : NOT_USE);
+									return dto;
+								})
+								.sorted(Comparator.comparing(PrintRemarksContentDto::getPrintItem))
+								.collect(Collectors.toList());
 	} 
 	
 	/**
