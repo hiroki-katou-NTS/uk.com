@@ -17,7 +17,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
-import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 import nts.uk.ctx.sys.gateway.dom.login.EmployCodeEditType;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeCodeSettingAdapter;
@@ -75,7 +75,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			this.checkEmployeeDelStatus(em.getEmployeeId());
 			
 			// Get User by PersonalId
-			UserImport user = this.getUser(em.getPersonalId());
+			UserImportNew user = this.getUser(em.getPersonalId());
 			
 			// check password
 			String msgErrorId = this.compareHashPassword(user, password);
@@ -178,8 +178,8 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 	 * @param personalId the personal id
 	 * @return the user
 	 */
-	private UserImport getUser(String personalId) {
-		Optional<UserImport> user = userAdapter.findUserByAssociateId(personalId);
+	private UserImportNew getUser(String personalId) {
+		Optional<UserImportNew> user = userAdapter.findUserByAssociateId(personalId);
 		if (user.isPresent()) {
 			return user.get();
 		} else {
@@ -192,7 +192,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 	 *
 	 * @param user the user
 	 */
-	private void checkLimitTime(UserImport user) {
+	private void checkLimitTime(UserImportNew user) {
 		if (user.getExpirationDate().before(GeneralDate.today())) {
 			throw new BusinessException("Msg_316");
 		}

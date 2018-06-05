@@ -70,6 +70,30 @@ public class CheckBeforePasswordPublisherImpl implements CheckBeforePasswordPubl
 		// ドメインモデル「パスワードポリシー」を取得する
 		return this.passwordPolicyCheck(userId, reNewPass, user.getContractCode().v());
 	}
+	
+	@Override
+	public CheckBeforeChangePassOutput checkBeforeResetPassword(String userId, String newPass, String reNewPass) {
+		
+		List<String> messages = new ArrayList<>();
+		// 変更前チェック Check newPass and reNewPass
+		if (!newPass.equals(reNewPass)) {
+			messages.add("#Msg_961");
+		}
+		//get domain User
+		User user = this.userRepo.getByUserID(userId).get();
+		
+		//Check loginId
+		if (user.getLoginID().v().equals(newPass)) {
+			messages.add("#Msg_989");
+		}
+		
+		if (!messages.isEmpty()) {
+			return new CheckBeforeChangePassOutput(true, messages);
+		}
+
+		// ドメインモデル「パスワードポリシー」を取得する
+		return this.passwordPolicyCheck(userId, reNewPass, user.getContractCode().v());
+	}
 
 	/**
 	 * Password policy check.

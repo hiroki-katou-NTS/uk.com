@@ -52,7 +52,17 @@ public class ChangePasswordCommandHandler extends CommandHandler<ChangePasswordC
 				if (checkResult.isError()) {
 					// Throw error list
 					BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
-					checkResult.getMessage().forEach(bundledBusinessExceptions::addMessage);
+					checkResult.getMessage().forEach(item -> {
+						// get messageId
+						String msgId = item.getMessage();
+						String param = item.getParam();
+						if (param != null) {
+							bundledBusinessExceptions.addMessage(msgId, param);
+						} else {
+							bundledBusinessExceptions.addMessage(msgId);
+						}
+
+					});
 					if (!bundledBusinessExceptions.cloneExceptions().isEmpty()) {
 						throw bundledBusinessExceptions;
 					}

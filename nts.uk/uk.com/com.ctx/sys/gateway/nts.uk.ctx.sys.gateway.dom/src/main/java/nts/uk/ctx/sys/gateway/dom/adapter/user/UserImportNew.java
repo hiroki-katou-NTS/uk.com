@@ -39,5 +39,5 @@ public class UserImportNew {
 	/** The expiration date. */
 	private GeneralDate expirationDate;	
 	
-	private PassStatus passStatus;
+	private Integer passStatus;
 }

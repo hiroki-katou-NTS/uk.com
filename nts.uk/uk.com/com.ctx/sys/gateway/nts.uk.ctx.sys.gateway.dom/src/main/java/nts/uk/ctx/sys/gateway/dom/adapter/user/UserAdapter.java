@@ -28,7 +28,7 @@ public interface UserAdapter {
 	 * @param associatePersonId the associate person id
 	 * @return the user by associate id
 	 */
-	Optional<UserImport> findUserByAssociateId(String associatePersonId);
+	Optional<UserImportNew> findUserByAssociateId(String associatePersonId);
 	
 	
 	/**
@@ -46,7 +46,7 @@ public interface UserAdapter {
 	 * @param userId the user id
 	 * @return the optional
 	 */
-	Optional<UserImport> findByUserId(String userId);
+	Optional<UserImportNew> findByUserId(String userId);
 	
 	/**
 	 * Password policy check.
@@ -77,4 +77,13 @@ public interface UserAdapter {
 	 * @param newPassword the new password
 	 */
 	void updatePassword(String userId,String newPassword);
+	
+	/**
+	 * Find user by contract and login id new.
+	 *
+	 * @param contractCode the contract code
+	 * @param loginId the login id
+	 * @return the optional
+	 */
+	Optional<UserImportNew> findUserByContractAndLoginIdNew(String contractCode, String loginId);
 }

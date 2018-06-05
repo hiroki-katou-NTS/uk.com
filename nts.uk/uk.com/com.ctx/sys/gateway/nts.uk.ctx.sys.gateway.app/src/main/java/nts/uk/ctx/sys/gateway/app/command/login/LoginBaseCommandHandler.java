@@ -25,7 +25,6 @@ import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.CheckBeforeChangePass;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.PassStatus;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
-import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 import nts.uk.ctx.sys.gateway.dom.login.Contract;
 import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
@@ -229,7 +228,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @param companyCode
 	 *            the company code
 	 */
-	protected void setLoggedInfo(UserImport user, EmployeeImport em, String companyCode) {
+	protected void setLoggedInfo(UserImportNew user, EmployeeImport em, String companyCode) {
 		// set info to session
 		manager.loggedInAsEmployee(user.getUserId(), em.getPersonalId(), user.getContractCode(), em.getCompanyId(),
 				companyCode, em.getEmployeeId(), em.getEmployeeCode());
@@ -242,7 +241,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 *            the user
 	 */
 	// init session
-	protected CheckChangePassDto initSession(UserImport user) {
+	protected CheckChangePassDto initSession(UserImportNew user) {
 		List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.getUserId(), user.getAssociatePersonId());
 		if (lstCompanyId.isEmpty()) {
 			manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId(), user.getContractCode(), null,
@@ -284,7 +283,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 */
 	protected boolean checkAfterLogin(UserImportNew user) {
 
-		if (user.getPassStatus() == PassStatus.Official) {
+		if (user.getPassStatus() == PassStatus.Official.value) {
 			// Get PasswordPolicy
 			Optional<PasswordPolicy> passwordPolicyOpt = this.PasswordPolicyRepo
 					.getPasswordPolicy(new ContractCode(user.getContractCode()));
@@ -313,7 +312,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			// Check Change Password at first login
 			if (passwordPolicy.isInitialPasswordChange()) {
 				// Check state
-				if (user.getPassStatus() != PassStatus.InitPassword) {
+				if (user.getPassStatus() != PassStatus.InitPassword.value) {
 					// Math PassPolicy
 					CheckBeforeChangePass mess = this.userAdapter.passwordPolicyCheck(user.getUserId(),
 							user.getPassword(), user.getContractCode());
@@ -404,7 +403,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @param password
 	 *            the password
 	 */
-	protected String compareHashPassword(UserImport user, String password) {
+	protected String compareHashPassword(UserImportNew user, String password) {
 		if (!PasswordHash.verifyThat(password, user.getUserId()).isEqualTo(user.getPassword())) {
 			// アルゴリズム「ロックアウト」を実行する ※２次対応
 			this.lockOutExecuted(user);
@@ -419,7 +418,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @param user
 	 *            the user
 	 */
-	private void lockOutExecuted(UserImport user) {
+	private void lockOutExecuted(UserImportNew user) {
 		// ドメインモデル「アカウントロックポリシー」を取得する
 		AccountLockPolicy accountLockPolicy = this.accountLockPolicyRepository
 				.getAccountLockPolicy(new ContractCode(user.getContractCode())).get();
@@ -516,7 +515,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 */
 	private CheckChangePassDto getUserAndCheckLimitTime(HttpServletRequest request, WindowsAccount windowAccount) {
 		// get user
-		Optional<UserImport> optUserImport = this.userAdapter.findByUserId(windowAccount.getUserId());
+		Optional<UserImportNew> optUserImport = this.userAdapter.findByUserId(windowAccount.getUserId());
 
 		// Validate limit time
 		if (optUserImport.isPresent()) {

@@ -27,5 +27,8 @@ public interface CheckBeforePasswordPublisher {
 	 */
 	//check passPolicy
 	CheckBeforeChangePassOutput passwordPolicyCheck(String userId, String newPass, String contractCode);
+	
+	//パスワード再設定前チェック request list 445
+	CheckBeforeChangePassOutput checkBeforeResetPassword(String userId, String newPass, String reNewPass);
 
 }

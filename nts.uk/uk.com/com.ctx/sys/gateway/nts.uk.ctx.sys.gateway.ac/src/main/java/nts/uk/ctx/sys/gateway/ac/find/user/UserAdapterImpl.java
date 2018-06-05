@@ -14,11 +14,14 @@ import javax.inject.Inject;
 import nts.uk.ctx.sys.auth.pub.user.ChangeUserPasswordPublisher;
 import nts.uk.ctx.sys.auth.pub.user.CheckBeforeChangePassOutput;
 import nts.uk.ctx.sys.auth.pub.user.CheckBeforePasswordPublisher;
+import nts.uk.ctx.sys.auth.pub.user.PasswordMessageObject;
 import nts.uk.ctx.sys.auth.pub.user.UserExport;
 import nts.uk.ctx.sys.auth.pub.user.UserPublisher;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.CheckBeforeChangePass;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.PasswordMessageImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 
 /**
  * The Class UserAdapterImpl.
@@ -41,6 +44,17 @@ public class UserAdapterImpl implements UserAdapter {
 	 * #findUserByContractAndLoginId(java.lang.String, java.lang.String)
 	 */
 	@Override
+	public Optional<UserImportNew> findUserByContractAndLoginIdNew(String contractCode, String loginId) {
+		Optional<UserExport> user = this.userPublisher.getUserByContractAndLoginId(contractCode, loginId);
+		
+		// Check found or not!
+		if (user.isPresent()) {
+			return this.covertToImportDomainNew(user);
+		}
+		return Optional.empty();
+	}
+	
+	@Override
 	public Optional<UserImport> findUserByContractAndLoginId(String contractCode, String loginId) {
 		Optional<UserExport> user = this.userPublisher.getUserByContractAndLoginId(contractCode, loginId);
 		
@@ -56,12 +70,12 @@ public class UserAdapterImpl implements UserAdapter {
 	 * #findUserByAssociateId(java.lang.String)
 	 */
 	@Override
-	public Optional<UserImport> findUserByAssociateId(String associatePersonId) {
+	public Optional<UserImportNew> findUserByAssociateId(String associatePersonId) {
 		Optional<UserExport> user = this.userPublisher.getUserByAssociateId(associatePersonId);
 		
 		// Check found or not!
 		if (user.isPresent()) {
-			return this.covertToImportDomain(user);
+			return this.covertToImportDomainNew(user);
 		}
 		return Optional.empty();
 	}
@@ -86,6 +100,20 @@ public class UserAdapterImpl implements UserAdapter {
 				.build());
 	}
 
+	private Optional<UserImportNew> covertToImportDomainNew(Optional<UserExport> user) {
+		UserExport userInfo = user.get();
+		return Optional.of(UserImportNew.builder()
+				.userId(userInfo.getUserID())
+				.userName(userInfo.getUserName())
+				.mailAddress(userInfo.getMailAddress())
+				.loginId(userInfo.getLoginID())
+				.associatePersonId(userInfo.getAssociatedPersonID())
+				.password(userInfo.getPassword())
+				.expirationDate(userInfo.getExpirationDate())
+				.contractCode(userInfo.getContractCode())
+				.passStatus(userInfo.getPassStatus())
+				.build());
+	}
 
 
 	/* (non-Javadoc)
@@ -110,10 +138,10 @@ public class UserAdapterImpl implements UserAdapter {
 	 * @see nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter#findByUserId(java.lang.String)
 	 */
 	@Override
-	public Optional<UserImport> findByUserId(String userId) {
+	public Optional<UserImportNew> findByUserId(String userId) {
 		Optional<UserExport> optUserExport = this.userPublisher.getByUserId(userId);
 		if (optUserExport.isPresent()) {
-			return this.covertToImportDomain(optUserExport);
+			return this.covertToImportDomainNew(optUserExport);
 		}
 		return Optional.empty();
 	}
@@ -125,7 +153,7 @@ public class UserAdapterImpl implements UserAdapter {
 	public CheckBeforeChangePass passwordPolicyCheck(String userId, String newPass, String contractCode) {
 		CheckBeforeChangePassOutput result = this.checkPasswordPublisher.passwordPolicyCheck(userId, newPass, contractCode);
 		
-		return new CheckBeforeChangePass(result.isError(), result.getMessage());
+		return new CheckBeforeChangePass(result.isError(), this.convert(result.getMessage()));
 	}
 	
 	/* (non-Javadoc)
@@ -136,7 +164,20 @@ public class UserAdapterImpl implements UserAdapter {
 			String reNewPass) {
 		CheckBeforeChangePassOutput result = this.checkPasswordPublisher.checkBeforeChangePassword(userId,
 				currentPass, newPass, reNewPass);
-		return new CheckBeforeChangePass(result.isError(), result.getMessage());
+		return new CheckBeforeChangePass(result.isError(), this.convert(result.getMessage()));
+	}
+	
+	/**
+	 * Convert.
+	 *
+	 * @param lstMsg the lst msg
+	 * @return the list
+	 */
+	//covert from List<PasswordMessageObject> to List<PasswordMessageImport>
+	private List<PasswordMessageImport> convert(List<PasswordMessageObject> lstMsg) {
+		return lstMsg.stream().map(item -> {
+			return new PasswordMessageImport(item.getMessage(), item.getParam());
+		}).collect(Collectors.toList());
 	}
 	
 	/* (non-Javadoc)
