@@ -526,7 +526,7 @@ public class TableList extends AggregateRoot {
 	/**
 	 * 親テーブル有無
 	 */
-	private NotUseAtr hasParentTable;
+	private NotUseAtr hasParentTblFlg;
 
 	/**
 	 * 親テーブル物理名
@@ -611,7 +611,7 @@ public class TableList extends AggregateRoot {
 			String filedKeyUpdate10, String filedKeyUpdate11, String filedKeyUpdate12, String filedKeyUpdate13,
 			String filedKeyUpdate14, String filedKeyUpdate15, String filedKeyUpdate16, String filedKeyUpdate17,
 			String filedKeyUpdate18, String filedKeyUpdate19, String filedKeyUpdate20, String screenRetentionPeriod,
-			String supplementaryExplanation, String parentTblJpName, int hasParentTable,
+			String supplementaryExplanation, String parentTblJpName, int hasParentTblFlg,
 			String parentTblName, String fieldParent1, String fieldParent2, String fieldParent3, String fieldParent4,
 			String fieldParent5, String fieldParent6, String fieldParent7, String fieldParent8, String fieldParent9,
 			String fieldParent10, int surveyPreservation) {
@@ -718,7 +718,7 @@ public class TableList extends AggregateRoot {
 		this.screenRetentionPeriod = screenRetentionPeriod;
 		this.supplementaryExplanation = supplementaryExplanation;
 		this.parentTblJpName = parentTblJpName;
-		this.hasParentTable = EnumAdaptor.valueOf(hasParentTable, NotUseAtr.class);
+		this.hasParentTblFlg = EnumAdaptor.valueOf(hasParentTblFlg, NotUseAtr.class);
 		this.parentTblName = parentTblName;
 		this.fieldParent1 = fieldParent1;
 		this.fieldParent2 = fieldParent2;

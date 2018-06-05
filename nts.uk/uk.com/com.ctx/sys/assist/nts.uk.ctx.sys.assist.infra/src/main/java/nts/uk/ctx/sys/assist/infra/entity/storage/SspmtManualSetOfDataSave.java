@@ -71,7 +71,7 @@ public class SspmtManualSetOfDataSave extends UkJpaEntity implements Serializabl
     /**
     * 手動保存の圧縮パスワード
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "COMPRESSED_PASSWORD")
     public String compressedPassword;
     

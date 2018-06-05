@@ -735,8 +735,8 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 * 親テーブル有無
 	 */
 	@Basic(optional = false)
-	@Column(name = "HAS_PARENT_TABLE")
-	public int hasParentTable;
+	@Column(name = "HAS_PARENT_TBL_FLG")
+	public int hasParentTblFlg;
 
 	/**
 	 * 親テーブル物理名
@@ -844,7 +844,7 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 				filedKeyUpdate6, filedKeyUpdate7, filedKeyUpdate8, filedKeyUpdate9, filedKeyUpdate10, filedKeyUpdate11,
 				filedKeyUpdate12, filedKeyUpdate13, filedKeyUpdate14, filedKeyUpdate15, filedKeyUpdate16,
 				filedKeyUpdate17, filedKeyUpdate18, filedKeyUpdate19, filedKeyUpdate20, screenRetentionPeriod,
-				supplementaryExplanation, parentTblJpName, hasParentTable, parentTblName, fieldParent1, fieldParent2,
+				supplementaryExplanation, parentTblJpName, hasParentTblFlg, parentTblName, fieldParent1, fieldParent2,
 				fieldParent3, fieldParent4, fieldParent5, fieldParent6, fieldParent7, fieldParent8, fieldParent9,
 				fieldParent10, 1);
 	}
@@ -881,7 +881,7 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 				domain.getFiledKeyUpdate13(), domain.getFiledKeyUpdate14(), domain.getFiledKeyUpdate15(),
 				domain.getFiledKeyUpdate16(), domain.getFiledKeyUpdate17(), domain.getFiledKeyUpdate18(),
 				domain.getFiledKeyUpdate19(), domain.getFiledKeyUpdate20(), domain.getScreenRetentionPeriod(),
-				domain.getSupplementaryExplanation(), domain.getParentTblJpName(), domain.getHasParentTable().value,
+				domain.getSupplementaryExplanation(), domain.getParentTblJpName(), domain.getHasParentTblFlg().value,
 				domain.getParentTblName(), domain.getFieldParent1(), domain.getFieldParent2(), domain.getFieldParent3(),
 				domain.getFieldParent4(), domain.getFieldParent5(), domain.getFieldParent6(), domain.getFieldParent7(),
 				domain.getFieldParent8(), domain.getFieldParent9(), domain.getFieldParent10(),

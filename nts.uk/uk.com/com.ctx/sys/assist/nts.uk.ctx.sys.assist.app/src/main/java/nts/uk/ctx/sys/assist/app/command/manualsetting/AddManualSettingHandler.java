@@ -18,6 +18,7 @@ import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSaveRepository;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSaveService;
 import nts.uk.ctx.sys.assist.dom.storage.OperatingCondition;
 import nts.uk.ctx.sys.assist.dom.storage.TargetEmployeesRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -38,15 +39,16 @@ public class AddManualSettingHandler extends AsyncCommandHandler<ManualSettingCo
 	@Override
 	protected void handle(CommandHandlerContext<ManualSettingCommand> context) {
 		ManualSettingCommand manualSetCmd = context.getCommand();
+		String companyId = AppContexts.user().companyId();
 		
 		// 手動保存の圧縮パスワードを暗号化する
-		if (manualSetCmd.getCompressedPassword() != null) {
-			manualSetCmd.setCompressedPassword(
-					Base64.getEncoder().encodeToString(manualSetCmd.getCompressedPassword().getBytes()));
-		}
+//		if (manualSetCmd.getCompressedPassword() != null) {
+//			manualSetCmd.setCompressedPassword(
+//					Base64.getEncoder().encodeToString(manualSetCmd.getCompressedPassword().getBytes()));
+//		}
 
 		String storeProcessingId = IdentifierUtil.randomUniqueId();
-		ManualSetOfDataSave domain = manualSetCmd.toDomain(storeProcessingId);
+		ManualSetOfDataSave domain = manualSetCmd.toDomain(companyId, storeProcessingId);
 		manualSetOfDataSaveRepo.addManualSetting(domain);
 		
 		// ドメインモデル「データ保存動作管理」に登録する

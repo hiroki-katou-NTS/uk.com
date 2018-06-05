@@ -55,70 +55,70 @@ public class SspmtCategoryFieldMt extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "CLS_KEY_QUERY_1")
-	public int clsKeyQuery1;
+	public String clsKeyQuery1;
 
 	/**
 	 * 抽出キー区分2
 	 */
 	@Basic(optional = true)
 	@Column(name = "CLS_KEY_QUERY_2")
-	public int clsKeyQuery2;
+	public String clsKeyQuery2;
 
 	/**
 	 * 抽出キー区分3
 	 */
 	@Basic(optional = true)
 	@Column(name = "CLS_KEY_QUERY_3")
-	public int clsKeyQuery3;
+	public String clsKeyQuery3;
 
 	/**
 	 * 抽出キー区分4
 	 */
 	@Basic(optional = true)
 	@Column(name = "CLS_KEY_QUERY_4")
-	public int clsKeyQuery4;
+	public String clsKeyQuery4;
 
 	/**
 	 * 抽出キー区分5
 	 */
 	@Basic(optional = true)
 	@Column(name = "CLS_KEY_QUERY_5")
-	public int clsKeyQuery5;
+	public String clsKeyQuery5;
 
 	/**
 	 * 抽出キー区分6
 	 */
 	@Basic(optional = true)
 	@Column(name = "CLS_KEY_QUERY_6")
-	public int clsKeyQuery6;
+	public String clsKeyQuery6;
 
 	/**
 	 * 抽出キー区分7
 	 */
 	@Basic(optional = true)
 	@Column(name = "CLS_KEY_QUERY_7")
-	public int clsKeyQuery7;
+	public String clsKeyQuery7;
 
 	/**
 	 * 抽出キー区分8
 	 */
 	@Basic(optional = true)
 	@Column(name = "CLS_KEY_QUERY_8")
-	public int clsKeyQuery8;
+	public String clsKeyQuery8;
 
 	/**
 	 * 抽出キー区分9
 	 */
 	@Basic(optional = true)
 	@Column(name = "CLS_KEY_QUERY_9")
-	public int clsKeyQuery9;
+	public String clsKeyQuery9;
 
 	/**
 	 * 抽出キー区分10
 	 */
 	@Basic(optional = true)
 	@Column(name = "CLS_KEY_QUERY_10")
-	public int clsKeyQuery10;
+	public String clsKeyQuery10;
 
 	/**
 	 * 抽出キー条件固定
@@ -495,8 +495,8 @@ public class SspmtCategoryFieldMt extends UkJpaEntity implements Serializable {
 	 * 親テーブル有無
 	 */
 	@Basic(optional = true)
-	@Column(name = "HAS_PARENT_TABLE")
-	public int hasParentTable;
+	@Column(name = "HAS_PARENT_TBL_FLG")
+	public int hasParentTblFlg;
 
 	/**
 	 * 親テーブル物理名
@@ -701,7 +701,7 @@ public class SspmtCategoryFieldMt extends UkJpaEntity implements Serializable {
 				this.filedKeyUpdate11, this.filedKeyUpdate12, this.filedKeyUpdate13, this.filedKeyUpdate14,
 				this.filedKeyUpdate15, this.filedKeyUpdate16, this.filedKeyUpdate17, this.filedKeyUpdate18,
 				this.filedKeyUpdate19, this.filedKeyUpdate20, this.historyCls, this.parentTblJpName,
-				this.hasParentTable, this.parentTblName, this.fieldParent1, this.fieldParent2, this.fieldParent3,
+				this.hasParentTblFlg, this.parentTblName, this.fieldParent1, this.fieldParent2, this.fieldParent3,
 				this.fieldParent4, this.fieldParent5, this.fieldParent6, this.fieldParent7, this.fieldParent8,
 				this.fieldParent9, this.fieldParent10, this.fieldChild1, this.fieldChild2, this.fieldChild3,
 				this.fieldChild4, this.fieldChild5, this.fieldChild6, this.fieldChild7, this.fieldChild8,
@@ -712,10 +712,10 @@ public class SspmtCategoryFieldMt extends UkJpaEntity implements Serializable {
 	public static SspmtCategoryFieldMt toEntity(CategoryFieldMt domain) {
 		return new SspmtCategoryFieldMt(new SspmtCategoryFieldMtPk(domain.getCategoryId(), domain.getTableNo()),
 				domain.getTableJapanName(), domain.getTableEnglishName(), domain.getTimeStopDelete(),
-				domain.getClsKeyQuery1().value, domain.getClsKeyQuery2().value, domain.getClsKeyQuery3().value,
-				domain.getClsKeyQuery4().value, domain.getClsKeyQuery5().value, domain.getClsKeyQuery6().value,
-				domain.getClsKeyQuery7().value, domain.getClsKeyQuery8().value, domain.getClsKeyQuery9().value,
-				domain.getClsKeyQuery10().value, domain.getDefaultCondKeyQuery(), domain.getFieldKeyQuery1(),
+				domain.getClsKeyQuery1(), domain.getClsKeyQuery2(), domain.getClsKeyQuery3(),
+				domain.getClsKeyQuery4(), domain.getClsKeyQuery5(), domain.getClsKeyQuery6(),
+				domain.getClsKeyQuery7(), domain.getClsKeyQuery8(), domain.getClsKeyQuery9(),
+				domain.getClsKeyQuery10(), domain.getDefaultCondKeyQuery(), domain.getFieldKeyQuery1(),
 				domain.getFieldKeyQuery2(), domain.getFieldKeyQuery3(), domain.getFieldKeyQuery4(),
 				domain.getFieldKeyQuery5(), domain.getFieldKeyQuery6(), domain.getFieldKeyQuery7(),
 				domain.getFieldKeyQuery8(), domain.getFieldKeyQuery9(), domain.getFieldKeyQuery10(),
@@ -731,7 +731,7 @@ public class SspmtCategoryFieldMt extends UkJpaEntity implements Serializable {
 				domain.getFiledKeyUpdate13(), domain.getFiledKeyUpdate14(), domain.getFiledKeyUpdate15(),
 				domain.getFiledKeyUpdate16(), domain.getFiledKeyUpdate17(), domain.getFiledKeyUpdate18(),
 				domain.getFiledKeyUpdate19(), domain.getFiledKeyUpdate20(), domain.getHistoryCls().value,
-				domain.getParentTblJpName(), domain.getHasParentTable().value, domain.getParentTblName(),
+				domain.getParentTblJpName(), domain.getHasParentTblFlg().value, domain.getParentTblName(),
 				domain.getFieldParent1(), domain.getFieldParent2(), domain.getFieldParent3(), domain.getFieldParent4(),
 				domain.getFieldParent5(), domain.getFieldParent6(), domain.getFieldParent7(), domain.getFieldParent8(),
 				domain.getFieldParent9(), domain.getFieldParent10(), domain.getFieldChild1(), domain.getFieldChild2(),

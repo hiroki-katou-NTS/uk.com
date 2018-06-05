@@ -99,7 +99,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 		// From
 		query.append(" FROM ").append(tableExport.getSimpleName()).append(" t");
 		Class<?> tableParent = null;
-		if (tableList.getHasParentTable() == NotUseAtr.USE) {
+		if (tableList.getHasParentTblFlg() == NotUseAtr.USE) {
 			tableParent = this.getTypeForTableName(tableList.getParentTblName());
 			query.append(" INNER JOIN ").append(tableParent.getSimpleName()).append(" p ON ");
 
@@ -137,7 +137,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 
 		for (int i = 0; i < clsKeyQuerys.length; i++) {
 			if (clsKeyQuerys[i] == EMPLOYEE_CD) {
-				if (tableList.getHasParentTable() == NotUseAtr.USE) {
+				if (tableList.getHasParentTblFlg() == NotUseAtr.USE) {
 					query.append(" INNER JOIN SspmtTargetEmployees e ON e.targetEmployeesPk.Sid = p.");
 					query.append(this.getFieldForColumnName(tableParent, fieldKeyQuerys[i]));
 				} else {
