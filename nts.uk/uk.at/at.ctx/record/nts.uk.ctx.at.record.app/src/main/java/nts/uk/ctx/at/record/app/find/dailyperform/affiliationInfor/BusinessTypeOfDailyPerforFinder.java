@@ -41,4 +41,9 @@ public class BusinessTypeOfDailyPerforFinder extends FinderFacade {
 		return (List<T>) this.repo.finds(param).stream()
 			.map(c -> BusinessTypeOfDailyPerforDto.getDto(c)).collect(Collectors.toList());
 	}
+
+	@Override
+	public Object getDomain(String employeeId, GeneralDate baseDate) {
+		return repo.findByKey(employeeId, baseDate);
+	}
 }

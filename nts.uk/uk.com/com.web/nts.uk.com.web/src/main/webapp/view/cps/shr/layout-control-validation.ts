@@ -1193,6 +1193,7 @@ module nts.layout {
                 CS00016_IS00079: IFindData = finder.find('CS00016', 'IS00079'),
                 CS00017_IS00082: IFindData = finder.find('CS00017', 'IS00082'),
                 CS00017_IS00084: IFindData = finder.find('CS00017', 'IS00084'),
+                CS00017_IS00085: IFindData = finder.find('CS00017', 'IS00085'),
                 CS00020_IS00130: IFindData = finder.find('CS00020', 'IS00130'),
                 CS00020_IS00131: IFindData = finder.find('CS00020', 'IS00131');
 
@@ -1244,6 +1245,54 @@ module nts.layout {
                         workplaceId: undefined
                     }).done((cbx: Array<IComboboxItem>) => {
                         CS00017_IS00084.data.lstComboBoxValue(cbx);
+                    });
+                });
+                // 
+                CS00017_IS00084.ctrl.on('click', () => {
+                    setShared('inputCDL008', {
+                        selectedCodes: [ko.toJS(CS00017_IS00084.data.value)],
+                        baseDate: ko.toJS(CS00017_IS00082.data.value),
+                        isMultiple: false,
+                        selectedSystemType: 5,
+                        isrestrictionOfReferenceRange: false
+                    }, true);
+
+                    modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
+                        // Check is cancel.
+                        if (getShared('CDL008Cancel')) {
+                            return;
+                        }
+
+                        //view all code of selected item 
+                        let output = getShared('outputCDL008');
+                        if (output) {
+                            CS00017_IS00084.data.value(output);
+                        }
+                    });
+                });
+            }
+
+            if (CS00017_IS00082 && CS00017_IS00085) {
+                CS00017_IS00085.ctrl.on('click', () => {
+                    setShared('inputCDL008', {
+                        selectedCodes: [ko.toJS(CS00017_IS00085.data.value)],
+                        baseDate: ko.toJS(CS00017_IS00082.data.value),
+                        isMultiple: false,
+                        selectedSystemType: 5,
+                        isrestrictionOfReferenceRange: false
+                    }, true);
+
+                    modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
+                        // Check is cancel.
+                        if (getShared('CDL008Cancel')) {
+                            return;
+                        }
+
+                        //view all code of selected item 
+                        let output = getShared('outputCDL008');
+                        if (output) {
+                            CS00017_IS00085.data.value(output);
+                        }
                     });
                 });
             }
@@ -1615,6 +1664,9 @@ module nts.layout {
                         .primitiveValueConstraints[ctrls[0].id.replace(/#/g, '')]
                         .stringExpression = /^[a-zA-Z0-9\s"#$%&(~|{}\[\]@:`*+?;\\/_\-><)]{1,20}$/;
 
+                    __viewContext.primitiveValueConstraints['StampNumber'].stringExpression = __viewContext
+                        .primitiveValueConstraints[ctrls[0].id.replace(/#/g, '')].stringExpression;
+
                     fetch.get_stc_setting().done((stt: StampCardEditing) => {
                         let _bind = $(document).data('_nts_bind') || {};
 
@@ -1886,9 +1938,9 @@ module nts.layout {
     }
 
     enum EDIT_METHOD {
-        PreviousZero = 0,
-        AfterZero = 1,
-        PreviousSpace = 2,
-        AfterSpace = 3
+        PreviousZero = 1,
+        AfterZero = 2,
+        PreviousSpace = 3,
+        AfterSpace = 4
     }
 }

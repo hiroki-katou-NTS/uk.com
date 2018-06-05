@@ -27,4 +27,8 @@ public abstract class FinderFacade {
 	public FinderFacade getFinder(String layout) {
 		return this;
 	}
+	
+	public Object getDomain(String employeeId, GeneralDate baseDate) {
+		return null;
+	}
 }
