@@ -111,7 +111,7 @@
 	right: 0;
 }
 
-.ui-igcombo-wrapper {
+.form-group.search-box .ui-igcombo-wrapper {
 	width: 100%;
 }
 

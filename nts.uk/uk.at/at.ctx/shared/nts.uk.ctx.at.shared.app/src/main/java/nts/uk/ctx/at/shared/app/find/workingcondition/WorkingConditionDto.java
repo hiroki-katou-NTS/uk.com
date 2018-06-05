@@ -72,8 +72,8 @@ public class WorkingConditionDto extends PeregDomainDto {
 	/**
 	 * 月間パターンCD
 	 */
-	 @PeregItem("IS00127")
-	 private String monthlyPattern;
+	@PeregItem("IS00127")
+	private String monthlyPattern;
 
 	/**
 	 * 休日勤種CD 区分別勤務.休日時.勤務種類コード
@@ -121,8 +121,8 @@ public class WorkingConditionDto extends PeregDomainDto {
 	/**
 	 * 平日時勤務時間2
 	 */
-    @PeregItem("IS00135")
-    private String weekDay2;
+	@PeregItem("IS00135")
+	private String weekDay2;
 
 	/**
 	 * 平日開始2 区分別勤務.平日時.勤務時間帯.開始 ※回数=2
@@ -211,7 +211,7 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 */
 	@PeregItem("IS00150")
 	private String workInPubliclicHoliday1;
-	
+
 	/**
 	 * 公休出開始1 区分別勤務.公休出勤時.勤務時間帯.開始 ※回数=1
 	 */
@@ -819,22 +819,22 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 */
 	@PeregItem("IS00253")
 	private Integer contractTime;
-	
+
 	/** The auto stamp set atr. */
 	// 自動打刻セット区分
 	@PeregItem("IS00258")
 	private int autoStampSetAtr;
-	
-	 /* The hourly ppayment atr. */
-	 // 時給者区分
-	 @PeregItem("IS00259")
-	 private Integer hourlyPaymentAtr;
 
-	 /* The time apply. */
-	 // 加給時間帯
-	 @PeregItem("IS00246")
-	 private String timeApply;
-	 
+	/* The hourly ppayment atr. */
+	// 時給者区分
+	@PeregItem("IS00259")
+	private Integer hourlyPaymentAtr;
+
+	/* The time apply. */
+	// 加給時間帯
+	@PeregItem("IS00246")
+	private String timeApply;
+
 	public WorkingConditionDto(String recordId) {
 		super(recordId);
 	}
@@ -842,19 +842,26 @@ public class WorkingConditionDto extends PeregDomainDto {
 	public static WorkingConditionDto createWorkingConditionDto(DateHistoryItem dateHistoryItem,
 			WorkingConditionItem workingConditionItem) {
 		WorkingConditionDto dto = new WorkingConditionDto(dateHistoryItem.identifier());
+
 		dto.setRecordId(dateHistoryItem.identifier());
 		dto.setStartDate(dateHistoryItem.start());
 		dto.setEndDate(dateHistoryItem.end());
-		
-		if(workingConditionItem.getHourlyPaymentAtr() != null)dto.setHourlyPaymentAtr(workingConditionItem.getHourlyPaymentAtr().value);
-		if(workingConditionItem.getTimeApply().isPresent())
-			dto.setTimeApply(workingConditionItem.getTimeApply().get().v());
-		
+
+		if (workingConditionItem.getHourlyPaymentAtr() != null) {
+			dto.setHourlyPaymentAtr(workingConditionItem.getHourlyPaymentAtr().value);
+		}
+
+		workingConditionItem.getTimeApply().ifPresent(wci -> {
+			dto.setTimeApply(wci.v());
+		});
+
 		dto.setScheduleManagementAtr(workingConditionItem.getScheduleManagementAtr().value);
 
 		// 予定作成方法
-		if(workingConditionItem.getMonthlyPattern().isPresent())
-			dto.setMonthlyPattern(workingConditionItem.getMonthlyPattern().get().v());
+		workingConditionItem.getMonthlyPattern().ifPresent(mp -> {
+			dto.setMonthlyPattern(mp.v());
+		});
+
 		setScheduleMethod(dto, workingConditionItem.getScheduleMethod().get());
 
 		PersonalWorkCategory workCategory = workingConditionItem.getWorkCategory();
@@ -869,75 +876,59 @@ public class WorkingConditionDto extends PeregDomainDto {
 		setWorkInHoliday(dto, workCategory.getHolidayWork());
 
 		// 公休出勤時
-		if (workCategory.getPublicHolidayWork().isPresent()) {
-			setWorkInPublicHoliday(dto, workCategory.getPublicHolidayWork().get());
-		}
+		workCategory.getPublicHolidayWork().ifPresent(phw -> {
+			setWorkInPublicHoliday(dto, phw);
+		});
 
 		// 法内休出時
-		if (workCategory.getInLawBreakTime().isPresent()) {
-			setInLawBreakTime(dto, workCategory.getInLawBreakTime().get());
-		}
+		workCategory.getInLawBreakTime().ifPresent(ilbt -> {
+			setInLawBreakTime(dto, ilbt);
+		});
 
 		// 法外休出時
-		if (workCategory.getOutsideLawBreakTime().isPresent()) {
-			setOutsideLawBreakTime(dto, workCategory.getOutsideLawBreakTime().get());
-		}
+		workCategory.getOutsideLawBreakTime().ifPresent(olbt -> {
+			setOutsideLawBreakTime(dto, olbt);
+		});
 
 		// 祝日出勤時
-		if (workCategory.getHolidayAttendanceTime().isPresent()) {
-			setHolidayAttendanceTime(dto, workCategory.getHolidayAttendanceTime().get());
-		}
+		workCategory.getHolidayAttendanceTime().ifPresent(at -> {
+			setHolidayAttendanceTime(dto, at);
+		});
 
 		PersonalDayOfWeek workDayOfWeek = workingConditionItem.getWorkDayOfWeek();
 
 		// 日曜日
-		if (workDayOfWeek.getSunday().isPresent()) {
-			setSunday(dto, workDayOfWeek.getSunday().get());
-		}
+		workDayOfWeek.getSunday().ifPresent(sund -> setSunday(dto, sund));
 
 		// 月曜日
-		if (workDayOfWeek.getMonday().isPresent()) {
-			setMonday(dto, workDayOfWeek.getMonday().get());
-		}
+		workDayOfWeek.getMonday().ifPresent(mond -> setMonday(dto, mond));
 
 		// 火曜日
-		if (workDayOfWeek.getTuesday().isPresent()) {
-			setTuesday(dto, workDayOfWeek.getTuesday().get());
-		}
+		workDayOfWeek.getTuesday().ifPresent(tue -> setTuesday(dto, tue));
 
 		// 水曜日
-		if (workDayOfWeek.getWednesday().isPresent()) {
-			setWednesday(dto, workDayOfWeek.getWednesday().get());
-		}
+		workDayOfWeek.getWednesday().ifPresent(wed -> setWednesday(dto, wed));
 
 		// 木曜日
-		if (workDayOfWeek.getThursday().isPresent()) {
-			setThursday(dto, workDayOfWeek.getThursday().get());
-		}
+		workDayOfWeek.getThursday().ifPresent(thu -> setThursday(dto, thu));
 
 		// 金曜日
-		if (workDayOfWeek.getFriday().isPresent()) {
-			setFriday(dto, workDayOfWeek.getFriday().get());
-		}
+		workDayOfWeek.getFriday().ifPresent(fri -> setFriday(dto, fri));
 
 		// 土曜日
-		if (workDayOfWeek.getSaturday().isPresent()) {
-			setSaturday(dto, workDayOfWeek.getSaturday().get());
-		}
+		workDayOfWeek.getSaturday().ifPresent(sat -> setSaturday(dto, sat));
 
 		dto.setAutoIntervalSetAtr(workingConditionItem.getAutoIntervalSetAtr().value);
 		dto.setVacationAddedTimeAtr(workingConditionItem.getVacationAddedTimeAtr().value);
-		if(workingConditionItem.getHolidayAddTimeSet().isPresent()){
-			if (workingConditionItem.getHolidayAddTimeSet().get().getOneDay() != null){
-				dto.setOneDay(workingConditionItem.getHolidayAddTimeSet().get().getOneDay().v());
-			}
-			if (workingConditionItem.getHolidayAddTimeSet().get().getMorning() != null){
-				dto.setMorning(workingConditionItem.getHolidayAddTimeSet().get().getMorning().v());
-			}
-			if (workingConditionItem.getHolidayAddTimeSet().get().getAfternoon() != null){
-				dto.setAfternoon(workingConditionItem.getHolidayAddTimeSet().get().getAfternoon().v());
-			}
-		}
+
+		workingConditionItem.getHolidayAddTimeSet().ifPresent(hat -> {
+			Optional.of(hat.getOneDay()).ifPresent(od -> dto.setOneDay(od.v()));
+
+			Optional.of(hat.getMorning()).ifPresent(od -> dto.setMorning(od.v()));
+
+			Optional.of(hat.getAfternoon()).ifPresent(od -> dto.setAfternoon(od.v()));
+		});
+
 		dto.setLaborSystem(workingConditionItem.getLaborSystem().value);
 		dto.setContractTime(workingConditionItem.getContractTime().v());
 		dto.setAutoStampSetAtr(workingConditionItem.getAutoStampSetAtr().value);
@@ -947,272 +938,316 @@ public class WorkingConditionDto extends PeregDomainDto {
 
 	private static void setScheduleMethod(WorkingConditionDto dto, ScheduleMethod scheduleMethod) {
 		dto.setBasicCreateMethod(scheduleMethod.getBasicCreateMethod().value);
-		if (scheduleMethod.getWorkScheduleBusCal().isPresent()) {
-			dto.setReferenceBusinessDayCalendar(
-					scheduleMethod.getWorkScheduleBusCal().get().getReferenceBusinessDayCalendar().value);
-			dto.setReferenceBasicWork(scheduleMethod.getWorkScheduleBusCal().get().getReferenceBasicWork().value);
-		}
+
+		scheduleMethod.getWorkScheduleBusCal().ifPresent(wsb -> {
+			dto.setReferenceBasicWork(wsb.getReferenceBasicWork().value);
+			dto.setReferenceBusinessDayCalendar(wsb.getReferenceBusinessDayCalendar().value);
+		});
+
+		// cần xem lại thuật toán thực thi đoạn mã này
 		switch (scheduleMethod.getBasicCreateMethod()) {
 		case BUSINESS_DAY_CALENDAR:
-			if (scheduleMethod.getWorkScheduleBusCal().isPresent()) {
-				dto.setReferenceType(scheduleMethod.getWorkScheduleBusCal().get().getReferenceWorkingHours().value);
-			}
+			scheduleMethod.getWorkScheduleBusCal().ifPresent(wsb -> {
+				dto.setReferenceType(wsb.getReferenceWorkingHours().value);
+			});
 			break;
 		case MONTHLY_PATTERN:
-			if (scheduleMethod.getMonthlyPatternWorkScheduleCre().isPresent()) {
-				dto.setReferenceType(scheduleMethod.getMonthlyPatternWorkScheduleCre().get().getReferenceType().value);
-			}
+			scheduleMethod.getMonthlyPatternWorkScheduleCre().ifPresent(mps -> {
+				dto.setReferenceType(mps.getReferenceType().value);
+			});
 			break;
 		default:
+		case PERSONAL_DAY_OF_WEEK:
 			break;
 		}
 	}
 
 	private static void setHolidayTime(WorkingConditionDto dto, SingleDaySchedule holidayTime) {
-		if(holidayTime != null)
-			dto.setHolidayWorkTypeCode(holidayTime.getWorkTypeCode().v());
+		Optional.ofNullable(holidayTime).ifPresent(ht -> {
+			dto.setHolidayWorkTypeCode(ht.getWorkTypeCode().v());
+		});
 	}
 
 	private static void setWeekDay(WorkingConditionDto dto, SingleDaySchedule weekDay) {
-		if(weekDay != null){
-			dto.setWeekdayWorkTypeCode(weekDay.getWorkTypeCode().v());
-			if(weekDay.getWorkTimeCode().isPresent())
-				dto.setWeekdayWorkTimeCode(weekDay.getWorkTimeCode().get().v());
-			Optional<TimeZone> timeZone1 = weekDay.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst();
-			Optional<TimeZone> timeZone2 = weekDay.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst();
-			if(timeZone1.isPresent()){
-				TimeZone tz = timeZone1.get();
+		Optional.of(weekDay).ifPresent(wd -> {
+			dto.setWeekdayWorkTypeCode(wd.getWorkTypeCode().v());
+
+			wd.getWorkTimeCode().ifPresent(wt -> dto.setWeekdayWorkTimeCode(wt.v()));
+
+			Optional<TimeZone> timeZone1 = wd.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1)
+					.findFirst();
+			Optional<TimeZone> timeZone2 = wd.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2)
+					.findFirst();
+
+			timeZone1.ifPresent(tz -> {
 				dto.setWeekDayStartTime1(tz.getStart().v());
 				dto.setWeekDayEndTime1(tz.getEnd().v());
-			}
-			if(timeZone2.isPresent()){
-				TimeZone tz = timeZone2.get();
+			});
+
+			timeZone2.ifPresent(tz -> {
 				dto.setWeekDayStartTime2(tz.getStart().v());
 				dto.setWeekDayEndTime2(tz.getEnd().v());
-			}
-		}
+			});
+		});
 	}
 
 	private static void setWorkInHoliday(WorkingConditionDto dto, SingleDaySchedule workInHoliday) {
 		dto.setWorkInHolidayWorkTypeCode(workInHoliday.getWorkTypeCode().v());
-		if(workInHoliday.getWorkTimeCode().isPresent())
-			dto.setWorkInHolidayWorkTimeCode(workInHoliday.getWorkTimeCode().get().v());
-		Optional<TimeZone> timeZone1 = workInHoliday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1)
-				.findFirst();
-		Optional<TimeZone> timeZone2 = workInHoliday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2)
-				.findFirst();
-		if(timeZone1.isPresent()){
-			TimeZone tz = timeZone1.get();
+
+		workInHoliday.getWorkTimeCode().ifPresent(wtc -> dto.setWorkInHolidayWorkTimeCode(wtc.v()));
+
+		Optional<TimeZone> timeZone1 = workInHoliday.getWorkingHours().stream()
+				.filter(timeZone -> timeZone.getCnt() == 1).findFirst();
+
+		Optional<TimeZone> timeZone2 = workInHoliday.getWorkingHours().stream()
+				.filter(timeZone -> timeZone.getCnt() == 2).findFirst();
+
+		timeZone1.ifPresent(tz -> {
 			dto.setWorkInHolidayStartTime1(tz.getStart().v());
 			dto.setWorkInHolidayEndTime1(tz.getEnd().v());
-		}
-		
-		if(timeZone2.isPresent()){
-			TimeZone tz = timeZone2.get();
+		});
+
+		timeZone2.ifPresent(tz -> {
 			dto.setWorkInHolidayStartTime2(tz.getStart().v());
 			dto.setWorkInHolidayEndTime2(tz.getEnd().v());
-		}
-		
+		});
 	}
 
 	private static void setWorkInPublicHoliday(WorkingConditionDto dto, SingleDaySchedule workInPublicHoliday) {
 		dto.setWorkInPublicHolidayWorkTypeCode(workInPublicHoliday.getWorkTypeCode().v());
-		if(workInPublicHoliday.getWorkTimeCode().isPresent())
-			dto.setWorkInPublicHolidayWorkTimeCode(workInPublicHoliday.getWorkTimeCode().get().v());
-		Optional<TimeZone> timeZone1 = workInPublicHoliday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst();
-		Optional<TimeZone> timeZone2 = workInPublicHoliday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst();
-		if(timeZone1.isPresent()){
-			TimeZone tz = timeZone1.get();
+
+		workInPublicHoliday.getWorkTimeCode().ifPresent(wtc -> dto.setWorkInPublicHolidayWorkTimeCode(wtc.v()));
+
+		Optional<TimeZone> timeZone1 = workInPublicHoliday.getWorkingHours().stream()
+				.filter(timeZone -> timeZone.getCnt() == 1).findFirst();
+		Optional<TimeZone> timeZone2 = workInPublicHoliday.getWorkingHours().stream()
+				.filter(timeZone -> timeZone.getCnt() == 2).findFirst();
+
+		timeZone1.ifPresent(tz -> {
 			dto.setWorkInPublicHolidayStartTime1(tz.getStart().v());
 			dto.setWorkInPublicHolidayEndTime1(tz.getEnd().v());
-		}
-		if(timeZone2.isPresent()){
-			TimeZone tz = timeZone2.get();
+		});
+
+		timeZone2.ifPresent(tz -> {
 			dto.setWorkInPublicHolidayStartTime2(tz.getStart().v());
 			dto.setWorkInPublicHolidayEndTime2(tz.getEnd().v());
-		}
+		});
 	}
 
 	private static void setInLawBreakTime(WorkingConditionDto dto, SingleDaySchedule inLawBreakTime) {
 		dto.setInLawBreakTimeWorkTypeCode(inLawBreakTime.getWorkTypeCode().v());
-		if(inLawBreakTime.getWorkTimeCode().isPresent())
-			dto.setInLawBreakTimeWorkTimeCode(inLawBreakTime.getWorkTimeCode().get().v());
-		Optional<TimeZone> timeZone1 = inLawBreakTime.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst();
-		Optional<TimeZone> timeZone2 = inLawBreakTime.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst();
-		if(timeZone1.isPresent()){
-			TimeZone tz = timeZone1.get();
+
+		inLawBreakTime.getWorkTimeCode().ifPresent(wtc -> dto.setInLawBreakTimeWorkTimeCode(wtc.v()));
+
+		Optional<TimeZone> timeZone1 = inLawBreakTime.getWorkingHours().stream()
+				.filter(timeZone -> timeZone.getCnt() == 1).findFirst();
+		Optional<TimeZone> timeZone2 = inLawBreakTime.getWorkingHours().stream()
+				.filter(timeZone -> timeZone.getCnt() == 2).findFirst();
+
+		timeZone1.ifPresent(tz -> {
 			dto.setInLawBreakTimeStartTime1(tz.getStart().v());
 			dto.setInLawBreakTimeEndTime1(tz.getEnd().v());
-		}
-		if(timeZone2.isPresent()){
-			TimeZone tz = timeZone2.get();
+		});
+
+		timeZone2.ifPresent(tz -> {
 			dto.setInLawBreakTimeStartTime2(tz.getStart().v());
 			dto.setInLawBreakTimeEndTime2(tz.getEnd().v());
-		}
+		});
 	}
 
 	private static void setOutsideLawBreakTime(WorkingConditionDto dto, SingleDaySchedule outsideLawBreakTime) {
 		dto.setOutsideLawBreakTimeWorkTypeCode(outsideLawBreakTime.getWorkTypeCode().v());
-		if(outsideLawBreakTime.getWorkTimeCode().isPresent())
-			dto.setOutsideLawBreakTimeWorkTimeCode(outsideLawBreakTime.getWorkTimeCode().get().v());
-		Optional<TimeZone> timeZone1 = outsideLawBreakTime.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst();
-		Optional<TimeZone> timeZone2 = outsideLawBreakTime.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst();
-		if(timeZone1.isPresent()){
-			TimeZone tz = timeZone1.get();
+
+		outsideLawBreakTime.getWorkTimeCode().ifPresent(wtc -> dto.setOutsideLawBreakTimeWorkTimeCode(wtc.v()));
+
+		Optional<TimeZone> timeZone1 = outsideLawBreakTime.getWorkingHours().stream()
+				.filter(timeZone -> timeZone.getCnt() == 1).findFirst();
+		Optional<TimeZone> timeZone2 = outsideLawBreakTime.getWorkingHours().stream()
+				.filter(timeZone -> timeZone.getCnt() == 2).findFirst();
+
+		timeZone1.ifPresent(tz -> {
 			dto.setOutsideLawBreakTimeStartTime1(tz.getStart().v());
 			dto.setOutsideLawBreakTimeEndTime1(tz.getEnd().v());
-		}
-		if(timeZone2.isPresent()){
-			TimeZone tz = timeZone2.get();
+		});
+
+		timeZone2.ifPresent(tz -> {
 			dto.setOutsideLawBreakTimeStartTime2(tz.getStart().v());
 			dto.setOutsideLawBreakTimeEndTime2(tz.getEnd().v());
-		}
+		});
 	}
 
 	private static void setHolidayAttendanceTime(WorkingConditionDto dto, SingleDaySchedule holidayAttendanceTime) {
 		dto.setHolidayAttendanceTimeWorkTypeCode(holidayAttendanceTime.getWorkTypeCode().v());
-		if(holidayAttendanceTime.getWorkTimeCode().isPresent())
-			dto.setHolidayAttendanceTimeWorkTimeCode(holidayAttendanceTime.getWorkTimeCode().get().v());
-		Optional<TimeZone> timeZone1 = holidayAttendanceTime.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1)
-				.findFirst();
-		Optional<TimeZone> timeZone2 = holidayAttendanceTime.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2)
-				.findFirst();
-		if(timeZone1.isPresent()){
-			TimeZone tz = timeZone1.get();
+
+		holidayAttendanceTime.getWorkTimeCode().ifPresent(wtc -> dto.setHolidayAttendanceTimeWorkTimeCode(wtc.v()));
+
+		Optional<TimeZone> timeZone1 = holidayAttendanceTime.getWorkingHours().stream()
+				.filter(timeZone -> timeZone.getCnt() == 1).findFirst();
+		Optional<TimeZone> timeZone2 = holidayAttendanceTime.getWorkingHours().stream()
+				.filter(timeZone -> timeZone.getCnt() == 2).findFirst();
+
+		timeZone1.ifPresent(tz -> {
 			dto.setHolidayAttendanceTimeStartTime1(tz.getStart().v());
 			dto.setHolidayAttendanceTimeEndTime1(tz.getEnd().v());
-		}
-		if(timeZone2.isPresent()){
-			TimeZone tz = timeZone2.get();
+		});
+
+		timeZone2.ifPresent(tz -> {
 			dto.setHolidayAttendanceTimeStartTime2(tz.getStart().v());
 			dto.setHolidayAttendanceTimeEndTime2(tz.getEnd().v());
-		}
+		});
 	}
 
 	private static void setSunday(WorkingConditionDto dto, SingleDaySchedule sunday) {
 		dto.setSundayWorkTypeCode(sunday.getWorkTypeCode().v());
-		if(sunday.getWorkTimeCode().isPresent())
-			dto.setSundayWorkTimeCode(sunday.getWorkTimeCode().get().v());
-		Optional<TimeZone> timeZone1 = sunday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst();
-		Optional<TimeZone> timeZone2 = sunday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst();
-		if(timeZone1.isPresent()){
-			TimeZone tz = timeZone1.get();
+
+		sunday.getWorkTimeCode().ifPresent(wtc -> dto.setSundayWorkTimeCode(wtc.v()));
+
+		Optional<TimeZone> timeZone1 = sunday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1)
+				.findFirst();
+		Optional<TimeZone> timeZone2 = sunday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2)
+				.findFirst();
+
+		timeZone1.ifPresent(tz -> {
 			dto.setSundayStartTime1(tz.getStart().v());
 			dto.setSundayEndTime1(tz.getEnd().v());
-		}
-		if(timeZone2.isPresent()){
-			TimeZone tz = timeZone2.get();
+		});
+
+		timeZone2.ifPresent(tz -> {
 			dto.setSundayStartTime2(tz.getStart().v());
 			dto.setSundayEndTime2(tz.getEnd().v());
-		}
+		});
 	}
 
 	private static void setMonday(WorkingConditionDto dto, SingleDaySchedule monday) {
 		dto.setMondayWorkTypeCode(monday.getWorkTypeCode().v());
-		if(monday.getWorkTimeCode().isPresent())
-			dto.setMondayWorkTimeCode(monday.getWorkTimeCode().get().v());
-		Optional<TimeZone> timeZone1 = monday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst();
-		Optional<TimeZone> timeZone2 = monday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst();
-		if(timeZone1.isPresent()){
-			TimeZone tz = timeZone1.get();
+
+		monday.getWorkTimeCode().ifPresent(wtc -> dto.setMondayWorkTimeCode(wtc.v()));
+
+		Optional<TimeZone> timeZone1 = monday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1)
+				.findFirst();
+		Optional<TimeZone> timeZone2 = monday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2)
+				.findFirst();
+
+		timeZone1.ifPresent(tz -> {
 			dto.setMondayStartTime1(tz.getStart().v());
 			dto.setMondayEndTime1(tz.getEnd().v());
-		}
-		if(timeZone2.isPresent()){
-			TimeZone tz = timeZone2.get();
+		});
+
+		timeZone2.ifPresent(tz -> {
 			dto.setMondayStartTime2(tz.getStart().v());
 			dto.setMondayEndTime2(tz.getEnd().v());
-		}
+		});
 	}
 
 	private static void setTuesday(WorkingConditionDto dto, SingleDaySchedule tuesday) {
 		dto.setTuesdayWorkTypeCode(tuesday.getWorkTypeCode().v());
-		if(tuesday.getWorkTimeCode().isPresent())
-			dto.setTuesdayWorkTimeCode(tuesday.getWorkTimeCode().get().v());
-		Optional<TimeZone> timeZone1 = tuesday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst();
-		Optional<TimeZone> timeZone2 = tuesday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst();
-		if(timeZone1.isPresent()){
-			TimeZone tz = timeZone1.get();
+
+		tuesday.getWorkTimeCode().ifPresent(wtc -> dto.setTuesdayWorkTimeCode(wtc.v()));
+
+		Optional<TimeZone> timeZone1 = tuesday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1)
+				.findFirst();
+		Optional<TimeZone> timeZone2 = tuesday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2)
+				.findFirst();
+
+		timeZone1.ifPresent(tz -> {
 			dto.setTuesdayStartTime1(tz.getStart().v());
 			dto.setTuesdayEndTime1(tz.getEnd().v());
-		}
-		if(timeZone2.isPresent()){
-			TimeZone tz = timeZone2.get();
+		});
+
+		timeZone2.ifPresent(tz -> {
 			dto.setTuesdayStartTime2(tz.getStart().v());
 			dto.setTuesdayEndTime2(tz.getEnd().v());
-		}
+		});
 	}
 
 	private static void setWednesday(WorkingConditionDto dto, SingleDaySchedule wednesday) {
 		dto.setWednesdayWorkTypeCode(wednesday.getWorkTypeCode().v());
-		if(wednesday.getWorkTimeCode().isPresent())
-			dto.setWednesdayWorkTimeCode(wednesday.getWorkTimeCode().get().v());
-		Optional<TimeZone> timeZone1 = wednesday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst();
-		Optional<TimeZone> timeZone2 = wednesday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst();
-		if(timeZone1.isPresent()){
-			TimeZone tz = timeZone1.get();
+
+		wednesday.getWorkTimeCode().ifPresent(wtc -> dto.setWednesdayWorkTimeCode(wtc.v()));
+
+		Optional<TimeZone> timeZone1 = wednesday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1)
+				.findFirst();
+		Optional<TimeZone> timeZone2 = wednesday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2)
+				.findFirst();
+
+		timeZone1.ifPresent(tz -> {
 			dto.setWednesdayStartTime1(tz.getStart().v());
 			dto.setWednesdayEndTime1(tz.getEnd().v());
-		}
-		if(timeZone2.isPresent()){
-			TimeZone tz = timeZone2.get();
+		});
+
+		timeZone2.ifPresent(tz -> {
 			dto.setWednesdayStartTime2(tz.getStart().v());
 			dto.setWednesdayEndTime2(tz.getEnd().v());
-		}
+		});
 	}
 
 	private static void setThursday(WorkingConditionDto dto, SingleDaySchedule thursday) {
 		dto.setThursdayWorkTypeCode(thursday.getWorkTypeCode().v());
-		if(thursday.getWorkTimeCode().isPresent())
-			dto.setThursdayWorkTimeCode(thursday.getWorkTimeCode().get().v());
-		Optional<TimeZone> timeZone1 = thursday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst();
-		Optional<TimeZone> timeZone2 = thursday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst();
-		if(timeZone1.isPresent()){
-			TimeZone tz = timeZone1.get();
+
+		thursday.getWorkTimeCode().ifPresent(wtc -> {
+			dto.setThursdayWorkTimeCode(wtc.v());
+		});
+
+		Optional<TimeZone> timeZone1 = thursday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1)
+				.findFirst();
+		Optional<TimeZone> timeZone2 = thursday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2)
+				.findFirst();
+
+		timeZone1.ifPresent(tz -> {
 			dto.setThursdayStartTime1(tz.getStart().v());
 			dto.setThursdayEndTime1(tz.getEnd().v());
-		}
-		if(timeZone2.isPresent()){
-			TimeZone tz = timeZone2.get();
+		});
+
+		timeZone2.ifPresent(tz -> {
 			dto.setThursdayStartTime2(tz.getStart().v());
 			dto.setThursdayEndTime2(tz.getEnd().v());
-		}
+		});
 	}
 
 	private static void setFriday(WorkingConditionDto dto, SingleDaySchedule friday) {
 		dto.setFridayWorkTypeCode(friday.getWorkTypeCode().v());
-		if(friday.getWorkTimeCode().isPresent())
-			dto.setFridayWorkTimeCode(friday.getWorkTimeCode().get().v());
-		Optional<TimeZone> timeZone1 = friday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst();
-		Optional<TimeZone> timeZone2 = friday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst();
-		if(timeZone1.isPresent()){
-			TimeZone tz = timeZone1.get();
+
+		friday.getWorkTimeCode().ifPresent(wtc -> {
+			dto.setFridayWorkTimeCode(wtc.v());
+		});
+
+		Optional<TimeZone> timeZone1 = friday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1)
+				.findFirst();
+		Optional<TimeZone> timeZone2 = friday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2)
+				.findFirst();
+
+		timeZone1.ifPresent(tz -> {
 			dto.setFridayStartTime1(tz.getStart().v());
 			dto.setFridayEndTime1(tz.getEnd().v());
-		}
-		if(timeZone2.isPresent()){
-			TimeZone tz = timeZone2.get();
+		});
+
+		timeZone2.ifPresent(tz -> {
 			dto.setFridayStartTime2(tz.getStart().v());
 			dto.setFridayEndTime2(tz.getEnd().v());
-		}
+		});
 	}
 
 	private static void setSaturday(WorkingConditionDto dto, SingleDaySchedule saturday) {
 		dto.setSaturdayWorkTypeCode(saturday.getWorkTypeCode().v());
-		if(saturday.getWorkTimeCode().isPresent())
-			dto.setSaturdayWorkTimeCode(saturday.getWorkTimeCode().get().v());
-		Optional<TimeZone> timeZone1 = saturday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst();
-		Optional<TimeZone> timeZone2 = saturday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst();
-		if(timeZone1.isPresent()){
-			TimeZone tz = timeZone1.get();
+
+		saturday.getWorkTimeCode().ifPresent(wtc -> {
+			dto.setSaturdayWorkTimeCode(wtc.v());
+		});
+
+		Optional<TimeZone> timeZone1 = saturday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1)
+				.findFirst();
+		Optional<TimeZone> timeZone2 = saturday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2)
+				.findFirst();
+
+		timeZone1.ifPresent(tz -> {
 			dto.setSaturdayStartTime1(tz.getStart().v());
 			dto.setSaturdayEndTime1(tz.getEnd().v());
-		}
-		if(timeZone2.isPresent()){
-			TimeZone tz = timeZone2.get();
+		});
+
+		timeZone2.ifPresent(tz -> {
 			dto.setSaturdayStartTime2(tz.getStart().v());
 			dto.setSaturdayEndTime2(tz.getEnd().v());
-		}
+		});
 	}
 
 }
