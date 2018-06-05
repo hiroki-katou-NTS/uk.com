@@ -39,6 +39,9 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 	@Inject
 	EmpEmployeeAdapter empEmployeeAdapter;
 	
+	@Inject
+	private GetClosureStartForEmployee getClosureStartForEmployee;
+	
 	/**
 	 * RequestList210
 	 * 次回年休付与日を取得する
@@ -51,6 +54,10 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 	public List<NextAnnualLeaveGrantExport> acquireNextHolidayGrantDate(String companyId, String employeeId) {
 		// ドメインモデル「年休社員基本情報」を取得
 		Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo = annLeaEmpBasicInfoRepository.get(employeeId);
+		
+		if(!annualLeaveEmpBasicInfo.isPresent()) {
+			return null;
+		}
 		
 		// 次回年休付与を計算
 		List<NextAnnualLeaveGrantExport> result = calculateNextHolidayGrant(companyId, employeeId, Optional.empty(), annualLeaveEmpBasicInfo);
@@ -81,8 +88,7 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 			isSingleDay = true;
 			
 			// 社員に対応する締め開始日を取得する
-			GetClosureStartForEmployee closureStartForEmployee = new GetClosureStartForEmployee();
-			Optional<GeneralDate> closureStartDate = closureStartForEmployee.algorithm(employeeId);
+			Optional<GeneralDate> closureStartDate = getClosureStartForEmployee.algorithm(employeeId);
 			
 			periodDate = Optional.ofNullable(new DatePeriod(GeneralDate.ymd(closureStartDate.get().year(), 
 					closureStartDate.get().month(), closureStartDate.get().day()), GeneralDate.ymd(9999, 12, 31)));
@@ -90,6 +96,10 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 		
 		// ドメインモデル「年休付与テーブル設定」を取得する
 		Optional<GrantHdTblSet> grantHdTblSet = yearHolidayRepository.findByCode(companyId, annualLeaveEmpBasicInfo.get().getGrantRule().getGrantTableCode().v());
+		
+		if(!grantHdTblSet.isPresent()) {
+			return null;
+		}
 		
 		// 次回年休付与を取得する
 		List<NextAnnualLeaveGrantExport> nextAnnualLeaveGrantData = nextAnnualLeaveGrant.algorithm(companyId, grantHdTblSet.get().getYearHolidayCode().v(), 
