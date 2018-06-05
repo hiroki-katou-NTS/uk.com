@@ -60,7 +60,7 @@ public class AddSubHdManagementService {
 				LeaveManagementData domainLeaveManagementData = new LeaveManagementData(leaveId,
 						AppContexts.user().companyId(), subHdManagementData.getEmployeeId(), false,
 						subHdManagementData.getDateHoliday(), subHdManagementData.getDuedateHoliday(),
-						subHdManagementData.getSelectedCodeHoliday(), 0, Double.valueOf(0), 0, subHDAtr, equivalentADay,
+						subHdManagementData.getSelectedCodeHoliday(), 0, subHdManagementData.getDayRemaining(), 0, subHDAtr, equivalentADay,
 						equivalentHalfDay);
 				repoLeaveManaData.create(domainLeaveManagementData);
 			}
