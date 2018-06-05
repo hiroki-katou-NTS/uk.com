@@ -3,6 +3,8 @@ package nts.uk.ctx.at.shared.infra.repository.remainingnumber;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.comfirmdata.AnnualHolidayPlanManRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.comfirmdata.AnnualHolidayPlanMana;
@@ -10,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDays;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtAnnualPlanMana;
 
+@Stateless
 public class JpaAnnualHolidayPlanManRepo extends JpaRepository implements AnnualHolidayPlanManRepository{
 	private String QUERY_BY_SID_WORKTYPE_PERIOD = "SELECT c FROM KrcdtAnnualPlanMana c"
 			+ " WHERE c.pk.sId = :employeeId AND c.pk.workTypeCd = :workTypeCd "
