@@ -1010,6 +1010,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             // if (!nts.uk.ui.errors.hasError()) {
             nts.uk.ui.errors.clearAll();
             self.hideComponent();
+            self.removeErrorRefer();
             let lstEmployee = [];
             if (self.displayFormat() === 0) {
                 let lst = _.find(self.lstEmployee(), (employee) => {
@@ -1089,7 +1090,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             });
             //   }
         }
-
+ 
+        removeErrorRefer(){
+            var self = this;
+            self.listCareError([]);
+            self.listCareInputError([]);
+            self.listCheckHolidays([]);
+            self.listCheck28([]);    
+        }
+        
         btnExtraction_Click() {
             var self = this;
             self.showTextStyle = false;
@@ -1243,6 +1252,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         nts.uk.ui.block.grayout();
                         service.selectErrorCode(param).done((data) => {
                             self.dataAll(data);
+                            self.removeErrorRefer();
                             self.createSumColumn(data);
                             self.columnSettings(data.lstControlDisplayItem.columnSettings);
                             self.receiveData(data);
@@ -1320,6 +1330,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         nts.uk.ui.block.grayout();
                         service.selectFormatCode(param).done((data) => {
                             self.dataAll(data);
+                            self.removeErrorRefer();
                             self.createSumColumn(data);
                             self.columnSettings(data.lstControlDisplayItem.columnSettings);
                             self.receiveData(data);
