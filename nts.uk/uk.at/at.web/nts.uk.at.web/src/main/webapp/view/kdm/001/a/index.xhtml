@@ -29,11 +29,11 @@
 		<ui:define name="sidebar">
 			<ul class="navigator">
 				<!-- 残数管理データ登録_振休管理 -->
-				<li><a tabindex="-1" href="#tabpanel-1" role="tab-navigator">#{i18n.getText('KDM001_149')}</a></li>
+				<li><a tabindex="-1" href="#tabpanel-1" class="tab-a" role="tab-navigator">#{i18n.getText('KDM001_149')}</a></li>
 				<!-- 残数管理データ登録_代休管理 -->
 				<li><a tabindex="-1" href="#tabpanel-2" class="tab-b" role="tab-navigator">#{i18n.getText('KDM001_150')}</a></li>
 				<!-- 残数管理データ登録_６０Ｈ超休管理 -->
-				<li><a tabindex="-1" href="#tabpanel-3" role="tab-navigator">#{i18n.getText('KDM001_151')}</a></li>
+				<li><a tabindex="-1" href="#tabpanel-3" class="tab-c" role="tab-navigator">#{i18n.getText('KDM001_151')}</a></li>
 			</ul>
 		</ui:define>
 		<ui:define name="sidebar-content">
@@ -102,7 +102,7 @@
 						<!-- A4  表 -->
 						<div class="div-table-row">
 							<!-- A4_0  説明 -->
-							<label>#{i18n.getText('KDM001_123')}</label>
+							<label style="line-height: 35px;">#{i18n.getText('KDM001_123')}</label>
 							<!-- A4_1 -->
 							<table tabindex = "8" id="compositePayOutSubMngDataGrid"></table>
 						</div>
