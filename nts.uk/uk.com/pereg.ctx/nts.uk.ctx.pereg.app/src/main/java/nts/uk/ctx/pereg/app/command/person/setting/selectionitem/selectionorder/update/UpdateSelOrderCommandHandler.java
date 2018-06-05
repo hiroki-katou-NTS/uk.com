@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection;
+package nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selectionorder.update;
 
 import java.util.ArrayList;
 import java.util.List;

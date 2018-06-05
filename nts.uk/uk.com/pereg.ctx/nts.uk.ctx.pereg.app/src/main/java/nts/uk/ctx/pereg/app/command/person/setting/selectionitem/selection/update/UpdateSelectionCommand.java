@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection;
+package nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection.update;
 
 import lombok.Value;
 
@@ -8,7 +8,7 @@ import lombok.Value;
  *
  */
 @Value
-public class AddSelectionCommand {
+public class UpdateSelectionCommand {
 	private String selectionID;
 	private String histId;
 	private String selectionCD;

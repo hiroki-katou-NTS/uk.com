@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection;
+package nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection.add;
 
 import java.util.List;
 
