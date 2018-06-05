@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
@@ -16,12 +15,12 @@ import nts.uk.ctx.at.shared.infra.entity.remainingnumber.paymana.KrcmtPayoutSubO
 @Stateless
 public class JpaPayoutSubofHDManaRepository extends JpaRepository implements PayoutSubofHDManaRepository {
 
-	private final String QUERY = "SELECT ps FROM KrcmtPayoutSubOfHDMana ps ";
+	private static final String QUERY = "SELECT ps FROM KrcmtPayoutSubOfHDMana ps ";
 	
-	private final String QUERY_BY_PAYOUTID = String.join(" ",QUERY, " WHERE ps.krcmtPayoutSubOfHDManaPK.payoutId =:payoutId");
-	private final String QUERY_BY_SUBID = String.join(" ",QUERY, " WHERE ps.krcmtPayoutSubOfHDManaPK.subOfHDID =:subOfHDID");
-	private final String DELETE_BY_PAYOUTID = "DELETE FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.payoutId =:payoutId";
-	private final String DELETE_BY_SUBID = "DELETE FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.subOfHDID =:subOfHDID";
+	private static final String QUERY_BY_PAYOUTID = String.join(" ",QUERY, " WHERE ps.krcmtPayoutSubOfHDManaPK.payoutId =:payoutId");
+	private static final String QUERY_BY_SUBID = String.join(" ",QUERY, " WHERE ps.krcmtPayoutSubOfHDManaPK.subOfHDID =:subOfHDID");
+	private static final String DELETE_BY_PAYOUTID = "DELETE FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.payoutId =:payoutId";
+	private static final String DELETE_BY_SUBID = "DELETE FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.subOfHDID =:subOfHDID";
 	
 	@Override
 	public void add(PayoutSubofHDManagement domain) {
