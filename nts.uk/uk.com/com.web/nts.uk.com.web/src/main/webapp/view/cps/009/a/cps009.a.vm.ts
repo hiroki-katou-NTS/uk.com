@@ -928,7 +928,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 self.selectionItemRefType = params.selectionItemRefType || undefined;
 
                 self.selection = ko.observableArray(params.selection || []);
-                self.selectedCode = ko.observable((params.stringValue == null ? params.selectionItemId : params.stringValue) || undefined);
+                
+                
+                self.selectedCode = ko.observable((params.stringValue == null ? (params.selection.length > 0? params.selection[0].optionValue : undefined) : params.stringValue) || undefined);
 
             }
 

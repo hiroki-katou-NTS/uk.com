@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection;
+package nts.uk.ctx.pereg.app.command.person.setting.selectionitem.history.remove;
 
 import lombok.Value;
 
@@ -9,5 +9,8 @@ import lombok.Value;
  */
 @Value
 public class RemoveHistoryCommand {
+	
+	private String selectionItemId;
+	
 	private String histId;
 }
