@@ -42,19 +42,21 @@ module nts.uk.com.view.cmf005.c.viewmodel {
             self.listCategory = ko.observableArray([]);
             self.selectedCode = ko.observable('');
 
+            self.selectedCode.subscribe(value => {
+                self.currentItem = _.find(self.systemTypes(), a => a.code === value);
+                self.getListCategory(systemTypeB, listCategoryB);
+
+            })
+            
             service.getSysTypes().done(function(data: Array<any>) {
                 if (data && data.length) {
                     _.forOwn(data, function(index) {
                         self.systemTypes.push(new model.ItemModel(index.systemTypeValue, index.systemTypeName));
                     });
 
-
                     if (systemTypeB != undefined) {
                         self.selectedCode = ko.observable(systemTypeB.code);
-                    } else {
-                        self.selectedCode = ko.observable(self.systemTypes()[0].code);
                     }
-                    self.getListCategory(systemTypeB, listCategoryB);
                 }
             }).fail(function(error) {
                 alertError(error);
@@ -71,11 +73,7 @@ module nts.uk.com.view.cmf005.c.viewmodel {
                 });
             }
 
-            self.selectedCode.subscribe(value => {
-                self.currentItem = _.find(self.systemTypes(), a => a.code === value);
-                self.getListCategory(systemTypeB, listCategoryB);
 
-            })
 
             self.columns = ko.observableArray([
                 { headerText: self.headerCodeCategories, key: 'categoryId', width: 70 },
