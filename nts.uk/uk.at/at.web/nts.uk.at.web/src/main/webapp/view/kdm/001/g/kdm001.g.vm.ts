@@ -17,8 +17,8 @@ module nts.uk.at.view.kdm001.g.viewmodel {
         days: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
         selectedCodeDay: KnockoutObservable<string> = ko.observable('');
         checkedExpired: KnockoutObservable<boolean> = ko.observable(false);
-        lawAtrList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getTypeHoliday());
-        
+        lawAtrList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getLawAtr());
+        occurredDaysList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getOccurredDays());
         
 
         employeeId: KnockoutObservable<string> = ko.observable('');
@@ -28,8 +28,8 @@ module nts.uk.at.view.kdm001.g.viewmodel {
         unknownDate: KnockoutObservable<string> = ko.observable('');
         dayoffDate: KnockoutObservable<string> = ko.observable('');
         expiredDate: KnockoutObservable<string> = ko.observable('');
-        lawAtr: KnockoutObservable<number> = ko.observable(0);
-        occurredDays: KnockoutObservable<number> = ko.observable(0);
+        lawAtr: KnockoutObservable<string> = ko.observable('0');
+        occurredDays: KnockoutObservable<string> = ko.observable('0');
         unUsedDays: KnockoutObservable<number> = ko.observable(0);
         stateAtr: KnockoutObservable<number> = ko.observable(0);
         disapearDate: KnockoutObservable<string> = ko.observable('');
