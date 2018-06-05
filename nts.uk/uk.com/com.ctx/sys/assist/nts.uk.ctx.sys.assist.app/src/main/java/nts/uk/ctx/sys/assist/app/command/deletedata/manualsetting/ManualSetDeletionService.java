@@ -495,7 +495,7 @@ public class ManualSetDeletionService extends ExportService<Object>{
 		
 		// ファイル圧縮実行
 		boolean isExistCompressPassFlg = domain.isExistCompressPassFlg();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 		String executeDate = sdf.format(new Date()); 
 		String nameFile = domain.getCompanyId()+"_" + domain.getDelName() + "_" + executeDate + ZIP_FILE_EXTENSION;
 		
