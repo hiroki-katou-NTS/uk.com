@@ -146,14 +146,19 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         }
         getSubstituteDataList(searchCondition: any) {
             let self = this;
-            service.getExtraHolidayData(searchCondition).done(function(result) {
-                self.closureEmploy = result.closureEmploy;
-                self.listExtractData = result.extraData;
-                self.convertToDisplayList();
-                self.updateSubstituteDataList();
-            }).fail(function(result) {
-                dialog.alertError(result.errorMessage);
-            });
+            if (self.selectedPeriodItem() ==1 ){
+                $("#daterangepicker").trigger("validate");
+            }
+            if (!nts.uk.ui.errors.hasError()) {
+                service.getExtraHolidayData(searchCondition).done(function(result) {
+                    self.closureEmploy = result.closureEmploy;
+                    self.listExtractData = result.extraData;
+                    self.convertToDisplayList();
+                    self.updateSubstituteDataList();
+                }).fail(function(result) {
+                    dialog.alertError(result.errorMessage);
+                });
+            }
         }
         getSearchCondition() {
             let self = this, startDate, endDate, searchCondition = null;
