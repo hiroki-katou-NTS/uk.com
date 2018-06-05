@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -1672,23 +1673,15 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			
 			currentRow++;
 			
-			// First employee flag, use for page breaking
-			boolean isFirstEmployee = false;
+			Iterator<DailyPersonalPerformanceData> dataIterator = employeeReportData.iterator();
 			
 			// Employee data
-			for (DailyPersonalPerformanceData employee : employeeReportData){
+			while (dataIterator.hasNext()){
+				DailyPersonalPerformanceData employee = dataIterator.next();
 				
 				List<ActualValue> lstItem = employee.getActualValue();
 				if (lstItem == null) continue;  // Skip to next record if performance is null
 				
-				// Page break from 2nd record
-				if (isFirstEmployee && condition.getPageBreakIndicator() == PageBreakIndicator.EMPLOYEE) {
-					// Page break by employee
-					sheet.getHorizontalPageBreaks().add(currentRow);
-				}
-				
-				// Set flag to true
-				isFirstEmployee = true;
 				Range dateRangeTemp;
 				if (colorWhite) // White row
 					dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_WHITE_ROW + dataRowCount);
@@ -1751,17 +1744,31 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		        remarkCell.setValue(employee.getDetailedErrorData());
 		        currentRow++;
 		        colorWhite = !colorWhite; // Change to other color
+		        
+		        // Only break when has next iterator
+		        if (dataIterator.hasNext() && condition.getPageBreakIndicator() == PageBreakIndicator.EMPLOYEE) {
+		        	// Thin border for last row of page
+		        	Range lastRowRange = cells.createRange(currentRow - 1, 0, 1, 39);
+		        	lastRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+		        	
+		        	// Page break by employee
+					sheet.getHorizontalPageBreaks().add(currentRow);
+		        }
 			}
 		}
-		
-		// Page break by workplace
-		if (condition.getPageBreakIndicator() == PageBreakIndicator.WORKPLACE)
-			sheet.getHorizontalPageBreaks().add(currentRow);
         
 		// Child workplace
 		Map<String, DailyWorkplaceData> mapChildWorkplace = rootWorkplace.getLstChildWorkplaceData();
 		for (Map.Entry<String, DailyWorkplaceData> entry: mapChildWorkplace.entrySet()) {
 			currentRow = writeDailyDetailedPerformanceDataOnWorkplace(currentRow, sheet, templateSheetCollection, entry.getValue(), dataRowCount, condition);
+		
+			// Page break by workplace
+			if (condition.getPageBreakIndicator() == PageBreakIndicator.WORKPLACE) {
+				Range lastRowRange = cells.createRange(currentRow - 1, 0, 1, 39);
+	        	lastRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+				
+				sheet.getHorizontalPageBreaks().add(currentRow);
+			}
 		}
 		
 		// Workplace total, root workplace use gross total instead
