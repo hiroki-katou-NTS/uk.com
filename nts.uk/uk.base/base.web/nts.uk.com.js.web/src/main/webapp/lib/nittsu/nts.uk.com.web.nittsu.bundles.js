@@ -4151,6 +4151,7 @@ var nts;
                                         ? this.constraint.maxLength : 9999) : 9999]), validateResult.errorCode);
                             return result;
                         }
+                        return validateResult;
                     }
                     result.success(inputText);
                     return result;
