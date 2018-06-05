@@ -631,7 +631,7 @@ module nts.custombinding {
                                                 text: _item.itemName || '',
                                                 cssClass: cssClass,
                                                 required: _item.required,
-                                                constraint: _item.constraint }"></div>
+                                                constraint: _item.constraint }" class="limited-label"></div>
             
                                             <!-- ko if: _item.dispType == DISP_TYPE.SINGLE -->
                                                 <!-- ko template: { data: _item, name: 'ctr_template' } --><!-- /ko -->
@@ -678,7 +678,7 @@ module nts.custombinding {
                                                                         text: _sitem.itemName,
                                                                         cssClass: cssClass,
                                                                         required: _sitem.required 
-                                                                    }"></div>
+                                                                    }" class="limited-label"></div>
                                                                 <!-- ko if: _sitem.dispType == DISP_TYPE.SINGLE -->
                                                                     <div class="childs-row" data-bind="template: { data: _sitem, name: 'ctr_template' }"></div>
                                                                 <!-- /ko -->
@@ -723,7 +723,7 @@ module nts.custombinding {
 
                                 <!-- ko if: layoutItemType == LAYOUT_TYPE.LIST -->
                                     <div class="item-controls">
-                                        <div data-bind="ntsFormLabel: { required: false, text: className || '' }"></div>
+                                        <div data-bind="ntsFormLabel: { required: false, text: className || '' }" class="limited-label"></div>
                                         <div class="table-container header-1rows" data-bind="let: {
                                                     __lft: ko.observable(0),
                                                     __flft: ko.observable(0)
@@ -754,7 +754,7 @@ module nts.custombinding {
                                                                         style: {
                                                                             'width': __wdt() + 'px',
                                                                             'margin-left': (__flft() - __lft()) + 'px'
-                                                                        }"></div>
+                                                                        }" class="limited-label"></div>
                                                                 </th>
                                                                 <!-- /ko -->
                                                             <!-- /ko -->
@@ -2792,18 +2792,6 @@ module nts.custombinding {
             ko.bindingHandlers['ntsRadioBoxGroup'].init(ctrls.radios, () => opts.radios, allBindingsAccessor, viewModel, bindingContext);
 
             ko.bindingHandlers['ntsComboBox'].init(ctrls.combobox, () => opts.combobox, allBindingsAccessor, viewModel, bindingContext);
-            /*ko.bindingHandlers['ntsDropDownList'].init(ctrls.combobox, () => ({
-                value: opts.combobox.value,
-                dataSource: opts.combobox.options,
-                textKey: opts.combobox.optionsText,
-                valueKey: opts.combobox.optionsValue,
-                visibleItemsCount: 10,
-                enable: opts.combobox.enable,
-                columns: [
-                    { prop: 'categoryCode', 'class': 'hidden' },
-                    { prop: 'categoryName' }
-                ]
-            }), allBindingsAccessor, viewModel, bindingContext);*/
 
             ko.bindingHandlers['ntsSearchBox'].init(ctrls.searchbox, () => opts.searchbox, allBindingsAccessor, viewModel, bindingContext);
 
@@ -2825,18 +2813,6 @@ module nts.custombinding {
             ko.bindingHandlers['ntsRadioBoxGroup'].update(ctrls.radios, () => opts.radios, allBindingsAccessor, viewModel, bindingContext);
 
             ko.bindingHandlers['ntsComboBox'].update(ctrls.combobox, () => opts.combobox, allBindingsAccessor, viewModel, bindingContext);
-            /*ko.bindingHandlers['ntsDropDownList'].update(ctrls.combobox, () => ({
-                value: opts.combobox.value,
-                dataSource: opts.combobox.options,
-                textKey: opts.combobox.optionsText,
-                valueKey: opts.combobox.optionsValue,
-                visibleItemsCount: 10,
-                enable: opts.combobox.enable,
-                columns: [
-                    { prop: 'categoryCode', 'class': 'hidden' },
-                    { prop: 'categoryName' }
-                ]
-            }), allBindingsAccessor, viewModel, bindingContext);*/
 
             ko.bindingHandlers['ntsSearchBox'].update(ctrls.searchbox, () => opts.searchbox, allBindingsAccessor, viewModel, bindingContext);
 
