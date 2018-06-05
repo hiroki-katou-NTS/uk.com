@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection;
+package nts.uk.ctx.pereg.app.command.person.setting.selectionitem.history.edit;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
@@ -9,12 +9,12 @@ import nts.arc.time.GeneralDate;
  *
  */
 @Value
-public class AddSelectionHistoryCommand {
+public class EditHistoryCommand {
 	
 	private String selectionItemId;
 	
 	private String selectingHistId;
 	
-	private GeneralDate startDate;
+	private GeneralDate newStartDate;
 	
 }
