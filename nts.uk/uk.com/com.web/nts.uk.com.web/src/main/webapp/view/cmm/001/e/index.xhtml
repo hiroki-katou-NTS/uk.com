@@ -26,13 +26,13 @@
 					<label>#{i18n.getText('CMM001_41')}</label>
 				</div>
 				<div class="div-table">
-					<table data-bind="name : #{i18n.getText('CMM001_42')};">
+					<table width="775px" heigh="512px" data-bind="name : #{i18n.getText('CMM001_42')};">
 						<thead>
 							<tr class="bg-green">
-								<th width="20px"><div data-bind="ntsCheckBox: {checked: isCheckedAll};"></div></th>
-								<th width="154px"><label>#{i18n.getText('CMM001_43')}</label></th>
-								<th width="264px"><label>#{i18n.getText('CMM001_44')}</label></th>
-								<th width="294px">
+								<th width="31px"><div data-bind="ntsCheckBox: {checked: isCheckedAll};"></div></th>
+								<th width="151px"><label>#{i18n.getText('CMM001_43')}</label></th>
+								<th width="266px"><label>#{i18n.getText('CMM001_44')}</label></th>
+								<th style="border-right: none;">
 									<div style="padding-bottom: 5px"><label>#{i18n.getText('CMM001_45')}</label></div>
 									<div id="copy-method-header" data-bind="ntsSwitchButton: {
 												options: switchOptions,
@@ -43,7 +43,7 @@
 												name: '#{i18n.getText('CMM001_45')}'}"
 										tabindex="2" style="display: inline-flex;"></div>
 									<div style="padding-top: 3px"><span class="caret-bottom outline"></span></div></th>
-								<th width="16px"></th>
+								<th width="15px" style="border-left: none;"></th>
 							</tr>
 						</thead>
 						<tbody data-bind="foreach: dataSource">

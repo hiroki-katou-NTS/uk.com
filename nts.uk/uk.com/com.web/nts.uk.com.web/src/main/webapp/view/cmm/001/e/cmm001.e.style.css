@@ -13,8 +13,6 @@ td {
 }
 .div-table {
     display: block;
-    
-    height: 350px;
     margin: 20px;
 }
 thead, tbody {
@@ -28,7 +26,7 @@ thead label {
 	font-weight: bold;
 }
 tbody {
-	height: 410px;
+	height: 400px;
 	overflow-y: scroll;
     overflow-x: hidden;
 }
