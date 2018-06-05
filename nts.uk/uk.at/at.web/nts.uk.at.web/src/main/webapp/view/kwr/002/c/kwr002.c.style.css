@@ -30,6 +30,7 @@
 	margin: 10px;
 	border-radius: 5px;
 	height: 28px;
+	text-align: center;
 }
 
 .seal {
@@ -42,6 +43,10 @@
 	margin-top: 5px;
 }
 
+#content-body {
+	float: left;
+}
+
 .parent-tab {
 	border: 1px solid;
 	border-radius: 5px;
@@ -50,6 +55,10 @@
 .column {
 	float: left;
 	padding: 1px 1px 5px 1px;
+}
+
+.column>span {
+	margin: 0 30px 0 30px;
 }
 
 #tab-panel {
@@ -91,6 +100,21 @@
 .tab-master {
 	height: auto;
 }
-.addSign{
-	background:url("../imgage/追加＋.png");
+
+.addSign {
+	background: url("../image/addSign1.png");
+	margin: -8px 10px;
+	border-radius: 5px;
+	height: 28px;
+	text-align: center;
+	padding-bottom: 5px;
+}
+
+.switch>button {
+	width: 80px;
+}
+
+.clear {
+	clear: left;
+	zoom: 1;
 }
