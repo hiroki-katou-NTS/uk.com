@@ -11,12 +11,11 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
-import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 
 /**
  * The Class SubmitLoginFormOneCommandHandler.
@@ -47,7 +46,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 			this.reCheckContract(command.getContractCode(), command.getContractPassword());
 			
 			// find user by login id
-			Optional<UserImport> user = userAdapter.findUserByContractAndLoginId(command.getContractCode(), loginId);
+			Optional<UserImportNew> user = userAdapter.findUserByContractAndLoginIdNew(command.getContractCode(), loginId);
 			if (!user.isPresent()) {
 				throw new BusinessException("Msg_301");
 			}
@@ -66,7 +65,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 			this.initSession(user.get());
 			
 			//アルゴリズム「ログイン記録」を実行する１
-			if (this.checkAfterLogin(user.get()){
+			if (this.checkAfterLogin(user.get())){
 				return new CheckChangePassDto(true, null);
 			}
 		}
@@ -94,7 +93,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 	 *
 	 * @param user the user
 	 */
-	private void checkLimitTime(Optional<UserImport> user) {
+	private void checkLimitTime(Optional<UserImportNew> user) {
 		if (user.get().getExpirationDate().before(GeneralDate.today())) {
 			throw new BusinessException("Msg_316");
 		}

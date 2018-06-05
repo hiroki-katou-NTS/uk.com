@@ -126,10 +126,10 @@ module nts.uk.pr.view.ccg007.b {
                 submitData.contractPassword = _.escape(self.contractPassword());
 
                 blockUI.invisible();
-                service.submitLogin(submitData).done(function(isError:any) {
+                service.submitLogin(submitData).done(function(messError) {
                     //check MsgError
-                    if (!nts.uk.util.isNullOrEmpty(isError)) {
-                        nts.uk.ui.dialog.alertError({ messageId: isError });
+                    if (!nts.uk.util.isNullOrEmpty(messError.msgErrorId)) {
+                        nts.uk.ui.dialog.alertError({ messageId: messError.msgErrorId });
                         self.password("");
                     } else {
                         nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/b/index.xhtml");
