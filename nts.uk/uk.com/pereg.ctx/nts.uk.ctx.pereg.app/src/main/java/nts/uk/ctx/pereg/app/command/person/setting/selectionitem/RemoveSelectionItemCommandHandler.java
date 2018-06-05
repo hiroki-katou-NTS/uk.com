@@ -8,7 +8,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFinder;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.history.PerInfoHistorySelectionRepository;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.history.SelectionHistoryRepository;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionRepository;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.IPerInfoSelectionItemRepository;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionorder.SelectionItemOrderRepository;
@@ -20,7 +20,7 @@ public class RemoveSelectionItemCommandHandler extends CommandHandler<RemoveSele
 	private IPerInfoSelectionItemRepository perInfoSelectionItemRepo;
 
 	@Inject
-	private PerInfoHistorySelectionRepository historySelectionRepository;
+	private SelectionHistoryRepository historySelectionRepository;
 
 	@Inject
 	private SelectionRepository selectionRepo;
@@ -46,7 +46,7 @@ public class RemoveSelectionItemCommandHandler extends CommandHandler<RemoveSele
 		selectionOrderRepo.removeInSelectionItemId(selectionItemId);
 		
 		// remove histories
-		historySelectionRepository.removeInSelectionItemId(selectionItemId);
+		historySelectionRepository.removeAllOfSelectionItem(selectionItemId);
 		
 		// remove selection item
 		this.perInfoSelectionItemRepo.remove(selectionItemId);
