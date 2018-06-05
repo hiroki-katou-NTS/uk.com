@@ -54,7 +54,8 @@ public class UserPublisherImpl implements UserPublisher {
 	private UserExport fromDomain(User domain) {
 		return new UserExport(domain.getUserID(), domain.getLoginID().v(), domain.getContractCode().v(),
 				domain.getUserName().v(), domain.getPassword().v(), domain.getMailAddress().v(),
-				domain.getAssociatedPersonID(), domain.getExpirationDate());
+				domain.getAssociatedPersonID(), domain.getExpirationDate(),
+				domain.getPassStatus().value);
 	}
 
 	@Override
