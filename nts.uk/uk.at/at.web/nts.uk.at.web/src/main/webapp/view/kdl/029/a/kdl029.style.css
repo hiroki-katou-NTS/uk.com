@@ -5,10 +5,13 @@
 }
 
 #content-left {
-	width: 250px;
-	height: 300px;
+	width: 352px;
+	height: 355px;
 }
 
 #contents-area {
 	padding: 10px !important;
+}
+.width_td{
+	width: 90px;
 }

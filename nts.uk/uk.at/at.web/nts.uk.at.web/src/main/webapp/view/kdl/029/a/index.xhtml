@@ -10,19 +10,15 @@
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<script>var dialogSize = { width: 860 , height: 700};</script>
-			<!-- ccg001 -->
-			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<!-- kcp005 -->
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.service.js"
-				of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 
 			<!-- kdl029 a-->
 			<com:stylefile path="kdl029.style.css" />
-			<com:scriptfile path="kdl029.a.vm.js" />
 			<com:scriptfile path="kdl029.a.start.js" />
 			<com:scriptfile path="kdl029.a.service.js" />
+			<com:scriptfile path="kdl029.a.vm.js" />
 			<com:ValidatorScript>
 				nts.uk.ctx.at.request.dom.application.AppReason
 			</com:ValidatorScript>
@@ -33,127 +29,67 @@
 
 			<div id="contents-area" class="cf">
 				<div id="content-left">
-					<div id="ccgcomponent"></div>
+					<!-- A1 -->
+					<label>#{i18n.getText('KDL029_2')}</label>
+					<!-- A2 -->
+					<div id="component-items-list" tabindex="7" class="pull-left contentkcp005"></div>
 				</div>
 				<div id="content-right">
 					<div id="content_right_top">
 						<div class="div_line">
-							<div class="div_line">
 								<!-- A3_1 -->
-								<label> </label>
+								<label data-bind ="text: employeeCode"></label>
 								<!-- A3_2 -->
-								<label> </label>
-							</div>
-
+								<label class ="margin-left-employee" data-bind ="text: employeeName"> </label>
 						</div>
 						<div class="div_line">
 							<!-- A4 -->
 							<table id="single-list"
 								data-bind="ntsGridList: {
-										width: 250 ,								
+										width: 500 ,								
 										height: 100,
-										dataSource: data ,
+										dataSource: dataHolidayGrantInfo ,
 										primaryKey: 'code',
-										columns: columns ,
+										columns: columnHolidayGrantInfos ,
 										multiple: false ,
 										value: value
 									}"></table>
 							<table id="totalTable">
 								<tr>
-									<td></td>
-									<td></td>
+									<td class ="width_td">#{i18n.getText('KDL029_21')}</td>
+									<td class ="width_td"></td>
+									<td class ="width_td"></td>
+									<td class ="width_td">a12</td>
+									<td class ="width_td"></td>
 								</tr>
 							</table>
-							<div class="div_line">
-								<!-- A5_1_1 -->
-								<label> </label>
-								<!-- A5_1_2-->
-								<label> </label>
-								<!-- A5_1_3 -->
-								<label> </label>
-							</div>
-							<div class="div_line">
-								<!-- A5_2_1 -->
-								<label> </label>
-								<!-- A5_1_2-->
-								<label> </label>
-								<!-- A5_2_2 -->
-								<label> </label>
-							</div>
-
 						</div>
-
 					</div>
 					<div id="content_right_bottom">
 						<div id="content_right_bottom_left">
 							<div class="div_line">
-								<!-- A6_1 -->
-								<label> </label>
+								<!-- A5_1 -->
+								<label>#{i18n.getText('KDL029_15')}</label>
 							</div>
 							<div class="div_line">
-								<!-- A7 -->
+								<!-- A6 -->
 								<table id="single-list"
 									data-bind="ntsGridList: {
-										width: 250 ,								
+										width: 400 ,								
 										height: 100,
-										dataSource: data ,
+										dataSource: dataSteadyUseInfor,
 										primaryKey: 'code',
-										columns: columns ,
+										columns: columnSteadyUseInfors ,
 										multiple: false ,
 										value: value
 									}"></table>
 							</div>
 						</div>
-						<div id="content_right_bottom_right">
-							<div class="div_line">
-								<!-- A8_1 -->
-								<label> </label>
-							</div>
-
-							<div class="div_line">
-								<!-- A8_2_1 -->
-								<label> </label>
-								<!-- A8_2_2 -->
-								<label> </label>
-
-							</div>
-
-							<div class="div_line">
-								<!-- A8_3_1 -->
-								<label> </label>
-								<!-- A8_3_2 -->
-								<label> </label>
-								<!-- A8_3_3 -->
-								<label> </label>
-							</div>
-
-							<div class="div_line">
-								<!-- A8_4_1 -->
-								<label> </label>
-							</div>
-
-							<div class="div_line"></div>
-							<!-- A8_5_1 -->
-							<label> </label>
-							<div class="div_line">
-								<!-- A8_6_1 -->
-								<label> </label>
-							</div>
-
-							<div class="div_line">
-								<!-- A8_7_1 -->
-								<label> </label>
-							</div>
-
-							<div class="div_line"></div>
-
-						</div>
-
-
 					</div>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
+				<!-- A10_1 -->
 				<button class="large" data-bind="click: closeDialog">#{i18n.getText('KDL029_20')}</button>
 			</div>
 

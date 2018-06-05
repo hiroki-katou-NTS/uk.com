@@ -16,7 +16,7 @@
 
 #content-left {
 	float: left;
-	padding: 5px;
+	padding: 45px;
 }
 
 #content-right{
@@ -44,10 +44,6 @@ hr {
 
 #message-area {
 	padding: 10px;
-}
-
-.div_line>* {
-	float: left;
 }
 
 .text_line {
