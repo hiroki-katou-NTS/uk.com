@@ -40,12 +40,13 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 	@Override
 	public List<InterimRemainAggregateOutputData> getAbsRecRemainAggregate(String employeeId, GeneralDate baseDate,
 			YearMonth startMonth, YearMonth endMonth) {
+		List<InterimRemainAggregateOutputData> lstOutData = new ArrayList<>();
 		//アルゴリズム「締めと残数算出対象期間を取得する」を実行する
 		ClosureRemainPeriodOutputData closureData = remainManaExport.getClosureRemainPeriod(employeeId, baseDate, startMonth, endMonth);
 		//残数算出対象年月を設定する
 		for(YearMonth ym = closureData.getStartMonth(); closureData.getEndMonth().greaterThanOrEqualTo(ym); ym.addMonths(1)) {
-			InterimRemainAggregateOutputData outPutData = new InterimRemainAggregateOutputData(ym, null, null, null, null, null);
-			//アルゴリズム「指定年月の締め期間を取得する」を実行する
+			InterimRemainAggregateOutputData outPutData = new InterimRemainAggregateOutputData(ym, (double) 0, (double) 0, (double) 0, (double) 0, (double) 0);
+			/*//アルゴリズム「指定年月の締め期間を取得する」を実行する
 			DatePeriod dateData = remainManaExport.getClosureOfMonthDesignation(closureData.getClosure(), ym);
 			//アルゴリズム「期間内の振休発生数合計を取得」を実行する
 			Double occurrentDays = this.getTotalOccurrentDay(employeeId, dateData);
@@ -59,10 +60,10 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 				outPutData.setMonthUse(useDays);
 			} else {
 				//当月の振休残数を集計する
-			}
-			
+			}*/
+			lstOutData.add(outPutData);
 		}
-		return null;
+		return lstOutData;
 	}
 	@Override
 	public Double getTotalOccurrentDay(String employeeId, DatePeriod dateData) {

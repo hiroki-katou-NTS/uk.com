@@ -14,6 +14,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana.KrcmtComDayoffMaData;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOffManaDataRepository {
@@ -33,6 +34,10 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 	
 	private String GET_BY_LISTID = " SELECT c FROM KrcmtComDayoffMaData c WHERE c.comDayOffID IN :comDayOffIDs";
 	
+	private String GET_BY_DAYOFFDATE_PERIOD = "SELECT c FROM KrcmtComDayoffMaData"
+			+ " WHERE c.dayOff >= :startDate"
+			+ " AND c.dayOff <= :endDate"
+			+ " AND c.sID = :sid";
 
 	@Override
 	public List<CompensatoryDayOffManaData> getBySidWithReDay(String cid, String sid) {
@@ -185,6 +190,16 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 	public List<CompensatoryDayOffManaData> getByReDay(String cid, String sid) {
 		List<KrcmtComDayoffMaData> list = this.queryProxy().query(GET_BY_REDAY, KrcmtComDayoffMaData.class)
 				.setParameter("employeeId", sid).setParameter("cid", cid).getList();
+		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<CompensatoryDayOffManaData> getByDayOffDatePeriod(String sid, DatePeriod dateData) {
+		List<KrcmtComDayoffMaData> list = this.queryProxy().query(GET_BY_DAYOFFDATE_PERIOD, KrcmtComDayoffMaData.class)
+				.setParameter("sid", sid)
+				.setParameter("startDate", dateData.start())
+				.setParameter("endDate", dateData.end())
+				.getList();
 		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
 	

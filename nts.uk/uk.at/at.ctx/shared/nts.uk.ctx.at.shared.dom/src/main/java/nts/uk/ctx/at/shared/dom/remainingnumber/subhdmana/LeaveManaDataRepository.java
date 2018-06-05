@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface LeaveManaDataRepository {
 	
@@ -50,5 +51,14 @@ public interface LeaveManaDataRepository {
 	 * @param leaveId ID
 	 */
 	void deleteByLeaveId(String leaveId);
+	/**
+	 * ドメインモデル「休出管理データ」を取得する
+	 * @param sid
+	 * @param dateData ・休出日が指定期間内
+	 * ・休出日≧INPUT.期間.開始年月日
+	 * ・休出日≦INPUT.期間.終了年月日
+	 * @return
+	 */
+	List<LeaveManagementData> getByDayOffDatePeriod(String sid, DatePeriod dateData);
 	
 }

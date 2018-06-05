@@ -15,6 +15,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AsbRemainTotalInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
@@ -24,6 +25,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.export.RemainManagementExport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -34,7 +40,10 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 	private InterimBreakDayOffMngRepository breakDayOffRepo;
 	@Inject
 	private InterimRemainRepository remainRepo;
-	
+	@Inject
+	private LeaveManaDataRepository leaveManaDataRepo;
+	@Inject
+	private ComDayOffManaDataRepository leaveDayOffRepo;
 	@Override
 	public List<InterimRemainAggregateOutputData> getInterimRemainAggregate(String employeeId, GeneralDate baseDate,
 			YearMonth startMonth, YearMonth endMonth) {
@@ -44,15 +53,13 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		//残数算出対象年月を設定する
 		List<InterimRemainAggregateOutputData> lstData = new ArrayList<>(); 
 		for(YearMonth ym = closureData.getStartMonth(); closureData.getEndMonth().greaterThanOrEqualTo(ym); ym.addMonths(1)) {
-			InterimRemainAggregateOutputData outPutData = new InterimRemainAggregateOutputData(ym, null, null, null, null, null);
-			//アルゴリズム「指定年月の締め期間を取得する」を実行する
+			InterimRemainAggregateOutputData outPutData = new InterimRemainAggregateOutputData(ym, (double) 0, (double) 0, (double) 0, (double) 0, (double) 0);
+			/*//アルゴリズム「指定年月の締め期間を取得する」を実行する
 			DatePeriod dateData = remainManaExport.getClosureOfMonthDesignation(closureData.getClosure(), ym);
 			//アルゴリズム「期間内の代休発生数合計を取得」を実行する
 			Double occurrentDays = this.getTotalOccurrenceDays(employeeId, dateData);
 			//アルゴリズム「期間内の代休使用数合計を取得」を実行する
 			Double useDays = this.getTotalUseDays(employeeId, dateData);
-			
-			
 			//残数算出対象年月をチェックする
 			//残数算出対象年月＞締め.当月.処理年月
 			if(ym.greaterThan(closureData.getClosure().getClosureMonth().getProcessingYm())) {
@@ -67,7 +74,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 				//TODO: can xac nhan lai outputdata trong truong hop nay
 				
 				
-			}
+			}*/
 			lstData.add(outPutData);
 		}
 		return lstData;
@@ -77,17 +84,17 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		//ドメインモデル「暫定休出管理データ」を取得する
 		List<InterimRemain> getRemainBySidPriod = remainRepo.getRemainBySidPriod(employeeId, dateData, RemainType.BREAKDAYOFF);
 		Double outputData = (double) 0;
-		if(!getRemainBySidPriod.isEmpty()) {
-			for (InterimRemain interimRemain : getRemainBySidPriod) {
-				Optional<InterimBreakMng> getBreakManaBybreakManaId = breakDayOffRepo.getBreakManaBybreakMngId(interimRemain.getRemainManaID());
-				if(getBreakManaBybreakManaId.isPresent()) {
-					outputData += getBreakManaBybreakManaId.get().getOccurrenceDays().v();
-				}
-			}	
-		}
-		
+		for (InterimRemain interimRemain : getRemainBySidPriod) {
+			Optional<InterimBreakMng> getBreakManaBybreakManaId = breakDayOffRepo.getBreakManaBybreakMngId(interimRemain.getRemainManaID());
+			if(getBreakManaBybreakManaId.isPresent()) {
+				outputData += getBreakManaBybreakManaId.get().getOccurrenceDays().v();
+			}
+		}		
 		//ドメインモデル「休出管理データ」を取得する
-		//TODO cần phai chuyển domain về shared
+		List<LeaveManagementData> lstLeaveData = leaveManaDataRepo.getByDayOffDatePeriod(employeeId, dateData);
+		for (LeaveManagementData leaveData : lstLeaveData) {
+			outputData += leaveData.getOccurredDays().v();
+		}
 		return outputData;
 	}
 	@Override
@@ -95,27 +102,27 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		//ドメインモデル「暫定代休管理データ」を取得する
 		List<InterimRemain> getRemainBySidPriod = remainRepo.getRemainBySidPriod(employeeId, dateData, RemainType.BREAKDAYOFF);
 		Double outputData = (double) 0;
-		if(!getRemainBySidPriod.isEmpty()) {
-			for (InterimRemain interimRemain : getRemainBySidPriod) {
-				Optional<InterimDayOffMng> getDayoffById = breakDayOffRepo.getDayoffById(interimRemain.getRemainManaID());
-				if(getDayoffById.isPresent()) {
-					outputData += getDayoffById.get().getRequiredDay().v();
-				}			
-			}	
+		for (InterimRemain interimRemain : getRemainBySidPriod) {
+			Optional<InterimDayOffMng> getDayoffById = breakDayOffRepo.getDayoffById(interimRemain.getRemainManaID());
+			if(getDayoffById.isPresent()) {
+				outputData += getDayoffById.get().getRequiredDay().v();
+			}			
 		}
-		
-		//ドメインモデル「休出管理データ」を取得する
-		//TODO can chuyen domain ve shared
-		
+		//ドメインモデル「代休管理データ」を取得する
+		List<CompensatoryDayOffManaData> lstLeaveData = leaveDayOffRepo.getByDayOffDatePeriod(employeeId, dateData);
+		for (CompensatoryDayOffManaData leaveData : lstLeaveData) {
+			outputData += leaveData.getRequireDays().v();
+		}
 		return outputData;
 	}
 	@Override
 	public InterimRemainAggregateOutputData aggregatedDayoffCurrentMonth(String employeeId) {
 		//アルゴリズム「月初の代休残数を取得」を実行する
-		//TODO can chuyen domain ve share
-		
+		String companyId = AppContexts.user().companyId();
+		Double dayOffRemainBeginMonths = this.getDayOffRemainOfBeginMonth(companyId, employeeId);
 		//アルゴリズム「期間内の代休消滅数合計を取得」を実行する
 		//TODO hien tai chua lam duoc
+		
 		
 		
 		return null;
@@ -335,6 +342,30 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		}
 		outputData.setCarryForwardDays(carryDays - carryDayOff);
 		return outputData;
+	}
+	@Override
+	public Double getDayOffRemainOfBeginMonth(String cid, String sid) {
+		//ドメインモデル「休出管理データ」を取得
+		List<LeaveManagementData> lstLeaveData = leaveManaDataRepo.getBySidWithsubHDAtr(cid, sid, DigestionAtr.UNUSED.value);
+		Double unUseDays = (double) 0;
+		//取得した「休出管理データ」の未使用日数を合計
+		for (LeaveManagementData leaveData : lstLeaveData) {
+			unUseDays += leaveData.getUnUsedDays().v();
+		}
+		//ドメインモデル「代休管理データ」を取得
+		List<CompensatoryDayOffManaData> lstLeaveDayOffData = leaveDayOffRepo.getBySidWithReDay(cid, sid);
+		Double unOffSet = (double) 0;
+		//取得した「代休管理データ」の未相殺日数を合計
+		for (CompensatoryDayOffManaData leaveDayOffData : lstLeaveDayOffData) {			
+			unOffSet += leaveDayOffData.getRemainDays().v();
+		}
+		//代休発生数合計－代休使用数合計を返す
+		return unUseDays - unOffSet;
+	}
+	@Override
+	public Double totalExtinctionRemainOfInPeriod(String sid, DatePeriod dateData) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 

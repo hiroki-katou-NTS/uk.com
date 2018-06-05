@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.UsedDays;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana.KrcmtLeaveManaData;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaDataRepository {
@@ -33,6 +34,10 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	private String QUERY_BYID = "SELECT l FROM KrcmtLeaveManaData l WHERE l.leaveID IN :leaveIDs";
 	
 	private String QUERY_BY_ID = "SELECT l FROM KrcmtLeaveManaData l WHERE l.leaveID IN :leaveIds";
+	
+	private String QUERY_BY_DAYOFF_PERIOD = "SELECT c FROM KrcmtLeaveManaData"
+			+ " WHERE c.dayOff >= :startDate"
+			+ " AND c.dayOff <= :endDate";
 	
 	@Override
 	public List<LeaveManagementData> getBySidWithsubHDAtr(String cid, String sid, int state) {
@@ -199,5 +204,15 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 			throw new BusinessException("Msg_198");
 		}
 		this.commandProxy().remove(entity);
+	}
+
+	@Override
+	public List<LeaveManagementData> getByDayOffDatePeriod(String sid, DatePeriod dateData) {
+		List<KrcmtLeaveManaData> listListMana = this.queryProxy().query(QUERY_BY_DAYOFF_PERIOD, KrcmtLeaveManaData.class)
+				.setParameter("employeeId", sid)
+				.setParameter("startDate", dateData.start())
+				.setParameter("endDate", dateData.end())
+				.getList();
+		return listListMana.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
 }

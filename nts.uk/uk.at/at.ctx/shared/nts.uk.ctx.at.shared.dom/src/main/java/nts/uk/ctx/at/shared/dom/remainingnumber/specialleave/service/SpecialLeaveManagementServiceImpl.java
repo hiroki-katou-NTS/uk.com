@@ -39,7 +39,7 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 		//管理データを取得する
 		//TODO 1
 		
-		//社員の特別休暇情報を取得する
+		/*//社員の特別休暇情報を取得する
 		List<InterimSpecialHolidayMng> lstInterimSpeHoliday = interimSpeHolidayExport.getDataByMode(cid, sid, complileDate, mode);
 		//繰越上限日数まで調整する
 		//TODO lam tiep khi todo 1 xong
@@ -48,9 +48,9 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 		//使用数を管理データから引く
 		adjustCarryoverDays = this.subtractUseDaysFromMngData(adjustCarryoverDays, lstInterimSpeHoliday);
 		//使用数を求める
-		Double useDays = this.askUseDays(lstInterimSpeHoliday);
+		Double useDays = this.askUseDays(lstInterimSpeHoliday);*/
 		//残数情報をまとめる
-		InPeriodOfSpecialLeave outputData = this.sumRemainData(null, useDays, baseDate); //TODO
+		InPeriodOfSpecialLeave outputData = this.sumRemainData(new ArrayList<>(), (double) 0, baseDate); //TODO
 		if(mngAtr) {
 			//社員の特別休暇情報を取得する
 		}
