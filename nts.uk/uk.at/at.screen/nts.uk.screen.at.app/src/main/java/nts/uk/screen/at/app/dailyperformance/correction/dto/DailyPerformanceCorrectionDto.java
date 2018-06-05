@@ -240,7 +240,7 @@ public class DailyPerformanceCorrectionDto {
 				}
 				nameKey = "Name" + columnKey;
 			} else {
-				columnKey = "A" + columnKey;
+				colKey = "A" + columnKey;
 			}
 			
 			Optional<DPCellStateDto> existedCellState = findExistCellState(dataId, colKey);
