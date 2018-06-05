@@ -1608,8 +1608,9 @@ module nts.custombinding {
                         exceptConsts = [];
                         
                         // fix bug stampNumber error msg
-                        let stampNumber = _.clone(constraints['COM1000000000000000CS00069IS00779']);
+                        let stampNumber = _.clone(_.find(constraints, c => c.itemCode == 'COM1000000000000000CS00069IS00779'));
                         if (stampNumber) {
+                            stampNumber.itemCode = "StampNumber";
                             constraints.push(stampNumber);
                         }
 
