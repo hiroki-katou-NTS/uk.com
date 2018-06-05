@@ -511,7 +511,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
         // 履歴削除をする
         removeHistory() {
-            let self = this,
+            let self = this;
             let perInfoSelectionItem = self.perInfoSelectionItem();
             
             let command = {
