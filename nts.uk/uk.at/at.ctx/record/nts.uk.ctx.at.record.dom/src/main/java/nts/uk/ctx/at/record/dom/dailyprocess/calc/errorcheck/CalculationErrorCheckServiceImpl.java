@@ -186,7 +186,8 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 																			 	 integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime().getDivergenceTime(),
 																			 	integrationOfDaily.getAttendanceLeave(),
 																			 	Arrays.asList(errorItem),
-																			 	master.getDivergenceTime());
+																			 	master.getDivergenceTime(),
+																			 	master.getShareContainer());
 				}
 				return Collections.emptyList();
 			//遅刻

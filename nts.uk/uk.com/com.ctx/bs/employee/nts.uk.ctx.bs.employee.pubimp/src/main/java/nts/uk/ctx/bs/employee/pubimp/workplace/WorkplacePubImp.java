@@ -253,18 +253,25 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		listSid.forEach(sid -> {
 
 			AffCompanyHist affCompanyHist = mapPidAndAffCompanyHist.get(mapSidPid.get(sid));
+			if(affCompanyHist != null){
+				AffCompanyHistByEmployee affCompanyHistByEmp = affCompanyHist.getAffCompanyHistByEmployee(sid);
+				Optional.ofNullable(affCompanyHistByEmp).ifPresent(f -> {
+					if (f.items() != null) {
+						List<AffCompanyHistItem> listAffComHisItem = affCompanyHistByEmp.getLstAffCompanyHistoryItem();
 
-			AffCompanyHistByEmployee affCompanyHistByEmp = affCompanyHist.getAffCompanyHistByEmployee(sid);
+						if (!CollectionUtil.isEmpty(listAffComHisItem)) {
+							listAffComHisItem.forEach(m -> {
+								if (m.start().beforeOrEquals(startDate) && m.end().afterOrEquals(endDate)) {
+									AffWorkplaceExport aff = new AffWorkplaceExport(sid, m.start(), m.end());
+									result.add(aff);
+								}
+							});
+						}
 
-			List<AffCompanyHistItem> listAffComHisItem = affCompanyHistByEmp.getLstAffCompanyHistoryItem();
-
-			if (!CollectionUtil.isEmpty(listAffComHisItem)) {
-				listAffComHisItem.forEach(m -> {
-					if (m.start().beforeOrEquals(startDate) && m.end().afterOrEquals(endDate)) {
-						AffWorkplaceExport aff = new AffWorkplaceExport(sid, m.start(), m.end());
-						result.add(aff);
 					}
 				});
+			}else{
+				System.out.println("data sai: " + sid);
 			}
 		});
 

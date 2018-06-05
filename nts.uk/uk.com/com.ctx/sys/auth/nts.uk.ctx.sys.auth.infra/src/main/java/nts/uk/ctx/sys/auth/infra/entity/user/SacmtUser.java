@@ -29,12 +29,12 @@ public class SacmtUser extends UkJpaEntity implements Serializable {
     public SacmtUserPK sacmtUserPK;
     
     /** The default User */
-    /** デフォルトユーザ*/
+    /** ッ�ォルトユーザ*/
     @Column(name = "DEFAULT_USER")
     public int defaultUser;
     
     /** The password. */
-    /**パスワード*/
+    /**パスワー�/
     @Column(name = "PASSWORD")
     public String password;
     
@@ -44,7 +44,7 @@ public class SacmtUser extends UkJpaEntity implements Serializable {
     public String loginID;
     
     /** The contract CD. */
-    /**契約コード */
+    /**契紂�ー�*/
     @Column(name = "CONTRACT_CD")
     public String contractCd;
     
@@ -56,12 +56,12 @@ public class SacmtUser extends UkJpaEntity implements Serializable {
     public GeneralDate expirationDate;
     
     /** The special user. */
-    /** 特別利用者 */
+    /** 特別利用�*/
     @Column(name = "SPECIAL_USER")
     public int specialUser;
     
     /** The multi com. */
-    /**複数会社を兼務する */
+    /**褕�会社を�務す�*/
     @Column(name = "MULTI_COM")
     public int multiCompanyConcurrent;
     
@@ -70,7 +70,7 @@ public class SacmtUser extends UkJpaEntity implements Serializable {
     @Column(name = "MAIL_ADD")
     public String mailAdd;
     
-    /**ユーザ名 */
+    /**ユーザ�*/
     /** The user name. */
     @Column(name = "USER_NAME")
     public String userName;
@@ -80,9 +80,9 @@ public class SacmtUser extends UkJpaEntity implements Serializable {
     @Column(name = "ASSO_PID")
     public String associatedPersonID;
 	
-    /* パスワード状態 */
+    /* パスワード状�*/
  	/** PasswordStatus **/
-    @Column(name = "pass_Status")
+    @Column(name = "PASS_STATUS")
     public int passStatus;
     
 	@Override
