@@ -6,7 +6,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Getter
 @Setter
-public class SyEmploymentImport {
+public class SharedSyEmploymentImport {
 
 	/** The employee id. */
 	// 社員ID
@@ -24,7 +24,7 @@ public class SyEmploymentImport {
 	// 配属期間 
 	private DatePeriod period;
 
-	public SyEmploymentImport(String employeeId, String employmentCode, String employmentName, DatePeriod period) {
+	public SharedSyEmploymentImport(String employeeId, String employmentCode, String employmentName, DatePeriod period) {
 		super();
 		this.employeeId = employeeId;
 		this.employmentCode = employmentCode;

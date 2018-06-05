@@ -8,8 +8,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.adapter.employment.SyEmploymentAdapter;
-import nts.uk.ctx.at.shared.dom.adapter.employment.SyEmploymentImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSyEmploymentAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSyEmploymentImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RervLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.app.command.vacation.setting.retentionyearly.dto.UpperLimitSettingDto;
@@ -28,7 +28,7 @@ public class ResvLeaGrantRemNumFinder {
 	private RervLeaGrantRemDataRepository repository;
 	
 	@Inject
-	private SyEmploymentAdapter syEmploymentAdapter;
+	private SharedSyEmploymentAdapter syEmploymentAdapter;
 	
 	@Inject
 	private RetentionYearlySettingRepository reYearSetRepo;
@@ -69,7 +69,7 @@ public class ResvLeaGrantRemNumFinder {
 	
 	private UpperLimitSetting getUpperLimitSetting(String companyId, String employeeId, GeneralDate grantDate){
 		UpperLimitSetting upLimSet = null;
-		Optional<SyEmploymentImport> syEmployment = syEmploymentAdapter.findByEmployeeId(companyId, employeeId, grantDate);
+		Optional<SharedSyEmploymentImport> syEmployment = syEmploymentAdapter.findByEmployeeId(companyId, employeeId, grantDate);
 		if(!syEmployment.isPresent()){
 			upLimSet = getUpLimSetEmpNone(companyId);
 		}else{
