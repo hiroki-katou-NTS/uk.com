@@ -702,7 +702,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				Optional<AttendanceItemValueImport> optItemValue = x.getAttendanceItems().stream().filter(att -> att.getItemId() == item.getAttendanceDisplay()).findFirst();
 				if (optItemValue.isPresent()) {
 					AttendanceItemValueImport itemValue = optItemValue.get();
-					if (itemValue.getValueType() == ActualValue.STRING) {
+					if (itemValue.getValueType() == ActualValue.STRING && itemValue.getValue() != null) {
 						Optional<WorkType> optWorkType = lstWorkType.stream().filter(type -> type.getWorkTypeCode().compareTo(itemValue.getValue()) == 0).findFirst();
 						if (optWorkType.isPresent()) {
 							if (outSche.getWorkTypeNameDisplay() == NameWorkTypeOrHourZone.OFFICIAL_NAME)
@@ -1343,13 +1343,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						// Divide list into smaller lists (max 16 items)
 						int numOfChunks = (int)Math.ceil((double)lstItem.size() / CHUNK_SIZE);
 	
+						int curRow = currentRow;
+						
 				        for(int i = 0; i < numOfChunks; i++) {
 				            int start = i * CHUNK_SIZE;
 				            int length = Math.min(lstItem.size() - start, CHUNK_SIZE);
 	
 				            List<ActualValue> lstItemRow = lstItem.subList(start, start + length);
-				            
-				            int curRow = currentRow;
 				            
 				            for (int j = 0; j < length; j++) {
 				            	// Column 4, 6, 8,...
@@ -1382,7 +1382,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				        Cell remarkCell = cells.get(currentRow,35);
 				        remarkCell.setValue(detailedDailyPerformanceReportData.getErrorDetail());
 				        
-				        currentRow++;
+				        currentRow += dataRowCount;
 				        colorWhite = !colorWhite; // Change to other color
 					}
 				}
@@ -1932,7 +1932,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	public Optional<PrintRemarksContent> getRemarkContent(String employeeId, GeneralDate currentDate, List<EmployeeDailyPerError> errorList, RemarksContentChoice choice, List<ErrorAlarmWorkRecordCode> lstOutputErrorCode) {
 		// 遅刻早退
 		PrintRemarksContent printRemarksContent = null;
-		if (errorList.size() > 0 && (lstOutputErrorCode.contains(SystemFixedErrorAlarm.LEAVE_EARLY.value) || lstOutputErrorCode.contains(SystemFixedErrorAlarm.LATE.value))) {
+		
+		List<String> errorCodeList = lstOutputErrorCode.stream().map(x -> x.v()).collect(Collectors.toList());
+		if (errorList.size() > 0 && (errorCodeList.contains(SystemFixedErrorAlarm.LEAVE_EARLY.value) || errorCodeList.contains(SystemFixedErrorAlarm.LATE.value))) {
 			Optional<EmployeeDailyPerError> optError = errorList.stream()
 					.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.LEAVE_EARLY.value) || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.LATE.value)).findFirst();
 			if (optError.isPresent() && (choice == RemarksContentChoice.LEAVING_EARLY)) {
