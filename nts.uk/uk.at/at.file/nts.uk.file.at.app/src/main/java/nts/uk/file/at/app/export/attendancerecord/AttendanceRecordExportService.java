@@ -40,6 +40,9 @@ import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportDat
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportEmployeeData;
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportWeeklyData;
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportWeeklySumaryData;
+import nts.uk.query.pub.employee.EmployeeInformationExport;
+import nts.uk.query.pub.employee.EmployeeInformationPub;
+import nts.uk.query.pub.employee.EmployeeInformationQueryDto;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -73,6 +76,9 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 	@Inject
 	private CompanyRepository companyRepo;
 
+	@Inject
+	private EmployeeInformationPub employeePub;
+
 	// @Inject
 	// private EmployeeInformationPub employeeInfo;
 
@@ -84,6 +90,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		String companyId = AppContexts.user().companyId();
 		Map<String, List<AttendanceRecordReportEmployeeData>> reportData = new HashMap<>();
 		List<AttendanceRecordReportEmployeeData> attendanceRecRepEmpDataList = new ArrayList<>();
+
 		request.getEmployeeList().forEach(employee -> {
 
 			// get Closure
@@ -392,12 +399,25 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 						 * title. The work type The year month
 						 **/
 						// Fake Data
-						attendanceRecRepEmpData.setEmployment("Nothing");
+						List<String> employeeIds = new ArrayList<>();
+						GeneralDate referenceDate = GeneralDate.ymd(closure.getClosureMonth().getProcessingYm().year(),
+								closure.getClosureMonth().getProcessingYm().month(), closureDate.getClosureDay().v());
+						employeeIds.add(employee.getEmployeeId());
+						// build param
+						EmployeeInformationQueryDto param = EmployeeInformationQueryDto.builder()
+								.employeeIds(employeeIds).referenceDate(referenceDate).toGetWorkplace(true)
+								.toGetDepartment(false).toGetPosition(true).toGetEmployment(true)
+								.toGetClassification(false).toGetEmploymentCls(true).build();
+
+						List<EmployeeInformationExport> employeeInfoList = employeePub.find(param);
+						EmployeeInformationExport result = employeeInfoList.get(0);
+
+						attendanceRecRepEmpData.setEmployment(result.getEmployment().toString());
 						attendanceRecRepEmpData
 								.setInvidual(employee.getEmployeeCode() + " " + employee.getEmployeeName());
-						attendanceRecRepEmpData.setTitle("Blank");
-						attendanceRecRepEmpData.setWorkplace("NoWhere");
-						attendanceRecRepEmpData.setWorkType("FullTime");
+						attendanceRecRepEmpData.setTitle(result.getPosition().toString());
+						attendanceRecRepEmpData.setWorkplace(result.getWorkplace().toString());
+						attendanceRecRepEmpData.setWorkType(result.getEmployment().toString());
 						attendanceRecRepEmpData.setYearMonth(yearMonth.toString());
 						attendanceRecRepEmpDataList.add(attendanceRecRepEmpData);
 
