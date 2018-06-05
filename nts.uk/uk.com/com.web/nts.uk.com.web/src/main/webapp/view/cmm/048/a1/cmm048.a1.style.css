@@ -11,3 +11,11 @@
 	padding: 5px;
 	vertical-align: top;
 }
+.left-column{
+	padding-left:10px;
+	width:140px;
+}
+.input-column{
+	width: 250px !important;
+    margin-left: 20px;
+}

@@ -11,22 +11,33 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 public class OutingTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 
 	@Getter
-	private Optional<OutingTimeOfDailyPerformanceDto> data;
+	private Optional<OutingTimeOfDailyPerformance> data;
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
 		this.data = item == null || !item.isHaveData() ? Optional.empty()
-				: Optional.of((OutingTimeOfDailyPerformanceDto) item);
+				: Optional.of(((OutingTimeOfDailyPerformanceDto) item).toDomain(getEmployeeId(), getWorkDate()));
 	}
 
 	@Override
 	public void updateData(Object data) {
 		if(data == null){ return; }
-		setRecords(OutingTimeOfDailyPerformanceDto.getDto((OutingTimeOfDailyPerformance) data));
+		this.data = Optional.of((OutingTimeOfDailyPerformance) data);
 	}
 
 	@Override
 	public Optional<OutingTimeOfDailyPerformance> toDomain() {
-		return data == null ? null : data.map(c -> c.toDomain(getEmployeeId(), getWorkDate()));
+		return data;
+	}
+
+	@Override
+	public Optional<OutingTimeOfDailyPerformanceDto> toDto() {
+		return getData().map(b -> OutingTimeOfDailyPerformanceDto.getDto(b));
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public void updateDataO(Optional<?> data) {
+		this.data = (Optional<OutingTimeOfDailyPerformance>) data;
 	}
 }
