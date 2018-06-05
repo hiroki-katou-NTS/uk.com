@@ -188,6 +188,7 @@ module nts.uk.com.view.kwr002.b {
                 if (data.length > 0) {
                     _.map(data,(item)=>{
                         item.code=_.padStart(item.code, 2, '0');
+                         data = _.orderBy(data, [e => e.code], ['asc']);
                     });
                     self.aRES(data);
                     if (currentData) {
@@ -258,6 +259,7 @@ module nts.uk.com.view.kwr002.b {
                     _.map(data,(item)=>{
                         item.code=_.padStart(item.code, 2, '0');
                         // new AttendanceRecordExportSetting(item);
+                        data = _.orderBy(data, [item => item.code], ['asc']);
                     });
                     self.aRES(data);
                     let firstData = _.first(data);

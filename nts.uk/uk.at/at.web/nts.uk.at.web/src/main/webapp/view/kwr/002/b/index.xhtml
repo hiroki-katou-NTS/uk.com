@@ -8,7 +8,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-		<script>var dialogSize = { width: 1350, height: 720 };</script>
+		<script>var dialogSize = { width: 1350, height: 610 };</script>
 
 			<script>
 				__viewContext.primitiveValueConstraints = __viewContext.primitiveValueConstraints
@@ -80,7 +80,7 @@
 					style="padding-top: 20px; padding-left: 20px">
 					<!-- B2_1 -->
 					<div
-						data-bind="ntsPanel:{width: 'auto', height: '410px', showIcon: true, visible: true, direction: 'right'}">
+						data-bind="ntsPanel:{width: '260px', height: '410px', showIcon: true, visible: true, direction: 'right'}">
 						<!-- B2_2 -->
 						<div tabindex="5"
 							data-bind="ntsSearchBox: {
@@ -100,15 +100,15 @@
 								name: '#[KWR002_34]',
 								rows: 15,
 								columns: [
-					                { headerText: '#{i18n.getText('KWR002_35')}', key: 'code', width: 60, formatter: _.escape },
-					                { headerText: '#{i18n.getText('KWR002_36')}', key: 'name', width: 260, formatter: _.escape }
+					                { headerText: '#{i18n.getText('KWR002_35')}', key: 'code', width: 70, formatter: _.escape },
+					                { headerText: '#{i18n.getText('KWR002_36')}', key: 'name', width: 150, formatter: _.escape }
 					            ],
 					            options: aRES,
 								optionsValue: 'code',
 								multiple: false,
 								value: currentARESCode,
 								height: '390px',
-								width: '390px'
+								width: '260px;'
 							}">
 							</table>
 						</div>

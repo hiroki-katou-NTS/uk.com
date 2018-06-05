@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.app.command.attendancerecord.export;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -10,6 +11,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class AttendanceRecordExportDeleteCommand {
 
 	/**
