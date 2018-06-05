@@ -32,6 +32,31 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 		return dto;
 	}
 
+	public static OptionalItemOfDailyPerformDto getDto(AnyItemValueOfDaily domain, Map<Integer, OptionalItem> master) {
+		OptionalItemOfDailyPerformDto dto = new OptionalItemOfDailyPerformDto();
+		if (domain != null) {
+			dto.setDate(domain.getYmd());
+			dto.setEmployeeId(domain.getEmployeeId());
+			dto.setOptionalItems(ConvertHelper.mapTo(domain.getItems(), (c) -> 
+							OptionalItemValueDto.from(c, getAttrFromMaster(master, c))));
+			dto.exsistData();
+		}
+		return dto;
+	}
+	
+	public void correctItems(Map<Integer, OptionalItem> optionalMaster) {
+		optionalItems.removeIf(item -> !item.isHaveData());
+		optionalItems.stream().forEach(item -> {
+			if(item.isNeedCorrect()) {
+				item.correctItem(optionalMaster.get(item.getItemNo()).getOptionalItemAtr());
+			}
+		});
+	}
+
+	private static OptionalItemAtr getAttrFromMaster(Map<Integer, OptionalItem> master, AnyItemValue c) {
+		return master.get(c.getItemNo().v()).getOptionalItemAtr();
+	}
+
 	@Override
 	public String employeeId() {
 		return this.employeeId;
