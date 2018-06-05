@@ -111,18 +111,18 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 		entity.allowOtherCompanyRef = domain.getAllowOtherCompanyRef().value;
 		entity.allowOtherRef = domain.getAllowOtherRef().value;
 		entity.allowPersonRef = domain.getAllowPersonRef().value;
-		entity.otherAllowAddHis = domain.getOtherAllowAddHis().value;
-		entity.otherAllowDelHis = domain.getOtherAllowDelHis().value;
-		entity.selfPastHisAuth = domain.getSelfPastHisAuth().value;
-		entity.selfFutureHisAuth = domain.getSelfFutureHisAuth().value;
-		entity.selfAllowAddHis = domain.getSelfAllowAddHis().value;
-		entity.selfAllowDelHis = domain.getSelfAllowDelHis().value;
-		entity.otherPastHisAuth = domain.getOtherPastHisAuth().value;
-		entity.otherFutureHisAuth = domain.getOtherFutureHisAuth().value;
-		entity.selfAllowAddMulti = domain.getSelfAllowAddMulti().value;
-		entity.selfAllowDelMulti = domain.getSelfAllowDelMulti().value;
-		entity.otherAllowAddMulti = domain.getOtherAllowAddMulti().value;
-		entity.otherAllowDelMulti = domain.getOtherAllowDelMulti().value;
+		entity.otherAllowAddHis = domain.getOtherAllowAddHis() == null? null: domain.getOtherAllowAddHis().value;
+		entity.otherAllowDelHis = domain.getOtherAllowDelHis() == null? null:   domain.getOtherAllowDelHis().value;
+		entity.selfPastHisAuth = domain.getSelfPastHisAuth() == null? null: domain.getSelfPastHisAuth().value;
+		entity.selfFutureHisAuth = domain.getSelfFutureHisAuth() == null? null:domain.getSelfFutureHisAuth().value;
+		entity.selfAllowAddHis = domain.getSelfAllowAddHis() == null ? null: domain.getSelfAllowAddHis().value;
+		entity.selfAllowDelHis = domain.getSelfAllowDelHis() == null? null: domain.getSelfAllowDelHis().value;
+		entity.otherPastHisAuth = domain.getOtherPastHisAuth() == null? null: domain.getOtherPastHisAuth().value;
+		entity.otherFutureHisAuth = domain.getOtherFutureHisAuth() == null? null: domain.getOtherFutureHisAuth().value;
+		entity.selfAllowAddMulti = domain.getSelfAllowAddMulti() == null? null: domain.getSelfAllowAddMulti().value;
+		entity.selfAllowDelMulti = domain.getSelfAllowDelMulti() == null? null: domain.getSelfAllowDelMulti().value;
+		entity.otherAllowAddMulti = domain.getOtherAllowAddMulti() == null? null: domain.getOtherAllowAddMulti().value;
+		entity.otherAllowDelMulti = domain.getOtherAllowDelMulti() == null? null: domain.getOtherAllowDelMulti().value;
 		return entity;
 
 	}

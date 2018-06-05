@@ -36,8 +36,8 @@ import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDaily
 public class JpaAlarmCheckConditionByCategoryRepository extends JpaRepository
 		implements AlarmCheckConditionByCategoryRepository {
 
-	private final String GET_All_BY_COMPANY = "SELECT c FROM KfnmtAlarmCheckConditionCategory c WHERE c.pk.companyId = :companyId ";
-	private final String GET_All_BY_COMPANY_CATEGORY = "SELECT c FROM KfnmtAlarmCheckConditionCategory c WHERE c.pk.companyId = :companyId AND c.pk.category = :category ";
+	private static final String GET_All_BY_COMPANY = "SELECT c FROM KfnmtAlarmCheckConditionCategory c WHERE c.pk.companyId = :companyId ";
+	private static final String GET_All_BY_COMPANY_CATEGORY = "SELECT c FROM KfnmtAlarmCheckConditionCategory c WHERE c.pk.companyId = :companyId AND c.pk.category = :category ";
 
 	@Override
 	public Optional<AlarmCheckConditionByCategory> find(String companyId, int category, String code) {

@@ -23,4 +23,9 @@ public interface RoleSetGrantedEmployeePub {
 	 * @return
 	 */
 	public boolean canApprovalOnBaseDate(String companyId , String employeeID , GeneralDate date);
+	
+	/**
+	 * request no. 139: version 2
+	 */
+	public List<String> findEmpGrantedInWkpVer2(List<String> lstWkpId, DatePeriod period);
 }
