@@ -10,7 +10,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         selectedPeriodItem: KnockoutObservable<number>;
         dateValue: KnockoutObservable<any>;
         dispTotalRemainHours: KnockoutObservable<string> = ko.observable(null);
-        dispTotalExpiredDate: KnockoutObservable<string> = ko.observable(null);
+        dispExpiredDate: KnockoutObservable<string> = ko.observable(null);
         closureEmploy: any;
         selectedEmployee: EmployeeInfo;
         listExtractData: Array<any>;
@@ -181,8 +181,11 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 if (expired != 0) {
                     expired = expired.toFixed(1) + getText('KDM001_27');
                 }
-                if (data.unknowDate == 1) {
-                    dayOffDate += '※';
+                if (data.unknownDate == 1) {
+                    if (!dayOffDate){
+                        dayOffDate = '※';
+                    } else dayOffDate += '※';
+                    
                 }
                 if (data.type == 0) {
                     occurredDays = data.occurredDays;
@@ -281,7 +284,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     self.listExtractData = result.extraHolidayManagementDataDto.extraData;
                     self.convertToDisplayList();
                     self.updateSubstituteDataList();
-                    self.dispTotalExpiredDate = result.compenSettingEmpExpiredDate;
+                    self.dispExpiredDate(result.compenSettingEmpExpiredDate);
                     self.initKCP009();
                     self.disableLinkedData();
                     dfd.resolve();

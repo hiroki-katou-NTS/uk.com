@@ -40,9 +40,13 @@ public class ExtraHolidayManagementDataDto {
 			} else {
 				dto.setLinked(0);
 			}
-			if (data.getComDayOffDate().getDayoffDate().get().after(GeneralDate.today())){
-				dto.setExpired(data.getUnUsedDays().v());
-			} else {
+			if (data.getComDayOffDate().getDayoffDate().isPresent()){
+				if (data.getComDayOffDate().getDayoffDate().get().after(GeneralDate.today())){
+					dto.setExpired(data.getUnUsedDays().v());
+				}else {
+					dto.setExpired(data.getUnUsedDays().v());
+				}
+			}else {
 				dto.setRemain(data.getUnUsedDays().v());
 			}
 			listExtraData.add(dto);
@@ -54,16 +58,21 @@ public class ExtraHolidayManagementDataDto {
 			} else {
 				dto.setLinked(0);
 			}
-			if (data.getDayOffDate().getDayoffDate().get().after(GeneralDate.today())){
-				dto.setExpired(data.getRemainDays().v());
-			} else {
+			if (data.getDayOffDate().getDayoffDate().isPresent()){
+				if (data.getDayOffDate().getDayoffDate().get().after(GeneralDate.today())){
+					dto.setExpired(data.getRemainDays().v());
+				}else {
+					dto.setExpired(data.getRemainDays().v());
+				}
+			}else {
 				dto.setExpired(data.getRemainDays().v());
 			}
 			
 			listExtraData.add(dto);
 		}
 		listExtraData.sort((m1, m2)->{
-			return m1.getDayOffDate().before(m2.getDayOffDate()) ? -1 : 1;
+			if (Objects.isNull(m1.getDayOffDate()) || Objects.isNull(m2.getDayOffDate())) return 1;
+			else return m1.getDayOffDate().before(m2.getDayOffDate()) ? -1 : 1;
 		});
 		
 		if (!Objects.isNull(sEmpHistoryImport)){
