@@ -104,7 +104,7 @@
 					                { headerText: '#{i18n.getText('KWR002_36')}', key: 'name', width: 260, formatter: _.escape }
 					            ],
 					            options: aRES,
-								optionsValue: 'code', 
+								optionsValue: 'code',
 								multiple: false,
 								value: currentARESCode,
 								height: '390px',
@@ -133,10 +133,10 @@
 										<div>
 											<!-- B6_2 -->
 											<input id="code" tabindex="7"
-												data-bind="ntsTextEditor: {name: '#[KWR002_41]', value:code, constraint: 'ExportSettingCode',enable:$parent.newMode, option : { width : '50px'}}" />
+												data-bind="ntsTextEditor: {name: '#[KWR002_41]', value:code, required: true, constraint: 'ExportSettingCode',enable:$parent.newMode, option : { width : '50px'}}" />
 											<!-- b6-3 -->
 											<input id="name" tabindex="8"
-												data-bind="ntsTextEditor: {name: '#[KWR002_42]', value:name, constraint: 'ExportSettingName', option : { width : '200px'}}" />
+												data-bind="ntsTextEditor: {name: '#[KWR002_42]', value:name, required: true, constraint: 'ExportSettingName', option : { width : '200px'}}" />
 										</div>
 									</td>
 								</tr>
