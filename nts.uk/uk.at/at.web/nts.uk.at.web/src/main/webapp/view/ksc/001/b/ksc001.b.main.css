@@ -1,3 +1,8 @@
+.nts-wizard>.steps>ul>li.current>.nts-steps-middle>.nts-bridge>.nts-horizontal-line
+	{
+	width: calc(94% - 62px);
+}
+
 .navigation-label {
 	margin-left: 20px;
 	vertical-align: 12px;

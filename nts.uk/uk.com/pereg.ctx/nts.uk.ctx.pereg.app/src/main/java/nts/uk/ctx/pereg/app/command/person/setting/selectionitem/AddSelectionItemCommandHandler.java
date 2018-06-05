@@ -13,8 +13,8 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.dom.company.ICompanyRepo;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.history.PerInfoHistorySelection;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.history.PerInfoHistorySelectionRepository;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.history.SelectionHistory;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.history.SelectionHistoryRepository;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.IPerInfoSelectionItemRepository;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.PerInfoSelectionItem;
 import nts.uk.shr.com.context.AppContexts;
@@ -27,7 +27,7 @@ public class AddSelectionItemCommandHandler extends CommandHandlerWithResult<Add
 	private IPerInfoSelectionItemRepository perInfoSelectionItemRepo;
 
 	@Inject
-	private PerInfoHistorySelectionRepository historySelectionRepository;
+	private SelectionHistoryRepository selectionHistoryRepo;
 
 	@Inject
 	private ICompanyRepo companyRepo;
@@ -54,19 +54,19 @@ public class AddSelectionItemCommandHandler extends CommandHandlerWithResult<Add
 		// ドメインモデル「選択肢履歴」を登録する
 		DatePeriod period = new DatePeriod(GeneralDate.min(), GeneralDate.max());
 		
-		PerInfoHistorySelection domainHist = PerInfoHistorySelection.createHistorySelection(newHistId, newId,
+		SelectionHistory domainHist = SelectionHistory.createHistorySelection(newHistId, newId,
 				AppContexts.user().zeroCompanyIdInContract(), period);
 
-		this.historySelectionRepository.add(domainHist);
+		this.selectionHistoryRepo.add(domainHist);
 		
 		if (!command.isShareChecked()) {
 			List<String> companyIdList = companyRepo.acquireAllCompany();
 			for (String cid : companyIdList) {
 				newHistId = IdentifierUtil.randomUniqueId();
-				domainHist = PerInfoHistorySelection.createHistorySelection(newHistId, newId,
+				domainHist = SelectionHistory.createHistorySelection(newHistId, newId,
 						cid, period);
 
-				this.historySelectionRepository.add(domainHist);
+				this.selectionHistoryRepo.add(domainHist);
 			}
 		}
 		return newId;

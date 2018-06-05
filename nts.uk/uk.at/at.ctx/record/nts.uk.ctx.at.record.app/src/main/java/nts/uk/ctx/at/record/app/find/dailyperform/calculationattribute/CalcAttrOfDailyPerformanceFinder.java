@@ -39,4 +39,9 @@ public class CalcAttrOfDailyPerformanceFinder extends FinderFacade {
 		return (List<T>) this.repo.finds(param).stream()
 				.map(c -> CalcAttrOfDailyPerformanceDto.getDto(c)).collect(Collectors.toList());
 	}
+
+	@Override
+	public Object getDomain(String employeeId, GeneralDate baseDate) {
+		return repo.find(employeeId, baseDate);
+	}
 }

@@ -48,4 +48,9 @@ public class EditStateOfDailyPerformanceFinder extends FinderFacade {
 			.map(c -> EditStateOfDailyPerformanceDto.getDto(c)).collect(Collectors.toList());
 	}
 
+	@Override
+	public Object getDomain(String employeeId, GeneralDate baseDate) {
+		return repo.findByKey(employeeId, baseDate);
+	}
+
 }
