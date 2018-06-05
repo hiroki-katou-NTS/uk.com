@@ -280,7 +280,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 			return new ArrayList<>();
 		}
 		// Convert Result List to Map
-		Map<String, List<BsymtAffCompanyHist>> resultMap = resultList.stream()
+		Map<String, List<BsymtAffCompanyHist>> resultMap = resultList.parallelStream()
 				.collect(Collectors.groupingBy(item -> item.bsymtAffCompanyHistPk.pId));
 
 		// Foreach Map: Convert to Domain then add to Output List
