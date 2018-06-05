@@ -4,6 +4,9 @@
 .radio-group {
 	margin-top :10px;
 }
+.link-button {
+	margin-right: 30px;
+}
 .div-table {
 	display: table;
 	width: 1000px;
