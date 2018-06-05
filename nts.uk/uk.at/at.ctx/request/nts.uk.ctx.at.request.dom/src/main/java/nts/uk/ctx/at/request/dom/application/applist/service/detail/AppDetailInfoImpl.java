@@ -80,6 +80,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	@Inject
 	private BPTimeItemRepository bPTimeItemRepo;
 	/**
+	 * 残業申請
 	 * get Application Over Time Info
 	 * appType = 0;
 	 * @param companyID
@@ -150,6 +151,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	}
 
 	/**
+	 * 直行直帰申請
 	 * get Application Go Back Info
 	 * appType = 4;
 	 * @param companyID
@@ -170,6 +172,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				this.convertTime(appGoBack.getWorkTimeEnd2().map(x -> x.v()).orElse(null)));
 	}
 	/**
+	 * 勤務変更申請
 	 * get Application Holiday Work Info
 	 * appType = 6;
 	 * @param companyID
@@ -232,8 +235,9 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				lstFrame);
 	}
 	/**
+	 * 勤務変更申請
 	 * get Application Work Change Info
-	 * appType = 6;
+	 * appType = 2;
 	 * @param companyID
 	 * @param appId
 	 * @return
@@ -265,7 +269,9 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				this.convertTime(appWkChange.getBreakTimeEnd1()));
 	}
 	/**
+	 * 休暇申請
 	 * get Application Absence Info
+	 * appType = 1;
 	 * @param companyID
 	 * @param appId
 	 * @param day
@@ -306,7 +312,9 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				relaCode, relaName, appForSpec == null ? false : appForSpec.isMournerFlag());
 	}
 	/**
+	 * 振休振出申請
 	 * get Application Complt Leave Info
+	 * appType = 10;
 	 * @param companyID
 	 * @param appId
 	 * @param type

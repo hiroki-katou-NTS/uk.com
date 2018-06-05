@@ -16,9 +16,10 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHist;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -60,10 +61,18 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 	private static final String SELECT_BY_EMPIDS = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
 			+ " INNER JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId"
 			+ " WHERE aw.sid IN :employeeIds AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
+	
+	private static final String SELECT_BY_EMPIDS_PERIOD = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
+			+ " WHERE aw.sid IN :employeeIds AND aw.strDate <= :endDate AND aw.endDate >= :startDate"
+			+ " ORDER BY aw.sid, aw.strDate";
 
 	private static final String SELECT_BY_WKPID_PERIOD = "SELECT DISTINCT  a.sid FROM BsymtAffiWorkplaceHist a"
 			+ " INNER JOIN BsymtAffiWorkplaceHistItem b ON a.hisId = b.hisId"
 			+ " WHERE b.workPlaceId = :workPlaceId AND a.strDate <= :endDate AND  a.endDate >= :startDate";
+	
+	private static final String SELECT_BY_LIST_WKPID_PERIOD = "SELECT DISTINCT  a.sid FROM BsymtAffiWorkplaceHist a"
+			+ " INNER JOIN BsymtAffiWorkplaceHistItem b ON a.hisId = b.hisId"
+			+ " WHERE b.workPlaceId IN :lstWkpId AND a.strDate <= :endDate AND  a.endDate >= :startDate";
 
 	private static final String SELECT_BY_LISTSID = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
 			+ " INNER JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId"
@@ -200,6 +209,38 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 			return this.toDomainTemp(resultMap.get(key));
 		}).collect(Collectors.toList());
 	}
+	
+	@Override
+	public List<AffWorkplaceHistory> findByEmployeesWithPeriod(List<String> employeeIds, DatePeriod period) {
+		if (CollectionUtil.isEmpty(employeeIds)) {
+			return new ArrayList<>();
+		}
+		
+		String companyId = AppContexts.user().companyId();
+		
+		List<BsymtAffiWorkplaceHist> workPlaceEntities = this.queryProxy()
+				.query(SELECT_BY_EMPIDS_PERIOD, BsymtAffiWorkplaceHist.class).setParameter("employeeIds", employeeIds)
+				.setParameter("startDate", period.start()).setParameter("endDate", period.end()).getList();
+		
+		Map<String, List<BsymtAffiWorkplaceHist>> workPlaceByEmployeeId = workPlaceEntities.stream()
+				.collect(Collectors.groupingBy(BsymtAffiWorkplaceHist::getEmployeeId));
+		
+		List<AffWorkplaceHistory> workplaceHistoryList = new ArrayList<>();
+		
+		workPlaceByEmployeeId.forEach((employeeId, entities) -> {
+			List<DateHistoryItem> historyItems = convertToHistoryItems(entities);
+			workplaceHistoryList.add(new AffWorkplaceHistory(companyId, employeeId, historyItems));
+		});
+		
+		return workplaceHistoryList;
+	}
+	
+	public List<DateHistoryItem> convertToHistoryItems(List<BsymtAffiWorkplaceHist> entities) {
+		return entities.stream()
+				.map(ent -> new DateHistoryItem(ent.getHisId(), new DatePeriod(ent.getStrDate(), ent.getEndDate())))
+				.collect(Collectors.toList());
+	}
+	
 
 	@Override
 	public Optional<AffWorkplaceHistory> getByHistIdAndBaseDate(String histId, GeneralDate date) {
@@ -316,6 +357,25 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 				.setParameter("endDate", endDate).getList();
 		if (!listWkpHist.isEmpty()) {
 			return listWkpHist;
+		} else {
+			return Collections.emptyList();
+		}
+	}
+	
+	@Override
+	public List<String> getByLstWplIdAndPeriod(List<String> lstWkpId, GeneralDate startDate, GeneralDate endDate) {
+		// Split query.
+		List<String> resultList = new ArrayList<>();
+
+		CollectionUtil.split(lstWkpId, 1000, (subList) -> {
+			resultList.addAll(this.queryProxy().query(SELECT_BY_LIST_WKPID_PERIOD, String.class)
+					.setParameter("lstWkpId", subList)
+					.setParameter("startDate", startDate)
+					.setParameter("endDate", endDate).getList());
+		});
+
+		if (!resultList.isEmpty()) {
+			return resultList;
 		} else {
 			return Collections.emptyList();
 		}

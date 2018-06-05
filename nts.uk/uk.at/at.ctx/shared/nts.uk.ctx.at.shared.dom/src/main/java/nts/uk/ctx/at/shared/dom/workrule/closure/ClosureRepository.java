@@ -206,5 +206,27 @@ public interface ClosureRepository {
 		
 		return Optional.empty();
 	}
+	
+	/**
+	 * Find.
+	 *
+	 * @param companyId the company id
+	 * @param closureId the closure id
+	 * @param useAtr the use atr
+	 * @param processingYm the processing ym
+	 * @return the optional
+	 */
+	default Optional<Closure> find(String companyId, int closureId, UseClassification useAtr, YearMonth processingYm) {
+		Optional<Closure> foundedClosure = this.findByIdAndUseAtr(companyId, closureId, useAtr);
+		// Check closure exits.
+		if (!foundedClosure.isPresent()) {
+			return Optional.empty();
+		}
+		// Check processingYM.
+		if (!foundedClosure.get().getClosureMonth().getProcessingYm().equals(processingYm)) {
+			return foundedClosure;
+		}
+		return Optional.empty();
+	}
 
 }

@@ -41,6 +41,25 @@ public interface RsvLeaRemNumEachMonthRepository {
 	 */
 	List<RsvLeaRemNumEachMonth> findByYMAndClosureIdOrderByStartYmd(
 			String employeeId, YearMonth yearMonth, ClosureId closureId);
+
+	/**
+	 * 検索　（社員IDリスト）
+	 * @param employeeIds 社員IDリスト
+	 * @param yearMonth 年月
+	 * @param closureId 締めID
+	 * @param closureDate 締め日付
+	 * @return 該当する積立年休月別残数データ
+	 */
+	List<RsvLeaRemNumEachMonth> findByEmployees(List<String> employeeIds, YearMonth yearMonth,
+			ClosureId closureId, ClosureDate closureDate);
+
+	/**
+	 * 検索　（社員IDリストと年月リスト）
+	 * @param employeeIds 社員IDリスト
+	 * @param yearMonths 年月リスト
+	 * @return 積立年休月別残数データ　（開始年月日順）
+	 */
+	List<RsvLeaRemNumEachMonth> findBySidsAndYearMonths(List<String> employeeIds, List<YearMonth> yearMonths);
 	
 	/**
 	 * 登録および更新

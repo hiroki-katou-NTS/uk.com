@@ -33,6 +33,14 @@ module nts.uk.com.view.cas001.a.viewmodel {
             multiple: false
         });
         listRole: KnockoutObservableArray<PersonRole> = ko.observableArray([]);
+        ctgColumns: KnockoutObservableArray<any> = ko.observableArray([
+            { headerText: 'コード', key: 'categoryId', width: 200, hidden: true },
+            { headerText: getText('CAS001_10'), key: 'categoryName', width: 165 },
+            {
+              headerText: getText('CAS001_69'), key: 'setting', width: 80, //formatter: makeIcon
+               template: '{{if ${setting} == "true"}} <span>●</span>{{else }} <span></span> {{/if}}'
+            }
+        ]);
 
         constructor() {
             let self = this;
@@ -224,11 +232,12 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
             nts.uk.ui.windows.sub.modal('/view/cas/001/c/index.xhtml', { title: '' }).onClosed(function(): any {
 
-                if (!getShared('isCanceled')) {
+                let objSetofScreenC = getShared('isCanceled');
+                if (!objSetofScreenC.isCancel) {
                     self.reload().always(() => {
-
-
-
+                        if (objSetofScreenC.id !== null && objSetofScreenC.id != undefined) {
+                            self.component.currentCode(objSetofScreenC.id);
+                        }
                     });
                 }
             });
@@ -247,6 +256,12 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                     self.currentRole().currentCategory().loadRoleItems(self.currentRoleId(), selectedId).done(function() {
                         self.checkboxSelectedAll(false);
+                        let allowPerson = self.allowPersonRef(),
+                            allowOther = self.allowOtherRef();
+                        self.allowPersonRef(!allowPerson);
+                        self.allowPersonRef(allowPerson);
+                        self.allowOtherRef(!allowOther);
+                        self.allowOtherRef(allowOther);
                     });
 
                 }
@@ -552,6 +567,13 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 screenModel = __viewContext['screenModel'];
             screenModel.allowPersonRef(param ? param.allowPersonRef : 0);
             screenModel.allowOtherRef(param ? param.allowOtherRef : 0);
+            let allowPerson = screenModel.allowPersonRef(),
+                allowOther = screenModel.allowOtherRef();
+            screenModel.allowPersonRef(!allowPerson);
+            screenModel.allowPersonRef(allowPerson);
+            screenModel.allowOtherRef(!allowOther);
+            screenModel.allowOtherRef(allowOther);
+
             self.allowOtherCompanyRef = ko.observable(param ? param.allowOtherCompanyRef : 0);
             self.selfPastHisAuth = ko.observable(param ? param.selfPastHisAuth : 1);
             self.selfFutureHisAuth = ko.observable(param ? param.selfFutureHisAuth : 1);
@@ -628,7 +650,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     height: '315px',
                     dataSource: self.roleItemList(),
                     primaryKey: 'personItemDefId',
-//                    hidePrimaryKey: true,
+                    //                    hidePrimaryKey: true,
                     rowVirtualization: true,
                     virtualization: true,
                     virtualizationMode: 'continuous',
@@ -678,9 +700,17 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     }],
                 });
 
-                // đoạn bind lại header
+                let allowOther = __viewContext['screenModel'].allowOtherRef(),
+                    allowPerson = __viewContext['screenModel'].allowPersonRef();
+                __viewContext['screenModel'].allowOtherRef(!allowOther);
+                __viewContext['screenModel'].allowOtherRef(allowOther);
+                __viewContext['screenModel'].allowPersonRef(!allowPerson);
+                __viewContext['screenModel'].allowPersonRef(allowPerson);
+
+                // Ä‘oáº¡n bind láº¡i header
                 ko.applyBindings(__viewContext['screenModel'], nts.uk.ui.ig.grid.header.getCell('item_role_table_body', 'otherAuth')[0]);
                 ko.applyBindings(__viewContext['screenModel'], nts.uk.ui.ig.grid.header.getCell('item_role_table_body', 'selfAuth')[0]);
+
 
                 dfd.resolve();
 
@@ -722,7 +752,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
         constructor(param: IPersonRoleItem) {
             let self = this;
-            self.personItemDefId = param ?  param.personItemDefId: "";//_.replace(param.personItemDefId, new RegExp("-", "g"), "_") : '';
+            self.personItemDefId = param ? param.personItemDefId : "";//_.replace(param.personItemDefId, new RegExp("-", "g"), "_") : '';
             self.setting = param ? param.setting : false;
             self.requiredAtr = param ? param.requiredAtr : 'false';
             self.itemName = param ? param.itemName : '';
@@ -731,7 +761,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
             self.otherAuth = this.setting === true ? param ? param.otherAuth : 1 : 1;
             self.selfAuth = this.setting === true ? param ? param.selfAuth : 1 : 1;
             self.dataType = param ? param.dataType : '';
-            self.isConvert = param ? (param.personItemDefId.search("CS") > -1 ? false: true): false;
+            self.isConvert = param ? (param.personItemDefId.search("CS") > -1 ? false : true) : false;
         }
     }
 
@@ -812,7 +842,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
             itemLst = _.map(dataSource, function(c: any) {
                 _.each(itemGroup, function(i) {
                     if (i.length > 0) {
-                         let personItemDefId: string = i[0].rowId;
+                        let personItemDefId: string = i[0].rowId;
                     }
                     if (c.personItemDefId === personItemDefId) {
                         _.each(i, function(x) {
@@ -834,7 +864,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
             });
 
             this.items = _.map(itemLst, x => new PersonRoleItemCommand(x));
-            console.log(this.items);
             //add child item
             this.addChildItem(this.items);
         }
@@ -859,7 +888,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                     items.push(new PersonRoleItemCommand(childItem));
                 });
-                
+
 
             });
 
@@ -891,6 +920,5 @@ function makeIcon(value, row) {
         return "●";
     return '';
 }
-
 
 

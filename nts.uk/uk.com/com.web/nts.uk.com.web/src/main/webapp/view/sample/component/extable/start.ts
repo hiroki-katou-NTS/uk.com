@@ -150,7 +150,7 @@ __viewContext.ready(function () {
     let horzSumContentDs = [], leftHorzContentDs = [], vertSumContentDs = [], newVertSumContentDs = [];
     for (let i = 0; i < 300; i++) {
         detailContentDs.push(new ExItem(i.toString()));
-        let eName = nts.uk.text.padRight("社員名" + i, " ", 10) + "AAA";
+        let eName = nts.uk.text.padRight("社員名" + i, " ", 10) + "AAAAAAAAAAAAAAAAAA";
         leftmostDs.push({　empId: i.toString(), empName: eName });//"社員名" + i + "    AAA" });
         middleDs.push({ empId: i.toString(), cert: "★", over1: 100 + i + "", over2: 1 + i + "" });
         updateMiddleDs.push({ empId: i.toString(), time: "100:00", days: "38", can: "", get: "" });
@@ -424,10 +424,13 @@ __viewContext.ready(function () {
             bodyHeightMode: "dynamic",
             windowXOccupation: 170,
             windowYOccupation: 300,
-            updateMode: "edit",
+            manipulatorId: "6",
+            manipulatorKey: "empId",
+            updateMode: "stick",
             pasteOverWrite: true,
             stickOverWrite: true,
-            viewMode: "time",
+            viewMode: "shortName",
+            showTooltipIfOverflow: true,
             secondaryTable: $("#subtable"),
             determination: {
                 rows: [0],

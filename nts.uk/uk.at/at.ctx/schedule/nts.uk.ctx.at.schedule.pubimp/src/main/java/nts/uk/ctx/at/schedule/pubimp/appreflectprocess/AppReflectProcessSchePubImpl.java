@@ -1,8 +1,11 @@
 package nts.uk.ctx.at.schedule.pubimp.appreflectprocess;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.ApplyTimeAtr;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.CommonReflectParamSche;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.absenceleave.AbsenceLeaveReflectSche;
@@ -14,6 +17,8 @@ import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.gobacksche.GobackRef
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.holidaywork.HolidayWorkReflectSche;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.recruitment.RecruitmentAppReflectSche;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.workchange.WorkChangeReflectServiceSche;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.CommonReflectSchePubParam;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.AppReflectProcessSchePub;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.ApplicationReflectParamScheDto;
@@ -32,6 +37,8 @@ public class AppReflectProcessSchePubImpl implements AppReflectProcessSchePub{
 	private AbsenceLeaveReflectSche absenceLeaveReflect;
 	@Inject
 	private RecruitmentAppReflectSche recruitmentReflect;
+	@Inject
+	private BasicScheduleRepository basicSche;
 	@Override
 	public boolean goBackDirectlyReflectSch(ApplicationReflectParamScheDto reflectPara) {
 		ApplicationGobackScheInfor gobackInfo = new ApplicationGobackScheInfor(EnumAdaptor.valueOf(reflectPara.getGobackInfor().getChangeAtrAppGoback().value, ChangeAtrAppGoback.class),
@@ -85,6 +92,15 @@ public class AppReflectProcessSchePubImpl implements AppReflectProcessSchePub{
 	@Override
 	public boolean recruitmentReflectSche(CommonReflectSchePubParam recruitmentParam) {
 		return recruitmentReflect.recruitmentReflect(this.toParamSche(recruitmentParam));
+	}
+
+	@Override
+	public boolean isSche(String employeeId, GeneralDate baseDate) {
+		Optional<BasicSchedule> optBasicScheOpt = basicSche.find(employeeId, baseDate);		
+		if(!optBasicScheOpt.isPresent()) {
+			return false;
+		}
+		return true;
 	}
 
 

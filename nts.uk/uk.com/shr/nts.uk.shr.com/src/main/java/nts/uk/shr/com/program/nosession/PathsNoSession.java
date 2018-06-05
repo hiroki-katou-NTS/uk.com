@@ -16,6 +16,7 @@ public class PathsNoSession implements PathsToCheckCsrf {
 			"/public/.*",
 			"/ntscommons/arc/task/async/.*",
 			"/ntscommons/arc/filegate/.*",
+			"/ntscommons/arc/diagnose/.*",
 			"/shr/infra/file/storage/.*",
 			"/i18n/.*",
 			"/ctx/sys/gateway/login/.*"
@@ -29,6 +30,8 @@ public class PathsNoSession implements PathsToCheckCsrf {
 			ProgramsManager.CCG007B.getPPath(),
 			ProgramsManager.CCG007C.getPPath(),
 			ProgramsManager.CCG007D.getPPath(),
+			ProgramsManager.CCG007F.getPPath(),
+			ProgramsManager.CCG007G.getPPath(),
 			ProgramsManager.KDW003A.getPPath()
 			);
 

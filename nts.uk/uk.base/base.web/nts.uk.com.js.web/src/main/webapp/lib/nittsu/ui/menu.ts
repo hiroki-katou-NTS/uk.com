@@ -28,7 +28,8 @@ module nts.uk.ui.menu {
         $menuItems.append($("<li class='menu-item'/>").text("メニュー選択"));
         $menuItems.append($("<hr/>").css({ margin: "5px 0px" }));
         _.forEach(menuSet, function(item, i) {
-            $menuItems.append($("<li class='menu-item'/>").data("code", item.webMenuCode)
+            $menuItems.append($("<li class='menu-item'/>")
+                .data("code", item.companyId + ":" + item.webMenuCode)
                 .text(item.webMenuName).on(constants.CLICK, function() {
                     uk.localStorage.setItem(constants.MENU, $(this).data("code"));
                     $menuNav.find(".category:eq(0)").off();
@@ -57,8 +58,9 @@ module nts.uk.ui.menu {
             createMenuSelect($menuNav, menuSet);
             let menuCode = uk.localStorage.getItem(constants.MENU);
             if (menuCode.isPresent()) {
+                let parts = menuCode.get().split(":");
                 let selectedMenu = _.find(menuSet, function(m) {
-                    return m.webMenuCode === menuCode.get();
+                    return m.companyId === parts[0] && m.webMenuCode === parts[1];
                 });
                 
                 !util.isNullOrUndefined(selectedMenu) ? generate($menuNav, selectedMenu)
@@ -200,13 +202,27 @@ module nts.uk.ui.menu {
      */
     function getProgram() {
         nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function(pg: any) {
+            let programName = "";
+            let queryString = __viewContext.program.queryString;
+            if (queryString) {
+                let program = _.find(pg, function(p) {
+                    return p.param === queryString;
+                });    
+                
+                if (program) {
+                    programName = program.name;
+                }
+            } else if (programName === "" && pg && pg.length > 0) {
+                programName = pg[0].name;
+            }
+            
             // show program name on title of browser
             ui.viewModelBuilt.add(() => {
-                ui._viewModel.kiban.programName(pg);
+                ui._viewModel.kiban.programName(programName);
             });
             
             let $pgArea = $("#pg-area");
-            $("<div/>").attr("id", "pg-name").text(pg).appendTo($pgArea);
+            $("<div/>").attr("id", "pg-name").text(programName).appendTo($pgArea);
             let $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
             let $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
             $manualBtn.on(constants.CLICK, function() {

@@ -7,8 +7,10 @@ package nts.uk.query.app.employee;
 import java.io.Serializable;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.query.model.employee.EmployeeSearchQuery;
 
@@ -17,6 +19,8 @@ import nts.uk.query.model.employee.EmployeeSearchQuery;
  */
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class RegulationInfoEmpQueryDto implements Serializable {
 
 	/** The Constant TIME_DAY_START. */

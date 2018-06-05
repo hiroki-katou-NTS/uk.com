@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
-import nts.uk.shr.com.security.audittrail.UserInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrection;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
+import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 
 public class DataCorrectionLoggingContext {
 

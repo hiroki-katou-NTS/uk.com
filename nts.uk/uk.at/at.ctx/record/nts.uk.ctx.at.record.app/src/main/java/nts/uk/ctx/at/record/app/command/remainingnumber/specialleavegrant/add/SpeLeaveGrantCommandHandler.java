@@ -19,6 +19,7 @@ public class SpeLeaveGrantCommandHandler {
 	 * @return
 	 */
 	public String addHandler(SpecialLeaveGrantRemainingData domain){
+		if(domain == null) return null; 
 		repo.add(domain);
 		return domain.getEmployeeId();
 	}

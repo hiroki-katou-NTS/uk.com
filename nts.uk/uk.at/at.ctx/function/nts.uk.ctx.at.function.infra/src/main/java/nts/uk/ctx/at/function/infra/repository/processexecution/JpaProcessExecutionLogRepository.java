@@ -12,6 +12,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogRepository;
+import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtExecutionTaskLog;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLog;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogManage;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogPK;
@@ -30,9 +31,14 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 			+ "WHERE pel.kfnmtProcExecLogPK.companyId = :companyId "
 			+ "AND pel.kfnmtProcExecLogPK.execItemCd = :execItemCd "
 			+ "AND pel.kfnmtProcExecLogPK.execId = :execId ";
-	private static final String SELECT_BY_KEY = SELECT_ALL
+	
+	private static final String SELECT_BY_KEY = SELECT_ALL 
 			+ "WHERE pel.kfnmtProcExecLogPK.companyId = :companyId "
 			+ "AND pel.kfnmtProcExecLogPK.execItemCd = :execItemCd ";
+	
+	private static final String SELECT_TASK_LOG = "SELECT k FROM KfnmtExecutionTaskLog k"+ 
+	" WHERE k.kfnmtExecTaskLogPK.companyId = :companyId " + " AND k.kfnmtExecTaskLogPK.execItemCd= :execItemCd ";
+	
 	
 	private static final String SELECT_BY_CID_AND_EXEC_CD = SELECT_ALL
 			+ "WHERE pel.kfnmtProcExecLogPK.companyId = :companyId "
@@ -94,12 +100,25 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 
 	@Override
 	public Optional<ProcessExecutionLog> getLog(String companyId, String execItemCd) {
-		 List<ProcessExecutionLog> lstProcessExecutionLog = this.queryProxy().query(SELECT_BY_KEY, KfnmtProcessExecutionLog.class)
-				.setParameter("companyId", companyId).setParameter("execItemCd", execItemCd).getList(c -> c.toDomain());
-		 if(lstProcessExecutionLog!=null && !lstProcessExecutionLog.isEmpty()){
-			return Optional.ofNullable(lstProcessExecutionLog.get(0));
-		 }
-		 return Optional.empty();
+		 List<KfnmtExecutionTaskLog> list = this.queryProxy().query(SELECT_TASK_LOG, KfnmtExecutionTaskLog.class)
+				.setParameter("companyId", companyId).setParameter("execItemCd", execItemCd).getList();
+		if(!list.isEmpty()){
+			 List<KfnmtProcessExecutionLog> listKfnmtProcessExecutionLog= this.queryProxy().query(SELECT_BY_KEY, KfnmtProcessExecutionLog.class)
+						.setParameter("companyId", companyId).setParameter("execItemCd", execItemCd).getList();
+			 if(!listKfnmtProcessExecutionLog.isEmpty()){
+				 KfnmtProcessExecutionLog kfnmtProcessExecutionLog = listKfnmtProcessExecutionLog.get(0);
+				 return Optional.ofNullable(kfnmtProcessExecutionLog.toDomainMaxDate(list));
+			 }else{
+				 return Optional.empty();
+			 }
+		}else{
+			 List<ProcessExecutionLog> lstProcessExecutionLog = this.queryProxy().query(SELECT_BY_KEY, KfnmtProcessExecutionLog.class)
+						.setParameter("companyId", companyId).setParameter("execItemCd", execItemCd).getList(c -> c.toDomainMaxDate());
+				 if(lstProcessExecutionLog!=null && !lstProcessExecutionLog.isEmpty()){
+					return Optional.ofNullable(lstProcessExecutionLog.get(0));
+				 }
+				 return Optional.empty();
+		}
 	}
 	
 	@Override
@@ -109,7 +128,7 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 		List<KfnmtProcessExecutionLog> resultList = query.getResultList();
 		List<ProcessExecutionLog> lstProcessExecutionLog = new ArrayList<ProcessExecutionLog>();
 		resultList.forEach(x->{
-			lstProcessExecutionLog.add(x.toDomain());
+			lstProcessExecutionLog.add(x.toDomainMaxDate());
 		});
 		 if(lstProcessExecutionLog!=null && !lstProcessExecutionLog.isEmpty()){
 				return Optional.ofNullable(lstProcessExecutionLog.get(0));

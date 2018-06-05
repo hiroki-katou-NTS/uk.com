@@ -1,7 +1,5 @@
 package nts.uk.shr.com.security.audittrail.correction.content;
 
-import nts.uk.shr.com.security.audittrail.UserInfo;
-
 public interface DataCorrection {
 	
 	/** 対象ユーザ */

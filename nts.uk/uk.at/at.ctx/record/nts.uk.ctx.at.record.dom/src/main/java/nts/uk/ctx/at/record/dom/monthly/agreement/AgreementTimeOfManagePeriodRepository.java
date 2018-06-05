@@ -29,12 +29,20 @@ public interface AgreementTimeOfManagePeriodRepository {
 	List<AgreementTimeOfManagePeriod> findByYearOrderByYearMonth(String employeeId, Year year);
 
 	/**
-	 * 検索　（社員リスト）
+	 * 検索　（社員IDリスト）
 	 * @param employeeIds 社員IDリスト
 	 * @param yearMonth 年月
 	 * @return 該当する管理期間の36協定時間
 	 */
 	List<AgreementTimeOfManagePeriod> findByEmployees(List<String> employeeIds, YearMonth yearMonth);
+
+	/**
+	 * 検索　（社員IDリストと年月リスト）
+	 * @param employeeIds 社員IDリスト
+	 * @param yearMonths 年月リスト
+	 * @return 該当する管理期間の36協定時間
+	 */
+	List<AgreementTimeOfManagePeriod> findBySidsAndYearMonths(List<String> employeeIds, List<YearMonth> yearMonths);
 	
 	/**
 	 * 登録および更新

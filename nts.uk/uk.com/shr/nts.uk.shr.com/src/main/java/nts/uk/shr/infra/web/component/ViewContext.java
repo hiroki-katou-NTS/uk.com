@@ -39,7 +39,9 @@ public class ViewContext extends UIComponentBase {
 	@Override
 	public void encodeBegin(FacesContext context) throws IOException {
 
-		String requestedPath = ((HttpServletRequest) context.getExternalContext().getRequest()).getServletPath();
+		HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest(); 
+		String requestedPath = request.getServletPath();
+		String queryString = request.getQueryString();
 		String applicationContextPath = context.getExternalContext().getApplicationContextPath();
 		
 		ResponseWriter rw = context.getResponseWriter();
@@ -48,7 +50,7 @@ public class ViewContext extends UIComponentBase {
 		writeRootPath(requestedPath, rw);
 		rw.write(",");
 
-		writeProgramInfo(requestedPath, rw, applicationContextPath);
+		writeProgramInfo(requestedPath, queryString, rw, applicationContextPath);
 		rw.write(",");
 		writeLoginPersonInfo(rw);
 		rw.write(",");
@@ -63,7 +65,7 @@ public class ViewContext extends UIComponentBase {
 
 	}
 	
-	private void writeProgramInfo (String requestedPath, ResponseWriter rw, String applicationContextPath) throws IOException {
+	private void writeProgramInfo (String requestedPath, String queryString, ResponseWriter rw, String applicationContextPath) throws IOException {
 		WebAppId webApi = Arrays.asList(WebAppId.values()).stream()
 				.filter(w -> applicationContextPath.indexOf(w.name) >= 0).findFirst().orElse(WebAppId.COM);
 		
@@ -74,6 +76,9 @@ public class ViewContext extends UIComponentBase {
 			String programName = TextResource.localize(pr.getPName());
 			builder.append("programName: '" + programName + "', ");
 			builder.append("path: '" + pr.getPPath() + "'");
+			if (queryString != null) {
+				builder.append(", queryString: '" + queryString + "'");
+			}
 		});
 		
 		rw.write("program: {" + builder.toString() + "}");
@@ -110,6 +115,7 @@ public class ViewContext extends UIComponentBase {
 		if(role != null){
 			builder.append("attendance: '" + role.forAttendance() + "', ");
 			builder.append("companyAdmin: '" + role.forCompanyAdmin() + "', ");
+			builder.append("groupCompanyAdmin: '" + role.forGroupCompaniesAdmin() + "', ");
 			builder.append("officeHelper: '" + role.forOfficeHelper() + "', ");
 			builder.append("payroll: '" + role.forPayroll() + "', ");
 			builder.append("personalInfo: '" + role.forPersonalInfo() + "', ");

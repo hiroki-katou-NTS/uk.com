@@ -31,7 +31,7 @@ public interface ApplicationOfEmployee {
 			List<PersonApprovalRoot> lstPersonRootInfor,
 			String companyID,
 			String sId,
-			ApplicationType appType,
+			AppTypes appType,
 			GeneralDate baseDate);
 	/**
 	 * 

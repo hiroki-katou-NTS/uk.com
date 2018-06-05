@@ -5,11 +5,11 @@ import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
- * 集計総拘束時間
+ * 期間別の総拘束時間
  * @author shuichi_ishida
  */
 @Getter
-public class AggregateTotalTimeSpentAtWork {
+public class AggregateTotalTimeSpentAtWork implements Cloneable {
 
 	/** 拘束残業時間 */
 	private AttendanceTimeMonth overTimeSpentAtWork;
@@ -57,6 +57,22 @@ public class AggregateTotalTimeSpentAtWork {
 		domain.varienceTimeSpentAtWork = varienceTimeSpentAtWork;
 		domain.totalTimeSpentAtWork = totalTimeSpentAtWork;
 		return domain;
+	}
+	
+	@Override
+	public AggregateTotalTimeSpentAtWork clone() {
+		AggregateTotalTimeSpentAtWork cloned = new AggregateTotalTimeSpentAtWork();
+		try {
+			cloned.overTimeSpentAtWork = new AttendanceTimeMonth(this.overTimeSpentAtWork.v());
+			cloned.midnightTimeSpentAtWork = new AttendanceTimeMonth(this.midnightTimeSpentAtWork.v());
+			cloned.holidayTimeSpentAtWork = new AttendanceTimeMonth(this.holidayTimeSpentAtWork.v());
+			cloned.varienceTimeSpentAtWork = new AttendanceTimeMonth(this.varienceTimeSpentAtWork.v());
+			cloned.totalTimeSpentAtWork = new AttendanceTimeMonth(this.totalTimeSpentAtWork.v());
+		}
+		catch (Exception e){
+			throw new RuntimeException("AggregateTotalTimeSpentAtWork clone error.");
+		}
+		return cloned;
 	}
 	
 	/**
