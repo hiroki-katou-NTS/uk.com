@@ -1536,9 +1536,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			int level = workplaceReportData.getLevel();
 			
 			String tagStr;
-			if (level != 0 && level >= totalHierarchyOption.getHighestLevelEnabled()) {
+			if (level != 0 && level >= totalHierarchyOption.getHighestLevelEnabled() && condition.getSettingDetailTotalOutput().isCumulativeWorkplace()) {
+				// Condition: not root workplace (lvl = 0), level within picked hierarchy zone, enable cumulative workplace.
 				tagStr = WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + workplaceReportData.getLevel();
 			} else if (condition.getSettingDetailTotalOutput().isGrossTotal())
+				// Condition: enable gross total, also implicitly root workplace
 				tagStr = WorkScheOutputConstants.GROSS_TOTAL;
 			else
 				tagStr = null;
