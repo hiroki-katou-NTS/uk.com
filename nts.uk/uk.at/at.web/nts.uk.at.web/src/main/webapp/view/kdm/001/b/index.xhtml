@@ -65,13 +65,13 @@
 		<!-- B5 -->
 		<div
 			class=" panel panel-frame person-info-panel flex valign-center">
-			<div>
+			<div data-bind="if: selectedPeriodItem() == 0">
 				<label>#{i18n.getText('KDM001_38')}</label> <label
 					data-bind="text: dispTotalRemainHours"></label>
 			</div>
 			<div style="margin-left: auto;">
 				<label>#{i18n.getText('KDM001_40')}</label> <label
-					data-bind="text: dispTotalExpiredDate"></label>
+					data-bind="text: dispExpiredDate"></label>
 			</div>
 		</div>
 	</div>
