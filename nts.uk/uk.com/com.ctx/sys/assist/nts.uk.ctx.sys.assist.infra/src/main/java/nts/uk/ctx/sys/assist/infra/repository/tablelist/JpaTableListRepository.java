@@ -1,11 +1,14 @@
 package nts.uk.ctx.sys.assist.infra.repository.tablelist;
 
+import java.awt.event.ItemEvent;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.Column;
@@ -68,10 +71,20 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 		}
 		return "";
 	}
-
+	
+	@Override
+	public List<TableList> getByOffsetAndNumber(int offset, int number) {
+		List<SspmtTableList> listTable = this.getEntityManager()
+				.createQuery(SELECT_ALL_QUERY_STRING, SspmtTableList.class)
+				.setFirstResult(offset).setMaxResults(number).getResultList();
+		
+		return listTable.stream().map(item -> item.toDomain()).collect(Collectors.toList());
+	}
+	
 	@Override
 	public List<TableList> getAllTableList() {
-		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, SspmtTableList.class).getList(item -> item.toDomain());
+		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, SspmtTableList.class)
+				.getList(item -> item.toDomain());
 	}
 
 	@Override
@@ -247,4 +260,5 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 		}
 		return "";
 	}
+
 }
