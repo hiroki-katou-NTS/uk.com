@@ -7,6 +7,7 @@ import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
+import nts.uk.ctx.at.record.dom.weekly.WeeklyCalculation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
@@ -118,6 +119,48 @@ public class AgreementTimeBreakdown {
 			
 			// 対象項目の時間を取得　と　丸め処理
 			val targetItemTime = monthlyCalculation.getTimeOfAttendanceItemId(attendanceItemId, roundingSet);
+			
+			// 勤怠項目IDに対応する時間を加算する
+			this.addTimeByAttendanceItemId(attendanceItemId, targetItemTime);
+		}
+	}
+	
+	/**
+	 * 36協定時間の対象項目を取得　（週用）
+	 * @param aggregateAtr 集計区分
+	 * @param weeklyCalculation 月別実績の月の計算
+	 * @param repositories 月次集計が必要とするリポジトリ
+	 */
+	public void getTargetItemOfAgreementForWeek(
+			MonthlyAggregateAtr aggregateAtr,
+			WeeklyCalculation weeklyCalculation,
+			RepositoriesRequiredByMonthlyAggr repositories){
+		
+		val companyId = weeklyCalculation.getCompanyId();
+		
+		// 集計結果　初期化
+		this.overTime = new AttendanceTimeMonth(0);
+		this.transferOverTime = new AttendanceTimeMonth(0);
+		this.holidayWorkTime = new AttendanceTimeMonth(0);
+		this.transferTime = new AttendanceTimeMonth(0);
+		this.flexExcessTime = new AttendanceTimeMonth(0);
+		this.withinPrescribedPremiumTime = new AttendanceTimeMonth(0);
+		this.weeklyPremiumTime = new AttendanceTimeMonth(0);
+		this.monthlyPremiumTime = new AttendanceTimeMonth(0);
+		
+		// 丸め設定取得
+		RoundingSetOfMonthly roundingSet = new RoundingSetOfMonthly(companyId);
+		val roundingSetOpt = repositories.getRoundingSetOfMonthly().find(companyId);
+		if (roundingSetOpt.isPresent()) roundingSet = roundingSetOpt.get();
+		
+		// 「時間帯超過設定」を取得
+		val outsideOTSetOpt = repositories.getOutsideOTSet().findById(companyId);
+		if (!outsideOTSetOpt.isPresent()) return;
+		val outsideOTSet = outsideOTSetOpt.get();
+		for (val attendanceItemId : outsideOTSet.getAllAttendanceItemIds()){
+			
+			// 対象項目の時間を取得　と　丸め処理
+			val targetItemTime = weeklyCalculation.getTimeOfAttendanceItemId(attendanceItemId, roundingSet);
 			
 			// 勤怠項目IDに対応する時間を加算する
 			this.addTimeByAttendanceItemId(attendanceItemId, targetItemTime);

@@ -173,6 +173,21 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 	public void addItemData(EmpInfoItemData domain) {
 		this.commandProxy().insert(toEntiy(domain));
 	}
+	
+	@Override
+	public void registerEmpInfoItemData(EmpInfoItemData domain) {
+		// Get exist item
+		PpemtEmpInfoItemDataPk key = new PpemtEmpInfoItemDataPk(domain.getPerInfoDefId(), domain.getRecordId());
+		Optional<PpemtEmpInfoItemData> existItem = this.queryProxy().find(key, PpemtEmpInfoItemData.class);
+		
+		if (!existItem.isPresent()) {
+			addItemData(domain);
+		} else {
+			updateEntiy(domain, existItem.get());
+			// Update table
+			this.commandProxy().update(existItem.get());
+		}
+	}
 
 	@Override
 	public void updateEmpInfoItemData(EmpInfoItemData domain) {

@@ -7,7 +7,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         Monthly = 1
     }
     export class ScreenModel {
-        screenMode: KnockoutObservable<number> = ko.observable(ScreenMode.Monthly);
+        screenMode: KnockoutObservable<number> = ko.observable(ScreenMode.Daily);
         isNewMode: KnockoutObservable<boolean> = ko.observable(false);
         enumShowTypeAtr: KnockoutObservableArray<any> = ko.observableArray([
             { code: 0, name: "全てを表示する" },
@@ -30,7 +30,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         ]);
         lstErrorAlarm: KnockoutObservableArray<any> = ko.observableArray([]);
         lstFilteredData: KnockoutObservableArray<any> = ko.observableArray([]);
-        selectedErrorAlarm: KnockoutObservable<any> = ko.observable(new ErrorAlarmWorkRecord());
+        selectedErrorAlarm: KnockoutObservable<any>;
         selectedErrorAlarmCode: KnockoutObservable<string> = ko.observable(null);
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray([
             { id: 'tab-1', title: nts.uk.resource.getText("KDW007_9"), content: '.settingTab', enable: ko.observable(true), visible: ko.observable(true) },
@@ -74,10 +74,13 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         ]);
         
         sideBar: KnockoutObservable<number>;
-        constructor() {
+        constructor(isDaily) {
             let self = this;
             self.sideBar = ko.observable(2);
-            
+            if (isDaily){ //monthly
+                self.screenMode(ScreenMode.Monthly);
+            } 
+            self.selectedErrorAlarm = ko.observable(new ErrorAlarmWorkRecord(self.screenMode()));
             self.selectedErrorAlarmCode.subscribe((code) => {
                 if (code) {
                     let foundItem = _.find(self.lstErrorAlarm(), (item) => {
@@ -145,14 +148,11 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             $("#errorAlarmWorkRecordName").focus();
         }
 
-        startPage(isDaily, code): JQueryPromise<any> {
+        startPage(code): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             nts.uk.ui.block.grayout();
-            if (isDaily != null){
-                
-                self.screenMode(isDaily);
-                }
+            
             if (self.screenMode() == ScreenMode.Daily) {
                 self.sideBar(1);
                 service.getAll().done((lstData) => {
@@ -333,7 +333,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     if (self.screenMode() == ScreenMode.Daily) {
                         service.update(data).done(() => {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                self.startPage(0, self.isNewMode() ? "U" + data.code : data.code).then(() => {
+                                self.startPage(self.isNewMode() ? "U" + data.code : data.code).then(() => {
                                     self.showTypeAtr(0);
                                 });
                                 if (self.lstErrorAlarm().length > 0) {
@@ -346,7 +346,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     } else if (self.screenMode() == ScreenMode.Monthly) {
                         service.updateMonthlyCondition(data).done(() => {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                self.startPage(1, self.isNewMode() ? "U" + data.code : data.code).then(() => {
+                                self.startPage(self.isNewMode() ? "U" + data.code : data.code).then(() => {
                                     self.showTypeAtr(0);
                                 });
                                 if (self.lstErrorAlarm().length > 0) {
@@ -369,7 +369,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_618" }).ifYes(() => {
                     service.remove(data).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-                            self.startPage(0, null);
+                            self.startPage(null);
                             if (self.lstErrorAlarm().length > 0) {
                                 $("#errorAlarmWorkRecordName").focus();
                             } else {
@@ -382,7 +382,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_618" }).ifYes(() => {
                     service.removeMonthlyCondition(data).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-                            self.startPage(1, null);
+                            self.startPage(null);
                             if (self.lstErrorAlarm().length > 0) {
                                 $("#errorAlarmWorkRecordName").focus();
                             } else {
@@ -581,8 +581,10 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         group2UseAtr: KnockoutObservable<boolean>;
         erAlAtdItemConditionGroup1: Array<ErAlAtdItemCondition>;
         erAlAtdItemConditionGroup2: Array<ErAlAtdItemCondition>;
+        screenMode: number;
 
-        constructor(param?: ErrorAlarmWorkRecord) {
+        constructor(screenMode: number, param?: ErrorAlarmWorkRecord) {
+            this.screenMode = screenMode;
             this.companyId = param && param.companyId ? ko.observable(param.companyId) : ko.observable('');
             this.errorAlarmCheckID = param && param.errorAlarmCheckID ? ko.observable(param.errorAlarmCheckID) : ko.observable('');
             this.code = param && param.code ? ko.observable(param.code) : ko.observable('');
@@ -605,11 +607,11 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             this.operatorGroup1 = param && param.operatorGroup1 ? ko.observable(param.operatorGroup1) : ko.observable(0);
             this.operatorGroup2 = param && param.operatorGroup2 ? ko.observable(param.operatorGroup2) : ko.observable(0);
             this.group2UseAtr = param && param.group2UseAtr ? ko.observable(param.group2UseAtr) : ko.observable(false);
-            this.erAlAtdItemConditionGroup1 = param && param.erAlAtdItemConditionGroup1 ? param.erAlAtdItemConditionGroup1.map((con) => { return new ErAlAtdItemCondition(con.NO, con); }) : this.initListAtdItemCondition();
-            this.erAlAtdItemConditionGroup2 = param && param.erAlAtdItemConditionGroup2 ? param.erAlAtdItemConditionGroup2.map((con) => { return new ErAlAtdItemCondition(con.NO, con); }) : this.initListAtdItemCondition();
+            this.erAlAtdItemConditionGroup1 = param && param.erAlAtdItemConditionGroup1 ? param.erAlAtdItemConditionGroup1.map((con) => { return new ErAlAtdItemCondition(con.NO, con, this.screenMode); }) : this.initListAtdItemCondition();
+            this.erAlAtdItemConditionGroup2 = param && param.erAlAtdItemConditionGroup2 ? param.erAlAtdItemConditionGroup2.map((con) => { return new ErAlAtdItemCondition(con.NO, con, this.screenMode); }) : this.initListAtdItemCondition();
             this.errorDisplayItem.subscribe((itemCode) => {
                 if (itemCode) {
-                    service.getAttendanceItemByCodes([itemCode]).done((lstItems) => {
+                    service.getAttendanceItemByCodes([itemCode], this.screenMode).done((lstItems) => {
                         if (lstItems && lstItems.length > 0) {
                             this.errorDisplayItemName(lstItems[0].attendanceItemName);
                         }
@@ -623,9 +625,9 @@ module nts.uk.at.view.kdw007.a.viewmodel {
 
         initListAtdItemCondition() {
             let resultList = [];
-            resultList.push(new ErAlAtdItemCondition(0, null));
-            resultList.push(new ErAlAtdItemCondition(1, null));
-            resultList.push(new ErAlAtdItemCondition(2, null));
+            resultList.push(new ErAlAtdItemCondition(0, null, this.screenMode));
+            resultList.push(new ErAlAtdItemCondition(1, null, this.screenMode));
+            resultList.push(new ErAlAtdItemCondition(2, null, this.screenMode));
             return resultList;
         }
     }
@@ -1068,9 +1070,11 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         displayTarget: KnockoutObservable<string>;
         displayRightCompare: KnockoutObservable<string>;
         displayRightOperator: KnockoutObservable<string>;
+        screenMode: number;
 
-        constructor(NO, param) {
+        constructor(NO, param, screenMode: number) {
             let self = this;
+            self.screenMode = screenMode;
             self.targetNO = ko.observable(NO);
             self.conditionAtr = param ? ko.observable(param.conditionAtr) : ko.observable(0);
             self.useAtr = param ? ko.observable(param.useAtr) : ko.observable(false);
@@ -1169,7 +1173,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 } else {
                     // If is compare with a attendance item
                     if (self.singleAtdItem()) {
-                        service.getAttendanceItemByCodes([self.singleAtdItem()]).done((lstItems) => {
+                        service.getAttendanceItemByCodes([self.singleAtdItem()], self.screenMode).done((lstItems) => {
                             if (lstItems && lstItems.length > 0) {
                                 self.displayLeftCompare(lstItems[0].attendanceItemName);
                                 self.displayRightCompare("");
@@ -1185,7 +1189,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.displayTarget("");
             if (self.conditionAtr() === 2) {
                 if (self.uncountableAtdItem()) {
-                    service.getAttendanceItemByCodes([self.uncountableAtdItem()]).done((lstItems) => {
+                    service.getAttendanceItemByCodes([self.uncountableAtdItem()], self.screenMode).done((lstItems) => {
                         if (lstItems && lstItems.length > 0) {
                             self.displayTarget(lstItems[0].attendanceItemName);
                         }
@@ -1193,7 +1197,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 }
             } else {
                 if (self.countableAddAtdItems().length > 0) {
-                    service.getAttendanceItemByCodes(self.countableAddAtdItems()).done((lstItems) => {
+                    service.getAttendanceItemByCodes(self.countableAddAtdItems(), self.screenMode).done((lstItems) => {
                         if (lstItems && lstItems.length > 0) {
                             for (let i = 0; i < lstItems.length; i++) {
                                 let operator = (i === (lstItems.length - 1)) ? "" : " + ";
@@ -1202,7 +1206,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                         }
                     }).then(() => {
                         if (self.countableSubAtdItems().length > 0) {
-                            service.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
+                            service.getAttendanceItemByCodes(self.countableSubAtdItems(), self.screenMode).done((lstItems) => {
                                 if (lstItems && lstItems.length > 0) {
                                     for (let i = 0; i < lstItems.length; i++) {
                                         let operator = (i === (lstItems.length - 1)) ? "" : " - ";
@@ -1214,7 +1218,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                         }
                     });
                 } else if (self.countableSubAtdItems().length > 0) {
-                    service.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
+                    service.getAttendanceItemByCodes(self.countableSubAtdItems(), self.screenMode).done((lstItems) => {
                         if (lstItems && lstItems.length > 0) {
                             for (let i = 0; i < lstItems.length; i++) {
                                 let operator = (i === (lstItems.length - 1)) ? "" : " - ";
@@ -1228,10 +1232,10 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             }
         }
 
-        openAtdItemConditionDialog() {
+        openAtdItemConditionDialog(mode) {
             let self = this;
-            let param = ko.mapping.toJS(this);
-            nts.uk.ui.windows.setShared("KDW007BParams", param, true);
+            let data = ko.mapping.toJS(this);
+            nts.uk.ui.windows.setShared("KDW007BParams", {'mode': mode, 'data': data}, true);
             nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/b/index.xhtml", { title: "計算式の設定" }).onClosed(() => {
                 let output = getShared("KDW007BResult");
                 if (output) {

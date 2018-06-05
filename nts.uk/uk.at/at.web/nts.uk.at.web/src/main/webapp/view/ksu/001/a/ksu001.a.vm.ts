@@ -14,6 +14,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
      * reference file a.start.ts
      */
     export class ScreenModel {
+        employeeIdLogin: string = null;
         //tree-grid
         itemsTree: KnockoutObservableArray<Node>;
         selectedCodeTree: KnockoutObservableArray<Node>;
@@ -275,6 +276,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $.when(__viewContext.viewModel.viewO.getWorkTypeTimeAndStartEndDate(), self.getDataScheduleDisplayControl(), self.getDataComPattern()).done(() => {
                 self.dtPrev(new Date(__viewContext.viewModel.viewO.startDateScreenA));
                 self.dtAft(new Date(__viewContext.viewModel.viewO.endDateScreenA));
+                self.employeeIdLogin = __viewContext.viewModel.viewO.employeeIdLogin;
                 // get state of list workTypeCode
                 // get data for screen A
                 let lstWorkTypeCode = [];
@@ -629,6 +631,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     bodyHeightMode: "dynamic",
                     windowXOccupation: 134,
                     windowYOccupation: 210,
+                    manipulatorId: self.employeeIdLogin,
+                    manipulatorKey: "empId",
                     updateMode: "stick",
                     pasteOverWrite: true,
                     stickOverWrite: true,
@@ -667,8 +671,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         updateExTable(): void {
             let self = this;
-            // reset state of cell
-            $("#extable").find(".ex-body-detail").data("x-det", null);
             // save scroll's position
             $("#extable").exTable("saveScroll");
             self.stopRequest(false);
@@ -843,19 +845,28 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         return true;
                     }
 
-                    let stateWorkTypeCd: any = _.find(self.listCheckNeededOfWorkTime(), ['workTypeCode', data.workTypeCode]);
+                    let workTypeCd: any = _.find(self.listCheckNeededOfWorkTime(), ['workTypeCode', data.workTypeCode]);
                     // if workTypeCode is not required( state = 2) worktime is needless
-                    if (stateWorkTypeCd && stateWorkTypeCd.state == 2 && data.workTimeCode !== null && data.workTimeCode !== '000') {
+                    if (workTypeCd && workTypeCd.state == 2 && data.workTimeCode !== null && data.workTimeCode !== '000') {
                         return function() {
                             alertError({ messageId: 'Msg_434' });
                         };
                     }
                     // if workTypeCode is required( state = 0) worktime is need
-                    if (stateWorkTypeCd && stateWorkTypeCd.state == 0 && (data.workTimeCode === null || data.workTimeCode === '000')) {
+                    if (workTypeCd && workTypeCd.state == 0 && (data.workTimeCode === null || data.workTimeCode === '000')) {
                         return function() {
                             alertError({ messageId: 'Msg_435' });
                         };
                     }
+
+                    let stateWorkTypeCode = _.find(self.listStateWorkTypeCode(), { 'workTypeCode': data.workTypeCode }).state;
+                    // set color for cell
+                    $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data) {
+                        if (stateWorkTypeCode == 3) return { textColor: "#0000ff" }; // color-attendance
+                        else if (stateWorkTypeCode == 0) return { textColor: "#ff0000" };// color-schedule-sunday
+                        else return { textColor: "#FF7F27" };// color-half-day-work
+                    });
+
                     return true;
                 });
             }).always(() => {
@@ -868,8 +879,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         updateDetailAndHorzSum(): void {
             let self = this;
-            // reset state of cell
-            $("#extable").find(".ex-body-detail").data("x-det", null);
             // save scroll's position
             $("#extable").exTable("saveScroll");
             //Get dates in time period
@@ -952,6 +961,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     //                    $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, {});
 
                     setTimeout(function() { $("#extable").exTable("scrollBack", 2); }, 1000);
+                    
+                    //set lock cell
+                        _.forEach(self.dataSource(), (x) => {
+                            if (x.confirmedAtr == 1) {
+                                $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
+                            }
+                        });
 
                     self.stopRequest(true);
                 });
@@ -1022,6 +1038,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         //                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
 
                         setTimeout(function() { $("#extable").exTable("scrollBack", 2); }, 1000);
+                        
+                        //set lock cell
+                        _.forEach(self.dataSource(), (x) => {
+                            if (x.confirmedAtr == 1) {
+                                $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
+                            }
+                        });
                     });
                 }).always(() => {
                     self.stopRequest(true);
@@ -1092,6 +1115,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         //                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
 
                         setTimeout(function() { $("#extable").exTable("scrollBack", 2); }, 1000);
+                        
+                        //set lock cell
+                        _.forEach(self.dataSource(), (x) => {
+                            if (x.confirmedAtr == 1) {
+                                $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
+                            }
+                        });
                     });
                 }).always(() => {
                     self.stopRequest(true);
@@ -1115,7 +1145,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
 
         /**
-         * Get data of Basic Schedule = listDataShortName + listDataTimeZone
+         * Get data of Basic Schedule = listDataShortName + listDataTimeZone + dataWScheState
          */
         getDataBasicSchedule(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred(),
@@ -1158,6 +1188,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         itemDataSource.scheduleEndClock = null;
                     }
                 });
+
+                // set data for from table Sche_State
+                self.dataWScheduleState(data.listDataScheState);
 
                 dfd.resolve();
             }).fail(function() {
@@ -1274,22 +1307,22 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         /**
          * Get data WorkScheduleState
          */
-        getDataWorkScheduleState(): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred(),
-                obj = {
-                    sId: self.listSid(),
-                    startDate: self.dtPrev(),
-                    endDate: self.dtAft(),
-                };
-            service.getDataWorkScheduleState(obj).done(function(data) {
-                self.dataWScheduleState(data);
-                dfd.resolve();
-            }).fail(function() {
-                dfd.reject();
-            });
-            return dfd.promise();
-        }
+        //        getDataWorkScheduleState(): JQueryPromise<any> {
+        //            let self = this,
+        //                dfd = $.Deferred(),
+        //                obj = {
+        //                    sId: self.listSid(),
+        //                    startDate: self.dtPrev(),
+        //                    endDate: self.dtAft(),
+        //                };
+        //            service.getDataWorkScheduleState(obj).done(function(data) {
+        //                self.dataWScheduleState(data);
+        //                dfd.resolve();
+        //            }).fail(function() {
+        //                dfd.reject();
+        //            });
+        //            return dfd.promise();
+        //        }
 
         /**
          * Get data WkpSpecificDate, ComSpecificDate, PublicHoliday
@@ -1423,7 +1456,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let arrFilter = _.filter(arrTmp, { 'rowIndex': item.rowIndex, 'columnKey': item.columnKey });
                     if (arrFilter.length > 1) {
                         _.each(arrFilter, (data) => {
-                            if (data.value.startTime == "" || data.value.endTime == "") {
+                            if ((data.value.startTime == "" && data.value.endTime != "") || (data.value.startTime != "" && data.value.endTime == "")) {
                                 _.remove(arrCell, data);
                             }
                         });
@@ -1442,6 +1475,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     bounceAtr: 1
                 }] : null;
 
+                //TO-DO
+                // let workScheduleStateCommands: any = null;
+
                 arrObj.push({
                     // slice string '_YYYYMMDD' to 'YYYYMMDD'
                     date: moment.utc(arrCell[i].columnKey.slice(1, arrCell[i].columnKey.length), 'YYYYMMDD').toISOString(),
@@ -1452,6 +1488,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     //set static confirmedAtr= 0
                     confirmedAtr: 0,
                     workScheduleTimeZoneSaveCommands: workScheduleTimeZone
+                    //workScheduleStateCommands: workScheduleStateCommands
                 });
             }
 

@@ -19,6 +19,9 @@ public interface RegulationInfoEmployeePub {
 	 * @param query the query
 	 * @return the list
 	 */
+	// <<Public>> 管理者条件で社員を検索して並び替える
+	// <<Public>> 個人情報条件で社員を検索して並び替える
+	// <<Public>> 就業条件で社員を検索して並び替える
 	public List<RegulationInfoEmployeeExport> find(EmployeeSearchQueryDto query);
 
 	/**

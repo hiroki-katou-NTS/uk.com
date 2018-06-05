@@ -195,14 +195,38 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	public EmployeeBasicInfoExport findBySId(String sId) {
 
 		EmployeeBasicInfoExport result = new EmployeeBasicInfoExport();
-		// Employee Opt
+		// Get Employee
 		Optional<EmployeeDataMngInfo> empOpt = this.empDataMngRepo.findByEmpId(sId);
 		if (!empOpt.isPresent()) {
 			return null;
 		}
-		// Get Employee
+		
 		EmployeeDataMngInfo emp = empOpt.get();
-		// Person Opt
+
+		// Lay thông tin lịch sử vào ra công ty của nhân viên
+		Date date = new Date();
+		GeneralDate systemDate = GeneralDate.legacyDate(date);
+		String cid = AppContexts.user().companyId();
+		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(cid, emp.getEmployeeId());
+
+		AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(emp.getEmployeeId());
+
+		Optional.ofNullable(affComHistByEmp).ifPresent(f -> {
+			if (f.items() != null) {
+
+				List<AffCompanyHistItem> filter = f.getLstAffCompanyHistoryItem();
+				// lấy lịch sử ra vào cty gần nhất (order by RetiredDate DESC) 
+				filter.sort((x, y) -> y.getDatePeriod().end().compareTo(x.getDatePeriod().end()));
+
+				// set entryDate
+				result.setEntryDate(filter.get(0).getDatePeriod().start());
+
+				// set retireDate
+				result.setRetiredDate(filter.get(0).getDatePeriod().end());
+			}
+		});
+
+		// Lay thông tin Person
 		Optional<Person> personOpt = this.personRepository.getByPersonId(emp.getPersonId());
 		if (!personOpt.isPresent()) {
 			return null;
@@ -220,28 +244,6 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		result.setEmployeeCode(emp.getEmployeeCode().v());
 		result.setCompanyMailAddr(new MailAddress(""));
 		result.setBirthDay(person.getBirthDate());
-
-		Date date = new Date();
-		GeneralDate systemDate = GeneralDate.legacyDate(date);
-		String cid = AppContexts.user().companyId();
-		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(cid, emp.getEmployeeId());
-
-		AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(emp.getEmployeeId());
-
-		AffCompanyHistItem affComHistItem = new AffCompanyHistItem();
-
-		if (affComHistByEmp.items() != null) {
-
-			List<AffCompanyHistItem> filter = affComHistByEmp.getLstAffCompanyHistoryItem().stream().filter(m -> {
-				return m.end().afterOrEquals(systemDate) && m.start().beforeOrEquals(systemDate);
-			}).collect(Collectors.toList());
-
-			if (!filter.isEmpty()) {
-				affComHistItem = filter.get(0);
-				result.setRetiredDate(affComHistItem.end());
-				result.setEntryDate(affComHistItem.start());
-			}
-		}
 
 		return result;
 	}
@@ -548,7 +550,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		result.setEmployeeId(emp.getEmployeeId());
 		result.setBusinessName(person.getPersonNameGroup().getBusinessName().v());
 		result.setEmployeeCode(emp.getEmployeeCode().v());
-		
+
 		return result;
 	}
 

@@ -203,8 +203,10 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 				paramQuery.getSortOrderNo());
 
 		// sort
-		List<Order> orders = this.getOrders(paramQuery.getSystemType(), 1, sortConditions); // TODO: fixed name type
-		cq.orderBy(orders);
+		if (paramQuery.getSystemType() != SystemType.ADMINISTRATOR.value) {
+			List<Order> orders = this.getOrders(paramQuery.getSystemType(), 1, sortConditions); // TODO: fixed name type
+			cq.orderBy(orders);
+		}
 
 		// execute query & add to resultList
 		resultList.addAll(em.createQuery(cq).getResultList());
@@ -296,11 +298,10 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 				orders.add(cb.asc(root.get(EmployeeDataView_.comStrDate)));
 				break;
 			case 6: // NAME
-				if (nameType == 1) {
-					orders.add(cb.asc(root.get(EmployeeDataView_.personNameKana)));
-				} else {
-					orders.add(cb.asc(root.get(EmployeeDataView_.businessNameKana)));
-				}
+				// 現在は、氏名の種類を選択する機能がないので、「ビジネスネーム日本語」固定で
+				// => 「氏名カナ」 ＝ 「ビジネスネームカナ」
+				orders.add(cb.asc(root.get(EmployeeDataView_.businessNameKana)));
+				// TODO: orders.add(cb.asc(root.get(EmployeeDataView_.personNameKana)));
 				break;
 			}
 		});

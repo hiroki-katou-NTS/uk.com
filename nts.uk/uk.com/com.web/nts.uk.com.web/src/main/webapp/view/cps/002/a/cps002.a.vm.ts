@@ -446,12 +446,10 @@ module cps002.a.vm {
 
                 layout.listItemCls(data.itemsClassification || []);
                 if (layout.listItemCls().length > 0) {
-                    _.defer(() => {
-                        new vc(layout.listItemCls());
-                        _.defer(() => {
-                            $('.drag-panel input:not(:disabled):first').focus();
-                        });
-                    });
+                    new vc(layout.listItemCls());
+                    setTimeout(() => {
+                        $('.drag-panel input:not(:disabled):first').focus();
+                    }, 100);
                 }
 
             });
@@ -464,7 +462,6 @@ module cps002.a.vm {
                 }
 
             });
-
 
         }
 
@@ -483,8 +480,6 @@ module cps002.a.vm {
             }
 
             self.gotoStep2();
-
-
         }
 
         isUseInitValue() {

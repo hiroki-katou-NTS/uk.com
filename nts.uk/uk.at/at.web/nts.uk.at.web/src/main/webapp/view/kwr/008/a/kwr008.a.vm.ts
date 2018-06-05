@@ -142,7 +142,8 @@ module nts.uk.at.view.kwr008.a {
                 data.breakPage        = self.selectedBreakPage().toString();
                 data.employees = [];
                 for (var employeeCode of self.selectedEmployeeCode()) {
-                    data.employees.push(self.findByCodeEmployee(employeeCode));
+                    let emp = self.findByCodeEmployee(employeeCode);
+                    if (emp) data.employees.push(emp);
                 }
                 //ユーザ固有情報「年間勤務表（36チェックリスト）」を更新する
                 self.saveOutputConditionAnnualWorkSchedule(new model.OutputConditionAnnualWorkScheduleChar(self.selectedOutputItem(), self.selectedBreakPage()));

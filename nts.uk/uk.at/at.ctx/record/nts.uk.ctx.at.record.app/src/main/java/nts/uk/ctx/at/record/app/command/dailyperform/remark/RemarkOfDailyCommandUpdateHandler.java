@@ -10,7 +10,6 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
 @Stateless
 public class RemarkOfDailyCommandUpdateHandler extends CommandFacade<RemarkOfDailyCommand> {
 
-	/** TODO: no repo*/
 	@Inject
 	private RemarksOfDailyPerformRepo repo;
 
