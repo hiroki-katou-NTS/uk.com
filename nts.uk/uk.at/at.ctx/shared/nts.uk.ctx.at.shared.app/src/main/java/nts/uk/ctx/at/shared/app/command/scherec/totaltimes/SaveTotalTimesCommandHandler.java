@@ -14,13 +14,10 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalSubjects;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.WorkTypeAtr;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -32,14 +29,6 @@ public class SaveTotalTimesCommandHandler extends CommandHandler<TotalTimesComma
 	/** The total times repo. */
 	@Inject
 	private TotalTimesRepository totalTimesRepo;
-
-	/** The work time setting repository. */
-	@Inject
-	private WorkTimeSettingRepository workTimeSettingRepository;
-
-	/** The work type repository. */
-	@Inject
-	private WorkTypeRepository workTypeRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -70,37 +59,8 @@ public class SaveTotalTimesCommandHandler extends CommandHandler<TotalTimesComma
 		// Convert to domain
 		TotalTimes totalTimes = command.toDomain(companyId);
 
-		// valid list total subjects
-		this.validTotalSubject(companyId, totalTimes);
-
 		// Alway has 30 items and allow update only
 		this.totalTimesRepo.update(totalTimes);
-	}
-
-	/**
-	 * Valid total subject.
-	 *
-	 * @param totalTime
-	 *            the total time
-	 */
-	private void validTotalSubject(String companyId, TotalTimes totalTime) {
-//		totalTime.getTotalSubjects().stream()
-//				.filter(item -> item.getWorkTypeAtr().equals(WorkTypeAtr.WORKTYPE))
-//				.forEach(item -> {
-//					if (!workTypeRepository.findByPK(companyId, item.getWorkTypeCode().v())
-//							.isPresent()) {
-//						throw new BusinessException("Msg_216", "KMK009_8");
-//					}
-//				});
-//
-//		totalTime.getTotalSubjects().stream()
-//				.filter(item -> item.getWorkTypeAtr().equals(WorkTypeAtr.WORKINGTIME))
-//				.forEach(item -> {
-//					if (!workTimeSettingRepository.findByCode(companyId, item.getWorkTypeCode().v())
-//							.isPresent()) {
-//						throw new BusinessException("Msg_216", "KMK009_9");
-//					}
-//				});
 	}
 
 	/**
@@ -145,12 +105,23 @@ public class SaveTotalTimesCommandHandler extends CommandHandler<TotalTimesComma
 		command.setTotalCondition(totalConditionDto);
 
 		List<TotalSubjectsDto> listTotalSubjects = new ArrayList<>();
-		for (TotalSubjects totalObj : totalTimeDb.getTotalSubjects()) {
-			TotalSubjectsDto dto = new TotalSubjectsDto();
-			dto.setWorkTypeAtr(totalObj.getWorkTypeAtr().value);
-			dto.setWorkTypeCode(totalObj.getWorkTypeCode().v());
-			listTotalSubjects.add(dto);
-		}
+		
+		totalTimeDb.getSummaryList().ifPresent(item -> {
+			item.getWorkTimeCodes().forEach(workTimeCode -> {
+				TotalSubjectsDto dto = new TotalSubjectsDto();
+				dto.setWorkTypeAtr(WorkTypeAtr.WORKINGTIME.value);
+				dto.setWorkTypeCode(workTimeCode);
+				listTotalSubjects.add(dto);
+			});
+			
+			item.getWorkTypeCodes().forEach(workTypeCode -> {
+				TotalSubjectsDto dto = new TotalSubjectsDto();
+				dto.setWorkTypeAtr(WorkTypeAtr.WORKTYPE.value);
+				dto.setWorkTypeCode(workTypeCode);
+				listTotalSubjects.add(dto);
+			});
+		});
+		
 		command.setListTotalSubjects(listTotalSubjects);
 	}
 }
