@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.sys.assist.dom.storage.ExtractionKeyCategory;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -42,52 +41,52 @@ public class CategoryFieldMt extends AggregateRoot {
 	/**
 	 * 抽出キー区分1
 	 */
-	private ExtractionKeyCategory clsKeyQuery1;
+	private String clsKeyQuery1;
 
 	/**
 	 * 抽出キー区分2
 	 */
-	private ExtractionKeyCategory clsKeyQuery2;
+	private String clsKeyQuery2;
 
 	/**
 	 * 抽出キー区分3
 	 */
-	private ExtractionKeyCategory clsKeyQuery3;
+	private String clsKeyQuery3;
 
 	/**
 	 * 抽出キー区分4
 	 */
-	private ExtractionKeyCategory clsKeyQuery4;
+	private String clsKeyQuery4;
 
 	/**
 	 * 抽出キー区分5
 	 */
-	private ExtractionKeyCategory clsKeyQuery5;
+	private String clsKeyQuery5;
 
 	/**
 	 * 抽出キー区分6
 	 */
-	private ExtractionKeyCategory clsKeyQuery6;
+	private String clsKeyQuery6;
 
 	/**
 	 * 抽出キー区分7
 	 */
-	private ExtractionKeyCategory clsKeyQuery7;
+	private String clsKeyQuery7;
 
 	/**
 	 * 抽出キー区分8
 	 */
-	private ExtractionKeyCategory clsKeyQuery8;
+	private String clsKeyQuery8;
 
 	/**
 	 * 抽出キー区分9
 	 */
-	private ExtractionKeyCategory clsKeyQuery9;
+	private String clsKeyQuery9;
 
 	/**
 	 * 抽出キー区分10
 	 */
-	private ExtractionKeyCategory clsKeyQuery10;
+	private String clsKeyQuery10;
 
 	/**
 	 * 抽出キー条件固定
@@ -357,7 +356,7 @@ public class CategoryFieldMt extends AggregateRoot {
 	/**
 	 * 親テーブル有無
 	 */
-	private NotUseAtr hasParentTable;
+	private NotUseAtr hasParentTblFlg;
 
 	/**
 	 * 親テーブル物理名
@@ -489,10 +488,10 @@ public class CategoryFieldMt extends AggregateRoot {
 	private String fieldAcqStartDate;
 
 	public CategoryFieldMt(String categoryId, int tableNo, String tableJapanName, String tableEnglishName,
-			String timeStopDelete, int clsKeyQuery1, int clsKeyQuery2,
-			int clsKeyQuery3, int clsKeyQuery4, int clsKeyQuery5,
-			int clsKeyQuery6, int clsKeyQuery7, int clsKeyQuery8,
-			int clsKeyQuery9, int clsKeyQuery10, String defaultCondKeyQuery,
+			String timeStopDelete, String clsKeyQuery1, String clsKeyQuery2,
+			String clsKeyQuery3, String clsKeyQuery4, String clsKeyQuery5,
+			String clsKeyQuery6, String clsKeyQuery7, String clsKeyQuery8,
+			String clsKeyQuery9, String clsKeyQuery10, String defaultCondKeyQuery,
 			String fieldKeyQuery1, String fieldKeyQuery2, String fieldKeyQuery3, String fieldKeyQuery4,
 			String fieldKeyQuery5, String fieldKeyQuery6, String fieldKeyQuery7, String fieldKeyQuery8,
 			String fieldKeyQuery9, String fieldKeyQuery10, String fieldDate1, String fieldDate2, String fieldDate3,
@@ -505,7 +504,7 @@ public class CategoryFieldMt extends AggregateRoot {
 			String filedKeyUpdate11, String filedKeyUpdate12, String filedKeyUpdate13, String filedKeyUpdate14,
 			String filedKeyUpdate15, String filedKeyUpdate16, String filedKeyUpdate17, String filedKeyUpdate18,
 			String filedKeyUpdate19, String filedKeyUpdate20, int historyCls, String parentTblJpName,
-			int hasParentTable, String parentTblName, String fieldParent1, String fieldParent2,
+			int hasParentTblFlg, String parentTblName, String fieldParent1, String fieldParent2,
 			String fieldParent3, String fieldParent4, String fieldParent5, String fieldParent6, String fieldParent7,
 			String fieldParent8, String fieldParent9, String fieldParent10, String fieldChild1, String fieldChild2,
 			String fieldChild3, String fieldChild4, String fieldChild5, String fieldChild6, String fieldChild7,
@@ -517,16 +516,16 @@ public class CategoryFieldMt extends AggregateRoot {
 		this.tableJapanName = tableJapanName;
 		this.tableEnglishName = tableEnglishName;
 		this.timeStopDelete = timeStopDelete;
-		this.clsKeyQuery1 = EnumAdaptor.valueOf(clsKeyQuery1, ExtractionKeyCategory.class);
-		this.clsKeyQuery2 = EnumAdaptor.valueOf(clsKeyQuery2, ExtractionKeyCategory.class);
-		this.clsKeyQuery3 = EnumAdaptor.valueOf(clsKeyQuery3, ExtractionKeyCategory.class);
-		this.clsKeyQuery4 = EnumAdaptor.valueOf(clsKeyQuery4, ExtractionKeyCategory.class);
-		this.clsKeyQuery5 = EnumAdaptor.valueOf(clsKeyQuery6, ExtractionKeyCategory.class);
-		this.clsKeyQuery6 = EnumAdaptor.valueOf(clsKeyQuery6, ExtractionKeyCategory.class);
-		this.clsKeyQuery7 = EnumAdaptor.valueOf(clsKeyQuery7, ExtractionKeyCategory.class);
-		this.clsKeyQuery8 = EnumAdaptor.valueOf(clsKeyQuery8, ExtractionKeyCategory.class);
-		this.clsKeyQuery9 = EnumAdaptor.valueOf(clsKeyQuery9, ExtractionKeyCategory.class);
-		this.clsKeyQuery10 = EnumAdaptor.valueOf(clsKeyQuery10, ExtractionKeyCategory.class);
+		this.clsKeyQuery1 = clsKeyQuery1;
+		this.clsKeyQuery2 = clsKeyQuery2;
+		this.clsKeyQuery3 = clsKeyQuery3;
+		this.clsKeyQuery4 = clsKeyQuery4;
+		this.clsKeyQuery5 = clsKeyQuery5;
+		this.clsKeyQuery6 = clsKeyQuery6;
+		this.clsKeyQuery7 = clsKeyQuery7;
+		this.clsKeyQuery8 = clsKeyQuery8;
+		this.clsKeyQuery9 = clsKeyQuery9;
+		this.clsKeyQuery10 = clsKeyQuery10;
 		this.defaultCondKeyQuery = defaultCondKeyQuery;
 		this.fieldKeyQuery1 = fieldKeyQuery1;
 		this.fieldKeyQuery2 = fieldKeyQuery2;
@@ -580,7 +579,7 @@ public class CategoryFieldMt extends AggregateRoot {
 		this.filedKeyUpdate20 = filedKeyUpdate20;
 		this.historyCls = EnumAdaptor.valueOf(historyCls, HistoryDiviSion.class);
 		this.parentTblJpName = parentTblJpName;
-		this.historyCls = EnumAdaptor.valueOf(hasParentTable, HistoryDiviSion.class);
+		this.historyCls = EnumAdaptor.valueOf(hasParentTblFlg, HistoryDiviSion.class);
 		this.parentTblName = parentTblName;
 		this.fieldParent1 = fieldParent1;
 		this.fieldParent2 = fieldParent2;
