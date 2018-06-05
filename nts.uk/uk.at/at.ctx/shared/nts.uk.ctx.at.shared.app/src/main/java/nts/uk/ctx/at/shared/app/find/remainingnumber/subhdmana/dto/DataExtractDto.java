@@ -48,9 +48,6 @@ public class DataExtractDto {
 	// 半日相当時間
 	private int halfDayTime;
 
-	// 消滅日
-	private GeneralDate disapearDate;
-
 	// ID
 	private String comDayOffID;
 
@@ -81,7 +78,7 @@ public class DataExtractDto {
 				leaveData.getOccurredDays().v().doubleValue(), leaveData.getOccurredTimes().v().intValue(),
 				leaveData.getUnUsedDays().v().doubleValue(), leaveData.getUnUsedTimes().v().intValue(),
 				leaveData.getSubHDAtr().value, leaveData.getFullDayTime().v().intValue(),
-				leaveData.getHalfDayTime().v().intValue(), leaveData.getDisapearDate().orElse(null));
+				leaveData.getHalfDayTime().v().intValue());
 	}
 	
 	public static DataExtractDto convertFromCompensatoryDataToDto(int type, CompensatoryDayOffManaData compensatoryData) {
@@ -93,7 +90,7 @@ public class DataExtractDto {
 	
 	public DataExtractDto(int type, String iD, String cID, String sID, int unknownDate, GeneralDate dayOffDate,
 			GeneralDate expiredDate, double occurredDays, int occurredTimes, double unUsedDays, int unUsedTimes,
-			int subHDAtr, int fullDayTime, int halfDayTime, GeneralDate disapearDate) {
+			int subHDAtr, int fullDayTime, int halfDayTime) {
 		this.type = type;
 		this.ID = iD;
 		this.cID = cID;
@@ -108,7 +105,6 @@ public class DataExtractDto {
 		this.subHDAtr = subHDAtr;
 		this.fullDayTime = fullDayTime;
 		this.halfDayTime = halfDayTime;
-		this.disapearDate = disapearDate;
 	}
 	public DataExtractDto(int type, String comDayOffID, String sID, String cID, int unknownDate, GeneralDate dayOffDate,
 			double requireDays, int requiredTimes, double remainDays, int remainTimes) {
