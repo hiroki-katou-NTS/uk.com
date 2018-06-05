@@ -48,6 +48,15 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 		}
 		return dto;
 	}
+	
+	public void correctItems(Map<Integer, OptionalItem> optionalMaster) {
+		optionalItems.removeIf(item -> !item.isHaveData());
+		optionalItems.stream().forEach(item -> {
+			if(item.isNeedCorrect()) {
+				item.correctItem(optionalMaster.get(item.getItemNo()).getOptionalItemAtr());
+			}
+		});
+	}
 
 	private static OptionalItemAtr getAttrFromMaster(Map<Integer, OptionalItem> master, AnyItemValue c) {
 		return master.get(c.getItemNo().v()).getOptionalItemAtr();

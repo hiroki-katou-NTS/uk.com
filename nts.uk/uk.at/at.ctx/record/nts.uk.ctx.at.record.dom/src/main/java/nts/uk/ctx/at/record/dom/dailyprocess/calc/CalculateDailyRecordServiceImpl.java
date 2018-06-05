@@ -502,6 +502,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			case FIXED_WORK:
 				/* 固定 */
 				val fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, workInfo.getRecordInfo().getWorkTimeCode().v());
+				if(!fixedWorkSetting.isPresent()) return ManageReGetClass.cantCalc();
 				List<OverTimeOfTimeZoneSet> fixOtSetting = Collections.emptyList();
 				if(workType.get().getAttendanceHolidayAttr().isFullTime()) {
 					fixOtSetting = fixedWorkSetting.get().getLstHalfDayWorkTimezone().stream().filter(tc -> tc.getDayAtr().equals(AmPmAtr.ONE_DAY)).findFirst().get().getWorkTimezone().getLstOTTimezone();
@@ -1003,9 +1004,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 * @return
 	 */
 	private IntegrationOfDaily calcOptionalItem(IntegrationOfDaily integrationOfDaily) {
-		if(!integrationOfDaily.getAnyItemValue().isPresent()) {
-			return integrationOfDaily;
-		}
+//		if(!integrationOfDaily.getAnyItemValue().isPresent()) {
+//			return integrationOfDaily;
+//		}
 		String companyId = AppContexts.user().companyId();
 		String employeeId = integrationOfDaily.getAffiliationInfor().getEmployeeId();
 		GeneralDate targetDate = integrationOfDaily.getAffiliationInfor().getYmd(); 
@@ -1028,7 +1029,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				.setData(integrationOfDaily).toDomain();
 		
 		//任意項目の計算
-		AnyItemValueOfDaily result = integrationOfDaily.getAnyItemValue().get().caluculationAnyItem(companyId, employeeId, targetDate, optionalItems, formulaList, empCondition, Optional.of(dailyRecordDto),bsEmploymentHistOpt);
+		AnyItemValueOfDaily result = AnyItemValueOfDaily.caluculationAnyItem(companyId, employeeId, targetDate, optionalItems, formulaList, empCondition, Optional.of(dailyRecordDto),bsEmploymentHistOpt,integrationOfDaily.getAnyItemValue());
 		integrationOfDaily.setAnyItemValue(Optional.of(result));
 		
 		

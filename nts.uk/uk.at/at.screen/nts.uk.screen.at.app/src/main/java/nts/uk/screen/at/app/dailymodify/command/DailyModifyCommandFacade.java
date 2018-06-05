@@ -1,6 +1,8 @@
 package nts.uk.screen.at.app.dailymodify.command;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -18,6 +20,8 @@ import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.Pa
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.RegisterDayApproval;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.ParamIdentityConfirmDay;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.RegisterIdentityConfirmDay;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.SelfConfirmDay;
@@ -48,6 +52,9 @@ public class DailyModifyCommandFacade {
 	
 	@Inject
 	private RegisterDayApproval registerDayApproval;
+
+	@Inject
+	private OptionalItemRepository optionalMasterRepo;
 
 	public void handleAdd(DailyModifyQuery query) {
 		this.handler.handleAdd(createCommand(AppContexts.user().employeeId(), toDto(query), query));
@@ -90,15 +97,13 @@ public class DailyModifyCommandFacade {
 	}
 
 	private DailyRecordDto toDto(DailyModifyQuery query) {
-		DailyRecordDto oldValues = finder.find(query.getEmployeeId(), query.getBaseDate());
-		oldValues = AttendanceItemUtil.fromItemValues(oldValues, query.getItemValues());
-		oldValues.getTimeLeaving().ifPresent(dto -> {
-			if(dto.getWorkAndLeave() != null) dto.getWorkAndLeave().removeIf(tl -> tl.getWorking() == null && tl.getLeave() == null);
-		});
-		return oldValues;
+		return toDto(Arrays.asList(query)).get(0);
 	}
 	
 	private List<DailyRecordDto> toDto(List<DailyModifyQuery> query) {
+		Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
+				.findAll(AppContexts.user().companyId()).stream()
+				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
 		List<DailyRecordDto> oldValues = finder.find(query.stream()
 									.collect(Collectors.groupingBy(c -> c.getEmployeeId(), 
 												Collectors.collectingAndThen(Collectors.toList(), 
@@ -109,6 +114,9 @@ public class DailyModifyCommandFacade {
 																&& q.getEmployeeId().equals(o.employeeId()))
 									.findFirst().get().getItemValues();
 			AttendanceItemUtil.fromItemValues(o, itemValues);
+			o.getOptionalItem().ifPresent(optional -> {
+				optional.correctItems(optionalMaster);
+			});
 			o.getTimeLeaving().ifPresent(dto -> {
 				if(dto.getWorkAndLeave() != null) 
 					dto.getWorkAndLeave().removeIf(tl -> tl.getWorking() == null && tl.getLeave() == null);

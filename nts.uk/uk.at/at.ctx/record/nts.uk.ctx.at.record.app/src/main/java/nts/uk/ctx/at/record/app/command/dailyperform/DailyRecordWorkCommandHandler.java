@@ -13,6 +13,8 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommandUpdateHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.BusinessTypeOfDailyPerformCommandAddHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.BusinessTypeOfDailyPerformCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.AttendanceLeavingGateOfDailyCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.AttendanceLeavingGateOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.PCLogInfoOfDailyCommandAddHandler;
@@ -25,8 +27,6 @@ import nts.uk.ctx.at.record.app.command.dailyperform.calculationattribute.CalcAt
 import nts.uk.ctx.at.record.app.command.dailyperform.calculationattribute.CalcAttrOfDailyPerformanceCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.editstate.EditStateOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.editstate.EditStateOfDailyPerformCommandUpdateHandler;
-import nts.uk.ctx.at.record.app.command.dailyperform.erroralarm.EmployeeDailyPerErrorCommandAddHandler;
-import nts.uk.ctx.at.record.app.command.dailyperform.erroralarm.EmployeeDailyPerErrorCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.goout.OutingTimeOfDailyPerformanceCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.goout.OutingTimeOfDailyPerformanceCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.optionalitem.OptionalItemOfDailyPerformCommandAddHandler;
@@ -86,12 +86,19 @@ public class DailyRecordWorkCommandHandler {
 	private AffiliationInforOfDailyPerformCommandUpdateHandler affiliationInfoUpdateHandler;
 
 	/** エラー一覧： 社員の日別実績エラー一覧 */
+//	@Inject
+//	@AttendanceItemLayout(layout = "D", jpPropertyName = "", index = 4)
+//	private EmployeeDailyPerErrorCommandAddHandler errorAddHandler;
+//	@Inject
+//	@AttendanceItemLayout(layout = "D", jpPropertyName = "", index = 4)
+//	private EmployeeDailyPerErrorCommandUpdateHandler errorUpdateHandler;
+	
 	@Inject
 	@AttendanceItemLayout(layout = "D", jpPropertyName = "", index = 4)
-	private EmployeeDailyPerErrorCommandAddHandler errorAddHandler;
+	private BusinessTypeOfDailyPerformCommandAddHandler businessTypeAddHandler;
 	@Inject
 	@AttendanceItemLayout(layout = "D", jpPropertyName = "", index = 4)
-	private EmployeeDailyPerErrorCommandUpdateHandler errorUpdateHandler;
+	private BusinessTypeOfDailyPerformCommandUpdateHandler businessTypeUpdateHandler;
 
 	/** 外出時間帯: 日別実績の外出時間帯 */
 	@Inject
@@ -207,7 +214,7 @@ public class DailyRecordWorkCommandHandler {
 	@Inject
 	private DailyRecordWorkFinder finder;
 	
-	private final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList("G");
+	private final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList("G", "M");
 	
 	private final List<String> DOMAIN_CHANGE_EVENT = Arrays.asList("A", "I");
 	
@@ -290,7 +297,11 @@ public class DailyRecordWorkCommandHandler {
 			calced.stream().filter(d -> d.getAffiliationInfor().getEmployeeId().equals(c.getEmployeeId()) 
 					&& d.getAffiliationInfor().getYmd().equals(c.getWorkDate()))
 			.findFirst().ifPresent(d -> {
-				c.getAttendanceTime().updateData(d.getAttendanceTimeOfDailyPerformance().orElse(null));
+				DOMAIN_CHANGED_BY_CALCULATE.stream().forEach(dcbc -> {
+					c.getCommand(dcbc).updateData(getDomain(dcbc, d));
+				});
+//				c.getAttendanceTime().updateData(d.getAttendanceTimeOfDailyPerformance().orElse(null));
+//				c.getOptionalItem().updateData(d.getAnyItemValue().orElse(null));
 			});
 		});
 		group.addAll(DOMAIN_CHANGED_BY_CALCULATE);
@@ -331,7 +342,7 @@ public class DailyRecordWorkCommandHandler {
 			handler = isUpdate ? this.affiliationInfoUpdateHandler : this.affiliationInfoAddHandler;
 			break;
 		case "D":
-			handler = isUpdate ? this.errorUpdateHandler : this.errorAddHandler;
+			handler = isUpdate ? this.businessTypeUpdateHandler : this.businessTypeAddHandler;
 			break;
 		case "E":
 			handler = isUpdate ? this.outingTimeUpdateHandler : this.outingTimeAddHandler;
@@ -376,6 +387,66 @@ public class DailyRecordWorkCommandHandler {
 			break;
 		}
 		return handler;
+	}
+	
+	private Object getDomain(String group, IntegrationOfDaily domain) {
+		Object returnD = null;
+		switch (group) {
+		case "A":
+			returnD = domain.getWorkInformation();
+			break;
+		case "B":
+			returnD = domain.getCalAttr();
+			break;
+		case "C":
+			returnD = domain.getAffiliationInfor();
+			break;
+		case "D":
+			returnD = domain.getBusinessType().orElse(null);
+			break;
+		case "E":
+			returnD = domain.getOutingTime().orElse(null);
+			break;
+		case "F":
+			returnD = domain.getBreakTime();
+			break;
+		case "G":
+			returnD = domain.getAttendanceTimeOfDailyPerformance().orElse(null);
+			break;
+		case "H":
+			returnD = domain.getAttendancetimeByWork().orElse(null);
+			break;
+		case "I":
+			returnD = domain.getAttendanceLeave().orElse(null);
+			break;
+		case "J":
+			returnD = domain.getShortTime().orElse(null);
+			break;
+		case "K":
+			returnD = domain.getSpecDateAttr().orElse(null);
+			break;
+		case "L":
+			returnD = domain.getAttendanceLeavingGate().orElse(null);
+			break;
+		case "M":
+			returnD = domain.getAnyItemValue().orElse(null);
+			break;
+		case "N":
+			returnD = domain.getEditState();
+			break;
+		case "O":
+			returnD = domain.getTempTime().orElse(null);
+			break;
+		case "P":
+			returnD = domain.getPcLogOnInfo().orElse(null);
+			break;
+		case "Q":
+//			returnD = isUpdate ? this.remarksUpdateHandler : this.remarksAddHandler;
+			break;
+		default:
+			break;
+		}
+		return returnD;
 	}
 
 	private String getGroup(ItemValue c) {

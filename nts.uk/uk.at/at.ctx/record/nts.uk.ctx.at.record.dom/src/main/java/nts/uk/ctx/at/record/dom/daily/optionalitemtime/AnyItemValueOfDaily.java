@@ -40,15 +40,15 @@ public class AnyItemValueOfDaily {
      * 任意項目の計算
      * @return
      */
-    public AnyItemValueOfDaily caluculationAnyItem(String companyId,
+    public static AnyItemValueOfDaily caluculationAnyItem(String companyId,
     											   		  String employeeId,
     											   		  GeneralDate ymd,
     											   		  List<OptionalItem> optionalItemList,
     											   		  List<Formula> formulaList,
     											   		  List<EmpCondition> empConditionList,
     											   		  Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto,
-    											   		  Optional<BsEmploymentHistoryImport> bsEmploymentHistOpt
-												   		  ) {
+    											   		  Optional<BsEmploymentHistoryImport> bsEmploymentHistOpt,
+    											   		  Optional<AnyItemValueOfDaily> anyItemValueOfDaily) {
     	
                
         //任意項目分ループ
@@ -70,19 +70,33 @@ public class AnyItemValueOfDaily {
         	}
         }
         
-        //任意項目NOの昇順でソート
-        items.sort((c1, c2) -> c1.getItemNo().compareTo(c2.getItemNo()));
+        AnyItemValueOfDaily result = new AnyItemValueOfDaily(employeeId,ymd,new ArrayList<>());
         
-        /*パラメータ：任意項目の計算結果から任意項目値クラスへ変換(上で計算した項目のみ更新する)*/
-        for(CalcResultOfAnyItem calcResultOfAnyItem:anyItemList) {
-        	int itemNo = calcResultOfAnyItem.getOptionalItemNo().v();
-        	items.set(itemNo - 1, new AnyItemValue(new AnyItemNo(itemNo),
-					  calcResultOfAnyItem.getCount().map(v -> new AnyItemTimes(BigDecimal.valueOf(v))),
-					  calcResultOfAnyItem.getMoney().map(v -> new AnyItemAmount(v)),
-					  calcResultOfAnyItem.getTime().map(v -> new AnyItemTime(v)))); 
+        if(anyItemValueOfDaily.isPresent()) {
+        	
+        	result = anyItemValueOfDaily.get();
+        	
+            //任意項目NOの昇順でソート
+        	result.items.sort((c1, c2) -> c1.getItemNo().compareTo(c2.getItemNo()));
+            
+            /*パラメータ：任意項目の計算結果から任意項目値クラスへ変換(上で計算した項目のみ更新する)*/
+            for(CalcResultOfAnyItem calcResultOfAnyItem:anyItemList) {
+            	int itemNo = calcResultOfAnyItem.getOptionalItemNo().v();
+            	result.items.set(itemNo - 1, new AnyItemValue(new AnyItemNo(itemNo),
+    					  									  calcResultOfAnyItem.getCount().map(v -> new AnyItemTimes(BigDecimal.valueOf(v))),
+    					  									  calcResultOfAnyItem.getMoney().map(v -> new AnyItemAmount(v)),
+    					  									  calcResultOfAnyItem.getTime().map(v -> new AnyItemTime(v)))); 
+            }
+        }else {
+        	for(CalcResultOfAnyItem calcResultOfAnyItem:anyItemList) {
+            	int itemNo = calcResultOfAnyItem.getOptionalItemNo().v();
+            	result.getItems().add(new AnyItemValue(new AnyItemNo(itemNo),
+    					  							   calcResultOfAnyItem.getCount().map(v -> new AnyItemTimes(BigDecimal.valueOf(v))),
+    					  							   calcResultOfAnyItem.getMoney().map(v -> new AnyItemAmount(v)),
+    					  							   calcResultOfAnyItem.getTime().map(v -> new AnyItemTime(v))));
+        	}
         }
-                
-        return this;
+        return result;
     }
     
     public void correctAnyType(OptionalItemRepository optionalMasterRepo){
