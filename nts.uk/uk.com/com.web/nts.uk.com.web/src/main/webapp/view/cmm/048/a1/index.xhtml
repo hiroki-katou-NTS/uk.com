@@ -22,22 +22,25 @@
 					<table class="table-form">
 						<tr>
 							<td style="width: 200px;"><div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('CMM048_8')}</div></td>
-							<td><input tabindex="4" data-bind="ntsTextEditor: {
+							<td><input tabindex="4" class="input-column" data-bind="ntsTextEditor: {
 								name: '#[CMM048_8]',
+								constraint: 'RawPassword',
 								value: mainModel.oldPassword, 
 								option: {textmode: 'password'}}" /></td>
 						</tr>
 						<tr>
 							<td style="width: 200px;"><div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('CMM048_9')}</div></td>
-							<td><input tabindex="5" data-bind="ntsTextEditor: {
+							<td><input tabindex="5" class="input-column" data-bind="ntsTextEditor: {
 								name: '#[CMM048_9]',
+								constraint: 'RawPassword',
 								value: mainModel.newPassword, 
 								option: {textmode: 'password'}}" /></td>
 						</tr>
 						<tr>
 							<td style="width: 200px;"><div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('CMM048_10')}</div></td>
-							<td><input tabindex="6" data-bind="ntsTextEditor: {
+							<td><input tabindex="6" class="input-column" data-bind="ntsTextEditor: {
 								name: '#[CMM048_10]',
+								constraint: 'RawPassword',
 								value: mainModel.confirmNewPassword, 
 								option: {textmode: 'password'}}" /></td>
 						</tr>
@@ -54,13 +57,13 @@
 									</td>
 								</tr>
 								<tr>
-									<td style="width: 200px; padding-left: 10px;"><div class="label">#{i18n.getText('CMM048_12')}</div></td>
+									<td class="left-column"><div class="label">#{i18n.getText('CMM048_12')}</div></td>
 									<td>
 										<div class="label" data-bind="text: passwordPolicy.textLowestDigits"></div>
 									</td>
 								</tr>
 								<tr>
-									<td style="width: 200px; padding-left: 10px;"><div class="label">#{i18n.getText('CMM048_14')}</div></td>
+									<td class="left-column"><div class="label">#{i18n.getText('CMM048_14')}</div></td>
 									<td>
 										<div class="label" data-bind="text: passwordPolicy.complexity.textAlphabetDigit"></div>
 										<div class="label" data-bind="text: passwordPolicy.complexity.textNumberOfDigits"></div>
@@ -68,13 +71,13 @@
 									</td>
 								</tr>
 								<tr>
-									<td style="width: 200px; padding-left: 10px;"><div class="label">#{i18n.getText('CMM048_18')}</div></td>
+									<td class="left-column"><div class="label">#{i18n.getText('CMM048_18')}</div></td>
 									<td>
 										<div class="label" data-bind="text: passwordPolicy.textHistoryCount"></div>
 									</td>
 								</tr>
 								<tr>
-									<td style="width: 200px; padding-left: 10px;"><div class="label">#{i18n.getText('CMM048_20')}</div></td>
+									<td class="left-column"><div class="label">#{i18n.getText('CMM048_20')}</div></td>
 									<td>
 										<div class="label" data-bind="text: passwordPolicy.textValidityPeriod"></div>
 									</td>

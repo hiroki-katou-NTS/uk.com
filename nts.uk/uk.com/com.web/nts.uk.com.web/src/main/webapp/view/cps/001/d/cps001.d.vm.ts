@@ -48,7 +48,7 @@ module cps001.d.vm {
                 $("#test").bind("imgloaded", function(evt, query?: SrcChangeQuery) {
                     // update height 
                     var currentDialog = nts.uk.ui.windows.getSelf();
-                    currentDialog.setHeight(840);
+                    //currentDialog.setHeight(840);
                     $(".checkbox-holder").show();
                     $('input[type=checkbox]').prop('checked', true);
                     if (!self.isInit) {

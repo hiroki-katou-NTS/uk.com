@@ -19,23 +19,23 @@ import nts.uk.ctx.at.shared.infra.entity.specialholiday.yearserviceper.KshstYear
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaPerItemRepository extends JpaRepository implements YearServicePerRepository{
-	private final String SELECT_NO_WHERE = "SELECT c FROM KshstYearServicePerSet c ";
+	private static final String SELECT_NO_WHERE = "SELECT c FROM KshstYearServicePerSet c ";
 	
-	private final String SELECT_ITEM = SELECT_NO_WHERE + "WHERE c.kshstYearServicePerSetPK.companyId = :companyId ";
+	private static final String SELECT_ITEM = SELECT_NO_WHERE + "WHERE c.kshstYearServicePerSetPK.companyId = :companyId ";
 	
-	private final String SELECT_YEAR = SELECT_ITEM + " AND c.year = :year";
+	private static final String SELECT_YEAR = SELECT_ITEM + " AND c.year = :year";
 	
-	private final String SELECT_CODE = SELECT_ITEM + " AND c.kshstYearServicePerSetPK.specialHolidayCode = :specialHolidayCode";
+	private static final String SELECT_CODE = SELECT_ITEM + " AND c.kshstYearServicePerSetPK.specialHolidayCode = :specialHolidayCode";
 	
-	private final String SELECT_CODE_SET = SELECT_CODE + " AND c.kshstYearServicePerSetPK.yearServiceCode = :yearServiceCode";
+	private static final String SELECT_CODE_SET = SELECT_CODE + " AND c.kshstYearServicePerSetPK.yearServiceCode = :yearServiceCode";
 	
-	private final String SELECT_NO_WHERE_PER = "SELECT c FROM KshstYearServicePer c ";
+	private static final String SELECT_NO_WHERE_PER = "SELECT c FROM KshstYearServicePer c ";
 	
-	private final String SELECT_ITEM_PER = SELECT_NO_WHERE_PER + "WHERE c.kshstYearServicePerPK.companyId = :companyId AND c.kshstYearServicePerPK.specialHolidayCode = :specialHolidayCode";
+	private static final String SELECT_ITEM_PER = SELECT_NO_WHERE_PER + "WHERE c.kshstYearServicePerPK.companyId = :companyId AND c.kshstYearServicePerPK.specialHolidayCode = :specialHolidayCode";
 	
-	private final String SELECT_ALL_PER = SELECT_NO_WHERE_PER + "WHERE c.kshstYearServicePerPK.companyId = :companyId ORDER BY c.kshstYearServicePerPK.specialHolidayCode ASC";
+	private static final String SELECT_ALL_PER = SELECT_NO_WHERE_PER + "WHERE c.kshstYearServicePerPK.companyId = :companyId ORDER BY c.kshstYearServicePerPK.specialHolidayCode ASC";
 	
-	private final String CHANGE_ALL_PROVISION = "UPDATE KshstYearServicePer e SET e.provision = 0 WHERE e.kshstYearServicePerPK.companyId = :companyId AND e.kshstYearServicePerPK.specialHolidayCode = :specialHolidayCode ";
+	private static final String CHANGE_ALL_PROVISION = "UPDATE KshstYearServicePer e SET e.provision = 0 WHERE e.kshstYearServicePerPK.companyId = :companyId AND e.kshstYearServicePerPK.specialHolidayCode = :specialHolidayCode ";
 	
 	/**
 	 * change entity to domain

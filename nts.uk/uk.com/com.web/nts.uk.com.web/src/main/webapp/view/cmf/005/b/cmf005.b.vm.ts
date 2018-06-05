@@ -342,7 +342,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         /**
          *Check validate client
          */
-        ScreenModel.prototype.validateForm = function() {
+        private validateForm() {
             $(".validate_form").trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
                 return false;
