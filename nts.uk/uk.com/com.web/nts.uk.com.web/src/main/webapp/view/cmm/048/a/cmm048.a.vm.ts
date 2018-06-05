@@ -9,61 +9,61 @@ module nts.uk.com.view.cmm048.a {
     import UserInfoUseMethodDto = nts.uk.com.view.cmm048.a.service.model.UserInfoUseMethodDto;
     import UseContactSettingDto = nts.uk.com.view.cmm048.a.service.model.UseContactSettingDto;
     import MailNoticeSetSaveCommand = nts.uk.com.view.cmm048.a.service.model.MailNoticeSetSaveCommand;
-    
+
     export module viewmodel {
 
         export class ScreenModel {
-            
+
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
-            
-            mainModel: MainModel; 
-            
+
+            mainModel: MainModel;
+
             constructor() {
                 let _self = this;
-                
-                _self.mainModel = new MainModel(); 
+
+                _self.mainModel = new MainModel();
                 _self.tabs = ko.observableArray([
-                    {id: 'tab-1', title: nts.uk.resource.getText("CMM048_4"), content: '.tab-content-1', enable: ko.observable(true), visible: _self.mainModel.editPassword},
-                    {id: 'tab-2', title: nts.uk.resource.getText("CMM048_5"), content: '.tab-content-2', enable: ko.observable(true), visible: _self.mainModel.notSpecialUser}
+                    { id: 'tab-1', title: nts.uk.resource.getText("CMM048_4"), content: '.tab-content-1', enable: ko.observable(true), visible: _self.mainModel.editPassword },
+                    { id: 'tab-2', title: nts.uk.resource.getText("CMM048_5"), content: '.tab-content-2', enable: ko.observable(true), visible: _self.mainModel.notSpecialUser }
                 ]);
-                _self.selectedTab = ko.observable('tab-1');                                   
+                _self.selectedTab = ko.observable('tab-1');
             }
-            
+
             /**
              * Start page
              */
             public startPage(): JQueryPromise<any> {
                 let _self = this;
                 let dfd = $.Deferred<any>();
-                
+
                 service.getData().done((data: MainDto) => {
                     _self.mainModel.updateData(data);
                     dfd.resolve();
-                }).fail((res:any) => {
+                }).fail((res: any) => {
                     // Jump to CCG008 in case of error
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => {
                         nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
                     });
                     dfd.reject();
-                });               
-                
+                });
+
                 return dfd.promise();
             }
-            
+
             /**
              * Set focus
              */
             public setInitialFocus(): void {
-                $('button-save').focus();
+                $('#button-save').focus();
             }
-            
+
             /**
              * Save
              */
             public save() {
                 let _self = this;
-                
+
                 nts.uk.ui.block.grayout();
                 let command: MailNoticeSetSaveCommand = {
                     isPasswordUpdate: _self.mainModel.editPassword(),
@@ -76,27 +76,27 @@ module nts.uk.com.view.cmm048.a {
                     listUseContactSetting: _.map(_self.mainModel.listUseContactSetting(), item => item.toDto())
                 }
                 service.save(command)
-                    .done((res:any) => {
+                    .done((res: any) => {
                         nts.uk.ui.block.clear();
-                        nts.uk.ui.dialog.info({ messageId: 'Msg_15' });                       
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
                     })
-                    .fail((err:any) => {
+                    .fail((err: any) => {
                         nts.uk.ui.block.clear();
                         _self.showMessageError(err);
                     });
             }
-            
+
             /**
              * showMessageError
              */
             public showMessageError(res: any) {
                 let dfd = $.Deferred<any>();
-                
+
                 // check error business exception
                 if (!res.businessException) {
                     return;
                 }
-                
+
                 // show error message
                 if (Array.isArray(res.errors)) {
                     nts.uk.ui.dialog.bundledErrors(res);
@@ -105,7 +105,7 @@ module nts.uk.com.view.cmm048.a {
                 }
             }
         }
-        
+
         export class MainModel {
             editPassword: KnockoutObservable<boolean>;
             notSpecialUser: KnockoutObservable<boolean>;
@@ -114,15 +114,15 @@ module nts.uk.com.view.cmm048.a {
             personContact: PersonContactModel;
             passwordPolicy: PasswordPolicyModel;
             listUserInfoUseMethod: KnockoutObservableArray<UserInfoUseMethodModel>;
-            listUseContactSetting: KnockoutObservableArray<UseContactSettingModel>;            
+            listUseContactSetting: KnockoutObservableArray<UseContactSettingModel>;
             oldPassword: KnockoutObservable<string>;
             newPassword: KnockoutObservable<string>;
             confirmNewPassword: KnockoutObservable<string>;
-            
+
             constructor() {
                 let _self = this;
-                _self.editPassword = ko.observable(false);  
-                _self.notSpecialUser = ko.observable(false);                
+                _self.editPassword = ko.observable(false);
+                _self.notSpecialUser = ko.observable(false);
                 _self.employee = new EmployeeModel();
                 _self.employeeInfoContact = new EmployeeInfoContactModel();
                 _self.personContact = new PersonContactModel();
@@ -133,7 +133,7 @@ module nts.uk.com.view.cmm048.a {
                 _self.newPassword = ko.observable('');
                 _self.confirmNewPassword = ko.observable('');
             }
-            
+
             updateData(dto: MainDto) {
                 let _self = this;
                 _self.editPassword(dto.editPassword);
@@ -154,19 +154,19 @@ module nts.uk.com.view.cmm048.a {
                 }));
             }
         }
-        
+
         export class EmployeeModel {
             employeeId: KnockoutObservable<string>;
             employeeCode: KnockoutObservable<string>;
             employeeName: KnockoutObservable<string>;
-            
+
             constructor() {
                 let _self = this;
                 _self.employeeId = ko.observable("");
                 _self.employeeCode = ko.observable("");
                 _self.employeeName = ko.observable("");
             }
-            
+
             updateData(dto: EmployeeDto) {
                 let _self = this;
                 _self.employeeId(dto.employeeId);
@@ -174,13 +174,13 @@ module nts.uk.com.view.cmm048.a {
                 _self.employeeName(dto.employeeName);
             }
         }
-        
+
         export class EmployeeInfoContactModel {
             employeeId: KnockoutObservable<string>;
             mailAddress: KnockoutObservable<string>;
             mobileMailAddress: KnockoutObservable<string>;
             cellPhoneNo: KnockoutObservable<string>;
-            
+
             constructor() {
                 let _self = this;
                 _self.employeeId = ko.observable("");
@@ -188,7 +188,7 @@ module nts.uk.com.view.cmm048.a {
                 _self.mobileMailAddress = ko.observable("");
                 _self.cellPhoneNo = ko.observable("");
             }
-            
+
             updateData(dto: EmployeeInfoContactDto) {
                 let _self = this;
                 _self.employeeId(dto.employeeId);
@@ -196,7 +196,7 @@ module nts.uk.com.view.cmm048.a {
                 _self.mobileMailAddress(dto.mobileMailAddress);
                 _self.cellPhoneNo(dto.cellPhoneNo);
             }
-            
+
             toDto(): EmployeeInfoContactDto {
                 let _self = this;
                 let dto: EmployeeInfoContactDto = {
@@ -208,13 +208,13 @@ module nts.uk.com.view.cmm048.a {
                 return dto;
             }
         }
-        
+
         export class PersonContactModel {
             personId: KnockoutObservable<string>;
             mailAddress: KnockoutObservable<string>;
             mobileMailAddress: KnockoutObservable<string>;
             cellPhoneNo: KnockoutObservable<string>;
-            
+
             constructor() {
                 let _self = this;
                 _self.personId = ko.observable("");
@@ -222,7 +222,7 @@ module nts.uk.com.view.cmm048.a {
                 _self.mobileMailAddress = ko.observable("");
                 _self.cellPhoneNo = ko.observable("");
             }
-            
+
             updateData(dto: PersonContactDto) {
                 let _self = this;
                 _self.personId(dto.personId);
@@ -230,7 +230,7 @@ module nts.uk.com.view.cmm048.a {
                 _self.mobileMailAddress(dto.mobileMailAddress);
                 _self.cellPhoneNo(dto.cellPhoneNo);
             }
-            
+
             toDto(): PersonContactDto {
                 let _self = this;
                 let dto: PersonContactDto = {
@@ -242,29 +242,29 @@ module nts.uk.com.view.cmm048.a {
                 return dto;
             }
         }
-        
+
         export class PasswordPolicyModel {
             isUse: KnockoutObservable<boolean>;
             complexity: ComplexityModel;
             lowestDigits: KnockoutObservable<number>;
             historyCount: KnockoutObservable<number>;
             validityPeriod: KnockoutObservable<number>;
-            
+
             textLowestDigits: KnockoutObservable<string>;
             textHistoryCount: KnockoutObservable<string>;
             textValidityPeriod: KnockoutObservable<string>;
-            
+
             constructor() {
                 let _self = this;
                 _self.isUse = ko.observable(true);
                 _self.complexity = new ComplexityModel();
-                _self.lowestDigits = ko.observable(null);                
+                _self.lowestDigits = ko.observable(null);
                 _self.historyCount = ko.observable(null);
-                _self.validityPeriod = ko.observable(null);                
+                _self.validityPeriod = ko.observable(null);
                 _self.textLowestDigits = ko.observable("");
                 _self.textHistoryCount = ko.observable("");
                 _self.textValidityPeriod = ko.observable("");
-                
+
                 _self.lowestDigits.subscribe((v) => _self.textLowestDigits(nts.uk.text.format(nts.uk.resource.getText("CMM048_13"), v)));
                 _self.lowestDigits.extend({ notify: 'always' });
                 _self.historyCount.subscribe((v) => _self.textHistoryCount(nts.uk.text.format(nts.uk.resource.getText("CMM048_19"), v)));
@@ -275,7 +275,7 @@ module nts.uk.com.view.cmm048.a {
                 _self.historyCount(0);
                 _self.validityPeriod(0);
             }
-            
+
             updateData(dto: PasswordPolicyDto) {
                 let _self = this;
                 _self.isUse(dto.isUse);
@@ -285,25 +285,25 @@ module nts.uk.com.view.cmm048.a {
                 _self.validityPeriod(dto.validityPeriod);
             }
         }
-        
+
         export class ComplexityModel {
             alphabetDigit: KnockoutObservable<number>;
             numberOfDigits: KnockoutObservable<number>;
             numberOfChar: KnockoutObservable<number>;
-            
+
             textAlphabetDigit: KnockoutObservable<string>;
             textNumberOfDigits: KnockoutObservable<string>;
             textNumberOfChar: KnockoutObservable<string>;
-            
+
             constructor() {
                 let _self = this;
                 _self.alphabetDigit = ko.observable(null);
                 _self.numberOfDigits = ko.observable(null);
-                _self.numberOfChar = ko.observable(null);               
+                _self.numberOfChar = ko.observable(null);
                 _self.textAlphabetDigit = ko.observable("");
                 _self.textNumberOfDigits = ko.observable("");
                 _self.textNumberOfChar = ko.observable("");
-                    
+
                 _self.alphabetDigit.subscribe((v) => _self.textAlphabetDigit(nts.uk.text.format(nts.uk.resource.getText("CMM048_15"), v)));
                 _self.alphabetDigit.extend({ notify: 'always' });
                 _self.numberOfDigits.subscribe((v) => _self.textNumberOfDigits(nts.uk.text.format(nts.uk.resource.getText("CMM048_16"), v)));
@@ -314,7 +314,7 @@ module nts.uk.com.view.cmm048.a {
                 _self.numberOfDigits(0);
                 _self.numberOfChar(0);
             }
-            
+
             updateData(dto: ComplexityDto) {
                 let _self = this;
                 _self.alphabetDigit(dto.alphabetDigit);
@@ -322,69 +322,69 @@ module nts.uk.com.view.cmm048.a {
                 _self.numberOfChar(dto.numberOfChar);
             }
         }
-        
+
         export class UserInfoUseMethodModel {
             settingItem: KnockoutObservable<number>;
             selfEdit: KnockoutObservable<number>;
             settingUseMail: KnockoutObservable<number>;
             isNotUse: boolean;
-            isUse: boolean;          
+            isUse: boolean;
             isPersonal: boolean;
             enableEdit: KnockoutObservable<boolean>;
-            
+
             constructor() {
                 let _self = this;
                 _self.settingItem = ko.observable(0);
                 _self.selfEdit = ko.observable(null);
                 _self.settingUseMail = ko.observable(null);
                 _self.enableEdit = ko.observable(null);
-                
+
                 _self.selfEdit.subscribe((v) => {
                     switch (v) {
                         case 0:
                             _self.enableEdit(false);
-                        break;
+                            break;
                         case 1:
                             _self.enableEdit(true);
-                        break;
+                            break;
                         default:
                             _self.enableEdit(false);
-                    }      
+                    }
                 });
                 _self.selfEdit(0);
                 _self.settingUseMail.subscribe((v) => {
                     switch (v) {
                         case 0:
                             _self.isNotUse = true;
-                            _self.isUse = false;                           
+                            _self.isUse = false;
                             _self.isPersonal = false;
-                        break;
+                            break;
                         case 1:
                             _self.isNotUse = false;
-                            _self.isUse = true;                           
+                            _self.isUse = true;
                             _self.isPersonal = false;
-                        break;
+                            break;
                         case 2:
                             _self.isNotUse = false;
-                            _self.isUse = false;                           
+                            _self.isUse = false;
                             _self.isPersonal = true;
-                        break;
+                            break;
                         default:
                             _self.isNotUse = false;
-                            _self.isUse = false;                           
+                            _self.isUse = false;
                             _self.isPersonal = false;
-                    }      
+                    }
                 });
                 _self.settingUseMail(2);
             }
-            
+
             updateData(dto: UserInfoUseMethodDto) {
                 let _self = this;
                 _self.settingItem(dto.settingItem);
                 _self.selfEdit(dto.selfEdit);
                 _self.settingUseMail(dto.settingUseMail);
             }
-            
+
             toDto(): UserInfoUseMethodDto {
                 let _self = this;
                 let dto: UserInfoUseMethodDto = {
@@ -395,26 +395,26 @@ module nts.uk.com.view.cmm048.a {
                 return dto;
             }
         }
-        
+
         export class UseContactSettingModel {
             employeeId: KnockoutObservable<string>;
             settingItem: KnockoutObservable<number>;
             useMailSetting: KnockoutObservable<boolean>;
-            
+
             constructor() {
                 let _self = this;
                 _self.employeeId = ko.observable("");
                 _self.settingItem = ko.observable(0);
                 _self.useMailSetting = ko.observable(true);
             }
-            
+
             updateData(dto: UseContactSettingDto) {
                 let _self = this;
                 _self.employeeId(dto.employeeId);
                 _self.settingItem(dto.settingItem);
                 _self.useMailSetting(dto.useMailSetting);
             }
-            
+
             toDto(): UseContactSettingDto {
                 let _self = this;
                 let dto: UseContactSettingDto = {
