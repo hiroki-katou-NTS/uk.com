@@ -22,7 +22,7 @@ public class InterimBreakMng extends AggregateRoot{
 	/**	１日相当時間 */
 	private AttendanceTime onedayTime;
 	/**	使用期限日 */
-	private GeneralDate expirationDays;
+	private GeneralDate expirationDate;
 	/**	発生時間数 */
 	private OccurrenceTime occurrenceTimes;
 	/**	発生日数 */

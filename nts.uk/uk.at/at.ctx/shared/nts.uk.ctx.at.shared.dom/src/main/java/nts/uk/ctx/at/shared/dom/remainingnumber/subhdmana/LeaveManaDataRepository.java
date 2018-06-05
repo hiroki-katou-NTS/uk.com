@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface LeaveManaDataRepository {
@@ -60,5 +61,14 @@ public interface LeaveManaDataRepository {
 	 * @return
 	 */
 	List<LeaveManagementData> getByDayOffDatePeriod(String sid, DatePeriod dateData);
-	
+	/**
+	 * ドメインモデル「休出管理データ」を取得する
+	 * @param sid
+	 * @param dateData　・使用期限日≧INPUT.期間.開始年月日・使用期限日≦INPUT.期間.終了年月日
+	 * OR ・消滅日≧INPUT.期間.開始年月日　・消滅日≦INPUT.期間.終了年月日
+	 * @param unUseDays ・未使用日数＞unUseDays
+	 * @param subHDAtr 代休消化区分 = subHDAtr
+	 * @return
+	 */
+	List<LeaveManagementData> getByExtinctionPeriod(String sid, DatePeriod tmpDateData, DatePeriod dateData, Double unUseDays, DigestionAtr subHDAtr);
 }

@@ -45,7 +45,7 @@ public interface BreakDayOffManagementQuery {
 	 * @param employeeId
 	 * @return
 	 */
-	public InterimRemainAggregateOutputData aggregatedDayoffCurrentMonth(String employeeId);
+	public InterimRemainAggregateOutputData aggregatedDayoffCurrentMonth(String employeeId, DatePeriod dateData, InterimRemainAggregateOutputData dataOut);
 	/**
 	 * 休出代休発生消化履歴の取得
 	 */

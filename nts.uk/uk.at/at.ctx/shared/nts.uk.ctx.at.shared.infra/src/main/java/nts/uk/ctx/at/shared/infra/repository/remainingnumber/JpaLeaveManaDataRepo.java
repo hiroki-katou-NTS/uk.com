@@ -35,10 +35,13 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	
 	private String QUERY_BY_ID = "SELECT l FROM KrcmtLeaveManaData l WHERE l.leaveID IN :leaveIds";
 	
-	private String QUERY_BY_DAYOFF_PERIOD = "SELECT c FROM KrcmtLeaveManaData"
-			+ " WHERE c.dayOff >= :startDate"
+	private String QUERY_BY_DAYOFF_PERIOD = "SELECT c FROM KrcmtLeaveManaData c"
+			+ " WHERE c.sID = :sid"
+			+ " AND c.dayOff >= :startDate"
 			+ " AND c.dayOff <= :endDate";
-	
+	private String QUERY_BY_EX = QUERY_BY_DAYOFF_PERIOD
+			+ " AND (c.unUsedDays > :unUsedDays AND c.expiredDate >= :sDate AND c.expiredDate <= :eDate)"
+			+ " OR (c.subHDAtr = :subHDAtr AND c.disapearDate >= :sDate AND c.disapearDate <= :eDate)";
 	@Override
 	public List<LeaveManagementData> getBySidWithsubHDAtr(String cid, String sid, int state) {
 		List<KrcmtLeaveManaData> listListMana = this.queryProxy()
@@ -209,9 +212,25 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	@Override
 	public List<LeaveManagementData> getByDayOffDatePeriod(String sid, DatePeriod dateData) {
 		List<KrcmtLeaveManaData> listListMana = this.queryProxy().query(QUERY_BY_DAYOFF_PERIOD, KrcmtLeaveManaData.class)
-				.setParameter("employeeId", sid)
+				.setParameter("sid", sid)
 				.setParameter("startDate", dateData.start())
 				.setParameter("endDate", dateData.end())
+				.getList();
+		return listListMana.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<LeaveManagementData> getByExtinctionPeriod(String sid, DatePeriod tmpDateData,DatePeriod dateData, Double unUseDays,
+			DigestionAtr subHDAtr) {
+		List<KrcmtLeaveManaData> listListMana = this.queryProxy()
+				.query(QUERY_BY_EX, KrcmtLeaveManaData.class)
+				.setParameter("sid", sid)
+				.setParameter("startDate", tmpDateData.start())
+				.setParameter("endDate", tmpDateData.end())
+				.setParameter("unUsedDays", unUseDays)
+				.setParameter("sDate", dateData.start())
+				.setParameter("eDate", dateData.end())
+				.setParameter("subHDAtr", subHDAtr.value)
 				.getList();
 		return listListMana.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
