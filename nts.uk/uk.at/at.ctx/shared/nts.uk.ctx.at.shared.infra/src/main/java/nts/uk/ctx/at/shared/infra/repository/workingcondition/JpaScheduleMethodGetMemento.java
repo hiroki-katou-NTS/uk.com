@@ -63,7 +63,7 @@ public class JpaScheduleMethodGetMemento implements ScheduleMethodGetMemento {
 	 */
 	@Override
 	public Optional<MonthlyPatternWorkScheduleCre> getMonthlyPatternWorkScheduleCre() {
-		return this.kshmtScheduleMethod.getMPatternWorkScheCreate() != null
+		return this.kshmtScheduleMethod.getRefWorkingHours() != null
 				? Optional.of(new MonthlyPatternWorkScheduleCre(
 						new JpaMPatternWorkScheCreGetMemento(this.kshmtScheduleMethod)))
 				: Optional.empty();
