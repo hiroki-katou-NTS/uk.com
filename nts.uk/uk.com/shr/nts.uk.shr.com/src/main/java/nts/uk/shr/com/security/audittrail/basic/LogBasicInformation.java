@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.com.context.ScreenIdentifier;
 import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
-import nts.uk.shr.com.security.audittrail.UserInfo;
+import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 
 /**
  * ログ基本情報

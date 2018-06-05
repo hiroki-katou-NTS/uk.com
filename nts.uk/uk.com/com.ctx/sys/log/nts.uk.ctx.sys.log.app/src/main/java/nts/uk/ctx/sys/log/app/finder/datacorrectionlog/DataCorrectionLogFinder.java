@@ -3,11 +3,11 @@ package nts.uk.ctx.sys.log.app.finder.datacorrectionlog;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
@@ -16,6 +16,7 @@ import nts.uk.ctx.sys.log.dom.logbasicinfo.LogBasicInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
+import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
@@ -37,31 +38,28 @@ public class DataCorrectionLogFinder {
 	public List<DataCorrectionLogDto> getDataLog(DataCorrectionLogParams params) {
 		List<DataCorrectionLogDto> result = new ArrayList<>();
 //		String companyId = AppContexts.user().companyId();
-//		String loginEmpId = AppContexts.user().employeeId();
-//		List<LogBasicInformation> listBasicInfo = basicInfoRepo.getAllLogBasicInfo(companyId, loginEmpId);
+//		TargetDataType dataType = TargetDataType.of(params.getFunctionId());
 //		List<DataCorrectionLog> listCorrectionLog = new ArrayList<>();
-//		List<String> listOperationId = listBasicInfo.stream().map(i -> i.getOperationId()).collect(Collectors.toList());
 //		if (params.getStartYmd() != null && params.getEndYmd() != null) {
-//			listCorrectionLog = correctionLogRepo.getAllLogData(listOperationId, params.getListEmployeeId(),
+//			listCorrectionLog = correctionLogRepo.getAllLogData(dataType, params.getListEmployeeId(),
 //					new DatePeriod(params.getStartYmd(), params.getEndYmd()));
 //		} else if (params.getStartYm() != null && params.getEndYm() != null) {
-//			listCorrectionLog = correctionLogRepo.getAllLogData(listOperationId, params.getListEmployeeId(),
+//			listCorrectionLog = correctionLogRepo.getAllLogData(dataType, params.getListEmployeeId(),
 //					new YearMonthPeriod(new YearMonth(params.getStartYm()), new YearMonth(params.getEndYm())));
 //		} else {
-//			listCorrectionLog = correctionLogRepo.getAllLogData(listOperationId, params.getListEmployeeId(),
+//			listCorrectionLog = correctionLogRepo.getAllLogData(dataType, params.getListEmployeeId(),
 //					Year.of(params.getStartY()), Year.of(params.getEndY()));
 //		}
-//		for (LogBasicInformation i : listBasicInfo) {
-//			List<DataCorrectionLog> tmpList = listCorrectionLog.stream()
-//					.filter(d -> d.getOperationId().equals(i.getOperationId())).collect(Collectors.toList());
-//			for (DataCorrectionLog d : tmpList) {
-//				DataCorrectionLogDto log = new DataCorrectionLogDto(d.getTargetDataKey().getDateKey().get(),
-//						d.getTargetUser().getUserName(), d.getCorrectedItem().getName(),
-//						d.getCorrectedItem().getValueBefore().getViewValue(),
-//						d.getCorrectedItem().getValueAfter().getViewValue(), i.getUserInfo().getUserName(),
-//						i.getModifiedDateTime(), d.getCorrectionAttr().value);
-//				result.add(log);
-//			}
+//		if (listCorrectionLog.isEmpty()) 
+//			throw new BusinessException("Msg_37");
+//		for (DataCorrectionLog d : listCorrectionLog) {
+//			LogBasicInformation basicInfo = basicInfoRepo.getLogBasicInfo(companyId, d.getOperationId()).get();
+//			DataCorrectionLogDto log = new DataCorrectionLogDto(d.getTargetDataKey().getDateKey().get(),
+//					d.getTargetUser().getUserName(), d.getCorrectedItem().getName(),
+//					d.getCorrectedItem().getValueBefore().getViewValue(),
+//					d.getCorrectedItem().getValueAfter().getViewValue(), basicInfo.getUserInfo().getUserName(),
+//					basicInfo.getModifiedDateTime(), d.getCorrectionAttr().value);
+//			result.add(log);
 //		}
 		if (params.getDisplayFormat() == 0) {// by date
 			for (int i = 0; i < 500; i++) {

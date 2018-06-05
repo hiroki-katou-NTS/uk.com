@@ -4,6 +4,7 @@ import java.time.Year;
 import java.util.List;
 
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
+import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
@@ -15,10 +16,10 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 public interface DataCorrectionLogRepository {
 
-	List<DataCorrectionLog> getAllLogData(List<String> listOperationId, List<String> listEmployeeId, DatePeriod datePeriod);
+	List<DataCorrectionLog> getAllLogData(TargetDataType targetDataType, List<String> listEmployeeId, DatePeriod datePeriod);
 
-	List<DataCorrectionLog> getAllLogData(List<String> listOperationId, List<String> listEmployeeId, YearMonthPeriod ymPeriod);
+	List<DataCorrectionLog> getAllLogData(TargetDataType targetDataType, List<String> listEmployeeId, YearMonthPeriod ymPeriod);
 
-	List<DataCorrectionLog> getAllLogData(List<String> listOperationId, List<String> listEmployeeId, Year yearStart, Year yearEnd);
+	List<DataCorrectionLog> getAllLogData(TargetDataType targetDataType, List<String> listEmployeeId, Year yearStart, Year yearEnd);
 
 }

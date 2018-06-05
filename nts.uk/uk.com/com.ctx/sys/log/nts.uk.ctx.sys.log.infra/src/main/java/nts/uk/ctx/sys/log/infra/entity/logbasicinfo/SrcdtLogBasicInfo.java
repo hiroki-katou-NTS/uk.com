@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.com.context.ScreenIdentifier;
 import nts.uk.shr.com.context.loginuser.role.DefaultLoginUserRoles;
-import nts.uk.shr.com.security.audittrail.UserInfo;
+import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 import nts.uk.shr.com.security.audittrail.basic.LoginInformation;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;

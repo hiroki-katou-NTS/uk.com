@@ -1,7 +1,6 @@
 package nts.uk.shr.com.security.audittrail.correction.content;
 
 import lombok.Getter;
-import nts.uk.shr.com.security.audittrail.UserInfo;
 
 /**
  * データ修正記録

@@ -1,6 +1,6 @@
 package nts.uk.ctx.sys.log.infra.repository.logbasicinfo;
 
-import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -19,10 +19,10 @@ import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 public class JpaLogBasicInformationRepository extends JpaRepository implements LogBasicInfoRepository {
 
 	@Override
-	public List<LogBasicInformation> getAllLogBasicInfo(String companyId, String loginEmployeeId) {
-		String query = "SELECT a FROM SrcdtLogBasicInfo a WHERE a.companyId = :companyId AND a.employeeId = :loginEmpId";
+	public Optional<LogBasicInformation> getLogBasicInfo(String companyId, String operationId) {
+		String query = "SELECT a FROM SrcdtLogBasicInfo a WHERE a.companyId = :companyId AND a.operationId = :operationId";
 		return this.queryProxy().query(query, SrcdtLogBasicInfo.class).setParameter("companyId", companyId)
-				.setParameter("loginEmpId", loginEmployeeId).getList(item -> item.toDomain());
+				.setParameter("operationId", operationId).getSingle(item -> item.toDomain());
 	}
 
 }
