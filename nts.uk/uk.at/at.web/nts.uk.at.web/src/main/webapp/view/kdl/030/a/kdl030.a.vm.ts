@@ -53,7 +53,6 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                             }
                         }
                         self.approvalRootState(ko.mapping.fromJS(listApprovalPhase)());
-                        console.log(self.approvalRootState());
                     }
                     dfd.resolve();
                 }).fail(function(res: any) {
