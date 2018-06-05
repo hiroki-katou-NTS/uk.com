@@ -4,9 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.base.ManagementDays;
-import nts.uk.ctx.at.record.dom.remainingnumber.base.ScheduleRecordAtr;
-import nts.uk.ctx.at.record.dom.remainingnumber.base.TimeHoliday;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDays;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.ScheduleRecordAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimeHoliday;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**

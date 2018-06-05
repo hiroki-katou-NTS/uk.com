@@ -104,8 +104,9 @@ public class GetTimeAndCountFromDailyRecordImpl implements GetTimeAndCountFromDa
 			val attendanceTimeOfDaily = this.attendanceTimeOfDailyMap.get(procDate);
 			
 			// 勤務情報の判断
-			val totalSubjects = totalTimes.getTotalSubjects();
 			boolean isTargetWork = false;
+			/*
+			val totalSubjects = totalTimes.getTotalSubjects();
 			switch (totalTimes.getSummaryAtr()){
 			case COMBINATION:
 				for (val totalSubject : totalSubjects){
@@ -129,6 +130,7 @@ public class GetTimeAndCountFromDailyRecordImpl implements GetTimeAndCountFromDa
 				}
 				break;
 			}
+			*/
 			if (!isTargetWork) continue;
 			
 			// 出勤状態の判断

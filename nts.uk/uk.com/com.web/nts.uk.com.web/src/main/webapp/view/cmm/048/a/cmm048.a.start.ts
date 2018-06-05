@@ -4,6 +4,7 @@ module nts.uk.com.view.cmm048.a {
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
             _.defer(() => screenModel.setInitialFocus());
+            $('#tab-panel').removeAttr('tabIndex');
         });
     });
 }

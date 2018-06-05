@@ -110,6 +110,12 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 self.updateDataList();
             });
             
+            self.selectedPeriodItem.subscribe(x =>{
+                if (x == 0) {
+                    $("#daterangepickerA .ntsDatepicker").ntsError("clear");
+                }
+            });
+            
             $("#compositePayOutSubMngDataGrid").ntsGrid({
                 height: '520px',
                 name: 'Grid name',
@@ -197,7 +203,10 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             let startDate = isPeriod ? moment.utc(self.dateValue().startDate, 'YYYY/MM/DD').format('YYYY-MM-DD') : null;
             let endDate = isPeriod ? moment.utc(self.dateValue().endDate, 'YYYY/MM/DD').format('YYYY-MM-DD') : null;
             
-            $("#daterangepickerA .ntsDatepicker").trigger("validate");
+            if(isPeriod) {
+                $("#daterangepickerA .ntsDatepicker").trigger("validate");
+            }
+            
             if (!nts.uk.ui.errors.hasError()) {
                 service.getFurikyuMngDataExtraction(empId, startDate, endDate, isPeriod).done(function(res: any) {
                     let arrayResponse = res.compositePayOutSubMngData;
