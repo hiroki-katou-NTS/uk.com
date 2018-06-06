@@ -53,4 +53,9 @@ public class RemarksOfDailyFinder extends FinderFacade {
 		return (List<T>) this.repo.getRemarks(param).stream()
 			.map(c -> RemarksOfDailyDto.getDto(c)).collect(Collectors.toList());
 	}
+
+	@Override
+	public Object getDomain(String employeeId, GeneralDate baseDate) {
+		return repo.getRemarks(employeeId, baseDate);
+	}
 }

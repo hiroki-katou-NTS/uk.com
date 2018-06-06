@@ -9,7 +9,6 @@ import javax.transaction.Transactional;
 
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommandHandler;
-import nts.uk.ctx.at.record.app.command.dailyperform.editstatecolor.EditStateColorOfDailyPerformCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.editstatecolor.EditStateColorOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
@@ -129,15 +128,15 @@ public class DailyModifyCommandFacade {
 	}
 
 	public void handleEditCell(List<DPItemValue> data) {
-		String sid = AppContexts.user().employeeId();
-		List<EditStateOfDailyPerformance> editData = data.stream().map(x -> {
-			return new EditStateOfDailyPerformance(x.getEmployeeId(), x.getItemId(), x.getDate(),
-					sid.equals(x.getEmployeeId()) ? EditStateSetting.HAND_CORRECTION_MYSELF
-							: EditStateSetting.HAND_CORRECTION_OTHER);
-		}).collect(Collectors.toList());
-		EditStateColorOfDailyPerformCommand command = new EditStateColorOfDailyPerformCommand();
-		command.getData().addAll(editData);
-		editStateHandler.handle(command);
+//		String sid = AppContexts.user().employeeId();
+//		List<EditStateOfDailyPerformance> editData = data.stream().map(x -> {
+//			return new EditStateOfDailyPerformance(x.getEmployeeId(), x.getItemId(), x.getDate(),
+//					sid.equals(x.getEmployeeId()) ? EditStateSetting.HAND_CORRECTION_MYSELF
+//							: EditStateSetting.HAND_CORRECTION_OTHER);
+//		}).collect(Collectors.toList());
+//		EditStateColorOfDailyPerformCommand command = new EditStateColorOfDailyPerformCommand();
+//		command.getData().addAll(editData);
+//		editStateHandler.handle(command);
 	}
 
 	public void insertSign(List<DPItemCheckBox> dataCheckSign) {

@@ -93,17 +93,23 @@ module cps001.f.vm {
                 self.fileSize(nts.uk.resource.getText("CPS001_85", [fileSize]));
 
                 // save file to domain EmployeeFileManagement
+                var dfd = $.Deferred();
                 service.savedata({
                     pid: dataShare.pid,
                     fileid: fileInfo.id,
                     personInfoCtgId: "",
                     uploadOrder: 1
                 }).done(() => {
-                    self.start().done(() => {
-                        self.restart();
+                    __viewContext['viewModel'].start().done(() => {
+                        init();
+                        $('.filenamelabel').hide();
+                        $('.browser-button').focus();
                         unblock();
+                        dfd.resolve();
                     });
+
                 });
+                return dfd.promise();
             }
         }
 

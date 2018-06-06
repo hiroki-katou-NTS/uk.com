@@ -84,7 +84,7 @@ public class W4D4AlarmService {
 						if (optAlarm.isPresent())
 							result.add(optAlarm.get());
 					}
-					break;
+					
 				}
 			}
 		}
