@@ -582,6 +582,14 @@ module nts.custombinding {
                     .layout-control.readonly:not(.inputable) .color-operation-case-character {
                         color: #000 !important;
                     }
+
+                    .layout-control.inputable .nts-help-button-image {
+                        width: 300px !important;
+                    }
+
+                    .layout-control.inputable .nts-help-button-image .caret-helpbutton.caret-left {
+                        top: unset !important;
+                    }
                 </style>`;
 
         private tmp = `<div class="left-area">
@@ -805,7 +813,7 @@ module nts.custombinding {
                 </script>
                 <script type="text/html" id="ctr_template">
                     <!-- ko if: resourceId -->
-                        <button class="inline" data-bind="attr: { title: resourceId }, text: text('？')">？</button>
+                        <button class="inline" data-bind="ntsHelpButton: { position: 'right center', textId: resourceId }, text: text('？')">？</button>
                     <!-- /ko -->                    
                     <!-- ko let: { 
                                 nameid : itemDefId.replace(/[-_]/g, ''),
@@ -850,7 +858,7 @@ module nts.custombinding {
                         <input data-bind=" ntsTextEditor: {
                                 name: itemName,
                                 value: value,
-                                constraint: nameid == 'COM1000000000000000CS00069IS00779' ? 'StampNumber' : nameid,
+                                constraint:  _.endsWith(nameid, 'CS00069IS00779') ? 'StampNumber' : nameid,
                                 required: required,
                                 option: {
                                     textmode: 'text'
@@ -1144,7 +1152,7 @@ module nts.custombinding {
                                     'data-category': categoryCode,
                                     'data-required': required,
                                     'data-defv': defValue
-                                 }, text: text('CPS001_127'), enable: editable">選択</button>
+                                 }, text: text('CPS001_127'), enable: editable" class="hidden">選択</button>
                             </div>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.READONLY_BUTTON -->
@@ -1158,7 +1166,7 @@ module nts.custombinding {
                                     'data-category': categoryCode,
                                     'data-required': required,
                                     'data-defv': defValue
-                                 }, text: text('CPS001_127'), enable: editable">選択</button>
+                                 }, text: text('CPS001_127'), enable: editable" class="hidden">選択</button>
                             </div>
                         <!-- /ko -->
                     <!-- /ko -->
@@ -1606,9 +1614,9 @@ module nts.custombinding {
 
                     if (constraints && constraints.length) {
                         exceptConsts = [];
-                        
+
                         // fix bug stampNumber error msg
-                        let stampNumber = _.clone(_.find(constraints, c => c.itemCode == 'COM1000000000000000CS00069IS00779'));
+                        let stampNumber = _.clone(_.find(constraints, c => _.endsWith(c.itemCode, 'CS00069IS00779')));
                         if (stampNumber) {
                             stampNumber.itemCode = "StampNumber";
                             constraints.push(stampNumber);

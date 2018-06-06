@@ -1,6 +1,7 @@
 package nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -8,6 +9,8 @@ import nts.arc.time.GeneralDate;
 public interface SelectionRepository {
 
 	void add(Selection selection);
+	
+	void addAll(List<Selection> selectionList);
 
 	void update(Selection selection);
 
@@ -16,8 +19,8 @@ public interface SelectionRepository {
 	void removeInSelectionItemId(String selectionItemId);
 
 	List<Selection> getAllSelectByHistId(String histId);
-
-	Optional<Selection> getSelectionByHistId(String histId);
+	
+	Map<String, List<Selection>> getByHistIdList(List<String> histIdList);
 
 	Optional<Selection> getSelectionBySelectionCd(String selectionCD);
 
@@ -30,5 +33,5 @@ public interface SelectionRepository {
 	List<Selection> getAllSelectionByHistoryId(String selectionItemId, GeneralDate baseDate);
 
 	List<Selection> getAllSelectionBySelectionID(String selectionId);
-
+	
 }

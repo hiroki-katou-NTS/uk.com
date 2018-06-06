@@ -101,7 +101,7 @@ module nts.uk.at.view.kaf002.m1 {
                 } 
             }
             
-            register(application : vmbase.Application){
+            register(application : vmbase.Application, checkBoxValue: boolean){
                 var self = this;
                 let command = {
                     appID: "",
@@ -127,8 +127,22 @@ module nts.uk.at.view.kaf002.m1 {
                     nts.uk.ui.block.invisible();
                     service.insert(command)
                     .done((data) => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                            location.reload();
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            if(data.autoSendMail){
+                                nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
+                                    location.reload();
+                                });    
+                            } else {
+                                if(self.checkBoxValue()){
+                                    let command = {appID: data.appID};
+                                    setShared("KDL030_PARAM", command);
+                                    nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
+                                        location.reload();
+                                    });    
+                                } else {
+                                    location.reload();
+                                }   
+                            }
                         });    
                     })
                     .fail(function(res) { 
@@ -162,8 +176,14 @@ module nts.uk.at.view.kaf002.m1 {
                     nts.uk.ui.block.invisible();
                     service.update(command)
                     .done(() => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                            location.reload();
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            if(data.autoSendMail){
+                                nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
+                                    location.reload();
+                                });    
+                            } else {
+                                location.reload();
+                            }
                         });     
                     })
                     .fail(function(res) { 
