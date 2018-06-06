@@ -96,4 +96,25 @@ public interface AbsenceReruitmentManaQuery {
 	 * @return
 	 */
 	AsbRemainTotalInfor getAbsRemainTotalInfor(List<RecruitmentHistoryOutPara> lstRecHis, List<AbsenceHistoryOutputPara> lstAbsHis);
+	/**
+	 * 当月の振休残数を集計する
+	 * @param sid
+	 * @param dateData
+	 * @param outData
+	 * @return
+	 */
+	InterimRemainAggregateOutputData calAsbRemainOfCurrentMonth(String sid, DatePeriod dateData, InterimRemainAggregateOutputData outData);
+	/**
+	 * 月初の振休残数を取得
+	 * @param sid
+	 * @return
+	 */
+	Double useDays(String sid);
+	/**
+	 * 期間内の振休消滅数合計を取得
+	 * @param sid
+	 * @param dateData
+	 * @return
+	 */
+	Double getMonthExtinctionDays(String sid, DatePeriod dateData);
 }

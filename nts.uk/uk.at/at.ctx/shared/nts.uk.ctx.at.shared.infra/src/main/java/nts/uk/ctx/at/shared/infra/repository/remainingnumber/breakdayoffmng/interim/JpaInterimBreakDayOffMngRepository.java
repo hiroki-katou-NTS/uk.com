@@ -38,7 +38,7 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 	private String QUERY_DAYOFF_MNG = "SELECT c FROM KrcmtInterimBreakDayOff c"
 			+ " WHERE c.breakDayOffKey.dayOffMngId = :mngId"
 			+ " AND c.dayOffMngAtr = :mngAtr";
-	private String QUERY_BY_EXPIRATIONDATE = "SELECT c FROM KrcmtInterimBreakMng"
+	private String QUERY_BY_EXPIRATIONDATE = "SELECT c FROM KrcmtInterimBreakMng c"
 			+ " WHERE c.breakMngId IN breakMngIds"
 			+ " AND c.unUsedDays > :unUsedDays"
 			+ " AND c.expirationDate >= :startDate"

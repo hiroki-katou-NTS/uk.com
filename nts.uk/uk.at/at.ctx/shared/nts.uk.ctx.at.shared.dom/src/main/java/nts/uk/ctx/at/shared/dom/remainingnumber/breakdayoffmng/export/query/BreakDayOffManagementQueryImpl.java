@@ -375,7 +375,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 			interimUnUseDays += breakMng.getUnUsedDays().v();
 		}
 		//ドメインモデル「休出管理データ」を取得する
-		List<LeaveManagementData> lstLeaveMng = leaveManaDataRepo.getByExtinctionPeriod(sid, tmpDateData, dateData, (double) 0, DigestionAtr.UNUSED);
+		List<LeaveManagementData> lstLeaveMng = leaveManaDataRepo.getByExtinctionPeriod(sid, tmpDateData, dateData, (double) 0, DigestionAtr.EXPIRED);
 		Double unUseDays = (double) 0;
 		Double useDays =  (double) 0;
 		for (LeaveManagementData leaveMng : lstLeaveMng) {

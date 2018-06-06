@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber.absencerecruitment.interim;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -21,16 +23,22 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcmtInterimAbsMng;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcmtInterimRecAbs;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcmtInterimRecMng;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.breakdayoff.interim.KrcmtInterimBreakMng;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaInterimRecAbasMngRepository extends JpaRepository implements InterimRecAbasMngRepository{
 
 	private String QUERY_REC_BY_ID = "SELECT c FROM KrcmtInterimRecAbs c"
 			+ " WHERE c.recAbsPk.recruitmentMngId = :remainID"
-			+ " AND c.recruitmentMngAtr = 0";
+			+ " AND c.recruitmentMngAtr = :mngAtr";
 	private String QUERY_ABS_BY_ID = "SELECT c FROM KrcmtInterimRecAbs c"
 			+ " WHERE c.recAbsPk.absenceMngID = :remainID"
-			+ " AND c.recruitmentMngAtr = 0";
-	
+			+ " AND c.recruitmentMngAtr = :mngAtr";
+	private String QUERY_REC_BY_DATEPERIOD = "SELECT c FROM KrcmtInterimRecMng c"
+			+ " WHERE c.recruitmentMngId in :mngIds"
+			+ " AND c.unUsedDays > :unUsedDays"
+			+ " AND c.expirationDate >= :startDate"
+			+ " AND c.expirationDate <= :endDate";
 	@Override
 	public Optional<InterimRecMng> getReruitmentById(String recId) {
 		return this.queryProxy().find(recId, KrcmtInterimRecMng.class)
@@ -39,7 +47,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 
 	private InterimRecMng toDomainRecMng(KrcmtInterimRecMng x) {
 		return new InterimRecMng(x.recruitmentMngId, 
-				x.expirationDays, 
+				x.expirationDate, 
 				new OccurrenceDay(x.occurrenceDays),
 				EnumAdaptor.valueOf(x.statutoryAtr, StatutoryAtr.class),
 				new UnUsedDay(x.unUsedDays));
@@ -56,9 +64,10 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	}
 
 	@Override
-	public Optional<InterimRecAbsMng> getRecOrAbsMng(String interimId, boolean isRec) {
+	public Optional<InterimRecAbsMng> getRecOrAbsMng(String interimId, boolean isRec, DataManagementAtr mngAtr) {
 		return this.queryProxy().query(isRec ? QUERY_REC_BY_ID : QUERY_ABS_BY_ID, KrcmtInterimRecAbs.class)
 				.setParameter("remainID", interimId)
+				.setParameter("mngAtr", mngAtr.values)
 				.getSingle(x -> toDomainRecAbs(x));
 	}
 
@@ -71,4 +80,16 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 				EnumAdaptor.valueOf(x.selectedAtr, SelectedAtr.class));
 	}
 
+	@Override
+	public List<InterimRecMng> getRecByIdPeriod(List<String> recId, Double unUseDays, DatePeriod dateData) {
+		if(recId.isEmpty()) {
+			return Collections.emptyList();
+		}
+		return this.queryProxy().query(QUERY_REC_BY_DATEPERIOD, KrcmtInterimRecMng.class)
+				.setParameter("mngIds", recId)
+				.setParameter("unUsedDays", unUseDays)
+				.setParameter("startDate", dateData.start())
+				.setParameter("endDate", dateData.end())
+				.getList(c -> toDomainRecMng(c));
+	}
 }
