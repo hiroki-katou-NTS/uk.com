@@ -36,6 +36,12 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         constructor() {
             let self = this;
             self.initScreen();
+            
+            self.selectedCodeHoliday(self.itemListHoliday()[0].code);
+            self.selectedCodeSubHoliday(self.itemListSubHoliday()[0].code);
+            self.selectedCodeOptionSubHoliday(self.itemListOptionSubHoliday()[0].code);
+            
+            
             //休出残数算出処理
             self.checkedHoliday.subscribe((v) => {
                 let remainDayObject = {
