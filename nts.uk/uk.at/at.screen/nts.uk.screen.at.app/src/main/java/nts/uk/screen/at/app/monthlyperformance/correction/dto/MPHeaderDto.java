@@ -106,13 +106,13 @@ public class MPHeaderDto {
 		MPHeaderDto dto = new MPHeaderDto("", key, "String", width, "", false, "", false, false);
 		int attendanceAtr = item.getAttendanceAtr();
 
-		if (attendanceAtr == 3) {
+		if (attendanceAtr == 4) {
 			// dto.setNtsControl("TextEditorNumberSeparated");
 			dto.setConstraint(new Constraint("Currency", false, ""));
 		} else if (attendanceAtr == 1) {
 			// dto.setNtsControl("TextEditorTimeShortHM");
 			dto.setConstraint(new Constraint("Clock", false, ""));
-		} else if (attendanceAtr == 2) {
+		} else if (attendanceAtr == 3) {
 			dto.setConstraint(new Constraint("Integer", false, ""));
 		}
 //		else if (attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
