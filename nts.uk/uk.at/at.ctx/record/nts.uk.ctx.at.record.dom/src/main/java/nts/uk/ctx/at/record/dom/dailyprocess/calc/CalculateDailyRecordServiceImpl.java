@@ -232,12 +232,12 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		if (integrationOfDaily.getAffiliationInfor() == null || companyCommonSetting == null)
 			return integrationOfDaily;
 		// 実績データの計算
-		val afterCalcResult = this.calcDailyAttendancePerformance(integrationOfDaily);
+		val afterCalcResult = this.calcDailyAttendancePerformance(integrationOfDaily,companyCommonSetting);
 		//任意項目の計算
 		val aftercalcOptionalItemResult = this.calcOptionalItem(afterCalcResult);
 		//エラーチェック
 //		return calculationErrorCheckService.errorCheck(afterCalcResult);
-		return calculationErrorCheckService.errorCheck(aftercalcOptionalItemResult);
+		return calculationErrorCheckService.errorCheck(aftercalcOptionalItemResult,companyCommonSetting);
 //		return afterCalcResult;
 	}
 
