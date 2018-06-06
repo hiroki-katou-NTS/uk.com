@@ -3,10 +3,11 @@ package nts.uk.ctx.at.request.app.command.application.lateorleaveearly;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import nts.arc.layer.app.command.CommandHandler;
+
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterProcessDelete;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.LateOrLeaveEarlyService;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 
 /**
  * 
@@ -15,21 +16,15 @@ import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.LateOrLeav
  */
 @Stateless
 @Transactional
-public class DeleteLateOrLeaveEarlyCommandHandler extends CommandHandler<DeleteLateOrLeaveEarlyCommand> {
-
-	@Inject
-	private LateOrLeaveEarlyService lateOrLeaveEarlyService;
+public class DeleteLateOrLeaveEarlyCommandHandler extends CommandHandlerWithResult<DeleteLateOrLeaveEarlyCommand, ProcessResult> {
 	
 	@Inject
 	private AfterProcessDelete afterProcessDeleteService;
 	
 	@Override
-	protected void handle(CommandHandlerContext<DeleteLateOrLeaveEarlyCommand> context) {
-	
-		afterProcessDeleteService.screenAfterDelete(context.getCommand().getCompanyID(), context.getCommand().getAppID(), context.getCommand().getVersion());
-		lateOrLeaveEarlyService.deleteLateOrLeaveEarly(context.getCommand().getCompanyID(), context.getCommand().getAppID());
-		
-		
+	protected ProcessResult handle(CommandHandlerContext<DeleteLateOrLeaveEarlyCommand> context) {
+		// lateOrLeaveEarlyService.deleteLateOrLeaveEarly(context.getCommand().getCompanyID(), context.getCommand().getAppID());
+		return afterProcessDeleteService.screenAfterDelete(context.getCommand().getCompanyID(), context.getCommand().getAppID(), context.getCommand().getVersion());
 	}
 
 }
