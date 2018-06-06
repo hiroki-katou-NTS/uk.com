@@ -9,7 +9,6 @@ module nts.uk.at.view.kdm001.share.model {
 
     export function getNumberOfDays(): Array<ItemModel> {
         return [
-            new model.ItemModel(0, getText('管理データ日数単位')),
             new model.ItemModel(1.0, getText('KDM001_127')),
             new model.ItemModel(0.5, getText('KDM001_128'))
         ];
