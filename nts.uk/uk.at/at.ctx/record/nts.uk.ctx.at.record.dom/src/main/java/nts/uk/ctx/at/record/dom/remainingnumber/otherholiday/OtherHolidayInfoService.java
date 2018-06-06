@@ -324,36 +324,7 @@ public class OtherHolidayInfoService {
 
 		return result;
 	}
-
-//	/**
-//	 * Get flexible time
-//	 * 
-//	 * @param cid
-//	 * @param workTimeCD
-//	 * @return
-//	 */
-//	private DesignatedTime getFlexTime(String cid, String workTimeCD) {
-//		DesignatedTime result = new DesignatedTime(new OneDayTime(0), new OneDayTime(0));
-//		Optional<FlexWorkSetting> flexWork = flexWorkSettingRepository.find(cid, workTimeCD);
-//		if (!flexWork.isPresent()) {
-//			return result;
-//		}
-//		Optional<WorkTimezoneOtherSubHolTimeSet> subHolTimeSet = flexWork.get().getCommonSetting().getSubHolTimeSet()
-//				.stream().filter(i -> i.getOriginAtr().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value
-//						&& (i.getSubHolTimeSet().isUseDivision() == true))
-//				.findFirst();
-//		if (subHolTimeSet.isPresent()) {
-//			if (subHolTimeSet.get().getSubHolTimeSet().getSubHolTransferSetAtr().isSpecifiedTimeSubHol()) {
-//				return subHolTimeSet.get().getSubHolTimeSet().getDesignatedTime();
-//
-//			} else {
-//
-//				return new DesignatedTime(subHolTimeSet.get().getSubHolTimeSet().getCertainTime(), new OneDayTime(0));
-//			}
-//		}
-//		return getCompanySet(cid);
-//	}
-
+	
 	/**
 	 * Get flexible time
 	 * 
