@@ -9,7 +9,8 @@ module nts.uk.at.view.kdw003.a.service {
         addAndUpdate: "screen/at/correctionofdailyperformance/addAndUpdate",
         getApplication: "screen/at/correctionofdailyperformance/getApplication",
         addClosure: "screen/at/correctionofdailyperformance/insertClosure",
-        findFlexCheck: "screen/at/correctionofdailyperformance/getFlexCheck"
+        findFlexCheck: "screen/at/correctionofdailyperformance/getFlexCheck",
+        loadRow: "screen/at/correctionofdailyperformance/loadRow"
     }
     
     export function startScreen(param){
@@ -55,5 +56,9 @@ module nts.uk.at.view.kdw003.a.service {
     
      export function findFlexCheck(param) {
          return nts.uk.request.ajax(paths.findFlexCheck, param);
+     }
+    
+     export function loadRow(param) {
+         return nts.uk.request.ajax(paths.loadRow, param);
      }
 }
