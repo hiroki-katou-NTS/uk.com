@@ -351,6 +351,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             self.reloadParam().processDate = date;
+            nts.uk.ui.block.invisible();
+            nts.uk.ui.block.grayout();
             service.updateScreen(self.reloadParam()).done((data) => {
                 //self.itemValueAll(data.itemValues);
                 self.receiveData(data);
@@ -362,7 +364,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 //Closure name
                 self.closureName(data.closureName);
                 //date process
-                self.yearMonth(data.processDate);
+//                self.yearMonth(data.processDate);
                 //actual times
                 self.actualTimeDats(data.lstActualTimes);
                 self.actualTimeSelectedDat(data.selectedActualTime);
@@ -382,6 +384,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 let datasource = self.formatDate(self.dpData);
                 $("#dpGrid").igGrid("option","dataSource", datasource);
                 dfd.resolve();
+                nts.uk.ui.block.clear();
             })
             return dfd.promise();
             
@@ -824,7 +827,36 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 if (header.constraint == null || header.constraint == undefined) {
                     delete header.constraint;
                 } else {
+                    header.constraint["cDisplayType"] = header.constraint.cdisplayType;
+                    if (header.constraint.cDisplayType != null && header.constraint.cDisplayType != undefined) {
+                        if (header.constraint.cDisplayType != "Primitive" && header.constraint.cDisplayType != "Combo") {
+                            if (header.constraint.cDisplayType.indexOf("Currency") != -1) {
+                                header["columnCssClass"] = "currency-symbol";
+                                header.constraint["min"] = "0";
+                                header.constraint["max"] = "9999999999"
+                            } else if (header.constraint.cDisplayType == "Clock") {
+                                header["columnCssClass"] = "right-align";
+                                header.constraint["min"] = "-10:00";
+                                header.constraint["max"] = "100:30"
+                            } else if (header.constraint.cDisplayType == "Integer") {
+                                header["columnCssClass"] = "right-align";
+                            }
+                            delete header.constraint.primitiveValue;
+                        } else {
 
+                            if (header.constraint.cDisplayType == "Primitive") {
+                                delete header.group[0].constraint.cDisplayType
+                            } else if (header.constraint.cDisplayType == "Combo") {
+                                header.group[0].constraint["min"] = 0;
+                                header.group[0].constraint["max"] = Number(header.group[0].constraint.primitiveValue);
+                                header.group[0].constraint["cDisplayType"] = header.group[0].constraint.cdisplayType;
+                                delete header.group[0].constraint.cdisplayType
+                                delete header.group[0].constraint.primitiveValue;
+                            }
+                            delete header.constraint;
+                            delete header.group[1].constraint;
+                        }
+                    }
                     if (header.constraint != undefined) delete header.constraint.cdisplayType;
                 }
                 if (header.group != null && header.group != undefined) {

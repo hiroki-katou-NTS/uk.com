@@ -45,6 +45,8 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CalcFlexDto;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CheckBeforeCalcFlex;
+import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.DPLoadRowProcessor;
+import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.DPPramLoadRow;
 import nts.uk.screen.at.app.dailyperformance.correction.selecterrorcode.DailyPerformanceErrorCodeProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.selectitem.DailyPerformanceSelectItemProcessor;
 import nts.uk.screen.at.app.monthlyperformance.correction.command.MonthModifyCommandFacade;
@@ -90,6 +92,9 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@Inject
 	private CheckBeforeCalcFlex checkBeforeCalcFlex;
+	
+	@Inject
+	private DPLoadRowProcessor loadRowProcessor;
 	
 	@POST
 	@Path("startScreen")
@@ -249,5 +254,11 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("getFlexCheck")
 	public JavaTypeResult<String>  getValueTimeFlex(CalcFlexDto calc) {
 		return new JavaTypeResult<String>(checkBeforeCalcFlex.getConditionCalcFlex(calc));
+	}
+	
+	@POST
+	@Path("loadRow")
+	public DailyPerformanceCorrectionDto reloadRow(DPPramLoadRow param) {
+		return loadRowProcessor.reloadGrid(param);
 	}
 }
