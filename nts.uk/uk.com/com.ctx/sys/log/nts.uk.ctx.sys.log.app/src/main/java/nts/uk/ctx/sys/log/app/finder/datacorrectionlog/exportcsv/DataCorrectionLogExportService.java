@@ -43,8 +43,6 @@ public class DataCorrectionLogExportService extends ExportService<DataCorrection
 			"CDL027_9", "CDL027_11", "CDL027_12", "CDL027_13", "CDL027_14");
 
 	private static final String FILE_EXTENSION = ".csv";
-	
-	private static final String PGID = AppContexts.programId();
 
 	private List<String> getTextHeader(int displayFormat) {
 		List<String> lstHeader = new ArrayList<>();
@@ -84,11 +82,12 @@ public class DataCorrectionLogExportService extends ExportService<DataCorrection
 			row.put(headers.get(7), getCorrectionAttr(d.getCorrectionAttr()));
 			dataSource.add(row);
 		}
+		String pgId = AppContexts.programId();
 		CSVFileData fileData = new CSVFileData(
-				PGID + "_" + GeneralDateTime.now().toString("yyyyMMddHHmmss") + FILE_EXTENSION, headers, dataSource);
+				pgId + "_" + GeneralDateTime.now().toString("yyyyMMddHHmmss") + FILE_EXTENSION, headers, dataSource);
 		generator.generate(context.getGeneratorContext(), fileData);
 	}
-	
+
 	private String getCorrectionAttr(int attr) {
 		CorrectionAttr correctionAttr = CorrectionAttr.of(attr);
 		switch (correctionAttr) {

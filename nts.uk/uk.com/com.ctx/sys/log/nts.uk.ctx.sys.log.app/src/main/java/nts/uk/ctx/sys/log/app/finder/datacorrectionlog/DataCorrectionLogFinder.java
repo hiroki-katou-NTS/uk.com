@@ -8,8 +8,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.sys.log.dom.datacorrectionlog.DataCorrectionLogRepository;
 import nts.uk.ctx.sys.log.dom.logbasicinfo.LogBasicInfoRepository;
@@ -37,52 +35,59 @@ public class DataCorrectionLogFinder {
 
 	public List<DataCorrectionLogDto> getDataLog(DataCorrectionLogParams params) {
 		List<DataCorrectionLogDto> result = new ArrayList<>();
-//		String companyId = AppContexts.user().companyId();
-//		TargetDataType dataType = TargetDataType.of(params.getFunctionId());
-//		List<DataCorrectionLog> listCorrectionLog = new ArrayList<>();
-//		if (params.getStartYmd() != null && params.getEndYmd() != null) {
-//			listCorrectionLog = correctionLogRepo.getAllLogData(dataType, params.getListEmployeeId(),
-//					new DatePeriod(params.getStartYmd(), params.getEndYmd()));
-//		} else if (params.getStartYm() != null && params.getEndYm() != null) {
-//			listCorrectionLog = correctionLogRepo.getAllLogData(dataType, params.getListEmployeeId(),
-//					new YearMonthPeriod(new YearMonth(params.getStartYm()), new YearMonth(params.getEndYm())));
-//		} else {
-//			listCorrectionLog = correctionLogRepo.getAllLogData(dataType, params.getListEmployeeId(),
-//					Year.of(params.getStartY()), Year.of(params.getEndY()));
-//		}
-//		if (listCorrectionLog.isEmpty()) 
-//			throw new BusinessException("Msg_37");
-//		for (DataCorrectionLog d : listCorrectionLog) {
-//			LogBasicInformation basicInfo = basicInfoRepo.getLogBasicInfo(companyId, d.getOperationId()).get();
-//			DataCorrectionLogDto log = new DataCorrectionLogDto(d.getTargetDataKey().getDateKey().get(),
-//					d.getTargetUser().getUserName(), d.getCorrectedItem().getName(),
-//					d.getCorrectedItem().getValueBefore().getViewValue(),
-//					d.getCorrectedItem().getValueAfter().getViewValue(), basicInfo.getUserInfo().getUserName(),
-//					basicInfo.getModifiedDateTime(), d.getCorrectionAttr().value);
-//			result.add(log);
-//		}
-		if (params.getDisplayFormat() == 0) {// by date
-			for (int i = 0; i < 500; i++) {
-				for (int j = 0; j < params.getListEmployeeId().size(); j++) {
-					for (int k = 0; k < 4; k++) {
-						DataCorrectionLogDto log = new DataCorrectionLogDto(GeneralDate.ymd(2018, 5, (i % 28) + 1),
-								"User" + j, "Item" + k, "0900", "1508", "Admin", GeneralDateTime.now(), i % 3);
-						result.add(log);
-					}
-				}
-			}
-		} else { // by individual
-			for (int i = 0; i < 500; i++) {
-				for (int j = 0; j < params.getListEmployeeId().size(); j++) {
-					for (int k = 0; k < 4; k++) {
-						DataCorrectionLogDto log = new DataCorrectionLogDto(GeneralDate.ymd(2018, 5, (i % 28) + 1),
-								"User" + i, "Item" + k, "0900", "1508", "Admin", GeneralDateTime.now(), i % 3);
-						result.add(log);
+		String companyId = AppContexts.user().companyId();
+		List<DataCorrectionLog> listCorrectionLog = new ArrayList<>();
+		if (params.getStartYmd() != null && params.getEndYmd() != null) {
+			listCorrectionLog = correctionLogRepo.getAllLogData(convertFuncId(params.getFunctionId()),
+					params.getListEmployeeId(), new DatePeriod(params.getStartYmd(), params.getEndYmd()));
+		} else if (params.getStartYm() != null && params.getEndYm() != null) {
+			listCorrectionLog = correctionLogRepo.getAllLogData(convertFuncId(params.getFunctionId()),
+					params.getListEmployeeId(),
+					new YearMonthPeriod(new YearMonth(params.getStartYm()), new YearMonth(params.getEndYm())));
+		} else {
+			listCorrectionLog = correctionLogRepo.getAllLogData(convertFuncId(params.getFunctionId()),
+					params.getListEmployeeId(), Year.of(params.getStartY()), Year.of(params.getEndY()));
+		}
 
-					}
-				}
-			}
+		if (listCorrectionLog.isEmpty())
+			throw new BusinessException("Msg_37");
+
+		for (DataCorrectionLog d : listCorrectionLog) {
+			LogBasicInformation basicInfo = basicInfoRepo.getLogBasicInfo(companyId, d.getOperationId()).get();
+			DataCorrectionLogDto log = new DataCorrectionLogDto(d.getTargetDataKey().getDateKey().get(),
+					d.getTargetUser().getUserName(), d.getCorrectedItem().getName(),
+					d.getCorrectedItem().getValueBefore().getViewValue(),
+					d.getCorrectedItem().getValueAfter().getViewValue(),
+					basicInfo != null ? basicInfo.getUserInfo().getUserName() : null,
+					basicInfo != null ? basicInfo.getModifiedDateTime() : null, d.getCorrectionAttr().value);
+			result.add(log);
 		}
 		return result;
 	}
+
+	private TargetDataType convertFuncId(int funcId) {
+		switch (funcId) {
+		case 1:
+			return TargetDataType.of(0);
+		case 2:
+			return TargetDataType.of(1);
+		case 3:
+			return TargetDataType.of(2);
+		case 4:
+			return TargetDataType.of(3);
+		case 5:
+			return TargetDataType.of(6);
+		case 6:
+			return TargetDataType.of(7);
+		case 7:
+			return TargetDataType.of(8);
+		case 8:
+			return TargetDataType.of(9);
+		case 9:
+			return TargetDataType.of(10);
+		default:
+			return null;
+		}
+	}
+
 }
