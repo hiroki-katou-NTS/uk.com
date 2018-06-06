@@ -27,14 +27,11 @@ import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternCode;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionWithDataPeriod;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondItem;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondItem_;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondPK_;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond_;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -367,8 +364,8 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 	 * getBySidsAndBaseDate(java.util.List, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public List<WorkingConditionItem> getBySidsAndBaseDate(List<String> employeeIds,
-			GeneralDate baseDate) {
+	public List<WorkingConditionItem> getBySidsAndDatePeriod(List<String> employeeIds,
+			DatePeriod datePeriod) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -392,10 +389,10 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 			lstpredicateWhere.add(root.get(KshmtWorkingCondItem_.sid).in(subList));
 			lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
 					root.get(KshmtWorkingCondItem_.kshmtWorkingCond).get(KshmtWorkingCond_.strD),
-					baseDate));
+					datePeriod.end()));
 			lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
 					root.get(KshmtWorkingCondItem_.kshmtWorkingCond).get(KshmtWorkingCond_.endD),
-					baseDate));
+					datePeriod.start()));
 
 			// set where to SQL
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));

@@ -24,7 +24,7 @@ public class MonthlyAbsenceleaveRemainExportImpl implements MonthlyAbsenceleaveR
 			if(lstAbsenData.isEmpty()) {
 				continue;
 			}
-			AbsenceleaveCurrentMonthOfEmployee dataOutput = new AbsenceleaveCurrentMonthOfEmployee(employeeId, ym, null, null, null, null, null);
+			AbsenceleaveCurrentMonthOfEmployee dataOutput = new AbsenceleaveCurrentMonthOfEmployee(employeeId, ym, (double)0, (double)0, (double)0, (double)0, (double)0);
 			GeneralDate endDateRemainingMax = GeneralDate.ymd(ym.year(), ym.month(), 1);
 			GeneralDate endDatecarryMax = GeneralDate.ymd(ym.year(), ym.month(), 1);
 			//同じ属性同士の値を合算
