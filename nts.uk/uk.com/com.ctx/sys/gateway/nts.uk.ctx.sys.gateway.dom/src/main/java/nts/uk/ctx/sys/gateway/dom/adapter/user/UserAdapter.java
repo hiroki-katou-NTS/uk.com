@@ -77,6 +77,12 @@ public interface UserAdapter {
 	 * @param newPassword the new password
 	 */
 	void updatePassword(String userId,String newPassword);
+	 * requestlist 313 adapter
+	 * @param userId
+	 * @return
+	 */
+	Optional<UserInforExImport> getByEmpID(String empID);
+
 	
 	/**
 	 * Find user by contract and login id new.

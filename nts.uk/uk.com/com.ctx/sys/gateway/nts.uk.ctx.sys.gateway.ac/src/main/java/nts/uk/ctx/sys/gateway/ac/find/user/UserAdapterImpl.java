@@ -16,6 +16,7 @@ import nts.uk.ctx.sys.auth.pub.user.CheckBeforeChangePassOutput;
 import nts.uk.ctx.sys.auth.pub.user.CheckBeforePasswordPublisher;
 import nts.uk.ctx.sys.auth.pub.user.PasswordMessageObject;
 import nts.uk.ctx.sys.auth.pub.user.UserExport;
+import nts.uk.ctx.sys.auth.pub.user.UserInforEx;
 import nts.uk.ctx.sys.auth.pub.user.UserPublisher;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.CheckBeforeChangePass;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.PasswordMessageImport;
@@ -144,6 +145,15 @@ public class UserAdapterImpl implements UserAdapter {
 			return this.covertToImportDomainNew(optUserExport);
 		}
 		return Optional.empty();
+	}
+
+	@Override
+	public Optional<UserInforExImport> getByEmpID(String empID) {
+		return userPublisher.getByEmpID(empID).map(x -> new UserInforExImport(
+				x.getUserID(), 
+				x.getLoginID(), 
+				x.getEmpID(), 
+				x.getEmpCD()));
 	}
 	
 	/* (non-Javadoc)

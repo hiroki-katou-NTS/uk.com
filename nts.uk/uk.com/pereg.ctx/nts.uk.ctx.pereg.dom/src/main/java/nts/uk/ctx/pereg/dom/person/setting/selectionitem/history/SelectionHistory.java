@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -12,7 +11,6 @@ import nts.uk.shr.com.history.strategic.PersistentResidentHistory;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Getter
-@AllArgsConstructor
 public class SelectionHistory implements PersistentResidentHistory<DateHistoryItem, DatePeriod, GeneralDate>{
 	
 	// domain name: 選択肢履歴
@@ -32,8 +30,20 @@ public class SelectionHistory implements PersistentResidentHistory<DateHistoryIt
 	 */
 	private List<DateHistoryItem> dateHistoryItems;
 	
+	private SelectionHistory(String companyId, String selectionItemId, List<DateHistoryItem> dateHistoryItems) {
+		super();
+		this.companyId = companyId;
+		this.selectionItemId = selectionItemId;
+		this.dateHistoryItems = dateHistoryItems;
+	}
+	
 	public static SelectionHistory createNewHistorySelection(String selectionItemId, String companyId) {
 		return new SelectionHistory(companyId, selectionItemId, new ArrayList<>());
+	}
+	
+	public static SelectionHistory createFullHistorySelection(String selectionItemId, String companyId,
+			List<DateHistoryItem> dateHistoryItems) {
+		return new SelectionHistory(companyId, selectionItemId, dateHistoryItems);
 	}
 	
 	public static SelectionHistory createHistorySelection(String histId, String selectionItemId, String companyId,
@@ -46,5 +56,7 @@ public class SelectionHistory implements PersistentResidentHistory<DateHistoryIt
 	public List<DateHistoryItem> items() {
 		return dateHistoryItems;
 	}
+
+	
 
 }
