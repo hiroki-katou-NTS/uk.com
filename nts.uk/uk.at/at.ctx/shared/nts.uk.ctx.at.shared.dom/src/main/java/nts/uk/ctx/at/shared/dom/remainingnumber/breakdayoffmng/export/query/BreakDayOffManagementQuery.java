@@ -45,7 +45,7 @@ public interface BreakDayOffManagementQuery {
 	 * @param employeeId
 	 * @return
 	 */
-	public InterimRemainAggregateOutputData aggregatedDayoffCurrentMonth(String employeeId);
+	public InterimRemainAggregateOutputData aggregatedDayoffCurrentMonth(String employeeId, DatePeriod dateData, InterimRemainAggregateOutputData dataOut);
 	/**
 	 * 休出代休発生消化履歴の取得
 	 */
@@ -97,4 +97,18 @@ public interface BreakDayOffManagementQuery {
 	 * @return
 	 */
 	public AsbRemainTotalInfor totalInfor(List<BreakHistoryData> lstBreakHis, List<DayOffHistoryData> lstDayOffHis);
+	/**
+	 * 月初の代休残数を取得
+	 * @param cid
+	 * @param sid
+	 * @return
+	 */
+	public Double getDayOffRemainOfBeginMonth(String cid, String sid);
+	/**
+	 * 期間内の代休消滅数合計を取得
+	 * @param sid
+	 * @param dateData
+	 * @return
+	 */
+	public Double totalExtinctionRemainOfInPeriod(String sid, DatePeriod dateData);
 }

@@ -27,7 +27,7 @@ public class KrcmtInterimRecMng extends UkJpaEntity implements Serializable{
 	public String recruitmentMngId;
 	/**	使用期限日 */
 	@Column(name = "EXPIRATION_DAYS")
-	public GeneralDate expirationDays;
+	public GeneralDate expirationDate;
 	/**	発生日数 */
 	@Column(name = "OCCURRENCE_DAYS")
 	public Double occurrenceDays;

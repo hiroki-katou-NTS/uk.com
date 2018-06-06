@@ -82,6 +82,8 @@ module nts.uk.at.view.kdm001.e.viewmodel {
             service.getBySidDatePeriod(self.info.selectedEmployee.employeeId, self.info.rowValue.id).done((data: Array<ItemModel> )=>{
                 if (data && data.length > 0) {
                     self.items(data);
+                    let sortData = _.sortBy(self.items(), o => o.dayoffDate,'asc');
+                    self.items(sortData);
                     let code = _.filter(self.items(), function(currentItem: ItemModel) {
                         return currentItem.linked == true;
                     });
@@ -96,7 +98,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
                         }    
                     })
                 } else {
-                    dialog.info({messageId: 'Msg_1068'})    
+                    dialog.info({messageId: 'Msg_1068'});  
                 }
                 block.clear();
             }).fail((res)=>{
@@ -104,7 +106,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
                 block.clear();
             })
         }
-        
+
         public create(): void {
             let self = this;
             

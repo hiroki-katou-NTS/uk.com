@@ -9,9 +9,11 @@ import javax.ejb.Stateless;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.paymana.KrcmtPayoutManaData;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 
 @Stateless
@@ -37,6 +39,19 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 	private static final String QUERY_BY_SUBID = "SELECT p FROM KrcmtPayoutManaData p where p.payoutId IN (SELECT ps.krcmtPayoutSubOfHDManaPK.payoutId FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.subOfHDID =:subOfHDID)";
 	
 	private static final String QUERY_DELETE_SUB = "DELETE FROM KrcmtPayoutSubOfHDMana p WHERE p.krcmtPayoutSubOfHDManaPK.payoutId = :payoutId ";
+	
+	private static final String QUERY_SID_DATE_PERIOD = "SELECT c FROM KrcmtPayoutManaData c"
+			+ " WHERE c.sID = :sid"
+			+ " AND c.dayOff >= :startDate"
+			+ " AND c.dayOff <= :endDate";
+	
+	private static final String QUERY_BY_STATEATR = "SELECT c FROM KrcmtPayoutManaData c"
+			+ " WHERE c.sID = :sid"
+			+ " AND c.stateAtr = :stateAtr";
+	private static final String QUERY_BY_EACH_PERIOD = QUERY_SID_DATE_PERIOD
+			+ " AND (c.unUsedDays > :unUsedDays AND c.expiredDate >= :sDate AND c.expiredDate <= eDate)"
+			+ " OR (c.stateAtr = :stateAtr AND c.disapearDate >= :sDate AND c.disapearDate <= eDate) ";
+
 	@Override
 	public List<PayoutManagementData> getSid(String cid, String sid) {
 		List<KrcmtPayoutManaData> list = this.queryProxy().query(QUERY_BYSID, KrcmtPayoutManaData.class)
@@ -151,6 +166,40 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 	@Override
 	public List<PayoutManagementData> getDayoffDateBysubOfHDID(String subOfHDID) {
 		List<KrcmtPayoutManaData> listpayout = this.queryProxy().query(QUERY_BY_SUBID, KrcmtPayoutManaData.class ).setParameter("subOfHDID", subOfHDID).getList(); 
+		return listpayout.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<PayoutManagementData> getBySidAndDatePeriod(String sid, DatePeriod dateData) {
+		List<KrcmtPayoutManaData> listpayout = this.queryProxy().query(QUERY_SID_DATE_PERIOD, KrcmtPayoutManaData.class )
+				.setParameter("sid", sid)
+				.setParameter("startDate", dateData.start())
+				.setParameter("endDate", dateData.end())
+				.getList(); 
+		return listpayout.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<PayoutManagementData> getByStateAtr(String sid, DigestionAtr stateAtr) {
+		List<KrcmtPayoutManaData> list = this.queryProxy().query(QUERY_BY_STATEATR, KrcmtPayoutManaData.class)
+				.setParameter("sid", sid)
+				.setParameter("stateAtr", stateAtr)
+				.getList();
+		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<PayoutManagementData> getEachPeriod(String sid, DatePeriod dateTmp, DatePeriod dateData,
+			Double unUseDays, DigestionAtr stateAtr) {
+		List<KrcmtPayoutManaData> listpayout = this.queryProxy().query(QUERY_BY_EACH_PERIOD, KrcmtPayoutManaData.class )
+				.setParameter("sid", sid)
+				.setParameter("startDate", dateTmp.start())
+				.setParameter("endDate", dateTmp.end())
+				.setParameter("unUsedDays", unUseDays)
+				.setParameter("sDate", dateData.start())
+				.setParameter("eDate", dateData.end())
+				.setParameter("stateAtr", stateAtr.value)
+				.getList(); 
 		return listpayout.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
 

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber.breakdayoffmng.interim;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -26,6 +28,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseTime;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.breakdayoff.interim.KrcmtInterimBreakDayOff;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.breakdayoff.interim.KrcmtInterimBreakMng;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.breakdayoff.interim.KrcmtInterimDayOffMng;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements InterimBreakDayOffMngRepository{
 	
@@ -35,7 +38,11 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 	private String QUERY_DAYOFF_MNG = "SELECT c FROM KrcmtInterimBreakDayOff c"
 			+ " WHERE c.breakDayOffKey.dayOffMngId = :mngId"
 			+ " AND c.dayOffMngAtr = :mngAtr";
-	
+	private String QUERY_BY_EXPIRATIONDATE = "SELECT c FROM KrcmtInterimBreakMng c"
+			+ " WHERE c.breakMngId IN breakMngIds"
+			+ " AND c.unUsedDays > :unUsedDays"
+			+ " AND c.expirationDate >= :startDate"
+			+ " AND c.expirationDate <= :endDate";
 	@Override
 	public Optional<InterimBreakMng> getBreakManaBybreakMngId(String breakManaId) {
 		return this.queryProxy().find(breakManaId, KrcmtInterimBreakMng.class)
@@ -44,7 +51,7 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 	private InterimBreakMng toDomainBreakMng(KrcmtInterimBreakMng x) {		
 		return new InterimBreakMng(x.breakMngId, 
 				new AttendanceTime(x.occurrenceTimes),
-				x.expirationDays,
+				x.expirationDate,
 				new OccurrenceTime(x.occurrenceTimes), 
 				new OccurrenceDay(x.occurrenceDays),
 				new AttendanceTime(x.haftDayEquiTime),
@@ -63,8 +70,11 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 				new UnOffsetDay(x.unOffsetDays));
 	}
 	@Override
-	public Optional<InterimBreakDayOffMng> getBreakDayOffMng(String mngId, boolean breakDay) {
-		return this.queryProxy().find(breakDay ? QUERY_BREAK_MNG : QUERY_DAYOFF_MNG, KrcmtInterimBreakDayOff.class)
+	public Optional<InterimBreakDayOffMng> getBreakDayOffMng(String mngId, boolean breakDay, DataManagementAtr mngAtr) {
+		return this.queryProxy().query(breakDay ? QUERY_BREAK_MNG : QUERY_DAYOFF_MNG, KrcmtInterimBreakDayOff.class)
+				.setParameter("mngId", mngId)
+				.setParameter("mngAtr", mngAtr.values)
+				.getSingle()
 				.map(x -> toDomainBreakDayoffMng(x));
 	}
 	private InterimBreakDayOffMng toDomainBreakDayoffMng(KrcmtInterimBreakDayOff x) {		
@@ -75,6 +85,18 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 				new UseTime(x.userTimes),
 				new UseDay(x.userDays),
 				EnumAdaptor.valueOf(x.selectedAtr, SelectedAtr.class));
+	}
+	@Override
+	public List<InterimBreakMng> getByPeriod(List<String> mngId, Double unUseDays, DatePeriod dateData) {
+		if(mngId.isEmpty()) {
+			return Collections.emptyList();
+		}
+		return this.queryProxy().query(QUERY_BY_EXPIRATIONDATE, KrcmtInterimBreakMng.class)
+				.setParameter("breakMngIds", mngId)
+				.setParameter("unUsedDays", unUseDays)
+				.setParameter("startDate", dateData.start())
+				.setParameter("endDate", dateData.end())
+				.getList(c -> toDomainBreakMng(c));
 	}
 
 }
