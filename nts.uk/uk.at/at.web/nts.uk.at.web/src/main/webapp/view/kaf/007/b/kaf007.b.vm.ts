@@ -207,9 +207,14 @@ module nts.uk.at.view.kaf007.b {
                 //application change date format
                 self.changeDateFormat(workChange);
                 service.updateWorkChange(workChange).done(() => {
-                    
-                    dialog.info({ messageId: "Msg_15" }).then(function() {
-                        location.reload();
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        if(data.autoSendMail){
+                            nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
+                                location.reload();
+                            });    
+                        } else {
+                            location.reload();
+                        }
                     });
                 }).fail((res) => {
                     dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});

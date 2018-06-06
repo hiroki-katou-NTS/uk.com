@@ -105,7 +105,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             self.fixColGrid = ko.observableArray([]);
 
             self.monthlyParam({
-                yearMonth: self.yearMonth,
+                yearMonth: 0,
                 actualTime: null,
                 initMode: self.initMode(),
                 //抽出対象社員一覧
@@ -300,10 +300,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             var self = this;
             let valueResult: string = "";
             if (atr != undefined && atr != null) {
-                if (atr == 6) {
-                    // Time
-                    valueResult = value == "" ? null : String(self.getHoursAll(value));
-                } else if (atr == 5) {
+                if (atr == 1) {
                     valueResult = value == "" ? null : String(self.getHoursTime(value));
                 } else {
                     valueResult = value;
@@ -313,6 +310,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             }
             return valueResult;
         };
+        
+        getHours(value: any): number {
+            return Number(value.split(':')[0]) * 60 + Number(value.split(':')[1]);
+        }
         
         //time
         getHoursTime(value): number {
@@ -349,44 +350,53 @@ module nts.uk.at.view.kmw003.a.viewmodel {
          */
         updateDate(date: any) {
             let self = this;
-            let dfd = $.Deferred();
-            self.reloadParam().processDate = date;
+            //let dfd = $.Deferred();
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
-            service.updateScreen(self.reloadParam()).done((data) => {
-                //self.itemValueAll(data.itemValues);
-                self.receiveData(data);
-                /*********************************
-                 * Screen data
-                 *********************************/
-                // closure ID
-                self.closureId(data.closureId);
-                //Closure name
-                self.closureName(data.closureName);
-                //date process
-//                self.yearMonth(data.processDate);
-                //actual times
-                self.actualTimeDats(data.lstActualTimes);
-                self.actualTimeSelectedDat(data.selectedActualTime);
-                self.initActualTime();
-                self.lstEmployee(_.orderBy(data.lstEmployee, ['code'], ['asc']));
-                /*********************************
-                 * Grid data
-                 *********************************/
-                // Fixed Header
-                self.setFixedHeader(data.lstFixedHeader);
-
-                let employeeLogin: any = _.find(self.lstEmployee(), function(data) {
-                    return data.loginUser == true;
-                });
-                self.employIdLogin = employeeLogin;
-                
-                let datasource = self.formatDate(self.dpData);
-                $("#dpGrid").igGrid("option","dataSource", datasource);
-                dfd.resolve();
-                nts.uk.ui.block.clear();
-            })
-            return dfd.promise();
+            self.monthlyParam().yearMonth = date;
+//            $("#dpGrid").ntsGrid("destroy");
+            
+            $.when(self.initScreen()).done(() => {
+                  nts.uk.ui.block.clear();
+            });
+//            nts.uk.ui.block.invisible();
+//            nts.uk.ui.block.grayout();
+//            service.updateScreen(self.reloadParam()).done((data) => {
+//                //self.itemValueAll(data.itemValues);
+//                self.receiveData(data);
+//                /*********************************
+//                 * Screen data
+//                 *********************************/
+//                // closure ID
+//                self.closureId(data.closureId);
+//                //Closure name
+//                self.closureName(data.closureName);
+//                //date process
+////                self.yearMonth(data.processDate);
+//                //actual times
+//                self.actualTimeDats(data.lstActualTimes);
+//                self.actualTimeSelectedDat(data.selectedActualTime);
+//                self.initActualTime();
+//                self.lstEmployee(_.orderBy(data.lstEmployee, ['code'], ['asc']));
+//                /*********************************
+//                 * Grid data
+//                 *********************************/
+//                // Fixed Header
+//                self.setFixedHeader(data.lstFixedHeader);
+//
+//                let employeeLogin: any = _.find(self.lstEmployee(), function(data) {
+//                    return data.loginUser == true;
+//                });
+//                self.employIdLogin = employeeLogin;
+//                
+//                self.formatDate(self.dpData);
+////                $("#dpGrid").igGrid("option","dataSource", datasource);
+//                 $("#dpGrid").ntsGrid("destroy");
+//                 self.loadGrid();
+//                dfd.resolve();
+//                nts.uk.ui.block.clear();
+//            })
+           // return dfd.promise();
             
         };
         /**
@@ -483,13 +493,17 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                             isLoginUser: false
                         };
                     }));
+                    nts.uk.ui.block.invisible();
+                    nts.uk.ui.block.grayout();
                     self.lstEmployee(_.orderBy(self.lstEmployee(), ['code'], ['asc']));
 //                    self.lstEmployee(_.orderBy(self.lstEmployee(), ['code'], ['asc']));
                     //Reload screen
                     $("#dpGrid").ntsGrid("destroy");
                     self.monthlyParam().lstEmployees = self.lstEmployee();
-                    self.reloadParam().lstEmployees = self.lstEmployee();
-                    self.initScreen();
+                    self.reloadParam().lstEmployees = self.lstEmployee();                    
+                    $.when(self.initScreen()).done(() => {
+                          nts.uk.ui.block.clear();
+                    });
 //                    self.updateDate(self.yearMonth());
                 },
             }
@@ -837,7 +851,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                             } else if (header.constraint.cDisplayType == "Clock") {
                                 header["columnCssClass"] = "right-align";
                                 header.constraint["min"] = "-10:00";
-                                header.constraint["max"] = "100:30"
+                                header.constraint["max"] = "200:30"
                             } else if (header.constraint.cDisplayType == "Integer") {
                                 header["columnCssClass"] = "right-align";
                             }
