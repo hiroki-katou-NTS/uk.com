@@ -40,18 +40,16 @@
 					<table>
 					    <colgroup>
 					        <col width="160px"/>
-					        <col width="180px"/>
-					       <!-- <col width="100px"/> -->
+					        <col width="80px"/>
+					       <col width="100px"/>
 					    </colgroup>
 					    <tbody data-bind = "foreach: execLog.taskLogList">
 					        <tr>
 					            <td class="inputLabel"><div data-bind = "text: taskName" /></td>
 					            <td><div data-bind = "text: status" /></td>
-					            <!-- 
 					            <td style="text-align: center;">
 					            <button class="setting small" data-bind="click: function(data, event) { $parent.openDetailDialog(data, event)}, enable: statusCd == 3" data-code="${taskId}" style="width: 70px;">#{i18n.getText('KBT002_146')}</button>
 					            </td>
-					             -->
 					        </tr>
 					    </tbody>
 					</table>

@@ -38,12 +38,16 @@ public class JpaCDL009EmployeeQueryRepository extends JpaRepository implements C
 			+ "LEFT JOIN BsymtTempAbsHistory absHis ON e.bsymtEmployeeDataMngInfoPk.sId = absHis.sid "
 			+ "LEFT JOIN BsymtTempAbsHisItem absHisItem ON absHis.histId = absHisItem.histId "
 			+ "LEFT JOIN BsymtAffiWorkplaceHistItem awhi ON awh.hisId = awhi.hisId "
-			+ "LEFT JOIN BsymtWorkplaceInfo wi ON wi.bsymtWorkplaceInfoPK.wkpid = awhi.workPlaceId "
+			+ "LEFT JOIN BsymtWorkplaceHist wkphist ON wkphist.bsymtWorkplaceHistPK.wkpid = awhi.workPlaceId "
+			+ "LEFT JOIN BsymtWorkplaceInfo wi ON wi.bsymtWorkplaceInfoPK.historyId = wkphist.bsymtWorkplaceHistPK.historyId "
 			+ "LEFT JOIN BsymtEmployeeDataMngInfo e ON awh.sid = e.bsymtEmployeeDataMngInfoPk.sId "
 			+ "LEFT JOIN BpsmtPerson p ON e.bsymtEmployeeDataMngInfoPk.pId = p.bpsmtPersonPk.pId "
 			+ "WHERE awhi.workPlaceId IN :wplIds "
 			+ "AND awh.strDate <= :refDate "
-			+ "AND awh.endDate >= :refDate";
+			+ "AND awh.endDate >= :refDate "
+			+ "AND wkphist.strD <= :refDate "
+			+ "AND wkphist.endD >= :refDate";
+	
 
 	/*
 	 * (non-Javadoc)
