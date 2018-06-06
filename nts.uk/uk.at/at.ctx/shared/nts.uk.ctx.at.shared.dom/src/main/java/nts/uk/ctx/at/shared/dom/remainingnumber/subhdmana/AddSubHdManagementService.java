@@ -209,6 +209,7 @@ public class AddSubHdManagementService {
 		if (closureDate.isPresent() && !closureDate.get().after(subHolidayDate)) {
 			errorList.add("Msg_746");
 		}
+		
 		// 休出（年月日）と代休（年月日）をチェックする
 		if (holidayDate.isPresent() && subHolidayDate.compareTo(holidayDate.get()) == 0) {
 			errorList.add("Msg_730");
