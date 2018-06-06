@@ -105,6 +105,7 @@ module nts.uk.com.view.ccg009.a.viewmodel {
                             return obj.alarmCategory() == i;    
                         }));
                         self.currentAlarm(new TopPageAlarmSetDto(item.value, item.name, { alarmCategory: item.alarmCategory, useAtr: item.useAtr }));
+                        
                     });
                 }).always(function(){
                     nts.uk.ui.block.clear();    
