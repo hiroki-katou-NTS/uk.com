@@ -15,12 +15,10 @@ public class SortingProcessScheduleJob extends UkScheduledJob{
 		
 		String companyId = context.scheduletimeData().getString("companyId");
 		String execItemCd = context.scheduletimeData().getString("execItemCd");
-		//todo fixed 
-		String scheduleId ="lay tu kiban";
 		ScheduleExecuteCommand s = new ScheduleExecuteCommand();
 		s.setCompanyId(companyId);
 		s.setExecItemCd(execItemCd);
-		s.setScheduleId(scheduleId);
+		s.setNextDate(context.nextFireTime());
 		this.sortingProcessCommandHandler.handle(s);
 	}
 
