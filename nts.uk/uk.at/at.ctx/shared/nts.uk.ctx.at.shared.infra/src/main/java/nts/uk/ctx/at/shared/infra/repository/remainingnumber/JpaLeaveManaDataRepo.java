@@ -161,6 +161,7 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 				.setParameter("leaveIDs", leaveIds).getList();
 		for(KrcmtLeaveManaData busItem: listListMana){
 			busItem.subHDAtr =  DigestionAtr.USED.value;
+			busItem.unUsedDays = 0.0;
 		}
 		this.commandProxy().updateAll(listListMana);
 	}
@@ -172,7 +173,7 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 				.setParameter("leaveIDs", leaveIds).getList();
 		for(KrcmtLeaveManaData busItem: listListMana){
 			busItem.subHDAtr =  DigestionAtr.UNUSED.value;
-			busItem.unUsedDays = 1.0;
+			busItem.unUsedDays = busItem.occurredDays;
 		}
 		this.commandProxy().updateAll(listListMana);
 	}
@@ -182,6 +183,7 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	public void updateUnUseDayLeaveId(String leaveId,Double unUsedDay) {
 		KrcmtLeaveManaData leaveMana =  this.getEntityManager().find(KrcmtLeaveManaData.class, leaveId);
 		leaveMana.unUsedDays = unUsedDay;
+		leaveMana.subHDAtr = 1;
 		this.commandProxy().update(leaveMana);
 	}
 	
