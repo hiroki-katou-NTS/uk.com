@@ -18,7 +18,7 @@
 			<com:scriptfile path="kwr002.d.service.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="functions-area" style="margin:0px 10px;">
+			<div style="margin:0px 10px;">
 				<div data-bind="ntsFormLabel: {}">
 					#{i18n.getText('KWR002_130')} <span data-bind="text:layoutCode" style="margin-left:10px"></span>
 					<span style="margin-left: 10px;" data-bind="text:layoutName"></span>
@@ -56,7 +56,7 @@
 						<i class="icon icon-searchbox"></i>
 						<div class="cf">
 							<div class="drop-down-attendance"><div class="labelCombo"><span >#{i18n.getText('KWR002_136')}</span></div>
-								<div  tabindex="2" style="width: 70px" id="combo-box" class="combo"
+								<div  tabindex="2" style="width: 110px;margin-left:15px;" id="combo-box" class="combo"
 									data-bind="ntsComboBox: {
 																name: '#[KWR002_137]',
 																options: listAttendanceType,

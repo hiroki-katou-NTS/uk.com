@@ -3,14 +3,14 @@
 
 
 .form-label {
-	margin-bottom: 40px;
+	margin-bottom:15px;
 }
 
 .th-col2 {
 	/* width: 400px; */
-	padding-bottom: 40px;
 	/* border: none;
 	height: 30px; */
+	padding-bottom:15px;
 }
 
 .switch-btn>button{

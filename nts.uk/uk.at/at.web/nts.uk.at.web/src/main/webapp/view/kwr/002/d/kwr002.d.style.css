@@ -13,18 +13,16 @@
 }
 
 .drop-down-attendance {
-	margin: 0 0 20px 20px;
+	margin: 0 0 45px 20px;
 }
 
 .labelCombo {
-	margin-top: 5px;
+	margin-top: 8px;
 	float: left;
 }
 
 .combo {
-	margin: -4px 5px 0px 12px;
-	padding-left: 9px;
-	padding-bottom: 10px;
+
 	float: left;
 }
 
