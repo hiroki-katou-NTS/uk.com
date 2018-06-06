@@ -10,7 +10,11 @@ public interface SelectionHistoryRepository {
 
 	void add(SelectionHistory selectionHistory);
 	
-	public void update(SelectionHistory domain, DateHistoryItem itemToBeUpdated);
+	void addAllDomain(SelectionHistory selectionHistory);
 	
-	public void delete(SelectionHistory domain, DateHistoryItem itemToBeDeleted);
+	void update(SelectionHistory domain, DateHistoryItem itemToBeUpdated);
+	
+	void delete(SelectionHistory domain, DateHistoryItem itemToBeDeleted);
+	
+	void removeAllOfSelectionItem(String selectionItemId);
 }

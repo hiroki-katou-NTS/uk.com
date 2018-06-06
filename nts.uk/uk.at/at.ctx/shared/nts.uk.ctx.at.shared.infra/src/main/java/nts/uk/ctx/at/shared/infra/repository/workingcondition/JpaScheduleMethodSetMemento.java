@@ -75,7 +75,7 @@ public class JpaScheduleMethodSetMemento implements ScheduleMethodSetMemento {
 	public void setMonthlyPatternWorkScheduleCre(
 			Optional<MonthlyPatternWorkScheduleCre> monthlyPatternWorkScheduleCre) {
 		if (!monthlyPatternWorkScheduleCre.isPresent()) {
-			this.entity.setMPatternWorkScheCreate(null);
+			this.entity.setRefWorkingHours(null);
 			return;
 		}
 

@@ -1144,7 +1144,7 @@ module nts.custombinding {
                                     'data-category': categoryCode,
                                     'data-required': required,
                                     'data-defv': defValue
-                                 }, text: text('CPS001_127'), enable: editable">選択</button>
+                                 }, text: text('CPS001_127'), enable: editable" class="hidden">選択</button>
                             </div>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.READONLY_BUTTON -->
@@ -1606,7 +1606,7 @@ module nts.custombinding {
 
                     if (constraints && constraints.length) {
                         exceptConsts = [];
-                        
+
                         // fix bug stampNumber error msg
                         let stampNumber = _.clone(_.find(constraints, c => c.itemCode == 'COM1000000000000000CS00069IS00779'));
                         if (stampNumber) {
