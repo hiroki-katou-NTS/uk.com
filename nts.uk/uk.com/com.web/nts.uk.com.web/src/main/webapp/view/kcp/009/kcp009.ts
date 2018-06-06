@@ -146,17 +146,18 @@ module kcp009.viewmodel {
                 $('#next-btn-'+self.prefix()).attr('style', "background: url('" + nextIconLink + "'); width: 30px; height: 30px; background-size: 30px 30px;");
 
                 // Toggle employee list
-                $('#items-list-'+self.prefix()).ntsPopup({
+                var itemListEl = '#item-list-' + self.prefix();
+                var btnShowListEl = '#btn_show_list-'+self.prefix();
+                $(itemListEl).ntsPopup({
                     position: {
                         my: 'left top',
                         at: 'left bottom',
-                        of: $('#function-tr')
+                        of: btnShowListEl
                     },
-                    dismissible: false,
+                    dismissible: false
                 });
                 // Toggle
-                $('#btn_show_list-'+self.prefix()).click(function() {
-                    var itemListEl = '#item-list-' + self.prefix();
+                $(btnShowListEl).click(function() { 
                     $(itemListEl).ntsPopup('toggle');
                 });
                 // Enter keypress

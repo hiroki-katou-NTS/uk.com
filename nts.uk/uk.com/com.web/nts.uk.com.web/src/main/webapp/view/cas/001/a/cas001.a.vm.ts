@@ -33,6 +33,14 @@ module nts.uk.com.view.cas001.a.viewmodel {
             multiple: false
         });
         listRole: KnockoutObservableArray<PersonRole> = ko.observableArray([]);
+        ctgColumns: KnockoutObservableArray<any> = ko.observableArray([
+            { headerText: 'コード', key: 'categoryId', width: 200, hidden: true },
+            { headerText: getText('CAS001_10'), key: 'categoryName', width: 165 },
+            {
+              headerText: getText('CAS001_69'), key: 'setting', width: 80, //formatter: makeIcon
+               template: '{{if ${setting} == "true"}} <span>●</span>{{else }} <span></span> {{/if}}'
+            }
+        ]);
 
         constructor() {
             let self = this;
@@ -227,7 +235,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 let objSetofScreenC = getShared('isCanceled');
                 if (!objSetofScreenC.isCancel) {
                     self.reload().always(() => {
-                        if(objSetofScreenC.id !== null && objSetofScreenC.id != undefined){
+                        if (objSetofScreenC.id !== null && objSetofScreenC.id != undefined) {
                             self.component.currentCode(objSetofScreenC.id);
                         }
                     });
@@ -559,6 +567,13 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 screenModel = __viewContext['screenModel'];
             screenModel.allowPersonRef(param ? param.allowPersonRef : 0);
             screenModel.allowOtherRef(param ? param.allowOtherRef : 0);
+            let allowPerson = screenModel.allowPersonRef(),
+                allowOther = screenModel.allowOtherRef();
+            screenModel.allowPersonRef(!allowPerson);
+            screenModel.allowPersonRef(allowPerson);
+            screenModel.allowOtherRef(!allowOther);
+            screenModel.allowOtherRef(allowOther);
+
             self.allowOtherCompanyRef = ko.observable(param ? param.allowOtherCompanyRef : 0);
             self.selfPastHisAuth = ko.observable(param ? param.selfPastHisAuth : 1);
             self.selfFutureHisAuth = ko.observable(param ? param.selfFutureHisAuth : 1);
@@ -902,9 +917,8 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
 function makeIcon(value, row) {
     if (value == "true")
-         return "●";
+        return "●";
     return '';
 }
-
 
 

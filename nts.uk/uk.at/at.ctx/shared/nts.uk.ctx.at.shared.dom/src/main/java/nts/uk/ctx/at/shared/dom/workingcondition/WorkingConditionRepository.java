@@ -1,15 +1,13 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface WorkingConditionRepository.
@@ -60,7 +58,13 @@ public interface WorkingConditionRepository {
 	 */
 	Optional<WorkingCondition> getBySidAndStandardDate(String companyId, String employeeId, GeneralDate baseDate);
 
-	
+	/**
+	 * Gets the by sids.
+	 *
+	 * @param sId the s id
+	 * @return the by sids
+	 */
+	List<WorkingCondition> getBySids(List<String> sIds);
 
 	
 	/**

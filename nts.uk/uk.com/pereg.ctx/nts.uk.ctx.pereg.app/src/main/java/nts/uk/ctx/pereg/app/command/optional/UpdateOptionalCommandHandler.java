@@ -71,7 +71,7 @@ public class UpdateOptionalCommandHandler extends CommandHandler<PeregUserDefUpd
 				state = OptionalUtil.createDataState(item);
 				
 				itemData = new PersonInfoItemData(item.definitionId(), recordId, state);
-				perInfoItemDataRepository.updateItemData(itemData);
+				perInfoItemDataRepository.registerItemData(itemData);
 			}
 			
 		} else if (perInfoCategory.get().getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE){
@@ -84,7 +84,7 @@ public class UpdateOptionalCommandHandler extends CommandHandler<PeregUserDefUpd
 			for (ItemValue item : command.getItems()){
 				state = OptionalUtil.createDataState(item);
 				itemData = new EmpInfoItemData(item.definitionId(), command.getRecordId(), state);
-				empInfoItemDataRepository.updateEmpInfoItemData(itemData);
+				empInfoItemDataRepository.registerEmpInfoItemData(itemData);
 			}
 			
 		}

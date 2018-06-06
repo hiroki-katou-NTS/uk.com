@@ -504,7 +504,7 @@ public class DailyPerformanceCorrectionProcessor {
 						.findFirst();
 				if (optWorkInfoOfDailyPerformanceDto.isPresent()
 						&& optWorkInfoOfDailyPerformanceDto.get().getState() == CalculationState.No_Calculated)
-					screenDto.setAlarmCellForFixedColumn(data.getId());
+					screenDto.setAlarmCellForFixedColumn(data.getId(), displayFormat);
 			}
 		}
 		// chech ca hai gia tri spr thay doi 
