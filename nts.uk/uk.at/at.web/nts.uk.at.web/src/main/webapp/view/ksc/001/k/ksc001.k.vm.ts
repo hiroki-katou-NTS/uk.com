@@ -49,6 +49,7 @@ module nts.uk.at.view.ksc001.k {
                 let self = this;
                 let dfd = $.Deferred();
                 service.findAllError(parentData.executionId).done(function(data: Array<any>) {
+                    parentData.countError = _.uniqBy(data, 'employeeId').length;
                     self.targetRange(nts.uk.resource.getText("KSC001_46", [parentData.startDate, parentData.endDate]));
                     self.errorNumber(nts.uk.resource.getText("KSC001_47", [parentData.countError]));
                     let arr = [];
