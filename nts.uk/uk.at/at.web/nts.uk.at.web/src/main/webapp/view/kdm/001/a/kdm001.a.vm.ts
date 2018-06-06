@@ -139,13 +139,13 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     { headerText: '', key: 'unUsedDaysInGridText', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'expriedDaysInGridText', dataType: 'string', width: '0px', hidden: true },
                     { headerText: getText('KDM001_8'), template: '<div style="float:right"> ${dayoffDatePyout} </div>', key: 'dayoffDatePyout', dataType: 'string', width: '120px' },
-                    { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${occurredDays}${occurredDaysText} </div>', key: 'occurredDays', dataType: 'string', width: '85px' },
-                    { headerText: getText('KDM001_124'), key: 'payoutTied', dataType: 'string', width: '85px' },
+                    { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${occurredDays}${occurredDaysText} </div>', key: 'occurredDays', dataType: 'string', width: '86px' },
+                    { headerText: getText('KDM001_124'), key: 'payoutTied', dataType: 'string', width: '86px' },
                     { headerText: getText('KDM001_10'), template: '<div style="float:right"> ${dayoffDateSub} </div>', key: 'dayoffDateSub', dataType: 'string', width: '120px' },
-                    { headerText: getText('KDM001_11'), template: '<div style="float:right"> ${requiredDays}${requiredDaysText} </div>', key: 'requiredDays', dataType: 'string', width: '85px' },
-                    { headerText: getText('KDM001_124'), key: 'subTied', dataType: 'string', width: '85px' },
-                    { headerText: getText('KDM001_12'), template: '<div style="float:right"> ${unUsedDaysInGrid}${unUsedDaysInGridText} </div>', key: 'unUsedDaysInGrid', dataType: 'string', width: '85px' },
-                    { headerText: getText('KDM001_13'), template: '<div style="float:right"> ${expriedDaysInGrid}${expriedDaysInGridText} </div>', key: 'expriedDaysInGrid', dataType: 'string', width: '85px' },
+                    { headerText: getText('KDM001_11'), template: '<div style="float:right"> ${requiredDays}${requiredDaysText} </div>', key: 'requiredDays', dataType: 'string', width: '86px' },
+                    { headerText: getText('KDM001_124'), key: 'subTied', dataType: 'string', width: '86px' },
+                    { headerText: getText('KDM001_12'), template: '<div style="float:right"> ${unUsedDaysInGrid}${unUsedDaysInGridText} </div>', key: 'unUsedDaysInGrid', dataType: 'string', width: '86px' },
+                    { headerText: getText('KDM001_13'), template: '<div style="float:right"> ${expriedDaysInGrid}${expriedDaysInGridText} </div>', key: 'expriedDaysInGrid', dataType: 'string', width: '86px' },
                     { headerText: getText('KDM001_14'), formatter: getLawAtr, key: 'lawAtr', dataType: 'string', width: '100px' },
                     { headerText: '', key: 'link', dataType: 'string', width: '85px', unbound: true, ntsControl: 'ButtonPegSetting' },
                     { headerText: '', key: 'edit', dataType: 'string', width: '55px', unbound: true, ntsControl: 'ButtonCorrection' }
@@ -155,6 +155,12 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         name: 'Paging',
                         type: "local",
                         pageSize: 14
+                    },
+                    {
+                        name: "Resizing",
+                        columnSettings: [
+                            { allowResizing: false },
+                        ]
                     }
                 ],
                 ntsControls: [

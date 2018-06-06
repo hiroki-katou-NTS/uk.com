@@ -44,12 +44,8 @@ public class ExtraHolidayManagementDataDto {
 			} else {
 				dto.setLinked(0);
 			}
-			if (data.getComDayOffDate().getDayoffDate().isPresent()){
-				if (data.getComDayOffDate().getDayoffDate().get().after(GeneralDate.today())){
-					dto.setExpired(data.getUnUsedDays().v());
-				}else {
-					dto.setExpired(data.getUnUsedDays().v());
-				}
+			if (GeneralDate.today().after(data.getExpiredDate())){
+				dto.setExpired(data.getUnUsedDays().v());
 			}else {
 				dto.setRemain(data.getUnUsedDays().v());
 			}
@@ -62,16 +58,7 @@ public class ExtraHolidayManagementDataDto {
 			} else {
 				dto.setLinked(0);
 			}
-			if (data.getDayOffDate().getDayoffDate().isPresent()){
-				if (data.getDayOffDate().getDayoffDate().get().after(GeneralDate.today())){
-					dto.setExpired(data.getRemainDays().v());
-				}else {
-					dto.setExpired(data.getRemainDays().v());
-				}
-			}else {
-				dto.setExpired(data.getRemainDays().v());
-			}
-			
+			dto.setRemain(data.getRemainDays().v());
 			listExtraData.add(dto);
 		}
 		listExtraData = listExtraData.stream().filter(o -> o.getCID().equals(cid) && o.getSID().equals(sid)).collect(Collectors.toList());
