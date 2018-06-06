@@ -101,29 +101,28 @@ public class AnnualWorkScheduleData {
 	}
 
 	/**
-	 * TODO
-	 * 
-	 * @return
+	 * 月平均の算出(Calculate monthly average)
 	 */
 	public AnnualWorkScheduleData calc() {
+		// 取得した実績の合計を算出する
 		this.sum = new BigDecimal(0);
-		this.sum = this.sum.add(month1st == null ? BigDecimal.valueOf(0) : month1st.getValue())
+		this.sum = this.sum.add(this.getItemValueByNullOrZero(this.month1st))
 				.add(this.getItemValueByNullOrZero(this.month2nd)).add(this.getItemValueByNullOrZero(this.month3rd))
 				.add(this.getItemValueByNullOrZero(this.month4th)).add(this.getItemValueByNullOrZero(this.month5th))
 				.add(this.getItemValueByNullOrZero(this.month6th)).add(this.getItemValueByNullOrZero(this.month7th))
 				.add(this.getItemValueByNullOrZero(this.month8th)).add(this.getItemValueByNullOrZero(this.month9th))
 				.add(this.getItemValueByNullOrZero(this.month10th)).add(this.getItemValueByNullOrZero(this.month11th))
 				.add(this.getItemValueByNullOrZero(this.month12th));
-
+		// 月平均を算出する
 		this.average = this.sum.divide(BigDecimal.valueOf(this.numMonth), this.getMaxDigitAfterDecimalPoint(),
-				RoundingMode.HALF_UP); // TODO
+				RoundingMode.HALF_UP);
 		return this;
 	}
 
 	private int getMaxDigitAfterDecimalPoint() {
 		if (maxDigitAfterDecimalPoint == null) {
 			maxDigitAfterDecimalPoint = Collections
-					.max(Arrays.asList(this.getDigitAfterDecimalPoint(this.month1st.getValue()),
+					.max(Arrays.asList(this.getDigitAfterDecimalPoint(this.getItemValueByNullOrDefault(this.month1st)),
 							this.getDigitAfterDecimalPoint(this.getItemValueByNullOrDefault(this.month2nd)),
 							this.getDigitAfterDecimalPoint(this.getItemValueByNullOrDefault(this.month3rd)),
 							this.getDigitAfterDecimalPoint(this.getItemValueByNullOrDefault(this.month4th)),
