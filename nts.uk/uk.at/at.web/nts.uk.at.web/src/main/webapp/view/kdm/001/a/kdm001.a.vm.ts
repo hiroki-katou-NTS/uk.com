@@ -112,7 +112,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             
             self.selectedPeriodItem.subscribe(x =>{
                 if (x == 0) {
-                    $("#daterangepickerA .ntsDatepicker").ntsError("clear");
+                    nts.uk.ui.errors.clearAll();
                 }
             });
             
