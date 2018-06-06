@@ -55,9 +55,10 @@ module nts.uk.com.view.cmf005.c.viewmodel {
                     });
 
                     if (systemTypeB != undefined) {
-                        self.selectedCode = ko.observable(systemTypeB.code);
+                        self.selectedCode(systemTypeB.code);
+                    } else {
+                        self.selectedCode(self.systemTypes()[0].code);
                     }
-                    self.getListCategory(systemTypeB, listCategoryB);
                 }
             }).fail(function(error) {
                 alertError(error);

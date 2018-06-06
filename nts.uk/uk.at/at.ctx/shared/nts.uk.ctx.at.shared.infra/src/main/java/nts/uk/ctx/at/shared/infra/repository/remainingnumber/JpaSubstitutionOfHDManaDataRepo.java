@@ -12,6 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.paymana.KrcmtSubOfHDManaData;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements SubstitutionOfHDManaDataRepository {
@@ -36,8 +37,13 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 	
 	private static final String QUERY_DELETE_SUB = "DELETE FROM KrcmtPayoutSubOfHDMana p WHERE p.krcmtPayoutSubOfHDManaPK.subOfHDID = :subOfHDID ";
 
-
-	
+	private String QUERY_BY_SID_DATE_PERIOD = "SELECT c FROM KrcmtSubOfHDManaData c"
+			+ " WHERE c.sID = :sid"
+			+ " AND c.dayOff >= :startDate"
+			+ " AND c.dayOff <= :endDate";
+	private String QUERY_BY_SID_REMAINDAYS = "SELECT c FROM KrcmtSubOfHDManaData c"
+			+ " WHERE c.sID = :sid"
+			+ " AND c.remainDays > :remainDays";
 	
 	@Override
 	public List<SubstitutionOfHDManagementData> getBysiD(String cid, String sid) {
@@ -140,6 +146,25 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 	public Optional<SubstitutionOfHDManagementData> find(String cID, String sID, GeneralDate holidayDate) {
 		return this.queryProxy().query(QUERY_BY_SID_CID_HOLIDAYDATE, KrcmtSubOfHDManaData.class).setParameter("cid", cID)
 				.setParameter("employeeId", sID).setParameter("holidayDate", holidayDate).getSingle().map(i -> toDomain(i));
+	}
+
+	@Override
+	public List<SubstitutionOfHDManagementData> getBySidAndDatePeriod(String sid, DatePeriod dateData) {
+		List<KrcmtSubOfHDManaData> list = this.queryProxy().query(QUERY_BY_SID_DATE_PERIOD, KrcmtSubOfHDManaData.class)
+				.setParameter("sid", sid)
+				.setParameter("startDate", dateData.start())
+				.setParameter("endDate", dateData.end())
+				.getList();
+		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<SubstitutionOfHDManagementData> getByRemainDays(String sid, Double remainDays) {
+		List<KrcmtSubOfHDManaData> list = this.queryProxy().query(QUERY_BY_SID_REMAINDAYS, KrcmtSubOfHDManaData.class)
+				.setParameter("sid", sid)
+				.setParameter("remainDays", remainDays)
+				.getList();
+		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
 
 

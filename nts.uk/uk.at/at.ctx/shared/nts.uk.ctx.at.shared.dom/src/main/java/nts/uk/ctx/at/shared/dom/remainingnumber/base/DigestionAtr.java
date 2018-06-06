@@ -9,11 +9,17 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public enum DigestionAtr {
-	// 未消化
+	/**
+	 *  未消化
+	 */
 	UNUSED(0),
-	// 消化済
+	/**
+	 *  消化済
+	 */
 	USED(1),
-	// 消滅
+	/**
+	 *  消滅
+	 */
 	EXPIRED(2);
 	
 	public final int value;
