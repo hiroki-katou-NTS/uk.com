@@ -3,7 +3,35 @@
 #totalTable {
 	width: 250px;
 }
-#content-right{
+
+#content-right {
 	float: left;
 	margin-left: 25px;
+}
+
+#holiday-info_table tr, #holiday-use_table tr {
+	height: 25px;
+}
+
+#total {
+	border: 1px solid #CCC;
+	margin-top: 1px;
+	padding: 0 2px;
+	width: 613px;
+}
+
+#total-number {
+	margin-left: 282px;
+}
+
+#half-year-rest {
+	margin-top: 30px;
+}
+
+#time-year-rest {
+	
+}
+
+#content-right {
+	height: 570px;
 }

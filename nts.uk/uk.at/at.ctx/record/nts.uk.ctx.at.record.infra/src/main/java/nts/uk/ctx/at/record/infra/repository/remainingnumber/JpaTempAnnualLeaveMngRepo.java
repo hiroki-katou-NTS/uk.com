@@ -42,7 +42,7 @@ public class JpaTempAnnualLeaveMngRepo extends JpaRepository implements TempAnnu
 	static{
 		StringBuilder query = new StringBuilder();
 		query.append("SELECT a FROM KrcdtAnnleaMngTemp a");
-		query.append(" WHERE a.PK.employeeId = :employeeID");
+		query.append(" WHERE a.PK.employeeId = :employeeId");
 		query.append(" ORDER BY a.PK.ymd ASC");
 		SELECT_BY_EMPLOYEEID = query.toString();
 	}

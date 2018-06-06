@@ -4,7 +4,7 @@ module nts.uk.at.view.kdl020.a.start {
 
         let vm =  __viewContext['viewModel'] = new nts.uk.at.view.kdl020.a.screenModel.ViewModel();
         __viewContext['viewModel'].start().done(() => {
-            __viewContext.bind(__viewContext['viewModel']); 
+            __viewContext.bind(vm); 
            
         });
     });

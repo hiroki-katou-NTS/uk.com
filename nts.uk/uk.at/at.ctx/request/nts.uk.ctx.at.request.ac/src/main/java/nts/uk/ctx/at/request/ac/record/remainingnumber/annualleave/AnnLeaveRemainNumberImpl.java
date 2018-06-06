@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.ac.record.remainingnumber.annualleave;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,6 +36,9 @@ public class AnnLeaveRemainNumberImpl implements AnnLeaveRemainNumberAdapter {
 
 	private List<AnnualLeaveManageInforImport> mapManageInfors(
 			List<AnnualLeaveManageInforExport> infors) {
+		if(infors == null){
+			return	Collections.emptyList();
+		}
 	return	infors.stream().map(x->  new AnnualLeaveManageInforImport(
 								x.getYmd(),
 								x.getDaysUsedNo(),
@@ -43,6 +47,9 @@ public class AnnLeaveRemainNumberImpl implements AnnLeaveRemainNumberAdapter {
 	}
 
 	private List<AnnualLeaveGrantImport> mapLeaveGrants(List<AnnualLeaveGrantExport> grants) {
+		if(grants== null){
+			return	Collections.emptyList();
+		}
 		return grants.stream().map(x-> new AnnualLeaveGrantImport(
 											x.getGrantDate(), 
 											x.getGrantNumber(), 
@@ -54,6 +61,9 @@ public class AnnLeaveRemainNumberImpl implements AnnLeaveRemainNumberAdapter {
 	}
 
 	private AnnualLeaveRemainingNumberImport mapNumber(AnnualLeaveRemainingNumberExport number) {
+		if (number == null) {
+			return null;
+		}
 		return new AnnualLeaveRemainingNumberImport(
 											number.getAnnualLeaveGrantPreDay(), 
 											number.getAnnualLeaveGrantPreTime(),

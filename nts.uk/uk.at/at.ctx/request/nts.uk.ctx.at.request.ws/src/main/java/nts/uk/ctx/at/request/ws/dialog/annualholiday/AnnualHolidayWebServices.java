@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.request.ws.dialog.annualholiday;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import lombok.Value;
+import lombok.Data;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.dialog.annualholiday.AnnualHolidayFinder;
@@ -20,14 +22,27 @@ public class AnnualHolidayWebServices extends WebService {
 
 	@POST
 	@Path("startPage")
-	private AnnualHolidayDto startPage(StartPageParam param) {
-		return this.finder.starPage(param.getBaseDate(), param.getSID());
+	public AnnualHolidayDto startPage(StartPageParam param) {
+		return this.finder.starPage(param.getSelectMode(), param.getBaseDate(), param.getEmployeeIds());
+	}
+
+	@POST
+	@Path("changeID")
+	public AnnualHolidayDto getAnnualHoliDayDto(ChangeSIDParam param) {
+		return this.finder.getAnnualHoliDayDto(param.getEmployeeId(), param.getBaseDate());
 	}
 
 }
 
-@Value
+@Data
 class StartPageParam {
+	private int selectMode;
 	private GeneralDate baseDate;
-	private String sID;
+	private List<String> employeeIds;
+}
+
+@Data
+class ChangeSIDParam {
+	private String employeeId;
+	private GeneralDate baseDate;
 }
