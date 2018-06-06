@@ -327,8 +327,19 @@ module nts.uk.com.view.kwr002.a {
             public openBDialog(): void {
                 nts.uk.ui.windows.sub.modal("/view/kwr/002/b/index.xhtml").onClosed(function() {
 
-                });
-            }
+                    service.getAllAttendanceRecExpSet().done(function(listAttendance: Array<AttendanceRecordExportSettingDto>) {
+                        self.attendanceRecordList();
+                        if (listAttendance === undefined || listAttendance.length == 0) {
+                            self.attendanceRecordList([]);
+                            $('#print').attr("disabled", "disabled")
+                            $('#exportExcel').attr("disabled", "disabled")
+                        } else {
+                            self.attendanceRecordList(listAttendance);
+                            self.selectedCode = ko.observable(listAttendance[0].code);
+                        }
+
+                    });
+                }
         }
 
         export class AttendanceRecordExportSettingDto {
