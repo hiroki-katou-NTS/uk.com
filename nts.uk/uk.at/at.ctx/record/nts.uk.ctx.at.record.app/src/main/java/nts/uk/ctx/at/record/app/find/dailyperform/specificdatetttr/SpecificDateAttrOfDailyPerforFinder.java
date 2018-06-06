@@ -41,4 +41,9 @@ public class SpecificDateAttrOfDailyPerforFinder extends FinderFacade {
 			.map(c -> SpecificDateAttrOfDailyPerforDto.getDto(c)).collect(Collectors.toList());
 	}
 
+	@Override
+	public Object getDomain(String employeeId, GeneralDate baseDate) {
+		return repo.find(employeeId, baseDate);
+	}
+
 }

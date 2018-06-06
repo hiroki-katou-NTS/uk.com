@@ -4,7 +4,6 @@
 package nts.uk.ctx.sys.assist.dom.storage;
 
 import java.lang.reflect.Field;
-import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,8 +33,6 @@ import nts.uk.ctx.sys.assist.dom.category.CategoryRepository;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMt;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMtRepository;
-import nts.uk.ctx.sys.assist.dom.deletedata.Result;
-import nts.uk.ctx.sys.assist.dom.deletedata.ResultState;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableListRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -76,6 +73,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	private static final String ZIP_EXTENSION = ".zip";
 	private static final String FILE_NAME_CSV1 = "保存対象テーブル一覧";
 	private static final String FILE_NAME_CSV2 = "対象社員";
+	private static final int NUM_OF_TABLE_EACH_PROCESS = 100;
 
 	@Inject
 	private ResultOfSavingRepository repoResultSaving;
@@ -111,8 +109,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		Optional<ManualSetOfDataSave> optManualSetting = repoMalSetOfSave.getManualSetOfDataSaveById(storeProcessingId);
 
 		if (optManualSetting.isPresent()) {
-			// ドメインモデル「データ保存の保存結果」へ書き出す ( Save data to Save result of data
-			// saving)
+			// ドメインモデル「データ保存の保存結果」へ書き出す
 			String cid = optManualSetting.get().getCid();
 			int systemType = optManualSetting.get().getSystemType().value;
 			String practitioner = optManualSetting.get().getPractitioner();
@@ -145,51 +142,28 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			// update domain 「データ保存動作管理」 Data storage operation management
 			repoDataSto.update(storeProcessingId, countCategories, 1, OperatingCondition.SAVING);
 
-			// アルゴリズム「対象データの保存」を実行
-			ApplicationTemporaryFilesContainer applicationTemporaryFilesContainer = applicationTemporaryFileFactory
-					.createContainer();
-			ResultState resultState;
-			// Get
-			List<SaveTargetCsv> listSaveTargetCsv = csvRepo.getSaveTargetCsvById(storeProcessingId);
-
-			// テーブル一覧の内容をテンポラリーフォルダにcsvファイルで書き出す
-			resultState = generalCsv(listSaveTargetCsv, generatorContext);
-
-			if (resultState == ResultState.ABNORMAL_END) {
-				return;
-			}
-
-			// 「テーブル一覧」の調査保存の識別が「する」の場合、ドメインモデル「対象社員」のビジネスネームを全てNULLクリアする
-			if (optManualSetting.get().getIdentOfSurveyPre() == NotUseAtr.USE) {
-				repoTargetEmp.removeBusinessName(storeProcessingId);
-			}
-
 			// 対象社員のカウント件数を取り保持する
 			List<TargetEmployees> targetEmployees = repoTargetEmp.getTargetEmployeesListById(storeProcessingId);
 
-			// 対象社員の内容をcsvファイルに暗号化して書き出す
-			resultState = generalCsv2(targetEmployees, generatorContext);
+			// アルゴリズム「対象データの保存」を実行
+			ResultState resultState = saveTargetData(storeProcessingId, generatorContext, optManualSetting.get(),
+					targetEmployees);
 
-			if (resultState == ResultState.ABNORMAL_END) {
-				return;
-			}
-			
-			// Add Table to CSV Auto
-			generalCsvAuto(generatorContext);
+			// 処理結果を判定
+			switch (resultState) {
+			case NORMAL_END:
+				evaluateNormalEnd(storeProcessingId, generatorContext, optManualSetting.get(), targetEmployees);
+				break;
 
-			Path compressedFile = null;
-			NotUseAtr passwordAvailability = optManualSetting.get().getPasswordAvailability();
-			String fileName = AppContexts.user().companyCode() + ZIP_EXTENSION;
-			if (passwordAvailability == NotUseAtr.NOT_USE) {
-				compressedFile = applicationTemporaryFilesContainer.zipWithName(generatorContext, fileName);
-			}
-			if (passwordAvailability == NotUseAtr.USE) {
-				String password = optManualSetting.get().getCompressedPassword().v();
-				compressedFile = applicationTemporaryFilesContainer.zipWithName(generatorContext, fileName,
-						CommonKeyCrypt.encrypt(password));
+			case ABNORMAL_END:
+				evaluateAbnormalEnd(storeProcessingId, targetEmployees);
+				break;
+
+			case INTERRUPTION:
+				evaluateInterruption(storeProcessingId, targetEmployees);
+				break;
 			}
 
-			applicationTemporaryFilesContainer.removeContainer();
 		}
 
 	}
@@ -310,7 +284,39 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		return categorys.size();
 	}
 
-	private ResultState generalCsv(List<SaveTargetCsv> listSaveTargetCsv, FileGeneratorContext generatorContext) {
+	private ResultState saveTargetData(String storeProcessingId, FileGeneratorContext generatorContext,
+			ManualSetOfDataSave optManualSetting, List<TargetEmployees> targetEmployees) {
+		// アルゴリズム「対象データの保存」を実行
+		ResultState resultState;
+
+		List<SaveTargetCsv> listSaveTargetCsv = csvRepo.getSaveTargetCsvById(storeProcessingId);
+
+		// テーブル一覧の内容をテンポラリーフォルダにcsvファイルで書き出す
+		resultState = generalCsv(generatorContext, listSaveTargetCsv);
+
+		if (resultState != ResultState.NORMAL_END) {
+			return resultState;
+		}
+
+		// 「テーブル一覧」の調査保存の識別が「する」の場合、ドメインモデル「対象社員」のビジネスネームを全てNULLクリアする
+		if (optManualSetting.getIdentOfSurveyPre() == NotUseAtr.USE) {
+			repoTargetEmp.removeBusinessName(storeProcessingId);
+		}
+
+		// 対象社員の内容をcsvファイルに暗号化して書き出す
+		resultState = generalCsv2(generatorContext, targetEmployees);
+
+		if (resultState != ResultState.NORMAL_END) {
+			return resultState;
+		}
+
+		// Add Table to CSV Auto
+		resultState = generalCsvAuto(generatorContext, storeProcessingId);
+
+		return resultState;
+	}
+
+	private ResultState generalCsv(FileGeneratorContext generatorContext, List<SaveTargetCsv> listSaveTargetCsv) {
 		try {
 			List<String> headerCsv = this.getTextHeader();
 			// Get data from Manual Setting table
@@ -412,7 +418,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 	}
 
-	private ResultState generalCsv2(List<TargetEmployees> targetEmployees, FileGeneratorContext generatorContext) {
+	private ResultState generalCsv2(FileGeneratorContext generatorContext, List<TargetEmployees> targetEmployees) {
 		try {
 			// Add Table to CSV2
 			List<String> headerCsv2 = this.getTextHeaderCSV2();
@@ -436,58 +442,147 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 	}
 
-	private void generalCsvAuto(FileGeneratorContext generatorContext) {
-		List<TableList> tableLists = repoTableList.getAllTableList();
-		for (TableList tableList : tableLists) {
-			List<?> listObject = repoTableList.getDataDynamic(tableList);
-
-			// Add Table to CSV Auto
-			List<String> headerCsv = this.getTextHeaderCsv3(tableList);
-			List<Map<String, Object>> dataSourceCsv = new ArrayList<>();
-			for (Object object : listObject) {
-				Map<String, Object> rowCsv = new HashMap<>();
-
-				for (String key : headerCsv) {
-					String header = key;
-					if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(0))
-							&& !Strings.isNullOrEmpty(tableList.getFieldAcqCid())) {
-						header = tableList.getFieldAcqCid();
-					}
-					if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(1))
-							&& !Strings.isNullOrEmpty(tableList.getFieldAcqEmployeeId())) {
-						header = tableList.getFieldAcqEmployeeId();
-					}
-					if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(2))
-							&& !Strings.isNullOrEmpty(tableList.getFieldAcqDateTime())) {
-						header = tableList.getFieldAcqDateTime();
-					}
-					if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(3))
-							&& !Strings.isNullOrEmpty(tableList.getFieldAcqStartDate())) {
-						header = tableList.getFieldAcqStartDate();
-					}
-					if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(4))
-							&& !Strings.isNullOrEmpty(tableList.getFieldAcqEndDate())) {
-						header = tableList.getFieldAcqEndDate();
-					}
-					String fieldName = repoTableList.getFieldForColumnName(object.getClass(), header);
-					Object resultObj = null;
-					if (!Strings.isNullOrEmpty(fieldName)) {
-						resultObj = object;
-						for (String name : fieldName.split("\\.")) {
-							resultObj = getValueByPropertyName(resultObj, name);
-						}
-					}
-					rowCsv.put(key, resultObj);
+	private ResultState generalCsvAuto(FileGeneratorContext generatorContext, String storeProcessingId) {
+		try {
+			int offset = 0;
+			String categoryId = "";
+			while (true) {
+				// ドメインモデル「データ保存動作管理」を取得し「中断終了」を判別
+				Optional<DataStorageMng> dataStorageMng = repoDataSto.getDataStorageMngById(storeProcessingId);
+				if (dataStorageMng.isPresent()
+						&& dataStorageMng.get().operatingCondition == OperatingCondition.INTERRUPTION_END) {
+					return ResultState.INTERRUPTION;
 				}
 
-				dataSourceCsv.add(rowCsv);
+				// テーブル一覧の１行分を処理する
+				List<TableList> tableLists = repoTableList.getByOffsetAndNumber(offset, NUM_OF_TABLE_EACH_PROCESS);
+				for (TableList tableList : tableLists) {
+					List<?> listObject = repoTableList.getDataDynamic(tableList);
+
+					// Add Table to CSV Auto
+					List<String> headerCsv = this.getTextHeaderCsv3(tableList);
+					List<Map<String, Object>> dataSourceCsv = new ArrayList<>();
+					for (Object object : listObject) {
+						Map<String, Object> rowCsv = new HashMap<>();
+
+						for (String key : headerCsv) {
+							String header = key;
+							if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(0))
+									&& !Strings.isNullOrEmpty(tableList.getFieldAcqCid())) {
+								header = tableList.getFieldAcqCid();
+							}
+							if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(1))
+									&& !Strings.isNullOrEmpty(tableList.getFieldAcqEmployeeId())) {
+								header = tableList.getFieldAcqEmployeeId();
+							}
+							if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(2))
+									&& !Strings.isNullOrEmpty(tableList.getFieldAcqDateTime())) {
+								header = tableList.getFieldAcqDateTime();
+							}
+							if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(3))
+									&& !Strings.isNullOrEmpty(tableList.getFieldAcqStartDate())) {
+								header = tableList.getFieldAcqStartDate();
+							}
+							if (key.equals(LST_NAME_ID_HEADER_TABLE_CSV3.get(4))
+									&& !Strings.isNullOrEmpty(tableList.getFieldAcqEndDate())) {
+								header = tableList.getFieldAcqEndDate();
+							}
+							String fieldName = repoTableList.getFieldForColumnName(object.getClass(), header);
+							Object resultObj = null;
+							if (!Strings.isNullOrEmpty(fieldName)) {
+								resultObj = object;
+								for (String name : fieldName.split("\\.")) {
+									resultObj = getValueByPropertyName(resultObj, name);
+								}
+							}
+							rowCsv.put(key, resultObj);
+						}
+
+						dataSourceCsv.add(rowCsv);
+					}
+
+					CSVFileData fileData = new CSVFileData(AppContexts.user().companyCode()
+							+ tableList.getCategoryName() + tableList.getTableJapaneseName() + CSV_EXTENSION, headerCsv,
+							dataSourceCsv);
+
+					generator.generate(generatorContext, fileData);
+
+					// テーブル一覧で次の処理行のカテゴリが異なる場合
+					// ドメインモデル「データ保存動作管理」を更新する
+					if (!tableList.getCategoryId().equals(categoryId)) {
+						categoryId = tableList.getCategoryId();
+						repoDataSto.increaseCategoryCount(storeProcessingId);
+					}
+				}
+
+				offset += NUM_OF_TABLE_EACH_PROCESS;
+				// テーブルをすべて書き出したか判定
+				if (tableLists.size() < NUM_OF_TABLE_EACH_PROCESS)
+					break;
 			}
 
-			CSVFileData fileData = new CSVFileData(AppContexts.user().companyCode() + tableList.getCategoryName()
-					+ tableList.getTableJapaneseName() + CSV_EXTENSION, headerCsv, dataSourceCsv);
-
-			generator.generate(generatorContext, fileData);
+			return ResultState.NORMAL_END;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResultState.ABNORMAL_END;
 		}
+	}
+
+	private ResultState evaluateNormalEnd(String storeProcessingId, FileGeneratorContext generatorContext,
+			ManualSetOfDataSave optManualSetting, List<TargetEmployees> targetEmployees) {
+		// ドメインモデル「データ保存動作管理」を更新する
+		repoDataSto.update(storeProcessingId, OperatingCondition.INPROGRESS);
+
+		try {
+			// アルゴリズム「結果ファイルの圧縮」を実行
+			ApplicationTemporaryFilesContainer applicationTemporaryFilesContainer = applicationTemporaryFileFactory
+					.createContainer();
+			NotUseAtr passwordAvailability = optManualSetting.getPasswordAvailability();
+			String fileName = AppContexts.user().companyCode() + ZIP_EXTENSION;
+			if (passwordAvailability == NotUseAtr.NOT_USE) {
+				applicationTemporaryFilesContainer.zipWithName(generatorContext, fileName);
+			}
+			if (passwordAvailability == NotUseAtr.USE) {
+				String password = optManualSetting.getCompressedPassword().v();
+				applicationTemporaryFilesContainer.zipWithName(generatorContext, fileName,
+						CommonKeyCrypt.encrypt(password));
+			}
+
+			applicationTemporaryFilesContainer.removeContainer();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return evaluateAbnormalEnd(storeProcessingId, targetEmployees);
+		}
+
+		// ドメインモデル「データ保存動作管理」を更新する
+		repoDataSto.update(storeProcessingId, OperatingCondition.DONE);
+
+		// ドメインモデル「データ保存の保存結果」を書き出し
+		String fileId = generatorContext.getTaskId();
+		repoResultSaving.update(storeProcessingId, targetEmployees.size(), SaveStatus.SUCCESS, fileId,
+				NotUseAtr.NOT_USE);
+
+		return ResultState.NORMAL_END;
+	}
+
+	private ResultState evaluateAbnormalEnd(String storeProcessingId, List<TargetEmployees> targetEmployees) {
+		// ドメインモデル「データ保存動作管理」を更新する
+		repoDataSto.update(storeProcessingId, OperatingCondition.ABNORMAL_TERMINATION);
+		
+		// ドメインモデル「データ保存の保存結果」を書き出し
+		repoResultSaving.update(storeProcessingId, targetEmployees.size(), SaveStatus.FAILURE);
+		
+		return ResultState.ABNORMAL_END;
+	}
+	
+	private ResultState evaluateInterruption(String storeProcessingId, List<TargetEmployees> targetEmployees) {
+		// ドメインモデル「データ保存動作管理」を更新する
+		repoDataSto.update(storeProcessingId, OperatingCondition.INTERRUPTION_END);
+		
+		// ドメインモデル「データ保存の保存結果」を書き出し
+		repoResultSaving.update(storeProcessingId, targetEmployees.size(), SaveStatus.INTERRUPTION);
+		
+		return ResultState.INTERRUPTION;
 	}
 
 	private Object getValueByPropertyName(Object object, String fieldName) {

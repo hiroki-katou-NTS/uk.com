@@ -8,7 +8,9 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.assist.dom.storage.ResultOfSaving;
 import nts.uk.ctx.sys.assist.dom.storage.ResultOfSavingRepository;
+import nts.uk.ctx.sys.assist.dom.storage.SaveStatus;
 import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtResultOfSaving;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class JpaResultOfSavingRepository extends JpaRepository implements ResultOfSavingRepository {
@@ -33,5 +35,28 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 	public void add(ResultOfSaving data) {
 		this.commandProxy().insert(SspmtResultOfSaving.toEntity(data));
 
+	}
+
+	@Override
+	public void update(String storeProcessingId, int targetNumberPeople, SaveStatus saveStatus, String fileId,
+			NotUseAtr deletedFiles) {
+		Optional<ResultOfSaving> resultOfSavingOpt = this.getResultOfSavingById(storeProcessingId);
+		resultOfSavingOpt.ifPresent(entity -> {
+			entity.setTargetNumberPeople(targetNumberPeople);
+			entity.setSaveStatus(saveStatus);
+			entity.setFileId(fileId);
+			entity.setDeletedFiles(deletedFiles);
+			this.commandProxy().update(entity);
+		});
+	}
+
+	@Override
+	public void update(String storeProcessingId, int targetNumberPeople, SaveStatus saveStatus) {
+		Optional<ResultOfSaving> resultOfSavingOpt = this.getResultOfSavingById(storeProcessingId);
+		resultOfSavingOpt.ifPresent(entity -> {
+			entity.setTargetNumberPeople(targetNumberPeople);
+			entity.setSaveStatus(saveStatus);
+			this.commandProxy().update(entity);
+		});
 	}
 }

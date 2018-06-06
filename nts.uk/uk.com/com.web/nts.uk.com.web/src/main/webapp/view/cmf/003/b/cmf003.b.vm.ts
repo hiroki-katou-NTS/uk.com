@@ -447,10 +447,9 @@ module nts.uk.com.view.cmf003.b {
            * start page data 
            */
             public startPage(): JQueryPromise<any> {
-                var self = this;
-                var dfd = $.Deferred();
-
-                dfd.resolve(self);
+                let self = this;
+                let dfd = $.Deferred();
+                setTimeout(function(){ dfd.resolve(self); }, 100);
                 return dfd.promise();
             }
             /**

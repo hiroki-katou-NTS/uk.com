@@ -41,4 +41,9 @@ public class AffiliationInforOfDailyPerforFinder extends FinderFacade {
 		return (List<T>) this.affiliationInfoRepo.finds(param).stream()
 				.map(c -> AffiliationInforOfDailyPerforDto.getDto(c)).collect(Collectors.toList());
 	}
+
+	@Override
+	public Object getDomain(String employeeId, GeneralDate baseDate) {
+		return affiliationInfoRepo.findByKey(employeeId, baseDate);
+	}
 }
