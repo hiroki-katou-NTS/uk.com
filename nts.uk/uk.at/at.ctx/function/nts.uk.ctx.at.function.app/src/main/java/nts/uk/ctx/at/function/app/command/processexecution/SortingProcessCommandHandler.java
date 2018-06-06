@@ -64,8 +64,8 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
 			executeProcessExecutionCommand.setExecItemCd(execItemCd);
 			executeProcessExecutionCommand.setExecId(execItemId);
 			executeProcessExecutionCommand.setExecType(0);
-			AsyncCommandHandlerContext<ExecuteProcessExecutionCommand> ctxNew = new AsyncCommandHandlerContext<ExecuteProcessExecutionCommand>(executeProcessExecutionCommand);
-			this.execHandler.handle(ctxNew);
+			//AsyncCommandHandlerContext<ExecuteProcessExecutionCommand> ctxNew = new AsyncCommandHandlerContext<ExecuteProcessExecutionCommand>(executeProcessExecutionCommand);
+			this.execHandler.handle(executeProcessExecutionCommand);
 		}
 		
 	}
