@@ -68,30 +68,29 @@ public class AnyItemValueOfDaily {
         
         AnyItemValueOfDaily result = new AnyItemValueOfDaily(employeeId,ymd,new ArrayList<>());
         
-        if(anyItemValueOfDaily.isPresent()) {
-        	
-        	result = anyItemValueOfDaily.get();
-        	
-            //任意項目NOの昇順でソート
-        	result.items.sort((c1, c2) -> c1.getItemNo().compareTo(c2.getItemNo()));
-            
-            /*パラメータ：任意項目の計算結果から任意項目値クラスへ変換(上で計算した項目のみ更新する)*/
-            for(CalcResultOfAnyItem calcResultOfAnyItem:anyItemList) {
-            	int itemNo = calcResultOfAnyItem.getOptionalItemNo().v();
-            	result.items.set(itemNo - 1, new AnyItemValue(new AnyItemNo(itemNo),
-    					  									  calcResultOfAnyItem.getCount().map(v -> new AnyItemTimes(BigDecimal.valueOf(v))),
-    					  									  calcResultOfAnyItem.getMoney().map(v -> new AnyItemAmount(v)),
-    					  									  calcResultOfAnyItem.getTime().map(v -> new AnyItemTime(v)))); 
-            }
-        }else {
-        	for(CalcResultOfAnyItem calcResultOfAnyItem:anyItemList) {
-            	int itemNo = calcResultOfAnyItem.getOptionalItemNo().v();
-            	result.getItems().add(new AnyItemValue(new AnyItemNo(itemNo),
-    					  							   calcResultOfAnyItem.getCount().map(v -> new AnyItemTimes(BigDecimal.valueOf(v))),
-    					  							   calcResultOfAnyItem.getMoney().map(v -> new AnyItemAmount(v)),
-    					  							   calcResultOfAnyItem.getTime().map(v -> new AnyItemTime(v))));
-        	}
-        }
+        for(CalcResultOfAnyItem calcResultOfAnyItem:anyItemList) {
+        	int itemNo = calcResultOfAnyItem.getOptionalItemNo().v();
+        	result.getItems().add(new AnyItemValue(new AnyItemNo(itemNo),
+					  							   calcResultOfAnyItem.getCount().map(v -> new AnyItemTimes(BigDecimal.valueOf(v))),
+					  							   calcResultOfAnyItem.getMoney().map(v -> new AnyItemAmount(v)),
+					  							   calcResultOfAnyItem.getTime().map(v -> new AnyItemTime(v))));
+    	}
+        
+//        if(anyItemValueOfDaily.isPresent()) {
+//        	List<AnyItemNo> anyItemNoList = new ArrayList<>();
+//        	for(AnyItemValue calcedAnyItemValue : result.getItems()) {
+//        		anyItemNoList.add(calcedAnyItemValue.getItemNo());
+//        	}
+//        	
+//        	List<AnyItemValue> beforeCalc = anyItemValueOfDaily.get().getItems();	
+//        	for(AnyItemValue beforeCalcAnyItemValue : beforeCalc) {
+//        		if(!anyItemNoList.contains(beforeCalcAnyItemValue.getItemNo())) {
+//        			result.items.add(beforeCalcAnyItemValue);
+//        		}
+//        	}
+//            //任意項目NOの昇順でソート
+//        	result.items.sort((c1, c2) -> c1.getItemNo().compareTo(c2.getItemNo()));
+//        }
         return result;
     }
     

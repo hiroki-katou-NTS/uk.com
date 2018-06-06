@@ -46,6 +46,21 @@ public class OptionalItemValueDto {
 		this.isAmountItem = isAmountItem;
 	}
 	
+	public static OptionalItemValueDto from(AnyItemValue c) {
+		if (c != null) {
+			boolean isTimes = c.getTimes().isPresent();
+			boolean isAmount = c.getAmount().isPresent();
+			boolean isTime = c.getTime().isPresent();
+			String value = isAmount ? c.getAmount().isPresent() ? String.valueOf(c.getAmount().get().v() ) : "" : 
+						isTime ? c.getTime().isPresent() ? String.valueOf(c.getTime().get().valueAsMinutes()) : "" : 
+							c.getTimes().isPresent() ? c.getTimes().get().v().toString() : "";
+			OptionalItemValueDto dto = new OptionalItemValueDto(value, c.getItemNo().v(), isTime, isTimes, isAmount);
+//			dto.itemMapped();
+			return dto;
+		}
+		return null;
+	}
+	
 			String value = isAmount ? c.getAmount().isPresent() ? String.valueOf(c.getAmount().get().v() ) : "" : 
 						isTime ? c.getTime().isPresent() ? String.valueOf(c.getTime().get().valueAsMinutes()) : "" : 
 							c.getTimes().isPresent() ? c.getTimes().get().v().toString() : "";
@@ -82,9 +97,9 @@ public class OptionalItemValueDto {
 	public AnyItemValue toDomain() {
 		boolean isHaveData = isHaveData();
 		return new AnyItemValue(new AnyItemNo(this.itemNo), 
-						this.isTimesItem && isHaveData ? Optional.of(new AnyItemTimes(new BigDecimal(this.value))) : Optional.empty(),
-						this.isAmountItem && isHaveData ? Optional.of(new AnyItemAmount(Integer.parseInt(this.value))) : Optional.empty(),
-						this.isTimeItem && isHaveData? Optional.of(new AnyItemTime(Integer.valueOf(this.value))) : Optional.empty());
+						Optional.of(new AnyItemTimes(this.isTimesItem && isHaveData ? new BigDecimal(this.value) : BigDecimal.ZERO)),
+						Optional.of(new AnyItemAmount(this.isAmountItem && isHaveData ? Integer.parseInt(this.value) : 0)),
+						Optional.of(new AnyItemTime(this.isTimeItem && isHaveData? Integer.valueOf(this.value) : 0)));
 	}
 
 	public boolean isHaveData() {
