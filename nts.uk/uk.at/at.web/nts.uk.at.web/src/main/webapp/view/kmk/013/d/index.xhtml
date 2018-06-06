@@ -13,7 +13,7 @@
 			<com:scriptfile path="kmk013.d.service.js" />
 			<com:stylefile path="kmk013.d.main.css" />
 			<com:ValidatorScript>
-				nts.uk.ctx.at.shared.dom.common.time.AttendanceTime
+				nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth
 			</com:ValidatorScript>
 		</ui:define>
 
@@ -149,15 +149,19 @@
 										<tr>
 											<td><div class="d7_label">#{i18n.getText('KMK013_271')}</div></td>
 											<td><div>
-											<input tabindex="5" id="dateInput" data-bind="ntsTimeEditor: {
-											name: '#{i18n.getText('KMK013_271')}',
-											constraint: 'AttendanceTime',
-											value: time,
-											inputFormat: 'time', 
-											mode: 'time', 
-											enable: enable, 
-											required: true}" />
-											</div></td>
+											<input data-bind="ntsNumberEditor: {
+												name: '#[KMK013_272]',
+												value: time,
+												constraint: 'AttendanceDaysMonth',
+												option: {
+							                        placeholder: '',
+							                        width: '20px',
+							                        textalign: 'left'
+												},
+												required: true,
+												enable: true,
+												readonly: false}" />
+										</div></td>
 										</tr>
 									</table>
 								</div>
