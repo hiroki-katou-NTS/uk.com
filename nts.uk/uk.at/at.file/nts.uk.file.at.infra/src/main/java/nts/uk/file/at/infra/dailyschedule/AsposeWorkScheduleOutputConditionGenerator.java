@@ -112,6 +112,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class AsposeWorkScheduleOutputConditionGenerator.
  * @author HoangNDH
@@ -492,6 +493,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param lstAttendanceResultImport the lst attendance result import
 	 * @param datePeriod the date period
 	 * @param lstWorkType the lst work type
+	 * @param lstDisplayItem the lst display item
 	 */
 	private void collectedEmployeePerformanceData(DailyPerformanceReportData reportData, WorkScheduleOutputQuery query,
 			List<AttendanceResultImport> lstAttendanceResultImport, List<GeneralDate> datePeriod, List<WorkType> lstWorkType, List<AttendanceItemsDisplay> lstDisplayItem) {
@@ -603,6 +605,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param lstAttendanceResultImport the lst attendance result import
 	 * @param employeeId the employee id
 	 * @param lstWorkType the lst work type
+	 * @param lstDisplayItem the lst display item
 	 * @return the employee report data
 	 */
 	private EmployeeReportData collectedEmployeePerformanceData(DailyPerformanceReportData reportData, WorkScheduleOutputQuery query,
@@ -669,7 +672,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				boolean erMark = false, alMark = false;
 				List<String> lstErrorCode = errorList.stream().map(error -> error.getErrorAlarmWorkRecordCode().v()).collect(Collectors.toList());
 				// ドメインモデル「勤務実績のエラーアラーム」を取得する
-				List<ErrorAlarmWorkRecord> lstErrorRecord = errorAlarmWorkRecordRepo.getListErAlByListCodeError(AppContexts.user().companyId(), lstErrorCode);
+				List<ErrorAlarmWorkRecord> lstErrorRecord = errorAlarmWorkRecordRepo.getListErAlByListCode(AppContexts.user().companyId(), lstErrorCode);
 				
 				for (ErrorAlarmWorkRecord error : lstErrorRecord) {
 					// コードから区分を取得する
@@ -1535,60 +1538,62 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		if (condition.getSettingDetailTotalOutput().isGrossTotal() || condition.getSettingDetailTotalOutput().isCumulativeWorkplace()) {
 			int level = workplaceReportData.getLevel();
 			
-			String tagStr;
-			if (level != 0 && level >= totalHierarchyOption.getHighestLevelEnabled() && condition.getSettingDetailTotalOutput().isCumulativeWorkplace()) {
-				// Condition: not root workplace (lvl = 0), level within picked hierarchy zone, enable cumulative workplace.
-				tagStr = WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + workplaceReportData.getLevel();
-			} else if (condition.getSettingDetailTotalOutput().isGrossTotal())
-				// Condition: enable gross total, also implicitly root workplace
-				tagStr = WorkScheOutputConstants.GROSS_TOTAL;
-			else
-				tagStr = null;
-			
-			if (tagStr != null) {
-				Range wkpHierTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
-				Range wkpHierTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
-				wkpHierTotalRange.copy(wkpHierTotalRangeTemp);
-				wkpHierTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
-				Cell workplaceTotalCellTag = cells.get(currentRow, 0);
+			if (findWorkplaceHigherEnabledLevel(workplaceReportData, totalHierarchyOption) <= level) {
+				String tagStr;
+				if (level != 0 && level >= totalHierarchyOption.getHighestLevelEnabled() && condition.getSettingDetailTotalOutput().isCumulativeWorkplace()) {
+					// Condition: not root workplace (lvl = 0), level within picked hierarchy zone, enable cumulative workplace.
+					tagStr = WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + workplaceReportData.getLevel();
+				} else if (condition.getSettingDetailTotalOutput().isGrossTotal())
+					// Condition: enable gross total, also implicitly root workplace
+					tagStr = WorkScheOutputConstants.GROSS_TOTAL;
+				else
+					tagStr = null;
 				
-				if (StringUtils.equals(tagStr, WorkScheOutputConstants.GROSS_TOTAL)) {
+				if (tagStr != null) {
+					Range wkpHierTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
+					Range wkpHierTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
+					wkpHierTotalRange.copy(wkpHierTotalRangeTemp);
 					wkpHierTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+					Cell workplaceTotalCellTag = cells.get(currentRow, 0);
+					
+					if (StringUtils.equals(tagStr, WorkScheOutputConstants.GROSS_TOTAL)) {
+						wkpHierTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+					}
+					
+					workplaceTotalCellTag.setValue(tagStr);
+					
+					// A9_2 - A13_2
+					int numOfChunks = (int) Math.ceil( (double) workplaceReportData.getGrossTotal().size() / CHUNK_SIZE);
+					
+			        for(int i = 0; i < numOfChunks; i++) {
+			            int start = i * CHUNK_SIZE;
+			            int length = Math.min(workplaceReportData.getGrossTotal().size() - start, CHUNK_SIZE);
+			
+			            List<TotalValue> lstItemRow = workplaceReportData.getGrossTotal().subList(start, start + length);
+			            
+			            for (int j = 0; j < length; j++) {
+			            	String value = lstItemRow.get(j).getValue();
+			            	Cell cell = cells.get(currentRow + i, DATA_COLUMN_INDEX[0] + j * 2); 
+			            	Style style = cell.getStyle();
+			            	switch (lstItemRow.get(j).getValueType()) {
+							case ActualValue.INTEGER:
+								if (value != null)
+									cell.setValue(getTimeAttr(value));
+								else
+									cell.setValue(getTimeAttr("0"));
+								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+								break;
+							case ActualValue.BIG_DECIMAL:
+							case ActualValue.DATE:
+							case ActualValue.STRING:
+							}
+			            	setFontStyle(style);
+			            	cell.setStyle(style);
+			            }
+			        }
 				}
-				
-				workplaceTotalCellTag.setValue(tagStr);
-				
-				// A9_2 - A13_2
-				int numOfChunks = (int) Math.ceil( (double) workplaceReportData.getGrossTotal().size() / CHUNK_SIZE);
-				
-		        for(int i = 0; i < numOfChunks; i++) {
-		            int start = i * CHUNK_SIZE;
-		            int length = Math.min(workplaceReportData.getGrossTotal().size() - start, CHUNK_SIZE);
-		
-		            List<TotalValue> lstItemRow = workplaceReportData.getGrossTotal().subList(start, start + length);
-		            
-		            for (int j = 0; j < length; j++) {
-		            	String value = lstItemRow.get(j).getValue();
-		            	Cell cell = cells.get(currentRow + i, DATA_COLUMN_INDEX[0] + j * 2); 
-		            	Style style = cell.getStyle();
-		            	switch (lstItemRow.get(j).getValueType()) {
-						case ActualValue.INTEGER:
-							if (value != null)
-								cell.setValue(getTimeAttr(value));
-							else
-								cell.setValue(getTimeAttr("0"));
-							style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-							break;
-						case ActualValue.BIG_DECIMAL:
-						case ActualValue.DATE:
-						case ActualValue.STRING:
-						}
-		            	setFontStyle(style);
-		            	cell.setStyle(style);
-		            }
-		        }
+				currentRow += dataRowCount;
 			}
-			currentRow += dataRowCount;
 		}
 		
 		return currentRow;
@@ -1603,6 +1608,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param dailyReport the daily report
 	 * @param dataRowCount the data row count
 	 * @param condition the condition
+	 * @return the int
 	 * @throws Exception the exception
 	 */
 	public int writeDetailedDailySchedule(int currentRow, WorksheetCollection templateSheetCollection, Worksheet sheet, DailyReportData dailyReport, int dataRowCount, WorkScheduleOutputCondition condition) throws Exception {
@@ -1919,10 +1925,38 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		pageSetup.setPrintArea("A1:" + lastCellName);
 	}
 	
+	/**
+	 * Gets the time attr.
+	 *
+	 * @param rawValue the raw value
+	 * @return the time attr
+	 */
 	public String getTimeAttr(String rawValue) {
 		int value = Integer.parseInt(rawValue);
 		int minute = value % 60;
 		return String.valueOf(value / 60) + ":" + (minute < 10 ? "0" + minute : String.valueOf(minute));
+	}
+	
+	/**
+	 * Find workplace higher enabled level.
+	 *
+	 * @param workplaceReportData the workplace report data
+	 * @param hierarchy the hierarchy
+	 * @return the int
+	 */
+	public int findWorkplaceHigherEnabledLevel(WorkplaceReportData workplaceReportData, TotalWorkplaceHierachy hierarchy) {
+		int currentLevel = workplaceReportData.getLevel();
+		if (currentLevel != 0) {
+			int lowerEnabledLevel = hierarchy.getLowerClosestSelectedHierarchyLevel(currentLevel);
+			if (lowerEnabledLevel == 0) {
+				WorkplaceReportData parentWorkplace = workplaceReportData.getParent();
+				return findWorkplaceHigherEnabledLevel(parentWorkplace, hierarchy);
+			}
+			return lowerEnabledLevel;
+		}
+		else {
+			return 0;
+		}
 	}
 	
 	/**
