@@ -48,8 +48,7 @@ public class AnnualHolidayManagementImpl implements AnnualHolidayManagementAdapt
 
 	@Override
 	public Optional<AttendRateAtNextHolidayImport> getDaysPerYear(String companyId, String employeeId) {
-		Optional<AttendRateAtNextHolidayExport> nextAnualOpt = this.annualPub.getDaysPerYear(companyId, employeeId);
-		return Optional.ofNullable(nextAnualOpt.get())
+		return this.annualPub.getDaysPerYear(companyId, employeeId)
 				.map(x -> new AttendRateAtNextHolidayImport(x.getNextHolidayGrantDate(),
 						x.getNextHolidayGrantDays().v(), x.getAttendanceRate().v(), x.getAttendanceRate().v(),
 						x.getPredeterminedDays().v(), x.getAnnualPerYearDays().v()));

@@ -132,7 +132,9 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 	public Optional<AttendRateAtNextHolidayExport> getDaysPerYear(String companyId, String employeeId) {
 		// ドメインモデル「年休社員基本情報」を取得
 		Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo = annLeaEmpBasicInfoRepository.get(employeeId);
-		
+		if(!annualLeaveEmpBasicInfo.isPresent()){
+			return Optional.empty();
+		}
 		// 次回年休付与を計算
 		List<NextAnnualLeaveGrantExport> result = calculateNextHolidayGrant(companyId, employeeId, Optional.empty(), annualLeaveEmpBasicInfo);
 		return Optional.empty();
