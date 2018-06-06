@@ -723,7 +723,7 @@
 												<com:ko bind="haveSelect() === true" tag ="if">
 													<!-- bind select -->
 													<div style="    float: right;">
-														<button id="btnSettingBA2_2" data-bind="click : viewModel.btnSettingBA2_2_click.bind($parent), enable: true">#{i18n.getText('KAL003_57')}</button>
+														<button id="btnSettingBA2_2" data-bind="click : viewModel.btnSettingBA2_2_click.bind( viewModel), enable: true">#{i18n.getText('KAL003_57')}</button>
 														<input id ="display-target-item" class="display-list-label need-check" data-bind="ntsTextEditor: {
 															   value: viewModel.displayAttendanceItemSelections_BA2_3,
 															   require: true,
@@ -752,8 +752,11 @@
 												<com:ko bind="haveInput() === 0" tag ="if">
 													<!-- bind input -->
 													<div data-bind="text : textLabel"></div>
-													<input style="width: 50px;" data-bind="ntsTimeEditor: {value: numberDayDiffHoliday1 , inputFormat: 'D', mode: 'D',required: true}" />日
-													<input style="width: 50px;" data-bind="ntsTimeEditor: {value: numberDayDiffHoliday2 , inputFormat: 'D',enable : false,required: true }" />日
+													<!-- <input style="width: 50px;" data-bind="ntsNumberEditor: {value: numberDayDiffHoliday1 ,required: true}" />日
+													<input style="width: 50px;" data-bind="ntsNumberEditor: {value: numberDayDiffHoliday2 , enable : 　　,required: true }" />日 -->
+													<com:ko bind="inputs" tag ="foreach">
+														<input style="width: 50px;" data-bind="ntsNumberEditor: {value: value ,required: required,enable : enable}" />日
+													</com:ko>
 												</com:ko>
 												<com:ko bind="haveInput() === 1 || haveInput() === 2" tag ="if">
 													<!-- bind input -->
@@ -762,6 +765,9 @@
 												</com:ko>
 												<com:ko bind="haveInput() === 3" tag ="if">
 													<!-- bind input -->
+													<com:ko bind="inputs" tag ="foreach">
+														<input style="width: 50px;" data-bind="ntsNumberEditor: {value: value ,required: required,enable : enable}" />日
+													</com:ko>
 													<div data-bind="text : textLabel"></div>
 												</com:ko>
 												<com:ko bind="haveGroup() === true" tag ="if">

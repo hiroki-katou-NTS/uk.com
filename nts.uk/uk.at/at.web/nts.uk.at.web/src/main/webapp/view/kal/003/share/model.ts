@@ -309,63 +309,209 @@ module nts.uk.at.view.kal003.share.model {
 //    }
     
     export class ExtraResultMonthly {
-        errorAlarmCheckID : KnockoutObservable<string> = ko.observable('');//
-        sortBy : KnockoutObservable<number> = ko.observable('');//
-        nameAlarmExtraCon : KnockoutObservable<string> = ko.observable('');//
-        useAtr : KnockoutObservable<boolean> = ko.observable(false);//
-        typeCheckItem : KnockoutObservable<number> = ko.observable(0);//
-        messageBold : KnockoutObservable<boolean> = ko.observable(false);//
-        messageColor : KnockoutObservable<string> = ko.observable('');//
-        displayMessage : KnockoutObservable<string> = ko.observable('');
-        rowId: KnockoutObservable<number> = ko.observable(0);//common
-        conditions: KnockoutObservableArray<ExtractCondition>;       
-        currentConditions: KnockoutObservableArray<ExtractCondition>;   
+        errorAlarmCheckID : KnockoutObservable<string>;//
+        sortBy : KnockoutObservable<number>;//
+        nameAlarmExtraCon : KnockoutObservable<string>;//
+        useAtr : KnockoutObservable<boolean>;//
+        typeCheckItem : KnockoutObservable<number>;//
+        messageBold : KnockoutObservable<boolean>;//
+        messageColor : KnockoutObservable<string>;//
+        displayMessage : KnockoutObservable<string>;
+        rowId: KnockoutObservable<number>;//common
+        conditions: KnockoutObservableArray<ExtractCondition>;     
+        currentConditions: KnockoutObservableArray<ExtractCondition>;  
         constructor(param: any) {
             let self = this;
-            self.errorAlarmCheckID = param.errorAlarmCheckID || '';
-            self.sortBy = param.sortBy || 0;
-            self.nameAlarmExtraCon(param.nameAlarmExtraCon);
-            self.useAtr(param.useAtr || false);
-            self.messageBold(param.messageBold);
-            self.messageColor(param.messageColor);
-            self.displayMessage(param.displayMessage || '');
-            self.rowId(param.rowId || 0);
-            let temp = [];
-            temp.push(new AttdItemConCommon(param.checkConMonthly));
-            temp.push(new SpecHolidayCheckCon(param.specHolidayCheckCon));
-            temp.push(new CheckRemainNumberMon (param.checkRemainNumberMon));
-            let ag36 = new AgreementCheckCon36(param.agreementCheckCon36);
-            temp.push(ag36);
-            temp.push(ag36.setupDefaultOtherType(param.agreementCheckCon36));
-            
-            self.conditions = ko.observableArray(temp);
-            self.currentConditions = ko.observableArray(temp);
-            self.typeCheckItem = ko.observable(param.typeCheckItem || 0);
-            
+            if(!nts.uk.util.isNullOrUndefined(param)){
+                self.errorAlarmCheckID = ko.observable(param.errorAlarmCheckID || '');
+                self.sortBy = ko.observable(param.sortBy || 0);
+                self.nameAlarmExtraCon = ko.observable(param.nameAlarmExtraCon);
+                self.useAtr = ko.observable(param.useAtr || false);
+                self.messageBold = ko.observable(param.messageBold);
+                self.messageColor = ko.observable(param.messageColor);
+                self.displayMessage = ko.observable(param.displayMessage || '');
+                self.rowId = ko.observable(param.rowId || 0);
+                let temp = [];
+                temp.push(new AttdItemConCommon(ko.toJS(param.checkConMonthly)));
+                temp.push(new SpecHolidayCheckCon(ko.toJS(param.specHolidayCheckCon)));
+                temp.push(new CheckRemainNumberMon (ko.toJS(param.checkRemainNumberMon)));
+                let ag36 = new AgreementCheckCon36(ko.toJS(param.agreementCheckCon36));
+                temp.push(ag36);
+                temp.push(ag36.setupDefaultOtherType(ko.toJS(param.agreementCheckCon36)));
+                
+                self.conditions = ko.observableArray(temp);
+                self.currentConditions = ko.observableArray([]);
+                self.typeCheckItem=ko.observable(param.typeCheckItem || 0);    
+            } else {
+                self.typeCheckItem=ko.observable(0);    
+                //self.conditions = ko.observableArray([]);
+                self.currentConditions = ko.observableArray([]);     
+            }
+            self.typeCheckItem.subscribe((v) => {
+//                console.log(self.conditions);
+//                console.log(self);
+//                console.log(self.conditions());
+                let current = (_.filter(self.conditions(), (con: ExtractCondition) => {
+                    return con.typeCheckItem() === v;
+                }));
+                self.currentConditions(current);
+            });
+        }
+        
+        public static  clone(data: any):ExtraResultMonthly{
+            var x = new ExtraResultMonthly();
+            x.errorAlarmCheckID=ko.observable(data.errorAlarmCheckID);
+            x.sortBy=ko.observable(data.sortBy);
+            x.nameAlarmExtraCon=ko.observable(data.nameAlarmExtraCon);
+            x.useAtr=ko.observable(data.useAtr);
+            x.messageBold=ko.observable(data.messageBold);
+            x.messageColor=ko.observable(data.messageColor);
+            x.displayMessage=ko.observable(data.displayMessage);
+            x.rowId=ko.observable(data.rowId);
+            x.typeCheckItem(data.typeCheckItem);
+            ko.mapping.fromJS(data, mapping, x);
+            x.typeCheckItem.valueHasMutated();
+            return x;
         }
     }
     
-    export function setupCurrent(data: ExtraResultMonthly){
-        let self = data;
-        self.typeCheckItem.subscribe((v) => {
-            let current = (_.filter(self.conditions, (con: ExtractCondition) => {
-                return con.extractType() === v;
-            }));
-            self.currentConditions(current);
-        });    
-        self.typeCheckItem.valueHasMutated();
-    }
+//    export function setupCurrent(data: ExtraResultMonthly){
+//        let self = data;
+//        _.forEach(self.conditions, (v: ExtractCondition) => {
+//            setupSubscribe(v);     
+//        });
+//        self.typeCheckItem.subscribe((v) => {
+//            let current = (_.filter(self.conditions, (con: ExtractCondition) => {
+//                return con.typeCheckItem() === v;
+//            }));
+//            self.currentConditions(current);
+//        });
+//        
+//            
+//        self.typeCheckItem.valueHasMutated();
+//        
+//    }
+//    function setupSubscribe(data: ExtractCondition){
+//        let self = data;   
+//        setupInputs(data);
+//        self.extractType.subscribe((v) => {
+//            nts.uk.ui.errors.clearAll();
+//            if(data.typeCheckItem() === 0){
+//                if(v > 5){
+//                    self.inputs()[1].enable(true);
+//                    self.inputs()[1].required(true);
+//                } else {
+//                    self.inputs()[1].enable(false);
+//                    self.inputs()[1].required(false);
+//                }
+//            }else if(data.typeCheckItem() === 3){
+//                if(v > 5){
+//                    self.inputs()[2].enable(true);
+//                    self.inputs()[2].required(true);
+//                    self.inputs()[3].enable(true);
+//                    self.inputs()[3].required(true);
+//                } else {
+//                    self.inputs()[2].enable(false);
+//                    self.inputs()[2].required(false);
+//                    self.inputs()[2].value('');
+//                    self.inputs()[3].enable(false);
+//                    self.inputs()[3].required(false);
+//                    self.inputs()[3].value('');
+//                }
+//                
+//            }
+//            
+//        }); 
+//        self.extractType.valueHasMutated();
+//        
+//    }
+    
+//    function setupInputs(data: ExtractCondition){
+//        if(data.typeCheckItem() === 0){
+//            data.inputs = ko.observableArray([new InputModel(true,data.numberDayDiffHoliday1(),true,true),
+//                                            new InputModel(true,data.numberDayDiffHoliday2(),true,true)]);     
+//        }else if(data.typeCheckItem() === 3){
+//            if(data.checkOperatorType()===0){
+//                data.inputs = ko.observableArray([new InputModel(true,data.compareSingleValueEx.value==null?null:data.compareSingleValueEx.value.daysValue(),true,true),
+//                                                  new InputModel(true,data.compareSingleValueEx.value==null?null:data.compareSingleValueEx.value.timeValue(),true,true),
+//                                                  new InputModel(false,'',false,true),
+//                                                  new InputModel(false,'',false,true)]);    
+//            }else{
+//                data.inputs = ko.observableArray([new InputModel(true,data.compareRangeEx.startValue==null?null:data.compareRangeEx.startValue.daysValue(),true,true),
+//                                                  new InputModel(true,data.compareRangeEx.startValue==null?null:data.compareRangeEx.startValue.timeValue(),true,true),
+//                                                  new InputModel(true,data.compareRangeEx.endValue==null?null:data.compareRangeEx.endValue.daysValue(),true,true),
+//                                                  new InputModel(true,data.compareRangeEx.endValue==null?null:data.compareRangeEx.endValue.timeValue(),true,true),
+//                                                  ]);  
+//            }
+//        }
+//    }
     
     export class ExtractCondition {
-        errorAlarmCheckID : KnockoutObservable<string>= ko.observable('') ;
-        operator: KnockoutObservable<number>= ko.observable(0); 
-        extractType: KnockoutObservable<number>= ko.observable(0);
-        textLabel: KnockoutObservable<string>= ko.observable('');
-        haveTypeVacation :KnockoutObservable<boolean>= ko.observable(false);
-        haveCombobox: KnockoutObservable<boolean>= ko.observable(false);
-        haveSelect: KnockoutObservable<boolean>= ko.observable(false);
-        haveGroup: KnockoutObservable<boolean>= ko.observable(false);
-        haveInput: KnockoutObservable<number>= ko.observable(0);
+        errorAlarmCheckID : KnockoutObservable<string> ;
+        operator: KnockoutObservable<number>; 
+        extractType: KnockoutObservable<number>;
+        textLabel: KnockoutObservable<string>;
+        haveTypeVacation :KnockoutObservable<boolean>;
+        haveCombobox: KnockoutObservable<boolean>;
+        haveSelect: KnockoutObservable<boolean>;
+        haveGroup: KnockoutObservable<boolean>;
+        haveInput: KnockoutObservable<number>;
+        inputs: KnockoutObservableArray<InputModel>;
+        typeCheckItem : KnockoutObservable<number>; //Set other type
+        
+        static clone(data: any): ExtractCondition{
+            var x = new ExtractCondition();
+            x.errorAlarmCheckID= ko.observable(data.errorAlarmCheckID);
+            x.operator= ko.observable(data.operator);
+            x.extractType= ko.observable(data.extractType);
+            x.textLabel= ko.observable(data.textLabel);
+            x.haveTypeVacation= ko.observable(data.haveTypeVacation);
+            x.haveCombobox= ko.observable(data.haveCombobox);
+            x.haveSelect= ko.observable(data.haveSelect);
+            x.haveGroup= ko.observable(data.haveGroup);
+            x.haveInput= ko.observable(data.haveInput);
+            x.inputs= ko.observableArray(data.inputs);
+            x.typeCheckItem =ko.observable( data.typeCheckItem);
+            ko.mapping.fromJS(data, mapping, x);
+            x.setupScrible();
+            return x;
+        }
+        
+        
+        setupScrible(){
+            let self = this;
+            self.setupInputs();
+            self.extractType.subscribe((v) => {
+                nts.uk.ui.errors.clearAll();
+            });     
+        }
+        
+        setupInputs() {
+            let self = this;
+            self.inputs = ko.observableArray([]);
+        }
+    }
+    
+    export class InputModel{
+        required: KnockoutObservable<boolean>;
+        value: KnockoutObservable<string>;
+        enable: KnockoutObservable<boolean>;
+        visible: KnockoutObservable<boolean>;
+        constructor(required: boolean,value: string,enable: boolean,visible: boolean){
+            this.required= ko.observable(required);
+            this.value= ko.observable(value);
+            this.enable= ko.observable(enable);
+            this.visible= ko.observable(visible);
+        }
+        
+        public static  clone(data: any):InputModel{
+            var x = new InputModel();
+            x.required(data.required);
+            x.value(data.value);
+            x.enable(data.enable);
+            x.visible(data.visible);
+            return x;
+        }
     }
     
 //    export interface ISpecHolidayCheckCon{
@@ -376,22 +522,111 @@ module nts.uk.at.view.kal003.share.model {
 //    }
     
     export class SpecHolidayCheckCon extends ExtractCondition{
-        numberDayDiffHoliday1 : KnockoutObservable<number> = ko.observable(0);
-        numberDayDiffHoliday2 : KnockoutObservable<number> = ko.observable(null);
+        numberDayDiffHoliday1 : KnockoutObservable<number>;
+        numberDayDiffHoliday2 : KnockoutObservable<number>;
         constructor(data : any){
-            super();
-            this.errorAlarmCheckID(data.errorAlarmCheckID);
-            this.operator(data.compareOperator || 0);
-            this.extractType(0);
-            this.textLabel("所定公休日数の");
-            this.haveTypeVacation(false);
-            this.haveCombobox(true);
-            this.haveSelect(false);
-            this.haveGroup(false);
-            this.haveInput(0);
             
-            this.numberDayDiffHoliday1(data.numberDayDiffHoliday1 || 0);
-            this.numberDayDiffHoliday2(data.numberDayDiffHoliday2 || null);    
+            super();
+            this.extractType=ko.observable(0);
+            this.textLabel=ko.observable("所定公休日数の");
+            this.haveTypeVacation=ko.observable(false);
+            this.haveCombobox=ko.observable(true);
+            this.haveSelect=ko.observable(false);
+            this.haveGroup=ko.observable(false);
+            this.haveInput=ko.observable(0);
+            this.typeCheckItem = ko.observable(0);
+            if(!nts.uk.util.isNullOrUndefined(data)){
+                this.errorAlarmCheckID=ko.observable(data.errorAlarmCheckID);
+                this.operator=ko.observable(data.compareOperator || 0);
+                this.numberDayDiffHoliday1=ko.observable(data.numberDayDiffHoliday1 || 0);
+                this.numberDayDiffHoliday2=ko.observable(data.numberDayDiffHoliday2 || null);    
+            }
+        }
+        
+        
+        setupScrible(){
+            let self = this;
+            self.setupInputs();
+            self.extractType.subscribe((v) => {
+                nts.uk.ui.errors.clearAll();
+                if(v > 5){
+                    self.inputs()[1].enable(true);
+                    self.inputs()[1].required(true);
+                } else {
+                    self.inputs()[1].enable(false);
+                    self.inputs()[1].required(false);
+                }
+            });  
+        }
+        
+        setupInputs(){
+            let self = this;
+            self.inputs = ko.observableArray([new InputModel(true,self.numberDayDiffHoliday1(),true,true),
+                                            new InputModel(true,self.numberDayDiffHoliday2(),true,true)]);    
+        }
+        public static  clone(data: any) : SpecHolidayCheckCon{
+            var x = new SpecHolidayCheckCon();
+            x.numberDayDiffHoliday1=ko.observable(data.numberDayDiffHoliday1);
+            x.numberDayDiffHoliday2=ko.observable(data.numberDayDiffHoliday2);
+            x.errorAlarmCheckID=ko.observable(data.errorAlarmCheckID);
+            x.operator=ko.observable(data.operator);
+            x.textLabel=ko.observable(data.textLabel);
+            x.haveTypeVacation=ko.observable(data.haveTypeVacation);
+            x.haveCombobox=ko.observable(data.haveCombobox);
+            x.haveSelect=ko.observable(data.haveSelect);
+            x.haveGroup=ko.observable(data.haveGroup);
+            x.haveInput=ko.observable(data.haveInput);
+            x.typeCheckItem=ko.observable(data.typeCheckItem);
+            x.setupScrible();
+            return x;
+        }
+    }
+    
+    var mapping = {
+        'conditions': {
+            create: function(options) {
+                return ko.observableArray(_.map(options.data, (d) => {
+                    if(d.typeCheckItem === 0){
+                        return SpecHolidayCheckCon.clone(d);
+                    }else if(d.typeCheckItem === 1 || d.typeCheckItem === 2){
+                        return AgreementCheckCon36.clone(d);
+                    }else if(d.typeCheckItem === 3){
+                        return CheckRemainNumberMon.clone(d);
+                    }else{
+                        return AttdItemConCommon.clone(d);
+                    }
+                }));
+                //return ExtractCondition.clone(options.data);
+            }
+        },'inputs': {
+            create: function(options) {
+                return ko.observableArray(_.map(options.data, (d) => {
+                    return InputModel.clone(d);
+                }));
+            }
+        },'compareRangeEx': {
+            create: function(options) {
+                
+                return ko.observable(CompareRangeImport.clone(options.data));
+            }
+        },'compareSingleValueEx': {
+            create: function(options) {
+                
+                return ko.observable(CompareSingleValueImport.clone(options.data));
+            }
+        },
+        'startValue': {
+            create: function(options) {
+                return ko.observable(CheckConValueRemainNumberImport.clone(options.data));
+            }
+        },'endValue': {
+            create: function(options) {
+                return ko.observable(CheckConValueRemainNumberImport.clone(options.data));
+            }
+        },'value': {
+            create: function(options) {
+                return ko.observable(CheckConValueRemainNumberImport.clone(options.data));
+            }
         }
     }
     
@@ -404,25 +639,89 @@ module nts.uk.at.view.kal003.share.model {
 //    }
     
     export class CheckRemainNumberMon extends ExtractCondition{
-        checkVacation : KnockoutObservable<number> = ko.observable(0);
-        compareRangeEx : KnockoutObservable<CompareRangeImport> = ko.observable(null); 
-        compareSingleValueEx : KnockoutObservable<CompareSingleValueImport> = ko.observable(null);
+        checkOperatorType : KnockoutObservable<number>;
+        checkVacation : KnockoutObservable<number>;
+        compareRangeEx : KnockoutObservable<CompareRangeImport>; 
+        compareSingleValueEx : KnockoutObservable<CompareSingleValueImport>;
+        listItemID : KnockoutObservableArray<number>;
         constructor(data : any){
             super();
-            this.errorAlarmCheckID(data.errorAlarmCheckID);
-            this.operator(data.checkOperatorType || 0);
-            this.extractType(3);
-            this.textLabel("");
-            this.haveTypeVacation(true);
-            this.haveCombobox(true);
-            this.haveSelect(true);
-            this.haveGroup(false);
-            this.haveInput(3);
+            this.extractType=ko.observable(0);
+            this.textLabel=ko.observable("");
+            this.haveTypeVacation=ko.observable(true);
+            this.haveCombobox=ko.observable(true);
+            this.haveSelect=ko.observable(true);
+            this.haveGroup=ko.observable(false);
+            this.haveInput=ko.observable(3);
+            this.typeCheckItem =ko.observable(3);
             
-            this.checkVacation(data.checkVacation || 0);
-            this.compareRangeEx(data && data.compareRangeEx?new CompareRangeImport(data.compareRangeEx) : null);
-            this.compareSingleValueEx(data && data.compareSingleValueEx? new CompareSingleValueImport( data.compareSingleValueEx) : null);
+            if(!nts.uk.util.isNullOrUndefined(data)){
+                this.errorAlarmCheckID=ko.observable(data.errorAlarmCheckID);
+                this.operator=ko.observable(data.checkOperatorType || 0);
+                this.checkOperatorType=ko.observable(data.checkOperatorType || 0);
+                this.checkVacation=ko.observable(data.checkVacation || 0);
+                this.compareRangeEx=ko.observable(data && data.compareRangeEx?new CompareRangeImport(data.compareRangeEx) : null);
+                this.compareSingleValueEx=ko.observable(data && data.compareSingleValueEx? new CompareSingleValueImport( data.compareSingleValueEx) : null);
+                this.listItemID=ko.observableArray(data && data.listItemID? data.listItemID : null);    
+            }
             
+            
+        }
+        
+        public static  clone(data: any):CheckRemainNumberMon{
+            var x = new CheckRemainNumberMon();
+            x.errorAlarmCheckID=ko.observable(data.errorAlarmCheckID);
+            x.operator=ko.observable(data.operator);
+            x.extractType=ko.observable(data.extractType);
+            x.textLabel=ko.observable(data.textLabel);
+            x.haveTypeVacation=ko.observable(data.haveTypeVacation);
+            x.haveCombobox=ko.observable(data.haveCombobox);
+            x.checkOperatorType=ko.observable(data.checkOperatorType);
+            x.haveSelect=ko.observable(data.haveSelect);
+            x.haveGroup=ko.observable(data.haveGroup);
+            x.haveInput=ko.observable(data.haveInput);
+            x.typeCheckItem=ko.observable(data.typeCheckItem);
+            x.listItemID=ko.observable(data.listItemID);
+            ko.mapping.fromJS(data, mapping, x);
+            x.setupScrible();
+            return x;
+        }
+
+        setupScrible(){
+            let self = this;
+            self.setupInputs();
+            self.extractType.subscribe((v) => {
+                nts.uk.ui.errors.clearAll();
+                if(v > 5){
+                    self.inputs()[2].enable(true);
+                    self.inputs()[2].required(true);
+                    self.inputs()[3].enable(true);
+                    self.inputs()[3].required(true);
+                } else {
+                    self.inputs()[2].enable(false);
+                    self.inputs()[2].required(false);
+                    self.inputs()[2].value('');
+                    self.inputs()[3].enable(false);
+                    self.inputs()[3].required(false);
+                    self.inputs()[3].value('');
+                }
+            });  
+        }
+
+        setupInputs(){
+            let self = this;
+            if(self.checkOperatorType()===0){
+                self.inputs = ko.observableArray([new InputModel(true,self.compareSingleValueEx().value()==null?null:self.compareSingleValueEx().value().daysValue(),true,true),
+                                                  new InputModel(true,self.compareSingleValueEx().value()==null?null:self.compareSingleValueEx().value().timeValue(),true,true),
+                                                  new InputModel(false,'',false,true),
+                                                  new InputModel(false,'',false,true)]);    
+            }else{
+                self.inputs = ko.observableArray([new InputModel(true,self.compareRangeEx().startValue()==null?null:self.compareRangeEx().startValue().daysValue(),true,true),
+                                                  new InputModel(true,self.compareRangeEx().startValue()==null?null:self.compareRangeEx().startValue().timeValue(),true,true),
+                                                  new InputModel(true,self.compareRangeEx().endValue()==null?null:self.compareRangeEx().endValue().daysValue(),true,true),
+                                                  new InputModel(true,self.compareRangeEx().endValue()==null?null:self.compareRangeEx().endValue().timeValue(),true,true),
+                                                  ]);  
+            }
         }
     }
 //    
@@ -433,13 +732,22 @@ module nts.uk.at.view.kal003.share.model {
 //    }
     
     export class CompareRangeImport{
-        compareOperator : KnockoutObservable<number> = ko.observable(0);
-        startValue : KnockoutObservable<CheckConValueRemainNumberImport> = ko.observable(null);
-        endValue : KnockoutObservable<CheckConValueRemainNumberImport> = ko.observable(null);   
+        compareOperator : KnockoutObservable<number>;
+        startValue : KnockoutObservable<CheckConValueRemainNumberImport>;
+        endValue : KnockoutObservable<CheckConValueRemainNumberImport>;   
         constructor(data : any ){
-        this.compareOperator(data.compareOperator ||0);
-            this.startValue(data && data.startValue?new CheckConValueRemainNumberImport(data.startValue) : null);    
-            this.endValue(data && data.endValue?new CheckConValueRemainNumberImport(data.endValue) : null);
+            if(!nts.uk.util.isNullOrUndefined(data)){
+                this.compareOperator=ko.observable(data.compareOperator ||0);
+                this.startValue=ko.observable(data && data.startValue?new CheckConValueRemainNumberImport(data.startValue) : null);    
+                this.endValue=ko.observable(data && data.endValue?new CheckConValueRemainNumberImport(data.endValue) : null);    
+            }
+        }
+        
+        public static  clone(data: any) : CompareRangeImport{
+            var x = new CompareRangeImport();
+            x.compareOperator=ko.observable(data.compareOperator);
+            ko.mapping.fromJS(data, mapping, x);
+            return x;
         }
     }
     
@@ -449,11 +757,20 @@ module nts.uk.at.view.kal003.share.model {
 //    }
     
     export class CompareSingleValueImport{
-        compareOperator : KnockoutObservable<number> = ko.observable(0);
-        value : KnockoutObservable<CheckConValueRemainNumberImport> = ko.observable(null);
+        compareOperator : KnockoutObservable<number>;
+        value : KnockoutObservable<CheckConValueRemainNumberImport>;
         constructor(data : any){
-        this.compareOperator(data.compareOperator ||0);
-        this.value(data && data.value?new CheckConValueRemainNumberImport(data.value) : null);
+            if(!nts.uk.util.isNullOrUndefined(data)){
+                this.compareOperator=ko.observable(data.compareOperator ||0);
+                this.value=ko.observable(data && data.value?new CheckConValueRemainNumberImport(data.value) : null);
+            }
+        }
+        
+        public static  clone(data: any) : CompareSingleValueImport{
+            var x = new CompareSingleValueImport();
+            x.compareOperator=ko.observable(data.compareOperator);
+            ko.mapping.fromJS(data, mapping, x);
+            return x;
         }
     }
     
@@ -463,11 +780,21 @@ module nts.uk.at.view.kal003.share.model {
 //    }
 //    
     export class CheckConValueRemainNumberImport {
-        daysValue : KnockoutObservable<number> = ko.observable(0);
-        timeValue : KnockoutObservable<number> = ko.observable(0);
+        daysValue  : KnockoutObservable<number>;
+        timeValue : KnockoutObservable<number>;
         constructor(data : any){
-            this.daysValue(data.daysValue || 0);
-            this.timeValue(data.timeValue || null); 
+            if(!nts.uk.util.isNullOrUndefined(data)){
+                this.daysValue=ko.observable(data.daysValue || 0);
+                this.timeValue=ko.observable(data.timeValue || null);    
+            }
+             
+        }
+        
+        public static  clone(data: any) : CheckConValueRemainNumberImport{
+            var x = new CheckConValueRemainNumberImport();
+            x.daysValue=ko.observable(data.daysValue);
+            x.timeValue=ko.observable(data.timeValue);
+            return x;
         }
     }
     
@@ -479,22 +806,27 @@ module nts.uk.at.view.kal003.share.model {
 //    }
     
     export class AgreementCheckCon36 extends ExtractCondition {
-        classification : KnockoutObservable<number> = ko.observable(0);
-        eralBeforeTime : KnockoutObservable<number> = ko.observable(0);
+        classification : KnockoutObservable<number>;
+        eralBeforeTime : KnockoutObservable<number>;
         constructor(data : any){
             super();
-            this.errorAlarmCheckID(data.errorAlarmCheckID);
-            this.operator(data.compareOperator || 0);
-            this.extractType(data.classification == 0 ? 1 : 2);
-            this.textLabel(data.classification == 0 ? "エラー時間" : "アラーム時間");
-            this.haveTypeVacation(false);
-            this.haveCombobox(true);
-            this.haveSelect(false);
-            this.haveGroup(false);
-            this.haveInput(data.classification == 0 ? 1 : 2);
             
-            this.classification(data.classification || 0);
-            this.eralBeforeTime(data.eralBeforeTime || 0);
+            this.haveTypeVacation=ko.observable(false);
+            this.haveCombobox=ko.observable(true);
+            this.haveSelect=ko.observable(false);
+            this.haveGroup=ko.observable(false);
+            if(!nts.uk.util.isNullOrUndefined(data)){
+                this.errorAlarmCheckID=ko.observable(data.errorAlarmCheckID);
+                this.extractType=ko.observable(data.classification == 0 ? 1 : 2);
+                this.textLabel=ko.observable(data.classification == 0 ? "エラー時間" : "アラーム時間");
+                this.operator=ko.observable(data.compareOperator || 0);
+                this.haveInput=ko.observable(data.classification == 0 ? 1 : 2);
+                this.typeCheckItem =ko.observable(data.classification == 0 ? 1 : 2 );
+                
+                this.classification=ko.observable(data.classification || 0);
+                this.eralBeforeTime=ko.observable(data.eralBeforeTime || 0);    
+            }
+            
         }
         
         setupDefaultOtherType(data : any): AgreementCheckCon36 {
@@ -503,29 +835,75 @@ module nts.uk.at.view.kal003.share.model {
             data.eralBeforeTime = 0;
             return new AgreementCheckCon36(data);
         }
+        
+        
+        public static  clone(data: any): AgreementCheckCon36{
+            var x = new AgreementCheckCon36();
+            x.classification=ko.observable(data.classification);
+            x.eralBeforeTime=ko.observable(data.eralBeforeTime);
+            x.errorAlarmCheckID=ko.observable(data.errorAlarmCheckID);
+            x.operator=ko.observable(data.operator);
+            x.extractType=ko.observable(data.extractType);
+            x.textLabel=ko.observable(data.textLabel);
+            x.haveTypeVacation=ko.observable(data.haveTypeVacation);
+            x.haveCombobox=ko.observable(data.haveCombobox);
+            x.haveSelect=ko.observable(data.haveSelect);
+            x.haveGroup=ko.observable(data.haveGroup);
+            x.haveInput=ko.observable(data.haveInput);
+            x.typeCheckItem=ko.observable(data.typeCheckItem);
+            x.setupScrible();
+            return x;
+        }
+        
+        
     }
     
     export class AttdItemConCommon extends ExtractCondition{
         group1: KnockoutObservable<ErAlConditionsAttendanceItem>;
-        group2UseAtr: KnockoutObservable<boolean> = ko.observable(false);
+        group2UseAtr: KnockoutObservable<boolean>;
         group2: KnockoutObservable<ErAlConditionsAttendanceItem>;
         
         constructor(param: any) {
             super();
             let self = this;
-            self.errorAlarmCheckID(param.errorAlarmCheckID);
-            self.operator(param ? param.operatorBetweenGroups || 0 : 0);
-            self.extractType(8);
-            self.textLabel("");
-            this.haveTypeVacation(false);
-            this.haveCombobox(false);
-            this.haveSelect(false);
-            this.haveGroup(true);   
-            this.haveInput(8);
+            self.extractType=ko.observable(8);
+            self.textLabel=ko.observable("");
+            this.haveTypeVacation=ko.observable(false);
+            this.haveCombobox=ko.observable(false);
+            this.haveSelect=ko.observable(false);
+            this.haveGroup=ko.observable(true);   
+            this.haveInput=ko.observable(8);
+            this.typeCheckItem=ko.observable(8);
             
-            self.group1 = ko.observable(param ? new ErAlConditionsAttendanceItem(param.group1) : null);
-            self.group2UseAtr(param ? param.group2UseAtr || false : false);
-            self.group2 = ko.observable(param ? new ErAlConditionsAttendanceItem(param.group2) : null);
+            if(!nts.uk.util.isNullOrUndefined(param)){
+                self.errorAlarmCheckID=ko.observable(param.errorAlarmCheckID);
+                self.operator=ko.observable(param ? param.operatorBetweenGroups || 0 : 0);
+                
+                self.group1=ko.observable(param ? new ErAlConditionsAttendanceItem(param.group1) : null);
+                self.group2UseAtr=ko.observable(param ? param.group2UseAtr || false : false);
+                self.group2=ko.observable(param ? new ErAlConditionsAttendanceItem(param.group2) : null);
+            }
+        }
+        
+        
+        public static  clone(data: any): AttdItemConCommon{
+            var x = new AttdItemConCommon();
+            x.group1=ko.observable(data.group1);
+            x.group2UseAtr=ko.observable(data.group2UseAtr);
+            x.group2=ko.observable(data.group2);
+            x.errorAlarmCheckID=ko.observable(data.errorAlarmCheckID);
+            x.operator=ko.observable(data.operator);
+            x.extractType=ko.observable(data.extractType);
+            x.textLabel=ko.observable(data.textLabel);
+            x.haveTypeVacation=ko.observable(data.haveTypeVacation);
+            x.haveCombobox=ko.observable(data.haveCombobox);
+            x.haveSelect=ko.observable(data.haveSelect);
+            x.haveGroup=ko.observable(data.haveGroup);
+            x.haveInput=ko.observable(data.haveInput);
+            x.typeCheckItem=ko.observable(data.typeCheckItem);
+            ko.mapping.fromJS(data, mapping, x);
+            x.setupScrible();
+            return x;
         }
     }
 
@@ -596,8 +974,8 @@ module nts.uk.at.view.kal003.share.model {
         conditionAtr: KnockoutObservable<number>;
         useAtr: KnockoutObservable<boolean>;
         uncountableAtdItem: KnockoutObservable<number>;
-        countableAddAtdItems: KnockoutObservableArray<number> = ko.observableArray([]);
-        countableSubAtdItems: KnockoutObservableArray<number> = ko.observableArray([]);
+        countableAddAtdItems: KnockoutObservableArray<number>;
+        countableSubAtdItems: KnockoutObservableArray<number>;
         conditionType: KnockoutObservable<number>;
         compareOperator: KnockoutObservable<number>;
         singleAtdItem: KnockoutObservable<number>;
@@ -612,23 +990,50 @@ module nts.uk.at.view.kal003.share.model {
 
         constructor(NO, param: IErAlAtdItemCondition) {
             let self = this;
-            self.targetNO = ko.observable(NO);
-            self.conditionAtr = param ? ko.observable(param.conditionAtr) : ko.observable(0);
-            self.useAtr = param ? ko.observable(param.useAtr) : ko.observable(true);
-            self.uncountableAtdItem = param ? ko.observable(param.uncountableAtdItem) : ko.observable(null);
-            self.countableAddAtdItems(param && param.countableAddAtdItems ? param.countableAddAtdItems : []);
-            self.countableSubAtdItems(param && param.countableSubAtdItems ? param.countableSubAtdItems : []);
-            self.conditionType = param ? ko.observable(param.conditionType) : ko.observable(1);   //1: 勤怠項目 - AttendanceItem, 0: fix
-            self.singleAtdItem = param ? ko.observable(param.singleAtdItem) : ko.observable(null);
-            self.compareStartValue = param ? ko.observable(param.compareStartValue) : ko.observable(0);
-            self.compareEndValue = param ? ko.observable(param.compareEndValue) : ko.observable(0);
-            self.compareOperator = param ? ko.observable(param.compareOperator) : ko.observable(0);
-            self.displayLeftCompare = ko.observable("");
-            self.displayLeftOperator = ko.observable("");
-            self.displayTarget = ko.observable("");
-            self.displayRightCompare = ko.observable("");
-            self.displayRightOperator = ko.observable("");
-            self.setTextDisplay();
+            if(!nts.uk.util.isNullOrUndefined(param)){
+                self.targetNO=ko.observable(NO);
+                self.conditionAtr=ko.observable(param.conditionAtr);
+                self.useAtr=ko.observable(param.useAtr);
+                self.uncountableAtdItem=ko.observable(param.uncountableAtdItem);
+                self.countableAddAtdItems=ko.observableArray(param.countableAddAtdItems ? param.countableAddAtdItems : []);
+                self.countableSubAtdItems=ko.observableArray(param.countableSubAtdItems ? param.countableSubAtdItems : []);
+                self.conditionType=ko.observable(param.conditionType);
+                self.singleAtdItem=ko.observable(param.singleAtdItem);
+                self.compareStartValue=ko.observable(param.compareStartValue);
+                self.compareEndValue=ko.observable(param.compareEndValue);
+                self.compareOperator=ko.observable(param.compareOperator);
+                self.displayLeftCompare=ko.observable("");
+                self.displayLeftOperator=ko.observable("");
+                self.displayTarget=ko.observable("");
+                self.displayRightCompare=ko.observable("");
+                self.displayRightOperator=ko.observable("");
+                self.setTextDisplay();    
+            }
+            
+        }
+       
+        
+        public static  clone(data: any) : ErAlAtdItemCondition{
+            var x = new ErAlAtdItemCondition();
+            x.targetNO=ko.observable(data.targetNO);
+            x.conditionAtr=ko.observable(data.conditionAtr);
+            x.useAtr=ko.observable(data.useAtr);
+            x.uncountableAtdItem=ko.observable(data.uncountableAtdItem);
+            x.countableAddAtdItems=ko.observableArray(data.countableAddAtdItems);
+            x.countableSubAtdItems=ko.observableArray(data.countableSubAtdItems);
+            x.conditionType=ko.observable(data.conditionType);
+            x.singleAtdItem=ko.observable(data.singleAtdItem);
+            x.compareStartValue=ko.observable(data.compareStartValue);
+            x.compareEndValue=ko.observable(data.compareEndValue);
+            x.compareOperator=ko.observable(data.compareOperator);
+            x.displayLeftCompare=ko.observable(data.displayLeftCompare);
+            x.displayLeftOperator=ko.observable(data.displayLeftOperator);
+            x.displayTarget=ko.observable(data.displayTarget);
+            x.displayRightCompare=ko.observable(data.displayRightCompare);    
+            x.displayRightOperator=ko.observable(data.displayRightOperator);
+            x.setTextDisplay=ko.observable(data.setTextDisplay);
+            ko.mapping.fromJS(data, mapping, x);
+            return x;
         }
 
         setTextDisplay() {
@@ -828,14 +1233,25 @@ module nts.uk.at.view.kal003.share.model {
     }
 
     export class ErAlConditionsAttendanceItem {
-        atdItemConGroupId: KnockoutObservable<string>;
-        conditionOperator: KnockoutObservable<number>; //OR|AND B15-3, B17-3
-        lstErAlAtdItemCon: KnockoutObservableArray<ErAlAtdItemCondition>;// max 3 item, B16-1 -> B16-4
+        atdItemConGroupId: KnockoutObservable<string>  = ko.observable('');
+        conditionOperator: KnockoutObservable<number> = ko.observable(0); //OR|AND B15-3, B17-3
+        lstErAlAtdItemCon: KnockoutObservableArray<ErAlAtdItemCondition> = ko.observableArray([]);// max 3 item, B16-1 -> B16-4
         constructor(param: IErAlConditionsAttendanceItem) {
             let self = this;
-            self.atdItemConGroupId = ko.observable(param ? param.atdItemConGroupId || '' : '');
-            self.conditionOperator = ko.observable(param ? param.conditionOperator || 0 : 0);
-            self.lstErAlAtdItemCon = ko.observableArray(param ? _.map(param.lstErAlAtdItemCon,acc =>{ return new ErAlAtdItemCondition(acc); }) || [] : []);
+            if(!nts.uk.util.isNullOrUndefined(param)){
+                self.atdItemConGroupId(param ? param.atdItemConGroupId || '' : '');
+                self.conditionOperator(param ? param.conditionOperator || 0 : 0);
+                self.lstErAlAtdItemCon(param ? _.map(param.lstErAlAtdItemCon,acc =>{ return new ErAlAtdItemCondition(acc); }) || [] : []);
+            }
+        }
+        
+        public static  clone(data: any) : ErAlConditionsAttendanceItem{
+            var x = new ErAlConditionsAttendanceItem();
+            x.atdItemConGroupId(data.atdItemConGroupId);
+            x.conditionOperator(data.conditionOperator);
+            x.lstErAlAtdItemCon(data.lstErAlAtdItemCon);
+            ko.mapping.fromJS(data, mapping, x);
+            return x;
         }
     }
 

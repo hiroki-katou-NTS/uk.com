@@ -88,10 +88,10 @@ module nts.uk.at.view.kal003.b.viewmodel{
                     self.listTypeCheckVacation = ko.observableArray(__viewContext.enums.TypeCheckVacation);
 //                    self.settingExtraMon = $.extend({}, shareutils.getDefaultExtraResultMonthly(0), option.data);
 //                    let extraResultMonthly = shareutils.convertTransferDataToExtraResultMonthly(self.settingExtraMon);
-                    let data = ko.mapping.fromJS(option.data);
-                    data.currentConditions = ko.observableArray([]);
-                    sharemodel.setupCurrent(data);
-                    self.extraResultMonthly = ko.observable(data);
+//                    let data = ko.mapping.fromJS(option.data);
+//                    data.currentConditions = ko.observableArray([]);
+//                    sharemodel.setupCurrent(data);
+                    self.extraResultMonthly = ko.observable(sharemodel.ExtraResultMonthly.clone(option.data));
                 break ;
                 default :break;
             }
@@ -685,56 +685,119 @@ module nts.uk.at.view.kal003.b.viewmodel{
         btnSettingBA2_2_click() {
             let self = this;
             let dfd = $.Deferred();
-            let currentAtdItemCondition = self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0];
-            //fixbug select item 111
-            self.getListItemByAtr(self.workRecordExtractingCondition().checkItem()).done((lstItem) => {
-                let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
-                if (self.workRecordExtractingCondition().checkItem() === 2) {
-                    //Open dialog KDL021
-                    nts.uk.ui.windows.setShared('Multiple', false);
-                    nts.uk.ui.windows.setShared('AllAttendanceObj', lstItemCode);
-                    nts.uk.ui.windows.setShared('SelectedAttendanceId', [currentAtdItemCondition.uncountableAtdItem()]);
-                    nts.uk.ui.windows.sub.modal("at", "/view/kdl/021/a/index.xhtml").onClosed(() => {
-                        $(".nts-input").ntsError("clear");
-                        let output = nts.uk.ui.windows.getShared("selectedChildAttendace");
-                        if (output) {
-                            currentAtdItemCondition.uncountableAtdItem(parseInt(output));
-                            self.fillTextDisplayTarget(dfd, currentAtdItemCondition);
-                        } else if (output === "") {
-                            currentAtdItemCondition.uncountableAtdItem(0);
-                            self.displayAttendanceItemSelections_BA2_3("");
+            switch(self.category()){
+                case sharemodel.CATEGORY.DAILY :
+                let currentAtdItemCondition = self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0];
+                //fixbug select item 111
+                self.getListItemByAtr(self.workRecordExtractingCondition().checkItem()).done((lstItem) => {
+                    let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
+                    if (self.workRecordExtractingCondition().checkItem() === 2) {
+                        //Open dialog KDL021
+                        nts.uk.ui.windows.setShared('Multiple', false);
+                        nts.uk.ui.windows.setShared('AllAttendanceObj', lstItemCode);
+                        nts.uk.ui.windows.setShared('SelectedAttendanceId', [currentAtdItemCondition.uncountableAtdItem()]);
+                        nts.uk.ui.windows.sub.modal("at", "/view/kdl/021/a/index.xhtml").onClosed(() => {
+                            $(".nts-input").ntsError("clear");
+                            let output = nts.uk.ui.windows.getShared("selectedChildAttendace");
+                            if (output) {
+                                currentAtdItemCondition.uncountableAtdItem(parseInt(output));
+                                self.fillTextDisplayTarget(dfd, currentAtdItemCondition);
+                            } else if (output === "") {
+                                currentAtdItemCondition.uncountableAtdItem(0);
+                                self.displayAttendanceItemSelections_BA2_3("");
+                            }
+                        });
+                    } else {
+                        //Open dialog KDW007C
+                        let param = {
+                            lstAllItems: lstItemCode,
+                            lstAddItems: currentAtdItemCondition.countableAddAtdItems(),
+                            lstSubItems: currentAtdItemCondition.countableSubAtdItems()
+                        };
+                        
+                        if ((self.checkItemTemp() || self.checkItemTemp() == 0) && self.checkItemTemp() != self.workRecordExtractingCondition().checkItem()) {
+                            param.lstAddItems = [];
+                            param.lstSubItems = [];
                         }
-                    });
-                } else {
-                    //Open dialog KDW007C
-                    let param = {
-                        lstAllItems: lstItemCode,
-                        lstAddItems: currentAtdItemCondition.countableAddAtdItems(),
-                        lstSubItems: currentAtdItemCondition.countableSubAtdItems()
-                    };
-                    
-                    if ((self.checkItemTemp() || self.checkItemTemp() == 0) && self.checkItemTemp() != self.workRecordExtractingCondition().checkItem()) {
-                        param.lstAddItems = [];
-                        param.lstSubItems = [];
+                        
+                        nts.uk.ui.windows.setShared("KDW007Params", param);
+                        nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/c/index.xhtml").onClosed(() => {
+                            $(".nts-input").ntsError("clear");
+                            let output = nts.uk.ui.windows.getShared("KDW007CResults");  
+                            if (output) {
+                                currentAtdItemCondition.countableAddAtdItems(output.lstAddItems.map((item) => { return parseInt(item); }));
+                                currentAtdItemCondition.countableSubAtdItems(output.lstSubItems.map((item) => { return parseInt(item); }));
+                                self.fillTextDisplayTarget(dfd, currentAtdItemCondition);
+                            } 
+                        });
                     }
+                });
+                break;
+                case sharemodel.CATEGORY.MONTHLY :  
                     
-                    nts.uk.ui.windows.setShared("KDW007Params", param);
-                    nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/c/index.xhtml").onClosed(() => {
-                        $(".nts-input").ntsError("clear");
-                        let output = nts.uk.ui.windows.getShared("KDW007CResults");  
-                        if (output) {
-                            currentAtdItemCondition.countableAddAtdItems(output.lstAddItems.map((item) => { return parseInt(item); }));
-                            currentAtdItemCondition.countableSubAtdItems(output.lstSubItems.map((item) => { return parseInt(item); }));
-                            self.fillTextDisplayTarget(dfd, currentAtdItemCondition);
-                        } 
-                    });
-                }
-            });
+                    let currentAtdItemConMon = self.extraResultMonthly().currentConditions().group1().lstErAlAtdItemCon()[0];
+                    self.getAttdItemMonByAtr(self.extraResultMonthly().typeCheckItem()).done((lstItem) => {
+                        let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
+                        if (self.extraResultMonthly().typeCheckItem() === 3) {
+                             //Open dialog KDL021
+                            nts.uk.ui.windows.setShared('Multiple', false);
+                            nts.uk.ui.windows.setShared('AllAttendanceObj', lstItemCode);
+                            nts.uk.ui.windows.setShared('SelectedAttendanceId', [currentAtdItemConMon.uncountableAtdItem()]);
+                            nts.uk.ui.windows.sub.modal("at", "/view/kdl/021/a/index.xhtml").onClosed(() => {
+                                $(".nts-input").ntsError("clear");
+                                let output = nts.uk.ui.windows.getShared("selectedChildAttendace");
+                                if (output) {
+                                    currentAtdItemConMon.uncountableAtdItem(parseInt(output));
+                                    //self.fillTextDisplayTarget(dfd, currentAtdItemCondition);
+                                } else if (output === "") {
+                                    currentAtdItemCondition.uncountableAtdItem(0);
+                                    self.displayAttendanceItemSelections_BA2_3("");
+                                }
+                            });
+                        }else{
+                            //Open dialog KDW007C
+                            let param = {
+                                attr : 1,
+                                lstAllItems: lstItemCode,
+                                lstAddItems: currentAtdItemConMon.countableAddAtdItems(),
+                                lstSubItems: currentAtdItemConMon.countableSubAtdItems()
+                            };
+                            
+    //                        if ((self.checkItemTemp() || self.checkItemTemp() == 0) && self.checkItemTemp() != self.workRecordExtractingCondition().checkItem()) {
+    //                            param.lstAddItems = [];
+    //                            param.lstSubItems = [];
+    //                        }
+                            
+                            nts.uk.ui.windows.setShared("KDW007Params", param);
+                            nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/c/index.xhtml").onClosed(() => {
+                                $(".nts-input").ntsError("clear");
+                                let output = nts.uk.ui.windows.getShared("KDW007CResults");  
+                                if (output) {
+                                    currentAtdItemConMon.countableAddAtdItems(output.lstAddItems.map((item) => { return parseInt(item); }));
+                                    currentAtdItemConMon.countableSubAtdItems(output.lstSubItems.map((item) => { return parseInt(item); }));
+                                   //self.fillTextDisplayTarget(dfd, currentAtdItemCondition);
+                                } 
+                            });
+                        }
+                        
+                       
+                   });
+                break ;
+                default :break;
+            }
+            
         }
+        
         
         getListItemByAtr(conditionAtr) {
             let self = this;
             return service.getAttendanceItemByAtr(conditionAtr);
+        }
+        
+        //monthly
+        getAttdItemMonByAtr(atr){
+            let self = this;
+            return service.getAttdItemMonByAtr(atr);
         }
         
         fillTextDisplayTarget(defered, currentAtdItemCondition) {

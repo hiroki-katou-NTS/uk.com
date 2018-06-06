@@ -3,6 +3,8 @@ module nts.uk.at.view.kal003.share {
     import getShared = nts.uk.ui.windows.getShared;
     import model = nts.uk.at.view.kal003.share.model;
 
+    
+    
     export module kal003utils {
         /**
          * initial default value for Condition Object
@@ -102,6 +104,7 @@ module nts.uk.at.view.kal003.share {
                 checkRemainNumberMon :data.checkRemainNumberMon === null? getDefaultCheckRemainNumberMon(): data.checkRemainNumberMon,
                 agreementCheckCon36 :data.agreementCheckCon36 === null? getDefaultAgreementCheckCon36():data.agreementCheckCon36
                 
+                
             });
             return extraResultMonthly;
         }
@@ -130,7 +133,8 @@ module nts.uk.at.view.kal003.share {
                 checkVacation: 0,
                 checkOperatorType: 0,
                 compareRangeEx: getDefaultCompareRangeImport(),
-                compareSingleValueEx : getDefaultCompareSingleValueImport()
+                compareSingleValueEx : getDefaultCompareSingleValueImport(),
+                listItemID: []
             });
         }
         

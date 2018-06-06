@@ -94,9 +94,7 @@ public class MonAlarmCheckConEventPubSubscriber implements DomainEventSubscriber
 					extraResultMonthly.getAgreementCheckCon36().setErrorAlarmCheckID(errorAlarmCheckID);
 					AgreementCheckCon36 agreementCheckCon36 = convertToAgreementCheckCon36AdapterPubDto(extraResultMonthly.getAgreementCheckCon36());
 					addAgreementCheckCon36(agreementCheckCon36);
-				} else if (extraResultMonthly.getTypeCheckItem() == 8) {
-
-				} else { // when typecheck = 3 4 5 6 7
+				} else if (extraResultMonthly.getTypeCheckItem() == 3) {
 					// add CheckRemainNumberMon
 					extraResultMonthly.getCheckRemainNumberMon().setErrorAlarmCheckID(errorAlarmCheckID);
 					CheckRemainNumberMon checkRemainNumberMon = convertToCheckRemainNumberMonAdapterPubDto(extraResultMonthly.getCheckRemainNumberMon());
@@ -260,7 +258,11 @@ public class MonAlarmCheckConEventPubSubscriber implements DomainEventSubscriber
 		} else {
 			checkedCondition = convertToCompareRangeAdapterPubDto(dto.getCompareRangeEx());
 		}
-		return new CheckRemainNumberMon(dto.getErrorAlarmCheckID(), EnumAdaptor.valueOf(dto.getCheckVacation(), TypeCheckVacation.class), checkedCondition, EnumAdaptor.valueOf(dto.getCheckOperatorType(), CheckOperatorType.class));
+		return new CheckRemainNumberMon(dto.getErrorAlarmCheckID(), 
+				EnumAdaptor.valueOf(dto.getCheckVacation(), TypeCheckVacation.class), 
+				checkedCondition, EnumAdaptor.valueOf(dto.getCheckOperatorType(), CheckOperatorType.class),
+				dto.getListItemID()
+				);
 	}
 
 	private CompareRange<CheckConValueRemainingNumber> convertToCompareRangeAdapterPubDto(CompareRangeAdapterPubDto dto) {

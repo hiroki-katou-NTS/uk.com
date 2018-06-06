@@ -1,10 +1,18 @@
 package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycheckcondition.checkremainnumber;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -44,27 +52,32 @@ public class KrcmtCheckRemainNumberMon extends UkJpaEntity implements Serializab
 
 	@OneToOne(mappedBy = "comparesingle")
 	public KrcmtCompareSingleVal krcmtCompareSingleVal;
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
+	public List<KrcmtRemainListItemID> listItemID;
 
 	@Override
 	protected Object getKey() {
 		return errorAlarmCheckID;
 	}
 
-	public KrcmtCheckRemainNumberMon(String errorAlarmCheckID, int typeCheckVacation, int checkOperatorType, KrcmtCompareRange krcmtCompareRange, KrcmtCompareSingleVal krcmtCompareSingleVal) {
+	public KrcmtCheckRemainNumberMon(String errorAlarmCheckID, int typeCheckVacation, int checkOperatorType, KrcmtCompareRange krcmtCompareRange, KrcmtCompareSingleVal krcmtCompareSingleVal, List<KrcmtRemainListItemID> listItemID) {
 		super();
 		this.errorAlarmCheckID = errorAlarmCheckID;
 		this.typeCheckVacation = typeCheckVacation;
 		this.checkOperatorType = checkOperatorType;
 		this.krcmtCompareRange = krcmtCompareRange;
 		this.krcmtCompareSingleVal = krcmtCompareSingleVal;
+		this.listItemID = listItemID;
 	}
 	
-
 	public static KrcmtCheckRemainNumberMon toEntity(CheckRemainNumberMon domain) {
 		return new KrcmtCheckRemainNumberMon(domain.getErrorAlarmCheckID(), domain.getCheckVacation().value,
 				domain.getCheckOperatorType().value,
 				domain.getCheckOperatorType() == CheckOperatorType.RANGE_VALUE ? KrcmtCompareRange.toEntity(domain.getErrorAlarmCheckID(), (CompareRange<CheckConValueRemainingNumber>) domain.getCheckCondition()) : null,
-				domain.getCheckOperatorType() == CheckOperatorType.SINGLE_VALUE ? KrcmtCompareSingleVal.toEntity(domain.getErrorAlarmCheckID(), (CompareSingleValue<CheckConValueRemainingNumber>) domain.getCheckCondition()) : null
+				domain.getCheckOperatorType() == CheckOperatorType.SINGLE_VALUE ? KrcmtCompareSingleVal.toEntity(domain.getErrorAlarmCheckID(), (CompareSingleValue<CheckConValueRemainingNumber>) domain.getCheckCondition()) : null,
+				!domain.getListAttdID().isPresent()?null:KrcmtRemainListItemID.toEntity(domain.getErrorAlarmCheckID(), domain.getListAttdID().get())
 						);
 
 	}
@@ -77,8 +90,14 @@ public class KrcmtCheckRemainNumberMon extends UkJpaEntity implements Serializab
 			checkedCondition = this.krcmtCompareSingleVal.toDomain();
 		}
 		return new CheckRemainNumberMon(this.errorAlarmCheckID, EnumAdaptor.valueOf(this.typeCheckVacation, TypeCheckVacation.class), checkedCondition,
-			   EnumAdaptor.valueOf(this.checkOperatorType, CheckOperatorType.class));
+			   EnumAdaptor.valueOf(this.checkOperatorType, CheckOperatorType.class),
+			   this.listItemID.stream().map(c->c.krcmtRemainListItemIDPK.timeItemID).collect(Collectors.toList())
+				);
 	}
+
+
+
+
 
 
 

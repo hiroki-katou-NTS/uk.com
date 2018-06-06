@@ -36,7 +36,8 @@ public class CheckRemainNumberMonAcFinder implements CheckRemainNumberMonFunAdap
 				export.getCheckVacation(),
 				export.getCheckOperatorType(),
 				export.getCompareRangeEx()==null?null : convertToCompareRangeEx(export.getCompareRangeEx()),//export.getCompareRangeEx(),
-				export.getCompareSingleValueEx()==null?null:convertToCompareSingleValueEx(export.getCompareSingleValueEx())//ex
+				export.getCompareSingleValueEx()==null?null:convertToCompareSingleValueEx(export.getCompareSingleValueEx()),//ex
+				export.getListItemID()
 				
 				);
 	}

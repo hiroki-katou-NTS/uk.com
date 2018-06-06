@@ -8,7 +8,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.AgreementCheckCon36;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.AgreementCheckCon36Repository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycheckcondition.KrcmtAgreementCheckCon36;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycheckcondition.KrcmtAgreementCheckCon36PK;
 @Stateless
 public class JpaAgreeCheckCon36Repository extends JpaRepository implements AgreementCheckCon36Repository {
 
@@ -33,7 +32,8 @@ public class JpaAgreeCheckCon36Repository extends JpaRepository implements Agree
 	public void updateAgreementCheckCon36(AgreementCheckCon36 agreementCheckCon36) {
 		KrcmtAgreementCheckCon36 newEntity = KrcmtAgreementCheckCon36.toEntity(agreementCheckCon36);
 		KrcmtAgreementCheckCon36 updateEntity = this.queryProxy().find(
-				new KrcmtAgreementCheckCon36PK(agreementCheckCon36.getErrorAlarmCheckID(),agreementCheckCon36.getClassification().value), KrcmtAgreementCheckCon36.class).get();
+				agreementCheckCon36.getErrorAlarmCheckID(), KrcmtAgreementCheckCon36.class).get();
+		updateEntity.classification = newEntity.classification;
 		updateEntity.compareOperator = newEntity.compareOperator;
 		updateEntity.eralBeforeTime = newEntity.eralBeforeTime;
 		this.commandProxy().update(updateEntity);

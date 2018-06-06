@@ -19,6 +19,8 @@ module nts.uk.at.view.kal003.b.service {
             getEnumTargetSelectionRange:    "/at/function/alarm/checkcondition/kal003b/getEnumTargetSelectionRange",
             getEnumTargetServiceType:       "/at/function/alarm/checkcondition/kal003b/getEnumTargetServiceType",
             getEnumLogicalOperator:         "/at/function/alarm/checkcondition/kal003b/getEnumLogicalOperator",
+            //monthly
+            getAttdItemMonByAtr:         "at/record/attendanceitem/monthly/findbyatr/{0}",
 
     }
 
@@ -90,5 +92,9 @@ module nts.uk.at.view.kal003.b.service {
     }
     export function getEnumLogicalOperator() : JQueryPromise<any> {
         return req_ajax(paths.getEnumLogicalOperator);
+    }
+    //monthly
+     export function getAttdItemMonByAtr(atr:number) : JQueryPromise<any>  {
+        return nts.uk.request.ajax("at", paths.getAttdItemMonByAtr,atr);
     }
 }

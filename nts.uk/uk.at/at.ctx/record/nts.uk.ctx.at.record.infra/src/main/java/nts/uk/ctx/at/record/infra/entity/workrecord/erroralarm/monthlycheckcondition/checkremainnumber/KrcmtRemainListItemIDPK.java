@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycheckcondition;
+package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycheckcondition.checkremainnumber;
 
 import java.io.Serializable;
 
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class KrcmtAgreementCheckCon36PK implements Serializable  {
+public class KrcmtRemainListItemIDPK implements Serializable {
 	/**
 	 * 
 	 */
@@ -22,6 +22,6 @@ public class KrcmtAgreementCheckCon36PK implements Serializable  {
 	@Column(name = "ERAL_CHECK_ID")
 	public String errorAlarmCheckID;
 	
-	@Column(name = "CLASSIFICATION")
-	public int classification;
+	@Column(name = "TIME_ITEM_ID")
+	public int timeItemID;
 }

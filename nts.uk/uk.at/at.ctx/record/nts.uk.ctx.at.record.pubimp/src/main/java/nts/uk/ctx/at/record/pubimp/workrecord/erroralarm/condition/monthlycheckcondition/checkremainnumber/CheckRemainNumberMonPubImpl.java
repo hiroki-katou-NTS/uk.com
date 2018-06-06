@@ -1,11 +1,11 @@
 package nts.uk.ctx.at.record.pubimp.workrecord.erroralarm.condition.monthlycheckcondition.checkremainnumber;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CheckedCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.checkremainnumber.CheckConValueRemainingNumber;
@@ -48,7 +48,8 @@ public class CheckRemainNumberMonPubImpl implements CheckRemainNumberMonPub {
 									compareSingleValue.getValue().getDaysValue(),
 									!compareSingleValue.getValue().getTimeValue().isPresent()?null:compareSingleValue.getValue().getTimeValue().get()
 									)
-							)
+							),
+					!domain.getListAttdID().isPresent()?Collections.emptyList():domain.getListAttdID().get()
 					);
 		}else {
 			CompareRange<CheckConValueRemainingNumber> compareRange = (CompareRange<CheckConValueRemainingNumber>) domain.getCheckCondition();
@@ -67,7 +68,8 @@ public class CheckRemainNumberMonPubImpl implements CheckRemainNumberMonPub {
 									!compareRange.getEndValue().getTimeValue().isPresent()?null:compareRange.getEndValue().getTimeValue().get()
 									)
 							),
-					null
+					null,
+					!domain.getListAttdID().isPresent()?Collections.emptyList():domain.getListAttdID().get()
 					);
 		}
 		

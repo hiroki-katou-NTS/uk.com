@@ -83,7 +83,8 @@ public class MonAlarmCheckConEventSubscriber implements DomainEventSubscriber<Mo
 				checkRemainNumberMon.getCheckVacation(),
 				checkRemainNumberMon.getCheckOperatorType(),
 				convertToCompareRangeImport(checkRemainNumberMon.getCompareRangeEx()),
-				convertToCompareSingleValueImport(checkRemainNumberMon.getCompareSingleValueEx())
+				convertToCompareSingleValueImport(checkRemainNumberMon.getCompareSingleValueEx()),
+				checkRemainNumberMon.getListItemID()
 				);
 	}
 	
