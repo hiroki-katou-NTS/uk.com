@@ -69,7 +69,7 @@ var nts;
                 var decimalSeperator = formatOption.decimalseperator ? formatOption.decimalseperator : ".";
                 var decimalLength = formatOption.decimallength ? formatOption.decimallength : 0;
                 var formattedValue = "";
-                var stringValue = uk.text.replaceAll(value.toString(), groupSeperator, '');
+                var stringValue = uk.text.replaceAll(value.toString().trim(), groupSeperator, '');
                 var isMinus = stringValue.charAt(0) === '-';
                 var values = isMinus ? stringValue.split('-')[1].split(decimalSeperator) : stringValue.split(decimalSeperator);
                 if (groupLength > 0) {
@@ -83,7 +83,12 @@ var nts;
                 else {
                     formattedValue = values[0];
                 }
-                formattedValue = uk.text.removeFromStart(uk.text.removeFromStart(formattedValue, '0'), groupSeperator);
+                if (formattedValue.indexOf("0") >= 0) {
+                    formattedValue = uk.text.removeFromStart(uk.text.removeFromStart(formattedValue, '0'), groupSeperator);
+                    if (formattedValue === "") {
+                        formattedValue = 0;
+                    }
+                }
                 if (values[1] === undefined || decimalLength > values[1].length) {
                     values[1] = uk.text.padRight(values[1] ? values[1] : "", '0', values[1] ? decimalLength : decimalLength + 1);
                 }
@@ -315,7 +320,7 @@ var nts;
                         case 'Time':
                         case 'Clock':
                         case 'Duration': // ValidatorScriptではない。DynamicConstraintで使う？
-                        case 'TimePoint': // ValidatorScriptではない。DynamicConstraintで使う？
+                        case 'TimePoint':
                             constraintText += (constraintText.length > 0) ? "/" : "";
                             constraintText += constraint.min + "～" + constraint.max;
                             break;
@@ -467,7 +472,7 @@ var nts;
                 }
                 return -1;
             }
-            var TreeObject = /** @class */ (function () {
+            var TreeObject = (function () {
                 function TreeObject(value, children, index, isOperator) {
                     var self = this;
                     self.value = value;
@@ -491,7 +496,7 @@ var nts;
                     return new Optional(null);
                 }
                 optional.empty = empty;
-                var Optional = /** @class */ (function () {
+                var Optional = (function () {
                     function Optional(value) {
                         this.value = orDefault(value, null);
                     }
@@ -531,7 +536,7 @@ var nts;
                 }());
                 optional.Optional = Optional;
             })(optional = util.optional || (util.optional = {}));
-            var Range = /** @class */ (function () {
+            var Range = (function () {
                 function Range(start, end) {
                     if (start > end) {
                         throw new Error('start is larger than end');
@@ -582,7 +587,7 @@ var nts;
                     });
                 }
                 value.reset = reset;
-                var DefaultValue = /** @class */ (function () {
+                var DefaultValue = (function () {
                     function DefaultValue() {
                     }
                     DefaultValue.prototype.onReset = function ($control, koValue) {
@@ -609,9 +614,9 @@ var nts;
                         if (immediateApply)
                             this.applyReset($control, koValue);
                     };
-                    DefaultValue.RESET_EVT = "reset";
                     return DefaultValue;
                 }());
+                DefaultValue.RESET_EVT = "reset";
                 value.DefaultValue = DefaultValue;
             })(value = util.value || (util.value = {}));
             var accessor;
@@ -620,7 +625,7 @@ var nts;
                     return new AccessorDefine(obj);
                 }
                 accessor.defineInto = defineInto;
-                var AccessorDefine = /** @class */ (function () {
+                var AccessorDefine = (function () {
                     function AccessorDefine(obj) {
                         this.obj = obj;
                     }
@@ -649,7 +654,7 @@ var nts;
                 exception_1.isBusinessError = isBusinessError;
             })(exception = util.exception || (util.exception = {}));
         })(util = uk.util || (uk.util = {}));
-        var WebStorageWrapper = /** @class */ (function () {
+        var WebStorageWrapper = (function () {
             function WebStorageWrapper(nativeStorage) {
                 this.nativeStorage = nativeStorage;
             }
@@ -711,7 +716,7 @@ var nts;
                     return new Configuration();
                 }
                 repeater.createConfiguration = createConfiguration;
-                var Configuration = /** @class */ (function () {
+                var Configuration = (function () {
                     function Configuration() {
                         this.pauseMilliseconds = 0;
                         this.runAfter = 0;
@@ -946,7 +951,7 @@ var nts;
     (function (uk) {
         var format;
         (function (format) {
-            var NoFormatter = /** @class */ (function () {
+            var NoFormatter = (function () {
                 function NoFormatter() {
                 }
                 NoFormatter.prototype.format = function (source) {
@@ -1361,7 +1366,7 @@ var nts;
             /**
              * Type of characters
              */
-            var CharType = /** @class */ (function () {
+            var CharType = (function () {
                 function CharType(viewName, width, validator) {
                     this.viewName = viewName;
                     this.width = width;
@@ -1496,7 +1501,7 @@ var nts;
                 return format;
             }
             text_3.getISOFormat = getISOFormat;
-            var StringFormatter = /** @class */ (function () {
+            var StringFormatter = (function () {
                 function StringFormatter(args) {
                     this.args = args;
                 }
@@ -1517,7 +1522,7 @@ var nts;
                 return StringFormatter;
             }());
             text_3.StringFormatter = StringFormatter;
-            var NumberFormatter = /** @class */ (function () {
+            var NumberFormatter = (function () {
                 function NumberFormatter(option) {
                     this.option = option;
                 }
@@ -1529,7 +1534,7 @@ var nts;
                 return NumberFormatter;
             }());
             text_3.NumberFormatter = NumberFormatter;
-            var TimeFormatter = /** @class */ (function () {
+            var TimeFormatter = (function () {
                 function TimeFormatter(option) {
                     this.option = option;
                 }
@@ -1559,7 +1564,7 @@ var nts;
                 return TimeFormatter;
             }());
             text_3.TimeFormatter = TimeFormatter;
-            var TimeWithDayFormatter = /** @class */ (function () {
+            var TimeWithDayFormatter = (function () {
                 function TimeWithDayFormatter(option) {
                     this.option = option;
                 }
@@ -1573,7 +1578,7 @@ var nts;
                 return TimeWithDayFormatter;
             }());
             text_3.TimeWithDayFormatter = TimeWithDayFormatter;
-            var NumberUnit = /** @class */ (function () {
+            var NumberUnit = (function () {
                 function NumberUnit(unitID, unitText, position, language) {
                     this.unitID = unitID;
                     this.unitText = unitText;
@@ -1647,7 +1652,7 @@ var nts;
                     return year + "年 " + month + " 月";
                 return year;
             }
-            var JapanYearMonth = /** @class */ (function () {
+            var JapanYearMonth = (function () {
                 function JapanYearMonth(empire, year, month) {
                     this.empire = empire;
                     this.year = year;
@@ -1734,7 +1739,7 @@ var nts;
                 return new JapanYearMonth("平成 ", diff, month);
             }
             time_1.yearmonthInJapanEmpire = yearmonthInJapanEmpire;
-            var JapanDateMoment = /** @class */ (function () {
+            var JapanDateMoment = (function () {
                 function JapanDateMoment(date, outputFormat) {
                     var MomentResult = parseMoment(date, outputFormat);
                     var year = MomentResult.momentObject.year();
@@ -1844,14 +1849,14 @@ var nts;
                 return moment.utc(date, inputFormats).format(outputFormat);
             }
             time_1.formatPattern = formatPattern;
-            var ParseResult = /** @class */ (function () {
+            var ParseResult = (function () {
                 function ParseResult(success) {
                     this.success = success;
                 }
                 return ParseResult;
             }());
             time_1.ParseResult = ParseResult;
-            var ResultParseTime = /** @class */ (function (_super) {
+            var ResultParseTime = (function (_super) {
                 __extends(ResultParseTime, _super);
                 function ResultParseTime(success, minus, hours, minutes, msg) {
                     var _this = _super.call(this, success) || this;
@@ -1919,7 +1924,7 @@ var nts;
                 return ResultParseTime.succeeded(minusNumber, parseInt(hours), parseInt(minutes));
             }
             time_1.parseTime = parseTime;
-            var ResultParseYearMonth = /** @class */ (function (_super) {
+            var ResultParseYearMonth = (function (_super) {
                 __extends(ResultParseYearMonth, _super);
                 function ResultParseYearMonth(success, msg, year, month) {
                     var _this = _super.call(this, success) || this;
@@ -1974,7 +1979,7 @@ var nts;
                 return ResultParseYearMonth.succeeded(year, month);
             }
             time_1.parseYearMonth = parseYearMonth;
-            var ResultParseTimeOfTheDay = /** @class */ (function (_super) {
+            var ResultParseTimeOfTheDay = (function (_super) {
                 __extends(ResultParseTimeOfTheDay, _super);
                 function ResultParseTimeOfTheDay(success, msg, hour, minute) {
                     var _this = _super.call(this, success) || this;
@@ -2029,7 +2034,7 @@ var nts;
                 return ResultParseTimeOfTheDay.succeeded(hour, minute);
             }
             time_1.parseTimeOfTheDay = parseTimeOfTheDay;
-            var ResultParseYearMonthDate = /** @class */ (function (_super) {
+            var ResultParseYearMonthDate = (function (_super) {
                 __extends(ResultParseYearMonthDate, _super);
                 function ResultParseYearMonthDate(success, msg, year, month, date) {
                     var _this = _super.call(this, success) || this;
@@ -2114,7 +2119,7 @@ var nts;
                 return ResultParseYearMonthDate.succeeded(year, month, date);
             }
             time_1.parseYearMonthDate = parseYearMonthDate;
-            var MomentResult = /** @class */ (function (_super) {
+            var MomentResult = (function (_super) {
                 __extends(MomentResult, _super);
                 function MomentResult(momentObject, outputFormat) {
                     var _this = _super.call(this, true) || this;
@@ -2240,7 +2245,6 @@ var nts;
                     milliseconds = (uk.util.isNullOrUndefined(milliseconds)) ? currentDate.getUTCMilliseconds() : milliseconds;
                     return new Date(Date.UTC(year, month, date, hours, minutes, seconds, milliseconds));
                 }
-                // Return input time in UTC
                 else {
                     month = (uk.util.isNullOrUndefined(month)) ? 0 : month;
                     date = (uk.util.isNullOrUndefined(date)) ? 1 : date;
@@ -2252,7 +2256,7 @@ var nts;
                 }
             }
             time_1.UTCDate = UTCDate;
-            var DateTimeFormatter = /** @class */ (function () {
+            var DateTimeFormatter = (function () {
                 function DateTimeFormatter() {
                     this.shortYmdPattern = /^\d{4}\/\d{1,2}\/\d{1,2}$/;
                     this.shortYmdwPattern = /^\d{4}\/\d{1,2}\/\d{1,2}\(\w+\)$/;
@@ -2559,7 +2563,7 @@ var nts;
             (function (minutesBased) {
                 var duration;
                 (function (duration_1) {
-                    var ResultParseMiuntesBasedDuration = /** @class */ (function (_super) {
+                    var ResultParseMiuntesBasedDuration = (function (_super) {
                         __extends(ResultParseMiuntesBasedDuration, _super);
                         function ResultParseMiuntesBasedDuration(success, minus, hours, minutes, msg) {
                             var _this = _super.call(this, success) || this;
@@ -2845,7 +2849,7 @@ var nts;
                                 default: throw new Error("invalid value: " + dayAttr);
                             }
                         }
-                        var ResultParseTimeWithDayAttr = /** @class */ (function () {
+                        var ResultParseTimeWithDayAttr = (function () {
                             function ResultParseTimeWithDayAttr(success, asMinutes) {
                                 this.success = success;
                                 this.asMinutes = asMinutes;
@@ -2960,7 +2964,7 @@ var nts;
                 pr: 'nts.uk.pr.web',
                 at: 'nts.uk.at.web'
             };
-            var QueryString = /** @class */ (function () {
+            var QueryString = (function () {
                 function QueryString() {
                     this.items = {};
                 }
@@ -3023,7 +3027,7 @@ var nts;
             /**
              * URL and QueryString
              */
-            var Locator = /** @class */ (function () {
+            var Locator = (function () {
                 function Locator(url) {
                     this.rawUrl = url.split('?')[0];
                     this.queryString = QueryString.parseUrl(url);
@@ -3516,7 +3520,7 @@ var nts;
             /** Event to notify ViewModel built to bind. */
             ui.viewModelBuilt = $.Callbacks();
             // Kiban ViewModel
-            var KibanViewModel = /** @class */ (function () {
+            var KibanViewModel = (function () {
                 function KibanViewModel(dialogOptions) {
                     var _this = this;
                     this.systemName = ko.observable("");
@@ -3651,7 +3655,7 @@ var nts;
                 /**
                  * Menu item.
                  */
-                var MenuItem = /** @class */ (function () {
+                var MenuItem = (function () {
                     function MenuItem(name, path) {
                         this.name = name;
                         this.path = path;
@@ -4064,7 +4068,7 @@ var nts;
             var validation;
             (function (validation) {
                 var util = nts.uk.util;
-                var NoValidator = /** @class */ (function () {
+                var NoValidator = (function () {
                     function NoValidator() {
                     }
                     NoValidator.prototype.validate = function (inputText, option) {
@@ -4076,7 +4080,7 @@ var nts;
                     return NoValidator;
                 }());
                 validation.NoValidator = NoValidator;
-                var ValidationResult = /** @class */ (function () {
+                var ValidationResult = (function () {
                     function ValidationResult() {
                         this.errorMessage = 'error message';
                     }
@@ -4092,7 +4096,7 @@ var nts;
                     return ValidationResult;
                 }());
                 validation.ValidationResult = ValidationResult;
-                var DepartmentCodeValidator = /** @class */ (function () {
+                var DepartmentCodeValidator = (function () {
                     function DepartmentCodeValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4110,7 +4114,7 @@ var nts;
                             result.success(inputText);
                             return result;
                         }
-                        var validateResult;
+                        //let validateResult;
                         // Check CharType
                         result = checkCharType(inputText, this.charType);
                         if (!result.isValid)
@@ -4119,7 +4123,7 @@ var nts;
                         if (this.constraint !== undefined && this.constraint !== null) {
                             if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
                                 var maxLength = this.constraint.maxLength;
-                                result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, maxLength]), validateResult.errorCode);
+                                result.fail(nts.uk.resource.getMessage(result.errorMessage, [this.name, maxLength]), result.errorCode);
                                 return result;
                             }
                             if (!util.isNullOrUndefined(option) && option.isCheckExpression === true) {
@@ -4147,6 +4151,7 @@ var nts;
                                         ? this.constraint.maxLength : 9999) : 9999]), validateResult.errorCode);
                             return result;
                         }
+                        return validateResult;
                     }
                     result.success(inputText);
                     return result;
@@ -4163,7 +4168,7 @@ var nts;
                     }
                     return inputText;
                 }
-                var WorkplaceCodeValidator = /** @class */ (function () {
+                var WorkplaceCodeValidator = (function () {
                     function WorkplaceCodeValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4204,7 +4209,7 @@ var nts;
                     return WorkplaceCodeValidator;
                 }());
                 validation.WorkplaceCodeValidator = WorkplaceCodeValidator;
-                var PostCodeValidator = /** @class */ (function () {
+                var PostCodeValidator = (function () {
                     function PostCodeValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4222,7 +4227,7 @@ var nts;
                             result.success(inputText);
                             return result;
                         }
-                        var validateResult;
+                        //let validateResult;
                         // Check CharType
                         result = checkCharType(inputText, this.charType);
                         if (!result.isValid)
@@ -4231,7 +4236,7 @@ var nts;
                         if (this.constraint !== undefined && this.constraint !== null) {
                             if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
                                 var maxLength = this.constraint.maxLength;
-                                result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, maxLength]), validateResult.errorCode);
+                                result.fail(nts.uk.resource.getMessage(result.errorMessage, [this.name, maxLength]), result.errorCode);
                                 return result;
                             }
                             if (!util.isNullOrUndefined(option) && option.isCheckExpression === true) {
@@ -4247,7 +4252,7 @@ var nts;
                     return PostCodeValidator;
                 }());
                 validation.PostCodeValidator = PostCodeValidator;
-                var PunchCardNoValidator = /** @class */ (function () {
+                var PunchCardNoValidator = (function () {
                     function PunchCardNoValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4265,7 +4270,7 @@ var nts;
                             result.success(inputText);
                             return result;
                         }
-                        var validateResult;
+                        //let validateResult;
                         // Check CharType
                         result = checkCharType(inputText, this.charType);
                         if (!result.isValid)
@@ -4274,7 +4279,7 @@ var nts;
                         if (this.constraint !== undefined && this.constraint !== null) {
                             if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
                                 var maxLength = this.constraint.maxLength;
-                                result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, maxLength]), validateResult.errorCode);
+                                result.fail(nts.uk.resource.getMessage(result.errorMessage, [this.name, maxLength]), result.errorCode);
                                 return result;
                             }
                             if (!util.isNullOrUndefined(option) && option.isCheckExpression === true) {
@@ -4290,7 +4295,7 @@ var nts;
                     return PunchCardNoValidator;
                 }());
                 validation.PunchCardNoValidator = PunchCardNoValidator;
-                var StringValidator = /** @class */ (function () {
+                var StringValidator = (function () {
                     function StringValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4330,6 +4335,9 @@ var nts;
                                 return result;
                             }
                         }
+                        else {
+                            validateResult = result;
+                        }
                         // Check Constraint
                         if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
                             var maxLength = this.constraint.maxLength;
@@ -4350,7 +4358,7 @@ var nts;
                     return StringValidator;
                 }());
                 validation.StringValidator = StringValidator;
-                var NumberValidator = /** @class */ (function () {
+                var NumberValidator = (function () {
                     function NumberValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4428,7 +4436,7 @@ var nts;
                     return NumberValidator;
                 }());
                 validation.NumberValidator = NumberValidator;
-                var TimeValidator = /** @class */ (function () {
+                var TimeValidator = (function () {
                     function TimeValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4555,7 +4563,7 @@ var nts;
                     return TimeValidator;
                 }());
                 validation.TimeValidator = TimeValidator;
-                var TimeWithDayValidator = /** @class */ (function () {
+                var TimeWithDayValidator = (function () {
                     function TimeWithDayValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4636,7 +4644,7 @@ var nts;
         (function (ui) {
             var errors;
             (function (errors_1) {
-                var ErrorsViewModel = /** @class */ (function () {
+                var ErrorsViewModel = (function () {
                     function ErrorsViewModel(dialogOptions) {
                         var _this = this;
                         this.title = "エラー一覧";
@@ -4789,7 +4797,7 @@ var nts;
                     return ErrorsViewModel;
                 }());
                 errors_1.ErrorsViewModel = ErrorsViewModel;
-                var ErrorViewModelMemento = /** @class */ (function () {
+                var ErrorViewModelMemento = (function () {
                     function ErrorViewModelMemento() {
                     }
                     ErrorViewModelMemento.prototype.setErrors = function (errors) {
@@ -4821,7 +4829,7 @@ var nts;
                     return ErrorViewModelMemento;
                 }());
                 errors_1.ErrorViewModelMemento = ErrorViewModelMemento;
-                var ErrorHeader = /** @class */ (function () {
+                var ErrorHeader = (function () {
                     function ErrorHeader(name, text, width, visible) {
                         this.name = name;
                         this.text = text;
@@ -5039,7 +5047,7 @@ var nts;
                     };
                 }
             })(block = ui.block || (ui.block = {}));
-            var DirtyChecker = /** @class */ (function () {
+            var DirtyChecker = (function () {
                 function DirtyChecker(targetViewModelObservable) {
                     this.targetViewModel = targetViewModelObservable;
                     this.initialState = this.getCurrentState();
@@ -5146,7 +5154,7 @@ var nts;
                 /**
                  * Main or Sub Window(dialog)
                  */
-                var ScreenWindow = /** @class */ (function () {
+                var ScreenWindow = (function () {
                     function ScreenWindow(id, isRoot, parent) {
                         this.globalContext = null;
                         this.$dialog = null;
@@ -5339,7 +5347,7 @@ var nts;
                  * All ScreenWindows are managed by this container.
                  * this instance is singleton in one browser-tab.
                  */
-                var ScreenWindowContainer = /** @class */ (function () {
+                var ScreenWindowContainer = (function () {
                     function ScreenWindowContainer() {
                         this.windows = {};
                         this.windows[windows.selfId] = ScreenWindow.createMainWindow();
@@ -5376,11 +5384,9 @@ var nts;
                         if (uk.util.isNullOrUndefined(data)) {
                             transferData = data;
                         }
-                        // Data or KO data
                         else if (!_.isFunction(data) || ko.isObservable(data)) {
                             transferData = JSON.parse(JSON.stringify(ko.unwrap(data))); // Complete remove reference by object
                         }
-                        // Callback function
                         else {
                             transferData = data;
                         }
@@ -5996,14 +6002,14 @@ var nts;
         (function (ui_2) {
             var option;
             (function (option_1) {
-                var DialogOption = /** @class */ (function () {
+                var DialogOption = (function () {
                     function DialogOption() {
                         this.show = false;
                     }
                     return DialogOption;
                 }());
                 option_1.DialogOption = DialogOption;
-                var ConfirmDialogOption = /** @class */ (function (_super) {
+                var ConfirmDialogOption = (function (_super) {
                     __extends(ConfirmDialogOption, _super);
                     function ConfirmDialogOption(option) {
                         var _this = _super.call(this) || this;
@@ -6026,7 +6032,7 @@ var nts;
                     return ConfirmDialogOption;
                 }(DialogOption));
                 option_1.ConfirmDialogOption = ConfirmDialogOption;
-                var DelDialogOption = /** @class */ (function (_super) {
+                var DelDialogOption = (function (_super) {
                     __extends(DelDialogOption, _super);
                     function DelDialogOption(option) {
                         var _this = _super.call(this) || this;
@@ -6060,7 +6066,7 @@ var nts;
                     return DelDialogOption;
                 }(DialogOption));
                 option_1.DelDialogOption = DelDialogOption;
-                var OKDialogOption = /** @class */ (function (_super) {
+                var OKDialogOption = (function (_super) {
                     __extends(OKDialogOption, _super);
                     function OKDialogOption(option) {
                         var _this = _super.call(this) || this;
@@ -6094,7 +6100,7 @@ var nts;
                     return OKDialogOption;
                 }(DialogOption));
                 option_1.OKDialogOption = OKDialogOption;
-                var ErrorDialogOption = /** @class */ (function (_super) {
+                var ErrorDialogOption = (function (_super) {
                     __extends(ErrorDialogOption, _super);
                     function ErrorDialogOption(option) {
                         var _this = _super.call(this) || this;
@@ -6124,7 +6130,7 @@ var nts;
                     return ErrorDialogOption;
                 }(DialogOption));
                 option_1.ErrorDialogOption = ErrorDialogOption;
-                var ErrorDialogWithTabOption = /** @class */ (function (_super) {
+                var ErrorDialogWithTabOption = (function (_super) {
                     __extends(ErrorDialogWithTabOption, _super);
                     function ErrorDialogWithTabOption(option) {
                         var _this = _super.call(this) || this;
@@ -6155,7 +6161,7 @@ var nts;
                     return ErrorDialogWithTabOption;
                 }(ErrorDialogOption));
                 option_1.ErrorDialogWithTabOption = ErrorDialogWithTabOption;
-                var DialogButton = /** @class */ (function () {
+                var DialogButton = (function () {
                     function DialogButton() {
                     }
                     DialogButton.prototype.click = function (viewmodel, ui) { };
@@ -6180,13 +6186,13 @@ var nts;
                     "JPY": "left",
                     "USD": "right"
                 };
-                var EditorOptionBase = /** @class */ (function () {
+                var EditorOptionBase = (function () {
                     function EditorOptionBase() {
                     }
                     return EditorOptionBase;
                 }());
                 option_2.EditorOptionBase = EditorOptionBase;
-                var TextEditorOption = /** @class */ (function (_super) {
+                var TextEditorOption = (function (_super) {
                     __extends(TextEditorOption, _super);
                     function TextEditorOption(option) {
                         var _this = _super.call(this) || this;
@@ -6203,7 +6209,7 @@ var nts;
                     return TextEditorOption;
                 }(EditorOptionBase));
                 option_2.TextEditorOption = TextEditorOption;
-                var TimeEditorOption = /** @class */ (function (_super) {
+                var TimeEditorOption = (function (_super) {
                     __extends(TimeEditorOption, _super);
                     function TimeEditorOption(option) {
                         var _this = _super.call(this) || this;
@@ -6218,7 +6224,7 @@ var nts;
                     return TimeEditorOption;
                 }(EditorOptionBase));
                 option_2.TimeEditorOption = TimeEditorOption;
-                var NumberEditorOption = /** @class */ (function (_super) {
+                var NumberEditorOption = (function (_super) {
                     __extends(NumberEditorOption, _super);
                     function NumberEditorOption(option) {
                         var _this = _super.call(this) || this;
@@ -6239,7 +6245,7 @@ var nts;
                     return NumberEditorOption;
                 }(EditorOptionBase));
                 option_2.NumberEditorOption = NumberEditorOption;
-                var CurrencyEditorOption = /** @class */ (function (_super) {
+                var CurrencyEditorOption = (function (_super) {
                     __extends(CurrencyEditorOption, _super);
                     function CurrencyEditorOption(option) {
                         var _this = _super.call(this) || this;
@@ -6264,7 +6270,7 @@ var nts;
                 function getCurrencyPosition(currencyformat) {
                     return currenryPosition[currencyformat] === null ? "right" : currenryPosition[currencyformat];
                 }
-                var MultilineEditorOption = /** @class */ (function (_super) {
+                var MultilineEditorOption = (function (_super) {
                     __extends(MultilineEditorOption, _super);
                     function MultilineEditorOption(option) {
                         var _this = _super.call(this) || this;
@@ -6278,7 +6284,7 @@ var nts;
                     return MultilineEditorOption;
                 }(EditorOptionBase));
                 option_2.MultilineEditorOption = MultilineEditorOption;
-                var TimeWithDayAttrEditorOption = /** @class */ (function (_super) {
+                var TimeWithDayAttrEditorOption = (function (_super) {
                     __extends(TimeWithDayAttrEditorOption, _super);
                     function TimeWithDayAttrEditorOption(option) {
                         var _this = _super.call(this) || this;
@@ -6333,7 +6339,7 @@ var nts;
                 var STICK = "stick";
                 var Connector = {};
                 var _scrollWidth;
-                var ExTable = /** @class */ (function () {
+                var ExTable = (function () {
                     function ExTable($container, options) {
                         // dynamic or fixed
                         this.bodyHeightSetMode = DYNAMIC;
@@ -6342,6 +6348,7 @@ var nts;
                         this.updateMode = EDIT;
                         this.pasteOverWrite = true;
                         this.stickOverWrite = true;
+                        this.overflowTooltipOn = false;
                         this.$container = $container[0];
                         this.$commander = options.primaryTable ? options.primaryTable[0] : null;
                         this.$follower = options.secondaryTable ? options.secondaryTable[0] : null;
@@ -6365,6 +6372,8 @@ var nts;
                         this.pasteOverWrite = options.pasteOverWrite;
                         this.stickOverWrite = options.stickOverWrite;
                         this.viewMode = options.viewMode;
+                        this.overflowTooltipOn = !uk.util.isNullOrUndefined(options.showTooltipIfOverflow)
+                            ? options.showTooltipIfOverflow : false;
                         this.determination = options.determination;
                         this.features = options.features;
                         $.data(this.$container, internal.X_OCCUPY, this.windowXOccupation);
@@ -6450,10 +6459,16 @@ var nts;
                     ExTable.prototype.setHeaderClass = function (options, part) {
                         options.tableClass = HEADER_TBL_PRF + part;
                         options.containerClass = HEADER_PRF + part;
+                        if (uk.util.isNullOrUndefined(options.showTooltipIfOverflow)) {
+                            options.overflowTooltipOn = this.overflowTooltipOn;
+                        }
                     };
                     ExTable.prototype.setBodyClass = function (options, part) {
                         options.tableClass = BODY_TBL_PRF + part;
                         options.containerClass = BODY_PRF + part;
+                        if (uk.util.isNullOrUndefined(options.showTooltipIfOverflow)) {
+                            options.overflowTooltipOn = this.overflowTooltipOn;
+                        }
                     };
                     /**
                      * Create.
@@ -7005,7 +7020,7 @@ var nts;
                         });
                         return colspan !== 0 ? (colspan - noGroup) : undefined;
                     }
-                    var Conditional = /** @class */ (function () {
+                    var Conditional = (function () {
                         function Conditional(options) {
                             this.options = options;
                             var columns = helper.classifyColumns(options);
@@ -7016,7 +7031,7 @@ var nts;
                         }
                         return Conditional;
                     }());
-                    var Painter = /** @class */ (function (_super) {
+                    var Painter = (function (_super) {
                         __extends(Painter, _super);
                         function Painter($container, options) {
                             var _this = _super.call(this, options) || this;
@@ -7079,6 +7094,8 @@ var nts;
                                 style.detCell(self.$container, td, rowIdx, key);
                                 tdStyle += "; padding: 0px;";
                                 td.style.cssText += tdStyle;
+                                if (self.options.overflowTooltipOn)
+                                    widget.textOverflow(td);
                                 return td;
                             }
                             if (!uk.util.isNullOrUndefined(column.handlerType) && !self.options.isHeader) {
@@ -7117,6 +7134,7 @@ var nts;
                                     td.appendChild(icon);
                                 }
                                 else if (!column.control) {
+                                    tdStyle += " text-overflow: ellipsis; -ms-text-overflow: ellipsis;";
                                     td.innerText = data;
                                 }
                                 controls.check(td, column, data, helper.call(column.handler, rData, rowIdx, key));
@@ -7125,6 +7143,8 @@ var nts;
                             //                spread.bindSticker(td, rowIdx , key, self.options);
                             style.detCell(self.$container, td, rowIdx, key);
                             td.style.cssText += tdStyle;
+                            if (self.options.overflowTooltipOn)
+                                widget.textOverflow(td);
                             return td;
                         };
                         Painter.prototype.row = function (data, config, rowIdx) {
@@ -7335,7 +7355,7 @@ var nts;
                         return Painter;
                     }(Conditional));
                     render.Painter = Painter;
-                    var GroupHeaderPainter = /** @class */ (function (_super) {
+                    var GroupHeaderPainter = (function (_super) {
                         __extends(GroupHeaderPainter, _super);
                         function GroupHeaderPainter(options) {
                             var _this = _super.call(this, options) || this;
@@ -7697,7 +7717,7 @@ var nts;
                     intan.TOP_SPACE = "top-space";
                     intan.BOTTOM_SPACE = "bottom-space";
                     intan.NULL = null;
-                    var Cloud = /** @class */ (function () {
+                    var Cloud = (function () {
                         function Cloud($container, dataSource, options) {
                             this.$container = $container;
                             this.options = options;
@@ -8158,7 +8178,7 @@ var nts;
                     update.EDITOR_CLS = "ex-editor";
                     update.EDITABLE_CLS = "ex-editable";
                     var EMPTY_TBL_HEIGHT = "1px";
-                    var Editor = /** @class */ (function () {
+                    var Editor = (function () {
                         function Editor($editor, land, rowIdx, columnKey, innerIdx, value) {
                             this.$editor = $editor;
                             this.land = land;
@@ -9089,14 +9109,14 @@ var nts;
                         Mode[Mode["SINGLE"] = 0] = "SINGLE";
                         Mode[Mode["MULTIPLE"] = 1] = "MULTIPLE";
                     })(Mode || (Mode = {}));
-                    var History = /** @class */ (function () {
+                    var History = (function () {
                         function History(cells) {
                             this.cells = cells;
                         }
                         return History;
                     }());
                     copy.History = History;
-                    var Printer = /** @class */ (function () {
+                    var Printer = (function () {
                         function Printer(options) {
                             this.options = options;
                         }
@@ -9397,7 +9417,7 @@ var nts;
                 (function (spread) {
                     spread.SINGLE = "single";
                     spread.MULTIPLE = "multiple";
-                    var Sticker = /** @class */ (function () {
+                    var Sticker = (function () {
                         function Sticker(data) {
                             this.mode = spread.MULTIPLE;
                             this.validate = function () { return true; };
@@ -9504,7 +9524,7 @@ var nts;
                     validation.DEF_HOUR_MIN = 0;
                     validation.DEF_MIN_MAXMIN = 0;
                     validation.DAY_MINS = 1439;
-                    var Result = /** @class */ (function () {
+                    var Result = (function () {
                         function Result(isValid, value) {
                             this.isValid = isValid;
                             this.value = value;
@@ -9872,7 +9892,7 @@ var nts;
                 (function (selection) {
                     selection.CELL_SELECTED_CLS = "x-cell-selected";
                     selection.ROW_SELECTED_CLS = "x-row-selected";
-                    var Cell = /** @class */ (function () {
+                    var Cell = (function () {
                         function Cell(rowIdx, columnKey, value, innerIdx) {
                             this.rowIndex = rowIdx;
                             this.columnKey = columnKey;
@@ -10346,7 +10366,7 @@ var nts;
                     resize.RESIZE_AREA = "resize-area";
                     resize.AREA_LINE = "ex-area-line";
                     resize.STAY_CLS = "x-stay";
-                    var ColumnAdjuster = /** @class */ (function () {
+                    var ColumnAdjuster = (function () {
                         function ColumnAdjuster($headerTable, $contentTable, options) {
                             this.$headerTable = $headerTable;
                             this.$contentTable = $contentTable;
@@ -10496,7 +10516,7 @@ var nts;
                         return ColumnAdjuster;
                     }());
                     resize.ColumnAdjuster = ColumnAdjuster;
-                    var AreaAdjuster = /** @class */ (function () {
+                    var AreaAdjuster = (function () {
                         function AreaAdjuster($container, headerWrappers, bodyWrappers, $follower) {
                             this.$container = $container;
                             this.headerWrappers = headerWrappers;
@@ -10996,7 +11016,7 @@ var nts;
                 (function (storage) {
                     storage.AREA_WIDTHS = "areawidths";
                     storage.TBL_HEIGHT = "tableheight";
-                    var Store = /** @class */ (function () {
+                    var Store = (function () {
                         function Store() {
                         }
                         /**
@@ -11025,7 +11045,7 @@ var nts;
                     }());
                     var area;
                     (function (area) {
-                        var Cache = /** @class */ (function (_super) {
+                        var Cache = (function (_super) {
                             __extends(Cache, _super);
                             function Cache() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -11116,7 +11136,7 @@ var nts;
                     })(area = storage.area || (storage.area = {}));
                     var tableHeight;
                     (function (tableHeight) {
-                        var Cache2 = /** @class */ (function (_super) {
+                        var Cache2 = (function (_super) {
                             __extends(Cache2, _super);
                             function Cache2() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -11449,6 +11469,7 @@ var nts;
                     events.MOUSE_OVER = "mouseover";
                     events.MOUSE_ENTER = "mouseenter";
                     events.MOUSE_OUT = "mouseout";
+                    events.MOUSE_LEAVE = "mouseleave";
                     events.FOCUS_IN = "focusin";
                     events.PASTE = "paste";
                     events.MOUSE_WHEEL = "wheel";
@@ -11635,7 +11656,7 @@ var nts;
                     style.DET_CLS = "xdet";
                     style.HIDDEN_CLS = "xhidden";
                     style.SEAL_CLS = "xseal";
-                    var CellStyleParam = /** @class */ (function () {
+                    var CellStyleParam = (function () {
                         function CellStyleParam($cell, cellData, rowData, rowIdx, columnKey) {
                             this.$cell = $cell;
                             this.cellData = cellData;
@@ -11646,7 +11667,7 @@ var nts;
                         return CellStyleParam;
                     }());
                     style.CellStyleParam = CellStyleParam;
-                    var Cell = /** @class */ (function () {
+                    var Cell = (function () {
                         function Cell(rowIndex, columnKey, makeup) {
                             this.rowIndex = rowIndex;
                             this.columnKey = columnKey;
@@ -12952,7 +12973,7 @@ var nts;
                         }
                     }
                     selector.siblingsLt = siblingsLt;
-                    var Manipulator = /** @class */ (function () {
+                    var Manipulator = (function () {
                         function Manipulator() {
                         }
                         Manipulator.prototype.addNodes = function (nodes) {
@@ -13877,7 +13898,7 @@ var nts;
                     /**
                      * Widget.
                      */
-                    var XWidget = /** @class */ (function () {
+                    var XWidget = (function () {
                         function XWidget($selector) {
                             this.$selector = $selector;
                         }
@@ -13892,7 +13913,7 @@ var nts;
                     /**
                      * Tooltip.
                      */
-                    var Tooltip = /** @class */ (function (_super) {
+                    var Tooltip = (function (_super) {
                         __extends(Tooltip, _super);
                         function Tooltip($selector, options) {
                             var _this = _super.call(this, $selector) || this;
@@ -13940,7 +13961,7 @@ var nts;
                     /**
                      * Popup.
                      */
-                    var Popup = /** @class */ (function (_super) {
+                    var Popup = (function (_super) {
                         __extends(Popup, _super);
                         function Popup($selector) {
                             var _this = _super.call(this, $selector) || this;
@@ -13964,7 +13985,7 @@ var nts;
                     /**
                      * Context menu.
                      */
-                    var ContextMenu = /** @class */ (function (_super) {
+                    var ContextMenu = (function (_super) {
                         __extends(ContextMenu, _super);
                         function ContextMenu($selector, items) {
                             var _this = _super.call(this, $selector) || this;
@@ -14026,7 +14047,7 @@ var nts;
                     /**
                      * Menu item.
                      */
-                    var MenuItem = /** @class */ (function () {
+                    var MenuItem = (function () {
                         function MenuItem(text, selectHandler, disabled, icon) {
                             this.text = text;
                             this.selectHandler = selectHandler ? selectHandler : $.noop();
@@ -14039,7 +14060,7 @@ var nts;
                     /**
                      * Popup panel.
                      */
-                    var PopupPanel = /** @class */ (function (_super) {
+                    var PopupPanel = (function (_super) {
                         __extends(PopupPanel, _super);
                         function PopupPanel($selector, provider, position) {
                             var _this = _super.call(this, $selector) || this;
@@ -14146,6 +14167,47 @@ var nts;
                         return wType;
                     }
                     widget.bind = bind;
+                    /**
+                     * Text overflow.
+                     */
+                    function textOverflow($cell) {
+                        $cell.addXEventListener(events.MOUSE_ENTER + ".celloverflow", function (evt) {
+                            var $target = $(evt.target);
+                            if (!displayFullText($target)) {
+                                var $link = $target.find("a");
+                                if ($link.length > 0) {
+                                    displayFullText($link, $target);
+                                }
+                            }
+                        });
+                    }
+                    widget.textOverflow = textOverflow;
+                    /**
+                     * Display full text.
+                     */
+                    function displayFullText($target, $s) {
+                        if ($target.outerWidth() < $target[0].scrollWidth) {
+                            var $container_1 = $s ? $s : $target;
+                            var $view_2 = $("<div />").addClass("x-cell-overflow")
+                                .text($target.text() || $target.val())
+                                .appendTo("body")
+                                .position({
+                                my: "left top",
+                                at: "left bottom",
+                                of: $container_1,
+                                collision: "flip"
+                            }).on(events.MOUSE_OVER, function (evt) {
+                                $view_2.remove();
+                            });
+                            $container_1[0].addXEventListener(events.MOUSE_LEAVE + ".celloverflow", function (evt) {
+                                $view_2.remove();
+                                setTimeout(function () {
+                                    $container_1[0].removeXEventListener(events.MOUSE_LEAVE + ".celloverflow");
+                                }, 0);
+                            });
+                            return true;
+                        }
+                    }
                     /**
                      * Hide.
                      */
@@ -14326,7 +14388,7 @@ var nts;
                 /**
                  * CheckBox binding handler
                  */
-                var NtsCheckboxBindingHandler = /** @class */ (function () {
+                var NtsCheckboxBindingHandler = (function () {
                     /**
                      * Constructor.
                      */
@@ -14418,7 +14480,7 @@ var nts;
                 /**
                  * MultiCheckbox binding handler
                  */
-                var NtsMultiCheckBoxBindingHandler = /** @class */ (function () {
+                var NtsMultiCheckBoxBindingHandler = (function () {
                     function NtsMultiCheckBoxBindingHandler() {
                     }
                     NtsMultiCheckBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -14548,269 +14610,355 @@ var nts;
         (function (ui_6) {
             var koExtentions;
             (function (koExtentions) {
-                var notSelected;
-                (function (notSelected) {
-                    var DATA = "not-selected";
-                    function set($element, value) {
-                        $element.data(DATA, value);
-                    }
-                    notSelected.set = set;
-                    function get($element) {
-                        return $element.data(DATA) === true;
-                    }
-                    notSelected.get = get;
-                })(notSelected || (notSelected = {}));
-                var required;
-                (function (required) {
-                    var DATA = "required";
-                    function set($element, value) {
-                        $element.data(DATA, value);
-                    }
-                    required.set = set;
-                    function get($element) {
-                        return $element.data(DATA) === true;
-                    }
-                    required.get = get;
-                })(required || (required = {}));
-                var controlName;
-                (function (controlName) {
-                    var DATA = "control-name";
-                    function set($element, value) {
-                        $element.data(DATA, value);
-                    }
-                    controlName.set = set;
-                    function get($element) {
-                        return $element.data(DATA);
-                    }
-                    controlName.get = get;
-                })(controlName || (controlName = {}));
-                /**
-                 * ComboBox binding handler
-                 */
-                var ComboBoxBindingHandler = /** @class */ (function () {
-                    /**
-                     * Constructor.
-                     */
+                var count = nts.uk.text.countHalf;
+                var WoC = 8, MINWIDTH = 'auto', TAB_INDEX = 'tabindex', KEYPRESS = 'keypress', KEYDOWN = 'keydown', FOCUS = 'focus', VALIDATE = 'validate', OPENDDL = 'openDropDown', CLOSEDDL = 'closeDropDown', OPENED = 'dropDownOpened', IGCOMB = 'igCombo', OPTION = 'option', ENABLE = 'enable', EDITABLE = 'editable', DROPDOWN = 'dropdown', COMBOROW = 'nts-combo-item', COMBOCOL = 'nts-column nts-combo-column', DATA = '_nts_data', CHANGED = '_nts_changed', SHOWVALUE = '_nts_show', NAME = '_nts_name', CWIDTH = '_nts_col_width', VALUE = '_nts_value', REQUIRED = '_nts_required';
+                var ComboBoxBindingHandler = (function () {
                     function ComboBoxBindingHandler() {
-                    }
-                    /**
-                     * Init.
-                     */
-                    ComboBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var container = $(element);
-                        //            if(nts.uk.util.isNullOrUndefined(container.attr("tabindex"))){
-                        //                container.attr("tabindex", "0");    
-                        //            }
-                        container.data("tabindex", container.attr("tabindex"));
-                        container.removeAttr("tabindex");
-                        container.keypress(function (evt, ui) {
-                            var code = evt.which || evt.keyCode;
-                            if (code === 32) {
-                                container.igCombo("openDropDown");
-                                evt.preventDefault();
-                                //                    $('html, body').scrollTop(container.first().offset().top - 200);      
-                            }
-                        });
-                        container.bind("validate", function () {
-                            if (required.get(container) && notSelected.get(container)) {
-                                container.ntsError("set", uk.resource.getMessage("FND_E_REQ_SELECT", [controlName.get(container)]), "FND_E_REQ_SELECT");
-                            }
-                            else {
-                                container.ntsError("clear");
-                            }
-                        });
-                        ui.bindErrorStyle.useDefaultErrorClass(container);
-                    };
-                    /**
-                     * Update
-                     */
-                    ComboBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data.
-                        var data = valueAccessor();
-                        var self = this;
-                        // Get options. 
-                        var options = ko.unwrap(data.options);
-                        // Get options value.
-                        var optionValue = data.optionsValue === undefined ? null : ko.unwrap(data.optionsValue);
-                        var optionText = data.optionsText === undefined ? null : ko.unwrap(data.optionsText);
-                        var selectedValue = ko.unwrap(data.value);
-                        var editable = ko.unwrap(data.editable);
-                        var isRequired = ko.unwrap(data.required) === true;
-                        var enable = data.enable !== undefined ? ko.unwrap(data.enable) : true;
-                        var selectFirstIfNull = !(ko.unwrap(data.selectFirstIfNull) === false); // default: true
-                        var columns = ko.unwrap(data.columns);
-                        var visibleItemsCount = data.visibleItemsCount === undefined ? 5 : ko.unwrap(data.visibleItemsCount);
-                        var dropDownAttachedToBody = data.dropDownAttachedToBody === undefined ? null : ko.unwrap(data.dropDownAttachedToBody);
-                        if (dropDownAttachedToBody === null) {
-                            if ($(element).closest(".ui-iggrid").length != 0)
-                                dropDownAttachedToBody = true;
-                            else
-                                dropDownAttachedToBody = false;
-                        }
-                        // Container.
-                        var container = $(element);
-                        var comboMode = editable ? 'editable' : 'dropdown';
-                        controlName.set(container, ko.unwrap(data.name));
-                        // Default values.
-                        var distanceColumns = '     ';
-                        var fillCharacter = ' '; // Character used fill to the columns.
-                        var maxWidthCharacter = 15;
-                        // Default value
-                        var defVal = new nts.uk.util.value.DefaultValue().onReset(container, data.value);
-                        var getValue = function (item) {
-                            return optionValue === null ? item : item[optionValue];
-                        };
-                        // required
-                        required.set(container, isRequired);
-                        if (selectFirstIfNull && options.length !== 0 && uk.util.isNullOrEmpty(selectedValue)) {
-                            selectedValue = getValue(options[0]);
-                            data.value(selectedValue);
-                            notSelected.set(container, false);
-                            container.ntsError("clear");
-                        }
-                        else {
-                            // Check if selected code exists in list.
-                            // But "null" and "undefined" are "not-selected" even if the "null" or "undefined" exist in list.
-                            // この仕様は、「未選択」という項目を持つことを許容するためのもの。
-                            var isValidValue = !uk.util.isNullOrUndefined(selectedValue) && _.some(options, function (item) { return getValue(item) === selectedValue; });
-                            notSelected.set(container, !isValidValue);
-                            if (!isValidValue) {
-                                notSelected.set(container, true);
-                            }
-                            else {
-                                notSelected.set(container, false);
-                                container.ntsError("clear");
-                            }
-                        }
-                        var haveColumn = columns && columns.length > 0;
-                        var isChangeOptions = !_.isEqual(container.data("options"), options);
-                        if (isChangeOptions) {
-                            container.data("options", options.slice());
-                            options = options.map(function (option) {
-                                var newOptionText = '';
-                                // Check muti columns.
-                                if (haveColumn) {
-                                    _.forEach(columns, function (item, i) {
-                                        var prop = option[item.prop];
-                                        if (uk.util.isNullOrUndefined(prop)) {
-                                            prop = "";
-                                        }
-                                        var length = item.length;
-                                        if (i === columns.length - 1) {
-                                            newOptionText += prop;
+                        this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            var template = '', $element = $(element), accessor = valueAccessor(), 
+                            // dataSource of igCombo
+                            options = ko.unwrap(accessor.options), 
+                            // enable or disable
+                            enable = _.has(accessor, 'enable') ? ko.unwrap(accessor.enable) : true, 
+                            // mode of dropdown
+                            editable = _.has(accessor, 'editable') ? ko.unwrap(accessor.editable) : false, 
+                            // require or no
+                            required = _.has(accessor, 'required') ? ko.unwrap(accessor.required) : false, 
+                            // textKey
+                            optionsText = _.has(accessor, 'optionsText') ? ko.unwrap(accessor.optionsText) : null, 
+                            // valueKey
+                            optionsValue = _.has(accessor, 'optionsValue') ? ko.unwrap(accessor.optionsValue) : null, 
+                            // columns
+                            columns = _.has(accessor, 'columns') ? ko.unwrap(accessor.columns) : [{ prop: optionsText }], visibleItemsCount = _.has(accessor, 'visibleItemsCount') ? ko.unwrap(accessor.visibleItemsCount) : 5, dropDownAttachedToBody = _.has(accessor, 'dropDownAttachedToBody') ? ko.unwrap(accessor.dropDownAttachedToBody) : false, $show = $('<div>', {
+                                'class': 'nts-toggle-dropdown',
+                                'style': 'padding-left: 2px; color: #000; height: 29px',
+                                click: function (evt) {
+                                    if ($element.data(IGCOMB)) {
+                                        if ($element.igCombo(OPENED)) {
+                                            $element.igCombo(CLOSEDDL);
+                                            evt.stopPropagation();
                                         }
                                         else {
-                                            newOptionText += uk.text.padRight(prop, fillCharacter, length) + distanceColumns;
+                                            $element.igCombo(OPENDDL, function () { }, true, true);
+                                            evt.stopPropagation();
                                         }
-                                    });
-                                }
-                                else {
-                                    newOptionText = optionText === null ? option : option[optionText];
-                                }
-                                // Add label attr.
-                                option['nts-combo-label'] = newOptionText;
-                                return option;
-                            });
-                        }
-                        var $input = container.find(".ui-igcombo-field");
-                        var currentColumnSetting = container.data("columns");
-                        var currentComboMode = container.data("comboMode");
-                        var isInitCombo = !_.isEqual(currentColumnSetting, columns) || !_.isEqual(currentComboMode, comboMode);
-                        if (isInitCombo) {
-                            // Delete igCombo.
-                            if (container.data("igCombo") != null) {
-                                container.igCombo('destroy');
-                                container.removeClass('ui-state-disabled');
-                            }
-                            // Set attribute for multi column.
-                            var itemTemplate = undefined;
-                            if (haveColumn) {
-                                itemTemplate = '<div class="nts-combo-item">';
-                                _.forEach(columns, function (item, i) {
-                                    // Set item template.
-                                    itemTemplate += '<div class="nts-column nts-combo-column-' + i + '">${' + item.prop + '}</div>';
-                                });
-                                itemTemplate += '</div>';
-                            }
-                            // Create igCombo.
-                            container.igCombo({
-                                dataSource: options,
-                                valueKey: data.optionsValue,
-                                visibleItemsCount: visibleItemsCount,
-                                dropDownAttachedToBody: dropDownAttachedToBody,
-                                textKey: 'nts-combo-label',
-                                mode: comboMode,
-                                disabled: !enable,
-                                placeHolder: '',
-                                tabIndex: nts.uk.util.isNullOrEmpty(container.data("tabindex")) ? 0 : parseInt(container.data("tabindex")),
-                                enableClearButton: false,
-                                initialSelectedItems: [
-                                    { value: selectedValue }
-                                ],
-                                itemTemplate: itemTemplate,
-                                selectionChanged: function (evt, ui) {
-                                    if (ui.items.length > 0) {
-                                        data.value(getValue(ui.items[0].data));
                                     }
                                 }
                             });
-                            $input = container.find(".ui-igcombo-field");
-                            $input.focus(function (evt, ui) {
-                                $input[0].selectionStart = 0;
-                                $input[0].selectionEnd = 0;
-                                //                    container.focus();
-                            });
-                        }
-                        else {
-                            container.igCombo("option", "disabled", !enable);
-                        }
-                        if (!enable) {
-                            defVal.applyReset(container, data.value);
-                            $input.attr("disabled", "disabled");
-                            //                container.attr("tabindex", "-1");
-                        }
-                        else {
-                            $input.removeAttr("disabled");
-                            //                container.attr("tabindex", container.data("tabindex"));    
-                        }
-                        if (isChangeOptions && !isInitCombo) {
-                            container.igCombo("option", "dataSource", options);
-                            container.igCombo("dataBind");
-                        }
-                        if (notSelected.get(container) || uk.util.isNullOrUndefined(selectedValue)) {
-                            container.igCombo("value", "");
-                        }
-                        else {
-                            container.igCombo("value", selectedValue);
-                        }
-                        container.data("columns", _.cloneDeep(columns));
-                        container.data("comboMode", comboMode);
-                        var isDropDownWidthSpecified = false;
-                        // Set width for multi columns.
-                        if (haveColumn && (isChangeOptions || isInitCombo)) {
-                            var componentWidth = 0;
-                            var $dropDownOptions = $(container.igCombo("dropDown"));
-                            _.forEach(columns, function (item, i) {
-                                isDropDownWidthSpecified = (isDropDownWidthSpecified || item.lengthDropDown !== undefined);
-                                if (item.lengthDropDown === undefined) {
-                                    item.lengthDropDown = item.length;
-                                }
-                                var componentColumnWidth = item.length * maxWidthCharacter + 10;
-                                var dropDownColumnWidth = item.lengthDropDown * maxWidthCharacter + 10;
-                                $dropDownOptions.find('.nts-combo-column-' + i).css("width", dropDownColumnWidth);
-                                componentWidth += componentColumnWidth + 10;
-                            });
-                            container.css({ 'min-width': componentWidth });
-                            if (isDropDownWidthSpecified) {
-                                container.find(".ui-igcombo-dropdown").css("width", "auto");
+                            // filter valid options
+                            options = _(options)
+                                .filter(function (x) { return _.isObject(x); })
+                                .value();
+                            // fix show dropdown in igGrid
+                            if (!!$element.closest(".ui-iggrid").length) {
+                                dropDownAttachedToBody = true;
                             }
-                        }
-                        if (notSelected.get(container)) {
-                            //container.find("input").val("");
-                        }
-                    };
+                            // generate template if has columns
+                            if (_.isArray(columns)) {
+                                template = "<div class='" + COMBOROW + "'>" + _.map(columns, function (c, i) { return "<div data-ntsclass='" + (c.toggle || '') + "' class='" + COMBOCOL + "-" + i + " " + c.prop.toLowerCase() + " " + (c.toggle || '') + "'>${" + c.prop + "}&nbsp;</div>"; }).join('') + "</div>";
+                            }
+                            if (!$element.attr('tabindex')) {
+                                $element.attr('tabindex', 0);
+                            }
+                            $element
+                                .on(SHOWVALUE, function (evt) {
+                                var data = $element.data(DATA), cws = data[CWIDTH], ks = _.keys(cws);
+                                var option = _.find(data[DATA], function (t) { return t[optionsValue] == data[VALUE]; }), _template = template;
+                                if (option) {
+                                    _.each(_.keys(option), function (k) {
+                                        _template = _template.replace("${" + k + "}", option[k]);
+                                    });
+                                    $show.html(_template);
+                                    _.each(ks, function (k) {
+                                        $show.find("." + k.toLowerCase() + ":not(:last-child)")
+                                            .css('width', cws[k] * WoC + "px");
+                                        $show.find("." + k.toLowerCase())
+                                            .css('height', '31px')
+                                            .css('line-height', '27px')
+                                            .find('.nts-column:last-child').css('margin-right', 0);
+                                        ;
+                                    });
+                                }
+                                else {
+                                    $show.empty();
+                                }
+                            })
+                                .on(CHANGED, function (evt, key, value) {
+                                if (value === void 0) { value = undefined; }
+                                var data = $element.data(DATA) || {};
+                                {
+                                    data[key] = value;
+                                    $element.data(DATA, data);
+                                }
+                            })
+                                .on(VALIDATE, function (evt, ui) {
+                                var data = $element.data(DATA), value = data[VALUE];
+                                if ((ui ? data[CHANGED] : true) && data[ENABLE] && data[REQUIRED] && (_.isEmpty(String(value).trim()) || _.isNil(value))) {
+                                    $element
+                                        .addClass('error')
+                                        .ntsError("set", uk.resource.getMessage("FND_E_REQ_SELECT", [data[NAME]]), "FND_E_REQ_SELECT");
+                                }
+                                else {
+                                    $element
+                                        .removeClass('error')
+                                        .ntsError("clear");
+                                }
+                            })
+                                .on(KEYDOWN, function (evt, ui) {
+                                if ($element.data(IGCOMB)) {
+                                    if ([13].indexOf(evt.which || evt.keyCode) > -1) {
+                                        // fire click of igcombo-button
+                                        $element
+                                            .find('.ui-igcombo-button')
+                                            .trigger('click');
+                                    }
+                                    else if ([32, 38, 40].indexOf(evt.which || evt.keyCode) > -1) {
+                                        if (!$element.igCombo(OPENED)) {
+                                            // fire click of igcombo-button
+                                            $element
+                                                .find('.ui-igcombo-button')
+                                                .trigger('click');
+                                        }
+                                    }
+                                }
+                            })
+                                .igCombo({
+                                loadOnDemandSettings: {
+                                    enabled: true,
+                                    pageSize: 15
+                                },
+                                dataSource: options,
+                                placeHolder: '',
+                                textKey: 'nts_' + optionsText,
+                                valueKey: optionsValue,
+                                mode: editable ? EDITABLE : DROPDOWN,
+                                disabled: !ko.toJS(enable),
+                                enableClearButton: false,
+                                itemTemplate: template,
+                                dropDownWidth: "auto",
+                                tabIndex: $element.attr('tabindex') || 0,
+                                visibleItemsCount: visibleItemsCount,
+                                dropDownAttachedToBody: dropDownAttachedToBody,
+                                rendered: function (evt, ui) {
+                                    $element
+                                        .find('.ui-igcombo')
+                                        .css('background', '#f6f6f6')
+                                        .find('.ui-igcombo-fieldholder').hide();
+                                    $element
+                                        .find('.ui-igcombo-hidden-field')
+                                        .parent()
+                                        .append($show)
+                                        .css('overflow', 'hidden');
+                                },
+                                itemsRendered: function (evt, ui) {
+                                    var data = $element.data(DATA) || {}, cws = data[CWIDTH] || [], ks = _.keys(cws);
+                                    // calc new size of template columns
+                                    _.each(ks, function (k) {
+                                        $("[class*=ui-igcombo-orientation]")
+                                            .find("." + k.toLowerCase() + ":not(:last-child)")
+                                            .css('width', cws[k] * WoC + "px");
+                                    });
+                                },
+                                selectionChanged: function (evt, ui) {
+                                    if (!_.size(ui.items)) {
+                                        $element.trigger(CHANGED, [VALUE, null]);
+                                    }
+                                    else {
+                                        var value = ui.items[0]["data"][optionsValue];
+                                        $element.trigger(CHANGED, [VALUE, value]);
+                                    }
+                                },
+                                dropDownClosed: function (evt, ui) {
+                                    // check flag changed for validate
+                                    $element.trigger(CHANGED, [CHANGED, true]);
+                                    setTimeout(function () {
+                                        var data = $element.data(DATA);
+                                        // set value on select
+                                        accessor.value(data[VALUE]);
+                                        // validate if required
+                                        $element
+                                            .trigger(VALIDATE, [true])
+                                            .trigger(SHOWVALUE)
+                                            .focus();
+                                    }, 10);
+                                },
+                                dropDownOpening: function (evt, ui) {
+                                    var data = $element.data(DATA), cws = data[CWIDTH], ks = _.keys(cws);
+                                    // move searchbox to list
+                                    $element
+                                        .find('.ui-igcombo-fieldholder')
+                                        .prependTo(ui.list);
+                                    // show searchbox if editable
+                                    var $input = ui.list
+                                        .find('.ui-igcombo-fieldholder')
+                                        .css('height', !!data[EDITABLE] ? '' : '0px')
+                                        .css('padding', !!data[EDITABLE] ? '3px' : '')
+                                        .css('background-color', !!data[EDITABLE] ? '#f6f6f6' : '')
+                                        .show()
+                                        .find('input')
+                                        .css('width', '0px')
+                                        .css('height', !!data[EDITABLE] ? '29px' : '0px')
+                                        .css('border', !!data[EDITABLE] ? '1px solid #ccc' : 'none');
+                                    if (!$input.data('_nts_bind')) {
+                                        $input
+                                            .on(KEYDOWN, function (evt, ui) {
+                                            if ([13].indexOf(evt.which || evt.keyCode) > -1) {
+                                                if ($element.data(IGCOMB)) {
+                                                    // fire click of igcombo-button
+                                                    $element
+                                                        .find('.ui-igcombo-button')
+                                                        .trigger('click');
+                                                }
+                                            }
+                                        })
+                                            .data('_nts_bind', true)
+                                            .attr('tabindex', -1);
+                                    }
+                                    // calc new size of template columns
+                                    _.each(ks, function (k) {
+                                        $(ui.list).find("." + k.toLowerCase() + (_.size(ks) == 1 ? '' : ':not(:last-child)'))
+                                            .css('width', cws[k] * WoC + "px");
+                                    });
+                                    // fix min width of dropdown = $element.width();
+                                    $(ui.list)
+                                        .css('min-width', $element.width() + 'px')
+                                        .find('.nts-column:last-child')
+                                        .css('margin-right', 0);
+                                    setTimeout(function () {
+                                        $input.css('width', ($(ui.list).width() - 6) + 'px');
+                                    }, 25);
+                                }
+                            })
+                                .trigger(CHANGED, [DATA, options])
+                                .addClass('ntsControl')
+                                .on('blur', function () { $element.css('box-shadow', ''); })
+                                .on('focus', function () {
+                                $element
+                                    .css('outline', 'none')
+                                    .css('box-shadow', '0 0 1px 1px #0096f2');
+                            });
+                        };
+                        this.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            var ss = new Date().getTime(), $element = $(element), accessor = valueAccessor(), width = _.has(accessor, 'width') ? ko.unwrap(accessor.width) : undefined, name = ko.unwrap(accessor.name), value = ko.unwrap(accessor.value), 
+                            // dataSource of igCombo
+                            options = ko.unwrap(accessor.options), 
+                            // init default selection
+                            selectFirstIfNull = !(ko.unwrap(accessor.selectFirstIfNull) === false), // default: true
+                            // enable or disable
+                            enable = _.has(accessor, 'enable') ? ko.unwrap(accessor.enable) : true, 
+                            // mode of dropdown
+                            editable = _.has(accessor, 'editable') ? ko.unwrap(accessor.editable) : false, 
+                            // require or no
+                            required = _.has(accessor, 'required') ? ko.unwrap(accessor.required) : false, 
+                            // textKey
+                            optionsText = _.has(accessor, 'optionsText') ? ko.unwrap(accessor.optionsText) : null, 
+                            // valueKey
+                            optionsValue = _.has(accessor, 'optionsValue') ? ko.unwrap(accessor.optionsValue) : null, 
+                            // columns
+                            columns = _.has(accessor, 'columns') ? ko.unwrap(accessor.columns) : [{ prop: optionsText }];
+                            // filter valid options
+                            options = _(options)
+                                .filter(function (x) { return _.isObject(x); })
+                                .value();
+                            var props = columns.map(function (c) { return c.prop; }), 
+                            // list key value
+                            vkl = _(options)
+                                .map(function (m) {
+                                if (!!m) {
+                                    return _(m)
+                                        .keys(m)
+                                        .map(function (t) { return ({
+                                        k: t,
+                                        w: _.max([count(_.trim(m[t])), (_.find(columns, function (c) { return c.prop == t; }) || {}).length || 0])
+                                    }); })
+                                        .filter(function (m) { return props.indexOf(m.k) > -1; })
+                                        .keyBy('k')
+                                        .mapValues('w')
+                                        .value();
+                                }
+                                return undefined;
+                            }).filter(function (f) { return !!f; }).value(), cws = _(props)
+                                .map(function (p) { return ({ k: p, v: _.maxBy(vkl, p) }); })
+                                .map(function (m) { return ({ k: m.k, v: (m.v || {})[m.k] || 0 }); })
+                                .keyBy('k')
+                                .mapValues('v')
+                                .value();
+                            // map new options width nts_[optionsText]
+                            // (show new prop on filter box)
+                            options = _(options)
+                                .map(function (m) {
+                                var c = {}, k = ko.toJS(m), t = k[optionsText], v = k[optionsValue], n = _.omit(k, [optionsValue]), nt = _.map(props, function (p) { return k[p]; }).join(' ').trim();
+                                c[optionsValue] = v || '';
+                                c['nts_' + optionsText] = nt || t || ' ';
+                                return _.extend(n, c);
+                            })
+                                .value();
+                            // check value has exist in option
+                            var vio = _.find(options, function (f) { return f[optionsValue] == value; });
+                            if (!vio) {
+                                if (selectFirstIfNull) {
+                                    vio = _.head(options);
+                                    if (!vio) {
+                                        value = undefined;
+                                    }
+                                    else {
+                                        value = vio[optionsValue];
+                                    }
+                                }
+                                else {
+                                    value = undefined;
+                                }
+                                accessor.value(value);
+                            }
+                            // check flag changed for validate
+                            if (_.has($element.data(DATA), VALUE)) {
+                                $element.trigger(CHANGED, [CHANGED, true]);
+                            }
+                            // save change value
+                            $element
+                                .trigger(CHANGED, [CWIDTH, cws])
+                                .trigger(CHANGED, [NAME, name])
+                                .trigger(CHANGED, [VALUE, value])
+                                .trigger(CHANGED, [ENABLE, enable])
+                                .trigger(CHANGED, [EDITABLE, editable])
+                                .trigger(CHANGED, [REQUIRED, required]);
+                            // if igCombo has init
+                            if ($element.data("igCombo")) {
+                                var data = $element.data(DATA), olds = data[DATA];
+                                // change dataSource if changed
+                                if (!_.isEqual(olds, options)) {
+                                    $element.igCombo(OPTION, "dataSource", options);
+                                }
+                                $element
+                                    .igCombo(OPTION, "disabled", !enable)
+                                    .igCombo("value", value);
+                                // validate if has dataOptions
+                                $element
+                                    .trigger(VALIDATE, [true]);
+                                if (!value) {
+                                    $element
+                                        .igCombo("deselectAll");
+                                }
+                                // set width of container
+                                if (width) {
+                                    if (width != MINWIDTH) {
+                                        $element.igCombo("option", "width", width);
+                                    }
+                                    else {
+                                        $element
+                                            .igCombo("option", "width", (_.sum(_.map(cws, function (c) { return c; })) * WoC + 60) + 'px');
+                                    }
+                                }
+                            }
+                            // set new dataSource to data;
+                            $element
+                                .trigger(CHANGED, [DATA, options])
+                                .trigger(SHOWVALUE);
+                        };
+                    }
                     return ComboBoxBindingHandler;
                 }());
+                koExtentions.ComboBoxBindingHandler = ComboBoxBindingHandler;
                 ko.bindingHandlers['ntsComboBox'] = new ComboBoxBindingHandler();
             })(koExtentions = ui_6.koExtentions || (ui_6.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
@@ -14825,7 +14973,7 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
-                var DatePickerBindingHandler = /** @class */ (function () {
+                var DatePickerBindingHandler = (function () {
                     /**
                      * Constructor.
                      */
@@ -15105,7 +15253,7 @@ var nts;
                     ViewLocation[ViewLocation["CURRENT"] = 1] = "CURRENT";
                     ViewLocation[ViewLocation["NEXT"] = 2] = "NEXT";
                 })(ViewLocation || (ViewLocation = {}));
-                var DatePickerNormalizer = /** @class */ (function () {
+                var DatePickerNormalizer = (function () {
                     function DatePickerNormalizer() {
                         this.fiscalMonth = 1;
                         // Constants
@@ -15677,7 +15825,7 @@ var nts;
                 /**
                  * Dialog binding handler
                  */
-                var NtsDialogBindingHandler = /** @class */ (function () {
+                var NtsDialogBindingHandler = (function () {
                     function NtsDialogBindingHandler() {
                     }
                     /**
@@ -15765,7 +15913,7 @@ var nts;
                 /**
                  * Error Dialog binding handler
                  */
-                var NtsErrorDialogBindingHandler = /** @class */ (function () {
+                var NtsErrorDialogBindingHandler = (function () {
                     function NtsErrorDialogBindingHandler() {
                     }
                     /**
@@ -16046,7 +16194,7 @@ var nts;
                 /**
                  * BaseEditor Processor
                  */
-                var EditorProcessor = /** @class */ (function () {
+                var EditorProcessor = (function () {
                     function EditorProcessor() {
                     }
                     EditorProcessor.prototype.init = function ($input, data) {
@@ -16190,7 +16338,7 @@ var nts;
                 /**
                  * TextEditor Processor
                  */
-                var TextEditorProcessor = /** @class */ (function (_super) {
+                var TextEditorProcessor = (function (_super) {
                     __extends(TextEditorProcessor, _super);
                     function TextEditorProcessor() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -16329,7 +16477,7 @@ var nts;
                 /**
                  * MultilineEditor Processor
                  */
-                var MultilineEditorProcessor = /** @class */ (function (_super) {
+                var MultilineEditorProcessor = (function (_super) {
                     __extends(MultilineEditorProcessor, _super);
                     function MultilineEditorProcessor() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -16359,7 +16507,7 @@ var nts;
                 /**
                  * NumberEditor Processor
                  */
-                var NumberEditorProcessor = /** @class */ (function (_super) {
+                var NumberEditorProcessor = (function (_super) {
                     __extends(NumberEditorProcessor, _super);
                     function NumberEditorProcessor() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -16438,7 +16586,7 @@ var nts;
                 /**
                  * TimeEditor Processor
                  */
-                var TimeEditorProcessor = /** @class */ (function (_super) {
+                var TimeEditorProcessor = (function (_super) {
                     __extends(TimeEditorProcessor, _super);
                     function TimeEditorProcessor() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -16488,7 +16636,7 @@ var nts;
                 /**
                  * TimeWithDayAttrEditor Processor
                  */
-                var TimeWithDayAttrEditorProcessor = /** @class */ (function (_super) {
+                var TimeWithDayAttrEditorProcessor = (function (_super) {
                     __extends(TimeWithDayAttrEditorProcessor, _super);
                     function TimeWithDayAttrEditorProcessor() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -16536,7 +16684,7 @@ var nts;
                 /**
                  * Base Editor
                  */
-                var NtsEditorBindingHandler = /** @class */ (function () {
+                var NtsEditorBindingHandler = (function () {
                     function NtsEditorBindingHandler() {
                     }
                     /**
@@ -16556,7 +16704,7 @@ var nts;
                 /**
                  * TextEditor
                  */
-                var NtsTextEditorBindingHandler = /** @class */ (function (_super) {
+                var NtsTextEditorBindingHandler = (function (_super) {
                     __extends(NtsTextEditorBindingHandler, _super);
                     function NtsTextEditorBindingHandler() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -16578,7 +16726,7 @@ var nts;
                 /**
                  * NumberEditor
                  */
-                var NtsNumberEditorBindingHandler = /** @class */ (function () {
+                var NtsNumberEditorBindingHandler = (function () {
                     function NtsNumberEditorBindingHandler() {
                     }
                     /**
@@ -16598,7 +16746,7 @@ var nts;
                 /**
                  * TimeEditor
                  */
-                var NtsTimeEditorBindingHandler = /** @class */ (function () {
+                var NtsTimeEditorBindingHandler = (function () {
                     function NtsTimeEditorBindingHandler() {
                     }
                     /**
@@ -16619,7 +16767,7 @@ var nts;
                 /**
                  * MultilineEditor
                  */
-                var NtsMultilineEditorBindingHandler = /** @class */ (function (_super) {
+                var NtsMultilineEditorBindingHandler = (function (_super) {
                     __extends(NtsMultilineEditorBindingHandler, _super);
                     function NtsMultilineEditorBindingHandler() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -16641,7 +16789,7 @@ var nts;
                 /**
                  * TimeWithDayAttr
                  */
-                var NtsTimeWithDayAttrEditorBindingHandler = /** @class */ (function (_super) {
+                var NtsTimeWithDayAttrEditorBindingHandler = (function (_super) {
                     __extends(NtsTimeWithDayAttrEditorBindingHandler, _super);
                     function NtsTimeWithDayAttrEditorBindingHandler() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -16692,7 +16840,7 @@ var nts;
                 /**
                  * FormLabel
                  */
-                var NtsFormLabelBindingHandler = /** @class */ (function () {
+                var NtsFormLabelBindingHandler = (function () {
                     function NtsFormLabelBindingHandler() {
                     }
                     /**
@@ -16753,7 +16901,7 @@ var nts;
                 /**
                  * GridList binding handler
                  */
-                var NtsGridListBindingHandler = /** @class */ (function () {
+                var NtsGridListBindingHandler = (function () {
                     function NtsGridListBindingHandler() {
                     }
                     NtsGridListBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -16783,7 +16931,7 @@ var nts;
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
                             var _document = document;
-                            var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
+                            var isIE = false || !!_document.documentMode;
                             // Edge 20+
                             var _window = window;
                             var isEdge = !isIE && !!_window.StyleMedia;
@@ -16852,6 +17000,7 @@ var nts;
                                 }
                             }
                             else {
+                                var formatter_1 = c.formatter;
                                 c.formatter = function (val, row) {
                                     if (row) {
                                         setTimeout(function () {
@@ -16869,7 +17018,7 @@ var nts;
                                             });
                                         }, 0);
                                     }
-                                    return nts.uk.util.isNullOrUndefined(formatter) ? val : formatter(val, row);
+                                    return nts.uk.util.isNullOrUndefined(formatter_1) ? val : formatter_1(val, row);
                                 };
                             }
                             return c;
@@ -17084,7 +17233,7 @@ var nts;
                     return NtsGridListBindingHandler;
                 }());
                 ko.bindingHandlers['ntsGridList'] = new NtsGridListBindingHandler();
-                var SwapHandler = /** @class */ (function () {
+                var SwapHandler = (function () {
                     function SwapHandler() {
                     }
                     SwapHandler.prototype.setModel = function (model) {
@@ -17177,7 +17326,7 @@ var nts;
                     };
                     return SwapHandler;
                 }());
-                var SwapModel = /** @class */ (function () {
+                var SwapModel = (function () {
                     function SwapModel($grid, primaryKey) {
                         this.$grid = $grid;
                         this.primaryKey = primaryKey;
@@ -17185,7 +17334,7 @@ var nts;
                     }
                     return SwapModel;
                 }());
-                var GridSwapList = /** @class */ (function (_super) {
+                var GridSwapList = (function (_super) {
                     __extends(GridSwapList, _super);
                     function GridSwapList() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -17216,7 +17365,7 @@ var nts;
                     };
                     return GridSwapList;
                 }(SwapModel));
-                var ListItemTransporter = /** @class */ (function () {
+                var ListItemTransporter = (function () {
                     function ListItemTransporter() {
                     }
                     ListItemTransporter.prototype.primary = function (primaryKey) {
@@ -17279,7 +17428,7 @@ var nts;
                 /**
                  * ListBox binding handler
                  */
-                var ListBoxBindingHandler = /** @class */ (function () {
+                var ListBoxBindingHandler = (function () {
                     /**
                      * Constructor.
                      */
@@ -17583,7 +17732,7 @@ var nts;
         (function (ui_8) {
             var koExtentions;
             (function (koExtentions) {
-                var NtsRadioBoxBindingHandler = /** @class */ (function () {
+                var NtsRadioBoxBindingHandler = (function () {
                     function NtsRadioBoxBindingHandler() {
                     }
                     /**
@@ -17677,7 +17826,7 @@ var nts;
                 /**
                  * RadioBoxGroup binding handler
                  */
-                var NtsRadioBoxGroupBindingHandler = /** @class */ (function () {
+                var NtsRadioBoxGroupBindingHandler = (function () {
                     function NtsRadioBoxGroupBindingHandler() {
                     }
                     /**
@@ -17853,7 +18002,7 @@ var nts;
                 /**
                 * SearchBox Binding Handler
                 */
-                var SearchBox = /** @class */ (function () {
+                var SearchBox = (function () {
                     function SearchBox(source, searchField, childField) {
                         this.childField = childField;
                         this.source = nts.uk.util.isNullOrEmpty(source) ? [] : this.cloneDeep(source);
@@ -17892,7 +18041,7 @@ var nts;
                     return SearchBox;
                 }());
                 koExtentions.SearchBox = SearchBox;
-                var SearchResult = /** @class */ (function () {
+                var SearchResult = (function () {
                     function SearchResult() {
                         this.options = [];
                         this.selectItems = [];
@@ -17900,7 +18049,7 @@ var nts;
                     return SearchResult;
                 }());
                 koExtentions.SearchResult = SearchResult;
-                var SearchPub = /** @class */ (function () {
+                var SearchPub = (function () {
                     function SearchPub(key, mode, source, searchField, childField) {
                         this.seachBox = new SearchBox(source, searchField, childField);
                         ;
@@ -17954,7 +18103,7 @@ var nts;
                     return SearchPub;
                 }());
                 koExtentions.SearchPub = SearchPub;
-                var NtsSearchBoxBindingHandler = /** @class */ (function () {
+                var NtsSearchBoxBindingHandler = (function () {
                     function NtsSearchBoxBindingHandler() {
                     }
                     /**
@@ -18191,7 +18340,7 @@ var nts;
                 /**
                  * SwapList binding handler
                  */
-                var NtsSwapListBindingHandler = /** @class */ (function () {
+                var NtsSwapListBindingHandler = (function () {
                     /**
                      * Constructor.
                      */
@@ -18476,7 +18625,7 @@ var nts;
                     return NtsSwapListBindingHandler;
                 }());
                 ko.bindingHandlers['ntsSwapList'] = new NtsSwapListBindingHandler().makeBindings();
-                var SwapHandler = /** @class */ (function () {
+                var SwapHandler = (function () {
                     function SwapHandler() {
                     }
                     SwapHandler.prototype.setModel = function (model) {
@@ -18627,7 +18776,7 @@ var nts;
                     };
                     return SwapHandler;
                 }());
-                var SwapModel = /** @class */ (function () {
+                var SwapModel = (function () {
                     function SwapModel($container, swapParts) {
                         this.$container = $container;
                         this.swapParts = swapParts;
@@ -18636,14 +18785,14 @@ var nts;
                     }
                     return SwapModel;
                 }());
-                var SearchResult = /** @class */ (function () {
+                var SearchResult = (function () {
                     function SearchResult(results, indices) {
                         this.data = results;
                         this.indices = indices;
                     }
                     return SearchResult;
                 }());
-                var SwapPart = /** @class */ (function () {
+                var SwapPart = (function () {
                     function SwapPart() {
                         this.searchMode = "highlight"; // highlight & filter - Default: highlight
                         this.innerDrop = true;
@@ -18785,7 +18934,7 @@ var nts;
                     };
                     return SwapPart;
                 }());
-                var GridSwapPart = /** @class */ (function (_super) {
+                var GridSwapPart = (function (_super) {
                     __extends(GridSwapPart, _super);
                     function GridSwapPart() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -18835,7 +18984,7 @@ var nts;
                     };
                     return GridSwapPart;
                 }(SwapPart));
-                var GridSwapList = /** @class */ (function (_super) {
+                var GridSwapList = (function (_super) {
                     __extends(GridSwapList, _super);
                     function GridSwapList() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -18949,7 +19098,7 @@ var nts;
                     };
                     return GridSwapList;
                 }(SwapModel));
-                var ListItemTransporter = /** @class */ (function () {
+                var ListItemTransporter = (function () {
                     function ListItemTransporter(firstList, secondList) {
                         this.firstList = firstList;
                         this.secondList = secondList;
@@ -19089,7 +19238,7 @@ var nts;
                 /**
                  * SwitchButton binding handler
                  */
-                var NtsSwitchButtonBindingHandler = /** @class */ (function () {
+                var NtsSwitchButtonBindingHandler = (function () {
                     /**
                      * Constructor.
                      */
@@ -19263,7 +19412,7 @@ var nts;
                 /**
                  * TabPanel Binding Handler
                  */
-                var TabPanelBindingHandler = /** @class */ (function () {
+                var TabPanelBindingHandler = (function () {
                     /**
                      * Constructor.
                      */
@@ -19390,7 +19539,7 @@ var nts;
                 /**
                  * Panel binding handler
                  */
-                var NtsPanelBindingHandler = /** @class */ (function () {
+                var NtsPanelBindingHandler = (function () {
                     function NtsPanelBindingHandler() {
                     }
                     /**
@@ -19454,7 +19603,7 @@ var nts;
                 /**
                  * TreeGrid binding handler
                  */
-                var NtsTreeGridViewBindingHandler = /** @class */ (function () {
+                var NtsTreeGridViewBindingHandler = (function () {
                     /**
                      * Constructor.
                      */
@@ -19680,7 +19829,7 @@ var nts;
                     return NtsTreeGridViewBindingHandler;
                 }());
                 var isEmpty = nts.uk.util.isNullOrEmpty;
-                var ExpandNodeHolder = /** @class */ (function () {
+                var ExpandNodeHolder = (function () {
                     function ExpandNodeHolder() {
                         this.nodes = [];
                     }
@@ -19765,7 +19914,7 @@ var nts;
                         }
                     }
                 })(Helper || (Helper = {}));
-                var ExpandNode = /** @class */ (function () {
+                var ExpandNode = (function () {
                     function ExpandNode(source, nodeKey, childKey, element, nodeLevel) {
                         this.nodeSource = source;
                         this.nodeLevel = nodeLevel;
@@ -19795,7 +19944,7 @@ var nts;
                 /**
                  * UpDownButton binding handler
                  */
-                var NtsUpDownBindingHandler = /** @class */ (function () {
+                var NtsUpDownBindingHandler = (function () {
                     /**
                      * Constructor.
                      */
@@ -20078,7 +20227,7 @@ var nts;
                 /**
                  * Wizard binding handler
                  */
-                var WizardBindingHandler = /** @class */ (function () {
+                var WizardBindingHandler = (function () {
                     /**
                      * Constructor.
                      */
@@ -20189,7 +20338,7 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
-                var NtsLegentButtonBindingHandler = /** @class */ (function () {
+                var NtsLegentButtonBindingHandler = (function () {
                     function NtsLegentButtonBindingHandler() {
                     }
                     /**
@@ -20314,7 +20463,7 @@ var nts;
                 /**
                  * Accordion binding handler
                  */
-                var NtsCharsetSettingBindingHandler = /** @class */ (function () {
+                var NtsCharsetSettingBindingHandler = (function () {
                     function NtsCharsetSettingBindingHandler() {
                     }
                     /**
@@ -20385,7 +20534,7 @@ var nts;
         (function (ui_16) {
             var contextmenu;
             (function (contextmenu) {
-                var ContextMenu = /** @class */ (function () {
+                var ContextMenu = (function () {
                     /**
                      * Create an instance of ContextMenu. Auto call init() method
                      *
@@ -20543,7 +20692,7 @@ var nts;
                     return ContextMenu;
                 }());
                 contextmenu.ContextMenu = ContextMenu;
-                var ContextMenuItem = /** @class */ (function () {
+                var ContextMenuItem = (function () {
                     function ContextMenuItem(key, text, handler, icon, visible, enable) {
                         this.key = key;
                         this.text = text;
@@ -20612,7 +20761,7 @@ var nts;
 /// <reference path="ui/ko-ext/wizard-ko-ext.ts"/>
 /// <reference path="ui/ko-ext/legendbutton-ko-ext.ts"/>
 /// <reference path="ui/ko-ext/charset-setting-ko-ext.ts"/>
-/// <reference path="ui/function-wrap/contextmenu.ts"/>
+/// <reference path="ui/function-wrap/contextmenu.ts"/> 
 /// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
@@ -20622,7 +20771,7 @@ var nts;
         (function (ui) {
             var file;
             (function (file_1) {
-                var FileDownload = /** @class */ (function () {
+                var FileDownload = (function () {
                     function FileDownload(servicePath, data) {
                         var self = this;
                         self.servicePath = servicePath;
@@ -20891,7 +21040,7 @@ var nts;
                         $element.data("builder", builder);
                         return;
                     };
-                    var TableBuildingConstructor = /** @class */ (function () {
+                    var TableBuildingConstructor = (function () {
                         function TableBuildingConstructor(container, option) {
                             this.container = container;
                             this.mode = option.mode;
@@ -21096,7 +21245,7 @@ var nts;
                         };
                         return TableBuildingConstructor;
                     }());
-                    var TableButtonEntity = /** @class */ (function () {
+                    var TableButtonEntity = (function () {
                         function TableButtonEntity(rowId, columnId, viewText, tooltipText) {
                             this.rowId = rowId;
                             this.columnId = columnId;
@@ -22136,7 +22285,7 @@ var nts;
                             }
                         }
                         dist.query = query;
-                        var Local = /** @class */ (function () {
+                        var Local = (function () {
                             function Local() {
                             }
                             /**
@@ -22159,7 +22308,7 @@ var nts;
                             return Local;
                         }());
                         dist.Local = Local;
-                        var Remote = /** @class */ (function () {
+                        var Remote = (function () {
                             function Remote(loadPath, savePath) {
                                 this.loadPath = loadPath;
                                 this.savePath = savePath;
@@ -22958,7 +23107,7 @@ var nts;
                         /**
                          * Render cell
                          */
-                        function renderCell($grid, rowId, columnKey, latestValues) {
+                        function renderCell($grid, rowId, columnKey, latestValues, clearStates) {
                             var grid = $grid.data("igGrid");
                             if (!utils.updatable($grid))
                                 return;
@@ -22968,6 +23117,13 @@ var nts;
                                 return col.key === columnKey;
                             });
                             var $cell = $grid.igGrid("cellById", rowId, columnKey);
+                            if (clearStates) {
+                                [color.Error, color.Alarm, color.ManualEditTarget, color.ManualEditOther,
+                                    color.Reflect, color.Calculation, color.Disable].forEach(function (s) {
+                                    if ($cell.hasClass(s))
+                                        $cell.removeClass(s);
+                                });
+                            }
                             $cell.html(String(grid._renderCell(rowData[columnKey], column, rowData)));
                             return $cell;
                         }
@@ -23409,7 +23565,7 @@ var nts;
                             if (!uk.util.isNullOrUndefined($targetGrid) && utils.selectable($targetGrid))
                                 $targetGrid.igGridSelection("clearSelection");
                         }
-                        var Direction = /** @class */ (function () {
+                        var Direction = (function () {
                             function Direction() {
                             }
                             Direction.prototype.bind = function (evt) {
@@ -23601,6 +23757,8 @@ var nts;
                         functions.UNCHECK_ALL = "uncheckAll";
                         functions.HEADER_TEXT = "headerText";
                         functions.SELECTED_SHEET = "selectedSheet";
+                        functions.CLEAR_ROW_STATES = "clearRowStates";
+                        functions.RESET_ORIG_DS = "resetOrigDataSource";
                         functions.DESTROY = "destroy";
                         /**
                          * Actions
@@ -23645,6 +23803,12 @@ var nts;
                                 case functions.HEADER_TEXT:
                                     setHeaderText($grid, params[0], params[1], params[2]);
                                     break;
+                                case functions.CLEAR_ROW_STATES:
+                                    clearStates($grid, params[0]);
+                                    break;
+                                case functions.RESET_ORIG_DS:
+                                    resetOrigDs($grid, params[0]);
+                                    break;
                                 case functions.DESTROY:
                                     destroy($grid);
                                     break;
@@ -23669,6 +23833,48 @@ var nts;
                          * Update row
                          */
                         function updateRow($grid, rowId, object, autoCommit) {
+                            var selectedSheet = getSelectedSheet($grid);
+                            if (selectedSheet) {
+                                var grid_1 = $grid.data("igGrid");
+                                var options_2 = grid_1.options;
+                                Object.keys(object).forEach(function (k) {
+                                    if (!_.includes(selectedSheet.columns, k)) {
+                                        grid_1.dataSource.setCellValue(rowId, k, object[k], grid_1.options.autoCommit);
+                                        delete object[k];
+                                        if (!uk.util.isNullOrUndefined(options_2.userId) && _.isFunction(options_2.getUserId)) {
+                                            var uId = options_2.getUserId(rowId);
+                                            if (uId === options_2.userId) {
+                                                var targetEdits = $grid.data(internal.TARGET_EDITS);
+                                                if (!targetEdits) {
+                                                    targetEdits = {};
+                                                    targetEdits[rowId] = [k];
+                                                    $grid.data(internal.TARGET_EDITS, targetEdits);
+                                                    return;
+                                                }
+                                                if (!targetEdits[rowId]) {
+                                                    targetEdits[rowId] = [k];
+                                                    return;
+                                                }
+                                                targetEdits[rowId].push(k);
+                                            }
+                                            else {
+                                                var otherEdits = $grid.data(internal.OTHER_EDITS);
+                                                if (!otherEdits) {
+                                                    otherEdits = {};
+                                                    otherEdits[rowId] = [k];
+                                                    $grid.data(internal.OTHER_EDITS, otherEdits);
+                                                    return;
+                                                }
+                                                if (!otherEdits[rowId]) {
+                                                    otherEdits[rowId] = [k];
+                                                    return;
+                                                }
+                                                otherEdits[rowId].push(k);
+                                            }
+                                        }
+                                    }
+                                });
+                            }
                             updating.updateRow($grid, rowId, object, undefined, true);
                             if (!autoCommit) {
                                 var updatedRow = $grid.igGrid("rowById", rowId, false);
@@ -23688,8 +23894,8 @@ var nts;
                                 if (row) {
                                     var sts = row[key];
                                     if (sts) {
-                                        if (sts[0][cellStateFeatureDef]) {
-                                            sts[0][cellStateFeatureDef] = states;
+                                        if (sts[0][cellStateFeatureDef.state]) {
+                                            sts[0][cellStateFeatureDef.state] = states;
                                         }
                                     }
                                     else {
@@ -23719,7 +23925,20 @@ var nts;
                                 colState[key] = [cellState];
                                 cellFormatter.rowStates[rowId] = colState;
                             }
-                            updating.renderCell($grid, rowId, key);
+                            var selectedSheet = getSelectedSheet($grid);
+                            if (selectedSheet && !_.includes(selectedSheet.columns, key)) {
+                                var options = $grid.data(internal.GRID_OPTIONS);
+                                var stateFt = feature.find(options.ntsFeatures, feature.CELL_STATE);
+                                if (stateFt) {
+                                    var newState = {};
+                                    newState[stateFt.rowId] = rowId;
+                                    newState[stateFt.columnKey] = key;
+                                    newState[stateFt.state] = states;
+                                    stateFt.states.push(newState);
+                                }
+                                return;
+                            }
+                            updating.renderCell($grid, rowId, key, undefined, true);
                         }
                         /**
                          * Disable controls
@@ -23884,8 +24103,8 @@ var nts;
                                 if (headerCell) {
                                     $(headerCell.find("span")[1]).html(text);
                                 }
-                                var options_2 = $grid.data(internal.GRID_OPTIONS);
-                                updateHeaderColumn(options_2.columns, key, text, group);
+                                var options_3 = $grid.data(internal.GRID_OPTIONS);
+                                updateHeaderColumn(options_3.columns, key, text, group);
                                 var sheetMng_1 = $grid.data(internal.SHEETS);
                                 if (sheetMng_1) {
                                     Object.keys(sheetMng_1.sheetColumns).forEach(function (k) {
@@ -23941,6 +24160,29 @@ var nts;
                             return updated;
                         }
                         /**
+                         * Clear states.
+                         */
+                        function clearStates($grid, id) {
+                            var cellFormatter = $grid.data(internal.CELL_FORMATTER);
+                            if (cellFormatter && cellFormatter.rowStates && cellFormatter.rowStates[id]) {
+                                delete cellFormatter.rowStates[id];
+                                var $row = $grid.igGrid("rowById", id, false);
+                                var $cells_1 = $row.find("td");
+                                [color.Error, color.Alarm, color.ManualEditTarget, color.ManualEditOther,
+                                    color.Reflect, color.Calculation, color.Disable].forEach(function (s) {
+                                    if ($cells_1.hasClass(s))
+                                        $cells_1.removeClass(s);
+                                });
+                            }
+                        }
+                        /**
+                         * Reset orig ds.
+                         */
+                        function resetOrigDs($grid, ds) {
+                            $grid.data(internal.ORIG_DS, ds);
+                            $grid.data(internal.UPDATED_CELLS, null);
+                        }
+                        /**
                          * Get selected sheet.
                          */
                         function getSelectedSheet($grid) {
@@ -23958,12 +24200,14 @@ var nts;
                             var $container = $grid.closest(".nts-grid-container");
                             if ($container.length === 0) {
                                 $grid.igGrid("destroy");
+                                $grid.off();
                                 $grid.removeData();
                                 return;
                             }
                             $container.find(".nts-grid-sheet-buttons").remove();
                             $($grid.igGrid("container")).unwrap().unwrap();
                             $grid.igGrid("destroy");
+                            $grid.off();
                             $grid.removeData();
                         }
                     })(functions || (functions = {}));
@@ -24099,13 +24343,13 @@ var nts;
                             };
                         }
                         ntsControls.bindCbHeaderColumns = bindCbHeaderColumns;
-                        var NtsControlBase = /** @class */ (function () {
+                        var NtsControlBase = (function () {
                             function NtsControlBase() {
                                 this.readOnly = false;
                             }
                             return NtsControlBase;
                         }());
-                        var CheckBox = /** @class */ (function (_super) {
+                        var CheckBox = (function (_super) {
                             __extends(CheckBox, _super);
                             function CheckBox() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -24161,7 +24405,7 @@ var nts;
                             };
                             return CheckBox;
                         }(NtsControlBase));
-                        var SwitchButtons = /** @class */ (function (_super) {
+                        var SwitchButtons = (function (_super) {
                             __extends(SwitchButtons, _super);
                             function SwitchButtons() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -24247,7 +24491,7 @@ var nts;
                             };
                             return SwitchButtons;
                         }(NtsControlBase));
-                        var ComboBox = /** @class */ (function (_super) {
+                        var ComboBox = (function (_super) {
                             __extends(ComboBox, _super);
                             function ComboBox() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -24397,7 +24641,7 @@ var nts;
                             };
                             return ComboBox;
                         }(NtsControlBase));
-                        var Button = /** @class */ (function (_super) {
+                        var Button = (function (_super) {
                             __extends(Button, _super);
                             function Button() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -24423,7 +24667,7 @@ var nts;
                             };
                             return Button;
                         }(NtsControlBase));
-                        var DeleteButton = /** @class */ (function (_super) {
+                        var DeleteButton = (function (_super) {
                             __extends(DeleteButton, _super);
                             function DeleteButton() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -24437,7 +24681,7 @@ var nts;
                             };
                             return DeleteButton;
                         }(Button));
-                        var TextEditor = /** @class */ (function (_super) {
+                        var TextEditor = (function (_super) {
                             __extends(TextEditor, _super);
                             function TextEditor() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -24567,7 +24811,7 @@ var nts;
                             };
                             return TextEditor;
                         }(NtsControlBase));
-                        var Label = /** @class */ (function (_super) {
+                        var Label = (function (_super) {
                             __extends(Label, _super);
                             function Label(action) {
                                 var _this = _super.call(this) || this;
@@ -24597,7 +24841,7 @@ var nts;
                             };
                             return Label;
                         }(NtsControlBase));
-                        var LinkLabel = /** @class */ (function (_super) {
+                        var LinkLabel = (function (_super) {
                             __extends(LinkLabel, _super);
                             function LinkLabel() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -24621,7 +24865,7 @@ var nts;
                             };
                             return LinkLabel;
                         }(NtsControlBase));
-                        var FlexImage = /** @class */ (function (_super) {
+                        var FlexImage = (function (_super) {
                             __extends(FlexImage, _super);
                             function FlexImage() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -24650,7 +24894,7 @@ var nts;
                             };
                             return FlexImage;
                         }(NtsControlBase));
-                        var Image = /** @class */ (function (_super) {
+                        var Image = (function (_super) {
                             __extends(Image, _super);
                             function Image() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -24782,7 +25026,7 @@ var nts;
                             PasteMode[PasteMode["NEW"] = 0] = "NEW";
                             PasteMode[PasteMode["UPDATE"] = 1] = "UPDATE";
                         })(PasteMode || (PasteMode = {}));
-                        var Processor = /** @class */ (function () {
+                        var Processor = (function () {
                             function Processor(options) {
                                 this.pasteInMode = PasteMode.UPDATE;
                                 this.options = options;
@@ -25204,7 +25448,7 @@ var nts;
                     })(copyPaste || (copyPaste = {}));
                     var events;
                     (function (events) {
-                        var Handler = /** @class */ (function () {
+                        var Handler = (function () {
                             function Handler($grid, options) {
                                 this.$grid = $grid;
                                 this.options = options;
@@ -25358,22 +25602,22 @@ var nts;
                                 });
                                 return this;
                             };
-                            Handler.KEY_DOWN = "keydown";
-                            Handler.KEY_UP = "keyup";
-                            Handler.FOCUS_IN = "focusin";
-                            Handler.BLUR = "blur";
-                            Handler.CLICK = "click";
-                            Handler.MOUSE_DOWN = "mousedown";
-                            Handler.SCROLL = "scroll";
-                            Handler.GRID_EDIT_CELL_STARTED = "iggridupdatingeditcellstarted";
-                            Handler.COLUMN_RESIZING = "iggridresizingcolumnresizing";
-                            Handler.RECORDS = "iggridvirtualrecordsrender";
-                            Handler.CELL_CLICK = "iggridcellclick";
-                            Handler.PAGE_INDEX_CHANGE = "iggridpagingpageindexchanging";
-                            Handler.PAGE_SIZE_CHANGE = "iggridpagingpagesizechanging";
-                            Handler.CONTROL_CHANGE = "ntsgridcontrolvaluechanged";
                             return Handler;
                         }());
+                        Handler.KEY_DOWN = "keydown";
+                        Handler.KEY_UP = "keyup";
+                        Handler.FOCUS_IN = "focusin";
+                        Handler.BLUR = "blur";
+                        Handler.CLICK = "click";
+                        Handler.MOUSE_DOWN = "mousedown";
+                        Handler.SCROLL = "scroll";
+                        Handler.GRID_EDIT_CELL_STARTED = "iggridupdatingeditcellstarted";
+                        Handler.COLUMN_RESIZING = "iggridresizingcolumnresizing";
+                        Handler.RECORDS = "iggridvirtualrecordsrender";
+                        Handler.CELL_CLICK = "iggridcellclick";
+                        Handler.PAGE_INDEX_CHANGE = "iggridpagingpageindexchanging";
+                        Handler.PAGE_SIZE_CHANGE = "iggridpagingpagesizechanging";
+                        Handler.CONTROL_CHANGE = "ntsgridcontrolvaluechanged";
                         events.Handler = Handler;
                         /**
                          * Post render process
@@ -25453,7 +25697,7 @@ var nts;
                     (function (validation) {
                         validation.VALIDATORS = "ntsValidators";
                         var H_M_MAX = 60;
-                        var ColumnFieldValidator = /** @class */ (function () {
+                        var ColumnFieldValidator = (function () {
                             function ColumnFieldValidator(name, primitiveValue, options) {
                                 this.name = name;
                                 this.primitiveValue = primitiveValue;
@@ -25501,7 +25745,7 @@ var nts;
                             return ColumnFieldValidator;
                         }());
                         validation.ColumnFieldValidator = ColumnFieldValidator;
-                        var NumberValidator = /** @class */ (function () {
+                        var NumberValidator = (function () {
                             function NumberValidator(name, displayType, primitiveValue, options) {
                                 this.name = name;
                                 this.displayType = displayType;
@@ -25561,7 +25805,7 @@ var nts;
                             };
                             return NumberValidator;
                         }());
-                        var Result = /** @class */ (function () {
+                        var Result = (function () {
                             function Result(isValid, formatted, messageId) {
                                 this.onSuccess = $.noop;
                                 this.onFail = $.noop;
@@ -25649,7 +25893,7 @@ var nts;
                         errors.ERROR_STL = { "border-color": "#ff6666" };
                         errors.NO_ERROR_STL = { "border-color": "" };
                         errors.EDITOR_SELECTOR = "div.ui-igedit-container";
-                        var GridCellError = /** @class */ (function () {
+                        var GridCellError = (function () {
                             function GridCellError(grid, rowId, columnKey, message) {
                                 this.grid = grid;
                                 this.rowId = rowId;
@@ -25859,7 +26103,7 @@ var nts;
                         color.Reflect = "ntsgrid-reflect";
                         color.Calculation = "ntsgrid-calc";
                         color.Disable = "ntsgrid-disable";
-                        var CellFormatter = /** @class */ (function () {
+                        var CellFormatter = (function () {
                             function CellFormatter($grid, features, ntsFeatures, flatCols) {
                                 this.$grid = $grid;
                                 // Cell
@@ -26385,7 +26629,7 @@ var nts;
                     (function (sheet_1) {
                         var normalStyles = { backgroundColor: '', color: '' };
                         var selectedStyles = { backgroundColor: '#00B050', color: '#fff' };
-                        var Configurator = /** @class */ (function () {
+                        var Configurator = (function () {
                             function Configurator(currentSheet, sheets) {
                                 this.currentSheet = currentSheet;
                                 this.sheets = sheets;
@@ -26693,7 +26937,7 @@ var nts;
                     })(sheet || (sheet = {}));
                     var onDemand;
                     (function (onDemand) {
-                        var Loader = /** @class */ (function () {
+                        var Loader = (function () {
                             function Loader(allKeysPath, pageRecordsPath) {
                                 this.allKeysPath = allKeysPath;
                                 this.pageRecordsPath = pageRecordsPath;
@@ -26782,7 +27026,7 @@ var nts;
                             if (!loader) {
                                 $grid.data(internal.LOADER, new Loader(demandLoadFt.allKeysPath, demandLoadFt.pageRecordsPath));
                             }
-                            else if (loader.keys) { // Switch sheet
+                            else if (loader.keys) {
                                 pageSize = setting.pageSize;
                                 return false;
                             }
@@ -26880,7 +27124,7 @@ var nts;
                     (function (settings) {
                         settings.USER_M = "M";
                         settings.USER_O = "O";
-                        var Descriptor = /** @class */ (function () {
+                        var Descriptor = (function () {
                             function Descriptor(startRow, rowCount, elements, keyIdxes) {
                                 this.startRow = startRow;
                                 this.rowCount = rowCount;
@@ -27541,7 +27785,7 @@ var nts;
                             $(window).on("mousedown.popup", function (e) {
                                 if (!$(e.target).is(control) // Target isn't Popup
                                     && control.has(e.target).length === 0 // Target isn't Popup's children
-                                    && !$(e.target).is(setting.trigger)) { // Target isn't Trigger element
+                                    && !$(e.target).is(setting.trigger)) {
                                     hide(control);
                                 }
                             });
@@ -27584,7 +27828,7 @@ var nts;
                         }
                         return control;
                     }
-                    var NtsPopupPanel = /** @class */ (function () {
+                    var NtsPopupPanel = (function () {
                         function NtsPopupPanel($panel, option) {
                             var parent = $panel.parent();
                             this.$panel = $panel
@@ -28266,7 +28510,7 @@ var nts;
                 /**
                  * Accordion binding handler
                  */
-                var NtsAccordionBindingHandler = /** @class */ (function () {
+                var NtsAccordionBindingHandler = (function () {
                     function NtsAccordionBindingHandler() {
                     }
                     /**
@@ -28361,7 +28605,7 @@ var nts;
                 /**
                  * Accordion binding handler
                  */
-                var NtsTableButtonBindingHandler = /** @class */ (function () {
+                var NtsTableButtonBindingHandler = (function () {
                     function NtsTableButtonBindingHandler() {
                     }
                     /**
@@ -28443,7 +28687,7 @@ var nts;
                 /**
                  * Dialog binding handler
                  */
-                var NtsColorPickerBindingHandler = /** @class */ (function () {
+                var NtsColorPickerBindingHandler = (function () {
                     function NtsColorPickerBindingHandler() {
                     }
                     /**
@@ -28612,7 +28856,7 @@ var nts;
                 /**
                  * Dialog binding handler
                  */
-                var NtsDateRangePickerBindingHandler = /** @class */ (function () {
+                var NtsDateRangePickerBindingHandler = (function () {
                     function NtsDateRangePickerBindingHandler() {
                     }
                     /**
@@ -28912,7 +29156,7 @@ var nts;
                 /**
                  * CheckBox binding handler
                  */
-                var NtsFileUploadBindingHandler = /** @class */ (function () {
+                var NtsFileUploadBindingHandler = (function () {
                     /**
                      * Constructor..
                      */
@@ -29057,7 +29301,7 @@ var nts;
                 /**
                  * CheckBox binding handler
                  */
-                var NtsFunctionPanelBindingHandler = /** @class */ (function () {
+                var NtsFunctionPanelBindingHandler = (function () {
                     /**
                      * Constructor.
                      */
@@ -29157,7 +29401,7 @@ var nts;
                 /**
                  * HelpButton binding handler
                  */
-                var NtsHelpButtonBindingHandler = /** @class */ (function () {
+                var NtsHelpButtonBindingHandler = (function () {
                     function NtsHelpButtonBindingHandler() {
                     }
                     NtsHelpButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -29255,7 +29499,7 @@ var nts;
                 /**
                  * HelpButton binding handler
                  */
-                var NtsIconBindingHandler = /** @class */ (function () {
+                var NtsIconBindingHandler = (function () {
                     function NtsIconBindingHandler() {
                     }
                     NtsIconBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -29302,7 +29546,7 @@ var nts;
                 /**
                  * Dialog binding handler
                  */
-                var NtsImageEditorBindingHandler = /** @class */ (function () {
+                var NtsImageEditorBindingHandler = (function () {
                     function NtsImageEditorBindingHandler() {
                     }
                     /**
@@ -29360,7 +29604,7 @@ var nts;
                     };
                     return NtsImageEditorBindingHandler;
                 }());
-                var ImageEditorConstructSite = /** @class */ (function () {
+                var ImageEditorConstructSite = (function () {
                     function ImageEditorConstructSite($root, helper) {
                         this.$root = $root;
                         this.helper = helper;
@@ -29584,7 +29828,7 @@ var nts;
                     };
                     return ImageEditorConstructSite;
                 }());
-                var ImageEditorHelper = /** @class */ (function () {
+                var ImageEditorHelper = (function () {
                     function ImageEditorHelper(extensions, msgIdForUnknownFile, query) {
                         this.IMAGE_EXTENSION = [".png", ".PNG", ".jpg", ".JPG", ".JPEG", ".jpeg"];
                         this.BYTE_SIZE = 1024;
@@ -29673,7 +29917,7 @@ var nts;
                 /**
                  * Let binding handler
                  */
-                var NtsLetBindingHandler = /** @class */ (function () {
+                var NtsLetBindingHandler = (function () {
                     function NtsLetBindingHandler() {
                         this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                             // Make a modified binding context, with extra properties, and apply it to descendant elements
@@ -29702,7 +29946,7 @@ var nts;
                 /**
                  * LinkButton
                  */
-                var NtsLinkButtonBindingHandler = /** @class */ (function () {
+                var NtsLinkButtonBindingHandler = (function () {
                     function NtsLinkButtonBindingHandler() {
                     }
                     /**
@@ -29747,7 +29991,7 @@ var nts;
                 /**
                  * Dialog binding handler
                  */
-                var NtsMonthDaysBindingHandler = /** @class */ (function () {
+                var NtsMonthDaysBindingHandler = (function () {
                     function NtsMonthDaysBindingHandler() {
                     }
                     /**
@@ -29862,7 +30106,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-var NtsSortableBindingHandler = /** @class */ (function () {
+var NtsSortableBindingHandler = (function () {
     function NtsSortableBindingHandler() {
         var _this = this;
         this.ITEMKEY = "ko_sortItem";
@@ -30067,7 +30311,6 @@ var NtsSortableBindingHandler = /** @class */ (function () {
                             if (sourceParent) {
                                 $(sourceParent === targetParent ? this : ui.sender || this).sortable("cancel");
                             }
-                            //for a draggable item just remove the element
                             else {
                                 $(el).remove();
                             }
@@ -30095,7 +30338,7 @@ var NtsSortableBindingHandler = /** @class */ (function () {
                                 //rendering is handled by manipulating the observableArray; ignore dropped element
                                 self.dataSet(el, self.ITEMKEY, null);
                             }
-                            else { //employ the strategy of moving items
+                            else {
                                 if (targetIndex >= 0) {
                                     if (sourceParent) {
                                         if (sourceParent !== targetParent) {
@@ -30194,7 +30437,7 @@ var nts;
                 /**
                  * Tree binding handler
                  */
-                var NtsTreeDragAndDropBindingHandler = /** @class */ (function () {
+                var NtsTreeDragAndDropBindingHandler = (function () {
                     /**
                      * Constructor.
                      */
@@ -30399,7 +30642,7 @@ var nts;
         (function (ui) {
             var sharedvm;
             (function (sharedvm) {
-                var KibanTimer = /** @class */ (function () {
+                var KibanTimer = (function () {
                     function KibanTimer(target) {
                         var self = this;
                         self.elapsedSeconds = 0;

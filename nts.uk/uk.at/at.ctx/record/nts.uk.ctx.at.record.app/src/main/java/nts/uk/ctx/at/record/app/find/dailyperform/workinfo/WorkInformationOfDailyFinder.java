@@ -39,4 +39,9 @@ public class WorkInformationOfDailyFinder extends FinderFacade {
 		return (List<T>) this.workInfoRepo.finds(param).stream()
 			.map(c -> WorkInformationOfDailyDto.getDto(c)).collect(Collectors.toList());
 	}
+
+	@Override
+	public Object getDomain(String employeeId, GeneralDate baseDate) {
+		return this.workInfoRepo.find(employeeId, baseDate);
+	}
 }

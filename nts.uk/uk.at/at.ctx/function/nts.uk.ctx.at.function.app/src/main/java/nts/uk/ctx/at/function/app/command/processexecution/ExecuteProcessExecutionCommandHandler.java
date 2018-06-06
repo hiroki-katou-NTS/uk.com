@@ -730,7 +730,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.ABNORMAL_END);
 		}
 		int timeOut=1;
-		boolean isError =false;
+		boolean isInterruption =false;
 		if(isException){
 		while(true){
 			// find execution log by id
@@ -739,12 +739,10 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			if (domainOpt.isPresent()) {
 				if (domainOpt.get().getCompletionStatus().value == CompletionStatus.COMPLETION_ERROR.value) {
 					this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.ABNORMAL_END);
-					isError=true;
 					break;
 				}
 				if (domainOpt.get().getCompletionStatus().value == CompletionStatus.INTERRUPTION.value) {
-					this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.ABNORMAL_END);
-					isError=true;
+					isInterruption=true;
 					break;
 				}
 				if(domainOpt.get().getCompletionStatus().value == CompletionStatus.DONE.value){
@@ -755,7 +753,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			}
 			if(timeOut==24){
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.ABNORMAL_END);
-			isError=true;
 				break;
 			}
 			timeOut++;
@@ -776,7 +773,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		*/
 		TaskDataSetter dataSetter = context.asAsync().getDataSetter();
 		dataSetter.setData("createSchedule", "done");
-		if(isError){
+		if(isInterruption){
 			return false;
 		}
 		return true;
@@ -1414,6 +1411,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		}else{
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CREATION, EndStatus.SUCCESS);
 		}
+		
 		
 		if(isHasDailyCalculateException){
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CALCULATION, EndStatus.ABNORMAL_END);
@@ -2592,6 +2590,19 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				break;
 			}
 		}
+		List<ErrMessageInfo> errMessageInfos = this.errMessageInfoRepository.getAllErrMessageInfoByEmpID(empCalAndSumExeLog.getEmpCalAndSumExecLogID());
+		List<String> errorMessage = errMessageInfos.stream().map(error -> {
+			return error.getMessageError().v();
+		}).collect(Collectors.toList());
+		if (!errorMessage.isEmpty()) {
+			if("日別作成".equals(typeExecution)){
+				throw new CreateDailyException();
+			}else{
+				throw new DailyCalculateException();
+			}
+		}
+		
+		
 		if (isInterrupt) {
 			return true;
 		}

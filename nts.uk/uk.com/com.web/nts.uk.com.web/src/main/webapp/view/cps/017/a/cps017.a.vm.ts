@@ -33,7 +33,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
         isDialog: KnockoutObservable<boolean> = ko.observable(false);
 
         selHistId: KnockoutObservable<string> = ko.observable('');
-        isGroupManager: KnockoutObservable<boolean>;
+        isGroupManager: boolean;
 
         // status of function-button
         enableRegister: KnockoutObservable<boolean> = ko.observable(false);
@@ -59,7 +59,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
             let selection: Selection = self.selection();
             let perInfoSelectionItem: ISelectionItem1 = self.perInfoSelectionItem();
 
-            self.isGroupManager = ko.observable(false);
+            let groupCompanyAdmin = __viewContext.user.role.groupCompanyAdmin;
+            self.isGroupManager = groupCompanyAdmin !== 'null';
             //check insert/update
             self.checkCreate = ko.observable(true);
             self.checkCreateaaa = ko.observable(true);
@@ -115,7 +116,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
                     }
                     // システム管理者　かつ　選択している選択項目の「選択項目区分」＝社員のとき
-                    if (self.isGroupManager() === true && perInfoSelectionItem.selectionItemClassification() === 1) {
+                    if (self.isGroupManager === true && perInfoSelectionItem.selectionItemClassification() === 1) {
                         self.showRefecToAll(true);
                     } else {
                         self.showRefecToAll(false);
@@ -128,6 +129,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             return item;
                         });
                         self.listHistorySelection(changeData);
+                        //self.historySelection(self.listHistorySelection()[0]);
                         self.historySelection().histId(self.listHistorySelection()[0].histId);
                         self.focusToInput();
                     });
@@ -154,6 +156,9 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             self.enableDelHist(false);
                         }
                     }
+                    // fill startDate and endDate
+                    self.historySelection().startDate(histCur.startDate);
+                    self.historySelection().endDate(histCur.endDate);
 
                     self.listSelection.removeAll();
                     service.getAllOrderItemSelection(x).done((itemList: Array<ISelection>) => {                        if (itemList && itemList.length > 0) {
@@ -227,9 +232,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
             nts.uk.ui.errors.clearAll();
             //xu ly dialog: 
             let param = getShared('CPS017_PARAMS');
-
-            // group manager;
-            self.isGroupManager(false);
 
             // ドメインモデル「個人情報の選択項目」をすべて取得する
             service.getAllSelectionItems().done((itemList: Array<ISelectionItem1>) => {
@@ -509,46 +511,25 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
         // 履歴削除をする
         removeHistory() {
-            let self = this,
-                items = ko.unwrap(self.listHistorySelection),
-                currentItem: HistorySelection = self.historySelection(),
-                listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
-                perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
-                listItems: Array<SelectionItem> = self.listItems();
-
-            currentItem.histId(self.historySelection().histId());
-            let command = ko.toJS(currentItem);
-            let oldIndex = _.findIndex(listHistorySelection, x => x.histId == currentItem.histId());
-            let lastIndex = items.length - 1;
-
-            if (items.length > 0) {
-                confirm({ messageId: "Msg_18" }).ifYes(() => {
-                    service.removeHistory(command).done(function() {
-                        self.listHistorySelection.removeAll();
-                        service.getAllPerInfoHistorySelection(self.historySelection().histId()).done((itemList: Array<IHistorySelection>) => {
-                            if (itemList && itemList.length) {
-                                itemList.forEach(x => self.listHistorySelection.push(x));
-                                if (oldIndex == lastIndex) {
-                                    oldIndex--;
-                                }
-                                let newItem = itemList[oldIndex];
-                                currentItem.histId(newItem.histId);
-                                self.listItems.valueHasMutated();
-                            }
-                        });
-                        perInfoSelectionItem.selectionItemId.valueHasMutated();
-                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                    });
-                    self.focusToInput();
-                }).ifNo(() => {
-                    self.listItems.valueHasMutated();
-                    self.focusToInput();
-                    return;
-                })
-            } else {
-                alertError({ messageId: "Msg_521" });
-                self.registerDataSelectioItem();
-            }
+            let self = this;
+            let perInfoSelectionItem = self.perInfoSelectionItem();
+            
+            let command = {
+                selectionItemId : perInfoSelectionItem.selectionItemId(),
+                histId : self.historySelection().histId()
+            };
+            
+            confirm({ messageId: "Msg_18" }).ifYes(() => {
+                service.removeHistory(command).done(function() {
+                    perInfoSelectionItem.selectionItemId.valueHasMutated();
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                });
+                self.focusToInput();
+            }).ifNo(() => {
+                self.listItems.valueHasMutated();
+                self.focusToInput();
+                return;
+            })
         }
 
         // 選択肢未登録会社へ反映する
@@ -603,37 +584,37 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
         //ダイアログC画面
         openDialogC() {
-            let self = this,
-                currentItem: HistorySelection = self.historySelection(),
-                listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
-                selectHistory = _.find(listHistorySelection, x => x.histId == currentItem.histId()),
-                perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
-                listItems: Array<SelectionItem> = self.listItems(),
-                selectionItemNameList = _.find(listItems, x => x.selectionItemName == perInfoSelectionItem.selectionItemName());
+            let self = this;
+            let perInfoSelectionItem = self.perInfoSelectionItem();
+            let selectionItemName = perInfoSelectionItem.selectionItemName();
+            let selectionItemId = perInfoSelectionItem.selectionItemId();
+            let histId = self.historySelection().histId();
 
-            setShared('CPS017C_PARAMS', { selectHistory: selectHistory, name: selectionItemNameList.selectionItemName });
+            setShared('CPS017C_PARAMS', { id: selectionItemId, name: selectionItemName, histId: histId });
+
             block.invisible();
             modal('/view/cps/017/c/index.xhtml', { title: '' }).onClosed(function(): any {
                 //reload lai History:
                 perInfoSelectionItem.selectionItemId.valueHasMutated();
                 block.clear();
-                this.focusToInput();
             });
         }
 
         //ダイアログD画面
         openDialogD() {
-            let self = this,
-                selectHistory = _.find(self.listHistorySelection(), x => x.histId == self.historySelection().histId()),
-                selectionItemNameList = _.find(self.listItems(), x => x.selectionItemName == self.perInfoSelectionItem().selectionItemName()),
-                perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
-                listItems: Array<SelectionItem> = self.listItems();
+            let self = this;
+            let perInfoSelectionItem = self.perInfoSelectionItem();
+            let selectingHistory = self.historySelection();
 
-            param = {
-                sel_history: selectHistory,
-                sel_name: selectionItemNameList.selectionItemName
-            };
+            let param = {
+                id: perInfoSelectionItem.selectionItemId(),
+                name: perInfoSelectionItem.selectionItemName(),
+                histId: selectingHistory.histId(),
+                startDate: selectingHistory.startDate()
+            }
+
             setShared('CPS017D_PARAMS', param);
+
             block.invisible();
             modal('/view/cps/017/d/index.xhtml', { title: '' }).onClosed(function(): any {
                 //reload lai History:

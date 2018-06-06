@@ -20,6 +20,7 @@ import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.ctx.sys.auth.pub.user.CheckBeforeChangePassOutput;
 import nts.uk.ctx.sys.auth.pub.user.CheckBeforePasswordPublisher;
+import nts.uk.ctx.sys.auth.pub.user.PasswordMessageObject;
 
 /**
  * The Class CheckBeforePasswordPublisherImpl.
@@ -49,18 +50,18 @@ public class CheckBeforePasswordPublisherImpl implements CheckBeforePasswordPubl
 	@Override
 	public CheckBeforeChangePassOutput checkBeforeChangePassword(String userId, String currentPass, String newPass,
 			String reNewPass) {
-		List<String> messages = new ArrayList<>();
+		List<PasswordMessageObject> messages = new ArrayList<>();
 		// 変更前チェック
 		if (!newPass.equals(reNewPass)) {
-			messages.add("#Msg_961");
+			messages.add( new PasswordMessageObject("Msg_961"));
 		}
 		User user = this.userRepo.getByUserID(userId).get();
 		if (user.getLoginID().v().equals(newPass)) {
-			messages.add("#Msg_989");
+			messages.add(new PasswordMessageObject("Msg_989"));
 		}
 		String currentPassHash = PasswordHash.generate(currentPass, userId);
 		if (!currentPassHash.equals(user.getPassword().v())) {
-			messages.add("#Msg_302");
+			messages.add(new PasswordMessageObject("Msg_302"));
 		}
 		if (!messages.isEmpty()) {
 			return new CheckBeforeChangePassOutput(true, messages);
@@ -88,7 +89,7 @@ public class CheckBeforePasswordPublisherImpl implements CheckBeforePasswordPubl
 	private CheckBeforeChangePassOutput passwordPolicyCheck(String userId, String newPass,
 			PasswordPolicyImport passwordPolicyImport) {
 
-		List<String> messages = new ArrayList<>();
+		List<PasswordMessageObject> messages = new ArrayList<>();
 		PasswordPolicyCountChar countChar = this.getCountChar(newPass);
 		int lengthPass = newPass.length();
 		int numberOfDigits = countChar.getNumberOfDigits();
@@ -97,22 +98,22 @@ public class CheckBeforePasswordPublisherImpl implements CheckBeforePasswordPubl
 
 		if (passwordPolicyImport.isUse) {
 			if (lengthPass < passwordPolicyImport.getLowestDigits()) {
-				messages.add("#Msg_1186" + "," + passwordPolicyImport.getLowestDigits());
+				messages.add(new PasswordMessageObject("Msg_1186",passwordPolicyImport.getLowestDigits()));
 			}
 			if (alphabetDigit < passwordPolicyImport.getAlphabetDigit()) {
-				messages.add("#Msg_1188" + "," + passwordPolicyImport.getAlphabetDigit());
+				messages.add(new PasswordMessageObject("Msg_1188", passwordPolicyImport.getAlphabetDigit()));
 			}
 			if (numberOfDigits < passwordPolicyImport.getNumberOfDigits()) {
-				messages.add("#Msg_1189" + "," + passwordPolicyImport.getNumberOfDigits());
+				messages.add(new PasswordMessageObject("Msg_1189", passwordPolicyImport.getNumberOfDigits()));
 			}
 			if (symbolCharacters < passwordPolicyImport.getSymbolCharacters()) {
-				messages.add("#Msg_1190" + "," + passwordPolicyImport.getSymbolCharacters());
+				messages.add( new PasswordMessageObject("Msg_1190", passwordPolicyImport.getSymbolCharacters()));
 			}
 			if (passwordPolicyImport.getHistoryCount() > 0) {
 				// Check password history
 				String newPassHash = PasswordHash.generate(newPass, userId);
 				if (this.isHistoryPassError(userId, passwordPolicyImport.getHistoryCount(), newPassHash)) {
-					messages.add("#Msg_1187" + "," + passwordPolicyImport.getHistoryCount());
+					messages.add(new PasswordMessageObject("Msg_1187", passwordPolicyImport.getHistoryCount()));
 				}
 			}
 		}

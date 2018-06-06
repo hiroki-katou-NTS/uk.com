@@ -543,7 +543,7 @@ public class DailyPerformanceSelectItemProcessor {
 					.findFirst();
 			if (optWorkInfoOfDailyPerformanceDto.isPresent()
 					&& optWorkInfoOfDailyPerformanceDto.get().getState() == CalculationState.No_Calculated)
-				screenDto.setAlarmCellForFixedColumn(data.getId());
+				screenDto.setAlarmCellForFixedColumn(data.getId(), 0);
 		}
 		Set<ItemValue> set = screenDto.getItemValues().stream()
 	            .collect(Collectors.toCollection(() -> 
