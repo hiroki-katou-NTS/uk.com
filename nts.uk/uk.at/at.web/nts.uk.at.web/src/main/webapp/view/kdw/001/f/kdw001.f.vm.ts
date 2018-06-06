@@ -105,6 +105,7 @@ module nts.uk.at.view.kdw001.f {
             getAllEmpCalAndSumExeLog(inputEmpCalAndSumByDate: model.InputEmpCalAndSumByDate) {
                 let self = this;
                 let dfd = $.Deferred<any>();
+                nts.uk.ui.block.grayout();
                 service.getAllEmpCalAndSumExeLog(inputEmpCalAndSumByDate).done(function(data: Array<model.IEmpCalAndSumExeLog>) {
                     //_.sortBy(self.empCalAndSumExeLog(data), 'executionDate');
                     data = _.orderBy(data, ['executionDate'], ['desc']);
@@ -158,7 +159,8 @@ module nts.uk.at.view.kdw001.f {
                     });
                     self.empCalAndSumExeLog(temp);
                     self.getListPersonInforLog(self.listSid).done(function(){
-                        dfd.resolve();    
+                        dfd.resolve(); 
+                        nts.uk.ui.block.clear();   
                     });
                 }).fail(function(res: any) {
                     dfd.reject();

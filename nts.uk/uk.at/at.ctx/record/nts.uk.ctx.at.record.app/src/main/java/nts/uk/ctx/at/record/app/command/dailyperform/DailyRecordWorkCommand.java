@@ -25,7 +25,7 @@ import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.AttendanceTimeBy
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDailyPerformanceCommand;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 
 public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
@@ -166,7 +166,7 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 	}
 
 	@Override
-	public void setRecords(AttendanceItemCommon item) {
+	public void setRecords(ConvertibleAttendanceItem item) {
 		DailyRecordDto fullDto = (DailyRecordDto) item;
 		this.workInfo.setRecords(fullDto.getWorkInfo());
 		this.calcAttr.setRecords(fullDto.getCalcAttr());
@@ -236,24 +236,26 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 
 	public DailyRecordDto toDto() {
 		return DailyRecordDto.builder()
-				.breakTime(breakTime.getData())
-				.editStates(editState.getData())
-				.attendanceLeavingGate(attendanceLeavingGate.getData().orElse(null))
-				.attendanceTime(attendanceTime.getData().orElse(null))
-				.attendanceTimeByWork(attendanceTimeByWork.getData().orElse(null))
+				.breakTime(breakTime.toDto())
+				.editStates(editState.toDto())
+				.attendanceLeavingGateO(attendanceLeavingGate.toDto())
+				.attendanceTimeO(attendanceTime.toDto())
+				.attendanceTimeByWorkO(attendanceTimeByWork.toDto())
 				.employeeId(getEmployeeId())
-				.optionalItems(optionalItem.getData().orElse(null))
-				.outingTime(outingTime.getData().orElse(null))
-				.pcLogInfo(pcLogInfo.getData().orElse(null))
-				.shortWorkTime(shortWorkTime.getData().orElse(null))
-				.specificDateAttr(specificDateAttr.getData().orElse(null))
-				.temporaryTime(temporaryTime.getData().orElse(null))
-				.timeLeaving(timeLeaving.getData().orElse(null))
-				.withAffiliationInfo(affiliationInfo.getData())
-				.withCalcAttr(calcAttr.getData())
-				.withErrors(errors.getData())
-				.withWorkInfo(workInfo.getData())
+				.optionalItemsO(optionalItem.toDto())
+				.outingTimeO(outingTime.toDto())
+				.pcLogInfoO(pcLogInfo.toDto())
+				.shortWorkTimeO(shortWorkTime.toDto())
+				.remarks(remarks.toDto())
+				.specificDateAttrO(specificDateAttr.toDto())
+				.temporaryTimeO(temporaryTime.toDto())
+				.timeLeavingO(timeLeaving.toDto())
+				.withAffiliationInfo(affiliationInfo.toDto())
+				.withCalcAttr(calcAttr.toDto())
+//				.withErrors(errors.getData())
+				.withWorkInfo(workInfo.toDto())
 				.workingDate(getWorkDate())
+				.withBusinessTypeO(businessType.toDto())
 				.complete();
 	}
 

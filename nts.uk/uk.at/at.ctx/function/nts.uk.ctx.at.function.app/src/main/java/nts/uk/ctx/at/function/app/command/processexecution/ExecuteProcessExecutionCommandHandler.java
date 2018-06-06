@@ -70,7 +70,10 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDail
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ProcessFlowOfDailyCreationDomainService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationEmployeeService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationService;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationEmployeeService;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.CalExeSettingInfor;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
@@ -91,6 +94,7 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionStatus;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
+import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommandHandler;
 import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
@@ -106,7 +110,9 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ResetAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
@@ -212,7 +218,16 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	private UkJobScheduler scheduler;
 	@Inject
 	private WorkplaceWorkRecordAdapter workplaceWorkRecordAdapter;
-	
+	@Inject
+	private HolidayAddtionRepository holidayAddtionRepo;
+	@Inject
+	private SpecificWorkRuleRepository specificWorkRuleRepo;
+	@Inject
+	private CompensLeaveComSetRepository compensLeaveComSetRepo;
+	@Inject
+	private DivergenceTimeRepository divergenceTimeRepo;
+	@Inject
+	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepo;
 	
 	/**
 	 * 更新処理を開始する
@@ -297,13 +312,13 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		// ・ドメインモデル「更新処理自動実行.実行設定.承認結果反映」
 		boolean monthlyAggCls = procExec.getExecSetting().isMonthlyAggCls();
 		EmpCalAndSumExeLog empCalAndSumExeLog = null;
-		if (dailyPerfCls || reflectResultCls || monthlyAggCls) {
+		//if (dailyPerfCls || reflectResultCls || monthlyAggCls) {
 			// ドメインモデル「就業計算と集計実行ログ」を追加する
 			empCalAndSumExeLog = new EmpCalAndSumExeLog(execId, command.getCompanyId(), new YearMonth(GeneralDate.today().year()*100+1),
 					ExecutedMenu.SELECT_AND_RUN, GeneralDate.today(), null, AppContexts.user().employeeId(), 1,
 					IdentifierUtil.randomUniqueId(), CalAndAggClassification.AUTOMATIC_EXECUTION);
 			this.empCalSumRepo.add(empCalAndSumExeLog);
-		}
+		//}
 
 		// アルゴリズム「実行前登録処理」を実行する
 		// 実行前登録処理
@@ -715,7 +730,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.ABNORMAL_END);
 		}
 		int timeOut=1;
-		boolean isError =false;
+		boolean isInterruption =false;
 		if(isException){
 		while(true){
 			// find execution log by id
@@ -724,12 +739,10 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			if (domainOpt.isPresent()) {
 				if (domainOpt.get().getCompletionStatus().value == CompletionStatus.COMPLETION_ERROR.value) {
 					this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.ABNORMAL_END);
-					isError=true;
 					break;
 				}
 				if (domainOpt.get().getCompletionStatus().value == CompletionStatus.INTERRUPTION.value) {
-					this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.ABNORMAL_END);
-					isError=true;
+					isInterruption=true;
 					break;
 				}
 				if(domainOpt.get().getCompletionStatus().value == CompletionStatus.DONE.value){
@@ -740,7 +753,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			}
 			if(timeOut==24){
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.ABNORMAL_END);
-			isError=true;
 				break;
 			}
 			timeOut++;
@@ -761,7 +773,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		*/
 		TaskDataSetter dataSetter = context.asAsync().getDataSetter();
 		dataSetter.setData("createSchedule", "done");
-		if(isError){
+		if(isInterruption){
 			return false;
 		}
 		return true;
@@ -1252,23 +1264,23 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			
 			String typeExecution = "日別作成";
 			// 日別実績の作成
-			this.dailyPerformanceCreation(context, procExec, empCalAndSumExeLog, createProcessForChangePerOrWorktype.getNoLeaderEmpIdList(),
+			this.dailyPerformanceCreation( companyId,context, procExec, empCalAndSumExeLog, createProcessForChangePerOrWorktype.getNoLeaderEmpIdList(),
 					calculateDailyPeriod.getDailyCreationPeriod(), workPlaceIds, typeExecution,dailyCreateLog);
-			
+		
 			typeExecution = "日別計算";
 			// 日別実績の計算
-			this.dailyPerformanceCreation(context, procExec, empCalAndSumExeLog, createProcessForChangePerOrWorktype.getNoLeaderEmpIdList(),
+			this.dailyPerformanceCreation( companyId,context, procExec, empCalAndSumExeLog, createProcessForChangePerOrWorktype.getNoLeaderEmpIdList(),
 					calculateDailyPeriod.getDailyCalcPeriod(), workPlaceIds, typeExecution,dailyCalLog);
 			
-			
+		
 			
 			// 勤務種別変更者を再作成 =true
-			if (!procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()) {
+			if (procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()) {
 				DatePeriod maxDatePeriod = this.getMaxDatePeriod(calculateDailyPeriod.getDailyCreationPeriod(),
 						calculateDailyPeriod.getDailyCalcPeriod());
 				// 再作成処理
 				this.recreateProcess(context, closure.getClosureId().value, empCalAndSumExeLog, maxDatePeriod,
-						workPlaceIds, createProcessForChangePerOrWorktype.getLeaderEmpIdList(), companyId, procExecLog, procExec);
+						workPlaceIds, createProcessForChangePerOrWorktype.getLeaderEmpIdList(), companyId, procExecLog, procExec, dailyCreateLog);
 
 			} 
 			
@@ -1400,6 +1412,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CREATION, EndStatus.SUCCESS);
 		}
 		
+		
 		if(isHasDailyCalculateException){
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CALCULATION, EndStatus.ABNORMAL_END);
 		}else{
@@ -1438,14 +1451,14 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		//・社員ID（異動者、勤務種別変更者のみ）（List）
 		List<String> noLeaderEmpIdList = empIds;
 		// check 異動者を再作成する
-		if(procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isRecreateTransfer()){
+		if(procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer()){
 			//異動者の絞り込み todo request list 189
 			List<WorkPlaceHistImport> wplByListSidAndPeriod = this.workplaceWorkRecordAdapter.getWplByListSidAndPeriod(empIds, p);
 			wplByListSidAndPeriod.forEach(x->{
 				wplEmpIdList.add(x.getEmployeeId());
 			});
 		}
-		if(procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isRecreateWorkType()){
+		if(procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()){
 		// 勤務種別の絞り込み
 			 newEmpIdList = this.refineWorkType(companyId, empIds, p.start());
 		}
@@ -1577,10 +1590,10 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		GeneralDate endDate ;
 		if(targetDate==1){
 			if(createPeriod==1){
-				endDate =	GeneralDate.ymd(today.year(), startMonth, startDate.localDate().getMonth().maxLength());
+				endDate =	GeneralDate.ymd(today.year(), startMonth, 1);
 				endDate = GeneralDate.ymd(today.year(), startMonth, endDate.localDate().getMonth().maxLength());
 			}else{
-				endDate =	GeneralDate.ymd(today.year(), startMonth+createPeriod-1, startDate.localDate().getMonth().maxLength());
+				endDate =	GeneralDate.ymd(today.year(), startMonth+createPeriod-1, 1);
 				endDate =	GeneralDate.ymd(today.year(), startMonth+createPeriod-1, endDate.localDate().getMonth().maxLength());
 			}
 		}else{
@@ -2138,7 +2151,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		}
 		this.procExecLogRepo.update(ProcessExecutionLog);
 		// 月別集計の判定
-		boolean reflectResultCls = processExecution.getExecSetting().isReflectResultCls();
+		boolean reflectResultCls = processExecution.getExecSetting().isMonthlyAggCls();
 		if (!reflectResultCls) {
 			// ドメインモデル「更新処理自動実行ログ」を更新する
 			for (int i = 0; i < size; i++) {
@@ -2439,7 +2452,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 
 	// true is interrupt
 	// 日別実績の作成 ~ 日別実績の計算
-	private boolean dailyPerformanceCreation(CommandHandlerContext<ExecuteProcessExecutionCommand> context,
+	private boolean dailyPerformanceCreation(String companyId,CommandHandlerContext<ExecuteProcessExecutionCommand> context,
 			ProcessExecution processExecution, EmpCalAndSumExeLog empCalAndSumExeLog, List<String> lstEmpId,
 			DatePeriod period, List<String> workPlaceIds, String typeExecution,ExecutionLog dailyCreateLog) throws CreateDailyException, DailyCalculateException {
 		/*
@@ -2566,7 +2579,10 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			// アルゴリズム「開始日を入社日にする」を実行する
 			DatePeriod employeeDatePeriod = this.makeStartDateForHiringDate(processExecution,
 					lstEmpId.get(i), period);
-			boolean executionDaily = this.executionDaily(context, processExecution,
+			if(employeeDatePeriod==null && processExecution.getExecSetting().getDailyPerf().getTargetGroupClassification().isMidJoinEmployee()){
+				continue;
+			}
+			boolean executionDaily = this.executionDaily(companyId,context, processExecution,
 					lstEmpId.get(i), empCalAndSumExeLog, employeeDatePeriod,
 					typeExecution, dailyCreateLog);
 			if (executionDaily) {
@@ -2574,6 +2590,19 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				break;
 			}
 		}
+		List<ErrMessageInfo> errMessageInfos = this.errMessageInfoRepository.getAllErrMessageInfoByEmpID(empCalAndSumExeLog.getEmpCalAndSumExecLogID());
+		List<String> errorMessage = errMessageInfos.stream().map(error -> {
+			return error.getMessageError().v();
+		}).collect(Collectors.toList());
+		if (!errorMessage.isEmpty()) {
+			if("日別作成".equals(typeExecution)){
+				throw new CreateDailyException();
+			}else{
+				throw new DailyCalculateException();
+			}
+		}
+		
+		
 		if (isInterrupt) {
 			return true;
 		}
@@ -2602,12 +2631,13 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				}
 				return new DatePeriod(startDate, period.end());
 			}
+			return null;
 		}
 		return period;
 	}
 
 	// true is interrupt
-	private boolean executionDaily(CommandHandlerContext<ExecuteProcessExecutionCommand> context,
+	private boolean executionDaily(String companyId,CommandHandlerContext<ExecuteProcessExecutionCommand> context,
 			ProcessExecution processExecution, String employeeId, EmpCalAndSumExeLog empCalAndSumExeLog,
 			DatePeriod period, String typeExecution,ExecutionLog dailyCreateLog) throws CreateDailyException, DailyCalculateException {
 		AsyncCommandHandlerContext<ExecuteProcessExecutionCommand> asyContext = (AsyncCommandHandlerContext<ExecuteProcessExecutionCommand>) context;
@@ -2625,8 +2655,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			}
 		} else {
 			try {
+				ManagePerCompanySet companyCommonSetting = new ManagePerCompanySet(holidayAddtionRepo.findByCompanyId(companyId), holidayAddtionRepo.findByCId(companyId), specificWorkRuleRepo.findCalcMethodByCid(companyId), compensLeaveComSetRepo.find(companyId), divergenceTimeRepo.getAllDivTime(companyId), errorAlarmWorkRecordRepo.getListErrorAlarmWorkRecord(companyId));
 				processState = this.dailyCalculationEmployeeService.calculate(asyContext, employeeId, period,
-						empCalAndSumExeLog.getEmpCalAndSumExecLogID(), ExecutionType.NORMAL_EXECUTION, null);
+						empCalAndSumExeLog.getEmpCalAndSumExecLogID(), ExecutionType.NORMAL_EXECUTION, companyCommonSetting);
 			} catch (Exception e) {
 				throw new DailyCalculateException();
 			}
@@ -2656,9 +2687,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	private boolean recreateProcess(CommandHandlerContext<ExecuteProcessExecutionCommand> context, int closureId,
 			EmpCalAndSumExeLog empCalAndSumExeLog, DatePeriod period, List<String> workPlaceIds,
 			List<String> empIdList, String companyId, ProcessExecutionLog procExecLog,
-			ProcessExecution processExecution) throws CreateDailyException, DailyCalculateException {
+			ProcessExecution processExecution,ExecutionLog dailyCreateLog) throws CreateDailyException, DailyCalculateException {
 		// 承認結果の反映の実行ログを作成
-		this.createExecLogReflecAppResult(empCalAndSumExeLog.getCaseSpecExeContentID(), companyId, procExecLog);
+		//this.createExecLogReflecAppResult(empCalAndSumExeLog.getCaseSpecExeContentID(), companyId, procExecLog);
 		// 期間を計算
 		DatePeriod calculatePeriod = this.calculatePeriod(closureId, period, companyId);
 		/*
@@ -2786,9 +2817,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		// 日別実績処理の再実行
 		int size = newEmpIdList.size();
 		for (int i = 0; i < size; i++) {
-			String empId = newEmpIdList.get(0);
+			String empId = newEmpIdList.get(i);
 			isHasInterrupt = this.RedoDailyPerformanceProcessing(context, companyId, empId, calculatePeriod,
-					empCalAndSumExeLog.getEmpCalAndSumExecLogID());
+					empCalAndSumExeLog.getEmpCalAndSumExecLogID(), dailyCreateLog);
 			if (isHasInterrupt) {
 				break;
 			}
@@ -2849,22 +2880,23 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	}
 
 	private boolean RedoDailyPerformanceProcessing(CommandHandlerContext<ExecuteProcessExecutionCommand> context,
-			String companyId, String empId, DatePeriod period, String empCalAndSumExeLogId) throws CreateDailyException, DailyCalculateException {
+			String companyId, String empId, DatePeriod period, String empCalAndSumExeLogId,ExecutionLog dailyCreateLog) throws CreateDailyException, DailyCalculateException {
 		AsyncCommandHandlerContext<ExecuteProcessExecutionCommand> asyncContext = (AsyncCommandHandlerContext<ExecuteProcessExecutionCommand>) context;
 				ProcessState processState1;
 		try {
 			// ⑤社員の日別実績を作成する
 			 processState1 = this.createDailyService.createDailyResultEmployeeWithNoInfoImport(asyncContext, empId, period,
-					companyId, empCalAndSumExeLogId, null, true);
+					companyId, empCalAndSumExeLogId,Optional.ofNullable(dailyCreateLog), true);
 		} catch (Exception e) {
 			throw new CreateDailyException();
 		}
 		ProcessState ProcessState2;
 		
 		try {
+			ManagePerCompanySet companyCommonSetting = new ManagePerCompanySet(holidayAddtionRepo.findByCompanyId(companyId), holidayAddtionRepo.findByCId(companyId), specificWorkRuleRepo.findCalcMethodByCid(companyId), compensLeaveComSetRepo.find(companyId), divergenceTimeRepo.getAllDivTime(companyId), errorAlarmWorkRecordRepo.getListErrorAlarmWorkRecord(companyId));
 			// 社員の日別実績を計算
 			 ProcessState2 = this.dailyCalculationEmployeeService.calculate(asyncContext, empId, period,
-					empCalAndSumExeLogId, ExecutionType.NORMAL_EXECUTION, null);
+					empCalAndSumExeLogId, ExecutionType.NORMAL_EXECUTION, companyCommonSetting);
 		} catch (Exception e) {
 			throw new DailyCalculateException();
 		}

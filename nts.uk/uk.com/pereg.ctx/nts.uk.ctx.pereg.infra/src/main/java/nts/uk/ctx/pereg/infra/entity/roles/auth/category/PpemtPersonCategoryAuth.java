@@ -34,53 +34,41 @@ public class PpemtPersonCategoryAuth extends UkJpaEntity implements Serializable
 	@Column(name = "ALLOW_OTHER_C_REF_ATR")
 	public int allowOtherCompanyRef;
 
-	@Basic(optional = false)
 	@Column(name = "SELF_PAST_HIS_AUTH_TYPE")
-	public int selfPastHisAuth;
+	public Integer selfPastHisAuth;
 
-	@Basic(optional = false)
 	@Column(name = "SELF_FUTURE_HIS_AUTH_TYPE")
-	public int selfFutureHisAuth;
+	public Integer selfFutureHisAuth;
 
-	@Basic(optional = false)
 	@Column(name = "SELF_ALLOW_DEL_HIS_ATR")
-	public int selfAllowDelHis;
+	public Integer selfAllowDelHis;
 
-	@Basic(optional = false)
 	@Column(name = "SELF_ALLOW_ADD_HIS_ATR")
-	public int selfAllowAddHis;
+	public Integer selfAllowAddHis;
 
-	@Basic(optional = false)
 	@Column(name = "OTHER_PAST_HIS_AUTH_TYPE")
-	public int otherPastHisAuth;
+	public Integer otherPastHisAuth;
 
-	@Basic(optional = false)
 	@Column(name = "OTHER_FUTURE_HIS_AUTH_TYPE")
-	public int otherFutureHisAuth;
+	public Integer otherFutureHisAuth;
 
-	@Basic(optional = false)
 	@Column(name = "OTHER_ALLOW_DEL_HIS_ATR")
-	public int otherAllowDelHis;
+	public Integer otherAllowDelHis;
 
-	@Basic(optional = false)
 	@Column(name = "OTHER_ALLOW_ADD_HIS_ATR")
-	public int otherAllowAddHis;
+	public Integer otherAllowAddHis;
 
-	@Basic(optional = false)
 	@Column(name = "SELF_ALLOW_DEL_MULTI_ATR")
-	public int selfAllowDelMulti;
+	public Integer selfAllowDelMulti;
 
-	@Basic(optional = false)
 	@Column(name = "SELF_ALLOW_ADD_MULTI_ATR")
-	public int selfAllowAddMulti;
+	public Integer selfAllowAddMulti;
 
-	@Basic(optional = false)
 	@Column(name = "OTHER_ALLOW_DEL_MULTI_ATR")
-	public int otherAllowDelMulti;
+	public Integer otherAllowDelMulti;
 
-	@Basic(optional = false)
 	@Column(name = "OTHER_ALLOW_ADD_MULTI_ATR")
-	public int otherAllowAddMulti;
+	public Integer otherAllowAddMulti;
 
 	@Override
 	protected Object getKey() {
@@ -92,18 +80,18 @@ public class PpemtPersonCategoryAuth extends UkJpaEntity implements Serializable
 		this.allowPersonRef = domain.getAllowPersonRef().value;
 		this.allowOtherRef = domain.getAllowOtherRef().value;
 		this.allowOtherCompanyRef = domain.getAllowOtherCompanyRef().value;
-		this.selfPastHisAuth = domain.getSelfPastHisAuth().value;
-		this.selfFutureHisAuth = domain.getSelfFutureHisAuth().value;
-		this.selfAllowAddHis = domain.getSelfAllowAddHis().value;
-		this.selfAllowDelHis = domain.getSelfAllowDelHis().value;
-		this.otherPastHisAuth = domain.getOtherPastHisAuth().value;
-		this.otherFutureHisAuth = domain.getOtherFutureHisAuth().value;
-		this.otherAllowAddHis = domain.getOtherAllowAddHis().value;
-		this.otherAllowDelHis = domain.getOtherAllowDelHis().value;
-		this.selfAllowAddMulti = domain.getSelfAllowAddMulti().value;
-		this.selfAllowDelMulti = domain.getSelfAllowDelMulti().value;
-		this.otherAllowAddMulti = domain.getOtherAllowAddMulti().value;
-		this.otherAllowDelMulti = domain.getOtherAllowDelMulti().value;
+		this.selfPastHisAuth = domain.getSelfPastHisAuth() == null? null: domain.getSelfPastHisAuth().value;
+		this.selfFutureHisAuth = domain.getSelfFutureHisAuth() == null? null: domain.getSelfFutureHisAuth().value;
+		this.selfAllowAddHis = domain.getSelfAllowAddHis() == null? null: domain.getSelfAllowAddHis().value;
+		this.selfAllowDelHis = domain.getSelfAllowDelHis() == null? null: domain.getSelfAllowDelHis().value;
+		this.otherPastHisAuth = domain.getOtherPastHisAuth() == null? null: domain.getOtherPastHisAuth().value;
+		this.otherFutureHisAuth = domain.getOtherFutureHisAuth() == null? null: domain.getOtherFutureHisAuth().value;
+		this.otherAllowAddHis = domain.getOtherAllowAddHis() == null? null: domain.getOtherAllowAddHis().value;
+		this.otherAllowDelHis = domain.getOtherAllowDelHis() == null? null: domain.getOtherAllowDelHis().value;
+		this.selfAllowAddMulti = domain.getSelfAllowAddMulti() == null?  null: domain.getSelfAllowAddMulti().value;
+		this.selfAllowDelMulti = domain.getSelfAllowDelMulti() == null? null: domain.getSelfAllowDelMulti().value;
+		this.otherAllowAddMulti = domain.getOtherAllowAddMulti() == null? null: domain.getOtherAllowAddMulti().value;
+		this.otherAllowDelMulti = domain.getOtherAllowDelMulti() == null? null: domain.getOtherAllowDelMulti().value;
 		return this;
 	}
 

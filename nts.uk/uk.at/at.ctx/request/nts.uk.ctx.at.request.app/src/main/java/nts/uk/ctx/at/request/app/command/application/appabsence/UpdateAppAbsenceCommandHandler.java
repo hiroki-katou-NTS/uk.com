@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.app.command.application.appabsence;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -17,13 +16,14 @@ import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
-public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<UpdateAppAbsenceCommand, List<String>>{
+public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<UpdateAppAbsenceCommand, ProcessResult>{
 	final static String DATE_FORMAT = "yyyy/MM/dd";
 	@Inject
 	private AppAbsenceRepository appAbsenceRepository;
@@ -36,7 +36,7 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 	@Inject
 	private CreatAppAbsenceCommandHandler creatAppAbsenceCommandHandler;
 	@Override
-	protected List<String> handle(CommandHandlerContext<UpdateAppAbsenceCommand> context) {
+	protected ProcessResult handle(CommandHandlerContext<UpdateAppAbsenceCommand> context) {
 		String companyID = AppContexts.user().companyId();
 		UpdateAppAbsenceCommand command = context.getCommand();
 		Optional<AppAbsence> opAppAbsence = this.appAbsenceRepository.getAbsenceByAppId(companyID, command.getAppID());

@@ -189,13 +189,15 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 else {
                     monthConfirm = "";
                 }
-                if (_.filter(item.listDailyConfirm, { bossConfirm: false, personConfirm: false }).length == 0) {
+                if (_.filter(item.listDailyConfirm, { bossConfirm: false, personConfirm: false }).length == 0
+                    && _.filter(item.listDailyConfirm, { personConfirm: true }).length > 1) {
                     personConfirm = text("KAF018_92");
                 }
                 else {
                     personConfirm = "";
                 }
-                if (_.filter(item.listDailyConfirm, { bossConfirm: false }).length == 0) {
+                if (_.filter(item.listDailyConfirm, { bossConfirm: false }).length == 0
+                    && _.filter(item.listDailyConfirm, { bossConfirm: true }).length > 0) {
                     bossConfirm = text("KAF018_92");
                 }
                 else {
@@ -223,10 +225,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                         hasError = false;
                     } else {
                         let objDaily = _.find(item.listDailyConfirm, { targetDate: self.formatDate(currentDay) });
-                        if (objDaily == null) {
-                            performance = Performance.NONE;
-                            hasError = false;
-                        } else {
+                        if (objDaily != null) {
                             if (self.useSetting.usePersonConfirm && self.useSetting.useBossConfirm) {
                                 if (!objDaily.personConfirm && !objDaily.bossConfirm) {
                                     performance = Performance.PERSON_UNCONFIRM;
@@ -271,16 +270,16 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         initExTable(): JQueryPromise<any> {
             let self = this;
             var dfd = $.Deferred();
-            shareModel.clearStorageExTable();
             self.getEmpPerformance().done(function(listData: any) {
-                let sv1 = self.setColorForCellHeaderDetail();
-                let sv2 = self.setColorForCellContentDetail(listData);
-                $.when(sv1, sv2).done(function(detailHeaderDeco, detailContentDeco) {
-                    let initExTable = self.setFormatData(detailHeaderDeco, detailContentDeco, listData);
+                let detailContentDeco = self.setColorForCellContentDetail(listData);
+                let leftmostDeco = self.setStyleForCellContentHeader(listData);
+                self.setColorForCellHeaderDetail().done(function(detailHeaderDeco) {
+                    let initExTable = self.setFormatData(leftmostDeco, detailHeaderDeco, detailContentDeco, listData);
                     new nts.uk.ui.exTable.ExTable($("#extable"), {
-                        headerHeight: "50px", bodyRowHeight: "18px", bodyHeight: "324px",
+                        headerHeight: "64px", bodyRowHeight: "22px", bodyHeight: "308px",
                         horizontalSumBodyRowHeight: "0px",
                         areaResize: false,
+                        remainSizes: false,
                         bodyHeightMode: "fixed",
                         windowXOccupation: 50,
                         windowYOccupation: 20,
@@ -303,10 +302,10 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             let self = this;
             block.invisible();
             self.getEmpPerformance().done(function(listData: any) {
-                let sv1 = self.setColorForCellHeaderDetail();
-                let sv2 = self.setColorForCellContentDetail(listData);
-                $.when(sv1, sv2).done(function(detailHeaderDeco, detailContentDeco) {
-                    let initExTable = self.setFormatData(detailHeaderDeco, detailContentDeco, listData);
+                let detailContentDeco = self.setColorForCellContentDetail(listData);
+                let leftmostDeco = self.setStyleForCellContentHeader(listData);
+                self.setColorForCellHeaderDetail().done(function(detailHeaderDeco) {
+                    let initExTable = self.setFormatData(leftmostDeco, detailHeaderDeco, detailContentDeco, listData);
                     $("#extable").exTable("updateTable", "leftmost", initExTable.leftmostHeader, initExTable.leftmostContent, true);
                     $("#extable").exTable("updateTable", "detail", initExTable.detailHeader, initExTable.detailContent, true);
                 }).always(() => {
@@ -317,12 +316,12 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             })
         }
 
-        setFormatData(detailHeaderDeco, detailContentDeco, listData) {
+        setFormatData(leftmostDeco, detailHeaderDeco, detailContentDeco, listData) {
             let self = this;
             let leftmostColumns = [];
             let leftmostHeader = {};
             let leftmostContent = {};
-            let leftmostHeaderWidth = 0;
+            let leftmostEmpNameHeaderWidth = 0;
 
             let detailHeaderColumns = [];
             let detailHeader = {};
@@ -331,32 +330,37 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 
             //create leftMost Header and Content            
             leftmostColumns = [
-                { headerText: text("KAF018_60"), key: "sName", width: "165px", control: "link", handler: function(rData, rowIdx, key) { } }
+                { headerText: text("KAF018_60"), key: "sName", width: "200px", control: "link", handler: function(rData, rowIdx, key) { } }
             ];
-            leftmostHeaderWidth += 165;
+            leftmostEmpNameHeaderWidth += 352;
 
             if (self.useSetting.monthlyConfirm) {
-                leftmostColumns.push({ headerText: formatText(text("KAF018_61"), self.currentMonth), key: "monthConfirm", width: "35px", headerControl: "link", headerHandler: function() { } });
-                leftmostHeaderWidth += 35;
+                leftmostColumns.push({ headerText: formatText(text("KAF018_61"), self.currentMonth), key: "monthConfirm", width: "44px", headerControl: "link", headerHandler: function() { } });
+                leftmostEmpNameHeaderWidth -= 44;
             }
             if (self.useSetting.usePersonConfirm) {
-                leftmostColumns.push({ headerText: text("KAF018_62"), key: "personConfirm", width: "45px" });
-                leftmostHeaderWidth += 45;
+                leftmostColumns.push({ headerText: text("KAF018_62"), key: "personConfirm", width: "54px" });
+                leftmostEmpNameHeaderWidth -= 54;
             }
             if (self.useSetting.useBossConfirm) {
-                leftmostColumns.push({ headerText: text("KAF018_63"), key: "bossConfirm", width: "45px" });
-                leftmostHeaderWidth += 45;
+                leftmostColumns.push({ headerText: text("KAF018_63"), key: "bossConfirm", width: "54px" });
+                leftmostEmpNameHeaderWidth -= 54;
             }
+            leftmostColumns[0].width = leftmostEmpNameHeaderWidth;
 
             leftmostHeader = {
                 columns: leftmostColumns,
-                rowHeight: "50px",
-                width: leftmostHeaderWidth + "px"
+                rowHeight: "64px",
+                width: "352px"
             };
             leftmostContent = {
                 columns: leftmostColumns,
                 dataSource: listData,
-                primaryKey: "index"
+                primaryKey: "index",
+                features: [{
+                    name: "BodyCellStyle",
+                    decorator: leftmostDeco
+                }]
             };
 
             // create detail Columns and detail Content Columns
@@ -364,10 +368,10 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             while (currentDay <= self.dtAft()) {
                 let time = new shareModel.Time(currentDay);
                 detailHeaderColumns.push({
-                    key: "_" + time.yearMonthDay, width: "30px", headerText: self.getDay(time)
+                    key: "_" + time.yearMonthDay, width: "28px", headerText: self.getDay(time)
                 });
                 detailContentColumns.push({
-                    key: "__" + time.yearMonthDay, width: "30px"
+                    key: "__" + time.yearMonthDay, width: "28px"
                 });
                 currentDay.setDate(currentDay.getDate() + 1);
             }
@@ -378,11 +382,11 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                     headerText: text("KAF018_64"),
                     group: detailHeaderColumns
                 }],
-                width: "930px",
+                width: "868px",
                 features: [
                     {
                         name: "HeaderRowHeight",
-                        rows: { 0: "20px", 1: "30px" }
+                        rows: { 0: "22px", 1: "42px" }
                     },
                     {
                         name: "HeaderCellStyle",
@@ -469,8 +473,8 @@ module nts.uk.at.view.kaf018.f.viewmodel {
          * Set color for cell detail
          * 
          */
-        setColorForCellContentDetail(listData: Array<EmpPerformance>): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
+        setColorForCellContentDetail(listData: Array<EmpPerformance>) {
+            let self = this;
             let detailContentDeco = [];
             for (let i = 0; i < listData.length; i++) {
                 let currentDay = new Date(self.dtPrev().toString());
@@ -505,8 +509,20 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                     j++;
                 }
             }
-            dfd.resolve(detailContentDeco);
-            return dfd.promise();
+            return detailContentDeco;
+        }
+
+        /**
+         * Set color for cell detail
+         * 
+         */
+        setStyleForCellContentHeader(listData: Array<EmpPerformance>) {
+            let self = this;
+            let leftmostDeco = [];
+            _.each(listData, function(item) {
+                leftmostDeco.push(new shareModel.CellColor("sName", item.index, "emp-name" + item.index));
+            })
+            return leftmostDeco;
         }
     }
 

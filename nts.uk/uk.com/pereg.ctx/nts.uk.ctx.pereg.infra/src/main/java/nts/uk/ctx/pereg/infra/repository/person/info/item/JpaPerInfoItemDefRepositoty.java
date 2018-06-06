@@ -70,7 +70,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	
 	private final static String CONDITION_FOR_007008 = "ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId IN :lstPerInfoCategoryId AND i.abolitionAtr = 0 AND (ic.itemParentCd IS NULL OR ic.itemParentCd = '')  ORDER BY io.disporder";
 	
-	private final static String CONDITION = "ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId ORDER BY io.disporder";
+	private final static String CONDITION = "ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId AND i.abolitionAtr = 0  ORDER BY io.disporder";
 
 	private final static String SELECT_ITEMS_BY_CATEGORY_ID_QUERY = String.join(" ", SELECT_NO_WHERE, "WHERE",
 			COMMON_CONDITION);
@@ -327,6 +327,10 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"WHERE c.cid =:cid  and ic.ppemtPerInfoItemCmPK.contractCd =:contractCd AND ic.itemType = 2 AND  (ic.ppemtPerInfoItemCmPK.itemCd IN :itemCdLst OR ic.itemParentCd IN :itemCdLst) ",
 			"ORDER BY io.disporder");
 	
+	private final static String SEL_ITEM_EVENT = String.join(" ",
+			"SELECT i.ppemtPerInfoItemPK.perInfoItemDefId, i.perInfoCtgId FROM  PpemtPerInfoItem i",
+			"WHERE i.perInfoCtgId IN :perInfoCtgId   AND i.itemCd IN :itemCd");
+
 	private final static String SELECT_ALL_ITEMS_BY_ITEM_CD_QUERY = String.join(" ",
 			"SELECT distinct i.ppemtPerInfoItemPK.perInfoItemDefId, i.itemCd, i.itemName, i.abolitionAtr, i.requiredAtr,",
 			"ic.itemParentCd, ic.systemRequiredAtr, ic.requireChangabledAtr, ic.fixedAtr, ic.itemType,",
@@ -344,6 +348,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	
 	private final static String SELECT_ALL_DISORDER__BY_CTC_ID_QUERY = String.join(" ",
 			"SELECT  o FROM PpemtPerInfoItemOrder o WHERE o.perInfoCtgId =:perInfoCtgId ");
+
 
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
@@ -598,7 +603,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		String perInfoCategoryId = String.valueOf(i[27]);
 
 		String relatedCategoryCode = String.valueOf(i[28]);
-		String resourceId = null;
+		String resourceId = i[29] == null ? null : String.valueOf(i[29]);
 
 		return PersonInfoItemDefinition.createNewPersonInfoItemDefinition(perInfoItemDefId, perInfoCategoryId,
 				itemParentCode, itemCode, itemName, isAbolition, isFixed, isRequired, systemRequired, requireChangable,
@@ -1002,10 +1007,11 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		List<String> itemCodeChilds = this.queryProxy().query(SELECT_ITEM_CD_BY_ITEM_ID_QUERY, String.class)
 				.setParameter("contractCd", contractCd).setParameter("listItemDefId", listItemDefId).getList();
 		if(!itemCodeChilds.isEmpty()) {
-		List<String> itemCodeChildChilds = this.queryProxy().query(SELECT_ITEM_CD_BY_ITEM_CD_QUERY, String.class)
-				.setParameter("contractCd", contractCd).setParameter("itemCdLst", itemCodeChilds).getList();
-		itemCodeAll.addAll(itemCodeChilds);
-		if(!itemCodeChildChilds.isEmpty()) itemCodeAll.addAll(itemCodeChildChilds);
+			List<String> itemCodeChildChilds = this.queryProxy().query(SELECT_ITEM_CD_BY_ITEM_CD_QUERY, String.class)
+					.setParameter("contractCd", contractCd).setParameter("itemCdLst", itemCodeChilds).getList();
+			itemCodeAll.addAll(itemCodeChilds);
+			if(!itemCodeChildChilds.isEmpty()) 
+				itemCodeAll.addAll(itemCodeChildChilds);
 		}
 		if(!itemCodeAll.isEmpty()) {
 			return this.queryProxy().query(SELECT_CHILD_ITEMS_BY_ITEM_CD_QUERY, Object[].class)
@@ -1029,6 +1035,31 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	}
 
 	@Override
+
+	public List<PersonInfoItemDefinition> getAllItemId(List<String> ctgIdLst, List<String> itemCodeLst) {
+		List<PersonInfoItemDefinition> itemIdLst = this.queryProxy().query(SEL_ITEM_EVENT, Object[].class)
+				.setParameter("perInfoCtgId", ctgIdLst)
+				.setParameter("itemCd", itemCodeLst)
+				.getList(c -> toDomain(c));
+		return itemIdLst;
+	}
+	
+
+	@Override
+	public void updateAbolitionItem(List<PersonInfoItemDefinition>itemLst){
+		itemLst.stream().forEach(c ->{
+			Optional<PpemtPerInfoItem> entityOpt = this.queryProxy()
+					.find(new PpemtPerInfoItemPK(c.getPerInfoItemDefId()), PpemtPerInfoItem.class);
+			if (entityOpt.isPresent()) {
+				PpemtPerInfoItem entity = entityOpt.get();
+				if (c.getIsAbolition() != null) {
+					entity.abolitionAtr = c.getIsAbolition().value;
+				}
+				this.commandProxy().update(entity);
+			}
+		});
+	}
+
 	public List<PersonInfoItemDefinition> getItemLstByListId(List<String> listItemDefId, String ctgId,
 			String categoryCd, String contractCd) {
 		List<String> itemCodeAll = new ArrayList<>();

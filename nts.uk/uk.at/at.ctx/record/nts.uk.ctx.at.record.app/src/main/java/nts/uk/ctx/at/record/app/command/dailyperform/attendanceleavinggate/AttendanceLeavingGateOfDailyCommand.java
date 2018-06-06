@@ -6,26 +6,38 @@ import lombok.Getter;
 import nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.dto.AttendanceLeavingGateOfDailyDto;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 
 public class AttendanceLeavingGateOfDailyCommand extends DailyWorkCommonCommand {
 
 	@Getter
-	private Optional<AttendanceLeavingGateOfDailyDto> data;
+	private Optional<AttendanceLeavingGateOfDaily> data;
 
 	@Override
-	public void setRecords(AttendanceItemCommon item) {
-		this.data = item == null || !item.isHaveData() ? Optional.empty() : Optional.of((AttendanceLeavingGateOfDailyDto) item);
+	public void setRecords(ConvertibleAttendanceItem item) {
+		this.data = item == null || !item.isHaveData() ? Optional.empty() 
+				: Optional.of(((AttendanceLeavingGateOfDailyDto) item).toDomain(getEmployeeId(), getWorkDate()));
 	}
 
 	@Override
 	public void updateData(Object item) {
 		if(data == null){ return; }
-		setRecords(AttendanceLeavingGateOfDailyDto.getDto((AttendanceLeavingGateOfDaily) item));
+		this.data = Optional.of((AttendanceLeavingGateOfDaily) item);
 	}
 
 	@Override
 	public Optional<AttendanceLeavingGateOfDaily> toDomain() {
-		return data == null ? null : data.map(c -> c.toDomain(getEmployeeId(), getWorkDate()));
+		return data;
+	}
+
+	@Override
+	public Optional<AttendanceLeavingGateOfDailyDto> toDto() {
+		return getData().map(b -> AttendanceLeavingGateOfDailyDto.getDto(b));
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public void updateDataO(Optional<?> data) {
+		this.data = (Optional<AttendanceLeavingGateOfDaily>) data;
 	}
 }

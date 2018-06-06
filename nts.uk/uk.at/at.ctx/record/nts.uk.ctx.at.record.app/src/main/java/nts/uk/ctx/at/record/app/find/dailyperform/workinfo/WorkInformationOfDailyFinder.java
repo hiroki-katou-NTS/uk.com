@@ -35,8 +35,13 @@ public class WorkInformationOfDailyFinder extends FinderFacade {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends ConvertibleAttendanceItem> List<T> find(Map<String, GeneralDate> param) {
+	public <T extends ConvertibleAttendanceItem> List<T> find(Map<String, List<GeneralDate>> param) {
 		return (List<T>) this.workInfoRepo.finds(param).stream()
 			.map(c -> WorkInformationOfDailyDto.getDto(c)).collect(Collectors.toList());
+	}
+
+	@Override
+	public Object getDomain(String employeeId, GeneralDate baseDate) {
+		return this.workInfoRepo.find(employeeId, baseDate);
 	}
 }

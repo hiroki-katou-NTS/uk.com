@@ -85,19 +85,19 @@ module nts.custom.component {
                                 click: function() {
                                     combobox.value.valueHasMutated();
                                 }" tabindex="8"></button>
-                        <div data-bind="attr: {
+                        <div tabindex="9" data-bind="attr: {
                                     id: nts.uk.util.randomId().replace(/-/g, '')
                                 }, 
-                                ntsDropDownList: {
+                                ntsComboBox: {
+                                    width: '100%',
                                     value: combobox.value,
-                                    dataSource: combobox.options,
-                                    textKey: 'categoryName',
-                                    valueKey: 'id',
+                                    options: combobox.options,
+                                    optionsText: 'categoryName',
+                                    optionsValue: 'id',
                                     visibleItemsCount: 10,
-                                    tabIndex: 9,
                                     columns: [
-                                        { prop: 'categoryCode', class: 'hidden' },
-                                        { prop: 'categoryName'}
+                                        /*{ prop: 'categoryCode', toggle: 'hidden', length: 20 },*/
+                                        { prop: 'categoryName', length: 14}
                                     ]
                                  }"
                             tabindex="9"></div>

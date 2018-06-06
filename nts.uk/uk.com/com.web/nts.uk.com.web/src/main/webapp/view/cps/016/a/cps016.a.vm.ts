@@ -64,6 +64,11 @@ module nts.uk.com.view.cps016.a.viewmodel {
             let dfd = $.Deferred();
 
             nts.uk.ui.errors.clearAll();
+            
+            let groupCompanyAdmin = __viewContext.user.role.groupCompanyAdmin;
+            if (groupCompanyAdmin === 'null') {
+                uk.request.jumpToTopPage();
+            }
 
             // get selection items
             self.getAllSelectionItems().done(() => {

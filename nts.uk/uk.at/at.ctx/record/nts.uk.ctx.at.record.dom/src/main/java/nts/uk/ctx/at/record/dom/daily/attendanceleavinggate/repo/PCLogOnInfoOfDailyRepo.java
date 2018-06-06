@@ -18,7 +18,7 @@ public interface PCLogOnInfoOfDailyRepo {
 	
 	public List<PCLogOnInfoOfDaily> finds(List<String> employeeId, DatePeriod baseDate);
 	
-	public List<PCLogOnInfoOfDaily> finds(Map<String, GeneralDate> param);
+	public List<PCLogOnInfoOfDaily> finds(Map<String, List<GeneralDate>> param);
 
 	public void update(PCLogOnInfoOfDaily domain);
 

@@ -152,24 +152,24 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         });
 
                     });
-              _.defer(() => {
-                    self.currentCategory().itemList.removeAll();
-                    self.currentCategory().itemList(itemConvert);
-                    self.lstItemFilter = itemConvert;
-                  _.defer(() => {
-                        $('#ctgName').focus();
-                     });
-                });
+                    _.defer(() => {
+                        self.currentCategory().itemList.removeAll();
+                        self.currentCategory().itemList(itemConvert);
+                        self.lstItemFilter = itemConvert;
+                        _.defer(() => {
+                            $('#ctgName').focus();
+                        });
+                    });
                 } else {
                     _.defer(() => {
-                      self.currentCategory().itemList.removeAll();
+                        self.currentCategory().itemList.removeAll();
                         self.currentCategory().itemList([]);
-                      _.defer(() => {
+                        _.defer(() => {
                             $('#ctgName').focus();
-                         });
+                        });
                     });
                 }
-            }).always(()=>{ block.clear()});
+            }).always(() => { block.clear() });
         }
 
         start(id: string): JQueryPromise<any> {
@@ -557,9 +557,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 $("#sub-right>table>tbody").css("height", "495px");
             }
         }
-        
-        checkError(itemList : Array<any>){
-        
+
+        checkError(itemList: Array<any>) {
+
         }
 
     }
@@ -928,15 +928,17 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 self.selectionItemRefType = params.selectionItemRefType || undefined;
 
                 self.selection = ko.observableArray(params.selection || []);
-                self.selectedCode = ko.observable((params.stringValue == null ? params.selectionItemId : params.stringValue) || undefined);
+
+
+                self.selectedCode = ko.observable((params.stringValue == null ? (params.selection.length > 0 ? params.selection[0].optionValue : undefined) : params.stringValue) || undefined);
 
             }
 
             if (params.dataType === 8) {
-                let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == params.stringValue) { return c } });
+                let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == self.selectedCode()) { return c } });
                 self.selectionName = ko.observable((objSel == undefined ? " " : objSel.optionText) || " ");
+                console.log(self.selectionName());
             }
-
 
             self.dateType = params.dateType || undefined;
 
@@ -1246,43 +1248,49 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 isSelfWorkTime: boolean = isSelfItemWorkTime !== undefined ? true : false,
                 itemWorkTime: any = _.find(ko.toJS(__viewContext["viewModel"].currentCategory().itemList()), function(obj) { if (isSelfWorkType) { if (obj.itemCode === isSelfItemWorkType.workTime) { return obj; } } }),
                 itemWorkType: any = _.find(ko.toJS(__viewContext["viewModel"].currentCategory().itemList()), function(obj) { if (isSelfWorkTime) { if (obj.itemCode === isSelfItemWorkTime.workType) { return obj; } } });
-            if (isKdl002) {
-                setShared("KDL002_Multiple", false, true);
-                setShared("KDL002_SelectedItemId", self.selectedCode(), true);
-                setShared("KDL002_AllItemObj", _.map(ko.toJS(self.selection), x => x.optionValue), true);
+            if (self.ctgCode() == "CS00020") {
 
-                modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
-                    let childData: Array<any> = getShared('KDL002_SelectedNewItem');
+                if (isKdl002) {
+                    setShared("KDL002_Multiple", false, true);
+                    setShared("KDL002_SelectedItemId", self.selectedCode(), true);
+                    setShared("KDL002_AllItemObj", _.map(ko.toJS(self.selection), x => x.optionValue), true);
 
-                    if (childData[0]) {
-                        self.selectionName(childData[0].code + " " + childData[0].name);
-                        self.selectedCode(childData[0].code);
-                    }
-                });
-            } else {
-                let objShare: any = {};
-                if (isSelfWorkType) {
-                    objShare = {
-                        workTypeCodes: isSelfItemWorkType && _.map(self.selection(), x => x.optionValue),
-                        selectedWorkTypeCode: self.selectedCode() && ko.toJS(self.selectedCode),
-                        workTimeCodes: _.map(itemWorkTime != undefined ? itemWorkTime.selection : [], x => x.optionValue),
-                        selectedWorkTimeCode: ko.toJS(itemWorkTime.selectedCode)
-                    };
+                    modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
+                        let childData: Array<any> = getShared('KDL002_SelectedNewItem');
+
+                        if (childData[0]) {
+                            self.selectionName(childData[0].code + " " + childData[0].name);
+                            self.selectedCode(childData[0].code);
+                        }
+                    });
                 } else {
-                    objShare = {
-                        workTypeCodes: _.map(itemWorkType != undefined ? itemWorkType.selection : [], x => x.optionValue),
-                        selectedWorkTypeCode: ko.toJS(itemWorkType.selectedCode),
-                        workTimeCodes: isSelfItemWorkTime && _.map(self.selection(), x => x.optionValue),
-                        selectedWorkTimeCode: self.selectedCode() && ko.toJS(self.selectedCode)
-                    };
+                    let objShare: any = {};
+                    if (isSelfWorkType) {
+                        objShare = {
+                            workTypeCodes: isSelfItemWorkType && _.map(self.selection(), x => x.optionValue),
+                            selectedWorkTypeCode: self.selectedCode() && ko.toJS(self.selectedCode),
+                            workTimeCodes: _.map(itemWorkTime != undefined ? itemWorkTime.selection : [], x => x.optionValue),
+                            selectedWorkTimeCode: ko.toJS(itemWorkTime.selectedCode)
+                        };
+                    } else {
+                        objShare = {
+                            workTypeCodes: _.map(itemWorkType != undefined ? itemWorkType.selection : [], x => x.optionValue),
+                            selectedWorkTypeCode: ko.toJS(itemWorkType.selectedCode),
+                            workTimeCodes: isSelfItemWorkTime && _.map(self.selection(), x => x.optionValue),
+                            selectedWorkTimeCode: self.selectedCode() && ko.toJS(self.selectedCode)
+                        };
+                    }
+
+                    setShared('parentCodes', objShare, true);
+
+                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                        let childData: IChildData = getShared('childData');
+                        self.setValueOfCS00020(childData, isSelfWorkType, isSelfWorkTime, isSelfItemWorkType, isSelfItemWorkTime, itemWorkTime, itemWorkType);
+                    });
                 }
-
-                setShared('parentCodes', objShare, true);
-
-                modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                    let childData: IChildData = getShared('childData');
-                    self.setValueOfCS00020(childData, isSelfWorkType, isSelfWorkTime, isSelfItemWorkType, isSelfItemWorkTime, itemWorkTime, itemWorkType);
-                });
+            }
+            if (self.ctgCode() == "CS00017") {
+                self.clickButtonCS0017();
             }
         }
 
@@ -1332,6 +1340,32 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 i = i + 3;
             }
 
+        }
+
+        clickButtonCS0017() {
+            let self = this;
+            setShared('inputCDL008', {
+                selectedCodes: [self.selectedCode()],
+                baseDate: moment.utc(new Date()).toDate(),
+                isMultiple: false,
+                selectedSystemType: 5,
+                isrestrictionOfReferenceRange: false
+            }, true);
+
+            modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
+                // Check is cancel.
+                if (getShared('CDL008Cancel')) {
+                    return;
+                }
+
+                //view all code of selected item 
+                let output = getShared('outputCDL008');
+                if (output) {
+                    let objSel: any = _.find(self.selection(), function(c) { if (c.optionValue == output) { return c; } });
+                    self.selectionName(objSel == undefined ? " " : objSel.optionText);
+                    self.selectedCode(output);
+                }
+            });
         }
 
     }

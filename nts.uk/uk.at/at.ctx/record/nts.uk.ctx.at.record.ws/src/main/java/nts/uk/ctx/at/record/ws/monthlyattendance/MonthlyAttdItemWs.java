@@ -53,4 +53,11 @@ public class MonthlyAttdItemWs extends WebService {
 		return data;
 		
 	}
+	
+	@POST
+	@Path("getattendcomparison/{checkItem}")
+	public List<AttdItemDto> getMonthlyAttendanceComparisonBy(@PathParam("checkItem") int checkItem) {
+		return this.finder.findByAtr(checkItem);
+	}
+	
 }

@@ -4,7 +4,11 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoAuthType;
-
+/**
+ * 個人情報項目権限
+ * @author lanlt
+ *
+ */
 @Getter
 public class PersonInfoItemAuth extends AggregateRoot {
 
