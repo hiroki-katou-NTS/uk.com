@@ -39,6 +39,12 @@ public class DayOffManagementFinder {
 		dayOffAll.addAll(resultDayFreeMana);
 		Collections.sort(dayOffAll, new Comparator<DayOffManagementDto>() {
 			  public int compare(DayOffManagementDto o1, DayOffManagementDto o2) {
+				  if (o1.getDateHoliday() == null) {
+				        return (o2.getDateHoliday() == null) ? 0 : -1;
+				    }
+				    if (o2.getDateHoliday() == null) {
+				        return 1;
+				    }
 			      return o1.getDateHoliday().compareTo(o2.getDateHoliday());
 			  }
 		});

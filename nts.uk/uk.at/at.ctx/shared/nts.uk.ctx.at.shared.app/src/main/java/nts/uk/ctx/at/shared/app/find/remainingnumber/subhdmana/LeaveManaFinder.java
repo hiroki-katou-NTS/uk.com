@@ -39,6 +39,12 @@ public class LeaveManaFinder {
 		allLeaveMana.addAll(resultLeaveFreeMana);
 		Collections.sort(allLeaveMana, new Comparator<LeaveManaDto>() {
 			  public int compare(LeaveManaDto o1, LeaveManaDto o2) {
+				  if (o1.getDateHoliday() == null) {
+				        return (o2.getDateHoliday() == null) ? 0 : -1;
+				    }
+				    if (o2.getDateHoliday() == null) {
+				        return 1;
+				    }
 			      return o1.getDateHoliday().compareTo(o2.getDateHoliday());
 			  }
 		});
