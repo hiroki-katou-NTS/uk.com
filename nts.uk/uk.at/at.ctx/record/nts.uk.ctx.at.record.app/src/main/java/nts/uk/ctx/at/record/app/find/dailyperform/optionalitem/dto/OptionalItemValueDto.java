@@ -12,8 +12,10 @@ import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemTime;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemTimes;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValue;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
@@ -30,12 +32,13 @@ public class OptionalItemValueDto {
 
 	@Getter
 	private int itemNo;
-	
+
 	private boolean isTimeItem;
-	
+
 	private boolean isTimesItem;
-	
+
 	private boolean isAmountItem;
+
 	public OptionalItemValueDto(String value, int itemNo, boolean isTimeItem, boolean isTimesItem,
 			boolean isAmountItem) {
 		super();
@@ -61,32 +64,29 @@ public class OptionalItemValueDto {
 		return null;
 	}
 	
+	public static OptionalItemValueDto from(AnyItemValue c, OptionalItemAtr attr) {
+		if (c != null) {
+			boolean isTimes = attr == OptionalItemAtr.NUMBER;
+			boolean isAmount = attr == OptionalItemAtr.AMOUNT;
+			boolean isTime = attr == OptionalItemAtr.TIME;
 			String value = isAmount ? c.getAmount().isPresent() ? String.valueOf(c.getAmount().get().v() ) : "" : 
 						isTime ? c.getTime().isPresent() ? String.valueOf(c.getTime().get().valueAsMinutes()) : "" : 
 							c.getTimes().isPresent() ? c.getTimes().get().v().toString() : "";
 			OptionalItemValueDto dto = new OptionalItemValueDto(value, c.getItemNo().v(), isTime, isTimes, isAmount);
 			dto.itemMapped();
 			return dto;
-	
-	public static OptionalItemValueDto from(AnyItemValue c) {
-		if(c != null) {
-			boolean isTimes = c.getTimes().isPresent();
-			boolean isAmount = c.getAmount().isPresent();
-			boolean isTime = c.getTime().isPresent();
-			String value = isAmount ? c.getAmount().get().v().toString()
-					: isTime ? String.valueOf(c.getTime().get().valueAsMinutes())
-							: String.valueOf(c.getTimes().get().v());
 		}
 		return null;
 	}
 	
+	public static OptionalItemValueDto from(AnyItemOfMonthly c, OptionalItemAtr attr) {
 		if(c != null) {
-			boolean isTimes = c.getTimes().isPresent();
-			boolean isAmount = c.getAmount().isPresent();
-			boolean isTime = c.getTime().isPresent();
-			String value = isTimes ? c.getTimes().get().v().toString()
-					: isAmount ? String.valueOf(c.getAmount().get().v())
-							: String.valueOf(c.getTime().get().valueAsMinutes());
+			boolean isTimes = attr == OptionalItemAtr.NUMBER;
+			boolean isAmount = attr == OptionalItemAtr.AMOUNT;
+			boolean isTime = attr == OptionalItemAtr.TIME;
+			String value = isAmount ? String.valueOf(c.getAmount().get().v() ): 
+				isTime ? String.valueOf(c.getTime().get().valueAsMinutes()) : 
+					     c.getTimes().get().v().toString();
 			OptionalItemValueDto dto = new OptionalItemValueDto(value, c.getAnyItemId(), isTime, isTimes, isAmount);
 			dto.itemMapped();
 			return dto;
@@ -128,16 +128,16 @@ public class OptionalItemValueDto {
 		return null;
 	}
 	
-	public Integer getDailyTimes(){
+	public BigDecimal getDailyTimes(){
 		if(isTimesItem && isHaveData()){
-			return Integer.parseInt(value);
+			return new BigDecimal(value);
 		}
 		return null;
 	}
 	
-	public BigDecimal getDailyAmount(){
+	public Integer getDailyAmount(){
 		if(isAmountItem && isHaveData()){
-			return new BigDecimal(value);
+			return Integer.parseInt(value);
 		}
 		return null;
 	}

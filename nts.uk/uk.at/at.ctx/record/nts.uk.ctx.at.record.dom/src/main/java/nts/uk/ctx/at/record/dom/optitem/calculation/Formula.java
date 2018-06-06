@@ -186,7 +186,7 @@ public class Formula extends AggregateRoot {
 		else if(this.getCalcAtr().isItemSelection()) {
 			if(this.calcFormulaSetting.getItemSelection().isPresent()) {
 				//項目選択による計算
-				calcValue = this.calcFormulaSetting.getItemSelection().get().calculationByItemSelection(performanceAtr, dailyRecordDto);
+				calcValue = this.calcFormulaSetting.getItemSelection().get().calculationByItemSelection(performanceAtr, dailyRecordDto/*monthlyRecordDto*/);
 			}else {
 				//計算項目選択が取得できない場合は0 ← これで良い？
 				calcValue = 0;

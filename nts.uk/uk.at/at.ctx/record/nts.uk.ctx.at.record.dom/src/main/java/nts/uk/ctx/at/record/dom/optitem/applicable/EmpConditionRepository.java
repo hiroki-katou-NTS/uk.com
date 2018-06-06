@@ -25,9 +25,9 @@ public interface EmpConditionRepository {
 	 * @param optionalItemNo the optional item no
 	 * @return the emp condition
 	 */
-	EmpCondition find(String companyId, String optionalItemNo);
+	EmpCondition find(String companyId, Integer optionalItemNo);
 	
 	
-	List<EmpCondition> findAll(String companyId, List<String> optionalItemNoList);
+	List<EmpCondition> findAll(String companyId, List<Integer> optionalItemNoList);
 
 }

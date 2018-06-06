@@ -1,10 +1,14 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.optionalitem.dto;
 
 import java.util.List;
+import java.util.Map;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValue;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
@@ -67,10 +71,10 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 	public GeneralDate workingDate() {
 		return this.date;
 	}
-	
+
 	@Override
 	public AnyItemValueOfDaily toDomain(String employeeId, GeneralDate date) {
-		if(!this.isHaveData()) {
+		if (!this.isHaveData()) {
 			return null;
 		}
 		if (employeeId == null) {

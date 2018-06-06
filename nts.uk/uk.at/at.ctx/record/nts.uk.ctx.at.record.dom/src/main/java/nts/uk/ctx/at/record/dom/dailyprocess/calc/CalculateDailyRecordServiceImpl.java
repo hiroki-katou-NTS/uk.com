@@ -234,10 +234,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		// 実績データの計算
 		val afterCalcResult = this.calcDailyAttendancePerformance(integrationOfDaily,companyCommonSetting);
 		//任意項目の計算
-		val aftercalcOptionalItemResult = this.calcOptionalItem(afterCalcResult);
+//		val aftercalcOptionalItemResult = this.calcOptionalItem(afterCalcResult);
 		//エラーチェック
-//		return calculationErrorCheckService.errorCheck(afterCalcResult);
-		return calculationErrorCheckService.errorCheck(aftercalcOptionalItemResult,companyCommonSetting);
+		return calculationErrorCheckService.errorCheck(afterCalcResult,companyCommonSetting);
+//		return calculationErrorCheckService.errorCheck(aftercalcOptionalItemResult,companyCommonSetting);
 //		return afterCalcResult;
 	}
 
@@ -1044,7 +1044,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	    //AggregateRoot「任意項目」取得
 		List<OptionalItem> optionalItems = optionalItemRepository.findAll(companyId);
 		//任意項目NOのlist作成
-		List<String> optionalItemNoList = optionalItems.stream().map(oi -> oi.getOptionalItemNo().toString()).collect(Collectors.toList());
+		List<Integer> optionalItemNoList = optionalItems.stream().map(oi -> oi.getOptionalItemNo().v()).collect(Collectors.toList());
 		//計算式を取得(任意項目NOで後から絞る必要あり)
 		List<Formula> formulaList = formulaRepository.find(companyId);
 		//適用する雇用条件の取得
@@ -1053,14 +1053,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		DailyRecordToAttendanceItemConverter dailyRecordDto = this.converter.setData(integrationOfDaily); 
 		
 		
-		/* 日別実績の退避(任意項目計算前の値を保持) */
-//		val copyIntegrationOfDaily = dailyRecordToAttendanceItemConverter
-//				.setData(integrationOfDaily).toDomain();
 		
 		//任意項目の計算
 		AnyItemValueOfDaily result = AnyItemValueOfDaily.caluculationAnyItem(companyId, employeeId, targetDate, optionalItems, formulaList,
 				empCondition, Optional.of(dailyRecordDto),bsEmploymentHistOpt,integrationOfDaily.getAnyItemValue());
-//		integrationOfDaily.setAnyItemValue(Optional.of(result));
 		
 		
 		// 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
@@ -1072,7 +1068,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 
 		IntegrationOfDaily calcResultIntegrationOfDaily = integrationOfDaily;  
 		if(!attendanceItemIdList.isEmpty()) {
-//			this.converter.withAnyItems(integrationOfDaily.getAnyItemValue().orElse(null)); 
 			List<ItemValue> itemValueList = this.converter.convert(attendanceItemIdList);  
 			this.converter.withAnyItems(result); 
 			this.converter.merge(itemValueList);
