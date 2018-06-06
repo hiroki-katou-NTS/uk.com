@@ -4,16 +4,17 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface ComDayOffManaDataRepository {
+
 	/**
-	 * ドメインモデル「代休管理データ」を取得
-	 * 
+	 *  ドメインモデル「代休管理データ」を取得
+	 *  未相殺日数>0.0
+	 * @param cid
 	 * @param sid
 	 * @return
 	 */
-	// 社員ID=パラメータ「社員ID」
-	// 未相殺日数>0.0
 	List<CompensatoryDayOffManaData> getBySidWithReDay(String cid, String sid);
 	
 	List<CompensatoryDayOffManaData> getByReDay(String cid, String sid);
@@ -51,4 +52,14 @@ public interface ComDayOffManaDataRepository {
 	Optional<CompensatoryDayOffManaData> getBycomdayOffId(String comDayOffId);
 	
 	void updateRemainDay(String comDayOffID, Double remainDay);
+
+	/**
+	 * ドメインモデル「休出管理データ」を取得する
+	 * @param sid
+	 * @param dateData ・休出日が指定期間内
+	 * ・休出日≧INPUT.期間.開始年月日
+	 * ・休出日≦INPUT.期間.終了年月日
+	 * @return
+	 */
+	List<CompensatoryDayOffManaData> getByDayOffDatePeriod(String sid, DatePeriod dateData);
 }
