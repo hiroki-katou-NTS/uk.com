@@ -1,13 +1,11 @@
 package nts.uk.ctx.sys.assist.infra.repository.tablelist;
 
-import java.awt.event.ItemEvent;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -22,6 +20,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableListRepository;
+import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtTargetCategory;
 import nts.uk.ctx.sys.assist.infra.entity.tablelist.SspmtTableList;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -29,7 +28,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Stateless
 public class JpaTableListRepository extends JpaRepository implements TableListRepository {
 
-	private static final String SELECT_ALL_QUERY_STRING = "SELECT t FROM SspmtTableList t";
+	private static final String SELECT_ALL_QUERY_STRING = "SELECT t FROM SspmtTableList t WHERE  t.dataStorageProcessingId =:storeProcessingId";
 	private static final String COMPANY_CD = "0";
 	private static final String EMPLOYEE_CD = "5";
 	private static final String YEAR = "6";
@@ -71,20 +70,22 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 		}
 		return "";
 	}
-	
+
 	@Override
-	public List<TableList> getByOffsetAndNumber(int offset, int number) {
+	public List<TableList> getByOffsetAndNumber(String storeProcessingId, int offset, int number) {
 		List<SspmtTableList> listTable = this.getEntityManager()
 				.createQuery(SELECT_ALL_QUERY_STRING, SspmtTableList.class)
-				.setFirstResult(offset).setMaxResults(number).getResultList();
-		
+				.setParameter("storeProcessingId", storeProcessingId).setFirstResult(offset).setMaxResults(number)
+				.getResultList();
+
 		return listTable.stream().map(item -> item.toDomain()).collect(Collectors.toList());
 	}
 	
+
 	@Override
-	public List<TableList> getAllTableList() {
+	public List<TableList> getByProcessingId(String storeProcessingId) {
 		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, SspmtTableList.class)
-				.getList(item -> item.toDomain());
+				.setParameter("storeProcessingId", storeProcessingId).getList(c -> c.toDomain());
 	}
 
 	@Override
@@ -92,7 +93,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 		Class<?> tableExport = this.getTypeForTableName(tableList.getTableEnglishName());
 
 		StringBuffer query = new StringBuffer("");
-		
+
 		// Select
 		query.append("SELECT t");
 
@@ -246,10 +247,10 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 		}
 
 		TypedQueryWrapper<?> queryWrapper = this.queryProxy().query(query.toString(), tableExport);
-		for(Entry<String, Object> entry : params.entrySet()) {
+		for (Entry<String, Object> entry : params.entrySet()) {
 			queryWrapper = queryWrapper.setParameter(entry.getKey(), entry.getValue());
 		}
-		return queryWrapper.getList();		
+		return queryWrapper.getList();
 	}
 
 	private String getOnStatement(Class<?> parentTable, String parentColumn, Class<?> childTable, String childColumn) {
