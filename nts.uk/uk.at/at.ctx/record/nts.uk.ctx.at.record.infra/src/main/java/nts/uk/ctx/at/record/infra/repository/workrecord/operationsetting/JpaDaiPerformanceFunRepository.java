@@ -50,8 +50,6 @@ public class JpaDaiPerformanceFunRepository extends JpaRepository implements Dai
         updateDaiPerformanceFun.flexDispAtr = newDaiPerformanceFun.flexDispAtr;
         updateDaiPerformanceFun.breakCalcUpdAtr = newDaiPerformanceFun.breakCalcUpdAtr;
         updateDaiPerformanceFun.breakTimeAutoAtr = newDaiPerformanceFun.breakTimeAutoAtr;
-        updateDaiPerformanceFun.breakClrTimeAtr = newDaiPerformanceFun.breakClrTimeAtr;
-        updateDaiPerformanceFun.autoSetTimeAtr = newDaiPerformanceFun.autoSetTimeAtr;
         updateDaiPerformanceFun.ealyCalcUpdAtr = newDaiPerformanceFun.ealyCalcUpdAtr;
         updateDaiPerformanceFun.overtimeCalcUpdAtr = newDaiPerformanceFun.overtimeCalcUpdAtr;
         updateDaiPerformanceFun.lawOverCalcUpdAtr = newDaiPerformanceFun.lawOverCalcUpdAtr;

@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.app.command.person.setting.selectionitem;
+package nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selectionitem.remove;
 
 import lombok.Value;
 
