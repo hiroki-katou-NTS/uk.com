@@ -27,6 +27,9 @@ public class JpaSelectionHistoryRepository extends JpaRepository implements Sele
 	private static final String SELECT_ALL_HISTORY = SELECT_ALL
 			+ " WHERE si.selectionItemId = :selectionItemId AND si.companyId=:companyId"
 			+ " ORDER BY si.startDate";
+	
+	private static final String SELECT_ALL_HISTORY_SELECTION = SELECT_ALL
+			+ " WHERE si.selectionItemId = :selectionItemId";
 
 	@Override
 	public Optional<SelectionHistory> get(String selectionItemId, String companyId) {
@@ -40,7 +43,7 @@ public class JpaSelectionHistoryRepository extends JpaRepository implements Sele
 				.map(ent -> new DateHistoryItem(ent.histidPK.histId, new DatePeriod(ent.startDate, ent.endDate)))
 				.collect(Collectors.toList());
 		
-		SelectionHistory selectionHistory = new SelectionHistory(companyId, selectionItemId, dateHistoryItems);
+		SelectionHistory selectionHistory = SelectionHistory.createFullHistorySelection(companyId, selectionItemId, dateHistoryItems);
 		return Optional.of(selectionHistory);
 
 	}
@@ -63,6 +66,22 @@ public class JpaSelectionHistoryRepository extends JpaRepository implements Sele
 		// Update item before and after
 		updateItemBefore(domain, lastItem);
 
+	}
+	
+	@Override
+	public void addAllDomain(SelectionHistory domain) {
+		List<DateHistoryItem> dateHistoryItems = domain.getDateHistoryItems();
+		if (dateHistoryItems.isEmpty()) {
+			return;
+		}
+		
+		String companyId = domain.getCompanyId();
+		String selectionItemId = domain.getSelectionItemId();
+		
+		domain.getDateHistoryItems().forEach(dateHistItem -> {
+			addDateItem(companyId, selectionItemId, dateHistItem);
+		});
+		
 	}
 	
 	@Override
@@ -120,6 +139,14 @@ public class JpaSelectionHistoryRepository extends JpaRepository implements Sele
 
 		updateDateItem(beforeItemOpt.get());
 
+	}
+
+	@Override
+	public void removeAllOfSelectionItem(String selectionItemId) {
+		List<PpemtHistorySelection> historyList = this.queryProxy()
+				.query(SELECT_ALL_HISTORY_SELECTION, PpemtHistorySelection.class)
+				.setParameter("selectionItemId", selectionItemId).getList();
+		this.commandProxy().removeAll(historyList);
 	}
 
 }

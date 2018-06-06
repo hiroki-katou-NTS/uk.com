@@ -13,10 +13,11 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.InputCommonData;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterDeny;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 @Transactional
-public class UpdateApplicationDenyHandler extends CommandHandlerWithResult<InputCommonData, String> {
+public class UpdateApplicationDenyHandler extends CommandHandlerWithResult<InputCommonData, ProcessResult> {
 	
 	@Inject
 	private DetailAfterDeny detailAfterDeny;
@@ -25,7 +26,7 @@ public class UpdateApplicationDenyHandler extends CommandHandlerWithResult<Input
 	private DetailBeforeUpdate beforeRegisterRepo;
 
 	@Override
-	protected String handle(CommandHandlerContext<InputCommonData> context) {
+	protected ProcessResult handle(CommandHandlerContext<InputCommonData> context) {
 		String memo = context.getCommand().getMemo();
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();

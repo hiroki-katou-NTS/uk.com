@@ -14611,7 +14611,7 @@ var nts;
             var koExtentions;
             (function (koExtentions) {
                 var count = nts.uk.text.countHalf;
-                var WoC = 6, MINWIDTH = 'auto', TAB_INDEX = 'tabindex', KEYPRESS = 'keypress', KEYDOWN = 'keydown', FOCUS = 'focus', VALIDATE = 'validate', OPENDDL = 'openDropDown', CLOSEDDL = 'closeDropDown', OPENED = 'dropDownOpened', IGCOMB = 'igCombo', OPTION = 'option', ENABLE = 'enable', EDITABLE = 'editable', DROPDOWN = 'dropdown', COMBOROW = 'nts-combo-item', COMBOCOL = 'nts-column nts-combo-column', DATA = '_nts_data', CHANGED = '_nts_changed', SHOWVALUE = '_nts_show', NAME = '_nts_name', CWIDTH = '_nts_col_width', VALUE = '_nts_value', REQUIRED = '_nts_required';
+                var WoC = 8, MINWIDTH = 'auto', TAB_INDEX = 'tabindex', KEYPRESS = 'keypress', KEYDOWN = 'keydown', FOCUS = 'focus', VALIDATE = 'validate', OPENDDL = 'openDropDown', CLOSEDDL = 'closeDropDown', OPENED = 'dropDownOpened', IGCOMB = 'igCombo', OPTION = 'option', ENABLE = 'enable', EDITABLE = 'editable', DROPDOWN = 'dropdown', COMBOROW = 'nts-combo-item', COMBOCOL = 'nts-column nts-combo-column', DATA = '_nts_data', CHANGED = '_nts_changed', SHOWVALUE = '_nts_show', NAME = '_nts_name', CWIDTH = '_nts_col_width', VALUE = '_nts_value', REQUIRED = '_nts_required';
                 var ComboBoxBindingHandler = (function () {
                     function ComboBoxBindingHandler() {
                         this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -14671,7 +14671,7 @@ var nts;
                                     $show.html(_template);
                                     _.each(ks, function (k) {
                                         $show.find("." + k.toLowerCase() + ":not(:last-child)")
-                                            .css('min-width', cws[k] * WoC + "px");
+                                            .css('width', cws[k] * WoC + "px");
                                         $show.find("." + k.toLowerCase())
                                             .css('height', '31px')
                                             .css('line-height', '27px')
@@ -14756,7 +14756,7 @@ var nts;
                                     _.each(ks, function (k) {
                                         $("[class*=ui-igcombo-orientation]")
                                             .find("." + k.toLowerCase() + ":not(:last-child)")
-                                            .css('min-width', cws[k] * WoC + "px");
+                                            .css('width', cws[k] * WoC + "px");
                                     });
                                 },
                                 selectionChanged: function (evt, ui) {
@@ -14817,7 +14817,7 @@ var nts;
                                     // calc new size of template columns
                                     _.each(ks, function (k) {
                                         $(ui.list).find("." + k.toLowerCase() + (_.size(ks) == 1 ? '' : ':not(:last-child)'))
-                                            .css('min-width', cws[k] * WoC + "px");
+                                            .css('width', cws[k] * WoC + "px");
                                     });
                                     // fix min width of dropdown = $element.width();
                                     $(ui.list)
@@ -14908,6 +14908,7 @@ var nts;
                                 else {
                                     value = undefined;
                                 }
+                                accessor.value(value);
                             }
                             // check flag changed for validate
                             if (_.has($element.data(DATA), VALUE)) {

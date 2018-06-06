@@ -204,10 +204,14 @@ public class DailyPerformanceCorrectionDto {
 	}
 
 	/** Set AlarmCell state for Fixed cell */
-	public void setAlarmCellForFixedColumn(String dataId) {
-		Stream.of("date", "employeeCode", "employeeName").forEach(columnKey -> {
-			setCellStateFixed(dataId, columnKey, "ntsgrid-alarm");
-		});
+	public void setAlarmCellForFixedColumn(String dataId, Integer mode) {
+		if (mode == 0) {
+			setCellStateFixed(dataId, "date", "ntsgrid-alarm");
+		} else {
+			Stream.of("date", "employeeCode", "employeeName").forEach(columnKey -> {
+				setCellStateFixed(dataId, columnKey, "ntsgrid-alarm");
+			});
+		}
 	}
 
 	private void setCellStateFixed(String dataId, String columnKey, String state) {
@@ -236,7 +240,7 @@ public class DailyPerformanceCorrectionDto {
 				}
 				nameKey = "Name" + columnKey;
 			} else {
-				columnKey = "A" + columnKey;
+				colKey = "A" + columnKey;
 			}
 			
 			Optional<DPCellStateDto> existedCellState = findExistCellState(dataId, colKey);

@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 530, height: 530 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="kdm001.k.vm.js" />
+			<com:scriptfile path="kdm001.k.service.js" />
+			<com:scriptfile path="kdm001.k.start.js" />
+			<com:stylefile path="kdm001.k.style.css" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area">
+				<!-- K1 文言 -->
+				<div>
+					<span id="K1" class="label">#{i18n.getText('KDM001_105')}</span>
+				</div>
+				<div id="K2">
+					<!-- K2_1 職場コード -->
+					<span id="K2_1" class="label" data-bind="text: workCode"></span>
+					<!-- K2_2 職場名称 -->
+					<span id="K2_2" class="label" data-bind="text: workPlaceName"></span>
+					<!-- K2_3 ： -->
+					<span id="K2_3" class="label">#{i18n.getText('KDM001_58')}</span>
+					<!-- K2_4 社員コード -->
+					<span id="K2_4" class="label" data-bind="text: employeeCode"></span>
+					<!-- K2_5 社員名 -->
+					<span id="K2_5" class="label" data-bind="text: employeeName"></span>
+				</div>
+				<!-- K3 罫線 -->
+				<div>
+					<hr />
+				</div>
+				<div>
+					<!-- K4_1 休出 -->
+					<span id="K4_1" class="label">#{i18n.getText('KDM001_110')}</span>
+					<!-- K4_2 代休 -->
+					<span id="K4_2" class="label">#{i18n.getText('KDM001_113')}</span>
+				</div>
+				<div id="parent">
+					<!-- K5 紐付候補リスト -->
+					<div id="K5">
+						<table id="multi-list"
+							data-bind="ntsGridList: {
+								options: items,
+								name: '#[KDM001_93]',
+								optionsValue: 'leaveManaID',
+								columns: columns,
+								rows:8,
+								multiple: true,
+								selectionDisables: disables,
+								value: currentCodeList
+							}" tabindex="1"></table>
+					</div>
+					<div>
+						<!-- K6_1 代休日 -->
+						<span id="K6_1" class="label" data-bind="text: dateHoliday"></span>
+						<!-- K6_2 発生数 -->
+						<span id="K6_2" class="label" data-bind="text: numberDay"></span>
+					</div>
+				</div>
+				<div style="margin-top: 15px; margin-left: 15px;">
+					<!-- K7_1残 -->
+					<span id="K7_1" class="label">#{i18n.getText('KDM001_98')}</span>
+					<!-- K7_2残 数-->
+					<span id="K7_2" class="label" data-bind="text: residualDay"></span>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<!-- K31_1 登録 -->
+				<button id="K31_1" style="margin-top: 10px" class="proceed large" data-bind="click: update" tabindex="2">#{i18n.getText('KDM001_89')}</button>
+				<!-- K31_2 キャンセル -->
+				<button id="K31_2" style="margin-top: 10px" data-bind="click: closeDialog" tabindex="3">#{i18n.getText('KDM001_90')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
