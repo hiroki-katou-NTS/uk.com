@@ -63,22 +63,39 @@ public class AddSubHdManagementService {
 						subHdManagementData.getSelectedCodeHoliday(), 0, subHdManagementData.getDayRemaining(), 0, subHDAtr, equivalentADay,
 						equivalentHalfDay);
 				repoLeaveManaData.create(domainLeaveManagementData);
-			}
-			if (subHdManagementData.getCheckedSubHoliday()) {
-				CompensatoryDayOffManaData domainCompensatoryDayOffManaData = new CompensatoryDayOffManaData(
-						comDayOffID, AppContexts.user().companyId(), subHdManagementData.getEmployeeId(), false,
-						subHdManagementData.getDateSubHoliday(), subHdManagementData.getSelectedCodeSubHoliday(), 0,
-						subHdManagementData.getDayRemaining(), 0);
-				repoComDayOffManaData.create(domainCompensatoryDayOffManaData);
-				if (subHdManagementData.getCheckedSplit()) {
-					CompensatoryDayOffManaData domainCompensatoryDayOffManaDataSub = new CompensatoryDayOffManaData(
-							comDayOffIDSub, AppContexts.user().companyId(), subHdManagementData.getEmployeeId(), false,
-							subHdManagementData.getDateOptionSubHoliday(),
-							subHdManagementData.getSelectedCodeOptionSubHoliday(), 0,
+				if (subHdManagementData.getCheckedSubHoliday()) {
+					CompensatoryDayOffManaData domainCompensatoryDayOffManaData = new CompensatoryDayOffManaData(
+							comDayOffID, AppContexts.user().companyId(), subHdManagementData.getEmployeeId(), false,
+							subHdManagementData.getDateSubHoliday(), subHdManagementData.getSelectedCodeSubHoliday(), 0,
 							subHdManagementData.getDayRemaining(), 0);
-					repoComDayOffManaData.create(domainCompensatoryDayOffManaDataSub);
+					repoComDayOffManaData.create(domainCompensatoryDayOffManaData);
+					if (subHdManagementData.getCheckedSplit()) {
+						CompensatoryDayOffManaData domainCompensatoryDayOffManaDataSub = new CompensatoryDayOffManaData(
+								comDayOffIDSub, AppContexts.user().companyId(), subHdManagementData.getEmployeeId(), false,
+								subHdManagementData.getDateOptionSubHoliday(),
+								subHdManagementData.getSelectedCodeOptionSubHoliday(), 0,
+								subHdManagementData.getDayRemaining(), 0);
+						repoComDayOffManaData.create(domainCompensatoryDayOffManaDataSub);
+					}
 				}
-			}
+			}else{
+				if (subHdManagementData.getCheckedSubHoliday()) {
+					CompensatoryDayOffManaData domainCompensatoryDayOffManaData = new CompensatoryDayOffManaData(
+							comDayOffID, AppContexts.user().companyId(), subHdManagementData.getEmployeeId(), false,
+							subHdManagementData.getDateSubHoliday(), subHdManagementData.getSelectedCodeSubHoliday(), 0,
+							subHdManagementData.getSelectedCodeSubHoliday(), 0);
+					repoComDayOffManaData.create(domainCompensatoryDayOffManaData);
+					if (subHdManagementData.getCheckedSplit()) {
+						CompensatoryDayOffManaData domainCompensatoryDayOffManaDataSub = new CompensatoryDayOffManaData(
+								comDayOffIDSub, AppContexts.user().companyId(), subHdManagementData.getEmployeeId(), false,
+								subHdManagementData.getDateOptionSubHoliday(),
+								subHdManagementData.getSelectedCodeOptionSubHoliday(), 0,
+								subHdManagementData.getSelectedCodeOptionSubHoliday(), 0);
+						repoComDayOffManaData.create(domainCompensatoryDayOffManaDataSub);
+					}
+				}
+			}	
+			
 			if (subHdManagementData.getCheckedHoliday() && subHdManagementData.getCheckedSubHoliday()) {
 				// ドメインモデル「振休休出振付け管理」に紐付きチェックされているもの全てを追加する
 				BigDecimal usedDays = BigDecimal.valueOf(0);
@@ -129,7 +146,10 @@ public class AddSubHdManagementService {
 			GeneralDate dateHoliday = subHdManagementData.getCheckedHoliday() ? subHdManagementData.getDateHoliday() : subHdManagementData.getDateSubHoliday();
 			List<LeaveManagementData> leaveManagementDatas = repoLeaveManaData.getBySidWithHolidayDate(companyId,
 					employeeId, dateHoliday);
-			if (!leaveManagementDatas.isEmpty()) {
+			List<CompensatoryDayOffManaData> compensatoryDayOffManaDatas = repoComDayOffManaData
+					.getBySidWithHolidayDateCondition(companyId, employeeId, dateHoliday);
+			
+			if (!leaveManagementDatas.isEmpty() || !compensatoryDayOffManaDatas.isEmpty()) {
 				if(subHdManagementData.getCheckedHoliday()){
 					errorList.add("Msg_737_holiday");
 				}
@@ -142,9 +162,9 @@ public class AddSubHdManagementService {
 						closureDate, closureId, subHdManagementData.getCheckedSplit(), dateOptionSubHolidayCheck));
 				//ドメインモデル「代休管理データ」を読み込む
 				GeneralDate dateSubHoliday = subHdManagementData.getDateSubHoliday();
-				List<CompensatoryDayOffManaData> compensatoryDayOffManaDatas = repoComDayOffManaData
+				compensatoryDayOffManaDatas = repoComDayOffManaData
 						.getBySidWithHolidayDateCondition(companyId, employeeId, dateSubHoliday);
-				if (!compensatoryDayOffManaDatas.isEmpty()) {
+				if (!compensatoryDayOffManaDatas.isEmpty() || !leaveManagementDatas.isEmpty()) {
 					errorList.add("Msg_737_sub_holiday");
 				}
 			} 
@@ -153,7 +173,7 @@ public class AddSubHdManagementService {
 				GeneralDate dateOptionSubHoliday = subHdManagementData.getDateOptionSubHoliday();
 				leaveManagementDatas = repoLeaveManaData.getBySidWithHolidayDate(companyId,
 						employeeId, dateOptionSubHoliday);
-				if (!leaveManagementDatas.isEmpty()) {					
+				if (!leaveManagementDatas.isEmpty() || !compensatoryDayOffManaDatas.isEmpty()) {					
 						errorList.add("Msg_737_sub_option_holiday");			
 				}
 				/*List<CompensatoryDayOffManaData> dayoff = repoComDayOffManaData
@@ -179,9 +199,12 @@ public class AddSubHdManagementService {
 	 */
 	public List<String> checkHoliday(GeneralDate holidayDate, Optional<GeneralDate> closureDate, int closureId) {
 		List<String> errorList = new ArrayList<>();
-		//YearMonth processYearMonth = GeneralDate.today().yearMonth();
+		YearMonth processYearMonth = GeneralDate.today().yearMonth();
+		if (!closureDate.isPresent()) {
+			closureDate = this.getClosureDate(closureId, processYearMonth);
+		}
 		// 休出（年月日）と締め日をチェックする
-		if (!closureDate.isPresent() &&!closureDate.get().after(holidayDate)) {
+		if (!closureDate.get().after(holidayDate)) {
 			errorList.add("Msg_745");
 			return errorList;
 		}
