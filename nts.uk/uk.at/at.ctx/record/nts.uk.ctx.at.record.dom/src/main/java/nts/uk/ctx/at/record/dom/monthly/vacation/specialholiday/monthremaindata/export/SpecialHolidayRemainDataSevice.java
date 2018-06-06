@@ -13,5 +13,5 @@ public interface SpecialHolidayRemainDataSevice {
 	 * @param endMonth
 	 * @return
 	 */
-	public List<SpecialHolidayRemainData> getSpeHoliOfConfirmedMonthly(String sid, YearMonth startMonth, YearMonth endMonth);
+	public List<SpecialHolidayRemainDataOutput> getSpeHoliOfConfirmedMonthly(String sid, YearMonth startMonth, YearMonth endMonth);
 }

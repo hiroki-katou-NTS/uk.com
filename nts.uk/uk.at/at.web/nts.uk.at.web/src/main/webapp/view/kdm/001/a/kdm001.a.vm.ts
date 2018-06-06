@@ -112,7 +112,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             
             self.selectedPeriodItem.subscribe(x =>{
                 if (x == 0) {
-                    $("#daterangepickerA .ntsDatepicker").ntsError("clear");
+                    nts.uk.ui.errors.clearAll();
                 }
             });
             
@@ -309,9 +309,21 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             
             // set data for KCP009 screen B
             if(!($("#tabpanel-2").hasClass("disappear"))) {
-                __viewContext.viewModel.viewmodelB.employeeInputList([]);
-                __viewContext.viewModel.viewmodelB.employeeInputList(self.employeeInputList());
-                $('#emp-component').ntsLoadListComponent(__viewContext.viewModel.viewmodelB.listComponentOption);
+                var screenBModel = __viewContext.viewModel.viewmodelB;
+                screenBModel.employeeInputList([]);
+                screenBModel.listEmployee = [];
+                _.each(dataList, function(item) {
+                    screenBModel.listEmployee.push(new nts.uk.at.view.kdm001.b.viewmodel.EmployeeInfo(item.employeeId, item.employeeCode, item.employeeName, item.workplaceId, item.workplaceCode, item.workplaceName));
+                    screenBModel.employeeInputList.push(new EmployeeKcp009(item.employeeId, item.employeeCode, item.employeeName, item.workplaceName, ""));
+                });
+                $('#emp-component').ntsLoadListComponent(self.listComponentOption);
+                if (dataList.length == 0) {
+                    self.selectedItem('');
+                } else {
+                    let item = self.findIdSelected(dataList, self.selectedItem());
+                    let sortByEmployeeCode = _.orderBy(dataList, ["employeeCode"], ["asc"]);
+                    if (item == undefined) self.selectedItem(sortByEmployeeCode[0].employeeId);
+                }
             }
         }
 
@@ -588,13 +600,13 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 
                 if (moment.utc(params.expiredDate, 'YYYY/MM/DD').diff(moment.utc()) > 0) {
                     this.unUsedDaysInGrid = "" + params.unUsedDays;
-                    this.expriedDaysInGrid = null;
+                    this.expriedDaysInGrid = "0";
                     if(params.unUsedDays > 0) {
                         this.unUsedDaysInGridText = getText("KDM001_27");
                         this.unUsedDaysInGrid = params.unUsedDays.toFixed(1);
                     }
                 } else {
-                    this.unUsedDaysInGrid = null;
+                    this.unUsedDaysInGrid = "0";
                     this.expriedDaysInGrid = "" + params.unUsedDays;
                     if(params.unUsedDays > 0) {
                         this.expriedDaysInGridText = getText("KDM001_27");
@@ -604,7 +616,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             } else if ((params.subOfHDID != null) && (params.subOfHDID != "")) {
                 this.id = params.subOfHDID;
                 this.unUsedDaysInGrid = "" + (params.remainDays * (-1));
-                this.expriedDaysInGrid = null;
+                this.expriedDaysInGrid = "0";
                 if(params.remainDays > 0) {
                     this.unUsedDaysInGridText = getText("KDM001_27");
                     this.unUsedDaysInGrid = (params.remainDays * (-1)).toFixed(1);
