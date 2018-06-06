@@ -24,6 +24,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManaDataRepositor
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -46,6 +47,12 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 
+/**
+ * 休出管理データの初回登録
+ * 
+ * @author lanlt
+ *
+ */
 @Stateless
 public class OtherHolidayInfoService {
 
@@ -216,7 +223,7 @@ public class OtherHolidayInfoService {
 		// 半日相当時間←指定時間．半日の時間
 		// TODO QA
 		DesignatedTime commonSet = getWorkTimeSetting(cid, sid);
-		
+
 		int aDay = commonSet.getOneDayTime().v();
 		int aHalf = commonSet.getHalfDayTime().v();
 		while (remainNumberTpm.compareTo(ZERO) > 0) {
@@ -286,7 +293,7 @@ public class OtherHolidayInfoService {
 		if (!workingCondItem.isPresent()) {
 			return result;
 		}
-		//労働条件項目．区分別勤務．休日出勤時．就業時間帯コードの就業時間帯
+		// 労働条件項目．区分別勤務．休日出勤時．就業時間帯コードの就業時間帯
 		Optional<WorkTimeCode> workTimeCD = workingCondItem.get().getWorkCategory().getHolidayWork().getWorkTimeCode();
 
 		if (!workTimeCD.isPresent()) {
@@ -317,7 +324,7 @@ public class OtherHolidayInfoService {
 
 		return result;
 	}
-
+	
 	/**
 	 * Get flexible time
 	 * 
@@ -332,10 +339,15 @@ public class OtherHolidayInfoService {
 			return result;
 		}
 		Optional<WorkTimezoneOtherSubHolTimeSet> subHolTimeSet = flexWork.get().getCommonSetting().getSubHolTimeSet()
-				.stream().filter(i -> i.getOriginAtr().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value && (i.getSubHolTimeSet().isUseDivision() == true))
+				.stream().filter(i -> i.getOriginAtr().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value
+						&& (i.getSubHolTimeSet().isUseDivision() == true))
 				.findFirst();
 		if (subHolTimeSet.isPresent()) {
-			return subHolTimeSet.get().getSubHolTimeSet().getDesignatedTime();
+			if (subHolTimeSet.get().getSubHolTimeSet().getSubHolTransferSetAtr().isSpecifiedTimeSubHol()) {
+				return subHolTimeSet.get().getSubHolTimeSet().getDesignatedTime();
+			} else {
+				return new DesignatedTime(subHolTimeSet.get().getSubHolTimeSet().getCertainTime(), new OneDayTime(0));
+			}
 		}
 		return getCompanySet(cid);
 	}
@@ -351,11 +363,16 @@ public class OtherHolidayInfoService {
 
 		CompensatoryLeaveComSetting comSet = compensLeaveComSetRepository.find(cid);
 		if (comSet != null) {
-			Optional<DesignatedTime> designTime = comSet.getCompensatoryOccurrenceSetting().stream()
+			Optional<CompensatoryOccurrenceSetting> comCurrentSetOptional = comSet.getCompensatoryOccurrenceSetting().stream()
 					.filter(i -> i.getOccurrenceType().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value)
-					.findFirst().map(i -> i.getTransferSetting().getDesignatedTime());
-			if (designTime.isPresent()) {
-				return designTime.get();
+					.findFirst();
+			if (comCurrentSetOptional.isPresent()) {
+				CompensatoryOccurrenceSetting comCurrentSet = comCurrentSetOptional.get();
+				if(comCurrentSet.getTransferSetting().getSubHolTransferSetAtr().isSpecifiedTimeSubHol()) {
+					return comCurrentSet.getTransferSetting().getDesignatedTime();
+				}else {
+					return new  DesignatedTime(comCurrentSet.getTransferSetting().getCertainTime(), new OneDayTime(0));
+				}
 			}
 		}
 		return result;
@@ -374,14 +391,22 @@ public class OtherHolidayInfoService {
 		if (!fixedWork.isPresent()) {
 			return result;
 		}
-		Optional<DesignatedTime> designTime = fixedWork.get().getCommonSetting().getSubHolTimeSet().stream()
-				.filter(i -> i.getOriginAtr().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value && (i.getSubHolTimeSet().isUseDivision() == true) )
-				.findFirst().map(i -> i.getSubHolTimeSet().getDesignatedTime());
+		Optional<WorkTimezoneOtherSubHolTimeSet> workTimeOptional = fixedWork.get().getCommonSetting()
+				.getSubHolTimeSet().stream()
+				.filter(i -> i.getOriginAtr().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value
+						&& (i.getSubHolTimeSet().isUseDivision() == true))
+				.findFirst();
 
-		if (!designTime.isPresent()) {
+		if (!workTimeOptional.isPresent()) {
 			return getCompanySet(cid);
 		}
-		return designTime.get();
+
+		WorkTimezoneOtherSubHolTimeSet workTime = workTimeOptional.get();
+		if (workTime.getSubHolTimeSet().getSubHolTransferSetAtr().isSpecifiedTimeSubHol()) {
+			return workTime.getSubHolTimeSet().getDesignatedTime();
+		} else {
+			return new DesignatedTime(workTime.getSubHolTimeSet().getCertainTime(), new OneDayTime(0));
+		}
 	}
 
 	/**
@@ -397,14 +422,20 @@ public class OtherHolidayInfoService {
 		if (!flowWork.isPresent()) {
 			return result;
 		}
-		Optional<DesignatedTime> designTime = flowWork.get().getCommonSetting().getSubHolTimeSet().stream()
-				.filter(i -> i.getOriginAtr().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value && (i.getSubHolTimeSet().isUseDivision() == true))
-				.findFirst().map(i -> i.getSubHolTimeSet().getDesignatedTime());
+		Optional<WorkTimezoneOtherSubHolTimeSet> workTimeOptional = flowWork.get().getCommonSetting().getSubHolTimeSet()
+				.stream().filter(i -> i.getOriginAtr().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value
+						&& (i.getSubHolTimeSet().isUseDivision() == true))
+				.findFirst();
 
-		if (!designTime.isPresent()) {
+		if (!workTimeOptional.isPresent()) {
 			return getCompanySet(cid);
 		}
-		return designTime.get();
+		WorkTimezoneOtherSubHolTimeSet workTime = workTimeOptional.get();
+		if (workTime.getSubHolTimeSet().getSubHolTransferSetAtr().isSpecifiedTimeSubHol()) {
+			return workTime.getSubHolTimeSet().getDesignatedTime();
+		} else {
+			return new DesignatedTime(workTime.getSubHolTimeSet().getCertainTime(), new OneDayTime(0));
+		}
 	}
 
 	/**
@@ -420,14 +451,20 @@ public class OtherHolidayInfoService {
 		if (!diffTime.isPresent()) {
 			return result;
 		}
-		Optional<DesignatedTime> designTime = diffTime.get().getCommonSet().getSubHolTimeSet().stream()
-				.filter(i ->  i.getOriginAtr().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value && (i.getSubHolTimeSet().isUseDivision() == true))
-				.findFirst().map(i -> i.getSubHolTimeSet().getDesignatedTime());
+		Optional<WorkTimezoneOtherSubHolTimeSet> workTimeOptional = diffTime.get().getCommonSet().getSubHolTimeSet()
+				.stream().filter(i -> i.getOriginAtr().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value
+						&& (i.getSubHolTimeSet().isUseDivision() == true))
+				.findFirst();
 
-		if (!designTime.isPresent()) {
+		if (!workTimeOptional.isPresent()) {
 			return getCompanySet(cid);
 		}
-		return designTime.get();
+		WorkTimezoneOtherSubHolTimeSet workTime = workTimeOptional.get();
+		if (workTime.getSubHolTimeSet().getSubHolTransferSetAtr().isSpecifiedTimeSubHol()) {
+			return workTime.getSubHolTimeSet().getDesignatedTime();
+		} else {
+			return new DesignatedTime(workTime.getSubHolTimeSet().getCertainTime(), new OneDayTime(0));
+		}
 	}
 
 	public void updateOtherHolidayInfo(String cid, PublicHolidayRemain pubHD, ExcessLeaveInfo exLeav,
