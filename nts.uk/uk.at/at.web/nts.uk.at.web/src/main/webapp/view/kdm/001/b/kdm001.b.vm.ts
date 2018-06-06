@@ -253,6 +253,23 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                         name: 'Paging',
                         type: "local",
                         pageSize: 14
+                    },
+                    {
+                        name : 'Resizing',
+                        columnSettings: [
+                            { columnKey: "id", allowResizing: false },
+                            { columnKey: "isLinked", allowResizing: false },
+                            { columnKey: "substituedWorkingDate", allowResizing: false },
+                            { columnKey: "substituedWorkingHours", allowResizing: false },
+                            { columnKey: "substituedWorkingPeg", allowResizing: false },
+                            { columnKey: "substituedHolidayDate", allowResizing: false },
+                            { columnKey: "substituteHolidayHours", allowResizing: false },
+                            { columnKey: "substituedHolidayPeg", allowResizing: false },
+                            { columnKey: "remainHolidayHours", allowResizing: false },
+                            { columnKey: "expiredHolidayHours", allowResizing: false },
+                            { columnKey: "link", allowResizing: false },
+                            { columnKey: "edit", allowResizing: false }, 
+                        ],
                     }
                 ],
                 ntsControls: [
