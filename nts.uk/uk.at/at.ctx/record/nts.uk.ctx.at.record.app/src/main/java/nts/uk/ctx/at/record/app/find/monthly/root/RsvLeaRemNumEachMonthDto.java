@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveGrant;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceLayoutConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
@@ -26,7 +27,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 積立年休月別残数データ */
-@AttendanceItemRoot(rootName = "積立年休月別残数データ", itemType = AttendanceItemType.MONTHLY_ITEM)
+@AttendanceItemRoot(rootName = AttendanceLayoutConst.MONTHLY_RESERVE_LEAVING_REMAIN_NAME, itemType = AttendanceItemType.MONTHLY_ITEM)
 public class RsvLeaRemNumEachMonthDto extends MonthlyItemCommon {
 	/** 会社ID */
 	private String companyId;
