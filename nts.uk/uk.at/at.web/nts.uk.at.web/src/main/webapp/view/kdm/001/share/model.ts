@@ -57,6 +57,13 @@ module nts.uk.at.view.kdm001.share.model {
             new model.ItemModel(2, getText('KDM001_148'))
         ];
     }
+    
+    export function getDaysNumber(): Array<ItemModel> {
+        return [
+            new model.ItemModel(1.0, getText('KDM001_127')),
+            new model.ItemModel(0.5, getText('KDM001_128'))
+        ];
+    }
 
     export function getremainDay(): Array<ItemModel> {
         return [
