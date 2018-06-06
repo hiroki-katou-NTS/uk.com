@@ -14,6 +14,10 @@ public class CheckChangePassDto {
 	
 	public String msgErrorId;
 
+	public CheckChangePassDto() {
+		super();
+	}
+
 	/**
 	 * Instantiates a new check change pass dto.
 	 *

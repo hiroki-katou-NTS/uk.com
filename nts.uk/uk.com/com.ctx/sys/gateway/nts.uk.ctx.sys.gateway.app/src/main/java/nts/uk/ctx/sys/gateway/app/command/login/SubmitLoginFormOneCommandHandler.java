@@ -23,7 +23,7 @@ import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 @Stateless
 public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<SubmitLoginFormOneCommand> {
 
-	/** The user repository. */
+	/** The user adapter. */
 	@Inject
 	private UserAdapter userAdapter;
 	
@@ -55,7 +55,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 			String msgErrorId = this.compareHashPassword(user.get(), password);
 			if (!StringUtil.isNullOrEmpty(msgErrorId, true)){
 				return new CheckChangePassDto(false, msgErrorId);
-			} 
+			}
 	
 			// check time limit
 			this.checkLimitTime(user);
@@ -69,7 +69,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 				return new CheckChangePassDto(true, null);
 			}
 		}
-		return new CheckChangePassDto(false, null);
+		return new CheckChangePassDto(false, "Msg_301");
 	}
 
 	/**

@@ -23,6 +23,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Transactional
 public class ChangePasswordCommandHandler extends CommandHandler<ChangePasswordCommand> {
 
+	/** The user adapter. */
 	@Inject
 	private UserAdapter userAdapter;
 

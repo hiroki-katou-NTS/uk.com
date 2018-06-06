@@ -39,7 +39,7 @@ module nts.uk.pr.view.ccg007.b {
             contractPassword: string;
         }
         
-        export interface MessErrorDto{
+        export interface CheckChangePassDto{
             showChangePass: boolean;
             msgErrorId: string;
         }

@@ -10,7 +10,7 @@ import javax.ws.rs.Produces;
 
 import nts.arc.error.BusinessException;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.sys.gateway.app.find.sendmail.LoginInfo;
+import nts.uk.ctx.sys.gateway.app.command.sendmail.SendMailInfoCommand;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
 
@@ -24,7 +24,7 @@ public class SendMailWebService extends WebService {
 	
 	@POST
 	@Path("submit")
-	public String submitSendMail(LoginInfo infor) {
+	public String submitSendMail(SendMailInfoCommand infor) {
 		
 		Optional<UserImport> userInfor = this.userAdapter.findUserByContractAndLoginId(infor.getContractCode(), infor.getLoginId());
 		

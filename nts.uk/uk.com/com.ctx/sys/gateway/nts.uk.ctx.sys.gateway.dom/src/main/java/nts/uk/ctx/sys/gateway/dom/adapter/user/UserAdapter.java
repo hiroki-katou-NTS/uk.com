@@ -77,7 +77,8 @@ public interface UserAdapter {
 	 * @param newPassword the new password
 	 */
 	void updatePassword(String userId,String newPassword);
-	 * requestlist 313 adapter
+	 
+	/** requestlist 313 adapter
 	 * @param userId
 	 * @return
 	 */

@@ -4,6 +4,7 @@ module nts.uk.pr.view.ccg007.b {
         import ContractDto = service.ContractDto;
         import blockUI = nts.uk.ui.block;
         import SubmitData = service.SubmitData;
+        import CheckChangePassDto = service.CheckChangePassDto;
         export class ScreenModel {
             loginId: KnockoutObservable<string>;
             password: KnockoutObservable<string>;
@@ -126,7 +127,7 @@ module nts.uk.pr.view.ccg007.b {
                 submitData.contractPassword = _.escape(self.contractPassword());
 
                 blockUI.invisible();
-                service.submitLogin(submitData).done(function(messError) {
+                service.submitLogin(submitData).done(function(messError: CheckChangePassDto) {
                     //check MsgError
                     if (!nts.uk.util.isNullOrEmpty(messError.msgErrorId)) {
                         nts.uk.ui.dialog.alertError({ messageId: messError.msgErrorId });

@@ -51,7 +51,7 @@ public class CheckBeforePasswordPublisherImpl implements CheckBeforePasswordPubl
 	public CheckBeforeChangePassOutput checkBeforeChangePassword(String userId, String currentPass, String newPass,
 			String reNewPass) {
 		List<PasswordMessageObject> messages = new ArrayList<>();
-		// 変更前チェック
+		// 螟画峩蜑阪メ繧ｧ繝�繧ｯ
 		if (!newPass.equals(reNewPass)) {
 			messages.add( new PasswordMessageObject("Msg_961"));
 		}
@@ -67,31 +67,31 @@ public class CheckBeforePasswordPublisherImpl implements CheckBeforePasswordPubl
 			return new CheckBeforeChangePassOutput(true, messages);
 		}
 
-		// ドメインモデル「パスワードポリシー」を取得する
+		// 繝峨Γ繧､繝ｳ繝｢繝�繝ｫ縲後ヱ繧ｹ繝ｯ繝ｼ繝峨�昴Μ繧ｷ繝ｼ縲阪ｒ蜿門ｾ励☆繧�
 		return this.passwordPolicyCheck(userId, reNewPass, user.getContractCode().v());
 	}
 	
 	@Override
 	public CheckBeforeChangePassOutput checkBeforeResetPassword(String userId, String newPass, String reNewPass) {
 		
-		List<String> messages = new ArrayList<>();
-		// 変更前チェック Check newPass and reNewPass
+		List<PasswordMessageObject> messages = new ArrayList<>();
+		// 螟画峩蜑阪メ繧ｧ繝�繧ｯ Check newPass and reNewPass
 		if (!newPass.equals(reNewPass)) {
-			messages.add("#Msg_961");
+			messages.add(new PasswordMessageObject("#Msg_961"));
 		}
 		//get domain User
 		User user = this.userRepo.getByUserID(userId).get();
 		
 		//Check loginId
 		if (user.getLoginID().v().equals(newPass)) {
-			messages.add("#Msg_989");
+			messages.add(new PasswordMessageObject("#Msg_989"));
 		}
 		
 		if (!messages.isEmpty()) {
 			return new CheckBeforeChangePassOutput(true, messages);
 		}
 
-		// ドメインモデル「パスワードポリシー」を取得する
+		// 繝峨Γ繧､繝ｳ繝｢繝�繝ｫ縲後ヱ繧ｹ繝ｯ繝ｼ繝峨�昴Μ繧ｷ繝ｼ縲阪ｒ蜿門ｾ励☆繧�
 		return this.passwordPolicyCheck(userId, reNewPass, user.getContractCode().v());
 	}
 
@@ -106,7 +106,7 @@ public class CheckBeforePasswordPublisherImpl implements CheckBeforePasswordPubl
 	 *            the contract code
 	 * @return the check before change pass output
 	 */
-	// パスワードポリシーチェック
+	// 繝代せ繝ｯ繝ｼ繝峨�昴Μ繧ｷ繝ｼ繝√ぉ繝�繧ｯ
 	@Override
 	public CheckBeforeChangePassOutput passwordPolicyCheck(String userId, String newPass, String contractCode) {
 		//get PasswordPolicy
@@ -159,7 +159,7 @@ public class CheckBeforePasswordPublisherImpl implements CheckBeforePasswordPubl
 	 * @return true, if is history pass error
 	 */
 	private boolean isHistoryPassError(String userId, int historyCount, String newPassHash) {
-		// domain パスワード変更ログ PasswordChangeLog
+		// domain 繝代せ繝ｯ繝ｼ繝牙､画峩繝ｭ繧ｰ PasswordChangeLog
 		List<PasswordChangeLog> listPasswordChangeLog = this.passwordChangeLogRepository.findByUserId(userId,
 				historyCount + 1);
 		Optional<PasswordChangeLog> duplicatePassword = listPasswordChangeLog.stream()
