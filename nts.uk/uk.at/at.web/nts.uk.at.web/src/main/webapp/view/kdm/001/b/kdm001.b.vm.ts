@@ -178,12 +178,15 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             _.forEach(self.listExtractData, data => {
                 dayOffDate = data.dayOffDate;
                 remain = data.remain;
+                if (data.type ==1 ){
+                    remain = remain * -1;
+                }
                 expired = data.expired;
                 totalRemain += remain;
                 if (remain != 0) {
                     remain = remain.toFixed(1) + getText('KDM001_27');
                 }
-                if (expired != 0) {
+                if (expired != 0) { 
                     expired = expired.toFixed(1) + getText('KDM001_27');
                 }
                 if (data.unknownDate == 1) {
