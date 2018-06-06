@@ -116,12 +116,15 @@ import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetOfStatutoryWorkTim
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
@@ -940,10 +943,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		WorkInfoOfDailyPerformance toDayWorkInfo = integrationOfDaily.getWorkInformation();
 		
-		/*ジャストタイムの判断するための設定取得*/
-//		boolean justLate        = /*就業時間帯から固定・流動・フレックスの設定を取得してくるロジック*/;
-//		boolean justEarlyLeave  = /*就業時間帯から固定・流動・フレックスの設定を取得してくるロジック*/;
-//		/*日別実績の出退勤時刻セット*/
+		Optional<WorkTimezoneCommonSet> commonSet = getWorkTimezoneCommonSet(integrationOfDaily,companyId);
+		
+		/*日別実績の出退勤時刻セット*/
 		Optional<TimeLeavingOfDailyPerformance> timeLeavingOfDailyPerformance = integrationOfDaily.getAttendanceLeave();
 		if(!timeLeavingOfDailyPerformance.isPresent()) {
 			WorkStamp attendance = new WorkStamp(new TimeWithDayAttr(0),new TimeWithDayAttr(0), new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET );
@@ -954,6 +956,19 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			timeLeavingWorkList.add(timeLeavingWork);
 			timeLeavingOfDailyPerformance = Optional.of(new TimeLeavingOfDailyPerformance(employeeId,new WorkTimes(1),timeLeavingWorkList,targetDate)); 
 		}
+		
+		/*ジャストタイムの判断するための設定取得*/
+		boolean justLate = false;
+		boolean justEarlyLeave = false;
+		if(commonSet.isPresent()) {
+			justLate = commonSet.get().getLateEarlySet().getOtherEmTimezoneLateEarlySet(LateEarlyAtr.LATE).isStampExactlyTimeIsLateEarly();
+			justEarlyLeave = commonSet.get().getLateEarlySet().getOtherEmTimezoneLateEarlySet(LateEarlyAtr.EARLY).isStampExactlyTimeIsLateEarly();
+		}
+		//この区分は本当は引数として計算処理の呼出し口から渡されます
+		JustCorrectionAtr justCorrectionAtr = JustCorrectionAtr.USE;
+		//ジャスト遅刻、早退による時刻補正
+		timeLeavingOfDailyPerformance.get().calcJustTime(justLate, justEarlyLeave, justCorrectionAtr);
+		
 		return new CalculationRangeOfOneDay(Finally.empty(),  
 											Finally.empty(),
 											calcRangeOfOneDay,
@@ -1020,15 +1035,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//項目選択による計算時に必要なので取得
 		DailyRecordToAttendanceItemConverter dailyRecordDto = this.converter.setData(integrationOfDaily); 
 		
-		
-		/* 日別実績の退避(任意項目計算前の値を保持) */
-//		val copyIntegrationOfDaily = dailyRecordToAttendanceItemConverter
-//				.setData(integrationOfDaily).toDomain();
-		
 		//任意項目の計算
 		AnyItemValueOfDaily result = AnyItemValueOfDaily.caluculationAnyItem(companyId, employeeId, targetDate, optionalItems, formulaList,
 				empCondition, Optional.of(dailyRecordDto),bsEmploymentHistOpt,integrationOfDaily.getAnyItemValue());
-//		integrationOfDaily.setAnyItemValue(Optional.of(result));
 		
 		
 		// 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
@@ -1040,7 +1049,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 
 		IntegrationOfDaily calcResultIntegrationOfDaily = integrationOfDaily;  
 		if(!attendanceItemIdList.isEmpty()) {
-//			this.converter.withAnyItems(integrationOfDaily.getAnyItemValue().orElse(null)); 
 			List<ItemValue> itemValueList = this.converter.convert(attendanceItemIdList);  
 			this.converter.withAnyItems(result); 
 			this.converter.merge(itemValueList);
@@ -1049,6 +1057,56 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		  }
 		
 		return calcResultIntegrationOfDaily;
+	}
+	
+	
+	/**
+	 * 就業時間帯の共通設定を取得する
+	 * @return
+	 */
+	private Optional<WorkTimezoneCommonSet> getWorkTimezoneCommonSet(IntegrationOfDaily integrationOfDaily,String companyId) {
+		
+		/* 勤務種類の取得 */
+		val workInfo = integrationOfDaily.getWorkInformation();
+		
+		Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,workInfo.getRecordInfo().getWorkTimeCode().toString());
+		if(!workTime.isPresent()) return Optional.empty();
+		
+		if (workTime.get().getWorkTimeDivision().getWorkTimeDailyAtr().isFlex()) {
+			val flexWorkSetOpt = flexWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v());
+			if(flexWorkSetOpt.isPresent()) {
+				return Optional.of(flexWorkSetOpt.get().getCommonSetting());
+			}
+		}else{
+		
+			switch (workTime.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
+			case FIXED_WORK:
+				/* 固定 */
+				val fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, workInfo.getRecordInfo().getWorkTimeCode().v());
+				if(fixedWorkSetting.isPresent()) {
+					return Optional.of(fixedWorkSetting.get().getCommonSetting());
+				}
+			break;
+			case FLOW_WORK:
+				/* 流動勤務 */
+				val flowWorkSetOpt = flowWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v());
+				if(flowWorkSetOpt.isPresent()) {
+					return Optional.of(flowWorkSetOpt.get().getCommonSetting());
+				}
+				break;
+			case DIFFTIME_WORK:
+				/* 時差勤務 */
+				val diffWorkSetOpt = diffTimeWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v());
+				if(diffWorkSetOpt.isPresent()) {
+					return Optional.of(diffWorkSetOpt.get().getCommonSet());
+				}
+				break;
+			default:
+				throw new RuntimeException(
+						"unknown workTimeMethodSet" + workTime.get().getWorkTimeDivision().getWorkTimeMethodSet());
+			}
+		}
+		return Optional.empty();
 	}
 	
 	
