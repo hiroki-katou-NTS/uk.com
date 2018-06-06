@@ -481,20 +481,20 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			this.executionLogCreationProcess(scheduleExecutionLog, scheduleCreateContent, scheduleCreators);
 		}
 
-		DatePeriod dateAfterCorrection = new DatePeriod(scheduleExecutionLog.getPeriod().start(),
+		DatePeriod dateBeforeCorrection = new DatePeriod(scheduleExecutionLog.getPeriod().start(),
 				scheduleExecutionLog.getPeriod().end());
 
 		// get all data creator
 		List<ScheduleCreator> scheduleCreators = this.scheduleCreatorRepository.findAll(exeId);
 		List<String> employeeIds = scheduleCreators.stream().map(item -> item.getEmployeeId())
 				.collect(Collectors.toList());
-		
+
 		// Imported(就業)「社員の履歴情報」を取得する
 		EmployeeGeneralInfoImported empGeneralInfo = this.scEmpGeneralInfoAdapter.getPerEmpInfo(employeeIds,
 				scheduleExecutionLog.getPeriod());
 		// Imported(就業)「社員の在職状態」を取得する
 		List<EmploymentStatusImported> listEmploymentStatus = this.employmentStatusAdapter
-				.findListOfEmployee(employeeIds, dateAfterCorrection);
+				.findListOfEmployee(employeeIds, dateBeforeCorrection);
 		Map<String, List<EmploymentInfoImported>> mapEmploymentStatus = listEmploymentStatus.stream().collect(
 				Collectors.toMap(EmploymentStatusImported::getEmployeeId, EmploymentStatusImported::getEmploymentInfo));
 
@@ -511,10 +511,12 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				break;
 			}
 			// アルゴリズム「対象期間を締め開始日以降に補正する」を実行する
-			boolean isTargetPeriod = this.correctTargetPeriodAfterClosingStartDate(command.getCompanyId(),
-					scheduleCreator.getEmployeeId(), dateAfterCorrection, empGeneralInfo);
-			if (!isTargetPeriod)
+			StateAndValueDatePeriod stateAndValueDatePeriod = this.correctTargetPeriodAfterClosingStartDate(
+					command.getCompanyId(), scheduleCreator.getEmployeeId(), dateBeforeCorrection, empGeneralInfo);
+			if (!stateAndValueDatePeriod.state)
 				continue;
+
+			DatePeriod dateAfterCorrection = stateAndValueDatePeriod.getValue();
 
 			// パラメータ.処理実行区分を判断-check processExecutionAtr reconfig
 			if (command.getContent().getReCreateContent().getProcessExecutionAtr() == ProcessExecutionAtr.RECONFIG) {
@@ -568,11 +570,12 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 * 
 	 * @param companyId
 	 * @param employeeId
-	 * @param dateAfterCorrection
+	 * @param dateBeforeCorrection
+	 * @param empGeneralInfo
 	 * @return
 	 */
-	private boolean correctTargetPeriodAfterClosingStartDate(String companyId, String employeeId,
-			DatePeriod dateAfterCorrection, EmployeeGeneralInfoImported empGeneralInfo) {
+	private StateAndValueDatePeriod correctTargetPeriodAfterClosingStartDate(String companyId, String employeeId,
+			DatePeriod dateBeforeCorrection, EmployeeGeneralInfoImported empGeneralInfo) {
 		// Imported「所属雇用履歴」. 雇用コードを取得する
 		// Optional<EmploymentHistoryImported> employmentHistoryImported =
 		// this.scEmploymentAdapter
@@ -588,9 +591,9 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		Optional<ExEmploymentHistItemImported> optEmpHistItem = Optional.empty();
 		if (listEmpHistItem != null) {
 			optEmpHistItem = listEmpHistItem.stream()
-					.filter(empHistItem -> empHistItem.getPeriod().contains(dateAfterCorrection.end())).findFirst();
+					.filter(empHistItem -> empHistItem.getPeriod().contains(dateBeforeCorrection.end())).findFirst();
 			if (!optEmpHistItem.isPresent()) {
-				return false;
+				return new StateAndValueDatePeriod(dateBeforeCorrection, false);
 			}
 		}
 
@@ -598,27 +601,28 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		Optional<ClosureEmployment> optionalClosureEmployment = this.closureEmployment.findByEmploymentCD(companyId,
 				optEmpHistItem.get().getEmploymentCode());
 		if (!optionalClosureEmployment.isPresent())
-			return false;
+			return new StateAndValueDatePeriod(dateBeforeCorrection, false);
 		// ドメインモデル「締め」を取得
 		Optional<Closure> optionalClosure = this.closureRepository.findById(companyId,
 				optionalClosureEmployment.get().getClosureId());
 		if (!optionalClosure.isPresent())
-			return false;
+			return new StateAndValueDatePeriod(dateBeforeCorrection, false);
 		// アルゴリズム「当月の期間を算出する」を実行
 		DatePeriod dateP = this.closureService.getClosurePeriod(optionalClosure.get().getClosureId().value,
 				optionalClosure.get().getClosureMonth().getProcessingYm());
 		// Input「対象開始日」と、取得した「開始年月日」を比較
-		if (dateAfterCorrection.start().before(dateP.start())) {
-			dateAfterCorrection.cutOffWithNewStart(dateP.start());
+		DatePeriod dateAfterCorrection = dateBeforeCorrection;
+		if (dateBeforeCorrection.start().before(dateP.start())) {
+			dateAfterCorrection = dateBeforeCorrection.cutOffWithNewStart(dateP.start());
 		}
 		// Output「対象開始日(補正後)」に、取得した「締め期間. 開始日年月日」を設定する
-		if (dateAfterCorrection.start().beforeOrEquals(dateAfterCorrection.end())) {
+		if (dateAfterCorrection.start().beforeOrEquals(dateBeforeCorrection.end())) {
 			// Out「対象終了日(補正後)」に、Input「対象終了日」を設定する
-			dateAfterCorrection.cutOffWithNewEnd(dateAfterCorrection.end());
-			return true;
+			dateAfterCorrection = dateAfterCorrection.cutOffWithNewEnd(dateBeforeCorrection.end());
+			return new StateAndValueDatePeriod(dateAfterCorrection, true);
 		}
 
-		return false;
+		return new StateAndValueDatePeriod(dateAfterCorrection, false);
 	}
 
 }

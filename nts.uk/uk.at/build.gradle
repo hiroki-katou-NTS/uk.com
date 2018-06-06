@@ -586,6 +586,7 @@ project (':at.file:nts.uk.file.at.app') {
 	 	compile project (':at.ctx:record:nts.uk.ctx.at.record.dom')
 	 	compile project (':at.ctx:request:nts.uk.ctx.at.request.dom')
 		compile project (':at.ctx:shared:nts.uk.ctx.at.shared.dom')
+		compile(group: 'com.query', name: 'nts.uk.query.pub', version: version)
 	}
 }
 
@@ -597,6 +598,7 @@ project (':at.file:nts.uk.file.at.infra') {
 		compile project (':at.ctx:request:nts.uk.ctx.at.request.infra')
 		compile project (':at.ctx:shared:nts.uk.ctx.at.shared.infra')
 		compile project (':at.ctx:shared:nts.uk.ctx.at.shared.infra')
+		compile(group: 'com.query', name: 'nts.uk.query.pub', version: version)
 	}
 }
 //=============at.file�==========================================

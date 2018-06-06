@@ -10,8 +10,6 @@ public interface PerInfoHistorySelectionRepository {
 
 	void remove(String histId);
 
-	void update(PerInfoHistorySelection perInfoHistorySelection);
-
 	Optional<PerInfoHistorySelection> getAllHistoryByHistId(String histId);
 
 	List<PerInfoHistorySelection> getAllHistoryBySelectionItemId(String selectionItemId);
