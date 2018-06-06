@@ -52,7 +52,7 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		//残数算出対象年月を設定する
 		for(YearMonth ym = closureData.getStartMonth(); closureData.getEndMonth().greaterThanOrEqualTo(ym); ym.addMonths(1)) {
 			InterimRemainAggregateOutputData outPutData = new InterimRemainAggregateOutputData(ym, (double) 0, (double) 0, (double) 0, (double) 0, (double) 0);
-			/*//アルゴリズム「指定年月の締め期間を取得する」を実行する
+			//アルゴリズム「指定年月の締め期間を取得する」を実行する
 			DatePeriod dateData = remainManaExport.getClosureOfMonthDesignation(closureData.getClosure(), ym);
 			//アルゴリズム「期間内の振休発生数合計を取得」を実行する
 			Double occurrentDays = this.getTotalOccurrentDay(employeeId, dateData);
@@ -69,7 +69,7 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 				outPutData = this.calAsbRemainOfCurrentMonth(employeeId, dateData, outPutData);
 				//月末振休残数：月初振休残数＋振休発生数合計－振休使用数合計－振休消滅数合計
 				outPutData.setMonthEndRemain(outPutData.getMonthStartRemain() + occurrentDays - useDays - outPutData.getMonthExtinction() );
-			}*/
+			}
 			lstOutData.add(outPutData);
 		}
 		return lstOutData;
