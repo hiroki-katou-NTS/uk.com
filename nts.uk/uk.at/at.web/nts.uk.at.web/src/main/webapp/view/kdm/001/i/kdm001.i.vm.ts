@@ -119,11 +119,11 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             } else if (remainObject.checkBox1 && !remainObject.checkBox2 && remainObject.checkBox3) {
                 return (remainObject.value1 - remainObject.value3).toString();
             } else if (!remainObject.checkBox1 && remainObject.checkBox2 && !remainObject.checkBox3) {
-                return (remainObject.value2).toString();
+                return remainObject.value2;
             } else if (!remainObject.checkBox1 && remainObject.checkBox2 && remainObject.checkBox3) {
-                return (remainObject.value2 - remainObject.value3).toString();
+                return (remainObject.value2 + remainObject.value3).toString();
             } else if (!remainObject.checkBox1 && !remainObject.checkBox2 && remainObject.checkBox3) {
-                return (remainObject.value3).toString();
+                return remainObject.value3;
             }
         }
         initScreen(): void {

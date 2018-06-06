@@ -179,18 +179,14 @@ public class AddSubHdManagementService {
 	 */
 	public List<String> checkHoliday(GeneralDate holidayDate, Optional<GeneralDate> closureDate, int closureId) {
 		List<String> errorList = new ArrayList<>();
-		YearMonth processYearMonth = GeneralDate.today().yearMonth();
-		if (!closureDate.isPresent()) {
-			closureDate = this.getClosureDate(closureId, processYearMonth);
-		}
+		//YearMonth processYearMonth = GeneralDate.today().yearMonth();
 		// 休出（年月日）と締め日をチェックする
-		if (!closureDate.get().after(holidayDate)) {
+		if (!closureDate.isPresent() &&!closureDate.get().after(holidayDate)) {
 			errorList.add("Msg_745");
 			return errorList;
 		}
 		return errorList;
 	}
-
 	/**
 	 * 代休（年月日）チェック処理
 	 * 
