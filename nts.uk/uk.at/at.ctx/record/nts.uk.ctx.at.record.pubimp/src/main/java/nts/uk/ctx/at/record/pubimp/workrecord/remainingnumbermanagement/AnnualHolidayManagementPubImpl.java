@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.pubimp.workrecord.remainingnumbermanagement;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -56,7 +58,7 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 		Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo = annLeaEmpBasicInfoRepository.get(employeeId);
 		
 		if(!annualLeaveEmpBasicInfo.isPresent()) {
-			return null;
+			return Collections.emptyList();
 		}
 		
 		// 次回年休付与を計算
@@ -98,7 +100,7 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 		Optional<GrantHdTblSet> grantHdTblSet = yearHolidayRepository.findByCode(companyId, annualLeaveEmpBasicInfo.get().getGrantRule().getGrantTableCode().v());
 		
 		if(!grantHdTblSet.isPresent()) {
-			return null;
+			return Collections.emptyList();
 		}
 		
 		// 次回年休付与を取得する
