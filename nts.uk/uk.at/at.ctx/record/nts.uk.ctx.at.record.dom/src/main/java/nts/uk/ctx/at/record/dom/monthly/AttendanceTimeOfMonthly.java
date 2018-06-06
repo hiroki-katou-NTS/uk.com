@@ -73,7 +73,7 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 		this.excessOutsideWork = new ExcessOutsideWorkOfMonthly();
 		this.verticalTotal = new VerticalTotalOfMonthly();
 		this.totalCount = new TotalCountByPeriod();
-		this.aggregateDays = new AttendanceDaysMonth(0.0);
+		this.aggregateDays = new AttendanceDaysMonth((double)(datePeriod.start().daysTo(datePeriod.end()) + 1));
 	}
 	
 	/**

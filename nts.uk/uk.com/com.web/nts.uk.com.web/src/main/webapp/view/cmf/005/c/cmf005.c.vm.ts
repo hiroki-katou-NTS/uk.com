@@ -14,7 +14,7 @@ module nts.uk.com.view.cmf005.c.viewmodel {
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
         currentCategorySelected: KnockoutObservableArray<any>;
         listCateIdIgnore: KnockoutObservableArray<string> = ko.observableArray([]);
-       
+
 
         // comboBox system type
         systemTypes: KnockoutObservableArray<any>;
@@ -37,17 +37,29 @@ module nts.uk.com.view.cmf005.c.viewmodel {
             self.currentCategorySelected = ko.observableArray([]);
             var systemIdSelected;
             self.systemTypes = ko.observableArray([]);
+            self.isEnable = ko.observable(true);
+            self.isEditable = ko.observable(true);
+            self.listCategory = ko.observableArray([]);
+            self.selectedCode = ko.observable('');
+
+            self.selectedCode.subscribe(value => {
+                self.currentItem = _.find(self.systemTypes(), a => a.code === value);
+                self.getListCategory(systemTypeB, listCategoryB);
+
+            })
+            
             service.getSysTypes().done(function(data: Array<any>) {
                 if (data && data.length) {
                     _.forOwn(data, function(index) {
                         self.systemTypes.push(new model.ItemModel(index.systemTypeValue, index.systemTypeName));
                     });
 
-                    systemIdSelected = self.systemTypes()[0].code;
-                } else {
-
+                    if (systemTypeB != undefined) {
+                        self.selectedCode(systemTypeB.code);
+                    } else {
+                        self.selectedCode(self.systemTypes()[0].code);
+                    }
                 }
-
             }).fail(function(error) {
                 alertError(error);
 
@@ -55,51 +67,13 @@ module nts.uk.com.view.cmf005.c.viewmodel {
 
             });
 
-            if (systemTypeB != undefined) {
-                systemIdSelected = systemTypeB.code;
-            }
-            self.selectedCode = ko.observable(systemIdSelected);
             if (self.listCategoryChosed().length > 0) {
                 _.forEach(self.listCategoryChosed(), function(x) {
                     self.listCateIdIgnore.push(x.id);
                 });
             }
-            if (systemIdSelected != undefined) {
-                service.getCategoryListBySystem(self.selectedCode(), self.listCateIdIgnore).done(function(data: Array<any>) {
-                    if (systemTypeB != undefined) {
-                        _.forOwn(listCategoryB, function(index) {
-                            _.remove(data, function(e) {
-                                return e.categoryId == index.categoryId;
-                            });
-                        });
-                        self.currentCategorySelected(listCategoryB);
-                    }
-                    self.listCategory(data);
-                }).fail(function(error) {
-                    alertError(error);
-                }).always(() => {
-                    _.defer(() => {
-                        $("#grd_Condition tr:first-child").focus();
-                    });
-                });
-            }
 
-            self.isEnable = ko.observable(true);
-            self.isEditable = ko.observable(true);
-            self.listCategory = ko.observableArray([]);
-            self.selectedCode.subscribe(value => {
-                self.currentItem = _.find(self.systemTypes(), a => a.code === value);
-                service.getCategoryListBySystem(self.selectedCode(), self.listCateIdIgnore).done(function(data: Array<any>) {
-                    self.listCategory(data);
-                }).fail(function(error) {
-                    alertError(error);
-                }).always(() => {
-                    _.defer(() => {
-                        $("#grd_Condition tr:first-child").focus();
-                    });
-                });
 
-            })
 
             self.columns = ko.observableArray([
                 { headerText: self.headerCodeCategories, key: 'categoryId', width: 70 },
@@ -109,7 +83,27 @@ module nts.uk.com.view.cmf005.c.viewmodel {
             self.listCategoryChosed = self.currentCategorySelected;
         }
 
- 
+        getListCategory(systemTypeB: KnockoutObservable<model.ItemModel>, listCategoryB: KnockoutObservableArray<model.ItemCategory>) {
+            var self = this;
+            service.getCategoryListBySystem(self.selectedCode(), self.listCateIdIgnore).done(function(data: Array<any>) {
+                if (systemTypeB != undefined) {
+                    _.forOwn(listCategoryB, function(index) {
+                        _.remove(data, function(e) {
+                            return e.categoryId == index.categoryId;
+                        });
+                    });
+                    self.currentCategorySelected(listCategoryB);
+                }
+                self.listCategory(data);
+            }).fail(function(error) {
+                alertError(error);
+            }).always(() => {
+                _.defer(() => {
+                    $("#grd_Condition tr:first-child").focus();
+                });
+            });
+        }
+
         closePopup() {
             close();
         }

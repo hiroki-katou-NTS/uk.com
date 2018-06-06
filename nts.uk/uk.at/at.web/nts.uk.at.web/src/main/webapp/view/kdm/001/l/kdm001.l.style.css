@@ -1,0 +1,33 @@
+
+#L1div {
+	margin-top: 10px;
+	margin-left: 10px;
+}
+#L2 {
+	margin-top : 20px;
+	margin-bottom: -55px;
+}
+#L3 {
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+#bottom {
+	margin-left: 20px;
+}
+#L5 {
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+#L6_2 {
+	margin-left: 2px;
+}
+
+#L9_2 {
+	margin-left: 2px;
+}
+.combobox-select-day {
+	min-width: 108px !important;
+	width: 103px!important;
+	margin-top: 10px;
+	margin-left: 7px;
+}
