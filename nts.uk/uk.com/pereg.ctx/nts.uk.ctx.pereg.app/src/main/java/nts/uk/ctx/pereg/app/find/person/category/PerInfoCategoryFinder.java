@@ -11,12 +11,14 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
+import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFinder;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
+import nts.uk.ctx.pereg.dom.person.info.category.AddItemObjCls;
 import nts.uk.ctx.pereg.dom.person.info.category.HistoryTypes;
+import nts.uk.ctx.pereg.dom.person.info.category.InitValMasterObjCls;
 import nts.uk.ctx.pereg.dom.person.info.category.IsFixed;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
@@ -214,27 +216,28 @@ public class PerInfoCategoryFinder {
 	public PerInfoCtgDataEnumDto getAllPerInfoCtgByCompanyRoot() {
 
 		// ログイン者がグループ会社管理者かどうか判定する - Kiểm tra quyền
-		// String roleId = AppContexts.user().roles().forGroupCompaniesAdmin();
-		// if (roleId == null) {
-		// // false Msg_1103
-		// throw new BusinessException("Msg_1103");
-		// } else {
-		// true
-		List<PersonInfoCategory> categoryList = perInfoCtgRepositoty
-				.getAllPerInfoCategory(AppContexts.user().zeroCompanyIdInContract(), AppContexts.user().contractCode());
+		 String roleId = AppContexts.user().roles().forGroupCompaniesAdmin();
+		 if (roleId == null) {
+			 // false Msg_1103
+			 throw new BusinessException("Msg_1103");
+		 }
+		 else
+		 {
+			List<PersonInfoCategory> categoryList = perInfoCtgRepositoty
+					.getAllPerInfoCategory(AppContexts.user().zeroCompanyIdInContract(), AppContexts.user().contractCode());
+	
+			List<PerInfoCtgShowDto> x = categoryList.stream().map(p -> {
+				return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
+						p.getCategoryType().value, p.getCategoryCode().v(), p.getIsAbolition().value, p.getCategoryParentCode().v(),
+						p.getInitValMasterCls() == null ? InitValMasterObjCls.INIT.value : p.getInitValMasterCls().value,
+						p.getAddItemCls() == null ? AddItemObjCls.ENABLE.value : p.getAddItemCls().value);
+			}).collect(Collectors.toList());
+	
+			List<EnumConstant> historyTypes = EnumAdaptor.convertToValueNameList(HistoryTypes.class, internationalization);
+	
+			return new PerInfoCtgDataEnumDto(historyTypes, x);
 
-		List<PerInfoCtgShowDto> x = categoryList.stream().map(p -> {
-			return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
-					p.getCategoryType().value, p.getCategoryCode().v(), p.getIsAbolition().value, p.getCategoryParentCode().v(),
-					p.getInitValMasterCls() == null ? 1 : p.getInitValMasterCls().value,
-					p.getAddItemCls() == null ? 1 : p.getAddItemCls().value);
-		}).collect(Collectors.toList());
-
-		List<EnumConstant> historyTypes = EnumAdaptor.convertToValueNameList(HistoryTypes.class, internationalization);
-
-		return new PerInfoCtgDataEnumDto(historyTypes, x);
-
-		// }
+		 }
 	};
 
 	public PerInfoCtgWithItemsNameDto getPerInfoCtgWithItemsName(String perInfoCtgId) {
