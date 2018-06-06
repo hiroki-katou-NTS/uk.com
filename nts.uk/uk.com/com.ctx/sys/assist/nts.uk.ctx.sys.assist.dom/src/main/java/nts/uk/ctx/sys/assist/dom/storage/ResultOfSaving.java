@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.assist.dom.storage;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
@@ -12,6 +13,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 */
 @NoArgsConstructor
 @Getter
+@Setter
 public class ResultOfSaving extends AggregateRoot
 {
     
