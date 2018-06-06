@@ -22,6 +22,7 @@ import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
 import nts.uk.ctx.pereg.dom.copysetting.setting.EmpCopySettingRepository;
 import nts.uk.ctx.pereg.dom.copysetting.setting.EmployeeCopyCategory;
 import nts.uk.ctx.pereg.dom.copysetting.setting.EmployeeCopySetting;
+import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
@@ -31,6 +32,7 @@ import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeState;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.SingleItem;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuthRepository;
+import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryDetail;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
@@ -57,6 +59,8 @@ public class CopySettingItemFinder {
 	@Inject
 	private PersonInfoCategoryAuthRepository perInfoCtgRepo;
 	
+	private final String END_DATE_NAME = "終了日";
+	
 	public List<SettingItemDto> getAllCopyItemByCtgCode(String categoryCd, String selectedEmployeeId, GeneralDate baseDate) {
 
 		String companyId = AppContexts.user().companyId();
@@ -75,10 +79,24 @@ public class CopySettingItemFinder {
 		
 		List<SettingItemDto> copyItemList = convertToSettingItemDtoOfCategory(itemDefList, dataMap, categoryCd);
 		
+		// EA No746
+		if (perInfoCategory.getCategoryType() == CategoryType.CONTINUOUSHISTORY) {
+			setMaxEndDate(copyItemList);
+		}
+		
 		this.settingItemMap.setTextForItem(copyItemList, selectedEmployeeId, baseDate, perInfoCategory);
 		
 		return copyItemList;
 
+	}
+	
+	private void setMaxEndDate(List<SettingItemDto> copyItemList) {
+		copyItemList.forEach(copyItem -> {
+			if (copyItem.getItemName().equals(END_DATE_NAME)) {
+				copyItem.setData(GeneralDate.max());
+			}
+		});
+		
 	}
 	
 	public List<SettingItemDto> getValueCopyItem(String employeeId, GeneralDate baseDate) {
@@ -93,11 +111,11 @@ public class CopySettingItemFinder {
 		List<String> copySettingCategoryIdList = empCopySettingOpt.get().getCopySettingCategoryIdList();
 		List<String> copySettingItemIdList = empCopySettingOpt.get().getCopySettingItemIdList();
 		
-		Map<String, String> categoryIdvsCodeMap = perInfoCtgRepo
-				.getAllCategoryByCtgIdList(companyId, copySettingCategoryIdList).stream()
-				.collect(Collectors.toMap(x -> x.getCategoryId(), x -> x.getCategoryCode()));
-		
-		List<String> categoryCodes = new ArrayList<>(categoryIdvsCodeMap.values());
+		List<PersonInfoCategoryDetail> categoryDetails = perInfoCtgRepo.getAllCategoryByCtgIdList(companyId,
+				copySettingCategoryIdList);
+
+		List<String> categoryCodes = categoryDetails.stream().map(category -> category.getCategoryCode())
+				.collect(Collectors.toList());
 		
 		// get item-definition-list
 		List<PersonInfoItemDefinition> itemDefList = itemDefRepo.getItemLstByListId(copySettingItemIdList,
@@ -106,7 +124,24 @@ public class CopySettingItemFinder {
 		// get data
 		Map<String, Object> dataMap = getCategoryData(categoryCodes, employeeId, baseDate);
 		
-		return convertToSettingItemDto(itemDefList, dataMap, categoryIdvsCodeMap);
+		
+		List<SettingItemDto> copyItemList = convertToSettingItemDto(itemDefList, dataMap, categoryDetails);
+		
+		// EA No746
+		setMaxEndDate(copyItemList, categoryDetails);
+		
+		return copyItemList;
+	}
+	
+	private void setMaxEndDate(List<SettingItemDto> copyItemList, List<PersonInfoCategoryDetail> categoryDetails) {
+		Map<String, Integer> mapCategoryType = categoryDetails.stream().collect(
+				Collectors.toMap(category -> category.getCategoryCode(), category -> category.getCategoryType()));
+		copyItemList.forEach(copyItem -> {
+			int categoryType = mapCategoryType.get(copyItem.getCategoryCode());
+			if (categoryType == 3 && copyItem.getItemName().equals(END_DATE_NAME)) {
+				copyItem.setData(GeneralDate.max());
+			}
+		});
 	}
 	
 	private PersonInfoCategory getCategory(String categoryCd, String companyId) {
@@ -183,7 +218,11 @@ public class CopySettingItemFinder {
 	}
 	
 	private List<SettingItemDto> convertToSettingItemDto(List<PersonInfoItemDefinition> itemDefList,
-			Map<String, Object> dataMap, Map<String, String> categoryIdvsCodeMap) {
+			Map<String, Object> dataMap, List<PersonInfoCategoryDetail> categoryDetails) {
+		
+		Map<String, String> categoryIdvsCodeMap = categoryDetails.stream()
+				.collect(Collectors.toMap(x -> x.getCategoryId(), x -> x.getCategoryCode()));
+		
 		List<SettingItemDto> copyItemList = new ArrayList<>();
 		for (PersonInfoItemDefinition itemDef : itemDefList) {
 			if (itemDef.getItemTypeState().getItemType() != ItemType.SINGLE_ITEM) {

@@ -16,23 +16,26 @@ import nts.uk.ctx.at.shared.infra.entity.specialholiday.yearserviceper.KshstYear
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.yearserviceper.KshstYearServicePerPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.yearserviceper.KshstYearServicePerSet;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.yearserviceper.KshstYearServicePerSetPK;
+import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaPerItemRepository extends JpaRepository implements YearServicePerRepository{
-	private final String SELECT_NO_WHERE = "SELECT c FROM KshstYearServicePerSet c ";
+	private static final String SELECT_NO_WHERE = "SELECT c FROM KshstYearServicePerSet c ";
 	
-	private final String SELECT_ITEM = SELECT_NO_WHERE + "WHERE c.kshstYearServicePerSetPK.companyId = :companyId ";
+	private static final String SELECT_ITEM = SELECT_NO_WHERE + "WHERE c.kshstYearServicePerSetPK.companyId = :companyId ";
 	
-	private final String SELECT_YEAR = SELECT_ITEM + " AND c.year = :year";
+	private static final String SELECT_YEAR = SELECT_ITEM + " AND c.year = :year";
 	
-	private final String SELECT_CODE = SELECT_ITEM + " AND c.kshstYearServicePerSetPK.specialHolidayCode = :specialHolidayCode";
+	private static final String SELECT_CODE = SELECT_ITEM + " AND c.kshstYearServicePerSetPK.specialHolidayCode = :specialHolidayCode";
 	
-	private final String SELECT_CODE_SET = SELECT_CODE + " AND c.kshstYearServicePerSetPK.yearServiceCode = :yearServiceCode";
+	private static final String SELECT_CODE_SET = SELECT_CODE + " AND c.kshstYearServicePerSetPK.yearServiceCode = :yearServiceCode";
 	
-	private final String SELECT_NO_WHERE_PER = "SELECT c FROM KshstYearServicePer c ";
+	private static final String SELECT_NO_WHERE_PER = "SELECT c FROM KshstYearServicePer c ";
 	
-	private final String SELECT_ITEM_PER = SELECT_NO_WHERE_PER + "WHERE c.kshstYearServicePerPK.companyId = :companyId AND c.kshstYearServicePerPK.specialHolidayCode = :specialHolidayCode";
+	private static final String SELECT_ITEM_PER = SELECT_NO_WHERE_PER + "WHERE c.kshstYearServicePerPK.companyId = :companyId AND c.kshstYearServicePerPK.specialHolidayCode = :specialHolidayCode";
 	
-	private final String SELECT_ALL_PER = SELECT_NO_WHERE_PER + "WHERE c.kshstYearServicePerPK.companyId = :companyId ORDER BY c.kshstYearServicePerPK.specialHolidayCode ASC";
+	private static final String SELECT_ALL_PER = SELECT_NO_WHERE_PER + "WHERE c.kshstYearServicePerPK.companyId = :companyId ORDER BY c.kshstYearServicePerPK.specialHolidayCode ASC";
+	
+	private static final String CHANGE_ALL_PROVISION = "UPDATE KshstYearServicePer e SET e.provision = 0 WHERE e.kshstYearServicePerPK.companyId = :companyId AND e.kshstYearServicePerPK.specialHolidayCode = :specialHolidayCode ";
 	
 	/**
 	 * change entity to domain
@@ -76,6 +79,7 @@ public class JpaPerItemRepository extends JpaRepository implements YearServicePe
 																	entity.kshstYearServicePerPK.specialHolidayCode,
 																	entity.kshstYearServicePerPK.yearServiceCode,
 																	entity.yearServiceName,
+																	entity.provision,
 																	entity.yearServiceCls, 
 																	domls);
 		return domain;
@@ -86,6 +90,7 @@ public class JpaPerItemRepository extends JpaRepository implements YearServicePe
 																domain.getSpecialHolidayCode(), 
 																domain.getYearServiceCode().v());
 		entity.yearServiceName = domain.getYearServiceName().v();
+		entity.provision = domain.getProvision();
 		entity.yearServiceCls = domain.getYearServiceCls().value;
 		if(domain.getYearServicePerSets() != null){
 			entity.listYearServicePerSet = domain.getYearServicePerSets().stream()
@@ -141,18 +146,21 @@ public class JpaPerItemRepository extends JpaRepository implements YearServicePe
 	}
 	@Override
 	public void updatePer(YearServicePer yearServicePer) {
-			KshstYearServicePer entity = toEntityPer(yearServicePer);
-			KshstYearServicePer oldEntity = this.queryProxy().find(entity.kshstYearServicePerPK, KshstYearServicePer.class).get();
-			oldEntity.yearServiceName = entity.yearServiceName;
-			oldEntity.yearServiceCls = entity.yearServiceCls;
-			if(yearServicePer.getYearServicePerSets() != null){
-				oldEntity.listYearServicePerSet =  yearServicePer.getYearServicePerSets().stream()
-						.map(x -> toEntityPerSet(x))
-						.collect(Collectors.toList());
-				
-			}
-			this.commandProxy().update(oldEntity);
-}
+		KshstYearServicePer entity = toEntityPer(yearServicePer);
+		KshstYearServicePer oldEntity = this.queryProxy().find(entity.kshstYearServicePerPK, KshstYearServicePer.class).get();
+		oldEntity.yearServiceName = entity.yearServiceName;
+		oldEntity.provision = entity.provision;
+		oldEntity.yearServiceCls = entity.yearServiceCls;
+		
+		if(yearServicePer.getYearServicePerSets() != null){
+			oldEntity.listYearServicePerSet =  yearServicePer.getYearServicePerSets().stream()
+					.map(x -> toEntityPerSet(x))
+					.collect(Collectors.toList());
+			
+		}
+		
+		this.commandProxy().update(oldEntity);
+	}
 	
 	@Override
 	public void insertPer(YearServicePer yearServicePer) {
@@ -174,5 +182,14 @@ public class JpaPerItemRepository extends JpaRepository implements YearServicePe
 		return this.queryProxy().query(SELECT_ALL_PER, KshstYearServicePer.class)
 				.setParameter("companyId", companyId)
 				.getList(c->toDomainPer(c));
+	}
+	@Override
+	public void changeAllProvision(int specialHolidayCode) {
+		String companyId = AppContexts.user().companyId();
+		
+		this.getEntityManager().createQuery(CHANGE_ALL_PROVISION)
+		.setParameter("companyId", companyId)
+		.setParameter("specialHolidayCode", specialHolidayCode)
+		.executeUpdate();
 	}
 }

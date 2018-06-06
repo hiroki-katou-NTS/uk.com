@@ -25,7 +25,7 @@ public class DailyConfirmOutput {
 	/**
 	 * 対象日
 	 */
-	private GeneralDate TargetDate;
+	private GeneralDate targetDate;
 	/**
 	 * 本人確認
 	 */

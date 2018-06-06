@@ -21,7 +21,7 @@ module nts.uk.at.view.ksm011 {
             ]);
             currentTab: KnockoutObservable<string> = ko.observable('A');
             oldtab: KnockoutObservable<any> = ko.observable(new TabModel({ id: 0, name: "" }));
-            
+
             constructor() {
                 let self = this;
                 //get use setting
@@ -186,10 +186,10 @@ module nts.uk.at.view.ksm011 {
             conditionData: KnockoutObservableArray<ConditionModel>;
             scheFuncCondList: KnockoutObservableArray<any>;
             oldScheFuncCondList: any;
-            
+
             constructor() {
                 var self = this;
-                
+
                 self.dataA = null;
                 self.dataE = null;
                 self.conditionData = ko.observableArray([]);
@@ -203,57 +203,57 @@ module nts.uk.at.view.ksm011 {
                 self.confirmEnable = ko.observable(false);
                 self.retrievalMethodEnable = ko.observable(false);
                 self.optionCompleteEnable = ko.observable(true);
-                
+
                 //Block 1
                 self.alarmCheckAtr = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
-    
-                self.selectedAlarm = ko.observable(1);
-                
+
+                self.selectedAlarm = ko.observable(0);
+
                 self.confirmedAtr = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
-    
-                self.selectedConfirmed = ko.observable(1);
-                
+
+                self.selectedConfirmed = ko.observable(0);
+
                 self.publicAtr = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
-    
-                self.selectedPublic = ko.observable(0);
-                
+
+                self.selectedPublic = ko.observable(1);
+
                 self.outputAtr = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
-    
-                self.selectedOutput = ko.observable(1);
-                
+
+                self.selectedOutput = ko.observable(0);
+
                 self.workDevision = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
-    
-                self.selectedWorkDivision = ko.observable(0);
-                
+
+                self.selectedWorkDivision = ko.observable(1);
+
                 self.teamDivision = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
-    
-                self.selectedTeamDivision = ko.observable(0);
-                
+
+                self.selectedTeamDivision = ko.observable(1);
+
                 self.rankAtr = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
-    
-                self.selectedRank = ko.observable(0);
-                
+
+                self.selectedRank = ko.observable(1);
+
                 self.dayOfWeek = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("月曜日") },
                     { code: 1, name: nts.uk.resource.getText("火曜日") },
@@ -263,185 +263,185 @@ module nts.uk.at.view.ksm011 {
                     { code: 5, name: nts.uk.resource.getText("土曜日") },
                     { code: 6, name: nts.uk.resource.getText("日曜日") }
                 ]);
-                
+
                 self.selectedDay = ko.observable(0);
-                
+
                 //Block 2
                 self.shortNameDisp = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
-    
-                self.selectedShortName = ko.observable(1);
-                
+
+                self.selectedShortName = ko.observable(0);
+
                 self.timeDisp = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
-    
-                self.selectedTime = ko.observable(1);
-                
+
+                self.selectedTime = ko.observable(0);
+
                 self.symbols = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
-    
+
                 self.selectedSymbol = ko.observable(0);
-                
+
                 //Block 3
                 self.dispOn28th = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
-    
-                self.selectedDispOn28th = ko.observable(0);
-                
+
+                self.selectedDispOn28th = ko.observable(1);
+
                 self.endDateIndication = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
-    
-                self.selectedIndication = ko.observable(0);
-                
+
+                self.selectedIndication = ko.observable(1);
+
                 //Block 4
                 self.individualDisp = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
-    
-                self.selectedIndividual = ko.observable(0);
-                
+
+                self.selectedIndividual = ko.observable(1);
+
                 self.dispByDate = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
-    
-                self.selectedDate = ko.observable(0);
-                
+
+                self.selectedDate = ko.observable(1);
+
                 self.indicationByShift = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
-    
-                self.selectedIndicationByShift = ko.observable(0);
-                
+
+                self.selectedIndicationByShift = ko.observable(1);
+
                 //Block 5
                 self.regularWork = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_29") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_30") }
                 ]);
-    
-                self.selectedRegular = ko.observable(1);
-                
+
+                self.selectedRegular = ko.observable(0);
+
                 self.fluidWork = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_29") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_30") }
                 ]);
-    
-                self.selectedFluid = ko.observable(1);
-                
+
+                self.selectedFluid = ko.observable(0);
+
                 self.workForFlex = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_29") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_30") }
                 ]);
-    
-                self.selectedFlex = ko.observable(1);
-                
+
+                self.selectedFlex = ko.observable(0);
+
                 self.overtime = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_29") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_30") }
                 ]);
-    
-                self.selectedOvertime = ko.observable(1);
-                
+
+                self.selectedOvertime = ko.observable(0);
+
                 //Block 6
                 self.generalCreated = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
-    
-                self.selectedGeneral = ko.observable(0);
-                
+
+                self.selectedGeneral = ko.observable(1);
+
                 self.simulation = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
-    
-                self.selectedSimulation = ko.observable(0);
-                
+
+                self.selectedSimulation = ko.observable(1);
+
                 self.capture = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
-    
-                self.selectedCapture = ko.observable(0);
-                
+
+                self.selectedCapture = ko.observable(1);
+
                 //Block 7                
                 self.completeFunc = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
-    
-                self.selectedCompFunc = ko.observable(0);
-                
+
+                self.selectedCompFunc = ko.observable(1);
+
                 self.optionComplete = ko.observableArray([
                     { id: 0, name: nts.uk.resource.getText("KSM011_41") },
                     { id: 1, name: nts.uk.resource.getText("KSM011_42") }
                 ]);
-    
+
                 self.selectedOptionComp = ko.observable(0);
-                
+
                 self.alarmCheck = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
-    
+
                 self.selectedAlarmCheck = ko.observable(0);
-                
+
                 self.alarmMethod = ko.observableArray([
                     { id: 0, name: nts.uk.resource.getText("KSM011_41") },
                     { id: 1, name: nts.uk.resource.getText("KSM011_42") }
                 ]);
-    
+
                 self.selectedAlarmMethod = ko.observable(0);
 
-                self.conditionList = ko.observable("");
-                
+                self.conditionList = ko.observable(nts.uk.resource.getText("KSM011_75"));
+
                 self.unhooking = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
-    
+
                 self.selectedUnhooking = ko.observable(0);
-                
+
                 self.confirm = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
-    
+
                 self.selectedConfirm = ko.observable(0);
-                
-                                
+
+
                 //Block 8
                 self.searchMethod = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
-    
-                self.selectedSearchMethod = ko.observable(0);
-                
+
+                self.selectedSearchMethod = ko.observable(1);
+
                 self.retrievalMethod = ko.observableArray([
                     { id: 0, name: nts.uk.resource.getText("KSM011_51") },
                     { id: 1, name: nts.uk.resource.getText("KSM011_52") }
                 ]);
-    
+
                 self.selectedRetrieval = ko.observable(1);
-                
+
                 //Subscribes
                 self.selectedCompFunc.subscribe(function(value) {
-                    if(value == 0) {
+                    if (value == 0) {
                         self.optionCompleteEnable(true);
-                        if(self.selectedOptionComp() == 0) {
+                        if (self.selectedOptionComp() == 0) {
                             self.alarmCheckEnable(false);
                             self.alarmMethodEnable(false);
                             self.selectedAlarmMethod.valueHasMutated();
@@ -451,10 +451,10 @@ module nts.uk.at.view.ksm011 {
                             self.confirmEnable(false);
                         } else {
                             self.alarmCheckEnable(true);
-                            if(self.selectedAlarmCheck() == 0) {
+                            if (self.selectedAlarmCheck() == 0) {
                                 self.alarmMethodEnable(true);
-                                
-                                if(self.selectedAlarmMethod() == 0) {
+
+                                if (self.selectedAlarmMethod() == 0) {
                                     self.openEDialogEnable(false);
                                     self.conditionListEnable(false);
                                 } else {
@@ -466,7 +466,7 @@ module nts.uk.at.view.ksm011 {
                                 self.openEDialogEnable(false);
                                 self.conditionListEnable(false);
                             }
-                            
+
                             self.unhookingEnable(true);
                             self.confirmEnable(true);
                         }
@@ -475,14 +475,14 @@ module nts.uk.at.view.ksm011 {
                         self.alarmCheckEnable(false);
                         self.alarmMethodEnable(false);
                         self.openEDialogEnable(false);
-                        self.conditionListEnable(false);  
+                        self.conditionListEnable(false);
                         self.unhookingEnable(false);
-                        self.confirmEnable(false);                                              
+                        self.confirmEnable(false);
                     }
                 });
-                
+
                 self.selectedOptionComp.subscribe(function(value) {
-                    if(value == 0) {
+                    if (value == 0) {
                         self.alarmCheckEnable(false);
                         self.unhookingEnable(false);
                         self.confirmEnable(false);
@@ -490,7 +490,7 @@ module nts.uk.at.view.ksm011 {
                         self.openEDialogEnable(false);
                         self.conditionListEnable(false);
                     } else {
-                        if(self.selectedCompFunc() == 1) {
+                        if (self.selectedCompFunc() == 1) {
                             self.alarmCheckEnable(false);
                             self.alarmMethodEnable(false);
                             self.openEDialogEnable(false);
@@ -498,9 +498,9 @@ module nts.uk.at.view.ksm011 {
                         } else {
                             self.alarmCheckEnable(true);
                         }
-                        
-                        if(self.selectedAlarmCheck() == 0) {
-                            if(self.selectedCompFunc() == 1) {
+
+                        if (self.selectedAlarmCheck() == 0) {
+                            if (self.selectedCompFunc() == 1) {
                                 self.alarmCheckEnable(false);
                                 self.alarmMethodEnable(false);
                                 self.openEDialogEnable(false);
@@ -508,12 +508,12 @@ module nts.uk.at.view.ksm011 {
                             } else {
                                 self.alarmMethodEnable(true);
                             }
-                            
-                            if(self.selectedAlarmMethod() == 0) {
+
+                            if (self.selectedAlarmMethod() == 0) {
                                 self.openEDialogEnable(false);
                                 self.conditionListEnable(false);
                             } else {
-                                if(self.selectedCompFunc() == 1) {
+                                if (self.selectedCompFunc() == 1) {
                                     self.alarmCheckEnable(false);
                                     self.alarmMethodEnable(false);
                                     self.openEDialogEnable(false);
@@ -526,16 +526,16 @@ module nts.uk.at.view.ksm011 {
                         } else {
                             self.alarmMethodEnable(false);
                             self.openEDialogEnable(false);
-                            self.conditionListEnable(false); 
+                            self.conditionListEnable(false);
                         }
-                        
+
                         self.unhookingEnable(true);
                         self.confirmEnable(true);
                     }
                 });
-                
+
                 self.selectedAlarmCheck.subscribe(function(value) {
-                    if(value == 0) {
+                    if (value == 0) {
                         self.alarmMethodEnable(true);
                         self.selectedAlarmMethod.valueHasMutated();
                     } else {
@@ -544,13 +544,13 @@ module nts.uk.at.view.ksm011 {
                         self.conditionListEnable(false);
                     }
                 });
-                
+
                 self.selectedAlarmMethod.subscribe(function(value) {
-                    if(value == 0) {
+                    if (value == 0) {
                         self.openEDialogEnable(false);
                         self.conditionListEnable(false);
                     } else {
-                        if(self.selectedCompFunc() == 1) {
+                        if (self.selectedCompFunc() == 1) {
                             self.alarmCheckEnable(false);
                             self.alarmMethodEnable(false);
                             self.openEDialogEnable(false);
@@ -561,9 +561,9 @@ module nts.uk.at.view.ksm011 {
                         }
                     }
                 });
-                
+
                 self.selectedSearchMethod.subscribe(function(value) {
-                    if(value == 0) {
+                    if (value == 0) {
                         self.retrievalMethodEnable(false);
                     } else {
                         self.retrievalMethodEnable(true);
@@ -577,98 +577,101 @@ module nts.uk.at.view.ksm011 {
             start() {
                 var self = this;
                 var dfd = $.Deferred();
-                
+
                 self.conditionData([]);
-                
+
                 $.when(self.getData(), self.getShiftConditionCat(), self.getShiftCondition()).done(function() {
-                    if(self.conditionData().length > 0 && self.dataA != null) {
+                    if (self.conditionData().length > 0 && self.dataA != null) {
                         var conds = "";
                         self.scheFuncCondList([]);
-                        
-                        self.selectedAlarm(self.dataA.alarmCheckUseCls); 
-                        self.selectedConfirmed(self.dataA.confirmedCls); 
-                        self.selectedPublic(self.dataA.publicCls); 
-                        self.selectedOutput(self.dataA.outputCls); 
-                        self.selectedWorkDivision(self.dataA.workDormitionCls); 
-                        self.selectedTeamDivision(self.dataA.teamCls); 
-                        self.selectedRank(self.dataA.rankCls); 
-                        self.selectedDay(self.dataA.startDateInWeek); 
-                        self.selectedShortName(self.dataA.shortNameDisp); 
-                        self.selectedTime(self.dataA.timeDisp); 
-                        self.selectedSymbol(self.dataA.symbolDisp); 
-                        self.selectedDispOn28th(self.dataA.twentyEightDaysCycle); 
-                        self.selectedIndication(self.dataA.lastDayDisp); 
-                        self.selectedIndividual(self.dataA.individualDisp); 
-                        self.selectedDate(self.dataA.dispByDate); 
+
+                        self.selectedAlarm(self.dataA.alarmCheckUseCls);
+                        self.selectedConfirmed(self.dataA.confirmedCls);
+                        self.selectedPublic(self.dataA.publicCls);
+                        self.selectedOutput(self.dataA.outputCls);
+                        self.selectedWorkDivision(self.dataA.workDormitionCls);
+                        self.selectedTeamDivision(self.dataA.teamCls);
+                        self.selectedRank(self.dataA.rankCls);
+                        self.selectedDay(self.dataA.startDateInWeek);
+                        self.selectedShortName(self.dataA.shortNameDisp);
+                        self.selectedTime(self.dataA.timeDisp);
+                        self.selectedSymbol(self.dataA.symbolDisp);
+                        self.selectedDispOn28th(self.dataA.twentyEightDaysCycle);
+                        self.selectedIndication(self.dataA.lastDayDisp);
+                        self.selectedIndividual(self.dataA.individualDisp);
+                        self.selectedDate(self.dataA.dispByDate);
                         self.selectedIndicationByShift(self.dataA.indicationByShift);
-                        self.selectedRegular(self.dataA.regularWork); 
-                        self.selectedFluid(self.dataA.fluidWork); 
-                        self.selectedFlex(self.dataA.workingForFlex); 
-                        self.selectedOvertime(self.dataA.overtimeWork); 
-                        self.selectedGeneral(self.dataA.normalCreation); 
-                        self.selectedSimulation(self.dataA.simulationCls); 
-                        self.selectedCapture(self.dataA.captureUsageCls); 
-                        self.selectedCompFunc(self.dataA.completedFuncCls); 
-                        self.selectedOptionComp(self.dataA.howToComplete); 
-                        self.selectedAlarmCheck(self.dataA.alarmCheckCls); 
-                        self.selectedAlarmMethod(self.dataA.executionMethod); 
-                        self.selectedUnhooking(self.dataA.handleRepairAtr); 
-                        self.selectedConfirm(self.dataA.confirm); 
-                        self.selectedSearchMethod(self.dataA.searchMethod); 
+                        self.selectedRegular(self.dataA.regularWork);
+                        self.selectedFluid(self.dataA.fluidWork);
+                        self.selectedFlex(self.dataA.workingForFlex);
+                        self.selectedOvertime(self.dataA.overtimeWork);
+                        self.selectedGeneral(self.dataA.normalCreation);
+                        self.selectedSimulation(self.dataA.simulationCls);
+                        self.selectedCapture(self.dataA.captureUsageCls);
+                        self.selectedCompFunc(self.dataA.completedFuncCls);
+                        self.selectedOptionComp(self.dataA.howToComplete);
+                        self.selectedAlarmCheck(self.dataA.alarmCheckCls);
+                        self.selectedAlarmMethod(self.dataA.executionMethod);
+                        self.selectedUnhooking(self.dataA.handleRepairAtr);
+                        self.selectedConfirm(self.dataA.confirm);
+                        self.selectedSearchMethod(self.dataA.searchMethod);
                         self.selectedRetrieval(self.dataA.searchMethodDispCls);
-                        
+
                         var sortedScheFuncCond = _.sortBy(self.dataA.scheFuncCond, [function(o) { return o.conditionNo; }]);
                         _.forEach(sortedScheFuncCond, function(item) {
                             var result = _.find(self.conditionData(), function(o) { return o.conditionNo == Number(item.conditionNo) && o.isParent == false; });
                             self.scheFuncCondList.push(result);
                             conds += result.conditionName + ", ";
                         });
-                        
-                        self.conditionList(conds.trim().slice(0, -1));
+                        if (conds == "") {
+                            self.conditionList(nts.uk.resource.getText("KSM011_75"));
+                        } else {
+                            self.conditionList(conds.trim().slice(0, -1));
+                        }
                         self.oldScheFuncCondList = self.scheFuncCondList();
                     } else {
-                        self.selectedAlarm(1); 
-                        self.selectedConfirmed(1); 
-                        self.selectedPublic(0); 
-                        self.selectedOutput(1); 
-                        self.selectedWorkDivision(0); 
-                        self.selectedTeamDivision(0); 
-                        self.selectedRank(0); 
-                        self.selectedDay(0); 
-                        self.selectedShortName(1); 
-                        self.selectedTime(1); 
-                        self.selectedSymbol(0); 
-                        self.selectedDispOn28th(0); 
-                        self.selectedIndication(0); 
-                        self.selectedIndividual(0); 
-                        self.selectedDate(0); 
-                        self.selectedIndicationByShift(0);
-                        self.selectedRegular(1); 
-                        self.selectedFluid(1); 
-                        self.selectedFlex(1); 
-                        self.selectedOvertime(1); 
-                        self.selectedGeneral(0); 
-                        self.selectedSimulation(0); 
-                        self.selectedCapture(0); 
-                        self.selectedCompFunc(0); 
-                        self.selectedOptionComp(0); 
-                        self.selectedAlarmCheck(0); 
+                        self.selectedAlarm(0);
+                        self.selectedConfirmed(0);
+                        self.selectedPublic(1);
+                        self.selectedOutput(0);
+                        self.selectedWorkDivision(1);
+                        self.selectedTeamDivision(1);
+                        self.selectedRank(1);
+                        self.selectedDay(0);
+                        self.selectedShortName(0);
+                        self.selectedTime(0);
+                        self.selectedSymbol(0);
+                        self.selectedDispOn28th(1);
+                        self.selectedIndication(1);
+                        self.selectedIndividual(1);
+                        self.selectedDate(1);
+                        self.selectedIndicationByShift(1);
+                        self.selectedRegular(0);
+                        self.selectedFluid(0);
+                        self.selectedFlex(0);
+                        self.selectedOvertime(0);
+                        self.selectedGeneral(1);
+                        self.selectedSimulation(1);
+                        self.selectedCapture(1);
+                        self.selectedCompFunc(0);
+                        self.selectedOptionComp(0);
+                        self.selectedAlarmCheck(0);
                         self.selectedAlarmMethod(0);
-                        self.conditionList("");
-                        self.selectedUnhooking(0); 
-                        self.selectedConfirm(0); 
-                        self.selectedSearchMethod(0); 
+                        self.conditionList(nts.uk.resource.getText("KSM011_75"));
+                        self.selectedUnhooking(0);
+                        self.selectedConfirm(0);
+                        self.selectedSearchMethod(1);
                         self.selectedRetrieval(1);
                     }
-                    
-                    if(self.selectedCompFunc() == 0) {
+
+                    if (self.selectedCompFunc() == 0) {
                         self.optionCompleteEnable(true);
-                        if(self.selectedOptionComp() == 0) {
+                        if (self.selectedOptionComp() == 0) {
                             self.alarmCheckEnable(false);
                             self.alarmMethodEnable(false);
                         } else {
                             self.alarmCheckEnable(true);
-                            if(self.selectedAlarmCheck() == 1) {
+                            if (self.selectedAlarmCheck() == 1) {
                                 self.alarmMethodEnable(false);
                                 self.openEDialogEnable(false);
                                 self.conditionListEnable(false);
@@ -678,7 +681,9 @@ module nts.uk.at.view.ksm011 {
                         self.unhookingEnable(false);
                         self.confirmEnable(false);
                     }
-                    
+                    nts.uk.ui.windows.setShared("KSM011_A_TEAMDIVISION", self.selectedTeamDivision());
+                    nts.uk.ui.windows.setShared("KSM011_A_RANK", self.selectedRank());
+
                     dfd.resolve();
                 }).fail(function(res) {
                     dfd.reject(res);
@@ -686,69 +691,69 @@ module nts.uk.at.view.ksm011 {
 
                 return dfd.promise();
             }
-            
+
             /**
              * Get data from db.
              */
             getData(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-                
+
                 service.findScheFuncControl().done(function(data) {
-                    if(data != null) {
+                    if (data != null) {
                         var dataItems = new ScheFuncControlDto({
-                                                    alarmCheckUseCls: data.alarmCheckUseCls, 
-                                                    confirmedCls: data.confirmedCls, 
-                                                    publicCls: data.publicCls, 
-                                                    outputCls: data.outputCls, 
-                                                    workDormitionCls: data.workDormitionCls, 
-                                                    teamCls: data.teamCls, 
-                                                    rankCls: data.rankCls, 
-                                                    startDateInWeek: data.startDateInWeek, 
-                                                    shortNameDisp: data.shortNameDisp, 
-                                                    timeDisp: data.timeDisp, 
-                                                    symbolDisp: data.symbolDisp, 
-                                                    twentyEightDaysCycle: data.twentyEightDaysCycle, 
-                                                    lastDayDisp: data.lastDayDisp, 
-                                                    individualDisp: data.individualDisp, 
-                                                    dispByDate: data.dispByDate, 
-                                                    indicationByShift: data.indicationByShift,
-                                                    regularWork: data.regularWork, 
-                                                    fluidWork: data.fluidWork, 
-                                                    workingForFlex: data.workingForFlex, 
-                                                    overtimeWork: data.overtimeWork, 
-                                                    normalCreation: data.normalCreation, 
-                                                    simulationCls: data.simulationCls, 
-                                                    captureUsageCls: data.captureUsageCls, 
-                                                    completedFuncCls: data.completedFuncCls, 
-                                                    howToComplete: data.howToComplete, 
-                                                    alarmCheckCls: data.alarmCheckCls, 
-                                                    executionMethod: data.executionMethod, 
-                                                    handleRepairAtr: data.handleRepairAtr, 
-                                                    confirm: data.confirm, 
-                                                    searchMethod: data.searchMethod, 
-                                                    searchMethodDispCls: data.searchMethodDispCls,
-                                                    scheFuncCond: data.scheFuncCond
-                                                });
-                            
-                        self.dataA = dataItems;  
+                            alarmCheckUseCls: data.alarmCheckUseCls,
+                            confirmedCls: data.confirmedCls,
+                            publicCls: data.publicCls,
+                            outputCls: data.outputCls,
+                            workDormitionCls: data.workDormitionCls,
+                            teamCls: data.teamCls,
+                            rankCls: data.rankCls,
+                            startDateInWeek: data.startDateInWeek,
+                            shortNameDisp: data.shortNameDisp,
+                            timeDisp: data.timeDisp,
+                            symbolDisp: data.symbolDisp,
+                            twentyEightDaysCycle: data.twentyEightDaysCycle,
+                            lastDayDisp: data.lastDayDisp,
+                            individualDisp: data.individualDisp,
+                            dispByDate: data.dispByDate,
+                            indicationByShift: data.indicationByShift,
+                            regularWork: data.regularWork,
+                            fluidWork: data.fluidWork,
+                            workingForFlex: data.workingForFlex,
+                            overtimeWork: data.overtimeWork,
+                            normalCreation: data.normalCreation,
+                            simulationCls: data.simulationCls,
+                            captureUsageCls: data.captureUsageCls,
+                            completedFuncCls: data.completedFuncCls,
+                            howToComplete: data.howToComplete,
+                            alarmCheckCls: data.alarmCheckCls,
+                            executionMethod: data.executionMethod,
+                            handleRepairAtr: data.handleRepairAtr,
+                            confirm: data.confirm,
+                            searchMethod: data.searchMethod,
+                            searchMethodDispCls: data.searchMethodDispCls,
+                            scheFuncCond: data.scheFuncCond
+                        });
+
+                        self.dataA = dataItems;
                     }
-                                   
+
                     dfd.resolve(data);
                 }).fail(function(res) {
-                    dfd.reject(res);    
+                    dfd.reject(res);
                 });
-    
+
                 return dfd.promise();
             }
-            
+
             /**
              * Get ShiftConditionCat.
              */
             getShiftConditionCat(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-                
+
                 service.getShiftConditionCat().done(function(data) {
                     _.forEach(data, function(item) {
                         var model = new ConditionModel({
@@ -756,25 +761,25 @@ module nts.uk.at.view.ksm011 {
                             conditionName: item.categoryName,
                             isParent: true,
                         });
-                        
+
                         self.conditionData.push(model);
                     });
-                    
+
                     dfd.resolve(data);
                 }).fail(function(res) {
-                    dfd.reject(res);    
+                    dfd.reject(res);
                 });
-    
+
                 return dfd.promise();
             }
-            
+
             /**
              * Get ShiftCondition.
              */
             getShiftCondition(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-                
+
                 service.getShiftCondition().done(function(data) {
                     _.forEach(data, function(item) {
                         var model = new ConditionModel({
@@ -782,155 +787,160 @@ module nts.uk.at.view.ksm011 {
                             conditionName: item.conditionName,
                             isParent: false,
                         });
-                        
+
                         self.conditionData.push(model);
                     });
-                    
+
                     dfd.resolve(data);
                 }).fail(function(res) {
-                    dfd.reject(res);    
+                    dfd.reject(res);
                 });
-    
+
                 return dfd.promise();
             }
-            
+
             /**
              * Registration function.
              */
             registration() {
                 var self = this;
-                
+
                 // clear all error
                 nts.uk.ui.errors.clearAll();
-                
-                if(self.selectedCompFunc() == 0 && self.selectedOptionComp() == 1) {
-                    if(self.selectedAlarmCheck() == 0 && self.selectedAlarmMethod() == 1) {
-                        if(self.dataE == null && self.scheFuncCondList().length == 0) {
+
+                if (self.selectedCompFunc() == 0 && self.selectedOptionComp() == 1) {
+                    if (self.selectedAlarmCheck() == 0 && self.selectedAlarmMethod() == 1) {
+                        if (self.dataE == null && self.scheFuncCondList().length == 0) {
                             nts.uk.ui.dialog.alertError({ messageId: "Msg_718" });
                             return;
                         }
                     }
-                    
-                    if(self.selectedAlarmCheck() != 0 && self.selectedUnhooking() != 0 && self.selectedConfirm() != 0) {
+
+                    if (self.selectedAlarmCheck() != 0 && self.selectedUnhooking() != 0 && self.selectedConfirm() != 0) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_717" });
                         return;
                     }
                 }
-                
+
                 if (nts.uk.ui.errors.hasError()) {
                     return;
                 }
-                
+
                 var conditionData = [];
-                if(self.selectedCompFunc() == 0 && self.selectedOptionComp() == 1 && self.selectedAlarmCheck() == 0 && self.selectedAlarmMethod() == 1) {
-                    if(self.dataE != null && self.dataE.length > 0) {
+                if (self.selectedCompFunc() == 0 && self.selectedOptionComp() == 1 && self.selectedAlarmCheck() == 0 && self.selectedAlarmMethod() == 1) {
+                    if (self.dataE != null && self.dataE.length > 0) {
                         _.forEach(self.dataE, function(code) {
-                            conditionData.push({ 
+                            conditionData.push({
                                 conditionNo: Number(code.slice(0, -1))
                             });
                         });
                     } else {
                         _.forEach(self.scheFuncCondList(), function(item) {
-                            conditionData.push({ 
+                            conditionData.push({
                                 conditionNo: Number(item.conditionNo)
                             });
-                        });                    
+                        });
                     }
                 } else {
-                    if(self.selectedOptionComp() == 0 || self.selectedAlarmCheck() == 1 || self.selectedAlarmMethod() == 0) {
+                    if (self.selectedOptionComp() == 0 || self.selectedAlarmCheck() == 1 || self.selectedAlarmMethod() == 0) {
                         _.forEach(self.oldScheFuncCondList, function(item) {
-                            conditionData.push({ 
+                            conditionData.push({
                                 conditionNo: Number(item.conditionNo)
                             });
-                        }); 
+                        });
                     } else {
                         _.forEach(self.oldScheFuncCondList, function(item) {
-                            conditionData.push({ 
+                            conditionData.push({
                                 conditionNo: Number(item.conditionNo)
                             });
-                        }); 
+                        });
                     }
                 }
-                
+
                 var data = new ScheFuncControlDto({
-                                alarmCheckUseCls: self.selectedAlarm(), 
-                                confirmedCls: self.selectedConfirmed(), 
-                                publicCls: self.selectedPublic(), 
-                                outputCls: self.selectedOutput(), 
-                                workDormitionCls: self.selectedWorkDivision(), 
-                                teamCls: self.selectedTeamDivision(), 
-                                rankCls: self.selectedRank(), 
-                                startDateInWeek: self.selectedDay(), 
-                                shortNameDisp: self.selectedShortName(), 
-                                timeDisp: self.selectedTime(), 
-                                symbolDisp: self.selectedSymbol(), 
-                                twentyEightDaysCycle: self.selectedDispOn28th(), 
-                                lastDayDisp: self.selectedIndication(), 
-                                individualDisp: self.selectedIndividual(), 
-                                dispByDate: self.selectedDate(), 
-                                indicationByShift: self.selectedIndicationByShift(),
-                                regularWork: self.selectedRegular(), 
-                                fluidWork: self.selectedFluid(), 
-                                workingForFlex: self.selectedFlex(), 
-                                overtimeWork: self.selectedOvertime(), 
-                                normalCreation: self.selectedGeneral(), 
-                                simulationCls: self.selectedSimulation(), 
-                                captureUsageCls: self.selectedCapture(), 
-                                completedFuncCls: self.selectedCompFunc(), 
-                                howToComplete: self.selectedOptionComp(), 
-                                alarmCheckCls: self.selectedAlarmCheck(), 
-                                executionMethod: self.selectedAlarmMethod(), 
-                                handleRepairAtr: self.selectedUnhooking(), 
-                                confirm: self.selectedConfirm(), 
-                                searchMethod: self.selectedSearchMethod(), 
-                                searchMethodDispCls: self.selectedRetrieval(),
-                                scheFuncCond: conditionData
+                    alarmCheckUseCls: self.selectedAlarm(),
+                    confirmedCls: self.selectedConfirmed(),
+                    publicCls: self.selectedPublic(),
+                    outputCls: self.selectedOutput(),
+                    workDormitionCls: self.selectedWorkDivision(),
+                    teamCls: self.selectedTeamDivision(),
+                    rankCls: self.selectedRank(),
+                    startDateInWeek: self.selectedDay(),
+                    shortNameDisp: self.selectedShortName(),
+                    timeDisp: self.selectedTime(),
+                    symbolDisp: self.selectedSymbol(),
+                    twentyEightDaysCycle: self.selectedDispOn28th(),
+                    lastDayDisp: self.selectedIndication(),
+                    individualDisp: self.selectedIndividual(),
+                    dispByDate: self.selectedDate(),
+                    indicationByShift: self.selectedIndicationByShift(),
+                    regularWork: self.selectedRegular(),
+                    fluidWork: self.selectedFluid(),
+                    workingForFlex: self.selectedFlex(),
+                    overtimeWork: self.selectedOvertime(),
+                    normalCreation: self.selectedGeneral(),
+                    simulationCls: self.selectedSimulation(),
+                    captureUsageCls: self.selectedCapture(),
+                    completedFuncCls: self.selectedCompFunc(),
+                    howToComplete: self.selectedOptionComp(),
+                    alarmCheckCls: self.selectedAlarmCheck(),
+                    executionMethod: self.selectedAlarmMethod(),
+                    handleRepairAtr: self.selectedUnhooking(),
+                    confirm: self.selectedConfirm(),
+                    searchMethod: self.selectedSearchMethod(),
+                    searchMethodDispCls: self.selectedRetrieval(),
+                    scheFuncCond: conditionData
                 });
-                
+                nts.uk.ui.windows.setShared("KSM011_A_TEAMDIVISION", self.selectedTeamDivision());
+                nts.uk.ui.windows.setShared("KSM011_A_RANK", self.selectedRank());
                 service.saveScheFuncControl(data).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError({ messageId: error.messageId, messageParams: error.parameterIds });
                 });
             }
-            
+
             /**
              * Open E dialog to set condition list.
              */
             openEDialog() {
                 var self = this;
-                
-                if(self.dataE != null) {
+
+                if (self.dataE != null) {
                     nts.uk.ui.windows.setShared("KSM011_A_DATA_SELECTED", self.dataE);
                 } else {
                     var oldData = [];
-                    
+
                     _.forEach(self.scheFuncCondList(), function(item) {
                         oldData.push(item.conditionNo.toString() + "c");
                     });
-                    
+
                     nts.uk.ui.windows.setShared("KSM011_A_DATA_SELECTED", oldData);
                 }
-                
+
                 nts.uk.ui.windows.sub.modal("/view/ksm/011/e/index.xhtml").onClosed(() => {
                     self.dataE = nts.uk.ui.windows.getShared("KSM011_E_DATA");
-                    
-                    if(self.conditionData().length > 0 && self.dataE != null) {
+
+                    if (self.conditionData().length > 0 && self.dataE != null) {
                         var conds = "";
                         self.scheFuncCondList([]);
-                        
+
                         _.forEach(self.dataE, function(code) {
                             var result = _.find(self.conditionData(), function(o) { return o.conditionNo == Number(code.slice(0, -1)) && o.isParent == false; });
                             self.scheFuncCondList.push(result);
                             conds += result.conditionName + ", ";
                         });
-                        
-                        self.conditionList(conds.trim().slice(0, -1));
+
+                        if (conds == "") {
+                            self.conditionList(nts.uk.resource.getText("KSM011_75"));
+                        } else {
+                            self.conditionList(conds.trim().slice(0, -1));
+                        }
                     }
                 });
             }
         }
-        
+
         class ScheFuncControlDto {
             alarmCheckUseCls: number;
             confirmedCls: number;
@@ -964,7 +974,7 @@ module nts.uk.at.view.ksm011 {
             searchMethod: number;
             searchMethodDispCls: number;
             scheFuncCond: Array<ScheFuncCondDto>;
-            
+
             constructor(param: IScheFuncControlDto) {
                 this.alarmCheckUseCls = param.alarmCheckUseCls;
                 this.confirmedCls = param.confirmedCls;
@@ -1000,7 +1010,7 @@ module nts.uk.at.view.ksm011 {
                 this.scheFuncCond = param.scheFuncCond;
             }
         }
-        
+
         interface IScheFuncControlDto {
             alarmCheckUseCls: number;
             confirmedCls: number;
@@ -1033,33 +1043,33 @@ module nts.uk.at.view.ksm011 {
             confirm: number;
             searchMethod: number;
             searchMethodDispCls: number;
-            scheFuncCond: Array<ScheFuncCondDto>;    
+            scheFuncCond: Array<ScheFuncCondDto>;
         }
-        
+
         class ScheFuncCondDto {
             conditionNo: number;
-            
+
             constructor(param: IScheFuncCondDto) {
                 this.conditionNo = param.conditionNo;
             }
         }
-        
+
         interface IScheFuncCondDto {
             conditionNo: number;
         }
-        
+
         class ConditionModel {
             conditionNo: number;
             conditionName: string;
             isParent: boolean;
-            
+
             constructor(param: IConditionModel) {
                 this.conditionNo = param.conditionNo;
                 this.conditionName = param.conditionName;
                 this.isParent = param.isParent;
             }
         }
-        
+
         interface IConditionModel {
             conditionNo: number;
             conditionName: string;

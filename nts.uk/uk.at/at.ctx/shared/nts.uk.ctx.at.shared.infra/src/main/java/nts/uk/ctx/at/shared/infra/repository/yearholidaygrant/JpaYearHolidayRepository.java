@@ -29,18 +29,18 @@ import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstGrantHdTblSetPK;
 @Stateless
 public class JpaYearHolidayRepository extends JpaRepository implements YearHolidayRepository {
 	
-	private final String findAllByCompanyID = "SELECT a FROM KshstGrantHdTblSet a "
+	private static final String FIND_ALL_BY_CID = "SELECT a FROM KshstGrantHdTblSet a "
 			+ "WHERE a.kshstGrantHdTblSetPK.companyId = :companyId ORDER BY a.kshstGrantHdTblSetPK.yearHolidayCode ASC";
-	private final String DELETE_CONDITION = "DELETE FROM KshstGrantCondition c "
+	private static final String DELETE_CONDITION = "DELETE FROM KshstGrantCondition c "
 			+ "WHERE c.kshstGrantConditionPK.companyId =:companyId "
 			+ "AND c.kshstGrantConditionPK.yearHolidayCode =:yearHolidayCode ";
-	private final String DELETE_GRANT_DATES = "DELETE FROM KshstGrantHdTbl g "
+	private static final String DELETE_GRANT_DATES = "DELETE FROM KshstGrantHdTbl g "
 			+ "WHERE g.kshstGrantHdTblPK.companyId =:companyId "
 			+ "AND g.kshstGrantHdTblPK.yearHolidayCode =:yearHolidayCode ";
 	
 	@Override
 	public List<GrantHdTblSet> findAll(String companyId) {
-		return this.queryProxy().query(findAllByCompanyID, KshstGrantHdTblSet.class)
+		return this.queryProxy().query(FIND_ALL_BY_CID, KshstGrantHdTblSet.class)
 				.setParameter("companyId", companyId)
 				.getList(x -> convertToDomainYearHoliday(x));
 	}	

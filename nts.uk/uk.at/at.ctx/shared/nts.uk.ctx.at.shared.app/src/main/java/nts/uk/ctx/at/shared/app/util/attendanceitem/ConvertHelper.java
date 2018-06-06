@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.shared.app.util.attendanceitem;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -11,6 +13,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 public class ConvertHelper {
 
@@ -31,23 +34,22 @@ public class ConvertHelper {
 	}
 	
 	public static List<YearMonth> yearMonthsBetween(DatePeriod range){
-		List<YearMonth> result = new ArrayList<>();
-		YearMonth start = range.start().yearMonth();
-		YearMonth end = range.end().yearMonth();
-		while (start.lessThanOrEqualTo(end)) {
-			result.add(start);
-			start = start.addMonths(1);
-		}
-		return result;
+		return range.yearMonthsBetween();
+	}
+	
+	public static List<YearMonth> yearMonthsBetween(YearMonthPeriod range){
+		return range.yearMonthsBetween();
 	}
 	
 	public static List<GeneralDate> datesBetween(DatePeriod range){
-		List<GeneralDate> result = new ArrayList<>();
-		GeneralDate start = range.start();
-		while (start.beforeOrEquals(range.end())) {
-			result.add(start);
-			start = start.addDays(1);
-		}
-		return result;
+		return range.datesBetween();
+	}
+	
+	public static boolean isCollection(Object c) {
+	  return Collection.class.isAssignableFrom(c.getClass());
+	}
+	
+	public static boolean isOptional(Object c) {
+	  return Optional.class.isAssignableFrom(c.getClass());
 	}
 }

@@ -273,4 +273,11 @@ public class WithinStatutoryTimeOfDaily {
 		return new WithinStatutoryTimeOfDaily(this.workTime,this.actualWorkTime,this.withinStatutoryMidNightTime!=null?this.withinStatutoryMidNightTime.calcDiverGenceTime():this.withinStatutoryMidNightTime);
 	}
 	
+	/**
+	 * 深夜時間の上限時間調整処理
+	 * @param upperTime 上限時間
+	 */
+	public void controlMidTimeUpper(AttendanceTime upperTime) {
+		this.withinStatutoryMidNightTime.controlUpperTime(upperTime);
+	}
 }

@@ -22,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
@@ -65,6 +66,12 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 				.flatMap(List::stream).collect(Collectors.toList());
 	}
 
+	@SuppressWarnings("unchecked")
+	public <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, YearMonthPeriod range) {
+		return (List<T>) ConvertHelper.yearMonthsBetween(range).stream().map(ym -> find(employeeId, ym))
+				.flatMap(List::stream).collect(Collectors.toList());
+	}
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, YearMonth yearMonth) {
@@ -72,7 +79,7 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 		List<AttendanceTimeOfMonthlyDto> att = attendanceTime.find(employeeId, yearMonth);
 		List<AnyItemOfMonthlyDto> any = anyItemFinder.find(employeeId, yearMonth);
 		List<AnnLeaRemNumEachMonthDto> ann = annLeaFinder.find(employeeId, yearMonth);
-		List<RsvLeaRemNumEachMonthDto> rsv = anyItemFinder.find(employeeId, yearMonth);
+		List<RsvLeaRemNumEachMonthDto> rsv = rsvLeaFinder.find(employeeId, yearMonth);
 		return (List<T>) aff.stream().map(a -> {
 			MonthlyRecordWorkDto dto = new MonthlyRecordWorkDto();
 			dto.setClosureDate(a.getClosureDate());

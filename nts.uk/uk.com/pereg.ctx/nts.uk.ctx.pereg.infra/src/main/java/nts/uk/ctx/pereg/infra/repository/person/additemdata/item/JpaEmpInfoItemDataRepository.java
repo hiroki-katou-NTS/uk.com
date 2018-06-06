@@ -42,10 +42,17 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 
 	private static final String SELECT_ALL_INFO_ITEM_BY_ITEMDEF_ID_AND_RECODE_ID = SELECT_ALL_INFO_ITEM_NO_WHERE_2
 			+ " WHERE id.ppemtEmpInfoItemDataPk.perInfoDefId = :perInfoDefId AND id.ppemtEmpInfoItemDataPk.recordId = :recordId";
+	
+	
 
 	private static final String SELECT_ALL_INFO_ITEM_BY_CTGID_AND_SID = SELECT_ALL_INFO_ITEM_NO_WHERE
 			+ " WHERE ic.personInfoCtgId = :ctgid AND ic.employeeId = :sid";
+	
+	
 	private static final String DELETE_ITEM_DATA = "DELETE FROM PpemtEmpInfoItemData WHERE ppemtEmpInfoItemDataPk.recordId = :recordId";
+	
+	private static final String SELECT_ITEM_DATA_OF_RECORD_ID_LIST = "SELECT id FROM PpemtEmpInfoItemData id "
+			+ "WHERE id.ppemtEmpInfoItemDataPk.perInfoDefId = :itemId AND id.ppemtEmpInfoItemDataPk.recordId IN :recordIds";
 
 	public final String SELECT_ALL_INFO_ITEM_BY_ALL_CID_QUERY_STRING = "SELECT id.ppemtEmpInfoItemDataPk.perInfoDefId"
 			+ " FROM PpemtEmpInfoItemData id"
@@ -166,6 +173,21 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 	public void addItemData(EmpInfoItemData domain) {
 		this.commandProxy().insert(toEntiy(domain));
 	}
+	
+	@Override
+	public void registerEmpInfoItemData(EmpInfoItemData domain) {
+		// Get exist item
+		PpemtEmpInfoItemDataPk key = new PpemtEmpInfoItemDataPk(domain.getPerInfoDefId(), domain.getRecordId());
+		Optional<PpemtEmpInfoItemData> existItem = this.queryProxy().find(key, PpemtEmpInfoItemData.class);
+		
+		if (!existItem.isPresent()) {
+			addItemData(domain);
+		} else {
+			updateEntiy(domain, existItem.get());
+			// Update table
+			this.commandProxy().update(existItem.get());
+		}
+	}
 
 	@Override
 	public void updateEmpInfoItemData(EmpInfoItemData domain) {
@@ -198,6 +220,23 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 		return this.queryProxy().query(SELECT_ALL_INFO_ITEM_BY_ITEMDEF_ID_AND_RECODE_ID, Object[].class)
 				.setParameter("recordId", recordId).setParameter("perInfoDefId", itemDefId)
 				.getSingle(c -> toDomainNew(c));
+	}
+	
+	@Override
+	public List<EmpInfoItemData> getItemsData(String itemDefId, List<String> recordIds) {
+		if (recordIds.isEmpty()) {
+			return new ArrayList<>();
+		}
+		
+		List<PpemtEmpInfoItemData> entites = this.queryProxy()
+				.query(SELECT_ITEM_DATA_OF_RECORD_ID_LIST, PpemtEmpInfoItemData.class).setParameter("itemId", itemDefId)
+				.setParameter("recordIds", recordIds).getList();
+		
+		return entites.stream()
+				.map(ent -> EmpInfoItemData.createFromJavaType(ent.ppemtEmpInfoItemDataPk.perInfoDefId,
+						ent.ppemtEmpInfoItemDataPk.recordId, ent.saveDataType, ent.stringValue, ent.intValue,
+						ent.dateValue))
+				.collect(Collectors.toList());
 	}
 
 	@Override

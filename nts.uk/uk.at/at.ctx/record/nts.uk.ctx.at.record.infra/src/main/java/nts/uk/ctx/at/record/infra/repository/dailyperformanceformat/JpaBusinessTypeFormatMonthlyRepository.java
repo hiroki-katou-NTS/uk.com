@@ -22,6 +22,8 @@ public class JpaBusinessTypeFormatMonthlyRepository extends JpaRepository
 	private static final String REMOVE_EXIST_DATA;
 	
 	private static final String IS_EXIST_DATA;
+	
+	private static final String FIND_BY_COMPANYID;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -52,6 +54,12 @@ public class JpaBusinessTypeFormatMonthlyRepository extends JpaRepository
 				.append("WHERE a.krcmtBusinessTypeMonthlyPK.companyId = :companyId ");
 		builderString.append("AND a.krcmtBusinessTypeMonthlyPK.businessTypeCode = :businessTypeCode ");
 		IS_EXIST_DATA = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcmtBusinessTypeMonthly a ");
+		builderString.append("WHERE a.krcmtBusinessTypeMonthlyPK.companyId = :companyId ");
+		FIND_BY_COMPANYID = builderString.toString();
 	}
 
 	@Override
@@ -110,6 +118,11 @@ public class JpaBusinessTypeFormatMonthlyRepository extends JpaRepository
 		entity.order = businessTypeFormatMonthly.getOrder();
 		
 		return entity;
+	}
+
+	@Override
+	public List<BusinessTypeFormatMonthly> getMonthlyDetailByCompanyId(String companyId) {
+		return this.queryProxy().query(FIND_BY_COMPANYID, KrcmtBusinessTypeMonthly.class).setParameter("companyId", companyId).getList(f -> toDomain(f));
 	}
 
 }

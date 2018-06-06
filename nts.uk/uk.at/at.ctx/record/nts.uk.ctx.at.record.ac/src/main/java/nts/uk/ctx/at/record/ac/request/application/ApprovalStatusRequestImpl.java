@@ -54,7 +54,7 @@ public class ApprovalStatusRequestImpl implements ApprovalStatusRequestAdapter {
 
 	@Override
 	public SendMailResultImport exeApprovalStatusMailTransmission(List<MailTransmissionContentOutput> listMailContent,
-			ApprovalStatusMailTempImport domain) {
+			ApprovalStatusMailTempImport domain, int mailType) {
 		List<MailTransmissionContentExport> listData = listMailContent.stream()
 				.map(x -> new MailTransmissionContentExport(x.getSId(), x.getSName(), x.getMailAddr(), x.getSubject(),
 						x.getText()))
@@ -62,7 +62,7 @@ public class ApprovalStatusRequestImpl implements ApprovalStatusRequestAdapter {
 		ApprovalStatusMailTempExport domainMail = new ApprovalStatusMailTempExport(domain.getMailType(),
 				domain.getUrlApprovalEmbed(), domain.getUrlDayEmbed(), domain.getUrlMonthEmbed(),
 				domain.getMailSubject(), domain.getMailContent());
-		SendMailResultExport result = approvalStatusPub.exeApprovalStatusMailTransmission(listData, domainMail);
+		SendMailResultExport result = approvalStatusPub.exeApprovalStatusMailTransmission(listData, domainMail, mailType);
 
 		return new SendMailResultImport(result.isOK(), result.getListError());
 	}

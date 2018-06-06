@@ -30,8 +30,8 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumb
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.YearlyHolidaysTimeRemainingImport;
 import nts.uk.ctx.at.request.dom.application.remainingnumer.ExcelInforCommand;
 import nts.uk.ctx.at.request.dom.application.remainingnumer.PlannedVacationListCommand;
-import nts.uk.ctx.at.request.dom.settting.worktype.history.PlanVacationHistory;
-import nts.uk.ctx.at.request.dom.settting.worktype.history.VacationHistoryRepository;
+import nts.uk.ctx.at.request.dom.vacation.history.PlanVacationHistory;
+import nts.uk.ctx.at.request.dom.vacation.history.VacationHistoryRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -156,6 +156,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 					asyncTask.finishedAsCancelled();
 					break;
 				}
+				
 				// パラメータ.年休残数をチェックする
 				//(Check số phép còn lại trong param -パラメータ.年休残数)
 				if (command.getMaxDay() != null) {
@@ -190,7 +191,10 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				ExcelInforCommand excelInforCommand = new ExcelInforCommand();
 				excelInforCommand.setName(employeeRecordImport.getPname());
 				excelInforCommand.setDateStart(employeeRecordImport.getEntryDate().toString());
-				excelInforCommand.setDateEnd(employeeRecordImport.getRetiredDate().toString());
+				//GeneralDate temDate9999 = GeneralDate.fromString("99991231", "YYYY/MM/DD");
+				excelInforCommand.setDateEnd("9999/12/31".equals(employeeRecordImport.getRetiredDate().toString()) ?
+					"" : employeeRecordImport.getRetiredDate().toString());
+				
 				excelInforCommand.setDateOffYear(yearlyHolidaysTimeRemainingImport.get(0).getAnnualHolidayGrantDay().toString());
 				excelInforCommand.setDateTargetRemaining(command.getDate().toString());
 				excelInforCommand.setDateAnnualRetirement(yearlyHolidaysTimeRemainingImport.get(0).getAnnualRemainingGrantTime());

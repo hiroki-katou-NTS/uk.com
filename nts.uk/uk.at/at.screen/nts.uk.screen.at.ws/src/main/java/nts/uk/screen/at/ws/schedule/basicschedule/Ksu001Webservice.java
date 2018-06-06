@@ -18,8 +18,6 @@ import nts.uk.screen.at.app.schedule.basicschedule.StateWorkTypeCodeDto;
 import nts.uk.screen.at.app.schedule.basicschedule.WorkEmpCombineScreenDto;
 import nts.uk.screen.at.app.schedule.basicschedule.WorkTimeScreenDto;
 import nts.uk.screen.at.app.schedule.basicschedule.WorkTypeScreenDto;
-import nts.uk.screen.at.app.schedule.workschedulestate.WorkScheduleStateScreenDto;
-import nts.uk.screen.at.app.schedule.workschedulestate.WorkScheduleStateScreenParams;
 import nts.uk.screen.at.app.schedule.workschedulestate.WorkScheduleStateScreenProcessor;
 import nts.uk.screen.at.app.shift.businesscalendar.holiday.PublicHolidayScreenProcessor;
 import nts.uk.screen.at.app.shift.specificdayset.company.ComSpecificDateSetScreenProcessor;
@@ -27,6 +25,7 @@ import nts.uk.screen.at.app.shift.specificdayset.workplace.WorkplaceIdAndDateScr
 import nts.uk.screen.at.app.shift.specificdayset.workplace.WorkplaceSpecificDateSetScreenProcessor;
 import nts.uk.screen.at.app.shift.workpairpattern.ComPatternScreenDto;
 import nts.uk.screen.at.app.shift.workpairpattern.WkpPatternScreenDto;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -62,19 +61,19 @@ public class Ksu001Webservice extends WebService {
 		PresentClosingPeriodExport obj = this.bScheduleScreenProces.getPresentClosingPeriodExport();
 		// get work type
 		List<WorkTypeScreenDto> workTypeList = this.bScheduleScreenProces.findByCIdAndDeprecateCls();
-		List<String> workTypeCodeList = workTypeList.stream().map(x -> x.getWorkTypeCode()).collect(Collectors.toList());
+		List<String> workTypeCodeList = workTypeList.stream().map(x -> x.getWorkTypeCode())
+				.collect(Collectors.toList());
 		// get work time
 		List<WorkTimeScreenDto> workTimeList = this.bScheduleScreenProces.getListWorkTime();
-		List<String> workTimeCodeList = workTimeList.stream().map(x -> x.getWorkTimeCode()).collect(Collectors.toList());
-		
-		return new DataInitScreenDto(
-				workTypeList,
-				workTimeList, 
-				obj.getClosureStartDate(), 
-				obj.getClosureEndDate(),
+		List<String> workTimeCodeList = workTimeList.stream().map(x -> x.getWorkTimeCode())
+				.collect(Collectors.toList());
+
+		return new DataInitScreenDto(workTypeList, workTimeList, obj.getClosureStartDate(), obj.getClosureEndDate(),
 				this.bScheduleScreenProces.checkStateWorkTypeCode(workTypeCodeList),
 				this.bScheduleScreenProces.checkNeededOfWorkTimeSetting(workTypeCodeList),
-				this.bScheduleScreenProces.getListWorkEmpCombine(new ScheduleScreenSymbolParams(workTypeCodeList, workTimeCodeList)));
+				this.bScheduleScreenProces
+						.getListWorkEmpCombine(new ScheduleScreenSymbolParams(workTypeCodeList, workTimeCodeList)),
+				AppContexts.user().employeeId());
 	}
 
 	@POST
@@ -94,22 +93,26 @@ public class Ksu001Webservice extends WebService {
 	public BasicScheduleScreenAtDto getDataBasicScheduleScreenAtDto(BasicScheduleScreenParams params) {
 		BasicScheduleScreenAtDto result = new BasicScheduleScreenAtDto(
 				this.bScheduleScreenProces.getByListSidAndDate(params),
-				this.bScheduleScreenProces.getDataWorkScheTimezone(params));
+				this.bScheduleScreenProces.getDataWorkScheTimezone(params),
+				this.workScheduleStateScreenProces.getByListSidAndDateAndScheId(params));
 		return result;
 	}
 
-	@POST
-	@Path("getDataWorkScheduleState")
-	public List<WorkScheduleStateScreenDto> getDataWorkScheduleState(WorkScheduleStateScreenParams params) {
-		return this.workScheduleStateScreenProces.getByListSidAndDateAndScheId(params);
-	}
+	/*
+	 * @POST
+	 * 
+	 * @Path("getDataWorkScheduleState") public List<WorkScheduleStateScreenDto>
+	 * getDataWorkScheduleState(WorkScheduleStateScreenParams params) { return
+	 * this.workScheduleStateScreenProces.getByListSidAndDateAndScheId(params);
+	 * }
+	 */
 
 	@POST
 	@Path("checkStateWorkTypeCode")
 	public List<StateWorkTypeCodeDto> checkStateWorkTypeCode(List<String> lstWorkTypeCode) {
 		return this.bScheduleScreenProces.checkStateWorkTypeCode(lstWorkTypeCode);
 	}
-	
+
 	@POST
 	@Path("checkNeededOfWorkTimeSetting")
 	public List<StateWorkTypeCodeDto> checkNeededOfWorkTimeSetting(List<String> lstWorkTypeCode) {

@@ -3,7 +3,8 @@ module nts.uk.at.view.kaf018.a.service {
     var paths: any = {
         getAll: "at/request/application/setting/workplace/getall",
         findAllClosure: "at/request/application/approvalstatus/findAllClosure",
-        getApprovalStatusPerior: "at/request/application/approvalstatus/getApprovalStatusPerior/{0}/{1}"
+        getApprovalStatusPerior: "at/request/application/approvalstatus/getApprovalStatusPerior/{0}/{1}",
+        getUseSetting: "at/record/application/realitystatus/getUseSetting"
     }
 
     export function getAll(lstWkpId): JQueryPromise<Array<any>> {
@@ -14,8 +15,26 @@ module nts.uk.at.view.kaf018.a.service {
         return nts.uk.request.ajax(paths.findAllClosure);
     }
 
-    export function getApprovalStatusPerior(closureId: number, closureDate: number): JQueryPromise<any> {
-        let path = format(paths.getApprovalStatusPerior, closureId, closureDate);
+    export function getApprovalStatusPerior(closureId: number): JQueryPromise<any> {
+        let path = format(paths.getApprovalStatusPerior, closureId);
         return nts.uk.request.ajax(path);
+    }
+
+    export function getUseSetting(): JQueryPromise<any> {
+        return nts.uk.request.ajax(paths.getUseSetting);
+    }
+    
+    /**
+     * save to client service MonthlyPatternSettingBatch
+     */
+    export function saveSelectedClosureId(data): void {
+        nts.uk.characteristics.save('StoreSelectedClosureId', data);
+    }
+
+    /**
+     * find data client service MonthlyPatternSettingBatch
+     */
+    export function restoreSelectedClosureId(): JQueryPromise<any> {
+        return nts.uk.characteristics.restore('StoreSelectedClosureId');
     }
 }

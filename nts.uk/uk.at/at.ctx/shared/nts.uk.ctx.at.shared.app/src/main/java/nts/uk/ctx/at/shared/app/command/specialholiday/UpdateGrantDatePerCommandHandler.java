@@ -27,6 +27,10 @@ public class UpdateGrantDatePerCommandHandler extends CommandHandlerWithResult<G
 		
 		if (errList.isEmpty()) {
 			// Add new data
+			if(domain.getProvision() == 1) {
+				grantRegularRepository.changeAllProvision();
+			}
+			
 			grantRegularRepository.updatePer(domain);
 		}
 		

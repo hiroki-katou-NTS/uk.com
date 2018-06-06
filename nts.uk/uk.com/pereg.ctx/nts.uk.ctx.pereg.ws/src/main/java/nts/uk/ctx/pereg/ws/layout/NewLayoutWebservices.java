@@ -24,15 +24,15 @@ public class NewLayoutWebservices extends WebService {
 	@POST
 	@Path("get")
 	public NewLayoutDto getNewLayout() {
-		return nLayoutFinder.getLayout();
+		return nLayoutFinder.getLayout().orElse(null);
 	}
 
 	@POST
 	@Path("save")
-	public void addMaintenanceLayout(NewLayoutCommand command) {
+	public void saveNewLayout(NewLayoutCommand command) {
 		this.commandHandler.handle(command);
 	}
-	
+
 	@POST
 	@Path("check-new-layout")
 	public Boolean checkNewLayout() {

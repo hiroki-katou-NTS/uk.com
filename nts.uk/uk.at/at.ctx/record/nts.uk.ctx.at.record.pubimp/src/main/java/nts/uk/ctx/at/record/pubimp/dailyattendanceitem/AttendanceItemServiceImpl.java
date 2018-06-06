@@ -12,43 +12,31 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
-import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
-import nts.uk.ctx.at.record.app.find.monthly.finder.MonthlyRecordWorkFinder;
-import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
+import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService;
+import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService.AttendanceItemValueResult;
+import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService.MonthlyAttendanceItemValueResult;
 import nts.uk.ctx.at.record.pub.dailyattendanceitem.AttendanceItemService;
 import nts.uk.ctx.at.record.pub.dailyattendanceitem.AttendanceItemValue;
 import nts.uk.ctx.at.record.pub.dailyattendanceitem.AttendanceResult;
 import nts.uk.ctx.at.record.pub.dailyattendanceitem.MonthlyAttendanceResult;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 public class AttendanceItemServiceImpl implements AttendanceItemService {
 
 	@Inject
-	private DailyRecordWorkFinder fullFinder;
-	
-    @Inject
-    private MonthlyRecordWorkFinder monthlyFinder;
+	private AttendanceItemValueService service;
 
 	@Override
 	public Optional<AttendanceItemValue> getValueOf(String employeeId, GeneralDate workingDate, int itemId) {
-		DailyRecordDto itemDtos = this.fullFinder.find(employeeId, workingDate);
-		return AttendanceItemUtil.toItemValues(itemDtos, Arrays.asList(itemId)).stream()
-				.filter(c -> c.itemId() == itemId).findFirst()
-				.map(c -> new AttendanceItemValue(c.getValueType().value, c.itemId(), c.value()));
+		return service.getValueOf(employeeId, workingDate, itemId).map(c -> convert1(c));
 	}
 
 	@Override
 	public AttendanceResult getValueOf(String employeeId, GeneralDate workingDate, Collection<Integer> itemIds) {
-		DailyRecordDto itemDtos = this.fullFinder.find(employeeId, workingDate);
-		return getAndConvert(employeeId, workingDate, itemDtos, itemIds);
+		return convert2(this.service.getValueOf(employeeId, workingDate, itemIds));
 	}
 
 	@Override
@@ -57,9 +45,8 @@ public class AttendanceItemServiceImpl implements AttendanceItemService {
 		if (employeeId == null || employeeId.isEmpty() || workingDate == null) {
 			return new ArrayList<>();
 		}
-		return this.fullFinder.find(new ArrayList<>(employeeId), workingDate).stream()
-				.map(c -> getAndConvert(c.employeeId(), c.workingDate(), (DailyRecordDto) c, itemIds))
-				.collect(Collectors.toList());
+		return this.service.getValueOf(employeeId, workingDate, itemIds)
+				.stream().map(t -> convert2(t)).collect(Collectors.toList());
 	}
 
 	@Override
@@ -73,19 +60,15 @@ public class AttendanceItemServiceImpl implements AttendanceItemService {
 	@Override
 	public MonthlyAttendanceResult getMonthlyValueOf(String employeeId, YearMonth yearMonth, int closureId,
 			int clouseDate, boolean lastDayOfMonth, Collection<Integer> itemIds) {
-		MonthlyRecordWorkDto itemDtos = monthlyFinder.find(employeeId, yearMonth,
-				ConvertHelper.getEnum(closureId, ClosureId.class), new ClosureDate(clouseDate, lastDayOfMonth));
-		return getAndConvert(employeeId, yearMonth, closureId, clouseDate, lastDayOfMonth, itemDtos, itemIds);
+		MonthlyAttendanceItemValueResult result = this.service.getMonthlyValueOf(employeeId, yearMonth, closureId, clouseDate, lastDayOfMonth, itemIds);
+		return convert3(result);
 	}
 
 	@Override
 	public List<MonthlyAttendanceResult> getMonthlyValueOf(Collection<String> employeeId, DatePeriod range,
 			Collection<Integer> itemIds) {
-		List<MonthlyRecordWorkDto> result = monthlyFinder.find(employeeId, range);
-		return result.stream().map(mrw -> {
-			return getAndConvert(mrw.employeeId(), mrw.yearMonth(), mrw.getClosureID(),
-					mrw.getClosureDate().getClosureDay(), mrw.getClosureDate().getLastDayOfMonth(), mrw, itemIds);
-		}).collect(Collectors.toList());
+		return this.service.getMonthlyValueOf(employeeId, range, itemIds)
+				.stream().map(t -> convert3(t)).collect(Collectors.toList());
 	}
 
 	@Override
@@ -95,13 +78,23 @@ public class AttendanceItemServiceImpl implements AttendanceItemService {
 	}
 
 	@Override
+	public List<MonthlyAttendanceResult> getMonthlyValueOf(Collection<String> employeeId, YearMonthPeriod range,
+			Collection<Integer> itemIds) {
+		return this.service.getMonthlyValueOf(employeeId, range, itemIds)
+				.stream().map(t -> convert3(t)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<MonthlyAttendanceResult> getMonthlyValueOf(String employeeId, YearMonthPeriod range,
+			Collection<Integer> itemIds) {
+		return getMonthlyValueOf(Arrays.asList(employeeId), range, itemIds);
+	}
+
+	@Override
 	public List<MonthlyAttendanceResult> getMonthlyValueOf(Collection<String> employeeId, YearMonth range,
 			Collection<Integer> itemIds) {
-		List<MonthlyRecordWorkDto> result = monthlyFinder.find(employeeId, range);
-		return result.stream().map(mrw -> {
-			return getAndConvert(mrw.employeeId(), mrw.yearMonth(), mrw.getClosureID(),
-					mrw.getClosureDate().getClosureDay(), mrw.getClosureDate().getLastDayOfMonth(), mrw, itemIds);
-		}).collect(Collectors.toList());
+		return this.service.getMonthlyValueOf(employeeId, range, itemIds)
+				.stream().map(t -> convert3(t)).collect(Collectors.toList());
 	}
 
 	@Override
@@ -110,23 +103,23 @@ public class AttendanceItemServiceImpl implements AttendanceItemService {
 		return getMonthlyValueOf(Arrays.asList(employeeId), range, itemIds);
 	}
 
-	private AttendanceResult getAndConvert(String employeeId, GeneralDate workingDate, DailyRecordDto data,
-			Collection<Integer> itemIds) {
-		return AttendanceResult.builder().employeeId(employeeId).workingDate(workingDate)
-				.attendanceItems(toAttendanceValue(data, itemIds, AttendanceItemType.DAILY_ITEM)).build();
+	private AttendanceItemValue convert1(ItemValue c) {
+		return new AttendanceItemValue(c.getValueType().value, c.itemId(), c.value());
 	}
 
-	private MonthlyAttendanceResult getAndConvert(String employeeId, YearMonth yearMonth, int closureId,
-			Integer clouseDate, Boolean lastDayOfMonth, MonthlyRecordWorkDto data, Collection<Integer> itemIds) {
-		return MonthlyAttendanceResult.builder().employeeId(employeeId).yearMonth(yearMonth).closureId(closureId)
-				.clouseDate(clouseDate).lastDayOfMonth(lastDayOfMonth)
-				.attendanceItems(toAttendanceValue(data, itemIds, AttendanceItemType.MONTHLY_ITEM)).build();
+	private AttendanceResult convert2(AttendanceItemValueResult result) {
+		return AttendanceResult.builder().employeeId(result.getEmployeeId()).workingDate(result.getWorkingDate())
+				.attendanceItems(result.getAttendanceItems().stream().map(t -> convert1(t)).collect(Collectors.toList()))
+				.build();
 	}
 
-	private <T extends AttendanceItemCommon> List<AttendanceItemValue> toAttendanceValue(T data,
-			Collection<Integer> itemIds, AttendanceItemType type) {
-		return AttendanceItemUtil.toItemValues(data, itemIds, type).stream()
-				.map(c -> new AttendanceItemValue(c.getValueType().value, c.itemId(), c.value()))
-				.collect(Collectors.toList());
+	private MonthlyAttendanceResult convert3(MonthlyAttendanceItemValueResult result) {
+		return MonthlyAttendanceResult.builder().employeeId(result.getEmployeeId())
+				.attendanceItems(result.getAttendanceItems().stream().map(t -> convert1(t)).collect(Collectors.toList()))
+				.closureId(result.getClosureId())
+				.clouseDate(result.getClouseDate())
+				.lastDayOfMonth(result.isLastDayOfMonth())
+				.yearMonth(result.getYearMonth())
+				.build();
 	}
 }

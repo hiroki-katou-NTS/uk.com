@@ -358,9 +358,10 @@ module nts.custombinding {
                     }
                 
                     .layout-control .item-controls th div {
-                        top: 0;    
+                        top: 0;
                         height: 31px;
                         color: #000;
+                        padding: 0;
                         overflow: hidden;
                         line-height: 31px;
                         text-align: center;
@@ -370,8 +371,13 @@ module nts.custombinding {
                         border-left: 1px solid #aaa;
                     }
 
+                    .layout-control .item-controls th div>i,
+                    .layout-control .item-controls th div>label {
+                        line-height: 31px;                        
+                    }
+
                     .layout-control .item-controls th div.required {
-                        background-color: #fcc;
+                        background-color: #FAC002;
                     }
                 
                     .layout-control .item-controls thead>tr:first-child div {
@@ -384,6 +390,10 @@ module nts.custombinding {
                 
                     .layout-control .item-controls thead>tr:nth-child(3) div {
                         top: 70px;
+                    }
+
+                    .layout-control .item-controls tr * {
+                        background-color: transparent;
                     }
 
                     .layout-control .item-control td input,
@@ -498,11 +508,6 @@ module nts.custombinding {
                         padding-left: 15px;
                         width: 100%;
                         line-height: 30px;
-                    }
-
-                    .layout-control .item-classification .ui-igcombo-wrapper {
-                        width: auto;
-                        width: initial;                            
                     }
 
                     .layout-control .item-classification .form-label {
@@ -626,7 +631,7 @@ module nts.custombinding {
                                                 text: _item.itemName || '',
                                                 cssClass: cssClass,
                                                 required: _item.required,
-                                                constraint: _item.constraint }"></div>
+                                                constraint: _item.constraint }" class="limited-label"></div>
             
                                             <!-- ko if: _item.dispType == DISP_TYPE.SINGLE -->
                                                 <!-- ko template: { data: _item, name: 'ctr_template' } --><!-- /ko -->
@@ -673,7 +678,7 @@ module nts.custombinding {
                                                                         text: _sitem.itemName,
                                                                         cssClass: cssClass,
                                                                         required: _sitem.required 
-                                                                    }"></div>
+                                                                    }" class="limited-label"></div>
                                                                 <!-- ko if: _sitem.dispType == DISP_TYPE.SINGLE -->
                                                                     <div class="childs-row" data-bind="template: { data: _sitem, name: 'ctr_template' }"></div>
                                                                 <!-- /ko -->
@@ -718,7 +723,7 @@ module nts.custombinding {
 
                                 <!-- ko if: layoutItemType == LAYOUT_TYPE.LIST -->
                                     <div class="item-controls">
-                                        <div data-bind="ntsFormLabel: { required: false, text: className || '' }"></div>
+                                        <div data-bind="ntsFormLabel: { required: false, text: className || '' }" class="limited-label"></div>
                                         <div class="table-container header-1rows" data-bind="let: {
                                                     __lft: ko.observable(0),
                                                     __flft: ko.observable(0)
@@ -740,19 +745,23 @@ module nts.custombinding {
                                                             <!-- ko foreach: { data: _.first(renders()).items, as: 'header' } -->
                                                                 <!-- ko let: { __wdt: ko.observable(0) } -->
                                                                 <th data-bind="ntsProp: { width: __wdt }">
-                                                                    <div data-bind="text: header.itemName,
+                                                                    <div data-bind="ntsFormLabel: { 
+                                                                            text: header.itemName,
+                                                                            required: header.required,
+                                                                            constraint: header.constraint,
+                                                                            inline: true
+                                                                        },
                                                                         style: {
                                                                             'width': __wdt() + 'px',
-                                                                            'margin-left': (__flft() - __lft()) + 'px',
-                                                                            'background-color': header.required ? '#FAC002' : 'transparent'
-                                                                        }"></div>
+                                                                            'margin-left': (__flft() - __lft()) + 'px'
+                                                                        }" class="limited-label"></div>
                                                                 </th>
                                                                 <!-- /ko -->
                                                             <!-- /ko -->
                                                         </tr>
                                                     </thead>
                                                     <tbody data-bind="foreach: { data: renders(), as: 'row', afterRender: function(element, data) { let _renders = _.map(ko.toJS(renders), function(m) { return m.recordId; }); if(_.indexOf(_renders, data.recordId) == _renders.length - 1) { setTimeout(function() { $(element[1]).find('input').unbind('blur'); }, 100) } } }">
-                                                        <tr data-bind="attr: { 'data-id': row.recordId }">
+                                                        <tr data-bind="attr: { 'data-id': row.recordId }, style: {'background-color': ko.toJS(row.checked) ? '#aaa' : '#fff'}">
                                                             <td>
                                                                 <span data-bind="ntsCheckBox: { checked: row.checked, enable: row.enable }"></span>
                                                             </td>
@@ -841,7 +850,7 @@ module nts.custombinding {
                         <input data-bind=" ntsTextEditor: {
                                 name: itemName,
                                 value: value,
-                                constraint: nameid,
+                                constraint: nameid == 'COM1000000000000000CS00069IS00779' ? 'StampNumber' : nameid,
                                 required: required,
                                 option: {
                                     textmode: 'text'
@@ -1022,6 +1031,7 @@ module nts.custombinding {
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.SELECTION -->
                         <div data-bind="ntsComboBox: {
+                                    width: '200px',
                                     name: itemName,
                                     value: value,
                                     options: lstComboBoxValue,
@@ -1033,7 +1043,7 @@ module nts.custombinding {
                                     visibleItemsCount: 5,
                                     selectFirstIfNull: false,
                                     dropDownAttachedToBody: true,
-                                    columns: [{ prop: 'optionText', length: 10, lengthDropDown: 20 }]
+                                    columns: [{ prop: 'optionText', length: _.max(ko.toJS(lstComboBoxValue).map(function(v) {return v['optionText'].length; }))}]
                                 }, attr: {
                                     id: nameid,
                                     nameid: nameid,
@@ -1043,7 +1053,7 @@ module nts.custombinding {
                                     'data-category': categoryCode,
                                     'data-required': required,
                                     'data-defv': defValue
-                                }"></div>
+                                }", style='width: 200px; min-width: 200px; max-width: 580px;'></div>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.SEL_RADIO -->
                             <div data-bind="ntsRadioBoxGroup: {
@@ -1209,7 +1219,10 @@ module nts.custombinding {
                         options: ko.observableArray([]),
                         optionsValue: 'id',
                         optionsText: 'categoryName',
-                        columns: [{ prop: 'categoryName', length: 15 }]
+                        columns: [
+                            { prop: 'categoryCode', 'toggle': 'hidden', length: 20 },
+                            { prop: 'categoryName', length: 20 }
+                        ]
                     },
                     searchbox: {
                         mode: 'listbox',
@@ -1593,6 +1606,14 @@ module nts.custombinding {
 
                     if (constraints && constraints.length) {
                         exceptConsts = [];
+                        
+                        // fix bug stampNumber error msg
+                        let stampNumber = _.clone(_.find(constraints, c => c.itemCode == 'COM1000000000000000CS00069IS00779'));
+                        if (stampNumber) {
+                            stampNumber.itemCode = "StampNumber";
+                            constraints.push(stampNumber);
+                        }
+
                         writeConstraints(constraints);
                     }
                 },
@@ -1637,32 +1658,39 @@ module nts.custombinding {
                                         let id1 = '#' + prev.itemDefId.replace(/[-_]/g, ""),
                                             id2 = '#' + next.itemDefId.replace(/[-_]/g, "");
 
-                                        $(document).on('blur', `${id1}, ${id2}`, (evt) => {
-                                            setTimeout(() => {
-                                                let dom1 = $(id1),
-                                                    dom2 = $(id2),
-                                                    pv = ko.toJS(prev.value),
-                                                    nv = ko.toJS(next.value),
-                                                    tpt = _.isNumber(pv),
-                                                    tnt = _.isNumber(nv);
+                                        let _bind = $(document).data('_nts_bind') || {};
 
-                                                if (!tpt && tnt) {
-                                                    if (!dom1.is(':disabled') && !dom1.ntsError('hasError')) {
-                                                        dom1.ntsError('set', { messageId: "Msg_858" });
-                                                    }
-                                                } else {
-                                                    rmError(dom1, "Msg_858");
-                                                }
+                                        if (!_bind[`BLUR_${id1}_${id2}`]) {
+                                            _bind[`BLUR_${id1}_${id2}`] = true;
+                                            $(document).data('_nts_bind', _bind);
 
-                                                if (tpt && !tnt) {
-                                                    if (!dom2.is(':disabled') && !dom2.ntsError('hasError')) {
-                                                        dom2.ntsError('set', { messageId: "Msg_858" });
+                                            $(document).on('blur', `${id1}, ${id2}`, (evt) => {
+                                                setTimeout(() => {
+                                                    let dom1 = $(id1),
+                                                        dom2 = $(id2),
+                                                        pv = ko.toJS(prev.value),
+                                                        nv = ko.toJS(next.value),
+                                                        tpt = _.isNumber(pv),
+                                                        tnt = _.isNumber(nv);
+
+                                                    if (!tpt && tnt) {
+                                                        if (!dom1.is(':disabled') && !dom1.ntsError('hasError')) {
+                                                            dom1.ntsError('set', { messageId: "Msg_858" });
+                                                        }
+                                                    } else {
+                                                        rmError(dom1, "Msg_858");
                                                     }
-                                                } else {
-                                                    rmError(dom2, "Msg_858");
-                                                }
-                                            }, 5);
-                                        });
+
+                                                    if (tpt && !tnt) {
+                                                        if (!dom2.is(':disabled') && !dom2.ntsError('hasError')) {
+                                                            dom2.ntsError('set', { messageId: "Msg_858" });
+                                                        }
+                                                    } else {
+                                                        rmError(dom2, "Msg_858");
+                                                    }
+                                                }, 5);
+                                            });
+                                        }
                                     };
 
                                 if (first.item.dataTypeValue == second.item.dataTypeValue) {
@@ -2083,7 +2111,7 @@ module nts.custombinding {
                                     _row = {
                                         recordId: recordId,
                                         checked: ko.observable(false),
-                                        enable: true,
+                                        enable: ko.observable(true),
                                         items: []
                                     };
 
@@ -2763,19 +2791,7 @@ module nts.custombinding {
             // init radio box group
             ko.bindingHandlers['ntsRadioBoxGroup'].init(ctrls.radios, () => opts.radios, allBindingsAccessor, viewModel, bindingContext);
 
-            //ko.bindingHandlers['ntsComboBox'].init(ctrls.combobox, () => opts.combobox, allBindingsAccessor, viewModel, bindingContext);
-            ko.bindingHandlers['ntsDropDownList'].init(ctrls.combobox, () => ({
-                value: opts.combobox.value,
-                dataSource: opts.combobox.options,
-                textKey: opts.combobox.optionsText,
-                valueKey: opts.combobox.optionsValue,
-                visibleItemsCount: 10,
-                enable: opts.combobox.enable,
-                columns: [
-                    { prop: 'categoryCode', 'class': 'hidden' },
-                    { prop: 'categoryName' }
-                ]
-            }), allBindingsAccessor, viewModel, bindingContext);
+            ko.bindingHandlers['ntsComboBox'].init(ctrls.combobox, () => opts.combobox, allBindingsAccessor, viewModel, bindingContext);
 
             ko.bindingHandlers['ntsSearchBox'].init(ctrls.searchbox, () => opts.searchbox, allBindingsAccessor, viewModel, bindingContext);
 
@@ -2796,19 +2812,7 @@ module nts.custombinding {
 
             ko.bindingHandlers['ntsRadioBoxGroup'].update(ctrls.radios, () => opts.radios, allBindingsAccessor, viewModel, bindingContext);
 
-            //ko.bindingHandlers['ntsComboBox'].update(ctrls.combobox, () => opts.combobox, allBindingsAccessor, viewModel, bindingContext);
-            ko.bindingHandlers['ntsDropDownList'].update(ctrls.combobox, () => ({
-                value: opts.combobox.value,
-                dataSource: opts.combobox.options,
-                textKey: opts.combobox.optionsText,
-                valueKey: opts.combobox.optionsValue,
-                visibleItemsCount: 10,
-                enable: opts.combobox.enable,
-                columns: [
-                    { prop: 'categoryCode', 'class': 'hidden' },
-                    { prop: 'categoryName' }
-                ]
-            }), allBindingsAccessor, viewModel, bindingContext);
+            ko.bindingHandlers['ntsComboBox'].update(ctrls.combobox, () => opts.combobox, allBindingsAccessor, viewModel, bindingContext);
 
             ko.bindingHandlers['ntsSearchBox'].update(ctrls.searchbox, () => opts.searchbox, allBindingsAccessor, viewModel, bindingContext);
 
@@ -3023,14 +3027,6 @@ module nts.custombinding {
         SET_MULTILINE_W_RADIO = <any>"SET_MULTILINE_W_RADIO",
         SET_MULTILINE_W_TITLE = <any>"SET_MULTILINE_W_TITLE"
     }
-}
-
-let scripts = $("script[src*='cbx-control-ko-ext.js']");
-if (scripts.length == 0) {
-    $('head').append($('<script>', {
-        'type': 'text/javascript',
-        'src': '/nts.uk.com.web/view/cps/shr/cbx-control-ko-ext.js'
-    }));
 }
 
 ko.bindingHandlers["ntsProp"] = new nts.custombinding.PropControl();

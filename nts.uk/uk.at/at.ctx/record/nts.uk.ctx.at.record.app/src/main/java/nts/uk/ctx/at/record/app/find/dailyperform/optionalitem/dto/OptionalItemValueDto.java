@@ -51,7 +51,7 @@ public class OptionalItemValueDto {
 	
 	public AnyItemValue toDomain() {
 		return new AnyItemValue(new AnyItemNo(this.itemNo), 
-						this.isTimesItem ? Optional.of(new AnyItemTimes(Integer.valueOf(this.value))) : Optional.empty(),
+						this.isTimesItem ? Optional.of(new AnyItemTimes(new BigDecimal(this.value))) : Optional.empty(),
 						this.isAmountItem ? Optional.of(new AnyItemAmount(new BigDecimal(this.value))) : Optional.empty(),
 						this.isTimeItem ? Optional.of(new AnyItemTime(Integer.valueOf(this.value))) : Optional.empty());
 	}
