@@ -70,7 +70,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	
 	private final static String CONDITION_FOR_007008 = "ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId IN :lstPerInfoCategoryId AND i.abolitionAtr = 0 AND (ic.itemParentCd IS NULL OR ic.itemParentCd = '')  ORDER BY io.disporder";
 	
-	private final static String CONDITION = "ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId ORDER BY io.disporder";
+	private final static String CONDITION = "ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId AND i.abolitionAtr = 0  ORDER BY io.disporder";
 
 	private final static String SELECT_ITEMS_BY_CATEGORY_ID_QUERY = String.join(" ", SELECT_NO_WHERE, "WHERE",
 			COMMON_CONDITION);
@@ -603,7 +603,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		String perInfoCategoryId = String.valueOf(i[27]);
 
 		String relatedCategoryCode = String.valueOf(i[28]);
-		String resourceId = null;
+		String resourceId = i[29] == null ? null : String.valueOf(i[29]);
 
 		return PersonInfoItemDefinition.createNewPersonInfoItemDefinition(perInfoItemDefId, perInfoCategoryId,
 				itemParentCode, itemCode, itemName, isAbolition, isFixed, isRequired, systemRequired, requireChangable,

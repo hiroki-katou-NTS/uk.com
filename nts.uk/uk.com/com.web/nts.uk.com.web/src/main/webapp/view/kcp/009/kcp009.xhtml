@@ -73,8 +73,9 @@
 		</div>
 		<div class="items-list" data-bind="attr: {id: 'item-list-'+ prefix()}" style="visibility: hidden;">
 
-			<div id='list-box'
-				data-bind="ntsListBox: {
+			<div
+				data-bind="attr: {id: nts.uk.util.randomId()},
+					ntsListBox: {
 					options: empList,
 					optionsValue: 'id',
 					optionsText: 'code',

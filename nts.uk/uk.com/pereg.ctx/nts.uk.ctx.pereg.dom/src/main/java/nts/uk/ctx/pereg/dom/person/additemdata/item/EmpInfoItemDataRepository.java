@@ -21,6 +21,8 @@ public interface EmpInfoItemDataRepository {
 
 	void addItemData(EmpInfoItemData infoItemData);
 	
+	void registerEmpInfoItemData(EmpInfoItemData domain);
+	
 	void updateEmpInfoItemData(EmpInfoItemData domain);
 	
 	void deleteEmployInfoItemData(String recordID);

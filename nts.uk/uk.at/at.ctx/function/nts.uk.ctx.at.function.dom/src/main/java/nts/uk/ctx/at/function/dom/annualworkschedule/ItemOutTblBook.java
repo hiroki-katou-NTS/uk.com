@@ -14,6 +14,7 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.ItemOutTblBo
 */
 @Getter
 public class ItemOutTblBook extends DomainObject {
+	private final static String CD_36_AGREEMENT_TIME = "01";
 	/**
 	* 会社ID
 	*/
@@ -49,6 +50,13 @@ public class ItemOutTblBook extends DomainObject {
 	private ValueOuputFormat valOutFormat;
 
 	private List<CalcFormulaItem> listOperationSetting;
+
+	/**
+	 * 36協定時間
+	 */
+	public boolean isItem36AgreementTime() {
+		return CD_36_AGREEMENT_TIME.equals(this.cd.v());
+	}
 
 	public static ItemOutTblBook createFromJavaType(String cid, String setOutCd, String cd, int sortBy, String headingName, boolean useClass,
 			int valOutFormat, List<CalcFormulaItem> listCalcFormulaItem) {

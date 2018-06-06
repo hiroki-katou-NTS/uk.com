@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 
@@ -12,7 +13,7 @@ public interface GoBackDirectlyRegisterService {
 	 * @param application
 	 * @param goBackDirectly
 	 */
-	public void register(GoBackDirectly goBackDirectly, Application_New application);
+	public ProcessResult register(GoBackDirectly goBackDirectly, Application_New application);
 	
 	/**
 	 * 
