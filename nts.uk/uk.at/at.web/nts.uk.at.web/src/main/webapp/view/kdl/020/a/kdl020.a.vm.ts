@@ -28,7 +28,8 @@ module nts.uk.at.view.kdl020.a.screenModel {
         isShowSelectAllButton: KnockoutObservable<boolean>;
         employeeList: KnockoutObservableArray<UnitModel>;
         baseDate = ko.observable(new Date());
-        reNumAnnLeave: KnockoutObservableArray<ReNumAnnLeaReferenceDate> = ko.observable(new ReNumAnnLeaReferenceDate());
+        reNumAnnLeave: KnockoutObservable<ReNumAnnLeaReferenceDate> = ko.observable(new ReNumAnnLeaReferenceDate());
+        displayAnnualLeaveGrant: KnockoutObservable<DisplayAnnualLeaveGrant> = ko.observable(new DisplayAnnualLeaveGrant());
         constructor() {
             let self = this;
             self.selectedCode = ko.observable('');
@@ -117,40 +118,59 @@ module nts.uk.at.view.kdl020.a.screenModel {
 
         }
 
-        genRemainDays(remainDays, remainMinutes) {
+        genGrantDaysText(grantDays) {
 
-            return remainDays + "&nbsp;" + text('KDL020_14') + "&nbsp;&nbsp;" + formatById('Clock_Short_HM', remainMinutes);
+            if (grantDays() == null) {
+                return '';
+            }
+            return grantDays() + "&nbsp;" + text('KDL020_14');
+        }
+
+        genRemainDays(remainDays, remainMinutes) {
+            if (remainDays() == null) {
+                return '';
+            }
+
+            return remainDays() + "&nbsp;" + text('KDL020_14') + "&nbsp;&nbsp;" + formatById('Clock_Short_HM', remainMinutes());
         }
 
         genDaysUsedNo(daysUsedNo, usedMinutes) {
+            if (daysUsedNo() == null) {
+                return '';
+            }
 
-            return daysUsedNo + "&nbsp;" + text('KDL020_14') + "&nbsp;&nbsp;" + formatById('Clock_Short_HM', usedMinutes);
+            return daysUsedNo() + "&nbsp;" + text('KDL020_14') + "&nbsp;&nbsp;" + formatById('Clock_Short_HM', usedMinutes());
         }
         genGrantNumber(grantNumber) {
+            if (grantNumber() == null) {
+                return '';
+            }
 
-            return grantNumber + "&nbsp;" + text('KDL020_14');
+            return grantNumber() + "&nbsp;" + text('KDL020_14');
         }
         genUsedNo(daysUsedNo, usedMinutes) {
 
-            if (daysUsedNo) {
-                return daysUsedNo + ' ' + text('KDL020_14')
+            if (daysUsedNo() != null) {
+                return daysUsedNo() + ' ' + text('KDL020_14')
             }
-            if (usedMinutes) {
-                return formatById("Clock_Short_HM", usedMinutes);
+            if (usedMinutes() != null) {
+                return formatById("Clock_Short_HM", usedMinutes());
             }
 
             return '';
         }
         genScheduleRecordText(scheduleRecordAtr) {
-
-            if (scheduleRecordAtr == 0) {
+            if (scheduleRecordAtr() == null) {
+                return '';
+            }
+            if (scheduleRecordAtr() == 0) {
                 return '未反映状態'
             }
 
-            if (scheduleRecordAtr == 1) {
+            if (scheduleRecordAtr() == 1) {
                 return '実績'
             }
-            if (scheduleRecordAtr == 2) {
+            if (scheduleRecordAtr() == 2) {
                 return 'スケジュール'
             }
 
@@ -159,6 +179,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
         changeData(data) {
             let self = this;
             self.reNumAnnLeave(new ReNumAnnLeaReferenceDate(data.reNumAnnLeave));
+            self.displayAnnualLeaveGrant(new DisplayAnnualLeaveGrant(data.annualLeaveGrant[0]));
             self.setTotal();
         }
 
@@ -179,6 +200,33 @@ module nts.uk.at.view.kdl020.a.screenModel {
         close() {
             nts.uk.ui.windows.close();
         }    }
+
+    export class DisplayAnnualLeaveGrant {
+        /** 付与年月日 */
+        grantDate: KnockoutObservable<String> = ko.observable("");
+        /** 付与日数 */
+        grantDays: number = ko.observable(null);
+        /** 回数 */
+        times: number = ko.observable(null);
+        /** 時間年休上限日数 */
+        timeAnnualLeaveMaxDays: number = ko.observable(null);
+        /** 時間年休上限時間 */
+        timeAnnualLeaveMaxTime: number = ko.observable(null);
+        /** 半日年休上限回数 */
+        halfDayAnnualLeaveMaxTimes: number = ko.observable(null);
+        constructor(data?) {
+            if (data) {
+                this.grantDate(data.grantDate);
+                this.grantDays(data.grantDays);
+                this.times(data.times);
+                this.timeAnnualLeaveMaxDays(data.timeAnnualLeaveMaxDays);
+                this.timeAnnualLeaveMaxTime(data.timeAnnualLeaveMaxTime);
+                this.halfDayAnnualLeaveMaxTimes(data.halfDayAnnualLeaveMaxTimes);
+
+            }
+        }
+
+    }
 
     export class ReNumAnnLeaReferenceDate {
 
@@ -201,16 +249,16 @@ module nts.uk.at.view.kdl020.a.screenModel {
         }
     }
     export class AnnualLeaveRemainingNumber {
-        annualLeaveGrantPreDay: KnockoutObservable<number> = ko.observable(0);
-        annualLeaveGrantPreTime: KnockoutObservable<number> = ko.observable(0);
-        numberOfRemainGrantPre: KnockoutObservable<number> = ko.observable(0);
-        timeAnnualLeaveWithMinusGrantPre: KnockoutObservable<number> = ko.observable(0);
-        annualLeaveGrantPostDay: KnockoutObservable<number> = ko.observable(0);
-        annualLeaveGrantPostTime: KnockoutObservable<number> = ko.observable(0);
-        numberOfRemainGrantPost: KnockoutObservable<number> = ko.observable(0);
-        timeAnnualLeaveWithMinusGrantPost: KnockoutObservable<number> = ko.observable(0);
-        attendanceRate: KnockoutObservable<number> = ko.observable(0);
-        workingDays: KnockoutObservable<number> = ko.observable(0);
+        annualLeaveGrantPreDay: KnockoutObservable<number> = ko.observable(null);
+        annualLeaveGrantPreTime: KnockoutObservable<number> = ko.observable(null);
+        numberOfRemainGrantPre: KnockoutObservable<number> = ko.observable(null);
+        timeAnnualLeaveWithMinusGrantPre: KnockoutObservable<number> = ko.observable(null);
+        annualLeaveGrantPostDay: KnockoutObservable<number> = ko.observable(null);
+        annualLeaveGrantPostTime: KnockoutObservable<number> = ko.observable(null);
+        numberOfRemainGrantPost: KnockoutObservable<number> = ko.observable(null);
+        timeAnnualLeaveWithMinusGrantPost: KnockoutObservable<number> = ko.observable(null);
+        attendanceRate: KnockoutObservable<number> = ko.observable(null);
+        workingDays: KnockoutObservable<number> = ko.observable(null);
         constructor(data?) {
             if (data) {
                 this.annualLeaveGrantPreDay(data.annualLeaveGrantPreDay);
@@ -230,13 +278,13 @@ module nts.uk.at.view.kdl020.a.screenModel {
     }
 
     export class AnnualLeaveGrant {
-        grantDate: KnockoutObservable<Date> = ko.observable(moment().toDate());
-        grantNumber: KnockoutObservable<number> = ko.observable(0);
-        daysUsedNo: KnockoutObservable<number> = ko.observable(0);
-        usedMinutes: KnockoutObservable<number> = ko.observable(0);
-        remainDays: KnockoutObservable<number> = ko.observable(0);
-        remainMinutes: KnockoutObservable<number> = ko.observable(0);
-        deadline: KnockoutObservable<Date> = ko.observable(moment().toDate());
+        grantDate: KnockoutObservable<String> = ko.observable("");
+        grantNumber: KnockoutObservable<number> = ko.observable(null);
+        daysUsedNo: KnockoutObservable<number> = ko.observable(null);
+        usedMinutes: KnockoutObservable<number> = ko.observable(null);
+        remainDays: KnockoutObservable<number> = ko.observable(null);
+        remainMinutes: KnockoutObservable<number> = ko.observable(null);
+        deadline: KnockoutObservable<String> = ko.observable("");
         constructor(data?) {
             if (data) {
                 this.grantDate(data.grantDate);
@@ -252,9 +300,9 @@ module nts.uk.at.view.kdl020.a.screenModel {
     }
     export class AnnualLeaveManageInfor {
         ymd: KnockoutObservable<Date> = ko.observable(moment().toDate());
-        daysUsedNo: KnockoutObservable<number> = ko.observable(0);
-        usedMinutes: KnockoutObservable<number> = ko.observable(0);
-        scheduleRecordAtr: KnockoutObservable<number> = ko.observable(0);
+        daysUsedNo: KnockoutObservable<number> = ko.observable(null);
+        usedMinutes: KnockoutObservable<number> = ko.observable(null);
+        scheduleRecordAtr: KnockoutObservable<number> = ko.observable(null);
         constructor(data?) {
             if (data) {
                 this.ymd(data.ymd);

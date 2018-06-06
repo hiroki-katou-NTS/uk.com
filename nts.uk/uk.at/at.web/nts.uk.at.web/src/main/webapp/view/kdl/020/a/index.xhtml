@@ -144,46 +144,50 @@
 						<div id="content-right_bottom_right">
 							<div class="div_line">
 								<!-- A8_1 -->
-								<label> </label>
+								<label>#{i18n.getText('KDL020_23')}</label>
 							</div>
+							<div data-bind="with:displayAnnualLeaveGrant">
+								<div class="div_line">
+									<!-- A8_2_1 -->
+									<label> #{i18n.getText('KDL020_24')}</label>
+									<!-- A8_2_2 -->
+									<label data-bind="text:grantDate" style="margin-left: 20px;">
+									</label>
 
-							<div class="div_line">
-								<!-- A8_2_1 -->
-								<label> </label>
-								<!-- A8_2_2 -->
-								<label> </label>
+								</div>
 
+								<div class="div_line">
+									<!-- A8_3_1 -->
+									<label>#{i18n.getText('KDL020_25')}</label>
+									<!-- A8_3_2 + A8_3_3 -->
+									<label data-bind="html:$parent.genGrantDaysText(grantDays)" style="margin-left: 20px;">
+									</label>
+								</div>
+
+								<!-- <div class="div_line" style="margin-top: 30px">
+									A8_4_1
+									<label>#{i18n.getText('KDL020_26')} </label>
+									A8_4_2
+									<label></label>
+									A8_4_3
+									<label>#{i18n.getText('KDL020_27')} </label>
+								</div>
+
+								<div class="div_line"></div>
+								A8_5_1
+								<label> </label>
+								<div class="div_line">
+									A8_6_1
+									<label> </label>
+								</div>
+
+								<div class="div_line">
+									A8_7_1
+									<label> </label>
+								</div> -->
+
+								<div class="div_line"></div>
 							</div>
-
-							<div class="div_line">
-								<!-- A8_3_1 -->
-								<label> </label>
-								<!-- A8_3_2 -->
-								<label> </label>
-								<!-- A8_3_3 -->
-								<label> </label>
-							</div>
-
-							<div class="div_line">
-								<!-- A8_4_1 -->
-								<label> </label>
-							</div>
-
-							<div class="div_line"></div>
-							<!-- A8_5_1 -->
-							<label> </label>
-							<div class="div_line">
-								<!-- A8_6_1 -->
-								<label> </label>
-							</div>
-
-							<div class="div_line">
-								<!-- A8_7_1 -->
-								<label> </label>
-							</div>
-
-							<div class="div_line"></div>
-
 						</div>
 
 

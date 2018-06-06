@@ -49,3 +49,12 @@
 #component-items-list {
 	margin-top: 55px;
 }
+
+#content-right_bottom_left, #content-right_bottom_right {
+	display: inline-block;
+}
+
+#content-right_bottom_right {
+	margin-left: 30px;
+	vertical-align: top;
+}
