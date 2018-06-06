@@ -67,9 +67,14 @@ module nts.uk.at.view.kdl020.a.screenModel {
                             baseDate: self.baseDate()
                         };
                     self.selectedName(_.find(self.employeeList(), ['code', newCode]).name);
+                    block.invisible();
                     service.changeID(changeIDParam).done((data) => {
                         self.changeData(data);
-                    });
+                    }).fail((error) => {
+                        dialog({ messageId: error.messageId });
+                    }).always(() => {
+                        block.clear();
+                    });;
 
                 }
 
@@ -81,7 +86,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
         start(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-            let data: any = getShared('KDL020A_PARAM') ;
+            let data: any = getShared('KDL020A_PARAM');
 
 
             let startParam = {

@@ -24,12 +24,13 @@
 			<div id="functions-area"></div>
 			<div id="contents-area" class="cf">
 				<div id="content-left">
+					<div id="title" class="div_line">#{i18n.getText('KDL020_2')}</div>
 					<div id="component-items-list"></div>
 				</div>
 				<div id="content-right">
 					<div id="content-right_top">
 						<div class="div_line">
-							<div class="div_line">
+							<div id="employeeInfo" class="div_line">
 								<!-- A3_1 -->
 								<label data-bind="text:selectedCode"> </label>
 								<!-- A3_2 -->
@@ -38,7 +39,7 @@
 							</div>
 
 						</div>
-						<div class="div_line">
+						<div class="div_line" style="margin-top: 18px">
 							<!-- A4 -->
 							<table id="holiday-info_table">
 								<colgroup>
@@ -125,7 +126,8 @@
 									</thead>
 
 									<tbody>
-										<com:ko-foreach bind="reNumAnnLeave().annualLeaveManageInfors()">
+										<com:ko-foreach
+											bind="reNumAnnLeave().annualLeaveManageInfors()">
 											<tr>
 												<td><div data-bind="text: ymd"></div></td>
 												<td><div

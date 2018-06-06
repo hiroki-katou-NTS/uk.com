@@ -17,7 +17,7 @@
 	border: 1px solid #CCC;
 	margin-top: 1px;
 	padding: 0 2px;
-	width: 613px;
+	width: 596px;
 }
 
 #total-number {
@@ -34,4 +34,18 @@
 
 #content-right {
 	height: 570px;
+}
+
+#title, #employeeInfo label {
+	font-size: 1.1em;
+	font-weight: bold;
+}
+
+#contents-area {
+	padding-left: 20px;
+	padding-top: 0px;
+}
+
+#component-items-list {
+	margin-top: 55px;
 }
