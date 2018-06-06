@@ -26,6 +26,7 @@ module nts.uk.at.view.kdm001.k.viewmodel {
             let info = getShared("KDM001_K_PARAMS");
             self.initScreen(info);
             self.residualDay('-'+ parseFloat(self.numberDay()).toFixed(1) + ' 日');
+            $("#K7_2").css("color", "red");
             self.callService(self.comDayOffId(), self.employeeId());
 
             self.columns = ko.observableArray([
