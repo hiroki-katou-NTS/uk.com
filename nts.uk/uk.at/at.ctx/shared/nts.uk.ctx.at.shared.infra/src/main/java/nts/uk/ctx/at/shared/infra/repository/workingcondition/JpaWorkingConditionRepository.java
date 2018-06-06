@@ -323,7 +323,7 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 	 * @see nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository#getBySids(java.util.List)
 	 */
 	@Override
-	public List<WorkingCondition> getBySids(List<String> employeeIds) {
+	public List<WorkingCondition> getBySidsAndBaseDate(List<String> employeeIds, GeneralDate baseDate) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -343,8 +343,12 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 			
 			// eq company id
+			lstpredicateWhere.add(root.get(KshmtWorkingCond_.kshmtWorkingCondPK)
+					.get(KshmtWorkingCondPK_.sid).in(subList));
 			lstpredicateWhere.add(
-					root.get(KshmtWorkingCond_.kshmtWorkingCondPK).get(KshmtWorkingCondPK_.sid).in(subList));
+					criteriaBuilder.lessThanOrEqualTo(root.get(KshmtWorkingCond_.strD), baseDate));
+			lstpredicateWhere.add(criteriaBuilder
+					.greaterThanOrEqualTo(root.get(KshmtWorkingCond_.endD), baseDate));
 
 			// set where to SQL
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));

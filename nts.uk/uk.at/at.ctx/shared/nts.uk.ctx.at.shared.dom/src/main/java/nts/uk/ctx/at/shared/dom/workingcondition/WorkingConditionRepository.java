@@ -64,8 +64,7 @@ public interface WorkingConditionRepository {
 	 * @param sId the s id
 	 * @return the by sids
 	 */
-	List<WorkingCondition> getBySids(List<String> sIds);
-
+	List<WorkingCondition> getBySidsAndBaseDate(List<String> sIds, GeneralDate baseDate);
 	
 	/**
 	 * Save.
