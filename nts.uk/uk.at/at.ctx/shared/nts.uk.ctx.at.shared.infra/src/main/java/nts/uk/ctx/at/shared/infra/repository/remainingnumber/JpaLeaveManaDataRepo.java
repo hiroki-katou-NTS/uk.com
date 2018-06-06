@@ -20,24 +20,24 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaDataRepository {
 
-	private String QUERY_BYSID = "SELECT l FROM KrcmtLeaveManaData l WHERE l.cID = :cid AND l.sID =:employeeId ";
+	private static final String QUERY_BYSID = "SELECT l FROM KrcmtLeaveManaData l WHERE l.cID = :cid AND l.sID =:employeeId ";
 
-	private String QUERY_BYSIDWITHSUBHDATR = String.join(" ", QUERY_BYSID, "AND l.subHDAtr =:subHDAtr");
+	private static final String QUERY_BYSIDWITHSUBHDATR = String.join(" ", QUERY_BYSID, "AND l.subHDAtr =:subHDAtr");
 	
-	private String QUERY_LEAVEDAYOFF = String.join(" ", QUERY_BYSID, "AND l.leaveID IN (SELECT b.krcmtLeaveDayOffManaPK.leaveID FROM KrcmtLeaveDayOffMana b WHERE b.krcmtLeaveDayOffManaPK.comDayOffID = :comDayOffID )");
+	private static final String QUERY_LEAVEDAYOFF = String.join(" ", QUERY_BYSID, "AND l.leaveID IN (SELECT b.krcmtLeaveDayOffManaPK.leaveID FROM KrcmtLeaveDayOffMana b WHERE b.krcmtLeaveDayOffManaPK.comDayOffID = :comDayOffID )");
 	
-	private String QUERY_BYSIDANDHOLIDAYDATECONDITION = "SELECT l FROM KrcmtLeaveManaData l WHERE l.cID = :cid AND l.sID =:employeeId AND l.dayOff = :dateHoliday";
+	private static final String QUERY_BYSIDANDHOLIDAYDATECONDITION = "SELECT l FROM KrcmtLeaveManaData l WHERE l.cID = :cid AND l.sID =:employeeId AND l.dayOff = :dateHoliday";
 
-	private String QUERY_BYSID_AND_NOT_UNUSED = String.join(" ", QUERY_BYSID, "AND l.subHDAtr !=:subHDAtr");
+	private static final String QUERY_BYSID_AND_NOT_UNUSED = String.join(" ", QUERY_BYSID, "AND l.subHDAtr =:subHDAtr");
 
-	private String QUERY_BYID = "SELECT l FROM KrcmtLeaveManaData l WHERE l.leaveID IN :leaveIDs";
+	private static final String QUERY_BYID = "SELECT l FROM KrcmtLeaveManaData l WHERE l.leaveID IN :leaveIDs";
 	
 	
-	private String QUERY_BY_DAYOFF_PERIOD = "SELECT c FROM KrcmtLeaveManaData c"
+	private static final String QUERY_BY_DAYOFF_PERIOD = "SELECT c FROM KrcmtLeaveManaData c"
 			+ " WHERE c.sID = :sid"
 			+ " AND c.dayOff >= :startDate"
 			+ " AND c.dayOff <= :endDate";
-	private String QUERY_BY_EX = QUERY_BY_DAYOFF_PERIOD
+	private static final String QUERY_BY_EX = QUERY_BY_DAYOFF_PERIOD
 			+ " AND (c.unUsedDays > :unUsedDays AND c.expiredDate >= :sDate AND c.expiredDate <= :eDate)"
 			+ " OR (c.subHDAtr = :subHDAtr AND c.disapearDate >= :sDate AND c.disapearDate <= :eDate)";
 	@Override
