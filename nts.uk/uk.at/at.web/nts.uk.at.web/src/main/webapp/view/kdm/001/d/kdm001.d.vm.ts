@@ -61,6 +61,9 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 self.calRemainDays();
             });
             self.lawAtr(self.typeHoliday()[0].code);
+            self.requiredDays(self.itemListOptionSubHoliday()[0].code);
+            self.subDays(self.itemListSubHoliday()[0].code);
+            self.occurredDays(self.itemListHoliday()[0].code);
   
         }
         

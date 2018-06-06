@@ -52,7 +52,7 @@ public class SubstitutionOfHDManaDataService {
 			Optional<SubstitutionOfHDManagementData> subMana = substitutionOfHDManaDataRepository
 					.findByID(item.getSubOfHDID());
 			if (subMana.isPresent()) {
-				subMana.get().setRemainsDay(Double.valueOf(item.getUsedDays().v().intValue()));
+				subMana.get().setRemainsDay(item.getUsedDays().v().doubleValue());
 				substitutionOfHDManaDataRepository.update(subMana.get());
 			}
 		});
