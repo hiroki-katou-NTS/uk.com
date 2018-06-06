@@ -850,7 +850,7 @@ module nts.custombinding {
                         <input data-bind=" ntsTextEditor: {
                                 name: itemName,
                                 value: value,
-                                constraint: nameid == 'COM1000000000000000CS00069IS00779' ? 'StampNumber' : nameid,
+                                constraint:  _.endsWith(nameid, 'CS00069IS00779') ? 'StampNumber' : nameid,
                                 required: required,
                                 option: {
                                     textmode: 'text'
@@ -1608,7 +1608,7 @@ module nts.custombinding {
                         exceptConsts = [];
 
                         // fix bug stampNumber error msg
-                        let stampNumber = _.clone(_.find(constraints, c => c.itemCode == 'COM1000000000000000CS00069IS00779'));
+                        let stampNumber = _.clone(_.find(constraints, c => _.endsWith(c.itemCode, 'CS00069IS00779')));
                         if (stampNumber) {
                             stampNumber.itemCode = "StampNumber";
                             constraints.push(stampNumber);
