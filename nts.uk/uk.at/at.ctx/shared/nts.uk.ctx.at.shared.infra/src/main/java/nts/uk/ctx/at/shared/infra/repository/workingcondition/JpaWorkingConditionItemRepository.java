@@ -27,11 +27,14 @@ import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternCode;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionWithDataPeriod;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondItem;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondItem_;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondPK_;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond_;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -354,6 +357,64 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 		// exclude select
 		return Optional.of(new WorkingConditionItem(
 				new JpaWorkingConditionItemGetMemento(result.get(FIRST_ITEM_INDEX))));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository#
+	 * getBySidsAndBaseDate(java.util.List, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public List<WorkingConditionItem> getBySidsAndBaseDate(List<String> employeeIds,
+			GeneralDate baseDate) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<KshmtWorkingCondItem> cq = criteriaBuilder
+				.createQuery(KshmtWorkingCondItem.class);
+
+		// root data
+		Root<KshmtWorkingCondItem> root = cq.from(KshmtWorkingCondItem.class);
+
+		// select root
+		cq.select(root);
+
+		List<KshmtWorkingCondItem> result = new ArrayList<>();
+
+		CollectionUtil.split(employeeIds, 1000, subList -> {
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+			// equal
+			lstpredicateWhere.add(root.get(KshmtWorkingCondItem_.sid).in(subList));
+			lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
+					root.get(KshmtWorkingCondItem_.kshmtWorkingCond).get(KshmtWorkingCond_.strD),
+					baseDate));
+			lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
+					root.get(KshmtWorkingCondItem_.kshmtWorkingCond).get(KshmtWorkingCond_.endD),
+					baseDate));
+
+			// set where to SQL
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+			// creat query
+			TypedQuery<KshmtWorkingCondItem> query = em.createQuery(cq);
+
+			result.addAll(query.getResultList());
+		});
+
+		// Check empty
+		if (CollectionUtil.isEmpty(result)) {
+			return Collections.emptyList();
+		}
+
+		// exclude select
+		return result.parallelStream().map(
+				entity -> new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(entity)))
+				.collect(Collectors.toList());
 	}
 	
 	/*
