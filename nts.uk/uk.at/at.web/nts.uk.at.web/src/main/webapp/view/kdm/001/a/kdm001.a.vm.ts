@@ -59,7 +59,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             self.ccgcomponent = {
                 /** Common properties */
                 systemType: 1,
-                showEmployeeSelection: false,
+                showEmployeeSelection: true,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
                 showBaseDate: false,

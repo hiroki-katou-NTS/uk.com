@@ -196,7 +196,7 @@ public class PayoutManagementDataService {
 	private List<String> checkBox(boolean checkBox, int stateAtr, GeneralDate dayoffDate, GeneralDate expiredDate,
 			double unUsedDays) {
 		List<String> errorList = new ArrayList<>();
-		if (checkBox) {
+		if (!checkBox) {
 			if (stateAtr == DigestionAtr.EXPIRED.value) {
 				errorList.add("Msg_1212");
 				return errorList;
