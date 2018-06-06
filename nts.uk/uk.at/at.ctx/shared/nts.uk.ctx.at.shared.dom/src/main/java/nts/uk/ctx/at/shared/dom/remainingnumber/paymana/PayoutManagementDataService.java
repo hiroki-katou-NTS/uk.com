@@ -150,7 +150,7 @@ public class PayoutManagementDataService {
 	}
 	
 	private boolean checkDateClosing(GeneralDate date, Optional<GeneralDate> closureDate, int closureId) {
-		if (!closureDate.isPresent() || date.after(closureDate.get())) {
+		if (closureDate.isPresent() && date.after(closureDate.get())) {
 			return true;
 		}
 		return false;
@@ -263,7 +263,7 @@ public class PayoutManagementDataService {
 			// Update remain days 振出管理データ
 			Optional<PayoutManagementData> payoutMan = payoutManagementDataRepository.findByID(item.getPayoutId());
 			if (payoutMan.isPresent()) {
-				payoutMan.get().setRemainNumber(Double.valueOf(item.getUsedDays().v().intValue()));
+				payoutMan.get().setRemainNumber(item.getUsedDays().v().doubleValue());
 				payoutMan.get().setStateAtr(DigestionAtr.UNUSED.value);
 				payoutManagementDataRepository.update(payoutMan.get());
 			}

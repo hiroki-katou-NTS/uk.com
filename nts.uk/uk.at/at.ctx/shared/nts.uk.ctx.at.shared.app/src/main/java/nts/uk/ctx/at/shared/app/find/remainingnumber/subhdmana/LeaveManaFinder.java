@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,11 +33,17 @@ public class LeaveManaFinder {
 		leaveManaFree = leaveManaDataRepository.getBySidWithsubHDAtr(companyId, employeeId, DigestionAtr.UNUSED.value);
 		List<LeaveManagementData> leaveMana = new ArrayList<>();
 		leaveMana = leaveManaDataRepository.getByComDayOffId(companyId, employeeId, comDayOffID);
-		resultLeaveFreeMana = leaveManaFree.stream().map(p -> new LeaveManaDto(p.getComDayOffDate().getDayoffDate().get(),p.getOccurredDays().v().toString(), false,p.getID())).collect(Collectors.toList());
-		resultLeaveMana = leaveMana.stream().map(p -> new LeaveManaDto(p.getComDayOffDate().getDayoffDate().get(),p.getOccurredDays().v().toString(), true,p.getID())).collect(Collectors.toList());
+		resultLeaveFreeMana = leaveManaFree.stream().map(p -> new LeaveManaDto(p.getComDayOffDate().getDayoffDate().orElse(null),p.getOccurredDays().v().toString(), false,p.getID())).collect(Collectors.toList());
+		resultLeaveMana = leaveMana.stream().map(p -> new LeaveManaDto(p.getComDayOffDate().getDayoffDate().orElse(null),p.getOccurredDays().v().toString(), true,p.getID())).collect(Collectors.toList());
 		allLeaveMana.addAll(resultLeaveMana);
 		allLeaveMana.addAll(resultLeaveFreeMana);
+		Collections.sort(allLeaveMana, new Comparator<LeaveManaDto>() {
+			  public int compare(LeaveManaDto o1, LeaveManaDto o2) {
+			      return o1.getDateHoliday().compareTo(o2.getDateHoliday());
+			  }
+		});
 		result.setListLeaveMana(allLeaveMana);
+		
 		if(allLeaveMana.isEmpty()) {
 			result.setErrorCode("Msg_1074");
 		}

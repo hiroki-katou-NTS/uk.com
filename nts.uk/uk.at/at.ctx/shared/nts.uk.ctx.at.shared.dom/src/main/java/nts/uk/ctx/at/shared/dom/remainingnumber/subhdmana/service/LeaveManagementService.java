@@ -3,12 +3,15 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaData;
@@ -26,6 +29,9 @@ public class LeaveManagementService {
 	
 	@Inject
 	private LeaveManaDataRepository leaveManaDataRepository;
+	
+	@Inject
+	private ComDayOffManaDataRepository comDayOffManaDataRepository;
 	
 	public static final String ONE_DAY = "1.0";
 	public static final String HALF_DAY = "0.5";
@@ -53,22 +59,7 @@ public class LeaveManagementService {
 				response.add("Msg_743");
 			}
 			
-			/*if(leaveManagementData.getNumberDayParam().equals(HALF_DAY)) {
-				response.add("Msg_734");
-			}
 			
-			if (leaveManagementData.getLeaveMana().get(0).getRemainDays().equals(ONE_DAY)
-					|| leaveManagementData.getLeaveMana().get(1).getRemainDays().equals(ONE_DAY)) {
-
-				response.add("Msg_743");
-
-			} else if (leaveManagementData.getLeaveMana().get(0).getRemainDays().equals(HALF_DAY)
-					|| leaveManagementData.getLeaveMana().get(1).getRemainDays().equals(HALF_DAY)) {
-				if (!leaveManagementData.getLeaveMana().get(0).getRemainDays().equals(HALF_DAY)
-						|| !leaveManagementData.getLeaveMana().get(1).getRemainDays().equals(HALF_DAY)) {
-					response.add("Msg_734");
-				}
-			}*/
 		} else if (leaveManagementData.getLeaveMana().size() >= 3) {
 			response.add("Msg_743");
 		}
@@ -82,17 +73,6 @@ public class LeaveManagementService {
 			List<LeaveManagementData> leaveManaUpdate = this.leaveManaDataRepository.getByComDayOffId(companyId, leaveManagementData.getEmployeeId(),
 					leaveManagementData.getComDayOffID());
 			
-			/*List<String> updateUnUsedDay = new ArrayList<>();
-			for (int i = 0; i < leaveManaUpdate.size(); i++) {
-				if(leaveManaUpdate.get(i).getOccurredDays().v() != Double.parseDouble(leaveManagementData.getNumberDayParam())) {
-					updateUnUsedDay.add(leaveManaUpdate.get(i).getID());
-					//leaveManaUpdate.remove(i);
-				}
-			}
-			// update unUsedDay when not used 
-			if(!updateUnUsedDay.isEmpty()) {
-				leaveManaDataRepository.updateUnUseDayLeaveId(updateUnUsedDay);
-			}*/
 			
 			List<String> currentLeaveMana = leaveManaUpdate.stream().map(LeaveManagementData::getID)
 					.collect(Collectors.toList());
@@ -122,6 +102,24 @@ public class LeaveManagementService {
 			if (!listId.isEmpty()) {
 				leaveManaDataRepository.updateByLeaveIds(listId);
 			}
+			
+			// update
+
+			Double remainDay = 0.0;
+			Double remainDayNew = 0.0;
+			Optional<CompensatoryDayOffManaData> comDayOff = comDayOffManaDataRepository
+					.getBycomdayOffId(leaveManagementData.getComDayOffID());
+			for (int i = 0; i < leaveManagementData.getLeaveMana().size(); i++) {
+				remainDayNew = remainDayNew
+						+ Double.parseDouble(leaveManagementData.getLeaveMana().get(i).getRemainDays());
+			}
+
+			if (comDayOff.isPresent()) {
+				remainDay = comDayOff.get().getRequireDays().v();
+				comDayOffManaDataRepository.updateRemainDay(leaveManagementData.getComDayOffID(),
+						remainDayNew - remainDay);
+			}
+			
 			response.add("Msg_15");
 		}
 		

@@ -12,7 +12,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         employeeName: KnockoutObservable<string>                  = ko.observable('');
         remainDays: KnockoutObservable<number>                    = ko.observable(0);
         unit: KnockoutObservable<string>                          = ko.observable('');
-        lawAtr: KnockoutObservable<number>                        = ko.observable(0);
+        lawAtr: KnockoutObservable<number>                        = ko.observable(null);
         pickUp: KnockoutObservable<boolean>                       = ko.observable(true);;
         pause: KnockoutObservable<boolean>                        = ko.observable(true);
         checkedSplit: KnockoutObservable<boolean>                 = ko.observable(false);
@@ -20,12 +20,12 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         expiredDate: KnockoutObservable<string>                   = ko.observable('');
         subDayoffDate: KnockoutObservable<string>                 = ko.observable('');
         holidayDate: KnockoutObservable<string>                   = ko.observable('');
-        requiredDays: KnockoutObservable<number>                  = ko.observable(1);
+        requiredDays: KnockoutObservable<number>                  = ko.observable(null);
         typeHoliday: KnockoutObservableArray<model.ItemModel>     = ko.observableArray(model.getTypeHoliday());
         itemListHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
-        occurredDays: KnockoutObservable<number>                  = ko.observable(1);
+        occurredDays: KnockoutObservable<number>                  = ko.observable(null);
         itemListSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
-        subDays: KnockoutObservable<number>           = ko.observable(1);
+        subDays: KnockoutObservable<number>           = ko.observable(null);
         itemListOptionSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
         isOptionSubHolidayEnable: KnockoutObservable<boolean>              = ko.observable(false);
         closureId: KnockoutObservable<number> = ko.observable(0);
@@ -60,6 +60,11 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             self.checkedSplit.subscribe((v) => {
                 self.calRemainDays();
             });
+            self.lawAtr(self.typeHoliday()[0].code);
+            self.requiredDays(self.itemListOptionSubHoliday()[0].code);
+            self.subDays(self.itemListSubHoliday()[0].code);
+            self.occurredDays(self.itemListHoliday()[0].code);
+  
         }
         
         public calRemainDays(){

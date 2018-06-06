@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -47,6 +48,11 @@ public interface ComDayOffManaDataRepository {
 	void updateReDayByComDayId(List<String> comDayIds);
 	
 	void updateReDayReqByComDayId(List<String> comDayIds);
+	
+	Optional<CompensatoryDayOffManaData> getBycomdayOffId(String comDayOffId);
+	
+	void updateRemainDay(String comDayOffID, Double remainDay);
+
 	/**
 	 * ドメインモデル「休出管理データ」を取得する
 	 * @param sid

@@ -21,7 +21,7 @@
 					<!--H1 -->
 					<label>#{i18n.getText('KDM001_102')}</label>
 				</div>
-				<div class="margin-bottom">
+				<div class="margin-bottom" style="margin-left: -15px !important;">
 					<!-- H2 対象者 -->
 					<div data-bind="ntsFormLabel: {}">
 						<!-- H2_1 職場コード -->
@@ -51,7 +51,7 @@
 				<table>
 					<tr>
 						<th>
-							<div class="margin-bottom padding-left-15">
+							<div class="margin-bottom padding-left-15" style="margin-left:5px !important;">
 								<!-- H6_1 -->
 								<div class="column-1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDM001_62')}</div>
 								<!-- H6_2  HolidayDate  -->
@@ -82,7 +82,7 @@
 				</table>
 
 
-				<div class="flex valign-center margin-bottom padding-left-15">
+				<div class="flex valign-center margin-bottom padding-left-15" style="margin-left:5px !important;">
 					<!-- H8_1 -->
 					<div class="column-1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDM001_85')}</div>
 					<!-- H8_2  -->
@@ -102,9 +102,9 @@
 			</div>
 			<div id="functions-area-bottom">
 				<!--F31_1 登録 -->
-				<button class="proceed x-large" tabindex="4" data-bind="click: updateData">#{i18n.getText('KDM001_89')}</button>
+				<button class="proceed large" tabindex="4" data-bind="click: updateData">#{i18n.getText('KDM001_89')}</button>
 				<!-- F31_2 削除 -->
-				<button class="danger x-large" tabindex="5" data-bind="click: removeData">#{i18n.getText('KDM001_100')}</button>
+				<button class="danger large" tabindex="5" data-bind="click: removeData">#{i18n.getText('KDM001_100')}</button>
 				<!-- F31_3 キャンセル -->
 				<button data-bind="click: closeKDM001H" tabindex="6">#{i18n.getText('KDM001_90')}</button>
 			</div>

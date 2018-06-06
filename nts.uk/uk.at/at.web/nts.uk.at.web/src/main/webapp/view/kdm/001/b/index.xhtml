@@ -44,7 +44,7 @@
 					<div class="div-table-row-1"></div>
 					<!-- B3_4  期間範囲 -->
 					<div class="div-table-row-2" id="daterangepicker" tabindex="4"
-						data-bind="ntsDateRangePicker: { required: false, enable: selectedPeriodItem()==1, showNextPrevious: true, value: dateValue}" />
+						data-bind="ntsDateRangePicker: { required: selectedPeriodItem()==1, enable: selectedPeriodItem()==1, showNextPrevious: true, value: dateValue}" />
 				</div>
 				<div class="div-table-col-big">
 					<div class="div-table-row-1"></div>
@@ -57,7 +57,7 @@
 			</div>
 			<!-- B4  表 -->
 			<div class="div-table-row">
-				<label>#{i18n.getText('KDM001_123')}</label>
+				<label style="line-height: 35px;">#{i18n.getText('KDM001_123')}</label>
 				<!-- B4_1  説明 -->
 				<table tabindex = "8" id="substituteDataGrid"></table>
 			</div>
@@ -65,13 +65,13 @@
 		<!-- B5 -->
 		<div
 			class=" panel panel-frame person-info-panel flex valign-center">
-			<div>
+			<div data-bind="if: selectedPeriodItem() == 0">
 				<label>#{i18n.getText('KDM001_38')}</label> <label
 					data-bind="text: dispTotalRemainHours"></label>
 			</div>
 			<div style="margin-left: auto;">
 				<label>#{i18n.getText('KDM001_40')}</label> <label
-					data-bind="text: dispTotalExpiredDate"></label>
+					data-bind="text: dispExpiredDate"></label>
 			</div>
 		</div>
 	</div>

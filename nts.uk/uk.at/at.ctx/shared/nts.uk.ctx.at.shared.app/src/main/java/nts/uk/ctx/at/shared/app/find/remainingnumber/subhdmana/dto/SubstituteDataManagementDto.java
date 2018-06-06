@@ -28,7 +28,9 @@ public class SubstituteDataManagementDto {
 		if (!Objects.isNull(subDataOutput.getCompensatoryLeaveEmSetting())){
 			leaveSettingExpiredDate = subDataOutput.getCompensatoryLeaveEmSetting().getCompensatoryAcquisitionUse().getExpirationTime().name();
 		}
-		if (!Objects.isNull(subDataOutput.getCompensatoryLeaveComSetting())){
+		if (!Objects.isNull(subDataOutput.getCompensatoryLeaveEmSetting())){
+			leaveSettingExpiredDate = subDataOutput.getCompensatoryLeaveEmSetting().getCompensatoryAcquisitionUse().getExpirationTime().description;
+		} else if (!Objects.isNull(subDataOutput.getCompensatoryLeaveComSetting())){
 			compenSettingEmpExpiredDate = subDataOutput.getCompensatoryLeaveComSetting().getCompensatoryAcquisitionUse().getExpirationTime().description;
 		}
 		return new SubstituteDataManagementDto(sWkpHist, ExtraHolidayManagementDataDto.convertToDto(extraHolidayManagementOutput), leaveSettingExpiredDate, compenSettingEmpExpiredDate);
