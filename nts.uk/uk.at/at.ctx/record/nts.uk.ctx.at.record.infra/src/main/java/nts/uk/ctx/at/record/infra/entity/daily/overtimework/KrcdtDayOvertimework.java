@@ -506,13 +506,13 @@ public class KrcdtDayOvertimework extends UkJpaEntity implements Serializable{
 			
 			if(overTimeOfDaily.getFlexTime() != null) {
 				//フレックス時間
-				this.flexTime = overTimeOfDaily.getFlexTime().getFlexTime().getTime().valueAsMinutes();
+				this.flexTime = overTimeOfDaily.getFlexTime().getFlexTime().getTime() == null? 0 : overTimeOfDaily.getFlexTime().getFlexTime().getTime().valueAsMinutes();
 				//計算フレックス時間
-				this.calcFlexTime = overTimeOfDaily.getFlexTime().getFlexTime().getCalcTime().valueAsMinutes();
+				this.calcFlexTime = overTimeOfDaily.getFlexTime().getFlexTime().getCalcTime() == null ? 0 : overTimeOfDaily.getFlexTime().getFlexTime().getCalcTime().valueAsMinutes();
 				//事前フレックス時間
 				this.preAppFlexTime = overTimeOfDaily.getFlexTime().getBeforeApplicationTime() == null ? 0 :overTimeOfDaily.getFlexTime().getBeforeApplicationTime().valueAsMinutes();
 				//フレックス乖離時間
-				this.divergenceFlexTime = overTimeOfDaily.getFlexTime().getFlexTime().getDivergenceTime().valueAsMinutes();
+				this.divergenceFlexTime = overTimeOfDaily.getFlexTime().getFlexTime().getDivergenceTime() == null ? 0 : overTimeOfDaily.getFlexTime().getFlexTime().getDivergenceTime().valueAsMinutes();
 			}
 		}
 	}
