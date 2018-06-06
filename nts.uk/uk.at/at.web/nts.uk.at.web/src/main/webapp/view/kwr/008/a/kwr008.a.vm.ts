@@ -67,6 +67,16 @@ module nts.uk.at.view.kwr008.a {
             //A6 
             breakPage: KnockoutObservableArray<share.EnumConstantDto> = ko.observableArray([]);
             selectedBreakPage: KnockoutObservable<number> = ko.observable(null);
+            
+            //年間勤務表印刷形式
+            listSheetPrintingForm: KnockoutObservableArray<any> = ko.observableArray([
+                {code : 0, name : nts.uk.resource.getText('KWR008_53')},
+                {code : 1, name : nts.uk.resource.getText('KWR008_54')}
+            ]);
+            
+            printFormat: KnockoutObservable<number> = ko.observable(0);
+            
+            fiscalYear: KnockoutObservable<string> = ko.observable((new Date()).getFullYear().toString());
 
             constructor() {
                 var self = this;
@@ -123,10 +133,15 @@ module nts.uk.at.view.kwr008.a {
                 if (self.validate()) return;
                 nts.uk.ui.block.invisible();
                 var data = new model.EmployeeDto();
-                data.startYearMonth   = self.dateValue().startDate;
-                data.endYearMonth     = self.dateValue().endDate;
+                if(self.printFormat() == 0){
+                    data.startYearMonth   = self.dateValue().startDate;
+                    data.endYearMonth     = self.dateValue().endDate;
+                }else{
+                    data.fiscalYear             = self.fiscalYear();
+                }
                 data.setItemsOutputCd = self.selectedOutputItem();
                 data.breakPage        = self.selectedBreakPage().toString();
+                data.printFormat        = self.printFormat();
                 data.employees = [];
                 for (var employeeCode of self.selectedEmployeeCode()) {
                     let emp = self.findByCodeEmployee(employeeCode);
@@ -464,6 +479,8 @@ module nts.uk.at.view.kwr008.a {
                 endYearMonth: string;
                 setItemsOutputCd: string;
                 breakPage: string;
+                fiscalYear:string = '';
+                printFormat:number = 0;
                 constructor() {}
             }
         }
