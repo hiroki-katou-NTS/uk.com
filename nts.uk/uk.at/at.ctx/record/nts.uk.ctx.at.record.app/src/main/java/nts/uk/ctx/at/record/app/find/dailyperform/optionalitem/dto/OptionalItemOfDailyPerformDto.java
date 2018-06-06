@@ -31,7 +31,7 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 			dto.setDate(domain.getYmd());
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setOptionalItems(
-					ConvertHelper.mapTo(domain.getItems(), (c) -> OptionalItemValueDto.from(c, OptionalItemAtr.TIME)));
+					ConvertHelper.mapTo(domain.getItems(), (c) -> OptionalItemValueDto.from(c)));
 			dto.exsistData();
 		}
 		return dto;
@@ -50,12 +50,12 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 	}
 	
 	public void correctItems(Map<Integer, OptionalItem> optionalMaster) {
-		optionalItems.removeIf(item -> !item.isHaveData());
 		optionalItems.stream().forEach(item -> {
-			if(item.isNeedCorrect()) {
+//			if(item.isNeedCorrect()) {
 				item.correctItem(optionalMaster.get(item.getItemNo()).getOptionalItemAtr());
-			}
+//			}
 		});
+		optionalItems.removeIf(item -> !item.isHaveData());
 	}
 
 	private static OptionalItemAtr getAttrFromMaster(Map<Integer, OptionalItem> master, AnyItemValue c) {
@@ -83,6 +83,7 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
+		optionalItems.removeIf(item -> !item.isHaveData());
 		return new AnyItemValueOfDaily(employeeId, date,
 				ConvertHelper.mapTo(optionalItems, c -> c == null ? null : c.toDomain()));
 	}

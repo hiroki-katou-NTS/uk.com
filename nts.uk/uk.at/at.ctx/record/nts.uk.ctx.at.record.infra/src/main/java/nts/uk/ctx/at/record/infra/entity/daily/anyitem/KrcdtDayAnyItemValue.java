@@ -33,7 +33,7 @@ public class KrcdtDayAnyItemValue extends UkJpaEntity implements Serializable{
 	public int timeValue;
 	/* 回数 */
 	@Column(name = "COUNT_VALUE")
-	public int countValue;
+	public BigDecimal countValue;
 	/* 金額 */
 	@Column(name = "MONEY_VALUE")
 	public int moneyValue;
@@ -72,13 +72,13 @@ public class KrcdtDayAnyItemValue extends UkJpaEntity implements Serializable{
 			this.timeValue = v.valueAsMinutes();
 		});
 		anyItemValue.getTimes().ifPresent(v -> {
-			this.countValue = v.v().intValue();
+			this.countValue = v.v();
 		});
 	}
 	
 	public AnyItemValue toDomain() {
 		return new AnyItemValue(new AnyItemNo(krcdtDayAnyItemValuePK.itemNo),
-								Optional.of(new AnyItemTimes(BigDecimal.valueOf(countValue))), 
+								Optional.of(new AnyItemTimes(countValue)), 
 								Optional.of(new AnyItemAmount(moneyValue)),
 								Optional.of(new AnyItemTime(timeValue)));
 	}

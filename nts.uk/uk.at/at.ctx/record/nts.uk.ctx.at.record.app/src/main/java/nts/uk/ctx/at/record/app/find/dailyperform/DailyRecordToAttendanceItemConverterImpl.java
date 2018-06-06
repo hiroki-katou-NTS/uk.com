@@ -53,6 +53,7 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.shr.com.context.AppContexts;
@@ -84,11 +85,28 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 	@Override
 	public void merge(ItemValue value) {
 		AttendanceItemUtil.fromItemValues(dailyRecord, Arrays.asList(value));
+		if(AttendanceItemIdContainer.isHaveOptionalItems(Arrays.asList(value))) {
+			dailyRecord.getOptionalItem().ifPresent(optional -> {
+				Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
+						.findAll(AppContexts.user().companyId()).stream()
+						.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
+				optional.correctItems(optionalMaster);
+			});
+		}
+		
 	}
 
 	@Override
 	public void merge(Collection<ItemValue> values) {
 		AttendanceItemUtil.fromItemValues(dailyRecord, values);
+		if(AttendanceItemIdContainer.isHaveOptionalItems(values)) {
+			dailyRecord.getOptionalItem().ifPresent(optional -> {
+				Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
+						.findAll(AppContexts.user().companyId()).stream()
+						.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
+				optional.correctItems(optionalMaster);
+			});
+		}
 	}
 
 	@Override
@@ -98,6 +116,8 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 
 	@Override
 	public DailyRecordToAttendanceItemConverter setData(IntegrationOfDaily domain) {
+		this.employeeId(domain.getAffiliationInfor().getEmployeeId());
+		this.workingDate(domain.getAffiliationInfor().getYmd());
 		this.withWorkInfo(domain.getWorkInformation());
 		this.withCalcAttr(domain.getCalAttr());
 		this.withAffiliationInfo(domain.getAffiliationInfor());
@@ -204,7 +224,9 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 				Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
 						.findByListNos(AppContexts.user().companyId(), itemIds).stream()
 						.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
-				this.dailyRecord.optionalItems(OptionalItemOfDailyPerformDto.getDto(domain, optionalMaster));
+				OptionalItemOfDailyPerformDto dto = OptionalItemOfDailyPerformDto.getDto(domain, optionalMaster);
+				dto.correctItems(optionalMaster);
+				this.dailyRecord.optionalItems(dto);
 				return this;
 			}
 		}
