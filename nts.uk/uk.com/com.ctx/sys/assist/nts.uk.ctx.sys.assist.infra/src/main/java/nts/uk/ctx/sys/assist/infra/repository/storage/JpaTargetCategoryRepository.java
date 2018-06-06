@@ -34,8 +34,11 @@ public class JpaTargetCategoryRepository extends JpaRepository implements Target
 	}
 
 	@Override
-	public void add(TargetCategory domain) {
-		this.commandProxy().insert(SspmtTargetCategory.toEntity(domain));
+	public void add(List<TargetCategory> domain) {
+		for (TargetCategory targetCategory : domain) {
+			this.commandProxy().insert(SspmtTargetCategory.toEntity(targetCategory));
+		}
+		
 	}
 
 	@Override

@@ -15,7 +15,7 @@ public interface TargetCategoryRepository
     
     List<TargetCategory> getTargetCategoryListById(String storeProcessingId);
 
-    void add(TargetCategory domain);
+    void add(List<TargetCategory> domain);
 
     void update(TargetCategory domain);
 

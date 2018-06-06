@@ -45,7 +45,7 @@ public class ManualSettingCommand {
 	private List<TargetEmployeesCommand> employees;
 	private List<TargetCategoryCommand> category;
 
-	public ManualSetOfDataSave toDomain(String cid, String storeProcessingId) {
+	public ManualSetOfDataSave toDomain(String cid, String storeProcessingId, String practitioner) {
 		return new ManualSetOfDataSave(cid, storeProcessingId, systemType, passwordAvailability, saveSetName,
 				referenceDate, compressedPassword, executionDateAndTime, daySaveEndDate, daySaveStartDate,
 				monthSaveEndDate, monthSaveStartDate, suppleExplanation, endYear, startYear, presenceOfEmployee,

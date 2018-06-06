@@ -39,7 +39,7 @@ public class JpaDataStorageMngRepository extends JpaRepository implements DataSt
 	 */
 	@Override
 	public void add(DataStorageMng domain) {
-		this.commandProxy().insert(domain);
+		this.commandProxy().insert(SspmtDataStorageMng.toEntity(domain));
 
 	}
 
@@ -55,8 +55,8 @@ public class JpaDataStorageMngRepository extends JpaRepository implements DataSt
 	
 	@Override
 	public void update(String storeProcessingId, OperatingCondition operatingCondition) {
-		DataStorageMng entity = this.getEntityManager().find(DataStorageMng.class, storeProcessingId);
-		entity.operatingCondition = operatingCondition;
+		SspmtDataStorageMng entity = this.getEntityManager().find(SspmtDataStorageMng.class, storeProcessingId);
+		entity.operatingCondition = operatingCondition.value;
 		this.commandProxy().update(entity);
 	}
 	

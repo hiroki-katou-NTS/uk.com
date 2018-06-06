@@ -31,7 +31,7 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 
 	@Override
 	public void add(ResultOfSaving data) {
-		this.commandProxy().insert(data);
+		this.commandProxy().insert(SspmtResultOfSaving.toEntity(data));
 
 	}
 }
