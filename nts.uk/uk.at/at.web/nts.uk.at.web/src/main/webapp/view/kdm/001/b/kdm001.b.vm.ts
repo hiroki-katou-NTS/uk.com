@@ -238,14 +238,14 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     { headerText: 'ID', key: 'id', dataType: 'string', width: '0px', hidden: true },
                     { headerText: 'linked', key: 'isLinked', dataType: 'string', width: '0px', hidden: true },
                     { headerText: getText('KDM001_33'), template: '<div style="float:right"> ${substituedWorkingDate} </div>', key: 'substituedWorkingDate', dataType: 'string', width: '120px' },
-                    { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${substituedWorkingHours} </div>', key: 'substituedWorkingHours', dataType: 'string', width: '100px' },
-                    { headerText: getText('KDM001_124'), key: 'substituedWorkingPeg', dataType: 'string', width: '100px' },
+                    { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${substituedWorkingHours} </div>', key: 'substituedWorkingHours', dataType: 'string', width: '102px' },
+                    { headerText: getText('KDM001_124'), key: 'substituedWorkingPeg', dataType: 'string', width: '102px' },
                     { headerText: getText('KDM001_34'), template: '<div style="float:right"> ${substituedHolidayDate} </div>', key: 'substituedHolidayDate', dataType: 'string', width: '120px' },
-                    { headerText: getText('KDM001_11'), template: '<div style="float:right"> ${substituteHolidayHours} </div>', key: 'substituteHolidayHours', dataType: 'string', width: '100px' },
-                    { headerText: getText('KDM001_124'), key: 'substituedHolidayPeg', dataType: 'string', width: '100px' },
-                    { headerText: getText('KDM001_37'), template: '<div style="float:right"> ${remainHolidayHours} </div>', key: 'remainHolidayHours', dataType: 'string', width: '100px' },
-                    { headerText: getText('KDM001_20'), template: '<div style="float:right"> ${expiredHolidayHours} </div>', key: 'expiredHolidayHours', dataType: 'string', width: '100px' },
-                    { headerText: '', key: 'link', dataType: 'string', width: '85px', unbound: true, ntsControl: 'ButtonPegSetting' },
+                    { headerText: getText('KDM001_11'), template: '<div style="float:right"> ${substituteHolidayHours} </div>', key: 'substituteHolidayHours', dataType: 'string', width: '102px' },
+                    { headerText: getText('KDM001_124'), key: 'substituedHolidayPeg', dataType: 'string', width: '102px' },
+                    { headerText: getText('KDM001_37'), template: '<div style="float:right"> ${remainHolidayHours} </div>', key: 'remainHolidayHours', dataType: 'string', width: '102px' },
+                    { headerText: getText('KDM001_20'), template: '<div style="float:right"> ${expiredHolidayHours} </div>', key: 'expiredHolidayHours', dataType: 'string', width: '102px' },
+                    { headerText: '', key: 'link', dataType: 'string', width: '86px', unbound: true, ntsControl: 'ButtonPegSetting' },
                     { headerText: '', key: 'edit', dataType: 'string', width: '55px', unbound: true, ntsControl: 'ButtonCorrection' }
                 ],
                 features: [
@@ -289,7 +289,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     self.listExtractData = result.extraHolidayManagementDataDto.extraData;
                     self.convertToDisplayList();
                     self.updateSubstituteDataList();
-                    if (result.leaveSettingExpiredDate >0){
+                    if (result.leaveSettingExpiredDate.length>0){
                         self.dispExpiredDate(result.leaveSettingExpiredDate);
                     } else self.dispExpiredDate(result.compenSettingEmpExpiredDate);
                     self.initKCP009();
