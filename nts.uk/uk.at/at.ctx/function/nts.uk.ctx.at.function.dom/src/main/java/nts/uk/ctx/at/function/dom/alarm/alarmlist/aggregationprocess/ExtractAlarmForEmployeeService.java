@@ -75,8 +75,8 @@ public class ExtractAlarmForEmployeeService {
 				}
 				// カテゴリ：36協定
 				else if(checkCondition.isAgrrement()) {
-					agreementProcessService.agreementProcess(checkCondition.getCheckConditionList(), datePeriods, employees);
-					
+					List<ValueExtractAlarm> agreementAlarmList = agreementProcessService.agreementProcess(checkCondition.getCheckConditionList(), datePeriods, employees);
+					result.addAll(agreementAlarmList);
 				}
 				// カテゴリ：月次のチェック条件 (monthly)
 				else if (checkCondition.isMonthly()) {

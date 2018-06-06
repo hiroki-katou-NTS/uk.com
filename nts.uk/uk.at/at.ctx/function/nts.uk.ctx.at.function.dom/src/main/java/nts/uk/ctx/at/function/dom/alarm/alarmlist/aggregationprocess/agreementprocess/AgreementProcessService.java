@@ -84,7 +84,9 @@ public class AgreementProcessService {
 					if(minute.length()<2) minute ="0" + minute;
 					String ot36 =hour +":" + minute ;
 					
-					result.add(new ValueExtractAlarm(mapEmployee.get(check.getEmployeeId()).getWorkplaceId(), check.getEmployeeId(), check.getDatePeriod().toString(), TextResource.localize("KAL010_208"),
+					String datePeriod = check.getDatePeriod().start().toString() + "~" + check.getDatePeriod().end().toString();
+					
+					result.add(new ValueExtractAlarm(mapEmployee.get(check.getEmployeeId()).getWorkplaceId(), check.getEmployeeId(), datePeriod, TextResource.localize("KAL010_208"),
 							TextResource.localize("KAL010_201"), TextResource.localize("KAL010_202", check.getNo()+"", ot36, check.getExcessNum().v()+"" ), check.getMessageDisp().v()));
 			}
 			
