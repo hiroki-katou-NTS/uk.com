@@ -1247,11 +1247,14 @@ module nts.layout {
                         CS00017_IS00084.data.lstComboBoxValue(cbx);
                     });
                 });
+            }
+
+            if (CS00017_IS00084) {
                 // 
                 CS00017_IS00084.ctrl.on('click', () => {
                     setShared('inputCDL008', {
                         selectedCodes: [ko.toJS(CS00017_IS00084.data.value)],
-                        baseDate: ko.toJS(CS00017_IS00082.data.value),
+                        baseDate: ko.toJS(!!CS00017_IS00082 ? new Date(CS00017_IS00082.data.value()) : new Date()),
                         isMultiple: false,
                         selectedSystemType: 5,
                         isrestrictionOfReferenceRange: false
@@ -1272,11 +1275,11 @@ module nts.layout {
                 });
             }
 
-            if (CS00017_IS00082 && CS00017_IS00085) {
+            if (CS00017_IS00085) {
                 CS00017_IS00085.ctrl.on('click', () => {
                     setShared('inputCDL008', {
                         selectedCodes: [ko.toJS(CS00017_IS00085.data.value)],
-                        baseDate: ko.toJS(CS00017_IS00082.data.value),
+                        baseDate: ko.toJS(!!CS00017_IS00082 ? new Date(CS00017_IS00082.data.value()): new Date()),
                         isMultiple: false,
                         selectedSystemType: 5,
                         isrestrictionOfReferenceRange: false
@@ -1660,13 +1663,6 @@ module nts.layout {
             if (!!ctrls) {
                 let categoryId = ((ctrls[0] || <any>{}).data || <any>{}).categoryId;
                 if (categoryId) {
-                    __viewContext
-                        .primitiveValueConstraints[ctrls[0].id.replace(/#/g, '')]
-                        .stringExpression = /^[a-zA-Z0-9\s"#$%&(~|{}\[\]@:`*+?;\\/_\-><)]{1,20}$/;
-
-                    __viewContext.primitiveValueConstraints['StampNumber'].stringExpression = __viewContext
-                        .primitiveValueConstraints[ctrls[0].id.replace(/#/g, '')].stringExpression;
-
                     fetch.get_stc_setting().done((stt: StampCardEditing) => {
                         let _bind = $(document).data('_nts_bind') || {};
 
