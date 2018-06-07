@@ -5,6 +5,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.assist.dom.category.RecoverFormCompanyOther;
+import nts.uk.ctx.sys.assist.dom.category.StorageRangeSaved;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.HistoryDiviSion;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -107,7 +108,7 @@ public class TableList extends AggregateRoot {
 	/**
 	 * 保存時保存範囲
 	 */
-	private String storageRangeSaved;
+	private StorageRangeSaved storageRangeSaved;
 
 	/**
 	 * 保存期間区分
@@ -592,7 +593,7 @@ public class TableList extends AggregateRoot {
 			String dataRecoveryProcessId, int tableNo, String tableJapaneseName, String tableEnglishName,
 			String fieldAcqCid, String fieldAcqDateTime, String fieldAcqEmployeeId, String fieldAcqEndDate,
 			String fieldAcqStartDate, String saveSetCode, String saveSetName, String saveFileName, String saveForm,
-			GeneralDate saveDateFrom, GeneralDate saveDateTo, String storageRangeSaved, int retentionPeriodCls,
+			GeneralDate saveDateFrom, GeneralDate saveDateTo, int storageRangeSaved, int retentionPeriodCls,
 			String internalFileName, int anotherComCls, String referenceYear, String referenceMonth,
 			String compressedFileName, String fieldChild1, String fieldChild2, String fieldChild3, String fieldChild4,
 			String fieldChild5, String fieldChild6, String fieldChild7, String fieldChild8, String fieldChild9,
@@ -634,7 +635,7 @@ public class TableList extends AggregateRoot {
 		this.saveForm = saveForm;
 		this.saveDateFrom = saveDateFrom;
 		this.saveDateTo = saveDateTo;
-		this.storageRangeSaved = storageRangeSaved;
+		this.storageRangeSaved = EnumAdaptor.valueOf(storageRangeSaved, StorageRangeSaved.class);
 		this.retentionPeriodCls = EnumAdaptor.valueOf(retentionPeriodCls, TimeStore.class);
 		this.internalFileName = internalFileName;
 		this.anotherComCls = EnumAdaptor.valueOf(anotherComCls, RecoverFormCompanyOther.class);

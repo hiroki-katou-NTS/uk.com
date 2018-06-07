@@ -181,7 +181,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 		for (CategoryFieldMt categoryFieldMt : categoryFieldMts) {
 			String categoryName = "";
-			String storageRangeSaved = "";
+			int storageRangeSaved = 0;
 			TimeStore retentionPeriodCls = null;
 			int anotherComCls = 0;
 			String screenRetentionPeriod = "";
@@ -193,7 +193,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					.filter(c -> c.getCategoryId().v().equals(categoryFieldMt.getCategoryId())).findFirst();
 			if (category.isPresent()) {
 				categoryName = category.get().getCategoryName().v();
-				storageRangeSaved = category.get().getStorageRangeSaved().toString();
+				storageRangeSaved = category.get().getStorageRangeSaved().value;
 				retentionPeriodCls = category.get().getTimeStore();
 				anotherComCls = category.get().getOtherCompanyCls() != null ? category.get().getOtherCompanyCls().value
 						: null;

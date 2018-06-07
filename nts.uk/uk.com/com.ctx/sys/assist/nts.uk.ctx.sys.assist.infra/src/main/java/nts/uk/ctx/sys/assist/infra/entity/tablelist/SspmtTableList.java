@@ -149,7 +149,7 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = false)
 	@Column(name = "STORAGE_RANGE_SAVED")
-	public String storageRangeSaved;
+	public int storageRangeSaved;
 
 	/**
 	 * 保存期間区分
@@ -175,14 +175,14 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	/**
 	 * 参照年
 	 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "REFERENCE_YEAR")
 	public String referenceYear;
 
 	/**
 	 * 参照月
 	 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "REFERENCE_MONTH")
 	public String referenceMonth;
 
@@ -856,7 +856,7 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 				domain.getFieldAcqDateTime(), domain.getFieldAcqEmployeeId(), domain.getFieldAcqEndDate(),
 				domain.getFieldAcqStartDate(), domain.getSaveSetCode(), domain.getSaveSetName(),
 				domain.getSaveFileName(), domain.getSaveForm(), domain.getSaveDateFrom(), domain.getSaveDateTo(),
-				domain.getStorageRangeSaved(), domain.getRetentionPeriodCls().value, domain.getInternalFileName(),
+				domain.getStorageRangeSaved().value, domain.getRetentionPeriodCls().value, domain.getInternalFileName(),
 				domain.getAnotherComCls().value, domain.getReferenceYear(), domain.getReferenceMonth(),
 				domain.getCompressedFileName(), domain.getFieldChild1(), domain.getFieldChild2(),
 				domain.getFieldChild3(), domain.getFieldChild4(), domain.getFieldChild5(), domain.getFieldChild6(),

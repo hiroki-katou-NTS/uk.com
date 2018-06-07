@@ -848,9 +848,9 @@ module nts.uk.com.view.cmf003.b {
 
         function storageRangeSaved(value, row) {
             if (value && value === '0') {
-                return getText('Enum_Storage_Range_Saved_EARCH_EMP');
+                return getText('Enum_StorageRangeSaved_EARCH_EMP');
             } else if (value && value === '1') {
-                return getText('Enum_Storage_Range_Saved_ALL_EMP');
+                return getText('Enum_StorageRangeSaved_ALL_EMP');
             }
         }
     }

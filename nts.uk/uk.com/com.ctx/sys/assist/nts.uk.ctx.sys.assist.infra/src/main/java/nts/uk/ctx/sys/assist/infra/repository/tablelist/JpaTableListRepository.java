@@ -20,7 +20,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableListRepository;
-import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtTargetCategory;
 import nts.uk.ctx.sys.assist.infra.entity.tablelist.SspmtTableList;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
