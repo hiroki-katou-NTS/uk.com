@@ -9,13 +9,17 @@ import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.AggregateAffiliationInfoDto;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceLayoutConst;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の所属情報 */
+@AttendanceItemRoot(rootName = AttendanceLayoutConst.MONTHLY_AFFILIATION_INFO_NAME, itemType = AttendanceItemType.MONTHLY_ITEM)
 public class AffiliationInfoOfMonthlyDto extends MonthlyItemCommon {
 	/** 年月: 年月 */
 	private YearMonth yearMonth;
