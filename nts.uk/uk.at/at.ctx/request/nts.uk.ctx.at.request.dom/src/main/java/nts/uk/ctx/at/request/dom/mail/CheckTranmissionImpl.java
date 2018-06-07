@@ -81,7 +81,7 @@ public class CheckTranmissionImpl implements CheckTransmission {
 		for(String employeeToSendId: employeeIdList){
 			//find mail by sID
 			OutGoingMailImport mail = envAdapter.findMailBySid(lstMail, employeeToSendId);
-			String employeeMail = mail == null ? "" : mail.getEmailAddress();
+			String employeeMail = mail == null || mail.getEmailAddress() == null ? "" : mail.getEmailAddress();
 			if (mail == null) {//TH k co mail -> se k xay ra
 				//imported（申請承認）「社員名（ビジネスネーム）」を取得する 
 				List<EmployeeInfoImport> empObj = empAdapter.getByListSID(Arrays.asList(employeeToSendId));

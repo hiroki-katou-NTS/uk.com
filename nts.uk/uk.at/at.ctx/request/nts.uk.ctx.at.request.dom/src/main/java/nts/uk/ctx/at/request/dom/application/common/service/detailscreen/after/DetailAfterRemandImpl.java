@@ -141,7 +141,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 		for (String employee : employeeList) {
 			String employeeName = employeeAdapter.getEmployeeName(employee);
 			OutGoingMailImport mail = envAdapter.findMailBySid(lstMail, employee);
-			String employeeMail = mail == null ? "" : mail.getEmailAddress();
+			String employeeMail = mail == null || mail.getEmailAddress() == null ? "" : mail.getEmailAddress();
 			// TODO
 			String urlInfo = "";
 			if (urlEmbedded.isPresent()) {

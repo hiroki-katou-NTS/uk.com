@@ -79,14 +79,14 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 			//RQL 419 (replace 225)
 			List<MailDestinationImport> lstMail = envAdapter.getEmpEmailAddress(companyID, Arrays.asList(app.getEmployeeID()), 6);
 			List<OutGoingMailImport> outGoingMails = lstMail.get(0).getOutGoingMails();
-			String applicantMail = outGoingMails.isEmpty() ? "" : outGoingMails.get(0).getEmailAddress();
+			String applicantMail = outGoingMails.isEmpty() || outGoingMails.get(0).getEmailAddress() == null ? "" : outGoingMails.get(0).getEmailAddress();
 			//login
 			PesionInforImport loginer = employeeRequestAdapter.getEmployeeInfor(AppContexts.user().employeeId());
 			String loginName = Objects.isNull(loginer) ? "" : loginer.getPname();
 			//get mail login : rq419
 			List<MailDestinationImport> lstMailLogin = envAdapter.getEmpEmailAddress(companyID, Arrays.asList(AppContexts.user().employeeId()), 6);
 			List<OutGoingMailImport> outMails = lstMailLogin.get(0).getOutGoingMails();
-			String loginMail = outMails.isEmpty() ? "" : outMails.get(0).getEmailAddress();
+			String loginMail = outMails.isEmpty() || outMails.get(0).getEmailAddress() == null ? "" : outMails.get(0).getEmailAddress();
 			String appContent = appContentService.getApplicationContent(application_New.get());
 			//メール本文を編集する
 			String mailContentToSend = I18NText.getText("Msg_703",
@@ -114,7 +114,7 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 					//RQL 419 (replace 225)
 					List<MailDestinationImport> lstMail = envAdapter.getEmpEmailAddress(cid, Arrays.asList(z.getApproverID()), 6);
 					List<OutGoingMailImport> outGoingMails = lstMail.get(0).getOutGoingMails();
-					String sMail = outGoingMails.isEmpty() ? "" : outGoingMails.get(0).getEmailAddress();
+					String sMail = outGoingMails.isEmpty() || outGoingMails.get(0).getEmailAddress() == null ? "" : outGoingMails.get(0).getEmailAddress();
 					z.setSMail(sMail);
 				});
 			});
