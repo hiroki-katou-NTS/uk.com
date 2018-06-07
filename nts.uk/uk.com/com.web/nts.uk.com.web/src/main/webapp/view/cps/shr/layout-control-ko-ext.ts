@@ -590,6 +590,17 @@ module nts.custombinding {
                     .layout-control.inputable .nts-help-button-image .caret-helpbutton.caret-left {
                         top: unset !important;
                     }
+                    
+                    .layout-control .ntsHelpButton {
+                        margin-left: -50px;
+                        margin-right: 15px;
+                    }
+
+                    .layout-control .ntsHelpButton button {
+                        top: 3px;
+                        height: 27px;
+                        vertical-align: middle;
+                    }
                 </style>`;
 
         private tmp = `<div class="left-area">
@@ -854,11 +865,34 @@ module nts.custombinding {
                                 }
                             } -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.STRING -->
-                        <!-- ko if: item.stringItemType == STRING_TYPE.NUMERIC || item.stringItemLength < 40 || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA, STRING_TYPE.CARDNO].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80) -->
+                        <!-- ko if: [STRING_TYPE.CARDNO].indexOf(item.stringItemType) > -1 -->
                         <input data-bind=" ntsTextEditor: {
                                 name: itemName,
                                 value: value,
-                                constraint:  _.endsWith(nameid, 'CS00069IS00779') ? 'StampNumber' : nameid,
+                                constraint: 'StampNumber',
+                                required: required,
+                                option: {
+                                    textmode: 'text'
+                                },
+                                enable: editable,
+                                readonly: readonly,
+                                immediate: false
+                            },  attr: {
+                                id: nameid,
+                                nameid: nameid,
+                                title: itemName,
+                                'data-title': itemName,
+                                'data-code': itemCode,
+                                'data-category': categoryCode,
+                                'data-required': required,
+                                'data-defv': defValue
+                            }," />
+                        <!-- /ko -->
+                        <!-- ko if: item.stringItemType == STRING_TYPE.NUMERIC || item.stringItemLength < 40 || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80) -->
+                        <input data-bind=" ntsTextEditor: {
+                                name: itemName,
+                                value: value,
+                                constraint: nameid,
                                 required: required,
                                 option: {
                                     textmode: 'text'
@@ -1535,6 +1569,7 @@ module nts.custombinding {
                                         constraint.charType = 'Any';
                                         break;
                                     case ITEM_STRING_TYPE.CARDNO:
+                                        constraint.itemCode = 'StampNumber';
                                     case ITEM_STRING_TYPE.ANYHALFWIDTH:
                                         constraint.charType = 'AnyHalfWidth';
                                         break;
@@ -1614,14 +1649,6 @@ module nts.custombinding {
 
                     if (constraints && constraints.length) {
                         exceptConsts = [];
-
-                        // fix bug stampNumber error msg
-                        let stampNumber = _.clone(_.find(constraints, c => _.endsWith(c.itemCode, 'CS00069IS00779')));
-                        if (stampNumber) {
-                            stampNumber.itemCode = "StampNumber";
-                            constraints.push(stampNumber);
-                        }
-
                         writeConstraints(constraints);
                     }
                 },
