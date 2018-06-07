@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.application;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -15,6 +16,9 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailDestinationImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.OutGoingMailImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForSendOutput;
@@ -41,6 +45,11 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 	@Inject 
 	private IApplicationContentService appContentService;
 	
+	@Inject
+	private EnvAdapter envAdapter;
+	/**
+	 * ダイアログを開く kdl030
+	 */
 	@Override
 	public ApplicationForSendOutput getApplicationForSend(String appID) {
 		String companyID = AppContexts.user().companyId();
@@ -64,15 +73,24 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 		}
 		if (application_New.isPresent()){
 			Application_New app = application_New.get();
+			//get empName
 			PesionInforImport applicant = employeeRequestAdapter.getEmployeeInfor(app.getEmployeeID());
 			String empName = Objects.isNull(applicant) ? "" : applicant.getPname();
-			String applicantMail = "hiep.ld@3si.vn";
+			//RQL 419 (replace 225)
+			List<MailDestinationImport> lstMail = envAdapter.getEmpEmailAddress(companyID, Arrays.asList(app.getEmployeeID()), 6);
+			List<OutGoingMailImport> outGoingMails = lstMail.get(0).getOutGoingMails();
+			String applicantMail = outGoingMails.isEmpty() ? "" : outGoingMails.get(0).getEmailAddress();
+			//login
 			PesionInforImport loginer = employeeRequestAdapter.getEmployeeInfor(AppContexts.user().employeeId());
 			String loginName = Objects.isNull(loginer) ? "" : loginer.getPname();
-			String loginMail = "D00001@nittsusystime.co.jp";
+			//get mail login : rq419
+			List<MailDestinationImport> lstMailLogin = envAdapter.getEmpEmailAddress(companyID, Arrays.asList(AppContexts.user().employeeId()), 6);
+			List<OutGoingMailImport> outMails = lstMailLogin.get(0).getOutGoingMails();
+			String loginMail = outMails.isEmpty() ? "" : outMails.get(0).getEmailAddress();
 			String appContent = appContentService.getApplicationContent(application_New.get());
+			//メール本文を編集する
 			String mailContentToSend = I18NText.getText("Msg_703",
-					loginName, appTempAsStr,
+					loginName, appTempAsStr,app.getAppDate().toLocalDate().toString(),
 					GeneralDate.today().toString(), app.getAppType().nameId,
 					empName, app.getAppDate().toLocalDate().toString(),
 					appContent, loginName, loginMail);
@@ -83,11 +101,14 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 	private ApprovalRootOutput fromApprovalRootToApprovalRootOutput(ApprovalRootContentImport_New approvalRoot){
 		ApprovalRootOutput approvalRootOutput = ApprovalRootOutput.fromApprovalRootImportToOutput(approvalRoot);
 		// set email
+		String cid = AppContexts.user().companyId();
 		approvalRootOutput.getListApprovalPhaseState().forEach(x -> {
 			x.getListApprovalFrame().forEach(y -> {
 				y.getListApprover().forEach(z ->{
 					//RQL 419 (replace 225)
-					String sMail = "hiep.ld@3si.vn";
+					List<MailDestinationImport> lstMail = envAdapter.getEmpEmailAddress(cid, Arrays.asList(z.getApproverID()), 6);
+					List<OutGoingMailImport> outGoingMails = lstMail.get(0).getOutGoingMails();
+					String sMail = outGoingMails.isEmpty() ? "" : outGoingMails.get(0).getEmailAddress();
 					z.setSMail(sMail);
 				});
 			});

@@ -20,7 +20,12 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailDestinationImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.OutGoingMailImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
+import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
+import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbedded;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbeddedRepository;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
@@ -47,43 +52,44 @@ public class CheckTranmissionImpl implements CheckTransmission {
 	private RegisterEmbededURL registerEmbededURL;
 
 	@Inject
-	private AtEmployeeAdapter employeeRequestAdapter;
-
+	private AtEmployeeAdapter empAdapter;
+	
+	@Inject
+	private EnvAdapter envAdapter;
+	
+	@Inject
+	private AppDispNameRepository repoAppDispName;
+	/**
+	 * 送信・送信後チェック
+	 */
 	@Override
 	public MailSenderResult doCheckTranmission(String appId, int appType, int prePostAtr, List<String> employeeIdList,
-			String mailTitle, String mailBody, List<String> fileId) {
+			String mailTitle, String mailBody, List<String> fileId, String appDate) {
 		String cid = AppContexts.user().companyId();
 		Application_New application = applicationRepository.findByID(cid, appId).get();
 		Optional<UrlEmbedded> urlEmbedded = urlEmbeddedRepo.getUrlEmbeddedById(cid);
 		List<String> successList = new ArrayList<>();
 		List<String> errorList = new ArrayList<>();
-		String appContent = "app contents";
-		if (urlEmbedded.isPresent()) {
-			int urlEmbeddedCls = urlEmbedded.get().getUrlEmbedded().value;
-			NotUseAtr checkUrl = NotUseAtr.valueOf(urlEmbeddedCls);
-			if (checkUrl == NotUseAtr.USE) {
-				String urlInfo = registerEmbededURL.obtainApplicationEmbeddedUrl(appId, application.getAppType().value,
-						application.getPrePostAtr().value, application.getEmployeeID());
-				if (!Strings.isEmpty(urlInfo)){
-					appContent += "\n" + "#KDL030_30" + " " + application.getAppID() + "\n" + urlInfo;
-				}
-			}
+		//get list mail by list sID : rq419
+		List<MailDestinationImport> lstMail = envAdapter.getEmpEmailAddress(cid, employeeIdList, 6);
+		Optional<AppDispName> appDispName = repoAppDispName.getDisplay(appType);
+		String appName = "";
+		if(appDispName.isPresent()){
+			appName = appDispName.get().getDispName().v();
 		}
-		String loginName = "D00001";
-		String loginMail = "D00001@nittsusystime.co.jp";
-		String empName = "D00001 name";
-		String mailContentToSend = I18NText.getText("Msg_703",
-				loginName, mailBody,
-				GeneralDate.today().toString(), application.getAppType().nameId,
-				empName, application.getAppDate().toLocalDate().toString(),
-				appContent, loginName, loginMail);
+		String titleMail = appDate + " " + appName;
 		for(String employeeToSendId: employeeIdList){
-			String mail = employeeToSendId;
-			String employeeMail = "hiep.ld@3si.vn";
-			if (Strings.isBlank(mail)) {
-				errorList.add(mail);
+			//find mail by sID
+			OutGoingMailImport mail = envAdapter.findMailBySid(lstMail, employeeToSendId);
+			String employeeMail = mail == null ? "" : mail.getEmailAddress();
+			if (mail == null) {//TH k co mail -> se k xay ra
+				//imported（申請承認）「社員名（ビジネスネーム）」を取得する 
+				List<EmployeeInfoImport> empObj = empAdapter.getByListSID(Arrays.asList(employeeToSendId));
+				if(!empObj.isEmpty() && empObj.size() > 1){
+					errorList.add(empObj.get(0).getBussinessName());
+				}
 			} else {
-				mailSender.send("tarou@nittsusystem.co.jp", employeeMail, new MailContents("", mailContentToSend));
+				mailSender.sendFromAdmin(employeeMail, new MailContents(titleMail, mailBody));
 				successList.add(employeeToSendId);
 		
 			}
