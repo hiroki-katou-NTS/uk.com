@@ -1871,6 +1871,12 @@ public class ProgramsManager {
 	public static final Program CMF005F = new Program(WebAppId.COM, ProgramIdConsts.CMF005F, "CMF005_6",
 			"/view/cmm/005/f/index.xhtml");
 	
+	//KDL030
+	public static final Program KDL030 = new Program(WebAppId.AT, ProgramIdConsts.KDL030, "KDL030_1",
+			"/view/kdl/030/a/index.xhtml");
+	//KDL034
+	public static final Program KDL034 = new Program(WebAppId.AT, ProgramIdConsts.KDL034, "KDL034_1",
+			"/view/kdl/034/a/index.xhtml");
 
 	/**
 	 * All programs map.
