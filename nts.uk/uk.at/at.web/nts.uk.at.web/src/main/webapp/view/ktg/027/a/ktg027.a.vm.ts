@@ -29,9 +29,9 @@ module nts.uk.at.view.ktg027.a.viewmodel {
             self.selectedClosureID = ko.observable('1');
             var inforOvertime: Array<InforOvertime> = [];
             self.inforOvertimeFooter = ko.observable(new InforOvertime("", null, null, null, null, "", ""));
-            self.targetMonth.subscribe((newSelect) => {
-             self.clickExtractionBtn();
-            });
+          //  self.targetMonth.subscribe((newSelect) => {
+            // self.clickExtractionBtn();
+           // });
             self.inforOvertime = ko.observableArray([]);
             self.backgroundColor = ko.observable('');
             self.color = ko.observable('');
