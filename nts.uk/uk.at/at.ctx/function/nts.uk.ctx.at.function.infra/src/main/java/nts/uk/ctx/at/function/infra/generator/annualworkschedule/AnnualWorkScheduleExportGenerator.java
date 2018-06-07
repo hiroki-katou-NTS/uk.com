@@ -11,6 +11,7 @@ import com.aspose.cells.Color;
 import com.aspose.cells.HorizontalPageBreakCollection;
 import com.aspose.cells.PageSetup;
 import com.aspose.cells.Range;
+import com.aspose.cells.Style;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
@@ -24,6 +25,7 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.export.EmployeeData;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.ExportData;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.ExportItem;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.HeaderData;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -88,8 +90,7 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 			this.itemBooks = dataSource.getExportItems();
 			// set first employee
 			EmployeeData firstEmp = dataSource.getEmployees().get(empIds.remove(0));
-			print(wsc, new RangeCustom(empRange, 0), firstEmp, true);
-
+			
 			String workplaceCd = firstEmp.getEmployeeInfo().getWorkplaceCode();
 			RangeCustom newRange = new RangeCustom(empRange, 0);
 			int offset = 0, sumRowCount = workplaceRange.getRowCount();
@@ -117,6 +118,8 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 				}
 				offset = newRange.offset;
 			}
+			
+			print(wsc, new RangeCustom(empRange, 0), firstEmp, true);
 
 			reportContext.processDesigner();
 			reportContext.saveAsExcel(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
@@ -200,17 +203,29 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 			}
 
 			range.cell("month1st", rowOffset, 0).putValue(data.formatMonth1st());
+			this.setCellStyle(range.cell("month1st", rowOffset, 0), data.getColorMonth1st());
 			range.cell("month2nd", rowOffset, 0).putValue(data.formatMonth2nd());
+			this.setCellStyle(range.cell("month2nd", rowOffset, 0), data.getColorMonth2nd());
 			range.cell("month3rd", rowOffset, 0).putValue(data.formatMonth3rd());
+			this.setCellStyle(range.cell("month3rd", rowOffset, 0), data.getColorMonth3rd());
 			range.cell("month4th", rowOffset, 0).putValue(data.formatMonth4th());
+			this.setCellStyle(range.cell("month4th", rowOffset, 0), data.getColorMonth4th());
 			range.cell("month5th", rowOffset, 0).putValue(data.formatMonth5th());
+			this.setCellStyle(range.cell("month5th", rowOffset, 0), data.getColorMonth5th());
 			range.cell("month6th", rowOffset, 0).putValue(data.formatMonth6th());
+			this.setCellStyle(range.cell("month6th", rowOffset, 0), data.getColorMonth6th());
 			range.cell("month7th", rowOffset, 0).putValue(data.formatMonth7th());
+			this.setCellStyle(range.cell("month7th", rowOffset, 0), data.getColorMonth7th());
 			range.cell("month8th", rowOffset, 0).putValue(data.formatMonth8th());
+			this.setCellStyle(range.cell("month8th", rowOffset, 0), data.getColorMonth8th());
 			range.cell("month9th", rowOffset, 0).putValue(data.formatMonth9th());
+			this.setCellStyle(range.cell("month9th", rowOffset, 0), data.getColorMonth9th());
 			range.cell("month10th", rowOffset, 0).putValue(data.formatMonth10th());
+			this.setCellStyle(range.cell("month10th", rowOffset, 0), data.getColorMonth10th());
 			range.cell("month11th", rowOffset, 0).putValue(data.formatMonth11th());
+			this.setCellStyle(range.cell("month11th", rowOffset, 0), data.getColorMonth11th());
 			range.cell("month12th", rowOffset, 0).putValue(data.formatMonth12th());
+			this.setCellStyle(range.cell("month12th", rowOffset, 0), data.getColorMonth12th());
 			range.cell("average", rowOffset, 0).putValue(data.formatAverage());
 			range.cell("sum", rowOffset, 0).putValue(data.formatSum());
 			rowOffset++;
@@ -223,6 +238,14 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 		newRange.copyStyle(range);
 		int offset = newRange.getFirstRow() - range.getFirstRow();
 		return new RangeCustom(newRange, offset);
+	}
+
+	private void setCellStyle(Cell cell, Integer color) {
+		if (color == null)
+			return;
+		Style style = cell.getStyle();
+		style.setForegroundArgbColor(color);
+		cell.setStyle(style);
 	}
 }
 

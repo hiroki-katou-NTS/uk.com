@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeOfManagePeriodImport;
 import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.AttendanceItemValueImport;
 import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.MonthlyAttendanceResultImport;
@@ -228,6 +229,74 @@ public class AnnualWorkScheduleData {
 
 	public String formatAverage() {
 		return this.formatBigDecimal(this.average);
+	}
+
+	private Integer getColor(ItemData item) {
+		if (item == null || item.getStatus() == null)
+			return null;
+		switch (item.getStatus()) {
+		case EXCESS_LIMIT_ERROR:
+		case EXCESS_EXCEPTION_LIMIT_ERROR:
+			// #FD4D4D = 16600397
+			return 16600397;
+		case EXCESS_LIMIT_ALARM:
+		case EXCESS_EXCEPTION_LIMIT_ALARM:
+			// #F6F636 = 16184886
+			return 16184886;
+		case IN_EXCEPTION_LIMIT:
+			// #EB9152 = 15438162
+			return 15438162;
+		default:
+			return null;
+		}
+	}
+
+	public Integer getColorMonth1st() {
+		return this.getColor(this.month1st);
+	}
+
+	public Integer getColorMonth2nd() {
+		return this.getColor(this.month2nd);
+	}
+
+	public Integer getColorMonth3rd() {
+		return this.getColor(this.month3rd);
+	}
+
+	public Integer getColorMonth4th() {
+		return this.getColor(this.month4th);
+	}
+
+	public Integer getColorMonth5th() {
+		return this.getColor(this.month5th);
+	}
+
+	public Integer getColorMonth6th() {
+		return this.getColor(this.month6th);
+	}
+
+	public Integer getColorMonth7th() {
+		return this.getColor(this.month7th);
+	}
+
+	public Integer getColorMonth8th() {
+		return this.getColor(this.month8th);
+	}
+
+	public Integer getColorMonth9th() {
+		return this.getColor(this.month9th);
+	}
+
+	public Integer getColorMonth10th() {
+		return this.getColor(this.month10th);
+	}
+
+	public Integer getColorMonth11th() {
+		return this.getColor(this.month11th);
+	}
+
+	public Integer getColorMonth12th() {
+		return this.getColor(this.month12th);
 	}
 
 	public static AnnualWorkScheduleData fromMonthlyAttendanceList(ItemOutTblBook itemOut,

@@ -9,6 +9,7 @@ import nts.uk.ctx.at.function.app.find.annualworkschedule.EmployeeDto;
 public class AnnualWorkScheduleExportQuery {
 	/** */
 	private List<EmployeeDto> employees;
+	private int printFormat;
 	private String fiscalYear;
 	/** A3_2 期間: 開始年月 */
 	private String startYearMonth;
