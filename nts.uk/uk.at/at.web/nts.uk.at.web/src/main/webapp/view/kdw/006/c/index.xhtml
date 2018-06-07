@@ -16,6 +16,7 @@
 
 			<com:EnumScript>
 				nts.uk.ctx.at.record.dom.workrecord.operationsetting.YourselfConfirmError
+				nts.uk.ctx.at.function.dom.dailyfix.ApplicationType
 			</com:EnumScript>
 
 		</ui:define>
@@ -32,6 +33,7 @@
 				<div id="screen-d">
 					<!-- C2_1 -->
 					<div id="label11" class="label">#{i18n.getText('KDW006_35')}</div>
+
 					<!-- C2_2 -->
 					<div id="checkBox21" class="check-box-atr" tabindex="3"
 						data-bind="ntsCheckBox: { checked: identityProcessDto().useDailySelfCk}">#{i18n.getText('KDW006_36')}</div>
@@ -66,17 +68,29 @@
 					<div id="checkBox61" class="check-box-atr" tabindex="9"
 						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().flexDispAtr }">#{i18n.getText('KDW006_66')}</div>
 					<!-- C2_9 -->
-					<div id="checkBox71" class="check-box-atr" tabindex="10"
-						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().autoSetTimeAtr }">#{i18n.getText('KDW006_67')}</div>
+					<!-- <div id="checkBox71" class="check-box-atr" tabindex="10"
+						data-bind="ntsCheckBox: { checked : daiPerformanceFunDto().autoSetTimeAtr }">#{i18n.getText('KDW006_67')}</div>-->
 					<!-- C2_10 -->
 					<div id="checkBox81" class="check-box-atr" tabindex="11"
 						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().manualFixAutoSetAtr }">#{i18n.getText('KDW006_68')}</div>
 					<!-- C2_11 -->
-					<div id="checkBox91" class="check-box-atr" tabindex="12"
-						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().breakClrTimeAtr }">#{i18n.getText('KDW006_69')}</div>
+					<!-- <div id="checkBox91" class="check-box-atr" tabindex="12"
+						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().breakClrTimeAtr }">#{i18n.getText('KDW006_69')}</div> -->
 					<!-- C2_12 -->
 					<div id="checkBox101" class="check-box-atr" tabindex="13"
 						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().clearManuAtr }">#{i18n.getText('KDW006_70')}</div>
+						
+					<!-- C2_13 -->
+					<div id="label13" class="label">#{i18n.getText('KDW006_77')}</div>
+					<!-- C2_14 -->
+					<button id="dialog" data-bind="click: opentHDialog">#{i18n.getText('KDW006_78')}</button>
+					<!-- C2_15 -->
+								
+					<input id="textbox" data-bind="ntsTextEditor: {value: appType,
+							   	  name: '#[KDW006_35]',
+							   	  readonly: true,
+							   	  option: []}"
+							   	  ></input>
 					<div>
 						<!-- C3_1 -->
 						<div id="label11" class="label">#{i18n.getText('KDW006_60')}</div>

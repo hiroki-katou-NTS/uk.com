@@ -55,7 +55,9 @@ module nts.uk.com.view.cmf005.c.viewmodel {
                     });
 
                     if (systemTypeB != undefined) {
-                        self.selectedCode = ko.observable(systemTypeB.code);
+                        self.selectedCode(systemTypeB.code);
+                    } else {
+                        self.selectedCode(self.systemTypes()[0].code);
                     }
                 }
             }).fail(function(error) {
@@ -64,8 +66,6 @@ module nts.uk.com.view.cmf005.c.viewmodel {
             }).always(() => {
 
             });
-
-
 
             if (self.listCategoryChosed().length > 0) {
                 _.forEach(self.listCategoryChosed(), function(x) {

@@ -27,6 +27,7 @@ public interface EmpConditionRepository {
 	 */
 	EmpCondition find(String companyId, Integer optionalItemNo);
 	
+	
 	List<EmpCondition> findAll(String companyId, List<Integer> optionalItemNoList);
 
 }

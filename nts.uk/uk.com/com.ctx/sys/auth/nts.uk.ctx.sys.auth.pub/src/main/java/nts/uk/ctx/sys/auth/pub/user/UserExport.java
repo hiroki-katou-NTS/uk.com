@@ -39,6 +39,9 @@ public class UserExport {
 
 	/** The associated person ID. */
 	private String associatedPersonID;
+	
+	/** The associated person ID. */
+	private int passStatus;
 
 	/**
 	 * Instantiates a new user export.
@@ -53,7 +56,7 @@ public class UserExport {
 	 * @param expirationDate the expiration date
 	 */
 	public UserExport(String userID, String loginID, String contractCode, String userName, String password, String mailAddress, String associatedPersonID,
-			GeneralDate expirationDate) {
+			GeneralDate expirationDate ,int passStatus) {
 		this.userID = userID;
 		this.loginID = loginID;
 		this.contractCode = contractCode;
@@ -62,6 +65,7 @@ public class UserExport {
 		this.mailAddress = mailAddress;
 		this.associatedPersonID = associatedPersonID;
 		this.expirationDate = expirationDate;
+		this.passStatus = passStatus;
 	}	
 	
 	public boolean isExistAssociatedPersonID(String associatedPersonID){

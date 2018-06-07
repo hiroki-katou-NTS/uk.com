@@ -13,6 +13,7 @@ import lombok.Getter;
 import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.record.dom.optitem.calculation.CalcResultOfAnyItem;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
@@ -204,20 +205,16 @@ public class OptionalItem extends AggregateRoot {
     public CalcResultOfAnyItem caluculationFormula(String companyId,
     												OptionalItem optionalItem,
     												List<Formula> formulaList,
-    												Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto
-    												/*Optional<> monthlyRecordDto*/) {
-        //AggregateRoot「任意項目の計算式」取得
-//        val formulaList = formulaRepository.find(companyId);
-    	
+    												Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto,
+    												Optional<MonthlyRecordToAttendanceItemConverter> monthlyRecordDto) {
+	
     	//任意項目計算式を記号の昇順でソート
-//    	formulaList.stream().sorted((first,second) -> first.getSymbol().compareTo(second.getSymbol())).collect(Collectors.toList());
     	formulaList.sort((first,second) -> first.getSymbol().compareTo(second.getSymbol()));
-//    	formulaList = formulaList.stream().sorted((first,second) -> first.getSymbol().compareTo(second.getSymbol())).collect(Collectors.toList());
         /*パラメータ：任意項目の計算結果を定義*/
         List<ResultOfCalcFormula> calcResultAnyItem = new ArrayList<>();
         //計算式分ループ
         for(Formula formula : formulaList) {
-            calcResultAnyItem.add(formula.dicisionCalc(optionalItem, performanceAtr, calcResultAnyItem, dailyRecordDto/*,monthlyRecordDto*/));
+            calcResultAnyItem.add(formula.dicisionCalc(optionalItem, performanceAtr, calcResultAnyItem, dailyRecordDto, monthlyRecordDto));
         }
         //Listが空だった場合
         if(calcResultAnyItem.isEmpty()) {

@@ -14,7 +14,8 @@ module nts.uk.at.view.kaf004.b.viewmodel {
         lateTime1: KnockoutObservable<number> = ko.observable(null);
         lateTime2: KnockoutObservable<number> = ko.observable(null);
         //check send mail
-        sendMail: KnockoutObservable<boolean> = ko.observable(true);
+        checkBoxValue: KnockoutObservable<boolean> = ko.observable(false);
+        sendMail: KnockoutObservable<boolean> = ko.observable(false);
         //check late
         late1: KnockoutObservable<boolean> = ko.observable(false);
         late2: KnockoutObservable<boolean> = ko.observable(false);
@@ -76,6 +77,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             service.getByCode("").done(function(data) {
+                self.sendMail(data.appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? false : true);
                 self.ListTypeReason.removeAll();
                 _.forEach(data.listApplicationReasonDto, data => {
                     let reasonTmp: TypeReason = {reasonID: data.reasonID, reasonTemp: data.reasonTemp};
@@ -166,8 +168,22 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                         appReason: self.appreason()
                     };
                     service.createLateOrLeaveEarly(lateOrLeaveEarly).done((data) => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                            location.reload();
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            if(data.autoSendMail){
+                                nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
+                                    location.reload();
+                                });    
+                            } else {
+                                if(self.checkBoxValue()){
+                                    let command = {appID: data.appID};
+                                    setShared("KDL030_PARAM", command);
+                                    nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
+                                        location.reload();
+                                    });    
+                                } else {
+                                    location.reload();
+                                }   
+                            }
                         });
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});  

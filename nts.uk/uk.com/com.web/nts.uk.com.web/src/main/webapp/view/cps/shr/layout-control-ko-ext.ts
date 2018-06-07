@@ -582,6 +582,14 @@ module nts.custombinding {
                     .layout-control.readonly:not(.inputable) .color-operation-case-character {
                         color: #000 !important;
                     }
+
+                    .layout-control.inputable .nts-help-button-image {
+                        width: 300px !important;
+                    }
+
+                    .layout-control.inputable .nts-help-button-image .caret-helpbutton.caret-left {
+                        top: unset !important;
+                    }
                 </style>`;
 
         private tmp = `<div class="left-area">
@@ -631,7 +639,7 @@ module nts.custombinding {
                                                 text: _item.itemName || '',
                                                 cssClass: cssClass,
                                                 required: _item.required,
-                                                constraint: _item.constraint }"></div>
+                                                constraint: _item.constraint }" class="limited-label"></div>
             
                                             <!-- ko if: _item.dispType == DISP_TYPE.SINGLE -->
                                                 <!-- ko template: { data: _item, name: 'ctr_template' } --><!-- /ko -->
@@ -678,7 +686,7 @@ module nts.custombinding {
                                                                         text: _sitem.itemName,
                                                                         cssClass: cssClass,
                                                                         required: _sitem.required 
-                                                                    }"></div>
+                                                                    }" class="limited-label"></div>
                                                                 <!-- ko if: _sitem.dispType == DISP_TYPE.SINGLE -->
                                                                     <div class="childs-row" data-bind="template: { data: _sitem, name: 'ctr_template' }"></div>
                                                                 <!-- /ko -->
@@ -723,7 +731,7 @@ module nts.custombinding {
 
                                 <!-- ko if: layoutItemType == LAYOUT_TYPE.LIST -->
                                     <div class="item-controls">
-                                        <div data-bind="ntsFormLabel: { required: false, text: className || '' }"></div>
+                                        <div data-bind="ntsFormLabel: { required: false, text: className || '' }" class="limited-label"></div>
                                         <div class="table-container header-1rows" data-bind="let: {
                                                     __lft: ko.observable(0),
                                                     __flft: ko.observable(0)
@@ -754,7 +762,7 @@ module nts.custombinding {
                                                                         style: {
                                                                             'width': __wdt() + 'px',
                                                                             'margin-left': (__flft() - __lft()) + 'px'
-                                                                        }"></div>
+                                                                        }" class="limited-label"></div>
                                                                 </th>
                                                                 <!-- /ko -->
                                                             <!-- /ko -->
@@ -805,7 +813,7 @@ module nts.custombinding {
                 </script>
                 <script type="text/html" id="ctr_template">
                     <!-- ko if: resourceId -->
-                        <button class="inline" data-bind="attr: { title: resourceId }, text: text('？')">？</button>
+                        <button class="inline" data-bind="ntsHelpButton: { position: 'right center', textId: resourceId }, text: text('？')">？</button>
                     <!-- /ko -->                    
                     <!-- ko let: { 
                                 nameid : itemDefId.replace(/[-_]/g, ''),
@@ -850,7 +858,7 @@ module nts.custombinding {
                         <input data-bind=" ntsTextEditor: {
                                 name: itemName,
                                 value: value,
-                                constraint: nameid == 'COM1000000000000000CS00069IS00779' ? 'StampNumber' : nameid,
+                                constraint:  _.endsWith(nameid, 'CS00069IS00779') ? 'StampNumber' : nameid,
                                 required: required,
                                 option: {
                                     textmode: 'text'
@@ -1144,7 +1152,7 @@ module nts.custombinding {
                                     'data-category': categoryCode,
                                     'data-required': required,
                                     'data-defv': defValue
-                                 }, text: text('CPS001_127'), enable: editable">選択</button>
+                                 }, text: text('CPS001_127'), enable: editable" class="hidden">選択</button>
                             </div>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.READONLY_BUTTON -->
@@ -1158,7 +1166,7 @@ module nts.custombinding {
                                     'data-category': categoryCode,
                                     'data-required': required,
                                     'data-defv': defValue
-                                 }, text: text('CPS001_127'), enable: editable">選択</button>
+                                 }, text: text('CPS001_127'), enable: editable" class="hidden">選択</button>
                             </div>
                         <!-- /ko -->
                     <!-- /ko -->
@@ -1606,9 +1614,9 @@ module nts.custombinding {
 
                     if (constraints && constraints.length) {
                         exceptConsts = [];
-                        
+
                         // fix bug stampNumber error msg
-                        let stampNumber = _.clone(_.find(constraints, c => c.itemCode == 'COM1000000000000000CS00069IS00779'));
+                        let stampNumber = _.clone(_.find(constraints, c => _.endsWith(c.itemCode, 'CS00069IS00779')));
                         if (stampNumber) {
                             stampNumber.itemCode = "StampNumber";
                             constraints.push(stampNumber);
@@ -2792,18 +2800,6 @@ module nts.custombinding {
             ko.bindingHandlers['ntsRadioBoxGroup'].init(ctrls.radios, () => opts.radios, allBindingsAccessor, viewModel, bindingContext);
 
             ko.bindingHandlers['ntsComboBox'].init(ctrls.combobox, () => opts.combobox, allBindingsAccessor, viewModel, bindingContext);
-            /*ko.bindingHandlers['ntsDropDownList'].init(ctrls.combobox, () => ({
-                value: opts.combobox.value,
-                dataSource: opts.combobox.options,
-                textKey: opts.combobox.optionsText,
-                valueKey: opts.combobox.optionsValue,
-                visibleItemsCount: 10,
-                enable: opts.combobox.enable,
-                columns: [
-                    { prop: 'categoryCode', 'class': 'hidden' },
-                    { prop: 'categoryName' }
-                ]
-            }), allBindingsAccessor, viewModel, bindingContext);*/
 
             ko.bindingHandlers['ntsSearchBox'].init(ctrls.searchbox, () => opts.searchbox, allBindingsAccessor, viewModel, bindingContext);
 
@@ -2825,18 +2821,6 @@ module nts.custombinding {
             ko.bindingHandlers['ntsRadioBoxGroup'].update(ctrls.radios, () => opts.radios, allBindingsAccessor, viewModel, bindingContext);
 
             ko.bindingHandlers['ntsComboBox'].update(ctrls.combobox, () => opts.combobox, allBindingsAccessor, viewModel, bindingContext);
-            /*ko.bindingHandlers['ntsDropDownList'].update(ctrls.combobox, () => ({
-                value: opts.combobox.value,
-                dataSource: opts.combobox.options,
-                textKey: opts.combobox.optionsText,
-                valueKey: opts.combobox.optionsValue,
-                visibleItemsCount: 10,
-                enable: opts.combobox.enable,
-                columns: [
-                    { prop: 'categoryCode', 'class': 'hidden' },
-                    { prop: 'categoryName' }
-                ]
-            }), allBindingsAccessor, viewModel, bindingContext);*/
 
             ko.bindingHandlers['ntsSearchBox'].update(ctrls.searchbox, () => opts.searchbox, allBindingsAccessor, viewModel, bindingContext);
 

@@ -284,6 +284,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		String companyManagerRoleId = this.getRoleId(userId, RoleType.COMPANY_MANAGER);
 		String systemManagerRoleId = this.getRoleId(userId, RoleType.SYSTEM_MANAGER);
 		String personalInfoRoleId = this.getRoleId(userId, RoleType.PERSONAL_INFO);
+		String groupCompanyManagerRoleId = this.getRoleId(userId, RoleType.GROUP_COMAPNY_MANAGER);
 		// 就業
 		if (employmentRoleId != null) {
 			manager.roleIdSetter().forAttendance(employmentRoleId);
@@ -303,7 +304,9 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		// 会計
 		// マイナンバー
 		// グループ会社管理
-
+		if (groupCompanyManagerRoleId != null) {
+			manager.roleIdSetter().forGroupCompaniesAdmin(groupCompanyManagerRoleId);
+		}
 		// 会社管理者
 		if (companyManagerRoleId != null) {
 			manager.roleIdSetter().forCompanyAdmin(companyManagerRoleId);

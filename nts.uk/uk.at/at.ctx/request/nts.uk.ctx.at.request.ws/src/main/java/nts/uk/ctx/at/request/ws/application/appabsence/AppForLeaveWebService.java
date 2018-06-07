@@ -8,7 +8,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import lombok.Value;
-import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.appabsence.CreatAppAbsenceCommand;
 import nts.uk.ctx.at.request.app.command.application.appabsence.CreatAppAbsenceCommandHandler;
@@ -16,6 +15,7 @@ import nts.uk.ctx.at.request.app.command.application.appabsence.UpdateAppAbsence
 import nts.uk.ctx.at.request.app.command.application.appabsence.UpdateAppAbsenceCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.appabsence.AppAbsenceFinder;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDto;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 
 @Path("at/request/application/appforleave")
 @Produces("application/json")
@@ -74,9 +74,8 @@ public class AppForLeaveWebService extends WebService{
 	}
 	@POST
 	@Path("insert")
-	public JavaTypeResult<String> insert(CreatAppAbsenceCommand param) {
-		JavaTypeResult<String> result  =  new JavaTypeResult<String>(creatAppAbsenceCommandHandler.handle(param));
-		return result;
+	public ProcessResult insert(CreatAppAbsenceCommand param) {
+		return creatAppAbsenceCommandHandler.handle(param);
 	}
 	@POST
 	@Path("getByAppID")
@@ -86,7 +85,7 @@ public class AppForLeaveWebService extends WebService{
 	
 	@POST
 	@Path("update")
-	public List<String> update(UpdateAppAbsenceCommand command) {
+	public ProcessResult update(UpdateAppAbsenceCommand command) {
 		return this.updateAppAbsenceCommandHandler.handle(command);
 	}
 	

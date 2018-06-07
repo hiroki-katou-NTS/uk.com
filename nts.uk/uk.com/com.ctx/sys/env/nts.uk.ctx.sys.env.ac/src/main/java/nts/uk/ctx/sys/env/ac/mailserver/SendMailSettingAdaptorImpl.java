@@ -20,6 +20,7 @@ import nts.uk.ctx.sys.env.dom.mailserver.MailServer;
 import nts.uk.ctx.sys.env.dom.mailserver.MailServerRepository;
 import nts.uk.ctx.sys.env.dom.mailserver.UseAuthentication;
 import nts.uk.shr.com.mail.SendMailSettingAdaptor;
+import nts.uk.shr.com.mail.UkSendMailSetting;
 
 /**
  * The Class SendMailSettingAdaptorImpl.
@@ -38,7 +39,7 @@ public class SendMailSettingAdaptorImpl implements SendMailSettingAdaptor {
 	 * nts.uk.shr.com.mail.SendMailSettingAdaptor#getSetting(java.lang.String)
 	 */
 	@Override
-	public SendMailSetting getSetting(String companyId) {
+	public UkSendMailSetting getSetting(String companyId) {
 		Optional<MailServer> optMailServer = mailServerRepo.findBy(companyId);
 
 		// Check exist
@@ -88,7 +89,7 @@ public class SendMailSettingAdaptorImpl implements SendMailSettingAdaptor {
 		SendMailSetting sendMailSetting = new SendMailSetting(smtpServer, secondsToTimeout,
 				authenticationMethod, authenticationAccount, authenticationServer, encryptionType);
 
-		return sendMailSetting;
+		return new UkSendMailSetting(sendMailSetting, mailServer.getEmailAuthentication().v());
 	}
 
 	/**
