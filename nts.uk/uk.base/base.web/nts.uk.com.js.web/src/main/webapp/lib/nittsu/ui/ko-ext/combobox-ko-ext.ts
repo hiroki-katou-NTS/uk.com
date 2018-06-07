@@ -214,6 +214,13 @@ module nts.uk.ui.koExtentions {
                         setTimeout(() => {
                             let data = $element.data(DATA);
 
+                            // select first if !select and !editable
+                            if (!data[EDITABLE] && !data[VALUE]) {
+                                $element.trigger(CHANGED, [VALUE, $element.igCombo('value')]);
+                                //reload data
+                                data = $element.data(DATA);
+                            }
+
                             // set value on select
                             accessor.value(data[VALUE]);
 
