@@ -61,7 +61,7 @@
 					<!-- Combobox -->
 					<div id="I6_3" tabindex="3" class="combo-box-holiday"
 						data-bind="ntsComboBox: {
-					name: '#[KDM001_112]',
+					name: '#{i18n.getText('KDM001_112')}',
 					options: itemListHoliday,
 					optionsValue: 'code',
 					visibleItemsCount: 5,
@@ -69,7 +69,7 @@
 					optionsText: 'name',
 					editable: false,
 					enable: true,
-					selectFirstIfNull : true,
+					required: checkedHoliday,
 					columns: [
 						{ prop: 'name', length: 5 },
 					]}">
@@ -81,7 +81,7 @@
 						data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_72')}</div>
 					<!-- I8_1 期限 -->
 					<!-- Datepicker -->
-					<div tabindex="4"
+					<div id="I8_1" tabindex="4"
 						data-bind="ntsDatePicker: {value: duedateHoliday, dateFormat: 'YYYY/MM/DD', name: '#[KDM001_73]', required: checkedHoliday}"></div>
 				</div>
 
@@ -108,7 +108,7 @@
 					<!-- Combobox -->
 					<div tabindex="6" id="I11_3" class="combo-box-sub-holiday"
 						data-bind="ntsComboBox: {
-					name: '#[KDM001_116]',
+					name: '#{i18n.getText('KDM001_116')}',
 					options: itemListSubHoliday,
 					optionsValue: 'code',
 					visibleItemsCount: 5,
@@ -117,6 +117,7 @@
 					editable: false,
 					enable: true,
 					selectFirstIfNull : true,
+					required: checkedSubHoliday,
 					columns: [
 						{ prop: 'name', length: 5 },
 					]}">
@@ -139,14 +140,15 @@
 						<!-- Combobox -->
 						<div tabindex="8" id="I12_4" class="combo-box-option-sub-holiday"
 							data-bind="ntsComboBox: {
-							name: '#[KDM001_116]',
+							name: '#{i18n.getText('KDM001_116')}',
 							options: itemListOptionSubHoliday,
 							optionsValue: 'code',
 							visibleItemsCount: 5,
 							value: selectedCodeOptionSubHoliday,
 							optionsText: 'name',
 							editable: false,
-							enable: checkedSplit,
+							enable: checkedSplit() &amp;&amp; checkedSubHoliday(),
+							required: checkedSplit,
 							selectFirstIfNull : true,
 							columns: [
 								{ prop: 'name', length: 5 },

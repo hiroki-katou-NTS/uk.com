@@ -20,11 +20,11 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         dateSubHoliday: KnockoutObservable<string> = ko.observable('');
         dateOptionSubHoliday: KnockoutObservable<string> = ko.observable('');
         dateOffOptionSubHoliday: KnockoutObservable<string> = ko.observable('');
-        itemListHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
+        itemListHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberDays());
         selectedCodeHoliday: KnockoutObservable<number> = ko.observable(null);
-        itemListSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
+        itemListSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberDays());
         selectedCodeSubHoliday: KnockoutObservable<number> = ko.observable(null);
-        itemListOptionSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
+        itemListOptionSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberDays());
         selectedCodeOptionSubHoliday: KnockoutObservable<string> = ko.observable('');
         closureId: KnockoutObservable<number> = ko.observable(0);
         //RemaningDay
@@ -43,7 +43,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             self.selectedCodeOptionSubHoliday(self.itemListOptionSubHoliday()[0].code);
             
             if(self.checkedHoliday() && self.checkedSubHoliday()){
-                if(self.dateHoliday() == null && self.dateSubHoliday() == null){
+                if(self.dateHoliday() == '' && self.dateSubHoliday() == ''){
                     self.dayRemaining("");
                 }
             }
@@ -58,7 +58,14 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     value2: self.selectedCodeSubHoliday(),
                     value3: self.selectedCodeOptionSubHoliday()
                 }
-                self.dayRemaining(self.getRemainDay(remainDayObject));
+                self.dayRemaining(self.getRemainDay(remainDayObject));                   
+                if (!v) {
+                    $("#I6_1").ntsError('clear');
+                    $("#I6_3").ntsError('clear');
+                    $("#I8_1").ntsError('clear');
+                }else{
+                    $("#I6_3").ntsError('clear');
+                }
             });
             self.checkedSubHoliday.subscribe((v) => {
 
@@ -71,6 +78,13 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     value3: self.selectedCodeOptionSubHoliday()
                 }
                 self.dayRemaining(self.getRemainDay(remainDayObject));
+                
+                if (!v) {
+                    $("#I11_1").ntsError('clear');
+                    $("#I11_3").ntsError('clear');
+                }else{
+                    $("#I11_3").ntsError('clear');
+                }
             });
 
             self.checkedSplit.subscribe((v) => {
@@ -83,6 +97,13 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     value3: self.selectedCodeOptionSubHoliday()
                 }
                 self.dayRemaining(self.getRemainDay(remainDayObject));
+                
+                if (!v) {
+                    $("#I12_2").ntsError('clear');
+                    $("#I12_4").ntsError('clear');
+                }else{
+                    $("#I12_4").ntsError('clear');
+                }
             });
             self.selectedCodeHoliday.subscribe((v) => {
                 let remainDayObject = {
@@ -123,23 +144,43 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             if (!remainObject.checkBox1 && !remainObject.checkBox2 && !remainObject.checkBox3) {
                 return "";
             } else if (remainObject.checkBox1 && !remainObject.checkBox2 && !remainObject.checkBox3) {
-                return remainObject.value1;
+                if (remainObject.value1 == '') {
+                    return "";
+                } else {
+                    return remainObject.value1;
+                }
             } else if (remainObject.checkBox1 && remainObject.checkBox2 && !remainObject.checkBox3) {
-                if (remainObject.value1 == null && remainObject.value2 == null) {
+                if (remainObject.value1 == '' && remainObject.value2 == '') {
                     return "";
                 } else {
                     return (remainObject.value1 - remainObject.value2).toString();
                 }
             } else if (remainObject.checkBox1 && remainObject.checkBox2 && remainObject.checkBox3) {
-                return (remainObject.value1 - remainObject.value2 - remainObject.value3).toString();
+                if (remainObject.value1 == '' && remainObject.value2 == '' && remainObject.value3 == '') {
+                    return "";
+                } else {
+                    return (remainObject.value1 - remainObject.value2 - remainObject.value3).toString();
+                }
             } else if (remainObject.checkBox1 && !remainObject.checkBox2 && remainObject.checkBox3) {
                 return (remainObject.value1 - remainObject.value3).toString();
             } else if (!remainObject.checkBox1 && remainObject.checkBox2 && !remainObject.checkBox3) {
-                return (remainObject.checkBox1 - remainObject.value2).toString();
-            } else if (!remainObject.checkBox1 && remainObject.checkBox2 && remainObject.checkBox3) { 
-                return (remainObject.checkBox1 - (remainObject.value2 + remainObject.value3)).toString();
+                if (remainObject.value2 == '') {
+                    return "";
+                } else {
+                    return (remainObject.checkBox1 - remainObject.value2).toString();
+                }
+            } else if (!remainObject.checkBox1 && remainObject.checkBox2 && remainObject.checkBox3) {
+                if (remainObject.value2 == '' && remainObject.value3 == '') {
+                    return "";
+                } else {
+                    return (remainObject.checkBox1 - (remainObject.value2 + remainObject.value3)).toString();
+                }
             } else if (!remainObject.checkBox1 && !remainObject.checkBox2 && remainObject.checkBox3) {
-                return remainObject.value3;
+                if (remainObject.checkBox3 == '') {
+                    return "";
+                } else {
+                    return remainObject.value3;
+                }
             }
         }
         initScreen(): void {
@@ -162,16 +203,19 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         public submitData() {
             let self = this;
             errors.clearAll();
-            if(self.checkedHoliday()){
-                    $("#I6_1").trigger("validate");
-                    $("#I8_1").trigger("validate");
+            if (self.checkedHoliday()) {
+                $("#I6_1").trigger("validate");
+                $("#I6_3").trigger("validate");
+                $("#I8_1").trigger("validate");
+            }
+            if (self.checkedSubHoliday()) {
+                $("#I11_1").trigger("validate");
+                $("#I11_3").trigger("validate");
+                if (self.checkedSplit()) {
+                    $("#I12_2").trigger("validate");
+                     $("#I12_4").trigger("validate");
                 }
-            if(self.checkedSubHoliday()){
-                    $("#I11_1").trigger("validate");
-                    if(self.checkedSplit()){
-                        $("#I12_2").trigger("validate");
-                    }
-                }
+            }
  
             if (!errors.hasError()) {
                 block.invisible();
