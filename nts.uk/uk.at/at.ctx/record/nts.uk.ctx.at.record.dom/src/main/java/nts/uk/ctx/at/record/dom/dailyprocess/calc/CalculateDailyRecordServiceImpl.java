@@ -964,7 +964,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			justLate = commonSet.get().getLateEarlySet().getOtherEmTimezoneLateEarlySet(LateEarlyAtr.LATE).isStampExactlyTimeIsLateEarly();
 			justEarlyLeave = commonSet.get().getLateEarlySet().getOtherEmTimezoneLateEarlySet(LateEarlyAtr.EARLY).isStampExactlyTimeIsLateEarly();
 		}
-		//この区分は本当は引数として計算処理の呼出し口から渡されます
+		//この区分は本来は引数として計算処理の呼出し口から渡されます（2018/6/6現在は引数として渡されていないので一時的に固定値を渡しています）
 		JustCorrectionAtr justCorrectionAtr = JustCorrectionAtr.USE;
 		//ジャスト遅刻、早退による時刻補正
 		timeLeavingOfDailyPerformance.get().calcJustTime(justLate, justEarlyLeave, justCorrectionAtr);
