@@ -65,5 +65,22 @@ public enum EmpConditionAtr {
 		// Not found.
 		return null;
 	}
+	
+	
+	/**
+	 * 条件ありか判定する
+	 * @return ありならtrue
+	 */
+	public boolean isWithCondition() {
+		return WITH_CONDITION.equals(this);
+	}
+	
+	/**
+	 * 条件なしか判定する
+	 * @return なしならtrue
+	 */
+	public boolean isNoCondition() {
+		return NO_CONDITION.equals(this);
+	}
 
 }
