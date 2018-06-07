@@ -84,7 +84,7 @@ public class SubstitutionOfHDManaDataService {
 		List<String> errorList = new ArrayList<>();
 		YearMonth processYearMonth = GeneralDate.today().yearMonth();
 		Optional<GeneralDate> closureDate = addSubHdManagementService.getClosureDate(closureId, processYearMonth);
-		if (dayoffDate.compareTo(closureDate.get()) >= 0) {
+		if (closureDate.isPresent() && dayoffDate.compareTo(closureDate.get()) >= 0) {
 			errorList.add("Msg_744");
 		}
 //		List<PayoutManagementData> listPayout = payoutManagementDataRepository.getDayoffDateBysubOfHDID(subOfHDID);
