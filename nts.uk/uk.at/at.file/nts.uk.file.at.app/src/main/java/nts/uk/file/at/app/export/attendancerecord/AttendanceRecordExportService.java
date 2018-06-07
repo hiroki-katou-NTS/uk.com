@@ -163,8 +163,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 						GeneralDate startDateByClosure = GeneralDate.ymd(yearMonth.year(), yearMonth.month(),
 								closureDate.getClosureDay().v());
-						GeneralDate endDateByClosure = GeneralDate.ymd(yearMonth.year(), yearMonth.month() + 1,
-								closureDate.getClosureDay().v());
+						GeneralDate endDateByClosure = GeneralDate.ymd(yearMonth.addMonths(1).year(),
+								yearMonth.addMonths(1).month(), closureDate.getClosureDay().v());
 
 						// amount day in month
 						int flag = 0;

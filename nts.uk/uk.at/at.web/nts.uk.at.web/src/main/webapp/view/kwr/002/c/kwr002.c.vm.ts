@@ -106,15 +106,16 @@ module nts.uk.com.view.kwr002.c.viewmodel {
 
                 var attendanceItemName: String;
 
-                var positionTop:any = $(element).hasClass('top');
-                var positionBot:any = $(element).hasClass('bot');
-                
+                var positionTop: any = $(element).hasClass('top');
+                var positionBot: any = $(element).hasClass('bot');
+
                 var position: number;
 
                 var exportAtr: number;
 
                 var attItem: model.AttendanceRecExp;
-                if (position == "upperPosition" || position == "upperShow()") {
+
+                if (position.search("upper") != -1) {
                     position = 1;
                 }
                 else position = 2;
