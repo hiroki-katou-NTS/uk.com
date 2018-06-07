@@ -59,6 +59,9 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             self.checkedSplit.subscribe((v) => {
                 self.calRemainDays();
             });
+            
+
+            
             self.remainDays(null);
             self.unit("");
         }
@@ -100,7 +103,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             } else {
                 if (self.remainDays() == 0) {
                     return;
-                } else {
+                } else if (self.remainDays()){
                     self.remainDays(self.remainDays().toFixed(1)); 
                 }
             }

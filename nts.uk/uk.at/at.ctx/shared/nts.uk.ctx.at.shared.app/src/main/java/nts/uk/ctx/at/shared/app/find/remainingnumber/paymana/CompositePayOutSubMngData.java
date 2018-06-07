@@ -1,9 +1,12 @@
 package nts.uk.ctx.at.shared.app.find.remainingnumber.paymana;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 
 @NoArgsConstructor
@@ -59,7 +62,7 @@ public class CompositePayOutSubMngData {
 	// add
 	private boolean subTied;
 
-	public CompositePayOutSubMngData(PayoutManagementData domain) {
+	public CompositePayOutSubMngData(PayoutManagementData domain, List<PayoutSubofHDManagement> listPayoutSub) {
 		this.payoutId = domain.getPayoutId();
 		this.cID = domain.getCID();
 		this.sID = domain.getSID();
@@ -71,15 +74,14 @@ public class CompositePayOutSubMngData {
 		this.unUsedDays = domain.getUnUsedDays().v();
 		this.stateAtr = domain.getStateAtr().value;
 		
-		//発生日数　≠　未使用日数
-		if(Double.compare(this.occurredDays, this.unUsedDays) != 0) {
+		if(listPayoutSub.stream().anyMatch(item -> item.getPayoutId().equals(domain.getPayoutId()))) {
 			this.payoutTied = true;
 		} else {
 			this.payoutTied = false;
 		}
 	}
 	
-	public CompositePayOutSubMngData(SubstitutionOfHDManagementData domain) {
+	public CompositePayOutSubMngData(SubstitutionOfHDManagementData domain, List<PayoutSubofHDManagement> listPayoutSub) {
 		this.subOfHDID = domain.getSubOfHDID();
 		this.cID = domain.getCid();
 		this.sID = domain.getSID();
@@ -88,8 +90,7 @@ public class CompositePayOutSubMngData {
 		this.requiredDays = domain.getRequiredDays().v();	
 		this.remainDays = domain.getRemainDays().v();
 		
-		//必要日数　≠　未相殺日数
-		if(Double.compare(this.requiredDays, this.remainDays) != 0) {
+		if(listPayoutSub.stream().anyMatch(item -> item.getSubOfHDID().equals(domain.getSubOfHDID()))) {
 			this.subTied = true;
 		} else {
 			this.subTied = false;
