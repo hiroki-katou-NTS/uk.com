@@ -152,8 +152,14 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                     appApprovalPhaseCmds: self.approvalList
                 };
                 service.updateLateOrLeaveEarly(lateOrLeaveEarly).done((data) => {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                        location.reload();
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        if(data.autoSendMail){
+                            nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
+                                location.reload();
+                            });    
+                        } else {
+                            location.reload();
+                        }
                     });
                 }).fail((res) => {
                     if(res.optimisticLock == true){

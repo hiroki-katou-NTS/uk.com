@@ -1,5 +1,6 @@
 package nts.uk.ctx.pereg.dom.person.setting.selectionitem.history;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -10,7 +11,13 @@ public interface SelectionHistoryRepository {
 
 	void add(SelectionHistory selectionHistory);
 	
-	public void update(SelectionHistory domain, DateHistoryItem itemToBeUpdated);
+	void addAllDomain(SelectionHistory selectionHistory);
 	
-	public void delete(SelectionHistory domain, DateHistoryItem itemToBeDeleted);
+	void update(SelectionHistory domain, DateHistoryItem itemToBeUpdated);
+	
+	void delete(SelectionHistory domain, DateHistoryItem itemToBeDeleted);
+	
+	void removeAllHistoryIds(List<String> historyIds);
+	
+	void removeAllOfSelectionItem(String selectionItemId);
 }

@@ -32,7 +32,7 @@
 <!-- 				<button tabindex="3" data-bind="click: openCMM018">#{i18n.getText('KAF005_12')}</button> -->
 				<!--A1_4 登録時にメールを送信する--> 				
 				<div class="btnSendMail" tabindex="6"
-					data-bind="ntsCheckBox: { checked: manualSendMailAtr, enable: true, text: '#{i18n.getText('KAF006_6')}' },visible: false"></div>
+					data-bind="ntsCheckBox: { checked: checkBoxValue, enable: manualSendMailAtr, text: '#{i18n.getText('KAF006_6')}' },visible: manualSendMailAtr"></div>
 			</div>
 			<div id="contents-area" class="">
 					<!-- Message area -->

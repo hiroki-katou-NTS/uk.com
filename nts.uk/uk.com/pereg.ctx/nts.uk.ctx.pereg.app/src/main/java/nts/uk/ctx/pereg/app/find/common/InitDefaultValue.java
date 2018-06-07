@@ -6,10 +6,10 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import nts.uk.ctx.at.record.dom.remainingnumber.base.LeaveExpirationStatus;
-import nts.uk.ctx.at.record.dom.remainingnumber.excessleave.PaymentMethod;
-import nts.uk.ctx.at.record.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveAppSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.ctx.at.shared.dom.remainingnumber.excessleave.PaymentMethod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveAppSetting;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;

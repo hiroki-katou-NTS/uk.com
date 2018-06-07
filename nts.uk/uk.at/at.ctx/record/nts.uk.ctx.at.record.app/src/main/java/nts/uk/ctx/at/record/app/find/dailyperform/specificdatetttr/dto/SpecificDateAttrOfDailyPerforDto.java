@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.specificdatetttr.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
@@ -10,12 +9,13 @@ import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrSheet;
 import nts.uk.ctx.at.record.dom.raisesalarytime.enums.SpecificDateAttr;
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceLayoutConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 
 @Data
-@AttendanceItemRoot(rootName = "日別実績の特定日区分")
+@AttendanceItemRoot(rootName = AttendanceLayoutConst.DAILY_SPECIFIC_DATE_ATTR_NAME)
 public class SpecificDateAttrOfDailyPerforDto extends AttendanceItemCommon {
 
 	private String employeeId;

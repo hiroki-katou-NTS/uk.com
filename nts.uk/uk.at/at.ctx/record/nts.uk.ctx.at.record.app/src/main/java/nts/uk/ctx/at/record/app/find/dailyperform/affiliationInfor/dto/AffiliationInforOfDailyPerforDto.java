@@ -4,6 +4,7 @@ import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceLayoutConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
@@ -12,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
 @Data
-@AttendanceItemRoot(rootName = "日別実績の所属情報")
+@AttendanceItemRoot(rootName = AttendanceLayoutConst.DAILY_AFFILIATION_INFO_NAME)
 public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 
 	private String employeeId;
