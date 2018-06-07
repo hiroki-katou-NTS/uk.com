@@ -97,7 +97,7 @@
 			</div>
 			<div id="functions-area-bottom">
 				<button tabindex="4" class="x-large proceed"
-					data-bind="click: sendMail">#{i18n.getText('KDL030_8')}</button>
+					data-bind="click: sendMail, enable: $root.errors.isEmpty">#{i18n.getText('KDL030_8')}</button>
 				<button tabindex="5" data-bind="click: cancel">#{i18n.getText('KDL030_9')}</button>
 			</div>
 		</ui:define>

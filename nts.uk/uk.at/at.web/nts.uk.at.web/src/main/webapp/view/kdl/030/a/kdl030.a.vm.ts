@@ -69,6 +69,11 @@ module nts.uk.at.view.kdl030.a.viewmodel {
         // アルゴリズム「メール送信」を実行する
         sendMail() {
             var self = this;
+            //validate
+            $(".A4_2").trigger("validate");
+            if (nts.uk.ui.errors.hasError()){
+                return;
+            }
             let listSendMail: Array<String> = [];
             let listApprovalPhase = ko.toJS(self.approvalRootState);
             _.forEach(listApprovalPhase, x => {
