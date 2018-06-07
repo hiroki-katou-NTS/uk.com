@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.dom.company.ICompanyRepo;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.domainservice.SelectionHistoryService;
@@ -30,7 +30,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  *
  */
 @Stateless
-public class ReflUnrCompCommandHandler extends CommandHandlerWithResult<ReflUnrCompCommand, String> {
+public class ReflUnrCompCommandHandler extends CommandHandler<ReflUnrCompCommand> {
 
 	@Inject
 	private SelectionHistoryRepository selectionHistoryRepo;
@@ -48,34 +48,33 @@ public class ReflUnrCompCommandHandler extends CommandHandlerWithResult<ReflUnrC
 	private SelectionHistoryService selectionHistService;
 
 	@Override
-	protected String handle(CommandHandlerContext<ReflUnrCompCommand> context) {
+	protected void handle(CommandHandlerContext<ReflUnrCompCommand> context) {
 		ReflUnrCompCommand command = context.getCommand();
-		String newHistId = IdentifierUtil.randomUniqueId();
 		String selectionItemId = command.getSelectionItemId();
 
 		String zeroCompanyId = AppContexts.user().zeroCompanyIdInContract();
 
 		SelectionHistory zeroCompanyHistory = this.selectionHistoryRepo.get(selectionItemId, zeroCompanyId).get();
 
-		List<String> historyIdOfZeroCompany = zeroCompanyHistory.getDateHistoryItems().stream().map(x -> x.identifier())
+		List<String> zeroHistoryIds = zeroCompanyHistory.getDateHistoryItems().stream().map(x -> x.identifier())
 				.collect(Collectors.toList());
 
-		Map<String, List<Selection>> histIdSelectionMap = selectionRepo.getByHistIdList(historyIdOfZeroCompany);
-		Map<String, List<SelectionItemOrder>> histIdSelectionOrderMap = selectOrderRepo
-				.getByHistIdList(historyIdOfZeroCompany);
+		Map<String, List<Selection>> histIdSelectionMap = selectionRepo.getByHistIdList(zeroHistoryIds).stream()
+				.collect(Collectors.groupingBy(Selection::getHistId));
+
+		Map<String, List<SelectionItemOrder>> histIdSelectionOrderMap = selectOrderRepo.getByHistIdList(zeroHistoryIds)
+				.stream().collect(Collectors.groupingBy(SelectionItemOrder::getHistId));
 
 		List<String> companyIdList = companyRepo.acquireAllCompany();
 
 		companyIdList.forEach(companyId -> {
 			// delete
 			selectionHistService.removeHistoryOfCompany(selectionItemId, companyId);
-			
+
 			// insert
 			insertHistoryList(zeroCompanyHistory, companyId, histIdSelectionMap, histIdSelectionOrderMap);
-
 		});
 
-		return newHistId;
 	}
 
 	private void insertHistoryList(SelectionHistory zeroCompanyHistory, String companyId,
@@ -93,59 +92,72 @@ public class ReflUnrCompCommandHandler extends CommandHandlerWithResult<ReflUnrC
 		});
 
 		// history
-		SelectionHistory selectionHistoryOfCompany = SelectionHistory
-				.createFullHistorySelection(zeroCompanyHistory.getSelectionItemId(), companyId, dateHistoryItems);
-		selectionHistoryRepo.add(selectionHistoryOfCompany);
+		SelectionHistory selectionHistoryOfCompany = SelectionHistory.createFullHistorySelection(companyId,
+				zeroCompanyHistory.getSelectionItemId(), dateHistoryItems);
+		selectionHistoryRepo.addAllDomain(selectionHistoryOfCompany);
 
-		// selection
-		List<Selection> selectionsOfCompany = createNewSelections(zeroCompanyHistory, histIdSelectionMap,
-				histIdSelectionOrderMap, zeroHistIdCompanyHistIdMap);
-		selectionRepo.addAll(selectionsOfCompany);
-
-		// selection order
-		List<SelectionItemOrder> selectionOrderOfCompany = createNewSelectionOrders(zeroCompanyHistory,
+		// selection and selection-order
+		SelectionAndOrder newSelectionAndOrder = createNewSelectionsAndSelectionOrders(zeroCompanyHistory,
 				histIdSelectionMap, histIdSelectionOrderMap, zeroHistIdCompanyHistIdMap);
-		selectOrderRepo.addAll(selectionOrderOfCompany);
+
+		selectionRepo.addAll(newSelectionAndOrder.getSelectionsOfCompany());
+		selectOrderRepo.addAll(newSelectionAndOrder.getSelectionOrderOfCompany());
+
 	}
 
-	private List<Selection> createNewSelections(SelectionHistory zeroCompanyHistory,
+	private SelectionAndOrder createNewSelectionsAndSelectionOrders(SelectionHistory zeroCompanyHistory,
 			Map<String, List<Selection>> histIdSelectionMap,
 			Map<String, List<SelectionItemOrder>> histIdSelectionOrderMap,
 			Map<String, String> zeroHistIdCompanyHistIdMap) {
-		
+
 		List<Selection> selectionsOfCompany = new ArrayList<>();
-		zeroCompanyHistory.getDateHistoryItems().forEach(histItem -> {
-			String zeroHistId = histItem.identifier();
-			String companyHistory = zeroHistIdCompanyHistIdMap.get(zeroHistId);
-			List<Selection> zeroSelections = histIdSelectionMap.get(histItem.identifier());
-			if (zeroSelections != null) {
-				List<Selection> companySelections = zeroSelections.stream()
-						.map(x -> x.cloneNewSelection(companyHistory)).collect(Collectors.toList());
-				selectionsOfCompany.addAll(companySelections);
-			}
-		});
+		List<SelectionItemOrder> selectionOrderOfCompany = new ArrayList<>();
 
-		return selectionsOfCompany;
-	}
-	
-	private List<SelectionItemOrder> createNewSelectionOrders(SelectionHistory zeroCompanyHistory,
-			Map<String, List<Selection>> histIdSelectionMap,
-			Map<String, List<SelectionItemOrder>> histIdSelectionOrderMap,
-			Map<String, String> zeroHistIdCompanyHistIdMap) {
-		List<SelectionItemOrder> selectionOrdersOfCompany = new ArrayList<>();
 		zeroCompanyHistory.getDateHistoryItems().forEach(histItem -> {
+
 			String zeroHistId = histItem.identifier();
 			String companyHistory = zeroHistIdCompanyHistIdMap.get(zeroHistId);
 
+			List<Selection> zeroSelections = histIdSelectionMap.get(zeroHistId);
 			List<SelectionItemOrder> zeroSelectionOrders = histIdSelectionOrderMap.get(zeroHistId);
-			if (zeroSelectionOrders != null) {
-				List<SelectionItemOrder> companySelectionOrders = zeroSelectionOrders.stream()
-						.map(x -> x.cloneNewSelectionItemOrder(companyHistory)).collect(Collectors.toList());
-				selectionOrdersOfCompany.addAll(companySelectionOrders);
-			}
 
+			// new selection and new selection-order of a history
+			SelectionAndOrder selectionAndOrders = cloneNewToCompany(zeroHistId, companyHistory, zeroSelections,
+					zeroSelectionOrders);
+
+			selectionsOfCompany.addAll(selectionAndOrders.getSelectionsOfCompany());
+			selectionOrderOfCompany.addAll(selectionAndOrders.getSelectionOrderOfCompany());
 		});
-		return selectionOrdersOfCompany;
+
+		return new SelectionAndOrder(selectionsOfCompany, selectionOrderOfCompany);
+
+	}
+
+	private SelectionAndOrder cloneNewToCompany(String zeroHistId, String companyHistory,
+			List<Selection> zeroSelections, List<SelectionItemOrder> zeroSelectionOrders) {
+
+		if (zeroSelections == null || zeroSelectionOrders == null) {
+			return new SelectionAndOrder();
+		}
+
+		List<Selection> companySelections = new ArrayList<>();
+		List<SelectionItemOrder> companySelectionOrders = new ArrayList<>();
+
+		Map<String, SelectionItemOrder> zeroSelectionOrdersMap = zeroSelectionOrders.stream()
+				.collect(Collectors.toMap(x -> x.getSelectionID(), x -> x));
+
+		zeroSelections.forEach(selection -> {
+			SelectionItemOrder zeroSelectionOrder = zeroSelectionOrdersMap.get(selection.getSelectionID());
+
+			Selection newSelection = selection.cloneNewSelection(companyHistory);
+			SelectionItemOrder newSelectionOrder = zeroSelectionOrder
+					.cloneNewSelectionItemOrder(newSelection.getSelectionID(), companyHistory);
+
+			companySelections.add(newSelection);
+			companySelectionOrders.add(newSelectionOrder);
+		});
+
+		return new SelectionAndOrder(companySelections, companySelectionOrders);
 	}
 
 }
