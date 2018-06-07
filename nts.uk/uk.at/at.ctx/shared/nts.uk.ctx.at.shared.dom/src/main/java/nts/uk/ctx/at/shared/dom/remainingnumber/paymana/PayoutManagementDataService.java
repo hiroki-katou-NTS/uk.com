@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.paymana;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -129,10 +128,10 @@ public class PayoutManagementDataService {
 				substitutionOfHDManaDataRepository.create(splitMana);
 			}
 			if (pause && pickUp) {
-				PayoutSubofHDManagement paySub = new PayoutSubofHDManagement(payMana.getPayoutId(), subMana.getSubOfHDID(), BigDecimal.valueOf(subMana.getRequiredDays().v()), TargetSelectionAtr.MANUAL.value);
+				PayoutSubofHDManagement paySub = new PayoutSubofHDManagement(payMana.getPayoutId(), subMana.getSubOfHDID(), subMana.getRequiredDays().v(), TargetSelectionAtr.MANUAL.value);
 				payoutSubofHDManaRepository.add(paySub);
 				if (checkedSplit) {
-					PayoutSubofHDManagement paySplit = new PayoutSubofHDManagement(payMana.getPayoutId(), splitMana.getSubOfHDID(), BigDecimal.valueOf(splitMana.getRequiredDays().v()), TargetSelectionAtr.MANUAL.value);
+					PayoutSubofHDManagement paySplit = new PayoutSubofHDManagement(payMana.getPayoutId(), splitMana.getSubOfHDID(), splitMana.getRequiredDays().v(), TargetSelectionAtr.MANUAL.value);
 					payoutSubofHDManaRepository.add(paySplit);
 				}
 			}
@@ -270,7 +269,7 @@ public class PayoutManagementDataService {
 		});
 		subOfHDId.forEach(i -> {
 			payoutSubofHDManaRepository.add(new PayoutSubofHDManagement(i.getPayoutId(), subId,
-					new BigDecimal(i.getOccurredDays()), TargetSelectionAtr.MANUAL.value));
+					i.getOccurredDays(), TargetSelectionAtr.MANUAL.value));
 			// Update remain days 振出管理データ
 			Optional<PayoutManagementData> payoutMan = payoutManagementDataRepository.findByID(i.getPayoutId());
 			if (payoutMan.isPresent()) {

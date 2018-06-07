@@ -24,7 +24,7 @@ public class KrcmtPayoutSubOfHDMana extends UkJpaEntity implements Serializable{
 	public KrcmtPayoutSubOfHDManaPK krcmtPayoutSubOfHDManaPK;
 	// 使用日数
 	@Column(name = "USED_DAYS")
-	public BigDecimal usedDays;
+	public Double usedDays;
 	
 	// 対象選択区分
 	@Column(name = "TARGET_SELECTION_ATR")
