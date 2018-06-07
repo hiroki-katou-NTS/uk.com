@@ -310,20 +310,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             // set data for KCP009 screen B
             if(!($("#tabpanel-2").hasClass("disappear"))) {
                 var screenBModel = __viewContext.viewModel.viewmodelB;
-                screenBModel.employeeInputList([]);
-                screenBModel.listEmployee = [];
-                _.each(dataList, function(item) {
-                    screenBModel.listEmployee.push(new nts.uk.at.view.kdm001.b.viewmodel.EmployeeInfo(item.employeeId, item.employeeCode, item.employeeName, item.workplaceId, item.workplaceCode, item.workplaceName));
-                    screenBModel.employeeInputList.push(new EmployeeKcp009(item.employeeId, item.employeeCode, item.employeeName, item.workplaceName, ""));
-                });
-                $('#emp-component').ntsLoadListComponent(self.listComponentOption);
-                if (dataList.length == 0) {
-                    self.selectedItem('');
-                } else {
-                    let item = self.findIdSelected(dataList, self.selectedItem());
-                    let sortByEmployeeCode = _.orderBy(dataList, ["employeeCode"], ["asc"]);
-                    if (item == undefined) self.selectedItem(sortByEmployeeCode[0].employeeId);
-                }
+                screenBModel.convertEmployeeCcg01ToKcp009(dataList);
             }
         }
 
