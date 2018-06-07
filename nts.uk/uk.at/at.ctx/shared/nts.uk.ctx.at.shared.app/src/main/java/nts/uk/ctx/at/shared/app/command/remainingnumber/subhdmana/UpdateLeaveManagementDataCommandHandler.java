@@ -70,7 +70,7 @@ public class UpdateLeaveManagementDataCommandHandler
 	 */
 	private List<String> inputItemCheck(LeaveManagementDataCommand command) {
 		List<String> errorList = new ArrayList<>();
-		if (command.getIsCheckedExpired()) {
+		if (!command.getIsCheckedExpired()) {
 			Optional<LeaveManagementData> domain = this.leaveManaDataRepository.getByLeaveId(command.getLeaveId());
 			if (domain.isPresent()) {
 				if (domain.get().getSubHDAtr().value == 2) {
