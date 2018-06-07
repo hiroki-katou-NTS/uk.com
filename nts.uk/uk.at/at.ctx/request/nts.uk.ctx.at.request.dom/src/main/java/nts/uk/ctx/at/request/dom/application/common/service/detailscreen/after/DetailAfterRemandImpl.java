@@ -25,6 +25,8 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.OutGoingMail
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationContentService;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
+import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
+import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbedded;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbeddedRepository;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.remandsetting.ContentOfRemandMail;
@@ -74,6 +76,9 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 	
 	@Inject
 	private EnvAdapter envAdapter;
+	
+	@Inject
+	private AppDispNameRepository repoAppDispName;
 	
 	@Override
 	public MailSenderResult doRemand(String companyID, String appID, Long version, Integer order, String returnReason) {
@@ -127,12 +132,16 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 		// Using RQL 419 instead (1 not have mail)
 		//get list mail by list sID
 		List<MailDestinationImport> lstMail = envAdapter.getEmpEmailAddress(cid, employeeList, 6);
+		Optional<AppDispName> appDispName = repoAppDispName.getDisplay(application.getAppType().value);
+		String appName = "";
+		if(appDispName.isPresent()){
+			appName = appDispName.get().getDispName().v();
+		}
+		String titleMail = application.getAppDate() + " " + appName;
 		for (String employee : employeeList) {
 			String employeeName = employeeAdapter.getEmployeeName(employee);
 			OutGoingMailImport mail = envAdapter.findMailBySid(lstMail, employee);
 			String employeeMail = mail == null ? "" : mail.getEmailAddress();
-//			String employeeMail = employeeAdapter.empEmail(employee);
-//			employeeMail = "hiep.ld@3si.vn";
 			// TODO
 			String urlInfo = "";
 			if (urlEmbedded.isPresent()) {
@@ -157,8 +166,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 				continue;
 			} else {
 				// TODO
-				mailsender.send("mailadmin@uk.com", employeeMail,
-						new MailContents(mailTitle, mailContentToSend));
+				mailsender.sendFromAdmin(employeeMail, new MailContents(titleMail, mailContentToSend));
 				successList.add(employeeName);
 			}
 		}
