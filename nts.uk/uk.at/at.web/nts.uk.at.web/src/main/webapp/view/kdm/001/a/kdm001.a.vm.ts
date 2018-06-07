@@ -585,7 +585,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             if ((params.payoutId != null) && (params.payoutId != "")) {
                 this.id = params.payoutId;
                 
-                if (moment.utc(params.expiredDate, 'YYYY/MM/DD').diff(moment.utc()) >= 0) {
+                if (moment.utc(params.expiredDate, 'YYYY/MM/DD').diff(moment.utc(moment.utc().format('YYYY/MM/DD'), 'YYYY/MM/DD')) >= 0) {
                     this.unUsedDaysInGrid = "" + params.unUsedDays;
                     this.expriedDaysInGrid = "0";
                     if(params.unUsedDays > 0) {
