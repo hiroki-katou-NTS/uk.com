@@ -136,47 +136,54 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             });
         }
         getRemainDay(remainObject: any): string {
-            if (!remainObject.checkBox1 && !remainObject.checkBox2 && !remainObject.checkBox3) {
+            if (!remainObject.value1 && !remainObject.value2) {
                 return "";
-            } else if (remainObject.checkBox1 && !remainObject.checkBox2 && !remainObject.checkBox3) {
-                if (remainObject.value1 == null) {
-                    return "";
-                } else {
-                    return remainObject.value1;
-                }
-            } else if (remainObject.checkBox1 && remainObject.checkBox2 && !remainObject.checkBox3) {
-                if (remainObject.value1 == null && remainObject.value2 == null) {
-                    return "";
-                } else {
-                    return (remainObject.value1 - remainObject.value2).toString();
-                }
-            } else if (remainObject.checkBox1 && remainObject.checkBox2 && remainObject.checkBox3) {
-                if (remainObject.value1 == null && remainObject.value2 == null && remainObject.value3 == null) {
-                    return "";
-                } else {
-                    return (remainObject.value1 - remainObject.value2 - remainObject.value3).toString();
-                }
-            } else if (remainObject.checkBox1 && !remainObject.checkBox2 && remainObject.checkBox3) {
-                return (remainObject.value1 - remainObject.value3).toString();
-            } else if (!remainObject.checkBox1 && remainObject.checkBox2 && !remainObject.checkBox3) {
-                if (remainObject.value2 == null) {
-                    return "";
-                } else {
-                    return (remainObject.checkBox1 - remainObject.value2).toString();
-                }
-            } else if (!remainObject.checkBox1 && remainObject.checkBox2 && remainObject.checkBox3) {
-                if (remainObject.value2 == null && remainObject.value3 == null) {
-                    return "";
-                } else {
-                    return (remainObject.checkBox1 - (remainObject.value2 + remainObject.value3)).toString();
-                }
-            } else if (!remainObject.checkBox1 && !remainObject.checkBox2 && remainObject.checkBox3) {
-                if (remainObject.checkBox3 == null) {
-                    return "";
-                } else {
-                    return remainObject.value3;
-                }
-            }
+            } 
+            let value1 = remainObject.checkBox1 ? remainObject.value1 : 0;
+            let value2 = remainObject.checkBox2 ? remainObject.value2 : 0;
+            let value3 = remainObject.checkBox2 && remainObject.checkBox3 ? remainObject.value3 : 0;
+            return (value1 - value2 - value3).toString();
+//            if (!remainObject.checkBox1 && !remainObject.checkBox2 && !remainObject.checkBox3) {
+//                return "";
+//            } else if (remainObject.checkBox1 && !remainObject.checkBox2 && !remainObject.checkBox3) {
+//                if (remainObject.value1 == null) {
+//                    return "";
+//                } else {
+//                    return remainObject.value1;
+//                }
+//            } else if (remainObject.checkBox1 && remainObject.checkBox2 && !remainObject.checkBox3) {
+//                if (remainObject.value1 == null && remainObject.value2 == null) {
+//                    return "";
+//                } else {
+//                    return (remainObject.value1 - remainObject.value2).toString();
+//                }
+//            } else if (remainObject.checkBox1 && remainObject.checkBox2 && remainObject.checkBox3) {
+//                if (remainObject.value1 == null && remainObject.value2 == null && remainObject.value3 == null) {
+//                    return "";
+//                } else {
+//                    return (remainObject.value1 - remainObject.value2 - remainObject.value3).toString();
+//                }
+//            } else if (remainObject.checkBox1 && !remainObject.checkBox2 && remainObject.checkBox3) {
+//                return (remainObject.value1 - remainObject.value3).toString();
+//            } else if (!remainObject.checkBox1 && remainObject.checkBox2 && !remainObject.checkBox3) {
+//                if (remainObject.value2 == null) {
+//                    return "";
+//                } else {
+//                    return (remainObject.checkBox1 - remainObject.value2).toString();
+//                }
+//            } else if (!remainObject.checkBox1 && remainObject.checkBox2 && remainObject.checkBox3) {
+//                if (remainObject.value2 == null && remainObject.value3 == null) {
+//                    return "";
+//                } else {
+//                    return (remainObject.checkBox1 - (remainObject.value2 + remainObject.value3)).toString();
+//                }
+//            } else if (!remainObject.checkBox1 && !remainObject.checkBox2 && remainObject.checkBox3) {
+//                if (remainObject.checkBox3 == null) {
+//                    return "";
+//                } else {
+//                    return remainObject.value3;
+//                }
+//            }
         }
         initScreen(): void {
             block.invisible();
