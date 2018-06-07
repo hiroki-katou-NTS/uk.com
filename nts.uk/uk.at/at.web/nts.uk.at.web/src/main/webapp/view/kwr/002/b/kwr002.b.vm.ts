@@ -179,8 +179,16 @@ module nts.uk.com.view.kwr002.b {
 
                 isInvalid: function() {
                     return ((!_.isArray(this.attendanceRecExpDaily) || !_.isArray(this.attendanceRecExpMonthly))
-                        || (this.attendanceRecExpDaily.length < 9 && this.attendanceRecExpMonthly.length < 9));
+                        || (this.countValid(this.attendanceRecExpDaily) < 9 && this.countValid(this.attendanceRecExpMonthly) < 9));
 
+                },
+
+                countValid: function (list) {
+                    let countResult = 0;
+                    _.forEach(list, (item) => {
+                        if (!(_.isEmpty(item.upperPosition) && _.isEmpty(item.lowwerPosition))) countResult++;
+                    });
+                    return countResult;
                 }
             };
 
