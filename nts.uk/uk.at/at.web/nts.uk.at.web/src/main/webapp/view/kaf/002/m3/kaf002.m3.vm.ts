@@ -32,7 +32,7 @@ module nts.uk.at.view.kaf002.m3 {
             }
             
             register(application : vmbase.Application){
-                if (nts.uk.ui.errors.hasError()){return;} 
+                if (nts.uk.ui.errors.hasError()){return;}  
                 nts.uk.ui.block.invisible();
                 var self = this;
                 let command = {
