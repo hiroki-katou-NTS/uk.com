@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
@@ -13,11 +12,12 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.primitive.Ac
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.primitive.WorkFrameNo;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceLayoutConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 
 @Data
-@AttendanceItemRoot(rootName = "日別実績の作業別勤怠時間")
+@AttendanceItemRoot(rootName = AttendanceLayoutConst.DAILY_ATTENDANCE_TIME_BY_WORK_NAME)
 public class AttendanceTimeByWorkOfDailyDto extends AttendanceItemCommon {
 
 	//TODO: not map item id

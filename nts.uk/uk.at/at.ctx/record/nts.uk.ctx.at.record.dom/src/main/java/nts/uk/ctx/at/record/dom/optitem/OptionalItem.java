@@ -4,9 +4,20 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import lombok.Getter;
 import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
+import nts.uk.ctx.at.record.dom.optitem.calculation.CalcResultOfAnyItem;
+import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
+import nts.uk.ctx.at.record.dom.optitem.calculation.ResultOfCalcFormula;
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -158,5 +169,70 @@ public class OptionalItem extends AggregateRoot {
 			return false;
 		return true;
 	}
+	
+	
+	/**
+	 * 利用条件の判定
+	 * @return
+	 */
+	public boolean checkTermsOfUse(Optional<EmpCondition> empCondition,Optional<BsEmploymentHistoryImport> bsEmploymentHistOpt) {
+		//利用区分をチェック
+		if(this.usageAtr.isNotUse()) {
+			return false;
+		}
+		//雇用条件区分をチェック
+		if(this.empConditionAtr.isNoCondition()) {
+			return true;
+		}
+		//適用する雇用条件が取得できたかチェック
+		if(!empCondition.isPresent()) {
+			return true;
+		}
+		//雇用条件判断
+		return empCondition.get().checkEmpCondition(bsEmploymentHistOpt);
+	}
+	
+	
+    /**
+     * 計算処理
+     * @param companyId
+     * @param optionalItem
+     * @param formulaList
+     * @param dailyRecordDto
+     * @return
+     */
+    public CalcResultOfAnyItem caluculationFormula(String companyId,
+    												OptionalItem optionalItem,
+    												List<Formula> formulaList,
+    												Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto
+    												/*Optional<> monthlyRecordDto*/) {
+	
+    	//任意項目計算式を記号の昇順でソート
+    	formulaList.sort((first,second) -> first.getSymbol().compareTo(second.getSymbol()));
+        /*パラメータ：任意項目の計算結果を定義*/
+        List<ResultOfCalcFormula> calcResultAnyItem = new ArrayList<>();
+        //計算式分ループ
+        for(Formula formula : formulaList) {
+            calcResultAnyItem.add(formula.dicisionCalc(optionalItem, performanceAtr, calcResultAnyItem, dailyRecordDto/*,monthlyRecordDto*/));
+        }
+        //Listが空だった場合
+        if(calcResultAnyItem.isEmpty()) {
+            return new CalcResultOfAnyItem(this.optionalItemNo,
+            							   Optional.of(0),
+										   Optional.of(0),
+										   Optional.of(0));
+        }
+        //一番最後の計算式の結果を取得
+        ResultOfCalcFormula resultOfCalcFormula = calcResultAnyItem.get(calcResultAnyItem.size()-1);
+        //一番最後の計算式の結果を基に任意項目の計算結果を作成
+        CalcResultOfAnyItem result = new CalcResultOfAnyItem(this.optionalItemNo,
+				   											 resultOfCalcFormula.getCount(),
+				   											 resultOfCalcFormula.getTime(),
+				   											 resultOfCalcFormula.getMoney());
+        //上限下限チェック
+        result = this.calcResultRange.checkRange(result, this.optionalItemAtr);
+        
+        return result;
+    }
 
 }

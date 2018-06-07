@@ -11,6 +11,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAt
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampNewPreOutput;
 /**
  * 
@@ -56,14 +57,14 @@ public class AppStampNewDefaultImpl implements AppStampNewDomainService {
 	}
 
 	@Override
-	public String appStampRegister(String applicationReason, AppStamp appStamp) {
+	public ProcessResult appStampRegister(String applicationReason, AppStamp appStamp) {
 		appStampCommonDomainService.appReasonCheck(applicationReason, appStamp);
 		appStampCommonDomainService.validateReason(appStamp);
 		return appStampRegistration(appStamp);
 	}
 	
 	// 打刻申請の新規登録
-	private String appStampRegistration(AppStamp appStamp) {
+	private ProcessResult appStampRegistration(AppStamp appStamp) {
 		newBeforeRegister.processBeforeRegister(appStamp.getApplication_New(),0);
 		appStamp.customValidate();
 		appStampRepository.addStamp(appStamp);
