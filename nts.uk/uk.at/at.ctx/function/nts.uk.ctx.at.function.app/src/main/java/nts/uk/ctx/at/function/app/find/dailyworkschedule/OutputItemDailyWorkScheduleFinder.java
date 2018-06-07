@@ -120,67 +120,30 @@ public class OutputItemDailyWorkScheduleFinder {
 		// Get domain 任意項目
 		List<OptionalItem> lstOptionalItem = optionalItemRepository.findAll(companyID);
 		
-		// TODO: hoangdd - doi QA
-//		lstOptionalItem = lstOptionalItem.stream()
-//								.filter(domain -> (domain.getPerformanceAtr().value == PerformanceAtr.DAILY_PERFORMANCE.value
-//													&& (domain.getOptionalItemAtr().value == OptionalItemAtr.AMOUNT.value 
-//														|| domain.getOptionalItemAtr().value == OptionalItemAtr.NUMBER.value
-//														|| domain.getOptionalItemAtr().value == OptionalItemAtr.TIME.value))
-//										)
-//								.map(domain -> domain)
-//								.collect(Collectors.toList());
+		Set<Integer> setScreenUseAtr = lstAttendanceType.stream().map(domain -> domain.getScreenUseAtr().value).collect(Collectors.toSet());
 		
-		// Use condition filter to get 画面で利用できる勤怠項目一覧
-		// dao nguoc lai de lay lstOptionalItem, sau do su dung file excel cua KH cung cap, + them 640 se ra duoc attendanceId
-//		List<AttendanceType> lstAttendanceTypeFilter = lstOptionalItem.stream()
-//				.flatMap(domainOptionItem -> lstAttendanceType.stream()
-//								.filter(domainAttendance -> domainOptionItem.getPerformanceAtr().value == PerformanceAtr.DAILY_PERFORMANCE.value 
-//																&& (
-//																		( domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.TIME.value 
-//																			&& domainAttendance.getScreenUseAtr().value == ScreenUseAtr.WORK_TIME.value)
-//																		|| (domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.NUMBER.value 
-//																			&& domainAttendance.getScreenUseAtr().value == ScreenUseAtr.ATTENDANCE_TIMES.value)
-//																		|| (domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.AMOUNT.value 
-//																			&& domainAttendance.getScreenUseAtr().value == ScreenUseAtr.TOTAL_COMMUTING_AMOUNT.value)
-//																		|| (domainAttendance.getScreenUseAtr().value == ScreenUseAtr.DAILY_WORK_SCHEDULE.value)
-//																))
-//								.map(domainAttendance -> domainAttendance))
-//								.sorted(Comparator.comparing(AttendanceType::getAttendanceItemId))
-//								.distinct()
-//				.collect(Collectors.toList());
-		List<OptionalItem> lstAttendanceTypeFilter = lstAttendanceType.stream()
-				.flatMap(domainAttendance -> lstOptionalItem.stream()
-								.filter(domainOptionItem -> domainOptionItem.getPerformanceAtr().value == PerformanceAtr.DAILY_PERFORMANCE.value 
-																&& (
-																		( domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.TIME.value 
-																			&& domainAttendance.getScreenUseAtr().value == ScreenUseAtr.WORK_TIME.value)
-																		|| (domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.NUMBER.value 
-																			&& domainAttendance.getScreenUseAtr().value == ScreenUseAtr.ATTENDANCE_TIMES.value)
-																		|| (domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.AMOUNT.value 
-																			&& domainAttendance.getScreenUseAtr().value == ScreenUseAtr.TOTAL_COMMUTING_AMOUNT.value)
-																		|| (domainAttendance.getScreenUseAtr().value == ScreenUseAtr.DAILY_WORK_SCHEDULE.value
-																			&& (domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.AMOUNT.value 
-																				|| domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.NUMBER.value 
-																				|| domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.TIME.value))
-																))
-								.map(domainOptionItem -> domainOptionItem))
-//								.sorted(Comparator.comparing(AttendanceType::getAttendanceItemId))
-								.distinct()
-				.collect(Collectors.toList());
-		
+		List<OptionalItem> lstAttendanceTypeFilter = lstOptionalItem.stream()
+																	.filter(domainOptionItem -> (
+																					(domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.TIME.value && setScreenUseAtr.contains(ScreenUseAtr.WORK_TIME.value))
+																					|| (domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.NUMBER.value && setScreenUseAtr.contains(ScreenUseAtr.ATTENDANCE_TIMES.value)) 
+																					|| (domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.AMOUNT.value && setScreenUseAtr.contains(ScreenUseAtr.TOTAL_COMMUTING_AMOUNT.value))
+																					|| (
+																							(domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.TIME.value
+																								|| domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.NUMBER.value 
+																								|| domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.AMOUNT.value)
+																							&& setScreenUseAtr.contains(ScreenUseAtr.DAILY_WORK_SCHEDULE.value)
+																					)))
+																	.map(domainOptionItem -> domainOptionItem)
+																	.distinct()
+																	.collect(Collectors.toList());
 		// End algorithm 画面で利用できる任意項目を含めた勤怠項目一覧を取得する
 		
-		// Get list attendanceID from domain 画面で利用できる勤怠項目一覧 
-//		List<Integer> lstAttendanceID = lstAttendanceTypeFilter.stream()
-//													.map(domain -> domain.getAttendanceItemId())
-//													.collect(Collectors.toList());
-		
-		// get list attendanceId of OptionalItem. according file 日次項目一覧.xls参照
+		// get list attendanceId of OptionalItem 任意項目. according file 日次項目一覧.xls参照
 		List<Integer> lstAttendanceID = lstAttendanceTypeFilter.stream()
 				.map(domain -> domain.getOptionalItemNo().v() + 640)
 				.collect(Collectors.toList());
 		
-		// get list attendanceId of AttendanceType
+		// get list attendanceId of AttendanceType 画面で利用できる勤怠項目一覧
 		List<Integer> lstAttendanceID2 = lstAttendanceType.stream()
 				.map(domain -> domain.getAttendanceItemId())
 				.collect(Collectors.toList());
@@ -188,7 +151,10 @@ public class OutputItemDailyWorkScheduleFinder {
 		
 		// get domain 日次の勤怠項目
 		// TODO: hoangdd - chua sort nhu note tren eap
-		List<DailyAttendanceItem> lstDailyAttendanceItem = dailyAttendanceItemRepository.getListById(companyID, lstAttendanceID);
+		List<DailyAttendanceItem> lstDailyAttendanceItem = new ArrayList<>();
+		if (!lstAttendanceID.isEmpty()) {
+			lstDailyAttendanceItem = dailyAttendanceItemRepository.getListById(companyID, lstAttendanceID);
+		}
 		mapDtoReturn.put("dailyAttendanceItem", lstDailyAttendanceItem.stream().map(domain -> {
 																						DailyAttendanceItemDto dto = new DailyAttendanceItemDto();
 																						dto.setCode(String.valueOf(domain.getAttendanceItemId()));

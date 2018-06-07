@@ -88,5 +88,9 @@ public class OutputItemDailyWorkSchedule extends AggregateRoot{
 		if (this.lstDisplayedAttendance.isEmpty() || this.lstDisplayedAttendance == null) {
 			throw new BusinessException("Msg_880");
 		}
+		
+		if (this.lstDisplayedAttendance.size() > 48) {
+			throw new BusinessException("Msg_1297");
+		}
 	}
 }
