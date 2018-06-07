@@ -261,8 +261,9 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							});
 
 							AttendanceRecordReportDailyData dailyData = new AttendanceRecordReportDailyData();
-							dailyData.setDate(startDateByClosure.toString());
-							dailyData.setDayOfWeek(startDateByClosure.localDate().getDayOfWeek().toString());
+							dailyData.setDate(String.valueOf(startDateByClosure.day()));
+							dailyData.setDayOfWeek(DayOfWeekJP
+									.getValue(startDateByClosure.localDate().getDayOfWeek().toString()).japanese);
 							AttendanceRecordReportColumnData[] columnDatasArray = new AttendanceRecordReportColumnData[9];
 							int index = 0;
 							for (AttendanceRecordResponse item : upperDailyRespond) {
@@ -572,13 +573,15 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			// calculate add
 			if (!addValueCalUpper.isEmpty()) {
 				for (ItemValue i : addValueCalUpper) {
-					sum = Integer.parseInt(sum.toString()) + (int) i.value();
+					if (i.getValue() != null)
+						sum = Integer.parseInt(sum.toString()) + (int) i.value();
 				}
 			}
 			// calculate sub
 			if (!subValueCalUpper.isEmpty()) {
 				for (ItemValue i : subValueCalUpper) {
-					sum = Integer.parseInt(sum.toString()) - (int) i.value();
+					if (i.getValue() != null)
+						sum = Integer.parseInt(sum.toString()) - (int) i.value();
 				}
 			}
 			break;
@@ -611,11 +614,13 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			sum = new Double(0);
 			// calculate add
 			for (ItemValue i : addValueCalUpper) {
-				sum = Double.parseDouble(sum.toString()) + (Double) i.value();
+				if (i.getValue() != null)
+					sum = Double.parseDouble(sum.toString()) + (Double) i.value();
 			}
 			// calculate sub
 			for (ItemValue i : subValueCalUpper) {
-				sum = Double.parseDouble(sum.toString()) - (Double) i.value();
+				if (i.getValue() != null)
+					sum = Double.parseDouble(sum.toString()) - (Double) i.value();
 			}
 			break;
 		case (3):
@@ -623,11 +628,13 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			BigDecimal sum1 = new BigDecimal(0);
 			// calculate add
 			for (ItemValue i : addValueCalUpper) {
-				sum1 = sum1.add(new BigDecimal(i.value().toString()));
+				if (i.getValue() != null)
+					sum1 = sum1.add(new BigDecimal(i.value().toString()));
 			}
 			// calculate sub
 			for (ItemValue i : subValueCalUpper) {
-				sum1 = sum1.subtract(new BigDecimal(i.value().toString()));
+				if (i.getValue() != null)
+					sum1 = sum1.subtract(new BigDecimal(i.value().toString()));
 			}
 			sum = sum1;
 			break;
