@@ -24,7 +24,7 @@
 }
 #A4_2 {
 	width: 500px;
-    height: 140px;
+    height: 175px;
 }
 
 #message-area {
@@ -40,7 +40,6 @@
 
 #table-phase, #table-phase td, #table-phase th { 
 	border: 1px solid black;
-	text-align: center;
 	height: 25px;
 }
 
