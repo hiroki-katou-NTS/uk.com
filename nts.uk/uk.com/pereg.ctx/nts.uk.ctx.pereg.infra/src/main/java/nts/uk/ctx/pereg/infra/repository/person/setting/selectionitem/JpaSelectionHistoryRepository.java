@@ -92,6 +92,7 @@ public class JpaSelectionHistoryRepository extends JpaRepository implements Sele
 		updateItemBefore(domain, itemToBeUpdated);
 	}
 	
+	@Override
 	public void delete(SelectionHistory domain, DateHistoryItem itemToBeDeleted){
 		
 		this.commandProxy().remove(PpemtHistorySelection.class, new PpemtHistorySelectionPK(itemToBeDeleted.identifier()));
@@ -105,6 +106,12 @@ public class JpaSelectionHistoryRepository extends JpaRepository implements Sele
 			
 			updateDateItem(itemToBeUpdated);
 		}
+	}
+	
+	public void removeAllHistoryIds(List<String> historyIds) {
+		List<PpemtHistorySelectionPK> keys = historyIds.stream().map(x -> new PpemtHistorySelectionPK(x))
+				.collect(Collectors.toList());
+		this.commandProxy().removeAll(PpemtHistorySelection.class, keys);
 	}
 
 	private void addDateItem(String companyId, String selectionItemId, DateHistoryItem dateItem) {

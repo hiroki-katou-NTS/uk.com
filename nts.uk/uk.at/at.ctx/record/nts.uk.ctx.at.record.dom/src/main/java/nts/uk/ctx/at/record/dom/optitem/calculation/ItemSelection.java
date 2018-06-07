@@ -10,6 +10,7 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 
@@ -54,7 +55,7 @@ public class ItemSelection extends DomainObject {
 	 * @param dailyRecordDto
 	 * @return
 	 */
-	public Integer calculationByItemSelection(PerformanceAtr performanceAtr,Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto/*,Optional<> monthlyRecordDto*/) {
+	public Integer calculationByItemSelection(PerformanceAtr performanceAtr,Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto,Optional<MonthlyRecordToAttendanceItemConverter> monthlyRecordDto) {
 		//計算値
 		Integer result = 0;
 		if(performanceAtr.isDailyPerformance()&&dailyRecordDto.isPresent()) {//実績区分が日別実績の場合
@@ -73,22 +74,22 @@ public class ItemSelection extends DomainObject {
 			}
 			return result;
 		}
-//		if(performanceAtr.isMonthlyPerformance()&&monthlyRecordDto.isPresent()){//実績区分が月別実績の場合
-//			for(SelectedAttendanceItem selectedAttendanceItem:this.selectedAttendanceItems) {//選択勤怠項目分ループ
-//				//該当する勤怠項目を取得
-//				Optional<ItemValue> itemValue = ;
-//				if(itemValue.isPresent()) {
-//					result = selectedAttendanceItem.calc(itemValue.get(), result);
-//				}
-//			}
-//			//マイナスかどうか
-//			if(result<0) {
-//				if(this.minusSegment.isTreatedAsZero()) {
-//					return 0;
-//				}
-//			}
-//			return result;
-//		}
+		if(performanceAtr.isMonthlyPerformance()&&monthlyRecordDto.isPresent()){//実績区分が月別実績の場合
+			for(SelectedAttendanceItem selectedAttendanceItem:this.selectedAttendanceItems) {//選択勤怠項目分ループ
+				//該当する勤怠項目を取得
+				Optional<ItemValue> itemValue = monthlyRecordDto.get().convert(selectedAttendanceItem.getAttendanceItemId());
+				if(itemValue.isPresent()) {
+					result = selectedAttendanceItem.calc(itemValue.get(), result);
+				}
+			}
+			//マイナスかどうか
+			if(result<0) {
+				if(this.minusSegment.isTreatedAsZero()) {
+					return 0;
+				}
+			}
+			return result;
+		}
 		return result;
 	}
 	

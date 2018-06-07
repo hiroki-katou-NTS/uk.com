@@ -62,7 +62,7 @@ public class AnyItemValueOfDaily {
         	if(optionalItem.checkTermsOfUse(empCondition,bsEmploymentHistOpt)) {
         		List<Formula> test = formulaList.stream().filter(t -> t.getOptionalItemNo().equals(optionalItem.getOptionalItemNo())).collect(Collectors.toList());
         		//計算処理
-                anyItemList.add(optionalItem.caluculationFormula(companyId, optionalItem, test, dailyRecordDto/*,Optional.empty()　月次用なので日別から呼ぶ場合は何も無し*/));
+                anyItemList.add(optionalItem.caluculationFormula(companyId, optionalItem, test, dailyRecordDto, Optional.empty()));
         	}
         }
         
