@@ -7,7 +7,7 @@ import lombok.Value;
 
 /**
  * @author sonnlb
- *
+ * 基準日時点年休残数
  */
 @Value
 @AllArgsConstructor

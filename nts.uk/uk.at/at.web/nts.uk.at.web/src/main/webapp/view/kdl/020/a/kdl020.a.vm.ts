@@ -30,6 +30,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
         baseDate = ko.observable(new Date());
         reNumAnnLeave: KnockoutObservable<ReNumAnnLeaReferenceDate> = ko.observable(new ReNumAnnLeaReferenceDate());
         displayAnnualLeaveGrant: KnockoutObservable<DisplayAnnualLeaveGrant> = ko.observable(new DisplayAnnualLeaveGrant());
+        attendNextHoliday: KnockoutObservable<AttendRateAtNextHoliday> = ko.observable(new AttendRateAtNextHoliday());
         constructor() {
             let self = this;
             self.selectedCode = ko.observable('');
@@ -117,69 +118,84 @@ module nts.uk.at.view.kdl020.a.screenModel {
             return dfd.promise();
 
         }
-
-        genGrantDaysText(grantDays) {
-
-            if (grantDays() == null) {
+        genDateText(data) {
+            if (data == null) {
                 return '';
             }
-            return grantDays() + "&nbsp;" + text('KDL020_14');
+            return data + text('KDL020_14');
         }
 
         genRemainDays(remainDays, remainMinutes) {
-            if (remainDays() == null) {
+            let self = this;
+            if (remainDays == null) {
                 return '';
             }
 
-            return remainDays() + "&nbsp;" + text('KDL020_14') + "&nbsp;&nbsp;" + formatById('Clock_Short_HM', remainMinutes());
+            return self.genDateText(remainDays) + "&nbsp;" + self.genTime( remainMinutes);
         }
 
         genDaysUsedNo(daysUsedNo, usedMinutes) {
-            if (daysUsedNo() == null) {
+            let self = this;
+            if (daysUsedNo == null) {
                 return '';
             }
 
-            return daysUsedNo() + "&nbsp;" + text('KDL020_14') + "&nbsp;&nbsp;" + formatById('Clock_Short_HM', usedMinutes());
-        }
-        genGrantNumber(grantNumber) {
-            if (grantNumber() == null) {
-                return '';
-            }
-
-            return grantNumber() + "&nbsp;" + text('KDL020_14');
+            return self.genDateText(daysUsedNo) + "&nbsp;" + self.genTime( usedMinutes);
         }
         genUsedNo(daysUsedNo, usedMinutes) {
-
-            if (daysUsedNo() != null) {
-                return daysUsedNo() + ' ' + text('KDL020_14')
+            let self = this;
+            if (daysUsedNo != null) {
+                return self.genDateText(daysUsedNo);
             }
-            if (usedMinutes() != null) {
-                return formatById("Clock_Short_HM", usedMinutes());
+            if (usedMinutes != null) {
+                return self.genTime(usedMinutes);
             }
 
             return '';
         }
+        genTime(data){
+            if(data == null){
+            return '';    
+            }
+            return formatById("Clock_Short_HM", data);
+        }
         genScheduleRecordText(scheduleRecordAtr) {
-            if (scheduleRecordAtr() == null) {
+            if (scheduleRecordAtr == null) {
                 return '';
             }
-            if (scheduleRecordAtr() == 0) {
+            if (scheduleRecordAtr == 0) {
                 return '未反映状態'
             }
 
-            if (scheduleRecordAtr() == 1) {
+            if (scheduleRecordAtr == 1) {
                 return '実績'
             }
-            if (scheduleRecordAtr() == 2) {
+            if (scheduleRecordAtr == 2) {
                 return 'スケジュール'
             }
 
             return '';
         }
-        changeData(data) {
+        genAttendanceRate(attendanceRate) {
+            if (attendanceRate == null) {
+                return '';
+            }
+            return attendanceRate + text('KDL020_27');
+
+        }
+        genNextHolidayGrantDate(nextHolidayGrantDate) {
+            if (nextHolidayGrantDate == null) {
+                return '';
+
+            }
+            return nextHolidayGrantDate +  text('KDL020_29');
+        }
+        changeData(data: IAnnualHoliday) {
             let self = this;
             self.reNumAnnLeave(new ReNumAnnLeaReferenceDate(data.reNumAnnLeave));
             self.displayAnnualLeaveGrant(new DisplayAnnualLeaveGrant(data.annualLeaveGrant[0]));
+            self.attendNextHoliday(new AttendRateAtNextHoliday(data.attendNextHoliday));
+
             self.setTotal();
         }
 
@@ -193,7 +209,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
                 totalTimes += item.remainMinutes;
             });
 
-            self.total(totalDays + "&nbsp;" + text('KDL020_14') + "&nbsp;&nbsp;" + formatById('Clock_Short_HM', totalTimes));
+            self.total (self.genDateText(totalDays) + "&nbsp;" + self.genTime(totalTimes));
 
         }
 
@@ -228,12 +244,15 @@ module nts.uk.at.view.kdl020.a.screenModel {
 
     }
 
-    export class ReNumAnnLeaReferenceDate {
+    export class ReNumAnnLeaReferenceDate{
 
+        /** 年休残数(仮)*/
         annualLeaveRemainNumber: KnockoutObservable<AnnualLeaveRemainingNumber> = ko.observable(new AnnualLeaveRemainingNumber());
 
+         /** 年休付与情報(仮)*/
         annualLeaveGrants: KnockoutObservableArray<AnnualLeaveGrant> = ko.observableArray([]);
 
+        /** 年休管理情報(仮)*/
         annualLeaveManageInfors: KnockoutObservableArray<AnnualLeaveManageInfor> = ko.observableArray([]);
 
         constructor(data?) {
@@ -249,15 +268,25 @@ module nts.uk.at.view.kdl020.a.screenModel {
         }
     }
     export class AnnualLeaveRemainingNumber {
+        /* 年休残数（付与前）日数*/
         annualLeaveGrantPreDay: KnockoutObservable<number> = ko.observable(null);
+        /* 年休残数（付与前）時間 */
         annualLeaveGrantPreTime: KnockoutObservable<number> = ko.observable(null);
+        /* 半休残数（付与前）回数*/
         numberOfRemainGrantPre: KnockoutObservable<number> = ko.observable(null);
+        /* 時間年休上限（付与前）*/
         timeAnnualLeaveWithMinusGrantPre: KnockoutObservable<number> = ko.observable(null);
+        /* 年休残数（付与後）日数 */
         annualLeaveGrantPostDay: KnockoutObservable<number> = ko.observable(null);
+        /* 年休残数（付与後）時間*/
         annualLeaveGrantPostTime: KnockoutObservable<number> = ko.observable(null);
+        /* 半休残数（付与後）回数*/
         numberOfRemainGrantPost: KnockoutObservable<number> = ko.observable(null);
+        /* 時間年休上限（付与後））*/
         timeAnnualLeaveWithMinusGrantPost: KnockoutObservable<number> = ko.observable(null);
+        /* 出勤率*/
         attendanceRate: KnockoutObservable<number> = ko.observable(null);
+        /* 労働日数*/
         workingDays: KnockoutObservable<number> = ko.observable(null);
         constructor(data?) {
             if (data) {
@@ -278,12 +307,19 @@ module nts.uk.at.view.kdl020.a.screenModel {
     }
 
     export class AnnualLeaveGrant {
+        /*付与日 */
         grantDate: KnockoutObservable<String> = ko.observable("");
+        /* 付与数*/
         grantNumber: KnockoutObservable<number> = ko.observable(null);
+        /* 使用日数 */
         daysUsedNo: KnockoutObservable<number> = ko.observable(null);
+        /* 使用時間*/
         usedMinutes: KnockoutObservable<number> = ko.observable(null);
+        /* 残日数*/
         remainDays: KnockoutObservable<number> = ko.observable(null);
+        /* 残時間*/
         remainMinutes: KnockoutObservable<number> = ko.observable(null);
+        /* 期限*/
         deadline: KnockoutObservable<String> = ko.observable("");
         constructor(data?) {
             if (data) {
@@ -320,6 +356,32 @@ module nts.uk.at.view.kdl020.a.screenModel {
         reNumAnnLeave: IReNumAnnLeaReferenceDateImport;
     }
 
+    export class AttendRateAtNextHoliday {
+        /** 次回年休付与日 */
+        nextHolidayGrantDate: KnockoutObservable<String> = ko.observable("");
+        /** 次回年休付与日数 */
+        nextHolidayGrantDays: KnockoutObservable<number> = ko.observable(null);
+        /** 出勤率 */
+        attendanceRate: KnockoutObservable<number> = ko.observable(null);
+        /** 出勤日数 */
+        attendanceDays: KnockoutObservable<number> = ko.observable(null);
+        /** 所定日数 */
+        predeterminedDays: KnockoutObservable<number> = ko.observable(null);
+        /** 年間所定日数 */
+        annualPerYearDays: KnockoutObservable<number> = ko.observable(null);
+    
+        constructor(data?) {
+            if (data) {
+                this.nextHolidayGrantDate(data.nextHolidayGrantDate);
+                this.nextHolidayGrantDays(data.nextHolidayGrantDays);
+                this.attendanceRate(data.attendanceRate);
+                this.attendanceDays(data.attendanceDays);
+                this.predeterminedDays(data.predeterminedDays);
+                this.annualPerYearDays(data.annualPerYearDays);
+            }
+        }
+
+    }
 
 
     export interface IReNumAnnLeaReferenceDateImport {
