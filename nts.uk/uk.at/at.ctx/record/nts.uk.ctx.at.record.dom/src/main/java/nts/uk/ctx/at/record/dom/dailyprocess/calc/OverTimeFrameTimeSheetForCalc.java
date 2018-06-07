@@ -325,14 +325,15 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
         														  predetermineTimeSet, 
         														  siftCode, 
         														  personalCondition, 
-        														  true, 
-        														  true, 
+        														  late, 
+        														  leaveEarly, 
         														  workingSystem, 
         														  illegularAddSetting, 
         														  flexAddSetting, 
         														  regularAddSetting, 
         														  holidayAddtionSet, 
-        														  holidayCalcMethodSet);
+        														  holidayCalcMethodSet,
+        														  dailyUnit);
         				
         				
         	}

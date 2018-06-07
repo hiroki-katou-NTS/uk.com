@@ -254,7 +254,13 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 			/*休憩と休憩　→　育児と育児の重複と同じにする(後ろにある時間の開始を前の終了に合わせる)*/
 			else if(this.getBreakAtr().get().isBreak() && compareTimeSheet.getBreakAtr().get().isBreak()) {
 				map.add(this);
-				//map.add(compareTimeSheet.replaceTimeSpan(compareTimeSheet.calcrange.getNotDuplicationWith(this.calcrange).get()));
+				if(compareTimeSheet.calcrange.getNotDuplicationWith(this.calcrange).isPresent()) {
+					map.add(compareTimeSheet.replaceTimeSpan(compareTimeSheet.calcrange.getNotDuplicationWith(this.calcrange).get()));
+				}
+				else {
+					map.add(compareTimeSheet.replaceTimeSpan(new TimeSpanForCalc(this.timeSheet.getEnd(),this.timeSheet.getEnd())));
+				}
+				
 				return map;
 			}
 		}

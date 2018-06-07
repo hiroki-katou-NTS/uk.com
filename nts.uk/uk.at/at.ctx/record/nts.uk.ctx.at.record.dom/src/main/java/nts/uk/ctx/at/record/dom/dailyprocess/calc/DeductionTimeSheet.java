@@ -151,7 +151,9 @@ public class DeductionTimeSheet {
 		/* 育児時間帯を取得 */
 
 		/* ソート処理 */
-		sheetList.stream().sorted((first, second) -> first.calcrange.getStart().compareTo(second.calcrange.getStart()));
+		sheetList = sheetList.stream()
+							 .sorted((first, second) -> first.calcrange.getStart().compareTo(second.calcrange.getStart()))
+							 .collect(Collectors.toList());
 		/* 計算範囲による絞り込み */
 		List<TimeSheetOfDeductionItem> reNewSheetList = refineCalcRange(sheetList, oneDayRange,
 				CommonSet.getCalculateMethod(), attendanceLeaveWork);

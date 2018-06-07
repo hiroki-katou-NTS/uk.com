@@ -43,7 +43,7 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 				
 				for(int nextNumber = number + 1; nextNumber < originCopyList.size(); nextNumber++) {
 					/*isDeplicatedはTimeSpanForCalcへ持っていく*/
-					if(originCopyList.get(number).calcrange.contains(originCopyList.get(nextNumber).calcrange)){
+					if(originCopyList.get(number).calcrange.checkDuplication(originCopyList.get(nextNumber).calcrange).isDuplicated()){
 						originCopyList = convertFromDeductionItemToList(originCopyList,number,nextNumber, setMethod, clockManage,workTimeDailyAtr);
 						if(originCopyList.size()>beforeCorrectSize)
 							/*追加された*/

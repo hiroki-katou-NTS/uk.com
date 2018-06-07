@@ -203,9 +203,10 @@ public class ActualWorkingTimeOfDaily {
 					eachCompanyTimeSet,
 					breakTimeCount,
 					integrationOfDaily,
-					flexAutoCalSet,coreTimeSetting
-					/*計画所定時間*/
-					/*実績所定労働時間*/);
+					flexAutoCalSet,
+					coreTimeSetting,
+					dailyUnit
+					);
 		
 		
 		/*大塚残業*/
@@ -216,7 +217,8 @@ public class ActualWorkingTimeOfDaily {
 											ootsukaFixedCalcSet,
 											calcAtrOfDaily.getOvertimeSetting(),
 											dailyUnit,
-											oneDay.getAttendanceLeavingWork());
+											oneDay.getAttendanceLeavingWork(),
+											workType);
 		
 		/*拘束差異時間*/
 		val constraintDifferenceTime = new AttendanceTime(0);
@@ -427,6 +429,7 @@ public class ActualWorkingTimeOfDaily {
 	 * @param predetermineTime 所定時間
 	 * @param dailyUnit 
 	 * @param timeLeavingOfDailyPerformance 
+	 * @param workType 
 	 * @return
 	 */
 	private static TotalWorkingTime calcOotsuka(WorkingSystem workingSystem, TotalWorkingTime totalWorkingTime,
@@ -434,7 +437,8 @@ public class ActualWorkingTimeOfDaily {
 									AttendanceTime predetermineTime,
 									Optional<FixedWorkCalcSetting> ootsukaFixedCalcSet,
 									AutoCalOvertimeSetting autoCalcSet, DailyUnit dailyUnit, 
-									TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance
+									TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, 
+									WorkType workType
 									) {
 		if((workingSystem.isRegularWork() || workingSystem.isVariableWorkingTimeWork())&&fixRestTimeSetting.isPresent()) {
 			//休憩未取得時間の計算
@@ -474,7 +478,8 @@ public class ActualWorkingTimeOfDaily {
 			   && ootsukaFixedCalcSet.isPresent()
 			   && ootsukaFixedCalcSet.get().getOverTimeCalcNoBreak() != null
 			   && ootsukaFixedCalcSet.get().getOverTimeCalcNoBreak().getCalcMethod() != null
-			   && !ootsukaFixedCalcSet.get().getOverTimeCalcNoBreak().getCalcMethod().isCalcAsWorking() ) {
+			   && !ootsukaFixedCalcSet.get().getOverTimeCalcNoBreak().getCalcMethod().isCalcAsWorking() 
+			   && !workType.getDailyWork().isHolidayWork()) {
 				totalWorkingTime.getWithinStatutoryTimeOfDaily().workTimeMinusUnUseBreakTimeForOotsuka(unUseBreakTime);
 			}
 			
