@@ -21,46 +21,50 @@
 		</ui:define>
 	
 		<ui:define name="content">
-		
-			<div id="contents-area" style="display: none" data-bind="visible: true">
+
+			<div id="contents-area" style="display: none"
+				data-bind="visible: true">
 				<div class="main-container">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_238')}</div>
-					<hr/>
-					<div class="margin-first-child">
-						<div tabindex="1" id="initial-focus-h" data-bind="ntsRadioBoxGroup: {
-							options: [
-								{value: 0, text: nts.uk.resource.getText('KMK003_241')},
-								{value: 1, text: nts.uk.resource.getText('KMK003_242')},
-								{value: 2, text: nts.uk.resource.getText('KMK003_243')}
-							],
-							optionsValue: 'value',
-							optionsText: 'text',
-							value: calcMethodFixed}"></div>
-					</div>
-					<div class="margin-second-child">
-						<div class="checkbox_display control-group" tabindex="2"
-							data-bind="ntsCheckBox: { checked: isCalcFromSchedule, enable: calcMethodFixed() == 1 }">
-							#{i18n.getText('KMK003_293')}
+					<hr />
+					<div id="component-uk" tabindex="1" data-bind="foreach: option">
+						<div class="style-radio-btn">
+							<span class="ntsControl"> <label class="ntsRadioBox">
+									<input type="radio" name="textRadio"
+									data-bind="checkedValue: value, checked: $parent.calcMethodFixed, enable: true" />
+									<span class="box"></span><span class="label"
+									data-bind="text: text"></span>
+							</label>
+							</span>
 						</div>
-						<br/>
-						<div class="checkbox_display control-group" tabindex="3"
-							data-bind="ntsCheckBox: { checked: isReferRestTime, enable: calcMethodFixed() == 1 }">
-							#{i18n.getText('KMK003_294')}
+						<div data-bind="if:value==1">
+							<div class="style-checkbox-btn">
+								<div class="checkbox_display control-group" tabindex="2"
+									data-bind="ntsCheckBox: { checked: $parent.isCalcFromSchedule, enable: $parent.calcMethodFixed() == 1 }">
+									#{i18n.getText('KMK003_293')}</div>
+								<br />
+								<div class="checkbox_display control-group" tabindex="3"
+									data-bind="ntsCheckBox: { checked: $parent.isReferRestTime, enable: $parent.calcMethodFixed() == 1 }">
+									#{i18n.getText('KMK003_294')}</div>
+								<br />
+							</div>
 						</div>
-						<br/>
-						<div class="checkbox_display control-group" tabindex="4"
-							data-bind="ntsCheckBox: { checked: usePrivateGoOutRest, enable: calcMethodFixed() == 2 }">
-							#{i18n.getText('KMK003_250')}
-						</div>
-						<br/>
-						<div class="checkbox_display control-group" tabindex="5"
-							data-bind="ntsCheckBox: { checked: useAssoGoOutRest, enable: calcMethodFixed() == 2 }">
-							#{i18n.getText('KMK003_251')}
+
+						<div data-bind="if:value==2">
+							<div class="style-checkbox-btn">
+								<div class="checkbox_display control-group" tabindex="4"
+									data-bind="ntsCheckBox: { checked: $parent.usePrivateGoOutRest, enable: $parent.calcMethodFixed() == 2 }">
+									#{i18n.getText('KMK003_250')}</div>
+								<br />
+								<div class="checkbox_display control-group" tabindex="5"
+									data-bind="ntsCheckBox: { checked: $parent.useAssoGoOutRest, enable: $parent.calcMethodFixed() == 2 }">
+									#{i18n.getText('KMK003_251')}</div>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		
+
 			<div id="functions-area-bottom">
 				<button tabindex="6" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
 				<button tabindex="7" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
