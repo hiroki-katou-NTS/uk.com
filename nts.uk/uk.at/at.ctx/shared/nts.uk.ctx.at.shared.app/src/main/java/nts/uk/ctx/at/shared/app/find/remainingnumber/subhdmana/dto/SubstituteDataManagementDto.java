@@ -7,6 +7,7 @@ import lombok.Data;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SWkpHistImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.service.ExtraHolidayManagementOutput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.service.SubstituteManagementOutput;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 @AllArgsConstructor
 @Data
@@ -29,8 +30,10 @@ public class SubstituteDataManagementDto {
 			leaveSettingExpiredDate = subDataOutput.getCompensatoryLeaveEmSetting().getCompensatoryAcquisitionUse().getExpirationTime().name();
 		}
 		if (!Objects.isNull(subDataOutput.getCompensatoryLeaveEmSetting())){
+			if (subDataOutput.getCompensatoryLeaveEmSetting().getIsManaged() == ManageDistinct.YES)
 			leaveSettingExpiredDate = subDataOutput.getCompensatoryLeaveEmSetting().getCompensatoryAcquisitionUse().getExpirationTime().description;
 		} else if (!Objects.isNull(subDataOutput.getCompensatoryLeaveComSetting())){
+			if (subDataOutput.getCompensatoryLeaveComSetting().isManaged())
 			compenSettingEmpExpiredDate = subDataOutput.getCompensatoryLeaveComSetting().getCompensatoryAcquisitionUse().getExpirationTime().description;
 		}
 		return new SubstituteDataManagementDto(sWkpHist, ExtraHolidayManagementDataDto.convertToDto(extraHolidayManagementOutput), leaveSettingExpiredDate, compenSettingEmpExpiredDate);
