@@ -203,7 +203,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	private EmpConditionRepository empConditionRepository;
 	
 	
-
 	
 	/**
 	 * 勤務情報を取得して計算
@@ -217,9 +216,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			return integrationOfDaily;
 		// 実績データの計算
 		val afterCalcResult = this.calcDailyAttendancePerformance(integrationOfDaily,companyCommonSetting);
-//		//任意項目の計算
+		//任意項目の計算
 		val aftercalcOptionalItemResult = this.calcOptionalItem(afterCalcResult);
-//		//エラーチェック
+		//エラーチェック
 //		return calculationErrorCheckService.errorCheck(afterCalcResult,companyCommonSetting);
 		return calculationErrorCheckService.errorCheck(aftercalcOptionalItemResult,companyCommonSetting);
 //		return afterCalcResult;
@@ -1035,6 +1034,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//項目選択による計算時に必要なので取得
 		DailyRecordToAttendanceItemConverter dailyRecordDto = this.converter.setData(integrationOfDaily); 
 		
+		
+		
 		//任意項目の計算
 		AnyItemValueOfDaily result = AnyItemValueOfDaily.caluculationAnyItem(companyId, employeeId, targetDate, optionalItems, formulaList,
 				empCondition, Optional.of(dailyRecordDto),bsEmploymentHistOpt,integrationOfDaily.getAnyItemValue());
@@ -1055,6 +1056,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			//手修正された項目の値を計算前に戻す   
 			calcResultIntegrationOfDaily.setAnyItemValue(converter.toDomain().getAnyItemValue());
 		  }
+		
 		
 		return calcResultIntegrationOfDaily;
 	}

@@ -72,6 +72,8 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationEmployeeServic
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
+import nts.uk.ctx.at.record.dom.divergencetime.service.DivCheckMasterShareBus;
+import nts.uk.ctx.at.record.dom.divergencetime.service.DivCheckMasterShareBus.DivCheckMasterShareContainer;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationEmployeeService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.CalExeSettingInfor;
@@ -730,7 +732,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.ABNORMAL_END);
 		}
 		int timeOut=1;
-		boolean isError =false;
+		boolean isInterruption =false;
 		if(isException){
 		while(true){
 			// find execution log by id
@@ -739,12 +741,10 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			if (domainOpt.isPresent()) {
 				if (domainOpt.get().getCompletionStatus().value == CompletionStatus.COMPLETION_ERROR.value) {
 					this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.ABNORMAL_END);
-					isError=true;
 					break;
 				}
 				if (domainOpt.get().getCompletionStatus().value == CompletionStatus.INTERRUPTION.value) {
-					this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.ABNORMAL_END);
-					isError=true;
+					isInterruption=true;
 					break;
 				}
 				if(domainOpt.get().getCompletionStatus().value == CompletionStatus.DONE.value){
@@ -755,7 +755,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			}
 			if(timeOut==24){
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.ABNORMAL_END);
-			isError=true;
 				break;
 			}
 			timeOut++;
@@ -776,7 +775,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		*/
 		TaskDataSetter dataSetter = context.asAsync().getDataSetter();
 		dataSetter.setData("createSchedule", "done");
-		if(isError){
+		if(isInterruption){
 			return false;
 		}
 		return true;
@@ -1414,6 +1413,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		}else{
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CREATION, EndStatus.SUCCESS);
 		}
+		
 		
 		if(isHasDailyCalculateException){
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CALCULATION, EndStatus.ABNORMAL_END);
@@ -2592,6 +2592,19 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				break;
 			}
 		}
+		List<ErrMessageInfo> errMessageInfos = this.errMessageInfoRepository.getAllErrMessageInfoByEmpID(empCalAndSumExeLog.getEmpCalAndSumExecLogID());
+		List<String> errorMessage = errMessageInfos.stream().map(error -> {
+			return error.getMessageError().v();
+		}).collect(Collectors.toList());
+		if (!errorMessage.isEmpty()) {
+			if("日別作成".equals(typeExecution)){
+				throw new CreateDailyException();
+			}else{
+				throw new DailyCalculateException();
+			}
+		}
+		
+		
 		if (isInterrupt) {
 			return true;
 		}
@@ -2645,8 +2658,11 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		} else {
 			try {
 				ManagePerCompanySet companyCommonSetting = new ManagePerCompanySet(holidayAddtionRepo.findByCompanyId(companyId), holidayAddtionRepo.findByCId(companyId), specificWorkRuleRepo.findCalcMethodByCid(companyId), compensLeaveComSetRepo.find(companyId), divergenceTimeRepo.getAllDivTime(companyId), errorAlarmWorkRecordRepo.getListErrorAlarmWorkRecord(companyId));
+				DivCheckMasterShareContainer shareContainer = DivCheckMasterShareBus.open();
+				companyCommonSetting.setShareContainer(shareContainer);
 				processState = this.dailyCalculationEmployeeService.calculate(asyContext, employeeId, period,
 						empCalAndSumExeLog.getEmpCalAndSumExecLogID(), ExecutionType.NORMAL_EXECUTION, companyCommonSetting);
+				shareContainer.clearAll();
 			} catch (Exception e) {
 				throw new DailyCalculateException();
 			}
@@ -2883,9 +2899,12 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		
 		try {
 			ManagePerCompanySet companyCommonSetting = new ManagePerCompanySet(holidayAddtionRepo.findByCompanyId(companyId), holidayAddtionRepo.findByCId(companyId), specificWorkRuleRepo.findCalcMethodByCid(companyId), compensLeaveComSetRepo.find(companyId), divergenceTimeRepo.getAllDivTime(companyId), errorAlarmWorkRecordRepo.getListErrorAlarmWorkRecord(companyId));
+			DivCheckMasterShareContainer shareContainer = DivCheckMasterShareBus.open();
+			companyCommonSetting.setShareContainer(shareContainer);
 			// 社員の日別実績を計算
 			 ProcessState2 = this.dailyCalculationEmployeeService.calculate(asyncContext, empId, period,
 					empCalAndSumExeLogId, ExecutionType.NORMAL_EXECUTION, companyCommonSetting);
+			 shareContainer.clearAll();
 		} catch (Exception e) {
 			throw new DailyCalculateException();
 		}

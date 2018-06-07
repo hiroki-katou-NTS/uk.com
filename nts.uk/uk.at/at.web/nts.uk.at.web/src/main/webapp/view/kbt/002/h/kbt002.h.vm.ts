@@ -228,7 +228,7 @@ module nts.uk.at.view.kbt002.h {
 function openDialogG(element, execItemCd, execId) {
     nts.uk.ui.block.grayout();
     nts.uk.at.view.kbt002.h.service.getLogHistory(execItemCd, execId).done(function(x) {
-        nts.uk.ui.windows.setShared('inputDialogG', { execLog: x });
+        nts.uk.ui.windows.setShared('inputDialogG', { execLog: _.assign(x,{taskLogExecId: execId}) });
         nts.uk.ui.windows.sub.modal("/view/kbt/002/g/index.xhtml").onClosed(function() {
             nts.uk.ui.block.clear();
         });

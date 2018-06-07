@@ -11,15 +11,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.record.dom.optitem.calculation.CalcResultOfAnyItem;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
-import nts.uk.shr.com.context.AppContexts;
 
 /** 日別実績の任意項目*/
 @Getter
@@ -66,7 +63,7 @@ public class AnyItemValueOfDaily {
         	if(optionalItem.checkTermsOfUse(empCondition,bsEmploymentHistOpt)) {
         		List<Formula> test = formulaList.stream().filter(t -> t.getOptionalItemNo().equals(optionalItem.getOptionalItemNo())).collect(Collectors.toList());
         		//計算処理
-                anyItemList.add(optionalItem.caluculationFormula(companyId, optionalItem, test, dailyRecordDto/*,Optional.empty()　月次用なので日別から呼ぶ場合は何も無し*/));
+                anyItemList.add(optionalItem.caluculationFormula(companyId, optionalItem, test, dailyRecordDto, Optional.empty()));
         	}
         }
         
@@ -80,49 +77,7 @@ public class AnyItemValueOfDaily {
 					  							   calcResultOfAnyItem.getTime().map(v -> new AnyItemTime(v))));
     	}
         
-//        if(anyItemValueOfDaily.isPresent()) {
-//        	List<AnyItemNo> anyItemNoList = new ArrayList<>();
-//        	for(AnyItemValue calcedAnyItemValue : result.getItems()) {
-//        		anyItemNoList.add(calcedAnyItemValue.getItemNo());
-//        	}
-//        	
-//        	List<AnyItemValue> beforeCalc = anyItemValueOfDaily.get().getItems();	
-//        	for(AnyItemValue beforeCalcAnyItemValue : beforeCalc) {
-//        		if(!anyItemNoList.contains(beforeCalcAnyItemValue.getItemNo())) {
-//        			result.items.add(beforeCalcAnyItemValue);
-//        		}
-//        	}
-//            //任意項目NOの昇順でソート
-//        	result.items.sort((c1, c2) -> c1.getItemNo().compareTo(c2.getItemNo()));
-//        }
         return result;
-    }
-    
-    public void correctAnyType(OptionalItemRepository optionalMasterRepo){
-    	List<Integer> itemIds = items.stream().map(i -> i.getItemNo().v()).collect(Collectors.toList());
-		Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
-				.findByListNos(AppContexts.user().companyId(), itemIds).stream()
-				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
-		if(!optionalMaster.isEmpty()){
-			items.stream().forEach(i -> {
-				OptionalItem master = optionalMaster.get(i.getItemNo().v());
-				if(master != null){
-					switch (master.getOptionalItemAtr()) {
-					case AMOUNT:
-						i.markAsAmount();
-						break;
-					case NUMBER:
-						i.markAsTimes();
-						break;
-					case TIME:
-						i.markAsTime();
-						break;
-					default:
-						break;
-					}
-				}
-			});	
-		}
     }
     
 }
