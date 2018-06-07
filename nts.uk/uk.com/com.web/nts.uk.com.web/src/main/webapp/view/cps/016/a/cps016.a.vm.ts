@@ -67,7 +67,10 @@ module nts.uk.com.view.cps016.a.viewmodel {
             
             let groupCompanyAdmin = __viewContext.user.role.groupCompanyAdmin;
             if (groupCompanyAdmin === 'null') {
-                uk.request.jumpToTopPage();
+                 alertError({ messageId: "Msg_1103" }).then( () => {
+                    uk.request.jumpToTopPage();    
+                 }) 
+                
             }
 
             // get selection items

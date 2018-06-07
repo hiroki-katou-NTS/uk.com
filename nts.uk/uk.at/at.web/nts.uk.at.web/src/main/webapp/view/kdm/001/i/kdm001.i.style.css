@@ -43,3 +43,8 @@
 .left-l{
 	margin-left: 30px;
 }
+
+.nts-datepicker-wrapper .ntsDatepicker{
+	min-width: 90px;
+	width: 90px;
+}

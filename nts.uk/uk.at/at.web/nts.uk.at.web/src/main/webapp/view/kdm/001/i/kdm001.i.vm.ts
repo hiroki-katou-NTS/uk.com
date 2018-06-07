@@ -34,10 +34,10 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         totalDay: KnockoutObservable<number> = ko.observable(null);
         unit: KnockoutObservable<string> = ko.observable('');
         unitDay: KnockoutObservable<string> = ko.observable('日');
+  
         constructor() {
             let self = this;
             self.initScreen();
-            
             self.selectedCodeHoliday(self.itemListHoliday()[0].code);
             self.selectedCodeSubHoliday(self.itemListSubHoliday()[0].code);
             self.selectedCodeOptionSubHoliday(self.itemListOptionSubHoliday()[0].code);
@@ -126,9 +126,9 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             } else if (remainObject.checkBox1 && !remainObject.checkBox2 && remainObject.checkBox3) {
                 return (remainObject.value1 - remainObject.value3).toString();
             } else if (!remainObject.checkBox1 && remainObject.checkBox2 && !remainObject.checkBox3) {
-                return (remainObject.value1 - remainObject.value2).toString();
-            } else if (!remainObject.checkBox1 && remainObject.checkBox2 && remainObject.checkBox3) {        
-                return (remainObject.value1 - (remainObject.value2 + remainObject.value3)).toString();
+                return (0 - remainObject.value2).toString();
+            } else if (!remainObject.checkBox1 && remainObject.checkBox2 && remainObject.checkBox3) { 
+                return (0 - (remainObject.value2 + remainObject.value3)).toString();
             } else if (!remainObject.checkBox1 && !remainObject.checkBox2 && remainObject.checkBox3) {
                 return remainObject.value3;
             }
@@ -153,7 +153,17 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         public submitData() {
             let self = this;
             errors.clearAll();
-            $(".ntsDatepicker").trigger("validate");
+            if(self.checkedHoliday()){
+                    $("#I6_1").trigger("validate");
+                    $("#I8_1").trigger("validate");
+                }
+            if(self.checkedSubHoliday()){
+                    $("#I11_1").trigger("validate");
+                    if(self.checkedSplit()){
+                        $("#I12_2").trigger("validate");
+                    }
+                }
+ 
             if (!errors.hasError()) {
                 block.invisible();
                 let data = {

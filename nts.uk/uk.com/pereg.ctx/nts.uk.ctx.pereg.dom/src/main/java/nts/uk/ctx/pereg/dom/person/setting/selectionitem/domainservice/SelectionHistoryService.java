@@ -1,6 +1,8 @@
 package nts.uk.ctx.pereg.dom.person.setting.selectionitem.domainservice;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -28,12 +30,22 @@ public class SelectionHistoryService {
 	public void removeHistoryOfCompany(String selectionItemId, String companyId) {
 
 		// History:
-		SelectionHistory selectionHistory = this.selectionHistoryRepo.get(selectionItemId, companyId).get();
+		//SelectionHistory selectionHistory = this.selectionHistoryRepo.get(selectionItemId, companyId).get();
+		Optional<SelectionHistory> selectionHistory = this.selectionHistoryRepo.get(selectionItemId, companyId);
+		
+		if (!selectionHistory.isPresent()) {
+			return;
+		}
 
-		selectionHistory.getDateHistoryItems().stream().forEach(x -> {
-			deleteSelectionHistory(selectionItemId, companyId, x.identifier());
+		List<String> historyIds = selectionHistory.get().getDateHistoryItems().stream().map(x -> x.identifier())
+				.collect(Collectors.toList());
 
-		});
+		selectionHistoryRepo.removeAllHistoryIds(historyIds);
+		
+		List<String> removeSelectionIdList = selectionRepo.getByHistIdList(historyIds).stream()
+				.map(x -> x.getSelectionID()).collect(Collectors.toList());
+		selectionRepo.removeAll(removeSelectionIdList);
+		selectionOrderRepo.removeAll(removeSelectionIdList);
 
 	}
 
