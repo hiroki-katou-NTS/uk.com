@@ -43,29 +43,29 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 	private static final String TEMPLATE_FILE = "report/休暇残数管理票_テンプレート.xlsx";
 	private static final String REPORT_FILE_NAME = "休暇残数管理票.xlsx";
-	private final int numberRowOfPage = 37;
-	private final int numberColumn = 23;
+	private static final int NUMBER_ROW_OF_PAGE = 37;
+	private static final int NUMBER_COLUMN = 23;
 	// private final int minRowDetails = 4;
-	private HolidayRemainingDataSource dataSource;
-	private YearMonth currentMonth = GeneralDate.today().yearMonth();
+	
+	
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, HolidayRemainingDataSource dataSource) {
 		try (val reportContext = this.createContext(TEMPLATE_FILE)) {
-			this.dataSource = dataSource;
 			val designer = this.createContext(TEMPLATE_FILE);
 			Workbook workbook = designer.getWorkbook();
 			WorksheetCollection worksheets = workbook.getWorksheets();
 			Worksheet worksheet = worksheets.get(0);
 
-			printTemplate(worksheet);
+		    YearMonth currentMonth = GeneralDate.today().yearMonth();
+			printTemplate(worksheet, currentMonth, dataSource);
 			
 			if (dataSource.getPageBreak() == BreakSelection.None.value) {
-				printNoneBreakPage(worksheet);
+				printNoneBreakPage(worksheet, currentMonth, dataSource);
 			} else if (dataSource.getPageBreak() == BreakSelection.Workplace.value) {
-				printWorkplaceBreakPage(worksheet);
+				printWorkplaceBreakPage(worksheet, currentMonth, dataSource);
 			} else if (dataSource.getPageBreak() == BreakSelection.Individual.value) {
-				printPersonBreakPage(worksheet);
+				printPersonBreakPage(worksheet, currentMonth, dataSource);
 			}
 
 			removeTemplate(worksheet);
@@ -80,7 +80,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		}
 	}
 
-	private void printTemplate(Worksheet worksheet) throws Exception {
+	private void printTemplate(Worksheet worksheet, YearMonth currentMonth, HolidayRemainingDataSource dataSource) throws Exception {
 
 		Cells cells = worksheet.getCells();
 
@@ -121,8 +121,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		}
 	}
 
-	private void printNoneBreakPage(Worksheet worksheet) throws Exception {
-		int firstRow = numberRowOfPage;
+	private void printNoneBreakPage(Worksheet worksheet, YearMonth currentMonth, HolidayRemainingDataSource dataSource) throws Exception {
+		int firstRow = NUMBER_ROW_OF_PAGE;
 
 		Cells cells = worksheet.getCells();
 
@@ -134,10 +134,10 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		List<HolidaysRemainingEmployee> employees = dataSource.getListEmployee().stream()
 				.sorted(Comparator.comparing(HolidaysRemainingEmployee::getEmployeeCode)).collect(Collectors.toList());
 		for (HolidaysRemainingEmployee employee : employees) {
-			int rowCount = countRowEachPerson() + 1;
-			if (firstRow % numberRowOfPage != 5
-					&& firstRow / numberRowOfPage != (firstRow + rowCount) / numberRowOfPage) {
-				firstRow = (firstRow / numberRowOfPage + 1) * numberRowOfPage;
+			int rowCount = countRowEachPerson(dataSource) + 1;
+			if (firstRow % NUMBER_ROW_OF_PAGE != 5
+					&& firstRow / NUMBER_ROW_OF_PAGE != (firstRow + rowCount) / NUMBER_ROW_OF_PAGE) {
+				firstRow = (firstRow / NUMBER_ROW_OF_PAGE + 1) * NUMBER_ROW_OF_PAGE;
 				// print Header
 				cells.copyRows(cells, 0, firstRow, 6);
 				firstRow += 5;
@@ -146,12 +146,12 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			cells.get(firstRow, 0).setValue(TextResource.localize("KDR001_12") + ": " + employee.getWorkplaceCode()
 					+ "　" + employee.getWorkplaceName());
 			firstRow += 1;
-			firstRow = this.printHolidayRemainingEachPerson(worksheet, firstRow, employee);
+			firstRow = this.printHolidayRemainingEachPerson(worksheet, firstRow, employee, currentMonth, dataSource);
 		}
 	}
 
-	private void printWorkplaceBreakPage(Worksheet worksheet) throws Exception {
-		int firstRow = numberRowOfPage;
+	private void printWorkplaceBreakPage(Worksheet worksheet, YearMonth currentMonth, HolidayRemainingDataSource dataSource) throws Exception {
+		int firstRow = NUMBER_ROW_OF_PAGE;
 
 		Map<String, List<HolidaysRemainingEmployee>> map = dataSource.getListEmployee().stream()
 				.collect(Collectors.groupingBy(HolidaysRemainingEmployee::getWorkplaceId));
@@ -160,11 +160,11 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			List<HolidaysRemainingEmployee> employees = listEmployee.stream()
 					.sorted(Comparator.comparing(HolidaysRemainingEmployee::getEmployeeCode))
 					.collect(Collectors.toList());
-			firstRow = printEachWorkplace(worksheet, firstRow, employees);
+			firstRow = printEachWorkplace(worksheet, firstRow, employees, currentMonth, dataSource);
 		}
 	}
 
-	private int printEachWorkplace(Worksheet worksheet, int firstRow, List<HolidaysRemainingEmployee> employees)
+	private int printEachWorkplace(Worksheet worksheet, int firstRow, List<HolidaysRemainingEmployee> employees, YearMonth currentMonth, HolidayRemainingDataSource dataSource)
 			throws Exception {
 		if (employees.size() == 0) {
 			return firstRow;
@@ -179,10 +179,10 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		firstRow += 6;
 
 		for (HolidaysRemainingEmployee employee : employees) {
-			int rowCount = countRowEachPerson();
-			if (firstRow % numberRowOfPage != 6
-					&& firstRow / numberRowOfPage != (firstRow + rowCount) / numberRowOfPage) {
-				firstRow = (firstRow / numberRowOfPage + 1) * numberRowOfPage;
+			int rowCount = countRowEachPerson(dataSource);
+			if (firstRow % NUMBER_ROW_OF_PAGE != 6
+					&& firstRow / NUMBER_ROW_OF_PAGE != (firstRow + rowCount) / NUMBER_ROW_OF_PAGE) {
+				firstRow = (firstRow / NUMBER_ROW_OF_PAGE + 1) * NUMBER_ROW_OF_PAGE;
 				// print Header
 				cells.copyRows(cells, 0, firstRow, 6);
 				// D1_1, D1_2
@@ -190,27 +190,27 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 						+ employees.get(0).getWorkplaceCode() + "　" + employees.get(0).getWorkplaceName());
 				firstRow += 6;
 			}
-			firstRow = printHolidayRemainingEachPerson(worksheet, firstRow, employee);
+			firstRow = printHolidayRemainingEachPerson(worksheet, firstRow, employee, currentMonth, dataSource);
 		}
-		if (firstRow % numberRowOfPage != 0) {
-			firstRow += (numberRowOfPage - firstRow % numberRowOfPage);
+		if (firstRow % NUMBER_ROW_OF_PAGE != 0) {
+			firstRow += (NUMBER_ROW_OF_PAGE - firstRow % NUMBER_ROW_OF_PAGE);
 		}
 
 		return firstRow;
 	}
 
-	private void printPersonBreakPage(Worksheet worksheet) throws Exception {
-		int firstRow = numberRowOfPage;
+	private void printPersonBreakPage(Worksheet worksheet, YearMonth currentMonth, HolidayRemainingDataSource dataSource) throws Exception {
+		int firstRow = NUMBER_ROW_OF_PAGE;
 
 		// Order by Employee Code
 		List<HolidaysRemainingEmployee> employees = dataSource.getListEmployee().stream()
 				.sorted(Comparator.comparing(HolidaysRemainingEmployee::getEmployeeCode)).collect(Collectors.toList());
 		for (HolidaysRemainingEmployee employee : employees) {
-			firstRow = this.printEachPerson(worksheet, firstRow, employee);
+			firstRow = this.printEachPerson(worksheet, firstRow, employee, currentMonth, dataSource);
 		}
 	}
 
-	private int printEachPerson(Worksheet worksheet, int firstRow, HolidaysRemainingEmployee employee)
+	private int printEachPerson(Worksheet worksheet, int firstRow, HolidaysRemainingEmployee employee, YearMonth currentMonth, HolidayRemainingDataSource dataSource)
 			throws Exception {
 
 		Cells cells = worksheet.getCells();
@@ -222,16 +222,16 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 				+ "　" + employee.getWorkplaceName());
 		firstRow += 6;
 
-		firstRow = printHolidayRemainingEachPerson(worksheet, firstRow, employee);
+		firstRow = printHolidayRemainingEachPerson(worksheet, firstRow, employee, currentMonth, dataSource);
 
-		if (firstRow % numberRowOfPage != 0) {
-			firstRow += (numberRowOfPage - firstRow % numberRowOfPage);
+		if (firstRow % NUMBER_ROW_OF_PAGE != 0) {
+			firstRow += (NUMBER_ROW_OF_PAGE - firstRow % NUMBER_ROW_OF_PAGE);
 		}
 
 		return firstRow;
 	}
 
-	private int printHolidayRemainingEachPerson(Worksheet worksheet, int firstRow, HolidaysRemainingEmployee employee)
+	private int printHolidayRemainingEachPerson(Worksheet worksheet, int firstRow, HolidaysRemainingEmployee employee, YearMonth currentMonth, HolidayRemainingDataSource dataSource)
 			throws Exception {
 		int rowIndexD = firstRow;
 		Cells cells = worksheet.getCells();
@@ -378,7 +378,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		// D2_3 Todo rql No.369
 
 		// Set Style
-		for (int index = 0; index < numberColumn; index++) {
+		for (int index = 0; index < NUMBER_COLUMN; index++) {
 			setTopBorderStyle(cells.get(rowIndexD, index));
 			setBottomBorderStyle(cells.get(firstRow - 1, index));
 		}
@@ -386,7 +386,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		return firstRow;
 	}
 
-	private int countRowEachPerson() {
+	private int countRowEachPerson(HolidayRemainingDataSource dataSource) {
 		int totalRowDetails = 0;
 		// 年休
 		if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getAnnualHoliday().isYearlyHoliday()) {
@@ -428,7 +428,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		if (worksheet.getShapes().getCount() > 0)
 			worksheet.getShapes().removeAt(0);
 		Cells cells = worksheet.getCells();
-		cells.deleteRows(0, numberRowOfPage);
+		cells.deleteRows(0, NUMBER_ROW_OF_PAGE);
 	}
 
 	private void setTopBorderStyle(Cell cell) {
