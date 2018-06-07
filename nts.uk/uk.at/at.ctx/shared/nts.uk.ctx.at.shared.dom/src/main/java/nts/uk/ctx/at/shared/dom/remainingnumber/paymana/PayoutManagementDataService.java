@@ -108,7 +108,7 @@ public class PayoutManagementDataService {
 				errors.add("Msg_737_SubPay");
 			}
 			errors.addAll(this.checkOffHolidate(subMana.getHolidayDate().getDayoffDate().orElse(null), payMana.getPayoutDate().getDayoffDate().orElse(null),
-						splitMana.getHolidayDate().getDayoffDate().orElse(null), closureDate, closureId, checkedSplit));
+						splitMana.getHolidayDate().getDayoffDate().orElse(null), closureDate, closureId, checkedSplit, pickUp));
 			if (checkedSplit) {
 				if (this.checkInfoSubPayMana(splitMana.getCid(), splitMana.getSID(), splitMana.getHolidayDate().getDayoffDate().orElse(null))
 						|| this.checkInfoPayMana(subMana.getCid(), subMana.getSID(), subMana.getHolidayDate().getDayoffDate().orElse(null))) {
@@ -156,12 +156,12 @@ public class PayoutManagementDataService {
 		return false;
 	}
 	
-	private List<String> checkOffHolidate(GeneralDate restDate,GeneralDate workDate,GeneralDate splitDate, Optional<GeneralDate> closureDate, int closureId,Boolean split) {
+	private List<String> checkOffHolidate(GeneralDate restDate,GeneralDate workDate,GeneralDate splitDate, Optional<GeneralDate> closureDate, int closureId,Boolean split, Boolean pickUp) {
 		List<String> errors = new ArrayList<String>();
 		if(checkDateClosing(restDate,closureDate,closureId)) {
 			errors.add("Msg_744");
 		}
-		if(restDate.equals(workDate)) {
+		if(pickUp && restDate.equals(workDate)) {
 			errors.add("Msg_729_SubMana");
 		}
 		if(split) {
@@ -171,7 +171,7 @@ public class PayoutManagementDataService {
 			if(checkDateClosing(splitDate,closureDate,closureId)){
 				errors.add("Msg_744_Split");
 			}
-			if(splitDate.equals(workDate)) {
+			if(pickUp && splitDate.equals(workDate)) {
 				errors.add("Msg_729_Split");
 			}
 		}
@@ -196,7 +196,7 @@ public class PayoutManagementDataService {
 	private List<String> checkBox(boolean checkBox, int stateAtr, GeneralDate dayoffDate, GeneralDate expiredDate,
 			double unUsedDays) {
 		List<String> errorList = new ArrayList<>();
-		if (checkBox) {
+		if (!checkBox) {
 			if (stateAtr == DigestionAtr.EXPIRED.value) {
 				errorList.add("Msg_1212");
 				return errorList;

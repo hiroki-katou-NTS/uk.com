@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManageme
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.service.ExtraHolidayManagementOutput;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.shr.com.context.AppContexts;
 
 @AllArgsConstructor
 @Data
@@ -23,6 +25,8 @@ public class ExtraHolidayManagementDataDto {
 	ClosureEmploymentDto closureEmploy;
 
 	public static ExtraHolidayManagementDataDto convertToDto(ExtraHolidayManagementOutput extraHolidayManagementOutput){
+		String cid = AppContexts.user().companyId();
+		String sid = extraHolidayManagementOutput.getSEmpHistoryImport().getEmployeeId();
 		// From domain
 		List<LeaveManagementData> listLeaveData = extraHolidayManagementOutput.getListLeaveData();
 		List<CompensatoryDayOffManaData> listCompensatoryData = extraHolidayManagementOutput.getListCompensatoryData();
@@ -40,12 +44,8 @@ public class ExtraHolidayManagementDataDto {
 			} else {
 				dto.setLinked(0);
 			}
-			if (data.getComDayOffDate().getDayoffDate().isPresent()){
-				if (data.getComDayOffDate().getDayoffDate().get().after(GeneralDate.today())){
-					dto.setExpired(data.getUnUsedDays().v());
-				}else {
-					dto.setExpired(data.getUnUsedDays().v());
-				}
+			if (GeneralDate.today().after(data.getExpiredDate())){
+				dto.setExpired(data.getUnUsedDays().v());
 			}else {
 				dto.setRemain(data.getUnUsedDays().v());
 			}
@@ -58,18 +58,10 @@ public class ExtraHolidayManagementDataDto {
 			} else {
 				dto.setLinked(0);
 			}
-			if (data.getDayOffDate().getDayoffDate().isPresent()){
-				if (data.getDayOffDate().getDayoffDate().get().after(GeneralDate.today())){
-					dto.setExpired(data.getRemainDays().v());
-				}else {
-					dto.setExpired(data.getRemainDays().v());
-				}
-			}else {
-				dto.setExpired(data.getRemainDays().v());
-			}
-			
+			dto.setRemain(data.getRemainDays().v());
 			listExtraData.add(dto);
 		}
+		listExtraData = listExtraData.stream().filter(o -> o.getCID().equals(cid) && o.getSID().equals(sid)).collect(Collectors.toList());
 		listExtraData.sort((m1, m2)->{
 			if (Objects.isNull(m1.getDayOffDate()) || Objects.isNull(m2.getDayOffDate())) return 1;
 			else return m1.getDayOffDate().before(m2.getDayOffDate()) ? -1 : 1;

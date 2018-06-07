@@ -25,7 +25,8 @@ module nts.uk.at.view.kdm001.k.viewmodel {
             let self = this;
             let info = getShared("KDM001_K_PARAMS");
             self.initScreen(info);
-            self.residualDay(parseFloat(self.numberDay()).toFixed(1) + ' 日');
+            self.residualDay('-'+ parseFloat(self.numberDay()).toFixed(1) + ' 日');
+            $("#K7_2").css("color", "red");
             self.callService(self.comDayOffId(), self.employeeId());
 
             self.columns = ko.observableArray([
@@ -56,7 +57,7 @@ module nts.uk.at.view.kdm001.k.viewmodel {
                             let iNum = parseFloat(x.remainDays);
                             let day = parseFloat(self.numberDay());
                             sumNum = sumNum + iNum;
-                            self.residualDay(parseFloat((day - sumNum)).toFixed(1) + ' 日');
+                            self.residualDay(parseFloat((sumNum - day)).toFixed(1) + ' 日');
                             if (parseFloat(self.residualDay()) < 0) {
                                 $("#K7_2").css("color", "red");
                             } else {
@@ -66,7 +67,7 @@ module nts.uk.at.view.kdm001.k.viewmodel {
                     });
                 } else {
 
-                    self.residualDay(parseFloat(self.numberDay()).toFixed(1) + ' 日');
+                    self.residualDay(parseFloat('-'+ self.numberDay()).toFixed(1) + ' 日');
                     if (parseFloat(self.residualDay()) < 0) {
                         $("#K7_2").css("color", "red");
                     } else {

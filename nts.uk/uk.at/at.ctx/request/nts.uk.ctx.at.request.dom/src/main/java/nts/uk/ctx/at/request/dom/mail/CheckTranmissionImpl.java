@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.mail;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,12 +15,16 @@ import nts.arc.time.GeneralDate;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.gul.mail.send.MailContents;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbedded;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbeddedRepository;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.shr.com.context.AppContexts;
-//import nts.uk.ctx.sys.gateway.dom.mail.service.RegisterEmbededURL;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.url.RegisterEmbededURL;
 
@@ -40,7 +45,10 @@ public class CheckTranmissionImpl implements CheckTransmission {
 
 	@Inject
 	private RegisterEmbededURL registerEmbededURL;
-	
+
+	@Inject
+	private AtEmployeeAdapter employeeRequestAdapter;
+
 	@Override
 	public MailSenderResult doCheckTranmission(String appId, int appType, int prePostAtr, List<String> employeeIdList,
 			String mailTitle, String mailBody, List<String> fileId) {
@@ -69,10 +77,6 @@ public class CheckTranmissionImpl implements CheckTransmission {
 				GeneralDate.today().toString(), application.getAppType().nameId,
 				empName, application.getAppDate().toLocalDate().toString(),
 				appContent, loginName, loginMail);
-		// TO - DO
-		// request list 225
-		// request list 228
-		// get mail (may be get from client but re-get here)
 		for(String employeeToSendId: employeeIdList){
 			String mail = employeeToSendId;
 			String employeeMail = "hiep.ld@3si.vn";
@@ -81,9 +85,10 @@ public class CheckTranmissionImpl implements CheckTransmission {
 			} else {
 				mailSender.send("tarou@nittsusystem.co.jp", employeeMail, new MailContents("", mailContentToSend));
 				successList.add(employeeToSendId);
-				
+		
 			}
 		}
+
 		return new MailSenderResult(successList, errorList);
 	}
 }

@@ -30,7 +30,7 @@
 					<button id="btnSpecSetting" style="display: none" data-bind="">#{i18n.getText('KAF009_4')}</button>
 					<button id="btnOpenCmm018" style="display: none" data-bind="click: openCMM018">#{i18n.getText('KAF009_5')}</button>
 					<div class="btnSendMail"
-						data-bind="visible: enableSendMail, ntsCheckBox: { checked: true, enable: true, text: '#{i18n.getText('KAF009_6')}' }">
+						data-bind="visible: enableSendMail, ntsCheckBox: { checked: checkBoxValue, enable: enableSendMail, text: '#{i18n.getText('KAF009_6')}' }">
 					</div>
 				</div>
 			</div>

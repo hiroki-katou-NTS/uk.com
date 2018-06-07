@@ -66,11 +66,11 @@ module nts.uk.at.view.kdm001.g.viewmodel {
                 
             }
             block.clear();
+            
         }
 
 
         public updateData() {
-            nts.uk.ui.errors.clearAll();
             if (!nts.uk.ui.errors.hasError()) {
                  block.invisible();
                 let self = this;
@@ -92,7 +92,7 @@ module nts.uk.at.view.kdm001.g.viewmodel {
                         for (let messageId of result) {
                             switch (messageId) {
                                 case "Msg_740": {
-                                    $('#G6_2').ntsError('set', { messageId: messageId });
+                                    $('#G6_4').ntsError('set', { messageId: messageId });
                                     break;
                                 }
                                 case "Msg_825": {

@@ -10,7 +10,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         employeeCode: KnockoutObservable<string>                  = ko.observable('');
         employeeId: KnockoutObservable<string>                    = ko.observable('');
         employeeName: KnockoutObservable<string>                  = ko.observable('');
-        remainDays: KnockoutObservable<number>                    = ko.observable(0);
+        remainDays: KnockoutObservable<number>                    = ko.observable(null);
         unit: KnockoutObservable<string>                          = ko.observable('');
         lawAtr: KnockoutObservable<number>                        = ko.observable(null);
         pickUp: KnockoutObservable<boolean>                       = ko.observable(true);;
@@ -22,11 +22,11 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         holidayDate: KnockoutObservable<string>                   = ko.observable('');
         requiredDays: KnockoutObservable<number>                  = ko.observable(null);
         typeHoliday: KnockoutObservableArray<model.ItemModel>     = ko.observableArray(model.getTypeHoliday());
-        itemListHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
+        itemListHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getDaysNumber());
         occurredDays: KnockoutObservable<number>                  = ko.observable(null);
-        itemListSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
+        itemListSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getDaysNumber());
         subDays: KnockoutObservable<number>           = ko.observable(null);
-        itemListOptionSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
+        itemListOptionSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getDaysNumber());
         isOptionSubHolidayEnable: KnockoutObservable<boolean>              = ko.observable(false);
         closureId: KnockoutObservable<number> = ko.observable(0);
         totalDay: KnockoutObservable<number> = ko.observable(0);
@@ -64,6 +64,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             self.requiredDays(self.itemListOptionSubHoliday()[0].code);
             self.subDays(self.itemListSubHoliday()[0].code);
             self.occurredDays(self.itemListHoliday()[0].code);
+            self.remainDays(null);
   
         }
         
@@ -90,9 +91,12 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                     if (self.checkedSplit()) {
                         self.remainDays(self.totalDay() - self.requiredDays());
                     } else {
-                        self.remainDays(0);
+                        self.remainDays(null);
                     }
                 }
+            }
+            if (self.remainDays != null) {
+                self.unit("日");
             }
         }
         
@@ -119,7 +123,6 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 self.closureId(info.closureId);
             }
             block.clear();
-            self.unit("日");
         }
         
         /**
@@ -177,10 +180,10 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                             $('#D6_3').ntsError('set', { messageId: "Msg_1257" });
                         }
                         if (error === "Msg_1256_SubDays") {
-                            $('#D11_1').ntsError('set', { messageId: "Msg_1256" });
+                            $('#D11_3').ntsError('set', { messageId: "Msg_1256" });
                         }
                         if (error === "Msg_1256_RequiredDays") {
-                            $('#D12_2').ntsError('set', { messageId: "Msg_1256" });
+                            $('#D12_4').ntsError('set', { messageId: "Msg_1256" });
                         }
                         if (error === "Msg_729_Split") {
                             $('#D12_2').ntsError('set', { messageId: "Msg_729" });
@@ -219,10 +222,13 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             $("#D8_1").trigger("validate");
             $("#D11_1").trigger("validate");
             $("#D12_2").trigger("validate");
+            $("#D6_3").trigger("validate");
+            $("#D7_1").trigger("validate");
+            $("#D11_3").trigger("validate");
+            $("#D12_4").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
                 if (this.checked()) {
-                    dialog.info({ messageId: "Msg_725" }).then(() => {
-                 });
+                     $('#D4').ntsError('set', { messageId: "Msg_727" });
                 } else {
                     this.submitForm();
                 }

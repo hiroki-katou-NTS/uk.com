@@ -13,7 +13,7 @@ module nts.uk.at.view.kdm001.h.viewmodel {
         substituteHolidayDate: KnockoutObservable<string> = ko.observable('');
         holidayTimeList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
         holidayTime: KnockoutObservable<string> = ko.observable('');
-        remainDaysList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getremainDay());
+        remainDaysList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getRemainDaysItemList());
         remainDays: KnockoutObservable<string> = ko.observable('');
         itemRequireDay: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getRequireDayList());
         subOfHDID: KnockoutObservable<string> = ko.observable('');
@@ -52,11 +52,11 @@ module nts.uk.at.view.kdm001.h.viewmodel {
         }
 
         closeKDM001H(): void {
+            setShared('KDM001_A_PARAMS', { isSuccess: false });
             nts.uk.ui.windows.close();
         }
 
         public updateData() {
-            nts.uk.ui.errors.clearAll();
             if (!nts.uk.ui.errors.hasError()) {
                 block.invisible();
                 let self = this;
@@ -75,11 +75,11 @@ module nts.uk.at.view.kdm001.h.viewmodel {
                         for (let messageId of result) {
                             switch (messageId) {
                                 case "Msg_744": {
-                                    $('#H6_2').ntsError('set', { messageId: messageId });
+                                    $('#H6_4').ntsError('set', { messageId: messageId });
                                     break;
                                 }
                                 case "Msg_729": {
-                                    $('#H6_2').ntsError('set', { messageId: messageId });
+                                    $('#H6_4').ntsError('set', { messageId: messageId });
                                     break;
                                 }
                             }

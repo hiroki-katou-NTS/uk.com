@@ -55,7 +55,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		List<InterimRemainAggregateOutputData> lstData = new ArrayList<>(); 
 		for(YearMonth ym = closureData.getStartMonth(); closureData.getEndMonth().greaterThanOrEqualTo(ym); ym.addMonths(1)) {
 			InterimRemainAggregateOutputData outPutData = new InterimRemainAggregateOutputData(ym, (double) 0, (double) 0, (double) 0, (double) 0, (double) 0);
-			/*//アルゴリズム「指定年月の締め期間を取得する」を実行する
+			//アルゴリズム「指定年月の締め期間を取得する」を実行する
 			DatePeriod dateData = remainManaExport.getClosureOfMonthDesignation(closureData.getClosure(), ym);
 			//アルゴリズム「期間内の代休発生数合計を取得」を実行する
 			Double occurrentDays = this.getTotalOccurrenceDays(employeeId, dateData);
@@ -73,7 +73,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 				outPutData = this.aggregatedDayoffCurrentMonth(employeeId, dateData, outPutData);
 				//月末代休残数：月初代休残数＋代休発生数合計－代休使用数合計－代休消滅数合計
 				outPutData.setMonthEndRemain(outPutData.getMonthStartRemain() + occurrentDays - useDays - outPutData.getMonthExtinction());
-			}*/
+			}
 			lstData.add(outPutData);
 		}
 		return lstData;
