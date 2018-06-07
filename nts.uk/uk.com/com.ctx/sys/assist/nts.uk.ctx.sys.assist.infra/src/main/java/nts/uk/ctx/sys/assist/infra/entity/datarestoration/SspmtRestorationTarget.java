@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.assist.infra.entity.datarestoration;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -92,14 +93,42 @@ public class SspmtRestorationTarget extends UkJpaEntity implements Serializable 
 	}
 
 	public static SspmtRestorationTarget toEntity(RestorationTarget domain) {
+		Integer recoveryTargetStartYear     = null;
+		Integer recoveryTargetEndYear       = null;
+		Integer recoveryTargetStartYM       = null;
+		Integer recoveryTargetEndYM         = null;
+		GeneralDate recoveryTargetStartDate = null;
+		GeneralDate recoveryTargetEndDate   = null;
+		if (domain.getRecoveryTargetYear().isPresent()) {
+			if (!Objects.isNull(domain.getRecoveryTargetYear().get().start())) {
+				recoveryTargetStartYear = domain.getRecoveryTargetYear().get().start().v();
+			}
+			if (!Objects.isNull(domain.getRecoveryTargetYear().get().end())) {
+				recoveryTargetEndYear   = domain.getRecoveryTargetYear().get().end().v();
+			}
+		}
+		if (domain.getRecoveryTargetYM().isPresent()) {
+			if (!Objects.isNull(domain.getRecoveryTargetYM().get().start())) {
+				recoveryTargetStartYM = domain.getRecoveryTargetYM().get().start().v();
+			}
+			if (!Objects.isNull(domain.getRecoveryTargetYM().get().end())) {
+				recoveryTargetEndYM   = domain.getRecoveryTargetYM().get().end().v();
+			}
+		}
+		if(domain.getRecoveryTargetDate().isPresent()){
+			if (!Objects.isNull(domain.getRecoveryTargetDate().get().start())) {
+				recoveryTargetStartDate = domain.getRecoveryTargetDate().get().start();
+			}
+			if (!Objects.isNull(domain.getRecoveryTargetDate().get().end())) {
+				recoveryTargetEndDate   = domain.getRecoveryTargetDate().get().end();
+			}
+		}
 		return new SspmtRestorationTarget(
-				new SspmtRestorationTargetPk(domain.getDataRecoveryProcessId(), domain.getRecoveryCategory()),
+				new SspmtRestorationTargetPk(domain.getDataRecoveryProcessId(), 
+				domain.getRecoveryCategory()),
 				domain.getRetentionPeriodIndicator().value,
-				domain.getRecoveryTargetStartYear().orElse(null),
-				domain.getRecoveryTargetEndYear().orElse(null),
-				domain.getRecoveryTargetStartYM().orElse(null).v(),
-				domain.getRecoveryTargetEndYM().orElse(null).v(),
-				domain.getRecoveryTargetStartDate().orElse(null),
-				domain.getRecoveryTargetEndDate().orElse(null));
+				recoveryTargetStartYear, recoveryTargetEndYear,
+				recoveryTargetStartYM, recoveryTargetEndYM,
+				recoveryTargetStartDate, recoveryTargetEndDate);
 	}
 }
