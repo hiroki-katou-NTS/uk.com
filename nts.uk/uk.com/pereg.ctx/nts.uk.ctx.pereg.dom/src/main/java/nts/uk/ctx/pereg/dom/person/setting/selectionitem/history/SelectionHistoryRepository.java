@@ -8,6 +8,8 @@ import nts.uk.shr.com.history.DateHistoryItem;
 public interface SelectionHistoryRepository {
 	
 	Optional<SelectionHistory> get(String selectionItemId, String companyId);
+	
+	List<SelectionHistory> getList(String selectionItemId, List<String> companyIds);
 
 	void add(SelectionHistory selectionHistory);
 	
