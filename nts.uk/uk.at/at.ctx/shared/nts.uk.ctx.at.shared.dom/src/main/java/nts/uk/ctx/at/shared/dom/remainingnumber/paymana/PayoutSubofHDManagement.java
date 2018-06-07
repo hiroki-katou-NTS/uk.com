@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.paymana;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
@@ -30,7 +28,7 @@ public class PayoutSubofHDManagement extends AggregateRoot{
 	// 対象選択区分
 	private TargetSelectionAtr targetSelectionAtr;
 
-	public PayoutSubofHDManagement(String payoutId, String subOfHDID, BigDecimal usedDays,
+	public PayoutSubofHDManagement(String payoutId, String subOfHDID, Double usedDays,
 			int targetSelectionAtr) {
 		super();
 		this.payoutId = payoutId;
