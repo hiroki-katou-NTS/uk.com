@@ -53,14 +53,14 @@
 					<!-- D6_1 年月日 -->
 					<!-- Datepicker -->
 					<div id="D6_1" tabindex="2"
-						data-bind="ntsDatePicker: {value: dayOff,required: pickUp, dateFormat: 'YYYY/MM/DD'}"></div>
+						data-bind="ntsDatePicker: {name: '#{i18n.getText('KDM001_63')}',value: dayOff,required: pickUp, dateFormat: 'YYYY/MM/DD' }"></div>
 					<!-- D6_2 休出日数 -->
 					<span class="label" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_64')}</span>
 					<!-- D6_3 休出日数 -->
 					<!-- Combobox -->
 					<div id="D6_3" tabindex ="3"
 						data-bind="ntsComboBox: {
-					name: '#[KDM001_112]',
+					name: '#{i18n.getText('KDM001_65')}',
 					options: itemListHoliday,
 					optionsValue: 'code',
 					visibleItemsCount: 5,
@@ -82,7 +82,7 @@
 					<!-- Combobox -->
 					<div id="D7_1" tabindex="4"
 						data-bind="ntsComboBox: {
-					name: '#[KDM001_71]',
+					name: '#{i18n.getText('KDM001_71')}',
 					options: typeHoliday,
 					optionsValue: 'code',
 					visibleItemsCount: 5,
@@ -103,7 +103,7 @@
 					<!-- D8_1 期限 -->
 					<!-- Datepicker -->
 					<div id="D8_1" tabindex="5"
-						data-bind="ntsDatePicker: {value: expiredDate,required: pickUp, dateFormat: 'YYYY/MM/DD', name: '#[KDM001_73]'}"></div>
+						data-bind="ntsDatePicker: {name: '#{i18n.getText('KDM001_73')}',value: expiredDate,required: pickUp, dateFormat: 'YYYY/MM/DD'}"></div>
 				</div>
 
 				<div class="down-s">
@@ -121,14 +121,14 @@
 					<!-- D11_1 年月日 -->
 					<!-- Datepicker -->
 					<div id="D11_1" class="valid" tabindex="7"
-						data-bind="ntsDatePicker: {value: subDayoffDate, required: pause, dateFormat: 'YYYY/MM/DD', name: '#[KDM001_76]'}"></div>
+						data-bind="ntsDatePicker: {name: '#{i18n.getText('KDM001_76')}',value: subDayoffDate, required: pause, dateFormat: 'YYYY/MM/DD'}"></div>
 					<!-- D11_2 代休日数 -->
 					<span class="label" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_77')}</span>
 					<!-- D11_3 代休日数 -->
 					<!-- Combobox -->
 					<div id="D11_3" tabindex="8"
 						data-bind="ntsComboBox: {
-					name: '#[KDM001_116]',
+					name: '#{i18n.getText('KDM001_78')}',
 					options: itemListSubHoliday,
 					optionsValue: 'code',
 					visibleItemsCount: 5,
@@ -153,14 +153,14 @@
 						<!-- D12_2 年月日 -->
 						<!-- Datepicker -->
 						<div id="D12_2" tabindex="10"
-							data-bind="ntsDatePicker: {value: holidayDate,required: checkedSplit,dateFormat: 'YYYY/MM/DD', enable: isOptionSubHolidayEnable, name: '#[KDM001_81]'  }"></div>
+							data-bind="ntsDatePicker: {name: '#{i18n.getText('KDM001_81')}',value: holidayDate,required: checkedSplit,dateFormat: 'YYYY/MM/DD', enable: isOptionSubHolidayEnable}"></div>
 						<!-- D12_3 代休日数 -->
 						<span class="label" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_82')}</span>
 						<!-- D12_4 代休日数 -->
 						<!-- Combobox -->
 						<div id="D12_4" tabindex="11"
 							data-bind="ntsComboBox: {
-							name: '#[KDM001_116]',
+							name: '#{i18n.getText('KDM001_83')}',
 							options: itemListOptionSubHoliday,
 							optionsValue: 'code',
 							visibleItemsCount: 5,
