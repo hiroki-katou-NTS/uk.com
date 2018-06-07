@@ -204,7 +204,7 @@ module nts.uk.com.view.kwr002.b {
                             let data = self.createTransferData(currentData, rcdExport);
                             //add new ARES
                             service.addARES(data).done(() => {
-                                self.callGetAll(self, null);
+                                self.callGetAll(self, currentData);
                             });
                         }
                     }
