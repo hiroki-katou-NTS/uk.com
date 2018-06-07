@@ -86,8 +86,7 @@ module nts.uk.com.view.kwr002.b {
             if (self.newMode()) return;
 
             confirm({ messageId: 'Msg_18' }).ifYes(() => {
-                info({ messageId: 'Msg_35' }).then(() => {
-                    let currentData = self.currentARES();
+                 let currentData = self.currentARES();
                     let delARESCmd = {
                         code: Number(currentData.code()),
                         exportCode: Number(currentData.code()),
@@ -112,9 +111,6 @@ module nts.uk.com.view.kwr002.b {
                            self.setCurrentCodeAfterDelete();
                         }
                     });
-                })
-            }).ifNo(() => {
-                info({ messageId: 'Msg_36' });
             });
         }
 
