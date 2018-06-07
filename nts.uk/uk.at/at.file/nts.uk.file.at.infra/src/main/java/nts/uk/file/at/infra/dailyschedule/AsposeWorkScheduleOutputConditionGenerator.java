@@ -575,7 +575,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							if (optItemValue.isPresent()) {
 								AttendanceItemValueImport itemValue = optItemValue.get();
 								if (itemValue.getValueType() == ActualValue.STRING) {
-									Optional<WorkType> optWorkType = lstWorkType.stream().filter(type -> type.getWorkTypeCode().compareTo(itemValue.getValue()) == 0).findFirst();
+									Optional<WorkType> optWorkType = lstWorkType.stream().filter(type -> type.getWorkTypeCode().v().equals(itemValue.getValue())).findFirst();
 									if (optWorkType.isPresent()) {
 										if (outSche.getWorkTypeNameDisplay() == NameWorkTypeOrHourZone.OFFICIAL_NAME)
 											itemValue.setValue(optWorkType.get().getName().v());
@@ -706,7 +706,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				if (optItemValue.isPresent()) {
 					AttendanceItemValueImport itemValue = optItemValue.get();
 					if (itemValue.getValueType() == ActualValue.STRING && itemValue.getValue() != null) {
-						Optional<WorkType> optWorkType = lstWorkType.stream().filter(type -> type.getWorkTypeCode().compareTo(itemValue.getValue()) == 0).findFirst();
+						Optional<WorkType> optWorkType = lstWorkType.stream().filter(type -> type.getWorkTypeCode().v().equalsIgnoreCase(itemValue.getValue())).findFirst();
 						if (optWorkType.isPresent()) {
 							if (outSche.getWorkTypeNameDisplay() == NameWorkTypeOrHourZone.OFFICIAL_NAME)
 								itemValue.setValue(optWorkType.get().getName().v());
