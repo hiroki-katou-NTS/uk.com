@@ -78,7 +78,10 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 } else {
                     self.remainDays(self.occurredDays());
                 }
-                self.unit("日");
+                if (self.occurredDays() != null) {
+                    self.unit("日");
+                }
+                
             } else {
                 if (self.pause()) {
                     if (self.checkedSplit()) {
