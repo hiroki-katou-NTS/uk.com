@@ -1254,7 +1254,7 @@ module nts.layout {
                 CS00017_IS00084.ctrl.on('click', () => {
                     setShared('inputCDL008', {
                         selectedCodes: [ko.toJS(CS00017_IS00084.data.value)],
-                        baseDate: ko.toJS(!!CS00017_IS00082 ? new Date(CS00017_IS00082.data.value()) : new Date()),
+                        baseDate: ko.toJS(!!CS00017_IS00082 ? moment.utc(CS00017_IS00082.data.value(), "YYYYMMDD").toDate() : new Date()),
                         isMultiple: false,
                         selectedSystemType: 5,
                         isrestrictionOfReferenceRange: false
@@ -1279,7 +1279,7 @@ module nts.layout {
                 CS00017_IS00085.ctrl.on('click', () => {
                     setShared('inputCDL008', {
                         selectedCodes: [ko.toJS(CS00017_IS00085.data.value)],
-                        baseDate: ko.toJS(!!CS00017_IS00082 ? new Date(CS00017_IS00082.data.value()): new Date()),
+                        baseDate: ko.toJS(!!CS00017_IS00082 ? moment.utc(CS00017_IS00082.data.value(), "YYYYMMDD").toDate() : new Date()),
                         isMultiple: false,
                         selectedSystemType: 5,
                         isrestrictionOfReferenceRange: false
