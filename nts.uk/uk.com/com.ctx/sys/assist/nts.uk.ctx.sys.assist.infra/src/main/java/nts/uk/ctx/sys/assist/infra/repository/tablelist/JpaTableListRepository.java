@@ -14,6 +14,9 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Table;
 import javax.persistence.metamodel.EntityType;
 
+import org.eclipse.persistence.internal.jpa.EJBQueryImpl;
+import org.eclipse.persistence.queries.DatabaseQuery;
+
 import com.google.common.base.Strings;
 
 import nts.arc.layer.infra.data.JpaRepository;
@@ -214,7 +217,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 		if (indexs.size() > 0) {
 			query.append(" AND ( ");
 			boolean isFirstOrStatement = true;
-			for (Integer index : yearIndexs) {
+			for (Integer index : indexs) {
 				if (!isFirstOrStatement) {
 					query.append(" OR ");
 				}
@@ -243,13 +246,16 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 				}
 			}
 
-			query.append(String.join(" ", extractCondArray));
+			//query.append(String.join(" ", extractCondArray));
 		}
 
 		TypedQueryWrapper<?> queryWrapper = this.queryProxy().query(query.toString(), tableExport);
 		for (Entry<String, Object> entry : params.entrySet()) {
 			queryWrapper = queryWrapper.setParameter(entry.getKey(), entry.getValue());
 		}
+		DatabaseQuery databaseQuery  = queryWrapper.getQuery().unwrap(EJBQueryImpl.class).getDatabaseQuery();
+		databaseQuery.setSQLString(databaseQuery.getSQLString() + " " + extractCondKeyFix);
+
 		return queryWrapper.getList();
 	}
 
