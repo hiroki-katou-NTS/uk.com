@@ -226,7 +226,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     checkedSplit: self.checkedSplit(),
                     dateOptionSubHoliday: moment.utc(self.dateOptionSubHoliday(), 'YYYY/MM/DD').toISOString(),
                     selectedCodeOptionSubHoliday: self.selectedCodeOptionSubHoliday(),                 
-                    dayRemaining: Math.abs(parseInt(self.dayRemaining())),
+                    dayRemaining: Math.abs(parseFloat(self.dayRemaining())),
                     closureId: self.closureId()
                 };
                 if (!self.checkedSubHoliday()) {
