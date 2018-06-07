@@ -25,7 +25,7 @@ public class TargetEmployeesCommand {
 	    /**
 	    * 社員ID
 	    */
-	    private String Sid;
+	    private String sid;
 	    
 	    /**
 	    * ビジネスネーム
@@ -36,4 +36,6 @@ public class TargetEmployeesCommand {
 	     * 社員コード
 	     */
 	    private String scd;
+	    
+	    
 }

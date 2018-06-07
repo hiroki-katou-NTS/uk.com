@@ -464,7 +464,7 @@ module nts.uk.com.view.cmf003.b {
                         code: employeeSearch.employeeCode,
                         name: employeeSearch.employeeName,
                         workplaceName: employeeSearch.workplaceName,
-                        Sid: employeeSearch.employeeId,
+                        sid: employeeSearch.employeeId,
                         scd: employeeSearch.employeeCode,
                         businessname: employeeSearch.employeeName
                     };
@@ -757,7 +757,7 @@ module nts.uk.com.view.cmf003.b {
             name?: string;
             workplaceName?: string;
             isAlreadySetting?: boolean;
-            Sid: string;
+            sid: string;
             scd: string;
             businessname: string;
         }
