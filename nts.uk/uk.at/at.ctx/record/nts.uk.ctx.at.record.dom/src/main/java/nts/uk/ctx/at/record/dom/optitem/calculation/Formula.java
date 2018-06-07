@@ -11,6 +11,7 @@ import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
@@ -171,8 +172,8 @@ public class Formula extends AggregateRoot {
 	public ResultOfCalcFormula dicisionCalc(OptionalItem optionalItem,
 											PerformanceAtr performanceAtr,
 											List<ResultOfCalcFormula> resultCalcFormula,
-											Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto
-											/*Optional<> monthlyRecordDto*/) {
+											Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto,
+											Optional<MonthlyRecordToAttendanceItemConverter> monthlyRecordDto) {
 		int calcValue = 0;
 		if(this.getCalcAtr().isFormulaSetting()) {
 			if(this.calcFormulaSetting.getFormulaSetting().isPresent()) {
@@ -186,7 +187,7 @@ public class Formula extends AggregateRoot {
 		else if(this.getCalcAtr().isItemSelection()) {
 			if(this.calcFormulaSetting.getItemSelection().isPresent()) {
 				//項目選択による計算
-				calcValue = this.calcFormulaSetting.getItemSelection().get().calculationByItemSelection(performanceAtr, dailyRecordDto/*monthlyRecordDto*/);
+				calcValue = this.calcFormulaSetting.getItemSelection().get().calculationByItemSelection(performanceAtr, dailyRecordDto, monthlyRecordDto);
 			}else {
 				//計算項目選択が取得できない場合は0 ← これで良い？
 				calcValue = 0;
