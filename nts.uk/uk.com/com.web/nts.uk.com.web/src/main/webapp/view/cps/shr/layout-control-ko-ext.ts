@@ -822,35 +822,11 @@ module nts.custombinding {
                         </tbody>
                     </table>
                 </script>
-                <script type="text/html" id="ctr_string">
-                    <input data-bind=" ntsTextEditor: {
-                            name: itemName,
-                            value: value,
-                            constraint: nameid,
-                            required: required,
-                            option: {
-                                textmode: 'text'
-                            },
-                            enable: editable,
-                            readonly: readonly,
-                            immediate: false
-                        },  attr: {
-                            id: nameid,
-                            nameid: nameid,
-                            title: itemName,
-                            'data-title': itemName,
-                            'data-code': itemCode,
-                            'data-category': categoryCode,
-                            'data-required': required,
-                            'data-defv': defValue
-                        }," />
-                </script>
                 <script type="text/html" id="ctr_template">
                     <!-- ko if: resourceId -->
                         <button class="inline" data-bind="ntsHelpButton: { position: 'right center', textId: resourceId }, text: text('？')">？</button>
                     <!-- /ko -->                    
-                    <!-- ko let: { 
-                                nameid : itemDefId.replace(/[-_]/g, ''),
+                    <!-- ko let: {
                                 DATE_TYPE: {
                                     YYYYMMDD: 1,
                                     YYYYMM: 2,
@@ -888,17 +864,34 @@ module nts.custombinding {
                                 }
                             } -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.STRING -->
-                            <!-- ko if: [STRING_TYPE.CARDNO].indexOf(item.stringItemType) > -1 -->
-                                <!-- ko template: {name: 'ctr_string', data: $.extend($data, { nameid: 'StampNumber' }) } --><!-- /ko -->
+                            <!-- ko if: [STRING_TYPE.NUMERIC, STRING_TYPE.CARDNO].indexOf(item.stringItemType) > -1 || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80) -->
+                            <input data-bind=" ntsTextEditor: {
+                                    name: itemName,
+                                    value: value,
+                                    constraint: constraint,
+                                    required: required,
+                                    option: {
+                                        textmode: 'text'
+                                    },
+                                    enable: editable,
+                                    readonly: readonly,
+                                    immediate: false
+                                },  attr: {
+                                    id: nameid,
+                                    nameid: nameid,
+                                    title: itemName,
+                                    'data-title': itemName,
+                                    'data-code': itemCode,
+                                    'data-category': categoryCode,
+                                    'data-required': required,
+                                    'data-defv': defValue
+                                }," />                                    
                             <!-- /ko -->
-                            <!-- ko if: item.stringItemType == STRING_TYPE.NUMERIC || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80) -->
-                                <!-- ko template: {name: 'ctr_string', data: $.extend($data, { nameid: nameid }) } --><!-- /ko -->
-                            <!-- /ko -->
-                            <!-- ko if: item.stringItemType != STRING_TYPE.NUMERIC && (([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) == -1 && item.stringItemLength >= 40) || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength > 80)) -->
+                            <!-- ko if: [STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) == -1 && item.stringItemLength >= 40 || [STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength > 80 -->
                             <textarea data-bind="ntsMultilineEditor: {
                                     name: itemName,
                                     value: value,
-                                    constraint: nameid,
+                                    constraint: constraint,
                                     required: required,
                                     option: {
                                         textmode: 'text'
@@ -922,7 +915,7 @@ module nts.custombinding {
                         <input data-bind="ntsNumberEditor: { 
                                     name: itemName,
                                     value: value,
-                                    constraint: nameid,
+                                    constraint: constraint,
                                     required: required,
                                     option: {
                                         textalign: 'left',
@@ -949,7 +942,7 @@ module nts.custombinding {
                                 value: value,
                                 startDate: startDate,
                                 endDate: endDate,
-                                constraint: nameid,
+                                constraint: constraint,
                                 dateFormat: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'YYYY/MM/DD' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'YYYY/MM' : 'YYYY'),
                                 enable: editable,
                                 readonly: readonly
@@ -975,7 +968,7 @@ module nts.custombinding {
                                     value: value,
                                     startDate: startDate,
                                     endDate: endDate,
-                                    constraint: nameid,
+                                    constraint: constraint,
                                     dateFormat: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'YYYY/MM/DD' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'YYYY/MM' : 'YYYY'),
                                     enable: editable,
                                     readonly: readonly
@@ -997,7 +990,7 @@ module nts.custombinding {
                                     value: value,
                                     startDate: startDate,
                                     endDate: endDate,
-                                    constraint: nameid,
+                                    constraint: constraint,
                                     dateFormat: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'YYYY/MM/DD' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'YYYY/MM' : 'YYYY'),
                                     enable: editable,
                                     readonly: readonly
@@ -1018,7 +1011,7 @@ module nts.custombinding {
                         <input data-bind="ntsTimeEditor: {
                                     name: itemName,
                                     value: value,
-                                    constraint: nameid,
+                                    constraint: constraint,
                                     required: required,
                                     inputFormat: 'time',
                                     enable: editable,
@@ -1038,7 +1031,7 @@ module nts.custombinding {
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.TIMEPOINT -->
                         <input data-bind="ntsTimeWithDayEditor: { 
                                     name: itemName,
-                                    constraint: nameid,
+                                    constraint: constraint,
                                     value: value,
                                     enable: editable, 
                                     readonly: readonly,
@@ -1142,7 +1135,7 @@ module nts.custombinding {
                                 <input data-bind="ntsNumberEditor: { 
                                             name: itemName,
                                             value: value,
-                                            constraint: nameid,
+                                            constraint: constraint,
                                             required: required,
                                             option: {
                                                 textalign: 'left',
@@ -2101,7 +2094,8 @@ module nts.custombinding {
                                             ITEM_SINGLE_TYPE.TIME,
                                             ITEM_SINGLE_TYPE.TIMEPOINT
                                         ].indexOf((x.item || {}).dataTypeValue) > -1 &&
-                                        x.itemDefId.replace(/[-_]/g, '');
+                                        x.itemDefId.replace(/[-_]/g, ''),
+                                    nameid = x.itemDefId.replace(/[-_]/g, '');
 
                                 // fix stampcard validate
                                 if ([ITEM_STRING_TYPE.CARDNO].indexOf((x.item || {}).stringItemType) > -1) {
@@ -2109,6 +2103,7 @@ module nts.custombinding {
                                 }
 
                                 return _.extend(x, {
+                                    nameid: nameid,
                                     parent: parent,
                                     childs: childs,
                                     constraint: constraint || undefined
@@ -2241,7 +2236,8 @@ module nts.custombinding {
                                     ITEM_SINGLE_TYPE.TIME,
                                     ITEM_SINGLE_TYPE.TIMEPOINT
                                 ].indexOf((col.item || {}).dataTypeValue) > -1 &&
-                                col.itemDefId.replace(/[-_]/g, '');
+                                col.itemDefId.replace(/[-_]/g, ''),
+                            nameid = col.itemDefId.replace(/[-_]/g, '');
 
                         // fix stampcard validate
                         if ([ITEM_STRING_TYPE.CARDNO].indexOf((col.item || {}).stringItemType) > -1) {
@@ -2249,6 +2245,7 @@ module nts.custombinding {
                         }
 
                         return _.extend(col, {
+                            nameid: nameid,
                             parent: parent,
                             childs: childs,
                             constraint: constraint || undefined
