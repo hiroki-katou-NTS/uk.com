@@ -6,19 +6,17 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
-
 import nts.gul.collection.CollectionUtil;
-import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
-import nts.uk.shr.com.mail.MailSender;
-import nts.uk.shr.com.mail.SendMailFailedException;
 
 /**
  * 
@@ -30,16 +28,10 @@ import nts.uk.shr.com.mail.SendMailFailedException;
 public class AfterProcessDeleteImpl implements AfterProcessDelete {
 	
 	@Inject
-	private  EmployeeRequestAdapter  employeeAdapter;
-	
-	@Inject
 	private AppTypeDiscreteSettingRepository  appTypeDiscreteSettingRepo;
 	
 	@Inject
 	private ApplicationRepository_New applicationRepo;
-	
-	@Inject
-	private MailSender mailSender;
 	
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
@@ -47,36 +39,30 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 	@Inject
 	private ApplicationApprovalService_New applicationApprovalService;
 	
+	@Inject
+	private OtherCommonAlgorithm otherCommonAlgorithm;
+	
 	@Override
-	public String screenAfterDelete(String companyID,String appID, Long version) {
-		ApplicationType appType = applicationRepo.findByID(companyID, appID).get().getAppType();
+	public ProcessResult screenAfterDelete(String companyID,String appID, Long version) {
+		boolean isProcessDone = true;
+		boolean isAutoSendMail = false;
+		List<String> autoSuccessMail = new ArrayList<>();
+		List<String> autoFailMail = new ArrayList<>();
+		Application_New application = applicationRepo.findByID(companyID, appID).get();
+		ApplicationType appType = application.getAppType();
 		AppCanAtr sendMailWhenApprovalFlg = appTypeDiscreteSettingRepo.getAppTypeDiscreteSettingByAppType(companyID, appType.value)
 				.get().getSendMailWhenRegisterFlg();
-		List<String> converList =new ArrayList<String>();
-		String strMail = "";
+		List<String> converList = new ArrayList<String>();
 		
 		// ドメインモデル「申請種類別設定」．新規登録時に自動でメールを送信するをチェックする(kiểm tra
 		// 「申請種類別設定」．新規登録時に自動でメールを送信する)//
 		if (sendMailWhenApprovalFlg == AppCanAtr.CAN) {
+			isAutoSendMail = true;
 			converList = approvalRootStateAdapter.getMailNotifierList(companyID, appID);
-			if (!CollectionUtil.isEmpty(converList)) {
-				// TODOgui mail cho ng xac nhan
-				
-				// TODO lay thong tin Imported
-				
-				for(String employeeId: converList){
-					String mail = employeeAdapter.getEmployeeInfor(employeeId).getSMail();
-					if(Strings.isBlank(mail)) {
-						continue;
-					}
-					try {
-						mailSender.send("nts", mail, new MailContents("nts mail", "delete mail from NTS"));
-						strMail += mail + System.lineSeparator();
-					} catch (SendMailFailedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
+			if(!CollectionUtil.isEmpty(converList)){
+				MailResult mailResult = otherCommonAlgorithm.sendMailApproverDelete(converList, application);
+				autoSuccessMail = mailResult.getSuccessList();
+				autoFailMail = mailResult.getFailList();
 			}
 		}
 		//TODO delete domaim Application
@@ -85,7 +71,7 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 		/*if (converList != null) {
 			//TODO Hien thi thong tin 392
 		}*/
-		return strMail;
+		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID);
 	}
 
 }

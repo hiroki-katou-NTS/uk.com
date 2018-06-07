@@ -7,7 +7,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.stamp.RegisterAppStampCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.stamp.UpdateAppStampCommandHandler;
@@ -16,6 +15,7 @@ import nts.uk.ctx.at.request.app.find.application.stamp.AppStampFinder;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampNewPreDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.StampCombinationDto;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 /**
  * 
  * @author Doan Duy Hung
@@ -48,8 +48,8 @@ public class ApplicationStampWebService extends WebService {
 	
 	@POST
 	@Path("insert")
-	public JavaTypeResult<String> insert(AppStampCmd command){
-		return new JavaTypeResult<String>(this.registerApplicationStampCommandHandler.handle(command));
+	public ProcessResult insert(AppStampCmd command){
+		return this.registerApplicationStampCommandHandler.handle(command);
 	}
 	
 	@POST

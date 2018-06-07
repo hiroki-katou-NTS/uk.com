@@ -34,7 +34,7 @@
 				<button tabindex="3" data-bind="click: openCMM018,visible: false">#{i18n.getText('KAF005_12')}</button>
 				<!--A1_4 登録時にメールを送信する--> 				
 				<div class="btnSendMail" tabindex="4"
-					data-bind="ntsCheckBox: { checked: manualSendMailAtr, enable: true, text: '#{i18n.getText('KAF005_13')}' },visible: false"></div>
+					data-bind="ntsCheckBox: { checked: checkBoxValue, enable: manualSendMailAtr, text: '#{i18n.getText('KAF005_13')}' }, visible: manualSendMailAtr"></div>
 			</div>
 			<div id="contents-area" class="">
 					<!-- Message area -->

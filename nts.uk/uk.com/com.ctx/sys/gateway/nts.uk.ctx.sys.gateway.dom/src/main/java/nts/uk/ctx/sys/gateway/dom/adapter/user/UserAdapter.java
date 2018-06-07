@@ -47,5 +47,12 @@ public interface UserAdapter {
 	 * @return the optional
 	 */
 	Optional<UserImport> findByUserId(String userId);
+	
+	/**
+	 * requestlist 313 adapter
+	 * @param userId
+	 * @return
+	 */
+	Optional<UserInforExImport> getByEmpID(String empID);
 
 }

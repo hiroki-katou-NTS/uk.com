@@ -260,8 +260,14 @@ module nts.uk.at.view.kaf009.b {
                 promiseResult.done((result) => {
                     if (result) {
                         service.updateGoBackDirect(self.getCommand()).done(function() {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                                location.reload();
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                                if(data.autoSendMail){
+                                    nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
+                                        location.reload();
+                                    });    
+                                } else {
+                                    location.reload();
+                                }
                             });
                         })
                         .fail(function(res) { 
