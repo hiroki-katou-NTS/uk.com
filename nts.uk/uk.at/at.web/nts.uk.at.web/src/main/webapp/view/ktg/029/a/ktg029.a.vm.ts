@@ -39,7 +39,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         displaySPHDRamainNo: KnockoutObservable<boolean>;
         displaySixtyhExtraRest: KnockoutObservable<boolean>;
         
-        dataRecord: KnockoutObservable<OptionalWidgetInfo>
+        dataRecord: KnockoutObservable<OptionalWidgetInfo>;
         
         
         
@@ -83,7 +83,12 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             block.invisible();
-            var topPagePartCode = $(location).attr('search').split('=')[1];            
+            var topPagePartCode = $(location).attr('search').split('=')[1];
+            if(nts.uk.text.isNullOrEmpty(topPagePartCode)){
+                block.clear();
+                dfd.resolve();
+                return dfd.promise();   
+            }            
             new service.Service().getOptionalWidgetDisplay(topPagePartCode).done(function(data: any){
                 if(data!=null){
                     self.excuteDisplay(data.optionalWidgetImport);
@@ -251,7 +256,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         }
         
         openKDW003Dialog() {
-            let self = this;
+            var self = this;
             if(self.dataRecord().presenceDailyPer){
                 window.top.location = window.location.origin + '/nts.uk.at.web/view/kdw/003/a/index.xhtml';
             }else{

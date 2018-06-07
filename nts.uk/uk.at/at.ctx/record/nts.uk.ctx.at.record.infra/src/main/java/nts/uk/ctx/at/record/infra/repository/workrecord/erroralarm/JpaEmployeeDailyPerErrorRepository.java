@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -190,6 +191,24 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 	public boolean checkEmployeeHasErrorOnProcessingDate(String employeeID, GeneralDate processingDate) {
 		return this.queryProxy().query(CHECK_EMPLOYEE_HAS_ERROR_ON_PROCESSING_DATE, long.class).setParameter("employeeId", employeeID)
 				.setParameter("processingDate", processingDate).getSingle().get() > 0;
+	}
+
+	@Override
+	public boolean checkExistErrorByDate(String companyId, String employeeId, GeneralDate date) {
+		/*StringBuilder builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcdtSyainDpErList a ");
+		builderString.append("WHERE a.krcdtSyainDpErListPK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtSyainDpErListPK.companyID = :companyId ");
+		builderString.append("AND a.krcdtSyainDpErListPK.processingDate = :date ");
+		Optional<KrcdtSyainDpErList> entyti = this.queryProxy().query(builderString.toString(), KrcdtSyainDpErList.class)
+				.setParameter("companyId", companyId)
+				.setParameter("employeeId", employeeId)
+				.setParameter("date", date).getSingle();
+		
+		return entyti.isPresent()?true:false;
+		*/
+		return false;
 	}
 	
 
