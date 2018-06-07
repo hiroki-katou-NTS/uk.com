@@ -44,7 +44,7 @@ public class AnnualPaidLeaveSettingEvenSubcriber implements DomainEventSubscribe
 	private void updateCtgAbolish(boolean params, String companyId) {
 		List<PersonInfoCategory> ctgLst = new ArrayList<>();
 		if (params) {
-			ctgLst.addAll(ctgRepo.getPerCtgByListCtgCd(Arrays.asList("CS00024"), companyId).stream()
+			ctgLst.addAll(ctgRepo.getPerCtgByListCtgCd(Arrays.asList("CS00024","CS00037"), companyId).stream()
 					.filter(c -> c.getIsAbolition() == IsAbolition.ABOLITION).map(c -> {
 						c.setAbolish(IsAbolition.NOT_ABOLITION);
 						return c;
