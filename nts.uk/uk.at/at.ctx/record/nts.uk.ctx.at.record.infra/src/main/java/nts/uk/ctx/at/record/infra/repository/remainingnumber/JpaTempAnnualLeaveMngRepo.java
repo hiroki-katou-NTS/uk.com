@@ -138,7 +138,7 @@ public class JpaTempAnnualLeaveMngRepo extends JpaRepository implements TempAnnu
 	@Override
 	public List<TempAnnualLeaveManagement> findByEmployeeID(String employeeID) {
 		return this.queryProxy().query(SELECT_BY_EMPLOYEEID, KrcdtAnnleaMngTemp.class)
-				.setParameter("employeeId", employeeID)
+				.setParameter("employeeID", employeeID)
 				.getList(c -> c.toDomain());
 	}
 }
