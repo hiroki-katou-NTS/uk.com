@@ -308,9 +308,9 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     self.listExtractData = result.extraHolidayManagementDataDto.extraData;
                     self.convertToDisplayList();
                     self.updateSubstituteDataList();
-                    if (result.compenSettingEmpExpiredDate.length>0){
-                        self.dispExpiredDate(result.compenSettingEmpExpiredDate);
-                    } else self.dispExpiredDate(result.leaveSettingExpiredDate);
+                    if (result.leaveSettingExpiredDate.length>0){
+                        self.dispExpiredDate(result.leaveSettingExpiredDate);
+                    } else self.dispExpiredDate(result.compenSettingEmpExpiredDate);
                     self.initKCP009();
                     self.disableLinkedData();
                     dfd.resolve();
