@@ -11,6 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.FurikyuMngDataExtractionData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.FurikyuMngDataExtractionService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 
 @Stateless
@@ -27,14 +28,16 @@ public class FurikyuMngDataExtractionFinder {
 		List<PayoutManagementData> payoutManagementData = furikyuMngDataExtractionData.getPayoutManagementData();
 		List<SubstitutionOfHDManagementData> substitutionOfHDManagementData = furikyuMngDataExtractionData
 				.getSubstitutionOfHDManagementData();
+		List<PayoutSubofHDManagement> payoutSubofHDManagementLinkToPayout = furikyuMngDataExtractionData.getPayoutSubofHDManagementLinkToPayout();
+		List<PayoutSubofHDManagement> payoutSubofHDManagementLinkToSub = furikyuMngDataExtractionData.getPayoutSubofHDManagementLinkToSub();
 		List<CompositePayOutSubMngData> compositePayOutSubMngData = new ArrayList<CompositePayOutSubMngData>();
 
 		for (PayoutManagementData item : payoutManagementData) {
-			compositePayOutSubMngData.add(new CompositePayOutSubMngData(item));
+			compositePayOutSubMngData.add(new CompositePayOutSubMngData(item, payoutSubofHDManagementLinkToPayout));
 		}
 
 		for (SubstitutionOfHDManagementData item : substitutionOfHDManagementData) {
-			compositePayOutSubMngData.add(new CompositePayOutSubMngData(item));
+			compositePayOutSubMngData.add(new CompositePayOutSubMngData(item, payoutSubofHDManagementLinkToSub));
 		}
 
 		compositePayOutSubMngData.sort(new Comparator<CompositePayOutSubMngData>() {
