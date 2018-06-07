@@ -206,13 +206,9 @@ public class OptionalItem extends AggregateRoot {
     												List<Formula> formulaList,
     												Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto
     												/*Optional<> monthlyRecordDto*/) {
-        //AggregateRoot「任意項目の計算式」取得
-//        val formulaList = formulaRepository.find(companyId);
-    	
+	
     	//任意項目計算式を記号の昇順でソート
-//    	formulaList.stream().sorted((first,second) -> first.getSymbol().compareTo(second.getSymbol())).collect(Collectors.toList());
     	formulaList.sort((first,second) -> first.getSymbol().compareTo(second.getSymbol()));
-//    	formulaList = formulaList.stream().sorted((first,second) -> first.getSymbol().compareTo(second.getSymbol())).collect(Collectors.toList());
         /*パラメータ：任意項目の計算結果を定義*/
         List<ResultOfCalcFormula> calcResultAnyItem = new ArrayList<>();
         //計算式分ループ
