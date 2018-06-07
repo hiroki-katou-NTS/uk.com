@@ -8,7 +8,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import lombok.Value;
-import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.overtime.CheckBeforeRegisterOvertime;
 import nts.uk.ctx.at.request.app.command.application.overtime.CheckConvertPrePost;
@@ -22,6 +21,7 @@ import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResu
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamCaculationOvertime;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamChangeAppDate;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 
 @Path("at/request/application/overtime")
@@ -87,9 +87,8 @@ public class OvertimeWebService extends WebService{
 	
 	@POST
 	@Path("create")
-	public JavaTypeResult<String> createOvertime(CreateOvertimeCommand command){
-		JavaTypeResult<String>  test = new JavaTypeResult<String>(createHandler.handle(command)); 
-		return test;
+	public ProcessResult createOvertime(CreateOvertimeCommand command){
+		return createHandler.handle(command); 
 	}
 	@POST
 	@Path("checkBeforeRegister")
@@ -111,7 +110,7 @@ public class OvertimeWebService extends WebService{
 	
 	@POST
 	@Path("update")
-	public List<String> update(UpdateOvertimeCommand command) {
+	public ProcessResult update(UpdateOvertimeCommand command) {
 		return this.updateOvertimeCommandHandler.handle(command);
 	}
 	

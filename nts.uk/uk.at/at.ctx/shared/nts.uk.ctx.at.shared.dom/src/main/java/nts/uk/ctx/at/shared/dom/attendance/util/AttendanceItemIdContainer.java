@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 
 public class AttendanceItemIdContainer {
 
+	private static final String OPTIONAL_ITEM_KEY = "任意項目値";
 	private static Map<Integer, String> DAY_ITEM_ID_CONTAINER;
 	private static Map<Integer, String> MONTHLY_ITEM_ID_CONTAINER;
 	private static Map<String, Integer> ENUM_CONTAINER;
@@ -2190,6 +2191,12 @@ public class AttendanceItemIdContainer {
 		/**　TODO: chua map 👆👆👆👆👆👆👆👆👆👆　*/
 	}
 
+	public static boolean isHaveOptionalItems(Collection<ItemValue> items) {
+		return items.stream().filter(i -> DAY_ITEM_ID_CONTAINER.get(i.getItemId()).contains(OPTIONAL_ITEM_KEY))
+				.findFirst().isPresent();
+	}
+	
+	
 	public static String getPath(int key, AttendanceItemType type) {
 		if (type == AttendanceItemType.MONTHLY_ITEM) {
 			return MONTHLY_ITEM_ID_CONTAINER.get(key);

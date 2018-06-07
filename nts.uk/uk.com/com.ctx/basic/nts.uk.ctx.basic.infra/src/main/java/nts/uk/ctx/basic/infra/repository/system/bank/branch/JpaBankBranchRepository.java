@@ -14,9 +14,9 @@ import nts.uk.ctx.basic.infra.entity.system.bank.branch.CbkmtBranchPK;
 
 @Stateless
 public class JpaBankBranchRepository extends JpaRepository implements BankBranchRepository{
-	public static String SEL_1 = "SELECT br FROM CbkmtBranch br WHERE br.ckbmtBranchPK.companyCode = :companyCode AND br.bankCode = :bankCode AND br.branchCode = :branchCode";
-    public static String SEL_2 = "SELECT br FROM CbkmtBranch br WHERE br.ckbmtBranchPK.companyCode = :companyCode AND br.bankCode = :bankCode";
-    public static String SEL_3 = "SELECT br FROM CbkmtBranch br WHERE br.ckbmtBranchPK.companyCode = :companyCode ORDER BY br.branchCode";
+	private static final String SEL_1 = "SELECT br FROM CbkmtBranch br WHERE br.ckbmtBranchPK.companyCode = :companyCode AND br.bankCode = :bankCode AND br.branchCode = :branchCode";
+	private static final String SEL_2 = "SELECT br FROM CbkmtBranch br WHERE br.ckbmtBranchPK.companyCode = :companyCode AND br.bankCode = :bankCode";
+	private static final String SEL_3 = "SELECT br FROM CbkmtBranch br WHERE br.ckbmtBranchPK.companyCode = :companyCode ORDER BY br.branchCode";
 	
     @Override
     public Optional<BankBranch> find(String companyCode, String branchId) {

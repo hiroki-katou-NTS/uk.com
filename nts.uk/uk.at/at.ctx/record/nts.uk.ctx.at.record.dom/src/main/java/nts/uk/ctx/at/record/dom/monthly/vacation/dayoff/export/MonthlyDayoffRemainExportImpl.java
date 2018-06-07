@@ -25,7 +25,7 @@ public class MonthlyDayoffRemainExportImpl implements MonthlyDayoffRemainExport{
 			if(getDayOffDataBySidYmStatus.isEmpty()) {
 				continue;
 			}
-			DayoffCurrentMonthOfEmployee dataOutput = new DayoffCurrentMonthOfEmployee(employeeId, ym, null, null, null, null, null, null, null, null, null, null);
+			DayoffCurrentMonthOfEmployee dataOutput = new DayoffCurrentMonthOfEmployee(employeeId, ym, (double)0, 0, (double)0, 0, (double)0, 0, (double)0, 0, (double)0, 0);
 			GeneralDate endDateRemainingMax = GeneralDate.ymd(ym.year(), ym.month(), 1);
 			GeneralDate endDatecarryMax = GeneralDate.ymd(ym.year(), ym.month(), 1);
 			for (MonthlyDayoffRemainData data : getDayOffDataBySidYmStatus) {

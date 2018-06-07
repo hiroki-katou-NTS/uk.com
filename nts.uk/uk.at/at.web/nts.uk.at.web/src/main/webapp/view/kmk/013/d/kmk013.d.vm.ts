@@ -19,7 +19,6 @@ module nts.uk.at.view.kmk013.d {
             selectedId44: KnockoutObservable<any>;
             
             time: KnockoutObservable<number>;
-            timeEditor: any;
             
             constructor() {
                 var self = this;
@@ -84,16 +83,8 @@ module nts.uk.at.view.kmk013.d {
                         });
                     }
                 });
-                
-                self.time = ko.observable(180);
-                self.timeEditor = {
-                    value: ko.observable(180),
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
-                        inputFormat: 'time'
-                    })),
-                    required: ko.observable(true),
-                    enable: ko.observable(true)
-                }
+                 
+                self.time = ko.observable(2);
             }
             startPage(): JQueryPromise<any> {
                 var self = this;

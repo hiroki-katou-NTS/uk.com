@@ -31,10 +31,10 @@ import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSe
 public class JpaWkpAutoCalSettingRepository extends JpaRepository implements WkpAutoCalSettingRepository {
 	
 	/** The select no where. */
-	public final String SELECT_NO_WHERE = "SELECT c FROM KshmtAutoWkpCalSet c";
+	public static final String SELECT_NO_WHERE = "SELECT c FROM KshmtAutoWkpCalSet c";
 	
 	/** The select by company id. */
-	public final String SELECT_BY_COMPANY_ID = SELECT_NO_WHERE + " WHERE c.companyId = :companyId";
+	public static final String SELECT_BY_COMPANY_ID = SELECT_NO_WHERE + " WHERE c.companyId = :companyId";
 	/*
 	 * (non-Javadoc)
 	 * 
