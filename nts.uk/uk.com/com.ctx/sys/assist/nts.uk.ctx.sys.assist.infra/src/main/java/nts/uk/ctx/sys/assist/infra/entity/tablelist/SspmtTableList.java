@@ -274,14 +274,14 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "CAN_NOT_BE_OLD")
-	public String canNotBeOld;
+	public int canNotBeOld;
 
 	/**
 	 * 復旧対象選択
 	 */
 	@Basic(optional = true)
 	@Column(name = "SELECTION_TARGET_FOR_RES")
-	public String selectionTargetForRes;
+	public int selectionTargetForRes;
 
 	/**
 	 * 抽出キー区分1

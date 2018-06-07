@@ -198,12 +198,12 @@ public class TableList extends AggregateRoot {
 	/**
 	 * 復旧対象可不可
 	 */
-	private String canNotBeOld;
+	private int canNotBeOld;
 
 	/**
 	 * 復旧対象選択
 	 */
-	private String selectionTargetForRes;
+	private int selectionTargetForRes;
 
 	/**
 	 * 抽出キー区分1
@@ -597,7 +597,7 @@ public class TableList extends AggregateRoot {
 			String internalFileName, int anotherComCls, String referenceYear, String referenceMonth,
 			String compressedFileName, String fieldChild1, String fieldChild2, String fieldChild3, String fieldChild4,
 			String fieldChild5, String fieldChild6, String fieldChild7, String fieldChild8, String fieldChild9,
-			String fieldChild10, int historyCls, String canNotBeOld, String selectionTargetForRes,
+			String fieldChild10, int historyCls, int canNotBeOld, int selectionTargetForRes,
 			String clsKeyQuery1, String clsKeyQuery2, String clsKeyQuery3, String clsKeyQuery4, String clsKeyQuery5,
 			String clsKeyQuery6, String clsKeyQuery7, String clsKeyQuery8, String clsKeyQuery9, String clsKeyQuery10,
 			String fieldKeyQuery1, String fieldKeyQuery2, String fieldKeyQuery3, String fieldKeyQuery4,
