@@ -1252,7 +1252,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		List<AffComHistItemAtScreen> resultList = new ArrayList<>();
 		CollectionUtil.split(employeeIds, 1000, (subList) -> {
 			resultList.addAll(this.queryProxy().query(SELECT_BY_EMPLOYEE_ID_AFF_COM, BsymtAffCompanyHist.class)
-					.setParameter("sIds", employeeIds).setParameter("cid", cid)
+					.setParameter("sIds", subList).setParameter("cid", cid)
 					.getList(x -> new AffComHistItemAtScreen(x.bsymtAffCompanyHistPk.sId,
 							new DatePeriod(x.startDate, x.endDate))));
 		});
