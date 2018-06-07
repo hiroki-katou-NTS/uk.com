@@ -1,4 +1,4 @@
-table, th {
+table {
     border-top: 0.5px solid grey;
     border-bottom: 0.5px solid grey;
     border-right: 0.5px solid grey;
@@ -7,16 +7,17 @@ table, th {
 th, td {
     padding: 5px;
 }
-td {
+td, th {
     border-top: 0.5px solid grey;
     border-left: 0.5px solid grey;
 }
 .div-table {
+	width: 775px;
     display: block;
     margin: 20px;
 }
 thead, tbody {
-	width: 775px;
+	width: 100%;
 	display: block;
 }
 thead {
