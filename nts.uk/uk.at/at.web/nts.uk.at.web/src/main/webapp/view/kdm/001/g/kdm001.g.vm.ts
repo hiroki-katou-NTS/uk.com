@@ -71,6 +71,11 @@ module nts.uk.at.view.kdm001.g.viewmodel {
 
 
         public updateData() {
+            nts.uk.ui.errors.clearAll();
+            $("#G6_4").trigger("validate");
+            $("#G7_2").trigger("validate");
+            $("#G9_2").trigger("validate");
+            $("#G8_2").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
                  block.invisible();
                 let self = this;
