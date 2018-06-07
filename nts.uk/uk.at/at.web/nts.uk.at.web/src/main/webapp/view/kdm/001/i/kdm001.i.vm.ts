@@ -5,6 +5,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
     import block = nts.uk.ui.block;
     import errors = nts.uk.ui.errors;
     import dialog = nts.uk.ui.dialog;
+    import getText = nts.uk.resource.getText;
     export class ScreenModel {
         employeeId: KnockoutObservable<string> = ko.observable('');
         workCode: KnockoutObservable<string> = ko.observable('');
@@ -25,28 +26,22 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         itemListSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberDays());
         selectedCodeSubHoliday: KnockoutObservable<number> = ko.observable(null);
         itemListOptionSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberDays());
-        selectedCodeOptionSubHoliday: KnockoutObservable<string> = ko.observable('');
+        selectedCodeOptionSubHoliday: KnockoutObservable<string> = ko.observable(null);
         closureId: KnockoutObservable<number> = ko.observable(0);
         //RemaningDay
         numberHoliday: KnockoutObservable<string> = ko.observable('');
         numberSubHoliday: KnockoutObservable<string> = ko.observable('');
         numberSplitHoliday: KnockoutObservable<string> = ko.observable('');
         totalDay: KnockoutObservable<number> = ko.observable(null);
-        unit: KnockoutObservable<string> = ko.observable('');
-        unitDay: KnockoutObservable<string> = ko.observable('日');
+        unitDay: KnockoutObservable<string> = ko.observable(getText('KDM001_27'));
   
         constructor() {
             let self = this;
             self.initScreen();
-            self.selectedCodeHoliday(self.itemListHoliday()[0].code);
-            self.selectedCodeSubHoliday(self.itemListSubHoliday()[0].code);
-            self.selectedCodeOptionSubHoliday(self.itemListOptionSubHoliday()[0].code);
+            //self.selectedCodeHoliday(self.itemListHoliday()[0].code);
+            //self.selectedCodeSubHoliday(self.itemListSubHoliday()[0].code);
+            //self.selectedCodeOptionSubHoliday(self.itemListOptionSubHoliday()[0].code);
             
-            if(self.checkedHoliday() && self.checkedSubHoliday()){
-                if(self.dateHoliday() == '' && self.dateSubHoliday() == ''){
-                    self.dayRemaining("");
-                }
-            }
             
             //休出残数算出処理
             self.checkedHoliday.subscribe((v) => {
@@ -64,7 +59,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     $("#I6_3").ntsError('clear');
                     $("#I8_1").ntsError('clear');
                 }else{
-                    $("#I6_3").ntsError('clear');
+                    _.defer(() => {$("#I6_3").ntsError('clear');});
                 }
             });
             self.checkedSubHoliday.subscribe((v) => {
@@ -144,19 +139,19 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             if (!remainObject.checkBox1 && !remainObject.checkBox2 && !remainObject.checkBox3) {
                 return "";
             } else if (remainObject.checkBox1 && !remainObject.checkBox2 && !remainObject.checkBox3) {
-                if (remainObject.value1 == '') {
+                if (remainObject.value1 == null) {
                     return "";
                 } else {
                     return remainObject.value1;
                 }
             } else if (remainObject.checkBox1 && remainObject.checkBox2 && !remainObject.checkBox3) {
-                if (remainObject.value1 == '' && remainObject.value2 == '') {
+                if (remainObject.value1 == null && remainObject.value2 == null) {
                     return "";
                 } else {
                     return (remainObject.value1 - remainObject.value2).toString();
                 }
             } else if (remainObject.checkBox1 && remainObject.checkBox2 && remainObject.checkBox3) {
-                if (remainObject.value1 == '' && remainObject.value2 == '' && remainObject.value3 == '') {
+                if (remainObject.value1 == null && remainObject.value2 == null && remainObject.value3 == null) {
                     return "";
                 } else {
                     return (remainObject.value1 - remainObject.value2 - remainObject.value3).toString();
@@ -164,19 +159,19 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             } else if (remainObject.checkBox1 && !remainObject.checkBox2 && remainObject.checkBox3) {
                 return (remainObject.value1 - remainObject.value3).toString();
             } else if (!remainObject.checkBox1 && remainObject.checkBox2 && !remainObject.checkBox3) {
-                if (remainObject.value2 == '') {
+                if (remainObject.value2 == null) {
                     return "";
                 } else {
                     return (remainObject.checkBox1 - remainObject.value2).toString();
                 }
             } else if (!remainObject.checkBox1 && remainObject.checkBox2 && remainObject.checkBox3) {
-                if (remainObject.value2 == '' && remainObject.value3 == '') {
+                if (remainObject.value2 == null && remainObject.value3 == null) {
                     return "";
                 } else {
                     return (remainObject.checkBox1 - (remainObject.value2 + remainObject.value3)).toString();
                 }
             } else if (!remainObject.checkBox1 && !remainObject.checkBox2 && remainObject.checkBox3) {
-                if (remainObject.checkBox3 == '') {
+                if (remainObject.checkBox3 == null) {
                     return "";
                 } else {
                     return remainObject.value3;

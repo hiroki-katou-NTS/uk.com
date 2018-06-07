@@ -52,7 +52,7 @@ public class AddSubHdManagementService {
 			String leaveId = IdentifierUtil.randomUniqueId();
 			if (subHdManagementData.getCheckedHoliday()) {
 				int subHDAtr = 0;
-				if (subHdManagementData.getDayRemaining() == 0) {
+				if (subHdManagementData.getCheckedHoliday() && subHdManagementData.getCheckedSubHoliday()) {
 					subHDAtr = 1;
 				}
 				int equivalentHalfDay = 0;
@@ -176,6 +176,8 @@ public class AddSubHdManagementService {
 				GeneralDate dateOptionSubHoliday = subHdManagementData.getDateOptionSubHoliday();
 				leaveManagementDatas = repoLeaveManaData.getBySidWithHolidayDate(companyId, employeeId,
 						dateOptionSubHoliday);
+				compensatoryDayOffManaDatas = repoComDayOffManaData.getBySidWithHolidayDateCondition(companyId,
+						employeeId, dateOptionSubHoliday);
 				if (!leaveManagementDatas.isEmpty() || !compensatoryDayOffManaDatas.isEmpty()) {
 					errorList.add("Msg_737_sub_option_holiday");
 				}
@@ -241,10 +243,11 @@ public class AddSubHdManagementService {
 		}
 
 		// 休出（年月日）と代休（年月日）をチェックする
-		if (holidayDate.isPresent() && subHolidayDate.compareTo(holidayDate.get()) == 0) {
-			errorList.add("Msg_730");
+		if (checkHoliday) {
+			if (holidayDate.isPresent() && subHolidayDate.compareTo(holidayDate.get()) == 0) {
+				errorList.add("Msg_730");
+			}
 		}
-
 		// チェックボタン「分割消化」をチェックする
 		if (checkSplit && splitDate.isPresent()) {
 			// 代休（年月日）と分割消化.代休（年月日）をチェックする
