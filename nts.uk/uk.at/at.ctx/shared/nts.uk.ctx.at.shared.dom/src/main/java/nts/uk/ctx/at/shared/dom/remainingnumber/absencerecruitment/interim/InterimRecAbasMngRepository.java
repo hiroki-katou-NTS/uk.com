@@ -26,7 +26,7 @@ public interface InterimRecAbasMngRepository {
 	 * @param isRec: True: 振出管理データ, false: 振休管理データ
 	 * @return
 	 */
-	Optional<InterimRecAbsMng> getRecOrAbsMng(String interimId, boolean isRec, DataManagementAtr mngAtr);
+	List<InterimRecAbsMng> getRecOrAbsMng(String interimId, boolean isRec, DataManagementAtr mngAtr);
 	/**
 	 * ドメインモデル「暫定振出管理データ」を取得する
 	 * @param recId
@@ -37,5 +37,14 @@ public interface InterimRecAbasMngRepository {
 	 * @return
 	 */
 	List<InterimRecMng> getRecByIdPeriod(List<String> recId, Double unUseDays, DatePeriod dateData);
+	/**
+	 * ドメインモデル「暫定振出振休紐付け管理」を取得する
+	 * @param sid
+	 * @param recAtr
+	 * @param absAtr
+	 * @param absId 振休＝absId
+	 * @return
+	 */
+	List<InterimRecAbsMng> getBySidMng(DataManagementAtr recAtr, DataManagementAtr absAtr, String absId);
 	
 }

@@ -161,16 +161,15 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 			if(optRecMng.isPresent()) {
 				lstRecData.add(optRecMng.get());
 			}
-			Optional<InterimRecAbsMng> optRecAbsData = recAbsRepo.getRecOrAbsMng(x.getRemainManaID(), true, DataManagementAtr.INTERIM);
-			if(optRecAbsData.isPresent()) {
-				InterimRecAbsMng recAbsData = optRecAbsData.get();
-				lstRecAbsMng.add(recAbsData);
+			List<InterimRecAbsMng> optRecAbsData = recAbsRepo.getRecOrAbsMng(x.getRemainManaID(), true, DataManagementAtr.INTERIM);
+			optRecAbsData.stream().forEach(y -> {
+				lstRecAbsMng.add(y);
 				//ドメインモデル「暫定振休管理データ」を取得する
-				Optional<InterimAbsMng> optAbsMng = recAbsRepo.getAbsById(recAbsData.getAbsenceMngId());
+				Optional<InterimAbsMng> optAbsMng = recAbsRepo.getAbsById(y.getAbsenceMngId());
 				if(optAbsMng.isPresent()) {
 					lstAbsData.add(optAbsMng.get());
 				}
-			}
+			});			
 		});
 		
 		return new AbsRecInterimOutputPara(lstAbsData, lstRecAbsMng, lstRecData);
@@ -197,7 +196,7 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 			hisData.setOccurrenceDays(x.getOccurredDays().v());
 			hisData.setUnUseDays(x.getUnUsedDays().v());
 			//確定振出に紐付いた暫定振出振休紐付け管理を抽出する		
-			Optional<InterimRecAbsMng> optRecConfirm = recAbsRepo.getRecOrAbsMng(x.getPayoutId(), true, DataManagementAtr.CONFIRM);
+			//Optional<InterimRecAbsMng> optRecConfirm = recAbsRepo.getRecOrAbsMng(x.getPayoutId(), true, DataManagementAtr.CONFIRM);
 			
 		});
 		//暫定振出管理データの件数分ループ
@@ -414,11 +413,10 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 			//確定未使用日数合計を算出する
 			confirmUnUseDays += confirmData.getUnUsedDays().v();
 			//ドメインモデル「暫定振出振休紐付け管理」を取得する 振出管理データ＝振出管理データ.振出データID
-			Optional<InterimRecAbsMng> optRecAbsData = recAbsRepo.getRecOrAbsMng(confirmData.getPayoutId(), true, DataManagementAtr.INTERIM);
-			if(optRecAbsData.isPresent()) {
-				//確定未使用数合計を更新する
-				interimUseDays += optRecAbsData.get().getUseDays().v();
-			}
+			List<InterimRecAbsMng> optRecAbsData = recAbsRepo.getRecOrAbsMng(confirmData.getPayoutId(), true, DataManagementAtr.INTERIM);
+			for (InterimRecAbsMng recAbsData : optRecAbsData) {
+				interimUseDays += recAbsData.getUseDays().v();
+			}			
 		}
 		//確定未使用日数：確定未使用日数－合計(暫定振出振休紐付け管理->使用日数)
 		confirmUnUseDays -= interimUseDays;

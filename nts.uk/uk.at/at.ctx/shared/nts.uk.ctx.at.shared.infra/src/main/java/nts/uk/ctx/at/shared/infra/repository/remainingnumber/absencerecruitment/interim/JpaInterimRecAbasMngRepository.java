@@ -39,6 +39,12 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 			+ " AND c.unUsedDays > :unUsedDays"
 			+ " AND c.expirationDate >= :startDate"
 			+ " AND c.expirationDate <= :endDate";
+	
+	private String QUERY_ABS_BY_SID_MNGID = "SELECT c FROM KrcmtInterimRecAbs c"
+			+ " WHERE c.recAbsPk.absenceMngID = :absenceMngID"
+			+ " AND c.absenceMngAtr = :absenceMngAtr"
+			+ " AND c.recruitmentMngAtr = :recruitmentMngAtr";
+			
 	@Override
 	public Optional<InterimRecMng> getReruitmentById(String recId) {
 		return this.queryProxy().find(recId, KrcmtInterimRecMng.class)
@@ -64,11 +70,11 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	}
 
 	@Override
-	public Optional<InterimRecAbsMng> getRecOrAbsMng(String interimId, boolean isRec, DataManagementAtr mngAtr) {
+	public List<InterimRecAbsMng> getRecOrAbsMng(String interimId, boolean isRec, DataManagementAtr mngAtr) {
 		return this.queryProxy().query(isRec ? QUERY_REC_BY_ID : QUERY_ABS_BY_ID, KrcmtInterimRecAbs.class)
 				.setParameter("remainID", interimId)
 				.setParameter("mngAtr", mngAtr.values)
-				.getSingle(x -> toDomainRecAbs(x));
+				.getList(x -> toDomainRecAbs(x));
 	}
 
 	private InterimRecAbsMng toDomainRecAbs(KrcmtInterimRecAbs x) {
@@ -91,5 +97,15 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 				.setParameter("startDate", dateData.start())
 				.setParameter("endDate", dateData.end())
 				.getList(c -> toDomainRecMng(c));
+	}
+
+	@Override
+	public List<InterimRecAbsMng> getBySidMng(DataManagementAtr recAtr, DataManagementAtr absAtr,
+			String absId) {
+		return this.queryProxy().query(QUERY_ABS_BY_SID_MNGID, KrcmtInterimRecAbs.class)
+				.setParameter("absenceMngID", absId)
+				.setParameter("absenceMngAtr", absAtr.values)
+				.setParameter("recruitmentMngAtr", recAtr.values)
+				.getList(x -> toDomainRecAbs(x));
 	}
 }
