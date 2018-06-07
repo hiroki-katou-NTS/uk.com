@@ -227,7 +227,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			
 
 			TableList listtable = new TableList(categoryFieldMt.getCategoryId(), categoryName, storeProcessingId, "",
-					categoryFieldMt.getTableNo(), categoryFieldMt.getTableJapanName(), "",
+					categoryFieldMt.getTableNo(), categoryFieldMt.getTableJapanName(), categoryFieldMt.getTableEnglishName(),
 					categoryFieldMt.getFieldAcqCid(), categoryFieldMt.getFieldAcqDateTime(),
 					categoryFieldMt.getFieldAcqEmployeeId(), categoryFieldMt.getFieldAcqEndDate(),
 					categoryFieldMt.getFieldAcqStartDate(), "", optManualSetting.getSaveSetName().toString(), "", "0",
