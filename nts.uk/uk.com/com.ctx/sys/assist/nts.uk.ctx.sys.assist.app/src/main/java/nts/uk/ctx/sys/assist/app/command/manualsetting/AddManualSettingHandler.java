@@ -3,14 +3,11 @@
  */
 package nts.uk.ctx.sys.assist.app.command.manualsetting;
 
-import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import org.junit.experimental.categories.Categories;
 
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -21,6 +18,7 @@ import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSave;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSaveRepository;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSaveService;
 import nts.uk.ctx.sys.assist.dom.storage.OperatingCondition;
+import nts.uk.ctx.sys.assist.dom.storage.SysEmployeeStorageAdapter;
 import nts.uk.ctx.sys.assist.dom.storage.TargetCategory;
 import nts.uk.ctx.sys.assist.dom.storage.TargetCategoryRepository;
 import nts.uk.ctx.sys.assist.dom.storage.TargetEmployees;
@@ -46,6 +44,10 @@ public class AddManualSettingHandler extends AsyncCommandHandler<ManualSettingCo
 	@Inject
 	private TargetCategoryRepository repoTargetCat;
 	
+	@Inject
+	private SysEmployeeStorageAdapter sysEmployeeStorageAdapter;
+	
+	
 	@Override
 	protected void handle(CommandHandlerContext<ManualSettingCommand> context) {
 		
@@ -62,13 +64,6 @@ public class AddManualSettingHandler extends AsyncCommandHandler<ManualSettingCo
 	    
 		List<TargetEmployees> listTargetEmp = null;
 		
-		
-		// 手動保存の圧縮パスワードを暗号化する
-//		if (manualSetCmd.getCompressedPassword() != null) {
-//			manualSetCmd.setCompressedPassword(
-//					Base64.getEncoder().encodeToString(manualSetCmd.getCompressedPassword().getBytes()));
-//		}
-
 		ManualSetOfDataSave domain = manualSetCmd.toDomain(companyId, storeProcessingId, employeeIDLogin);
 		manualSetOfDataSaveRepo.addManualSetting(domain);
 		
@@ -85,11 +80,14 @@ public class AddManualSettingHandler extends AsyncCommandHandler<ManualSettingCo
 
 		if (manualSetCmd.getPresenceOfEmployee() == 0) {
 			// 指定社員の有無＝「しない」の場合」
-			// listTargetEmp = // request 52
+			List<TargetEmployees>  lstEmplAll = sysEmployeeStorageAdapter.getListEmployeeByCompanyId(companyId);
+			lstEmplAll.stream().map(x -> {
+				x.setStoreProcessingId(storeProcessingId);
+				return x;
+			}).collect(Collectors.toList());
+			targetEmployeesRepo.addAll(lstEmplAll);
 		}
 		
-		
 		manualSetOfDataSaveService.start(storeProcessingId);
-
 	}
 }
