@@ -9,20 +9,30 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.error.BusinessException;
+import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.SyncState;
+import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
+import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
+import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailapplicationapproval.ApprovalTemp;
+import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailapplicationapproval.ApprovalTempRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.ReceptionRestrictionSetting;
@@ -40,6 +50,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplaceRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.mail.MailSender;
+import nts.uk.shr.com.mail.SendMailFailedException;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -70,6 +82,15 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	private CompltLeaveSimMngRepository compLeaveRepo;
 	@Inject
 	private RequestSettingRepository requestSettingRepository;
+	
+	@Inject
+	private MailSender mailsender;
+	
+	@Inject
+	private ApprovalTempRepository approvalTempRepository;
+	
+	@Inject
+	private AppDispNameRepository appDispNameRepository;
 	
 	public PeriodCurrentMonth employeePeriodCurrentMonthCalculate(String companyID, String employeeID, GeneralDate date){
 		/*
@@ -240,5 +261,69 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			}
 		}
 		return new AppCompltLeaveSyncOutput(absId, recId, synced, type);
+	}
+	@Override
+	public MailResult sendMail(List<String> listDestination, Application_New application) {
+		List<String> successList = new ArrayList<>();
+		List<String> failList = new ArrayList<>();
+		listDestination.forEach(x -> {
+			// request list 1
+			String employeeName = employeeAdaptor.getEmployeeName(x);
+			// request list 419
+			String employeeMail = "";
+			if(Strings.isBlank(employeeMail)){
+				failList.add(employeeMail);
+				return;
+			}
+			String URL = "URL";
+			Optional<AppDispName> opAppDispName = appDispNameRepository.getDisplay(application.getAppType().value);
+			if(!opAppDispName.isPresent()){
+				throw new RuntimeException("no setting AppDispName 申請表示名");
+			}
+			AppDispName appDispName = opAppDispName.get();
+			/*String mailContentToSend = I18NText.getText("Msg_703",
+					loginName, 
+					mailBody,
+					application.getAppDate(), 
+					application.getAppType().nameId,
+					empName, application.getAppDate().toLocalDate().toString(),
+					appContent, loginName, loginMail);*/
+		});
+		listDestination.forEach(x -> {
+			String email = employeeAdaptor.empEmail(x);
+			String employeeName = employeeAdaptor.getEmployeeName(x);
+			if(Strings.isNotBlank(email)) {
+				try {
+					mailsender.send("nts", email, new MailContents("nts mail", "approval mail from NTS"));
+					successList.add(employeeName);
+				} catch (SendMailFailedException e) {
+					failList.add(employeeName);
+				}
+			}
+		});
+		return new MailResult(successList, failList);
+	}
+	@Override
+	public MailResult sendMailApproverApprove(List<String> employeeIDList, Application_New application) {
+		Optional<ApprovalTemp> opApprovalTemp = approvalTempRepository.getAppTem();
+		if(!opApprovalTemp.isPresent()){
+			throw new RuntimeException("no setting ApprovalTemp 申請承認メールテンプレート");
+		}
+		return new MailResult(Collections.emptyList(), Collections.emptyList());
+	}
+	@Override
+	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application_New application) {
+		// TODO Auto-generated method stub
+		return new MailResult(Collections.emptyList(), Collections.emptyList());
+	}
+	@Override
+	public MailResult sendMailApplicantApprove(List<String> employeeIDList, Application_New application) {
+		// TODO Auto-generated method stub
+		return new MailResult(Collections.emptyList(), Collections.emptyList());
+	}
+	@Override
+	public MailResult sendMailApplicantDeny(List<String> employeeIDList, Application_New application) {
+		// TODO Auto-generated method stub
+		return new MailResult(Collections.emptyList(), Collections.emptyList());
 	}
 }

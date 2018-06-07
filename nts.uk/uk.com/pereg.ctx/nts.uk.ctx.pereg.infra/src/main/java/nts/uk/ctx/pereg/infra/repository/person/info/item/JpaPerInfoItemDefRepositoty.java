@@ -376,7 +376,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	public List<PersonInfoItemDefinition> getAllItemDefByCategoryId(String perInfoCtgId, String contractCd) {
 		return this.queryProxy().query(SELECT_ALL_ITEMS_BY_CATEGORY_ID, Object[].class)
 				.setParameter("contractCd", contractCd).setParameter("perInfoCtgId", perInfoCtgId).getList(i -> {
-					return createDomainFromEntity(i, new ArrayList<>());
+					return createDomainFromEntity1(i, new ArrayList<>());
 				});
 	}
 

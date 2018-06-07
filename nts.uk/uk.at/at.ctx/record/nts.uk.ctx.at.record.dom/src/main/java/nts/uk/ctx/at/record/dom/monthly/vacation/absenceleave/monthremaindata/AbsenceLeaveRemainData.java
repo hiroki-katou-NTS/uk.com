@@ -8,6 +8,11 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
+/**
+ * 振休月別残数データ
+ * @author do_dt
+ *
+ */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor

@@ -504,15 +504,15 @@ public class KrcdtDayOvertimework extends UkJpaEntity implements Serializable{
 			//変形法定内残業
 			this.deformLeglOverTime = overTimeOfDaily.getIrregularWithinPrescribedOverTimeWork() == null ? 0 : overTimeOfDaily.getIrregularWithinPrescribedOverTimeWork().valueAsMinutes();
 			
-			if(overTimeOfDaily.getFlexTime() != null) {
+			if(overTimeOfDaily.getFlexTime() != null && overTimeOfDaily.getFlexTime().getFlexTime() != null) {
 				//フレックス時間
-				this.flexTime = overTimeOfDaily.getFlexTime().getFlexTime().getTime().valueAsMinutes();
+				this.flexTime = overTimeOfDaily.getFlexTime().getFlexTime().getTime() == null? 0 : overTimeOfDaily.getFlexTime().getFlexTime().getTime().valueAsMinutes();
 				//計算フレックス時間
-				this.calcFlexTime = overTimeOfDaily.getFlexTime().getFlexTime().getCalcTime().valueAsMinutes();
+				this.calcFlexTime = overTimeOfDaily.getFlexTime().getFlexTime().getCalcTime() == null ? 0 : overTimeOfDaily.getFlexTime().getFlexTime().getCalcTime().valueAsMinutes();
 				//事前フレックス時間
 				this.preAppFlexTime = overTimeOfDaily.getFlexTime().getBeforeApplicationTime() == null ? 0 :overTimeOfDaily.getFlexTime().getBeforeApplicationTime().valueAsMinutes();
 				//フレックス乖離時間
-				this.divergenceFlexTime = overTimeOfDaily.getFlexTime().getFlexTime().getDivergenceTime().valueAsMinutes();
+				this.divergenceFlexTime = overTimeOfDaily.getFlexTime().getFlexTime().getDivergenceTime() == null ? 0 : overTimeOfDaily.getFlexTime().getFlexTime().getDivergenceTime().valueAsMinutes();
 			}
 		}
 	}
