@@ -28,7 +28,7 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KalmtA
 public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implements AnnualPaidLeaveSettingRepository {
     
     /** The element first. */
-    private static int ELEMENT_FIRST = 0;
+    private static final int ELEMENT_FIRST = 0;
     
     /*
      * (non-Javadoc)
