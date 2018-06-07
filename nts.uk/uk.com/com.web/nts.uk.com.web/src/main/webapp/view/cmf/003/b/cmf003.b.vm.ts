@@ -654,8 +654,8 @@ module nts.uk.com.view.cmf003.b {
                     moment.utc(self.monthValue().startDate, 'YYYY/MM/DD'), self.explanation(), Number(self.yearValue().endDate), Number(self.yearValue().startDate),
                     self.selectedTitleAtr(), Number(self.isSymbol()), self.targetEmployee(), self.categorys());
 
-                service.addMalSet(manualSetting).done(() => {
-
+                service.addMalSet(manualSetting).done((res) => {
+                    console.log(res);
                 }).fail(res => {
 
                 });
