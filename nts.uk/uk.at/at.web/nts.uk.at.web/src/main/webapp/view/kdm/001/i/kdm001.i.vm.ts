@@ -11,9 +11,9 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         workplaceName: KnockoutObservable<string> = ko.observable('');
         employeeCode: KnockoutObservable<string> = ko.observable('');
         employeeName: KnockoutObservable<string> = ko.observable('');
-        dayRemaining: KnockoutObservable<string> = ko.observable("0");
-        checkedHoliday: KnockoutObservable<boolean> = ko.observable(false);
-        checkedSubHoliday: KnockoutObservable<boolean> = ko.observable(false);
+        dayRemaining: KnockoutObservable<string> = ko.observable("");
+        checkedHoliday: KnockoutObservable<boolean> = ko.observable(true);
+        checkedSubHoliday: KnockoutObservable<boolean> = ko.observable(true);
         checkedSplit: KnockoutObservable<boolean> = ko.observable(false);
         dateHoliday: KnockoutObservable<string> = ko.observable('');
         duedateHoliday: KnockoutObservable<string> = ko.observable('');
@@ -42,6 +42,11 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             self.selectedCodeSubHoliday(self.itemListSubHoliday()[0].code);
             self.selectedCodeOptionSubHoliday(self.itemListOptionSubHoliday()[0].code);
             
+            if(self.checkedHoliday() && self.checkedSubHoliday()){
+                if(self.dateHoliday() == null && self.dateSubHoliday() == null){
+                    self.dayRemaining("");
+                }
+            }
             
             //休出残数算出処理
             self.checkedHoliday.subscribe((v) => {
@@ -116,19 +121,23 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         }
         getRemainDay(remainObject: any): string {
             if (!remainObject.checkBox1 && !remainObject.checkBox2 && !remainObject.checkBox3) {
-                return "0";
+                return "";
             } else if (remainObject.checkBox1 && !remainObject.checkBox2 && !remainObject.checkBox3) {
                 return remainObject.value1;
             } else if (remainObject.checkBox1 && remainObject.checkBox2 && !remainObject.checkBox3) {
-                return (remainObject.value1 - remainObject.value2).toString();
+                if (remainObject.value1 == null && remainObject.value2 == null) {
+                    return "";
+                } else {
+                    return (remainObject.value1 - remainObject.value2).toString();
+                }
             } else if (remainObject.checkBox1 && remainObject.checkBox2 && remainObject.checkBox3) {
                 return (remainObject.value1 - remainObject.value2 - remainObject.value3).toString();
             } else if (remainObject.checkBox1 && !remainObject.checkBox2 && remainObject.checkBox3) {
                 return (remainObject.value1 - remainObject.value3).toString();
             } else if (!remainObject.checkBox1 && remainObject.checkBox2 && !remainObject.checkBox3) {
-                return (0 - remainObject.value2).toString();
+                return (remainObject.checkBox1 - remainObject.value2).toString();
             } else if (!remainObject.checkBox1 && remainObject.checkBox2 && remainObject.checkBox3) { 
-                return (0 - (remainObject.value2 + remainObject.value3)).toString();
+                return (remainObject.checkBox1 - (remainObject.value2 + remainObject.value3)).toString();
             } else if (!remainObject.checkBox1 && !remainObject.checkBox2 && remainObject.checkBox3) {
                 return remainObject.value3;
             }
