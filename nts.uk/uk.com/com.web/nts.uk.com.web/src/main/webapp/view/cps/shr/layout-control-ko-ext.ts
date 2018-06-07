@@ -822,6 +822,29 @@ module nts.custombinding {
                         </tbody>
                     </table>
                 </script>
+                <script type="text/html" id="ctr_string">
+                    <input data-bind=" ntsTextEditor: {
+                            name: itemName,
+                            value: value,
+                            constraint: nameid,
+                            required: required,
+                            option: {
+                                textmode: 'text'
+                            },
+                            enable: editable,
+                            readonly: readonly,
+                            immediate: false
+                        },  attr: {
+                            id: nameid,
+                            nameid: nameid,
+                            title: itemName,
+                            'data-title': itemName,
+                            'data-code': itemCode,
+                            'data-category': categoryCode,
+                            'data-required': required,
+                            'data-defv': defValue
+                        }," />
+                </script>
                 <script type="text/html" id="ctr_template">
                     <!-- ko if: resourceId -->
                         <button class="inline" data-bind="ntsHelpButton: { position: 'right center', textId: resourceId }, text: text('？')">？</button>
@@ -865,75 +888,35 @@ module nts.custombinding {
                                 }
                             } -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.STRING -->
-                        <!-- ko if: [STRING_TYPE.CARDNO].indexOf(item.stringItemType) > -1 -->
-                        <input data-bind=" ntsTextEditor: {
-                                name: itemName,
-                                value: value,
-                                constraint: 'StampNumber',
-                                required: required,
-                                option: {
-                                    textmode: 'text'
-                                },
-                                enable: editable,
-                                readonly: readonly,
-                                immediate: false
-                            },  attr: {
-                                id: nameid,
-                                nameid: nameid,
-                                title: itemName,
-                                'data-title': itemName,
-                                'data-code': itemCode,
-                                'data-category': categoryCode,
-                                'data-required': required,
-                                'data-defv': defValue
-                            }," />
-                        <!-- /ko -->
-                        <!-- ko if: item.stringItemType == STRING_TYPE.NUMERIC || item.stringItemLength < 40 || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80) -->
-                        <input data-bind=" ntsTextEditor: {
-                                name: itemName,
-                                value: value,
-                                constraint: nameid,
-                                required: required,
-                                option: {
-                                    textmode: 'text'
-                                },
-                                enable: editable,
-                                readonly: readonly,
-                                immediate: false
-                            },  attr: {
-                                id: nameid,
-                                nameid: nameid,
-                                title: itemName,
-                                'data-title': itemName,
-                                'data-code': itemCode,
-                                'data-category': categoryCode,
-                                'data-required': required,
-                                'data-defv': defValue
-                            }," />
-                        <!-- /ko -->
-                        <!-- ko if: item.stringItemType != STRING_TYPE.NUMERIC && (([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA, STRING_TYPE.CARDNO].indexOf(item.stringItemType) == -1 && item.stringItemLength >= 40) || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA, STRING_TYPE.CARDNO].indexOf(item.stringItemType) > -1 && item.stringItemLength > 80)) -->
-                        <textarea data-bind="ntsMultilineEditor: {
-                                name: itemName,
-                                value: value,
-                                constraint: nameid,
-                                required: required,
-                                option: {
-                                    textmode: 'text'
-                                },
-                                enable: editable,
-                                readonly: readonly,
-                                immediate: false 
-                            }, attr: { 
-                                id: nameid, 
-                                nameid: nameid,
-                                title: itemName,
-                                'data-title': itemName,
-                                'data-code': itemCode,
-                                'data-category': categoryCode,
-                                'data-required': required,
-                                'data-defv': defValue
-                            }" />
-                        <!-- /ko -->
+                            <!-- ko if: [STRING_TYPE.CARDNO].indexOf(item.stringItemType) > -1 -->
+                                <!-- ko template: {name: 'ctr_string', data: $.extend($data, { nameid: 'StampNumber' }) } --><!-- /ko -->
+                            <!-- /ko -->
+                            <!-- ko if: item.stringItemType == STRING_TYPE.NUMERIC || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80) -->
+                                <!-- ko template: {name: 'ctr_string', data: $.extend($data, { nameid: nameid }) } --><!-- /ko -->
+                            <!-- /ko -->
+                            <!-- ko if: item.stringItemType != STRING_TYPE.NUMERIC && (([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) == -1 && item.stringItemLength >= 40) || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength > 80)) -->
+                            <textarea data-bind="ntsMultilineEditor: {
+                                    name: itemName,
+                                    value: value,
+                                    constraint: nameid,
+                                    required: required,
+                                    option: {
+                                        textmode: 'text'
+                                    },
+                                    enable: editable,
+                                    readonly: readonly,
+                                    immediate: false 
+                                }, attr: { 
+                                    id: nameid, 
+                                    nameid: nameid,
+                                    title: itemName,
+                                    'data-title': itemName,
+                                    'data-code': itemCode,
+                                    'data-category': categoryCode,
+                                    'data-required': required,
+                                    'data-defv': defValue
+                                }" />
+                            <!-- /ko -->
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.NUMERIC -->
                         <input data-bind="ntsNumberEditor: { 
@@ -1570,6 +1553,7 @@ module nts.custombinding {
                                         break;
                                     case ITEM_STRING_TYPE.CARDNO:
                                         constraint.itemCode = 'StampNumber';
+                                        constraint.stringExpression = /^[a-zA-Z0-9\s"#$%&(~|{}\[\]@:`*+?;\\/_\-><)]{1,20}$/;
                                     case ITEM_STRING_TYPE.ANYHALFWIDTH:
                                         constraint.charType = 'AnyHalfWidth';
                                         break;
@@ -2119,6 +2103,11 @@ module nts.custombinding {
                                         ].indexOf((x.item || {}).dataTypeValue) > -1 &&
                                         x.itemDefId.replace(/[-_]/g, '');
 
+                                // fix stampcard validate
+                                if ([ITEM_STRING_TYPE.CARDNO].indexOf((x.item || {}).stringItemType) > -1) {
+                                    constraint = 'StampNumber';
+                                }
+
                                 return _.extend(x, {
                                     parent: parent,
                                     childs: childs,
@@ -2253,6 +2242,11 @@ module nts.custombinding {
                                     ITEM_SINGLE_TYPE.TIMEPOINT
                                 ].indexOf((col.item || {}).dataTypeValue) > -1 &&
                                 col.itemDefId.replace(/[-_]/g, '');
+
+                        // fix stampcard validate
+                        if ([ITEM_STRING_TYPE.CARDNO].indexOf((col.item || {}).stringItemType) > -1) {
+                            constraint = 'StampNumber';
+                        }
 
                         return _.extend(col, {
                             parent: parent,

@@ -1663,13 +1663,6 @@ module nts.layout {
             if (!!ctrls) {
                 let categoryId = ((ctrls[0] || <any>{}).data || <any>{}).categoryId;
                 if (categoryId) {
-                    __viewContext
-                        .primitiveValueConstraints[ctrls[0].id.replace(/#/g, '')]
-                        .stringExpression = /^[a-zA-Z0-9\s"#$%&(~|{}\[\]@:`*+?;\\/_\-><)]{1,20}$/;
-
-                    __viewContext.primitiveValueConstraints['StampNumber'].stringExpression = __viewContext
-                        .primitiveValueConstraints[ctrls[0].id.replace(/#/g, '')].stringExpression;
-
                     fetch.get_stc_setting().done((stt: StampCardEditing) => {
                         let _bind = $(document).data('_nts_bind') || {};
 
