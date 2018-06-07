@@ -6,6 +6,7 @@ module nts.uk.com.view.kwr002.a {
       
         mainTab.start_page().done(function(screenModel: any) {
             __viewContext.bind(mainTab);
+            $('#combo-box').focus();
         });
     });
 }

@@ -16,6 +16,7 @@ module nts.uk.com.view.kwr002.b {
         currentARES: KnockoutObservable<AttendanceRecordExportSetting>;
         currentARESCode: KnockoutObservable<string>;
         currentARESName: KnockoutObservable<string>;
+        enableRegister : KnockoutComputed<boolean>;
 
         selectedARESCode: KnockoutObservable<string>;
         aRESCode: KnockoutObservable<string>;
@@ -37,6 +38,13 @@ module nts.uk.com.view.kwr002.b {
             self.currentARESCode = ko.observable('');
             self.currentARESName = ko.observable('');
             self.indexOfDelete = ko.observable('');
+            self.enableRegister = ko.pureComputed(() => {
+                if (self.newMode) {
+                    let exist = _.find(self.aRES(), (i) => i.code == this.currentARESCode());
+                    if (exist) return false
+                } else
+                    return true;
+            });
 
 
             self.selectedARESCode = ko.observable('');
@@ -129,7 +137,7 @@ module nts.uk.com.view.kwr002.b {
                     } else {
                         self.currentARESCode(self.aRES()[self.indexOfDelete()].code);
                     }
-                  
+
                 } else {
                     self.onNew();
                 }
@@ -215,9 +223,9 @@ module nts.uk.com.view.kwr002.b {
         callGetAll(self, currentData) {
             service.getAllARES().done((data) => {
                 if (data.length > 0) {
-                    _.map(data, (item) => {
-                        item.code = _.padStart(item.code, 2, '0');
-                        data = _.orderBy(data, [e => e.code], ['asc']);
+                    data = _.orderBy(data, [e => e.code], ['asc']);
+                    _.map(data,(item)=>{
+                        item.code=_.padStart(item.code, 2, '0');
                     });
                     self.aRES(data);
                     if (currentData) {
@@ -285,10 +293,10 @@ module nts.uk.com.view.kwr002.b {
 
             service.getAllARES().done((data) => {
                 if (data.length > 0) {
-                    _.map(data, (item) => {
-                        item.code = _.padStart(item.code, 2, '0');
+                    data = _.orderBy(data, [item => item.code], ['asc']);
+                    _.map(data,(item)=>{
+                        item.code=_.padStart(item.code, 2, '0');
                         // new AttendanceRecordExportSetting(item);
-                        data = _.orderBy(data, [item => item.code], ['asc']);
                     });
                     self.aRES(data);
                     let firstData = _.first(data);
@@ -297,7 +305,7 @@ module nts.uk.com.view.kwr002.b {
                     self.onNew();
                 }
                 dfd.resolve();
-            }).fail(function(error) {
+            }).fail(function (error) {
                 dfd.reject();
                 alert(error.message);
             }).always(() => {
@@ -407,6 +415,10 @@ module nts.uk.com.view.kwr002.b {
             }
 
             modal('../c/index.xhtml', {});
+        }
+
+        public checkCode(key) {
+            // console.log(key.code());
         }
     }
 

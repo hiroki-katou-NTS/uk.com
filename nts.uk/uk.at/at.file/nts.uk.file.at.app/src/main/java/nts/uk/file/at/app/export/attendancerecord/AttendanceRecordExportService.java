@@ -89,7 +89,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		AttendanceRecordRequest request = context.getQuery();
 		String companyId = AppContexts.user().companyId();
 		Map<String, List<AttendanceRecordReportEmployeeData>> reportData = new HashMap<>();
-		List<AttendanceRecordReportEmployeeData> attendanceRecRepEmpDataList = new ArrayList<>();
+		List<AttendanceRecordReportEmployeeData> attendanceRecRepEmpDataList = new ArrayList<AttendanceRecordReportEmployeeData>();
 
 		request.getEmployeeList().forEach(employee -> {
 
@@ -280,7 +280,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							}
 							List<AttendanceRecordReportColumnData> columnDatas = new ArrayList<>();
 							for (int i = 0; i < columnDatasArray.length; i++) {
-
+								if (columnDatasArray[i] == null)
+									columnDatasArray[i] = new AttendanceRecordReportColumnData("", "");
 								columnDatas.add(columnDatasArray[i]);
 							}
 
@@ -368,20 +369,25 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 						// Convert to AttendanceRecordReportColumnData
 						List<AttendanceRecordReportColumnData> employeeMonthlyData = new ArrayList<>();
 
-						AttendanceRecordReportColumnData[] columnDataMonthlyArray = new AttendanceRecordReportColumnData[9];
+						AttendanceRecordReportColumnData[] columnDataMonthlyArray = new AttendanceRecordReportColumnData[12];
 						int index = 0;
 						for (String item : upperResult) {
-							columnDataMonthlyArray[index] = new AttendanceRecordReportColumnData(item, "");
+							columnDataMonthlyArray[index] = new AttendanceRecordReportColumnData("", "");
+							if (item != null)
+								columnDataMonthlyArray[index].setUper(item);
 							index++;
 						}
 						index = 0;
 						for (String item : lowerResult) {
-							columnDataMonthlyArray[index].setLower(item);
+							if (item != null)
+								columnDataMonthlyArray[index].setLower(item);
 							index++;
 
 						}
 
 						for (int i = 0; i < columnDataMonthlyArray.length; i++) {
+							if (columnDataMonthlyArray[i] == null)
+								columnDataMonthlyArray[i] = new AttendanceRecordReportColumnData("", "");
 							employeeMonthlyData.add(columnDataMonthlyArray[i]);
 						}
 						// Get Employee information
@@ -412,12 +418,12 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 						List<EmployeeInformationExport> employeeInfoList = employeePub.find(param);
 						EmployeeInformationExport result = employeeInfoList.get(0);
 
-						attendanceRecRepEmpData.setEmployment(result.getEmployment().toString());
+						attendanceRecRepEmpData.setEmployment(result.getEmployment().getEmploymentName().toString());
 						attendanceRecRepEmpData
 								.setInvidual(employee.getEmployeeCode() + " " + employee.getEmployeeName());
-						attendanceRecRepEmpData.setTitle(result.getPosition().toString());
-						attendanceRecRepEmpData.setWorkplace(result.getWorkplace().toString());
-						attendanceRecRepEmpData.setWorkType(result.getEmployment().toString());
+						attendanceRecRepEmpData.setTitle(result.getPosition().getPositionName().toString());
+						attendanceRecRepEmpData.setWorkplace(result.getWorkplace().getWorkplaceName().toString());
+						attendanceRecRepEmpData.setWorkType(result.getEmployment().getEmploymentName().toString());
 						attendanceRecRepEmpData.setYearMonth(yearMonth.toString());
 						attendanceRecRepEmpDataList.add(attendanceRecRepEmpData);
 
@@ -458,7 +464,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			while (yearMonth.lessThanOrEqualTo(endYearMonth)) {
 				List<AttendanceRecordReportEmployeeData> attendanceRecRepEmpDataByMonthList = new ArrayList<>();
 				for (AttendanceRecordReportEmployeeData item : attendanceRecRepEmpDataList) {
-					if (item.getYearMonth().equals(yearMonth)) {
+
+					if (item.getYearMonth().equals(yearMonth.toString()) && item != null) {
 						attendanceRecRepEmpDataByMonthList.add(item);
 					}
 
@@ -481,27 +488,33 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		List<AttendanceRecordReportColumnData> dailyHeader = new ArrayList<AttendanceRecordReportColumnData>();
 		List<AttendanceRecordReportColumnData> monthlyHeader = new ArrayList<AttendanceRecordReportColumnData>();
 
-		dailyRecord.forEach(item -> {
+		for (AttendanceRecordExport item : dailyRecord) {
 			try {
-				String upperheader = item.getUpperPosition().get().getNameDisplay();
-				String lowerheader = item.getLowerPosition().get().getNameDisplay();
+				String upperheader = "";
+				String lowerheader = "";
+				if (item.getUpperPosition().isPresent())
+					upperheader = item.getUpperPosition().get().getNameDisplay();
+				if (item.getLowerPosition().isPresent())
+					lowerheader = item.getLowerPosition().get().getNameDisplay();
 				AttendanceRecordReportColumnData temp = (new AttendanceRecordReportColumnData(upperheader,
 						lowerheader));
-				System.out.println(temp.getLower());
 				dailyHeader.add(temp);
-				System.out.println(dailyHeader.size());
 			} catch (Exception ex) {
 				BundledBusinessException exceptions = BundledBusinessException.newInstance();
 				exceptions.addMessage(ex.getMessage());
 				exceptions.throwExceptions();
 			}
-		});
+		}
 
-		monthlyRecord.forEach(item -> {
-			String upperheader = item.getUpperPosition().get().getNameDisplay();
-			String lowerheader = item.getLowerPosition().get().getNameDisplay();
+		for (AttendanceRecordExport item : monthlyRecord) {
+			String upperheader = "";
+			String lowerheader = "";
+			if (item.getUpperPosition().isPresent())
+				upperheader = item.getUpperPosition().get().getNameDisplay();
+			if (item.getLowerPosition().isPresent())
+				lowerheader = item.getLowerPosition().get().getNameDisplay();
 			monthlyHeader.add(new AttendanceRecordReportColumnData(upperheader, lowerheader));
-		});
+		}
 
 		String exportDate = LocalDate.now().toString();
 

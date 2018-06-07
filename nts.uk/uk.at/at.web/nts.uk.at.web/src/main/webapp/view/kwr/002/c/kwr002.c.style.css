@@ -62,7 +62,7 @@
 }
 
 #tab-panel {
-	width: 800px;
+	width: 735px;
 	height: auto;
 }
 
@@ -89,12 +89,10 @@
 
 #foot-area {
 	width: 80%;
-	margin-bottom: 50px;
 }
 
 .buttons {
-	margin-left: 700px;
-	vertical-align: middle;
+	margin-left: 559px;
 }
 
 .tab-master {
