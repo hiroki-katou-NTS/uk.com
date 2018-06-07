@@ -24,6 +24,8 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailDestinationImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.OutGoingMailImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
+import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
+import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbedded;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbeddedRepository;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
@@ -54,10 +56,15 @@ public class CheckTranmissionImpl implements CheckTransmission {
 	
 	@Inject
 	private EnvAdapter envAdapter;
-
+	
+	@Inject
+	private AppDispNameRepository repoAppDispName;
+	/**
+	 * 送信・送信後チェック
+	 */
 	@Override
 	public MailSenderResult doCheckTranmission(String appId, int appType, int prePostAtr, List<String> employeeIdList,
-			String mailTitle, String mailBody, List<String> fileId) {
+			String mailTitle, String mailBody, List<String> fileId, String appDate) {
 		String cid = AppContexts.user().companyId();
 		Application_New application = applicationRepository.findByID(cid, appId).get();
 		Optional<UrlEmbedded> urlEmbedded = urlEmbeddedRepo.getUrlEmbeddedById(cid);
@@ -65,17 +72,24 @@ public class CheckTranmissionImpl implements CheckTransmission {
 		List<String> errorList = new ArrayList<>();
 		//get list mail by list sID : rq419
 		List<MailDestinationImport> lstMail = envAdapter.getEmpEmailAddress(cid, employeeIdList, 6);
+		Optional<AppDispName> appDispName = repoAppDispName.getDisplay(appType);
+		String appName = "";
+		if(appDispName.isPresent()){
+			appName = appDispName.get().getDispName().v();
+		}
+		String titleMail = appDate + " " + appName;
 		for(String employeeToSendId: employeeIdList){
 			//find mail by sID
 			OutGoingMailImport mail = envAdapter.findMailBySid(lstMail, employeeToSendId);
 			String employeeMail = mail == null ? "" : mail.getEmailAddress();
 			if (mail == null) {//TH k co mail -> se k xay ra
+				//imported（申請承認）「社員名（ビジネスネーム）」を取得する 
 				List<EmployeeInfoImport> empObj = empAdapter.getByListSID(Arrays.asList(employeeToSendId));
 				if(!empObj.isEmpty() && empObj.size() > 1){
 					errorList.add(empObj.get(0).getBussinessName());
 				}
 			} else {
-				mailSender.send("mailadmin@uk.com", employeeMail, new MailContents("", mailBody));
+				mailSender.sendFromAdmin(employeeMail, new MailContents(titleMail, mailBody));
 				successList.add(employeeToSendId);
 		
 			}

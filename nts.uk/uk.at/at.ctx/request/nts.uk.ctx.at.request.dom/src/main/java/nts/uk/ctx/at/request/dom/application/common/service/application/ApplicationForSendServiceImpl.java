@@ -47,7 +47,9 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 	
 	@Inject
 	private EnvAdapter envAdapter;
-	
+	/**
+	 * ダイアログを開く kdl030
+	 */
 	@Override
 	public ApplicationForSendOutput getApplicationForSend(String appID) {
 		String companyID = AppContexts.user().companyId();
@@ -71,6 +73,7 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 		}
 		if (application_New.isPresent()){
 			Application_New app = application_New.get();
+			//get empName
 			PesionInforImport applicant = employeeRequestAdapter.getEmployeeInfor(app.getEmployeeID());
 			String empName = Objects.isNull(applicant) ? "" : applicant.getPname();
 			//RQL 419 (replace 225)
@@ -85,8 +88,9 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 			List<OutGoingMailImport> outMails = lstMailLogin.get(0).getOutGoingMails();
 			String loginMail = outMails.isEmpty() ? "" : outMails.get(0).getEmailAddress();
 			String appContent = appContentService.getApplicationContent(application_New.get());
+			//メール本文を編集する
 			String mailContentToSend = I18NText.getText("Msg_703",
-					loginName, appTempAsStr,
+					loginName, appTempAsStr,app.getAppDate().toLocalDate().toString(),
 					GeneralDate.today().toString(), app.getAppType().nameId,
 					empName, app.getAppDate().toLocalDate().toString(),
 					appContent, loginName, loginMail);
