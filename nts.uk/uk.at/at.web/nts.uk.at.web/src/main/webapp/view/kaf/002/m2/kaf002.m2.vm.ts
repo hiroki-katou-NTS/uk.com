@@ -83,6 +83,7 @@ module nts.uk.at.view.kaf002.m2 {
             
             register(application : vmbase.Application){
                 var self = this;
+                if (nts.uk.ui.errors.hasError()){return;} 
                 let command = {
                     appID: "",
                     inputDate: application.inputDate(),
