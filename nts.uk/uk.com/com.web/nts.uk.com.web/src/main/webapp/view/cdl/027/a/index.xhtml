@@ -22,7 +22,7 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button tabindex="1" data-bind="click: exportCsv" class="proceed">#{i18n.getText('CDL027_1')}</button>
+				<button tabindex="1" data-bind="click: exportCsv" class="proceed" id="A1_1">#{i18n.getText('CDL027_1')}</button>
 				<button tabindex="2" data-bind="click: closeDialog">#{i18n.getText('CDL027_2')}</button>
 			</div>
 			<div class="contents-area">
@@ -33,7 +33,7 @@
 						<span class="label">#{i18n.getText('CDL027_6')}</span>
 						<span class="label" data-bind="text: targetEnd"></span>
 					</div>
-					<table id="list"></table>
+					<table id="list" tabindex="3"></table>
 				</div>
 			</div>
 		</ui:define>

@@ -71,23 +71,26 @@ module nts.uk.com.view.cdl027.a.viewmodel {
                                             r.correctionAttr));
                     }
                 }
-                self.initIGrid();
-                dfd.resolve();
             }).fail((error) => {
-                dfd.reject();
                 alertError(error);
             }).always(() => {
+                self.initIGrid();
+                dfd.resolve();
                 block.clear();
             });
             return dfd.promise();
         }
         
         private exportCsv(): void {
-            let self = this;
-            block.invisible();
-            service.exportCsv(self.formatParams()).always(() => {
-                block.clear();
-            });
+            let self = this, l = self.items().length;
+            if (l > 0) {
+                block.invisible();
+                service.exportCsv(self.formatParams()).always(() => {
+                    block.clear();
+                });
+            } else {
+                alertError({messageId: "Msg_37"});
+            }
         }
 
         private closeDialog() {
@@ -198,7 +201,7 @@ module nts.uk.com.view.cdl027.a.viewmodel {
             this.valueBefore = valueBefore;
             this.valueAfter = valueAfter;
             this.modifiedPerson = modifiedPerson;
-            this.modifiedDateTime = moment.utc(modifiedDateTime).format("YYYY/MM/DD(dd) hh:mm");
+            this.modifiedDateTime = moment.utc(modifiedDateTime).format("YYYY/MM/DD(dd) HH:mm");
             switch (correctionAttr) {
                 case CORRECTION_ATTR.EDIT: 
                     this.correctionAttr = getText("Enum_CorrectionAttr_EDIT");

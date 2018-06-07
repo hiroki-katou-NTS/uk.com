@@ -21,5 +21,6 @@ public class DataCorrectionLogDto {
 	private String modifiedPerson;
 	private GeneralDateTime modifiedDateTime;
 	private int correctionAttr;
+	private String employeeId;
 	
 }

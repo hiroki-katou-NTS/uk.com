@@ -56,7 +56,7 @@ public class SrcdtDataCorrectionLog extends UkJpaEntity {
 	@Column(name = "STRING_KEY")
 	String stringKey;
 
-	@Column(name = "CORRECTION_ATR")
+	@Column(name = "CORRECTION_ATTR")
 	@Basic(optional = false)
 	int correctionAttr;
 
@@ -128,7 +128,7 @@ public class SrcdtDataCorrectionLog extends UkJpaEntity {
 		}
 		if (this.yKey != null)
 			ymd = GeneralDate.ymd(this.yKey, 1, 1);
-		return new DataCorrectionLog(this.pk.operationId, new UserInfo(this.pk.userId, this.userName, this.employeeId),
+		return new DataCorrectionLog(this.pk.operationId, new UserInfo(this.pk.userId, this.employeeId, this.userName),
 				TargetDataType.of(this.pk.targetDataType), TargetDataKey.of(ymd, this.stringKey),
 				CorrectionAttr.of(this.correctionAttr),
 				ItemInfo.createToView(this.pk.itemId, this.itemName, this.viewValueBefore, this.viewValueAfter),

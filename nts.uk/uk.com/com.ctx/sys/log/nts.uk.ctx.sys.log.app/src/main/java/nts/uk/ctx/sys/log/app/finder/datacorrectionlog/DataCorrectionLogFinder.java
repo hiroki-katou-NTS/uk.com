@@ -2,6 +2,8 @@ package nts.uk.ctx.sys.log.app.finder.datacorrectionlog;
 
 import java.time.Year;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -59,8 +61,22 @@ public class DataCorrectionLogFinder {
 					d.getCorrectedItem().getValueBefore().getViewValue(),
 					d.getCorrectedItem().getValueAfter().getViewValue(),
 					basicInfo != null ? basicInfo.getUserInfo().getUserName() : null,
-					basicInfo != null ? basicInfo.getModifiedDateTime() : null, d.getCorrectionAttr().value);
+					basicInfo != null ? basicInfo.getModifiedDateTime() : null, d.getCorrectionAttr().value,
+					d.getTargetUser().getEmployeeId());
 			result.add(log);
+		}
+		if (params.getDisplayFormat() == 0) { // by date
+			Comparator<DataCorrectionLogDto> c = Comparator.comparing(DataCorrectionLogDto::getTargetDate)
+					.thenComparing(DataCorrectionLogDto::getEmployeeId)
+					.thenComparing(DataCorrectionLogDto::getModifiedDateTime)
+					.thenComparing(DataCorrectionLogDto::getCorrectionAttr);
+			Collections.sort(result, c);
+		} else { // by individual
+			Comparator<DataCorrectionLogDto> c = Comparator.comparing(DataCorrectionLogDto::getEmployeeId)
+					.thenComparing(DataCorrectionLogDto::getTargetDate)
+					.thenComparing(DataCorrectionLogDto::getModifiedDateTime)
+					.thenComparing(DataCorrectionLogDto::getCorrectionAttr);
+			Collections.sort(result, c);
 		}
 		return result;
 	}
