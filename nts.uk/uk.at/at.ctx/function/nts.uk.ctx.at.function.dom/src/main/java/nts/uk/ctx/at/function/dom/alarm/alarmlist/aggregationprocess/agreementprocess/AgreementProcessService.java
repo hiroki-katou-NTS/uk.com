@@ -65,7 +65,9 @@ public class AgreementProcessService {
 					if(!optAgreeName.isPresent()) throw new RuntimeException("Not found name of 36 agreement!");
 					String agreeName =  optAgreeName.get().getName().v();
 					
-					result.add(new ValueExtractAlarm(mapEmployee.get(check.getEmployeeId()).getWorkplaceId(), check.getEmployeeId(), check.getDatePeriod().toString(), 
+					String datePeriod = check.getDatePeriod().start().toString() + "~" + check.getDatePeriod().end().toString();
+					
+					result.add(new ValueExtractAlarm(mapEmployee.get(check.getEmployeeId()).getWorkplaceId(), check.getEmployeeId(), datePeriod, 
 							TextResource.localize("KAL010_208"), agreeName, TextResource.localize("KAL010_203", agreeName), check.getMessageDisp().v()));
 
 			}

@@ -69,8 +69,7 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 			YearMonth yearMonth = period.end().yearMonth();
 			
 			List<AgreementTimeExport> agreementTimeExport = agreementTimePub
-					.get(AppContexts.user().companyId(), employeeIds, yearMonth, ClosureId.valueOf(closureId)).stream()
-					.filter(e -> e.getErrorMessage().isPresent()).collect(Collectors.toList());
+					.get(AppContexts.user().companyId(), employeeIds, yearMonth, ClosureId.valueOf(closureId));
 			
 			List<AgreementTimeExport> exportError = agreementTimeExport.stream()
 					.filter(e -> e.getConfirmed().isPresent()
