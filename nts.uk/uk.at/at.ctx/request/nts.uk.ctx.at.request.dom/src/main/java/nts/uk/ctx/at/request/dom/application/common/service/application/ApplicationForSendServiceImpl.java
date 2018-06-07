@@ -90,10 +90,16 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 			String appContent = appContentService.getApplicationContent(application_New.get());
 			//メール本文を編集する
 			String mailContentToSend = I18NText.getText("Msg_703",
-					loginName, appTempAsStr,app.getAppDate().toLocalDate().toString(),
-					GeneralDate.today().toString(), app.getAppType().nameId,
-					empName, app.getAppDate().toLocalDate().toString(),
-					appContent, loginName, loginMail);
+					loginName,//{0}　←　ログイン者の氏名
+					appTempAsStr,//{1}　←　申請承認メールテンプレート．本文
+					app.getAppDate().toLocalDate().toString(),//{2}　←　申請．申請日付
+					app.getAppType().nameId,//{3}　←　申請．申請種類（名称）
+					empName,//{4}　←　申請．申請者の氏名
+					app.getAppDate().toLocalDate().toString(),//{5}　←　申請．申請日付
+					appContent,//{6}　←　申請．申請内容()
+					loginName,//{7}　←　ログイン者．氏名
+					loginMail//{8}　←　ログイン者．メールアドレス
+			);
 			return new ApplicationForSendOutput(app, mailContentToSend, approvalRoot, applicantMail);
 		}
 		return null;
