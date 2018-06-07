@@ -51,6 +51,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -183,7 +184,9 @@ public class TotalWorkingTime {
 			   List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 			   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet, 
 			   int breakTimeCount, IntegrationOfDaily integrationOfDaily,
-			   AutoCalFlexOvertimeSetting flexAutoCalSet,Optional<CoreTimeSetting> coreTimeSetting
+			   AutoCalFlexOvertimeSetting flexAutoCalSet,
+			   Optional<CoreTimeSetting> coreTimeSetting,
+			   DailyUnit dailyUnit
 			   ) {
 		
 
@@ -227,7 +230,9 @@ public class TotalWorkingTime {
 				   																      flexCalcMethod, 
 				   																      workTimeDailyAtr.get(), 
 				   																      workTimeCode,
-				   																      flexPreAppTime, coreTimeSetting);
+				   																      flexPreAppTime, 
+				   																      coreTimeSetting,
+				   																      dailyUnit);
 
 		
 		ExcessOfStatutoryTimeOfDaily excesstime =ExcessOfStatutoryTimeOfDaily.calculationExcessTime(oneDay, 
@@ -250,7 +255,8 @@ public class TotalWorkingTime {
 																									eachCompanyTimeSet,
 																									integrationOfDaily,
 																									flexPreAppTime,
-																									flexAutoCalSet);
+																									flexAutoCalSet,
+																									dailyUnit);
 		int overWorkTime = excesstime.getOverTimeWork().isPresent()?excesstime.getOverTimeWork().get().calcTotalFrameTime():0;
 		overWorkTime += excesstime.getOverTimeWork().isPresent()?excesstime.getOverTimeWork().get().calcTransTotalFrameTime():0;
 		int holidayWorkTime = excesstime.getWorkHolidayTime().isPresent()?excesstime.getWorkHolidayTime().get().calcTotalFrameTime():0;
@@ -343,7 +349,12 @@ public class TotalWorkingTime {
 
 		
 		//実働時間
-		val actualTime = withinStatutoryTimeOfDaily.getActualWorkTime();
+		val actualTime = new AttendanceTime(withinStatutoryTimeOfDaily.getActualWorkTime().valueAsMinutes()
+				   			+ withinStatutoryTimeOfDaily.getWithinPrescribedPremiumTime().valueAsMinutes() 
+				   			+ overWorkTime
+				   			+ holidayWorkTime
+				   			+ tempTime.totalTemporaryFrameTime()
+				   			+ flexTime);
 		
 		TotalWorkingTime returnTotalWorkingTimereturn = new TotalWorkingTime(totalWorkTime,
 																				totalCalcTime,
@@ -368,7 +379,19 @@ public class TotalWorkingTime {
 	private static int workCounter(CalculationRangeOfOneDay oneDay) {
 		int workCount = 0;
 		if(oneDay.getAttendanceLeavingWork() != null) {
-			workCount += oneDay.getAttendanceLeavingWork().getTimeLeavingWorks().size();
+			workCount = oneDay.getAttendanceLeavingWork().getTimeLeavingWorks().stream()
+																   .filter(tc -> 
+																   		tc.getAttendanceStamp() != null
+																   	&&  tc.getAttendanceStamp().isPresent()
+																   	&&  tc.getAttendanceStamp().get().getStamp() != null
+																   	&&  tc.getAttendanceStamp().get().getStamp().isPresent()
+																   	&&  tc.getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null
+																   	&&  tc.getLeaveStamp() != null
+																   	&&  tc.getLeaveStamp().isPresent()
+																   	&&  tc.getLeaveStamp().get().getStamp() != null
+																   	&&  tc.getLeaveStamp().get().getStamp().isPresent()
+																   	&&  tc.getLeaveStamp().get().getStamp().get().getTimeWithDay() != null)
+																   .collect(Collectors.toList()).size();
 		}
 		//↓に臨時を入れる
 		//リンジ

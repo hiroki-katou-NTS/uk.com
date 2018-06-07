@@ -88,8 +88,8 @@ public class TotalWorkingTimeDto {
 	private HolidayDailyPerformDto dailyOfHoliday;
 
 	/** 勤務回数: 勤務回数 */
-	// @AttendanceItemLayout(layout = "N")
-	// @AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemLayout(layout = "N", jpPropertyName = "勤務回数")
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer workTimes;
 
 	public static TotalWorkingTimeDto fromTotalWorkingTime(TotalWorkingTime domain) {

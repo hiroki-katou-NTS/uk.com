@@ -1,7 +1,6 @@
 package nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionorder;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 
@@ -17,11 +16,13 @@ public interface SelectionItemOrderRepository {
 
 	void remove(String selectionId);
 	
+	void removeAll(List<String> selectionIds);
+	
 	void removeInSelectionItemId(String selectionItemId);
 	
 	List<SelectionItemOrder> getAllOrderSelectionByHistId(String histId);
 	
-	Map<String, List<SelectionItemOrder>> getByHistIdList(List<String> histIdList);
+	List<SelectionItemOrder> getByHistIdList(List<String> histIdList);
 	
 	List<SelectionItemOrder> getAllOrderBySelectionId(String selectionId);
 	

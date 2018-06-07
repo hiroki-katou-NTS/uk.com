@@ -482,7 +482,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 											   flexWorkSetOpt.get().getLstHalfDayWorkTimezone().get(0).getWorkTimezone().getLstOTTimezone(),
 											   /*休出時間帯リスト*/Collections.emptyList(),overDayEndCalcSet, yesterDay, workType.get(),tomorrow,
 											   new BreakDownTimeDay(new AttendanceTime(4),new AttendanceTime(4),new AttendanceTime(8)),
-												personalInfo.getStatutoryWorkTime(),calcSetinIntegre.getOvertimeSetting(),LegalOTSetting.OUTSIDE_LEGAL_TIME,StatutoryPrioritySet.priorityNormalOverTimeWork,
+												personalInfo.getStatutoryWorkTime(),calcSetinIntegre,LegalOTSetting.OUTSIDE_LEGAL_TIME,StatutoryPrioritySet.priorityNormalOverTimeWork,
 												workTime.get(),flexWorkSetOpt.get(),goOutTimeSheetList,oneRange.getOneDayOfRange(),oneRange.getAttendanceLeavingWork(),
 												workTime.get().getWorkTimeDivision(),breakTimeOfDailyList,midNightTimeSheet,personalInfo,
 												holidayCalcMethodSet,
@@ -595,7 +595,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						tomorrow, 
 						oneRange.getPredetermineTimeSetForCalc().getAdditionSet().getPredTime(),
 						personalInfo.getStatutoryWorkTime(), 
-						calcSetinIntegre.getOvertimeSetting(), 
+						calcSetinIntegre, 
 						fixedWorkSetting.get().getLegalOTSetting(),
 						StatutoryPrioritySet.priorityNormalOverTimeWork, 
 						workTime.get(),
@@ -724,10 +724,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		val workType = recordReGetClass.getWorkType();
 		if(!workType.isPresent() || !workTimeDailyAtr.isPresent()) return recordReGetClass.getIntegrationOfDaily();
 		//予定時間帯が作成されるまでの一時対応
-		val scheWorkTypeCode = recordReGetClass.getCalculationRangeOfOneDay().getWorkInformationOfDaily().getScheduleInfo().getWorkTypeCode();
-		Optional<WorkType> scheWorkType = Optional.empty();
-		if(scheWorkTypeCode != null)
-			 scheWorkType = workTypeRepository.findByPK(companyId, scheWorkTypeCode.toString()); 
+//		val scheWorkTypeCode = recordReGetClass.getCalculationRangeOfOneDay().getWorkInformationOfDaily().getScheduleInfo().getWorkTypeCode();
+//		Optional<WorkType> scheWorkType = Optional.empty();
+//		if(scheWorkTypeCode != null)
+//			 scheWorkType = workTypeRepository.findByPK(companyId, scheWorkTypeCode.toString()); 
+		
 
 		//乖離時間(AggregateRoot)取得
 		List<DivergenceTime> divergenceTimeList = companyCommonSetting.getDivergenceTime();
@@ -767,7 +768,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					schePreTimeSet,
 					recordReGetClass.getOotsukaFixedWorkSet(),
 					recordReGetClass.getFixRestTimeSetting(),
-					scheWorkType,
+					scheduleReGetClass.getWorkType(),
 					recordReGetClass.getIntegrationOfDaily().getCalAttr().getFlexExcessTime(),
 					recordReGetClass.getDailyUnit(),
 					recordReGetClass.getBreakCount(),
