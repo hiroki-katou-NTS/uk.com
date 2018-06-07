@@ -114,7 +114,7 @@ module nts.uk.com.view.kwr002.b {
             });
         }
 
-        /** set current code after delete -  tuannt */
+        /** set current code after delete */
         setCurrentCodeAfterDelete() {
             block.invisible();
             let self = this;
@@ -379,13 +379,29 @@ module nts.uk.com.view.kwr002.b {
         name: KnockoutObservable<string>;
         sealUseAtr: KnockoutObservable<boolean>;
         nameUseAtr: KnockoutObservable<number>;
+        enableSetting: KnockoutComputed<boolean>;
 
         constructor(param: IARES) {
             let self = this;
-            this.code = ko.observable(param.code);
-            this.name = ko.observable(param.name);
-            this.sealUseAtr = ko.observable(param.sealUseAtr);
-            this.nameUseAtr = ko.observable(param.nameUseAtr);
+            self.code = ko.observable(param.code);
+            self.name = ko.observable(param.name);
+            self.sealUseAtr = ko.observable(param.sealUseAtr);
+            self.nameUseAtr = ko.observable(param.nameUseAtr);
+            self.enableSetting = ko.pureComputed(() => {
+                if (!nts.uk.ui.errors.hasError()) {
+                    if (_.isEmpty(self.code())) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }
+                if ($('#code').ntsError('hasError')) {
+                    return false;
+                } else {
+                    return true;
+                }
+
+            });
         }
 
         public openScreenC() {
