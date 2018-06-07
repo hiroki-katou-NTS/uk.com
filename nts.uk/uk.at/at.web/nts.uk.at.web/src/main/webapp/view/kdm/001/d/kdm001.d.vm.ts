@@ -23,13 +23,12 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         requiredDays: KnockoutObservable<number>                  = ko.observable(null);
         typeHoliday: KnockoutObservableArray<model.ItemModel>     = ko.observableArray(model.getTypeHoliday());
         itemListHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getDaysNumber());
-        occurredDays: KnockoutObservable<number>                  = ko.observable(null);
+        occurredDays: KnockoutObservable<number>                  = ko.observable(null);;
         itemListSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getDaysNumber());
         subDays: KnockoutObservable<number>           = ko.observable(null);
         itemListOptionSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getDaysNumber());
         isOptionSubHolidayEnable: KnockoutObservable<boolean>              = ko.observable(false);
         closureId: KnockoutObservable<number> = ko.observable(0);
-        totalDay: KnockoutObservable<number> = ko.observable(0);
         enableSplit: KnockoutObservable<boolean>              = ko.observable(true);
         constructor() {
             let self = this;
@@ -60,12 +59,8 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             self.checkedSplit.subscribe((v) => {
                 self.calRemainDays();
             });
-            self.lawAtr(self.typeHoliday()[0].code);
-            self.requiredDays(self.itemListOptionSubHoliday()[0].code);
-            self.subDays(self.itemListSubHoliday()[0].code);
-            self.occurredDays(self.itemListHoliday()[0].code);
             self.remainDays(null);
-  
+            self.unit("");
         }
         
         public calRemainDays(){
@@ -80,26 +75,40 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 } else {
                     self.remainDays(self.occurredDays());
                 }
+                self.unit("日");
             } else {
                 if (self.pause()) {
                     if (self.checkedSplit()) {
-                        self.remainDays(self.totalDay() - self.subDays() - self.requiredDays());
+                        self.remainDays( - self.subDays() - self.requiredDays());
                     } else {
-                        self.remainDays(self.totalDay() - self.subDays());
+                        self.remainDays( - self.subDays());
                     }
+                    self.unit("日");
                 } else {
                     if (self.checkedSplit()) {
-                        self.remainDays(self.totalDay() - self.requiredDays());
+                        self.remainDays(- self.requiredDays());
+                        self.unit("日");
                     } else {
                         self.remainDays(null);
+                        self.unit("");
                     }
                 }
             }
-            if (self.remainDays != null) {
-                self.unit("日");
+            if (isNaN(self.remainDays())) {
+               self.remainDays(null);
+               self.unit("");
+            } else {
+                if (self.remainDays() == 0) {
+                    return;
+                } else {
+                    self.remainDays(self.remainDays().toFixed(1)); 
+                }
             }
         }
-        
+        public isNaN(x) {
+            x = Number(x);
+            return x != x;
+        }
         public setSplit(){
             let self = this;
             if (self.pause()) {
@@ -122,6 +131,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 self.employeeName(info.selectedEmployee.employeeName);
                 self.closureId(info.closureId);
             }
+            
             block.clear();
         }
         
@@ -218,14 +228,23 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         
         public createData(){
             nts.uk.ui.errors.clearAll();
-            $("#D6_1").trigger("validate");
-            $("#D8_1").trigger("validate");
-            $("#D11_1").trigger("validate");
-            $("#D12_2").trigger("validate");
-            $("#D6_3").trigger("validate");
-            $("#D7_1").trigger("validate");
-            $("#D11_3").trigger("validate");
-            $("#D12_4").trigger("validate");
+            if (this.pickUp()){
+                $("#D6_1").trigger("validate");
+                $("#D8_1").trigger("validate");
+                $("#D7_1").trigger("validate");
+                $("#D6_3").trigger("validate");
+            }
+            if (this.pause()) {
+                $("#D11_1").trigger("validate");
+                $("#D11_3").trigger("validate");
+            }
+            if (this.checkedSplit()) {
+                $("#D12_2").trigger("validate");
+                $("#D12_4").trigger("validate");
+            }
+           
+            
+           
             if (!nts.uk.ui.errors.hasError()) {
                 if (this.checked()) {
                      $('#D4').ntsError('set', { messageId: "Msg_727" });
