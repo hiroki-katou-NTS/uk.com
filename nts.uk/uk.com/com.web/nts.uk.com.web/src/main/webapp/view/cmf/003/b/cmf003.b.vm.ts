@@ -176,9 +176,9 @@ module nts.uk.com.view.cmf003.b {
 
                 this.columnCategorys = ko.observableArray([
                     { headerText: '', key: 'categoryId', width: 100, hidden: true },
-                    { headerText: getText('CMF003_30'), key: 'categoryName', width: 320 },
+                    { headerText: getText('CMF003_30'), key: 'categoryName', width: 280 },
                     { headerText: getText('CMF003_31'), formatter: timeStore, key: 'timeStore', width: 80 },
-                    { headerText: getText('CMF003_32'), formatter: storageRangeSaved, key: 'storageRangeSaved', width: 80 }
+                    { headerText: getText('CMF003_32'), formatter: storageRangeSaved, key: 'storageRangeSaved', width: 130 }
                 ]);
 
                 this.columnEmployees = ko.observableArray([
@@ -634,16 +634,7 @@ module nts.uk.com.view.cmf003.b {
 
             private gotoscreenF(): void {
                 let self = this;
-                let params = {};
-                params.dataSaveSetName = self.dataSaveSetName();
-                params.dayValue = self.dayValue();
-                params.monthValue = self.monthValue();
-                params.yearValue = self.yearValue();
-
-                setShared("CMF001_E_PARAMS", params);
-
                 self.saveManualSetting();
-                // nts.uk.ui.windows.sub.modal("/view/cmf/003/f/index.xhtml");
             }
 
             private saveManualSetting(): void {
@@ -655,9 +646,20 @@ module nts.uk.com.view.cmf003.b {
                     self.selectedTitleAtr(), Number(self.isSymbol()), self.targetEmployee(), self.categorys());
 
                 service.addMalSet(manualSetting).done((res) => {
-                    console.log(res);
-                }).fail(res => {
+                    if((res != null) && (res != "")) {
+                        let params = {
+                            storeProcessingId: res,
+                            dataSaveSetName : self.dataSaveSetName(),
+                            dayValue : self.dayValue(),
+                            monthValue : self.monthValue(),
+                            yearValue : self.yearValue()
+                        };
 
+                        setShared("CMF001_E_PARAMS", params);
+                        nts.uk.ui.windows.sub.modal("/view/cmf/003/f/index.xhtml");
+                    }
+                }).fail((err) => {
+                    console.log("++++++++++++");
                 });
             }
         }//end screemodule
