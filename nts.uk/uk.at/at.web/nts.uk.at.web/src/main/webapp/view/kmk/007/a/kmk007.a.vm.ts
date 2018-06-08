@@ -199,7 +199,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                     self.checkDisabled(false);
                     $('#input-workTypeName').focus();
                     self.isCreated(false);
-
+                    self.isEnableOneDay(false);
                     self.index(_.findIndex(ko.toJS(lwt), x => x.workTypeCode == newValue));
 
                     service.findWorkType(newValue).done(function(workTypeRes) {
