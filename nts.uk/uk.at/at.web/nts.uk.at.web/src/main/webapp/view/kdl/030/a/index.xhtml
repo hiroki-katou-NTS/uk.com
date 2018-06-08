@@ -28,7 +28,7 @@
 						<div id="A1_1" class="column1"
 							data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDL030_3')}</div>
 					</div>
-					<div id = "A2_2" tabindex = "1" >
+					<div id = "A2_2">
 						<table id="table-phase">
 						<colgroup>
 							<col width="111px"/>
@@ -65,14 +65,15 @@
  									<!-- メール送信 -->
  									<td data-bind="foreach: $data.listApprover">
  										<div  class = "rowPer" data-bind = "if: $data.approverMail().length > 0,
- 												css: {rowBorder: ($parent.listApprover().length - $index()) > 1}">
+ 												css: {rowBorder: ($parent.listApprover().length - $index()) > 1},
+ 													attr: { id: 'sendAtr_' + $index()}">
 	 										<div data-bind="ntsSwitchButton: { 
 			   										name: '#{i18n.getText('KAF030_25')}',   
 			   										options: $parents[2].optionList,   
 			  										optionsValue: 'dispCode',  
 			  										optionsText: 'dispName',  
 			  										value: $data.isSend}">
-	  										</div> 
+	  										</div>
  										</div>
 									</td>
 								</tr>
@@ -84,7 +85,7 @@
 				<div class="table valign-center">
 					<div class="cell column1"></div>
 					<div class="cell column2">
-						<div id = "A3" tabindex = "2" data-bind="ntsCheckBox: { checked: isSendToApplicant, enable: applicant().smail.length >= 0, text: '#{i18n.getText('KDL030_4')}' }"></div>
+						<div id = "A3" data-bind="ntsCheckBox: { checked: isSendToApplicant, enable: applicant().smail.length >= 0, text: '#{i18n.getText('KDL030_4')}' }"></div>
 					</div>
 				</div>
 				<div class="table valign-center">
@@ -93,7 +94,7 @@
 							data-bind="ntsFormLabel: { required : true,  constraint: 'ApplicationEmailBody' }">#{i18n.getText('KDL030_6')}</div>
 					</div>
 					<div class="cell column2">
-						<textarea tabindex="3" id="A4_2"
+						<textarea id="A4_2"
 							data-bind="ntsMultilineEditor: { 
 									name: '#[KDL034_14]',
 									value: mailContent,
@@ -103,9 +104,9 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="4" class="x-large proceed"
+				<button  class="x-large proceed"
 					data-bind="click: sendMail, enable: $root.errors.isEmpty">#{i18n.getText('KDL030_8')}</button>
-				<button tabindex="5" data-bind="click: cancel">#{i18n.getText('KDL030_9')}</button>
+				<button data-bind="click: cancel">#{i18n.getText('KDL030_9')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
