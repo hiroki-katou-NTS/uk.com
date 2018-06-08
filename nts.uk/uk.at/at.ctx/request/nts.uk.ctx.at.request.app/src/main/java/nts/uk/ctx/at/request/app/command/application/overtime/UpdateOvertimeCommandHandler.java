@@ -15,6 +15,7 @@ import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
@@ -24,7 +25,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<UpdateOvertimeCommand, List<String>>{
+public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<UpdateOvertimeCommand, ProcessResult>{
 
 	@Inject
 	private OvertimeRepository overtimeRepository;
@@ -39,7 +40,7 @@ public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<Updat
 	private ApplicationRepository_New applicationRepository;
 	
 	@Override
-	protected List<String> handle(CommandHandlerContext<UpdateOvertimeCommand> context) {
+	protected ProcessResult handle(CommandHandlerContext<UpdateOvertimeCommand> context) {
 		String companyID = AppContexts.user().companyId();
 		UpdateOvertimeCommand command = context.getCommand();
 		Optional<AppOverTime> opAppOverTime = overtimeRepository.getFullAppOvertime(companyID, command.getAppID());

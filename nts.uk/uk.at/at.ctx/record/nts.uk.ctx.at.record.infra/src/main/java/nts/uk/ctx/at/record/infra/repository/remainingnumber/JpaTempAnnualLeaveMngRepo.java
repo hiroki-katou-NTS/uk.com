@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLea
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveMngRepository;
 import nts.uk.ctx.at.record.infra.entity.remainingnumber.annlea.KrcdtAnnleaMngTemp;
 import nts.uk.ctx.at.record.infra.entity.remainingnumber.annlea.KrcdtAnnleaMngTempPK;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -38,7 +39,16 @@ public class JpaTempAnnualLeaveMngRepo extends JpaRepository implements TempAnnu
 			+ "WHERE a.PK.employeeId = :employeeId "
 			+ "AND a.PK.ymd <= :criteriaDate ";
 	
+
+	private static final String SELECT_BY_WORKTYPE_PERIOD = "SELECT a FROM KrcdtAnnleaMngTemp a "
+			+ "WHERE a.PK.employeeId = :employeeId "
+			+ "AND a.workTypeCode = :workTypeCode"			
+			+ "AND a.PK.ymd >= :startYmd "
+			+ "AND a.PK.ymd <= :endYmd "
+			+ "ORDER BY a.PK.ymd ";
+
 	private static final String SELECT_BY_EMPLOYEEID;
+	
 	static{
 		StringBuilder query = new StringBuilder();
 		query.append("SELECT a FROM KrcdtAnnleaMngTemp a");
@@ -115,9 +125,20 @@ public class JpaTempAnnualLeaveMngRepo extends JpaRepository implements TempAnnu
 	}
 
 	@Override
+	public List<TempAnnualLeaveManagement> findBySidWorkTypePeriod(String employeeId, String workTypeCode,
+			Period period) {
+		return this.queryProxy().query(SELECT_BY_WORKTYPE_PERIOD, KrcdtAnnleaMngTemp.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("workTypeCode", workTypeCode)
+				.setParameter("startYmd", period.getStartDate())
+				.setParameter("endYmd", period.getEndDate())
+				.getList(c -> c.toDomain());
+	}
+
+	@Override
 	public List<TempAnnualLeaveManagement> findByEmployeeID(String employeeID) {
 		return this.queryProxy().query(SELECT_BY_EMPLOYEEID, KrcdtAnnleaMngTemp.class)
-				.setParameter("employeeId", employeeID)
+				.setParameter("employeeID", employeeID)
 				.getList(c -> c.toDomain());
 	}
 }

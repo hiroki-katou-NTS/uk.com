@@ -1,10 +1,8 @@
 package nts.uk.ctx.sys.env.dom.contact;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
 public class EmployeeContactObjectImport {
 
 	// 社員ID
@@ -24,5 +22,15 @@ public class EmployeeContactObjectImport {
 
 	// 携帯電話番号
 	private String cellPhoneNo;
+
+	public EmployeeContactObjectImport(String sid, String mailAddress, String seatDialIn, String seatExtensionNo,
+			String phoneMailAddress, String cellPhoneNo) {
+		this.sid = sid;
+		this.mailAddress = mailAddress;
+		this.seatDialIn = seatDialIn;
+		this.seatExtensionNo = seatExtensionNo;
+		this.phoneMailAddress = phoneMailAddress;
+		this.cellPhoneNo = cellPhoneNo;
+	}
 
 }

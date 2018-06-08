@@ -12,12 +12,12 @@ import javax.inject.Inject;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.env.dom.contact.EmployeeContactAdapter;
 import nts.uk.ctx.sys.env.dom.contact.EmployeeContactObjectImport;
-import nts.uk.ctx.sys.env.dom.contact.PersonContactObjectOfEmployeeImport;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.MailDestinationFunction;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.MailDestinationFunctionRepository;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.SettingUseSendMail;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethodRepository;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PersonContactImport;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSetting;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSettingRepository;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
@@ -78,7 +78,7 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 		boolean isCompanyEmail = useInfoMethod.getSettingItem().equals(UserInfoItem.COMPANY_PC_MAIL)
 				|| useInfoMethod.getSettingItem().equals(UserInfoItem.COMPANY_MOBILE_MAIL);
 		if (isCompanyEmail) {
-			// Imported(環境)「社員連絡先」を取得する RequestList 378
+			// Imported(環境)「社員連絡先」を取得する
 			List<EmployeeContactObjectImport> empContacts = empContactAdapter.getList(sIDs);
 
 			setCompanyMail(useInfoMethod, emailAddress, sIDs, empContacts, cID, useInfoMethod.getSettingItem());
@@ -89,8 +89,8 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 				|| useInfoMethod.getSettingItem().equals(UserInfoItem.PERSONAL_MOBILE_MAIL);
 
 		if (isPersonEmail) {
-			// Imported(環境)「個人連絡先」を取得する RequestList 420
-			List<PersonContactObjectOfEmployeeImport> personContacts = empContactAdapter.getListOfEmployees(sIDs);
+			// Imported(環境)「個人連絡先」を取得する
+			List<PersonContactImport> personContacts = new ArrayList<PersonContactImport>();
 
 			setPersonMail(useInfoMethod, emailAddress, sIDs, personContacts, cID, useInfoMethod.getSettingItem());
 		}
@@ -98,7 +98,7 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 	}
 
 	private void setPersonMail(UserInfoUseMethod useInfoMethod, List<MailDestination> emailAddress, List<String> sIDs,
-			List<PersonContactObjectOfEmployeeImport> personContacts, String cID, UserInfoItem userInfoItem) {
+			List<PersonContactImport> personContacts, String cID, UserInfoItem userInfoItem) {
 		boolean isPersonSelectAble = useInfoMethod.getSettingUseMail().get()
 				.equals(SettingUseSendMail.PERSONAL_SELECTABLE);
 
@@ -125,17 +125,18 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 	}
 
 	private void addEmailFromPerContact(List<MailDestination> emailAddress, List<String> sIDs,
-			List<PersonContactObjectOfEmployeeImport> personContacts) {
+			List<PersonContactImport> personContacts) {
 		sIDs.forEach(sID -> {
 
 			Optional<MailDestination> mailDestinationOpt = emailAddress.stream()
 					.filter(mailDestination -> mailDestination.getEmployeeID().equals(sID)).findFirst();
+			// chỗ này chưa xong
 			mailDestinationOpt.ifPresent(mailDestination -> {
-				Optional<PersonContactObjectOfEmployeeImport> perContactOpt = personContacts.stream()
-						.filter(perContact -> perContact.getEmployeeId().equals(sID)).findFirst();
+				Optional<PersonContactImport> perContactOpt = personContacts.stream()
+						.filter(perContact -> perContact.getPersonId().equals(sID)).findFirst();
 
 				perContactOpt.ifPresent(item -> {
-					mailDestination.addOutGoingMails(item.getMailAdress());
+					mailDestination.addOutGoingMails(item.getMailAddress());
 				});
 
 			});

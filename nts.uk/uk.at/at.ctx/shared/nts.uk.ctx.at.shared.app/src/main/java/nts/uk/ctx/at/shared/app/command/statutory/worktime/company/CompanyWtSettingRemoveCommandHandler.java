@@ -24,9 +24,6 @@ public class CompanyWtSettingRemoveCommandHandler extends CommandHandler<Company
 	@Inject
 	private CompanyWtSettingRepository repository;
 
-	/** The company id. */
-	String companyId = AppContexts.user().companyId();
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -36,6 +33,8 @@ public class CompanyWtSettingRemoveCommandHandler extends CommandHandler<Company
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<CompanyWtSettingRemoveCommand> context) {
+		/** The company id. */
+		String companyId = AppContexts.user().companyId();
 		// Get Command
 		CompanyWtSettingRemoveCommand command = context.getCommand();
 		this.repository.remove(companyId, command.getYear());

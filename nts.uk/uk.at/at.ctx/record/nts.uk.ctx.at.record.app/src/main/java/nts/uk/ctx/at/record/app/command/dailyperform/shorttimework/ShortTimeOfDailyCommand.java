@@ -21,7 +21,7 @@ public class ShortTimeOfDailyCommand extends DailyWorkCommonCommand {
 
 	@Override
 	public void updateData(Object item) {
-		if(data == null){ return; }
+		if(item == null){ return; }
 		this.data = Optional.of((ShortTimeOfDailyPerformance) item);
 	}
 

@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.vacation.annualleave;
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
 
 /**
  * 半日年休使用数

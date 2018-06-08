@@ -17,6 +17,7 @@ import nts.uk.ctx.at.record.app.find.monthly.root.dto.TimeAnnualLeaveUsedTimeDto
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceLayoutConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
@@ -28,7 +29,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 年休月別残数データ */
-@AttendanceItemRoot(rootName = "年休月別残数データ", itemType = AttendanceItemType.MONTHLY_ITEM)
+@AttendanceItemRoot(rootName = AttendanceLayoutConst.MONTHLY_ANNUAL_LEAVING_REMAIN_NAME, itemType = AttendanceItemType.MONTHLY_ITEM)
 public class AnnLeaRemNumEachMonthDto extends MonthlyItemCommon {
 	/** 会社ID */
 	private String companyId;
