@@ -19,7 +19,7 @@ module nts.uk.at.view.kdm001.f.viewmodel {
         residualDay: KnockoutObservable<any> = ko.observable(0);
         residualDayDispay: KnockoutObservable<any> = ko.observable('0' + " " + getText('KDM001_27'));
         info: any = getShared("KDM001_EFGH_PARAMS");
-        disables: Array<any> = [];
+        disables: KnockoutObservableArray<any> = ko.observableArray([]);
         constructor() {
             let self = this;
             // set init value from screen a
@@ -33,9 +33,9 @@ module nts.uk.at.view.kdm001.f.viewmodel {
             }
 
             self.columns = ko.observableArray([
-                { headerText: 'コード', key: 'payoutId', width: 100, hidden: true },
-                { headerText: nts.uk.resource.getText("KDM001_95"), key: 'dayoffDate', width: 100 },
-                { headerText: nts.uk.resource.getText("KDM001_96"), key: 'occurredDays', formatter: model.formatterDay, width: 100 }
+                { headerText: 'コード', dataType: 'string', key: 'payoutId', width: 100, hidden: true },
+                { headerText: nts.uk.resource.getText("KDM001_95"), key: 'dayoffDate', width: 110 },
+                { headerText: nts.uk.resource.getText("KDM001_96"), key: 'occurredDays', formatter:model.formatterDay, width: 100 },
             ]);
             self.initScreen();
 
@@ -67,7 +67,6 @@ module nts.uk.at.view.kdm001.f.viewmodel {
                     $('#multi-list').ntsError('set', { messageId: "Msg_766" });
                 } else {
                     sumNum = sumNum + x.occurredDays;
-                    let day = parseFloat(self.numberDay());
                     self.residualDay(sumNum - day);
                     residualValue = (sumNum - day) > 0 ? (sumNum - day).toFixed(1) : (sumNum - day);
                     self.residualDayDispay(residualValue + " " + getText('KDM001_27'));
@@ -89,20 +88,16 @@ module nts.uk.at.view.kdm001.f.viewmodel {
 
             service.getBySidDatePeriod(self.info.selectedEmployee.employeeId, self.info.rowValue.id).done((data: Array<ItemModel>) => {
                 if (data && data.length > 0) {
-                    self.items(data);
+                    _.forEach(data, function(item) {
+                        self.items.push(new ItemModel(item.payoutId, item.dayoffDate,item.occurredDays));
+                        if (item.linked){
+                            self.currentCodeList.push(item.payoutId);
+                        }
+                    });
                     let sortData = _.sortBy(self.items(), o => o.dayoffDate,'asc');
                     self.items(sortData);
-                    let code = _.filter(self.items(), function(currentItem: ItemModel) {
-                        return currentItem.linked == true;
-                    });
-
-                    if (code) {
-                        _.forEach(code, function(item: ItemModel) {
-                            self.currentCodeList.push(item.payoutId);
-                        });
-                    }
                     _.forEach(self.items(), function(item: ItemModel) {
-                        if(item.occurredDays > parseFloat(self.info.rowValue.requiredDays)) {
+                        if(parseFloat(item.occurredDays) > parseFloat(self.info.rowValue.requiredDays)) {
                             self.disables.push(item.payoutId);    
                         }    
                     })
@@ -145,7 +140,6 @@ module nts.uk.at.view.kdm001.f.viewmodel {
 
         private validate(): boolean {
             let self = this;
-            self.caculRemainNumber();
             if (self.currentCodeList().length == 0) {
                 $('#multi-list').ntsError('set', { messageId: "Msg_742" });
                 return false;
@@ -179,9 +173,8 @@ module nts.uk.at.view.kdm001.f.viewmodel {
     class ItemModel {
         payoutId: string;
         dayoffDate: string;
-        occurredDays: number;
-        linked: boolean;
-        constructor(code: string, date: string, occurredDays?: number) {
+        occurredDays: string;
+        constructor(code: string, date: string, occurredDays: string) {
             this.payoutId = code;
             this.dayoffDate = date;
             this.occurredDays = occurredDays;
