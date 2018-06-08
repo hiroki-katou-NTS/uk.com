@@ -72,12 +72,14 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 
             self.selectTarget.subscribe((value) => {
                 block.invisible();
+                self.multiSelectedWorkplaceId([]);
                 service.getApprovalStatusPerior(value).done((data: any) => {
                     self.startDate(new Date(data.startDate));
                     self.endDate(new Date(data.endDate));
                     self.listEmployeeCode(data.employeesCode);
                     self.baseDate(new Date(data.endDate));
                     self.processingYm(nts.uk.time.formatYearMonth(data.yearMonth));
+                    self.closureName(data.closureName);
                     $('#tree-grid').ntsTreeComponent(self.treeGrid).done(() => {
                         self.reloadData().done(() => {
                             block.clear();
@@ -86,6 +88,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                 });
                 service.saveSelectedClosureId(value);
             });
+                        console.log(self.multiSelectedWorkplaceId());
         }
 
 
@@ -105,7 +108,6 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                 self.processYm = closure.processingYm;
                 self.processingYm(nts.uk.time.formatYearMonth(closure.processingYm));
                 self.baseDate(new Date(closure.endDate));
-                self.closureName(closures.closeName);
                 self.listEmployeeCode(closure.employeesCode);
 
                 // getUseSetting
@@ -122,8 +124,14 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                         self.selectTarget(1);
                     }
                     dfd.resolve();
+                }).then(() => {
+                    let params: Array<any> = nts.uk.ui.windows.getShared('KAF018AInput');
+                    if (params && params.multiSelectedWorkplaceId.length > 0) {
+                        self.multiSelectedWorkplaceId(params.multiSelectedWorkplaceId);
+                    }
                 });
             });
+
             return dfd.promise();
         }
 
@@ -135,8 +143,6 @@ module nts.uk.at.view.kaf018.a.viewmodel {
             nts.uk.ui.block.invisible();
             service.getAll(lstWkp.map((wkp) => { return wkp.workplaceId; })).done((dataResults: Array<model.IApplicationApprovalSettingWkp>) => {
                 self.alreadySettingList(dataResults.map((data) => { return { workplaceId: data.wkpId, isAlreadySetting: true }; }));
-                self.multiSelectedWorkplaceId([]);
-                self.multiSelectedWorkplaceId.valueHasMutated();
                 dfd.resolve();
             });
             return dfd.promise();
@@ -161,7 +167,6 @@ module nts.uk.at.view.kaf018.a.viewmodel {
         choiceNextScreen() {
             var self = this;
             let listWorkplace = [];
-            console.log(self.multiSelectedWorkplaceId());
             _.forEach(self.multiSelectedWorkplaceId(), function(item) {
                 let data = _.find(lstWkp, (wkp) => { return wkp.workplaceId == item });
                 listWorkplace.push({ code: data.workplaceId, name: data.nodeText });

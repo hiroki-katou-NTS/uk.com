@@ -705,10 +705,12 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			// Imported（就業）「個人社員基本情報」を取得する
 			// RequestList126
 			String empName = "";
+			String empCode = "";
 			List<EmployeeBasicInfoImport> listEmpInfor = this.workplaceAdapter.findBySIds(listEmpId);
 			if(!listEmpInfor.isEmpty()){
 				EmployeeBasicInfoImport empInfo = listEmpInfor.stream().findFirst().get();
 				empName = empInfo.getEmployeeCode() + "　" + empInfo.getPName();
+				empCode = empInfo.getEmployeeCode();
 			}
 			// アルゴリズム「承認状況取得申請」を実行する
 			List<ApplicationApprContent> listAppSttAcquisitionAppl = this.getAppSttAcquisitionAppl(appStt);
@@ -720,7 +722,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			// アルゴリズム「承認状況日別状態作成」を実行する
 			List<DailyStatus> dailyStatus = this.getApprovalSttByDate(appStt.getStartDate(), appStt.getEndDate(),
 					listApprovalContent);
-			listDailyStatus.add(new DailyStatusOutput(appStt.getSid(), empName, dailyStatus));
+			listDailyStatus.add(new DailyStatusOutput(appStt.getSid(), empCode, empName, dailyStatus));
 		}
 		return new ApprovalSttByEmpListOutput(listDailyStatus, listAppSttEmp);
 	}

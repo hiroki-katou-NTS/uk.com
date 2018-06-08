@@ -20,6 +20,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
         isDailyComfirm: boolean;
         listEmployeeCode: Array<any>;
         listWorkplace: Array<model.WorkplaceInfor>;
+        multiSelectedWorkplaceId: Array<any> = [];
         constructor() {
             var self = this;
             $("#fixed-table").ntsFixedTable({ width: 1000, height: 163 });
@@ -38,6 +39,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
             self.listEmployeeCode = params.listEmployeeCode;
             self.isDailyComfirm = params.isConfirmData;
             self.listWorkplace = params.listWorkplace;
+            self.multiSelectedWorkplaceId = params.multiSelectedWorkplaceId;
             let obj = {
                 startDate: self.startDate,
                 endDate: self.endDate,
@@ -46,7 +48,6 @@ module nts.uk.at.view.kaf018.b.viewmodel {
                 listEmpCd: self.listEmployeeCode
             };
             service.getAppSttByWorkpace(obj).done(function(data: any) {
-                console.log(data);
                 _.forEach(data, function(item) {
                     self.tempData.push(new model.ConfirmationStatus(item.workplaceId, item.workplaceName, item.enabled, item.checked, item.numOfApp, item.approvedNumOfCase, item.numOfUnreflected, item.numOfUnapproval, item.numOfDenials));
 
@@ -120,6 +121,14 @@ module nts.uk.at.view.kaf018.b.viewmodel {
             return self.processingYm + "(" + startDate + " ～ " + endDate + ")";
         }
 
+        goBackA() {
+            var self = this;
+            let params = {
+                multiSelectedWorkplaceId: self.multiSelectedWorkplaceId
+            };
+             nts.uk.request.jump('/view/kaf/018/a/index.xhtml', params);    
+        }
+        
         gotoC(index) {
             var self = this;
             let listWorkplace = [];
@@ -135,6 +144,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
                 listWorkplace: listWorkplace,
                 selectedWplIndex: index(),
                 listEmployeeCode: self.listEmployeeCode,
+                multiSelectedWorkplaceId: self.multiSelectedWorkplaceId
             };
             nts.uk.request.jump('/view/kaf/018/c/index.xhtml', params);
         }

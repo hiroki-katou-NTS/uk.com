@@ -37,6 +37,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         dailySttOut: DailyStatusOut = new DailyStatusOut(null, null);
         listApprovalEmployee: Array<ApprovalStatusEmployee> = [];
         listDailyStatus: Array<DailyStatusOut> = [];
+        multiSelectedWorkplaceId: Array<any>;
         constructor() {
             var self = this;
             this.legendOptions = {
@@ -73,6 +74,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                 self.listWorkplace = params.listWorkplace;
                 self.selectedWplIndex = params.selectedWplIndex;
                 self.listEmpCd = params.listEmployeeCode;
+                self.multiSelectedWorkplaceId = params.multiSelectedWorkplaceId;
             }
             self.dtPrev(new Date(self.startDateFormat));
             self.dtAft(new Date(self.endDateFormat));
@@ -147,15 +149,15 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             var dfd = $.Deferred();
             self.getStatusSymbol().done(function(data: any) {
                 self.listApprovalEmployee = data.listAppSttEmp;
-                self.listDailyStatus = data.listDailyStt;
-
+                let listDailyStatus = _.sortBy(data.listDailyStt, o => o.empCode,'asc');
+                self.listDailyStatus = listDailyStatus;
                 let sv1 = self.setColorForCellHeaderDetail();
                 let sv2 = self.setSymbolForCellContentDetail(self.listDailyStatus);
                 $.when(sv1, sv2).done(function(detailHeaderDeco) {
                     let initExTable = self.setFormatData(detailHeaderDeco, self.listDailyStatus);
 
                     new nts.uk.ui.exTable.ExTable($("#extable"), {
-                        headerHeight: "42px", bodyRowHeight: "22px", bodyHeight: "330px",
+                        headerHeight: "42px", bodyRowHeight: "23px", bodyHeight: "330px",
                         horizontalSumBodyRowHeight: "0px",
                         areaResize: false,
                         remainSizes: false,
@@ -248,7 +250,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             //create Detail Header
             detailHeader = {
                 columns: detailHeaderColumns,
-                width: "1200px",
+                width: "1020px",
                 features: [
                     {
                         name: "HeaderRowHeight",
@@ -391,6 +393,14 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             return resizeColumn;
         }
 
+        goBackA() {
+            var self = this;
+            let params = {
+                multiSelectedWorkplaceId: self.multiSelectedWorkplaceId
+            };
+            nts.uk.request.jump('/view/kaf/018/a/index.xhtml', params);
+        }
+
         backToB() {
             var self = this;
             let params = {
@@ -425,8 +435,10 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 
     class DailyStatusOut {
         empId: string;
+        empCode: string;
         listDaily: Array<DailyStatus>;
-        constructor(empId: string, listDaily: Array<DailyStatus>) {
+        constructor(empId: string, empCode: string, listDaily: Array<DailyStatus>) {
+            this.empCode = empCode;
             this.empId = empId;
             this.listDaily = listDaily;
         }

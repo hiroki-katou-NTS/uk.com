@@ -172,7 +172,8 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 listEmpCd: self.listEmpCd
             };
             service.getEmpPerformance(obj).done(function(data: Array<EmpPerformanceDto>) {
-                dfd.resolve(self.convertToEmpPerformance(data));
+                let lstData = _.sortBy(data, o => o.sname, 'asc');
+                dfd.resolve(self.convertToEmpPerformance(lstData));
             });
             return dfd.promise();
         }
@@ -276,7 +277,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 self.setColorForCellHeaderDetail().done(function(detailHeaderDeco) {
                     let initExTable = self.setFormatData(leftmostDeco, detailHeaderDeco, detailContentDeco, listData);
                     new nts.uk.ui.exTable.ExTable($("#extable"), {
-                        headerHeight: "64px", bodyRowHeight: "22px", bodyHeight: "308px",
+                        headerHeight: "64px", bodyRowHeight: "23px", bodyHeight: "308px",
                         horizontalSumBodyRowHeight: "0px",
                         areaResize: false,
                         remainSizes: false,
