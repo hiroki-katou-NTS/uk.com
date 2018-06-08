@@ -2,11 +2,8 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm;
 
 import java.util.ArrayList;
 import java.util.List;
-<<<<<<< HEAD
 import java.util.Optional;
-=======
 import java.util.Map;
->>>>>>> origin/delivery/release_user
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
