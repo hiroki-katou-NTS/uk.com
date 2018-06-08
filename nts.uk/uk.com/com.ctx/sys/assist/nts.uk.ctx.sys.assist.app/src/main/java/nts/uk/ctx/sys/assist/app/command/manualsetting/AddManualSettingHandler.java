@@ -11,8 +11,6 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.assist.dom.storage.DataStorageMng;
 import nts.uk.ctx.sys.assist.dom.storage.DataStorageMngRepository;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSave;
@@ -32,7 +30,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  *
  */
 @Stateless
-public class AddManualSettingHandler extends CommandHandlerWithResult<ManualSettingCommand, String> {
+public class AddManualSettingHandler extends AsyncCommandHandler<ManualSettingCommand> {
 	@Inject
 	private ManualSetOfDataSaveRepository manualSetOfDataSaveRepo;
 	@Inject
@@ -50,13 +48,13 @@ public class AddManualSettingHandler extends CommandHandlerWithResult<ManualSett
 	
 	
 	@Override
-	protected String handle(CommandHandlerContext<ManualSettingCommand> context) {
+	protected void handle(CommandHandlerContext<ManualSettingCommand> context) {
 		
 		String companyId = AppContexts.user().companyId();
-		String storeProcessingId = IdentifierUtil.randomUniqueId();
+
 		String employeeIDLogin = AppContexts.user().employeeId();
-		
 		ManualSettingCommand manualSetCmd = context.getCommand();
+		String storeProcessingId = manualSetCmd.getStoreProcessingId();
 	    List<TargetCategoryCommand> lstcategories = manualSetCmd.getCategory();
 	    List<TargetCategory> targetCategory = lstcategories.stream().map(item -> {
 	    	return new TargetCategory(storeProcessingId, item.getCategoryId());
@@ -90,7 +88,5 @@ public class AddManualSettingHandler extends CommandHandlerWithResult<ManualSett
 		}
 		
 		manualSetOfDataSaveService.start(storeProcessingId);
-		
-		return storeProcessingId;
 	}
 }

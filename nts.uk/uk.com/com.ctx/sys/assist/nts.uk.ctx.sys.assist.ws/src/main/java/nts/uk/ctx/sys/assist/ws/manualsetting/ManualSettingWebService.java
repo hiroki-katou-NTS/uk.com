@@ -10,8 +10,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.assist.app.command.manualsetting.AddManualSettingHandler;
 import nts.uk.ctx.sys.assist.app.command.manualsetting.ManualSettingCommand;
 import nts.uk.ctx.sys.assist.app.find.manualsetting.ManualSettingDto;
@@ -33,8 +33,11 @@ public class ManualSettingWebService extends WebService {
 
 	@POST
 	@Path("addMalSet")
-	public JavaTypeResult<String>  add(ManualSettingCommand mal) {
-		return new JavaTypeResult<String>(this.addMalSet.handle(mal));
+	public String add(ManualSettingCommand mal) {
+		String storeProcessingId = IdentifierUtil.randomUniqueId();
+		mal.setStoreProcessingId(storeProcessingId);
+		this.addMalSet.handle(mal);
+		return storeProcessingId;
 	}
 
 	@POST
