@@ -75,7 +75,7 @@ module nts.uk.at.view.kdm001.l.viewmodel {
                     if (result && result.length > 0) {
                         if (result.indexOf("Msg_1302") >= 0) {
                             dialog.confirm({ messageId: "Msg_1302" }).ifYes(() => {
-                                self.updateHolidaySetting(command);
+                                self.callUpdateHolidaySetting(command);
                             }).then(() => {
                                 block.clear();
                                 return;
@@ -104,7 +104,7 @@ module nts.uk.at.view.kdm001.l.viewmodel {
                         block.clear();
                         return;
                     }
-                    self.updateHolidaySetting(command);
+                    self.callUpdateHolidaySetting(command);
                 }).always(() => {
                     block.clear();
                 });
@@ -114,14 +114,12 @@ module nts.uk.at.view.kdm001.l.viewmodel {
         /**
          * 情報メッセージ　Msg_15 登録しました。を表示する。
          */
-        public updateHolidaySetting(command) {
+        public callUpdateHolidaySetting(command) {
             service.updateHolidaySetting(command).done(result => {
-                if (!result && !result.length > 0) {
-                    dialog.info({ messageId: "Msg_15" }).then(() => {
-                        setShared('KDM001_L_PARAMS_RES', { isChanged: true });
-                        this.closeDialog();
-                    });
-                }
+                dialog.info({ messageId: "Msg_15" }).then(() => {
+                    setShared('KDM001_L_PARAMS_RES', { isChanged: true });
+                    this.closeDialog();
+                });
             });
         }
 

@@ -16,6 +16,6 @@ module nts.uk.at.view.kdm001.l.service {
      }
 
     export function checkValidate(command): JQueryPromise<any> {
-        return ajax(paths.deleteHolidaySetting, command);
+        return ajax(paths.checkValidate, command);
     }
 }
