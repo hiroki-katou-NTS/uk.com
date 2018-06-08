@@ -10,6 +10,10 @@ import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSetting
 import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
 import nts.uk.ctx.at.record.pub.standardtime.AgreementOperationSettingPub;
 
+/**
+ * @author dat.lh
+ *
+ */
 @Stateless
 public class AgreementOperationSettingAcFinder implements AgreementOperationSettingAdapter {
 

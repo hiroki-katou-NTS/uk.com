@@ -3,6 +3,10 @@ package nts.uk.ctx.at.function.dom.adapter.standardtime;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 
+/**
+ * @author dat.lh
+ *
+ */
 @Getter
 public class AgreementOperationSettingImport {
 

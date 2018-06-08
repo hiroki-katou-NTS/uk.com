@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.function.dom.adapter.standardtime;
 
+/**
+ * @author dat.lh
+ *
+ */
 public enum ClosingDateAtrImport {
 	/*
 	 * ３６協定締め日区分

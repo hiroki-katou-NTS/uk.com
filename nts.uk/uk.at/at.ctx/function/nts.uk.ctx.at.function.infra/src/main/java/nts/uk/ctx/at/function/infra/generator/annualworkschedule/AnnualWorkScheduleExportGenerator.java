@@ -90,7 +90,7 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 			this.itemBooks = dataSource.getExportItems();
 			// set first employee
 			EmployeeData firstEmp = dataSource.getEmployees().get(empIds.remove(0));
-			
+
 			String workplaceCd = firstEmp.getEmployeeInfo().getWorkplaceCode();
 			RangeCustom newRange = new RangeCustom(empRange, 0);
 			int offset = 0, sumRowCount = workplaceRange.getRowCount();
@@ -118,7 +118,7 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 				}
 				offset = newRange.offset;
 			}
-			
+
 			print(wsc, new RangeCustom(empRange, 0), firstEmp, true);
 
 			reportContext.processDesigner();
@@ -228,6 +228,20 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 			this.setCellStyle(range.cell("month12th", rowOffset, 0), data.getColorMonth12th());
 			range.cell("average", rowOffset, 0).putValue(data.formatAverage());
 			range.cell("sum", rowOffset, 0).putValue(data.formatSum());
+			range.cell("period1st", rowOffset, 0).putValue(data.formatMonthPeriod1st());
+			this.setCellStyle(range.cell("period1st", rowOffset, 0), data.getColorPeriodMonth1st());
+			range.cell("period2nd", rowOffset, 0).putValue(data.formatMonthPeriod2nd());
+			this.setCellStyle(range.cell("period2nd", rowOffset, 0), data.getColorPeriodMonth2nd());
+			range.cell("period3rd", rowOffset, 0).putValue(data.formatMonthPeriod3rd());
+			this.setCellStyle(range.cell("period3rd", rowOffset, 0), data.getColorPeriodMonth3rd());
+			range.cell("period4th", rowOffset, 0).putValue(data.formatMonthPeriod4th());
+			this.setCellStyle(range.cell("period4th", rowOffset, 0), data.getColorPeriodMonth4th());
+			range.cell("period5th", rowOffset, 0).putValue(data.formatMonthPeriod5th());
+			this.setCellStyle(range.cell("period5th", rowOffset, 0), data.getColorPeriodMonth5th());
+			range.cell("period6th", rowOffset, 0).putValue(data.formatMonthPeriod6th());
+			this.setCellStyle(range.cell("period6th", rowOffset, 0), data.getColorPeriodMonth6th());
+			range.cell("period7th", rowOffset, 0).putValue(data.formatMonthPeriod7th());
+			this.setCellStyle(range.cell("period7th", rowOffset, 0), data.getColorPeriodMonth7th());
 			rowOffset++;
 		}
 	}
