@@ -8,10 +8,16 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.DeleteAgreeCondOtCommand;
+import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.DeleteAgreeConditionErrorCommand;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapter;
+import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunAdapter;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeCondOtRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeConditionErrorRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckConEvent;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -32,16 +38,20 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 	@Inject
 	private FixedConWorkRecordAdapter fixedConWorkRecordRepo;
 	
+	//monthly
+	@Inject
+	private FixedExtraMonFunAdapter fixedExtraMonFunAdapter;
+	// ３６協定
+	@Inject
+	private IAgreeConditionErrorRepository conErrRep;
+
+	@Inject
+	private IAgreeCondOtRepository otRep;
 	@Override
 	protected void handle(CommandHandlerContext<AlarmCheckConditionByCategoryCommand> context) {
 		AlarmCheckConditionByCategoryCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		//TODO:
-				// When alarm check condition by category is deleted
-				// Delete the "time item check of work record (勤務実績の勤怠項目チェック)"
-				// and "error item condition of time item (勤怠項目のエラーアラーム条件)"
-				// linked to error work alarm check ID of work record
-		
+
 		if (command.getCategory() == AlarmCategory.DAILY.value) {
 			// delete List Work Record Extract Condition by list Error Alarm Code
 			List<String> listErrorAlarmCheckId =  command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork().stream().map(item -> item.getErrorAlarmCheckID()).collect(Collectors.toList());
@@ -52,6 +62,35 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 			this.fixedConWorkRecordRepo.deleteFixedConWorkRecordPub(dailyAlarmConID);
 		}
 		
+		if (command.getCategory() == AlarmCategory.MONTHLY.value) {
+			String monAlarmCheckID = "";
+			
+			// delete List Fixed Work Record Extract Condition by list Error Alarm Code
+			if(command.getMonAlarmCheckCon().getListFixExtraMon().size()>0) {
+				monAlarmCheckID =  command.getMonAlarmCheckCon().getListFixExtraMon().get(0).getMonAlarmCheckID();
+				this.fixedExtraMonFunAdapter.deleteFixedExtraMon(monAlarmCheckID);
+			}
+			// delete List Work Record Extract Condition by list Error Alarm Code
+			MonAlarmCheckConEvent event = new MonAlarmCheckConEvent(monAlarmCheckID,false,false,true,command.getMonAlarmCheckCon().getArbExtraCon());
+			event.toBePublished();
+		}
+		if (command.getCategory() == AlarmCategory.AGREEMENT.value) {
+			List<DeleteAgreeConditionErrorCommand> listErrorDel = command.getCondAgree36().getListCondError().stream()
+																		.map(c -> DeleteAgreeConditionErrorCommand.changeType(c)).collect(Collectors.toList());  
+			if(!listErrorDel.isEmpty()){
+				for(DeleteAgreeConditionErrorCommand obj : listErrorDel){
+					this.conErrRep.delete(obj.getCode(), obj.getCategory());
+				}
+			}
+
+			List<DeleteAgreeCondOtCommand> listOtDel = command.getCondAgree36().getListCondOt().stream()
+																.map(x -> DeleteAgreeCondOtCommand.changeType(x)).collect(Collectors.toList());
+			if(!listOtDel.isEmpty()){
+				for(DeleteAgreeCondOtCommand item : listOtDel){
+					this.otRep.delete(item.getCode(), item.getCategory());
+				}
+			}
+		}
 		conditionRepo.delete(companyId, command.getCategory(), command.getCode());
 	}
 
