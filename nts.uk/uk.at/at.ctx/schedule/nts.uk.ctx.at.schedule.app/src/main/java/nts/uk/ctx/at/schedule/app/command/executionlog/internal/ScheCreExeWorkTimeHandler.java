@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.schedule.app.command.executionlog.WorkCondItemDto;
 import nts.uk.ctx.at.schedule.dom.adapter.employmentstatus.EmploymentInfoImported;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScEmploymentStatusAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
@@ -114,28 +115,30 @@ public class ScheCreExeWorkTimeHandler {
 
 	/**
 	 * Gets the status employment.
-	 *
+	 * 
+	 * アルゴリズム (Employment)
+	 * 
 	 * @param employeeId
-	 *            the employee id
 	 * @param baseDate
-	 *            the base date
-	 * @return the status employment
+	 * @return
 	 */
-	// アルゴリズム (Employment)
 	public EmploymentStatusDto getStatusEmployment(String employeeId, GeneralDate baseDate) {
 		return this.scEmploymentStatusAdapter.getStatusEmployment(employeeId, baseDate);
 	}
 
 	/**
 	 * Gets the worktime.
-	 *
+	 * 
+	 * 就業時間帯を取得する
+	 * 
 	 * @param command
-	 *            the command
-	 * @return the worktime
+	 * @param empGeneralInfo
+	 * @param mapEmploymentStatus
+	 * @param listWorkingConItem
+	 * @return
 	 */
-	// 就業時間帯を取得する
 	public Optional<String> getWorktime(WorkTimeGetterCommand command, EmployeeGeneralInfoImported empGeneralInfo,
-			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus) {
+			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus, List<WorkCondItemDto> listWorkingConItem) {
 
 		Optional<BasicWorkSetting> optionalBasicWorkSetting = this.scheCreExeBasicWorkSettingHandler
 				.getBasicWorkSetting(command.toBasicWorkSetting(), empGeneralInfo);
@@ -145,7 +148,7 @@ public class ScheCreExeWorkTimeHandler {
 			commandGetter.setWorkTypeCode(optionalBasicWorkSetting.get().getWorktypeCode().v());
 			commandGetter.setWorkingCode(optionalBasicWorkSetting.get().getWorkingCode() == null ? null
 					: optionalBasicWorkSetting.get().getWorkingCode().v());
-			return this.getWorkingTimeZoneCode(commandGetter, mapEmploymentStatus);
+			return this.getWorkingTimeZoneCode(commandGetter, mapEmploymentStatus, listWorkingConItem);
 		}
 		return Optional.empty();
 	}
@@ -153,11 +156,11 @@ public class ScheCreExeWorkTimeHandler {
 	/**
 	 * Check holiday work.
 	 *
+	 * ? = 休日出勤
+	 * 
 	 * @param dailyWork
-	 *            the daily work
-	 * @return true, if successful
+	 * @return
 	 */
-	// ? = 休日出勤
 	public boolean checkHolidayWork(DailyWork dailyWork) {
 		if (dailyWork.getWorkTypeUnit().value == WorkTypeUnit.OneDay.value) {
 			return dailyWork.getOneDay().value == WorkTypeClassification.HolidayWork.value;
@@ -168,10 +171,9 @@ public class ScheCreExeWorkTimeHandler {
 
 	/**
 	 * Check null or defaul code.
-	 *
+	 * 
 	 * @param workingCode
-	 *            the working code
-	 * @return true, if successful
+	 * @return
 	 */
 	public boolean checkNullOrDefaulCode(String workingCode) {
 		return StringUtil.isNullOrEmpty(workingCode, false) || workingCode.equals(DEFAULT_CODE);
@@ -179,16 +181,14 @@ public class ScheCreExeWorkTimeHandler {
 
 	/**
 	 * Gets the labor condition item.
-	 *
+	 * 
+	 * 労働条件項目を取得する
+	 * 
 	 * @param companyId
-	 *            the company id
 	 * @param employeeId
-	 *            the employee id
 	 * @param baseDate
-	 *            the base date
-	 * @return the labor condition item
+	 * @return
 	 */
-	// 労働条件項目を取得する
 	public Optional<WorkingConditionItem> getLaborConditionItem(String companyId, String employeeId,
 			GeneralDate baseDate) {
 		Optional<WorkingCondition> optionalWorkingCondition = this.workingConditionRepository.getBySid(companyId,
@@ -203,15 +203,13 @@ public class ScheCreExeWorkTimeHandler {
 
 	/**
 	 * Gets the work time code of day of week personal condition.
-	 *
+	 * 
 	 * @param command
-	 *            the command
 	 * @param workingConditionItem
-	 *            the working condition item
-	 * @return the work time code of day of week personal condition
+	 * @return
 	 */
 	public String getWorkTimeCodeOfDayOfWeekPersonalCondition(WorkTimeConvertCommand command,
-			WorkingConditionItem workingConditionItem) {
+			WorkCondItemDto workingConditionItem) {
 
 		// get MONDAY of data
 		if (DayOfWeek.MONDAY.getValue() == command.getBaseGetter().getToDate().dayOfWeek() && this
@@ -254,12 +252,10 @@ public class ScheCreExeWorkTimeHandler {
 
 	/**
 	 * Gets the work type code of day of week personal condition.
-	 *
+	 * 
 	 * @param command
-	 *            the command
 	 * @param workingConditionItem
-	 *            the working condition item
-	 * @return the work type code of day of week personal condition
+	 * @return
 	 */
 	public String getWorkTypeCodeOfDayOfWeekPersonalCondition(WorkTimeConvertCommand command,
 			WorkingConditionItem workingConditionItem) {
@@ -306,18 +302,14 @@ public class ScheCreExeWorkTimeHandler {
 	/**
 	 * Convert working hours employment status.
 	 *
+	 * 在職状態から「就業時間帯コードを変換する」に変更
+	 * 
 	 * @param command
-	 *            the command
-	 * @return the string
+	 * @param mapEmploymentStatus
+	 * @return
 	 */
-	// 在職状態から「就業時間帯コードを変換する」に変更
 	private String convertWorkingHoursEmploymentStatus(WorkTimeConvertCommand command,
 			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus) {
-
-		// get employment status by id
-		// EmploymentStatusDto employmentStatus =
-		// this.getStatusEmployment(command.getEmployeeId(),
-		// command.getBaseGetter().getToDate());
 
 		// EA No1686
 		List<EmploymentInfoImported> listEmploymentInfo = mapEmploymentStatus.get(command.getEmployeeId());
@@ -344,10 +336,9 @@ public class ScheCreExeWorkTimeHandler {
 
 	/**
 	 * Check holiday setting.
-	 *
+	 * 
 	 * @param workType
-	 *            the work type
-	 * @return true, if successful
+	 * @return
 	 */
 	private boolean checkHolidaySetting(WorkType workType) {
 
@@ -400,10 +391,9 @@ public class ScheCreExeWorkTimeHandler {
 
 	/**
 	 * Check exist work time code by single day schedule.
-	 *
+	 * 
 	 * @param optionalSingleDaySchedule
-	 *            the optional single day schedule
-	 * @return true, if successful
+	 * @return
 	 */
 	private boolean checkExistWorkTimeCodeBySingleDaySchedule(Optional<SingleDaySchedule> optionalSingleDaySchedule) {
 		return optionalSingleDaySchedule.isPresent() && optionalSingleDaySchedule.get().getWorkTimeCode().isPresent();
@@ -411,10 +401,9 @@ public class ScheCreExeWorkTimeHandler {
 
 	/**
 	 * Gets the work time code by single day schedule.
-	 *
+	 * 
 	 * @param optionalSingleDaySchedule
-	 *            the optional single day schedule
-	 * @return the work time code by single day schedule
+	 * @return
 	 */
 	private String getWorkTimeCodeBySingleDaySchedule(Optional<SingleDaySchedule> optionalSingleDaySchedule) {
 		return optionalSingleDaySchedule.get().getWorkTimeCode().get().v();
@@ -422,10 +411,9 @@ public class ScheCreExeWorkTimeHandler {
 
 	/**
 	 * Gets the work type code by single day schedule.
-	 *
+	 * 
 	 * @param optionalSingleDaySchedule
-	 *            the optional single day schedule
-	 * @return the work type code by single day schedule
+	 * @return
 	 */
 	private String getWorkTypeCodeBySingleDaySchedule(Optional<SingleDaySchedule> optionalSingleDaySchedule) {
 		return optionalSingleDaySchedule.get().getWorkTypeCode().v();
@@ -433,12 +421,11 @@ public class ScheCreExeWorkTimeHandler {
 
 	/**
 	 * Gets the holiday work of personal condition.
-	 *
+	 * 
 	 * @param workingConditionItem
-	 *            the working condition item
-	 * @return the holiday work of personal condition
+	 * @return
 	 */
-	private String getHolidayWorkOfWorkingConditionItem(WorkingConditionItem workingConditionItem) {
+	private String getHolidayWorkOfWorkingConditionItem(WorkCondItemDto workingConditionItem) {
 		if (workingConditionItem.getWorkCategory().getHolidayWork().getWorkTimeCode().isPresent()) {
 			return workingConditionItem.getWorkCategory().getHolidayWork().getWorkTimeCode().get().v();
 		}
@@ -447,10 +434,9 @@ public class ScheCreExeWorkTimeHandler {
 
 	/**
 	 * Gets the holiday atr work type.
-	 *
+	 * 
 	 * @param workType
-	 *            the work type
-	 * @return the holiday atr work type
+	 * @return
 	 */
 	private Optional<HolidayAtr> getHolidayAtrWorkType(WorkType workType) {
 
@@ -497,26 +483,30 @@ public class ScheCreExeWorkTimeHandler {
 
 	/**
 	 * Gets the work time zone code in office.
-	 *
+	 * 
+	 * 在職の「就業時間帯コード」を返す
+	 * 
 	 * @param command
-	 *            the command
-	 * @param workingConditionItem
-	 *            the working condition item
-	 * @return the work time zone code in office
+	 * @param listWorkingConItem
+	 * @return
 	 */
-	// 在職の「就業時間帯コード」を返す
-	private String getWorkTimeZoneCodeInOffice(WorkTimeConvertCommand command) {
+	private String getWorkTimeZoneCodeInOffice(WorkTimeConvertCommand command,
+			List<WorkCondItemDto> listWorkingConItem) {
 
 		// find work type by id
 		Optional<WorkType> optionalWorkType = this.workTypeRepository.findByPK(command.getBaseGetter().getCompanyId(),
 				command.getWorkTypeCode());
 
-		Optional<WorkingConditionItem> optionalWorkingConditionItem = this.getLaborConditionItem(
-				command.getBaseGetter().getCompanyId(), command.getEmployeeId(), command.getBaseGetter().getToDate());
+		// EA修正履歴 No1832
+		Optional<WorkCondItemDto> optionalWorkingConditionItem = listWorkingConItem.stream()
+				.filter(x -> x.getDatePeriod().contains(command.getBaseGetter().getToDate())
+						&& command.getEmployeeId().equals(x.getEmployeeId()))
+				.findFirst();
+
 		// check exist data
 		if (optionalWorkType.isPresent() && optionalWorkingConditionItem.isPresent()) {
 			WorkType worktype = optionalWorkType.get();
-			WorkingConditionItem workingConditionItem = optionalWorkingConditionItem.get();
+			WorkCondItemDto workingConditionItem = optionalWorkingConditionItem.get();
 
 			// check holiday work type
 			if (this.checkHolidayWork(worktype.getDailyWork())) {
@@ -584,18 +574,16 @@ public class ScheCreExeWorkTimeHandler {
 
 	/**
 	 * Convert working hours personal work.
-	 *
+	 * 
+	 * 個人勤務日別と在職状態から「就業時間帯コード」を変換する
+	 * 
 	 * @param command
-	 *            the command
-	 * @return the string
+	 * @param mapEmploymentStatus
+	 * @param listWorkingConItem
+	 * @return
 	 */
-	// 個人勤務日別と在職状態から「就業時間帯コード」を変換する
 	private String convertWorkingHoursPersonalWork(WorkTimeConvertCommand command,
-			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus) {
-
-		// EmploymentStatusDto employmentStatus =
-		// this.getStatusEmployment(command.getEmployeeId(),
-		// command.getBaseGetter().getToDate());
+			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus, List<WorkCondItemDto> listWorkingConItem) {
 
 		// EA No1687
 		List<EmploymentInfoImported> listEmploymentInfo = mapEmploymentStatus.get(command.getEmployeeId());
@@ -614,7 +602,7 @@ public class ScheCreExeWorkTimeHandler {
 
 		// employment status is INCUMBENT
 		if (optEmploymentInfo.get().getEmploymentState() == INCUMBENT) {
-			return this.getWorkTimeZoneCodeInOffice(command);
+			return this.getWorkTimeZoneCodeInOffice(command, listWorkingConItem);
 		}
 
 		throw (new BusinessException("Employment status not found"));
@@ -622,12 +610,12 @@ public class ScheCreExeWorkTimeHandler {
 
 	/**
 	 * Check holiday daily work.
-	 *
+	 * 
+	 * ? = 休日
+	 * 
 	 * @param dailyWork
-	 *            the daily work
-	 * @return true, if successful
+	 * @return
 	 */
-	// ? = 休日
 	private boolean checkHolidayDailyWork(DailyWork dailyWork) {
 		if (dailyWork.getWorkTypeUnit().value == WorkTypeUnit.OneDay.value) {
 			return dailyWork.getOneDay().value == WorkTypeClassification.Holiday.value;
@@ -638,13 +626,15 @@ public class ScheCreExeWorkTimeHandler {
 
 	/**
 	 * Gets the work time zone code in office day of week.
-	 *
+	 * 
+	 * 在職の「就業時間帯コード」を返す 2
+	 * 
 	 * @param command
-	 *            the command
-	 * @return the work time zone code in office day of week
+	 * @param listWorkingConItem
+	 * @return
 	 */
-	// 在職の「就業時間帯コード」を返す 2
-	private String getWorkTimeZoneCodeInOfficeDayOfWeek(WorkTimeConvertCommand command) {
+	private String getWorkTimeZoneCodeInOfficeDayOfWeek(WorkTimeConvertCommand command,
+			List<WorkCondItemDto> listWorkingConItem) {
 
 		// check default work time code by basic work setting
 		if (command.getWorkingCode() == null) {
@@ -661,9 +651,11 @@ public class ScheCreExeWorkTimeHandler {
 				return null;
 			}
 
-			Optional<WorkingConditionItem> optionalWorkingConditionItem = this.getLaborConditionItem(
-					command.getBaseGetter().getCompanyId(), command.getEmployeeId(),
-					command.getBaseGetter().getToDate());
+			// EA修正履歴 No1833
+			Optional<WorkCondItemDto> optionalWorkingConditionItem = listWorkingConItem.stream()
+					.filter(x -> x.getDatePeriod().contains(command.getBaseGetter().getToDate())
+							&& command.getEmployeeId().equals(x.getEmployeeId()))
+					.findFirst();
 
 			if (!optionalWorkingConditionItem.isPresent()) {
 				return null;
@@ -674,20 +666,17 @@ public class ScheCreExeWorkTimeHandler {
 	}
 
 	/**
-	 * Convert working hours personal dayof week.
-	 *
+	 * Convert working hours personal day of week.
+	 * 
+	 * 個人曜日別と在職状態から「就業時間帯コード」を変換する
+	 * 
 	 * @param command
-	 *            the command
-	 * @return the string
+	 * @param mapEmploymentStatus
+	 * @param listWorkingConItem
+	 * @return
 	 */
-	// 個人曜日別と在職状態から「就業時間帯コード」を変換する
 	private String convertWorkingHoursPersonalDayofWeek(WorkTimeConvertCommand command,
-			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus) {
-
-		// get employment status by id
-		// EmploymentStatusDto employmentStatus =
-		// this.getStatusEmployment(command.getEmployeeId(),
-		// command.getBaseGetter().getToDate());
+			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus, List<WorkCondItemDto> listWorkingConItem) {
 
 		// EA No1688
 		List<EmploymentInfoImported> listEmploymentInfo = mapEmploymentStatus.get(command.getEmployeeId());
@@ -703,7 +692,7 @@ public class ScheCreExeWorkTimeHandler {
 
 		// employment status is INCUMBENT
 		if (optEmploymentInfo.get().getEmploymentState() == INCUMBENT) {
-			return this.getWorkTimeZoneCodeInOfficeDayOfWeek(command);
+			return this.getWorkTimeZoneCodeInOfficeDayOfWeek(command, listWorkingConItem);
 		}
 
 		return null;
@@ -711,12 +700,12 @@ public class ScheCreExeWorkTimeHandler {
 
 	/**
 	 * Gets the time zone.
-	 *
+	 * 
+	 * 変換した時間帯を返す
+	 * 
 	 * @param command
-	 *            the command
-	 * @return the time zone
+	 * @return
 	 */
-	// 変換した時間帯を返す
 	private PrescribedTimezoneSetting getTimeZone(WorkTimeSetGetterCommand command) {
 
 		// 所定時間帯を取得する
@@ -737,12 +726,12 @@ public class ScheCreExeWorkTimeHandler {
 
 	/**
 	 * Gets the schedule work hour.
-	 *
+	 * 
+	 * 勤務予定時間帯を取得する
+	 * 
 	 * @param command
-	 *            the command
-	 * @return the schedule work hour
+	 * @return
 	 */
-	// 勤務予定時間帯を取得する
 	public Optional<PrescribedTimezoneSetting> getScheduleWorkHour(WorkTimeSetGetterCommand command) {
 		if (StringUtil.isNullOrEmpty(command.getWorkingCode(), true)) {
 			return Optional.empty();
@@ -764,14 +753,16 @@ public class ScheCreExeWorkTimeHandler {
 
 	/**
 	 * Gets the working time zone code.
-	 *
+	 * 
+	 * 在職状態に対応する「就業時間帯コード」を取得する
+	 * 
 	 * @param command
-	 *            the command
-	 * @return the working time zone code
+	 * @param mapEmploymentStatus
+	 * @param listWorkingConItem
+	 * @return
 	 */
-	// 在職状態に対応する「就業時間帯コード」を取得する
 	public Optional<String> getWorkingTimeZoneCode(WorkTimeZoneGetterCommand command,
-			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus) {
+			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus, List<WorkCondItemDto> listWorkingConItem) {
 
 		String worktimeCode = null;
 
@@ -781,18 +772,21 @@ public class ScheCreExeWorkTimeHandler {
 		}
 
 		if (command.getReferenceWorkingHours() == TimeZoneScheduledMasterAtr.PERSONAL_WORK_DAILY.value) {
-			worktimeCode = this.convertWorkingHoursPersonalWork(command.toWorkTimeConvert(), mapEmploymentStatus);
+			worktimeCode = this.convertWorkingHoursPersonalWork(command.toWorkTimeConvert(), mapEmploymentStatus,
+					listWorkingConItem);
 		}
 
 		if (command.getReferenceWorkingHours() == TimeZoneScheduledMasterAtr.PERSONAL_DAY_OF_WEEK.value) {
-			worktimeCode = this.convertWorkingHoursPersonalDayofWeek(command.toWorkTimeConvert(), mapEmploymentStatus);
+			worktimeCode = this.convertWorkingHoursPersonalDayofWeek(command.toWorkTimeConvert(), mapEmploymentStatus,
+					listWorkingConItem);
 
 		}
 
 		// check work time code null
-		if (StringUtil.isNullOrEmpty(worktimeCode, true)) { // fix bug #87723
-															// for case not
-															// setting work time
+		if (StringUtil.isNullOrEmpty(worktimeCode, true)) {
+			// fix bug #87723
+			// for case not
+			// setting work time
 			return null;
 		}
 
