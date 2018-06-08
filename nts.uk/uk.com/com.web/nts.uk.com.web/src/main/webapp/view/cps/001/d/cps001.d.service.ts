@@ -8,7 +8,8 @@ module cps001.d.service {
         updateAva: "command/updateAvaOrMap",
         removeAva: "command/removeAvaOrMap",
         checkEmpFileMnExist: "find/checkEmpFileMnExist/{0}/{1}",
-        permision: 'ctx/pereg/roles/auth/get-self-auth'
+        permision: 'ctx/pereg/functions/auth/find-all/{0}'
+        
     };
 
     export function getFullAvatar(sid) {
@@ -30,6 +31,7 @@ module cps001.d.service {
     }
 
     export function getCurrentEmpPermision() {
-        return ajax(paths.permision);
+        let roleId = null;
+        return ajax(paths.permision , roleId);
     }
 }
