@@ -49,7 +49,7 @@ public class ExtraHolidayManagementDataDto {
 			} else {
 				dto.setLinked(0);
 			}
-			if (GeneralDate.today().after(data.getExpiredDate()) && data.getSubHDAtr() == DigestionAtr.EXPIRED){
+			if (GeneralDate.today().after(data.getExpiredDate()) || data.getSubHDAtr() == DigestionAtr.EXPIRED){
 				dto.setExpired(data.getUnUsedDays().v());
 			}else {
 				dto.setRemain(data.getUnUsedDays().v());

@@ -180,11 +180,12 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             _.forEach(self.listExtractData, data => {
                 dayOffDate = data.dayOffDate;
                 remain = data.remain;
+                expired = data.expired;
                 if (data.type ==1 ){
                     remain = remain * -1;
+                    expired = expired * -1;
                 }
-                expired = data.expired;
-                totalRemain += remain;
+                totalRemain += remain + expired;
                 if (remain != 0) {
                     remain = remain.toFixed(1) + getText('KDM001_27');
                 }
