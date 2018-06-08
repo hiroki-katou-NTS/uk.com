@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -467,7 +468,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 				Map<String, Object> rowCsv2 = new HashMap<>();
 				rowCsv2.put(headerCsv2.get(0), targetEmp.getSid());
 				rowCsv2.put(headerCsv2.get(1), targetEmp.getScd());
-				rowCsv2.put(headerCsv2.get(2), CommonKeyCrypt.encrypt(targetEmp.getBusinessname().v()));
+				rowCsv2.put(headerCsv2.get(2), Base64.getEncoder().encodeToString(targetEmp.getBusinessname().v().getBytes()));
 				dataSourceCsv2.add(rowCsv2);
 			}
 
