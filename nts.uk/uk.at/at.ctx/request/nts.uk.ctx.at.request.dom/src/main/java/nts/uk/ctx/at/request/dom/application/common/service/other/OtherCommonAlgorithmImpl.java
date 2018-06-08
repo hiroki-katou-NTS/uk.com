@@ -427,13 +427,13 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 				loginName, 
 				text,
 				application.getAppDate().toLocalDate().toString(), 
-				appDispName.toString(),
+				appDispName.getDispName().toString(),
 				applicantName, 
 				application.getAppDate().toLocalDate().toString(),
 				appContent, 
 				loginName, 
 				loginMail);
-		String mailTitle = application.getAppDate().toLocalDate().toString()+" "+appDispName;
+		String mailTitle = application.getAppDate().toLocalDate().toString()+" "+appDispName.getDispName().toString();
 		String mailBody = mailContentToSend;
 		if(Strings.isNotBlank(URL)){
 			mailBody += "/n" + URL;
