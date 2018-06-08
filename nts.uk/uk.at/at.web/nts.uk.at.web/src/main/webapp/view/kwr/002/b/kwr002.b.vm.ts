@@ -69,6 +69,11 @@ module nts.uk.com.view.kwr002.b {
                     service.getARESByCode(value).done((aRESData) => {
                         self.currentARES(new AttendanceRecordExportSetting(aRESData));
                         self.newMode(false);
+                        setShared('attendanceRecExpDaily', null, true);
+                        setShared('attendanceRecExpMonthly', null, true);
+                        setShared('attendanceRecItemList', null, true);
+                        setShared('sealStamp', null, true);
+                        setShared('useSeal', null, true);
                     }).fail((error) => {
                         alert(error.message);
                     })
@@ -179,7 +184,7 @@ module nts.uk.com.view.kwr002.b {
                 sealStamp: getShared('sealStamp'),
                 useSeal: getShared('useSeal'),
 
-                isInvalid: function() {
+                isInvalid: function () {
                     return ((!_.isArray(this.attendanceRecExpDaily) || !_.isArray(this.attendanceRecExpMonthly))
                         || (this.countValid(this.attendanceRecExpDaily) < 9 && this.countValid(this.attendanceRecExpMonthly) < 9));
 
@@ -198,8 +203,7 @@ module nts.uk.com.view.kwr002.b {
                 let data = self.createTransferData(currentData, rcdExport);
                 if (rcdExport.isInvalid()) {
                     if (util.isNullOrUndefined(rcdExport.attendanceRecExpDaily) && util.isNullOrUndefined(rcdExport.attendanceRecExpMonthly)
-                        && util.isNullOrUndefined(rcdExport.attendanceRecItemList) && util.isNullOrUndefined(rcdExport.sealStamp) &&
-                        util.isNullOrUndefined(rcdExport.useSeal)) {
+                        && util.isNullOrUndefined(rcdExport.attendanceRecItemList) && util.isNullOrUndefined(rcdExport.sealStamp)) {
                         data["onceUpdate"] = true;
                         //update ARES
                         service.addARES(data).done(() => {
