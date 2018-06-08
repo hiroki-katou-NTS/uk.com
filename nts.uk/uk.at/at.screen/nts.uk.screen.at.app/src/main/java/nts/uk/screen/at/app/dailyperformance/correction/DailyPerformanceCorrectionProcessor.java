@@ -372,27 +372,38 @@ public class DailyPerformanceCorrectionProcessor {
 		}
 		System.out.println("time flex : " + (System.currentTimeMillis() - start));
 		
+		//get itemId
 		DisplayItem disItem = getDisplayItems(correct, formatCodes, companyId, screenDto, listEmployeeId, showButton);
-
-		List<DailyModifyResult> results = new ArrayList<>();
-		results = new GetDataDaily(listEmployeeId, dateRange, disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor).call();
+		//get item Name
 		DPControlDisplayItem dPControlDisplayItem = this.getItemIdNames(disItem, showButton);
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
+		Map<Integer, DPAttendanceItem> mapDP = dPControlDisplayItem.getLstAttendanceItem() != null
+				? dPControlDisplayItem.getLstAttendanceItem().stream()
+						.collect(Collectors.toMap(DPAttendanceItem::getId, x -> x))
+				: new HashMap<>();
+						
+		// disable cell
+		screenDto.markLoginUser(sId);
+		long start1 = System.currentTimeMillis();
+		screenDto.createAccessModifierCellState(mapDP);
+		System.out.println("time disable : " + (System.currentTimeMillis() - start1));
+		
+		// get data from DB
+		start = System.currentTimeMillis();
+		List<DailyModifyResult> results = new ArrayList<>();
+		results = new GetDataDaily(listEmployeeId, dateRange, disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor).call();
 		screenDto.getItemValues().addAll(results.isEmpty() ? new ArrayList<>() : results.get(0).getItems());
-		System.out.println("time get data and map name : " + (System.currentTimeMillis() - start));
-		long startTime2 = System.currentTimeMillis();
+		System.out.println("time lay du lieu : " + (System.currentTimeMillis() - start));
 		Map<String, DailyModifyResult> resultDailyMap = results.stream().collect(Collectors
 				.toMap(x -> mergeString(x.getEmployeeId(), "|", x.getDate().toString()), Function.identity(), (x, y) -> x));
+		
+		
 		//// 11. Excel: 未計算のアラームがある場合は日付又は名前に表示する
 		// Map<Integer, Integer> typeControl =
 		//// lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::
 		//// getId, DPAttendanceItem::getAttendanceAtr));
 		List<WorkInfoOfDailyPerformanceDto> workInfoOfDaily = repo.getListWorkInfoOfDailyPerformance(listEmployeeId,
 				dateRange);
-		Map<Integer, DPAttendanceItem> mapDP = dPControlDisplayItem.getLstAttendanceItem() != null
-				? dPControlDisplayItem.getLstAttendanceItem().stream()
-						.collect(Collectors.toMap(DPAttendanceItem::getId, x -> x))
-				: new HashMap<>();
 
 		// set error, alarm
 		if (screenDto.getLstEmployee().size() > 0) {
@@ -410,12 +421,6 @@ public class DailyPerformanceCorrectionProcessor {
 		
 		//get  check box sign(Confirm day)
 		Map<String, Boolean> signDayMap = repo.getConfirmDay(companyId, listEmployeeId, dateRange);
-		System.out.println("time create HashMap: " + (System.currentTimeMillis() - startTime2));
-		start = System.currentTimeMillis();
-		screenDto.markLoginUser(sId);
-		long start1 = System.currentTimeMillis();
-		screenDto.createAccessModifierCellState(mapDP);
-		System.out.println("time disable : " + (System.currentTimeMillis() - start1));
 		screenDto.getLstFixedHeader().forEach(column -> {
 			screenDto.getLstControlDisplayItem().getColumnSettings().add(new ColumnSetting(column.getKey(), false));
 		});

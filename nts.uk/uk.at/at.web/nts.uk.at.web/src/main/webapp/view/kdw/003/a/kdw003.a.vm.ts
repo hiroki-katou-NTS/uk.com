@@ -177,6 +177,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         sprRemoveApprovalAll: any;
         
         dataSourceLoadOld: any = {};
+        
+        lstHeaderReceive: any;
 
         constructor(dataShare: any) {
             var self = this;
@@ -464,6 +466,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.fixHeaders(data.lstFixedHeader);
             self.showPrincipal(data.showPrincipal);
             self.showSupervisor(data.showSupervisor);
+            self.lstHeaderReceive = _.cloneDeep(data.lstControlDisplayItem.lstHeader);
             if (data.lstControlDisplayItem.lstHeader.length == 0) self.hasLstHeader = false;
             if (self.showPrincipal() || data.lstControlDisplayItem.lstHeader.length == 0) {
                 self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
@@ -819,7 +822,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 },
                 mode: 0,
                 displayFormat: self.displayFormat(),
-                lstData: lstData
+                lstData: lstData,
+                lstHeader: self.lstHeaderReceive
             }
 
             let dfd = $.Deferred();
@@ -1092,6 +1096,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.showPrincipal(data.showPrincipal);
                 self.showSupervisor(data.showSupervisor);
                 self.showTighProcess(data.identityProcessDto.useConfirmByYourself && self.displayFormat() === 0);
+                self.lstHeaderReceive = _.cloneDeep(data.lstControlDisplayItem.lstHeader);
                 if (data.lstControlDisplayItem.lstHeader.length == 0) self.hasLstHeader = false;
                 if (self.showPrincipal() || data.lstControlDisplayItem.lstHeader.length == 0) {
                     self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
