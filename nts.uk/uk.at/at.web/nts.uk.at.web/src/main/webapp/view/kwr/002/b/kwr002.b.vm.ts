@@ -48,7 +48,6 @@ module nts.uk.com.view.kwr002.b {
                     return true;
             });
 
-
             self.selectedARESCode = ko.observable('');
             self.aRESCode = ko.observable('');
             self.aRESName = ko.observable('');
@@ -65,6 +64,7 @@ module nts.uk.com.view.kwr002.b {
             self.newMode = ko.observable(false);
 
             self.currentARESCode.subscribe((value) => {
+                errors.clearAll();
                 if (value) {
                     service.getARESByCode(value).done((aRESData) => {
                         self.currentARES(new AttendanceRecordExportSetting(aRESData));
