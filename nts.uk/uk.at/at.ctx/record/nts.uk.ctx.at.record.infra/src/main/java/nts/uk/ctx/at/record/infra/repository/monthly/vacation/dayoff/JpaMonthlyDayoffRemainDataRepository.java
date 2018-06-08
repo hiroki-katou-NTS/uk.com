@@ -50,5 +50,45 @@ public class JpaMonthlyDayoffRemainDataRepository extends JpaRepository implemen
 				new DayOffRemainDayAndTimes(new ReserveLeaveRemainingDayNumber(c.carryforwardDays), Optional.of(new RemainingMinutes(c.carryforwardTimes))),
 				new DayOffDayAndTimes(new AttendanceDaysMonth(c.unUsedDays), Optional.of(new TimeDayoffRemain(c.unUsedTimes))));
 	}
+	@Override
+	public void create(MonthlyDayoffRemainData domain) {
+		this.commandProxy().insert(toEntity(domain));
+	}
+	private KrcdtMonDayoffRemain toEntity(MonthlyDayoffRemainData domain) {
+		KrcdtMonDayoffRemain entity = new KrcdtMonDayoffRemain();
+		entity.pk.sid = domain.getSId();
+		entity.pk.ym = domain.getYm().v();
+		entity.pk.closureId = domain.getClosureId();
+		entity.pk.closureDay = domain.getClosureDay();
+		entity.pk.isLastDay = domain.isLastDayis() ? 1 : 0;
+		entity.closureStatus = domain.getClosureStatus().value;
+		entity.startDate = domain.getStartDate();
+		entity.endDate = domain.getEndDate();
+		entity.occurredDays = domain.getOccurrenceDayTimes().getDay().v();
+		domain.getOccurrenceDayTimes().getTime().ifPresent(x -> {
+			entity.occurredTimes = x.v();
+		});
+		entity.usedDays = domain.getUseDayTimes().getDay().v();
+		domain.getUseDayTimes().getTime().ifPresent(x -> {
+			entity.usedTimes = x.v();
+		});
+		entity.remainingDays = domain.getRemainingDayTimes().getDays().v();
+		domain.getRemainingDayTimes().getTimes().ifPresent(x -> {
+			entity.remainingTimes = x.v();
+		});
+		entity.carryforwardDays = domain.getCarryForWardDayTimes().getDays().v();
+		domain.getCarryForWardDayTimes().getTimes().ifPresent(x -> {
+			entity.carryforwardTimes = x.v();
+		});
+		entity.unUsedDays = domain.getUnUsedDayTimes().getDay().v();
+		domain.getUnUsedDayTimes().getTime().ifPresent(x -> {
+			entity.unUsedTimes = x.v();
+		});
+		return entity;
+	}
+	@Override
+	public void update(MonthlyDayoffRemainData domain) {
+		this.commandProxy().update(toEntity(domain));
+	}
 
 }

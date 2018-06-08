@@ -14,5 +14,15 @@ public interface MonthlyDayoffRemainDataRepository {
 	 * @return
 	 */
 	List<MonthlyDayoffRemainData> getDayOffDataBySidYmStatus(String employeeId, YearMonth ym, ClosureStatus status);
+	/**
+	 * 代休月別残数データ 　を追加
+	 * @param domain
+	 */
+	void create(MonthlyDayoffRemainData domain);
+	/**
+	 * 代休月別残数データ 　を更新
+	 * @param domain
+	 */
+	void update(MonthlyDayoffRemainData domain);
 
 }
