@@ -281,7 +281,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 						if(realAnnualLeave.getRemainingNumberAfterGrant().get().getTotalRemainingTime().isPresent()){
 							annualLeaveGrantPostTime = realAnnualLeave.getRemainingNumberAfterGrant().get().getTotalRemainingTime().get().v();
 						}
-						annualLeaveGrantPostDay = realAnnualLeave.getRemainingNumberAfterGrant().get().getTotalRemainingDays() != null ? realAnnualLeave.getRemainingNumberAfterGrant().get().getTotalRemainingDays().v() : 0;
+						annualLeaveGrantPostDay = realAnnualLeave.getRemainingNumberAfterGrant().get().getTotalRemainingDays() != null ? realAnnualLeave.getRemainingNumberAfterGrant().get().getTotalRemainingDays().v() : 0.00;
 					}
 					if(realAnnualLeave.getRemainingNumber() != null){
 						if(realAnnualLeave.getRemainingNumber().getTotalRemainingTime().isPresent()){
