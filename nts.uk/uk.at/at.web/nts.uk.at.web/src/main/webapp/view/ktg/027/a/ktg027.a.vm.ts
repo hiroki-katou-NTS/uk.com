@@ -9,6 +9,7 @@ module nts.uk.at.view.ktg027.a.viewmodel {
         inforOvertime: KnockoutObservableArray<InforOvertime>;
         inforOvertimeFooter: KnockoutObservable<InforOvertime>;
         closureResultModel: KnockoutObservableArray<ClosureResultModel> = ko.observableArray([]);
+        enable: KnockoutObservable<boolean>;
         //color
         backgroundColor: KnockoutObservable<String>;
         color: KnockoutObservable<String>;
@@ -35,6 +36,7 @@ module nts.uk.at.view.ktg027.a.viewmodel {
             self.inforOvertime = ko.observableArray([]);
             self.backgroundColor = ko.observable('');
             self.color = ko.observable('');
+            self.enable = ko.observable(false);
         }
 
         startPage(): JQueryPromise<any> {
@@ -76,7 +78,14 @@ module nts.uk.at.view.ktg027.a.viewmodel {
                 if (!nts.uk.text.isNullOrEmpty(data.overtimeHours.errorMessage))
                     var MsgID = data.overtimeHours.errorMessage;
                 nts.uk.ui.dialog.alertError({ messageId: MsgID, messageParams: [nts.uk.resource.getText("MsgID")] })
-
+                     
+                $.each(data.overtimeHours.overtimeLaborInfor, function(item) { 
+                    if (item.errorMessage != null) {
+                         self.enable(true);
+                        return false; 
+                    } 
+                });
+                
                 dfd.resolve();
                 block.clear();
             });
@@ -138,6 +147,7 @@ module nts.uk.at.view.ktg027.a.viewmodel {
                 if (!nts.uk.text.isNullOrEmpty(data.errorMessage))
                     var MsgID = data.errorMessage;
                 nts.uk.ui.dialog.alertError({ messageId: MsgID, messageParams: [nts.uk.resource.getText("MsgID")] })
+                
             });
             block.clear();
         }
