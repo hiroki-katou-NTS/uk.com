@@ -74,19 +74,8 @@ public class DayOffManagementService {
 					.collect(Collectors.toList());
 			
 			// update remainDays by current selected
-			Double currentRemainDay = 0.0;
-			Boolean check = false;
-			
-			for (int i = 0; i < daysOffMana.size(); i++) {
-				currentRemainDay = currentRemainDay + daysOffMana.get(i).getRemainDays().v();
-			}
-			
-			if(currentRemainDay == Double.parseDouble(dayOffManagementData.getNumberDayParam())) {
-				check = true;
-			}
-			
 			if (!currentComDaySelect.isEmpty()) {
-				comDayOffManaDataRepository.updateReDayReqByComDayId(currentComDaySelect,check);
+				comDayOffManaDataRepository.updateReDayReqByComDayId(currentComDaySelect);
 			}
 			
 			// delete List LeaveComDayOff

@@ -145,6 +145,10 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         }
         getSubstituteDataList(searchCondition: any) {
             let self = this;
+            if (self.selectedPeriodItem() == 1){
+                $(".ntsStartDatePicker").trigger("validate");
+                $(".ntsEndDatePicker").trigger("validate");
+            }
             if (self.selectedPeriodItem() ==1 ){
                 $("#daterangepicker").trigger("validate");
             }

@@ -177,20 +177,14 @@ private String GET_BYSID = "SELECT a FROM KrcmtComDayoffMaData a WHERE a.sID = :
 	}
 	
 	@Override
-	public void updateReDayReqByComDayId(List<String> comDayIds,Boolean check) {
+	public void updateReDayReqByComDayId(List<String> comDayIds) {
 		List<KrcmtComDayoffMaData> KrcmtComDayoffMaData = this.queryProxy()
 				.query(GET_BY_LISTID, KrcmtComDayoffMaData.class)
 				.setParameter("comDayOffIDs",comDayIds)
 				.getList();
-		if(check) {
 			for(KrcmtComDayoffMaData busItem: KrcmtComDayoffMaData){
 				busItem.remainDays =  busItem.requiredDays;
 			}
-		} else {
-			for(KrcmtComDayoffMaData busItem: KrcmtComDayoffMaData){
-				busItem.remainDays =  0.5;
-			}
-		}
 		this.commandProxy().updateAll(KrcmtComDayoffMaData);
 	}
 

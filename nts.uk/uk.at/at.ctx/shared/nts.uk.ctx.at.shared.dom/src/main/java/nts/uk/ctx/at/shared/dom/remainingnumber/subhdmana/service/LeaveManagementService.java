@@ -78,18 +78,8 @@ public class LeaveManagementService {
 					.collect(Collectors.toList());
 			// update Sub by current leave
 			
-			Double occurrentDay = 0.0;
-			Boolean check = false;
-			
-			for (int i = 0; i < leaveManaUpdate.size(); i++) {
-				occurrentDay = occurrentDay + leaveManaUpdate.get(i).getOccurredDays().v();
-			}
-			
-			if(occurrentDay == Double.parseDouble(leaveManagementData.getNumberDayParam())) {
-				check = true;
-			}
 			if (!currentLeaveMana.isEmpty()) {
-				leaveManaDataRepository.updateSubByLeaveId(currentLeaveMana,check);
+				leaveManaDataRepository.updateSubByLeaveId(currentLeaveMana);
 
 			}
 			
