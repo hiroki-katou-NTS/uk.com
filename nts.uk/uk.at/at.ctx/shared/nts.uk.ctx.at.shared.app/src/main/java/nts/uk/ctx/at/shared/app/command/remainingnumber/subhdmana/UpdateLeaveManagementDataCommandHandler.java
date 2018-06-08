@@ -56,7 +56,7 @@ public class UpdateLeaveManagementDataCommandHandler
 		LeaveManagementData domain = new LeaveManagementData(command.getLeaveId(), AppContexts.user().companyId(),
 				command.getEmployeeId(), false, command.getLeaveDate(), command.getExpiredDate(),
 				command.getOccurredDays(), 0, command.getUnUsedDays(), 0, subHDAtr, 0, 0);
-		leaveManaDataRepository.udpate(domain);
+		leaveManaDataRepository.udpateByHolidaySetting(domain);
 
 		// 結果情報に「エラーなし」を返す
 		return Collections.emptyList();
@@ -70,7 +70,7 @@ public class UpdateLeaveManagementDataCommandHandler
 	 */
 	private List<String> inputItemCheck(LeaveManagementDataCommand command) {
 		List<String> errorList = new ArrayList<>();
-		if (command.getIsCheckedExpired()) {
+		if (!command.getIsCheckedExpired()) {
 			Optional<LeaveManagementData> domain = this.leaveManaDataRepository.getByLeaveId(command.getLeaveId());
 			if (domain.isPresent()) {
 				if (domain.get().getSubHDAtr().value == 2) {

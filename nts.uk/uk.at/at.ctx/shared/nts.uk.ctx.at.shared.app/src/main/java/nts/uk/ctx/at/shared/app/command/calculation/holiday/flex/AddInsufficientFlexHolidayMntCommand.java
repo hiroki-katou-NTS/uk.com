@@ -13,9 +13,9 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHoliday
 @AllArgsConstructor
 public class AddInsufficientFlexHolidayMntCommand {
 	/** 補填可能時間 */
-	public int attendanceTime;
+	public double attendanceTime;
 	
 	public InsufficientFlexHolidayMnt toDomain(String companyId) {
-		return InsufficientFlexHolidayMnt.createFromJavaType(companyId, attendanceTime);
+		return InsufficientFlexHolidayMnt.createFromJavaType(companyId, attendanceTime); 
 	}
 }
