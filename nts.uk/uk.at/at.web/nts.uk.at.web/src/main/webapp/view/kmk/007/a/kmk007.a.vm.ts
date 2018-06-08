@@ -381,15 +381,15 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-            if ((workType.oneDayCls() == 4 && workType.oneDay().sumSpHodidayNo() == "") ||
-                (workType.morningCls() == 4 && workType.morning().sumSpHodidayNo() == "") ||
-                (workType.afternoonCls() == 4 && workType.afternoon().sumSpHodidayNo() == "")) {
+            if ((workType.oneDayCls() == 4 && workType.oneDay().sumSpHodidayNo() == null) ||
+                (workType.morningCls() == 4 && workType.morning().sumSpHodidayNo() == null) ||
+                (workType.afternoonCls() == 4 && workType.afternoon().sumSpHodidayNo() == null)) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_921" });
                 return;
             }
-            if ((workType.oneDayCls() == 5 && workType.oneDay().sumAbsenseNo() == "")
-                || (workType.morningCls() == 5 && workType.morning().sumAbsenseNo() == "") ||
-                (workType.afternoonCls() == 5 && workType.afternoon().sumAbsenseNo() == "")) {
+            if ((workType.oneDayCls() == 5 && workType.oneDay().sumAbsenseNo() == null)
+                || (workType.morningCls() == 5 && workType.morning().sumAbsenseNo() == null) ||
+                (workType.afternoonCls() == 5 && workType.afternoon().sumAbsenseNo() == null)) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_922" });
                 return;
             }
