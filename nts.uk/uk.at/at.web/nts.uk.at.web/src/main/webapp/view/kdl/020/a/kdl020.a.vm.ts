@@ -83,7 +83,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
             });
 
             $("#holiday-info_table").ntsFixedTable({ height: 120, width: 600 });
-            $("#holiday-use_table").ntsFixedTable({ height: 240, width: 600 });
+            $("#holiday-use_table").ntsFixedTable({ height: 224, width: 600 });
         }
         start(): JQueryPromise<any> {
             let self = this,
