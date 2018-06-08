@@ -99,7 +99,7 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 			kfnstAttndRecUpdate.setItemName(singleAttendanceRecord.getName().toString());
 			kfnstAttndRecUpdate.setAttribute(new BigDecimal(singleAttendanceRecord.getAttribute().value));
 			int useAtrValue = useAtr ? USE_ATTRIBUTE : NOT_USE_ATTRIBUTE;
-			kfnstAttndRecUpdate.setAttribute(new BigDecimal(useAtrValue));
+			kfnstAttndRecUpdate.setUseAtr(new BigDecimal(useAtrValue));
 			this.commandProxy().update(kfnstAttndRecUpdate);
 		} else {
 			this.commandProxy().insert(this.toEntityAttndRec(exportSettingCode, columnIndex, position, exportArt,
