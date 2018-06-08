@@ -250,7 +250,8 @@ public class DailyRecordWorkCommandHandler {
 	@Inject
 	private DailyRecordWorkFinder finder;
 	
-	private final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList(AttendanceLayoutConst.DAILY_ATTENDANCE_TIME_CODE);
+	private final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList(AttendanceLayoutConst.DAILY_ATTENDANCE_TIME_CODE,
+			AttendanceLayoutConst.DAILY_OPTIONAL_ITEM_CODE);
 	
 	private final Map<String, String[]> DOMAIN_CHANGED_BY_EVENT = new HashMap<>();
 	{

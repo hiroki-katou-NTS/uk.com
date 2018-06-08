@@ -15,8 +15,8 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
-import nts.uk.ctx.at.record.dom.divergencetime.service.DivCheckMasterShareBus;
-import nts.uk.ctx.at.record.dom.divergencetime.service.DivCheckMasterShareBus.DivCheckMasterShareContainer;
+import nts.uk.ctx.at.record.dom.divergencetime.service.MasterShareBus;
+import nts.uk.ctx.at.record.dom.divergencetime.service.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
@@ -66,7 +66,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		
 		if(integrationOfDaily.isEmpty()) return integrationOfDaily;
 		//会社共通の設定を
-		DivCheckMasterShareContainer shareContainer = DivCheckMasterShareBus.open();
+		MasterShareContainer shareContainer = MasterShareBus.open();
 		val companyCommonSetting = new ManagePerCompanySet(holidayAddtionRepository.findByCompanyId(AppContexts.user().companyId()),
 														   holidayAddtionRepository.findByCId(AppContexts.user().companyId()),
 														   specificWorkRuleRepository.findCalcMethodByCid(AppContexts.user().companyId()),

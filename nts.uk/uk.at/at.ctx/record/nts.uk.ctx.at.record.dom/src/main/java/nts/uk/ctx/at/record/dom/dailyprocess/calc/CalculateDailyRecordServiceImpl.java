@@ -54,6 +54,8 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.ootsuka.OotsukaProcessService;
 //import nts.uk.ctx.at.record.dom.dailyprocess.calc.ootsuka.OotsukaProcessService;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
+import nts.uk.ctx.at.record.dom.divergencetime.service.MasterShareBus;
+import nts.uk.ctx.at.record.dom.divergencetime.service.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
@@ -130,8 +132,10 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSet;
@@ -215,14 +219,23 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		// val copyIntegrationOfDaily = integrationOfDaily;
 		if (integrationOfDaily.getAffiliationInfor() == null || companyCommonSetting == null)
 			return integrationOfDaily;
+		boolean isShareContainerNotInit = companyCommonSetting.getShareContainer() == null;
+		if(isShareContainerNotInit) {
+			companyCommonSetting.setShareContainer(MasterShareBus.open());
+		}
 		// 実績データの計算
 		val afterCalcResult = this.calcDailyAttendancePerformance(integrationOfDaily,companyCommonSetting);
 		//任意項目の計算
 		val aftercalcOptionalItemResult = this.calcOptionalItem(afterCalcResult);
 		//エラーチェック
 //		return calculationErrorCheckService.errorCheck(afterCalcResult,companyCommonSetting);
-		return calculationErrorCheckService.errorCheck(aftercalcOptionalItemResult,companyCommonSetting);
-//		return afterCalcResult;
+		IntegrationOfDaily result = calculationErrorCheckService.errorCheck(aftercalcOptionalItemResult,companyCommonSetting);
+		
+		if(isShareContainerNotInit) {
+			companyCommonSetting.getShareContainer().clearAll();
+		}
+		
+		return result;
 	}
 
 	private IntegrationOfDaily calcDailyAttendancePerformance(IntegrationOfDaily integrationOfDaily, ManagePerCompanySet companyCommonSetting) {
@@ -253,19 +266,19 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 * @param companyCommonSetting 
 	 */
 	private ManageReGetClass createRecord(IntegrationOfDaily integrationOfDaily,TimeSheetAtr timeSheetAtr, ManagePerCompanySet companyCommonSetting) {
+
+		MasterShareContainer shareContainer = companyCommonSetting.getShareContainer();
+		
 		String companyId = AppContexts.user().companyId();
 		String placeId = integrationOfDaily.getAffiliationInfor().getWplID();
 		String employmentCd = integrationOfDaily.getAffiliationInfor().getEmploymentCode().toString();
 		String employeeId = integrationOfDaily.getAffiliationInfor().getEmployeeId();
 		GeneralDate targetDate = integrationOfDaily.getAffiliationInfor().getYmd(); 
 		
-		/* 1日の計算範囲クラスを作成 */
-		val oneRange = createOneDayRange(integrationOfDaily);
 		/* 勤務種類の取得 */
 		val workInfo = integrationOfDaily.getWorkInformation();
 		Optional<WorkType> workType = this.workTypeRepository.findByPK(companyId,workInfo.getRecordInfo().getWorkTypeCode().v()); // 要確認：勤務種類マスタが削除されている場合は考慮しない？
 	
-		
 		if(!workType.isPresent()) return ManageReGetClass.cantCalc();
 		val beforeWorkType = workType;
 		
@@ -274,6 +287,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			return ManageReGetClass.cantCalc();
 		Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,workInfo.getRecordInfo().getWorkTimeCode().toString());
 		if(!workTime.isPresent()) return ManageReGetClass.cantCalc();
+		
+		/* 1日の計算範囲クラスを作成 */
+		val oneRange = createOneDayRange(integrationOfDaily,workTime,shareContainer);
+		
 		/* 労働制 */
 		DailyCalculationPersonalInformation personalInfo = getPersonInfomation(integrationOfDaily, companyCommonSetting);
 		if(personalInfo==null) return ManageReGetClass.cantCalc(); 
@@ -400,7 +417,12 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		Optional<FixRestTimezoneSet>fixRestTimeSet = Optional.empty();
 		Optional<FixedWorkCalcSetting>ootsukaFixedWorkSet = Optional.empty();
 		
-		val flexWorkSetOpt = flexWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v());
+		Optional<FlexWorkSetting> flexWorkSetOpt = shareContainer.getShared("FLEX_WORK" + companyId + workInfo.getRecordInfo().getWorkTimeCode().v(), 
+				() -> flexWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v()));
+		if(timeSheetAtr.isSchedule()) {
+			flexWorkSetOpt = shareContainer.getShared("PRE_FLEX_WORK" + companyId + workInfo.getRecordInfo().getWorkTimeCode().v(), 
+					() -> flexWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v()));
+		}
 		
 		//---------------------------------Repositoryが整理されるまでの一時的な作成-------------------------------------------
 		/*各加算設定取得用*/
@@ -518,7 +540,13 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			switch (workTime.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
 			case FIXED_WORK:
 				/* 固定 */
-				val fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, workInfo.getRecordInfo().getWorkTimeCode().v());
+				Optional<FixedWorkSetting> fixedWorkSetting = shareContainer.getShared("FIXED_WORK" + companyId + workInfo.getRecordInfo().getWorkTimeCode().v(), 
+																					   () -> fixedWorkSettingRepository.findByKey(companyId, workInfo.getRecordInfo().getWorkTimeCode().v()));
+				if(timeSheetAtr.isSchedule()) {
+					fixedWorkSetting = shareContainer.getShared("PRE_FIXED_WORK" + companyId + workInfo.getRecordInfo().getWorkTimeCode().v(), 
+							() -> fixedWorkSettingRepository.findByKey(companyId, workInfo.getRecordInfo().getWorkTimeCode().v()));
+				}
+				
 				if(!fixedWorkSetting.isPresent()) return ManageReGetClass.cantCalc();
 				List<OverTimeOfTimeZoneSet> fixOtSetting = Collections.emptyList();
 				if(workType.get().getAttendanceHolidayAttr().isFullTime()) {
@@ -593,9 +621,12 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				subhol = fixedWorkSetting.get().getCommonSetting().getSubHolTimeSet();
 				
 				oneRange.createWithinWorkTimeSheet(personalInfo.getWorkingSystem(),
-						workTime.get().getWorkTimeDivision().getWorkTimeMethodSet(), RestClockManageAtr.IS_CLOCK_MANAGE,
-						goOutTimeSheetList, new CommonRestSetting(RestTimeOfficeWorkCalcMethod.OFFICE_WORK_APPROP_ALL),
-						Optional.of(fixedWorkSetting.get().getFixedWorkRestSetting().getCalculateMethod()), workTime.get().getWorkTimeDivision(),
+						workTime.get().getWorkTimeDivision().getWorkTimeMethodSet(),
+						RestClockManageAtr.IS_CLOCK_MANAGE,
+						goOutTimeSheetList,
+						new CommonRestSetting(RestTimeOfficeWorkCalcMethod.OFFICE_WORK_APPROP_ALL),
+						Optional.of(fixedWorkSetting.get().getFixedWorkRestSetting().getCalculateMethod()),
+						workTime.get().getWorkTimeDivision(),
 						oneRange.getPredetermineTimeSetForCalc(), fixedWorkSetting.get(), 
 						BonusPaySetting.createFromJavaType(companyId,
 						"01"/*ここは聞く*/,
@@ -640,13 +671,13 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				break;
 			case FLOW_WORK:
 				/* 流動勤務 */
-				val flowWorkSetOpt = flowWorkSettingRepository.find(companyId,
-						workInfo.getRecordInfo().getWorkTimeCode().v());
+				val flowWorkSetOpt = shareContainer.getShared("FLOW_WORK" + companyId + workInfo.getRecordInfo().getWorkTimeCode().v(), 
+															  () -> flowWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v()));
 				break;
 			case DIFFTIME_WORK:
 				/* 時差勤務 */
-				val diffWorkSetOpt = diffTimeWorkSettingRepository.find(companyId,
-						workInfo.getRecordInfo().getWorkTimeCode().v());
+				val diffWorkSetOpt = shareContainer.getShared("FLOW_WORK" + companyId + workInfo.getRecordInfo().getWorkTimeCode().v(), 
+						  									  () -> diffTimeWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v()));
 				// case Enum_Overtime_Work:
 				break;
 			default:
@@ -924,7 +955,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 *            日別実績(Work)
 	 * @return 1日の計算範囲
 	 */
-	private CalculationRangeOfOneDay createOneDayRange(IntegrationOfDaily integrationOfDaily) {
+	private CalculationRangeOfOneDay createOneDayRange(IntegrationOfDaily integrationOfDaily,Optional<WorkTimeSetting> workTime, MasterShareContainer shareContainer) {
 		String companyId = AppContexts.user().companyId();
 		String placeId = integrationOfDaily.getAffiliationInfor().getWplID();
 		String employmentCd = integrationOfDaily.getAffiliationInfor().getEmploymentCode().toString();
@@ -956,7 +987,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		WorkInfoOfDailyPerformance toDayWorkInfo = integrationOfDaily.getWorkInformation();
 		
-		Optional<WorkTimezoneCommonSet> commonSet = getWorkTimezoneCommonSet(integrationOfDaily,companyId);
+		Optional<WorkTimezoneCommonSet> commonSet = getWorkTimezoneCommonSet(integrationOfDaily,companyId,workTime,shareContainer);
 		
 		/*日別実績の出退勤時刻セット*/
 		Optional<TimeLeavingOfDailyPerformance> timeLeavingOfDailyPerformance = integrationOfDaily.getAttendanceLeave();
@@ -1080,16 +1111,14 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 * 就業時間帯の共通設定を取得する
 	 * @return
 	 */
-	private Optional<WorkTimezoneCommonSet> getWorkTimezoneCommonSet(IntegrationOfDaily integrationOfDaily,String companyId) {
+	private Optional<WorkTimezoneCommonSet> getWorkTimezoneCommonSet(IntegrationOfDaily integrationOfDaily,String companyId,Optional<WorkTimeSetting> workTime, MasterShareContainer shareContainer) {
 		
 		/* 勤務種類の取得 */
 		val workInfo = integrationOfDaily.getWorkInformation();
 		
-		Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,workInfo.getRecordInfo().getWorkTimeCode().toString());
-		if(!workTime.isPresent()) return Optional.empty();
-		
 		if (workTime.get().getWorkTimeDivision().getWorkTimeDailyAtr().isFlex()) {
-			val flexWorkSetOpt = flexWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v());
+			val flexWorkSetOpt = shareContainer.getShared("FLEX_WORK" + companyId + workInfo.getRecordInfo().getWorkTimeCode().v(), 
+														  () -> flexWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v()));
 			if(flexWorkSetOpt.isPresent()) {
 				return Optional.of(flexWorkSetOpt.get().getCommonSetting());
 			}
@@ -1098,21 +1127,24 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			switch (workTime.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
 			case FIXED_WORK:
 				/* 固定 */
-				val fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, workInfo.getRecordInfo().getWorkTimeCode().v());
+				val fixedWorkSetting = shareContainer.getShared("FIXED_WORK" + companyId + workInfo.getRecordInfo().getWorkTimeCode().v(), 
+																() -> fixedWorkSettingRepository.findByKey(companyId, workInfo.getRecordInfo().getWorkTimeCode().v()));
 				if(fixedWorkSetting.isPresent()) {
 					return Optional.of(fixedWorkSetting.get().getCommonSetting());
 				}
 			break;
 			case FLOW_WORK:
 				/* 流動勤務 */
-				val flowWorkSetOpt = flowWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v());
+				val flowWorkSetOpt = shareContainer.getShared("FLOW_WORK" + companyId + workInfo.getRecordInfo().getWorkTimeCode().v(), 
+															  () -> flowWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v()));
 				if(flowWorkSetOpt.isPresent()) {
 					return Optional.of(flowWorkSetOpt.get().getCommonSetting());
 				}
 				break;
 			case DIFFTIME_WORK:
 				/* 時差勤務 */
-				val diffWorkSetOpt = diffTimeWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v());
+				val diffWorkSetOpt = shareContainer.getShared("FLOW_WORK" + companyId + workInfo.getRecordInfo().getWorkTimeCode().v(), 
+						  									  () -> diffTimeWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v()));
 				if(diffWorkSetOpt.isPresent()) {
 					return Optional.of(diffWorkSetOpt.get().getCommonSet());
 				}
