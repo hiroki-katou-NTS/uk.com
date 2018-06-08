@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 
 /**
  * 積立年休残明細

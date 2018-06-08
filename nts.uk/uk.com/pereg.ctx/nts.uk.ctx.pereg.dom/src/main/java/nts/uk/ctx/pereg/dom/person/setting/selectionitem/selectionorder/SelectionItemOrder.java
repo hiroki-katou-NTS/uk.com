@@ -29,7 +29,7 @@ public class SelectionItemOrder {
 				EnumAdaptor.valueOf(initSelection, InitSelection.class));
 	}
 	
-	public SelectionItemOrder cloneNewSelectionItemOrder(String histId) {
-		return new SelectionItemOrder(this.selectionID, histId, this.disporder, this.initSelection);
+	public SelectionItemOrder cloneNewSelectionItemOrder(String selectionId, String histId) {
+		return new SelectionItemOrder(selectionId, histId, this.disporder, this.initSelection);
 	}
 }

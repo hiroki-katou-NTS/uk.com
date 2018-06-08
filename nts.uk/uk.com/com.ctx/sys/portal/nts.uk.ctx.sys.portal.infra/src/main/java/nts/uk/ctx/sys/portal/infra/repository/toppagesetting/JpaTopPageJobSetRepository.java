@@ -22,8 +22,8 @@ import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.CcgptTopPageJobSetPK;
 @Stateless
 public class JpaTopPageJobSetRepository extends JpaRepository implements TopPageJobSetRepository {
 
-	private final String SEL = "SELECT a FROM CcgptTopPageJobSet a ";
-	private final String SEL_BY_LIST_JOB_ID = SEL
+	private static final String SEL = "SELECT a FROM CcgptTopPageJobSet a ";
+	private static final String SEL_BY_LIST_JOB_ID = SEL
 			+ "WHERE a.ccgptTopPageJobSetPK.companyId = :companyId AND a.ccgptTopPageJobSetPK.jobId IN :jobId";
 
 	public static TopPageJobSet toDomain(CcgptTopPageJobSet entity) {

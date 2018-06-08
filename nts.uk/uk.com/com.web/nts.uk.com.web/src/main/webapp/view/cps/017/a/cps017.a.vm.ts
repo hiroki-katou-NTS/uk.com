@@ -8,7 +8,10 @@ module nts.uk.com.view.cps017.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import textUK = nts.uk.text;
     import block = nts.uk.ui.block;
-    let writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraint'];
+    let writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraint'],
+        invisible = window["nts"]["uk"]["ui"]["block"]["invisible"],
+        unblock = window["nts"]["uk"]["ui"]["block"]["clear"];
+    
     export class ScreenModel {
         //listSelectionItem
         listItems: KnockoutObservableArray<SelectionItem> = ko.observableArray([]);
@@ -534,34 +537,18 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
         // 選択肢未登録会社へ反映する
         ReflUnrComp() {
-            let self = this,
-                currentItem: IHistorySelection = ko.toJS(self.historySelection),
-                listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
-                selectHistory = _.find(listHistorySelection, x => x.histId == currentItem.histId),
-
-                perInfoSelectionItem: ISelectionItem = ko.toJS(self.perInfoSelectionItem),
-                listItems: Array<SelectionItem> = self.listItems(),
-                selectionItemList = _.find(listItems, x => x.selectionItemId == perInfoSelectionItem.selectionItemId),
-                selItemList: SelectionItem = self.perInfoSelectionItem();
-
-            let command = ko.toJS(perInfoSelectionItem);
+            let self = this;
+            let command = { 'selectionItemId' : self.perInfoSelectionItem().selectionItemId() };
 
             confirm({ messageId: "Msg_532", messageParams: ["1"] }).ifYes(() => {
+                invisible();
                 service.reflUnrComp(command).done(function() {
-                    self.listHistorySelection.removeAll();
-                    service.getAllPerInfoHistorySelection(self.historySelection().histId()).done((itemList: Array<>) => {
-                        if (itemList && itemList.length) {
-                            itemList.forEach(x => self.listHistorySelection.push(x));
-                        }
-                    });
-                    self.listItems.valueHasMutated();
-                    selItemList.selectionItemId.valueHasMutated();
+                    unblock();
                     nts.uk.ui.dialog.info({ messageId: "Msg_81" }).then(() => {
                         self.focusToInput();
                     });
                 });
             }).ifNo(() => {
-                self.listItems.valueHasMutated();
                 return;
             })
         }

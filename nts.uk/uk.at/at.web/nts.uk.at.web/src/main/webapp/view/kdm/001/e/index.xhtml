@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 530, height: 530 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="kdm001.e.start.js" />
+			<com:scriptfile path="kdm001.e.vm.js" />
+			<com:scriptfile path="kdm001.e.service.js" />
+			<com:stylefile path="kdm001.e.style.css" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area">
+				<!-- E1 文言 -->
+				<div>
+					<span id="E1" class="label">#{i18n.getText('KDM001_91')}</span>
+				</div>
+				<div id="E2">
+					<!-- E2_1 職場コード -->
+					<span id="E2_1" class="label" data-bind="text: workCode"></span>
+					<!-- E2_2 職場名称 -->
+					<span id="E2_2" class="label" data-bind="text: workPlaceName"></span>
+					<!-- E2_3 ： -->
+					<span id="E2_3" class="label">:</span>
+					<!-- E2_4 社員コード -->
+					<span id="E2_4" class="label" data-bind="text: employeeCode"></span>
+					<!-- E2_5 社員名 -->
+					<span id="E2_5" class="label" data-bind="text: employeeName"></span>
+				</div>
+				<!-- E3 罫線 -->
+				<div>
+					<hr />
+				</div>
+				<div>
+					<!-- E4_1 振出 -->
+					<span id="E4_1" class="label">#{i18n.getText('KDM001_61')}</span>
+					<!-- E4_2 振休 -->
+					<span id="E4_2" class="label">#{i18n.getText('KDM001_92')}</span>
+				</div>
+				<!-- E5_1 振出日 -->
+				<span id="E5_1" class="label" data-bind="text: dateHoliday"></span>
+				<!-- E5_2 発生数 -->
+				<span id="E5_2" class="label" data-bind="text: numberDay"></span>
+				<!-- E6 紐付候補リスト -->
+				<div id="E6">
+					<table id="multi-list"
+						data-bind="ntsGridList: {
+							name: '#[KDM001_93]',
+							dataSource: items,
+							optionsValue: 'subOfHDID',
+							columns: columns,
+							multiple: true,
+							selectionDisables: disables,
+							rows: 8,
+							value: currentCodeList
+						}" tabindex="1"></table>
+				</div>
+				<!-- E7_1 残-->
+				<span id="E7_1" style="margin-left: 210px; margin-top: 15px;"
+					class="label">#{i18n.getText('KDM001_98')}</span>
+				<!-- E7_2残数-->
+				<span id="E7_2" class="label" data-bind="text: residualDayDispay"></span>
+			</div>
+			<div id="functions-area-bottom">
+				<!-- E31_1 登録 -->
+				<button id="E31_1" style="margin-top: 10px" data-bind="click: create" class="proceed large" tabindex="2">#{i18n.getText('KDM001_89')}</button>
+				<!-- E31_2 キャンセル -->
+				<button id="E31_2" style="margin-top: 10px" data-bind="click: closeDialog" tabindex="3">#{i18n.getText('KDM001_90')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
