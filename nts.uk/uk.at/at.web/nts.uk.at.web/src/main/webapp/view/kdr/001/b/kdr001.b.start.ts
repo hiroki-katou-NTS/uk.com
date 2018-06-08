@@ -4,6 +4,7 @@ module nts.uk.at.view.kdr001.b {
         screenModel.start().done(function(self) {
             __viewContext.bind(screenModel);
             self.setFocus();
+            setTimeout(function() {self.setSpecialHolidayStyle(); }, 200);
         });
     });
 }

@@ -65,7 +65,7 @@ public class TimeRoundingSetting extends DomainObject {
 		switch (this.rounding) {
 		case ROUNDING_DOWN_OVER:
 			int mod = minutesInHour % (this.roundingTime.asTime() * 2);
-			val direction = minutesInHour < mod ? Direction.TO_BACK : Direction.TO_FORWARD;
+			val direction = mod < this.roundingTime.asTime() ? Direction.TO_BACK : Direction.TO_FORWARD;
 			return this.roundingTime.round(timeAsMinutes, direction);
 		case ROUNDING_DOWN:
 			return this.roundingTime.round(timeAsMinutes, Direction.TO_BACK);

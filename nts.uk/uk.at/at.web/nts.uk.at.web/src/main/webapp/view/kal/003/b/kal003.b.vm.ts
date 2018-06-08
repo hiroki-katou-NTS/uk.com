@@ -33,10 +33,17 @@ module nts.uk.at.view.kal003.b.viewmodel{
         comparisonRange : KnockoutObservable<model.ComparisonValueRange>;
         checkItemTemp: KnockoutObservable<number> = ko.observable(null);
         
+        
+        //monthly
+        listEnumRoleType: KnockoutObservableArray<any>;
+        
         constructor() {
             let self = this;
             let option = windows.getShared('inputKal003b');
             self.setting = $.extend({}, shareutils.getDefaultWorkRecordExtractingCondition(0), option);
+            
+            //monthly
+            self.listEnumRoleType = ko.observableArray(__viewContext.enums.RoleType);
             
             let workRecordExtractingCond = shareutils.convertTransferDataToWorkRecordExtractingCondition(self.setting);
             self.workRecordExtractingCondition = ko.observable(workRecordExtractingCond);
@@ -690,27 +697,10 @@ module nts.uk.at.view.kal003.b.viewmodel{
             });
         }
         
-        //getListItemByAtr(conditionAtr) {
-        //    let self = this;
-        //    return service.getAttendanceItemByAtr(conditionAtr);
-      // }
-          getListItemByAtr(conditionAtr) {
+        getListItemByAtr(conditionAtr) {
             let self = this;
-            if (self.workRecordExtractingCondition().checkItem() === 0 ||self.workRecordExtractingCondition().checkItem() === 4) {
-                //With type 回数 - Times
-                return service.getAttendanceItemByAtr(5);
-            } else if (self.workRecordExtractingCondition().checkItem() === 1) {
-                //With type 時間 - Time
-                return service.getAttendanceItemByAtr(2);
-            } else if (self.workRecordExtractingCondition().checkItem() === 2) {
-                //With type 時刻 - TimeWithDay
-                return service.getAttendanceItemByAtr(3);
-            } else if (self.workRecordExtractingCondition().checkItem() === 3) {
-                //With type 金額 - AmountMoney
-                return service.getAttendanceItemByAtr(6);
-            }
+            return service.getAttendanceItemByAtr(conditionAtr);
         }
-
         
         fillTextDisplayTarget(defered, currentAtdItemCondition) {
             let self = this;

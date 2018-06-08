@@ -20,7 +20,7 @@ public interface EditStateOfDailyPerformanceRepository {
 	
 	List<EditStateOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd);
 	
-	List<EditStateOfDailyPerformance> finds(Map<String, GeneralDate> param);
+	List<EditStateOfDailyPerformance> finds(Map<String, List<GeneralDate>> param);
 	
 	void updateByKey(List<EditStateOfDailyPerformance> editStates);
 	

@@ -28,7 +28,7 @@ module nts.uk.at.view.kaf002.m4 {
                 });
             }
             
-            register(application : vmbase.Application){
+            register(application : vmbase.Application, checkBoxValue: boolean){
                 $(".m4-time-editor").trigger("validate");
                 if (!nts.uk.ui.errors.hasError())
                 {
@@ -50,11 +50,23 @@ module nts.uk.at.view.kaf002.m4 {
                     }
                     service.insert(command)
                     .done(() => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                            location.reload();
-                            $('.cm-memo').focus();
-                            nts.uk.ui.block.clear();
-                        });     
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            if(data.autoSendMail){
+                                nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
+                                    location.reload();
+                                });    
+                            } else {
+                                if(self.checkBoxValue()){
+                                    let command = {appID: data.appID};
+                                    setShared("KDL030_PARAM", command);
+                                    nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
+                                        location.reload();
+                                    });    
+                                } else {
+                                    location.reload();
+                                }   
+                            }
+                        });        
                     })
                     .fail(function(res) { 
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
@@ -82,10 +94,14 @@ module nts.uk.at.view.kaf002.m4 {
                 }
                 service.update(command)
                 .done(() => {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                        location.reload();
-                        $('.cm-memo').focus();
-                        nts.uk.ui.block.clear();
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        if(data.autoSendMail){
+                            nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
+                                location.reload();
+                            });    
+                        } else {
+                            location.reload();
+                        }
                     });     
                 })
                 .fail(function(res) { 

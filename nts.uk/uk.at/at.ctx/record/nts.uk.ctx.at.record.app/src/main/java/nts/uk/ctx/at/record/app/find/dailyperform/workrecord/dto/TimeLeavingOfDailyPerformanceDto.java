@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceLayoutConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
@@ -18,8 +19,8 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 
-@AttendanceItemRoot(rootName = "日別実績の出退勤")
 @Data
+@AttendanceItemRoot(rootName = AttendanceLayoutConst.DAILY_ATTENDACE_LEAVE_NAME)
 public class TimeLeavingOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	private String employeeId;

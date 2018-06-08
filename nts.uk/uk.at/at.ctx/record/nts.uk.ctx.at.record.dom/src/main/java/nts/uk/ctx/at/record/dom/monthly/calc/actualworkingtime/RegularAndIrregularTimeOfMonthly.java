@@ -23,6 +23,7 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOut
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.AddedVacationUseTime;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.IrregularPeriodCarryforwardsTimeOfCurrent;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.TargetPremiumTimeMonthOfRegular;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.TargetPrmTimeWeekOfPrevMonLast;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.AddSet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.GetAddSet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.PremiumAtr;
@@ -30,6 +31,7 @@ import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.export.GetSettlementPeriodOfDefor;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
@@ -62,6 +64,8 @@ public class RegularAndIrregularTimeOfMonthly {
 	private AddedVacationUseTime addedVacationUseTime;
 	/** 週割増処理期間 */
 	private DatePeriod weekAggrPeriod;
+	/** 前月の最終週の週割増対象時間 */
+	private AttendanceTimeMonth weekPremiumTimeOfPrevMonth;
 	/** エラー情報 */
 	private List<MonthlyAggregationErrorInfo> errorInfos;
 	
@@ -77,6 +81,7 @@ public class RegularAndIrregularTimeOfMonthly {
 		this.irregularPeriodCarryforwardsTime = new IrregularPeriodCarryforwardsTimeOfCurrent();
 		this.addedVacationUseTime = new AddedVacationUseTime();
 		this.weekAggrPeriod = new DatePeriod(GeneralDate.today(), GeneralDate.today());
+		this.weekPremiumTimeOfPrevMonth = new AttendanceTimeMonth(0);
 		this.errorInfos = new ArrayList<>();
 	}
 
@@ -118,6 +123,7 @@ public class RegularAndIrregularTimeOfMonthly {
 	 * @param aggregateTotalWorkingTime 集計総労働時間
 	 * @param excessOutsideWorkMng 時間外超過管理
 	 * @param startWeekNo 開始週NO
+	 * @param employee 社員
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 * @return 戻り値：月別実績を集計する
 	 */
@@ -139,6 +145,7 @@ public class RegularAndIrregularTimeOfMonthly {
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			ExcessOutsideWorkMng excessOutsideWorkMng,
 			int startWeekNo,
+			EmployeeImport employee,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		List<AttendanceTimeOfWeekly> resultWeeks = new ArrayList<>();
@@ -153,12 +160,22 @@ public class RegularAndIrregularTimeOfMonthly {
 		}
 		WeekStart weekStart = weekStartOpt.get();
 		
-		// 前月の最終週のループ
-		//*****（保留中）
+		this.weekPremiumTimeOfPrevMonth = new AttendanceTimeMonth(0);
+		if (weekStart != WeekStart.TighteningStartDate){
+			
+			// 前月の最終週を集計する
+			this.aggregateLastWeekOfPrevMonth(companyId, employeeId, datePeriod, workingSystem,
+					aggregateAtr, settingsByReg, settingsByDefo,
+					attendanceTimeOfDailyMap, workInformationOfDailyMap,
+					weekStart, startWeekNo, employee, repositories);;
+		}
 
 		// 期間．開始日を処理日にする
 		GeneralDate procDate = datePeriod.start();
 		int procWeekNo = startWeekNo;
+		
+		// 「処理中の週開始日」を期間．開始日にする
+		GeneralDate procWeekStartDate = datePeriod.start();
 		
 		// 処理をする期間の日数分ループ
 		while (procDate.beforeOrEquals(datePeriod.end())){
@@ -196,10 +213,10 @@ public class RegularAndIrregularTimeOfMonthly {
 			if (MonthlyCalculation.isAggregateWeek(procDate, weekStart, datePeriod, closureOpt)){
 			
 				// 週の期間を計算
-				this.weekAggrPeriod = new DatePeriod(procDate.addDays(-6), procDate);
-				if (this.weekAggrPeriod.start().before(datePeriod.start())) {
-					this.weekAggrPeriod = new DatePeriod(datePeriod.start(), procDate);
-				}
+				this.weekAggrPeriod = new DatePeriod(procWeekStartDate, procDate);
+				
+				// 翌週の開始日を設定しておく
+				procWeekStartDate = procDate.addDays(1);
 				
 				// 対象の「週別実績の勤怠時間」を作成する
 				val newWeek = new AttendanceTimeOfWeekly(employeeId, yearMonth, closureId, closureDate,
@@ -210,9 +227,10 @@ public class RegularAndIrregularTimeOfMonthly {
 				{
 					// 週の計算
 					val weekCalc = newWeek.getWeeklyCalculation();
-					weekCalc.aggregate(companyId, employeeId, yearMonth, datePeriod, this.weekAggrPeriod,
-							workingSystem, aggregateAtr, procDate,
-							settingsByReg, settingsByDefo, aggregateTotalWorkingTime, weekStart,
+					weekCalc.aggregate(companyId, employeeId, yearMonth, this.weekAggrPeriod,
+							workingSystem, aggregateAtr,
+							settingsByReg, settingsByDefo, aggregateTotalWorkingTime,
+							weekStart, this.weekPremiumTimeOfPrevMonth,
 							attendanceTimeOfDailyMap, repositories);
 					resultWeeks.add(newWeek);
 					
@@ -241,6 +259,129 @@ public class RegularAndIrregularTimeOfMonthly {
 		
 		return AggregateMonthlyValue.of(aggregateTotalWorkingTime, excessOutsideWorkMng, resultWeeks);
 	}
+	
+	/**
+	 * 前月の最終週を集計する
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @param datePeriod 期間
+	 * @param workingSystem 労働制
+	 * @param aggregateAtr 集計区分
+	 * @param settingsByReg 通常勤務が必要とする設定
+	 * @param settingsByDefo 変形労働勤務が必要とする設定
+	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
+	 * @param workInformationOfDailyMap 日別実績の勤務情報リスト
+	 * @param weekStart 週開始
+	 * @param startWeekNo 開始週NO
+	 * @param employee 社員
+	 * @param repositories 月次集計が必要とするリポジトリ
+	 */
+	private void aggregateLastWeekOfPrevMonth(
+			String companyId,
+			String employeeId,
+			DatePeriod datePeriod,
+			WorkingSystem workingSystem,
+			MonthlyAggregateAtr aggregateAtr,
+			SettingRequiredByReg settingsByReg,
+			SettingRequiredByDefo settingsByDefo,
+			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap,
+			Map<GeneralDate, WorkInformation> workInformationOfDailyMap,
+			WeekStart weekStart,
+			int startWeekNo,
+			EmployeeImport employee,
+			RepositoriesRequiredByMonthlyAggr repositories){
+		
+		// 前月の最終週を集計するか判断する
+		{
+			// 労働条件のループの1回目の処理か確認する　（週NOが1以外なら、その月度の1回目ではない）
+			if (startWeekNo != 1) return;
+			
+			// 前月の最終日の労働制を確認する
+			val workingConditionItemOpt = repositories.getWorkingConditionItem()
+					 .getBySidAndStandardDate(employeeId, datePeriod.start().addDays(-1));
+			if (!workingConditionItemOpt.isPresent()) return;
+			val prevWorkingSystem = workingConditionItemOpt.get().getLaborSystem();
+			
+			if (workingSystem == WorkingSystem.REGULAR_WORK){
+				if (prevWorkingSystem != WorkingSystem.REGULAR_WORK) return;
+			}
+			if (workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
+				if (prevWorkingSystem == WorkingSystem.FLEX_TIME_WORK) return;
+			}
+		}
+		
+		// 前月の最終週の期間を求める
+		DatePeriod lastWeekPeriod = null;
+		if (!MonthlyCalculation.isWeekStart(datePeriod.start(), weekStart)){
+			GeneralDate startDate = datePeriod.start().addDays(-1);
+			for (int i = 0; i < 6; i++){
+				if (MonthlyCalculation.isWeekStart(startDate, weekStart)) break;
+				startDate = startDate.addDays(-1);
+			}
+			GeneralDate endDate = datePeriod.start().addDays(-1);
+			lastWeekPeriod = MonthlyCalculation.confirmProcPeriod(
+					new DatePeriod(startDate, endDate),
+					new DatePeriod(employee.getEntryDate(), employee.getRetiredDate()));
+		}
+		if (lastWeekPeriod == null) return;
+		
+		// 最終週用の集計総労働時間を用意する
+		AggregateTotalWorkingTime prevTotalWorkingTime = new AggregateTotalWorkingTime();
+		
+		// 共有項目を集計する
+		prevTotalWorkingTime.aggregateSharedItem(lastWeekPeriod, attendanceTimeOfDailyMap);
+
+		GeneralDate procDate = lastWeekPeriod.start();
+		while (procDate.beforeOrEquals(lastWeekPeriod.end())){
+			
+			if (attendanceTimeOfDailyMap.containsKey(procDate)){
+				val attendanceTimeOfDaily = attendanceTimeOfDailyMap.get(procDate);
+				
+				// 処理日の職場コードを取得する
+				String procWorkplaceId = "empty";
+				val affWorkplaceOpt = repositories.getAffWorkplace().findBySid(employeeId, procDate);
+				if (affWorkplaceOpt.isPresent()){
+					procWorkplaceId = affWorkplaceOpt.get().getWorkplaceId();
+				}
+				
+				// 処理日の雇用コードを取得する
+				String procEmploymentCd = "empty";
+				val syEmploymentOpt =
+						repositories.getSyEmployment().findByEmployeeId(companyId, employeeId, procDate);
+				if (syEmploymentOpt.isPresent()){
+					procEmploymentCd = syEmploymentOpt.get().getEmploymentCode();
+				}
+				
+				// 処理日の勤務情報を取得する
+				if (workInformationOfDailyMap.containsKey(procDate)) {
+					val workInfo = workInformationOfDailyMap.get(procDate);
+					
+					// 日別実績を集計する　（通常・変形労働時間勤務用）
+					prevTotalWorkingTime.aggregateDailyForRegAndIrreg(attendanceTimeOfDaily,
+							companyId, procWorkplaceId, procEmploymentCd, workingSystem, aggregateAtr,
+							workInfo, settingsByReg, settingsByDefo, repositories);
+				}
+			}
+			
+			// 処理日を更新する
+			procDate = procDate.addDays(1);
+		}
+
+		// 加算設定取得　（割増用）
+		AddSet addSet = new AddSet();
+		if (workingSystem == WorkingSystem.REGULAR_WORK){
+			addSet = GetAddSet.get(workingSystem, PremiumAtr.PREMIUM, settingsByReg.getHolidayAdditionMap());
+		}
+		if (workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
+			addSet = GetAddSet.get(workingSystem, PremiumAtr.PREMIUM, settingsByDefo.getHolidayAdditionMap());
+		}
+		
+		// 前月の最終週の週割増時間を求める
+		val weekPremiumTime = TargetPrmTimeWeekOfPrevMonLast.askPremiumTimeWeek(
+				companyId, employeeId, lastWeekPeriod, addSet, prevTotalWorkingTime);
+		this.weekPremiumTimeOfPrevMonth = new AttendanceTimeMonth(weekPremiumTime.getTargetTime().v());
+	}
+	
 	/**
 	 * 月単位の時間を集計する
 	 * @param companyId 会社ID
@@ -351,7 +492,6 @@ public class RegularAndIrregularTimeOfMonthly {
 			this.monthlyTotalPremiumTime = new AttendanceTimeMonth(0);
 		}
 	}
-	
 	
 	/**
 	 * 変形労働勤務の月単位の時間を集計する

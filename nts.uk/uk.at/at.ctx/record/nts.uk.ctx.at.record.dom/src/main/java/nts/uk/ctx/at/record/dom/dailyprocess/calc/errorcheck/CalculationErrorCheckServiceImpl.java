@@ -10,13 +10,14 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+//import nts.arc.diagnose.stopwatch.Stopwatches;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CheckExcessAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.divergencetime.service.DivTimeSysFixedCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
 import nts.uk.shr.com.context.AppContexts;
@@ -28,9 +29,6 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckService{
-
-	@Inject
-	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepository; 
 	@Inject
 	private DivTimeSysFixedCheckService divTimeSysFixedCheckService;
 	
@@ -41,21 +39,21 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 	private DailyRecordToAttendanceItemConverter dailyRecordToAttendanceItemConverter;
 	
 	@Override
-	public IntegrationOfDaily errorCheck(IntegrationOfDaily integrationOfDaily, List<ErrorAlarmWorkRecord> errorAlarm) {
-		
+	public IntegrationOfDaily errorCheck(IntegrationOfDaily integrationOfDaily, ManagePerCompanySet master) {
+		//Stopwatches.start("ERALALL");
 		String companyID = AppContexts.user().companyId();
 		List<EmployeeDailyPerError> addItemList = new ArrayList<>();
 //		if(!integrationOfDaily.getEmployeeError().isEmpty() &&  integrationOfDaily.getEmployeeError() != null)
 //			addItemList = integrationOfDaily.getEmployeeError();
 		DailyRecordToAttendanceItemConverter attendanceItemConverter = this.dailyRecordToAttendanceItemConverter.setData(integrationOfDaily);
 		//勤務実績のエラーアラーム数分ループ
-		for(ErrorAlarmWorkRecord errorItem : errorAlarm) {
+		for(ErrorAlarmWorkRecord errorItem : master.getErrorAlarm()) {
 			//使用しない
 			if(!errorItem.getUseAtr()) continue;
 			
 			//システム固定
 			if(errorItem.getFixedAtr()) {
-				val addItems = systemErrorCheck(integrationOfDaily,errorItem,attendanceItemConverter);
+				val addItems = systemErrorCheck(integrationOfDaily,errorItem,attendanceItemConverter, master);
 				if(!addItems.isEmpty() && addItems != null) {
 					for(val item : addItems) {
 						Boolean flg = true;
@@ -94,6 +92,7 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 			}
 		}
 		integrationOfDaily.setEmployeeError(addItemList);
+		//Stopwatches.stop("ERALALL");
 		return integrationOfDaily;
 	}
 
@@ -102,7 +101,8 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 	 * @param attendanceItemConverter 
 	 * @return 社員の日別実績エラー一覧
 	 */
-	public List<EmployeeDailyPerError> systemErrorCheck(IntegrationOfDaily integrationOfDaily,ErrorAlarmWorkRecord errorItem, DailyRecordToAttendanceItemConverter attendanceItemConverter) {
+	public List<EmployeeDailyPerError> systemErrorCheck(IntegrationOfDaily integrationOfDaily,ErrorAlarmWorkRecord errorItem, 
+			DailyRecordToAttendanceItemConverter attendanceItemConverter, ManagePerCompanySet master) {
 		Optional<SystemFixedErrorAlarm> fixedErrorAlarmCode = SystemFixedErrorAlarm.getEnumFromErrorCode(errorItem.getCode().toString());
 		if(!integrationOfDaily.getAttendanceLeave().isPresent() || !fixedErrorAlarmCode.isPresent())
 			return Collections.emptyList();
@@ -165,6 +165,8 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 			case DIVERGENCE_ERROR_2:
 			case DIVERGENCE_ALARM_2:
 			case DIVERGENCE_ERROR_3:
+			case DIVERGENCE_ALARM_3:
+			case DIVERGENCE_ERROR_4:
 			case DIVERGENCE_ALARM_4:
 			case DIVERGENCE_ERROR_5:
 			case DIVERGENCE_ALARM_5:
@@ -185,7 +187,9 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 																			 	 integrationOfDaily.getAffiliationInfor().getYmd(),
 																			 	 integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime().getDivergenceTime(),
 																			 	integrationOfDaily.getAttendanceLeave(),
-																			 	Arrays.asList(errorItem));
+																			 	Arrays.asList(errorItem),
+																			 	master.getDivergenceTime(),
+																			 	master.getShareContainer());
 				}
 				return Collections.emptyList();
 			//遅刻

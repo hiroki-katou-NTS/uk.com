@@ -1,10 +1,10 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 
-import java.util.List;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 
 
 public interface AfterProcessDelete {
 
-	public String screenAfterDelete (String companyID,String appID, Long version );
+	public ProcessResult screenAfterDelete (String companyID,String appID, Long version );
 
 }

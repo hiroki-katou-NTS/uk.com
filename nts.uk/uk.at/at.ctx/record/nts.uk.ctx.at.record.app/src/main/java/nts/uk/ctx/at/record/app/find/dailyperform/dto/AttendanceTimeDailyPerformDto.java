@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceLayoutConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
@@ -14,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 /** 日別実績の勤怠時間 */
 @Getter
 @Setter
-@AttendanceItemRoot(rootName = "日別実績の勤怠時間")
+@AttendanceItemRoot(rootName = AttendanceLayoutConst.DAILY_ATTENDANCE_TIME_NAME)
 public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 
 	/** 年月日: 年月日 */

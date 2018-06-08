@@ -14,16 +14,16 @@ import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstLengthServiceTblP
 
 @Stateless
 public class JpaLengthServiceRepository extends JpaRepository implements LengthServiceRepository{
-	private final String SELECT_BY_CODE = "SELECT c FROM KshstLengthServiceTbl c "
+	private static final String SELECT_BY_CODE = "SELECT c FROM KshstLengthServiceTbl c "
 					+ "WHERE c.kshstLengthServiceTblPK.companyId = :companyId "
 					+ "AND c.kshstLengthServiceTblPK.yearHolidayCode = :yearHolidayCode ORDER BY c.kshstLengthServiceTblPK.grantNum ";
 	
-	private final String DELETE_ALL = "DELETE FROM KshstLengthServiceTbl c "
+	private static final String DELETE_ALL = "DELETE FROM KshstLengthServiceTbl c "
 									+ "WHERE c.kshstLengthServiceTblPK.companyId = :companyId ";
 	
-	private final String DELETE_BY_CD = DELETE_ALL + "AND c.kshstLengthServiceTblPK.yearHolidayCode = :yearHolidayCode ";
+	private static final String DELETE_BY_CD = DELETE_ALL + "AND c.kshstLengthServiceTblPK.yearHolidayCode = :yearHolidayCode ";
 	
-	private final String DELETE_BY_KEY = DELETE_BY_CD + "AND c.kshstLengthServiceTblPK.grantNum IN :grantNums ";
+	private static final String DELETE_BY_KEY = DELETE_BY_CD + "AND c.kshstLengthServiceTblPK.grantNum IN :grantNums ";
 	/**
 	 * convert from KshstLengthServiceTbl entity to LengthServiceTbl domain
 	 * @param entity
@@ -39,7 +39,7 @@ public class JpaLengthServiceRepository extends JpaRepository implements LengthS
 		val entity = new KshstLengthServiceTbl();
 		entity.kshstLengthServiceTblPK = new KshstLengthServiceTblPK(domain.getCompanyId(), domain.getYearHolidayCode().v(), domain.getGrantNum().v());
 		entity.allowStatus = domain.getAllowStatus().value;
-		entity.month = domain.getMonth().v();
+		entity.month = domain.getMonth() != null ? domain.getMonth().v() : 0;
 		entity.year = domain.getYear().v();
 		entity.standGrantDay = domain.getStandGrantDay().value;
 		return entity;

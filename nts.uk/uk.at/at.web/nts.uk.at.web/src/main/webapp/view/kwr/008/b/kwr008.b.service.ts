@@ -10,9 +10,9 @@ module nts.uk.at.view.kwr008.b.service{
         getValueOutputFormat: "at/function/annualworkschedule/get/enum/valueoutputformat",
         getOutputAgreementTime : "at/function/annualworkschedule/get/enum/outputagreementtime",
         getListItemOutput : "at/function/annualworkschedule/get/listItemOutput/",
-        getAttendanceItemByCodes: "at/record/divergencetime/AttendanceDivergenceName",
-        getAttendanceItemByAtr: "at/record/businesstype/attendanceItem/getListByAttendanceAtr/",
-        getOptItemByAtr: "at/record/attendanceitem/daily/getattendcomparison/"
+        getMonthlyAttendanceItemByCodes: "at/record/divergencetime/getMonthlyAttendanceDivergenceName",
+        getMonthlyAttendanceItemByAtr: "at/record/businesstype/attendanceItem/getListMonthlyByAttendanceAtr/",
+        getOptItemByAtr: "at/record/attendanceitem/monthly/getattendcomparison/"
     }
     
     export function getOutItemSettingCode(): JQueryPromise<Array<share.OutputSettingCodeDto>>{
@@ -43,12 +43,12 @@ module nts.uk.at.view.kwr008.b.service{
         return ajax(paths.getListItemOutput + itemOutputSettingCode);
     }
     
-    export function getAttendanceItemByCodes(codes) {
-        return ajax("at", paths.getAttendanceItemByCodes, codes);
+    export function getMonthlyAttendanceItemByCodes(codes) {
+        return ajax("at", paths.getMonthlyAttendanceItemByCodes, codes);
     }
     
-    export function getAttendanceItemByAtr(atr) {
-        return nts.uk.request.ajax("at", paths.getAttendanceItemByAtr + atr);
+    export function getMonthlyAttendanceItemByAtr(atr) {
+        return nts.uk.request.ajax("at", paths.getMonthlyAttendanceItemByAtr + atr);
     }
     
     export function getOptItemByAtr(atr) {
