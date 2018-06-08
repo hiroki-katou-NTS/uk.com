@@ -154,6 +154,9 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     self.listExtractData = result.extraData;
                     self.convertToDisplayList();
                     self.updateSubstituteDataList();
+                    if (result.empSettingExpiredDate.length>0){
+                        self.dispExpiredDate(result.empSettingExpiredDate);
+                    } else self.dispExpiredDate(result.companySettingExpiredDate);
                 }).fail(function(result) {
                     dialog.alertError(result.errorMessage);
                 });
@@ -308,9 +311,9 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     self.listExtractData = result.extraHolidayManagementDataDto.extraData;
                     self.convertToDisplayList();
                     self.updateSubstituteDataList();
-                    if (result.leaveSettingExpiredDate.length>0){
-                        self.dispExpiredDate(result.leaveSettingExpiredDate);
-                    } else self.dispExpiredDate(result.compenSettingEmpExpiredDate);
+                    if (result.extraHolidayManagementDataDto.empSettingExpiredDate.length>0){
+                        self.dispExpiredDate(result.extraHolidayManagementDataDto.empSettingExpiredDate);
+                    } else self.dispExpiredDate(result.extraHolidayManagementDataDto.companySettingExpiredDate);
                     self.initKCP009();
                     self.disableLinkedData();
                     dfd.resolve();

@@ -137,7 +137,8 @@ module nts.uk.at.view.kdm001.j.viewmodel {
         
         
         public callService(leaveId,employeeId):void {
-
+            
+            block.invisible();
             let self = this;
             service.getAll(leaveId, employeeId).done(function(data) {
 
@@ -155,8 +156,10 @@ module nts.uk.at.view.kdm001.j.viewmodel {
                     }
                     
                 }
+                block.clear();
             }).fail(function(error) {
                 alert(error);
+                block.clear();
             });
 
         }
