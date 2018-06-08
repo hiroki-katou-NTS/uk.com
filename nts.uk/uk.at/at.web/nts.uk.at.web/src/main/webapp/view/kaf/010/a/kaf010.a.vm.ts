@@ -437,6 +437,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         }
         //登録処理を実行
         registerData(overtime) {
+            var self = this;
             service.createOvertime(overtime).done((data) => {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     if(data.autoSendMail){
