@@ -27,6 +27,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
 
         checkDisabled: KnockoutObservable<boolean> = ko.observable(false);
         isEnable: KnockoutObservable<boolean> = ko.observable(true);
+        isEnableOneDay: KnockoutObservable<boolean> = ko.observable(false);
         langId: KnockoutObservable<string> = ko.observable('ja');
 
         constructor() {
@@ -518,7 +519,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 od = cwt.oneDay(),
                 mn = cwt.morning(),
                 af = cwt.afternoon();
-
+            self.isEnableOneDay(true);
             self.checkDisabled(true);
             cwt.workTypeCode('');
             cwt.dispName('');
@@ -527,7 +528,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             cwt.abolishAtr(0);
             cwt.memo('');
             cwt.workAtr(0);
-            cwt.oneDayCls(1);
+            cwt.oneDayCls(0);
             cwt.morningCls(0);
             cwt.afternoonCls(0);
             cwt.calculatorMethod(1);
