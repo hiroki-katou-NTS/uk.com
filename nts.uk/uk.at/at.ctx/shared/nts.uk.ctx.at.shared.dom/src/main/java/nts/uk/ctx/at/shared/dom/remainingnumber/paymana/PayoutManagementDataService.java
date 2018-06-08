@@ -221,11 +221,15 @@ public class PayoutManagementDataService {
 			if (!errorListCheckBox.isEmpty()) {
 				return errorListCheckBox;
 			} else {
-				if(ZERO.equals(data.getUnUsedDays().v()) ){
+				// Update state 
+				if (checkBox){
+					data.setStateAtr(DigestionAtr.EXPIRED.value);
+				} else if (ZERO.equals(data.getUnUsedDays().v()) ){
 					data.setStateAtr(DigestionAtr.USED.value);
-				}else{
+				} else {
 					data.setStateAtr(DigestionAtr.UNUSED.value);
 				}
+				
 				payoutManagementDataRepository.update(data);
 				return Collections.emptyList();
 			}

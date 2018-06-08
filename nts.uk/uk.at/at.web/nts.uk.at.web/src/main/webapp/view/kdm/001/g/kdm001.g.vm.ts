@@ -62,7 +62,7 @@ module nts.uk.at.view.kdm001.g.viewmodel {
                 self.unUsedDays(info.rowValue.unUsedDays);
                 self.unknownDate(info.rowValue.unknownDatePayout);
                 self.stateAtr(info.rowValue.stateAtr),
-                self.checkBox(info.rowValue.stateAtr == 1 || info.rowValue.stateAtr == 2);
+                self.checkBox(info.rowValue.stateAtr == 2);
                 
             }
             block.clear();
@@ -77,8 +77,24 @@ module nts.uk.at.view.kdm001.g.viewmodel {
             $("#G9_2").trigger("validate");
             $("#G8_2").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
-                 block.invisible();
+                block.invisible();
                 let self = this;
+                if (self.checkBox()){
+                    dialog.confirm({ messageId: "Msg_1302" }).ifYes(() => {
+                        self.registData(); 
+                    }).ifCancel(() => {
+                        block.clear();
+                        return;
+                    });
+                } else {
+                    self.registData(); 
+                }
+                
+            }
+        }
+        
+        registData (){
+            let self = this;
                 let data = {
                     closureId: self.closureId(),
                     payoutId: self.payoutId(),
@@ -92,43 +108,41 @@ module nts.uk.at.view.kdm001.g.viewmodel {
                     checkBox: self.checkBox(),
                     stateAtr: self.stateAtr()
                 };
-                service.updatePayout(data).done((result) => {
-                    if (result && result.length > 0) {
-                        for (let messageId of result) {
-                            switch (messageId) {
-                                case "Msg_740": {
-                                    $('#G6_4').ntsError('set', { messageId: messageId });
-                                    break;
-                                }
-                                case "Msg_825": {
-                                    $('#G8_2').ntsError('set', { messageId: messageId });
-                                    break;
-                                }
-                                case "Msg_1212": {
-                                    $('#G7_2').ntsError('set', { messageId: messageId });
-                                    break;
-                                }
-                                case "Msg_1213": {
-                                    $('#G9_2').ntsError('set', { messageId: messageId });
-                                    break;
-                                }
+            service.updatePayout(data).done((result) => {
+                if (result && result.length > 0) {
+                    for (let messageId of result) {
+                        switch (messageId) {
+                            case "Msg_740": {
+                                $('#G6_4').ntsError('set', { messageId: messageId });
+                                break;
+                            }
+                            case "Msg_825": {
+                                $('#G8_2').ntsError('set', { messageId: messageId });
+                                break;
+                            }
+                            case "Msg_1212": {
+                                $('#G7_2').ntsError('set', { messageId: messageId });
+                                break;
+                            }
+                            case "Msg_1213": {
+                                $('#G9_2').ntsError('set', { messageId: messageId });
+                                break;
                             }
                         }
-                        setShared('KDM001_A_PARAMS', { isSuccess: false });
-                        block.clear();
-                        return;
                     }
-                    dialog.info({ messageId: "Msg_15" }).then(() => {
-                        setShared('KDM001_A_PARAMS', { isSuccess: true });
-                        nts.uk.ui.windows.close();
-                    });
-
-                }).always(() => {
+                    setShared('KDM001_A_PARAMS', { isSuccess: false });
                     block.clear();
+                    return;
+                }
+                dialog.info({ messageId: "Msg_15" }).then(() => {
+                    setShared('KDM001_A_PARAMS', { isSuccess: true });
+                    nts.uk.ui.windows.close();
                 });
-            }
+    
+            }).always(() => {
+                block.clear();
+            });   
         }
-
         public removeData() {
             block.invisible();
             dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
