@@ -136,6 +136,7 @@ module nts.uk.at.view.kdm001.k.viewmodel {
         }
         
          public callService(comDayOffId,employeeId):void {
+             block.invisible();
              let self = this;
              service.getAll(comDayOffId, employeeId).done(function(data) {
                  
@@ -156,7 +157,7 @@ module nts.uk.at.view.kdm001.k.viewmodel {
              }).fail(function(error) {
                  alert(error);
              });
-        
+            block.clear();
         }
         
         
