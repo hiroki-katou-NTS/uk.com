@@ -127,8 +127,8 @@ module nts.uk.com.view.kwr002.b {
                     _.map(data, (item) => {
                         item.code = _.padStart(item.code, 2, '0');
                         // new AttendanceRecordExportSetting(item);
-                        data = _.orderBy(data, [item => item.code], ['asc']);
                     });
+                    data = _.orderBy(data, [item => item.code], ['asc']);
                     self.aRES(data);
                     if (self.indexOfDelete() == self.aRES().length) {
                         self.currentARESCode(self.aRES()[self.indexOfDelete() - 1].code);
@@ -241,10 +241,10 @@ module nts.uk.com.view.kwr002.b {
         callGetAll(self, currentData) {
             service.getAllARES().done((data) => {
                 if (data.length > 0) {
-                    data = _.orderBy(data, [e => e.code], ['asc']);
-                    _.map(data, (item) => {
-                        item.code = _.padStart(item.code, 2, '0');
+                    _.map(data,(item)=>{
+                        item.code=_.padStart(item.code, 2, '0');
                     });
+                    data = _.orderBy(data, [e => e.code], ['asc']);
                     self.aRES(data);
                     if (currentData) {
                         self.currentARESCode(currentData.code());
@@ -311,11 +311,12 @@ module nts.uk.com.view.kwr002.b {
 
             service.getAllARES().done((data) => {
                 if (data.length > 0) {
-                    data = _.orderBy(data, [item => item.code], ['asc']);
-                    _.map(data, (item) => {
-                        item.code = _.padStart(item.code, 2, '0');
+
+                    _.map(data,(item)=>{
+                        item.code=_.padStart(item.code, 2, '0');
                         // new AttendanceRecordExportSetting(item);
                     });
+                    data = _.orderBy(data, [item => item.code], ['asc']);
                     self.aRES(data);
                     let firstData = _.first(data);
                     self.currentARESCode(firstData.code);
@@ -437,7 +438,7 @@ module nts.uk.com.view.kwr002.b {
 
             let itemList = getShared('attendanceRecItemList');
 
-            if (_.isArray(itemList) && !_.isEmpty(itemList) && _.first(itemList).layoutCode == self.code) {
+            if (_.isArray(itemList) && !_.isEmpty(itemList) && _.first(itemList).layoutCode == Number(self.code())) {
                 setShared('attendanceRecExpDaily', getShared('attendanceRecExpDaily'), true);
                 setShared('attendanceRecExpMonthly', getShared('attendanceRecExpMonthly'), true);
                 setShared('attendanceRecItemList', getShared('attendanceRecItemList'), true);
