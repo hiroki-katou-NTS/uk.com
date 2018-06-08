@@ -818,7 +818,12 @@ public class ProgramIdConsts {
 	 */
 	public static final String CMM049A = "CMM049A";
 	public static final String CMM049B = "CMM049B";
-
+	
+	/**
+	 * CDL027
+	 */
+	public static final String CDL027TEST = "CDL027TEST";
+	public static final String CDL027 = "CDL027";
 	/**
 	 * KAF018
 	 */
