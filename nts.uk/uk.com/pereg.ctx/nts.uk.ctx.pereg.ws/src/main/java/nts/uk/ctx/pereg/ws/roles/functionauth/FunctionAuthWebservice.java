@@ -19,7 +19,7 @@ public class FunctionAuthWebservice extends WebService {
 	private PersonInfoAuthFinder authFinder;
 
 	@POST
-	@Path("findAll")
+	@Path("find-all")
 	public List<PersonInfoAuthDto> getAllFunctionAuth(String roleId) {
 		return authFinder.getListAuth(roleId);
 
