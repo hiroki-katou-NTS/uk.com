@@ -1,9 +1,13 @@
 package nts.uk.ctx.pereg.dom.roles.functionauth.authsetting;
 
-import java.util.List;
+import java.util.Map;
 
 public interface PersonInfoAuthorityRepository {
 	
-	List<PersonInfoAuthority> getListOfRole(String companyId, String roleId);
+	Map<Integer, PersonInfoAuthority> getListOfRole(String companyId, String roleId);
+	
+	void add(PersonInfoAuthority auth);
+	
+	void update(PersonInfoAuthority auth);
 
 }

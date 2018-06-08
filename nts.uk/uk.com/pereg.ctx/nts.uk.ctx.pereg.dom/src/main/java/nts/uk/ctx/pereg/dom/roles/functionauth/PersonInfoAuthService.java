@@ -23,8 +23,7 @@ public class PersonInfoAuthService {
 
 	public List<AuthFullInfoObject> getFullInfo(String companyId, String roleId) {
 		List<PersonInfoAuthDescription> descriptionList = personInfoAuthDesc.getListDesc();
-		Map<Integer, PersonInfoAuthority> authorityList = personInfoAuth.getListOfRole(companyId, roleId).stream()
-				.collect(Collectors.toMap(x -> x.getFunctionNo(), x -> x));
+		Map<Integer, PersonInfoAuthority> authorityList = personInfoAuth.getListOfRole(companyId, roleId);
 		return descriptionList.stream().map(desc -> {
 			PersonInfoAuthority auth = authorityList.get(desc.getFunctionNo());
 			if (auth != null) {

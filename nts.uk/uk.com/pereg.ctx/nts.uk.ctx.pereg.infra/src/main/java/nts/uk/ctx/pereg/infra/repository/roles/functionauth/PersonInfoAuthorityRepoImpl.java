@@ -1,7 +1,7 @@
 package nts.uk.ctx.pereg.infra.repository.roles.functionauth;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.ejb.Stateless;
 
@@ -12,19 +12,25 @@ import nts.uk.ctx.pereg.dom.roles.functionauth.authsetting.PersonInfoAuthorityRe
 public class PersonInfoAuthorityRepoImpl implements PersonInfoAuthorityRepository{
 
 	@Override
-	public List<PersonInfoAuthority> getListOfRole(String companyId, String roleId) {
-		List<PersonInfoAuthority> authList = new ArrayList<>();
-		authList.add(PersonInfoAuthority.createFromJavaType(companyId, roleId, 1, true));
-		authList.add(PersonInfoAuthority.createFromJavaType(companyId, roleId, 2, true));
-		authList.add(PersonInfoAuthority.createFromJavaType(companyId, roleId, 3, true));
-		authList.add(PersonInfoAuthority.createFromJavaType(companyId, roleId, 4, true));
-		authList.add(PersonInfoAuthority.createFromJavaType(companyId, roleId, 5, true));
-		authList.add(PersonInfoAuthority.createFromJavaType(companyId, roleId, 6, true));
-		authList.add(PersonInfoAuthority.createFromJavaType(companyId, roleId, 7, true));
-		authList.add(PersonInfoAuthority.createFromJavaType(companyId, roleId, 8, true));
-		authList.add(PersonInfoAuthority.createFromJavaType(companyId, roleId, 9, true));
-		authList.add(PersonInfoAuthority.createFromJavaType(companyId, roleId, 10, true));
+	public Map<Integer, PersonInfoAuthority> getListOfRole(String companyId, String roleId) {
+		Map<Integer, PersonInfoAuthority> authList = new HashMap<>();
+		authList.put(1, PersonInfoAuthority.createFromJavaType(companyId, roleId, 1, true));
+		authList.put(2, PersonInfoAuthority.createFromJavaType(companyId, roleId, 2, true));
+		authList.put(3, PersonInfoAuthority.createFromJavaType(companyId, roleId, 3, true));
+		authList.put(4, PersonInfoAuthority.createFromJavaType(companyId, roleId, 4, true));
 		return authList;
+	}
+
+	@Override
+	public void add(PersonInfoAuthority auth) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(PersonInfoAuthority auth) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
