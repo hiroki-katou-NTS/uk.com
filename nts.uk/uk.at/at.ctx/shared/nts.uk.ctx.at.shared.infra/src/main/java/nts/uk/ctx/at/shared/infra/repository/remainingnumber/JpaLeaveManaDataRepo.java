@@ -167,20 +167,14 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	}
 	
 	@Override
-	public void updateSubByLeaveId(List<String> leaveIds, Boolean check) {
+	public void updateSubByLeaveId(List<String> leaveIds) {
 		List<KrcmtLeaveManaData> listListMana = this.queryProxy()
 				.query(QUERY_BYID, KrcmtLeaveManaData.class)
 				.setParameter("leaveIDs", leaveIds).getList();
-		if(check) {
 			for(KrcmtLeaveManaData busItem: listListMana){
 				busItem.subHDAtr =  DigestionAtr.UNUSED.value;
 				busItem.unUsedDays = busItem.occurredDays;
 			}
-		} else {
-			for(KrcmtLeaveManaData busItem: listListMana){
-				busItem.unUsedDays = 0.5;
-			}
-		}
 		this.commandProxy().updateAll(listListMana);
 	}
 	

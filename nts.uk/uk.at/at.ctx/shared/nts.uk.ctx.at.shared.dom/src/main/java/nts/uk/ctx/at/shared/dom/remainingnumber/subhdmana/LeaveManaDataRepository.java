@@ -31,7 +31,7 @@ public interface LeaveManaDataRepository {
 	
 	public void updateUnUseDayLeaveId(String leaveId, Double unUsedDay);
 	
-	void updateSubByLeaveId(List<String> leaveIds, Boolean check);
+	void updateSubByLeaveId(List<String> leaveIds);
 	/**
 	 * Get domain 休出管理データ by ID
 	 * 
