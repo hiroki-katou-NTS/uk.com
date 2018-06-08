@@ -56,7 +56,7 @@ public class CheckBeforePasswordPublisherImpl implements CheckBeforePasswordPubl
 			messages.add( new PasswordMessageObject("Msg_961"));
 		}
 		User user = this.userRepo.getByUserID(userId).get();
-		if (user.getLoginID().v().equals(newPass)) {
+		if (user.getLoginID().v().trim().equals(newPass)) {
 			messages.add(new PasswordMessageObject("Msg_989"));
 		}
 		String currentPassHash = PasswordHash.generate(currentPass, userId);
