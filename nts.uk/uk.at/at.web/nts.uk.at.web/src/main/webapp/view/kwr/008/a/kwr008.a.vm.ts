@@ -65,7 +65,7 @@ module nts.uk.at.view.kwr008.a {
             selectedOutputItem: KnockoutObservable<string> = ko.observable(null);
 
             //A6 
-            breakPage: KnockoutObservableArray<share.EnumConstantDto> = ko.observableArray([]);
+            breakPage: KnockoutObservableArray<share.ItemModel> = ko.observableArray([]);
             selectedBreakPage: KnockoutObservable<number> = ko.observable(null);
             
             //年間勤務表印刷形式
@@ -319,7 +319,9 @@ module nts.uk.at.view.kwr008.a {
                 });
 
                 var getPageBreakSelection = service.getPageBreakSelection().done((enumRes)=>{
-                    self.breakPage(enumRes);
+                    for(let i of enumRes){
+                        self.breakPage.push({code : i.value+'', name : i.localizedName});
+                    }
                 }).fail((enumError)=>{
                     console.log(`fail : ${enumError}`);
                 });
