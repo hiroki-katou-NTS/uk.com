@@ -64,15 +64,19 @@ module cps001.e.vm {
                 unblock();
             });
 
-            permision().done((data: IPersonAuth) => {
+            permision().done((data: Array<IPersonAuth>) => {
                 if (data) {
-                    if (data.allowMapUpload != 1) {
-                        self.enaBtnSave(false);
-                        $(".upload-btn").attr('disabled', 'disabled');
-                        $('.upload-btn').focus();
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].functionNo == FunctionNo.No4) {
+                            if (data[i].available == false) {
+                                self.enaBtnSave(false);
+                                $(".upload-btn").attr('disabled', 'disabled');
+                                $('.upload-btn').focus();
+                            }
+                        }
                     }
                 }
-            });
+            });            
 
             $('.upload-btn').focus();
 
@@ -160,13 +164,11 @@ module cps001.e.vm {
     }
 
     interface IPersonAuth {
-        roleId: string;
-        allowMapUpload: number;
-        allowMapBrowse: number;
-        allowDocRef: number;
-        allowDocUpload: number;
-        allowAvatarUpload: number;
-        allowAvatarRef: number;
+        functionNo: number;
+        functionName: string;
+        available: boolean;
+        description: string;
+        orderNumber: number;
     }
 
 
@@ -175,5 +177,30 @@ module cps001.e.vm {
         fileId?: string;
         fileType?: number;
         isAvatar: boolean;
+    }
+    
+    enum FunctionNo {
+        // có thể delete employee ở đăng ký thông tin cá nhân
+        No1 = 1,
+        // có thể upload ảnh chân dung employee ở đăng ký thông tin cá nhân
+        No2 = 2,
+        // có thể xem ảnh chân dung employee ở đăng ký thông tin cá nhân
+        No3 = 3,
+        // có thể upload file bản đồ ở đăng ký thông tin cá nhân
+        No4 = 4,
+        // có thể xem file bản đồ ở đăng ký thông tin cá nhân
+        No5 = 5,
+        // có thể upload file điện tử employee ở đăng ký thông tin cá nhân
+        No6 = 6,
+        // có thể xem file điện tử employee ở đăng ký thông tin cá nhân
+        No7 = 7,
+        // có thể in biểu mẫu của employee ở đăng ký thông tin cá nhân
+        No8 = 8,
+        // có thể setting copy target item khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
+        No9 = 9,
+        // có thể setting giá trị ban đầu nhập vào khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
+        No10 = 10,
+        // Lọc chọn lựa phòng ban trực thuộc/workplace trực tiếp theo bộ phận liên kết cấp dưới tại đăng ký thông tin cá nhân
+        No11 = 11
     }
 }
