@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
+import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.metamodel.EntityType;
 
@@ -82,7 +83,6 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 
 		return listTable.stream().map(item -> item.toDomain()).collect(Collectors.toList());
 	}
-	
 
 	@Override
 	public List<TableList> getByProcessingId(String storeProcessingId) {
@@ -181,7 +181,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 				break;
 			}
 		}
-		Map<String, Object> params = new HashMap<>();
+		List<Object> params = new ArrayList<>();
 		if (companyCdIndexs.size() > 0) {
 			query.append(" AND ( ");
 			boolean isFirstOrStatement = true;
@@ -193,7 +193,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 				query.append(" t.");
 				query.append(this.getFieldForColumnName(tableExport, fieldKeyQuerys[index]));
 				query.append(" = :companyId ");
-				params.put("companyId", AppContexts.user().companyId());
+				params.add(AppContexts.user().companyId());
 			}
 			query.append(" ) ");
 		}
@@ -224,18 +224,34 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 				query.append(" (t.");
 				query.append(this.getFieldForColumnName(tableExport, fieldKeyQuerys[index]));
 				query.append(" >= :startDate ");
-				params.put("startDate", tableList.getSaveDateFrom());
 				query.append(" AND ");
 				query.append(" t.");
 				query.append(this.getFieldForColumnName(tableExport, fieldKeyQuerys[index]));
 				query.append(" <= :endDate) ");
-				params.put("endDate", tableList.getSaveDateTo());
+
+				switch (tableList.getRetentionPeriodCls()) {
+				case ANNUAL:
+					params.add(tableList.getSaveDateFrom().year());
+					params.add(tableList.getSaveDateTo().year());
+					break;
+				case MONTHLY:
+					params.add(tableList.getSaveDateFrom().yearMonth().v());
+					params.add(tableList.getSaveDateTo().yearMonth().v());
+					break;
+				case DAILY:
+					params.add(tableList.getSaveDateFrom());
+					params.add(tableList.getSaveDateTo());
+					break;
+
+				default:
+					break;
+				}
 			}
 			query.append(" ) ");
 		}
 
 		// 抽出条件キー固定
-		String extractCondKeyFix = tableList.getDefaultCondKeyQuery();
+		String extractCondKeyFix = tableList.getDefaultCondKeyQuery() == null ? "" : tableList.getDefaultCondKeyQuery();
 		if (!Strings.isNullOrEmpty(extractCondKeyFix)) {
 			String[] extractCondArray = extractCondKeyFix.split(" ");
 			for (int i = 0; i < extractCondArray.length; i++) {
@@ -245,17 +261,34 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 				}
 			}
 
-			//query.append(String.join(" ", extractCondArray));
+			// query.append(String.join(" ", extractCondArray));
 		}
 
 		TypedQueryWrapper<?> queryWrapper = this.queryProxy().query(query.toString(), tableExport);
-		for (Entry<String, Object> entry : params.entrySet()) {
-			queryWrapper = queryWrapper.setParameter(entry.getKey(), entry.getValue());
+		// for (Entry<String, Object> entry : params.entrySet()) {
+		// queryWrapper = queryWrapper.setParameter(entry.getKey(),
+		// entry.getValue());
+		// }
+		//
+		DatabaseQuery databaseQuery = queryWrapper.getQuery().unwrap(EJBQueryImpl.class).getDatabaseQuery();
+		StringBuffer sql = new StringBuffer(databaseQuery.getSQLString() + " " + extractCondKeyFix);
+		int paramIndex = 1;
+		char[] chs = sql.toString().toCharArray();
+		for (int i = 0; i < chs.length; i++) {
+			if (chs[i] == '?') {
+				sql.insert(i + paramIndex, paramIndex);
+				paramIndex++;
+			}
 		}
-		DatabaseQuery databaseQuery  = queryWrapper.getQuery().unwrap(EJBQueryImpl.class).getDatabaseQuery();
-		databaseQuery.setSQLString(databaseQuery.getSQLString() + " " + extractCondKeyFix);
 
-		return queryWrapper.getList();
+		Query queryString = getEntityManager().createNativeQuery(sql.toString());
+		queryString.setParameter(1, 1);
+		queryString.setParameter(2, 1);
+		for (int i = 0; i < params.size(); i++) {
+			queryString.setParameter(3 + i, params.get(i));
+		}
+
+		return queryString.getResultList();
 	}
 
 	private String getOnStatement(Class<?> parentTable, String parentColumn, Class<?> childTable, String childColumn) {
