@@ -8,7 +8,7 @@ module cps001.f.service {
         'updateCtgdata': 'basic/organization/empfilemanagement/updatectgdocfile',
         'updatedata': 'basic/organization/empfilemanagement/updatedata',
         'deletedata': 'basic/organization/empfilemanagement/deletedata/{0}',
-        'permision': 'ctx/pereg/roles/auth/get-self-auth'
+        'permision': 'ctx/pereg/functions/auth/find-all/{0}'
     };
 
     export function getData(employeeId: any) {
@@ -32,6 +32,7 @@ module cps001.f.service {
     }
 
     export function getCurrentEmpPermision() {
-        return ajax(paths.permision);
+        let roleId = null;
+        return ajax(paths.permision, roleId);
     }
 }

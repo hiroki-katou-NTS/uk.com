@@ -15,10 +15,16 @@ module cps001.f {
                 });
             });
 
-            service.getCurrentEmpPermision().done((data: IPersonAuth) => {
-                if (data && data.allowDocUpload != 1) {
-                    $(".browser-button").attr('disabled', 'disabled');
-                    $(".delete-button").attr('disabled', 'disabled');
+            service.getCurrentEmpPermision().done((data: Array<IPersonAuth>) => {
+                if (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].functionNo == FunctionNo.No6) {
+                            if (data[i].available == false) {
+                                $(".browser-button").attr('disabled', 'disabled');
+                                $(".delete-button").attr('disabled', 'disabled');
+                            }
+                        }
+                    }
                 }
             });
 
@@ -81,12 +87,35 @@ function ButtonClick() {
 }
 
 interface IPersonAuth {
-    roleId: string;
-    allowMapUpload: number;
-    allowMapBrowse: number;
-    allowDocRef: number;
-    allowDocUpload: number;
-    allowAvatarUpload: number;
-    allowAvatarRef: number;
+    functionNo: number;
+    functionName: string;
+    available: boolean;
+    description: string;
+    orderNumber: number;
+}
+
+enum FunctionNo {
+    // có thể delete employee ở đăng ký thông tin cá nhân
+    No1 = 1,
+    // có thể upload ảnh chân dung employee ở đăng ký thông tin cá nhân
+    No2 = 2,
+    // có thể xem ảnh chân dung employee ở đăng ký thông tin cá nhân
+    No3 = 3,
+    // có thể upload file bản đồ ở đăng ký thông tin cá nhân
+    No4 = 4,
+    // có thể xem file bản đồ ở đăng ký thông tin cá nhân
+    No5 = 5,
+    // có thể upload file điện tử employee ở đăng ký thông tin cá nhân
+    No6 = 6,
+    // có thể xem file điện tử employee ở đăng ký thông tin cá nhân
+    No7 = 7,
+    // có thể in biểu mẫu của employee ở đăng ký thông tin cá nhân
+    No8 = 8,
+    // có thể setting copy target item khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
+    No9 = 9,
+    // có thể setting giá trị ban đầu nhập vào khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
+    No10 = 10,
+    // Lọc chọn lựa phòng ban trực thuộc/workplace trực tiếp theo bộ phận liên kết cấp dưới tại đăng ký thông tin cá nhân
+    No11 = 11
 }
 
