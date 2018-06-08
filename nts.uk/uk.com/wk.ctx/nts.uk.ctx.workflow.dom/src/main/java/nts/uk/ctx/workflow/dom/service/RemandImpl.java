@@ -76,4 +76,16 @@ public class RemandImpl implements RemandService {
 		releaseAllAtOnceService.doReleaseAllAtOnce(companyID, rootStateID, rootType);
 	}
 
+	@Override
+	public Integer getCurrentApprovePhase(String rootStateID, Integer rootType) {
+		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, rootType);
+		if(!opApprovalRootState.isPresent()){
+			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
+		}
+		ApprovalRootState approvalRootState = opApprovalRootState.get();
+		List<ApprovalPhaseState> listApprovalPhase = approvalRootState.getListApprovalPhaseState();
+		listApprovalPhase.sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder));
+		return listApprovalPhase.stream().filter(x -> x.getApprovalAtr()==ApprovalBehaviorAtr.UNAPPROVED).findFirst().get().getPhaseOrder();
+	}
+
 }
