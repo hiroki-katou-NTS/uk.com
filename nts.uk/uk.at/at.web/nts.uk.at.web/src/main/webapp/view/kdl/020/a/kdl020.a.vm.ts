@@ -131,7 +131,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
                 return '';
             }
 
-            return self.genDateText(remainDays) + "&nbsp;" + self.genTime( remainMinutes);
+            return self.genDateText(remainDays) + "&nbsp;" + self.genTime(remainMinutes);
         }
 
         genDaysUsedNo(daysUsedNo, usedMinutes) {
@@ -140,7 +140,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
                 return '';
             }
 
-            return self.genDateText(daysUsedNo) + "&nbsp;" + self.genTime( usedMinutes);
+            return self.genDateText(daysUsedNo) + "&nbsp;" + self.genTime(usedMinutes);
         }
         genUsedNo(daysUsedNo, usedMinutes) {
             let self = this;
@@ -153,9 +153,9 @@ module nts.uk.at.view.kdl020.a.screenModel {
 
             return '';
         }
-        genTime(data){
-            if(data == null){
-            return '';    
+        genTime(data) {
+            if (data == null) {
+                return '';
             }
             return formatById("Clock_Short_HM", data);
         }
@@ -188,7 +188,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
                 return '';
 
             }
-            return nextHolidayGrantDate +  text('KDL020_29');
+            return nextHolidayGrantDate + text('KDL020_29');
         }
         changeData(data: IAnnualHoliday) {
             let self = this;
@@ -205,12 +205,25 @@ module nts.uk.at.view.kdl020.a.screenModel {
                 totalDays = 0,
                 totalTimes = 0;
             _.forEach(grants, function(item) {
-                totalDays += item.remainDays;
-                totalTimes += item.remainMinutes;
+                totalDays += item.remainDays();
+                totalTimes += item.remainMinutes();
             });
 
-            self.total (self.genDateText(totalDays) + "&nbsp;" + self.genTime(totalTimes));
+            self.total(self.genDateText(totalDays) + "&nbsp;" + self.genTime(totalTimes));
 
+        }
+        addUseRecordData() {
+            let self = this,
+                randomNumber = Math.floor((Math.random() * 10) + 1),
+                randomNumber2 = Math.floor((Math.random() * 3)),
+                data = {
+                    ymd: '2018/06/07',
+                    daysUsedNo: randomNumber % 3 == 0 ? randomNumber : undefined,
+                    usedMinutes: randomNumber,
+                    scheduleRecordAtr: randomNumber2
+                };
+
+            self.reNumAnnLeave().annualLeaveManageInfors.push(new AnnualLeaveManageInfor(data));
         }
 
         close() {
@@ -244,12 +257,12 @@ module nts.uk.at.view.kdl020.a.screenModel {
 
     }
 
-    export class ReNumAnnLeaReferenceDate{
+    export class ReNumAnnLeaReferenceDate {
 
         /** 年休残数(仮)*/
         annualLeaveRemainNumber: KnockoutObservable<AnnualLeaveRemainingNumber> = ko.observable(new AnnualLeaveRemainingNumber());
 
-         /** 年休付与情報(仮)*/
+        /** 年休付与情報(仮)*/
         annualLeaveGrants: KnockoutObservableArray<AnnualLeaveGrant> = ko.observableArray([]);
 
         /** 年休管理情報(仮)*/
@@ -335,7 +348,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
         }
     }
     export class AnnualLeaveManageInfor {
-        ymd: KnockoutObservable<Date> = ko.observable(moment().toDate());
+        ymd: KnockoutObservable<String> = ko.observable("");
         daysUsedNo: KnockoutObservable<number> = ko.observable(null);
         usedMinutes: KnockoutObservable<number> = ko.observable(null);
         scheduleRecordAtr: KnockoutObservable<number> = ko.observable(null);
@@ -369,7 +382,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
         predeterminedDays: KnockoutObservable<number> = ko.observable(null);
         /** 年間所定日数 */
         annualPerYearDays: KnockoutObservable<number> = ko.observable(null);
-    
+
         constructor(data?) {
             if (data) {
                 this.nextHolidayGrantDate(data.nextHolidayGrantDate);
