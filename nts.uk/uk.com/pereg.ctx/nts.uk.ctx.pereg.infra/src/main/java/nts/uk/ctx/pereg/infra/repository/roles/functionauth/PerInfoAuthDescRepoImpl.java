@@ -24,6 +24,7 @@ public class PerInfoAuthDescRepoImpl implements PerInfoAuthDescRepository{
 		result.add(PersonInfoAuthDescription.createFromJavaType(8, "No8", "Description of No8", 8, false));
 		result.add(PersonInfoAuthDescription.createFromJavaType(9, "No0", "Description of No9", 9, false));
 		result.add(PersonInfoAuthDescription.createFromJavaType(10, "No10", "Description of No10", 10, false));
+		result.add(PersonInfoAuthDescription.createFromJavaType(11, "No11", "Description of No11", 11, false));
 		return result;
 	}
 	
