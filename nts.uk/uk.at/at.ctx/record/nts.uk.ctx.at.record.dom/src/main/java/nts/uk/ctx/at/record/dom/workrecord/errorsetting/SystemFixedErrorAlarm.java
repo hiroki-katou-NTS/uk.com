@@ -94,7 +94,7 @@ public enum SystemFixedErrorAlarm {
 	DIVERGENCE_ERROR_2("D003"),
 	
 	//乖離時間2アラーム
-	DIVERGENCE_ALARM_2("D002"),
+	DIVERGENCE_ALARM_2("D004"),
 	
 	//乖離時間3エラー
 	DIVERGENCE_ERROR_3("D005"),

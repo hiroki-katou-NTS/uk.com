@@ -49,8 +49,13 @@ public class RemarksOfDailyFinder extends FinderFacade {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends ConvertibleAttendanceItem> List<T> find(Map<String, GeneralDate> param) {
+	public <T extends ConvertibleAttendanceItem> List<T> find(Map<String, List<GeneralDate>> param) {
 		return (List<T>) this.repo.getRemarks(param).stream()
 			.map(c -> RemarksOfDailyDto.getDto(c)).collect(Collectors.toList());
+	}
+
+	@Override
+	public Object getDomain(String employeeId, GeneralDate baseDate) {
+		return repo.getRemarks(employeeId, baseDate);
 	}
 }

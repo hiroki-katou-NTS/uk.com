@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -11,7 +12,12 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author shuichu_ishida
  */
 public interface TempAnnualLeaveMngRepository {
-
+	
+	/**
+	 * @param employeeID
+	 * @return List<TempAnnualLeaveManagement>
+	 */
+	List<TempAnnualLeaveManagement> findByEmployeeID(String employeeID);
 	/**
 	 * 検索
 	 * @param employeeId 社員ID
@@ -54,4 +60,12 @@ public interface TempAnnualLeaveMngRepository {
 	 * @param criteriaDate 基準日
 	 */
 	void removePastYmd(String employeeId, GeneralDate criteriaDate);
+	/**
+	 * ドメインモデル「暫定年休管理データ」を取得する
+	 * @param employeeId
+	 * @param workTypeCode
+	 * @param period 指定期間の開始日<=年月日<=INPUT．指定期間の終了日
+	 * @return
+	 */
+	List<TempAnnualLeaveManagement> findBySidWorkTypePeriod(String employeeId, String workTypeCode, Period period);
 }

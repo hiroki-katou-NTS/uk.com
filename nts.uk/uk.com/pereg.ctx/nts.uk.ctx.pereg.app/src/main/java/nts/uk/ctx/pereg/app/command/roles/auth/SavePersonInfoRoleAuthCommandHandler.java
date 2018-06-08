@@ -1,15 +1,22 @@
 package nts.uk.ctx.pereg.app.command.roles.auth;
 
 import java.util.List;
+import java.util.Locale.Category;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.EnumType;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pereg.app.command.roles.auth.category.SavePersonInfoCategoryAuthCommand;
 import nts.uk.ctx.pereg.app.command.roles.auth.item.PersonInfoItemAuthCommand;
+import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
+import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
+import nts.uk.ctx.pereg.dom.roles.auth.PersonInfoPermissionType;
 import nts.uk.ctx.pereg.dom.roles.auth.PersonInfoRoleAuth;
 import nts.uk.ctx.pereg.dom.roles.auth.PersonInfoRoleAuthRepository;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuth;
@@ -80,29 +87,28 @@ public class SavePersonInfoRoleAuthCommandHandler extends CommandHandler<SavePer
 
 		Optional<PersonInfoCategoryAuth> ctgAuthOpt = this.pCategoryAuthRepo.getDetailPersonCategoryAuthByPId(roleId,
 				ctgId);
-
 		if (ctgAuthOpt.isPresent()) {
 			PersonInfoCategoryAuth oldCtgAuth = ctgAuthOpt.get();
-			oldCtgAuth.updateFromJavaType(ctgCmd.getAllowPersonRef(), ctgCmd.getAllowOtherRef(),
-					ctgCmd.getAllowOtherCompanyRef(), ctgCmd.getSelfPastHisAuth(), ctgCmd.getSelfFutureHisAuth(),
-					ctgCmd.getSelfAllowAddHis(), ctgCmd.getSelfAllowDelHis(), ctgCmd.getOtherPastHisAuth(),
-					ctgCmd.getOtherFutureHisAuth(), ctgCmd.getOtherAllowAddHis(), ctgCmd.getOtherAllowDelHis(),
-					ctgCmd.getSelfAllowAddMulti(), ctgCmd.getSelfAllowDelMulti(), ctgCmd.getOtherAllowAddMulti(),
-					ctgCmd.getOtherAllowDelMulti());
+			oldCtgAuth.updateFromJavaType(ctgCmd.getCategoryType(), ctgCmd.getAllowPersonRef(),
+					ctgCmd.getAllowOtherRef(), ctgCmd.getAllowOtherCompanyRef(), ctgCmd.getSelfPastHisAuth(),
+					ctgCmd.getSelfFutureHisAuth(), ctgCmd.getSelfAllowAddHis(), ctgCmd.getSelfAllowDelHis(),
+					ctgCmd.getOtherPastHisAuth(), ctgCmd.getOtherFutureHisAuth(), ctgCmd.getOtherAllowAddHis(),
+					ctgCmd.getOtherAllowDelHis(), ctgCmd.getSelfAllowAddMulti(), ctgCmd.getSelfAllowDelMulti(),
+					ctgCmd.getOtherAllowAddMulti(), ctgCmd.getOtherAllowDelMulti());
 
 			this.pCategoryAuthRepo.update(oldCtgAuth);
 
 		} else {
-
-			PersonInfoCategoryAuth newCtgAuth = PersonInfoCategoryAuth.createFromJavaType(roleId,
+			PersonInfoCategoryAuth ctg = PersonInfoCategoryAuth.createFromJavaType(ctgCmd.getCategoryType(), roleId,
 					ctgCmd.getCategoryId(), ctgCmd.getAllowPersonRef(), ctgCmd.getAllowOtherRef(),
 					ctgCmd.getAllowOtherCompanyRef(), ctgCmd.getSelfPastHisAuth(), ctgCmd.getSelfFutureHisAuth(),
 					ctgCmd.getSelfAllowAddHis(), ctgCmd.getSelfAllowDelHis(), ctgCmd.getOtherPastHisAuth(),
 					ctgCmd.getOtherFutureHisAuth(), ctgCmd.getOtherAllowAddHis(), ctgCmd.getOtherAllowDelHis(),
 					ctgCmd.getSelfAllowAddMulti(), ctgCmd.getSelfAllowDelMulti(), ctgCmd.getOtherAllowAddMulti(),
 					ctgCmd.getOtherAllowDelMulti());
-
-			this.pCategoryAuthRepo.add(newCtgAuth);
+			if (ctg != null) {
+				this.pCategoryAuthRepo.add(ctg);
+			}
 
 		}
 	}

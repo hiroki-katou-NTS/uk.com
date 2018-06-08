@@ -489,9 +489,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					} else {
 						if (businessTypeOfEmployee.get().getBusinessTypeCode()
 								.equals(workTypeOfDailyPerformance.get().getWorkTypeCode())) {
-							exitStatus = ExitStatus.RECREATE;
 							return exitStatus;
 						} else {
+							exitStatus = ExitStatus.RECREATE;
 							return exitStatus;
 						}
 					}
@@ -1431,11 +1431,13 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				if (timeLeavingOptional.getTimeLeavingWorks() != null) {
 					leavingStamp = timeLeavingOptional.getTimeLeavingWorks().stream()
 							.filter(itemx -> itemx.getWorkNo().v().equals(timeLeavingWork.getWorkNo().v())).findFirst()
-							.orElse(null);
+							.orElse(new TimeLeavingWork(timeLeavingWork.getWorkNo(), new TimeActualStamp(), new TimeActualStamp()));
+				} else {
+					leavingStamp = new TimeLeavingWork(timeLeavingWork.getWorkNo(), new TimeActualStamp(), new TimeActualStamp());
 				}
 
-				TimeActualStamp attendanceStamp = new TimeActualStamp();
-				TimeActualStamp leaveStamp = new TimeActualStamp();
+				TimeActualStamp attendanceStamp = leavingStamp.getAttendanceStamp().get();
+				TimeActualStamp leaveStamp = leavingStamp.getLeaveStamp().get();
 
 				// 出勤反映 = true
 				// 出勤に自動打刻セットする
@@ -1473,7 +1475,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 									timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp());
 
 						}
-					}
+					} 
 				}
 
 				// set leave
@@ -1509,7 +1511,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 						}
 					}
-
 				}
 
 				leavingStamp = new TimeLeavingWork(timeLeavingWork.getWorkNo(), attendanceStamp,

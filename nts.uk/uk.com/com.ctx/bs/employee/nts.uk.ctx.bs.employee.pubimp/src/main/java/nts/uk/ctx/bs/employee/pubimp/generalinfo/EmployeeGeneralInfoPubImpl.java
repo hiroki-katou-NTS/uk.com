@@ -94,7 +94,8 @@ public class EmployeeGeneralInfoPubImpl implements EmployeeGeneralInfoPub {
 			List<ExEmploymentHistItemDto> employmentItems = eh.getHistoryItems().stream().map(ehItem -> {
 				String historyId = ehItem.identifier();
 				String employmentCode = ehItemList.get(historyId).getEmploymentCode().v();
-				return new ExEmploymentHistItemDto(historyId, period, employmentCode);
+				return new ExEmploymentHistItemDto(historyId, new DatePeriod(ehItem.start(), ehItem.end()),
+						employmentCode);
 			}).collect(Collectors.toList());
 			resultList.add(new ExEmploymentHistoryDto(eh.getEmployeeId(), employmentItems));
 		}
@@ -114,7 +115,8 @@ public class EmployeeGeneralInfoPubImpl implements EmployeeGeneralInfoPub {
 			List<ExClassificationHistItemDto> classificationItems = ch.getPeriods().stream().map(chItem -> {
 				String historyId = chItem.identifier();
 				String classificationCode = chItemList.get(historyId).getClassificationCode().v();
-				return new ExClassificationHistItemDto(historyId, period, classificationCode);
+				return new ExClassificationHistItemDto(historyId, new DatePeriod(chItem.start(), chItem.end()),
+						classificationCode);
 			}).collect(Collectors.toList());
 			resultList.add(new ExClassificationHistoryDto(ch.getEmployeeId(), classificationItems));
 		}
@@ -135,7 +137,7 @@ public class EmployeeGeneralInfoPubImpl implements EmployeeGeneralInfoPub {
 			List<ExJobTitleHistItemDto> jobTitleItems = jh.getHistoryItems().stream().map(jhItem -> {
 				String historyId = jhItem.identifier();
 				String jobTitleId = jtItemList.get(historyId).getJobTitleId();
-				return new ExJobTitleHistItemDto(historyId, period, jobTitleId);
+				return new ExJobTitleHistItemDto(historyId, new DatePeriod(jhItem.start(), jhItem.end()), jobTitleId);
 			}).collect(Collectors.toList());
 			resultList.add(new ExJobTitleHistoryDto(jh.getEmployeeId(), jobTitleItems));
 		}

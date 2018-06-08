@@ -19,12 +19,12 @@ import nts.uk.ctx.at.shared.infra.entity.specialholiday.yearserviceset.KshstYear
 
 @Stateless
 public class JpaSetItemRepository extends JpaRepository implements YearServiceComRepository{
-	private final String SELECT_NO_WHERE = "SELECT c FROM KshstYearServiceSet c ";
-	private final String SELECT_ITEM = SELECT_NO_WHERE + "WHERE c.kshstYearServiceSetPK.companyId = :companyId ";
-	private final String SELECT_YEAR = SELECT_ITEM + " AND c.year = :year";
-	private final String SELECT_ITEM_SPHC = SELECT_ITEM + " AND c.kshstYearServiceSetPK.specialHolidayCode = :specialHolidayCode";
-	private final String SELECT_NO_WHERE_COM = "SELECT c FROM KshstYearServiceCom c ";
-	private final String SELECT_ITEM_COM = SELECT_NO_WHERE_COM + "WHERE c.kshstYearServiceComPK.companyId = :companyId AND c.kshstYearServiceComPK.specialHolidayCode = :specialHolidayCode";
+	private static final String SELECT_NO_WHERE = "SELECT c FROM KshstYearServiceSet c ";
+	private static final String SELECT_ITEM = SELECT_NO_WHERE + "WHERE c.kshstYearServiceSetPK.companyId = :companyId ";
+	private static final String SELECT_YEAR = SELECT_ITEM + " AND c.year = :year";
+	private static final String SELECT_ITEM_SPHC = SELECT_ITEM + " AND c.kshstYearServiceSetPK.specialHolidayCode = :specialHolidayCode";
+	private static final String SELECT_NO_WHERE_COM = "SELECT c FROM KshstYearServiceCom c ";
+	private static final String SELECT_ITEM_COM = SELECT_NO_WHERE_COM + "WHERE c.kshstYearServiceComPK.companyId = :companyId AND c.kshstYearServiceComPK.specialHolidayCode = :specialHolidayCode";
 	/**
 	 * change entity to domain
 	 * @param entity

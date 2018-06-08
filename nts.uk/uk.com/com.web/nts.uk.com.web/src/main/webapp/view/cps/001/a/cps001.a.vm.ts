@@ -209,9 +209,28 @@ module cps001.a.vm {
                     info({ messageId: "Msg_15" }).then(function() {
                         self.reload();
                     });
-                }).fail((mes) => {
+                }).fail((mes : any) => {
                     self.unblock();
-                    alert(mes.message);
+                    if (mes.messageId == "Msg_346") {
+                        let lstCardNumber = _.map($('[data-code = IS00779]'), e => e.value);
+                        let listIndex = new Array();
+                        for (let i = 0; i < lstCardNumber.length; i++) {
+
+                            let duplicate = _.filter(listIndex, function(o) { return o == i; });
+
+                            if (duplicate.length == 0) {
+                                for (let j = i + 1; j < lstCardNumber.length - 1; j++) {
+                                    if (lstCardNumber[i] == lstCardNumber[j]) {
+                                        listIndex.push(j);
+                                        $($('[data-code = IS00779]')[j]).ntsError('set', { messageId: "Msg_346" });
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        alert(mes.message);
+                    }
+
                 });
             }, 50);
         }

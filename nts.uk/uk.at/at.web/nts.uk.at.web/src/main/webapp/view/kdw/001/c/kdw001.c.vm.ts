@@ -250,7 +250,7 @@ module nts.uk.at.view.kdw001.c {
                     inService: true, // 在職区分
                     leaveOfAbsence: true, // 休職区分
                     closed: true, // 休業区分
-                    retirement: true, // 退職区分
+                    retirement: false, // 退職区分
 
                     /** Quick search tab options */
                     showAllReferableEmployee: true, // 参照可能な社員すべて

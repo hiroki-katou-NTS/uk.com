@@ -10,6 +10,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.OverallErrorDetail;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
@@ -69,6 +70,8 @@ public class ProcessExecutionLogDto {
 	/* 次回実行日時 */
 	private String nextExecDateTime;
 	
+	private String taskLogExecId;
+	
     private List<ProcessExecutionTaskLogDto> taskLogList;
 	
 	public ProcessExecutionLogDto() {
@@ -79,7 +82,7 @@ public class ProcessExecutionLogDto {
 			String currentStatus, Integer overallStatusCd, String overallStatus, String overallError,
 			String lastExecDateTime, GeneralDate schCreateStart, GeneralDate schCreateEnd, GeneralDate dailyCreateStart,
 			GeneralDate dailyCreateEnd, GeneralDate dailyCalcStart, GeneralDate dailyCalcEnd, String execId,
-			List<ProcessExecutionTaskLogDto> taskLogList) {
+			List<ProcessExecutionTaskLogDto> taskLogList,String taskLogExecId) {
 		super();
 		this.execItemCd = execItemCd;
 		this.companyId = companyId;
@@ -97,6 +100,7 @@ public class ProcessExecutionLogDto {
 		this.dailyCalcEnd = dailyCalcEnd;
 		this.execId = execId;
 		this.taskLogList = taskLogList;
+		this.taskLogExecId = taskLogExecId;
 	}
 	
 	public static ProcessExecutionLogDto fromDomain(ProcessExecutionLog procExecLog, ProcessExecutionLogManage procExecLogMan ) {
@@ -107,6 +111,11 @@ public class ProcessExecutionLogDto {
 				return dto1.getTaskId() - dto2.getTaskId();
 			}
 		});
+		String taskLogExecId = "";
+		if(!procExecLog.getTaskLogList().isEmpty()){
+			taskLogExecId = procExecLog.getTaskLogList().get(0).getExecId();
+		}
+		
 		GeneralDate schCreateStart = null;
 		GeneralDate schCreateEnd = null;
 		if (procExecLog.getEachProcPeriod() != null && procExecLog.getEachProcPeriod().isPresent()
@@ -155,6 +164,6 @@ public class ProcessExecutionLogDto {
 				dailyCalcStart,
 				dailyCalcEnd,
 				procExecLog.getExecId(), 
-				taskLogList);
+				taskLogList,taskLogExecId);
 	}
 }

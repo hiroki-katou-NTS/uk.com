@@ -26,6 +26,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveOfThisMonthImported;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveRemainingAdapter;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveUsageStatusOfThisMonthImported;
+import nts.uk.ctx.at.function.dom.holidaysremaining.BreakSelection;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidayRemainingDataSource;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingEmployee;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingReportGenerator;
@@ -58,12 +59,12 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			Worksheet worksheet = worksheets.get(0);
 
 			printTemplate(worksheet);
-
-			if (dataSource.getPageBreak() == 0) {
+			
+			if (dataSource.getPageBreak() == BreakSelection.None.value) {
 				printNoneBreakPage(worksheet);
-			} else if (dataSource.getPageBreak() == 1) {
+			} else if (dataSource.getPageBreak() == BreakSelection.Workplace.value) {
 				printWorkplaceBreakPage(worksheet);
-			} else if (dataSource.getPageBreak() == 2) {
+			} else if (dataSource.getPageBreak() == BreakSelection.Individual.value) {
 				printPersonBreakPage(worksheet);
 			}
 
