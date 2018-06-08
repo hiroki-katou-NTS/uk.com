@@ -131,11 +131,11 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                 return "";
             }
             //休出.代休日数
-            let value1 = !remainObject.checkBox1 ? 0 : remainObject.value1;
+            let value1 = !remainObject.checkBox1 || !remainObject.value1? 0 : remainObject.value1;
             //代休.代休日数
-            let value2 = !remainObject.checkBox2 ? 0 : remainObject.value2;
+            let value2 = !remainObject.checkBox2 || !remainObject.value2 ? 0 : remainObject.value2;
             //分割消化.代休日数
-            let value3 = !remainObject.checkBox2 || !remainObject.checkBox3 ? 0 : remainObject.value3;
+            let value3 = !remainObject.checkBox2 || !remainObject.checkBox3 || !remainObject.value3 ? 0 : remainObject.value3;
             return (value1 - value2 - value3).toString();
         }
         initScreen(): void {
