@@ -306,12 +306,40 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 				// add 年休付与情報(仮)
 				if(!CollectionUtil.isEmpty(asOfPeriodEnd.getGrantRemainingList())){
 					for(AnnualLeaveGrantRemaining annualLeave : asOfPeriodEnd.getGrantRemainingList()){
+						Double grantNumber = 0.00;
+						Double daysUsedNo = 0.00;
+						Integer usedMinutes = 0;
+						Double remainDays = 0.00;
+						Integer remainMinutes = 0;
+						if(annualLeave.getDetails() != null){
+							if (annualLeave.getDetails().getGrantNumber() != null) {
+								grantNumber = annualLeave.getDetails().getGrantNumber().getDays() != null
+										? annualLeave.getDetails().getGrantNumber().getDays().v() : 0.00;
+							}
+							if (annualLeave.getDetails().getUsedNumber() != null) {
+								if (annualLeave.getDetails().getUsedNumber().getDays() != null) {
+									daysUsedNo = annualLeave.getDetails().getUsedNumber().getDays().v();
+								}
+								if (annualLeave.getDetails().getUsedNumber().getMinutes().isPresent()) {
+									usedMinutes = annualLeave.getDetails().getUsedNumber().getMinutes().get().v();
+								}
+							}
+							if (annualLeave.getDetails().getRemainingNumber() != null) {
+								if (annualLeave.getDetails().getRemainingNumber().getDays() != null) {
+									remainDays = annualLeave.getDetails().getRemainingNumber().getDays().v();
+								}
+								if(annualLeave.getDetails().getRemainingNumber().getMinutes().isPresent()){
+									remainMinutes = annualLeave.getDetails().getRemainingNumber().getMinutes().get().v();
+								}
+							}
+
+						}
 						AnnualLeaveGrantExport annualLeaveGrantExport = new AnnualLeaveGrantExport(annualLeave.getGrantDate(), 
-								annualLeave.getDetails().getGrantNumber().getDays().v(),
-								annualLeave.getDetails().getUsedNumber().getDays().v(),
-								annualLeave.getDetails().getUsedNumber().getMinutes().get().v(),
-								annualLeave.getDetails().getRemainingNumber().getDays().v(), 
-								annualLeave.getDetails().getRemainingNumber().getMinutes().get().v(), 
+								grantNumber,
+								daysUsedNo,
+								usedMinutes,
+								remainDays, 
+								remainMinutes, 
 								annualLeave.getDeadline());
 						annualLeaveGrantExports.add(annualLeaveGrantExport);
 					}
@@ -324,9 +352,17 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 		if(!CollectionUtil.isEmpty(tempAnnualLeaveManagements)){
 			List<AnnualLeaveManageInforExport> annualLeaveManageInforExports = new ArrayList<>();
 			for(TempAnnualLeaveManagement temp : tempAnnualLeaveManagements){
+				Double daysUsedNo = 0.00;
+				if(temp.getAnnualLeaveUse() != null){
+					daysUsedNo = temp.getAnnualLeaveUse().v();
+				}
+				Integer usedMinutes = 0;
+				if(temp.getTimeAnnualLeaveUse() != null){
+					usedMinutes = temp.getTimeAnnualLeaveUse().v();
+				}
 				AnnualLeaveManageInforExport annualLeaveManageInforExport = new AnnualLeaveManageInforExport(temp.getYmd(),
-						temp.getAnnualLeaveUse().v(),
-						temp.getTimeAnnualLeaveUse().v(), 
+						daysUsedNo,
+						usedMinutes, 
 						temp.getScheduleRecordAtr().value);
 				annualLeaveManageInforExports.add(annualLeaveManageInforExport);
 			}
