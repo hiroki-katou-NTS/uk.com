@@ -24,7 +24,7 @@ public interface InterimBreakDayOffMngRepository {
 	 * @param breakDay: True: 休出管理データ, false: 代休管理データ
 	 * @return
 	 */
-	Optional<InterimBreakDayOffMng> getBreakDayOffMng(String mngId, boolean breakDay, DataManagementAtr mngAtr);
+	List<InterimBreakDayOffMng> getBreakDayOffMng(String mngId, boolean breakDay, DataManagementAtr mngAtr);
 	/**
 	 * 
 	 * @param mngId
@@ -35,4 +35,65 @@ public interface InterimBreakDayOffMngRepository {
 	 * @return
 	 */
 	List<InterimBreakMng> getByPeriod(List<String> mngId, Double unUseDays, DatePeriod dateData);
+	/**
+	 * 暫定休出管理データ 　を追加
+	 * @param domain
+	 */
+	void createInterimBreakMng(InterimBreakMng domain);
+	/**
+	 * 暫定休出管理データ を更新
+	 * @param domain
+	 */
+	void updateInterimBreakMng(InterimBreakMng domain);
+	/**
+	 * 暫定休出管理データ  を削除
+	 * @param mngId
+	 */
+	void deleteInterimBreakMng(String mngId);
+	/**
+	 * 暫定代休管理データ 　を追加
+	 * @param domain
+	 */
+	void createInterimDayOffMng(InterimDayOffMng domain);
+	/**
+	 * 暫定代休管理データ  を更新
+	 * @param domain
+	 */
+	void updateInterimDayOffMng(InterimDayOffMng domain);
+	/**
+	 * 暫定代休管理データ  を削除
+	 * @param mngId
+	 */
+	void deleteInterimDayOffMng(String mngId);
+	/**
+	 * 暫定休出代休紐付け管理 　を追加
+	 * @param domain
+	 */
+	void createInterimBreakDayOffMng(InterimBreakDayOffMng domain);
+	/**
+	 * 暫定休出代休紐付け管理 　を更新
+	 * @param domain
+	 */
+	void updateInterimBreakDayOffMng(InterimBreakDayOffMng domain);
+	/**
+	 * 暫定休出代休紐付け管理  を削除
+	 * @param mngId
+	 * @param isBreak：True：　休出、False：代休
+	 */
+	void deleteBreakDayOffById(String mngId, boolean isBreak);
+	/**
+	 * 暫定休出代休紐付け管理 を削除
+	 * @param breakId　休出
+	 * @param dayOffId　代休
+	 * @param breakAtr　休出管理データ区分
+	 * @param dayOffAtr　休出管理データ区分
+	 */
+	void deleteBreakDayOfByIdAndAtr(String breakId, String dayOffId, DataManagementAtr breakAtr, DataManagementAtr dayOffAtr);
+	/**
+	 * 暫定休出代休紐付け管理  を削除
+	 * @param mngId
+	 * @param mngAtr
+	 * @param isBreak
+	 */
+	void deleteBreakDayOfById(String mngId, DataManagementAtr mngAtr, boolean isBreak);
 }
