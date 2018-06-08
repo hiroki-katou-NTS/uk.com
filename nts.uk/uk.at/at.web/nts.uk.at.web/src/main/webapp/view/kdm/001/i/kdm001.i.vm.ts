@@ -53,7 +53,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     value2: self.selectedCodeSubHoliday(),
                     value3: self.selectedCodeOptionSubHoliday()
                 }
-                self.dayRemaining(self.getRemainDay(remainDayObject));                   
+                self.dayRemaining(self.getRemainDay(remainDayObject));
                 if (!v) {
                     $("#I6_1").ntsError('clear');
                     $("#I6_3").ntsError('clear');
@@ -136,12 +136,15 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             });
         }
         getRemainDay(remainObject: any): string {
-            if (!remainObject.value1 && !remainObject.value2) {
+            if ((!remainObject.checkBox1 && !remainObject.checkBox2) || (!remainObject.value1 && !remainObject.value2)) {
                 return "";
             } 
-            let value1 = remainObject.checkBox1 ? remainObject.value1 : 0;
-            let value2 = remainObject.checkBox2 ? remainObject.value2 : 0;
-            let value3 = remainObject.checkBox2 && remainObject.checkBox3 ? remainObject.value3 : 0;
+            //休出.代休日数
+            let value1 = !remainObject.checkBox1 ? 0 : remainObject.value1;
+            //代休.代休日数
+            let value2 = !remainObject.checkBox2 ? 0 : remainObject.value2;
+            //分割消化.代休日数
+            let value3 = !remainObject.checkBox2 || !remainObject.checkBox3 ? 0 : remainObject.value3;
             return (value1 - value2 - value3).toString();
 //            if (!remainObject.checkBox1 && !remainObject.checkBox2 && !remainObject.checkBox3) {
 //                return "";
