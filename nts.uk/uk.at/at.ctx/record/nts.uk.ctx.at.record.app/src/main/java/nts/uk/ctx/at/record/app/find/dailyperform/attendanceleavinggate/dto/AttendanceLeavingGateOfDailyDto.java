@@ -13,6 +13,7 @@ import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceLayoutConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
@@ -20,7 +21,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Data
-@AttendanceItemRoot(rootName = "日別実績の入退門")
+@AttendanceItemRoot(rootName = AttendanceLayoutConst.DAILY_ATTENDANCE_LEAVE_GATE_NAME)
 public class AttendanceLeavingGateOfDailyDto extends AttendanceItemCommon {
 
 	private String employeeId;

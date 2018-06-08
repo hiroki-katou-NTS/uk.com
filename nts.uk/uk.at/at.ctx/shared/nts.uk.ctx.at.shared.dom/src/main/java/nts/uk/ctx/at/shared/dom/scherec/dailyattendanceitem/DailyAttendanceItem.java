@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 
 /**
- * 
+ * 日次の勤怠項目
  * @author nampt
  *
  */
