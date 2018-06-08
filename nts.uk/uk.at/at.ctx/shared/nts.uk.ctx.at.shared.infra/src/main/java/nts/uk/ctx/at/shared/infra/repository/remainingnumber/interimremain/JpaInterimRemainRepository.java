@@ -22,6 +22,15 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 			+ " AND c.ymd >= :startDate"
 			+ " AND c.ymd <= :endDate"
 			+ " AND c.remainType = :remainType";
+	private String DELETE_BY_SID_PRIOD_TYPE = "DELETE FROM KrcmtInterimRemainMng c"
+			+ " WHERE c.sId = :employeeId"
+			+ " AND c.ymd >= :startDate"
+			+ " AND c.ymd <= :endDate"
+			+ " AND c.remainType = :remainType";
+	private String DELETE_BY_SID_PRIOD = "DELETE FROM KrcmtInterimRemainMng c"
+			+ " WHERE c.sId = :employeeId"
+			+ " AND c.ymd >= :startDate"
+			+ " AND c.ymd <= :endDate";
 	@Override
 	public List<InterimRemain> getRemainBySidPriod(String employeeId, DatePeriod dateData, RemainType remainType) {
 		return this.queryProxy().query(QUERY_BY_SID_PRIOD, KrcmtInterimRemainMng.class)
@@ -43,6 +52,50 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 	public Optional<InterimRemain> getById(String remainId) {
 		return this.queryProxy().find(remainId, KrcmtInterimRemainMng.class)
 				.map(x -> convertToDomainSet(x));
+	}
+	@Override
+	public void createInterimRemain(InterimRemain domain) {
+		this.commandProxy().insert(toEntity(domain));
+	}
+	private KrcmtInterimRemainMng toEntity(InterimRemain domain) {
+		KrcmtInterimRemainMng entity = new KrcmtInterimRemainMng();
+		entity.remainMngId = domain.getRemainManaID();
+		entity.sId = domain.getSID();
+		entity.ymd = domain.getYmd();
+		entity.createrAtr = domain.getCreatorAtr().value;
+		entity.remainType = domain.getRemainType().value;
+		entity.remainAtr = domain.getRemainAtr().value;
+		return entity;
+	}
+	@Override
+	public void updateInterimRemain(InterimRemain domain) {
+		this.commandProxy().update(toEntity(domain));
+	}
+	@Override
+	public void deleteById(String mngId) {
+		Optional<KrcmtInterimRemainMng> optData = this.queryProxy().find(mngId, KrcmtInterimRemainMng.class);
+		if(optData.isPresent()) {
+			this.commandProxy().remove(KrcmtInterimRemainMng.class, mngId);
+		}
+		
+	}
+	@Override
+	public void deleteBySidPeriodType(String employeeId, DatePeriod dateData, RemainType remainType) {
+		this.getEntityManager().createQuery(DELETE_BY_SID_PRIOD_TYPE)
+				.setParameter("employeeId", employeeId)
+				.setParameter("startDate", dateData.start())
+				.setParameter("endDate", dateData.end())
+				.setParameter("remainType", remainType.value)
+				.executeUpdate();
+		
+	}
+	@Override
+	public void deleteBySidPeriod(String employeeId, DatePeriod dateData) {
+		this.getEntityManager().createQuery(DELETE_BY_SID_PRIOD)
+			.setParameter("employeeId", employeeId)
+			.setParameter("startDate", dateData.start())
+			.setParameter("endDate", dateData.end())
+			.executeUpdate();
 	}
 	
 
