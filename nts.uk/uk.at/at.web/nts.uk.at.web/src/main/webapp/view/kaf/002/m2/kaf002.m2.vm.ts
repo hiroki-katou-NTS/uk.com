@@ -48,6 +48,8 @@ module nts.uk.at.view.kaf002.m2 {
             
             extendsModeEvent(){
                 var self = this;
+                nts.uk.ui.errors.clearAll();
+                $('#appDate').trigger("validate");
                 self.displayItemNo = 5;
                 self.extendsMode(!self.extendsMode());    
                 self.extendsModeDisplay(!self.extendsMode()); 
@@ -83,6 +85,7 @@ module nts.uk.at.view.kaf002.m2 {
             
             register(application : vmbase.Application){
                 var self = this;
+                $('#appDate').trigger("validate");
                 if (nts.uk.ui.errors.hasError()){return;} 
                 let command = {
                     appID: "",
