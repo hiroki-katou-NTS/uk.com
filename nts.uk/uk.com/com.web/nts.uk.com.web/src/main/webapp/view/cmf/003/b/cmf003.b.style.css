@@ -173,7 +173,7 @@
 .selectionEmployee {
 	border: 1px solid #ccc !important;
 	border-radius: 5px;
-	margin: 0px 30px 0px 90px;
+	margin: 0px 115px 0px 90px;
 	padding: 20px;
 	width: 600px;
 	float: right;
@@ -230,12 +230,12 @@
 }
 
 .top-right-panel{
-	margin-left: 365px;
+	margin-left: 276px;
 }
 
 .bot-right-panel{
 	float: right;
-    margin-right: 440px;
+    margin-right: 525px;
 }
 
 .other .space {
