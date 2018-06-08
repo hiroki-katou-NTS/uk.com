@@ -435,26 +435,33 @@ module nts.uk.com.view.kwr002.b {
             let self = this;
             block.grayout();
 
+            let settingCode = self.code();
 
-            setShared('attendanceRecExpSetCode', self.code(), true);
-            setShared('attendanceRecExpSetName', self.name(), true);
-            setShared('useSeal', self.sealUseAtr(), true);
+            service.getARESByCode(settingCode).done((data) => {
+                if (_.isEmpty(data.code)) {
+                    setShared('attendanceRecExpSetCode', settingCode, true);
+                    setShared('attendanceRecExpSetName', self.name(), true);
+                    setShared('useSeal', self.sealUseAtr(), true);
 
-            let itemList = getShared('attendanceRecItemList');
+                    let itemList = getShared('attendanceRecItemList');
 
-            if (_.isArray(itemList) && !_.isEmpty(itemList) && _.first(itemList).layoutCode == Number(self.code())) {
-                setShared('attendanceRecExpDaily', getShared('attendanceRecExpDaily'), true);
-                setShared('attendanceRecExpMonthly', getShared('attendanceRecExpMonthly'), true);
-                setShared('attendanceRecItemList', getShared('attendanceRecItemList'), true);
-                setShared('sealStamp', getShared('sealStamp'), true);
-            } else {
-                setShared('attendanceRecExpDaily', null, true);
-                setShared('attendanceRecExpMonthly', null, true);
-                setShared('attendanceRecItemList', null, true);
-                setShared('sealStamp', null, true);
-            }
-
-            modal('../c/index.xhtml', {});
+                    if (_.isArray(itemList) && !_.isEmpty(itemList) && _.first(itemList).layoutCode == Number(settingCode)) {
+                        setShared('attendanceRecExpDaily', getShared('attendanceRecExpDaily'), true);
+                        setShared('attendanceRecExpMonthly', getShared('attendanceRecExpMonthly'), true);
+                        setShared('attendanceRecItemList', getShared('attendanceRecItemList'), true);
+                        setShared('sealStamp', getShared('sealStamp'), true);
+                    } else {
+                        setShared('attendanceRecExpDaily', null, true);
+                        setShared('attendanceRecExpMonthly', null, true);
+                        setShared('attendanceRecItemList', null, true);
+                        setShared('sealStamp', null, true);
+                    }
+                    modal('../c/index.xhtml', {});
+                } else {
+                    alertError({ messageId: 'Msg_3' });
+                    block.clear();
+                }
+            });
         }
 
         public checkCode(key) {
