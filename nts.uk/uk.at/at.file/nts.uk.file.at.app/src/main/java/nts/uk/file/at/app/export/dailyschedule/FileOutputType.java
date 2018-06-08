@@ -1,7 +1,7 @@
 package nts.uk.file.at.app.export.dailyschedule;
 
 /**
- * File output type (0: Excel, 1: PDF.
+ * File output type (0: Excel, 1: PDF)
  *
  * @author HoangNDH
  */

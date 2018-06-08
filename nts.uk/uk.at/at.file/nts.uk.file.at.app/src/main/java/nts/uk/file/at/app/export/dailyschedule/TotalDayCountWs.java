@@ -82,20 +82,18 @@ public class TotalDayCountWs {
 	 * @param dayType
 	 * @return
 	 */
-	private TotalCountDay calculateNonPredeterminedDay(String employeeId, DateRange dateRange, TotalCountDay totalCountDay) {
-		// ドメインモデル「画面で利用できる勤怠項目一覧」を取得する
-//		AttendanceType attendanceType = attendanceTypeRepository.getItemByScreenUseAtr(AppContexts.user().companyId(), 19)
-//				.stream().filter(x -> x.getAttendanceItemId() == 58 && x.getAttendanceItemType().value == 1).findFirst().get();
-		
+	private void calculateNonPredeterminedDay(String employeeId, DateRange dateRange, TotalCountDay totalCountDay) {
 		// ドメインモデル「日別実績の勤務情報」を取得する
 		List<String> empList = new ArrayList<>();
 		empList.add(employeeId);
 		// 予定勤務種類コードを取得する
 		List<WorkInfoOfDailyPerformanceDetailDto> dailyPerformanceList = dailyPerformanceRepo.find(empList, dateRange);
 		
+		String companyId = AppContexts.user().companyId();
+		
 		for (DayType dayType : DayType.values()) {
 			// ドメインモデル「勤務種類」を取得する
-			List<WorkType> lstWorkType = workTypeRepository.findByCompanyId(AppContexts.user().companyId()).stream().filter(x -> 
+			List<WorkType> lstWorkType = workTypeRepository.findByCompanyId(companyId).stream().filter(x -> 
 				x.getDailyWork().getOneDay().value == dayType.value || 
 				x.getDailyWork().getMorning().value == dayType.value || 
 				x.getDailyWork().getAfternoon().value == dayType.value).collect(Collectors.toList());
@@ -130,7 +128,6 @@ public class TotalDayCountWs {
 				
 			}
 		}
-		return totalCountDay;
 	}
 	
 	/**
@@ -146,11 +143,6 @@ public class TotalDayCountWs {
 		lstAttendanceId.add(598);
 		lstAttendanceId.add(604);
 		lstAttendanceId.add(610);
-		
-		// ドメインモデル「画面で利用できる勤怠項目一覧」を取得する
-//		AttendanceType attendanceType = attendanceTypeRepository.getItemByScreenUseAtr(AppContexts.user().companyId(), 19)
-//				.stream().filter(x -> lstAttendanceId.contains(x.getAttendanceItemId()) && 
-//									   x.getAttendanceItemType().value == 1).findFirst().get();
 		
 		List<String> lstEmployeeId = new ArrayList<>();
 		lstEmployeeId.add(employeeId);
@@ -177,12 +169,12 @@ public class TotalDayCountWs {
 			}
 			
 			switch (item) {
-			case Late_Come_1:
-			case Late_Come_2:
+			case LATE_COME_1:
+			case LATE_COME_2:
 				totalCountDay.setLateComeDay(totalCountDay.getLateComeDay() + dayCount);
 				break;
-			case Early_Leave_1:
-			case Early_Leave_2:
+			case EARLY_LEAVE_1:
+			case EARLY_LEAVE_2:
 				totalCountDay.setEarlyLeaveDay(totalCountDay.getEarlyLeaveDay() + dayCount);
 				break;
 			}
@@ -197,7 +189,7 @@ public class TotalDayCountWs {
 	 */
 	public void calculateAllDayCount(String employeeId, DateRange dateRange, TotalCountDay totalCountDay) {
 		calculatePredeterminedDay(employeeId, dateRange, totalCountDay);
-		totalCountDay = calculateNonPredeterminedDay(employeeId, dateRange, totalCountDay);
+	    calculateNonPredeterminedDay(employeeId, dateRange, totalCountDay);
 		calculateDayCount(employeeId, dateRange, totalCountDay);
 	}
 }

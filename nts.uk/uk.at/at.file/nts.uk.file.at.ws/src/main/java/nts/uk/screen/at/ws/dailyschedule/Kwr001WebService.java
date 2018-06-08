@@ -13,12 +13,24 @@ import nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputGenerator;
 import nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputQuery;
 import nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputQueryDto;
 
+/**
+ * The Class Kwr001WebService.
+ * @author HoangNDH
+ */
 @Path("screen/at/dailyschedule")
 @Produces("application/json")
 public class Kwr001WebService extends WebService {
+	
+	/** The service. */
 	@Inject
 	DailyPerformanceExportService service;
 	
+	/**
+	 * Export data.
+	 *
+	 * @param dto the dto
+	 * @return the export service result
+	 */
 	@POST
 	@Path("export")
 	public ExportServiceResult exportData(WorkScheduleOutputQueryDto dto) {

@@ -1,7 +1,5 @@
 package nts.uk.file.at.app.export.dailyschedule;
 
-import java.util.Optional;
-
 import lombok.Data;
 
 /**
@@ -25,16 +23,4 @@ public class WorkScheduleSettingTotalOutput {
 	private boolean cumulativeWorkplace;
 	// 職場階層累計
 	private TotalWorkplaceHierachy workplaceHierarchyTotal;
-	
-//	public static WorkScheduleSettingTotalOutput convertToDomain(WorkScheduleSettingTotalOutputDto dto) {
-//		WorkScheduleSettingTotalOutput output = new WorkScheduleSettingTotalOutput();
-//		output.details = dto.isDetails();
-//		output.personalTotal = dto.isPersonalTotal();
-//		output.workplaceTotal = dto.isWorkplaceTotal();
-//		output.totalNumberDay = dto.isTotalNumberDay();
-//		output.grossTotal = dto.isGrossTotal();
-//		output.cumulativeWorkplace = dto.isCumulativeWorkplace();
-//		output.workplaceHierachyTotal = dto.getWorkplaceHierachyTotalDto();
-//		return output;
-//	}
 }

@@ -1,7 +1,7 @@
 package nts.uk.file.at.app.export.dailyschedule;
 
 /**
- * 
+ * Output condition setting
  * @author HoangNDH
  *
  */

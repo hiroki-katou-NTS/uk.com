@@ -23,8 +23,14 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMasterRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 
+/**
+ * The Class JobTitleImportAdapter.
+ * @author HoangNDH
+ */
 @Stateless
 public class JobTitleImportAdapter {
+	
+	/** The job title info repository. */
 	@Inject
 	private JobTitleInfoRepository jobTitleInfoRepository;
 
@@ -32,12 +38,21 @@ public class JobTitleImportAdapter {
 	@Inject
 	private SequenceMasterRepository sequenceMasterRepository;
 	
+	/** The aff job title his repo. */
 	@Inject
 	private AffJobTitleHistoryRepository affJobTitleHisRepo;
 	
+	/** The aff job title his item repo. */
 	@Inject
 	private AffJobTitleHistoryItemRepository affJobTitleHisItemRepo;
 	
+	/**
+	 * Find by sid.
+	 *
+	 * @param employeeId the employee id
+	 * @param baseDate the base date
+	 * @return the optional
+	 */
 	public Optional<EmployeeJobHistExport> findBySid(String employeeId, GeneralDate baseDate) {
 		// Query
 		Optional<AffJobTitleHistory> optAffJobTitleHist = this.affJobTitleHisRepo
@@ -70,6 +85,14 @@ public class JobTitleImportAdapter {
 		return Optional.empty();
 	}
 	
+	/**
+	 * Find by ids.
+	 *
+	 * @param companyId the company id
+	 * @param jobIds the job ids
+	 * @param baseDate the base date
+	 * @return the list
+	 */
 	public List<SimpleJobTitleExport> findByIds(String companyId, List<String> jobIds, GeneralDate baseDate) {
 		// Query infos
 		List<JobTitleInfo> jobTitleInfos = this.jobTitleInfoRepository.findByIds(companyId, jobIds, baseDate);

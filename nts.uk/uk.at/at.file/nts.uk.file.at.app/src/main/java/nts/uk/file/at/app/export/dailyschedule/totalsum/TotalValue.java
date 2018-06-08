@@ -42,9 +42,6 @@ public class TotalValue {
 	 * @return the t
 	 */
 	public <T> T value() {
-//		if(value == null){
-//			return null;
-//		}
 		switch (this.valueType) {
 		case INTEGER:
 			return this.value == null || this.value.isEmpty() ? (T) new Integer(0) : (T) new Integer(this.value);
