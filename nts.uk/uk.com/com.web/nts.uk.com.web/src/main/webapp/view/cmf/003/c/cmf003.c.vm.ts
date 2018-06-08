@@ -35,7 +35,7 @@ module nts.uk.com.view.cmf003.c {
                    service.getSysTypes().done(function(data: Array<any>) {
                         if (data && data.length) {
                             _.forOwn(data, function(index) {
-                                self.systemTypes.push(new ItemSystemType(index.value,index.localizedName));
+                                self.systemTypes.push(new ItemSystemType(index.value + '',index.localizedName));
                               });
                              
                             systemIdSelected = self.systemTypes()[0].code;
@@ -117,7 +117,7 @@ module nts.uk.com.view.cmf003.c {
                      alertError({ messageId: "Msg_577" });
                 } else {
                     setShared("CMF003_C_CATEGORIES",self.currentCateSelected());
-                    setShared("CMF003_C_SYSTEMTYPE",self.currentItem);
+                    setShared("CMF003_C_SYSTEMTYPE",self.selectedCode());
                     close();
                 }
             }
