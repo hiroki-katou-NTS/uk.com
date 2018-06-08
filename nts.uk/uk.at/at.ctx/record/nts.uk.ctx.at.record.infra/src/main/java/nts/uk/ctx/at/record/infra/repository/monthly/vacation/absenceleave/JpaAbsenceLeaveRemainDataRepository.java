@@ -47,4 +47,31 @@ public class JpaAbsenceLeaveRemainDataRepository extends JpaRepository implement
 				new AttendanceDaysMonth(c.unUsedDays));
 	}
 
+	@Override
+	public void create(AbsenceLeaveRemainData domain) {
+		this.commandProxy().insert(toEntity(domain));
+	}
+
+	private KrcdtMonSubOfHdRemain toEntity(AbsenceLeaveRemainData domain) {
+		KrcdtMonSubOfHdRemain entity = new KrcdtMonSubOfHdRemain();
+		entity.pk.sId = domain.getSId();
+		entity.pk.ym = domain.getYm().v();
+		entity.pk.closureId = domain.getClosureId();
+		entity.pk.isLastDay = domain.isLastDayIs() ? 1 : 0;
+		entity.closureStatus = domain.getClosureStatus().value;
+		entity.startDate = domain.getStartDate();
+		entity.endDate = domain.getEndDate();
+		entity.occurredDays = domain.getOccurredDay().v();
+		entity.usedDays = domain.getUsedDays().v();
+		entity.remainingDays = domain.getRemainingDays().v();
+		entity.carryForWardDays = domain.getCarryforwardDays().v();
+		entity.unUsedDays = domain.getUnUsedDays().v();
+		return entity;
+	}
+
+	@Override
+	public void update(AbsenceLeaveRemainData domain) {
+		this.commandProxy().update(toEntity(domain));
+	}
+
 }
