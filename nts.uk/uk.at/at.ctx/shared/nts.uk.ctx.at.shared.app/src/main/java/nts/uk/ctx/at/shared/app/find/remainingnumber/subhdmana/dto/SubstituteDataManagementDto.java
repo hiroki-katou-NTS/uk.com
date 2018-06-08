@@ -27,11 +27,12 @@ public class SubstituteDataManagementDto {
 		}
 		ExtraHolidayManagementOutput extraHolidayManagementOutput = subDataOutput.getExtraHolidayManagementOutput();
 		if (!Objects.isNull(subDataOutput.getCompensatoryLeaveEmSetting())){
-			leaveSettingExpiredDate = subDataOutput.getCompensatoryLeaveEmSetting().getCompensatoryAcquisitionUse().getExpirationTime().name();
-		}
-		if (!Objects.isNull(subDataOutput.getCompensatoryLeaveEmSetting())){
-			if (subDataOutput.getCompensatoryLeaveEmSetting().getIsManaged() == ManageDistinct.YES)
-			leaveSettingExpiredDate = subDataOutput.getCompensatoryLeaveEmSetting().getCompensatoryAcquisitionUse().getExpirationTime().description;
+			if (subDataOutput.getCompensatoryLeaveEmSetting().getIsManaged() == ManageDistinct.YES){
+				leaveSettingExpiredDate = subDataOutput.getCompensatoryLeaveEmSetting().getCompensatoryAcquisitionUse().getExpirationTime().name();
+			} else if (!Objects.isNull(subDataOutput.getCompensatoryLeaveComSetting())){
+					if (subDataOutput.getCompensatoryLeaveComSetting().isManaged())
+					compenSettingEmpExpiredDate = subDataOutput.getCompensatoryLeaveComSetting().getCompensatoryAcquisitionUse().getExpirationTime().description;
+			}
 		} else if (!Objects.isNull(subDataOutput.getCompensatoryLeaveComSetting())){
 			if (subDataOutput.getCompensatoryLeaveComSetting().isManaged())
 			compenSettingEmpExpiredDate = subDataOutput.getCompensatoryLeaveComSetting().getCompensatoryAcquisitionUse().getExpirationTime().description;
