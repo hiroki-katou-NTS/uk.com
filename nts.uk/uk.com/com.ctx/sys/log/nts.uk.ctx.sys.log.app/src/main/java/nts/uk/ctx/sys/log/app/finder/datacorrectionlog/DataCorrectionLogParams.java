@@ -17,5 +17,6 @@ public class DataCorrectionLogParams {
 	private Integer startY;
 	private Integer endY;
 	private int displayFormat; //0: by date; 1: by individual
+	private String pgid;
 
 }

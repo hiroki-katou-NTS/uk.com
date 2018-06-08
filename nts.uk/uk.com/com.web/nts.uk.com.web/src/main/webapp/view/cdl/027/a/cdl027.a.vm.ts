@@ -16,8 +16,8 @@ module nts.uk.com.view.cdl027.a.viewmodel {
             { headerText: getText('CDL027_10'), key: 'arrow', dataType: 'string', width: '20px' },
             { headerText: getText('CDL027_11'), key: 'valueAfter', dataType: 'string', width: '120px' },
             { headerText: getText('CDL027_12'), key: 'modifiedPerson', dataType: 'string', width: '120px' },
-            { headerText: getText('CDL027_13'), key: 'modifiedDateTime', dataType: 'string', width: '120px' },
-            { headerText: getText('CDL027_14'), key: 'correctionAttr', dataType: 'string', width: '120px' }
+            { headerText: getText('CDL027_13'), key: 'modifiedDateTime', dataType: 'string', width: '170px' },
+            { headerText: getText('CDL027_14'), key: 'correctionAttr', dataType: 'string', width: '70px' }
         ];
         columnsByIndividual: Array<any> = [
             { headerText: getText('CDL027_4'), key: 'targetUser', dataType: 'string', width: '120px' },
@@ -27,8 +27,8 @@ module nts.uk.com.view.cdl027.a.viewmodel {
             { headerText: getText('CDL027_10'), key: 'arrow', dataType: 'string', width: '20px' },
             { headerText: getText('CDL027_11'), key: 'valueAfter', dataType: 'string', width: '120px' },
             { headerText: getText('CDL027_12'), key: 'modifiedPerson', dataType: 'string', width: '120px' },
-            { headerText: getText('CDL027_13'), key: 'modifiedDateTime', dataType: 'string', width: '120px' },
-            { headerText: getText('CDL027_14'), key: 'correctionAttr', dataType: 'string', width: '120px' }
+            { headerText: getText('CDL027_13'), key: 'modifiedDateTime', dataType: 'string', width: '170px' },
+            { headerText: getText('CDL027_14'), key: 'correctionAttr', dataType: 'string', width: '70px' }
         ];
         params: any;
         targetStart: string;
@@ -100,6 +100,7 @@ module nts.uk.com.view.cdl027.a.viewmodel {
         private formatParams(): any {
             let self = this;
             let _params = {
+                pgid: self.params.pgid,
                 functionId: self.params.functionId, 
                 listEmployeeId: self.params.listEmployeeId, 
                 displayFormat: self.params.displayFormat, 
@@ -150,7 +151,7 @@ module nts.uk.com.view.cdl027.a.viewmodel {
         private initIGrid() {
             let self = this;
             $("#list").igGrid({
-                height: '400px',
+                height: '375px',
                 width: '1000px',
                 dataSource: self.items(),
                 columns: self.params.displayFormat == DISPLAY_FORMAT.BY_DATE ? self.columnsByDate : self.columnsByIndividual,
@@ -168,7 +169,8 @@ module nts.uk.com.view.cdl027.a.viewmodel {
                         type: "local",
                         mode: "simple",
                         columnSettings: [
-                            {columnKey: "arrow", allowFiltering: false}
+                            {columnKey: "arrow", allowFiltering: false},
+                            {columnKey: "modifiedPerson", allowFiltering: false}
                         ]
                     },
                     {
@@ -201,7 +203,7 @@ module nts.uk.com.view.cdl027.a.viewmodel {
             this.valueBefore = valueBefore;
             this.valueAfter = valueAfter;
             this.modifiedPerson = modifiedPerson;
-            this.modifiedDateTime = moment.utc(modifiedDateTime).format("YYYY/MM/DD(dd) HH:mm");
+            this.modifiedDateTime = moment.utc(modifiedDateTime).format("YYYY/MM/DD HH:mm:ss");
             switch (correctionAttr) {
                 case CORRECTION_ATTR.EDIT: 
                     this.correctionAttr = getText("Enum_CorrectionAttr_EDIT");

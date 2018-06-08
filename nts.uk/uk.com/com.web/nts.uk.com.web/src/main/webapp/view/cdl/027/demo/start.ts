@@ -15,17 +15,17 @@ module nts.uk.com.view.cdl027.demo {
         period: KnockoutObservable<any> = ko.observable({});
         periodType: KnockoutObservable<string>;
         functionId: KnockoutObservable<number> = ko.observable(1);
-        displayFormats: KnockoutObservableArray<any> = ko.observableArray([{ code: 0, name: 'BY DATE' }, { code: 1, name: 'BY INDIVIDUAL' }]);
+        displayFormats: KnockoutObservableArray<any> = ko.observableArray([{ code: 0, name: '日付別' }, { code: 1, name: '個人別' }]);
         functionIDs: KnockoutObservableArray<any> = ko.observableArray([
-            { name: 'Schedule', code: 1 },
-            { name: 'Daily', code: 2 },
-            { name: 'Monthly', code: 3 },
-            { name: 'Any period', code: 4 },
-            { name: 'Salary', code: 5 },
-            { name: 'Bonus', code: 6 },
-            { name: 'Year end adjustment', code: 7 },
-            { name: 'Monthly calculation', code: 8 },
-            { name: 'Raising rising back', code: 9 }
+            { name: 'スケジュール', code: 1 },
+            { name: '日次', code: 2 },
+            { name: '月次', code: 3 },
+            { name: '任意期間', code: 4 },
+            { name: '給与', code: 5 },
+            { name: '賞与', code: 6 },
+            { name: '年末調整', code: 7 },
+            { name: '月額算定', code: 8 },
+            { name: '昇給遡り', code: 9 }
         ]);
         listEmployee: KnockoutObservableArray<any> = ko.observableArray([
             { employeeId: "ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570", employeeCode: "000001", employeeName: "大塚　太郎ビ" },
@@ -209,7 +209,13 @@ module nts.uk.com.view.cdl027.demo {
 
         openCdl027Dialog() {
             let self = this,
-                params = { functionId: self.functionId(), listEmployeeId: self.selectedEmployee(), period: self.period(), displayFormat: self.displayFormat() };
+                params = { 
+                    pgid: __viewContext.program.programId, 
+                    functionId: self.functionId(), 
+                    listEmployeeId: self.selectedEmployee(), 
+                    period: self.period(), 
+                    displayFormat: self.displayFormat() 
+                };
             setShared("CDL027Params", params);
             modal("com", "/view/cdl/027/a/index.xhtml");
         }

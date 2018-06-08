@@ -1,14 +1,9 @@
 /* style */
 
-/*
-#list_headers th {
-	text-align: center;
+.ui-iggrid .ui-iggrid-tablebody td{
+	white-space: nowrap;
 }
 
-#list td {
-	text-align: center;
-}
-*/
 span.label{
 	padding-left: 10px;
 }

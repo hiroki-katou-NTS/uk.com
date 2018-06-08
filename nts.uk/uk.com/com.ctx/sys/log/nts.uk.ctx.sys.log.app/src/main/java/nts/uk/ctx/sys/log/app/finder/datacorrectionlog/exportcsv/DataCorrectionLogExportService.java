@@ -15,7 +15,6 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.log.app.finder.datacorrectionlog.DataCorrectionLogDto;
 import nts.uk.ctx.sys.log.app.finder.datacorrectionlog.DataCorrectionLogFinder;
 import nts.uk.ctx.sys.log.app.finder.datacorrectionlog.DataCorrectionLogParams;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
 import nts.uk.shr.infra.file.csv.CSVFileData;
@@ -82,7 +81,7 @@ public class DataCorrectionLogExportService extends ExportService<DataCorrection
 			row.put(headers.get(7), getCorrectionAttr(d.getCorrectionAttr()));
 			dataSource.add(row);
 		}
-		String pgId = AppContexts.programId();
+		String pgId = params.getPgid();
 		CSVFileData fileData = new CSVFileData(
 				pgId + "_" + GeneralDateTime.now().toString("yyyyMMddHHmmss") + FILE_EXTENSION, headers, dataSource);
 		generator.generate(context.getGeneratorContext(), fileData);

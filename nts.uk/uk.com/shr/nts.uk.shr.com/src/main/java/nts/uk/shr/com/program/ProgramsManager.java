@@ -1828,6 +1828,8 @@ public class ProgramsManager {
 			"/view/kmw/006/f/index.xhtml");
 	
 	/** CDL027 */
+	public static final Program CDL027TEST = new Program(WebAppId.COM, ProgramIdConsts.CDL027TEST, "CDL027_3",
+			"/view/cdl/027/demo/index.xhtml");
 	public static final Program CDL027 = new Program(WebAppId.COM, ProgramIdConsts.CDL027, "CDL027_3",
 			"/view/cdl/027/a/index.xhtml");
 
