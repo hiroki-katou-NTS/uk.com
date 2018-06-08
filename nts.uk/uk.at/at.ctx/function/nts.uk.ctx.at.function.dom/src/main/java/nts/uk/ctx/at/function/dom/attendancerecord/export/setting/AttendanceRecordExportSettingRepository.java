@@ -37,7 +37,7 @@ public interface AttendanceRecordExportSettingRepository {
 	 *
 	 * @param attendanceRecordExpSet the attendance record out set
 	 */
-	void addAttendanceRecExpSet(AttendanceRecordExportSetting attendanceRecordExpSet);
+	void addAttendanceRecExpSet(AttendanceRecordExportSetting attendanceRecordExpSet,boolean onceUpdate);
 
 	/**
 	 * Delete attendance rec out set.

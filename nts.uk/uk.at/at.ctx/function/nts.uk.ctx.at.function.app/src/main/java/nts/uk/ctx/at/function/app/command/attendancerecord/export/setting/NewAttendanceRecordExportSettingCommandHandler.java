@@ -38,7 +38,8 @@ public class NewAttendanceRecordExportSettingCommandHandler extends CommandHandl
     @Override
     protected void handle(CommandHandlerContext<NewAttendanceRecordExportSettingCommand> context) {
         NewAttendanceRecordExportSettingCommand command = context.getCommand();
+        command.getCmd().setOnceUpdate(command.isOnceUpdate());
         cmdHandler.handle(command.getCmd());//done
-        itemCmdHandler.handle(command.getItemCmd());//done
+        if(!command.isOnceUpdate()) itemCmdHandler.handle(command.getItemCmd());//done
     }
 }

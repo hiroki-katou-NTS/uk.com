@@ -28,6 +28,9 @@ public class AttendanceRecordExportSettingAddCommand {
 
 	Integer nameUseAtr;
 	
+	/** The once update. */
+	boolean onceUpdate;
+	
 	/**
 	 * Instantiates a new attendance record export setting add command.
 	 */
