@@ -325,11 +325,12 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		String loginName = employeeAdaptor.getEmployeeName(loginID);
 		String applicantName = employeeAdaptor.getEmployeeName(application.getEmployeeID());
 		for(String employeeID : listDestination){
+			String employeeName = employeeAdaptor.getEmployeeName(employeeID);
 			String approverMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(employeeID)).findAny()
 					.map(x -> { if(CollectionUtil.isEmpty(x.getOutGoingMails())){ return null; } else { return x.getOutGoingMails().get(0).getEmailAddress(); } })
 					.orElse(null);
 			if(Strings.isBlank(approverMail)){
-				failList.add(employeeID);
+				failList.add(employeeName);
 				continue;
 			}
 			String URL = "";
@@ -353,22 +354,22 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 					loginName, 
 					text,
 					application.getAppDate().toLocalDate().toString(), 
-					appDispName.toString(),
+					appDispName.getDispName().toString(),
 					applicantName, 
 					application.getAppDate().toLocalDate().toString(),
 					appContent, 
 					loginName, 
 					loginMail);
-			String mailTitle = application.getAppDate().toLocalDate().toString()+" "+appDispName;
+			String mailTitle = application.getAppDate().toLocalDate().toString()+" "+appDispName.getDispName().toString();
 			String mailBody = mailContentToSend;
 			if(Strings.isNotBlank(URL)){
 				mailBody += "/n" + URL;
 			}
 			try {
 				mailsender.sendFromAdmin(approverMail, new MailContents(mailTitle, mailBody));
-				successList.add(employeeID);
+				successList.add(employeeName);
 			} catch (Exception e) {
-				failList.add(employeeID);
+				failList.add(employeeName);
 			}
 		}
 		return new MailResult(successList, failList);
@@ -380,18 +381,29 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		String loginID = AppContexts.user().employeeId();
 		String companyID = AppContexts.user().companyId();
 		String employeeID = application.getEmployeeID();
+		String employeeName = employeeAdaptor.getEmployeeName(employeeID);
 		List<String> listDestination = new ArrayList<>(Arrays.asList(loginID, employeeID));
 		List<MailDestinationImport> mailResultList = envAdapter.getEmpEmailAddress(companyID, listDestination, 6);
 		String loginMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(loginID)).findAny()
-				.map(x -> { if(CollectionUtil.isEmpty(x.getOutGoingMails())){ return null; } else { return x.getOutGoingMails().get(0).getEmailAddress(); } })
-				.orElse(null);
+				.map(x -> { 
+					if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){ 
+						return null; 
+					} else {
+						return x.getOutGoingMails().get(0).getEmailAddress(); 
+					} 
+				}).orElse(null);
 		String loginName = employeeAdaptor.getEmployeeName(loginID);
 		String applicantName = employeeAdaptor.getEmployeeName(application.getEmployeeID());
 		String applicantMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(employeeID)).findAny()
-				.map(x -> { if(CollectionUtil.isEmpty(x.getOutGoingMails())){ return null; } else { return x.getOutGoingMails().get(0).getEmailAddress(); } })
-				.orElse(null);
+				.map(x -> { 
+					if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){ 
+						return null; 
+					} else { 
+						return x.getOutGoingMails().get(0).getEmailAddress(); 
+					} 
+				}).orElse(null);
 		if(Strings.isBlank(applicantMail)){
-			failList.add(employeeID);
+			failList.add(employeeName);
 			return new MailResult(successList, failList);
 		}
 		String URL = "";
@@ -428,9 +440,9 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		}
 		try {
 			mailsender.sendFromAdmin(applicantMail, new MailContents(mailTitle, mailBody));
-			successList.add(employeeID);
+			successList.add(employeeName);
 		} catch (Exception e) {
-			failList.add(employeeID);
+			failList.add(employeeName);
 		}
 		return new MailResult(successList, failList);
 	}
