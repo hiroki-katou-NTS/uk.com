@@ -71,14 +71,11 @@ module nts.uk.at.view.kdm001.l.viewmodel {
                     isCheckedExpired: self.checkedExpired(),
                     closureId: self.closureId()
                 };
-                service.updateHolidaySetting(command).done(result => {
+                service.checkValidate(command).done(result => {
                     if (result && result.length > 0) {
                         if (result.indexOf("Msg_1302") >= 0) {
                             dialog.confirm({ messageId: "Msg_1302" }).ifYes(() => {
-                                service.updateHolidaySetting(command).done(result => {
-                                    //情報メッセージ　Msg_15 登録しました。を表示する。
-                                    self.showSuccessMessage();
-                                });
+                                self.updateHolidaySetting(command);
                             }).then(() => {
                                 block.clear();
                                 return;
@@ -107,9 +104,7 @@ module nts.uk.at.view.kdm001.l.viewmodel {
                         block.clear();
                         return;
                     }
-                    //情報メッセージ　Msg_15 登録しました。を表示する。
-                    self.showSuccessMessage();
-
+                    self.updateHolidaySetting(command);
                 }).always(() => {
                     block.clear();
                 });
@@ -119,10 +114,14 @@ module nts.uk.at.view.kdm001.l.viewmodel {
         /**
          * 情報メッセージ　Msg_15 登録しました。を表示する。
          */
-        public showSuccessMessage() {
-            dialog.info({ messageId: "Msg_15" }).then(() => {
-                setShared('KDM001_L_PARAMS_RES', { isChanged: true });
-                this.closeDialog();
+        public updateHolidaySetting(command) {
+            service.updateHolidaySetting(command).done(result => {
+                if (!result && !result.length > 0) {
+                    dialog.info({ messageId: "Msg_15" }).then(() => {
+                        setShared('KDM001_L_PARAMS_RES', { isChanged: true });
+                        this.closeDialog();
+                    });
+                }
             });
         }
 
