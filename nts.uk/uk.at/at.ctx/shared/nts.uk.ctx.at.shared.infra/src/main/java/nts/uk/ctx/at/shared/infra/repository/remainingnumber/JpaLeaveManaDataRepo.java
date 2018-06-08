@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
@@ -194,7 +195,12 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	}
 
 	@Override
-	public void udpate(LeaveManagementData domain) {
+	public void udpateByHolidaySetting(LeaveManagementData domain) {
+		KrcmtLeaveManaData entity = this.getEntityManager().find(KrcmtLeaveManaData.class, domain.getID());
+		if (Objects.isNull(entity)) {
+			throw new BusinessException("Msg_198");
+		}
+		domain.setSubHDAtr(EnumAdaptor.valueOf(entity.subHDAtr, DigestionAtr.class));
 		this.commandProxy().update(this.toEntity(domain));
 	}
 

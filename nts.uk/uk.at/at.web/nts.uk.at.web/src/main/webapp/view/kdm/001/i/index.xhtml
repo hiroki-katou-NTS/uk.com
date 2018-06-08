@@ -18,7 +18,7 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<!--I1 文言-->
-				<div class="down-s">
+				<div class="down-s" style="margin-left: 0;">
 					<span class="label">#{i18n.getText('KDM001_103')}</span>
 				</div>
 				<!--I2 対象者-->
@@ -61,7 +61,7 @@
 					<!-- Combobox -->
 					<div id="I6_3" tabindex="3" class="combo-box-holiday"
 						data-bind="ntsComboBox: {
-					name: '#[KDM001_112]',
+					name: '#{i18n.getText('KDM001_112')}',
 					options: itemListHoliday,
 					optionsValue: 'code',
 					visibleItemsCount: 5,
@@ -69,7 +69,8 @@
 					optionsText: 'name',
 					editable: false,
 					enable: true,
-					selectFirstIfNull : true,
+					required: checkedHoliday,
+					selectFirstIfNull : false,
 					columns: [
 						{ prop: 'name', length: 5 },
 					]}">
@@ -81,7 +82,7 @@
 						data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_72')}</div>
 					<!-- I8_1 期限 -->
 					<!-- Datepicker -->
-					<div tabindex="4"
+					<div id="I8_1" tabindex="4"
 						data-bind="ntsDatePicker: {value: duedateHoliday, dateFormat: 'YYYY/MM/DD', name: '#[KDM001_73]', required: checkedHoliday}"></div>
 				</div>
 
@@ -108,7 +109,7 @@
 					<!-- Combobox -->
 					<div tabindex="6" id="I11_3" class="combo-box-sub-holiday"
 						data-bind="ntsComboBox: {
-					name: '#[KDM001_116]',
+					name: '#{i18n.getText('KDM001_116')}',
 					options: itemListSubHoliday,
 					optionsValue: 'code',
 					visibleItemsCount: 5,
@@ -116,7 +117,8 @@
 					optionsText: 'name',
 					editable: false,
 					enable: true,
-					selectFirstIfNull : true,
+					selectFirstIfNull : false,
+					required: checkedSubHoliday,
 					columns: [
 						{ prop: 'name', length: 5 },
 					]}">
@@ -139,15 +141,16 @@
 						<!-- Combobox -->
 						<div tabindex="8" id="I12_4" class="combo-box-option-sub-holiday"
 							data-bind="ntsComboBox: {
-							name: '#[KDM001_116]',
+							name: '#{i18n.getText('KDM001_116')}',
 							options: itemListOptionSubHoliday,
 							optionsValue: 'code',
 							visibleItemsCount: 5,
 							value: selectedCodeOptionSubHoliday,
 							optionsText: 'name',
 							editable: false,
-							enable: checkedSplit,
-							selectFirstIfNull : true,
+							enable: checkedSplit() &amp;&amp; checkedSubHoliday(),
+							selectFirstIfNull : false,
+							required: checkedSplit,
 							columns: [
 								{ prop: 'name', length: 5 },
 							]}">
@@ -163,7 +166,10 @@
 					<div class="labelTitle"
 						data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_85')}</div>
 					<!-- I15_1 残数 -->
-					<span class="label" data-bind="text: unit" ></span><span class="label" data-bind="text: dayRemaining"></span><span class="label" data-bind="text: unitDay" ></span>
+					<span class="label" data-bind="text: dayRemaining"></span>
+					<span class="label" data-bind="if: dayRemaining" >
+						<label data-bind="text: unitDay"></label>
+					</span>
 				</div>
 			</div>
 			<div id="functions-area-bottom">

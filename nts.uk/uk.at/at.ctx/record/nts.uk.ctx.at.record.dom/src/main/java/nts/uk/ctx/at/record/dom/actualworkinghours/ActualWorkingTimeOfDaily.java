@@ -371,7 +371,8 @@ public class ActualWorkingTimeOfDaily {
 									) {
 		if((workingSystem.isRegularWork() || workingSystem.isVariableWorkingTimeWork())&&fixRestTimeSetting.isPresent()) {
 			//休憩未取得時間の計算
-			val unUseBreakTime = workingSystem.isRegularWork()?totalWorkingTime.getBreakTimeOfDaily().calcUnUseBrekeTime(fixRestTimeSetting.get(),timeLeavingOfDailyPerformance):new AttendanceTime(0);
+			AttendanceTime unUseBreakTime = workingSystem.isRegularWork()?totalWorkingTime.getBreakTimeOfDaily().calcUnUseBrekeTime(fixRestTimeSetting.get(),timeLeavingOfDailyPerformance):new AttendanceTime(0);
+			unUseBreakTime = unUseBreakTime.greaterThan(0)?unUseBreakTime:new AttendanceTime(0);
 			//日別実績の総労働からとってくる
 			AttendanceTime vacationAddTime = totalWorkingTime.getVacationAddTime();
 			//残業時間

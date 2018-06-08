@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -25,7 +24,7 @@ public class KrcmtLeaveDayOffMana extends UkJpaEntity implements Serializable{
 	
 	// 使用日数
 	@Column(name = "USED_DAYS")
-	public BigDecimal usedDays;
+	public Double usedDays;
 		
 	// 使用時間数
 	@Column(name = "USED_HOURS")

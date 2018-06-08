@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -90,7 +89,7 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 		this.getEntityManager().flush();
 	}
 	
-	private KrcmtLeaveDayOffMana newEntities(String leaveID, String comDayOffID, BigDecimal usedDays,int usedHours,int targetSelectionAtr) {
+	private KrcmtLeaveDayOffMana newEntities(String leaveID, String comDayOffID, Double usedDays,int usedHours,int targetSelectionAtr) {
 		return new KrcmtLeaveDayOffMana(new KrcmtLeaveDayOffManaPK(leaveID, comDayOffID),
 				usedDays,usedHours,targetSelectionAtr);
 	}
