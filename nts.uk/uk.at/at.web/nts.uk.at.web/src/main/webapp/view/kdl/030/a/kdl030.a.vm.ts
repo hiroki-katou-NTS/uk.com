@@ -42,7 +42,8 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                                 for (let listApprover = listApprovalFrame[j].listApprover, k = 0; k < listApprover.length; k++) {
                                     if (listApprover[k].representerName.length > 0){
                                         listApprover[k].approverName += '(' + listApprover[k].representerName + ')';
-                                    } else if (listApprover[k].approverMail.length >0){
+                                    }
+                                    if (listApprover[k].approverMail.length >0){
                                         listApprover[k].approverName += '(@)';
                                         listApprover[k]['isSend'] = 1;
                                     } else {
@@ -142,11 +143,6 @@ module nts.uk.at.view.kdl030.a.viewmodel {
             let sucessListAsStr = "";
             //送信出来た人があったかチェックする
             //送信できた人なし
-//            if(numOfSuccess == 0){
-//                //エラーメッセージ（Msg_1057）をエラーダイアログに出力する
-//                dialog.alertError({messageId: "Msg_1057" });
-//                return;
-//            }
             if (numOfSuccess > 0) {//送信できた人あり
                 //情報メッセージ（Msg_207）を画面表示する
                 dialog.info({messageId: "Msg_207" }).then(() =>{
