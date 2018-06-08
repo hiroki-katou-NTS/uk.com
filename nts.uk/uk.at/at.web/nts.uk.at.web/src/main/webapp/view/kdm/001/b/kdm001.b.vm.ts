@@ -134,10 +134,6 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         }
         filterByPeriod() {
             let self = this;
-            if (self.selectedPeriodItem() == 1){
-                $(".ntsStartDatePicker").trigger("validate");
-                $(".ntsEndDatePicker").trigger("validate");
-            }
             if (!nts.uk.ui.errors.hasError()) {
                 self.getSubstituteDataList(self.getSearchCondition());
                 $('#substituteDataGrid').focus();
@@ -146,11 +142,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         getSubstituteDataList(searchCondition: any) {
             let self = this;
             if (self.selectedPeriodItem() == 1){
-                $(".ntsStartDatePicker").trigger("validate");
-                $(".ntsEndDatePicker").trigger("validate");
-            }
-            if (self.selectedPeriodItem() ==1 ){
-                $("#daterangepicker").trigger("validate");
+                $("#daterangepicker .ntsDatepicker").trigger("validate");
             }
             if (!nts.uk.ui.errors.hasError()) {
                 service.getExtraHolidayData(searchCondition).done(function(result) {
