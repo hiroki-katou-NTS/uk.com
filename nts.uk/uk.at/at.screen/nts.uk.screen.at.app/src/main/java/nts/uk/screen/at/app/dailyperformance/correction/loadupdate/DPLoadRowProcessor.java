@@ -39,6 +39,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorr
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecEditSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ScreenMode;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
 import nts.uk.shr.com.context.AppContexts;
@@ -209,6 +210,10 @@ public class DPLoadRowProcessor {
 					}
 				}
 				
+				if(data.isSign() && mode == ScreenMode.NORMAL.value){
+					process.lockCell(result, data);
+					lock = true;
+				}
 				
 				itemValueMap = resultOfOneRow.getItems().stream()
 						.collect(Collectors.toMap(x -> process.mergeString(String.valueOf(x.getItemId()), "|",
