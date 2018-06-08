@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
+import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.gul.mail.send.MailContents;
@@ -89,8 +90,12 @@ public class CheckTranmissionImpl implements CheckTransmission {
 					errorList.add(empObj.get(0).getBussinessName());
 				}
 			} else {
-				mailSender.sendFromAdmin(employeeMail, new MailContents(titleMail, mailBody));
-				successList.add(employeeToSendId);
+				try {
+					mailSender.sendFromAdmin(employeeMail, new MailContents(titleMail, mailBody));
+					successList.add(employeeToSendId);
+				} catch (Exception ex) {
+					throw new BusinessException("Msg_1057");
+				}
 		
 			}
 		}
