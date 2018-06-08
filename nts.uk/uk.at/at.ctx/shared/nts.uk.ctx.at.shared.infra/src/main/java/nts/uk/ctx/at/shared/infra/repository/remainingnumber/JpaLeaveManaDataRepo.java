@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
@@ -195,13 +194,16 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	}
 
 	@Override
-	public void udpateByHolidaySetting(LeaveManagementData domain) {
-		KrcmtLeaveManaData entity = this.getEntityManager().find(KrcmtLeaveManaData.class, domain.getID());
+	public void udpateByHolidaySetting(String leaveId, Boolean isCheckedExpired, GeneralDate expiredDate, Double occurredDays, Double unUsedDays) {
+		KrcmtLeaveManaData entity = this.getEntityManager().find(KrcmtLeaveManaData.class, leaveId);
 		if (Objects.isNull(entity)) {
 			throw new BusinessException("Msg_198");
 		}
-		domain.setSubHDAtr(EnumAdaptor.valueOf(entity.subHDAtr, DigestionAtr.class));
-		this.commandProxy().update(this.toEntity(domain));
+		entity.subHDAtr     = isCheckedExpired ? 2 : entity.subHDAtr;
+		entity.expiredDate  = expiredDate;
+		entity.occurredDays = occurredDays;
+		entity.unUsedDays   = unUsedDays;
+		this.commandProxy().update(entity);
 	}
 
 	@Override
