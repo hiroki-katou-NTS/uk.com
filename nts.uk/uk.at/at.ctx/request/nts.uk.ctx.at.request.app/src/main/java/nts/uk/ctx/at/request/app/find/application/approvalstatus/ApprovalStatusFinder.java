@@ -134,8 +134,7 @@ public class ApprovalStatusFinder {
 		GeneralDate endDate = null;
 		int processingYm = 0;
 		// ドメインモデル「就業締め日」を取得する <shared>
-		//List<Closure> closureList = this.repository.findAllActive(companyId, UseClassification.UseClass_Use);
-		List<Closure> closureList = this.repository.findAllUse(companyId);
+		List<Closure> closureList = this.repository.findAllActive(companyId, UseClassification.UseClass_Use);
 		int selectedClosureId = 0;
 		List<ClosuresDto> closureDto = this.getClosure(closureList);
 

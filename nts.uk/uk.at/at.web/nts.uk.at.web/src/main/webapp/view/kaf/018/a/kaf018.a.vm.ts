@@ -169,15 +169,16 @@ module nts.uk.at.view.kaf018.a.viewmodel {
             let listWorkplace = [];
             _.forEach(self.multiSelectedWorkplaceId(), function(item) {
                 let data = _.find(lstWkp, (wkp) => { return wkp.workplaceId == item });
-                listWorkplace.push({ code: data.workplaceId, name: data.nodeText });
+                listWorkplace.push({hierarchyCode: data.hierarchyCode, code: data.workplaceId, name: data.nodeText });
             })
+            let lstWorkplaces = _.sortBy(listWorkplace, o => o.hierarchyCode, 'asc')
             let params = {
                 closureId: self.selectTarget,
                 processingYm: self.processingYm(),
                 startDate: self.startDate(),
                 endDate: self.endDate(),
                 closureName: self.closureName(),
-                listWorkplace: listWorkplace,
+                listWorkplace: lstWorkplaces,
                 isConfirmData: self.isDailyComfirm(),
                 listEmployeeCode: self.listEmployeeCode(),
                 multiSelectedWorkplaceId: self.multiSelectedWorkplaceId()

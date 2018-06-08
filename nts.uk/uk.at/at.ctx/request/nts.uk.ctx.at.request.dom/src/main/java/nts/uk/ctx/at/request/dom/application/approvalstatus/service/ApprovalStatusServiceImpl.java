@@ -722,7 +722,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			// アルゴリズム「承認状況日別状態作成」を実行する
 			List<DailyStatus> dailyStatus = this.getApprovalSttByDate(appStt.getStartDate(), appStt.getEndDate(),
 					listApprovalContent);
-			listDailyStatus.add(new DailyStatusOutput(appStt.getSid(), empCode, empName, dailyStatus));
+			listDailyStatus.add(new DailyStatusOutput(appStt.getSid(), empName, dailyStatus));
 		}
 		return new ApprovalSttByEmpListOutput(listDailyStatus, listAppSttEmp);
 	}

@@ -149,7 +149,8 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             var dfd = $.Deferred();
             self.getStatusSymbol().done(function(data: any) {
                 self.listApprovalEmployee = data.listAppSttEmp;
-                let listDailyStatus = _.sortBy(data.listDailyStt, o => o.empCode,'asc');
+                let listDailyStatus = _.sortBy(data.listDailyStt,'asc');
+                
                 self.listDailyStatus = listDailyStatus;
                 let sv1 = self.setColorForCellHeaderDetail();
                 let sv2 = self.setSymbolForCellContentDetail(self.listDailyStatus);
@@ -186,7 +187,8 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             block.invisible();
             self.getStatusSymbol().done(function(data: any) {
                 self.listApprovalEmployee = data.listAppSttEmp;
-                self.listDailyStatus = data.listDailyStt;
+                let listDailyStatus = _.sortBy(data.listDailyStt, o => o.empName,'asc');
+                self.listDailyStatus = listDailyStatus;
 
                 let sv1 = self.setColorForCellHeaderDetail();
                 let sv2 = self.setSymbolForCellContentDetail(self.listDailyStatus);
@@ -435,10 +437,8 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 
     class DailyStatusOut {
         empId: string;
-        empCode: string;
         listDaily: Array<DailyStatus>;
-        constructor(empId: string, empCode: string, listDaily: Array<DailyStatus>) {
-            this.empCode = empCode;
+        constructor(empId: string, listDaily: Array<DailyStatus>) {
             this.empId = empId;
             this.listDaily = listDaily;
         }

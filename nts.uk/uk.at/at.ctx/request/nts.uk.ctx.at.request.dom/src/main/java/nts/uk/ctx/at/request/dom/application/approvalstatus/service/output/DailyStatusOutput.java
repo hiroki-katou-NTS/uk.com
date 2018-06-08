@@ -11,7 +11,6 @@ import lombok.Setter;
 @Setter
 public class DailyStatusOutput {
 	String empId;
-	String empCode;
 	String empName;
 	List<DailyStatus> listDaily;
 }
