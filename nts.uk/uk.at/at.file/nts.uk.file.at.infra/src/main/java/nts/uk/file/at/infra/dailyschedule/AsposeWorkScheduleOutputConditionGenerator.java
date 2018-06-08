@@ -236,7 +236,14 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			Integer currentRow, dateRow;
 			
 			// Calculate row size and get sheet
-			int nSize = reportData.getHeaderData().getLstOutputItemSettingCode().size() / CHUNK_SIZE + 1;
+			int nListOutputCode = reportData.getHeaderData().getLstOutputItemSettingCode().size();
+			int nSize;
+			if (nListOutputCode % CHUNK_SIZE == 0) {
+				nSize = reportData.getHeaderData().getLstOutputItemSettingCode().size() / CHUNK_SIZE;
+			}
+			else {
+				nSize = reportData.getHeaderData().getLstOutputItemSettingCode().size() / CHUNK_SIZE + 1;
+			}
 			if (condition.getOutputType() == FormOutputType.BY_EMPLOYEE) {
 				switch (nSize) {
 				case 1:
