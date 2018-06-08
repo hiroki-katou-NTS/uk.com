@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.infra.repository.monthly.roundingset;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -7,11 +8,14 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.roundingmonth.ItemRoundingSetOfMonthly;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.roundingmonth.RoundingSetOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.monthly.roundingset.RoundingProcessOfExcessOutsideTime;
 import nts.uk.ctx.at.shared.dom.monthly.roundingset.TimeRoundingOfExcessOutsideTime;
 import nts.uk.ctx.at.shared.infra.entity.monthly.roundingset.KrcstMonExcOutRound;
+import nts.uk.ctx.at.shared.infra.entity.monthly.roundingset.KrcstMonItemRound;
+import nts.uk.ctx.at.shared.infra.entity.monthly.roundingset.KrcstMonItemRoundPK;
 import nts.uk.ctx.at.shared.infra.entity.monthly.roundingset.KrcstMonRoundSetPK;
 
 /**
@@ -23,6 +27,10 @@ public class JpaExcOutRoundingSet extends JpaRepository implements RoundingSetOf
 
 	private static final String REMOVE_BY_CID_FOR_EXCOUT =
 			"DELETE FROM KrcstMonExcoutRound a "
+			+ "WHERE a.PK.companyId = :companyId ";
+	
+	private static final String REMOVE_BY_CID_FOR_ITEM =
+			"DELETE FROM KrcstMonItemRound a "
 			+ "WHERE a.PK.companyId = :companyId ";
 	
 	/** 検索 */
@@ -83,5 +91,19 @@ public class JpaExcOutRoundingSet extends JpaRepository implements RoundingSetOf
 		this.getEntityManager().createQuery(REMOVE_BY_CID_FOR_EXCOUT)
 				.setParameter("companyId", companyId)
 				.executeUpdate();
+	}
+
+	@Override
+	public void persistAndUpdateMonItemRound(List<ItemRoundingSetOfMonthly> lstItemRounding, String companyId) {
+		this.getEntityManager().createQuery(REMOVE_BY_CID_FOR_ITEM)
+		.setParameter("companyId", companyId)
+		.executeUpdate();
+		for (val itemRoundSet : lstItemRounding){
+			KrcstMonItemRound entityItemRound = new KrcstMonItemRound();
+			entityItemRound.PK = new KrcstMonItemRoundPK(companyId, itemRoundSet.getAttendanceItemId());
+			entityItemRound.roundUnit = itemRoundSet.getRoundingSet().getRoundingTime().value;
+			entityItemRound.roundProc = itemRoundSet.getRoundingSet().getRounding().value;
+			this.getEntityManager().persist(entityItemRound);
+		}
 	}
 }
