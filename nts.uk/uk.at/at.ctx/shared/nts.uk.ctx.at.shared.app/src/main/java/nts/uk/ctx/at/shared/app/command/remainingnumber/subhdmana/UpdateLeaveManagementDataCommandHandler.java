@@ -13,7 +13,6 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.AddSubHdManagementService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class UpdateLeaveManagementDataCommandHandler
@@ -37,8 +36,9 @@ public class UpdateLeaveManagementDataCommandHandler
 	 * @return errorList
 	 */
 	private List<String> leaveManagementProcess(LeaveManagementDataCommand command) {
-        // アルゴリズム「休出（年月日）チェック処理」を実行する
-        List<String> errorList = this.addSubHdManaService.checkHoliday(command.getLeaveDate(), Optional.empty(), command.getClosureId());
+		// アルゴリズム「休出（年月日）チェック処理」を実行する
+		List<String> errorList = this.addSubHdManaService.checkHoliday(command.getLeaveDate(), Optional.empty(),
+				command.getClosureId());
 
 		if (!errorList.isEmpty()) {
 			return errorList;
@@ -51,12 +51,9 @@ public class UpdateLeaveManagementDataCommandHandler
 			return errorList;
 		}
 
-		int subHDAtr = command.getIsCheckedExpired() ? 1 : 0;
 		// ドメインモデル「休出管理データ」の選択データを更新する
-		LeaveManagementData domain = new LeaveManagementData(command.getLeaveId(), AppContexts.user().companyId(),
-				command.getEmployeeId(), false, command.getLeaveDate(), command.getExpiredDate(),
-				command.getOccurredDays(), 0, command.getUnUsedDays(), 0, subHDAtr, 0, 0);
-		leaveManaDataRepository.udpateByHolidaySetting(domain);
+		leaveManaDataRepository.udpateByHolidaySetting(command.getLeaveId(), command.getIsCheckedExpired(),
+				command.getExpiredDate(), command.getOccurredDays(), command.getUnUsedDays());
 
 		// 結果情報に「エラーなし」を返す
 		return Collections.emptyList();
@@ -89,6 +86,9 @@ public class UpdateLeaveManagementDataCommandHandler
 			if (Double.valueOf(0).equals(command.getUnUsedDays())) {
 				// エラーメッセージ(Msg_1213)をエラーリストにセットする
 				errorList.add("Msg_1213");
+			} else {
+				// エラーメッセージ(Msg_1302)をエラーリストにセットする
+				errorList.add("Msg_1302");
 			}
 		}
 		return errorList;

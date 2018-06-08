@@ -31,7 +31,7 @@ public interface LeaveManaDataRepository {
 	
 	public void updateUnUseDayLeaveId(String leaveId, Double unUsedDay);
 	
-	void updateSubByLeaveId(List<String> leaveIds);
+	void updateSubByLeaveId(List<String> leaveIds, Boolean check);
 	/**
 	 * Get domain 休出管理データ by ID
 	 * 
@@ -43,9 +43,13 @@ public interface LeaveManaDataRepository {
 
 	/**
 	 * Update domain 休出管理データ
-	 * @param domain
+	 * @param leaveId 休出データID
+	 * @param isCheckedExpired 期限切れ
+	 * @param expiredDate 期限
+	 * @param occurredDays 休出日数
+	 * @param unUsedDays 未使用日数
 	 */
-	void udpateByHolidaySetting(LeaveManagementData domain);
+	void udpateByHolidaySetting(String leaveId, Boolean isCheckedExpired, GeneralDate expiredDate, Double occurredDays, Double unUsedDays);
 
 	/**
 	 * Delete domain 休出管理データ
