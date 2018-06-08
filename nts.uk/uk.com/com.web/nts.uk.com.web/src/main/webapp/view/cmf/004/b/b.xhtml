@@ -20,8 +20,21 @@
 			</div>
 			<div class="div-line">
 				<!--B3_2 アップロードボタン-->
-				<button style="margin-left: 60px;" class="proceed large" tabindex="2">#{i18n.getText('CMF004_31')}</button>
-			</div>
+<div id="file-upload" class="div-line proceed" tabindex="2"
+												style="display: inline-block;"
+												data-bind="ntsFileUpload:{
+													stereoType: 'flowmenu',
+													name: '#[CMF004_31]', 
+													text: '#{i18n.getText('CMF004_31')}',
+													filename: $vm.fileName,
+													accept: ['.zip'],			
+													aslink: true,
+													enable: true,
+													required: true,
+													immediateUpload: true,
+													uploadFinished: $vm.finished}">
+											</div>			</div>
+			
 			<div class="div-line" style="margin-bottom: 20px;">
 				<!--B4_1 保存ファイル指定-->
 				<div

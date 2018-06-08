@@ -44,3 +44,8 @@
 .row-number {
 	background-color: #CFF1A5;
 }
+
+#file-upload .browser-button {
+	background-color: #A4EEB0;
+	margin-left: 60px;
+}

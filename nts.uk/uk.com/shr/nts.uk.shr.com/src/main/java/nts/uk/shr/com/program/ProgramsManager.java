@@ -1897,10 +1897,6 @@ public class ProgramsManager {
 	public static final Program KDM002B = new Program(WebAppId.AT, ProgramIdConsts.KDM002B, "KDM002_2",
 			"/view/kdm/002/b/index.xhtml");
 
-	public static final Program CMF003A = new Program(WebAppId.COM, ProgramIdConsts.CMF004A, "CMF004_1",
-			"/view/cmf/004/a/index.xhtml");
-	public static final Program CMF003C = new Program(WebAppId.COM, ProgramIdConsts.CMF004C, "CMF004_3",
-			"/view/cmf/004/c/index.xhtml");
 	public static final Program CMF003D = new Program(WebAppId.COM, ProgramIdConsts.CMF004D, "CMF004_4",
 			"/view/cmf/004/d/index.xhtml");
 	
