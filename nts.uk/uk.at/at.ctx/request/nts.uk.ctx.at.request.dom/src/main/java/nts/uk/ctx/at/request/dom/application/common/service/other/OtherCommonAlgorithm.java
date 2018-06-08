@@ -56,6 +56,9 @@ public interface OtherCommonAlgorithm {
 	public AppCompltLeaveSyncOutput getAppComplementLeaveSync(String companyId, String appId);
 	
 	/**
+	 * 10.申請メール自動送信
+	 */
+	/**
 	 * 承認者へ送る（新規登録、更新登録、承認）
 	 * @param employeeIDList
 	 * @param application
@@ -73,26 +76,32 @@ public interface OtherCommonAlgorithm {
 	
 	/**
 	 * 申請者へ送る（承認）
-	 * @param employeeIDList
 	 * @param application
 	 * @return
 	 */
-	public MailResult sendMailApplicantApprove(List<String> employeeIDList, Application_New application);
+	public MailResult sendMailApplicantApprove(Application_New application);
 	
 	/**
 	 * 申請者へ送る（否認）
-	 * @param employeeIDList
 	 * @param application
 	 * @return
 	 */
-	public MailResult sendMailApplicantDeny(List<String> employeeIDList, Application_New application);
+	public MailResult sendMailApplicantDeny(Application_New application);
 	
 	/**
 	 * 承認者へ送る
-	 * 申請者へ送る
 	 * @param listDestination
 	 * @param application
+	 * @param text
 	 * @return
 	 */
-	public MailResult sendMail(List<String> listDestination, Application_New application);
+	public MailResult sendMailApprover(List<String> listDestination, Application_New application, String text);
+	
+	/**
+	 * 申請者へ送る
+	 * @param application
+	 * @param text
+	 * @return
+	 */
+	public MailResult sendMailApplicant(Application_New application, String text);
 }

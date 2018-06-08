@@ -868,7 +868,7 @@ module nts.custombinding {
                             <input data-bind=" ntsTextEditor: {
                                     name: itemName,
                                     value: value,
-                                    constraint: constraint,
+                                    constraint: constraint || nameid,
                                     required: required,
                                     option: {
                                         textmode: 'text'
@@ -891,7 +891,7 @@ module nts.custombinding {
                             <textarea data-bind="ntsMultilineEditor: {
                                     name: itemName,
                                     value: value,
-                                    constraint: constraint,
+                                    constraint: constraint || nameid,
                                     required: required,
                                     option: {
                                         textmode: 'text'
@@ -915,7 +915,7 @@ module nts.custombinding {
                         <input data-bind="ntsNumberEditor: { 
                                     name: itemName,
                                     value: value,
-                                    constraint: constraint,
+                                    constraint: constraint || nameid,
                                     required: required,
                                     option: {
                                         textalign: 'left',
@@ -942,10 +942,11 @@ module nts.custombinding {
                                 value: value,
                                 startDate: startDate,
                                 endDate: endDate,
-                                constraint: constraint,
+                                constraint: constraint || nameid,
                                 dateFormat: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'YYYY/MM/DD' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'YYYY/MM' : 'YYYY'),
                                 enable: editable,
-                                readonly: readonly
+                                readonly: readonly,
+                                required: required
                             }, attr: { 
                                 id: nameid, 
                                 nameid: nameid,
@@ -968,10 +969,11 @@ module nts.custombinding {
                                     value: value,
                                     startDate: startDate,
                                     endDate: endDate,
-                                    constraint: constraint,
+                                    constraint: constraint || nameid,
                                     dateFormat: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'YYYY/MM/DD' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'YYYY/MM' : 'YYYY'),
                                     enable: editable,
-                                    readonly: readonly
+                                    readonly: readonly,
+                                    required: required
                                 }, attr: { 
                                     id: nameid, 
                                     nameid: nameid,
@@ -990,10 +992,11 @@ module nts.custombinding {
                                     value: value,
                                     startDate: startDate,
                                     endDate: endDate,
-                                    constraint: constraint,
+                                    constraint: constraint || nameid,
                                     dateFormat: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'YYYY/MM/DD' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'YYYY/MM' : 'YYYY'),
                                     enable: editable,
-                                    readonly: readonly
+                                    readonly: readonly,
+                                    required: required
                                 }, attr: { 
                                     id: nameid, 
                                     nameid: nameid,
@@ -1011,7 +1014,7 @@ module nts.custombinding {
                         <input data-bind="ntsTimeEditor: {
                                     name: itemName,
                                     value: value,
-                                    constraint: constraint,
+                                    constraint: constraint || nameid,
                                     required: required,
                                     inputFormat: 'time',
                                     enable: editable,
@@ -1031,7 +1034,7 @@ module nts.custombinding {
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.TIMEPOINT -->
                         <input data-bind="ntsTimeWithDayEditor: { 
                                     name: itemName,
-                                    constraint: constraint,
+                                    constraint: constraint || nameid,
                                     value: value,
                                     enable: editable, 
                                     readonly: readonly,
@@ -1135,7 +1138,7 @@ module nts.custombinding {
                                 <input data-bind="ntsNumberEditor: { 
                                             name: itemName,
                                             value: value,
-                                            constraint: constraint,
+                                            constraint: constraint || nameid,
                                             required: required,
                                             option: {
                                                 textalign: 'left',

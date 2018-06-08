@@ -27,7 +27,9 @@ import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessType
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
- * 勤務予定マスタ情報を取得する(lấy các thông tin master 勤務予定マスタ情報)
+ * 勤務予定マスタ情報を取得する
+ * 
+ * lấy các thông tin master 勤務予定マスタ情報
  * 
  * @author sonnh1
  *
@@ -50,7 +52,7 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 	@Override
 	public Optional<ScheduleMasterInformationDto> getScheduleMasterInformationDto(String employeeId,
 			GeneralDate baseDate, String exeId, EmployeeGeneralInfoImported empGeneralInfo) {
-		
+
 		Optional<ScheduleMasterInformationDto> result = Optional.of(new ScheduleMasterInformationDto());
 
 		Map<String, List<ExEmploymentHistItemImported>> mapEmploymentHist = empGeneralInfo.getEmploymentDto().stream()
@@ -110,7 +112,7 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 	private boolean setEmployeeCode(String exeId, String employeeId, GeneralDate baseDate,
 			Optional<ScheduleMasterInformationDto> result,
 			Map<String, List<ExEmploymentHistItemImported>> mapEmploymentHist) {
-
+		// EA No1678
 		List<ExEmploymentHistItemImported> listEmpHistItem = mapEmploymentHist.get(employeeId);
 		if (listEmpHistItem != null) {
 			Optional<ExEmploymentHistItemImported> optEmpHistItem = listEmpHistItem.stream()
@@ -121,12 +123,6 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 			}
 		}
 
-		// if (employmentHistoryImported.isPresent()) {
-		// String employmentCode =
-		// employmentHistoryImported.get().getEmploymentCode();
-		// result.get().setEmployeeCode(employmentCode);
-		// return true;
-		// }
 		ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(this.getErrorContent("Msg_602", "#Com_Employment"),
 				exeId, baseDate, employeeId);
 		this.scheduleErrorLogRepository.add(scheduleErrorLog);
@@ -144,10 +140,7 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 	private void getClassificationCode(String employeeId, GeneralDate baseDate,
 			Optional<ScheduleMasterInformationDto> result,
 			Map<String, List<ExClassificationHistItemImported>> mapClassificationHist) {
-		// Imported「所属分類履歴」から分類コードを取得する(lấy 分類コード từ Imported「所属分類履歴」)
-		// Optional<SClsHistImported> hisExport =
-		// this.syClassificationAdapter.findSClsHistBySid(companyId, employeeId,
-		// baseDate);
+		// EA No1679
 		List<ExClassificationHistItemImported> listClassHistItem = mapClassificationHist.get(employeeId);
 		if (listClassHistItem != null) {
 			Optional<ExClassificationHistItemImported> optClassHistItem = listClassHistItem.stream()
@@ -155,12 +148,7 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 			if (optClassHistItem.isPresent()) {
 				result.get().setClassificationCode(optClassHistItem.get().getClassificationCode());
 			}
-		}
-		// if (hisExport.isPresent()) {
-		// String classificationCode = hisExport.get().getClassificationCode();
-		// result.get().setClassificationCode(classificationCode);
-		// }
-		else {
+		} else {
 			result.get().setClassificationCode(null);
 		}
 	}
@@ -178,22 +166,7 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 	private boolean acquireJobTitleId(String exeId, String employeeId, GeneralDate baseDate,
 			Optional<ScheduleMasterInformationDto> result,
 			Map<String, List<ExJobTitleHistItemImported>> mapJobTitleHist) {
-		// Imported「所属職位履歴」から職位IDを取得する(lấy 職位ID từ Imported「所属職位履歴」)
-		// Optional<EmployeeJobHistImported> employeeJobHisOptional =
-		// this.syJobTitleAdapter.findBySid(employeeId,
-		// baseDate);
-		// if (employeeJobHisOptional.isPresent()) {
-		// String jobId = employeeJobHisOptional.get().getJobTitleID();
-		// result.get().setJobId(jobId);
-		// return true;
-		// }
-		// else {
-		// ScheduleErrorLog scheduleErrorLog = new
-		// ScheduleErrorLog(this.getErrorContent("Msg_602", "#Com_Jobtitle"),
-		// exeId, baseDate, employeeId);
-		// this.scheduleErrorLogRepository.add(scheduleErrorLog);
-		// return false;
-		// }
+		// EA No1680
 		List<ExJobTitleHistItemImported> listJobTitleHistItem = mapJobTitleHist.get(employeeId);
 		if (listJobTitleHistItem != null) {
 			Optional<ExJobTitleHistItemImported> optJobTitleHistItem = listJobTitleHistItem.stream()
@@ -223,21 +196,7 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 	private boolean acquireWorkplaceId(String exeId, String employeeId, GeneralDate baseDate,
 			Optional<ScheduleMasterInformationDto> result,
 			Map<String, List<ExWorkplaceHistItemImported>> mapWorkplaceHist) {
-		// Imported「所属職場履歴」から職場IDを取得する(lấy職場ID từ Imported「所属職場履歴」)
-		// Optional<SWkpHistImported> swkpHisOptional =
-		// this.syWorkplaceAdapter.findBySid(employeeId, baseDate);
-		// if (swkpHisOptional.isPresent()) {
-		// String workPlaceId = swkpHisOptional.get().getWorkplaceId();
-		// result.get().setWorkplaceId(workPlaceId);
-		// return true;
-		// } else {
-		// ScheduleErrorLog scheduleErrorLog = new
-		// ScheduleErrorLog(this.getErrorContent("Msg_602", "#Com_Workplace"),
-		// exeId, baseDate, employeeId);
-		// this.scheduleErrorLogRepository.add(scheduleErrorLog);
-		// return false;
-		// }
-
+		// EA No1681
 		List<ExWorkplaceHistItemImported> listWorkplaceHistItem = mapWorkplaceHist.get(employeeId);
 		if (listWorkplaceHistItem != null) {
 			Optional<ExWorkplaceHistItemImported> optWorkplaceHistItem = listWorkplaceHistItem.stream()
