@@ -186,7 +186,7 @@ module nts.uk.com.view.kwr002.b {
 
                 isInvalid: function () {
                     return ((!_.isArray(this.attendanceRecExpDaily) || !_.isArray(this.attendanceRecExpMonthly))
-                        || (this.countValid(this.attendanceRecExpDaily) < 9 && this.countValid(this.attendanceRecExpMonthly) < 9));
+                        || (this.countValid(this.attendanceRecExpDaily) < 1 && this.countValid(this.attendanceRecExpMonthly) < 1));
 
                 },
 
