@@ -319,14 +319,14 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	private PpemtPerInfoCtg createPerInfoCtgFromDomain(PersonInfoCategory perInfoCtg) {
 		PpemtPerInfoCtgPK perInfoCtgPK = new PpemtPerInfoCtgPK(perInfoCtg.getPersonInfoCategoryId());
 		return new PpemtPerInfoCtg(perInfoCtgPK, perInfoCtg.getCompanyId(), perInfoCtg.getCategoryCode().v(),
-				perInfoCtg.getCategoryName().v(), perInfoCtg.getIsAbolition().value);
+				perInfoCtg.getCategoryName().v(), perInfoCtg.getIsAbolition().value, perInfoCtg.isCanAbolition() == true? 1: 0);
 
 	}
 
 	private PpemtPerInfoCtg createPerInfoCtgFromDomainWithCid(PersonInfoCategory perInfoCtg, String companyId) {
 		PpemtPerInfoCtgPK perInfoCtgPK = new PpemtPerInfoCtgPK(IdentifierUtil.randomUniqueId());
 		return new PpemtPerInfoCtg(perInfoCtgPK, companyId, perInfoCtg.getCategoryCode().v(),
-				perInfoCtg.getCategoryName().v(), perInfoCtg.getIsAbolition().value);
+				perInfoCtg.getCategoryName().v(), perInfoCtg.getIsAbolition().value, perInfoCtg.isCanAbolition() == true? 1: 0);
 
 	}
 
@@ -337,7 +337,9 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 		return new PpemtPerInfoCtgCm(perInfoCtgCmPK, categoryParentCode, perInfoCtg.getCategoryType().value,
 				perInfoCtg.getPersonEmployeeType().value, perInfoCtg.getIsFixed().value,
 				perInfoCtg.getAddItemCls() == null ? 1 : perInfoCtg.getAddItemCls().value,
-				perInfoCtg.getInitValMasterCls() == null ? 1 : perInfoCtg.getInitValMasterCls().value);
+				perInfoCtg.getInitValMasterCls() == null ? 1 : perInfoCtg.getInitValMasterCls().value,
+				perInfoCtg.getSalaryUseAtr().value, perInfoCtg.getPersonnelUseAtr().value, 
+				perInfoCtg.getEmploymentUseAtr().value);
 	}
 
 	private PpemtPerInfoCtgOrder createPerInfoCtgOrderFromDomain(String perInfoCtgId, String companyId, int disOrder) {
