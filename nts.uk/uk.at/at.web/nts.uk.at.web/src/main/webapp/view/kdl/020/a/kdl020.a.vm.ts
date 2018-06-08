@@ -282,25 +282,25 @@ module nts.uk.at.view.kdl020.a.screenModel {
     }
     export class AnnualLeaveRemainingNumber {
         /* 年休残数（付与前）日数*/
-        annualLeaveGrantPreDay: KnockoutObservable<number> = ko.observable(null);
+        annualLeaveGrantPreDay: KnockoutObservable<number> = ko.observable(0);
         /* 年休残数（付与前）時間 */
-        annualLeaveGrantPreTime: KnockoutObservable<number> = ko.observable(null);
+        annualLeaveGrantPreTime: KnockoutObservable<number> = ko.observable(0);
         /* 半休残数（付与前）回数*/
-        numberOfRemainGrantPre: KnockoutObservable<number> = ko.observable(null);
+        numberOfRemainGrantPre: KnockoutObservable<number> = ko.observable(0);
         /* 時間年休上限（付与前）*/
-        timeAnnualLeaveWithMinusGrantPre: KnockoutObservable<number> = ko.observable(null);
+        timeAnnualLeaveWithMinusGrantPre: KnockoutObservable<number> = ko.observable(0);
         /* 年休残数（付与後）日数 */
-        annualLeaveGrantPostDay: KnockoutObservable<number> = ko.observable(null);
+        annualLeaveGrantPostDay: KnockoutObservable<number> = ko.observable(0);
         /* 年休残数（付与後）時間*/
-        annualLeaveGrantPostTime: KnockoutObservable<number> = ko.observable(null);
+        annualLeaveGrantPostTime: KnockoutObservable<number> = ko.observable(0);
         /* 半休残数（付与後）回数*/
-        numberOfRemainGrantPost: KnockoutObservable<number> = ko.observable(null);
+        numberOfRemainGrantPost: KnockoutObservable<number> = ko.observable(0);
         /* 時間年休上限（付与後））*/
-        timeAnnualLeaveWithMinusGrantPost: KnockoutObservable<number> = ko.observable(null);
+        timeAnnualLeaveWithMinusGrantPost: KnockoutObservable<number> = ko.observable(0);
         /* 出勤率*/
-        attendanceRate: KnockoutObservable<number> = ko.observable(null);
+        attendanceRate: KnockoutObservable<number> = ko.observable(0);
         /* 労働日数*/
-        workingDays: KnockoutObservable<number> = ko.observable(null);
+        workingDays: KnockoutObservable<number> = ko.observable(0);
         constructor(data?) {
             if (data) {
                 this.annualLeaveGrantPreDay(data.annualLeaveGrantPreDay);
@@ -323,15 +323,15 @@ module nts.uk.at.view.kdl020.a.screenModel {
         /*付与日 */
         grantDate: KnockoutObservable<String> = ko.observable("");
         /* 付与数*/
-        grantNumber: KnockoutObservable<number> = ko.observable(null);
+        grantNumber: KnockoutObservable<number> = ko.observable(0);
         /* 使用日数 */
-        daysUsedNo: KnockoutObservable<number> = ko.observable(null);
+        daysUsedNo: KnockoutObservable<number> = ko.observable(0);
         /* 使用時間*/
-        usedMinutes: KnockoutObservable<number> = ko.observable(null);
+        usedMinutes: KnockoutObservable<number> = ko.observable(0);
         /* 残日数*/
-        remainDays: KnockoutObservable<number> = ko.observable(null);
+        remainDays: KnockoutObservable<number> = ko.observable(0);
         /* 残時間*/
-        remainMinutes: KnockoutObservable<number> = ko.observable(null);
+        remainMinutes: KnockoutObservable<number> = ko.observable(0);
         /* 期限*/
         deadline: KnockoutObservable<String> = ko.observable("");
         constructor(data?) {
@@ -349,9 +349,9 @@ module nts.uk.at.view.kdl020.a.screenModel {
     }
     export class AnnualLeaveManageInfor {
         ymd: KnockoutObservable<String> = ko.observable("");
-        daysUsedNo: KnockoutObservable<number> = ko.observable(null);
-        usedMinutes: KnockoutObservable<number> = ko.observable(null);
-        scheduleRecordAtr: KnockoutObservable<number> = ko.observable(null);
+        daysUsedNo: KnockoutObservable<number> = ko.observable(0);
+        usedMinutes: KnockoutObservable<number> = ko.observable(0);
+        scheduleRecordAtr: KnockoutObservable<number> = ko.observable(0);
         constructor(data?) {
             if (data) {
                 this.ymd(data.ymd);
@@ -373,15 +373,15 @@ module nts.uk.at.view.kdl020.a.screenModel {
         /** 次回年休付与日 */
         nextHolidayGrantDate: KnockoutObservable<String> = ko.observable("");
         /** 次回年休付与日数 */
-        nextHolidayGrantDays: KnockoutObservable<number> = ko.observable(null);
+        nextHolidayGrantDays: KnockoutObservable<number> = ko.observable(0);
         /** 出勤率 */
-        attendanceRate: KnockoutObservable<number> = ko.observable(null);
+        attendanceRate: KnockoutObservable<number> = ko.observable(0);
         /** 出勤日数 */
-        attendanceDays: KnockoutObservable<number> = ko.observable(null);
+        attendanceDays: KnockoutObservable<number> = ko.observable(0);
         /** 所定日数 */
-        predeterminedDays: KnockoutObservable<number> = ko.observable(null);
+        predeterminedDays: KnockoutObservable<number> = ko.observable(0);
         /** 年間所定日数 */
-        annualPerYearDays: KnockoutObservable<number> = ko.observable(null);
+        annualPerYearDays: KnockoutObservable<number> = ko.observable(0);
 
         constructor(data?) {
             if (data) {
