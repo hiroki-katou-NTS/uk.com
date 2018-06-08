@@ -45,7 +45,7 @@ public interface LeaveManaDataRepository {
 	 * Update domain 休出管理データ
 	 * @param domain
 	 */
-	void udpate(LeaveManagementData domain);
+	void udpateByHolidaySetting(LeaveManagementData domain);
 
 	/**
 	 * Delete domain 休出管理データ

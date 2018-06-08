@@ -1,23 +1,19 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.base;
 
-import java.math.BigDecimal;
+import nts.arc.primitive.HalfIntegerPrimitiveValue;
+import nts.arc.primitive.constraint.HalfIntegerRange;
 
-import nts.arc.primitive.DecimalPrimitiveValue;
-import nts.arc.primitive.constraint.DecimalMaxValue;
-import nts.arc.primitive.constraint.DecimalMinValue;
-
-@DecimalMinValue("0.0")
-@DecimalMaxValue("1.0")
 /**
  * 使用日数
  * @author HopNT
  *
  */
-public class UsedDays extends DecimalPrimitiveValue<UsedDays>{
+@HalfIntegerRange(min=0d, max = 1d)
+public class UsedDays extends HalfIntegerPrimitiveValue<UsedDays>{
 
 	private static final long serialVersionUID = 1L;
 
-	public UsedDays(BigDecimal rawValue) {
+	public UsedDays(Double rawValue) {
 		super(rawValue);
 	}
 

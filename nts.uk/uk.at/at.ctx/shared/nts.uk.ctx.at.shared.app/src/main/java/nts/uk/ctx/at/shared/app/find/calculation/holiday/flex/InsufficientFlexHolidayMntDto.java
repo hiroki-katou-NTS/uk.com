@@ -10,5 +10,5 @@ import lombok.Data;
 @Data
 public class InsufficientFlexHolidayMntDto {
 	/** 補填可能時間 */
-	public int attendanceTime;
+	public double attendanceTime;
 }

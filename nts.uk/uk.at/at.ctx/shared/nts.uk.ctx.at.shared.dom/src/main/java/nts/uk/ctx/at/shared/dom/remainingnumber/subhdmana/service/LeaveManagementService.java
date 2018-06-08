@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -91,7 +90,7 @@ public class LeaveManagementService {
 			List<LeavesManaData> leaveMana = leaveManagementData.getLeaveMana();
 			List<LeaveComDayOffManagement> entitiesLeave = leaveMana.stream()
 					.map(item -> new LeaveComDayOffManagement(item.getLeaveManaID(),
-							leaveManagementData.getComDayOffID(), new BigDecimal(item.getRemainDays()), 0,
+							leaveManagementData.getComDayOffID(), new Double(item.getRemainDays()), 0,
 							TargetSelectionAtr.MANUAL.value))
 					.collect(Collectors.toList());
 			leaveComDayOffManaRepository.insertAll(entitiesLeave);

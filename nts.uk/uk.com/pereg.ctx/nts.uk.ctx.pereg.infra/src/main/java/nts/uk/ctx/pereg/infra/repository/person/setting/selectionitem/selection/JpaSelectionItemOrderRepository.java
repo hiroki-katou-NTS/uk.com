@@ -2,7 +2,6 @@ package nts.uk.ctx.pereg.infra.repository.person.setting.selectionitem.selection
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -58,6 +57,16 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 	}
 	
 	@Override
+	public void removeAll(List<String> selectionIds) {
+		if (selectionIds.isEmpty()) {
+			return;
+		}
+		List<PpemtSelItemOrderPK> keys = selectionIds.stream().map(x -> new PpemtSelItemOrderPK(x))
+				.collect(Collectors.toList());
+		this.commandProxy().removeAll(PpemtSelItemOrder.class, keys);
+	}
+	
+	@Override
 	public void removeInSelectionItemId(String selectionItemId) {
 		List<PpemtSelItemOrder> orderList = this.queryProxy()
 				.query(SELECT_ALL_IN_SELECTION_ITEM_ID, PpemtSelItemOrder.class)
@@ -86,11 +95,15 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 	}
 	
 	@Override
-	public Map<String, List<SelectionItemOrder>> getByHistIdList(List<String> histIdList) {
+	public List<SelectionItemOrder> getByHistIdList(List<String> histIdList) {
+		
+		if (histIdList.isEmpty()) {
+			return new ArrayList<>();
+		}
 		List<SelectionItemOrder> seletionOrders = this.queryProxy()
 				.query(SELECT_BY_HISTORY_ID_LIST, PpemtSelItemOrder.class).setParameter("histIdList", histIdList)
 				.getList(c -> toDomain(c));
-		return seletionOrders.stream().collect(Collectors.groupingBy(SelectionItemOrder::getHistId));
+		return seletionOrders;
 	}
 
 	@Override
