@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
+import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.gul.mail.send.MailContents;
@@ -141,7 +142,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 		for (String employee : employeeList) {
 			String employeeName = employeeAdapter.getEmployeeName(employee);
 			OutGoingMailImport mail = envAdapter.findMailBySid(lstMail, employee);
-			String employeeMail = mail == null ? "" : mail.getEmailAddress();
+			String employeeMail = mail == null || mail.getEmailAddress() == null ? "" : mail.getEmailAddress();
 			// TODO
 			String urlInfo = "";
 			if (urlEmbedded.isPresent()) {
@@ -165,9 +166,12 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 				errorList.add(I18NText.getText("Msg_768", employeeName));
 				continue;
 			} else {
-				// TODO
-				mailsender.sendFromAdmin(employeeMail, new MailContents(titleMail, mailContentToSend));
-				successList.add(employeeName);
+				try {
+					mailsender.sendFromAdmin(employeeMail, new MailContents(titleMail, mailContentToSend));
+					successList.add(employeeName);
+				} catch (Exception ex) {
+					throw new BusinessException("Msg_1057");
+				}
 			}
 		}
 		return new MailSenderResult(successList, errorList);

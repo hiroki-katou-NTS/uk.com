@@ -13,26 +13,14 @@
 	margin: 10px;
 	margin-left: 25px;
 }
-.column1 {
-	width: 135px;	
-}
-.column1 {
-	width: 500;	
-}
+
 #combo-box {
 	width: 240px;		
 }
 #A4_2 {
 	width: 500px;
-    height: 140px;
+    height: 175px;
 }
-
-#message-area {
-	background-color: #f8efd4;
-	height: 68px;
-	width: 798px;
-}
-
 .message-td {
 	padding-left: 10px;
 	padding-top: 10px;
@@ -40,7 +28,7 @@
 
 #table-phase, #table-phase td, #table-phase th { 
 	border: 1px solid black;
-	text-align: center;
+	padding-left: 2px;
 	height: 25px;
 }
 

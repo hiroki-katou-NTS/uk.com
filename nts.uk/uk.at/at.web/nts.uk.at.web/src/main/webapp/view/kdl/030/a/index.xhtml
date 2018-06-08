@@ -30,13 +30,20 @@
 					</div>
 					<div id = "A2_2" tabindex = "1" >
 						<table id="table-phase">
+						<colgroup>
+							<col width="111px"/>
+							<col width="111px"/>
+							<col width="300px"/>
+							<col width="100px"/>
+							<col width="200px"/>
+						</colgroup>
 						<thead>
 							<tr class="bg-green">
-								<th class="phase-app" style="width: 111px;">#{i18n.getText('KDL030_10')}</th>
-								<th class="order-app" style="width: 111px;">#{i18n.getText('KDL030_11')}</th>
-								<th class="name-app" style="width: 300px;">#{i18n.getText('KDL030_12')}</th>
-								<th class="status-app" style="width: 100px;">#{i18n.getText('KDL030_13')}</th>
-								<th class="isMail-app" style="width: 200px;">#{i18n.getText('KDL030_14')}</th>
+								<th class="phase-app">#{i18n.getText('KDL030_10')}</th>
+								<th class="order-app">#{i18n.getText('KDL030_11')}</th>
+								<th class="name-app">#{i18n.getText('KDL030_12')}</th>
+								<th class="status-app">#{i18n.getText('KDL030_13')}</th>
+								<th class="isMail-app">#{i18n.getText('KDL030_14')}</th>
 							</tr>
 						</thead>
 						<tbody data-bind="foreach: approvalRootState">
@@ -47,14 +54,14 @@
 										<td data-bind="attr: {rowspan: $parent.listApprovalFrame().length}, text: 'フェーズ'+$parent.phaseOrder()" style="width: 111px;"  class="bg-green"></td>
 									</com:ko>
 									<!-- 承認者 -->
-									<td data-bind="text: '承認者'+$data.frameOrder()" style="width: 111px; text-align: left; padding-left: 5px;"  class="bg-green" ></td>
+									<td data-bind="text: '承認者'+$data.frameOrder()" class="bg-green" ></td>
 									<!-- 社員名 -->
-									<td data-bind="foreach: $data.listApprover" style="width: 230px; text-align: left;">
+									<td data-bind="foreach: $data.listApprover">
 										<div class = "rowPer"  data-bind="text: $data.dispApproverName(),
 																css: { rowBorder:  ($parent.listApprover().length - $index()) > 1 }"></div>
 									</td>
 									<!-- 状況 -->
-									<td data-bind="text: $data.approvalAtrName()" style="width: 111px; text-align: left; padding-left: 5px;"  ></td>
+									<td data-bind="text: $data.approvalAtrName()" ></td>
  									<!-- メール送信 -->
  									<td data-bind="foreach: $data.listApprover">
  										<div  class = "rowPer" data-bind = "if: $data.approverMail().length > 0,
@@ -97,7 +104,7 @@
 			</div>
 			<div id="functions-area-bottom">
 				<button tabindex="4" class="x-large proceed"
-					data-bind="click: sendMail">#{i18n.getText('KDL030_8')}</button>
+					data-bind="click: sendMail, enable: $root.errors.isEmpty">#{i18n.getText('KDL030_8')}</button>
 				<button tabindex="5" data-bind="click: cancel">#{i18n.getText('KDL030_9')}</button>
 			</div>
 		</ui:define>

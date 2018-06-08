@@ -8,13 +8,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
-
-import nts.arc.i18n.I18NText;
-import nts.arc.time.GeneralDate;
-import nts.gul.mail.send.MailContents;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.arc.error.BusinessException;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -28,7 +22,6 @@ import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbedded;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbeddedRepository;
-import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.url.RegisterEmbededURL;
@@ -81,7 +74,7 @@ public class CheckTranmissionImpl implements CheckTransmission {
 		for(String employeeToSendId: employeeIdList){
 			//find mail by sID
 			OutGoingMailImport mail = envAdapter.findMailBySid(lstMail, employeeToSendId);
-			String employeeMail = mail == null ? "" : mail.getEmailAddress();
+			String employeeMail = mail == null || mail.getEmailAddress() == null ? "" : mail.getEmailAddress();
 			if (mail == null) {//TH k co mail -> se k xay ra
 				//imported（申請承認）「社員名（ビジネスネーム）」を取得する 
 				List<EmployeeInfoImport> empObj = empAdapter.getByListSID(Arrays.asList(employeeToSendId));
@@ -89,8 +82,12 @@ public class CheckTranmissionImpl implements CheckTransmission {
 					errorList.add(empObj.get(0).getBussinessName());
 				}
 			} else {
-				mailSender.sendFromAdmin(employeeMail, new MailContents(titleMail, mailBody));
-				successList.add(employeeToSendId);
+				try {
+					mailSender.sendFromAdmin(employeeMail, new MailContents(titleMail, mailBody));
+					successList.add(employeeToSendId);
+				} catch (Exception ex) {
+					throw new BusinessException("Msg_1057");
+				}
 		
 			}
 		}

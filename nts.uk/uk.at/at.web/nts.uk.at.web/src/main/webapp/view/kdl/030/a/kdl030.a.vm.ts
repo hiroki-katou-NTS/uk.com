@@ -42,7 +42,8 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                                 for (let listApprover = listApprovalFrame[j].listApprover, k = 0; k < listApprover.length; k++) {
                                     if (listApprover[k].representerName.length > 0){
                                         listApprover[k].approverName += '(' + listApprover[k].representerName + ')';
-                                    } else if (listApprover[k].approverMail.length >0){
+                                    }
+                                    if (listApprover[k].approverMail.length >0){
                                         listApprover[k].approverName += '(@)';
                                         listApprover[k]['isSend'] = 1;
                                     } else {
@@ -69,6 +70,11 @@ module nts.uk.at.view.kdl030.a.viewmodel {
         // アルゴリズム「メール送信」を実行する
         sendMail() {
             var self = this;
+            //validate
+            $(".A4_2").trigger("validate");
+            if (nts.uk.ui.errors.hasError()){
+                return;
+            }
             let listSendMail: Array<String> = [];
             let listApprovalPhase = ko.toJS(self.approvalRootState);
             _.forEach(listApprovalPhase, x => {
@@ -96,8 +102,8 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                 'sendMailOption': listSendMail
             };
             nts.uk.ui.block.invisible();
-            nts.uk.ui.block.clear();
             service.sendMail(command).done(function(result) {
+                nts.uk.ui.block.clear();
                 // TO DO
                 if (result) {
                     // 成功
@@ -119,9 +125,11 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                     self.handleSendMailResult(successList, failedList);
                 }
             }).fail(function(res: any) {
-                dialog.alertError(res.errorMessage);
-            }).always(function(res: any) {
                 nts.uk.ui.block.clear();
+                //Msg1057
+                dialog.alertError({ messageId: res.messageId}).then(() =>{
+                    nts.uk.ui.windows.close();
+                });;
             });
 
         }
@@ -135,24 +143,22 @@ module nts.uk.at.view.kdl030.a.viewmodel {
             let sucessListAsStr = "";
             //送信出来た人があったかチェックする
             //送信できた人なし
-            if(numOfSuccess == 0){
-                //エラーメッセージ（Msg_1057）をエラーダイアログに出力する
-                dialog.alertError({messageId: "Msg_1057" });
-                return;
-            }
             if (numOfSuccess > 0) {//送信できた人あり
                 //情報メッセージ（Msg_207）を画面表示する
                 dialog.info({messageId: "Msg_207" }).then(() =>{
                     //アルゴリズム「送信・送信後チェック」で溜め込んだ社員名があったかチェックする
                     if(numOfFailed > 0){//溜め込んだ社員名無しあり
                         //エラーメッセージ（Msg_651）と溜め込んだ社員名をエラーダイアログに出力する
-                        dialog.alertError({ message: getMessage('Msg_651') + "\n" + failedList.join('\n'), messageId: "Msg_651" });
+                        dialog.alertError({ message: getMessage('Msg_651') + "\n" + failedList.join('\n'), messageId: "Msg_651" }).then(() =>{
+                            nts.uk.ui.windows.close();
+                        });
+                    }else{
+                        nts.uk.ui.windows.close();
                     }
                 });
             }
         }
     }
-
 
     export class ApprovalPhaseState {
         phaseOrder: number;
