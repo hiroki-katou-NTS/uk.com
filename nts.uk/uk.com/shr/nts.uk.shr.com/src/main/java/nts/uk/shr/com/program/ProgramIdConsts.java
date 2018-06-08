@@ -830,4 +830,9 @@ public class ProgramIdConsts {
 	public static final String KAF018F = "KAF018F";
 	public static final String KAF018G = "KAF018G";
 	public static final String KAF018H = "KAF018H";
+	
+	//KDL030
+	public static final String KDL030 = "KDL030";
+	//KDL034
+	public static final String KDL034 = "KDL034";
 }
