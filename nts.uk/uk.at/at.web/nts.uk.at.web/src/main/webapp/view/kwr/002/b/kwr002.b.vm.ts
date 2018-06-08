@@ -196,7 +196,7 @@ module nts.uk.com.view.kwr002.b {
 
             if (!self.newMode()) { //in update mode
                 let data = self.createTransferData(currentData, rcdExport);
-                if (!rcdExport.isInvalid()) {
+                if (rcdExport.isInvalid()) {
                     if (util.isNullOrUndefined(rcdExport.attendanceRecExpDaily) && util.isNullOrUndefined(rcdExport.attendanceRecExpMonthly)
                         && util.isNullOrUndefined(rcdExport.attendanceRecItemList) && util.isNullOrUndefined(rcdExport.sealStamp) &&
                         util.isNullOrUndefined(rcdExport.useSeal)) {
