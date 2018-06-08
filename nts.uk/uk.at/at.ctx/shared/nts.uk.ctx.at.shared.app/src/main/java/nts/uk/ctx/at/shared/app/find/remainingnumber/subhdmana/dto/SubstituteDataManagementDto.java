@@ -7,7 +7,6 @@ import lombok.Data;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SWkpHistImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.service.ExtraHolidayManagementOutput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.service.SubstituteManagementOutput;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 @AllArgsConstructor
 @Data

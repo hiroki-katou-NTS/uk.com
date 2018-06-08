@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
@@ -48,7 +49,7 @@ public class ExtraHolidayManagementDataDto {
 			} else {
 				dto.setLinked(0);
 			}
-			if (GeneralDate.today().after(data.getExpiredDate())){
+			if (GeneralDate.today().after(data.getExpiredDate()) && data.getSubHDAtr() == DigestionAtr.EXPIRED){
 				dto.setExpired(data.getUnUsedDays().v());
 			}else {
 				dto.setRemain(data.getUnUsedDays().v());
