@@ -7,9 +7,14 @@ table {
 th, td {
     padding: 5px;
 }
-td, th {
+td {
     border-top: 0.5px solid grey;
     border-left: 0.5px solid grey;
+}
+th {
+    border-top: 0.5px solid grey;
+    border-left: 0.5px solid grey;
+    border-bottom: 0.5px solid grey;
 }
 .div-table {
 	width: 775px;
