@@ -41,22 +41,22 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 	public void update(String storeProcessingId, int targetNumberPeople, SaveStatus saveStatus, String fileId,
 			NotUseAtr deletedFiles) {
 		Optional<ResultOfSaving> resultOfSavingOpt = this.getResultOfSavingById(storeProcessingId);
-		resultOfSavingOpt.ifPresent(entity -> {
-			entity.setTargetNumberPeople(targetNumberPeople);
-			entity.setSaveStatus(saveStatus);
-			entity.setFileId(fileId);
-			entity.setDeletedFiles(deletedFiles);
-			this.commandProxy().update(entity);
+		resultOfSavingOpt.ifPresent(data -> {
+			data.setTargetNumberPeople(targetNumberPeople);
+			data.setSaveStatus(saveStatus);
+			data.setFileId(fileId);
+			data.setDeletedFiles(deletedFiles);
+			this.commandProxy().update(SspmtResultOfSaving.toEntity(data));
 		});
 	}
 
 	@Override
 	public void update(String storeProcessingId, int targetNumberPeople, SaveStatus saveStatus) {
 		Optional<ResultOfSaving> resultOfSavingOpt = this.getResultOfSavingById(storeProcessingId);
-		resultOfSavingOpt.ifPresent(entity -> {
-			entity.setTargetNumberPeople(targetNumberPeople);
-			entity.setSaveStatus(saveStatus);
-			this.commandProxy().update(entity);
+		resultOfSavingOpt.ifPresent(data -> {
+			data.setTargetNumberPeople(targetNumberPeople);
+			data.setSaveStatus(saveStatus);
+			this.commandProxy().update(SspmtResultOfSaving.toEntity(data));
 		});
 	}
 }

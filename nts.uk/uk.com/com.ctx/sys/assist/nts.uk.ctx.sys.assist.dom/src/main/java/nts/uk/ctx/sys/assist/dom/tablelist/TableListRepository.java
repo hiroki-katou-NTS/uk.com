@@ -7,7 +7,7 @@ public interface TableListRepository {
 	void add(TableList domain);
 	Class<?> getTypeForTableName(String tableName);
 	String getFieldForColumnName(Class<?> tableType, String columnName);
-	List<TableList> getByOffsetAndNumber(int offset, int number);
-	List<TableList> getAllTableList();
+	List<TableList> getByOffsetAndNumber(String storeProcessingId, int offset, int number);
+	List<TableList> getByProcessingId(String storeProcessingId);
 	List<?> getDataDynamic(TableList tableList);
 }

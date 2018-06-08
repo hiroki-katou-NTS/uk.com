@@ -358,8 +358,14 @@ module nts.uk.at.view.kaf006.b{
                 endTime2: self.timeEnd2()
              };
              service.updateAbsence(paramInsert).done((data) =>{
-                  dialog.info({ messageId: "Msg_15" }).then(function() {         
-                        location.reload();   
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    if(data.autoSendMail){
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
+                            location.reload();
+                        });    
+                    } else {
+                        location.reload();
+                    }
                 });
              }).fail((res) =>{
                  dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })

@@ -937,7 +937,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
             if (params.dataType === 8) {
                 let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == self.selectedCode()) { return c } });
                 self.selectionName = ko.observable((objSel == undefined ? " " : objSel.optionText) || " ");
-                console.log(self.selectionName());
             }
 
             self.dateType = params.dateType || undefined;

@@ -59,7 +59,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             self.ccgcomponent = {
                 /** Common properties */
                 systemType: 1,
-                showEmployeeSelection: false,
+                showEmployeeSelection: true,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
                 showBaseDate: false,
@@ -112,7 +112,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             
             self.selectedPeriodItem.subscribe(x =>{
                 if (x == 0) {
-                    $("#daterangepickerA .ntsDatepicker").ntsError("clear");
+                    nts.uk.ui.errors.clearAll();
                 }
             });
             
@@ -139,13 +139,13 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     { headerText: '', key: 'unUsedDaysInGridText', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'expriedDaysInGridText', dataType: 'string', width: '0px', hidden: true },
                     { headerText: getText('KDM001_8'), template: '<div style="float:right"> ${dayoffDatePyout} </div>', key: 'dayoffDatePyout', dataType: 'string', width: '120px' },
-                    { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${occurredDays}${occurredDaysText} </div>', key: 'occurredDays', dataType: 'string', width: '85px' },
-                    { headerText: getText('KDM001_124'), key: 'payoutTied', dataType: 'string', width: '85px' },
+                    { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${occurredDays}${occurredDaysText} </div>', key: 'occurredDays', dataType: 'string', width: '86px' },
+                    { headerText: getText('KDM001_124'), key: 'payoutTied', dataType: 'string', width: '86px' },
                     { headerText: getText('KDM001_10'), template: '<div style="float:right"> ${dayoffDateSub} </div>', key: 'dayoffDateSub', dataType: 'string', width: '120px' },
-                    { headerText: getText('KDM001_11'), template: '<div style="float:right"> ${requiredDays}${requiredDaysText} </div>', key: 'requiredDays', dataType: 'string', width: '85px' },
-                    { headerText: getText('KDM001_124'), key: 'subTied', dataType: 'string', width: '85px' },
-                    { headerText: getText('KDM001_12'), template: '<div style="float:right"> ${unUsedDaysInGrid}${unUsedDaysInGridText} </div>', key: 'unUsedDaysInGrid', dataType: 'string', width: '85px' },
-                    { headerText: getText('KDM001_13'), template: '<div style="float:right"> ${expriedDaysInGrid}${expriedDaysInGridText} </div>', key: 'expriedDaysInGrid', dataType: 'string', width: '85px' },
+                    { headerText: getText('KDM001_11'), template: '<div style="float:right"> ${requiredDays}${requiredDaysText} </div>', key: 'requiredDays', dataType: 'string', width: '86px' },
+                    { headerText: getText('KDM001_124'), key: 'subTied', dataType: 'string', width: '86px' },
+                    { headerText: getText('KDM001_12'), template: '<div style="float:right"> ${unUsedDaysInGrid}${unUsedDaysInGridText} </div>', key: 'unUsedDaysInGrid', dataType: 'string', width: '86px' },
+                    { headerText: getText('KDM001_13'), template: '<div style="float:right"> ${expriedDaysInGrid}${expriedDaysInGridText} </div>', key: 'expriedDaysInGrid', dataType: 'string', width: '86px' },
                     { headerText: getText('KDM001_14'), formatter: getLawAtr, key: 'lawAtr', dataType: 'string', width: '100px' },
                     { headerText: '', key: 'link', dataType: 'string', width: '85px', unbound: true, ntsControl: 'ButtonPegSetting' },
                     { headerText: '', key: 'edit', dataType: 'string', width: '55px', unbound: true, ntsControl: 'ButtonCorrection' }
@@ -155,6 +155,12 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         name: 'Paging',
                         type: "local",
                         pageSize: 14
+                    },
+                    {
+                        name: "Resizing",
+                        columnSettings: [
+                            { allowResizing: false },
+                        ]
                     }
                 ],
                 ntsControls: [
@@ -303,9 +309,21 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             
             // set data for KCP009 screen B
             if(!($("#tabpanel-2").hasClass("disappear"))) {
-                __viewContext.viewModel.viewmodelB.employeeInputList([]);
-                __viewContext.viewModel.viewmodelB.employeeInputList(self.employeeInputList());
-                $('#emp-component').ntsLoadListComponent(__viewContext.viewModel.viewmodelB.listComponentOption);
+                var screenBModel = __viewContext.viewModel.viewmodelB;
+                screenBModel.employeeInputList([]);
+                screenBModel.listEmployee = [];
+                _.each(dataList, function(item) {
+                    screenBModel.listEmployee.push(new nts.uk.at.view.kdm001.b.viewmodel.EmployeeInfo(item.employeeId, item.employeeCode, item.employeeName, item.workplaceId, item.workplaceCode, item.workplaceName));
+                    screenBModel.employeeInputList.push(new EmployeeKcp009(item.employeeId, item.employeeCode, item.employeeName, item.workplaceName, ""));
+                });
+                $('#emp-component').ntsLoadListComponent(self.listComponentOption);
+                if (dataList.length == 0) {
+                    self.selectedItem('');
+                } else {
+                    let item = self.findIdSelected(dataList, self.selectedItem());
+                    let sortByEmployeeCode = _.orderBy(dataList, ["employeeCode"], ["asc"]);
+                    if (item == undefined) self.selectedItem(sortByEmployeeCode[0].employeeId);
+                }
             }
         }
 
@@ -582,13 +600,13 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 
                 if (moment.utc(params.expiredDate, 'YYYY/MM/DD').diff(moment.utc()) > 0) {
                     this.unUsedDaysInGrid = "" + params.unUsedDays;
-                    this.expriedDaysInGrid = null;
+                    this.expriedDaysInGrid = "0";
                     if(params.unUsedDays > 0) {
                         this.unUsedDaysInGridText = getText("KDM001_27");
                         this.unUsedDaysInGrid = params.unUsedDays.toFixed(1);
                     }
                 } else {
-                    this.unUsedDaysInGrid = null;
+                    this.unUsedDaysInGrid = "0";
                     this.expriedDaysInGrid = "" + params.unUsedDays;
                     if(params.unUsedDays > 0) {
                         this.expriedDaysInGridText = getText("KDM001_27");
@@ -598,7 +616,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             } else if ((params.subOfHDID != null) && (params.subOfHDID != "")) {
                 this.id = params.subOfHDID;
                 this.unUsedDaysInGrid = "" + (params.remainDays * (-1));
-                this.expriedDaysInGrid = null;
+                this.expriedDaysInGrid = "0";
                 if(params.remainDays > 0) {
                     this.unUsedDaysInGridText = getText("KDM001_27");
                     this.unUsedDaysInGrid = (params.remainDays * (-1)).toFixed(1);

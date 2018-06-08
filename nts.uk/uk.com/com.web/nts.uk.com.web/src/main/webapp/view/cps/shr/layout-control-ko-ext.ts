@@ -582,6 +582,14 @@ module nts.custombinding {
                     .layout-control.readonly:not(.inputable) .color-operation-case-character {
                         color: #000 !important;
                     }
+
+                    .layout-control.inputable .nts-help-button-image {
+                        width: 300px !important;
+                    }
+
+                    .layout-control.inputable .nts-help-button-image .caret-helpbutton.caret-left {
+                        top: unset !important;
+                    }
                 </style>`;
 
         private tmp = `<div class="left-area">
@@ -805,7 +813,7 @@ module nts.custombinding {
                 </script>
                 <script type="text/html" id="ctr_template">
                     <!-- ko if: resourceId -->
-                        <button class="inline" data-bind="attr: { title: resourceId }, text: text('？')">？</button>
+                        <button class="inline" data-bind="ntsHelpButton: { position: 'right center', textId: resourceId }, text: text('？')">？</button>
                     <!-- /ko -->                    
                     <!-- ko let: { 
                                 nameid : itemDefId.replace(/[-_]/g, ''),

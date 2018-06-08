@@ -3,6 +3,6 @@ module nts.uk.at.view.kdm001.e {
         let screenModel = new nts.uk.at.view.kdm001.e.viewmodel.ScreenModel();
             __viewContext.bind(screenModel);
         screenModel.initScreen();
-            $("#E6").focus();
+        $("#multi-list_container").focus();
     });
 }

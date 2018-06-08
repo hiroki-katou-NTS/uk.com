@@ -9,6 +9,10 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.shr.com.time.calendar.Year;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.YearPeriod;
 
 /**
  * 復旧対象
@@ -37,48 +41,49 @@ public class RestorationTarget extends DomainObject {
 	private RetentionPeriodIndicator retentionPeriodIndicator;
 
 	/**
-	 * 復旧対象開始年
+	 * 復旧対象年
 	 */
-	private Optional<Integer> recoveryTargetStartYear;
+	private Optional<YearPeriod> recoveryTargetYear;
 
 	/**
-	 * 復旧対象終了年
+	 * 復旧対象年月
 	 */
-	private Optional<Integer> recoveryTargetEndYear;
+	private Optional<YearMonthPeriod> recoveryTargetYM;
 
 	/**
-	 * 復旧対象開始年月
+	 * 復旧対象日
 	 */
-	private Optional<YearMonth> recoveryTargetStartYM;
+	private Optional<DatePeriod> recoveryTargetDate;
 
-	/**
-	 * 復旧対象終了年月
-	 */
-	private Optional<YearMonth> recoveryTargetEndYM;
-
-	/**
-	 * 復旧対象開始日
-	 */
-	private Optional<GeneralDate> recoveryTargetStartDate;
-
-	/**
-	 * 復旧対象終了日
-	 */
-	private Optional<GeneralDate> recoveryTargetEndDate;
-
-	public RestorationTarget(String dataRecoveryProcessId, String recoveryCategory,
-			int retentionPeriodIndicator, Integer recoveryTargetStartYear,
-			Integer recoveryTargetEndYear, Integer recoveryTargetStartYM,
-			Integer recoveryTargetEndYM, GeneralDate recoveryTargetStartDate,
-			GeneralDate recoveryTargetEndDate) {
+	public RestorationTarget(String dataRecoveryProcessId, String recoveryCategory, int retentionPeriodIndicator,
+			Integer recoveryTargetStartYear, Integer recoveryTargetEndYear, Integer recoveryTargetStartYM,
+			Integer recoveryTargetEndYM, GeneralDate recoveryTargetStartDate, GeneralDate recoveryTargetEndDate) {
 		this.dataRecoveryProcessId    = dataRecoveryProcessId;
 		this.recoveryCategory         = recoveryCategory;
 		this.retentionPeriodIndicator = EnumAdaptor.valueOf(retentionPeriodIndicator, RetentionPeriodIndicator.class);
-		this.recoveryTargetStartYear  = Optional.ofNullable(recoveryTargetStartYear);
-		this.recoveryTargetEndYear    = Optional.ofNullable(recoveryTargetEndYear);
-		this.recoveryTargetStartYM    = Objects.isNull(recoveryTargetStartYM) ? Optional.empty() : Optional.of(new YearMonth(recoveryTargetStartYM));
-		this.recoveryTargetEndYM      = Objects.isNull(recoveryTargetEndYM) ? Optional.empty() : Optional.of(new YearMonth(recoveryTargetEndYM));
-		this.recoveryTargetStartDate  = Optional.ofNullable(recoveryTargetStartDate);
-		this.recoveryTargetEndDate    = Optional.ofNullable(recoveryTargetEndDate);
+		// 復旧対象年
+		if (Objects.isNull(recoveryTargetStartYear) && Objects.isNull(recoveryTargetEndYear)) {
+			this.recoveryTargetYear = Optional.empty();
+		} else {
+			this.recoveryTargetYear = Optional.of(new YearPeriod(
+					!Objects.isNull(recoveryTargetStartYear) ? new Year(recoveryTargetStartYear) : null,
+					!Objects.isNull(recoveryTargetEndYear)   ? new Year(recoveryTargetEndYear)   : null));
+		}
+		// 復旧対象年月
+		if (Objects.isNull(recoveryTargetStartYM) && Objects.isNull(recoveryTargetEndYM)) {
+			this.recoveryTargetYM = Optional.empty();
+		} else {
+			this.recoveryTargetYM  = Optional.of(new YearMonthPeriod(
+					!Objects.isNull(recoveryTargetStartYM) ? new YearMonth(recoveryTargetStartYM) : null,
+					!Objects.isNull(recoveryTargetEndYM)   ? new YearMonth(recoveryTargetEndYM)   : null));
+		}
+		// 復旧対象日
+		if (!Objects.isNull(recoveryTargetStartDate) && !Objects.isNull(recoveryTargetEndDate)) {
+			this.recoveryTargetDate = Optional.empty();
+		} else {
+			this.recoveryTargetDate = Optional.of(new DatePeriod(
+					!Objects.isNull(recoveryTargetStartDate) ? recoveryTargetStartDate : null,
+					!Objects.isNull(recoveryTargetEndDate)   ? recoveryTargetEndDate   : null));
+		}
 	}
 }
