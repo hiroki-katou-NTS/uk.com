@@ -9,8 +9,6 @@
 
 #list_role {
 	background-color: #E0F59E;
-	width: 390px;
-	height: 410px;
 	margin-top: 5px;
 	border-radius: 7px;
 	padding: 20px;
@@ -18,9 +16,8 @@
 }
 
 #right-content {
-	margin-left: 50px;
+	padding: 25px 0 0 25px;
 	float: left;
-	margin-top: 13px;
 	width: calc(100% - 550px);
 }
 
