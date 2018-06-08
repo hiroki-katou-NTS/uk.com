@@ -98,8 +98,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             });
             self.selectedPeriodItem.subscribe(x => {
                 if (x == 0){
-                    $('.ntsStartDatePicker ').ntsError('clear');
-                    $('.ntsEndDatePicker ').ntsError('clear');
+                    nts.uk.ui.errors.clearAll();
                 }
             });
         }

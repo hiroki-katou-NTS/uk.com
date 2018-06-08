@@ -26,7 +26,7 @@ public interface InterimRecAbasMngRepository {
 	 * @param isRec: True: 振出管理データ, false: 振休管理データ
 	 * @return
 	 */
-	Optional<InterimRecAbsMng> getRecOrAbsMng(String interimId, boolean isRec, DataManagementAtr mngAtr);
+	List<InterimRecAbsMng> getRecOrAbsMng(String interimId, boolean isRec, DataManagementAtr mngAtr);
 	/**
 	 * ドメインモデル「暫定振出管理データ」を取得する
 	 * @param recId
@@ -37,5 +37,75 @@ public interface InterimRecAbasMngRepository {
 	 * @return
 	 */
 	List<InterimRecMng> getRecByIdPeriod(List<String> recId, Double unUseDays, DatePeriod dateData);
-	
+	/**
+	 * ドメインモデル「暫定振出振休紐付け管理」を取得する
+	 * @param sid
+	 * @param recAtr
+	 * @param absAtr
+	 * @param absId 振休＝absId
+	 * @return
+	 */
+	List<InterimRecAbsMng> getBySidMng(DataManagementAtr recAtr, DataManagementAtr absAtr, String absId);
+	/**
+	 * 暫定振出管理データ　を追加
+	 * @param domain
+	 */
+	void createInterimRecMng(InterimRecMng domain);
+	/**
+	 * 暫定振休管理データ　 を追加
+	 * @param domain
+	 */
+	void createInterimAbsMng(InterimAbsMng domain);
+	/**
+	 * 暫定振出振休紐付け管理 　を追加
+	 * @param domain
+	 */
+	void createInterimRecAbsMng(InterimRecAbsMng domain);
+	/**
+	 * 暫定振出管理データ　を削除
+	 * @param sid
+	 * @param dateData
+	 */
+	void deleteInterimRecMng(String recruitmentMngId);
+	/**
+	 * 暫定振休管理データ 　を削除
+	 * @param absenceMngId
+	 */
+	void deleteInterimAbsMng(String absenceMngId);
+	/**
+	 * 暫定振出振休紐付け管理  を削除
+	 * @param mndId
+	 * @param isRec：　True：　振出、False：　振休
+	 */
+	void deleteInterimRecAbsMng(String mndId, boolean isRec);
+	/**
+	 * 暫定振出振休紐付け管理  を削除
+	 * @param recId: 振出ID
+	 * @param absId 振休ID
+	 * @param recAtr 休出管理データ区分
+	 * @param absAtr
+	 */
+	void deleteRecAbsMngByIdAndAtr(String recId, String absId, DataManagementAtr recAtr, DataManagementAtr absAtr);
+	/**
+	 * 暫定振出振休紐付け管理  を削除
+	 * @param mngId
+	 * @param recAtr
+	 * @param isRec 　True：　振出、False：　振休
+	 */
+	void deleteRecAbsMngByIDAtr(String mngId, DataManagementAtr mngAtr, boolean isRec);
+	/**
+	 * 暫定振出管理データ 　を更新
+	 * @param domain
+	 */
+	void updateInterimRecMng(InterimRecMng domain);
+	/**
+	 * 暫定振休管理データ 　を更新
+	 * @param domain
+	 */
+	void updateInterimAbsMng(InterimAbsMng domain);
+	/**
+	 * 暫定振出振休紐付け管理  を更新
+	 * @param domain
+	 */
+	void updateInterimRecAbsMng(InterimRecAbsMng domain);
 }
