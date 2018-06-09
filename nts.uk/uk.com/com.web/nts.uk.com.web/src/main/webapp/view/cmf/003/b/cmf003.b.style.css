@@ -241,3 +241,15 @@
 .other .space {
 	width: 135px;
 }
+
+.save-period tr td {
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-right: 5px;
+}
+
+.compressed-password tr td {
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-right: 5px;
+}

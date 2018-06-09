@@ -42,27 +42,42 @@
 					}"></table>
 				</div>
 				
-				<div class="valign-center control-group">
+				<div class="flex">
 					<div id="E3_20" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_124')}</div>
-					<span id="E3_21">#{i18n.getText('CMF003_125')}</span>
-					<div id="E3_24" style="display:inline-block;" tabindex="7" data-bind="ntsDateRangePicker: { 
+					<table class="save-period">
+						<tr>
+							<td>
+								<span id="E3_21">#{i18n.getText('CMF003_125')}</span>
+							</td>
+							<td>
+								<div id="E3_24" style="display:inline-block;" tabindex="7" data-bind="ntsDateRangePicker: { 
 						required: dayRequired, enable: false, name: '#[CMF003_37]', 
 						showNextPrevious: false, value: dayValue}"/>
-				</div>
-				<div class="valign-center control-group other">
-					<div class="space"></div>
-					<span id="E3_22">#{i18n.getText('CMF003_35')}</span>
-					<div id="E3_25" style="display:inline-block;" tabindex="8" data-bind="ntsDateRangePicker: { 
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span id="E3_22">#{i18n.getText('CMF003_35')}</span>
+							</td>							
+							<td>
+								<div id="E3_25" style="display:inline-block;" tabindex="8" data-bind="ntsDateRangePicker: { 
 						required: monthRequired, enable: false, name: '#[CMF003_38]',
 						showNextPrevious: false, value: monthValue, type: 'yearmonth'}"/>
-				</div>
-				<div class="valign-center control-group other">
-					<div class="space"></div>
-					<span id="E3_23">#{i18n.getText('CMF003_36')}</span>
-					<div id="E3_26" style="display:inline-block;" tabindex="9" data-bind="ntsDateRangePicker: {
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span id="E3_23">#{i18n.getText('CMF003_36')}</span>
+							</td>
+							<td>
+								<div id="E3_26" style="display:inline-block;" tabindex="9" data-bind="ntsDateRangePicker: {
 						required: yearRequired, enable: false, name: '#[CMF003_39]',
 						showNextPrevious: false, value: yearValue, type: 'year'}"/>
+							</td>
+						</tr>
+					</table>
 				</div>
+								
 				<div class="valign-center control-group">
 					<div id="E3_32" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_45')}</div>
 					<div id="E3_33" tabindex="10" data-bind="ntsCheckBox: { checked: isCompressPass, enable: false }">
