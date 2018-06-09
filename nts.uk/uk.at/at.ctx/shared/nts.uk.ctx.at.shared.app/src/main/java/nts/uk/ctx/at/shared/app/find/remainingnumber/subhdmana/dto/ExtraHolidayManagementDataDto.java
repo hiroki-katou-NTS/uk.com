@@ -26,7 +26,6 @@ public class ExtraHolidayManagementDataDto {
 
 	public static ExtraHolidayManagementDataDto convertToDto(ExtraHolidayManagementOutput extraHolidayManagementOutput){
 		String cid = AppContexts.user().companyId();
-		String sid = extraHolidayManagementOutput.getSEmpHistoryImport().getEmployeeId();
 		// From domain
 		List<LeaveManagementData> listLeaveData = extraHolidayManagementOutput.getListLeaveData();
 		List<CompensatoryDayOffManaData> listCompensatoryData = extraHolidayManagementOutput.getListCompensatoryData();
@@ -61,7 +60,10 @@ public class ExtraHolidayManagementDataDto {
 			dto.setRemain(data.getRemainDays().v());
 			listExtraData.add(dto);
 		}
-		listExtraData = listExtraData.stream().filter(o -> o.getCID().equals(cid) && o.getSID().equals(sid)).collect(Collectors.toList());
+		if (!Objects.isNull(extraHolidayManagementOutput.getSEmpHistoryImport())){
+			String sid = extraHolidayManagementOutput.getSEmpHistoryImport().getEmployeeId();
+			listExtraData = listExtraData.stream().filter(o -> o.getCID().equals(cid) && o.getSID().equals(sid)).collect(Collectors.toList());
+		}
 		listExtraData.sort((m1, m2)->{
 			if (Objects.isNull(m1.getDayOffDate()) || Objects.isNull(m2.getDayOffDate())) return 1;
 			else return m1.getDayOffDate().before(m2.getDayOffDate()) ? -1 : 1;

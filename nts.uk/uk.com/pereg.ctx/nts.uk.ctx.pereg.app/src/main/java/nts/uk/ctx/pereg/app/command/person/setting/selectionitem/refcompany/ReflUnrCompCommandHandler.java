@@ -67,10 +67,10 @@ public class ReflUnrCompCommandHandler extends CommandHandler<ReflUnrCompCommand
 
 		List<String> companyIdList = companyRepo.acquireAllCompany();
 
+		// remove
+		selectionHistService.removeHistoryOfCompanies(selectionItemId, companyIdList);
+		
 		companyIdList.forEach(companyId -> {
-			// delete
-			selectionHistService.removeHistoryOfCompany(selectionItemId, companyId);
-
 			// insert
 			insertHistoryList(zeroCompanyHistory, companyId, histIdSelectionMap, histIdSelectionOrderMap);
 		});
