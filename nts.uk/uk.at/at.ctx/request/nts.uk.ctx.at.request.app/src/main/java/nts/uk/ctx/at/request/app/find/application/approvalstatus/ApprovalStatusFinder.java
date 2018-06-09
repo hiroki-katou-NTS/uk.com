@@ -261,7 +261,7 @@ public class ApprovalStatusFinder {
 	/**
 	 * アルゴリズム「承認状況社員別起動」を実行する
 	 */
-	public ApprovalSttByEmpListOutput initApprovalSttByEmployee(ApprovalStatusByIdDto appSttById) {
+	public List<ApprovalSttByEmpListOutput> initApprovalSttByEmployee(ApprovalStatusByIdDto appSttById) {
 		return appSttService.getApprovalSttById(appSttById.getSelectedWkpId(), appSttById.getListWkpId(),
 				appSttById.getStartDate(), appSttById.getEndDate(), appSttById.getListEmpCode());
 	}

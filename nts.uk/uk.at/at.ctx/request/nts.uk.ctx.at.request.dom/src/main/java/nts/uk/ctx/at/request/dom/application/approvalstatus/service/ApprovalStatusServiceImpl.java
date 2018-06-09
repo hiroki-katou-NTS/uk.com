@@ -690,9 +690,9 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public ApprovalSttByEmpListOutput getApprovalSttById(String selectedWkpId, List<String> listWkpId,
+	public List<ApprovalSttByEmpListOutput> getApprovalSttById(String selectedWkpId, List<String> listWkpId,
 			GeneralDate startDate, GeneralDate endDate, List<String> listEmpCode) {
-		List<DailyStatusOutput> listDailyStatus = new ArrayList<>();
+		List<ApprovalSttByEmpListOutput> lstApprovalSttByEmpList = new ArrayList<>();
 		// アルゴリズム「承認状況取得社員」を実行する
 		List<ApprovalStatusEmployeeOutput> listAppSttEmp = this.getApprovalStatusEmployee(selectedWkpId, startDate,
 				endDate, listEmpCode);
@@ -705,12 +705,10 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			// Imported（就業）「個人社員基本情報」を取得する
 			// RequestList126
 			String empName = "";
-			String empCode = "";
 			List<EmployeeBasicInfoImport> listEmpInfor = this.workplaceAdapter.findBySIds(listEmpId);
 			if(!listEmpInfor.isEmpty()){
 				EmployeeBasicInfoImport empInfo = listEmpInfor.stream().findFirst().get();
 				empName = empInfo.getEmployeeCode() + "　" + empInfo.getPName();
-				empCode = empInfo.getEmployeeCode();
 			}
 			// アルゴリズム「承認状況取得申請」を実行する
 			List<ApplicationApprContent> listAppSttAcquisitionAppl = this.getAppSttAcquisitionAppl(appStt);
@@ -722,9 +720,9 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			// アルゴリズム「承認状況日別状態作成」を実行する
 			List<DailyStatus> dailyStatus = this.getApprovalSttByDate(appStt.getStartDate(), appStt.getEndDate(),
 					listApprovalContent);
-			listDailyStatus.add(new DailyStatusOutput(appStt.getSid(), empName, dailyStatus));
+			lstApprovalSttByEmpList.add(new ApprovalSttByEmpListOutput(appStt.getSid(), empName, dailyStatus, appStt.getStartDate(), appStt.getEndDate()));
 		}
-		return new ApprovalSttByEmpListOutput(listDailyStatus, listAppSttEmp);
+		return lstApprovalSttByEmpList;
 	}
 
 	/**

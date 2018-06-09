@@ -34,10 +34,10 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         dataComSpecificDate: KnockoutObservableArray<any> = ko.observableArray([]);
         dataPublicHoliday: KnockoutObservableArray<any> = ko.observableArray([]);
 
-        dailySttOut: DailyStatusOut = new DailyStatusOut(null, null);
         listApprovalEmployee: Array<ApprovalStatusEmployee> = [];
         listDailyStatus: Array<DailyStatusOut> = [];
         multiSelectedWorkplaceId: Array<any>;
+        dateFormat = "yyyy/MM/dd";
         constructor() {
             var self = this;
             this.legendOptions = {
@@ -112,10 +112,62 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                 endDate: self.endDate,
                 listEmpCode: self.listEmpCd,
             };
-            service.initApprovalSttByEmployee(obj).done(function(data: any) {
-                dfd.resolve(data);
+            service.initApprovalSttByEmployee(obj).done(function(data: Array<ApprovalSttByEmpList>) {
+                let lstData = _.sortBy(data, o => o.empName, 'asc');
+                _.each(lstData, function(item) {
+                    self.listApprovalEmployee.push(new ApprovalStatusEmployee(item.empId, item.startDate, item.endDate));
+                })
+                let lstApprovalSttByEmp = self.confirmDuplicateEmp(lstData);
+                dfd.resolve(self.convertToEmpPerformance(lstApprovalSttByEmp));
             });
             return dfd.promise();
+        }
+
+        confirmDuplicateEmp(data: Array<ApprovalSttByEmpList>): Array<EmpApprovalPeriod> {
+            let empIdTemp = "";
+            let listEmp: Array<EmpApprovalPeriod> = [];
+            _.each(data, function(item: ApprovalSttByEmpList) {
+                let empPeriod: EmpPeriod = new EmpPeriod(item.startDate, item.endDate,
+                    item.listDaily);
+                if (empIdTemp == item.empId) {
+                    let emp: EmpApprovalPeriod = _.find(listEmp, { empId: item.empId });
+                    emp.listEmpPeriod.push(empPeriod);
+                } else {
+                    empIdTemp = item.empId
+                    let listEmpPeriod: Array<EmpPeriod> = [];
+                    listEmpPeriod.push(empPeriod);
+                    let empDuplicate: EmpApprovalPeriod = new EmpApprovalPeriod(item.empId, item.empName, listEmpPeriod);
+                    listEmp.push(empDuplicate);
+                }
+            });
+            return listEmp;
+        }
+
+        convertToEmpPerformance(data: Array<EmpApprovalPeriod>): Array<DailyStatusOut> {
+            let self = this;
+            let lstDailyOut = Array<DailyStatusOut>();
+            _.each(data, function(item) {
+                let listDaily: Array<DailyStatus> = [];
+                _.each(item.listEmpPeriod, function(empPeriod) {
+                    let startDate = new Date(empPeriod.startDate.toString());
+                    let endDate = new Date(empPeriod.endDate.toString());            
+                    let currentDay = new Date(empPeriod.startDate.toString());
+                    while (currentDay <= endDate) {
+                        let objDaily = _.find(empPeriod.listDailyStt, { date: self.convertDate(currentDay) });
+                        let stateSymbol = objDaily != null ? objDaily.stateSymbol : [];
+                        let date = self.convertDate(currentDay);
+                        listDaily.push(new DailyStatus(date, stateSymbol));
+                        currentDay.setDate(currentDay.getDate() + 1);
+                    }
+                })
+                lstDailyOut.push(new DailyStatusOut(item.empId, item.empName, listDaily));
+            })
+            return lstDailyOut;
+        }
+
+        convertDate(date: Date) {
+            let self = this;
+            return nts.uk.time.formatDate(date, self.dateFormat);
         }
 
         nextWkp() {
@@ -148,10 +200,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             self.getStatusSymbol().done(function(data: any) {
-                self.listApprovalEmployee = data.listAppSttEmp;
-                let listDailyStatus = _.sortBy(data.listDailyStt,'asc');
-                
-                self.listDailyStatus = listDailyStatus;
+                self.listDailyStatus = data;
                 let sv1 = self.setColorForCellHeaderDetail();
                 let sv2 = self.setSymbolForCellContentDetail(self.listDailyStatus);
                 $.when(sv1, sv2).done(function(detailHeaderDeco) {
@@ -186,10 +235,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             let self = this;
             block.invisible();
             self.getStatusSymbol().done(function(data: any) {
-                self.listApprovalEmployee = data.listAppSttEmp;
-                let listDailyStatus = _.sortBy(data.listDailyStt, o => o.empName,'asc');
-                self.listDailyStatus = listDailyStatus;
-
+                self.listDailyStatus = data;
                 let sv1 = self.setColorForCellHeaderDetail();
                 let sv2 = self.setSymbolForCellContentDetail(self.listDailyStatus);
                 $.when(sv1, sv2).done(function(detailHeaderDeco) {
@@ -268,7 +314,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             detailContent = {
                 columns: detailContentColumns,
                 dataSource: listData,
-                primaryKey: "sId"
+                primaryKey: "empId"
             };
             return {
                 leftmostHeader: leftmostHeader,
@@ -437,9 +483,11 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 
     class DailyStatusOut {
         empId: string;
+        empName: string;
         listDaily: Array<DailyStatus>;
-        constructor(empId: string, listDaily: Array<DailyStatus>) {
+        constructor(empId: string, empName: string, listDaily: Array<DailyStatus>) {
             this.empId = empId;
+            this.empName = empName;
             this.listDaily = listDaily;
         }
     }
@@ -447,16 +495,9 @@ module nts.uk.at.view.kaf018.c.viewmodel {
     class DailyStatus {
         date: Date;
         stateSymbol: Array<number>;
-    }
-
-    class ApprovalStatusEmployee {
-        sid: string;
-        startDate: Date;
-        endDate: Date;
-        constructor(sid: string, startDate: Date, endDate: Date) {
-            this.sid = sid;
-            this.startDate = startDate;
-            this.endDate = endDate;
+        constructor(date: Date, stateSymbol: Array<number>) {
+            this.date = date;
+            this.stateSymbol = stateSymbol;
         }
     }
 
@@ -502,6 +543,54 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             this.startDate = startDate;
             this.endDate = endDate;
             this.listEmpCode = listEmpCode;
+        }
+    }
+
+    class ApprovalStatusEmployee {
+        sid: string;
+        startDate: Date;
+        endDate: Date;
+        constructor(sid: string, startDate: Date, endDate: Date) {
+            this.sid = sid;
+            this.startDate = startDate;
+            this.endDate = endDate;
+        }
+    }
+
+    class ApprovalSttByEmpList {
+        sid: string;
+        empName: string;
+        startDate: Date;
+        endDate: Date;
+        listDaily: Array<DailyStatus>;
+        constructor(sid: string, empName: string, listDaily: Array<DailyStatus>, startDate: Date, endDate: Date) {
+            this.sid = sid;
+            this.empName = empName;
+            this.listDaily = listDaily;
+            this.startDate = startDate;
+            this.endDate = endDate;
+        }
+    }
+
+    class EmpApprovalPeriod {
+        empId: string;
+        empName: string;
+        listEmpPeriod: Array<EmpPeriod>;
+        constructor(empId: string, empName: string, listEmpPeriod: Array<EmpPeriod>) {
+            this.empId = empId;
+            this.empName = empName;
+            this.listEmpPeriod = listEmpPeriod;
+        }
+    }
+    class EmpPeriod {
+        startDate: string;
+        endDate: string;
+        listDailyStt: Array<DailyStatus>;
+        constructor(startDate: string, endDate: string, listDailyStt: Array<DailyStatus>) {
+            this.startDate = startDate;
+            this.endDate = endDate;
+            this.listDailyStt = listDailyStt;
+
         }
     }
 }
