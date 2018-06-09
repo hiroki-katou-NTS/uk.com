@@ -2,7 +2,6 @@ package nts.uk.ctx.at.function.infra.repository.holidaysremaining.report;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -131,9 +130,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		firstRow += 5;
 
 		// Order by Employee Code
-		List<HolidaysRemainingEmployee> employees = dataSource.getListEmployee().stream()
-				.sorted(Comparator.comparing(HolidaysRemainingEmployee::getEmployeeCode)).collect(Collectors.toList());
-		for (HolidaysRemainingEmployee employee : employees) {
+		
+		for (HolidaysRemainingEmployee employee : dataSource.getMapEmployees().values()) {
 			int rowCount = countRowEachPerson(dataSource) + 1;
 			if (firstRow % NUMBER_ROW_OF_PAGE != 5
 					&& firstRow / NUMBER_ROW_OF_PAGE != (firstRow + rowCount) / NUMBER_ROW_OF_PAGE) {
@@ -152,16 +150,11 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 	private void printWorkplaceBreakPage(Worksheet worksheet, YearMonth currentMonth, HolidayRemainingDataSource dataSource) throws Exception {
 		int firstRow = NUMBER_ROW_OF_PAGE;
-
-		Map<String, List<HolidaysRemainingEmployee>> map = dataSource.getListEmployee().stream()
-				.collect(Collectors.groupingBy(HolidaysRemainingEmployee::getWorkplaceId));
-
-		for (List<HolidaysRemainingEmployee> listEmployee : map.values()) {
-			List<HolidaysRemainingEmployee> employees = listEmployee.stream()
-					.sorted(Comparator.comparing(HolidaysRemainingEmployee::getEmployeeCode))
-					.collect(Collectors.toList());
-			firstRow = printEachWorkplace(worksheet, firstRow, employees, currentMonth, dataSource);
-		}
+		List<HolidaysRemainingEmployee> listEmployee = (List)dataSource.getMapEmployees().values();
+		List<HolidaysRemainingEmployee> employees = listEmployee.stream()
+				.sorted(Comparator.comparing(HolidaysRemainingEmployee::getEmployeeCode))
+				.collect(Collectors.toList());
+		firstRow = printEachWorkplace(worksheet, firstRow, employees, currentMonth, dataSource);
 	}
 
 	private int printEachWorkplace(Worksheet worksheet, int firstRow, List<HolidaysRemainingEmployee> employees, YearMonth currentMonth, HolidayRemainingDataSource dataSource)
@@ -203,9 +196,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		int firstRow = NUMBER_ROW_OF_PAGE;
 
 		// Order by Employee Code
-		List<HolidaysRemainingEmployee> employees = dataSource.getListEmployee().stream()
-				.sorted(Comparator.comparing(HolidaysRemainingEmployee::getEmployeeCode)).collect(Collectors.toList());
-		for (HolidaysRemainingEmployee employee : employees) {
+		
+		for (String employeeId : dataSource.getEmpIds()) {
+			HolidaysRemainingEmployee employee = dataSource.getMapEmployees().get(employeeId);
 			firstRow = this.printEachPerson(worksheet, firstRow, employee, currentMonth, dataSource);
 		}
 	}

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.dom.holidaysremaining.report;
 
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,19 +12,22 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
 @Setter
 public class HolidayRemainingDataSource {
 	public HolidayRemainingDataSource(String startMonth, String endMonth, String outputItemSettingCode, int pageBreak,
-			HolidaysRemainingManagement holidaysRemainingManagement, List<HolidaysRemainingEmployee> listEmployee) {
+			HolidaysRemainingManagement holidaysRemainingManagement, List<String> listEmployeeIds,
+			Map<String, HolidaysRemainingEmployee> mapEmployees) {
 		super();
 		this.startMonth = GeneralDate.fromString(startMonth, "yyyy/MM/dd");
 		this.endMonth = GeneralDate.fromString(endMonth, "yyyy/MM/dd");
 		this.outputItemSettingCode = outputItemSettingCode;
 		this.pageBreak = pageBreak;
 		this.holidaysRemainingManagement = holidaysRemainingManagement;
-		this.listEmployee = listEmployee;
+		this.empIds = listEmployeeIds;
+		this.mapEmployees = mapEmployees;
 	}
 	private GeneralDate startMonth;
 	private GeneralDate endMonth;
 	private String outputItemSettingCode;
 	private int pageBreak;
 	private HolidaysRemainingManagement holidaysRemainingManagement;
-	private List<HolidaysRemainingEmployee> listEmployee;
+	private List<String> empIds;
+	private Map<String, HolidaysRemainingEmployee> mapEmployees;
 }
