@@ -33,7 +33,9 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 					query.getHolidayRemainingOutputCondition().getStartMonth(),
 					query.getHolidayRemainingOutputCondition().getEndMonth(),
 					query.getHolidayRemainingOutputCondition().getOutputItemSettingCode(),
-					query.getHolidayRemainingOutputCondition().getPageBreak(), hdManagement.get(),
+					query.getHolidayRemainingOutputCondition().getPageBreak(),
+					query.getHolidayRemainingOutputCondition().getBaseDate(),
+					hdManagement.get(),
 					query.getLstEmpIds().stream().map(item -> {
 						return new HolidaysRemainingEmployee(
 								item.getEmployeeCode(), item.getEmployeeId(), item.getEmployeeName(), 

@@ -34,8 +34,8 @@ public class GetReserveLeaveNumbersFinder implements GetReserveLeaveNumbersAdpte
 	public ReserveHolidayImported algorithm(String employeeId) {
 		// requestList268
 		ReserveLeaveNowExport reserveLeave = getReserveLeaveNumbers.algorithm(employeeId);
-		if (reserveLeave == null)
-			return null;
+//		if (reserveLeave == null)
+//			return null;
 		return new ReserveHolidayImported(reserveLeave.getStartMonthRemain().v(), reserveLeave.getGrantNumber().v(),
 				reserveLeave.getUsedNumber().v(), reserveLeave.getRemainNumber().v(),
 				reserveLeave.getUndigestNumber().v());
@@ -45,8 +45,8 @@ public class GetReserveLeaveNumbersFinder implements GetReserveLeaveNumbersAdpte
 	public List<ReservedYearHolidayImported> algorithm(String employeeId, YearMonthPeriod period) {
 		// requestList258
 		List<ReserveLeaveUsageExport> lstReserveLeaveUsage = getConfirmedReserveLeave.algorithm(employeeId, period);
-		if (lstReserveLeaveUsage == null)
-			return null;
+//		if (lstReserveLeaveUsage == null)
+//			return null;
 		List<ReservedYearHolidayImported> lstReservedYearHoliday = new ArrayList<>();
 		lstReserveLeaveUsage.forEach(item -> {
 			ReservedYearHolidayImported reservedYearHoliday = new ReservedYearHolidayImported(item.getYearMonth(),

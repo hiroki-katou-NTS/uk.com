@@ -7,7 +7,7 @@ import nts.arc.time.YearMonth;
 
 @Setter
 @Getter
-public class CurrentHolidayImported {
+public class CurrentHolidayRemainImported {
 	/**	年月 
 	 * ※年月＝当月の場合のみ出力
 	 * */
@@ -22,7 +22,7 @@ public class CurrentHolidayImported {
 	private Double monthExtinction;
 	/**	月末残数 */
 	private Double monthEndRemain;
-	public CurrentHolidayImported(YearMonth ym, Double monthStartRemain, Double monthOccurrence, Double monthUse,
+	public CurrentHolidayRemainImported(YearMonth ym, Double monthStartRemain, Double monthOccurrence, Double monthUse,
 			Double monthExtinction, Double monthEndRemain) {
 		this.ym = ym;
 		this.monthStartRemain = monthStartRemain;

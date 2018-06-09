@@ -10,13 +10,14 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
 @Getter
 @Setter
 public class HolidayRemainingDataSource {
-	public HolidayRemainingDataSource(String startMonth, String endMonth, String outputItemSettingCode, int pageBreak,
+	public HolidayRemainingDataSource(String startMonth, String endMonth, String outputItemSettingCode, int pageBreak, String baseDate,
 			HolidaysRemainingManagement holidaysRemainingManagement, List<HolidaysRemainingEmployee> listEmployee) {
 		super();
 		this.startMonth = GeneralDate.fromString(startMonth, "yyyy/MM/dd");
 		this.endMonth = GeneralDate.fromString(endMonth, "yyyy/MM/dd");
 		this.outputItemSettingCode = outputItemSettingCode;
 		this.pageBreak = pageBreak;
+		this.baseDate = GeneralDate.fromString(baseDate, "yyyy/MM/dd");
 		this.holidaysRemainingManagement = holidaysRemainingManagement;
 		this.listEmployee = listEmployee;
 	}
@@ -24,6 +25,7 @@ public class HolidayRemainingDataSource {
 	private GeneralDate endMonth;
 	private String outputItemSettingCode;
 	private int pageBreak;
+	private GeneralDate baseDate;
 	private HolidaysRemainingManagement holidaysRemainingManagement;
 	private List<HolidaysRemainingEmployee> listEmployee;
 }

@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AbsenceReruitmentManaAdapter;
-import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.CurrentHolidayImported;
+import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.CurrentHolidayRemainImported;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.StatusOfHolidayImported;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.export.AbsenceleaveCurrentMonthOfEmployee;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.export.MonthlyAbsenceleaveRemainExport;
@@ -26,16 +26,16 @@ public class AbsenceReruitmentManaFinder implements AbsenceReruitmentManaAdapter
 	private MonthlyAbsenceleaveRemainExport monthlyAbsenceleaveRemainExport;
 
 	@Override
-	public List<CurrentHolidayImported> getAbsRecRemainAggregate(String employeeId, GeneralDate baseDate,
+	public List<CurrentHolidayRemainImported> getAbsRecRemainAggregate(String employeeId, GeneralDate baseDate,
 			YearMonth startMonth, YearMonth endMonth) {
 		// requestList270
 		List<InterimRemainAggregateOutputData> lstAbsRecRemainAggregate = absenceReruitmentManaQuery
 				.getAbsRecRemainAggregate(employeeId, baseDate, startMonth, endMonth);
 		if (lstAbsRecRemainAggregate == null)
 			return null;
-		List<CurrentHolidayImported> lstCurrentHoliday = new ArrayList<>();
+		List<CurrentHolidayRemainImported> lstCurrentHoliday = new ArrayList<>();
 		lstAbsRecRemainAggregate.forEach(item -> {
-			CurrentHolidayImported CurrentHoliday = new CurrentHolidayImported(item.getYm(), item.getMonthStartRemain(),
+			CurrentHolidayRemainImported CurrentHoliday = new CurrentHolidayRemainImported(item.getYm(), item.getMonthStartRemain(),
 					item.getMonthOccurrence(), item.getMonthUse(), item.getMonthExtinction(), item.getMonthEndRemain());
 			lstCurrentHoliday.add(CurrentHoliday);
 		});

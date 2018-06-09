@@ -15,7 +15,7 @@ public interface AbsenceReruitmentManaAdapter {
 	 * @param endMonth
 	 * @return
 	 */
-	List<CurrentHolidayImported> getAbsRecRemainAggregate(String employeeId, GeneralDate baseDate, YearMonth startMonth, YearMonth endMonth);
+	List<CurrentHolidayRemainImported> getAbsRecRemainAggregate(String employeeId, GeneralDate baseDate, YearMonth startMonth, YearMonth endMonth);
 	
 	
 	/**
