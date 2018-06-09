@@ -579,7 +579,7 @@ public class CategoryFieldMt extends AggregateRoot {
 		this.filedKeyUpdate20 = filedKeyUpdate20;
 		this.historyCls = EnumAdaptor.valueOf(historyCls, HistoryDiviSion.class);
 		this.parentTblJpName = parentTblJpName;
-		this.historyCls = EnumAdaptor.valueOf(hasParentTblFlg, HistoryDiviSion.class);
+		this.hasParentTblFlg = EnumAdaptor.valueOf(hasParentTblFlg, NotUseAtr.class);
 		this.parentTblName = parentTblName;
 		this.fieldParent1 = fieldParent1;
 		this.fieldParent2 = fieldParent2;

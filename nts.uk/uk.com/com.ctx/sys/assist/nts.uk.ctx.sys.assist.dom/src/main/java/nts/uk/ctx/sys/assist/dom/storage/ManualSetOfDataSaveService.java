@@ -143,7 +143,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			int countCategories = selectTargetTable(storeProcessingId, optManualSetting.get());
 
 			// update domain 「データ保存動作管理」 Data storage operation management
-			repoDataSto.update(storeProcessingId, countCategories, 1, OperatingCondition.SAVING);
+			repoDataSto.update(storeProcessingId, countCategories, 0, OperatingCondition.SAVING);
 
 			// 対象社員のカウント件数を取り保持する
 			List<TargetEmployees> targetEmployees = repoTargetEmp.getTargetEmployeesListById(storeProcessingId);

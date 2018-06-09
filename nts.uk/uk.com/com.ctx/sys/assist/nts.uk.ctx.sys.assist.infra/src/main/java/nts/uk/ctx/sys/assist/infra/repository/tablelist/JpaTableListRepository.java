@@ -2,10 +2,7 @@ package nts.uk.ctx.sys.assist.infra.repository.tablelist;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -119,7 +116,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 			boolean isFirstOnStatement = true;
 			for (int i = 0; i < parentFields.length; i++) {
 				String onStatement = getOnStatement(tableParent, parentFields[i], tableExport, childFields[i]);
-				if (Strings.isNullOrEmpty(onStatement)) {
+				if (!Strings.isNullOrEmpty(onStatement)) {
 					if (!isFirstOnStatement) {
 						query.append(" AND ");
 					}
@@ -190,8 +187,14 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 					query.append(" OR ");
 				}
 				isFirstOrStatement = false;
-				query.append(" t.");
-				query.append(this.getFieldForColumnName(tableExport, fieldKeyQuerys[index]));
+				String companyCdField = this.getFieldForColumnName(tableExport, fieldKeyQuerys[index]);
+				if (!Strings.isNullOrEmpty(companyCdField)) {
+					query.append(" t.");
+					query.append(companyCdField);
+				} else {
+					query.append(" p.");
+					query.append(this.getFieldForColumnName(tableParent, fieldKeyQuerys[index]));
+				}
 				query.append(" = :companyId ");
 				params.add(AppContexts.user().companyId());
 			}
@@ -221,12 +224,27 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 					query.append(" OR ");
 				}
 				isFirstOrStatement = false;
-				query.append(" (t.");
-				query.append(this.getFieldForColumnName(tableExport, fieldKeyQuerys[index]));
+				String startDateField = this.getFieldForColumnName(tableExport, fieldKeyQuerys[index]);
+				if (!Strings.isNullOrEmpty(startDateField)) {
+					query.append(" (t.");
+					query.append(startDateField);
+				} else {
+					query.append(" (p.");
+					query.append(this.getFieldForColumnName(tableParent, fieldKeyQuerys[index]));
+				}
+
 				query.append(" >= :startDate ");
 				query.append(" AND ");
-				query.append(" t.");
-				query.append(this.getFieldForColumnName(tableExport, fieldKeyQuerys[index]));
+
+				String endDateField = this.getFieldForColumnName(tableExport, fieldKeyQuerys[index]);
+				if (!Strings.isNullOrEmpty(endDateField)) {
+					query.append(" t.");
+					query.append(endDateField);
+				} else {
+					query.append(" p.");
+					query.append(this.getFieldForColumnName(tableParent, fieldKeyQuerys[index]));
+				}
+
 				query.append(" <= :endDate) ");
 
 				switch (tableList.getRetentionPeriodCls()) {
@@ -239,8 +257,8 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 					params.add(tableList.getSaveDateTo().yearMonth().v());
 					break;
 				case DAILY:
-					params.add(tableList.getSaveDateFrom());
-					params.add(tableList.getSaveDateTo());
+					params.add(tableList.getSaveDateFrom().toString("yyyy/MM/dd"));
+					params.add(tableList.getSaveDateTo().toString("yyyy/MM/dd"));
 					break;
 
 				default:
@@ -252,24 +270,8 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 
 		// 抽出条件キー固定
 		String extractCondKeyFix = tableList.getDefaultCondKeyQuery() == null ? "" : tableList.getDefaultCondKeyQuery();
-		if (!Strings.isNullOrEmpty(extractCondKeyFix)) {
-			String[] extractCondArray = extractCondKeyFix.split(" ");
-			for (int i = 0; i < extractCondArray.length; i++) {
-				String fieldName = this.getFieldForColumnName(tableExport, extractCondArray[i]);
-				if (!Strings.isNullOrEmpty(fieldName)) {
-					extractCondArray[i] = "t." + fieldName;
-				}
-			}
-
-			// query.append(String.join(" ", extractCondArray));
-		}
 
 		TypedQueryWrapper<?> queryWrapper = this.queryProxy().query(query.toString(), tableExport);
-		// for (Entry<String, Object> entry : params.entrySet()) {
-		// queryWrapper = queryWrapper.setParameter(entry.getKey(),
-		// entry.getValue());
-		// }
-		//
 		DatabaseQuery databaseQuery = queryWrapper.getQuery().unwrap(EJBQueryImpl.class).getDatabaseQuery();
 		StringBuffer sql = new StringBuffer(databaseQuery.getSQLString() + " " + extractCondKeyFix);
 		int paramIndex = 1;
