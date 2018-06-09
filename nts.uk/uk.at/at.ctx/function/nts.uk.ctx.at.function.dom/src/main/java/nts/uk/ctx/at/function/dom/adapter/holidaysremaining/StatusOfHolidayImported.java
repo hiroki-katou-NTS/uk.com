@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.dom.adapter.holidaysremaining;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.YearMonth;
@@ -8,8 +7,7 @@ import nts.arc.time.YearMonth;
 
 @Getter
 @Setter
-@AllArgsConstructor
-public class AbsenceleaveCurrentMonthOfEmployeeImported {
+public class StatusOfHolidayImported {
 	/**	年月 */
 	private YearMonth ym;
 	
@@ -24,4 +22,15 @@ public class AbsenceleaveCurrentMonthOfEmployeeImported {
 	
 	/**	残日数 = 残数日数 */
 	private Double remainingDays;
+
+	public StatusOfHolidayImported(YearMonth ym, Double occurredDay, Double usedDays,
+			Double unUsedDays, Double remainingDays) {
+		this.ym = ym;
+		this.occurredDay = occurredDay;
+		this.usedDays = usedDays;
+		this.unUsedDays = unUsedDays;
+		this.remainingDays = remainingDays;
+	}
+	
+	
 }

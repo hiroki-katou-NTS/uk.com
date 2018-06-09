@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.dom.adapter.reserveleave;
 
 import java.util.List;
+
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 public interface GetReserveLeaveNumbersAdpter {
@@ -22,5 +23,14 @@ public interface GetReserveLeaveNumbersAdpter {
 	 * RequestList258
 	 */
 	List<ReservedYearHolidayImported> algorithm(String employeeId, YearMonthPeriod period);
+	
+	/**
+	 * 当月以降の積立年休使用数・残数を取得する
+	 * @param employeeId 社員ID
+	 * @param period 年月期間
+	 * @return 積立年休利用当月状況リスト
+	 * RequestList364
+	 */
+	List<RsvLeaUsedCurrentMonImported> algorithm364(String employeeId, YearMonthPeriod period);
 
 }

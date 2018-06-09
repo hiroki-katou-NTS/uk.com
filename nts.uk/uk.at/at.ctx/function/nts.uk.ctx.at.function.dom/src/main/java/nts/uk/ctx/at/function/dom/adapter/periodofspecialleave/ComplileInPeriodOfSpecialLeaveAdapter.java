@@ -21,7 +21,7 @@ public interface ComplileInPeriodOfSpecialLeaveAdapter {
 	 * @param mngAtr true: 翌月管理データ取得区分がする, false: 翌月管理データ取得区分がしない。 
 	 * @return
 	 */
-	List<ComplileInPeriodOfSpecialLeaveImported> complileInPeriodOfSpecialLeave(String cid, String sid, DatePeriod complileDate, boolean mode, GeneralDate baseDate, int specialLeaveCode, boolean mngAtr);
+	SpecialVacationImported complileInPeriodOfSpecialLeave(String cid, String sid, DatePeriod complileDate, boolean mode, GeneralDate baseDate, int specialLeaveCode, boolean mngAtr);
 	
 	
 	/**
@@ -31,6 +31,6 @@ public interface ComplileInPeriodOfSpecialLeaveAdapter {
 	 * @param endMonth
 	 * @return
 	 */
-	public List<SpecialHolidayRemainDataImported> getSpeHoliOfConfirmedMonthly(String sid, YearMonth startMonth, YearMonth endMonth);
+	public List<SpecialHolidayImported> getSpeHoliOfConfirmedMonthly(String sid, YearMonth startMonth, YearMonth endMonth);
 	
 }
