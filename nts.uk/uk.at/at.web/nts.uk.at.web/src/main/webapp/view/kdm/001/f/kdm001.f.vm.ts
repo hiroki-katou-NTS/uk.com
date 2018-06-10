@@ -67,9 +67,9 @@ module nts.uk.at.view.kdm001.f.viewmodel {
                     $('#multi-list').ntsError('set', { messageId: "Msg_766" });
                 } else {
                     sumNum = sumNum + x.occurredDays;
-                    self.residualDay(sumNum - day);
-                    residualValue = (sumNum - day) > 0 ? (sumNum - day).toFixed(1) : (sumNum - day);
-                    self.residualDayDispay(residualValue + " " + getText('KDM001_27'));
+                    residualValue = (sumNum - day);
+                    self.residualDay(residualValue);
+                    self.residualDayDispay(model.formatterDay(residualValue));
                 }
             });
             if (self.residualDay() < 0) {
