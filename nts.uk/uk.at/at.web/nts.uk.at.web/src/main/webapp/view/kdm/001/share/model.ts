@@ -82,9 +82,9 @@ module nts.uk.at.view.kdm001.share.model {
 
     export function formatterDay(value) {
         if (value) {
-            return value == "0" ? value + "&nbsp;" + getText('KDM001_27') : parseFloat(value).toFixed(1) + "&nbsp;" + getText('KDM001_27');
+            return value == "0" ? value + getText('KDM001_27') : parseFloat(value).toFixed(1) + getText('KDM001_27');
         } else {
-            return "&nbsp;0" + "&nbsp;" + getText('KDM001_27');
+            return "0" + getText('KDM001_27');
         }
 
     }
