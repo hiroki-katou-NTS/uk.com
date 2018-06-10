@@ -57,6 +57,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
         private caculRemainNumber(): void{
             let sumNum = 0, self = this, day = parseFloat(self.numberDay());
             self.residualDayDispay(day.toFixed(1)  + " " + getText('KDM001_27'));
+			self.residualDay(day);
             _.each(self.currentList(), function (x) {
                 if (self.dateHoliday() === x.dayoffDate) {
                     $('#multi-list').ntsError('set', { messageId: "Msg_729" });
