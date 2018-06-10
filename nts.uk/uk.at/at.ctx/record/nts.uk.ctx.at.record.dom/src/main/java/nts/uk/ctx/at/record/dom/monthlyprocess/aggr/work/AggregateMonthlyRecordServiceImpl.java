@@ -6,8 +6,10 @@ import javax.inject.Inject;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.record.dom.remainingnumber.absenceleave.temp.TempAbsenceLeaveService;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
+import nts.uk.ctx.at.record.dom.remainingnumber.dayoff.temp.TempDayoffService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
@@ -24,6 +26,12 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 	/** 期間中の年休積休残数を取得 */
 	@Inject
 	private GetAnnAndRsvRemNumWithinPeriod getAnnAndRsvRemNumWithinPeriod;
+	/** （仮対応用）振休 */
+	@Inject
+	private TempAbsenceLeaveService tempAbsenceLeaveService;
+	/** （仮対応用）代休 */
+	@Inject
+	private TempDayoffService tempDayoffService;
 	/** 月別実績と勤怠項目の相互変換 */
 	@Inject
 	private MonthlyRecordToAttendanceItemConverter itemConverter;
@@ -38,6 +46,8 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 		AggregateMonthlyRecordServiceProc proc = new AggregateMonthlyRecordServiceProc(
 				this.repositories,
 				this.getAnnAndRsvRemNumWithinPeriod,
+				this.tempAbsenceLeaveService,
+				this.tempDayoffService,
 				this.itemConverter);
 		
 		return proc.aggregate(companyId, employeeId, yearMonth, closureId, closureDate,
