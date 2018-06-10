@@ -1,10 +1,10 @@
 module nts.uk.at.view.kdm001.f.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
-    import model = kdm001.share.model;
-    import dialog = nts.uk.ui.dialog;
-    import block = nts.uk.ui.block;
-    import getText = nts.uk.resource.getText;
+    import model     = kdm001.share.model;
+    import dialog    = nts.uk.ui.dialog;
+    import block     = nts.uk.ui.block;
+    import getText   = nts.uk.resource.getText;
     export class ScreenModel {
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         columns: KnockoutObservableArray<any>;
@@ -17,7 +17,7 @@ module nts.uk.at.view.kdm001.f.viewmodel {
         dateHoliday: KnockoutObservable<any> = ko.observable('');
         numberDay: KnockoutObservable<any> = ko.observable('');
         residualDay: KnockoutObservable<any> = ko.observable(0);
-        residualDayDispay: KnockoutObservable<any> = ko.observable('0' + " " + getText('KDM001_27'));
+        residualDayDisplay: KnockoutObservable<any> = ko.observable(model.formatterDay('0'));
         info: any = getShared("KDM001_EFGH_PARAMS");
         disables: KnockoutObservableArray<any> = ko.observableArray([]);
         constructor() {
@@ -29,13 +29,13 @@ module nts.uk.at.view.kdm001.f.viewmodel {
                 self.employeeCode(self.info.selectedEmployee.employeeCode);
                 self.employeeName(self.info.selectedEmployee.employeeName);
                 self.dateHoliday(self.info.rowValue.dayoffDateSub);
-                self.numberDay(self.info.rowValue.requiredDays + " "  + getText('KDM001_27'));
+                self.numberDay(model.formatterDay(self.info.rowValue.requiredDays));
             }
 
             self.columns = ko.observableArray([
                 { headerText: 'コード', dataType: 'string', key: 'payoutId', width: 100, hidden: true },
-                { headerText: nts.uk.resource.getText("KDM001_95"), key: 'dayoffDate', width: 110 },
-                { headerText: nts.uk.resource.getText("KDM001_96"), key: 'occurredDays', formatter:model.formatterDay, width: 100 },
+                { headerText: getText("KDM001_95"), key: 'dayoffDate', width: 110 },
+                { headerText: getText("KDM001_96"), key: 'occurredDays', formatter:model.formatterDay, width: 100 },
             ]);
             self.initScreen();
 
@@ -49,7 +49,6 @@ module nts.uk.at.view.kdm001.f.viewmodel {
                         return currentItem.payoutId === item;
                     });
                     if (code) {
-
                         self.currentList.push(code);
                     }
                 })
@@ -58,10 +57,9 @@ module nts.uk.at.view.kdm001.f.viewmodel {
         }
 
         private caculRemainNumber(): void {
-            let sumNum = 0, self = this, day = parseFloat(self.numberDay());
-            let residualValue = 0 - day;
+            let sumNum = 0, self = this, day = parseFloat(self.numberDay()), residualValue = 0 - day;
             self.residualDay(residualValue);
-            self.residualDayDispay(model.formatterDay(residualValue));
+            self.residualDayDisplay(model.formatterDay(residualValue));
             _.each(self.currentList(), function(x) {
                 if (self.dateHoliday() === x.dayoffDate) {
                     $('#multi-list').ntsError('set', { messageId: "Msg_766" });
@@ -69,7 +67,7 @@ module nts.uk.at.view.kdm001.f.viewmodel {
                     sumNum = sumNum + x.occurredDays;
                     residualValue = (sumNum - day);
                     self.residualDay(residualValue);
-                    self.residualDayDispay(model.formatterDay(residualValue));
+                    self.residualDayDisplay(model.formatterDay(residualValue));
                 }
             });
             if (self.residualDay() < 0) {
@@ -107,8 +105,6 @@ module nts.uk.at.view.kdm001.f.viewmodel {
                 dialog.alertError({ messageId: res.messageId });
                 block.clear();
             })
-
-
         }
 
         public create(): void {
