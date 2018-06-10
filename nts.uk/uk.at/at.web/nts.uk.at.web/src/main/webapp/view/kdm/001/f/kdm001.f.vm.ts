@@ -1,8 +1,8 @@
 module nts.uk.at.view.kdm001.f.viewmodel {
-    import model = kdm001.share.model;
-    import dialog = nts.uk.ui.dialog;
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
+    import model = kdm001.share.model;
+    import dialog = nts.uk.ui.dialog;
     import block = nts.uk.ui.block;
     import getText = nts.uk.resource.getText;
     export class ScreenModel {
