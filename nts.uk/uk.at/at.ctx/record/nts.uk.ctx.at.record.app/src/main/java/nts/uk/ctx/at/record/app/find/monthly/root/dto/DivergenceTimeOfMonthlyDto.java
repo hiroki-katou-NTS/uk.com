@@ -21,22 +21,22 @@ public class DivergenceTimeOfMonthlyDto implements ItemConst {
 	/** 控除後乖離時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = DEDUCTION + AFTER, layout = LAYOUT_A)
-	private Integer divergenceTimeAfterDeduction;
+	private int divergenceTimeAfterDeduction;
 
 	/** 控除時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = DEDUCTION, layout = LAYOUT_B)
-	private Integer deductionTime;
+	private int deductionTime;
 
 	/** 乖離フラグ: 月別実績の乖離フラグ */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = ATTRIBUTE, layout = LAYOUT_C)
-	private Integer divergenceAtr;
+	private int divergenceAtr;
 
 	/** 乖離時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = DIVERGENCE, layout = LAYOUT_D)
-	private Integer divergenceTime;
+	private int divergenceTime;
 
 	/** 乖離時間NO: 乖離時間NO */
 	private int no;
@@ -44,11 +44,11 @@ public class DivergenceTimeOfMonthlyDto implements ItemConst {
 	public static DivergenceTimeOfMonthlyDto from(AggregateDivergenceTime domain) {
 		DivergenceTimeOfMonthlyDto dto = new DivergenceTimeOfMonthlyDto();
 		if(domain != null) {
-			dto.setDeductionTime(domain.getDeductionTime() == null ? null : domain.getDeductionTime().valueAsMinutes());
-			dto.setDivergenceAtr(domain.getDivergenceAtr() == null ? null : domain.getDivergenceAtr().value);
-			dto.setDivergenceTime(domain.getDivergenceTime() == null ? null : domain.getDivergenceTime().valueAsMinutes());
+			dto.setDeductionTime(domain.getDeductionTime() == null ? 0 : domain.getDeductionTime().valueAsMinutes());
+			dto.setDivergenceAtr(domain.getDivergenceAtr() == null ? 0 : domain.getDivergenceAtr().value);
+			dto.setDivergenceTime(domain.getDivergenceTime() == null ? 0 : domain.getDivergenceTime().valueAsMinutes());
 			dto.setDivergenceTimeAfterDeduction(domain.getDivergenceTimeAfterDeduction() == null 
-					? null : domain.getDivergenceTimeAfterDeduction().valueAsMinutes());
+					? 0 : domain.getDivergenceTimeAfterDeduction().valueAsMinutes());
 			dto.setNo(domain.getDivergenceTimeNo());
 		}
 		return dto;
@@ -60,6 +60,6 @@ public class DivergenceTimeOfMonthlyDto implements ItemConst {
 	}
 
 	private AttendanceTimeMonth toAttendanceTimeMonth(Integer time) {
-		return time == null ? null : new AttendanceTimeMonth(time);
+		return new AttendanceTimeMonth(time);
 	}
 }

@@ -22,7 +22,7 @@ public class AggregateLeaveDaysDto implements ItemConst {
 	/** 日数: 勤怠月間日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
 	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_B, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
-	private Double days;
+	private double days;
 
 	public String enumText() {
 		switch (this.attr) {

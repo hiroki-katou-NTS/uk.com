@@ -23,7 +23,7 @@ public class ExcessOutsideWorkOfMonthlyDto implements ItemConst {
 	/** 月割増合計時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = MONTHLY_PREMIUM, layout = LAYOUT_A)
-	private Integer monthlyTotalPremiumTime;
+	private int monthlyTotalPremiumTime;
 	
 	/** 時間: 時間外超過 */
 	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_B, listMaxLength = 50, indexField = DEFAULT_INDEX_FIELD_NAME)
@@ -32,18 +32,18 @@ public class ExcessOutsideWorkOfMonthlyDto implements ItemConst {
 	/** 週割増合計時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = WEEKLY_PREMIUM, layout = LAYOUT_C)
-	private Integer weeklyTotalPremiumTime;
+	private int weeklyTotalPremiumTime;
 	
 	/** 変形繰越時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = IRREGULAR + CARRY_FORWARD, layout = LAYOUT_D)
-	private Integer deformationCarryforwardTime;
+	private int deformationCarryforwardTime;
 	
 	public ExcessOutsideWorkOfMonthly toDomain() {
 		return ExcessOutsideWorkOfMonthly.of(
-						weeklyTotalPremiumTime == null ? null : new AttendanceTimeMonth(weeklyTotalPremiumTime), 
-						monthlyTotalPremiumTime == null ? null : new AttendanceTimeMonth(monthlyTotalPremiumTime), 
-						deformationCarryforwardTime == null ? null : new AttendanceTimeMonthWithMinus(deformationCarryforwardTime), 
+						new AttendanceTimeMonth(weeklyTotalPremiumTime), 
+						new AttendanceTimeMonth(monthlyTotalPremiumTime), 
+						new AttendanceTimeMonthWithMinus(deformationCarryforwardTime), 
 						ConvertHelper.mapTo(time, c -> c.toDomain()));
 	}
 	
@@ -51,11 +51,11 @@ public class ExcessOutsideWorkOfMonthlyDto implements ItemConst {
 		ExcessOutsideWorkOfMonthlyDto dto = new ExcessOutsideWorkOfMonthlyDto();
 		if(domain != null) {
 			dto.setDeformationCarryforwardTime(domain.getDeformationCarryforwardTime() == null 
-					? null : domain.getDeformationCarryforwardTime().valueAsMinutes());
+					? 0 : domain.getDeformationCarryforwardTime().valueAsMinutes());
 			dto.setMonthlyTotalPremiumTime(domain.getMonthlyTotalPremiumTime() == null 
-					? null : domain.getMonthlyTotalPremiumTime().valueAsMinutes());
+					? 0 : domain.getMonthlyTotalPremiumTime().valueAsMinutes());
 			dto.setWeeklyTotalPremiumTime(domain.getWeeklyTotalPremiumTime() == null 
-					? null : domain.getWeeklyTotalPremiumTime().valueAsMinutes());
+					? 0 : domain.getWeeklyTotalPremiumTime().valueAsMinutes());
 			dto.setTime(ExcessOutsideWorkDto.from(domain.getTime()));
 		}
 		return dto;

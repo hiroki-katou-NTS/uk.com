@@ -4,6 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.PrescribedWorkingTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.WorkTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.HolidayWorkTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.OverTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.VacationUseTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 
@@ -38,11 +43,11 @@ public class AggregateTotalWorkingTimeDto implements ItemConst {
 
 	public AggregateTotalWorkingTime toDomain() {
 		return AggregateTotalWorkingTime.of(
-				workTime == null ? null : workTime.toDomain(),
-				overTime == null ? null : overTime.toDomain(),
-				holidayWorkTime == null ? null : holidayWorkTime.toDomain(),
-				vacationUseTime == null ? null : vacationUseTime.toDomain(),
-				prescribedWorkingTime == null ? null : prescribedWorkingTime.toDomain());
+				workTime == null ? new WorkTimeOfMonthly() : workTime.toDomain(),
+				overTime == null ? new OverTimeOfMonthly() : overTime.toDomain(),
+				holidayWorkTime == null ? new HolidayWorkTimeOfMonthly() : holidayWorkTime.toDomain(),
+				vacationUseTime == null ? new VacationUseTimeOfMonthly() : vacationUseTime.toDomain(),
+				prescribedWorkingTime == null ? new PrescribedWorkingTimeOfMonthly() : prescribedWorkingTime.toDomain());
 	}
 	
 	public static AggregateTotalWorkingTimeDto from(AggregateTotalWorkingTime domain) {

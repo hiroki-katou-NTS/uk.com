@@ -22,10 +22,10 @@ public class CommonAggregateDaysDto implements ItemConst {
 	/** 日数: 勤怠月間日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
 	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_A)
-	private Double days;
+	private double days;
 
 	/** 時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
 	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_B)
-	private Integer time;
+	private int time;
 }

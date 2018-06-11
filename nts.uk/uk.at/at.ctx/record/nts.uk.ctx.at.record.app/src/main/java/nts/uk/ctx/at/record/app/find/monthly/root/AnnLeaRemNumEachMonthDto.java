@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.DatePeriodDto;
@@ -16,6 +17,12 @@ import nts.uk.ctx.at.record.app.find.monthly.root.dto.HalfDayAnnualLeaveDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.TimeAnnualLeaveUsedTimeDto;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeave;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveAttdRateDays;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveGrant;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveMaxRemainingTime;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnualLeave;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.RealAnnualLeave;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
@@ -124,20 +131,35 @@ public class AnnLeaRemNumEachMonthDto extends MonthlyItemCommon {
 	}
 
 	@Override
-	public AnnLeaRemNumEachMonth toDomain() {
-		if (!this.isHaveData()) {
+	public AnnLeaRemNumEachMonth toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
+		if(!this.isHaveData()) {
 			return null;
+		}
+		if(employeeId == null){
+			employeeId = this.employeeId;
+		}
+		if(ym == null){
+			ym = this.ym;
+		}else {
+			if(datePeriod == null){
+				datePeriod = new DatePeriodDto(GeneralDate.ymd(ym.year(), ym.month(), 1), 
+						GeneralDate.ymd(ym.year(), ym.month(), ym.lastDateInMonth()));
+			}
+		}
+		if(closureDate == null){
+			closureDate = this.closureDate;
 		}
 		return AnnLeaRemNumEachMonth.of(employeeId, ym, ConvertHelper.getEnum(closureID, ClosureId.class),
 				closureDate == null ? null : closureDate.toDomain(), datePeriod == null ? null : datePeriod.toDomain(),
 				ConvertHelper.getEnum(closureStatus, ClosureStatus.class), 
-				annualLeave == null ? null : annualLeave.toDomain(), realAnnualLeave == null ? null : realAnnualLeave.toRealDomain(),
-				Optional.ofNullable(halfDayAnnualLeave == null ? null : halfDayAnnualLeave.toDomain()), 
-				Optional.ofNullable(realHalfDayAnnualLeave == null ? null : realHalfDayAnnualLeave.toDomain()), 
-				Optional.ofNullable(annualLeaveGrant == null ? null : annualLeaveGrant.toDomain()),
-				Optional.ofNullable(maxRemainingTime == null ? null : maxRemainingTime.toMaxRemainingTimeDomain()), 
-				Optional.ofNullable(realMaxRemainingTime == null ? null : realMaxRemainingTime.toMaxRemainingTimeDomain()),
-				attendanceRateDays == null ? null : attendanceRateDays.toAttdRateDaysDomain(), grantAtr);
+				annualLeave == null ? new AnnualLeave() : annualLeave.toDomain(), 
+				realAnnualLeave == null ? new RealAnnualLeave() : realAnnualLeave.toRealDomain(),
+				Optional.of(halfDayAnnualLeave == null ? new HalfDayAnnualLeave() : halfDayAnnualLeave.toDomain()), 
+				Optional.of(realHalfDayAnnualLeave == null ? new HalfDayAnnualLeave() : realHalfDayAnnualLeave.toDomain()), 
+				Optional.of(annualLeaveGrant == null ? new AnnualLeaveGrant() : annualLeaveGrant.toDomain()),
+				Optional.of(maxRemainingTime == null ? new AnnualLeaveMaxRemainingTime()  : maxRemainingTime.toMaxRemainingTimeDomain()), 
+				Optional.of(realMaxRemainingTime == null ? new AnnualLeaveMaxRemainingTime() : realMaxRemainingTime.toMaxRemainingTimeDomain()),
+				attendanceRateDays == null ? new AnnualLeaveAttdRateDays() : attendanceRateDays.toAttdRateDaysDomain(), grantAtr);
 	}
 
 	@Override

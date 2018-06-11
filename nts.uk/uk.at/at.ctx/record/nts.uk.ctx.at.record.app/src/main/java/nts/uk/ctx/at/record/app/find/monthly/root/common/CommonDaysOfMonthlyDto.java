@@ -26,7 +26,7 @@ public class CommonDaysOfMonthlyDto implements ItemConst {
 	/** 特別休暇合計日数: 勤怠月間日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
 	@AttendanceItemLayout(jpPropertyName = TOTAL + DAYS, layout = LAYOUT_A)
-	private Double totalAbsenceDays;
+	private double totalAbsenceDays;
 
 	/** 欠勤日数: 集計欠勤日数 */
 	/** 特別休暇日数: 集計特別休暇日数 */
@@ -37,27 +37,27 @@ public class CommonDaysOfMonthlyDto implements ItemConst {
 	/** 特別休暇合計時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = TOTAL + TIME, layout = LAYOUT_C)
-	private Integer totalAbsenceTime;
+	private int totalAbsenceTime;
 
 	public static CommonDaysOfMonthlyDto from(AbsenceDaysOfMonthly domain) {
 		CommonDaysOfMonthlyDto dto = new CommonDaysOfMonthlyDto();
 		if (domain != null) {
 			dto.setDaysList(ConvertHelper.mapTo(domain.getAbsenceDaysList(),
 					c -> new CommonAggregateDaysDto(c.getValue().getAbsenceFrameNo(),
-							c.getValue().getDays() == null ? null : c.getValue().getDays().v(),
-							c.getValue().getTime() == null ? null : c.getValue().getTime().v())));
-			dto.setTotalAbsenceDays(domain.getTotalAbsenceDays() == null ? null : domain.getTotalAbsenceDays().v());
-			dto.setTotalAbsenceTime(domain.getTotalAbsenceTime() == null ? null : domain.getTotalAbsenceTime().valueAsMinutes());
+							c.getValue().getDays() == null ? 0 : c.getValue().getDays().v(),
+							c.getValue().getTime() == null ? 0 : c.getValue().getTime().v())));
+			dto.setTotalAbsenceDays(domain.getTotalAbsenceDays() == null ? 0 : domain.getTotalAbsenceDays().v());
+			dto.setTotalAbsenceTime(domain.getTotalAbsenceTime() == null ? 0 : domain.getTotalAbsenceTime().valueAsMinutes());
 		}
 		return dto;
 	}
 	
 	public AbsenceDaysOfMonthly toAbsenceDays() {
 		return AbsenceDaysOfMonthly.of(
-					totalAbsenceDays == null ? null : new AttendanceDaysMonth(totalAbsenceDays),
-					totalAbsenceTime == null ? null : new AttendanceTimeMonth(totalAbsenceTime),
+					new AttendanceDaysMonth(totalAbsenceDays),
+					new AttendanceTimeMonth(totalAbsenceTime),
 					ConvertHelper.mapTo(daysList, c -> AggregateAbsenceDays.of(c.getNo(),
-									c.getDays() == null ? null : new AttendanceDaysMonth(c.getDays()),
-									c.getTime() == null ? null : new AttendanceTimeMonth(c.getTime()))));
+									new AttendanceDaysMonth(c.getDays()),
+									new AttendanceTimeMonth(c.getTime()))));
 	}
 }

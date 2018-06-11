@@ -16,7 +16,7 @@ public class RsvLeaRemNumEachMonthCommandHandler extends CommandFacade<RsvLeaRem
 	@Override
 	protected void handle(CommandHandlerContext<RsvLeaRemNumEachMonthCommand> context) {
 		if(context.getCommand().getData().isHaveData()) {
-			repo.persistAndUpdate(context.getCommand().getData().toDomain());
+			repo.persistAndUpdate(context.getCommand().toDomain());
 		}
 		
 	}

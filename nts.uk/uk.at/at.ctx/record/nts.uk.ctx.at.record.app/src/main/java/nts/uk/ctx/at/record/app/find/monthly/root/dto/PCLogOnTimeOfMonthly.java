@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.AggrPCLogonClock;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.AggrPCLogonDivergence;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.PCLogonClockOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.PCLogonDivergenceOfMonthly;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
@@ -39,12 +41,12 @@ public class PCLogOnTimeOfMonthly implements ItemConst{
 	}
 	
 	public PCLogonClockOfMonthly toDomain(){
-		return PCLogonClockOfMonthly.of(logOn == null ? null : logOn.toDomain(), 
-										logOff == null ? null : logOff.toDomain());
+		return PCLogonClockOfMonthly.of(logOn == null ? new AggrPCLogonClock() : logOn.toDomain(), 
+										logOff == null ? new AggrPCLogonClock() : logOff.toDomain());
 	}
 	
 	public PCLogonDivergenceOfMonthly toDivergenceDomain(){
-		return PCLogonDivergenceOfMonthly.of(logOn == null ? null : logOn.toDivergenceDomain(), 
-										logOff == null ? null : logOff.toDivergenceDomain());
+		return PCLogonDivergenceOfMonthly.of(logOn == null ? new AggrPCLogonDivergence() : logOn.toDivergenceDomain(), 
+										logOff == null ? new AggrPCLogonDivergence() : logOff.toDivergenceDomain());
 	}
 }

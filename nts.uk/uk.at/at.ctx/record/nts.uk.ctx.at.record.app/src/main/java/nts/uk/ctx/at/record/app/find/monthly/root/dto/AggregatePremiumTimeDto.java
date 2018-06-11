@@ -22,18 +22,18 @@ public class AggregatePremiumTimeDto implements ItemConst {
 	/** 時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_A)
-	private Integer time;
+	private int time;
 	
 	public static AggregatePremiumTimeDto from (AggregatePremiumTime domain) {
 		AggregatePremiumTimeDto dto = new AggregatePremiumTimeDto();
 		if(domain != null) {
 			dto.setNo(domain.getPremiumTimeItemNo());
-			dto.setTime(domain.getTime() == null ? null : domain.getTime().valueAsMinutes());
+			dto.setTime(domain.getTime() == null ? 0 : domain.getTime().valueAsMinutes());
 		}
 		return dto;
 	}
 
 	public AggregatePremiumTime toDomain(){
-		return AggregatePremiumTime.of(no, time == null ? null : new AttendanceTimeMonth(time));
+		return AggregatePremiumTime.of(no, new AttendanceTimeMonth(time));
 	}
 }

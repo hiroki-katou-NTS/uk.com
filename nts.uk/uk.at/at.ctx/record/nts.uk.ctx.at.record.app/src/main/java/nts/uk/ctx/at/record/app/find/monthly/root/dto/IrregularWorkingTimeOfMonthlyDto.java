@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.IrregularWorkingTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -20,17 +21,17 @@ public class IrregularWorkingTimeOfMonthlyDto implements ItemConst {
 	/** 複数月変形途中時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = MULTI_MONTH + MIDDLE, layout = LAYOUT_A)
-	private Integer multiMonthIrregularMiddleTime;
+	private int multiMonthIrregularMiddleTime;
 
 	/** 変形期間繰越時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = CARRY_FORWARD, layout = LAYOUT_B)
-	private Integer irregularPeriodCarryforwardTime;
+	private int irregularPeriodCarryforwardTime;
 
 	/** 変形労働不足時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = SHORTAGE, layout = LAYOUT_C)
-	private Integer irregularWorkingShortageTime;
+	private int irregularWorkingShortageTime;
 
 	/** 変形法定内残業時間 */
 	@AttendanceItemLayout(jpPropertyName = LEGAL + OVERTIME, layout = LAYOUT_D)
@@ -38,10 +39,10 @@ public class IrregularWorkingTimeOfMonthlyDto implements ItemConst {
 
 	public IrregularWorkingTimeOfMonthly toDomain() {
 		return IrregularWorkingTimeOfMonthly.of(
-						multiMonthIrregularMiddleTime == null ? null : new AttendanceTimeMonthWithMinus(multiMonthIrregularMiddleTime),
-						irregularPeriodCarryforwardTime == null ? null : new AttendanceTimeMonthWithMinus(irregularPeriodCarryforwardTime),
-						irregularWorkingShortageTime == null ? null : new AttendanceTimeMonth(irregularWorkingShortageTime), 
-						irregularLegalOverTime == null ? null : irregularLegalOverTime.toDomain());
+						new AttendanceTimeMonthWithMinus(multiMonthIrregularMiddleTime),
+						new AttendanceTimeMonthWithMinus(irregularPeriodCarryforwardTime),
+						new AttendanceTimeMonth(irregularWorkingShortageTime), 
+						irregularLegalOverTime == null ? new TimeMonthWithCalculation() : irregularLegalOverTime.toDomain());
 	}
 	
 	public static IrregularWorkingTimeOfMonthlyDto from(IrregularWorkingTimeOfMonthly domain) {
@@ -49,11 +50,11 @@ public class IrregularWorkingTimeOfMonthlyDto implements ItemConst {
 		if(domain != null) {
 			dto.setIrregularLegalOverTime(TimeMonthWithCalculationDto.from(domain.getIrregularLegalOverTime()));
 			dto.setIrregularPeriodCarryforwardTime(domain.getIrregularPeriodCarryforwardTime() == null 
-					? null : domain.getIrregularPeriodCarryforwardTime().valueAsMinutes());
+					? 0 : domain.getIrregularPeriodCarryforwardTime().valueAsMinutes());
 			dto.setIrregularWorkingShortageTime(domain.getIrregularWorkingShortageTime() == null 
-					? null : domain.getIrregularWorkingShortageTime().valueAsMinutes());
+					? 0 : domain.getIrregularWorkingShortageTime().valueAsMinutes());
 			dto.setMultiMonthIrregularMiddleTime(domain.getMultiMonthIrregularMiddleTime() == null 
-					? null : domain.getMultiMonthIrregularMiddleTime().valueAsMinutes());
+					? 0 : domain.getMultiMonthIrregularMiddleTime().valueAsMinutes());
 		}
 		return dto;
 	}

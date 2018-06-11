@@ -92,22 +92,28 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 	}
 	
 	public AffiliationInfoOfMonthly toAffiliation(){
-		return this.affiliation.toDomain();
+		return this.affiliation.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
 	}
 	
 	public AttendanceTimeOfMonthly toAttendanceTime(){
-		return this.attendanceTime.toDomain();
+		return this.attendanceTime.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
 	}
 	
 	public List<AnyItemOfMonthly> toAnyItems(){
-		return this.anyItem.toDomain();
+		return this.anyItem.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
 	}
 	
 	public AnnLeaRemNumEachMonth toAnnLeave(){
-		return this.annLeave.toDomain();
+		return this.annLeave.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
 	}
 	
 	public RsvLeaRemNumEachMonth toRsvLeave(){
-		return this.rsvLeave.toDomain();
+		return this.rsvLeave.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
+	}
+
+	@Override
+	public Object toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -19,24 +19,24 @@ public class BreakTimeOfMonthlyDto implements ItemConst {
 	/** 休憩時間: 勤怠月間時間 */
 	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_A)
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	private Integer breakTime;
+	private int breakTime;
 
 	/** 所定内休憩時間: 勤怠月間時間 */
 	@AttendanceItemLayout(jpPropertyName = WITHIN_STATUTORY, layout = LAYOUT_B)
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	private Integer withinBreakTime;
+	private int withinBreakTime;
 
 	/** 所定外休憩時間: 勤怠月間時間 */
 	@AttendanceItemLayout(jpPropertyName = EXCESS_STATUTORY, layout = LAYOUT_C)
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	private Integer excessBreakTime;
+	private int excessBreakTime;
 
 	public static BreakTimeOfMonthlyDto from(BreakTimeOfMonthly domain) {
 		return domain == null ? null : 
-					new BreakTimeOfMonthlyDto(domain.getBreakTime() == null ? null : domain.getBreakTime().valueAsMinutes(), null, null);
+					new BreakTimeOfMonthlyDto(domain.getBreakTime() == null ? 0 : domain.getBreakTime().valueAsMinutes(), 0, 0);
 	}
 	
 	public BreakTimeOfMonthly toDomain() {
-		return BreakTimeOfMonthly.of(breakTime == null ? null : new AttendanceTimeMonth(breakTime));
+		return BreakTimeOfMonthly.of(new AttendanceTimeMonth(breakTime));
 	}
 }

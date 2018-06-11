@@ -27,12 +27,12 @@ public class GoOutForChildCareDto implements ItemConst {
 	/** 回数: 勤怠月間回数 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = COUNT, layout = LAYOUT_B, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
-	private Integer times;
+	private int times;
 	
 	/** 時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_C, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
-	private Integer time;
+	private int time;
 	
 	public String enumText(){
 		switch (this.attr) {
@@ -48,16 +48,16 @@ public class GoOutForChildCareDto implements ItemConst {
 		GoOutForChildCareDto dto = new GoOutForChildCareDto();
 		if(domain != null) {
 			dto.setAttr(domain.getChildCareAtr() == null ? 0 : domain.getChildCareAtr().value);
-			dto.setTime(domain.getTime() == null ? null : domain.getTime().valueAsMinutes());
-			dto.setTimes(domain.getTimes() == null ? null : domain.getTimes().v());
+			dto.setTime(domain.getTime() == null ? 0 : domain.getTime().valueAsMinutes());
+			dto.setTimes(domain.getTimes() == null ? 0 : domain.getTimes().v());
 		}
 		return dto;
 	}
 	
 	public GoOutForChildCare toDomain(){
 		return GoOutForChildCare.of(ConvertHelper.getEnum(attr, ChildCareAtr.class), 
-				times == null ? null : new AttendanceTimesMonth(times), 
-						time == null ? null : new AttendanceTimeMonth(time));
+				new AttendanceTimesMonth(times), 
+						new AttendanceTimeMonth(time));
 	}
 	
 }

@@ -20,5 +20,5 @@ public class AnyLeaveDto implements ItemConst {
 	/** 日数: 勤怠月間日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
 	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_A)
-	private Double days;
+	private double days;
 }

@@ -23,25 +23,25 @@ public class AggregateSpecificDaysDto implements ItemConst {
 	/** 特定日数: 勤怠月間日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
 	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_A)
-	private Double specificDays;
+	private double specificDays;
 
 	/** 休出特定日数: 勤怠月間日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
 	@AttendanceItemLayout(jpPropertyName = HOLIDAY_WORK, layout = LAYOUT_B)
-	private Double holidayWorkSpecificDays;
-	
+	private double holidayWorkSpecificDays;
+
 	public AggregateSpecificDays toDomain() {
-		return AggregateSpecificDays.of(new SpecificDateItemNo(no), 
-										specificDays == null ? null : new AttendanceDaysMonth(specificDays),
-										holidayWorkSpecificDays == null ? null : new AttendanceDaysMonth(holidayWorkSpecificDays));
+		return AggregateSpecificDays.of(new SpecificDateItemNo(no), new AttendanceDaysMonth(specificDays),
+				new AttendanceDaysMonth(holidayWorkSpecificDays));
 	}
-	
+
 	public static AggregateSpecificDaysDto from(AggregateSpecificDays domain) {
 		AggregateSpecificDaysDto dto = new AggregateSpecificDaysDto();
-		if(domain != null) {
-			dto.setHolidayWorkSpecificDays(domain.getHolidayWorkSpecificDays() == null ? null : domain.getHolidayWorkSpecificDays().v());
+		if (domain != null) {
+			dto.setHolidayWorkSpecificDays(
+					domain.getHolidayWorkSpecificDays() == null ? 0 : domain.getHolidayWorkSpecificDays().v());
 			dto.setNo(domain.getSpecificDayItemNo().v());
-			dto.setSpecificDays(domain.getSpecificDays() == null ? null : domain.getSpecificDays().v());
+			dto.setSpecificDays(domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v());
 		}
 		return dto;
 	}

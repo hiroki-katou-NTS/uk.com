@@ -57,10 +57,10 @@ public class AggregateAffiliationInfoDto implements ItemConst {
 	}
 
 	public AggregateAffiliationInfo toDomain() {
-		return AggregateAffiliationInfo.of(employmentCode == null ? null : new EmploymentCode(employmentCode),
-				workPlaceCode == null ? null : new WorkplaceId(workPlaceCode),
-				jobTitle == null ? null : new JobTitleId(jobTitle),
-				classificationCode == null ? null : new ClassificationCode(classificationCode),
-				businessTypeCode == null ? null : new BusinessTypeCode(businessTypeCode));
+		return AggregateAffiliationInfo.of(new EmploymentCode(employmentCode),
+				new WorkplaceId(workPlaceCode),
+				new JobTitleId(jobTitle),
+				new ClassificationCode(classificationCode),
+				new BusinessTypeCode(businessTypeCode));
 	}
 }

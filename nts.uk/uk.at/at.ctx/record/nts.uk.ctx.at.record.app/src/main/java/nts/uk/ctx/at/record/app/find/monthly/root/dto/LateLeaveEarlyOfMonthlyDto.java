@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.CommonTimeCountDto;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.lateleaveearly.Late;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.lateleaveearly.LateLeaveEarlyOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.lateleaveearly.LeaveEarly;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 
@@ -31,7 +33,7 @@ public class LateLeaveEarlyOfMonthlyDto implements ItemConst {
 		return dto;
 	}
 	public LateLeaveEarlyOfMonthly toDomain() {
-		return LateLeaveEarlyOfMonthly.of(leaveEarly == null ? null : leaveEarly.toLeaveEarly(),
-										late == null ? null : late.toLate());
+		return LateLeaveEarlyOfMonthly.of(leaveEarly == null ? new LeaveEarly() : leaveEarly.toLeaveEarly(),
+										late == null ? new Late() : late.toLate());
 	}
 }

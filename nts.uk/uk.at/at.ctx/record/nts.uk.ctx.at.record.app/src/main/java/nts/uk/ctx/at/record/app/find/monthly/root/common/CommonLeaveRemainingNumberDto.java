@@ -6,6 +6,8 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingDetail;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingNumber;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveRemainingNumber;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
@@ -30,8 +32,7 @@ public class CommonLeaveRemainingNumberDto implements ItemConst {
 
 	/** 合計残時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_B)
-	private Integer totalRemainingTime;
+	private int totalRemainingTime;
 
 	/** 明細 */
 	// @AttendanceItemLayout(jpPropertyName = "明細", layout = "C", listMaxLength = ??)
@@ -40,20 +41,19 @@ public class CommonLeaveRemainingNumberDto implements ItemConst {
 	public static CommonLeaveRemainingNumberDto from(AnnualLeaveRemainingNumber domain) {
 		return domain == null ? null : new CommonLeaveRemainingNumberDto(
 				domain.getTotalRemainingDays().v(), 
-				domain.getTotalRemainingTime().isPresent() ? domain.getTotalRemainingTime().get().valueAsMinutes() : null, 
+				domain.getTotalRemainingTime().isPresent() ? domain.getTotalRemainingTime().get().valueAsMinutes() : 0, 
 				ConvertHelper.mapTo(domain.getDetails(), c -> CommonlLeaveRemainingDetailDto.from(c)));
 	}
 	
 	public AnnualLeaveRemainingNumber toDomain() {
 		return AnnualLeaveRemainingNumber.of(
 				new AnnualLeaveRemainingDayNumber(totalRemainingDays), 
-				Optional.ofNullable(totalRemainingTime == null ? null : new RemainingMinutes(totalRemainingTime)), 
-				ConvertHelper.mapTo(details, c -> c == null ? null : c.toDomain()));
+				Optional.of(new RemainingMinutes(totalRemainingTime)), 
+				ConvertHelper.mapTo(details, c -> c == null ? new AnnualLeaveRemainingDetail(GeneralDate.today()) : c.toDomain()));
 	}
 	public static CommonLeaveRemainingNumberDto from(ReserveLeaveRemainingNumber domain) {
 		return domain == null ? null : new CommonLeaveRemainingNumberDto(
-				domain.getTotalRemainingDays().v(), 
-				null, 
+				domain.getTotalRemainingDays().v(), 0, 
 				ConvertHelper.mapTo(domain.getDetails(), c -> CommonlLeaveRemainingDetailDto.from(c)));
 	}
 	

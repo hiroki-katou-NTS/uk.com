@@ -17,10 +17,10 @@ public class ReservationOfMonthlyDto implements ItemConst {
 	@AttendanceItemLayout(jpPropertyName = AMOUNT, layout = LAYOUT_A)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	/** 注文金額: 注文金額 */
-	private Integer reservationAmount;
+	private int reservationAmount;
 
 	@AttendanceItemLayout(jpPropertyName = NUMBER, layout = LAYOUT_B)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	/** 注文数: 注文数 */
-	private Integer reservationNumber;
+	private int reservationNumber;
 }

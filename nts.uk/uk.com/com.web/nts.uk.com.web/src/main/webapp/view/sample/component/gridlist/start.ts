@@ -44,7 +44,7 @@ module nts.uk.ui.gridlist {
                 this.currentCode.subscribe((newValue) => {
                     self.index(_.findIndex(this.items(), ["code", newValue]));
                 })
-                this.currentCodeList = ko.observableArray([]);
+                this.currentCodeList = ko.observableArray(["006"]);
                 this.codeList = ko.observableArray([]);
                 // Fire event.
                 $("#multi-list").on('itemDeleted', (function(e: Event) {

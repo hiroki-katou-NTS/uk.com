@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.WorkClockOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 
@@ -26,9 +29,9 @@ public class VerticalTotalOfMonthlyDto implements ItemConst {
 	private WorkDaysOfMonthlyDto workDays;
 	
 	public VerticalTotalOfMonthly toDomain(){
-		return VerticalTotalOfMonthly.of(workDays == null ? null : workDays.toDomain(), 
-										workTime == null ? null : workTime.toDomain(), 
-										workHour == null ? null : workHour.toDomain());
+		return VerticalTotalOfMonthly.of(workDays == null ? new WorkDaysOfMonthly() : workDays.toDomain(), 
+										workTime == null ? new WorkTimeOfMonthly() : workTime.toDomain(), 
+										workHour == null ? new WorkClockOfMonthly() : workHour.toDomain());
 	}
 	
 	public static VerticalTotalOfMonthlyDto from(VerticalTotalOfMonthly domain) {

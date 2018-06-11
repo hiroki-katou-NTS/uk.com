@@ -24,17 +24,17 @@ public class AgreementTimeOfMonthlyDto implements ItemConst {
 	/** 36協定時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = AGREEMENT, layout = LAYOUT_A)
-	private Integer agreementTime;
+	private int agreementTime;
 
 	/** 限度アラーム時間: ３６協定１ヶ月時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = LIMIT_ALARM, layout = LAYOUT_B)
-	private Integer limitAlarmTime;
+	private int limitAlarmTime;
 
 	/** 限度エラー時間: ３６協定１ヶ月時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = LIMIT_ERROR, layout = LAYOUT_C)
-	private Integer limitErrorTime;
+	private int limitErrorTime;
 
 	/** AgreementTimeStatusOfMonthly */
 	/** 状態: 月別実績の36協定時間状態 */
@@ -53,9 +53,9 @@ public class AgreementTimeOfMonthlyDto implements ItemConst {
 	private Integer exceptionLimitErrorTime;
 
 	public AgreementTimeOfMonthly toDomain() {
-		return AgreementTimeOfMonthly.of(agreementTime == null ? null : new AttendanceTimeMonth(agreementTime),
-										limitErrorTime == null ? null : new LimitOneMonth(limitErrorTime),
-										limitAlarmTime == null ? null : new LimitOneMonth(limitAlarmTime),
+		return AgreementTimeOfMonthly.of(new AttendanceTimeMonth(agreementTime),
+										new LimitOneMonth(limitErrorTime),
+										new LimitOneMonth(limitAlarmTime),
 										exceptionLimitErrorTime == null ? Optional.empty()
 												: Optional.of(new LimitOneMonth(exceptionLimitErrorTime)),
 										exceptionLimitAlarmTime == null ? Optional.empty()
@@ -66,7 +66,7 @@ public class AgreementTimeOfMonthlyDto implements ItemConst {
 	public static AgreementTimeOfMonthlyDto from(AgreementTimeOfMonthly domain) {
 		AgreementTimeOfMonthlyDto dto = new AgreementTimeOfMonthlyDto();
 		if(domain != null) {
-			dto.setAgreementTime(domain.getAgreementTime() == null ? null : domain.getAgreementTime().valueAsMinutes());
+			dto.setAgreementTime(domain.getAgreementTime() == null ? 0 : domain.getAgreementTime().valueAsMinutes());
 			dto.setExceptionLimitAlarmTime(from(domain.getExceptionLimitAlarmTime().orElse(null)));
 			dto.setExceptionLimitErrorTime(from(domain.getExceptionLimitErrorTime().orElse(null)));
 			dto.setLimitAlarmTime(from(domain.getLimitAlarmTime()));
@@ -77,6 +77,6 @@ public class AgreementTimeOfMonthlyDto implements ItemConst {
 	}
 	
 	private static Integer from(LimitOneMonth domain) {
-		return domain == null ? null : domain.valueAsMinutes();
+		return domain == null ? 0 : domain.valueAsMinutes();
 	}
 }

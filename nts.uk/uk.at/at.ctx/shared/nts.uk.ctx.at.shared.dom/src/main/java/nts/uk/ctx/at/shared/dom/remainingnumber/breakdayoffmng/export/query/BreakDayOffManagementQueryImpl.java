@@ -363,7 +363,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 	}
 	@Override
 	public Double totalExtinctionRemainOfInPeriod(String sid, DatePeriod dateData) {
-		DatePeriod tmpDateData = new DatePeriod(GeneralDate.fromString("1900/01/01", "yyyy/mm/dd"), dateData.end()); 
+		DatePeriod tmpDateData = new DatePeriod(GeneralDate.min(), dateData.end()); 
 		List<InterimRemain> lstInterimData = remainRepo.getRemainBySidPriod(sid, tmpDateData, RemainType.SUBHOLIDAY);
 		List<String> lstMngId = new ArrayList<>();
 		lstInterimData.stream().forEach(x ->{

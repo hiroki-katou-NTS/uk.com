@@ -26,36 +26,36 @@ public class PremiumTimeOfMonthlyDto implements ItemConst {
 	/** 深夜時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = LATE_NIGHT, layout = LAYOUT_B)
-	private Integer midnightTime;
+	private int midnightTime;
 
 	/** 法定外休出時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = ILLEGAL + HOLIDAY_WORK, layout = LAYOUT_C)
-	private Integer illegalHolidayWorkTime;
+	private int illegalHolidayWorkTime;
 
 	/** 法定外時間外時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = ILLEGAL + TIME, layout = LAYOUT_D)
-	private Integer illegalOutsideWorkTime;
+	private int illegalOutsideWorkTime;
 
 	/** 法定内休出時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = LEGAL + HOLIDAY_WORK, layout = LAYOUT_E)
-	private Integer legalHolidayWorkTime;
+	private int legalHolidayWorkTime;
 
 	/** 法定内時間外時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = LEGAL + TIME, layout = LAYOUT_F)
-	private Integer legalOutsideWorkTime;
+	private int legalOutsideWorkTime;
 	
 	public static PremiumTimeOfMonthlyDto from(PremiumTimeOfMonthly domain) {
 		PremiumTimeOfMonthlyDto dto = new PremiumTimeOfMonthlyDto();
 		if(domain != null) {
-			dto.setIllegalHolidayWorkTime(domain.getIllegalHolidayWorkTime() == null ? null : domain.getIllegalHolidayWorkTime().valueAsMinutes());
-			dto.setIllegalOutsideWorkTime(domain.getIllegalOutsideWorkTime() == null ? null : domain.getIllegalOutsideWorkTime().valueAsMinutes());
-			dto.setLegalHolidayWorkTime(domain.getLegalHolidayWorkTime() == null ? null : domain.getLegalHolidayWorkTime().valueAsMinutes());
-			dto.setLegalOutsideWorkTime(domain.getLegalOutsideWorkTime() == null ? null : domain.getLegalOutsideWorkTime().valueAsMinutes());
-			dto.setMidnightTime(domain.getMidnightTime() == null ? null : domain.getMidnightTime().valueAsMinutes());
+			dto.setIllegalHolidayWorkTime(domain.getIllegalHolidayWorkTime() == null ? 0 : domain.getIllegalHolidayWorkTime().valueAsMinutes());
+			dto.setIllegalOutsideWorkTime(domain.getIllegalOutsideWorkTime() == null ? 0 : domain.getIllegalOutsideWorkTime().valueAsMinutes());
+			dto.setLegalHolidayWorkTime(domain.getLegalHolidayWorkTime() == null ? 0 : domain.getLegalHolidayWorkTime().valueAsMinutes());
+			dto.setLegalOutsideWorkTime(domain.getLegalOutsideWorkTime() == null ? 0 : domain.getLegalOutsideWorkTime().valueAsMinutes());
+			dto.setMidnightTime(domain.getMidnightTime() == null ? 0 : domain.getMidnightTime().valueAsMinutes());
 			dto.setPremiumTimes(ConvertHelper.mapTo(domain.getPremiumTime(), c -> AggregatePremiumTimeDto.from(c.getValue())));
 		}
 		return dto;
@@ -68,6 +68,6 @@ public class PremiumTimeOfMonthlyDto implements ItemConst {
 	}
 	
 	private AttendanceTimeMonth toAttendanceTimeMonth(Integer time){
-		return time == null ? null : new AttendanceTimeMonth(time);
+		return new AttendanceTimeMonth(time);
 	}
 }

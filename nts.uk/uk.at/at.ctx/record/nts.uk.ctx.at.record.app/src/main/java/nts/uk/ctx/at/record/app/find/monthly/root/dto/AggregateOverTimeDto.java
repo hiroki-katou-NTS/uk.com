@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -27,7 +28,7 @@ public class AggregateOverTimeDto implements ItemConst {
 	/** 事前残業時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = BEFORE, layout = LAYOUT_B)
-	private Integer beforeOverTime;
+	private int beforeOverTime;
 
 	/** 振替残業時間 */
 	@AttendanceItemLayout(jpPropertyName = TRANSFER, layout = LAYOUT_C)
@@ -36,28 +37,28 @@ public class AggregateOverTimeDto implements ItemConst {
 	/** 法定内残業時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = LEGAL, layout = LAYOUT_D)
-	private Integer legalOverTime;
+	private int legalOverTime;
 
 	/** 法定内振替残業時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = LEGAL + TRANSFER, layout = LAYOUT_E)
-	private Integer legalTransferOverTime;
+	private int legalTransferOverTime;
 
 	public AggregateOverTime toDomain() {
 		return AggregateOverTime.of(new OverTimeFrameNo(no), 
-									overTime == null ? null : overTime.toDomain(),
-									beforeOverTime == null ? null : new AttendanceTimeMonth(beforeOverTime),
-									transferOverTime == null ? null : transferOverTime.toDomain(),
-									legalOverTime == null ? null : new AttendanceTimeMonth(legalOverTime),
-									legalTransferOverTime == null ? null : new AttendanceTimeMonth(legalTransferOverTime));
+									overTime == null ? new TimeMonthWithCalculation() : overTime.toDomain(),
+									new AttendanceTimeMonth(beforeOverTime),
+									transferOverTime == null ? new TimeMonthWithCalculation() : transferOverTime.toDomain(),
+									new AttendanceTimeMonth(legalOverTime),
+									new AttendanceTimeMonth(legalTransferOverTime));
 	}
 	
 	public static AggregateOverTimeDto from(AggregateOverTime domain) {
 		AggregateOverTimeDto dto = new AggregateOverTimeDto();
 		if(domain != null) {
-			dto.setBeforeOverTime(domain.getBeforeOverTime() == null ? null : domain.getBeforeOverTime().valueAsMinutes());
-			dto.setLegalOverTime(domain.getLegalOverTime() == null ? null : domain.getLegalOverTime().valueAsMinutes());
-			dto.setLegalTransferOverTime(domain.getLegalTransferOverTime() == null ? null : domain.getLegalTransferOverTime().valueAsMinutes());
+			dto.setBeforeOverTime(domain.getBeforeOverTime() == null ? 0 : domain.getBeforeOverTime().valueAsMinutes());
+			dto.setLegalOverTime(domain.getLegalOverTime() == null ? 0 : domain.getLegalOverTime().valueAsMinutes());
+			dto.setLegalTransferOverTime(domain.getLegalTransferOverTime() == null ? 0 : domain.getLegalTransferOverTime().valueAsMinutes());
 			dto.setOverTime(TimeMonthWithCalculationDto.from(domain.getOverTime()));
 			dto.setNo(domain.getOverTimeFrameNo().v());
 			dto.setTransferOverTime(TimeMonthWithCalculationDto.from(domain.getTransferOverTime()));

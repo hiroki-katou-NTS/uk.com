@@ -3,7 +3,12 @@ package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.AggregateTotalTimeSpentAtWork;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
+import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
@@ -39,21 +44,21 @@ public class MonthlyCalculationDto implements ItemConst {
 	/** 総労働時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = TOTAL_LABOR, layout = LAYOUT_F)
-	private Integer totalWorkingTime;
+	private int totalWorkingTime;
 
 	/** 法定労働時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = WITHIN_STATUTORY, layout = LAYOUT_G)
-	private Integer statutoryWorkingTime;
+	private int statutoryWorkingTime;
 
 	public MonthlyCalculation toDomain() {
-		return MonthlyCalculation.of(actualWorkingTime == null ? null : actualWorkingTime.toDomain(),
-									flexTime == null ? null : flexTime.toDomain(),
-									statutoryWorkingTime == null ? null : new AttendanceTimeMonth(statutoryWorkingTime),
-									aggregateTime == null ? null : aggregateTime.toDomain(),
-									totalWorkingTime == null ? null : new AttendanceTimeMonth(totalWorkingTime),
-									totalTimeSpentAtWork == null ? null : totalTimeSpentAtWork.toDomain(),
-									agreementTime == null ? null : agreementTime.toDomain());
+		return MonthlyCalculation.of(actualWorkingTime == null ? new RegularAndIrregularTimeOfMonthly() : actualWorkingTime.toDomain(),
+									flexTime == null ? new FlexTimeOfMonthly() : flexTime.toDomain(),
+									new AttendanceTimeMonth(statutoryWorkingTime),
+									aggregateTime == null ? new AggregateTotalWorkingTime() : aggregateTime.toDomain(),
+									new AttendanceTimeMonth(totalWorkingTime),
+									totalTimeSpentAtWork == null ? new AggregateTotalTimeSpentAtWork() : totalTimeSpentAtWork.toDomain(),
+									agreementTime == null ? new AgreementTimeOfMonthly() : agreementTime.toDomain());
 	}
 	
 	public static MonthlyCalculationDto from(MonthlyCalculation domain) {

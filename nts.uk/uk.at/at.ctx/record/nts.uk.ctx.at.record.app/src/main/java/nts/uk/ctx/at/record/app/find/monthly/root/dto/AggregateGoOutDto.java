@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
+import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.goout.AggregateGoOut;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
@@ -21,7 +22,7 @@ public class AggregateGoOutDto implements ItemConst {
 	/** 回数: 勤怠月間回数 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = COUNT, layout = LAYOUT_A, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
-	private Integer times;
+	private int times;
 
 	/** 外出理由: 外出理由 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
@@ -63,17 +64,17 @@ public class AggregateGoOutDto implements ItemConst {
 			dto.setAttr(domain.getGoOutReason() == null ? 0 : domain.getGoOutReason().value);
 			dto.setIllegalTime(TimeMonthWithCalculationDto.from(domain.getIllegalTime()));
 			dto.setLegalTime(TimeMonthWithCalculationDto.from(domain.getLegalTime()));
-			dto.setTimes(domain.getTimes() == null ? null : domain.getTimes().v());
+			dto.setTimes(domain.getTimes() == null ? 0 : domain.getTimes().v());
 			dto.setTotalTime(TimeMonthWithCalculationDto.from(domain.getTotalTime()));
 		}
 		return dto;
 	}
 
 	public AggregateGoOut toDomain(){
-		return AggregateGoOut.of(ConvertHelper.getEnum(attr, GoingOutReason.class), 
-					times == null ? null : new AttendanceTimesMonth(times), 
-					legalTime == null ? null : legalTime.toDomain(), 
-					illegalTime == null ? null : illegalTime.toDomain(), 
-					totalTime != null ? null : totalTime.toDomain());
+		return AggregateGoOut.of(ConvertHelper.getEnum(attr, GoingOutReason.class),  
+					new AttendanceTimesMonth(times), 
+					legalTime == null ? new TimeMonthWithCalculation() : legalTime.toDomain(), 
+					illegalTime == null ? new TimeMonthWithCalculation() : illegalTime.toDomain(), 
+					totalTime != null ? new TimeMonthWithCalculation() : totalTime.toDomain());
 	}
 }

@@ -26,25 +26,24 @@ public class TotalCountDto implements ItemConst {
 	/** 回数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
 	@AttendanceItemLayout(jpPropertyName = COUNT, layout = LAYOUT_A)
-	private Double count;
+	private double count;
 
 	/** 時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_B)
-	private Integer time;
+	private int time;
+	
 	
 	public TotalCount toDomain(){
-		return TotalCount.of(this.no,
-				this.count == null ? new AttendanceDaysMonth(0.0) : new AttendanceDaysMonth(this.count),
-				this.time == null ? new AttendanceTimeMonth(0) : new AttendanceTimeMonth(this.time));
+		return TotalCount.of(this.no, new AttendanceDaysMonth(this.count), new AttendanceTimeMonth(this.time));
 	}
 	
 	public static TotalCountDto from(TotalCount domain){
 		TotalCountDto dto = new TotalCountDto();
 		if (domain != null){
 			dto.no = domain.getTotalCountNo();
-			dto.count = domain.getCount() == null ? null : domain.getCount().v();
-			dto.time = domain.getTime() == null ? null : domain.getTime().v();
+			dto.count = domain.getCount() == null ? 0 : domain.getCount().v();
+			dto.time = domain.getTime() == null ? 0 : domain.getTime().v();
 		}
 		return dto;
 	}

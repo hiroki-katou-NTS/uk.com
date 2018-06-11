@@ -21,17 +21,17 @@ public class MedicalTimeOfMonthlyDto implements ItemConst{
 	/** 勤務時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = WORKING_TIME, layout = LAYOUT_A, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD )
-	private Integer workTime;
+	private int workTime;
 
 	/** 控除時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = DEDUCTION, layout = LAYOUT_B, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
-	private Integer deducationTime;
+	private int deducationTime;
 
 	/** 申送時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = TAKE_OVER, layout = LAYOUT_C, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
-	private Integer takeOverTime;
+	private int takeOverTime;
 
 	/** 日勤夜勤区分: 日勤夜勤区分 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
@@ -52,9 +52,9 @@ public class MedicalTimeOfMonthlyDto implements ItemConst{
 		MedicalTimeOfMonthlyDto dto = new MedicalTimeOfMonthlyDto();
 		if(domain != null) {
 			dto.setAttr(domain.getDayNightAtr() == null ? 0 : domain.getDayNightAtr().value);
-			dto.setDeducationTime(domain.getDeducationTime() == null ? null : domain.getDeducationTime().valueAsMinutes());
-			dto.setTakeOverTime(domain.getTakeOverTime() == null ? null : domain.getTakeOverTime().valueAsMinutes());
-			dto.setWorkTime(domain.getWorkTime() == null ? null : domain.getWorkTime().valueAsMinutes());
+			dto.setDeducationTime(domain.getDeducationTime() == null ? 0 : domain.getDeducationTime().valueAsMinutes());
+			dto.setTakeOverTime(domain.getTakeOverTime() == null ? 0 : domain.getTakeOverTime().valueAsMinutes());
+			dto.setWorkTime(domain.getWorkTime() == null ? 0 : domain.getWorkTime().valueAsMinutes());
 		}
 		return dto;
 	}
@@ -66,6 +66,6 @@ public class MedicalTimeOfMonthlyDto implements ItemConst{
 	}
 
 	private AttendanceTimeMonth toAttendanceTimeMonth(Integer time) {
-		return time == null ? null : new AttendanceTimeMonth(time);
+		return new AttendanceTimeMonth(time);
 	}
 }

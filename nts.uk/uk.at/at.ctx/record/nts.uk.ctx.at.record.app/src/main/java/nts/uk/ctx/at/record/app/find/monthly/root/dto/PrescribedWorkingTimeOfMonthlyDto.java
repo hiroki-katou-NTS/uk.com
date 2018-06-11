@@ -19,24 +19,24 @@ public class PrescribedWorkingTimeOfMonthlyDto implements ItemConst {
 	/** 計画所定労働時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = PLAN, layout = LAYOUT_A)
-	private Integer scheduleTime;
+	private int scheduleTime;
 
 	/** 実績所定労働時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = ACTUAL, layout = LAYOUT_B)
-	private Integer recordTime;
+	private int recordTime;
 	
 	public PrescribedWorkingTimeOfMonthly toDomain() {
 		return PrescribedWorkingTimeOfMonthly.of(
-							scheduleTime == null ? null : new AttendanceTimeMonth(scheduleTime),
-							recordTime == null ? null : new AttendanceTimeMonth(recordTime));
+							new AttendanceTimeMonth(scheduleTime),
+							new AttendanceTimeMonth(recordTime));
 	}
 	
 	public static PrescribedWorkingTimeOfMonthlyDto from(PrescribedWorkingTimeOfMonthly domain) {
 		PrescribedWorkingTimeOfMonthlyDto dto = new PrescribedWorkingTimeOfMonthlyDto();
 		if(domain != null) {
-			dto.setRecordTime(domain.getRecordPrescribedWorkingTime() == null ? null : domain.getRecordPrescribedWorkingTime().valueAsMinutes());
-			dto.setScheduleTime(domain.getSchedulePrescribedWorkingTime() == null ? null : domain.getSchedulePrescribedWorkingTime().valueAsMinutes());
+			dto.setRecordTime(domain.getRecordPrescribedWorkingTime() == null ? 0 : domain.getRecordPrescribedWorkingTime().valueAsMinutes());
+			dto.setScheduleTime(domain.getSchedulePrescribedWorkingTime() == null ? 0 : domain.getSchedulePrescribedWorkingTime().valueAsMinutes());
 		}
 		return dto;
 	}
