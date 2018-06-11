@@ -1,13 +1,10 @@
 package nts.uk.file.at.app.export.dailyschedule;
 
-import java.text.Normalizer.Form;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Data;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -36,6 +33,12 @@ public class WorkScheduleOutputCondition  {
 	// 勤務実績のエラーアラームコード
 	private Optional<List<ErrorAlarmWorkRecordCode>> errorAlarmCode;
 	
+	/**
+	 * Creates the domain from java type.
+	 *
+	 * @param dto the dto
+	 * @return the work schedule output condition
+	 */
 	public static WorkScheduleOutputCondition createFromJavaType(WorkScheduleOutputConditionDto dto) {
 		WorkScheduleOutputCondition condition = new WorkScheduleOutputCondition();
 		condition.setCompanyId(dto.getCompanyId());

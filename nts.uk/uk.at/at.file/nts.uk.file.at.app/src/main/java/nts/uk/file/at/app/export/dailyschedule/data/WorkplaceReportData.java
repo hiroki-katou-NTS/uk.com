@@ -26,7 +26,7 @@ public class WorkplaceReportData {
 	/** The level. */
 	public int level;
 	
-	/** Parent workplace */
+	/**  Parent workplace. */
 	public WorkplaceReportData parent;
 	
 	/** The lst employee report data. */
@@ -56,16 +56,27 @@ public class WorkplaceReportData {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		return super.hashCode();
 	}
 
+	/**
+	 * Instantiates a new workplace report data.
+	 *
+	 * @param workplaceCode the workplace code
+	 */
 	public WorkplaceReportData(String workplaceCode) {
 		super();
 		this.workplaceCode = workplaceCode;
 	}
 
+	/**
+	 * Instantiates a new workplace report data.
+	 */
 	public WorkplaceReportData() {
 		super();
 	}

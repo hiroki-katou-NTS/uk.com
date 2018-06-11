@@ -9,25 +9,22 @@ import lombok.Data;
 
 /**
  * The Class JobTitleExport.
+ * @author HoangNDH
  */
 // 職位
 @Data
 @Builder
 public class SimpleJobTitleExport {
 
-	/** The job title id. */
 	// 職位ID
 	private String jobTitleId;
 
-	/** The job title code. */
 	// 職位コード
 	private String jobTitleCode;
 
-	/** The job title name. */
 	// 職位名称
 	private String jobTitleName;
 
-	/** The disporder. */
 	// 序列
 	private Integer disporder;
 

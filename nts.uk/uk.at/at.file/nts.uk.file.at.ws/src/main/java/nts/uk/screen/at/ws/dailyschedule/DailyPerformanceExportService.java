@@ -8,11 +8,20 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputGenerator;
 import nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputQuery;
 
+/**
+ * The Class DailyPerformanceExportService.
+ * @author HoangNDH
+ */
 @Stateless
 public class DailyPerformanceExportService extends ExportService<WorkScheduleOutputQuery>  {
+	
+	/** The generator. */
 	@Inject
 	WorkScheduleOutputGenerator generator;
 	
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.app.file.export.ExportService#handle(nts.arc.layer.app.file.export.ExportServiceContext)
+	 */
 	@Override
 	protected void handle(ExportServiceContext<WorkScheduleOutputQuery> context) {
 		WorkScheduleOutputQuery query = context.getQuery();

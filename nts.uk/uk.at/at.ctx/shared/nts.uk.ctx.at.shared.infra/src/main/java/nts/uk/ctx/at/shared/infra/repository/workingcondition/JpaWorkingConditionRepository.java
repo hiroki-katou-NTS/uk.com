@@ -27,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondPK_;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond_;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaWorkingConditionRepository.
@@ -323,7 +324,7 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 	 * @see nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository#getBySids(java.util.List)
 	 */
 	@Override
-	public List<WorkingCondition> getBySidsAndBaseDate(List<String> employeeIds, GeneralDate baseDate) {
+	public List<WorkingCondition> getBySidsAndDatePeriod(List<String> employeeIds, DatePeriod datePeriod) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -346,9 +347,9 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 			lstpredicateWhere.add(root.get(KshmtWorkingCond_.kshmtWorkingCondPK)
 					.get(KshmtWorkingCondPK_.sid).in(subList));
 			lstpredicateWhere.add(
-					criteriaBuilder.lessThanOrEqualTo(root.get(KshmtWorkingCond_.strD), baseDate));
+					criteriaBuilder.lessThanOrEqualTo(root.get(KshmtWorkingCond_.strD), datePeriod.end()));
 			lstpredicateWhere.add(criteriaBuilder
-					.greaterThanOrEqualTo(root.get(KshmtWorkingCond_.endD), baseDate));
+					.greaterThanOrEqualTo(root.get(KshmtWorkingCond_.endD), datePeriod.start()));
 
 			// set where to SQL
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));

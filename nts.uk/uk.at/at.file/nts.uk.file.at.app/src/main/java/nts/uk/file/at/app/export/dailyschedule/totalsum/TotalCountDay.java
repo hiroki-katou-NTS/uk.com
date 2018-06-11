@@ -33,8 +33,12 @@ public class TotalCountDay {
 	// 所定日数
 	private int predeterminedDay;	
 	
+	/** The all day count. */
 	public List<Integer> allDayCount = new ArrayList<>();
 	
+	/**
+	 * Inits all day count.
+	 */
 	public void initAllDayCount() {
 		allDayCount.add(predeterminedDay);	// 所定日数
 		allDayCount.add(holidayDay);		// 休日日数

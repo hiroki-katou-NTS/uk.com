@@ -6,7 +6,7 @@ import nts.arc.time.YearMonth;
 
 public interface MonthlyAbsenceleaveRemainExport {
 	/**
-	 * 	RequestList 260 社員の月毎の確定済み振休を取得する
+	 * 	RequestList260 社員の月毎の確定済み振休を取得する
 	 * @param employeeId
 	 * @param startMonth
 	 * @param endMonth

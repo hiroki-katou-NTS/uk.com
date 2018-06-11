@@ -10,19 +10,10 @@ import lombok.Setter;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 
-// TODO: Auto-generated Javadoc
 /**
  * 実績値.
  *
  * @author HoangNDH
- */
-
-/**
- * Instantiates a new actual value.
- *
- * @param attendanceId the attendance id
- * @param value the value
- * @param valueType the value type
  */
 @Getter
 @Setter

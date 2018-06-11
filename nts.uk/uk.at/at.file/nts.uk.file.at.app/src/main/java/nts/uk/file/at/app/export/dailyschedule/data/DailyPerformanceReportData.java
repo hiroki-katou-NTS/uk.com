@@ -1,11 +1,6 @@
 package nts.uk.file.at.app.export.dailyschedule.data;
 
-import java.util.List;
-import java.util.Map;
-
-import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 
 /**
  * Report data for daily performance (KWR001).

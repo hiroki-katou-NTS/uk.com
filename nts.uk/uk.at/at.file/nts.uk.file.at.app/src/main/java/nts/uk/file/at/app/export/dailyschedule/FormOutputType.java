@@ -1,7 +1,5 @@
 package nts.uk.file.at.app.export.dailyschedule;
 
-import nts.uk.ctx.at.function.dom.attendancetype.ScreenUseAtr;
-
 /**
  * 帳票出力種類.
  *

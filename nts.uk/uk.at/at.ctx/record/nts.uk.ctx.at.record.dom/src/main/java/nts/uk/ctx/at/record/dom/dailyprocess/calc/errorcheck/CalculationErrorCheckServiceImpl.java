@@ -165,6 +165,8 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 			case DIVERGENCE_ERROR_2:
 			case DIVERGENCE_ALARM_2:
 			case DIVERGENCE_ERROR_3:
+			case DIVERGENCE_ALARM_3:
+			case DIVERGENCE_ERROR_4:
 			case DIVERGENCE_ALARM_4:
 			case DIVERGENCE_ERROR_5:
 			case DIVERGENCE_ALARM_5:

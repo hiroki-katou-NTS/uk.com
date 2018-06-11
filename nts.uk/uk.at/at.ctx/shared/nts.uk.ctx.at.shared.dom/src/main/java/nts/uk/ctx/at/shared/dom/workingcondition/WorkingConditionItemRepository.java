@@ -49,7 +49,7 @@ public interface WorkingConditionItemRepository {
 	 * @param baseDate the base date
 	 * @return the by sids and base date
 	 */
-	List<WorkingConditionItem> getBySidsAndBaseDate(List<String> sIds, GeneralDate baseDate);
+	List<WorkingConditionItem> getBySidsAndDatePeriod(List<String> sIds, DatePeriod datePeriod);
 
 	/**
 	 * Find working condition item by pers work cat.
