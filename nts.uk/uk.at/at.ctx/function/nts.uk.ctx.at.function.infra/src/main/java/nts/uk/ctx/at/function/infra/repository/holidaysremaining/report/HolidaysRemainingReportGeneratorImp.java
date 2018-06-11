@@ -698,10 +698,10 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		cells.get(rowIndexD, 0).setValue(employee.getEmployeeCode());
 		// D2_2
 		cells.get(rowIndexD, 1).setValue(employee.getEmployeeName());
-		// D2_3 Todo rql No.369
+		// D2_3 No.369
 		Optional<GeneralDate> grantDate = getNextAnnLeaGrantDateAdapter.algorithm(AppContexts.user().companyId(), employee.getEmployeeId());
 		if (grantDate.isPresent()){
-			cells.get(rowIndexD+1, 0).setValue(employee.getEmployeeName());
+			cells.get(rowIndexD+1, 0).setValue(grantDate.get());
 		}
 		// Set Style
 		for (int index = 0; index < NUMBER_COLUMN; index++) {
