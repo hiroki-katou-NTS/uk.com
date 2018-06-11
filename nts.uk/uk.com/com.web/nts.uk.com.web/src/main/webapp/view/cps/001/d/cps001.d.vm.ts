@@ -204,27 +204,16 @@ module cps001.d.vm {
     }
     
     enum FunctionNo {
-        // có thể delete employee ở đăng ký thông tin cá nhân
-        No1 = 1,
-        // có thể upload ảnh chân dung employee ở đăng ký thông tin cá nhân
-        No2 = 2,
-        // có thể xem ảnh chân dung employee ở đăng ký thông tin cá nhân
-        No3 = 3,
-        // có thể upload file bản đồ ở đăng ký thông tin cá nhân
-        No4 = 4,
-        // có thể xem file bản đồ ở đăng ký thông tin cá nhân
-        No5 = 5,
-        // có thể upload file điện tử employee ở đăng ký thông tin cá nhân
-        No6 = 6,
-        // có thể xem file điện tử employee ở đăng ký thông tin cá nhân
-        No7 = 7,
-        // có thể in biểu mẫu của employee ở đăng ký thông tin cá nhân
-        No8 = 8,
-        // có thể setting copy target item khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
-        No9 = 9,
-        // có thể setting giá trị ban đầu nhập vào khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
-        No10 = 10,
-        // Lọc chọn lựa phòng ban trực thuộc/workplace trực tiếp theo bộ phận liên kết cấp dưới tại đăng ký thông tin cá nhân
-        No11 = 11
+        No1_Allow_DelEmp = 1, // có thể delete employee ở đăng ký thông tin cá nhân
+        No2_Allow_UploadAva = 2, // có thể upload ảnh chân dung employee ở đăng ký thông tin cá nhân
+        No3_Allow_RefAva = 3,// có thể xem ảnh chân dung employee ở đăng ký thông tin cá nhân
+        No4_Allow_UploadMap = 4, // có thể upload file bản đồ ở đăng ký thông tin cá nhân
+        No5_Allow_RefMap = 5, // có thể xem file bản đồ ở đăng ký thông tin cá nhân
+        No6_Allow_UploadDoc = 6,// có thể upload file điện tử employee ở đăng ký thông tin cá nhân
+        No7_Allow_RefDoc = 7,// có thể xem file điện tử employee ở đăng ký thông tin cá nhân
+        No8_Allow_Print = 8,  // có thể in biểu mẫu của employee ở đăng ký thông tin cá nhân
+        No9_Allow_SetCoppy = 9,// có thể setting copy target item khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
+        No10_Allow_SetInit = 10, // có thể setting giá trị ban đầu nhập vào khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
+        No11_Allow_SwitchWpl = 11  // Lọc chọn lựa phòng ban trực thuộc/workplace trực tiếp theo bộ phận liên kết cấp dưới tại đăng ký thông tin cá nhân
     }
 }
