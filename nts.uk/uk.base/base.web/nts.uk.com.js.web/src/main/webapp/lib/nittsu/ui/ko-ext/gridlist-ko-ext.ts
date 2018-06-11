@@ -200,6 +200,7 @@ module nts.uk.ui.koExtentions {
                     return true;
                 });
             }
+            
             $grid.bind('iggridselectionrowselectionchanging', (eventObject: JQueryEventObject, ui: any) => {
                 if (String($grid.data("enable")) === "false") return false;
                 let disables = $grid.data("selectionDisables");
@@ -220,7 +221,7 @@ module nts.uk.ui.koExtentions {
                     if (disables) {
                         _.forEach(selected, (s, i) => {
                             _.forEach(disables, (d) => {
-                                if (d === s.id) {
+                                if (d === s.id && util.isNullOrUndefined(_.find(value, iv => iv === d))) {
                                     $grid.igGridSelection("deselectRowById", d);
                                     disableIds.push(i);
                                     return false;
@@ -233,7 +234,9 @@ module nts.uk.ui.koExtentions {
                         });
                     }
                     if (!nts.uk.util.isNullOrEmpty(selected)) {
-                        data.value(_.map(selected, s => s.id));
+                        let newValue = _.map(selected, s => s.id);
+                        newValue = _.union(newValue, _.intersection(disables, value));
+                        data.value(newValue);
                     } else {
                         data.value([]);
                     }
