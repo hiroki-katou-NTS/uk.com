@@ -73,6 +73,6 @@ public class WorkClosureQueryProcessor {
 		if (closureEmp.isPresent()) {
 			return closureEmp.get().getClosureId();
 		}
-		return null;
+		return 1;
 	}
 }
