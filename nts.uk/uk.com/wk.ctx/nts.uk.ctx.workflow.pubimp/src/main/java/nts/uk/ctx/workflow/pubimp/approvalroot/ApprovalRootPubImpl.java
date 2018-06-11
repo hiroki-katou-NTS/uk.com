@@ -15,6 +15,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.AdjustedAp
 import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.ApprovalRootOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
+import nts.uk.ctx.workflow.dom.service.RemandService;
 import nts.uk.ctx.workflow.dom.service.output.ApproverInfo;
 import nts.uk.ctx.workflow.pub.approvalroot.ApprovalRootPub;
 import nts.uk.ctx.workflow.pub.approvalroot.export.ApprovalPhaseExport;
@@ -29,6 +30,9 @@ public class ApprovalRootPubImpl implements ApprovalRootPub {
 
 	@Inject
 	private JobtitleToApproverService jobtitleToApproverService;
+	
+	@Inject
+	private RemandService remandService;
 
 	@Override
 	public List<ApprovalRootExport> getApprovalRootOfSubjectRequest(String cid, String sid, int employmentRootAtr,
@@ -107,6 +111,13 @@ public class ApprovalRootPubImpl implements ApprovalRootPub {
 			return export;
 		}).collect(Collectors.toList());
 
+	}
+	/**
+	 * get phase current
+	 */
+	@Override
+	public Integer getCurrentApprovePhase(String rootStateID, Integer rootType) {
+		return remandService.getCurrentApprovePhase(rootStateID, rootType);
 	}
 
 }
