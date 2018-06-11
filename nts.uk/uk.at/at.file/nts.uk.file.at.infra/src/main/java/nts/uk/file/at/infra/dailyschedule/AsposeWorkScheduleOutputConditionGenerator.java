@@ -1740,7 +1740,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				Cell employeeCell = cells.get(currentRow, 1);
 				employeeCell.setValue(employee.getEmployeeName());
 				
-				Range employeeRange = cells.createRange(currentRow, 1, 1, 2);
+				Range employeeRange = cells.createRange(currentRow, 1, dataRowCount, 2);
 				employeeRange.merge();
 				
 				// B5_3
@@ -1787,7 +1787,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		        // B5_4
 		        Cell remarkCell = cells.get(currentRow,35);
 		        remarkCell.setValue(employee.getDetailedErrorData());
-		        currentRow++;
+		        currentRow += dataRowCount;
 		        colorWhite = !colorWhite; // Change to other color
 		        
 		        // Only break when has next iterator
