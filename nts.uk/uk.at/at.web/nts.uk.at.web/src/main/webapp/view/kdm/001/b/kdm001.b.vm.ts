@@ -159,7 +159,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     } else {
                         self.subData = [];
                         self.updateSubstituteDataList();
-                        self.dispTotalRemainHours('');
+                        self.dispTotalRemainHours('0' + getText('KDM001_27'));
                         self.dispExpiredDate('');
                         self.isHaveError(true);
                         dialog.alertError({messageId: 'Msg_1306'});
