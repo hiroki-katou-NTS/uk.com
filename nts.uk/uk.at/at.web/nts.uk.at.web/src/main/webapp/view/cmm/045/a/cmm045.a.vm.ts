@@ -843,7 +843,7 @@ module cmm045.a.viewmodel {
             let appContent007 = getText('CMM045_250') + wkChange.workTypeName + wkChange.workTimeName + time1 + time2 + breakTime + reason;
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
-            let dateRange = self.appDateRangeColor(self.convertDateMDW(app.startDate), self.convertDateMDW(app.endDate));
+            let dateRange = app.startDate == app.endDate ? self.appDateColor(self.convertDateMDW(app.applicationDate), '','') : self.appDateRangeColor(self.convertDateMDW(app.startDate), self.convertDateMDW(app.endDate));
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
                 masterInfo.dispName, prePostApp, dateRange, appContent007, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
                 self.mode() == 0 ? self.convertStatus(app.reflectPerState) : self.convertStatusAppv(app.reflectPerState), masterInfo.phaseStatus,
@@ -872,7 +872,7 @@ module cmm045.a.viewmodel {
             }
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
-            let dateRange = app.endDate == null ? self.appDateColor(self.convertDateMDW(app.applicationDate), '','') : self.appDateRangeColor(self.convertDateMDW(app.startDate), self.convertDateMDW(app.endDate));
+            let dateRange = app.startDate == app.endDate ? self.appDateColor(self.convertDateMDW(app.applicationDate), '','') : self.appDateRangeColor(self.convertDateMDW(app.startDate), self.convertDateMDW(app.endDate));
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
                 masterInfo.dispName, prePostApp, dateRange, appContent006 + reason, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
                 self.mode() == 0 ? self.convertStatus(app.reflectPerState) : self.convertStatusAppv(app.reflectPerState), masterInfo.phaseStatus,
@@ -889,8 +889,7 @@ module cmm045.a.viewmodel {
             let self = this;
             let day = absence.mournerFlag == true ? getText('CMM045_277') + absence.day + getText('CMM045_278') : '';
             //hdAppSet.specialVaca
-            let result = getText('CMM045_279') + getText('CMM045_248') + absence.workTimeName
-            + absence.relationshipName + day;
+            let result = getText('CMM045_279') + getText('CMM045_248') + self.convertNameHoliday(absence.holidayAppType) + absence.relationshipName + day;
             return result;
         }
         //※休暇申請.終日半日休暇区分　＝　半日休暇
@@ -898,7 +897,7 @@ module cmm045.a.viewmodel {
             let self = this;
             let time1 = absence.startTime1 == '' ? '' : absence.startTime1 + getText('CMM045_100') +  absence.endTime1;
             let time2 =  absence.startTime2 == '' ? '' : absence.startTime2 + getText('CMM045_100') + absence.endTime2;
-            let result = getText('CMM045_279') + getText('CMM045_249') + getText('CMM045_230', [absence.workTimeName])  + time1 + time2;
+            let result = getText('CMM045_279') + getText('CMM045_249') + getText('CMM045_230', [self.convertNameHoliday(absence.holidayAppType)])  + time1 + time2;
             return result;
         }
         convertNameHoliday(holidayType: number): string{

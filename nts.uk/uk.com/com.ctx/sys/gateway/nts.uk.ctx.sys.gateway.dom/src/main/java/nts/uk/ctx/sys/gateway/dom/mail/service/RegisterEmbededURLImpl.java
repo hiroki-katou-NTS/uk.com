@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.gateway.dom.mail.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.ejb.Stateless;
@@ -12,6 +13,8 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserInforExImport;
 import nts.uk.ctx.sys.gateway.dom.mail.UrlExecInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.url.EmbeddedUrlScreenID;
@@ -27,9 +30,11 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 
 	@Inject
 	private UrlExecInfoRepository urlExcecInfoRepo;
+	
+	@Inject
+	private UserAdapter userAdapter;
 
 	@Override
-
 	public String obtainApplicationEmbeddedUrl(String appId, int appType, int prePostAtr, String employeeId) {
 		String loginId = AppContexts.user().employeeCode();
 		return this.registerEmbeddedForApp(appId, appType, prePostAtr, loginId, employeeId);
@@ -40,32 +45,34 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 		EmbeddedUrlScreenID embeddedUrlScreenID = this.getEmbeddedUrlRequestScreenID(appType, prePostAtr);
 		List<UrlTaskIncre> taskInce = new ArrayList<>();
 		taskInce.add(UrlTaskIncre.createFromJavaType(null, null, null, appId, appId));
-		return this.embeddedUrlInfoRegis(embeddedUrlScreenID.getProgramId(), embeddedUrlScreenID.getDestinationId(), 1, 1, employeeId, loginId, taskInce);
+		return this.embeddedUrlInfoRegis(embeddedUrlScreenID.getProgramId(), embeddedUrlScreenID.getDestinationId(), 1, 1, 
+				employeeId, "000000000000", loginId, "", taskInce);
 	}
 
 	@Override
-	public String embeddedUrlInfoRegis(String programId, String screenId, int periodCls, int numOfPeriod,
-			String employeeId, String loginId, List<UrlTaskIncre> taskIncidental) {
+	public String embeddedUrlInfoRegis(String programId, String screenId, int periodCls, int numOfPeriod, 
+			String employeeId, String contractCD, String loginId, String employeeCD, List<UrlTaskIncre> taskIncidental) {
 		if (loginId.isEmpty() && employeeId.isEmpty()) {
-			return null;
-		} else {
-			String cid = AppContexts.user().companyId();
-			// Request list 313
-			String sLoginId = "s-logincd";
-			String scd = "000001";
-			if (!Strings.isBlank(sLoginId)){
-				scd = sLoginId;
-			}
-			String contractCd = AppContexts.user().contractCode();
-			GeneralDateTime issueDate = GeneralDateTime.now();
-			GeneralDateTime startDate = GeneralDateTime.now();
-			GeneralDateTime expiredDate = this.getEmbeddedUrlExpriredDate(startDate, periodCls, numOfPeriod);
-			UrlExecInfo urlInfo = this.updateEmbeddedUrl(cid, contractCd, loginId, scd, sLoginId, programId, screenId, issueDate, expiredDate, taskIncidental);
-			if (!Objects.isNull(urlInfo)){
-				return (programId + "" + screenId+"/"+ urlInfo.getEmbeddedId());
-			}
-			return null;
+			return Strings.EMPTY;
+		} 
+		String cid = AppContexts.user().companyId();
+		// Request list 313
+		if(Strings.isNotBlank(employeeId)){
+			Optional<UserInforExImport> opUserInforEx = userAdapter.getByEmpID(employeeId);
+			if(opUserInforEx.isPresent()){
+				loginId = opUserInforEx.get().getLoginID();
+				employeeCD = opUserInforEx.get().getEmpCD();
+			};
+		}	
+		GeneralDateTime issueDate = GeneralDateTime.now();
+		GeneralDateTime startDate = GeneralDateTime.now();
+		GeneralDateTime expiredDate = this.getEmbeddedUrlExpriredDate(startDate, periodCls, numOfPeriod);
+		UrlExecInfo urlInfo = this.updateEmbeddedUrl(cid, contractCD, loginId, employeeCD, employeeId, programId, screenId, issueDate, expiredDate, taskIncidental);
+		if (!Objects.isNull(urlInfo)){
+			return (programId + "" + screenId+"/"+ urlInfo.getEmbeddedId());
 		}
+		return Strings.EMPTY;
+		
 	}
 
 	@Override

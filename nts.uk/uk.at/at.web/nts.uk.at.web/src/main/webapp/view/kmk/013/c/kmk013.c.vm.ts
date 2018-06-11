@@ -64,45 +64,45 @@ module nts.uk.at.view.kmk013.c {
                 ]);
                 self.selectedC34 = ko.observable(1);
                 self.roundingC38 = ko.observableArray([
-                    { code: 1, name: nts.uk.resource.getText('KMK013_100') },
-                    { code: 0, name: nts.uk.resource.getText('KMK013_101') },
+                    { code: 1, name: nts.uk.resource.getText('KMK013_96') },
+                    { code: 0, name: nts.uk.resource.getText('KMK013_97') },
                 ]);
                 self.selectedC38 = ko.observable(1);
                 self.roundingC312 = ko.observableArray([
-                    { code: 1, name: nts.uk.resource.getText('KMK013_104') },
-                    { code: 0, name: nts.uk.resource.getText('KMK013_105') },
+                    { code: 1, name: nts.uk.resource.getText('KMK013_96') },
+                    { code: 0, name: nts.uk.resource.getText('KMK013_97') },
                 ]);
                 self.selectedC312 = ko.observable(1);
                 //c4
                 self.roundingC44 = ko.observableArray([
-                    { code: 1, name: nts.uk.resource.getText('KMK013_109') },
-                    { code: 0, name: nts.uk.resource.getText('KMK013_110') },
+                    { code: 1, name: nts.uk.resource.getText('KMK013_96') },
+                    { code: 0, name: nts.uk.resource.getText('KMK013_97') },
                 ]);
                 self.selectedC44 = ko.observable(1);
                 self.roundingC48 = ko.observableArray([
-                    { code: 1, name: nts.uk.resource.getText('KMK013_113') },
-                    { code: 0, name: nts.uk.resource.getText('KMK013_114') },
+                    { code: 1, name: nts.uk.resource.getText('KMK013_96') },
+                    { code: 0, name: nts.uk.resource.getText('KMK013_97') },
                 ]);
                 self.selectedC48 = ko.observable(1);
                 self.roundingC412 = ko.observableArray([
-                    { code: 1, name: nts.uk.resource.getText('KMK013_117') },
-                    { code: 0, name: nts.uk.resource.getText('KMK013_118') },
+                    { code: 1, name: nts.uk.resource.getText('KMK013_96') },
+                    { code: 0, name: nts.uk.resource.getText('KMK013_97') },
                 ]);
                 self.selectedC412 = ko.observable(1);
                 //c5
                 self.roundingC54 = ko.observableArray([
-                    { code: 1, name: nts.uk.resource.getText('KMK013_122') },
-                    { code: 0, name: nts.uk.resource.getText('KMK013_123') },
+                    { code: 1, name: nts.uk.resource.getText('KMK013_96') },
+                    { code: 0, name: nts.uk.resource.getText('KMK013_97') },
                 ]);
                 self.selectedC54 = ko.observable(1);
                 self.roundingC58 = ko.observableArray([
-                    { code: 1, name: nts.uk.resource.getText('KMK013_126') },
-                    { code: 0, name: nts.uk.resource.getText('KMK013_127') },
+                    { code: 1, name: nts.uk.resource.getText('KMK013_96') },
+                    { code: 0, name: nts.uk.resource.getText('KMK013_97') },
                 ]);
                 self.selectedC58 = ko.observable(1);
                 self.roundingC512 = ko.observableArray([
-                    { code: 1, name: nts.uk.resource.getText('KMK013_130') },
-                    { code: 0, name: nts.uk.resource.getText('KMK013_131') },
+                    { code: 1, name: nts.uk.resource.getText('KMK013_96') },
+                    { code: 0, name: nts.uk.resource.getText('KMK013_97') },
                 ]);
                 self.selectedC512 = ko.observable(1);
                 //c6
@@ -112,13 +112,13 @@ module nts.uk.at.view.kmk013.c {
                 ]);
                 self.selectedC64 = ko.observable(1);
                 self.roundingC68 = ko.observableArray([
-                    { code: 1, name: nts.uk.resource.getText('KMK013_139') },
-                    { code: 0, name: nts.uk.resource.getText('KMK013_140') },
+                    { code: 1, name: nts.uk.resource.getText('KMK013_96') },
+                    { code: 0, name: nts.uk.resource.getText('KMK013_97') },
                 ]);
                 self.selectedC68 = ko.observable(1);
                 self.roundingC612 = ko.observableArray([
-                    { code: 1, name: nts.uk.resource.getText('KMK013_143') },
-                    { code: 0, name: nts.uk.resource.getText('KMK013_144') },
+                    { code: 1, name: nts.uk.resource.getText('KMK013_96') },
+                    { code: 0, name: nts.uk.resource.getText('KMK013_97') },
                 ]);
                 self.selectedC612 = ko.observable(1);
                 self.selectedValueC23.subscribe(newValue => {

@@ -5,7 +5,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 
 /**
  * 積立年休残数

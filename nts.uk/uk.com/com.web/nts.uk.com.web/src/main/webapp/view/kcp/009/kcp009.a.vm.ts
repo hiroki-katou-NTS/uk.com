@@ -13,7 +13,9 @@ module kcp009.a.viewmodel {
         selectedSystem: KnockoutObservable<number>;
         
         listComponentOption: ComponentOption;
+        listComponentOption1: ComponentOption;
         selectedItem: KnockoutObservable<string>;
+        selectedItem1: KnockoutObservable<string>;
         tabindex: number;
         constructor() {
             let self = this;
@@ -39,6 +41,7 @@ module kcp009.a.viewmodel {
             });
             self.targetBtnText = nts.uk.resource.getText("KCP009_3");
             self.selectedItem = ko.observable(null);
+            self.selectedItem1 = ko.observable(null);
             self.systemReferenceList = ko.observableArray([
                 { code: 1, name: 'Employment System' },
                 { code: 2, name: 'Other Systems' },
@@ -67,6 +70,16 @@ module kcp009.a.viewmodel {
                 tabIndex: self.tabindex
             };
             
+            // Initial listComponentOption
+            self.listComponentOption1 = {
+                systemReference: self.systemType(),
+                isDisplayOrganizationName: self.isDisplayOrganizationName(),
+                employeeInputList: self.empList,
+                targetBtnText: self.targetBtnText,
+                selectedItem: self.selectedItem1,
+                tabIndex: self.tabindex
+            };
+            
         }
         
         // Reload component
@@ -78,6 +91,13 @@ module kcp009.a.viewmodel {
             self.listComponentOption.employeeInputList(self.empList());
             // Load listComponent
             $('#emp-component').ntsLoadListComponent(self.listComponentOption);
+            
+            self.listComponentOption1.systemReference = self.systemType();
+            self.listComponentOption1.isDisplayOrganizationName = self.isDisplayOrganizationName();
+            self.listComponentOption1.targetBtnText = self.targetBtnText;
+            self.listComponentOption1.employeeInputList(self.empList());
+            // Load listComponent
+            $('#emp-component1').ntsLoadListComponent(self.listComponentOption1);
         }
         
     }

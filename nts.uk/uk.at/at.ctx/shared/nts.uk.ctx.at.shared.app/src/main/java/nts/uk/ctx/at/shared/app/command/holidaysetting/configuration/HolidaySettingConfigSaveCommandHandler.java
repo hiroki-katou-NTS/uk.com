@@ -105,7 +105,8 @@ public class HolidaySettingConfigSaveCommandHandler extends CommandHandler<Holid
 		//check managementCategory change
 		// ドメインモデル「特別休暇」を新規登録した場合
 		// Event： 特別休暇情報が変更された を発行する
-		if (!optionalPubHdSet.isPresent()) {
+		if (!optionalPubHdSet.isPresent() || optionalPubHdSet.get().isManageComPublicHd() != command
+				.getPubHdSet().getIsManageComPublicHd()) {
 			val publicHolidaySettingDomainEvent = new PublicHolidaySettingDomainEvent(
 					command.getPubHdSet().getIsManageComPublicHd());
 			publicHolidaySettingDomainEvent.toBePublished();
