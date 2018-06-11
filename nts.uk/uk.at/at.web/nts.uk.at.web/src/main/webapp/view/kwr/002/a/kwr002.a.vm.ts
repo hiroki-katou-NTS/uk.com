@@ -161,8 +161,9 @@ module nts.uk.com.view.kwr002.a {
                         $('#print').attr("disabled", "disabled")
                         $('#exportExcel').attr("disabled", "disabled")
                     } else {
-                        self.attendanceRecordList(listAttendance);
-                        self.selectedCode = ko.observable(listAttendance[0].code);
+                        var sortArray = listAttendance.sort((i1, i2) => Number(i1.code) > Number(i2.code));
+                        self.attendanceRecordList(sortArray);
+                        self.selectedCode = ko.observable(sortArray[0].code);
                     }
                     dfd.resolve();
                 })
@@ -286,7 +287,7 @@ module nts.uk.com.view.kwr002.a {
 
                 }).fail((res: any) => {
                     self.showMessageError(res);
-                })
+                });
             }
 
             public exportExcel() {
@@ -302,7 +303,8 @@ module nts.uk.com.view.kwr002.a {
 
                 }).fail((res: any) => {
                     self.showMessageError(res);
-                })
+
+                });
             }
 
             /**
@@ -328,14 +330,14 @@ module nts.uk.com.view.kwr002.a {
                 nts.uk.ui.windows.sub.modal("/view/kwr/002/b/index.xhtml").onClosed(function() {
 
                     service.getAllAttendanceRecExpSet().done(function(listAttendance: Array<AttendanceRecordExportSettingDto>) {
-                        self.attendanceRecordList();
+                        self.attendanceRecordList = ko.observableArray([]);
                         if (listAttendance === undefined || listAttendance.length == 0) {
-                            self.attendanceRecordList([]);
                             $('#print').attr("disabled", "disabled")
                             $('#exportExcel').attr("disabled", "disabled")
                         } else {
-                            self.attendanceRecordList(listAttendance);
-                            self.selectedCode = ko.observable(listAttendance[0].code);
+                            var sortArray = listAttendance.sort((i1, i2) => Number(i1.code) > Number(i2.code));
+                            self.attendanceRecordList(sortArray);
+                            self.selectedCode = ko.observable(sortArray[0].code);
                         }
 
                     });
