@@ -520,16 +520,15 @@ module nts.uk.at.view.kaf010.b {
             updateOvertime(command: any){
                 service.updateOvertime(command)
                 .done((data) => {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-//                        if (!nts.uk.util.isNullOrUndefined(data)) {
-//                            nts.uk.ui.dialog.info({ messageId: 'Msg_392',messageParams: [data]  }).then(()=>{
-//                                location.reload();    
-//                            });
-//                        } else {
-//                            location.reload();        
-//                        }
-                        location.reload(); 
-                    });     
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        if(data.autoSendMail){
+                            nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
+                                location.reload();
+                            });    
+                        } else {
+                            location.reload();
+                        }
+                    });    
                 })
                 .fail(function(res) { 
                     if(res.optimisticLock == true){

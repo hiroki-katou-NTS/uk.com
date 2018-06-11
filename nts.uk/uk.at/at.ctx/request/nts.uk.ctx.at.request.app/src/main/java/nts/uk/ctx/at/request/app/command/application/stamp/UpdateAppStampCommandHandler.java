@@ -17,6 +17,7 @@ import nts.uk.ctx.at.request.app.command.application.stamp.command.AppStampCmd;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCancel;
@@ -35,7 +36,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 @Stateless
-public class UpdateAppStampCommandHandler extends CommandHandlerWithResult<AppStampCmd, List<String>>{
+public class UpdateAppStampCommandHandler extends CommandHandlerWithResult<AppStampCmd, ProcessResult>{
 	
 	private final String DATE_FORMAT = "yyyy/MM/dd";
 	
@@ -46,7 +47,7 @@ public class UpdateAppStampCommandHandler extends CommandHandlerWithResult<AppSt
 	private ApplicationRepository_New applicationRepository;
 	
 	@Override
-	protected List<String> handle(CommandHandlerContext<AppStampCmd> context) {
+	protected ProcessResult handle(CommandHandlerContext<AppStampCmd> context) {
 		String companyID = AppContexts.user().companyId();
 		AppStampCmd appStampCmd = context.getCommand();
 		String applicationReason = "";

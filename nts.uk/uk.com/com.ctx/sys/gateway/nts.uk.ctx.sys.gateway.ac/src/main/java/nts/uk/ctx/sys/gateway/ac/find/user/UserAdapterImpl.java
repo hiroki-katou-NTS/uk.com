@@ -12,9 +12,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.sys.auth.pub.user.UserExport;
+import nts.uk.ctx.sys.auth.pub.user.UserInforEx;
 import nts.uk.ctx.sys.auth.pub.user.UserPublisher;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserInforExImport;
 
 /**
  * The Class UserAdapterImpl.
@@ -103,6 +105,15 @@ public class UserAdapterImpl implements UserAdapter {
 			return this.covertToImportDomain(optUserExport);
 		}
 		return Optional.empty();
+	}
+
+	@Override
+	public Optional<UserInforExImport> getByEmpID(String empID) {
+		return userPublisher.getByEmpID(empID).map(x -> new UserInforExImport(
+				x.getUserID(), 
+				x.getLoginID(), 
+				x.getEmpID(), 
+				x.getEmpCD()));
 	}
 
 }

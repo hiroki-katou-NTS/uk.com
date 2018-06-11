@@ -1,6 +1,7 @@
 module nts.uk.at.view.kaf002.m3 {
     import service = nts.uk.at.view.kaf002.shr.service;
     import vmbase = nts.uk.at.view.kaf002.shr.vmbase;
+    import setShared = nts.uk.ui.windows.setShared;
     export module viewmodel {
         export class ScreenModel {
             appStampList: KnockoutObservableArray<vmbase.AppStampCancel> = ko.observableArray([]); 
@@ -31,7 +32,7 @@ module nts.uk.at.view.kaf002.m3 {
                 nts.uk.ui.block.clear();
             }
             
-            register(application : vmbase.Application){
+            register(application : vmbase.Application, checkBoxValue: boolean){
                 nts.uk.ui.block.invisible();
                 var self = this;
                 let command = {
@@ -81,10 +82,14 @@ module nts.uk.at.view.kaf002.m3 {
                 }
                 service.update(command)
                 .done(() => {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                        location.reload();
-                        $('.cm-memo').focus();
-                        nts.uk.ui.block.clear();
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        if(data.autoSendMail){
+                            nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
+                                location.reload();
+                            });    
+                        } else {
+                            location.reload();
+                        }
                     });     
                 })
                 .fail(function(res) { 

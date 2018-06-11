@@ -59,6 +59,9 @@ module nts.uk.at.view.kdw001.h {
                     }else{
                         self.clouseEnable = true;    
                     }
+                    if(param.height!=null || param.height != undefined ){
+                    nts.uk.ui.windows.getSelf().setHeight(param.height);    
+                    }
                     
                     
                     self.executionContent = param.executionContent;

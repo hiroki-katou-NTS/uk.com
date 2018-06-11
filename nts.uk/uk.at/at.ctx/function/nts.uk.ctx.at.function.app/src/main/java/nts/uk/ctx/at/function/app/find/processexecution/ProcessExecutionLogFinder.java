@@ -48,7 +48,7 @@ public class ProcessExecutionLogFinder {
 	
 	public List<ProcessExecutionLogDto> findAll() {
 		String companyId = AppContexts.user().companyId();
-			return this.processExecLogManRepo.getProcessExecutionReadUncommit(companyId).stream().map(a -> {
+			return this.processExecLogManRepo.getProcessExecutionLogByCompanyId(companyId).stream().map(a -> {
 				ProcessExecutionLogDto dto = null;
 				Optional<ProcessExecutionLog> processExecutionLogOpt = this.procExecLogRepo.getLog(companyId, a.getExecItemCd().v());
 				if(processExecutionLogOpt!=null && processExecutionLogOpt.isPresent()){
