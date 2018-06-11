@@ -107,7 +107,8 @@ module nts.uk.com.view.cmf003.f {
                             nts.uk.ui.dialog.confirm({ messageId: "Msg_334" })
                             .ifYes(() => {
                                 service.findResultOfSaving(storeProcessingId).done(function(res: any) {
-                                    //TODO download by file id 
+                                    let fileId = res.fileId;
+                                    nts.uk.request.specials.donwloadFile(fileId);
                                 }).fail(function(res: any) {
                                     console.log("Get fileId fail");
                                 });                            
@@ -160,7 +161,8 @@ module nts.uk.com.view.cmf003.f {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_388" })
                 .ifYes(() => {
                     service.findResultOfSaving(self.storeProcessingId).done(function(res: any) {
-                        //TODO download by file id 
+                        let fileId = res.fileId;
+                        nts.uk.request.specials.donwloadFile(fileId);
                     }).fail(function(res: any) {
                         console.log("Get fileId fail");
                     });
