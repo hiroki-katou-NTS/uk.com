@@ -28,13 +28,6 @@ public interface RoundingSetOfMonthlyRepository {
 	void persistAndUpdate(TimeRoundingOfExcessOutsideTime roundingSetOfMonthly);
 	
 	/**
-	 * Persist and update monthly item round.
-	 *
-	 * @param lstItemRounding the lst item rounding
-	 */
-	void persistAndUpdateMonItemRound(List<ItemRoundingSetOfMonthly> lstItemRounding, String companyId);
-	
-	/**
 	 * 削除.
 	 *
 	 * @param companyId 会社ID

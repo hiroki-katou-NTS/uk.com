@@ -14,8 +14,6 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.monthly.roundingset.RoundingProcessOfExcessOutsideTime;
 import nts.uk.ctx.at.shared.dom.monthly.roundingset.TimeRoundingOfExcessOutsideTime;
 import nts.uk.ctx.at.shared.infra.entity.monthly.roundingset.KrcstMonExcOutRound;
-import nts.uk.ctx.at.shared.infra.entity.monthly.roundingset.KrcstMonItemRound;
-import nts.uk.ctx.at.shared.infra.entity.monthly.roundingset.KrcstMonItemRoundPK;
 import nts.uk.ctx.at.shared.infra.entity.monthly.roundingset.KrcstMonRoundSetPK;
 
 /**
@@ -91,19 +89,5 @@ public class JpaExcOutRoundingSet extends JpaRepository implements RoundingSetOf
 		this.getEntityManager().createQuery(REMOVE_BY_CID_FOR_EXCOUT)
 				.setParameter("companyId", companyId)
 				.executeUpdate();
-	}
-
-	@Override
-	public void persistAndUpdateMonItemRound(List<ItemRoundingSetOfMonthly> lstItemRounding, String companyId) {
-		this.getEntityManager().createQuery(REMOVE_BY_CID_FOR_ITEM)
-		.setParameter("companyId", companyId)
-		.executeUpdate();
-		for (val itemRoundSet : lstItemRounding){
-			KrcstMonItemRound entityItemRound = new KrcstMonItemRound();
-			entityItemRound.PK = new KrcstMonItemRoundPK(companyId, itemRoundSet.getAttendanceItemId());
-			entityItemRound.roundUnit = itemRoundSet.getRoundingSet().getRoundingTime().value;
-			entityItemRound.roundProc = itemRoundSet.getRoundingSet().getRounding().value;
-			this.getEntityManager().persist(entityItemRound);
-		}
 	}
 }
