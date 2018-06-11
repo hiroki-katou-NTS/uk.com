@@ -39,10 +39,10 @@ public class AttendanceRecordExportSettingAddCommandHandler
 		domain.setCompanyId(AppContexts.user().companyId());
 		domain.setCode(new ExportSettingCode(command.getCode()));
 		domain.setName(new ExportSettingName(command.getName()));
+		domain.setNameUseAtr(NameUseAtr.valueOf(command.getNameUseAtr()));
 		if (!command.onceUpdate) {
 			domain.setSealStamp(command.getSealStamp().stream().map(SealColumnName::new).collect(Collectors.toList()));
 			domain.setSealUseAtr(command.getSealUseAtr());
-			domain.setNameUseAtr(NameUseAtr.valueOf(command.getNameUseAtr()));
 		}
 		// Add
 		attendanceRecExpSetRepo.addAttendanceRecExpSet(domain,command.isOnceUpdate());

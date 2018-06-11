@@ -192,17 +192,17 @@ module nts.uk.com.view.kwr002.b {
                 useSeal: getShared('useSeal'),
 
                 isInvalid: function () {
-                    return ((!_.isArray(this.attendanceRecExpDaily) || !_.isArray(this.attendanceRecExpMonthly))
-                        || (this.countValid(this.attendanceRecExpDaily) < 1 && this.countValid(this.attendanceRecExpMonthly) < 1));
-
+                    return ((!_.isArray(this.attendanceRecExpDaily) && !_.isArray(this.attendanceRecExpMonthly))
+                        || (!this.isListValid(this.attendanceRecExpDaily) && !this.isListValid(this.attendanceRecExpMonthly)));
                 },
 
-                countValid: function (list) {
-                    let countResult = 0;
-                    _.forEach(list, (item) => {
-                        if (!(_.isEmpty(item.upperPosition) && _.isEmpty(item.lowwerPosition))) countResult++;
-                    });
-                    return countResult;
+                isListValid: function (list) {
+                    return _.find(list,(item)=>!(_.isEmpty(item.upperPosition) && _.isEmpty(item.lowwerPosition)));
+                    // let countResult = 0;
+                    // _.forEach(list, (item) => {
+                    //     if (!(_.isEmpty(item.upperPosition) && _.isEmpty(item.lowwerPosition))) countResult++;
+                    // });
+                    // return countResult;
                 }
             };
 
@@ -445,19 +445,6 @@ module nts.uk.com.view.kwr002.b {
             setShared('attendanceRecExpSetName', self.name(), true);
             setShared('useSeal', self.sealUseAtr(), true);
 
-            let itemList = getShared('attendanceRecItemList');
-
-//            if (_.isArray(itemList) && !_.isEmpty(itemList) && _.first(itemList).layoutCode == Number(settingCode)) {
-            setShared('attendanceRecExpDaily', getShared('attendanceRecExpDaily'), true);
-            setShared('attendanceRecExpMonthly', getShared('attendanceRecExpMonthly'), true);
-            setShared('attendanceRecItemList', getShared('attendanceRecItemList'), true);
-            setShared('sealStamp', getShared('sealStamp'), true);
-//            } else {
-//                setShared('attendanceRecExpDaily', null, true);
-//                setShared('attendanceRecExpMonthly', null, true);
-//                setShared('attendanceRecItemList', null, true);
-//                setShared('sealStamp', null, true);
-//            }
             modal('../c/index.xhtml', {});
         }
 
@@ -477,10 +464,6 @@ module nts.uk.com.view.kwr002.b {
                     }
                 });
             }
-        }
-
-        public checkCode(key) {
-            // console.log(key.code());
         }
     }
 
