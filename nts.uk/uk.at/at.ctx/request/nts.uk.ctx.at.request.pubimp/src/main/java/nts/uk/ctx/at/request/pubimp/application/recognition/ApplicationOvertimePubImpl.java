@@ -36,8 +36,8 @@ public class ApplicationOvertimePubImpl implements ApplicationOvertimePub {
 	@Override
 	public List<ApplicationOvertimeExport> acquireTotalApplicationOverTimeHours(String sId, GeneralDate startDate, GeneralDate endDate) {
 		String companyId = AppContexts.user().companyId();
-		Optional<AppOverTime> appOt = null;
-		Optional<AppHolidayWork> appHdWork = null;
+		Optional<AppOverTime> appOt = Optional.empty();
+		Optional<AppHolidayWork> appHdWork = Optional.empty();
 		int totalOtHours = 0;
 		int totalOtTimeInput = 0;
 		int totalHdTimeInput = 0;
@@ -55,14 +55,23 @@ public class ApplicationOvertimePubImpl implements ApplicationOvertimePub {
 		
 		// 取得した「残業申請」と「休日出勤申請」の残業時間を、日付別に集計する
 		for (int i = 1; i <= 10 ; i++) {
-			totalOtTimeInput += appOt.get().getOverTimeInput().get(i).getApplicationTime().v();
-			totalHdTimeInput += appHdWork.get().getHolidayWorkInputs().get(i).getApplicationTime().v();
+			if(appOt.isPresent()) {
+				if(appOt.get().getOverTimeInput().size() >= 1) {
+					totalOtTimeInput += appOt.get().getOverTimeInput().get(i).getApplicationTime().v();
+				}
+			}
+			
+			if(appHdWork.isPresent()) {
+				if(appHdWork.get().getHolidayWorkInputs().size() >= 1) {
+					totalHdTimeInput += appHdWork.get().getHolidayWorkInputs().get(i).getApplicationTime().v();
+				}
+			}
 		}
 		
 		totalOtHours = totalOtTimeInput + totalHdTimeInput;
 		
 		ApplicationOvertimeExport data = new ApplicationOvertimeExport();
-		data.setDate(appNew.get(0).getAppDate());
+		data.setDate(appNew.size() >= 1 ? appNew.get(0).getAppDate() : null);
 		data.setTotalOtHours(totalOtHours);
 		results.add(data);
 		
