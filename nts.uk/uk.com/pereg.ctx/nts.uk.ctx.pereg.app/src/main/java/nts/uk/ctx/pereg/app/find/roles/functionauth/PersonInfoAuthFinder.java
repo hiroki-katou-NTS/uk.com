@@ -18,7 +18,7 @@ public class PersonInfoAuthFinder {
 	
 	public List<PersonInfoAuthDto> getListAuth(String roleId) {
 		
-		if (roleId == null) {
+		if (roleId == null || roleId.equals("")) {
 			roleId = AppContexts.user().roles().forPersonalInfo();
 		}
 		String companyId = AppContexts.user().companyId();
