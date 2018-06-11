@@ -35,4 +35,17 @@ public interface AbsenceReruitmentMngInPeriodQuery {
 	 * @return
 	 */
 	AbsRecDetailPara getInterimAndConfirmAbs(String sid, SubstitutionOfHDManagementData confirmAbsData);
+	/**
+	 * 2.未使用の振出(確定)を取得する
+	 * @param sid
+	 * @return
+	 */
+	List<AbsRecDetailPara> getUnUseDaysConfirmRec(String sid, List<AbsRecDetailPara> lstDataDetail);
+	/**
+	 * 繰越数を計算する
+	 * @param startDate 集計開始日
+	 * @param lstDataDetail 振出振休明細
+	 * @return
+	 */
+	double calcCarryForwardDays(GeneralDate startDate, List<AbsRecDetailPara> lstDataDetail);
 }
