@@ -119,7 +119,7 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 	@Override
 	public AbsRecGenerationDigestionHis generationDigestionHis(String cid, String sid, GeneralDate baseDate) {
 		//確定管理データを取得する
-		AbsRecConfirmOutputPara absRecConfirmData = this.getAbsRecConfirmData(sid);
+		/*AbsRecConfirmOutputPara absRecConfirmData = this.getAbsRecConfirmData(sid);
 		//暫定管理データを取得する
 		AbsRecInterimOutputPara absRecInterimData = this.getAbsRecInterimData(sid, baseDate);
 		//振出履歴を作成する
@@ -129,8 +129,9 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		//振出振休履歴対照情報を作成する
 		List<RecAbsHistoryOutputPara> createAbsRecData = this.createRecAbsHis(lstHisRecData, lstHisAbsData, absRecInterimData.getInterimRecAbsMngInfor());
 		//残数集計情報を作成する
-		AsbRemainTotalInfor totalInfor = this.getAbsRemainTotalInfor(lstHisRecData, lstHisAbsData);
-		
+		AsbRemainTotalInfor totalInfor = this.getAbsRemainTotalInfor(lstHisRecData, lstHisAbsData);*/
+		List<RecAbsHistoryOutputPara> createAbsRecData = this.createRecAbsHis(null, null, null);
+		AsbRemainTotalInfor totalInfor = this.getAbsRemainTotalInfor(null, null);
 		return new AbsRecGenerationDigestionHis(sid, totalInfor, createAbsRecData);
 	}
 	@Override

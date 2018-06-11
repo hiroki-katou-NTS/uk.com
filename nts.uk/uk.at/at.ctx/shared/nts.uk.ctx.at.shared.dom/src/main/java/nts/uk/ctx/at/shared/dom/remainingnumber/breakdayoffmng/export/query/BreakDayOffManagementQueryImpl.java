@@ -128,7 +128,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 	@Override
 	public BreakDayOffOutputHisData getBreakDayOffData(String cid, String sid, GeneralDate baseDate) {
 		// TODO 確定管理データを取得する
-		
+		/*
 		//暫定管理データを取得する
 		BreakDayOffInterimMngData interimMngData = this.getMngData(sid, baseDate);
 		//休出履歴を作成する
@@ -138,8 +138,9 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		//休出代休履歴対照情報を作成する
 		List<BreakDayOffHistory> lstOutput = this.lstBreakDayOffHis(interimMngData.getLstBreakDayOffMng(), lstBreakHis, lstDayOffHis);
 		//残数集計情報を作成する
-		AsbRemainTotalInfor totalOutput = this.totalInfor(lstBreakHis, lstDayOffHis);
-		
+		AsbRemainTotalInfor totalOutput = this.totalInfor(lstBreakHis, lstDayOffHis);*/
+		List<BreakDayOffHistory> lstOutput = this.lstBreakDayOffHis(null, null, null);
+		AsbRemainTotalInfor totalOutput = this.totalInfor(null, null);
 		return new BreakDayOffOutputHisData(lstOutput, totalOutput);
 	}
 	@Override
