@@ -229,7 +229,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		List<BreakDayOffHistory> lstOutputData = new ArrayList<>();
 		//紐付き対象のない休出代休履歴対象情報を作成してListに追加する
 		//休出履歴を抽出する ・  休出管理データ.未使用日数＞0
-		List<BreakHistoryData> lstBreakUnUse = lstBreakHis.stream().filter(x -> x.getUnUseDays() > 0).collect(Collectors.toList());
+		/*List<BreakHistoryData> lstBreakUnUse = lstBreakHis.stream().filter(x -> x.getUnUseDays() > 0).collect(Collectors.toList());
 		lstBreakUnUse.stream().forEach(x -> {
 			BreakDayOffHistory outData = new BreakDayOffHistory();
 			outData.setHisDate(x.getBreakDate());
@@ -290,14 +290,14 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		if(!lstInterimOutput.isEmpty()) {
 			lstOutputData.addAll(lstInterimOutput);	
 		}
-		Collections.sort(lstOutputData, Comparator.comparing(BreakDayOffHistory :: getHisDate));
+		Collections.sort(lstOutputData, Comparator.comparing(BreakDayOffHistory :: getHisDate));*/
 		return lstOutputData;
 	}
 	@Override
 	public AsbRemainTotalInfor totalInfor(List<BreakHistoryData> lstBreakHis, List<DayOffHistoryData> lstDayOffHis) {
 		AsbRemainTotalInfor outputData = new AsbRemainTotalInfor((double) 0, (double)0, (double) 0, (double) 0, (double) 0);
 		//実績使用日数を算出する
-		List<DayOffHistoryData> dayOffHisRecord = lstDayOffHis.stream()
+		/*List<DayOffHistoryData> dayOffHisRecord = lstDayOffHis.stream()
 				.filter(x -> x.getCreateAtr() == MngDataAtr.RECORD)
 				.collect(Collectors.toList());
 		dayOffHisRecord.stream().forEach(y -> {
@@ -339,7 +339,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		for (DayOffHistoryData dayOffHistoryData : dayOffHisCarry) {
 			carryDayOff += dayOffHistoryData.getUnOffsetDays();
 		}
-		outputData.setCarryForwardDays(carryDays - carryDayOff);
+		outputData.setCarryForwardDays(carryDays - carryDayOff);*/
 		return outputData;
 	}
 	@Override

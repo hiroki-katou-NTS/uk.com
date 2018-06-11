@@ -247,7 +247,7 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		List<RecAbsHistoryOutputPara> lstOutputPara = new ArrayList<>();
 		//紐付き対象のない振出振休履歴対象情報を作成してListに追加する
 		//振出履歴を抽出する
-		List<RecruitmentHistoryOutPara> lstRecHisTmp = lstRecHis.stream().filter(z -> z.getUnUseDays() > 0)
+		/*List<RecruitmentHistoryOutPara> lstRecHisTmp = lstRecHis.stream().filter(z -> z.getUnUseDays() > 0)
 				.collect(Collectors.toList());
 		lstRecHisTmp.stream().forEach(x -> {
 			RecAbsHistoryOutputPara outPutData = new RecAbsHistoryOutputPara();	
@@ -315,14 +315,14 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		if(!lstInterim.isEmpty()) {
 			lstOutputPara.addAll(lstInterim);
 		}
-		lstOutputPara.stream().sorted((a, b) -> b.getYmd().compareTo(a.getYmd()));
+		lstOutputPara.stream().sorted((a, b) -> b.getYmd().compareTo(a.getYmd()));*/
 		return lstOutputPara;
 	}
 	@Override
 	public AsbRemainTotalInfor getAbsRemainTotalInfor(List<RecruitmentHistoryOutPara> lstRecHis,
 			List<AbsenceHistoryOutputPara> lstAbsHis) {
 		AsbRemainTotalInfor outPutData = new AsbRemainTotalInfor((double) 0,(double) 0,(double) 0,(double) 0, (double) 0);
-		List<AbsenceHistoryOutputPara> lstAbsHisRecord = lstAbsHis.stream().filter(x -> x.getCreateAtr() == MngDataAtr.RECORD).collect(Collectors.toList());
+		/*List<AbsenceHistoryOutputPara> lstAbsHisRecord = lstAbsHis.stream().filter(x -> x.getCreateAtr() == MngDataAtr.RECORD).collect(Collectors.toList());
 		lstAbsHisRecord.stream().forEach(x -> {
 			//実績使用日数を算出する
 			outPutData.setRecordUseDays(outPutData.getRecordUseDays() + x.getRequeiredDays());			
@@ -356,7 +356,7 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 			unOffsetDays += confirmData.getUnOffsetDays();
 		}
 		//繰越日数：確定未使用日数－確定未相殺日数
-		outPutData.setCarryForwardDays(unUseDay - unOffsetDays);
+		outPutData.setCarryForwardDays(unUseDay - unOffsetDays);*/
 		return outPutData;
 	}
 	@Override

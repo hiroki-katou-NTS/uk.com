@@ -39,6 +39,8 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		//アルゴリズム「未相殺の振休(確定)を取得する」を実行する
 		List<AbsRecDetailPara> lstAbsRec = this.getAbsOfUnOffset(sid);		
 		//アルゴリズム「未使用の振出(確定)を取得する」を実行する
+		lstAbsRec = this.getUnUseDaysConfirmRec(sid, lstAbsRec);
+		//繰越数を計算する
 		
 		return null;
 	}
@@ -57,6 +59,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		return lstOutput;
 	}
 
+	
 	/*private List<AbsRecDetailPara> insertAbsRec(List<AbsRecDetailPara> lstData, AbsRecDetailPara detailData){
 		List<AbsRecDetailPara> lstTmp = lstData.stream()
 				.filter(x -> x.getSid() == detailData.getSid() && detailData.getYmdData() == detailData.getYmdData())
@@ -136,6 +139,12 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 			lstDataDetail.add(dataDetail);
 		}		
 		return lstDataDetail;
+	}
+
+	@Override
+	public double calcCarryForwardDays(GeneralDate startDate, List<AbsRecDetailPara> lstDataDetail) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

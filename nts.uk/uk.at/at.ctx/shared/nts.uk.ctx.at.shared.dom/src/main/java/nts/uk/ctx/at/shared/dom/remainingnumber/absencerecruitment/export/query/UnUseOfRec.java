@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
 @Getter
 @Setter
 @AllArgsConstructor
