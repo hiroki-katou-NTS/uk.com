@@ -183,7 +183,7 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 	public List<PayoutManagementData> getByStateAtr(String sid, DigestionAtr stateAtr) {
 		List<KrcmtPayoutManaData> list = this.queryProxy().query(QUERY_BY_STATEATR, KrcmtPayoutManaData.class)
 				.setParameter("sid", sid)
-				.setParameter("stateAtr", stateAtr)
+				.setParameter("stateAtr", stateAtr.value)
 				.getList();
 		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}

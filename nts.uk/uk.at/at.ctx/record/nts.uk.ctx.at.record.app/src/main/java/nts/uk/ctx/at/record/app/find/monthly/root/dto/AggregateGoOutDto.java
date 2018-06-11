@@ -8,6 +8,7 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.goout.AggregateGoOut;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -16,51 +17,51 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 /** 集計外出 */
 @NoArgsConstructor
 @AllArgsConstructor
-public class AggregateGoOutDto {
+public class AggregateGoOutDto implements ItemConst {
 
 	/** 回数: 勤怠月間回数 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "回数", layout = "A", needCheckIDWithMethod = "goOutReason")
+	@AttendanceItemLayout(jpPropertyName = COUNT, layout = LAYOUT_A, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	private int times;
 
 	/** 外出理由: 外出理由 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "外出理由", layout = "B", needCheckIDWithMethod = "goOutReason")
-	private int goOutReason;
+	@AttendanceItemLayout(jpPropertyName = REASON, layout = LAYOUT_B, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
+	private int attr;
 
 	/** 合計時間: 計算付き月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "合計時間", layout = "C", needCheckIDWithMethod = "goOutReason")
+	@AttendanceItemLayout(jpPropertyName = TOTAL, layout = LAYOUT_C, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	private TimeMonthWithCalculationDto totalTime;
 
 	/** 法定外時間: 計算付き月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "法定外時間", layout = "D", needCheckIDWithMethod = "goOutReason")
+	@AttendanceItemLayout(jpPropertyName = ILLEGAL, layout = LAYOUT_D, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	private TimeMonthWithCalculationDto illegalTime;
 
 	/** 法定内時間: 計算付き月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "法定内時間", layout = "E", needCheckIDWithMethod = "goOutReason")
+	@AttendanceItemLayout(jpPropertyName = LEGAL, layout = LAYOUT_E, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	private TimeMonthWithCalculationDto legalTime;
 
-	public String goOutReason() {
-		switch (this.goOutReason) {
+	public String enumText() {
+		switch (this.attr) {
 		case 0:
-			return "私用";
+			return E_SUPPORT;
 		case 1:
-			return "公用";
+			return E_UNION;
 		case 2:
-			return "有償";
+			return E_CHARGE;
 		case 3:
 		default:
-			return "組合";
+			return E_OFFICAL;
 		}
 	}
 	
 	public static AggregateGoOutDto from(AggregateGoOut domain) {
 		AggregateGoOutDto dto = new AggregateGoOutDto();
 		if(domain != null) {
-			dto.setGoOutReason(domain.getGoOutReason() == null ? 0 : domain.getGoOutReason().value);
+			dto.setAttr(domain.getGoOutReason() == null ? 0 : domain.getGoOutReason().value);
 			dto.setIllegalTime(TimeMonthWithCalculationDto.from(domain.getIllegalTime()));
 			dto.setLegalTime(TimeMonthWithCalculationDto.from(domain.getLegalTime()));
 			dto.setTimes(domain.getTimes() == null ? 0 : domain.getTimes().v());
@@ -70,7 +71,7 @@ public class AggregateGoOutDto {
 	}
 
 	public AggregateGoOut toDomain(){
-		return AggregateGoOut.of(ConvertHelper.getEnum(goOutReason, GoingOutReason.class), 
+		return AggregateGoOut.of(ConvertHelper.getEnum(attr, GoingOutReason.class),  
 					new AttendanceTimesMonth(times), 
 					legalTime == null ? new TimeMonthWithCalculation() : legalTime.toDomain(), 
 					illegalTime == null ? new TimeMonthWithCalculation() : illegalTime.toDomain(), 

@@ -14,6 +14,7 @@ module nts.uk.at.view.kmk003.h {
             calcMethodFixed: KnockoutObservable<number>;
             calcMethodFluctuation: KnockoutObservable<number>;
 
+            option:KnockoutObservableArray<any>;
             constructor() {
                 let self = this;
                 self.isCalcFromSchedule = ko.observable(false);
@@ -25,6 +26,12 @@ module nts.uk.at.view.kmk003.h {
                 self.timeManagerSetAtr = ko.observable(0);
                 self.calcMethodFixed = ko.observable(0);
                 self.calcMethodFluctuation = ko.observable(0);
+                
+                self.option = ko.observableArray([
+                    { value: 0, text: nts.uk.resource.getText('KMK003_241')},
+                    { value: 1, text: nts.uk.resource.getText('KMK003_242')},
+                    { value: 2, text: nts.uk.resource.getText('KMK003_243')}
+                ]);
             }
 
             /**

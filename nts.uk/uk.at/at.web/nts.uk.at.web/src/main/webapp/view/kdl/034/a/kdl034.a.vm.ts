@@ -68,6 +68,7 @@ module nts.uk.at.view.kdl034.a {
                         }
                         nts.uk.at.view.kdl034.a.service.remand(command) 
                             .done(function(result){
+                                nts.uk.ui.block.clear();
                                 let successList: Array<string> = [];
                                 let failedList: Array<string> = [];
                                 if (result){
@@ -88,9 +89,11 @@ module nts.uk.at.view.kdl034.a {
                                     self.handleSendMailResult(successList, failedList);
                                 });
                             }).fail(function(res){
-                                dialog.alertError (res.errorMessage);
-                            }).always(function(){
                                 nts.uk.ui.block.clear();
+                                //エラーメッセージ(Msg_197) - sai version
+                                dialog.alertError ({messageId: res.errorMessageId}).then(()=>{
+                                    nts.uk.ui.windows.close();
+                                });
                             });
                     
                 }).ifNo(() => {

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.AggrPCLogonClock;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.AggrPCLogonDivergence;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -15,21 +16,21 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 集計PCログオン時刻 + 集計PCログオン乖離 */
-public class TotalPcLogon {
+public class TotalPcLogon implements ItemConst {
 
 	/** 合計時刻: 勤怠月間時間 + 合計時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "合計時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = TOTAL + CLOCK, layout = LAYOUT_A)
 	private int totalTime;
 
 	/** 合計日数: 勤怠月間日数 + 日数: 勤怠月間日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "合計日数", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = TOTAL + DAYS, layout = LAYOUT_B)
 	private double totalDays;
 
 	/** 平均時刻: 勤怠月間時間 + 平均時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "平均時刻", layout = "C")
+	@AttendanceItemLayout(jpPropertyName = AVERAGE + CLOCK, layout = LAYOUT_C)
 	private int averageTime;
 	
 	public static TotalPcLogon from(AggrPCLogonClock domain){

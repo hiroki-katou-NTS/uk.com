@@ -9,6 +9,7 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AbsenceDaysOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AggregateAbsenceDays;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -19,23 +20,23 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 @AllArgsConstructor
 /** 月別実績の欠勤日数 */
 /** 月別実績の特別休暇日数 */
-public class CommonDaysOfMonthlyDto {
+public class CommonDaysOfMonthlyDto implements ItemConst {
 
 	/** 欠勤合計日数: 勤怠月間日数 */
 	/** 特別休暇合計日数: 勤怠月間日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "合計日数", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = TOTAL + DAYS, layout = LAYOUT_A)
 	private double totalAbsenceDays;
 
 	/** 欠勤日数: 集計欠勤日数 */
 	/** 特別休暇日数: 集計特別休暇日数 */
-	@AttendanceItemLayout(jpPropertyName = "日数", layout = "B", indexField = "frameNo", listMaxLength = 30)
+	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_B, indexField = DEFAULT_INDEX_FIELD_NAME, listMaxLength = 30)
 	private List<CommonAggregateDaysDto> daysList;
 	
 	/** 欠勤合計時間: 勤怠月間時間 */
 	/** 特別休暇合計時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "合計時間", layout = "C")
+	@AttendanceItemLayout(jpPropertyName = TOTAL + TIME, layout = LAYOUT_C)
 	private int totalAbsenceTime;
 
 	public static CommonDaysOfMonthlyDto from(AbsenceDaysOfMonthly domain) {
@@ -55,7 +56,7 @@ public class CommonDaysOfMonthlyDto {
 		return AbsenceDaysOfMonthly.of(
 					new AttendanceDaysMonth(totalAbsenceDays),
 					new AttendanceTimeMonth(totalAbsenceTime),
-					ConvertHelper.mapTo(daysList, c -> AggregateAbsenceDays.of(c.getFrameNo(),
+					ConvertHelper.mapTo(daysList, c -> AggregateAbsenceDays.of(c.getNo(),
 									new AttendanceDaysMonth(c.getDays()),
 									new AttendanceTimeMonth(c.getTime()))));
 	}
