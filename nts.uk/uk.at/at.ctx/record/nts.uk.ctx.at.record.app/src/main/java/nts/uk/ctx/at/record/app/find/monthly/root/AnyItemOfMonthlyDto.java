@@ -16,7 +16,7 @@ import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceLayoutConst;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
@@ -26,7 +26,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の任意項目 */
-@AttendanceItemRoot(rootName = AttendanceLayoutConst.MONTHLY_OPTIONAL_ITEM_NAME, itemType = AttendanceItemType.MONTHLY_ITEM)
+@AttendanceItemRoot(rootName = ItemConst.MONTHLY_OPTIONAL_ITEM_NAME, itemType = AttendanceItemType.MONTHLY_ITEM)
 public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 	
 	/** 社員ID: 社員ID */
@@ -42,7 +42,8 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 	private YearMonth yearMonth;
 	
 	/** 任意項目値: 集計任意項目 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "任意項目値", listMaxLength = 200, indexField = "itemNo")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = OPTIONAL_ITEM_VALUE, 
+			listMaxLength = 200, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<OptionalItemValueDto> values = new ArrayList<>();
 	@Override
 	public String employeeId() {
@@ -50,17 +51,19 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 	}
 
 	@Override
-	public List<AnyItemOfMonthly> toDomain() {
-		if (this.isHaveData()) {
-			return ConvertHelper.mapTo(values, any -> AnyItemOfMonthly.of(employeeId, yearMonth, 
-					ConvertHelper.getEnum(closureID, ClosureId.class),
-					closureDate == null ? null : closureDate.toDomain(),
-					any.getItemNo(),
-					Optional.ofNullable(any.getMonthlyTime()),
-					Optional.ofNullable(any.getMonthlyTimes()), 
-					Optional.ofNullable(any.getMonthlyAmount())));
+	public List<AnyItemOfMonthly> toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
+		if(!this.isHaveData()) {
+			return new ArrayList<>();
 		}
-		return new ArrayList<>();
+		return ConvertHelper.mapTo(values, any -> AnyItemOfMonthly.of(employeeId == null ? this.employeeId : employeeId, 
+				ym == null ? yearMonth : ym, 
+				ConvertHelper.getEnum(closureID, ClosureId.class),
+				closureDate == null ? this.closureDate == null ? null : this.closureDate.toDomain() : closureDate.toDomain(),
+				any.getNo(),
+				Optional.ofNullable(any.getMonthlyTime()),
+				Optional.ofNullable(any.getMonthlyTimes()), 
+				Optional.ofNullable(any.getMonthlyAmount())));
+		
 	}
 
 	@Override
@@ -88,6 +91,7 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 			dto.setEmployeeId(domain.get(0).getEmployeeId());
 			dto.setYearMonth(domain.get(0).getYearMonth());
 			domain.stream().forEach(d -> {
+				dto.getValues().add(OptionalItemValueDto.from(d));
 				if(master == null || master.get(d.getAnyItemId()) == null){
 					dto.getValues().add(OptionalItemValueDto.from(d, null));
 				} else {

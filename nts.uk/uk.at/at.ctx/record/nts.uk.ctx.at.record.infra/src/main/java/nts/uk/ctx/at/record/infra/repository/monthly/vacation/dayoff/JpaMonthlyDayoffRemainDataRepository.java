@@ -37,7 +37,7 @@ public class JpaMonthlyDayoffRemainDataRepository extends JpaRepository implemen
 		return  this.queryProxy().query(QUERY_BY_SID_YM_STATUS, KrcdtMonDayoffRemain.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("ym", ym.v())
-				.setParameter("closureStatus", status.value)
+				.setParameter("status", status.value)
 				.getList(c -> toDomain(c));
 	}
 	

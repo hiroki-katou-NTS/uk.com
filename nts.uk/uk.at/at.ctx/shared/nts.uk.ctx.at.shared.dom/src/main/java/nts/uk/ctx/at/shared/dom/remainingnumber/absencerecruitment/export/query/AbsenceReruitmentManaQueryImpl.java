@@ -55,7 +55,7 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		//アルゴリズム「締めと残数算出対象期間を取得する」を実行する
 		ClosureRemainPeriodOutputData closureData = remainManaExport.getClosureRemainPeriod(employeeId, baseDate, startMonth, endMonth);
 		//残数算出対象年月を設定する
-		for(YearMonth ym = closureData.getStartMonth(); closureData.getEndMonth().greaterThanOrEqualTo(ym); ym.addMonths(1)) {
+		for(YearMonth ym = closureData.getStartMonth(); closureData.getEndMonth().greaterThanOrEqualTo(ym); ym = ym.addMonths(1)) {
 			InterimRemainAggregateOutputData outPutData = new InterimRemainAggregateOutputData(ym, (double) 0, (double) 0, (double) 0, (double) 0, (double) 0);
 			//アルゴリズム「指定年月の締め期間を取得する」を実行する
 			DatePeriod dateData = remainManaExport.getClosureOfMonthDesignation(closureData.getClosure(), ym);
@@ -119,7 +119,7 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 	@Override
 	public AbsRecGenerationDigestionHis generationDigestionHis(String cid, String sid, GeneralDate baseDate) {
 		//確定管理データを取得する
-		AbsRecConfirmOutputPara absRecConfirmData = this.getAbsRecConfirmData(sid);
+		/*AbsRecConfirmOutputPara absRecConfirmData = this.getAbsRecConfirmData(sid);
 		//暫定管理データを取得する
 		AbsRecInterimOutputPara absRecInterimData = this.getAbsRecInterimData(sid, baseDate);
 		//振出履歴を作成する
@@ -129,8 +129,9 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		//振出振休履歴対照情報を作成する
 		List<RecAbsHistoryOutputPara> createAbsRecData = this.createRecAbsHis(lstHisRecData, lstHisAbsData, absRecInterimData.getInterimRecAbsMngInfor());
 		//残数集計情報を作成する
-		AsbRemainTotalInfor totalInfor = this.getAbsRemainTotalInfor(lstHisRecData, lstHisAbsData);
-		
+		AsbRemainTotalInfor totalInfor = this.getAbsRemainTotalInfor(lstHisRecData, lstHisAbsData);*/
+		List<RecAbsHistoryOutputPara> createAbsRecData = this.createRecAbsHis(null, null, null);
+		AsbRemainTotalInfor totalInfor = this.getAbsRemainTotalInfor(null, null);
 		return new AbsRecGenerationDigestionHis(sid, totalInfor, createAbsRecData);
 	}
 	@Override
@@ -247,7 +248,7 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		List<RecAbsHistoryOutputPara> lstOutputPara = new ArrayList<>();
 		//紐付き対象のない振出振休履歴対象情報を作成してListに追加する
 		//振出履歴を抽出する
-		List<RecruitmentHistoryOutPara> lstRecHisTmp = lstRecHis.stream().filter(z -> z.getUnUseDays() > 0)
+		/*List<RecruitmentHistoryOutPara> lstRecHisTmp = lstRecHis.stream().filter(z -> z.getUnUseDays() > 0)
 				.collect(Collectors.toList());
 		lstRecHisTmp.stream().forEach(x -> {
 			RecAbsHistoryOutputPara outPutData = new RecAbsHistoryOutputPara();	
@@ -315,14 +316,14 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		if(!lstInterim.isEmpty()) {
 			lstOutputPara.addAll(lstInterim);
 		}
-		lstOutputPara.stream().sorted((a, b) -> b.getYmd().compareTo(a.getYmd()));
+		lstOutputPara.stream().sorted((a, b) -> b.getYmd().compareTo(a.getYmd()));*/
 		return lstOutputPara;
 	}
 	@Override
 	public AsbRemainTotalInfor getAbsRemainTotalInfor(List<RecruitmentHistoryOutPara> lstRecHis,
 			List<AbsenceHistoryOutputPara> lstAbsHis) {
 		AsbRemainTotalInfor outPutData = new AsbRemainTotalInfor((double) 0,(double) 0,(double) 0,(double) 0, (double) 0);
-		List<AbsenceHistoryOutputPara> lstAbsHisRecord = lstAbsHis.stream().filter(x -> x.getCreateAtr() == MngDataAtr.RECORD).collect(Collectors.toList());
+		/*List<AbsenceHistoryOutputPara> lstAbsHisRecord = lstAbsHis.stream().filter(x -> x.getCreateAtr() == MngDataAtr.RECORD).collect(Collectors.toList());
 		lstAbsHisRecord.stream().forEach(x -> {
 			//実績使用日数を算出する
 			outPutData.setRecordUseDays(outPutData.getRecordUseDays() + x.getRequeiredDays());			
@@ -356,7 +357,7 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 			unOffsetDays += confirmData.getUnOffsetDays();
 		}
 		//繰越日数：確定未使用日数－確定未相殺日数
-		outPutData.setCarryForwardDays(unUseDay - unOffsetDays);
+		outPutData.setCarryForwardDays(unUseDay - unOffsetDays);*/
 		return outPutData;
 	}
 	@Override
@@ -393,7 +394,7 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 	@Override
 	public Double getMonthExtinctionDays(String sid, DatePeriod dateData) {
 		//ドメインモデル「暫定振出管理データ」を取得する
-		DatePeriod dateTmp = new DatePeriod(GeneralDate.fromString("1900/01/01", "yyyy/mm/dd"), dateData.end());
+		DatePeriod dateTmp = new DatePeriod(GeneralDate.fromString("1900/01/01", "yyyy/MM/dd"), dateData.end());
 		List<InterimRemain> lstRemain = remainRepo.getRemainBySidPriod(sid, dateTmp, RemainType.PAUSE);
 		List<String> lstMngId = new ArrayList<>();
 		lstRemain.stream().forEach(x -> {

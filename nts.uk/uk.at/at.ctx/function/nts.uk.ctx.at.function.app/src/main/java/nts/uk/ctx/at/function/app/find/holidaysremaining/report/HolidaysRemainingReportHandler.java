@@ -18,6 +18,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.app.find.holidaysremaining.HdRemainManageFinder;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
+import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationAdapter;
+import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationQueryDtoImport;
 import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidayRemainingDataSource;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingEmployee;
@@ -33,6 +35,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 	private HdRemainManageFinder hdFinder;
 	@Inject
 	private RegulationInfoEmployeeAdapter regulationInfoEmployeeAdapter;
+	@Inject
+	private EmployeeInformationAdapter employeeInformationAdapter;
 
 	@Override
 	protected void handle(ExportServiceContext<HolidaysRemainingReportQuery> context) {
@@ -47,22 +51,28 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 			List<String> employeeIds = query.getLstEmpIds().stream()
 					.map(m -> m.getEmployeeId()).collect(Collectors.toList());
 			employeeIds = this.regulationInfoEmployeeAdapter.sortEmployee(cId, employeeIds, AppContexts.system().getInstallationType().value, null, null, GeneralDateTime.localDateTime(LocalDateTime.of(endDate,LocalTime.of(0, 0))));
-			
+
+			Map<String, String> empNameMap = query.getLstEmpIds().stream()
+					.collect(Collectors.toMap(EmployeeQuery::getEmployeeId, EmployeeQuery::getEmployeeName));
+
 			Map<String, HolidaysRemainingEmployee> employees = new HashMap<>();
-			query.getLstEmpIds().forEach(emp -> {
-				employees.put(emp.getEmployeeId(), new HolidaysRemainingEmployee(
-						emp.getEmployeeCode(), emp.getEmployeeId(), emp.getEmployeeName(), 
-						emp.getWorkplaceCode(), emp.getWorkplaceId(), emp.getWorkplaceName()));
-			});
-			
+
+			employeeInformationAdapter.getEmployeeInfo(new EmployeeInformationQueryDtoImport(employeeIds,
+					GeneralDate.localDate(endDate), true, false, true, true, false, false)).forEach(emp -> {
+						employees.put(emp.getEmployeeId(),
+								new HolidaysRemainingEmployee(emp.getEmployeeId(), emp.getEmployeeCode(),
+										empNameMap.get(emp.getEmployeeId()), emp.getWorkplace().getWorkplaceCode(),
+										emp.getWorkplace().getWorkplaceName(), emp.getEmployment().getEmploymentName(),
+										emp.getPosition().getPositionName()));
+					});
+
 			HolidayRemainingDataSource dataSource = new HolidayRemainingDataSource(
-                    query.getHolidayRemainingOutputCondition().getStartMonth(),
-                    query.getHolidayRemainingOutputCondition().getEndMonth(),
-                    query.getHolidayRemainingOutputCondition().getOutputItemSettingCode(),
-                    query.getHolidayRemainingOutputCondition().getPageBreak(),
-                    query.getHolidayRemainingOutputCondition().getBaseDate(),
-                    hdManagement.get(),
-                    employeeIds, employees);
+					query.getHolidayRemainingOutputCondition().getStartMonth(),
+					query.getHolidayRemainingOutputCondition().getEndMonth(),
+					query.getHolidayRemainingOutputCondition().getOutputItemSettingCode(),
+					query.getHolidayRemainingOutputCondition().getPageBreak(),
+					query.getHolidayRemainingOutputCondition().getBaseDate(), hdManagement.get(), employeeIds,
+					employees);
 
 			this.reportGenerator.generate(context.getGeneratorContext(), dataSource);
 		}
