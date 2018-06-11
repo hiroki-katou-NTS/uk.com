@@ -89,12 +89,12 @@ module nts.uk.at.view.kdl020.a.screenModel {
             let self = this,
                 dfd = $.Deferred();
             let data: any = getShared('KDL020A_PARAM');
-
+            self.baseDate(data.baseDate);
 
             let startParam = {
                 selectMode: self.isMultiSelect() ? 1 : 0,
                 baseDate: self.baseDate(),
-                employeeIds: data
+                employeeIds: data.employeeIds
             }
             block.invisible();
             service.startPage(startParam).done((data: IAnnualHoliday) => {
