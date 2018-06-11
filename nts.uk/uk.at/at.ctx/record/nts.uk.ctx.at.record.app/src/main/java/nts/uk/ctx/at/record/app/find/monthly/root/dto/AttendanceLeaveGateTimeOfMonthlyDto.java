@@ -18,30 +18,30 @@ public class AttendanceLeaveGateTimeOfMonthlyDto {
 	/** 出勤前時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "出勤前時間", layout = "A")
-	private Integer timeBeforeAttendance;
+	private int timeBeforeAttendance;
 
 	/** 滞在時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "滞在時間", layout = "B")
-	private Integer stayingTime;
+	private int stayingTime;
 
 	/** 退勤後時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "退勤後時間", layout = "C")
-	private Integer timeAfterLeaveWork;
+	private int timeAfterLeaveWork;
 
 	/** 不就労時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "不就労時間", layout = "D")
-	private Integer unemployedTime;
+	private int unemployedTime;
 	
 	public static AttendanceLeaveGateTimeOfMonthlyDto from(AttendanceLeaveGateTimeOfMonthly domain) {
 		AttendanceLeaveGateTimeOfMonthlyDto dto = new AttendanceLeaveGateTimeOfMonthlyDto();
 		if(domain != null) {
-			dto.setStayingTime(domain.getStayingTime() == null ? null : domain.getStayingTime().valueAsMinutes());
-			dto.setTimeAfterLeaveWork(domain.getTimeAfterLeaveWork() == null ? null : domain.getTimeAfterLeaveWork().valueAsMinutes());
-			dto.setTimeBeforeAttendance(domain.getTimeBeforeAttendance() == null ? null : domain.getTimeBeforeAttendance().valueAsMinutes());
-			dto.setUnemployedTime(domain.getUnemployedTime() == null ? null : domain.getUnemployedTime().valueAsMinutes());
+			dto.setStayingTime(domain.getStayingTime() == null ? 0 : domain.getStayingTime().valueAsMinutes());
+			dto.setTimeAfterLeaveWork(domain.getTimeAfterLeaveWork() == null ? 0 : domain.getTimeAfterLeaveWork().valueAsMinutes());
+			dto.setTimeBeforeAttendance(domain.getTimeBeforeAttendance() == null ? 0 : domain.getTimeBeforeAttendance().valueAsMinutes());
+			dto.setUnemployedTime(domain.getUnemployedTime() == null ? 0 : domain.getUnemployedTime().valueAsMinutes());
 		}
 		return dto;
 	}
@@ -54,7 +54,7 @@ public class AttendanceLeaveGateTimeOfMonthlyDto {
 	}
 	
 	private AttendanceTimeMonth toAttendanceTimeMonth(Integer time) {
-		return time == null ? null : new AttendanceTimeMonth(time);
+		return new AttendanceTimeMonth(time);
 	}
 }
 

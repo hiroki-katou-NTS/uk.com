@@ -17,18 +17,18 @@ public class PayDaysOfMonthlyDto {
 	/** 給与出勤日数: 勤怠月間日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
 	@AttendanceItemLayout(jpPropertyName = "給与出勤日数", layout = "A")
-	private Double payAttendanceDays;
+	private double payAttendanceDays;
 
 	/** 給与欠勤日数: 勤怠月間日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
 	@AttendanceItemLayout(jpPropertyName = "給与欠勤日数", layout = "B")
-	private Double payAbsenceDays;
+	private double payAbsenceDays;
 	
 	public static PayDaysOfMonthlyDto from(PayDaysOfMonthly domain) {
 		PayDaysOfMonthlyDto dto = new PayDaysOfMonthlyDto();
 		if(domain != null) {
-			dto.setPayAbsenceDays(domain.getPayAbsenceDays() == null ? null : domain.getPayAbsenceDays().v());
-			dto.setPayAttendanceDays(domain.getPayAttendanceDays() == null ? null : domain.getPayAttendanceDays().v());
+			dto.setPayAbsenceDays(domain.getPayAbsenceDays() == null ? 0 : domain.getPayAbsenceDays().v());
+			dto.setPayAttendanceDays(domain.getPayAttendanceDays() == null ? 0 : domain.getPayAttendanceDays().v());
 		}
 		return dto;
 	}

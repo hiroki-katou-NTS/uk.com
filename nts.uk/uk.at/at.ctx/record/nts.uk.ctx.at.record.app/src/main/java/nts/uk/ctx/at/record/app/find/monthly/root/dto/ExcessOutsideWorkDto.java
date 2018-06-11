@@ -22,7 +22,7 @@ public class ExcessOutsideWorkDto {
 	/** 超過時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "時間", layout = "A")
-	private Integer breakdown;
+	private int breakdown;
 
 	/** 内訳NO: int */
 	private int breakdownNo;
@@ -39,13 +39,12 @@ public class ExcessOutsideWorkDto {
 
 	public ExcessOutsideWork toDomain() {
 		//TODO: need check
-		return ExcessOutsideWork.of((fakeNo / 10) + 1, (fakeNo % 10) + 1,
-				breakdown == null ? null : new AttendanceTimeMonth(breakdown));
+		return ExcessOutsideWork.of((fakeNo / 10) + 1, (fakeNo % 10) + 1, new AttendanceTimeMonth(breakdown));
 	}
 
 	public static ExcessOutsideWorkDto from(ExcessOutsideWork domain) {
 		return new ExcessOutsideWorkDto(domain.getExcessNo(), domain.getBreakdownNo(),
-				domain.getExcessTime() == null ? null : domain.getExcessTime().valueAsMinutes());
+				domain.getExcessTime() == null ? 0 : domain.getExcessTime().valueAsMinutes());
 	}
 
 	public static List<ExcessOutsideWorkDto> from(Map<Integer, ExcessOutSideWorkEachBreakdown> domain) {

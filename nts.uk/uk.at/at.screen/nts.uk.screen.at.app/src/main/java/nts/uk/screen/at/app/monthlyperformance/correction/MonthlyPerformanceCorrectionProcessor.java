@@ -15,6 +15,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
@@ -31,6 +32,7 @@ import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQue
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryR;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
 import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
+import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FormatPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FormatPerformanceRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFun;
@@ -185,21 +187,30 @@ public class MonthlyPerformanceCorrectionProcessor {
 			// 7. アルゴリズム「通常モードで起動する」を実行する
 			// アルゴリズム「<<Public>> 就業条件で社員を検索して並び替える」を実行する
 
-			List<RegulationInfoEmployeeQueryR> regulationRs = regulationInfoEmployeePub.search(
-					createQueryEmployee(new ArrayList<>(), presentClosingPeriodExport.get().getClosureStartDate(),
-							presentClosingPeriodExport.get().getClosureStartDate()));
+			if (param.getLstEmployees() != null && !param.getLstEmployees().isEmpty()) {
+				screenDto.setLstEmployee(param.getLstEmployees());
+			} else {
+				List<RegulationInfoEmployeeQueryR> regulationRs = regulationInfoEmployeePub.search(
+						createQueryEmployee(new ArrayList<>(), presentClosingPeriodExport.get().getClosureStartDate(),
+								presentClosingPeriodExport.get().getClosureStartDate()));
 
-			List<MonthlyPerformanceEmployeeDto> lstEmployeeDto = regulationRs.stream().map(item -> {
-				return new MonthlyPerformanceEmployeeDto(item.getEmployeeId(), item.getEmployeeCode(), item.getEmployeeName(), item.getWorkplaceName(), item.getWorkplaceId(), "", false);
-			}).collect(Collectors.toList());
-			screenDto.setLstEmployee(lstEmployeeDto);
-			
-//			screenDto.setLstEmployee(extractEmployeeList(param.getLstEmployees(), employeeId, new DateRange(
-//					screenDto.getSelectedActualTime().getEndDate(), screenDto.getSelectedActualTime().getEndDate())));
-//			List<MonthlyPerformanceEmployeeDto> lstEmployeeData = extractEmployeeData(param.getInitScreenMode(),
-//					employeeId, screenDto.getLstEmployee());
-//			// TODO List<String> employeeIds = lstEmployeeData.stream().map(e ->
-//			// e.getId()).collect(Collectors.toList());
+				List<MonthlyPerformanceEmployeeDto> lstEmployeeDto = regulationRs.stream().map(item -> {
+					return new MonthlyPerformanceEmployeeDto(item.getEmployeeId(), item.getEmployeeCode(),
+							item.getEmployeeName(), item.getWorkplaceName(), item.getWorkplaceId(), "", false);
+				}).collect(Collectors.toList());
+				screenDto.setLstEmployee(lstEmployeeDto);
+			}
+
+			// screenDto.setLstEmployee(extractEmployeeList(param.getLstEmployees(),
+			// employeeId, new DateRange(
+			// screenDto.getSelectedActualTime().getEndDate(),
+			// screenDto.getSelectedActualTime().getEndDate())));
+			// List<MonthlyPerformanceEmployeeDto> lstEmployeeData =
+			// extractEmployeeData(param.getInitScreenMode(),
+			// employeeId, screenDto.getLstEmployee());
+			// // TODO List<String> employeeIds = lstEmployeeData.stream().map(e
+			// ->
+			// // e.getId()).collect(Collectors.toList());
 			List<String> employeeIds = screenDto.getLstEmployee().stream().map(e -> e.getId())
 					.collect(Collectors.toList());
 			// アルゴリズム「表示フォーマットの取得」を実行する(Thực hiện 「Lấy format hiển thị」)
@@ -209,6 +220,11 @@ public class MonthlyPerformanceCorrectionProcessor {
 			} else {
 				throw new BusinessException("FormatPerformance hasn't data");
 			}
+			
+			List<MonthlyPerformaceLockStatus> lstLockStatus = screenDto.getParam().getLstLockStatus();
+			if (lstLockStatus.stream().allMatch(item -> item.getLockStatusString() != Strings.EMPTY)) {
+				screenDto.setShowRegisterButton(false);
+			} else screenDto.setShowRegisterButton(true);
 
 			// アルゴリズム「月別実績を表示する」を実行する Hiển thị monthly result
 			displayMonthlyResult(screenDto, yearMonth, closureId);
@@ -233,7 +249,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 		}
 		return screenDto;
 	}
-	
+
 	private RegulationInfoEmployeeQuery createQueryEmployee(List<String> employeeCodes, GeneralDate startDate,
 			GeneralDate endDate) {
 		RegulationInfoEmployeeQuery query = new RegulationInfoEmployeeQuery();
@@ -241,8 +257,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 		query.setReferenceRange(EmployeeReferenceRange.DEPARTMENT_AND_CHILD.value);
 		query.setFilterByEmployment(false);
 		query.setEmploymentCodes(Collections.emptyList());
-//		query.setFilterByDepartment(false);
-//		query.setDepartmentCodes(Collections.emptyList());
+		// query.setFilterByDepartment(false);
+		// query.setDepartmentCodes(Collections.emptyList());
 		query.setFilterByWorkplace(false);
 		query.setWorkplaceCodes(Collections.emptyList());
 		query.setFilterByClassification(false);
@@ -256,8 +272,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 		query.setIncludeIncumbents(true);
 		query.setIncludeWorkersOnLeave(true);
 		query.setIncludeOccupancy(true);
-//		query.setIncludeAreOnLoan(true);
-//		query.setIncludeGoingOnLoan(false);
+		// query.setIncludeAreOnLoan(true);
+		// query.setIncludeGoingOnLoan(false);
 		query.setIncludeRetirees(false);
 		query.setRetireStart(GeneralDate.today());
 		query.setRetireEnd(GeneralDate.today());
