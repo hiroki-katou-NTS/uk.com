@@ -22,38 +22,38 @@ public class VacationUseTimeOfMonthlyDto {
 	/** 年休 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "年休", layout = "A")
-	private Integer annualLeave;
+	private int annualLeave;
 
 	/** 積立年休 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "積立年休", layout = "B")
-	private Integer retentionYearly;
+	private int retentionYearly;
 
 	/** 特別休暇 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "特別休暇", layout = "C")
-	private Integer specialHoliday;
+	private int specialHoliday;
 
 	/** 代休 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "代休", layout = "D")
-	private Integer compensatoryLeave;
+	private int compensatoryLeave;
 
 	public VacationUseTimeOfMonthly toDomain() {
 		return VacationUseTimeOfMonthly.of(
-							AnnualLeaveUseTimeOfMonthly.of(annualLeave == null ? null : new AttendanceTimeMonth(annualLeave)),
-							RetentionYearlyUseTimeOfMonthly.of(retentionYearly == null ? null : new AttendanceTimeMonth(retentionYearly)),
-							SpecialHolidayUseTimeOfMonthly.of(specialHoliday == null ? null : new AttendanceTimeMonth(specialHoliday)),
-							CompensatoryLeaveUseTimeOfMonthly.of(compensatoryLeave == null ? null : new AttendanceTimeMonth(compensatoryLeave)));
+							AnnualLeaveUseTimeOfMonthly.of(new AttendanceTimeMonth(annualLeave)),
+							RetentionYearlyUseTimeOfMonthly.of(new AttendanceTimeMonth(retentionYearly)),
+							SpecialHolidayUseTimeOfMonthly.of(new AttendanceTimeMonth(specialHoliday)),
+							CompensatoryLeaveUseTimeOfMonthly.of(new AttendanceTimeMonth(compensatoryLeave)));
 	}
 	
 	public static VacationUseTimeOfMonthlyDto from(VacationUseTimeOfMonthly domain) {
 		VacationUseTimeOfMonthlyDto dto = new VacationUseTimeOfMonthlyDto();
 		if(domain != null) {
-			dto.setAnnualLeave(domain.getAnnualLeave() == null ? null : domain.getAnnualLeave().getUseTime().valueAsMinutes());
-			dto.setCompensatoryLeave(domain.getCompensatoryLeave() == null ? null : domain.getCompensatoryLeave().getUseTime().valueAsMinutes());
-			dto.setRetentionYearly(domain.getRetentionYearly() == null ? null : domain.getRetentionYearly().getUseTime().valueAsMinutes());
-			dto.setSpecialHoliday(domain.getSpecialHoliday() == null ? null : domain.getSpecialHoliday().getUseTime().valueAsMinutes());
+			dto.setAnnualLeave(domain.getAnnualLeave() == null ? 0 : domain.getAnnualLeave().getUseTime().valueAsMinutes());
+			dto.setCompensatoryLeave(domain.getCompensatoryLeave() == null ? 0 : domain.getCompensatoryLeave().getUseTime().valueAsMinutes());
+			dto.setRetentionYearly(domain.getRetentionYearly() == null ? 0 : domain.getRetentionYearly().getUseTime().valueAsMinutes());
+			dto.setSpecialHoliday(domain.getSpecialHoliday() == null ? 0 : domain.getSpecialHoliday().getUseTime().valueAsMinutes());
 		}
 		return dto;
 	}

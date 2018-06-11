@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.worktime;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -233,7 +232,7 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 	}
 	
 	@Override
-	public List<TemporaryTimeOfDailyPerformance> finds(Map<String, GeneralDate> param) {
+	public List<TemporaryTimeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
 		List<TemporaryTimeOfDailyPerformance> result = new ArrayList<>();
 		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDaiTemporaryTime a ");
 		query.append("WHERE a.krcdtDaiTemporaryTimePK.employeeId IN :employeeId ");
@@ -241,9 +240,9 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 		TypedQueryWrapper<KrcdtDaiTemporaryTime> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiTemporaryTime.class);
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
 			result.addAll(tQuery.setParameter("employeeId", p.keySet())
-					.setParameter("date", new HashSet<>(p.values()))
+					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
 					.getList().stream()
-					.filter(c -> c.krcdtDaiTemporaryTimePK.ymd.equals(p.get(c.krcdtDaiTemporaryTimePK.employeeId)))
+					.filter(c -> p.get(c.krcdtDaiTemporaryTimePK.employeeId).contains(c.krcdtDaiTemporaryTimePK.ymd))
 					.map(f -> f.toDomain()).collect(Collectors.toList()));
 		});
 		return result;

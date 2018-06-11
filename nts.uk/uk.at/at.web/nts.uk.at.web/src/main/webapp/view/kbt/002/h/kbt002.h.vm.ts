@@ -145,9 +145,9 @@ module nts.uk.at.view.kbt002.h {
                     var yyyy = today.getFullYear();
                     var startDateSplit = self.dateValue().startDate.split("/");
                     var endDateSplit = self.dateValue().endDate.split("/");
-                    var yearEndDate = new Number(startDateSplit[0]);
-                    var monthEndDate = new Number(startDateSplit[1]);
-                    var dayEndDate = new Number(startDateSplit[2]);
+                    var yearEndDate = new Number(endDateSplit[0]);
+                    var monthEndDate = new Number(endDateSplit[1]);
+                    var dayEndDate = new Number(endDateSplit[2]);
                     if (yearEndDate > yyyy || monthEndDate > mm || dayEndDate > dd) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_1077" });
                     } else {
@@ -228,7 +228,7 @@ module nts.uk.at.view.kbt002.h {
 function openDialogG(element, execItemCd, execId) {
     nts.uk.ui.block.grayout();
     nts.uk.at.view.kbt002.h.service.getLogHistory(execItemCd, execId).done(function(x) {
-        nts.uk.ui.windows.setShared('inputDialogG', { execLog: x });
+        nts.uk.ui.windows.setShared('inputDialogG', { execLog: _.assign(x,{taskLogExecId: execId}) });
         nts.uk.ui.windows.sub.modal("/view/kbt/002/g/index.xhtml").onClosed(function() {
             nts.uk.ui.block.clear();
         });

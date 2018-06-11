@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.midnighttime.IllegalMidnightTime;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.midnighttime.MidnightTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 
@@ -50,11 +52,11 @@ public class MidnightTimeOfMonthlyDto {
 	}
 	
 	public MidnightTimeOfMonthly toDomain() {
-		return MidnightTimeOfMonthly.of(overWorkMidnightTime == null ? null : overWorkMidnightTime.toDomain(), 
-										legalMidnightTime == null ? null : legalMidnightTime.toDomain(),  
-										illegalMidnightTime == null ? null : illegalMidnightTime.toDomain(), 
-										legalHolidayWorkMidnightTime == null ? null : legalHolidayWorkMidnightTime.toDomain(), 
-										illegalHolidayWorkMidnightTime == null ? null : illegalHolidayWorkMidnightTime.toDomain(), 
-										specialHolidayWorkMidnightTime == null ? null : specialHolidayWorkMidnightTime.toDomain());
+		return MidnightTimeOfMonthly.of(overWorkMidnightTime == null ? new TimeMonthWithCalculation() : overWorkMidnightTime.toDomain(), 
+										legalMidnightTime == null ? new TimeMonthWithCalculation() : legalMidnightTime.toDomain(),  
+										illegalMidnightTime == null ? new IllegalMidnightTime() : illegalMidnightTime.toDomain(), 
+										legalHolidayWorkMidnightTime == null ? new TimeMonthWithCalculation() : legalHolidayWorkMidnightTime.toDomain(), 
+										illegalHolidayWorkMidnightTime == null ? new TimeMonthWithCalculation() : illegalHolidayWorkMidnightTime.toDomain(), 
+										specialHolidayWorkMidnightTime == null ? new TimeMonthWithCalculation() : specialHolidayWorkMidnightTime.toDomain());
 	}
 }

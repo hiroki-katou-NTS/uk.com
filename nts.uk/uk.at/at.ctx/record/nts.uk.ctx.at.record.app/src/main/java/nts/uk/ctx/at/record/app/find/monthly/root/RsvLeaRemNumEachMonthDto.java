@@ -1,32 +1,37 @@
 package nts.uk.ctx.at.record.app.find.monthly.root;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.DatePeriodDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.ReserveLeaveDto;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
+import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RealReserveLeave;
+import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeave;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveGrant;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceLayoutConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 /** 積立年休月別残数データ */
-@AttendanceItemRoot(rootName = "積立年休月別残数データ", itemType = AttendanceItemType.MONTHLY_ITEM)
+@AttendanceItemRoot(rootName = AttendanceLayoutConst.MONTHLY_RESERVE_LEAVING_REMAIN_NAME, itemType = AttendanceItemType.MONTHLY_ITEM)
 public class RsvLeaRemNumEachMonthDto extends MonthlyItemCommon {
 	/** 会社ID */
 	private String companyId;
@@ -66,7 +71,7 @@ public class RsvLeaRemNumEachMonthDto extends MonthlyItemCommon {
 	/** 積立年休付与情報 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
 	@AttendanceItemLayout(jpPropertyName = "積立年休付与情報", layout = "E")
-	private Double reserveLeaveGrant;
+	private double reserveLeaveGrant;
 
 	/** 付与区分 */
 	@AttendanceItemLayout(jpPropertyName = "付与区分", layout = "F")
@@ -99,16 +104,30 @@ public class RsvLeaRemNumEachMonthDto extends MonthlyItemCommon {
 	}
 
 	@Override
-	public RsvLeaRemNumEachMonth toDomain() {
-		if (!this.isHaveData()) {
+	public RsvLeaRemNumEachMonth toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
+		if(!this.isHaveData()) {
 			return null;
+		}
+		if(employeeId == null){
+			employeeId = this.employeeId;
+		}
+		if(ym == null){
+			ym = this.ym;
+		}else {
+			if(datePeriod == null){
+				datePeriod = new DatePeriodDto(GeneralDate.ymd(ym.year(), ym.month(), 1), 
+						GeneralDate.ymd(ym.year(), ym.month(), ym.lastDateInMonth()));
+			}
+		}
+		if(closureDate == null){
+			closureDate = this.closureDate;
 		}
 		return RsvLeaRemNumEachMonth.of(employeeId, ym, ConvertHelper.getEnum(closureID, ClosureId.class),
 				closureDate == null ? null : closureDate.toDomain(), datePeriod == null ? null : datePeriod.toDomain(),
 				ConvertHelper.getEnum(closureStatus, ClosureStatus.class), 
-				reserveLeave == null ? null : reserveLeave.toDomain(), 
-				realReserveLeave == null ? null : realReserveLeave.toRealDomain(),
-				Optional.ofNullable(reserveLeaveGrant == null ? null : ReserveLeaveGrant.of(new ReserveLeaveGrantDayNumber(reserveLeaveGrant))),
+				reserveLeave == null ? new ReserveLeave() : reserveLeave.toDomain(), 
+				realReserveLeave == null ? new RealReserveLeave() : realReserveLeave.toRealDomain(),
+				Optional.of(ReserveLeaveGrant.of(new ReserveLeaveGrantDayNumber(reserveLeaveGrant))),
 				grantAtr);
 	}
 

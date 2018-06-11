@@ -36,9 +36,14 @@ public class AttendanceTimeOfDailyPerformFinder extends FinderFacade {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends ConvertibleAttendanceItem> List<T> find(Map<String, GeneralDate> param) {
+	public <T extends ConvertibleAttendanceItem> List<T> find(Map<String, List<GeneralDate>> param) {
 		return (List<T>) this.attendanceTimeRepo.finds(param).stream()
 			.map(c -> AttendanceTimeDailyPerformDto.getDto(c)).collect(Collectors.toList());
+	}
+
+	@Override
+	public Object getDomain(String employeeId, GeneralDate baseDate) {
+		return attendanceTimeRepo.find(employeeId, baseDate);
 	}
 
 }

@@ -11,9 +11,9 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
-import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScEmploymentStatusAdapter;
+import nts.uk.ctx.at.schedule.app.command.executionlog.WorkCondItemDto;
+import nts.uk.ctx.at.schedule.dom.adapter.employmentstatus.EmploymentInfoImported;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScShortWorkTimeAdapter;
-import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.workplace.ExWorkPlaceHistoryImported;
@@ -33,7 +33,6 @@ import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessType
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHis;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHisAdaptor;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 
 /**
  * 月間パターンで勤務予定を作成する
@@ -54,8 +53,6 @@ public class ScheCreExeMonthlyPatternHandler {
 	@Inject
 	private BasicScheduleRepository basicScheduleRepo;
 	@Inject
-	private ScEmploymentStatusAdapter scEmploymentStatusAdapter;
-	@Inject
 	private ScheCreExeBasicScheduleHandler scheCreExeBasicScheduleHandler;
 	@Inject
 	private ScShortWorkTimeAdapter scShortWorkTimeAdapter;
@@ -71,9 +68,13 @@ public class ScheCreExeMonthlyPatternHandler {
 	 * 
 	 * @param command
 	 * @param workingConditionItem
+	 * @param empGeneralInfo
+	 * @param mapEmploymentStatus
+	 * @param listWorkingConItem
 	 */
 	public void createScheduleWithMonthlyPattern(ScheduleCreatorExecutionCommand command,
-			WorkingConditionItem workingConditionItem, EmployeeGeneralInfoImported empGeneralInfo) {
+			WorkCondItemDto workingConditionItem, EmployeeGeneralInfoImported empGeneralInfo,
+			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus, List<WorkCondItemDto> listWorkingConItem) {
 		// ドメインモデル「月間勤務就業設定」を取得する
 		Optional<WorkMonthlySetting> workMonthlySetOpt = this.workMonthlySettingRepo.findById(command.getCompanyId(),
 				workingConditionItem.getMonthlyPattern().get().v(), command.getToDate());
@@ -83,10 +84,15 @@ public class ScheCreExeMonthlyPatternHandler {
 			return;
 		}
 
-		// 在職状態を判断
-		EmploymentStatusDto employmentStatus = this.scEmploymentStatusAdapter
-				.getStatusEmployment(workingConditionItem.getEmployeeId(), command.getToDate());
-		if (!checkEmploymentStatus(employmentStatus)) {
+		// EA No1684
+		List<EmploymentInfoImported> listEmploymentInfo = mapEmploymentStatus.get(workingConditionItem.getEmployeeId());
+		Optional<EmploymentInfoImported> optEmploymentInfo = Optional.empty();
+		if (listEmploymentInfo != null) {
+			optEmploymentInfo = listEmploymentInfo.stream()
+					.filter(employmentInfo -> employmentInfo.getStandardDate().equals(command.getToDate())).findFirst();
+		}
+
+		if (!checkEmploymentStatus(optEmploymentInfo)) {
 			return;
 		}
 
@@ -114,7 +120,7 @@ public class ScheCreExeMonthlyPatternHandler {
 			}
 
 			// アルゴリズム「スケジュール作成判定処理」を実行する
-			if (!this.scheduleCreationDeterminationProcess(command, basicSche, employmentStatus, workingConditionItem,
+			if (!this.scheduleCreationDeterminationProcess(command, basicSche, optEmploymentInfo, workingConditionItem,
 					empGeneralInfo)) {
 				return;
 			}
@@ -132,10 +138,12 @@ public class ScheCreExeMonthlyPatternHandler {
 
 		// 在職状態に対応する「勤務種類コード」を取得する
 		WorkTypeGetterCommand commandWorktypeGetter = getWorkTypeGetter(command, workingConditionItem);
-		Optional<WorktypeDto> workTypeOpt = this.getWorkTypeByEmploymentStatus(workMonthlySet, commandWorktypeGetter);
+		Optional<WorktypeDto> workTypeOpt = this.getWorkTypeByEmploymentStatus(workMonthlySet, commandWorktypeGetter,
+				mapEmploymentStatus, listWorkingConItem);
 		if (workTypeOpt.isPresent()) {// 取得エラーなし
 			// 在職状態に対応する「就業時間帯コード」を取得する
-			Optional<String> workTimeOpt = this.getWorkingTimeZoneCode(workMonthlySet, commandWorktypeGetter);
+			Optional<String> workTimeOpt = this.getWorkingTimeZoneCode(workMonthlySet, commandWorktypeGetter,
+					mapEmploymentStatus, listWorkingConItem);
 			if (workTimeOpt == null || workTimeOpt.isPresent()) {// 取得エラーなし
 				// 休憩予定時間帯を取得する
 				// 勤務予定マスタ情報を取得する
@@ -158,7 +166,7 @@ public class ScheCreExeMonthlyPatternHandler {
 	 * @return
 	 */
 	private WorkTypeGetterCommand getWorkTypeGetter(ScheduleCreatorExecutionCommand command,
-			WorkingConditionItem workingConditionItem) {
+			WorkCondItemDto workingConditionItem) {
 		WorkTypeGetterCommand commandWorktypeGetter = new WorkTypeGetterCommand();
 		commandWorktypeGetter.setBaseGetter(command.toBaseCommand());
 		commandWorktypeGetter.setEmployeeId(workingConditionItem.getEmployeeId());
@@ -183,7 +191,8 @@ public class ScheCreExeMonthlyPatternHandler {
 	 * @return
 	 */
 	private Optional<WorktypeDto> getWorkTypeByEmploymentStatus(WorkMonthlySetting workMonthlySet,
-			WorkTypeGetterCommand commandWorktypeGetter) {
+			WorkTypeGetterCommand commandWorktypeGetter, Map<String, List<EmploymentInfoImported>> mapEmploymentStatus,
+			List<WorkCondItemDto> listWorkingConItem) {
 		// setup command employment status getter
 		WorkTypeByEmpStatusGetterCommand commandWorkTypeEmploymentStatus = commandWorktypeGetter
 				.toWorkTypeEmploymentStatus();
@@ -195,7 +204,8 @@ public class ScheCreExeMonthlyPatternHandler {
 		// set work type code to command
 		commandWorkTypeEmploymentStatus.setWorkTypeCode(workMonthlySet.getWorkTypeCode().v());
 
-		return this.scheCreExeWorkTypeHandler.getWorkTypeByEmploymentStatus(commandWorkTypeEmploymentStatus);
+		return this.scheCreExeWorkTypeHandler.getWorkTypeByEmploymentStatus(commandWorkTypeEmploymentStatus,
+				mapEmploymentStatus, listWorkingConItem);
 	}
 
 	/**
@@ -206,7 +216,8 @@ public class ScheCreExeMonthlyPatternHandler {
 	 * @return
 	 */
 	public Optional<String> getWorkingTimeZoneCode(WorkMonthlySetting workMonthlySet,
-			WorkTypeGetterCommand commandWorktypeGetter) {
+			WorkTypeGetterCommand commandWorktypeGetter, Map<String, List<EmploymentInfoImported>> mapEmploymentStatus,
+			List<WorkCondItemDto> listWorkingConItem) {
 		WorkTimeGetterCommand workTimeGetterCommand = commandWorktypeGetter.toWorkTime();
 		WorkTimeZoneGetterCommand commandGetter = workTimeGetterCommand.toWorkTimeZone();
 		commandGetter.setWorkTypeCode(workMonthlySet.getWorkTypeCode().v());
@@ -215,7 +226,8 @@ public class ScheCreExeMonthlyPatternHandler {
 		if (StringUtil.isNullOrEmpty(commandGetter.getWorkingCode(), true)) {
 			commandGetter.setWorkingCode(null);
 		}
-		return this.scheCreExeWorkTimeHandler.getWorkingTimeZoneCode(commandGetter);
+		return this.scheCreExeWorkTimeHandler.getWorkingTimeZoneCode(commandGetter, mapEmploymentStatus,
+				listWorkingConItem);
 	}
 
 	/**
@@ -223,14 +235,14 @@ public class ScheCreExeMonthlyPatternHandler {
 	 * 
 	 * @param command
 	 */
-	private boolean checkEmploymentStatus(EmploymentStatusDto employmentStatus) {
+	private boolean checkEmploymentStatus(Optional<EmploymentInfoImported> optEmploymentInfo) {
 		// 退職、取得できない(退職 OR không lấy được)
-		if (employmentStatus == null || employmentStatus.getStatusOfEmployment() == 6) {// RETIREMENT
+		if (!optEmploymentInfo.isPresent() || optEmploymentInfo.get().getEmploymentState() == 6) {// RETIREMENT
 			return false;
 		}
 
 		// 入社前
-		if (employmentStatus.getStatusOfEmployment() == 4) { // BEFORE_JOINING
+		if (optEmploymentInfo.get().getEmploymentState() == 4) { // BEFORE_JOINING
 			return false;
 		}
 
@@ -243,8 +255,8 @@ public class ScheCreExeMonthlyPatternHandler {
 	 * @param command
 	 * @param workingConditionItem
 	 */
-	private boolean checkMonthlyPattern(ScheduleCreatorExecutionCommand command,
-			WorkingConditionItem workingConditionItem, Optional<WorkMonthlySetting> workMonthlySetOpt) {
+	private boolean checkMonthlyPattern(ScheduleCreatorExecutionCommand command, WorkCondItemDto workingConditionItem,
+			Optional<WorkMonthlySetting> workMonthlySetOpt) {
 		// ドメインモデル「スケジュール作成エラーログ」を登録する
 		if (!workingConditionItem.getMonthlyPattern().isPresent()
 				|| StringUtil.isNullOrEmpty(workingConditionItem.getMonthlyPattern().get().v(), true)) {
@@ -274,8 +286,8 @@ public class ScheCreExeMonthlyPatternHandler {
 	 * アルゴリズム「スケジュール作成判定処理」を実行する
 	 */
 	public boolean scheduleCreationDeterminationProcess(ScheduleCreatorExecutionCommand command,
-			BasicSchedule basicSche, EmploymentStatusDto employmentStatus, WorkingConditionItem workingConditionItem,
-			EmployeeGeneralInfoImported empGeneralInfo) {
+			BasicSchedule basicSche, Optional<EmploymentInfoImported> optEmploymentInfo,
+			WorkCondItemDto workingConditionItem, EmployeeGeneralInfoImported empGeneralInfo) {
 		// 再作成対象区分を判定する
 		if (command.getContent().getReCreateContent().getRebuildTargetAtr() == RebuildTargetAtr.ALL) {
 			return true;
@@ -290,7 +302,7 @@ public class ScheCreExeMonthlyPatternHandler {
 		// 休職休業者を再作成するか判定する
 		boolean valueIsReEmpOnLeaveOfAbsence = this.isReEmpOnLeaveOfAbsence(
 				command.getContent().getReCreateContent().getRebuildTargetDetailsAtr().getRecreateEmployeeOffWork(),
-				employmentStatus.getStatusOfEmployment());
+				optEmploymentInfo.get().getEmploymentState());
 		if (!valueIsReEmpOnLeaveOfAbsence) {
 			return false;
 		}
@@ -369,7 +381,7 @@ public class ScheCreExeMonthlyPatternHandler {
 		if (!optWorkplaceHistItem.get().getWorkplaceId().equals(wkpId)) {
 			return true;
 		}
-		
+
 		return false;
 	}
 

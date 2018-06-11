@@ -324,8 +324,8 @@ public class AttendanceItemUtil {
 			if(enumField != null) {
 				Set<Integer> notExistEnums = notExistEnum(list, keySet, enumField);
 				for(Integer e : notExistEnums) {
-					T nIns = ReflectionUtil.newInstance(targetClass);
-					ReflectionUtil.setFieldValue(enumField, nIns, e);
+					T nIns = ReflectionUtil.newInstance(targetClass); 
+					ReflectionUtil.setFieldValue(enumField, nIns, e - 1);
 					list.add(nIns);
 				}
 			}

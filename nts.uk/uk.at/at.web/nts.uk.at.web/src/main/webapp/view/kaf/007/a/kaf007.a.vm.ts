@@ -3,6 +3,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
     import service = nts.uk.at.view.kaf007.share.service;
     import dialog = nts.uk.ui.dialog;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
+    import setShared = nts.uk.ui.windows.setShared;
     export class ScreenModel {
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
         appWorkChange: KnockoutObservable<common.AppWorkChangeCommand> = ko.observable(new common.AppWorkChangeCommand());
@@ -35,7 +36,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
         approvalSource: Array<common.AppApprovalPhase> = [];        
         //menu-bar 
         enableSendMail :KnockoutObservable<boolean> = ko.observable(false); 
-        manualSendMailAtr: KnockoutObservable<boolean> = ko.observable(false);    
+        checkBoxValue: KnockoutObservable<boolean> = ko.observable(false);    
         dateFormat: string = 'YYYY/MM/DD';
         //画面モード(表示/編集)
         editable: KnockoutObservable<boolean> = ko.observable( true );
@@ -108,10 +109,10 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                         //「申請種類別設定．申請理由の表示」  ※A11
                         self.displayAppReasonContentFlg(appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1 ? true : false );
                         //登録時にメールを送信する Visible
-                        self.enableSendMail(appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? true: false);
+                        self.enableSendMail(appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? false: true);
                         //self.enableSendMail(appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? false: true);
                     }
-                    self.manualSendMailAtr(appCommonSettingDto.applicationSettingDto.manualSendMailAtr == 1 ? true: false);
+                    // self.manualSendMailAtr(appCommonSettingDto.applicationSettingDto.manualSendMailAtr == 1 ? true: false);
                     //A5 勤務を変更する ※A4                    
                     if(appWorkChangeCommonSetting　!= undefined){ 
                         //勤務変更申請設定.勤務時間を変更できる　＝　出来る
@@ -194,8 +195,22 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             let workChange = ko.toJS(self.appWorkChange());
             service.addWorkChange(workChange).done(() => {
                 //Success
-                dialog.info({ messageId: "Msg_15" }).then(function() {
-                    location.reload();
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    if(data.autoSendMail){
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
+                            location.reload();
+                        });    
+                    } else {
+                        if(self.checkBoxValue()){
+                            let command = {appID: data.appID};
+                            setShared("KDL030_PARAM", command);
+                            nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
+                                location.reload();
+                            });    
+                        } else {
+                            location.reload();
+                        }   
+                    }
                 });
             }).fail((res) => {
                 dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });

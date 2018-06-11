@@ -17,7 +17,9 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
+import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainDataRepository;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonthRepository;
+import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainDataRepository;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonthRepository;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
@@ -65,6 +67,12 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	/** 積立年休月別残数データ */
 	@Inject
 	private RsvLeaRemNumEachMonthRepository rsvLeaRemNumEachMonthRepo;
+	/** 振休月別残数データ */
+	@Inject
+	private AbsenceLeaveRemainDataRepository absLeaRemRepo;
+	/** 代休月別残数データ */
+	@Inject
+	private MonthlyDayoffRemainDataRepository monDayoffRemRepo;
 	/** エラーメッセージ情報 */
 	@Inject
 	private ErrMessageInfoRepository errMessageInfoRepository;
@@ -172,6 +180,12 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			}
 			for (val rsvLeaRemNum : value.getRsvLeaRemNumEachMonthList()){
 				this.rsvLeaRemNumEachMonthRepo.persistAndUpdate(rsvLeaRemNum);
+			}
+			for (val absLeaRemNum : value.getAbsenceLeaveRemainList()){
+				this.absLeaRemRepo.persistAndUpdate(absLeaRemNum);
+			}
+			for (val monDayoffRemNum : value.getMonthlyDayoffRemainList()){
+				this.monDayoffRemRepo.persistAndUpdate(monDayoffRemNum);
 			}
 		}
 		return status;

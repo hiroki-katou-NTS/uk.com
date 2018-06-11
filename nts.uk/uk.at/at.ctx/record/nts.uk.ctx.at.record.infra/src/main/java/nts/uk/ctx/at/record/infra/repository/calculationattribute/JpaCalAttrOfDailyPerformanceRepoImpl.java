@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.calculationattribute;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -274,7 +273,7 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 	}
 
 	@Override
-	public List<CalAttrOfDailyPerformance> finds(Map<String, GeneralDate> param) {
+	public List<CalAttrOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
 		List<CalAttrOfDailyPerformance> result = new ArrayList<>();
 		StringBuilder builder = new StringBuilder("SELECT c FROM KrcstDaiCalculationSet c ");
 		builder.append("WHERE c.krcstDaiCalculationSetPK.sid IN :ids ");
@@ -288,8 +287,8 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 						.query("SELECT c FROM KrcstHolAutoCalSet c WHERE c.holWorkTimeId IN :ids", KrcstHolAutoCalSet.class);
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
 			List<KrcstDaiCalculationSet> calces = tCalcQuery.setParameter("ids", p.keySet())
-								.setParameter("date", new HashSet<>(p.values())).getList();
-			calces = calces.stream().filter(c -> c.krcstDaiCalculationSetPK.ymd.equals(p.get(c.krcstDaiCalculationSetPK.sid)))
+								.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet())).getList();
+			calces = calces.stream().filter(c -> p.get(c.krcstDaiCalculationSetPK.sid).contains(c.krcstDaiCalculationSetPK.ymd))
 									.collect(Collectors.toList());
 			if (!calces.isEmpty()) {
 				List<KrcstOtAutoCalSet> ots = tOtQuery.setParameter("ids", 

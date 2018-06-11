@@ -16,7 +16,7 @@ public interface AttendanceLeavingGateOfDailyRepo {
 	
 	public List<AttendanceLeavingGateOfDaily> finds(List<String> employeeId, DatePeriod baseDate);
 	
-	public List<AttendanceLeavingGateOfDaily> finds(Map<String, GeneralDate> param);
+	public List<AttendanceLeavingGateOfDaily> finds(Map<String, List<GeneralDate>> param);
 	
 	public List<AttendanceLeavingGateOfDaily> find(String employeeId);
 

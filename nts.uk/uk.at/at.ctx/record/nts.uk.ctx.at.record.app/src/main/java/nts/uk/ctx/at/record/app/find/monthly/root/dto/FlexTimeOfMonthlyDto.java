@@ -3,6 +3,10 @@ package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexCarryforwardTime;
+import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexShortDeductTime;
+import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTime;
+import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfExcessOutsideTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
@@ -26,7 +30,7 @@ public class FlexTimeOfMonthlyDto {
 	/** フレックス超過時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "フレックス超過時間", layout = "A")
-	private Integer excessTime;
+	private int excessTime;
 
 	/** フレックス不足控除時間: フレックス不足控除時間 */
 	@AttendanceItemLayout(jpPropertyName = "フレックス不足控除時間", layout = "A")
@@ -35,19 +39,19 @@ public class FlexTimeOfMonthlyDto {
 	/** フレックス不足時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "フレックス不足時間", layout = "A")
-	private Integer shortageTime;
+	private int shortageTime;
 
 	/** 時間外超過のフレックス時間: 時間外超過のフレックス時間 */
 	@AttendanceItemLayout(jpPropertyName = "時間外超過のフレックス時間", layout = "A")
 	private FlexTimeOfExcessOutsideTimeDto excessOutsideTime;
 
 	public FlexTimeOfMonthly toDomain() {
-		return FlexTimeOfMonthly.of(flexTime == null ? null : flexTime.toDomain(),
-				excessTime == null ? null : new AttendanceTimeMonth(excessTime),
-				shortageTime == null ? null : new AttendanceTimeMonth(shortageTime),
-				carryforwardTime == null ? null : carryforwardTime.toDomain(),
-				excessOutsideTime == null ? null : excessOutsideTime.toDmain(),
-				shortDeductTime == null ? null : shortDeductTime.toDomain());
+		return FlexTimeOfMonthly.of(flexTime == null ? new FlexTime() : flexTime.toDomain(),
+				new AttendanceTimeMonth(excessTime),
+				new AttendanceTimeMonth(shortageTime),
+				carryforwardTime == null ? new FlexCarryforwardTime() : carryforwardTime.toDomain(),
+				excessOutsideTime == null ? new FlexTimeOfExcessOutsideTime() : excessOutsideTime.toDmain(),
+				shortDeductTime == null ? new FlexShortDeductTime() : shortDeductTime.toDomain());
 	}
 
 	public static FlexTimeOfMonthlyDto from(FlexTimeOfMonthly domain) {
