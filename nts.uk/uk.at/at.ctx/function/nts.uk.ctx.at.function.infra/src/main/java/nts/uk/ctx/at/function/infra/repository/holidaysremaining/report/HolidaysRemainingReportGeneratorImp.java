@@ -437,19 +437,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 					.lstDayoffCurrentMonthOfEmployee(employee.getEmployeeId(), dataSource.getStartMonth().yearMonth(),
 							dataSource.getEndMonth().yearMonth());
 
-			// TODO requestList269 need a object but return list
-			if (!currentHolidayImported.isEmpty()) {
-				CurrentHolidayImported firstItem = currentHolidayImported.get(0);
-				// I1_2 代休_月初残_日数
-				cells.get(firstRow, 5).setValue(firstItem.getMonthStartRemain());
-				// I1_3 代休_使用数_日数
-				cells.get(firstRow, 6).setValue(firstItem.getMonthUse());
-				// I1_4 代休_残数_日数
-				cells.get(firstRow, 7).setValue(firstItem.getMonthEndRemain());
-				// I1_5 代休_未消化_日数
-				cells.get(firstRow, 8).setValue(firstItem.getMonthExtinction());
-			}
-
 			for (int i = 0; i < currentHolidayImported.size(); i++) {
 				CurrentHolidayImported currentHolidayItem = currentHolidayImported.get(i);
 				StatusHolidayImported statusHolidayItem = statusHolidayImported.get(i);
@@ -487,6 +474,17 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 						cells.get(firstRow + 3, 10 + totalMonth).setValue(currentHolidayItem.getMonthEndRemain());
 					}
 				}
+				
+				if (currentMonth.compareTo(currentHolidayItem.getYm()) == 0) {
+					// I1_2 代休_月初残_日数
+					cells.get(firstRow, 5).setValue(currentHolidayItem.getMonthStartRemain());
+					// I1_3 代休_使用数_日数
+					cells.get(firstRow, 6).setValue(currentHolidayItem.getMonthUse());
+					// I1_4 代休_残数_日数
+					cells.get(firstRow, 7).setValue(currentHolidayItem.getMonthEndRemain());
+					// I1_5 代休_未消化_日数
+					cells.get(firstRow, 8).setValue(currentHolidayItem.getMonthExtinction());
+				}
 			}
 
 			firstRow += 4;
@@ -519,19 +517,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 					.getDataCurrentMonthOfEmployee(employee.getEmployeeId(), dataSource.getStartMonth().yearMonth(),
 							dataSource.getEndMonth().yearMonth());
 
-			// TODO requestList270 need a object but return list
-			if (!currentHolidayList.isEmpty()) {
-				CurrentHolidayRemainImported firstItem = currentHolidayList.get(0);
-				// J1_2 振休_月初残
-				cells.get(firstRow, 5).setValue(firstItem.getMonthStartRemain());
-				// J1_3 振休_使用数
-				cells.get(firstRow, 6).setValue(firstItem.getMonthUse());
-				// J1_4 振休_残数
-				cells.get(firstRow, 7).setValue(firstItem.getMonthEndRemain());
-				// J1_5 振休_未消化
-				cells.get(firstRow, 8).setValue(firstItem.getMonthExtinction());
-			}
-
 			for (int i = 0; i < StatusOfHolidayList.size(); i++) {
 				StatusOfHolidayImported statusOfHDItem = StatusOfHolidayList.get(i);
 				CurrentHolidayRemainImported holidayRemainItem = currentHolidayList.get(i);
@@ -549,7 +534,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 						cells.get(firstRow + 3, 10 + totalMonth).setValue(statusOfHDItem.getRemainingDays());
 					}
 				}
-				if (currentMonth.compareTo(holidayRemainItem.getYm()) < 0) {
+				if (currentMonth.compareTo(holidayRemainItem.getYm()) <= 0) {
 					int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), holidayRemainItem.getYm());
 					if (totalMonth >= 0) {
 						// J2_5 振休_発生
@@ -563,6 +548,16 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 					}
 				}
 
+				if (currentMonth.compareTo(holidayRemainItem.getYm()) == 0){
+					// J1_2 振休_月初残
+					cells.get(firstRow, 5).setValue(holidayRemainItem.getMonthStartRemain());
+					// J1_3 振休_使用数
+					cells.get(firstRow, 6).setValue(holidayRemainItem.getMonthUse());
+					// J1_4 振休_残数
+					cells.get(firstRow, 7).setValue(holidayRemainItem.getMonthEndRemain());
+					// J1_5 振休_未消化
+					cells.get(firstRow, 8).setValue(holidayRemainItem.getMonthExtinction());
+				}
 			}
 
 			firstRow += 4;
