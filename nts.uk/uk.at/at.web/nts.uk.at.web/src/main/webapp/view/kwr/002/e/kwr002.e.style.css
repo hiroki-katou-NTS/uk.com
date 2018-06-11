@@ -3,8 +3,8 @@ body {
 	display: flex;
 }
 .external {
-	margin-top: 10px;
-	margin-left: 15px;
+	margin-top: 5px;
+	margin-left: 10px;
 }
 
 textarea {
@@ -12,8 +12,8 @@ textarea {
 }
 
 #multiline-textbox {
-	width: 1070px; 
-	height: 80px;
+	width: 1030px; 
+	height: 70px;
 	border-radius: 5px;
 }
 
@@ -35,5 +35,10 @@ table .ui-iggrid-layout-helper {
 
 #selected-list tbody {
 	overflow-y: scroll;
-	height: 410px;
+	height: 370px;
+}
+#func-notifier-errors {
+	top: 0px;
+    left: 10px;
+    position: fixed;
 }
