@@ -22,7 +22,7 @@ public class ExcessOutsideWorkOfMonthlyDto {
 	/** 月割増合計時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "月割増合計時間", layout = "A")
-	private Integer monthlyTotalPremiumTime;
+	private int monthlyTotalPremiumTime;
 	
 	/** 時間: 時間外超過 */
 	@AttendanceItemLayout(jpPropertyName = "時間", layout = "B", listMaxLength = 50, indexField = "fakeNo")
@@ -31,18 +31,18 @@ public class ExcessOutsideWorkOfMonthlyDto {
 	/** 週割増合計時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "週割増合計時間", layout = "C")
-	private Integer weeklyTotalPremiumTime;
+	private int weeklyTotalPremiumTime;
 	
 	/** 変形繰越時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "変形繰越時間", layout = "D")
-	private Integer deformationCarryforwardTime;
+	private int deformationCarryforwardTime;
 	
 	public ExcessOutsideWorkOfMonthly toDomain() {
 		return ExcessOutsideWorkOfMonthly.of(
-						weeklyTotalPremiumTime == null ? null : new AttendanceTimeMonth(weeklyTotalPremiumTime), 
-						monthlyTotalPremiumTime == null ? null : new AttendanceTimeMonth(monthlyTotalPremiumTime), 
-						deformationCarryforwardTime == null ? null : new AttendanceTimeMonthWithMinus(deformationCarryforwardTime), 
+						new AttendanceTimeMonth(weeklyTotalPremiumTime), 
+						new AttendanceTimeMonth(monthlyTotalPremiumTime), 
+						new AttendanceTimeMonthWithMinus(deformationCarryforwardTime), 
 						ConvertHelper.mapTo(time, c -> c.toDomain()));
 	}
 	
@@ -50,11 +50,11 @@ public class ExcessOutsideWorkOfMonthlyDto {
 		ExcessOutsideWorkOfMonthlyDto dto = new ExcessOutsideWorkOfMonthlyDto();
 		if(domain != null) {
 			dto.setDeformationCarryforwardTime(domain.getDeformationCarryforwardTime() == null 
-					? null : domain.getDeformationCarryforwardTime().valueAsMinutes());
+					? 0 : domain.getDeformationCarryforwardTime().valueAsMinutes());
 			dto.setMonthlyTotalPremiumTime(domain.getMonthlyTotalPremiumTime() == null 
-					? null : domain.getMonthlyTotalPremiumTime().valueAsMinutes());
+					? 0 : domain.getMonthlyTotalPremiumTime().valueAsMinutes());
 			dto.setWeeklyTotalPremiumTime(domain.getWeeklyTotalPremiumTime() == null 
-					? null : domain.getWeeklyTotalPremiumTime().valueAsMinutes());
+					? 0 : domain.getWeeklyTotalPremiumTime().valueAsMinutes());
 			dto.setTime(ExcessOutsideWorkDto.from(domain.getTime()));
 		}
 		return dto;
