@@ -172,7 +172,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 		// Order by Employee Code
 		
-		for (HolidaysRemainingEmployee employee : dataSource.getMapEmployees().values()) {
+		for (String employeeIds : dataSource.getEmpIds()) {
+			HolidaysRemainingEmployee employee = dataSource.getMapEmployees().get(employeeIds);
 			int rowCount = countRowEachPerson(dataSource) + 1;
 			if (firstRow % NUMBER_ROW_OF_PAGE != 5
 					&& firstRow / NUMBER_ROW_OF_PAGE != (firstRow + rowCount) / NUMBER_ROW_OF_PAGE) {
@@ -238,8 +239,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 		// Order by Employee Code
 		
-		for (String employeeId : dataSource.getEmpIds()) {
-			HolidaysRemainingEmployee employee = dataSource.getMapEmployees().get(employeeId);
+		for (String employeeIds : dataSource.getEmpIds()) {
+			HolidaysRemainingEmployee employee = dataSource.getMapEmployees().get(employeeIds);
 			firstRow = this.printEachPerson(worksheet, firstRow, employee, currentMonth, dataSource);
 		}
 	}
