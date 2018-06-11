@@ -8,7 +8,7 @@ module cps001.d.service {
         updateAva: "command/updateAvaOrMap",
         removeAva: "command/removeAvaOrMap",
         checkEmpFileMnExist: "find/checkEmpFileMnExist/{0}/{1}",
-        permision: 'ctx/pereg/functions/auth/find-all/{0}'
+        permision: 'ctx/pereg/functions/auth/find-all'
         
     };
 
@@ -31,7 +31,6 @@ module cps001.d.service {
     }
 
     export function getCurrentEmpPermision() {
-        let roleId = null;
-        return ajax(paths.permision , roleId);
+        return ajax(paths.permision);
     }
 }
