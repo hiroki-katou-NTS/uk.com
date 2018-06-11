@@ -278,7 +278,7 @@ public class JpaRequestSettingRepository extends JpaRepository implements Reques
 				temp.normalOtTime = null;
 				
 				// 日数 - 残業申請事前の受付制限
-				temp.otRestrictPreDay = item.getBeforehandRestriction().getDateBeforehandRestriction().value;
+				temp.otRestrictPreDay = item.getBeforehandRestriction().getOtRestrictPreDay().value;
 				
 				// 利用する - 残業申請事前の受付制限
 				temp.otToUse = item.getBeforehandRestriction().getOtToUse() ? 1 : 0;
