@@ -28,6 +28,7 @@ import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AbsenceReruitmentMan
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveOfThisMonthImported;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveRemainingAdapter;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveUsageStatusOfThisMonthImported;
+import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnualLeaveUsageImported;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.CurrentHolidayRemainImported;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.StatusOfHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.ComplileInPeriodOfSpecialLeaveAdapter;
@@ -59,25 +60,25 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 	@Inject
 	private AnnLeaveRemainingAdapter annLeaveRemainingAdapter;
-	
+
 	@Inject
 	private GetReserveLeaveNumbersAdpter getReserveLeaveNumbersFinder;
-	
+
 	@Inject
 	private MonthlyDayoffRemainAdapter monthlyDayoffRemainAdapter;
-	
+
 	@Inject
 	private AbsenceReruitmentManaAdapter absenceReruitmentManaAdapter;
-	
+
 	@Inject
 	private ComplileInPeriodOfSpecialLeaveAdapter complileInPeriodOfSpecialLeaveAdapter;
-	
-	@Inject 
+
+	@Inject
 	private ChildNursingLeaveMng childNursingLeaveMng;
-	
+
 	@Inject
 	private CareHolidayMngService careHolidayMngService;
-	
+
 	@Inject
 	private GetNextAnnLeaGrantDateAdapter getNextAnnLeaGrantDateAdapter;
 
@@ -86,8 +87,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 	private static final int NUMBER_ROW_OF_PAGE = 37;
 	private static final int NUMBER_COLUMN = 23;
 	// private final int minRowDetails = 4;
-	
-	
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, HolidayRemainingDataSource dataSource) {
@@ -97,9 +96,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			WorksheetCollection worksheets = workbook.getWorksheets();
 			Worksheet worksheet = worksheets.get(0);
 
-		    YearMonth currentMonth = GeneralDate.today().yearMonth();
+			YearMonth currentMonth = GeneralDate.today().yearMonth();
 			printTemplate(worksheet, currentMonth, dataSource);
-			
+
 			if (dataSource.getPageBreak() == BreakSelection.None.value) {
 				printNoneBreakPage(worksheet, currentMonth, dataSource);
 			} else if (dataSource.getPageBreak() == BreakSelection.Workplace.value) {
@@ -120,7 +119,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		}
 	}
 
-	private void printTemplate(Worksheet worksheet, YearMonth currentMonth, HolidayRemainingDataSource dataSource) throws Exception {
+	private void printTemplate(Worksheet worksheet, YearMonth currentMonth, HolidayRemainingDataSource dataSource)
+			throws Exception {
 
 		Cells cells = worksheet.getCells();
 
@@ -161,7 +161,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		}
 	}
 
-	private void printNoneBreakPage(Worksheet worksheet, YearMonth currentMonth, HolidayRemainingDataSource dataSource) throws Exception {
+	private void printNoneBreakPage(Worksheet worksheet, YearMonth currentMonth, HolidayRemainingDataSource dataSource)
+			throws Exception {
 		int firstRow = NUMBER_ROW_OF_PAGE;
 
 		Cells cells = worksheet.getCells();
@@ -171,7 +172,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		firstRow += 5;
 
 		// Order by Employee Code
-		
+
 		for (HolidaysRemainingEmployee employee : dataSource.getMapEmployees().values()) {
 			int rowCount = countRowEachPerson(dataSource) + 1;
 			if (firstRow % NUMBER_ROW_OF_PAGE != 5
@@ -189,17 +190,17 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		}
 	}
 
-	private void printWorkplaceBreakPage(Worksheet worksheet, YearMonth currentMonth, HolidayRemainingDataSource dataSource) throws Exception {
+	private void printWorkplaceBreakPage(Worksheet worksheet, YearMonth currentMonth,
+			HolidayRemainingDataSource dataSource) throws Exception {
 		int firstRow = NUMBER_ROW_OF_PAGE;
-		List<HolidaysRemainingEmployee> listEmployee = (List)dataSource.getMapEmployees().values();
+		List<HolidaysRemainingEmployee> listEmployee = (List) dataSource.getMapEmployees().values();
 		List<HolidaysRemainingEmployee> employees = listEmployee.stream()
-				.sorted(Comparator.comparing(HolidaysRemainingEmployee::getEmployeeCode))
-				.collect(Collectors.toList());
+				.sorted(Comparator.comparing(HolidaysRemainingEmployee::getEmployeeCode)).collect(Collectors.toList());
 		firstRow = printEachWorkplace(worksheet, firstRow, employees, currentMonth, dataSource);
 	}
 
-	private int printEachWorkplace(Worksheet worksheet, int firstRow, List<HolidaysRemainingEmployee> employees, YearMonth currentMonth, HolidayRemainingDataSource dataSource)
-			throws Exception {
+	private int printEachWorkplace(Worksheet worksheet, int firstRow, List<HolidaysRemainingEmployee> employees,
+			YearMonth currentMonth, HolidayRemainingDataSource dataSource) throws Exception {
 		if (employees.size() == 0) {
 			return firstRow;
 		}
@@ -233,19 +234,20 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		return firstRow;
 	}
 
-	private void printPersonBreakPage(Worksheet worksheet, YearMonth currentMonth, HolidayRemainingDataSource dataSource) throws Exception {
+	private void printPersonBreakPage(Worksheet worksheet, YearMonth currentMonth,
+			HolidayRemainingDataSource dataSource) throws Exception {
 		int firstRow = NUMBER_ROW_OF_PAGE;
 
 		// Order by Employee Code
-		
+
 		for (String employeeId : dataSource.getEmpIds()) {
 			HolidaysRemainingEmployee employee = dataSource.getMapEmployees().get(employeeId);
 			firstRow = this.printEachPerson(worksheet, firstRow, employee, currentMonth, dataSource);
 		}
 	}
 
-	private int printEachPerson(Worksheet worksheet, int firstRow, HolidaysRemainingEmployee employee, YearMonth currentMonth, HolidayRemainingDataSource dataSource)
-			throws Exception {
+	private int printEachPerson(Worksheet worksheet, int firstRow, HolidaysRemainingEmployee employee,
+			YearMonth currentMonth, HolidayRemainingDataSource dataSource) throws Exception {
 
 		Cells cells = worksheet.getCells();
 		// D index
@@ -265,14 +267,15 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		return firstRow;
 	}
 
-	private int printHolidayRemainingEachPerson(Worksheet worksheet, int firstRow, HolidaysRemainingEmployee employee, YearMonth currentMonth, HolidayRemainingDataSource dataSource)
-			throws Exception {
+	private int printHolidayRemainingEachPerson(Worksheet worksheet, int firstRow, HolidaysRemainingEmployee employee,
+			YearMonth currentMonth, HolidayRemainingDataSource dataSource) throws Exception {
 		int rowIndexD = firstRow;
 		Cells cells = worksheet.getCells();
 		int totalRowDetails = 0;
-		YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(dataSource.getStartMonth().yearMonth(), dataSource.getEndMonth().yearMonth());
-		DatePeriod datePeriod = new DatePeriod(dataSource.getStartMonth(),dataSource.getEndMonth());
-		
+		YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(dataSource.getStartMonth().yearMonth(),
+				dataSource.getEndMonth().yearMonth());
+		DatePeriod datePeriod = new DatePeriod(dataSource.getStartMonth(), dataSource.getEndMonth());
+
 		// 年休
 		if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getAnnualHoliday().isYearlyHoliday()) {
 			cells.copyRows(cells, 6, firstRow, 2);
@@ -286,18 +289,18 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			// Set background
 			for (int i = 0; i <= totalMonths(dataSource.getStartMonth().yearMonth(),
 					dataSource.getEndMonth().yearMonth()); i++) {
-				if (dataSource.getStartMonth().addMonths(i).yearMonth().compareTo(currentMonth) > 0)
-				{
+				if (dataSource.getStartMonth().addMonths(i).yearMonth().compareTo(currentMonth) > 0) {
 					setBackgroundGray(cells.get(firstRow, 10 + i));
 					setBackgroundGray(cells.get(firstRow + 1, 10 + i));
 				}
 			}
-			
+
+			// TODO Call rql 281
+
 			// Call rql 265
-			AnnLeaveOfThisMonthImported annLeave = 
-					annLeaveRemainingAdapter.getAnnLeaveOfThisMonth(employee.getEmployeeId());
-			if (annLeave != null)
-			{
+			AnnLeaveOfThisMonthImported annLeave = annLeaveRemainingAdapter
+					.getAnnLeaveOfThisMonth(employee.getEmployeeId());
+			if (annLeave != null) {
 				// E1_4
 				cells.get(firstRow, 5).setValue(annLeave.getFirstMonthRemNumDays());
 				// E1_5
@@ -305,13 +308,28 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 				// E1_6
 				cells.get(firstRow, 7).setValue(annLeave.getRemainDays());
 			}
-			
+
+			// Call rql 255
+			List<AnnualLeaveUsageImported> listAnnLeaveUsage = annLeaveRemainingAdapter
+					.algorithm(employee.getEmployeeId(), yearMonthPeriod);
+			for (AnnualLeaveUsageImported item : listAnnLeaveUsage) {
+				if (currentMonth.compareTo(item.getYearMonth()) > 0)
+					continue;
+				int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), item.getYearMonth());
+				if (totalMonth >= 0) {
+					// E2_3 当月以降
+					cells.get(firstRow, 10 + totalMonth).setValue(item.getUsedDays());
+					// E3_3 当月以降
+					cells.get(firstRow + 1, 10 + totalMonth).setValue(item.getRemainingDays());
+				}
+			}
+
 			// Call rql 363
-			List<AnnLeaveUsageStatusOfThisMonthImported> listAnnLeaveUsage = annLeaveRemainingAdapter
-					.getAnnLeaveUsageOfThisMonth(employee.getEmployeeId(),
-							new DatePeriod(dataSource.getStartMonth(), dataSource.getEndMonth()));
-			for (AnnLeaveUsageStatusOfThisMonthImported item : listAnnLeaveUsage) {
-				if (currentMonth.compareTo(item.getYearMonth()) != 0) continue;
+			List<AnnLeaveUsageStatusOfThisMonthImported> listAnnLeaveUsageOfThisMonth = annLeaveRemainingAdapter
+					.getAnnLeaveUsageOfThisMonth(employee.getEmployeeId(), datePeriod);
+			for (AnnLeaveUsageStatusOfThisMonthImported item : listAnnLeaveUsageOfThisMonth) {
+				if (currentMonth.compareTo(item.getYearMonth()) <= 0)
+					continue;
 				int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), item.getYearMonth());
 				if (totalMonth >= 0) {
 					// E2_3 当月以降
@@ -324,8 +342,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			firstRow += 2;
 			totalRowDetails += 2;
 		}
-		
-		// 積立年休 --------------------------------------------------------------------------------------------
+
+		// 積立年休
+		// --------------------------------------------------------------------------------------------
 		if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getYearlyReserved().isYearlyReserved()) {
 			cells.copyRows(cells, 8, firstRow, 2);
 			// H1_1
@@ -336,48 +355,51 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			cells.get(firstRow + 1, 9).setValue(TextResource.localize("KDR001_15"));
 			// Set data for 積立年休 (H)
 			// Call requestList268
-			ReserveHolidayImported reserveHolidayImported = getReserveLeaveNumbersFinder.algorithm(employee.getEmployeeId());
+			ReserveHolidayImported reserveHolidayImported = getReserveLeaveNumbersFinder
+					.algorithm(employee.getEmployeeId());
 			// H1_2
-			cells.get(firstRow,4).setValue(reserveHolidayImported.getGrantNumber());
+			cells.get(firstRow, 4).setValue(reserveHolidayImported.getGrantNumber());
 			// H1_3
-			cells.get(firstRow,5).setValue(reserveHolidayImported.getStartMonthRemain());
+			cells.get(firstRow, 5).setValue(reserveHolidayImported.getStartMonthRemain());
 			// H1_4
-			cells.get(firstRow,6).setValue(reserveHolidayImported.getUsedNumber());
+			cells.get(firstRow, 6).setValue(reserveHolidayImported.getUsedNumber());
 			// H1_5
-			cells.get(firstRow,7).setValue(reserveHolidayImported.getRemainNumber());
+			cells.get(firstRow, 7).setValue(reserveHolidayImported.getRemainNumber());
 			// H1_6
-			cells.get(firstRow,8).setValue(reserveHolidayImported.getUndigestNumber());
-			
+			cells.get(firstRow, 8).setValue(reserveHolidayImported.getUndigestNumber());
+
 			// Call requestList258
-			
-			List<ReservedYearHolidayImported> reservedYearHolidayImportedList = getReserveLeaveNumbersFinder.algorithm(
-					employee.getEmployeeId(),yearMonthPeriod);
+
+			List<ReservedYearHolidayImported> reservedYearHolidayImportedList = getReserveLeaveNumbersFinder
+					.algorithm(employee.getEmployeeId(), yearMonthPeriod);
 			// Call requestList364
 			List<RsvLeaUsedCurrentMonImported> rsvLeaUsedCurrentMonImported = getReserveLeaveNumbersFinder
 					.algorithm364(employee.getEmployeeId(), yearMonthPeriod);
-			
+
 			for (int i = 0; i < reservedYearHolidayImportedList.size(); i++) {
-				
+
 				ReservedYearHolidayImported reservedYearHolidayItem = reservedYearHolidayImportedList.get(i);
 				RsvLeaUsedCurrentMonImported rsvLeaUsedCurrentMonItem = rsvLeaUsedCurrentMonImported.get(i);
-				
-				if(currentMonth.compareTo(reservedYearHolidayItem.getYearMonth()) == 0) continue;
-				
-				
+
+				if (currentMonth.compareTo(reservedYearHolidayItem.getYearMonth()) == 0)
+					continue;
+
 				// Before this month
-				if(currentMonth.compareTo(reservedYearHolidayItem.getYearMonth()) > 0) {
-					int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), reservedYearHolidayItem.getYearMonth());
+				if (currentMonth.compareTo(reservedYearHolidayItem.getYearMonth()) > 0) {
+					int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(),
+							reservedYearHolidayItem.getYearMonth());
 					if (totalMonth >= 0) {
 						// H2_3 当月より前
 						cells.get(firstRow, 10 + totalMonth).setValue(reservedYearHolidayItem.getUsedDays());
 						// H2_4 当月以降
 						cells.get(firstRow + 1, 10 + totalMonth).setValue(reservedYearHolidayItem.getRemainingDays());
 					}
-				} 
+				}
 				// After this month
-				if(currentMonth.compareTo(rsvLeaUsedCurrentMonItem.getYearMonth()) < 0){
-					
-					int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), rsvLeaUsedCurrentMonItem.getYearMonth());
+				if (currentMonth.compareTo(rsvLeaUsedCurrentMonItem.getYearMonth()) < 0) {
+
+					int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(),
+							rsvLeaUsedCurrentMonItem.getYearMonth());
 					if (totalMonth >= 0) {
 						// H2_3 当月より前
 						cells.get(firstRow, 10 + totalMonth).setValue(rsvLeaUsedCurrentMonItem.getUsedNumber());
@@ -385,16 +407,16 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 						cells.get(firstRow + 1, 10 + totalMonth).setValue(rsvLeaUsedCurrentMonItem.getRemainNumber());
 					}
 				}
-				
-				
+
 			}
 			firstRow += 2;
 			totalRowDetails += 2;
 		}
-		
+
 		// ------------------------------------------------------------------------------------------------------
-		
-		// 代休 ------------------------------------------------------------------------------------------------
+
+		// 代休
+		// ------------------------------------------------------------------------------------------------
 		if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getSubstituteHoliday()
 				.isOutputItemSubstitute()) {
 			cells.copyRows(cells, 10, firstRow, 4);
@@ -408,74 +430,77 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			cells.get(firstRow + 2, 9).setValue(TextResource.localize("KDR001_11"));
 			// I5_1
 			cells.get(firstRow + 3, 9).setValue(TextResource.localize("KDR001_18"));
-			
+
 			// Set value for I
 			// Call requestList269
 			List<CurrentHolidayImported> currentHolidayImported = monthlyDayoffRemainAdapter.getInterimRemainAggregate(
 					employee.getEmployeeId(), dataSource.getBaseDate(), dataSource.getStartMonth().yearMonth(),
 					dataSource.getEndMonth().yearMonth());
 			// Call requestList259
-			List<StatusHolidayImported> statusHolidayImported = monthlyDayoffRemainAdapter.lstDayoffCurrentMonthOfEmployee(
-					employee.getEmployeeId(), dataSource.getStartMonth().yearMonth(),dataSource.getEndMonth().yearMonth());
-			
+			List<StatusHolidayImported> statusHolidayImported = monthlyDayoffRemainAdapter
+					.lstDayoffCurrentMonthOfEmployee(employee.getEmployeeId(), dataSource.getStartMonth().yearMonth(),
+							dataSource.getEndMonth().yearMonth());
+
 			// TODO requestList269 need a object but return list
-			if (!currentHolidayImported.isEmpty()){
+			if (!currentHolidayImported.isEmpty()) {
 				CurrentHolidayImported firstItem = currentHolidayImported.get(0);
-				// I1_2	代休_月初残_日数
-				cells.get(firstRow,5).setValue(firstItem.getMonthStartRemain());
-				// I1_3	代休_使用数_日数
-				cells.get(firstRow,6).setValue(firstItem.getMonthUse());	
-				// I1_4	代休_残数_日数
-				cells.get(firstRow,7).setValue(firstItem.getMonthEndRemain());	
-				// I1_5	代休_未消化_日数
-				cells.get(firstRow,8).setValue(firstItem.getMonthExtinction());
+				// I1_2 代休_月初残_日数
+				cells.get(firstRow, 5).setValue(firstItem.getMonthStartRemain());
+				// I1_3 代休_使用数_日数
+				cells.get(firstRow, 6).setValue(firstItem.getMonthUse());
+				// I1_4 代休_残数_日数
+				cells.get(firstRow, 7).setValue(firstItem.getMonthEndRemain());
+				// I1_5 代休_未消化_日数
+				cells.get(firstRow, 8).setValue(firstItem.getMonthExtinction());
 			}
-			
-			for (int i = 0; i < currentHolidayImported.size() ; i++ ){
+
+			for (int i = 0; i < currentHolidayImported.size(); i++) {
 				CurrentHolidayImported currentHolidayItem = currentHolidayImported.get(i);
 				StatusHolidayImported statusHolidayItem = statusHolidayImported.get(i);
-				
-				if(currentMonth.compareTo(currentHolidayItem.getYm()) == 0) continue;
-				
+
+				if (currentMonth.compareTo(currentHolidayItem.getYm()) == 0)
+					continue;
+
 				// After this month
-				if(currentMonth.compareTo(currentHolidayItem.getYm()) < 0) {
-					int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(),currentHolidayItem.getYm());
+				if (currentMonth.compareTo(currentHolidayItem.getYm()) < 0) {
+					int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), currentHolidayItem.getYm());
 					if (totalMonth >= 0) {
 						// I2_3 代休_発生_日数
 						cells.get(firstRow, 10 + totalMonth).setValue(currentHolidayItem.getMonthOccurrence());
 						// I3_3 代休_使用_日数
 						cells.get(firstRow + 1, 10 + totalMonth).setValue(currentHolidayItem.getMonthUse());
 						// I4_3 代休_未消化_日数
-						cells.get(firstRow+2, 10+ totalMonth).setValue(currentHolidayItem.getMonthExtinction());
+						cells.get(firstRow + 2, 10 + totalMonth).setValue(currentHolidayItem.getMonthExtinction());
 						// I5_3 代休_残数_日数
-						cells.get(firstRow+3, 10+ totalMonth).setValue(currentHolidayItem.getMonthEndRemain());
+						cells.get(firstRow + 3, 10 + totalMonth).setValue(currentHolidayItem.getMonthEndRemain());
 					}
-				} 
-				
+				}
+
 				// Before this month
-				if(currentMonth.compareTo(statusHolidayItem.getYm()) > 0) {
+				if (currentMonth.compareTo(statusHolidayItem.getYm()) > 0) {
 					// Before this month
-					int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(),statusHolidayItem.getYm());
+					int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), statusHolidayItem.getYm());
 					if (totalMonth >= 0) {
 						// I2_3 代休_発生_日数
 						cells.get(firstRow, 10 + totalMonth).setValue(statusHolidayItem.getOccurrenceDays());
 						// I3_3 代休_使用_日数
 						cells.get(firstRow + 1, 10 + totalMonth).setValue(statusHolidayItem.getUseDays());
 						// I4_3 代休_未消化_日数
-						cells.get(firstRow+2, 10+ totalMonth).setValue(statusHolidayItem.getUnUsedDays());
+						cells.get(firstRow + 2, 10 + totalMonth).setValue(statusHolidayItem.getUnUsedDays());
 						// I5_3 代休_残数_日数
-						cells.get(firstRow+3, 10+ totalMonth).setValue(statusHolidayItem.getRemainDays());
+						cells.get(firstRow + 3, 10 + totalMonth).setValue(statusHolidayItem.getRemainDays());
 					}
 				}
 			}
-			
+
 			firstRow += 4;
 			totalRowDetails += 4;
 		}
-		
+
 		// ---------------------------------------------------------------------------------------------------
-		
-		// 振休 --------------------------------------------------------------------------------------------
+
+		// 振休
+		// --------------------------------------------------------------------------------------------
 		if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getPause().isPauseItem()) {
 			cells.copyRows(cells, 14, firstRow, 4);
 			// J1_1
@@ -488,67 +513,69 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			cells.get(firstRow + 2, 9).setValue(TextResource.localize("KDR001_11"));
 			// J2_4
 			cells.get(firstRow + 3, 9).setValue(TextResource.localize("KDR001_18"));
-			// Set value for 振休  J
+			// Set value for 振休 J
 			// Call requestList270
-			List<CurrentHolidayRemainImported> currentHolidayList = absenceReruitmentManaAdapter.getAbsRecRemainAggregate(
-					employee.getEmployeeId(), dataSource.getBaseDate(), dataSource.getStartMonth().yearMonth(),
-					dataSource.getEndMonth().yearMonth());
+			List<CurrentHolidayRemainImported> currentHolidayList = absenceReruitmentManaAdapter
+					.getAbsRecRemainAggregate(employee.getEmployeeId(), dataSource.getBaseDate(),
+							dataSource.getStartMonth().yearMonth(), dataSource.getEndMonth().yearMonth());
 			// Call requestList260
-			List<StatusOfHolidayImported> StatusOfHolidayList = absenceReruitmentManaAdapter.getDataCurrentMonthOfEmployee(
-					employee.getEmployeeId(), dataSource.getStartMonth().yearMonth(), dataSource.getEndMonth().yearMonth());
-			
+			List<StatusOfHolidayImported> StatusOfHolidayList = absenceReruitmentManaAdapter
+					.getDataCurrentMonthOfEmployee(employee.getEmployeeId(), dataSource.getStartMonth().yearMonth(),
+							dataSource.getEndMonth().yearMonth());
+
 			// TODO requestList270 need a object but return list
-			if (!currentHolidayList.isEmpty()){
+			if (!currentHolidayList.isEmpty()) {
 				CurrentHolidayRemainImported firstItem = currentHolidayList.get(0);
-				// J1_2	振休_月初残
-				cells.get(firstRow,5).setValue(firstItem.getMonthStartRemain());
-				// J1_3	振休_使用数
-				cells.get(firstRow,6).setValue(firstItem.getMonthUse());	
-				// J1_4	振休_残数
-				cells.get(firstRow,7).setValue(firstItem.getMonthEndRemain());	
-				// J1_5	振休_未消化
-				cells.get(firstRow,8).setValue(firstItem.getMonthExtinction());
+				// J1_2 振休_月初残
+				cells.get(firstRow, 5).setValue(firstItem.getMonthStartRemain());
+				// J1_3 振休_使用数
+				cells.get(firstRow, 6).setValue(firstItem.getMonthUse());
+				// J1_4 振休_残数
+				cells.get(firstRow, 7).setValue(firstItem.getMonthEndRemain());
+				// J1_5 振休_未消化
+				cells.get(firstRow, 8).setValue(firstItem.getMonthExtinction());
 			}
-			
-			for (int i = 0; i < StatusOfHolidayList.size() ; i++){
+
+			for (int i = 0; i < StatusOfHolidayList.size(); i++) {
 				StatusOfHolidayImported statusOfHDItem = StatusOfHolidayList.get(i);
 				CurrentHolidayRemainImported holidayRemainItem = currentHolidayList.get(i);
 				// Before this month
-				if(currentMonth.compareTo(statusOfHDItem.getYm()) > 0) {
-					int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(),statusOfHDItem.getYm());
+				if (currentMonth.compareTo(statusOfHDItem.getYm()) > 0) {
+					int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), statusOfHDItem.getYm());
 					if (totalMonth >= 0) {
 						// J2_5 振休_発生
 						cells.get(firstRow, 10 + totalMonth).setValue(statusOfHDItem.getOccurredDay());
 						// J2_6 振休_使用
 						cells.get(firstRow + 1, 10 + totalMonth).setValue(statusOfHDItem.getUsedDays());
 						// J2_7 振休_未消化
-						cells.get(firstRow+2, 10+ totalMonth).setValue(statusOfHDItem.getUnUsedDays());
+						cells.get(firstRow + 2, 10 + totalMonth).setValue(statusOfHDItem.getUnUsedDays());
 						// J2_7 振休_残数
-						cells.get(firstRow+3, 10+ totalMonth).setValue(statusOfHDItem.getRemainingDays());
+						cells.get(firstRow + 3, 10 + totalMonth).setValue(statusOfHDItem.getRemainingDays());
 					}
-				} 
-				if(currentMonth.compareTo(holidayRemainItem.getYm()) < 0) {
-					int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(),holidayRemainItem.getYm());
+				}
+				if (currentMonth.compareTo(holidayRemainItem.getYm()) < 0) {
+					int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), holidayRemainItem.getYm());
 					if (totalMonth >= 0) {
 						// J2_5 振休_発生
 						cells.get(firstRow, 10 + totalMonth).setValue(holidayRemainItem.getMonthOccurrence());
 						// J2_6 振休_使用
 						cells.get(firstRow + 1, 10 + totalMonth).setValue(holidayRemainItem.getMonthUse());
 						// J2_7 振休_未消化
-						cells.get(firstRow+2, 10+ totalMonth).setValue(holidayRemainItem.getMonthExtinction());
+						cells.get(firstRow + 2, 10 + totalMonth).setValue(holidayRemainItem.getMonthExtinction());
 						// J2_7 振休_残数
-						cells.get(firstRow+3, 10+ totalMonth).setValue(holidayRemainItem.getMonthEndRemain());
+						cells.get(firstRow + 3, 10 + totalMonth).setValue(holidayRemainItem.getMonthEndRemain());
 					}
 				}
-				
+
 			}
-			
+
 			firstRow += 4;
 		}
-		
+
 		// -----------------------------------------------------------------------------------------------
-		
-		// 特別休暇 ------------------------------------------------------------------------------
+
+		// 特別休暇
+		// ------------------------------------------------------------------------------
 		List<Integer> specialHoliday = dataSource.getHolidaysRemainingManagement().getListItemsOutput()
 				.getSpecialHoliday();
 		for (int i = 0; i < specialHoliday.size(); i++) {
@@ -557,7 +584,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_17"));
 			// M2_3
 			cells.get(firstRow + 1, 9).setValue(TextResource.localize("KDR001_18"));
-			
+
 			// TODO Call requestList273
 			SpecialVacationImported specialVacationImported = complileInPeriodOfSpecialLeaveAdapter
 					.complileInPeriodOfSpecialLeave(AppContexts.user().companyId(), employee.getEmployeeId(),
@@ -566,49 +593,50 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			List<SpecialHolidayImported> specialHolidayList = complileInPeriodOfSpecialLeaveAdapter
 					.getSpeHoliOfConfirmedMonthly(employee.getEmployeeId(), dataSource.getStartMonth().yearMonth(),
 							dataSource.getEndMonth().yearMonth());
-			
+
 			// M1_2 特別休暇１_付与数日数
-			cells.get(firstRow,4).setValue(specialVacationImported.getGrantDate());
+			cells.get(firstRow, 4).setValue(specialVacationImported.getGrantDate());
 			// M1_3 特別休暇１_月初残日数
-			cells.get(firstRow,5).setValue(specialVacationImported.getFirstMonthRemNumDays());
-			// M1_4  特別休暇１_使用数日数
-			cells.get(firstRow,6).setValue(specialVacationImported.getUsedDate());
+			cells.get(firstRow, 5).setValue(specialVacationImported.getFirstMonthRemNumDays());
+			// M1_4 特別休暇１_使用数日数
+			cells.get(firstRow, 6).setValue(specialVacationImported.getUsedDate());
 			// M1_5 特別休暇１_残数日数
-			cells.get(firstRow,7).setValue(specialVacationImported.getRemainDate());
-			
-			for (SpecialHolidayImported item : specialHolidayList){
-				
+			cells.get(firstRow, 7).setValue(specialVacationImported.getRemainDate());
+
+			for (SpecialHolidayImported item : specialHolidayList) {
+
 				// Before this month
-				if(currentMonth.compareTo(item.getYm()) > 0) {
-					int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(),item.getYm());
+				if (currentMonth.compareTo(item.getYm()) > 0) {
+					int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), item.getYm());
 					if (totalMonth >= 0) {
 						// M2_5 特別休暇１_使用日数
 						cells.get(firstRow, 10 + totalMonth).setValue(item.getUseDays());
 						// M2_7 特別休暇１_残数日数
-						cells.get(firstRow+1, 10+ totalMonth).setValue(item.getRemainDays());
+						cells.get(firstRow + 1, 10 + totalMonth).setValue(item.getRemainDays());
 					}
-				} 
-				int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(),specialVacationImported.getGrantDate().yearMonth());
+				}
+				int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(),
+						specialVacationImported.getGrantDate().yearMonth());
 				if (totalMonth >= 0) {
 					// M2_5 特別休暇１_使用日数
 					cells.get(firstRow, 10 + totalMonth).setValue(specialVacationImported.getUsedDate());
 					// M2_7 特別休暇１_残数日数
-					cells.get(firstRow+1, 10+ totalMonth).setValue(specialVacationImported.getRemainDate());
+					cells.get(firstRow + 1, 10 + totalMonth).setValue(specialVacationImported.getRemainDate());
 				}
-				
+
 				// Current month
-				if (currentMonth.compareTo(specialVacationImported.getGrantDate().yearMonth())==0){
-					
+				if (currentMonth.compareTo(specialVacationImported.getGrantDate().yearMonth()) == 0) {
+
 				}
 			}
-			
+
 			firstRow += 2;
 		}
-		
-		
+
 		// ---------------------------------------------------------------------------------------
-		
-		// 子の看護休暇 -----------------------------------------------------------------------------
+
+		// 子の看護休暇
+		// -----------------------------------------------------------------------------
 		if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getChildNursingVacation()
 				.isChildNursingLeave()) {
 			cells.copyRows(cells, 20, firstRow, 2);
@@ -618,38 +646,38 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_9"));
 			// N2_2
 			cells.get(firstRow + 1, 9).setValue(TextResource.localize("KDR001_18"));
-			
+
 			// Call requestList341
-			ChildCareNursingRemainOutputPara currentSituationImported = childNursingLeaveMng.calChildNursOfInPeriod(AppContexts.user().companyId(), employee.getEmployeeId(), datePeriod, true);
+			ChildCareNursingRemainOutputPara currentSituationImported = childNursingLeaveMng
+					.calChildNursOfInPeriod(AppContexts.user().companyId(), employee.getEmployeeId(), datePeriod, true);
 			// N1_2 子の看護休暇_使用数
 			cells.get(firstRow, 6).setValue(currentSituationImported.getBeforeUseDays());
 			// N1_3 子の看護休暇_残数
-			cells.get(firstRow,7).setValue(currentSituationImported.getBeforeCareLeaveDays());
-			
+			cells.get(firstRow, 7).setValue(currentSituationImported.getBeforeCareLeaveDays());
+
 			// N2_3 子の看護休暇_使用日数
-			cells.get(firstRow,11).setValue(currentSituationImported.getBeforeUseDays());
-			
+			cells.get(firstRow, 11).setValue(currentSituationImported.getBeforeUseDays());
+
 			// Position of current month
-			int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(),currentMonth);
-			
+			int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), currentMonth);
+
 			// 子の看護休暇_使用日数
 			String grantUsedDayValue = currentSituationImported.getBeforeUseDays() + "/"
 					+ currentSituationImported.getAfterUseDays();
-			cells.get(firstRow,10+totalMonth).setValue(grantUsedDayValue);
-			
+			cells.get(firstRow, 10 + totalMonth).setValue(grantUsedDayValue);
+
 			// N2_4 子の看護休暇_残日数
 			String grantReamainDayValue = currentSituationImported.getBeforeCareLeaveDays() + "/"
 					+ currentSituationImported.getAfterCareLeaveDays();
-			cells.get(firstRow+1,10+totalMonth).setValue(grantReamainDayValue);
-			
+			cells.get(firstRow + 1, 10 + totalMonth).setValue(grantReamainDayValue);
+
 			firstRow += 2;
 		}
-		
-		
+
 		// -----------------------------------------------------------------------------------------
-		
-		
-		// 介護休暇 -------------------------------------------------------------------------------
+
+		// 介護休暇
+		// -------------------------------------------------------------------------------
 		if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getNursingcareLeave().isNursingLeave()) {
 			cells.copyRows(cells, 22, firstRow, 2);
 			// O1_1
@@ -658,41 +686,39 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_9"));
 			// O2_2
 			cells.get(firstRow + 1, 9).setValue(TextResource.localize("KDR001_18"));
-			
+
 			// Call requestList343
-			ChildCareNursingRemainOutputPara careHoliday = careHolidayMngService.calCareRemainOfInPerior(AppContexts.user().companyId(), employee.getEmployeeId(), datePeriod, true);
+			ChildCareNursingRemainOutputPara careHoliday = careHolidayMngService.calCareRemainOfInPerior(
+					AppContexts.user().companyId(), employee.getEmployeeId(), datePeriod, true);
 			// O1_2 介護休暇_使用数
 			cells.get(firstRow, 6).setValue(careHoliday.getBeforeUseDays());
 			// O1_3 介護休暇_残数
-			cells.get(firstRow,7).setValue(careHoliday.getBeforeCareLeaveDays());
-			
+			cells.get(firstRow, 7).setValue(careHoliday.getBeforeCareLeaveDays());
+
 			// O2_3 介護休暇_使用日数
-			cells.get(firstRow,11).setValue(careHoliday.getBeforeUseDays());
-			
+			cells.get(firstRow, 11).setValue(careHoliday.getBeforeUseDays());
+
 			// Position of current month
-			int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(),currentMonth);
-			
+			int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), currentMonth);
+
 			// 介護休暇_使用日数
-			String grantUsedDayValue = careHoliday.getBeforeUseDays() + "/"
-					+ careHoliday.getAfterUseDays();
-			cells.get(firstRow,10+totalMonth).setValue(grantUsedDayValue);
-			
+			String grantUsedDayValue = careHoliday.getBeforeUseDays() + "/" + careHoliday.getAfterUseDays();
+			cells.get(firstRow, 10 + totalMonth).setValue(grantUsedDayValue);
+
 			// O2_4 介護休暇_残日数
 			String grantReamainDayValue = careHoliday.getBeforeCareLeaveDays() + "/"
 					+ careHoliday.getAfterCareLeaveDays();
-			cells.get(firstRow+1,10+totalMonth).setValue(grantReamainDayValue);
-			
+			cells.get(firstRow + 1, 10 + totalMonth).setValue(grantReamainDayValue);
+
 			firstRow += 2;
 		}
-		
-		
-		
+
 		// ------------------------------------------------------------------------------------------
-				
-//		 if (totalRowDetails < minRowDetails) {
-//		 cells.copyRows(cells, 25, firstRow, minRowDetails - totalRowDetails);
-//		 firstRow += (minRowDetails - totalRowDetails);
-//		 }
+
+		// if (totalRowDetails < minRowDetails) {
+		// cells.copyRows(cells, 25, firstRow, minRowDetails - totalRowDetails);
+		// firstRow += (minRowDetails - totalRowDetails);
+		// }
 
 		// D2_1
 		cells.get(rowIndexD, 0).setValue(employee.getEmployeeCode());
@@ -768,8 +794,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.MEDIUM, Color.getBlack());
 		cell.setStyle(style);
 	}
-	
-	private void setBackgroundGray(Cell cell){
+
+	private void setBackgroundGray(Cell cell) {
 		Style style = cell.getStyle();
 		style.setForegroundColor(Color.getGray());
 		style.setBackgroundColor(Color.getGray());
