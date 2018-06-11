@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.app.find.holidaysremaining.report;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;

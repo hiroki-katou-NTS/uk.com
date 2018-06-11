@@ -14,7 +14,6 @@ public class HolidayRemainingDataSource {
 	public HolidayRemainingDataSource(String startMonth, String endMonth, String outputItemSettingCode, int pageBreak, String baseDate,
 			HolidaysRemainingManagement holidaysRemainingManagement, List<String> listEmployeeIds,
 			Map<String, HolidaysRemainingEmployee> mapEmployees) {
-
 		super();
 		this.startMonth = GeneralDate.fromString(startMonth, "yyyy/MM/dd");
 		this.endMonth = GeneralDate.fromString(endMonth, "yyyy/MM/dd");
