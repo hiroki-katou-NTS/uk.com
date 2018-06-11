@@ -50,17 +50,19 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 	}
 
 	@Override
-	public List<AnyItemOfMonthly> toDomain() {
-		if (this.isHaveData()) {
-			return ConvertHelper.mapTo(values, any -> AnyItemOfMonthly.of(employeeId, yearMonth, 
-					ConvertHelper.getEnum(closureID, ClosureId.class),
-					closureDate == null ? null : closureDate.toDomain(),
-					any.getItemNo(),
-					Optional.ofNullable(any.getMonthlyTime()),
-					Optional.ofNullable(any.getMonthlyTimes()), 
-					Optional.ofNullable(any.getMonthlyAmount())));
+	public List<AnyItemOfMonthly> toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
+		if(!this.isHaveData()) {
+			return new ArrayList<>();
 		}
-		return new ArrayList<>();
+		return ConvertHelper.mapTo(values, any -> AnyItemOfMonthly.of(employeeId == null ? this.employeeId : employeeId, 
+				ym == null ? yearMonth : ym, 
+				ConvertHelper.getEnum(closureID, ClosureId.class),
+				closureDate == null ? this.closureDate == null ? null : this.closureDate.toDomain() : closureDate.toDomain(),
+				any.getItemNo(),
+				Optional.ofNullable(any.getMonthlyTime()),
+				Optional.ofNullable(any.getMonthlyTimes()), 
+				Optional.ofNullable(any.getMonthlyAmount())));
+		
 	}
 
 	@Override
@@ -88,7 +90,12 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 			dto.setEmployeeId(domain.get(0).getEmployeeId());
 			dto.setYearMonth(domain.get(0).getYearMonth());
 			domain.stream().forEach(d -> {
-				dto.getValues().add(OptionalItemValueDto.from(d, master.get(d.getAnyItemId()).getOptionalItemAtr()));
+				dto.getValues().add(OptionalItemValueDto.from(d));
+				if(master == null || master.get(d.getAnyItemId()) == null){
+					dto.getValues().add(OptionalItemValueDto.from(d, null));
+				} else {
+					dto.getValues().add(OptionalItemValueDto.from(d, master.get(d.getAnyItemId()).getOptionalItemAtr()));
+				}
 			});
 			dto.exsistData();
 		}

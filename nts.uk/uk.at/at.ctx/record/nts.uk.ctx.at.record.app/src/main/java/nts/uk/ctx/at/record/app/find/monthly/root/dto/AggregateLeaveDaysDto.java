@@ -21,7 +21,7 @@ public class AggregateLeaveDaysDto {
 	/** 日数: 勤怠月間日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
 	@AttendanceItemLayout(jpPropertyName = "日数", layout = "B", needCheckIDWithMethod = "leaveAtr")
-	private Double days;
+	private double days;
 
 	public String leaveAtr() {
 		switch (this.leaveAtr) {

@@ -24,24 +24,13 @@ public class SubstitutionManagementService {
 	@Inject
 	private ExtraHolidayManagementService extraHolidayManagementService;
 
-	@Inject
-	private CompensLeaveEmSetRepository compensLeaveEmSetRepository;
-	
-	@Inject
-	private CompensLeaveComSetRepository compensLeaveComSetRepository;
 	
 	public SubstituteManagementOutput activationProcess(GeneralDate startDate, GeneralDate endDate){
 		String employeeId = AppContexts.user().employeeId();
 		GeneralDate baseDate = GeneralDate.today();
-		String cid = AppContexts.user().companyId();
 		Optional<SWkpHistImport> sWkpHistImport = syWorkplaceAdapter.findBySid(employeeId, baseDate);
-		CompensatoryLeaveEmSetting compenLeaveEmpSetting = null;
-		CompensatoryLeaveComSetting compensatoryLeaveComSetting = null;
 		ExtraHolidayManagementOutput extraHolidayManagementOutput = extraHolidayManagementService.dataExtractionProcessing(0, employeeId, startDate, endDate);
-		if (!Objects.isNull(extraHolidayManagementOutput.getSEmpHistoryImport())){
-			compenLeaveEmpSetting = compensLeaveEmSetRepository.find(cid, extraHolidayManagementOutput.getSEmpHistoryImport().getEmploymentCode());
-		}
-		compensatoryLeaveComSetting = compensLeaveComSetRepository.find(cid);
-		return new SubstituteManagementOutput(sWkpHistImport.orElse(null), extraHolidayManagementOutput, compenLeaveEmpSetting, compensatoryLeaveComSetting);
+		
+		return new SubstituteManagementOutput(sWkpHistImport.orElse(null), extraHolidayManagementOutput);
 	}
 }

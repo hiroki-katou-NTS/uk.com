@@ -16,10 +16,10 @@ public class ReservationOfMonthlyDto {
 	@AttendanceItemLayout(jpPropertyName = "注文金額", layout = "A")
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	/** 注文金額: 注文金額 */
-	private Integer reservationAmount;
+	private int reservationAmount;
 
 	@AttendanceItemLayout(jpPropertyName = "注文数", layout = "B")
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	/** 注文数: 注文数 */
-	private Integer reservationNumber;
+	private int reservationNumber;
 }

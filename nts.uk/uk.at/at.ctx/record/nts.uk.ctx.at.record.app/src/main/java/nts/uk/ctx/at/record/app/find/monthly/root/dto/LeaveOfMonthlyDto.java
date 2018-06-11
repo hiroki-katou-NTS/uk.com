@@ -35,10 +35,10 @@ public class LeaveOfMonthlyDto {
 		if (domain != null) {
 			dto.setAnyLeaveDays(ConvertHelper.mapTo(domain.getAnyLeaveDays(), 
 							c -> new AnyLeaveDto(c.getValue().getAnyLeaveNo(),
-												c.getValue().getDays() == null ? null : c.getValue().getDays().v())));
+												c.getValue().getDays() == null ? 0 : c.getValue().getDays().v())));
 			dto.setFixLeaveDays(ConvertHelper.mapTo(domain.getFixLeaveDays(), 
 					c -> new AggregateLeaveDaysDto(c.getValue().getLeaveAtr() == null ? 0 : c.getValue().getLeaveAtr().value,
-										c.getValue().getDays() == null ? null : c.getValue().getDays().v())));
+										c.getValue().getDays() == null ? 0 : c.getValue().getDays().v())));
 		}
 		return dto;
 	}
@@ -47,8 +47,8 @@ public class LeaveOfMonthlyDto {
 		return LeaveOfMonthly.of(
 				ConvertHelper.mapTo(fixLeaveDays,
 						c -> AggregateLeaveDays.of(ConvertHelper.getEnum(c.getLeaveAtr(), CloseAtr.class),
-								c.getDays() == null ? null : new AttendanceDaysMonth(c.getDays()))),
+								new AttendanceDaysMonth(c.getDays()))),
 				ConvertHelper.mapTo(anyLeaveDays, c -> AnyLeave.of(c.getAnyLeaveNo(),
-						c.getDays() == null ? null : new AttendanceDaysMonth(c.getDays()))));
+						new AttendanceDaysMonth(c.getDays()))));
 	}
 }

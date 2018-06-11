@@ -20,12 +20,12 @@ public class TimeMonthWithCalculationDto {
 	@AttendanceItemLayout(jpPropertyName = "時間", layout = "A")
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	/** 時間 */
-	private Integer time;
+	private int time;
 
 	@AttendanceItemLayout(jpPropertyName = "計算時間", layout = "B")
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	/** 計算時間 */
-	private Integer calcTime;
+	private int calcTime;
 
 	public TimeMonthWithCalculation toDomain() {
 		return new TimeMonthWithCalculation(toTime(time), toTime(calcTime));
@@ -37,21 +37,21 @@ public class TimeMonthWithCalculationDto {
 
 	public static TimeMonthWithCalculationDto from(TimeMonthWithCalculation domain) {
 		return new TimeMonthWithCalculationDto(
-								domain.getTime() == null ? null : domain.getTime().valueAsMinutes(),
-								domain.getCalcTime() == null ? null : domain.getCalcTime().valueAsMinutes());
+								domain.getTime() == null ? 0 : domain.getTime().valueAsMinutes(),
+								domain.getCalcTime() == null ? 0 : domain.getCalcTime().valueAsMinutes());
 	}
 
 	public static TimeMonthWithCalculationDto from(TimeMonthWithCalculationAndMinus domain) {
 		return new TimeMonthWithCalculationDto(
-								domain.getTime() == null ? null : domain.getTime().valueAsMinutes(),
-								domain.getCalcTime() == null ? null : domain.getCalcTime().valueAsMinutes());
+								domain.getTime() == null ? 0 : domain.getTime().valueAsMinutes(),
+								domain.getCalcTime() == null ? 0 : domain.getCalcTime().valueAsMinutes());
 	}
 
 	private AttendanceTimeMonth toTime(Integer time) {
-		return time == null ? null : new AttendanceTimeMonth(time);
+		return new AttendanceTimeMonth(time);
 	}
 
 	private AttendanceTimeMonthWithMinus toTimeWithMinus(Integer time) {
-		return time == null ? null : new AttendanceTimeMonthWithMinus(time);
+		return new AttendanceTimeMonthWithMinus(time);
 	}
 }

@@ -3,11 +3,14 @@ package nts.uk.ctx.at.record.app.find.monthly.root;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.common.DatePeriodDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.AggregateAffiliationInfoDto;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.affiliation.AggregateAffiliationInfo;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceLayoutConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
@@ -47,15 +50,25 @@ public class AffiliationInfoOfMonthlyDto extends MonthlyItemCommon {
 	}
 
 	@Override
-	public AffiliationInfoOfMonthly toDomain() {
-		if (this.isHaveData()) {
-			return AffiliationInfoOfMonthly.of(employeeId, yearMonth, 
-										ConvertHelper.getEnum(closureID, ClosureId.class), 
-										closureDate == null ? null : closureDate.toDomain(), 
-										startMonthInfo == null ? null : startMonthInfo.toDomain(), 
-										endMonthInfo == null ? null : endMonthInfo.toDomain());
+	public AffiliationInfoOfMonthly toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
+		if(!this.isHaveData()) {
+			return null;
 		}
-		return null;
+		if(employeeId == null){
+			employeeId = this.employeeId;
+		}
+		if(ym == null){
+			ym = this.yearMonth;
+		} 
+		if(closureDate == null){
+			closureDate = this.closureDate;
+		}
+		return AffiliationInfoOfMonthly.of(employeeId, yearMonth, 
+									ConvertHelper.getEnum(closureID, ClosureId.class), 
+									closureDate == null ? null : closureDate.toDomain(), 
+									startMonthInfo == null ? new AggregateAffiliationInfo()  : startMonthInfo.toDomain(), 
+									endMonthInfo == null ? new AggregateAffiliationInfo() : endMonthInfo.toDomain());
+		
 	}
 
 	@Override

@@ -134,10 +134,6 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         }
         filterByPeriod() {
             let self = this;
-            if (self.selectedPeriodItem() == 1){
-                $(".ntsStartDatePicker").trigger("validate");
-                $(".ntsEndDatePicker").trigger("validate");
-            }
             if (!nts.uk.ui.errors.hasError()) {
                 self.getSubstituteDataList(self.getSearchCondition());
                 $('#substituteDataGrid').focus();
@@ -145,8 +141,8 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         }
         getSubstituteDataList(searchCondition: any) {
             let self = this;
-            if (self.selectedPeriodItem() ==1 ){
-                $("#daterangepicker").trigger("validate");
+            if (self.selectedPeriodItem() == 1){
+                $("#daterangepicker .ntsDatepicker").trigger("validate");
             }
             if (!nts.uk.ui.errors.hasError()) {
                 service.getExtraHolidayData(searchCondition).done(function(result) {
@@ -154,6 +150,9 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     self.listExtractData = result.extraData;
                     self.convertToDisplayList();
                     self.updateSubstituteDataList();
+                    if (result.empSettingExpiredDate.length>0){
+                        self.dispExpiredDate(result.empSettingExpiredDate);
+                    } else self.dispExpiredDate(result.companySettingExpiredDate);
                 }).fail(function(result) {
                     dialog.alertError(result.errorMessage);
                 });
@@ -177,11 +176,12 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             _.forEach(self.listExtractData, data => {
                 dayOffDate = data.dayOffDate;
                 remain = data.remain;
+                expired = data.expired;
                 if (data.type ==1 ){
                     remain = remain * -1;
+                    expired = expired * -1;
                 }
-                expired = data.expired;
-                totalRemain += remain;
+                totalRemain += remain + expired;
                 if (remain != 0) {
                     remain = remain.toFixed(1) + getText('KDM001_27');
                 }
@@ -308,9 +308,9 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     self.listExtractData = result.extraHolidayManagementDataDto.extraData;
                     self.convertToDisplayList();
                     self.updateSubstituteDataList();
-                    if (result.leaveSettingExpiredDate.length>0){
-                        self.dispExpiredDate(result.leaveSettingExpiredDate);
-                    } else self.dispExpiredDate(result.compenSettingEmpExpiredDate);
+                    if (result.extraHolidayManagementDataDto.empSettingExpiredDate.length>0){
+                        self.dispExpiredDate(result.extraHolidayManagementDataDto.empSettingExpiredDate);
+                    } else self.dispExpiredDate(result.extraHolidayManagementDataDto.companySettingExpiredDate);
                     self.initKCP009();
                     self.disableLinkedData();
                     dfd.resolve();

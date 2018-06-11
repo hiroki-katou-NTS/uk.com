@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.IrregularWorkingTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
@@ -18,12 +19,12 @@ public class RegularAndIrregularTimeOfMonthlyDto {
 	/** 週割増合計時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "週割増合計時間", layout = "A")
-	private Integer weeklyTotalPremiumTime;
+	private int weeklyTotalPremiumTime;
 
 	/** 月割増合計時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "月割増合計時間", layout = "B")
-	private Integer monthlyTotalPremiumTime;
+	private int monthlyTotalPremiumTime;
 
 	/** 変形労働時間 */
 	@AttendanceItemLayout(jpPropertyName = "変形労働時間", layout = "C")
@@ -31,9 +32,9 @@ public class RegularAndIrregularTimeOfMonthlyDto {
 
 	public RegularAndIrregularTimeOfMonthly toDomain() {
 		return RegularAndIrregularTimeOfMonthly.of(
-				weeklyTotalPremiumTime == null ? null : new AttendanceTimeMonth(weeklyTotalPremiumTime), 
-				monthlyTotalPremiumTime == null ? null : new AttendanceTimeMonth(monthlyTotalPremiumTime),
-				irregularWorkingTime == null ? null : irregularWorkingTime.toDomain());
+				new AttendanceTimeMonth(weeklyTotalPremiumTime), 
+				new AttendanceTimeMonth(monthlyTotalPremiumTime),
+				irregularWorkingTime == null ? new IrregularWorkingTimeOfMonthly() : irregularWorkingTime.toDomain());
 	}
 	
 	public static RegularAndIrregularTimeOfMonthlyDto from(RegularAndIrregularTimeOfMonthly domain) {
@@ -41,9 +42,9 @@ public class RegularAndIrregularTimeOfMonthlyDto {
 		if(domain != null) {
 			dto.setIrregularWorkingTime(IrregularWorkingTimeOfMonthlyDto.from(domain.getIrregularWorkingTime()));
 			dto.setMonthlyTotalPremiumTime(domain.getMonthlyTotalPremiumTime() == null 
-					? null : domain.getMonthlyTotalPremiumTime().valueAsMinutes());
+					? 0 : domain.getMonthlyTotalPremiumTime().valueAsMinutes());
 			dto.setWeeklyTotalPremiumTime(domain.getWeeklyTotalPremiumTime() == null 
-					? null : domain.getWeeklyTotalPremiumTime().valueAsMinutes());
+					? 0 : domain.getWeeklyTotalPremiumTime().valueAsMinutes());
 		}
 		return dto;
 	}

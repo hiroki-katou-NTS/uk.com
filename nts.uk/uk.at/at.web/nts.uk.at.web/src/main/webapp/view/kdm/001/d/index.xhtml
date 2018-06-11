@@ -66,7 +66,7 @@
 					visibleItemsCount: 5,
 					value: occurredDays,
 					optionsText: 'name',
-					editable: true,
+					editable: false,
 					enable: true,
 					required: pickUp,
 					selectFirstIfNull: false,
@@ -88,7 +88,7 @@
 					visibleItemsCount: 5,
 					value: lawAtr,
 					optionsText: 'name',
-					editable: true,
+					editable: false,
 					enable: true,
 					required: pickUp,
 					selectFirstIfNull: false,
@@ -134,7 +134,7 @@
 					visibleItemsCount: 5,
 					value: subDays,
 					optionsText: 'name',
-					editable: true,
+					editable: false,
 					enable: true,
 					selectFirstIfNull: false,
 					required: pause,
@@ -166,7 +166,7 @@
 							visibleItemsCount: 5,
 							value: requiredDays,
 							optionsText: 'name',
-							editable: true,
+							editable: false,
 							enable: isOptionSubHolidayEnable,
 							selectFirstIfNull: false,
 							required: pickUp,
@@ -185,7 +185,9 @@
 					<div id = "D15" class="labelTitle" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_85')}</div>
 					<!-- D15_1 残数 -->
 					<span class="label" data-bind="text: remainDays" ></span>
-					<span class="label" data-bind="text: unit" ></span>
+					<span class="label" data-bind="if: remainDays() || remainDays() ==0" >
+						<label data-bind="text: unit"></label>
+					</span>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
