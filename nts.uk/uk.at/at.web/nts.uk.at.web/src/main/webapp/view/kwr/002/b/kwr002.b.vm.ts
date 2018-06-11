@@ -11,6 +11,8 @@ module nts.uk.com.view.kwr002.b {
     import info = nts.uk.ui.dialog.info;
     import util = nts.uk.util;
 
+    let newModeFlag = false;
+
     export class ScreenModel {
 
         aRES: KnockoutObservableArray<AttendanceRecordExportSetting>;
@@ -69,6 +71,7 @@ module nts.uk.com.view.kwr002.b {
                     service.getARESByCode(value).done((aRESData) => {
                         self.currentARES(new AttendanceRecordExportSetting(aRESData));
                         self.newMode(false);
+                        newModeFlag = false;
                         setShared('attendanceRecExpDaily', null, true);
                         setShared('attendanceRecExpMonthly', null, true);
                         setShared('attendanceRecItemList', null, true);
@@ -165,6 +168,7 @@ module nts.uk.com.view.kwr002.b {
                 self.currentARESCode("");
 
                 self.newMode(true);
+                newModeFlag = true;
             }
             $("#code").focus();
         }
@@ -429,39 +433,48 @@ module nts.uk.com.view.kwr002.b {
                 }
 
             });
+        };
+
+
+        public openDialogC() {
+            let self = this;
+            let settingCode = self.code();
+            setShared('attendanceRecExpSetCode', settingCode, true);
+            setShared('attendanceRecExpSetName', self.name(), true);
+            setShared('useSeal', self.sealUseAtr(), true);
+
+            let itemList = getShared('attendanceRecItemList');
+
+            if (_.isArray(itemList) && !_.isEmpty(itemList) && _.first(itemList).layoutCode == Number(settingCode)) {
+                setShared('attendanceRecExpDaily', getShared('attendanceRecExpDaily'), true);
+                setShared('attendanceRecExpMonthly', getShared('attendanceRecExpMonthly'), true);
+                setShared('attendanceRecItemList', getShared('attendanceRecItemList'), true);
+                setShared('sealStamp', getShared('sealStamp'), true);
+            } else {
+                setShared('attendanceRecExpDaily', null, true);
+                setShared('attendanceRecExpMonthly', null, true);
+                setShared('attendanceRecItemList', null, true);
+                setShared('sealStamp', null, true);
+            }
+            modal('../c/index.xhtml', {});
         }
 
         public openScreenC() {
             let self = this;
             block.grayout();
 
-            let settingCode = self.code();
-
-            service.getARESByCode(settingCode).done((data) => {
-                if (_.isEmpty(data.code)) {
-                    setShared('attendanceRecExpSetCode', settingCode, true);
-                    setShared('attendanceRecExpSetName', self.name(), true);
-                    setShared('useSeal', self.sealUseAtr(), true);
-
-                    let itemList = getShared('attendanceRecItemList');
-
-                    if (_.isArray(itemList) && !_.isEmpty(itemList) && _.first(itemList).layoutCode == Number(settingCode)) {
-                        setShared('attendanceRecExpDaily', getShared('attendanceRecExpDaily'), true);
-                        setShared('attendanceRecExpMonthly', getShared('attendanceRecExpMonthly'), true);
-                        setShared('attendanceRecItemList', getShared('attendanceRecItemList'), true);
-                        setShared('sealStamp', getShared('sealStamp'), true);
+            if (!newModeFlag) {
+                this.openDialogC();
+            } else {
+                service.getARESByCode(this.code()).done((data) => {
+                    if (_.isEmpty(data.code)) {
+                        this.openDialogC()
                     } else {
-                        setShared('attendanceRecExpDaily', null, true);
-                        setShared('attendanceRecExpMonthly', null, true);
-                        setShared('attendanceRecItemList', null, true);
-                        setShared('sealStamp', null, true);
+                        alertError({messageId: 'Msg_3'});
+                        block.clear();
                     }
-                    modal('../c/index.xhtml', {});
-                } else {
-                    alertError({ messageId: 'Msg_3' });
-                    block.clear();
-                }
-            });
+                });
+            }
         }
 
         public checkCode(key) {
