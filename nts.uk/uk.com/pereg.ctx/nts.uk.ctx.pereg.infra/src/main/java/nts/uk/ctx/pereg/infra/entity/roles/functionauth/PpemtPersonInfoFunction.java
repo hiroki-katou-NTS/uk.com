@@ -1,13 +1,14 @@
 package nts.uk.ctx.pereg.infra.entity.roles.functionauth;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Table(name = "PPEMT_PER_INFO_FUNCTION")
-// @Entity
+@Entity
 public class PpemtPersonInfoFunction extends UkJpaEntity {
 
 	@Id
@@ -17,10 +18,10 @@ public class PpemtPersonInfoFunction extends UkJpaEntity {
 	@Column(name = "FUNCTION_NAME")
 	public String functionName; 
 	
-	@Column(name = "DESCRIPTION")
+	@Column(name = "MEMO")
 	public String description; 
 	
-	@Column(name = "DISPLAY_ORDER")
+	@Column(name = "DISPORDER")
 	public int displayOrder; 
 	
 	@Column(name = "DEFAULT_VALUE")

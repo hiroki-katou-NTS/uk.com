@@ -1,8 +1,10 @@
 package nts.uk.ctx.pereg.infra.repository.roles.functionauth;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -20,12 +22,13 @@ public class PersonInfoAuthorityRepoImpl extends JpaRepository implements Person
 
 	@Override
 	public Map<Integer, PersonInfoAuthority> getListOfRole(String companyId, String roleId) {
-		/*List<PpemtPersonInfoAuth> entities = this.queryProxy()
-				.namedQuery(QUERY_COMPANY_ROLEID, PpemtPersonInfoAuth.class).getList();
+		List<PpemtPersonInfoAuth> entities = this.queryProxy()
+				.query(QUERY_COMPANY_ROLEID, PpemtPersonInfoAuth.class)
+				.setParameter("cid", companyId)
+				.setParameter("roleId", roleId).getList();
 
 		return entities.stream().map(ent -> toDomain(ent))
-				.collect(Collectors.toMap(x -> x.getFunctionNo().v(), x -> x));*/
-		return mock(companyId, roleId);
+				.collect(Collectors.toMap(x -> x.getFunctionNo().v(), x -> x));
 
 	}
 
@@ -51,12 +54,12 @@ public class PersonInfoAuthorityRepoImpl extends JpaRepository implements Person
 
 	@Override
 	public void add(PersonInfoAuthority auth) {
-		//this.commandProxy().insert(toEntity(auth));
+		this.commandProxy().insert(toEntity(auth));
 	}
 
 	@Override
 	public void update(PersonInfoAuthority auth) {
-		/*PpemtPersonInfoAuthPk key = new PpemtPersonInfoAuthPk(auth.getCompanyId(), auth.getRoleId(),
+		PpemtPersonInfoAuthPk key = new PpemtPersonInfoAuthPk(auth.getCompanyId(), auth.getRoleId(),
 				auth.getFunctionNo().v());
 		Optional<PpemtPersonInfoAuth> entity = this.queryProxy().find(key, PpemtPersonInfoAuth.class);
 		
@@ -66,7 +69,7 @@ public class PersonInfoAuthorityRepoImpl extends JpaRepository implements Person
 		
 		entity.get().available = auth.isAvailable() ? 1 : 0;
 		
-		this.commandProxy().update(entity);*/
+		this.commandProxy().update(entity);
 	}
 
 }

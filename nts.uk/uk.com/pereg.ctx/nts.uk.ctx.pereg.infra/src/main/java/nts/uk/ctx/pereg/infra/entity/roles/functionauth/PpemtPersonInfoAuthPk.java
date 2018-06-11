@@ -4,12 +4,14 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Embeddable
 @AllArgsConstructor
+@NoArgsConstructor
 public class PpemtPersonInfoAuthPk {
 
-	@Column(name = "ROLE_ID")
+	@Column(name = "CID")
 	public String cid;
 
 	@Column(name = "ROLE_ID")

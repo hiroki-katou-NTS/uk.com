@@ -2,6 +2,7 @@ package nts.uk.ctx.pereg.infra.repository.roles.functionauth;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -18,10 +19,9 @@ public class PerInfoAuthDescRepoImpl extends JpaRepository implements PerInfoAut
 
 	@Override
 	public List<PersonInfoAuthDescription> getListDesc() {
-		/*List<PpemtPersonInfoFunction> entities = this.queryProxy().query(GET_ALL, PpemtPersonInfoFunction.class)
+		List<PpemtPersonInfoFunction> entities = this.queryProxy().query(GET_ALL, PpemtPersonInfoFunction.class)
 				.getList();
-		return entities.stream().map( x -> todomain(x)).collect(Collectors.toList());*/
-		return mock();
+		return entities.stream().map( x -> todomain(x)).collect(Collectors.toList());
 	}
 	
 	private PersonInfoAuthDescription todomain(PpemtPersonInfoFunction ent) {
