@@ -2,13 +2,17 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtSyainDpErList;
@@ -163,6 +167,24 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 	@Override
 	public void removeParam(String sid, GeneralDate date) {
 		List<KrcdtSyainDpErList> result = findEntities(sid, date);
+		if(!result.isEmpty()){
+			commandProxy().removeAll(result);
+		}
+	}
+	
+	@Override
+	public void removeParam(Map<String, List<GeneralDate>> param) {
+		List<KrcdtSyainDpErList> result = new ArrayList<>();
+		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtSyainDpErList a");
+		query.append(" WHERE a.employeeId IN :employeeId");
+		query.append(" AND a.processingDate IN :date");
+		TypedQueryWrapper<KrcdtSyainDpErList> tQuery=  this.queryProxy().query(query.toString(), KrcdtSyainDpErList.class);
+		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
+			result.addAll(tQuery.setParameter("employeeId", p.keySet())
+					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
+					.getList().stream().filter(c -> p.get(c.employeeId).contains(c.processingDate))
+					.collect(Collectors.toList()));
+		});
 		if(!result.isEmpty()){
 			commandProxy().removeAll(result);
 		}

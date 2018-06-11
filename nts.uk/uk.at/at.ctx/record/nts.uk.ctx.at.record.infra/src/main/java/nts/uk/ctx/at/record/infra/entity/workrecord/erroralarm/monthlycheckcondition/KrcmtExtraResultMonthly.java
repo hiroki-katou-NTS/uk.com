@@ -122,11 +122,11 @@ public class KrcmtExtraResultMonthly extends UkJpaEntity implements Serializable
 				!domain.getHowDisplayMessage().getMessageColor().isPresent()?null:domain.getHowDisplayMessage().getMessageColor().get(),
 				!domain.getDisplayMessage().isPresent()?null:domain.getDisplayMessage().get().v(),
 				!isCheckConMonthly?null:new BigDecimal(domain.getCheckConMonthly().get().getOperatorBetweenGroups().value),
-				!isCheckConMonthly?null:new BigDecimal(domain.getCheckConMonthly().get().getGroup2UseAtr()?1:0),
+				null,
 				!isCheckConMonthly?null:domain.getCheckConMonthly().get().getGroup1().getAtdItemConGroupId(),
-				!isCheckConMonthly?null:KrcstErAlConGroup.toEntity(domain.getCheckConMonthly().get().getGroup1()),
+				null,
 				!isCheckConMonthly?null:domain.getCheckConMonthly().get().getGroup2().getAtdItemConGroupId(),
-				!isCheckConMonthly?null:KrcstErAlConGroup.toEntity(domain.getCheckConMonthly().get().getGroup2())
+				null
 				);
 	}
 	
@@ -136,8 +136,8 @@ public class KrcmtExtraResultMonthly extends UkJpaEntity implements Serializable
 				EnumAdaptor.valueOf(this.operatorBetweenGroups.intValue(), LogicalOperator.class),	
 				new Boolean(this.group2UseAtr.intValue()==1?true:false)
 				);
-			attdItemCon.setGroup1(krcstErAlConGroup1.toDomain(AppContexts.user().companyId(), this.errorAlarmCheckID));
-			attdItemCon.setGroup2(krcstErAlConGroup2.toDomain(AppContexts.user().companyId(), this.errorAlarmCheckID));
+//			attdItemCon.setGroup1(krcstErAlConGroup1.toDomain(AppContexts.user().companyId(), this.errorAlarmCheckID));
+//			attdItemCon.setGroup2(krcstErAlConGroup2.toDomain(AppContexts.user().companyId(), this.errorAlarmCheckID));
 		
 		
 		return new ExtraResultMonthly(

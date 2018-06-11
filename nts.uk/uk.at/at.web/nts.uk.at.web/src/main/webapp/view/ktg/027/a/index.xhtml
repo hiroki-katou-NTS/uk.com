@@ -22,10 +22,9 @@
 			<div id="contents-area">
 				<div class="valign-center control-group">
 					<label>#{i18n.getText('KTG027_3')}</label>
-					<div
-						data-bind="ntsDatePicker: { value: targetMonth, dateFormat: 'yearmonth', valueFormat: 'YYYYMM',showJumpButtons: true}"></div>
+					<div data-bind="ntsDatePicker: { name: '#[KTG027_3]', value: targetMonth, dateFormat: 'yearmonth', valueFormat: 'YYYYMM',showJumpButtons: true, required: true}"></div>
 				</div>
-				<div class="valign-center control-group" style ="min-width: 600px;">
+				<div class="valign-center control-group" style ="min-width: 500px;">
 					<label>#{i18n.getText('KTG027_4')}</label>
 					<div id="combo-box" style = "margin-left: 19px;" 
 						data-bind="ntsComboBox: {
@@ -38,14 +37,15 @@
 							columns: [
 								{ prop: 'closureName', length: 5},
 							]}"></div>
-					<button data-bind = "click : clickExtractionBtn">#{i18n.getText('KTG027_5')}</button>
+					<button class="caret-bottom" data-bind = "click : clickExtractionBtn ,enable: $root.errors.isEmpty">#{i18n.getText('KTG027_5')}</button>
 					<button data-bind = " click : printData">#{i18n.getText('KTG027_13')} </button>
-					<button	style ="margin-left: 50px;" data-bind="ntsHelpButton: {textId : 'KTG027_11', position: 'right top'}">?</button>
+					<div class="btnHelp"><button data-bind="ntsHelpButton: {textId : 'KTG027_11', position: 'left bottom'}">?</button></div>
 					
 				</div>
+				
 				<table id="fixed-table">
 					<colgroup>
-						<col width="200px" />
+						<col width="270px" />
 						<col width="70px" />
 						<col width="70px" />
 						<col width="70px" />
@@ -59,6 +59,7 @@
 							<th class="ui-widget-header" colspan="3">#{i18n.getText('KTG027_1')}</th>
 
 						</tr>
+						
 						<tr>
 							<th class="ui-widget-header">#{i18n.getText('KTG027_8')}</th>
 							<th class="ui-widget-header">#{i18n.getText('KTG027_9')}</th>
@@ -75,6 +76,8 @@
 						</tr>
 					</tbody>
 				</table>
+				
+				
 			</div>
 		</ui:define>
 	</ui:composition>

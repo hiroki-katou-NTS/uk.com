@@ -69,7 +69,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
 
         //combo-box
         lstHolidayRemaining: KnockoutObservableArray<HolidayRemainingModel> = ko.observableArray([]) ;
-        itemSelected: KnockoutObservableArray<ItemModel>;
+        itemSelected: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         selectedCode: KnockoutObservable<string> = ko.observable('0');
         holidayRemainingSelectedCd: KnockoutObservable<string> = ko.observable('');
         
@@ -122,13 +122,6 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 self.periodEndDate(moment(value));
                 self.periodEndDate.valueHasMutated();
             });
-
-            //combo-box2
-            self.itemSelected = ko.observableArray([
-                new ItemModel('0', getText("Enum_BreakSelection_NONE")),
-                new ItemModel('1', getText("Enum_BreakSelection_WORKPLACE")),
-                new ItemModel('2', getText("Enum_BreakSelection_INDIVIDUAL"))
-            ]);
         }
 
         /**
@@ -233,6 +226,12 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             var dfd = $.Deferred();
             nts.uk.ui.block.invisible();
             let user: any = __viewContext.user;
+            //combo-box2
+            service.getBreakSelection().done(data => {
+                for (let i = 0, count = data.length; i < count; i++) {
+                    self.itemSelected.push(new ItemModel(data[i].value, data[i].localizedName));
+                }
+            });
             $.when(service.findAll(),
                     service.getDate(),
                     service.getPermissionOfEmploymentForm(),
@@ -384,7 +383,8 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 startMonth.format("YYYY/MM/DD"),
                 endMonth.format("YYYY/MM/DD"),
                 self.holidayRemainingSelectedCd(),
-                self.selectedCode()
+                self.selectedCode(),
+                self.baseDate().format("YYYY/MM/DD")
             );
 
             let data = new ReportInfor(holidayRemainingOutputCondition, lstSelectedEployee);
@@ -588,12 +588,13 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         endMonth: string;
         outputItemSettingCode: string;
         pageBreak: string;
-
-        constructor(startMonth: string, endMonth: string, outputItemSettingCode: string, pageBreak: string) {
+        baseDate: string;
+        constructor(startMonth: string, endMonth: string, outputItemSettingCode: string, pageBreak: string, baseDate: string) {
             this.startMonth = startMonth;
             this.endMonth = endMonth;
             this.outputItemSettingCode = outputItemSettingCode;
             this.pageBreak = pageBreak;
+            this.baseDate = baseDate;
         }
     }
 
