@@ -17,8 +17,10 @@ import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaisingSalaryTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
@@ -96,7 +98,9 @@ public class OverTimeSheet {
 	public List<OverTimeFrameTime> collectOverTimeWorkTime(AutoCalOvertimeSetting autoCalcSet,
 														   WorkType workType,
 														   Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-														   Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily) {
+														   Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
+														   IntegrationOfDaily integrationOfDaily,
+														   List<OverTimeFrameNo> statutoryFrameNoList) {
 		Map<Integer,OverTimeFrameTime> overTimeFrameList = new HashMap<Integer, OverTimeFrameTime>();
 		List<OverTimeFrameNo> numberOrder = new ArrayList<>();
 		val sortedFrameTimeSheet = sortFrameTime(frameTimeSheets, workType, eachWorkTimeSet, eachCompanyTimeSet);
@@ -150,7 +154,7 @@ public class OverTimeSheet {
 		 
 		
 		//事前申請を上限とする制御
-		val afterCalcUpperTimeList = afterUpperControl(calcOverTimeWorkTimeList,autoCalcSet);
+		val afterCalcUpperTimeList = afterUpperControl(calcOverTimeWorkTimeList,autoCalcSet,statutoryFrameNoList);
 		//return afterCalcUpperTimeList; 
 		//振替処理
 		val aftertransTimeList = transProcess(workType,
@@ -187,13 +191,19 @@ public class OverTimeSheet {
 	 * @param calcOverTimeWorkTimeList 残業時間枠リスト
 	 * @param autoCalcSet 残業時間の自動計算設定
 	 */
-	private List<OverTimeFrameTime> afterUpperControl(List<OverTimeFrameTime> calcOverTimeWorkTimeList,AutoCalOvertimeSetting autoCalcSet) {
+	private List<OverTimeFrameTime> afterUpperControl(List<OverTimeFrameTime> calcOverTimeWorkTimeList,AutoCalOvertimeSetting autoCalcSet,List<OverTimeFrameNo> statutoryFrameNoList) {
 		List<OverTimeFrameTime> returnList = new ArrayList<>();
 		for(OverTimeFrameTime loopOverTimeFrame:calcOverTimeWorkTimeList) {
+			
+			TimeLimitUpperLimitSetting autoSet = autoCalcSet.getNormalOtTime().getUpLimitORtSet();
+			if(statutoryFrameNoList != null && statutoryFrameNoList.contains(loopOverTimeFrame.getOverWorkFrameNo()))
+					autoSet =  autoCalcSet.getLegalOtTime().getUpLimitORtSet();
+													 
+													
 			//時間の上限時間算出
-			AttendanceTime upperTime = desictionUseUppserTime(autoCalcSet,loopOverTimeFrame, loopOverTimeFrame.getOverTimeWork().getTime());
+			AttendanceTime upperTime = desictionUseUppserTime(autoSet,loopOverTimeFrame, loopOverTimeFrame.getOverTimeWork().getTime());
 			//計算時間の上限算出
-			AttendanceTime upperCalcTime = desictionUseUppserTime(autoCalcSet,loopOverTimeFrame,  loopOverTimeFrame.getOverTimeWork().getCalcTime());
+			AttendanceTime upperCalcTime = desictionUseUppserTime(autoSet,loopOverTimeFrame,  loopOverTimeFrame.getOverTimeWork().getCalcTime());
 			//振替処理
 			loopOverTimeFrame = loopOverTimeFrame.changeOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(upperTime.greaterThan(loopOverTimeFrame.getOverTimeWork().getTime())?loopOverTimeFrame.getOverTimeWork().getTime():upperTime,
 																														 upperCalcTime.greaterThan(loopOverTimeFrame.getOverTimeWork().getCalcTime())?loopOverTimeFrame.getOverTimeWork().getCalcTime():upperCalcTime));
@@ -203,8 +213,8 @@ public class OverTimeSheet {
 	}
 	
 	
-	public AttendanceTime desictionUseUppserTime(AutoCalOvertimeSetting autoCalcSet, OverTimeFrameTime loopOverTimeFrame, AttendanceTime attendanceTime) {
-		switch(autoCalcSet.decisionUseCalcSetting(StatutoryAtr.Excess,false).getUpLimitORtSet()) {
+	public AttendanceTime desictionUseUppserTime(TimeLimitUpperLimitSetting autoSet, OverTimeFrameTime loopOverTimeFrame, AttendanceTime attendanceTime) {
+		switch(autoSet) {
 		//上限なし
 		case NOUPPERLIMIT:
 			return attendanceTime;

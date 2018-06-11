@@ -136,6 +136,33 @@ public abstract class CalculationTimeSheet {
 	}
 	
 	/**
+	 * 指定時間に従って時間帯の縮小
+	 * @return 縮小後の時間帯
+	 */
+	public Optional<TimeSpanForCalc> contractTimeSheet(TimeWithDayAttr timeWithDayAttr) {
+		/*ここのcalcTotalTImeは残業時間帯の時間*/
+		int afterShort = calcTotalTime().valueAsMinutes() - timeWithDayAttr.valueAsMinutes();
+		if(afterShort <= 0) return Optional.empty();
+		TimeSpanForCalc newSpan = new TimeSpanForCalc(timeSheet.getStart(), timeSheet.getStart().forwardByMinutes(afterShort));
+		List<TimeSheetOfDeductionItem> copyList = getNewSpanIncludeCalcrange(deductionTimeSheet,newSpan);
+		for(int listn = 0 ; listn < copyList.size() ; listn++){
+				/*ここのcalcTotalTimeは残業時間帯が持ってる控除時間帯の時間*/
+				int differTime = copyList.get(listn).calcTotalTime().valueAsMinutes();
+				newSpan = newSpan.shiftEndAhead(differTime);
+				/*ずらす前に範囲内に入っている時間帯の数を保持*/
+				int beforeincludeSpan = getNewSpanIncludeCalcrange(copyList,newSpan).size();
+				val moveAfterNewSpan = newSpan.shiftEndAhead(copyList.stream().map(ts -> ts.calcrange.lengthAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
+				int afterincludeSpan = getNewSpanIncludeCalcrange(copyList,moveAfterNewSpan).size();
+				/*ずらした後の範囲に入っている時間帯の数とずらす前のかずを比較し増えていた場合、控除時間帯を保持してる変数に追加する*/
+				if(afterincludeSpan > beforeincludeSpan) {
+					copyList = Collections.emptyList();
+					copyList = getNewSpanIncludeCalcrange(deductionTimeSheet,moveAfterNewSpan);
+				}
+		}
+		return Optional.of(newSpan);
+	}
+	
+	/**
 	 *　時間帯と重複している控除時間帯のみを抽出する
 	 * @param newTimeSpan 時間帯
 	 * @return　控除時間帯リスト
@@ -263,32 +290,7 @@ public abstract class CalculationTimeSheet {
 								 -calcChildTime.valueAsMinutes());
 		
 	}
-	/**
-	 * 指定時間に従って時間帯の縮小
-	 * @return 縮小後の時間帯
-	 */
-	public Optional<TimeSpanForCalc> contractTimeSheet(TimeWithDayAttr timeWithDayAttr) {
-		/*ここのcalcTotalTImeは残業時間帯の時間*/
-		int afterShort = calcTotalTime().valueAsMinutes() - timeWithDayAttr.valueAsMinutes();
-		if(afterShort <= 0) return Optional.empty();
-		TimeSpanForCalc newSpan = new TimeSpanForCalc(timeSheet.getStart(), timeSheet.getStart().forwardByMinutes(afterShort));
-		List<TimeSheetOfDeductionItem> copyList = getNewSpanIncludeCalcrange(deductionTimeSheet,newSpan);
-		for(int listn = 0 ; listn < copyList.size() ; listn++){
-				/*ここのcalcTotalTimeは残業時間帯が持ってる控除時間帯の時間*/
-				int differTime = copyList.get(listn).calcTotalTime().valueAsMinutes();
-				newSpan = newSpan.shiftEndAhead(differTime);
-				/*ずらす前に範囲内に入っている時間帯の数を保持*/
-				int beforeincludeSpan = getNewSpanIncludeCalcrange(copyList,newSpan).size();
-				val moveAfterNewSpan = newSpan.shiftEndAhead(copyList.stream().map(ts -> ts.calcrange.lengthAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
-				int afterincludeSpan = getNewSpanIncludeCalcrange(copyList,moveAfterNewSpan).size();
-				/*ずらした後の範囲に入っている時間帯の数とずらす前のかずを比較し増えていた場合、控除時間帯を保持してる変数に追加する*/
-				if(afterincludeSpan > beforeincludeSpan) {
-					copyList = Collections.emptyList();
-					copyList = getNewSpanIncludeCalcrange(deductionTimeSheet,moveAfterNewSpan);
-				}
-		}
-		return Optional.of(newSpan);
-	}
+
 	
 	
 	/**

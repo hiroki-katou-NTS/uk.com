@@ -243,15 +243,15 @@ public class OverTimeOfDaily {
 												  WorkDeformedLaborAdditionSet illegularAddSetting,
 												  WorkFlexAdditionSet flexAddSetting,
 												  WorkRegularAdditionSet regularAddSetting,
-												  HolidayAddtionSet holidayAddtionSet,WorkTimeDailyAtr workTimeDailyAtr,
+												  HolidayAddtionSet holidayAddtionSet,Optional<WorkTimeDailyAtr> workTimeDailyAtr,
 												  Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 												  Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily, 
 												  AttendanceTime flexPreAppTime,AutoCalFlexOvertimeSetting flexOutCalcSetting,
-												  DailyUnit dailyUnit) {
+												  DailyUnit dailyUnit,List<OverTimeFrameNo> statutoryFrameNoList) {
 		//枠時間帯入れる
 		val overTimeFrameTimeSheet = overTimeSheet.changeOverTimeFrameTimeSheet();
 		//枠時間計算
-		val overTimeFrame = overTimeSheet.collectOverTimeWorkTime(overTimeAutoCalcSet,workType,eachWorkTimeSet,eachCompanyTimeSet,integrationOfDaily);
+		val overTimeFrame = overTimeSheet.collectOverTimeWorkTime(overTimeAutoCalcSet,workType,eachWorkTimeSet,eachCompanyTimeSet,integrationOfDaily, statutoryFrameNoList );
 		//残業内の深夜時間計算
 		val excessOverTimeWorkMidNightTime = Finally.of(calcExcessMidNightTime(overTimeSheet,overTimeAutoCalcSet));
 		//変形法定内残業時間計算
@@ -259,7 +259,7 @@ public class OverTimeOfDaily {
 		//フレックス時間
 		FlexTime flexTime = new FlexTime(TimeDivergenceWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)),new AttendanceTime(0));
 		//フレ時間の計算に挑戦
-		if(workTimeDailyAtr.isFlex() && withinWorkTimeSheetList != null) {
+		if(workTimeDailyAtr.isPresent() && workTimeDailyAtr.get().isFlex() && withinWorkTimeSheetList != null) {
 			
 			val changeVariant = ((FlexWithinWorkTimeSheet)withinWorkTimeSheetList);
 			flexTime =  changeVariant.createWithinWorkTimeSheetAsFlex(calcMethod,holidayCalcMethodSet,autoCalcAtr,workType,

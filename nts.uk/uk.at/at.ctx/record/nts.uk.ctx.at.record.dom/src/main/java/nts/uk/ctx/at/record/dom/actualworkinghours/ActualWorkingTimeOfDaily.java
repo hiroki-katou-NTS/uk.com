@@ -41,6 +41,7 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
@@ -164,8 +165,7 @@ public class ActualWorkingTimeOfDaily {
 			   Optional<WorkType> scheWorkType,
 			   AutoCalFlexOvertimeSetting flexAutoCalSet,
 			   DailyUnit dailyUnit, WorkScheduleTimeOfDaily workScheduleTime,Optional<CoreTimeSetting> coreTimeSetting
-				/*計画所定時間*/
-				/*実績所定労働時間*/) {
+			   ,List<OverTimeFrameNo> statutoryFrameNoList) {
 
 		
 		/* 総労働時間の計算 */
@@ -190,7 +190,8 @@ public class ActualWorkingTimeOfDaily {
 					integrationOfDaily,
 					flexAutoCalSet,
 					coreTimeSetting,
-					dailyUnit
+					dailyUnit, 
+					statutoryFrameNoList
 					);
 		
 		
@@ -369,7 +370,7 @@ public class ActualWorkingTimeOfDaily {
 									TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, 
 									WorkType workType
 									) {
-		if((workingSystem.isRegularWork() || workingSystem.isVariableWorkingTimeWork())&&fixRestTimeSetting.isPresent()) {
+		if((workingSystem.isRegularWork() || workingSystem.isVariableWorkingTimeWork())&&fixRestTimeSetting.isPresent()&& !workType.getDailyWork().isHolidayWork()) {
 			//休憩未取得時間の計算
 			AttendanceTime unUseBreakTime = workingSystem.isRegularWork()?totalWorkingTime.getBreakTimeOfDaily().calcUnUseBrekeTime(fixRestTimeSetting.get(),timeLeavingOfDailyPerformance):new AttendanceTime(0);
 			unUseBreakTime = unUseBreakTime.greaterThan(0)?unUseBreakTime:new AttendanceTime(0);
@@ -405,8 +406,7 @@ public class ActualWorkingTimeOfDaily {
 			   && ootsukaFixedCalcSet.isPresent()
 			   && ootsukaFixedCalcSet.get().getOverTimeCalcNoBreak() != null
 			   && ootsukaFixedCalcSet.get().getOverTimeCalcNoBreak().getCalcMethod() != null
-			   && !ootsukaFixedCalcSet.get().getOverTimeCalcNoBreak().getCalcMethod().isCalcAsWorking() 
-			   && !workType.getDailyWork().isHolidayWork()) {
+			   && !ootsukaFixedCalcSet.get().getOverTimeCalcNoBreak().getCalcMethod().isCalcAsWorking() ) {
 				totalWorkingTime.getWithinStatutoryTimeOfDaily().workTimeMinusUnUseBreakTimeForOotsuka(unUseBreakTime);
 			}
 			

@@ -56,6 +56,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryD
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.HolidayCalculation;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
@@ -186,7 +187,8 @@ public class TotalWorkingTime {
 			   int breakTimeCount, IntegrationOfDaily integrationOfDaily,
 			   AutoCalFlexOvertimeSetting flexAutoCalSet,
 			   Optional<CoreTimeSetting> coreTimeSetting,
-			   DailyUnit dailyUnit
+			   DailyUnit dailyUnit,
+			   List<OverTimeFrameNo> statutoryFrameNoList
 			   ) {
 		
 
@@ -228,7 +230,7 @@ public class TotalWorkingTime {
 				   																      CalcMethodOfNoWorkingDay.isCalculateFlexTime, 
 				   																      overTimeAutoCalcAtr, 
 				   																      flexCalcMethod, 
-				   																      workTimeDailyAtr.get(), 
+				   																      workTimeDailyAtr, 
 				   																      workTimeCode,
 				   																      flexPreAppTime, 
 				   																      coreTimeSetting,
@@ -250,13 +252,13 @@ public class TotalWorkingTime {
 																									calcAtrOfDaily.getLeaveEarlySetting().getLeaveEarly().isUse(),  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 																									workingSystem,illegularAddSetting,flexAddSetting,regularAddSetting,
 																									holidayAddtionSet,
-																									workTimeDailyAtr.get(),
+																									workTimeDailyAtr,
 																									eachWorkTimeSet,
 																									eachCompanyTimeSet,
 																									integrationOfDaily,
 																									flexPreAppTime,
 																									flexAutoCalSet,
-																									dailyUnit);
+																									dailyUnit, statutoryFrameNoList);
 		int overWorkTime = excesstime.getOverTimeWork().isPresent()?excesstime.getOverTimeWork().get().calcTotalFrameTime():0;
 		overWorkTime += excesstime.getOverTimeWork().isPresent()?excesstime.getOverTimeWork().get().calcTransTotalFrameTime():0;
 		int holidayWorkTime = excesstime.getWorkHolidayTime().isPresent()?excesstime.getWorkHolidayTime().get().calcTotalFrameTime():0;
@@ -334,7 +336,9 @@ public class TotalWorkingTime {
 		
 		//総労働時間
 		
-		int flexTime = workTimeDailyAtr.isPresent()&&workTimeDailyAtr.get().isFlex() ? excesstime.getOverTimeWork().get().getFlexTime().getFlexTime().getCalcTime().valueAsMinutes():0;
+		int flexTime = workTimeDailyAtr.isPresent() && workTimeDailyAtr.get().isFlex() 
+						? excesstime.getOverTimeWork().get().getFlexTime().getFlexTime().getCalcTime().valueAsMinutes()
+						:0;
 		flexTime = (flexTime<0)?0:flexTime;
 		val totalWorkTime = new AttendanceTime(withinStatutoryTimeOfDaily.getWorkTime().valueAsMinutes()
 						  					   + withinStatutoryTimeOfDaily.getWithinPrescribedPremiumTime().valueAsMinutes() 

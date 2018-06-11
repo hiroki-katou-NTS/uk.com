@@ -761,8 +761,15 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//-------------------------計算用一時的クラス作成----------------------------
 		
 		/*計画所定算出のため、計画側の所定時間取得*/
-		Optional<PredetermineTimeSetForCalc> schePreTimeSet = Optional.of(scheduleReGetClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc());
-		
+		Optional<PredetermineTimeSetForCalc> schePreTimeSet = Optional.empty();
+		if(scheduleReGetClass.getCalculationRangeOfOneDay() != null)
+			schePreTimeSet = Optional.of(scheduleReGetClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc());
+		//計画側の勤務区分取得
+		Optional<WorkTimeDailyAtr> scheWorkTimeDailyAtr = Optional.empty();
+		if(scheduleReGetClass.getWorkTimeSetting() != null
+			&& scheduleReGetClass.getWorkTimeSetting().isPresent() 
+			&& scheduleReGetClass.getWorkTimeSetting().get().getWorkTimeDivision() != null)
+				scheWorkTimeDailyAtr = Optional.of(scheduleReGetClass.getWorkTimeSetting().get().getWorkTimeDivision().getWorkTimeDailyAtr());
 		val workType = recordReGetClass.getWorkType();
 		if(!workType.isPresent() || !recordReGetClass.getWorkTimeSetting().isPresent()) return recordReGetClass.getIntegrationOfDaily();
 		//予定時間帯が作成されるまでの一時対応
@@ -794,7 +801,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				    recordReGetClass.getWorkRegularAdditionSet(),
 				    recordReGetClass.getHolidayAddtionSet(),
 				    AutoCalOverTimeAttr.CALCULATION_FROM_STAMP,
-				    recordReGetClass.getWorkTimeSetting().get().getWorkTimeDivision().getWorkTimeDailyAtr(),
+				    Optional.of(recordReGetClass.getWorkTimeSetting().get().getWorkTimeDivision().getWorkTimeDailyAtr()),
 				    flexCalcMethod,
 				    recordReGetClass.getHolidayCalcMethodSet(),
 					bonusPayAutoCalcSet,
@@ -816,7 +823,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					recordReGetClass.getBreakCount(),
 					recordReGetClass.coreTimeSetting,
 					recordReGetClass.statutoryFrameNoList,
-					scheduleReGetClass.getWorkTimeSetting().get().getWorkTimeDivision().getWorkTimeDailyAtr()
+					scheWorkTimeDailyAtr
 					));
 	
 	//  // 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）

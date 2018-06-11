@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
@@ -74,8 +75,10 @@ public class ManageReGetClass {
 	private WorkFlexAdditionSet workFlexAdditionSet;
 	private HourlyPaymentAdditionSet hourlyPaymentAdditionSet;
 	private WorkDeformedLaborAdditionSet workDeformedLaborAdditionSet;
-	
 	private HolidayAddtionSet holidayAddtionSet;
+	
+	//法て内残業枠ＮＯリスト
+	List<OverTimeFrameNo> statutoryFrameNoList;
 	/**
 	 * Constructor 
 	 */
@@ -88,7 +91,7 @@ public class ManageReGetClass {
 			HolidayCalcMethodSet holidayCalcMethodSet,Boolean calculatable,
 			int breakCount,WorkRegularAdditionSet workRegularAdditionSet,
 			WorkFlexAdditionSet workFlexAdditionSet,HourlyPaymentAdditionSet hourlyPaymentAdditionSet, WorkDeformedLaborAdditionSet workDeformedLaborAdditionSet,
-			HolidayAddtionSet holidayAddtionSet,Optional<CoreTimeSetting> coreTimeSetting) {
+			HolidayAddtionSet holidayAddtionSet,Optional<CoreTimeSetting> coreTimeSetting,List<OverTimeFrameNo> statutoryFrameNoList) {
 		super();
 		this.calculationRangeOfOneDay = calculationRangeOfOneDay;
 		this.integrationOfDaily = integrationOfDaily;
@@ -131,7 +134,8 @@ public class ManageReGetClass {
 									null,
 									null,
 									null,
-									Optional.empty());
+									Optional.empty(),
+									null);
 				
 	}
 	
@@ -147,7 +151,7 @@ public class ManageReGetClass {
 										  HolidayCalcMethodSet holidayCalcMethodSet,
 										  int breakCount,WorkRegularAdditionSet workRegularAdditionSet,
 										  WorkFlexAdditionSet workFlexAdditionSet,HourlyPaymentAdditionSet hourlyPaymentAdditionSet, WorkDeformedLaborAdditionSet workDeformedLaborAdditionSet,
-										  HolidayAddtionSet holidayAddtionSet, Optional<CoreTimeSetting> coreTimeSetting) {
+										  HolidayAddtionSet holidayAddtionSet, Optional<CoreTimeSetting> coreTimeSetting,List<OverTimeFrameNo> statutoryFrameNoList) {
 		return new ManageReGetClass(calculationRangeOfOneDay,
 									integrationOfDaily,
 									workTimeSetting,
@@ -164,8 +168,9 @@ public class ManageReGetClass {
 									workFlexAdditionSet,
 									hourlyPaymentAdditionSet,
 									workDeformedLaborAdditionSet,
-									holidayAddtionSet
-									,coreTimeSetting);
+									holidayAddtionSet,
+									coreTimeSetting,
+									statutoryFrameNoList);
 	
 	}
 }

@@ -445,7 +445,8 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			 PredetermineTimeSetForCalc predetermineTimeSetForCalc, 
 			 Finally<TimevacationUseTimeOfDaily> timeVacationAdditionRemainingTime,
 			 DailyUnit dailyUnit) {
-		if(predTime > statutoryTime.valueAsMinutes()) {
+		if( statutoryTime.greaterThan(0)
+			&& predTime > statutoryTime.valueAsMinutes()) {
 			return decisionPredeterminePremiumTime(statutoryTime, 
 												  withinTimeSheet,
 												  personalCondition,

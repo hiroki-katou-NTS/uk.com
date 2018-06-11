@@ -42,6 +42,7 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
@@ -128,6 +129,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	 * @param oneDay 1日の範囲クラス
 	 * @param schePreTimeSet 
 	 * @param ootsukaFixCalsSet 
+	 * @param workTimeDailyAtr2 
 	 * @param scheduleReGetClass 
 	 * @param integrationOfDaily2 
 	 * @return 日別実績(Work)クラス
@@ -163,7 +165,8 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   Optional<WorkType> scheWorkType,
 			   AutoCalFlexOvertimeSetting flexAutoCalSet,
 			   DailyUnit dailyUnit,
-			   int breakCount,Optional<CoreTimeSetting> coreTimeSetting) {
+			   int breakCount,Optional<CoreTimeSetting> coreTimeSetting
+			   ,List<OverTimeFrameNo> statutoryFrameNoList, Optional<WorkTimeDailyAtr> scheWorkTimeDailyAtr) {
 		integrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(collectCalculationResult(recordOneDay,scheOneDay,
 				   																		personalCondition,
 				   																		 vacationClass,
@@ -194,7 +197,9 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 				   																	     integrationOfDaily, 
 				   																	     scheWorkType,
 				   																	     flexAutoCalSet,
-				   																	     dailyUnit,coreTimeSetting
+				   																	     dailyUnit,coreTimeSetting,
+				   																	     statutoryFrameNoList,
+				   																	     scheWorkTimeDailyAtr
 				   																	     )));
 		
 		return integrationOfDaily;
@@ -236,7 +241,9 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   Optional<FixRestTimezoneSet> fixRestTimeSetting, IntegrationOfDaily integrationOfDaily,
 			   Optional<WorkType> scheWorkType, 
 			   AutoCalFlexOvertimeSetting flexSetting,
-			   DailyUnit dailyUnit,Optional<CoreTimeSetting> coreTimeSetting
+			   DailyUnit dailyUnit,Optional<CoreTimeSetting> coreTimeSetting,
+			   List<OverTimeFrameNo> statutoryFrameNoList,
+			   Optional<WorkTimeDailyAtr> scheWorkTimeDailyAtr
 			   ) {
 		
 		/*日別実績の勤務予定時間の計算*/
@@ -244,9 +251,9 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 		val workScheduleTime = calcWorkSheduleTime(recordOneDay,scheduleOneDay,schePreTimeSet, recordWorkType,scheWorkType, 
 												   personalCondition, vacationClass, workingSystem, 
 												   illegularAddSetting, flexAddSetting, regularAddSetting, holidayAddtionSet, overTimeAutoCalcAtr, 
-												   workTimeDailyAtr, flexCalcMethod, holidayCalcMethodSet, bonusPayAutoCalcSet, 
+												   scheWorkTimeDailyAtr, flexCalcMethod, holidayCalcMethodSet, bonusPayAutoCalcSet, 
 												   calcAtrOfDaily, eachWorkTimeSet, eachCompanyTimeSet, breakTimeCount, integrationOfDaily, 
-												   flexSetting, coreTimeSetting,dailyUnit);
+												   flexSetting, coreTimeSetting,dailyUnit,statutoryFrameNoList);
 		/*日別実績の実績時間の計算*/
 		val actualWorkingTimeOfDaily = ActualWorkingTimeOfDaily.calcRecordTime(recordOneDay,personalCondition,
 				    vacationClass,
@@ -274,7 +281,9 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 					scheWorkType, 
 					flexSetting, 
 					dailyUnit,
-					workScheduleTime,coreTimeSetting);
+					workScheduleTime,
+					coreTimeSetting, 
+					statutoryFrameNoList);
 		
 
 		/*滞在時間の計算*/
@@ -324,7 +333,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	 * @param regularAddSetting 
 	 * @param holidayAddtionSet 
 	 * @param overTimeAutoCalcAtr 
-	 * @param workTimeDailyAtr 
+	 * @param scheWorkTimeDailyAtr 
 	 * @param flexCalcMethod 
 	 * @param holidayCalcMethodSet 
 	 * @param raisingAutoCalcSet 
@@ -336,6 +345,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	 * @param integrationOfDaily 
 	 * @param flexAutoCalSet 
 	 * @param coreTimeSetting 
+	 * @param statutoryFrameNoList 
 	 * @return
 	 */
 	private static WorkScheduleTimeOfDaily calcWorkSheduleTime(CalculationRangeOfOneDay recordOneDay, CalculationRangeOfOneDay scheduleOneDay,
@@ -344,26 +354,31 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 															   WorkingSystem workingSystem, 
 															   WorkDeformedLaborAdditionSet illegularAddSetting, WorkFlexAdditionSet flexAddSetting, 
 															   WorkRegularAdditionSet regularAddSetting, HolidayAddtionSet holidayAddtionSet, 
-															   AutoCalOverTimeAttr overTimeAutoCalcAtr, Optional<WorkTimeDailyAtr> workTimeDailyAtr, 
+															   AutoCalOverTimeAttr overTimeAutoCalcAtr, Optional<WorkTimeDailyAtr> scheWorkTimeDailyAtr, 
 															   Optional<SettingOfFlexWork> flexCalcMethod, HolidayCalcMethodSet holidayCalcMethodSet, 
 															   BonusPayAutoCalcSet bonusPayAutoCalcSet, 
 															   CalAttrOfDailyPerformance calcAtrOfDaily, List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet, 
 															   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet, int breakTimeCount, 
 															   IntegrationOfDaily integrationOfDaily, AutoCalFlexOvertimeSetting flexAutoCalSet, 
-															   Optional<CoreTimeSetting> coreTimeSetting,DailyUnit dailyUnit) {
+															   Optional<CoreTimeSetting> coreTimeSetting,DailyUnit dailyUnit, List<OverTimeFrameNo> statutoryFrameNoList) {
 		//勤務予定時間を計算
 		//val schedulePredWorkTime = (scheduleOneDay.getWorkInformastionOfDaily().getRecordInfo().getWorkTimeCode() == null)?new AttendanceTime(0):recordOneDay.getPredetermineTimeSetForCalc().getpredetermineTime(workType.getDailyWork());
-		val totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(scheduleOneDay,
+		AttendanceTime scheTotalTime = new AttendanceTime(0);
+		AttendanceTime scheExcessTotalTime = new AttendanceTime(0);
+		AttendanceTime scheWithinTotalTime = new AttendanceTime(0);
+		if(scheWorkType != null
+			&& scheWorkType.isPresent()) {
+			val totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(scheduleOneDay,
 																   personalCondition, 
 																   vacationClass, 
-																   workType, 
+																   scheWorkType.get(), 
 																   workingSystem, 
 																   illegularAddSetting, 
 																   flexAddSetting, 
 																   regularAddSetting, 
 																   holidayAddtionSet, 
 																   overTimeAutoCalcAtr, 
-																   workTimeDailyAtr, 
+																   scheWorkTimeDailyAtr, 
 																   flexCalcMethod, 
 																   holidayCalcMethodSet, 
 																   bonusPayAutoCalcSet, 
@@ -374,18 +389,28 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 																   integrationOfDaily, 
 																   flexAutoCalSet, 
 																   coreTimeSetting,
-																   dailyUnit
+																   dailyUnit,
+																   statutoryFrameNoList
 																   );
-		int overWorkTime = totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().calcTotalFrameTime():0;
-		overWorkTime += totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().calcTransTotalFrameTime():0;
-		int holidayWorkTime = totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().calcTotalFrameTime():0;
-		holidayWorkTime += totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().calcTransTotalFrameTime():0;
+			scheTotalTime = totalWorkingTime.getTotalTime();
+			if(totalWorkingTime.getWithinStatutoryTimeOfDaily() != null)
+				scheWithinTotalTime = totalWorkingTime.getWithinStatutoryTimeOfDaily().getWorkTime();
+			int overWorkTime = totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().calcTotalFrameTime():0;
+			overWorkTime += totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().calcTransTotalFrameTime():0;
+			int holidayWorkTime = totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().calcTotalFrameTime():0;
+			holidayWorkTime += totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().calcTransTotalFrameTime():0;
+			scheExcessTotalTime = new AttendanceTime(overWorkTime + holidayWorkTime);
+		}
 		//実績所定労働時間の計算
-		val actualPredWorkTime = (recordOneDay.getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode() == null)?new AttendanceTime(0):recordOneDay.getPredetermineTimeSetForCalc().getPredetermineTimeByAttendanceAtr(workType.getDailyWork().decisionNeedPredTime());
+		val actualPredWorkTime = (recordOneDay.getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode() == null || workType.getDailyWork().isHolidayWork())
+									?new AttendanceTime(0)
+									:recordOneDay.getPredetermineTimeSetForCalc().getPredetermineTimeByAttendanceAtr(workType.getDailyWork().decisionNeedPredTime());
 		//計画所定時間の計算
-		val shedulePreWorkTime = (schePreTime.isPresent()&&scheWorkType.isPresent())? schePreTime.get().getPredetermineTimeByAttendanceAtr(scheWorkType.get().getDailyWork().decisionNeedPredTime()):new AttendanceTime(0);
+		val shedulePreWorkTime = (schePreTime.isPresent() && scheWorkType.isPresent() && !scheWorkType.get().getDailyWork().isHolidayWork())
+								  ? schePreTime.get().getPredetermineTimeByAttendanceAtr(scheWorkType.get().getDailyWork().decisionNeedPredTime())
+								  :new AttendanceTime(0);
 		//val workSheduleTime
-		return new WorkScheduleTimeOfDaily(new WorkScheduleTime(totalWorkingTime.getTotalTime(),new AttendanceTime(overWorkTime + holidayWorkTime),totalWorkingTime.getTotalTime()),shedulePreWorkTime,actualPredWorkTime);
+		return new WorkScheduleTimeOfDaily(new WorkScheduleTime(scheTotalTime,scheExcessTotalTime,scheWithinTotalTime),shedulePreWorkTime,actualPredWorkTime);
 	}
 
 	/**
