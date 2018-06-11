@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -114,61 +116,77 @@ public class KrcdtDayOvertimeworkTs extends UkJpaEntity implements Serializable{
 	}
 	
 	public void setData(List<OverTimeFrameTimeSheet> overTimeSheet){
-		TimeSpanForCalc span;
-		if(overTimeSheet.size() > 0) {
-			span = getTimeSpan(overTimeSheet, 0);
-			this.overTime1StrClc = span == null ? 0 : span.startValue();
-			this.overTime1EndClc = span == null ? 0: span.endValue();
-		}
-		if(overTimeSheet.size() > 1) {
-			span = getTimeSpan(overTimeSheet, 1);
-			this.overTime2StrClc = span == null ? 0 : span.startValue();
-			this.overTime2EndClc = span == null ? 0 : span.endValue();
-		}
-		if(overTimeSheet.size() > 2) {
-			span = getTimeSpan(overTimeSheet, 2);
-			this.overTime3StrClc = span == null ? 0 : span.startValue();
-			this.overTime3EndClc = span == null ? 0 : span.endValue();
-		}
-		if(overTimeSheet.size() > 3) {
-			span = getTimeSpan(overTimeSheet, 3);
-			this.overTime4StrClc = span == null ? 0 : span.startValue();
-			this.overTime4EndClc = span == null ? 0 : span.endValue();
-		}
-		if(overTimeSheet.size() > 4) {
-			span = getTimeSpan(overTimeSheet, 4);
-			this.overTime5StrClc = span == null ? 0 : span.startValue();
-			this.overTime5EndClc = span == null ? 0 : span.endValue();
-		}
-		if(overTimeSheet.size() > 5) {
-			span = getTimeSpan(overTimeSheet, 5);
-			this.overTime6StrClc = span == null ? 0 : span.startValue();
-			this.overTime6EndClc = span == null ? 0 : span.endValue();
-		}
-		if(overTimeSheet.size() > 6) {
-			span = getTimeSpan(overTimeSheet, 6);
-			this.overTime7StrClc = span == null ? 0 : span.startValue();
-			this.overTime7EndClc = span == null ? 0 : span.endValue();
-		}
-		if(overTimeSheet.size() > 7) {
-			span = getTimeSpan(overTimeSheet, 7);
-			this.overTime8StrClc = span == null ? 0 : span.startValue();
-			this.overTime8EndClc = span == null ? 0 : span.endValue();
-		}
-		if(overTimeSheet.size() > 8) {
-			span = getTimeSpan(overTimeSheet, 8);
-			this.overTime9StrClc = span == null ? 0 : span.startValue();
-			this.overTime9EndClc = span == null ? 0 : span.endValue();
-		}
-		if(overTimeSheet.size() > 9) {
-			span = getTimeSpan(overTimeSheet, 9);
-			this.overTime10StrClc = span == null ? 0 : span.startValue();
-			this.overTime10EndClc = span == null ? 0 : span.endValue();
-		}
+		if(overTimeSheet == null) return;
+		Optional<TimeSpanForCalc> span;
+		span = getTimeSpan(overTimeSheet, 1);
+		span.ifPresent( tc -> {
+			this.overTime1StrClc = tc == null ? 0 : tc.startValue();
+			this.overTime1EndClc = tc == null ? 0 : tc.endValue();
+		});
+
+		
+		span = getTimeSpan(overTimeSheet, 2);
+		span.ifPresent( tc -> {
+			this.overTime2StrClc = tc == null ? 0 : tc.startValue();
+			this.overTime2EndClc = tc == null ? 0 : tc.endValue();
+		});
+
+		span = getTimeSpan(overTimeSheet, 3);
+		span.ifPresent( tc -> {
+			this.overTime3StrClc = tc == null ? 0 : tc.startValue();
+			this.overTime3EndClc = tc == null ? 0 : tc.endValue();
+		});
+ 
+		span = getTimeSpan(overTimeSheet, 4);
+		span.ifPresent( tc -> {
+			this.overTime4StrClc = tc == null ? 0 : tc.startValue();
+			this.overTime4EndClc = tc == null ? 0 : tc.endValue();
+		});
+ 
+		span = getTimeSpan(overTimeSheet, 5);
+		span.ifPresent( tc -> {
+			this.overTime5StrClc = tc == null ? 0 : tc.startValue();
+			this.overTime5EndClc = tc == null ? 0 : tc.endValue();
+		});
+ 
+		span = getTimeSpan(overTimeSheet, 6);
+		span.ifPresent( tc -> {
+			this.overTime6StrClc = tc == null ? 0 : tc.startValue();
+			this.overTime6EndClc = tc == null ? 0 : tc.endValue();
+		});
+ 
+		span = getTimeSpan(overTimeSheet, 7);
+		span.ifPresent( tc -> {
+			this.overTime7StrClc = tc == null ? 0 : tc.startValue();
+			this.overTime7EndClc = tc == null ? 0 : tc.endValue();
+		});
+ 
+		span = getTimeSpan(overTimeSheet, 8);
+		span.ifPresent( tc -> {
+			this.overTime8StrClc = tc == null ? 0 : tc.startValue();
+			this.overTime8EndClc = tc == null ? 0 : tc.endValue();
+		});
+ 
+		span = getTimeSpan(overTimeSheet, 9);
+		span.ifPresent( tc -> {
+			this.overTime9StrClc = tc == null ? 0 : tc.startValue();
+			this.overTime9EndClc = tc == null ? 0 : tc.endValue();
+		});
+ 
+		span = getTimeSpan(overTimeSheet, 10);
+		span.ifPresent( tc -> {
+			this.overTime10StrClc = tc == null ? 0 : tc.startValue();
+			this.overTime10EndClc = tc == null ? 0 : tc.endValue();
+		});
+ 
 	}
 
-	private TimeSpanForCalc getTimeSpan(List<OverTimeFrameTimeSheet> overTimeSheet, int sheetNo) {
-		return overTimeSheet.get(sheetNo).getTimeSpan();
+	private Optional<TimeSpanForCalc> getTimeSpan(List<OverTimeFrameTimeSheet> overTimeSheet, int sheetNo) {
+		return overTimeSheet.stream()
+							.filter(tc -> tc.getFrameNo().v().intValue() == sheetNo)
+							.map(tc -> tc.getTimeSpan())
+							.findFirst();
+							
 	}
 	
 	

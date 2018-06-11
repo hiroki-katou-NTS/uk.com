@@ -28,6 +28,8 @@ import nts.uk.ctx.at.record.infra.entity.daily.divergencetime.KrcdtDayDivergence
 import nts.uk.ctx.at.record.infra.entity.daily.divergencetime.KrcdtDayDivergenceTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.holidayworktime.KrcdtDayHolidyWork;
 import nts.uk.ctx.at.record.infra.entity.daily.holidayworktime.KrcdtDayHolidyWorkPK;
+import nts.uk.ctx.at.record.infra.entity.daily.holidayworktime.KrcdtDayHolidyWorkTs;
+import nts.uk.ctx.at.record.infra.entity.daily.holidayworktime.KrcdtDayHolidyWorkTsPK;
 import nts.uk.ctx.at.record.infra.entity.daily.latetime.KrcdtDayLateTime;
 import nts.uk.ctx.at.record.infra.entity.daily.latetime.KrcdtDayLateTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.leaveearlytime.KrcdtDayLeaveEarlyTime;
@@ -36,6 +38,8 @@ import nts.uk.ctx.at.record.infra.entity.daily.legalworktime.KrcdtDayPrsIncldTim
 import nts.uk.ctx.at.record.infra.entity.daily.legalworktime.KrcdtDayPrsIncldTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimework;
 import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimeworkPK;
+import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimeworkTs;
+import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimeworkTsPK;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttime;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.vacation.KrcdtDayVacation;
@@ -71,7 +75,7 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 						attendanceTime.getYmd(), attendanceTime.getWorkScheduleTimeOfDaily()));
 			}
 			if(attendanceTime.getActualWorkingTimeOfDaily().getDivTime() != null) {
-				//追加
+				//乖離
 				this.commandProxy().insert(KrcdtDayDivergenceTime.toEntity(attendanceTime.getEmployeeId(), attendanceTime.getYmd(),
 																			  attendanceTime.getActualWorkingTimeOfDaily().getDivTime()));
 			}
@@ -85,6 +89,11 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 							.insert(KrcdtDayOvertimework.create(attendanceTime.getEmployeeId(), attendanceTime.getYmd(),
 									attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
 											.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get()));
+						/* 残業時間帯 */
+						this.commandProxy()
+							.insert(KrcdtDayOvertimeworkTs.create(attendanceTime.getEmployeeId(), attendanceTime.getYmd(),
+									attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
+											.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTimeSheet()));
 					}
 					if (attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily()
 						.getWorkHolidayTime().isPresent()) {
@@ -93,17 +102,24 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 							.insert(KrcdtDayHolidyWork.create(attendanceTime.getEmployeeId(), attendanceTime.getYmd(),
 									attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
 											.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get()));
+						/* 休出時間帯 */
+						this.commandProxy()
+							.insert(KrcdtDayHolidyWorkTs.create(attendanceTime.getEmployeeId(), attendanceTime.getYmd(),
+									attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
+											.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTimeSheet()));
 					}
 				}
 				if (attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily() != null) {
 					/* 休憩時間 */
 					this.commandProxy().insert(KrcdtDayBreakTime.toEntity(attendanceTime.getEmployeeId(),
 							attendanceTime.getYmd(), attendanceTime));
+					/*補正後休憩時間帯*/
 				}
 				if (attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily() != null) {
 					/* 短時間勤務時間 */
 					this.commandProxy().insert(KrcdtDayShorttime.toEntity(attendanceTime.getEmployeeId(),
 							attendanceTime.getYmd(), attendanceTime));
+					/*短時間勤務時間帯*/
 				}
 				for (LeaveEarlyTimeOfDaily leaveEarlyTime : attendanceTime.getActualWorkingTimeOfDaily()
 						.getTotalWorkingTime().getLeaveEarlyTimeOfDaily()) {
@@ -154,45 +170,79 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 								.find(new KrcdtDayOvertimeworkPK(attendanceTime.getEmployeeId(), attendanceTime.getYmd()),
 										KrcdtDayOvertimework.class)
 								.orElse(null);
+						/*残業時間帯*/
+						KrcdtDayOvertimeworkTs krcdtDayOvertimeworkTs  = this.queryProxy()
+								.find(new KrcdtDayOvertimeworkTsPK(attendanceTime.getEmployeeId(), attendanceTime.getYmd()),
+										KrcdtDayOvertimeworkTs.class)
+								.orElse(null);
 						/* 残業時間がattendanceTimeにある&&取得成功 */
 						if (attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
-								.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()
-								&& (krcdtDayOvertimework != null)) {
-							krcdtDayOvertimework.setData(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
-									.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().orElse(null));
-							this.commandProxy().update(krcdtDayOvertimework);
-						}
-						/* 残業時間がattendanceTimeにある && 取得失敗 */
-						else if (attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
-								.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()
-								&& (krcdtDayOvertimework == null)) {
-							/* 残業時間 */
-							this.commandProxy()
+							.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()) {
+								/*残業時間*/
+								if(krcdtDayOvertimework != null) {			
+									krcdtDayOvertimework.setData(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
+												.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().orElse(null));
+										this.commandProxy().update(krcdtDayOvertimework);
+								}
+								else {
+									this.commandProxy()
 									.insert(KrcdtDayOvertimework.create(attendanceTime.getEmployeeId(),
 											attendanceTime.getYmd(),
 											attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
 													.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get()));
+								}
+								/*残業時間帯*/
+								if(krcdtDayOvertimeworkTs != null) {
+									krcdtDayOvertimeworkTs.setData(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
+											.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTimeSheet());
+									this.commandProxy().update(krcdtDayOvertimeworkTs);
+								}
+								else {
+									this.commandProxy()
+									.insert(KrcdtDayOvertimeworkTs.create(attendanceTime.getEmployeeId(),
+											attendanceTime.getYmd(),
+											attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
+													.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTimeSheet()));
+								}
 						}
-
 						/* 休出時間 */
 						KrcdtDayHolidyWork krcdtDayHolidyWork = this.queryProxy()
 								.find(new KrcdtDayHolidyWorkPK(attendanceTime.getEmployeeId(), attendanceTime.getYmd()),
 										KrcdtDayHolidyWork.class)
 								.orElse(null);
-						if ((attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
-								.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent())
-								&& (krcdtDayHolidyWork != null)) {
-							krcdtDayHolidyWork.setData(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
-									.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get());
-							this.commandProxy().update(krcdtDayHolidyWork);
-						} else if ((attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
-								.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent())
-								&& (krcdtDayHolidyWork == null)) {
-							this.commandProxy()
-									.insert(KrcdtDayHolidyWork.create(attendanceTime.getEmployeeId(),
-											attendanceTime.getYmd(),
-											attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
-													.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get()));
+						/* 休出時間帯*/
+						KrcdtDayHolidyWorkTs krcdtDayHolidyWorkTs = this.queryProxy()
+								.find(new KrcdtDayHolidyWorkTsPK(attendanceTime.getEmployeeId(), attendanceTime.getYmd()),
+										KrcdtDayHolidyWorkTs.class)
+								.orElse(null);
+						if (attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
+								.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()){
+							/*休出時間*/
+							if(krcdtDayHolidyWork != null) {
+								krcdtDayHolidyWork.setData(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
+										.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get());
+								this.commandProxy().update(krcdtDayHolidyWork);								
+							}
+							else {
+								this.commandProxy()
+								.insert(KrcdtDayHolidyWork.create(attendanceTime.getEmployeeId(),
+										attendanceTime.getYmd(),
+										attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
+												.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get()));
+							}
+							/*休出時間帯*/
+							if(krcdtDayHolidyWorkTs != null) {
+								krcdtDayHolidyWorkTs.setData(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
+										.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTimeSheet());
+								this.commandProxy().update(krcdtDayHolidyWorkTs);								
+							}
+							else {
+								this.commandProxy()
+								.insert(KrcdtDayHolidyWorkTs.create(attendanceTime.getEmployeeId(),
+										attendanceTime.getYmd(),
+										attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
+												.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTimeSheet()));
+							}
 						}
 						/* 休憩時間 */
 						KrcdtDayBreakTime krcdtDayBreakTime = this.queryProxy()
@@ -242,8 +292,8 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 								this.commandProxy().insert(KrcdtDayLeaveEarlyTime.create(attendanceTime.getEmployeeId(),
 										attendanceTime.getYmd(), leaveEarlyTime));
 							} else {
-							krcdtDayLeaveEarlyTime.setData(leaveEarlyTime);
-							this.commandProxy().update(krcdtDayLeaveEarlyTime);
+								krcdtDayLeaveEarlyTime.setData(leaveEarlyTime);
+								this.commandProxy().update(krcdtDayLeaveEarlyTime);
 							}
 						}
 						for (LateTimeOfDaily lateTime : attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
