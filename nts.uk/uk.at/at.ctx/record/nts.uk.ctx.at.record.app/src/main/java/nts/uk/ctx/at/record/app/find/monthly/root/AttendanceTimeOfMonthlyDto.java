@@ -15,7 +15,7 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.totalcount.TotalCountByPeriod;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceLayoutConst;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
@@ -28,7 +28,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の勤怠時間 */
-@AttendanceItemRoot(rootName = AttendanceLayoutConst.MONTHLY_ATTENDANCE_TIME_NAME, itemType = AttendanceItemType.MONTHLY_ITEM)
+@AttendanceItemRoot(rootName = ItemConst.MONTHLY_ATTENDANCE_TIME_NAME, itemType = AttendanceItemType.MONTHLY_ITEM)
 public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 	/** 会社ID */
 	private String companyId;
@@ -49,28 +49,28 @@ public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 	private ClosureDateDto closureDate;
 
 	/** 期間: 期間 */
-	@AttendanceItemLayout(jpPropertyName = "期間", layout = "C")
+	@AttendanceItemLayout(jpPropertyName = PERIOD, layout = LAYOUT_C)
 	private DatePeriodDto datePeriod;
 
 	/** 月の計算: 月別実績の月の計算 */
-	@AttendanceItemLayout(jpPropertyName = "月の計算", layout = "E")
+	@AttendanceItemLayout(jpPropertyName = CALC, layout = LAYOUT_D)
 	private MonthlyCalculationDto monthlyCalculation;
 
 	/** 時間外超過: 月別実績の時間外超過 */
-	@AttendanceItemLayout(jpPropertyName = "時間外超過", layout = "F")
+	@AttendanceItemLayout(jpPropertyName = EXCESS, layout = LAYOUT_E)
 	private ExcessOutsideWorkOfMonthlyDto excessOutsideWork;
 
 	/** 集計日数: 勤怠月間日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "集計日数", layout = "G")
+	@AttendanceItemLayout(jpPropertyName = AGGREGATE + DAYS, layout = LAYOUT_F)
 	private Double aggregateDays;
 
 	/** 縦計: 期間別の縦計 */
-	@AttendanceItemLayout(jpPropertyName = "縦計", layout = "H")
+	@AttendanceItemLayout(jpPropertyName = VERTICAL_TOTAL, layout = LAYOUT_G)
 	private VerticalTotalOfMonthlyDto verticalTotal;
 
 	/** 回数集計: 期間別の回数集計 */
-	@AttendanceItemLayout(jpPropertyName = "回数集計", layout = "I")
+	@AttendanceItemLayout(jpPropertyName = COUNT + AGGREGATE, layout = LAYOUT_H)
 	private TotalCountByPeriodDto totalCount;
 
 	@Override

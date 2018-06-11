@@ -8,6 +8,7 @@ import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.Co
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.RetentionYearlyUseTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.SpecialHolidayUseTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.VacationUseTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -17,26 +18,26 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の休暇使用時間 */
-public class VacationUseTimeOfMonthlyDto {
+public class VacationUseTimeOfMonthlyDto implements ItemConst {
 
 	/** 年休 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "年休", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = ANNUNAL_LEAVE, layout = LAYOUT_A)
 	private Integer annualLeave;
 
 	/** 積立年休 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "積立年休", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = RETENTION, layout = LAYOUT_B)
 	private Integer retentionYearly;
 
 	/** 特別休暇 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "特別休暇", layout = "C")
+	@AttendanceItemLayout(jpPropertyName = SPECIAL, layout = LAYOUT_C)
 	private Integer specialHoliday;
 
 	/** 代休 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "代休", layout = "D")
+	@AttendanceItemLayout(jpPropertyName = COMPENSATORY, layout = LAYOUT_D)
 	private Integer compensatoryLeave;
 
 	public VacationUseTimeOfMonthly toDomain() {

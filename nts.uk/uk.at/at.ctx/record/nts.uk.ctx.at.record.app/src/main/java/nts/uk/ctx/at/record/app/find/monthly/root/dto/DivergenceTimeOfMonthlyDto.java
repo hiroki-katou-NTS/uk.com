@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.divergencetime.AggregateDivergenceTime;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.divergencetime.DivergenceAtrOfMonthly;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -15,30 +16,30 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の乖離時間 -> 集計乖離時間 */
-public class DivergenceTimeOfMonthlyDto {
+public class DivergenceTimeOfMonthlyDto implements ItemConst {
 
 	/** 控除後乖離時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "控除後乖離時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = DEDUCTION + AFTER, layout = LAYOUT_A)
 	private Integer divergenceTimeAfterDeduction;
 
 	/** 控除時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "控除時間", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = DEDUCTION, layout = LAYOUT_B)
 	private Integer deductionTime;
 
 	/** 乖離フラグ: 月別実績の乖離フラグ */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "乖離フラグ", layout = "C")
+	@AttendanceItemLayout(jpPropertyName = ATTRIBUTE, layout = LAYOUT_C)
 	private Integer divergenceAtr;
 
 	/** 乖離時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "乖離時間", layout = "D")
+	@AttendanceItemLayout(jpPropertyName = DIVERGENCE, layout = LAYOUT_D)
 	private Integer divergenceTime;
 
 	/** 乖離時間NO: 乖離時間NO */
-	private int divergenceTimeNo;
+	private int no;
 
 	public static DivergenceTimeOfMonthlyDto from(AggregateDivergenceTime domain) {
 		DivergenceTimeOfMonthlyDto dto = new DivergenceTimeOfMonthlyDto();
@@ -48,12 +49,12 @@ public class DivergenceTimeOfMonthlyDto {
 			dto.setDivergenceTime(domain.getDivergenceTime() == null ? null : domain.getDivergenceTime().valueAsMinutes());
 			dto.setDivergenceTimeAfterDeduction(domain.getDivergenceTimeAfterDeduction() == null 
 					? null : domain.getDivergenceTimeAfterDeduction().valueAsMinutes());
-			dto.setDivergenceTimeNo(domain.getDivergenceTimeNo());
+			dto.setNo(domain.getDivergenceTimeNo());
 		}
 		return dto;
 	}
 	public AggregateDivergenceTime toDomain() {
-		return AggregateDivergenceTime.of(divergenceTimeNo, toAttendanceTimeMonth(divergenceTime), 
+		return AggregateDivergenceTime.of(no, toAttendanceTimeMonth(divergenceTime), 
 				toAttendanceTimeMonth(deductionTime), toAttendanceTimeMonth(divergenceTimeAfterDeduction),
 				ConvertHelper.getEnum(divergenceAtr, DivergenceAtrOfMonthly.class));
 	}

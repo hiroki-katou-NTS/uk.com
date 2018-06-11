@@ -13,26 +13,26 @@ import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemTimes;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValue;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
 
 @NoArgsConstructor
-public class OptionalItemValueDto {
+public class OptionalItemValueDto implements ItemConst{
 	
 	private boolean autoInit = true;
 
 	/** 任意項目: 回数, 時間, 金額 */
 	@AttendanceItemValue
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "値")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = VALUE)
 	private String value;
 
 	@Getter
-	private int itemNo;
-
+	private int no;
+	
 	private boolean isTimeItem;
 
 	private boolean isTimesItem;
@@ -43,7 +43,7 @@ public class OptionalItemValueDto {
 			boolean isAmountItem) {
 		super();
 		this.value = value;
-		this.itemNo = itemNo;
+		this.no = itemNo;
 		this.isTimeItem = isTimeItem;
 		this.isTimesItem = isTimesItem;
 		this.isAmountItem = isAmountItem;
@@ -96,7 +96,7 @@ public class OptionalItemValueDto {
 
 	public AnyItemValue toDomain() {
 		boolean isHaveData = isHaveData();
-		return new AnyItemValue(new AnyItemNo(this.itemNo), 
+		return new AnyItemValue(new AnyItemNo(this.no), 
 						Optional.of(new AnyItemTimes(this.isTimesItem && isHaveData ? new BigDecimal(this.value) : BigDecimal.ZERO)),
 						Optional.of(new AnyItemAmount(this.isAmountItem && isHaveData ? Integer.parseInt(this.value) : 0)),
 						Optional.of(new AnyItemTime(this.isTimeItem && isHaveData? Integer.valueOf(this.value) : 0)));

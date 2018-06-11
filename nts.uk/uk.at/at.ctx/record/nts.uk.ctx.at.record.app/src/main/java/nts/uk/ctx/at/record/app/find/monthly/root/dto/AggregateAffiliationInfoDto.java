@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AggregateAffiliationInfo;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
@@ -16,31 +17,31 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCod
 /** 集計所属情報 */
 @NoArgsConstructor
 @AllArgsConstructor
-public class AggregateAffiliationInfoDto {
+public class AggregateAffiliationInfoDto implements ItemConst {
 
 	/** 分類コード: 分類コード */
 	@AttendanceItemValue
-	@AttendanceItemLayout(jpPropertyName = "分類コード", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = CLASSIFICATION, layout = LAYOUT_A)
 	private String classificationCode;
 
 	/** 勤務種別コード: 勤務種別コード */
 	@AttendanceItemValue
-	@AttendanceItemLayout(jpPropertyName = "勤務種別コード", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = BUSINESS_TYPE, layout = LAYOUT_B)
 	private String businessTypeCode;
 
 	/** 職位ID: 職位ID */
 	@AttendanceItemValue
-	@AttendanceItemLayout(jpPropertyName = "職位ID", layout = "C")
+	@AttendanceItemLayout(jpPropertyName = JOB_TITLE, layout = LAYOUT_C)
 	private String jobTitle;
 
 	/** 職場ID: 職場ID (work place ID) */
 	@AttendanceItemValue
-	@AttendanceItemLayout(jpPropertyName = "職場ID", layout = "D")
+	@AttendanceItemLayout(jpPropertyName = WORKPLACE, layout = LAYOUT_D)
 	private String workPlaceCode;
 
 	/** 雇用コード: 雇用コード */
 	@AttendanceItemValue
-	@AttendanceItemLayout(jpPropertyName = "雇用コード", layout = "E")
+	@AttendanceItemLayout(jpPropertyName = EMPLOYEMENT, layout = LAYOUT_E)
 	private String employmentCode;
 
 	public static AggregateAffiliationInfoDto from(AggregateAffiliationInfo domain) {

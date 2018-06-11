@@ -129,6 +129,8 @@ public interface ItemConst {
 	public final String MONTHLY_RESERVE_LEAVING_REMAIN_CODE = LAYOUT_E;
 	public final String MONTHLY_RESERVE_LEAVING_REMAIN_NAME = "積立年休月別残数データ";
 
+	public final String OPTIONAL_ITEM_VALUE = "任意項目値";
+	
 	public final String WORK_TYPE = "勤務種類";
 	public final String WORK_TIME = "就業時間";
 	public final String TRANSFER = "振替";

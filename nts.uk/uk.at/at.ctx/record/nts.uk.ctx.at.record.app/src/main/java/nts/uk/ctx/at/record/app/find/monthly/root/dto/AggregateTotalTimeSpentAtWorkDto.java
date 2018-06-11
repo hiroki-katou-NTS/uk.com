@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateTotalTimeSpentAtWork;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -13,31 +14,31 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 期間別の総拘束時間 */
-public class AggregateTotalTimeSpentAtWorkDto {
+public class AggregateTotalTimeSpentAtWorkDto implements ItemConst {
 
 	/** 拘束残業時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "拘束残業時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = OVERTIME, layout = LAYOUT_A)
 	private Integer overTime;
 
 	/** 拘束深夜時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "拘束深夜時間", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = LATE_NIGHT, layout = LAYOUT_B)
 	private Integer midnightTime;
 
 	/** 拘束休出時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "拘束休出時間", layout = "C")
+	@AttendanceItemLayout(jpPropertyName = HOLIDAY_WORK, layout = LAYOUT_C)
 	private Integer holidayTime;
 
 	/** 拘束差異時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "拘束差異時間", layout = "D")
+	@AttendanceItemLayout(jpPropertyName = DIFF, layout = LAYOUT_D)
 	private Integer varienceTime;
 
 	/** 総拘束時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "総拘束時間", layout = "E")
+	@AttendanceItemLayout(jpPropertyName = TOTAL, layout = LAYOUT_E)
 	private Integer totalTime;
 
 	public AggregateTotalTimeSpentAtWork toDomain() {

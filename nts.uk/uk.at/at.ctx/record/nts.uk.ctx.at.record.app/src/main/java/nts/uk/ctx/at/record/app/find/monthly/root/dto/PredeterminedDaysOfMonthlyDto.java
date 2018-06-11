@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.PredeterminedDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -13,21 +14,21 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の所定日数 */
-public class PredeterminedDaysOfMonthlyDto {
+public class PredeterminedDaysOfMonthlyDto implements ItemConst {
 
 	/** 所定日数: 勤怠月間日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "所定日数", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_A)
 	private Double predeterminedDays;
 
 	/** 所定日数付与前: 勤怠月間日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "所定日数付与前", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = BEFORE, layout = LAYOUT_B)
 	private Double predeterminedDaysBeforeGrant;
 
 	/** 所定日数付与後: 勤怠月間日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "所定日数付与後", layout = "C")
+	@AttendanceItemLayout(jpPropertyName = AFTER, layout = LAYOUT_C)
 	private Double predeterminedDaysAfterGrant;
 
 	public PredeterminedDaysOfMonthly toDomain() {

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.IrregularWorkingTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -14,25 +15,25 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の変形労働時間 */
-public class IrregularWorkingTimeOfMonthlyDto {
+public class IrregularWorkingTimeOfMonthlyDto implements ItemConst {
 
 	/** 複数月変形途中時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "複数月変形途中時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = MULTI_MONTH + MIDDLE, layout = LAYOUT_A)
 	private Integer multiMonthIrregularMiddleTime;
 
 	/** 変形期間繰越時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "変形期間繰越時間", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = CARRY_FORWARD, layout = LAYOUT_B)
 	private Integer irregularPeriodCarryforwardTime;
 
 	/** 変形労働不足時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "変形労働不足時間", layout = "C")
+	@AttendanceItemLayout(jpPropertyName = SHORTAGE, layout = LAYOUT_C)
 	private Integer irregularWorkingShortageTime;
 
 	/** 変形法定内残業時間 */
-	@AttendanceItemLayout(jpPropertyName = "変形法定内残業時間", layout = "D")
+	@AttendanceItemLayout(jpPropertyName = LEGAL + OVERTIME, layout = LAYOUT_D)
 	private TimeMonthWithCalculationDto irregularLegalOverTime;
 
 	public IrregularWorkingTimeOfMonthly toDomain() {

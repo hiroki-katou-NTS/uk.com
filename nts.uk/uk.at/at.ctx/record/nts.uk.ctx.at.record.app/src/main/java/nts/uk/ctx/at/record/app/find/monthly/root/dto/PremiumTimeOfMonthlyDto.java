@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.premiumtime.PremiumTimeOfMonthly;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -16,35 +17,35 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の割増時間 */
-public class PremiumTimeOfMonthlyDto {
+public class PremiumTimeOfMonthlyDto implements ItemConst {
 
 	/** 割増時間: 集計割増時間 */
-	@AttendanceItemLayout(jpPropertyName = "割増時間", layout = "A", listMaxLength = 10, indexField = "premiumTimeItemNo")
+	@AttendanceItemLayout(jpPropertyName = PREMIUM, layout = LAYOUT_A, listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<AggregatePremiumTimeDto> premiumTimes;
 
 	/** 深夜時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "深夜時間", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = LATE_NIGHT, layout = LAYOUT_B)
 	private Integer midnightTime;
 
 	/** 法定外休出時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "法定外休出時間", layout = "C")
+	@AttendanceItemLayout(jpPropertyName = ILLEGAL + HOLIDAY_WORK, layout = LAYOUT_C)
 	private Integer illegalHolidayWorkTime;
 
 	/** 法定外時間外時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "法定外時間外時間", layout = "D")
+	@AttendanceItemLayout(jpPropertyName = ILLEGAL + TIME, layout = LAYOUT_D)
 	private Integer illegalOutsideWorkTime;
 
 	/** 法定内休出時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "法定内休出時間", layout = "E")
+	@AttendanceItemLayout(jpPropertyName = LEGAL + HOLIDAY_WORK, layout = LAYOUT_E)
 	private Integer legalHolidayWorkTime;
 
 	/** 法定内時間外時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "法定内時間外時間", layout = "F")
+	@AttendanceItemLayout(jpPropertyName = LEGAL + TIME, layout = LAYOUT_F)
 	private Integer legalOutsideWorkTime;
 	
 	public static PremiumTimeOfMonthlyDto from(PremiumTimeOfMonthly domain) {

@@ -19,6 +19,7 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.TwoTimes
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.WorkDaysDetailOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.WorkTimesOfMonthly;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -27,70 +28,70 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の勤務日数 */
-public class WorkDaysOfMonthlyDto {
+public class WorkDaysOfMonthlyDto implements ItemConst {
 
 	/** 休業: 月別実績の休業 */
-	@AttendanceItemLayout(jpPropertyName = "休業", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = SUSPENS_WORK, layout = LAYOUT_A)
 	private LeaveOfMonthlyDto leave;
 
 	/** 休出日数: 月別実績の休出日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "休出日数", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = HOLIDAY_WORK, layout = LAYOUT_B)
 	private Double holidayWorkDays;
 
 	/** 休日日数: 月別実績の休日日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "休日日数", layout = "C")
+	@AttendanceItemLayout(jpPropertyName = HOLIDAY, layout = LAYOUT_C)
 	private Double holidayDays;
 
 	/** 給与用日数: 月別実績の給与用日数 */
-	@AttendanceItemLayout(jpPropertyName = "給与用日数", layout = "D")
+	@AttendanceItemLayout(jpPropertyName = FOR_SALARY, layout = LAYOUT_D)
 	private PayDaysOfMonthlyDto payDays;
 
 	/** 勤務回数: 月別実績の勤務回数 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "勤務回数", layout = "E")
+	@AttendanceItemLayout(jpPropertyName = COUNT, layout = LAYOUT_E)
 	private Integer workTimes;
 
 	/** 勤務日数: 月別実績の勤務日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "勤務日数", layout = "F")
+	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_F)
 	private Double workDays;
 
 	/** 欠勤日数: 月別実績の欠勤日数 */
-	@AttendanceItemLayout(jpPropertyName = "欠勤日数", layout = "G")
+	@AttendanceItemLayout(jpPropertyName = ABSENCE, layout = LAYOUT_G)
 	private CommonDaysOfMonthlyDto absenceDays;
 
 	/** 出勤日数: 月別実績の出勤日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "出勤日数", layout = "H")
+	@AttendanceItemLayout(jpPropertyName = ATTENDANCE, layout = LAYOUT_H)
 	private Double attendanceDays;
 
 	/** 所定日数: 月別実績の所定日数 */
-	@AttendanceItemLayout(jpPropertyName = "所定日数", layout = "I")
+	@AttendanceItemLayout(jpPropertyName = WITHIN_STATUTORY, layout = LAYOUT_I)
 	private PredeterminedDaysOfMonthlyDto predetermineDays;
 
 	/** 特定日数: 月別実績の特定日数 */
-	@AttendanceItemLayout(jpPropertyName = "特定日数", layout = "J", listMaxLength = 10, indexField = "specificDayItemNo")
+	@AttendanceItemLayout(jpPropertyName = SPECIFIC, layout = LAYOUT_J, listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<AggregateSpecificDaysDto> specificDays;
 
 	/** 二回勤務回数: 月別実績の二回勤務回数 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "二回勤務回数", layout = "K")
+	@AttendanceItemLayout(jpPropertyName = TWO_TIMES + COUNT, layout = LAYOUT_K)
 	private Integer twoTimesWorkTimes;
 
 	/** 臨時勤務回数: 月別実績の臨時勤務回数 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "臨時勤務回数", layout = "L")
+	@AttendanceItemLayout(jpPropertyName = TEMPORARY, layout = LAYOUT_L)
 	private Integer temporaryWorkTimes;
 	
 	/** 振出日数: 月別実績の振出日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "振出日数", layout = "M")
+	@AttendanceItemLayout(jpPropertyName = TRANSFER, layout = LAYOUT_M)
 	private Double transferdays;
 
 	/** 特別休暇日数: 月別実績の特別休暇日数 */
-	@AttendanceItemLayout(jpPropertyName = "特別休暇日数", layout = "N")
+	@AttendanceItemLayout(jpPropertyName = SPECIAL + HOLIDAY, layout = LAYOUT_N)
 	private CommonDaysOfMonthlyDto specialHolidays;
 	
 	public static WorkDaysOfMonthlyDto from(WorkDaysOfMonthly domain) {

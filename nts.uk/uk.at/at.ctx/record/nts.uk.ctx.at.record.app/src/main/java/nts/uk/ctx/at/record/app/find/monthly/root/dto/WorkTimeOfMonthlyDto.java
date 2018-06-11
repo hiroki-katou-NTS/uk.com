@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.bonuspaytime.Bonu
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.divergencetime.DivergenceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.timevarience.BudgetTimeVarienceOfMonthly;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -20,55 +21,55 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の勤務時間 */
-public class WorkTimeOfMonthlyDto {
+public class WorkTimeOfMonthlyDto implements ItemConst {
 
 	/** 医療時間: 月別実績の医療時間 */
-	@AttendanceItemLayout(jpPropertyName = "医療時間", layout = "A", listMaxLength = 2, listNoIndex = true, enumField = "dayNightAtr")
+	@AttendanceItemLayout(jpPropertyName = MEDICAL, layout = LAYOUT_A, listMaxLength = 2, listNoIndex = true, enumField = DEFAULT_ENUM_FIELD_NAME)
 	private List<MedicalTimeOfMonthlyDto> medical;
 
 	/** 加給時間: 月別実績の加給時間 */
-	@AttendanceItemLayout(jpPropertyName = "加給時間", layout = "B", indexField = "bonusPayFrameNo", listMaxLength = 10)
+	@AttendanceItemLayout(jpPropertyName = RAISING_SALARY, layout = LAYOUT_B, indexField = DEFAULT_INDEX_FIELD_NAME, listMaxLength = 10)
 	private List<BonusPayTimeOfMonthlyDto> bonus;
 
 	/** 外出: 月別実績の外出 */
-	@AttendanceItemLayout(jpPropertyName = "外出", layout = "C")
+	@AttendanceItemLayout(jpPropertyName = GO_OUT, layout = LAYOUT_C)
 	private GoOutOfMonthlyDto goout;
 
 	/** 割増時間: 月別実績の割増時間 */
-	@AttendanceItemLayout(jpPropertyName = "割増時間", layout = "D")
+	@AttendanceItemLayout(jpPropertyName = PREMIUM, layout = LAYOUT_D)
 	private PremiumTimeOfMonthlyDto premiumTime;
 
 	/** 休憩時間: 月別実績の休憩時間 */
-	@AttendanceItemLayout(jpPropertyName = "休憩時間", layout = "E")
+	@AttendanceItemLayout(jpPropertyName = BREAK, layout = LAYOUT_E)
 	private BreakTimeOfMonthlyDto breakTime;
 
 	/** 深夜時間: 月別実績の深夜時間 */
-	@AttendanceItemLayout(jpPropertyName = "深夜時間", layout = "F")
+	@AttendanceItemLayout(jpPropertyName = LATE_NIGHT, layout = LAYOUT_F)
 	private MidnightTimeOfMonthlyDto midNightTime;
 
 	/** 遅刻早退: 月別実績の遅刻早退 */
-	@AttendanceItemLayout(jpPropertyName = "遅刻早退", layout = "G")
+	@AttendanceItemLayout(jpPropertyName = LATE + LEAVE_EARLY, layout = LAYOUT_G)
 	private LateLeaveEarlyOfMonthlyDto lateLeaveEarly;
 
 	/** 入退門時間: 月別実績の入退門時間 */
-	@AttendanceItemLayout(jpPropertyName = "入退門時間", layout = "H")
+	@AttendanceItemLayout(jpPropertyName = ATTENDANCE_LEAVE_GATE, layout = LAYOUT_H)
 	private AttendanceLeaveGateTimeOfMonthlyDto attendanceLeave;
 
 	/** 予実差異時間: 月別実績の予実差異時間 */
-	@AttendanceItemLayout(jpPropertyName = "予実差異時間", layout = "I")
+	@AttendanceItemLayout(jpPropertyName = PLAN_ACTUAL_DIFF, layout = LAYOUT_I)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer budgetTimeVarience;
 
 	/** 予約: 月別実績の予約 */
-	@AttendanceItemLayout(jpPropertyName = "予約", layout = "J")
+	@AttendanceItemLayout(jpPropertyName = RESERVATION, layout = LAYOUT_J)
 	private ReservationOfMonthlyDto reservation;
 
 	/** 乖離時間: 月別実績の乖離時間 */
-	@AttendanceItemLayout(jpPropertyName = "乖離時間", layout = "K", listMaxLength = 10, indexField = "divergenceTimeNo")
+	@AttendanceItemLayout(jpPropertyName = DIVERGENCE, layout = LAYOUT_K, listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<DivergenceTimeOfMonthlyDto> divergenceTimes;
 
 	/** 休日時間: 月別実績の休日時間 */
-	@AttendanceItemLayout(jpPropertyName = "休日時間", layout = "L")
+	@AttendanceItemLayout(jpPropertyName = HOLIDAY, layout = LAYOUT_L)
 	private HolidayTimeOfMonthlyDto holidayTime;
 
 	public static WorkTimeOfMonthlyDto from(WorkTimeOfMonthly domain) {

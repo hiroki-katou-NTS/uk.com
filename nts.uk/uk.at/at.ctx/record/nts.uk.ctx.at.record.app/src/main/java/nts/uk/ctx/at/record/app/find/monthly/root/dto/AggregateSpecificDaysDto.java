@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.specificdays.AggregateSpecificDays;
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -14,23 +15,23 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の特定日数 + 集計特定日数 */
-public class AggregateSpecificDaysDto {
+public class AggregateSpecificDaysDto implements ItemConst {
 
 	/** 特定日項目No */
-	private int specificDayItemNo;
+	private int no;
 
 	/** 特定日数: 勤怠月間日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "特定日数", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_A)
 	private Double specificDays;
 
 	/** 休出特定日数: 勤怠月間日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "休出特定日数", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = HOLIDAY_WORK, layout = LAYOUT_B)
 	private Double holidayWorkSpecificDays;
 	
 	public AggregateSpecificDays toDomain() {
-		return AggregateSpecificDays.of(new SpecificDateItemNo(specificDayItemNo), 
+		return AggregateSpecificDays.of(new SpecificDateItemNo(no), 
 										specificDays == null ? null : new AttendanceDaysMonth(specificDays),
 										holidayWorkSpecificDays == null ? null : new AttendanceDaysMonth(holidayWorkSpecificDays));
 	}
@@ -39,7 +40,7 @@ public class AggregateSpecificDaysDto {
 		AggregateSpecificDaysDto dto = new AggregateSpecificDaysDto();
 		if(domain != null) {
 			dto.setHolidayWorkSpecificDays(domain.getHolidayWorkSpecificDays() == null ? null : domain.getHolidayWorkSpecificDays().v());
-			dto.setSpecificDayItemNo(domain.getSpecificDayItemNo().v());
+			dto.setNo(domain.getSpecificDayItemNo().v());
 			dto.setSpecificDays(domain.getSpecificDays() == null ? null : domain.getSpecificDays().v());
 		}
 		return dto;

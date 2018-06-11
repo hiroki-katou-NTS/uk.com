@@ -4,24 +4,25 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 
 @Data
 /** 期間別の縦計 */
 @NoArgsConstructor
 @AllArgsConstructor
-public class VerticalTotalOfMonthlyDto {
+public class VerticalTotalOfMonthlyDto implements ItemConst {
 
 	/** 勤務時間: 月別実績の勤務時間 */
-	@AttendanceItemLayout(jpPropertyName = "勤務時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_A)
 	private WorkTimeOfMonthlyDto workTime;
 
 	/** 勤務時刻: 月別実績の勤務時刻 */
-	@AttendanceItemLayout(jpPropertyName = "勤務時刻", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = CLOCK, layout = LAYOUT_B)
 	private WorkHourOfMonthlyDto workHour;
 
 	/** 勤務日数: 月別実績の勤務日数 */
-	@AttendanceItemLayout(jpPropertyName = "勤務日数", layout = "C")
+	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_C)
 	private WorkDaysOfMonthlyDto workDays;
 	
 	public VerticalTotalOfMonthly toDomain(){

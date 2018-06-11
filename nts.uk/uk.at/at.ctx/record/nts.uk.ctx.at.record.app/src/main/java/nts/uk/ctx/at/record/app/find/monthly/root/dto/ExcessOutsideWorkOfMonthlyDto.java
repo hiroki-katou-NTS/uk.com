@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -17,25 +18,25 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の時間外超過 */
-public class ExcessOutsideWorkOfMonthlyDto {
+public class ExcessOutsideWorkOfMonthlyDto implements ItemConst {
 
 	/** 月割増合計時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "月割増合計時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = MONTHLY_PREMIUM, layout = LAYOUT_A)
 	private Integer monthlyTotalPremiumTime;
 	
 	/** 時間: 時間外超過 */
-	@AttendanceItemLayout(jpPropertyName = "時間", layout = "B", listMaxLength = 50, indexField = "fakeNo")
+	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_B, listMaxLength = 50, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<ExcessOutsideWorkDto> time;
 	
 	/** 週割増合計時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "週割増合計時間", layout = "C")
+	@AttendanceItemLayout(jpPropertyName = WEEKLY_PREMIUM, layout = LAYOUT_C)
 	private Integer weeklyTotalPremiumTime;
 	
 	/** 変形繰越時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "変形繰越時間", layout = "D")
+	@AttendanceItemLayout(jpPropertyName = IRREGULAR + CARRY_FORWARD, layout = LAYOUT_D)
 	private Integer deformationCarryforwardTime;
 	
 	public ExcessOutsideWorkOfMonthly toDomain() {

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.totalcount.TotalCount;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -17,23 +18,23 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TotalCountDto {
+public class TotalCountDto implements ItemConst {
 
 	/** 回数集計NO */
-	private int totalCountNo;
+	private int no;
 	
 	/** 回数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "回数", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = COUNT, layout = LAYOUT_A)
 	private Double count;
 
 	/** 時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "時間", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_B)
 	private Integer time;
 	
 	public TotalCount toDomain(){
-		return TotalCount.of(this.totalCountNo,
+		return TotalCount.of(this.no,
 				this.count == null ? new AttendanceDaysMonth(0.0) : new AttendanceDaysMonth(this.count),
 				this.time == null ? new AttendanceTimeMonth(0) : new AttendanceTimeMonth(this.time));
 	}
@@ -41,6 +42,7 @@ public class TotalCountDto {
 	public static TotalCountDto from(TotalCount domain){
 		TotalCountDto dto = new TotalCountDto();
 		if (domain != null){
+			dto.no = domain.getTotalCountNo();
 			dto.count = domain.getCount() == null ? null : domain.getCount().v();
 			dto.time = domain.getTime() == null ? null : domain.getTime().v();
 		}

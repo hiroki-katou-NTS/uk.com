@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.holidaytime.HolidayTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -13,21 +14,21 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の勤務時間 */
-public class HolidayTimeOfMonthlyDto {
+public class HolidayTimeOfMonthlyDto implements ItemConst {
 
 	/** 法定内休日時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "法定内休日時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = LEGAL, layout = LAYOUT_A)
 	private Integer legalHolTime;
 	
 	/** 法定外休日時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "法定外休日時間", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = ILLEGAL, layout = LAYOUT_B)
 	private Integer illegalHolTime;
 	
 	/** 法定外祝日休日時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "法定外祝日休日時間", layout = "C")
+	@AttendanceItemLayout(jpPropertyName = ILLEGAL + PUBLIC_HOLIDAY, layout = LAYOUT_C)
 	private Integer illegalSpeHolTime;
 	
 	public static HolidayTimeOfMonthlyDto from(HolidayTimeOfMonthly domain) {

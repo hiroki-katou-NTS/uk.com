@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -13,36 +14,36 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の月の計算 */
-public class MonthlyCalculationDto {
+public class MonthlyCalculationDto implements ItemConst {
 
 	/** 36協定時間: 月別実績の36協定時間 */
-	@AttendanceItemLayout(jpPropertyName = "36協定時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = AGREEMENT, layout = LAYOUT_A)
 	private AgreementTimeOfMonthlyDto agreementTime;
 
 	/** フレックス時間: 月別実績のフレックス時間 */
-	@AttendanceItemLayout(jpPropertyName = "フレックス時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = FLEX, layout = LAYOUT_B)
 	private FlexTimeOfMonthlyDto flexTime;
 
 	/** 実働時間: 月別実績の通常変形時間 */
-	@AttendanceItemLayout(jpPropertyName = "実働時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = ACTUAL, layout = LAYOUT_C)
 	private RegularAndIrregularTimeOfMonthlyDto actualWorkingTime;
 
 	/** 集計時間: 集計総労働時間 */
-	@AttendanceItemLayout(jpPropertyName = "集計時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = AGGREGATE, layout = LAYOUT_D)
 	private AggregateTotalWorkingTimeDto aggregateTime;
 
 	/** 総拘束時間: 期間別の総拘束時間 */
-	@AttendanceItemLayout(jpPropertyName = "総拘束時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = RESTRAINT, layout = LAYOUT_E)
 	private AggregateTotalTimeSpentAtWorkDto totalTimeSpentAtWork;
 
 	/** 総労働時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "総労働時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = TOTAL_LABOR, layout = LAYOUT_F)
 	private Integer totalWorkingTime;
 
 	/** 法定労働時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "法定労働時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = WITHIN_STATUTORY, layout = LAYOUT_G)
 	private Integer statutoryWorkingTime;
 
 	public MonthlyCalculation toDomain() {

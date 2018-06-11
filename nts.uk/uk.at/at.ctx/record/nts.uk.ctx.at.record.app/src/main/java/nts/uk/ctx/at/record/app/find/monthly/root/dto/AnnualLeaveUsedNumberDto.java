@@ -6,20 +6,21 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 
 @Data
 /** 年休使用数 */
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnnualLeaveUsedNumberDto {
+public class AnnualLeaveUsedNumberDto implements ItemConst {
 
 	/** 使用日数 */
-	@AttendanceItemLayout(jpPropertyName = "使用日数", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_A)
 	private AnnualLeaveUsedDaysDto usedDays;
 
 	/** 使用時間 */
-	@AttendanceItemLayout(jpPropertyName = "使用時間", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_B)
 	private TimeAnnualLeaveUsedTimeDto usedTime;
 
 	public static AnnualLeaveUsedNumberDto from(AnnualLeaveUsedNumber domain) {
