@@ -1,7 +1,16 @@
-.contents-area{
-	margin:20px 0px 0px 30px;
+.header-content {
+	margin: 5px 10px;
+	border-bottom-style: solid;
+	border-width: 1px;
+	border-color: #b1b1b1;
+	padding-bottom:5px;
 }
-.swaplist-content{
+
+.contents-area {
+	margin: 20px 0px 0px 30px;
+}
+
+.swaplist-content {
 	margin: 30px 0px 0px 15px;
 }
 
@@ -22,7 +31,6 @@
 }
 
 .combo {
-
 	float: left;
 }
 
