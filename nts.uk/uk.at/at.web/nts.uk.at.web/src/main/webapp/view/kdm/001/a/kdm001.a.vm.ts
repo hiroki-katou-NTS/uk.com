@@ -289,7 +289,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 service.getWpName().done(function(wp) {
                     if(wp == null || wp.workplaceId == null || wp.workplaceId == "") {
                         dialog.alertError({ messageId: "Msg_504" }).then(() => {
-                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
                         });
                     } else {
                         self.selectedEmployeeObject = {employeeId: emp.sid, employeeCode: emp.employeeCode, employeeName: emp.employeeName, 
