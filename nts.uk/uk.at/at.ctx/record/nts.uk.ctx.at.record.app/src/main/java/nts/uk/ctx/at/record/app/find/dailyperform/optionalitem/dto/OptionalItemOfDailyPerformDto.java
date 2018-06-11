@@ -10,20 +10,21 @@ import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceLayoutConst;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 
 @Data
-@AttendanceItemRoot(rootName = AttendanceLayoutConst.DAILY_OPTIONAL_ITEM_NAME)
+@AttendanceItemRoot(rootName = ItemConst.DAILY_OPTIONAL_ITEM_NAME)
 public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 
 	private String employeeId;
 
 	private GeneralDate date;
 
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "任意項目値", listMaxLength = 100, indexField = "itemNo")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = OPTIONAL_ITEM_VALUE, 
+			listMaxLength = 100, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<OptionalItemValueDto> optionalItems;
 
 	public static OptionalItemOfDailyPerformDto getDto(AnyItemValueOfDaily domain) {
@@ -53,7 +54,7 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 	public void correctItems(Map<Integer, OptionalItem> optionalMaster) {
 		optionalItems.stream().forEach(item -> {
 //			if(item.isNeedCorrect()) {
-				item.correctItem(optionalMaster.get(item.getItemNo()).getOptionalItemAtr());
+				item.correctItem(optionalMaster.get(item.getNo()).getOptionalItemAtr());
 //			}
 		});
 		optionalItems.removeIf(item -> !item.isHaveData());

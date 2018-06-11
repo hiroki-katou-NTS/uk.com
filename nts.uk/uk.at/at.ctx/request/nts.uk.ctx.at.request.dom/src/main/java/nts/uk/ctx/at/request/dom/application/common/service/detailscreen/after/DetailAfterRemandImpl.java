@@ -133,12 +133,12 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 		// Using RQL 419 instead (1 not have mail)
 		//get list mail by list sID
 		List<MailDestinationImport> lstMail = envAdapter.getEmpEmailAddress(cid, employeeList, 6);
-		Optional<AppDispName> appDispName = repoAppDispName.getDisplay(application.getAppType().value);
-		String appName = "";
-		if(appDispName.isPresent()){
-			appName = appDispName.get().getDispName().v();
-		}
-		String titleMail = application.getAppDate() + " " + appName;
+//		Optional<AppDispName> appDispName = repoAppDispName.getDisplay(application.getAppType().value);
+//		String appName = "";
+//		if(appDispName.isPresent()){
+//			appName = appDispName.get().getDispName().v();
+//		}
+//		String titleMail = application.getAppDate() + " " + appName;
 		for (String employee : employeeList) {
 			String employeeName = employeeAdapter.getEmployeeName(employee);
 			OutGoingMailImport mail = envAdapter.findMailBySid(lstMail, employee);
@@ -167,7 +167,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 				continue;
 			} else {
 				try {
-					mailsender.sendFromAdmin(employeeMail, new MailContents(titleMail, mailContentToSend));
+					mailsender.sendFromAdmin(employeeMail, new MailContents(mailTitle, mailContentToSend));
 					successList.add(employeeName);
 				} catch (Exception ex) {
 					throw new BusinessException("Msg_1057");
