@@ -244,7 +244,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             self.sealStamp().push(self.sealName4());
             self.sealStamp().push(self.sealName5());
             self.sealStamp().push(self.sealName6());
-            setShared('sealStamp', self.sealStamp(), true);
+            setShared('sealStamp', _.reject(self.sealStamp(), (it)=>_.isEmpty(it)), true);
             setShared('useSeal', self.useSealValue());
             nts.uk.ui.windows.close();
         }
