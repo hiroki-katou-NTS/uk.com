@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
@@ -76,6 +77,13 @@ public class ManageReGetClass {
 	private WorkDeformedLaborAdditionSet workDeformedLaborAdditionSet;
 	
 	private HolidayAddtionSet holidayAddtionSet;
+	
+	//就業時間帯の共通設定
+	private Optional<WorkTimezoneCommonSet> WorkTimezoneCommonSet;
+	
+	
+	
+	
 	/**
 	 * Constructor 
 	 */
@@ -88,7 +96,7 @@ public class ManageReGetClass {
 			HolidayCalcMethodSet holidayCalcMethodSet,Boolean calculatable,
 			int breakCount,WorkRegularAdditionSet workRegularAdditionSet,
 			WorkFlexAdditionSet workFlexAdditionSet,HourlyPaymentAdditionSet hourlyPaymentAdditionSet, WorkDeformedLaborAdditionSet workDeformedLaborAdditionSet,
-			HolidayAddtionSet holidayAddtionSet,Optional<CoreTimeSetting> coreTimeSetting) {
+			HolidayAddtionSet holidayAddtionSet,Optional<CoreTimeSetting> coreTimeSetting,Optional<WorkTimezoneCommonSet> WorkTimezoneCommonSet) {
 		super();
 		this.calculationRangeOfOneDay = calculationRangeOfOneDay;
 		this.integrationOfDaily = integrationOfDaily;
@@ -108,6 +116,7 @@ public class ManageReGetClass {
 		this.workDeformedLaborAdditionSet = workDeformedLaborAdditionSet;
 		this.holidayAddtionSet = holidayAddtionSet;
 		this.coreTimeSetting = coreTimeSetting;
+		this.WorkTimezoneCommonSet = WorkTimezoneCommonSet;
 	}
 	
 	/**
@@ -131,6 +140,7 @@ public class ManageReGetClass {
 									null,
 									null,
 									null,
+									Optional.empty(),
 									Optional.empty());
 				
 	}
@@ -147,7 +157,7 @@ public class ManageReGetClass {
 										  HolidayCalcMethodSet holidayCalcMethodSet,
 										  int breakCount,WorkRegularAdditionSet workRegularAdditionSet,
 										  WorkFlexAdditionSet workFlexAdditionSet,HourlyPaymentAdditionSet hourlyPaymentAdditionSet, WorkDeformedLaborAdditionSet workDeformedLaborAdditionSet,
-										  HolidayAddtionSet holidayAddtionSet, Optional<CoreTimeSetting> coreTimeSetting) {
+										  HolidayAddtionSet holidayAddtionSet, Optional<CoreTimeSetting> coreTimeSetting,Optional<WorkTimezoneCommonSet> WorkTimezoneCommonSet) {
 		return new ManageReGetClass(calculationRangeOfOneDay,
 									integrationOfDaily,
 									workTimeSetting,
@@ -165,7 +175,7 @@ public class ManageReGetClass {
 									hourlyPaymentAdditionSet,
 									workDeformedLaborAdditionSet,
 									holidayAddtionSet
-									,coreTimeSetting);
+									,coreTimeSetting,WorkTimezoneCommonSet);
 	
 	}
 }

@@ -44,6 +44,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
@@ -163,7 +164,8 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   Optional<WorkType> scheWorkType,
 			   AutoCalFlexOvertimeSetting flexAutoCalSet,
 			   DailyUnit dailyUnit,
-			   int breakCount,Optional<CoreTimeSetting> coreTimeSetting) {
+			   int breakCount,Optional<CoreTimeSetting> coreTimeSetting,
+			   Optional<WorkTimezoneCommonSet> WorkTimezoneCommonSet) {
 		integrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(collectCalculationResult(recordOneDay,scheOneDay,
 				   																		personalCondition,
 				   																		 vacationClass,
@@ -194,8 +196,8 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 				   																	     integrationOfDaily, 
 				   																	     scheWorkType,
 				   																	     flexAutoCalSet,
-				   																	     dailyUnit,coreTimeSetting
-				   																	     )));
+				   																	     dailyUnit,coreTimeSetting,
+				   																	     WorkTimezoneCommonSet)));
 		
 		return integrationOfDaily;
 	}
@@ -236,7 +238,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   Optional<FixRestTimezoneSet> fixRestTimeSetting, IntegrationOfDaily integrationOfDaily,
 			   Optional<WorkType> scheWorkType, 
 			   AutoCalFlexOvertimeSetting flexSetting,
-			   DailyUnit dailyUnit,Optional<CoreTimeSetting> coreTimeSetting
+			   DailyUnit dailyUnit,Optional<CoreTimeSetting> coreTimeSetting,Optional<WorkTimezoneCommonSet> WorkTimezoneCommonSet
 			   ) {
 		
 		/*日別実績の勤務予定時間の計算*/
@@ -274,7 +276,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 					scheWorkType, 
 					flexSetting, 
 					dailyUnit,
-					workScheduleTime,coreTimeSetting);
+					workScheduleTime,coreTimeSetting,WorkTimezoneCommonSet);
 		
 
 		/*滞在時間の計算*/

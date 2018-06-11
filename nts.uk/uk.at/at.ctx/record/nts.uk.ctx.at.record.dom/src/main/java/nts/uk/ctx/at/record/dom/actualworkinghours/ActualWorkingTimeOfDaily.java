@@ -42,6 +42,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryO
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
@@ -163,7 +164,8 @@ public class ActualWorkingTimeOfDaily {
 			   IntegrationOfDaily integrationOfDaily,
 			   Optional<WorkType> scheWorkType,
 			   AutoCalFlexOvertimeSetting flexAutoCalSet,
-			   DailyUnit dailyUnit, WorkScheduleTimeOfDaily workScheduleTime,Optional<CoreTimeSetting> coreTimeSetting
+			   DailyUnit dailyUnit, WorkScheduleTimeOfDaily workScheduleTime,Optional<CoreTimeSetting> coreTimeSetting,
+			   Optional<WorkTimezoneCommonSet> WorkTimezoneCommonSet
 				/*計画所定時間*/
 				/*実績所定労働時間*/) {
 
@@ -195,22 +197,22 @@ public class ActualWorkingTimeOfDaily {
 		
 		
 		/*大塚残業*/
-		val calcResultOotsuka = calcOotsuka(workingSystem,
-											totalWorkingTime,
-											fixRestTimeSetting,
-											oneDay.getPredetermineTimeSetForCalc().getAdditionSet().getPredTime().getOneDay(),
-											ootsukaFixedCalcSet,
-											calcAtrOfDaily.getOvertimeSetting(),
-											dailyUnit,
-											oneDay.getAttendanceLeavingWork(),
-											workType);
+		TotalWorkingTime calcResultOotsuka = calcOotsuka(workingSystem,
+														 totalWorkingTime,
+														 fixRestTimeSetting,
+														 oneDay.getPredetermineTimeSetForCalc().getAdditionSet().getPredTime().getOneDay(),
+														 ootsukaFixedCalcSet,
+														 calcAtrOfDaily.getOvertimeSetting(),
+														 dailyUnit,
+														 oneDay.getAttendanceLeavingWork(),
+														 workType);
 		
 		/*大塚モードの計算（欠勤控除時間）*/
 		//1日出勤系の場合は処理を呼ばないように作成が必要
-//		if(workType.getDailyWork().decisionNeedPredTime() != AttendanceHolidayAttr.FULL_TIME) {
-//			//2018/05/25はここからスタート
-//			calcResultOotsuka = calcResultOotsuka.reCalcLateLeave(holidayCalculation);
-//		}
+		if(workType.getDailyWork().decisionNeedPredTime() != AttendanceHolidayAttr.FULL_TIME) {
+			//2018/05/25はここからスタート
+			calcResultOotsuka = calcResultOotsuka.reCalcLateLeave(WorkTimezoneCommonSet.get().getHolidayCalculation());
+		}
 		
 		/*拘束差異時間*/
 		val constraintDifferenceTime = new AttendanceTime(0);
