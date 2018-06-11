@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;

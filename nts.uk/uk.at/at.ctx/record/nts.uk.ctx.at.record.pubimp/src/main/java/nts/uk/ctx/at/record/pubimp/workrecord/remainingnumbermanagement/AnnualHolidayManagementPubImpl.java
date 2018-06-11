@@ -33,6 +33,9 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 	@Inject
 	LengthServiceRepository lengthServiceRepository;
 
+	@Inject
+	GetClosureStartForEmployee closureStartForEmployee;
+	
 	/**
 	 * RequestList210
 	 * 次回年休付与日を取得する
@@ -75,7 +78,6 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 			isSingleDay = true;
 			
 			// 社員に対応する締め開始日を取得する
-			GetClosureStartForEmployee closureStartForEmployee = new GetClosureStartForEmployee();
 			Optional<GeneralDate> closureStartDate = closureStartForEmployee.algorithm(employeeId);
 			
 			periodDate = Optional.ofNullable(new DatePeriod(GeneralDate.ymd(closureStartDate.get().year(), 

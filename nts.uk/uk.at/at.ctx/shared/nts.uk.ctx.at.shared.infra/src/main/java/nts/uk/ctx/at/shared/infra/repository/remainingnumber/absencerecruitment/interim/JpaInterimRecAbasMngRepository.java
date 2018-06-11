@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
@@ -22,32 +23,34 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDa
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcmtInterimAbsMng;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcmtInterimRecAbs;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcmtInterimRecAbsPK;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcmtInterimRecMng;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+
 @Stateless
 public class JpaInterimRecAbasMngRepository extends JpaRepository implements InterimRecAbasMngRepository{
 
-	private String QUERY_REC_BY_ID = "SELECT c FROM KrcmtInterimRecAbs c"
+	private static final String QUERY_REC_BY_ID = "SELECT c FROM KrcmtInterimRecAbs c"
 			+ " WHERE c.recAbsPk.recruitmentMngId = :remainID"
 			+ " AND c.recruitmentMngAtr = :mngAtr";
-	private String QUERY_ABS_BY_ID = "SELECT c FROM KrcmtInterimRecAbs c"
+	private static final String QUERY_ABS_BY_ID = "SELECT c FROM KrcmtInterimRecAbs c"
 			+ " WHERE c.recAbsPk.absenceMngID = :remainID"
 			+ " AND c.recruitmentMngAtr = :mngAtr";
-	private String QUERY_REC_BY_DATEPERIOD = "SELECT c FROM KrcmtInterimRecMng c"
+	private static final String QUERY_REC_BY_DATEPERIOD = "SELECT c FROM KrcmtInterimRecMng c"
 			+ " WHERE c.recruitmentMngId in :mngIds"
 			+ " AND c.unUsedDays > :unUsedDays"
 			+ " AND c.expirationDate >= :startDate"
 			+ " AND c.expirationDate <= :endDate";
 	
-	private String QUERY_ABS_BY_SID_MNGID = "SELECT c FROM KrcmtInterimRecAbs c"
+	private static final String QUERY_ABS_BY_SID_MNGID = "SELECT c FROM KrcmtInterimRecAbs c"
 			+ " WHERE c.recAbsPk.absenceMngID = :absenceMngID"
 			+ " AND c.absenceMngAtr = :absenceMngAtr"
 			+ " AND c.recruitmentMngAtr = :recruitmentMngAtr";
-	private String DELETE_ABS_BY_MNGID = "SELECT c FROM KrcmtInterimRecAbs c "
+	private static final String DELETE_ABS_BY_MNGID = "SELECT c FROM KrcmtInterimRecAbs c "
 			+ " WHERE c.recAbsPk.absenceMngID := mngId";
-	private String DELETE_REC_BY_MNGID = "SELECT c FROM KrcmtInterimRecAbs c "
+	private static final String DELETE_REC_BY_MNGID = "SELECT c FROM KrcmtInterimRecAbs c "
 			+ " WHERE c.recAbsPk.recruitmentMngId := mngId";
-	private String DELETE_BY_ID_ATR = "SELECT c FROM KrcmtInterimRecAbs c"
+	private static final String DELETE_BY_ID_ATR = "SELECT c FROM KrcmtInterimRecAbs c"
 			+ " WHERE c.recAbsPk.absenceMngID = :absId"
 			+ " AND c.recAbsPk.recruitmentMngId = :recId"
 			+ " AND c.absenceMngAtr = absAtr"
@@ -118,47 +121,75 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	}
 
 	@Override
-	public void createInterimRecMng(InterimRecMng domain) {
-		this.commandProxy().insert(toEntityInterimRecMng(domain));
+	public void persistAndUpdateInterimRecMng(InterimRecMng domain) {
+		
+		// キー
+		val key = domain.getRecruitmentMngId();
+		
+		// 登録・更新
+		KrcmtInterimRecMng entity = this.getEntityManager().find(KrcmtInterimRecMng.class, key);
+		if (entity == null){
+			entity = new KrcmtInterimRecMng();
+			entity.recruitmentMngId = domain.getRecruitmentMngId();
+			entity.expirationDate = domain.getExpirationDate();
+			entity.occurrenceDays = domain.getOccurrenceDays().v();
+			entity.statutoryAtr = domain.getStatutoryAtr().value;
+			entity.unUsedDays = domain.getUnUsedDays().v();
+			this.getEntityManager().persist(entity);
+		}
+		else {
+			entity.expirationDate = domain.getExpirationDate();
+			entity.occurrenceDays = domain.getOccurrenceDays().v();
+			entity.statutoryAtr = domain.getStatutoryAtr().value;
+			entity.unUsedDays = domain.getUnUsedDays().v();
+		}
 	}
-
-	private KrcmtInterimRecMng toEntityInterimRecMng(InterimRecMng domain) {
-		KrcmtInterimRecMng entity = new KrcmtInterimRecMng();
-		entity.recruitmentMngId = domain.getRecruitmentMngId();
-		entity.expirationDate = domain.getExpirationDate();
-		entity.occurrenceDays = domain.getOccurrenceDays().v();
-		entity.statutoryAtr = domain.getStatutoryAtr().value;
-		entity.unUsedDays = domain.getUnUsedDays().v();
-		return entity;
-	}
-
+	
 	@Override
-	public void createInterimAbsMng(InterimAbsMng domain) {
-		this.commandProxy().insert(toEntityInterimAbsMng(domain));
+	public void persistAndUpdateInterimAbsMng(InterimAbsMng domain) {
+		
+		// キー
+		val key = domain.getAbsenceMngId();
+		
+		// 登録・更新
+		KrcmtInterimAbsMng entity = this.getEntityManager().find(KrcmtInterimAbsMng.class, key);
+		if (entity == null){
+			entity = new KrcmtInterimAbsMng();
+			entity.absenceMngId = domain.getAbsenceMngId();
+			entity.requiredDays = domain.getRequeiredDays().v();
+			entity.unOffsetDay = domain.getUnOffsetDays().v();
+			this.getEntityManager().persist(entity);
+		}
+		else {
+			entity.requiredDays = domain.getRequeiredDays().v();
+			entity.unOffsetDay = domain.getUnOffsetDays().v();
+		}
 	}
-
-	private KrcmtInterimAbsMng toEntityInterimAbsMng(InterimAbsMng domain) {
-		KrcmtInterimAbsMng entity = new KrcmtInterimAbsMng();
-		entity.absenceMngId = domain.getAbsenceMngId();
-		entity.requiredDays = domain.getRequeiredDays().v();
-		entity.unOffsetDay = domain.getUnOffsetDays().v();
-		return entity;
-	}
-
+	
 	@Override
-	public void createInterimRecAbsMng(InterimRecAbsMng domain) {
-		this.commandProxy().insert(toEntityInterimRecAbsMng(domain));
-	}
-
-	private KrcmtInterimRecAbs toEntityInterimRecAbsMng(InterimRecAbsMng domain) {
-		KrcmtInterimRecAbs entity = new KrcmtInterimRecAbs();
-		entity.recAbsPk.absenceMngID = domain.getAbsenceMngId();
-		entity.recAbsPk.recruitmentMngId = domain.getRecruitmentMngId();
-		entity.absenceMngAtr = domain.getAbsenceMngAtr().values;
-		entity.recruitmentMngAtr = domain.getRecruitmentMngAtr().values;
-		entity.useDays = domain.getUseDays().v();
-		entity.selectedAtr = domain.getSelectedAtr().value;
-		return entity;
+	public void persistAndUpdateInterimRecAbsMng(InterimRecAbsMng domain) {
+		
+		// キー
+		val key = new KrcmtInterimRecAbsPK(domain.getAbsenceMngId(), domain.getRecruitmentMngId());
+		
+		// 登録・更新
+		KrcmtInterimRecAbs entity = this.getEntityManager().find(KrcmtInterimRecAbs.class, key);
+		if (entity == null){
+			entity = new KrcmtInterimRecAbs();
+			entity.recAbsPk.absenceMngID = domain.getAbsenceMngId();
+			entity.recAbsPk.recruitmentMngId = domain.getRecruitmentMngId();
+			entity.absenceMngAtr = domain.getAbsenceMngAtr().values;
+			entity.recruitmentMngAtr = domain.getRecruitmentMngAtr().values;
+			entity.useDays = domain.getUseDays().v();
+			entity.selectedAtr = domain.getSelectedAtr().value;
+			this.getEntityManager().persist(entity);
+		}
+		else {
+			entity.absenceMngAtr = domain.getAbsenceMngAtr().values;
+			entity.recruitmentMngAtr = domain.getRecruitmentMngAtr().values;
+			entity.useDays = domain.getUseDays().v();
+			entity.selectedAtr = domain.getSelectedAtr().value;
+		}
 	}
 
 	@Override
@@ -202,21 +233,6 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	}
 
 	@Override
-	public void updateInterimRecMng(InterimRecMng domain) {
-		this.commandProxy().update(toEntityInterimRecMng(domain));
-	}
-
-	@Override
-	public void updateInterimAbsMng(InterimAbsMng domain) {
-		this.commandProxy().update(toEntityInterimAbsMng(domain));
-	}
-
-	@Override
-	public void updateInterimRecAbsMng(InterimRecAbsMng domain) {
-		this.commandProxy().update(toEntityInterimRecAbsMng(domain));
-	}
-
-	@Override
 	public void deleteRecAbsMngByIDAtr(String mngId, DataManagementAtr mngAtr, boolean isRec) {
 		List<KrcmtInterimRecAbs> lstEntity = this.queryProxy().query(isRec ? QUERY_REC_BY_ID : QUERY_ABS_BY_ID, KrcmtInterimRecAbs.class)
 			.setParameter("remainID", mngId)
@@ -225,7 +241,5 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 		lstEntity.stream().forEach(x -> {
 			this.commandProxy().remove(x);
 		});
-		
 	}
-		
 }
