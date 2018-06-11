@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.CommonLeaveRemainingNumberDto;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RealReserveLeave;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeave;
+import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveRemainingNumber;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveUndigestedNumber;
+import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 
@@ -48,9 +50,9 @@ public class ReserveLeaveDto {
 	}
 
 	public ReserveLeave toDomain() {
-		return ReserveLeave.of(usedNumber == null ? null : usedNumber.toDomain(),
-				remainingNumber == null ? null : remainingNumber.toReserveDomain(),
-				remainingNumberBeforeGrant == null ? null : remainingNumberBeforeGrant.toReserveDomain(),
+		return ReserveLeave.of(usedNumber == null ? new ReserveLeaveUsedNumber() : usedNumber.toDomain(),
+				remainingNumber == null ? new ReserveLeaveRemainingNumber() : remainingNumber.toReserveDomain(),
+				remainingNumberBeforeGrant == null ? new ReserveLeaveRemainingNumber() : remainingNumberBeforeGrant.toReserveDomain(),
 				Optional.ofNullable(
 						remainingNumberAfterGrant == null ? null : remainingNumberAfterGrant.toReserveDomain()),
 				ReserveLeaveUndigestedNumber.of(new ReserveLeaveRemainingDayNumber(undigestedNumber)));
@@ -67,9 +69,9 @@ public class ReserveLeaveDto {
 
 	public RealReserveLeave toRealDomain() {
 		return RealReserveLeave.of(
-				usedNumber == null ? null : usedNumber.toDomain(),
-				remainingNumber == null ? null : remainingNumber.toReserveDomain(),
-				remainingNumberBeforeGrant == null ? null : remainingNumberBeforeGrant.toReserveDomain(),
+				usedNumber == null ? new ReserveLeaveUsedNumber() : usedNumber.toDomain(),
+				remainingNumber == null ? new ReserveLeaveRemainingNumber() : remainingNumber.toReserveDomain(),
+				remainingNumberBeforeGrant == null ? new ReserveLeaveRemainingNumber() : remainingNumberBeforeGrant.toReserveDomain(),
 				Optional.ofNullable(remainingNumberAfterGrant == null ? null : remainingNumberAfterGrant.toReserveDomain()));
 	}
 }

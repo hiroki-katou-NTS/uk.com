@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.PCLogonClockOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.PCLogonDivergenceOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.PCLogonOfMonthly;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 
@@ -29,7 +31,7 @@ public class PCLogOnInfoOfMonthlyDto {
 	} 
 	
 	public PCLogonOfMonthly toDomain(){
-		return PCLogonOfMonthly.of(pcLogOnTime == null ? null : pcLogOnTime.toDomain(), 
-									pcLogOnDivergence == null ? null : pcLogOnDivergence.toDivergenceDomain());
+		return PCLogonOfMonthly.of(pcLogOnTime == null ? new PCLogonClockOfMonthly() : pcLogOnTime.toDomain(), 
+									pcLogOnDivergence == null ? new PCLogonDivergenceOfMonthly() : pcLogOnDivergence.toDivergenceDomain());
 	}
 }

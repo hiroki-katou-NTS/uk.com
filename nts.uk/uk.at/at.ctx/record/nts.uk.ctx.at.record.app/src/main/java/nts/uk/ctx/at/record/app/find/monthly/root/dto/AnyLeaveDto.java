@@ -19,5 +19,5 @@ public class AnyLeaveDto {
 	/** 日数: 勤怠月間日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
 	@AttendanceItemLayout(jpPropertyName = "日数", layout = "A")
-	private Double days;
+	private double days;
 }

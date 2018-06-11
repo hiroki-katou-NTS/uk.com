@@ -21,10 +21,10 @@ public class CommonAggregateDaysDto {
 	/** 日数: 勤怠月間日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
 	@AttendanceItemLayout(jpPropertyName = "日数", layout = "A")
-	private Double days;
+	private double days;
 
 	/** 時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
 	@AttendanceItemLayout(jpPropertyName = "時間", layout = "B")
-	private Integer time;
+	private int time;
 }

@@ -34,21 +34,20 @@ public class CommonlLeaveRemainingDetailDto {
 	/** 時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "時間", layout = "C")
-	private Integer time;
+	private int time;
 
 	public static CommonlLeaveRemainingDetailDto from(AnnualLeaveRemainingDetail domain) {
 		return domain == null ? null : new CommonlLeaveRemainingDetailDto(domain.getGrantDate(), domain.getDays().v(),
-						domain.getTime().isPresent() ? domain.getTime().get().valueAsMinutes() : null);
+						domain.getTime().isPresent() ? domain.getTime().get().valueAsMinutes() : 0);
 	}
 
 	public AnnualLeaveRemainingDetail toDomain() {
 		return AnnualLeaveRemainingDetail.of(grantDate, new AnnualLeaveRemainingDayNumber(days),
-				Optional.ofNullable(time == null ? null : new AnnualLeaveRemainingTime(time)));
+				Optional.of(new AnnualLeaveRemainingTime(time)));
 	}
 	
 	public static CommonlLeaveRemainingDetailDto from(ReserveLeaveRemainingDetail domain) {
-		return domain == null ? null : new CommonlLeaveRemainingDetailDto(domain.getGrantDate(), domain.getDays().v(),
-						null);
+		return domain == null ? null : new CommonlLeaveRemainingDetailDto(domain.getGrantDate(), domain.getDays().v(), 0);
 	}
 
 	public ReserveLeaveRemainingDetail toReserveDomain() {
