@@ -109,7 +109,7 @@ public class WithinStatutoryTimeOfDaily {
 			   												   CalcMethodOfNoWorkingDay calcMethod, 
 			   												   AutoCalOverTimeAttr autoCalcAtr, 
 			   												   Optional<SettingOfFlexWork> flexCalcMethod, 
-			   												   WorkTimeDailyAtr workTimeDailyAtr, 
+			   												   Optional<WorkTimeDailyAtr> workTimeDailyAtr, 
 			   												   Optional<WorkTimeCode> workTimeCode,
 			   												   AttendanceTime preFlexTime,
 			   												   Optional<CoreTimeSetting> coreTimeSetting,
@@ -128,11 +128,13 @@ public class WithinStatutoryTimeOfDaily {
 																										  .collect(Collectors.summingInt(tc -> tc)))
 																										  
 										:new AttendanceTime(0);
+			
 			//就業時間の計算
-			workTime = calcWithinStatutoryTime(oneDay.getWithinWorkingTimeSheet().get(),personalCondition,vacationClass,workType,
+			if(workTimeDailyAtr.isPresent())
+				workTime = calcWithinStatutoryTime(oneDay.getWithinWorkingTimeSheet().get(),personalCondition,vacationClass,workType,
 														  late,leaveEarly,workingSystem,illegularAddSetting,
 														  flexAddSetting,regularAddSetting,holidayAddtionSet,holidayCalcMethodSet,
-														  calcMethod,autoCalcAtr,flexCalcMethod,workTimeDailyAtr,workTimeCode,preFlexTime,coreTimeSetting,
+														  calcMethod,autoCalcAtr,flexCalcMethod,workTimeDailyAtr.get(),workTimeCode,preFlexTime,coreTimeSetting,
 														  oneDay.getPredetermineTimeSetForCalc(),oneDay.getTimeVacationAdditionRemainingTime(),dailyUnit);
 			
 

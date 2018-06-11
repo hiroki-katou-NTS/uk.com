@@ -366,7 +366,7 @@ public class HolidayWorkTimeSheet{
 		int totalFrameTime =  useTimeAtr.isTime()
 								?afterCalcUpperTimeList.stream().map(tc -> tc.getHolidayWorkTime().get().getTime().v()).collect(Collectors.summingInt(tc -> tc))
 								:afterCalcUpperTimeList.stream().map(tc -> tc.getHolidayWorkTime().get().getCalcTime().v()).collect(Collectors.summingInt(tc -> tc));
-		if(periodTime.greaterThanOrEqualTo(new AttendanceTime(totalFrameTime))) {
+		if(new AttendanceTime(totalFrameTime).greaterThanOrEqualTo(periodTime)) {
 			return new AttendanceTime(totalFrameTime).minusMinutes(periodTime.valueAsMinutes());
 		}
 		else {
@@ -383,7 +383,7 @@ public class HolidayWorkTimeSheet{
 		AttendanceTime transRestAbleTime = restTransAbleTime;
 		for(HolidayWorkFrameTime holidayWorkFrameTime : afterCalcUpperTimeList) {
 
-			transAbleTime = calcTransferTime(useTimeAtr, holidayWorkFrameTime, transAbleTime, transRestAbleTime);
+			transAbleTime = calcTransferTime(useTimeAtr, holidayWorkFrameTime, transRestAbleTime);
 			//振替
 			val overTime = useTimeAtr.isTime()?holidayWorkFrameTime.getHolidayWorkTime().get().getTime().minusMinutes(transAbleTime.valueAsMinutes())
 											  :holidayWorkFrameTime.getHolidayWorkTime().get().getCalcTime().minusMinutes(transAbleTime.valueAsMinutes());
@@ -403,14 +403,14 @@ public class HolidayWorkTimeSheet{
 	 * @param transRestAbleTime
 	 * @return
 	 */
-	private AttendanceTime calcTransferTime(UseTimeAtr useTimeAtr, HolidayWorkFrameTime holidayWorkFrameTime, AttendanceTime transAbleTime, AttendanceTime transRestAbleTime) {
+	private AttendanceTime calcTransferTime(UseTimeAtr useTimeAtr, HolidayWorkFrameTime holidayWorkFrameTime,AttendanceTime transRestAbleTime) {
 		if(useTimeAtr.isTime()) {
 			return holidayWorkFrameTime.getHolidayWorkTime().get().getTime().greaterThanOrEqualTo(transRestAbleTime)
 																		  ?transRestAbleTime
 																		  :holidayWorkFrameTime.getHolidayWorkTime().get().getTime();
 		}
 		else {
-			return transAbleTime = holidayWorkFrameTime.getHolidayWorkTime().get().getCalcTime().greaterThanOrEqualTo(transRestAbleTime)
+			return holidayWorkFrameTime.getHolidayWorkTime().get().getCalcTime().greaterThanOrEqualTo(transRestAbleTime)
 					  													  ?transRestAbleTime
 					  													  :holidayWorkFrameTime.getHolidayWorkTime().get().getCalcTime();
 		}

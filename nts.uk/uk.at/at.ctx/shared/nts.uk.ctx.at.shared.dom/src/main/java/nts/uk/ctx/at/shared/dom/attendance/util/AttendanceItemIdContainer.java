@@ -120,7 +120,7 @@ public class AttendanceItemIdContainer {
 		DAY_ITEM_ID_CONTAINER.put(79, "日別実績の入退門.入退門時刻.開始時間.時刻2");
 		DAY_ITEM_ID_CONTAINER.put(83, "日別実績の入退門.入退門時刻.開始時間.時刻3");
 
-		DAY_ITEM_ID_CONTAINER.put(461, "日別実績の出退勤.勤務回数");
+		//DAY_ITEM_ID_CONTAINER.put(461, "日別実績の出退勤.勤務回数");
 		DAY_ITEM_ID_CONTAINER.put(30, "日別実績の出退勤.出退勤.出勤.打刻.場所コード1");
 		DAY_ITEM_ID_CONTAINER.put(31, "日別実績の出退勤.出退勤.出勤.打刻.時刻1");
 		DAY_ITEM_ID_CONTAINER.put(32, "日別実績の出退勤.出退勤.出勤.打刻.丸め後の時刻1");

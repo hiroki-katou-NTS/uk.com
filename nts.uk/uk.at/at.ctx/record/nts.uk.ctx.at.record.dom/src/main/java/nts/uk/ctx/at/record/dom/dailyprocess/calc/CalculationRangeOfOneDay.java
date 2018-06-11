@@ -79,7 +79,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
- * 1日の計算�?��
+ * 1日の計算範囲
  * 
  * @author keisuke_hoshina
  *
@@ -119,7 +119,7 @@ public class CalculationRangeOfOneDay {
 	}
 
 	/**
-	 * 就業時間帯の作�?
+	 * 就業時間帯の作成
 	 * 
 	 * @param workingSystem
 	 * @param setMethod
@@ -144,14 +144,14 @@ public class CalculationRangeOfOneDay {
 	 * @param overDayEndSet
 	 * @param holidayTimeWorkItem
 	 * @param beforeDay
-	 *            前日の勤務種�?
+	 *            前日の勤務種類
 	 * @param toDay
-	 *            当日の勤務種�?
+	 *            当日の勤務種類
 	 * @param afterDay
-	 *            翌日の勤務種�?
+	 *            翌日の勤務種類
 	 * @param breakdownTimeDay
 	 * @param dailyTime
-	 *            法定労働時�?
+	 *            法定労働時間
 	 * @param calcSetinIntegre
 	 * @param statutorySet
 	 * @param prioritySet
@@ -172,7 +172,7 @@ public class CalculationRangeOfOneDay {
     		Optional<WorkTimeCode> siftCode, Optional<PersonalLaborCondition> personalCondition, 
     		boolean late, boolean leaveEarly, WorkDeformedLaborAdditionSet illegularAddSetting, WorkFlexAdditionSet flexAddSetting, 
     		WorkRegularAdditionSet regularAddSetting, HolidayAddtionSet holidayAddtionSet) {
-		/* 固定控除時間帯の作�? */
+		/* 固定控除時間帯の作成 */
 		DeductionTimeSheet deductionTimeSheet = DeductionTimeSheet.createTimeSheetForFixBreakTime(
 				setMethod, clockManage, dailyGoOutSheet, this.oneDayOfRange, commonSet, attendanceLeavingWork,
 				fixedCalc, workTimeDivision, breakTimeOfDailyList);
@@ -189,28 +189,28 @@ public class CalculationRangeOfOneDay {
 	}
 
 	/**
-	 * 時間帯作�?(勤務回数�??ルー�?) 就業時間�??外�?処�?
+	 * 時間帯作成(勤務回数分ループ) 就業時間内・外作成処理
 	 * 
 	 * @param workingSystem
 	 *            労働制クラス
 	 * @param predetermineTimeSet
-	 *            �?定時間設定クラス
+	 *            所定時間設定クラス
 	 * @param fixedWorkSetting
 	 *            固定勤務設定クラス
 	 * @param workTimeCommonSet
 	 *            就業時間帯の共通設定クラス
 	 * @param bonusPaySetting
-	 *            �?給設定クラス
+	 *            加給設定クラス
 	 * @param overTimeHourSetList
 	 *            残業時間の時間帯設定クラス
 	 * @param fixOff
-	 *            固定勤務�?休日出勤用勤務時間帯クラス
+	 *            固定勤務の休日出勤用勤務時間帯クラス
 	 * @param dayEndSet
 	 *            0時跨ぎ計算設定クラス
 	 * @param overDayEndSet
 	 *            就業時間帯の共通設定クラス
 	 * @param holidayTimeWorkItem
-	 *            休�?�?時間帯
+	 *            休出時間帯
 	 * @param beforeDay
 	 *            勤務種類クラス
 	 * @param toDay
@@ -218,15 +218,15 @@ public class CalculationRangeOfOneDay {
 	 * @param afterDay
 	 *            勤務種類クラス
 	 * @param breakdownTimeDay
-	 *            1日の時間�?��クラス
+	 *            1日の時間内訳クラス
 	 * @param dailyTime
-	 *            法定労働時�?
+	 *            法定労働時間
 	 * @param calcSetinIntegre
 	 *            残業時間の自動計算設定クラス
 	 * @param statutorySet
-	 *            法定�?残業設�?
+	 *            法定内残業設定
 	 * @param prioritySet
-	 *            法定�?優先設�?
+	 *            法定内優先設定
 	 * @param deductionTimeSheet
 	 *            控除時間帯
 	 * @param integrationOfDaily 
@@ -246,12 +246,12 @@ public class CalculationRangeOfOneDay {
     		boolean late, boolean leaveEarly, WorkDeformedLaborAdditionSet illegularAddSetting, WorkFlexAdditionSet flexAddSetting, 
     		WorkRegularAdditionSet regularAddSetting, HolidayAddtionSet holidayAddtionSet) {
 		if (workingSystem.isExcludedWorkingCalculate()) {
-			/* 計算対象外�?処�? */
+			/* 計算対象外 */
 			return;
 		}
 		for (int workNumber = 1; workNumber <= attendanceLeavingWork.getTimeLeavingWorks().size(); workNumber++) {
 			
-			/* 就業�??時間帯作�? */
+			/* 就業内時間帯作成 */
 			//打刻はある前提で動く
 			val createWithinWorkTimeSheet = WithinWorkTimeSheet.createAsFixed(attendanceLeavingWork.getAttendanceLeavingWork(new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(workNumber)).get(),
 																			  toDay,
@@ -867,7 +867,9 @@ public class CalculationRangeOfOneDay {
 	 }
 	 
 	 /**
+	  * 大塚モード使用時専用の��?��、早��?削除処��?
 	  * 大塚モード使用時専用の�?��、早�?削除処�?
+	  * 大塚モード使用時専用の遅刻、早退削除処理
 	  */
 	 public void cleanLateLeaveEarlyTimeForOOtsuka() {
 		 if(this.getWithinWorkingTimeSheet() != null
