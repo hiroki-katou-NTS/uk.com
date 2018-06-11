@@ -18,23 +18,23 @@ public class FlexCarryforwardTimeDto {
 	/** フレックス繰越勤務時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "フレックス繰越勤務時間", layout = "A")
-	private Integer flexCarryforwardWorkTime;
+	private int flexCarryforwardWorkTime;
 
 	/** フレックス繰越時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "フレックス繰越時間", layout = "B")
-	private Integer flexCarryforwardTime;
+	private int flexCarryforwardTime;
 
 	/** フレックス繰越不足時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "フレックス繰越不足時間", layout = "C")
-	private Integer flexCarryforwardShortageTime;
+	private int flexCarryforwardShortageTime;
 
 	public FlexCarryforwardTime toDomain() {
 		return FlexCarryforwardTime.of(
-						flexCarryforwardTime == null ? null : new AttendanceTimeMonth(flexCarryforwardTime),
-						flexCarryforwardWorkTime == null ? null : new AttendanceTimeMonth(flexCarryforwardWorkTime),
-						flexCarryforwardShortageTime == null ? null : new AttendanceTimeMonth(flexCarryforwardShortageTime));
+						new AttendanceTimeMonth(flexCarryforwardTime),
+						new AttendanceTimeMonth(flexCarryforwardWorkTime),
+						new AttendanceTimeMonth(flexCarryforwardShortageTime));
 	}
 	
 	public static FlexCarryforwardTimeDto from(FlexCarryforwardTime domain) {
@@ -48,6 +48,6 @@ public class FlexCarryforwardTimeDto {
 	}
 
 	private static Integer from(AttendanceTimeMonth domain) {
-		return domain == null ? null : domain.valueAsMinutes();
+		return domain == null ? 0 : domain.valueAsMinutes();
 	}
 }

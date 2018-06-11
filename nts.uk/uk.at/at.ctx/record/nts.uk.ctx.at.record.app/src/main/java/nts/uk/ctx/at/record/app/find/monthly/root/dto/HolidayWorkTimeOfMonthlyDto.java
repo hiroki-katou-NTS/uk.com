@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.HolidayWorkTimeOfMonthly;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -24,7 +25,7 @@ public class HolidayWorkTimeOfMonthlyDto {
 	/** 事前休出時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "事前休出時間", layout = "B")
-	private Integer beforeHolidayWorkTime;
+	private int beforeHolidayWorkTime;
 	/** 振替合計時間 */
 	@AttendanceItemLayout(jpPropertyName = "振替合計時間", layout = "C")
 	private TimeMonthWithCalculationDto totalTransferTime;
@@ -33,9 +34,9 @@ public class HolidayWorkTimeOfMonthlyDto {
 	private List<AggregateHolidayWorkTimeDto> aggregateHolidayWorkTimeMap;
 
 	public HolidayWorkTimeOfMonthly toDomain() {
-		return HolidayWorkTimeOfMonthly.of(totalHolidayWorkTime == null ? null : totalHolidayWorkTime.toDomain(),
-											beforeHolidayWorkTime == null ? null : new AttendanceTimeMonth(beforeHolidayWorkTime),
-											totalTransferTime == null ? null : totalTransferTime.toDomain(),
+		return HolidayWorkTimeOfMonthly.of(totalHolidayWorkTime == null ? new TimeMonthWithCalculation() : totalHolidayWorkTime.toDomain(),
+											new AttendanceTimeMonth(beforeHolidayWorkTime),
+											totalTransferTime == null ? new TimeMonthWithCalculation() : totalTransferTime.toDomain(),
 											ConvertHelper.mapTo(aggregateHolidayWorkTimeMap, c -> c.toDomain()));
 	}
 	
@@ -44,7 +45,7 @@ public class HolidayWorkTimeOfMonthlyDto {
 		if(domain != null) {
 			dto.setAggregateHolidayWorkTimeMap(ConvertHelper.mapTo(domain.getAggregateHolidayWorkTimeMap(), 
 					c -> AggregateHolidayWorkTimeDto.from(c.getValue())));
-			dto.setBeforeHolidayWorkTime(domain.getBeforeHolidayWorkTime() == null ? null : domain.getBeforeHolidayWorkTime().valueAsMinutes());
+			dto.setBeforeHolidayWorkTime(domain.getBeforeHolidayWorkTime() == null ? 0 : domain.getBeforeHolidayWorkTime().valueAsMinutes());
 			dto.setTotalHolidayWorkTime(TimeMonthWithCalculationDto.from(domain.getTotalHolidayWorkTime()));
 			dto.setTotalTransferTime(TimeMonthWithCalculationDto.from(domain.getTotalTransferTime()));
 		}

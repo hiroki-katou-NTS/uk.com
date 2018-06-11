@@ -19,30 +19,30 @@ public class EndWorkHourOfMonthlyDto {
 	@AttendanceItemLayout(jpPropertyName = "回数", layout = "A")
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	/** 回数: 勤怠月間回数 */
-	private Integer times;
+	private int times;
 
 	@AttendanceItemLayout(jpPropertyName = "合計時刻", layout = "B")
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	/** 合計時刻: 勤怠月間時間 */
-	private Integer totalHours;
+	private int totalHours;
 
 	@AttendanceItemLayout(jpPropertyName = "平均時刻", layout = "C")
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	/** 平均時刻: 勤怠月間時間 */
-	private Integer averageHours;
+	private int averageHours;
 	
 	public static EndWorkHourOfMonthlyDto from(EndClockOfMonthly domain){
 		if(domain != null){
-			return new EndWorkHourOfMonthlyDto(domain.getTimes() == null ? null : domain.getTimes().v(), 
-												domain.getTotalClock() == null ? null : domain.getTotalClock().valueAsMinutes(), 
-												domain.getAverageClock() == null ? null : domain.getAverageClock().valueAsMinutes());
+			return new EndWorkHourOfMonthlyDto(domain.getTimes() == null ? 0 : domain.getTimes().v(), 
+												domain.getTotalClock() == null ? 0 : domain.getTotalClock().valueAsMinutes(), 
+												domain.getAverageClock() == null ? 0 : domain.getAverageClock().valueAsMinutes());
 		}
 		return null;
 	}
 	
 	public EndClockOfMonthly toDomain(){
-		return EndClockOfMonthly.of(times == null ? null : new AttendanceTimesMonth(times),
-									totalHours == null ? null : new AttendanceTimeMonth(totalHours),
-									averageHours == null ? null : new AttendanceTimeMonth(averageHours));
+		return EndClockOfMonthly.of(new AttendanceTimesMonth(times),
+									new AttendanceTimeMonth(totalHours),
+									new AttendanceTimeMonth(averageHours));
 	}
 }

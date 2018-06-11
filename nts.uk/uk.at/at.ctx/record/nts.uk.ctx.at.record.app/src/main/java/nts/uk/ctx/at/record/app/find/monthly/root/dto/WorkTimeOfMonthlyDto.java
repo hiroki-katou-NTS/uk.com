@@ -7,8 +7,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.attdleavegatetime.AttendanceLeaveGateTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.bonuspaytime.BonusPayTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.breaktime.BreakTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.divergencetime.DivergenceTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.goout.GoOutOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.holidaytime.HolidayTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.lateleaveearly.LateLeaveEarlyOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.midnighttime.MidnightTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.premiumtime.PremiumTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.timevarience.BudgetTimeVarienceOfMonthly;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -57,7 +64,7 @@ public class WorkTimeOfMonthlyDto {
 	/** 予実差異時間: 月別実績の予実差異時間 */
 	@AttendanceItemLayout(jpPropertyName = "予実差異時間", layout = "I")
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	private Integer budgetTimeVarience;
+	private int budgetTimeVarience;
 
 	/** 予約: 月別実績の予約 */
 	@AttendanceItemLayout(jpPropertyName = "予約", layout = "J")
@@ -86,7 +93,7 @@ public class WorkTimeOfMonthlyDto {
 			dto.setLateLeaveEarly(LateLeaveEarlyOfMonthlyDto.from(domain.getLateLeaveEarly()));
 			dto.setAttendanceLeave(AttendanceLeaveGateTimeOfMonthlyDto.from(domain.getAttendanceLeaveGateTime()));
 			dto.setBudgetTimeVarience(domain.getBudgetTimeVarience() == null || domain.getBudgetTimeVarience().getTime() == null 
-					? null : domain.getBudgetTimeVarience().getTime().valueAsMinutes());
+					? 0 : domain.getBudgetTimeVarience().getTime().valueAsMinutes());
 //			dto.setReservation(reservation);
 			dto.setDivergenceTimes(domain.getDivergenceTime() == null ? new ArrayList<>() : 
 				ConvertHelper.mapTo(domain.getDivergenceTime().getDivergenceTimeList(), 
@@ -98,18 +105,18 @@ public class WorkTimeOfMonthlyDto {
 
 	public WorkTimeOfMonthly toDomain() {
 		return WorkTimeOfMonthly.of(BonusPayTimeOfMonthly.of(ConvertHelper.mapTo(bonus, c -> c.toDomain())),
-				goout == null ? null : goout.toDomain(), premiumTime == null ? null : premiumTime.toDomain(),
-				breakTime == null ? null : breakTime.toDomain(), 
-				holidayTime == null ? null : holidayTime.toDomain(),
-				midNightTime == null ? null : midNightTime.toDomain(),
-				lateLeaveEarly == null ? null : lateLeaveEarly.toDomain(),
-				attendanceLeave == null ? null : attendanceLeave.toDomain(),
+				goout == null ? new GoOutOfMonthly() : goout.toDomain(), premiumTime == null ? new PremiumTimeOfMonthly() : premiumTime.toDomain(),
+				breakTime == null ? new BreakTimeOfMonthly() : breakTime.toDomain(), 
+				holidayTime == null ? new HolidayTimeOfMonthly() : holidayTime.toDomain(),
+				midNightTime == null ? new MidnightTimeOfMonthly() : midNightTime.toDomain(),
+				lateLeaveEarly == null ? new LateLeaveEarlyOfMonthly() : lateLeaveEarly.toDomain(),
+				attendanceLeave == null ? new AttendanceLeaveGateTimeOfMonthly() : attendanceLeave.toDomain(),
 				BudgetTimeVarienceOfMonthly.of(toAttendanceTimeMonth(budgetTimeVarience)),
 				DivergenceTimeOfMonthly.of(ConvertHelper.mapTo(divergenceTimes, c -> c.toDomain())),
 				ConvertHelper.mapTo(medical, c -> c.toDomain()));
 	}
 
 	private AttendanceTimeMonth toAttendanceTimeMonth(Integer time) {
-		return time == null ? null : new AttendanceTimeMonth(time);
+		return new AttendanceTimeMonth(time);
 	}
 }

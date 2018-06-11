@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnLeaRemainingNum;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnLeaUsedNum;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnualLeave;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 
@@ -28,7 +30,7 @@ public class HalfDayAnnualLeaveDto {
 
 	public HalfDayAnnualLeave toDomain() {
 		return HalfDayAnnualLeave.of(
-							remainingNum == null ? null : remainingNum.toRemainingNumDomain(),
-							usedNum == null ? null : remainingNum.toUsedNumDomain());
+							remainingNum == null ? new HalfDayAnnLeaRemainingNum() : remainingNum.toRemainingNumDomain(),
+							usedNum == null ? new HalfDayAnnLeaUsedNum() : remainingNum.toUsedNumDomain());
 	}
 }
