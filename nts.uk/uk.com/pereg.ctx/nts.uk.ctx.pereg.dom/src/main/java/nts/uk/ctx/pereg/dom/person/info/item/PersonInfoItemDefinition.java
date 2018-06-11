@@ -110,7 +110,7 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 		this.isRequired = EnumAdaptor.valueOf(isRequired, IsRequired.class);
 		this.systemRequired = SystemRequired.NONE_REQUIRED;
 		this.requireChangable = RequireChangable.NONE_REQUIRED;
-		this.canAbolition = false;
+		this.canAbolition = true;
 	}
 
 	private PersonInfoItemDefinition(String perInfoItemDefId, String perInfoCategoryId, String itemCode,

@@ -27,7 +27,10 @@ public class PerInfoCtgFinder {
 
 	public List<PerInfoCtgFullDto> getAllPerInfoCtg(String companyId) {
 		String contractCd = companyId.substring(0, 12);
-		return perInfoCtgRepositoty.getAllPerInfoCategory(companyId, contractCd).stream().map(p -> {
+		 int salary = AppContexts.user().roles().forPayroll() != null? 1: 0;
+		 int personnel = AppContexts.user().roles().forPersonnel() != null? 1: 0;
+		 int employee = AppContexts.user().roles().forAttendance() != null? 1: 0;
+		return perInfoCtgRepositoty.getAllPerInfoCategory(companyId, contractCd, salary, personnel, employee).stream().map(p -> {
 			return new PerInfoCtgFullDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(), p.getCategoryName().v(),
 					p.getPersonEmployeeType().value, p.getIsAbolition().value, p.getCategoryType().value,
 					p.getIsFixed().value);

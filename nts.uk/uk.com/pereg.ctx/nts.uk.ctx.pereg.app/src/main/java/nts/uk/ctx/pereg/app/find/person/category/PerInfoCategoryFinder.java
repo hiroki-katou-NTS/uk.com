@@ -54,7 +54,10 @@ public class PerInfoCategoryFinder {
 	public List<PerInfoCtgFullDto> getAllPerInfoCtg() {
 		String zeroCompanyId = AppContexts.user().zeroCompanyIdInContract();
 		String contractCode = AppContexts.user().contractCode();
-		List<PersonInfoCategory> categoryList = perInfoCtgRepositoty.getAllPerInfoCategory(zeroCompanyId, contractCode);
+		 int salary = AppContexts.user().roles().forPayroll() != null? 1: 0;
+		 int personnel = AppContexts.user().roles().forPersonnel() != null? 1: 0;
+		 int employee = AppContexts.user().roles().forAttendance() != null? 1: 0;
+		List<PersonInfoCategory> categoryList = perInfoCtgRepositoty.getAllPerInfoCategory(zeroCompanyId, contractCode, salary, personnel, employee);
 		return categoryList.stream()
 				.map(p -> new PerInfoCtgFullDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(),
 						p.getCategoryName().v(), p.getPersonEmployeeType().value, p.getIsAbolition().value,
@@ -163,10 +166,14 @@ public class PerInfoCategoryFinder {
 	public PerInfoCtgDataEnumDto getAllPerInfoCtgByCompany() {
 		String companyId = AppContexts.user().companyId();
 		String contractCode = AppContexts.user().contractCode();
+		 int salary = AppContexts.user().roles().forPayroll() != null? 1: 0;
+		 int personnel = AppContexts.user().roles().forPersonnel() != null? 1: 0;
+		 int employee = AppContexts.user().roles().forAttendance() != null? 1: 0;
+		
+		
 
-		List<PerInfoCtgShowDto> categoryList = perInfoCtgRepositoty.getAllPerInfoCategory(companyId, contractCode)
+		List<PerInfoCtgShowDto> categoryList = perInfoCtgRepositoty.getAllPerInfoCategory(companyId, contractCode, salary, personnel, employee)
 				.stream().map(p -> {
-
 					if ((pernfoItemDefRep.countPerInfoItemDefInCategory(p.getPersonInfoCategoryId(), companyId) > 0)) {
 						return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
 								p.getCategoryType().value, p.getCategoryCode().v(), p.getIsAbolition().value, p.getCategoryParentCode().v(),
@@ -231,7 +238,7 @@ public class PerInfoCategoryFinder {
 		 else
 		 {
 			List<PersonInfoCategory> categoryList = perInfoCtgRepositoty
-					.getAllPerInfoCategory(AppContexts.user().zeroCompanyIdInContract(), AppContexts.user().contractCode());
+					.getAllPerInfoCategory(AppContexts.user().zeroCompanyIdInContract(), AppContexts.user().contractCode(), salary, personnel, employee);
 	
 			List<PerInfoCtgShowDto> ctgDtoLst = categoryList.stream().map(p -> {
 				return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
