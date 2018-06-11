@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
-import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
@@ -36,9 +36,9 @@ public class GetTotalTimesFromDailyRecordImpl implements GetTotalTimesFromDailyR
 	/** 勤務種類の取得 */
 	@Inject
 	private WorkTypeRepository workTypeRepo;
-	/** 勤怠項目値変換 */
+	/** 日別実績と勤怠項目の相互変換 */
 	@Inject
-	private AttendanceItemConvertFactory attendanceItemConverter;
+	private DailyRecordToAttendanceItemConverter dailyToAttendanceItem;
 
 	/** 回数集計結果情報を取得 */
 	@Override
@@ -51,7 +51,7 @@ public class GetTotalTimesFromDailyRecordImpl implements GetTotalTimesFromDailyR
 				this.timeLeavingOfDailyRepo,
 				this.workInfoOfDailyRepo,
 				this.workTypeRepo);
-		return algorithm.getResult(totalTimes, period, this.attendanceItemConverter);
+		return algorithm.getResult(totalTimes, period, this.dailyToAttendanceItem);
 	}
 	
 	/** 回数集計結果情報を取得 */
@@ -65,6 +65,6 @@ public class GetTotalTimesFromDailyRecordImpl implements GetTotalTimesFromDailyR
 				this.timeLeavingOfDailyRepo,
 				this.workInfoOfDailyRepo,
 				this.workTypeRepo);
-		return algorithm.getResults(totalTimesList, period, this.attendanceItemConverter);
+		return algorithm.getResults(totalTimesList, period, this.dailyToAttendanceItem);
 	}
 }

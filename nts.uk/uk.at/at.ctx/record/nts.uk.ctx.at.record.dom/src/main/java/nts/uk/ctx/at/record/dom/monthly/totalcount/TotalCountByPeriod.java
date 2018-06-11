@@ -95,7 +95,7 @@ public class TotalCountByPeriod implements Cloneable {
 		val results = algorithm.getResults(
 				totalTimesList,
 				period,
-				repositories.getAttendanceItemConverter());
+				repositories.getDailyConverter());
 		
 		// 回数集計結果を返す
 		for (val result : results.entrySet()){
