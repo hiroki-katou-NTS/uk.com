@@ -274,7 +274,7 @@ public class DailyPerformanceErrorCodeProcessor {
 						.findFirst();
 				if (optWorkInfoOfDailyPerformanceDto.isPresent()
 						&& optWorkInfoOfDailyPerformanceDto.get().getState() == CalculationState.No_Calculated)
-					screenDto.setAlarmCellForFixedColumn(data.getId());
+					screenDto.setAlarmCellForFixedColumn(data.getId(), displayFormat);
 			}
 		}
 		screenDto.setLstData(lstData);

@@ -122,6 +122,10 @@ public class LayoutFinder {
 		
 		List<String> layoutIdList = simpleLayouts.stream()
 				.map(simpleLayout -> simpleLayout.getMaintenanceLayoutID()).collect(Collectors.toList());
+		
+		if (layoutIdList.isEmpty()) {
+			return new ArrayList<>();
+		}
 
 		Map<String, List<LayoutPersonInfoClassification>> classItemMap = this.itemClsRepo.getAllByLayoutIdList(layoutIdList);
 		
@@ -507,6 +511,11 @@ public class LayoutFinder {
 		if (perInfoCategory.isPersonType()) {
 			List<PerInfoCtgData> perInfoCtgDatas = perInCtgDataRepo.getByPerIdAndCtgId(query.getPersonId(),
 					perInfoCategory.getPersonInfoCategoryId());
+			
+			if (perInfoCtgDatas.isEmpty()) {
+				classItem.getItems().addAll(convertDefItem(perInfoCategory, classItem.getListItemDf()));
+				return;
+			} 
 
 			for (PerInfoCtgData perInfoCtgData : perInfoCtgDatas) {
 				
@@ -527,6 +536,11 @@ public class LayoutFinder {
 
 			List<EmpInfoCtgData> empInfoCtgDatas = empInCtgDataRepo.getByEmpIdAndCtgId(query.getEmployeeId(),
 					perInfoCategory.getPersonInfoCategoryId());
+			
+			if (empInfoCtgDatas.isEmpty()) {
+				classItem.getItems().addAll(convertDefItem(perInfoCategory, classItem.getListItemDf()));
+				return;
+			} 
 			
 			for (EmpInfoCtgData empInfoCtgData : empInfoCtgDatas) {
 				

@@ -29,15 +29,17 @@ public class TargetPremiumTimeWeekOfRegular {
 	 * @param weekPeriod 週割増処理期間
 	 * @param addSet 加算設定
 	 * @param aggregateTotalWorkingTime 集計総労働時間
-	 * @return 加算した休暇使用時間
+	 * @param premiumTimeOfPrevMonLast 前月の最終週の週割増対象時間
+	 * @return 通常勤務の週割増対象時間
 	 */
 	public static TargetPremiumTimeWeekOfRegular askPremiumTimeWeek(String companyId, String employeeId,
-			DatePeriod weekPeriod, AddSet addSet, AggregateTotalWorkingTime aggregateTotalWorkingTime){
+			DatePeriod weekPeriod, AddSet addSet, AggregateTotalWorkingTime aggregateTotalWorkingTime,
+			AttendanceTimeMonth premiumTimeOfPrevMonLast){
 
 		TargetPremiumTimeWeekOfRegular domain = new TargetPremiumTimeWeekOfRegular();
 		domain.premiumTimeWeek = new AttendanceTimeMonth(0);
 		domain.premiumTimeOfCurrentMonth = new AttendanceTimeMonth(0);
-		domain.premiumTimeOfPrevMonth = new AttendanceTimeMonth(0);
+		domain.premiumTimeOfPrevMonth = new AttendanceTimeMonth(premiumTimeOfPrevMonLast.v());
 		
 		// 法定内時間を取得する
 		val workTimeOfMonthly = aggregateTotalWorkingTime.getWorkTime();
@@ -71,8 +73,6 @@ public class TargetPremiumTimeWeekOfRegular {
 		domain.premiumTimeOfCurrentMonth = new AttendanceTimeMonth(domain.premiumTimeWeek.v());
 
 		// 「前月の最終週の週割増対象時間」を加算する
-		//*****（未）　前月最終週計算が設計中。2018.5.27 shuichi_ishida
-		domain.premiumTimeOfPrevMonth = new AttendanceTimeMonth(0);
 		domain.premiumTimeWeek = domain.premiumTimeWeek.addMinutes(domain.premiumTimeOfPrevMonth.v());
 		
 		return domain;

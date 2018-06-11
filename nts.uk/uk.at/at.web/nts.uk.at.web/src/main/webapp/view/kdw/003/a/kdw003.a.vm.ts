@@ -169,13 +169,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         itemValueMonthParent: any = {};
         valueUpdateMonth: any = null;
         valueFlexCheck: any;
-        
+
         textStyles: any = [];
         showTextStyle: boolean = true;
         clickFromExtract: boolean = true;
-        
+
         sprRemoveApprovalAll: any;
-        
+
         constructor(dataShare: any) {
             var self = this;
             self.initLegendButton();
@@ -210,7 +210,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             });
             // show/hide profile icon
             self.showProfileIcon.subscribe((val) => {
-                self.reloadGrid();
+                if (self.displayFormat() == 1 || self.displayFormat() ==2) {
+                    self.reloadGrid();
+                }
             });
 
             self.displayWhenZero.subscribe(val => {
@@ -266,7 +268,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
                     var elementDate = dateRange.startDate;
                     if (moment(elementDate, "YYYY/MM/DD").isValid()) {
-                        while (!moment(elementDate, "YYYY/MM/DD").isAfter(dateRange.endDate)) {
+                        while (!moment(elementDate, "YYYY/MM/DD").isAfter(moment(dateRange.endDate, "YYYY/MM/DD"))) {
                             self.lstDate.push({ date: elementDate });
                             elementDate = moment(elementDate, "YYYY/MM/DD").add(1, 'd').format("YYYY/MM/DD");
                         }
@@ -542,19 +544,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         $("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId34, objectName);
                         sprStamp.change34 = true;
                     }
-                    if ((data.changeSPR.change31 || data.changeSPR.change34) && self.shareObject().initClock.canEdit ){
+                    if ((data.changeSPR.change31 || data.changeSPR.change34) && self.shareObject().initClock.canEdit) {
                         self.sprStampSourceInfo(sprStamp);
                     }
                 }
                 //update
             }
         }
- 
-        convertMinute(value) : string{
+
+        convertMinute(value): string {
             return Math.floor(value / 60) + ':' + value % 60;
         }
-        
-        processFlex(data) : JQueryPromise<any>{
+
+        processFlex(data): JQueryPromise<any> {
             let dfd = $.Deferred();
             let self = this;
             if (data.flexShortage != null && data.flexShortage.showFlex && self.displayFormat() == 0) {
@@ -567,11 +569,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 let fst: FlexShortage = self.flexShortage();
 
                 //fst.parent = ko.observable(self);
-                $.when(fst.bindData(ko.toJS(self.calcFlex), ko.toJS(self.breakTimeDay))).done(() =>{
-                 self.itemMonthLayout(data);
-                  self.itemValueMonthParent = data.flexShortage.monthParent;
-                  nts.uk.ui.block.clear();
-                  dfd.resolve();
+                $.when(fst.bindData(ko.toJS(self.calcFlex), ko.toJS(self.breakTimeDay))).done(() => {
+                    self.itemMonthLayout(data);
+                    self.itemValueMonthParent = data.flexShortage.monthParent;
+                    nts.uk.ui.block.clear();
+                    dfd.resolve();
                 });
 
                 //self.flexShortage(new FlexShortage(self, self.calcFlex(),  self.breakTimeDay()));
@@ -599,7 +601,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.sheetsGrid(data.lstControlDisplayItem.lstSheet);
             self.sheetsGrid.valueHasMutated();
             if (self.showTextStyle || self.clickFromExtract) {
-                self.textStyles = data.textStyles; 
+                self.textStyles = data.textStyles;
             }
         }
 
@@ -607,7 +609,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             var self = this;
             this.insertUpdate();
         }
- 
+
         proceedSave() {
             var self = this;
             this.insertUpdate();
@@ -638,10 +640,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let dataTemp = _.find(dataSource, (item: any) => {
                         return item.id == data.rowId;
                     });
+                    
                     if (data.columnKey != "sign" && data.columnKey != "approval") {
                         if (data.columnKey.indexOf("Code") == -1 && data.columnKey.indexOf("NO") == -1) {
                             if (data.columnKey.indexOf("Name") != -1) {
-                                // todo
                             } else {
 
                                 // check itemCare 
@@ -687,11 +689,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             dataCheckSign.push({ rowId: data.rowId, itemId: "sign", value: data.value, employeeId: dataTemp.employeeId, date: dataTemp.dateDetail.utc().toISOString(), flagRemoveAll: false });
                         } else {
                             let flag = false;
-                            if(data.rowId == self.sprRemoveApprovalAll){
-                               flag = true; 
-                               self.sprRemoveApprovalAll = null;
+                            if (data.rowId == self.sprRemoveApprovalAll) {
+                                flag = true;
+                                self.sprRemoveApprovalAll = null;
                             }
-                            dataCheckApproval.push({ rowId: data.rowId, itemId: "approval", value: data.value, employeeId: dataTemp.employeeId, date: dataTemp.dateDetail.utc().toISOString(), flagRemoveAll: flag});
+                            dataCheckApproval.push({ rowId: data.rowId, itemId: "approval", value: data.value, employeeId: dataTemp.employeeId, date: dataTemp.dateDetail.utc().toISOString(), flagRemoveAll: flag });
                         }
                     }
                 });
@@ -730,7 +732,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         dataChange = {};
                         if (_.isEmpty(data)) {
                             if (checkDailyChange) {
-                                self.reloadScreen();
+                                // self.reloadScreen();
+                                self.loadRowScreen();
                             } else {
                                 nts.uk.ui.block.clear();
                             }
@@ -746,11 +749,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             }
                             if (data[2] != undefined) {
                                 self.listCheckHolidays(data[2]);
-                                self.reloadScreen();
+                                self.loadRowScreen();
                             }
-                            
-                            if(data[3] != undefined){
-                               self.listCheck28(data[3]); 
+
+                            if (data[3] != undefined) {
+                                self.listCheck28(data[3]);
                             }
                             self.showErrorDialog();
                         }
@@ -771,6 +774,88 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
         }
 
+        loadRowScreen() {
+            var self = this;
+            let lstEmployee = [];
+            if (self.displayFormat() === 0) {
+                let lst = _.find(self.lstEmployee(), (employee) => {
+                    return employee.id === self.selectedEmployee();
+                });
+                if (lst != undefined) lstEmployee.push(lst);
+            } else {
+                lstEmployee = self.lstEmployee();
+            }
+
+            let dataSource = $("#dpGrid").igGrid("option", "dataSource");
+
+            let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
+
+            let rowIds = _.map(_.uniqBy(dataChange, function(e) {
+                return e.rowId;
+            }), (value) => {
+                return value.rowId.substring(1, value.rowId.length);
+            });
+
+            let lstData = _.map(_.sortBy(_.filter(self.dailyPerfomanceData(), (v) => _.includes(rowIds, v.id)), (sort) => {
+                return new Date(sort.date);
+            }), (map) => {
+                map.date = moment(map.date).utc().toISOString()
+                return map;
+            }
+            );
+            
+            let param = {
+                lstAttendanceItem: self.lstAttendanceItem(),
+                lstEmployee: lstEmployee,
+                dateRange: {
+                    startDate: lstData[0].date,
+                    endDate: lstData[lstData.length - 1].date
+                },
+                mode: 0,
+                displayFormat: self.displayFormat(),
+                lstData: lstData
+            }
+
+            let dfd = $.Deferred();
+            service.loadRow(param).done((data) => {
+                let dataSourceRow, dataSource, dataSourceNew;
+                dataSourceRow = self.formatDate(data.lstData);
+                dataSource = $("#dpGrid").igGrid("option", "dataSource");
+                dataSourceNew = _.map(_.cloneDeep(dataSource), (value) => {
+                    let val = _.find(dataSourceRow, (item) => {
+                        return item.id == value.id;
+                    });
+                    return val != undefined ? val : value;
+                })
+                console.log(dataSourceNew);
+                $("#dpGrid").ntsGrid("resetOrigDataSource", dataSourceNew)
+                $("#dpGrid").igGrid("option", "dataSource", _.cloneDeep(dataSourceNew));
+//                _.forEach(dataSourceRow, (valueUpate) =>{
+//                    delete valueUpate.dateDetail
+//                    delete valueUpate.employeeCode
+//                    delete valueUpate.employeeId
+//                    delete valueUpate.employeeName
+//                    delete valueUpate.employmentCode
+//                    delete valueUpate.typeGroup
+//                    delete valueUpate.workplaceId;
+//                    let id = valueUpate.id;
+//                    delete valueUpate.id
+//                    $("#dpGrid").ntsGrid("updateRow", id, valueUpate);
+//                })
+                _.each(rowIds, rowN => {
+                    $("#dpGrid").ntsGrid("clearRowStates", "_" + rowN);
+                });
+                _.each(data.lstCellState, (valt) => {
+                    console.log("column key:" + valt.columnKey);
+                    $("#dpGrid").ntsGrid("setState", valt.rowId, valt.columnKey, valt.state);
+                });
+                nts.uk.ui.block.clear();
+                dfd.resolve();
+            });
+            return dfd.promise();
+        }
+
+       
         checkIsColumn(dataCell: any, key: any): boolean {
             let check = false;
             _.each(dataCell, (item: any) => {
@@ -918,13 +1003,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 // $("#content-grid").attr('style', 'top: 180px !IMPORTANT');
             }
         }
-        
-        reloadScreen(){
+
+        reloadScreen() {
             var self = this;
             console.log(self.dailyPerfomanceData());
             // if (!nts.uk.ui.errors.hasError()) {
             nts.uk.ui.errors.clearAll();
             self.hideComponent();
+            self.removeErrorRefer();
             let lstEmployee = [];
             if (self.displayFormat() === 0) {
                 let lst = _.find(self.lstEmployee(), (employee) => {
@@ -962,6 +1048,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     localStorage.removeItem(window.location.href + '/dpGrid');
                 }
                 localStorage.setItem('kdw003_type', data.typeBussiness);
+                self.dataAll(data);
                 self.formatCodes(data.lstControlDisplayItem.formatCode);
                 //let idC = self.createKeyLoad();
                 //TO Thanh: set data for list attendance item after load by extract click
@@ -1002,6 +1089,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 nts.uk.ui.block.clear();
             });
             //   }
+        }
+ 
+        removeErrorRefer(){
+            var self = this;
+            self.listCareError([]);
+            self.listCareInputError([]);
+            self.listCheckHolidays([]);
+            self.listCheck28([]);    
         }
         
         btnExtraction_Click() {
@@ -1084,16 +1179,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 let object = { date: value.date, employeeCode: self.dpData[0].employeeCode, employeeName: self.dpData[0].employeeName, message: value.valueType, itemName: value.rowId, columnKey: value.itemId };
                 errorValidateScreeen.push(object);
             });
-            
+
             // check item28 input listCheck28
             _.each(self.listCheck28(), value => {
                 let dateCon = _.find(self.dpData, (item: any) => {
                     return item.id == value.rowId.substring(1, value.rowId.length);
                 });
                 let object = { date: dateCon.date, employeeCode: dateCon.employeeCode, employeeName: dateCon.employeeName, message: nts.uk.resource.getMessage("Msg_1270"), itemName: "", columnKey: value.itemId };
-//                let item = _.find(self.optionalHeader, (data) => {
-//                    return String(data.key) === "A" + value.itemId;
-//                })
+                //                let item = _.find(self.optionalHeader, (data) => {
+                //                    return String(data.key) === "A" + value.itemId;
+                //                })
                 let item = _.find(self.optionalHeader, (data) => {
                     if (data.group != undefined && data.group != null) {
                         return String(data.group[0].key) === "Code" + value.itemId;
@@ -1104,12 +1199,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 object.itemName = (item == undefined) ? "" : item.headerText;
                 errorValidateScreeen.push(object);
             });
-            
+
             if (self.displayFormat() === 0) {
                 lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
                     return employee.id === self.selectedEmployee();
                 }));
-            } else { 
+            } else {
                 lstEmployee = self.lstEmployee();
             }
             let param = {
@@ -1156,6 +1251,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         nts.uk.ui.block.invisible();
                         nts.uk.ui.block.grayout();
                         service.selectErrorCode(param).done((data) => {
+                            self.dataAll(data);
+                            self.removeErrorRefer();
                             self.createSumColumn(data);
                             self.columnSettings(data.lstControlDisplayItem.columnSettings);
                             self.receiveData(data);
@@ -1232,6 +1329,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         nts.uk.ui.block.invisible();
                         nts.uk.ui.block.grayout();
                         service.selectFormatCode(param).done((data) => {
+                            self.dataAll(data);
+                            self.removeErrorRefer();
                             self.createSumColumn(data);
                             self.columnSettings(data.lstControlDisplayItem.columnSettings);
                             self.receiveData(data);
@@ -1442,9 +1541,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         }
         destroyGrid() {
             $("#dpGrid").ntsGrid("destroy");
-            $("#dpGrid").remove();
-            $(".nts-grid-sheet-buttons").remove();
-            $('<table id="dpGrid"></table>').appendTo('#gid');
+//            $("#dpGrid").remove();
+//            $(".nts-grid-sheet-buttons").remove();
+//            $('<table id="dpGrid"></table>').appendTo('#gid');
+            $("#dpGrid").off();
         }
         setColorWeekend() {
             var self = this;
@@ -1553,10 +1653,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     total = total + moment.duration(d).asMinutes();
                 }
             });
-            let hours =  total > 0 ?   Math.floor(total/60) :  Math.ceil(total/60);
-            let minus = Math.abs(total%60);
-            minus = (minus < 10) ? '0'+minus : minus;
-            return ((total< 0 && hours == 0 ) ? "-"+hours : hours)  + ":" + minus;
+            let hours = total > 0 ? Math.floor(total / 60) : Math.ceil(total / 60);
+            let minus = Math.abs(total % 60);
+            minus = (minus < 10) ? '0' + minus : minus;
+            return ((total < 0 && hours == 0) ? "-" + hours : hours) + ":" + minus;
         }
 
         totalMoney(data) {
@@ -1764,7 +1864,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 rowVirtualization: true,
                 virtualization: true,
                 virtualizationMode: 'continuous',
-                enter: self.selectedDirection() == 0 ? 'below' : 'right',
+                enter: self.selectedDirection() == 0 ? 'below' : 'right',  
                 autoFitWindow: false,
                 preventEditInError: false,
                 columns: self.headersGrid(),
@@ -1827,6 +1927,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         },
                         controlType: 'FlexImage'
                     },
+                    { name: 'Image', source: 'image-icon', controlType: 'Image' },
                     {
                         name: 'Button', controlType: 'Button', text: nts.uk.resource.getText("KDW003_63"), enable: true, click: function(data) {
                             let source: any = $("#dpGrid").igGrid("option", "dataSource");
@@ -1900,11 +2001,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             var self = this;
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
-            self.createSumColumn(self.dataAll());
-            self.columnSettings(self.dataAll().lstControlDisplayItem.columnSettings);
-            self.receiveData(self.dataAll());
-            self.extractionData();
-            self.loadGrid();
+//            self.destroyGrid();
+//            self.createSumColumn(self.dataAll());
+//            self.columnSettings(self.dataAll().lstControlDisplayItem.columnSettings);
+//            self.receiveData(self.dataAll());
+//            self.extractionData();
+//            self.loadGrid();
+            self.extraction();
             nts.uk.ui.block.clear();
         }
 
@@ -1955,7 +2058,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     tempList.push(header);
                 });
             } else if (mode == 1) {
-                self.displayProfileIcon();
+                self.displayProfileIcon(mode);
                 _.forEach(self.dateModeHeader, (header) => {
                     if (header.constraint == null) {
                         delete header.constraint;
@@ -1964,6 +2067,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     tempList.push(header);
                 });
             } else if (mode == 2) {
+                 self.displayProfileIcon(mode); 
                 _.forEach(self.errorModeHeader, (header) => {
                     if (header.constraint == null) {
                         delete header.constraint;
@@ -2069,7 +2173,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
         }
 
-        displayProfileIcon() {
+        displayProfileIcon(mode) {
             var self = this;
             if (self.showProfileIcon()) {
                 _.remove(self.dateModeHeader, function(header) {
@@ -2078,8 +2182,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 _.remove(self.dateModeFixCol, function(header) {
                     return header.columnKey === "picture-person";
                 });
-                self.dateModeHeader.splice(5, 0, LIST_FIX_HEADER[7]);
-                self.dateModeFixCol.push({ columnKey: 'picture-person', isFixed: true });
+                 if(mode == 1) {
+                      self.dateModeHeader.splice(5, 0, LIST_FIX_HEADER[7]);
+                      self.dateModeFixCol.splice(5, 0, { columnKey: 'picture-person', isFixed: true });
+                }else {
+                    self.errorModeHeader.splice(6, 0, LIST_FIX_HEADER[7]);
+                    self.errorModeHeader.splice(6, 0, { columnKey: 'picture-person', isFixed: true });
+                }
             } else {
                 _.remove(self.dateModeHeader, function(header) {
                     return header.key === "picture-person";
@@ -2802,7 +2911,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         };
 
         bindData = (dataCalc: CalcFlex, breakTimeDay: BreakTimeDay): JQueryPromise<any> => {
-          let dfd = $.Deferred();
+            let dfd = $.Deferred();
             if (!dataCalc || !breakTimeDay) {
                 return;
             }
@@ -2819,12 +2928,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.noOfHolidays(Number(val189));
             self.absentDeductionTime(Number(val190));
             self.initLoad = 1;
-            self.calc(dataCalc, breakTimeDay).done(() =>{
+            self.calc(dataCalc, breakTimeDay).done(() => {
                 dfd.resolve();
             }
             );
             //self.checkColor(self.nextMonthTransferredMoneyTime(), breakTimeDay);
-           return dfd.promise();
+            return dfd.promise();
         }
 
         calc(dataCalc: CalcFlex, breakTimeDay: BreakTimeDay): JQueryPromise<any> {
@@ -2842,7 +2951,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
             // minuNextMonth = minuNextMonth < 0 ? 0 : minuNextMonth * (-1);
             self.nextMonthTransferredMoneyTime(self.convertToHours(minuNextMonth));
-            
+
             if ((__viewContext.vm.canFlex())) {
                 self.checkColor(self.nextMonthTransferredMoneyTime(), breakTimeDay).done(() => {
                     __viewContext.vm.valueUpdateMonth = {};
@@ -2874,7 +2983,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             } else {
                 dfd.resolve();
             }
-        return dfd.promise();
+            return dfd.promise();
         }
         natural(value: any): number {
             let temp = Number(value);
@@ -2888,20 +2997,20 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             return hours + ":" + minutes;
         }
 
-        checkColor(value: any, breakTimeDay: BreakTimeDay) : JQueryPromise<any>{
+        checkColor(value: any, breakTimeDay: BreakTimeDay): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            if(__viewContext.vm.valueFlexCheck == undefined) dfd.resolve();
+            if (__viewContext.vm.valueFlexCheck == undefined) dfd.resolve();
             let param = __viewContext.vm.valueFlexCheck;
             param.date = moment(param.date).utc().toISOString()
             service.findFlexCheck(param).done((data) => {
-                 self.messageRed(nts.uk.resource.getText('KDW003_80', [data]));
+                self.messageRed(nts.uk.resource.getText('KDW003_80', [data]));
                 self.checkColorDetail(data, value, breakTimeDay);
                 dfd.resolve();
-            }).fail(() =>{
-                  dfd.resolve();
+            }).fail(() => {
+                dfd.resolve();
             });
-           return dfd.promise();
+            return dfd.promise();
         }
 
         checkColorDetail(timeCheck: any, value: any, breakTimeDay: BreakTimeDay) {

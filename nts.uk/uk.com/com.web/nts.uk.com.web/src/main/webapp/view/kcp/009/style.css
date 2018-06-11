@@ -76,7 +76,6 @@ td.employment-tdpad {
 	width: 100px;
 }
 
-.items-list {
-	position: absolute;
-	z-index: 998 !important;
+.btn_show_list{
+	z-index: 100000;
 }

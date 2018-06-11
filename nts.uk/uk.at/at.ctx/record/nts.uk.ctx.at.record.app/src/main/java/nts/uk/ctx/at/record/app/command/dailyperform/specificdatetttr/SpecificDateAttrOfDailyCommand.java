@@ -11,21 +11,33 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 public class SpecificDateAttrOfDailyCommand extends DailyWorkCommonCommand {
 
 	@Getter
-	private Optional<SpecificDateAttrOfDailyPerforDto> data;
+	private Optional<SpecificDateAttrOfDailyPerfor> data;
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
-		this.data = item == null || !item.isHaveData() ? Optional.empty() : Optional.of((SpecificDateAttrOfDailyPerforDto) item);
+		this.data = item == null || !item.isHaveData() ? Optional.empty() 
+				: Optional.of(((SpecificDateAttrOfDailyPerforDto) item).toDomain(getEmployeeId(), getWorkDate()));
 	}
 
 	@Override
 	public void updateData(Object item) {
-		if(data == null){ return; }
-		setRecords(SpecificDateAttrOfDailyPerforDto.getDto((SpecificDateAttrOfDailyPerfor) item));
+		if(item == null){ return; }
+		this.data = Optional.of((SpecificDateAttrOfDailyPerfor) item);
 	}
 	
 	@Override
 	public Optional<SpecificDateAttrOfDailyPerfor> toDomain() {
-		return data == null ? null : data.map(c -> c.toDomain(getEmployeeId(), getWorkDate()));
+		return this.data;
+	}
+
+	@Override
+	public Optional<SpecificDateAttrOfDailyPerforDto> toDto() {
+		return getData().map(b -> SpecificDateAttrOfDailyPerforDto.getDto(b));
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public void updateDataO(Optional<?> data) {
+		this.data = (Optional<SpecificDateAttrOfDailyPerfor>) data;
 	}
 }

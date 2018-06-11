@@ -25,8 +25,8 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaMonthlyCorrectConditionRepository extends JpaRepository implements MonthlyCorrectConditionRepository {
 
-	private final String SELLECT_MONTHLY_CONDITION_BY_COMPANY = "SELECT m FROM KrcmtMonthlyCorrectCon m WHERE m.krcmtMonthlyCorrectConPK.companyId = :companyId";
-	private final String SELECT_CHECKID = "SELECT c FROM KrcmtTimeChkMonthly c WHERE c.eralCheckId = :eralCheckId ";
+	private static final String SELLECT_MONTHLY_CONDITION_BY_COMPANY = "SELECT m FROM KrcmtMonthlyCorrectCon m WHERE m.krcmtMonthlyCorrectConPK.companyId = :companyId";
+	private static final String SELECT_CHECKID = "SELECT c FROM KrcmtTimeChkMonthly c WHERE c.eralCheckId = :eralCheckId ";
 
 	@Override
 	public Optional<MonthlyCorrectExtractCondition> findMonthlyConditionByCode(String errCode) {

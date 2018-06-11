@@ -71,9 +71,7 @@
 								data-bind="ntsGridList: {	
 						dataSource: roleCategoryList ,
 						primaryKey: 'categoryId' ,
-						columns: [{ headerText: 'コード', key: 'categoryId', width: 200 ,hidden:true},
-								{ headerText: '#{i18n.getText('CAS001_10')}', key: 'categoryName', width: 165},
-				                {headerText: '#{i18n.getText('CAS001_69')}', key: 'setting', width: 80 , formatter :makeIcon } ] ,
+						columns: ctgColumns ,
 						multiple: false,
 						value: currentCategoryId ,
 						rows:10 }">
