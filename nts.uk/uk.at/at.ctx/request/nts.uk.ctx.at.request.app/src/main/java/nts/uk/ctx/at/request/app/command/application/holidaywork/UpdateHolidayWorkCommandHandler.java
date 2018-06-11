@@ -14,6 +14,7 @@ import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkClock;
@@ -22,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
-public class UpdateHolidayWorkCommandHandler extends CommandHandlerWithResult<UpdateHolidayWorkCommand, List<String>> {
+public class UpdateHolidayWorkCommandHandler extends CommandHandlerWithResult<UpdateHolidayWorkCommand, ProcessResult> {
 	@Inject
 	private AppHolidayWorkRepository appHolidayWorkRepository;
 	@Inject
@@ -33,7 +34,7 @@ public class UpdateHolidayWorkCommandHandler extends CommandHandlerWithResult<Up
 	private DetailBeforeUpdate detailBeforeUpdate;
 	
 	@Override
-	protected List<String> handle(CommandHandlerContext<UpdateHolidayWorkCommand> context) {
+	protected ProcessResult handle(CommandHandlerContext<UpdateHolidayWorkCommand> context) {
 		String companyID = AppContexts.user().companyId();
 		UpdateHolidayWorkCommand updateHolidayWorkCommand = context.getCommand();
 		Optional<AppHolidayWork> opAppHolidayWork = appHolidayWorkRepository.getFullAppHolidayWork(companyID, updateHolidayWorkCommand.getAppID());

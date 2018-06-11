@@ -13,5 +13,5 @@ public interface ChildNursingLeaveMng {
 	 * @param mode True: 月次モード, false: その他モード
 	 * @return
 	 */
-	public List<ChildCareNursingRemainOutputPara> calChildNursOfInPeriod(String cid, String sid, DatePeriod dateData, boolean mode);
+	public ChildCareNursingRemainOutputPara calChildNursOfInPeriod(String cid, String sid, DatePeriod dateData, boolean mode);
 }

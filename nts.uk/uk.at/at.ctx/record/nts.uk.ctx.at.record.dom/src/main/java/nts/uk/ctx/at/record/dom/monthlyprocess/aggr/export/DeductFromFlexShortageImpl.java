@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
@@ -47,10 +48,38 @@ public class DeductFromFlexShortageImpl implements DeductFromFlexShortage {
 			return returnValue;
 		}
 		val workConditionItem = workConditionItemOpt.get();
+
+		// 集計に必要な日別実績データを取得する
+		MonthlyCalculatingDailys monthlyCalcDailys = new MonthlyCalculatingDailys();
+		{
+			// 取得期間を　開始日-6日～終了日　とする　（前月の最終週の集計のため）
+			DatePeriod findPeriod = new DatePeriod(period.start().addDays(-6), period.end());
+			
+			// 日別実績の勤怠時間　取得
+			val attendanceTimeOfDailyList =
+					this.repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, findPeriod);
+			for (val attendanceTimeOfDaily : attendanceTimeOfDailyList){
+				monthlyCalcDailys.getAttendanceTimeOfDailyMap().putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
+			}
+			
+			// 日別実績の勤務情報　取得
+			val workInfoOfDailyList =
+					this.repositories.getWorkInformationOfDaily().findByPeriodOrderByYmd(employeeId, findPeriod);
+			for (val workInfoOfDaily : workInfoOfDailyList){
+				monthlyCalcDailys.getWorkInfoOfDailyMap().putIfAbsent(workInfoOfDaily.getYmd(), workInfoOfDaily);
+			}
+			
+			// 日別実績の出退勤　取得
+			val timeLeaveOfDailyList =
+					this.repositories.getTimeLeavingOfDaily().findbyPeriodOrderByYmd(employeeId, findPeriod);
+			for (val timeLeaveOfDaily : timeLeaveOfDailyList){
+				monthlyCalcDailys.getTimeLeaveOfDailyMap().putIfAbsent(timeLeaveOfDaily.getYmd(), timeLeaveOfDaily);
+			}
+		}
 		
 		// 履歴ごとに月別実績を集計する
 		monthlyCalculation.prepareAggregation(companyId, employeeId, yearMonth, closureId, closureDate,
-				period, workConditionItem, Optional.empty(), 1, this.repositories);
+				period, workConditionItem, 1, monthlyCalcDailys, this.repositories);
 		for (val errorInfo : monthlyCalculation.getErrorInfos()){
 			if (errorInfo.getResourceId().compareTo("002") == 0) return returnValue;
 		}

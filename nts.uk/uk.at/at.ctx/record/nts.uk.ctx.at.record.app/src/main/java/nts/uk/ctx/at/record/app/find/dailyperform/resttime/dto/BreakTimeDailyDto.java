@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
@@ -19,27 +20,28 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Data
-@AttendanceItemRoot(rootName = "日別実績の休憩時間帯")
+@AttendanceItemRoot(rootName = ItemConst.DAILY_BREAK_TIME_NAME)
 public class BreakTimeDailyDto extends AttendanceItemCommon {
 
 	private String employeeId;
 	
 	private GeneralDate ymd;
 	
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "時間帯", needCheckIDWithMethod = "restTimeType", listMaxLength = 10, indexField = "timeSheetNo")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TIME_ZONE, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD, 
+			listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<TimeSheetDto> timeZone;
 
 	/** 休憩種類 */
-	private int restTimeType;
+	private int attr;
 
-	public String restTimeType() {
-		switch (this.restTimeType) {
+	public String enumText() {
+		switch (this.attr) {
 		case 0:
-			return "就業時間帯から参照";
+			return E_WORK_REF;
 		case 1:
-			return "スケジュールから参照";
+			return E_SCHEDULE_REF;
 		default:
-			return "";
+			return EMPTY_STRING;
 		}
 	}
 	
@@ -48,7 +50,7 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 		if(x != null){
 			dto.setEmployeeId(x.getEmployeeId());
 			dto.setYmd(x.getYmd());
-			dto.setRestTimeType(x.getBreakType() == null ? 0 : x.getBreakType().value);
+			dto.setAttr(x.getBreakType() == null ? 0 : x.getBreakType().value);
 			dto.setTimeZone(ConvertHelper.mapTo(x.getBreakTimeSheets(), 
 													(c) -> new TimeSheetDto(
 														c.getBreakFrameNo().v().intValue(),
@@ -86,9 +88,9 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 			date = this.workingDate();
 		}
 		return new BreakTimeOfDailyPerformance(emp,
-					EnumAdaptor.valueOf(restTimeType, BreakType.class),
+					EnumAdaptor.valueOf(attr, BreakType.class),
 					ConvertHelper.mapTo(timeZone,
-							(d) -> new BreakTimeSheet(new BreakFrameNo(d.getTimeSheetNo()),
+							(d) -> new BreakTimeSheet(new BreakFrameNo(d.getNo()),
 									createWorkStamp(d.getStart()),
 									createWorkStamp(d.getEnd()),
 									// TODO: calculate break time

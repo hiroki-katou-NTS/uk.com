@@ -3,6 +3,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
     import service = nts.uk.at.view.kaf010.shr.service;
     import dialog = nts.uk.ui.dialog;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
+    import setShared = nts.uk.ui.windows.setShared;
     export class ScreenModel {
         
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
@@ -14,6 +15,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         //        curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
         //manualSendMailAtr
         manualSendMailAtr: KnockoutObservable<boolean> = ko.observable(false);
+        checkBoxValue: KnockoutObservable<boolean> = ko.observable(false);
         displayBreakTimeFlg: KnockoutObservable<boolean> = ko.observable(true);
         //申請者
         employeeName: KnockoutObservable<string> = ko.observable("");
@@ -228,7 +230,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 
         initData(data: any) {
             var self = this;
-            self.manualSendMailAtr(data.manualSendMailAtr);
+            self.manualSendMailAtr(!data.manualSendMailAtr);
             self.displayPrePostFlg(data.displayPrePostFlg ? true : false);
             self.prePostSelected(data.application.prePostAtr);
             self.displayCaculationTime(data.displayCaculationTime);
@@ -436,16 +438,24 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         }
         //登録処理を実行
         registerData(overtime) {
+            var self = this;
             service.createOvertime(overtime).done((data) => {
-                dialog.info({ messageId: "Msg_15" }).then(function() {
-//                    if (!nts.uk.util.isNullOrUndefined(data)) {
-//                            nts.uk.ui.dialog.info({ messageId: 'Msg_392',messageParams: [data]  }).then(()=>{
-//                                location.reload();    
-//                            });
-//                        } else {
-//                            location.reload();        
-//                        }
-                        location.reload();   
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    if(data.autoSendMail){
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
+                            location.reload();
+                        });    
+                    } else {
+                        if(self.checkBoxValue()){
+                            let command = {appID: data.appID};
+                            setShared("KDL030_PARAM", command);
+                            nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
+                                location.reload();
+                            });    
+                        } else {
+                            location.reload();
+                        }   
+                    }
                 });
             }).fail((res) => {
                 dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })

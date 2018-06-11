@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+
 /**
  * 
  * @author hieult
@@ -17,6 +19,6 @@ public interface DetailAfterRelease {
 	 * @param application Application
 	 * @param loginID Login ID
 	 */
-	public void detailAfterRelease(String companyID, String appID, String loginID, String memo);
+	public ProcessResult detailAfterRelease(String companyID, String appID, String loginID, String memo);
 	
 }
