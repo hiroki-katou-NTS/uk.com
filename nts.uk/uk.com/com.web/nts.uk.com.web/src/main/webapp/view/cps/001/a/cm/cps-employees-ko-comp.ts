@@ -10,7 +10,7 @@ module nts.custom.component {
     let __viewContext: any = window["__viewContext"] || {};
 
     const fetch = {
-        perm: () => ajax('ctx/pereg/roles/auth/get-self-auth'),
+        perm: () => ajax('ctx/pereg/functions/auth/find-all'),
         employee: (id: string) => ajax(`bs/employee/person/get-header/${id}`),
         get_list: (ids) => ajax('com', 'bs/employee/person/get-list-emps', ids),
         avartar: (id: string) => ajax(`basic/organization/empfilemanagement/find/getAvaOrMap/${id}/0`)
@@ -263,7 +263,12 @@ module nts.custom.component {
                                         tabindex="15"></button>
                             </div>
                             <div class="column">
-                                <button class="btn btn-print hidden" type="button" tabindex="14" data-bind="text: text('CPS001_17')"></button>
+                                <button class="btn btn-print" type="button" tabindex="14" 
+                                        data-bind="
+                                            text: text('CPS001_17'),
+                                            style: { 
+                                                visibility: auth.allowPrintRef() ? 'visible' : 'hidden' 
+                                            }"></button>
                             </div>
                         </div>
                         <div class="active-panel">
@@ -347,15 +352,28 @@ module nts.custom.component {
                 auth: {
                     allowDocRef: ko.observable(false),
                     allowMapBrowse: ko.observable(false),
-                    allowAvatarRef: ko.observable(false)
+                    allowAvatarRef: ko.observable(false),
+                    allowPrintRef: ko.observable(false),
                 }
             });
 
-            fetch.perm().done((data: IPersonAuth) => {
+            fetch.perm().done((data: Array<IPersonAuth>) => {
                 if (data) {
-                    params.auth.allowDocRef(!!data.allowDocRef);
-                    params.auth.allowAvatarRef(!!data.allowAvatarRef);
-                    params.auth.allowMapBrowse(!!data.allowMapBrowse);
+                    debugger;
+                    _.forEach(data, function(value : IPersonAuth) {
+                        if (value.functionNo == FunctionNo.No3_Allow_RefAva) {
+                           params.auth.allowAvatarRef(!!value.available);
+                        }
+                        if (value.functionNo == FunctionNo.No5_Allow_RefMap) {
+                           params.auth.allowMapBrowse(!!value.available);
+                        }
+                        if (value.functionNo == FunctionNo.No7_Allow_RefDoc) {
+                           params.auth.allowDocRef(!!value.available);
+                        }
+                        if (value.functionNo == FunctionNo.No8_Allow_Print) {
+                            params.auth.allowDocRef(!!value.available);
+                        }
+                    });
                 } else {
                     params.auth.allowDocRef(false);
                     params.auth.allowAvatarRef(false);
@@ -479,12 +497,11 @@ module nts.custom.component {
     });
 
     interface IPersonAuth {
-        allowMapUpload: number;
-        allowMapBrowse: number;
-        allowDocRef: number;
-        allowDocUpload: number;
-        allowAvatarUpload: number;
-        allowAvatarRef: number;
+        functionNo: number;
+        functionName: string;
+        available: boolean;
+        description: string;
+        orderNumber: number;
     }
 
     interface IData {
@@ -506,5 +523,30 @@ module nts.custom.component {
 
         position?: string;
         contractCodeType?: string;
+    }
+    
+    enum FunctionNo {
+        // có thể delete employee ở đăng ký thông tin cá nhân
+        No1_Allow_DelEmp = 1,
+        // có thể upload ảnh chân dung employee ở đăng ký thông tin cá nhân
+        No2_Allow_UploadAva = 2,
+        // có thể xem ảnh chân dung employee ở đăng ký thông tin cá nhân
+        No3_Allow_RefAva = 3,
+        // có thể upload file bản đồ ở đăng ký thông tin cá nhân
+        No4_Allow_UploadMap = 4,
+        // có thể xem file bản đồ ở đăng ký thông tin cá nhân
+        No5_Allow_RefMap = 5,
+        // có thể upload file điện tử employee ở đăng ký thông tin cá nhân
+        No6_Allow_UploadDoc = 6,
+        // có thể xem file điện tử employee ở đăng ký thông tin cá nhân
+        No7_Allow_RefDoc = 7,
+        // có thể in biểu mẫu của employee ở đăng ký thông tin cá nhân
+        No8_Allow_Print = 8,
+        // có thể setting copy target item khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
+        No9_Allow_SetCoppy = 9,
+        // có thể setting giá trị ban đầu nhập vào khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
+        No10_Allow_SetInit = 10,
+        // Lọc chọn lựa phòng ban trực thuộc/workplace trực tiếp theo bộ phận liên kết cấp dưới tại đăng ký thông tin cá nhân
+        No11_Allow_SwitchWpl = 11
     }
 }
