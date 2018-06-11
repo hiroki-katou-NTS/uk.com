@@ -12,12 +12,12 @@ import nts.uk.ctx.at.record.app.command.monthly.anyitem.AnyItemOfMonthlyCommandH
 import nts.uk.ctx.at.record.app.command.monthly.attendancetime.AttendanceTimeOfMonthlyCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.reserveleave.RsvLeaRemNumEachMonthCommandHandler;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.attendance.util.RecordHandler;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 
 @Stateless
-public class MonthlyRecordWorkCommandHandler implements ItemConst {
+public class MonthlyRecordWorkCommandHandler extends RecordHandler {
 
 	/** 月別実績の所属情報： 月別実績の所属情報 */
 	@Inject

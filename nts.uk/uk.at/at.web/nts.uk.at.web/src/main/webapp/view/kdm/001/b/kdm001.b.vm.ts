@@ -330,7 +330,8 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                         self.subData = [];
                         self.updateSubstituteDataList();
                         self.isHaveError(true);
-                        dialog.alertError({messageId: 'Msg_1306'}); 
+                        dialog.alertError({messageId: 'Msg_1306'});
+                        self.dispTotalRemainHours('0' + getText('KDM001_27'));
                     }
                     dfd.resolve();
                 }).fail(function(result) {
