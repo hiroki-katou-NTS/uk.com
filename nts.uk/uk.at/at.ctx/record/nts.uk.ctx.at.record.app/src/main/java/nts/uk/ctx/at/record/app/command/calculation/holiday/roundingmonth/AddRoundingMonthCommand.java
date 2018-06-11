@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.command.calculation.holiday.roundingmonth;
+package nts.uk.ctx.at.record.app.command.calculation.holiday.roundingmonth;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
