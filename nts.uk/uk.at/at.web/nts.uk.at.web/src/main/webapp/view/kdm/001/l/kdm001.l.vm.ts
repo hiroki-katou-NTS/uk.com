@@ -44,7 +44,7 @@ module nts.uk.at.view.kdm001.l.viewmodel {
                 self.expiredDate(info.row.expiredDate);
                 self.occurredDays(info.row.occurredDays);
                 self.unUsedDays(info.row.unUsedDays);
-                self.checkedExpired(info.row.subHDAtr == 1);
+                self.checkedExpired(!(info.row.subHDAtr == 0));
                 self.closureId(info.closure.closureId);
             }
             block.clear();

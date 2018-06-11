@@ -65,7 +65,7 @@ module nts.uk.at.view.kwr008.a {
             selectedOutputItem: KnockoutObservable<string> = ko.observable(null);
 
             //A6 
-            breakPage: KnockoutObservableArray<share.EnumConstantDto> = ko.observableArray([]);
+            breakPage: KnockoutObservableArray<share.ItemModel> = ko.observableArray([]);
             selectedBreakPage: KnockoutObservable<number> = ko.observable(null);
             
             //年間勤務表印刷形式
@@ -148,7 +148,7 @@ module nts.uk.at.view.kwr008.a {
                     if (emp) data.employees.push(emp);
                 }
                 //ユーザ固有情報「年間勤務表（36チェックリスト）」を更新する
-                self.saveOutputConditionAnnualWorkSchedule(new model.OutputConditionAnnualWorkScheduleChar(self.selectedOutputItem(), self.selectedBreakPage()));
+                self.saveOutputConditionAnnualWorkSchedule(new model.OutputConditionAnnualWorkScheduleChar(self.selectedOutputItem(), self.selectedBreakPage(), self.printFormat()));
 
                 nts.uk.request.exportFile('at/function/annualworkschedule/export', data).done(() => {
                     
@@ -309,6 +309,7 @@ module nts.uk.at.view.kwr008.a {
                             if (data) {
                                 self.selectedOutputItem(data.setItemsOutputCd);
                                 self.selectedBreakPage(data.breakPage);
+                                self.printFormat(data.printFormat);
                             } else if (self.outputItem().length) {
                                 self.selectedOutputItem(self.outputItem()[0].code);
                             }
@@ -319,7 +320,9 @@ module nts.uk.at.view.kwr008.a {
                 });
 
                 var getPageBreakSelection = service.getPageBreakSelection().done((enumRes)=>{
-                    self.breakPage(enumRes);
+                    for(let i of enumRes){
+                        self.breakPage.push({code : i.value+'', name : i.localizedName});
+                    }
                 }).fail((enumError)=>{
                     console.log(`fail : ${enumError}`);
                 });
@@ -467,9 +470,13 @@ module nts.uk.at.view.kwr008.a {
                 setItemsOutputCd: string;
                 /** A6_2 改頁選択 */
                 breakPage: number;
-                constructor(setItemsOutputCd: string, breakPage: number) {
+                
+                printFormat: number;
+                
+                constructor(setItemsOutputCd: string, breakPage: number, printFormat: number) {
                     this.setItemsOutputCd = setItemsOutputCd;
                     this.breakPage = breakPage;
+                    this.printFormat = printFormat;
                 }
             }
 

@@ -146,6 +146,11 @@ public class DPHeaderDto {
 		return new DPHeaderDto(TextResource.localize("KDW003_62"), "Submitted", "String", "90px", "", false, "Label",
 				false, false);
 	}
+	
+	public static DPHeaderDto addHeaderApplicationList() {
+		return new DPHeaderDto(TextResource.localize("KDW003_110"), "ApplicationList", "String", "90px", "", false, "ButtonList",
+				false, false);
+	}
 
 	private static String getCode(String key) {
 		return key.trim().substring(1, key.trim().length());

@@ -56,7 +56,7 @@
                     </div>
                 </div>
                 <div class="fixed-flex-layout-right">
-                    <div data-bind="with: currentSetOutputSettingCode">
+                    <div data-bind="with: currentSetOutputSettingCode" class="valign-center control-group ">
                         <!-- B3_1 -->
                         <div data-bind ="ntsFormLabel: { required: true }">#{i18n.getText('KWR008_24')}</div> 
                         
@@ -69,14 +69,14 @@
                     </div>
                     
                     <!-- B6 -->
-                    <div data-bind="with: currentSetOutputSettingCode" style="margin-top: 5px;">
-                    	<span class="label">#{i18n.getText('KWR008_35')}</span>
+                    <div class="valign-center control-group " style="margin-top: 5px;">
+                    	<div data-bind ="ntsFormLabel: { required: true }" >#{i18n.getText('KWR008_35')}</div>
                     	<div class="listSheetPrintingForm" data-bind="ntsSwitchButton: {
 							name: '#[KWR008_35]',
-							options: $parent.listSheetPrintingForm,
+							options: listSheetPrintingForm,
 							optionsValue: 'code',
 							optionsText: 'name',
-							value: printForm,
+							value: selectedPrintForm,
 							required: true,
 							enable: true }"></div>
                     </div>
@@ -106,7 +106,7 @@
                            </thead>
                            <tbody data-bind = "foreach: outputItem()">
                               <tr>
-                                <td style="text-align: center;"><div tabindex="9" data-bind="ntsCheckBox: {checked: $data.useClass}"></div></td>
+                                <td style="text-align: center;"><div tabindex="9" data-bind="ntsCheckBox: {checked: $data.useClass, enable: $parent.checkEnable36($data) }"></div></td>
                                 <td>
                                     <input class="headingName" data-bind="ntsTextEditor: {
                                         name: '#[KWR008_31]',
@@ -127,6 +127,7 @@
                                                     value: $data.valOutFormat,
                                                     optionsText: 'name',
                                                     enable: $data.sortBy() > 1,
+                                                    required: true,
                                                     columns: [{ prop: 'name', length: 2 }]
                                                 }">
                                     </div>
@@ -141,7 +142,7 @@
                     <div data-bind="visible: currentSetOutputSettingCode().printForm">
 	                    <div data-bind="with: currentSetOutputSettingCode" style="margin-top: 3px;">
 	                        <!-- B5_1 -->
-	                        <div tabindex="9" data-bind="ntsCheckBox: { checked: outNumExceedTime36Agr,  }">${i18n.getText('KWR008_35')}</div>
+	                        <div tabindex="9" data-bind="ntsCheckBox: { checked: outNumExceedTime36Agr  }">${i18n.getText('KWR008_35')}</div>
 	                    </div>
 	                    <div data-bind="with: currentSetOutputSettingCode" style="margin-top: 3px; margin-bottom:5px">
 	                        <!-- B5_2 -->

@@ -1,7 +1,7 @@
 package nts.uk.ctx.pereg.dom.person.setting.selectionitem.domainservice;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -27,24 +27,27 @@ public class SelectionHistoryService {
 	@Inject
 	private SelectionHistoryRepository selectionHistoryRepo;
 
-	public void removeHistoryOfCompany(String selectionItemId, String companyId) {
+	public void removeHistoryOfCompanies(String selectionItemId, List<String> companyIds) {
 
-		// History:
-		//SelectionHistory selectionHistory = this.selectionHistoryRepo.get(selectionItemId, companyId).get();
-		Optional<SelectionHistory> selectionHistory = this.selectionHistoryRepo.get(selectionItemId, companyId);
+		List<SelectionHistory> selectionHistories = this.selectionHistoryRepo.getList(selectionItemId, companyIds);
+
+		List<String> historyIds = new ArrayList<>();
+		selectionHistories.forEach(selectionHist -> {
+			List<String> historyIdsOfCompany = selectionHist.getDateHistoryItems().stream().map(x -> x.identifier())
+					.collect(Collectors.toList());
+			historyIds.addAll(historyIdsOfCompany);
+
+		});
 		
-		if (!selectionHistory.isPresent()) {
-			return;
-		}
-
-		List<String> historyIds = selectionHistory.get().getDateHistoryItems().stream().map(x -> x.identifier())
-				.collect(Collectors.toList());
-
+		// remove SelecitonHistory
 		selectionHistoryRepo.removeAllHistoryIds(historyIds);
-		
+
 		List<String> removeSelectionIdList = selectionRepo.getByHistIdList(historyIds).stream()
 				.map(x -> x.getSelectionID()).collect(Collectors.toList());
+		// remove Selection
 		selectionRepo.removeAll(removeSelectionIdList);
+		
+		// remove SelectionOrder
 		selectionOrderRepo.removeAll(removeSelectionIdList);
 
 	}
