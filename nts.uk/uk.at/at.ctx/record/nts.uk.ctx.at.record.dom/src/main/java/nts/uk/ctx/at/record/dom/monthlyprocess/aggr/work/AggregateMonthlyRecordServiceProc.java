@@ -22,7 +22,6 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveAttdRateDays;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOutsideWorkMng;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.absenceleave.temp.TempAbsenceLeaveService;
@@ -60,8 +59,6 @@ public class AggregateMonthlyRecordServiceProc {
 	private TempAbsenceLeaveService tempAbsenceLeaveService;
 	/** （仮対応用）代休 */
 	private TempDayoffService tempDayoffService;
-	/** 月別実績と勤怠項目の相互変換 */
-	private MonthlyRecordToAttendanceItemConverter itemConverter;
 	
 	/** 集計結果 */
 	private AggregateMonthlyRecordValue aggregateResult;
@@ -96,12 +93,10 @@ public class AggregateMonthlyRecordServiceProc {
 			RepositoriesRequiredByMonthlyAggr repositories,
 			GetAnnAndRsvRemNumWithinPeriod getAnnAndRsvRemNumWithinPeriod,
 			TempAbsenceLeaveService tempAbsenceLeaveService,
-			TempDayoffService tempDayoffService,
-			MonthlyRecordToAttendanceItemConverter itemConverter){
+			TempDayoffService tempDayoffService){
 
 		this.repositories = repositories;
 		this.getAnnAndRsvRemNumWithinPeriod = getAnnAndRsvRemNumWithinPeriod;
-		this.itemConverter = itemConverter;
 		this.tempAbsenceLeaveService = tempAbsenceLeaveService;
 		this.tempDayoffService = tempDayoffService;
 	}
@@ -638,10 +633,11 @@ public class AggregateMonthlyRecordServiceProc {
 		val oldDataOpt = this.repositories.getAttendanceTimeOfMonthly().find(
 				this.employeeId, this.yearMonth, this.closureId, this.closureDate);
 		if (!oldDataOpt.isPresent()) return attendanceTime;
-		val oldItemConvert = this.itemConverter.withAttendanceTime(oldDataOpt.get());
+		val monthlyConverter = this.repositories.getAttendanceItemConverter().createMonthlyConverter();
+		val oldItemConvert = monthlyConverter.withAttendanceTime(oldDataOpt.get());
 
 		// 計算後データを確認
-		val convert = this.itemConverter.withAttendanceTime(attendanceTime);
+		val convert = monthlyConverter.withAttendanceTime(attendanceTime);
 		
 		// 月別実績の編集状態を取得
 		

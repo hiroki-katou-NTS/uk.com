@@ -5,7 +5,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceLayoutConst;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
@@ -14,14 +14,14 @@ import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
 @Data
-@AttendanceItemRoot(rootName = AttendanceLayoutConst.DAILY_BUSINESS_TYPE_NAME)
+@AttendanceItemRoot(rootName = ItemConst.DAILY_BUSINESS_TYPE_NAME)
 public class BusinessTypeOfDailyPerforDto extends AttendanceItemCommon {
 
 	private String employeeId;
 	
 	private GeneralDate baseDate; 
 	
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "勤務種別コード")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = BUSINESS_TYPE)
 	@AttendanceItemValue
 	private String businessTypeCode;
 	
