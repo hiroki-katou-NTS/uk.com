@@ -260,7 +260,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         });
                     } else {
                         // update data to view
-                        self.dispTotalRemain("");
+                        self.dispTotalRemain(0);
                         self.expirationDate("");
                         self.closureID = "";
                         self.newDataDisable(true);
