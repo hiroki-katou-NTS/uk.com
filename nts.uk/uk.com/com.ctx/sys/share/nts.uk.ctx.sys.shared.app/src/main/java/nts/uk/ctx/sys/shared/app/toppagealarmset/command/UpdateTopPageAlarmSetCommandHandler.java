@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.shared.app.toppagealarm.command;
+package nts.uk.ctx.sys.shared.app.toppagealarmset.command;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
