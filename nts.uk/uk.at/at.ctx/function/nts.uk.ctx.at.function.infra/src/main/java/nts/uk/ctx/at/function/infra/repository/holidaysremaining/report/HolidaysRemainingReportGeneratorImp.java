@@ -799,6 +799,11 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			cells.get(rowIndexD + 1, 0).setValue(grantDate.get());
 		}
 		
+		// D2_4
+		cells.get(rowIndexD + 2, 0).setValue(employee.getEmploymentName());
+		// D2_5
+		cells.get(rowIndexD + 3, 1).setValue(employee.getJobTitle());
+		
 		// Set Style
 		for (int index = 0; index < NUMBER_COLUMN; index++) {
 			setTopBorderStyle(cells.get(rowIndexD, index));
