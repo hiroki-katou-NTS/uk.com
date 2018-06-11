@@ -164,7 +164,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             self.supplementaryExplanation('2017年05月締め前');
             let listCategory: Array<CategoryInfo> = [];
             for (let i = 1; i < 10; i++) {
-                let isRecover = i % 2 ? true : false;
+                let isRecover = !!(i % 2);
                 let categoryName = '個人情報マスタ';
                 let recoveryPeriod = '日次';
                 let startOfPeriod = '2018/01/0' + i;
