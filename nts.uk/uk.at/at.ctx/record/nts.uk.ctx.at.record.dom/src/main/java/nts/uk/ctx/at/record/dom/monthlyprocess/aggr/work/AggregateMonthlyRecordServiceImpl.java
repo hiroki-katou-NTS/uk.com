@@ -5,7 +5,6 @@ import javax.inject.Inject;
 
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.remainingnumber.absenceleave.temp.TempAbsenceLeaveService;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
@@ -32,9 +31,6 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 	/** （仮対応用）代休 */
 	@Inject
 	private TempDayoffService tempDayoffService;
-	/** 月別実績と勤怠項目の相互変換 */
-	@Inject
-	private MonthlyRecordToAttendanceItemConverter itemConverter;
 	
 	/** 集計処理　（アルゴリズム） */
 	@Override
@@ -47,8 +43,7 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 				this.repositories,
 				this.getAnnAndRsvRemNumWithinPeriod,
 				this.tempAbsenceLeaveService,
-				this.tempDayoffService,
-				this.itemConverter);
+				this.tempDayoffService);
 		
 		return proc.aggregate(companyId, employeeId, yearMonth, closureId, closureDate,
 				datePeriod, prevAggrResult);

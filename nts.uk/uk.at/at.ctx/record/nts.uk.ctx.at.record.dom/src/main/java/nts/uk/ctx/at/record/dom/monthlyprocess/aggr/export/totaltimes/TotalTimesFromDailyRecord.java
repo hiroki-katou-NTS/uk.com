@@ -10,7 +10,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.attdstatus.AttendanceStatusList;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.workinfo.WorkInfoList;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -111,16 +111,16 @@ public class TotalTimesFromDailyRecord {
 	 * 回数集計結果情報を取得する
 	 * @param totalTimesList 回数集計
 	 * @param period 期間
-	 * @param dailyToAttendanceItem 日別実績と勤怠項目の相互変換
+	 * @param attendanceItemConverter 勤怠項目値変換
 	 * @return 回数集計結果情報
 	 */
 	public Optional<TotalTimesResult> getResult(TotalTimes totalTimes, DatePeriod period,
-			DailyRecordToAttendanceItemConverter dailyToAttendanceItem) {
+			AttendanceItemConvertFactory attendanceItemConverter) {
 		
 		List<TotalTimes> totalTimesList = new ArrayList<>();
 		totalTimesList.add(totalTimes);
 		
-		val results = this.getResults(totalTimesList, period, dailyToAttendanceItem);
+		val results = this.getResults(totalTimesList, period, attendanceItemConverter);
 		val totalCountNo = totalTimes.getTotalCountNo();
 		if (!results.containsKey(totalCountNo)) return Optional.empty();
 		return Optional.of(results.get(totalCountNo));
@@ -130,11 +130,11 @@ public class TotalTimesFromDailyRecord {
 	 * 回数集計結果情報を取得する
 	 * @param totalTimesList 回数集計リスト
 	 * @param period 期間
-	 * @param dailyToAttendanceItem 日別実績と勤怠項目の相互変換
+	 * @param attendanceItemConverter 勤怠項目値変換
 	 * @return 回数集計結果情報マップ（回数集計NO別）
 	 */
 	public Map<Integer, TotalTimesResult> getResults(List<TotalTimes> totalTimesList, DatePeriod period,
-			DailyRecordToAttendanceItemConverter dailyToAttendanceItem) {
+			AttendanceItemConvertFactory attendanceItemConverter) {
 		
 		Map<Integer, TotalTimesResult> results = new HashMap<>();
 
@@ -232,7 +232,8 @@ public class TotalTimesFromDailyRecord {
 				if (!isTargetAttendance) continue;
 				
 				// 日別実績を回数集計用のクラスに変換
-				val dailyItems = dailyToAttendanceItem.withAttendanceTime(attendanceTimeOfDaily);
+				val dailyConverter = attendanceItemConverter.createDailyConverter();
+				val dailyItems = dailyConverter.withAttendanceTime(attendanceTimeOfDaily);
 				
 				// 勤務時間の判断
 				val itemValOpt = dailyItems.convert(totalCondition.getAtdItemId());
