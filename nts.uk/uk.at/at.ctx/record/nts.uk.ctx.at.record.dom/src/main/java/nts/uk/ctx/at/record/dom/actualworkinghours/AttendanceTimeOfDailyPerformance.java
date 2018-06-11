@@ -286,8 +286,8 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 					dailyUnit,
 					workScheduleTime,
 					coreTimeSetting, 
-					statutoryFrameNoList,
-					WorkTimezoneCommonSet);
+					WorkTimezoneCommonSet,
+					statutoryFrameNoList);
 		
 
 		/*滞在時間の計算*/

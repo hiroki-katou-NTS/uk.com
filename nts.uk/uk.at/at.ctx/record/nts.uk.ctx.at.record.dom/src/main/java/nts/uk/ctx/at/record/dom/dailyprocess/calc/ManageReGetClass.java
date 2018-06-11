@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -143,7 +144,8 @@ public class ManageReGetClass {
 									null,
 									null,
 									Optional.empty(),
-									null);
+									null,
+									Collections.emptyList());
 				
 	}
 	
