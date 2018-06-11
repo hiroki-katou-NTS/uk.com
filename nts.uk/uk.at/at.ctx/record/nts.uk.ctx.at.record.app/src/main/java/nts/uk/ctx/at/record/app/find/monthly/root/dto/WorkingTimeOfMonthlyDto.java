@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.WorkTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -13,21 +14,21 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の就業時間 */
-public class WorkingTimeOfMonthlyDto {
+public class WorkingTimeOfMonthlyDto implements ItemConst {
 
 	/** 就業時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "就業時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = WORK_TIME, layout = LAYOUT_A)
 	private int workTime;
 
 	/** 所定内割増時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "所定内割増時間", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = PREMIUM, layout = LAYOUT_B)
 	private int withinPrescribedPremiumTime;
 	
 	/** 実働就業時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "実働就業時間", layout = "C")
+	@AttendanceItemLayout(jpPropertyName = ACTUAL, layout = LAYOUT_C)
 	private int actualWorkTime;
 	
 	public static WorkingTimeOfMonthlyDto from(WorkTimeOfMonthly domain) {

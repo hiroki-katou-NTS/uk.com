@@ -9,20 +9,21 @@ import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrSheet;
 import nts.uk.ctx.at.record.dom.raisesalarytime.enums.SpecificDateAttr;
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceLayoutConst;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 
 @Data
-@AttendanceItemRoot(rootName = AttendanceLayoutConst.DAILY_SPECIFIC_DATE_ATTR_NAME)
+@AttendanceItemRoot(rootName = ItemConst.DAILY_SPECIFIC_DATE_ATTR_NAME)
 public class SpecificDateAttrOfDailyPerforDto extends AttendanceItemCommon {
 
 	private String employeeId;
 
 	private GeneralDate ymd;
 
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "特定日区分", listMaxLength = 10, indexField = "itemNo")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = ATTRIBUTE, 
+			listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<SpecificDateAttrDto> sepecificDateAttrs;
 
 	public static SpecificDateAttrOfDailyPerforDto getDto(SpecificDateAttrOfDailyPerfor domain) {
@@ -63,7 +64,7 @@ public class SpecificDateAttrOfDailyPerforDto extends AttendanceItemCommon {
 		}
 		return new SpecificDateAttrOfDailyPerfor(emp,
 				ConvertHelper.mapTo(sepecificDateAttrs,
-						(c) -> new SpecificDateAttrSheet(new SpecificDateItemNo(c.getItemNo()),
+						(c) -> new SpecificDateAttrSheet(new SpecificDateItemNo(c.getNo()),
 								ConvertHelper.getEnum(c.getSpecificDate(), SpecificDateAttr.class))),
 						date);
 	}

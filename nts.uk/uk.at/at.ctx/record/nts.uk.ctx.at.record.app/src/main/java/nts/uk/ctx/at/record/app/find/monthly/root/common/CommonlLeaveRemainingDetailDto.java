@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingDetail;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveRemainingDetail;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -19,21 +20,21 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
 /** 年休残明細 */
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommonlLeaveRemainingDetailDto {
+public class CommonlLeaveRemainingDetailDto implements ItemConst {
 
 	/** 付与日 */
 	@AttendanceItemValue(type = ValueType.DATE)
-	@AttendanceItemLayout(jpPropertyName = "付与日", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = GRANT, layout = LAYOUT_A)
 	private GeneralDate grantDate;
 
 	/** 日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "日数", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_B)
 	private double days;
 
 	/** 時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "時間", layout = "C")
+	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_C)
 	private int time;
 
 	public static CommonlLeaveRemainingDetailDto from(AnnualLeaveRemainingDetail domain) {
