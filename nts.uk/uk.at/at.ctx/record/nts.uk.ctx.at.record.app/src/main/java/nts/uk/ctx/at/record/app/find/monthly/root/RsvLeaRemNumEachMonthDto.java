@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.find.monthly.root;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -18,8 +17,8 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeave;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveGrant;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceLayoutConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
@@ -31,7 +30,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 積立年休月別残数データ */
-@AttendanceItemRoot(rootName = AttendanceLayoutConst.MONTHLY_RESERVE_LEAVING_REMAIN_NAME, itemType = AttendanceItemType.MONTHLY_ITEM)
+@AttendanceItemRoot(rootName = ItemConst.MONTHLY_RESERVE_LEAVING_REMAIN_NAME, itemType = AttendanceItemType.MONTHLY_ITEM)
 public class RsvLeaRemNumEachMonthDto extends MonthlyItemCommon {
 	/** 会社ID */
 	private String companyId;
@@ -43,38 +42,35 @@ public class RsvLeaRemNumEachMonthDto extends MonthlyItemCommon {
 	private YearMonth ym;
 
 	/** 締めID: 締めID */
-	// @AttendanceItemValue
-	// @AttendanceItemLayout(jpPropertyName = "締めID", layout = "A")
 	private int closureID = 1;
 
 	/** 締め日: 日付 */
-	// @AttendanceItemLayout(jpPropertyName = "締め日", layout = "B")
 	private ClosureDateDto closureDate;
 
 	/** 締め期間: 期間 */
-	@AttendanceItemLayout(jpPropertyName = "期間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = PERIOD, layout = LAYOUT_A)
 	private DatePeriodDto datePeriod;
 
 	/** 締め処理状態 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "締め処理状態", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = CLOSURE_STATE, layout = LAYOUT_B)
 	private int closureStatus;
 
 	/** 積立年休 */
-	@AttendanceItemLayout(jpPropertyName = "積立年休", layout = "C")
+	@AttendanceItemLayout(jpPropertyName = RETENTION, layout = LAYOUT_C)
 	private ReserveLeaveDto reserveLeave;
 	
 	/** 実積立年休 */
-	@AttendanceItemLayout(jpPropertyName = "実積立年休", layout = "D")
+	@AttendanceItemLayout(jpPropertyName = REAL + RETENTION, layout = LAYOUT_D)
 	private ReserveLeaveDto realReserveLeave;
 	
 	/** 積立年休付与情報 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "積立年休付与情報", layout = "E")
+	@AttendanceItemLayout(jpPropertyName = GRANT + INFO, layout = LAYOUT_E)
 	private double reserveLeaveGrant;
 
 	/** 付与区分 */
-	@AttendanceItemLayout(jpPropertyName = "付与区分", layout = "F")
+	@AttendanceItemLayout(jpPropertyName = GRANT + ATTRIBUTE, layout = LAYOUT_F)
 	@AttendanceItemValue(type = ValueType.BOOLEAN)
 	private boolean grantAtr;
 

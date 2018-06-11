@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.HolidayWorkTimeOfMonthly;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -17,20 +18,20 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の休出時間 */
-public class HolidayWorkTimeOfMonthlyDto {
+public class HolidayWorkTimeOfMonthlyDto implements ItemConst {
 
 	/** 休出合計時間 */
-	@AttendanceItemLayout(jpPropertyName = "休出合計時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = TOTAL, layout = LAYOUT_A)
 	private TimeMonthWithCalculationDto totalHolidayWorkTime;
 	/** 事前休出時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "事前休出時間", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = BEFORE, layout = LAYOUT_B)
 	private int beforeHolidayWorkTime;
 	/** 振替合計時間 */
-	@AttendanceItemLayout(jpPropertyName = "振替合計時間", layout = "C")
+	@AttendanceItemLayout(jpPropertyName = TRANSFER + TOTAL, layout = LAYOUT_C)
 	private TimeMonthWithCalculationDto totalTransferTime;
 	/** 集計休出時間 */
-	@AttendanceItemLayout(jpPropertyName = "集計休出時間", layout = "D", listMaxLength = 10, indexField = "holidayWorkFrameNo")
+	@AttendanceItemLayout(jpPropertyName = AGGREGATE, layout = LAYOUT_D, listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<AggregateHolidayWorkTimeDto> aggregateHolidayWorkTimeMap;
 
 	public HolidayWorkTimeOfMonthly toDomain() {

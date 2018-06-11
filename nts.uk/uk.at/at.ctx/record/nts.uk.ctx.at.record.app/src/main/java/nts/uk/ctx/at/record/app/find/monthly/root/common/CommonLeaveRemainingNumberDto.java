@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainin
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingNumber;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveRemainingNumber;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -22,16 +23,15 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
 /** 年休残数 */
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommonLeaveRemainingNumberDto {
+public class CommonLeaveRemainingNumberDto implements ItemConst {
 
 	/** 合計残日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "合計残日数", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_A)
 	private double totalRemainingDays;
 
 	/** 合計残時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "合計残時間", layout = "B")
 	private int totalRemainingTime;
 
 	/** 明細 */
