@@ -8,11 +8,13 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.service.ExtraHolidayManagementOutput;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -23,6 +25,8 @@ public class ExtraHolidayManagementDataDto {
 	List<DataExtractDto> extraData;
 	SEmpHistoryDto sEmpHistoryImport;
 	ClosureEmploymentDto closureEmploy;
+	String empSettingExpiredDate;
+	String companySettingExpiredDate;
 
 	public static ExtraHolidayManagementDataDto convertToDto(ExtraHolidayManagementOutput extraHolidayManagementOutput){
 		String cid = AppContexts.user().companyId();
@@ -36,6 +40,8 @@ public class ExtraHolidayManagementDataDto {
 		List<DataExtractDto> listExtraData = new ArrayList<>();
 		SEmpHistoryDto sEmpHistoryDto = null;
 		ClosureEmploymentDto closureEmployDto = null;
+		String empSettingExpiredDate = "";
+		String companySettingExpiredDate = "";
 		for(LeaveManagementData data : listLeaveData){
 			DataExtractDto dto = DataExtractDto.convertFromLeaveDataToDto(0, data);
 			if(listLeaveComDayOffManagement.stream().filter(o -> o.getLeaveID().equals(data.getID())).findFirst().isPresent()){
@@ -43,7 +49,7 @@ public class ExtraHolidayManagementDataDto {
 			} else {
 				dto.setLinked(0);
 			}
-			if (GeneralDate.today().after(data.getExpiredDate())){
+			if (GeneralDate.today().after(data.getExpiredDate()) || data.getSubHDAtr() == DigestionAtr.EXPIRED){
 				dto.setExpired(data.getUnUsedDays().v());
 			}else {
 				dto.setRemain(data.getUnUsedDays().v());
@@ -75,6 +81,17 @@ public class ExtraHolidayManagementDataDto {
 		if (!Objects.isNull(closureEmploy)){
 			closureEmployDto = ClosureEmploymentDto.convertToDto(closureEmploy);
 		}
-		return new ExtraHolidayManagementDataDto(listExtraData, sEmpHistoryDto, closureEmployDto);
+		if (!Objects.isNull(extraHolidayManagementOutput.getCompensatoryLeaveEmSetting())){
+			if (extraHolidayManagementOutput.getCompensatoryLeaveEmSetting().getIsManaged() == ManageDistinct.YES){
+				empSettingExpiredDate = extraHolidayManagementOutput.getCompensatoryLeaveEmSetting().getCompensatoryAcquisitionUse().getExpirationTime().description;
+			} else if (!Objects.isNull(extraHolidayManagementOutput.getCompensatoryLeaveComSetting())){
+					if (extraHolidayManagementOutput.getCompensatoryLeaveComSetting().isManaged())
+						companySettingExpiredDate = extraHolidayManagementOutput.getCompensatoryLeaveComSetting().getCompensatoryAcquisitionUse().getExpirationTime().description;
+			}
+		} else if (!Objects.isNull(extraHolidayManagementOutput.getCompensatoryLeaveComSetting())){
+			if (extraHolidayManagementOutput.getCompensatoryLeaveComSetting().isManaged())
+				companySettingExpiredDate = extraHolidayManagementOutput.getCompensatoryLeaveComSetting().getCompensatoryAcquisitionUse().getExpirationTime().description;
+		}
+		return new ExtraHolidayManagementDataDto(listExtraData, sEmpHistoryDto, closureEmployDto, empSettingExpiredDate, companySettingExpiredDate);
 	}
 }
