@@ -2,6 +2,7 @@ package nts.uk.ctx.pereg.infra.repository.person.setting.selectionitem.selection
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -25,6 +26,9 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 	private static final String SELECT_ALL_HISTORY_ID = SELECT_ALL + " WHERE si.histId = :histId"
 			+ " ORDER BY si.dispOrder ASC";
 	
+	private static final String SELECT_BY_HISTORY_ID_LIST = SELECT_ALL + " WHERE si.histId IN :histIdList"
+			+ " ORDER BY si.histId, si.dispOrder ASC";
+	
 	private static final String SELECT_ALL_IN_SELECTION_ITEM_ID = SELECT_ALL
 			+ " INNER JOIN PpemtHistorySelection his ON si.histId = his.histidPK.histId"
 			+ " WHERE his.selectionItemId = :selectionItemId";
@@ -37,12 +41,29 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 		this.commandProxy().insert(toEntity(selectionItemOrder));
 
 	}
+	
+	@Override
+	public void addAll(List<SelectionItemOrder> selectionItemOrders) {
+		List<PpemtSelItemOrder> entities = selectionItemOrders.stream().map(x -> toEntity(x))
+				.collect(Collectors.toList());
+		this.commandProxy().insertAll(entities);
+	}
 
 	@Override
 	public void remove(String selectionId) {
 		PpemtSelItemOrderPK pk = new PpemtSelItemOrderPK(selectionId);
 		this.commandProxy().remove(PpemtSelItemOrder.class, pk);
 
+	}
+	
+	@Override
+	public void removeAll(List<String> selectionIds) {
+		if (selectionIds.isEmpty()) {
+			return;
+		}
+		List<PpemtSelItemOrderPK> keys = selectionIds.stream().map(x -> new PpemtSelItemOrderPK(x))
+				.collect(Collectors.toList());
+		this.commandProxy().removeAll(PpemtSelItemOrder.class, keys);
 	}
 	
 	@Override
@@ -71,6 +92,18 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 	public List<SelectionItemOrder> getAllOrderSelectionByHistId(String histId) {
 		return this.queryProxy().query(SELECT_ALL_HISTORY_ID, PpemtSelItemOrder.class).setParameter("histId", histId)
 				.getList(c -> toDomain(c));
+	}
+	
+	@Override
+	public List<SelectionItemOrder> getByHistIdList(List<String> histIdList) {
+		
+		if (histIdList.isEmpty()) {
+			return new ArrayList<>();
+		}
+		List<SelectionItemOrder> seletionOrders = this.queryProxy()
+				.query(SELECT_BY_HISTORY_ID_LIST, PpemtSelItemOrder.class).setParameter("histIdList", histIdList)
+				.getList(c -> toDomain(c));
+		return seletionOrders;
 	}
 
 	@Override

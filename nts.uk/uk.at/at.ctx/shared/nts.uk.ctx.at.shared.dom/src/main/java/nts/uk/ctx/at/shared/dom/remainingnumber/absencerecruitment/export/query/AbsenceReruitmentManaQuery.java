@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.Inter
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.InterimRemainAggregateOutputData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface AbsenceReruitmentManaQuery {
@@ -41,7 +42,7 @@ public interface AbsenceReruitmentManaQuery {
 	 */
 	Double getUsedDays(String employeeId, DatePeriod dateData);
 	/**
-	 * 振出振休発生消化履歴の取得
+	 * RequestList450: 振出振休発生消化履歴の取得
 	 * @param cid
 	 * @param sid
 	 * @param baseDate
@@ -74,7 +75,7 @@ public interface AbsenceReruitmentManaQuery {
 	 * @param interimData: 暫定振出管理データ
 	 * @return
 	 */
-	List<RecruitmentHistoryOutPara> createRecruitmentHis(List<InterimRecMng> interimData);
+	List<RecruitmentHistoryOutPara> createRecruitmentHis(List<InterimRecMng> interimData, List<PayoutManagementData> confirmData);
 	/**
 	 * 振休履歴を作成する
 	 * @param interimData : 暫定振休管理データ
@@ -117,4 +118,10 @@ public interface AbsenceReruitmentManaQuery {
 	 * @return
 	 */
 	Double getMonthExtinctionDays(String sid, DatePeriod dateData);
+	/**
+	 * 確定管理データを取得する
+	 * @param sid
+	 * @return
+	 */
+	AbsRecConfirmOutputPara getAbsRecConfirmData(String sid);
 }

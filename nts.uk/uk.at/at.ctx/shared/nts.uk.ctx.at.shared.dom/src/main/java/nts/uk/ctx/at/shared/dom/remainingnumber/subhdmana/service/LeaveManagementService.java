@@ -73,9 +73,11 @@ public class LeaveManagementService {
 					leaveManagementData.getComDayOffID());
 			
 			
+			
 			List<String> currentLeaveMana = leaveManaUpdate.stream().map(LeaveManagementData::getID)
 					.collect(Collectors.toList());
 			// update Sub by current leave
+			
 			if (!currentLeaveMana.isEmpty()) {
 				leaveManaDataRepository.updateSubByLeaveId(currentLeaveMana);
 
