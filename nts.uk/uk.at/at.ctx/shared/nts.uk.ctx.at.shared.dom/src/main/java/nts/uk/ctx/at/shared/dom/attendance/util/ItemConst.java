@@ -1,12 +1,21 @@
 package nts.uk.ctx.at.shared.dom.attendance.util;
 
 public interface ItemConst {
+	public final String DAILY = "日次";
+	public final String MONTHLY = "月次";
+	
+	public final int DEFAULT_IDX = 0;
+	public final int DEFAULT_NEXT_IDX = 1;
+	public final int DEFAULT_MINUS = -1;
 	public final String DEFAULT_SEPERATOR = ".";
 	public final String DEFAULT_ENUM_SEPERATOR = "-";
 	public final String DEFAULT_INDEX_FIELD_NAME = "no";
 	public final String DEFAULT_ENUM_FIELD_NAME = "attr";
 	public final String DEFAULT_CHECK_ENUM_METHOD = "enumText";
 	public final String EMPTY_STRING = "";
+	public final String DEFAULT_MARK_DATA_FIELD = "exsistData";
+	public final String DEFAULT_LAYOUT_SEPERATOR = "_";
+	public final String DEFAULT_NUMBER_REGEX = "[0-9]+$";
 	
 	public final String E_WORK_REF = "就業時間帯から参照";
 	public final String E_SCHEDULE_REF = "スケジュールから参照";
