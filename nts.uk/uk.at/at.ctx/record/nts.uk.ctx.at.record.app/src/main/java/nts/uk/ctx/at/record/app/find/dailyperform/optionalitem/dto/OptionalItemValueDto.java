@@ -81,13 +81,27 @@ public class OptionalItemValueDto {
 	
 	public static OptionalItemValueDto from(AnyItemOfMonthly c) {
 		if(c != null) {
-			
 			boolean isTimes = c.getTimes().isPresent();
 			boolean isAmount = c.getAmount().isPresent();
-			boolean isTime = c.getTime().isPresent();
-			String value = isTimes ? c.getTimes().get().v().toString()
-			: isAmount ? String.valueOf(c.getAmount().get().v())
-			: String.valueOf(c.getTime().get().valueAsMinutes());
+			boolean isTime =  c.getTime().isPresent();
+			String value = isAmount ? String.valueOf(c.getAmount().get().v() ): 
+				isTime ? String.valueOf(c.getTime().get().valueAsMinutes()) : 
+					     c.getTimes().get().v().toString();
+			OptionalItemValueDto dto = new OptionalItemValueDto(value, c.getAnyItemId(), isTime, isTimes, isAmount);
+			dto.itemMapped();
+			return dto;
+		}
+		return null;
+	}
+	
+	public static OptionalItemValueDto from(AnyItemOfMonthly c, OptionalItemAtr attr) {
+		if(c != null) {
+			boolean isTimes = attr == null ? c.getTimes().isPresent() : attr == OptionalItemAtr.NUMBER;
+			boolean isAmount = attr == null ? c.getAmount().isPresent() : attr == OptionalItemAtr.AMOUNT;
+			boolean isTime = attr == null ? c.getTime().isPresent() : attr == OptionalItemAtr.TIME;
+			String value = isAmount ? String.valueOf(c.getAmount().get().v() ): 
+				isTime ? String.valueOf(c.getTime().get().valueAsMinutes()) : 
+					     c.getTimes().get().v().toString();
 			OptionalItemValueDto dto = new OptionalItemValueDto(value, c.getAnyItemId(), isTime, isTimes, isAmount);
 			dto.itemMapped();
 			return dto;

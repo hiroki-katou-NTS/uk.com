@@ -5,7 +5,6 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -53,8 +52,7 @@ public class LeaveManagementData extends AggregateRoot {
 	// 未使用時間数
 	private ManagementDataHours unUsedTimes;
 	
-	// 代休消化区分
-	@Setter
+	// 代休消化区分r
 	private DigestionAtr subHDAtr;
 	
 	// １日相当時間

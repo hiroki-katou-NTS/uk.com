@@ -91,6 +91,11 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 			dto.setYearMonth(domain.get(0).getYearMonth());
 			domain.stream().forEach(d -> {
 				dto.getValues().add(OptionalItemValueDto.from(d));
+				if(master == null || master.get(d.getAnyItemId()) == null){
+					dto.getValues().add(OptionalItemValueDto.from(d, null));
+				} else {
+					dto.getValues().add(OptionalItemValueDto.from(d, master.get(d.getAnyItemId()).getOptionalItemAtr()));
+				}
 			});
 			dto.exsistData();
 		}

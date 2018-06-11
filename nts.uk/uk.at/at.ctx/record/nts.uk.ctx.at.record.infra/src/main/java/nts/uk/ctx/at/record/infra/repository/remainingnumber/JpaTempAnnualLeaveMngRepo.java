@@ -5,8 +5,6 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import com.fasterxml.jackson.databind.deser.impl.ExternalTypeHandler.Builder;
-
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
@@ -38,7 +36,6 @@ public class JpaTempAnnualLeaveMngRepo extends JpaRepository implements TempAnnu
 	private static final String DELETE_PAST_YMD = "DELETE FROM KrcdtAnnleaMngTemp a "
 			+ "WHERE a.PK.employeeId = :employeeId "
 			+ "AND a.PK.ymd <= :criteriaDate ";
-	
 
 	private static final String SELECT_BY_WORKTYPE_PERIOD = "SELECT a FROM KrcdtAnnleaMngTemp a "
 			+ "WHERE a.PK.employeeId = :employeeId "
@@ -47,15 +44,9 @@ public class JpaTempAnnualLeaveMngRepo extends JpaRepository implements TempAnnu
 			+ "AND a.PK.ymd <= :endYmd "
 			+ "ORDER BY a.PK.ymd ";
 
-	private static final String SELECT_BY_EMPLOYEEID;
-	
-	static{
-		StringBuilder query = new StringBuilder();
-		query.append("SELECT a FROM KrcdtAnnleaMngTemp a");
-		query.append(" WHERE a.PK.employeeId = :employeeID");
-		query.append(" ORDER BY a.PK.ymd ASC");
-		SELECT_BY_EMPLOYEEID = query.toString();
-	}
+	private static final String SELECT_BY_EMPLOYEEID = "SELECT a FROM KrcdtAnnleaMngTemp a"
+			+ " WHERE a.PK.employeeId = :employeeID"
+			+ " ORDER BY a.PK.ymd ASC";
 	
 	/** 検索 */
 	@Override
@@ -138,7 +129,7 @@ public class JpaTempAnnualLeaveMngRepo extends JpaRepository implements TempAnnu
 	@Override
 	public List<TempAnnualLeaveManagement> findByEmployeeID(String employeeID) {
 		return this.queryProxy().query(SELECT_BY_EMPLOYEEID, KrcdtAnnleaMngTemp.class)
-				.setParameter("employeeId", employeeID)
+				.setParameter("employeeID", employeeID)
 				.getList(c -> c.toDomain());
 	}
 }
