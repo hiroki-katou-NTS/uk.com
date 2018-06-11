@@ -588,7 +588,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			// TODO Call requestList273
 			SpecialVacationImported specialVacationImported = complileInPeriodOfSpecialLeaveAdapter
 					.complileInPeriodOfSpecialLeave(AppContexts.user().companyId(), employee.getEmployeeId(),
-							datePeriod, true, dataSource.getBaseDate(), specialHoliday.get(i), true);
+							datePeriod, false, dataSource.getBaseDate(), specialHoliday.get(i), false);
 			// Call requestList263
 			List<SpecialHolidayImported> specialHolidayList = complileInPeriodOfSpecialLeaveAdapter
 					.getSpeHoliOfConfirmedMonthly(employee.getEmployeeId(), dataSource.getStartMonth().yearMonth(),
@@ -649,7 +649,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 			// Call requestList341
 			ChildCareNursingRemainOutputPara currentSituationImported = childNursingLeaveMng
-					.calChildNursOfInPeriod(AppContexts.user().companyId(), employee.getEmployeeId(), datePeriod, true);
+					.calChildNursOfInPeriod(AppContexts.user().companyId(), employee.getEmployeeId(), datePeriod, false);
 			// N1_2 子の看護休暇_使用数
 			cells.get(firstRow, 6).setValue(currentSituationImported.getBeforeUseDays());
 			// N1_3 子の看護休暇_残数
@@ -689,7 +689,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 			// Call requestList343
 			ChildCareNursingRemainOutputPara careHoliday = careHolidayMngService.calCareRemainOfInPerior(
-					AppContexts.user().companyId(), employee.getEmployeeId(), datePeriod, true);
+					AppContexts.user().companyId(), employee.getEmployeeId(), datePeriod, false);
 			// O1_2 介護休暇_使用数
 			cells.get(firstRow, 6).setValue(careHoliday.getBeforeUseDays());
 			// O1_3 介護休暇_残数
