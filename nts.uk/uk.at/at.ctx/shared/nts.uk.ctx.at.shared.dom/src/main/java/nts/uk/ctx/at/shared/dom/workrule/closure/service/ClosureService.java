@@ -52,4 +52,11 @@ public interface ClosureService {
 	 * @return
 	 */
 	public Closure getClosureDataByEmployee(String employeeId, GeneralDate baseDate);
+	/**
+	 * 社員に対応する締め期間を取得する
+	 * @param employeeId
+	 * @param baseDate
+	 * @return
+	 */
+	DatePeriod findClosurePeriod(String employeeId, GeneralDate baseDate);
 }

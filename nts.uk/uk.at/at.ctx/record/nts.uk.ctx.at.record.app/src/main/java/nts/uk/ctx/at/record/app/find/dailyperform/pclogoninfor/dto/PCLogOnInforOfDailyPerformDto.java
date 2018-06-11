@@ -8,13 +8,14 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnNo;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceLayoutConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
-@AttendanceItemRoot(rootName = "日別実績のPCログオン情報")
 @Data
+@AttendanceItemRoot(rootName = AttendanceLayoutConst.DAILY_PC_LOG_INFO_NAME)
 public class PCLogOnInforOfDailyPerformDto extends AttendanceItemCommon {
 
 	private String employeeId;

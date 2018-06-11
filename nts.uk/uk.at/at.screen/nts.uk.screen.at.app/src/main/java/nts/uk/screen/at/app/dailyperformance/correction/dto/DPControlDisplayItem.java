@@ -112,10 +112,11 @@ public class DPControlDisplayItem {
 		});
 		this.lstSheet = this.lstSheet.stream().filter(x -> x.getColumns().size() > 0).collect(Collectors.toList());
 		this.lstSheet.forEach(x -> {
+			x.addColumn("Submitted");
 			if(showButton){
-				x.addColumn("Submitted");
 				x.addColumn("Application");
 			}
+			x.addColumn("ApplicationList");
 		});
 		
 		if(this.lstSheet.size() == 0){
