@@ -15,6 +15,12 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
         //enum value output format
         valOutFormat: KnockoutObservableArray<any> = ko.observableArray([]);
+        
+        //年間勤務表印刷形式
+        listSheetPrintingForm: KnockoutObservableArray<any> = ko.observableArray([
+            new model.ItemModel(0, getText('KWR008_53')),
+            new model.ItemModel(1, getText('KWR008_54'))
+        ]);
 
         //B2_2
         listStandardImportSetting: KnockoutObservableArray<SetOutputSettingCode> = ko.observableArray([]);
@@ -31,6 +37,9 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         outputItem: KnockoutObservableArray<any> = ko.observableArray([]);
 
         isCheckedAll: KnockoutObservable<boolean> = ko.observable(false);
+        
+        selectedPrintForm: KnockoutObservable<number> = ko.observable(0);
+        
         
         constructor() {
             let self = this;
@@ -119,6 +128,15 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     self.registerMode();
                 }
             });
+            
+            this.selectedPrintForm.subscribe(data => {
+                self.currentSetOutputSettingCode().printForm(data);
+                if(data == 0){
+                    self.outputItem()[0].useClass(false);
+                    self.currentSetOutputSettingCode().outNumExceedTime36Agr(false);
+                    self.currentSetOutputSettingCode().displayFormat(0);
+                }
+            })
 
             self.isCheckedAll = ko.computed({
                 read: function() {
@@ -132,6 +150,9 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 write: function(val) {
                     ko.utils.arrayForEach(self.outputItem(), function(item) {
                         item.useClass(val);
+                        if (item.sortBy() == 1 && self.currentSetOutputSettingCode().printForm() == 0) {
+                            item.useClass(false);
+                        }
                     });
                 },
                 owner: this
@@ -159,7 +180,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
                 service.getValueOutputFormat().done(data => {
                     for (let i = 0, count = data.length; i < count; i++) {
-                        self.valOutFormat.push(new model.ItemModel(data[i].value, data[i].localizedName));
+                        self.valOutFormat.push(new model.ItemModel(data[i].value+'', data[i].localizedName));
                     }
                 }).always(function() {
                     dfd.resolve(self);
@@ -172,6 +193,13 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             });
             
             return dfd.promise();
+        }
+        
+        checkEnable36(data){
+            let self = this;
+            if(data.sortBy() == 1 && self.currentSetOutputSettingCode().printForm() == 0)
+            return false;
+            return true;
         }
 
         listStandardImportSetting_Sort() {
@@ -190,7 +218,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 return;
             }
 
-            self.getListItemByAtr(self.outputItem()[index].valOutFormat()).done((lstItem) => {
+            self.getListItemByAtr(+self.outputItem()[index].valOutFormat()).done((lstItem) => {
                 let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
                 let lstAddItems = _.filter(self.outputItem()[index].listOperationSetting(), (item) => {
                     return item.operation();
@@ -357,6 +385,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 self.isNewMode(false);
                 if (selectedIndex > -1) {
                     self.currentSetOutputSettingCode(self.listStandardImportSetting()[selectedIndex]);
+                    self.selectedPrintForm(self.currentSetOutputSettingCode().printForm());
                     $('#B3_3').focus();
                 } else {
                     $('#B3_2').focus();
@@ -372,6 +401,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
             self.isNewMode(true); 
             self.currentSetOutputSettingCode(new SetOutputSettingCode(null));
+            self.selectedPrintForm(0);
             self.selectedCode('');
             for (var i = 0; i < self.outputItem().length; i++) {
                 self.outputItem()[i].updateData(i + 1,
@@ -577,6 +607,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         outNumExceedTime36Agr: KnockoutObservable<boolean> = ko.observable(false);
         displayFormat: KnockoutObservable<number> = ko.observable(0);
         listItemOutput: KnockoutObservableArray<OutputItemData> = ko.observableArray([]);
+        printForm: KnockoutObservable<number> = ko.observable(0);
         constructor(param) {
             let self = this;
             self.cd(param ? param.cd || '' : '');
@@ -585,6 +616,10 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.displayName = self.name();
             self.outNumExceedTime36Agr(param ? param.outNumExceedTime36Agr || false : false);
             self.displayFormat(param ? param.displayFormat || 0 : 0);
+            self.printForm(param ? param.printForm || 0 : 0);
+            self.printForm.subscribe(data=>{
+                self.printForm(data);     
+            });
         }
 
         buildListItemOutput(listItemOutput: Array<any>) {
