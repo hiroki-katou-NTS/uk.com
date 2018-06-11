@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.PredeterminedDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -13,26 +14,26 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の所定日数 */
-public class PredeterminedDaysOfMonthlyDto {
+public class PredeterminedDaysOfMonthlyDto implements ItemConst {
 
 	/** 所定日数: 勤怠月間日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "所定日数", layout = "A")
-	private Double predeterminedDays;
+	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_A)
+	private double predeterminedDays;
 
 	/** 所定日数付与前: 勤怠月間日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "所定日数付与前", layout = "B")
-	private Double predeterminedDaysBeforeGrant;
+	@AttendanceItemLayout(jpPropertyName = BEFORE, layout = LAYOUT_B)
+	private double predeterminedDaysBeforeGrant;
 
 	/** 所定日数付与後: 勤怠月間日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "所定日数付与後", layout = "C")
-	private Double predeterminedDaysAfterGrant;
+	@AttendanceItemLayout(jpPropertyName = AFTER, layout = LAYOUT_C)
+	private double predeterminedDaysAfterGrant;
 
 	public PredeterminedDaysOfMonthly toDomain() {
 		return PredeterminedDaysOfMonthly.of(
-						predeterminedDays == null ? null : new AttendanceDaysMonth(predeterminedDays));//,
+						new AttendanceDaysMonth(predeterminedDays));//,
 //						predeterminedDaysBeforeGrant == null ? null : new AttendanceDaysMonth(predeterminedDaysBeforeGrant), 
 //						predeterminedDaysAfterGrant == null ? null : new AttendanceDaysMonth(predeterminedDaysAfterGrant));
 	}
@@ -41,7 +42,7 @@ public class PredeterminedDaysOfMonthlyDto {
 		PredeterminedDaysOfMonthlyDto dto = new PredeterminedDaysOfMonthlyDto();
 		if(domain != null) {
 			dto.setPredeterminedDays(domain.getPredeterminedDays() == null 
-					? null : domain.getPredeterminedDays().v());
+					? 0 : domain.getPredeterminedDays().v());
 //			dto.setPredeterminedDaysAfterGrant(domain.getPredeterminedDaysAfterGrant() == null 
 //					? null : domain.getPredeterminedDaysAfterGrant().v());
 //			dto.setPredeterminedDaysBeforeGrant(domain.getPredeterminedDaysBeforeGrant() == null 

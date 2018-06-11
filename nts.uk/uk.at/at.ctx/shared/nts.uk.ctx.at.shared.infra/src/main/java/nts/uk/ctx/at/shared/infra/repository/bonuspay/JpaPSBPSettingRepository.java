@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstPersonalBPSettingPK;
 @Stateless
 public class JpaPSBPSettingRepository extends JpaRepository implements PSBonusPaySettingRepository {
 
-	private final String SELECT_BY_LIST_ID = "SELECT c FROM KbpstPersonalBPSetting c WHERE c.kbpstPersonalBPSettingPK.employeeId IN :employeeIds";
+	private static final String SELECT_BY_LIST_ID = "SELECT c FROM KbpstPersonalBPSetting c WHERE c.kbpstPersonalBPSettingPK.employeeId IN :employeeIds";
 
 	@Override
 	public Optional<PersonalBonusPaySetting> getPersonalBonusPaySetting(String id) {
