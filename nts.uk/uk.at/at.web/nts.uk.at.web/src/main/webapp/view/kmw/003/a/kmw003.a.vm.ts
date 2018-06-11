@@ -310,6 +310,11 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             }
         };
         
+        insertUpdate2(){
+            var self = this;
+           self.insertUpdate();
+        }
+        
         getPrimitiveValue(value: any, atr: any): string {
             var self = this;
             let valueResult: string = "";
