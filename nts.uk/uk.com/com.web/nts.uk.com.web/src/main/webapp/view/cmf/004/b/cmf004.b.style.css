@@ -4,6 +4,7 @@
 }
 
 #data-recovery-wizard>.content {
+    width: 850px;
 	background: none;
 	overflow: visible;
 }
