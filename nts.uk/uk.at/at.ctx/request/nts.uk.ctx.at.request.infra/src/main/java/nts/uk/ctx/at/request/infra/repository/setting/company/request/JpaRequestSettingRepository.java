@@ -263,10 +263,10 @@ public class JpaRequestSettingRepository extends JpaRepository implements Reques
 				temp.retrictPreMethodFlg = item.getBeforehandRestriction().getMethodCheck().value;
 				
 				// 利用する - retrictPreUseFlg - RETRICT_PRE_USE_FLG
-				temp.retrictPreUseFlg = 0;
+				temp.retrictPreUseFlg = item.getBeforehandRestriction().getToUse() ? 1 : 0;
 				
 				// 日数 - retrictPreDay - RETRICT_PRE_DAY
-				temp.retrictPreDay = 0;
+				temp.retrictPreDay = item.getBeforehandRestriction().getDateBeforehandRestriction().value;
 				
 				// 時刻 - retrictPreTimeDay - RETRICT_PRE_TIMEDAY
 				temp.retrictPreTimeDay = item.getBeforehandRestriction().getTimeBeforehandRestriction() == null ? null : item.getBeforehandRestriction().getTimeBeforehandRestriction().v();
