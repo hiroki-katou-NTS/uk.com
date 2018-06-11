@@ -145,9 +145,9 @@ module nts.uk.at.view.kbt002.h {
                     var yyyy = today.getFullYear();
                     var startDateSplit = self.dateValue().startDate.split("/");
                     var endDateSplit = self.dateValue().endDate.split("/");
-                    var yearEndDate = new Number(startDateSplit[0]);
-                    var monthEndDate = new Number(startDateSplit[1]);
-                    var dayEndDate = new Number(startDateSplit[2]);
+                    var yearEndDate = new Number(endDateSplit[0]);
+                    var monthEndDate = new Number(endDateSplit[1]);
+                    var dayEndDate = new Number(endDateSplit[2]);
                     if (yearEndDate > yyyy || monthEndDate > mm || dayEndDate > dd) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_1077" });
                     } else {
