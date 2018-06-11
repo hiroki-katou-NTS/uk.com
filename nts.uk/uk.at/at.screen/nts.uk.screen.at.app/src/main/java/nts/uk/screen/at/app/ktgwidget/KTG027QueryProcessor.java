@@ -2,11 +2,13 @@ package nts.uk.screen.at.app.ktgwidget;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.auth.dom.adapter.AuthWorkPlaceAdapter;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.AlarmExtraValueWkReDto;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.AgreementTimeDetail;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.GetAgreementTime;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.GetAgreementTimeImpl;
@@ -179,6 +181,16 @@ public class KTG027QueryProcessor {
 							!agreementTimeDetail.getAfterAppReflect().isPresent() ? 0 : agreementTimeDetail.getAfterAppReflect().get().getStatus().value));
 			data.add(agreementTimeList36);
 		}
+		
+		data.sort((a, b) ->
+			 {
+				 if(a.getAfterAppReflect().getAgreementTime()== b.getAfterAppReflect().getAgreementTime()){
+					 return a.getEmployeeCD().compareTo(b.getEmployeeCD());
+				 }else{
+					 return  b.getAfterAppReflect().getAgreementTime()-a.getAfterAppReflect().getAgreementTime();
+				 }
+			}
+		);
 
 		return new OvertimeHours(null, data);
 	}

@@ -234,6 +234,9 @@ public class RegularAndIrregularTimeOfMonthly {
 							attendanceTimeOfDailyMap, repositories);
 					resultWeeks.add(newWeek);
 					
+					// 「前月の最終週の週割増対象時間 」を0にする　（前月の最終週の～は、1回目の週の計算だけで使う）
+					this.weekPremiumTimeOfPrevMonth = new AttendanceTimeMonth(0);
+					
 					// 月の週割増合計へ
 					val weekTime = weekCalc.getRegAndIrgTime();
 					this.weeklyTotalPremiumTime = this.weeklyTotalPremiumTime.addMinutes(

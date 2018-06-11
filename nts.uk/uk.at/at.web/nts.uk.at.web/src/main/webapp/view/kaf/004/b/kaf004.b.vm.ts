@@ -2,7 +2,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
     import kaf002 = nts.uk.at.view.kaf002;
     import vmbase = nts.uk.at.view.kaf002.shr.vmbase;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
-    
+    import setShared = nts.uk.ui.windows.setShared;
     const employmentRootAtr: number = 1; // EmploymentRootAtr: Application
     const applicationType: number = 9; // Application Type: Stamp Application
     

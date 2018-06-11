@@ -15,12 +15,13 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.WorkDaysOfMonthly
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.PayItemCountOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.VerticalTotalMethodOfMonthly;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.attdstatus.AttendanceStatusList;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.scherec.attdstatus.GetAttendanceStatus;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -77,6 +78,7 @@ public class VerticalTotalOfMonthly {
 	 * @param employeeId 社員ID
 	 * @param datePeriod 期間
 	 * @param workingSystem 労働制
+	 * @param monthlyCalcDailys 月の計算中の日別実績データ
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void verticalTotal(
@@ -84,6 +86,7 @@ public class VerticalTotalOfMonthly {
 			String employeeId,
 			DatePeriod datePeriod,
 			WorkingSystem workingSystem,
+			MonthlyCalculatingDailys monthlyCalcDailys,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 集計結果の初期化
@@ -92,31 +95,16 @@ public class VerticalTotalOfMonthly {
 		this.workClock = new WorkClockOfMonthly();
 		
 		// 日別実績の勤務情報　取得
-		val workInfoOfDailys =
-				repositories.getWorkInformationOfDaily().findByPeriodOrderByYmd(employeeId, datePeriod);
-		Map<GeneralDate, WorkInfoOfDailyPerformance> workInfoOfDailyMap = new HashMap<>();
-		for (val workInfoOfDaily : workInfoOfDailys){
-			val ymd = workInfoOfDaily.getYmd();
-			workInfoOfDailyMap.putIfAbsent(ymd, workInfoOfDaily);
-		}
+		Map<GeneralDate, WorkInfoOfDailyPerformance> workInfoOfDailyMap =
+				monthlyCalcDailys.getWorkInfoOfDailyMap();
 		
 		// 日別実績の勤怠時間　取得
-		val attendanceTimeOfDailys =
-				repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, datePeriod);
-		Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap = new HashMap<>();
-		for (val attendanceTimeOfDaily : attendanceTimeOfDailys){
-			val ymd = attendanceTimeOfDaily.getYmd();
-			attendanceTimeOfDailyMap.putIfAbsent(ymd, attendanceTimeOfDaily);
-		}
+		Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap =
+				monthlyCalcDailys.getAttendanceTimeOfDailyMap();
 		
 		// 日別実績の出退勤　取得
-		val timeLeavingOfDailys =
-				repositories.getTimeLeavingOfDaily().findbyPeriodOrderByYmd(employeeId, datePeriod);
-		Map<GeneralDate, TimeLeavingOfDailyPerformance> timeLeavingOfDailyMap = new HashMap<>();
-		for (val timeLeavingOfDaily : timeLeavingOfDailys){
-			val ymd = timeLeavingOfDaily.getYmd();
-			timeLeavingOfDailyMap.putIfAbsent(ymd, timeLeavingOfDaily);
-		}
+		Map<GeneralDate, TimeLeavingOfDailyPerformance> timeLeavingOfDailyMap =
+				monthlyCalcDailys.getTimeLeaveOfDailyMap();
 		
 		// 日別実績の臨時出退勤　取得
 		val temporaryTimeOfDailys =
@@ -165,7 +153,8 @@ public class VerticalTotalOfMonthly {
 		val vacationAddSet = repositories.getVacationAddSet().get(companyId);
 		
 		// 出勤状態を取得する
-		GetAttendanceStatus attendanceStatus = repositories.getAttendanceStatus().setData(employeeId, datePeriod);
+		AttendanceStatusList attendanceStatusList = new AttendanceStatusList(employeeId, datePeriod,
+				repositories.getAttendanceTimeOfDaily(), repositories.getTimeLeavingOfDaily());
 		
 		// 乖離フラグの集計
 		val employeeDailyPerErrors =
@@ -219,8 +208,8 @@ public class VerticalTotalOfMonthly {
 			val specificDateAttrOfDaily = specificDateAttrOfDailyMap.get(procYmd);
 			
 			// 出勤状態・2回目打刻有無を確認する
-			val isAttendanceDay = attendanceStatus.isAttendanceDay(procYmd);
-			val isTwoTimesStampExists = attendanceStatus.isTwoTimesStampExists(procYmd);
+			val isAttendanceDay = attendanceStatusList.isAttendanceDay(procYmd);
+			val isTwoTimesStampExists = attendanceStatusList.isTwoTimesStampExists(procYmd);
 			
 			// PCログオン情報　取得
 			val pcLogonInfoOpt = repositories.getPCLogonInfoOfDaily().find(employeeId, procYmd);
@@ -236,12 +225,6 @@ public class VerticalTotalOfMonthly {
 			
 			// 勤務時刻集計
 			this.workClock.aggregate(pcLogonInfoOpt, attendanceTimeOfDaily, timeLeavingOfDaily, predTimeSetForCalc);
-			
-			// 処理期間の各週の開始日・終了日を判断
-			
-			// 週の回数分ループ
-			
-			// 週の集計
 			
 			procYmd = procYmd.addDays(1);
 		}

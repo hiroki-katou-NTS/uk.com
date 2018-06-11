@@ -10,11 +10,11 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class ChildNursingLeaveMngImpl implements ChildNursingLeaveMng{
 
 	@Override
-	public List<ChildCareNursingRemainOutputPara> calChildNursOfInPeriod(String cid, String sid, DatePeriod dateData,
+	public ChildCareNursingRemainOutputPara calChildNursOfInPeriod(String cid, String sid, DatePeriod dateData,
 			boolean mode) {
-		List<ChildCareNursingRemainOutputPara> lstOutData = new ArrayList<>();
+		ChildCareNursingRemainOutputPara outData = new ChildCareNursingRemainOutputPara();
 		// TODO Auto-generated method stub
-		return lstOutData;
+		return outData;
 	}
 
 }

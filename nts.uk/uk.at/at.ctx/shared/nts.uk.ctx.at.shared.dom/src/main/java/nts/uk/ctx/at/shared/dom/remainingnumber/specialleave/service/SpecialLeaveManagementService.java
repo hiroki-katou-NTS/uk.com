@@ -87,6 +87,6 @@ public interface SpecialLeaveManagementService {
 	 * @param baseDate ・基準日
 	 * @return
 	 */
-	InPeriodOfSpecialLeave sumRemainData(List<SpecialLeaveGrantDetails> lstSpecialLeaverData, Double useDays, GeneralDate baseDate);
+	InPeriodOfSpecialLeave sumRemainData(SpecialLeaveGrantDetails lstSpecialLeaverData, Double useDays, GeneralDate baseDate);
 		
 }
