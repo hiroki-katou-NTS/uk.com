@@ -705,7 +705,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		}
 		
 		return ManageReGetClass.canCalc(oneRange, integrationOfDaily, workTime,beforeWorkType , subhol, personalInfo ,dailyUnit ,fixRestTimeSet,ootsukaFixedWorkSet,holidayCalcMethodSet,breakCount,
-										regularAddSetting,flexAddSetting,hourlyPaymentAddSetting,illegularAddSetting,holidayAddtionSetting.get(),coreTimeSetting,statutoryOverFrameNoList,commonSet);
+										regularAddSetting,flexAddSetting,hourlyPaymentAddSetting,illegularAddSetting,holidayAddtionSetting.get(),coreTimeSetting,commonSet);
 	}
 
 	/**
@@ -797,7 +797,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				    recordReGetClass.getWorkRegularAdditionSet(),
 				    recordReGetClass.getHolidayAddtionSet(),
 				    AutoCalOverTimeAttr.CALCULATION_FROM_STAMP,
-				    recordReGetClass.getWorkTimeSetting().get().getWorkTimeDivision().getWorkTimeDailyAtr(),
+				    Optional.of(recordReGetClass.getWorkTimeSetting().get().getWorkTimeDivision().getWorkTimeDailyAtr()),
 				    flexCalcMethod,
 				    recordReGetClass.getHolidayCalcMethodSet(),
 					bonusPayAutoCalcSet,
@@ -818,8 +818,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					recordReGetClass.getDailyUnit(),
 					recordReGetClass.getBreakCount(),
 					recordReGetClass.coreTimeSetting,
-					recordReGetClass.statutoryFrameNoList,
-					scheduleReGetClass.getWorkTimeSetting().get().getWorkTimeDivision().getWorkTimeDailyAtr(),
 					recordReGetClass.getWorkTimezoneCommonSet()
 					));
 	
