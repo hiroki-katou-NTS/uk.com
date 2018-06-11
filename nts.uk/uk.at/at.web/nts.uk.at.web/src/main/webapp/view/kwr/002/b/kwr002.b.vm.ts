@@ -177,6 +177,10 @@ module nts.uk.com.view.kwr002.b {
         }
 
         onRegister() {
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+            
             block.invisible();
             let self = this;
             let currentData = self.currentARES();
@@ -198,11 +202,6 @@ module nts.uk.com.view.kwr002.b {
 
                 isListValid: function (list) {
                     return _.find(list,(item)=>!(_.isEmpty(item.upperPosition) && _.isEmpty(item.lowwerPosition)));
-                    // let countResult = 0;
-                    // _.forEach(list, (item) => {
-                    //     if (!(_.isEmpty(item.upperPosition) && _.isEmpty(item.lowwerPosition))) countResult++;
-                    // });
-                    // return countResult;
                 }
             };
 
@@ -412,7 +411,7 @@ module nts.uk.com.view.kwr002.b {
         name: KnockoutObservable<string>;
         sealUseAtr: KnockoutObservable<boolean>;
         nameUseAtr: KnockoutObservable<number>;
-        enableSetting: KnockoutComputed<boolean>;
+        // enableSetting: KnockoutComputed<boolean>;
 
         constructor(param: IARES) {
             let self = this;
@@ -420,21 +419,21 @@ module nts.uk.com.view.kwr002.b {
             self.name = ko.observable(param.name);
             self.sealUseAtr = ko.observable(param.sealUseAtr);
             self.nameUseAtr = ko.observable(param.nameUseAtr);
-            self.enableSetting = ko.pureComputed(() => {
-                if (!nts.uk.ui.errors.hasError()) {
-                    if (_.isEmpty(self.code())) {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                }
-                if ($('#code').ntsError('hasError')) {
-                    return false;
-                } else {
-                    return true;
-                }
-
-            });
+            // self.enableSetting = ko.pureComputed(() => {
+            //     if (!nts.uk.ui.errors.hasError()) {
+            //         if (_.isEmpty(self.code())) {
+            //             return false;
+            //         } else {
+            //             return true;
+            //         }
+            //     }
+            //     if ($('#code').ntsError('hasError')) {
+            //         return false;
+            //     } else {
+            //         return true;
+            //     }
+            //
+            // });
         };
 
 
@@ -450,8 +449,11 @@ module nts.uk.com.view.kwr002.b {
 
         public openScreenC() {
             let self = this;
-            block.grayout();
 
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+            block.grayout();
             if (!newModeFlag) {
                 this.openDialogC();
             } else {
