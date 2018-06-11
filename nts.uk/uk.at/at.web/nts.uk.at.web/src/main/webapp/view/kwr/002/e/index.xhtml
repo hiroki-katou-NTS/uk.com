@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 1200,
-					height : 900
+					width : 1150,
+					height : 860
 				};
 			</script>
 			<com:ValidatorScript>
@@ -23,7 +23,7 @@
 			<com:scriptfile path="kwr002.e.start.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="content-area"
+			<div
 				class="contents-area fixed-flex-layout external"
 				style="display: block;">
 				<div style="display: inline;">
@@ -60,16 +60,16 @@
                                           	required: true}"
 							class="external" />
 					</div>
-					<div class="fixed-flex-layout external">
+					<div class="fixed-flex-layout external" style="margin-top: 20px; height: 460px;">
 						<div class="fixed-flex-layout-left external" style="width: 430px;">
 							<div
 								class="panel ntsPanel caret-background caret-right direction-right"
-								data-bind="ntsPanel:{width: '390px', height: '460px', direction: 'right', showIcon: true, visible: true}"
+								data-bind="ntsPanel:{width: '390px', height: '410px', direction: 'right', showIcon: true, visible: true}"
 								style="margin: unset;">
 								<i class="icon icon-searchbox"></i>
 								<div style="display: inline-flex; margin-bottom: 10px;"
 									class="external">
-									<div style="margin-top: 20px;">
+									<div style="margin-top: 10px;">
 										<!-- E3_2 -->
 										<label>#{i18n.getText('KWR002_166')}</label>
 									</div>
@@ -105,7 +105,7 @@
 										data-bind="ntsGridList: {
 													name: '#{i18n.getText('KWR002_175')}',
 													options: gridItems,
-													height: 330,
+													height: 310,
 													optionsValue: 'code',
 													columns: columns,
 													multiple: true,
@@ -158,17 +158,17 @@
 						</div>
 					</div>
 				</div>
-				<div class="external" style="margin-left: 45px;">
+				<div class="external" style="margin-left: 30px;">
 					<!-- E9_1 -->
 					<div data-bind="ntsFormLabel: {}" class="form-label">#{i18n.getText('KWR002_190')}</div>
 				</div>
-				<div class="external" style="margin-left: 45px;">
+				<div class="external" style="margin-left: 30px;">
 					<!-- E9_2 -->
 					<textarea id="multiline-textbox"
 						data-bind="ntsMultilineEditor: {value: formulaContent, readonly: true, name: '#{i18n.getText('KWR002_191')}'}" />
 				</div>
 			</div>
-			<div id="functions-area-bottom" style="display: block;">
+			<div id="functions-area-bottom">
 				<!-- E10_1 -->
 				<button tabindex="10" id="" class="button x-large proceed"
 					data-bind="click: decide">#{i18n.getText('KWR002_192')}</button>
