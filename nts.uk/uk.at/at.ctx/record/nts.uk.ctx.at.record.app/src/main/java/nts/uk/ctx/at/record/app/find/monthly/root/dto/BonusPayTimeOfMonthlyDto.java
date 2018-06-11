@@ -21,31 +21,31 @@ public class BonusPayTimeOfMonthlyDto {
 	/** 加給時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "加給時間", layout = "A")
-	private Integer bonus;
+	private int bonus;
 	
 	/** 休出加給時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "休出加給時間", layout = "B")
-	private Integer holWorkBonus;
+	private int holWorkBonus;
 	
 	/** 休出特定加給時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "休出特定加給時間", layout = "C")
-	private Integer holWorkSpecBonus;
+	private int holWorkSpecBonus;
 	
 	/** 特定加給時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "特定加給時間", layout = "D")
-	private Integer specBonus;
+	private int specBonus;
 	
 	public static BonusPayTimeOfMonthlyDto from(AggregateBonusPayTime domain) {
 		BonusPayTimeOfMonthlyDto dto = new BonusPayTimeOfMonthlyDto();
 		if(domain != null) {
-			dto.setBonus(domain.getBonusPayTime() == null ? null : domain.getBonusPayTime().valueAsMinutes());
+			dto.setBonus(domain.getBonusPayTime() == null ? 0 : domain.getBonusPayTime().valueAsMinutes());
 			dto.setBonusPayFrameNo(domain.getBonusPayFrameNo());
-			dto.setHolWorkBonus(domain.getHolidayWorkBonusPayTime() == null ? null : domain.getHolidayWorkBonusPayTime().valueAsMinutes());
-			dto.setHolWorkSpecBonus(domain.getHolidayWorkSpecificBonusPayTime() == null ? null : domain.getHolidayWorkSpecificBonusPayTime().valueAsMinutes());
-			dto.setSpecBonus(domain.getSpecificBonusPayTime() == null ? null : domain.getSpecificBonusPayTime().valueAsMinutes());
+			dto.setHolWorkBonus(domain.getHolidayWorkBonusPayTime() == null ? 0 : domain.getHolidayWorkBonusPayTime().valueAsMinutes());
+			dto.setHolWorkSpecBonus(domain.getHolidayWorkSpecificBonusPayTime() == null ? 0 : domain.getHolidayWorkSpecificBonusPayTime().valueAsMinutes());
+			dto.setSpecBonus(domain.getSpecificBonusPayTime() == null ? 0 : domain.getSpecificBonusPayTime().valueAsMinutes());
 		}
 		return dto;
 	}
@@ -56,6 +56,6 @@ public class BonusPayTimeOfMonthlyDto {
 	}
 	
 	private AttendanceTimeMonth toAttendanceTimeMonth(Integer time){
-		return time == null ? null : new AttendanceTimeMonth(time);
+		return new AttendanceTimeMonth(time);
 	}
 }

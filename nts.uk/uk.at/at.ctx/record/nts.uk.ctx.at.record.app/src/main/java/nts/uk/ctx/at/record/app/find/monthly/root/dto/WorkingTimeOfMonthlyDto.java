@@ -18,32 +18,32 @@ public class WorkingTimeOfMonthlyDto {
 	/** 就業時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "就業時間", layout = "A")
-	private Integer workTime;
+	private int workTime;
 
 	/** 所定内割増時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "所定内割増時間", layout = "B")
-	private Integer withinPrescribedPremiumTime;
+	private int withinPrescribedPremiumTime;
 	
 	/** 実働就業時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "実働就業時間", layout = "C")
-	private Integer actualWorkTime;
+	private int actualWorkTime;
 	
 	public static WorkingTimeOfMonthlyDto from(WorkTimeOfMonthly domain) {
 		WorkingTimeOfMonthlyDto dto = new WorkingTimeOfMonthlyDto();
 		if(domain != null) {
 			dto.setWithinPrescribedPremiumTime(domain.getWithinPrescribedPremiumTime() == null 
-					? null : domain.getWithinPrescribedPremiumTime().valueAsMinutes());
-			dto.setWorkTime(domain.getWorkTime() == null ? null : domain.getWorkTime().valueAsMinutes());
-			dto.setActualWorkTime(domain.getActualWorkTime() == null ? null : domain.getActualWorkTime().valueAsMinutes());
+					? 0 : domain.getWithinPrescribedPremiumTime().valueAsMinutes());
+			dto.setWorkTime(domain.getWorkTime() == null ? 0 : domain.getWorkTime().valueAsMinutes());
+			dto.setActualWorkTime(domain.getActualWorkTime() == null ? 0 : domain.getActualWorkTime().valueAsMinutes());
 		}
 		return dto;
 	}
 	
 	public WorkTimeOfMonthly toDomain() {
-		return WorkTimeOfMonthly.of(workTime == null ? null : new AttendanceTimeMonth(workTime),
-									withinPrescribedPremiumTime == null ? null : new AttendanceTimeMonth(withinPrescribedPremiumTime),
-									actualWorkTime == null ? null : new AttendanceTimeMonth(actualWorkTime));
+		return WorkTimeOfMonthly.of(new AttendanceTimeMonth(workTime),
+									new AttendanceTimeMonth(withinPrescribedPremiumTime),
+									new AttendanceTimeMonth(actualWorkTime));
 	}
 }

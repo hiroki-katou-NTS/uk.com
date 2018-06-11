@@ -79,14 +79,15 @@ public class OptionalItemValueDto {
 		return null;
 	}
 	
-	public static OptionalItemValueDto from(AnyItemOfMonthly c, OptionalItemAtr attr) {
+	public static OptionalItemValueDto from(AnyItemOfMonthly c) {
 		if(c != null) {
-			boolean isTimes = attr == OptionalItemAtr.NUMBER;
-			boolean isAmount = attr == OptionalItemAtr.AMOUNT;
-			boolean isTime = attr == OptionalItemAtr.TIME;
-			String value = isAmount ? String.valueOf(c.getAmount().get().v() ): 
-				isTime ? String.valueOf(c.getTime().get().valueAsMinutes()) : 
-					     c.getTimes().get().v().toString();
+			
+			boolean isTimes = c.getTimes().isPresent();
+			boolean isAmount = c.getAmount().isPresent();
+			boolean isTime = c.getTime().isPresent();
+			String value = isTimes ? c.getTimes().get().v().toString()
+			: isAmount ? String.valueOf(c.getAmount().get().v())
+			: String.valueOf(c.getTime().get().valueAsMinutes());
 			OptionalItemValueDto dto = new OptionalItemValueDto(value, c.getAnyItemId(), isTime, isTimes, isAmount);
 			dto.itemMapped();
 			return dto;

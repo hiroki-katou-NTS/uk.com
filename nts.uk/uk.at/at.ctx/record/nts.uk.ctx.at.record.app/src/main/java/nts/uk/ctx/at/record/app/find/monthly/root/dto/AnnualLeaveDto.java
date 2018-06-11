@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.CommonLeaveRemainingNumberDto;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeave;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingNumber;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.RealAnnualLeave;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 
@@ -47,9 +49,9 @@ public class AnnualLeaveDto {
 	
 	public AnnualLeave toDomain(){
 		return AnnualLeave.of(
-						usedNumber == null ? null : usedNumber.toDomain(),
-						remainingNumber == null ? null : remainingNumber.toDomain(), 
-						remainingNumberBeforeGrant == null ? null : remainingNumberBeforeGrant.toDomain(), 
+						usedNumber == null ? new AnnualLeaveUsedNumber()  : usedNumber.toDomain(),
+						remainingNumber == null ? new AnnualLeaveRemainingNumber()  : remainingNumber.toDomain(), 
+						remainingNumberBeforeGrant == null ? new AnnualLeaveRemainingNumber() : remainingNumberBeforeGrant.toDomain(), 
 						Optional.ofNullable(remainingNumberAfterGrant == null ? null : remainingNumberAfterGrant.toDomain()),
 						undigestedNumber == null ? null : undigestedNumber.toDomain());
 	}
@@ -65,9 +67,9 @@ public class AnnualLeaveDto {
 	
 	public RealAnnualLeave toRealDomain(){
 		return RealAnnualLeave.of(
-						usedNumber == null ? null : usedNumber.toDomain(),
-						remainingNumber == null ? null : remainingNumber.toDomain(), 
-						remainingNumberBeforeGrant == null ? null : remainingNumberBeforeGrant.toDomain(), 
+						usedNumber == null ? new AnnualLeaveUsedNumber() : usedNumber.toDomain(),
+						remainingNumber == null ? new AnnualLeaveRemainingNumber() : remainingNumber.toDomain(), 
+						remainingNumberBeforeGrant == null ? new AnnualLeaveRemainingNumber() : remainingNumberBeforeGrant.toDomain(), 
 						Optional.ofNullable(remainingNumberAfterGrant == null ? null : remainingNumberAfterGrant.toDomain()));
 	}
 }

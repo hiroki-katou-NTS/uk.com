@@ -20,17 +20,17 @@ public class MedicalTimeOfMonthlyDto {
 	/** 勤務時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "勤務時間", layout = "A", needCheckIDWithMethod = "dayNightAtr")
-	private Integer workTime;
+	private int workTime;
 
 	/** 控除時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "控除時間", layout = "B", needCheckIDWithMethod = "dayNightAtr")
-	private Integer deducationTime;
+	private int deducationTime;
 
 	/** 申送時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "申送時間", layout = "C", needCheckIDWithMethod = "dayNightAtr")
-	private Integer takeOverTime;
+	private int takeOverTime;
 
 	/** 日勤夜勤区分: 日勤夜勤区分 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
@@ -51,9 +51,9 @@ public class MedicalTimeOfMonthlyDto {
 		MedicalTimeOfMonthlyDto dto = new MedicalTimeOfMonthlyDto();
 		if(domain != null) {
 			dto.setDayNightAtr(domain.getDayNightAtr() == null ? 0 : domain.getDayNightAtr().value);
-			dto.setDeducationTime(domain.getDeducationTime() == null ? null : domain.getDeducationTime().valueAsMinutes());
-			dto.setTakeOverTime(domain.getTakeOverTime() == null ? null : domain.getTakeOverTime().valueAsMinutes());
-			dto.setWorkTime(domain.getWorkTime() == null ? null : domain.getWorkTime().valueAsMinutes());
+			dto.setDeducationTime(domain.getDeducationTime() == null ? 0 : domain.getDeducationTime().valueAsMinutes());
+			dto.setTakeOverTime(domain.getTakeOverTime() == null ? 0 : domain.getTakeOverTime().valueAsMinutes());
+			dto.setWorkTime(domain.getWorkTime() == null ? 0 : domain.getWorkTime().valueAsMinutes());
 		}
 		return dto;
 	}
@@ -65,6 +65,6 @@ public class MedicalTimeOfMonthlyDto {
 	}
 
 	private AttendanceTimeMonth toAttendanceTimeMonth(Integer time) {
-		return time == null ? null : new AttendanceTimeMonth(time);
+		return new AttendanceTimeMonth(time);
 	}
 }

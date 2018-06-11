@@ -19,31 +19,31 @@ public class FlexShortDeductTimeDto {
 	/** 欠勤控除時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "欠勤控除時間", layout = "A")
-	private Integer absenceDeductTime;
+	private int absenceDeductTime;
 
 	/** 控除前のフレックス不足時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(jpPropertyName = "控除前のフレックス不足時間", layout = "B")
-	private Integer flexShortTimeBeforeDeduct;
+	private int flexShortTimeBeforeDeduct;
 
 	/** 年休控除日数: 勤怠月間日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
 	@AttendanceItemLayout(jpPropertyName = "年休控除日数", layout = "C")
-	private Double annualLeaveDeductDays;
+	private double annualLeaveDeductDays;
 
 	public FlexShortDeductTime toDomain() {
 		return FlexShortDeductTime.of(
-						annualLeaveDeductDays == null ? null : new AttendanceDaysMonth(annualLeaveDeductDays),
-						absenceDeductTime == null ? null : new AttendanceTimeMonth(absenceDeductTime),
-						flexShortTimeBeforeDeduct == null ? null : new AttendanceTimeMonth(flexShortTimeBeforeDeduct));
+						new AttendanceDaysMonth(annualLeaveDeductDays),
+						new AttendanceTimeMonth(absenceDeductTime),
+						new AttendanceTimeMonth(flexShortTimeBeforeDeduct));
 	}
 	
 	public static FlexShortDeductTimeDto from(FlexShortDeductTime domain) {
 		FlexShortDeductTimeDto dto = new FlexShortDeductTimeDto();
 		if(domain != null) {
-			dto.setAbsenceDeductTime(domain.getAbsenceDeductTime() == null ? null : domain.getAbsenceDeductTime().valueAsMinutes());
-			dto.setAnnualLeaveDeductDays(domain.getAnnualLeaveDeductDays() == null ? null : domain.getAnnualLeaveDeductDays().v());
-			dto.setFlexShortTimeBeforeDeduct(domain.getFlexShortTimeBeforeDeduct() == null ? null : domain.getFlexShortTimeBeforeDeduct().valueAsMinutes());
+			dto.setAbsenceDeductTime(domain.getAbsenceDeductTime() == null ? 0 : domain.getAbsenceDeductTime().valueAsMinutes());
+			dto.setAnnualLeaveDeductDays(domain.getAnnualLeaveDeductDays() == null ? 0 : domain.getAnnualLeaveDeductDays().v());
+			dto.setFlexShortTimeBeforeDeduct(domain.getFlexShortTimeBeforeDeduct() == null ? 0 : domain.getFlexShortTimeBeforeDeduct().valueAsMinutes());
 		}
 		return dto;
 	}
