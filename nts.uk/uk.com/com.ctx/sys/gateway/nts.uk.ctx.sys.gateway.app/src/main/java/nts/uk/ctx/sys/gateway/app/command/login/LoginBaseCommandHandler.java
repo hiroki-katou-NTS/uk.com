@@ -281,7 +281,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @param user
 	 *            the user
 	 */
-	protected boolean checkAfterLogin(UserImportNew user) {
+	protected boolean checkAfterLogin(UserImportNew user, String oldPassword) {
 
 		if (user.getPassStatus() == PassStatus.Official.value) {
 			// Get PasswordPolicy
@@ -290,11 +290,13 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 			if (passwordPolicyOpt.isPresent()) {
 				// Event Check
-				return this.checkEvent(passwordPolicyOpt.get(), user);
+				return this.checkEvent(passwordPolicyOpt.get(), user, oldPassword);
 			}
+			
+			return true;
 		}
 
-		return false;
+		return true;
 
 	}
 
@@ -306,7 +308,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @param user
 	 *            the user
 	 */
-	protected boolean checkEvent(PasswordPolicy passwordPolicy, UserImportNew user) {
+	protected boolean checkEvent(PasswordPolicy passwordPolicy, UserImportNew user, String oldPassword) {
 		// Check passwordPolicy isUse
 		if (passwordPolicy.isUse()) {
 			// Check Change Password at first login
@@ -315,7 +317,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				if (user.getPassStatus() != PassStatus.InitPassword.value) {
 					// Math PassPolicy
 					CheckBeforeChangePass mess = this.userAdapter.passwordPolicyCheck(user.getUserId(),
-							user.getPassword(), user.getContractCode());
+							oldPassword, user.getContractCode());
 					
 					if (mess.isError()) return false;
 					

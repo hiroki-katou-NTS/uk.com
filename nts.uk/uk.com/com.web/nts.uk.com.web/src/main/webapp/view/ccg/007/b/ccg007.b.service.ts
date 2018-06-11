@@ -18,7 +18,7 @@ module nts.uk.pr.view.ccg007.b {
         /**
           * Function is used to copy new Top Page.
           */
-        export function submitLogin(data: SubmitData): JQueryPromise<MessErrorDto> {
+        export function submitLogin(data: SubmitData): JQueryPromise<CheckChangePassDto> {
             return nts.uk.request.ajax(servicePath.submitLogin + location.search, data);
         }
 

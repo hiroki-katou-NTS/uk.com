@@ -2,6 +2,7 @@ module nts.uk.pr.view.ccg007.e {
     export module viewmodel {
         import blockUI = nts.uk.ui.block;
         import CallerParameter = service.CallerParameter;
+        import ChangePasswordCommand = service.ChangePasswordCommand;
 
         export class ScreenModel {
             
@@ -53,38 +54,30 @@ module nts.uk.pr.view.ccg007.e {
                 
                 blockUI.invisible();
                 
-//                service.submitSendMail(self.callerParameter).done(function () {
-                    
-//                }).fail(function(res) {
-//                    //Return Dialog Error
-//                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-//                    blockUI.clear();
-//                });
+                //add command
+                let command: ChangePasswordCommand = new ChangePasswordCommand(self.passwordCurrent(), self.passwordNew(), self.passwordNewConfirm());
+                
+                //submitChangePass
+                service.submitChangePass(command).done(function () {
+                    self.closeDialog();
+                    nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
+                    blockUI.clear();
+                }).fail(function(res) {
+                    //Return Dialog Error
+                    nts.uk.ui.dialog.alertError(res.message);
+                    blockUI.clear();
+                });
                 
             }
             
             //open dialog I 
             OpenDialogI() {
                 let self = this;
-                
-                //set LoginId to dialog
-                nts.uk.ui.windows.setShared('parentCodes', {
-//                    loginId: self.loginId(),
-//                    contractCode : self.contractCode()
-                }, true);
 
                 nts.uk.ui.windows.sub.modal('/view/ccg/007/i/index.xhtml',{
                     width : 520,
                     height : 300
-                }).onClosed(function(): any {
-                    //view all code of selected item 
-                    var childData = nts.uk.ui.windows.getShared('childData');
-                    if (childData) {
-//                        self.timeHistory(childData.timeHistory);
-//                        self.startTime(childData.start);
-//                        self.endTime(childData.end);
-                    }
-                })
+                }).onClosed(function(): any {})
             }
             
             /**

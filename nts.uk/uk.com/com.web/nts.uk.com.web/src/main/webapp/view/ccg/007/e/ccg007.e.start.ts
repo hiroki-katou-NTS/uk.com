@@ -4,7 +4,7 @@ module nts.uk.pr.view.ccg007.e {
         var screenModel = new e.viewmodel.ScreenModel(parentCodes);
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
-//            $('#employee-code-inp').focus();
+            $('#pass-current').focus();
         });
     });
 }

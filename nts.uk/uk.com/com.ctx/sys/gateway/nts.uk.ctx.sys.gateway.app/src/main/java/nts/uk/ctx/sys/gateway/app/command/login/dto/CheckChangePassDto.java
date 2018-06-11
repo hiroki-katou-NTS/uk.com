@@ -24,6 +24,7 @@ public class CheckChangePassDto {
 	 * @param showChangePass the show change pass
 	 */
 	public CheckChangePassDto(boolean showChangePass, String msgErrorId) {
+		super();
 		this.showChangePass = showChangePass;
 		this.msgErrorId = msgErrorId;
 	}

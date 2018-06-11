@@ -27,6 +27,7 @@ import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormThreeCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormThreeCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormTwoCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormTwoCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckContractDto;
 import nts.uk.ctx.sys.gateway.app.find.login.CompanyInformationFinder;
 import nts.uk.ctx.sys.gateway.app.find.login.EmployeeLoginSettingFinder;
@@ -127,13 +128,12 @@ public class LoginWs extends WebService {
 	 */
 	@POST
 	@Path("submit/form1")
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public JavaTypeResult<String> submitLoginForm1(@Context HttpServletRequest request,SubmitLoginFormOneCommand command) {
+	public CheckChangePassDto submitLoginForm1(@Context HttpServletRequest request,SubmitLoginFormOneCommand command) {
 		if (request.getParameter("signon") != null){
 			command.setSignOn(request.getParameter("signon").toLowerCase().equals(SIGN_ON));
 		}
 		command.setRequest(request);
-		return new JavaTypeResult(this.submitForm1.handle(command));
+		return this.submitForm1.handle(command);
 	}
 
 	/**

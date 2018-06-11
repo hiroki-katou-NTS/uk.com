@@ -11,8 +11,8 @@
 					nts.uk.ctx.sys.auth.dom.password.changelog.RawPassword
    				</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="ccg007.e.vm.js" />
 			<com:scriptfile path="ccg007.e.service.js" />
+			<com:scriptfile path="ccg007.e.vm.js" />
 			<com:scriptfile path="ccg007.e.start.js" />
 		</ui:define>
 
@@ -35,7 +35,7 @@
 								<label data-bind="text: '#{i18n.getText('CCG007_15')}'"><br /></label></div>
 						</td>
 						<td style="padding-bottom: 15px;"><div>
-								<input tabindex="2" id="password-input"
+								<input tabindex="1" id="pass-current"
 									data-bind="ntsTextEditor: {
 										name: '#{i18n.getText('CCG007_2')}',
 										value: passwordCurrent,
@@ -43,7 +43,7 @@
 										option: {textmode: 'password',width: '180px'},
 										enable: true,
 										readonly: false
-										}, valueUpdate: 'afterkeydown'" />
+										}" />
 							</div>
 						</td>
 					</tr>
@@ -53,7 +53,7 @@
 								<label data-bind="text: '#{i18n.getText('CCG007_16')}'"><br /></label></div>
 						</td>
 						<td style="padding-bottom: 15px;"><div>
-								<input tabindex="2" id="password-input"
+								<input tabindex="2"
 									data-bind="ntsTextEditor: {
 										name: '#{i18n.getText('CCG007_2')}',
 										value: passwordNew,
@@ -61,7 +61,7 @@
 										option: {textmode: 'password',width: '180px'},
 										enable: true,
 										readonly: false
-										}, valueUpdate: 'afterkeydown'" />
+										}" />
 							</div>
 						</td>
 					</tr>
@@ -71,7 +71,7 @@
 								<label data-bind="text: '#{i18n.getText('CCG007_17')}'"><br /></label></div>
 						</td>
 						<td style="padding-bottom: 15px;"><div>
-								<input tabindex="2" id="password-input"
+								<input tabindex="3"
 									data-bind="ntsTextEditor: {
 										name: '#{i18n.getText('CCG007_2')}',
 										value: passwordNewConfirm,
@@ -79,7 +79,7 @@
 										option: {textmode: 'password',width: '180px'},
 										enable: true,
 										readonly: false
-										}, valueUpdate: 'afterkeydown'" />
+										}" />
 							</div>
 						</td>
 					</tr>

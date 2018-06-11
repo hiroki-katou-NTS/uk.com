@@ -14,9 +14,6 @@ import lombok.Setter;
 @Setter
 public class ChangePasswordCommand {
 
-	/** The is password update. */
-	private Boolean isPasswordUpdate;
-
 	/** The old password. */
 	private String oldPassword;
 

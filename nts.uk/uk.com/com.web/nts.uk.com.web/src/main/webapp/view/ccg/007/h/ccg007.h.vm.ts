@@ -53,13 +53,15 @@ module nts.uk.pr.view.ccg007.h {
                 
                 blockUI.invisible();
                 
-//                service.submitSendMail(self.callerParameter).done(function () {
-                    
-//                }).fail(function(res) {
-//                    //Return Dialog Error
-//                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-//                    blockUI.clear();
-//                });
+                service.submitForgotPass(self.callerParameter.url).done(function () {
+                    self.closeDialog();
+                    nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
+                    blockUI.clear();
+                }).fail(function(res) {
+                    //Return Dialog Error
+                    nts.uk.ui.dialog.alertError(res.message);
+                    blockUI.clear();
+                });
                 
             }
             

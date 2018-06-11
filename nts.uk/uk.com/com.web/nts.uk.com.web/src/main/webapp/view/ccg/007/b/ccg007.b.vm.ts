@@ -115,7 +115,10 @@ module nts.uk.pr.view.ccg007.b {
                     }
                 });
             }
-
+            
+            /**
+             * SubmitLogin
+             */
             private submitLogin(isSignOn : boolean) {
                 var self = this;
                 var submitData = <SubmitData>{};
@@ -129,9 +132,13 @@ module nts.uk.pr.view.ccg007.b {
                 blockUI.invisible();
                 service.submitLogin(submitData).done(function(messError: CheckChangePassDto) {
                     //check MsgError
-                    if (!nts.uk.util.isNullOrEmpty(messError.msgErrorId)) {
-                        nts.uk.ui.dialog.alertError({ messageId: messError.msgErrorId });
-                        self.password("");
+                    if (!nts.uk.util.isNullOrEmpty(messError.msgErrorId) || messError.showChangePass) {
+                        if (messError.showChangePass){
+                            self.OpenDialogE();
+                        } else {
+                            nts.uk.ui.dialog.alertError({ messageId: messError.msgErrorId });
+                            self.password("");
+                        }
                     } else {
                         nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/b/index.xhtml");
                         //Remove LoginInfo
@@ -153,6 +160,30 @@ module nts.uk.pr.view.ccg007.b {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
                     blockUI.clear();
                 });
+            }
+            
+            //open dialog E 
+            private OpenDialogE() {
+                let self = this;
+                
+                //set LoginId to dialog
+                nts.uk.ui.windows.setShared('parentCodes', {
+                    loginId: self.loginId(),
+                    contractCode : self.contractCode()
+                }, true);
+
+                nts.uk.ui.windows.sub.modal('/view/ccg/007/e/index.xhtml',{
+                    width : 520,
+                    height : 450
+                }).onClosed(function(): any {
+                    //view all code of selected item 
+//                    var childData = nts.uk.ui.windows.getShared('childData');
+//                    if (childData) {
+//                        self.timeHistory(childData.timeHistory);
+//                        self.startTime(childData.start);
+//                        self.endTime(childData.end);
+//                    }
+                })
             }
             
             //open dialog F 
@@ -178,6 +209,8 @@ module nts.uk.pr.view.ccg007.b {
                     }
                 })
             }
+            
+            
         }
     }
 }
