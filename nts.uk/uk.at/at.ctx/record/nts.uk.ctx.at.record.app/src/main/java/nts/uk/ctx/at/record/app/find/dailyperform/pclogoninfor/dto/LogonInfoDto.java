@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.find.dailyperform.pclogoninfor.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -11,15 +12,15 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 /** 時間帯 */
 @AllArgsConstructor
 @NoArgsConstructor
-public class LogonInfoDto {
+public class LogonInfoDto implements ItemConst {
 
-	private Integer logNo;
+	private Integer no;
 
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "ログオン")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = LOGON)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer logOn;
 
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "ログオフ")
+	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = LOGOFF)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer logOff;
 }
