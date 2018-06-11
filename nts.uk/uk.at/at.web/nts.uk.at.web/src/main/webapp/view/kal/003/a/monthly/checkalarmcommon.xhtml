@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	
+ 	<com:ValidatorScript> 
+         nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.NameWKRecord 
+         nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.NameAlarmExtractionCondition
+    </com:ValidatorScript> 
+	
+	<div>
+		<div style="padding-bottom: 30px;">
+			<button style="margin-right: 20px;" data-bind="click: createNewCheckCondition_click,enable: true">#{i18n.getText('KAL003_21')}</button>
+			<button data-bind="click: deleteCheckCondition_click, enable: true">#{i18n.getText('KAL003_22')}</button>
+		</div>
+		
+		<table id="fixed-table2">
+		       <colgroup>
+			        <col width="36px"/>
+			        <col width="36px"/>
+			        <col width="230px"/>
+			        <col width="90px"/>
+			        <col width="230px"/>
+			    </colgroup>
+			    <thead>
+			        <tr>
+			            <th class="ui-widget-header" style ="text-align: center; background-color: #CFF1A5;"><div data-bind="ntsCheckBox: { checked: isAllCheckCondition  }"></div></th>
+					<th class="ui-widget-header" style ="text-align: center; background-color: #CFF1A5;">#{i18n.getText('KAL003_24')}</th>
+					<th class="ui-widget-header" style ="background-color: #CFF1A5;">#{i18n.getText('KAL003_12')}</th>
+					<th class="ui-widget-header" style ="text-align: center; background-color: #CFF1A5;">#{i18n.getText('KAL003_23')}</th>
+					<th class="ui-widget-header" style ="background-color: #CFF1A5;">#{i18n.getText('KAL003_25')}</th>
+			        </tr>
+		        </thead>
+		       <tbody data-bind="foreach: listExtraResultMonthly">
+		           <tr data-bind="attr: { 'data-id': rowId }">
+		               <td style ="text-align: center;">
+		                   <div data-bind="ntsCheckBox: {checked: useAtr}"></div>
+		               </td>
+		               <td style ="text-align: center;">
+	                       <span data-bind="text: rowId"></span>
+	                   </td>
+	                   <td>
+	                       <input data-bind="ntsTextEditor: {value: nameAlarmExtraCon , required: true, constraint: 'NameAlarmExtractionCondition', name: '#[KAL003_12]', 
+		                       option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+				                textmode: 'text',
+				                placeholder: '',
+				                width: '203px',
+				                textalign: 'left'
+				            }))}" />
+	                   </td>
+	                   <td style ="text-align: center;">
+	                       <button data-bind="click: $parent.btnSettingCheckCondition_click.bind($parent, rowId),enable: true">#{i18n.getText('KAL003_14')}</button>
+	                   </td>
+	                   <td>
+							<div data-bind = "text: displayMessage" class="limited-label description"></div>
+	                   </td>
+		           </tr>
+		       </tbody>
+		   </table>
+		<!-- <table id="fixed-table2">
+			<colgroup>
+		        <col width="50px"/>
+		        <col width="50px"/>
+		        <col width="190px"/>
+		        <col width="80px"/>
+		        <col width="200px"/>
+		    </colgroup>
+			<thead>
+				<tr>
+					I2_2 3 4 5 6 7 8 9
+					<th class="ui-widget-header" style ="text-align: center; background-color: #CFF1A5;"><div data-bind="ntsCheckBox: { checked: false  }"></div></th>
+					<th class="ui-widget-header" style ="text-align: center; background-color: #CFF1A5;">#{i18n.getText('KAL003_24')}</th>
+					<th class="ui-widget-header" style ="background-color: #CFF1A5;">#{i18n.getText('KAL003_12')}</th>
+					<th class="ui-widget-header" style ="text-align: center; background-color: #CFF1A5;">#{i18n.getText('KAL003_23')}</th>
+					<th class="ui-widget-header" style ="background-color: #CFF1A5;">#{i18n.getText('KAL003_25')}</th>
+					
+				</tr>
+			</thead>
+			<tbody>
+				<com:ko-foreach bind="dataItems">
+					<tr>
+						<td style="text-align: center; border: 1px solid #dddddd;"><div data-bind="ntsCheckBox: { checked: false }"></div></td>
+						<td style="text-align: center; border: 1px solid #dddddd;"> <span data-bind="text: rowId"></span> </td>
+						<td style="border: 1px solid #dddddd;"> <span data-bind="text: name"></span> </td>
+						<td style="text-align: center; border: 1px solid #dddddd;"> 
+							<button data-bind="click: $parent.btnSetting_click.bind($parent, rowId),enable: true">#{i18n.getText('KAL003_14')}</button> 
+						</td>
+						<td style="border: 1px solid #dddddd;"> <span data-bind="text: message"></span> </td>
+					</tr>
+				</com:ko-foreach>
+			</tbody>
+		</table> -->
+	</div>
+</ui:composition>

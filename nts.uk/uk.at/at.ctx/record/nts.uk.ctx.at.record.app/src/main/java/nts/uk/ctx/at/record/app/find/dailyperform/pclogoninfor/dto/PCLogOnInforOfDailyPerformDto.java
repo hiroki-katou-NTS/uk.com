@@ -8,20 +8,21 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnNo;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
-@AttendanceItemRoot(rootName = "日別実績のPCログオン情報")
 @Data
+@AttendanceItemRoot(rootName = ItemConst.DAILY_PC_LOG_INFO_NAME)
 public class PCLogOnInforOfDailyPerformDto extends AttendanceItemCommon {
 
 	private String employeeId;
 
 	private GeneralDate ymd;
 
-	 @AttendanceItemLayout(layout = "A", jpPropertyName = "ログオン情報", listMaxLength = 2, indexField = "logNo")
+	 @AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = INFO, listMaxLength = 2, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<LogonInfoDto> logonTime;
 
 	@Override
@@ -62,7 +63,7 @@ public class PCLogOnInforOfDailyPerformDto extends AttendanceItemCommon {
 			date = this.workingDate();
 		}
 		return new PCLogOnInfoOfDaily(employeeId, date, ConvertHelper.mapTo(logonTime, 
-							c -> new LogOnInfo(new PCLogOnNo(c.getLogNo()),
+							c -> new LogOnInfo(new PCLogOnNo(c.getNo()),
 								toWorkStamp(c.getLogOff()), toWorkStamp(c.getLogOn()))));
 	}
 

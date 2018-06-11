@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -12,35 +13,35 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ShortWorkTimeDto {
+public class ShortWorkTimeDto implements ItemConst {
 
 	/** 合計控除時間 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "合計控除時間", needCheckIDWithMethod = "childCareAttr")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = DEDUCTION, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	private TotalDeductionTimeDto totalDeductionTime;
 
 	/** 合計時間 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "合計時間", needCheckIDWithMethod = "childCareAttr")
+	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = TOTAL, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	private TotalDeductionTimeDto totalTime;
 
 	/** 勤務回数 */
-	@AttendanceItemLayout(layout = "C", jpPropertyName = "回数", needCheckIDWithMethod = "childCareAttr")
+	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = COUNT, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer times;
 
 	/** 育児介護区分 */
-	@AttendanceItemLayout(layout = "D", jpPropertyName = "育児介護区分")
+	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = CHILD_CARE_ATTR)
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	private int childCareAttr;
+	private int attr;
 	
-	public String childCareAttr(){
-		switch (this.childCareAttr) {
+	public String enumText(){
+		switch (this.attr) {
 		case 0:
-			return "育児";
+			return E_CHILD_CARE;
 
 		case 1:
-			return "介護";
+			return E_CARE;
 		default:
-			return "";
+			return EMPTY_STRING;
 		}
 	}
 	

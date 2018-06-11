@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 
 /**
  * 年休上限残時間

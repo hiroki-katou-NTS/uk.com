@@ -12,35 +12,41 @@ import nts.uk.ctx.at.record.app.command.monthly.anyitem.AnyItemOfMonthlyCommandH
 import nts.uk.ctx.at.record.app.command.monthly.attendancetime.AttendanceTimeOfMonthlyCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.reserveleave.RsvLeaRemNumEachMonthCommandHandler;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 
 @Stateless
-public class MonthlyRecordWorkCommandHandler {
+public class MonthlyRecordWorkCommandHandler implements ItemConst {
 
 	/** 月別実績の所属情報： 月別実績の所属情報 */
 	@Inject
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "月別実績の所属情報", index = 1)
+	@AttendanceItemLayout(layout = MONTHLY_AFFILIATION_INFO_CODE, 
+		jpPropertyName = MONTHLY_AFFILIATION_INFO_NAME, index = 1)
 	private AffiliationInfoOfMonthlyCommandHandler affiliationHandler;
 
 	/** 月別実績の勤怠時間： 月別実績の勤怠時間 */
 	@Inject
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "月別実績の勤怠時間", index = 2)
+	@AttendanceItemLayout(layout = MONTHLY_ATTENDANCE_TIME_CODE, 
+		jpPropertyName = MONTHLY_ATTENDANCE_TIME_NAME, index = 2)
 	private AttendanceTimeOfMonthlyCommandHandler attendanceTimeHandler;
 	
 	/** 月別実績の任意項目 */
 	@Inject
-	@AttendanceItemLayout(layout = "C", jpPropertyName = "月別実績の任意項目", index = 3)
+	@AttendanceItemLayout(layout = MONTHLY_OPTIONAL_ITEM_CODE, 
+		jpPropertyName = MONTHLY_OPTIONAL_ITEM_NAME, index = 3)
 	private AnyItemOfMonthlyCommandHandler anyItem;
 
 	/** 年休月別残数データ */
 	@Inject
-	@AttendanceItemLayout(layout = "D", jpPropertyName = "年休月別残数データ", index = 4)
+	@AttendanceItemLayout(layout = MONTHLY_ANNUAL_LEAVING_REMAIN_CODE, 
+		jpPropertyName = MONTHLY_ANNUAL_LEAVING_REMAIN_NAME, index = 4)
 	private AnnLeaRemNumEachMonthCommandHandler annualLeave;
 
 	/** 積立年休月別残数データ */
 	@Inject
-	@AttendanceItemLayout(layout = "E", jpPropertyName = "積立年休月別残数データ", index = 5)
+	@AttendanceItemLayout(layout = MONTHLY_RESERVE_LEAVING_REMAIN_CODE, 
+		jpPropertyName = MONTHLY_RESERVE_LEAVING_REMAIN_NAME, index = 5)
 	private RsvLeaRemNumEachMonthCommandHandler reserveLeave;
 
 	public void handleAdd(MonthlyRecordWorkCommand command) {
@@ -66,19 +72,19 @@ public class MonthlyRecordWorkCommandHandler {
 	private CommandFacade<?> getHandler(String group, boolean isUpdate) {
 		CommandFacade<?> handler = null;
 		switch (group) {
-		case "A":
+		case MONTHLY_AFFILIATION_INFO_CODE:
 			handler = this.affiliationHandler;
 			break;
-		case "B":
+		case MONTHLY_ATTENDANCE_TIME_CODE:
 			handler = this.attendanceTimeHandler;
 			break;
-		case "C":
+		case MONTHLY_OPTIONAL_ITEM_CODE:
 			handler = this.anyItem;
 			break;
-		case "D":
+		case MONTHLY_ANNUAL_LEAVING_REMAIN_CODE:
 			handler = this.annualLeave;
 			break;
-		case "E":
+		case MONTHLY_RESERVE_LEAVING_REMAIN_CODE:
 			handler = this.reserveLeave;
 			break;
 		default:
