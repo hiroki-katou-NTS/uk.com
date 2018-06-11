@@ -138,7 +138,7 @@
 										<div>
 											<!-- B6_2 -->
 											<input id="code" tabindex="7"
-												data-bind="event: { 'keyup': checkCode }, ntsTextEditor: {name: '#[KWR002_41]', value:code, required: true, constraint: 'AExportSettingCode',enable:$parent.newMode, option : { width : '15px'}}" />
+												data-bind="ntsTextEditor: {name: '#[KWR002_41]', value:code, required: true, constraint: 'AExportSettingCode',enable:$parent.newMode, option : { width : '18px'}}" />
 											<!-- b6-3 -->
 											<input id="name" tabindex="8"
 												data-bind="ntsTextEditor: {name: '#[KWR002_42]', value:name, required: true, constraint: 'ExportSettingName', option : { width : '130px'}}" />
@@ -175,7 +175,7 @@
 									<td colspan="2" class="th-col2">
 										<div>
 											<button style="min-width: 65px;" tabindex="10"
-												data-bind="click:openScreenC, enable: enableSetting()">#{i18n.getText('KWR002_48')}</button>
+												data-bind="click:openScreenC">#{i18n.getText('KWR002_48')}</button>
 										</div>
 									</td>
 								</tr>

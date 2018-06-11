@@ -11,6 +11,8 @@ module nts.uk.com.view.kwr002.b {
     import info = nts.uk.ui.dialog.info;
     import util = nts.uk.util;
 
+    let newModeFlag = false;
+
     export class ScreenModel {
 
         aRES: KnockoutObservableArray<AttendanceRecordExportSetting>;
@@ -65,22 +67,30 @@ module nts.uk.com.view.kwr002.b {
 
             self.currentARESCode.subscribe((value) => {
                 errors.clearAll();
+                self.resetShare();
                 if (value) {
                     service.getARESByCode(value).done((aRESData) => {
                         self.currentARES(new AttendanceRecordExportSetting(aRESData));
                         self.newMode(false);
-                        setShared('attendanceRecExpDaily', null, true);
-                        setShared('attendanceRecExpMonthly', null, true);
-                        setShared('attendanceRecItemList', null, true);
-                        setShared('sealStamp', null, true);
-                        setShared('useSeal', null, true);
+                        newModeFlag = false;
                     }).fail((error) => {
                         alert(error.message);
                     })
-
+                } else {
+                    self.newMode(true);
+                    newModeFlag = true;
                 }
             });
         }
+
+        resetShare() {
+            setShared('attendanceRecExpDaily', null, true);
+            setShared('attendanceRecExpMonthly', null, true);
+            setShared('attendanceRecItemList', null, true);
+            setShared('sealStamp', null, true);
+            setShared('useSeal', null, true);
+        };
+
 
         //Close Dialog
         onClose() {
@@ -90,9 +100,8 @@ module nts.uk.com.view.kwr002.b {
         onDelete() {
             let self = this;
             errors.clearAll();
-            if (self.newMode()) return;
 
-            confirm({ messageId: 'Msg_18' }).ifYes(() => {
+            confirm({messageId: 'Msg_18'}).ifYes(() => {
                 let currentData = self.currentARES();
                 let delARESCmd = {
                     code: Number(currentData.code()),
@@ -106,7 +115,9 @@ module nts.uk.com.view.kwr002.b {
                     delARECmd: delARESCmd,
                     delARICmd: delARESCmd
                 };
-                self.indexOfDelete(_.findIndex(self.aRES(), (e) => { return e.code == self.currentARESCode() }));
+                self.indexOfDelete(_.findIndex(self.aRES(), (e) => {
+                    return e.code == self.currentARESCode()
+                }));
                 service.delARES(cmd).done(() => {
                     let newVal = _.reject(self.aRES(), ['code', currentData.code()]);
                     self.aRES(newVal);
@@ -148,28 +159,28 @@ module nts.uk.com.view.kwr002.b {
             });
         }
 
-
         /** new mode */
         onNew() {
             let self = this;
             errors.clearAll();
 
-            if (!self.newMode()) {
-                let params = {
-                    code: "",
-                    name: "",
-                    sealUseAtr: false,
-                    nameUseAtr: 1
-                };
-                self.currentARES(new AttendanceRecordExportSetting(params));
-                self.currentARESCode("");
+            let params = {
+                code: "",
+                name: "",
+                sealUseAtr: false,
+                nameUseAtr: 1
+            };
+            self.currentARES(new AttendanceRecordExportSetting(params));
+            self.currentARESCode("");
 
-                self.newMode(true);
-            }
             $("#code").focus();
         }
 
         onRegister() {
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+            
             block.invisible();
             let self = this;
             let currentData = self.currentARES();
@@ -185,17 +196,12 @@ module nts.uk.com.view.kwr002.b {
                 useSeal: getShared('useSeal'),
 
                 isInvalid: function () {
-                    return ((!_.isArray(this.attendanceRecExpDaily) || !_.isArray(this.attendanceRecExpMonthly))
-                        || (this.countValid(this.attendanceRecExpDaily) < 1 && this.countValid(this.attendanceRecExpMonthly) < 1));
-
+                    return ((!_.isArray(this.attendanceRecExpDaily) && !_.isArray(this.attendanceRecExpMonthly))
+                        || (!this.isListValid(this.attendanceRecExpDaily) && !this.isListValid(this.attendanceRecExpMonthly)));
                 },
 
-                countValid: function (list) {
-                    let countResult = 0;
-                    _.forEach(list, (item) => {
-                        if (!(_.isEmpty(item.upperPosition) && _.isEmpty(item.lowwerPosition))) countResult++;
-                    });
-                    return countResult;
+                isListValid: function (list) {
+                    return _.find(list,(item)=>!(_.isEmpty(item.upperPosition) && _.isEmpty(item.lowwerPosition)));
                 }
             };
 
@@ -210,7 +216,7 @@ module nts.uk.com.view.kwr002.b {
                             self.callGetAll(self, currentData);
                         });
                     } else {
-                        alertError({ messageId: 'Msg_1130' });
+                        alertError({messageId: 'Msg_1130'});
                         block.clear();
                     }
 
@@ -224,11 +230,11 @@ module nts.uk.com.view.kwr002.b {
             } else { // in new mode
                 service.getARESByCode(currentData.code()).done((rs) => {
                     if (!_.isNull(rs.code)) {
-                        alertError({ messageId: 'Msg_3' });
+                        alertError({messageId: 'Msg_3'});
                         block.clear();
                     } else {
                         if (rcdExport.isInvalid()) {
-                            alertError({ messageId: 'Msg_1130' });
+                            alertError({messageId: 'Msg_1130'});
                             block.clear();
                         } else {
                             let data = self.createTransferData(currentData, rcdExport);
@@ -245,8 +251,8 @@ module nts.uk.com.view.kwr002.b {
         callGetAll(self, currentData) {
             service.getAllARES().done((data) => {
                 if (data.length > 0) {
-                    _.map(data,(item)=>{
-                        item.code=_.padStart(item.code, 2, '0');
+                    _.map(data, (item) => {
+                        item.code = _.padStart(item.code, 2, '0');
                     });
                     data = _.orderBy(data, [e => e.code], ['asc']);
                     self.aRES(data);
@@ -315,9 +321,8 @@ module nts.uk.com.view.kwr002.b {
 
             service.getAllARES().done((data) => {
                 if (data.length > 0) {
-
-                    _.map(data,(item)=>{
-                        item.code=_.padStart(item.code, 2, '0');
+                    _.map(data, (item) => {
+                        item.code = _.padStart(item.code, 2, '0');
                         // new AttendanceRecordExportSetting(item);
                     });
                     data = _.orderBy(data, [item => item.code], ['asc']);
@@ -328,7 +333,7 @@ module nts.uk.com.view.kwr002.b {
                     self.onNew();
                 }
                 dfd.resolve();
-            }).fail(function(error) {
+            }).fail(function (error) {
                 dfd.reject();
                 alert(error.message);
             }).always(() => {
@@ -406,7 +411,7 @@ module nts.uk.com.view.kwr002.b {
         name: KnockoutObservable<string>;
         sealUseAtr: KnockoutObservable<boolean>;
         nameUseAtr: KnockoutObservable<number>;
-        enableSetting: KnockoutComputed<boolean>;
+        // enableSetting: KnockoutComputed<boolean>;
 
         constructor(param: IARES) {
             let self = this;
@@ -414,58 +419,53 @@ module nts.uk.com.view.kwr002.b {
             self.name = ko.observable(param.name);
             self.sealUseAtr = ko.observable(param.sealUseAtr);
             self.nameUseAtr = ko.observable(param.nameUseAtr);
-            self.enableSetting = ko.pureComputed(() => {
-                if (!nts.uk.ui.errors.hasError()) {
-                    if (_.isEmpty(self.code())) {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                }
-                if ($('#code').ntsError('hasError')) {
-                    return false;
-                } else {
-                    return true;
-                }
+            // self.enableSetting = ko.pureComputed(() => {
+            //     if (!nts.uk.ui.errors.hasError()) {
+            //         if (_.isEmpty(self.code())) {
+            //             return false;
+            //         } else {
+            //             return true;
+            //         }
+            //     }
+            //     if ($('#code').ntsError('hasError')) {
+            //         return false;
+            //     } else {
+            //         return true;
+            //     }
+            //
+            // });
+        };
 
-            });
+
+        public openDialogC() {
+            let self = this;
+            let settingCode = self.code();
+            setShared('attendanceRecExpSetCode', settingCode, true);
+            setShared('attendanceRecExpSetName', self.name(), true);
+            setShared('useSeal', self.sealUseAtr(), true);
+
+            modal('../c/index.xhtml', {});
         }
 
         public openScreenC() {
             let self = this;
+
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
             block.grayout();
-
-            let settingCode = self.code();
-
-            service.getARESByCode(settingCode).done((data) => {
-                if (_.isEmpty(data.code)) {
-                    setShared('attendanceRecExpSetCode', settingCode, true);
-                    setShared('attendanceRecExpSetName', self.name(), true);
-                    setShared('useSeal', self.sealUseAtr(), true);
-
-                    let itemList = getShared('attendanceRecItemList');
-
-                    if (_.isArray(itemList) && !_.isEmpty(itemList) && _.first(itemList).layoutCode == Number(settingCode)) {
-                        setShared('attendanceRecExpDaily', getShared('attendanceRecExpDaily'), true);
-                        setShared('attendanceRecExpMonthly', getShared('attendanceRecExpMonthly'), true);
-                        setShared('attendanceRecItemList', getShared('attendanceRecItemList'), true);
-                        setShared('sealStamp', getShared('sealStamp'), true);
+            if (!newModeFlag) {
+                this.openDialogC();
+            } else {
+                service.getARESByCode(this.code()).done((data) => {
+                    if (_.isEmpty(data.code)) {
+                        this.openDialogC()
                     } else {
-                        setShared('attendanceRecExpDaily', null, true);
-                        setShared('attendanceRecExpMonthly', null, true);
-                        setShared('attendanceRecItemList', null, true);
-                        setShared('sealStamp', null, true);
+                        alertError({messageId: 'Msg_3'});
+                        block.clear();
                     }
-                    modal('../c/index.xhtml', {});
-                } else {
-                    alertError({ messageId: 'Msg_3' });
-                    block.clear();
-                }
-            });
-        }
-
-        public checkCode(key) {
-            // console.log(key.code());
+                });
+            }
         }
     }
 

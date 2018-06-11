@@ -244,17 +244,17 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             self.sealStamp().push(self.sealName4());
             self.sealStamp().push(self.sealName5());
             self.sealStamp().push(self.sealName6());
-            setShared('sealStamp', self.sealStamp(), true);
+            setShared('sealStamp', _.reject(self.sealStamp(), (it)=>_.isEmpty(it)), true);
             setShared('useSeal', self.useSealValue());
             nts.uk.ui.windows.close();
         }
 
         cancel(): void {
-            setShared('attendanceRecExpDaily', null, true);
-            setShared('attendanceRecExpMonthly', null, true);
-            setShared('attendanceRecItemList', null, true);
-            setShared('sealStamp', null, true);
-            setShared('useSeal', null, true);
+            // setShared('attendanceRecExpDaily', null, true);
+            // setShared('attendanceRecExpMonthly', null, true);
+            // setShared('attendanceRecItemList', null, true);
+            // setShared('sealStamp', null, true);
+            // setShared('useSeal', null, true);
             nts.uk.ui.windows.close();
         }
 
