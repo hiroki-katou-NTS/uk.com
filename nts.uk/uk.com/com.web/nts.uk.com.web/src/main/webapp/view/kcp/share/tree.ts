@@ -287,8 +287,13 @@ module kcp.share.tree {
                 self.loadTreeGrid().done(function() {
                     // Special command -> remove unuse.
                     $input.find('#multiple-tree-grid_tooltips_ruler').remove();
-
+                    
                     dfd.resolve();
+                    if (self.isMultiSelect) {
+                        $('#multiple-tree-grid').igTreeGrid('dataBind');
+                    } else {
+                        $('#single-tree-grid').igTreeGrid('dataBind');
+                    }
                 })
 
                 $(document).delegate('#' + self.getComIdSearchBox(), "igtreegridrowsrendered", function(evt: any) {
@@ -321,15 +326,15 @@ module kcp.share.tree {
         private addColToGrid(data: TreeComponentOption, dataList: Array<UnitModel>) {
             let self = this;
             // Convert tree to array.
-            let maxSizeNameCol = Math.max(self.getMaxSizeOfTextList(self.convertTreeToArray(dataList)), 250);
+            //let maxSizeNameCol = Math.max(self.getMaxSizeOfTextList(self.convertTreeToArray(dataList)), 250);
             
             // calculate height tree
-            self.calHeightTree(maxSizeNameCol, data);
+            self.calHeightTree(300, data);
             
             self.treeComponentColumn = [
                 { headerText: "", key: 'workplaceId', dataType: "string", hidden: true },
                 {
-                    headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: maxSizeNameCol, dataType: "string",
+                    headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: 250, dataType: "string",
                     template: "<td class='tree-component-node-text-col'>${nodeText}</td>"
                 }
             ];

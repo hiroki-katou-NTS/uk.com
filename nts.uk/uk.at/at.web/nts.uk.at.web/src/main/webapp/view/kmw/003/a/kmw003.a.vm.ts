@@ -144,7 +144,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             });
             
              self.showProfileIcon.subscribe((val) => {
-                 $("#dpGrid").ntsGrid("destroy");
+                 
+                if($("#dpGrid").data('igGrid')) {
+                    $("#dpGrid").ntsGrid("destroy");
+                }
                  self.reloadGrid();
             });
         }
@@ -152,6 +155,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
 
+            localStorage.removeItem(window.location.href + '/dpGrid');
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             self.initScreen().done(() => {
@@ -161,7 +165,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 dfd.resolve();
             }).fail(function(error) {
 //                nts.uk.ui.dialog.alert(error.message);
-                nts.uk.ui.dialog.alert(error.message).then(function() {
+                nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
                     nts.uk.request.jumpToTopPage();
                 });
                 nts.uk.ui.block.clear();
@@ -175,6 +179,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         initScreen(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
+            nts.uk.ui.block.invisible();
+                nts.uk.ui.block.grayout();
             service.startScreen(self.monthlyParam()).done((data) => {
                 self.dataAll(data);
                 self.itemValueAll(data.itemValues);
@@ -188,10 +194,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.closureId(data.closureId);
                 self.reloadParam().closureId = data.closureId;
                 self.reloadParam().lstAtdItemUnique = data.param.lstAtdItemUnique;
-                //Closure name
-                self.closureName(data.closureName);
                 //date process
                 self.yearMonth(data.processDate);
+                //Closure name
+                self.closureName(data.closureName);
                 // closureDateDto
                 self.closureDateDto(data.closureDate);
                 //actual times
@@ -215,15 +221,23 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 });
                 self.employIdLogin = employeeLogin;
                 //画面項目の非活制御をする
-                self.showButton = ko.observable(new AuthorityDetailModel(data.authorityDto, data.actualTimeState, self.initMode(), data.formatPerformance.settingUnitType));
+                self.showButton(new AuthorityDetailModel(data.authorityDto, data.actualTimeState, self.initMode(), data.formatPerformance.settingUnitType));
                 self.showButton().enable_multiActualTime(data.lstActualTimes.length > 1);
+                if(data.showRegisterButton == false){
+                    self.showButton().enable_A1_1(data.showRegisterButton);
+                    self.showButton().enable_A1_2(data.showRegisterButton);
+                    self.showButton.valueHasMutated();
+                }
+                nts.uk.ui.block.clear();
                 dfd.resolve();
             }).fail(function(error) {
                 if (error.messageId == "KMW003_SELECT_FORMATCODE") {
                     //Open KDM003C to select format code
                     self.displayItem();
                 } else {
-                    nts.uk.ui.dialog.alert(error.message);
+                    nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
+                        nts.uk.request.jumpToTopPage();
+                    });
                     dfd.reject();
                 }
             });
@@ -300,6 +314,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             var self = this;
             let valueResult: string = "";
             if (atr != undefined && atr != null) {
+                
                 if (atr == 1) {
                     valueResult = value == "" ? null : String(self.getHoursTime(value));
                 } else {
@@ -354,49 +369,15 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             self.monthlyParam().yearMonth = date;
-//            $("#dpGrid").ntsGrid("destroy");
+            
+            if($("#dpGrid").data('igGrid')) {
+                $("#dpGrid").ntsGrid("destroy");
+            }
+            //$("#dpGrid").off();
             
             $.when(self.initScreen()).done(() => {
                   nts.uk.ui.block.clear();
             });
-//            nts.uk.ui.block.invisible();
-//            nts.uk.ui.block.grayout();
-//            service.updateScreen(self.reloadParam()).done((data) => {
-//                //self.itemValueAll(data.itemValues);
-//                self.receiveData(data);
-//                /*********************************
-//                 * Screen data
-//                 *********************************/
-//                // closure ID
-//                self.closureId(data.closureId);
-//                //Closure name
-//                self.closureName(data.closureName);
-//                //date process
-////                self.yearMonth(data.processDate);
-//                //actual times
-//                self.actualTimeDats(data.lstActualTimes);
-//                self.actualTimeSelectedDat(data.selectedActualTime);
-//                self.initActualTime();
-//                self.lstEmployee(_.orderBy(data.lstEmployee, ['code'], ['asc']));
-//                /*********************************
-//                 * Grid data
-//                 *********************************/
-//                // Fixed Header
-//                self.setFixedHeader(data.lstFixedHeader);
-//
-//                let employeeLogin: any = _.find(self.lstEmployee(), function(data) {
-//                    return data.loginUser == true;
-//                });
-//                self.employIdLogin = employeeLogin;
-//                
-//                self.formatDate(self.dpData);
-////                $("#dpGrid").igGrid("option","dataSource", datasource);
-//                 $("#dpGrid").ntsGrid("destroy");
-//                 self.loadGrid();
-//                dfd.resolve();
-//                nts.uk.ui.block.clear();
-//            })
-           // return dfd.promise();
             
         };
         /**
@@ -496,9 +477,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     nts.uk.ui.block.invisible();
                     nts.uk.ui.block.grayout();
                     self.lstEmployee(_.orderBy(self.lstEmployee(), ['code'], ['asc']));
-//                    self.lstEmployee(_.orderBy(self.lstEmployee(), ['code'], ['asc']));
                     //Reload screen
-                    $("#dpGrid").ntsGrid("destroy");
+                    if($("#dpGrid").data('igGrid')) {
+                        $("#dpGrid").ntsGrid("destroy");
+                    }
                     self.monthlyParam().lstEmployees = self.lstEmployee();
                     self.reloadParam().lstEmployees = self.lstEmployee();                    
                     $.when(self.initScreen()).done(() => {
@@ -996,7 +978,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             nts.uk.ui.dialog.confirm({ messageId: "Msg_983" }).ifYes(() => {
                 //画面モードを「ロック解除モード」に変更する
                 self.initMode(1);
-                self.showButton = ko.observable(new AuthorityDetailModel(self.dataAll().authorityDto, self.dataAll().actualTimeState, self.initMode(), self.dataAll().formatPerformance.settingUnitType));
+                self.showButton(new AuthorityDetailModel(self.dataAll().authorityDto, self.dataAll().actualTimeState, self.initMode(), self.dataAll().formatPerformance.settingUnitType));
                 //保持しているパラメータ「ロック状態一覧」のすべてのロック状態をアンロックに変更する
                 //TODO Loop all param and change lock status to Unlock
                 //ロック状態を画面に反映する
@@ -1012,7 +994,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             let self = this;
             // 画面モードを「修正モード」に変更する
             self.initMode(0);
-            self.showButton = ko.observable(new AuthorityDetailModel(self.dataAll().authorityDto, self.dataAll().actualTimeState, self.initMode(), self.dataAll().formatPerformance.settingUnitType));
+            self.showButton(new AuthorityDetailModel(self.dataAll().authorityDto, self.dataAll().actualTimeState, self.initMode(), self.dataAll().formatPerformance.settingUnitType));
             //アルゴリズム「ロック状態を表示する」を実行する
             //Restore init lock status 
             //確認メッセージ「#Msg_984」を表示する
@@ -1102,7 +1084,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
     export class AuthorityDetailModel {
         //A1_1
         available_A1_1: KnockoutObservable<boolean> = ko.observable(false);
-        enable_A1_1: KnockoutObservable<boolean> = ko.observable(false);
+        enable_A1_1:  /*boolean = false;*/KnockoutObservable<boolean> = ko.observable(false);
         //A1_2 
         available_A1_2: KnockoutObservable<boolean> = ko.observable(false);
         enable_A1_2: KnockoutObservable<boolean> = ko.observable(false);

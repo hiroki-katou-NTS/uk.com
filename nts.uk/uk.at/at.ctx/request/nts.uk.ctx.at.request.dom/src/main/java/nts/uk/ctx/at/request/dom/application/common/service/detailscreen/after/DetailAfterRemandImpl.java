@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
+import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.gul.mail.send.MailContents;
@@ -19,9 +20,14 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailDestinationImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.OutGoingMailImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationContentService;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
+import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
+import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbedded;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbeddedRepository;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.remandsetting.ContentOfRemandMail;
@@ -68,6 +74,12 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 
 	@Inject 
 	private IApplicationContentService appContentService;
+	
+	@Inject
+	private EnvAdapter envAdapter;
+	
+	@Inject
+	private AppDispNameRepository repoAppDispName;
 	
 	@Override
 	public MailSenderResult doRemand(String companyID, String appID, Long version, Integer order, String returnReason) {
@@ -117,11 +129,20 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 		Optional<UrlEmbedded> urlEmbedded = urlEmbeddedRepo.getUrlEmbeddedById(AppContexts.user().companyId());
 		List<String> successList = new ArrayList<>();
 		List<String> errorList = new ArrayList<>();
+		
+		// Using RQL 419 instead (1 not have mail)
+		//get list mail by list sID
+		List<MailDestinationImport> lstMail = envAdapter.getEmpEmailAddress(cid, employeeList, 6);
+//		Optional<AppDispName> appDispName = repoAppDispName.getDisplay(application.getAppType().value);
+//		String appName = "";
+//		if(appDispName.isPresent()){
+//			appName = appDispName.get().getDispName().v();
+//		}
+//		String titleMail = application.getAppDate() + " " + appName;
 		for (String employee : employeeList) {
 			String employeeName = employeeAdapter.getEmployeeName(employee);
-			// Using RQL 419 instead (1 not have mail)
-			String employeeMail = employeeAdapter.empEmail(employee);
-			employeeMail = "hiep.ld@3si.vn";
+			OutGoingMailImport mail = envAdapter.findMailBySid(lstMail, employee);
+			String employeeMail = mail == null || mail.getEmailAddress() == null ? "" : mail.getEmailAddress();
 			// TODO
 			String urlInfo = "";
 			if (urlEmbedded.isPresent()) {
@@ -145,10 +166,12 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 				errorList.add(I18NText.getText("Msg_768", employeeName));
 				continue;
 			} else {
-				// TODO
-				mailsender.send("mailadmin@uk.com", employeeMail,
-						new MailContents(mailTitle, mailContentToSend));
-				successList.add(employeeName);
+				try {
+					mailsender.sendFromAdmin(employeeMail, new MailContents(mailTitle, mailContentToSend));
+					successList.add(employeeName);
+				} catch (Exception ex) {
+					throw new BusinessException("Msg_1057");
+				}
 			}
 		}
 		return new MailSenderResult(successList, errorList);

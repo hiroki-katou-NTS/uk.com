@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveMaxRemainingTime;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.TimeAnnualLeaveUsedTime;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -19,26 +20,26 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Used
 @AllArgsConstructor
 /** 時間年休使用時間 */
 /** 年休上限残時間 */
-public class TimeAnnualLeaveUsedTimeDto {
+public class TimeAnnualLeaveUsedTimeDto implements ItemConst {
 
 	/** 使用回数 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "回数", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = COUNT, layout = LAYOUT_A)
 	private int usedTimes;
 	
 	/** 使用時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "時間", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_B)
 	private int usedTime;
 	
 	/** 使用時間付与前 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "時間付与前", layout = "C")
+	@AttendanceItemLayout(jpPropertyName = GRANT + BEFORE, layout = LAYOUT_C)
 	private int usedTimeBeforeGrant;
 	
 	/** 使用時間付与後 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "時間付与後", layout = "D")
+	@AttendanceItemLayout(jpPropertyName = GRANT + AFTER, layout = LAYOUT_D)
 	private Integer usedTimeAfterGrant;
 
 	public static TimeAnnualLeaveUsedTimeDto from(TimeAnnualLeaveUsedTime domain) {

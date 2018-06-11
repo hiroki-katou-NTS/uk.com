@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstBPTimeItemSettingPK;
 
 @Stateless
 public class JpaBPTimeItemSettingRepository extends JpaRepository implements BPTimeItemSettingRepository {
-	private final String SELECT_BPTIMEITEMSET_BY_COMPANYID = "SELECT c " + " FROM KbpstBPTimeItemSetting c "
+	private static final String SELECT_BPTIMEITEMSET_BY_COMPANYID = "SELECT c " + " FROM KbpstBPTimeItemSetting c "
 			+ " JOIN  KbpstBonusPayTimeItem k "
 			+ " ON c.kbpstBPTimeItemSettingPK.timeItemNo = k.kbpstBonusPayTimeItemPK.timeItemNo "
 			+ " AND c.kbpstBPTimeItemSettingPK.timeItemTypeAtr = k.kbpstBonusPayTimeItemPK.timeItemTypeAtr "
@@ -24,7 +24,7 @@ public class JpaBPTimeItemSettingRepository extends JpaRepository implements BPT
 			+ " AND c.kbpstBPTimeItemSettingPK.companyId = :companyId "
 			+ " ORDER BY k.kbpstBonusPayTimeItemPK.timeItemNo";
 
-	private final String SELECT_SPEC_BPTIMEITEMSET_BY_COMPANYID = "SELECT c " + " FROM KbpstBPTimeItemSetting c "
+	private static final String SELECT_SPEC_BPTIMEITEMSET_BY_COMPANYID = "SELECT c " + " FROM KbpstBPTimeItemSetting c "
 			+ " JOIN KbpstBonusPayTimeItem k "
 			+ " ON c.kbpstBPTimeItemSettingPK.timeItemNo = k.kbpstBonusPayTimeItemPK.timeItemNo "
 			+ " AND c.kbpstBPTimeItemSettingPK.timeItemTypeAtr = k.kbpstBonusPayTimeItemPK.timeItemTypeAtr "
