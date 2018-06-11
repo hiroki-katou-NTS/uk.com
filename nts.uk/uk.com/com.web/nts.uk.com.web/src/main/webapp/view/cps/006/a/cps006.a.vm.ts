@@ -420,6 +420,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
         categoryName: string;
         categoryType: number;
         isAbolition: string;
+        canAbolition: boolean;
         personEmployeeType: number;
         itemList?: Array<any>;
     }
@@ -430,6 +431,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
         categoryName: KnockoutObservable<string>;
         categoryType: KnockoutObservable<number>;
         isAbolition: KnockoutObservable<boolean>;
+        canAbolition:  KnockoutObservable<boolean>;
         personEmployeeType: number;
         isExistedItemLst: KnockoutObservable<number>;
         displayIsAbolished: KnockoutObservable<number> = ko.observable(0);
@@ -449,6 +451,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
             this.categoryName = ko.observable(params.categoryName);
             this.categoryType = ko.observable(params.categoryType);
             this.isAbolition = ko.observable(false);
+            this.canAbolition = ko.observable(params.canAbolition);
             this.itemList = ko.observableArray(params.itemList || []);
             this.personEmployeeType = params.personEmployeeType || 1;
             this.isExistedItemLst = ko.observable(0);
@@ -460,6 +463,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
             this.categoryName(params.categoryName);
             this.categoryType(params.categoryType);
             this.isAbolition(params.isAbolition);
+            this.canAbolition(params.canAbolition);
             this.displayIsAbolished(displayIsAbolished);
             this.isExistedItemLst(isExistedItemLst);
             this.personEmployeeType = params.personEmployeeType;

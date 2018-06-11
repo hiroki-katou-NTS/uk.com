@@ -23,14 +23,31 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 	private final static String SPECIAL_CTG_CODE = "CO";
 
-	private final static String SELECT_CATEGORY_BY_COMPANY_ID_QUERY = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
-			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
-			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder"
-			+ " FROM PpemtPerInfoCtg ca INNER JOIN PpemtPerInfoCtgCm co"
-			+ " ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
-			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND"
-			+ " ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd AND ca.cid = :cid  ORDER BY po.disporder";
+	private final static String SELECT_CATEGORY_BY_COMPANY_ID_QUERY = String.join(" ","SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,",
+			 " ca.categoryCd, ca.categoryName, ca.abolitionAtr,",
+			 " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder, co.addItemObjCls, co.initValMasterObjCls, ca.canAbolition, co.salaryUseAtr, co.personnelUseAtr, co.employmentUseAtr",
+			 " FROM PpemtPerInfoCtg ca INNER JOIN PpemtPerInfoCtgCm co",
+			 " ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd",
+			 " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId",
+			 " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd AND ca.cid = :cid",
+			 " AND co.salaryUseAtr =:salaryUseAtr ",
+			 " AND  co.personnelUseAtr =:personnelUseAtr",
+			 " AND co.employmentUseAtr =:employmentUseAtr,",
+			 " AND co.categoryParentCd is not null ",
+			  " ORDER BY po.disporder");
+	
+	private final static String SELECT_CATEGORY_BY_COMPANY_ROOT= String.join(" ","SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,",
+			 " ca.categoryCd, ca.categoryName, ca.abolitionAtr,",
+			 " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder, co.addItemObjCls, co.initValMasterObjCls, ca.canAbolition, co.salaryUseAtr, co.personnelUseAtr, co.employmentUseAtr",
+			 " FROM PpemtPerInfoCtg ca INNER JOIN PpemtPerInfoCtgCm co",
+			 " ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd",
+			 " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId",
+			 " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd AND ca.cid = :cid",
+			 " AND co.salaryUseAtr =:salaryUseAtr ",
+			 " AND  co.personnelUseAtr =:personnelUseAtr",
+			 " AND co.employmentUseAtr =:employmentUseAtr,",
+			 " AND co.categoryParentCd is not null ",
+			  " ORDER BY po.disporder");
 	
 	private final static String GET_ALL_CATEGORY_FOR_CPS007_CPS008 = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
@@ -158,10 +175,10 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			"FROM PpemtPerInfoCtg c WHERE c.categoryCd in :lstCtgCd AND c.cid = :cid");
 
 	@Override
-	public List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd) {
+	public List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd, int salaryUseAtr, int personnelUseAtr, int employmentUseAtr) {
 		return this.queryProxy().query(SELECT_CATEGORY_BY_COMPANY_ID_QUERY, Object[].class)
 				.setParameter("contractCd", contractCd).setParameter("cid", companyId).getList(c -> {
-					return createDomainFromEntity(c);
+					return createDomainVer3FromEntity(c);
 				});
 	}
 	
@@ -289,10 +306,8 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 		int categoryType = Integer.parseInt(String.valueOf(c[5]));
 		int personEmployeeType = Integer.parseInt(String.valueOf(c[6]));
 		int fixedAtr = Integer.parseInt(String.valueOf(c[7]));
-		
 		return PersonInfoCategory.createFromEntity(personInfoCategoryId, null, categoryCode, categoryParentCd,
 				categoryName, personEmployeeType, abolitionAtr, categoryType, fixedAtr);
-
 	}
 	
 	// đối ứng cho việc thêm 2 trường mới initObj, addObj
@@ -310,6 +325,28 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 		
 		return PersonInfoCategory.createFromEntity(personInfoCategoryId, null, categoryCode, categoryParentCd,
 				categoryName, personEmployeeType, abolitionAtr, categoryType, fixedAtr, addObj, initObj);
+
+	}
+	
+	// đối ứng cho việc thêm 4 trường mới  canAbolition, salaryUseAtr, personnelUseAtr, employmentUseAtr
+	private PersonInfoCategory createDomainVer3FromEntity(Object[] c) {
+		String personInfoCategoryId = String.valueOf(c[0]);
+		String categoryCode = String.valueOf(c[1]);
+		String categoryName = String.valueOf(c[2]);
+		int abolitionAtr = Integer.parseInt(String.valueOf(c[3]));
+		String categoryParentCd = (c[4] != null) ? String.valueOf(c[4]) : null;
+		int categoryType = Integer.parseInt(String.valueOf(c[5]));
+		int personEmployeeType = Integer.parseInt(String.valueOf(c[6]));
+		int fixedAtr = Integer.parseInt(String.valueOf(c[7]));
+		int addObj = (c[8]!= null) ? Integer.parseInt(String.valueOf(c[8])) : 1;
+		int initObj = (c[9]!= null) ? Integer.parseInt(String.valueOf(c[9])) : 1;
+		int canAbolition = Integer.parseInt(String.valueOf(c[10]));
+		int  salaryUseAtr = Integer.parseInt(String.valueOf(c[11]));
+		int  personnelUseAtr = Integer.parseInt(String.valueOf(c[12]));
+		int  employmentUseAtr = Integer.parseInt(String.valueOf(c[13]));
+		return PersonInfoCategory.createFromEntity(personInfoCategoryId, null, categoryCode, categoryParentCd,
+				categoryName, personEmployeeType, abolitionAtr, categoryType, fixedAtr, addObj, initObj, salaryUseAtr,
+				employmentUseAtr, personnelUseAtr,canAbolition);
 
 	}
 	

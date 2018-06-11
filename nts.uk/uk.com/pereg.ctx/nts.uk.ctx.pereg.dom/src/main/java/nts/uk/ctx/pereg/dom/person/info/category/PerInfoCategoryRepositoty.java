@@ -7,7 +7,7 @@ import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
 
 public interface PerInfoCategoryRepositoty {
 
-	List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd);
+	List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd, int salaryUseAtr, int personnelUseAtr, int employmentUseAtr);
 	
 	List<PersonInfoCategory> getAllCategoryForCPS007(String companyId, String contractCd);
 
