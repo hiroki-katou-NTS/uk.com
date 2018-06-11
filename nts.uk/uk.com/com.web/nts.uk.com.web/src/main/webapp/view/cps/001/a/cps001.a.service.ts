@@ -22,7 +22,7 @@ module cps001.a.service {
         emp: {
             getInfo: 'bs/employee/person/get-header/{0}',
             getFile: 'basic/organization/empfilemanagement/find/getAvaOrMap/{0}/{1}',
-            permision: 'ctx/pereg/roles/auth/get-self-auth',
+            permision: 'ctx/pereg/functions/auth/find-all',
         },
         file: '/shr/infra/file/storage/infor/{0}'
     };

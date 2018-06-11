@@ -15,6 +15,7 @@ module cps001.a.vm {
     import format = nts.uk.text.format;
     import lv = nts.layout.validate;
     import vc = nts.layout.validation;
+    import permision = service.getCurrentEmpPermision;
 
     const DEF_AVATAR = 'images/avatar.png',
         __viewContext: any = window['__viewContext'] || {},
@@ -89,6 +90,10 @@ module cps001.a.vm {
         titleResource: KnockoutObservable<string> = ko.observable(text("CPS001_39"));
 
         layout: Layout = new Layout();
+        
+        // 
+        enaBtnManagerEmp: KnockoutObservable<boolean> = ko.observable(true);
+        enaBtnDelEmp: KnockoutObservable<boolean> = ko.observable(true);
 
         constructor() {
             let self = this,
@@ -119,6 +124,19 @@ module cps001.a.vm {
 
                 self.saveAble(!!aut.length && !hasError());
             }, 0);
+            
+            permision().done((data: Array<IPersonAuth>) => {
+                if (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].functionNo == FunctionNo.No1_Allow_DelEmp) {
+                            if (data[i].available == false) {
+                                self.enaBtnManagerEmp(false);
+                                self.enaBtnDelEmp(false);
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         reload() {
@@ -486,5 +504,27 @@ module cps001.a.vm {
         TIME = 4,
         TIMEPOINT = 5,
         SELECTION = 6
+    }
+    
+    interface IPersonAuth {
+        functionNo: number;
+        functionName: string;
+        available: boolean;
+        description: string;
+        orderNumber: number;
+    }
+    
+    enum FunctionNo {
+        No1_Allow_DelEmp = 1, // có thể delete employee ở đăng ký thông tin cá nhân
+        No2_Allow_UploadAva = 2, // có thể upload ảnh chân dung employee ở đăng ký thông tin cá nhân
+        No3_Allow_RefAva = 3,// có thể xem ảnh chân dung employee ở đăng ký thông tin cá nhân
+        No4_Allow_UploadMap = 4, // có thể upload file bản đồ ở đăng ký thông tin cá nhân
+        No5_Allow_RefMap = 5, // có thể xem file bản đồ ở đăng ký thông tin cá nhân
+        No6_Allow_UploadDoc = 6,// có thể upload file điện tử employee ở đăng ký thông tin cá nhân
+        No7_Allow_RefDoc = 7,// có thể xem file điện tử employee ở đăng ký thông tin cá nhân
+        No8_Allow_Print = 8,  // có thể in biểu mẫu của employee ở đăng ký thông tin cá nhân
+        No9_Allow_SetCoppy = 9,// có thể setting copy target item khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
+        No10_Allow_SetInit = 10, // có thể setting giá trị ban đầu nhập vào khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
+        No11_Allow_SwitchWpl = 11  // Lọc chọn lựa phòng ban trực thuộc/workplace trực tiếp theo bộ phận liên kết cấp dưới tại đăng ký thông tin cá nhân
     }
 }
