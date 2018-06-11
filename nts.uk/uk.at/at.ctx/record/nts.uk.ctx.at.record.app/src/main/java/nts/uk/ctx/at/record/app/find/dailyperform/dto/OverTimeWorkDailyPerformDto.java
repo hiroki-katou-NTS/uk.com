@@ -13,11 +13,11 @@ import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheet;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -26,10 +26,10 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OverTimeWorkDailyPerformDto {
+public class OverTimeWorkDailyPerformDto implements ItemConst {
 
 	/** 残業枠時間: 残業枠時間 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "残業枠時間", listMaxLength = 10, indexField = "overtimeFrameNo")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = FRAMES, listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<OverTimeFrameTimeDto> overTimeFrameTime;
 
 	/** 残業枠時間帯: 残業枠時間帯 */
@@ -38,22 +38,21 @@ public class OverTimeWorkDailyPerformDto {
 	private List<OverTimeFrameTimeSheetDto> overTimeFrameTimeSheet;
 
 	/** 所定外深夜時間: 法定外残業深夜時間 */
-	@AttendanceItemLayout(layout = "C", jpPropertyName = "所定外深夜時間")
+	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = LATE_NIGHT)
 	private ExcessOverTimeWorkMidNightTimeDto excessOfStatutoryMidNightTime;
 
 	/** 残業拘束時間: 勤怠時間 */
-	@AttendanceItemLayout(layout = "D", jpPropertyName = "残業拘束時間")
+	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = RESTRAINT)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer overTimeSpentAtWork;
 
 	/** 変形法定内残業: 勤怠時間 */
-	@AttendanceItemLayout(layout = "E", jpPropertyName = "変形法定内残業")
+	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = IRREGULAR + LEGAL)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer irregularWithinPrescribedOverTimeWork;
 
 	/** フレックス時間: フレックス時間 */
-	
-	@AttendanceItemLayout(layout = "F", jpPropertyName = "フレックス時間")
+	@AttendanceItemLayout(layout = LAYOUT_F, jpPropertyName = FLEX)
 	private FlexTimeDto flexTime;
 
 	public static OverTimeWorkDailyPerformDto fromOverTimeWorkDailyPerform(OverTimeOfDaily domain) {
@@ -93,7 +92,7 @@ public class OverTimeWorkDailyPerformDto {
 						(c) -> new OverTimeFrameTimeSheet(createTimeSheet(c.getTimeSheet()),
 								new OverTimeFrameNo(c.getOvertimeFrameNo()))),
 				ConvertHelper.mapTo(overTimeFrameTime,
-						(c) -> new OverTimeFrameTime(new OverTimeFrameNo(c.getOvertimeFrameNo()),
+						(c) -> new OverTimeFrameTime(new OverTimeFrameNo(c.getNo()),
 								createTimeWithCalc(c.getOvertime()), createTimeWithCalc(c.getTransferTime()),
 								toAttendanceTime(c.getBeforeApplicationTime()), toAttendanceTime(c.getOrderTime()))),
 				excessOfStatutoryMidNightTime == null ? Finally.empty() : Finally.of(excessOfStatutoryMidNightTime.toDomain()),
@@ -120,9 +119,5 @@ public class OverTimeWorkDailyPerformDto {
 
 	private TimeWithDayAttr toTimeWithDayAttr(Integer time) {
 		return time == null ? null : new TimeWithDayAttr(time);
-	}
-
-	private AttendanceTimeOfExistMinus toAttendanceTimeOfExistMinus(Integer time) {
-		return time == null ? null : new AttendanceTimeOfExistMinus(time);
 	}
 }

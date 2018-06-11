@@ -8,6 +8,7 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.lateleaveearly.Late;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.lateleaveearly.LeaveEarly;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -16,14 +17,14 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 早退 + 遅刻 */
-public class CommonTimeCountDto {
+public class CommonTimeCountDto implements ItemConst {
 
-	@AttendanceItemLayout(jpPropertyName = "回数", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = COUNT, layout = LAYOUT_A)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	/** 回数: 勤怠月間回数 */
 	private int times;
 
-	@AttendanceItemLayout(jpPropertyName = "時間", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_B)
 	/** 時間: 計算付き月間時間 */
 	private TimeMonthWithCalculationDto time;
 	
