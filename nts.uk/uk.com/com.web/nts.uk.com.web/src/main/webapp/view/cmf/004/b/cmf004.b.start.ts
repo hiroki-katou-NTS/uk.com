@@ -3,8 +3,8 @@ module nts.uk.com.view.cmf004.b {
         let screenModel = new viewmodel.ScreenModel();
         screenModel.start().done(()=>{
             __viewContext.bind(screenModel);
-            $('#kcp005component').ntsListComponent(screenModel.kcp005ComponentOption);
-            $('#kcp005component1').ntsListComponent(screenModel.kcp005ComponentOption);
+            $('#kcp005component').ntsListComponent(screenModel.kcp005ComponentOptionScreenG);
+            $('#kcp005component1').ntsListComponent(screenModel.kcp005ComponentOptionScreenH);
         });
     });
 }
