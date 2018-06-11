@@ -93,7 +93,7 @@ public class LeaveEarlyTimeSheet {
 		}
 		if(leave!=null && leaveEarlyDesClock.isPresent()) {
 			//退勤時刻と早退判断時刻を比較	
-			if(leaveEarlyDesClock.get().getLeaveEarlyDecisionClock().lessThan(leave)
+			if(leaveEarlyDesClock.get().getLeaveEarlyDecisionClock().greaterThan(leave)
 					||!graceTimeSetting.isIncludeWorkingHour()){//猶予時間を加算しない場合
 				
 				//早退控除時間帯の作成
