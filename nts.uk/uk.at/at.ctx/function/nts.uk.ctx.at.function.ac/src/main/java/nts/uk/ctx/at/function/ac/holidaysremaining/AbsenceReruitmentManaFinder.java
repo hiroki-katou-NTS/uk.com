@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.export.Absenceleav
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.export.MonthlyAbsenceleaveRemainExport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentManaQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.InterimRemainAggregateOutputData;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AbsenceReruitmentManaFinder implements AbsenceReruitmentManaAdapter {
@@ -29,8 +30,13 @@ public class AbsenceReruitmentManaFinder implements AbsenceReruitmentManaAdapter
 	public List<CurrentHolidayRemainImported> getAbsRecRemainAggregate(String employeeId, GeneralDate baseDate,
 			YearMonth startMonth, YearMonth endMonth) {
 		// requestList270
-		List<InterimRemainAggregateOutputData> lstAbsRecRemainAggregate = absenceReruitmentManaQuery
-				.getAbsRecRemainAggregate(employeeId, baseDate, startMonth, endMonth);
+//		List<InterimRemainAggregateOutputData> lstAbsRecRemainAggregate = absenceReruitmentManaQuery
+//				.getAbsRecRemainAggregate(employeeId, baseDate, startMonth, endMonth);\
+		// TODO requestList270 fail
+		InterimRemainAggregateOutputData itemImported = new InterimRemainAggregateOutputData(GeneralDate.today().yearMonth().addMonths(1), 0d, 0d, 0d, 0d, 0d);
+		List<InterimRemainAggregateOutputData> lstAbsRecRemainAggregate = new ArrayList<>();
+		lstAbsRecRemainAggregate.add(itemImported);
+		
 		if (lstAbsRecRemainAggregate == null)
 			return null;
 		List<CurrentHolidayRemainImported> lstCurrentHoliday = new ArrayList<>();
@@ -46,8 +52,15 @@ public class AbsenceReruitmentManaFinder implements AbsenceReruitmentManaAdapter
 	public List<StatusOfHolidayImported> getDataCurrentMonthOfEmployee(String employeeId, YearMonth startMonth,
 			YearMonth endMonth) {
 		// requestList260
-		List<AbsenceleaveCurrentMonthOfEmployee> lstDataCurrentMonthOfEmployee = monthlyAbsenceleaveRemainExport
-				.getDataCurrentMonthOfEmployee(employeeId, startMonth, endMonth);
+//		List<AbsenceleaveCurrentMonthOfEmployee> lstDataCurrentMonthOfEmployee = monthlyAbsenceleaveRemainExport
+//				.getDataCurrentMonthOfEmployee(employeeId, startMonth, endMonth);
+		
+		// TODO requestList260 fail
+		AbsenceleaveCurrentMonthOfEmployee itemImported = new AbsenceleaveCurrentMonthOfEmployee(
+				AppContexts.user().employeeId(), GeneralDate.today().yearMonth().addMonths(-1), 0d, 0d, 0d, 0d, 0d);
+		List<AbsenceleaveCurrentMonthOfEmployee> lstDataCurrentMonthOfEmployee = new ArrayList<>();
+		lstDataCurrentMonthOfEmployee.add(itemImported);
+		
 		if (lstDataCurrentMonthOfEmployee == null)
 			return null;
 		List<StatusOfHolidayImported> lstStatusOfHoliday = new ArrayList<>();

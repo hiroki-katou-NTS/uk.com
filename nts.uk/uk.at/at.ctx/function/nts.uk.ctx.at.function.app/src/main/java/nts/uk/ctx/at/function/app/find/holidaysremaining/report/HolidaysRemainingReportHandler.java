@@ -15,6 +15,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.app.find.holidaysremaining.HdRemainManageFinder;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
@@ -43,7 +44,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 				.findByCode(query.getHolidayRemainingOutputCondition().getOutputItemSettingCode());
 		if (hdManagement.isPresent()) {
 
-			LocalDate endDate = (Date.valueOf(query.getHolidayRemainingOutputCondition().getEndMonth())).toLocalDate();
+			LocalDate endDate = (GeneralDate.fromString(query.getHolidayRemainingOutputCondition().getEndMonth(), "yyyy/MM/dd")).toLocalDate();
 			List<String> employeeIds = query.getLstEmpIds().stream()
 					.map(m -> m.getEmployeeId()).collect(Collectors.toList());
 			this.regulationInfoEmployeeAdapter.sortEmployee(cId, employeeIds, AppContexts.system().getInstallationType().value, null, null, GeneralDateTime.localDateTime(LocalDateTime.of(endDate,LocalTime.of(0, 0))));

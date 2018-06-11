@@ -33,7 +33,7 @@ private String GET_BYSID = "SELECT a FROM KrcmtComDayoffMaData a WHERE a.sID = :
 	
 	private String GET_BY_LISTID = " SELECT c FROM KrcmtComDayoffMaData c WHERE c.comDayOffID IN :comDayOffIDs";
 	
-	private String GET_BY_DAYOFFDATE_PERIOD = "SELECT c FROM KrcmtComDayoffMaData"
+	private String GET_BY_DAYOFFDATE_PERIOD = "SELECT c FROM KrcmtComDayoffMaData c"
 			+ " WHERE c.dayOff >= :startDate"
 			+ " AND c.dayOff <= :endDate"
 			+ " AND c.sID = :sid";
