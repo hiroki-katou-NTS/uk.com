@@ -52,4 +52,13 @@ public interface OptionalItemRepository {
 	 * @return the list
 	 */
 	List<OptionalItem> findByAtr(String companyId, int atr);
+	
+	/**
+	 * Find by atr.
+	 *
+	 * @param companyId the company id
+	 * @param atr the atr
+	 * @return the list
+	 */
+	List<OptionalItem> findByAtr(String companyId, OptionalItemAtr atr);
 }
