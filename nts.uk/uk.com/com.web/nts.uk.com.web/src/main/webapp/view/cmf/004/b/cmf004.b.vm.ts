@@ -294,7 +294,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             if (inputType() === '日次') return PeriodEnum.DAY;
             if (inputType() === '月次') return PeriodEnum.MONTH;
             if (inputType() === '年次') return PeriodEnum.YEAR;
-            return 0;
+            return 3;
         }
 
         start(): JQueryPromise<any> {

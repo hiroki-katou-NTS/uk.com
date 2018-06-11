@@ -41,6 +41,10 @@
 	height: 28px;
 }
 
+#F4_1 tbody>tr{
+	height: 32px;
+}
+
 .row-number {
 	background-color: #CFF1A5;
 }
