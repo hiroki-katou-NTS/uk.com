@@ -52,7 +52,7 @@ public class LeaveEarlyDecisionClock {
 				decisionClock = calｃRange.get().getEnd();
 			} else {
 				// 猶予時間帯の作成
-				TimeSpanForCalc graceTimeSheet = new TimeSpanForCalc(predetermineTimeSheet.get().getEnd().forwardByMinutes(leaveEarlyGraceTime.getGraceTime().minute()),
+				TimeSpanForCalc graceTimeSheet = new TimeSpanForCalc(predetermineTimeSheet.get().getEnd().backByMinutes(leaveEarlyGraceTime.getGraceTime().minute()),
 																	 predetermineTimeSheet.get().getEnd());
 				
 				// 重複している控除分をずらす

@@ -94,7 +94,7 @@ public class LateTimeSheet{
 		}
 		if(attendance != null && lateDesClock.isPresent()) {
 			//出勤時刻と遅刻判断時刻を比較	
-			if(lateDesClock.get().getLateDecisionClock().greaterThan(attendance)
+			if(lateDesClock.get().getLateDecisionClock().lessThan(attendance)
 					||!graceTimeSetting.isIncludeWorkingHour()){//猶予時間を加算しない場合
 				
 				//遅刻控除時間帯の作成
