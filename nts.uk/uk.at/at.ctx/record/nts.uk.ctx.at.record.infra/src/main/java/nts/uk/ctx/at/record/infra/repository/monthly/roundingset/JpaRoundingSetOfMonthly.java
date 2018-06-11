@@ -140,4 +140,20 @@ public class JpaRoundingSetOfMonthly extends JpaRepository implements RoundingSe
 				.setParameter("companyId", companyId)
 				.executeUpdate();
 	}
+
+	/** Update monthly item rounding only */
+	@Override
+	public void persistAndUpdateMonItemRound(List<ItemRoundingSetOfMonthly> lstItemRounding, String companyId) {
+		// 月別実績の項目丸め設定
+		this.getEntityManager().createQuery(REMOVE_BY_CID_FOR_ITEM)
+				.setParameter("companyId", companyId)
+				.executeUpdate();
+		for (val itemRoundSet : lstItemRounding){
+			KrcstMonItemRound entityItemRound = new KrcstMonItemRound();
+			entityItemRound.PK = new KrcstMonItemRoundPK(companyId, itemRoundSet.getAttendanceItemId());
+			entityItemRound.roundUnit = itemRoundSet.getRoundingSet().getRoundingTime().value;
+			entityItemRound.roundProc = itemRoundSet.getRoundingSet().getRounding().value;
+			this.getEntityManager().persist(entityItemRound);
+		}
+	}
 }
