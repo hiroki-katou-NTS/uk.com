@@ -2,7 +2,7 @@ package nts.uk.ctx.sys.assist.dom.tablelist;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.assist.dom.category.RecoverFormCompanyOther;
 import nts.uk.ctx.sys.assist.dom.category.StorageRangeSaved;
@@ -14,7 +14,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  * テーブル一覧
  */
 @Getter
-public class TableList extends AggregateRoot {
+public class TableList extends DomainObject {
 	/**
 	 * カテゴリID
 	 */
