@@ -106,7 +106,7 @@ public class MPHeaderDto {
 		MPHeaderDto dto = new MPHeaderDto("", key, "String", width, "", false, "", false, false);
 		int attendanceAtr = item.getAttendanceAtr();
 
-		if (attendanceAtr == 3) {
+		if (attendanceAtr == 4) {
 			// dto.setNtsControl("TextEditorNumberSeparated");
 			dto.setConstraint(new Constraint("Currency", false, ""));
 		} else if (attendanceAtr == 1) {
@@ -114,6 +114,8 @@ public class MPHeaderDto {
 			dto.setConstraint(new Constraint("Clock", false, ""));
 		} else if (attendanceAtr == 2) {
 			dto.setConstraint(new Constraint("Integer", false, ""));
+		} else if (attendanceAtr == 3) {
+			dto.setConstraint(new Constraint("HalfInt", false, ""));
 		}
 //		else if (attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
 //			dto.setConstraint(new Constraint("TimeWithDay", false, ""));

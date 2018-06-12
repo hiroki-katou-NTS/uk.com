@@ -43,7 +43,7 @@
 							<label style="padding-left: 20px;" data-bind="text : categoryCount"></label>
 							<label>/</label>
 							<label data-bind="text : categoryTotalCount"></label>
-							<label>category</label>
+							<label>#{i18n.getText('CMF003_30')}</label>
 						</td>
 					</tr>
 					<tr >
@@ -52,7 +52,7 @@
 						</td>
 						<td id="F1_8" width='400px'>
 							<label data-bind="text : errorCount"></label>
-							<label>error</label>
+							<label>件</label>
 						</td>
 					</tr>
 				</table>
@@ -74,7 +74,7 @@
 						</td>
 						<td id="F2_6" width='400px'>
 							<label>#{i18n.getText('CMF003_34')}</label>
-							<label>: </label>
+							<label style="padding-right: 5px;">: </label>
 							<label data-bind="text : dayStartValue"></label>
 							<label>~</label>
 							<label data-bind="text : dayEndValue"></label>
@@ -83,7 +83,7 @@
 					<tr >
 						<td id="F2_7" width='400px'>
 							<label>#{i18n.getText('CMF003_35')}</label>
-							<label>: </label>
+							<label style="padding-right: 5px;">: </label>
 							<label data-bind="text : monthStartValue"></label>
 							<label>~</label> 
 							<label data-bind="text : monthEndValue"></label>
@@ -92,7 +92,7 @@
 					<tr >
 						<td id="F2_8" width='400px'>
 							<label>#{i18n.getText('CMF003_36')}</label>
-							<label>: </label> 
+							<label style="padding-right: 5px;">: </label> 
 							<label data-bind="text : yearStartValue"></label>
 							<label>~</label>
 							<label data-bind="text : yearEndValue"></label>
@@ -106,7 +106,7 @@
  						<button id="F3_1" class="large" data-bind="click : interrupt" tabindex="1">#{i18n.getText('CMF003_187')}</button> 
  					</com:ko-if>
  					<com:ko-if bind="(dialogMode() !== 'saving')">
-	 					<button id="F3_2" class="large" data-bind="click : download, enable: dialogMode() == 'done'" tabindex="2">#{i18n.getText('CMF003_188')}</button>
+	 					<button id="F3_2" class="large" data-bind="click : download, enable: ((dialogMode() == 'done') &amp;&amp; (!isDownloaded()))" tabindex="2">#{i18n.getText('CMF003_188')}</button>
 	 					<button id="F3_3" class="large" data-bind="click : close" tabindex="3">#{i18n.getText('CMF003_189')}</button> 
 					</com:ko-if>
 				</div>

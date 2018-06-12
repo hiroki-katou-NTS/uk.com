@@ -92,6 +92,10 @@ public class ItemsByCategory {
 	public List<ItemValue> collectItemsDefinedByUser() {
 		return this.items.stream().filter(item -> isDefinedByUser(item.itemCode())).collect(Collectors.toList());
 	}
+	
+	public boolean isHaveSomeSystemItems() {
+		return this.getItems().stream().anyMatch(i -> i.itemCode().charAt(1) == 'S');
+	}
 
 	private static boolean isDefinedBySystem(String itemCode) {
 		return !isDefinedByUser(itemCode);

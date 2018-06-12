@@ -9,6 +9,7 @@ import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
+import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
@@ -37,9 +38,8 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
-import nts.uk.ctx.at.shared.dom.scherec.attdstatus.GetAttendanceStatus;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
-import nts.uk.ctx.at.shared.dom.scherec.totaltimes.algorithm.GetTimeAndCountFromDailyRecord;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.algorithm.GetTotalTimesFromDailyRecord;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkRepository;
@@ -107,6 +107,10 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	/** 日別実績の任意項目の取得 */
 	@Inject
 	public AnyItemValueOfDailyRepo anyItemValueOfDaily;
+
+	/** 勤怠項目値変換 */
+	@Inject
+	public AttendanceItemConvertFactory attendanceItemConverter;
 	
 	/** 勤務情報の取得 */
 	@Inject
@@ -199,9 +203,6 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	@Inject
 	public AgreementMonthSettingRepository agreementMonthSet;
 	
-	/** 出勤状態を取得する */
-	@Inject
-	public GetAttendanceStatus attendanceStatus;
 	/** 月別実績の給与項目カウントの取得 */
 	@Inject
 	public PayItemCountOfMonthlyRepository payItemCountOfMonthly;
@@ -211,5 +212,5 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 
 	/** 日別実績から回数集計結果を取得する */
 	@Inject
-	public GetTimeAndCountFromDailyRecord timeAndCountFromDailyRecord;
+	public GetTotalTimesFromDailyRecord timeAndCountFromDailyRecord;
 }

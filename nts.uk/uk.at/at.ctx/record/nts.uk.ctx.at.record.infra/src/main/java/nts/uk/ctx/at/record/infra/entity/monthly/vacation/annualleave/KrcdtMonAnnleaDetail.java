@@ -52,11 +52,11 @@ public class KrcdtMonAnnleaDetail extends UkJpaEntity implements Serializable {
 	/** マッチング：年休月別残数データ */
 	@ManyToOne
 	@JoinColumns({
-		@JoinColumn(name = "SID", referencedColumnName = "KRCDT_MON_ANNLEA_REMAIN.SID", insertable = false, updatable = false),
-		@JoinColumn(name = "YM", referencedColumnName = "KRCDT_MON_ANNLEA_REMAIN.YM", insertable = false, updatable = false),
-		@JoinColumn(name = "CLOSURE_ID", referencedColumnName = "KRCDT_MON_ANNLEA_REMAIN.CLOSURE_ID", insertable = false, updatable = false),
-		@JoinColumn(name = "CLOSURE_DAY", referencedColumnName = "KRCDT_MON_ANNLEA_REMAIN.CLOSURE_DAY", insertable = false, updatable = false),
-		@JoinColumn(name = "IS_LAST_DAY", referencedColumnName = "KRCDT_MON_ANNLEA_REMAIN.IS_LAST_DAY", insertable = false, updatable = false)
+		@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+		@JoinColumn(name = "YM", referencedColumnName = "YM", insertable = false, updatable = false),
+		@JoinColumn(name = "CLOSURE_ID", referencedColumnName = "CLOSURE_ID", insertable = false, updatable = false),
+		@JoinColumn(name = "CLOSURE_DAY", referencedColumnName = "CLOSURE_DAY", insertable = false, updatable = false),
+		@JoinColumn(name = "IS_LAST_DAY", referencedColumnName = "IS_LAST_DAY", insertable = false, updatable = false)
 	})
 	public KrcdtMonAnnleaRemain krcdtMonAnnleaRemain;
 	

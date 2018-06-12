@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
@@ -32,7 +30,7 @@ public class LeaveComDayOffManagement extends AggregateRoot{
 	// 対象選択区分
 	private TargetSelectionAtr targetSelectionAtr;
 
-	public LeaveComDayOffManagement(String leaveID, String comDayOffID, BigDecimal usedDays, int usedHours,
+	public LeaveComDayOffManagement(String leaveID, String comDayOffID, Double usedDays, int usedHours,
 			int targetSelectionAtr) {
 		super();
 		this.leaveID = leaveID;

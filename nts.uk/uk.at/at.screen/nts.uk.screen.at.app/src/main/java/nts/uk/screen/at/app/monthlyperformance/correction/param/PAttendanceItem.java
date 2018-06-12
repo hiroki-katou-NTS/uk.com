@@ -16,10 +16,14 @@ public class PAttendanceItem {
 	private Integer displayNumber;	
 	/** 属性: 月次項目の属性*/
 	/*1:  時間 */
-	/*2:  回数*/
-	/*3:  金額*/
-	/*4:  日数 */
+	/*2:  回数 */
+	/*3:  日数*/
+	/*4:  金額 */
 	/*5:  マスタを参照する */
+	/*6:  コード */
+	/*7:  区分 */
+	/*8:  比率 */
+	/*9:  文字 */
 	private Integer attendanceAtr;
 	/** ユーザが変更できる*/
 	private boolean userCanChange;

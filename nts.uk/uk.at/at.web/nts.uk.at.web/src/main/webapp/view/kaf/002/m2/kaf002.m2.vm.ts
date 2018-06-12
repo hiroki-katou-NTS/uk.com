@@ -1,6 +1,7 @@
 module nts.uk.at.view.kaf002.m2 {
     import service = nts.uk.at.view.kaf002.shr.service;
     import vmbase = nts.uk.at.view.kaf002.shr.vmbase;
+    import setShared = nts.uk.ui.windows.setShared;
     export module viewmodel {
         export class ScreenModel {
             extendsMode: KnockoutObservable<boolean> = ko.observable(false);
@@ -81,7 +82,7 @@ module nts.uk.at.view.kaf002.m2 {
                 } 
             }
             
-            register(application : vmbase.Application){
+            register(application : vmbase.Application, checkBoxValue: boolean){
                 var self = this;
                 let command = {
                     appID: "",
@@ -106,12 +107,24 @@ module nts.uk.at.view.kaf002.m2 {
                 } else {
                     nts.uk.ui.block.invisible();
                     service.insert(command)
-                    .done(() => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                            location.reload();
-                            $('.cm-memo').focus();
-                            nts.uk.ui.block.clear();
-                        });     
+                    .done((data) => {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            if(data.autoSendMail){
+                                nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
+                                    location.reload();
+                                });    
+                            } else {
+                                if(checkBoxValue){
+                                    let command = {appID: data.appID};
+                                    setShared("KDL030_PARAM", command);
+                                    nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
+                                        location.reload();
+                                    });    
+                                } else {
+                                    location.reload();
+                                }   
+                            }
+                        });   
                     })
                     .fail(function(res) { 
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});  
@@ -139,12 +152,16 @@ module nts.uk.at.view.kaf002.m2 {
                 if(!nts.uk.util.isNullOrEmpty(command.appStampWorkCmds)){
                     nts.uk.ui.block.invisible();
                     service.update(command)
-                    .done(() => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                            location.reload();
-                            $('.cm-memo').focus();
-                            nts.uk.ui.block.clear();
-                        });     
+                    .done((data) => {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            if(data.autoSendMail){
+                                nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
+                                    location.reload();
+                                });    
+                            } else {
+                                location.reload();
+                            }
+                        });    
                     })
                     .fail(function(res) { 
                         if(res.optimisticLock == true){

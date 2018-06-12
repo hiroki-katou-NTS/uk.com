@@ -8,20 +8,21 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaiseSalaryTimeOfDailyPerfor;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 
 /** 日別実績の加給時間 */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RaisingSalaryTimeDailyPerformDto {
+public class RaisingSalaryTimeDailyPerformDto implements ItemConst {
 
 	/** 特定日加給時間 : 加給時間 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "特定加給時間", listMaxLength = 10, indexField = "raisingSalaryNo")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = SPECIFIC, listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<RaisingSalaryTimeDto> specificDayOfRaisingSalaryTime;
 
 	/** 加給時間 : 加給時間 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "加給時間", listMaxLength = 10, indexField = "raisingSalaryNo")
+	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = RAISING_SALARY, listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<RaisingSalaryTimeDto> raisingSalaryTime;
 	
 	public static RaisingSalaryTimeDailyPerformDto toDto(RaiseSalaryTimeOfDailyPerfor domain){
