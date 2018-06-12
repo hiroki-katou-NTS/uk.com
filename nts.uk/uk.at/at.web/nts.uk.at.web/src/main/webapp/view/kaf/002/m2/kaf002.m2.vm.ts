@@ -107,14 +107,14 @@ module nts.uk.at.view.kaf002.m2 {
                 } else {
                     nts.uk.ui.block.invisible();
                     service.insert(command)
-                    .done(() => {
+                    .done((data) => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                             if(data.autoSendMail){
                                 nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
                                     location.reload();
                                 });    
                             } else {
-                                if(self.checkBoxValue()){
+                                if(checkBoxValue){
                                     let command = {appID: data.appID};
                                     setShared("KDL030_PARAM", command);
                                     nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
@@ -152,7 +152,7 @@ module nts.uk.at.view.kaf002.m2 {
                 if(!nts.uk.util.isNullOrEmpty(command.appStampWorkCmds)){
                     nts.uk.ui.block.invisible();
                     service.update(command)
-                    .done(() => {
+                    .done((data) => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                             if(data.autoSendMail){
                                 nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
