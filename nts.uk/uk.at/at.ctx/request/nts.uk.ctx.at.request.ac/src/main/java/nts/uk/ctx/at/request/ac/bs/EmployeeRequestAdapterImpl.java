@@ -17,16 +17,17 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAd
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.AffWorkplaceImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.ConcurrentEmployeeRequest;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PersonEmpBasicInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
+import nts.uk.ctx.bs.employee.pub.employee.export.PersonEmpBasicInfoPub;
 import nts.uk.ctx.bs.employee.pub.employment.SEmpHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
-import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 
@@ -49,6 +50,10 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 	private IPersonInfoPub personPub;
 	@Inject
 	private SyEmployeePub syEmployeePub;
+	
+	@Inject
+	private PersonEmpBasicInfoPub perEmpBasicInfoPub;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -184,6 +189,25 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 						x.getJobEntryDate(), 
 						x.getRetirementDate()))
 				.collect(Collectors.toList());
+		return data;
+	}
+
+	@Override
+	public List<PersonEmpBasicInfoImport> getPerEmpBasicInfo(String companyId, List<String> employeeIds) {
+		List<PersonEmpBasicInfoImport> data = this.perEmpBasicInfoPub
+				.getEmpBasicInfo(companyId, employeeIds)
+				.stream()
+				.map(x -> new PersonEmpBasicInfoImport(
+						x.getPersonId(), 
+						x.getEmployeeId(), 
+						x.getBusinessName(),
+						x.getGender(),
+						x.getBirthday(),
+						x.getEmployeeCode(),
+						x.getJobEntryDate(),
+						x.getRetirementDate()))
+				.collect(Collectors.toList());
+		
 		return data;
 	}
 }
