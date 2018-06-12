@@ -91,7 +91,7 @@ module cps001.a.vm {
 
         layout: Layout = new Layout();
         
-        // 
+        // check quyen có thể delete employee ở đăng ký thông tin cá nhân 
         enaBtnManagerEmp: KnockoutObservable<boolean> = ko.observable(true);
         enaBtnDelEmp: KnockoutObservable<boolean> = ko.observable(true);
 
@@ -125,6 +125,7 @@ module cps001.a.vm {
                 self.saveAble(!!aut.length && !hasError());
             }, 0);
             
+            // check quyen có thể delete employee ở đăng ký thông tin cá nhân
             permision().done((data: Array<IPersonAuth>) => {
                 if (data) {
                     for (var i = 0; i < data.length; i++) {
