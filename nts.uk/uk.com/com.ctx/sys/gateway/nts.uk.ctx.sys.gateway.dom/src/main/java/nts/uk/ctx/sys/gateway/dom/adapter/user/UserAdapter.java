@@ -60,6 +60,17 @@ public interface UserAdapter {
 	CheckBeforeChangePass passwordPolicyCheck(String userId, String newPass, String contractCode);
 	
 	/**
+	 * Password policy check for submit.
+	 *
+	 * @param userId the user id
+	 * @param newPass the new pass
+	 * @param contractCode the contract code
+	 * @return the check before change pass
+	 */
+	//check passPolicy
+	CheckBeforeChangePass passwordPolicyCheckForSubmit(String userId, String newPass, String contractCode);
+	
+	/**
 	 * Check before change password.
 	 *
 	 * @param userId the user id

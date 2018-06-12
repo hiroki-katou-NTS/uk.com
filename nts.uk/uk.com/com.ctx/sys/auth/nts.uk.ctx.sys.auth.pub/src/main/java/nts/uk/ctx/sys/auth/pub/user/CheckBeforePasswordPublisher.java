@@ -28,6 +28,25 @@ public interface CheckBeforePasswordPublisher {
 	//check passPolicy
 	CheckBeforeChangePassOutput passwordPolicyCheck(String userId, String newPass, String contractCode);
 	
+	/**
+	 * Password policy check for submit.
+	 *
+	 * @param userId the user id
+	 * @param newPass the new pass
+	 * @param contractCode the contract code
+	 * @return the check before change pass output
+	 */
+	//check passPolicyforSubmit
+	CheckBeforeChangePassOutput passwordPolicyCheckForSubmit(String userId, String newPass, String contractCode);
+	
+	/**
+	 * Check before reset password.
+	 *
+	 * @param userId the user id
+	 * @param newPass the new pass
+	 * @param reNewPass the re new pass
+	 * @return the check before change pass output
+	 */
 	//パスワード再設定前チェック request list 445
 	CheckBeforeChangePassOutput checkBeforeResetPassword(String userId, String newPass, String reNewPass);
 

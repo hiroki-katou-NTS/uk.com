@@ -92,6 +92,11 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			
 			//set role Id for LoginUserContextManager
 			this.setRoleId(user.getUserId());
+			
+			//アルゴリズム「ログイン記録」を実行する
+			if (!this.checkAfterLogin(user, password)){
+				return new CheckChangePassDto(true, null);
+			}
 		}
 		return new CheckChangePassDto(false, null);
 	}

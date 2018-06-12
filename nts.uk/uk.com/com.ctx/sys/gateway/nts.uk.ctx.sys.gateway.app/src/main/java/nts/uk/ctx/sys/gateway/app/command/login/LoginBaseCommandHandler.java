@@ -316,7 +316,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				// Check state
 				if (user.getPassStatus() != PassStatus.InitPassword.value) {
 					// Math PassPolicy
-					CheckBeforeChangePass mess = this.userAdapter.passwordPolicyCheck(user.getUserId(),
+					CheckBeforeChangePass mess = this.userAdapter.passwordPolicyCheckForSubmit(user.getUserId(),
 							oldPassword, user.getContractCode());
 					
 					if (mess.isError()) return false;

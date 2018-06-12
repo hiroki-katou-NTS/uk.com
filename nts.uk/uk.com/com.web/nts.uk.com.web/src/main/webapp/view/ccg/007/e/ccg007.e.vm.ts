@@ -52,6 +52,10 @@ module nts.uk.pr.view.ccg007.e {
             public submit(): void{
                 let self = this;
                 
+                if (nts.uk.ui.errors.hasError()) {
+                    return;                   
+                }
+                
                 blockUI.invisible();
                 
                 //add command
@@ -59,8 +63,12 @@ module nts.uk.pr.view.ccg007.e {
                 
                 //submitChangePass
                 service.submitChangePass(command).done(function () {
+                    let returnedData = {
+                            submit: true
+                        };
+                    nts.uk.ui.windows.setShared("childData", returnedData, false);
+                    
                     self.closeDialog();
-                    nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
                     blockUI.clear();
                 }).fail(function(res) {
                     //Return Dialog Error

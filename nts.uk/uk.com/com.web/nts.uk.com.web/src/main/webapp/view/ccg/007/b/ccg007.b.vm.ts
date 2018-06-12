@@ -176,13 +176,10 @@ module nts.uk.pr.view.ccg007.b {
                     width : 520,
                     height : 450
                 }).onClosed(function(): any {
-                    //view all code of selected item 
-//                    var childData = nts.uk.ui.windows.getShared('childData');
-//                    if (childData) {
-//                        self.timeHistory(childData.timeHistory);
-//                        self.startTime(childData.start);
-//                        self.endTime(childData.end);
-//                    }
+                    var childData = nts.uk.ui.windows.getShared('childData');
+                    if (!childData.submit.isNil) {
+                        nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
+                    }    
                 })
             }
             
@@ -199,18 +196,8 @@ module nts.uk.pr.view.ccg007.b {
                 nts.uk.ui.windows.sub.modal('/view/ccg/007/f/index.xhtml',{
                     width : 520,
                     height : 350
-                }).onClosed(function(): any {
-                    //view all code of selected item 
-                    var childData = nts.uk.ui.windows.getShared('childData');
-                    if (childData) {
-//                        self.timeHistory(childData.timeHistory);
-//                        self.startTime(childData.start);
-//                        self.endTime(childData.end);
-                    }
-                })
+                }).onClosed(function(): any {})
             }
-            
-            
         }
     }
 }

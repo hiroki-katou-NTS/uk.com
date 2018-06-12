@@ -15,7 +15,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
-import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.gateway.app.command.login.LocalContractFormCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.LocalContractFormCommandHandler;
@@ -143,15 +142,14 @@ public class LoginWs extends WebService {
 	 * @param command the command
 	 * @return the java type result
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@POST
 	@Path("submit/form2")
-	public JavaTypeResult<String> submitLoginForm2(@Context HttpServletRequest request,SubmitLoginFormTwoCommand command) {
+	public CheckChangePassDto submitLoginForm2(@Context HttpServletRequest request,SubmitLoginFormTwoCommand command) {
 		if (request.getParameter("signon") != null){
 			command.setSignOn(request.getParameter("signon").toLowerCase().equals(SIGN_ON));
 		}
 		command.setRequest(request);
-		return new JavaTypeResult(this.submitForm2.handle(command));
+		return this.submitForm2.handle(command);
 	}
 
 	/**
@@ -184,14 +182,13 @@ public class LoginWs extends WebService {
 	 * @param command the command
 	 * @return the java type result
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@POST
 	@Path("submit/form3")
-	public JavaTypeResult<String> submitLoginForm3(@Context HttpServletRequest request,SubmitLoginFormThreeCommand command) {
+	public CheckChangePassDto submitLoginForm3(@Context HttpServletRequest request,SubmitLoginFormThreeCommand command) {
 		if (request.getParameter("signon") != null){
 			command.setSignOn(request.getParameter("signon").toLowerCase().equals(SIGN_ON));
 		}
 		command.setRequest(request);
-		return new JavaTypeResult(this.submitForm3.handle(command));
+		return this.submitForm3.handle(command);
 	}
 }

@@ -35,15 +35,15 @@
 								<label data-bind="text: '#{i18n.getText('CCG007_15')}'"><br /></label></div>
 						</td>
 						<td style="padding-bottom: 15px;"><div>
-								<input tabindex="1" id="pass-current"
-									data-bind="ntsTextEditor: {
-										name: '#{i18n.getText('CCG007_2')}',
-										value: passwordCurrent,
-										required: true,
-										option: {textmode: 'password',width: '180px'},
-										enable: true,
-										readonly: false
-										}" />
+							<input tabindex="1" id="pass-current"
+								data-bind="ntsTextEditor: {
+									name: '#{i18n.getText('CCG007_2')}',
+									value: passwordCurrent,
+									required: true,
+									option: {textmode: 'password',width: '180px'},
+									enable: true,
+									readonly: false
+									}" />
 							</div>
 						</td>
 					</tr>
@@ -91,9 +91,9 @@
 				
 			</div>
 			<div id="functions-area-bottom">
-				<button class="x-large proceed" tabindex="1"
+				<button class="x-large proceed" tabindex="5"
 					data-bind="click: submit">#{i18n.getText('CCG007_19')}</button>
-				<button tabindex="2" data-bind="click: closeDialog">#{i18n.getText('CCG007_20')}</button>
+				<button tabindex="6" data-bind="click: closeDialog">#{i18n.getText('CCG007_20')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

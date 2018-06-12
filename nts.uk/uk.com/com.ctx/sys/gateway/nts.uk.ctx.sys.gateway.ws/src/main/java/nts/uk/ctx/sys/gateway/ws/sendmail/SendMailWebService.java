@@ -1,20 +1,17 @@
 package nts.uk.ctx.sys.gateway.ws.sendmail;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.arc.error.BusinessException;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.gateway.app.command.sendmail.SendMailInfoCommand;
 import nts.uk.ctx.sys.gateway.app.command.sendmail.SendMailInfoCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.sendmail.SendMailInfoFormGCommand;
+import nts.uk.ctx.sys.gateway.app.command.sendmail.SendMailInfoFormGCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.sendmail.dto.SendMailReturnDto;
-import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
-import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
 
 /**
  * The Class SendMailWebService.
@@ -24,36 +21,40 @@ import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
 @Stateless
 public class SendMailWebService extends WebService {
 	
-	/** The user adapter. */
-	@Inject
-	private UserAdapter userAdapter;
-	
 	/** The send mail info command handler. */
 	@Inject 
 	private SendMailInfoCommandHandler sendMailInfoCommandHandler;
 	
+	/** The send mail info form G command handler. */
+	@Inject 
+	private SendMailInfoFormGCommandHandler sendMailInfoFormGCommandHandler;
+	
 	/**
 	 * Submit send mail.
 	 *
-	 * @param infor the infor
+	 * @param command the command
 	 * @return the string
 	 */
 	@POST
 	@Path("submit")
-	public SendMailReturnDto submitSendMail(SendMailInfoCommand infor) {
-		//Get userInfor
-		Optional<UserImport> userInfor = this.userAdapter.findUserByContractAndLoginId(infor.getContractCode(), infor.getLoginId());
+	public SendMailReturnDto submitSendMail(SendMailInfoCommand command) {
+		//sendMail
+		this.sendMailInfoCommandHandler.handle(command);
 		
-		if (userInfor.isPresent()){
-			//check mail of user
-			if (userInfor.get().getMailAddress().isEmpty()){
-				throw new BusinessException("Msg_1129");
-			} else {
-				//sendMail
-				return this.sendMailInfoCommandHandler.handle(infor);
-			}
-		}
-		
+		return new SendMailReturnDto(null);
+	}
+	
+	/**
+	 * Submit send mail 2.
+	 *
+	 * @param command the command
+	 * @return the send mail return dto
+	 */
+	@POST
+	@Path("submit2")
+	public SendMailReturnDto submitSendMail2(SendMailInfoFormGCommand command) {
+		//sendMailformG
+		this.sendMailInfoFormGCommandHandler.handle(command);
 		return new SendMailReturnDto(null);
 	}
 }

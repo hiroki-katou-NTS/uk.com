@@ -15,7 +15,7 @@ public class SacdtPasswordChangeLogPK_ {
 	public static volatile SingularAttribute<SacdtPasswordChangeLogPK, String> userId;
 	
 	/** The login id. */
-	public static volatile SingularAttribute<SacdtPasswordChangeLogPK, String> loginId;
+	public static volatile SingularAttribute<SacdtPasswordChangeLogPK, String> logId;
 	
 	/** The modified datetime. */
 	public static volatile SingularAttribute<SacdtPasswordChangeLogPK, GeneralDateTime> modifiedDatetime;

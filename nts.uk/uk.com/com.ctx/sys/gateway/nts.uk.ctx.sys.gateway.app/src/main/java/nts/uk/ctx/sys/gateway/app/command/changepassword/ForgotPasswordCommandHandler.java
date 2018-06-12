@@ -11,6 +11,7 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.CheckBeforeChangePass;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.url.RegisterEmbededURL;
 
 @Stateless
 @Transactional
@@ -19,6 +20,9 @@ public class ForgotPasswordCommandHandler extends CommandHandler<ForgotPasswordC
 	/** The user adapter. */
 	@Inject
 	private UserAdapter userAdapter;
+	
+	@Inject
+	private RegisterEmbededURL registerEmbededURL;
 
 	@Override
 	protected void handle(CommandHandlerContext<ForgotPasswordCommand> context) {
@@ -30,7 +34,8 @@ public class ForgotPasswordCommandHandler extends CommandHandler<ForgotPasswordC
 		String newPassword = command.getNewPassword();
 		String confirmNewPassword = command.getConfirmNewPassword();
 		
-		this.checkDateMail(command.getUrl());
+		//check PassLimitExpire
+		this.registerEmbededURL.checkPassLimitExpire(command.getUrl());
 		
 		if (!StringUtil.isNullOrEmpty(oldPassword, true)
 				&& !StringUtil.isNullOrEmpty(newPassword, true)
@@ -59,10 +64,5 @@ public class ForgotPasswordCommandHandler extends CommandHandler<ForgotPasswordC
 				this.userAdapter.updatePassword(userId,newPassword);
 			}	
 		}
-	}
-	
-	private void checkDateMail(String url){
-		//get domain UrlExecInfo
-		
 	}
 }

@@ -1,11 +1,12 @@
 package nts.uk.ctx.sys.auth.pubimp.user;
 
+import java.util.UUID;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDateTime;
 import nts.gul.security.hash.password.PasswordHash;
-import nts.uk.ctx.sys.auth.dom.password.changelog.LoginId;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLog;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLogRepository;
 import nts.uk.ctx.sys.auth.dom.user.HashPassword;
@@ -30,8 +31,9 @@ public class ChangeUserPasswordPublisherImpl implements ChangeUserPasswordPublis
 		String newPassHash = PasswordHash.generate(newPassword, userId);
 
 		String loginId = AppContexts.user().employeeCode();
+		String logId = UUID.randomUUID().toString();
 
-		PasswordChangeLog passwordChangeLog = new PasswordChangeLog(new LoginId(loginId), userId, GeneralDateTime.now(),
+		PasswordChangeLog passwordChangeLog = new PasswordChangeLog(logId, userId, GeneralDateTime.now(),
 				new HashPassword(newPassHash));
 
 		// ドメインモデル「パスワード変更ログ」を登録する

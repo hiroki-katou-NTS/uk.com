@@ -168,6 +168,16 @@ public class UserAdapterImpl implements UserAdapter {
 	}
 	
 	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter#passwordPolicyCheckForSubmit(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public CheckBeforeChangePass passwordPolicyCheckForSubmit(String userId, String newPass, String contractCode) {
+		CheckBeforeChangePassOutput result = this.checkPasswordPublisher.passwordPolicyCheckForSubmit(userId, newPass, contractCode);
+		
+		return new CheckBeforeChangePass(result.isError(), this.convert(result.getMessage()));
+	}
+	
+	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter#checkBeforeChangePassword(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
