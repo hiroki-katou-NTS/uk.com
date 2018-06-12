@@ -39,9 +39,7 @@ public class SendMailWebService extends WebService {
 	@Path("submit")
 	public SendMailReturnDto submitSendMail(SendMailInfoCommand command) {
 		//sendMail
-		this.sendMailInfoCommandHandler.handle(command);
-		
-		return new SendMailReturnDto(null);
+		return this.sendMailInfoCommandHandler.handle(command);
 	}
 	
 	/**
@@ -54,7 +52,6 @@ public class SendMailWebService extends WebService {
 	@Path("submit2")
 	public SendMailReturnDto submitSendMail2(SendMailInfoFormGCommand command) {
 		//sendMailformG
-		this.sendMailInfoFormGCommandHandler.handle(command);
-		return new SendMailReturnDto(null);
+		return this.sendMailInfoFormGCommandHandler.handle(command);
 	}
 }
