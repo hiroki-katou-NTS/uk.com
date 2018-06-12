@@ -380,7 +380,7 @@ public class CalculationRangeOfOneDay {
 
 	
 	/**
-	 * 大塚�??固定勤務�?流動残業対�?(�?定�?割増を残業時間帯へ移�?)
+	 * 大塚　固定勤務の流動残業対応(所定内割増を残業時間帯へ移す)
 	 * @param statutorySet
 	 * @param dailyTime
 	 * @param overTimeWorkFrameTimeSheetList
@@ -416,25 +416,25 @@ public class CalculationRangeOfOneDay {
 			return Collections.emptyList();
 		List<WithinWorkTimeFrame> renewWithinFrame = new ArrayList<>();
 		List<OverTimeFrameTimeSheetForCalc> returnList = new ArrayList<>();
-		//�?定�?就業時間�?のルー�?
+		//所定内就業時間枠のループ
 		for(WithinWorkTimeFrame timeSheet : this.withinWorkingTimeSheet.get().getWithinWorkTimeFrame()) {
-			//割増時間帯が作�?されて�?��か確�?
+			//割増時間帯が作成されているか確認
 			if(timeSheet.getPremiumTimeSheetInPredetermined().isPresent()) {
 				
 					val newTimeSpan = timeSheet.timeSheet.getTimeSpan().getNotDuplicationWith(timeSheet.getPremiumTimeSheetInPredetermined().get().getTimeSheet());
-					//就業時間�?時間帯と割増時間帯の重なって�?���?���?���?
-					//就業時間�?時間帯を作り直�?
+					//就業時間枠時間帯と割増時間帯の重なっていない部分で、
+					//就業時間枠時間帯を作り直す
 					if(newTimeSpan.isPresent()) {
 						renewWithinFrame.add(new WithinWorkTimeFrame(timeSheet.getWorkingHoursTimeNo(),
 																	 new TimeZoneRounding(newTimeSpan.get().getStart(),newTimeSpan.get().getEnd(),timeSheet.getTimeSheet().getRounding()),
 																	 newTimeSpan.get().getSpan(),
 																	 timeSheet.duplicateNewTimeSpan(newTimeSpan.get()),
 																	 timeSheet.duplicateNewTimeSpan(newTimeSpan.get()),
-																	 timeSheet.getDuplicatedBonusPayNotStatic(timeSheet.getBonusPayTimeSheet(), newTimeSpan.get()),//�?給
+																	 timeSheet.getDuplicatedBonusPayNotStatic(timeSheet.getBonusPayTimeSheet(), newTimeSpan.get()),//加給
 																	 timeSheet.getMidNightTimeSheet().isPresent()
 																	 	?timeSheet.getDuplicateMidNightNotStatic(timeSheet.getMidNightTimeSheet().get(),newTimeSpan.get())
-																	 	:Optional.empty(),//深�?
-																	 timeSheet.getDuplicatedSpecBonusPayzNotStatic(timeSheet.getSpecBonusPayTimesheet(), newTimeSpan.get()),//特定日�?給
+																	 	:Optional.empty(),//深夜
+																	 timeSheet.getDuplicatedSpecBonusPayzNotStatic(timeSheet.getSpecBonusPayTimesheet(), newTimeSpan.get()),//特定日加給
 																	 timeSheet.getLateTimeSheet(),
 																	 timeSheet.getLeaveEarlyTimeSheet()
 											 ));
@@ -463,7 +463,7 @@ public class CalculationRangeOfOneDay {
 				
 			}
 		}
-		//�?定�?割増時間�?期化
+		//所定内割増時間初期化
 		if(this.withinWorkingTimeSheet.isPresent()) {
 			this.withinWorkingTimeSheet.get().resetPremiumTimeSheet();
 		}
@@ -496,7 +496,7 @@ public class CalculationRangeOfOneDay {
 	}
 
 	/**
-	 * �?��夜時間�?算�?結果から深夜時間�?合計を算�?する
+	 * 各深夜時間の算出結果から深夜時間の合計を算出する
 	 * 
 	 * @return 深夜時�?
 	 */
@@ -867,6 +867,8 @@ public class CalculationRangeOfOneDay {
 	 }
 	 
 	 /**
+	  * 大塚モード使用時専用の��?��、早��?削除処��?
+	  * 大塚モード使用時専用の�?��、早�?削除処�?
 	  * 大塚モード使用時専用の遅刻、早退削除処理
 	  */
 	 public void cleanLateLeaveEarlyTimeForOOtsuka() {
