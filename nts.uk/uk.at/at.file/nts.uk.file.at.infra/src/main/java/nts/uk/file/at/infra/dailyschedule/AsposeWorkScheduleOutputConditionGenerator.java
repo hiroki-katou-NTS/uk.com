@@ -520,7 +520,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		List<PrintRemarksContent> lstRemarkContent = outSche.getLstRemarkContent();
 		
 		for (String employeeId: lstEmployeeId) {
-			Optional<EmployeeDto> optEmployeeDto = lstEmployeeDto.stream().filter(employee -> employee.getEmployeeId() == employeeId).findFirst();
+			Optional<EmployeeDto> optEmployeeDto = lstEmployeeDto.stream().filter(employee -> StringUtils.equalsAnyIgnoreCase(employee.getEmployeeId(),employeeId)).findFirst();
 			
 			datePeriod.stream().forEach(date -> {
 				Optional<WorkplaceDailyReportData> optDailyWorkplaceData =  reportData.getDailyReportData().getLstDailyReportData().stream().filter(x -> x.getDate().compareTo(date) == 0).findFirst();
@@ -1128,14 +1128,16 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		List<AttendanceItemsDisplay> lstItem = condition.getLstDisplayedAttendance();
 		headerData.setLstOutputItemSettingCode(new ArrayList<>());
 		
-		List<Integer> lstAttendanceId = lstItem.stream().map(x -> x.getAttendanceDisplay()).collect(Collectors.toList());
+		List<Integer> lstAttendanceId = lstItem.stream().sorted((o1, o2) -> (o1.getOrderNo() - o2.getOrderNo())).map(x -> x.getAttendanceDisplay()).collect(Collectors.toList());
 		List<DailyAttendanceItem> lstDailyAttendanceItem = attendanceNameService.getNameOfDailyAttendanceItem(lstAttendanceId);
-		headerData.lstOutputItemSettingCode = lstDailyAttendanceItem.stream().map(x -> {
+		
+		lstAttendanceId.stream().forEach(x -> {
+			DailyAttendanceItem attendanceItem = lstDailyAttendanceItem.stream().filter(item -> item.getAttendanceItemId() == x).findFirst().get();
 			OutputItemSetting setting = new OutputItemSetting();
-			setting.setItemCode(x.getAttendanceItemDisplayNumber());
-			setting.setItemName(x.getAttendanceItemName());
-			return setting;
-		}).collect(Collectors.toList());
+			setting.setItemCode(attendanceItem.getAttendanceItemDisplayNumber());
+			setting.setItemName(attendanceItem.getAttendanceItemName());
+			headerData.lstOutputItemSettingCode.add(setting);
+		});
 	}
 	
 	/**
