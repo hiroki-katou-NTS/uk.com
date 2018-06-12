@@ -2701,7 +2701,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// update data TimeLeavingOfDailyPerformance
 
 		if (isNullStampOrActualStamp && isNullTimeActualStamp) {
-			List<TimeLeavingWork> lstTimeLeave = timeDailyPer.getTimeLeavingWorks() != null
+			List<TimeLeavingWork> lstTimeLeave = (timeDailyPer!=null &&timeDailyPer.getTimeLeavingWorks() != null)
 					? timeDailyPer.getTimeLeavingWorks() : new ArrayList<TimeLeavingWork>();
 
 			if ("出勤".equals(attendanceClass) && "実打刻".equals(actualStampClass)) {

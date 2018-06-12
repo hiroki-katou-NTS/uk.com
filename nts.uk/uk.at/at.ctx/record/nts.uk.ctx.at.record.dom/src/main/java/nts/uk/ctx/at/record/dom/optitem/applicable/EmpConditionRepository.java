@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem.applicable;
 
+import java.util.List;
+
 /**
  * The Interface EmpConditionRepository.
  */
@@ -24,5 +26,8 @@ public interface EmpConditionRepository {
 	 * @return the emp condition
 	 */
 	EmpCondition find(String companyId, Integer optionalItemNo);
+	
+	
+	List<EmpCondition> findAll(String companyId, List<Integer> optionalItemNoList);
 
 }

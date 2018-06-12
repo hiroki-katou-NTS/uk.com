@@ -26,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -337,5 +338,19 @@ public class DefaultClosureServiceImpl implements ClosureService {
 		}
 		
 		return optClosure.get();
+	}
+
+	@Override
+	public DatePeriod findClosurePeriod(String employeeId, GeneralDate baseDate) {
+		// 社員に対応する処理締めを取得する.
+		Closure closure = this.getClosureDataByEmployee(employeeId, baseDate);
+		if(closure == null) {
+			return null;
+		}
+		CurrentMonth currentMonth = closure.getClosureMonth();
+		
+		// 当月の期間を算出する.
+		return this.getClosurePeriod(
+				closure.getClosureId().value, currentMonth.getProcessingYm());
 	}
 }

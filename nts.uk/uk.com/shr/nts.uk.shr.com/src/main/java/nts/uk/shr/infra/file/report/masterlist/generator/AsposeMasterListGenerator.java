@@ -32,25 +32,25 @@ import nts.uk.shr.infra.file.report.masterlist.webservice.ReportType;
 @Stateless
 public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implements MasterListReportGenerator {
 
-	private final String REPORT_ID = "MASTER_LIST";
+	private static final String REPORT_ID = "MASTER_LIST";
 
-	// private final String REPORT_FILE_NAME = "マスタリスト_{TYPE}_{DATE}";
+	// private static final String REPORT_FILE_NAME = "マスタリスト_{TYPE}_{DATE}";
 
-	private final int HEADER_INFOR_START_ROW = 0;
+	private static final int HEADER_INFOR_START_ROW = 0;
 
-	private final int START_COLUMN = 0;
+	private static final int START_COLUMN = 0;
 
-	private final int MASTERLIST_DATA_START_ROW = 7;
+	private static final int MASTERLIST_DATA_START_ROW = 7;
 	
-	private final int TABLE_DISTANCE = 3;
+	private static final int TABLE_DISTANCE = 3;
 
-	private final String FONT_FAMILY = "ＭＳ ゴシック";
+	private static final String FONT_FAMILY = "ＭＳ ゴシック";
 
-	private final int FONT_SIZE = 10;
+	private static final int FONT_SIZE = 10;
 
-	private final int STANDARD_WIDTH = 100;
+	private static final int STANDARD_WIDTH = 100;
 
-	private final int STANDARD_HEIGHT = 25;
+	private static final int STANDARD_HEIGHT = 25;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, MasterListExportSource dataSource) {

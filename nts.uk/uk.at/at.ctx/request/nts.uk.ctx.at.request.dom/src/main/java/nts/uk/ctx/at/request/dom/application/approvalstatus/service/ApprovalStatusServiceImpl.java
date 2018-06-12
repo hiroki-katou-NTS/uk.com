@@ -440,12 +440,14 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	 */
 	private String getEmbeddedURL(String eid, ApprovalStatusMailTemp domain, ApprovalStatusMailType mailType) {
 		List<String> listUrl = new ArrayList<>();
+		String contractCD = AppContexts.user().contractCode();
+		String employeeCD = AppContexts.user().employeeCode();
 		// 承認状況メールテンプレート.URL承認埋込
 		if (NotUseAtr.USE.equals(domain.getUrlApprovalEmbed())) {
 			List<UrlTaskIncre> listTask = new ArrayList<>();
 			listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "activeMode", "approval"));
 			// アルゴリズム「埋込URL情報登録」を実行する
-			String url1 = registerEmbededURL.embeddedUrlInfoRegis("CMM045", "A", 1, 1, eid, "", listTask);
+			String url1 = registerEmbededURL.embeddedUrlInfoRegis("CMM045", "A", 1, 1, eid, contractCD, "", employeeCD, listTask);
 			listUrl.add(url1);
 		}
 		// 承認状況メールテンプレート.URL日別埋込
@@ -459,14 +461,14 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "errorRef", "true"));
 			listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "changePeriod", "true"));
 			// アルゴリズム「埋込URL情報登録」を実行する
-			String url2 = registerEmbededURL.embeddedUrlInfoRegis("KDW003", "A", 1, 1, eid, "", listTask);
+			String url2 = registerEmbededURL.embeddedUrlInfoRegis("KDW003", "A", 1, 1, eid, contractCD, "", employeeCD, listTask);
 			listUrl.add(url2);
 		}
 		// 承認状況メールテンプレート.URL月別埋込
 		if (NotUseAtr.USE.equals(domain.getUrlMonthEmbed())) {
 			List<UrlTaskIncre> listTask = new ArrayList<>();
 			// アルゴリズム「埋込URL情報登録」を実行する
-			String url3 = registerEmbededURL.embeddedUrlInfoRegis("KMW003", "A", 1, 1, eid, "", listTask);
+			String url3 = registerEmbededURL.embeddedUrlInfoRegis("KMW003", "A", 1, 1, eid, contractCD, "", employeeCD, listTask);
 			listUrl.add(url3);
 		}
 		String title = TextResource.localize("KAF018_190");

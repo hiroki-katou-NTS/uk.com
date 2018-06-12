@@ -31,7 +31,7 @@ public class JpaWorkTypeDivergenceReferenceTimeRepository extends JpaRepository
 		implements WorkTypeDivergenceReferenceTimeRepository {
 
 	/** The Constant DIVERGENCE_TIME_MAX_COUNT. */
-	private final int DIVERGENCE_TIME_MAX_COUNT = 10;
+	private static final int DIVERGENCE_TIME_MAX_COUNT = 10;
 
 	/*
 	 * (non-Javadoc)

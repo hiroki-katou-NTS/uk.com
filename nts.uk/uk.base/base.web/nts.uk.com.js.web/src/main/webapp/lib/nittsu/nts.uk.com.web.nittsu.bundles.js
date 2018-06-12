@@ -4151,6 +4151,7 @@ var nts;
                                         ? this.constraint.maxLength : 9999) : 9999]), validateResult.errorCode);
                             return result;
                         }
+                        return validateResult;
                     }
                     result.success(inputText);
                     return result;
@@ -4283,7 +4284,7 @@ var nts;
                             }
                             if (!util.isNullOrUndefined(option) && option.isCheckExpression === true) {
                                 if (!uk.text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
-                                    result.fail(nts.uk.resource.getMessage('Msg_1285'), 'Msg_1285');
+                                    result.fail(nts.uk.resource.getMessage('Msg_1285', [this.name]), 'Msg_1285');
                                     return result;
                                 }
                             }
@@ -14610,7 +14611,7 @@ var nts;
             var koExtentions;
             (function (koExtentions) {
                 var count = nts.uk.text.countHalf;
-                var WoC = 6, MINWIDTH = 'auto', TAB_INDEX = 'tabindex', KEYPRESS = 'keypress', KEYDOWN = 'keydown', FOCUS = 'focus', VALIDATE = 'validate', OPENDDL = 'openDropDown', CLOSEDDL = 'closeDropDown', OPENED = 'dropDownOpened', IGCOMB = 'igCombo', OPTION = 'option', ENABLE = 'enable', EDITABLE = 'editable', DROPDOWN = 'dropdown', COMBOROW = 'nts-combo-item', COMBOCOL = 'nts-column nts-combo-column', DATA = '_nts_data', CHANGED = '_nts_changed', SHOWVALUE = '_nts_show', NAME = '_nts_name', CWIDTH = '_nts_col_width', VALUE = '_nts_value', REQUIRED = '_nts_required';
+                var WoC = 9, MINWIDTH = 'auto', TAB_INDEX = 'tabindex', KEYPRESS = 'keypress', KEYDOWN = 'keydown', FOCUS = 'focus', VALIDATE = 'validate', OPENDDL = 'openDropDown', CLOSEDDL = 'closeDropDown', OPENED = 'dropDownOpened', IGCOMB = 'igCombo', OPTION = 'option', ENABLE = 'enable', EDITABLE = 'editable', DROPDOWN = 'dropdown', COMBOROW = 'nts-combo-item', COMBOCOL = 'nts-column nts-combo-column', DATA = '_nts_data', CHANGED = '_nts_changed', SHOWVALUE = '_nts_show', NAME = '_nts_name', CWIDTH = '_nts_col_width', VALUE = '_nts_value', REQUIRED = '_nts_required';
                 var ComboBoxBindingHandler = (function () {
                     function ComboBoxBindingHandler() {
                         this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -14670,7 +14671,7 @@ var nts;
                                     $show.html(_template);
                                     _.each(ks, function (k) {
                                         $show.find("." + k.toLowerCase() + ":not(:last-child)")
-                                            .css('min-width', cws[k] * WoC + "px");
+                                            .css('width', cws[k] * WoC + "px");
                                         $show.find("." + k.toLowerCase())
                                             .css('height', '31px')
                                             .css('line-height', '27px')
@@ -14755,7 +14756,7 @@ var nts;
                                     _.each(ks, function (k) {
                                         $("[class*=ui-igcombo-orientation]")
                                             .find("." + k.toLowerCase() + ":not(:last-child)")
-                                            .css('min-width', cws[k] * WoC + "px");
+                                            .css('width', cws[k] * WoC + "px");
                                     });
                                 },
                                 selectionChanged: function (evt, ui) {
@@ -14772,6 +14773,12 @@ var nts;
                                     $element.trigger(CHANGED, [CHANGED, true]);
                                     setTimeout(function () {
                                         var data = $element.data(DATA);
+                                        // select first if !select and !editable
+                                        if (!data[EDITABLE] && !data[VALUE]) {
+                                            $element.trigger(CHANGED, [VALUE, $element.igCombo('value')]);
+                                            //reload data
+                                            data = $element.data(DATA);
+                                        }
                                         // set value on select
                                         accessor.value(data[VALUE]);
                                         // validate if required
@@ -14816,7 +14823,7 @@ var nts;
                                     // calc new size of template columns
                                     _.each(ks, function (k) {
                                         $(ui.list).find("." + k.toLowerCase() + (_.size(ks) == 1 ? '' : ':not(:last-child)'))
-                                            .css('min-width', cws[k] * WoC + "px");
+                                            .css('width', cws[k] * WoC + "px");
                                     });
                                     // fix min width of dropdown = $element.width();
                                     $(ui.list)
@@ -14907,6 +14914,7 @@ var nts;
                                 else {
                                     value = undefined;
                                 }
+                                accessor.value(value);
                             }
                             // check flag changed for validate
                             if (_.has($element.data(DATA), VALUE)) {
@@ -16845,40 +16853,80 @@ var nts;
                      * Init.
                      */
                     NtsFormLabelBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var primitiveValue = ko.unwrap(data.constraint);
-                        var isRequired = ko.unwrap(data.required) === true;
-                        var isInline = ko.unwrap(data.inline) === true;
-                        var isEnable = ko.unwrap(data.enable) !== false;
-                        var cssClass = data.cssClass !== undefined ? ko.unwrap(data.cssClass) : "";
-                        var $formLabel = $(element).addClass('form-label');
-                        $('<label/>').html($formLabel.html()).appendTo($formLabel.empty());
-                        if (!isEnable) {
-                            $formLabel.addClass('disabled');
-                        }
-                        else {
-                            $formLabel.removeClass('disabled');
-                        }
-                        if (isRequired) {
-                            $formLabel.addClass('required');
-                        }
-                        if (primitiveValue !== undefined) {
-                            $formLabel.addClass(isInline ? 'inline' : 'broken');
-                            var constraintText = uk.util.getConstraintMes(primitiveValue);
-                            $('<i/>').text(constraintText).appendTo($formLabel);
-                        }
+                        element.classList.add('form-label');
                     };
                     /**
                      * Update
                      */
                     NtsFormLabelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var text = (data.text !== undefined) ? ko.unwrap(data.text) : $(element).find('label').html();
-                        var cssClass = data.cssClass !== undefined ? ko.unwrap(data.cssClass) : "";
-                        var container = $(element);
-                        var $label = container.find("label");
-                        $label.removeClass($label.data("cssClass")).addClass(cssClass).html(text);
-                        $label.data("cssClass", cssClass);
+                        var accessor = valueAccessor(), label = element.querySelector('label'), constraint = element.querySelector('i'), isInline = ko.unwrap(accessor.inline) === true, isEnable = ko.unwrap(accessor.enable) !== false, isRequired = ko.unwrap(accessor.required) === true, text = !_.isNil(accessor.text) ? ko.unwrap(accessor.text) : (!!label ? label.innerHTML : element.innerHTML), cssClass = !_.isNil(accessor.cssClass) ? ko.unwrap(accessor.cssClass) : '', primitive = !_.isNil(accessor.constraint) ? ko.unwrap(accessor.constraint) : '';
+                        // clear old html
+                        element.innerHTML = '';
+                        // show enable or disabled style
+                        if (!isEnable) {
+                            element.classList.add('disabled');
+                        }
+                        else {
+                            element.classList.remove('disabled');
+                        }
+                        // show inline mode or broken mode
+                        if (!!isRequired) {
+                            element.classList.add('required');
+                        }
+                        else {
+                            element.classList.remove('required');
+                        }
+                        if (!!isInline) {
+                            element.classList.add('inline');
+                            element.classList.remove('broken');
+                            // fix height (inline mode)
+                            element.style.height = '37px';
+                            element.style.lineHeight = '37px';
+                        }
+                        else {
+                            element.classList.remove('inline');
+                        }
+                        // init new label element
+                        if (!label) {
+                            label = document.createElement('label');
+                        }
+                        // init new constraint element
+                        if (!constraint) {
+                            constraint = document.createElement('i');
+                        }
+                        // append label tag to control
+                        element
+                            .appendChild(label);
+                        label.innerHTML = text;
+                        // add css class to label
+                        if (!!cssClass) {
+                            label.classList.add(cssClass);
+                        }
+                        // show primitive constraint if exist
+                        if (!!primitive) {
+                            if (!isInline) {
+                                element.classList.add('broken');
+                            }
+                            // append constraint
+                            element.appendChild(constraint);
+                            if (_.isArray(primitive)) {
+                                var miss = _.map(primitive, function (p) { return __viewContext.primitiveValueConstraints[p]; });
+                                if (miss.indexOf(false) > -1) {
+                                    constraint.innerHTML = 'UNKNOW_PRIMITIVE';
+                                }
+                                else {
+                                    constraint.innerHTML = uk.util.getConstraintMes(primitive);
+                                }
+                            }
+                            else {
+                                if (!__viewContext.primitiveValueConstraints[primitive]) {
+                                    constraint.innerHTML = 'UNKNOW_PRIMITIVE';
+                                }
+                                else {
+                                    constraint.innerHTML = uk.util.getConstraintMes(primitive);
+                                }
+                            }
+                        }
                     };
                     return NtsFormLabelBindingHandler;
                 }());
@@ -17102,7 +17150,7 @@ var nts;
                                 if (disables_1) {
                                     _.forEach(selected_1, function (s, i) {
                                         _.forEach(disables_1, function (d) {
-                                            if (d === s.id) {
+                                            if (d === s.id && uk.util.isNullOrUndefined(_.find(value, function (iv) { return iv === d; }))) {
                                                 $grid.igGridSelection("deselectRowById", d);
                                                 disableIds_1.push(i);
                                                 return false;
@@ -17114,7 +17162,9 @@ var nts;
                                     });
                                 }
                                 if (!nts.uk.util.isNullOrEmpty(selected_1)) {
-                                    data.value(_.map(selected_1, function (s) { return s.id; }));
+                                    var newValue = _.map(selected_1, function (s) { return s.id; });
+                                    newValue = _.union(newValue, _.intersection(disables_1, value));
+                                    data.value(newValue);
                                 }
                                 else {
                                     data.value([]);
@@ -22360,8 +22410,11 @@ var nts;
                         }
                         var flatCols = validation.scanValidators($self, options.columns);
                         // Cell color
-                        var cellFormatter = new color.CellFormatter($self, options.features, options.ntsFeatures, flatCols);
-                        $self.data(internal.CELL_FORMATTER, cellFormatter);
+                        var cellFormatter = $self.data(internal.CELL_FORMATTER);
+                        if (!cellFormatter) {
+                            cellFormatter = new color.CellFormatter($self, options.features, options.ntsFeatures, flatCols);
+                            $self.data(internal.CELL_FORMATTER, cellFormatter);
+                        }
                         $self.addClass('compact-grid nts-grid');
                         if ($self.closest(".nts-grid-wrapper").length === 0) {
                             $self.wrap($("<div class='nts-grid-wrapper'/>"));
@@ -23756,6 +23809,7 @@ var nts;
                         functions.HEADER_TEXT = "headerText";
                         functions.SELECTED_SHEET = "selectedSheet";
                         functions.CLEAR_ROW_STATES = "clearRowStates";
+                        functions.RESET_ORIG_DS = "resetOrigDataSource";
                         functions.DESTROY = "destroy";
                         /**
                          * Actions
@@ -23803,6 +23857,9 @@ var nts;
                                 case functions.CLEAR_ROW_STATES:
                                     clearStates($grid, params[0]);
                                     break;
+                                case functions.RESET_ORIG_DS:
+                                    resetOrigDs($grid, params[0]);
+                                    break;
                                 case functions.DESTROY:
                                     destroy($grid);
                                     break;
@@ -23827,6 +23884,48 @@ var nts;
                          * Update row
                          */
                         function updateRow($grid, rowId, object, autoCommit) {
+                            var selectedSheet = getSelectedSheet($grid);
+                            if (selectedSheet) {
+                                var grid_1 = $grid.data("igGrid");
+                                var options_2 = grid_1.options;
+                                Object.keys(object).forEach(function (k) {
+                                    if (!_.includes(selectedSheet.columns, k)) {
+                                        grid_1.dataSource.setCellValue(rowId, k, object[k], grid_1.options.autoCommit);
+                                        delete object[k];
+                                        if (!uk.util.isNullOrUndefined(options_2.userId) && _.isFunction(options_2.getUserId)) {
+                                            var uId = options_2.getUserId(rowId);
+                                            if (uId === options_2.userId) {
+                                                var targetEdits = $grid.data(internal.TARGET_EDITS);
+                                                if (!targetEdits) {
+                                                    targetEdits = {};
+                                                    targetEdits[rowId] = [k];
+                                                    $grid.data(internal.TARGET_EDITS, targetEdits);
+                                                    return;
+                                                }
+                                                if (!targetEdits[rowId]) {
+                                                    targetEdits[rowId] = [k];
+                                                    return;
+                                                }
+                                                targetEdits[rowId].push(k);
+                                            }
+                                            else {
+                                                var otherEdits = $grid.data(internal.OTHER_EDITS);
+                                                if (!otherEdits) {
+                                                    otherEdits = {};
+                                                    otherEdits[rowId] = [k];
+                                                    $grid.data(internal.OTHER_EDITS, otherEdits);
+                                                    return;
+                                                }
+                                                if (!otherEdits[rowId]) {
+                                                    otherEdits[rowId] = [k];
+                                                    return;
+                                                }
+                                                otherEdits[rowId].push(k);
+                                            }
+                                        }
+                                    }
+                                });
+                            }
                             updating.updateRow($grid, rowId, object, undefined, true);
                             if (!autoCommit) {
                                 var updatedRow = $grid.igGrid("rowById", rowId, false);
@@ -24055,8 +24154,8 @@ var nts;
                                 if (headerCell) {
                                     $(headerCell.find("span")[1]).html(text);
                                 }
-                                var options_2 = $grid.data(internal.GRID_OPTIONS);
-                                updateHeaderColumn(options_2.columns, key, text, group);
+                                var options_3 = $grid.data(internal.GRID_OPTIONS);
+                                updateHeaderColumn(options_3.columns, key, text, group);
                                 var sheetMng_1 = $grid.data(internal.SHEETS);
                                 if (sheetMng_1) {
                                     Object.keys(sheetMng_1.sheetColumns).forEach(function (k) {
@@ -24128,6 +24227,13 @@ var nts;
                             }
                         }
                         /**
+                         * Reset orig ds.
+                         */
+                        function resetOrigDs($grid, ds) {
+                            $grid.data(internal.ORIG_DS, ds);
+                            $grid.data(internal.UPDATED_CELLS, null);
+                        }
+                        /**
                          * Get selected sheet.
                          */
                         function getSelectedSheet($grid) {
@@ -24145,12 +24251,14 @@ var nts;
                             var $container = $grid.closest(".nts-grid-container");
                             if ($container.length === 0) {
                                 $grid.igGrid("destroy");
+                                $grid.off();
                                 $grid.removeData();
                                 return;
                             }
                             $container.find(".nts-grid-sheet-buttons").remove();
                             $($grid.igGrid("container")).unwrap().unwrap();
                             $grid.igGrid("destroy");
+                            $grid.off();
                             $grid.removeData();
                         }
                     })(functions || (functions = {}));
@@ -24804,7 +24912,7 @@ var nts;
                             };
                             LinkLabel.prototype.disable = function ($container) {
                                 var $wrapper = $container.find("." + this.containerClass()).data("enable", false);
-                                $wrapper.find("a").css("color", "#AAA").off("click");
+                                $wrapper.find("a").css("color", "#333").off("click");
                             };
                             return LinkLabel;
                         }(NtsControlBase));
@@ -29352,6 +29460,7 @@ var nts;
                         var data = valueAccessor();
                         var image = ko.unwrap(data.image);
                         var textId = ko.unwrap(data.textId);
+                        var textParams = ko.unwrap(data.textParams);
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var position = ko.unwrap(data.position);
                         var isImage = !uk.util.isNullOrUndefined(image);
@@ -29396,19 +29505,27 @@ var nts;
                                 $caret.css(caretPosition, parseFloat($popup.css(caretPosition)) * -1);
                             }
                         }).wrap($("<div class='ntsControl ntsHelpButton'></div>"));
+                        var $container = $(element).closest(".ntsHelpButton");
                         var $content;
                         if (isImage) {
                             $content = $("<img src='" + uk.request.resolvePath(image) + "' />");
                         }
                         else {
-                            $content = $("<span>").text(uk.resource.getText(textId));
+                            $content = $("<span>").text(uk.resource.getText(textId, textParams));
+                            $content.css('white-space', 'pre-line');
                         }
-                        var $container = $(element).closest(".ntsHelpButton");
                         var $caret = $("<span class='caret-helpbutton caret-" + caretDirection + "'></span>");
                         var $popup = $("<div class='nts-help-button-image'></div>")
                             .append($caret)
                             .append($content)
                             .appendTo($container).hide();
+                        if (!isImage) {
+                            var CHARACTER_DEFAULT_WIDTH = 7;
+                            var DEFAULT_SPACE = 5;
+                            var textLengths = _.map($content.text().split(/\r\n/g), function (o) { return nts.uk.text.countHalf(o); });
+                            var WIDTH_SHOULD_NEED = CHARACTER_DEFAULT_WIDTH * _.max(textLengths) + DEFAULT_SPACE;
+                            $popup.width(WIDTH_SHOULD_NEED > 300 ? 300 : WIDTH_SHOULD_NEED);
+                        }
                         // Click outside event
                         $("html").on("click", function (event) {
                             if (!$container.is(event.target) && $container.has(event.target).length === 0) {

@@ -79,7 +79,8 @@
 						</table>
 					</div>
 					<div id="content-right">
-						<div data-bind="template: { afterRender: function(){ $('#ctgName').focus();}}">
+						<div
+							data-bind="template: { afterRender: function(){ $('#ctgName').focus();}}">
 							<!-- A3_001: label コード/名称 -->
 							<div
 								data-bind="ntsFormLabel: {required: true, constraint: ['ValueSettingCode' , 'ValueSettingName']}"
@@ -195,8 +196,8 @@
 												class="months-input" data-bind="text: itemName" /></abbr>
 										</td>
 										<td class="input-units-2">
-												<div id="combo-box"
-													data-bind="ntsComboBox: {
+											<div id="combo-box"
+												data-bind="ntsComboBox: {
 														options: listComboItem,
 														optionsValue: 'code',
 														value: selectedRuleCode,
@@ -208,7 +209,7 @@
 														columns: [
 															{ prop: 'name', length: 10 },
 														]}">
-												</div>
+											</div>
 										</td>
 
 										<com:ko-if
@@ -217,7 +218,7 @@
 										</com:ko-if>
 
 										<com:ko-if bind="(selectedRuleCode() === 2 )">
-											<td class="input-units-3 ">
+											<td class="input-units-3 flex valign-center">
 												<!-- String  --> <com:ko-if bind="(dataType() === 1)">
 													<com:ko-if bind="(isRequired() === 1)">
 														<com:ko-if bind="(fixedItem === true)">
@@ -260,7 +261,10 @@
 																attr: { NameID: itemName }" />
 														</com:ko-if>
 													</com:ko-if>
-												</com:ko-if> <!--  date  --> <com:ko-if bind="(dataType() === 3)">
+												</com:ko-if> 
+												<!--  date  -->
+												
+												 <com:ko-if bind="(dataType() === 3)">
 													<!--  date thuộc kiểu ngày tháng năm   -->
 													<com:ko-if bind="(dateType === 1)">
 														<com:ko-if bind="(isRequired() === 1)">
@@ -366,9 +370,7 @@
 																attr: { NameID: itemName }" />
 
 													</com:ko-if>
-												</com:ko-if> 
-												<!-- 	 timepoint   --> 
-												<com:ko-if bind="(dataType() === 5)">
+												</com:ko-if> <!-- 	 timepoint   --> <com:ko-if bind="(dataType() === 5)">
 													<com:ko-if bind="(isRequired() === 1)">
 														<input id="timePoint" class="sub-input-units save-error"
 															data-bind="ntsTimeWithDayEditor: { 
@@ -391,9 +393,7 @@
 																readonly: false },
 																attr: { NameID: itemName }" />
 													</com:ko-if>
-												</com:ko-if> 
-												<!--   list box  --> 
-												<com:ko-if bind="(dataType() === 6)">
+												</com:ko-if> <!--   list box  --> <com:ko-if bind="(dataType() === 6)">
 													<div id="combox1"
 														data-bind="ntsComboBox: {
 																options: selection,
@@ -407,9 +407,7 @@
 																	{ prop: 'optionText', length: 10 },
 																]}">
 													</div>
-												</com:ko-if>
-												 <!-- number   --> 
-												 <com:ko-if bind="(dataType() === 2)">
+												</com:ko-if> <!-- number   --> <com:ko-if bind="(dataType() === 2)">
 													<com:ko-if
 														bind=" ((numbericItem.numberDecimalPart === 0) &amp; (numbericItem.numberIntegerPart !== 0)) ">
 														<com:ko-if bind="(isRequired() === 1)">
@@ -480,8 +478,8 @@
 															</div>
 														</com:ko-if>
 													</com:ko-if>
-												</com:ko-if> 
-												
+												</com:ko-if>
+												 
 												<com:ko-if bind="(dataType() === 7)">
 													<div
 														data-bind="ntsRadioBoxGroup: {
@@ -493,9 +491,10 @@
 												</com:ko-if> 
 												
 												<com:ko-if bind="(dataType() === 8)">
-													<button data-bind='click: clickButtonCS00020'>#{i18n.getText('CPS009_37')}</button>
+													<button  data-bind='click: clickButtonCS00020'>#{i18n.getText('CPS009_37')}</button>
 													<span class="caret-right caret-inline"></span>
-													<span data-bind="text: selectionName"></span>
+													<span class="limited-label selectionName" data-bind="text: selectionName"></span>
+													
 												</com:ko-if>
 											</td>
 										</com:ko-if>

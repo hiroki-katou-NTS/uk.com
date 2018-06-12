@@ -24,4 +24,6 @@ public interface RemandService {
 	 */
 	public void doRemandForApplicant(String companyID, String rootStateID, Integer rootType);
 	
+	public Integer getCurrentApprovePhase(String rootStateID, Integer rootType);
+	
 }

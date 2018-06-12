@@ -5,9 +5,8 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
-* 
+* 差し戻しのメール内容
 */
-@AllArgsConstructor
 @Getter
 public class ContentOfRemandMail extends AggregateRoot
 {
@@ -20,17 +19,17 @@ public class ContentOfRemandMail extends AggregateRoot
     /**
     * 差し戻しメール件名
     */
-    private String mailTitle;
+    private MailTitle mailTitle;
     
     /**
     * 差し戻しメール本文
     */
-    private String mailBody;
-    
-    public static ContentOfRemandMail createFromJavaType(String cid, String mailTitle, String mailBody)
-    {
-        ContentOfRemandMail  remandMail =  new ContentOfRemandMail(cid, mailTitle,  mailBody);
-        return remandMail;
-    }
+    private MailBody mailBody;
+
+	public ContentOfRemandMail(String cid, String mailTitle, String mailBody) {
+		this.cid = cid;
+		this.mailTitle = new MailTitle(mailTitle);
+		this.mailBody = new MailBody(mailBody);
+	}
     
 }

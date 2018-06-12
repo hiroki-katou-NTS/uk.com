@@ -54,6 +54,7 @@ public class JpaEmployeesDeletionRepository extends JpaRepository implements Emp
 		for (EmployeeDeletion employeeDeletion : employees) {
 			this.commandProxy().insert(SspdtEmployeesDeletion.toEntity(employeeDeletion));
 		}
+		this.getEntityManager().flush();
 	}
 
 	/*
