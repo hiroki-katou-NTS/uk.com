@@ -14939,7 +14939,7 @@ var nts;
                             options = _(options)
                                 .map(function (m) {
                                 var c = {}, k = ko.toJS(m), t = k[optionsText], v = k[optionsValue], n = _.omit(k, [optionsValue]), nt = _.map(props, function (p) { return k[p]; }).join(' ').trim();
-                                c[optionsValue] = v || '';
+                                c[optionsValue] = !_.isNil(v) ? v : '';
                                 c['nts_' + optionsText] = nt || t || ' ';
                                 return _.extend(n, c);
                             })
@@ -20928,7 +20928,7 @@ var nts;
 /// <reference path="ui/ko-ext/wizard-ko-ext.ts"/>
 /// <reference path="ui/ko-ext/legendbutton-ko-ext.ts"/>
 /// <reference path="ui/ko-ext/charset-setting-ko-ext.ts"/>
-/// <reference path="ui/function-wrap/contextmenu.ts"/> 
+/// <reference path="ui/function-wrap/contextmenu.ts"/>
 /// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {

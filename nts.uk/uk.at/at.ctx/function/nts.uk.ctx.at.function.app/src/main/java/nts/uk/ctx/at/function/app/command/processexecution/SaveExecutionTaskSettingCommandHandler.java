@@ -297,6 +297,7 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 							.startDate(GeneralDate.ymd(startDate.year(), startDate.month(), startDate.day()))
 							.endDate(GeneralDate.ymd(startDate.year(), startDate.month(), startDate.day()+1))
 							.startClock(new StartTime(command.getStartTime()))
+							.endClock(new EndTime(0))
 							.build();
 				
 				//loop minute
