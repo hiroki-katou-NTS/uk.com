@@ -25,6 +25,8 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class WorkClosureQueryProcessor {
+	
+	private static final int FIRST_CLOSURE_ID = 1;
 
 	/** The closure repo. */
 	@Inject
@@ -73,6 +75,6 @@ public class WorkClosureQueryProcessor {
 		if (closureEmp.isPresent()) {
 			return closureEmp.get().getClosureId();
 		}
-		return 1;
+		return FIRST_CLOSURE_ID;
 	}
 }
