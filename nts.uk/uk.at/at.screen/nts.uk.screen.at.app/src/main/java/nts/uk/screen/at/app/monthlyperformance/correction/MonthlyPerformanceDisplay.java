@@ -125,6 +125,7 @@ public class MonthlyPerformanceDisplay {
 		MonthlyItemControlByAuthDto monthlyItemAuthDto = monthlyItemControlByAuthFinder.getMonthlyItemControlByToUse(cId, employmentRoleID, newkintaiIDList, 1);
 		//取得したドメインモデル「権限別月次項目制御」でパラメータ「表示する項目一覧」をしぼり込む
 		//Filter param 「表示する項目一覧」  by domain 「権限別月次項目制御」
+		screenDto.setAuthDto(monthlyItemAuthDto);
         Map<Integer, PAttendanceItem> lstAtdItemUnique = new HashMap<>();
         if (monthlyItemAuthDto != null) {
         	for (PSheet sheet : param.getSheets()) {
