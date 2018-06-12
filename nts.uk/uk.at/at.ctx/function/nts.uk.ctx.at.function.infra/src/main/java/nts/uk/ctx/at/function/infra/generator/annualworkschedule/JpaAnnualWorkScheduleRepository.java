@@ -120,6 +120,9 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		List<ItemOutTblBook> listItemOut = setOutItemsWoSc.getListItemOutTblBook().stream()
 				.filter(item -> item.isUseClassification()) // ドメインモデル「帳表に出力する項目．使用区分」をチェックする
 				.sorted((i1, i2) -> Integer.compare(i1.getSortBy(), i2.getSortBy())).collect(Collectors.toList());
+		if (printFormat == 0) {
+			listItemOut = listItemOut.stream().filter(x -> !x.isItem36AgreementTime()).collect(Collectors.toList());
+		}
 		exportData.setExportItems(listItemOut.stream().map(m -> new ExportItem(m.getCd().v(), m.getHeadingName().v()))
 				.collect(Collectors.toList()));
 		// 出力項目数による個人情報の出力制限について
@@ -274,7 +277,6 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		if (numMonth > 0) {
 			// 年間超過回数の取得
 			// RequestList458
-			// TODO
 			monthsExceeded = getExcessTimesYearAdapter.algorithm(employeeId, fiscalYear);
 		}
 
