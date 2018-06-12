@@ -53,6 +53,7 @@ public class ApplicationListForScreen {
 			applicationExport.setAppDate(app.getAppDate());
 			applicationExport.setAppType(app.getAppType().value);
 			applicationExport.setEmployeeID(app.getEmployeeID());
+			applicationExport.setReflectState(app.getReflectionInformation().getStateReflectionReal().value);
 			applicationExport.setAppTypeName(appDispNameRepository.getDisplay(app.getAppType().value).isPresent() ? appDispNameRepository.getDisplay(app.getAppType().value).get().getDispName().toString() : "" );
 			applicationExports.add(applicationExport);
 		}
@@ -64,6 +65,7 @@ public class ApplicationListForScreen {
 			applicationExport.setAppDate(app.getAppDate());
 			applicationExport.setAppType(app.getAppType().value);
 			applicationExport.setEmployeeID(app.getEmployeeID());
+			applicationExport.setReflectState(app.getReflectionInformation().getStateReflectionReal().value);
 			applicationExport.setAppTypeName(this.getAppAbsenceName(optAppAbsence.get().getHolidayAppType().value));
 			applicationExports.add(applicationExport);
 		}
