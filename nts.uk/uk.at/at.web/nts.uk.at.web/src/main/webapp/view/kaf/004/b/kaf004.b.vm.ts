@@ -156,7 +156,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                     let lateOrLeaveEarly: LateOrLeaveEarly = {
                         prePostAtr: prePostAtr, 
                         applicationDate: self.date(),
-                        sendMail: self.sendMail(),
+                        sendMail: self.checkBoxValue(),
                         late1: self.late1() ? 1 : 0,
                         lateTime1: self.lateTime1(),
                         early1: self.early1() ? 1 : 0,
