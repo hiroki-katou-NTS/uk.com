@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondit
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ErrorAlarmClassification;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordName;
+import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 
 /**
  * @author hungnm 勤務実績のエラーアラーム
@@ -35,6 +36,12 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 
 	/* 使用する */
 	private Boolean useAtr;
+	
+	/* 備考入力でエラーを解除する */
+	private NotUseAtr remarkCancelErrorInput;
+	
+	/* 備考欄NO */
+	private int remarkColumnNo;
 
 	/* 区分 */
 	private ErrorAlarmClassification typeAtr;
@@ -65,15 +72,17 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 
 	/* Constructor */
 	private ErrorAlarmWorkRecord(String companyId, ErrorAlarmWorkRecordCode code, ErrorAlarmWorkRecordName name,
-			boolean fixedAtr, boolean useAtr, ErrorAlarmClassification typeAtr, ErrorAlarmMessage message,
-			boolean cancelableAtr, Integer errorDisplayItem, List<Integer> lstApplication,
-			String errorAlarmCheckID) {
+			boolean fixedAtr, boolean useAtr, NotUseAtr remarkCancelErrorInput, int remarkColumnNo,
+			ErrorAlarmClassification typeAtr, ErrorAlarmMessage message, boolean cancelableAtr,
+			Integer errorDisplayItem, List<Integer> lstApplication, String errorAlarmCheckID) {
 		super();
 		this.companyId = companyId;
 		this.code = code;
 		this.name = name;
 		this.fixedAtr = fixedAtr;
 		this.useAtr = useAtr;
+		this.remarkCancelErrorInput = remarkCancelErrorInput;
+		this.remarkColumnNo = remarkColumnNo;
 		this.typeAtr = typeAtr;
 		this.message = message;
 		this.cancelableAtr = cancelableAtr;
@@ -89,11 +98,12 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 	 * @return ErrorAlarmWorkRecord
 	 **/
 	public static ErrorAlarmWorkRecord createFromJavaType(String companyId, String code, String name, boolean fixedAtr,
-			boolean useAtr, int typeAtr, boolean boldAtr, String messageColor, boolean cancelableAtr,
-			Integer errorDisplayItem, List<Integer> lstApplication, String errorAlarmCheckID) {
+			boolean useAtr, int remarkCancelErrorInput, int remarkColumnNo, int typeAtr, boolean boldAtr,
+			String messageColor, boolean cancelableAtr, Integer errorDisplayItem, List<Integer> lstApplication,
+			String errorAlarmCheckID) {
 		ErrorAlarmWorkRecord errorAlarmWorkRecord = new ErrorAlarmWorkRecord(companyId,
 				new ErrorAlarmWorkRecordCode(code), new ErrorAlarmWorkRecordName(name), fixedAtr, useAtr,
-				EnumAdaptor.valueOf(typeAtr, ErrorAlarmClassification.class),
+				NotUseAtr.valueOf(remarkCancelErrorInput), remarkColumnNo, EnumAdaptor.valueOf(typeAtr, ErrorAlarmClassification.class),
 				ErrorAlarmMessage.createFromJavaType(boldAtr, messageColor), cancelableAtr, errorDisplayItem,
 				lstApplication, errorAlarmCheckID);
 		return errorAlarmWorkRecord;
@@ -106,11 +116,11 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 	 * @return ErrorAlarmWorkRecord
 	 **/
 	public static ErrorAlarmWorkRecord init(String companyId, String code, String name, boolean fixedAtr,
-			boolean useAtr, int typeAtr, boolean boldAtr, String messageColor, boolean cancelableAtr,
-			Integer errorDisplayItem, List<Integer> lstApplication) {
+			boolean useAtr, int remarkCancelErrorInput, int remarkColumnNo, int typeAtr, boolean boldAtr,
+			String messageColor, boolean cancelableAtr, Integer errorDisplayItem, List<Integer> lstApplication) {
 		ErrorAlarmWorkRecord errorAlarmWorkRecord = new ErrorAlarmWorkRecord(companyId,
 				code.length() < 4 ? new ErrorAlarmWorkRecordCode("U" + code) : new ErrorAlarmWorkRecordCode(code),
-				new ErrorAlarmWorkRecordName(name), fixedAtr, useAtr,
+				new ErrorAlarmWorkRecordName(name), fixedAtr, useAtr, NotUseAtr.valueOf(remarkCancelErrorInput), remarkColumnNo,
 				EnumAdaptor.valueOf(typeAtr, ErrorAlarmClassification.class),
 				ErrorAlarmMessage.createFromJavaType(boldAtr, messageColor), cancelableAtr, errorDisplayItem,
 				lstApplication, IdentifierUtil.randomUniqueId());

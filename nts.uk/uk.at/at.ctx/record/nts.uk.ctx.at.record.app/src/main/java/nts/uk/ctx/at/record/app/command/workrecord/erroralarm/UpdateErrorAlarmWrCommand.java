@@ -42,6 +42,10 @@ public class UpdateErrorAlarmWrCommand {
 	private int fixedAtr;
 	/* 使用する */
 	private int useAtr;
+	
+	private int remarkCancelErrorInput;
+	
+	private int remarkColumnNo;
 	/* 区分 */
 	private int typeAtr;
 	/* 表示メッセージ */
@@ -164,7 +168,7 @@ public class UpdateErrorAlarmWrCommand {
 
 	public ErrorAlarmWorkRecord toDomain() {
 		ErrorAlarmWorkRecord domain = ErrorAlarmWorkRecord.init(companyId, code, name, fixedAtr == 1, useAtr == 1,
-				typeAtr, boldAtr == 1, messageColor, cancelableAtr == 1,
+				remarkCancelErrorInput, remarkColumnNo, typeAtr, boldAtr == 1, messageColor, cancelableAtr == 1,
 				errorDisplayItem, lstApplicationTypeCode);
 		return domain;
 	}

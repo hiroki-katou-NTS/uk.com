@@ -34,27 +34,30 @@
 					<button id="register-button" class="proceed" data-bind="click: update, enable: $root.errors.isEmpty">#{i18n.getText('KDW007_3')}</button>
 					<button id = "delete-button" class="danger" data-bind="click: remove, enable: !isNewMode() &amp;&amp; selectedErrorAlarm().fixedAtr() != 1 ">#{i18n.getText('KDW007_4')}</button>
 				</div>
-				<div id="contents-area">
-					<com:ko-if bind="screenMode() == 0">
-						<div id="showtypeCbb" data-bind="ntsComboBox: {
-							options: enumShowTypeAtr,
-							optionsValue: 'code',
-							value: showTypeAtr,
-							optionsText: 'name',
-							enable: true,
-							columns: [
-								{ prop: 'name', length: 10 },
-							]}"></div><br/>
-					</com:ko-if>
-					<table id="lstErrorAlarm" data-bind="ntsGridList: {								
-						height: 370,
-						dataSource: lstFilteredData,
-						primaryKey: 'code',
-						columns: gridListColumns,
-						multiple: false,
-						value: selectedErrorAlarmCode
-					}"></table>
-					<div id="right-content">
+				<div id="contents-area" class="fixed-flex-layout">
+					<div class="fixed-flex-layout-left">
+						<com:ko-if bind="screenMode() == 0">
+							<div id="showtypeCbb" data-bind="ntsComboBox: {
+								options: enumShowTypeAtr,
+								optionsValue: 'code',
+								value: showTypeAtr,
+								optionsText: 'name',
+								enable: true,
+								columns: [
+									{ prop: 'name', length: 10 },
+								]}"></div><br/>
+						</com:ko-if>
+						<table id="lstErrorAlarm" data-bind="ntsGridList: {								
+							height: 370,
+							dataSource: lstFilteredData,
+							primaryKey: 'code',
+							columns: gridListColumns,
+							multiple: false,
+							value: selectedErrorAlarmCode
+						}"></table>
+					</div>
+					
+					<div class="fixed-flex-layout-right">
 						<com:ko-if bind="!isNewMode()">
 							<div data-bind="ntsFormLabel: { constraint: 'ErrorAlarmWorkRecordCode', required: true}">#{i18n.getText('KDW007_6')}</div>
 							<input id="errorAlarmWorkRecordCode" class="need-check" data-bind="ntsTextEditor: {
@@ -93,19 +96,49 @@
 						<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 							<!-- Tab 1 -->
 							<div class="settingTab">
-								<div id="type-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_10')}</div>
-								<div id="typeAtr" class="cf" data-bind="ntsSwitchButton: {
-									options: listTypeAtr,
-									optionsValue: 'code',
-									optionsText: 'name',
-									value: selectedErrorAlarm().typeAtr,
-									enable: selectedErrorAlarm().fixedAtr() != 1 }"></div><br/>
+								<div class="valign-center control-group">
+									<div id="type-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_10')}</div>
+									<div id="typeAtr" class="cf" data-bind="ntsSwitchButton: {
+										options: listTypeAtr,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedErrorAlarm().typeAtr,
+										enable: selectedErrorAlarm().fixedAtr() != 1 }"></div>
+								</div>
+									
 								<span id="noticed-label">#{i18n.getText('KDW007_91')}</span><br/>
-								<div id="color-display-target-item-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_11')}</div>
-								<button id="color-display-target-item-button" data-bind="click:openSelectAtdItemColorDialog, enable: selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_12')}</button>
-								<span id="color-display-target-item-span" data-bind="text: selectedErrorAlarm().errorDisplayItemName"></span><br/>
-								<div id="color-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_13')}</div>
-								<div id="colorpicker" data-bind="ntsColorPicker: {value: selectedErrorAlarm().messageColor, enable: selectedErrorAlarm().typeAtr() != 2, width: 100}"/><br/>
+								
+								<div class="valign-center control-group">
+									<div id="type-label" data-bind="ntsFormLabel: {}">備考入力でエラーを解除</div>
+									<div id="remarkCancelErrorInput" class="cf" data-bind="ntsSwitchButton: {
+										options: listRemarkCancelErrorInput,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedErrorAlarm().remarkCancelErrorInput,
+										enable: true }"></div>
+									<div id="type-label" data-bind="ntsFormLabel: {}">備考欄NO</div>
+									<div id="remarkColumnNo" data-bind="ntsComboBox: {
+										options: listRemarkColumnNo,
+										optionsValue: 'code',
+										visibleItemsCount: 5,
+										value: selectedErrorAlarm().remarkColumnNo,
+										width: '150px',
+										optionsText: 'name',
+										selectFirstIfNull: true,
+										columns: [
+											{ prop: 'code', length: 4 },
+											{ prop: 'name', length: 10 },
+										]}"></div>
+								</div>
+								<div class="valign-center control-group">
+									<div id="color-display-target-item-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_11')}</div>
+									<button id="color-display-target-item-button" data-bind="click:openSelectAtdItemColorDialog, enable: selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_12')}</button>
+									<span id="color-display-target-item-span" data-bind="text: selectedErrorAlarm().errorDisplayItemName"></span>
+								</div>
+								<div class="valign-center control-group">
+									<div id="color-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_13')}</div>
+									<div id="colorpicker" data-bind="ntsColorPicker: {value: selectedErrorAlarm().messageColor, enable: selectedErrorAlarm().typeAtr() != 2, width: 100}"/>
+								</div>
 								<div id="message-label" data-bind="ntsFormLabel: {constraint: 'DisplayMessage', required: false }">#{i18n.getText('KDW007_14')}</div>
 								<textarea id="messageDisplay" class="need-check" data-bind="ntsMultilineEditor: { 
 								    name: '#[KDW007_14]',

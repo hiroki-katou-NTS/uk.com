@@ -410,7 +410,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 	public static ErrorAlarmWorkRecord toDomain(KwrmtErAlWorkRecord entity) {
 		ErrorAlarmWorkRecord domain = ErrorAlarmWorkRecord.createFromJavaType(AppContexts.user().companyId(),
 				entity.kwrmtErAlWorkRecordPK.errorAlarmCode, entity.errorAlarmName, entity.fixedAtr == 1,
-				entity.useAtr == 1, entity.typeAtr, entity.boldAtr == 1, entity.messageColor, entity.cancelableAtr == 1,
+				entity.useAtr == 1, 0, 833, entity.typeAtr, entity.boldAtr == 1, entity.messageColor, entity.cancelableAtr == 1,
 				entity.errorDisplayItem,
 				Optional.ofNullable(entity.krcstErAlApplication).orElse(Collections.emptyList()).stream()
 						.map(eralAppEntity -> eralAppEntity.krcstErAlApplicationPK.appTypeCd)

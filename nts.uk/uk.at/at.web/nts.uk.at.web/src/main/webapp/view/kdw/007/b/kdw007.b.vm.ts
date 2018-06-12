@@ -11,7 +11,13 @@ module nts.uk.at.view.kdw007.b.viewmodel {
 
         enumConditionType: KnockoutObservableArray<any> = ko.observableArray([
             { code: 0, name: "固定値", enable: true },
-            { code: 1, name: "勤怠項目", enable: true }
+            { code: 1, name: "勤怠項目", enable: true },
+            { code: 2, name: "入力チェック", enable: true }
+        ]);
+        
+        enumInputCheckCondition: KnockoutObservableArray<any> = ko.observableArray([
+            { code: 0, name: "入力されていない" },
+            { code: 1, name: "入力されている" }
         ]);
 
         enumCompareOperator: KnockoutObservableArray<any> = ko.observableArray([
@@ -26,8 +32,8 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             { code: 8, name: "範囲の外（境界値を含まない）（＞＜）" },
             { code: 9, name: "範囲の外（境界値を含む）（≧≦）" }
         ]);
-
-        currentAtdItemCondition: any;
+        
+        currentAtdItemCondition: ErAlAtdItemCondition;
         displayTargetAtdItems: KnockoutObservable<string> = ko.observable("");
         displayCompareAtdItems: KnockoutObservable<string> = ko.observable("");
         mode: number;
@@ -48,7 +54,8 @@ module nts.uk.at.view.kdw007.b.viewmodel {
 
             ko.utils.extend(param.data, {
                 countableAddAtdItems: _.values(param.data.countableAddAtdItems || []),
-                countableSubAtdItems: _.values(param.data.countableSubAtdItems || [])
+                countableSubAtdItems: _.values(param.data.countableSubAtdItems || []),
+                inputCheckCondition: 0
             });
 
             self.currentAtdItemCondition = caic = ko.mapping.fromJS(param.data);
@@ -72,14 +79,16 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 if (value > 5) {
                     self.enumConditionType([
                         { code: 0, name: "固定値", enable: true },
-                        { code: 1, name: "勤怠項目", enable: false }
+                        { code: 1, name: "勤怠項目", enable: false },
+                        { code: 2, name: "入力チェック", enable: true }
                     ]);
 
                     caic.conditionType(0);
                 } else {
                     self.enumConditionType([
                         { code: 0, name: "固定値", enable: true },
-                        { code: 1, name: "勤怠項目", enable: true }
+                        { code: 1, name: "勤怠項目", enable: true },
+                        { code: 2, name: "入力チェック", enable: true }
                     ]);
                 }
             });
@@ -408,6 +417,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
         singleAtdItem: KnockoutObservable<number>;
         compareStartValue: KnockoutObservable<number>;
         compareEndValue: KnockoutObservable<number>;
+        inputCheckCondition: KnockoutObservable<number> = ko.observable(0);
 
         constructor(param) {
             this.targetNO = ko.observable(param.targetNO);
@@ -421,10 +431,6 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             this.compareStartValue = ko.observable(param.compareStartValue);
             this.compareEndValue = ko.observable(param.compareEndValue);
             this.compareOperator = ko.observable(param.compareOperator);
-
-            this.compareEndValue.subscribe(v => {
-                console.log(v);
-            });
         }
         
     }
