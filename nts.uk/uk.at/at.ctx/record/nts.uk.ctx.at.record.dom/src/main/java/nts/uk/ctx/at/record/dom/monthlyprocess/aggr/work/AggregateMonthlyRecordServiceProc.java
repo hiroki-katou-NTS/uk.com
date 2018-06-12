@@ -684,10 +684,10 @@ public class AggregateMonthlyRecordServiceProc {
 		this.annualAndReserveLeaveRemain(period);
 		
 		// 振休（仮対応）
-		//this.absenceLeaveRemain_temp(period);
+		this.absenceLeaveRemain_temp(period);
 		
 		// 代休（仮対応）
-		//this.dayoffRemain_temp(period);
+		this.dayoffRemain_temp(period);
 	}
 	
 	/**
