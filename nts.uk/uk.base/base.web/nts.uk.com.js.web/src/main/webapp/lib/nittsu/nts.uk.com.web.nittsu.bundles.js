@@ -17018,6 +17018,7 @@ var nts;
                         var rows = ko.unwrap(data.rows);
                         $grid.data("init", true);
                         $grid.data("selectionDisables", selectionDisables);
+                        $grid.data("initValue", value);
                         if (data.multiple) {
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
@@ -17190,6 +17191,7 @@ var nts;
                                     _.forEach(_.intersection(disables, value), function (iv) {
                                         $grid.igGridSelection("selectRowById", iv);
                                     });
+                                    $grid.trigger("selectionchanged");
                                 }, 0);
                             }
                             return true;
@@ -17306,13 +17308,30 @@ var nts;
                             }
                         }
                         $grid.data("enable", enable);
-                        if (disables) {
-                            _.forEach(disables, function (d) {
-                                var $row = $grid.igGrid("rowById", d, false);
-                                if ($row && !$row.hasClass("row-disable")) {
-                                    $row.addClass("row-disable");
-                                }
-                            });
+                        var currentDisables = $grid.data("selectionDisables");
+                        if (currentDisables && disables
+                            && !_.isEqual(disables.sort(function (d1, d2) { return d2 - d1; }), currentDisables.sort(function (d1, d2) { return d2 - d1; }))) {
+                            $grid.data("selectionDisables", disables);
+                            var disableRows = function (arr) {
+                                _.forEach(arr, function (d) {
+                                    var $row = $grid.igGrid("rowById", d, false);
+                                    if ($row && !$row.hasClass("row-disable")) {
+                                        $row.addClass("row-disable");
+                                    }
+                                });
+                            };
+                            if (disables.length > currentDisables.length) {
+                                disableRows(_.difference(disables, currentDisables));
+                            }
+                            else {
+                                _.forEach(currentDisables, function (d) {
+                                    var $row = $grid.igGrid("rowById", d, false);
+                                    if ($row && $row.hasClass("row-disable")) {
+                                        $row.removeClass("row-disable");
+                                    }
+                                });
+                                disableRows(disables);
+                            }
                         }
                         if (String($grid.attr("filtered")) === "true") {
                             var filteredSource_1 = [];
@@ -17370,7 +17389,10 @@ var nts;
                             else {
                                 $grid.ntsGridList('setSelected', data.value());
                             }
-                            _.defer(function () { $grid.trigger("selectChange"); });
+                            var initVal = $grid.data("initValue");
+                            if (!disables || !initVal || _.intersection(disables, initVal).length === 0) {
+                                _.defer(function () { $grid.trigger("selectChange"); });
+                            }
                         }
                         $grid.data("ui-changed", false);
                         $grid.closest('.ui-iggrid').addClass('nts-gridlist').height($grid.data("height")).attr("tabindex", $grid.data("tabindex"));
