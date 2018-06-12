@@ -55,12 +55,12 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.attendance.util.RecordHandler;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 
 @Stateless
-public class DailyRecordWorkCommandHandler implements ItemConst{
+public class DailyRecordWorkCommandHandler extends RecordHandler {
 
 	/** 勤務情報： 日別実績の勤務情報 */
 	@Inject
