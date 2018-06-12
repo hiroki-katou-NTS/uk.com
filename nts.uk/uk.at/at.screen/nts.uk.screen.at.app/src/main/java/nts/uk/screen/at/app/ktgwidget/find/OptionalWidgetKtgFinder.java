@@ -3,6 +3,7 @@ package nts.uk.screen.at.app.ktgwidget.find;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -11,6 +12,10 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.adapter.application.ApplicationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.application.importclass.ApplicationDeadlineImport;
+import nts.uk.ctx.at.function.dom.adapter.widgetKtg.ApplicationTimeImport;
+import nts.uk.ctx.at.function.dom.adapter.widgetKtg.DailyExcessTotalTimeImport;
+import nts.uk.ctx.at.function.dom.adapter.widgetKtg.EmployeeErrorImport;
+import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NextAnnualLeaveGrantImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetAdapter;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.WidgetDisplayItemImport;
@@ -31,6 +36,7 @@ import nts.uk.screen.at.app.ktgwidget.find.dto.DatePeriodDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.DeadlineOfRequest;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OptionalWidgetDisplay;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OptionalWidgetInfoDto;
+import nts.uk.screen.at.app.ktgwidget.find.dto.TimeOT;
 import nts.uk.screen.at.app.ktgwidget.find.dto.WidgetDisplayItemTypeImport;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -70,30 +76,30 @@ public class OptionalWidgetKtgFinder {
 	
 	@Inject
 	private GetNumberOfRemainingHolidaysRepository GetNumberOfRemainingHolidaysRepo;
+	
 
 	public DatePeriodDto getCurrentMonth() {
 		String companyId = AppContexts.user().companyId();
+		Integer closureId = this.getClosureId();
 		
-		ClosureEmployment closureEmployment = getClosureEmployment();
-		
-		Optional<Closure> closure = closureRepo.findById(companyId, getClosureEmployment().getClosureId());
+		Optional<Closure> closure = closureRepo.findById(companyId, closureId);
 		if(!closure.isPresent())
 			return null;
 		
-		YearMonth currentMonth = closure.get().getClosureMonth().getProcessingYm();
+		YearMonth processingDate = closure.get().getClosureMonth().getProcessingYm();
 		
-		DatePeriod datePeriodOfcurrentMonth = closureService.getClosurePeriod(closureEmployment.getClosureId(),currentMonth);
+		DatePeriod currentMonth = closureService.getClosurePeriod(closureId, processingDate);
 		
-		YearMonth nextMonth = currentMonth.addMonths(1);
+		DatePeriod nextMonth = closureService.getClosurePeriod(closureId, processingDate.addMonths(1));
 		
-		DatePeriod datePeriodOfNextMonth = closureService.getClosurePeriod(closureEmployment.getClosureId(), nextMonth);
-		
-		DatePeriodDto dto = new DatePeriodDto(datePeriodOfcurrentMonth.start(), datePeriodOfcurrentMonth.end(), datePeriodOfNextMonth.start(), datePeriodOfNextMonth.end());
+		DatePeriodDto dto = new DatePeriodDto(currentMonth.start(), currentMonth.end(), nextMonth.start(), nextMonth.end());
 		
 		return dto;
 	}
-	
-	private ClosureEmployment getClosureEmployment() {
+	/**
+	 * @return employment code
+	 */
+	private String getEmploymentCode() {
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
 		
@@ -101,13 +107,21 @@ public class OptionalWidgetKtgFinder {
 		if(!EmploymentHistoryImport.isPresent())
 			throw new RuntimeException("Not found EmploymentHistory by closureID");
 		String employmentCode = EmploymentHistoryImport.get().getEmploymentCode();
-		
-		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepo.findByEmploymentCD(companyId, employmentCode);
-		if(!closureEmployment.isPresent()) {
-			throw new RuntimeException("Not found ClosureEmployment");
-		}
-		return closureEmployment.get();
+		return employmentCode;
 	}
+	
+	/**
+	 * @return ClosureId
+	 */
+	private Integer getClosureId() {
+		String companyId = AppContexts.user().companyId();
+		String employmentCode = this.getEmploymentCode();
+		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepo.findByEmploymentCD(companyId, employmentCode);
+		if(!closureEmployment.isPresent())
+			return null;
+		return closureEmployment.get().getClosureId();
+	}
+	
 	public OptionalWidgetImport findOptionalWidgetByCode(String topPagePartCode) {
 		String companyId = AppContexts.user().companyId(); 
 		Optional<OptionalWidgetImport> dto = optionalWidgetAdapter.getSelectedWidget(companyId, topPagePartCode);
@@ -122,79 +136,178 @@ public class OptionalWidgetKtgFinder {
 		return new OptionalWidgetDisplay(datePeriodDto, optionalWidgetImport);
 	}
 	
+	
 	public OptionalWidgetInfoDto getDataRecord(String code, GeneralDate startDate, GeneralDate endDate) {
+		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
-		ClosureEmployment employment = getClosureEmployment();
+		DatePeriod datePeriod = new DatePeriod(startDate, endDate);
 		OptionalWidgetInfoDto dto = new OptionalWidgetInfoDto();
 		List<WidgetDisplayItemImport> widgetDisplayItem = findOptionalWidgetByCode(code).getWidgetDisplayItemExport();
+		//get requestList 193
+		List<DailyExcessTotalTimeImport> dailyExcessTotalTimeImport = optionalWidgetAdapter.getExcessTotalTime(employeeId,datePeriod);
+		
 		for (WidgetDisplayItemImport item : widgetDisplayItem) {
 			if(item.getNotUseAtr()==1) {
 				if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.OVERTIME_WORK_NO.value) {
+					//sử lý 01
 					dto.setOverTime(overtimeInstructRepo.getAllOverTimeInstructBySId(employeeId, startDate, endDate).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.INSTRUCTION_HD_NO.value) {
+					//sử lý 02
 					dto.setHolidayInstruction(holidayInstructRepo.getAllHolidayInstructBySId(employeeId, startDate, endDate).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.APPROVED_NO.value) {
+					//sử lý 03
+					//lấy theo request list của anh hiếu. chỉ khác tham số đầu vào.
 					//・反映状態　　＝　「反映済み」または「反映待ち」(「反映済み」 OR 「反映待ち」)
 					List<Integer> reflected = new ArrayList<>();
 					reflected.add(ReflectedState_New.REFLECTED.value);
 					reflected.add(ReflectedState_New.WAITREFLECTION.value);
 					dto.setApproved(applicationRepo_New.getByListRefStatus(employeeId, startDate, endDate, reflected).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.UNAPPROVED_NO.value) {
+					//sử lý 04
 					//・反映状態　　＝　「未承認」または「差戻し」(「未承認」OR 「差戻し」)
 					List<Integer> reflected = new ArrayList<>();
 					reflected.add(ReflectedState_New.NOTREFLECTED.value);
 					reflected.add(ReflectedState_New.REMAND.value);
 					dto.setUnApproved(applicationRepo_New.getByListRefStatus(employeeId, startDate, endDate, reflected).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.DENIED_NO.value) {
+					//sử lý 05
 					//・反映状態　　＝　「否認」
 					List<Integer> reflected = new ArrayList<>();
 					reflected.add(ReflectedState_New.DENIAL.value);
 					dto.setDeniedNo(applicationRepo_New.getByListRefStatus(employeeId, startDate, endDate, reflected).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REMAND_NO.value) {
+					//sử lý 06
 					//・反映状態　　＝　「差戻し」
 					List<Integer> reflected = new ArrayList<>();
 					reflected.add(ReflectedState_New.REMAND.value);
 					dto.setDeniedNo(applicationRepo_New.getByListRefStatus(employeeId, startDate, endDate, reflected).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.APP_DEADLINE_MONTH.value) {
-					ApplicationDeadlineImport deadlineImport = applicationAdapter.getApplicationDeadline(employment.getCompanyId(), employment.getClosureId());
+					//sử lý 07
+					ApplicationDeadlineImport deadlineImport = applicationAdapter.getApplicationDeadline(companyId, this.getClosureId());
 					dto.setAppDeadlineMonth(new DeadlineOfRequest(deadlineImport.isUseApplicationDeadline(), deadlineImport.getDateDeadline()));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PRESENCE_DAILY_PER.value) {
+					//sử lý 08
 					dto.setPresenceDailyPer(checksDailyPerformanceErrorRepo.checked(employeeId, startDate, endDate));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REFER_WORK_RECORD.value) {
-					
+					//sử lý 09
+					List<EmployeeErrorImport> listEmployeeError = optionalWidgetAdapter.checkEmployeeErrorOnProcessingDate(employeeId, datePeriod);
+					for (EmployeeErrorImport employeeErrorImport : listEmployeeError) {
+						if(employeeErrorImport.getHasError()) {
+							dto.setPresenceDailyPer(true);
+							break;
+						}
+					}
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.OVERTIME_HOURS.value) {
+					//sử lý 10 call Request list 236
+					int timeOT = 0;
+					List<ApplicationTimeImport> applicationOvertimeImport = optionalWidgetAdapter.acquireTotalApplicationOverTimeHours(employeeId, startDate, endDate);
 					
+					//lấy ra dailyExcessTotalTimeImport những ngày không có trong applicationOvertimeImport
+					for (ApplicationTimeImport applicationOvertime : applicationOvertimeImport) {
+						dailyExcessTotalTimeImport = dailyExcessTotalTimeImport.stream().
+								filter(c -> !c.getDate().equals(applicationOvertime.getDate())).collect(Collectors.toList());
+					}
+					//lấy ra tổng thời gian làm thêm theo ApplicationOvertime. 
+					for (ApplicationTimeImport OvertimeImport : applicationOvertimeImport) {
+						timeOT += OvertimeImport.getTotalOtHours();
+					}
+					//lấy ra tổng thời gian làm thêm theo DailyExcessTotalTime 
+					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyExcessTotalTimeImport) {
+						timeOT += dailyExcessTotalTime.getTimeOT().getTime();
+					}
+					dto.setOvertimeHours(new TimeOT(timeOT/60, timeOT%60));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.FLEX_TIME.value) {
+					//sử lý 11 call Request list 298
+					int time = 0;
+					List<ApplicationTimeImport> applicationflexTimeImport = optionalWidgetAdapter.acquireTotalApplicationTimeUnreflected(employeeId, startDate, endDate);
 					
+					//lấy ra dailyExcessTotalTimeImport những ngày không có trong applicationOvertimeImport
+					for (ApplicationTimeImport applicationOvertime : applicationflexTimeImport) {
+						dailyExcessTotalTimeImport = dailyExcessTotalTimeImport.stream().
+								filter(c -> !c.getDate().equals(applicationOvertime.getDate())).collect(Collectors.toList());
+					}
+					//lấy ra tổng thời gian làm thêm theo ApplicationOvertime. 
+					for (ApplicationTimeImport OvertimeImport : applicationflexTimeImport) {
+						time += OvertimeImport.getTotalOtHours();
+					}
+					//lấy ra tổng thời gian làm thêm theo DailyExcessTotalTime 
+					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyExcessTotalTimeImport) {
+						time += dailyExcessTotalTime.getTimeOT().getTime();
+					}
+					dto.setFlexTime(new TimeOT(time/60, time%60));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REST_TIME.value) {
+					//sử lý 12 call Request list 299
+					int time = 0;
+					List<ApplicationTimeImport> applicationflexTimeImport = optionalWidgetAdapter.acquireTotalAppHdTimeNotReflected(employeeId, startDate, endDate);
 					
+					//lấy ra dailyExcessTotalTimeImport những ngày không có trong applicationOvertimeImport
+					for (ApplicationTimeImport applicationOvertime : applicationflexTimeImport) {
+						dailyExcessTotalTimeImport = dailyExcessTotalTimeImport.stream().
+								filter(c -> !c.getDate().equals(applicationOvertime.getDate())).collect(Collectors.toList());
+					}
+					//lấy ra tổng thời gian làm thêm theo ApplicationOvertime. 
+					for (ApplicationTimeImport OvertimeImport : applicationflexTimeImport) {
+						time += OvertimeImport.getTotalOtHours();
+					}
+					//lấy ra tổng thời gian làm thêm theo DailyExcessTotalTime 
+					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyExcessTotalTimeImport) {
+						time += dailyExcessTotalTime.getTimeOT().getTime();
+					}
+					dto.setRestTime(new TimeOT(time/60, time%60));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.NIGHT_WORK_HOURS.value) {
+					//sử lý 13 call Request list 300
+					int time = 0;
+					List<ApplicationTimeImport> applicationflexTimeImport = optionalWidgetAdapter.acquireAppNotReflected(employeeId, startDate, endDate);
 					
+					//lấy ra dailyExcessTotalTimeImport những ngày không có trong applicationOvertimeImport
+					for (ApplicationTimeImport applicationOvertime : applicationflexTimeImport) {
+						dailyExcessTotalTimeImport = dailyExcessTotalTimeImport.stream().
+								filter(c -> !c.getDate().equals(applicationOvertime.getDate())).collect(Collectors.toList());
+					}
+					//lấy ra tổng thời gian làm thêm theo ApplicationOvertime. 
+					for (ApplicationTimeImport OvertimeImport : applicationflexTimeImport) {
+						time += OvertimeImport.getTotalOtHours();
+					}
+					//lấy ra tổng thời gian làm thêm theo DailyExcessTotalTime 
+					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyExcessTotalTimeImport) {
+						time += dailyExcessTotalTime.getTimeOT().getTime();
+					}
+					dto.setNightWorktime(new TimeOT(time/60, time%60));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.LATE_OR_EARLY_RETREAT.value) {
-					
+					//sử lý 14
+					//chưa có requestList 446 nên tạm thời return 0;
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.YEARLY_HD.value) {
+					//sử lý 15
+					// phần này lấy request list 210 của anh tân đang có vấn đề
+					NextAnnualLeaveGrantImport NextAnnualLeaveGrant = optionalWidgetAdapter.acquireNextHolidayGrantDate(companyId,employeeId);
+					
 					
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.HAFT_DAY_OFF.value) {
 					
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.HOURS_OF_HOLIDAY_UPPER_LIMIT.value) {
 					
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.RESERVED_YEARS_REMAIN_NO.value) {
-					
+					//sử lý 16
+					// chờ request 201 bên nhật làm.
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PLANNED_YEAR_HOLIDAY.value) {
-					
+					/*Delete display of planned number of inactivity days - 計画年休残数の表示は削除*/
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REMAIN_ALTERNATION_NO.value) {
-					GeneralDate systemDate = GeneralDate.today(); 
-					//dto.setReservedYearsRemainNo(GetNumberOfRemainingHolidaysRepo.getNumberOfRemainingHolidays(employeeId, systemDate));
+					//sử lý 18
+					//requestList 203 team B
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REMAINS_LEFT.value) {
-					
+					//sử lý 19
+					//requestList 204 team B
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PUBLIC_HD_NO.value) {
 					
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.HD_REMAIN_NO.value) {
-					
+					//sử lý 21
+					//requestList 206 team Anh ThànhNC
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.CARE_LEAVE_NO.value) {
-					
+					//sử lý 22
+					//requestList 207 team Anh ThànhNC
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.SPHD_RAMAIN_NO.value) {
-					
+					//sử lý 23
+					//requestList 208 Chưa có domain
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.SIXTYH_EXTRA_REST.value) {
 					
 				}

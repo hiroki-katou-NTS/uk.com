@@ -47,7 +47,7 @@ public class ApplicationOvertimePubImpl implements ApplicationOvertimePub {
 		
 		if(appNew.size() >= 1) {
 			// 条件を元に、ドメインモデル「残業申請」を取得する
-			appOt = overtimeRepository.getAppOvertime(companyId, appNew.get(0).getAppID());
+			appOt = overtimeRepository.getFullAppOvertime(companyId, appNew.get(0).getAppID());
 			
 			// 条件を元に、ドメインモデル「休日出勤申請」を取得する
 			appHdWork = appHdWorkRepository.getAppHolidayWork(companyId, appNew.get(0).getAppID());

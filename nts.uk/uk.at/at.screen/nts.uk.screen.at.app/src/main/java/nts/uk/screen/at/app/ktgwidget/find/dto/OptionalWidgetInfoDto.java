@@ -21,7 +21,7 @@ public class OptionalWidgetInfoDto {
 	/** 3 Approved Number 承認された件数 */
 	private int approved;
 	
-	/** 4 Approved Number 承認された件数 */
+	/** 4 Approved Number 未承認件数 */
 	private int unApproved;
 	
 	/** 5 Denied Number 否認された件数 */

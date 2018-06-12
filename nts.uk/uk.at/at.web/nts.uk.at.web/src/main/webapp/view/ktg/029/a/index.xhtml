@@ -139,7 +139,7 @@
 					</tr>
 					<tr data-bind="with: dataRecord()">
 						<td class="tab" colspan="2" data-bind="visible: ($parent.displayPresenceDailyPer &amp;&amp; presenceDailyPer)">
-							<div data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KTG029_61')}</div>
+							<div data-bind="ntsCheckBox: { checked: $parent.checked }">#{i18n.getText('KTG029_61')}</div>
 						</td>
 					</tr>
 					<!-- A11 -->

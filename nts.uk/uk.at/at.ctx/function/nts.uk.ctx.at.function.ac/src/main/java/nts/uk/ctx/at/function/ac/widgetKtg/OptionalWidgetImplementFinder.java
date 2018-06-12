@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.function.ac.widgetKtg;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -8,13 +10,29 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.function.dom.adapter.widgetKtg.ApplicationTimeImport;
+import nts.uk.ctx.at.function.dom.adapter.widgetKtg.AttendanceTimeImport;
+import nts.uk.ctx.at.function.dom.adapter.widgetKtg.DailyExcessTotalTimeImport;
+import nts.uk.ctx.at.function.dom.adapter.widgetKtg.EmployeeErrorImport;
+import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NextAnnualLeaveGrantImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetAdapter;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.WidgetDisplayItemImport;
+import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyExcessTotalTimePub;
+import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyExcessTotalTimePubImport;
+import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.exportparam.DailyExcessTotalTimeExpParam;
+import nts.uk.ctx.at.record.pub.workrecord.erroralarm.EmployeeDailyPerErrorPub;
+import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.AnnualHolidayManagementPub;
+import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.NextAnnualLeaveGrantExport;
+import nts.uk.ctx.at.request.pub.application.recognition.AppHdTimeNotReflectedPub;
+import nts.uk.ctx.at.request.pub.application.recognition.AppNotReflectedPub;
+import nts.uk.ctx.at.request.pub.application.recognition.ApplicationOvertimePub;
+import nts.uk.ctx.at.request.pub.application.recognition.ApplicationTimeUnreflectedPub;
 import nts.uk.ctx.at.request.pub.application.recognition.HolidayInstructPub;
 import nts.uk.ctx.at.request.pub.application.recognition.OverTimeInstructPub;
 import nts.uk.ctx.sys.portal.pub.toppagepart.optionalwidget.OptionalWidgetExport;
 import nts.uk.ctx.sys.portal.pub.toppagepart.optionalwidget.OptionalWidgetPub;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
@@ -28,6 +46,26 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 	@Inject
 	private OptionalWidgetPub optionalWidgetPub;
 	
+	@Inject
+	private EmployeeDailyPerErrorPub employeeDailyPerErrorPub;
+	
+	@Inject
+	private ApplicationOvertimePub applicationOvertimePub;
+	
+	@Inject
+	private DailyExcessTotalTimePub dailyExcessTotalTimePub;
+	
+	@Inject
+	private ApplicationTimeUnreflectedPub applicationTimeUnreflectedPub;
+	
+	@Inject
+	private AppHdTimeNotReflectedPub appHdTimeNotReflectedPub; 
+	
+	@Inject 
+	private AppNotReflectedPub appNotReflectedPub;
+	
+	@Inject
+	private AnnualHolidayManagementPub annualHolidayManagementPub;
 	
 	@Override
 	public int getNumberOT(String employeeId, GeneralDate startDate, GeneralDate endDate) {
@@ -55,6 +93,69 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 				optionalWidgetExport.get().getTopPageName(), optionalWidgetExport.get().getWidth(),
 				optionalWidgetExport.get().getHeight(), widgetDisplayItemImport));
 		return optionalWidgetImport;
+	}
+
+	@Override
+	public List<EmployeeErrorImport> checkEmployeeErrorOnProcessingDate(String employeeId, DatePeriod datePeriod) {
+		// TODO Auto-generated method stub
+		return employeeDailyPerErrorPub.checkEmployeeErrorOnProcessingDate(employeeId, datePeriod).stream()
+				.map(c -> new EmployeeErrorImport(c.getDate(), c.getHasError())).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ApplicationTimeImport> acquireTotalApplicationOverTimeHours(String sId, GeneralDate startDate,
+			GeneralDate endDate) {
+		// TODO Auto-generated method stub
+		return applicationOvertimePub.acquireTotalApplicationOverTimeHours(sId, startDate, endDate)
+				.stream().map(c -> new ApplicationTimeImport(c.getDate(), c.getTotalOtHours()))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<DailyExcessTotalTimeImport> getExcessTotalTime(String employeeId, DatePeriod datePeriod) {
+		// TODO Auto-generated method stub
+		Map<GeneralDate,DailyExcessTotalTimeExpParam> map =  dailyExcessTotalTimePub.getExcessTotalTime(new DailyExcessTotalTimePubImport(employeeId, datePeriod)).getMap();
+		List<DailyExcessTotalTimeImport> result = new ArrayList<>();
+		map.entrySet().forEach(c -> {
+			result.add(new DailyExcessTotalTimeImport(c.getKey(), new AttendanceTimeImport(c.getValue().getOverTime().hour(),c.getValue().getOverTime().minute())));
+		});
+		return result;
+	}
+
+	@Override
+	public List<ApplicationTimeImport> acquireTotalApplicationTimeUnreflected(String sId, GeneralDate startDate,
+			GeneralDate endDate) {
+		// TODO Auto-generated method stub
+		return applicationTimeUnreflectedPub.acquireTotalApplicationTimeUnreflected(sId, startDate, endDate)
+				.stream().map(c -> new ApplicationTimeImport(c.getDate(), c.getTotalOtHours())).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ApplicationTimeImport> acquireTotalAppHdTimeNotReflected(String sId, GeneralDate startDate,
+			GeneralDate endDate) {
+		// TODO Auto-generated method stub
+		return appHdTimeNotReflectedPub.acquireTotalAppHdTimeNotReflected(sId, startDate, endDate)
+				.stream().map(c -> new ApplicationTimeImport(c.getDate(), c.getBreakTime())).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ApplicationTimeImport> acquireAppNotReflected(String sId, GeneralDate startDate, GeneralDate endDate) {
+		// TODO Auto-generated method stub
+		return appNotReflectedPub.acquireAppNotReflected(sId, startDate, endDate)
+				.stream().map(c -> new ApplicationTimeImport(c.getDate(), c.getTotalOtHours())).collect(Collectors.toList());
+	}
+
+	@Override
+	public NextAnnualLeaveGrantImport acquireNextHolidayGrantDate(String cId, String employeeId) {
+		// TODO Auto-generated method stub
+		NextAnnualLeaveGrantExport c = annualHolidayManagementPub.acquireNextHolidayGrantDate(cId, employeeId).get(0);
+		return new NextAnnualLeaveGrantImport(
+				c.grantDate, 
+				c.grantDays.v(), 
+				c.times.v().intValue(), 
+				c.timeAnnualLeaveMaxDays.isPresent() ? c.timeAnnualLeaveMaxDays.get().v().intValue(): 0, 
+				c.timeAnnualLeaveMaxTime.isPresent()? c.timeAnnualLeaveMaxTime.get().v().intValue(): 0, 
+				c.halfDayAnnualLeaveMaxTimes.isPresent()?c.halfDayAnnualLeaveMaxTimes.get().v().intValue(): 0);
 	}
 
 	

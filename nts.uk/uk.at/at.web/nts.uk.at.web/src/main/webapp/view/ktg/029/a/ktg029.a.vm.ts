@@ -6,6 +6,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         currentMonth: KnockoutObservable<period>;
         nextMonth: KnockoutObservable<period>;
         switchDate: KnockoutObservable<boolean>;
+        checked: KnockoutObservable<boolean>;
         txtDatePeriod: KnockoutObservable<string>;
         btnSwitch: KnockoutObservable<string>;
         
@@ -50,8 +51,9 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             self.nextMonth = ko.observable(new period("",""));
             self.txtDatePeriod = ko.observable("");
             self.btnSwitch = ko.observable(getText('KTG029_7'));
+            self.checked = ko.observable(true);
             
-            self.displayOvertime = ko.observable(false);
+            self.displayOvertime = ko.observable(false); 
             self.displayHoliInstruct = ko.observable(false);
             self.displayApproved = ko.observable(false);
             self.displayUnApproved = ko.observable(false);
@@ -257,7 +259,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         
         openKDW003Dialog() {
             var self = this;
-            if(self.dataRecord().presenceDailyPer){
+            if(self.checked()){
                 window.top.location = window.location.origin + '/nts.uk.at.web/view/kdw/003/a/index.xhtml';
             }else{
                nts.uk.ui.windows.sub.modal('/view/kdw/003/b/index.xhtml');
