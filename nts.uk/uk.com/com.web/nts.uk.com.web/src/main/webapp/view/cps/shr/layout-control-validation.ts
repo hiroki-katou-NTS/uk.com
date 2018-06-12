@@ -1252,51 +1252,55 @@ module nts.layout {
             if (CS00017_IS00084) {
                 // 
                 CS00017_IS00084.ctrl.on('click', () => {
-                    setShared('inputCDL008', {
-                        selectedCodes: [ko.toJS(CS00017_IS00084.data.value)],
-                        baseDate: ko.toJS(!!CS00017_IS00082 ? moment.utc(CS00017_IS00082.data.value(), "YYYYMMDD").toDate() : new Date()),
-                        isMultiple: false,
-                        selectedSystemType: 5,
-                        isrestrictionOfReferenceRange: false
-                    }, true);
+                    if (!!CS00017_IS00082.data.value()) {
+                        setShared('inputCDL008', {
+                            selectedCodes: [ko.toJS(CS00017_IS00084.data.value)],
+                            baseDate: ko.toJS(!!CS00017_IS00082 ? moment.utc(CS00017_IS00082.data.value(), "YYYYMMDD").toDate() : new Date()),
+                            isMultiple: false,
+                            selectedSystemType: 5,
+                            isrestrictionOfReferenceRange: false
+                        }, true);
 
-                    modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
-                        // Check is cancel.
-                        if (getShared('CDL008Cancel')) {
-                            return;
-                        }
+                        modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
+                            // Check is cancel.
+                            if (getShared('CDL008Cancel')) {
+                                return;
+                            }
 
-                        //view all code of selected item 
-                        let output = getShared('outputCDL008');
-                        if (output) {
-                            CS00017_IS00084.data.value(output);
-                        }
-                    });
+                            //view all code of selected item 
+                            let output = getShared('outputCDL008');
+                            if (output) {
+                                CS00017_IS00084.data.value(output);
+                            }
+                        });
+                    }
                 });
             }
 
             if (CS00017_IS00085) {
                 CS00017_IS00085.ctrl.on('click', () => {
-                    setShared('inputCDL008', {
-                        selectedCodes: [ko.toJS(CS00017_IS00085.data.value)],
-                        baseDate: ko.toJS(!!CS00017_IS00082 ? moment.utc(CS00017_IS00082.data.value(), "YYYYMMDD").toDate() : new Date()),
-                        isMultiple: false,
-                        selectedSystemType: 5,
-                        isrestrictionOfReferenceRange: false
-                    }, true);
+                    if (!!CS00017_IS00082.data.value()) {
+                        setShared('inputCDL008', {
+                            selectedCodes: [ko.toJS(CS00017_IS00085.data.value)],
+                            baseDate: ko.toJS(!!CS00017_IS00082 ? moment.utc(CS00017_IS00082.data.value(), "YYYYMMDD").toDate() : new Date()),
+                            isMultiple: false,
+                            selectedSystemType: 5,
+                            isrestrictionOfReferenceRange: false
+                        }, true);
 
-                    modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
-                        // Check is cancel.
-                        if (getShared('CDL008Cancel')) {
-                            return;
-                        }
+                        modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
+                            // Check is cancel.
+                            if (getShared('CDL008Cancel')) {
+                                return;
+                            }
 
-                        //view all code of selected item 
-                        let output = getShared('outputCDL008');
-                        if (output) {
-                            CS00017_IS00085.data.value(output);
-                        }
-                    });
+                            //view all code of selected item 
+                            let output = getShared('outputCDL008');
+                            if (output) {
+                                CS00017_IS00085.data.value(output);
+                            }
+                        });
+                    }
                 });
             }
 

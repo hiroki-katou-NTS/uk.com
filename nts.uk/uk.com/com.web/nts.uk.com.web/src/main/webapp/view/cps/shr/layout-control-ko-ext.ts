@@ -522,6 +522,16 @@ module nts.custombinding {
                         width: 160px;
                     }
 
+                    .layout-control .item-classification th>.form-label {
+                        line-height: 31px !important;
+                        height: 31px !important;
+                    }
+
+                    .layout-control .item-classification th>.form-label>* {
+                        line-height: unset !important;
+                        height: unset !important;                        
+                    }
+
                     .layout-control .item-classification>.close-btn {
                         top: 0;
                         right: 5px;
@@ -1375,7 +1385,7 @@ module nts.custombinding {
                                             && relates.indexOf(def.perInfoCtgId) == -1;
                                     })
                                     .map(def => {
-                                        let is_relate = ((def.itemTypeState || {}).dataTypeState || {}).relatedCtgCode,
+                                        let is_relate = ((def.itemTypeState || <any>{}).dataTypeState || {}).relatedCtgCode,
                                             new_mode = !!is_relate && !!is_new,
                                             dispOrder: number = ko.toJS(opts.sortable.data).length,
                                             item: IItemClassification = {
@@ -1466,7 +1476,7 @@ module nts.custombinding {
                                     opts.sortable.pushItems(defs);
                                 }
                             } else {
-                                let dupids = dups.map((x: IItemDefinition) => x.id),
+                                let dupids: IItemDefinition = dups.map((x: IItemDefinition) => x.id),
                                     nodups = defs.filter((x: IItemDefinition) => dupids.indexOf(x.id) == -1);
 
                                 if (dupids && dupids.length) {
@@ -1843,7 +1853,7 @@ module nts.custombinding {
 
                     if (def.item && def.item.dataTypeValue == ITEM_SINGLE_TYPE.SELECTION) {
                         let data = ko.toJS(def.lstComboBoxValue),
-                            selected = _.find(data, f => f.optionValue == def.value());
+                            selected = _.find(data, (f: any) => f.optionValue == def.value());
 
                         if (!selected) {
                             def.value(undefined);
@@ -1854,10 +1864,13 @@ module nts.custombinding {
                         def.value.subscribe(v => {
                             if (v) {
                                 let data = ko.toJS(def.lstComboBoxValue),
-                                    selected = _.find(data, f => f.optionValue == v);
+                                    selected: any = _.find(data, (f: any) => f.optionValue == v);
+
+                                console.log(selected);
                                 if (selected) {
                                     def.textValue(selected.optionText);
                                 } else {
+                                    def.value(undefined);
                                     def.textValue(`${v}&nbsp;&nbsp;&nbsp;${text('CPS001_107')}`);
                                 }
                             } else {
