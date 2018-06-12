@@ -151,6 +151,15 @@ public class AppAbsenceDto {
 	
 	private boolean appReasonRequire;
 	
+	/**
+	 * 承認処理時に自動でメールを送信する
+	 */
+	private boolean sendMailWhenApprovalFlg;
+	/**
+	 * 新規登録時に自動でメールを送信する
+	 */
+	private boolean sendMailWhenRegisterFlg;
+	
 	public static AppAbsenceDto fromDomain(AppAbsence app){
 		return new AppAbsenceDto(app.getVersion(),
 								ApplicationDto_New.fromDomain(app.getApplication()),
@@ -182,7 +191,7 @@ public class AppAbsenceDto {
 								null,
 								0,
 								false,
-								false,null,true);
+								false,null,true, false, false);
 	}
 }
 
