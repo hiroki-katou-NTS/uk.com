@@ -168,10 +168,8 @@ public class ExcessOutsideWorkDetail {
 		// 就業時間
 		int diffWorkMinutes = this.totalTimeAfterRound.getWorkTime().v()
 				- totalTimeBeforeRound.getWorkTime().v();
-		if (diffWorkMinutes < 0) diffWorkMinutes = 0; 
 		int diffWithinPrescribedMinutes = this.totalTimeAfterRound.getWithinPrescribedPremiumTime().v()
 				- totalTimeBeforeRound.getWithinPrescribedPremiumTime().v();
-		if (diffWithinPrescribedMinutes < 0) diffWithinPrescribedMinutes = 0;
 		this.roundDiffTime.setWorkTime(new AttendanceTimeMonth(diffWorkMinutes));
 		this.roundDiffTime.setWithinPrescribedPremiumTime(new AttendanceTimeMonth(diffWithinPrescribedMinutes));
 		
@@ -183,19 +181,15 @@ public class ExcessOutsideWorkDetail {
 			
 			int diffOverMinutes = overTimeEachFrameNo.getOverTime().getTime().v()
 					- overTimeBeforeRound.getOverTime().getTime().v();
-			if (diffOverMinutes < 0) diffOverMinutes = 0;
 			
 			int diffCalcOverMinutes = overTimeEachFrameNo.getOverTime().getCalcTime().v()
 					- overTimeBeforeRound.getOverTime().getCalcTime().v();
-			if (diffCalcOverMinutes < 0) diffCalcOverMinutes = 0;
 			
 			int diffTransOverMinutes = overTimeEachFrameNo.getTransferOverTime().getTime().v()
 					- overTimeBeforeRound.getTransferOverTime().getTime().v();
-			if (diffTransOverMinutes < 0) diffTransOverMinutes = 0;
 			
 			int diffCalcTransOverMinutes = overTimeEachFrameNo.getTransferOverTime().getCalcTime().v()
 					- overTimeBeforeRound.getTransferOverTime().getCalcTime().v();
-			if (diffCalcTransOverMinutes < 0) diffCalcTransOverMinutes = 0;
 			
 			this.roundDiffTime.getOverTime().putIfAbsent(overTimeFrameNo,
 					OverTimeFrameTotalTime.of(overTimeFrameNo,
@@ -215,19 +209,15 @@ public class ExcessOutsideWorkDetail {
 			
 			int diffHolidayWorkMinutes = holidayWorkTimeEachFrameNo.getHolidayWorkTime().getTime().v()
 					- holidayWorkTimeBeforeRound.getHolidayWorkTime().getTime().v();
-			if (diffHolidayWorkMinutes < 0) diffHolidayWorkMinutes = 0;
 			
 			int diffCalcHolidayWorkMinutes = holidayWorkTimeEachFrameNo.getHolidayWorkTime().getCalcTime().v()
 					- holidayWorkTimeBeforeRound.getHolidayWorkTime().getCalcTime().v();
-			if (diffCalcHolidayWorkMinutes < 0) diffCalcHolidayWorkMinutes = 0;
 			
 			int diffTransMinutes = holidayWorkTimeEachFrameNo.getTransferTime().getTime().v()
 					- holidayWorkTimeBeforeRound.getTransferTime().getTime().v();
-			if (diffTransMinutes < 0) diffTransMinutes = 0;
 			
 			int diffCalcTransMinutes = holidayWorkTimeEachFrameNo.getTransferTime().getCalcTime().v()
 					- holidayWorkTimeBeforeRound.getTransferTime().getCalcTime().v();
-			if (diffCalcTransMinutes < 0) diffCalcTransMinutes = 0;
 			
 			this.roundDiffTime.getHolidayWorkTime().putIfAbsent(holidayWorkTimeFrameNo,
 					HolidayWorkFrameTotalTime.of(holidayWorkTimeFrameNo,
@@ -242,19 +232,16 @@ public class ExcessOutsideWorkDetail {
 		// フレックス超過時間
 		int diffFlexExcessMinutes = this.totalTimeAfterRound.getFlexExcessTime().v()
 				- totalTimeBeforeRound.getFlexExcessTime().v();
-		if (diffFlexExcessMinutes < 0) diffFlexExcessMinutes = 0;
 		this.roundDiffTime.setFlexExcessTime(new AttendanceTimeMonth(diffFlexExcessMinutes));
 		
 		// 週割増合計時間
 		int diffWeekPremiumMinutes = this.totalTimeAfterRound.getWeeklyTotalPremiumTime().v()
 				- totalTimeBeforeRound.getWeeklyTotalPremiumTime().v();
-		if (diffWeekPremiumMinutes < 0) diffWeekPremiumMinutes = 0;
 		this.roundDiffTime.setWeeklyTotalPremiumTime(new AttendanceTimeMonth(diffWeekPremiumMinutes));
 		
 		// 月割増合計時間
 		int diffMonthPremiumMinutes = this.totalTimeAfterRound.getMonthlyTotalPremiumTime().v()
 				- totalTimeBeforeRound.getMonthlyTotalPremiumTime().v();
-		if (diffMonthPremiumMinutes < 0) diffMonthPremiumMinutes = 0;
 		this.roundDiffTime.setMonthlyTotalPremiumTime(new AttendanceTimeMonth(diffMonthPremiumMinutes));
 	}
 	

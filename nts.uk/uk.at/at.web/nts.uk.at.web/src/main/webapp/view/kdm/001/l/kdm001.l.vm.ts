@@ -17,7 +17,8 @@ module nts.uk.at.view.kdm001.l.viewmodel {
         checkedExpired: KnockoutObservable<boolean> = ko.observable(false);
         leaveId: KnockoutObservable<string>         = ko.observable('');
         numberOfDay: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberOfDays());
-        closureId: KnockoutObservable<number>       = ko.observable(0);
+        closureId: KnockoutObservable<number>                 = ko.observable(0);
+        disableCheckedExpired: KnockoutObservable<boolean>    = ko.observable(false);
 
         constructor() {
         }
@@ -44,7 +45,8 @@ module nts.uk.at.view.kdm001.l.viewmodel {
                 self.expiredDate(info.row.expiredDate);
                 self.occurredDays(info.row.occurredDays);
                 self.unUsedDays(info.row.unUsedDays);
-                self.checkedExpired(info.row.subHDAtr == 1);
+                self.checkedExpired(info.row.subHDAtr == 2);
+                self.disableCheckedExpired(!self.checkedExpired());
                 self.closureId(info.closure.closureId);
             }
             block.clear();
@@ -69,16 +71,24 @@ module nts.uk.at.view.kdm001.l.viewmodel {
                     isCheckedExpired: self.checkedExpired(),
                     closureId: self.closureId()
                 };
-                service.updateHolidaySetting(command).done(result => {
+                service.checkValidate(command).done(result => {
                     if (result && result.length > 0) {
+                        if (result.indexOf("Msg_1302") >= 0) {
+                            dialog.confirm({ messageId: "Msg_1302" }).ifYes(() => {
+                                self.callUpdateHolidaySetting(command);
+                            }).then(() => {
+                                block.clear();
+                                return;
+                            });
+                        }
                         for (let messageId of result) {
                             switch (messageId) {
                                 case "Msg_745": {
-                                    $('#    ').ntsError('set', { messageId: messageId });
+                                    $('#L6_2').ntsError('set', { messageId: messageId });
                                     break;
                                 }
                                 case "Msg_825": {
-                                    $('#L6_2').ntsError('set', { messageId: messageId });
+                                    $('#L9_2').ntsError('set', { messageId: messageId });
                                     break;
                                 }
                                 case "Msg_1212": {
@@ -94,15 +104,23 @@ module nts.uk.at.view.kdm001.l.viewmodel {
                         block.clear();
                         return;
                     }
-                    //情報メッセージ　Msg_15 登録しました。を表示する。
-                    dialog.info({ messageId: "Msg_15" }).then(() => {
-                        setShared('KDM001_L_PARAMS_RES', { isChanged: true });
-                        self.closeDialog();
-                    });
+                    self.callUpdateHolidaySetting(command);
                 }).always(() => {
                     block.clear();
                 });
             }
+        }
+
+        /**
+         * 情報メッセージ　Msg_15 登録しました。を表示する。
+         */
+        public callUpdateHolidaySetting(command) {
+            service.updateHolidaySetting(command).done(result => {
+                dialog.info({ messageId: "Msg_15" }).then(() => {
+                    setShared('KDM001_L_PARAMS_RES', { isChanged: true });
+                    this.closeDialog();
+                });
+            });
         }
 
         /**

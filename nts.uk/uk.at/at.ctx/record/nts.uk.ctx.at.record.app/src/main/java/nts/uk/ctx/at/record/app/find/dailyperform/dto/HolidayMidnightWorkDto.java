@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayMidnightWork;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkMidNightTime;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 
@@ -15,22 +16,22 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAt
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class HolidayMidnightWorkDto {
+public class HolidayMidnightWorkDto implements ItemConst {
 
 	 /** 休出深夜時間: 休出深夜時間 */
 //	 @AttendanceItemLayout(layout="A", jpPropertyName="休出深夜時間")
 //	 private HolidayWorkMidNightTimeDto holidayWorkMidNightTime;
 
 	/** 法定内: 計算付き時間 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName="法定内休出")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = LEGAL)
 	private CalcAttachTimeDto withinPrescribedHolidayWork;
 
 	/** 法定外: 計算付き時間 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName="法定外休出")
+	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = ILLEGAL)
 	private CalcAttachTimeDto excessOfStatutoryHolidayWork;
 
 	/** 祝日: 計算付き時間 */
-	@AttendanceItemLayout(layout = "C", jpPropertyName="祝日休出")
+	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = PUBLIC_HOLIDAY)
 	private CalcAttachTimeDto publicHolidayWork;
 	
 	public static HolidayMidnightWorkDto fromHolidayMidnightWork(HolidayMidnightWork domain){

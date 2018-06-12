@@ -23,12 +23,12 @@ import nts.uk.ctx.at.record.dom.adapter.approvalrootstate.AppRootStateConfirmAda
 import nts.uk.ctx.at.record.dom.approvalmanagement.enums.ConfirmationOfManagerOrYouself;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalStatusOfDailyPerforRepository;
+import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployee;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployeeHistory;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeEmpOfHistoryRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeOfEmployeeRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTime;
@@ -92,7 +92,7 @@ public class DivTimeSysFixedCheckService {
 	private TimeLeavingOfDailyPerformanceRepository timeLeaveRepo;
 	
 	@Inject
-	private DailyRecordToAttendanceItemConverter convertHelper;
+	private AttendanceItemConvertFactory convertHelper;
 	
 	@Inject
 	private DivergenceTimeErrorAlarmMessageRepository divMesRepo;
@@ -130,60 +130,60 @@ public class DivTimeSysFixedCheckService {
 	@Inject
 	private BusinessTypeOfEmployeeRepository bteRepo;
 	
-	public static List<String> SYSTEM_FIXED_DIVERGENCE_CHECK_CODE = Arrays.asList("D001", "D002", "D003", "D004", "D005", 
+	public final static List<String> SYSTEM_FIXED_DIVERGENCE_CHECK_CODE = Arrays.asList("D001", "D002", "D003", "D004", "D005", 
 			"D006", "D007", "D008", "D009", "D010", "D011", "D012", "D013", "D014", "D015", "D016", "D017", "D018", "D019", "D020");
 	
-	private final String WORKTYPE_HISTORY_ITEM = "W_HIS";
+	private final static String WORKTYPE_HISTORY_ITEM = "W_HIS";
 	
-	private final String COMPANY_HISTORY_ITEM = "C_HIS";
+	private final static String COMPANY_HISTORY_ITEM = "C_HIS";
 	
-	private final String WORKTYPE_CODE = "WTC";
+	private final static String WORKTYPE_CODE = "WTC";
 	
 	/** ログオフ時刻をシステム時刻として計算するかチェックする */
-	private final int LOGOFF_DIV_NO = 7;
+	private final static int LOGOFF_DIV_NO = 7;
 	
 	/** ・勤怠項目ID　34（退勤時刻1） */
-	private final int TIME_LEAVE_ITEM = 34;
+	private final static int TIME_LEAVE_ITEM = 34;
 	
-	private final String EMPTY_STRING = "";
+	private final static String EMPTY_STRING = "";
 
-	private final String PATTERN_1 = "[0-9]+$";
+	private final static String PATTERN_1 = "[0-9]+$";
 
-	private final String SEPERATOR = "|";
+	private final static String SEPERATOR = "|";
 
-	private final String RUNTIME_ERROR_1 = "勤務実績のエラーアラームのコードのフォーマットが正しくない：　";
+	private final static String RUNTIME_ERROR_1 = "勤務実績のエラーアラームのコードのフォーマットが正しくない：　";
 
-	private final String RUNTIME_ERROR_2 = "CompanyDivergenceReferenceTimeHistory not found!! For Company: ";
+	private final static String RUNTIME_ERROR_2 = "CompanyDivergenceReferenceTimeHistory not found!! For Company: ";
 
-	private final String RUNTIME_ERROR_3 = "本人確認処理の利用設定 not found!!!";
+	private final static String RUNTIME_ERROR_3 = "本人確認処理の利用設定 not found!!!";
 
-	private final String WORK_TYPE_SETTING = "WorkTypeSetting";
+	private final static String WORK_TYPE_SETTING = "WorkTypeSetting";
 
-	private final String ERROR_ALARM_CHECK = "ErrorAlarmCheck";
+	private final static String ERROR_ALARM_CHECK = "ErrorAlarmCheck";
 
-	private final String DIVERGENCE_MESSAGE_KEY = "DivergenceMessage";
+	private final static String DIVERGENCE_MESSAGE_KEY = "DivergenceMessage";
 
-	private final String KDW003_108_KEY = "KDW003_108";
+	private final static String KDW003_108_KEY = "KDW003_108";
 
-	private final String BUSINESS_TYPE_CODE_D = "BusinessTypeCode";
+	private final static String BUSINESS_TYPE_CODE_D = "BusinessTypeCode";
 
-	private final String COM_DIV_REF_TIME_KEY = "ComDivRefTime";
+	private final static String COM_DIV_REF_TIME_KEY = "ComDivRefTime";
 
-	private final String WT_DIV_REF_TIME_KEY = "WTDivRefTime";
+	private final static String WT_DIV_REF_TIME_KEY = "WTDivRefTime";
 
-	private final String BUSINESS_TYPE_HISTORY_KEY = "BusinessTypeOfEmployeeHistory";
+	private final static String BUSINESS_TYPE_HISTORY_KEY = "BusinessTypeOfEmployeeHistory";
 
-	private final String COM_DIV_REF_TIME_HISTORY_KEY = "CompanyDivergenceReferenceTimeHistory";
+	private final static String COM_DIV_REF_TIME_HISTORY_KEY = "CompanyDivergenceReferenceTimeHistory";
 
-	private final String TIME_NOW_KEY = "TimeNow";
+	private final static String TIME_NOW_KEY = "TimeNow";
 
-	private final String TODAY_KEY = "Today";
+	private final static String TODAY_KEY = "Today";
 
-	private final String APPROVAL_SETTING_KEY = "ApprovalSetting";
+	private final static String APPROVAL_SETTING_KEY = "ApprovalSetting";
 
-	private final String IDENTITY_PUS_KEY = "IdentityPUS";
+	private final static String IDENTITY_PUS_KEY = "IdentityPUS";
 
-	private final String DIVERGENCE_TIME_KEY = "DivergenceTime";
+	private final static String DIVERGENCE_TIME_KEY = "DivergenceTime";
 	
 	/** 乖離時間（確認解除） */
 	public List<EmployeeDailyPerError> divergenceTimeCheckBySystemFixed(String comId, String empId, GeneralDate tarD){
@@ -257,7 +257,7 @@ public class DivTimeSysFixedCheckService {
 			List<ErrorAlarmWorkRecord> erAls, List<DivergenceTime> divTimeErAlMs){
 		DivCheckMasterShareContainer shareContainer = DivCheckMasterShareBus.open();
 		List<EmployeeDailyPerError> result = divergenceTimeCheckBySystemFixed(comId, empId, tarD, divTime, 
-				iPUS, tl, erAls, null, shareContainer);
+				iPUS, tl, erAls, divTimeErAlMs, shareContainer);
 		shareContainer.clearAll();
 		return result;
 	}
@@ -268,6 +268,10 @@ public class DivTimeSysFixedCheckService {
 			IdentityProcessUseSet iPUS, Optional<TimeLeavingOfDailyPerformance> tl, 
 			List<ErrorAlarmWorkRecord> erAls, List<DivergenceTime> divTimeErAlMs,
 			DivCheckMasterShareContainer shareContainer){
+		boolean isNotShare = shareContainer == null;
+		if(isNotShare){
+			shareContainer = DivCheckMasterShareBus.open();
+		}
 		List<EmployeeDailyPerError> errors = check(comId, empId, tarD, divTime, tl, erAls, divTimeErAlMs, shareContainer);
 		if(errors.isEmpty()) {
 			return errors;
@@ -276,7 +280,11 @@ public class DivTimeSysFixedCheckService {
 			iPUS = shareContainer.getShared(join(IDENTITY_PUS_KEY, SEPERATOR, comId), () -> iPSURepo.findByKey(comId)
 														.orElseThrow(() -> new RuntimeException(RUNTIME_ERROR_3)));
 		}
-		return removeconfirm(comId, empId, tarD, errors, iPUS, shareContainer);
+		List<EmployeeDailyPerError> result = removeconfirm(comId, empId, tarD, errors, iPUS, shareContainer);
+		if(isNotShare){
+			shareContainer.clearAll();;
+		}
+		return result;
 	}
 	
 	/** 確認解除 */
@@ -393,7 +401,7 @@ public class DivTimeSysFixedCheckService {
 		}
 		/** 勤怠項目ID　34（退勤時刻1） */
 		if(timeLeave.isPresent()) {
-			val valued = convertHelper.withTimeLeaving(timeLeave.get()).convert(TIME_LEAVE_ITEM);
+			val valued = convertHelper.createDailyConverter().withTimeLeaving(timeLeave.get()).convert(TIME_LEAVE_ITEM);
 			if(valued.isPresent() && valued.get().value() != null) {
 				GeneralDateTime now = shareContainer.getShared(TIME_NOW_KEY, () -> GeneralDateTime.now());
 				int currentTime = now.hours() * 60 + now.minutes();

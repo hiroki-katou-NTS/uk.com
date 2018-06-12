@@ -27,6 +27,7 @@ import nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto.WorkInformationOf
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.AttendanceTimeByWorkOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.TimeLeavingOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
@@ -41,19 +42,19 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	private GeneralDate date;
 
 	/** 勤務情報： 日別実績の勤務情報 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "日別実績の勤務情報")
+	@AttendanceItemLayout(layout = DAILY_WORK_INFO_CODE, jpPropertyName = DAILY_WORK_INFO_NAME)
 	private WorkInformationOfDailyDto workInfo;
 
 	/** 計算区分： 日別実績の計算区分 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "日別実績の計算区分")
+	@AttendanceItemLayout(layout = DAILY_CALCULATION_ATTR_CODE, jpPropertyName = DAILY_CALCULATION_ATTR_NAME)
 	private CalcAttrOfDailyPerformanceDto calcAttr;
 
 	/** 所属情報： 日別実績の所属情報 */
-	@AttendanceItemLayout(layout = "C", jpPropertyName = "日別実績の所属情報")
+	@AttendanceItemLayout(layout = DAILY_AFFILIATION_INFO_CODE, jpPropertyName = DAILY_AFFILIATION_INFO_NAME)
 	private AffiliationInforOfDailyPerforDto affiliationInfo;
 
 	/** 日別実績の勤務種別 */
-	@AttendanceItemLayout(layout = "D", jpPropertyName = "日別実績の勤務種別", isOptional = true)
+	@AttendanceItemLayout(layout = DAILY_BUSINESS_TYPE_CODE, jpPropertyName = DAILY_BUSINESS_TYPE_NAME, isOptional = true)
 	private Optional<BusinessTypeOfDailyPerforDto> businessType = Optional.empty();
 
 	/** エラー一覧： 社員の日別実績エラー一覧 */
@@ -62,39 +63,40 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	private EmployeeDailyPerErrorDto errors;
 
 	/** 外出時間帯: 日別実績の外出時間帯 */
-	@AttendanceItemLayout(layout = "E", jpPropertyName = "日別実績の外出時間帯", isOptional = true)
+	@AttendanceItemLayout(layout = DAILY_OUTING_TIME_CODE, jpPropertyName = DAILY_OUTING_TIME_NAME, isOptional = true)
 	private Optional<OutingTimeOfDailyPerformanceDto> outingTime = Optional.empty();
 
 	/** 休憩時間帯: 日別実績の休憩時間帯 */
-	@AttendanceItemLayout(layout = "F", jpPropertyName = "日別実績の休憩時間帯", listMaxLength = 2, enumField = "restTimeType", listNoIndex = true)
+	@AttendanceItemLayout(layout = DAILY_BREAK_TIME_CODE, jpPropertyName = DAILY_BREAK_TIME_NAME, 
+			listMaxLength = 2, enumField = DEFAULT_ENUM_FIELD_NAME, listNoIndex = true)
 	private List<BreakTimeDailyDto> breakTime = new ArrayList<>();
 
 	/** 勤怠時間: 日別実績の勤怠時間 */
-	@AttendanceItemLayout(layout = "G", jpPropertyName = "日別実績の勤怠時間", isOptional = true)
+	@AttendanceItemLayout(layout = DAILY_ATTENDANCE_TIME_CODE, jpPropertyName = DAILY_ATTENDANCE_TIME_NAME, isOptional = true)
 	private Optional<AttendanceTimeDailyPerformDto> attendanceTime = Optional.empty();
 
 	/** 作業別勤怠時間: 日別実績の作業別勤怠時間 */
-	@AttendanceItemLayout(layout = "H", jpPropertyName = "日別実績の作業別勤怠時間", isOptional = true)
+	@AttendanceItemLayout(layout = DAILY_ATTENDANCE_TIME_BY_WORK_CODE, jpPropertyName = DAILY_ATTENDANCE_TIME_BY_WORK_NAME, isOptional = true)
 	private Optional<AttendanceTimeByWorkOfDailyDto> attendanceTimeByWork = Optional.empty();
 
 	/** 出退勤: 日別実績の出退勤 */
-	@AttendanceItemLayout(layout = "I", jpPropertyName = "日別実績の出退勤", isOptional = true)
+	@AttendanceItemLayout(layout = DAILY_ATTENDACE_LEAVE_CODE, jpPropertyName = DAILY_ATTENDACE_LEAVE_NAME, isOptional = true)
 	private Optional<TimeLeavingOfDailyPerformanceDto> timeLeaving = Optional.empty();
 
 	/** 短時間勤務時間帯: 日別実績の短時間勤務時間帯 */
-	@AttendanceItemLayout(layout = "J", jpPropertyName = "日別実績の短時間勤務時間帯", isOptional = true)
+	@AttendanceItemLayout(layout = DAILY_SHORT_TIME_CODE, jpPropertyName = DAILY_SHORT_TIME_NAME, isOptional = true)
 	private Optional<ShortTimeOfDailyDto> shortWorkTime = Optional.empty();
 
 	/** 特定日区分: 日別実績の特定日区分 */
-	@AttendanceItemLayout(layout = "K", jpPropertyName = "日別実績の特定日区分", isOptional = true)
+	@AttendanceItemLayout(layout = DAILY_SPECIFIC_DATE_ATTR_CODE, jpPropertyName = DAILY_SPECIFIC_DATE_ATTR_NAME, isOptional = true)
 	private Optional<SpecificDateAttrOfDailyPerforDto> specificDateAttr = Optional.empty();
 
 	/** 入退門: 日別実績の入退門 */
-	@AttendanceItemLayout(layout = "L", jpPropertyName = "日別実績の入退門", isOptional = true)
+	@AttendanceItemLayout(layout = DAILY_ATTENDANCE_LEAVE_GATE_CODE, jpPropertyName = DAILY_ATTENDANCE_LEAVE_GATE_NAME, isOptional = true)
 	private Optional<AttendanceLeavingGateOfDailyDto> attendanceLeavingGate = Optional.empty();
 
 	/** 任意項目: 日別実績の任意項目 */
-	@AttendanceItemLayout(layout = "M", jpPropertyName = "日別実績の任意項目", isOptional = true)
+	@AttendanceItemLayout(layout = DAILY_OPTIONAL_ITEM_CODE, jpPropertyName = DAILY_OPTIONAL_ITEM_NAME, isOptional = true)
 	private Optional<OptionalItemOfDailyPerformDto> optionalItem = Optional.empty();
 
 	/** 編集状態: 日別実績の編集状態 */
@@ -103,14 +105,15 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	private List<EditStateOfDailyPerformanceDto> editStates = new ArrayList<>();
 
 	/** 臨時出退勤: 日別実績の臨時出退勤 */
-	@AttendanceItemLayout(layout = "O", jpPropertyName = "日別実績の臨時出退勤", isOptional = true)
+	@AttendanceItemLayout(layout = DAILY_TEMPORARY_TIME_CODE, jpPropertyName = DAILY_TEMPORARY_TIME_NAME, isOptional = true)
 	private Optional<TemporaryTimeOfDailyPerformanceDto> temporaryTime = Optional.empty();
 	/** PCログオン情報: 日別実績のPCログオン情報 */
-	@AttendanceItemLayout(layout = "P", jpPropertyName = "日別実績のPCログオン情報", isOptional = true)
+	@AttendanceItemLayout(layout = DAILY_PC_LOG_INFO_CODE, jpPropertyName = DAILY_PC_LOG_INFO_NAME, isOptional = true)
 	private Optional<PCLogOnInforOfDailyPerformDto> pcLogInfo = Optional.empty();
 	
 	/** 備考: 日別実績の備考 */
-	@AttendanceItemLayout(layout = "Q", jpPropertyName = "日別実績の備考", listMaxLength = 5, indexField = "remarkNo")
+	@AttendanceItemLayout(layout = DAILY_REMARKS_CODE, jpPropertyName = DAILY_REMARKS_NAME,
+			listMaxLength = 5, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<RemarksOfDailyDto> remarks = new ArrayList<>();
 
 	public static DailyRecordDto from(IntegrationOfDaily domain){

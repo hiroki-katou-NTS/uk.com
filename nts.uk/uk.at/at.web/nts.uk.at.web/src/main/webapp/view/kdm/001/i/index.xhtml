@@ -18,7 +18,7 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<!--I1 文言-->
-				<div class="down-s">
+				<div class="down-s" style="margin-left: 0;">
 					<span class="label">#{i18n.getText('KDM001_103')}</span>
 				</div>
 				<!--I2 対象者-->
@@ -41,13 +41,13 @@
 					<hr />
 				</div>
 				<!-- I4 休出 -->
-				<div tabindex="1" id="I4"
+				<div class="left-m" tabindex="1" id="I4"
 					data-bind="ntsCheckBox: { checked: checkedHoliday, enable: true, text: '#{i18n.getText('KDM001_110')}' }"></div>
 				<!-- I5 罫線 -->
 				<div class="set-row">
 					<hr />
 				</div>
-				<div class="down-s set-date flex valign-center">
+				<div class="down-s set-date flex valign-center left-l">
 					<!-- I6 年月日 -->
 					<div class="labelTitle"
 						data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_62')}</div>
@@ -61,7 +61,7 @@
 					<!-- Combobox -->
 					<div id="I6_3" tabindex="3" class="combo-box-holiday"
 						data-bind="ntsComboBox: {
-					name: '#[KDM001_112]',
+					name: '#{i18n.getText('KDM001_112')}',
 					options: itemListHoliday,
 					optionsValue: 'code',
 					visibleItemsCount: 5,
@@ -69,23 +69,24 @@
 					optionsText: 'name',
 					editable: false,
 					enable: true,
-					selectFirstIfNull : true,
+					required: checkedHoliday,
+					selectFirstIfNull : false,
 					columns: [
 						{ prop: 'name', length: 5 },
 					]}">
 					</div>
 				</div>
-				<div class="down-s set-due-date flex valign-center">
+				<div class="down-s set-due-date flex valign-center left-l">
 					<!-- I8 期限 -->
 					<div class="labelTitle"
 						data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_72')}</div>
 					<!-- I8_1 期限 -->
 					<!-- Datepicker -->
-					<div tabindex="4"
+					<div id="I8_1" tabindex="4"
 						data-bind="ntsDatePicker: {value: duedateHoliday, dateFormat: 'YYYY/MM/DD', name: '#[KDM001_73]', required: checkedHoliday}"></div>
 				</div>
 
-				<div class="down-s">
+				<div class="down-s left-m">
 					<!-- I9 代休 -->
 					<div tabindex="5"
 						data-bind="ntsCheckBox: { checked: checkedSubHoliday, enable: true, text: '#{i18n.getText('KDM001_113')}' }"></div>
@@ -94,7 +95,7 @@
 				<div class="set-row">
 					<hr />
 				</div>
-				<div class="down-s flex valign-center">
+				<div class="down-s flex valign-center left-l">
 					<!-- I11 年月日 -->
 					<div class="labelTitle"
 						data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_75')}</div>
@@ -108,7 +109,7 @@
 					<!-- Combobox -->
 					<div tabindex="6" id="I11_3" class="combo-box-sub-holiday"
 						data-bind="ntsComboBox: {
-					name: '#[KDM001_116]',
+					name: '#{i18n.getText('KDM001_116')}',
 					options: itemListSubHoliday,
 					optionsValue: 'code',
 					visibleItemsCount: 5,
@@ -116,7 +117,8 @@
 					optionsText: 'name',
 					editable: false,
 					enable: true,
-					selectFirstIfNull : true,
+					selectFirstIfNull : false,
+					required: checkedSubHoliday,
 					columns: [
 						{ prop: 'name', length: 5 },
 					]}">
@@ -132,22 +134,23 @@
 						<!-- I12_2 年月日 -->
 						<!-- Datepicker -->
 						<div id="I12_2"
-							data-bind="ntsDatePicker: {value: dateOptionSubHoliday, dateFormat: 'YYYY/MM/DD', enable: checkedSplit, name: '#[KDM001_81]', required: checkedSplit  }"></div>
+							data-bind="ntsDatePicker: {value: dateOptionSubHoliday, dateFormat: 'YYYY/MM/DD', enable: checkedSplit() &amp;&amp; checkedSubHoliday(), name: '#[KDM001_81]', required: checkedSplit  }"></div>
 						<!-- I12_3 代休日数 -->
 						<span class="label" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_115')}</span>
 						<!-- I12_4 代休日数 -->
 						<!-- Combobox -->
 						<div tabindex="8" id="I12_4" class="combo-box-option-sub-holiday"
 							data-bind="ntsComboBox: {
-							name: '#[KDM001_116]',
+							name: '#{i18n.getText('KDM001_116')}',
 							options: itemListOptionSubHoliday,
 							optionsValue: 'code',
 							visibleItemsCount: 5,
 							value: selectedCodeOptionSubHoliday,
 							optionsText: 'name',
 							editable: false,
-							enable: checkedSplit,
-							selectFirstIfNull : true,
+							enable: checkedSplit() &amp;&amp; checkedSubHoliday(),
+							selectFirstIfNull : false,
+							required: checkedSplit,
 							columns: [
 								{ prop: 'name', length: 5 },
 							]}">
@@ -163,7 +166,10 @@
 					<div class="labelTitle"
 						data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_85')}</div>
 					<!-- I15_1 残数 -->
-					<span class="label" data-bind="text: dayRemaining"></span>日
+					<span class="label" data-bind="text: dayRemaining"></span>
+					<span class="label" data-bind="if: dayRemaining" >
+						<label data-bind="text: unitDay"></label>
+					</span>
 				</div>
 			</div>
 			<div id="functions-area-bottom">

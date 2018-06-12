@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
+import nts.arc.diagnose.stopwatch.Stopwatches;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
@@ -83,18 +85,21 @@ public class DetermineErrorAlarmWorkRecordService implements ErAlCheckService {
 		if (erAl.getErrorAlarmCondition() == null || erAl.getErrorDisplayItem() == null) {
 			return new ArrayList<>();
 		}
+		Stopwatches.start("ERAL");
 		List<DailyRecordDto> data = null;
 		if(record != null){
 			DailyRecordDto recordDto = DailyRecordDto.from(record);
 			data = Arrays.asList(recordDto);
 		}
-		return workRecordCheckService.check(date, Arrays.asList(employeeID), erAl.getErrorAlarmCondition(), data)
+		val result = workRecordCheckService.check(date, Arrays.asList(employeeID), erAl.getErrorAlarmCondition(), data)
 										.entrySet().stream()
 										.filter(ae -> isError(ae.getValue())).map(ae -> {
 											return new EmployeeDailyPerError(companyId, employeeID, date,
 													erAl.getCode(),
 													Arrays.asList(erAl.getErrorDisplayItem()));
 										}).collect(Collectors.toList());
+		Stopwatches.stop("ERAL");
+		return result;
 	}
 
 	private Boolean isError(Boolean erAl) {

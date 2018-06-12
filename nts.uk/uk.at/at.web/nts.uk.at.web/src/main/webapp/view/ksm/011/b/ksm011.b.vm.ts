@@ -190,7 +190,7 @@ module nts.uk.at.view.ksm011.b.viewmodel {
             });
             $.when(self.getData()).done(function() {
                 if (self.dataB != null) {
-                    
+
                     if (self.dataB.schePerInfoAtr.length > 0) {
                         var rightItems = [];
                         var leftItems = self.leftItems();
@@ -209,27 +209,48 @@ module nts.uk.at.view.ksm011.b.viewmodel {
                             });
                         });
 
-                        self.rightItems([]);
                         let sortedLItems = _.sortBy(leftItems, [function(o) { return o.code; }]);
                         let sortedRItems = _.sortBy(rightItems, [function(o) { return o.code; }]);
-                        if (teamDivision == 1 && rank == 1) {
-                            var sortedRItemss = _.remove(sortedRItems, function(newItem) {
-                                return newItem.code == 6 || newItem.code == 5;
-                            })
+                        if (rightItems.length > self.rightItems().length) {
+                            if (teamDivision == 1 && rank == 1) {
+                                var sortedRItemss = _.remove(sortedRItems, function(newItem) {
+                                    return newItem.code == 6 || newItem.code == 5;
+                                })
+                            }
+                            if (teamDivision == 0 && rank == 0) {
+                                sortedRItems = _.sortBy(rightItems, function(o) { return o.code; });
+                            }
+                            if (teamDivision == 1 && rank == 0) {
+                                var sortedRItemss = _.remove(sortedRItems, function(newItem) {
+                                    return newItem.code == 5;
+                                })
+                            }
+                            if (teamDivision == 0 && rank == 1) {
+                                var sortedRItemss = _.remove(sortedRItems, function(newItem) {
+                                    return newItem.code == 6;
+                                })
+                            }
+                            if (self.rightItems().length > 0) {
+                                sortedRItems = self.rightItems();
+                                _.forEach(self.personalInforData, function(item) {
+                                    sortedLItems = _.remove(rightItems, function(newItem) {
+                                        return newItem.code == item.code;
+                                    });
+                                });
+                            }
+
+
+                        } else {
+                            sortedRItems = self.rightItems();
+                            _.forEach(self.personalInforData, function(item) {
+                                sortedLItems = _.remove(rightItems, function(newItem) {
+                                    return newItem.code == item.code;
+                                });
+                            });
+
+
                         }
-                        if (teamDivision == 0 && rank == 0) {
-                            sortedRItems = _.sortBy(rightItems, function(o) { return o.code; });
-                        }
-                        if (teamDivision == 1 && rank == 0) {
-                            var sortedRItemss = _.remove(sortedRItems, function(newItem) {
-                                return newItem.code == 5;
-                            })
-                        }
-                        if (teamDivision == 0 && rank == 1) {
-                            var sortedRItemss = _.remove(sortedRItems, function(newItem) {
-                                return newItem.code == 6;
-                            })
-                        }
+
 
                         self.rightItems(sortedRItems);
                         self.leftItems([]);

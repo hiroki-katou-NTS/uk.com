@@ -24,9 +24,7 @@ private String GET_BYSID = "SELECT a FROM KrcmtComDayoffMaData a WHERE a.sID = :
 	
 	private String GET_BY_REDAY = String.join(" ", GET_BYSID, " AND a.remainDays > 0");
 
-	private String GET_BYSID_WITHREDAY = String.join(" ", GET_BYSID, " AND a.remainDays > 0 OR a.comDayOffID IN  (SELECT c.krcmtLeaveDayOffManaPK.comDayOffID FROM KrcmtLeaveDayOffMana c "
-					+ "INNER JOIN KrcmtLeaveManaData b ON b.leaveID = c.krcmtLeaveDayOffManaPK.leaveID WHERE b.cID = :cid AND"
-					+ " b.sID =:employeeId AND b.subHDAtr !=:subHDAtr)");
+	private String GET_BYSID_WITHREDAY = String.join(" ", GET_BYSID, " AND a.remainDays > 0");
 
 	private String GET_BYCOMDAYOFFID = String.join(" ", GET_BYSID, " AND a.comDayOffID IN (SELECT b.krcmtLeaveDayOffManaPK.comDayOffID FROM KrcmtLeaveDayOffMana b WHERE b.krcmtLeaveDayOffManaPK.leaveID = :leaveID)");
 
@@ -35,7 +33,7 @@ private String GET_BYSID = "SELECT a FROM KrcmtComDayoffMaData a WHERE a.sID = :
 	
 	private String GET_BY_LISTID = " SELECT c FROM KrcmtComDayoffMaData c WHERE c.comDayOffID IN :comDayOffIDs";
 	
-	private String GET_BY_DAYOFFDATE_PERIOD = "SELECT c FROM KrcmtComDayoffMaData"
+	private String GET_BY_DAYOFFDATE_PERIOD = "SELECT c FROM KrcmtComDayoffMaData c"
 			+ " WHERE c.dayOff >= :startDate"
 			+ " AND c.dayOff <= :endDate"
 			+ " AND c.sID = :sid";
@@ -43,7 +41,7 @@ private String GET_BYSID = "SELECT a FROM KrcmtComDayoffMaData a WHERE a.sID = :
 	@Override
 	public List<CompensatoryDayOffManaData> getBySidWithReDay(String cid, String sid) {
 		List<KrcmtComDayoffMaData> list = this.queryProxy().query(GET_BYSID_WITHREDAY, KrcmtComDayoffMaData.class)
-				.setParameter("employeeId", sid).setParameter("cid", cid).setParameter("subHDAtr", 0).getList();
+				.setParameter("employeeId", sid).setParameter("cid", cid).getList();
 		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
 
@@ -184,9 +182,9 @@ private String GET_BYSID = "SELECT a FROM KrcmtComDayoffMaData a WHERE a.sID = :
 				.query(GET_BY_LISTID, KrcmtComDayoffMaData.class)
 				.setParameter("comDayOffIDs",comDayIds)
 				.getList();
-		for(KrcmtComDayoffMaData busItem: KrcmtComDayoffMaData){
-			busItem.remainDays =  busItem.requiredDays;
-		}
+			for(KrcmtComDayoffMaData busItem: KrcmtComDayoffMaData){
+				busItem.remainDays =  busItem.requiredDays;
+			}
 		this.commandProxy().updateAll(KrcmtComDayoffMaData);
 	}
 

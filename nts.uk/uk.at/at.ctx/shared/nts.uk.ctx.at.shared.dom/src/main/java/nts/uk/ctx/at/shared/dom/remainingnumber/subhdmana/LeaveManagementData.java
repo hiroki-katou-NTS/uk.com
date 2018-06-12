@@ -52,7 +52,7 @@ public class LeaveManagementData extends AggregateRoot {
 	// 未使用時間数
 	private ManagementDataHours unUsedTimes;
 	
-	// 代休消化区分
+	// 代休消化区分r
 	private DigestionAtr subHDAtr;
 	
 	// １日相当時間

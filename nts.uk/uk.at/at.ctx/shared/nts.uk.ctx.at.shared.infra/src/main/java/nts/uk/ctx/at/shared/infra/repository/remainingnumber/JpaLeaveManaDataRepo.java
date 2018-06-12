@@ -20,24 +20,24 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaDataRepository {
 
-	private String QUERY_BYSID = "SELECT l FROM KrcmtLeaveManaData l WHERE l.cID = :cid AND l.sID =:employeeId ";
+	private static final String QUERY_BYSID = "SELECT l FROM KrcmtLeaveManaData l WHERE l.cID = :cid AND l.sID =:employeeId ";
 
-	private String QUERY_BYSIDWITHSUBHDATR = String.join(" ", QUERY_BYSID, "AND l.subHDAtr =:subHDAtr");
+	private static final String QUERY_BYSIDWITHSUBHDATR = String.join(" ", QUERY_BYSID, "AND l.subHDAtr =:subHDAtr");
 	
-	private String QUERY_LEAVEDAYOFF = String.join(" ", QUERY_BYSID, "AND l.leaveID IN (SELECT b.krcmtLeaveDayOffManaPK.leaveID FROM KrcmtLeaveDayOffMana b WHERE b.krcmtLeaveDayOffManaPK.comDayOffID = :comDayOffID )");
+	private static final String QUERY_LEAVEDAYOFF = String.join(" ", QUERY_BYSID, "AND l.leaveID IN (SELECT b.krcmtLeaveDayOffManaPK.leaveID FROM KrcmtLeaveDayOffMana b WHERE b.krcmtLeaveDayOffManaPK.comDayOffID = :comDayOffID )");
 	
-	private String QUERY_BYSIDANDHOLIDAYDATECONDITION = "SELECT l FROM KrcmtLeaveManaData l WHERE l.cID = :cid AND l.sID =:employeeId AND l.dayOff = :dateHoliday";
+	private static final String QUERY_BYSIDANDHOLIDAYDATECONDITION = "SELECT l FROM KrcmtLeaveManaData l WHERE l.cID = :cid AND l.sID =:employeeId AND l.dayOff = :dateHoliday";
 
-	private String QUERY_BYSID_AND_NOT_UNUSED = String.join(" ", QUERY_BYSID, "AND l.subHDAtr !=:subHDAtr");
+	private static final String QUERY_BYSID_AND_NOT_UNUSED = String.join(" ", QUERY_BYSID, "AND l.subHDAtr =:subHDAtr");
 
-	private String QUERY_BYID = "SELECT l FROM KrcmtLeaveManaData l WHERE l.leaveID IN :leaveIDs";
+	private static final String QUERY_BYID = "SELECT l FROM KrcmtLeaveManaData l WHERE l.leaveID IN :leaveIDs";
 	
 	
-	private String QUERY_BY_DAYOFF_PERIOD = "SELECT c FROM KrcmtLeaveManaData c"
+	private static final String QUERY_BY_DAYOFF_PERIOD = "SELECT c FROM KrcmtLeaveManaData c"
 			+ " WHERE c.sID = :sid"
 			+ " AND c.dayOff >= :startDate"
 			+ " AND c.dayOff <= :endDate";
-	private String QUERY_BY_EX = QUERY_BY_DAYOFF_PERIOD
+	private static final String QUERY_BY_EX = QUERY_BY_DAYOFF_PERIOD
 			+ " AND (c.unUsedDays > :unUsedDays AND c.expiredDate >= :sDate AND c.expiredDate <= :eDate)"
 			+ " OR (c.subHDAtr = :subHDAtr AND c.disapearDate >= :sDate AND c.disapearDate <= :eDate)";
 	@Override
@@ -161,6 +161,7 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 				.setParameter("leaveIDs", leaveIds).getList();
 		for(KrcmtLeaveManaData busItem: listListMana){
 			busItem.subHDAtr =  DigestionAtr.USED.value;
+			busItem.unUsedDays = 0.0;
 		}
 		this.commandProxy().updateAll(listListMana);
 	}
@@ -170,10 +171,10 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 		List<KrcmtLeaveManaData> listListMana = this.queryProxy()
 				.query(QUERY_BYID, KrcmtLeaveManaData.class)
 				.setParameter("leaveIDs", leaveIds).getList();
-		for(KrcmtLeaveManaData busItem: listListMana){
-			busItem.subHDAtr =  DigestionAtr.UNUSED.value;
-			busItem.unUsedDays = 1.0;
-		}
+			for(KrcmtLeaveManaData busItem: listListMana){
+				busItem.subHDAtr =  DigestionAtr.UNUSED.value;
+				busItem.unUsedDays = busItem.occurredDays;
+			}
 		this.commandProxy().updateAll(listListMana);
 	}
 	
@@ -182,6 +183,7 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	public void updateUnUseDayLeaveId(String leaveId,Double unUsedDay) {
 		KrcmtLeaveManaData leaveMana =  this.getEntityManager().find(KrcmtLeaveManaData.class, leaveId);
 		leaveMana.unUsedDays = unUsedDay;
+		leaveMana.subHDAtr = 1;
 		this.commandProxy().update(leaveMana);
 	}
 	
@@ -192,8 +194,16 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	}
 
 	@Override
-	public void udpate(LeaveManagementData domain) {
-		this.commandProxy().update(this.toEntity(domain));
+	public void udpateByHolidaySetting(String leaveId, Boolean isCheckedExpired, GeneralDate expiredDate, Double occurredDays, Double unUsedDays) {
+		KrcmtLeaveManaData entity = this.getEntityManager().find(KrcmtLeaveManaData.class, leaveId);
+		if (Objects.isNull(entity)) {
+			throw new BusinessException("Msg_198");
+		}
+		entity.subHDAtr     = isCheckedExpired ? 2 : entity.subHDAtr;
+		entity.expiredDate  = expiredDate;
+		entity.occurredDays = occurredDays;
+		entity.unUsedDays   = unUsedDays;
+		this.commandProxy().update(entity);
 	}
 
 	@Override

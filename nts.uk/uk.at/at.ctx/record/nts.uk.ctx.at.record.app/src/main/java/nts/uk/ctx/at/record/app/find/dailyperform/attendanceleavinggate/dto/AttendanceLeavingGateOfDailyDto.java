@@ -13,6 +13,7 @@ import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
@@ -20,14 +21,14 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Data
-@AttendanceItemRoot(rootName = "日別実績の入退門")
+@AttendanceItemRoot(rootName = ItemConst.DAILY_ATTENDANCE_LEAVE_GATE_NAME)
 public class AttendanceLeavingGateOfDailyDto extends AttendanceItemCommon {
 
 	private String employeeId;
 	
 	private GeneralDate ymd;
 	
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "入退門時刻", listMaxLength = 3, indexField = "timeSheetNo")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TIME_ZONE, listMaxLength = 3, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<TimeSheetDto> attendanceLeavingGateTime;
 	
 	public static AttendanceLeavingGateOfDailyDto getDto(AttendanceLeavingGateOfDaily domain){
@@ -67,7 +68,7 @@ public class AttendanceLeavingGateOfDailyDto extends AttendanceItemCommon {
 			ymd = this.workingDate();
 		}
 		return new AttendanceLeavingGateOfDaily(employeeId, ymd, ConvertHelper.mapTo(attendanceLeavingGateTime,
-						(c) -> new AttendanceLeavingGate(new WorkNo(c.getTimeSheetNo()),
+						(c) -> new AttendanceLeavingGate(new WorkNo(c.getNo()),
 															createWorkStamp(c.getStart()),
 															createWorkStamp(c.getEnd()))));
 	}

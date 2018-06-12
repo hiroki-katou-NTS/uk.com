@@ -20,7 +20,9 @@ public interface CheckTransmission {
 	 * @param mailTitle
 	 * @param mailBody
 	 * @param fileId
+	 * @param appDate
 	 * @return sendMailResult
 	 */
-	public MailSenderResult doCheckTranmission(String appId, int appType, int prePostAtr, List<String> employeeIdList, String mailTitle, String mailBody, List<String> fileId);
+	public MailSenderResult doCheckTranmission(String appId, int appType, int prePostAtr, List<String> employeeIdList, 
+			String mailTitle, String mailBody, List<String> fileId, String appDate);
 }

@@ -41,12 +41,12 @@ public class KrcdtWekAggrPremTime extends UkJpaEntity implements Serializable {
 	/** マッチング：週別実績の勤怠時間 */
 	@ManyToOne
 	@JoinColumns({
-		@JoinColumn(name = "SID", referencedColumnName = "KRCDT_WEK_ATTENDANCE_TIME.SID", insertable = false, updatable = false),
-		@JoinColumn(name = "YM", referencedColumnName = "KRCDT_WEK_ATTENDANCE_TIME.YM", insertable = false, updatable = false),
-		@JoinColumn(name = "CLOSURE_ID", referencedColumnName = "KRCDT_WEK_ATTENDANCE_TIME.CLOSURE_ID", insertable = false, updatable = false),
-		@JoinColumn(name = "CLOSURE_DAY", referencedColumnName = "KRCDT_WEK_ATTENDANCE_TIME.CLOSURE_DAY", insertable = false, updatable = false),
-		@JoinColumn(name = "IS_LAST_DAY", referencedColumnName = "KRCDT_WEK_ATTENDANCE_TIME.IS_LAST_DAY", insertable = false, updatable = false),
-		@JoinColumn(name = "WEEK_NO", referencedColumnName = "KRCDT_WEK_ATTENDANCE_TIME.WEEK_NO", insertable = false, updatable = false)
+		@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+		@JoinColumn(name = "YM", referencedColumnName = "YM", insertable = false, updatable = false),
+		@JoinColumn(name = "CLOSURE_ID", referencedColumnName = "CLOSURE_ID", insertable = false, updatable = false),
+		@JoinColumn(name = "CLOSURE_DAY", referencedColumnName = "CLOSURE_DAY", insertable = false, updatable = false),
+		@JoinColumn(name = "IS_LAST_DAY", referencedColumnName = "IS_LAST_DAY", insertable = false, updatable = false),
+		@JoinColumn(name = "WEEK_NO", referencedColumnName = "WEEK_NO", insertable = false, updatable = false)
 	})
 	public KrcdtWekAttendanceTime krcdtWekAttendanceTime;
 	
