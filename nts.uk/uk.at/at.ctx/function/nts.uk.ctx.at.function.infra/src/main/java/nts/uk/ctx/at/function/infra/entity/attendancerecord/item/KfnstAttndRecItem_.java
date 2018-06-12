@@ -9,12 +9,12 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(KfnstAttndRecItem.class)
 public class KfnstAttndRecItem_ { 
 
-    public static volatile SingularAttribute<KfnstAttndRecItem, BigDecimal> outputAtr;
+    public static volatile SingularAttribute<KfnstAttndRecItem, Long> outputAtr;
     public static volatile SingularAttribute<KfnstAttndRecItem, BigDecimal> formulaType;
-    public static volatile SingularAttribute<KfnstAttndRecItem, BigDecimal> exportCd;
-    public static volatile SingularAttribute<KfnstAttndRecItem, BigDecimal> timeItemId;
-    public static volatile SingularAttribute<KfnstAttndRecItem, BigDecimal> columnIndex;
-    public static volatile SingularAttribute<KfnstAttndRecItem, BigDecimal> position;
+    public static volatile SingularAttribute<KfnstAttndRecItem, Long> exportCd;
+    public static volatile SingularAttribute<KfnstAttndRecItem, Long> timeItemId;
+    public static volatile SingularAttribute<KfnstAttndRecItem, Long> columnIndex;
+    public static volatile SingularAttribute<KfnstAttndRecItem, Long> position;
     public static volatile SingularAttribute<KfnstAttndRecItem, String> recordItemId;
     public static volatile SingularAttribute<KfnstAttndRecItem, String> cid;
 

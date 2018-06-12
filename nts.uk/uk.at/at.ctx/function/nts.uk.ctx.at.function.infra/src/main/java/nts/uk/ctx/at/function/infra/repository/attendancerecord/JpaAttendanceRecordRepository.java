@@ -4,7 +4,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRecPK;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecItem;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecItemPK_;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecItem_;
 
 import javax.persistence.EntityManager;
@@ -38,15 +37,13 @@ public abstract class JpaAttendanceRecordRepository extends JpaRepository {
 
 		// create condition
 		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.cid), kfnstAttndRecPK.getCid() ));
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.exportCd),
-				kfnstAttndRecPK.getExportCd()));
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.columnIndex),
-				kfnstAttndRecPK.getColumnIndex()));
+		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.cid), kfnstAttndRecPK.getCid() ));
+		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.exportCd),	kfnstAttndRecPK.getExportCd()));
+		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.columnIndex),kfnstAttndRecPK.getColumnIndex()));
 		predicates.add(
-				criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.position), kfnstAttndRecPK.getPosition()));
+				criteriaBuilder.equal(root.get(KfnstAttndRecItem_.position), kfnstAttndRecPK.getPosition()));
 		predicates.add(
-				criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.outputAtr), kfnstAttndRecPK.getOutputAtr()));
+				criteriaBuilder.equal(root.get(KfnstAttndRecItem_.outputAtr), kfnstAttndRecPK.getOutputAtr()));
 
 		criteriaQuery.where(predicates.toArray(new Predicate[] {}));
 
@@ -73,9 +70,8 @@ public abstract class JpaAttendanceRecordRepository extends JpaRepository {
 
 		// create condition
 		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.cid), companyId));
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.id).get(KfnstAttndRecItemPK_.exportCd),
-				exportSettingCode.v()));
+		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.cid), companyId));
+		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.exportCd),	exportSettingCode.v()));
 
 		criteriaQuery.where(predicates.toArray(new Predicate[] {}));
 

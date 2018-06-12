@@ -41,11 +41,11 @@ public class KfnstAttndRecItem extends UkJpaEntity implements Serializable {
 
 	/** The column index. */
 	@Column(name="COLUMN_INDEX")
-	private BigDecimal columnIndex;
+	private long columnIndex;
 
 	/** The export cd. */
 	@Column(name="EXPORT_CD")
-	private BigDecimal exportCd;
+	private long exportCd;
 
 	/** The formula type. */
 	@Column(name="FORMULA_TYPE")
@@ -53,15 +53,15 @@ public class KfnstAttndRecItem extends UkJpaEntity implements Serializable {
 
 	/** The output atr. */
 	@Column(name="OUTPUT_ATR")
-	private BigDecimal outputAtr;
+	private long outputAtr;
 
 	/** The position. */
 	@Column(name="[POSITION]")
-	private BigDecimal position;
+	private long position;
 
 	/** The time item id. */
 	@Column(name="TIME_ITEM_ID")
-	private BigDecimal timeItemId;
+	private long timeItemId;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()

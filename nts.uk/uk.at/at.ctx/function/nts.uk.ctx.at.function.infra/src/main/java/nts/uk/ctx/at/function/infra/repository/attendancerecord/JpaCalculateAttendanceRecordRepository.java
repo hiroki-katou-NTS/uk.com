@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.infra.repository.attendancerecord;
 
 import java.math.BigDecimal;
+import java.rmi.server.UID;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +23,6 @@ import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRecPK;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRecPK_;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec_;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecItem;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecItemPK;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -166,7 +166,7 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 		if (kfnstAttndRec.getId() == null) {
 			kfnstAttndRec.setId(kfnstAttndRecPk);
 		}
-	
+
 		// get listItemAdded, listItemSubtracted
 		List<KfnstAttndRecItem> listKfnstAttndRecItemAdded = calculateAttendanceRecord.getAddedItem().stream()
 				.map(e -> toEntityAttndRecItemAdded(exportSettingCode, columnIndex, position, exportArt, e))
@@ -204,17 +204,20 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 	 */
 	private KfnstAttndRecItem toEntityAttndRecItemSubtracted(ExportSettingCode exportSettingCode, long columnIndex,
 			long position, long exportArt, int timeItemId) {
-		KfnstAttndRecItemPK kfnstAttendRecItemPK = new KfnstAttndRecItemPK(AppContexts.user().companyId(),
-				exportSettingCode.v(), columnIndex, position, exportArt, timeItemId);
-		KfnstAttndRecItem kfnstAttendRecItem = new KfnstAttndRecItem(kfnstAttendRecItemPK, new BigDecimal(SUBTRACT_FORMULA_TYPE));
+		UID uid = new UID();
+		KfnstAttndRecItem kfnstAttendRecItem =  new KfnstAttndRecItem(uid.toString(),  AppContexts.user().companyId(), columnIndex,  exportSettingCode.v(),  new BigDecimal(SUBTRACT_FORMULA_TYPE),  exportArt
+				,  position, timeItemId);
 		return kfnstAttendRecItem;
 	}
 
 	private KfnstAttndRecItem toEntityAttndRecItemAdded(ExportSettingCode exportSettingCode, long columnIndex,
 			long position, long exportArt, int timeItemId) {
-		KfnstAttndRecItemPK kfnstAttendRecItemPK = new KfnstAttndRecItemPK(AppContexts.user().companyId(),
-				exportSettingCode.v(), columnIndex, position, exportArt, timeItemId);
-		KfnstAttndRecItem kfnstAttendRecItem = new KfnstAttndRecItem(kfnstAttendRecItemPK, new BigDecimal(ADD_FORMULA_TYPE));
+		// KfnstAttndRecItemPK kfnstAttendRecItemPK = new
+		// KfnstAttndRecItemPK(AppContexts.user().companyId(),
+		// exportSettingCode.v(), columnIndex, position, exportArt, timeItemId);
+		UID uid = new UID();
+		KfnstAttndRecItem kfnstAttendRecItem = new KfnstAttndRecItem(uid.toString(),  AppContexts.user().companyId(), columnIndex,  exportSettingCode.v(),  new BigDecimal(ADD_FORMULA_TYPE),  exportArt
+				,  position, timeItemId);
 		return kfnstAttendRecItem;
 	}
 

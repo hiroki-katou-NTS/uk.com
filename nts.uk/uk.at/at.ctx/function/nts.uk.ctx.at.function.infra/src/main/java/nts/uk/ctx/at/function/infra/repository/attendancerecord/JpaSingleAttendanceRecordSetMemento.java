@@ -56,7 +56,7 @@ public class JpaSingleAttendanceRecordSetMemento implements SingleAttendanceReco
 
 	@Override
 	public void setTimeItemId(Integer timeItemId) {
-		this.kfnstAttndRecItem.getId().setTimeItemId(timeItemId);
+		this.kfnstAttndRecItem.setTimeItemId(timeItemId);
 	}
 
 }

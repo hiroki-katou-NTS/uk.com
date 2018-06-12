@@ -63,9 +63,7 @@ public class JpaSingleAttendanceRecordGetMemento implements SingleAttendanceReco
 	 */
 	@Override
 	public Integer getTimeItemId() {
-		if (this.kfnstAttndRecItem.getId()== null)
-			return 0;
-		return (int) kfnstAttndRecItem.getId().getTimeItemId();
+		return (int)kfnstAttndRecItem.getTimeItemId();
 	}
 
 }

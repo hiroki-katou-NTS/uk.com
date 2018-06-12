@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.infra.repository.attendancerecord;
 
 import java.math.BigDecimal;
+import java.rmi.server.UID;
 import java.util.List;
 
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordSetMemento;
@@ -8,7 +9,6 @@ import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateItemAttributes;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecItem;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecItemPK;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -68,12 +68,11 @@ public class JpaCalculateAttendanceRecordSetMemento implements CalculateAttendan
 			}
 		});
 		// add new value
-		KfnstAttndRecItemPK pk = new KfnstAttndRecItemPK(this.kfnstAttndRec.getId().getCid(),
-				this.kfnstAttndRec.getId().getExportCd(), this.kfnstAttndRec.getId().getColumnIndex(),
-				this.kfnstAttndRec.getId().getPosition(), this.kfnstAttndRec.getId().getOutputAtr(), 0);
 		idListAdd.forEach(e -> {
-			pk.setTimeItemId(e);
-			KfnstAttndRecItem item = new KfnstAttndRecItem(pk, new BigDecimal(ADD_FORMULA_TYPE));
+			UID uid = new UID();
+			KfnstAttndRecItem item = new KfnstAttndRecItem(uid.toString(), this.kfnstAttndRec.getId().getCid(),  this.kfnstAttndRec.getId().getColumnIndex(),
+					this.kfnstAttndRec.getId().getExportCd(),  new BigDecimal(ADD_FORMULA_TYPE),  this.kfnstAttndRec.getId().getOutputAtr()
+					,  this.kfnstAttndRec.getId().getPosition(), e);
 			this.kfnstAttndRecItems.add(item);
 		});
 	}
@@ -90,12 +89,11 @@ public class JpaCalculateAttendanceRecordSetMemento implements CalculateAttendan
 			}
 		});
 		// add new value
-		KfnstAttndRecItemPK pk = new KfnstAttndRecItemPK(this.kfnstAttndRec.getId().getCid(),
-				this.kfnstAttndRec.getId().getExportCd(), this.kfnstAttndRec.getId().getColumnIndex(),
-				this.kfnstAttndRec.getId().getPosition(), this.kfnstAttndRec.getId().getOutputAtr(), 0);
 		idListSubtract.forEach(e -> {
-			pk.setTimeItemId(e);
-			KfnstAttndRecItem item = new KfnstAttndRecItem(pk, new BigDecimal(SUBTRACT_FORMULA_TYPE));
+			UID uid = new UID();
+			KfnstAttndRecItem item = new KfnstAttndRecItem(uid.toString(), this.kfnstAttndRec.getId().getCid(),  this.kfnstAttndRec.getId().getColumnIndex(),
+					this.kfnstAttndRec.getId().getExportCd(),  new BigDecimal(SUBTRACT_FORMULA_TYPE),  this.kfnstAttndRec.getId().getOutputAtr()
+					,  this.kfnstAttndRec.getId().getPosition(), e);
 			this.kfnstAttndRecItems.add(item);
 		});
 	}

@@ -69,7 +69,7 @@ public class JpaCalculateAttendanceRecordGetMemento implements CalculateAttendan
 			return new ArrayList<Integer>();
 		List<Integer> result = this.kfnstAttndRecItems.stream()
 				.filter(e -> e.getFormulaType().compareTo(new BigDecimal(ADD_FORMULA_TYPE)) == 0)
-				.map(e -> (int) e.getId().getTimeItemId()).collect(Collectors.toList());
+				.map(e -> (int) e.getTimeItemId()).collect(Collectors.toList());
 		return result;
 	}
 
@@ -82,7 +82,7 @@ public class JpaCalculateAttendanceRecordGetMemento implements CalculateAttendan
 			return new ArrayList<Integer>();
 		List<Integer> result = this.kfnstAttndRecItems.stream()
 				.filter(e -> e.getFormulaType().compareTo(new BigDecimal(SUB_FORMULA_TYPE)) == 0)
-				.map(obj -> (int) obj.getId().getTimeItemId()).collect(Collectors.toList());
+				.map(obj -> (int) obj.getTimeItemId()).collect(Collectors.toList());
 		return result;
 	}
 
