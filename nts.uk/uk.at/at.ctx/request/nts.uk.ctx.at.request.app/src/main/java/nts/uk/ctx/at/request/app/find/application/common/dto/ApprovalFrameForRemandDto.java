@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.app.find.application.common.dto;
 
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -16,8 +15,12 @@ public class ApprovalFrameForRemandDto {
 	public List<DetailApproverDto> listApprover; 
 	
 	public static ApprovalFrameForRemandDto fromDomain(DetailApprovalFrameOutput frameOutput){
-		return new ApprovalFrameForRemandDto(frameOutput.phaseOrder, frameOutput.approvalReason, frameOutput.listApprover.stream().map(x -> {
-			return new DetailApproverDto(x.getApproverID(), x.getApproverName(), x.getRepresenterID(), x.getRepresenterName(), x.getJobtitle());
-		}).collect(Collectors.toList()));
+		return new ApprovalFrameForRemandDto(frameOutput.phaseOrder, frameOutput.approvalReason, 
+				frameOutput.listApprover.stream().
+					map(x -> {
+							return new DetailApproverDto(x.getApproverID(), x.getApproverName(), 
+									x.getRepresenterID(), x.getRepresenterName(), x.getJobtitle(),
+									x.jobtitleAgent);
+					}).collect(Collectors.toList()));
 	}
 }
