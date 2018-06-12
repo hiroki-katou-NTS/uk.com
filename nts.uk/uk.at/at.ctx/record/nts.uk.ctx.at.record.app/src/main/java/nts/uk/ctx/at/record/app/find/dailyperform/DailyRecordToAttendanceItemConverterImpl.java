@@ -86,6 +86,8 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 
 	@Override
 	public DailyRecordToAttendanceItemConverter setData(IntegrationOfDaily domain) {
+		this.employeeId(domain.getAffiliationInfor().getEmployeeId());
+		this.workingDate(domain.getAffiliationInfor().getYmd());
 		this.withWorkInfo(domain.getWorkInformation());
 		this.withCalcAttr(domain.getCalAttr());
 		this.withAffiliationInfo(domain.getAffiliationInfor());
