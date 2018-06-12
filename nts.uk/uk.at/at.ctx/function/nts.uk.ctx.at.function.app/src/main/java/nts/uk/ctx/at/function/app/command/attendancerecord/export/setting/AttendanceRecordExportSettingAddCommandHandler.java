@@ -40,12 +40,12 @@ public class AttendanceRecordExportSettingAddCommandHandler
 		domain.setCode(new ExportSettingCode(command.getCode()));
 		domain.setName(new ExportSettingName(command.getName()));
 		domain.setNameUseAtr(NameUseAtr.valueOf(command.getNameUseAtr()));
-		if (!command.onceUpdate) {
+		if (command.getSealStamp() != null) {
 			domain.setSealStamp(command.getSealStamp().stream().map(SealColumnName::new).collect(Collectors.toList()));
 			domain.setSealUseAtr(command.getSealUseAtr());
 		}
 		// Add
-		attendanceRecExpSetRepo.addAttendanceRecExpSet(domain,command.isOnceUpdate());
+		attendanceRecExpSetRepo.addAttendanceRecExpSet(domain);
 	}
 
 }

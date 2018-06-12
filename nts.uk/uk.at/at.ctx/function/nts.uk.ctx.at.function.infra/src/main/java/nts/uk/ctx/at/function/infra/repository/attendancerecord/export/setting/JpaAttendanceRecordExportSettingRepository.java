@@ -146,9 +146,9 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository
 	 * AttendanceRecordExportSetting)
 	 */
 	@Override
-	public void addAttendanceRecExpSet(AttendanceRecordExportSetting attendanceRecordExpSet,boolean onceUpdate) {
+	public void addAttendanceRecExpSet(AttendanceRecordExportSetting attendanceRecordExpSet) {
 		addKfnstAttndRecOutSet(attendanceRecordExpSet);
-		if(!onceUpdate) addKfnstSealcolumns(attendanceRecordExpSet);
+		if (attendanceRecordExpSet.getSealStamp() != null) addKfnstSealcolumns(attendanceRecordExpSet);
 	}
 
     private void addKfnstSealcolumns(AttendanceRecordExportSetting attendanceRecordExpSet) {
