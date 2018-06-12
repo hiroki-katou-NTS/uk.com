@@ -38,6 +38,12 @@ public class AttendanceItemWebService extends WebService {
 	}
 	
 	@POST
+	@Path("attendanceItem/getMonthlyAttendanceItems")
+	public List<AttdItemDto> getMonthlyAttendanceItems(){
+		return this.attendanceItemsFinder.findAllMonthly();
+	}
+	
+	@POST
 	@Path("attendanceItem/getListByAttendanceAtr/{dailyAttendanceAtr}")
 	public List<AttdItemDto> getListByAttendanceAtr(@PathParam("dailyAttendanceAtr") int dailyAttendanceAtr){
 		return this.attendanceItemsFinder.findListByAttendanceAtr(dailyAttendanceAtr);
