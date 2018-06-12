@@ -199,7 +199,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 				}).collect(Collectors.toList());
 				screenDto.setLstEmployee(lstEmployeeDto);
 			}
-
+            screenDto.setLoginUser(employeeId);
 			// screenDto.setLstEmployee(extractEmployeeList(param.getLstEmployees(),
 			// employeeId, new DateRange(
 			// screenDto.getSelectedActualTime().getEndDate(),
@@ -247,6 +247,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 		else {
 			// TODO 対象外
 		}
+		screenDto.createAccessModifierCellState();
 		return screenDto;
 	}
 
