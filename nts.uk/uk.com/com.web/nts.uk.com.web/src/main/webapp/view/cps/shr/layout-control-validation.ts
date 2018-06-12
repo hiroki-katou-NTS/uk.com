@@ -55,13 +55,13 @@ module nts.layout {
                     .flatten()
                     .flatten()
                     .filter((x: IItemData) => x.type != ITEM_TYPE.SET)
-                    .orderBy((x: any) => x.dispOrder)
+                    //.orderBy((x: any) => x.dispOrder)
                     .find((x: any) => !!ko.toJS(x.editable));
 
                 if (_item) {
                     _item.hasFocus(true);
                 }
-            }, 0);
+            }, 50);
         },
         checkError: (items: Array<any>) => {
             _(items)
