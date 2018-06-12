@@ -818,7 +818,12 @@ public class ProgramIdConsts {
 	 */
 	public static final String CMM049A = "CMM049A";
 	public static final String CMM049B = "CMM049B";
-	
+
+	public static final String CMF003A = "CMF003A";
+	public static final String CMF003B = "CMF003B"; // B, D, E: is wizard
+	public static final String CMF003C = "CMF003C";
+	public static final String CMF003F = "CMF003F";
+
 	/**
 	 * CDL027
 	 */
