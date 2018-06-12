@@ -136,7 +136,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             });
             self.yearMonth.subscribe(value => {
                 //期間を変更する
-                self.updateDate(value);
+                if(!nts.uk.ui.errors.hasError() && value != undefined) self.updateDate(value);
             });
             $(document).mouseup(function(e) {
                 var container = $(".ui-tooltip");
@@ -447,6 +447,30 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         insertUpdate2(){
             var self = this;
            self.insertUpdate();
+        }
+        
+        btnSaveColumnWidth_Click() {
+            var self = this;
+            let command = {
+                lstHeader: {},
+                formatCode: self.formatCodes()
+            };
+            let jsonColumnWith = localStorage.getItem(window.location.href + '/dpGrid');
+            let valueTemp = 0;
+            _.forEach($.parseJSON(jsonColumnWith), (value, key) => {
+                if (key.indexOf('A') != -1) {
+                    if (nts.uk.ntsNumber.isNumber(key.substring(1, key.length))) {
+                        command.lstHeader[key.substring(1, key.length)] = value;
+                    }
+                }
+                if (key.indexOf('Code') != -1 || key.indexOf('NO') != -1) {
+                    valueTemp = value;
+                } else if (key.indexOf('Name') != -1) {
+                    command.lstHeader[key.substring(4, key.length)] = value + valueTemp;
+                    valueTemp = 0;
+                }
+            });
+//            service.saveColumnWidth(command);
         }
         
         getPrimitiveValue(value: any, atr: any): string {
@@ -1021,15 +1045,19 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                             if (header.constraint.cDisplayType.indexOf("Currency") != -1) {
                                 header["columnCssClass"] = "currency-symbol";
                                 header.constraint["min"] = "0";
-                                header.constraint["max"] = "9999999999"
+                                header.constraint["max"] = "99999999"
                             } else if (header.constraint.cDisplayType == "Clock") {
                                 header["columnCssClass"] = "right-align";
-                                header.constraint["min"] = "-10:00";
-                                header.constraint["max"] = "200:30"
+                                header.constraint["min"] = "0";
+                                header.constraint["max"] = "999:59"
                             } else if (header.constraint.cDisplayType == "Integer") {
                                 header["columnCssClass"] = "right-align";
+                                header.constraint["min"] = "0";
+                                header.constraint["max"] = "99"
                             } else if (header.constraint.cDisplayType == "HalfInt") {
                                 header["columnCssClass"] = "right-align";
+                                header.constraint["min"] = "0";
+                                header.constraint["max"] = "99.5"
                             }
                             delete header.constraint.primitiveValue;
                         } else {
