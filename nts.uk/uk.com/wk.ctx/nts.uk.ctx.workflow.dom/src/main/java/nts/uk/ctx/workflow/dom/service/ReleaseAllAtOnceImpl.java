@@ -81,7 +81,7 @@ public class ReleaseAllAtOnceImpl implements ReleaseAllAtOnceService {
 				continue;
 			}
 			approvalPhaseState.getListApprovalFrame().forEach(approvalFrame -> {
-				if(!approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
+				if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
 					return;
 				}
 				if(Strings.isBlank(approvalFrame.getRepresenterID())){
