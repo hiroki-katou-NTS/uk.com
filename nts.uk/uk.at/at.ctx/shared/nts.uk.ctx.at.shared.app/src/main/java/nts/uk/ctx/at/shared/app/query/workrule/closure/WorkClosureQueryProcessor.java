@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.shr.com.context.AppContexts;
@@ -26,8 +27,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class WorkClosureQueryProcessor {
 	
-	private static final int FIRST_CLOSURE_ID = 1;
-
 	/** The closure repo. */
 	@Inject
 	private ClosureRepository closureRepo;
@@ -75,6 +74,6 @@ public class WorkClosureQueryProcessor {
 		if (closureEmp.isPresent()) {
 			return closureEmp.get().getClosureId();
 		}
-		return FIRST_CLOSURE_ID;
+		return ClosureId.RegularEmployee.value;
 	}
 }
