@@ -8,29 +8,17 @@ module nts.uk.com.view.kwr002.b {
     import windows = nts.uk.ui.windows;
     import alertError = nts.uk.ui.dialog.alertError;
     import confirm = nts.uk.ui.dialog.confirm;
-    import info = nts.uk.ui.dialog.info;
     import util = nts.uk.util;
 
     let newModeFlag = false;
 
     export class ScreenModel {
-
         aRES: KnockoutObservableArray<AttendanceRecordExportSetting>;
         currentARES: KnockoutObservable<AttendanceRecordExportSetting>;
         currentARESCode: KnockoutObservable<string>;
-        currentARESName: KnockoutObservable<string>;
-        enableRegister: KnockoutComputed<boolean>;
-
         selectedARESCode: KnockoutObservable<string>;
-        aRESCode: KnockoutObservable<string>;
-        aRESName: KnockoutObservable<string>;
         indexOfDelete: KnockoutObservable<any>;
         onceUpdate: KnockoutObservable<boolean>;
-
-        //B3_2 B3_3
-        inputARESCode: KnockoutObservable<string>;
-        inputARESName: KnockoutObservable<string>;
-
         sealUseAtrSwitchs: KnockoutObservableArray<SealUseAtrSwitch>;
         newMode: KnockoutObservable<boolean>;
 
@@ -40,23 +28,9 @@ module nts.uk.com.view.kwr002.b {
             self.aRES = ko.observableArray([]);
             self.currentARES = ko.observable(null);
             self.currentARESCode = ko.observable('');
-            self.currentARESName = ko.observable('');
             self.indexOfDelete = ko.observable('');
-            self.enableRegister = ko.pureComputed(() => {
-                if (self.newMode) {
-                    let exist = _.find(self.aRES(), (i) => i.code == this.currentARESCode());
-                    if (exist) return false
-                } else
-                    return true;
-            });
-
             self.selectedARESCode = ko.observable('');
-            self.aRESCode = ko.observable('');
-            self.aRESName = ko.observable('');
             self.onceUpdate = ko.observable(true);
-            //test
-            self.inputARESCode = ko.observable('');
-            self.inputARESName = ko.observable('');
 
             self.sealUseAtrSwitchs = ko.observableArray([
                 new SealUseAtrSwitch(1, getText("KWR002_45")),
@@ -73,15 +47,10 @@ module nts.uk.com.view.kwr002.b {
                         self.currentARES(new AttendanceRecordExportSetting(aRESData));
                         self.newMode(false);
                         newModeFlag = false;
-                    }).fail((error) => {
-                        alert(error.message);
                     })
-                } else {
-                    self.newMode(true);
-                    newModeFlag = true;
                 }
             });
-        }
+        };
 
         resetShare() {
             setShared('attendanceRecExpDaily', null, true);
@@ -91,8 +60,6 @@ module nts.uk.com.view.kwr002.b {
             setShared('useSeal', null, true);
         };
 
-
-        //Close Dialog
         onClose() {
             windows.close();
         };
@@ -163,7 +130,6 @@ module nts.uk.com.view.kwr002.b {
         onNew() {
             let self = this;
             errors.clearAll();
-
             let params = {
                 code: "",
                 name: "",
@@ -172,7 +138,8 @@ module nts.uk.com.view.kwr002.b {
             };
             self.currentARES(new AttendanceRecordExportSetting(params));
             self.currentARESCode("");
-
+            self.newMode(true);
+            newModeFlag = true;
             $("#code").focus();
         }
 
@@ -308,7 +275,6 @@ module nts.uk.com.view.kwr002.b {
             let data = {
                 cmd: cmd,
                 itemCmd: itemCmd,
-                // cARCommand: cARCommand
             };
 
             return data;
@@ -411,7 +377,6 @@ module nts.uk.com.view.kwr002.b {
         name: KnockoutObservable<string>;
         sealUseAtr: KnockoutObservable<boolean>;
         nameUseAtr: KnockoutObservable<number>;
-        // enableSetting: KnockoutComputed<boolean>;
 
         constructor(param: IARES) {
             let self = this;
@@ -419,21 +384,6 @@ module nts.uk.com.view.kwr002.b {
             self.name = ko.observable(param.name);
             self.sealUseAtr = ko.observable(param.sealUseAtr);
             self.nameUseAtr = ko.observable(param.nameUseAtr);
-            // self.enableSetting = ko.pureComputed(() => {
-            //     if (!nts.uk.ui.errors.hasError()) {
-            //         if (_.isEmpty(self.code())) {
-            //             return false;
-            //         } else {
-            //             return true;
-            //         }
-            //     }
-            //     if ($('#code').ntsError('hasError')) {
-            //         return false;
-            //     } else {
-            //         return true;
-            //     }
-            //
-            // });
         };
 
 
@@ -448,6 +398,9 @@ module nts.uk.com.view.kwr002.b {
         }
 
         public openScreenC() {
+            $("#code").trigger("validate");
+            $("#name").trigger("validate");
+
             let self = this;
 
             if (nts.uk.ui.errors.hasError()) {
@@ -478,6 +431,4 @@ module nts.uk.com.view.kwr002.b {
             this.name = name;
         }
     }
-
-
 }
