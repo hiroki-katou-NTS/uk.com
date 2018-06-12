@@ -6,6 +6,8 @@ package nts.uk.ctx.at.function.app.find.dailyworkschedule;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +24,7 @@ import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkS
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceType;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
 import nts.uk.ctx.at.function.dom.attendancetype.ScreenUseAtr;
+import nts.uk.ctx.at.function.dom.dailyattendanceitem.repository.DailyAttendanceItemNameDomainService;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityDailyPerformanceFormat;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFomatDaily;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatCode;
@@ -42,7 +45,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesR
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
@@ -86,6 +88,9 @@ public class OutputItemDailyWorkScheduleFinder {
 	@Inject
 	private FormatPerformanceAdapter formatPerformanceAdapter;
 	
+	@Inject
+	private DailyAttendanceItemNameDomainService dailyAttendanceItemNameDomainService;
+	
 	// Input of algorithm when use enum ScreenUseAtr: 勤怠項目を利用する画面
 	private static final int DAILY_WORK_SCHEDULE = 19;
 	
@@ -123,16 +128,27 @@ public class OutputItemDailyWorkScheduleFinder {
 		Set<Integer> setScreenUseAtr = lstAttendanceType.stream().map(domain -> domain.getScreenUseAtr().value).collect(Collectors.toSet());
 		
 		List<OptionalItem> lstAttendanceTypeFilter = lstOptionalItem.stream()
-																	.filter(domainOptionItem -> (
-																					(domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.TIME.value && setScreenUseAtr.contains(ScreenUseAtr.WORK_TIME.value))
-																					|| (domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.NUMBER.value && setScreenUseAtr.contains(ScreenUseAtr.ATTENDANCE_TIMES.value)) 
-																					|| (domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.AMOUNT.value && setScreenUseAtr.contains(ScreenUseAtr.TOTAL_COMMUTING_AMOUNT.value))
-																					|| (
-																							(domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.TIME.value
-																								|| domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.NUMBER.value 
-																								|| domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.AMOUNT.value)
-																							&& setScreenUseAtr.contains(ScreenUseAtr.DAILY_WORK_SCHEDULE.value)
-																					)))
+																	.filter(domainOptionItem -> {
+																			// 出勤簿時間　=　時間
+																			if (domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.TIME.value && setScreenUseAtr.contains(ScreenUseAtr.WORK_TIME.value)) {
+																				return true;
+																			}
+																			// 出勤簿回数　=　回数
+																			if (domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.NUMBER.value && setScreenUseAtr.contains(ScreenUseAtr.ATTENDANCE_TIMES.value)) {
+																				return true;
+																			}
+																			// 出勤簿金額　=　金額
+																			if (domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.AMOUNT.value && setScreenUseAtr.contains(ScreenUseAtr.TOTAL_COMMUTING_AMOUNT.value)) {
+																				return true;
+																			}
+																			// 日別勤務表　=　時間or回数or金額
+																			if ((domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.TIME.value
+																					|| domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.NUMBER.value 
+																					|| domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.AMOUNT.value)
+																				&& setScreenUseAtr.contains(ScreenUseAtr.DAILY_WORK_SCHEDULE.value)) {
+																				return true;
+																			}
+																			return false;})
 																	.map(domainOptionItem -> domainOptionItem)
 																	.distinct()
 																	.collect(Collectors.toList());
@@ -149,18 +165,27 @@ public class OutputItemDailyWorkScheduleFinder {
 				.collect(Collectors.toList());
 		lstAttendanceID.addAll(lstAttendanceID2);
 		
-		// get domain 日次の勤怠項目
-		// TODO: hoangdd - chua sort nhu note tren eap
-		List<DailyAttendanceItem> lstDailyAttendanceItem = new ArrayList<>();
+		// ドメインモデル「日次の勤怠項目」をすべて取得する(Acquire all domain model "daily attendance items")
+//		List<DailyAttendanceItem> lstDailyAttendanceItem = new ArrayList<>();
 		if (!lstAttendanceID.isEmpty()) {
-			lstDailyAttendanceItem = dailyAttendanceItemRepository.getListById(companyID, lstAttendanceID);
-		}
-		mapDtoReturn.put("dailyAttendanceItem", lstDailyAttendanceItem.stream().map(domain -> {
-																						DailyAttendanceItemDto dto = new DailyAttendanceItemDto();
-																						dto.setCode(String.valueOf(domain.getAttendanceItemId()));
-																						dto.setName(domain.getAttendanceName().v());
-																						return dto;
-																					}).collect(Collectors.toList()));
+/*			lstDailyAttendanceItem = dailyAttendanceItemRepository.getListById(companyID, lstAttendanceID);
+			mapDtoReturn.put("dailyAttendanceItem", lstDailyAttendanceItem.stream().map(domain -> {
+			DailyAttendanceItemDto dto = new DailyAttendanceItemDto();
+			dto.setCode(String.valueOf(domain.getAttendanceItemId()));
+			dto.setName(domain.getAttendanceName().v());
+			return dto;
+		}).collect(Collectors.toList()));*/
+			
+			mapDtoReturn.put("dailyAttendanceItem", dailyAttendanceItemNameDomainService.getNameOfDailyAttendanceItem(lstAttendanceID).stream()
+					.map(domain -> {
+						DailyAttendanceItemDto dto = new DailyAttendanceItemDto();
+						dto.setCode(String.valueOf(domain.getAttendanceItemId()));
+						dto.setName(domain.getAttendanceItemName());
+						return dto;
+					}).collect(Collectors.toList()));
+		} else {
+			mapDtoReturn.put("dailyAttendanceItem", Collections.emptyList());
+		}		
 		
 		Map<String, String> mapCodeManeAttendance = convertListToMapAttendanceItem((List<DailyAttendanceItemDto>) mapDtoReturn.get("dailyAttendanceItem"));
 		
