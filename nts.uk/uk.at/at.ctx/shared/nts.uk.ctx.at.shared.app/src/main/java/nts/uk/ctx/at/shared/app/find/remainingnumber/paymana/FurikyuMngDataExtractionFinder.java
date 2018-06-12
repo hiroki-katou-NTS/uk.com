@@ -51,6 +51,6 @@ public class FurikyuMngDataExtractionFinder {
 		});
 		
 		return new FurikyuMngDataExtractionDto(compositePayOutSubMngData, furikyuMngDataExtractionData.getExpirationDate(),
-				furikyuMngDataExtractionData.getNumberOfDayLeft(), furikyuMngDataExtractionData.getClosureId());
+				furikyuMngDataExtractionData.getNumberOfDayLeft(), furikyuMngDataExtractionData.getClosureId(), furikyuMngDataExtractionData.isHaveEmploymentCode());
 	}
 }

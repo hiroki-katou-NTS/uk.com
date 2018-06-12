@@ -383,7 +383,8 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 startMonth.format("YYYY/MM/DD"),
                 endMonth.format("YYYY/MM/DD"),
                 self.holidayRemainingSelectedCd(),
-                self.selectedCode()
+                self.selectedCode(),
+                self.baseDate().format("YYYY/MM/DD")
             );
 
             let data = new ReportInfor(holidayRemainingOutputCondition, lstSelectedEployee);
@@ -587,12 +588,13 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         endMonth: string;
         outputItemSettingCode: string;
         pageBreak: string;
-
-        constructor(startMonth: string, endMonth: string, outputItemSettingCode: string, pageBreak: string) {
+        baseDate: string;
+        constructor(startMonth: string, endMonth: string, outputItemSettingCode: string, pageBreak: string, baseDate: string) {
             this.startMonth = startMonth;
             this.endMonth = endMonth;
             this.outputItemSettingCode = outputItemSettingCode;
             this.pageBreak = pageBreak;
+            this.baseDate = baseDate;
         }
     }
 

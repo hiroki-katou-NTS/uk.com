@@ -199,7 +199,7 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                         this.url = origin + "/nts.uk.at.web/view/ktg/002/a/index.xhtml"; 
                         this.html = '<iframe src="' + this.url + '"/>'; 
                     }else if(topPageCode === "0003"){
-                        this.url = origin + ""; 
+                        this.url = origin + "/nts.uk.at.web/view/ktg/027/a/index.xhtml"; 
                         this.html = '<iframe src="' + this.url + '"/>'; 
                     }
                 }else if(partType === 1){

@@ -125,6 +125,12 @@ public class DPLoadRowProcessor {
 		Map<Integer, DPAttendanceItem> mapDP =param.getLstAttendanceItem().stream()
 						.collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
 		result.setLstEmployee(param.getLstEmployee());
+		
+		result.markLoginUser(sId);
+		long start1 = System.currentTimeMillis();
+		result.createModifierCellStateCaseRow(mapDP, param.getLstHeader());
+		System.out.println("time disable : " + (System.currentTimeMillis() - start1));
+		
 		if (result.getLstEmployee().size() > 0) {
 			if (lstError.size() > 0) {
 				// Get list error setting
@@ -158,8 +164,6 @@ public class DPLoadRowProcessor {
 		});
 		//get  check box sign(Confirm day)
 		Map<String, Boolean> signDayMap = repo.getConfirmDay(companyId, listEmployeeId, dateRange);
-		result.markLoginUser(sId);
-		result.createAccessModifierCellState(mapDP);
 		
 		Optional<IdentityProcessUseSetDto> identityProcessDtoOpt = repo.findIdentityProcessUseSet(companyId);
 		result.setIdentityProcessDto(identityProcessDtoOpt.isPresent() ? identityProcessDtoOpt.get()

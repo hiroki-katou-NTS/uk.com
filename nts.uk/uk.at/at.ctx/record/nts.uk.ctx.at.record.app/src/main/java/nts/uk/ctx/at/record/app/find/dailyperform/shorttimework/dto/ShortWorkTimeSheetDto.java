@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.find.dailyperform.shorttimework.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -11,51 +12,51 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ShortWorkTimeSheetDto {
+public class ShortWorkTimeSheetDto implements ItemConst {
 
 	/** 短時間勤務枠NO: 短時間勤務枠NO */
-//	@AttendanceItemLayout(layout = "A", jpPropertyName = "")
-//	@AttendanceItemValue(type = ValueType.INTEGER)
-	private Integer shortWorkTimeFrameNo;
+	// @AttendanceItemLayout(layout = "A", jpPropertyName = "")
+	// @AttendanceItemValue(type = ValueType.INTEGER)
+	private Integer no;
 
 	/** 育児介護区分: 育児介護区分 */
 	/** @see nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute */
-//	@AttendanceItemLayout(layout = "B", jpPropertyName = "")
-//	@AttendanceItemValue(type = ValueType.INTEGER)
-	private Integer childCareAttr;
+	// @AttendanceItemLayout(layout = "B", jpPropertyName = "")
+	// @AttendanceItemValue(type = ValueType.INTEGER)
+	private Integer attr;
 
 	/** 開始: 時刻(日区分付き) */
-	@AttendanceItemLayout(layout = "C", jpPropertyName = "開始", needCheckIDWithMethod = "childCare")
+	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = START, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer startTime;
 
 	/** 終了: 時刻(日区分付き) */
-	@AttendanceItemLayout(layout = "D", jpPropertyName = "終了", needCheckIDWithMethod = "childCare")
+	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = END, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer endTime;
 
 	/** 控除時間: 勤怠時間 */
-//	@AttendanceItemLayout(layout = "E", jpPropertyName = "")
-//	@AttendanceItemValue(type = ValueType.INTEGER)
+	// @AttendanceItemLayout(layout = "E", jpPropertyName = "")
+	// @AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer deductionTime;
 
 	/** 時間: 勤怠時間 */
-//	@AttendanceItemLayout(layout = "F", jpPropertyName = "")
-//	@AttendanceItemValue(type = ValueType.INTEGER)
+	// @AttendanceItemLayout(layout = "F", jpPropertyName = "")
+	// @AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer shortTime;
-	
-	public String childCare(){
-		if(childCareAttr == null){
-			return "";
+
+	public String enumText() {
+		if (attr == null) {
+			return EMPTY_STRING;
 		}
-		
-		switch (childCareAttr) {
+
+		switch (attr) {
 		case 0:
-			return "育児";
+			return E_CHILD_CARE;
 		case 1:
-			return "介護";
+			return E_CARE;
 		default:
-			return "";
+			return EMPTY_STRING;
 		}
 	}
 }
