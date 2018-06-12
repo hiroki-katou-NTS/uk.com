@@ -298,9 +298,9 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 																attendanceLeavingGateOfDaily.isPresent()?attendanceLeavingGateOfDaily.get().calcBeforeAttendanceTime(attendanceLeave,GoLeavingWorkAtr.LEAVING_WORK):new AttendanceTime(0));
 			
 		/*不就労時間*/
-		val unEmployedTime = new AttendanceTime(0);
+		val unEmployedTime = stayingTime.getStayingTime().minusMinutes(actualWorkingTimeOfDaily.getTotalWorkingTime().calcTotalDedTime(recordOneDay).valueAsMinutes()).valueAsMinutes() - actualWorkingTimeOfDaily.getTotalWorkingTime().getActualTime().valueAsMinutes();
 		/*予定差異時間の計算*/
-		val budgetTimeVariance = new AttendanceTime(0);
+		val budgetTimeVariance = workScheduleTime.getWorkScheduleTime().getTotal().minusMinutes(actualWorkingTimeOfDaily.getTotalWorkingTime().getTotalTime().valueAsMinutes());
 		/*医療時間*/
 		val medicalCareTime = new MedicalCareTimeOfDaily(WorkTimeNightShift.DAY_SHIFT,
 														 new AttendanceTime(0),
@@ -312,7 +312,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 													workScheduleTime,
 													actualWorkingTimeOfDaily,
 													stayingTime,
-													unEmployedTime,
+													new AttendanceTime(unEmployedTime),
 													budgetTimeVariance,
 													medicalCareTime);
 		

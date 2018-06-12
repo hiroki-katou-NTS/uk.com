@@ -123,7 +123,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 													 eachCompanyTimeSet.stream().filter(tc -> !tc.getOccurrenceType().isOverTime()).findFirst(),
 													 integrationOfDaily);
 		//所定外深夜
-		val excessOfStatutoryMidNightTime = ExcessOfStatutoryMidNightTime.calcExcessTime(overTime,workHolidayTime);//.calcExcessMidNightTime(oneDay);//new ExcessOfStatutoryMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0));
+		val excessOfStatutoryMidNightTime = ExcessOfStatutoryMidNightTime.calcExcessTime(Optional.of(overTime),Optional.of(workHolidayTime));
 		
 		return new ExcessOfStatutoryTimeOfDaily(excessOfStatutoryMidNightTime, Optional.of(overTime), Optional.of(workHolidayTime));
 	}
@@ -360,18 +360,28 @@ public class ExcessOfStatutoryTimeOfDaily {
 		return new ExcessOfStatutoryTimeOfDaily(excessOfStatutoryMidNightTime,overtime,holiday); 
 	}
 	
-	public AttendanceTime reCalcMidNightTime() {
+	/**
+	 *　所定外深夜時間の手修正後の再計算
+	 * @param diffHolidayWorkTime 手修正前後の残業時間の差
+	 * @param diffOverTime 手修正前後の休出時間の差
+	 */
+	public void reCalcMidNightTime(int diffOverTime, int diffHolidayWorkTime) {
 		AttendanceTime overMidTime = new AttendanceTime(0);
 		AttendanceTime holidayMidTime = new AttendanceTime(0);
 		if(this.getOverTimeWork().isPresent()
 			&& this.getOverTimeWork().get().getExcessOverTimeWorkMidNightTime().isPresent()) {
-			overMidTime = this.getOverTimeWork().get().getExcessOverTimeWorkMidNightTime().get().getTime().getCalcTime();
+			overMidTime = this.getOverTimeWork().get().getExcessOverTimeWorkMidNightTime().get().getTime().getTime();
 		}
 		if(this.getWorkHolidayTime().isPresent()
 			&& this.getWorkHolidayTime().get().getHolidayMidNightWork().isPresent()) {
 			holidayMidTime = this.getWorkHolidayTime().get().getHolidayMidNightWork().get().calcAllMidTime();
 		}
-		return overMidTime.addMinutes(holidayMidTime.valueAsMinutes());
+		int totalMidTime = overMidTime.valueAsMinutes() + holidayMidTime.valueAsMinutes() + diffOverTime + diffHolidayWorkTime;
+		this.excessOfStatutoryMidNightTime = new ExcessOfStatutoryMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(totalMidTime >= 0? totalMidTime:0),
+																																							  this.excessOfStatutoryMidNightTime.getTime().getCalcTime()),
+																			   this.excessOfStatutoryMidNightTime.getBeforeApplicationTime());
+		
+//		this.excessOfStatutoryMidNightTime = ExcessOfStatutoryMidNightTime.calcExcessTime(this.overTimeWork, this.workHolidayTime);
 	}
 	
 	/**

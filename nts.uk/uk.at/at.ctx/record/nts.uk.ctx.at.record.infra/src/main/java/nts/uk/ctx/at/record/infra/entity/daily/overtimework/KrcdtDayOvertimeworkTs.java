@@ -118,6 +118,7 @@ public class KrcdtDayOvertimeworkTs extends UkJpaEntity implements Serializable{
 	public void setData(List<OverTimeFrameTimeSheet> overTimeSheet){
 		if(overTimeSheet == null) return;
 		Optional<TimeSpanForCalc> span;
+		allClear();
 		span = getTimeSpan(overTimeSheet, 1);
 		span.ifPresent( tc -> {
 			this.overTime1StrClc = tc == null ? 0 : tc.startValue();
@@ -179,6 +180,32 @@ public class KrcdtDayOvertimeworkTs extends UkJpaEntity implements Serializable{
 			this.overTime10EndClc = tc == null ? 0 : tc.endValue();
 		});
  
+	}
+
+	/**
+	 * clean all element
+	 */
+	private void allClear() {
+		this.overTime1StrClc = 0;
+		this.overTime1EndClc = 0;
+		this.overTime2StrClc = 0;
+		this.overTime2EndClc = 0;
+		this.overTime3StrClc = 0;
+		this.overTime3EndClc = 0;
+		this.overTime4StrClc = 0;
+		this.overTime4EndClc = 0;
+		this.overTime5StrClc = 0;
+		this.overTime5EndClc = 0;
+		this.overTime6StrClc = 0;
+		this.overTime6EndClc = 0;
+		this.overTime7StrClc = 0;
+		this.overTime7EndClc = 0;
+		this.overTime8StrClc = 0;
+		this.overTime8EndClc = 0;
+		this.overTime9StrClc = 0;
+		this.overTime9EndClc = 0;
+		this.overTime10StrClc = 0;
+		this.overTime10EndClc = 0;
 	}
 
 	private Optional<TimeSpanForCalc> getTimeSpan(List<OverTimeFrameTimeSheet> overTimeSheet, int sheetNo) {

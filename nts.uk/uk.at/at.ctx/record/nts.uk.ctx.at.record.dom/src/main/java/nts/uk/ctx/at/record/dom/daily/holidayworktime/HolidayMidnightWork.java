@@ -81,12 +81,22 @@ public class HolidayMidnightWork {
 	}
 	
 	/**
-	 * 深夜時間(全List分)の合計を求める 
+	 * 深夜時間(全List分)の計算時間合計を求める 
+	 * @return
+	 */
+	public AttendanceTime calcAllMidCalcTime() {
+		return new AttendanceTime(this.getHolidayWorkMidNightTime().stream()
+												.map(tc -> tc.getTime().getCalcTime().valueAsMinutes())
+												.collect(Collectors.summingInt(tc -> tc)));
+	}
+	
+	/**
+	 * 深夜時間(全List分)の時間合計を求める 
 	 * @return
 	 */
 	public AttendanceTime calcAllMidTime() {
 		return new AttendanceTime(this.getHolidayWorkMidNightTime().stream()
-												.map(tc -> tc.getTime().getCalcTime().valueAsMinutes())
+												.map(tc -> tc.getTime().getTime().valueAsMinutes())
 												.collect(Collectors.summingInt(tc -> tc)));
 	}
 }

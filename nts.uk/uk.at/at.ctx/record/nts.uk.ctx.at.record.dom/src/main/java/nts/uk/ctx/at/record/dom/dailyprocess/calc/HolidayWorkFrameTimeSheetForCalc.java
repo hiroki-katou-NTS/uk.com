@@ -91,10 +91,10 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	
 	/**
 	 * 計算用休出枠時間帯から休出枠時間帯へ変換する
-	 * @return　残業枠時間帯
+	 * @return　休出枠時間帯
 	 */
 	public HolidayWorkFrameTimeSheet changeNotWorkFrameTimeSheet() {
-		return new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(this.HolidayWorkTimeSheetNo.v().intValue()),this.calcrange);
+		return new HolidayWorkFrameTimeSheet(this.getFrameTime().getHolidayFrameNo(),this.calcrange);
 	}
 	
 	/**

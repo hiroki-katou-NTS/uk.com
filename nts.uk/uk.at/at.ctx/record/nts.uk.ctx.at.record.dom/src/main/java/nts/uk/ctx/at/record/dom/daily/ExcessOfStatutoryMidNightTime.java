@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.daily;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.Value;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
@@ -25,16 +27,16 @@ public class ExcessOfStatutoryMidNightTime {
 	/**
 	 * 所定外深夜時間の計算 
 	 */
-	public static ExcessOfStatutoryMidNightTime calcExcessTime(OverTimeOfDaily overDaily,HolidayWorkTimeOfDaily holidayDaily) {
+	public static ExcessOfStatutoryMidNightTime calcExcessTime(Optional<OverTimeOfDaily> overDaily,Optional<HolidayWorkTimeOfDaily> holidayDaily) {
 		TimeDivergenceWithCalculation overTime = TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0));
 		TimeDivergenceWithCalculation holidayTime = TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0));
 		//残業深夜
-		if(overDaily.getExcessOverTimeWorkMidNightTime().isPresent())
-			overTime = overDaily.getExcessOverTimeWorkMidNightTime().get().getTime();
+		if(overDaily.isPresent() && overDaily.get().getExcessOverTimeWorkMidNightTime().isPresent())
+			overTime = overDaily.get().getExcessOverTimeWorkMidNightTime().get().getTime();
 		
 		//休出深夜
-		if(holidayDaily.getHolidayMidNightWork().isPresent())
-			holidayTime = holidayDaily.getHolidayMidNightWork().get().calcTotalTime();
+		if(holidayDaily.isPresent() && holidayDaily.get().getHolidayMidNightWork().isPresent())
+			holidayTime = holidayDaily.get().getHolidayMidNightWork().get().calcTotalTime();
 		//return
 		TimeDivergenceWithCalculation totalTime = overTime.addMinutes(holidayTime.getTime(), holidayTime.getCalcTime());
 		return new ExcessOfStatutoryMidNightTime(totalTime, new AttendanceTime(0));

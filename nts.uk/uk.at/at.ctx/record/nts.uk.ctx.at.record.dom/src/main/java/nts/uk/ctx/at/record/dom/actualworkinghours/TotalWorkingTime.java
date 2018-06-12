@@ -348,9 +348,12 @@ public class TotalWorkingTime {
 						  					   + flexTime);
 		
 		//総計算時間
-		val totalCalcTime = new AttendanceTime(0);
-		
-
+		val totalCalcTime = new AttendanceTime(withinStatutoryTimeOfDaily.getActualWorkTime().valueAsMinutes()
+	   											+ withinStatutoryTimeOfDaily.getWithinPrescribedPremiumTime().valueAsMinutes() 
+	   											+ overWorkTime
+	   											+ holidayWorkTime
+	   											+ tempTime.totalTemporaryFrameTime()
+	   											+ flexTime);
 		
 		//実働時間
 		val actualTime = new AttendanceTime(withinStatutoryTimeOfDaily.getActualWorkTime().valueAsMinutes()
@@ -358,7 +361,8 @@ public class TotalWorkingTime {
 				   			+ overWorkTime
 				   			+ holidayWorkTime
 				   			+ tempTime.totalTemporaryFrameTime()
-				   			+ flexTime);
+				   			+ flexTime
+				   			/*変形基準内残業の時間もここにタス*/);
 		
 		TotalWorkingTime returnTotalWorkingTimereturn = new TotalWorkingTime(totalWorkTime,
 																				totalCalcTime,
@@ -514,12 +518,14 @@ public class TotalWorkingTime {
 	}
 	
 	
-	
+	public void calcTotalWorkingTimeForReCalc() {
+		this.totalTime = recalcTotalWorkingTime();
+	}
 	/**
 	 * 手修正の再計算時に使用する総労働時間の計算
 	 * @return
 	 */
-	public AttendanceTime calcTotalWorkingTimeForReCalc() {
+	public AttendanceTime recalcTotalWorkingTime() {
 		int withinTime = calcWithinTime();
 		int overTime = calcOverTime();
 		int holidayTime = calcHolidayTime();
@@ -527,19 +533,19 @@ public class TotalWorkingTime {
 		return new AttendanceTime(withinTime + overTime + holidayTime + rinzi);
 	}
 
-	private int calcHolidayTime() {
+	public int calcHolidayTime() {
 		int totalHolidayTimeTime = 0;
 		int totaltransTime = 0;
 		if(this.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()) {
 			totalHolidayTimeTime = this.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime()
 																									.stream()
 																									.filter(tc -> tc.getHolidayWorkTime().isPresent())
-																									.map(tc -> tc.getHolidayWorkTime().get().getCalcTime().valueAsMinutes())
+																									.map(tc -> tc.getHolidayWorkTime().get().getTime().valueAsMinutes())
 																									.collect(Collectors.summingInt(tc -> tc));
 			totaltransTime = this.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime()
 																							  .stream()
-																							  .filter(tc -> tc.getHolidayWorkTime().isPresent())
-																							  .map(tc -> tc.getHolidayWorkTime().get().getCalcTime().valueAsMinutes())
+																							  .filter(tc -> tc.getTransferTime().isPresent())
+																							  .map(tc -> tc.getTransferTime().get().getTime().valueAsMinutes())
 																							  .collect(Collectors.summingInt(tc -> tc));
 		}
 		return totalHolidayTimeTime + totaltransTime;
@@ -550,24 +556,44 @@ public class TotalWorkingTime {
 	 * 残業時間＋フレ＋振替時間を求める
 	 * @return
 	 */
-	private int calcOverTime() {
-		int totalOverTime = 0;
-		int totaltransTime = 0;
+	public int calcOverTime() {
+		int removeFlexTime = 0;
 		int flexTime = 0;
 		if(this.excessOfStatutoryTimeOfDaily.getOverTimeWork().isPresent()) {
-			totalOverTime = this.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime()
-																							  .stream()
-																							  .map(tc -> tc.getOverTimeWork().getCalcTime().valueAsMinutes())
-																							  .collect(Collectors.summingInt(tc -> tc));
-			totaltransTime = this.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime()
-					  																		   .stream()
-					  																		   .map(tc -> tc.getTransferTime().getCalcTime().valueAsMinutes())
-					  																		   .collect(Collectors.summingInt(tc -> tc));
-			flexTime = this.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getFlexTime().getCalcTime().valueAsMinutes();
+			removeFlexTime = calcOverTimeRemoveFlex();
+			flexTime = this.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getFlexTime().getTime().valueAsMinutes();
+			flexTime = flexTime > 0 ? flexTime : 0;
 		}
-		return totalOverTime + totaltransTime + flexTime;
+		return removeFlexTime + flexTime;
+	}
+	
+	public int calcOverTimeRemoveFlex() {
+		int totalOverTime = this.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime()
+				  				.stream()
+				  				.filter(tc -> tc != null 
+				  						&& tc.getOverTimeWork() != null
+				  						&& tc.getOverTimeWork().getTime() != null)
+				  				.map(tc -> tc.getOverTimeWork().getTime().valueAsMinutes())
+				  				.collect(Collectors.summingInt(tc -> tc));
+		int totaltransTime = this.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime()
+				   				 .stream()
+				   				 .filter(tc -> tc != null 
+				   				 	&& tc.getTransferTime() != null
+				   				 	&& tc.getTransferTime().getTime() != null)
+				   				 .map(tc -> tc.getTransferTime().getTime().valueAsMinutes())
+				   				 .collect(Collectors.summingInt(tc -> tc));
+		return totalOverTime + totaltransTime;
 	}
 
+	/**
+	 * 手修正後の再計算(実働時間)
+	 * @return
+	 */
+	public AttendanceTime recalcActualTime() {
+		//実働時間
+		return recalcTotalWorkingTime(); 
+						 //+変形基準内残業を足して返す;
+	}
 	/**
 	 * 手修正、再計算用
 	 * 所定内時間+所定内割増時間を求める

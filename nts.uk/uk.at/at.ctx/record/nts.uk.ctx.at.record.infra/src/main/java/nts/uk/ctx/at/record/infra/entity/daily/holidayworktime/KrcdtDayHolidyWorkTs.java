@@ -109,6 +109,7 @@ public class KrcdtDayHolidyWorkTs extends UkJpaEntity implements Serializable{
 	public void setData(List<HolidayWorkFrameTimeSheet> domain) {
 		Optional<HolidayWorkFrameTimeSheet> sheet = Optional.empty();
 		if(domain == null) return;
+		allClear();
 		sheet = getTimeSheet(domain, 1);
 		sheet.ifPresent(tc -> {
 			/*休日出勤1開始時刻*/
@@ -185,6 +186,32 @@ public class KrcdtDayHolidyWorkTs extends UkJpaEntity implements Serializable{
 		return domain.stream()
 					 .filter(tc -> tc.getHolidayWorkTimeSheetNo().v().intValue() == sheetNo)
 					 .findFirst();
+	}
+	
+	/**
+	 * Clean all element
+	 */
+	private void allClear() {
+		this.holiWork1StrClc = 0;
+		this.holiWork1EndClc = 0;
+		this.holiWork2StrClc = 0;
+		this.holiWork2EndClc = 0;
+		this.holiWork3StrClc = 0;
+		this.holiWork3EndClc = 0;
+		this.holiWork4StrClc = 0;
+		this.holiWork4EndClc = 0;
+		this.holiWork5StrClc = 0;
+		this.holiWork5EndClc = 0;
+		this.holiWork6StrClc = 0;
+		this.holiWork6EndClc = 0;
+		this.holiWork7StrClc = 0;
+		this.holiWork7EndClc = 0;
+		this.holiWork8StrClc = 0;
+		this.holiWork8EndClc = 0;
+		this.holiWork9StrClc = 0;
+		this.holiWork9EndClc = 0;
+		this.holiWork10StrClc = 0;
+		this.holiWork10EndClc = 0;
 	}
 	
 	

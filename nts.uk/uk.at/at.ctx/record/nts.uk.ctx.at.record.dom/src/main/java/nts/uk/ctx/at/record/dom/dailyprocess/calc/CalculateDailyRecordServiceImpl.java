@@ -177,8 +177,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	private DiffTimeWorkSettingRepository diffTimeWorkSettingRepository;
 	@Inject
 	private FlexWorkSettingRepository flexWorkSettingRepository;
-	
-	
+	@Inject
+	private SpecificWorkRuleRepository specificWorkRuleRepository;
+
 	
 	@Inject
 	private DailyRecordToAttendanceItemConverter converter;
@@ -836,7 +837,24 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		        .map(editState -> editState.getAttendanceItemId())
 		        .distinct()
 		        .collect(Collectors.toList());
+		  int overTotalTime = 0 ;
+		  int holidayWorkTotalTime = 0 ;
+		  if(recordReGetClass.getIntegrationOfDaily() != null
+			 && recordReGetClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().isPresent()
+			 && recordReGetClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily() != null
+			 && recordReGetClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null
+			 && recordReGetClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily() != null) {
+			  if(recordReGetClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()) {
+				  overTotalTime = recordReGetClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().calcTotalFrameTime()
+						          + recordReGetClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().calcTransTotalFrameTime();
+			  }
+			  if(recordReGetClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()) {
+				  holidayWorkTotalTime = recordReGetClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().calcTotalFrameTime()
+						  				 + recordReGetClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().calcTransTotalFrameTime();
+			  }
+		  }
 
+		  
 		  IntegrationOfDaily calcResultIntegrationOfDaily = recordReGetClass.getIntegrationOfDaily();  
 		  if(!attendanceItemIdList.isEmpty()) {
 		   DailyRecordToAttendanceItemConverter beforDailyRecordDto = this.converter.setData(copyIntegrationOfDaily); 
@@ -847,7 +865,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		   calcResultIntegrationOfDaily = afterDailyRecordDto.toDomain();
 		   
 		   //手修正後の再計算
-		   calcResultIntegrationOfDaily = reCalc(calcResultIntegrationOfDaily,recordReGetClass.getCalculationRangeOfOneDay(),companyId, companyCommonSetting);
+		   calcResultIntegrationOfDaily = reCalc(calcResultIntegrationOfDaily,recordReGetClass.getCalculationRangeOfOneDay(),companyId, companyCommonSetting,overTotalTime,holidayWorkTotalTime,attendanceItemIdList);
 		   //手修正された項目の値を計算値に戻す(手修正再計算の後Ver)
 		   DailyRecordToAttendanceItemConverter afterReCalcDto = this.converter.setData(calcResultIntegrationOfDaily); 
 		   afterReCalcDto.merge(itemValueList);
@@ -859,59 +877,78 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	}
 
 
-	private IntegrationOfDaily reCalc(IntegrationOfDaily calcResultIntegrationOfDaily,CalculationRangeOfOneDay calculationRangeOfOneDay, String companyId,ManagePerCompanySet companyCommonSetting) {
+	/**
+	 * 手修正後の再計算
+	 * @param calcResultIntegrationOfDaily
+	 * @param calculationRangeOfOneDay
+	 * @param companyId
+	 * @param companyCommonSetting
+	 * @param overTotalTime 手修正前の残業時間の合計
+	 * @param attendanceItemIdList 
+	 * @param holidayWorkTotalTime　手修正前の休出時間の合計
+	 * @return
+	 */
+	private IntegrationOfDaily reCalc(IntegrationOfDaily calcResultIntegrationOfDaily,CalculationRangeOfOneDay calculationRangeOfOneDay, String companyId,ManagePerCompanySet companyCommonSetting, int overTotalTime, int holidayWorkTotalTime, List<Integer> attendanceItemIdList) {
 		//乖離時間(AggregateRoot)取得
 		List<DivergenceTime> divergenceTimeList = companyCommonSetting.getDivergenceTime();
-//		if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
-//			
-//			AttendanceTimeOfDailyPerformance attendanceTimeOfDailyPerformance = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get();
-//			
-//			ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = attendanceTimeOfDailyPerformance.getActualWorkingTimeOfDaily();
-//			
-//			calcResultIntegrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(
-//						attendanceTimeOfDailyPerformance.inssertActualWorkingTimeOfDaily(
-//								actualWorkingTimeOfDaily.inssertTotalWorkingTime(
-//										actualWorkingTimeOfDaily.getTotalWorkingTime().calcDiverGenceTime()))));
-//
-//		}
-//		
-//		//予実差異時間
-//		AttendanceTime scheTime = new AttendanceTime(0);
-//		AttendanceTime totalWorkTime = new AttendanceTime(0);
-//		if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
-//			scheTime = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getWorkScheduleTimeOfDaily().getWorkScheduleTime().getTotal();
-//			if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()!= null
-//					&&calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
-//				totalWorkTime = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getTotalTime();
-//			}
-//		}
-//		AttendanceTime scheActDiffTime = totalWorkTime.minusMinutes(scheTime.valueAsMinutes());
-//		//不就労時間
-//		AttendanceTime alreadlyDedBindTime = new AttendanceTime(0);
-//		if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
-//			alreadlyDedBindTime = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getStayingTime().getStayingTime();
-//			if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null
-//				&& calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()!= null) {
-//				//↓で総控除時間を引く
-//				alreadlyDedBindTime = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getStayingTime().getStayingTime()
-//										.minusMinutes(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().calcTotalDedTime(calculationRangeOfOneDay).valueAsMinutes());
-//				alreadlyDedBindTime = alreadlyDedBindTime.minusMinutes(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getActualTime().valueAsMinutes());
-//			}
-//		}
-//		//総労働時間
-//		AttendanceTime reCalctotalWorkTime = new AttendanceTime(0);
-//		if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
-//			if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
-//				reCalctotalWorkTime = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().calcTotalWorkingTimeForReCalc();
-//			}
-//		}
-//		
-//		AttendanceTime reCalcMidTime = new AttendanceTime(0);
-//		if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
-//			if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
-//				reCalcMidTime = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().reCalcMidNightTime();
-//			}
-//		}
+		if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
+			
+			AttendanceTimeOfDailyPerformance attendanceTimeOfDailyPerformance = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get();
+			
+			ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = attendanceTimeOfDailyPerformance.getActualWorkingTimeOfDaily();
+			
+			calcResultIntegrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(
+						attendanceTimeOfDailyPerformance.inssertActualWorkingTimeOfDaily(
+								actualWorkingTimeOfDaily.inssertTotalWorkingTime(
+										actualWorkingTimeOfDaily.getTotalWorkingTime().calcDiverGenceTime()))));
+
+		}
+
+//		//深夜時間
+		if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
+			if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
+				int afterOverTime = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().calcOverTimeRemoveFlex();
+				int afterHolidayWorkTime = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().calcHolidayTime(); 
+				calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().reCalcMidNightTime(afterOverTime - overTotalTime,afterHolidayWorkTime - holidayWorkTotalTime);
+			}
+		}
+		
+		//総労働時間
+		if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
+			if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
+				calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().calcTotalWorkingTimeForReCalc();
+			}
+		}
+		
+		//予実差異時間
+		AttendanceTime scheActDiffTime = new AttendanceTime(0);
+		//総労働時間が編集している項目リストに含まれていなければ再計算
+		if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent() ) {
+			AttendanceTime scheTime = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getWorkScheduleTimeOfDaily().getWorkScheduleTime().getTotal();
+			if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()!= null
+					&&calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null
+					&& !attendanceItemIdList.contains(new Integer(559))) {
+				AttendanceTime totalWorkTime = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getTotalTime();
+				scheActDiffTime = scheTime.minusMinutes(totalWorkTime.valueAsMinutes());
+				scheActDiffTime = scheActDiffTime.lessThan(0)?new AttendanceTime(0):scheActDiffTime;
+			}
+		}
+		//不就労時間
+		AttendanceTime alreadlyDedBindTime = new AttendanceTime(0);
+		//総労働時間が編集している項目リストに含まれていなければ再計算
+		if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
+			alreadlyDedBindTime = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getUnEmployedTime();
+			if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null
+				&& calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()!= null
+				&& !attendanceItemIdList.contains(new Integer(559))) {
+				//↓で総控除時間を引く
+				alreadlyDedBindTime = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getStayingTime().getStayingTime()
+										.minusMinutes(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().calcTotalDedTime(calculationRangeOfOneDay).valueAsMinutes());
+				//alreadlyDedBindTime = alreadlyDedBindTime.minusMinutes(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getActualTime().valueAsMinutes());
+				alreadlyDedBindTime = alreadlyDedBindTime.minusMinutes(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().recalcActualTime().valueAsMinutes());
+				alreadlyDedBindTime = alreadlyDedBindTime.lessThan(0)?new AttendanceTime(0):alreadlyDedBindTime;
+			}
+		}
 		
 		//乖離時間計算用　勤怠項目ID紐づけDto作成
 		DailyRecordToAttendanceItemConverter forCalcDivergenceDto = this.converter.setData(calcResultIntegrationOfDaily);
@@ -939,16 +976,16 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																			  calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getWorkScheduleTimeOfDaily(),
 																			  reCreateActual,
 																			  calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getStayingTime(),
-																			  calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getUnEmployedTime(),
-																			  calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getBudgetTimeVariance(),
-																			  //scheActDiffTime,
+																			  alreadlyDedBindTime,
+																			  scheActDiffTime,
 																			  calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getMedicalCareTime());
 			calcResultIntegrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(reCreateAttendanceTime));
 		}
 		//Repositoryが作成されたらそちらから取得(今は仮置き)
-		UpperLimitTotalWorkingHour upperControl = new UpperLimitTotalWorkingHour(new CompanyId(AppContexts.user().companyId()),
-																	  LimitControlOfTotalWorkingSet.NO_LIMIT_CONTROL); 
-		upperControl.controlUpperLimit(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime());
+		Optional<UpperLimitTotalWorkingHour> upperControl = specificWorkRuleRepository.findUpperLimitWkHourByCid(AppContexts.user().companyId()); 
+		upperControl.ifPresent(tc ->{
+			tc.controlUpperLimit(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime());
+		});
 		
 		return calcResultIntegrationOfDaily;
 	}
