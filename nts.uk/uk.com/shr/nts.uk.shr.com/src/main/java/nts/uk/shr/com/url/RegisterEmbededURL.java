@@ -66,4 +66,10 @@ public interface RegisterEmbededURL {
 	 * @return
 	 */
 	public UrlExecInfo updateEmbeddedUrl (String cid, String contractCd, String loginID, String sCD, String sID, String programID, String screenID, GeneralDateTime issueDate, GeneralDateTime expiredDate, List<UrlTaskIncre> taskIncre);
+	
+	/**
+	 * パスワード再設定メール有効期限チェック(Check giới hạn active mail tái thiết lập pass)
+	 * @param embeddedURL 埋込URLID
+	 */
+	public void checkPassLimitExpire(String embeddedURLID);
 }

@@ -3,16 +3,10 @@ package nts.uk.ctx.at.record.app.find.dailyperform;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.ejb.Stateless;
-import javax.enterprise.inject.spi.CDI;
-import javax.inject.Inject;
-
 import nts.arc.time.GeneralDate;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.AffiliationInforOfDailyPerforDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.BusinessTypeOfDailyPerforDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.dto.AttendanceLeavingGateOfDailyDto;
@@ -45,25 +39,18 @@ import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
-import nts.uk.shr.com.context.AppContexts;
 
-@Stateless
+//@Stateless
 public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAttendanceItemConverter {
 
-	@Inject
-	private OptionalItemRepository optionalMasterRepo;
-	
 	private final DailyRecordDto dailyRecord;
 
 	private DailyRecordToAttendanceItemConverterImpl() {
@@ -85,28 +72,11 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 	@Override
 	public void merge(ItemValue value) {
 		AttendanceItemUtil.fromItemValues(dailyRecord, Arrays.asList(value));
-		if(AttendanceItemIdContainer.isHaveOptionalItems(Arrays.asList(value))) {
-			dailyRecord.getOptionalItem().ifPresent(optional -> {
-				Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
-						.findAll(AppContexts.user().companyId()).stream()
-						.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
-				optional.correctItems(optionalMaster);
-			});
-		}
-		
 	}
 
 	@Override
 	public void merge(Collection<ItemValue> values) {
 		AttendanceItemUtil.fromItemValues(dailyRecord, values);
-		if(AttendanceItemIdContainer.isHaveOptionalItems(values)) {
-			dailyRecord.getOptionalItem().ifPresent(optional -> {
-				Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
-						.findAll(AppContexts.user().companyId()).stream()
-						.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
-				optional.correctItems(optionalMaster);
-			});
-		}
 	}
 
 	@Override
@@ -215,21 +185,6 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 	}
 
 	public DailyRecordToAttendanceItemConverter withAnyItems(AnyItemValueOfDaily domain) {
-		if(domain != null) {
-			if(optionalMasterRepo == null){
-				optionalMasterRepo = CDI.current().select(OptionalItemRepository.class).get();
-			}
-			List<Integer> itemIds = domain.getItems().stream().map(i -> i.getItemNo().v()).collect(Collectors.toList());
-			if(!itemIds.isEmpty()){
-				Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
-						.findByListNos(AppContexts.user().companyId(), itemIds).stream()
-						.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
-				OptionalItemOfDailyPerformDto dto = OptionalItemOfDailyPerformDto.getDto(domain, optionalMaster);
-				dto.correctItems(optionalMaster);
-				this.dailyRecord.optionalItems(dto);
-				return this;
-			}
-		}
 		this.dailyRecord.optionalItems(OptionalItemOfDailyPerformDto.getDto(domain));
 		return this;
 	}

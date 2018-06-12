@@ -169,6 +169,25 @@ public class DailyPerformanceCorrectionDto {
 		});
 	}
 
+	public void createModifierCellStateCaseRow(Map<Integer, DPAttendanceItem> mapDP, List<DPHeaderDto> lstHeader) {
+		this.getLstData().forEach(data -> {
+			boolean isLoginUser = isLoginUser(data.getEmployeeId());
+			lstHeader.forEach(header -> {
+				if (header.getChangedByOther() && !header.getChangedByYou()) {
+					if (isLoginUser) {
+						setDisableCell(header, data, mapDP);
+					}
+				} else if (!header.getChangedByOther() && header.getChangedByYou()) {
+					if (!isLoginUser) {
+						setDisableCell(header, data, mapDP);
+					}
+				} else if (!header.getChangedByOther() && !header.getChangedByYou()) {
+					setDisableCell(header, data, mapDP);
+				}
+			});
+		});
+	}
+	
 	/** Set Error/Alarm text and state for cell */
 	public void addErrorToResponseData(List<DPErrorDto> lstError, List<DPErrorSettingDto> lstErrorSetting, Map<Integer, DPAttendanceItem> mapDP) {
 		lstError.forEach(error -> {

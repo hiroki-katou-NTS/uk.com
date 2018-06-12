@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -11,15 +12,15 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BreakTimeSheetDto {
+public class BreakTimeSheetDto implements ItemConst {
 
 	/** 開始: 勤怠打刻 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "開始")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = START)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer start;
 
 	/** 終了: 勤怠打刻 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "終了")
+	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = END)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer end;
 
@@ -31,5 +32,5 @@ public class BreakTimeSheetDto {
 	/** 休憩枠NO: 休憩枠NO */
 //	@AttendanceItemLayout(layout = "D")
 //	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
-	private Integer breakFrameNo;
+	private Integer no;
 }

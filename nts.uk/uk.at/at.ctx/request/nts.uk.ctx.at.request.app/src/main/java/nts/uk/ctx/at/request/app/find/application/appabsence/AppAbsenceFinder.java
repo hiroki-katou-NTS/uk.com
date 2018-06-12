@@ -123,6 +123,8 @@ public class AppAbsenceFinder {
 				appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT));
 		result.setManualSendMailFlg(
 				appCommonSettingOutput.applicationSetting.getManualSendMailAtr().value == 1 ? true : false);
+		result.setSendMailWhenApprovalFlg(appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenApprovalFlg().value == 1 ? true : false);
+		result.setSendMailWhenRegisterFlg(appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenRegisterFlg().value == 1 ? true : false);
 		// アルゴリズム「1-4.新規画面起動時の承認ルート取得パターン」を実行する
 		ApprovalRootPattern approvalRootPattern = collectApprovalRootPatternService.getApprovalRootPatternService(
 				companyID, employeeID, EmploymentRootAtr.APPLICATION,
