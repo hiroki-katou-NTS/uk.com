@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition>
+		<div id="ccgcomponent"></div>
+		<div class="contentB" tabindex="-1">
+		<div class="fixed-flex-layout-right-screenD" style="padding-top: 20px; padding-left: 30px;">
+							<div class="top-right-panel">
+								<div style="float: left; margin-right: 10px;">
+									<!-- D4_1 -->
+									<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMF003_87')}</div>
+								</div>
+								<div style="float: left; padding-bottom: 20px; width: 70%; margin-left: 40px;">
+									<!-- E4_2 -->
+									<!-- E4_3 -->
+									<div tabindex="3"
+										data-bind="ntsRadioBoxGroup: {options: itemTitleAtr,
+																			optionsValue: 'value',
+																			optionsText: 'titleAtrName',
+																			value: selectedTitleAtr,	
+																			enable: true}">
+									</div>
+								</div>
+							</div>
+				<!-- List employee -->
+				<div class="selectionEmployee" tabindex="3">
+							<div id="employeeSearch" tabindex="-1"></div>
+						</div>
+				<!-- List employee -->
+				<div class="valign-center control-group bot-right-panel">
+					<div id="D4_6" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_100')}</div>
+					<span id="D4_7"></span>
+					<button id="D4_8"
+								data-bind="ntsHelpButton: {image: '../resource/実行間隔説明画像.jpg', position: 'top right'}">?</button>
+				</div>
+				<div style="clear: both;">
+					
+				</div>
+				<!-- button -->
+				<div class="valign-center control-group button-bottom-area">
+					<button id="D5_1" class="large" tabindex="14" data-bind="click: previousB">#{i18n.getText('CMF003_101')}</button>
+					<button id="D5_2" class="x-large proceed" tabindex="15" data-bind="click: nextFromDToE">#{i18n.getText('CMF003_102')}</button>	
+				</div>
+				<!-- button -->
+			</div>
+		</div>
+		
+	</ui:composition>
+</body>
+</html>
