@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="cli001.a.style.css" />
+			<com:scriptfile path="cli001.a.service.js" />
+			<com:scriptfile path="cli001.a.vm.js" />
+			<com:scriptfile path="cli001.a.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button id="button-save" tabindex="4" class="proceed"
+					data-bind="click: save">#{i18n.getText('CLI001_3')}</button>
+				<button tabindex="5" class="large">#{i18n.getText('CLI001_4')}</button>
+			</div>
+			<div id="contents-area">
+				<div style="margin-left: 20px;margin-top: 15px">
+				<div style="width: 500px;"  data-bind="ntsSearchBox: {
+					label:'#{i18n.getText('CLI001_5')}',
+					searchMode: 'filter',
+					searchText: '絞り込み',
+					placeHolder:'ログインID・氏名で検索…',
+					targetKey: 'code',
+					mode: 'igGrid',
+					comId: 'grid',
+					items: items,
+					selectedKey: 'ProductID',
+					fields: ['code', 'name']}" />	
+					<table id="grid"></table>						
+				
+				</div>
+				</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

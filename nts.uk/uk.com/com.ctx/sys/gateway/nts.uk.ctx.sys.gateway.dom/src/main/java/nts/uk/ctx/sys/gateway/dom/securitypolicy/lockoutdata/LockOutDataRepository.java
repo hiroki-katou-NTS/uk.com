@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -25,4 +26,11 @@ public interface LockOutDataRepository {
 	 * @param logoutData the logout data
 	 */
 	void add(LockOutData logoutData);
+	
+	/**
+	 * Removes the.
+	 *
+	 * @param usersID the users ID
+	 */
+	void remove(List<String> usersID);
 }
