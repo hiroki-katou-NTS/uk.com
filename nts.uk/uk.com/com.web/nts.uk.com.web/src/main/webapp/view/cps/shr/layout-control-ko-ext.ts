@@ -886,7 +886,7 @@ module nts.custombinding {
                                     enable: editable,
                                     readonly: readonly,
                                     immediate: false
-                                },  attr: {
+                                }, attr: {
                                     id: nameid,
                                     nameid: nameid,
                                     title: itemName,
@@ -895,7 +895,7 @@ module nts.custombinding {
                                     'data-category': categoryCode,
                                     'data-required': required,
                                     'data-defv': defValue
-                                }," />                                    
+                                }, hasFocus: hasFocus" />                                    
                             <!-- /ko -->
                             <!-- ko if: ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) == -1 && item.stringItemLength >= 40) || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength > 80) -->
                             <textarea data-bind="ntsMultilineEditor: {
@@ -918,7 +918,7 @@ module nts.custombinding {
                                     'data-category': categoryCode,
                                     'data-required': required,
                                     'data-defv': defValue
-                                }" />
+                                }, hasFocus: hasFocus" />
                             <!-- /ko -->
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.NUMERIC -->
@@ -943,7 +943,7 @@ module nts.custombinding {
                                     'data-category': categoryCode,
                                     'data-required': required,
                                     'data-defv': defValue
-                                }" />
+                                }, hasFocus: hasFocus" />
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.DATE -->
                         <!-- ko if: index != 2 -->
@@ -966,7 +966,7 @@ module nts.custombinding {
                                 'data-category': categoryCode,
                                 'data-required': required,
                                 'data-defv': defValue
-                            }"></div>
+                            }, hasFocus: hasFocus"></div>
                         <!-- /ko -->
                         <!-- ko if: index == 2 -->
                         <!-- ko if: typeof ctgType !== 'undefined' -->
@@ -993,7 +993,7 @@ module nts.custombinding {
                                     'data-category': categoryCode,
                                     'data-required': required,
                                     'data-defv': defValue
-                                }"></div>
+                                }, hasFocus: hasFocus"></div>
                             <!-- /ko -->
                         <!-- /ko -->
                         <!-- ko if: typeof ctgType === 'undefined' -->
@@ -1016,7 +1016,7 @@ module nts.custombinding {
                                     'data-category': categoryCode,
                                     'data-required': required,
                                     'data-defv': defValue
-                                }"></div>
+                                }, hasFocus: hasFocus"></div>
                         <!-- /ko -->
                         <!-- /ko -->
                         <!-- /ko -->
@@ -1039,7 +1039,7 @@ module nts.custombinding {
                                     'data-category': categoryCode,
                                     'data-required': required,
                                     'data-defv': defValue
-                                }" />
+                                }, hasFocus: hasFocus" />
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.TIMEPOINT -->
                         <input data-bind="ntsTimeWithDayEditor: { 
@@ -1058,7 +1058,7 @@ module nts.custombinding {
                                     'data-category': categoryCode,
                                     'data-required': required,
                                     'data-defv': defValue
-                                }" />
+                                }, hasFocus: hasFocus" />
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.SELECTION -->
                         <div data-bind="ntsComboBox: {
@@ -1084,7 +1084,7 @@ module nts.custombinding {
                                     'data-category': categoryCode,
                                     'data-required': required,
                                     'data-defv': defValue
-                                }", style='width: 200px; min-width: 200px; max-width: 580px;'></div>
+                                }, hasFocus: hasFocus", style='width: 200px; min-width: 200px; max-width: 580px;'></div>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.SEL_RADIO -->
                             <div data-bind="ntsRadioBoxGroup: {
@@ -1102,7 +1102,7 @@ module nts.custombinding {
                                 'data-defv': defValue,
                                 title: itemName,
                                 'data-title': itemName,
-                            }"></div>
+                            }, hasFocus: hasFocus"></div>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.SEL_BUTTON -->
                             <button data-bind="attr: { 
@@ -1113,7 +1113,7 @@ module nts.custombinding {
                                 'data-category': categoryCode,
                                 'data-required': required,
                                 'data-defv': defValue
-                             }, text: text('CPS001_106'), enable: editable">選択</button>
+                             }, text: text('CPS001_106'), enable: editable, hasFocus: hasFocus">選択</button>
                             <label class="value-text readonly" data-bind="html: textValue"></label>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.READONLY -->
@@ -1140,7 +1140,7 @@ module nts.custombinding {
                                     'data-category': categoryCode,
                                     'data-required': required,
                                     'data-defv': defValue
-                                 }, text: text('CPS001_127'), enable: editable">選択</button>
+                                 }, text: text('CPS001_127'), enable: editable, hasFocus: hasFocus">選択</button>
                             </div>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.NUMBERIC_BUTTON -->
@@ -1166,7 +1166,7 @@ module nts.custombinding {
                                             'data-category': categoryCode,
                                             'data-required': required,
                                             'data-defv': defValue
-                                        }" />                            
+                                        }, hasFocus: hasFocus" />                            
                                 <button data-bind="attr: { 
                                     id: nameid, 
                                     title: itemName,
@@ -1189,7 +1189,7 @@ module nts.custombinding {
                                     'data-category': categoryCode,
                                     'data-required': required,
                                     'data-defv': defValue
-                                 }, text: text('CPS001_127'), enable: editable" class="hidden">選択</button>
+                                 }, text: text('CPS001_127'), enable: editable, hasFocus: hasFocus" class="hidden">選択</button>
                             </div>
                         <!-- /ko -->
                     <!-- /ko -->
@@ -1820,6 +1820,9 @@ module nts.custombinding {
                         item = {};
                     }
 
+                    // focus flag of control
+                    def.hasFocus = ko.observable(false);
+
                     def.itemCode = _.has(def, "itemCode") && def.itemCode || item.itemCode;
                     def.itemName = _.has(def, "itemName") && def.itemName || item.itemName;
                     def.itemDefId = _.has(def, "itemDefId") && def.itemDefId || item.id;
@@ -1866,7 +1869,6 @@ module nts.custombinding {
                                 let data = ko.toJS(def.lstComboBoxValue),
                                     selected: any = _.find(data, (f: any) => f.optionValue == v);
 
-                                console.log(selected);
                                 if (selected) {
                                     def.textValue(selected.optionText);
                                 } else {

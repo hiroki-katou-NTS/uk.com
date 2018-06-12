@@ -47,6 +47,21 @@ module nts.layout {
                         });
                     }
                 });
+
+            setTimeout(() => {
+                let _item: any = _(items)
+                    .filter(x => _.has(x, "items") && !!x.items)
+                    .map(x => x.items)
+                    .flatten()
+                    .flatten()
+                    .filter((x: IItemData) => x.type != ITEM_TYPE.SET)
+                    .orderBy((x: any) => x.dispOrder)
+                    .find((x: any) => !!ko.toJS(x.editable));
+
+                if (_item) {
+                    _item.hasFocus(true);
+                }
+            }, 0);
         },
         checkError: (items: Array<any>) => {
             _(items)
