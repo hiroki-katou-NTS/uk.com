@@ -29,7 +29,7 @@
 					data-bind="ntsLinkButton: { jump: '/view/kaf/004/a/index.xhtml' }">#{i18n.getText('KAF004_7')}</a>
 				<button class="proceed" data-bind="click : registryButtonClick">#{i18n.getText('KAF004_8')}</button>
 				<button style="display: none">#{i18n.getText('KAF004_9')}</button>
-				<div data-bind="ntsCheckBox: { checked: checkBoxValue, enable: sendMail }, visible: sendMail">#{i18n.getText('KAF004_10')}</div>
+				<div data-bind="ntsCheckBox: { checked: checkBoxValue, enable: enableSendMail }, visible: enableSendMail">#{i18n.getText('KAF004_10')}</div>
 			</div>
 			<div id="contents-area">
 			<div style="display: inline-flex;">

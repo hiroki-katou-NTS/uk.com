@@ -176,6 +176,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 		KrcmtInterimRecAbs entity = this.getEntityManager().find(KrcmtInterimRecAbs.class, key);
 		if (entity == null){
 			entity = new KrcmtInterimRecAbs();
+			entity.recAbsPk = new KrcmtInterimRecAbsPK();
 			entity.recAbsPk.absenceMngID = domain.getAbsenceMngId();
 			entity.recAbsPk.recruitmentMngId = domain.getRecruitmentMngId();
 			entity.absenceMngAtr = domain.getAbsenceMngAtr().values;
