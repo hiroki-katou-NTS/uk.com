@@ -62,13 +62,16 @@ public class FileUtil {
 		try {
 			CSVParsedResult csvParsedResult = csvReader.parse(inputStream);
 			NtsCsvRecord colHeader = csvParsedResult.getRecords().get(0);
-			NtsCsvRecord record = csvParsedResult.getRecords().get(1);
-			for (int i = 0; i < record.columnLength(); i++) {
+			List<NtsCsvRecord> allRecord = csvParsedResult.getRecords();
+			for(NtsCsvRecord record: allRecord){
 				List<String> data = new ArrayList<>();
-				data.add((String) colHeader.getColumn(i));
-				data.add((String) record.getColumn(i));
+				for (int i = 0; i < record.columnLength(); i++) {
+					data.add((String) colHeader.getColumn(i));
+					data.add((String) record.getColumn(i));
+				}
 				result.add(data);
 			}
+			
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

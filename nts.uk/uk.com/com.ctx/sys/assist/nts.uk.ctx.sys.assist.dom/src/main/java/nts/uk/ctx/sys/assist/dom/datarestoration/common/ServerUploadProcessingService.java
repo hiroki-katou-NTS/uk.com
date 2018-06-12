@@ -18,23 +18,23 @@ public class ServerUploadProcessingService {
 	private static final String PACK_PATH = "D://UK//temp//packs";
 	@Inject
 	private StoredFileStreamService fileStreamService;
-	
-	public ServerPrepareMng serverUploadProcessing(ServerPrepareMng serverPrepareMng, String fileId){
+	@Inject
+	private DataExtractionService dataExtractionService;
+	//アルゴリズム「サーバーアップロード処理」を実行する
+	public ServerPrepareMng serverUploadProcessing(ServerPrepareMng serverPrepareMng){
+		String fileId = serverPrepareMng.getFileId().get();
 		File uploadedFile = new File(TEMP_PATH + "//" + fileId +".zip");
-		if (uploadedFile.exists()){
-			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.UPLOAD_COMPLETED);
-		} else {
-			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.UPLOAD_FAILED);
-		}
+		//TODO
+		// Waiting for Kiban
+//		if (uploadedFile.exists()){
+//			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.UPLOAD_COMPLETED);
+//		} else {
+//			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.UPLOAD_FAILED);
+//		}
+		serverPrepareMng = dataExtractionService.extractData(serverPrepareMng);
+		
 		return serverPrepareMng;
 		
-	}
-	public static void main(String[] args) {
-		String path = "D://UK//temp//packs//8dbbe356-9a17-4336-b089-fc22df3e0baf";
-		File f = new File(path);
-		for(String filePath : f.list()){
-			System.out.println(filePath);
-		}
 	}
 }
 

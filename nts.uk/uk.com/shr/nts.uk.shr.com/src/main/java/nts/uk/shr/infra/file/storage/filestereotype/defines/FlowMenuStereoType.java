@@ -18,7 +18,7 @@ public class FlowMenuStereoType implements FileStereoTypeDescription {
 	
 	@Override
 	public boolean isPack() {
-		return true;
+		return false;
 	}
 	
 	@Override

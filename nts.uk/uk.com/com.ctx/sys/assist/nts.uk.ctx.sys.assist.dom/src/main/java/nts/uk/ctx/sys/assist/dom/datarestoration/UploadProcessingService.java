@@ -19,22 +19,12 @@ public class UploadProcessingService {
 	
 	@Inject
 	private ServerUploadProcessingService serverUploadProcessingService;
+	//アップロード処理
 	public ServerPrepareMng uploadProcessing(String fileId, String fileName, String password){
 		//サーバー準備動作管理への登録
 		String processId = UUID.randomUUID().toString();
 		ServerPrepareMng serverPrepareMng = new ServerPrepareMng(processId, null, fileId, fileName, 1, password, ServerPrepareOperatingCondition.UPLOADING.value);
-		serverPrepareMng = serverUploadProcessingService.serverUploadProcessing(serverPrepareMng, fileId);
+		serverPrepareMng = serverUploadProcessingService.serverUploadProcessing(serverPrepareMng);
 		return serverPrepareMng;
-	}
-	public static void main(String[] args) {
-		String filePath = "D://UK//temp";
-		File f = new File (filePath);
-		String[] listFile = f.list();
-		for(String a : listFile){
-			//System.out.println(a);
-			File f1 = new File(filePath + "//" + a);
-			System.out.println(f1.exists());
-			System.out.println("Path = " + f1.getAbsolutePath());
-		}
 	}
 }
