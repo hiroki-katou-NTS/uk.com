@@ -161,7 +161,7 @@ module nts.uk.com.view.kwr002.a {
                         $('#print').attr("disabled", "disabled")
                         $('#exportExcel').attr("disabled", "disabled")
                     } else {
-                        var sortArray = listAttendance.sort((i1, i2) => Number(i1.code) > Number(i2.code));
+                        var sortArray = _.orderBy(listAttendance, [e => Number(e.code)], ['asc']);
                         self.attendanceRecordList(sortArray);
                         self.selectedCode = ko.observable(sortArray[0].code);
                     }
@@ -326,23 +326,32 @@ module nts.uk.com.view.kwr002.a {
                 }
             }
 
-            public openBDialog(): void {
+            public openBDialog(): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred();
+                blockUI.invisible();
                 nts.uk.ui.windows.sub.modal("/view/kwr/002/b/index.xhtml").onClosed(function() {
 
                     service.getAllAttendanceRecExpSet().done(function(listAttendance: Array<AttendanceRecordExportSettingDto>) {
-                        self.attendanceRecordList = ko.observableArray([]);
                         if (listAttendance === undefined || listAttendance.length == 0) {
                             $('#print').attr("disabled", "disabled")
                             $('#exportExcel').attr("disabled", "disabled")
                         } else {
-                            var sortArray = listAttendance.sort((i1, i2) => Number(i1.code) > Number(i2.code));
+                            var sortArray = _.orderBy(listAttendance, [e => Number(e.code)], ['asc']);
                             self.attendanceRecordList(sortArray);
                             self.selectedCode = ko.observable(sortArray[0].code);
                         }
+                        console.log(self.attendanceRecordList());
+
+                        dfd.resolve();
 
                     });
-                }
-        }
+
+                });
+                nts.uk.ui.block.clear();
+
+                return dfd.promise();
+            }
 
         export class AttendanceRecordExportSettingDto {
             code: string;

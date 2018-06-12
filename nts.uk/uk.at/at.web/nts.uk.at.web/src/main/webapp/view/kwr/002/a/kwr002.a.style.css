@@ -12,4 +12,7 @@
 	padding: 30px;
 	box-sizing: border-box;
 }
+table tr td {
+    white-space: nowrap;
+}
 
