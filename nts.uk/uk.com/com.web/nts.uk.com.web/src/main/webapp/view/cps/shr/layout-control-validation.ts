@@ -1267,7 +1267,7 @@ module nts.layout {
             if (CS00017_IS00084) {
                 // 
                 CS00017_IS00084.ctrl.on('click', () => {
-                    if (!!CS00017_IS00082.data.value() || location.href.indexOf('/view/cps/002') > -1) {
+                    if ((!!CS00017_IS00082 && !!CS00017_IS00082.data.value()) || location.href.indexOf('/view/cps/002') > -1) {
                         setShared('inputCDL008', {
                             selectedCodes: [ko.toJS(CS00017_IS00084.data.value)],
                             baseDate: ko.toJS(!!CS00017_IS00082 ? moment.utc(CS00017_IS00082.data.value(), "YYYYMMDD").toDate() : new Date()),
@@ -1294,7 +1294,7 @@ module nts.layout {
 
             if (CS00017_IS00085) {
                 CS00017_IS00085.ctrl.on('click', () => {
-                    if (!!CS00017_IS00082.data.value() || location.href.indexOf('/view/cps/002') > -1) {
+                    if ((!!CS00017_IS00082 && !!CS00017_IS00082.data.value()) || location.href.indexOf('/view/cps/002') > -1) {
                         setShared('inputCDL008', {
                             selectedCodes: [ko.toJS(CS00017_IS00085.data.value)],
                             baseDate: ko.toJS(!!CS00017_IS00082 ? moment.utc(CS00017_IS00082.data.value(), "YYYYMMDD").toDate() : new Date()),
