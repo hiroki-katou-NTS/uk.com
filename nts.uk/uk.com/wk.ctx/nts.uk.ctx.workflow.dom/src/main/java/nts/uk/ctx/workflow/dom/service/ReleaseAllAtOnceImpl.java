@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -89,7 +90,7 @@ public class ReleaseAllAtOnceImpl implements ReleaseAllAtOnceService {
 				} else {
 					listApproverWithFlagOutput.add(new ApproverWithFlagOutput(approvalFrame.getRepresenterID(), true));
 				}
-				listApprover.add(approvalFrame.getApproverID());
+				listApprover.addAll(approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList()));
 			});
 			break;
 		}
