@@ -270,11 +270,12 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 			return new HashMap<>();
 
 		// パラメータ「超過月数を出力する」をチェックする
+		Integer monthsExceeded = null;
 		if (numMonth > 0) {
 			// 年間超過回数の取得
 			// RequestList458
 			// TODO
-			getExcessTimesYearAdapter.algorithm(employeeId, fiscalYear);
+			monthsExceeded = getExcessTimesYearAdapter.algorithm(employeeId, fiscalYear);
 		}
 
 		// パラメータ「表示形式」をチェックする
@@ -287,9 +288,8 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 
 		Map<String, AnnualWorkScheduleData> data = new HashMap<>();
 		// アルゴリズム「月平均の算出」を実行する
-		data.put(outputAgreementTime36.getCd().v(), AnnualWorkScheduleData
-				.fromAgreementTimeList(outputAgreementTime36, listAgreementTime, listExcesMonths, startYm, numMonth)
-				.calc());
+		data.put(outputAgreementTime36.getCd().v(), AnnualWorkScheduleData.fromAgreementTimeList(outputAgreementTime36,
+				listAgreementTime, listExcesMonths, startYm, numMonth, monthsExceeded).calc());
 		return data;
 	}
 
@@ -357,8 +357,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		startMonth = new Month(startYm.getMonthValue());
 		// 年度のエンド : 管理期間の36協定時間．年度＋(３６協定運用設定．起算月-1月)＋末日
 		GeneralDate criteria = GeneralDate.ymd(startYm.getYear(), startYm.getMonthValue(), 1).addDays(-1);
-		return agreementTimeByPeriodAdapter.algorithm(cid, employeeId, criteria, startMonth, fiscalYear,
-				unitMonth);
+		return agreementTimeByPeriodAdapter.algorithm(cid, employeeId, criteria, startMonth, fiscalYear, unitMonth);
 	}
 
 	/**

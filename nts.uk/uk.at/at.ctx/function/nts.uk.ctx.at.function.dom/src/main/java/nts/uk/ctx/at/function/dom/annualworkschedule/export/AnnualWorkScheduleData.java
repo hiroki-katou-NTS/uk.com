@@ -426,12 +426,14 @@ public class AnnualWorkScheduleData {
 
 	public static AnnualWorkScheduleData fromAgreementTimeList(ItemOutTblBook itemOut,
 			List<AgreementTimeOfManagePeriodImport> listAgreementTime,
-			List<AgreementTimeByPeriodImport> listExcesMonths, YearMonth startYm, int numMonth) {
+			List<AgreementTimeByPeriodImport> listExcesMonths, YearMonth startYm, int numMonth,
+			Integer monthsExceeded) {
 		AnnualWorkScheduleData annualWorkScheduleData = new AnnualWorkScheduleData();
 		annualWorkScheduleData.setHeadingName(itemOut.getHeadingName().v());
 		annualWorkScheduleData.setValOutFormat(itemOut.getValOutFormat());
 		annualWorkScheduleData.setStartYm(startYm);
 		annualWorkScheduleData.setNumMonth(numMonth);
+		annualWorkScheduleData.setMonthsExceeded(monthsExceeded);
 		listAgreementTime.forEach(m -> {
 			BigDecimal value = new BigDecimal(m.getAgreementTime().getAgreementTime().v());
 			AgreementTimeStatusOfMonthly status = m.getAgreementTime().getStatus();

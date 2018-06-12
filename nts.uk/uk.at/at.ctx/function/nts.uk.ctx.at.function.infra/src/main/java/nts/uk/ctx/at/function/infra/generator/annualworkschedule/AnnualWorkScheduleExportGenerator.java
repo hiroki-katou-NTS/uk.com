@@ -50,6 +50,9 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 			Workbook wb = reportContext.getWorkbook();
 			WorksheetCollection wsc = wb.getWorksheets();
 			Worksheet ws = wsc.get(0);
+			boolean is7Group = true;
+			boolean isMonthsExceeded = true;
+			int pageScale = 95;
 			// set A_11
 			reportContext.setHeader(0, dataSource.getHeader().getTitle());
 			// set A1_2
@@ -62,15 +65,20 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 			if (dataSource.getHeader().getMonthPeriodLabels() == null
 					|| dataSource.getHeader().getMonthPeriodLabels().size() < MAX_GROUP_MONTHS) {
 				ws.getCells().deleteColumn(wsc.getRangeByName("monthPeriodLabel7").getFirstColumn());
-				PageSetup pageSetup = ws.getPageSetup();
-				pageSetup.setZoom(100);
+				is7Group = false;
+				pageScale += 5;
 				rowsPerPage = ROW_PER_PAGE;
 				wsc.getRangeByName("monthPeriod6Range").setOutlineBorder(BorderType.RIGHT_BORDER, CellBorderType.DOTTED,
 						Color.getBlack());
 			}
 			if (!dataSource.isOutNumExceedTime36Agr()) {
 				ws.getCells().deleteColumn(wsc.getRangeByName("numExceedTime").getFirstColumn());
+				isMonthsExceeded = false;
+				pageScale += 2;
 			}
+			PageSetup pageSetup = ws.getPageSetup();
+			pageSetup.setZoom(pageScale);
+
 			// delete superfluous rows
 			Range empRange = wsc.getRangeByName("employeeRange");
 			int rowPerEmp = dataSource.getExportItems().size();
@@ -110,7 +118,7 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 				// break page and print
 				boolean isNewPage = sumRowCount > rowsPerPage
 						|| (nextWorkplace && PageBreakIndicator.WORK_PLACE.equals(dataSource.getPageBreak()));
-				print(wsc, newRange, emp, isNewPage || nextWorkplace);
+				print(wsc, newRange, emp, isNewPage || nextWorkplace, isMonthsExceeded, is7Group);
 				if (isNewPage) {
 					pageBreaks.add(newRange.range.getFirstRow());
 					sumRowCount = newRange.range.getRowCount(); // reset sum row
@@ -119,7 +127,7 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 				offset = newRange.offset;
 			}
 
-			print(wsc, new RangeCustom(empRange, 0), firstEmp, true);
+			print(wsc, new RangeCustom(empRange, 0), firstEmp, true, isMonthsExceeded, is7Group);
 
 			reportContext.processDesigner();
 			reportContext.saveAsExcel(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
@@ -175,7 +183,8 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 	 * @param emp
 	 * @param isNewPage
 	 */
-	private void print(WorksheetCollection wsc, RangeCustom range, EmployeeData emp, boolean isPrintWorkplace) {
+	private void print(WorksheetCollection wsc, RangeCustom range, EmployeeData emp, boolean isPrintWorkplace,
+			boolean isMonthsExceeded, boolean is7Group) {
 		if (isPrintWorkplace) {
 			String workplace = emp.getEmployeeInfo().getWorkplaceName();
 			range.cell("workplace").putValue(workplace);
@@ -228,6 +237,9 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 			this.setCellStyle(range.cell("month12th", rowOffset, 0), data.getColorMonth12th());
 			range.cell("average", rowOffset, 0).putValue(data.formatAverage());
 			range.cell("sum", rowOffset, 0).putValue(data.formatSum());
+			if (isMonthsExceeded) {
+				range.cell("numExceedTime", rowOffset, 0).putValue(data.getMonthsExceeded());
+			}
 			range.cell("period1st", rowOffset, 0).putValue(data.formatMonthPeriod1st());
 			this.setCellStyle(range.cell("period1st", rowOffset, 0), data.getColorPeriodMonth1st());
 			range.cell("period2nd", rowOffset, 0).putValue(data.formatMonthPeriod2nd());
@@ -240,8 +252,10 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 			this.setCellStyle(range.cell("period5th", rowOffset, 0), data.getColorPeriodMonth5th());
 			range.cell("period6th", rowOffset, 0).putValue(data.formatMonthPeriod6th());
 			this.setCellStyle(range.cell("period6th", rowOffset, 0), data.getColorPeriodMonth6th());
-			range.cell("period7th", rowOffset, 0).putValue(data.formatMonthPeriod7th());
-			this.setCellStyle(range.cell("period7th", rowOffset, 0), data.getColorPeriodMonth7th());
+			if (is7Group) {
+				range.cell("period7th", rowOffset, 0).putValue(data.formatMonthPeriod7th());
+				this.setCellStyle(range.cell("period7th", rowOffset, 0), data.getColorPeriodMonth7th());
+			}
 			rowOffset++;
 		}
 	}
