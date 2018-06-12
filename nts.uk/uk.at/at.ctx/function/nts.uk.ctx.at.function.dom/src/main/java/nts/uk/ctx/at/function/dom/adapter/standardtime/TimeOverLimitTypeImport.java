@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.function.dom.adapter.standardtime;
 
+/**
+ * @author dat.lh
+ *
+ */
 public enum TimeOverLimitTypeImport {
 	/*
 	 * ３６協定超過上限回数

@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeByPeriodImport;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeOfManagePeriodImport;
 import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.AttendanceItemValueImport;
 import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.MonthlyAttendanceResultImport;
@@ -97,6 +97,32 @@ public class AnnualWorkScheduleData {
 			break;
 		case 11:
 			this.month12th = item;
+			break;
+		}
+	}
+
+	public void setPeriodMonthData(ItemData item, int index) {
+		switch (index) {
+		case 0:
+			this.period1st = item;
+			break;
+		case 1:
+			this.period2nd = item;
+			break;
+		case 2:
+			this.period3rd = item;
+			break;
+		case 3:
+			this.period4th = item;
+			break;
+		case 4:
+			this.period5th = item;
+			break;
+		case 5:
+			this.period6th = item;
+			break;
+		case 6:
+			this.period7th = item;
 			break;
 		}
 	}
@@ -231,6 +257,34 @@ public class AnnualWorkScheduleData {
 		return this.formatBigDecimal(this.average);
 	}
 
+	public String formatMonthPeriod1st() {
+		return this.formatItemData(this.period1st);
+	}
+
+	public String formatMonthPeriod2nd() {
+		return this.formatItemData(this.period2nd);
+	}
+
+	public String formatMonthPeriod3rd() {
+		return this.formatItemData(this.period3rd);
+	}
+
+	public String formatMonthPeriod4th() {
+		return this.formatItemData(this.period4th);
+	}
+
+	public String formatMonthPeriod5th() {
+		return this.formatItemData(this.period5th);
+	}
+
+	public String formatMonthPeriod6th() {
+		return this.formatItemData(this.period6th);
+	}
+
+	public String formatMonthPeriod7th() {
+		return this.formatItemData(this.period7th);
+	}
+
 	private Integer getColor(ItemData item) {
 		if (item == null || item.getStatus() == null)
 			return null;
@@ -301,6 +355,34 @@ public class AnnualWorkScheduleData {
 		return this.getColor(this.month12th);
 	}
 
+	public Integer getColorPeriodMonth1st() {
+		return this.getColor(this.period1st);
+	}
+
+	public Integer getColorPeriodMonth2nd() {
+		return this.getColor(this.period2nd);
+	}
+
+	public Integer getColorPeriodMonth3rd() {
+		return this.getColor(this.period3rd);
+	}
+
+	public Integer getColorPeriodMonth4th() {
+		return this.getColor(this.period4th);
+	}
+
+	public Integer getColorPeriodMonth5th() {
+		return this.getColor(this.period5th);
+	}
+
+	public Integer getColorPeriodMonth6th() {
+		return this.getColor(this.period6th);
+	}
+
+	public Integer getColorPeriodMonth7th() {
+		return this.getColor(this.period7th);
+	}
+
 	public static AnnualWorkScheduleData fromMonthlyAttendanceList(ItemOutTblBook itemOut,
 			List<MonthlyAttendanceResultImport> monthlyAttendanceResult, YearMonth startYm, int numMonth) {
 		final Map<Integer, Integer> operationMap = itemOut.getListOperationSetting().stream()
@@ -343,18 +425,33 @@ public class AnnualWorkScheduleData {
 	}
 
 	public static AnnualWorkScheduleData fromAgreementTimeList(ItemOutTblBook itemOut,
-			List<AgreementTimeOfManagePeriodImport> listAgreementTime, YearMonth startYm, int numMonth) {
+			List<AgreementTimeOfManagePeriodImport> listAgreementTime,
+			List<AgreementTimeByPeriodImport> listExcesMonths, YearMonth startYm, int numMonth,
+			Integer monthsExceeded) {
 		AnnualWorkScheduleData annualWorkScheduleData = new AnnualWorkScheduleData();
 		annualWorkScheduleData.setHeadingName(itemOut.getHeadingName().v());
 		annualWorkScheduleData.setValOutFormat(itemOut.getValOutFormat());
 		annualWorkScheduleData.setStartYm(startYm);
 		annualWorkScheduleData.setNumMonth(numMonth);
+		annualWorkScheduleData.setMonthsExceeded(monthsExceeded);
 		listAgreementTime.forEach(m -> {
 			BigDecimal value = new BigDecimal(m.getAgreementTime().getAgreementTime().v());
 			AgreementTimeStatusOfMonthly status = m.getAgreementTime().getStatus();
 			ItemData item = new ItemData(value, status);
 			annualWorkScheduleData.setMonthlyData(item,
 					YearMonth.of(m.getYearMonth().year(), m.getYearMonth().month()));
+		});
+
+		listExcesMonths = listExcesMonths.stream().sorted((excesMonth1, excesMonth2) -> Integer
+				.compare(excesMonth1.getStartMonth().v(), excesMonth2.getStartMonth().v()))
+				.collect(Collectors.toList());
+		int periodIndex = 0;
+		listExcesMonths.forEach(m -> {
+			BigDecimal value = new BigDecimal(m.getAgreementTime().v());
+			AgreementTimeStatusOfMonthly status = m.getStatus();
+			ItemData item = new ItemData(value, status);
+			int index = periodIndex + 1;
+			annualWorkScheduleData.setPeriodMonthData(item, index);
 		});
 		return annualWorkScheduleData;
 	}
