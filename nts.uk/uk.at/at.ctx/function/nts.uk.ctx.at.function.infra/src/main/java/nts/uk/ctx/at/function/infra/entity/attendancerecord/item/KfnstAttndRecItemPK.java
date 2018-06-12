@@ -14,182 +14,70 @@ import lombok.AllArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 public class KfnstAttndRecItemPK implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
-	//default serial version id, required for serializable classes.
+	// default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
-	/** The cid. */
-	@Column(name="CID")
-	private String cid;
-
-	/** The export cd. */
-	@Column(name="EXPORT_CD")
-	private long exportCd;
-
-	/** The column index. */
-	@Column(name="COLUMN_INDEX")
-	private long columnIndex;
-
-	/** The position. */
-	@Column(name="[POSITION]")
-	private long position;
-
-	/** The output atr. */
-	@Column(name="OUTPUT_ATR")
-	private long outputAtr;
-
-	/** The time item id. */
-	@Column(name="TIME_ITEM_ID")
-	private long timeItemId;
+	
+	/** The record item id. */
+	@Column(name = "RECORD_ITEM_ID")
+	private String recordItemId;
 
 	/**
 	 * Instantiates a new kfnst attnd rec item PK.
 	 */
 	public KfnstAttndRecItemPK() {
 	}
-	
+
 	/**
-	 * Gets the cid.
+	 * Gets the record item id.
 	 *
-	 * @return the cid
+	 * @return the record item id
 	 */
-	public String getCid() {
-		return this.cid;
-	}
-	
-	/**
-	 * Sets the cid.
-	 *
-	 * @param cid the new cid
-	 */
-	public void setCid(String cid) {
-		this.cid = cid;
-	}
-	
-	/**
-	 * Gets the export cd.
-	 *
-	 * @return the export cd
-	 */
-	public long getExportCd() {
-		return this.exportCd;
-	}
-	
-	/**
-	 * Sets the export cd.
-	 *
-	 * @param exportCd the new export cd
-	 */
-	public void setExportCd(long exportCd) {
-		this.exportCd = exportCd;
-	}
-	
-	/**
-	 * Gets the column index.
-	 *
-	 * @return the column index
-	 */
-	public long getColumnIndex() {
-		return this.columnIndex;
-	}
-	
-	/**
-	 * Sets the column index.
-	 *
-	 * @param columnIndex the new column index
-	 */
-	public void setColumnIndex(long columnIndex) {
-		this.columnIndex = columnIndex;
-	}
-	
-	/**
-	 * Gets the position.
-	 *
-	 * @return the position
-	 */
-	public long getPosition() {
-		return this.position;
-	}
-	
-	/**
-	 * Sets the position.
-	 *
-	 * @param position the new position
-	 */
-	public void setPosition(long position) {
-		this.position = position;
-	}
-	
-	/**
-	 * Gets the output atr.
-	 *
-	 * @return the output atr
-	 */
-	public long getOutputAtr() {
-		return this.outputAtr;
-	}
-	
-	/**
-	 * Sets the output atr.
-	 *
-	 * @param outputAtr the new output atr
-	 */
-	public void setOutputAtr(long outputAtr) {
-		this.outputAtr = outputAtr;
-	}
-	
-	/**
-	 * Gets the time item id.
-	 *
-	 * @return the time item id
-	 */
-	public long getTimeItemId() {
-		return this.timeItemId;
-	}
-	
-	/**
-	 * Sets the time item id.
-	 *
-	 * @param timeItemId the new time item id
-	 */
-	public void setTimeItemId(long timeItemId) {
-		this.timeItemId = timeItemId;
+	public String getRecordItemId() {
+		return this.recordItemId;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
+	/**
+	 * Sets the record item id.
+	 *
+	 * @param recordItemId the new record item id
 	 */
-	public boolean equals(Object other) {
-		if (this == other) {
-			return true;
-		}
-		if (!(other instanceof KfnstAttndRecItemPK)) {
-			return false;
-		}
-		KfnstAttndRecItemPK castOther = (KfnstAttndRecItemPK)other;
-		return 
-			this.cid.equals(castOther.cid)
-			&& (this.exportCd == castOther.exportCd)
-			&& (this.columnIndex == castOther.columnIndex)
-			&& (this.position == castOther.position)
-			&& (this.outputAtr == castOther.outputAtr)
-			&& (this.timeItemId == castOther.timeItemId);
+	public void setRecordItemId(String recordItemId) {
+		this.recordItemId = recordItemId;
 	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
+	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int hash = 17;
-		hash = hash * prime + this.cid.hashCode();
-		hash = hash * prime + ((int) (this.exportCd ^ (this.exportCd >>> 32)));
-		hash = hash * prime + ((int) (this.columnIndex ^ (this.columnIndex >>> 32)));
-		hash = hash * prime + ((int) (this.position ^ (this.position >>> 32)));
-		hash = hash * prime + ((int) (this.outputAtr ^ (this.outputAtr >>> 32)));
-		hash = hash * prime + ((int) (this.timeItemId ^ (this.timeItemId >>> 32)));
-		
-		return hash;
+		int result = 1;
+		result = prime * result + ((recordItemId == null) ? 0 : recordItemId.hashCode());
+		return result;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		KfnstAttndRecItemPK other = (KfnstAttndRecItemPK) obj;
+		if (recordItemId == null) {
+			if (other.recordItemId != null)
+				return false;
+		} else if (!recordItemId.equals(other.recordItemId))
+			return false;
+		return true;
+	}
+
+	
 }

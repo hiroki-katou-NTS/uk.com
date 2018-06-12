@@ -37,6 +37,30 @@ public class KfnstAttndRecItem extends UkJpaEntity implements Serializable {
 	/** The formula type. */
 	@Column(name="FORMULA_TYPE")
 	private BigDecimal formulaType;
+	
+	/** The cid. */
+	@Column(name="CID")
+	private String cid;
+
+	/** The export cd. */
+	@Column(name="EXPORT_CD")
+	private long exportCd;
+
+	/** The column index. */
+	@Column(name="COLUMN_INDEX")
+	private long columnIndex;
+
+	/** The position. */
+	@Column(name="[POSITION]")
+	private long position;
+
+	/** The output atr. */
+	@Column(name="OUTPUT_ATR")
+	private long outputAtr;
+
+	/** The time item id. */
+	@Column(name="TIME_ITEM_ID")
+	private long timeItemId;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
