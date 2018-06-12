@@ -90,7 +90,7 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 		if (discreteSetting.getSendMailWhenApprovalFlg().equals(AppCanAtr.CAN)) {
 			isAutoSendMail = true;
 			if(allApprovalFlg.equals(Boolean.TRUE)){
-				MailResult applicantResult = otherCommonAlgorithm.sendMail(Arrays.asList(application.getEmployeeID()), application);
+				MailResult applicantResult = otherCommonAlgorithm.sendMailApplicantApprove(application);
 				autoSuccessMail.addAll(applicantResult.getSuccessList());
 				autoFailMail.addAll(applicantResult.getFailList());
 			}
@@ -107,7 +107,7 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 						employeeID, 
 						application.getAppType().value, 
 						application.getAppDate());
-				MailResult applicantResult = otherCommonAlgorithm.sendMail(destination, application);
+				MailResult applicantResult = otherCommonAlgorithm.sendMailApproverApprove(destination, application);
 				autoSuccessMail.addAll(applicantResult.getSuccessList());
 				autoFailMail.addAll(applicantResult.getFailList());
 			}

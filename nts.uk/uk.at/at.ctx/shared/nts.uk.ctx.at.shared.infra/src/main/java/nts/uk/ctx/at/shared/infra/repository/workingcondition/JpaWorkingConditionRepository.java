@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -32,7 +32,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * The Class JpaWorkingConditionRepository.
  */
-@RequestScoped
+@Stateless
 public class JpaWorkingConditionRepository extends JpaRepository implements WorkingConditionRepository {
 
 	/*

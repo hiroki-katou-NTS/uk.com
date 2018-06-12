@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.paymana;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -23,6 +25,9 @@ public class FurikyuMngDataExtractionService {
 	private PayoutManagementDataRepository payoutManagementDataRepository;
 	
 	@Inject
+	private PayoutSubofHDManaRepository payoutSubofHDManaRepository;
+	
+	@Inject
 	private SysEmploymentHisAdapter sysEmploymentHisAdapter;
 	
 	@Inject
@@ -36,10 +41,15 @@ public class FurikyuMngDataExtractionService {
 	
 	public FurikyuMngDataExtractionData getFurikyuMngDataExtraction(String sid, GeneralDate startDate, GeneralDate endDate, boolean isPeriod) {
 		List<PayoutManagementData> payoutManagementData;
+		List<PayoutSubofHDManagement> payoutSubofHDManagementLinkToPayout = new ArrayList<PayoutSubofHDManagement>();
 		List<SubstitutionOfHDManagementData> substitutionOfHDManagementData;
+		List<PayoutSubofHDManagement> payoutSubofHDManagementLinkToSub = new ArrayList<PayoutSubofHDManagement>();
 		Double numberOfDayLeft;
 		int expirationDate;
 		Integer closureId;
+		String cid = AppContexts.user().companyId();
+		String empCD = null;
+		boolean haveEmploymentCode = false;
 		
 		// select 過去の結果
 		if(isPeriod) {
@@ -51,11 +61,35 @@ public class FurikyuMngDataExtractionService {
 			substitutionOfHDManagementData = substitutionOfHDManaDataRepository.getBySidRemainDayAndInPayout(sid);
 		}
 		
-		numberOfDayLeft = getNumberOfDayLeft(sid);
-		expirationDate = getExpirationDate(sid);
-		closureId = getClosureId(sid);
+		if (!payoutManagementData.isEmpty()){
+			List<String> listPayoutID = payoutManagementData.stream().map(x ->{
+				return x.getPayoutId();
+			}).collect(Collectors.toList());
+			
+			payoutSubofHDManagementLinkToPayout = payoutSubofHDManaRepository.getByListPayoutID(listPayoutID);
+		}
 		
-		return new FurikyuMngDataExtractionData(payoutManagementData, substitutionOfHDManagementData, expirationDate, numberOfDayLeft, closureId);
+		if (!substitutionOfHDManagementData.isEmpty()){
+			List<String> listSubID = substitutionOfHDManagementData.stream().map(x ->{
+				return x.getSubOfHDID();
+			}).collect(Collectors.toList());
+			
+			payoutSubofHDManagementLinkToSub = payoutSubofHDManaRepository.getByListSubID(listSubID);
+		}
+		
+		if (sysEmploymentHisAdapter.findSEmpHistBySid(cid, sid, GeneralDate.legacyDate(new Date())).isPresent()) {
+			empCD = sysEmploymentHisAdapter.findSEmpHistBySid(cid, sid, GeneralDate.legacyDate(new Date())).get().getEmploymentCode();
+		}
+		
+		if(empCD != null) {
+			haveEmploymentCode = true;
+		}
+		
+		numberOfDayLeft = getNumberOfDayLeft(sid);
+		expirationDate = getExpirationDate(sid, empCD);
+		closureId = getClosureId(sid, empCD);
+		
+		return new FurikyuMngDataExtractionData(payoutManagementData, substitutionOfHDManagementData, payoutSubofHDManagementLinkToPayout, payoutSubofHDManagementLinkToSub, expirationDate, numberOfDayLeft, closureId, haveEmploymentCode);
 	}
 	
 	public Double getNumberOfDayLeft(String sID) {
@@ -77,19 +111,16 @@ public class FurikyuMngDataExtractionService {
 		return totalUnUseDay - totalUndeliveredDay;
 	}
 	
-	public int getExpirationDate(String sid) {
+	public int getExpirationDate(String sid, String empCD) {
 		String cid = AppContexts.user().companyId();
-		String sCD;
 		EmpSubstVacation empSubstVacation;
 		ComSubstVacation comSubstVacation;
 		int expirationDate = 0;
 		
 		// get scd
-		if (sysEmploymentHisAdapter.findSEmpHistBySid(cid, sid, GeneralDate.legacyDate(new Date())).isPresent()) {
-			sCD = sysEmploymentHisAdapter.findSEmpHistBySid(cid, sid, GeneralDate.legacyDate(new Date())).get().getEmploymentCode();
-			
-			if(empSubstVacationRepository.findById(cid, sCD).isPresent()) {
-				empSubstVacation = empSubstVacationRepository.findById(cid, sCD).get();
+		if (empCD != null) {
+			if(empSubstVacationRepository.findById(cid, empCD).isPresent()) {
+				empSubstVacation = empSubstVacationRepository.findById(cid, empCD).get();
 				expirationDate = empSubstVacation.getSetting().getExpirationDate().value;
 			} else if (comSubstVacationRepository.findById(cid).isPresent()){
 				comSubstVacation = comSubstVacationRepository.findById(cid).get();
@@ -105,16 +136,13 @@ public class FurikyuMngDataExtractionService {
 		return expirationDate;
 	}
 	
-	public Integer getClosureId(String sid) {
+	public Integer getClosureId(String sid, String empCD) {
 		String cid = AppContexts.user().companyId();
-		String sCD;
 		Integer closureId = null;
 		
-		if (sysEmploymentHisAdapter.findSEmpHistBySid(cid, sid, GeneralDate.legacyDate(new Date())).isPresent()) {
-			sCD = sysEmploymentHisAdapter.findSEmpHistBySid(cid, sid, GeneralDate.legacyDate(new Date())).get().getEmploymentCode();
-			
-			if(closureEmploymentRepository.findByEmploymentCD(cid, sCD).isPresent()) {
-				closureId = closureEmploymentRepository.findByEmploymentCD(cid, sCD).get().getClosureId();
+		if (empCD != null) {
+			if(closureEmploymentRepository.findByEmploymentCD(cid, empCD).isPresent()) {
+				closureId = closureEmploymentRepository.findByEmploymentCD(cid, empCD).get().getClosureId();
 			}
 		}
 		

@@ -75,3 +75,7 @@ td.employment-tdpad {
 .search-input {
 	width: 100px;
 }
+
+.btn_show_list{
+	z-index: 100000;
+}

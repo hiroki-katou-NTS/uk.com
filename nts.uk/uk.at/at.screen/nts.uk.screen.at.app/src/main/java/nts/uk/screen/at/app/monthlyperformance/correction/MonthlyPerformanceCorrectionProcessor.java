@@ -15,6 +15,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
@@ -37,8 +38,6 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFun;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFunRepository;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyDto;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyFinder;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -51,6 +50,7 @@ import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTime;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.ColumnSetting;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPCellDataDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPCellStateDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPControlDisplayItem;
@@ -185,21 +185,30 @@ public class MonthlyPerformanceCorrectionProcessor {
 			// 7. アルゴリズム「通常モードで起動する」を実行する
 			// アルゴリズム「<<Public>> 就業条件で社員を検索して並び替える」を実行する
 
-			List<RegulationInfoEmployeeQueryR> regulationRs = regulationInfoEmployeePub.search(
-					createQueryEmployee(new ArrayList<>(), presentClosingPeriodExport.get().getClosureStartDate(),
-							presentClosingPeriodExport.get().getClosureStartDate()));
+			if (param.getLstEmployees() != null && !param.getLstEmployees().isEmpty()) {
+				screenDto.setLstEmployee(param.getLstEmployees());
+			} else {
+				List<RegulationInfoEmployeeQueryR> regulationRs = regulationInfoEmployeePub.search(
+						createQueryEmployee(new ArrayList<>(), presentClosingPeriodExport.get().getClosureStartDate(),
+								presentClosingPeriodExport.get().getClosureStartDate()));
 
-			List<MonthlyPerformanceEmployeeDto> lstEmployeeDto = regulationRs.stream().map(item -> {
-				return new MonthlyPerformanceEmployeeDto(item.getEmployeeId(), item.getEmployeeCode(), item.getEmployeeName(), item.getWorkplaceName(), item.getWorkplaceId(), "", false);
-			}).collect(Collectors.toList());
-			screenDto.setLstEmployee(lstEmployeeDto);
-			
-//			screenDto.setLstEmployee(extractEmployeeList(param.getLstEmployees(), employeeId, new DateRange(
-//					screenDto.getSelectedActualTime().getEndDate(), screenDto.getSelectedActualTime().getEndDate())));
-//			List<MonthlyPerformanceEmployeeDto> lstEmployeeData = extractEmployeeData(param.getInitScreenMode(),
-//					employeeId, screenDto.getLstEmployee());
-//			// TODO List<String> employeeIds = lstEmployeeData.stream().map(e ->
-//			// e.getId()).collect(Collectors.toList());
+				List<MonthlyPerformanceEmployeeDto> lstEmployeeDto = regulationRs.stream().map(item -> {
+					return new MonthlyPerformanceEmployeeDto(item.getEmployeeId(), item.getEmployeeCode(),
+							item.getEmployeeName(), item.getWorkplaceName(), item.getWorkplaceId(), "", false);
+				}).collect(Collectors.toList());
+				screenDto.setLstEmployee(lstEmployeeDto);
+			}
+
+			// screenDto.setLstEmployee(extractEmployeeList(param.getLstEmployees(),
+			// employeeId, new DateRange(
+			// screenDto.getSelectedActualTime().getEndDate(),
+			// screenDto.getSelectedActualTime().getEndDate())));
+			// List<MonthlyPerformanceEmployeeDto> lstEmployeeData =
+			// extractEmployeeData(param.getInitScreenMode(),
+			// employeeId, screenDto.getLstEmployee());
+			// // TODO List<String> employeeIds = lstEmployeeData.stream().map(e
+			// ->
+			// // e.getId()).collect(Collectors.toList());
 			List<String> employeeIds = screenDto.getLstEmployee().stream().map(e -> e.getId())
 					.collect(Collectors.toList());
 			// アルゴリズム「表示フォーマットの取得」を実行する(Thực hiện 「Lấy format hiển thị」)
@@ -209,6 +218,12 @@ public class MonthlyPerformanceCorrectionProcessor {
 			} else {
 				throw new BusinessException("FormatPerformance hasn't data");
 			}
+
+			List<MonthlyPerformaceLockStatus> lstLockStatus = screenDto.getParam().getLstLockStatus();
+			if (lstLockStatus.stream().allMatch(item -> item.getLockStatusString() != Strings.EMPTY)) {
+				screenDto.setShowRegisterButton(false);
+			} else
+				screenDto.setShowRegisterButton(true);
 
 			// アルゴリズム「月別実績を表示する」を実行する Hiển thị monthly result
 			displayMonthlyResult(screenDto, yearMonth, closureId);
@@ -233,7 +248,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 		}
 		return screenDto;
 	}
-	
+
 	private RegulationInfoEmployeeQuery createQueryEmployee(List<String> employeeCodes, GeneralDate startDate,
 			GeneralDate endDate) {
 		RegulationInfoEmployeeQuery query = new RegulationInfoEmployeeQuery();
@@ -241,8 +256,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 		query.setReferenceRange(EmployeeReferenceRange.DEPARTMENT_AND_CHILD.value);
 		query.setFilterByEmployment(false);
 		query.setEmploymentCodes(Collections.emptyList());
-//		query.setFilterByDepartment(false);
-//		query.setDepartmentCodes(Collections.emptyList());
+		// query.setFilterByDepartment(false);
+		// query.setDepartmentCodes(Collections.emptyList());
 		query.setFilterByWorkplace(false);
 		query.setWorkplaceCodes(Collections.emptyList());
 		query.setFilterByClassification(false);
@@ -256,8 +271,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 		query.setIncludeIncumbents(true);
 		query.setIncludeWorkersOnLeave(true);
 		query.setIncludeOccupancy(true);
-//		query.setIncludeAreOnLoan(true);
-//		query.setIncludeGoingOnLoan(false);
+		// query.setIncludeAreOnLoan(true);
+		// query.setIncludeGoingOnLoan(false);
 		query.setIncludeRetirees(false);
 		query.setRetireStart(GeneralDate.today());
 		query.setRetireEnd(GeneralDate.today());
@@ -404,6 +419,49 @@ public class MonthlyPerformanceCorrectionProcessor {
 		displayItem.setLstHeader(lstHeader);
 		// Fixed header
 		screenDto.setLstFixedHeader(MPHeaderDto.GenerateFixedHeader());
+		screenDto.getLstFixedHeader().forEach(column -> {
+			screenDto.getLstControlDisplayItem().getColumnSettings().add(new ColumnSetting(column.getKey(), false));
+		});
+
+		for (MPHeaderDto key : displayItem.getLstHeader()) {
+			ColumnSetting columnSetting = new ColumnSetting(key.getKey(), false);
+			if (!key.getGroup().isEmpty()) {
+				displayItem.getColumnSettings().add(new ColumnSetting(key.getGroup().get(0).getKey(), false));
+				displayItem.getColumnSettings().add(new ColumnSetting(key.getGroup().get(1).getKey(), false));
+			} else {
+				if (key.getKey().contains("A")) {
+					PAttendanceItem item = param.getLstAtdItemUnique()
+							.get(Integer.parseInt(key.getKey().substring(1, key.getKey().length()).trim()));
+					columnSetting.setTypeFormat(item.getAttendanceAtr());
+				}
+			}
+			displayItem.getColumnSettings().add(columnSetting);
+		}
+
+		// for (DPHeaderDto key : result.getLstHeader()) {
+		// ColumnSetting columnSetting = new ColumnSetting(key.getKey(), false);
+		// if (!key.getKey().equals("Application") &&
+		// !key.getKey().equals("Submitted") &&
+		// !key.getKey().equals("ApplicationList")) {
+		// if (!key.getGroup().isEmpty()) {
+		// result.getColumnSettings().add(new
+		// ColumnSetting(key.getGroup().get(0).getKey(), false));
+		// result.getColumnSettings().add(new
+		// ColumnSetting(key.getGroup().get(1).getKey(), false));
+		// } else {
+		// /*
+		// * 時間 - thoi gian hh:mm 5, 回数: so lan 2, 金額 : so tien 3, 日数:
+		// * so ngay -
+		// */
+		// DPAttendanceItem dPItem = mapDP
+		// .get(Integer.parseInt(key.getKey().substring(1,
+		// key.getKey().length()).trim()));
+		// columnSetting.setTypeFormat(dPItem.getAttendanceAtr());
+		// }
+		// }
+		// result.getColumnSettings().add(columnSetting);
+		//
+		// }
 
 		/**
 		 * Get Data

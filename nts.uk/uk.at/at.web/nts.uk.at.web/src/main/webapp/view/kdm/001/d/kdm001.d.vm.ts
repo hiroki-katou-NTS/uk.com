@@ -4,6 +4,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import block = nts.uk.ui.block;
     import dialog    = nts.uk.ui.dialog;
+    import getText = nts.uk.resource.getText;
     export class ScreenModel {
         workCode: KnockoutObservable<string>                      = ko.observable('');
         workplaceName: KnockoutObservable<string>                 = ko.observable('');
@@ -11,7 +12,6 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         employeeId: KnockoutObservable<string>                    = ko.observable('');
         employeeName: KnockoutObservable<string>                  = ko.observable('');
         remainDays: KnockoutObservable<number>                    = ko.observable(null);
-        unit: KnockoutObservable<string>                          = ko.observable('');
         lawAtr: KnockoutObservable<number>                        = ko.observable(null);
         pickUp: KnockoutObservable<boolean>                       = ko.observable(true);;
         pause: KnockoutObservable<boolean>                        = ko.observable(true);
@@ -23,14 +23,14 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         requiredDays: KnockoutObservable<number>                  = ko.observable(null);
         typeHoliday: KnockoutObservableArray<model.ItemModel>     = ko.observableArray(model.getTypeHoliday());
         itemListHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getDaysNumber());
-        occurredDays: KnockoutObservable<number>                  = ko.observable(null);
+        occurredDays: KnockoutObservable<number>                  = ko.observable(null);;
         itemListSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getDaysNumber());
         subDays: KnockoutObservable<number>           = ko.observable(null);
         itemListOptionSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getDaysNumber());
         isOptionSubHolidayEnable: KnockoutObservable<boolean>              = ko.observable(false);
         closureId: KnockoutObservable<number> = ko.observable(0);
-        totalDay: KnockoutObservable<number> = ko.observable(0);
         enableSplit: KnockoutObservable<boolean>              = ko.observable(true);
+        unit: KnockoutObservable<string> = ko.observable(getText('KDM001_27'));
         constructor() {
             let self = this;
             self.initScreen();
@@ -60,46 +60,30 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             self.checkedSplit.subscribe((v) => {
                 self.calRemainDays();
             });
-            self.lawAtr(self.typeHoliday()[0].code);
-            self.requiredDays(self.itemListOptionSubHoliday()[0].code);
-            self.subDays(self.itemListSubHoliday()[0].code);
-            self.occurredDays(self.itemListHoliday()[0].code);
+            
+
+            
             self.remainDays(null);
-  
         }
         
         public calRemainDays(){
             let self = this;
-            if (self.pickUp()) {
-                if (self.pause()) {
-                    if (self.checkedSplit()) {
-                        self.remainDays(self.occurredDays() - self.subDays() - self.requiredDays());
-                    } else {
-                        self.remainDays(self.occurredDays() - self.subDays());
-                    }
-                } else {
-                    self.remainDays(self.occurredDays());
-                }
-            } else {
-                if (self.pause()) {
-                    if (self.checkedSplit()) {
-                        self.remainDays(self.totalDay() - self.subDays() - self.requiredDays());
-                    } else {
-                        self.remainDays(self.totalDay() - self.subDays());
-                    }
-                } else {
-                    if (self.checkedSplit()) {
-                        self.remainDays(self.totalDay() - self.requiredDays());
-                    } else {
-                        self.remainDays(null);
-                    }
-                }
+            if ((!self.pickUp() && !self.pause()) ||  (!self.occurredDays() && !self.subDays())) {
+                self.remainDays(null);
+                return;
             }
-            if (self.remainDays != null) {
-                self.unit("日");
+            let value1 = !self.pickUp() || !self.occurredDays()? 0 : self.occurredDays();
+            let value2 = !self.pause() || !self.subDays() ? 0 : self.subDays();
+            let value3 = !self.pause() || !self.checkedSplit() || !self.requiredDays() ? 0 : self.requiredDays();
+            self.remainDays(value1 - value2 - value3);
+            if (self.remainDays() !== 0){
+                self.remainDays(self.remainDays().toFixed(1));
             }
         }
-        
+        public isNaN(x) {
+            x = Number(x);
+            return x != x;
+        }
         public setSplit(){
             let self = this;
             if (self.pause()) {
@@ -122,6 +106,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 self.employeeName(info.selectedEmployee.employeeName);
                 self.closureId(info.closureId);
             }
+            
             block.clear();
         }
         
@@ -218,14 +203,23 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         
         public createData(){
             nts.uk.ui.errors.clearAll();
-            $("#D6_1").trigger("validate");
-            $("#D8_1").trigger("validate");
-            $("#D11_1").trigger("validate");
-            $("#D12_2").trigger("validate");
-            $("#D6_3").trigger("validate");
-            $("#D7_1").trigger("validate");
-            $("#D11_3").trigger("validate");
-            $("#D12_4").trigger("validate");
+            if (this.pickUp()){
+                $("#D6_1").trigger("validate");
+                $("#D8_1").trigger("validate");
+                $("#D7_1").trigger("validate");
+                $("#D6_3").trigger("validate");
+            }
+            if (this.pause()) {
+                $("#D11_1").trigger("validate");
+                $("#D11_3").trigger("validate");
+            }
+            if (this.checkedSplit()) {
+                $("#D12_2").trigger("validate");
+                $("#D12_4").trigger("validate");
+            }
+           
+            
+           
             if (!nts.uk.ui.errors.hasError()) {
                 if (this.checked()) {
                      $('#D4').ntsError('set', { messageId: "Msg_727" });

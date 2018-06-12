@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculationAndMinus;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -15,17 +16,17 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 @NoArgsConstructor
 @AllArgsConstructor
 /** 計算付き月間時間 */
-public class TimeMonthWithCalculationDto {
+public class TimeMonthWithCalculationDto implements ItemConst {
 
-	@AttendanceItemLayout(jpPropertyName = "時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_A)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	/** 時間 */
-	private Integer time;
+	private int time;
 
-	@AttendanceItemLayout(jpPropertyName = "計算時間", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = CALC, layout = LAYOUT_B)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	/** 計算時間 */
-	private Integer calcTime;
+	private int calcTime;
 
 	public TimeMonthWithCalculation toDomain() {
 		return new TimeMonthWithCalculation(toTime(time), toTime(calcTime));
@@ -37,21 +38,21 @@ public class TimeMonthWithCalculationDto {
 
 	public static TimeMonthWithCalculationDto from(TimeMonthWithCalculation domain) {
 		return new TimeMonthWithCalculationDto(
-								domain.getTime() == null ? null : domain.getTime().valueAsMinutes(),
-								domain.getCalcTime() == null ? null : domain.getCalcTime().valueAsMinutes());
+								domain.getTime() == null ? 0 : domain.getTime().valueAsMinutes(),
+								domain.getCalcTime() == null ? 0 : domain.getCalcTime().valueAsMinutes());
 	}
 
 	public static TimeMonthWithCalculationDto from(TimeMonthWithCalculationAndMinus domain) {
 		return new TimeMonthWithCalculationDto(
-								domain.getTime() == null ? null : domain.getTime().valueAsMinutes(),
-								domain.getCalcTime() == null ? null : domain.getCalcTime().valueAsMinutes());
+								domain.getTime() == null ? 0 : domain.getTime().valueAsMinutes(),
+								domain.getCalcTime() == null ? 0 : domain.getCalcTime().valueAsMinutes());
 	}
 
 	private AttendanceTimeMonth toTime(Integer time) {
-		return time == null ? null : new AttendanceTimeMonth(time);
+		return new AttendanceTimeMonth(time);
 	}
 
 	private AttendanceTimeMonthWithMinus toTimeWithMinus(Integer time) {
-		return time == null ? null : new AttendanceTimeMonthWithMinus(time);
+		return new AttendanceTimeMonthWithMinus(time);
 	}
 }

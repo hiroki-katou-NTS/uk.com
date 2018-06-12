@@ -3,7 +3,6 @@
  */
 package nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -52,7 +51,7 @@ public class AddSubHdManagementService {
 			String leaveId = IdentifierUtil.randomUniqueId();
 			if (subHdManagementData.getCheckedHoliday()) {
 				int subHDAtr = 0;
-				if (subHdManagementData.getDayRemaining() == 0) {
+				if (subHdManagementData.getCheckedHoliday() && subHdManagementData.getCheckedSubHoliday()) {
 					subHDAtr = 1;
 				}
 				int equivalentHalfDay = 0;
@@ -98,21 +97,15 @@ public class AddSubHdManagementService {
 
 			if (subHdManagementData.getCheckedHoliday() && subHdManagementData.getCheckedSubHoliday()) {
 				// ドメインモデル「振休休出振付け管理」に紐付きチェックされているもの全てを追加する
-				BigDecimal usedDays = BigDecimal.valueOf(0);
 				int targetSelectionAtr = 2; // 固定値：手動
 				int usedHours = 0;
-				Double usedDay = subHdManagementData.getSelectedCodeOptionSubHoliday()
-						+ subHdManagementData.getSelectedCodeOptionSubHoliday();
 				if (subHdManagementData.getCheckedSplit()) {
-					usedDays = BigDecimal.valueOf(usedDay);
 					LeaveComDayOffManagement domainLeaveComDayOffManagementSub = new LeaveComDayOffManagement(leaveId,
-							comDayOffIDSub, usedDays, usedHours, targetSelectionAtr);
+							comDayOffIDSub, subHdManagementData.getSelectedCodeOptionSubHoliday(), usedHours, targetSelectionAtr);
 					repoLeaveComDayOffMana.add(domainLeaveComDayOffManagementSub);
-				} else {
-					usedDays = BigDecimal.valueOf(subHdManagementData.getSelectedCodeOptionSubHoliday());
-				}
+				} 
 				LeaveComDayOffManagement domainLeaveComDayOffManagement = new LeaveComDayOffManagement(leaveId,
-						comDayOffID, usedDays, usedHours, targetSelectionAtr);
+						comDayOffID, subHdManagementData.getSelectedCodeSubHoliday(), usedHours, targetSelectionAtr);
 				repoLeaveComDayOffMana.add(domainLeaveComDayOffManagement);
 			}
 		}
@@ -176,6 +169,8 @@ public class AddSubHdManagementService {
 				GeneralDate dateOptionSubHoliday = subHdManagementData.getDateOptionSubHoliday();
 				leaveManagementDatas = repoLeaveManaData.getBySidWithHolidayDate(companyId, employeeId,
 						dateOptionSubHoliday);
+				compensatoryDayOffManaDatas = repoComDayOffManaData.getBySidWithHolidayDateCondition(companyId,
+						employeeId, dateOptionSubHoliday);
 				if (!leaveManagementDatas.isEmpty() || !compensatoryDayOffManaDatas.isEmpty()) {
 					errorList.add("Msg_737_sub_option_holiday");
 				}
@@ -241,10 +236,11 @@ public class AddSubHdManagementService {
 		}
 
 		// 休出（年月日）と代休（年月日）をチェックする
-		if (holidayDate.isPresent() && subHolidayDate.compareTo(holidayDate.get()) == 0) {
-			errorList.add("Msg_730");
+		if (checkHoliday) {
+			if (holidayDate.isPresent() && subHolidayDate.compareTo(holidayDate.get()) == 0) {
+				errorList.add("Msg_730");
+			}
 		}
-
 		// チェックボタン「分割消化」をチェックする
 		if (checkSplit && splitDate.isPresent()) {
 			// 代休（年月日）と分割消化.代休（年月日）をチェックする

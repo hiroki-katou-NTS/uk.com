@@ -20,6 +20,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
         isDailyComfirm: boolean;
         listEmployeeCode: Array<any>;
         listWorkplace: Array<model.WorkplaceInfor>;
+        multiSelectedWorkplaceId: Array<any> = [];
         constructor() {
             var self = this;
             $("#fixed-table").ntsFixedTable({ width: 1000, height: 163 });
@@ -38,6 +39,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
             self.listEmployeeCode = params.listEmployeeCode;
             self.isDailyComfirm = params.isConfirmData;
             self.listWorkplace = params.listWorkplace;
+            self.multiSelectedWorkplaceId = params.multiSelectedWorkplaceId;
             let obj = {
                 startDate: self.startDate,
                 endDate: self.endDate,
@@ -46,7 +48,6 @@ module nts.uk.at.view.kaf018.b.viewmodel {
                 listEmpCd: self.listEmployeeCode
             };
             service.getAppSttByWorkpace(obj).done(function(data: any) {
-                console.log(data);
                 _.forEach(data, function(item) {
                     self.tempData.push(new model.ConfirmationStatus(item.workplaceId, item.workplaceName, item.enabled, item.checked, item.numOfApp, item.approvedNumOfCase, item.numOfUnreflected, item.numOfUnapproval, item.numOfDenials));
 
@@ -59,7 +60,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
             return dfd.promise();
         }
 
-        private sendMails() {
+        sendMails() {
             var self = this;
             block.invisible();
             let confirmStatus: Array<model.UnApprovalSendMail> = [];
@@ -102,24 +103,32 @@ module nts.uk.at.view.kaf018.b.viewmodel {
             });
         }
 
-        private getRecord1(value1: number, value2: number): string {
+        getRecord1(value1: number, value2: number): string {
             let val2: string =  value2 > 0 ? value2 : "";
             let val1: string = value1 > 0 ? value1 + "件" : "";
             let symb = (val1 != "" && val2 != "") ? "/" : "";
             return val2 + symb + val1;
         }
 
-        private getRecord(value?: number) {
+        getRecord(value?: number) {
             return value ? value + "件" : "";
         }
 
-        private getTargetDate(): string {
+        getTargetDate(): string {
             var self = this;
             let startDate = nts.uk.time.formatDate(new Date(self.startDate), 'yyyy/MM/dd');
             let endDate = nts.uk.time.formatDate(new Date(self.endDate), 'yyyy/MM/dd');
             return self.processingYm + "(" + startDate + " ～ " + endDate + ")";
         }
 
+        goBackA() {
+            var self = this;
+            let params = {
+                multiSelectedWorkplaceId: self.multiSelectedWorkplaceId
+            };
+             nts.uk.request.jump('/view/kaf/018/a/index.xhtml', params);    
+        }
+        
         gotoC(index) {
             var self = this;
             let listWorkplace = [];
@@ -135,6 +144,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
                 listWorkplace: listWorkplace,
                 selectedWplIndex: index(),
                 listEmployeeCode: self.listEmployeeCode,
+                multiSelectedWorkplaceId: self.multiSelectedWorkplaceId
             };
             nts.uk.request.jump('/view/kaf/018/c/index.xhtml', params);
         }
