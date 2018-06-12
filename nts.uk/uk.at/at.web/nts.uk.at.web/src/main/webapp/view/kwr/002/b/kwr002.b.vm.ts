@@ -8,7 +8,6 @@ module nts.uk.com.view.kwr002.b {
     import windows = nts.uk.ui.windows;
     import alertError = nts.uk.ui.dialog.alertError;
     import confirm = nts.uk.ui.dialog.confirm;
-    import util = nts.uk.util;
 
     let newModeFlag = false;
 
@@ -18,7 +17,6 @@ module nts.uk.com.view.kwr002.b {
         currentARESCode: KnockoutObservable<string>;
         selectedARESCode: KnockoutObservable<string>;
         indexOfDelete: KnockoutObservable<any>;
-        onceUpdate: KnockoutObservable<boolean>;
         sealUseAtrSwitchs: KnockoutObservableArray<SealUseAtrSwitch>;
         newMode: KnockoutObservable<boolean>;
 
@@ -30,7 +28,6 @@ module nts.uk.com.view.kwr002.b {
             self.currentARESCode = ko.observable('');
             self.indexOfDelete = ko.observable('');
             self.selectedARESCode = ko.observable('');
-            self.onceUpdate = ko.observable(true);
 
             self.sealUseAtrSwitchs = ko.observableArray([
                 new SealUseAtrSwitch(1, getText("KWR002_45")),
@@ -174,26 +171,10 @@ module nts.uk.com.view.kwr002.b {
 
             if (!self.newMode()) { //in update mode
                 let data = self.createTransferData(currentData, rcdExport);
-                if (rcdExport.isInvalid()) {
-                    if (util.isNullOrUndefined(rcdExport.attendanceRecExpDaily) && util.isNullOrUndefined(rcdExport.attendanceRecExpMonthly)
-                        && util.isNullOrUndefined(rcdExport.attendanceRecItemList) && util.isNullOrUndefined(rcdExport.sealStamp)) {
-                        data["onceUpdate"] = true;
-                        //update ARES
-                        service.addARES(data).done(() => {
-                            self.callGetAll(self, currentData);
-                        });
-                    } else {
-                        alertError({messageId: 'Msg_1130'});
-                        block.clear();
-                    }
-
-                } else {
-                    //update ARES
-                    service.addARES(data).done(() => {
-                        self.callGetAll(self, currentData);
-                    });
-                }
-
+                //update ARES
+                service.addARES(data).done(() => {
+                    self.callGetAll(self, currentData);
+                });
             } else { // in new mode
                 service.getARESByCode(currentData.code()).done((rs) => {
                     if (!_.isNull(rs.code)) {
