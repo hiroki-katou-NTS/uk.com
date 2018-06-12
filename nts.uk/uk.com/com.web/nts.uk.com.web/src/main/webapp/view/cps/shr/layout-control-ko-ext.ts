@@ -1853,7 +1853,7 @@ module nts.custombinding {
 
                     if (def.item && def.item.dataTypeValue == ITEM_SINGLE_TYPE.SELECTION) {
                         let data = ko.toJS(def.lstComboBoxValue),
-                            selected = _.find(data, f => f.optionValue == def.value());
+                            selected = _.find(data, (f: any) => f.optionValue == def.value());
 
                         if (!selected) {
                             def.value(undefined);
@@ -1864,10 +1864,13 @@ module nts.custombinding {
                         def.value.subscribe(v => {
                             if (v) {
                                 let data = ko.toJS(def.lstComboBoxValue),
-                                    selected = _.find(data, f => f.optionValue == v);
+                                    selected: any = _.find(data, (f: any) => f.optionValue == v);
+
+                                console.log(selected);
                                 if (selected) {
                                     def.textValue(selected.optionText);
                                 } else {
+                                    def.value(undefined);
                                     def.textValue(`${v}&nbsp;&nbsp;&nbsp;${text('CPS001_107')}`);
                                 }
                             } else {
