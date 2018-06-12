@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/freelayout.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 300, height: 200 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ktg031.a.style.css" />
+			<com:scriptfile path="ktg031.a.service.js" />
+			<com:scriptfile path="ktg031.a.vm.js" />
+			<com:scriptfile path="ktg031.a.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div class="cf"
+					data-bind="ntsSwitchButton: {
+												name: 'Switch Button',
+												options: roundingRules,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: selectedRuleCode}"></div>
+				<table class="table1">
+					<thead>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="tbl-td">
+								<label>#{i18n.getText('KTG027_3')}</label>
+							</td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
