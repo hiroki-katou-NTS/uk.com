@@ -364,7 +364,6 @@ module nts.custombinding {
                         padding: 0;
                         overflow: hidden;
                         line-height: 31px;
-                        text-align: center;
                         position: absolute;
                         background: #CFF1A5;
                         box-sizing: border-box;
