@@ -42,7 +42,12 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
 			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND"
 			+ " ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd AND ca.cid = :cid AND ca.abolitionAtr = 0 ORDER BY po.disporder";
+			+ " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd "
+			+ " AND ca.cid = :cid AND ca.abolitionAtr = 0 "
+			+ " AND co.salaryUseAtr = :forPayroll "
+			+ " AND co.personnelUseAtr = :forPersonnel "
+			+ " AND co.employmentUseAtr = :forAttendance "
+			+ " ORDER BY po.disporder";
 	
 	private final static String SELECT_CATEGORY_NO_MUL_DUP_BY_COMPANY_ID_QUERY = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
@@ -167,9 +172,13 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	}
 	
 	@Override
-	public List<PersonInfoCategory> getAllCategoryForCPS007(String companyId, String contractCd) {
+	public List<PersonInfoCategory> getAllCategoryForCPS007(String companyId, String contractCd , int forAttendance , int forPayroll , int forPersonnel) {
 		return this.queryProxy().query(GET_ALL_CATEGORY_FOR_CPS007_CPS008, Object[].class)
-				.setParameter("contractCd", contractCd).setParameter("cid", companyId).getList(c -> {
+				.setParameter("contractCd", contractCd)
+				.setParameter("cid", companyId)
+				.setParameter("forAttendance", forAttendance)
+				.setParameter("forPayroll", forPayroll)
+				.setParameter("forPersonnel", forPersonnel).getList(c -> {
 					return createDomainFromEntity(c);
 				});
 	}

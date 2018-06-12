@@ -9,7 +9,7 @@ public interface PerInfoCategoryRepositoty {
 
 	List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd, int salaryUseAtr, int personnelUseAtr, int employmentUseAtr);
 	
-	List<PersonInfoCategory> getAllCategoryForCPS007(String companyId, String contractCd);
+	List<PersonInfoCategory> getAllCategoryForCPS007(String companyId, String contractCd, int forAttendance , int forPayroll, int forPersonnel);
 
 	Optional<PersonInfoCategory> getPerInfoCategory(String perInfoCategoryId, String contractCd);
 
