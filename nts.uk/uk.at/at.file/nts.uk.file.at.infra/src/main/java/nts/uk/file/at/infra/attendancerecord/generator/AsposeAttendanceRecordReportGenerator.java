@@ -11,6 +11,7 @@ import com.aspose.cells.HorizontalPageBreakCollection;
 import com.aspose.cells.PageSetup;
 import com.aspose.cells.PaperSizeType;
 import com.aspose.cells.Range;
+import com.aspose.cells.VerticalPageBreakCollection;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
@@ -36,6 +37,8 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 
 	/** The Constant TEMPLATE_FILE. */
 	private static final String TEMPLATE_FILE = "report/KWR002.xlsx";
+
+	private static final String REPORT_START_PAGE_ROW = "REPORT_START_PAGE_ROW";
 
 	/** The Constant REPORT_LEFT_ROW. */
 	private static final String REPORT_LEFT_ROW = "REPORT_LEFT_ROW";
@@ -180,6 +183,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			Map<String, List<AttendanceRecordReportEmployeeData>> reportDatas = data.getReportData();
 			for (String sheetName : reportDatas.keySet()) {
 				int sheetPage = 0;
+				int startNewPage = 0;
 
 				// create new sheet from template sheet
 				worksheetCollection.get(worksheetCollection.addCopy(0)).setName(sheetName);
@@ -191,10 +195,19 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 				// Generate employee report page
 				for (AttendanceRecordReportEmployeeData employeeData : reportEmployeeDatas) {
 
-					this.generateEmployeeReportPage(worksheet, employeeData, page, sheetPage, reportPageTmpl,
-							dailyWTmpl, dailyBTmpl, weeklyRangeTmpl);
+					startNewPage = this.generateEmployeeReportPage(startNewPage, worksheet, employeeData, page, sheetPage,
+							reportPageTmpl, dailyWTmpl, dailyBTmpl, weeklyRangeTmpl);
 					sheetPage++;
 					page++;
+				}
+
+				// create print area
+				PageSetup pageSetup = worksheet.getPageSetup();
+				pageSetup.setPrintArea(REPORT_PAGE_ADDR + startNewPage);
+				
+				if (dataSource.getMode() == EXPORT_PDF) {
+					pageSetup.setFitToPagesWide(1);
+					pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
 				}
 
 				worksheet.getCells().deleteColumns(42, 20, true);
@@ -264,10 +277,9 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	 * @throws Exception
 	 *             the exception
 	 */
-	private void generateEmployeeReportPage(Worksheet worksheet, AttendanceRecordReportEmployeeData employeeData,
-			int page, int sheetPage, Range pageTmpl, Range dailyWTmpl, Range dailyBTmpl, Range weeklyRangeTmpl)
-			throws Exception {
-		int startNewPage = MAX_ROW_PER_EMPL * sheetPage;
+	private int generateEmployeeReportPage(int startNewPage, Worksheet worksheet,
+			AttendanceRecordReportEmployeeData employeeData, int page, int sheetPage, Range pageTmpl, Range dailyWTmpl,
+			Range dailyBTmpl, Range weeklyRangeTmpl) throws Exception {
 		if (sheetPage > 0) {
 			// copy new report place
 			Range newReportPage = worksheet.getCells().createRange(START_REPORT_COL1 + (startNewPage + 1));
@@ -312,6 +324,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		// Create weekly data
 		List<AttendanceRecordReportWeeklyData> weeklyDatas = employeeData.getWeeklyDatas();
 		Map<String, Integer> dataRow = new HashMap<>();
+		dataRow.put(REPORT_START_PAGE_ROW, startNewPage);
 		dataRow.put(REPORT_LEFT_ROW, startNewPage + START_REPORT_DATA_ROW);
 		dataRow.put(REPORT_RIGHT_ROW, startNewPage + START_REPORT_DATA_ROW);
 		dataRow.put(REPORT_ROW_BG, REPORT_ROW_BG_WHITE);
@@ -320,10 +333,10 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			generateWeeklyData(worksheet, weeklyData, dataRow, dailyWTmpl, dailyBTmpl, weeklyRangeTmpl);
 		}
 
-		// create print area
-		PageSetup pageSetup = worksheet.getPageSetup();
-		pageSetup.setPrintArea(REPORT_PAGE_ADDR + (startNewPage + MAX_ROW_PER_EMPL));
-		pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
+		// update start page row value
+		startNewPage = dataRow.get(REPORT_START_PAGE_ROW);
+
+		return startNewPage - 1;
 	}
 
 	/**
@@ -346,7 +359,6 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	 */
 	private void generateWeeklyData(Worksheet worksheet, AttendanceRecordReportWeeklyData weeklyData,
 			Map<String, Integer> dataRow, Range dailyDataW, Range dailyDataB, Range weekSumaryTmpl) throws Exception {
-
 		List<AttendanceRecordReportDailyData> dailyDatas = weeklyData.getDailyDatas();
 		boolean isWhiteBackground = dataRow.get(REPORT_ROW_BG) == REPORT_ROW_BG_WHITE;
 		for (int i = 1, j = dailyDatas.size(); i <= j; i++) {
@@ -411,5 +423,8 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 
 		// update last next row color
 		dataRow.put(REPORT_ROW_BG, isWhiteBackground ? REPORT_ROW_BG_WHITE : REPORT_ROW_BG_BLUE);
+		dataRow.put(REPORT_START_PAGE_ROW,
+				dataRow.get(REPORT_LEFT_ROW) < dataRow.get(REPORT_RIGHT_ROW) ? dataRow.get(REPORT_RIGHT_ROW)
+						: dataRow.get(REPORT_LEFT_ROW));
 	}
 }
