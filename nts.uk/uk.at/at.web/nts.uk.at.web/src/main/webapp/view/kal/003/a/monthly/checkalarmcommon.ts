@@ -68,7 +68,7 @@ module nts.uk.at.view.kal003.a.tab {
                 dialog.alertError({ messageId: "Msg_833" });
                 return;
             }
-            let extraResultMonthly =null;// shareutils.getDefaultExtraResultMonthly(0);
+            let extraResultMonthly = shareutils.getDefaultExtraResultMonthly({ typeCheckItem : 0 });
             extraResultMonthly.rowId(self.listExtraResultMonthly().length + 1);
 
             self.listExtraResultMonthly.push(extraResultMonthly);
@@ -106,13 +106,15 @@ module nts.uk.at.view.kal003.a.tab {
                 let data = windows.getShared('outputKal003b');
                 if (data != null && data != undefined) {
                     if (rowId > 0 && rowId <= self.listExtraResultMonthly().length) {
-                        self.listExtraResultMonthly()[rowId - 1] = shareutils.convertTransferDataToExtraResultMonthly(data);
+                        self.listExtraResultMonthly()[rowId - 1] = model.ExtraResultMonthly.clone(data);
                         self.listExtraResultMonthly.valueHasMutated();
                     }
                 }
                 block.clear();
             });
         }
+        
+        
         
         /**
          * Execute deleting the selected WorkRecordExtractingCondition on screen 

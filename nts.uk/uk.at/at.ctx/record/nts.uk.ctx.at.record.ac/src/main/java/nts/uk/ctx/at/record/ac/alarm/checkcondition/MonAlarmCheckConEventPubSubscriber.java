@@ -79,24 +79,23 @@ public class MonAlarmCheckConEventPubSubscriber implements DomainEventSubscriber
 		if (domainEvent.isCheckAdd()) {
 			for (ExtraResultMonthlyDomainEventPubDto extraResultMonthly : listCheckConMonthly) {
 				// add ExtraResultMonthly
-				String errorAlarmCheckID = IdentifierUtil.randomUniqueId();
-				extraResultMonthly.setErrorAlarmCheckID(errorAlarmCheckID);
+				
 				addExtraResultMonthly(convertToExtraResultMonDto(extraResultMonthly));
 
 				if (extraResultMonthly.getTypeCheckItem() == 0) {
 
 					// add SpecHolidayCheckCon
-					extraResultMonthly.getSpecHolidayCheckCon().setErrorAlarmCheckID(errorAlarmCheckID);
+					
 					SpecHolidayCheckCon specHolidayCheckCon = convertToSpecHolidayCheckConDto(extraResultMonthly.getSpecHolidayCheckCon());
 					addSpecHolidayCheckCon(specHolidayCheckCon);
 				} else if (extraResultMonthly.getTypeCheckItem() == 1 || extraResultMonthly.getTypeCheckItem() == 2) {
 					// add listAgreementCheckCon36
-					extraResultMonthly.getAgreementCheckCon36().setErrorAlarmCheckID(errorAlarmCheckID);
+					
 					AgreementCheckCon36 agreementCheckCon36 = convertToAgreementCheckCon36AdapterPubDto(extraResultMonthly.getAgreementCheckCon36());
 					addAgreementCheckCon36(agreementCheckCon36);
 				} else if (extraResultMonthly.getTypeCheckItem() == 3) {
 					// add CheckRemainNumberMon
-					extraResultMonthly.getCheckRemainNumberMon().setErrorAlarmCheckID(errorAlarmCheckID);
+					
 					CheckRemainNumberMon checkRemainNumberMon = convertToCheckRemainNumberMonAdapterPubDto(extraResultMonthly.getCheckRemainNumberMon());
 					addCheckRemainNumberMon(checkRemainNumberMon);
 				}
@@ -243,7 +242,7 @@ public class MonAlarmCheckConEventPubSubscriber implements DomainEventSubscriber
 	}
 
 	private void removeAgreementCheckCon36(String eralCheckID) {
-		if (!agreementCheckCon36Repo.getAgreementCheckCon36ById(eralCheckID).isPresent())
+		if (agreementCheckCon36Repo.getAgreementCheckCon36ById(eralCheckID).isPresent())
 			agreementCheckCon36Repo.deleteAgreementCheckCon36(eralCheckID);
 	}
 

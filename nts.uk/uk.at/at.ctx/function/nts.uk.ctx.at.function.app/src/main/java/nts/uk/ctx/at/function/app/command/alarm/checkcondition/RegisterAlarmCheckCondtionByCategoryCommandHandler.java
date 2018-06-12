@@ -37,6 +37,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckConEvent;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.dtoevent.ExtraResultMonthlyDomainEventDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -241,13 +242,15 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				break;
 			case MONTHLY:
 				String monAlarmCheckConID = IdentifierUtil.randomUniqueId();
+				for(ExtraResultMonthlyDomainEventDto item:command.getMonAlarmCheckCon().getArbExtraCon()) {
+					item.setErrorAlarmCheckID(IdentifierUtil.randomUniqueId());
+				}
 				extractionCondition = command.getMonAlarmCheckCon() == null ? null
 						: new MonAlarmCheckCon(monAlarmCheckConID,
 								command.getMonAlarmCheckCon().getArbExtraCon().stream().map(c->c.getErrorAlarmCheckID()).collect(Collectors.toList())
 								);
 				//add list mon
-				List<String> listEralCheckIDOld = alarmCheckConByCategoryFinder.getDataByCode(command.getCategory(), command.getCode())
-						.getMonAlarmCheckConDto().getListEralCheckIDOld();
+				List<String> listEralCheckIDOld = new ArrayList<>();
 				MonAlarmCheckConEvent event = new MonAlarmCheckConEvent(monAlarmCheckConID,false,true,false,command.getMonAlarmCheckCon().getArbExtraCon(),listEralCheckIDOld);
 				event.toBePublished();
 				//add list fixedExtraMonFun

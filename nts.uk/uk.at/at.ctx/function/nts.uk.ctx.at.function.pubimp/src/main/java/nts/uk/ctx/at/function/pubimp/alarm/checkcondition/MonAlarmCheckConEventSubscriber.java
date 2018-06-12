@@ -2,6 +2,8 @@ package nts.uk.ctx.at.function.pubimp.alarm.checkcondition;
 
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.dom.event.DomainEventSubscriber;
 import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.AttendanceItemConAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.ErAlAtdItemConAdapterDto;
@@ -26,6 +28,7 @@ import nts.uk.ctx.at.function.pub.alarm.checkcondition.eventdto.ErAlConAttendanc
 import nts.uk.ctx.at.function.pub.alarm.checkcondition.eventdto.ExtraResultMonthlyDomainEventPubDto;
 import nts.uk.ctx.at.function.pub.alarm.checkcondition.eventdto.SpecHolidayCheckConAdapterPubDto;
 
+@Stateless
 public class MonAlarmCheckConEventSubscriber implements DomainEventSubscriber<MonAlarmCheckConEvent> {
 
 	@Override
@@ -61,10 +64,10 @@ public class MonAlarmCheckConEventSubscriber implements DomainEventSubscriber<Mo
 				export.isMessageBold(),
 				export.getMessageColor(),
 				export.getDisplayMessage(),
-				convertToAttendanceItemCon(export.getCheckConMonthly()),
-				convertToSpecHolidayCheckConFunImport(export.getSpecHolidayCheckCon()),
-				convertToCheckRemainNumberMonFunImport(export.getCheckRemainNumberMon()),
-				convertToAgreementCheckCon36Import(export.getAgreementCheckCon36())
+				export.getCheckConMonthly() == null?null: convertToAttendanceItemCon(export.getCheckConMonthly()),
+				export.getSpecHolidayCheckCon() == null?null: convertToSpecHolidayCheckConFunImport(export.getSpecHolidayCheckCon()),
+				export.getCheckRemainNumberMon() == null?null: convertToCheckRemainNumberMonFunImport(export.getCheckRemainNumberMon()),
+				export.getAgreementCheckCon36() == null?null: convertToAgreementCheckCon36Import(export.getAgreementCheckCon36())
 				);
 	}
 	

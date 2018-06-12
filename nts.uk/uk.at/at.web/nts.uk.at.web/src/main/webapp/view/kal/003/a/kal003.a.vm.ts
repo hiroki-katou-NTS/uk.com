@@ -230,7 +230,10 @@ module nts.uk.at.view.kal003.a.viewmodel {
 
             if (data.category() == model.CATEGORY.MONTHLY) {
                 data.monAlarmCheckCon().listFixExtraMon(self.tabAlarmcheck.listFixedExtraMonFun());
-                data.monAlarmCheckCon().listFixExtraMon(self.tabAlarmcheck.listFixedExtraMonFun());
+                data.monAlarmCheckCon().arbExtraCon(
+                    _.map(self.tabCheckAlarm.listExtraResultMonthly(), acc=>{ 
+                        return shareutils.convertTransferDataToExtraResultMonthly(acc); 
+                    }));
             }
 
             if (data.category() == model.CATEGORY._36_AGREEMENT) {
@@ -321,6 +324,10 @@ module nts.uk.at.view.kal003.a.viewmodel {
 
                         self.tabAgreementHour.listAgreementHour([]);
                     }
+                    if (self.selectedAlarmCheckCondition().category() == model.CATEGORY.MONTHLY) {
+                        self.tabCheckAlarm.listExtraResultMonthly([]);  
+                        self.tabAlarmcheck.listFixedExtraMonFun([]);
+                    }
                     self.selectCategoryFromDialog(true);
                     if (self.selectedCategory() != output)
                         self.selectedCategory(output);
@@ -383,7 +390,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         let _listExtraMon: Array<model.ExtraResultMonthly> = _.map(result.monAlarmCheckConDto.arbExtraCon, acc => {
                             return shareutils.getDefaultExtraResultMonthly(acc);
                         });
-                        item.monAlarmCheckCon().listExtraResultMonthly(_listExtraMon);
+                        item.monAlarmCheckCon().arbExtraCon(_listExtraMon);
                         self.selectedAlarmCheckCondition(item);
                         self.tabScopeCheck.targetCondition(item.targetCondition());
                         if (item.category() == model.CATEGORY.SCHEDULE_4_WEEK) {
@@ -412,7 +419,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
 
                         if (item.category() == model.CATEGORY.MONTHLY) {
                             //tab extraResult
-                            self.tabCheckAlarm.listExtraResultMonthly(item.monAlarmCheckCon().listExtraResultMonthly());
+                            self.tabCheckAlarm.listExtraResultMonthly(item.monAlarmCheckCon().arbExtraCon());
                             //tab fix
                             if (item.monAlarmCheckCon().listFixExtraMon().length > 0) {
                                 self.tabAlarmcheck.listFixedExtraMonFun(item.monAlarmCheckCon().listFixExtraMon());

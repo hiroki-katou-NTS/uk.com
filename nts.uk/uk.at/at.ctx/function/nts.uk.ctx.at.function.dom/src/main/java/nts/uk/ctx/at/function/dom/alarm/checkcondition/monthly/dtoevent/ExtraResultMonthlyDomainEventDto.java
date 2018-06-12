@@ -50,7 +50,25 @@ public class ExtraResultMonthlyDomainEventDto {
 		this.displayMessage = displayMessage;
 		this.checkConMonthly = checkConMonthly;
 	}
+
+	public ExtraResultMonthlyDomainEventDto(String errorAlarmCheckID, int sortBy, String nameAlarmExtraCon, boolean useAtr, int typeCheckItem, boolean messageBold, String messageColor, String displayMessage,
+			AttendanceItemConAdapterDto checkConMonthly, SpecHolidayCheckConFunImport specHolidayCheckCon, CheckRemainNumberMonFunImport checkRemainNumberMon, AgreementCheckCon36FunImport agreementCheckCon36) {
+		super();
+		this.errorAlarmCheckID = errorAlarmCheckID;
+		this.sortBy = sortBy;
+		this.nameAlarmExtraCon = nameAlarmExtraCon;
+		this.useAtr = useAtr;
+		this.typeCheckItem = typeCheckItem;
+		this.messageBold = messageBold;
+		this.messageColor = messageColor;
+		this.displayMessage = displayMessage;
+		this.checkConMonthly = checkConMonthly;
+		this.specHolidayCheckCon = specHolidayCheckCon;
+		this.checkRemainNumberMon = checkRemainNumberMon;
+		this.agreementCheckCon36 = agreementCheckCon36;
+	}
 	
 	
 
+	
 }
